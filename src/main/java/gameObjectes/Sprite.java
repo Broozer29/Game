@@ -1,4 +1,4 @@
-package Main;
+package gameObjectes;
 
 import java.awt.Image;
 
@@ -21,14 +21,12 @@ public class Sprite {
 		visible = true;
 	}
 
-	
 	protected void loadImage(String imageName) {
 		ImageIcon ii = new ImageIcon(imageName);
 		image = ii.getImage();
 	}
 
 	protected void getImageDimensions() {
-
 		width = image.getWidth(null);
 		height = image.getHeight(null);
 	}
@@ -37,12 +35,20 @@ public class Sprite {
 		return image;
 	}
 
-	public int getX() {
+	public int getXCoordinate() {
 		return xCoordinate;
 	}
 
-	public int getY() {
+	public int getYCoordinate() {
 		return yCoordinate;
+	}
+	
+	public void setX(int xCoordinate) {
+		this.xCoordinate = xCoordinate;
+	}
+	
+	public void setY(int yCoordinate) {
+		this.yCoordinate = yCoordinate;
 	}
 
 	public boolean isVisible() {

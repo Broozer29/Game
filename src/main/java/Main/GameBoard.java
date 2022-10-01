@@ -18,8 +18,11 @@ import javax.swing.JPanel;
 import javax.swing.Timer;
 
 import Main.Data.DataClass;
+import gameObjectes.Alien;
+import gameObjectes.Missile;
+import gameObjectes.SpaceShip;
 
-public class Board extends JPanel implements ActionListener {
+public class GameBoard extends JPanel implements ActionListener {
 
 	private Timer timer;
 	private SpaceShip spaceship;
@@ -37,7 +40,7 @@ public class Board extends JPanel implements ActionListener {
 			{ 530, 60 }, { 940, 59 }, { 990, 30 }, { 920, 200 }, { 900, 259 }, { 660, 50 }, { 540, 90 }, { 810, 220 },
 			{ 860, 20 }, { 740, 180 }, { 820, 128 }, { 490, 170 }, { 700, 30 } };
 
-	public Board() {
+	public GameBoard() {
 		initBoard();
 	}
 
@@ -78,21 +81,21 @@ public class Board extends JPanel implements ActionListener {
 
 	private void drawObjects(Graphics g) {
 		if (spaceship.isVisible()) {
-			g.drawImage(spaceship.getImage(), spaceship.getX(), spaceship.getY(), this);
+			g.drawImage(spaceship.getImage(), spaceship.getXCoordinate(), spaceship.getYCoordinate(), this);
 		}
 		
 		//Draw missiles
 		List<Missile> ms = spaceship.getMissiles();
 		for (Missile missile : ms) {
 			if (missile.isVisible()) {
-				g.drawImage(missile.getImage(), missile.getX(), missile.getY(), this);
+				g.drawImage(missile.getImage(), missile.getXCoordinate(), missile.getYCoordinate(), this);
 			}
 		}
 		
 		//Draw aliens
 		for (Alien alien : aliens) {
 			if (alien.isVisible()) {
-				g.drawImage(alien.getImage(), alien.getX(), alien.getY(), this);
+				g.drawImage(alien.getImage(), alien.getXCoordinate(), alien.getYCoordinate(), this);
 			}
 		}
 		

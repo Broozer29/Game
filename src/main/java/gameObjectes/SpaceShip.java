@@ -1,4 +1,4 @@
-package Main;
+package gameObjectes;
 
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;

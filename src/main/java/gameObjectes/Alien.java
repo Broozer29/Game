@@ -1,4 +1,4 @@
-package Main;
+package gameObjectes;
 
 public class Alien extends Sprite {
 
