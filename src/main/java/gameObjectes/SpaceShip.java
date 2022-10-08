@@ -17,7 +17,7 @@ public class SpaceShip extends Sprite {
 
 	private void initSpaceShip() {
 		missiles = new ArrayList<Missile>();
-		loadImage("src/resources/images/spaceship.png");
+		loadImage("spaceship");
 		getImageDimensions();
 	}
 

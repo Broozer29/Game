@@ -13,7 +13,7 @@ public class Missile extends Sprite {
 
 	private void initMissile() {
 
-		loadImage("src/resources/images/laserbeam.png");
+		loadImage("laserbeam");
 		getImageDimensions();
 	}
 

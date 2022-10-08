@@ -1,4 +1,4 @@
-package Main;
+package Boards;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -6,34 +6,23 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JPanel;
-import javax.swing.Timer;
 
-import Main.Data.DataClass;
+import Data.DataClass;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.FontMetrics;
 import java.awt.Graphics;
-import java.awt.Rectangle;
 import java.awt.Toolkit;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.ListIterator;
 
-import javax.swing.JPanel;
-import javax.swing.Timer;
 
 public class MenuBoard extends JPanel implements ActionListener {
 	private DataClass data = DataClass.getInstance();
 	private final int boardWidth = data.getWindowWidth();;
 	private final int boardHeight = data.getWindowHeight();;
 	private List<MenuTile> tiles = new ArrayList<MenuTile>();
-	private MenuTile pointerTile;
+	private MenuCursor menuCursor;
 	private MenuTile startGameTile;
 	private MenuTile selectUserTile;
 
@@ -48,8 +37,9 @@ public class MenuBoard extends JPanel implements ActionListener {
 	//Initialize all starter pointers
 	private void initMenuTiles() {
 		this.startGameTile = new MenuTile("StartGame", (boardWidth / 2), (boardHeight / 2));
-		this.pointerTile = new MenuTile("Pointer", (boardWidth / 2 - 50), startGameTile.getYCoordinate());
-		this.selectUserTile = new MenuTile("SelectUser", (boardWidth / 2), (boardHeight / 2) + 50);
+		this.menuCursor = new MenuCursor((boardWidth / 2 - 50), startGameTile.getYCoordinate());
+		this.menuCursor.setSelectedMenuTile(startGameTile);
+		this.selectUserTile = new MenuTile("SelectUserMenu", (boardWidth / 2), (boardHeight / 2) + 50);
 	}
 	//Recreate the tilesList that gets drawn by drawComponents	
 	private void recreateList() {
@@ -65,32 +55,38 @@ public class MenuBoard extends JPanel implements ActionListener {
 	//Activate the functionality of the specific menutile
 	private void selectMenuTile() {
 		for(MenuTile tile : tiles) {
-			if (pointerTile.getYCoordinate() == tile.getYCoordinate()) {
+			if (menuCursor.getSelectedMenuTile().equals(tile)) {
 				tile.menuTileAction();
 			}
 		}
 	}
 
-	//Go one menu tile upwards
+	// Go one menu tile upwards
 	private void previousMenuTile() {
-		int pointerY = pointerTile.getYCoordinate();
 		for (int i = 0; i < tiles.size(); i++) {
-			if (pointerY == tiles.get(i).getYCoordinate() && !(i < 1)) {
-				pointerTile.setY(tiles.get(i-1).getYCoordinate());
-				paintComponent(getGraphics());
-				break;
+			if ((menuCursor.getSelectedMenuTile().equals(tiles.get(i)))) {
+				if ((i > 0)) {
+					menuCursor.setY(tiles.get(i - 1).getYCoordinate());
+					menuCursor.setX(tiles.get(i - 1).getXCoordinate() - 50);
+					menuCursor.setSelectedMenuTile(tiles.get(i - 1));
+					paintComponent(getGraphics());
+					break;
+				}
 			}
 		}
 	}
 
-	//Go one menu tile downwards
+	// Go one menu tile downwards
 	private void nextMenuTile() {
-		int pointerY = pointerTile.getYCoordinate();
 		for (int i = 0; i < tiles.size(); i++) {
-			if (pointerY == tiles.get(i).getYCoordinate() && !(i+1 > tiles.size() - 1)) {
-				pointerTile.setY(tiles.get(i+1).getYCoordinate());
-				paintComponent(getGraphics());
-				break;
+			if ((menuCursor.getSelectedMenuTile().equals(tiles.get(i)))) {
+				if ((i + 1) < tiles.size()) {
+					menuCursor.setY(tiles.get(i + 1).getYCoordinate());
+					menuCursor.setX(tiles.get(i + 1).getXCoordinate() - 50);
+					menuCursor.setSelectedMenuTile(tiles.get(i + 1));
+					paintComponent(getGraphics());
+					break;
+				}
 			}
 		}
 	}
@@ -145,7 +141,7 @@ public class MenuBoard extends JPanel implements ActionListener {
 	
 	private void drawObjects(Graphics g) {
 		recreateList();
-		g.drawImage(pointerTile.getImage(), pointerTile.getXCoordinate(), pointerTile.getYCoordinate(), this);
+		g.drawImage(menuCursor.getImage(), menuCursor.getXCoordinate(), menuCursor.getYCoordinate(), this);
 		for (MenuTile tile : tiles) {
 			g.drawImage(tile.getImage(), tile.getXCoordinate(), tile.getYCoordinate(), this);
 		}

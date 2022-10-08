@@ -4,6 +4,8 @@ import java.awt.Image;
 
 import javax.swing.ImageIcon;
 
+import Data.ImageLoader;
+
 import java.awt.Rectangle;
 
 public class Sprite {
@@ -22,8 +24,8 @@ public class Sprite {
 	}
 
 	protected void loadImage(String imageName) {
-		ImageIcon ii = new ImageIcon(imageName);
-		image = ii.getImage();
+		ImageLoader imageLoader = ImageLoader.getInstance();
+		image = imageLoader.getImage(imageName);
 	}
 
 	protected void getImageDimensions() {

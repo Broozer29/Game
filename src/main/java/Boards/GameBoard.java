@@ -1,4 +1,4 @@
-package Main;
+package Boards;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -17,7 +17,7 @@ import java.util.List;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
-import Main.Data.DataClass;
+import Data.DataClass;
 import gameObjectes.Alien;
 import gameObjectes.Missile;
 import gameObjectes.SpaceShip;
@@ -45,7 +45,6 @@ public class GameBoard extends JPanel implements ActionListener {
 	}
 
 	private void initBoard() {
-
 		addKeyListener(new TAdapter());
 		setFocusable(true);
 		setBackground(Color.BLACK);
@@ -191,12 +190,15 @@ public class GameBoard extends JPanel implements ActionListener {
 			}
 		}
 	}
+	
+
 
 	//Required to read key presses
 	private class TAdapter extends KeyAdapter {
 
 		@Override
 		public void keyReleased(KeyEvent e) {
+			System.out.println("hey?");
 			spaceship.keyReleased(e);
 		}
 
