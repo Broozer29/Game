@@ -4,21 +4,33 @@ import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.List;
 
+import Data.DataClass;
+import gameManagers.MissileManager;
+
 public class SpaceShip extends Sprite {
 
 	private int directionx;
 	private int directiony;
-	private List<Missile> missiles;
+	private float hitpoints;
+	private MissileManager missileManager = MissileManager.getInstance();
 
-	public SpaceShip(int xCoordinate, int yCoordinate) {
-		super(xCoordinate, yCoordinate);
+	public SpaceShip() {
+		super(DataClass.getInstance().getWindowWidth() / 10, DataClass.getInstance().getWindowHeight() / 2);
 		initSpaceShip();
 	}
 
 	private void initSpaceShip() {
-		missiles = new ArrayList<Missile>();
 		loadImage("spaceship");
 		getImageDimensions();
+		setShipHealth();
+	}
+
+	private void setShipHealth() {
+		this.hitpoints = 100;
+	}
+
+	public void takeHitpointDamage(float damage) {
+		this.hitpoints -= damage;
 	}
 
 	public void move() {
@@ -26,13 +38,14 @@ public class SpaceShip extends Sprite {
 		yCoordinate += directiony;
 	}
 
-	public List<Missile> getMissiles() {
-		return missiles;
-	}
-
 	// Launch a missile from the center point of the spaceship
 	public void fire() {
-		missiles.add(new Missile(xCoordinate + width, yCoordinate + height / 2));
+		// Missile manager is hier null, ookal hoort hij dat niet te zijn? Hij wordt
+		// meteen geinstantieerd? Verdacht!
+		if (this.missileManager == null) {
+			missileManager = MissileManager.getInstance();
+		}
+		this.missileManager.addFriendlyMissile(new Missile(xCoordinate + width, yCoordinate + height / 2));
 	}
 
 	// Move the spaceship in target direction
@@ -43,16 +56,16 @@ public class SpaceShip extends Sprite {
 			fire();
 			break;
 		case (KeyEvent.VK_A):
-			directionx = -1;
+			directionx = -2;
 			break;
 		case (KeyEvent.VK_D):
-			directionx = 1;
+			directionx = 2;
 			break;
 		case (KeyEvent.VK_W):
-			directiony = -1;
+			directiony = -2;
 			break;
 		case (KeyEvent.VK_S):
-			directiony = 1;
+			directiony = 2;
 			break;
 		}
 	}
@@ -75,5 +88,9 @@ public class SpaceShip extends Sprite {
 			break;
 		}
 
+	}
+
+	public float getHitpoints() {
+		return this.hitpoints;
 	}
 }

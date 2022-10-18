@@ -5,16 +5,16 @@ import java.util.List;
 
 import gameObjectes.Animation;
 
-public class GlobalAnimationStorage {
+public class AnimationManager {
 
-	private static GlobalAnimationStorage instance = new GlobalAnimationStorage();
+	private static AnimationManager instance = new AnimationManager();
 	private List<Animation> animationList = new ArrayList<Animation>();
 
-	private GlobalAnimationStorage() {
+	private AnimationManager() {
 
 	}
 
-	public static GlobalAnimationStorage getInstance() {
+	public static AnimationManager getInstance() {
 		return instance;
 	}
 

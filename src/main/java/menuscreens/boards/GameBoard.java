@@ -5,13 +5,11 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
-import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JPanel;
@@ -19,26 +17,29 @@ import javax.swing.Timer;
 
 import Data.DataClass;
 import gameManagers.EnemyManager;
-import gameManagers.GlobalAnimationStorage;
-import gameObjectes.Alien;
+import gameManagers.FriendlyManager;
+import gameManagers.LevelManager;
+import gameManagers.AnimationManager;
+import gameManagers.MissileManager;
 import gameObjectes.Animation;
 import gameObjectes.Enemy;
 import gameObjectes.Missile;
-import gameObjectes.SpaceShip;
 
 public class GameBoard extends JPanel implements ActionListener {
 
 	private Timer timer;
-	private SpaceShip spaceship;
 	private boolean ingame;
-	private final int startingXPosition = 40;
-	private final int startingYPosition = 60;
+
 	private DataClass data = DataClass.getInstance();
-	private final int boardWidth = data.getWindowWidth();;
-	private final int boardHeight = data.getWindowHeight();;
+	private final int boardWidth = data.getWindowWidth();
+	private final int boardHeight = data.getWindowHeight();
+
 	private final int DELAY = 15;
-	private GlobalAnimationStorage animationLoader = GlobalAnimationStorage.getInstance();
+	private AnimationManager animationLoader = AnimationManager.getInstance();
 	private EnemyManager enemyManager = EnemyManager.getInstance();
+	private MissileManager missileManager = MissileManager.getInstance();
+	private LevelManager levelManager = LevelManager.getInstance();
+	private FriendlyManager friendlyManager = FriendlyManager.getInstance();
 
 	public GameBoard() {
 		initBoard();
@@ -51,10 +52,7 @@ public class GameBoard extends JPanel implements ActionListener {
 		ingame = true;
 
 		setPreferredSize(new Dimension(boardWidth, boardHeight));
-
-		spaceship = new SpaceShip(startingXPosition, startingYPosition);
-
-		enemyManager.startLevel();
+		levelManager.startLevel();
 
 		timer = new Timer(DELAY, this);
 		timer.start();
@@ -72,25 +70,36 @@ public class GameBoard extends JPanel implements ActionListener {
 	}
 
 	private void drawObjects(Graphics g) {
-		if (spaceship.isVisible()) {
-			g.drawImage(spaceship.getImage(), spaceship.getXCoordinate(), spaceship.getYCoordinate(), this);
+		// Draw friendly spaceship
+		if (friendlyManager.getSpaceship().isVisible()) {
+			g.drawImage(friendlyManager.getSpaceship().getImage(), friendlyManager.getSpaceship().getXCoordinate(),
+					friendlyManager.getSpaceship().getYCoordinate(), this);
 		}
 
-		// Draw missiles
-		List<Missile> ms = spaceship.getMissiles();
-		for (Missile missile : ms) {
+		// Draw friendly missiles
+		List<Missile> friendlyMissiles = missileManager.getFriendlyMissiles();
+		for (Missile missile : friendlyMissiles) {
 			if (missile.isVisible()) {
 				g.drawImage(missile.getImage(), missile.getXCoordinate(), missile.getYCoordinate(), this);
 			}
 		}
 
-		// Draw aliens
+		// Draw enemy missiles
+		List<Missile> enemyMissiles = missileManager.getEnemyMissiles();
+		for (Missile missile : enemyMissiles) {
+			if (missile.isVisible()) {
+				g.drawImage(missile.getImage(), missile.getXCoordinate(), missile.getYCoordinate(), this);
+			}
+		}
+
+		// Draw enemies
 		for (Enemy enemy : enemyManager.getEnemies()) {
 			if (enemy.isVisible()) {
 				g.drawImage(enemy.getImage(), enemy.getXCoordinate(), enemy.getYCoordinate(), this);
 			}
 		}
 
+		// Draw animations
 		List<Animation> animationList = animationLoader.getAnimations();
 		for (int i = 0; i < animationList.size(); i++) {
 			g.drawImage(animationList.get(i).getImage(), animationList.get(i).getXCoordinate(),
@@ -116,83 +125,18 @@ public class GameBoard extends JPanel implements ActionListener {
 	// Called on every action/input. Essentially the infinite loop that plays
 	public void actionPerformed(ActionEvent e) {
 		inGame();
-		updateShip();
-		updateMissiles();
-		updateEnemies();
-		checkCollisions();
-		updateLevel();
+		friendlyManager.updateGameTick();
+		missileManager.updateGameTick();
+		enemyManager.updateGameTick();
+		levelManager.updateGameTick();
 		repaint();
-	}
-
-	private void updateLevel() {
-		if (enemyManager.getEnemies().size() <= 0) {
-			enemyManager.levelUp();
-		}
 	}
 
 	// Checks wether the game is still running, stops the timer is not.
 	private void inGame() {
+		ingame = friendlyManager.getPlayerStatus();
 		if (!ingame) {
 			timer.stop();
-		}
-	}
-
-	private void updateShip() {
-		if (spaceship.isVisible()) {
-			spaceship.move();
-		}
-	}
-
-	private void updateEnemies() {
-		List<Enemy> enemies = enemyManager.getEnemies();
-		for (int i = 0; i < enemies.size(); i++) {
-			Enemy enemy = enemies.get(i);
-			if (enemy.isVisible()) {
-				enemy.move();
-			} else {
-				enemyManager.removeEnemy(enemy);
-			}
-		}
-	}
-
-	// Updates the missiles list. DO NOT ITERATE OVER "missiles
-	private void updateMissiles() {
-		List<Missile> missiles = spaceship.getMissiles();
-		for (int i = 0; i < missiles.size(); i++) {
-			Missile missile = missiles.get(i);
-
-			if (missile.isVisible()) {
-				missile.move();
-			} else {
-				missiles.remove(i);
-			}
-		}
-	}
-
-	public void checkCollisions() {
-		Rectangle spaceshipBounds = spaceship.getBounds();
-
-		for (Enemy enemy : enemyManager.getEnemies()) {
-			Rectangle alienBounds = enemy.getBounds();
-			if (spaceshipBounds.intersects(alienBounds)) {
-				spaceship.setVisible(false);
-				enemy.setVisible(false);
-				ingame = false;
-			}
-		}
-
-		List<Missile> ms = spaceship.getMissiles();
-		for (Missile m : ms) {
-			Rectangle r1 = m.getBounds();
-			for (Enemy enemy : enemyManager.getEnemies()) {
-				Rectangle r2 = enemy.getBounds();
-				if (r1.intersects(r2)) {
-					enemy.takeDamage(m.getMissileDamage());
-					animationLoader.addAnimation(
-							new Animation(m.getXCoordinate(), m.getYCoordinate(), "Impact Explosion One"));
-					m.setVisible(false);
-				}
-			}
 		}
 	}
 
@@ -201,12 +145,12 @@ public class GameBoard extends JPanel implements ActionListener {
 
 		@Override
 		public void keyReleased(KeyEvent e) {
-			spaceship.keyReleased(e);
+			friendlyManager.getSpaceship().keyReleased(e);
 		}
 
 		@Override
 		public void keyPressed(KeyEvent e) {
-			spaceship.keyPressed(e);
+			friendlyManager.getSpaceship().keyPressed(e);
 		}
 	}
 }
