@@ -27,10 +27,10 @@ public class ImageLoader {
 				return "src/resources/images/laserbeam.png";
 			case("testimage"):
 				return "src/resources/images/testimage.jpg";
-			case("alien"):
-				return "src/resources/images/testimage.jpg";
+			case("Alien spaceship"):
+				return "src/resources/images/Alien spaceship.png";
 			case("StartGame"):
-				return "src/resources/images/testimage.jpg";
+				return "src/resources/images/Start game.png";
 			case("UserOne"):
 				return "src/resources/images/testimage.jpg";
 			case("UserTwo"):
@@ -38,9 +38,11 @@ public class ImageLoader {
 			case("UserThree"):
 				return "src/resources/images/testimage.jpg";
 			case("SelectUserMenu"):
-				return "src/resources/images/testimage.jpg";
+				return "src/resources/images/Select user.png";
 			case("userMenuToMainMenu"):
 				return "src/resources/images/testimage.jpg";
+			case("Impact Explosion One"):
+				return "src/resources/images/explosion.gif";
 		}
 		return "notfound";
 	}

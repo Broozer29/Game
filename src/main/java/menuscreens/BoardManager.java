@@ -1,9 +1,12 @@
-package Boards;
+package menuscreens;
 
 import javax.swing.JFrame;
 
 import Data.DataClass;
 import database.DatabaseConnection;
+import menuscreens.boards.GameBoard;
+import menuscreens.boards.MenuBoard;
+import menuscreens.boards.UserSelectionBoard;
 
 public class BoardManager extends JFrame {
 

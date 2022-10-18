@@ -2,7 +2,7 @@ package Main;
 
 import java.awt.EventQueue;
 
-import Boards.BoardManager;
+import menuscreens.BoardManager;
 
 public class Main {
 	public static void main(String[] args) {

@@ -1,23 +1,19 @@
 package gameObjectes;
 
-public class Alien extends Sprite {
+import Data.DataClass;
 
-	private final int INITIAL_X = 400;
+public class Alien extends Enemy {
 
-	public Alien(int x, int y) {
-		super(x, y);
+	
+	public Alien(int x, int y, String enemyType) {
+		super(x, y, "Alien");
 		initAlien();
 	}
 
 	private void initAlien() {
-		loadImage("testimage");
+		loadImage("Alien spaceship");
 		getImageDimensions();
 	}
 
-	public void move() {
-		if (xCoordinate < 0) {
-			xCoordinate = INITIAL_X;
-		}
-		xCoordinate -= 1;
-	}
+
 }

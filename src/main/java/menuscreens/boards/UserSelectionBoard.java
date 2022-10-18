@@ -1,8 +1,10 @@
-package Boards;
+package menuscreens.boards;
 
 import javax.swing.JPanel;
 
 import Data.DataClass;
+import menuscreens.MenuCursor;
+import menuscreens.MenuTile;
 
 import java.awt.Color;
 import java.awt.Dimension;

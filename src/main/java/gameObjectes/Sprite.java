@@ -32,6 +32,14 @@ public class Sprite {
 		width = image.getWidth(null);
 		height = image.getHeight(null);
 	}
+	
+	public int getWidth() {
+		return this.width;
+	}
+	
+	public int getHeight() {
+		return this.height;
+	}
 
 	public Image getImage() {
 		return image;

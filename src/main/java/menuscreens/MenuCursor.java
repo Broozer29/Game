@@ -1,4 +1,4 @@
-package Boards;
+package menuscreens;
 
 import gameObjectes.Sprite;
 
