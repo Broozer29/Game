@@ -38,7 +38,8 @@ public class MissileManager {
 		this.friendlyMissiles.add(friendlyMissile);
 	}
 
-	public void addEnemyMissile(Missile enemyMissile) {
+	public void addEnemyMissile(int xCoordinate, int yCoordinate, String missileType) {
+		Missile enemyMissile = new Missile(xCoordinate, yCoordinate, missileType);
 		this.enemyMissiles.add(enemyMissile);
 	}
 
@@ -66,13 +67,36 @@ public class MissileManager {
 			}
 		}
 
-		// Checks collision between missile and enemies
+		checkFriendlyMissileCollision();
+		checkEnemyMissileCollision();
+	}
+
+	// Checks collision between friendly missiles and enemies
+	private void checkFriendlyMissileCollision() {
 		for (Missile m : friendlyMissiles) {
-			Rectangle r1 = m.getBounds();
-			for (Enemy enemy : enemyManager.getEnemies()) {
-				Rectangle r2 = enemy.getBounds();
+			if (m.isVisible()) {
+				Rectangle r1 = m.getBounds();
+				for (Enemy enemy : enemyManager.getEnemies()) {
+					Rectangle r2 = enemy.getBounds();
+					if (r1.intersects(r2)) {
+						enemy.takeDamage(m.getMissileDamage());
+						animationManager.addAnimation(
+								new Animation(m.getXCoordinate(), m.getYCoordinate(), "Impact Explosion One"));
+						m.setVisible(false);
+					}
+				}
+			}
+		}
+	}
+
+	// Checks collision between enemy missiles and the player shapeship
+	private void checkEnemyMissileCollision() {
+		for (Missile m : enemyMissiles) {
+			if (m.isVisible()) {
+				Rectangle r1 = m.getBounds();
+				Rectangle r2 = friendlyManager.getSpaceship().getBounds();
 				if (r1.intersects(r2)) {
-					enemy.takeDamage(m.getMissileDamage());
+					friendlyManager.getSpaceship().takeHitpointDamage(m.getMissileDamage());
 					animationManager.addAnimation(
 							new Animation(m.getXCoordinate(), m.getYCoordinate(), "Impact Explosion One"));
 					m.setVisible(false);
@@ -87,7 +111,7 @@ public class MissileManager {
 			Missile missile = friendlyMissiles.get(i);
 
 			if (missile.isVisible()) {
-				missile.move();
+				missile.updateGameTick();
 			} else {
 				friendlyMissiles.remove(i);
 			}
@@ -98,7 +122,7 @@ public class MissileManager {
 			Missile missile = enemyMissiles.get(i);
 
 			if (missile.isVisible()) {
-				missile.move();
+				missile.updateGameTick();
 			} else {
 				enemyMissiles.remove(i);
 			}

@@ -29,6 +29,8 @@ public class ImageLoader {
 				return "src/resources/images/testimage.jpg";
 			case("Alien spaceship"):
 				return "src/resources/images/Alien spaceship.png";
+			case("alienlaserbeam"):
+				return "src/resources/images/alienlaserbeam.png";
 			case("StartGame"):
 				return "src/resources/images/Start game.png";
 			case("UserOne"):

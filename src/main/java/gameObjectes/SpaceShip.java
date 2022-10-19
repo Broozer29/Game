@@ -1,10 +1,12 @@
 package gameObjectes;
 
 import java.awt.event.KeyEvent;
-import java.util.ArrayList;
-import java.util.List;
+import java.io.IOException;
+
+import javax.sound.sampled.UnsupportedAudioFileException;
 
 import Data.DataClass;
+import gameManagers.AudioManager;
 import gameManagers.MissileManager;
 
 public class SpaceShip extends Sprite {
@@ -13,6 +15,8 @@ public class SpaceShip extends Sprite {
 	private int directiony;
 	private float hitpoints;
 	private MissileManager missileManager = MissileManager.getInstance();
+	private AudioManager audioManager = AudioManager.getInstance();
+	private DataClass dataClass = DataClass.getInstance();
 
 	public SpaceShip() {
 		super(DataClass.getInstance().getWindowWidth() / 10, DataClass.getInstance().getWindowHeight() / 2);
@@ -26,7 +30,7 @@ public class SpaceShip extends Sprite {
 	}
 
 	private void setShipHealth() {
-		this.hitpoints = 100;
+		this.hitpoints = 150;
 	}
 
 	public void takeHitpointDamage(float damage) {
@@ -45,7 +49,13 @@ public class SpaceShip extends Sprite {
 		if (this.missileManager == null) {
 			missileManager = MissileManager.getInstance();
 		}
-		this.missileManager.addFriendlyMissile(new Missile(xCoordinate + width, yCoordinate + height / 2));
+		try {
+			this.audioManager.addAudioToPlayList("DefaultPlayerLaserbeam");
+		} catch (UnsupportedAudioFileException | IOException e) {
+			e.printStackTrace();
+		}
+		this.missileManager.addFriendlyMissile(
+				new Missile(xCoordinate + width, yCoordinate + height / 2, dataClass.getPlayerMissileType()));
 	}
 
 	// Move the spaceship in target direction

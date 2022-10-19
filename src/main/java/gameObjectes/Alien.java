@@ -1,10 +1,7 @@
 package gameObjectes;
 
-import Data.DataClass;
-
 public class Alien extends Enemy {
 
-	
 	public Alien(int x, int y, String enemyType) {
 		super(x, y, "Alien");
 		initAlien();
@@ -14,6 +11,5 @@ public class Alien extends Enemy {
 		loadImage("Alien spaceship");
 		getImageDimensions();
 	}
-
 
 }

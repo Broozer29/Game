@@ -19,6 +19,13 @@ public class EnemyManager {
 	
 	public void updateGameTick() {
 		updateEnemies();
+		triggerEnemyAction();
+	}
+	
+	private void triggerEnemyAction() {
+		for(Enemy enemy : enemyList) {
+			enemy.fireAction();
+		}
 	}
 
 	private void updateEnemies() {

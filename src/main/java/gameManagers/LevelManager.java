@@ -28,7 +28,6 @@ public class LevelManager {
 	public void updateGameTick() {
 		checkLevelUpdate();
 	}
-	
 
 	//Called when all aliens are dead
 	public void levelUp() {

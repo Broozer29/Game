@@ -1,30 +1,62 @@
 package gameObjectes;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Missile extends Sprite {
 
 	private final int BOARD_WIDTH = 1280;
-	private final int MISSILE_SPEED = 2;
-	private float missileDamage = (float) 7.5;
+	private float missileDamage;
+	private String missileType;
 
-	public Missile(int x, int y) {
+	public Missile(int x, int y, String missileType) {
 		super(x, y);
+		this.missileType = missileType;
 		initMissile();
 	}
 
 	private void initMissile() {
-		loadImage("laserbeam");
+		if(missileType.equals("PlayerDefault")) {
+			loadImage("laserbeam");
+			this.missileDamage = (float)7.5;
+		}
+		if(missileType.equals("AlienDefault")) {
+			loadImage("alienlaserbeam");
+			this.missileDamage = (float)2.5;
+		}
+
 		getImageDimensions();
 	}
 
-	public void move() {
+	public void updateGameTick() {
+		move(getCoordinatesDefaultMove(missileType));
 
-		xCoordinate += MISSILE_SPEED;
+	}
 
+	private List<Float> getCoordinatesDefaultMove(String type) {
+		List<Float> coordinatesList = new ArrayList<Float>(4);
+
+		if (type.equals("PlayerDefault")) {
+			coordinatesList.add(0, (float) 7.5);
+			coordinatesList.add(1, (float) 0);
+		} else if (type.equals("AlienDefault")) {
+			coordinatesList.add(0, (float) -3);
+			coordinatesList.add(1, (float) 0);
+		}
+		return coordinatesList;
+	}
+
+	public void move(List<Float> coordinatesList) {
+		xCoordinate += coordinatesList.get(0);
+		yCoordinate += coordinatesList.get(1);
 		if (xCoordinate > BOARD_WIDTH) {
 			visible = false;
 		}
+		if (xCoordinate < 0) {
+			visible = false;
+		}
 	}
-	
+
 	public float getMissileDamage() {
 		return this.missileDamage;
 	}
