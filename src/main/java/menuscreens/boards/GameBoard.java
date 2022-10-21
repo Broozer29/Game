@@ -16,14 +16,15 @@ import javax.swing.JPanel;
 import javax.swing.Timer;
 
 import Data.DataClass;
+import gameManagers.AnimationManager;
 import gameManagers.EnemyManager;
 import gameManagers.FriendlyManager;
 import gameManagers.LevelManager;
-import gameManagers.AnimationManager;
 import gameManagers.MissileManager;
 import gameObjectes.Animation;
 import gameObjectes.Enemy;
 import gameObjectes.Missile;
+import java.awt.Image;
 
 public class GameBoard extends JPanel implements ActionListener {
 
@@ -110,6 +111,10 @@ public class GameBoard extends JPanel implements ActionListener {
 		// Draw the score/aliens left
 		g.setColor(Color.WHITE);
 		g.drawString("Aliens left: " + enemyManager.getEnemies().size(), 5, 15);
+	}
+	
+	private void drawImageSelfWritten(Graphics g,Image image, int xCoordinate, int yCoordinate) {
+		g.drawImage(image, xCoordinate, yCoordinate, this);
 	}
 
 	// Draw the game over screen
