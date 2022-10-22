@@ -73,15 +73,15 @@ public class GameBoard extends JPanel implements ActionListener {
 	private void drawObjects(Graphics g) {
 		// Draw friendly spaceship
 		if (friendlyManager.getSpaceship().isVisible()) {
-			g.drawImage(friendlyManager.getSpaceship().getImage(), friendlyManager.getSpaceship().getXCoordinate(),
-					friendlyManager.getSpaceship().getYCoordinate(), this);
+			drawImageSelfWritten(g, friendlyManager.getSpaceship().getImage(),
+					friendlyManager.getSpaceship().getXCoordinate(), friendlyManager.getSpaceship().getYCoordinate());
 		}
 
 		// Draw friendly missiles
 		List<Missile> friendlyMissiles = missileManager.getFriendlyMissiles();
 		for (Missile missile : friendlyMissiles) {
 			if (missile.isVisible()) {
-				g.drawImage(missile.getImage(), missile.getXCoordinate(), missile.getYCoordinate(), this);
+				drawImageSelfWritten(g, missile.getImage(), missile.getXCoordinate(), missile.getYCoordinate());
 			}
 		}
 
@@ -89,22 +89,22 @@ public class GameBoard extends JPanel implements ActionListener {
 		List<Missile> enemyMissiles = missileManager.getEnemyMissiles();
 		for (Missile missile : enemyMissiles) {
 			if (missile.isVisible()) {
-				g.drawImage(missile.getImage(), missile.getXCoordinate(), missile.getYCoordinate(), this);
+				drawImageSelfWritten(g, missile.getImage(), missile.getXCoordinate(), missile.getYCoordinate());
 			}
 		}
 
 		// Draw enemies
 		for (Enemy enemy : enemyManager.getEnemies()) {
 			if (enemy.isVisible()) {
-				g.drawImage(enemy.getImage(), enemy.getXCoordinate(), enemy.getYCoordinate(), this);
+				drawImageSelfWritten(g, enemy.getImage(), enemy.getXCoordinate(), enemy.getYCoordinate());
 			}
 		}
 
 		// Draw animations
 		List<Animation> animationList = animationLoader.getAnimations();
 		for (int i = 0; i < animationList.size(); i++) {
-			g.drawImage(animationList.get(i).getImage(), animationList.get(i).getXCoordinate(),
-					animationList.get(i).getYCoordinate(), this);
+			drawImageSelfWritten(g, animationList.get(i).getImage(), animationList.get(i).getXCoordinate(),
+					animationList.get(i).getYCoordinate());
 			animationLoader.updateAnimationList(animationList.get(i));
 		}
 
@@ -112,8 +112,8 @@ public class GameBoard extends JPanel implements ActionListener {
 		g.setColor(Color.WHITE);
 		g.drawString("Aliens left: " + enemyManager.getEnemies().size(), 5, 15);
 	}
-	
-	private void drawImageSelfWritten(Graphics g,Image image, int xCoordinate, int yCoordinate) {
+
+	private void drawImageSelfWritten(Graphics g, Image image, int xCoordinate, int yCoordinate) {
 		g.drawImage(image, xCoordinate, yCoordinate, this);
 	}
 

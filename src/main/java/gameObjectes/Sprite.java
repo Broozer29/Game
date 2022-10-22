@@ -26,17 +26,19 @@ public class Sprite {
 	protected void loadImage(String imageName) {
 		ImageLoader imageLoader = ImageLoader.getInstance();
 		image = imageLoader.getImage(imageName);
+		// image = image.getScaledInstance(10, 20, 0);
+		// Zet collision ook op die getallen en shits & giggles
 	}
 
 	protected void getImageDimensions() {
 		width = image.getWidth(null);
 		height = image.getHeight(null);
 	}
-	
+
 	public int getWidth() {
 		return this.width;
 	}
-	
+
 	public int getHeight() {
 		return this.height;
 	}
@@ -52,11 +54,11 @@ public class Sprite {
 	public int getYCoordinate() {
 		return yCoordinate;
 	}
-	
+
 	public void setX(int xCoordinate) {
 		this.xCoordinate = xCoordinate;
 	}
-	
+
 	public void setY(int yCoordinate) {
 		this.yCoordinate = yCoordinate;
 	}
@@ -69,7 +71,7 @@ public class Sprite {
 		this.visible = visible;
 	}
 
-	//Get bounds required for collision detection
+	// Get bounds required for collision detection
 	public Rectangle getBounds() {
 		return new Rectangle(xCoordinate, yCoordinate, width, height);
 	}
