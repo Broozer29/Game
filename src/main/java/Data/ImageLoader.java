@@ -45,6 +45,10 @@ public class ImageLoader {
 				return "src/resources/images/testimage.jpg";
 			case("Impact Explosion One"):
 				return "src/resources/images/explosion.gif";
+			case("Player Engine"):
+				return "src/resources/images/enginesmoke.gif";
+			case("Player Engine Idle"):
+				return "src/resources/images/enginesmoke2.gif";
 		}
 		return "notfound";
 	}

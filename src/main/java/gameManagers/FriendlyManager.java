@@ -6,10 +6,12 @@ public class FriendlyManager {
 
 	private static FriendlyManager instance = new FriendlyManager();
 	private SpaceShip spaceship;
+	private String playerMissileType;
 	private boolean playerAlive;
 
 	private FriendlyManager() {
 		initSpaceShip();
+		this.playerMissileType = "laserblast";
 	}
 
 	public static FriendlyManager getInstance() {
@@ -24,9 +26,13 @@ public class FriendlyManager {
 	public SpaceShip getSpaceship() {
 		return this.spaceship;
 	}
-	
+
 	public boolean getPlayerStatus() {
 		return this.playerAlive;
+	}
+
+	public String getPlayerMissileType() {
+		return this.playerMissileType;
 	}
 
 	private void checkPlayerHealth() {

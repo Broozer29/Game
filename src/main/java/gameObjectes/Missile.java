@@ -3,11 +3,16 @@ package gameObjectes;
 import java.util.ArrayList;
 import java.util.List;
 
+import Data.DataClass;
+
 public class Missile extends Sprite {
 
 	private final int BOARD_WIDTH = 1280;
 	private float missileDamage;
+	private Trajectory trajectory;
+	//Trajectory wordt aangemaakt en gezet. De functie die een trajectory object maakt en het object een traject laat volgen is er nog niet.
 	private String missileType;
+	
 
 	public Missile(int x, int y, String missileType) {
 		super(x, y);
@@ -16,13 +21,21 @@ public class Missile extends Sprite {
 	}
 
 	private void initMissile() {
-		if(missileType.equals("PlayerDefault")) {
+		int xDestination = 0;
+		int yDestination = 0;
+		if(missileType.equals("laserblast")) {
 			loadImage("laserbeam");
 			this.missileDamage = (float)7.5;
+			xDestination = DataClass.getInstance().getWindowWidth();
+			yDestination = yCoordinate;
+			this.trajectory = new Trajectory(getCoordinatesDefaultMove(missileType), xCoordinate, yCoordinate);
 		}
 		if(missileType.equals("AlienDefault")) {
 			loadImage("alienlaserbeam");
 			this.missileDamage = (float)2.5;
+			xDestination = 0;
+			yDestination = yCoordinate;
+			this.trajectory = new Trajectory(getCoordinatesDefaultMove(missileType), xCoordinate, yCoordinate);
 		}
 
 		getImageDimensions();
@@ -36,7 +49,7 @@ public class Missile extends Sprite {
 	private List<Float> getCoordinatesDefaultMove(String type) {
 		List<Float> coordinatesList = new ArrayList<Float>(4);
 
-		if (type.equals("PlayerDefault")) {
+		if (type.equals("laserblast")) {
 			coordinatesList.add(0, (float) 7.5);
 			coordinatesList.add(1, (float) 0);
 		} else if (type.equals("AlienDefault")) {
@@ -56,6 +69,8 @@ public class Missile extends Sprite {
 			visible = false;
 		}
 	}
+	
+
 
 	public float getMissileDamage() {
 		return this.missileDamage;

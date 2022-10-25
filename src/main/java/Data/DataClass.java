@@ -11,7 +11,6 @@ public class DataClass {
 	private int windowHeight = 720;
 	// Tijdelijke string user, liever een domain object
 	private String currentUser;
-	private String currentMissiletype = "PlayerDefault";
 
 	private DataClass() {
 	}
@@ -20,10 +19,6 @@ public class DataClass {
 		return instance;
 	}
 	
-	public String getPlayerMissileType() {
-		return this.currentMissiletype;
-	}
-
 	public int getWindowWidth() {
 		return this.windowWidth;
 	}

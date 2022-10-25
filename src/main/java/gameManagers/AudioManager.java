@@ -12,7 +12,9 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 public class AudioManager {
 
 	private static AudioManager instance = new AudioManager();
-	private AudioInputStream defaultPlayerLaserBeamAudioStream = null;
+	private FriendlyManager friendlyManager = FriendlyManager.getInstance();
+	private Clip backGroundMusic = null;
+	private AudioInputStream backGroundMusicInputStream = null;
 
 	private AudioManager() {
 
@@ -22,33 +24,68 @@ public class AudioManager {
 		return instance;
 	}
 
-	public void addAudioToPlayList(String audioType) throws UnsupportedAudioFileException, IOException {
-		playAudio(getAudioStream(audioType));
-	}
+	// Wss niet meer nodig
+//	public void addAudioToPlayList(String audioType) throws UnsupportedAudioFileException, IOException {
+//		playAudio(audioType);
+//	}
+	
 
-	private AudioInputStream getAudioStream(String audioType) throws UnsupportedAudioFileException, IOException {
-		switch (audioType) {
-		case ("DefaultPlayerLaserbeam"):
-			if (defaultPlayerLaserBeamAudioStream == null) {
-				defaultPlayerLaserBeamAudioStream = AudioSystem.getAudioInputStream(new File("src/resources/audio/Earth5.wav").getAbsoluteFile());
-			}
-			return defaultPlayerLaserBeamAudioStream;
+	// Voeg een playermissile audio toe op basis van de missile type
+	public void firePlayerMissile() throws UnsupportedAudioFileException, IOException {
+		if (friendlyManager == null) {
+			friendlyManager = FriendlyManager.getInstance();
 		}
-		return null;
+
+		switch (friendlyManager.getPlayerMissileType()) {
+		case ("laserblast"):
+			playAudio("laserblast");
+		}
 	}
 
-	private void playAudio(AudioInputStream audioInputStream) throws UnsupportedAudioFileException, IOException {
-		String soundName = "src/resources/audio/Earth5.wav";
+	// Voegt background muziek toe en loopt het.
+	public void playBackgroundMusic(String audioType) throws UnsupportedAudioFileException, IOException {
+		if (backGroundMusic == null) {
+			playMusicAudio(audioType);
+		}
+	}
+
+	// Play singular audios
+	private void playAudio(String audioType) throws UnsupportedAudioFileException, IOException {
 		Clip clip;
-		AudioInputStream defaultPlayerLaserBeamAudioStream = AudioSystem.getAudioInputStream(new File("src/resources/audio/Earth5.wav").getAbsoluteFile());
+		AudioInputStream playerMissileAudio = null;
+
+		switch (audioType) {
+		case ("laserblast"):
+			playerMissileAudio = AudioSystem
+					.getAudioInputStream(new File("src/resources/audio/Laser1.wav").getAbsoluteFile());
+		}
+
 		try {
 			clip = AudioSystem.getClip();
-			clip.open(defaultPlayerLaserBeamAudioStream);
+			clip.open(playerMissileAudio);
 			clip.start();
 		} catch (LineUnavailableException e) {
 			e.printStackTrace();
 		}
 
+	}
+
+	// Play the background music
+	private void playMusicAudio(String audioType) throws UnsupportedAudioFileException, IOException {
+		switch (audioType) {
+		case ("defaultmusic"):
+			System.out.println("Ik zet");
+			backGroundMusicInputStream = AudioSystem
+					.getAudioInputStream(new File("src/resources/audio/music/defaultmusic.wav").getAbsoluteFile());
+		}
+
+		try {
+			backGroundMusic = AudioSystem.getClip();
+			backGroundMusic.open(backGroundMusicInputStream);
+			backGroundMusic.loop(Clip.LOOP_CONTINUOUSLY);
+		} catch (LineUnavailableException e) {
+			e.printStackTrace();
+		}
 	}
 
 }

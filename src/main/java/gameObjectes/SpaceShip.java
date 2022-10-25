@@ -7,6 +7,7 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 
 import Data.DataClass;
 import gameManagers.AudioManager;
+import gameManagers.FriendlyManager;
 import gameManagers.MissileManager;
 
 public class SpaceShip extends Sprite {
@@ -14,9 +15,11 @@ public class SpaceShip extends Sprite {
 	private int directionx;
 	private int directiony;
 	private float hitpoints;
+	private String engineStatus;
 	private MissileManager missileManager = MissileManager.getInstance();
 	private AudioManager audioManager = AudioManager.getInstance();
 	private DataClass dataClass = DataClass.getInstance();
+	private FriendlyManager friendlyManager = FriendlyManager.getInstance();
 
 	public SpaceShip() {
 		super(DataClass.getInstance().getWindowWidth() / 10, DataClass.getInstance().getWindowHeight() / 2);
@@ -38,24 +41,31 @@ public class SpaceShip extends Sprite {
 	}
 
 	public void move() {
+		engineStatus = "Player Engine";
 		xCoordinate += directionx;
 		yCoordinate += directiony;
+		engineStatus = "Player Engine Idle";
+	}
+
+	public String getEngineStatus() {
+		return this.engineStatus;
 	}
 
 	// Launch a missile from the center point of the spaceship
 	public void fire() {
-		// Missile manager is hier null, ookal hoort hij dat niet te zijn? Hij wordt
-		// meteen geinstantieerd? Verdacht!
-		if (this.missileManager == null) {
+		if (missileManager == null || friendlyManager == null) {
 			missileManager = MissileManager.getInstance();
+			friendlyManager = FriendlyManager.getInstance();
 		}
+		
 		try {
-			this.audioManager.addAudioToPlayList("DefaultPlayerLaserbeam");
+			this.audioManager.firePlayerMissile();
+			this.missileManager.addFriendlyMissile(
+					new Missile(xCoordinate + width, yCoordinate + height / 2, friendlyManager.getPlayerMissileType()));
 		} catch (UnsupportedAudioFileException | IOException e) {
 			e.printStackTrace();
 		}
-		this.missileManager.addFriendlyMissile(
-				new Missile(xCoordinate + width, yCoordinate + height / 2, dataClass.getPlayerMissileType()));
+
 	}
 
 	// Move the spaceship in target direction

@@ -5,18 +5,22 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
+import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.io.IOException;
 import java.util.List;
 
+import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
 import Data.DataClass;
 import gameManagers.AnimationManager;
+import gameManagers.AudioManager;
 import gameManagers.EnemyManager;
 import gameManagers.FriendlyManager;
 import gameManagers.LevelManager;
@@ -24,7 +28,6 @@ import gameManagers.MissileManager;
 import gameObjectes.Animation;
 import gameObjectes.Enemy;
 import gameObjectes.Missile;
-import java.awt.Image;
 
 public class GameBoard extends JPanel implements ActionListener {
 
@@ -36,13 +39,20 @@ public class GameBoard extends JPanel implements ActionListener {
 	private final int boardHeight = data.getWindowHeight();
 
 	private final int DELAY = 15;
-	private AnimationManager animationLoader = AnimationManager.getInstance();
+	private AnimationManager animationManager = AnimationManager.getInstance();
 	private EnemyManager enemyManager = EnemyManager.getInstance();
 	private MissileManager missileManager = MissileManager.getInstance();
 	private LevelManager levelManager = LevelManager.getInstance();
 	private FriendlyManager friendlyManager = FriendlyManager.getInstance();
+	private AudioManager audioManager = AudioManager.getInstance();
 
 	public GameBoard() {
+		animationManager = AnimationManager.getInstance();
+		enemyManager = EnemyManager.getInstance();
+		missileManager = MissileManager.getInstance();
+		levelManager = LevelManager.getInstance();
+		friendlyManager = FriendlyManager.getInstance();
+		audioManager = AudioManager.getInstance();
 		initBoard();
 	}
 
@@ -57,6 +67,11 @@ public class GameBoard extends JPanel implements ActionListener {
 
 		timer = new Timer(DELAY, this);
 		timer.start();
+		try {
+			audioManager.playBackgroundMusic("defaultmusic");
+		} catch (UnsupportedAudioFileException | IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override
@@ -71,6 +86,13 @@ public class GameBoard extends JPanel implements ActionListener {
 	}
 
 	private void drawObjects(Graphics g) {
+		// Draws the lower level animations
+		List<Animation> lowerAnimationList = animationManager.getLowerAnimations();
+		for (int i = 0; i < lowerAnimationList.size(); i++) {
+			drawImageSelfWritten(g, lowerAnimationList.get(i).getImage(), lowerAnimationList.get(i).getXCoordinate(),
+					lowerAnimationList.get(i).getYCoordinate());
+		}
+
 		// Draw friendly spaceship
 		if (friendlyManager.getSpaceship().isVisible()) {
 			drawImageSelfWritten(g, friendlyManager.getSpaceship().getImage(),
@@ -101,11 +123,10 @@ public class GameBoard extends JPanel implements ActionListener {
 		}
 
 		// Draw animations
-		List<Animation> animationList = animationLoader.getAnimations();
-		for (int i = 0; i < animationList.size(); i++) {
-			drawImageSelfWritten(g, animationList.get(i).getImage(), animationList.get(i).getXCoordinate(),
-					animationList.get(i).getYCoordinate());
-			animationLoader.updateAnimationList(animationList.get(i));
+		List<Animation> upperAnimationList = animationManager.getUpperAnimations();
+		for (int i = 0; i < upperAnimationList.size(); i++) {
+			drawImageSelfWritten(g, upperAnimationList.get(i).getImage(), upperAnimationList.get(i).getXCoordinate(),
+					upperAnimationList.get(i).getYCoordinate());
 		}
 
 		// Draw the score/aliens left
@@ -134,6 +155,8 @@ public class GameBoard extends JPanel implements ActionListener {
 		missileManager.updateGameTick();
 		enemyManager.updateGameTick();
 		levelManager.updateGameTick();
+		animationManager.updateGameTick();
+
 		repaint();
 	}
 
