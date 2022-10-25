@@ -15,10 +15,10 @@ public class SpaceShip extends Sprite {
 	private int directionx;
 	private int directiony;
 	private float hitpoints;
-	private String engineStatus;
+	private float attackSpeed = 15;
+	private float currentAttackFrame = 0;
 	private MissileManager missileManager = MissileManager.getInstance();
 	private AudioManager audioManager = AudioManager.getInstance();
-	private DataClass dataClass = DataClass.getInstance();
 	private FriendlyManager friendlyManager = FriendlyManager.getInstance();
 
 	public SpaceShip() {
@@ -39,16 +39,15 @@ public class SpaceShip extends Sprite {
 	public void takeHitpointDamage(float damage) {
 		this.hitpoints -= damage;
 	}
-
-	public void move() {
-		engineStatus = "Player Engine";
-		xCoordinate += directionx;
-		yCoordinate += directiony;
-		engineStatus = "Player Engine Idle";
+	
+	public void updateAttackCooldown() {
+		this.currentAttackFrame++;
 	}
 
-	public String getEngineStatus() {
-		return this.engineStatus;
+	//Moves the spaceship
+	public void move() {
+		xCoordinate += directionx;
+		yCoordinate += directiony;
 	}
 
 	// Launch a missile from the center point of the spaceship
@@ -57,15 +56,17 @@ public class SpaceShip extends Sprite {
 			missileManager = MissileManager.getInstance();
 			friendlyManager = FriendlyManager.getInstance();
 		}
-		
-		try {
-			this.audioManager.firePlayerMissile();
-			this.missileManager.addFriendlyMissile(
-					new Missile(xCoordinate + width, yCoordinate + height / 2, friendlyManager.getPlayerMissileType()));
-		} catch (UnsupportedAudioFileException | IOException e) {
-			e.printStackTrace();
-		}
 
+		if (currentAttackFrame >= attackSpeed) {
+			try {
+				this.audioManager.firePlayerMissile();
+				this.missileManager.addFriendlyMissile(new Missile(xCoordinate + width, yCoordinate + height / 2,
+						friendlyManager.getPlayerMissileType()));
+				currentAttackFrame = 0;
+			} catch (UnsupportedAudioFileException | IOException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 	// Move the spaceship in target direction

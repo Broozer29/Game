@@ -6,6 +6,7 @@ import java.io.IOException;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
+import javax.sound.sampled.FloatControl;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
@@ -63,6 +64,11 @@ public class AudioManager {
 		try {
 			clip = AudioSystem.getClip();
 			clip.open(playerMissileAudio);
+			
+			//Adjusts volume
+			FloatControl volume = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
+			volume.setValue(-6);
+			
 			clip.start();
 		} catch (LineUnavailableException e) {
 			e.printStackTrace();
@@ -74,7 +80,6 @@ public class AudioManager {
 	private void playMusicAudio(String audioType) throws UnsupportedAudioFileException, IOException {
 		switch (audioType) {
 		case ("defaultmusic"):
-			System.out.println("Ik zet");
 			backGroundMusicInputStream = AudioSystem
 					.getAudioInputStream(new File("src/resources/audio/music/defaultmusic.wav").getAbsoluteFile());
 		}
