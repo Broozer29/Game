@@ -62,7 +62,7 @@ public class SpaceShip extends Sprite {
 				this.audioManager.firePlayerMissile();
 				this.missileManager.addFriendlyMissile(new Missile(xCoordinate + width, yCoordinate + height / 2,
 						friendlyManager.getPlayerMissileType()));
-				currentAttackFrame = 0;
+				this.currentAttackFrame = 0;
 			} catch (UnsupportedAudioFileException | IOException e) {
 				e.printStackTrace();
 			}

@@ -58,7 +58,7 @@ public class AudioManager {
 		switch (audioType) {
 		case ("laserblast"):
 			playerMissileAudio = AudioSystem
-					.getAudioInputStream(new File("src/resources/audio/Laser1.wav").getAbsoluteFile());
+					.getAudioInputStream(new File("src/resources/audio/laserbeam1.wav").getAbsoluteFile());
 		}
 
 		try {
@@ -67,7 +67,7 @@ public class AudioManager {
 			
 			//Adjusts volume
 			FloatControl volume = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
-			volume.setValue(-6);
+			volume.setValue(-4);
 			
 			clip.start();
 		} catch (LineUnavailableException e) {

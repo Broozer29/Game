@@ -21,13 +21,16 @@ import javax.swing.Timer;
 import Data.DataClass;
 import gameManagers.AnimationManager;
 import gameManagers.AudioManager;
+import gameManagers.BackgroundManager;
 import gameManagers.EnemyManager;
 import gameManagers.FriendlyManager;
 import gameManagers.LevelManager;
 import gameManagers.MissileManager;
 import gameObjectes.Animation;
+import gameObjectes.BackgroundObject;
 import gameObjectes.Enemy;
 import gameObjectes.Missile;
+import gameObjectes.Sprite;
 
 public class GameBoard extends JPanel implements ActionListener {
 
@@ -45,6 +48,7 @@ public class GameBoard extends JPanel implements ActionListener {
 	private LevelManager levelManager = LevelManager.getInstance();
 	private FriendlyManager friendlyManager = FriendlyManager.getInstance();
 	private AudioManager audioManager = AudioManager.getInstance();
+	private BackgroundManager backgroundManager = BackgroundManager.getInstance();
 
 	public GameBoard() {
 		animationManager = AnimationManager.getInstance();
@@ -53,6 +57,7 @@ public class GameBoard extends JPanel implements ActionListener {
 		levelManager = LevelManager.getInstance();
 		friendlyManager = FriendlyManager.getInstance();
 		audioManager = AudioManager.getInstance();
+		backgroundManager = BackgroundManager.getInstance();
 		initBoard();
 	}
 
@@ -86,47 +91,56 @@ public class GameBoard extends JPanel implements ActionListener {
 	}
 
 	private void drawObjects(Graphics g) {
-		// Draws the lower level animations
-		List<Animation> lowerAnimationList = animationManager.getLowerAnimations();
-		for (int i = 0; i < lowerAnimationList.size(); i++) {
-			drawImageSelfWritten(g, lowerAnimationList.get(i).getImage(), lowerAnimationList.get(i).getXCoordinate(),
-					lowerAnimationList.get(i).getYCoordinate());
+
+		// Draws lowest level background objects
+		for (BackgroundObject bgObject : backgroundManager.getLevelOneObjects()) {
+			drawImageSelfWritten(g, bgObject);
+		}
+
+		// Draws lowest level background objects
+		for (BackgroundObject bgObject : backgroundManager.getLevelTwoObjects()) {
+			drawImageSelfWritten(g, bgObject);
+		}
+
+		// Draws lowest level background objects
+		for (BackgroundObject bgObject : backgroundManager.getLevelThreeObjects()) {
+			drawImageSelfWritten(g, bgObject);
+		}
+
+		// Draws lower level animations
+		for (Animation animation : animationManager.getLowerAnimations()) {
+			drawImageSelfWritten(g, animation);
 		}
 
 		// Draw friendly spaceship
 		if (friendlyManager.getSpaceship().isVisible()) {
-			drawImageSelfWritten(g, friendlyManager.getSpaceship().getImage(),
-					friendlyManager.getSpaceship().getXCoordinate(), friendlyManager.getSpaceship().getYCoordinate());
+			drawImageSelfWritten(g, friendlyManager.getSpaceship());
 		}
 
 		// Draw friendly missiles
-		List<Missile> friendlyMissiles = missileManager.getFriendlyMissiles();
-		for (Missile missile : friendlyMissiles) {
+		for (Missile missile : missileManager.getFriendlyMissiles()) {
 			if (missile.isVisible()) {
-				drawImageSelfWritten(g, missile.getImage(), missile.getXCoordinate(), missile.getYCoordinate());
+				drawImageSelfWritten(g, missile);
 			}
 		}
 
 		// Draw enemy missiles
-		List<Missile> enemyMissiles = missileManager.getEnemyMissiles();
-		for (Missile missile : enemyMissiles) {
+		for (Missile missile : missileManager.getEnemyMissiles()) {
 			if (missile.isVisible()) {
-				drawImageSelfWritten(g, missile.getImage(), missile.getXCoordinate(), missile.getYCoordinate());
+				drawImageSelfWritten(g, missile);
 			}
 		}
 
 		// Draw enemies
 		for (Enemy enemy : enemyManager.getEnemies()) {
 			if (enemy.isVisible()) {
-				drawImageSelfWritten(g, enemy.getImage(), enemy.getXCoordinate(), enemy.getYCoordinate());
+				drawImageSelfWritten(g, enemy);
 			}
 		}
 
-		// Draw animations
-		List<Animation> upperAnimationList = animationManager.getUpperAnimations();
-		for (int i = 0; i < upperAnimationList.size(); i++) {
-			drawImageSelfWritten(g, upperAnimationList.get(i).getImage(), upperAnimationList.get(i).getXCoordinate(),
-					upperAnimationList.get(i).getYCoordinate());
+		// Draws higher level animations
+		for (Animation animation : animationManager.getUpperAnimations()) {
+			drawImageSelfWritten(g, animation);
 		}
 
 		// Draw the score/aliens left
@@ -134,8 +148,9 @@ public class GameBoard extends JPanel implements ActionListener {
 		g.drawString("Aliens left: " + enemyManager.getEnemies().size(), 5, 15);
 	}
 
-	private void drawImageSelfWritten(Graphics g, Image image, int xCoordinate, int yCoordinate) {
-		g.drawImage(image, xCoordinate, yCoordinate, this);
+	private void drawImageSelfWritten(Graphics g, Sprite sprite) {
+		g.drawImage(sprite.getImage(), sprite.getXCoordinate(), sprite.getYCoordinate(), this);
+
 	}
 
 	// Draw the game over screen
@@ -156,6 +171,8 @@ public class GameBoard extends JPanel implements ActionListener {
 		enemyManager.updateGameTick();
 		levelManager.updateGameTick();
 		animationManager.updateGameTick();
+		backgroundManager.updateGameTick();
+//		backgroundManager.testWhatIGot();
 
 		repaint();
 	}

@@ -11,6 +11,7 @@ public class AnimationManager {
 	private static AnimationManager instance = new AnimationManager();
 	private List<Animation> upperAnimationList = new ArrayList<Animation>();
 	private List<Animation> lowerAnimationList = new ArrayList<Animation>();
+	
 	private FriendlyManager friendlyManager = FriendlyManager.getInstance();
 	private Animation playerEngineAnimation = null;
 

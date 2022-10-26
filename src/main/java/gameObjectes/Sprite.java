@@ -1,11 +1,7 @@
 package gameObjectes;
 
 import java.awt.Image;
-
-import javax.swing.ImageIcon;
-
 import Data.ImageLoader;
-
 import java.awt.Rectangle;
 
 public class Sprite {
@@ -34,7 +30,12 @@ public class Sprite {
 		width = image.getWidth(null);
 		height = image.getHeight(null);
 	}
-
+	
+	protected void setImage(Image image) {
+		this.image = image;
+		getImageDimensions();
+	}
+	
 	public int getWidth() {
 		return this.width;
 	}

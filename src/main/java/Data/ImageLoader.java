@@ -49,6 +49,19 @@ public class ImageLoader {
 				return "src/resources/images/enginesmoke.gif";
 			case("Player Engine Idle"):
 				return "src/resources/images/enginesmoke2.gif";
+			case("moon1"):
+				return "src/resources/images/background/moon1.png";
+			case("lavaplanet1"):
+				return "src/resources/images/background/lavaplanet1.png";
+			case("marsplanet1"):
+				return "src/resources/images/background/marsplanet1.png";
+			case("planet1"):
+				return "src/resources/images/background/planet1.png";
+			case("planet2"):
+				return "src/resources/images/background/planet2.png";
+			case("planet3"):
+				return "src/resources/images/background/planet3.png";
+			
 		}
 		return "notfound";
 	}
