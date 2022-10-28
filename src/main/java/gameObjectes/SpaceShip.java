@@ -39,12 +39,12 @@ public class SpaceShip extends Sprite {
 	public void takeHitpointDamage(float damage) {
 		this.hitpoints -= damage;
 	}
-	
+
 	public void updateAttackCooldown() {
 		this.currentAttackFrame++;
 	}
 
-	//Moves the spaceship
+	// Moves the spaceship
 	public void move() {
 		xCoordinate += directionx;
 		yCoordinate += directiony;
@@ -60,8 +60,7 @@ public class SpaceShip extends Sprite {
 		if (currentAttackFrame >= attackSpeed) {
 			try {
 				this.audioManager.firePlayerMissile();
-				this.missileManager.addFriendlyMissile(new Missile(xCoordinate + width, yCoordinate + height / 2,
-						friendlyManager.getPlayerMissileType()));
+				this.missileManager.firePlayerMissile(xCoordinate + width, yCoordinate + (height / 2));
 				this.currentAttackFrame = 0;
 			} catch (UnsupportedAudioFileException | IOException e) {
 				e.printStackTrace();

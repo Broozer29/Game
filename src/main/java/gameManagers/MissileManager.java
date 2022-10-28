@@ -23,6 +23,7 @@ public class MissileManager {
 		friendlyManager = FriendlyManager.getInstance();
 		enemyMissiles = new ArrayList<Missile>();
 		friendlyMissiles = new ArrayList<Missile>();
+		
 	}
 
 	public static MissileManager getInstance() {
@@ -35,6 +36,11 @@ public class MissileManager {
 
 	public List<Missile> getFriendlyMissiles() {
 		return friendlyMissiles;
+	}
+	
+	public void firePlayerMissile(int xCoordinate, int yCoordinate) {
+		Missile newMissile = new Missile(xCoordinate, yCoordinate, friendlyManager.getPlayerMissileType());
+		this.friendlyMissiles.add(newMissile);
 	}
 
 	public void addFriendlyMissile(Missile friendlyMissile) {

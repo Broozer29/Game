@@ -26,13 +26,13 @@ public class BackgroundManager {
 	private Map<String, Image> scaledBackgroundObjects = new HashMap<String, Image>();
 	private int maximumWidthRange = DataClass.getInstance().getWindowWidth() + 200;
 	private int minimumWidthRange = -200;
-	private int maximumHeightRange = DataClass.getInstance().getWindowHeight() + 100;
-	private int minimumHeightRange = -100;
+	private int maximumHeightRange = DataClass.getInstance().getWindowHeight() + 50;
+	private int minimumHeightRange = -50;
 	Random random = new Random();
 	private int updateFrameCounter = 0;
 	private int levelOneObjectModifier = 100;
 	private int levelTwoObjectModifier = 200;
-	private int levelThreeObjectModifier = 350;
+	private int levelThreeObjectModifier = 300;
 	private int levelOneStarModifier = 4;
 	private int levelTwoStarModifier = 6;
 	private int levelThreeStarModifier = 8;
@@ -89,7 +89,7 @@ public class BackgroundManager {
 			Image starImage = setStarScale(imageLoader.getImage("star"), 2);
 			int randomXCoordinate = getRandomXCoordinate();
 			int randomYCoordinate = getRandomYCoordinate();
-			if (checkValidXCoordinate(levelOneStars, randomXCoordinate)
+			if (checkValidXCoordinate(levelTwoStars, randomXCoordinate)
 					&& checkValidYCoordinate(levelTwoStars, randomYCoordinate)) {
 				levelTwoStars.add(new BackgroundObject(randomXCoordinate, randomYCoordinate, starImage));
 			}
@@ -102,7 +102,7 @@ public class BackgroundManager {
 			Image starImage = setStarScale(imageLoader.getImage("star"), 3);
 			int randomXCoordinate = getRandomXCoordinate();
 			int randomYCoordinate = getRandomYCoordinate();
-			if (checkValidXCoordinate(levelOneStars, randomXCoordinate)
+			if (checkValidXCoordinate(levelThreeStars, randomXCoordinate)
 					&& checkValidYCoordinate(levelThreeStars, randomYCoordinate)) {
 				levelThreeStars.add(new BackgroundObject(randomXCoordinate, randomYCoordinate, starImage));
 			}
@@ -139,7 +139,7 @@ public class BackgroundManager {
 	private void updateObjects() {
 		// Updates all level one objects. If their X position is below 0, reset them to
 		// windowwidth. If not, move them by one pixel;
-		if (updateFrameCounter == 2) {
+		if (updateFrameCounter == 4) {
 			for (BackgroundObject bgObject : levelOnePlanets) {
 				if ((bgObject.getXCoordinate() + levelOneObjectModifier + 20) < (0 - levelOneObjectModifier)) {
 
@@ -162,7 +162,7 @@ public class BackgroundManager {
 
 		// Updates all level two objects. If their X position is below 0, reset them to
 		// windowwidth. If not, move them by one pixel;
-		if (updateFrameCounter == 1) {
+		if (updateFrameCounter == 2) {
 			for (BackgroundObject bgObject : levelTwoPlanets) {
 				if ((bgObject.getXCoordinate() + levelTwoObjectModifier + 20) < (0 - levelTwoObjectModifier)) {
 
@@ -207,7 +207,7 @@ public class BackgroundManager {
 
 		// Update the framecounter and reset it to 0; for different movement speeds
 		// between planets
-		if (updateFrameCounter > 2) {
+		if (updateFrameCounter > 5) {
 			updateFrameCounter = 0;
 		}
 		updateFrameCounter++;
@@ -235,7 +235,6 @@ public class BackgroundManager {
 	private boolean checkValidXCoordinate(List<BackgroundObject> listToCheck, int xCoordinate) {
 		for (BackgroundObject bgObject : listToCheck) {
 			if (Math.abs(bgObject.getXCoordinate() - xCoordinate) < 20) {
-				System.out.println(Math.abs(bgObject.getXCoordinate() - xCoordinate));
 				return false;
 			}
 		}
