@@ -91,56 +91,71 @@ public class GameBoard extends JPanel implements ActionListener {
 	}
 
 	private void drawObjects(Graphics g) {
-
-		// Draws lowest level background objects
-		for (BackgroundObject bgObject : backgroundManager.getLevelOneObjects()) {
-			drawImageSelfWritten(g, bgObject);
+		
+		// Draws low level stars
+		for(BackgroundObject bgObject : backgroundManager.getLevelOneStars()) {
+			drawImage(g, bgObject);
 		}
 
-		// Draws lowest level background objects
-		for (BackgroundObject bgObject : backgroundManager.getLevelTwoObjects()) {
-			drawImageSelfWritten(g, bgObject);
+		// Draws low level planets
+		for (BackgroundObject bgObject : backgroundManager.getLevelOnePlanets()) {
+			drawImage(g, bgObject);
+		}
+		
+		// Draws medium level stars
+		for(BackgroundObject bgObject : backgroundManager.getLevelTwoStars()) {
+			drawImage(g, bgObject);
 		}
 
-		// Draws lowest level background objects
-		for (BackgroundObject bgObject : backgroundManager.getLevelThreeObjects()) {
-			drawImageSelfWritten(g, bgObject);
+		// Draws medium level planets
+		for (BackgroundObject bgObject : backgroundManager.getLevelTwoPlanets()) {
+			drawImage(g, bgObject);
+		}
+		
+		// Draws high level stars
+		for(BackgroundObject bgObject : backgroundManager.getLevelThreeStars()) {
+			drawImage(g, bgObject);
+		}
+
+		// Draws high level planets
+		for (BackgroundObject bgObject : backgroundManager.getLevelThreePlanets()) {
+			drawImage(g, bgObject);
 		}
 
 		// Draws lower level animations
 		for (Animation animation : animationManager.getLowerAnimations()) {
-			drawImageSelfWritten(g, animation);
+			drawImage(g, animation);
 		}
 
 		// Draw friendly spaceship
 		if (friendlyManager.getSpaceship().isVisible()) {
-			drawImageSelfWritten(g, friendlyManager.getSpaceship());
+			drawImage(g, friendlyManager.getSpaceship());
 		}
 
 		// Draw friendly missiles
 		for (Missile missile : missileManager.getFriendlyMissiles()) {
 			if (missile.isVisible()) {
-				drawImageSelfWritten(g, missile);
+				drawImage(g, missile);
 			}
 		}
 
 		// Draw enemy missiles
 		for (Missile missile : missileManager.getEnemyMissiles()) {
 			if (missile.isVisible()) {
-				drawImageSelfWritten(g, missile);
+				drawImage(g, missile);
 			}
 		}
 
 		// Draw enemies
 		for (Enemy enemy : enemyManager.getEnemies()) {
 			if (enemy.isVisible()) {
-				drawImageSelfWritten(g, enemy);
+				drawImage(g, enemy);
 			}
 		}
 
 		// Draws higher level animations
 		for (Animation animation : animationManager.getUpperAnimations()) {
-			drawImageSelfWritten(g, animation);
+			drawImage(g, animation);
 		}
 
 		// Draw the score/aliens left
@@ -148,7 +163,7 @@ public class GameBoard extends JPanel implements ActionListener {
 		g.drawString("Aliens left: " + enemyManager.getEnemies().size(), 5, 15);
 	}
 
-	private void drawImageSelfWritten(Graphics g, Sprite sprite) {
+	private void drawImage(Graphics g, Sprite sprite) {
 		g.drawImage(sprite.getImage(), sprite.getXCoordinate(), sprite.getYCoordinate(), this);
 
 	}
