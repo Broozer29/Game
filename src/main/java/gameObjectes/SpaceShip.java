@@ -60,7 +60,7 @@ public class SpaceShip extends Sprite {
 		if (currentAttackFrame >= attackSpeed) {
 			try {
 				this.audioManager.firePlayerMissile();
-				this.missileManager.firePlayerMissile(xCoordinate + width, yCoordinate + (height / 2));
+				this.missileManager.firePlayerMissile(xCoordinate + width, yCoordinate + (height / 2), friendlyManager.getPlayerMissileType());
 				this.currentAttackFrame = 0;
 			} catch (UnsupportedAudioFileException | IOException e) {
 				e.printStackTrace();

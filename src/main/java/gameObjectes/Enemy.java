@@ -5,7 +5,6 @@ import java.util.Random;
 import Data.DataClass;
 import gameManagers.MissileManager;
 
-
 public class Enemy extends Sprite {
 
 	private float hitPoints;
@@ -13,7 +12,6 @@ public class Enemy extends Sprite {
 	private float attackSpeedFrameCount;
 	private float currentAttackSpeedFrameCount = 0;
 	private Random random = new Random();
-	private int maximumFloatRange;
 
 	public Enemy(int x, int y, String enemyType) {
 		super(x, y);
@@ -32,7 +30,6 @@ public class Enemy extends Sprite {
 		if (this.enemyType.equals("Alien")) {
 			this.hitPoints = 35;
 			this.attackSpeedFrameCount = 60;
-			this.maximumFloatRange = 20;
 		}
 	}
 
@@ -41,19 +38,6 @@ public class Enemy extends Sprite {
 			xCoordinate = DataClass.getInstance().getWindowWidth();
 		}
 		xCoordinate -= 1;
-	}
-	
-	//Hier moet het vlieggedrag geimplementeerd worden
-	//Leg van te voren een locatie af waar de enemy heen moet, en maak een flightplan voor de enemy om af te leggen
-
-	private void calculateRandomMovementOffset() {
-		int randomMovement = random.nextInt((10 - 0) + 1) + 10;
-		int yOffset = random.nextInt((maximumFloatRange - 0) + 1) + maximumFloatRange;
-		
-		switch (randomMovement) {
-		case (1):
-		}
-
 	}
 
 	public void fireAction() {

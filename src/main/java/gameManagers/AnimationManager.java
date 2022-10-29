@@ -11,9 +11,11 @@ public class AnimationManager {
 	private static AnimationManager instance = new AnimationManager();
 	private List<Animation> upperAnimationList = new ArrayList<Animation>();
 	private List<Animation> lowerAnimationList = new ArrayList<Animation>();
-	
+
 	private FriendlyManager friendlyManager = FriendlyManager.getInstance();
 	private Animation playerEngineAnimation = null;
+	private int engineXCoordinate;
+	private int engineYCoordinate;
 
 	public static AnimationManager getInstance() {
 		return instance;
@@ -26,25 +28,30 @@ public class AnimationManager {
 	}
 
 	// Called every gameloop, sets the engine animation below the spaceship.
-	public void renderPlayerEngine() {
-		int engineNewXCoordinate = friendlyManager.getSpaceship().getXCoordinate() - (playerEngineAnimation.getWidth()/2 + 5);
-		int engineNewYCoordinate = friendlyManager.getSpaceship().getYCoordinate();
+	private void renderPlayerEngine() {
+		engineXCoordinate = friendlyManager.getSpaceship().getXCoordinate()
+				- (playerEngineAnimation.getWidth() / 2 + 5);
+		engineYCoordinate = friendlyManager.getSpaceship().getYCoordinate();
 
-		playerEngineAnimation.setX(engineNewXCoordinate);
-		playerEngineAnimation.setY(engineNewYCoordinate);
+		playerEngineAnimation.setX(engineXCoordinate);
+		playerEngineAnimation.setY(engineYCoordinate);
 
 		if (playerEngineAnimation.getCurrentFrameCount() >= playerEngineAnimation.getFrameCount()) {
-			playerEngineAnimation.refreshAnimation(engineNewXCoordinate, engineNewYCoordinate);
+			playerEngineAnimation.refreshAnimation(engineXCoordinate, engineYCoordinate);
 		}
 
 	}
 
-	public void addUpperAnimation(Animation animation) {
-		this.upperAnimationList.add(animation);
+	public void addUpperAnimation(int xCoordinate, int yCoordinate, String animationType) {
+		this.upperAnimationList.add(createAnimation(xCoordinate, yCoordinate, animationType));
 	}
 
-	public void addLowerAnimation(Animation animation) {
-		this.lowerAnimationList.add(animation);
+	public void addLowerAnimation(int xCoordinate, int yCoordinate, String animationType) {
+		this.lowerAnimationList.add(createAnimation(xCoordinate, yCoordinate, animationType));
+	}
+
+	private Animation createAnimation(int xCoordinate, int yCoordinate, String animationType) {
+		return new Animation(yCoordinate, yCoordinate, animationType);
 	}
 
 	public void updateAnimationList() {

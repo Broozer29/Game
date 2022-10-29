@@ -23,7 +23,7 @@ public class MissileManager {
 		friendlyManager = FriendlyManager.getInstance();
 		enemyMissiles = new ArrayList<Missile>();
 		friendlyMissiles = new ArrayList<Missile>();
-		
+
 	}
 
 	public static MissileManager getInstance() {
@@ -37,27 +37,15 @@ public class MissileManager {
 	public List<Missile> getFriendlyMissiles() {
 		return friendlyMissiles;
 	}
-	
-	public void firePlayerMissile(int xCoordinate, int yCoordinate) {
-		Missile newMissile = new Missile(xCoordinate, yCoordinate, friendlyManager.getPlayerMissileType());
-		this.friendlyMissiles.add(newMissile);
-	}
 
-	public void addFriendlyMissile(Missile friendlyMissile) {
-		this.friendlyMissiles.add(friendlyMissile);
+	public void firePlayerMissile(int xCoordinate, int yCoordinate, String missileType) {
+		Missile newMissile = new Missile(xCoordinate, yCoordinate, missileType);
+		this.friendlyMissiles.add(newMissile);
 	}
 
 	public void addEnemyMissile(int xCoordinate, int yCoordinate, String missileType) {
 		Missile enemyMissile = new Missile(xCoordinate, yCoordinate, missileType);
 		this.enemyMissiles.add(enemyMissile);
-	}
-
-	private void removeEnemyMissile(Missile enemyMissile) {
-		this.friendlyMissiles.remove(enemyMissile);
-	}
-
-	private void removeFriendlyMissile(Missile friendlyMissile) {
-		this.enemyMissiles.remove(friendlyMissile);
 	}
 
 	public void updateGameTick() {
@@ -66,7 +54,7 @@ public class MissileManager {
 	}
 
 	private void checkCollisions() {
-		if(friendlyManager == null) {
+		if (friendlyManager == null) {
 			this.friendlyManager = FriendlyManager.getInstance();
 		}
 		Rectangle spaceshipBounds = friendlyManager.getSpaceship().getBounds();
@@ -92,8 +80,8 @@ public class MissileManager {
 					Rectangle r2 = enemy.getBounds();
 					if (r1.intersects(r2)) {
 						enemy.takeDamage(m.getMissileDamage());
-						animationManager.addUpperAnimation(
-								new Animation(m.getXCoordinate(), m.getYCoordinate(), "Impact Explosion One"));
+						animationManager.addUpperAnimation(m.getXCoordinate(), m.getYCoordinate(),
+								"Impact Explosion One");
 						m.setVisible(false);
 					}
 				}
@@ -103,7 +91,7 @@ public class MissileManager {
 
 	// Checks collision between enemy missiles and the player shapeship
 	private void checkEnemyMissileCollision() {
-		if(animationManager == null) {
+		if (animationManager == null) {
 			animationManager = AnimationManager.getInstance();
 		}
 		for (Missile m : enemyMissiles) {
@@ -112,8 +100,7 @@ public class MissileManager {
 				Rectangle r2 = friendlyManager.getSpaceship().getBounds();
 				if (r1.intersects(r2)) {
 					friendlyManager.getSpaceship().takeHitpointDamage(m.getMissileDamage());
-					animationManager.addUpperAnimation(
-							new Animation(m.getXCoordinate(), m.getYCoordinate(), "Impact Explosion One"));
+					animationManager.addUpperAnimation(m.getXCoordinate(), m.getYCoordinate(), "Impact Explosion One");
 					m.setVisible(false);
 				}
 			}

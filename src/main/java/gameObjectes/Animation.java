@@ -28,14 +28,11 @@ public class Animation extends Sprite{
 			case("Player Engine"):
 				this.frameCount = 30;
 				return;
-			case("Player Engine Idle"):
-				this.frameCount = 30;
-				return;
 		}
 	}
 	
 	//Centers the animation a bit further inwards to the collision spot
-	public void centerAnimationFrame() {
+	private void centerAnimationFrame() {
 		this.setX(xCoordinate + (this.getWidth() / 2));
 		this.setY(yCoordinate - (this.getHeight() / 2));
 	}

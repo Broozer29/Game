@@ -38,13 +38,19 @@ public class EnemyManager {
 			}
 		}
 	}
+	
+	private Enemy createEnemy(int xCoordinate, int yCoordinate, String enemyType) {
+		return new Enemy(xCoordinate, yCoordinate, enemyType);
+	}
 
-	public void addEnemy(Enemy enemy) {
+	public void addEnemy(int xCoordinate, int yCoordinate, String enemyType) {
+		Enemy enemy = createEnemy(xCoordinate, yCoordinate, enemyType);
 		enemy.setVisible(true);
 		this.enemyList.add(enemy);
 	}
 
-	public void removeEnemy(Enemy enemy) {
+	
+	private void removeEnemy(Enemy enemy) {
 		this.enemyList.remove(enemy);
 	}
 
