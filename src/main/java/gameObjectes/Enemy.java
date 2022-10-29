@@ -30,6 +30,7 @@ public class Enemy extends Sprite {
 		if (this.enemyType.equals("Alien")) {
 			this.hitPoints = 35;
 			this.attackSpeedFrameCount = 60;
+			loadImage("Alien");
 		}
 	}
 
