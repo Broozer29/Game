@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import Data.DataClass;
-import gameObjectes.Animation;
+import imageObjects.Animation;
 
 public class AnimationManager {
 
@@ -51,7 +51,7 @@ public class AnimationManager {
 	}
 
 	private Animation createAnimation(int xCoordinate, int yCoordinate, String animationType) {
-		return new Animation(yCoordinate, yCoordinate, animationType);
+		return new Animation(xCoordinate, yCoordinate, animationType);
 	}
 
 	public void updateAnimationList() {

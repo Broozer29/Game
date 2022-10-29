@@ -4,9 +4,9 @@ import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.List;
 
-import gameObjectes.Animation;
-import gameObjectes.Enemy;
-import gameObjectes.Missile;
+import gameObjects.Enemy;
+import gameObjects.Missile;
+import imageObjects.Animation;
 
 public class MissileManager {
 

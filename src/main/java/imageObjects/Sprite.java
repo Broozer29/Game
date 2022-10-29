@@ -1,4 +1,4 @@
-package gameObjectes;
+package imageObjects;
 
 import java.awt.Image;
 import Data.ImageLoader;
@@ -22,6 +22,7 @@ public class Sprite {
 	protected void loadImage(String imageName) {
 		ImageLoader imageLoader = ImageLoader.getInstance();
 		image = imageLoader.getImage(imageName);
+		getImageDimensions();
 		// image = image.getScaledInstance(10, 20, 0);
 		// Zet collision ook op die getallen en shits & giggles
 	}
@@ -31,6 +32,7 @@ public class Sprite {
 		height = image.getHeight(null);
 	}
 	
+	//Only used to re-use objects and change the image. Currently only used for background planets.
 	protected void setImage(Image image) {
 		this.image = image;
 		getImageDimensions();

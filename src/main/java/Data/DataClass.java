@@ -10,6 +10,8 @@ public class DataClass {
 	private int windowWidth = 1280;
 	private int windowHeight = 720;
 	
+	
+	
 	// Tijdelijke string user, liever een domain object
 	private String currentUser;
 

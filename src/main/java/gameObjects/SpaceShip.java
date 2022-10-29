@@ -1,4 +1,4 @@
-package gameObjectes;
+package gameObjects;
 
 import java.awt.event.KeyEvent;
 import java.io.IOException;
@@ -9,6 +9,7 @@ import Data.DataClass;
 import gameManagers.AudioManager;
 import gameManagers.FriendlyManager;
 import gameManagers.MissileManager;
+import imageObjects.Sprite;
 
 public class SpaceShip extends Sprite {
 

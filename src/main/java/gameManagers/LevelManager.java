@@ -3,15 +3,15 @@ package gameManagers;
 import java.util.Random;
 
 import Data.DataClass;
-import gameObjectes.Alien;
-import gameObjectes.Enemy;
+import gameObjects.Alien;
+import gameObjects.Enemy;
 
 public class LevelManager {
 
 	private static LevelManager instance = new LevelManager();
 	private EnemyManager enemyManager = EnemyManager.getInstance();
-	private int maximumWidthRange = DataClass.getInstance().getWindowWidth();
-	private int minimumWidthRange = DataClass.getInstance().getWindowWidth() / 3;
+	private int maximumWidthRange = DataClass.getInstance().getWindowWidth() + 100;
+	private int minimumWidthRange = DataClass.getInstance().getWindowWidth();
 	private int maximumHeightRange = DataClass.getInstance().getWindowHeight() - 100;
 	private int minimumHeightRange = 100;
 	private int level = 1;
@@ -61,7 +61,7 @@ public class LevelManager {
 
 	private void setLevelOne() {
 		Random random = new Random();
-		for (int i = 0; i < 3; i++) {
+		for (int i = 0; i < 10; i++) {
 			int xCoordinate = random.nextInt((maximumWidthRange - minimumWidthRange) + 1) + minimumWidthRange;
 			int yCoordinate = random.nextInt((maximumHeightRange - minimumHeightRange) + 1) + minimumHeightRange;
 			enemyManager.addEnemy(xCoordinate, yCoordinate, "Alien");
@@ -70,7 +70,7 @@ public class LevelManager {
 
 	private void setLevelTwo() {
 		Random random = new Random();
-		for (int i = 0; i < 4; i++) {
+		for (int i = 0; i < 12; i++) {
 			int xCoordinate = random.nextInt((maximumWidthRange - minimumWidthRange) + 1) + minimumWidthRange;
 			int yCoordinate = random.nextInt((maximumHeightRange - minimumHeightRange) + 1) + minimumHeightRange;
 			enemyManager.addEnemy(xCoordinate, yCoordinate, "Alien");
@@ -79,7 +79,7 @@ public class LevelManager {
 
 	private void setLevelThree() {
 		Random random = new Random();
-		for (int i = 0; i < 5; i++) {
+		for (int i = 0; i < 14; i++) {
 			int xCoordinate = random.nextInt((maximumWidthRange - minimumWidthRange) + 1) + minimumWidthRange;
 			int yCoordinate = random.nextInt((maximumHeightRange - minimumHeightRange) + 1) + minimumHeightRange;
 			enemyManager.addEnemy(xCoordinate, yCoordinate, "Alien");

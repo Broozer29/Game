@@ -26,11 +26,11 @@ import gameManagers.EnemyManager;
 import gameManagers.FriendlyManager;
 import gameManagers.LevelManager;
 import gameManagers.MissileManager;
-import gameObjectes.Animation;
-import gameObjectes.BackgroundObject;
-import gameObjectes.Enemy;
-import gameObjectes.Missile;
-import gameObjectes.Sprite;
+import gameObjects.Enemy;
+import gameObjects.Missile;
+import imageObjects.Animation;
+import imageObjects.BackgroundObject;
+import imageObjects.Sprite;
 
 public class GameBoard extends JPanel implements ActionListener {
 

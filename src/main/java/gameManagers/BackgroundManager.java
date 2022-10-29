@@ -9,7 +9,7 @@ import java.util.Random;
 
 import Data.DataClass;
 import Data.ImageLoader;
-import gameObjectes.BackgroundObject;
+import imageObjects.BackgroundObject;
 
 public class BackgroundManager {
 

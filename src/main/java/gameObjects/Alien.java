@@ -1,4 +1,4 @@
-package gameObjectes;
+package gameObjects;
 
 public class Alien extends Enemy {
 

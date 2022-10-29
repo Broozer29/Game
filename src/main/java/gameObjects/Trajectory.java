@@ -1,6 +1,5 @@
-package gameObjectes;
+package gameObjects;
 
-import java.util.List;
 
 public class Trajectory {
 

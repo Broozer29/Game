@@ -1,4 +1,4 @@
-package gameObjectes;
+package imageObjects;
 
 import java.awt.Image;
 
