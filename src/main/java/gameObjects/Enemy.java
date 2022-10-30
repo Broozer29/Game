@@ -9,22 +9,25 @@ import imageObjects.Sprite;
 public class Enemy extends Sprite {
 
 	private float hitPoints;
+	private float maxHitPoints;
 	private String enemyType;
 	private float attackSpeedFrameCount;
 	private float currentAttackSpeedFrameCount = 0;
 	private Random random = new Random();
 	private int movementSpeed;
-	private int currentBoardBlock = 5;
+	private int currentBoardBlock;
 
-	public Enemy(int x, int y, String enemyType) {
+	public Enemy(int x, int y, String enemyType, int currentBoardBlock) {
 		super(x, y);
 		this.enemyType = enemyType;
+		this.currentBoardBlock = currentBoardBlock;
 		initEnemy();
 	}
 
 	private void initEnemy() {
 		if (this.enemyType.equals("Alien")) {
 			this.hitPoints = 35;
+			this.maxHitPoints = 35;
 			this.attackSpeedFrameCount = 150;
 			loadImage("Alien");
 			this.movementSpeed = 1;
@@ -71,6 +74,15 @@ public class Enemy extends Sprite {
 		case (5):
 			boardBlockFiveSpeed();
 			break;
+		case (6):
+			boardBlockSixSpeed();
+			break;
+		case (7):
+			boardBlockSevenSpeed();
+			break;
+		case (8):
+			boardBlockEightSpeed();
+			break;
 		}
 	}
 
@@ -105,7 +117,7 @@ public class Enemy extends Sprite {
 	private void boardBlockThreeSpeed() {
 		switch (this.enemyType) {
 		case ("Alien"):
-			this.movementSpeed = 2;
+			this.movementSpeed = 1;
 			break;
 		}
 	}
@@ -114,13 +126,40 @@ public class Enemy extends Sprite {
 	private void boardBlockFourSpeed() {
 		switch (this.enemyType) {
 		case ("Alien"):
-			this.movementSpeed = 3;
+			this.movementSpeed = 1;
 			break;
 		}
 	}
 
 	// Enemy speeds for block 5
 	private void boardBlockFiveSpeed() {
+		switch (this.enemyType) {
+		case ("Alien"):
+			this.movementSpeed = 1;
+			break;
+		}
+	}
+
+	// Enemy speeds for block 6
+	private void boardBlockSixSpeed() {
+		switch (this.enemyType) {
+		case ("Alien"):
+			this.movementSpeed = 2;
+			break;
+		}
+	}
+
+	// Enemy speeds for block 7
+	private void boardBlockSevenSpeed() {
+		switch (this.enemyType) {
+		case ("Alien"):
+			this.movementSpeed = 3;
+			break;
+		}
+	}
+
+	// Enemy speeds for block 8
+	private void boardBlockEightSpeed() {
 		switch (this.enemyType) {
 		case ("Alien"):
 			this.movementSpeed = 3;
@@ -143,10 +182,20 @@ public class Enemy extends Sprite {
 		}
 		xCoordinate -= movementSpeed;
 	}
+	
+	public float getCurrentHitpoints() {
+		return this.hitPoints;
+	}
+	
+	public float getMaxHitpoints() {
+		return this.maxHitPoints;
+	}
 
 	// Called every game tick. If weapon is not on cooldown, fire a shot.
+	// Current board block attack is set to 7, this shouldnt be a hardcoded value
+	// This function doesn't discern enemy types yet either, should be re-written when new enemies are introduced
 	public void fireAction() {
-		if (currentBoardBlock < 4) {
+		if (currentBoardBlock < 7) {
 			if (currentAttackSpeedFrameCount == attackSpeedFrameCount) {
 				MissileManager missileManager = MissileManager.getInstance();
 

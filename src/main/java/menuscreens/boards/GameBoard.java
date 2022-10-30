@@ -150,6 +150,7 @@ public class GameBoard extends JPanel implements ActionListener {
 		for (Enemy enemy : enemyManager.getEnemies()) {
 			if (enemy.isVisible()) {
 				drawImage(g, enemy);
+				drawHealthBars(g, enemy);
 			}
 		}
 
@@ -166,6 +167,17 @@ public class GameBoard extends JPanel implements ActionListener {
 	private void drawImage(Graphics g, Sprite sprite) {
 		g.drawImage(sprite.getImage(), sprite.getXCoordinate(), sprite.getYCoordinate(), this);
 
+	}
+	
+	//Primitive healthbar generator for enemies
+	private void drawHealthBars(Graphics g, Enemy enemy) {
+		float factor = enemy.getCurrentHitpoints() / enemy.getMaxHitpoints();
+		int actualAmount = (int) Math.round(enemy.getHeight() * factor);
+		
+		g.setColor(Color.RED);
+		g.fillRect((enemy.getXCoordinate() + enemy.getWidth() + 10), enemy.getYCoordinate(), 5, enemy.getHeight());
+		g.setColor(Color.GREEN);
+		g.fillRect((enemy.getXCoordinate() + enemy.getWidth() + 10), enemy.getYCoordinate(), 5, actualAmount);
 	}
 
 	// Draw the game over screen

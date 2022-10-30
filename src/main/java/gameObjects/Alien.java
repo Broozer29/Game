@@ -2,8 +2,8 @@ package gameObjects;
 
 public class Alien extends Enemy {
 
-	public Alien(int x, int y, String enemyType) {
-		super(x, y, "Alien");
+	public Alien(int x, int y, String enemyType, int currentBoardBlock) {
+		super(x, y, "Alien", currentBoardBlock);
 		initAlien();
 	}
 

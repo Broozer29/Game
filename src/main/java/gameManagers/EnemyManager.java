@@ -13,6 +13,7 @@ public class EnemyManager {
 	private static EnemyManager instance = new EnemyManager();
 	private List<Enemy> enemyList = new ArrayList<Enemy>();
 	private List<BoardBlock> boardBlockList = new ArrayList<BoardBlock>();
+	private int maxBoardBlocks = 8;
 
 	private EnemyManager() {
 		saturateBoardBlockList();
@@ -30,10 +31,11 @@ public class EnemyManager {
 	
 	private void saturateBoardBlockList() {
 		DataClass dataClass = DataClass.getInstance();
-		int widthPerBlock = dataClass.getWindowWidth() / 5;
+		int widthPerBlock = dataClass.getWindowWidth() / maxBoardBlocks;
 		int heightPerBlock = dataClass.getWindowHeight();
 		
-		for (int i = 0; i < 5; i++) {
+		//i < total amount of board blocks. The amount of board block speed settings in Enemy.java HAS TO REFLECT THIS.
+		for (int i = 0; i < maxBoardBlocks; i++) {
 			BoardBlock newBoardBlock = new BoardBlock(widthPerBlock, heightPerBlock, (i*widthPerBlock), 0, i);
 			boardBlockList.add(newBoardBlock);
 		}
@@ -68,7 +70,7 @@ public class EnemyManager {
 	}
 	
 	private Enemy createEnemy(int xCoordinate, int yCoordinate, String enemyType) {
-		return new Enemy(xCoordinate, yCoordinate, enemyType);
+		return new Enemy(xCoordinate, yCoordinate, enemyType, maxBoardBlocks);
 	}
 
 	public void addEnemy(int xCoordinate, int yCoordinate, String enemyType) {
