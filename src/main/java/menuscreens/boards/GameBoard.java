@@ -5,26 +5,32 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
+import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.io.IOException;
 import java.util.List;
 
+import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
 import Data.DataClass;
 import gameManagers.AnimationManager;
+import gameManagers.AudioManager;
+import gameManagers.BackgroundManager;
 import gameManagers.EnemyManager;
 import gameManagers.FriendlyManager;
 import gameManagers.LevelManager;
 import gameManagers.MissileManager;
-import gameObjectes.Animation;
-import gameObjectes.Enemy;
-import gameObjectes.Missile;
-import java.awt.Image;
+import gameObjects.Enemy;
+import gameObjects.Missile;
+import imageObjects.Animation;
+import imageObjects.BackgroundObject;
+import imageObjects.Sprite;
 
 public class GameBoard extends JPanel implements ActionListener {
 
@@ -36,13 +42,22 @@ public class GameBoard extends JPanel implements ActionListener {
 	private final int boardHeight = data.getWindowHeight();
 
 	private final int DELAY = 15;
-	private AnimationManager animationLoader = AnimationManager.getInstance();
+	private AnimationManager animationManager = AnimationManager.getInstance();
 	private EnemyManager enemyManager = EnemyManager.getInstance();
 	private MissileManager missileManager = MissileManager.getInstance();
 	private LevelManager levelManager = LevelManager.getInstance();
 	private FriendlyManager friendlyManager = FriendlyManager.getInstance();
+	private AudioManager audioManager = AudioManager.getInstance();
+	private BackgroundManager backgroundManager = BackgroundManager.getInstance();
 
 	public GameBoard() {
+		animationManager = AnimationManager.getInstance();
+		enemyManager = EnemyManager.getInstance();
+		missileManager = MissileManager.getInstance();
+		levelManager = LevelManager.getInstance();
+		friendlyManager = FriendlyManager.getInstance();
+		audioManager = AudioManager.getInstance();
+		backgroundManager = BackgroundManager.getInstance();
 		initBoard();
 	}
 
@@ -57,6 +72,11 @@ public class GameBoard extends JPanel implements ActionListener {
 
 		timer = new Timer(DELAY, this);
 		timer.start();
+		try {
+			audioManager.playBackgroundMusic("defaultmusic");
+		} catch (UnsupportedAudioFileException | IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override
@@ -71,50 +91,93 @@ public class GameBoard extends JPanel implements ActionListener {
 	}
 
 	private void drawObjects(Graphics g) {
+		
+		// Draws low level stars
+		for(BackgroundObject bgObject : backgroundManager.getLevelOneStars()) {
+			drawImage(g, bgObject);
+		}
+
+		// Draws low level planets
+		for (BackgroundObject bgObject : backgroundManager.getLevelOnePlanets()) {
+			drawImage(g, bgObject);
+		}
+		
+		// Draws medium level stars
+		for(BackgroundObject bgObject : backgroundManager.getLevelTwoStars()) {
+			drawImage(g, bgObject);
+		}
+
+		// Draws medium level planets
+		for (BackgroundObject bgObject : backgroundManager.getLevelTwoPlanets()) {
+			drawImage(g, bgObject);
+		}
+		
+		// Draws high level stars
+		for(BackgroundObject bgObject : backgroundManager.getLevelThreeStars()) {
+			drawImage(g, bgObject);
+		}
+
+		// Draws high level planets
+		for (BackgroundObject bgObject : backgroundManager.getLevelThreePlanets()) {
+			drawImage(g, bgObject);
+		}
+
+		// Draws lower level animations
+		for (Animation animation : animationManager.getLowerAnimations()) {
+			drawImage(g, animation);
+		}
+
 		// Draw friendly spaceship
 		if (friendlyManager.getSpaceship().isVisible()) {
-			g.drawImage(friendlyManager.getSpaceship().getImage(), friendlyManager.getSpaceship().getXCoordinate(),
-					friendlyManager.getSpaceship().getYCoordinate(), this);
+			drawImage(g, friendlyManager.getSpaceship());
 		}
 
 		// Draw friendly missiles
-		List<Missile> friendlyMissiles = missileManager.getFriendlyMissiles();
-		for (Missile missile : friendlyMissiles) {
+		for (Missile missile : missileManager.getFriendlyMissiles()) {
 			if (missile.isVisible()) {
-				g.drawImage(missile.getImage(), missile.getXCoordinate(), missile.getYCoordinate(), this);
+				drawImage(g, missile);
 			}
 		}
 
 		// Draw enemy missiles
-		List<Missile> enemyMissiles = missileManager.getEnemyMissiles();
-		for (Missile missile : enemyMissiles) {
+		for (Missile missile : missileManager.getEnemyMissiles()) {
 			if (missile.isVisible()) {
-				g.drawImage(missile.getImage(), missile.getXCoordinate(), missile.getYCoordinate(), this);
+				drawImage(g, missile);
 			}
 		}
 
 		// Draw enemies
 		for (Enemy enemy : enemyManager.getEnemies()) {
 			if (enemy.isVisible()) {
-				g.drawImage(enemy.getImage(), enemy.getXCoordinate(), enemy.getYCoordinate(), this);
+				drawImage(g, enemy);
+				drawHealthBars(g, enemy);
 			}
 		}
 
-		// Draw animations
-		List<Animation> animationList = animationLoader.getAnimations();
-		for (int i = 0; i < animationList.size(); i++) {
-			g.drawImage(animationList.get(i).getImage(), animationList.get(i).getXCoordinate(),
-					animationList.get(i).getYCoordinate(), this);
-			animationLoader.updateAnimationList(animationList.get(i));
+		// Draws higher level animations
+		for (Animation animation : animationManager.getUpperAnimations()) {
+			drawImage(g, animation);
 		}
 
 		// Draw the score/aliens left
 		g.setColor(Color.WHITE);
 		g.drawString("Aliens left: " + enemyManager.getEnemies().size(), 5, 15);
 	}
+
+	private void drawImage(Graphics g, Sprite sprite) {
+		g.drawImage(sprite.getImage(), sprite.getXCoordinate(), sprite.getYCoordinate(), this);
+
+	}
 	
-	private void drawImageSelfWritten(Graphics g,Image image, int xCoordinate, int yCoordinate) {
-		g.drawImage(image, xCoordinate, yCoordinate, this);
+	//Primitive healthbar generator for enemies
+	private void drawHealthBars(Graphics g, Enemy enemy) {
+		float factor = enemy.getCurrentHitpoints() / enemy.getMaxHitpoints();
+		int actualAmount = (int) Math.round(enemy.getHeight() * factor);
+		
+		g.setColor(Color.RED);
+		g.fillRect((enemy.getXCoordinate() + enemy.getWidth() + 10), enemy.getYCoordinate(), 5, enemy.getHeight());
+		g.setColor(Color.GREEN);
+		g.fillRect((enemy.getXCoordinate() + enemy.getWidth() + 10), enemy.getYCoordinate(), 5, actualAmount);
 	}
 
 	// Draw the game over screen
@@ -134,6 +197,10 @@ public class GameBoard extends JPanel implements ActionListener {
 		missileManager.updateGameTick();
 		enemyManager.updateGameTick();
 		levelManager.updateGameTick();
+		animationManager.updateGameTick();
+		backgroundManager.updateGameTick();
+//		backgroundManager.testWhatIGot();
+
 		repaint();
 	}
 
