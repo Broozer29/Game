@@ -1,19 +1,17 @@
 package gameManagers;
 
+import java.util.List;
 import java.util.Random;
 
-import Data.DataClass;
-import gameObjects.Alien;
+import Data.RandomCoordinator;
 import gameObjects.Enemy;
 
 public class LevelManager {
 
 	private static LevelManager instance = new LevelManager();
 	private EnemyManager enemyManager = EnemyManager.getInstance();
-	private int maximumWidthRange = DataClass.getInstance().getWindowWidth() + 100;
-	private int minimumWidthRange = DataClass.getInstance().getWindowWidth();
-	private int maximumHeightRange = DataClass.getInstance().getWindowHeight() - 100;
-	private int minimumHeightRange = 100;
+	private RandomCoordinator randomCoordinator = RandomCoordinator.getInstance();
+
 	private int level = 1;
 
 	private LevelManager() {
@@ -48,40 +46,41 @@ public class LevelManager {
 	private void setLevel(int level) {
 		switch (level) {
 		case (1):
-			this.setLevelOne();
+			this.saturateLevelOne();
 			return;
 		case (2):
-			this.setLevelTwo();
+			this.saturateLevelTwo();
 			return;
 		case (3):
-			this.setLevelThree();
+			this.saturateLevelThree();
 			return;
 		}
 	}
 
-	private void setLevelOne() {
+	private void saturateLevelOne() {
 		Random random = new Random();
+
 		for (int i = 0; i < 10; i++) {
-			int xCoordinate = random.nextInt((maximumWidthRange - minimumWidthRange) + 1) + minimumWidthRange;
-			int yCoordinate = random.nextInt((maximumHeightRange - minimumHeightRange) + 1) + minimumHeightRange;
+			int xCoordinate = randomCoordinator.getRandomXEnemyCoordinate();
+			int yCoordinate = randomCoordinator.getRandomYEnemyCoordinate();
 			enemyManager.addEnemy(xCoordinate, yCoordinate, "Alien");
 		}
 	}
 
-	private void setLevelTwo() {
+	private void saturateLevelTwo() {
 		Random random = new Random();
 		for (int i = 0; i < 12; i++) {
-			int xCoordinate = random.nextInt((maximumWidthRange - minimumWidthRange) + 1) + minimumWidthRange;
-			int yCoordinate = random.nextInt((maximumHeightRange - minimumHeightRange) + 1) + minimumHeightRange;
+			int xCoordinate = randomCoordinator.getRandomXEnemyCoordinate();
+			int yCoordinate = randomCoordinator.getRandomYEnemyCoordinate();
 			enemyManager.addEnemy(xCoordinate, yCoordinate, "Alien");
 		}
 	}
 
-	private void setLevelThree() {
+	private void saturateLevelThree() {
 		Random random = new Random();
 		for (int i = 0; i < 14; i++) {
-			int xCoordinate = random.nextInt((maximumWidthRange - minimumWidthRange) + 1) + minimumWidthRange;
-			int yCoordinate = random.nextInt((maximumHeightRange - minimumHeightRange) + 1) + minimumHeightRange;
+			int xCoordinate = randomCoordinator.getRandomXEnemyCoordinate();
+			int yCoordinate = randomCoordinator.getRandomYEnemyCoordinate();
 			enemyManager.addEnemy(xCoordinate, yCoordinate, "Alien");
 		}
 	}

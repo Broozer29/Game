@@ -9,6 +9,7 @@ import java.util.Random;
 
 import Data.DataClass;
 import Data.ImageLoader;
+import Data.RandomCoordinator;
 import imageObjects.BackgroundObject;
 
 public class BackgroundManager {
@@ -16,38 +17,40 @@ public class BackgroundManager {
 	private static BackgroundManager instance = new BackgroundManager();
 	private DataClass dataClass = DataClass.getInstance();
 	private ImageLoader imageLoader = ImageLoader.getInstance();
+	private RandomCoordinator randomCoordinator = RandomCoordinator.getInstance();
 	private List<BackgroundObject> levelOnePlanets = new ArrayList<BackgroundObject>();
 	private List<BackgroundObject> levelTwoPlanets = new ArrayList<BackgroundObject>();
 	private List<BackgroundObject> levelThreePlanets = new ArrayList<BackgroundObject>();
 	private List<BackgroundObject> levelOneStars = new ArrayList<BackgroundObject>();
 	private List<BackgroundObject> levelTwoStars = new ArrayList<BackgroundObject>();
 	private List<BackgroundObject> levelThreeStars = new ArrayList<BackgroundObject>();
-	private List<String> allBackgroundObjects = new ArrayList<String>();
+	
+	private List<List> planetLists = new ArrayList<List>();
+	private List<List> starLists = new ArrayList<List>();
+	
+	private List<String> allBackgroundObjectStringCodes = new ArrayList<String>();
 	private Map<String, Image> scaledBackgroundObjects = new HashMap<String, Image>();
-	private int maximumWidthRange = DataClass.getInstance().getWindowWidth() + 200;
-	private int minimumWidthRange = -200;
-	private int maximumHeightRange = DataClass.getInstance().getWindowHeight() + 50;
-	private int minimumHeightRange = -50;
+
 	Random random = new Random();
 	private int updateFrameCounter = 0;
-	private int levelOneObjectModifier = 100;
-	private int levelTwoObjectModifier = 200;
-	private int levelThreeObjectModifier = 300;
-	private int levelOneStarModifier = 4;
-	private int levelTwoStarModifier = 6;
-	private int levelThreeStarModifier = 8;
+	private int levelOneObjectModifier = 75;
+	private int levelTwoObjectModifier = 150;
+	private int levelThreeObjectModifier = 225;
+	private int levelOneStarModifier = 3;
+	private int levelTwoStarModifier = 5;
+	private int levelThreeStarModifier = 7;
 
 	private BackgroundManager() {
 		initManager();
 	}
 
 	private void initManager() {
-		allBackgroundObjects.add("moon1");
-		allBackgroundObjects.add("lavaplanet1");
-		allBackgroundObjects.add("marsplanet1");
-		allBackgroundObjects.add("planet1");
-		allBackgroundObjects.add("planet2");
-		allBackgroundObjects.add("planet3");
+		allBackgroundObjectStringCodes.add("moon1");
+		allBackgroundObjectStringCodes.add("lavaplanet1");
+		allBackgroundObjectStringCodes.add("marsplanet1");
+		allBackgroundObjectStringCodes.add("planet1");
+		allBackgroundObjectStringCodes.add("planet2");
+		allBackgroundObjectStringCodes.add("planet3");
 		loadAllPlanets();
 		initLists();
 	}
@@ -73,13 +76,14 @@ public class BackgroundManager {
 	private void fillLevelOneStars() {
 		while (levelOneStars.size() < 25) {
 			Image starImage = setStarScale(imageLoader.getImage("star"), 1);
-			int randomXCoordinate = getRandomXCoordinate();
-			int randomYCoordinate = getRandomYCoordinate();
-			if (checkValidXCoordinate(levelOneStars, randomXCoordinate)
-					&& checkValidYCoordinate(levelOneStars, randomYCoordinate)) {
+			int randomXCoordinate = randomCoordinator.getRandomXBGOCoordinate();
+			int randomYCoordinate = randomCoordinator.getRandomYBGOCoordinate();
+			if (randomCoordinator.checkValidBGOXCoordinate(levelOneStars, randomXCoordinate)
+					&& randomCoordinator.checkValidBGOYCoordinate(levelOneStars, randomYCoordinate)) {
 				levelOneStars.add(new BackgroundObject(randomXCoordinate, randomYCoordinate, starImage));
 			}
 		}
+		starLists.add(levelOneStars);
 
 	}
 
@@ -87,10 +91,10 @@ public class BackgroundManager {
 	private void fillLevelTwoStars() {
 		while (levelTwoStars.size() < 25) {
 			Image starImage = setStarScale(imageLoader.getImage("star"), 2);
-			int randomXCoordinate = getRandomXCoordinate();
-			int randomYCoordinate = getRandomYCoordinate();
-			if (checkValidXCoordinate(levelTwoStars, randomXCoordinate)
-					&& checkValidYCoordinate(levelTwoStars, randomYCoordinate)) {
+			int randomXCoordinate = randomCoordinator.getRandomXBGOCoordinate();
+			int randomYCoordinate = randomCoordinator.getRandomYBGOCoordinate();
+			if (randomCoordinator.checkValidBGOXCoordinate(levelOneStars, randomXCoordinate)
+					&& randomCoordinator.checkValidBGOYCoordinate(levelOneStars, randomYCoordinate)) {
 				levelTwoStars.add(new BackgroundObject(randomXCoordinate, randomYCoordinate, starImage));
 			}
 		}
@@ -100,10 +104,10 @@ public class BackgroundManager {
 	private void fillLevelThreeStars() {
 		while (levelThreeStars.size() < 25) {
 			Image starImage = setStarScale(imageLoader.getImage("star"), 3);
-			int randomXCoordinate = getRandomXCoordinate();
-			int randomYCoordinate = getRandomYCoordinate();
-			if (checkValidXCoordinate(levelThreeStars, randomXCoordinate)
-					&& checkValidYCoordinate(levelThreeStars, randomYCoordinate)) {
+			int randomXCoordinate = randomCoordinator.getRandomXBGOCoordinate();
+			int randomYCoordinate = randomCoordinator.getRandomYBGOCoordinate();
+			if (randomCoordinator.checkValidBGOXCoordinate(levelOneStars, randomXCoordinate)
+					&& randomCoordinator.checkValidBGOYCoordinate(levelOneStars, randomYCoordinate)) {
 				levelThreeStars.add(new BackgroundObject(randomXCoordinate, randomYCoordinate, starImage));
 			}
 		}
@@ -113,7 +117,7 @@ public class BackgroundManager {
 	private void fillLevelOnePlanets() {
 		for (int i = 0; i < 1; i++) {
 			Image planetImage = setPlanetScale(getRandomPlanet(), 1);
-			levelOnePlanets.add(new BackgroundObject(getRandomXCoordinate(), getRandomYCoordinate(), planetImage));
+			levelOnePlanets.add(new BackgroundObject(randomCoordinator.getRandomXBGOCoordinate(), randomCoordinator.getRandomYBGOCoordinate(), planetImage));
 		}
 	}
 
@@ -121,7 +125,7 @@ public class BackgroundManager {
 	private void fillLevelTwoPlanets() {
 		for (int i = 0; i < 1; i++) {
 			Image planetImage = setPlanetScale(getRandomPlanet(), 2);
-			levelTwoPlanets.add(new BackgroundObject(getRandomXCoordinate(), getRandomYCoordinate(), planetImage));
+			levelTwoPlanets.add(new BackgroundObject(randomCoordinator.getRandomXBGOCoordinate(), randomCoordinator.getRandomYBGOCoordinate(), planetImage));
 		}
 	}
 
@@ -129,7 +133,7 @@ public class BackgroundManager {
 	private void fillLevelThreePlanets() {
 		for (int i = 0; i < 1; i++) {
 			Image planetImage = setPlanetScale(getRandomPlanet(), 3);
-			levelThreePlanets.add(new BackgroundObject(getRandomXCoordinate(), getRandomYCoordinate(), planetImage));
+			levelThreePlanets.add(new BackgroundObject(randomCoordinator.getRandomXBGOCoordinate(), randomCoordinator.getRandomYBGOCoordinate(), planetImage));
 		}
 	}
 
@@ -139,12 +143,12 @@ public class BackgroundManager {
 	private void updateObjects() {
 		// Updates all level one objects. If their X position is below 0, reset them to
 		// windowwidth. If not, move them by one pixel;
-		if (updateFrameCounter == 4) {
+		if (updateFrameCounter >= 4) {
 			for (BackgroundObject bgObject : levelOnePlanets) {
 				if ((bgObject.getXCoordinate() + levelOneObjectModifier + 20) < (0 - levelOneObjectModifier)) {
 
 					bgObject.setX(dataClass.getWindowWidth() + 200);
-					bgObject.setY(getRandomYCoordinate());
+					bgObject.setY(randomCoordinator.getRandomYBGOCoordinate());
 					bgObject.setNewPlanetImage(setPlanetScale(getRandomPlanet(), 1));
 				}
 				bgObject.setX(bgObject.getXCoordinate() - 1);
@@ -154,7 +158,7 @@ public class BackgroundManager {
 				if ((bgObject.getXCoordinate() + levelOneStarModifier + 20) < (0 - levelOneStarModifier)) {
 
 					bgObject.setX(dataClass.getWindowWidth() + 200);
-					bgObject.setY(getRandomYCoordinate());
+					bgObject.setY(randomCoordinator.getRandomYBGOCoordinate());
 				}
 				bgObject.setX(bgObject.getXCoordinate() - 1);
 			}
@@ -162,12 +166,12 @@ public class BackgroundManager {
 
 		// Updates all level two objects. If their X position is below 0, reset them to
 		// windowwidth. If not, move them by one pixel;
-		if (updateFrameCounter == 2) {
+		if (updateFrameCounter >= 2) {
 			for (BackgroundObject bgObject : levelTwoPlanets) {
 				if ((bgObject.getXCoordinate() + levelTwoObjectModifier + 20) < (0 - levelTwoObjectModifier)) {
 
 					bgObject.setX(dataClass.getWindowWidth() + 200);
-					bgObject.setY(getRandomYCoordinate());
+					bgObject.setY(randomCoordinator.getRandomYBGOCoordinate());
 					bgObject.setNewPlanetImage(setPlanetScale(getRandomPlanet(), 2));
 				}
 				bgObject.setX(bgObject.getXCoordinate() - 1);
@@ -177,7 +181,7 @@ public class BackgroundManager {
 				if ((bgObject.getXCoordinate() + levelTwoStarModifier + 20) < (0 - levelTwoStarModifier)) {
 
 					bgObject.setX(dataClass.getWindowWidth() + 200);
-					bgObject.setY(getRandomYCoordinate());
+					bgObject.setY(randomCoordinator.getRandomYBGOCoordinate());
 				}
 				bgObject.setX(bgObject.getXCoordinate() - 1);
 			}
@@ -185,12 +189,13 @@ public class BackgroundManager {
 
 		// Updates all level three objects. If their X position is below 0, reset them
 		// to windowwidth. If not, move them by one pixel;
+		
 		for (BackgroundObject bgObject : levelThreePlanets) {
 
 			if ((bgObject.getXCoordinate() + levelThreeObjectModifier + 20) < (0 - levelThreeObjectModifier)) {
 
 				bgObject.setX(dataClass.getWindowWidth() + 200);
-				bgObject.setY(getRandomYCoordinate());
+				bgObject.setY(randomCoordinator.getRandomYBGOCoordinate());
 				bgObject.setNewPlanetImage(setPlanetScale(getRandomPlanet(), 3));
 			}
 			bgObject.setX(bgObject.getXCoordinate() - 1);
@@ -200,7 +205,7 @@ public class BackgroundManager {
 			if ((bgObject.getXCoordinate() + levelThreeStarModifier + 20) < (0 - levelThreeStarModifier)) {
 
 				bgObject.setX(dataClass.getWindowWidth() + 200);
-				bgObject.setY(getRandomYCoordinate());
+				bgObject.setY(randomCoordinator.getRandomYBGOCoordinate());
 			}
 			bgObject.setX(bgObject.getXCoordinate() - 1);
 		}
@@ -215,39 +220,13 @@ public class BackgroundManager {
 
 	private Image getRandomPlanet() {
 		int randomPlanet = getRandomBackgroundObject();
-		String randomPlanetString = allBackgroundObjects.get(randomPlanet);
+		String randomPlanetString = allBackgroundObjectStringCodes.get(randomPlanet);
 		return scaledBackgroundObjects.get(randomPlanetString);
-	}
-
-	private int getRandomXCoordinate() {
-		return random.nextInt((maximumWidthRange - minimumWidthRange) + 1) + minimumWidthRange;
-	}
-
-	private int getRandomYCoordinate() {
-		return random.nextInt((maximumHeightRange - minimumHeightRange) + 1) + minimumHeightRange;
 	}
 
 	// Returns a random planet to display
 	private int getRandomBackgroundObject() {
 		return random.nextInt((scaledBackgroundObjects.size() - 1) + 1) + 0;
-	}
-
-	private boolean checkValidXCoordinate(List<BackgroundObject> listToCheck, int xCoordinate) {
-		for (BackgroundObject bgObject : listToCheck) {
-			if (Math.abs(bgObject.getXCoordinate() - xCoordinate) < 20) {
-				return false;
-			}
-		}
-		return true;
-	}
-
-	private boolean checkValidYCoordinate(List<BackgroundObject> listToCheck, int yCoordinate) {
-		for (BackgroundObject bgObject : listToCheck) {
-			if (Math.abs(bgObject.getYCoordinate() - yCoordinate) < 20) {
-				return false;
-			}
-		}
-		return true;
 	}
 
 	// Objects require different scales to create illusion of depth
@@ -279,7 +258,7 @@ public class BackgroundManager {
 	// Initially loads all planets so they dont have to be reloaded from files.
 	// Saves memory
 	private void loadAllPlanets() {
-		for (String object : allBackgroundObjects) {
+		for (String object : allBackgroundObjectStringCodes) {
 			Image img = imageLoader.getImage(object);
 			scaledBackgroundObjects.put(object, img);
 		}
