@@ -89,8 +89,8 @@ public class BackgroundManager {
 			Image starImage = setStarScale(imageLoader.getImage("star"), 2);
 			int randomXCoordinate = randomCoordinator.getRandomXBGOCoordinate();
 			int randomYCoordinate = randomCoordinator.getRandomYBGOCoordinate();
-			if (randomCoordinator.checkValidBGOXCoordinate(levelOneStars, randomXCoordinate)
-					&& randomCoordinator.checkValidBGOYCoordinate(levelOneStars, randomYCoordinate)) {
+			if (randomCoordinator.checkValidBGOXCoordinate(levelTwoStars, randomXCoordinate)
+					&& randomCoordinator.checkValidBGOYCoordinate(levelTwoStars, randomYCoordinate)) {
 				levelTwoStars.add(new BackgroundObject(randomXCoordinate, randomYCoordinate, starImage));
 			}
 		}
@@ -102,8 +102,8 @@ public class BackgroundManager {
 			Image starImage = setStarScale(imageLoader.getImage("star"), 3);
 			int randomXCoordinate = randomCoordinator.getRandomXBGOCoordinate();
 			int randomYCoordinate = randomCoordinator.getRandomYBGOCoordinate();
-			if (randomCoordinator.checkValidBGOXCoordinate(levelOneStars, randomXCoordinate)
-					&& randomCoordinator.checkValidBGOYCoordinate(levelOneStars, randomYCoordinate)) {
+			if (randomCoordinator.checkValidBGOXCoordinate(levelThreeStars, randomXCoordinate)
+					&& randomCoordinator.checkValidBGOYCoordinate(levelThreeStars, randomYCoordinate)) {
 				levelThreeStars.add(new BackgroundObject(randomXCoordinate, randomYCoordinate, starImage));
 			}
 		}
