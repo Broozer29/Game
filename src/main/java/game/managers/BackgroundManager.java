@@ -1,4 +1,4 @@
-package gameManagers;
+package game.managers;
 
 import java.awt.Image;
 import java.util.ArrayList;
@@ -7,10 +7,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
-import Data.DataClass;
-import Data.ImageLoader;
-import Data.RandomCoordinator;
-import imageObjects.BackgroundObject;
+import data.DataClass;
+import data.ImageLoader;
+import data.RandomCoordinator;
+import image.objects.BackgroundObject;
 
 public class BackgroundManager {
 

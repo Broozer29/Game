@@ -1,6 +1,6 @@
-package gameManagers;
+package game.managers;
 
-import gameObjects.SpaceShip;
+import game.objects.SpaceShip;
 
 public class FriendlyManager {
 

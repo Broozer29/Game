@@ -1,10 +1,10 @@
-package gameObjects;
+package game.objects;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import Data.DataClass;
-import imageObjects.Sprite;
+import data.DataClass;
+import image.objects.Sprite;
 
 public class Missile extends Sprite {
 

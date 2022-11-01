@@ -18,19 +18,19 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
-import Data.DataClass;
-import gameManagers.AnimationManager;
-import gameManagers.AudioManager;
-import gameManagers.BackgroundManager;
-import gameManagers.EnemyManager;
-import gameManagers.FriendlyManager;
-import gameManagers.LevelManager;
-import gameManagers.MissileManager;
-import gameObjects.Enemy;
-import gameObjects.Missile;
-import imageObjects.Animation;
-import imageObjects.BackgroundObject;
-import imageObjects.Sprite;
+import data.DataClass;
+import game.managers.AnimationManager;
+import game.managers.AudioManager;
+import game.managers.BackgroundManager;
+import game.managers.EnemyManager;
+import game.managers.FriendlyManager;
+import game.managers.LevelManager;
+import game.managers.MissileManager;
+import game.objects.Enemy;
+import game.objects.Missile;
+import image.objects.Animation;
+import image.objects.BackgroundObject;
+import image.objects.Sprite;
 
 public class GameBoard extends JPanel implements ActionListener {
 

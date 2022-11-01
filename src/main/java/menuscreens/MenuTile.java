@@ -1,7 +1,7 @@
 package menuscreens;
 
-import Data.DataClass;
-import imageObjects.Sprite;
+import data.DataClass;
+import image.objects.Sprite;
 import javafx.scene.image.Image;
 
 public class MenuTile extends Sprite {

@@ -2,7 +2,7 @@ package menuscreens;
 
 import javax.swing.JFrame;
 
-import Data.DataClass;
+import data.DataClass;
 //import database.DatabaseConnection;
 import menuscreens.boards.GameBoard;
 import menuscreens.boards.MenuBoard;

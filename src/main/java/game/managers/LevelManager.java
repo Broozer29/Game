@@ -1,10 +1,10 @@
-package gameManagers;
+package game.managers;
 
 import java.util.List;
 import java.util.Random;
 
-import Data.RandomCoordinator;
-import gameObjects.Enemy;
+import data.RandomCoordinator;
+import game.objects.Enemy;
 
 public class LevelManager {
 

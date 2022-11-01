@@ -2,7 +2,7 @@ package menuscreens.boards;
 
 import javax.swing.JPanel;
 
-import Data.DataClass;
+import data.DataClass;
 import menuscreens.MenuCursor;
 import menuscreens.MenuTile;
 

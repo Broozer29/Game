@@ -1,4 +1,4 @@
-package imageObjects;
+package image.objects;
 
 public class Animation extends Sprite{
 

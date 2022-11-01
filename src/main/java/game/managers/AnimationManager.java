@@ -1,10 +1,10 @@
-package gameManagers;
+package game.managers;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import Data.DataClass;
-import imageObjects.Animation;
+import data.DataClass;
+import image.objects.Animation;
 
 public class AnimationManager {
 

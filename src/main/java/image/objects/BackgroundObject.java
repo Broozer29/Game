@@ -1,4 +1,4 @@
-package imageObjects;
+package image.objects;
 
 import java.awt.Image;
 

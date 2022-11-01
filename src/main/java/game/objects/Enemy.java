@@ -1,10 +1,10 @@
-package gameObjects;
+package game.objects;
 
 import java.util.Random;
 
-import Data.DataClass;
-import gameManagers.MissileManager;
-import imageObjects.Sprite;
+import data.DataClass;
+import game.managers.MissileManager;
+import image.objects.Sprite;
 
 public class Enemy extends Sprite {
 

@@ -1,12 +1,12 @@
-package gameManagers;
+package game.managers;
 
 import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.List;
 
-import gameObjects.Enemy;
-import gameObjects.Missile;
-import imageObjects.Animation;
+import game.objects.Enemy;
+import game.objects.Missile;
+import image.objects.Animation;
 
 public class MissileManager {
 

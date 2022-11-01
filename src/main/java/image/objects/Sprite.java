@@ -1,8 +1,9 @@
-package imageObjects;
+package image.objects;
 
 import java.awt.Image;
-import Data.ImageLoader;
 import java.awt.Rectangle;
+
+import data.ImageLoader;
 
 public class Sprite {
 

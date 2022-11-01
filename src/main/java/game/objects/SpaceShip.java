@@ -1,15 +1,15 @@
-package gameObjects;
+package game.objects;
 
 import java.awt.event.KeyEvent;
 import java.io.IOException;
 
 import javax.sound.sampled.UnsupportedAudioFileException;
 
-import Data.DataClass;
-import gameManagers.AudioManager;
-import gameManagers.FriendlyManager;
-import gameManagers.MissileManager;
-import imageObjects.Sprite;
+import data.DataClass;
+import game.managers.AudioManager;
+import game.managers.FriendlyManager;
+import game.managers.MissileManager;
+import image.objects.Sprite;
 
 public class SpaceShip extends Sprite {
 

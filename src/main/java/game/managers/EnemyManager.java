@@ -1,11 +1,12 @@
-package gameManagers;
+package game.managers;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import Data.DataClass;
-import gameObjects.BoardBlock;
-import gameObjects.Enemy;
+import data.DataClass;
+import game.objects.BoardBlock;
+import game.objects.Enemy;
+
 import java.awt.Rectangle;
 
 public class EnemyManager {

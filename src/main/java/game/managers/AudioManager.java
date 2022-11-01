@@ -1,4 +1,4 @@
-package gameManagers;
+package game.managers;
 
 import java.io.File;
 import java.io.IOException;

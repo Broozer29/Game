@@ -1,4 +1,4 @@
-package gameObjects;
+package game.objects;
 
 
 public class Trajectory {

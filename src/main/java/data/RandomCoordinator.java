@@ -1,10 +1,10 @@
-package Data;
+package data;
 
 import java.util.List;
 import java.util.Random;
 
-import imageObjects.BackgroundObject;
-import imageObjects.Sprite;
+import image.objects.BackgroundObject;
+import image.objects.Sprite;
 
 public class RandomCoordinator {
 

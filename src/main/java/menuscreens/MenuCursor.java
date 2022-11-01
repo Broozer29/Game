@@ -1,6 +1,6 @@
 package menuscreens;
 
-import imageObjects.Sprite;
+import image.objects.Sprite;
 
 public class MenuCursor extends Sprite {
 
