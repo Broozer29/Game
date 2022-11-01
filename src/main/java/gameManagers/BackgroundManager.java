@@ -24,10 +24,7 @@ public class BackgroundManager {
 	private List<BackgroundObject> levelOneStars = new ArrayList<BackgroundObject>();
 	private List<BackgroundObject> levelTwoStars = new ArrayList<BackgroundObject>();
 	private List<BackgroundObject> levelThreeStars = new ArrayList<BackgroundObject>();
-	
-	private List<List> planetLists = new ArrayList<List>();
-	private List<List> starLists = new ArrayList<List>();
-	
+
 	private List<String> allBackgroundObjectStringCodes = new ArrayList<String>();
 	private Map<String, Image> scaledBackgroundObjects = new HashMap<String, Image>();
 
@@ -83,7 +80,6 @@ public class BackgroundManager {
 				levelOneStars.add(new BackgroundObject(randomXCoordinate, randomYCoordinate, starImage));
 			}
 		}
-		starLists.add(levelOneStars);
 
 	}
 
@@ -117,7 +113,8 @@ public class BackgroundManager {
 	private void fillLevelOnePlanets() {
 		for (int i = 0; i < 1; i++) {
 			Image planetImage = setPlanetScale(getRandomPlanet(), 1);
-			levelOnePlanets.add(new BackgroundObject(randomCoordinator.getRandomXBGOCoordinate(), randomCoordinator.getRandomYBGOCoordinate(), planetImage));
+			levelOnePlanets.add(new BackgroundObject(randomCoordinator.getRandomXBGOCoordinate(),
+					randomCoordinator.getRandomYBGOCoordinate(), planetImage));
 		}
 	}
 
@@ -125,7 +122,8 @@ public class BackgroundManager {
 	private void fillLevelTwoPlanets() {
 		for (int i = 0; i < 1; i++) {
 			Image planetImage = setPlanetScale(getRandomPlanet(), 2);
-			levelTwoPlanets.add(new BackgroundObject(randomCoordinator.getRandomXBGOCoordinate(), randomCoordinator.getRandomYBGOCoordinate(), planetImage));
+			levelTwoPlanets.add(new BackgroundObject(randomCoordinator.getRandomXBGOCoordinate(),
+					randomCoordinator.getRandomYBGOCoordinate(), planetImage));
 		}
 	}
 
@@ -133,7 +131,8 @@ public class BackgroundManager {
 	private void fillLevelThreePlanets() {
 		for (int i = 0; i < 1; i++) {
 			Image planetImage = setPlanetScale(getRandomPlanet(), 3);
-			levelThreePlanets.add(new BackgroundObject(randomCoordinator.getRandomXBGOCoordinate(), randomCoordinator.getRandomYBGOCoordinate(), planetImage));
+			levelThreePlanets.add(new BackgroundObject(randomCoordinator.getRandomXBGOCoordinate(),
+					randomCoordinator.getRandomYBGOCoordinate(), planetImage));
 		}
 	}
 
@@ -143,10 +142,9 @@ public class BackgroundManager {
 	private void updateObjects() {
 		// Updates all level one objects. If their X position is below 0, reset them to
 		// windowwidth. If not, move them by one pixel;
-		if (updateFrameCounter >= 4) {
+		if (updateFrameCounter % 4 == 0) {
 			for (BackgroundObject bgObject : levelOnePlanets) {
 				if ((bgObject.getXCoordinate() + levelOneObjectModifier + 20) < (0 - levelOneObjectModifier)) {
-
 					bgObject.setX(dataClass.getWindowWidth() + 200);
 					bgObject.setY(randomCoordinator.getRandomYBGOCoordinate());
 					bgObject.setNewPlanetImage(setPlanetScale(getRandomPlanet(), 1));
@@ -156,7 +154,6 @@ public class BackgroundManager {
 
 			for (BackgroundObject bgObject : levelOneStars) {
 				if ((bgObject.getXCoordinate() + levelOneStarModifier + 20) < (0 - levelOneStarModifier)) {
-
 					bgObject.setX(dataClass.getWindowWidth() + 200);
 					bgObject.setY(randomCoordinator.getRandomYBGOCoordinate());
 				}
@@ -166,10 +163,9 @@ public class BackgroundManager {
 
 		// Updates all level two objects. If their X position is below 0, reset them to
 		// windowwidth. If not, move them by one pixel;
-		if (updateFrameCounter >= 2) {
+		if (updateFrameCounter % 3 == 0) {
 			for (BackgroundObject bgObject : levelTwoPlanets) {
 				if ((bgObject.getXCoordinate() + levelTwoObjectModifier + 20) < (0 - levelTwoObjectModifier)) {
-
 					bgObject.setX(dataClass.getWindowWidth() + 200);
 					bgObject.setY(randomCoordinator.getRandomYBGOCoordinate());
 					bgObject.setNewPlanetImage(setPlanetScale(getRandomPlanet(), 2));
@@ -179,7 +175,6 @@ public class BackgroundManager {
 
 			for (BackgroundObject bgObject : levelTwoStars) {
 				if ((bgObject.getXCoordinate() + levelTwoStarModifier + 20) < (0 - levelTwoStarModifier)) {
-
 					bgObject.setX(dataClass.getWindowWidth() + 200);
 					bgObject.setY(randomCoordinator.getRandomYBGOCoordinate());
 				}
@@ -189,30 +184,28 @@ public class BackgroundManager {
 
 		// Updates all level three objects. If their X position is below 0, reset them
 		// to windowwidth. If not, move them by one pixel;
-		
-		for (BackgroundObject bgObject : levelThreePlanets) {
-
-			if ((bgObject.getXCoordinate() + levelThreeObjectModifier + 20) < (0 - levelThreeObjectModifier)) {
-
-				bgObject.setX(dataClass.getWindowWidth() + 200);
-				bgObject.setY(randomCoordinator.getRandomYBGOCoordinate());
-				bgObject.setNewPlanetImage(setPlanetScale(getRandomPlanet(), 3));
+		if (updateFrameCounter % 2 == 0) {
+			for (BackgroundObject bgObject : levelThreePlanets) {
+				if ((bgObject.getXCoordinate() + levelThreeObjectModifier + 20) < (0 - levelThreeObjectModifier)) {
+					bgObject.setX(dataClass.getWindowWidth() + 200);
+					bgObject.setY(randomCoordinator.getRandomYBGOCoordinate());
+					bgObject.setNewPlanetImage(setPlanetScale(getRandomPlanet(), 3));
+				}
+				bgObject.setX(bgObject.getXCoordinate() - 1);
 			}
-			bgObject.setX(bgObject.getXCoordinate() - 1);
-		}
 
-		for (BackgroundObject bgObject : levelThreeStars) {
-			if ((bgObject.getXCoordinate() + levelThreeStarModifier + 20) < (0 - levelThreeStarModifier)) {
-
-				bgObject.setX(dataClass.getWindowWidth() + 200);
-				bgObject.setY(randomCoordinator.getRandomYBGOCoordinate());
+			for (BackgroundObject bgObject : levelThreeStars) {
+				if ((bgObject.getXCoordinate() + levelThreeStarModifier + 20) < (0 - levelThreeStarModifier)) {
+					bgObject.setX(dataClass.getWindowWidth() + 200);
+					bgObject.setY(randomCoordinator.getRandomYBGOCoordinate());
+				}
+				bgObject.setX(bgObject.getXCoordinate() - 1);
 			}
-			bgObject.setX(bgObject.getXCoordinate() - 1);
 		}
 
 		// Update the framecounter and reset it to 0; for different movement speeds
 		// between planets
-		if (updateFrameCounter > 5) {
+		if (updateFrameCounter > 10) {
 			updateFrameCounter = 0;
 		}
 		updateFrameCounter++;
