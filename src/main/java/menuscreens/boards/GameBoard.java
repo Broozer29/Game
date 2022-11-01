@@ -165,6 +165,7 @@ public class GameBoard extends JPanel implements ActionListener {
 	}
 
 	private void drawImage(Graphics g, Sprite sprite) {
+		
 		g.drawImage(sprite.getImage(), sprite.getXCoordinate(), sprite.getYCoordinate(), this);
 
 	}

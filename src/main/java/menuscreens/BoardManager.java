@@ -3,6 +3,7 @@ package menuscreens;
 import javax.swing.JFrame;
 
 import data.DataClass;
+import database.DatabaseConnection;
 //import database.DatabaseConnection;
 import menuscreens.boards.GameBoard;
 import menuscreens.boards.MenuBoard;
@@ -11,7 +12,7 @@ import menuscreens.boards.UserSelectionBoard;
 public class BoardManager extends JFrame {
 
 	private DataClass data = DataClass.getInstance();
-//	private DatabaseConnection connection;
+	private DatabaseConnection connection;
 	private MenuBoard mBoard;
 	private GameBoard gBoard;
 	private UserSelectionBoard usBoard;
