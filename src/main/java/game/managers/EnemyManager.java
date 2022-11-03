@@ -17,6 +17,7 @@ public class EnemyManager {
 	private int maxBoardBlocks = 8;
 	private DataClass dataClass = DataClass.getInstance();
 
+
 	private EnemyManager() {
 		saturateBoardBlockList();
 	}
@@ -49,7 +50,6 @@ public class EnemyManager {
 			enemy.fireAction();
 		}
 	}
-	
 
 	private void updateEnemyBoardBlocks() {
 		for (BoardBlock boardBlock : boardBlockList) {
@@ -74,6 +74,13 @@ public class EnemyManager {
 
 	private Enemy createEnemy(int xCoordinate, int yCoordinate, String enemyType) {
 		return new Enemy(xCoordinate, yCoordinate, enemyType, maxBoardBlocks);
+	}
+
+	public void addBombEnemy(int xCoordinte, int yCoordinate, String enemyType, String direction) {
+		Enemy enemy = createEnemy(xCoordinte, yCoordinate, enemyType);
+		enemy.setRotation(direction);
+		enemy.setVisible(true);
+		this.enemyList.add(enemy);
 	}
 
 	public void addEnemy(int xCoordinate, int yCoordinate, String enemyType) {

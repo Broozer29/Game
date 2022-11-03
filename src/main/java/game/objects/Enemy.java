@@ -16,6 +16,7 @@ public class Enemy extends Sprite {
 	private Random random = new Random();
 	private int movementSpeed;
 	private int currentBoardBlock;
+	private String rotation;
 
 	public Enemy(int x, int y, String enemyType, int currentBoardBlock) {
 		super(x, y);
@@ -30,6 +31,14 @@ public class Enemy extends Sprite {
 			this.maxHitPoints = 35;
 			this.attackSpeedFrameCount = 150;
 			loadImage("Alien");
+			this.movementSpeed = 1;
+			this.setRotation("Left");
+		}
+		if (this.enemyType.equals("Alien bomb")) {
+			this.hitPoints = 10;
+			this.maxHitPoints = 10;
+			this.attackSpeedFrameCount = 999999;
+			loadImage("Alien bomb");
 			this.movementSpeed = 1;
 		}
 	}
@@ -50,6 +59,72 @@ public class Enemy extends Sprite {
 			this.currentBoardBlock = boardBlockNumber;
 			this.updateMovementSpeed();
 		}
+	}
+
+	// Called when there is collision between friendly missile and enemy
+	public void takeDamage(float damageTaken) {
+		this.hitPoints -= damageTaken;
+		if (this.hitPoints <= 0) {
+			this.setVisible(false);
+		}
+	}
+
+	// Called every game tick
+	public void move() {
+		switch (enemyType) {
+		case ("Alien"):
+			if (xCoordinate < 0) {
+				this.setVisible(false);
+			}
+			xCoordinate -= movementSpeed;
+			break;
+		case ("Alien bomb"):
+			if (rotation.equals("Up")) {
+				if (yCoordinate < 0) {
+					this.setVisible(false);
+				}
+				yCoordinate -= movementSpeed;
+			} else if (rotation.equals("Down")) {
+				if (yCoordinate > DataClass.getInstance().getWindowHeight()) {
+					this.setVisible(false);
+				}
+				yCoordinate += movementSpeed;
+			}
+			break;
+		}
+
+	}
+
+	public float getCurrentHitpoints() {
+		return this.hitPoints;
+	}
+
+	public float getMaxHitpoints() {
+		return this.maxHitPoints;
+	}
+	
+	public String getEnemyType() {
+		return this.enemyType;
+	}
+	
+
+	public void setRotation(String rotation) {
+		this.rotation = rotation;
+		switch (rotation) {
+		case ("Up"):
+			rotateImage(Math.PI * 1.5);
+			break;
+		case ("Down"):
+			rotateImage(Math.PI * 0.5);
+			break;
+		case ("Left"):
+			rotateImage(0);
+			break;
+		case ("Right"):
+			rotateImage(Math.PI);
+			break;
+		}
+
 	}
 
 	// Call the corresponding boardBlockSpeed modification depending on the current
@@ -166,30 +241,6 @@ public class Enemy extends Sprite {
 			this.movementSpeed = 3;
 			break;
 		}
-	}
-
-	// Called when there is collision between friendly missile and enemy
-	public void takeDamage(float damageTaken) {
-		this.hitPoints -= damageTaken;
-		if (this.hitPoints <= 0) {
-			this.setVisible(false);
-		}
-	}
-
-	// Called every game tick
-	public void move() {
-		if (xCoordinate < 0) {
-			this.setVisible(false);
-		}
-		xCoordinate -= movementSpeed;
-	}
-
-	public float getCurrentHitpoints() {
-		return this.hitPoints;
-	}
-
-	public float getMaxHitpoints() {
-		return this.maxHitPoints;
 	}
 
 	// Called every game tick. If weapon is not on cooldown, fire a shot.

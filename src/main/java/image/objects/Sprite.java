@@ -4,6 +4,7 @@ import java.awt.Image;
 import java.awt.Rectangle;
 
 import data.ImageLoader;
+import data.ImageRotator;
 
 public class Sprite {
 
@@ -13,6 +14,7 @@ public class Sprite {
 	protected int height;
 	protected boolean visible;
 	protected Image image;
+	protected Image rotatedImage;
 
 	public Sprite(int x, int y) {
 		this.xCoordinate = x;
@@ -23,6 +25,7 @@ public class Sprite {
 	protected void loadImage(String imageName) {
 		ImageLoader imageLoader = ImageLoader.getInstance();
 		image = imageLoader.getImage(imageName);
+		rotatedImage = image;
 		getImageDimensions();
 		// image = image.getScaledInstance(10, 20, 0);
 		// Zet collision ook op die getallen en shits & giggles
@@ -36,7 +39,14 @@ public class Sprite {
 	//Only used to re-use objects and change the image. Currently only used for background planets.
 	protected void setImage(Image image) {
 		this.image = image;
+		this.rotatedImage = image;
 		getImageDimensions();
+	}
+	
+	protected void rotateImage(double angle) {
+		ImageRotator imageRotator = ImageRotator.getInstance();
+		this.rotatedImage = imageRotator.rotate(image, angle);
+		
 	}
 	
 	public int getWidth() {
@@ -48,7 +58,7 @@ public class Sprite {
 	}
 
 	public Image getImage() {
-		return image;
+		return rotatedImage;
 	}
 
 	public int getXCoordinate() {
@@ -77,6 +87,6 @@ public class Sprite {
 
 	// Get bounds required for collision detection
 	public Rectangle getBounds() {
-		return new Rectangle(xCoordinate, yCoordinate, width, height);
+		return new Rectangle(xCoordinate,yCoordinate, width, height);
 	}
 }

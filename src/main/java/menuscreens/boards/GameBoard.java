@@ -5,14 +5,12 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
-import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
-import java.util.List;
 
 import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.JPanel;
@@ -91,9 +89,9 @@ public class GameBoard extends JPanel implements ActionListener {
 	}
 
 	private void drawObjects(Graphics g) {
-		
+
 		// Draws low level stars
-		for(BackgroundObject bgObject : backgroundManager.getLevelOneStars()) {
+		for (BackgroundObject bgObject : backgroundManager.getLevelOneStars()) {
 			drawImage(g, bgObject);
 		}
 
@@ -101,9 +99,9 @@ public class GameBoard extends JPanel implements ActionListener {
 		for (BackgroundObject bgObject : backgroundManager.getLevelOnePlanets()) {
 			drawImage(g, bgObject);
 		}
-		
+
 		// Draws medium level stars
-		for(BackgroundObject bgObject : backgroundManager.getLevelTwoStars()) {
+		for (BackgroundObject bgObject : backgroundManager.getLevelTwoStars()) {
 			drawImage(g, bgObject);
 		}
 
@@ -111,9 +109,9 @@ public class GameBoard extends JPanel implements ActionListener {
 		for (BackgroundObject bgObject : backgroundManager.getLevelTwoPlanets()) {
 			drawImage(g, bgObject);
 		}
-		
+
 		// Draws high level stars
-		for(BackgroundObject bgObject : backgroundManager.getLevelThreeStars()) {
+		for (BackgroundObject bgObject : backgroundManager.getLevelThreeStars()) {
 			drawImage(g, bgObject);
 		}
 
@@ -153,6 +151,7 @@ public class GameBoard extends JPanel implements ActionListener {
 				drawHealthBars(g, enemy);
 			}
 		}
+
 		drawPlayerHealthBars(g);
 
 		// Draws higher level animations
@@ -169,41 +168,41 @@ public class GameBoard extends JPanel implements ActionListener {
 		g.drawImage(sprite.getImage(), sprite.getXCoordinate(), sprite.getYCoordinate(), this);
 
 	}
-	
-	//Primitive healthbar generator for enemies
+
+	// Primitive healthbar generator for enemies
 	private void drawHealthBars(Graphics g, Enemy enemy) {
 		float factor = enemy.getCurrentHitpoints() / enemy.getMaxHitpoints();
 		int actualAmount = (int) Math.round(enemy.getHeight() * factor);
-		
+
 		g.setColor(Color.RED);
 		g.fillRect((enemy.getXCoordinate() + enemy.getWidth() + 10), enemy.getYCoordinate(), 5, enemy.getHeight());
 		g.setColor(Color.GREEN);
 		g.fillRect((enemy.getXCoordinate() + enemy.getWidth() + 10), enemy.getYCoordinate(), 5, actualAmount);
 	}
-	
+
 	private void drawPlayerHealthBars(Graphics g) {
 		float playerHealth = friendlyManager.getSpaceship().getHitpoints();
 		float playerMaxHealth = friendlyManager.getSpaceship().getMaxHitpoints();
-		
+
 		float playerHealthFactor = playerHealth / playerMaxHealth;
 		int actualHealthAmount = (int) Math.round(200 * playerHealthFactor);
-		
+
 		g.setColor(Color.RED);
 		g.fillRect(10, 30, 200, 15);
 		g.setColor(Color.GREEN);
 		g.fillRect(10, 30, actualHealthAmount, 15);
-		
+
 		float playerShields = friendlyManager.getSpaceship().getShieldHitpoints();
 		float playerMaxShields = friendlyManager.getSpaceship().getMaxShieldHitpoints();
-		
+
 		float playerShieldFactor = playerShields / playerMaxShields;
 		int actualShieldAmount = (int) Math.round(200 * playerShieldFactor);
-		
+
 		g.setColor(Color.BLUE);
 		g.fillRect(10, 50, 200, 15);
 		g.setColor(Color.CYAN);
 		g.fillRect(10, 50, actualShieldAmount, 15);
-		
+
 	}
 
 	// Draw the game over screen
@@ -225,7 +224,6 @@ public class GameBoard extends JPanel implements ActionListener {
 		levelManager.updateGameTick();
 		animationManager.updateGameTick();
 		backgroundManager.updateGameTick();
-//		backgroundManager.testWhatIGot();
 
 		repaint();
 	}

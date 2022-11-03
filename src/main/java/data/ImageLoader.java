@@ -1,6 +1,7 @@
 package data;
 
 import javax.swing.ImageIcon;
+import java.awt.Image;
 
 public class ImageLoader {
 
@@ -13,8 +14,7 @@ public class ImageLoader {
 		return instance;
 	}
 
-	public java.awt.Image getImage(String imageString) {
-
+	public Image getImage(String imageString) {
 		ImageIcon ii = new ImageIcon(convertImageStringToURL(imageString));
 		return ii.getImage();
 	}
@@ -29,6 +29,8 @@ public class ImageLoader {
 				return "src/resources/images/testimage.jpg";
 			case("Alien"):
 				return "src/resources/images/Alien spaceship.png";
+			case("Alien bomb"):
+				return "src/resources/images/Alien bomb.png";
 			case("alienlaserbeam"):
 				return "src/resources/images/alienlaserbeam.png";
 			case("StartGame"):
