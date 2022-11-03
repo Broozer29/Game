@@ -15,6 +15,7 @@ public class EnemyManager {
 	private List<Enemy> enemyList = new ArrayList<Enemy>();
 	private List<BoardBlock> boardBlockList = new ArrayList<BoardBlock>();
 	private int maxBoardBlocks = 8;
+	private DataClass dataClass = DataClass.getInstance();
 
 	private EnemyManager() {
 		saturateBoardBlockList();
@@ -23,36 +24,37 @@ public class EnemyManager {
 	public static EnemyManager getInstance() {
 		return instance;
 	}
-	
+
 	public void updateGameTick() {
 		updateEnemies();
 		updateEnemyBoardBlocks();
 		triggerEnemyAction();
 	}
-	
+
 	private void saturateBoardBlockList() {
-		DataClass dataClass = DataClass.getInstance();
 		int widthPerBlock = dataClass.getWindowWidth() / maxBoardBlocks;
 		int heightPerBlock = dataClass.getWindowHeight();
-		
-		//i < total amount of board blocks. The amount of board block speed settings in Enemy.java HAS TO REFLECT THIS.
+
+		// i < total amount of board blocks. The amount of board block speed settings in
+		// Enemy.java HAS TO REFLECT THIS.
 		for (int i = 0; i < maxBoardBlocks; i++) {
-			BoardBlock newBoardBlock = new BoardBlock(widthPerBlock, heightPerBlock, (i*widthPerBlock), 0, i);
+			BoardBlock newBoardBlock = new BoardBlock(widthPerBlock, heightPerBlock, (i * widthPerBlock), 0, i);
 			boardBlockList.add(newBoardBlock);
 		}
-		
+
 	}
-	
+
 	private void triggerEnemyAction() {
-		for(Enemy enemy : enemyList) {
+		for (Enemy enemy : enemyList) {
 			enemy.fireAction();
 		}
 	}
 	
+
 	private void updateEnemyBoardBlocks() {
-		for(BoardBlock boardBlock : boardBlockList) {
-			for(Enemy enemy : enemyList) {
-				if(boardBlock.getBounds().intersects(enemy.getBounds())) {
+		for (BoardBlock boardBlock : boardBlockList) {
+			for (Enemy enemy : enemyList) {
+				if (boardBlock.getBounds().intersects(enemy.getBounds())) {
 					enemy.updateBoardBlock(boardBlock.getBoardBlockNumber());
 				}
 			}
@@ -69,7 +71,7 @@ public class EnemyManager {
 			}
 		}
 	}
-	
+
 	private Enemy createEnemy(int xCoordinate, int yCoordinate, String enemyType) {
 		return new Enemy(xCoordinate, yCoordinate, enemyType, maxBoardBlocks);
 	}
@@ -80,7 +82,6 @@ public class EnemyManager {
 		this.enemyList.add(enemy);
 	}
 
-	
 	private void removeEnemy(Enemy enemy) {
 		this.enemyList.remove(enemy);
 	}

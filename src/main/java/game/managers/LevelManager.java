@@ -58,17 +58,18 @@ public class LevelManager {
 	}
 
 	private void saturateLevelOne() {
-		Random random = new Random();
-
-		for (int i = 0; i < 10; i++) {
+		while (enemyManager.getEnemies().size() < 10) {
 			int xCoordinate = randomCoordinator.getRandomXEnemyCoordinate();
 			int yCoordinate = randomCoordinator.getRandomYEnemyCoordinate();
-			enemyManager.addEnemy(xCoordinate, yCoordinate, "Alien");
+			if (randomCoordinator.checkValidEnemyXCoordinate(enemyManager.getEnemies(), xCoordinate)
+					&& randomCoordinator.checkValidEnemyYCoordinate(enemyManager.getEnemies(), yCoordinate)) {
+				enemyManager.addEnemy(xCoordinate, yCoordinate, "Alien");
+			}
+
 		}
 	}
 
 	private void saturateLevelTwo() {
-		Random random = new Random();
 		for (int i = 0; i < 12; i++) {
 			int xCoordinate = randomCoordinator.getRandomXEnemyCoordinate();
 			int yCoordinate = randomCoordinator.getRandomYEnemyCoordinate();
@@ -77,7 +78,6 @@ public class LevelManager {
 	}
 
 	private void saturateLevelThree() {
-		Random random = new Random();
 		for (int i = 0; i < 14; i++) {
 			int xCoordinate = randomCoordinator.getRandomXEnemyCoordinate();
 			int yCoordinate = randomCoordinator.getRandomYEnemyCoordinate();

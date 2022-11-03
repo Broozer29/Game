@@ -16,8 +16,13 @@ public class SpaceShip extends Sprite {
 	private int directionx;
 	private int directiony;
 	private float hitpoints;
+	private float shieldHitpoints;
 	private float attackSpeed = 15;
 	private float currentAttackFrame = 0;
+	private float shieldRegenDelay = 300;
+	private float currentShieldRegenDelayFrame = 0;
+	private float maxHitPoints;
+	private float maxShieldHitPoints;
 	private MissileManager missileManager = MissileManager.getInstance();
 	private AudioManager audioManager = AudioManager.getInstance();
 	private FriendlyManager friendlyManager = FriendlyManager.getInstance();
@@ -35,14 +40,31 @@ public class SpaceShip extends Sprite {
 
 	private void setShipHealth() {
 		this.hitpoints = 150;
+		this.maxHitPoints = 150;
+		this.shieldHitpoints = 100;
+		this.maxShieldHitPoints = 100;
 	}
 
 	public void takeHitpointDamage(float damage) {
-		this.hitpoints -= damage;
+		float shieldPiercingDamage = shieldHitpoints - damage;
+		if (shieldPiercingDamage < 0) {
+			this.hitpoints += shieldPiercingDamage;
+			this.shieldHitpoints = 0;
+		} else
+			shieldHitpoints -= damage;
+		this.currentShieldRegenDelayFrame = 0;
+
 	}
 
-	public void updateAttackCooldown() {
+	public void updateGameTick() {
 		this.currentAttackFrame++;
+		this.currentShieldRegenDelayFrame++;
+
+		if (currentShieldRegenDelayFrame >= shieldRegenDelay) {
+			if (shieldHitpoints < maxShieldHitPoints) {
+				repairShields((float) 0.4);
+			}
+		}
 	}
 
 	// Moves the spaceship
@@ -61,7 +83,8 @@ public class SpaceShip extends Sprite {
 		if (currentAttackFrame >= attackSpeed) {
 			try {
 				this.audioManager.firePlayerMissile();
-				this.missileManager.firePlayerMissile(xCoordinate + width, yCoordinate + (height / 2), friendlyManager.getPlayerMissileType());
+				this.missileManager.firePlayerMissile(xCoordinate + width, yCoordinate + (height / 2),
+						friendlyManager.getPlayerMissileType());
 				this.currentAttackFrame = 0;
 			} catch (UnsupportedAudioFileException | IOException e) {
 				e.printStackTrace();
@@ -113,5 +136,25 @@ public class SpaceShip extends Sprite {
 
 	public float getHitpoints() {
 		return this.hitpoints;
+	}
+
+	public float getShieldHitpoints() {
+		return this.shieldHitpoints;
+	}
+
+	public void repairHealth(float healAmount) {
+		this.hitpoints += healAmount;
+	}
+
+	public void repairShields(float healAmount) {
+		this.shieldHitpoints += healAmount;
+	}
+
+	public float getMaxHitpoints() {
+		return this.maxHitPoints;
+	}
+
+	public float getMaxShieldHitpoints() {
+		return this.maxShieldHitPoints;
 	}
 }

@@ -21,7 +21,7 @@ public class FriendlyManager {
 	public void updateGameTick() {
 		updateSpaceShipMovement();
 		checkPlayerHealth();
-		spaceship.updateAttackCooldown();
+		spaceship.updateGameTick();
 	}
 
 	public SpaceShip getSpaceship() {

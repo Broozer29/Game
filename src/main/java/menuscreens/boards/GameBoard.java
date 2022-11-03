@@ -153,6 +153,7 @@ public class GameBoard extends JPanel implements ActionListener {
 				drawHealthBars(g, enemy);
 			}
 		}
+		drawPlayerHealthBars(g);
 
 		// Draws higher level animations
 		for (Animation animation : animationManager.getUpperAnimations()) {
@@ -165,7 +166,6 @@ public class GameBoard extends JPanel implements ActionListener {
 	}
 
 	private void drawImage(Graphics g, Sprite sprite) {
-		
 		g.drawImage(sprite.getImage(), sprite.getXCoordinate(), sprite.getYCoordinate(), this);
 
 	}
@@ -179,6 +179,31 @@ public class GameBoard extends JPanel implements ActionListener {
 		g.fillRect((enemy.getXCoordinate() + enemy.getWidth() + 10), enemy.getYCoordinate(), 5, enemy.getHeight());
 		g.setColor(Color.GREEN);
 		g.fillRect((enemy.getXCoordinate() + enemy.getWidth() + 10), enemy.getYCoordinate(), 5, actualAmount);
+	}
+	
+	private void drawPlayerHealthBars(Graphics g) {
+		float playerHealth = friendlyManager.getSpaceship().getHitpoints();
+		float playerMaxHealth = friendlyManager.getSpaceship().getMaxHitpoints();
+		
+		float playerHealthFactor = playerHealth / playerMaxHealth;
+		int actualHealthAmount = (int) Math.round(200 * playerHealthFactor);
+		
+		g.setColor(Color.RED);
+		g.fillRect(10, 30, 200, 15);
+		g.setColor(Color.GREEN);
+		g.fillRect(10, 30, actualHealthAmount, 15);
+		
+		float playerShields = friendlyManager.getSpaceship().getShieldHitpoints();
+		float playerMaxShields = friendlyManager.getSpaceship().getMaxShieldHitpoints();
+		
+		float playerShieldFactor = playerShields / playerMaxShields;
+		int actualShieldAmount = (int) Math.round(200 * playerShieldFactor);
+		
+		g.setColor(Color.BLUE);
+		g.fillRect(10, 50, 200, 15);
+		g.setColor(Color.CYAN);
+		g.fillRect(10, 50, actualShieldAmount, 15);
+		
 	}
 
 	// Draw the game over screen

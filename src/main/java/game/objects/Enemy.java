@@ -54,6 +54,7 @@ public class Enemy extends Sprite {
 
 	// Call the corresponding boardBlockSpeed modification depending on the current
 	// boardBlock
+
 	private void updateMovementSpeed() {
 		switch (currentBoardBlock) {
 		case (0):
@@ -178,22 +179,23 @@ public class Enemy extends Sprite {
 	// Called every game tick
 	public void move() {
 		if (xCoordinate < 0) {
-			xCoordinate = DataClass.getInstance().getWindowWidth();
+			this.setVisible(false);
 		}
 		xCoordinate -= movementSpeed;
 	}
-	
+
 	public float getCurrentHitpoints() {
 		return this.hitPoints;
 	}
-	
+
 	public float getMaxHitpoints() {
 		return this.maxHitPoints;
 	}
 
 	// Called every game tick. If weapon is not on cooldown, fire a shot.
 	// Current board block attack is set to 7, this shouldnt be a hardcoded value
-	// This function doesn't discern enemy types yet either, should be re-written when new enemies are introduced
+	// This function doesn't discern enemy types yet either, should be re-written
+	// when new enemies are introduced
 	public void fireAction() {
 		if (currentBoardBlock < 7) {
 			if (currentAttackSpeedFrameCount == attackSpeedFrameCount) {
@@ -209,5 +211,4 @@ public class Enemy extends Sprite {
 		}
 
 	}
-
 }

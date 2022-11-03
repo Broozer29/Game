@@ -3,15 +3,15 @@ package data;
 import java.util.List;
 import java.util.Random;
 
+import game.objects.Enemy;
 import image.objects.BackgroundObject;
-import image.objects.Sprite;
 
 public class RandomCoordinator {
 
 	private static RandomCoordinator instance = new RandomCoordinator();
 	private Random random = new Random();
 
-	private int maximumEnemyWidthRange = DataClass.getInstance().getWindowWidth() + 100;
+	private int maximumEnemyWidthRange = DataClass.getInstance().getWindowWidth() + 500;
 	private int minimumEnemyWidthRange = DataClass.getInstance().getWindowWidth();
 	private int maximumEnemyHeightRange = DataClass.getInstance().getWindowHeight() - 100;
 	private int minimumEnemyHeightRange = 100;
@@ -30,18 +30,18 @@ public class RandomCoordinator {
 	}
 
 	// Random functions used for ENEMIES //
-	public boolean checkValidEnemyXCoordinate(List<Sprite> listToCheck, int xCoordinate) {
-		for (Sprite bgObject : listToCheck) {
-			if (Math.abs(bgObject.getXCoordinate() - xCoordinate) < 20) {
+	public boolean checkValidEnemyXCoordinate(List<Enemy> listToCheck, int xCoordinate) {
+		for (Enemy enemy : listToCheck) {
+			if (Math.abs(enemy.getXCoordinate() - xCoordinate) < 20) {
 				return false;
 			}
 		}
 		return true;
 	}
 
-	public boolean checkValidEnemyYCoordinate(List<Sprite> listToCheck, int yCoordinate) {
-		for (Sprite bgObject : listToCheck) {
-			if (Math.abs(bgObject.getYCoordinate() - yCoordinate) < 20) {
+	public boolean checkValidEnemyYCoordinate(List<Enemy> listToCheck, int yCoordinate) {
+		for (Enemy enemy : listToCheck) {
+			if (Math.abs(enemy.getYCoordinate() - yCoordinate) < 20) {
 				return false;
 			}
 		}
