@@ -21,6 +21,7 @@ public class Sprite {
 		this.yCoordinate = y;
 		visible = true;
 	}
+	
 
 	protected void loadImage(String imageName) {
 		ImageLoader imageLoader = ImageLoader.getInstance();

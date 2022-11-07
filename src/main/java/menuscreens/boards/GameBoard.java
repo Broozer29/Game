@@ -29,6 +29,7 @@ import game.objects.Missile;
 import image.objects.Animation;
 import image.objects.BackgroundObject;
 import image.objects.Sprite;
+import menuscreens.BoardManager;
 
 public class GameBoard extends JPanel implements ActionListener {
 
@@ -40,6 +41,7 @@ public class GameBoard extends JPanel implements ActionListener {
 	private final int boardHeight = data.getWindowHeight();
 
 	private final int DELAY = 15;
+	private BoardManager boardManager = BoardManager.getInstance();
 	private AnimationManager animationManager = AnimationManager.getInstance();
 	private EnemyManager enemyManager = EnemyManager.getInstance();
 	private MissileManager missileManager = MissileManager.getInstance();
@@ -61,14 +63,42 @@ public class GameBoard extends JPanel implements ActionListener {
 
 	private void initBoard() {
 		addKeyListener(new TAdapter());
+		timer = new Timer(DELAY, this);
+	}
+
+	public void startGame() {
+		addKeyListener(new TAdapter());
+		setFocusable(true);
+		setBackground(Color.BLACK);
+		setPreferredSize(new Dimension(boardWidth, boardHeight));
+		ingame = true;
+		levelManager.startLevel();
+
+		timer.start();
+		try {
+			audioManager.playBackgroundMusic("defaultmusic");
+		} catch (UnsupportedAudioFileException | IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	// Resets the game
+	public void resetGame() {
+		animationManager.resetManager();
+		enemyManager.resetManager();
+		missileManager.resetManager();
+		levelManager.resetManager();
+		friendlyManager.resetManager();
+		audioManager.resetManager();
+		backgroundManager.resetManager();
+
+		addKeyListener(new TAdapter());
 		setFocusable(true);
 		setBackground(Color.BLACK);
 		ingame = true;
 
 		setPreferredSize(new Dimension(boardWidth, boardHeight));
 		levelManager.startLevel();
-
-		timer = new Timer(DELAY, this);
 		timer.start();
 		try {
 			audioManager.playBackgroundMusic("defaultmusic");
@@ -213,17 +243,25 @@ public class GameBoard extends JPanel implements ActionListener {
 		g.setColor(Color.white);
 		g.setFont(small);
 		g.drawString(msg, (boardWidth - fm.stringWidth(msg)) / 2, boardHeight / 2);
+
+		if (boardManager == null) {
+			boardManager = BoardManager.getInstance();
+		}
+		timer.stop();
+		boardManager.gameToMainMenu();
 	}
 
 	// Called on every action/input. Essentially the infinite loop that plays
 	public void actionPerformed(ActionEvent e) {
 		inGame();
-		friendlyManager.updateGameTick();
-		missileManager.updateGameTick();
-		enemyManager.updateGameTick();
-		levelManager.updateGameTick();
-		animationManager.updateGameTick();
-		backgroundManager.updateGameTick();
+		if (ingame) {
+			friendlyManager.updateGameTick();
+			missileManager.updateGameTick();
+			enemyManager.updateGameTick();
+			levelManager.updateGameTick();
+			animationManager.updateGameTick();
+			backgroundManager.updateGameTick();
+		}
 
 		repaint();
 	}

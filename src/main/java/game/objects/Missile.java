@@ -8,7 +8,6 @@ import image.objects.Sprite;
 
 public class Missile extends Sprite {
 
-	private final int BOARD_WIDTH = 1280;
 	private float missileDamage;
 	private String missileType;
 
@@ -52,7 +51,7 @@ public class Missile extends Sprite {
 	public void move(List<Float> coordinatesList) {
 		xCoordinate += coordinatesList.get(0);
 		yCoordinate += coordinatesList.get(1);
-		if (xCoordinate > BOARD_WIDTH) {
+		if (xCoordinate > DataClass.getInstance().getWindowWidth()) {
 			visible = false;
 		}
 		if (xCoordinate < 0) {

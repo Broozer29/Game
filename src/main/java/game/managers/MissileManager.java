@@ -11,19 +11,18 @@ import image.objects.Animation;
 public class MissileManager {
 
 	private static MissileManager instance = new MissileManager();
-	private EnemyManager enemyManager;
-	private AnimationManager animationManager;
-	private FriendlyManager friendlyManager;
-	private List<Missile> enemyMissiles;
-	private List<Missile> friendlyMissiles;
+	private EnemyManager enemyManager = EnemyManager.getInstance();
+	private AnimationManager animationManager = AnimationManager.getInstance();
+	private FriendlyManager friendlyManager = FriendlyManager.getInstance();
+	private List<Missile> enemyMissiles = new ArrayList<Missile>();
+	private List<Missile> friendlyMissiles = new ArrayList<Missile>();
 
 	private MissileManager() {
-		enemyManager = EnemyManager.getInstance();
-		animationManager = AnimationManager.getInstance();
-		friendlyManager = FriendlyManager.getInstance();
+	}
+
+	public void resetManager() {
 		enemyMissiles = new ArrayList<Missile>();
 		friendlyMissiles = new ArrayList<Missile>();
-
 	}
 
 	public static MissileManager getInstance() {
@@ -54,19 +53,6 @@ public class MissileManager {
 	}
 
 	private void checkCollisions() {
-		if (friendlyManager == null) {
-			this.friendlyManager = FriendlyManager.getInstance();
-		}
-		Rectangle spaceshipBounds = friendlyManager.getSpaceship().getBounds();
-
-		// Checks collision between spaceship and enemies
-		for (Enemy enemy : enemyManager.getEnemies()) {
-			Rectangle alienBounds = enemy.getBounds();
-			if (spaceshipBounds.intersects(alienBounds)) {
-				friendlyManager.getSpaceship().takeHitpointDamage(5);
-			}
-		}
-
 		checkFriendlyMissileCollision();
 		checkEnemyMissileCollision();
 	}
@@ -91,8 +77,9 @@ public class MissileManager {
 
 	// Checks collision between enemy missiles and the player shapeship
 	private void checkEnemyMissileCollision() {
-		if (animationManager == null) {
+		if (animationManager == null || friendlyManager == null) {
 			animationManager = AnimationManager.getInstance();
+			friendlyManager = FriendlyManager.getInstance();
 		}
 		for (Missile m : enemyMissiles) {
 			if (m.isVisible()) {

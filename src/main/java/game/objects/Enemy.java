@@ -8,6 +8,7 @@ import image.objects.Sprite;
 
 public class Enemy extends Sprite {
 
+	MissileManager missileManager = MissileManager.getInstance();
 	private float hitPoints;
 	private float maxHitPoints;
 	private String enemyType;
@@ -17,6 +18,7 @@ public class Enemy extends Sprite {
 	private int movementSpeed;
 	private int currentBoardBlock;
 	private String rotation;
+	private boolean hasAttack;
 
 	public Enemy(int x, int y, String enemyType, int currentBoardBlock) {
 		super(x, y);
@@ -33,6 +35,7 @@ public class Enemy extends Sprite {
 			loadImage("Alien");
 			this.movementSpeed = 1;
 			this.setRotation("Left");
+			this.hasAttack = true;
 		}
 		if (this.enemyType.equals("Alien bomb")) {
 			this.hitPoints = 10;
@@ -40,6 +43,7 @@ public class Enemy extends Sprite {
 			this.attackSpeedFrameCount = 999999;
 			loadImage("Alien bomb");
 			this.movementSpeed = 1;
+			this.hasAttack = false;
 		}
 	}
 
@@ -102,11 +106,18 @@ public class Enemy extends Sprite {
 	public float getMaxHitpoints() {
 		return this.maxHitPoints;
 	}
-	
+
 	public String getEnemyType() {
 		return this.enemyType;
 	}
-	
+
+	public boolean getHasAttack() {
+		return this.hasAttack;
+	}
+
+	public int getBoardBlockNumber() {
+		return this.currentBoardBlock;
+	}
 
 	public void setRotation(String rotation) {
 		this.rotation = rotation;
@@ -248,17 +259,18 @@ public class Enemy extends Sprite {
 	// This function doesn't discern enemy types yet either, should be re-written
 	// when new enemies are introduced
 	public void fireAction() {
-		if (currentBoardBlock < 7) {
-			if (currentAttackSpeedFrameCount == attackSpeedFrameCount) {
-				MissileManager missileManager = MissileManager.getInstance();
-
+		if (missileManager == null) {
+			missileManager = MissileManager.getInstance();
+		}
+		if (currentAttackSpeedFrameCount >= attackSpeedFrameCount) {
+			if (currentBoardBlock < 7) {
 				missileManager.addEnemyMissile(this.xCoordinate, this.yCoordinate + calculateRandomWeaponHeightOffset(),
 						"AlienDefault");
 				currentAttackSpeedFrameCount = 0;
 			}
-			if (currentAttackSpeedFrameCount < attackSpeedFrameCount) {
-				this.currentAttackSpeedFrameCount++;
-			}
+		}
+		if (currentAttackSpeedFrameCount < attackSpeedFrameCount) {
+			this.currentAttackSpeedFrameCount++;
 		}
 
 	}

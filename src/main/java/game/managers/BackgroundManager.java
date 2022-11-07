@@ -41,6 +41,27 @@ public class BackgroundManager {
 		initManager();
 	}
 
+	//Called when a game instance needs to be deleted and the manager needs to be reset.
+	public void resetManager() {
+		levelOnePlanets = new ArrayList<BackgroundObject>();
+		levelTwoPlanets = new ArrayList<BackgroundObject>();
+		levelThreePlanets = new ArrayList<BackgroundObject>();
+		levelOneStars = new ArrayList<BackgroundObject>();
+		levelTwoStars = new ArrayList<BackgroundObject>();
+		levelThreeStars = new ArrayList<BackgroundObject>();
+		allBackgroundObjectStringCodes = new ArrayList<String>();
+		scaledBackgroundObjects = new HashMap<String, Image>();
+		
+		allBackgroundObjectStringCodes.add("moon1");
+		allBackgroundObjectStringCodes.add("lavaplanet1");
+		allBackgroundObjectStringCodes.add("marsplanet1");
+		allBackgroundObjectStringCodes.add("planet1");
+		allBackgroundObjectStringCodes.add("planet2");
+		allBackgroundObjectStringCodes.add("planet3");
+		loadAllPlanets();
+		initLists();
+	}
+
 	private void initManager() {
 		allBackgroundObjectStringCodes.add("moon1");
 		allBackgroundObjectStringCodes.add("lavaplanet1");

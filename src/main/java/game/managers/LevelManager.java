@@ -10,15 +10,20 @@ public class LevelManager {
 	private int gameTick = 0;
 	private int bombsSpawnInterval = 3000;
 	private int bombQuota = 20;
-
 	private int level = 1;
 
 	private LevelManager() {
-		level = 1;
 	}
 
 	public static LevelManager getInstance() {
 		return instance;
+	}
+
+	public void resetManager() {
+		gameTick = 0;
+		bombsSpawnInterval = 3000;
+		bombQuota = 20;
+		level = 1;
 	}
 
 	public void updateGameTick() {

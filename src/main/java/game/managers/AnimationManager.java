@@ -14,11 +14,23 @@ public class AnimationManager {
 
 	private FriendlyManager friendlyManager = FriendlyManager.getInstance();
 	private Animation playerEngineAnimation = null;
-	private int engineXCoordinate;
-	private int engineYCoordinate;
+	private int engineXCoordinate = 0;
+	private int engineYCoordinate = 0;
 
 	public static AnimationManager getInstance() {
 		return instance;
+	}
+
+	// Called when a game instance needs to be deleted and the manager needs to be
+	// reset.
+	public void resetManager() {
+		upperAnimationList = new ArrayList<Animation>();
+		lowerAnimationList = new ArrayList<Animation>();
+		playerEngineAnimation = new Animation(friendlyManager.getSpaceship().getXCoordinate(),
+				friendlyManager.getSpaceship().getYCoordinate(), "Player Engine");
+		lowerAnimationList.add(playerEngineAnimation);
+		engineXCoordinate = 0;
+		engineYCoordinate = 0;
 	}
 
 	private AnimationManager() {

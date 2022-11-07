@@ -42,6 +42,20 @@ public class SpaceShip extends Sprite {
 		setShipHealth();
 	}
 
+	// Called when managers need to be reset.
+	public void resetSpaceship() {
+		directionx = 0;
+		directiony = 0;
+		this.hitpoints = 150;
+		this.maxHitPoints = 150;
+		this.shieldHitpoints = 100;
+		this.maxShieldHitPoints = 100;
+		attackSpeed = 15;
+		currentAttackFrame = 0;
+		shieldRegenDelay = 300;
+		currentShieldRegenDelayFrame = 0;
+	}
+
 	private void setShipHealth() {
 		this.hitpoints = 150;
 		this.maxHitPoints = 150;
@@ -114,7 +128,7 @@ public class SpaceShip extends Sprite {
 		if (currentAttackFrame >= attackSpeed) {
 			try {
 				this.audioManager.firePlayerMissile();
-				this.missileManager.firePlayerMissile(xCoordinate + width, yCoordinate + (height / 2),
+				this.missileManager.firePlayerMissile(xCoordinate + width, yCoordinate + (height / 2) - 5,
 						friendlyManager.getPlayerMissileType());
 				this.currentAttackFrame = 0;
 			} catch (UnsupportedAudioFileException | IOException e) {

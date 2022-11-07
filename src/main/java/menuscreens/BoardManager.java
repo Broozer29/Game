@@ -14,7 +14,7 @@ public class BoardManager extends JFrame {
 	private DataClass data = DataClass.getInstance();
 	private DatabaseConnection connection;
 	private MenuBoard mBoard;
-	private GameBoard gBoard;
+	private GameBoard gBoard = new GameBoard();
 	private UserSelectionBoard usBoard;
 	private static BoardManager instance = new BoardManager();
 
@@ -38,8 +38,8 @@ public class BoardManager extends JFrame {
 	public void initGame() {
 		remove(mBoard);
 		mBoard.revalidate();
-		gBoard = new GameBoard();
 		add(gBoard);
+		gBoard.startGame();
 		gBoard.revalidate();
 		gBoard.requestFocus();
 		repaint();
@@ -58,6 +58,16 @@ public class BoardManager extends JFrame {
 	public void userSelectionToMainMenu() {
 		remove(usBoard);
 		usBoard.revalidate();
+		add(mBoard);
+		mBoard.revalidate();
+		mBoard.requestFocus();
+		repaint();
+	}
+	
+	public void gameToMainMenu() {
+		gBoard.resetGame();
+		gBoard.revalidate();
+		remove(gBoard);
 		add(mBoard);
 		mBoard.revalidate();
 		mBoard.requestFocus();

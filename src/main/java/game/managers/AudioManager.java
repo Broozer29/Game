@@ -21,6 +21,16 @@ public class AudioManager {
 
 	}
 
+	// Called when a game instance needs to be deleted and the manager needs to be
+	// reset.
+	public void resetManager() {
+		backGroundMusic.stop();
+		backGroundMusic.close();
+		backGroundMusic = null;
+		backGroundMusicInputStream = null;
+
+	}
+
 	public static AudioManager getInstance() {
 		return instance;
 	}
@@ -29,7 +39,6 @@ public class AudioManager {
 //	public void addAudioToPlayList(String audioType) throws UnsupportedAudioFileException, IOException {
 //		playAudio(audioType);
 //	}
-	
 
 	// Voeg een playermissile audio toe op basis van de missile type
 	public void firePlayerMissile() throws UnsupportedAudioFileException, IOException {
@@ -64,11 +73,11 @@ public class AudioManager {
 		try {
 			clip = AudioSystem.getClip();
 			clip.open(playerMissileAudio);
-			
-			//Adjusts volume
+
+			// Adjusts volume
 			FloatControl volume = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
 			volume.setValue(-4);
-			
+
 			clip.start();
 		} catch (LineUnavailableException e) {
 			e.printStackTrace();

@@ -12,11 +12,11 @@ import java.awt.Rectangle;
 public class EnemyManager {
 
 	private static EnemyManager instance = new EnemyManager();
+	private FriendlyManager friendlyManager = FriendlyManager.getInstance();
 	private List<Enemy> enemyList = new ArrayList<Enemy>();
 	private List<BoardBlock> boardBlockList = new ArrayList<BoardBlock>();
 	private int maxBoardBlocks = 8;
 	private DataClass dataClass = DataClass.getInstance();
-
 
 	private EnemyManager() {
 		saturateBoardBlockList();
@@ -26,10 +26,22 @@ public class EnemyManager {
 		return instance;
 	}
 
+	// Called when a game instance needs to be deleted and the manager needs to be
+	// reset.
+	public void resetManager() {
+		enemyList = new ArrayList<Enemy>();
+		boardBlockList = new ArrayList<BoardBlock>();
+		friendlyManager = FriendlyManager.getInstance();
+		dataClass = DataClass.getInstance();
+		maxBoardBlocks = 8;
+		saturateBoardBlockList();
+	}
+
 	public void updateGameTick() {
 		updateEnemies();
 		updateEnemyBoardBlocks();
 		triggerEnemyAction();
+		checkSpaceshipCollisions();
 	}
 
 	private void saturateBoardBlockList() {
@@ -45,9 +57,26 @@ public class EnemyManager {
 
 	}
 
+	private void checkSpaceshipCollisions() {
+		if (friendlyManager == null) {
+			this.friendlyManager = FriendlyManager.getInstance();
+		}
+		Rectangle spaceshipBounds = friendlyManager.getSpaceship().getBounds();
+
+		// Checks collision between spaceship and enemies
+		for (Enemy enemy : enemyList) {
+			Rectangle alienBounds = enemy.getBounds();
+			if (spaceshipBounds.intersects(alienBounds)) {
+				friendlyManager.getSpaceship().takeHitpointDamage(5);
+			}
+		}
+	}
+
 	private void triggerEnemyAction() {
 		for (Enemy enemy : enemyList) {
-			enemy.fireAction();
+			if (enemy.getHasAttack()) {
+				enemy.fireAction();
+			}
 		}
 	}
 
@@ -55,7 +84,9 @@ public class EnemyManager {
 		for (BoardBlock boardBlock : boardBlockList) {
 			for (Enemy enemy : enemyList) {
 				if (boardBlock.getBounds().intersects(enemy.getBounds())) {
-					enemy.updateBoardBlock(boardBlock.getBoardBlockNumber());
+					if (boardBlock.getBoardBlockNumber() != enemy.getBoardBlockNumber()) {
+						enemy.updateBoardBlock(boardBlock.getBoardBlockNumber());
+					}
 				}
 			}
 		}

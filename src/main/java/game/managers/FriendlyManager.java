@@ -18,6 +18,16 @@ public class FriendlyManager {
 		return instance;
 	}
 
+	// Called when a game instance needs to be deleted and the manager needs to be
+	// reset.
+	public void resetManager() {
+		spaceship = null;
+		initSpaceShip();
+		this.playerMissileType = "laserblast";
+		//True because the player has to start true?
+		playerAlive = true;
+	}
+	
 	public void updateGameTick() {
 		updateSpaceShipMovement();
 		checkPlayerHealth();
