@@ -7,8 +7,7 @@ public class LevelManager {
 	private static LevelManager instance = new LevelManager();
 	private EnemyManager enemyManager = EnemyManager.getInstance();
 	private RandomCoordinator randomCoordinator = RandomCoordinator.getInstance();
-	private int gameTick = 0;
-	private int bombsSpawnInterval = 3000;
+	private TimerManager timerManager = TimerManager.getInstance();
 	private int bombQuota = 20;
 	private int level = 1;
 
@@ -20,15 +19,12 @@ public class LevelManager {
 	}
 
 	public void resetManager() {
-		gameTick = 0;
-		bombsSpawnInterval = 3000;
 		bombQuota = 20;
 		level = 1;
 	}
 
 	public void updateGameTick() {
 		checkLevelUpdate();
-		gameTick++;
 	}
 
 	// Called when all aliens are dead
@@ -41,13 +37,14 @@ public class LevelManager {
 		this.setLevel(this.level);
 	}
 
+	public void spawnBombs() {
+		saturateBombList();
+	}
+
 	private void checkLevelUpdate() {
 		if (enemyManager.getEnemies().size() <= 0) {
 			levelUp();
 			startLevel();
-		}
-		if (gameTick % bombsSpawnInterval == 0) {
-			saturateBombList();
 		}
 	}
 
@@ -102,6 +99,9 @@ public class LevelManager {
 				enemyManager.addEnemy(xCoordinate, yCoordinate, "Alien");
 			}
 		}
+		
+		System.out.println("Added bombs");
+		timerManager.createTimer("SpawnBombs");
 	}
 
 	private void saturateLevelTwo() {

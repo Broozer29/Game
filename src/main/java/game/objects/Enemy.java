@@ -3,12 +3,14 @@ package game.objects;
 import java.util.Random;
 
 import data.DataClass;
+import game.managers.AnimationManager;
 import game.managers.MissileManager;
 import image.objects.Sprite;
 
 public class Enemy extends Sprite {
 
-	MissileManager missileManager = MissileManager.getInstance();
+	private MissileManager missileManager = MissileManager.getInstance();
+	private AnimationManager animationManager = AnimationManager.getInstance();
 	private float hitPoints;
 	private float maxHitPoints;
 	private String enemyType;
@@ -67,8 +69,12 @@ public class Enemy extends Sprite {
 
 	// Called when there is collision between friendly missile and enemy
 	public void takeDamage(float damageTaken) {
+		if(animationManager == null) {
+			animationManager = AnimationManager.getInstance();
+		}
 		this.hitPoints -= damageTaken;
 		if (this.hitPoints <= 0) {
+			animationManager.addDestroyedExplosion(xCoordinate, yCoordinate);
 			this.setVisible(false);
 		}
 	}

@@ -53,6 +53,10 @@ public class AnimationManager {
 		}
 
 	}
+	
+	public void addDestroyedExplosion(int xCoordinate, int yCoordinate) {
+		addUpperAnimation(xCoordinate, yCoordinate, "Destroyed Explosion");
+	}
 
 	public void addUpperAnimation(int xCoordinate, int yCoordinate, String animationType) {
 		this.upperAnimationList.add(createAnimation(xCoordinate, yCoordinate, animationType));

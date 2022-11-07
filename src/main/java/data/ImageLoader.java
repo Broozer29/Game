@@ -49,8 +49,8 @@ public class ImageLoader {
 				return "src/resources/images/explosion.gif";
 			case("Player Engine"):
 				return "src/resources/images/enginesmoke.gif";
-			case("Player Engine Idle"):
-				return "src/resources/images/enginesmoke2.gif";
+			case("Destroyed Explosion"):
+				return "src/resources/images/Destroyed Explosion.gif";
 			case("moon1"):
 				return "src/resources/images/background/moon1.png";
 			case("lavaplanet1"):

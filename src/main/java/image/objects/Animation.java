@@ -1,55 +1,59 @@
 package image.objects;
 
-public class Animation extends Sprite{
+public class Animation extends Sprite {
 
 	float frameCount;
 	float currentFrameCount;
 	String animationType;
-	
+
 	public Animation(int x, int y, String imageType) {
 		super(x, y);
 		this.initAnimation(imageType);
 		this.animationType = imageType;
 	}
-	
+
 	protected void initAnimation(String imageType) {
 		loadImage(imageType);
 		setFrameCount(imageType);
 		getImageDimensions();
 		centerAnimationFrame();
 	}
-	
-	//Duration length of the frames
+
+	// Duration length of the frames
 	private void setFrameCount(String imageType) {
-		switch(imageType) {
-			case("Impact Explosion One"):
-				this.frameCount = 12;
-				return;
-			case("Player Engine"):
-				this.frameCount = 30;
-				return;
+		switch (imageType) {
+		case ("Impact Explosion One"):
+			this.frameCount = 12;
+			return;
+		case ("Player Engine"):
+			this.frameCount = 30;
+			return;
+		case ("Destroyed Explosion"):
+			this.frameCount = 30;
+			return;
 		}
 	}
-	
-	//Centers the animation a bit further inwards to the collision spot
+
+	// Centers the animation a bit further inwards to the collision spot
 	private void centerAnimationFrame() {
 		this.setX(xCoordinate + (this.getWidth() / 2));
 		this.setY(yCoordinate - (this.getHeight() / 2));
 	}
-	
+
 	public float getFrameCount() {
 		return this.frameCount;
 	}
-	
+
 	public float getCurrentFrameCount() {
 		return this.currentFrameCount;
 	}
-	
+
 	public String getAnimationType() {
 		return this.animationType;
 	}
-	
-	//Updates the current frame of the animation, and sets it invisible if it's fully played out
+
+	// Updates the current frame of the animation, and sets it invisible if it's
+	// fully played out
 	public void updateFrameCount() {
 		this.currentFrameCount += 1;
 		if (this.currentFrameCount >= frameCount) {
@@ -64,6 +68,5 @@ public class Animation extends Sprite{
 		this.setFrameCount(animationType);
 		this.setVisible(true);
 	}
-
 
 }
