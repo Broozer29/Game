@@ -42,7 +42,7 @@ public class AnimationManager {
 	// Called every gameloop, sets the engine animation below the spaceship.
 	private void renderPlayerEngine() {
 		engineXCoordinate = friendlyManager.getSpaceship().getXCoordinate()
-				- (playerEngineAnimation.getWidth() / 2 + 5);
+				- (playerEngineAnimation.getWidth() / 2 + 15);
 		engineYCoordinate = friendlyManager.getSpaceship().getYCoordinate();
 
 		playerEngineAnimation.setX(engineXCoordinate);

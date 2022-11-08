@@ -13,7 +13,7 @@ public class Animation extends Sprite {
 	}
 
 	protected void initAnimation(String imageType) {
-		loadImage(imageType);
+		loadGif(imageType);
 		setFrameCount(imageType);
 		getImageDimensions();
 		centerAnimationFrame();

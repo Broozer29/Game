@@ -2,10 +2,12 @@ package data;
 
 import javax.swing.ImageIcon;
 import java.awt.Image;
+import java.awt.Toolkit;
 
 public class ImageLoader {
 
 	private static ImageLoader instance = new ImageLoader();
+	private static Toolkit toolkit = Toolkit.getDefaultToolkit();
 
 	private ImageLoader() {
 	}
@@ -14,12 +16,16 @@ public class ImageLoader {
 		return instance;
 	}
 
-	public Image getImage(String imageString) {
+	public static Image getImage(String imageString) {
 		ImageIcon ii = new ImageIcon(convertImageStringToURL(imageString));
 		return ii.getImage();
 	}
+	
+	public static Image getGif(String imageString) {
+	    return toolkit.createImage(convertImageStringToURL(imageString));
+	}
 
-	private String convertImageStringToURL(String imageString){
+	private static String convertImageStringToURL(String imageString){
 		switch(imageString) {
 			case("spaceship"):
 				return "src/resources/images/spaceship.png";
