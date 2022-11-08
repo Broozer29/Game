@@ -34,6 +34,7 @@ public class CustomTimer implements ActionListener {
 	}
 
 	public void stopTimer() {
+		this.finished = true;
 		timer.stop();
 	}
 

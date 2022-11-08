@@ -51,6 +51,12 @@ public class ImageLoader {
 				return "src/resources/images/enginesmoke.gif";
 			case("Destroyed Explosion"):
 				return "src/resources/images/Destroyed Explosion.gif";
+			case("Destroyed Explosion Right"):
+				return "src/resources/images/Destroyed Explosion Right.gif";
+			case("Destroyed Explosion Left"):
+				return "src/resources/images/Destroyed Explosion Left.gif";
+			case("Destroyed Explosion Reverse"):
+				return "src/resources/images/Destroyed Explosion Reverse.gif";
 			case("moon1"):
 				return "src/resources/images/background/moon1.png";
 			case("lavaplanet1"):

@@ -107,6 +107,7 @@ public class EnemyManager {
 		return new Enemy(xCoordinate, yCoordinate, enemyType, maxBoardBlocks);
 	}
 
+	// Called by LevelManager, creates a bomb and adds it to the enemies
 	public void addBombEnemy(int xCoordinte, int yCoordinate, String enemyType, String direction) {
 		Enemy enemy = createEnemy(xCoordinte, yCoordinate, enemyType);
 		enemy.setRotation(direction);
@@ -114,6 +115,7 @@ public class EnemyManager {
 		this.enemyList.add(enemy);
 	}
 
+	// Called by LevelManager, creates an unambiguous enemy and adds it to enemies
 	public void addEnemy(int xCoordinate, int yCoordinate, String enemyType) {
 		Enemy enemy = createEnemy(xCoordinate, yCoordinate, enemyType);
 		enemy.setVisible(true);

@@ -23,12 +23,20 @@ public class TimerManager {
 		updateTimers();
 	}
 
+	public void resetManager() {
+		for (int i = 0; i < allTimers.size(); i++) {
+			CustomTimer selectedTimer = allTimers.get(i);
+			selectedTimer.stopTimer();
+			removeTimerFromList(selectedTimer);
+		}
+	}
+
 	// Creates timers for different purposes
 	// int duration, int timedelay (zelfde als game delay), waar de timer voor is
 	public void createTimer(String timerPurpose) {
 		switch (timerPurpose) {
 		case ("SpawnBombs"):
-			CustomTimer timer = new CustomTimer(5000, "SpawnBombs");
+			CustomTimer timer = new CustomTimer(15000, "SpawnBombs");
 			addTimerToList(timer);
 			break;
 		}
@@ -38,16 +46,21 @@ public class TimerManager {
 	public void updateTimers() {
 		for (int i = 0; i < allTimers.size(); i++) {
 			CustomTimer selectedTimer = allTimers.get(i);
-
-			switch (selectedTimer.getStatus()) {
-			case ("primed"):
-				selectedTimer.startTimer();
-				break;
-			case ("finished"):
+			if (!selectedTimer.getFinished()) {
+				switch (selectedTimer.getStatus()) {
+				case ("primed"):
+					selectedTimer.startTimer();
+					break;
+				case ("finished"):
+					selectedTimer.stopTimer();
+					removeTimerFromList(selectedTimer);
+					break;
+				case ("running"):
+					break;
+				}
+			}
+			if(selectedTimer.getFinished()) {
 				removeTimerFromList(selectedTimer);
-				break;
-			case ("running"):
-				break;
 			}
 		}
 	}

@@ -29,7 +29,16 @@ public class Animation extends Sprite {
 			this.frameCount = 30;
 			return;
 		case ("Destroyed Explosion"):
-			this.frameCount = 30;
+			this.frameCount = 50;
+			return;
+		case ("Destroyed Explosion Right"):
+			this.frameCount = 50;
+			return;
+		case ("Destroyed Explosion Left"):
+			this.frameCount = 50;
+			return;
+		case ("Destroyed Explosion Reverse"):
+			this.frameCount = 50;
 			return;
 		}
 	}

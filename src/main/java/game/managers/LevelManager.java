@@ -99,8 +99,6 @@ public class LevelManager {
 				enemyManager.addEnemy(xCoordinate, yCoordinate, "Alien");
 			}
 		}
-		
-		System.out.println("Added bombs");
 		timerManager.createTimer("SpawnBombs");
 	}
 

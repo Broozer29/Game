@@ -93,20 +93,7 @@ public class GameBoard extends JPanel implements ActionListener {
 		friendlyManager.resetManager();
 		audioManager.resetManager();
 		backgroundManager.resetManager();
-
-		addKeyListener(new TAdapter());
-		setFocusable(true);
-		setBackground(Color.BLACK);
-		ingame = true;
-
-		setPreferredSize(new Dimension(boardWidth, boardHeight));
-		levelManager.startLevel();
-		timer.start();
-		try {
-			audioManager.playBackgroundMusic("defaultmusic");
-		} catch (UnsupportedAudioFileException | IOException e) {
-			e.printStackTrace();
-		}
+		timerManager.resetManager();
 	}
 
 	@Override

@@ -2,8 +2,8 @@ package game.managers;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
-import data.DataClass;
 import image.objects.Animation;
 
 public class AnimationManager {
@@ -53,9 +53,31 @@ public class AnimationManager {
 		}
 
 	}
-	
+
 	public void addDestroyedExplosion(int xCoordinate, int yCoordinate) {
-		addUpperAnimation(xCoordinate, yCoordinate, "Destroyed Explosion");
+		Random random = new Random();
+		int result = random.nextInt(4 - 1) + 1;
+		String explosionType = null;
+
+		switch (result) {
+		case (1):
+			explosionType = "Destroyed Explosion";
+			break;
+		case (2):
+			explosionType = "Destroyed Explosion Right";
+			break;
+		case (3):
+			explosionType = "Destroyed Explosion Left";
+			break;
+		case (4):
+			explosionType = "Destroyed Explosion Right";
+			break;
+		}
+
+		if (explosionType == null) {
+			explosionType = "Destroyed Explosion";
+		}
+		addUpperAnimation(xCoordinate, yCoordinate, explosionType);
 	}
 
 	public void addUpperAnimation(int xCoordinate, int yCoordinate, String animationType) {
