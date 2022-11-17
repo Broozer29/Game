@@ -1,10 +1,22 @@
 package image.objects;
+import java.awt.Image;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.imageio.ImageIO;
+import javax.imageio.ImageReader;
+import javax.imageio.stream.FileImageInputStream;
+import javax.swing.ImageIcon;
 
 public class Animation extends Sprite {
 
 	float frameCount;
 	float currentFrameCount;
 	String animationType;
+	Image currentFrame;
+	List<ImageIcon> frames = new ArrayList<ImageIcon>();
 
 	public Animation(int x, int y, String imageType) {
 		super(x, y);
@@ -76,6 +88,16 @@ public class Animation extends Sprite {
 		this.currentFrameCount = 0;
 		this.setFrameCount(animationType);
 		this.setVisible(true);
+	}
+	
+	//Updates to the next frame of the gif
+	private void setNextFrame() {
+
+	}
+	
+	//returns current frame of the gif
+	public void getCurrentFrame() {
+		
 	}
 
 }

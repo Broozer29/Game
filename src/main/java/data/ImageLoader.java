@@ -16,12 +16,12 @@ public class ImageLoader {
 		return instance;
 	}
 
-	public static Image getImage(String imageString) {
+	public Image getImage(String imageString) {
 		ImageIcon ii = new ImageIcon(convertImageStringToURL(imageString));
 		return ii.getImage();
 	}
 	
-	public static Image getGif(String imageString) {
+	public Image getGif(String imageString) {
 	    return toolkit.createImage(convertImageStringToURL(imageString));
 	}
 
