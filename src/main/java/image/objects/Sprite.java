@@ -3,12 +3,11 @@ package image.objects;
 import java.awt.Image;
 import java.awt.Rectangle;
 
-import data.ImageLoader;
-import data.ImageMemorizer;
+import data.ImageDatabase;
 import data.ImageRotator;
 
 public class Sprite {
-	ImageMemorizer imgMemorizer = ImageMemorizer.getInstance();
+	ImageDatabase imgDatabase = ImageDatabase.getInstance();
 	protected int xCoordinate;
 	protected int yCoordinate;
 	protected int width;
@@ -25,17 +24,11 @@ public class Sprite {
 
 	protected void loadImage(String imageName) {
 
-		image = imgMemorizer.getImage(imageName);
+		image = imgDatabase.getImage(imageName);
 		rotatedImage = image;
 		getImageDimensions();
 		// image = image.getScaledInstance(10, 20, 0);
 		// Zet collision ook op die getallen en shits & giggles
-	}
-
-	protected void loadGif(String imageName) {
-		image = imgMemorizer.getGif(imageName);
-		rotatedImage = image;
-		getImageDimensions();
 	}
 
 	protected void getImageDimensions() {

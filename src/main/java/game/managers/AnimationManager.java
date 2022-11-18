@@ -42,13 +42,13 @@ public class AnimationManager {
 	// Called every gameloop, sets the engine animation below the spaceship.
 	private void renderPlayerEngine() {
 		engineXCoordinate = friendlyManager.getSpaceship().getXCoordinate()
-				- (playerEngineAnimation.getWidth() / 2 + 15);
+				- (playerEngineAnimation.getWidth() / 2 + 5);
 		engineYCoordinate = friendlyManager.getSpaceship().getYCoordinate();
 
 		playerEngineAnimation.setX(engineXCoordinate);
 		playerEngineAnimation.setY(engineYCoordinate);
-
-		if (playerEngineAnimation.getCurrentFrameCount() >= playerEngineAnimation.getFrameCount()) {
+		
+		if (playerEngineAnimation.getFrame() >= playerEngineAnimation.getTotalFrames()) {
 			playerEngineAnimation.refreshAnimation(engineXCoordinate, engineYCoordinate);
 		}
 

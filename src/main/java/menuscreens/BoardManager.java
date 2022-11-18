@@ -3,7 +3,7 @@ package menuscreens;
 import javax.swing.JFrame;
 
 import data.DataClass;
-import data.ImageMemorizer;
+import data.ImageDatabase;
 import database.DatabaseConnection;
 //import database.DatabaseConnection;
 import menuscreens.boards.GameBoard;
@@ -33,7 +33,7 @@ public class BoardManager extends JFrame {
 
 	public void initMainMenu() {
 		mBoard = new MenuBoard();
-		ImageMemorizer memorizer = ImageMemorizer.getInstance();
+		ImageDatabase memorizer = ImageDatabase.getInstance();
 		add(mBoard);
 	}
 
