@@ -30,20 +30,20 @@ public class Enemy extends Sprite {
 	}
 
 	private void initEnemy() {
-		if (this.enemyType.equals("Alien")) {
+		if (this.enemyType.equals("Default Alien Spaceship")) {
 			this.hitPoints = 35;
 			this.maxHitPoints = 35;
 			this.attackSpeedFrameCount = 150;
-			loadImage("Alien");
+			loadImage("Default Alien Spaceship");
 			this.movementSpeed = 1;
 			this.setRotation("Left");
 			this.hasAttack = true;
 		}
-		if (this.enemyType.equals("Alien bomb")) {
+		if (this.enemyType.equals("Alien Bomb")) {
 			this.hitPoints = 10;
 			this.maxHitPoints = 10;
 			this.attackSpeedFrameCount = 999999;
-			loadImage("Alien bomb");
+			loadImage("Alien Bomb");
 			this.movementSpeed = 1;
 			this.hasAttack = false;
 		}
@@ -82,13 +82,13 @@ public class Enemy extends Sprite {
 	// Called every game tick
 	public void move() {
 		switch (enemyType) {
-		case ("Alien"):
+		case ("Default Alien Spaceship"):
 			if (xCoordinate < 0) {
 				this.setVisible(false);
 			}
 			xCoordinate -= movementSpeed;
 			break;
-		case ("Alien bomb"):
+		case ("Alien Bomb"):
 			if (rotation.equals("Up")) {
 				if (yCoordinate < 0) {
 					this.setVisible(false);
@@ -182,7 +182,7 @@ public class Enemy extends Sprite {
 	// Enemy speeds for block 0
 	private void boardBlockZeroSpeed() {
 		switch (this.enemyType) {
-		case ("Alien"):
+		case ("Default Alien Spaceship"):
 			this.movementSpeed = 1;
 			break;
 		}
@@ -191,7 +191,7 @@ public class Enemy extends Sprite {
 	// Enemy speeds for block 1
 	private void boardBlockOneSpeed() {
 		switch (this.enemyType) {
-		case ("Alien"):
+		case ("Default Alien Spaceship"):
 			this.movementSpeed = 1;
 			break;
 		}
@@ -200,7 +200,7 @@ public class Enemy extends Sprite {
 	// Enemy speeds for block 2
 	private void boardBlockTwoSpeed() {
 		switch (this.enemyType) {
-		case ("Alien"):
+		case ("Default Alien Spaceship"):
 			this.movementSpeed = 1;
 			break;
 		}
@@ -209,7 +209,7 @@ public class Enemy extends Sprite {
 	// Enemy speeds for block 3
 	private void boardBlockThreeSpeed() {
 		switch (this.enemyType) {
-		case ("Alien"):
+		case ("Default Alien Spaceship"):
 			this.movementSpeed = 1;
 			break;
 		}
@@ -218,7 +218,7 @@ public class Enemy extends Sprite {
 	// Enemy speeds for block 4
 	private void boardBlockFourSpeed() {
 		switch (this.enemyType) {
-		case ("Alien"):
+		case ("Default Alien Spaceship"):
 			this.movementSpeed = 1;
 			break;
 		}
@@ -227,7 +227,7 @@ public class Enemy extends Sprite {
 	// Enemy speeds for block 5
 	private void boardBlockFiveSpeed() {
 		switch (this.enemyType) {
-		case ("Alien"):
+		case ("Default Alien Spaceship"):
 			this.movementSpeed = 1;
 			break;
 		}
@@ -236,7 +236,7 @@ public class Enemy extends Sprite {
 	// Enemy speeds for block 6
 	private void boardBlockSixSpeed() {
 		switch (this.enemyType) {
-		case ("Alien"):
+		case ("Default Alien Spaceship"):
 			this.movementSpeed = 2;
 			break;
 		}
@@ -245,7 +245,7 @@ public class Enemy extends Sprite {
 	// Enemy speeds for block 7
 	private void boardBlockSevenSpeed() {
 		switch (this.enemyType) {
-		case ("Alien"):
+		case ("Default Alien Spaceship"):
 			this.movementSpeed = 3;
 			break;
 		}
@@ -254,7 +254,7 @@ public class Enemy extends Sprite {
 	// Enemy speeds for block 8
 	private void boardBlockEightSpeed() {
 		switch (this.enemyType) {
-		case ("Alien"):
+		case ("Default Alien Spaceship"):
 			this.movementSpeed = 3;
 			break;
 		}
@@ -271,7 +271,7 @@ public class Enemy extends Sprite {
 		if (currentAttackSpeedFrameCount >= attackSpeedFrameCount) {
 			if (currentBoardBlock < 7) {
 				missileManager.addEnemyMissile(this.xCoordinate, this.yCoordinate + calculateRandomWeaponHeightOffset(),
-						"AlienDefault");
+						"Alien Laserbeam");
 				currentAttackSpeedFrameCount = 0;
 			}
 		}

@@ -11,7 +11,7 @@ public class FriendlyManager {
 
 	private FriendlyManager() {
 		initSpaceShip();
-		this.playerMissileType = "laserblast";
+		this.playerMissileType = "Player Laserbeam";
 	}
 
 	public static FriendlyManager getInstance() {
@@ -23,7 +23,7 @@ public class FriendlyManager {
 	public void resetManager() {
 		spaceship = null;
 		initSpaceShip();
-		this.playerMissileType = "laserblast";
+		this.playerMissileType = "Player Laserbeam";
 		//True because the player has to start true?
 		playerAlive = true;
 	}

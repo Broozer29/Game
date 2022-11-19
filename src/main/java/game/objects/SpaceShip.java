@@ -37,7 +37,7 @@ public class SpaceShip extends Sprite {
 	}
 
 	private void initSpaceShip() {
-		loadImage("spaceship");
+		loadImage("Player Spaceship");
 		getImageDimensions();
 		setShipHealth();
 	}

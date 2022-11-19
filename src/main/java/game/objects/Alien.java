@@ -8,7 +8,7 @@ public class Alien extends Enemy {
 	}
 
 	private void initAlien() {
-		loadImage("Alien spaceship");
+		loadImage("Default Alien Spaceship");
 		getImageDimensions();
 	}
 

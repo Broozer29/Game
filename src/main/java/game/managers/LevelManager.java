@@ -94,7 +94,7 @@ public class LevelManager {
 			int yCoordinate = randomCoordinator.getRandomYEnemyCoordinate();
 			if (randomCoordinator.checkValidEnemyXCoordinate(enemyManager.getEnemies(), xCoordinate, 20)
 					&& randomCoordinator.checkValidEnemyYCoordinate(enemyManager.getEnemies(), yCoordinate, 20)) {
-				enemyManager.addEnemy(xCoordinate, yCoordinate, "Alien");
+				enemyManager.addEnemy(xCoordinate, yCoordinate, "Default Alien Spaceship");
 			}
 		}
 		timerManager.createTimer("SpawnBombs");
@@ -104,7 +104,7 @@ public class LevelManager {
 		for (int i = 0; i < 12; i++) {
 			int xCoordinate = randomCoordinator.getRandomXEnemyCoordinate();
 			int yCoordinate = randomCoordinator.getRandomYEnemyCoordinate();
-			enemyManager.addEnemy(xCoordinate, yCoordinate, "Alien");
+			enemyManager.addEnemy(xCoordinate, yCoordinate, "Default Alien Spaceship");
 		}
 	}
 
@@ -112,7 +112,7 @@ public class LevelManager {
 		for (int i = 0; i < 14; i++) {
 			int xCoordinate = randomCoordinator.getRandomXEnemyCoordinate();
 			int yCoordinate = randomCoordinator.getRandomYEnemyCoordinate();
-			enemyManager.addEnemy(xCoordinate, yCoordinate, "Alien");
+			enemyManager.addEnemy(xCoordinate, yCoordinate, "Default Alien Spaceship");
 		}
 	}
 

@@ -12,7 +12,7 @@ public class MenuCursor extends Sprite {
 	}
 
 	private void initCursorImage() {
-		loadImage("laserbeam");
+		loadImage("Player Laserbeam");
 		getImageDimensions();
 	}
 
