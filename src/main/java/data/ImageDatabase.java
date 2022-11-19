@@ -119,7 +119,7 @@ public class ImageDatabase {
 			return this.laserBeamImage;
 		case ("Default Alien Spaceship"):
 			return this.alienSpaceshipImage;
-		case ("Alien bomb"):
+		case ("Alien Bomb"):
 			return this.alienBombImage;
 		case ("Alien Laserbeam"):
 			return this.alienLaserbeamImage;

@@ -47,8 +47,8 @@ public class AudioManager {
 		}
 
 		switch (friendlyManager.getPlayerMissileType()) {
-		case ("laserblast"):
-			playAudio("laserblast");
+		case ("Player Laserbeam"):
+			playAudio("Player Laserbeam");
 		}
 	}
 
@@ -65,7 +65,7 @@ public class AudioManager {
 		AudioInputStream playerMissileAudio = null;
 
 		switch (audioType) {
-		case ("laserblast"):
+		case ("Player Laserbeam"):
 			playerMissileAudio = AudioSystem
 					.getAudioInputStream(new File("src/resources/audio/laserbeam1.wav").getAbsoluteFile());
 		}

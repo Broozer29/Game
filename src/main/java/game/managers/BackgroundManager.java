@@ -66,7 +66,7 @@ public class BackgroundManager {
 	private void initManager() {
 		allBackgroundObjectStringCodes.add("Moon");
 		allBackgroundObjectStringCodes.add("Lava Planet");
-		allBackgroundObjectStringCodes.add("marsplanet1");
+		allBackgroundObjectStringCodes.add("Mars Planet");
 		allBackgroundObjectStringCodes.add("Planet One");
 		allBackgroundObjectStringCodes.add("Planet Two");
 		allBackgroundObjectStringCodes.add("Planet Three");

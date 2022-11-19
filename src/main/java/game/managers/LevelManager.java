@@ -82,7 +82,7 @@ public class LevelManager {
 
 			if (randomCoordinator.checkValidEnemyXCoordinate(enemyManager.getEnemies(), xCoordinate, 5)
 					&& randomCoordinator.checkValidEnemyYCoordinate(enemyManager.getEnemies(), yCoordinate, 5)) {
-				enemyManager.addBombEnemy(xCoordinate, yCoordinate, "Alien bomb", direction);
+				enemyManager.addBombEnemy(xCoordinate, yCoordinate, "Alien Bomb", direction);
 				bombsSpawned++;
 			}
 		}
