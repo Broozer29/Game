@@ -3,11 +3,11 @@ package image.objects;
 import java.awt.Image;
 import java.awt.Rectangle;
 
-import data.ImageLoader;
+import data.ImageDatabase;
 import data.ImageRotator;
 
 public class Sprite {
-
+	ImageDatabase imgDatabase = ImageDatabase.getInstance();
 	protected int xCoordinate;
 	protected int yCoordinate;
 	protected int width;
@@ -21,11 +21,9 @@ public class Sprite {
 		this.yCoordinate = y;
 		visible = true;
 	}
-	
 
 	protected void loadImage(String imageName) {
-		ImageLoader imageLoader = ImageLoader.getInstance();
-		image = imageLoader.getImage(imageName);
+		image = imgDatabase.getImage(imageName);
 		rotatedImage = image;
 		getImageDimensions();
 		// image = image.getScaledInstance(10, 20, 0);
@@ -36,20 +34,21 @@ public class Sprite {
 		width = image.getWidth(null);
 		height = image.getHeight(null);
 	}
-	
-	//Only used to re-use objects and change the image. Currently only used for background planets.
+
+	// Only used to re-use objects and change the image. Currently only used for
+	// background planets.
 	protected void setImage(Image image) {
 		this.image = image;
 		this.rotatedImage = image;
 		getImageDimensions();
 	}
-	
+
 	protected void rotateImage(double angle) {
 		ImageRotator imageRotator = ImageRotator.getInstance();
 		this.rotatedImage = imageRotator.rotate(image, angle);
-		
+
 	}
-	
+
 	public int getWidth() {
 		return this.width;
 	}
@@ -88,6 +87,6 @@ public class Sprite {
 
 	// Get bounds required for collision detection
 	public Rectangle getBounds() {
-		return new Rectangle(xCoordinate,yCoordinate, width, height);
+		return new Rectangle(xCoordinate, yCoordinate, width, height);
 	}
 }

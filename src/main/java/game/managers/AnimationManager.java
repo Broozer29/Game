@@ -47,8 +47,8 @@ public class AnimationManager {
 
 		playerEngineAnimation.setX(engineXCoordinate);
 		playerEngineAnimation.setY(engineYCoordinate);
-
-		if (playerEngineAnimation.getCurrentFrameCount() >= playerEngineAnimation.getFrameCount()) {
+		
+		if (playerEngineAnimation.getFrame() >= playerEngineAnimation.getTotalFrames()) {
 			playerEngineAnimation.refreshAnimation(engineXCoordinate, engineYCoordinate);
 		}
 

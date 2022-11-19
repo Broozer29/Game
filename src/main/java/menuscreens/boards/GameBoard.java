@@ -141,7 +141,7 @@ public class GameBoard extends JPanel implements ActionListener {
 
 		// Draws lower level animations
 		for (Animation animation : animationManager.getLowerAnimations()) {
-			drawImage(g, animation);
+			drawAnimation(g, animation);
 		}
 
 		// Draw friendly spaceship
@@ -175,7 +175,7 @@ public class GameBoard extends JPanel implements ActionListener {
 
 		// Draws higher level animations
 		for (Animation animation : animationManager.getUpperAnimations()) {
-			drawImage(g, animation);
+			drawAnimation(g, animation);
 		}
 
 		// Draw the score/aliens left
@@ -185,7 +185,10 @@ public class GameBoard extends JPanel implements ActionListener {
 
 	private void drawImage(Graphics g, Sprite sprite) {
 		g.drawImage(sprite.getImage(), sprite.getXCoordinate(), sprite.getYCoordinate(), this);
-
+	}
+	
+	private void drawAnimation(Graphics g, Animation animation) {
+		g.drawImage(animation.getCurrentFrame(), animation.getXCoordinate(), animation.getYCoordinate(), this);
 	}
 
 	// Primitive healthbar generator for enemies
