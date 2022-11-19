@@ -23,7 +23,6 @@ public class Sprite {
 	}
 
 	protected void loadImage(String imageName) {
-
 		image = imgDatabase.getImage(imageName);
 		rotatedImage = image;
 		getImageDimensions();

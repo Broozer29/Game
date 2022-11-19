@@ -66,12 +66,10 @@ public class LevelManager {
 		int bombsSpawned = 0;
 		int timesTriedToSpawn = 0;
 		while (bombsSpawned < bombQuota) {
-
+			timesTriedToSpawn++;
 			if (timesTriedToSpawn > 100) {
 				break;
 			}
-			timesTriedToSpawn++;
-
 			String direction = randomCoordinator.upOrDown();
 			int xCoordinate = randomCoordinator.getRandomXBombEnemyCoordinate();
 			int yCoordinate = 0;
