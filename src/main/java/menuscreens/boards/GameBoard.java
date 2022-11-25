@@ -36,6 +36,8 @@ public class GameBoard extends JPanel implements ActionListener {
 
 	private Timer timer;
 	private boolean ingame;
+	private String currentMusic = "Furi - Make this right"; 
+	
 
 	private DataClass data = DataClass.getInstance();
 	private final int boardWidth = data.getWindowWidth();
@@ -78,7 +80,7 @@ public class GameBoard extends JPanel implements ActionListener {
 
 		timer.start();
 		try {
-			audioManager.playBackgroundMusic("defaultmusic");
+			audioManager.playMusicAudio(currentMusic);
 		} catch (UnsupportedAudioFileException | IOException e) {
 			e.printStackTrace();
 		}

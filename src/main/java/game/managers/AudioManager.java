@@ -52,12 +52,6 @@ public class AudioManager {
 		}
 	}
 
-	// Voegt background muziek toe en loopt het.
-	public void playBackgroundMusic(String audioType) throws UnsupportedAudioFileException, IOException {
-		if (backGroundMusic == null) {
-			playMusicAudio(audioType);
-		}
-	}
 
 	// Play singular audios
 	private void playAudio(String audioType) throws UnsupportedAudioFileException, IOException {
@@ -66,6 +60,8 @@ public class AudioManager {
 
 		switch (audioType) {
 		case ("Player Laserbeam"):
+			// HIER KUN JE HETZELFDE DOEN MET IMAGEDATABASE, EEN KEER ALLES INLADEN EN
+			// BEWAREN ZODAT JE NIET CONSTANT FILES OPENT
 			playerMissileAudio = AudioSystem
 					.getAudioInputStream(new File("src/resources/audio/laserbeam1.wav").getAbsoluteFile());
 		}
@@ -86,19 +82,30 @@ public class AudioManager {
 	}
 
 	// Play the background music
-	private void playMusicAudio(String audioType) throws UnsupportedAudioFileException, IOException {
-		switch (audioType) {
-		case ("defaultmusic"):
-			backGroundMusicInputStream = AudioSystem
-					.getAudioInputStream(new File("src/resources/audio/music/defaultmusic.wav").getAbsoluteFile());
-		}
+	public void playMusicAudio(String audioType) throws UnsupportedAudioFileException, IOException {
+		if (backGroundMusic == null) {
+			switch (audioType) {
+			case ("defaultmusic"):
+				backGroundMusicInputStream = AudioSystem
+						.getAudioInputStream(new File("src/resources/audio/music/defaultmusic.wav").getAbsoluteFile());
+			case ("Furi - Make this right"):
+				backGroundMusicInputStream = AudioSystem.getAudioInputStream(
+						new File("src/resources/audio/music/Furi - Make this right.wav").getAbsoluteFile());
+			case ("Furi - Wisdom of rage"):
+				backGroundMusicInputStream = AudioSystem.getAudioInputStream(
+						new File("src/resources/audio/music/Furi - Wisdom of rage.wav").getAbsoluteFile());
+			case ("Furi - My only chance"):
+				backGroundMusicInputStream = AudioSystem.getAudioInputStream(
+						new File("src/resources/audio/music/Furi - My only chance.wav").getAbsoluteFile());
+			}
 
-		try {
-			backGroundMusic = AudioSystem.getClip();
-			backGroundMusic.open(backGroundMusicInputStream);
-			backGroundMusic.loop(Clip.LOOP_CONTINUOUSLY);
-		} catch (LineUnavailableException e) {
-			e.printStackTrace();
+			try {
+				backGroundMusic = AudioSystem.getClip();
+				backGroundMusic.open(backGroundMusicInputStream);
+				backGroundMusic.loop(Clip.LOOP_CONTINUOUSLY);
+			} catch (LineUnavailableException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 
