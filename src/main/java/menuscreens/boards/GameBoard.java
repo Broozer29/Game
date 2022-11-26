@@ -43,7 +43,7 @@ public class GameBoard extends JPanel implements ActionListener {
 	private final int boardWidth = data.getWindowWidth();
 	private final int boardHeight = data.getWindowHeight();
 
-	private final int DELAY = 15;
+	private final int DELAY = 3;
 	private BoardManager boardManager = BoardManager.getInstance();
 	private AnimationManager animationManager = AnimationManager.getInstance();
 	private EnemyManager enemyManager = EnemyManager.getInstance();
@@ -182,7 +182,8 @@ public class GameBoard extends JPanel implements ActionListener {
 
 		// Draw the score/aliens left
 		g.setColor(Color.WHITE);
-		g.drawString("Aliens left: " + enemyManager.getEnemies().size(), 5, 15);
+		g.drawString("Aliens left: " + enemyManager.getDefaultAlienSpaceshipCount(), 5, 15);
+		g.drawString("Bombs present: " + enemyManager.getAlienBombCount(), 5, 25);
 	}
 
 	private void drawImage(Graphics g, Sprite sprite) {

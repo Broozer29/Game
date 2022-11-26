@@ -17,6 +17,11 @@ public class EnemyManager {
 	private List<BoardBlock> boardBlockList = new ArrayList<BoardBlock>();
 	private int maxBoardBlocks = 8;
 	private DataClass dataClass = DataClass.getInstance();
+	
+	private int defaultAlienSpaceshipCount;
+	private int alienBombCount;
+
+
 
 	private EnemyManager() {
 		saturateBoardBlockList();
@@ -42,6 +47,7 @@ public class EnemyManager {
 		updateEnemyBoardBlocks();
 		triggerEnemyAction();
 		checkSpaceshipCollisions();
+		keepTrackOfEnemies();
 	}
 
 	private void saturateBoardBlockList() {
@@ -54,6 +60,24 @@ public class EnemyManager {
 			BoardBlock newBoardBlock = new BoardBlock(widthPerBlock, heightPerBlock, (i * widthPerBlock), 0, i);
 			boardBlockList.add(newBoardBlock);
 		}
+
+	}
+	
+	public void keepTrackOfEnemies() {
+		int defaultSpaceShipCounter = 0;
+		int alienBombCounter = 0;
+
+		for(Enemy enemy : enemyList) {
+			if (enemy.getEnemyType().equals("Default Alien Spaceship")) {
+				defaultSpaceShipCounter++;
+			}
+			if (enemy.getEnemyType().equals("Alien Bomb")) {
+				alienBombCounter++;
+			}
+		}
+		
+		defaultAlienSpaceshipCount = defaultSpaceShipCounter;
+		alienBombCount = alienBombCounter;
 
 	}
 
@@ -103,23 +127,16 @@ public class EnemyManager {
 		}
 	}
 
-	private Enemy createEnemy(int xCoordinate, int yCoordinate, String enemyType) {
-		return new Enemy(xCoordinate, yCoordinate, enemyType, maxBoardBlocks);
-	}
-
-	// Called by LevelManager, creates a bomb and adds it to the enemies
-	public void addBombEnemy(int xCoordinte, int yCoordinate, String enemyType, String direction) {
-		Enemy enemy = createEnemy(xCoordinte, yCoordinate, enemyType);
-		enemy.setRotation(direction);
-		enemy.setVisible(true);
-		this.enemyList.add(enemy);
+	private Enemy createEnemy(int xCoordinate, int yCoordinate, String enemyType, String direction) {
+		return new Enemy(xCoordinate, yCoordinate, enemyType, maxBoardBlocks, direction);
 	}
 
 	// Called by LevelManager, creates an unambiguous enemy and adds it to enemies
-	public void addEnemy(int xCoordinate, int yCoordinate, String enemyType) {
-		Enemy enemy = createEnemy(xCoordinate, yCoordinate, enemyType);
+	public void addEnemy(int xCoordinate, int yCoordinate, String enemyType, String direction) {
+		Enemy enemy = createEnemy(xCoordinate, yCoordinate, enemyType, direction);
 		enemy.setVisible(true);
 		this.enemyList.add(enemy);
+		keepTrackOfEnemies();
 	}
 
 	private void removeEnemy(Enemy enemy) {
@@ -129,5 +146,14 @@ public class EnemyManager {
 	public List<Enemy> getEnemies() {
 		return this.enemyList;
 	}
+	
+	public int getDefaultAlienSpaceshipCount() {
+		return defaultAlienSpaceshipCount;
+	}
+
+	public int getAlienBombCount() {
+		return alienBombCount;
+	}
+	
 
 }

@@ -92,20 +92,6 @@ public class AnimationManager {
 		return new Animation(xCoordinate, yCoordinate, animationType);
 	}
 
-	public void updateAnimationList() {
-		for (int i = 0; i < upperAnimationList.size(); i++) {
-			if (upperAnimationList.get(i).isVisible()) {
-				this.upperAnimationList.get(i).updateFrameCount();
-			}
-		}
-		for (int i = 0; i < lowerAnimationList.size(); i++) {
-			if (lowerAnimationList.get(i).isVisible()) {
-				this.lowerAnimationList.get(i).updateFrameCount();
-			}
-		}
-
-	}
-
 	private void removeInvisibleAnimations() {
 		for (int i = 0; i < upperAnimationList.size(); i++) {
 			if (!upperAnimationList.get(i).isVisible()) {
@@ -129,9 +115,9 @@ public class AnimationManager {
 	}
 
 	public void updateGameTick() {
-		removeInvisibleAnimations();
-		updateAnimationList();
 		renderPlayerEngine();
+		removeInvisibleAnimations();
+		
 	}
 
 }
