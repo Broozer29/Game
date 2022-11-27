@@ -18,12 +18,12 @@ public class Missile extends Sprite {
 	}
 
 	private void initMissile() {
-		if (missileType.equals("laserblast")) {
-			loadImage("laserbeam");
-			this.missileDamage = (float) 7.5;
+		if (missileType.equals("Player Laserbeam")) {
+			loadImage("Player Laserbeam");
+			this.missileDamage = (float) 27.5;
 		}
-		if (missileType.equals("AlienDefault")) {
-			loadImage("alienlaserbeam");
+		if (missileType.equals("Alien Laserbeam")) {
+			loadImage("Alien Laserbeam");
 			this.missileDamage = (float) 2.5;
 		}
 
@@ -32,16 +32,15 @@ public class Missile extends Sprite {
 
 	public void updateGameTick() {
 		move(getCoordinatesDefaultMove(missileType));
-
 	}
 
 	private List<Float> getCoordinatesDefaultMove(String type) {
 		List<Float> coordinatesList = new ArrayList<Float>(2);
 
-		if (type.equals("laserblast")) {
+		if (type.equals("Player Laserbeam")) {
 			coordinatesList.add(0, (float) 7.5);
 			coordinatesList.add(1, (float) 0);
-		} else if (type.equals("AlienDefault")) {
+		} else if (type.equals("Alien Laserbeam")) {
 			coordinatesList.add(0, (float) -3);
 			coordinatesList.add(1, (float) 0);
 		}

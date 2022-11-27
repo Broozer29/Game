@@ -16,6 +16,7 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
+import data.AudioDatabase;
 import data.DataClass;
 import game.managers.AnimationManager;
 import game.managers.AudioManager;
@@ -36,8 +37,12 @@ public class GameBoard extends JPanel implements ActionListener {
 
 	private Timer timer;
 	private boolean ingame;
+//	private String currentMusic = "Furi - Make this right"; 
+	private String currentMusic = ""; 
+	
 
 	private DataClass data = DataClass.getInstance();
+	private AudioDatabase audioDatabase = AudioDatabase.getInstance();
 	private final int boardWidth = data.getWindowWidth();
 	private final int boardHeight = data.getWindowHeight();
 
@@ -78,7 +83,7 @@ public class GameBoard extends JPanel implements ActionListener {
 
 		timer.start();
 		try {
-			audioManager.playBackgroundMusic("defaultmusic");
+			audioManager.playMusicAudio(currentMusic);
 		} catch (UnsupportedAudioFileException | IOException e) {
 			e.printStackTrace();
 		}
@@ -167,6 +172,7 @@ public class GameBoard extends JPanel implements ActionListener {
 		for (Enemy enemy : enemyManager.getEnemies()) {
 			if (enemy.isVisible()) {
 				drawImage(g, enemy);
+				if(!enemy.getEnemyType().equals("Alien Bomb"))
 				drawHealthBars(g, enemy);
 			}
 		}
@@ -180,7 +186,8 @@ public class GameBoard extends JPanel implements ActionListener {
 
 		// Draw the score/aliens left
 		g.setColor(Color.WHITE);
-		g.drawString("Aliens left: " + enemyManager.getEnemies().size(), 5, 15);
+		g.drawString("Aliens left: " + enemyManager.getDefaultAlienSpaceshipCount(), 5, 15);
+		g.drawString("Bombs present: " + enemyManager.getAlienBombCount(), 5, 25);
 	}
 
 	private void drawImage(Graphics g, Sprite sprite) {
@@ -254,6 +261,7 @@ public class GameBoard extends JPanel implements ActionListener {
 			animationManager.updateGameTick();
 			backgroundManager.updateGameTick();
 			timerManager.updateGameTick();
+			audioDatabase.updateGameTick();
 		}
 
 		repaint();

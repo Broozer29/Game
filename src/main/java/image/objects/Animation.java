@@ -18,10 +18,12 @@ public class Animation extends Sprite {
 	private int currentFrame;
 	private int totalFrames;
 	private List<ImageIcon> frames = new ArrayList<ImageIcon>();
+	private int frameDelay;
 
 	public Animation(int x, int y, String imageType) {
 		super(x, y);
 		this.initAnimation(imageType);
+		this.frameDelay = 0;
 	}
 
 	protected void initAnimation(String imageType) {
@@ -32,7 +34,8 @@ public class Animation extends Sprite {
 		totalFrames = frames.size();
 	}
 
-	// Sets frames, Animation shouldn't call the ImageDatabase, it should get it from a manager when created.
+	// Sets frames, Animation shouldn't call the ImageDatabase, it should get it
+	// from a manager when created.
 	private void loadGifFrames(String imageType) {
 		switch (imageType) {
 		case ("Impact Explosion One"):
@@ -71,11 +74,12 @@ public class Animation extends Sprite {
 		}
 	}
 
-	//Required for the engine to refresh itself
+	// Required for the engine to refresh itself
 	public void refreshAnimation(int xCoordinate, int yCoordinate) {
 		this.xCoordinate = xCoordinate;
 		this.yCoordinate = yCoordinate;
 		this.currentFrame = 0;
+		this.frameDelay = 0;
 		this.setVisible(true);
 	}
 
@@ -83,6 +87,12 @@ public class Animation extends Sprite {
 	public Image getCurrentFrame() {
 		if (currentFrame < frames.size()) {
 			Image returnImage = frames.get(currentFrame).getImage();
+			
+			if (frameDelay >= 1) {
+				updateFrameCount();
+				frameDelay = 0;
+			} else frameDelay++;
+			
 			return returnImage;
 		}
 		return frames.get(1).getImage();

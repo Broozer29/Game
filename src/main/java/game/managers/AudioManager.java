@@ -10,12 +10,15 @@ import javax.sound.sampled.FloatControl;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
+import data.AudioDatabase;
+
 public class AudioManager {
 
 	private static AudioManager instance = new AudioManager();
 	private FriendlyManager friendlyManager = FriendlyManager.getInstance();
 	private Clip backGroundMusic = null;
 	private AudioInputStream backGroundMusicInputStream = null;
+	private AudioDatabase audioDatabase = AudioDatabase.getInstance();
 
 	private AudioManager() {
 
@@ -24,10 +27,12 @@ public class AudioManager {
 	// Called when a game instance needs to be deleted and the manager needs to be
 	// reset.
 	public void resetManager() {
-		backGroundMusic.stop();
-		backGroundMusic.close();
-		backGroundMusic = null;
-		backGroundMusicInputStream = null;
+		if (backGroundMusic != null) {
+			backGroundMusic.stop();
+			backGroundMusic.close();
+			backGroundMusic = null;
+			backGroundMusicInputStream = null;
+		}
 
 	}
 
@@ -35,10 +40,9 @@ public class AudioManager {
 		return instance;
 	}
 
-	// Wss niet meer nodig
-//	public void addAudioToPlayList(String audioType) throws UnsupportedAudioFileException, IOException {
-//		playAudio(audioType);
-//	}
+	public void addAudio(String audioType) throws UnsupportedAudioFileException, IOException {
+		playAudio(audioType);
+	}
 
 	// Voeg een playermissile audio toe op basis van de missile type
 	public void firePlayerMissile() throws UnsupportedAudioFileException, IOException {
@@ -47,58 +51,69 @@ public class AudioManager {
 		}
 
 		switch (friendlyManager.getPlayerMissileType()) {
-		case ("laserblast"):
-			playAudio("laserblast");
-		}
-	}
-
-	// Voegt background muziek toe en loopt het.
-	public void playBackgroundMusic(String audioType) throws UnsupportedAudioFileException, IOException {
-		if (backGroundMusic == null) {
-			playMusicAudio(audioType);
+		case ("Player Laserbeam"):
+			playAudio("Player Laserbeam");
 		}
 	}
 
 	// Play singular audios
 	private void playAudio(String audioType) throws UnsupportedAudioFileException, IOException {
-		Clip clip;
-		AudioInputStream playerMissileAudio = null;
-
+		Clip clip = null;
+		
 		switch (audioType) {
-		case ("laserblast"):
-			playerMissileAudio = AudioSystem
-					.getAudioInputStream(new File("src/resources/audio/laserbeam1.wav").getAbsoluteFile());
+		case ("Player Laserbeam"):
+			clip = audioDatabase.getLaserBeam();
+			break;
+		case ("Destroyed Explosion"):
+			clip = audioDatabase.getDestroyedExplosion();
+			break;
+		case ("Alien Spaceship Destroyed"):
+			clip = audioDatabase.getDefaultAlienExplosion();
+			break;
 		}
 
-		try {
-			clip = AudioSystem.getClip();
-			clip.open(playerMissileAudio);
-
+		if (clip != null) {
 			// Adjusts volume
 			FloatControl volume = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
-			volume.setValue(-4);
+			switch(audioType) {
+			case ("Player Laserbeam"):
+				volume.setValue(-6);
+				break;
+			case ("Destroyed Explosion"):
+				volume.setValue(-2);
+				break;
+			case ("Alien Spaceship Destroyed"):
+				break;
+			}
 
 			clip.start();
-		} catch (LineUnavailableException e) {
-			e.printStackTrace();
 		}
 
 	}
 
 	// Play the background music
-	private void playMusicAudio(String audioType) throws UnsupportedAudioFileException, IOException {
-		switch (audioType) {
-		case ("defaultmusic"):
-			backGroundMusicInputStream = AudioSystem
-					.getAudioInputStream(new File("src/resources/audio/music/defaultmusic.wav").getAbsoluteFile());
-		}
+	public void playMusicAudio(String audioType) throws UnsupportedAudioFileException, IOException {
+		if (backGroundMusic == null) {
+			switch (audioType) {
+//			case ("defaultmusic"):
+//				backGroundMusicInputStream = audioDatabase.getDefaultMusic();
+//			case ("Furi - Make this right"):
+//				backGroundMusicInputStream = audioDatabase.getFuriMakeThisRight();
+//			case ("Furi - Wisdom of rage"):
+//				backGroundMusicInputStream = audioDatabase.getFuriWisdomOfRage();
+//			case ("Furi - My only chance"):
+//				backGroundMusicInputStream = audioDatabase.getFuriMyOnlyChance();
+			}
 
-		try {
-			backGroundMusic = AudioSystem.getClip();
-			backGroundMusic.open(backGroundMusicInputStream);
-			backGroundMusic.loop(Clip.LOOP_CONTINUOUSLY);
-		} catch (LineUnavailableException e) {
-			e.printStackTrace();
+			if (!(backGroundMusicInputStream == null)) {
+				try {
+					backGroundMusic = AudioSystem.getClip();
+					backGroundMusic.open(backGroundMusicInputStream);
+					backGroundMusic.loop(Clip.LOOP_CONTINUOUSLY);
+				} catch (LineUnavailableException e) {
+					e.printStackTrace();
+				}
+			}
 		}
 	}
 

@@ -44,7 +44,6 @@ public class ImageDatabase {
 	private List<ImageIcon> destroyedExplosionRightFrames = new ArrayList<ImageIcon>();
 	private List<ImageIcon> destroyedExplosionDownFrames = new ArrayList<ImageIcon>();
 
-
 	// Background images
 	private Image moon;
 	private Image lavaPlanet;
@@ -53,8 +52,8 @@ public class ImageDatabase {
 	private Image planetTwo;
 	private Image planetThree;
 	private Image star;
-	
-	//testimages
+
+	// testimages
 	private Image testImage;
 
 	private ImageDatabase() {
@@ -79,17 +78,17 @@ public class ImageDatabase {
 	}
 
 	private void initFriendlies() {
-		this.spaceShipImage = imgLoader.getImage("spaceship");
+		this.spaceShipImage = imgLoader.getImage("Player Spaceship");
 	}
 
 	private void initEnemies() {
-		this.alienSpaceshipImage = imgLoader.getImage("Alien");
-		this.alienBombImage = imgLoader.getImage("Alien bomb");
+		this.alienSpaceshipImage = imgLoader.getImage("Default Alien Spaceship");
+		this.alienBombImage = imgLoader.getImage("Alien Bomb");
 	}
 
 	private void initProjectiles() {
-		this.laserBeamImage = imgLoader.getImage("laserbeam");
-		this.alienLaserbeamImage = imgLoader.getImage("alienlaserbeam");
+		this.laserBeamImage = imgLoader.getImage("Player Laserbeam");
+		this.alienLaserbeamImage = imgLoader.getImage("Alien Laserbeam");
 	}
 
 	private void initMenuImages() {
@@ -103,105 +102,106 @@ public class ImageDatabase {
 	}
 
 	private void initBackgroundObjects() {
-		this.moon = imgLoader.getImage("moon1");
-		this.lavaPlanet = imgLoader.getImage("lavaplanet1");
-		this.planetOne = imgLoader.getImage("planet1");
-		this.planetTwo = imgLoader.getImage("planet2");
-		this.planetThree = imgLoader.getImage("planet3");
-		this.marsPlanet = imgLoader.getImage("marsplanet1");
+		this.moon = imgLoader.getImage("Moon");
+		this.lavaPlanet = imgLoader.getImage("Lava Planet");
+		this.planetOne = imgLoader.getImage("Planet One");
+		this.planetTwo = imgLoader.getImage("Planet Two");
+		this.planetThree = imgLoader.getImage("Planet Three");
+		this.marsPlanet = imgLoader.getImage("Mars Planet");
+		this.star = imgLoader.getImage("Star");
 	}
 
 	public Image getImage(String imageType) {
-		switch(imageType) {
-		case("spaceship"):
+		switch (imageType) {
+		case ("Player Spaceship"):
 			return this.spaceShipImage;
-		case("laserbeam"):
+		case ("Player Laserbeam"):
 			return this.laserBeamImage;
-		case("Alien"):
+		case ("Default Alien Spaceship"):
 			return this.alienSpaceshipImage;
-		case("Alien bomb"):
+		case ("Alien Bomb"):
 			return this.alienBombImage;
-		case("alienlaserbeam"):
+		case ("Alien Laserbeam"):
 			return this.alienLaserbeamImage;
-		case("StartGame"):
+		case ("StartGame"):
 			return this.startGameImage;
-		case("UserOne"):
+		case ("UserOne"):
 			return this.userOneImage;
-		case("UserTwo"):
+		case ("UserTwo"):
 			return this.userTwoImage;
-		case("UserThree"):
+		case ("UserThree"):
 			return this.userThreeImage;
-		case("SelectUserMenu"):
+		case ("SelectUserMenu"):
 			return this.selectUserMenuImage;
-		case("userMenuToMainMenu"):
+		case ("userMenuToMainMenu"):
 			return this.userMenuToMainMenu;
-		case("moon1"):
+		case ("Moon"):
 			return this.moon;
-		case("lavaplanet1"):
+		case ("Lava Planet"):
 			return this.lavaPlanet;
-		case("marsplanet1"):
+		case ("Mars Planet"):
 			return this.marsPlanet;
-		case("planet1"):
+		case ("Planet One"):
 			return this.planetOne;
-		case("planet2"):
+		case ("Planet Two"):
 			return this.planetTwo;
-		case("planet3"):
+		case ("Planet Three"):
 			return this.planetThree;
-		case("star"):
+		case ("Star"):
 			return this.star;
 		}
 		return testImage;
 	}
-	
+
 	public List<ImageIcon> getGif(String imageType) {
-		switch(imageType) {
-		case("Impact Explosion One"):
+		switch (imageType) {
+		case ("Impact Explosion One"):
 			return this.impactExplosionOneFrames;
-		case("Player Engine"):
+		case ("Player Engine"):
 			return this.playerEngineFrames;
-		case("Destroyed Explosion"):
+		case ("Destroyed Explosion"):
 			return this.destroyedExplosionUpFrames;
-		case("Destroyed Explosion Right"):
+		case ("Destroyed Explosion Right"):
 			return this.destroyedExplosionRightFrames;
-		case("Destroyed Explosion Down"):
+		case ("Destroyed Explosion Down"):
 			return this.destroyedExplosionDownFrames;
-		case("Destroyed Explosion Left"):
+		case ("Destroyed Explosion Left"):
 			return this.destroyedExplosionLeftFrames;
 		}
 		return null;
 	}
-	
+
 	public void initAnimations() throws FileNotFoundException, IOException {
-	      ImageReader reader = ImageIO.getImageReadersBySuffix("GIF").next();
-	      
-	      reader.setInput( new FileImageInputStream( new File("src/resources/images/explosion.gif")));
-	      impactExplosionOneFrames = gifToImageIcons(reader);
-	      
-	      reader.setInput( new FileImageInputStream( new File("src/resources/images/enginesmoke.gif")));
-	      playerEngineFrames = gifToImageIcons(reader);
-	      
-	      reader.setInput( new FileImageInputStream( new File("src/resources/images/Destroyed Explosion.gif")));
-	      destroyedExplosionUpFrames = gifToImageIcons(reader);
-	      
-	      reader.setInput( new FileImageInputStream( new File("src/resources/images/Destroyed Explosion Right.gif")));
-	      destroyedExplosionRightFrames = gifToImageIcons(reader);
-	      
-	      reader.setInput( new FileImageInputStream( new File("src/resources/images/Destroyed Explosion Left.gif")));
-	      destroyedExplosionDownFrames = gifToImageIcons(reader);
-	      
-	      reader.setInput( new FileImageInputStream( new File("src/resources/images/Destroyed Explosion Reverse.gif")));
-	      destroyedExplosionLeftFrames = gifToImageIcons(reader);
+		ImageReader reader = ImageIO.getImageReadersBySuffix("GIF").next();
+
+		reader.setInput(new FileImageInputStream(new File("src/resources/images/explosion.gif")));
+		impactExplosionOneFrames = gifToImageIcons(reader);
+
+		reader.setInput(new FileImageInputStream(new File("src/resources/images/enginesmoke.gif")));
+		playerEngineFrames = gifToImageIcons(reader);
+
+		reader.setInput(new FileImageInputStream(new File("src/resources/images/Destroyed Explosion.gif")));
+		destroyedExplosionUpFrames = gifToImageIcons(reader);
+
+		reader.setInput(new FileImageInputStream(new File("src/resources/images/Destroyed Explosion Right.gif")));
+		destroyedExplosionRightFrames = gifToImageIcons(reader);
+
+		reader.setInput(new FileImageInputStream(new File("src/resources/images/Destroyed Explosion Left.gif")));
+		destroyedExplosionDownFrames = gifToImageIcons(reader);
+
+		reader.setInput(new FileImageInputStream(new File("src/resources/images/Destroyed Explosion Reverse.gif")));
+		destroyedExplosionLeftFrames = gifToImageIcons(reader);
 	}
-	
-	private List<ImageIcon> gifToImageIcons(ImageReader reader) throws IOException{
-	      int n = reader.getNumImages( true );
-	      List<ImageIcon> imgs = new ArrayList<>();
-	      for(int i = 0; i<n; i++){
-	          imgs.add( new ImageIcon(reader.read(i)) );
-	      }
-	      return imgs;
+
+	private List<ImageIcon> gifToImageIcons(ImageReader reader) throws IOException {
+		int n = reader.getNumImages(true);
+		List<ImageIcon> imgs = new ArrayList<>();
+		for (int i = 0; i < n; i++) {
+			imgs.add(new ImageIcon(reader.read(i)));
+		}
+		return imgs;
 	}
-	
+
 	public List<ImageIcon> getImpactExplosionOneFrames() {
 		return impactExplosionOneFrames;
 	}
@@ -225,5 +225,5 @@ public class ImageDatabase {
 	public List<ImageIcon> getDestroyedExplosionDownFrames() {
 		return destroyedExplosionDownFrames;
 	}
-	
+
 }

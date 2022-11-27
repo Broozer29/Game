@@ -21,19 +21,19 @@ public class ImageLoader {
 		return ii.getImage();
 	}
 
-	private static String convertImageStringToURL(String imageString) {
+	private String convertImageStringToURL(String imageString) {
 		switch (imageString) {
-		case ("spaceship"):
+		case ("Player Spaceship"):
 			return "src/resources/images/spaceship.png";
-		case ("laserbeam"):
+		case ("Player Laserbeam"):
 			return "src/resources/images/laserbeam.png";
 		case ("testimage"):
 			return "src/resources/images/testimage.jpg";
-		case ("Alien"):
+		case ("Default Alien Spaceship"):
 			return "src/resources/images/Alien spaceship.png";
-		case ("Alien bomb"):
+		case ("Alien Bomb"):
 			return "src/resources/images/Alien bomb.png";
-		case ("alienlaserbeam"):
+		case ("Alien Laserbeam"):
 			return "src/resources/images/alienlaserbeam.png";
 		case ("StartGame"):
 			return "src/resources/images/Start game.png";
@@ -47,19 +47,19 @@ public class ImageLoader {
 			return "src/resources/images/Select user.png";
 		case ("userMenuToMainMenu"):
 			return "src/resources/images/testimage.jpg";
-		case ("moon1"):
+		case ("Moon"):
 			return "src/resources/images/background/moon1.png";
-		case ("lavaplanet1"):
+		case ("Lava Planet"):
 			return "src/resources/images/background/lavaplanet1.png";
-		case ("marsplanet1"):
+		case ("Mars Planet"):
 			return "src/resources/images/background/marsplanet1.png";
-		case ("planet1"):
+		case ("Planet One"):
 			return "src/resources/images/background/planet1.png";
-		case ("planet2"):
+		case ("Planet Two"):
 			return "src/resources/images/background/planet2.png";
-		case ("planet3"):
+		case ("Planet Three"):
 			return "src/resources/images/background/planet3.png";
-		case ("star"):
+		case ("Star"):
 			return "src/resources/images/background/star.png";
 
 		}

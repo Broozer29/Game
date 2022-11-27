@@ -2,13 +2,13 @@ package game.objects;
 
 public class Alien extends Enemy {
 
-	public Alien(int x, int y, String enemyType, int currentBoardBlock) {
-		super(x, y, "Alien", currentBoardBlock);
+	public Alien(int x, int y, String enemyType, int currentBoardBlock, String direction) {
+		super(x, y, "Alien", currentBoardBlock, direction);
 		initAlien();
 	}
 
 	private void initAlien() {
-		loadImage("Alien spaceship");
+		loadImage("Default Alien Spaceship");
 		getImageDimensions();
 	}
 

@@ -11,7 +11,8 @@ public class RandomCoordinator {
 	private static RandomCoordinator instance = new RandomCoordinator();
 	private Random random = new Random();
 
-	//Al deze ranges moeten eigenlijk dynamisch berekend worden, want nu is het niet resizable
+	// Al deze ranges moeten eigenlijk dynamisch berekend worden, want nu is het
+	// niet resizable
 	private int maximumEnemyWidthRange = DataClass.getInstance().getWindowWidth() + 500;
 	private int minimumEnemyWidthRange = DataClass.getInstance().getWindowWidth();
 	private int maximumEnemyHeightRange = DataClass.getInstance().getWindowHeight() - 100;
@@ -26,9 +27,9 @@ public class RandomCoordinator {
 	private int minimumBombEnemyWidthRange = 250;
 	private int maximumBombEnemyHeightUpRange = DataClass.getInstance().getWindowHeight() + 500;
 	private int minimumBombEnemyHeightUpRange = DataClass.getInstance().getWindowHeight();
-	
+
 	private int maximumBombEnemyHeightDownRange = 0;
-	private int minimumBombEnemyHeightDownRange = - 500;
+	private int minimumBombEnemyHeightDownRange = -500;
 
 	private RandomCoordinator() {
 
@@ -38,20 +39,25 @@ public class RandomCoordinator {
 		return instance;
 	}
 
-	// Random functions used for ENEMIES //
-	public boolean checkValidEnemyXCoordinate(List<Enemy> listToCheck, int xCoordinate, int minimumRange) {
+	//Function used to prevent enemies of the same type of stacking on top of each other when being spawned in
+	public boolean checkValidEnemyXCoordinate(String enemyType, List<Enemy> listToCheck, int xCoordinate, int minimumRange) {
 		for (Enemy enemy : listToCheck) {
-			if (Math.abs(enemy.getXCoordinate() - xCoordinate) < minimumRange) {
-				return false;
+			if (enemy.getEnemyType().equals(enemyType)) {
+				if (Math.abs(enemy.getXCoordinate() - xCoordinate) < minimumRange) {
+					return false;
+				}
 			}
 		}
 		return true;
 	}
 
-	public boolean checkValidEnemyYCoordinate(List<Enemy> listToCheck, int yCoordinate, int minimumRange) {
+	//Function used to prevent enemies of the same type of stacking on top of each other when being spawned in
+	public boolean checkValidEnemyYCoordinate(String enemyType, List<Enemy> listToCheck, int yCoordinate, int minimumRange) {
 		for (Enemy enemy : listToCheck) {
-			if (Math.abs(enemy.getYCoordinate() - yCoordinate) < minimumRange) {
-				return false;
+			if (enemy.getEnemyType().equals(enemyType)) {
+				if (Math.abs(enemy.getYCoordinate() - yCoordinate) < minimumRange) {
+					return false;
+				}
 			}
 		}
 		return true;
@@ -74,7 +80,7 @@ public class RandomCoordinator {
 		return random.nextInt((maximumBombEnemyHeightUpRange - minimumBombEnemyHeightUpRange) + 1)
 				+ minimumBombEnemyHeightUpRange;
 	}
-	
+
 	public int getRandomYDownBombEnemyCoordinate() {
 		return random.nextInt((maximumBombEnemyHeightDownRange - minimumBombEnemyHeightDownRange) + 1)
 				+ minimumBombEnemyHeightDownRange;
@@ -92,7 +98,6 @@ public class RandomCoordinator {
 	}
 
 	// Random functions used for Background objects //
-
 	public boolean checkValidBGOXCoordinate(List<BackgroundObject> listToCheck, int xCoordinate) {
 		for (BackgroundObject bgObject : listToCheck) {
 			if (Math.abs(bgObject.getXCoordinate() - xCoordinate) < 20) {

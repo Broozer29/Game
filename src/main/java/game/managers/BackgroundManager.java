@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Random;
 
 import data.DataClass;
+import data.ImageDatabase;
 import data.ImageLoader;
 import data.RandomCoordinator;
 import image.objects.BackgroundObject;
@@ -16,7 +17,7 @@ public class BackgroundManager {
 
 	private static BackgroundManager instance = new BackgroundManager();
 	private DataClass dataClass = DataClass.getInstance();
-	private ImageLoader imageLoader = ImageLoader.getInstance();
+	private ImageDatabase imageDatabase = ImageDatabase.getInstance();
 	private RandomCoordinator randomCoordinator = RandomCoordinator.getInstance();
 	private List<BackgroundObject> levelOnePlanets = new ArrayList<BackgroundObject>();
 	private List<BackgroundObject> levelTwoPlanets = new ArrayList<BackgroundObject>();
@@ -52,23 +53,23 @@ public class BackgroundManager {
 		allBackgroundObjectStringCodes = new ArrayList<String>();
 		scaledBackgroundObjects = new HashMap<String, Image>();
 		
-		allBackgroundObjectStringCodes.add("moon1");
-		allBackgroundObjectStringCodes.add("lavaplanet1");
-		allBackgroundObjectStringCodes.add("marsplanet1");
-		allBackgroundObjectStringCodes.add("planet1");
-		allBackgroundObjectStringCodes.add("planet2");
-		allBackgroundObjectStringCodes.add("planet3");
+		allBackgroundObjectStringCodes.add("Moon");
+		allBackgroundObjectStringCodes.add("Lava Planet");
+		allBackgroundObjectStringCodes.add("Mars Planet");
+		allBackgroundObjectStringCodes.add("Planet One");
+		allBackgroundObjectStringCodes.add("Planet Two");
+		allBackgroundObjectStringCodes.add("Planet Three");
 		loadAllPlanets();
 		initLists();
 	}
 
 	private void initManager() {
-		allBackgroundObjectStringCodes.add("moon1");
-		allBackgroundObjectStringCodes.add("lavaplanet1");
-		allBackgroundObjectStringCodes.add("marsplanet1");
-		allBackgroundObjectStringCodes.add("planet1");
-		allBackgroundObjectStringCodes.add("planet2");
-		allBackgroundObjectStringCodes.add("planet3");
+		allBackgroundObjectStringCodes.add("Moon");
+		allBackgroundObjectStringCodes.add("Lava Planet");
+		allBackgroundObjectStringCodes.add("Mars Planet");
+		allBackgroundObjectStringCodes.add("Planet One");
+		allBackgroundObjectStringCodes.add("Planet Two");
+		allBackgroundObjectStringCodes.add("Planet Three");
 		loadAllPlanets();
 		initLists();
 	}
@@ -93,7 +94,7 @@ public class BackgroundManager {
 	// Fill the first list with stars
 	private void fillLevelOneStars() {
 		while (levelOneStars.size() < 25) {
-			Image starImage = setStarScale(imageLoader.getImage("star"), 1);
+			Image starImage = setStarScale(imageDatabase.getImage("Star"), 1);
 			int randomXCoordinate = randomCoordinator.getRandomXBGOCoordinate();
 			int randomYCoordinate = randomCoordinator.getRandomYBGOCoordinate();
 			if (randomCoordinator.checkValidBGOXCoordinate(levelOneStars, randomXCoordinate)
@@ -107,7 +108,7 @@ public class BackgroundManager {
 	// Fill the second list with stars
 	private void fillLevelTwoStars() {
 		while (levelTwoStars.size() < 25) {
-			Image starImage = setStarScale(imageLoader.getImage("star"), 2);
+			Image starImage = setStarScale(imageDatabase.getImage("Star"), 2);
 			int randomXCoordinate = randomCoordinator.getRandomXBGOCoordinate();
 			int randomYCoordinate = randomCoordinator.getRandomYBGOCoordinate();
 			if (randomCoordinator.checkValidBGOXCoordinate(levelTwoStars, randomXCoordinate)
@@ -120,7 +121,7 @@ public class BackgroundManager {
 	// Fill the third list with stars
 	private void fillLevelThreeStars() {
 		while (levelThreeStars.size() < 25) {
-			Image starImage = setStarScale(imageLoader.getImage("star"), 3);
+			Image starImage = setStarScale(imageDatabase.getImage("Star"), 3);
 			int randomXCoordinate = randomCoordinator.getRandomXBGOCoordinate();
 			int randomYCoordinate = randomCoordinator.getRandomYBGOCoordinate();
 			if (randomCoordinator.checkValidBGOXCoordinate(levelThreeStars, randomXCoordinate)
@@ -273,7 +274,7 @@ public class BackgroundManager {
 	// Saves memory
 	private void loadAllPlanets() {
 		for (String object : allBackgroundObjectStringCodes) {
-			Image img = imageLoader.getImage(object);
+			Image img = imageDatabase.getImage(object);
 			scaledBackgroundObjects.put(object, img);
 		}
 
