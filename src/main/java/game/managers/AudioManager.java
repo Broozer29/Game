@@ -41,11 +41,7 @@ public class AudioManager {
 	}
 
 	public void addAudio(String audioType) throws UnsupportedAudioFileException, IOException {
-		switch(audioType) {
-		case("Destroyed Explosion"):
-			playAudio("Destroyed Explosion");
-		}
-		
+		playAudio(audioType);
 	}
 
 	// Voeg een playermissile audio toe op basis van de missile type
@@ -63,24 +59,35 @@ public class AudioManager {
 	// Play singular audios
 	private void playAudio(String audioType) throws UnsupportedAudioFileException, IOException {
 		Clip clip = null;
-		AudioInputStream playerMissileAudio = null;
-
+		
 		switch (audioType) {
 		case ("Player Laserbeam"):
-			// HIER KUN JE HETZELFDE DOEN MET IMAGEDATABASE, EEN KEER ALLES INLADEN EN
-			// BEWAREN ZODAT JE NIET CONSTANT FILES OPENT
 			clip = audioDatabase.getLaserBeam();
 			break;
 		case ("Destroyed Explosion"):
 			clip = audioDatabase.getDestroyedExplosion();
 			break;
+		case ("Alien Spaceship Destroyed"):
+			clip = audioDatabase.getDefaultAlienExplosion();
+			break;
 		}
 
-		// Adjusts volume
-		FloatControl volume = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
-		volume.setValue(-4);
+		if (clip != null) {
+			// Adjusts volume
+			FloatControl volume = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
+			switch(audioType) {
+			case ("Player Laserbeam"):
+				volume.setValue(-6);
+				break;
+			case ("Destroyed Explosion"):
+				volume.setValue(-2);
+				break;
+			case ("Alien Spaceship Destroyed"):
+				break;
+			}
 
-		clip.start();
+			clip.start();
+		}
 
 	}
 

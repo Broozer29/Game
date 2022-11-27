@@ -21,11 +21,9 @@ public class EnemyManager {
 	private List<BoardBlock> boardBlockList = new ArrayList<BoardBlock>();
 	private int maxBoardBlocks = 8;
 	private DataClass dataClass = DataClass.getInstance();
-	
+
 	private int defaultAlienSpaceshipCount;
 	private int alienBombCount;
-
-
 
 	private EnemyManager() {
 		saturateBoardBlockList();
@@ -67,12 +65,12 @@ public class EnemyManager {
 		}
 
 	}
-	
+
 	public void keepTrackOfEnemies() {
 		int defaultSpaceShipCounter = 0;
 		int alienBombCounter = 0;
 
-		for(Enemy enemy : enemyList) {
+		for (Enemy enemy : enemyList) {
 			if (enemy.getEnemyType().equals("Default Alien Spaceship")) {
 				defaultSpaceShipCounter++;
 			}
@@ -80,7 +78,7 @@ public class EnemyManager {
 				alienBombCounter++;
 			}
 		}
-		
+
 		defaultAlienSpaceshipCount = defaultSpaceShipCounter;
 		alienBombCount = alienBombCounter;
 
@@ -127,21 +125,29 @@ public class EnemyManager {
 			if (enemy.isVisible()) {
 				enemy.move();
 			} else {
-				triggerEnemyDeathSound(enemy);
+				if (enemy.getCurrentHitpoints() <= 0) {
+					try {
+						triggerEnemyDeathSound(enemy);
+					} catch (UnsupportedAudioFileException | IOException e) {
+						e.printStackTrace();
+					}
+				}
 				removeEnemy(enemy);
 			}
 		}
 	}
-	
-	private void triggerEnemyDeathSound(Enemy enemy) {
-		switch(enemy.getEnemyType()) {
-		case("Alien Bomb"):
-			try {
-				audioManager.addAudio("Destroyed Explosion");
-			} catch (UnsupportedAudioFileException | IOException e) {
-				e.printStackTrace();
-			}
+
+	private void triggerEnemyDeathSound(Enemy enemy) throws UnsupportedAudioFileException, IOException {
+		switch (enemy.getEnemyType()) {
+		case ("Alien Bomb"):
+			audioManager.addAudio("Destroyed Explosion");
+			break;
+		case ("Default Alien Spaceship"):
+			audioManager.addAudio("Alien Spaceship Destroyed");
+			break;
+
 		}
+
 	}
 
 	private Enemy createEnemy(int xCoordinate, int yCoordinate, String enemyType, String direction) {
@@ -163,7 +169,7 @@ public class EnemyManager {
 	public List<Enemy> getEnemies() {
 		return this.enemyList;
 	}
-	
+
 	public int getDefaultAlienSpaceshipCount() {
 		return defaultAlienSpaceshipCount;
 	}
@@ -171,6 +177,5 @@ public class EnemyManager {
 	public int getAlienBombCount() {
 		return alienBombCount;
 	}
-	
 
 }

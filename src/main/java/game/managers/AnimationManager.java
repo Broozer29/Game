@@ -70,7 +70,7 @@ public class AnimationManager {
 			explosionType = "Destroyed Explosion Left";
 			break;
 		case (4):
-			explosionType = "Destroyed Explosion Right";
+			explosionType = "Destroyed Explosion Reverse";
 			break;
 		}
 

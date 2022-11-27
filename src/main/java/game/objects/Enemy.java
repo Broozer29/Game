@@ -83,6 +83,7 @@ public class Enemy extends Sprite {
 		this.hitPoints -= damageTaken;
 		if (this.hitPoints <= 0) {
 			animationManager.addDestroyedExplosion(xCoordinate, yCoordinate);
+			
 			this.setVisible(false);
 		}
 	}

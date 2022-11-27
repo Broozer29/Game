@@ -20,7 +20,7 @@ public class Missile extends Sprite {
 	private void initMissile() {
 		if (missileType.equals("Player Laserbeam")) {
 			loadImage("Player Laserbeam");
-			this.missileDamage = (float) 7.5;
+			this.missileDamage = (float) 27.5;
 		}
 		if (missileType.equals("Alien Laserbeam")) {
 			loadImage("Alien Laserbeam");

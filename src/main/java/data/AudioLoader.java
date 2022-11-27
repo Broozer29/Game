@@ -41,6 +41,8 @@ public class AudioLoader {
 			return "src/resources/audio/laserbeam1.wav";
 		case ("Destroyed Explosion"):
 			return "src/resources/audio/Destroyed Explosion.wav";
+		case ("Alien Spaceship Destroyed"):
+			return "src/resources/audio/Alien Spaceship Destroyed.wav";
 		case ("Furi - Make this right"):
 			return "src/resources/audio/music/Furi - Make this right.wav";
 		case ("Furi - Wisdom of rage"):

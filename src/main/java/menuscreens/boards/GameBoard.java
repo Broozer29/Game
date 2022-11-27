@@ -16,6 +16,7 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
+import data.AudioDatabase;
 import data.DataClass;
 import game.managers.AnimationManager;
 import game.managers.AudioManager;
@@ -41,10 +42,11 @@ public class GameBoard extends JPanel implements ActionListener {
 	
 
 	private DataClass data = DataClass.getInstance();
+	private AudioDatabase audioDatabase = AudioDatabase.getInstance();
 	private final int boardWidth = data.getWindowWidth();
 	private final int boardHeight = data.getWindowHeight();
 
-	private final int DELAY = 3;
+	private final int DELAY = 15;
 	private BoardManager boardManager = BoardManager.getInstance();
 	private AnimationManager animationManager = AnimationManager.getInstance();
 	private EnemyManager enemyManager = EnemyManager.getInstance();
@@ -259,6 +261,7 @@ public class GameBoard extends JPanel implements ActionListener {
 			animationManager.updateGameTick();
 			backgroundManager.updateGameTick();
 			timerManager.updateGameTick();
+			audioDatabase.updateGameTick();
 		}
 
 		repaint();
