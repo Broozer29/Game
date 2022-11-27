@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import data.DataClass;
-import game.managers.PathFactory;
 import game.objects.Enemy;
 
 public class Trajectory {
@@ -17,15 +16,7 @@ public class Trajectory {
 	public Trajectory() {
 	}
 
-	/*
-	 * To-do lijst: - Pre-generated paths maken. Voor rechts naar links, boven naar
-	 * beneden en onder naar boven. (Gebruik window width/height) - Het juiste
-	 * trajectory (combinatie van paden) kiezen op basis van enemy type -
-	 * Enemy.move() aansluiten zodat het de nieuwe coordinaten van een pad
-	 * terugkrijgt. (getPathCoordinates)
-	 * 
-	 */
-
+	//Creates a trajectory & correspondent path based on enemy type
 	public void setTrajectoryType(Enemy enemy) {
 		Path newPath = null;
 
@@ -43,7 +34,7 @@ public class Trajectory {
 	}
 
 	// Gets additional path length to ensure the enemy doesn't stop dead in its
-	// tracks.
+	// tracks halfway the screen.
 	private int getAdditionalXSteps(Enemy enemy) {
 		switch (enemy.getEnemyType()) {
 		case ("Default Alien Spaceship"):
@@ -53,7 +44,7 @@ public class Trajectory {
 	}
 
 	// Gets additional path length to ensure the enemy doesn't stop dead in its
-	// tracks.
+	// tracks halfway the screen.
 	private int getAdditionalYSteps(Enemy enemy) {
 		switch (enemy.getEnemyType()) {
 		case ("Alien Bomb"):
@@ -72,8 +63,7 @@ public class Trajectory {
 		this.pathList.add(path);
 	}
 
-	// Should this be called every frame? As it stands, needs to be called on every
-	// enemyManager.updateGameTick();
+	//Removes paths that have finished playing out and resets the current path that needs to be followed.
 	private void removeFinishedPaths() {
 		for (int i = 0; i < pathList.size(); i++) {
 			if (pathList.get(i).isPathWalked()) {
@@ -100,6 +90,7 @@ public class Trajectory {
 
 	}
 
+	// Updates the movement speed of enemies when they change board blocks
 	public void updateMovementSpeed(int movementSpeed) {
 		currentPath.setMovementSpeed(movementSpeed);
 	}

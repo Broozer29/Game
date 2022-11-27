@@ -36,7 +36,8 @@ public class GameBoard extends JPanel implements ActionListener {
 
 	private Timer timer;
 	private boolean ingame;
-	private String currentMusic = "Furi - Make this right"; 
+//	private String currentMusic = "Furi - Make this right"; 
+	private String currentMusic = ""; 
 	
 
 	private DataClass data = DataClass.getInstance();
@@ -169,6 +170,7 @@ public class GameBoard extends JPanel implements ActionListener {
 		for (Enemy enemy : enemyManager.getEnemies()) {
 			if (enemy.isVisible()) {
 				drawImage(g, enemy);
+				if(!enemy.getEnemyType().equals("Alien Bomb"))
 				drawHealthBars(g, enemy);
 			}
 		}

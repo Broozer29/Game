@@ -3,15 +3,19 @@ package game.managers;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.sound.sampled.UnsupportedAudioFileException;
+
 import data.DataClass;
 import game.objects.BoardBlock;
 import game.objects.Enemy;
 
 import java.awt.Rectangle;
+import java.io.IOException;
 
 public class EnemyManager {
 
 	private static EnemyManager instance = new EnemyManager();
+	private AudioManager audioManager = AudioManager.getInstance();
 	private FriendlyManager friendlyManager = FriendlyManager.getInstance();
 	private List<Enemy> enemyList = new ArrayList<Enemy>();
 	private List<BoardBlock> boardBlockList = new ArrayList<BoardBlock>();
@@ -38,6 +42,7 @@ public class EnemyManager {
 		boardBlockList = new ArrayList<BoardBlock>();
 		friendlyManager = FriendlyManager.getInstance();
 		dataClass = DataClass.getInstance();
+		audioManager = AudioManager.getInstance();
 		maxBoardBlocks = 8;
 		saturateBoardBlockList();
 	}
@@ -122,7 +127,19 @@ public class EnemyManager {
 			if (enemy.isVisible()) {
 				enemy.move();
 			} else {
+				triggerEnemyDeathSound(enemy);
 				removeEnemy(enemy);
+			}
+		}
+	}
+	
+	private void triggerEnemyDeathSound(Enemy enemy) {
+		switch(enemy.getEnemyType()) {
+		case("Alien Bomb"):
+			try {
+				audioManager.addAudio("Destroyed Explosion");
+			} catch (UnsupportedAudioFileException | IOException e) {
+				e.printStackTrace();
 			}
 		}
 	}

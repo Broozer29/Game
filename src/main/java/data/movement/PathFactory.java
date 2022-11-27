@@ -1,6 +1,4 @@
-package game.managers;
-
-import data.movement.Path;
+package data.movement;
 
 public class PathFactory {
 

@@ -21,7 +21,7 @@ public class ImageLoader {
 		return ii.getImage();
 	}
 
-	private static String convertImageStringToURL(String imageString) {
+	private String convertImageStringToURL(String imageString) {
 		switch (imageString) {
 		case ("Player Spaceship"):
 			return "src/resources/images/spaceship.png";
