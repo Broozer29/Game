@@ -4,8 +4,8 @@ import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.List;
 
-import game.objects.Enemy;
 import game.objects.Missile;
+import game.objects.enemies.Enemy;
 import image.objects.Animation;
 
 public class MissileManager {

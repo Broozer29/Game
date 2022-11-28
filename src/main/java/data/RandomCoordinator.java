@@ -3,7 +3,7 @@ package data;
 import java.util.List;
 import java.util.Random;
 
-import game.objects.Enemy;
+import game.objects.enemies.Enemy;
 import image.objects.BackgroundObject;
 
 public class RandomCoordinator {

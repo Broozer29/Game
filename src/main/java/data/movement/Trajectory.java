@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import data.DataClass;
-import game.objects.Enemy;
+import game.objects.enemies.Enemy;
 
 public class Trajectory {
 
