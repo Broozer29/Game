@@ -13,7 +13,7 @@ public class Alien extends Enemy {
 		this.attackSpeedFrameCount = 150;
 		this.movementSpeed = 1;
 		this.hasAttack = true;
-		this.trajectory.setTrajectoryType(this);
+		this.trajectory.setEnemyTrajectoryType(this);
 	}
 
 	// Called every loop to move the enemy

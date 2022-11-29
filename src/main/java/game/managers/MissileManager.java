@@ -4,9 +4,10 @@ import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.List;
 
-import game.objects.Missile;
 import game.objects.enemies.Enemy;
-import image.objects.Animation;
+import game.objects.missiles.AlienLaserbeam;
+import game.objects.missiles.DefaultPlayerLaserbeam;
+import game.objects.missiles.Missile;
 
 public class MissileManager {
 
@@ -38,13 +39,21 @@ public class MissileManager {
 	}
 
 	public void firePlayerMissile(int xCoordinate, int yCoordinate, String missileType) {
-		Missile newMissile = new Missile(xCoordinate, yCoordinate, missileType);
-		this.friendlyMissiles.add(newMissile);
+		switch (missileType) {
+		case ("Player Laserbeam"):
+			Missile newMissile = new DefaultPlayerLaserbeam(xCoordinate, yCoordinate, missileType);
+			this.friendlyMissiles.add(newMissile);
+		}
+
 	}
 
 	public void addEnemyMissile(int xCoordinate, int yCoordinate, String missileType) {
-		Missile enemyMissile = new Missile(xCoordinate, yCoordinate, missileType);
-		this.enemyMissiles.add(enemyMissile);
+		switch (missileType) {
+		case ("Alien Laserbeam"):
+			Missile enemyMissile = new AlienLaserbeam(xCoordinate, yCoordinate, missileType);
+			this.enemyMissiles.add(enemyMissile);
+		}
+
 	}
 
 	public void updateGameTick() {
