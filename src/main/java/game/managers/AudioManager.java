@@ -70,6 +70,9 @@ public class AudioManager {
 		case ("Alien Spaceship Destroyed"):
 			clip = audioDatabase.getDefaultAlienExplosion();
 			break;
+		case("Alien Bomb Impact"):
+			clip = audioDatabase.getAlienBombImpact();
+			break;
 		}
 
 		if (clip != null) {
@@ -84,6 +87,8 @@ public class AudioManager {
 				break;
 			case ("Alien Spaceship Destroyed"):
 				break;
+			case("Alien Bomb Impact"):
+				volume.setValue(-2);
 			}
 
 			clip.start();

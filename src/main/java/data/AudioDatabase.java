@@ -14,11 +14,14 @@ public class AudioDatabase {
 	private Clip FuriMyOnlyChance;
 	private Clip FuriMakeThisRight;
 	private Clip DefaultMusic;
+
 	// Van alle clips een lijst met clips maken, dan vervolgens een clip teruggeven
 	// die niet gebruikt wordt.
 	// Zo kun je een maximum aantal clips afdwingen per soort zonder dat clips niet
 	// kunnen afspelen.
 
+	private int clipListSize = 10;
+	private List<Clip> alienBombImpactList = new ArrayList<Clip>();
 	private List<Clip> laserBeamClipList = new ArrayList<Clip>();
 	private List<Clip> destroyedExplosionClipList = new ArrayList<Clip>();
 	private List<Clip> alienSpaceshipDestroyedClipList = new ArrayList<Clip>();
@@ -61,6 +64,12 @@ public class AudioDatabase {
 				alienSpaceshipDestroyedClipList.get(i).setFramePosition(0);
 			}
 		}
+		for (int i = 0; i < alienBombImpactList.size(); i++) {
+			if (!alienBombImpactList.get(i).isRunning()) {
+				alienBombImpactList.get(i).stop();
+				alienBombImpactList.get(i).setFramePosition(0);
+			}
+		}
 
 	}
 
@@ -72,13 +81,15 @@ public class AudioDatabase {
 	}
 
 	private void initSoundEffects() throws LineUnavailableException {
-		for (int i = 0; i < 10; i++) {
+		for (int i = 0; i < clipListSize; i++) {
 			Clip tempLaserbeamClip = audioLoader.getSoundfile("Player Laserbeam");
 			laserBeamClipList.add(tempLaserbeamClip);
 			Clip tempDestroyedExplosionClip = audioLoader.getSoundfile("Destroyed Explosion");
 			destroyedExplosionClipList.add(tempDestroyedExplosionClip);
 			Clip tempAlienSpaceshipExplosionClip = audioLoader.getSoundfile("Alien Spaceship Destroyed");
 			alienSpaceshipDestroyedClipList.add(tempAlienSpaceshipExplosionClip);
+			Clip tempAlienBombImpactClip = audioLoader.getSoundfile("Alien Bomb Impact");
+			alienBombImpactList.add(tempAlienBombImpactClip);
 		}
 
 	}
@@ -121,6 +132,15 @@ public class AudioDatabase {
 		for (int i = 0; i < alienSpaceshipDestroyedClipList.size(); i++) {
 			if (!alienSpaceshipDestroyedClipList.get(i).isActive()) {
 				return alienSpaceshipDestroyedClipList.get(i);
+			}
+		}
+		return null;
+	}
+	
+	public Clip getAlienBombImpact() {
+		for (int i = 0; i < alienBombImpactList.size(); i++) {
+			if (!alienBombImpactList.get(i).isActive()) {
+				return alienBombImpactList.get(i);
 			}
 		}
 		return null;

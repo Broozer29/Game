@@ -40,22 +40,25 @@ public class Animation extends Sprite {
 		switch (imageType) {
 		case ("Impact Explosion One"):
 			this.frames = ImageDatabase.getInstance().getImpactExplosionOneFrames();
-			return;
+			break;
 		case ("Player Engine"):
 			this.frames = ImageDatabase.getInstance().getPlayerEngineFrames();
-			return;
+			break;
 		case ("Destroyed Explosion"):
 			this.frames = ImageDatabase.getInstance().getDestroyedExplosionUpFrames();
-			return;
+			break;
 		case ("Destroyed Explosion Right"):
 			this.frames = ImageDatabase.getInstance().getDestroyedExplosionRightFrames();
-			return;
+			break;
 		case ("Destroyed Explosion Left"):
 			this.frames = ImageDatabase.getInstance().getDestroyedExplosionLeftFrames();
-			return;
+			break;
 		case ("Destroyed Explosion Reverse"):
 			this.frames = ImageDatabase.getInstance().getDestroyedExplosionDownFrames();
-			return;
+			break;
+		case ("Alien Bomb Explosion"):
+			this.frames = ImageDatabase.getInstance().getAlienBombExplosionFrames();
+			break;
 		}
 	}
 
@@ -87,12 +90,13 @@ public class Animation extends Sprite {
 	public Image getCurrentFrame() {
 		if (currentFrame < frames.size()) {
 			Image returnImage = frames.get(currentFrame).getImage();
-			
+
 			if (frameDelay >= 1) {
 				updateFrameCount();
 				frameDelay = 0;
-			} else frameDelay++;
-			
+			} else
+				frameDelay++;
+
 			return returnImage;
 		}
 		return frames.get(1).getImage();

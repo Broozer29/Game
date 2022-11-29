@@ -18,6 +18,7 @@ public class EnemyManager {
 	private static EnemyManager instance = new EnemyManager();
 	private AudioManager audioManager = AudioManager.getInstance();
 	private FriendlyManager friendlyManager = FriendlyManager.getInstance();
+	private AnimationManager animationManager = AnimationManager.getInstance();
 	private List<Enemy> enemyList = new ArrayList<Enemy>();
 	private List<Alien> alienList = new ArrayList<Alien>();
 	private List<AlienBomb> alienBombList = new ArrayList<AlienBomb>();
@@ -53,12 +54,12 @@ public class EnemyManager {
 	public void updateGameTick() {
 		try {
 			updateEnemies();
+			checkSpaceshipCollisions();
 		} catch (UnsupportedAudioFileException | IOException e) {
 			e.printStackTrace();
 		}
 		updateEnemyBoardBlocks();
 		triggerEnemyAction();
-		checkSpaceshipCollisions();
 		keepTrackOfEnemies();
 	}
 
@@ -93,17 +94,26 @@ public class EnemyManager {
 
 	}
 
-	private void checkSpaceshipCollisions() {
-		if (friendlyManager == null) {
+	private void checkSpaceshipCollisions() throws UnsupportedAudioFileException, IOException {
+		if (friendlyManager == null || animationManager == null) {
+			this.animationManager = AnimationManager.getInstance();
 			this.friendlyManager = FriendlyManager.getInstance();
 		}
 		Rectangle spaceshipBounds = friendlyManager.getSpaceship().getBounds();
 
 		// Checks collision between spaceship and enemies
 		for (Enemy enemy : enemyList) {
-			Rectangle alienBounds = enemy.getBounds();
-			if (spaceshipBounds.intersects(alienBounds)) {
-				friendlyManager.getSpaceship().takeHitpointDamage(1);
+			Rectangle enemyBounds = enemy.getBounds();
+			if (spaceshipBounds.intersects(enemyBounds)) {
+				if (enemy.getEnemyType().equals("Alien Bomb")) {
+					friendlyManager.getSpaceship().takeHitpointDamage(20);
+					animationManager.addUpperAnimation(enemy.getXCoordinate(), enemy.getYCoordinate(),
+							"Alien Bomb Explosion");
+					audioManager.addAudio("Alien Bomb Impact");
+					enemy.setVisible(false);
+				} else {
+					friendlyManager.getSpaceship().takeHitpointDamage(1);
+				}
 			}
 		}
 	}
@@ -141,7 +151,7 @@ public class EnemyManager {
 				removeEnemy(alien);
 			}
 		}
-		
+
 		for (int i = 0; i < alienBombList.size(); i++) {
 			AlienBomb alienBomb = alienBombList.get(i);
 			if (alienBomb.isVisible()) {

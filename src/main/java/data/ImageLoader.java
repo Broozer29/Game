@@ -61,7 +61,6 @@ public class ImageLoader {
 			return "src/resources/images/background/planet3.png";
 		case ("Star"):
 			return "src/resources/images/background/star.png";
-
 		}
 		return "notfound";
 	}

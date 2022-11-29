@@ -43,6 +43,7 @@ public class ImageDatabase {
 	private List<ImageIcon> destroyedExplosionLeftFrames = new ArrayList<ImageIcon>();
 	private List<ImageIcon> destroyedExplosionRightFrames = new ArrayList<ImageIcon>();
 	private List<ImageIcon> destroyedExplosionDownFrames = new ArrayList<ImageIcon>();
+	private List<ImageIcon> alienBombExplosionFrames = new ArrayList<ImageIcon>();
 
 	// Background images
 	private Image moon;
@@ -174,23 +175,26 @@ public class ImageDatabase {
 	public void initAnimations() throws FileNotFoundException, IOException {
 		ImageReader reader = ImageIO.getImageReadersBySuffix("GIF").next();
 
-		reader.setInput(new FileImageInputStream(new File("src/resources/images/explosion.gif")));
+		reader.setInput(new FileImageInputStream(new File("src/resources/images/gif/explosion.gif")));
 		impactExplosionOneFrames = gifToImageIcons(reader);
 
-		reader.setInput(new FileImageInputStream(new File("src/resources/images/enginesmoke.gif")));
+		reader.setInput(new FileImageInputStream(new File("src/resources/images/gif/enginesmoke.gif")));
 		playerEngineFrames = gifToImageIcons(reader);
 
-		reader.setInput(new FileImageInputStream(new File("src/resources/images/Destroyed Explosion.gif")));
+		reader.setInput(new FileImageInputStream(new File("src/resources/images/gif/Destroyed Explosion.gif")));
 		destroyedExplosionUpFrames = gifToImageIcons(reader);
 
-		reader.setInput(new FileImageInputStream(new File("src/resources/images/Destroyed Explosion Right.gif")));
+		reader.setInput(new FileImageInputStream(new File("src/resources/images/gif/Destroyed Explosion Right.gif")));
 		destroyedExplosionRightFrames = gifToImageIcons(reader);
 
-		reader.setInput(new FileImageInputStream(new File("src/resources/images/Destroyed Explosion Left.gif")));
+		reader.setInput(new FileImageInputStream(new File("src/resources/images/gif/Destroyed Explosion Left.gif")));
 		destroyedExplosionDownFrames = gifToImageIcons(reader);
 
-		reader.setInput(new FileImageInputStream(new File("src/resources/images/Destroyed Explosion Reverse.gif")));
+		reader.setInput(new FileImageInputStream(new File("src/resources/images/gif/Destroyed Explosion Reverse.gif")));
 		destroyedExplosionLeftFrames = gifToImageIcons(reader);
+
+		reader.setInput(new FileImageInputStream(new File("src/resources/images/gif/Alien Bomb Explosion.gif")));
+		alienBombExplosionFrames = gifToImageIcons(reader);
 	}
 
 	private List<ImageIcon> gifToImageIcons(ImageReader reader) throws IOException {
@@ -224,6 +228,10 @@ public class ImageDatabase {
 
 	public List<ImageIcon> getDestroyedExplosionDownFrames() {
 		return destroyedExplosionDownFrames;
+	}
+
+	public List<ImageIcon> getAlienBombExplosionFrames() {
+		return alienBombExplosionFrames;
 	}
 
 }
