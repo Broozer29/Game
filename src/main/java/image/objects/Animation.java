@@ -1,14 +1,9 @@
 package image.objects;
 
 import java.awt.Image;
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.imageio.ImageIO;
-import javax.imageio.ImageReader;
-import javax.imageio.stream.FileImageInputStream;
 import javax.swing.ImageIcon;
 
 import data.ImageDatabase;
@@ -37,29 +32,7 @@ public class Animation extends Sprite {
 	// Sets frames, Animation shouldn't call the ImageDatabase, it should get it
 	// from a manager when created.
 	private void loadGifFrames(String imageType) {
-		switch (imageType) {
-		case ("Impact Explosion One"):
-			this.frames = ImageDatabase.getInstance().getImpactExplosionOneFrames();
-			break;
-		case ("Player Engine"):
-			this.frames = ImageDatabase.getInstance().getPlayerEngineFrames();
-			break;
-		case ("Destroyed Explosion"):
-			this.frames = ImageDatabase.getInstance().getDestroyedExplosionUpFrames();
-			break;
-		case ("Destroyed Explosion Right"):
-			this.frames = ImageDatabase.getInstance().getDestroyedExplosionRightFrames();
-			break;
-		case ("Destroyed Explosion Left"):
-			this.frames = ImageDatabase.getInstance().getDestroyedExplosionLeftFrames();
-			break;
-		case ("Destroyed Explosion Reverse"):
-			this.frames = ImageDatabase.getInstance().getDestroyedExplosionDownFrames();
-			break;
-		case ("Alien Bomb Explosion"):
-			this.frames = ImageDatabase.getInstance().getAlienBombExplosionFrames();
-			break;
-		}
+		this.frames = ImageDatabase.getInstance().getGif(imageType);
 	}
 
 	// Centers the animation a bit further inwards to the collision spot

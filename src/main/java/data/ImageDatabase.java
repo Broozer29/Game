@@ -23,6 +23,19 @@ public class ImageDatabase {
 	// Enemy images
 	private Image alienSpaceshipImage;
 	private Image alienBombImage;
+	private Image seekerImage;
+	private Image tazerImage;
+	private Image energizerImage;
+	private Image bulldozerImage;
+	private Image flamerImage;
+	private Image bombaImage;
+
+	// Ship numbers to names:
+	/*
+	 * Ship1 = Seeker Ship2 = Tazer Ship3 = Energizer Ship4 = Bulldozer Ship5 =
+	 * Flamer Ship6 = Bomba
+	 * 
+	 */
 
 	// Projectile images
 	private Image alienLaserbeamImage;
@@ -44,6 +57,36 @@ public class ImageDatabase {
 	private List<ImageIcon> destroyedExplosionRightFrames = new ArrayList<ImageIcon>();
 	private List<ImageIcon> destroyedExplosionDownFrames = new ArrayList<ImageIcon>();
 	private List<ImageIcon> alienBombExplosionFrames = new ArrayList<ImageIcon>();
+
+	// Enemy Projectile Animations
+	private List<ImageIcon> seekerProjectileFrames = new ArrayList<ImageIcon>();
+	private List<ImageIcon> tazerProjectileFrames = new ArrayList<ImageIcon>();
+	private List<ImageIcon> energizerProjectileFrames = new ArrayList<ImageIcon>();
+	private List<ImageIcon> bulldozerProjectileFrames = new ArrayList<ImageIcon>();
+	private List<ImageIcon> flamerProjectileFrames = new ArrayList<ImageIcon>();
+	private List<ImageIcon> bombaProjectileFrames = new ArrayList<ImageIcon>();
+
+	// Enemy Exhaust Animations
+	private List<ImageIcon> seekerNormalExhaustFrames = new ArrayList<ImageIcon>();
+	private List<ImageIcon> seekerLargeExhaustFrames = new ArrayList<ImageIcon>();
+	private List<ImageIcon> tazerNormalExhaustFrames = new ArrayList<ImageIcon>();
+	private List<ImageIcon> tazerLargeExhaustFrames = new ArrayList<ImageIcon>();
+	private List<ImageIcon> energizerNormalExhaustFrames = new ArrayList<ImageIcon>();
+	private List<ImageIcon> energizerLargeExhaustFrames = new ArrayList<ImageIcon>();
+	private List<ImageIcon> bulldozerNormalExhaustFrames = new ArrayList<ImageIcon>();
+	private List<ImageIcon> bulldozerLargeExhaustFrames = new ArrayList<ImageIcon>();
+	private List<ImageIcon> flamerNormalExhaustFrames = new ArrayList<ImageIcon>();
+	private List<ImageIcon> flamerLargeExhaustFrames = new ArrayList<ImageIcon>();
+	private List<ImageIcon> bombaNormalExhaustFrames = new ArrayList<ImageIcon>();
+	private List<ImageIcon> bombaLargeExhaustFrames = new ArrayList<ImageIcon>();
+
+	// Enemy projectile explosions
+	private List<ImageIcon> seekerProjectileExplosion = new ArrayList<ImageIcon>();
+	private List<ImageIcon> tazerProjectileExplosion = new ArrayList<ImageIcon>();
+	private List<ImageIcon> energizerProjectileExplosion = new ArrayList<ImageIcon>();
+	private List<ImageIcon> bulldozerProjectileExplosion = new ArrayList<ImageIcon>();
+	private List<ImageIcon> flamerProjectileExplosion = new ArrayList<ImageIcon>();
+	private List<ImageIcon> bombaProjectileExplosion = new ArrayList<ImageIcon>();
 
 	// Background images
 	private Image moon;
@@ -85,6 +128,12 @@ public class ImageDatabase {
 	private void initEnemies() {
 		this.alienSpaceshipImage = imgLoader.getImage("Default Alien Spaceship");
 		this.alienBombImage = imgLoader.getImage("Alien Bomb");
+		this.seekerImage = imgLoader.getImage("Seeker");
+		this.tazerImage = imgLoader.getImage("Tazer");
+		this.energizerImage = imgLoader.getImage("Energizer");
+		this.bulldozerImage = imgLoader.getImage("Bulldozer");
+		this.flamerImage = imgLoader.getImage("Flamer");
+		this.bombaImage = imgLoader.getImage("Bomba");
 	}
 
 	private void initProjectiles() {
@@ -150,6 +199,18 @@ public class ImageDatabase {
 			return this.planetThree;
 		case ("Star"):
 			return this.star;
+		case ("Seeker"):
+			return this.seekerImage;
+		case ("Tazer"):
+			return this.tazerImage;
+		case ("Energizer"):
+			return this.energizerImage;
+		case ("Bulldozer"):
+			return this.bulldozerImage;
+		case ("Flamer"):
+			return this.flamerImage;
+		case ("Bomba"):
+			return this.bombaImage;
 		}
 		return testImage;
 	}
@@ -168,6 +229,56 @@ public class ImageDatabase {
 			return this.destroyedExplosionDownFrames;
 		case ("Destroyed Explosion Left"):
 			return this.destroyedExplosionLeftFrames;
+		case ("Alien Bomb Explosion"):
+			return this.alienBombExplosionFrames;
+		case ("Seeker Projectile"):
+			return this.seekerProjectileFrames;
+		case ("Tazer Projectile"):
+			return this.tazerProjectileFrames;
+		case ("Energizer Projectile"):
+			return this.energizerProjectileFrames;
+		case ("Bulldozer Projectile"):
+			return this.bulldozerProjectileFrames;
+		case ("Flamer Projectile"):
+			return this.flamerProjectileFrames;
+		case ("Bomba Projectile"):
+			return this.bombaProjectileFrames;
+		case ("Seeker Normal Exhaust"):
+			return this.seekerNormalExhaustFrames;
+		case ("Seeker Large Exhaust"):
+			return this.seekerLargeExhaustFrames;
+		case ("Seeker Projectile Explosion"):
+			return this.seekerProjectileExplosion;
+		case ("Tazer Normal Exhaust"):
+			return this.tazerNormalExhaustFrames;
+		case ("Tazer Large Exhaust"):
+			return this.tazerLargeExhaustFrames;
+		case ("Tazer Projectile Explosion"):
+			return this.tazerProjectileExplosion;
+		case ("Energizer Normal Exhaust"):
+			return this.energizerNormalExhaustFrames;
+		case ("Energizer Large Exhaust"):
+			return this.energizerLargeExhaustFrames;
+		case ("Energizer Projectile Explosion"):
+			return this.energizerProjectileExplosion;
+		case ("Bulldozer Normal Exhaust"):
+			return this.bulldozerNormalExhaustFrames;
+		case ("Bulldozer Large Exhaust"):
+			return this.bulldozerLargeExhaustFrames;
+		case ("Bulldozer Projectile Explosion"):
+			return this.bulldozerProjectileExplosion;
+		case ("Flamer Normal Exhaust"):
+			return this.flamerNormalExhaustFrames;
+		case ("Flamer Large Exhaust"):
+			return this.flamerLargeExhaustFrames;
+		case ("Flamer Projectile Explosion"):
+			return this.flamerProjectileExplosion;
+		case ("Bomba Normal Exhaust"):
+			return this.bombaNormalExhaustFrames;
+		case ("Bomba Large Exhaust"):
+			return this.bombaLargeExhaustFrames;
+		case ("Bomba Projectile Explosion"):
+			return this.bombaProjectileExplosion;
 		}
 		return null;
 	}
@@ -195,6 +306,107 @@ public class ImageDatabase {
 
 		reader.setInput(new FileImageInputStream(new File("src/resources/images/gif/Alien Bomb Explosion.gif")));
 		alienBombExplosionFrames = gifToImageIcons(reader);
+
+		// Enemy projectiles
+		reader.setInput(
+				new FileImageInputStream(new File("src/resources/images/Ships/Ship 1/Ship 1 - Projectile.gif")));
+		seekerProjectileFrames = gifToImageIcons(reader);
+
+		reader.setInput(
+				new FileImageInputStream(new File("src/resources/images/Ships/Ship 2/Ship 2 - Projectile.gif")));
+		tazerProjectileFrames = gifToImageIcons(reader);
+
+		reader.setInput(
+				new FileImageInputStream(new File("src/resources/images/Ships/Ship 3/Ship 3 - Projectile.gif")));
+		energizerProjectileFrames = gifToImageIcons(reader);
+
+		reader.setInput(
+				new FileImageInputStream(new File("src/resources/images/Ships/Ship 4/Ship 4 - Projectile.gif")));
+		bulldozerProjectileFrames = gifToImageIcons(reader);
+
+		reader.setInput(
+				new FileImageInputStream(new File("src/resources/images/Ships/Ship 5/Ship 5 - Projectile.gif")));
+		flamerProjectileFrames = gifToImageIcons(reader);
+
+		reader.setInput(
+				new FileImageInputStream(new File("src/resources/images/Ships/Ship 6/Ship 6 - Projectile.gif")));
+		bombaProjectileFrames = gifToImageIcons(reader);
+
+		// Enemy normal exhausts
+		reader.setInput(
+				new FileImageInputStream(new File("src/resources/images/Ships/Ship 1/Ship 1 - Normal Exhaust.gif")));
+		seekerNormalExhaustFrames = gifToImageIcons(reader);
+
+		reader.setInput(
+				new FileImageInputStream(new File("src/resources/images/Ships/Ship 2/Ship 2 - Normal Exhaust.gif")));
+		tazerNormalExhaustFrames = gifToImageIcons(reader);
+
+		reader.setInput(
+				new FileImageInputStream(new File("src/resources/images/Ships/Ship 3/Ship 3 - Normal Exhaust.gif")));
+		energizerNormalExhaustFrames = gifToImageIcons(reader);
+
+		reader.setInput(
+				new FileImageInputStream(new File("src/resources/images/Ships/Ship 4/Ship 4 - Normal Exhaust.gif")));
+		bulldozerNormalExhaustFrames = gifToImageIcons(reader);
+
+		reader.setInput(
+				new FileImageInputStream(new File("src/resources/images/Ships/Ship 5/Ship 5 - Normal Exhaust.gif")));
+		flamerNormalExhaustFrames = gifToImageIcons(reader);
+
+		reader.setInput(
+				new FileImageInputStream(new File("src/resources/images/Ships/Ship 6/Ship 6 - Normal Exhaust.gif")));
+		bombaNormalExhaustFrames = gifToImageIcons(reader);
+
+		// Enemy large exhausts
+		reader.setInput(
+				new FileImageInputStream(new File("src/resources/images/Ships/Ship 1/Ship 1 - Large Exhaust.gif")));
+		seekerLargeExhaustFrames = gifToImageIcons(reader);
+
+		reader.setInput(
+				new FileImageInputStream(new File("src/resources/images/Ships/Ship 2/Ship 2 - Large Exhaust.gif")));
+		tazerLargeExhaustFrames = gifToImageIcons(reader);
+
+		reader.setInput(
+				new FileImageInputStream(new File("src/resources/images/Ships/Ship 3/Ship 3 - Large Exhaust.gif")));
+		energizerLargeExhaustFrames = gifToImageIcons(reader);
+
+		reader.setInput(
+				new FileImageInputStream(new File("src/resources/images/Ships/Ship 4/Ship 4 - Large Exhaust.gif")));
+		bulldozerLargeExhaustFrames = gifToImageIcons(reader);
+
+		reader.setInput(
+				new FileImageInputStream(new File("src/resources/images/Ships/Ship 5/Ship 5 - Large Exhaust.gif")));
+		flamerLargeExhaustFrames = gifToImageIcons(reader);
+
+		reader.setInput(
+				new FileImageInputStream(new File("src/resources/images/Ships/Ship 6/Ship 6 - Large Exhaust.gif")));
+		bombaLargeExhaustFrames = gifToImageIcons(reader);
+
+		// Enemy projectile explosions
+		reader.setInput(new FileImageInputStream(
+				new File("src/resources/images/Ships/Ship 1/Ship 1 - Projectile Explosion.gif")));
+		seekerProjectileExplosion = gifToImageIcons(reader);
+
+		reader.setInput(new FileImageInputStream(
+				new File("src/resources/images/Ships/Ship 2/Ship 2 - Projectile Explosion.gif")));
+		tazerProjectileExplosion = gifToImageIcons(reader);
+
+		reader.setInput(new FileImageInputStream(
+				new File("src/resources/images/Ships/Ship 3/Ship 3 - Projectile Explosion.gif")));
+		energizerProjectileExplosion = gifToImageIcons(reader);
+
+		reader.setInput(new FileImageInputStream(
+				new File("src/resources/images/Ships/Ship 4/Ship 4 - Projectile Explosion.gif")));
+		bulldozerProjectileExplosion = gifToImageIcons(reader);
+
+		reader.setInput(new FileImageInputStream(
+				new File("src/resources/images/Ships/Ship 5/Ship 5 - Projectile Explosion.gif")));
+		flamerProjectileExplosion = gifToImageIcons(reader);
+
+		reader.setInput(new FileImageInputStream(
+				new File("src/resources/images/Ships/Ship 6/Ship 6 - Projectile Explosion.gif")));
+		bombaProjectileExplosion = gifToImageIcons(reader);
+
 	}
 
 	private List<ImageIcon> gifToImageIcons(ImageReader reader) throws IOException {
@@ -204,34 +416,6 @@ public class ImageDatabase {
 			imgs.add(new ImageIcon(reader.read(i)));
 		}
 		return imgs;
-	}
-
-	public List<ImageIcon> getImpactExplosionOneFrames() {
-		return impactExplosionOneFrames;
-	}
-
-	public List<ImageIcon> getPlayerEngineFrames() {
-		return playerEngineFrames;
-	}
-
-	public List<ImageIcon> getDestroyedExplosionUpFrames() {
-		return destroyedExplosionUpFrames;
-	}
-
-	public List<ImageIcon> getDestroyedExplosionLeftFrames() {
-		return destroyedExplosionLeftFrames;
-	}
-
-	public List<ImageIcon> getDestroyedExplosionRightFrames() {
-		return destroyedExplosionRightFrames;
-	}
-
-	public List<ImageIcon> getDestroyedExplosionDownFrames() {
-		return destroyedExplosionDownFrames;
-	}
-
-	public List<ImageIcon> getAlienBombExplosionFrames() {
-		return alienBombExplosionFrames;
 	}
 
 }
