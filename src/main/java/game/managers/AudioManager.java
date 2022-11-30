@@ -17,7 +17,7 @@ public class AudioManager {
 	private static AudioManager instance = new AudioManager();
 	private FriendlyManager friendlyManager = FriendlyManager.getInstance();
 	private Clip backGroundMusic = null;
-	private AudioInputStream backGroundMusicInputStream = null;
+	private Clip backGroundMusicInputStream = null;
 	private AudioDatabase audioDatabase = AudioDatabase.getInstance();
 
 	private AudioManager() {
@@ -59,7 +59,7 @@ public class AudioManager {
 	// Play singular audios
 	private void playAudio(String audioType) throws UnsupportedAudioFileException, IOException {
 		Clip clip = null;
-		
+
 		switch (audioType) {
 		case ("Player Laserbeam"):
 			clip = audioDatabase.getLaserBeam();
@@ -70,7 +70,7 @@ public class AudioManager {
 		case ("Alien Spaceship Destroyed"):
 			clip = audioDatabase.getDefaultAlienExplosion();
 			break;
-		case("Alien Bomb Impact"):
+		case ("Alien Bomb Impact"):
 			clip = audioDatabase.getAlienBombImpact();
 			break;
 		}
@@ -78,7 +78,7 @@ public class AudioManager {
 		if (clip != null) {
 			// Adjusts volume
 			FloatControl volume = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
-			switch(audioType) {
+			switch (audioType) {
 			case ("Player Laserbeam"):
 				volume.setValue(-6);
 				break;
@@ -87,7 +87,7 @@ public class AudioManager {
 				break;
 			case ("Alien Spaceship Destroyed"):
 				break;
-			case("Alien Bomb Impact"):
+			case ("Alien Bomb Impact"):
 				volume.setValue(-2);
 			}
 
@@ -100,24 +100,19 @@ public class AudioManager {
 	public void playMusicAudio(String audioType) throws UnsupportedAudioFileException, IOException {
 		if (backGroundMusic == null) {
 			switch (audioType) {
-//			case ("defaultmusic"):
-//				backGroundMusicInputStream = audioDatabase.getDefaultMusic();
-//			case ("Furi - Make this right"):
-//				backGroundMusicInputStream = audioDatabase.getFuriMakeThisRight();
-//			case ("Furi - Wisdom of rage"):
-//				backGroundMusicInputStream = audioDatabase.getFuriWisdomOfRage();
-//			case ("Furi - My only chance"):
-//				backGroundMusicInputStream = audioDatabase.getFuriMyOnlyChance();
+			case ("defaultmusic"):
+				backGroundMusicInputStream = audioDatabase.getDefaultMusic();
+			case ("Furi - Make this right"):
+				backGroundMusicInputStream = audioDatabase.getFuriMakeThisRight();
+			case ("Furi - Wisdom of rage"):
+				backGroundMusicInputStream = audioDatabase.getFuriWisdomOfRage();
+			case ("Furi - My only chance"):
+				backGroundMusicInputStream = audioDatabase.getFuriMyOnlyChance();
 			}
 
 			if (!(backGroundMusicInputStream == null)) {
-				try {
-					backGroundMusic = AudioSystem.getClip();
-					backGroundMusic.open(backGroundMusicInputStream);
-					backGroundMusic.loop(Clip.LOOP_CONTINUOUSLY);
-				} catch (LineUnavailableException e) {
-					e.printStackTrace();
-				}
+				backGroundMusicInputStream.start();
+				backGroundMusicInputStream.loop(Clip.LOOP_CONTINUOUSLY);
 			}
 		}
 	}

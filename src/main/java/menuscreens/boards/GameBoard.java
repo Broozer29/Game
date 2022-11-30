@@ -37,8 +37,8 @@ public class GameBoard extends JPanel implements ActionListener {
 
 	private Timer timer;
 	private boolean ingame;
-//	private String currentMusic = "Furi - Make this right"; 
-	private String currentMusic = ""; 
+	private String currentMusic = "Furi - Make this right"; 
+//	private String currentMusic = ""; 
 	
 
 	private DataClass data = DataClass.getInstance();

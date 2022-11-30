@@ -4,6 +4,7 @@ import java.util.List;
 
 import data.DataClass;
 import data.movement.Trajectory;
+import image.objects.Animation;
 import image.objects.Sprite;
 
 public class Missile extends Sprite {
