@@ -6,14 +6,19 @@ import game.managers.MissileManager;
 
 public class Seeker extends Enemy {
 
-	public Seeker(int x, int y, String enemyType, String direction) {
-		super(x, y, enemyType, direction);
+	public Seeker(int x, int y, String direction) {
+		super(x, y, direction);
+		loadImage("Seeker");
 		this.hitPoints = 50;
 		this.maxHitPoints = 50;
 		this.attackSpeedFrameCount = 100;
 		this.movementSpeed = 2;
 		this.hasAttack = true;
+		this.showHealthBar = true;
+		this.deathSound = "Alien Spaceship Destroyed";
 		this.trajectory.setEnemyTrajectoryType(this);
+		this.setVisible(true);
+		this.setRotation(direction);
 	}
 
 	public void move() {

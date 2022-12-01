@@ -11,8 +11,13 @@ import data.DataClass;
 import game.objects.BoardBlock;
 import game.objects.enemies.Alien;
 import game.objects.enemies.AlienBomb;
+import game.objects.enemies.Bomba;
+import game.objects.enemies.Bulldozer;
 import game.objects.enemies.Enemy;
+import game.objects.enemies.Energizer;
+import game.objects.enemies.Flamer;
 import game.objects.enemies.Seeker;
+import game.objects.enemies.Tazer;
 
 public class EnemyManager {
 
@@ -23,6 +28,11 @@ public class EnemyManager {
 	private List<Enemy> enemyList = new ArrayList<Enemy>();
 	private List<Alien> alienList = new ArrayList<Alien>();
 	private List<Seeker> seekerList = new ArrayList<Seeker>();
+	private List<Bomba> bombaList = new ArrayList<Bomba>();
+	private List<Flamer> flamerList = new ArrayList<Flamer>();
+	private List<Bulldozer> bulldozerList = new ArrayList<Bulldozer>();
+	private List<Tazer> tazerList = new ArrayList<Tazer>();
+	private List<Energizer> energizerList = new ArrayList<Energizer>();
 	private List<AlienBomb> alienBombList = new ArrayList<AlienBomb>();
 	private List<BoardBlock> boardBlockList = new ArrayList<BoardBlock>();
 	private int maxBoardBlocks = 8;
@@ -48,6 +58,11 @@ public class EnemyManager {
 		alienList = new ArrayList<Alien>();
 		boardBlockList = new ArrayList<BoardBlock>();
 		seekerList = new ArrayList<Seeker>();
+		bombaList = new ArrayList<Bomba>();
+		flamerList = new ArrayList<Flamer>();
+		bulldozerList = new ArrayList<Bulldozer>();
+		tazerList = new ArrayList<Tazer>();
+		energizerList = new ArrayList<Energizer>();
 		friendlyManager = FriendlyManager.getInstance();
 		dataClass = DataClass.getInstance();
 		audioManager = AudioManager.getInstance();
@@ -86,17 +101,17 @@ public class EnemyManager {
 		int seekerCounter = 0;
 
 		for (Enemy enemy : enemyList) {
-			if (enemy.getEnemyType().equals("Default Alien Spaceship")) {
+			if (enemy instanceof Alien) {
 				defaultSpaceShipCounter++;
 			}
-			if (enemy.getEnemyType().equals("Alien Bomb")) {
+			if (enemy instanceof AlienBomb) {
 				alienBombCounter++;
 			}
-			if (enemy.getEnemyType().equals("Seeker")) {
+			if (enemy instanceof Seeker) {
 				seekerCounter++;
 			}
 		}
-
+		
 		defaultAlienSpaceshipCount = defaultSpaceShipCounter;
 		alienBombCount = alienBombCounter;
 		seekerCount = seekerCounter;
@@ -113,7 +128,7 @@ public class EnemyManager {
 		for (Enemy enemy : enemyList) {
 			Rectangle enemyBounds = enemy.getBounds();
 			if (spaceshipBounds.intersects(enemyBounds)) {
-				if (enemy.getEnemyType().equals("Alien Bomb")) {
+				if (enemy instanceof AlienBomb) {
 					friendlyManager.getSpaceship().takeHitpointDamage(20);
 					animationManager.addUpperAnimation(enemy.getXCoordinate(), enemy.getYCoordinate(),
 							"Alien Bomb Explosion", false);
@@ -220,16 +235,7 @@ public class EnemyManager {
 	}
 
 	private void triggerEnemyDeathSound(Enemy enemy) throws UnsupportedAudioFileException, IOException {
-		switch (enemy.getEnemyType()) {
-		case ("Alien Bomb"):
-			audioManager.addAudio("Destroyed Explosion");
-			break;
-		case ("Default Alien Spaceship"):
-			audioManager.addAudio("Alien Spaceship Destroyed");
-			break;
-
-		}
-
+		audioManager.addAudio(enemy.getDeathSound());
 	}
 
 	// Called by LevelManager, creates an unambiguous enemy and adds it to enemies
@@ -237,17 +243,17 @@ public class EnemyManager {
 		Enemy enemy = null;
 		switch (enemyType) {
 		case ("Alien Bomb"):
-			AlienBomb alienBomb = new AlienBomb(xCoordinate, yCoordinate, enemyType, direction);
+			AlienBomb alienBomb = new AlienBomb(xCoordinate, yCoordinate, direction);
 			enemy = alienBomb;
 			alienBombList.add(alienBomb);
 			break;
 		case ("Default Alien Spaceship"):
-			Alien alien = new Alien(xCoordinate, yCoordinate, enemyType, direction);
+			Alien alien = new Alien(xCoordinate, yCoordinate, direction);
 			enemy = alien;
 			alienList.add(alien);
 			break;
 		case ("Seeker"):
-			Seeker seeker = new Seeker(xCoordinate, yCoordinate, enemyType, direction);
+			Seeker seeker = new Seeker(xCoordinate, yCoordinate, direction);
 			enemy = seeker;
 			seekerList.add(seeker);
 		}

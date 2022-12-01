@@ -40,9 +40,9 @@ public class RandomCoordinator {
 	}
 
 	//Function used to prevent enemies of the same type of stacking on top of each other when being spawned in
-	public boolean checkValidEnemyXCoordinate(String enemyType, List<Enemy> listToCheck, int xCoordinate, int minimumRange) {
+	public boolean checkValidEnemyXCoordinate(Enemy enemyType, List<Enemy> listToCheck, int xCoordinate, int minimumRange) {
 		for (Enemy enemy : listToCheck) {
-			if (enemy.getEnemyType().equals(enemyType)) {
+			if (enemy.getClass().equals(enemyType.getClass())) {
 				if (Math.abs(enemy.getXCoordinate() - xCoordinate) < minimumRange) {
 					return false;
 				}
@@ -52,9 +52,9 @@ public class RandomCoordinator {
 	}
 
 	//Function used to prevent enemies of the same type of stacking on top of each other when being spawned in
-	public boolean checkValidEnemyYCoordinate(String enemyType, List<Enemy> listToCheck, int yCoordinate, int minimumRange) {
+	public boolean checkValidEnemyYCoordinate(Enemy enemyType, List<Enemy> listToCheck, int yCoordinate, int minimumRange) {
 		for (Enemy enemy : listToCheck) {
-			if (enemy.getEnemyType().equals(enemyType)) {
+			if (enemy.getClass().equals(enemyType.getClass())) {
 				if (Math.abs(enemy.getYCoordinate() - yCoordinate) < minimumRange) {
 					return false;
 				}

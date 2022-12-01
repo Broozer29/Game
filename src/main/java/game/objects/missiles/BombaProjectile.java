@@ -4,8 +4,8 @@ import data.DataClass;
 
 public class BombaProjectile extends Missile {
 
-	public BombaProjectile(int x, int y, String missileType) {
-		super(x, y, missileType);
+	public BombaProjectile(int x, int y) {
+		super(x, y);
 		this.missileDamage = (float) 7.5;
 		initMissile();
 		setAnimation();

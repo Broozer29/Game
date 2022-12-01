@@ -87,7 +87,7 @@ public class Animation extends Sprite {
 				frameDelay++;
 			return returnImage;
 		}
-		return frames.get(1).getImage();
+		return frames.get(frames.size() - 1).getImage();
 	}
 
 	public int getFrame() {

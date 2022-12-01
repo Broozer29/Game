@@ -4,8 +4,8 @@ import data.DataClass;
 
 public class AlienLaserbeam extends Missile{
 
-	public AlienLaserbeam(int x, int y, String missileType) {
-		super(x, y, missileType);
+	public AlienLaserbeam(int x, int y) {
+		super(x, y);
 		loadImage("Alien Laserbeam");
 		this.missileDamage = (float) 2.5;
 		initMissile();

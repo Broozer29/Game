@@ -58,40 +58,42 @@ public class AudioManager {
 
 	// Play singular audios
 	private void playAudio(String audioType) throws UnsupportedAudioFileException, IOException {
-		Clip clip = null;
+		if (audioType != null) {
+			Clip clip = null;
 
-		switch (audioType) {
-		case ("Player Laserbeam"):
-			clip = audioDatabase.getLaserBeam();
-			break;
-		case ("Destroyed Explosion"):
-			clip = audioDatabase.getDestroyedExplosion();
-			break;
-		case ("Alien Spaceship Destroyed"):
-			clip = audioDatabase.getDefaultAlienExplosion();
-			break;
-		case ("Alien Bomb Impact"):
-			clip = audioDatabase.getAlienBombImpact();
-			break;
-		}
-
-		if (clip != null) {
-			// Adjusts volume
-			FloatControl volume = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
 			switch (audioType) {
 			case ("Player Laserbeam"):
-				volume.setValue(-6);
+				clip = audioDatabase.getLaserBeam();
 				break;
 			case ("Destroyed Explosion"):
-				volume.setValue(-2);
+				clip = audioDatabase.getDestroyedExplosion();
 				break;
 			case ("Alien Spaceship Destroyed"):
+				clip = audioDatabase.getDefaultAlienExplosion();
 				break;
 			case ("Alien Bomb Impact"):
-				volume.setValue(-2);
+				clip = audioDatabase.getAlienBombImpact();
+				break;
 			}
 
-			clip.start();
+			if (clip != null) {
+				// Adjusts volume
+				FloatControl volume = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
+				switch (audioType) {
+				case ("Player Laserbeam"):
+					volume.setValue(-6);
+					break;
+				case ("Destroyed Explosion"):
+					volume.setValue(-2);
+					break;
+				case ("Alien Spaceship Destroyed"):
+					break;
+				case ("Alien Bomb Impact"):
+					volume.setValue(-2);
+				}
+
+				clip.start();
+			}
 		}
 
 	}

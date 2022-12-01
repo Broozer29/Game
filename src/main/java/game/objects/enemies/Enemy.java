@@ -2,6 +2,7 @@ package game.objects.enemies;
 
 import java.util.Random;
 
+import data.DataClass;
 import data.movement.Trajectory;
 import game.managers.AnimationManager;
 import game.managers.MissileManager;
@@ -13,7 +14,6 @@ public class Enemy extends Sprite {
 	protected AnimationManager animationManager = AnimationManager.getInstance();
 	protected float hitPoints;
 	protected float maxHitPoints;
-	protected String enemyType;
 	protected float attackSpeedFrameCount;
 	protected float currentAttackSpeedFrameCount = 0;
 	protected Random random = new Random();
@@ -23,19 +23,13 @@ public class Enemy extends Sprite {
 	protected boolean hasAttack;
 	protected String direction;
 	protected Trajectory trajectory = new Trajectory();
+	protected String deathSound;
+	protected boolean showHealthBar;
 
-	public Enemy(int x, int y, String enemyType, String direction) {
+	public Enemy(int x, int y, String direction) {
 		super(x, y);
-		loadImage(enemyType);
-		this.enemyType = enemyType;
 		this.direction = direction;
-		initEnemy();
-	}
-
-	private void initEnemy() {
 		this.currentBoardBlock = 8;
-		this.setRotation(direction);
-		this.setVisible(true);
 	}
 
 	// Called when there is collision between friendly missile and enemy
@@ -58,16 +52,20 @@ public class Enemy extends Sprite {
 		return this.maxHitPoints;
 	}
 
-	public String getEnemyType() {
-		return this.enemyType;
-	}
-
 	public String getEnemyDirection() {
 		return this.direction;
 	}
 
 	public int getMovementSpeed() {
 		return this.movementSpeed;
+	}
+	
+	public boolean showhealthBar() {
+		return this.showHealthBar;
+	}
+	
+	public String getDeathSound() {
+		return this.deathSound;
 	}
 
 	public boolean getHasAttack() {
@@ -78,7 +76,23 @@ public class Enemy extends Sprite {
 		return this.currentBoardBlock;
 	}
 
-	public void setRotation(String rotation) {
+	//Required for the trajectory to determine the length of the distance travelled
+	public int getAdditionalXSteps() {
+		return Math.abs(DataClass.getInstance().getWindowWidth() - xCoordinate);
+	}
+
+	//Required for the trajectory to determine the length of the distance travelled
+	public int getAdditionalYSteps() {
+		switch (direction) {
+		case ("Up"):
+			return Math.abs(DataClass.getInstance().getWindowHeight() - yCoordinate);
+		case ("Down"):
+			return Math.abs(DataClass.getInstance().getWindowHeight() + Math.abs(yCoordinate));
+		}
+		return 0;
+	}
+
+	protected void setRotation(String rotation) {
 		this.rotation = rotation;
 		switch (rotation) {
 		case ("Up"):

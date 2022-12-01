@@ -6,14 +6,19 @@ import game.managers.MissileManager;
 
 public class Alien extends Enemy {
 
-	public Alien(int x, int y, String enemyType, String direction) {
-		super(x, y, enemyType, direction);
+	public Alien(int x, int y, String direction) {
+		super(x, y, direction);
+		loadImage("Default Alien Spaceship");
 		this.hitPoints = 35;
 		this.maxHitPoints = 35;
 		this.attackSpeedFrameCount = 150;
 		this.movementSpeed = 1;
 		this.hasAttack = true;
+		this.deathSound = "Alien Spaceship Destroyed";
+		this.showHealthBar = true;
 		this.trajectory.setEnemyTrajectoryType(this);
+		this.setVisible(true);
+		this.setRotation(direction);
 	}
 
 	// Called every loop to move the enemy
@@ -27,6 +32,7 @@ public class Alien extends Enemy {
 		}
 
 	}
+	
 
 	public void updateBoardBlock(int boardBlockNumber) {
 		if (boardBlockNumber != this.currentBoardBlock) {

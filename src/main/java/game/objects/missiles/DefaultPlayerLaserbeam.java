@@ -4,10 +4,10 @@ import data.DataClass;
 
 public class DefaultPlayerLaserbeam extends Missile {
 
-	public DefaultPlayerLaserbeam(int x, int y, String missileType) {
-		super(x, y, missileType);
+	public DefaultPlayerLaserbeam(int x, int y) {
+		super(x, y);
 		this.missileDamage = (float) 27.5;
-		loadImage(missileType);
+		loadImage("Player Laserbeam");
 		initMissile();
 	}
 

@@ -26,9 +26,9 @@ import game.managers.FriendlyManager;
 import game.managers.LevelManager;
 import game.managers.MissileManager;
 import game.managers.TimerManager;
+import game.objects.enemies.AlienBomb;
 import game.objects.enemies.Enemy;
 import game.objects.missiles.Missile;
-import game.objects.missiles.SeekerProjectile;
 import image.objects.Animation;
 import image.objects.BackgroundObject;
 import image.objects.Sprite;
@@ -179,7 +179,7 @@ public class GameBoard extends JPanel implements ActionListener {
 		for (Enemy enemy : enemyManager.getEnemies()) {
 			if (enemy.isVisible()) {
 				drawImage(g, enemy);
-				if (!enemy.getEnemyType().equals("Alien Bomb"))
+				if (enemy.showhealthBar())
 					drawHealthBars(g, enemy);
 			}
 		}

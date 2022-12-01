@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import data.DataClass;
+import game.objects.enemies.Alien;
 import game.objects.enemies.Enemy;
 import game.objects.missiles.AlienLaserbeam;
 import game.objects.missiles.DefaultPlayerLaserbeam;
@@ -24,19 +25,35 @@ public class Trajectory {
 	public void setEnemyTrajectoryType(Enemy enemy) {
 		Path newPath = null;
 
-		switch (enemy.getEnemyType()) {
-		case ("Default Alien Spaceship"):
+		switch (enemy.getEnemyDirection()) {
+		case ("Left"):
 			newPath = pathFactory.getStraightLine(enemy.getEnemyDirection(),
-					dataClass.getWindowWidth() + getAdditionalXSteps(enemy), enemy.getMovementSpeed());
+					dataClass.getWindowWidth() + enemy.getAdditionalXSteps(), enemy.getMovementSpeed());
 			addPath(newPath);
-		case ("Alien Bomb"):
+			break;
+		case ("Right"):
 			newPath = pathFactory.getStraightLine(enemy.getEnemyDirection(),
-					dataClass.getWindowHeight() + getAdditionalYSteps(enemy), enemy.getMovementSpeed());
+					dataClass.getWindowWidth() + enemy.getAdditionalXSteps(), enemy.getMovementSpeed());
 			addPath(newPath);
-		case ("Seeker"):
+			break;
+		case ("Up"):
 			newPath = pathFactory.getStraightLine(enemy.getEnemyDirection(),
-					dataClass.getWindowWidth() + getAdditionalXSteps(enemy), enemy.getMovementSpeed());
+					dataClass.getWindowWidth() + enemy.getAdditionalYSteps(), enemy.getMovementSpeed());
 			addPath(newPath);
+			break;
+		case ("Down"):
+			newPath = pathFactory.getStraightLine(enemy.getEnemyDirection(),
+					dataClass.getWindowWidth() + enemy.getAdditionalYSteps(), enemy.getMovementSpeed());
+			addPath(newPath);
+			break;
+		case ("LeftUp"):
+			break;
+		case ("LeftDown"):
+			break;
+		case ("RightUp"):
+			break;
+		case ("RightDown"):
+			break;
 		}
 		setCurrentPath();
 	}
@@ -44,48 +61,37 @@ public class Trajectory {
 	public void setMissileTrajectoryType(Missile missile) {
 		Path newPath = null;
 
-		if (missile instanceof AlienLaserbeam) {
+		switch (missile.getMissileDirection()) {
+		case ("Left"):
 			newPath = pathFactory.getStraightLine(missile.getMissileDirection(), missile.getMaxMissileLength(),
 					missile.getMissileMovementSpeed());
 			addPath(newPath);
-		} else if (missile instanceof DefaultPlayerLaserbeam) {
+			break;
+		case ("Right"):
 			newPath = pathFactory.getStraightLine(missile.getMissileDirection(), missile.getMaxMissileLength(),
 					missile.getMissileMovementSpeed());
 			addPath(newPath);
-		} else if (missile instanceof SeekerProjectile) {
+			break;
+		case ("Up"):
 			newPath = pathFactory.getStraightLine(missile.getMissileDirection(), missile.getMaxMissileLength(),
 					missile.getMissileMovementSpeed());
 			addPath(newPath);
+			break;
+		case ("Down"):
+			newPath = pathFactory.getStraightLine(missile.getMissileDirection(), missile.getMaxMissileLength(),
+					missile.getMissileMovementSpeed());
+			addPath(newPath);
+			break;
+		case ("LeftUp"):
+			break;
+		case ("LeftDown"):
+			break;
+		case ("RightUp"):
+			break;
+		case ("RightDown"):
+			break;
 		}
-
 		setCurrentPath();
-	}
-
-	// Gets additional path length to ensure the enemy doesn't stop dead in its
-	// tracks halfway the screen.
-	private int getAdditionalXSteps(Enemy enemy) {
-		switch (enemy.getEnemyType()) {
-		case ("Default Alien Spaceship"):
-			return Math.abs(dataClass.getWindowWidth() - enemy.getXCoordinate());
-		case ("Seeker"):
-			return Math.abs(dataClass.getWindowWidth() - enemy.getXCoordinate());
-		}
-		return 0;
-	}
-
-	// Gets additional path length to ensure the enemy doesn't stop dead in its
-	// tracks halfway the screen.
-	private int getAdditionalYSteps(Enemy enemy) {
-		switch (enemy.getEnemyType()) {
-		case ("Alien Bomb"):
-			switch (enemy.getEnemyDirection()) {
-			case ("Up"):
-				return Math.abs(dataClass.getWindowHeight() - enemy.getYCoordinate());
-			case ("Down"):
-				return Math.abs(dataClass.getWindowHeight() + Math.abs(enemy.getYCoordinate()));
-			}
-		}
-		return 0;
 	}
 
 	// Adds the path to the list of paths

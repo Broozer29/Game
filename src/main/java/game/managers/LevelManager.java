@@ -1,6 +1,9 @@
 package game.managers;
 
 import data.RandomCoordinator;
+import game.objects.enemies.AlienBomb;
+import game.objects.enemies.Enemy;
+import game.objects.enemies.Seeker;
 
 public class LevelManager {
 
@@ -53,12 +56,6 @@ public class LevelManager {
 		case (1):
 			this.saturateLevelOne();
 			return;
-		case (2):
-			this.saturateLevelTwo();
-			return;
-		case (3):
-			this.saturateLevelThree();
-			return;
 		}
 	}
 
@@ -79,31 +76,32 @@ public class LevelManager {
 			} else if (direction.equals("Down")) {
 				yCoordinate = randomCoordinator.getRandomYDownBombEnemyCoordinate();
 			}
+			Enemy bombEnemy = new AlienBomb(xCoordinate, yCoordinate, direction);
 
-			if (randomCoordinator.checkValidEnemyXCoordinate("Alien Bomb", enemyManager.getEnemies(), xCoordinate, 5)
-					&& randomCoordinator.checkValidEnemyYCoordinate("Alien Bomb", enemyManager.getEnemies(), yCoordinate, 5)) {
+			if (randomCoordinator.checkValidEnemyXCoordinate(bombEnemy, enemyManager.getEnemies(), xCoordinate, 5)
+					&& randomCoordinator.checkValidEnemyYCoordinate(bombEnemy, enemyManager.getEnemies(), yCoordinate,
+							5)) {
+
 				enemyManager.addEnemy(xCoordinate, yCoordinate, "Alien Bomb", direction);
 				bombsSpawned++;
 			}
 		}
 	}
-	
-	private void saturateLevelOne() {
-	while (enemyManager.getSeekerCount() < 1) {
-		int xCoordinate = randomCoordinator.getRandomXEnemyCoordinate();
-		int yCoordinate = randomCoordinator.getRandomYEnemyCoordinate();
 
-		if (randomCoordinator.checkValidEnemyXCoordinate("Seeker", enemyManager.getEnemies(),
-				xCoordinate, 20)
-				&& randomCoordinator.checkValidEnemyYCoordinate("Seeker",
-						enemyManager.getEnemies(), yCoordinate, 20)) {
-			enemyManager.addEnemy(xCoordinate, yCoordinate, "Seeker", "Left");
+	private void saturateLevelOne() {
+		while (enemyManager.getSeekerCount() < 1) {
+			int xCoordinate = randomCoordinator.getRandomXEnemyCoordinate();
+			int yCoordinate = randomCoordinator.getRandomYEnemyCoordinate();
+			Enemy seekerEnemy = new Seeker(xCoordinate, yCoordinate, "Left");
+
+			if (randomCoordinator.checkValidEnemyXCoordinate(seekerEnemy, enemyManager.getEnemies(), xCoordinate, 20)
+					&& randomCoordinator.checkValidEnemyYCoordinate(seekerEnemy, enemyManager.getEnemies(), yCoordinate,
+							20)) {
+				enemyManager.addEnemy(xCoordinate, yCoordinate, "Seeker", "Left");
+			}
 		}
+		timerManager.createTimer("SpawnBombs");
 	}
-	timerManager.createTimer("SpawnBombs");
-}
-	
-	
 
 //	private void saturateLevelOne() {
 //		while (enemyManager.getDefaultAlienSpaceshipCount() < 10) {
@@ -119,32 +117,5 @@ public class LevelManager {
 //		}
 //		timerManager.createTimer("SpawnBombs");
 //	}
-
-	private void saturateLevelTwo() {
-		while (enemyManager.getDefaultAlienSpaceshipCount() < 12) {
-			int xCoordinate = randomCoordinator.getRandomXEnemyCoordinate();
-			int yCoordinate = randomCoordinator.getRandomYEnemyCoordinate();
-
-			if (randomCoordinator.checkValidEnemyXCoordinate("Default Alien Spaceship", enemyManager.getEnemies(),
-					xCoordinate, 20)
-					&& randomCoordinator.checkValidEnemyYCoordinate("Default Alien Spaceship",
-							enemyManager.getEnemies(), yCoordinate, 20)) {
-				enemyManager.addEnemy(xCoordinate, yCoordinate, "Default Alien Spaceship", "Left");
-			}
-		}
-	}
-
-	private void saturateLevelThree() {
-		while (enemyManager.getDefaultAlienSpaceshipCount() < 14) {
-			int xCoordinate = randomCoordinator.getRandomXEnemyCoordinate();
-			int yCoordinate = randomCoordinator.getRandomYEnemyCoordinate();
-			if (randomCoordinator.checkValidEnemyXCoordinate("Default Alien Spaceship", enemyManager.getEnemies(),
-					xCoordinate, 20)
-					&& randomCoordinator.checkValidEnemyYCoordinate("Default Alien Spaceship",
-							enemyManager.getEnemies(), yCoordinate, 20)) {
-				enemyManager.addEnemy(xCoordinate, yCoordinate, "Default Alien Spaceship", "Left");
-			}
-		}
-	}
 
 }

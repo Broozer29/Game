@@ -11,16 +11,14 @@ import image.objects.Sprite;
 public class Missile extends Sprite {
 
 	protected float missileDamage;
-	protected String missileType;
 	protected Trajectory trajectory = new Trajectory();
 	protected String missileDirection;
 	protected int missileMovementSpeed;
 	protected int maxMissileLength;
 	protected Animation animation;
 
-	public Missile(int x, int y, String missileType) {
+	public Missile(int x, int y) {
 		super(x, y);
-		this.missileType = missileType;
 	}
 
 	public void updateGameTick() {
@@ -44,7 +42,8 @@ public class Missile extends Sprite {
 		}
 	}
 
-	//Sets the animations (the graphics of missile) to align with the missiles coordinates
+	// Sets the animations (the graphics of missile) to align with the missiles
+	// coordinates
 	private void updateAnimationCoordinates() {
 		animation.setX(xCoordinate);
 		animation.setY(yCoordinate);
@@ -67,8 +66,25 @@ public class Missile extends Sprite {
 	}
 
 	protected void setAnimation() {
-		if (!missileType.equals("Alien Laserbeam") && !missileType.equals("Player Laserbeam")) {
-			this.animation = new Animation(xCoordinate, yCoordinate, missileType, true);
+		String missileType = null;
+		if (this instanceof BombaProjectile) {
+			missileType = "Bomba Projectile";
+		} else if (this instanceof BulldozerProjectile) {
+			missileType = "Bulldozer Projectile";
+		} else if (this instanceof EnergizerProjectile) {
+			missileType = "Energizer Projectile";
+		} else if (this instanceof FlamerProjectile) {
+			missileType = "Flamer Projectile";
+		} else if (this instanceof SeekerProjectile) {
+			missileType = "Seeker Projectile";
+		} else if (this instanceof TazerProjectile) {
+			missileType = "Tazer Projectile";
+		}
+
+		if (!(this instanceof AlienLaserbeam) && !(this instanceof DefaultPlayerLaserbeam)) {
+			if (missileType != null) {
+				this.animation = new Animation(xCoordinate, yCoordinate, missileType, true);
+			}
 		}
 	}
 

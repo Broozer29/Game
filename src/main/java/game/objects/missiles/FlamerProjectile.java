@@ -4,8 +4,8 @@ import data.DataClass;
 
 public class FlamerProjectile extends Missile{
 
-	public FlamerProjectile(int x, int y, String missileType) {
-		super(x, y, missileType);
+	public FlamerProjectile(int x, int y) {
+		super(x, y);
 		this.missileDamage = (float) 7.5;
 		initMissile();
 		setAnimation();
