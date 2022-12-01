@@ -27,7 +27,7 @@ public class AnimationManager {
 		upperAnimationList = new ArrayList<Animation>();
 		lowerAnimationList = new ArrayList<Animation>();
 		playerEngineAnimation = new Animation(friendlyManager.getSpaceship().getXCoordinate(),
-				friendlyManager.getSpaceship().getYCoordinate(), "Player Engine");
+				friendlyManager.getSpaceship().getYCoordinate(), "Player Engine", true);
 		lowerAnimationList.add(playerEngineAnimation);
 		engineXCoordinate = 0;
 		engineYCoordinate = 0;
@@ -35,7 +35,7 @@ public class AnimationManager {
 
 	private AnimationManager() {
 		playerEngineAnimation = new Animation(friendlyManager.getSpaceship().getXCoordinate(),
-				friendlyManager.getSpaceship().getYCoordinate(), "Player Engine");
+				friendlyManager.getSpaceship().getYCoordinate(), "Player Engine", true);
 		lowerAnimationList.add(playerEngineAnimation);
 	}
 
@@ -58,6 +58,7 @@ public class AnimationManager {
 		Random random = new Random();
 		int result = random.nextInt(4 - 1) + 1;
 		String explosionType = null;
+		boolean infiniteLoop = false;
 
 		switch (result) {
 		case (1):
@@ -77,19 +78,19 @@ public class AnimationManager {
 		if (explosionType == null) {
 			explosionType = "Destroyed Explosion";
 		}
-		addUpperAnimation(xCoordinate, yCoordinate, explosionType);
+		addUpperAnimation(xCoordinate, yCoordinate, explosionType, infiniteLoop);
 	}
 
-	public void addUpperAnimation(int xCoordinate, int yCoordinate, String animationType) {
-		this.upperAnimationList.add(createAnimation(xCoordinate, yCoordinate, animationType));
+	public void addUpperAnimation(int xCoordinate, int yCoordinate, String animationType, boolean infiniteLoop) {
+		this.upperAnimationList.add(createAnimation(xCoordinate, yCoordinate, animationType, infiniteLoop));
 	}
 
-	public void addLowerAnimation(int xCoordinate, int yCoordinate, String animationType) {
-		this.lowerAnimationList.add(createAnimation(xCoordinate, yCoordinate, animationType));
+	public void addLowerAnimation(int xCoordinate, int yCoordinate, String animationType, boolean infiniteLoop) {
+		this.lowerAnimationList.add(createAnimation(xCoordinate, yCoordinate, animationType, infiniteLoop));
 	}
 
-	private Animation createAnimation(int xCoordinate, int yCoordinate, String animationType) {
-		return new Animation(xCoordinate, yCoordinate, animationType);
+	private Animation createAnimation(int xCoordinate, int yCoordinate, String animationType, boolean infiniteLoop) {
+		return new Animation(xCoordinate, yCoordinate, animationType, infiniteLoop);
 	}
 
 	private void removeInvisibleAnimations() {
@@ -117,7 +118,6 @@ public class AnimationManager {
 	public void updateGameTick() {
 		renderPlayerEngine();
 		removeInvisibleAnimations();
-		
 	}
 
 }

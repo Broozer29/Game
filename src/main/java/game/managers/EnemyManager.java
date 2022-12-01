@@ -12,6 +12,7 @@ import game.objects.BoardBlock;
 import game.objects.enemies.Alien;
 import game.objects.enemies.AlienBomb;
 import game.objects.enemies.Enemy;
+import game.objects.enemies.Seeker;
 
 public class EnemyManager {
 
@@ -21,6 +22,7 @@ public class EnemyManager {
 	private AnimationManager animationManager = AnimationManager.getInstance();
 	private List<Enemy> enemyList = new ArrayList<Enemy>();
 	private List<Alien> alienList = new ArrayList<Alien>();
+	private List<Seeker> seekerList = new ArrayList<Seeker>();
 	private List<AlienBomb> alienBombList = new ArrayList<AlienBomb>();
 	private List<BoardBlock> boardBlockList = new ArrayList<BoardBlock>();
 	private int maxBoardBlocks = 8;
@@ -28,6 +30,7 @@ public class EnemyManager {
 
 	private int defaultAlienSpaceshipCount;
 	private int alienBombCount;
+	private int seekerCount;
 
 	private EnemyManager() {
 		saturateBoardBlockList();
@@ -44,6 +47,7 @@ public class EnemyManager {
 		alienBombList = new ArrayList<AlienBomb>();
 		alienList = new ArrayList<Alien>();
 		boardBlockList = new ArrayList<BoardBlock>();
+		seekerList = new ArrayList<Seeker>();
 		friendlyManager = FriendlyManager.getInstance();
 		dataClass = DataClass.getInstance();
 		audioManager = AudioManager.getInstance();
@@ -79,6 +83,7 @@ public class EnemyManager {
 	public void keepTrackOfEnemies() {
 		int defaultSpaceShipCounter = 0;
 		int alienBombCounter = 0;
+		int seekerCounter = 0;
 
 		for (Enemy enemy : enemyList) {
 			if (enemy.getEnemyType().equals("Default Alien Spaceship")) {
@@ -87,11 +92,14 @@ public class EnemyManager {
 			if (enemy.getEnemyType().equals("Alien Bomb")) {
 				alienBombCounter++;
 			}
+			if (enemy.getEnemyType().equals("Seeker")) {
+				seekerCounter++;
+			}
 		}
 
 		defaultAlienSpaceshipCount = defaultSpaceShipCounter;
 		alienBombCount = alienBombCounter;
-
+		seekerCount = seekerCounter;
 	}
 
 	private void checkSpaceshipCollisions() throws UnsupportedAudioFileException, IOException {
@@ -108,7 +116,7 @@ public class EnemyManager {
 				if (enemy.getEnemyType().equals("Alien Bomb")) {
 					friendlyManager.getSpaceship().takeHitpointDamage(20);
 					animationManager.addUpperAnimation(enemy.getXCoordinate(), enemy.getYCoordinate(),
-							"Alien Bomb Explosion");
+							"Alien Bomb Explosion", false);
 					audioManager.addAudio("Alien Bomb Impact");
 					enemy.setVisible(false);
 				} else {
@@ -124,6 +132,11 @@ public class EnemyManager {
 				alien.fireAction();
 			}
 		}
+		for (Seeker seeker : seekerList) {
+			if (seeker.getHasAttack()) {
+				seeker.fireAction();
+			}
+		}
 	}
 
 	private void updateEnemyBoardBlocks() {
@@ -136,13 +149,22 @@ public class EnemyManager {
 				}
 			}
 		}
+
 	}
 
-	private void updateEnemies() throws UnsupportedAudioFileException, IOException {
+	private void updateAliens() throws UnsupportedAudioFileException, IOException {
 		for (int i = 0; i < alienList.size(); i++) {
 			Alien alien = alienList.get(i);
 			if (alien.isVisible()) {
 				alien.move();
+				for (BoardBlock boardBlock : boardBlockList) {
+					if (boardBlock.getBounds().intersects(alien.getBounds())) {
+						if (boardBlock.getBoardBlockNumber() != alien.getBoardBlockNumber()) {
+							alien.updateBoardBlock(boardBlock.getBoardBlockNumber());
+						}
+					}
+				}
+
 			} else {
 				if (alien.getCurrentHitpoints() < 0) {
 					triggerEnemyDeathSound(alien);
@@ -151,7 +173,9 @@ public class EnemyManager {
 				removeEnemy(alien);
 			}
 		}
+	}
 
+	private void updateAlienBombs() throws UnsupportedAudioFileException, IOException {
 		for (int i = 0; i < alienBombList.size(); i++) {
 			AlienBomb alienBomb = alienBombList.get(i);
 			if (alienBomb.isVisible()) {
@@ -164,6 +188,34 @@ public class EnemyManager {
 				removeEnemy(alienBomb);
 			}
 		}
+	}
+
+	private void updateSeekers() throws UnsupportedAudioFileException, IOException {
+		for (int i = 0; i < seekerList.size(); i++) {
+			Seeker seeker = seekerList.get(i);
+			if (seeker.isVisible()) {
+				seeker.move();
+				for (BoardBlock boardBlock : boardBlockList) {
+					if (boardBlock.getBounds().intersects(seeker.getBounds())) {
+						if (boardBlock.getBoardBlockNumber() != seeker.getBoardBlockNumber()) {
+							seeker.updateBoardBlock(boardBlock.getBoardBlockNumber());
+						}
+					}
+				}
+			} else {
+				if (seeker.getCurrentHitpoints() < 0) {
+					triggerEnemyDeathSound(seeker);
+				}
+				removeSeeker(seeker);
+				removeEnemy(seeker);
+			}
+		}
+	}
+
+	private void updateEnemies() throws UnsupportedAudioFileException, IOException {
+		updateAliens();
+		updateAlienBombs();
+		updateSeekers();
 
 	}
 
@@ -194,9 +246,15 @@ public class EnemyManager {
 			enemy = alien;
 			alienList.add(alien);
 			break;
+		case ("Seeker"):
+			Seeker seeker = new Seeker(xCoordinate, yCoordinate, enemyType, direction);
+			enemy = seeker;
+			seekerList.add(seeker);
 		}
 
-		this.enemyList.add(enemy);
+		if (enemy != null) {
+			this.enemyList.add(enemy);
+		}
 		keepTrackOfEnemies();
 	}
 
@@ -206,6 +264,10 @@ public class EnemyManager {
 
 	private void removeAlienBomb(AlienBomb alienBomb) {
 		this.alienBombList.remove(alienBomb);
+	}
+
+	private void removeSeeker(Seeker seeker) {
+		this.seekerList.remove(seeker);
 	}
 
 	private void removeEnemy(Enemy enemy) {
@@ -222,6 +284,10 @@ public class EnemyManager {
 
 	public int getAlienBombCount() {
 		return alienBombCount;
+	}
+
+	public int getSeekerCount() {
+		return seekerCount;
 	}
 
 }

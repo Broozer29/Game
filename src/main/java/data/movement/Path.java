@@ -56,7 +56,7 @@ public class Path {
 			}
 			increaseStepTaken();
 		}
-
+		
 		newCoordsList.add(newXCoordinate);
 		newCoordsList.add(newYCoordinate);
 		return newCoordsList;

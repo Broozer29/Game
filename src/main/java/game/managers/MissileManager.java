@@ -7,7 +7,9 @@ import java.util.List;
 import game.objects.enemies.Enemy;
 import game.objects.missiles.AlienLaserbeam;
 import game.objects.missiles.DefaultPlayerLaserbeam;
+import game.objects.missiles.FlamerProjectile;
 import game.objects.missiles.Missile;
+import game.objects.missiles.SeekerProjectile;
 
 public class MissileManager {
 
@@ -50,8 +52,24 @@ public class MissileManager {
 	public void addEnemyMissile(int xCoordinate, int yCoordinate, String missileType) {
 		switch (missileType) {
 		case ("Alien Laserbeam"):
-			Missile enemyMissile = new AlienLaserbeam(xCoordinate, yCoordinate, missileType);
-			this.enemyMissiles.add(enemyMissile);
+			Missile alienMissile = new AlienLaserbeam(xCoordinate, yCoordinate, missileType);
+			this.enemyMissiles.add(alienMissile);
+			break;
+		case ("Seeker Projectile"):
+			Missile seekerMissile = new SeekerProjectile(xCoordinate, yCoordinate, missileType);
+			this.enemyMissiles.add(seekerMissile);
+			break;
+		case("Flamer Projectile"):
+			Missile flamerMissile = new FlamerProjectile(xCoordinate, yCoordinate, missileType);
+			break;
+		case("Tazer Projectile"):
+			break;
+		case("Bulldozer Projectile"):
+			break;
+		case("Bomba Projectile"):
+			break;
+		case("Energizer Projectile"):
+			break;
 		}
 
 	}
@@ -76,7 +94,7 @@ public class MissileManager {
 					if (r1.intersects(r2)) {
 						enemy.takeDamage(m.getMissileDamage());
 						animationManager.addUpperAnimation(m.getXCoordinate(), m.getYCoordinate(),
-								"Impact Explosion One");
+								"Impact Explosion One", false);
 						m.setVisible(false);
 					}
 				}
@@ -92,11 +110,11 @@ public class MissileManager {
 		}
 		for (Missile m : enemyMissiles) {
 			if (m.isVisible()) {
-				Rectangle r1 = m.getBounds();
+				Rectangle r1 = m.getAnimation().getBounds();
 				Rectangle r2 = friendlyManager.getSpaceship().getBounds();
 				if (r1.intersects(r2)) {
 					friendlyManager.getSpaceship().takeHitpointDamage(m.getMissileDamage());
-					animationManager.addUpperAnimation(m.getXCoordinate(), m.getYCoordinate(), "Impact Explosion One");
+					animationManager.addUpperAnimation(m.getXCoordinate(), m.getYCoordinate(), "Impact Explosion One", false);
 					m.setVisible(false);
 				}
 			}

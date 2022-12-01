@@ -36,7 +36,7 @@ public class TimerManager {
 	public void createTimer(String timerPurpose) {
 		switch (timerPurpose) {
 		case ("SpawnBombs"):
-			CustomTimer timer = new CustomTimer(1000, "SpawnBombs");
+			CustomTimer timer = new CustomTimer(10000, "SpawnBombs");
 			addTimerToList(timer);
 			break;
 		}

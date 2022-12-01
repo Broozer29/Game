@@ -8,6 +8,7 @@ import game.objects.enemies.Enemy;
 import game.objects.missiles.AlienLaserbeam;
 import game.objects.missiles.DefaultPlayerLaserbeam;
 import game.objects.missiles.Missile;
+import game.objects.missiles.SeekerProjectile;
 
 public class Trajectory {
 
@@ -32,6 +33,10 @@ public class Trajectory {
 			newPath = pathFactory.getStraightLine(enemy.getEnemyDirection(),
 					dataClass.getWindowHeight() + getAdditionalYSteps(enemy), enemy.getMovementSpeed());
 			addPath(newPath);
+		case ("Seeker"):
+			newPath = pathFactory.getStraightLine(enemy.getEnemyDirection(),
+					dataClass.getWindowWidth() + getAdditionalXSteps(enemy), enemy.getMovementSpeed());
+			addPath(newPath);
 		}
 		setCurrentPath();
 	}
@@ -47,6 +52,10 @@ public class Trajectory {
 			newPath = pathFactory.getStraightLine(missile.getMissileDirection(), missile.getMaxMissileLength(),
 					missile.getMissileMovementSpeed());
 			addPath(newPath);
+		} else if (missile instanceof SeekerProjectile) {
+			newPath = pathFactory.getStraightLine(missile.getMissileDirection(), missile.getMaxMissileLength(),
+					missile.getMissileMovementSpeed());
+			addPath(newPath);
 		}
 
 		setCurrentPath();
@@ -57,6 +66,8 @@ public class Trajectory {
 	private int getAdditionalXSteps(Enemy enemy) {
 		switch (enemy.getEnemyType()) {
 		case ("Default Alien Spaceship"):
+			return Math.abs(dataClass.getWindowWidth() - enemy.getXCoordinate());
+		case ("Seeker"):
 			return Math.abs(dataClass.getWindowWidth() - enemy.getXCoordinate());
 		}
 		return 0;

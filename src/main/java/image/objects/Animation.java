@@ -7,6 +7,7 @@ import java.util.List;
 import javax.swing.ImageIcon;
 
 import data.ImageDatabase;
+import javafx.scene.shape.Rectangle;
 
 public class Animation extends Sprite {
 
@@ -14,11 +15,13 @@ public class Animation extends Sprite {
 	private int totalFrames;
 	private List<ImageIcon> frames = new ArrayList<ImageIcon>();
 	private int frameDelay;
+	private boolean infiniteLoop;
 
-	public Animation(int x, int y, String imageType) {
+	public Animation(int x, int y, String imageType, boolean infiniteLoop) {
 		super(x, y);
 		this.initAnimation(imageType);
 		this.frameDelay = 0;
+		this.infiniteLoop = infiniteLoop;
 	}
 
 	protected void initAnimation(String imageType) {
@@ -45,7 +48,11 @@ public class Animation extends Sprite {
 	// fully played out
 	public void updateFrameCount() {
 		this.currentFrame += 1;
-		if (this.currentFrame >= frames.size()) {
+
+	}
+
+	private void removeAnimation() {
+		if (this.currentFrame >= frames.size() && !infiniteLoop) {
 			this.setVisible(false);
 		}
 	}
@@ -61,15 +68,23 @@ public class Animation extends Sprite {
 
 	// returns current frame of the gif
 	public Image getCurrentFrame() {
+		if (currentFrame >= frames.size()) {
+			if (infiniteLoop) {
+				refreshAnimation(this.xCoordinate, this.yCoordinate);
+			} else {
+				removeAnimation();
+			}
+		}
+
 		if (currentFrame < frames.size()) {
 			Image returnImage = frames.get(currentFrame).getImage();
-
+			width = returnImage.getWidth(null);
+			height = returnImage.getHeight(null);
 			if (frameDelay >= 1) {
 				updateFrameCount();
 				frameDelay = 0;
 			} else
 				frameDelay++;
-
 			return returnImage;
 		}
 		return frames.get(1).getImage();
@@ -81,6 +96,11 @@ public class Animation extends Sprite {
 
 	public int getTotalFrames() {
 		return this.totalFrames;
+	}
+	
+	// Get bounds for sprites that have ANIMATIONS. Regular bounds don't work
+	public Rectangle getAnimationBounds() {
+		return new Rectangle(xCoordinate, yCoordinate, width, height);
 	}
 
 }

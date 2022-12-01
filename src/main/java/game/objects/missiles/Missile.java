@@ -3,6 +3,7 @@ package game.objects.missiles;
 import java.util.List;
 
 import data.DataClass;
+import data.ImageDatabase;
 import data.movement.Trajectory;
 import image.objects.Animation;
 import image.objects.Sprite;
@@ -15,6 +16,7 @@ public class Missile extends Sprite {
 	protected String missileDirection;
 	protected int missileMovementSpeed;
 	protected int maxMissileLength;
+	protected Animation animation;
 
 	public Missile(int x, int y, String missileType) {
 		super(x, y);
@@ -23,18 +25,29 @@ public class Missile extends Sprite {
 
 	public void updateGameTick() {
 		move();
+		if (animation != null) {
+			updateAnimationCoordinates();
+		}
+
 	}
 
-	public void move() {
+	private void move() {
 		List<Integer> newCoordsList = trajectory.getPathCoordinates(xCoordinate, yCoordinate);
 		xCoordinate = newCoordsList.get(0);
 		yCoordinate = newCoordsList.get(1);
+
 		if (xCoordinate > DataClass.getInstance().getWindowWidth()) {
 			visible = false;
 		}
 		if (xCoordinate < 0) {
 			visible = false;
 		}
+	}
+
+	//Sets the animations (the graphics of missile) to align with the missiles coordinates
+	private void updateAnimationCoordinates() {
+		animation.setX(xCoordinate);
+		animation.setY(yCoordinate);
 	}
 
 	public float getMissileDamage() {
@@ -51,6 +64,19 @@ public class Missile extends Sprite {
 
 	public int getMaxMissileLength() {
 		return this.maxMissileLength;
+	}
+
+	protected void setAnimation() {
+		if (!missileType.equals("Alien Laserbeam") && !missileType.equals("Player Laserbeam")) {
+			this.animation = new Animation(xCoordinate, yCoordinate, missileType, true);
+		}
+	}
+
+	public Animation getAnimation() {
+		if (this.animation != null) {
+			return this.animation;
+		}
+		return null;
 	}
 
 }

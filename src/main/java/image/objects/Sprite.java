@@ -85,7 +85,7 @@ public class Sprite {
 		this.visible = visible;
 	}
 
-	// Get bounds required for collision detection
+	// Get bounds required for collision detection for objects WITHOUT ANIMATIONS
 	public Rectangle getBounds() {
 		return new Rectangle(xCoordinate, yCoordinate, width, height);
 	}
