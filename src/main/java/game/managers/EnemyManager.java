@@ -73,7 +73,6 @@ public class EnemyManager {
 		} catch (UnsupportedAudioFileException | IOException e) {
 			e.printStackTrace();
 		}
-		updateEnemyBoardBlocks();
 		triggerEnemyActions();
 	}
 
@@ -139,79 +138,6 @@ public class EnemyManager {
 		}
 		for (Bomba bomba : bombaList) {
 			bomba.fireAction();
-		}
-	}
-
-	private void updateEnemyBoardBlocks() {
-		for (BoardBlock boardBlock : boardBlockList) {
-			for (Alien alien : alienList) {
-				if (boardBlock.getBounds().intersects(alien.getBounds())) {
-					if (boardBlock.getBoardBlockNumber() != alien.getBoardBlockNumber()) {
-						alien.updateBoardBlock(boardBlock.getBoardBlockNumber());
-					}
-				}
-			}
-		}
-
-	}
-
-	private void updateAliens() throws UnsupportedAudioFileException, IOException {
-		for (int i = 0; i < alienList.size(); i++) {
-			Alien alien = alienList.get(i);
-			if (alien.isVisible()) {
-				alien.move();
-				for (BoardBlock boardBlock : boardBlockList) {
-					if (boardBlock.getBounds().intersects(alien.getBounds())) {
-						if (boardBlock.getBoardBlockNumber() != alien.getBoardBlockNumber()) {
-							alien.updateBoardBlock(boardBlock.getBoardBlockNumber());
-						}
-					}
-				}
-
-			} else {
-				if (alien.getCurrentHitpoints() < 0) {
-					triggerEnemyDeathSound(alien);
-				}
-				removeAlienSpaceship(alien);
-				removeEnemy(alien);
-			}
-		}
-	}
-
-	private void updateAlienBombs() throws UnsupportedAudioFileException, IOException {
-		for (int i = 0; i < alienBombList.size(); i++) {
-			AlienBomb alienBomb = alienBombList.get(i);
-			if (alienBomb.isVisible()) {
-				alienBomb.move();
-			} else {
-				if (alienBomb.getCurrentHitpoints() < 0) {
-					triggerEnemyDeathSound(alienBomb);
-				}
-				removeAlienBomb(alienBomb);
-				removeEnemy(alienBomb);
-			}
-		}
-	}
-
-	private void updateSeekers() throws UnsupportedAudioFileException, IOException {
-		for (int i = 0; i < seekerList.size(); i++) {
-			Seeker seeker = seekerList.get(i);
-			if (seeker.isVisible()) {
-				seeker.move();
-				for (BoardBlock boardBlock : boardBlockList) {
-					if (boardBlock.getBounds().intersects(seeker.getBounds())) {
-						if (boardBlock.getBoardBlockNumber() != seeker.getBoardBlockNumber()) {
-//							seeker.updateBoardBlock(boardBlock.getBoardBlockNumber());
-						}
-					}
-				}
-			} else {
-				if (seeker.getCurrentHitpoints() < 0) {
-					triggerEnemyDeathSound(seeker);
-				}
-				removeSeeker(seeker);
-				removeEnemy(seeker);
-			}
 		}
 	}
 
