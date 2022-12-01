@@ -17,6 +17,8 @@ public class Trajectory {
 	private Path currentPath;
 	private PathFactory pathFactory = PathFactory.getInstance();
 	private DataClass dataClass = DataClass.getInstance();
+	private Enemy enemy = null;
+	private Missile missile = null;
 
 	public Trajectory() {
 	}
@@ -24,7 +26,7 @@ public class Trajectory {
 	// Creates a trajectory & correspondent path based on enemy type
 	public void setEnemyTrajectoryType(Enemy enemy) {
 		Path newPath = null;
-
+		this.enemy = enemy;
 		switch (enemy.getEnemyDirection()) {
 		case ("Left"):
 			newPath = pathFactory.getStraightLine(enemy.getEnemyDirection(),
@@ -60,7 +62,7 @@ public class Trajectory {
 
 	public void setMissileTrajectoryType(Missile missile) {
 		Path newPath = null;
-
+		this.missile = missile;
 		switch (missile.getMissileDirection()) {
 		case ("Left"):
 			newPath = pathFactory.getStraightLine(missile.getMissileDirection(), missile.getMaxMissileLength(),
@@ -114,6 +116,14 @@ public class Trajectory {
 	public void setCurrentPath() {
 		if (pathList.size() > 0) {
 			currentPath = pathList.get(0);
+		}
+		//Creates a brand new path based on the type if the sprite becomes stationary
+		else if (pathList.size() == 0) {
+			if (missile != null) {
+				setMissileTrajectoryType(missile);
+			} else if (enemy != null) {
+				setEnemyTrajectoryType(enemy);
+			}
 		}
 	}
 

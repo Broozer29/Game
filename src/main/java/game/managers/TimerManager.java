@@ -80,7 +80,7 @@ public class TimerManager {
 
 		switch (timerPurpose) {
 		case ("SpawnBombs"):
-			levelManager.spawnBombs();
+			levelManager.spawnBombs(20);
 			createTimer("SpawnBombs");
 			break;
 		}

@@ -9,6 +9,7 @@ public class Bomba extends Enemy{
 	public Bomba(int x, int y, String direction) {
 		super(x, y, direction);
 		loadImage("Bomba");
+		this.initBoardBlockSpeeds();
 		this.hitPoints = 50;
 		this.maxHitPoints = 50;
 		this.attackSpeedFrameCount = 100;
@@ -20,24 +21,19 @@ public class Bomba extends Enemy{
 		this.setVisible(true);
 		this.setRotation(direction);
 	}
-
-	public void move() {
-		List<Integer> newCoordsList = trajectory.getPathCoordinates(xCoordinate, yCoordinate);
-		xCoordinate = newCoordsList.get(0);
-		yCoordinate = newCoordsList.get(1);
-
-		if (xCoordinate < 0) {
-			this.setVisible(false);
-		}
+	
+	private void initBoardBlockSpeeds() {
+		this.boardBlockSpeeds.add(0,1);
+		this.boardBlockSpeeds.add(1,1);
+		this.boardBlockSpeeds.add(2,1);
+		this.boardBlockSpeeds.add(3,2);
+		this.boardBlockSpeeds.add(4,2);
+		this.boardBlockSpeeds.add(5,2);
+		this.boardBlockSpeeds.add(6,3);
+		this.boardBlockSpeeds.add(7,3);
 	}
 
-	public void updateBoardBlock(int boardBlockNumber) {
-		if (boardBlockNumber != this.currentBoardBlock) {
-			this.currentBoardBlock = boardBlockNumber;
-			this.updateMovementSpeed();
-			this.trajectory.updateMovementSpeed(movementSpeed);
-		}
-	}
+
 
 	// Random offset for the origin of the missile the enemy shoots
 	private int calculateRandomWeaponHeightOffset() {
@@ -66,41 +62,6 @@ public class Bomba extends Enemy{
 		}
 		if (currentAttackSpeedFrameCount < attackSpeedFrameCount) {
 			this.currentAttackSpeedFrameCount++;
-		}
-	}
-
-	// Call the corresponding boardBlockSpeed modification depending on the current
-	// boardBlock
-
-	private void updateMovementSpeed() {
-		switch (currentBoardBlock) {
-		case (0):
-			this.movementSpeed = 2;
-			break;
-		case (1):
-			this.movementSpeed = 2;
-			break;
-		case (2):
-			this.movementSpeed = 2;
-			break;
-		case (3):
-			this.movementSpeed = 2;
-			break;
-		case (4):
-			this.movementSpeed = 2;
-			break;
-		case (5):
-			this.movementSpeed = 2;
-			break;
-		case (6):
-			this.movementSpeed = 2;
-			break;
-		case (7):
-			this.movementSpeed = 3;
-			break;
-		case (8):
-			this.movementSpeed = 3;
-			break;
 		}
 	}
 

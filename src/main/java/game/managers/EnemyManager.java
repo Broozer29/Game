@@ -38,10 +38,6 @@ public class EnemyManager {
 	private int maxBoardBlocks = 8;
 	private DataClass dataClass = DataClass.getInstance();
 
-	private int defaultAlienSpaceshipCount;
-	private int alienBombCount;
-	private int seekerCount;
-
 	private EnemyManager() {
 		saturateBoardBlockList();
 	}
@@ -78,8 +74,7 @@ public class EnemyManager {
 			e.printStackTrace();
 		}
 		updateEnemyBoardBlocks();
-		triggerEnemyAction();
-		keepTrackOfEnemies();
+		triggerEnemyActions();
 	}
 
 	private void saturateBoardBlockList() {
@@ -95,28 +90,6 @@ public class EnemyManager {
 
 	}
 
-	public void keepTrackOfEnemies() {
-		int defaultSpaceShipCounter = 0;
-		int alienBombCounter = 0;
-		int seekerCounter = 0;
-
-		for (Enemy enemy : enemyList) {
-			if (enemy instanceof Alien) {
-				defaultSpaceShipCounter++;
-			}
-			if (enemy instanceof AlienBomb) {
-				alienBombCounter++;
-			}
-			if (enemy instanceof Seeker) {
-				seekerCounter++;
-			}
-		}
-		
-		defaultAlienSpaceshipCount = defaultSpaceShipCounter;
-		alienBombCount = alienBombCounter;
-		seekerCount = seekerCounter;
-	}
-
 	private void checkSpaceshipCollisions() throws UnsupportedAudioFileException, IOException {
 		if (friendlyManager == null || animationManager == null) {
 			this.animationManager = AnimationManager.getInstance();
@@ -129,11 +102,7 @@ public class EnemyManager {
 			Rectangle enemyBounds = enemy.getBounds();
 			if (spaceshipBounds.intersects(enemyBounds)) {
 				if (enemy instanceof AlienBomb) {
-					friendlyManager.getSpaceship().takeHitpointDamage(20);
-					animationManager.addUpperAnimation(enemy.getXCoordinate(), enemy.getYCoordinate(),
-							"Alien Bomb Explosion", false);
-					audioManager.addAudio("Alien Bomb Impact");
-					enemy.setVisible(false);
+					detonateAlienBomb(enemy);
 				} else {
 					friendlyManager.getSpaceship().takeHitpointDamage(1);
 				}
@@ -141,16 +110,35 @@ public class EnemyManager {
 		}
 	}
 
-	private void triggerEnemyAction() {
+	private void detonateAlienBomb(Enemy enemy) throws UnsupportedAudioFileException, IOException {
+		friendlyManager.getSpaceship().takeHitpointDamage(20);
+		animationManager.addUpperAnimation(enemy.getXCoordinate(), enemy.getYCoordinate(), "Alien Bomb Explosion",
+				false);
+		audioManager.addAudio("Alien Bomb Impact");
+		enemy.setVisible(false);
+	}
+
+	private void triggerEnemyActions() {
 		for (Alien alien : alienList) {
-			if (alien.getHasAttack()) {
-				alien.fireAction();
-			}
+			alien.fireAction();
 		}
 		for (Seeker seeker : seekerList) {
-			if (seeker.getHasAttack()) {
-				seeker.fireAction();
-			}
+			seeker.fireAction();
+		}
+		for (Tazer tazer : tazerList) {
+			tazer.fireAction();
+		}
+		for (Bulldozer bulldozer : bulldozerList) {
+			bulldozer.fireAction();
+		}
+		for (Energizer energizer : energizerList) {
+			energizer.fireAction();
+		}
+		for (Flamer flamer : flamerList) {
+			flamer.fireAction();
+		}
+		for (Bomba bomba : bombaList) {
+			bomba.fireAction();
 		}
 	}
 
@@ -213,7 +201,7 @@ public class EnemyManager {
 				for (BoardBlock boardBlock : boardBlockList) {
 					if (boardBlock.getBounds().intersects(seeker.getBounds())) {
 						if (boardBlock.getBoardBlockNumber() != seeker.getBoardBlockNumber()) {
-							seeker.updateBoardBlock(boardBlock.getBoardBlockNumber());
+//							seeker.updateBoardBlock(boardBlock.getBoardBlockNumber());
 						}
 					}
 				}
@@ -228,9 +216,22 @@ public class EnemyManager {
 	}
 
 	private void updateEnemies() throws UnsupportedAudioFileException, IOException {
-		updateAliens();
-		updateAlienBombs();
-		updateSeekers();
+		for (int i = 0; i < enemyList.size(); i++) {
+			Enemy enemy = enemyList.get(i);
+			if (enemy.isVisible()) {
+				enemy.move();
+				enemy.updateBoardBlock();
+			} else {
+				if (enemy.getCurrentHitpoints() < 0) {
+					triggerEnemyDeathSound(enemy);
+				}
+				removeEnemy(enemy);
+			}
+		}
+
+//		updateAliens();
+//		updateAlienBombs();
+//		updateSeekers();
 
 	}
 
@@ -247,7 +248,7 @@ public class EnemyManager {
 			enemy = alienBomb;
 			alienBombList.add(alienBomb);
 			break;
-		case ("Default Alien Spaceship"):
+		case ("Alien"):
 			Alien alien = new Alien(xCoordinate, yCoordinate, direction);
 			enemy = alien;
 			alienList.add(alien);
@@ -256,12 +257,37 @@ public class EnemyManager {
 			Seeker seeker = new Seeker(xCoordinate, yCoordinate, direction);
 			enemy = seeker;
 			seekerList.add(seeker);
+			break;
+		case ("Energizer"):
+			Energizer energizer = new Energizer(xCoordinate, yCoordinate, direction);
+			enemy = energizer;
+			energizerList.add(energizer);
+			break;
+		case ("Bomba"):
+			Bomba bomba = new Bomba(xCoordinate, yCoordinate, direction);
+			enemy = bomba;
+			bombaList.add(bomba);
+			break;
+		case ("Flamer"):
+			Flamer flamer = new Flamer(xCoordinate, yCoordinate, direction);
+			enemy = flamer;
+			flamerList.add(flamer);
+			break;
+		case ("Bulldozer"):
+			Bulldozer bulldozer = new Bulldozer(xCoordinate, yCoordinate, direction);
+			enemy = bulldozer;
+			bulldozerList.add(bulldozer);
+			break;
+		case ("Tazer"):
+			Tazer tazer = new Tazer(xCoordinate, yCoordinate, direction);
+			enemy = tazer;
+			tazerList.add(tazer);
+			break;
 		}
 
 		if (enemy != null) {
 			this.enemyList.add(enemy);
 		}
-		keepTrackOfEnemies();
 	}
 
 	private void removeAlienSpaceship(Alien alien) {
@@ -278,6 +304,27 @@ public class EnemyManager {
 
 	private void removeEnemy(Enemy enemy) {
 		this.enemyList.remove(enemy);
+		removeEnemyFromSpecialisedList(enemy);
+	}
+
+	private void removeEnemyFromSpecialisedList(Enemy enemy) {
+		if (enemy instanceof Alien) {
+			alienList.remove(enemy);
+		} else if (enemy instanceof AlienBomb) {
+			alienBombList.remove(enemy);
+		} else if (enemy instanceof Tazer) {
+			tazerList.remove(enemy);
+		} else if (enemy instanceof Energizer) {
+			energizerList.remove(enemy);
+		} else if (enemy instanceof Seeker) {
+			seekerList.remove(enemy);
+		} else if (enemy instanceof Bomba) {
+			bombaList.remove(enemy);
+		} else if (enemy instanceof Flamer) {
+			flamerList.remove(enemy);
+		} else if (enemy instanceof Bulldozer) {
+			bulldozerList.remove(enemy);
+		}
 	}
 
 	public List<Enemy> getEnemies() {
@@ -285,15 +332,35 @@ public class EnemyManager {
 	}
 
 	public int getDefaultAlienSpaceshipCount() {
-		return defaultAlienSpaceshipCount;
+		return alienList.size();
 	}
 
 	public int getAlienBombCount() {
-		return alienBombCount;
+		return alienBombList.size();
 	}
 
 	public int getSeekerCount() {
-		return seekerCount;
+		return seekerList.size();
+	}
+
+	public int getBulldozerCount() {
+		return this.bulldozerList.size();
+	}
+
+	public int getEnergizerCount() {
+		return this.energizerList.size();
+	}
+
+	public int getFlamerCount() {
+		return this.flamerList.size();
+	}
+
+	public int getBombaCount() {
+		return this.bombaList.size();
+	}
+
+	public int getTazerCount() {
+		return this.tazerList.size();
 	}
 
 }

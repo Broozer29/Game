@@ -9,6 +9,7 @@ public class AlienBomb extends Enemy {
 	public AlienBomb(int x, int y, String direction) {
 		super(x, y, direction);
 		loadImage("Alien Bomb");
+		this.initBoardBlockSpeeds();
 		this.hitPoints = 10;
 		this.maxHitPoints = 10;
 		this.attackSpeedFrameCount = 999999;
@@ -20,22 +21,16 @@ public class AlienBomb extends Enemy {
 		this.setVisible(true);
 		this.setRotation(direction);
 	}
-
-	// Called every loop to move the enemy
-	public void move() {
-		List<Integer> newCoordsList = trajectory.getPathCoordinates(xCoordinate, yCoordinate);
-		xCoordinate = newCoordsList.get(0);
-		yCoordinate = newCoordsList.get(1);
-
-		if (direction.equals("Up")) {
-			if (yCoordinate <= 0) {
-				this.setVisible(false);
-			}
-		} else if (direction.equals("Down")) {
-			if (yCoordinate >= DataClass.getInstance().getWindowHeight()) {
-				this.setVisible(false);
-			}
-		}
+	
+	private void initBoardBlockSpeeds() {
+		this.boardBlockSpeeds.add(0,1);
+		this.boardBlockSpeeds.add(1,1);
+		this.boardBlockSpeeds.add(2,1);
+		this.boardBlockSpeeds.add(3,1);
+		this.boardBlockSpeeds.add(4,1);
+		this.boardBlockSpeeds.add(5,1);
+		this.boardBlockSpeeds.add(6,1);
+		this.boardBlockSpeeds.add(7,1);
 	}
 
 }
