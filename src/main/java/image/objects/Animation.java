@@ -13,12 +13,12 @@ public class Animation extends Sprite {
 
 	private int currentFrame;
 	private int totalFrames;
-	private List<ImageIcon> frames = new ArrayList<ImageIcon>();
+	private List<Image> frames = new ArrayList<Image>();
 	private int frameDelay;
 	private boolean infiniteLoop;
 
-	public Animation(int x, int y, String imageType, boolean infiniteLoop) {
-		super(x, y);
+	public Animation(int x, int y, String imageType, boolean infiniteLoop, int scale) {
+		super(x, y, scale);
 		this.initAnimation(imageType);
 		this.frameDelay = 0;
 		this.infiniteLoop = infiniteLoop;
@@ -26,7 +26,7 @@ public class Animation extends Sprite {
 
 	protected void initAnimation(String imageType) {
 		loadGifFrames(imageType);
-		setImage(frames.get(0).getImage());
+		setImage(frames.get(0));
 		getImageDimensions();
 		centerAnimationFrame();
 		totalFrames = frames.size();
@@ -77,7 +77,7 @@ public class Animation extends Sprite {
 		}
 
 		if (currentFrame < frames.size()) {
-			Image returnImage = frames.get(currentFrame).getImage();
+			Image returnImage = frames.get(currentFrame);
 			width = returnImage.getWidth(null);
 			height = returnImage.getHeight(null);
 			if (frameDelay >= 1) {
@@ -87,7 +87,7 @@ public class Animation extends Sprite {
 				frameDelay++;
 			return returnImage;
 		}
-		return frames.get(frames.size() - 1).getImage();
+		return frames.get(frames.size() - 1);
 	}
 
 	public int getFrame() {

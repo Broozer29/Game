@@ -34,12 +34,9 @@ public class EnemyManager {
 	private List<Tazer> tazerList = new ArrayList<Tazer>();
 	private List<Energizer> energizerList = new ArrayList<Energizer>();
 	private List<AlienBomb> alienBombList = new ArrayList<AlienBomb>();
-	private List<BoardBlock> boardBlockList = new ArrayList<BoardBlock>();
-	private int maxBoardBlocks = 8;
 	private DataClass dataClass = DataClass.getInstance();
 
 	private EnemyManager() {
-		saturateBoardBlockList();
 	}
 
 	public static EnemyManager getInstance() {
@@ -52,7 +49,6 @@ public class EnemyManager {
 		enemyList = new ArrayList<Enemy>();
 		alienBombList = new ArrayList<AlienBomb>();
 		alienList = new ArrayList<Alien>();
-		boardBlockList = new ArrayList<BoardBlock>();
 		seekerList = new ArrayList<Seeker>();
 		bombaList = new ArrayList<Bomba>();
 		flamerList = new ArrayList<Flamer>();
@@ -62,8 +58,6 @@ public class EnemyManager {
 		friendlyManager = FriendlyManager.getInstance();
 		dataClass = DataClass.getInstance();
 		audioManager = AudioManager.getInstance();
-		maxBoardBlocks = 8;
-		saturateBoardBlockList();
 	}
 
 	public void updateGameTick() {
@@ -74,19 +68,6 @@ public class EnemyManager {
 			e.printStackTrace();
 		}
 		triggerEnemyActions();
-	}
-
-	private void saturateBoardBlockList() {
-		int widthPerBlock = dataClass.getWindowWidth() / maxBoardBlocks;
-		int heightPerBlock = dataClass.getWindowHeight();
-
-		// i < total amount of board blocks. The amount of board block speed settings in
-		// Enemy.java HAS TO REFLECT THIS.
-		for (int i = 0; i < maxBoardBlocks; i++) {
-			BoardBlock newBoardBlock = new BoardBlock(widthPerBlock, heightPerBlock, (i * widthPerBlock), 0, i);
-			boardBlockList.add(newBoardBlock);
-		}
-
 	}
 
 	private void checkSpaceshipCollisions() throws UnsupportedAudioFileException, IOException {
@@ -112,7 +93,7 @@ public class EnemyManager {
 	private void detonateAlienBomb(Enemy enemy) throws UnsupportedAudioFileException, IOException {
 		friendlyManager.getSpaceship().takeHitpointDamage(20);
 		animationManager.addUpperAnimation(enemy.getXCoordinate(), enemy.getYCoordinate(), "Alien Bomb Explosion",
-				false);
+				false, 1);
 		audioManager.addAudio("Alien Bomb Impact");
 		enemy.setVisible(false);
 	}
@@ -155,10 +136,6 @@ public class EnemyManager {
 			}
 		}
 
-//		updateAliens();
-//		updateAlienBombs();
-//		updateSeekers();
-
 	}
 
 	private void triggerEnemyDeathSound(Enemy enemy) throws UnsupportedAudioFileException, IOException {
@@ -166,46 +143,46 @@ public class EnemyManager {
 	}
 
 	// Called by LevelManager, creates an unambiguous enemy and adds it to enemies
-	public void addEnemy(int xCoordinate, int yCoordinate, String enemyType, String direction) {
+	public void addEnemy(int xCoordinate, int yCoordinate, String enemyType, String direction, int scale) {
 		Enemy enemy = null;
 		switch (enemyType) {
 		case ("Alien Bomb"):
-			AlienBomb alienBomb = new AlienBomb(xCoordinate, yCoordinate, direction);
+			AlienBomb alienBomb = new AlienBomb(xCoordinate, yCoordinate, direction, scale);
 			enemy = alienBomb;
 			alienBombList.add(alienBomb);
 			break;
 		case ("Alien"):
-			Alien alien = new Alien(xCoordinate, yCoordinate, direction);
+			Alien alien = new Alien(xCoordinate, yCoordinate, direction, scale);
 			enemy = alien;
 			alienList.add(alien);
 			break;
 		case ("Seeker"):
-			Seeker seeker = new Seeker(xCoordinate, yCoordinate, direction);
+			Seeker seeker = new Seeker(xCoordinate, yCoordinate, direction, scale);
 			enemy = seeker;
 			seekerList.add(seeker);
 			break;
 		case ("Energizer"):
-			Energizer energizer = new Energizer(xCoordinate, yCoordinate, direction);
+			Energizer energizer = new Energizer(xCoordinate, yCoordinate, direction, scale);
 			enemy = energizer;
 			energizerList.add(energizer);
 			break;
 		case ("Bomba"):
-			Bomba bomba = new Bomba(xCoordinate, yCoordinate, direction);
+			Bomba bomba = new Bomba(xCoordinate, yCoordinate, direction, scale);
 			enemy = bomba;
 			bombaList.add(bomba);
 			break;
 		case ("Flamer"):
-			Flamer flamer = new Flamer(xCoordinate, yCoordinate, direction);
+			Flamer flamer = new Flamer(xCoordinate, yCoordinate, direction, scale);
 			enemy = flamer;
 			flamerList.add(flamer);
 			break;
 		case ("Bulldozer"):
-			Bulldozer bulldozer = new Bulldozer(xCoordinate, yCoordinate, direction);
+			Bulldozer bulldozer = new Bulldozer(xCoordinate, yCoordinate, direction, scale);
 			enemy = bulldozer;
 			bulldozerList.add(bulldozer);
 			break;
 		case ("Tazer"):
-			Tazer tazer = new Tazer(xCoordinate, yCoordinate, direction);
+			Tazer tazer = new Tazer(xCoordinate, yCoordinate, direction, scale);
 			enemy = tazer;
 			tazerList.add(tazer);
 			break;
@@ -214,18 +191,6 @@ public class EnemyManager {
 		if (enemy != null) {
 			this.enemyList.add(enemy);
 		}
-	}
-
-	private void removeAlienSpaceship(Alien alien) {
-		this.alienList.remove(alien);
-	}
-
-	private void removeAlienBomb(AlienBomb alienBomb) {
-		this.alienBombList.remove(alienBomb);
-	}
-
-	private void removeSeeker(Seeker seeker) {
-		this.seekerList.remove(seeker);
 	}
 
 	private void removeEnemy(Enemy enemy) {

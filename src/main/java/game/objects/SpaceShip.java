@@ -32,13 +32,12 @@ public class SpaceShip extends Sprite {
 //	private int rotatedtimes = 0;
 
 	public SpaceShip() {
-		super(DataClass.getInstance().getWindowWidth() / 10, DataClass.getInstance().getWindowHeight() / 2);
+		super(DataClass.getInstance().getWindowWidth() / 10, DataClass.getInstance().getWindowHeight() / 2, 1);
 		initSpaceShip();
 	}
 
 	private void initSpaceShip() {
 		loadImage("Player Spaceship");
-		getImageDimensions();
 		setShipHealth();
 	}
 

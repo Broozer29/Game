@@ -1,14 +1,13 @@
 package game.objects.enemies;
 
-import java.util.List;
-
 import game.managers.MissileManager;
 
 public class Alien extends Enemy {
 
-	public Alien(int x, int y, String direction) {
-		super(x, y, direction);
+	public Alien(int x, int y, String direction, int scale) {
+		super(x, y, direction, scale);
 		loadImage("Default Alien Spaceship");
+		this.initBoardBlockSpeeds();
 		this.hitPoints = 35;
 		this.maxHitPoints = 35;
 		this.attackSpeedFrameCount = 150;
@@ -21,25 +20,15 @@ public class Alien extends Enemy {
 		this.setRotation(direction);
 	}
 
-	// Called every loop to move the enemy
-	public void move() {
-		List<Integer> newCoordsList = trajectory.getPathCoordinates(xCoordinate, yCoordinate);
-		xCoordinate = newCoordsList.get(0);
-		yCoordinate = newCoordsList.get(1);
-
-		if (xCoordinate < 0) {
-			this.setVisible(false);
-		}
-
-	}
-	
-
-	public void updateBoardBlock(int boardBlockNumber) {
-		if (boardBlockNumber != this.currentBoardBlock) {
-			this.currentBoardBlock = boardBlockNumber;
-			this.updateMovementSpeed();
-			this.trajectory.updateMovementSpeed(movementSpeed);
-		}
+	private void initBoardBlockSpeeds() {
+		this.boardBlockSpeeds.add(0, 1);
+		this.boardBlockSpeeds.add(1, 1);
+		this.boardBlockSpeeds.add(2, 1);
+		this.boardBlockSpeeds.add(3, 2);
+		this.boardBlockSpeeds.add(4, 2);
+		this.boardBlockSpeeds.add(5, 2);
+		this.boardBlockSpeeds.add(6, 3);
+		this.boardBlockSpeeds.add(7, 3);
 	}
 
 	// Random offset for the origin of the missile the enemy shoots
@@ -72,41 +61,6 @@ public class Alien extends Enemy {
 			this.currentAttackSpeedFrameCount++;
 		}
 
-	}
-
-	// Call the corresponding boardBlockSpeed modification depending on the current
-	// boardBlock
-
-	private void updateMovementSpeed() {
-		switch (currentBoardBlock) {
-		case (0):
-			this.movementSpeed = 1;
-			break;
-		case (1):
-			this.movementSpeed = 1;
-			break;
-		case (2):
-			this.movementSpeed = 1;
-			break;
-		case (3):
-			this.movementSpeed = 1;
-			break;
-		case (4):
-			this.movementSpeed = 1;
-			break;
-		case (5):
-			this.movementSpeed = 1;
-			break;
-		case (6):
-			this.movementSpeed = 2;
-			break;
-		case (7):
-			this.movementSpeed = 3;
-			break;
-		case (8):
-			this.movementSpeed = 3;
-			break;
-		}
 	}
 
 }

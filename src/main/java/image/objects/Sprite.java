@@ -4,6 +4,7 @@ import java.awt.Image;
 import java.awt.Rectangle;
 
 import data.ImageDatabase;
+import data.ImageResizer;
 import data.ImageRotator;
 
 public class Sprite {
@@ -14,19 +15,20 @@ public class Sprite {
 	protected int height;
 	protected boolean visible;
 	protected Image image;
-	protected Image rotatedImage;
+	protected int scale;
 
-	public Sprite(int x, int y) {
+	public Sprite(int x, int y, int scale) {
 		this.xCoordinate = x;
 		this.yCoordinate = y;
+		this.scale = scale;
 		visible = true;
 	}
 
 	protected void loadImage(String imageName) {
 		image = imgDatabase.getImage(imageName);
-		rotatedImage = image;
+		setImageToScale();
 		getImageDimensions();
-		// image = image.getScaledInstance(10, 20, 0);
+//		image = image.getScaledInstance(10, 20, 0);
 		// Zet collision ook op die getallen en shits & giggles
 	}
 
@@ -39,13 +41,17 @@ public class Sprite {
 	// background planets.
 	protected void setImage(Image image) {
 		this.image = image;
-		this.rotatedImage = image;
 		getImageDimensions();
+	}
+	
+	private void setImageToScale() {
+		ImageResizer test = ImageResizer.getInstance();
+		image = test.getScaledImage(image, image.getWidth(null), image.getHeight(null), scale);
 	}
 
 	protected void rotateImage(double angle) {
 		ImageRotator imageRotator = ImageRotator.getInstance();
-		this.rotatedImage = imageRotator.rotate(image, angle);
+		this.image = imageRotator.rotate(image, angle);
 
 	}
 
@@ -58,7 +64,7 @@ public class Sprite {
 	}
 
 	public Image getImage() {
-		return rotatedImage;
+		return image;
 	}
 
 	public int getXCoordinate() {
@@ -83,6 +89,10 @@ public class Sprite {
 
 	public void setVisible(Boolean visible) {
 		this.visible = visible;
+	}
+	
+	public int getScale() {
+		return this.scale;
 	}
 
 	// Get bounds required for collision detection for objects WITHOUT ANIMATIONS

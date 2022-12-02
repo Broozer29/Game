@@ -50,43 +50,43 @@ public class ImageDatabase {
 	private Image userMenuToMainMenu;
 
 	// Animations
-	private List<ImageIcon> impactExplosionOneFrames = new ArrayList<ImageIcon>();
-	private List<ImageIcon> playerEngineFrames = new ArrayList<ImageIcon>();
-	private List<ImageIcon> destroyedExplosionUpFrames = new ArrayList<ImageIcon>();
-	private List<ImageIcon> destroyedExplosionLeftFrames = new ArrayList<ImageIcon>();
-	private List<ImageIcon> destroyedExplosionRightFrames = new ArrayList<ImageIcon>();
-	private List<ImageIcon> destroyedExplosionDownFrames = new ArrayList<ImageIcon>();
-	private List<ImageIcon> alienBombExplosionFrames = new ArrayList<ImageIcon>();
+	private List<Image> impactExplosionOneFrames = new ArrayList<Image>();
+	private List<Image> playerEngineFrames = new ArrayList<Image>();
+	private List<Image> destroyedExplosionUpFrames = new ArrayList<Image>();
+	private List<Image> destroyedExplosionLeftFrames = new ArrayList<Image>();
+	private List<Image> destroyedExplosionRightFrames = new ArrayList<Image>();
+	private List<Image> destroyedExplosionDownFrames = new ArrayList<Image>();
+	private List<Image> alienBombExplosionFrames = new ArrayList<Image>();
 
 	// Enemy Projectile Animations
-	private List<ImageIcon> seekerProjectileFrames = new ArrayList<ImageIcon>();
-	private List<ImageIcon> tazerProjectileFrames = new ArrayList<ImageIcon>();
-	private List<ImageIcon> energizerProjectileFrames = new ArrayList<ImageIcon>();
-	private List<ImageIcon> bulldozerProjectileFrames = new ArrayList<ImageIcon>();
-	private List<ImageIcon> flamerProjectileFrames = new ArrayList<ImageIcon>();
-	private List<ImageIcon> bombaProjectileFrames = new ArrayList<ImageIcon>();
+	private List<Image> seekerProjectileFrames = new ArrayList<Image>();
+	private List<Image> tazerProjectileFrames = new ArrayList<Image>();
+	private List<Image> energizerProjectileFrames = new ArrayList<Image>();
+	private List<Image> bulldozerProjectileFrames = new ArrayList<Image>();
+	private List<Image> flamerProjectileFrames = new ArrayList<Image>();
+	private List<Image> bombaProjectileFrames = new ArrayList<Image>();
 
 	// Enemy Exhaust Animations
-	private List<ImageIcon> seekerNormalExhaustFrames = new ArrayList<ImageIcon>();
-	private List<ImageIcon> seekerLargeExhaustFrames = new ArrayList<ImageIcon>();
-	private List<ImageIcon> tazerNormalExhaustFrames = new ArrayList<ImageIcon>();
-	private List<ImageIcon> tazerLargeExhaustFrames = new ArrayList<ImageIcon>();
-	private List<ImageIcon> energizerNormalExhaustFrames = new ArrayList<ImageIcon>();
-	private List<ImageIcon> energizerLargeExhaustFrames = new ArrayList<ImageIcon>();
-	private List<ImageIcon> bulldozerNormalExhaustFrames = new ArrayList<ImageIcon>();
-	private List<ImageIcon> bulldozerLargeExhaustFrames = new ArrayList<ImageIcon>();
-	private List<ImageIcon> flamerNormalExhaustFrames = new ArrayList<ImageIcon>();
-	private List<ImageIcon> flamerLargeExhaustFrames = new ArrayList<ImageIcon>();
-	private List<ImageIcon> bombaNormalExhaustFrames = new ArrayList<ImageIcon>();
-	private List<ImageIcon> bombaLargeExhaustFrames = new ArrayList<ImageIcon>();
+	private List<Image> seekerNormalExhaustFrames = new ArrayList<Image>();
+	private List<Image> seekerLargeExhaustFrames = new ArrayList<Image>();
+	private List<Image> tazerNormalExhaustFrames = new ArrayList<Image>();
+	private List<Image> tazerLargeExhaustFrames = new ArrayList<Image>();
+	private List<Image> energizerNormalExhaustFrames = new ArrayList<Image>();
+	private List<Image> energizerLargeExhaustFrames = new ArrayList<Image>();
+	private List<Image> bulldozerNormalExhaustFrames = new ArrayList<Image>();
+	private List<Image> bulldozerLargeExhaustFrames = new ArrayList<Image>();
+	private List<Image> flamerNormalExhaustFrames = new ArrayList<Image>();
+	private List<Image> flamerLargeExhaustFrames = new ArrayList<Image>();
+	private List<Image> bombaNormalExhaustFrames = new ArrayList<Image>();
+	private List<Image> bombaLargeExhaustFrames = new ArrayList<Image>();
 
 	// Enemy projectile explosions
-	private List<ImageIcon> seekerProjectileExplosion = new ArrayList<ImageIcon>();
-	private List<ImageIcon> tazerProjectileExplosion = new ArrayList<ImageIcon>();
-	private List<ImageIcon> energizerProjectileExplosion = new ArrayList<ImageIcon>();
-	private List<ImageIcon> bulldozerProjectileExplosion = new ArrayList<ImageIcon>();
-	private List<ImageIcon> flamerProjectileExplosion = new ArrayList<ImageIcon>();
-	private List<ImageIcon> bombaProjectileExplosion = new ArrayList<ImageIcon>();
+	private List<Image> seekerProjectileExplosion = new ArrayList<Image>();
+	private List<Image> tazerProjectileExplosion = new ArrayList<Image>();
+	private List<Image> energizerProjectileExplosion = new ArrayList<Image>();
+	private List<Image> bulldozerProjectileExplosion = new ArrayList<Image>();
+	private List<Image> flamerProjectileExplosion = new ArrayList<Image>();
+	private List<Image> bombaProjectileExplosion = new ArrayList<Image>();
 
 	// Background images
 	private Image moon;
@@ -215,7 +215,7 @@ public class ImageDatabase {
 		return testImage;
 	}
 
-	public List<ImageIcon> getGif(String imageType) {
+	public List<Image> getGif(String imageType) {
 		switch (imageType) {
 		case ("Impact Explosion One"):
 			return this.impactExplosionOneFrames;
@@ -409,11 +409,11 @@ public class ImageDatabase {
 
 	}
 
-	private List<ImageIcon> gifToImageIcons(ImageReader reader) throws IOException {
+	private List<Image> gifToImageIcons(ImageReader reader) throws IOException {
 		int n = reader.getNumImages(true);
-		List<ImageIcon> imgs = new ArrayList<>();
+		List<Image> imgs = new ArrayList<>();
 		for (int i = 0; i < n; i++) {
-			imgs.add(new ImageIcon(reader.read(i)));
+			imgs.add(new ImageIcon(reader.read(i)).getImage());
 		}
 		return imgs;
 	}

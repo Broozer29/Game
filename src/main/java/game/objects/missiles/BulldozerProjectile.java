@@ -4,8 +4,8 @@ import data.DataClass;
 
 public class BulldozerProjectile extends Missile{
 
-	public BulldozerProjectile(int x, int y) {
-		super(x, y);
+	public BulldozerProjectile(int x, int y, int scale) {
+		super(x, y, scale);
 		this.missileDamage = (float) 7.5;
 		initMissile();
 		setAnimation();

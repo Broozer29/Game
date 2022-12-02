@@ -4,10 +4,10 @@ import java.util.List;
 
 import game.managers.MissileManager;
 
-public class Bomba extends Enemy{
+public class Bomba extends Enemy {
 
-	public Bomba(int x, int y, String direction) {
-		super(x, y, direction);
+	public Bomba(int x, int y, String direction, int scale) {
+		super(x, y, direction, scale);
 		loadImage("Bomba");
 		this.initBoardBlockSpeeds();
 		this.hitPoints = 50;
@@ -21,19 +21,17 @@ public class Bomba extends Enemy{
 		this.setVisible(true);
 		this.setRotation(direction);
 	}
-	
+
 	private void initBoardBlockSpeeds() {
-		this.boardBlockSpeeds.add(0,1);
-		this.boardBlockSpeeds.add(1,1);
-		this.boardBlockSpeeds.add(2,1);
-		this.boardBlockSpeeds.add(3,2);
-		this.boardBlockSpeeds.add(4,2);
-		this.boardBlockSpeeds.add(5,2);
-		this.boardBlockSpeeds.add(6,3);
-		this.boardBlockSpeeds.add(7,3);
+		this.boardBlockSpeeds.add(0, 1);
+		this.boardBlockSpeeds.add(1, 1);
+		this.boardBlockSpeeds.add(2, 1);
+		this.boardBlockSpeeds.add(3, 2);
+		this.boardBlockSpeeds.add(4, 2);
+		this.boardBlockSpeeds.add(5, 2);
+		this.boardBlockSpeeds.add(6, 3);
+		this.boardBlockSpeeds.add(7, 3);
 	}
-
-
 
 	// Random offset for the origin of the missile the enemy shoots
 	private int calculateRandomWeaponHeightOffset() {

@@ -6,8 +6,8 @@ import game.managers.MissileManager;
 
 public class Bulldozer extends Enemy{
 
-	public Bulldozer(int x, int y, String direction) {
-		super(x, y, direction);
+	public Bulldozer(int x, int y, String direction, int scale) {
+		super(x, y, direction, scale);
 		loadImage("Bulldozer");
 		this.initBoardBlockSpeeds();
 		this.hitPoints = 50;

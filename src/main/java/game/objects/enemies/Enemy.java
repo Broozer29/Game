@@ -30,8 +30,8 @@ public class Enemy extends Sprite {
 	protected boolean showHealthBar;
 	protected List<Integer> boardBlockSpeeds = new ArrayList<Integer>();
 
-	public Enemy(int x, int y, String direction) {
-		super(x, y);
+	public Enemy(int x, int y, String direction, int scale) {
+		super(x, y, scale);
 		this.direction = direction;
 		this.currentBoardBlock = 8;
 	}
@@ -43,7 +43,7 @@ public class Enemy extends Sprite {
 		}
 		this.hitPoints -= damageTaken;
 		if (this.hitPoints <= 0) {
-			animationManager.addDestroyedExplosion(xCoordinate, yCoordinate);
+			animationManager.addDestroyedExplosion(xCoordinate, yCoordinate, scale);
 			this.setVisible(false);
 		}
 	}

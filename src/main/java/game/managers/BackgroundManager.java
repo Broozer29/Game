@@ -94,12 +94,12 @@ public class BackgroundManager {
 	// Fill the first list with stars
 	private void fillLevelOneStars() {
 		while (levelOneStars.size() < 25) {
-			Image starImage = setStarScale(imageDatabase.getImage("Star"), 1);
+			Image starImage = imageDatabase.getImage("Star");
 			int randomXCoordinate = randomCoordinator.getRandomXBGOCoordinate();
 			int randomYCoordinate = randomCoordinator.getRandomYBGOCoordinate();
 			if (randomCoordinator.checkValidBGOXCoordinate(levelOneStars, randomXCoordinate)
 					&& randomCoordinator.checkValidBGOYCoordinate(levelOneStars, randomYCoordinate)) {
-				levelOneStars.add(new BackgroundObject(randomXCoordinate, randomYCoordinate, starImage));
+				levelOneStars.add(new BackgroundObject(randomXCoordinate, randomYCoordinate, starImage, 1));
 			}
 		}
 
@@ -108,12 +108,12 @@ public class BackgroundManager {
 	// Fill the second list with stars
 	private void fillLevelTwoStars() {
 		while (levelTwoStars.size() < 25) {
-			Image starImage = setStarScale(imageDatabase.getImage("Star"), 2);
+			Image starImage = imageDatabase.getImage("Star");
 			int randomXCoordinate = randomCoordinator.getRandomXBGOCoordinate();
 			int randomYCoordinate = randomCoordinator.getRandomYBGOCoordinate();
 			if (randomCoordinator.checkValidBGOXCoordinate(levelTwoStars, randomXCoordinate)
 					&& randomCoordinator.checkValidBGOYCoordinate(levelTwoStars, randomYCoordinate)) {
-				levelTwoStars.add(new BackgroundObject(randomXCoordinate, randomYCoordinate, starImage));
+				levelTwoStars.add(new BackgroundObject(randomXCoordinate, randomYCoordinate, starImage, 2));
 			}
 		}
 	}
@@ -121,12 +121,12 @@ public class BackgroundManager {
 	// Fill the third list with stars
 	private void fillLevelThreeStars() {
 		while (levelThreeStars.size() < 25) {
-			Image starImage = setStarScale(imageDatabase.getImage("Star"), 3);
+			Image starImage = imageDatabase.getImage("Star");
 			int randomXCoordinate = randomCoordinator.getRandomXBGOCoordinate();
 			int randomYCoordinate = randomCoordinator.getRandomYBGOCoordinate();
 			if (randomCoordinator.checkValidBGOXCoordinate(levelThreeStars, randomXCoordinate)
 					&& randomCoordinator.checkValidBGOYCoordinate(levelThreeStars, randomYCoordinate)) {
-				levelThreeStars.add(new BackgroundObject(randomXCoordinate, randomYCoordinate, starImage));
+				levelThreeStars.add(new BackgroundObject(randomXCoordinate, randomYCoordinate, starImage, 3));
 			}
 		}
 	}
@@ -134,27 +134,27 @@ public class BackgroundManager {
 	// Fill the first list with objects
 	private void fillLevelOnePlanets() {
 		for (int i = 0; i < 1; i++) {
-			Image planetImage = setPlanetScale(getRandomPlanet(), 1);
+			Image planetImage = getRandomPlanet();
 			levelOnePlanets.add(new BackgroundObject(randomCoordinator.getRandomXBGOCoordinate(),
-					randomCoordinator.getRandomYBGOCoordinate(), planetImage));
+					randomCoordinator.getRandomYBGOCoordinate(), planetImage, 1));
 		}
 	}
 
 	// Fill the second list with objects
 	private void fillLevelTwoPlanets() {
 		for (int i = 0; i < 1; i++) {
-			Image planetImage = setPlanetScale(getRandomPlanet(), 2);
+			Image planetImage = getRandomPlanet();
 			levelTwoPlanets.add(new BackgroundObject(randomCoordinator.getRandomXBGOCoordinate(),
-					randomCoordinator.getRandomYBGOCoordinate(), planetImage));
+					randomCoordinator.getRandomYBGOCoordinate(), planetImage, 2));
 		}
 	}
 
 	// Fill the third list with objects
 	private void fillLevelThreePlanets() {
 		for (int i = 0; i < 1; i++) {
-			Image planetImage = setPlanetScale(getRandomPlanet(), 3);
+			Image planetImage = getRandomPlanet();
 			levelThreePlanets.add(new BackgroundObject(randomCoordinator.getRandomXBGOCoordinate(),
-					randomCoordinator.getRandomYBGOCoordinate(), planetImage));
+					randomCoordinator.getRandomYBGOCoordinate(), planetImage, 3));
 		}
 	}
 
@@ -169,7 +169,7 @@ public class BackgroundManager {
 				if ((bgObject.getXCoordinate() + levelOneObjectModifier + 20) < (0 - levelOneObjectModifier)) {
 					bgObject.setX(dataClass.getWindowWidth() + 200);
 					bgObject.setY(randomCoordinator.getRandomYBGOCoordinate());
-					bgObject.setNewPlanetImage(setPlanetScale(getRandomPlanet(), 1));
+					bgObject.setNewPlanetImage(getRandomPlanet());
 				}
 				bgObject.setX(bgObject.getXCoordinate() - 1);
 			}
@@ -190,7 +190,7 @@ public class BackgroundManager {
 				if ((bgObject.getXCoordinate() + levelTwoObjectModifier + 20) < (0 - levelTwoObjectModifier)) {
 					bgObject.setX(dataClass.getWindowWidth() + 200);
 					bgObject.setY(randomCoordinator.getRandomYBGOCoordinate());
-					bgObject.setNewPlanetImage(setPlanetScale(getRandomPlanet(), 2));
+					bgObject.setNewPlanetImage(getRandomPlanet());
 				}
 				bgObject.setX(bgObject.getXCoordinate() - 1);
 			}
@@ -211,7 +211,7 @@ public class BackgroundManager {
 				if ((bgObject.getXCoordinate() + levelThreeObjectModifier + 20) < (0 - levelThreeObjectModifier)) {
 					bgObject.setX(dataClass.getWindowWidth() + 200);
 					bgObject.setY(randomCoordinator.getRandomYBGOCoordinate());
-					bgObject.setNewPlanetImage(setPlanetScale(getRandomPlanet(), 3));
+					bgObject.setNewPlanetImage(getRandomPlanet());
 				}
 				bgObject.setX(bgObject.getXCoordinate() - 1);
 			}
@@ -244,31 +244,6 @@ public class BackgroundManager {
 		return random.nextInt((scaledBackgroundObjects.size() - 1) + 1) + 0;
 	}
 
-	// Objects require different scales to create illusion of depth
-	private Image setPlanetScale(Image image, int level) {
-		switch (level) {
-		case (1):
-			return image.getScaledInstance(levelOneObjectModifier, levelOneObjectModifier, Image.SCALE_SMOOTH);
-		case (2):
-			return image.getScaledInstance(levelTwoObjectModifier, levelTwoObjectModifier, Image.SCALE_SMOOTH);
-		case (3):
-			return image.getScaledInstance(levelThreeObjectModifier, levelThreeObjectModifier, Image.SCALE_SMOOTH);
-		}
-		return image;
-	}
-
-	// Stars require different scales to create illusion of depth
-	private Image setStarScale(Image image, int level) {
-		switch (level) {
-		case (1):
-			return image.getScaledInstance(levelOneStarModifier, levelOneStarModifier, Image.SCALE_SMOOTH);
-		case (2):
-			return image.getScaledInstance(levelTwoStarModifier, levelTwoStarModifier, Image.SCALE_SMOOTH);
-		case (3):
-			return image.getScaledInstance(levelThreeStarModifier, levelThreeStarModifier, Image.SCALE_SMOOTH);
-		}
-		return image;
-	}
 
 	// Initially loads all planets so they dont have to be reloaded from files.
 	// Saves memory
