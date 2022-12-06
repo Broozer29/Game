@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import game.objects.enemies.Enemy;
 import image.objects.Animation;
 
 public class AnimationManager {
@@ -27,7 +28,7 @@ public class AnimationManager {
 		upperAnimationList = new ArrayList<Animation>();
 		lowerAnimationList = new ArrayList<Animation>();
 		playerEngineAnimation = new Animation(friendlyManager.getSpaceship().getXCoordinate(),
-				friendlyManager.getSpaceship().getYCoordinate(), "Player Engine", true, 1);
+				friendlyManager.getSpaceship().getYCoordinate(), "Player Engine", true);
 		lowerAnimationList.add(playerEngineAnimation);
 		engineXCoordinate = 0;
 		engineYCoordinate = 0;
@@ -35,7 +36,7 @@ public class AnimationManager {
 
 	private AnimationManager() {
 		playerEngineAnimation = new Animation(friendlyManager.getSpaceship().getXCoordinate(),
-				friendlyManager.getSpaceship().getYCoordinate(), "Player Engine", true, 1);
+				friendlyManager.getSpaceship().getYCoordinate(), "Player Engine", true);
 		lowerAnimationList.add(playerEngineAnimation);
 	}
 
@@ -47,14 +48,14 @@ public class AnimationManager {
 
 		playerEngineAnimation.setX(engineXCoordinate);
 		playerEngineAnimation.setY(engineYCoordinate);
-		
+
 		if (playerEngineAnimation.getFrame() >= playerEngineAnimation.getTotalFrames()) {
 			playerEngineAnimation.refreshAnimation(engineXCoordinate, engineYCoordinate);
 		}
 
 	}
 
-	public void addDestroyedExplosion(int xCoordinate, int yCoordinate, int scale) {
+	public void addDestroyedExplosion(int xCoordinate, int yCoordinate) {
 		Random random = new Random();
 		int result = random.nextInt(4 - 1) + 1;
 		String explosionType = null;
@@ -78,19 +79,44 @@ public class AnimationManager {
 		if (explosionType == null) {
 			explosionType = "Destroyed Explosion";
 		}
-		addUpperAnimation(xCoordinate, yCoordinate, explosionType, infiniteLoop, scale);
+		addUpperAnimation(xCoordinate, yCoordinate, explosionType, infiniteLoop);
 	}
 
-	public void addUpperAnimation(int xCoordinate, int yCoordinate, String animationType, boolean infiniteLoop, int scale) {
-		this.upperAnimationList.add(createAnimation(xCoordinate, yCoordinate, animationType, infiniteLoop, scale));
+	public void addExhaustAnimation(Animation animation) {
+		if (animation != null) {
+			this.lowerAnimationList.add(animation);
+		}
 	}
 
-	public void addLowerAnimation(int xCoordinate, int yCoordinate, String animationType, boolean infiniteLoop, int scale) {
-		this.lowerAnimationList.add(createAnimation(xCoordinate, yCoordinate, animationType, infiniteLoop, scale));
+	public void addUpperAnimation(int xCoordinate, int yCoordinate, String animationType, boolean infiniteLoop) {
+		this.upperAnimationList.add(createAnimation(xCoordinate, yCoordinate, animationType, infiniteLoop));
 	}
 
-	private Animation createAnimation(int xCoordinate, int yCoordinate, String animationType, boolean infiniteLoop, int scale) {
-		return new Animation(xCoordinate, yCoordinate, animationType, infiniteLoop, scale);
+	public void addLowerAnimation(int xCoordinate, int yCoordinate, String animationType, boolean infiniteLoop) {
+		this.lowerAnimationList.add(createAnimation(xCoordinate, yCoordinate, animationType, infiniteLoop));
+	}
+
+	private Animation createAnimation(int xCoordinate, int yCoordinate, String animationType, boolean infiniteLoop) {
+		return new Animation(xCoordinate, yCoordinate, animationType, infiniteLoop);
+	}
+
+	// Called by EnemyManager when an enemy gets deleted and the belonging
+	// animations need to be removed
+	public void deleteEnemyAnimations(Enemy enemy) {
+		if (enemy.getExhaustAnimation() != null) {
+			deleteAnimation(enemy.getExhaustAnimation());
+		}
+	}
+
+	private void deleteAnimation(Animation animation) {
+		if (animation == null) {
+			return;
+		}
+		if (upperAnimationList.contains(animation)) {
+			upperAnimationList.remove(animation);
+		} else if (lowerAnimationList.contains(animation)) {
+			lowerAnimationList.remove(animation);
+		}
 	}
 
 	private void removeInvisibleAnimations() {

@@ -15,18 +15,16 @@ public class Sprite {
 	protected int height;
 	protected boolean visible;
 	protected Image image;
-	protected int scale;
 
-	public Sprite(int x, int y, int scale) {
+	public Sprite(int x, int y) {
 		this.xCoordinate = x;
 		this.yCoordinate = y;
-		this.scale = scale;
 		visible = true;
 	}
 
 	protected void loadImage(String imageName) {
 		image = imgDatabase.getImage(imageName);
-		setImageToScale();
+//		setImageToScale();
 		getImageDimensions();
 //		image = image.getScaledInstance(10, 20, 0);
 		// Zet collision ook op die getallen en shits & giggles
@@ -43,16 +41,28 @@ public class Sprite {
 		this.image = image;
 		getImageDimensions();
 	}
-	
-	private void setImageToScale() {
-		ImageResizer test = ImageResizer.getInstance();
-		image = test.getScaledImage(image, image.getWidth(null), image.getHeight(null), scale);
-	}
+
+	// Perhaps never to be used again
+//	private void setImageToScale() {
+//		ImageResizer test = ImageResizer.getInstance();
+//		image = test.getScaledImage(image, image.getWidth(null), image.getHeight(null), scale);
+//	}
+//	public int getScale() {
+//	return this.scale;
+//}
 
 	protected void rotateImage(double angle) {
 		ImageRotator imageRotator = ImageRotator.getInstance();
 		this.image = imageRotator.rotate(image, angle);
 
+	}
+	
+	public int getCenterXCoordinate() {
+		return xCoordinate + (width / 2);
+	}
+	
+	public int getCenterYCoordinate() {
+		return yCoordinate + (height / 2);
 	}
 
 	public int getWidth() {
@@ -89,10 +99,6 @@ public class Sprite {
 
 	public void setVisible(Boolean visible) {
 		this.visible = visible;
-	}
-	
-	public int getScale() {
-		return this.scale;
 	}
 
 	// Get bounds required for collision detection for objects WITHOUT ANIMATIONS

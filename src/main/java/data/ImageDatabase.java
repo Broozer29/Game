@@ -48,6 +48,7 @@ public class ImageDatabase {
 	private Image userThreeImage;
 	private Image selectUserMenuImage;
 	private Image userMenuToMainMenu;
+	
 
 	// Animations
 	private List<Image> impactExplosionOneFrames = new ArrayList<Image>();

@@ -26,7 +26,6 @@ import game.managers.FriendlyManager;
 import game.managers.LevelManager;
 import game.managers.MissileManager;
 import game.managers.TimerManager;
-import game.objects.enemies.AlienBomb;
 import game.objects.enemies.Enemy;
 import game.objects.missiles.Missile;
 import image.objects.Animation;
@@ -38,8 +37,8 @@ public class GameBoard extends JPanel implements ActionListener {
 
 	private Timer timer;
 	private boolean ingame;
-	private String currentMusic = "Furi - Make this right";
-//	private String currentMusic = ""; 
+//	private String currentMusic = "Furi - Make this right";
+	private String currentMusic = ""; 
 
 	private DataClass data = DataClass.getInstance();
 	private AudioDatabase audioDatabase = AudioDatabase.getInstance();
@@ -295,4 +294,5 @@ public class GameBoard extends JPanel implements ActionListener {
 			friendlyManager.getSpaceship().keyPressed(e);
 		}
 	}
+
 }

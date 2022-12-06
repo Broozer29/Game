@@ -2,9 +2,11 @@ package data;
 
 import java.awt.Graphics2D;
 import java.awt.Image;
-import java.awt.image.BufferedImage;
 import java.awt.geom.AffineTransform;
 import java.awt.image.AffineTransformOp;
+import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ImageRotator {
 
@@ -40,5 +42,15 @@ public class ImageRotator {
 		g.dispose();
 
 		return buff;
+	}
+	
+	public ArrayList<Image> getRotatedFrames(List<Image> frames, double angle){
+		ArrayList<Image> newFrames = new ArrayList<Image>();
+		for (int i = 0; i < frames.size(); i++) {
+			Image temp = frames.get(i);
+			temp = rotate(temp, angle);
+			newFrames.add(temp);
+		}
+		return newFrames;
 	}
 }

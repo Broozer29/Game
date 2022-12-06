@@ -1,16 +1,15 @@
 package game.objects.enemies;
 
-import java.util.List;
-
 import game.managers.MissileManager;
 
 public class Tazer extends Enemy {
 
-	public Tazer(int x, int y, String direction, int scale) {
-		super(x, y, direction, scale);
+	public Tazer(int x, int y, String direction) {
+		super(x, y, direction);
 		loadImage("Tazer");
+		setExhaustanimation("Tazer Large Exhaust");
 		this.initBoardBlockSpeeds();
-		this.hitPoints = 25;
+		this.hitPoints = 50;
 		this.maxHitPoints = 50;
 		this.attackSpeedFrameCount = 100;
 		this.movementSpeed = 2;

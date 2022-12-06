@@ -38,10 +38,10 @@ public class MenuBoard extends JPanel implements ActionListener {
 
 	//Initialize all starter pointers
 	private void initMenuTiles() {
-		this.startGameTile = new MenuTile("StartGame", (boardWidth / 2), (boardHeight / 2), 1);
-		this.menuCursor = new MenuCursor((boardWidth / 2 - 50), startGameTile.getYCoordinate(), 1);
+		this.startGameTile = new MenuTile("StartGame", (boardWidth / 2), (boardHeight / 2));
+		this.menuCursor = new MenuCursor((boardWidth / 2 - 50), startGameTile.getYCoordinate());
 		this.menuCursor.setSelectedMenuTile(startGameTile);
-		this.selectUserTile = new MenuTile("SelectUserMenu", (boardWidth / 2), (boardHeight / 2) + 50, 1);
+		this.selectUserTile = new MenuTile("SelectUserMenu", (boardWidth / 2), (boardHeight / 2) + 50);
 	}
 	//Recreate the tilesList that gets drawn by drawComponents	
 	private void recreateList() {

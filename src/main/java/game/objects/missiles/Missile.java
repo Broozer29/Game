@@ -17,8 +17,8 @@ public class Missile extends Sprite {
 	protected int maxMissileLength;
 	protected Animation animation;
 
-	public Missile(int x, int y, int scale) {
-		super(x, y, scale);
+	public Missile(int x, int y) {
+		super(x, y);
 	}
 
 	public void updateGameTick() {
@@ -83,7 +83,7 @@ public class Missile extends Sprite {
 
 		if (!(this instanceof AlienLaserbeam) && !(this instanceof DefaultPlayerLaserbeam)) {
 			if (missileType != null) {
-				this.animation = new Animation(xCoordinate, yCoordinate, missileType, true, scale);
+				this.animation = new Animation(xCoordinate, yCoordinate, missileType, true);
 			}
 		}
 	}

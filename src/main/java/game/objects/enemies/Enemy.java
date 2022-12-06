@@ -8,7 +8,7 @@ import data.DataClass;
 import data.movement.Trajectory;
 import game.managers.AnimationManager;
 import game.managers.MissileManager;
-import game.objects.BoardBlock;
+import image.objects.Animation;
 import image.objects.Sprite;
 
 public class Enemy extends Sprite {
@@ -29,13 +29,18 @@ public class Enemy extends Sprite {
 	protected String deathSound;
 	protected boolean showHealthBar;
 	protected List<Integer> boardBlockSpeeds = new ArrayList<Integer>();
+	protected Animation exhaustAnimation;
 
-	public Enemy(int x, int y, String direction, int scale) {
-		super(x, y, scale);
+	public Enemy(int x, int y, String direction) {
+		super(x, y);
 		this.direction = direction;
 		this.currentBoardBlock = 8;
 	}
-
+	
+	protected void setExhaustanimation(String imageType) {
+		this.exhaustAnimation = new Animation(xCoordinate, yCoordinate, imageType, true);
+	}
+	
 	// Called when there is collision between friendly missile and enemy
 	public void takeDamage(float damageTaken) {
 		if (animationManager == null) {
@@ -43,7 +48,7 @@ public class Enemy extends Sprite {
 		}
 		this.hitPoints -= damageTaken;
 		if (this.hitPoints <= 0) {
-			animationManager.addDestroyedExplosion(xCoordinate, yCoordinate, scale);
+			animationManager.addDestroyedExplosion(xCoordinate, yCoordinate);
 			this.setVisible(false);
 		}
 	}
@@ -127,6 +132,10 @@ public class Enemy extends Sprite {
 
 	public int getBoardBlockNumber() {
 		return this.currentBoardBlock;
+	}
+	
+	public Animation getExhaustAnimation() {
+		return this.exhaustAnimation;
 	}
 
 	// Required for the trajectory to determine the length of the distance travelled

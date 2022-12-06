@@ -38,11 +38,11 @@ public class UserSelectionBoard extends JPanel implements ActionListener {
 
 	// Initialize all starter tiles
 	private void initMenuTiles() {
-		this.userOneTile = new MenuTile("UserOne", (boardWidth - (boardWidth - 100)), (boardHeight / 2), 1);
-		this.userTwoTile = new MenuTile("UserTwo", (boardWidth - (boardWidth - 300)), (boardHeight / 2), 1);
-		this.userThreeTile = new MenuTile("UserThree", (boardWidth - (boardWidth - 500)), (boardHeight / 2), 1);
-		this.returnToMenuTile = new MenuTile("userMenuToMainMenu", boardWidth - 150, boardHeight - 100, 1);
-		this.menuCursor = new MenuCursor(userOneTile.getXCoordinate() - 50, userOneTile.getYCoordinate(), 1);
+		this.userOneTile = new MenuTile("UserOne", (boardWidth - (boardWidth - 100)), (boardHeight / 2));
+		this.userTwoTile = new MenuTile("UserTwo", (boardWidth - (boardWidth - 300)), (boardHeight / 2));
+		this.userThreeTile = new MenuTile("UserThree", (boardWidth - (boardWidth - 500)), (boardHeight / 2));
+		this.returnToMenuTile = new MenuTile("userMenuToMainMenu", boardWidth - 150, boardHeight - 100);
+		this.menuCursor = new MenuCursor(userOneTile.getXCoordinate() - 50, userOneTile.getYCoordinate());
 		this.menuCursor.setSelectedMenuTile(userOneTile);
 	}
 

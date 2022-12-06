@@ -6,8 +6,8 @@ import data.DataClass;
 
 public class AlienBomb extends Enemy {
 
-	public AlienBomb(int x, int y, String direction, int scale) {
-		super(x, y, direction, scale);
+	public AlienBomb(int x, int y, String direction) {
+		super(x, y, direction);
 		loadImage("Alien Bomb");
 		this.initBoardBlockSpeeds();
 		this.hitPoints = 10;

@@ -48,7 +48,7 @@ public class MissileManager {
 		int scale = 1;
 		switch (missileType) {
 		case ("Player Laserbeam"):
-			Missile newMissile = new DefaultPlayerLaserbeam(xCoordinate, yCoordinate, scale);
+			Missile newMissile = new DefaultPlayerLaserbeam(xCoordinate, yCoordinate);
 			this.friendlyMissiles.add(newMissile);
 		}
 
@@ -58,31 +58,31 @@ public class MissileManager {
 		int scale = 1;
 		switch (missileType) {
 		case ("Alien Laserbeam"):
-			Missile alienMissile = new AlienLaserbeam(xCoordinate, yCoordinate, scale);
+			Missile alienMissile = new AlienLaserbeam(xCoordinate, yCoordinate);
 			this.enemyMissiles.add(alienMissile);
 			break;
 		case ("Seeker Projectile"):
-			Missile seekerMissile = new SeekerProjectile(xCoordinate, yCoordinate, scale);
+			Missile seekerMissile = new SeekerProjectile(xCoordinate, yCoordinate);
 			this.enemyMissiles.add(seekerMissile);
 			break;
 		case ("Flamer Projectile"):
-			Missile flamerMissile = new FlamerProjectile(xCoordinate, yCoordinate, scale);
+			Missile flamerMissile = new FlamerProjectile(xCoordinate, yCoordinate);
 			this.enemyMissiles.add(flamerMissile);
 			break;
 		case ("Tazer Projectile"):
-			Missile tazerMissile = new TazerProjectile(xCoordinate, yCoordinate, scale);
+			Missile tazerMissile = new TazerProjectile(xCoordinate, yCoordinate);
 			this.enemyMissiles.add(tazerMissile);
 			break;
 		case ("Bulldozer Projectile"):
-			Missile bulldozerMissile = new BulldozerProjectile(xCoordinate, yCoordinate, scale);
+			Missile bulldozerMissile = new BulldozerProjectile(xCoordinate, yCoordinate);
 			this.enemyMissiles.add(bulldozerMissile);
 			break;
 		case ("Bomba Projectile"):
-			Missile bombaMissile = new BombaProjectile(xCoordinate, yCoordinate, scale);
+			Missile bombaMissile = new BombaProjectile(xCoordinate, yCoordinate);
 			this.enemyMissiles.add(bombaMissile);
 			break;
 		case ("Energizer Projectile"):
-			Missile energizerMissile = new EnergizerProjectile(xCoordinate, yCoordinate, scale);
+			Missile energizerMissile = new EnergizerProjectile(xCoordinate, yCoordinate);
 			this.enemyMissiles.add(energizerMissile);
 			break;
 		}
@@ -109,7 +109,7 @@ public class MissileManager {
 					if (r1.intersects(r2)) {
 						enemy.takeDamage(m.getMissileDamage());
 						animationManager.addUpperAnimation(m.getXCoordinate(), m.getYCoordinate(),
-								"Impact Explosion One", false, m.getScale());
+								"Impact Explosion One", false);
 						m.setVisible(false);
 					}
 				}
@@ -130,7 +130,7 @@ public class MissileManager {
 				if (r1.intersects(r2)) {
 					friendlyManager.getSpaceship().takeHitpointDamage(m.getMissileDamage());
 					animationManager.addUpperAnimation(m.getXCoordinate(), m.getYCoordinate(), "Impact Explosion One",
-							false, m.getScale());
+							false);
 					m.setVisible(false);
 				}
 			}

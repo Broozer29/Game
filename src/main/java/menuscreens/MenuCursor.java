@@ -6,8 +6,8 @@ public class MenuCursor extends Sprite {
 
 	MenuTile selectedMenuTile;
 
-	public MenuCursor(int xCoordinate, int yCoordinate, int scale) {
-		super(xCoordinate, yCoordinate, scale);
+	public MenuCursor(int xCoordinate, int yCoordinate) {
+		super(xCoordinate, yCoordinate);
 		initCursorImage();
 	}
 

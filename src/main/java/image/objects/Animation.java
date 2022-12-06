@@ -7,6 +7,8 @@ import java.util.List;
 import javax.swing.ImageIcon;
 
 import data.ImageDatabase;
+import data.ImageResizer;
+import data.ImageRotator;
 import javafx.scene.shape.Rectangle;
 
 public class Animation extends Sprite {
@@ -17,8 +19,8 @@ public class Animation extends Sprite {
 	private int frameDelay;
 	private boolean infiniteLoop;
 
-	public Animation(int x, int y, String imageType, boolean infiniteLoop, int scale) {
-		super(x, y, scale);
+	public Animation(int x, int y, String imageType, boolean infiniteLoop) {
+		super(x, y);
 		this.initAnimation(imageType);
 		this.frameDelay = 0;
 		this.infiniteLoop = infiniteLoop;
@@ -49,6 +51,16 @@ public class Animation extends Sprite {
 	public void updateFrameCount() {
 		this.currentFrame += 1;
 
+	}
+	
+	//Called by Animation manager when an animation needs to be deleted but is looping permanently
+	public void deleteAnimation() {
+		this.infiniteLoop = false;
+		this.setVisible(false);
+	}
+	
+	public void rotateAnimetion(Double angle) {
+		this.frames = ImageRotator.getInstance().getRotatedFrames(frames, angle);
 	}
 
 	private void removeAnimation() {

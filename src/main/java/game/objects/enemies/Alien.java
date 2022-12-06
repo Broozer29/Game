@@ -4,8 +4,8 @@ import game.managers.MissileManager;
 
 public class Alien extends Enemy {
 
-	public Alien(int x, int y, String direction, int scale) {
-		super(x, y, direction, scale);
+	public Alien(int x, int y, String direction) {
+		super(x, y, direction);
 		loadImage("Default Alien Spaceship");
 		this.initBoardBlockSpeeds();
 		this.hitPoints = 35;

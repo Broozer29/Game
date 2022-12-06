@@ -1,14 +1,13 @@
 package game.objects.enemies;
 
-import java.util.List;
-
 import game.managers.MissileManager;
 
 public class Flamer extends Enemy {
 
-	public Flamer(int x, int y, String direction, int scale) {
-		super(x, y, direction, scale);
+	public Flamer(int x, int y, String direction) {
+		super(x, y, direction);
 		loadImage("Flamer");
+		setExhaustanimation("Flamer Large Exhaust");
 		this.initBoardBlockSpeeds();
 		this.hitPoints = 50;
 		this.maxHitPoints = 50;
