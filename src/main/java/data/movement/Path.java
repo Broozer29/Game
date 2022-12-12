@@ -6,14 +6,18 @@ import java.util.List;
 public class Path {
 
 	private String pathDirection;
+	private int obliqueSteps;
 	private int stepsToTake;
 	private int stepsTaken;
 	private int stepSize;
 
-	public Path(String pathDirection, int stepsToTake, int stepSize) {
+	public Path(String pathDirection, int stepsToTake, int stepSize
+//			,int obliqueSteps
+			) {
 		this.pathDirection = pathDirection;
 		this.stepsToTake = stepsToTake;
 		this.stepSize = stepSize;
+//		this.obliqueSteps = obliqueSteps;
 	}
 
 	// Returns new X & Y coordinates based on the direction
@@ -110,6 +114,12 @@ public class Path {
 	// Called when enemy needs to change speed, for the board block system
 	public void setMovementSpeed(int movementSpeed) {
 		this.stepSize = movementSpeed;
+	}
+	
+	// Use to determine what amount of StepsTaken needs to be taken before another step can be added to the Y coordinate
+	// Use modulo
+	private void calculateIfYStepIsallowed() {
+		
 	}
 
 }

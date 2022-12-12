@@ -85,6 +85,9 @@ public class Trajectory {
 			addPath(newPath);
 			break;
 		case ("LeftUp"):
+			newPath = pathFactory.getObliquePath(missile.getMissileDirection(), missile.getMaxMissileLength(),
+					missile.getMissileMovementSpeed());
+			addPath(newPath);
 			break;
 		case ("LeftDown"):
 			break;
@@ -117,7 +120,7 @@ public class Trajectory {
 		if (pathList.size() > 0) {
 			currentPath = pathList.get(0);
 		}
-		//Creates a brand new path based on the type if the sprite becomes stationary
+		// Creates a brand new path based on the type if the sprite becomes stationary
 		else if (pathList.size() == 0) {
 			if (missile != null) {
 				setMissileTrajectoryType(missile);
