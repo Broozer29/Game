@@ -45,7 +45,6 @@ public class MissileManager {
 	}
 
 	public void firePlayerMissile(int xCoordinate, int yCoordinate, String missileType) {
-		int scale = 1;
 		switch (missileType) {
 		case ("Player Laserbeam"):
 			Missile newMissile = new DefaultPlayerLaserbeam(xCoordinate, yCoordinate);
@@ -54,35 +53,35 @@ public class MissileManager {
 
 	}
 
-	public void addEnemyMissile(int xCoordinate, int yCoordinate, String missileType) {
-		int scale = 1;
+	//Called by all enemy classes when fireAction() is called.
+	public void addEnemyMissile(int xCoordinate, int yCoordinate, String missileType, int angleModuloDivider) {
 		switch (missileType) {
 		case ("Alien Laserbeam"):
-			Missile alienMissile = new AlienLaserbeam(xCoordinate, yCoordinate);
+			Missile alienMissile = new AlienLaserbeam(xCoordinate, yCoordinate, missileType, angleModuloDivider);
 			this.enemyMissiles.add(alienMissile);
 			break;
 		case ("Seeker Projectile"):
-			Missile seekerMissile = new SeekerProjectile(xCoordinate, yCoordinate);
+			Missile seekerMissile = new SeekerProjectile(xCoordinate, yCoordinate, missileType, angleModuloDivider);
 			this.enemyMissiles.add(seekerMissile);
 			break;
 		case ("Flamer Projectile"):
-			Missile flamerMissile = new FlamerProjectile(xCoordinate, yCoordinate);
+			Missile flamerMissile = new FlamerProjectile(xCoordinate, yCoordinate, missileType, angleModuloDivider);
 			this.enemyMissiles.add(flamerMissile);
 			break;
 		case ("Tazer Projectile"):
-			Missile tazerMissile = new TazerProjectile(xCoordinate, yCoordinate);
+			Missile tazerMissile = new TazerProjectile(xCoordinate, yCoordinate, missileType, angleModuloDivider);
 			this.enemyMissiles.add(tazerMissile);
 			break;
 		case ("Bulldozer Projectile"):
-			Missile bulldozerMissile = new BulldozerProjectile(xCoordinate, yCoordinate);
+			Missile bulldozerMissile = new BulldozerProjectile(xCoordinate, yCoordinate, missileType, angleModuloDivider);
 			this.enemyMissiles.add(bulldozerMissile);
 			break;
 		case ("Bomba Projectile"):
-			Missile bombaMissile = new BombaProjectile(xCoordinate, yCoordinate);
+			Missile bombaMissile = new BombaProjectile(xCoordinate, yCoordinate, missileType, angleModuloDivider);
 			this.enemyMissiles.add(bombaMissile);
 			break;
 		case ("Energizer Projectile"):
-			Missile energizerMissile = new EnergizerProjectile(xCoordinate, yCoordinate);
+			Missile energizerMissile = new EnergizerProjectile(xCoordinate, yCoordinate, missileType, angleModuloDivider);
 			this.enemyMissiles.add(energizerMissile);
 			break;
 		}

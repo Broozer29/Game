@@ -10,13 +10,18 @@ import game.managers.TimerManager;
 public class CustomTimer implements ActionListener {
 
 	private TimerManager timerManager = TimerManager.getInstance();
+	
+	private int amountOfSpawnAttempts;
+	private String timerEnemyType;
 	private int delay;
 	private String timerPurpose;
 	private boolean finished;
 	private Timer timer;
 	private String status;
 
-	public CustomTimer(int delay, String timerPurpose) {
+	public CustomTimer(int delay, String timerPurpose, int amountOfSpawnAttempts, String timerEnemyType) {
+		this.amountOfSpawnAttempts = amountOfSpawnAttempts;
+		this.timerEnemyType = timerEnemyType;
 		this.delay = delay;
 		this.timerPurpose = timerPurpose;
 		this.finished = false;
@@ -42,7 +47,7 @@ public class CustomTimer implements ActionListener {
 	// bommen te spawnen.
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		timerManager.activate(timerPurpose);
+		timerManager.activate(this);
 		this.finished = true;
 		this.status = "finished";
 		stopTimer();
@@ -54,6 +59,18 @@ public class CustomTimer implements ActionListener {
 
 	public String getStatus() {
 		return this.status;
+	}
+	
+	public String getTimerPurpose() {
+		return this.timerPurpose;
+	}
+	
+	public String getTimerEnemy() {
+		return this.timerEnemyType;
+	}
+	
+	public int getTimerSpawnAttempts() {
+		return this.amountOfSpawnAttempts;
 	}
 
 }

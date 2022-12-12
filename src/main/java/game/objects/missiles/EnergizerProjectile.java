@@ -4,8 +4,10 @@ import data.DataClass;
 
 public class EnergizerProjectile extends Missile {
 
-	public EnergizerProjectile(int x, int y) {
+	public EnergizerProjectile(int x, int y, String missileType, int angleModuloDivider) {
 		super(x, y);
+		this.missileType = missileType;
+		this.angleModuloDivider = angleModuloDivider;
 		this.missileDamage = (float) 7.5;
 		initMissile();
 		setAnimation();
@@ -13,6 +15,7 @@ public class EnergizerProjectile extends Missile {
 
 	private void initMissile() {
 		this.missileDirection = "LeftUp";
+		this.angleModuloDivider = 7;
 		this.missileMovementSpeed = 5;
 		this.maxMissileLength = (int) (DataClass.getInstance().getWindowWidth() * 1.5);
 		this.trajectory.setMissileTrajectoryType(this);

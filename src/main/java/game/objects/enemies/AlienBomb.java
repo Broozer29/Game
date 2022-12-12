@@ -16,7 +16,7 @@ public class AlienBomb extends Enemy {
 		this.movementSpeed = 1;
 		this.deathSound = "Destroyed Explosion";
 		this.hasAttack = false;
-		this.showHealthBar = false;
+		this.showHealthBar = true;
 		this.trajectory.setEnemyTrajectoryType(this);
 		this.setVisible(true);
 		this.setRotation(direction);

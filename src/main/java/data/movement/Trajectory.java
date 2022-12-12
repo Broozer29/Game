@@ -85,8 +85,8 @@ public class Trajectory {
 			addPath(newPath);
 			break;
 		case ("LeftUp"):
-			newPath = pathFactory.getObliquePath(missile.getMissileDirection(), missile.getMaxMissileLength(),
-					missile.getMissileMovementSpeed());
+			newPath = pathFactory.getAngledLine(missile.getMissileDirection(), missile.getMaxMissileLength(),
+					missile.getMissileMovementSpeed(), missile.getAngleSize());
 			addPath(newPath);
 			break;
 		case ("LeftDown"):

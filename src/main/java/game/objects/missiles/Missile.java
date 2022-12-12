@@ -13,9 +13,11 @@ public class Missile extends Sprite {
 	protected float missileDamage;
 	protected Trajectory trajectory = new Trajectory();
 	protected String missileDirection;
+	protected int angleModuloDivider;
 	protected int missileMovementSpeed;
 	protected int maxMissileLength;
 	protected Animation animation;
+	protected String missileType;
 
 	public Missile(int x, int y) {
 		super(x, y);
@@ -64,24 +66,13 @@ public class Missile extends Sprite {
 	public int getMaxMissileLength() {
 		return this.maxMissileLength;
 	}
+	
+	public int getAngleSize() {
+		return this.angleModuloDivider;
+	}
 
 	protected void setAnimation() {
-		String missileType = null;
-		if (this instanceof BombaProjectile) {
-			missileType = "Bomba Projectile";
-		} else if (this instanceof BulldozerProjectile) {
-			missileType = "Bulldozer Projectile";
-		} else if (this instanceof EnergizerProjectile) {
-			missileType = "Energizer Projectile";
-		} else if (this instanceof FlamerProjectile) {
-			missileType = "Flamer Projectile";
-		} else if (this instanceof SeekerProjectile) {
-			missileType = "Seeker Projectile";
-		} else if (this instanceof TazerProjectile) {
-			missileType = "Tazer Projectile";
-		}
-
-		if (!(this instanceof AlienLaserbeam) && !(this instanceof DefaultPlayerLaserbeam)) {
+		if (!missileType.equals("Alien Laserbeam") && !missileType.equals("Player Laserbeam")) {
 			if (missileType != null) {
 				this.animation = new Animation(xCoordinate, yCoordinate, missileType, true);
 			}

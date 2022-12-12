@@ -14,14 +14,15 @@ public class PathFactory {
 
 	public Path getStraightLine(String direction, int totalDistance, int movementSpeed) {
 		int stepsToTake = totalDistance / movementSpeed;
-		Path newPath = new Path(direction, stepsToTake, movementSpeed);
+		Path newPath = new Path(direction, stepsToTake, movementSpeed, 0);
 		return newPath;
 	}
 	
 	//Total distance is the X distance to walk
-	public Path getObliquePath(String direction, int totalDistance, int movementSpeed) {
+	public Path getAngledLine(String direction, int totalDistance, int movementSpeed, int moduloDivider) {
 		int stepsToTake = totalDistance / movementSpeed;
-		Path newPath = new Path(direction, stepsToTake, movementSpeed);
+		Path newPath = new Path(direction, stepsToTake, movementSpeed, moduloDivider);
 		return newPath;
 	}
+	
 }
