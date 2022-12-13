@@ -1,36 +1,33 @@
 package game.objects.enemies;
 
-import java.util.List;
-
-import data.DataClass;
-
 public class AlienBomb extends Enemy {
 
-	public AlienBomb(int x, int y, String direction) {
-		super(x, y, direction);
+	public AlienBomb(int x, int y, String direction, int angleModuloDivider) {
+		super(x, y, direction, "Alien Bomb");
 		loadImage("Alien Bomb");
 		this.initBoardBlockSpeeds();
 		this.hitPoints = 10;
+		this.angleModuloDivider = angleModuloDivider;
 		this.maxHitPoints = 10;
 		this.attackSpeedFrameCount = 999999;
 		this.movementSpeed = 1;
 		this.deathSound = "Destroyed Explosion";
 		this.hasAttack = false;
-		this.showHealthBar = true;
+		this.showHealthBar = false;
 		this.trajectory.setEnemyTrajectoryType(this);
 		this.setVisible(true);
 		this.setRotation(direction);
 	}
-	
+
 	private void initBoardBlockSpeeds() {
-		this.boardBlockSpeeds.add(0,1);
-		this.boardBlockSpeeds.add(1,1);
-		this.boardBlockSpeeds.add(2,1);
-		this.boardBlockSpeeds.add(3,1);
-		this.boardBlockSpeeds.add(4,1);
-		this.boardBlockSpeeds.add(5,1);
-		this.boardBlockSpeeds.add(6,1);
-		this.boardBlockSpeeds.add(7,1);
+		this.boardBlockSpeeds.add(0, 1);
+		this.boardBlockSpeeds.add(1, 1);
+		this.boardBlockSpeeds.add(2, 1);
+		this.boardBlockSpeeds.add(3, 1);
+		this.boardBlockSpeeds.add(4, 1);
+		this.boardBlockSpeeds.add(5, 1);
+		this.boardBlockSpeeds.add(6, 1);
+		this.boardBlockSpeeds.add(7, 1);
 	}
 
 }

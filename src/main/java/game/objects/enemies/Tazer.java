@@ -4,12 +4,13 @@ import game.managers.MissileManager;
 
 public class Tazer extends Enemy {
 
-	public Tazer(int x, int y, String direction) {
-		super(x, y, direction);
+	public Tazer(int x, int y, String direction, int angleModuloDivider) {
+		super(x, y, direction, "Tazer");
 		loadImage("Tazer");
 		setExhaustanimation("Tazer Large Exhaust");
 		this.initBoardBlockSpeeds();
 		this.hitPoints = 50;
+		this.angleModuloDivider = angleModuloDivider;
 		this.maxHitPoints = 50;
 		this.attackSpeedFrameCount = 100;
 		this.movementSpeed = 2;

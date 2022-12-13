@@ -130,7 +130,8 @@ public class EnemyManager {
 				enemy.updateBoardBlock();
 				if (enemy.getExhaustAnimation() != null) {
 					enemy.getExhaustAnimation().setX(enemy.getCenterXCoordinate() + (enemy.getWidth() / 2));
-					enemy.getExhaustAnimation().setY(enemy.getCenterYCoordinate() - (enemy.getExhaustAnimation().getHeight() / 2));
+					enemy.getExhaustAnimation()
+							.setY(enemy.getCenterYCoordinate() - (enemy.getExhaustAnimation().getHeight() / 2));
 				}
 			} else {
 				if (enemy.getCurrentHitpoints() < 0) {
@@ -148,54 +149,38 @@ public class EnemyManager {
 	}
 
 	// Called by LevelManager, creates an unambiguous enemy and adds it to enemies
-	public void addEnemy(int xCoordinate, int yCoordinate, String enemyType, String direction) {
-		Enemy enemy = null;
-		switch (enemyType) {
-		case ("Alien Bomb"):
-			AlienBomb alienBomb = new AlienBomb(xCoordinate, yCoordinate, direction);
-			enemy = alienBomb;
-			alienBombList.add(alienBomb);
-			break;
-		case ("Alien"):
-			Alien alien = new Alien(xCoordinate, yCoordinate, direction);
-			enemy = alien;
-			alienList.add(alien);
-			break;
-		case ("Seeker"):
-			Seeker seeker = new Seeker(xCoordinate, yCoordinate, direction);
-			enemy = seeker;
-			seekerList.add(seeker);
-			break;
-		case ("Energizer"):
-			Energizer energizer = new Energizer(xCoordinate, yCoordinate, direction);
-			enemy = energizer;
-			energizerList.add(energizer);
-			break;
-		case ("Bomba"):
-			Bomba bomba = new Bomba(xCoordinate, yCoordinate, direction);
-			enemy = bomba;
-			bombaList.add(bomba);
-			break;
-		case ("Flamer"):
-			Flamer flamer = new Flamer(xCoordinate, yCoordinate, direction);
-			enemy = flamer;
-			flamerList.add(flamer);
-			break;
-		case ("Bulldozer"):
-			Bulldozer bulldozer = new Bulldozer(xCoordinate, yCoordinate, direction);
-			enemy = bulldozer;
-			bulldozerList.add(bulldozer);
-			break;
-		case ("Tazer"):
-			Tazer tazer = new Tazer(xCoordinate, yCoordinate, direction);
-			enemy = tazer;
-			tazerList.add(tazer);
-			break;
-		}
-
+	public void addEnemy(Enemy enemy) {
 		if (animationManager == null) {
 			animationManager = AnimationManager.getInstance();
 		}
+		
+		switch(enemy.getEnemyType()) {
+		case("Alien Bomb"):
+			alienBombList.add((AlienBomb) enemy);
+			break;
+		case("Flamer"):
+			flamerList.add((Flamer) enemy);
+			break;
+		case("Tazer"):
+			tazerList.add((Tazer) enemy);
+			break;
+		case("Seeker"):
+			seekerList.add((Seeker) enemy);
+			break;
+		case("Bomba"):
+			bombaList.add((Bomba) enemy);
+			break;
+		case("Bulldozer"):
+			bulldozerList.add((Bulldozer) enemy);
+			break;
+		case("Energizer"):
+			energizerList.add((Energizer) enemy);
+			break;
+		case("Alien"):
+			alienList.add((Alien) enemy);
+			break;
+		}
+		
 		if (enemy != null) {
 			animationManager.addExhaustAnimation(enemy.getExhaustAnimation());
 			this.enemyList.add(enemy);

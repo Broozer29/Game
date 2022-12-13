@@ -15,24 +15,33 @@ public class Enemy extends Sprite {
 
 	protected MissileManager missileManager = MissileManager.getInstance();
 	protected AnimationManager animationManager = AnimationManager.getInstance();
+	protected Random random = new Random();
+	
+	//Enemy combat stats
 	protected float hitPoints;
 	protected float maxHitPoints;
 	protected float attackSpeedFrameCount;
 	protected float currentAttackSpeedFrameCount = 0;
-	protected Random random = new Random();
+	protected boolean hasAttack;
+	
+	//Enemy movement/direction
 	protected int movementSpeed;
 	protected int currentBoardBlock;
 	protected String rotation;
-	protected boolean hasAttack;
 	protected String direction;
 	protected Trajectory trajectory = new Trajectory();
+	protected int angleModuloDivider;
+	
+	//Enemy miscellanious attributes
+	protected String enemyType;
 	protected String deathSound;
 	protected boolean showHealthBar;
 	protected List<Integer> boardBlockSpeeds = new ArrayList<Integer>();
 	protected Animation exhaustAnimation;
 
-	public Enemy(int x, int y, String direction) {
+	public Enemy(int x, int y, String direction, String enemyType) {
 		super(x, y);
+		this.enemyType = enemyType;
 		this.direction = direction;
 		this.currentBoardBlock = 8;
 	}
@@ -136,6 +145,14 @@ public class Enemy extends Sprite {
 	
 	public Animation getExhaustAnimation() {
 		return this.exhaustAnimation;
+	}
+	
+	public String getEnemyType() {
+		return this.enemyType;
+	}
+	
+	public int getAngleModuloDivider() {
+		return this.angleModuloDivider;
 	}
 
 	// Required for the trajectory to determine the length of the distance travelled

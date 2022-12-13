@@ -1,16 +1,16 @@
 package game.objects.enemies;
 
-import java.util.List;
 
 import game.managers.MissileManager;
 
 public class Bulldozer extends Enemy{
 
-	public Bulldozer(int x, int y, String direction) {
-		super(x, y, direction);
+	public Bulldozer(int x, int y, String direction, int angleModuloDivider) {
+		super(x, y, direction, "Bulldozer");
 		loadImage("Bulldozer");
 		setExhaustanimation("Bulldozer Large Exhaust");
 		this.initBoardBlockSpeeds();
+		this.angleModuloDivider = angleModuloDivider;
 		this.hitPoints = 50;
 		this.maxHitPoints = 50;
 		this.attackSpeedFrameCount = 100;

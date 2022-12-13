@@ -10,7 +10,7 @@ import java.util.Random;
 import data.DataClass;
 import data.ImageDatabase;
 import data.ImageLoader;
-import data.RandomCoordinator;
+import data.SpawningCoordinator;
 import image.objects.BackgroundObject;
 
 public class BackgroundManager {
@@ -18,7 +18,7 @@ public class BackgroundManager {
 	private static BackgroundManager instance = new BackgroundManager();
 	private DataClass dataClass = DataClass.getInstance();
 	private ImageDatabase imageDatabase = ImageDatabase.getInstance();
-	private RandomCoordinator randomCoordinator = RandomCoordinator.getInstance();
+	private SpawningCoordinator randomCoordinator = SpawningCoordinator.getInstance();
 	private List<BackgroundObject> levelOnePlanets = new ArrayList<BackgroundObject>();
 	private List<BackgroundObject> levelTwoPlanets = new ArrayList<BackgroundObject>();
 	private List<BackgroundObject> levelThreePlanets = new ArrayList<BackgroundObject>();

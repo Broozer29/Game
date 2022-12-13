@@ -40,21 +40,33 @@ public class Trajectory {
 			break;
 		case ("Up"):
 			newPath = pathFactory.getStraightLine(enemy.getEnemyDirection(),
-					dataClass.getWindowWidth() + enemy.getAdditionalYSteps(), enemy.getMovementSpeed());
+					dataClass.getWindowHeight() + enemy.getAdditionalYSteps(), enemy.getMovementSpeed());
 			addPath(newPath);
 			break;
 		case ("Down"):
 			newPath = pathFactory.getStraightLine(enemy.getEnemyDirection(),
-					dataClass.getWindowWidth() + enemy.getAdditionalYSteps(), enemy.getMovementSpeed());
+					dataClass.getWindowHeight() + enemy.getAdditionalYSteps(), enemy.getMovementSpeed());
 			addPath(newPath);
 			break;
 		case ("LeftUp"):
+			newPath = pathFactory.getAngledLine(enemy.getEnemyDirection(),
+					dataClass.getWindowWidth() + enemy.getAdditionalXSteps(), enemy.getMovementSpeed(), enemy.getAngleModuloDivider());
+			addPath(newPath);
 			break;
 		case ("LeftDown"):
+			newPath = pathFactory.getAngledLine(enemy.getEnemyDirection(),
+					dataClass.getWindowWidth() + enemy.getAdditionalXSteps(), enemy.getMovementSpeed(), enemy.getAngleModuloDivider());
+			addPath(newPath);
 			break;
 		case ("RightUp"):
+			newPath = pathFactory.getAngledLine(enemy.getEnemyDirection(),
+					dataClass.getWindowWidth() + enemy.getAdditionalXSteps(), enemy.getMovementSpeed(), enemy.getAngleModuloDivider());
+			addPath(newPath);
 			break;
 		case ("RightDown"):
+			newPath = pathFactory.getAngledLine(enemy.getEnemyDirection(),
+					dataClass.getWindowWidth() + enemy.getAdditionalXSteps(), enemy.getMovementSpeed(), enemy.getAngleModuloDivider());
+			addPath(newPath);
 			break;
 		}
 		setCurrentPath();
@@ -90,10 +102,19 @@ public class Trajectory {
 			addPath(newPath);
 			break;
 		case ("LeftDown"):
+			newPath = pathFactory.getAngledLine(missile.getMissileDirection(), missile.getMaxMissileLength(),
+					missile.getMissileMovementSpeed(), missile.getAngleSize());
+			addPath(newPath);
 			break;
 		case ("RightUp"):
+			newPath = pathFactory.getAngledLine(missile.getMissileDirection(), missile.getMaxMissileLength(),
+					missile.getMissileMovementSpeed(), missile.getAngleSize());
+			addPath(newPath);
 			break;
 		case ("RightDown"):
+			newPath = pathFactory.getAngledLine(missile.getMissileDirection(), missile.getMaxMissileLength(),
+					missile.getMissileMovementSpeed(), missile.getAngleSize());
+			addPath(newPath);
 			break;
 		}
 		setCurrentPath();
@@ -116,7 +137,7 @@ public class Trajectory {
 	}
 
 	// Sets the current path to the next item in the pathList.
-	public void setCurrentPath() {
+	private void setCurrentPath() {
 		if (pathList.size() > 0) {
 			currentPath = pathList.get(0);
 		}

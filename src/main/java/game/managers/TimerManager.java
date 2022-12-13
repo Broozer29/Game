@@ -33,44 +33,37 @@ public class TimerManager {
 
 	// Creates timers for different purposes
 	// int duration, int timedelay (zelfde als game delay), waar de timer voor is
-	public void createTimer(String timerPurpose, int amountOfSpawnAttempts, int timeBeforeActivation) {
+	public void createTimer(String timerPurpose, int amountOfSpawnAttempts, int timeBeforeActivation,
+			boolean loopable, String direction) {
+
+		String enemyType = "";
 		switch (timerPurpose) {
 		case ("Spawn Bombs"):
-			CustomTimer bombTimer = new CustomTimer(timeBeforeActivation, "Spawn Bombs", amountOfSpawnAttempts,
-					"Alien Bomb");
-			addTimerToList(bombTimer);
+			enemyType = "Alien Bomb";
 			break;
 		case ("Spawn Bomba"):
-			CustomTimer bombaTimer = new CustomTimer(timeBeforeActivation, "Spawn Bomba", amountOfSpawnAttempts,
-					"Bomba");
-			addTimerToList(bombaTimer);
+			enemyType = "Bomba";
 			break;
 		case ("Spawn Flamer"):
-			CustomTimer flamerTimer = new CustomTimer(timeBeforeActivation, "Spawn Flamer", amountOfSpawnAttempts,
-					"Flamer");
-			addTimerToList(flamerTimer);
+			enemyType = "Flamer";
 			break;
 		case ("Spawn Energizer"):
-			CustomTimer energizerTimer = new CustomTimer(timeBeforeActivation, "Spawn Energizer", amountOfSpawnAttempts,
-					"Energizer");
-			addTimerToList(energizerTimer);
+			enemyType = "Energizer";
 			break;
 		case ("Spawn Tazer"):
-			CustomTimer tazerTimer = new CustomTimer(timeBeforeActivation, "Spawn Tazer", amountOfSpawnAttempts,
-					"Tazer");
-			addTimerToList(tazerTimer);
+			enemyType = "Tazer";
 			break;
 		case ("Spawn Seeker"):
-			CustomTimer seekerTimer = new CustomTimer(timeBeforeActivation, "Spawn Seeker", amountOfSpawnAttempts,
-					"Seeker");
-			addTimerToList(seekerTimer);
+			enemyType = "Seeker";
 			break;
 		case ("Spawn Bulldozer"):
-			CustomTimer bulldozerTimer = new CustomTimer(timeBeforeActivation, "Spawn Bulldozer", amountOfSpawnAttempts,
-					"Bulldozer");
-			addTimerToList(bulldozerTimer);
+			enemyType = "Bulldozer";
 			break;
 		}
+
+		CustomTimer timer = new CustomTimer(timeBeforeActivation, timerPurpose, amountOfSpawnAttempts, enemyType,
+				loopable, direction);
+		addTimerToList(timer);
 	}
 
 	// Timers die afgelopen zijn, verwijderen
@@ -101,14 +94,20 @@ public class TimerManager {
 	}
 
 	private void addTimerToList(CustomTimer timerToAdd) {
-		this.allTimers.add(timerToAdd);
+		allTimers.add(timerToAdd);
 	}
 
-	//Called by the timer itself when it's time to activate
+	// Called by the timer itself when it's time to activate
 	public void activate(CustomTimer timer) {
 		if (levelManager == null) {
 			levelManager = LevelManager.getInstance();
 		}
-		levelManager.spawnEnemy(timer.getTimerEnemy(), timer.getTimerSpawnAttempts());
+		levelManager.spawnEnemy(timer.getTimerEnemy(), timer.getTimerSpawnAttempts(), timer.getEnemyMovementDirection());
+
+		if (timer.getLoopable()) {
+			createTimer(timer.getTimerPurpose(), timer.getTimerSpawnAttempts(), timer.getTimeBeforeActivation(),
+					timer.getLoopable(), timer.getEnemyMovementDirection());
+		}
+
 	}
 }

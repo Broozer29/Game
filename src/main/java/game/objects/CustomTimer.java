@@ -10,19 +10,24 @@ import game.managers.TimerManager;
 public class CustomTimer implements ActionListener {
 
 	private TimerManager timerManager = TimerManager.getInstance();
-	
+
 	private int amountOfSpawnAttempts;
+	private boolean loopable;
 	private String timerEnemyType;
-	private int delay;
+	private int timeBeforeActivation;
 	private String timerPurpose;
+	private String enemyMovementDirection;
 	private boolean finished;
 	private Timer timer;
 	private String status;
 
-	public CustomTimer(int delay, String timerPurpose, int amountOfSpawnAttempts, String timerEnemyType) {
+	public CustomTimer(int timeBeforeActivation, String timerPurpose, int amountOfSpawnAttempts, String timerEnemyType,
+			boolean loopable, String enemyMovementDirection) {
 		this.amountOfSpawnAttempts = amountOfSpawnAttempts;
+		this.enemyMovementDirection = enemyMovementDirection;
+		this.loopable = loopable;
 		this.timerEnemyType = timerEnemyType;
-		this.delay = delay;
+		this.timeBeforeActivation = timeBeforeActivation;
 		this.timerPurpose = timerPurpose;
 		this.finished = false;
 		this.status = "primed";
@@ -30,7 +35,7 @@ public class CustomTimer implements ActionListener {
 	}
 
 	private void initTimer() {
-		timer = new Timer(delay, this);
+		timer = new Timer(timeBeforeActivation, this);
 	}
 
 	public void startTimer() {
@@ -60,17 +65,29 @@ public class CustomTimer implements ActionListener {
 	public String getStatus() {
 		return this.status;
 	}
-	
+
 	public String getTimerPurpose() {
 		return this.timerPurpose;
 	}
-	
+
 	public String getTimerEnemy() {
 		return this.timerEnemyType;
 	}
 	
+	public String getEnemyMovementDirection() {
+		return this.enemyMovementDirection;
+	}
+
 	public int getTimerSpawnAttempts() {
 		return this.amountOfSpawnAttempts;
+	}
+
+	public boolean getLoopable() {
+		return this.loopable;
+	}
+
+	public int getTimeBeforeActivation() {
+		return this.timeBeforeActivation;
 	}
 
 }

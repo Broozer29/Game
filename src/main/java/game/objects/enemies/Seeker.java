@@ -4,11 +4,12 @@ import game.managers.MissileManager;
 
 public class Seeker extends Enemy {
 
-	public Seeker(int x, int y, String direction) {
-		super(x, y, direction);
+	public Seeker(int x, int y, String direction, int angleModuloDivider) {
+		super(x, y, direction, "Seeker");
 		loadImage("Seeker");
 		setExhaustanimation("Seeker Large Exhaust");
 		this.initBoardBlockSpeeds();
+		this.angleModuloDivider = angleModuloDivider;
 		this.hitPoints = 50;
 		this.maxHitPoints = 50;
 		this.attackSpeedFrameCount = 100;

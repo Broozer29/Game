@@ -6,11 +6,12 @@ import game.managers.MissileManager;
 
 public class Bomba extends Enemy {
 
-	public Bomba(int x, int y, String direction) {
-		super(x, y, direction);
+	public Bomba(int x, int y, String direction, int angleModuloDivider) {
+		super(x, y, direction, "Bomba");
 		loadImage("Bomba");
 		setExhaustanimation("Bomba Large Exhaust");
 		this.initBoardBlockSpeeds();
+		this.angleModuloDivider = angleModuloDivider;
 		this.hitPoints = 50;
 		this.maxHitPoints = 50;
 		this.attackSpeedFrameCount = 100;

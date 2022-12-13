@@ -6,11 +6,12 @@ import game.managers.MissileManager;
 
 public class Energizer extends Enemy{
 
-	public Energizer(int x, int y, String direction) {
-		super(x, y, direction);
+	public Energizer(int x, int y, String direction, int angleModuloDivider) {
+		super(x, y, direction, "Energizer");
 		loadImage("Energizer");
 		setExhaustanimation("Energizer Large Exhaust");
 		this.initBoardBlockSpeeds();
+		this.angleModuloDivider = angleModuloDivider;
 		this.hitPoints = 50;
 		this.maxHitPoints = 50;
 		this.attackSpeedFrameCount = 100;

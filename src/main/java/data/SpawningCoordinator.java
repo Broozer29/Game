@@ -6,9 +6,9 @@ import java.util.Random;
 import game.objects.enemies.Enemy;
 import image.objects.BackgroundObject;
 
-public class RandomCoordinator {
+public class SpawningCoordinator {
 
-	private static RandomCoordinator instance = new RandomCoordinator();
+	private static SpawningCoordinator instance = new SpawningCoordinator();
 	private Random random = new Random();
 
 	// Al deze ranges moeten eigenlijk dynamisch berekend worden, want nu is het
@@ -30,12 +30,13 @@ public class RandomCoordinator {
 
 	private int maximumBombEnemyHeightDownRange = 0;
 	private int minimumBombEnemyHeightDownRange = -500;
+	
 
-	private RandomCoordinator() {
+	private SpawningCoordinator() {
 
 	}
 
-	public static RandomCoordinator getInstance() {
+	public static SpawningCoordinator getInstance() {
 		return instance;
 	}
 

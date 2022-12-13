@@ -4,10 +4,11 @@ import game.managers.MissileManager;
 
 public class Alien extends Enemy {
 
-	public Alien(int x, int y, String direction) {
-		super(x, y, direction);
+	public Alien(int x, int y, String direction, int angleModuloDivider) {
+		super(x, y, direction, "Alien");
 		loadImage("Default Alien Spaceship");
 		this.initBoardBlockSpeeds();
+		this.angleModuloDivider=angleModuloDivider;
 		this.hitPoints = 35;
 		this.maxHitPoints = 35;
 		this.attackSpeedFrameCount = 150;
