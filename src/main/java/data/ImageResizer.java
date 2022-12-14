@@ -38,6 +38,9 @@ public class ImageResizer {
 		return image;
 	}
 
+	
+	//DIT WERKT NIET, ZEER WAARSCHIJNLIJK OMDAT HET NIET GEMAAKT IS OF GIFS TE LEZEN EN TE TRANSFORMEREN
+	//COLOUR PALETTE MATCHED GEWOON NIET
 	public ArrayList<Image> getScaledFrames(List<Image> frames, int scale) {
 		ArrayList<Image> newFrames = new ArrayList<Image>();
 		for (int i = 0; i < frames.size(); i++) {
@@ -55,13 +58,13 @@ public class ImageResizer {
 //			} catch (InterruptedException ex) {
 //				throw new RuntimeException("Image loading interrupted", ex);
 //			}
-			
-			
-			
+//			
+//			
+//			
 //		    Graphics2D g = bimage.createGraphics();
 //		    g.drawImage(temp, null, null);
-
-			newFrames.add(temp);
+//
+//			newFrames.add(temp);
 		}
 
 		return newFrames;

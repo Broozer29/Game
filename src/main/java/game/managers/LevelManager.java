@@ -1,6 +1,7 @@
 package game.managers;
 
 import data.SpawningCoordinator;
+import game.objects.CustomTimer;
 import game.objects.enemies.Alien;
 import game.objects.enemies.AlienBomb;
 import game.objects.enemies.Bomba;
@@ -68,18 +69,29 @@ public class LevelManager {
 
 	// Spawn command, spawn tries, amount of time required to pass
 	private void saturateLevelOne() {
-		timerManager.createTimer("Spawn Bombs", 20, 10000, true, "Left");
-		timerManager.createTimer("Spawn Bomba", 3, 5000, true, "Left");
-		timerManager.createTimer("Spawn Flamer", 3, 7500, true, "Left");
-		timerManager.createTimer("Spawn Tazer", 3, 10000, true, "Left");
-		timerManager.createTimer("Spawn Seeker", 3, 5000, true, "Left");
-		timerManager.createTimer("Spawn Bulldozer", 3, 10000, true, "Left");
-		timerManager.createTimer("Spawn Energizer", 3, 10000, true, "Left");
+		int angleModuloDivider = 0;
+		CustomTimer timer = null;
+//		timer = timerManager.createTimer("Spawn Bombs", 20, 10000, true, "Left", angleModuloDivider);
+//		timerManager.addTimerToList(timer);
+		timer = timerManager.createTimer("Spawn Bomba", 3, 2000, true, "Left", angleModuloDivider);
+		timerManager.addTimerToList(timer);
+//		timer = timerManager.createTimer("Spawn Flamer", 3, 7500, true, "Left", angleModuloDivider);
+//		timerManager.addTimerToList(timer);
+//		timer = timerManager.createTimer("Spawn Tazer", 3, 10000, true, "Left", angleModuloDivider);
+//		timerManager.addTimerToList(timer);
+//		timer = timerManager.createTimer("Spawn Seeker", 3, 5000, true, "Left", angleModuloDivider);
+//		timerManager.addTimerToList(timer);
+//		timer = timerManager.createTimer("Spawn Bulldozer", 3, 10000, true, "Left", angleModuloDivider);
+//		timerManager.addTimerToList(timer);
+//		timer = timerManager.createTimer("Spawn Energizer", 3, 10000, true, "Left", angleModuloDivider);
+//		timerManager.addTimerToList(timer);
 	}
 
 	// Called by CustomTimers when they have to spawn an enemy
-	public void spawnEnemy(String enemyType, int amountOfAttempts, String direction) {
+	public void spawnEnemy(String enemyType, int amountOfAttempts, String direction, int angleModuloDivider) {
 		for (int i = 0; i < amountOfAttempts; i++) {
+			
+			//Hier afvangen waar hij moet spawnen op basis van schuine lijn
 			int xCoordinate = randomCoordinator.getRandomXEnemyCoordinate();
 			int yCoordinate = randomCoordinator.getRandomYEnemyCoordinate();
 
@@ -89,34 +101,27 @@ public class LevelManager {
 				spawnAlienBomb(xCoordinate);
 				break;
 			case ("Alien"):
-				spawnAlien(xCoordinate, yCoordinate, direction);
+				spawnAlien(xCoordinate, yCoordinate, direction, angleModuloDivider);
 				break;
 			case ("Bomba"):
-				spawnBomba(xCoordinate, yCoordinate, direction);
+				spawnBomba(xCoordinate, yCoordinate, direction, angleModuloDivider);
 				break;
 			case ("Flamer"):
-				spawnFlamer(xCoordinate, yCoordinate, direction);
+				spawnFlamer(xCoordinate, yCoordinate, direction, angleModuloDivider);
 				break;
 			case ("Bulldozer"):
-				spawnBulldozer(xCoordinate, yCoordinate, direction);
+				spawnBulldozer(xCoordinate, yCoordinate, direction, angleModuloDivider);
 				break;
 			case ("Energizer"):
-				spawnEnergizer(xCoordinate, yCoordinate, direction);
+				spawnEnergizer(xCoordinate, yCoordinate, direction, angleModuloDivider);
 				break;
 			case ("Seeker"):
-				spawnSeeker(xCoordinate, yCoordinate, direction);
+				spawnSeeker(xCoordinate, yCoordinate, direction, angleModuloDivider);
 				break;
 			case ("Tazer"):
-				spawnTazer(xCoordinate, yCoordinate, direction);
+				spawnTazer(xCoordinate, yCoordinate, direction, angleModuloDivider);
 				break;
 			}
-		}
-	}
-
-	private void spawnAlien(int xCoordinate, int yCoordinate, String direction) {
-		Enemy enemy = new Alien(xCoordinate, yCoordinate, direction, 0);
-		if (validCoordinates(enemy)) {
-			enemyManager.addEnemy(enemy);
 		}
 	}
 
@@ -136,43 +141,50 @@ public class LevelManager {
 		}
 	}
 
-	private void spawnSeeker(int xCoordinate, int yCoordinate, String direction) {
-		Enemy enemy = new Seeker(xCoordinate, yCoordinate, direction, 0);
+	private void spawnSeeker(int xCoordinate, int yCoordinate, String direction, int angleModuloDivider) {
+		Enemy enemy = new Seeker(xCoordinate, yCoordinate, direction, angleModuloDivider);
 		if (validCoordinates(enemy)) {
 			enemyManager.addEnemy(enemy);
 		}
 	}
 
-	private void spawnTazer(int xCoordinate, int yCoordinate, String direction) {
-		Enemy enemy = new Tazer(xCoordinate, yCoordinate, direction, 0);
+	private void spawnTazer(int xCoordinate, int yCoordinate, String direction, int angleModuloDivider) {
+		Enemy enemy = new Tazer(xCoordinate, yCoordinate, direction, angleModuloDivider);
 		if (validCoordinates(enemy)) {
 			enemyManager.addEnemy(enemy);
 		}
 	}
 
-	private void spawnFlamer(int xCoordinate, int yCoordinate, String direction) {
-		Enemy enemy = new Flamer(xCoordinate, yCoordinate, direction, 0);
+	private void spawnFlamer(int xCoordinate, int yCoordinate, String direction, int angleModuloDivider) {
+		Enemy enemy = new Flamer(xCoordinate, yCoordinate, direction, angleModuloDivider);
 		if (validCoordinates(enemy)) {
 			enemyManager.addEnemy(enemy);
 		}
 	}
 
-	private void spawnBomba(int xCoordinate, int yCoordinate, String direction) {
-		Enemy enemy = new Bomba(xCoordinate, yCoordinate, direction, 0);
+	private void spawnBomba(int xCoordinate, int yCoordinate, String direction, int angleModuloDivider) {
+		Enemy enemy = new Bomba(xCoordinate, yCoordinate, direction, angleModuloDivider);
 		if (validCoordinates(enemy)) {
 			enemyManager.addEnemy(enemy);
 		}
 	}
 
-	private void spawnBulldozer(int xCoordinate, int yCoordinate, String direction) {
-		Enemy enemy = new Bomba(xCoordinate, yCoordinate, direction, 0);
+	private void spawnBulldozer(int xCoordinate, int yCoordinate, String direction, int angleModuloDivider) {
+		Enemy enemy = new Bomba(xCoordinate, yCoordinate, direction, angleModuloDivider);
 		if (validCoordinates(enemy)) {
 			enemyManager.addEnemy(enemy);
 		}
 	}
 
-	private void spawnEnergizer(int xCoordinate, int yCoordinate, String direction) {
-		Enemy enemy = new Bomba(xCoordinate, yCoordinate, direction, 0);
+	private void spawnEnergizer(int xCoordinate, int yCoordinate, String direction, int angleModuloDivider) {
+		Enemy enemy = new Bomba(xCoordinate, yCoordinate, direction, angleModuloDivider);
+		if (validCoordinates(enemy)) {
+			enemyManager.addEnemy(enemy);
+		}
+	}
+
+	private void spawnAlien(int xCoordinate, int yCoordinate, String direction, int angleModuloDivider) {
+		Enemy enemy = new Alien(xCoordinate, yCoordinate, direction, 0);
 		if (validCoordinates(enemy)) {
 			enemyManager.addEnemy(enemy);
 		}

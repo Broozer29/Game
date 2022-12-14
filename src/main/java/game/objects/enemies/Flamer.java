@@ -54,8 +54,8 @@ public class Flamer extends Enemy {
 		}
 
 		if (currentAttackSpeedFrameCount >= attackSpeedFrameCount) {
-			missileManager.addEnemyMissile(this.xCoordinate, this.yCoordinate + calculateRandomWeaponHeightOffset(),
-					"Flamer Projectile", 0);
+			missileManager.addEnemyMissile(this.xCoordinate, this.yCoordinate + this.height / 2,
+					"Flamer Projectile", 0, "Left");
 			currentAttackSpeedFrameCount = 0;
 		}
 		if (currentAttackSpeedFrameCount < attackSpeedFrameCount) {

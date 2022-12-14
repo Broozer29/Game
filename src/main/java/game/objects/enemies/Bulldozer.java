@@ -57,7 +57,7 @@ public class Bulldozer extends Enemy{
 
 		if (currentAttackSpeedFrameCount >= attackSpeedFrameCount) {
 			missileManager.addEnemyMissile(this.xCoordinate, this.yCoordinate + calculateRandomWeaponHeightOffset(),
-					"Bulldozer Projectile", 0);
+					"Bulldozer Projectile", 0, "Left");
 			currentAttackSpeedFrameCount = 0;
 		}
 		if (currentAttackSpeedFrameCount < attackSpeedFrameCount) {

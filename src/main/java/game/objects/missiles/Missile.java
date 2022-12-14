@@ -78,12 +78,14 @@ public class Missile extends Sprite {
 			}
 		}
 	}
-
+	
 	public Animation getAnimation() {
 		if (this.animation != null) {
 			return this.animation;
 		}
 		return null;
 	}
+	
+	
 
 }

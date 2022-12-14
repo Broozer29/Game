@@ -11,20 +11,27 @@ public class CustomTimer implements ActionListener {
 
 	private TimerManager timerManager = TimerManager.getInstance();
 
+	// Attributes required for spawning enemies
 	private int amountOfSpawnAttempts;
-	private boolean loopable;
-	private String timerEnemyType;
-	private int timeBeforeActivation;
-	private String timerPurpose;
+	private int angleModuloDivider;
 	private String enemyMovementDirection;
+	private String timerEnemyType;
+
+	// Attributes required for timing
+	private int timeBeforeActivation;
 	private boolean finished;
+	private boolean loopable;
 	private Timer timer;
 	private String status;
+	
+	// Attributes for distinguishing timers
+	private String timerPurpose;
 
 	public CustomTimer(int timeBeforeActivation, String timerPurpose, int amountOfSpawnAttempts, String timerEnemyType,
-			boolean loopable, String enemyMovementDirection) {
+			boolean loopable, String enemyMovementDirection, int angleModuloDivider) {
 		this.amountOfSpawnAttempts = amountOfSpawnAttempts;
 		this.enemyMovementDirection = enemyMovementDirection;
+		this.angleModuloDivider = angleModuloDivider;
 		this.loopable = loopable;
 		this.timerEnemyType = timerEnemyType;
 		this.timeBeforeActivation = timeBeforeActivation;
@@ -73,7 +80,7 @@ public class CustomTimer implements ActionListener {
 	public String getTimerEnemy() {
 		return this.timerEnemyType;
 	}
-	
+
 	public String getEnemyMovementDirection() {
 		return this.enemyMovementDirection;
 	}
@@ -84,6 +91,10 @@ public class CustomTimer implements ActionListener {
 
 	public boolean getLoopable() {
 		return this.loopable;
+	}
+	
+	public int getAngleModuloDivider() {
+		return this.angleModuloDivider;
 	}
 
 	public int getTimeBeforeActivation() {

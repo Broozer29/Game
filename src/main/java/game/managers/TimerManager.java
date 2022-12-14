@@ -33,8 +33,8 @@ public class TimerManager {
 
 	// Creates timers for different purposes
 	// int duration, int timedelay (zelfde als game delay), waar de timer voor is
-	public void createTimer(String timerPurpose, int amountOfSpawnAttempts, int timeBeforeActivation,
-			boolean loopable, String direction) {
+	public CustomTimer createTimer(String timerPurpose, int amountOfSpawnAttempts, int timeBeforeActivation,
+			boolean loopable, String direction, int angleModuloDivider) {
 
 		String enemyType = "";
 		switch (timerPurpose) {
@@ -62,8 +62,9 @@ public class TimerManager {
 		}
 
 		CustomTimer timer = new CustomTimer(timeBeforeActivation, timerPurpose, amountOfSpawnAttempts, enemyType,
-				loopable, direction);
-		addTimerToList(timer);
+				loopable, direction, angleModuloDivider);
+		return timer;
+//		addTimerToList(timer);
 	}
 
 	// Timers die afgelopen zijn, verwijderen
@@ -93,7 +94,7 @@ public class TimerManager {
 		allTimers.remove(timerToRemove);
 	}
 
-	private void addTimerToList(CustomTimer timerToAdd) {
+	public void addTimerToList(CustomTimer timerToAdd) {
 		allTimers.add(timerToAdd);
 	}
 
@@ -102,11 +103,12 @@ public class TimerManager {
 		if (levelManager == null) {
 			levelManager = LevelManager.getInstance();
 		}
-		levelManager.spawnEnemy(timer.getTimerEnemy(), timer.getTimerSpawnAttempts(), timer.getEnemyMovementDirection());
+		levelManager.spawnEnemy(timer.getTimerEnemy(), timer.getTimerSpawnAttempts(), timer.getEnemyMovementDirection(), timer.getAngleModuloDivider());
 
 		if (timer.getLoopable()) {
-			createTimer(timer.getTimerPurpose(), timer.getTimerSpawnAttempts(), timer.getTimeBeforeActivation(),
-					timer.getLoopable(), timer.getEnemyMovementDirection());
+			CustomTimer renewedTimer = createTimer(timer.getTimerPurpose(), timer.getTimerSpawnAttempts(), timer.getTimeBeforeActivation(),
+					timer.getLoopable(), timer.getEnemyMovementDirection(), timer.getAngleModuloDivider());
+			addTimerToList(renewedTimer);
 		}
 
 	}

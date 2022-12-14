@@ -47,14 +47,14 @@ public class MissileManager {
 	public void firePlayerMissile(int xCoordinate, int yCoordinate, String missileType) {
 		switch (missileType) {
 		case ("Player Laserbeam"):
-			Missile newMissile = new DefaultPlayerLaserbeam(xCoordinate, yCoordinate);
+			Missile newMissile = new DefaultPlayerLaserbeam(xCoordinate, yCoordinate, 0);
 			this.friendlyMissiles.add(newMissile);
 		}
 
 	}
 
 	//Called by all enemy classes when fireAction() is called.
-	public void addEnemyMissile(int xCoordinate, int yCoordinate, String missileType, int angleModuloDivider) {
+	public void addEnemyMissile(int xCoordinate, int yCoordinate, String missileType, int angleModuloDivider, String missileDirection) {
 		switch (missileType) {
 		case ("Alien Laserbeam"):
 			Missile alienMissile = new AlienLaserbeam(xCoordinate, yCoordinate, missileType, angleModuloDivider);
@@ -77,7 +77,7 @@ public class MissileManager {
 			this.enemyMissiles.add(bulldozerMissile);
 			break;
 		case ("Bomba Projectile"):
-			Missile bombaMissile = new BombaProjectile(xCoordinate, yCoordinate, missileType, angleModuloDivider);
+			Missile bombaMissile = new BombaProjectile(xCoordinate, yCoordinate, missileType, angleModuloDivider, missileDirection);
 			this.enemyMissiles.add(bombaMissile);
 			break;
 		case ("Energizer Projectile"):

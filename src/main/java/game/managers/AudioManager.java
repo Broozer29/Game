@@ -104,12 +104,16 @@ public class AudioManager {
 			switch (audioType) {
 			case ("defaultmusic"):
 				backGroundMusicInputStream = audioDatabase.getDefaultMusic();
+				break;
 			case ("Furi - Make this right"):
 				backGroundMusicInputStream = audioDatabase.getFuriMakeThisRight();
+				break;
 			case ("Furi - Wisdom of rage"):
 				backGroundMusicInputStream = audioDatabase.getFuriWisdomOfRage();
+				break;
 			case ("Furi - My only chance"):
 				backGroundMusicInputStream = audioDatabase.getFuriMyOnlyChance();
+				break;
 			}
 
 			if (!(backGroundMusicInputStream == null)) {

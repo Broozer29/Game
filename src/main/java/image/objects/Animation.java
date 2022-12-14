@@ -13,6 +13,7 @@ import javafx.scene.shape.Rectangle;
 
 public class Animation extends Sprite {
 
+	ImageResizer imageResizer = ImageResizer.getInstance();
 	private int currentFrame;
 	private int totalFrames;
 	private List<Image> frames = new ArrayList<Image>();
@@ -21,19 +22,19 @@ public class Animation extends Sprite {
 
 	public Animation(int x, int y, String imageType, boolean infiniteLoop) {
 		super(x, y);
+		loadGifFrames(imageType);
 		this.initAnimation(imageType);
 		this.frameDelay = 0;
 		this.infiniteLoop = infiniteLoop;
 	}
 
 	protected void initAnimation(String imageType) {
-		loadGifFrames(imageType);
 		setImage(frames.get(0));
 		getImageDimensions();
 		centerAnimationFrame();
 		totalFrames = frames.size();
 	}
-
+	
 	// Sets frames, Animation shouldn't call the ImageDatabase, it should get it
 	// from a manager when created.
 	private void loadGifFrames(String imageType) {

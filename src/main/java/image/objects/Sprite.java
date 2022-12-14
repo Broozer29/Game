@@ -9,6 +9,7 @@ import data.ImageRotator;
 
 public class Sprite {
 	ImageDatabase imgDatabase = ImageDatabase.getInstance();
+	ImageResizer imgResizer = ImageResizer.getInstance();
 	protected int xCoordinate;
 	protected int yCoordinate;
 	protected int width;
@@ -28,6 +29,15 @@ public class Sprite {
 		getImageDimensions();
 //		image = image.getScaledInstance(10, 20, 0);
 		// Zet collision ook op die getallen en shits & giggles
+	}
+	
+	//Ongetest!
+	protected void resizeSprite(int scale) {
+		Image newImage = imgResizer.getScaledImage(image, width, height, scale);
+		if(newImage != null) {
+			this.image = newImage;
+			getImageDimensions();
+		}
 	}
 
 	protected void getImageDimensions() {

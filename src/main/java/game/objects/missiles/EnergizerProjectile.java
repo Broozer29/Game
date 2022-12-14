@@ -15,7 +15,6 @@ public class EnergizerProjectile extends Missile {
 
 	private void initMissile() {
 		this.missileDirection = "LeftUp";
-		this.angleModuloDivider = 7;
 		this.missileMovementSpeed = 5;
 		this.maxMissileLength = (int) (DataClass.getInstance().getWindowWidth() * 1.5);
 		this.trajectory.setMissileTrajectoryType(this);
