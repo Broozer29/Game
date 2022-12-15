@@ -35,6 +35,7 @@ public class Animation extends Sprite {
 		totalFrames = frames.size();
 	}
 	
+	
 	// Sets frames, Animation shouldn't call the ImageDatabase, it should get it
 	// from a manager when created.
 	private void loadGifFrames(String imageType) {
@@ -60,8 +61,9 @@ public class Animation extends Sprite {
 		this.setVisible(false);
 	}
 	
-	public void rotateAnimetion(Double angle) {
-		this.frames = ImageRotator.getInstance().getRotatedFrames(frames, angle);
+	
+	public void rotateAnimetion(String rotation) {
+		this.frames = ImageRotator.getInstance().getRotatedFrames(frames, rotation);
 	}
 
 	private void removeAnimation() {

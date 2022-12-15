@@ -9,7 +9,7 @@ import data.ImageRotator;
 
 public class Sprite {
 	ImageDatabase imgDatabase = ImageDatabase.getInstance();
-	ImageResizer imgResizer = ImageResizer.getInstance();
+	ImageRotator imgRotator = ImageRotator.getInstance();
 	protected int xCoordinate;
 	protected int yCoordinate;
 	protected int width;
@@ -27,19 +27,9 @@ public class Sprite {
 		image = imgDatabase.getImage(imageName);
 //		setImageToScale();
 		getImageDimensions();
-//		image = image.getScaledInstance(10, 20, 0);
 		// Zet collision ook op die getallen en shits & giggles
 	}
 	
-	//Ongetest!
-	protected void resizeSprite(int scale) {
-		Image newImage = imgResizer.getScaledImage(image, width, height, scale);
-		if(newImage != null) {
-			this.image = newImage;
-			getImageDimensions();
-		}
-	}
-
 	protected void getImageDimensions() {
 		width = image.getWidth(null);
 		height = image.getHeight(null);
@@ -56,15 +46,17 @@ public class Sprite {
 //	private void setImageToScale() {
 //		ImageResizer test = ImageResizer.getInstance();
 //		image = test.getScaledImage(image, image.getWidth(null), image.getHeight(null), scale);
+//		image = image.getScaledInstance(10, 20, 0);
+
 //	}
 //	public int getScale() {
 //	return this.scale;
 //}
 
-	protected void rotateImage(double angle) {
+	protected void rotateImage(String rotation) {
 		ImageRotator imageRotator = ImageRotator.getInstance();
-		this.image = imageRotator.rotate(image, angle);
-
+		this.image = imageRotator.rotate(image, rotation);
+		getImageDimensions();
 	}
 	
 	public int getCenterXCoordinate() {

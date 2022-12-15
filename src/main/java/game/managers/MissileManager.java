@@ -44,44 +44,54 @@ public class MissileManager {
 		return friendlyMissiles;
 	}
 
-	public void firePlayerMissile(int xCoordinate, int yCoordinate, String missileType) {
+	public void firePlayerMissile(int xCoordinate, int yCoordinate, String missileType, int angleModuloDivider,
+			String rotation) {
 		switch (missileType) {
 		case ("Player Laserbeam"):
-			Missile newMissile = new DefaultPlayerLaserbeam(xCoordinate, yCoordinate, 0);
+			Missile newMissile = new DefaultPlayerLaserbeam(xCoordinate, yCoordinate, missileType, "Right",
+					angleModuloDivider, rotation);
 			this.friendlyMissiles.add(newMissile);
 		}
 
 	}
 
-	//Called by all enemy classes when fireAction() is called.
-	public void addEnemyMissile(int xCoordinate, int yCoordinate, String missileType, int angleModuloDivider, String missileDirection) {
+	// Called by all enemy classes when fireAction() is called.
+	public void addEnemyMissile(int xCoordinate, int yCoordinate, String missileType, int angleModuloDivider,
+			String missileDirection, String rotation) {
 		switch (missileType) {
 		case ("Alien Laserbeam"):
-			Missile alienMissile = new AlienLaserbeam(xCoordinate, yCoordinate, missileType, angleModuloDivider);
+			Missile alienMissile = new AlienLaserbeam(xCoordinate, yCoordinate, missileType, missileDirection,
+					angleModuloDivider, rotation);
 			this.enemyMissiles.add(alienMissile);
 			break;
 		case ("Seeker Projectile"):
-			Missile seekerMissile = new SeekerProjectile(xCoordinate, yCoordinate, missileType, angleModuloDivider);
+			Missile seekerMissile = new SeekerProjectile(xCoordinate, yCoordinate, missileType, missileDirection,
+					angleModuloDivider, rotation);
 			this.enemyMissiles.add(seekerMissile);
 			break;
 		case ("Flamer Projectile"):
-			Missile flamerMissile = new FlamerProjectile(xCoordinate, yCoordinate, missileType, angleModuloDivider);
+			Missile flamerMissile = new FlamerProjectile(xCoordinate, yCoordinate, missileType, missileDirection,
+					angleModuloDivider, rotation);
 			this.enemyMissiles.add(flamerMissile);
 			break;
 		case ("Tazer Projectile"):
-			Missile tazerMissile = new TazerProjectile(xCoordinate, yCoordinate, missileType, angleModuloDivider);
+			Missile tazerMissile = new TazerProjectile(xCoordinate, yCoordinate, missileType, missileDirection,
+					angleModuloDivider, rotation);
 			this.enemyMissiles.add(tazerMissile);
 			break;
 		case ("Bulldozer Projectile"):
-			Missile bulldozerMissile = new BulldozerProjectile(xCoordinate, yCoordinate, missileType, angleModuloDivider);
+			Missile bulldozerMissile = new BulldozerProjectile(xCoordinate, yCoordinate, missileType, missileDirection,
+					angleModuloDivider, rotation);
 			this.enemyMissiles.add(bulldozerMissile);
 			break;
 		case ("Bomba Projectile"):
-			Missile bombaMissile = new BombaProjectile(xCoordinate, yCoordinate, missileType, angleModuloDivider, missileDirection);
+			Missile bombaMissile = new BombaProjectile(xCoordinate, yCoordinate, missileType, missileDirection,
+					angleModuloDivider, rotation);
 			this.enemyMissiles.add(bombaMissile);
 			break;
 		case ("Energizer Projectile"):
-			Missile energizerMissile = new EnergizerProjectile(xCoordinate, yCoordinate, missileType, angleModuloDivider);
+			Missile energizerMissile = new EnergizerProjectile(xCoordinate, yCoordinate, missileType, missileDirection,
+					angleModuloDivider, rotation);
 			this.enemyMissiles.add(energizerMissile);
 			break;
 		}

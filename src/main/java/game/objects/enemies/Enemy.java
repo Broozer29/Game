@@ -173,19 +173,6 @@ public class Enemy extends Sprite {
 
 	protected void setRotation(String rotation) {
 		this.rotation = rotation;
-		switch (rotation) {
-		case ("Up"):
-			rotateImage(Math.PI * 1.5);
-			break;
-		case ("Down"):
-			rotateImage(Math.PI * 0.5);
-			break;
-		case ("Left"):
-			rotateImage(0);
-			break;
-		case ("Right"):
-			rotateImage(Math.PI);
-			break;
-		}
+		rotateImage(rotation);
 	}
 }

@@ -71,20 +71,20 @@ public class LevelManager {
 	private void saturateLevelOne() {
 		int angleModuloDivider = 0;
 		CustomTimer timer = null;
-//		timer = timerManager.createTimer("Spawn Bombs", 20, 10000, true, "Left", angleModuloDivider);
-//		timerManager.addTimerToList(timer);
-		timer = timerManager.createTimer("Spawn Bomba", 3, 2000, true, "Left", angleModuloDivider);
+		timer = timerManager.createTimer("Spawn Bombs", 20, 10000, true, "Left", angleModuloDivider);
 		timerManager.addTimerToList(timer);
-//		timer = timerManager.createTimer("Spawn Flamer", 3, 7500, true, "Left", angleModuloDivider);
-//		timerManager.addTimerToList(timer);
-//		timer = timerManager.createTimer("Spawn Tazer", 3, 10000, true, "Left", angleModuloDivider);
-//		timerManager.addTimerToList(timer);
-//		timer = timerManager.createTimer("Spawn Seeker", 3, 5000, true, "Left", angleModuloDivider);
-//		timerManager.addTimerToList(timer);
-//		timer = timerManager.createTimer("Spawn Bulldozer", 3, 10000, true, "Left", angleModuloDivider);
-//		timerManager.addTimerToList(timer);
-//		timer = timerManager.createTimer("Spawn Energizer", 3, 10000, true, "Left", angleModuloDivider);
-//		timerManager.addTimerToList(timer);
+		timer = timerManager.createTimer("Spawn Bomba", 3, 2000, true, "LeftUp", angleModuloDivider);
+		timerManager.addTimerToList(timer);
+		timer = timerManager.createTimer("Spawn Flamer", 3, 7500, true, "Left", angleModuloDivider);
+		timerManager.addTimerToList(timer);
+		timer = timerManager.createTimer("Spawn Tazer", 3, 10000, true, "Left", angleModuloDivider);
+		timerManager.addTimerToList(timer);
+		timer = timerManager.createTimer("Spawn Seeker", 3, 5000, true, "Left", angleModuloDivider);
+		timerManager.addTimerToList(timer);
+		timer = timerManager.createTimer("Spawn Bulldozer", 3, 10000, true, "Left", angleModuloDivider);
+		timerManager.addTimerToList(timer);
+		timer = timerManager.createTimer("Spawn Energizer", 3, 10000, true, "Left", angleModuloDivider);
+		timerManager.addTimerToList(timer);
 	}
 
 	// Called by CustomTimers when they have to spawn an enemy

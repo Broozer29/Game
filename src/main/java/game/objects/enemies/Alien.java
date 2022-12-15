@@ -54,7 +54,7 @@ public class Alien extends Enemy {
 		if (currentAttackSpeedFrameCount >= attackSpeedFrameCount) {
 			if (currentBoardBlock < 7) {
 				missileManager.addEnemyMissile(this.xCoordinate, this.yCoordinate + calculateRandomWeaponHeightOffset(),
-						"Alien Laserbeam", 0, "Left");
+						"Alien Laserbeam", 0, "Left", "Left");
 				currentAttackSpeedFrameCount = 0;
 			}
 		}

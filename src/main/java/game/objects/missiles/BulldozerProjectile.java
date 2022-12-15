@@ -4,17 +4,14 @@ import data.DataClass;
 
 public class BulldozerProjectile extends Missile{
 
-	public BulldozerProjectile(int x, int y, String missileType, int angleModuloDivider) {
-		super(x, y);
-		this.missileType = missileType;
-		this.angleModuloDivider = angleModuloDivider;
+	public BulldozerProjectile(int x, int y, String missileType, String missileDirection, int angleModuloDivider, String rotationAngle) {
+		super(x, y, missileType, missileDirection, angleModuloDivider, rotationAngle);
 		this.missileDamage = (float) 7.5;
 		initMissile();
 		setAnimation();
 	}
 
 	private void initMissile() {
-		this.missileDirection = "LeftUp";
 		this.missileMovementSpeed = 5;
 		this.maxMissileLength = (int) (DataClass.getInstance().getWindowWidth() * 1.5);
 		this.trajectory.setMissileTrajectoryType(this);

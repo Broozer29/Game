@@ -18,9 +18,16 @@ public class Missile extends Sprite {
 	protected int maxMissileLength;
 	protected Animation animation;
 	protected String missileType;
+	protected String rotationAngle;
 
-	public Missile(int x, int y) {
+	public Missile(int x, int y, String missileType, String missileDirection, int angleModuloDivider,
+			String rotationAngle) {
 		super(x, y);
+		this.angleModuloDivider = angleModuloDivider;
+		this.rotationAngle = rotationAngle;
+		this.missileType = missileType;
+		this.missileDirection = missileDirection;
+
 	}
 
 	public void updateGameTick() {
@@ -66,7 +73,7 @@ public class Missile extends Sprite {
 	public int getMaxMissileLength() {
 		return this.maxMissileLength;
 	}
-	
+
 	public int getAngleSize() {
 		return this.angleModuloDivider;
 	}
@@ -77,15 +84,14 @@ public class Missile extends Sprite {
 				this.animation = new Animation(xCoordinate, yCoordinate, missileType, true);
 			}
 		}
+		this.animation.rotateAnimetion(rotationAngle);
 	}
-	
+
 	public Animation getAnimation() {
 		if (this.animation != null) {
 			return this.animation;
 		}
 		return null;
 	}
-	
-	
 
 }
