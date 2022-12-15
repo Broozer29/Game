@@ -113,6 +113,10 @@ public class Animation extends Sprite {
 		return this.totalFrames;
 	}
 	
+	public void resizeAnimation(int scale) {
+		this.frames = imageResizer.getScaledFrames(frames, scale);
+	}
+	
 	// Get bounds for sprites that have ANIMATIONS. Regular bounds don't work
 	public Rectangle getAnimationBounds() {
 		return new Rectangle(xCoordinate, yCoordinate, width, height);
