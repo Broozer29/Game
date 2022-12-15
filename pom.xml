@@ -22,10 +22,15 @@
 		</dependency>
 
 	</dependencies>
-
-	<!-- <build> <plugins> <plugin> <groupId>org.springframework.boot</groupId> 
-		<artifactId>spring-boot-maven-plugin</artifactId> </plugin> <plugin> <groupId>org.apache.maven.plugins</groupId> 
-		<artifactId>maven-compiler-plugin</artifactId> <configuration> <source>17</source> 
-		<target>17</target> <compilerArgs> <arg>-Werror</arg> <arg>-Xlint:all</arg> 
-		</compilerArgs> </configuration> </plugin> </plugins> </build> -->
+	<build>
+		<plugins>
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>17</source>
+					<target>17</target>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
 </project>

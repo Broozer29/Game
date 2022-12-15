@@ -1,62 +1,45 @@
 package image.objects;
 
 import java.awt.Image;
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.imageio.ImageIO;
-import javax.imageio.ImageReader;
-import javax.imageio.stream.FileImageInputStream;
 import javax.swing.ImageIcon;
 
 import data.ImageDatabase;
+import data.ImageResizer;
+import data.ImageRotator;
+import javafx.scene.shape.Rectangle;
 
 public class Animation extends Sprite {
 
+	ImageResizer imageResizer = ImageResizer.getInstance();
 	private int currentFrame;
 	private int totalFrames;
-	private List<ImageIcon> frames = new ArrayList<ImageIcon>();
+	private List<Image> frames = new ArrayList<Image>();
 	private int frameDelay;
+	private boolean infiniteLoop;
 
-	public Animation(int x, int y, String imageType) {
+	public Animation(int x, int y, String imageType, boolean infiniteLoop) {
 		super(x, y);
+		loadGifFrames(imageType);
 		this.initAnimation(imageType);
 		this.frameDelay = 0;
+		this.infiniteLoop = infiniteLoop;
 	}
 
 	protected void initAnimation(String imageType) {
-		loadGifFrames(imageType);
-		setImage(frames.get(0).getImage());
+		setImage(frames.get(0));
 		getImageDimensions();
 		centerAnimationFrame();
 		totalFrames = frames.size();
 	}
-
+	
+	
 	// Sets frames, Animation shouldn't call the ImageDatabase, it should get it
 	// from a manager when created.
 	private void loadGifFrames(String imageType) {
-		switch (imageType) {
-		case ("Impact Explosion One"):
-			this.frames = ImageDatabase.getInstance().getImpactExplosionOneFrames();
-			return;
-		case ("Player Engine"):
-			this.frames = ImageDatabase.getInstance().getPlayerEngineFrames();
-			return;
-		case ("Destroyed Explosion"):
-			this.frames = ImageDatabase.getInstance().getDestroyedExplosionUpFrames();
-			return;
-		case ("Destroyed Explosion Right"):
-			this.frames = ImageDatabase.getInstance().getDestroyedExplosionRightFrames();
-			return;
-		case ("Destroyed Explosion Left"):
-			this.frames = ImageDatabase.getInstance().getDestroyedExplosionLeftFrames();
-			return;
-		case ("Destroyed Explosion Reverse"):
-			this.frames = ImageDatabase.getInstance().getDestroyedExplosionDownFrames();
-			return;
-		}
+		this.frames = ImageDatabase.getInstance().getGif(imageType);
 	}
 
 	// Centers the animation a bit further inwards to the collision spot
@@ -69,7 +52,22 @@ public class Animation extends Sprite {
 	// fully played out
 	public void updateFrameCount() {
 		this.currentFrame += 1;
-		if (this.currentFrame >= frames.size()) {
+
+	}
+	
+	//Called by Animation manager when an animation needs to be deleted but is looping permanently
+	public void deleteAnimation() {
+		this.infiniteLoop = false;
+		this.setVisible(false);
+	}
+	
+	
+	public void rotateAnimetion(String rotation) {
+		this.frames = ImageRotator.getInstance().getRotatedFrames(frames, rotation);
+	}
+
+	private void removeAnimation() {
+		if (this.currentFrame >= frames.size() && !infiniteLoop) {
 			this.setVisible(false);
 		}
 	}
@@ -85,17 +83,26 @@ public class Animation extends Sprite {
 
 	// returns current frame of the gif
 	public Image getCurrentFrame() {
+		if (currentFrame >= frames.size()) {
+			if (infiniteLoop) {
+				refreshAnimation(this.xCoordinate, this.yCoordinate);
+			} else {
+				removeAnimation();
+			}
+		}
+
 		if (currentFrame < frames.size()) {
-			Image returnImage = frames.get(currentFrame).getImage();
-			
+			Image returnImage = frames.get(currentFrame);
+			width = returnImage.getWidth(null);
+			height = returnImage.getHeight(null);
 			if (frameDelay >= 1) {
 				updateFrameCount();
 				frameDelay = 0;
-			} else frameDelay++;
-			
+			} else
+				frameDelay++;
 			return returnImage;
 		}
-		return frames.get(1).getImage();
+		return frames.get(frames.size() - 1);
 	}
 
 	public int getFrame() {
@@ -104,6 +111,11 @@ public class Animation extends Sprite {
 
 	public int getTotalFrames() {
 		return this.totalFrames;
+	}
+	
+	// Get bounds for sprites that have ANIMATIONS. Regular bounds don't work
+	public Rectangle getAnimationBounds() {
+		return new Rectangle(xCoordinate, yCoordinate, width, height);
 	}
 
 }

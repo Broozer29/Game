@@ -2,12 +2,10 @@ package data;
 
 import javax.swing.ImageIcon;
 import java.awt.Image;
-import java.awt.Toolkit;
 
 public class ImageLoader {
 
 	private static ImageLoader instance = new ImageLoader();
-	private static Toolkit toolkit = Toolkit.getDefaultToolkit();
 
 	private ImageLoader() {
 	}
@@ -61,7 +59,18 @@ public class ImageLoader {
 			return "src/resources/images/background/planet3.png";
 		case ("Star"):
 			return "src/resources/images/background/star.png";
-
+		case("Seeker"):
+			return "src/resources/images/Ships/Ship 1/Ship1.png";
+		case("Tazer"):
+			return "src/resources/images/Ships/Ship 2/Ship2.png";
+		case("Energizer"):
+			return "src/resources/images/Ships/Ship 3/Ship3.png";
+		case("Bulldozer"):
+			return "src/resources/images/Ships/Ship 4/Ship4.png";
+		case("Flamer"):
+			return "src/resources/images/Ships/Ship 5/Ship5.png";
+		case("Bomba"):
+			return "src/resources/images/Ships/Ship 6/Ship6.png";
 		}
 		return "notfound";
 	}

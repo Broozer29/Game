@@ -4,17 +4,18 @@ import java.awt.Image;
 import java.awt.Rectangle;
 
 import data.ImageDatabase;
+import data.ImageResizer;
 import data.ImageRotator;
 
 public class Sprite {
 	ImageDatabase imgDatabase = ImageDatabase.getInstance();
+	ImageRotator imgRotator = ImageRotator.getInstance();
 	protected int xCoordinate;
 	protected int yCoordinate;
 	protected int width;
 	protected int height;
 	protected boolean visible;
 	protected Image image;
-	protected Image rotatedImage;
 
 	public Sprite(int x, int y) {
 		this.xCoordinate = x;
@@ -24,12 +25,11 @@ public class Sprite {
 
 	protected void loadImage(String imageName) {
 		image = imgDatabase.getImage(imageName);
-		rotatedImage = image;
+//		setImageToScale();
 		getImageDimensions();
-		// image = image.getScaledInstance(10, 20, 0);
 		// Zet collision ook op die getallen en shits & giggles
 	}
-
+	
 	protected void getImageDimensions() {
 		width = image.getWidth(null);
 		height = image.getHeight(null);
@@ -39,14 +39,32 @@ public class Sprite {
 	// background planets.
 	protected void setImage(Image image) {
 		this.image = image;
-		this.rotatedImage = image;
 		getImageDimensions();
 	}
 
-	protected void rotateImage(double angle) {
-		ImageRotator imageRotator = ImageRotator.getInstance();
-		this.rotatedImage = imageRotator.rotate(image, angle);
+	// Perhaps never to be used again
+//	private void setImageToScale() {
+//		ImageResizer test = ImageResizer.getInstance();
+//		image = test.getScaledImage(image, image.getWidth(null), image.getHeight(null), scale);
+//		image = image.getScaledInstance(10, 20, 0);
 
+//	}
+//	public int getScale() {
+//	return this.scale;
+//}
+
+	protected void rotateImage(String rotation) {
+		ImageRotator imageRotator = ImageRotator.getInstance();
+		this.image = imageRotator.rotate(image, rotation);
+		getImageDimensions();
+	}
+	
+	public int getCenterXCoordinate() {
+		return xCoordinate + (width / 2);
+	}
+	
+	public int getCenterYCoordinate() {
+		return yCoordinate + (height / 2);
 	}
 
 	public int getWidth() {
@@ -58,7 +76,7 @@ public class Sprite {
 	}
 
 	public Image getImage() {
-		return rotatedImage;
+		return image;
 	}
 
 	public int getXCoordinate() {
@@ -85,7 +103,7 @@ public class Sprite {
 		this.visible = visible;
 	}
 
-	// Get bounds required for collision detection
+	// Get bounds required for collision detection for objects WITHOUT ANIMATIONS
 	public Rectangle getBounds() {
 		return new Rectangle(xCoordinate, yCoordinate, width, height);
 	}

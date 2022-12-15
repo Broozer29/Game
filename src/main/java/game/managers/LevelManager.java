@@ -1,14 +1,21 @@
 package game.managers;
 
-import data.RandomCoordinator;
+import data.SpawningCoordinator;
+import game.objects.CustomTimer;
+import game.objects.enemies.Alien;
+import game.objects.enemies.AlienBomb;
+import game.objects.enemies.Bomba;
+import game.objects.enemies.Enemy;
+import game.objects.enemies.Flamer;
+import game.objects.enemies.Seeker;
+import game.objects.enemies.Tazer;
 
 public class LevelManager {
 
 	private static LevelManager instance = new LevelManager();
 	private EnemyManager enemyManager = EnemyManager.getInstance();
-	private RandomCoordinator randomCoordinator = RandomCoordinator.getInstance();
+	private SpawningCoordinator randomCoordinator = SpawningCoordinator.getInstance();
 	private TimerManager timerManager = TimerManager.getInstance();
-	private int bombQuota = 20;
 	private int level = 1;
 
 	private LevelManager() {
@@ -19,7 +26,6 @@ public class LevelManager {
 	}
 
 	public void resetManager() {
-		bombQuota = 20;
 		level = 1;
 	}
 
@@ -37,15 +43,20 @@ public class LevelManager {
 		this.setLevel(this.level);
 	}
 
-	public void spawnBombs() {
-		saturateBombList();
+	public void spawnBombs(int bombTriesAmount) {
+		for (int i = 0; i < bombTriesAmount; i++) {
+			int randomXCoordinate = randomCoordinator.getRandomXBombEnemyCoordinate();
+			spawnAlienBomb(randomXCoordinate);
+		}
 	}
 
+	// Called every gameloop to see if enough aliens are dead to advance to the next
+	// level
 	private void checkLevelUpdate() {
-		if (enemyManager.getDefaultAlienSpaceshipCount() <= 0) {
-			levelUp();
-			startLevel();
-		}
+//		if (enemyManager.getDefaultAlienSpaceshipCount() <= 0) {
+//			levelUp();
+//			startLevel();
+//		}
 	}
 
 	private void setLevel(int level) {
@@ -53,81 +64,142 @@ public class LevelManager {
 		case (1):
 			this.saturateLevelOne();
 			return;
-		case (2):
-			this.saturateLevelTwo();
-			return;
-		case (3):
-			this.saturateLevelThree();
-			return;
 		}
 	}
 
-	private void saturateBombList() {
-		int bombsSpawned = 0;
-		int timesTriedToSpawn = 0;
-		while (bombsSpawned < bombQuota) {
-			timesTriedToSpawn++;
-			if (timesTriedToSpawn > 100) {
+	// Spawn command, spawn tries, amount of time required to pass
+	private void saturateLevelOne() {
+		int angleModuloDivider = 0;
+		CustomTimer timer = null;
+		timer = timerManager.createTimer("Spawn Bombs", 20, 10000, true, "Left", angleModuloDivider);
+		timerManager.addTimerToList(timer);
+		timer = timerManager.createTimer("Spawn Bomba", 3, 2000, true, "LeftUp", angleModuloDivider);
+		timerManager.addTimerToList(timer);
+		timer = timerManager.createTimer("Spawn Flamer", 3, 7500, true, "Left", angleModuloDivider);
+		timerManager.addTimerToList(timer);
+		timer = timerManager.createTimer("Spawn Tazer", 3, 10000, true, "Left", angleModuloDivider);
+		timerManager.addTimerToList(timer);
+		timer = timerManager.createTimer("Spawn Seeker", 3, 5000, true, "Left", angleModuloDivider);
+		timerManager.addTimerToList(timer);
+		timer = timerManager.createTimer("Spawn Bulldozer", 3, 10000, true, "Left", angleModuloDivider);
+		timerManager.addTimerToList(timer);
+		timer = timerManager.createTimer("Spawn Energizer", 3, 10000, true, "Left", angleModuloDivider);
+		timerManager.addTimerToList(timer);
+	}
+
+	// Called by CustomTimers when they have to spawn an enemy
+	public void spawnEnemy(String enemyType, int amountOfAttempts, String direction, int angleModuloDivider) {
+		for (int i = 0; i < amountOfAttempts; i++) {
+			
+			//Hier afvangen waar hij moet spawnen op basis van schuine lijn
+			int xCoordinate = randomCoordinator.getRandomXEnemyCoordinate();
+			int yCoordinate = randomCoordinator.getRandomYEnemyCoordinate();
+
+			switch (enemyType) {
+			case ("Alien Bomb"):
+				xCoordinate = randomCoordinator.getRandomXBombEnemyCoordinate();
+				spawnAlienBomb(xCoordinate);
+				break;
+			case ("Alien"):
+				spawnAlien(xCoordinate, yCoordinate, direction, angleModuloDivider);
+				break;
+			case ("Bomba"):
+				spawnBomba(xCoordinate, yCoordinate, direction, angleModuloDivider);
+				break;
+			case ("Flamer"):
+				spawnFlamer(xCoordinate, yCoordinate, direction, angleModuloDivider);
+				break;
+			case ("Bulldozer"):
+				spawnBulldozer(xCoordinate, yCoordinate, direction, angleModuloDivider);
+				break;
+			case ("Energizer"):
+				spawnEnergizer(xCoordinate, yCoordinate, direction, angleModuloDivider);
+				break;
+			case ("Seeker"):
+				spawnSeeker(xCoordinate, yCoordinate, direction, angleModuloDivider);
+				break;
+			case ("Tazer"):
+				spawnTazer(xCoordinate, yCoordinate, direction, angleModuloDivider);
 				break;
 			}
-			String direction = randomCoordinator.upOrDown();
-			int xCoordinate = randomCoordinator.getRandomXBombEnemyCoordinate();
-			int yCoordinate = 0;
-
-			if (direction.equals("Up")) {
-				yCoordinate = randomCoordinator.getRandomYUpBombEnemyCoordinate();
-			} else if (direction.equals("Down")) {
-				yCoordinate = randomCoordinator.getRandomYDownBombEnemyCoordinate();
-			}
-
-			if (randomCoordinator.checkValidEnemyXCoordinate("Alien Bomb", enemyManager.getEnemies(), xCoordinate, 5)
-					&& randomCoordinator.checkValidEnemyYCoordinate("Alien Bomb", enemyManager.getEnemies(), yCoordinate, 5)) {
-				enemyManager.addEnemy(xCoordinate, yCoordinate, "Alien Bomb", direction);
-				bombsSpawned++;
-			}
 		}
 	}
 
-	private void saturateLevelOne() {
-		while (enemyManager.getDefaultAlienSpaceshipCount() < 10) {
-			int xCoordinate = randomCoordinator.getRandomXEnemyCoordinate();
-			int yCoordinate = randomCoordinator.getRandomYEnemyCoordinate();
+	private void spawnAlienBomb(int xCoordinate) {
+		String direction = randomCoordinator.upOrDown();
+		int yCoordinate = 0;
 
-			if (randomCoordinator.checkValidEnemyXCoordinate("Default Alien Spaceship", enemyManager.getEnemies(),
-					xCoordinate, 20)
-					&& randomCoordinator.checkValidEnemyYCoordinate("Default Alien Spaceship",
-							enemyManager.getEnemies(), yCoordinate, 20)) {
-				enemyManager.addEnemy(xCoordinate, yCoordinate, "Default Alien Spaceship", "Left");
-			}
+		if (direction.equals("Up")) {
+			yCoordinate = randomCoordinator.getRandomYUpBombEnemyCoordinate();
+		} else if (direction.equals("Down")) {
+			yCoordinate = randomCoordinator.getRandomYDownBombEnemyCoordinate();
 		}
-		timerManager.createTimer("SpawnBombs");
-	}
 
-	private void saturateLevelTwo() {
-		while (enemyManager.getDefaultAlienSpaceshipCount() < 12) {
-			int xCoordinate = randomCoordinator.getRandomXEnemyCoordinate();
-			int yCoordinate = randomCoordinator.getRandomYEnemyCoordinate();
-
-			if (randomCoordinator.checkValidEnemyXCoordinate("Default Alien Spaceship", enemyManager.getEnemies(),
-					xCoordinate, 20)
-					&& randomCoordinator.checkValidEnemyYCoordinate("Default Alien Spaceship",
-							enemyManager.getEnemies(), yCoordinate, 20)) {
-				enemyManager.addEnemy(xCoordinate, yCoordinate, "Default Alien Spaceship", "Left");
-			}
+		Enemy enemy = new AlienBomb(xCoordinate, yCoordinate, direction, 0);
+		if (validCoordinates(enemy)) {
+			enemyManager.addEnemy(enemy);
 		}
 	}
 
-	private void saturateLevelThree() {
-		while (enemyManager.getDefaultAlienSpaceshipCount() < 14) {
-			int xCoordinate = randomCoordinator.getRandomXEnemyCoordinate();
-			int yCoordinate = randomCoordinator.getRandomYEnemyCoordinate();
-			if (randomCoordinator.checkValidEnemyXCoordinate("Default Alien Spaceship", enemyManager.getEnemies(),
-					xCoordinate, 20)
-					&& randomCoordinator.checkValidEnemyYCoordinate("Default Alien Spaceship",
-							enemyManager.getEnemies(), yCoordinate, 20)) {
-				enemyManager.addEnemy(xCoordinate, yCoordinate, "Default Alien Spaceship", "Left");
-			}
+	private void spawnSeeker(int xCoordinate, int yCoordinate, String direction, int angleModuloDivider) {
+		Enemy enemy = new Seeker(xCoordinate, yCoordinate, direction, angleModuloDivider);
+		if (validCoordinates(enemy)) {
+			enemyManager.addEnemy(enemy);
 		}
+	}
+
+	private void spawnTazer(int xCoordinate, int yCoordinate, String direction, int angleModuloDivider) {
+		Enemy enemy = new Tazer(xCoordinate, yCoordinate, direction, angleModuloDivider);
+		if (validCoordinates(enemy)) {
+			enemyManager.addEnemy(enemy);
+		}
+	}
+
+	private void spawnFlamer(int xCoordinate, int yCoordinate, String direction, int angleModuloDivider) {
+		Enemy enemy = new Flamer(xCoordinate, yCoordinate, direction, angleModuloDivider);
+		if (validCoordinates(enemy)) {
+			enemyManager.addEnemy(enemy);
+		}
+	}
+
+	private void spawnBomba(int xCoordinate, int yCoordinate, String direction, int angleModuloDivider) {
+		Enemy enemy = new Bomba(xCoordinate, yCoordinate, direction, angleModuloDivider);
+		if (validCoordinates(enemy)) {
+			enemyManager.addEnemy(enemy);
+		}
+	}
+
+	private void spawnBulldozer(int xCoordinate, int yCoordinate, String direction, int angleModuloDivider) {
+		Enemy enemy = new Bomba(xCoordinate, yCoordinate, direction, angleModuloDivider);
+		if (validCoordinates(enemy)) {
+			enemyManager.addEnemy(enemy);
+		}
+	}
+
+	private void spawnEnergizer(int xCoordinate, int yCoordinate, String direction, int angleModuloDivider) {
+		Enemy enemy = new Bomba(xCoordinate, yCoordinate, direction, angleModuloDivider);
+		if (validCoordinates(enemy)) {
+			enemyManager.addEnemy(enemy);
+		}
+	}
+
+	private void spawnAlien(int xCoordinate, int yCoordinate, String direction, int angleModuloDivider) {
+		Enemy enemy = new Alien(xCoordinate, yCoordinate, direction, 0);
+		if (validCoordinates(enemy)) {
+			enemyManager.addEnemy(enemy);
+		}
+	}
+
+	// Called by all spawn*Enemy* methods, returns true if there is no overlap
+	// between enemies of the same type
+	private boolean validCoordinates(Enemy enemy) {
+		if (randomCoordinator.checkValidEnemyXCoordinate(enemy, enemyManager.getEnemies(), enemy.getXCoordinate(),
+				enemy.getWidth())
+				&& randomCoordinator.checkValidEnemyYCoordinate(enemy, enemyManager.getEnemies(),
+						enemy.getYCoordinate(), enemy.getHeight())) {
+			return true;
+		}
+		return false;
 	}
 
 }

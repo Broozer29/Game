@@ -33,13 +33,38 @@ public class TimerManager {
 
 	// Creates timers for different purposes
 	// int duration, int timedelay (zelfde als game delay), waar de timer voor is
-	public void createTimer(String timerPurpose) {
+	public CustomTimer createTimer(String timerPurpose, int amountOfSpawnAttempts, int timeBeforeActivation,
+			boolean loopable, String direction, int angleModuloDivider) {
+
+		String enemyType = "";
 		switch (timerPurpose) {
-		case ("SpawnBombs"):
-			CustomTimer timer = new CustomTimer(1000, "SpawnBombs");
-			addTimerToList(timer);
+		case ("Spawn Bombs"):
+			enemyType = "Alien Bomb";
+			break;
+		case ("Spawn Bomba"):
+			enemyType = "Bomba";
+			break;
+		case ("Spawn Flamer"):
+			enemyType = "Flamer";
+			break;
+		case ("Spawn Energizer"):
+			enemyType = "Energizer";
+			break;
+		case ("Spawn Tazer"):
+			enemyType = "Tazer";
+			break;
+		case ("Spawn Seeker"):
+			enemyType = "Seeker";
+			break;
+		case ("Spawn Bulldozer"):
+			enemyType = "Bulldozer";
 			break;
 		}
+
+		CustomTimer timer = new CustomTimer(timeBeforeActivation, timerPurpose, amountOfSpawnAttempts, enemyType,
+				loopable, direction, angleModuloDivider);
+		return timer;
+//		addTimerToList(timer);
 	}
 
 	// Timers die afgelopen zijn, verwijderen
@@ -59,7 +84,7 @@ public class TimerManager {
 					break;
 				}
 			}
-			if(selectedTimer.getFinished()) {
+			if (selectedTimer.getFinished()) {
 				removeTimerFromList(selectedTimer);
 			}
 		}
@@ -69,20 +94,22 @@ public class TimerManager {
 		allTimers.remove(timerToRemove);
 	}
 
-	private void addTimerToList(CustomTimer timerToAdd) {
-		this.allTimers.add(timerToAdd);
+	public void addTimerToList(CustomTimer timerToAdd) {
+		allTimers.add(timerToAdd);
 	}
 
-	public void activate(String timerPurpose) {
+	// Called by the timer itself when it's time to activate
+	public void activate(CustomTimer timer) {
 		if (levelManager == null) {
 			levelManager = LevelManager.getInstance();
 		}
+		levelManager.spawnEnemy(timer.getTimerEnemy(), timer.getTimerSpawnAttempts(), timer.getEnemyMovementDirection(), timer.getAngleModuloDivider());
 
-		switch (timerPurpose) {
-		case ("SpawnBombs"):
-			levelManager.spawnBombs();
-			createTimer("SpawnBombs");
-			break;
+		if (timer.getLoopable()) {
+			CustomTimer renewedTimer = createTimer(timer.getTimerPurpose(), timer.getTimerSpawnAttempts(), timer.getTimeBeforeActivation(),
+					timer.getLoopable(), timer.getEnemyMovementDirection(), timer.getAngleModuloDivider());
+			addTimerToList(renewedTimer);
 		}
+
 	}
 }

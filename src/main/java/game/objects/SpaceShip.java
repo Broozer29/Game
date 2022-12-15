@@ -38,7 +38,6 @@ public class SpaceShip extends Sprite {
 
 	private void initSpaceShip() {
 		loadImage("Player Spaceship");
-		getImageDimensions();
 		setShipHealth();
 	}
 
@@ -83,33 +82,6 @@ public class SpaceShip extends Sprite {
 				repairShields((float) 0.4);
 			}
 		}
-//
-//		this.rotateTestCount++;
-//		if (rotateTestCount > rotateTestMaxCoun) {
-//			if (rotatedtimes == 0) {
-//				rotateImage(0);
-//				System.out.println(rotatedtimes + " Naar rechts");
-//			}
-//			if (rotatedtimes == 1) {
-//				rotateImage(Math.PI * 0.5);
-//				System.out.println(rotatedtimes + " Naar beneden");
-//			}
-//			if (rotatedtimes == 2) {
-//				rotateImage(Math.PI);
-//				System.out.println(rotatedtimes + " Naar links");
-//			}
-//			if(rotatedtimes == 3) {
-//				rotateImage(Math.PI * 1.5);
-//				System.out.println(rotatedtimes + " Naar boven");
-//			}
-//			
-//			rotateTestCount = 0;
-//			rotatedtimes++;
-//		}
-//		if(rotatedtimes > 3) {
-//			rotatedtimes = 0;
-//		}
-
 	}
 
 	// Moves the spaceship
@@ -129,7 +101,7 @@ public class SpaceShip extends Sprite {
 			try {
 				this.audioManager.firePlayerMissile();
 				this.missileManager.firePlayerMissile(xCoordinate + width, yCoordinate + (height / 2) - 5,
-						friendlyManager.getPlayerMissileType());
+						friendlyManager.getPlayerMissileType(), 0, "Right");
 				this.currentAttackFrame = 0;
 			} catch (UnsupportedAudioFileException | IOException e) {
 				e.printStackTrace();

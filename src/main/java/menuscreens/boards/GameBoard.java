@@ -26,8 +26,8 @@ import game.managers.FriendlyManager;
 import game.managers.LevelManager;
 import game.managers.MissileManager;
 import game.managers.TimerManager;
-import game.objects.Enemy;
-import game.objects.Missile;
+import game.objects.enemies.Enemy;
+import game.objects.missiles.Missile;
 import image.objects.Animation;
 import image.objects.BackgroundObject;
 import image.objects.Sprite;
@@ -37,9 +37,8 @@ public class GameBoard extends JPanel implements ActionListener {
 
 	private Timer timer;
 	private boolean ingame;
-//	private String currentMusic = "Furi - Make this right"; 
+//	private String currentMusic = "defaultmusic";
 	private String currentMusic = ""; 
-	
 
 	private DataClass data = DataClass.getInstance();
 	private AudioDatabase audioDatabase = AudioDatabase.getInstance();
@@ -163,8 +162,15 @@ public class GameBoard extends JPanel implements ActionListener {
 
 		// Draw enemy missiles
 		for (Missile missile : missileManager.getEnemyMissiles()) {
-			if (missile.isVisible()) {
+			if (missile.isVisible() && missile.getAnimation() == null) {
 				drawImage(g, missile);
+			}
+		}
+
+		// Draw enemy missiles with an animation
+		for (Missile missile : missileManager.getEnemyMissiles()) {
+			if (missile.isVisible() && missile.getAnimation() != null) {
+				drawAnimation(g, missile.getAnimation());
 			}
 		}
 
@@ -172,8 +178,8 @@ public class GameBoard extends JPanel implements ActionListener {
 		for (Enemy enemy : enemyManager.getEnemies()) {
 			if (enemy.isVisible()) {
 				drawImage(g, enemy);
-				if(!enemy.getEnemyType().equals("Alien Bomb"))
-				drawHealthBars(g, enemy);
+				if (enemy.showhealthBar())
+					drawHealthBars(g, enemy);
 			}
 		}
 
@@ -193,7 +199,7 @@ public class GameBoard extends JPanel implements ActionListener {
 	private void drawImage(Graphics g, Sprite sprite) {
 		g.drawImage(sprite.getImage(), sprite.getXCoordinate(), sprite.getYCoordinate(), this);
 	}
-	
+
 	private void drawAnimation(Graphics g, Animation animation) {
 		g.drawImage(animation.getCurrentFrame(), animation.getXCoordinate(), animation.getYCoordinate(), this);
 	}
@@ -288,4 +294,5 @@ public class GameBoard extends JPanel implements ActionListener {
 			friendlyManager.getSpaceship().keyPressed(e);
 		}
 	}
+
 }

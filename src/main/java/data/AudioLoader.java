@@ -51,6 +51,8 @@ public class AudioLoader {
 			return "src/resources/audio/music/Furi - My only chance.wav";
 		case ("DefaultMusic"):
 			return "src/resources/audio/music/defaultmusic.wav";
+		case("Alien Bomb Impact"):
+			return "src/resources/audio/Alien Bomb Impact.wav";
 		}
 		return null;
 	}

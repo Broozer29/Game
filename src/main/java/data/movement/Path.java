@@ -6,14 +6,16 @@ import java.util.List;
 public class Path {
 
 	private String pathDirection;
+	private int moduloDivider;
 	private int stepsToTake;
 	private int stepsTaken;
 	private int stepSize;
 
-	public Path(String pathDirection, int stepsToTake, int stepSize) {
+	public Path(String pathDirection, int stepsToTake, int stepSize, int moduloDivider) {
 		this.pathDirection = pathDirection;
 		this.stepsToTake = stepsToTake;
 		this.stepSize = stepSize;
+		this.moduloDivider = moduloDivider;
 	}
 
 	// Returns new X & Y coordinates based on the direction
@@ -86,13 +88,15 @@ public class Path {
 	// Returns new Y coordinates based on the direction & stepsize
 	private int getNewYCoordinate(String direction, int currentYCoordinate) {
 		int newYCoordinate = currentYCoordinate;
-		switch (direction) {
-		case ("Up"):
-			newYCoordinate -= stepSize;
-			break;
-		case ("Down"):
-			newYCoordinate += stepSize;
-			break;
+		if (isYStepAllowed()) {
+			switch (direction) {
+			case ("Up"):
+				newYCoordinate -= stepSize;
+				break;
+			case ("Down"):
+				newYCoordinate += stepSize;
+				break;
+			}
 		}
 		return newYCoordinate;
 	}
@@ -110,6 +114,19 @@ public class Path {
 	// Called when enemy needs to change speed, for the board block system
 	public void setMovementSpeed(int movementSpeed) {
 		this.stepSize = movementSpeed;
+	}
+
+	// Use to determine what amount of StepsTaken needs to be taken before another
+	// step can be added to the Y coordinate
+	// Use modulo
+	private boolean isYStepAllowed() {
+		if(moduloDivider == 0) {
+			return true;
+		}
+		if (stepsTaken % moduloDivider == 0) {
+			return true;
+		}
+		return false;
 	}
 
 }
