@@ -19,10 +19,11 @@ public class Missile extends Sprite {
 	protected Animation animation;
 	protected String missileType;
 	protected String rotationAngle;
+	protected int missileStepsTaken;
 
 	public Missile(int x, int y, String missileType, String missileDirection, int angleModuloDivider,
-			String rotationAngle) {
-		super(x, y);
+			String rotationAngle, float scale) {
+		super(x, y, scale);
 		this.angleModuloDivider = angleModuloDivider;
 		this.rotationAngle = rotationAngle;
 		this.missileType = missileType;
@@ -42,7 +43,7 @@ public class Missile extends Sprite {
 		List<Integer> newCoordsList = trajectory.getPathCoordinates(xCoordinate, yCoordinate);
 		xCoordinate = newCoordsList.get(0);
 		yCoordinate = newCoordsList.get(1);
-
+		missileStepsTaken++;
 		if (xCoordinate > DataClass.getInstance().getWindowWidth()) {
 			visible = false;
 		}
@@ -78,10 +79,14 @@ public class Missile extends Sprite {
 		return this.angleModuloDivider;
 	}
 
+	public String getMissileType() {
+		return this.missileType;
+	}
+
 	protected void setAnimation() {
 		if (!missileType.equals("Alien Laserbeam") && !missileType.equals("Player Laserbeam")) {
 			if (missileType != null) {
-				this.animation = new Animation(xCoordinate, yCoordinate, missileType, true);
+				this.animation = new Animation(xCoordinate, yCoordinate, missileType, true, scale);
 			}
 		}
 		this.animation.rotateAnimetion(rotationAngle);

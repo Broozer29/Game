@@ -4,8 +4,8 @@ import game.managers.MissileManager;
 
 public class Flamer extends Enemy {
 
-	public Flamer(int x, int y, String direction, int angleModuloDivider) {
-		super(x, y, direction, "Flamer");
+	public Flamer(int x, int y, String direction, int angleModuloDivider, float scale) {
+		super(x, y, direction, "Flamer", scale);
 		loadImage("Flamer");
 		setExhaustanimation("Flamer Large Exhaust");
 		this.initBoardBlockSpeeds();
@@ -55,7 +55,7 @@ public class Flamer extends Enemy {
 
 		if (currentAttackSpeedFrameCount >= attackSpeedFrameCount) {
 			missileManager.addEnemyMissile(this.xCoordinate, this.yCoordinate + this.height / 2,
-					"Flamer Projectile", 0, "Left", "Left");
+					"Flamer Projectile", 0, "Left", "Left", this.scale);
 			currentAttackSpeedFrameCount = 0;
 		}
 		if (currentAttackSpeedFrameCount < attackSpeedFrameCount) {

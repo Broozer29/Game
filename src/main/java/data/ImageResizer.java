@@ -19,7 +19,7 @@ public class ImageResizer {
 	public static ImageResizer getInstance() {
 		return instance;
 	}
-	
+
 	private BufferedImage toBufferedImage(Image image) {
 		if (image instanceof BufferedImage) {
 			return (BufferedImage) image;
@@ -34,47 +34,27 @@ public class ImageResizer {
 		return buff;
 	}
 
-	public BufferedImage getScaledImage(Image image, int scale) {
-		// resize, internally chains as operation after loading
-		int newWidth = image.getWidth(null) * scale;
-		int newHeight = image.getHeight(null) * scale;
-
+	public BufferedImage getScaledImage(Image image, float scale) {
+// Een harde cast, het kan omdat er geen afbeeldingen zijn met komma getallen qua dimensies, maar indien die er zijn gaat dit tot problemen leiden		
+		int newWidth = (int) (image.getWidth(null) * scale);
+		int newHeight = (int) (image.getHeight(null) * scale);
+		
 		BufferedImage before = toBufferedImage(image);
 		BufferedImage after = new BufferedImage(newWidth, newHeight, BufferedImage.TYPE_INT_ARGB);
 		AffineTransform at = new AffineTransform();
 		at.scale(scale, scale);
-		AffineTransformOp scaleOp = 
-		   new AffineTransformOp(at, AffineTransformOp.TYPE_BILINEAR);
+		AffineTransformOp scaleOp = new AffineTransformOp(at, AffineTransformOp.TYPE_BILINEAR);
 		after = scaleOp.filter(before, after);
 		return after;
-//
-//		if (scale >= 1) {
-//			image = image.getScaledInstance(width * scale, height * scale, Image.SCALE_SMOOTH);
-//		} else if (scale < 1) {
-//			image = image.getScaledInstance(width * scale, height * scale, Image.SCALE_AREA_AVERAGING);
-//		}
-//
-//		// wait for image to be ready
-//		MediaTracker tracker = new MediaTracker(new java.awt.Container());
-//		tracker.addImage(image, 0);
-//		try {
-//			tracker.waitForAll();
-//		} catch (InterruptedException ex) {
-//			throw new RuntimeException("Image loading interrupted", ex);
-//		}
-//		return image;
 	}
 
-	// DIT WERKT NIET, ZEER WAARSCHIJNLIJK OMDAT HET NIET GEMAAKT IS OF GIFS TE
-	// LEZEN EN TE TRANSFORMEREN
-	// COLOUR PALETTE MATCHED GEWOON NIET
-	public ArrayList<Image> getScaledFrames(List<Image> frames, int scale) {
+	public ArrayList<Image> getScaledFrames(List<Image> frames, float scale) {
 		ArrayList<Image> newFrames = new ArrayList<Image>();
 		for (int i = 0; i < frames.size(); i++) {
 			Image temp = frames.get(i);
 			BufferedImage tempBuffer = getScaledImage(temp, scale);
-		    Graphics2D g = tempBuffer.createGraphics();
-		    g.drawImage(tempBuffer, 0, 0, null);
+			Graphics2D g = tempBuffer.createGraphics();
+			g.drawImage(tempBuffer, 0, 0, null);
 //
 			newFrames.add(tempBuffer);
 		}

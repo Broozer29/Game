@@ -4,8 +4,8 @@ import game.managers.MissileManager;
 
 public class Tazer extends Enemy {
 
-	public Tazer(int x, int y, String direction, int angleModuloDivider) {
-		super(x, y, direction, "Tazer");
+	public Tazer(int x, int y, String direction, int angleModuloDivider, float scale) {
+		super(x, y, direction, "Tazer", scale);
 		loadImage("Tazer");
 		setExhaustanimation("Tazer Large Exhaust");
 		this.initBoardBlockSpeeds();
@@ -55,7 +55,7 @@ public class Tazer extends Enemy {
 
 		if (currentAttackSpeedFrameCount >= attackSpeedFrameCount) {
 			missileManager.addEnemyMissile(this.xCoordinate, this.yCoordinate + calculateRandomWeaponHeightOffset(),
-					"Tazer Projectile", 0, "Left", "Left");
+					"Tazer Projectile", 0, "Left", "Left", this.scale);
 			currentAttackSpeedFrameCount = 0;
 		}
 		if (currentAttackSpeedFrameCount < attackSpeedFrameCount) {

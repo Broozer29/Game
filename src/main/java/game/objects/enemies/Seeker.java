@@ -4,8 +4,8 @@ import game.managers.MissileManager;
 
 public class Seeker extends Enemy {
 
-	public Seeker(int x, int y, String direction, int angleModuloDivider) {
-		super(x, y, direction, "Seeker");
+	public Seeker(int x, int y, String direction, int angleModuloDivider, float scale) {
+		super(x, y, direction, "Seeker", scale);
 		loadImage("Seeker");
 		setExhaustanimation("Seeker Large Exhaust");
 		this.initBoardBlockSpeeds();
@@ -55,7 +55,7 @@ public class Seeker extends Enemy {
 
 		if (currentAttackSpeedFrameCount >= attackSpeedFrameCount) {
 			missileManager.addEnemyMissile(this.xCoordinate, this.yCoordinate + calculateRandomWeaponHeightOffset(),
-					"Seeker Projectile", 0, "Left", "Left");
+					"Seeker Projectile", 0, "Left", "Left", this.scale);
 			currentAttackSpeedFrameCount = 0;
 		}
 		if (currentAttackSpeedFrameCount < attackSpeedFrameCount) {

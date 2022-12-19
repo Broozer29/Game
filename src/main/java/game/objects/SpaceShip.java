@@ -32,7 +32,7 @@ public class SpaceShip extends Sprite {
 //	private int rotatedtimes = 0;
 
 	public SpaceShip() {
-		super(DataClass.getInstance().getWindowWidth() / 10, DataClass.getInstance().getWindowHeight() / 2);
+		super(DataClass.getInstance().getWindowWidth() / 10, DataClass.getInstance().getWindowHeight() / 2, 1);
 		initSpaceShip();
 	}
 
@@ -101,7 +101,7 @@ public class SpaceShip extends Sprite {
 			try {
 				this.audioManager.firePlayerMissile();
 				this.missileManager.firePlayerMissile(xCoordinate + width, yCoordinate + (height / 2) - 5,
-						friendlyManager.getPlayerMissileType(), 0, "Right");
+						friendlyManager.getPlayerMissileType(), 0, "Right", 1);
 				this.currentAttackFrame = 0;
 			} catch (UnsupportedAudioFileException | IOException e) {
 				e.printStackTrace();

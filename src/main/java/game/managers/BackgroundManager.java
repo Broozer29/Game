@@ -42,7 +42,8 @@ public class BackgroundManager {
 		initManager();
 	}
 
-	//Called when a game instance needs to be deleted and the manager needs to be reset.
+	// Called when a game instance needs to be deleted and the manager needs to be
+	// reset.
 	public void resetManager() {
 		levelOnePlanets = new ArrayList<BackgroundObject>();
 		levelTwoPlanets = new ArrayList<BackgroundObject>();
@@ -52,7 +53,7 @@ public class BackgroundManager {
 		levelThreeStars = new ArrayList<BackgroundObject>();
 		allBackgroundObjectStringCodes = new ArrayList<String>();
 		scaledBackgroundObjects = new HashMap<String, Image>();
-		
+
 		allBackgroundObjectStringCodes.add("Moon");
 		allBackgroundObjectStringCodes.add("Lava Planet");
 		allBackgroundObjectStringCodes.add("Mars Planet");
@@ -99,7 +100,7 @@ public class BackgroundManager {
 			int randomYCoordinate = randomCoordinator.getRandomYBGOCoordinate();
 			if (randomCoordinator.checkValidBGOXCoordinate(levelOneStars, randomXCoordinate)
 					&& randomCoordinator.checkValidBGOYCoordinate(levelOneStars, randomYCoordinate)) {
-				levelOneStars.add(new BackgroundObject(randomXCoordinate, randomYCoordinate, starImage));
+				levelOneStars.add(new BackgroundObject(randomXCoordinate, randomYCoordinate, starImage, 1));
 			}
 		}
 
@@ -113,7 +114,7 @@ public class BackgroundManager {
 			int randomYCoordinate = randomCoordinator.getRandomYBGOCoordinate();
 			if (randomCoordinator.checkValidBGOXCoordinate(levelTwoStars, randomXCoordinate)
 					&& randomCoordinator.checkValidBGOYCoordinate(levelTwoStars, randomYCoordinate)) {
-				levelTwoStars.add(new BackgroundObject(randomXCoordinate, randomYCoordinate, starImage));
+				levelTwoStars.add(new BackgroundObject(randomXCoordinate, randomYCoordinate, starImage, 1));
 			}
 		}
 	}
@@ -126,7 +127,7 @@ public class BackgroundManager {
 			int randomYCoordinate = randomCoordinator.getRandomYBGOCoordinate();
 			if (randomCoordinator.checkValidBGOXCoordinate(levelThreeStars, randomXCoordinate)
 					&& randomCoordinator.checkValidBGOYCoordinate(levelThreeStars, randomYCoordinate)) {
-				levelThreeStars.add(new BackgroundObject(randomXCoordinate, randomYCoordinate, starImage));
+				levelThreeStars.add(new BackgroundObject(randomXCoordinate, randomYCoordinate, starImage, 1));
 			}
 		}
 	}
@@ -136,7 +137,7 @@ public class BackgroundManager {
 		for (int i = 0; i < 1; i++) {
 			Image planetImage = setPlanetScale(getRandomPlanet(), 1);
 			levelOnePlanets.add(new BackgroundObject(randomCoordinator.getRandomXBGOCoordinate(),
-					randomCoordinator.getRandomYBGOCoordinate(), planetImage));
+					randomCoordinator.getRandomYBGOCoordinate(), planetImage, 1));
 		}
 	}
 
@@ -145,7 +146,7 @@ public class BackgroundManager {
 		for (int i = 0; i < 1; i++) {
 			Image planetImage = setPlanetScale(getRandomPlanet(), 2);
 			levelTwoPlanets.add(new BackgroundObject(randomCoordinator.getRandomXBGOCoordinate(),
-					randomCoordinator.getRandomYBGOCoordinate(), planetImage));
+					randomCoordinator.getRandomYBGOCoordinate(), planetImage, 1));
 		}
 	}
 
@@ -154,7 +155,7 @@ public class BackgroundManager {
 		for (int i = 0; i < 1; i++) {
 			Image planetImage = setPlanetScale(getRandomPlanet(), 3);
 			levelThreePlanets.add(new BackgroundObject(randomCoordinator.getRandomXBGOCoordinate(),
-					randomCoordinator.getRandomYBGOCoordinate(), planetImage));
+					randomCoordinator.getRandomYBGOCoordinate(), planetImage, 1));
 		}
 	}
 

@@ -6,8 +6,8 @@ import game.managers.MissileManager;
 
 public class Bomba extends Enemy {
 
-	public Bomba(int x, int y, String direction, int angleModuloDivider) {
-		super(x, y, direction, "Bomba");
+	public Bomba(int x, int y, String direction, int angleModuloDivider, float scale) {
+		super(x, y, direction, "Bomba", scale);
 		loadImage("Bomba");
 		setExhaustanimation("Bomba Large Exhaust");
 		this.initBoardBlockSpeeds();
@@ -46,11 +46,11 @@ public class Bomba extends Enemy {
 
 		if (currentAttackSpeedFrameCount >= attackSpeedFrameCount) {
 			missileManager.addEnemyMissile(this.xCoordinate, this.yCoordinate + this.height / 2,
-					"Bomba Projectile", 0, "Left", "Left");
+					"Bomba Projectile", 0, "Left", "Left", this.scale);
 			missileManager.addEnemyMissile(this.xCoordinate, this.yCoordinate + this.height / 2,
-					"Bomba Projectile", 3, "LeftDown", "Left");
+					"Bomba Projectile", 3, "LeftDown", "Left", this.scale);
 			missileManager.addEnemyMissile(this.xCoordinate, this.yCoordinate + this.height / 2,
-					"Bomba Projectile", 3, "LeftUp", "Left");
+					"Bomba Projectile", 3, "LeftUp", "Left", this.scale);
 			currentAttackSpeedFrameCount = 0;
 		}
 		if (currentAttackSpeedFrameCount < attackSpeedFrameCount) {

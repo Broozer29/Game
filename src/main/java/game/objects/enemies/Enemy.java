@@ -39,15 +39,15 @@ public class Enemy extends Sprite {
 	protected List<Integer> boardBlockSpeeds = new ArrayList<Integer>();
 	protected Animation exhaustAnimation;
 
-	public Enemy(int x, int y, String direction, String enemyType) {
-		super(x, y);
+	public Enemy(int x, int y, String direction, String enemyType, float scale) {
+		super(x, y, scale);
 		this.enemyType = enemyType;
 		this.direction = direction;
 		this.currentBoardBlock = 8;
 	}
 	
 	protected void setExhaustanimation(String imageType) {
-		this.exhaustAnimation = new Animation(xCoordinate, yCoordinate, imageType, true);
+		this.exhaustAnimation = new Animation(xCoordinate, yCoordinate, imageType, true, scale);
 	}
 	
 	// Called when there is collision between friendly missile and enemy
@@ -57,7 +57,7 @@ public class Enemy extends Sprite {
 		}
 		this.hitPoints -= damageTaken;
 		if (this.hitPoints <= 0) {
-			animationManager.addDestroyedExplosion(xCoordinate, yCoordinate);
+			animationManager.addDestroyedExplosion(xCoordinate, yCoordinate, scale);
 			this.setVisible(false);
 		}
 	}

@@ -5,8 +5,8 @@ import game.managers.MissileManager;
 
 public class Bulldozer extends Enemy{
 
-	public Bulldozer(int x, int y, String direction, int angleModuloDivider) {
-		super(x, y, direction, "Bulldozer");
+	public Bulldozer(int x, int y, String direction, int angleModuloDivider, float scale) {
+		super(x, y, direction, "Bulldozer", scale);
 		loadImage("Bulldozer");
 		setExhaustanimation("Bulldozer Large Exhaust");
 		this.initBoardBlockSpeeds();
@@ -57,7 +57,7 @@ public class Bulldozer extends Enemy{
 
 		if (currentAttackSpeedFrameCount >= attackSpeedFrameCount) {
 			missileManager.addEnemyMissile(this.xCoordinate, this.yCoordinate + calculateRandomWeaponHeightOffset(),
-					"Bulldozer Projectile", 0, "Left", "Left");
+					"Bulldozer Projectile", 0, "Left", "Left", this.scale);
 			currentAttackSpeedFrameCount = 0;
 		}
 		if (currentAttackSpeedFrameCount < attackSpeedFrameCount) {

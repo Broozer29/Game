@@ -9,22 +9,26 @@ import data.ImageRotator;
 
 public class Sprite {
 	ImageDatabase imgDatabase = ImageDatabase.getInstance();
-	ImageRotator imgRotator = ImageRotator.getInstance();
+	ImageRotator imageRotator = ImageRotator.getInstance();
+	ImageResizer imageResizer = ImageResizer.getInstance();
 	protected int xCoordinate;
 	protected int yCoordinate;
 	protected int width;
 	protected int height;
 	protected boolean visible;
 	protected Image image;
+	protected float scale;
 
-	public Sprite(int x, int y) {
+	public Sprite(int x, int y, float scale) {
 		this.xCoordinate = x;
 		this.yCoordinate = y;
+		this.scale = scale; 
 		visible = true;
 	}
 
 	protected void loadImage(String imageName) {
 		image = imgDatabase.getImage(imageName);
+		this.image = imageResizer.getScaledImage(image, scale);
 //		setImageToScale();
 		getImageDimensions();
 		// Zet collision ook op die getallen en shits & giggles
@@ -42,20 +46,15 @@ public class Sprite {
 		getImageDimensions();
 	}
 
-	// Perhaps never to be used again
-//	private void setImageToScale() {
-//		ImageResizer test = ImageResizer.getInstance();
-//		image = test.getScaledImage(image, image.getWidth(null), image.getHeight(null), scale);
-//		image = image.getScaledInstance(10, 20, 0);
-
-//	}
-//	public int getScale() {
-//	return this.scale;
-//}
 
 	protected void rotateImage(String rotation) {
-		ImageRotator imageRotator = ImageRotator.getInstance();
 		this.image = imageRotator.rotate(image, rotation);
+		getImageDimensions();
+	}
+	
+	protected void setScale(float newScale) {
+		this.scale = newScale;
+		this.image = imageResizer.getScaledImage(image, scale);
 		getImageDimensions();
 	}
 	

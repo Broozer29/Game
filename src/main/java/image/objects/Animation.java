@@ -16,16 +16,18 @@ public class Animation extends Sprite {
 	ImageResizer imageResizer = ImageResizer.getInstance();
 	private int currentFrame;
 	private int totalFrames;
+	private List<Image> standardSizeFrames = new ArrayList<Image>();
 	private List<Image> frames = new ArrayList<Image>();
 	private int frameDelay;
 	private boolean infiniteLoop;
 
-	public Animation(int x, int y, String imageType, boolean infiniteLoop) {
-		super(x, y);
+	public Animation(int x, int y, String imageType, boolean infiniteLoop, float scale) {
+		super(x, y, scale);
 		loadGifFrames(imageType);
 		this.initAnimation(imageType);
 		this.frameDelay = 0;
 		this.infiniteLoop = infiniteLoop;
+		setAnimationScale(scale);
 	}
 
 	protected void initAnimation(String imageType) {
@@ -40,6 +42,7 @@ public class Animation extends Sprite {
 	// from a manager when created.
 	private void loadGifFrames(String imageType) {
 		this.frames = ImageDatabase.getInstance().getGif(imageType);
+		this.standardSizeFrames = frames;
 	}
 
 	// Centers the animation a bit further inwards to the collision spot
@@ -52,7 +55,11 @@ public class Animation extends Sprite {
 	// fully played out
 	public void updateFrameCount() {
 		this.currentFrame += 1;
-
+	}
+	
+	public void setAnimationScale(float newScale) {
+		this.scale = newScale;
+		this.frames = imageResizer.getScaledFrames(standardSizeFrames, newScale);
 	}
 	
 	//Called by Animation manager when an animation needs to be deleted but is looping permanently
@@ -120,6 +127,10 @@ public class Animation extends Sprite {
 	// Get bounds for sprites that have ANIMATIONS. Regular bounds don't work
 	public Rectangle getAnimationBounds() {
 		return new Rectangle(xCoordinate, yCoordinate, width, height);
+	}
+
+	public float getScale() {
+		return scale;
 	}
 
 }

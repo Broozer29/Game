@@ -4,8 +4,8 @@ import data.DataClass;
 
 public class SeekerProjectile extends Missile {
 
-	public SeekerProjectile(int x, int y, String missileType, String missileDirection, int angleModuloDivider, String rotation) {
-		super(x, y, missileType, missileDirection, angleModuloDivider, rotation);
+	public SeekerProjectile(int x, int y, String missileType, String missileDirection, int angleModuloDivider, String rotation, float scale) {
+		super(x, y, missileType, missileDirection, angleModuloDivider, rotation, scale);
 		this.missileDamage = (float) 7.5;
 		initMissile();
 		setAnimation();
@@ -15,6 +15,10 @@ public class SeekerProjectile extends Missile {
 		this.missileMovementSpeed = 5;
 		this.maxMissileLength = (int) (DataClass.getInstance().getWindowWidth() * 1.5);
 		this.trajectory.setMissileTrajectoryType(this);
+	}
+	
+	public void missileAction() {
+		
 	}
 
 }

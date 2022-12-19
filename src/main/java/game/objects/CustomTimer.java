@@ -16,6 +16,11 @@ public class CustomTimer implements ActionListener {
 	private int angleModuloDivider;
 	private String enemyMovementDirection;
 	private String timerEnemyType;
+	private float enemyScale;
+
+	public float getEnemyScale() {
+		return enemyScale;
+	}
 
 	// Attributes required for timing
 	private int timeBeforeActivation;
@@ -28,7 +33,8 @@ public class CustomTimer implements ActionListener {
 	private String timerPurpose;
 
 	public CustomTimer(int timeBeforeActivation, String timerPurpose, int amountOfSpawnAttempts, String timerEnemyType,
-			boolean loopable, String enemyMovementDirection, int angleModuloDivider) {
+			boolean loopable, String enemyMovementDirection, int angleModuloDivider, float enemyScale) {
+		this.enemyScale = enemyScale;
 		this.amountOfSpawnAttempts = amountOfSpawnAttempts;
 		this.enemyMovementDirection = enemyMovementDirection;
 		this.angleModuloDivider = angleModuloDivider;

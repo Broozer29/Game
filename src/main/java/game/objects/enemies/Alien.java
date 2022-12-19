@@ -4,8 +4,8 @@ import game.managers.MissileManager;
 
 public class Alien extends Enemy {
 
-	public Alien(int x, int y, String direction, int angleModuloDivider) {
-		super(x, y, direction, "Alien");
+	public Alien(int x, int y, String direction, int angleModuloDivider, float scale) {
+		super(x, y, direction, "Alien", scale);
 		loadImage("Default Alien Spaceship");
 		this.initBoardBlockSpeeds();
 		this.angleModuloDivider=angleModuloDivider;
@@ -54,7 +54,7 @@ public class Alien extends Enemy {
 		if (currentAttackSpeedFrameCount >= attackSpeedFrameCount) {
 			if (currentBoardBlock < 7) {
 				missileManager.addEnemyMissile(this.xCoordinate, this.yCoordinate + calculateRandomWeaponHeightOffset(),
-						"Alien Laserbeam", 0, "Left", "Left");
+						"Alien Laserbeam", 0, "Left", "Left", this.scale);
 				currentAttackSpeedFrameCount = 0;
 			}
 		}

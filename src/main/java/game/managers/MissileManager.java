@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import game.objects.enemies.Enemy;
+import game.objects.enemies.Tazer;
 import game.objects.missiles.AlienLaserbeam;
 import game.objects.missiles.BombaProjectile;
 import game.objects.missiles.BulldozerProjectile;
@@ -23,6 +24,13 @@ public class MissileManager {
 	private FriendlyManager friendlyManager = FriendlyManager.getInstance();
 	private List<Missile> enemyMissiles = new ArrayList<Missile>();
 	private List<Missile> friendlyMissiles = new ArrayList<Missile>();
+	private List<AlienLaserbeam> alienLaserbeams = new ArrayList<AlienLaserbeam>();
+	private List<FlamerProjectile> flamerProjectiles = new ArrayList<FlamerProjectile>();
+	private List<BombaProjectile> bombaProjectiles = new ArrayList<BombaProjectile>();
+	private List<BulldozerProjectile> bulldozerProjectiles = new ArrayList<BulldozerProjectile>();
+	private List<EnergizerProjectile> energizerProjectiles = new ArrayList<EnergizerProjectile>();
+	private List<SeekerProjectile> seekerProjectiles = new ArrayList<SeekerProjectile>();
+	private List<TazerProjectile> tazerProjectiles = new ArrayList<TazerProjectile>();
 
 	private MissileManager() {
 	}
@@ -45,11 +53,11 @@ public class MissileManager {
 	}
 
 	public void firePlayerMissile(int xCoordinate, int yCoordinate, String missileType, int angleModuloDivider,
-			String rotation) {
+			String rotation, float scale) {
 		switch (missileType) {
 		case ("Player Laserbeam"):
 			Missile newMissile = new DefaultPlayerLaserbeam(xCoordinate, yCoordinate, missileType, "Right",
-					angleModuloDivider, rotation);
+					angleModuloDivider, rotation, scale);
 			this.friendlyMissiles.add(newMissile);
 		}
 
@@ -57,42 +65,49 @@ public class MissileManager {
 
 	// Called by all enemy classes when fireAction() is called.
 	public void addEnemyMissile(int xCoordinate, int yCoordinate, String missileType, int angleModuloDivider,
-			String missileDirection, String rotation) {
+			String missileDirection, String rotation, float scale) {
 		switch (missileType) {
 		case ("Alien Laserbeam"):
 			Missile alienMissile = new AlienLaserbeam(xCoordinate, yCoordinate, missileType, missileDirection,
-					angleModuloDivider, rotation);
+					angleModuloDivider, rotation, scale);
 			this.enemyMissiles.add(alienMissile);
+			this.alienLaserbeams.add((AlienLaserbeam) alienMissile);
 			break;
 		case ("Seeker Projectile"):
 			Missile seekerMissile = new SeekerProjectile(xCoordinate, yCoordinate, missileType, missileDirection,
-					angleModuloDivider, rotation);
+					angleModuloDivider, rotation, scale);
 			this.enemyMissiles.add(seekerMissile);
+			this.seekerProjectiles.add((SeekerProjectile) seekerMissile);
 			break;
 		case ("Flamer Projectile"):
 			Missile flamerMissile = new FlamerProjectile(xCoordinate, yCoordinate, missileType, missileDirection,
-					angleModuloDivider, rotation);
+					angleModuloDivider, rotation, scale);
 			this.enemyMissiles.add(flamerMissile);
+			this.flamerProjectiles.add((FlamerProjectile) flamerMissile);
 			break;
 		case ("Tazer Projectile"):
 			Missile tazerMissile = new TazerProjectile(xCoordinate, yCoordinate, missileType, missileDirection,
-					angleModuloDivider, rotation);
+					angleModuloDivider, rotation, scale);
 			this.enemyMissiles.add(tazerMissile);
+			this.tazerProjectiles.add((TazerProjectile) tazerMissile);
 			break;
 		case ("Bulldozer Projectile"):
 			Missile bulldozerMissile = new BulldozerProjectile(xCoordinate, yCoordinate, missileType, missileDirection,
-					angleModuloDivider, rotation);
+					angleModuloDivider, rotation, scale);
 			this.enemyMissiles.add(bulldozerMissile);
+			this.bulldozerProjectiles.add((BulldozerProjectile) bulldozerMissile);
 			break;
 		case ("Bomba Projectile"):
 			Missile bombaMissile = new BombaProjectile(xCoordinate, yCoordinate, missileType, missileDirection,
-					angleModuloDivider, rotation);
+					angleModuloDivider, rotation, scale);
 			this.enemyMissiles.add(bombaMissile);
+			this.bombaProjectiles.add((BombaProjectile) bombaMissile);
 			break;
 		case ("Energizer Projectile"):
 			Missile energizerMissile = new EnergizerProjectile(xCoordinate, yCoordinate, missileType, missileDirection,
-					angleModuloDivider, rotation);
+					angleModuloDivider, rotation, scale);
 			this.enemyMissiles.add(energizerMissile);
+			this.energizerProjectiles.add((EnergizerProjectile) energizerMissile);
 			break;
 		}
 
@@ -100,12 +115,9 @@ public class MissileManager {
 
 	public void updateGameTick() {
 		moveMissiles();
-		checkCollisions();
-	}
-
-	private void checkCollisions() {
 		checkFriendlyMissileCollision();
 		checkEnemyMissileCollision();
+		triggerMissileAction();
 	}
 
 	// Checks collision between friendly missiles and enemies
@@ -118,7 +130,7 @@ public class MissileManager {
 					if (r1.intersects(r2)) {
 						enemy.takeDamage(m.getMissileDamage());
 						animationManager.addUpperAnimation(m.getXCoordinate(), m.getYCoordinate(),
-								"Impact Explosion One", false);
+								"Impact Explosion One", false, 1);
 						m.setVisible(false);
 					}
 				}
@@ -139,7 +151,7 @@ public class MissileManager {
 				if (r1.intersects(r2)) {
 					friendlyManager.getSpaceship().takeHitpointDamage(m.getMissileDamage());
 					animationManager.addUpperAnimation(m.getXCoordinate(), m.getYCoordinate(), "Impact Explosion One",
-							false);
+							false, 1);
 					m.setVisible(false);
 				}
 			}
@@ -154,7 +166,7 @@ public class MissileManager {
 			if (missile.isVisible()) {
 				missile.updateGameTick();
 			} else {
-				friendlyMissiles.remove(i);
+				removeFriendlyMissile(missile);
 			}
 		}
 
@@ -165,9 +177,65 @@ public class MissileManager {
 			if (missile.isVisible()) {
 				missile.updateGameTick();
 			} else {
-				enemyMissiles.remove(i);
+				removeEnemyMissile(missile);
 			}
 		}
+	}
+	
+	private void triggerMissileAction() {
+		for(AlienLaserbeam missile : alienLaserbeams) {
+			missile.missileAction();
+		}
+		for(FlamerProjectile missile : flamerProjectiles) {
+			missile.missileAction();
+		}
+		for(BombaProjectile missile : bombaProjectiles) {
+			missile.missileAction();
+		}
+		for(EnergizerProjectile missile : energizerProjectiles) {
+			missile.missileAction();
+		}
+		for(SeekerProjectile missile : seekerProjectiles) {
+			missile.missileAction();
+		}
+		for(TazerProjectile missile : tazerProjectiles) {
+			missile.missileAction();
+		}
+	}
+
+	private void removeFriendlyMissile(Missile missile) {
+		switch (missile.getMissileType()) {
+		case ("Player Laserbeam"):
+			this.friendlyMissiles.remove(missile);
+			break;
+		}
+	}
+
+	private void removeEnemyMissile(Missile missile) {
+		switch (missile.getMissileType()) {
+		case ("Alien Laserbeam"):
+			this.alienLaserbeams.remove(missile);
+			break;
+		case ("Seeker Projectile"):
+			this.seekerProjectiles.remove(missile);
+			break;
+		case ("Flamer Projectile"):
+			this.flamerProjectiles.remove(missile);
+			break;
+		case ("Tazer Projectile"):
+			this.tazerProjectiles.remove(missile);
+			break;
+		case ("Bulldozer Projectile"):
+			this.bulldozerProjectiles.remove(missile);
+			break;
+		case ("Bomba Projectile"):
+			this.bombaProjectiles.remove(missile);
+			break;
+		case ("Energizer Projectile"):
+			this.energizerProjectiles.remove(missile);
+			break;
+		}
+		this.enemyMissiles.remove(missile);
 	}
 
 }

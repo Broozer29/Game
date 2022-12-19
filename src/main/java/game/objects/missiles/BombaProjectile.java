@@ -6,8 +6,8 @@ import data.DataClass;
 public class BombaProjectile extends Missile {
 
 	public BombaProjectile(int x, int y, String missileType, String missileDirection, int angleModuloDivider,
-			String rotationAngle) {
-		super(x, y, missileType, missileDirection, angleModuloDivider, rotationAngle);
+			String rotationAngle, float scale) {
+		super(x, y, missileType, missileDirection, angleModuloDivider, rotationAngle, scale);
 		this.missileDamage = (float) 7.5;
 		initMissile();
 		setAnimation();
@@ -19,6 +19,10 @@ public class BombaProjectile extends Missile {
 		this.maxMissileLength = (int) (DataClass.getInstance().getWindowWidth() * 1.5);
 		this.trajectory.setMissileTrajectoryType(this);
 
+	}
+	
+	public void missileAction() {
+		
 	}
 
 }

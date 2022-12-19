@@ -6,8 +6,8 @@ import game.managers.MissileManager;
 
 public class Energizer extends Enemy{
 
-	public Energizer(int x, int y, String direction, int angleModuloDivider) {
-		super(x, y, direction, "Energizer");
+	public Energizer(int x, int y, String direction, int angleModuloDivider, float scale) {
+		super(x, y, direction, "Energizer", scale);
 		loadImage("Energizer");
 		setExhaustanimation("Energizer Large Exhaust");
 		this.initBoardBlockSpeeds();
@@ -57,7 +57,7 @@ public class Energizer extends Enemy{
 
 		if (currentAttackSpeedFrameCount >= attackSpeedFrameCount) {
 			missileManager.addEnemyMissile(this.xCoordinate, this.yCoordinate + calculateRandomWeaponHeightOffset(),
-					"Energizer Projectile", 0, "Left", "Left");
+					"Energizer Projectile", 0, "Left", "Left", this.scale);
 			currentAttackSpeedFrameCount = 0;
 		}
 		if (currentAttackSpeedFrameCount < attackSpeedFrameCount) {
