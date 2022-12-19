@@ -110,6 +110,17 @@ public class Enemy extends Sprite {
 			}
 		}
 	}
+	
+	// Random offset for the origin of the missile the enemy shoots
+	protected int calculateRandomWeaponHeightOffset() {
+		int upOrDown = random.nextInt((1 - 0) + 1) + 1;
+		int yOffset = random.nextInt(((this.getHeight() / 2) - 0) + 1) + 0;
+		if (upOrDown == 1) {
+			return yOffset;
+		} else {
+			return -yOffset;
+		}
+	}
 
 	public float getCurrentHitpoints() {
 		return this.hitPoints;

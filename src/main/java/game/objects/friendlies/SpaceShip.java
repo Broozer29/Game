@@ -1,4 +1,4 @@
-package game.objects;
+package game.objects.friendlies;
 
 import java.awt.event.KeyEvent;
 import java.io.IOException;

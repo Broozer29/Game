@@ -2,6 +2,7 @@
 package game.objects.missiles;
 
 import data.DataClass;
+import game.managers.ExplosionManager;
 
 public class BombaProjectile extends Missile {
 
@@ -22,7 +23,10 @@ public class BombaProjectile extends Missile {
 	}
 	
 	public void missileAction() {
-		
+		if(missileStepsTaken >= 75) {
+			ExplosionManager.getInstance().addExplosion(getCenterXCoordinate(), getCenterYCoordinate(), "Bomba Projectile Explosion", scale, 20);
+			this.setVisible(false);
+		}
 	}
 
 }

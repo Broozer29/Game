@@ -1,9 +1,8 @@
 package game.objects.enemies;
 
-
 import game.managers.MissileManager;
 
-public class Bulldozer extends Enemy{
+public class Bulldozer extends Enemy {
 
 	public Bulldozer(int x, int y, String direction, int angleModuloDivider, float scale) {
 		super(x, y, direction, "Bulldozer", scale);
@@ -22,28 +21,16 @@ public class Bulldozer extends Enemy{
 		this.setVisible(true);
 		this.setRotation(direction);
 	}
-	
+
 	private void initBoardBlockSpeeds() {
-		this.boardBlockSpeeds.add(0,1);
-		this.boardBlockSpeeds.add(1,1);
-		this.boardBlockSpeeds.add(2,1);
-		this.boardBlockSpeeds.add(3,2);
-		this.boardBlockSpeeds.add(4,2);
-		this.boardBlockSpeeds.add(5,2);
-		this.boardBlockSpeeds.add(6,3);
-		this.boardBlockSpeeds.add(7,3);
-	}
-
-
-	// Random offset for the origin of the missile the enemy shoots
-	private int calculateRandomWeaponHeightOffset() {
-		int upOrDown = random.nextInt((1 - 0) + 1) + 1;
-		int yOffset = random.nextInt(((this.getHeight() / 2) - 0) + 1) + 0;
-		if (upOrDown == 1) {
-			return yOffset;
-		} else {
-			return -yOffset;
-		}
+		this.boardBlockSpeeds.add(0, 1);
+		this.boardBlockSpeeds.add(1, 1);
+		this.boardBlockSpeeds.add(2, 1);
+		this.boardBlockSpeeds.add(3, 2);
+		this.boardBlockSpeeds.add(4, 2);
+		this.boardBlockSpeeds.add(5, 2);
+		this.boardBlockSpeeds.add(6, 3);
+		this.boardBlockSpeeds.add(7, 3);
 	}
 
 	// Called every game tick. If weapon is not on cooldown, fire a shot.
@@ -56,14 +43,17 @@ public class Bulldozer extends Enemy{
 		}
 
 		if (currentAttackSpeedFrameCount >= attackSpeedFrameCount) {
-			missileManager.addEnemyMissile(this.xCoordinate, this.yCoordinate + calculateRandomWeaponHeightOffset(),
-					"Bulldozer Projectile", 0, "Left", "Left", this.scale);
+			missileManager.addEnemyMissile(this.xCoordinate, this.yCoordinate, "Bulldozer Projectile", 10, "LeftUp",
+					"LeftUp", this.scale);
+			missileManager.addEnemyMissile(this.xCoordinate, this.yCoordinate, "Bulldozer Projectile", 10, "LeftDown",
+					"LeftDown", this.scale);
+			missileManager.addEnemyMissile(this.xCoordinate, this.yCoordinate, "Bulldozer Projectile", 0, "Left",
+					"Left", this.scale);
 			currentAttackSpeedFrameCount = 0;
 		}
 		if (currentAttackSpeedFrameCount < attackSpeedFrameCount) {
 			this.currentAttackSpeedFrameCount++;
 		}
 	}
-
 
 }

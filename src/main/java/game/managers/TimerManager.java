@@ -33,35 +33,9 @@ public class TimerManager {
 
 	// Creates timers for different purposes
 	// int duration, int timedelay (zelfde als game delay), waar de timer voor is
-	public CustomTimer createTimer(String timerPurpose, int amountOfSpawnAttempts, int timeBeforeActivation,
+	public CustomTimer createTimer(String enemyType, int amountOfSpawnAttempts, int timeBeforeActivation,
 			boolean loopable, String direction, int angleModuloDivider, float enemyScale) {
-
-		String enemyType = "";
-		switch (timerPurpose) {
-		case ("Spawn Bombs"):
-			enemyType = "Alien Bomb";
-			break;
-		case ("Spawn Bomba"):
-			enemyType = "Bomba";
-			break;
-		case ("Spawn Flamer"):
-			enemyType = "Flamer";
-			break;
-		case ("Spawn Energizer"):
-			enemyType = "Energizer";
-			break;
-		case ("Spawn Tazer"):
-			enemyType = "Tazer";
-			break;
-		case ("Spawn Seeker"):
-			enemyType = "Seeker";
-			break;
-		case ("Spawn Bulldozer"):
-			enemyType = "Bulldozer";
-			break;
-		}
-
-		CustomTimer timer = new CustomTimer(timeBeforeActivation, timerPurpose, amountOfSpawnAttempts, enemyType,
+		CustomTimer timer = new CustomTimer(timeBeforeActivation, amountOfSpawnAttempts, enemyType,
 				loopable, direction, angleModuloDivider, enemyScale);
 		return timer;
 //		addTimerToList(timer);
@@ -106,7 +80,7 @@ public class TimerManager {
 		levelManager.spawnEnemy(timer.getTimerEnemy(), timer.getTimerSpawnAttempts(), timer.getEnemyMovementDirection(), timer.getAngleModuloDivider(), timer.getEnemyScale());
 
 		if (timer.getLoopable()) {
-			CustomTimer renewedTimer = createTimer(timer.getTimerPurpose(), timer.getTimerSpawnAttempts(), timer.getTimeBeforeActivation(),
+			CustomTimer renewedTimer = createTimer(timer.getTimerEnemy(), timer.getTimerSpawnAttempts(), timer.getTimeBeforeActivation(),
 					timer.getLoopable(), timer.getEnemyMovementDirection(), timer.getAngleModuloDivider(), timer.getEnemyScale());
 			addTimerToList(renewedTimer);
 		}

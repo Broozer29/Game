@@ -4,12 +4,9 @@ import java.awt.Image;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.ImageIcon;
-
 import data.ImageDatabase;
 import data.ImageResizer;
 import data.ImageRotator;
-import javafx.scene.shape.Rectangle;
 
 public class Animation extends Sprite {
 
@@ -24,13 +21,13 @@ public class Animation extends Sprite {
 	public Animation(int x, int y, String imageType, boolean infiniteLoop, float scale) {
 		super(x, y, scale);
 		loadGifFrames(imageType);
-		this.initAnimation(imageType);
+		this.initAnimation();
 		this.frameDelay = 0;
 		this.infiniteLoop = infiniteLoop;
 		setAnimationScale(scale);
 	}
 
-	protected void initAnimation(String imageType) {
+	protected void initAnimation() {
 		setImage(frames.get(0));
 		getImageDimensions();
 		centerAnimationFrame();
@@ -109,7 +106,7 @@ public class Animation extends Sprite {
 				frameDelay++;
 			return returnImage;
 		}
-		return frames.get(frames.size() - 1);
+		return null;
 	}
 
 	public int getFrame() {
@@ -124,10 +121,6 @@ public class Animation extends Sprite {
 		this.frames = imageResizer.getScaledFrames(frames, scale);
 	}
 	
-	// Get bounds for sprites that have ANIMATIONS. Regular bounds don't work
-	public Rectangle getAnimationBounds() {
-		return new Rectangle(xCoordinate, yCoordinate, width, height);
-	}
 
 	public float getScale() {
 		return scale;
