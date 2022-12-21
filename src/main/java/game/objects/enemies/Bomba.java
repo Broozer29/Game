@@ -1,15 +1,15 @@
 package game.objects.enemies;
 
-import java.util.List;
 
 import game.managers.MissileManager;
 
 public class Bomba extends Enemy {
 
-	public Bomba(int x, int y, String direction, int angleModuloDivider) {
-		super(x, y, direction, "Bomba");
+	public Bomba(int x, int y, String direction, int angleModuloDivider, float scale) {
+		super(x, y, direction, "Bomba", scale);
 		loadImage("Bomba");
 		setExhaustanimation("Bomba Large Exhaust");
+		this.exhaustAnimation.setFrameDelay(3);
 		this.initBoardBlockSpeeds();
 		this.angleModuloDivider = angleModuloDivider;
 		this.hitPoints = 50;
@@ -45,12 +45,12 @@ public class Bomba extends Enemy {
 		}
 
 		if (currentAttackSpeedFrameCount >= attackSpeedFrameCount) {
-			missileManager.addEnemyMissile(this.xCoordinate, this.yCoordinate + this.height / 2,
-					"Bomba Projectile", 0, "Left", "Left");
-			missileManager.addEnemyMissile(this.xCoordinate, this.yCoordinate + this.height / 2,
-					"Bomba Projectile", 3, "LeftDown", "Left");
-			missileManager.addEnemyMissile(this.xCoordinate, this.yCoordinate + this.height / 2,
-					"Bomba Projectile", 3, "LeftUp", "Left");
+			missileManager.addEnemyMissile(this.xCoordinate, this.yCoordinate + this.height / 2, "Bomba Projectile",
+					"Bomba Projectile Explosion", 0, "Left", "Left", this.scale);
+			missileManager.addEnemyMissile(this.xCoordinate, this.yCoordinate + this.height / 2, "Bomba Projectile",
+					"Bomba Projectile Explosion", 3, "LeftDown", "Left", this.scale);
+			missileManager.addEnemyMissile(this.xCoordinate, this.yCoordinate + this.height / 2, "Bomba Projectile",
+					"Bomba Projectile Explosion", 3, "LeftUp", "Left", this.scale);
 			currentAttackSpeedFrameCount = 0;
 		}
 		if (currentAttackSpeedFrameCount < attackSpeedFrameCount) {

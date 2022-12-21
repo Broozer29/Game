@@ -17,12 +17,16 @@ public class Missile extends Sprite {
 	protected int missileMovementSpeed;
 	protected int maxMissileLength;
 	protected Animation animation;
+	protected Animation explosionAnimation;
 	protected String missileType;
+	protected String explosionType;
 	protected String rotationAngle;
+	protected int missileStepsTaken;
 
-	public Missile(int x, int y, String missileType, String missileDirection, int angleModuloDivider,
-			String rotationAngle) {
-		super(x, y);
+	public Missile(int x, int y, String missileType, String explosionType, String missileDirection, int angleModuloDivider,
+			String rotationAngle, float scale) {
+		super(x, y, scale);
+		this.explosionType = explosionType;
 		this.angleModuloDivider = angleModuloDivider;
 		this.rotationAngle = rotationAngle;
 		this.missileType = missileType;
@@ -42,7 +46,7 @@ public class Missile extends Sprite {
 		List<Integer> newCoordsList = trajectory.getPathCoordinates(xCoordinate, yCoordinate);
 		xCoordinate = newCoordsList.get(0);
 		yCoordinate = newCoordsList.get(1);
-
+		missileStepsTaken++;
 		if (xCoordinate > DataClass.getInstance().getWindowWidth()) {
 			visible = false;
 		}
@@ -56,6 +60,8 @@ public class Missile extends Sprite {
 	private void updateAnimationCoordinates() {
 		animation.setX(xCoordinate);
 		animation.setY(yCoordinate);
+		explosionAnimation.setX(xCoordinate);
+		explosionAnimation.setY(yCoordinate);
 	}
 
 	public float getMissileDamage() {
@@ -78,15 +84,30 @@ public class Missile extends Sprite {
 		return this.angleModuloDivider;
 	}
 
+	public String getMissileType() {
+		return this.missileType;
+	}
+
 	protected void setAnimation() {
 		if (!missileType.equals("Alien Laserbeam") && !missileType.equals("Player Laserbeam")) {
 			if (missileType != null) {
-				this.animation = new Animation(xCoordinate, yCoordinate, missileType, true);
+				this.animation = new Animation(xCoordinate, yCoordinate, missileType, true, scale);
+				this.explosionAnimation = new Animation(xCoordinate, yCoordinate, explosionType, false, scale);
 			}
+		} else {
+			this.animation = new Animation(xCoordinate, yCoordinate, "Impact Explosion One", false, scale);
+			this.explosionAnimation = new Animation(xCoordinate, yCoordinate, "Impact Explosion One", false, scale);
 		}
 		this.animation.rotateAnimetion(rotationAngle);
 	}
 
+	public Animation getExplosionAnimation() {
+		if(this.explosionAnimation != null) {
+			return this.explosionAnimation;
+		}
+		return null;
+	}
+	
 	public Animation getAnimation() {
 		if (this.animation != null) {
 			return this.animation;

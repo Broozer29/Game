@@ -9,8 +9,8 @@ public class MenuTile extends Sprite {
 	private DataClass dataClass = DataClass.getInstance();
 	private String tileType;
 
-	public MenuTile(String tileType, int xCoordinate, int yCoordinate) {
-		super(xCoordinate, yCoordinate);
+	public MenuTile(String tileType, int xCoordinate, int yCoordinate, float scale) {
+		super(xCoordinate, yCoordinate, scale);
 		this.tileType = tileType;
 		initTile();
 	}

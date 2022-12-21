@@ -22,10 +22,12 @@ import game.managers.AnimationManager;
 import game.managers.AudioManager;
 import game.managers.BackgroundManager;
 import game.managers.EnemyManager;
+import game.managers.ExplosionManager;
 import game.managers.FriendlyManager;
 import game.managers.LevelManager;
 import game.managers.MissileManager;
 import game.managers.TimerManager;
+import game.objects.Explosion;
 import game.objects.enemies.Enemy;
 import game.objects.missiles.Missile;
 import image.objects.Animation;
@@ -38,7 +40,7 @@ public class GameBoard extends JPanel implements ActionListener {
 	private Timer timer;
 	private boolean ingame;
 //	private String currentMusic = "defaultmusic";
-	private String currentMusic = ""; 
+	private String currentMusic = "";
 
 	private DataClass data = DataClass.getInstance();
 	private AudioDatabase audioDatabase = AudioDatabase.getInstance();
@@ -55,6 +57,7 @@ public class GameBoard extends JPanel implements ActionListener {
 	private AudioManager audioManager = AudioManager.getInstance();
 	private BackgroundManager backgroundManager = BackgroundManager.getInstance();
 	private TimerManager timerManager = TimerManager.getInstance();
+	private ExplosionManager explosionManager = ExplosionManager.getInstance();
 
 	public GameBoard() {
 		animationManager = AnimationManager.getInstance();
@@ -64,6 +67,8 @@ public class GameBoard extends JPanel implements ActionListener {
 		friendlyManager = FriendlyManager.getInstance();
 		audioManager = AudioManager.getInstance();
 		backgroundManager = BackgroundManager.getInstance();
+		timerManager = TimerManager.getInstance();
+		explosionManager = ExplosionManager.getInstance();
 		initBoard();
 	}
 
@@ -113,33 +118,8 @@ public class GameBoard extends JPanel implements ActionListener {
 
 	private void drawObjects(Graphics g) {
 
-		// Draws low level stars
-		for (BackgroundObject bgObject : backgroundManager.getLevelOneStars()) {
-			drawImage(g, bgObject);
-		}
-
-		// Draws low level planets
-		for (BackgroundObject bgObject : backgroundManager.getLevelOnePlanets()) {
-			drawImage(g, bgObject);
-		}
-
-		// Draws medium level stars
-		for (BackgroundObject bgObject : backgroundManager.getLevelTwoStars()) {
-			drawImage(g, bgObject);
-		}
-
-		// Draws medium level planets
-		for (BackgroundObject bgObject : backgroundManager.getLevelTwoPlanets()) {
-			drawImage(g, bgObject);
-		}
-
-		// Draws high level stars
-		for (BackgroundObject bgObject : backgroundManager.getLevelThreeStars()) {
-			drawImage(g, bgObject);
-		}
-
-		// Draws high level planets
-		for (BackgroundObject bgObject : backgroundManager.getLevelThreePlanets()) {
+		// Draws all background objects
+		for (BackgroundObject bgObject : backgroundManager.getAllBGO()) {
 			drawImage(g, bgObject);
 		}
 
@@ -183,6 +163,12 @@ public class GameBoard extends JPanel implements ActionListener {
 			}
 		}
 
+		for (Explosion explosion : explosionManager.getExplosions()) {
+			if (explosion.isVisible()) {
+				drawAnimation(g, explosion.getAnimation());
+			}
+		}
+
 		drawPlayerHealthBars(g);
 
 		// Draws higher level animations
@@ -197,11 +183,15 @@ public class GameBoard extends JPanel implements ActionListener {
 	}
 
 	private void drawImage(Graphics g, Sprite sprite) {
-		g.drawImage(sprite.getImage(), sprite.getXCoordinate(), sprite.getYCoordinate(), this);
+		if (sprite.getImage() != null) {
+			g.drawImage(sprite.getImage(), sprite.getXCoordinate(), sprite.getYCoordinate(), this);
+		}
 	}
 
 	private void drawAnimation(Graphics g, Animation animation) {
-		g.drawImage(animation.getCurrentFrame(), animation.getXCoordinate(), animation.getYCoordinate(), this);
+		if (animation.getCurrentFrame() != null) {
+			g.drawImage(animation.getCurrentFrame(), animation.getXCoordinate(), animation.getYCoordinate(), this);
+		}
 	}
 
 	// Primitive healthbar generator for enemies
@@ -268,6 +258,7 @@ public class GameBoard extends JPanel implements ActionListener {
 			backgroundManager.updateGameTick();
 			timerManager.updateGameTick();
 			audioDatabase.updateGameTick();
+			explosionManager.updateGametick();
 		}
 
 		repaint();

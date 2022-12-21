@@ -8,7 +8,6 @@ import java.util.List;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
 import data.DataClass;
-import game.objects.BoardBlock;
 import game.objects.enemies.Alien;
 import game.objects.enemies.AlienBomb;
 import game.objects.enemies.Bomba;
@@ -18,6 +17,7 @@ import game.objects.enemies.Energizer;
 import game.objects.enemies.Flamer;
 import game.objects.enemies.Seeker;
 import game.objects.enemies.Tazer;
+import image.objects.Animation;
 
 public class EnemyManager {
 
@@ -64,10 +64,10 @@ public class EnemyManager {
 		try {
 			updateEnemies();
 			checkSpaceshipCollisions();
+			triggerEnemyActions();
 		} catch (UnsupportedAudioFileException | IOException e) {
 			e.printStackTrace();
 		}
-		triggerEnemyActions();
 	}
 
 	private void checkSpaceshipCollisions() throws UnsupportedAudioFileException, IOException {
@@ -92,8 +92,9 @@ public class EnemyManager {
 
 	private void detonateAlienBomb(Enemy enemy) throws UnsupportedAudioFileException, IOException {
 		friendlyManager.getSpaceship().takeHitpointDamage(20);
-		animationManager.addUpperAnimation(enemy.getXCoordinate(), enemy.getYCoordinate(), "Alien Bomb Explosion",
-				false);
+		Animation newAnimation = animationManager.createAnimation(enemy.getXCoordinate(), enemy.getYCoordinate(),
+				"Alien Bomb Explosion", false, 1);
+		animationManager.addUpperAnimation(newAnimation);
 		audioManager.addAudio("Alien Bomb Impact");
 		enemy.setVisible(false);
 	}
@@ -153,34 +154,34 @@ public class EnemyManager {
 		if (animationManager == null) {
 			animationManager = AnimationManager.getInstance();
 		}
-		
-		switch(enemy.getEnemyType()) {
-		case("Alien Bomb"):
+
+		switch (enemy.getEnemyType()) {
+		case ("Alien Bomb"):
 			alienBombList.add((AlienBomb) enemy);
 			break;
-		case("Flamer"):
+		case ("Flamer"):
 			flamerList.add((Flamer) enemy);
 			break;
-		case("Tazer"):
+		case ("Tazer"):
 			tazerList.add((Tazer) enemy);
 			break;
-		case("Seeker"):
+		case ("Seeker"):
 			seekerList.add((Seeker) enemy);
 			break;
-		case("Bomba"):
+		case ("Bomba"):
 			bombaList.add((Bomba) enemy);
 			break;
-		case("Bulldozer"):
+		case ("Bulldozer"):
 			bulldozerList.add((Bulldozer) enemy);
 			break;
-		case("Energizer"):
+		case ("Energizer"):
 			energizerList.add((Energizer) enemy);
 			break;
-		case("Alien"):
+		case ("Alien"):
 			alienList.add((Alien) enemy);
 			break;
 		}
-		
+
 		if (enemy != null) {
 			animationManager.addExhaustAnimation(enemy.getExhaustAnimation());
 			this.enemyList.add(enemy);
@@ -193,22 +194,31 @@ public class EnemyManager {
 	}
 
 	private void removeEnemyFromSpecialisedList(Enemy enemy) {
-		if (enemy instanceof Alien) {
+		switch (enemy.getEnemyType()) {
+		case ("Alien"):
 			alienList.remove(enemy);
-		} else if (enemy instanceof AlienBomb) {
+			break;
+		case ("Alien Bomb"):
 			alienBombList.remove(enemy);
-		} else if (enemy instanceof Tazer) {
+			break;
+		case ("Tazer"):
 			tazerList.remove(enemy);
-		} else if (enemy instanceof Energizer) {
+			break;
+		case ("Energizer"):
 			energizerList.remove(enemy);
-		} else if (enemy instanceof Seeker) {
+			break;
+		case ("Seeker"):
 			seekerList.remove(enemy);
-		} else if (enemy instanceof Bomba) {
+			break;
+		case ("Bomba"):
 			bombaList.remove(enemy);
-		} else if (enemy instanceof Flamer) {
+			break;
+		case ("Flamer"):
 			flamerList.remove(enemy);
-		} else if (enemy instanceof Bulldozer) {
+			break;
+		case ("Bulldozer"):
 			bulldozerList.remove(enemy);
+			break;
 		}
 	}
 

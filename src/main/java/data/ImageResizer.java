@@ -1,8 +1,9 @@
 package data;
 
-import java.awt.Image;
 import java.awt.Graphics2D;
-import java.awt.MediaTracker;
+import java.awt.Image;
+import java.awt.image.AffineTransformOp;
+import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,52 +20,43 @@ public class ImageResizer {
 		return instance;
 	}
 
-	public Image getScaledImage(Image image, int width, int height, int scale) {
-		// resize, internally chains as operation after loading
-		if (scale >= 1) {
-			image = image.getScaledInstance(width * scale, height * scale, Image.SCALE_SMOOTH);
-		} else if (scale < 1) {
-			image = image.getScaledInstance(width * scale, height * scale, Image.SCALE_AREA_AVERAGING);
+	private BufferedImage toBufferedImage(Image image) {
+		if (image instanceof BufferedImage) {
+			return (BufferedImage) image;
 		}
 
-		// wait for image to be ready
-		MediaTracker tracker = new MediaTracker(new java.awt.Container());
-		tracker.addImage(image, 0);
-		try {
-			tracker.waitForAll();
-		} catch (InterruptedException ex) {
-			throw new RuntimeException("Image loading interrupted", ex);
-		}
-		return image;
+		BufferedImage buff = new BufferedImage(image.getWidth(null), image.getHeight(null),
+				BufferedImage.TYPE_INT_ARGB);
+		Graphics2D g = buff.createGraphics();
+		g.drawImage(image, 0, 0, null);
+		g.dispose();
+
+		return buff;
 	}
 
-	
-	//DIT WERKT NIET, ZEER WAARSCHIJNLIJK OMDAT HET NIET GEMAAKT IS OF GIFS TE LEZEN EN TE TRANSFORMEREN
-	//COLOUR PALETTE MATCHED GEWOON NIET
-	public ArrayList<Image> getScaledFrames(List<Image> frames, int scale) {
+	public BufferedImage getScaledImage(Image image, float scale) {
+// Een harde cast, het kan omdat er geen afbeeldingen zijn met komma getallen qua dimensies, maar indien die er zijn gaat dit tot problemen leiden		
+		int newWidth = (int) Math.floor((image.getWidth(null) * scale));
+		int newHeight = (int) Math.floor((image.getHeight(null) * scale));
+		
+		BufferedImage before = toBufferedImage(image);
+		BufferedImage after = new BufferedImage(newWidth, newHeight, BufferedImage.TYPE_INT_ARGB);
+		AffineTransform at = new AffineTransform();
+		at.scale(scale, scale);
+		AffineTransformOp scaleOp = new AffineTransformOp(at, AffineTransformOp.TYPE_BILINEAR);
+		after = scaleOp.filter(before, after);
+		return after;
+	}
+
+	public ArrayList<Image> getScaledFrames(List<Image> frames, float scale) {
 		ArrayList<Image> newFrames = new ArrayList<Image>();
 		for (int i = 0; i < frames.size(); i++) {
 			Image temp = frames.get(i);
-			
-			
-			temp = getScaledImage(temp, temp.getWidth(null), temp.getHeight(null), scale);
-//			BufferedImage bimage = new BufferedImage(temp.getWidth(null), temp.getHeight(null),
-//					9);
-//			
-//			MediaTracker tracker = new MediaTracker(new java.awt.Container());
-//			tracker.addImage(bimage, 0);
-//			try {
-//				tracker.waitForAll();
-//			} catch (InterruptedException ex) {
-//				throw new RuntimeException("Image loading interrupted", ex);
-//			}
-//			
-//			
-//			
-//		    Graphics2D g = bimage.createGraphics();
-//		    g.drawImage(temp, null, null);
+			BufferedImage tempBuffer = getScaledImage(temp, scale);
+			Graphics2D g = tempBuffer.createGraphics();
+			g.drawImage(tempBuffer, 0, 0, null);
 //
-//			newFrames.add(temp);
+			newFrames.add(tempBuffer);
 		}
 
 		return newFrames;

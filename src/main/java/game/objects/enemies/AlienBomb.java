@@ -2,8 +2,8 @@ package game.objects.enemies;
 
 public class AlienBomb extends Enemy {
 
-	public AlienBomb(int x, int y, String direction, int angleModuloDivider) {
-		super(x, y, direction, "Alien Bomb");
+	public AlienBomb(int x, int y, String direction, int angleModuloDivider, float scale) {
+		super(x, y, direction, "Alien Bomb", scale);
 		loadImage("Alien Bomb");
 		this.initBoardBlockSpeeds();
 		this.hitPoints = 10;
