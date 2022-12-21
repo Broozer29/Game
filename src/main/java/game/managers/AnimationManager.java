@@ -79,7 +79,8 @@ public class AnimationManager {
 		if (explosionType == null) {
 			explosionType = "Destroyed Explosion";
 		}
-		addUpperAnimation(xCoordinate, yCoordinate, explosionType, infiniteLoop, scale);
+		Animation newAnimation = createAnimation(xCoordinate, yCoordinate, explosionType, infiniteLoop, scale);
+		addUpperAnimation(newAnimation);
 	}
 
 	public void addExhaustAnimation(Animation animation) {
@@ -88,15 +89,15 @@ public class AnimationManager {
 		}
 	}
 
-	public void addUpperAnimation(int xCoordinate, int yCoordinate, String animationType, boolean infiniteLoop, float scale) {
-		this.upperAnimationList.add(createAnimation(xCoordinate, yCoordinate, animationType, infiniteLoop, scale));
+	public void addUpperAnimation(Animation animation) {
+		this.upperAnimationList.add(animation);
 	}
 
-	public void addLowerAnimation(int xCoordinate, int yCoordinate, String animationType, boolean infiniteLoop, float scale) {
-		this.lowerAnimationList.add(createAnimation(xCoordinate, yCoordinate, animationType, infiniteLoop, scale));
+	public void addLowerAnimation(Animation animation) {
+		this.lowerAnimationList.add(animation);
 	}
 
-	private Animation createAnimation(int xCoordinate, int yCoordinate, String animationType, boolean infiniteLoop, float scale) {
+	public Animation createAnimation(int xCoordinate, int yCoordinate, String animationType, boolean infiniteLoop, float scale) {
 		return new Animation(xCoordinate, yCoordinate, animationType, infiniteLoop, scale);
 	}
 

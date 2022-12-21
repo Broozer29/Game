@@ -8,6 +8,7 @@ public class Flamer extends Enemy {
 		super(x, y, direction, "Flamer", scale);
 		loadImage("Flamer");
 		setExhaustanimation("Flamer Large Exhaust");
+		this.exhaustAnimation.setFrameDelay(3);
 		this.initBoardBlockSpeeds();
 		this.angleModuloDivider = angleModuloDivider;
 		this.hitPoints = 50;
@@ -33,7 +34,6 @@ public class Flamer extends Enemy {
 		this.boardBlockSpeeds.add(7, 3);
 	}
 
-
 	// Called every game tick. If weapon is not on cooldown, fire a shot.
 	// Current board block attack is set to 7, this shouldnt be a hardcoded value
 	// This function doesn't discern enemy types yet either, should be re-written
@@ -44,8 +44,8 @@ public class Flamer extends Enemy {
 		}
 
 		if (currentAttackSpeedFrameCount >= attackSpeedFrameCount) {
-			missileManager.addEnemyMissile(this.xCoordinate, this.yCoordinate + this.height / 2,
-					"Flamer Projectile", 0, "Left", "Left", this.scale);
+			missileManager.addEnemyMissile(this.xCoordinate, this.yCoordinate + this.height / 2, "Flamer Projectile",
+					"Flamer Projectile Explosion", 0, "Left", "Left", this.scale);
 			currentAttackSpeedFrameCount = 0;
 		}
 		if (currentAttackSpeedFrameCount < attackSpeedFrameCount) {

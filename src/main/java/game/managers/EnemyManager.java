@@ -8,7 +8,6 @@ import java.util.List;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
 import data.DataClass;
-import game.objects.BoardBlock;
 import game.objects.enemies.Alien;
 import game.objects.enemies.AlienBomb;
 import game.objects.enemies.Bomba;
@@ -18,6 +17,7 @@ import game.objects.enemies.Energizer;
 import game.objects.enemies.Flamer;
 import game.objects.enemies.Seeker;
 import game.objects.enemies.Tazer;
+import image.objects.Animation;
 
 public class EnemyManager {
 
@@ -92,8 +92,9 @@ public class EnemyManager {
 
 	private void detonateAlienBomb(Enemy enemy) throws UnsupportedAudioFileException, IOException {
 		friendlyManager.getSpaceship().takeHitpointDamage(20);
-		animationManager.addUpperAnimation(enemy.getXCoordinate(), enemy.getYCoordinate(), "Alien Bomb Explosion",
-				false, 1);
+		Animation newAnimation = animationManager.createAnimation(enemy.getXCoordinate(), enemy.getYCoordinate(),
+				"Alien Bomb Explosion", false, 1);
+		animationManager.addUpperAnimation(newAnimation);
 		audioManager.addAudio("Alien Bomb Impact");
 		enemy.setVisible(false);
 	}

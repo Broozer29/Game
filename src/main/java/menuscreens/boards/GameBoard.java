@@ -118,33 +118,8 @@ public class GameBoard extends JPanel implements ActionListener {
 
 	private void drawObjects(Graphics g) {
 
-		// Draws low level stars
-		for (BackgroundObject bgObject : backgroundManager.getLevelOneStars()) {
-			drawImage(g, bgObject);
-		}
-
-		// Draws low level planets
-		for (BackgroundObject bgObject : backgroundManager.getLevelOnePlanets()) {
-			drawImage(g, bgObject);
-		}
-
-		// Draws medium level stars
-		for (BackgroundObject bgObject : backgroundManager.getLevelTwoStars()) {
-			drawImage(g, bgObject);
-		}
-
-		// Draws medium level planets
-		for (BackgroundObject bgObject : backgroundManager.getLevelTwoPlanets()) {
-			drawImage(g, bgObject);
-		}
-
-		// Draws high level stars
-		for (BackgroundObject bgObject : backgroundManager.getLevelThreeStars()) {
-			drawImage(g, bgObject);
-		}
-
-		// Draws high level planets
-		for (BackgroundObject bgObject : backgroundManager.getLevelThreePlanets()) {
+		// Draws all background objects
+		for (BackgroundObject bgObject : backgroundManager.getAllBGO()) {
 			drawImage(g, bgObject);
 		}
 
@@ -208,7 +183,9 @@ public class GameBoard extends JPanel implements ActionListener {
 	}
 
 	private void drawImage(Graphics g, Sprite sprite) {
-		g.drawImage(sprite.getImage(), sprite.getXCoordinate(), sprite.getYCoordinate(), this);
+		if (sprite.getImage() != null) {
+			g.drawImage(sprite.getImage(), sprite.getXCoordinate(), sprite.getYCoordinate(), this);
+		}
 	}
 
 	private void drawAnimation(Graphics g, Animation animation) {

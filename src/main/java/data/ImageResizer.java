@@ -36,8 +36,8 @@ public class ImageResizer {
 
 	public BufferedImage getScaledImage(Image image, float scale) {
 // Een harde cast, het kan omdat er geen afbeeldingen zijn met komma getallen qua dimensies, maar indien die er zijn gaat dit tot problemen leiden		
-		int newWidth = (int) (image.getWidth(null) * scale);
-		int newHeight = (int) (image.getHeight(null) * scale);
+		int newWidth = (int) Math.floor((image.getWidth(null) * scale));
+		int newHeight = (int) Math.floor((image.getHeight(null) * scale));
 		
 		BufferedImage before = toBufferedImage(image);
 		BufferedImage after = new BufferedImage(newWidth, newHeight, BufferedImage.TYPE_INT_ARGB);

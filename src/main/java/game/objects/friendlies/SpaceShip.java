@@ -101,7 +101,7 @@ public class SpaceShip extends Sprite {
 			try {
 				this.audioManager.firePlayerMissile();
 				this.missileManager.firePlayerMissile(xCoordinate + width, yCoordinate + (height / 2) - 5,
-						friendlyManager.getPlayerMissileType(), 0, "Right", 1);
+						friendlyManager.getPlayerMissileType(), "Impact Explosion One" ,0, "Right", 1);
 				this.currentAttackFrame = 0;
 			} catch (UnsupportedAudioFileException | IOException e) {
 				e.printStackTrace();

@@ -15,14 +15,15 @@ public class Animation extends Sprite {
 	private int totalFrames;
 	private List<Image> standardSizeFrames = new ArrayList<Image>();
 	private List<Image> frames = new ArrayList<Image>();
-	private int frameDelay;
+	private int frameDelayCounter;
+	private int frameDelay = 2;
 	private boolean infiniteLoop;
 
 	public Animation(int x, int y, String imageType, boolean infiniteLoop, float scale) {
 		super(x, y, scale);
 		loadGifFrames(imageType);
 		this.initAnimation();
-		this.frameDelay = 0;
+		this.frameDelayCounter = 0;
 		this.infiniteLoop = infiniteLoop;
 		setAnimationScale(scale);
 	}
@@ -81,7 +82,7 @@ public class Animation extends Sprite {
 		this.xCoordinate = xCoordinate;
 		this.yCoordinate = yCoordinate;
 		this.currentFrame = 0;
-		this.frameDelay = 0;
+		this.frameDelayCounter = 0;
 		this.setVisible(true);
 	}
 
@@ -99,11 +100,11 @@ public class Animation extends Sprite {
 			Image returnImage = frames.get(currentFrame);
 			width = returnImage.getWidth(null);
 			height = returnImage.getHeight(null);
-			if (frameDelay >= 1) {
+			if (frameDelayCounter >= frameDelay) {
 				updateFrameCount();
-				frameDelay = 0;
+				frameDelayCounter = 0;
 			} else
-				frameDelay++;
+				frameDelayCounter++;
 			return returnImage;
 		}
 		return null;
@@ -117,13 +118,16 @@ public class Animation extends Sprite {
 		return this.totalFrames;
 	}
 	
-	public void resizeAnimation(int scale) {
+	public void resizeAnimation(float scale) {
 		this.frames = imageResizer.getScaledFrames(frames, scale);
 	}
-	
 
 	public float getScale() {
 		return scale;
 	}
-
+	
+	public void setFrameDelay(int frameDelay) {
+		this.frameDelay = frameDelay;
+	}
+	
 }

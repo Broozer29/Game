@@ -99,18 +99,18 @@ public class SpawningCoordinator {
 	}
 
 	// Random functions used for Background objects //
-	public boolean checkValidBGOXCoordinate(List<BackgroundObject> listToCheck, int xCoordinate) {
+	public boolean checkValidBGOXCoordinate(List<BackgroundObject> listToCheck, int xCoordinate, int size) {
 		for (BackgroundObject bgObject : listToCheck) {
-			if (Math.abs(bgObject.getXCoordinate() - xCoordinate) < 20) {
+			if (Math.abs(bgObject.getXCoordinate() - xCoordinate) < size) {
 				return false;
 			}
 		}
 		return true;
 	}
 
-	public boolean checkValidBGOYCoordinate(List<BackgroundObject> listToCheck, int yCoordinate) {
+	public boolean checkValidBGOYCoordinate(List<BackgroundObject> listToCheck, int yCoordinate, int size) {
 		for (BackgroundObject bgObject : listToCheck) {
-			if (Math.abs(bgObject.getYCoordinate() - yCoordinate) < 20) {
+			if (Math.abs(bgObject.getYCoordinate() - yCoordinate) < size) {
 				return false;
 			}
 		}

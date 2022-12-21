@@ -6,13 +6,13 @@ import game.managers.ExplosionManager;
 
 public class BombaProjectile extends Missile {
 
-	public BombaProjectile(int x, int y, String missileType, String missileDirection, int angleModuloDivider,
+	public BombaProjectile(int x, int y, String missileType,String explosionType, String missileDirection, int angleModuloDivider,
 			String rotationAngle, float scale) {
-		super(x, y, missileType, missileDirection, angleModuloDivider, rotationAngle, scale);
+		super(x, y, missileType, explosionType, missileDirection, angleModuloDivider, rotationAngle, scale);
 		this.missileDamage = (float) 7.5;
 		initMissile();
 		setAnimation();
-		this.animation.resizeAnimation(1);
+		this.animation.setFrameDelay(3);
 	}
 
 	private void initMissile() {

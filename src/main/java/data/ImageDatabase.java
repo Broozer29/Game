@@ -34,7 +34,6 @@ public class ImageDatabase {
 	/*
 	 * Ship1 = Seeker Ship2 = Tazer Ship3 = Energizer Ship4 = Bulldozer Ship5 =
 	 * Flamer Ship6 = Bomba
-	 * 
 	 */
 
 	// Projectile images
@@ -49,15 +48,19 @@ public class ImageDatabase {
 	private Image selectUserMenuImage;
 	private Image userMenuToMainMenu;
 	
-
-	// Animations
+	
+	// Explosion animations
 	private List<Image> impactExplosionOneFrames = new ArrayList<Image>();
-	private List<Image> playerEngineFrames = new ArrayList<Image>();
 	private List<Image> destroyedExplosionUpFrames = new ArrayList<Image>();
 	private List<Image> destroyedExplosionLeftFrames = new ArrayList<Image>();
 	private List<Image> destroyedExplosionRightFrames = new ArrayList<Image>();
 	private List<Image> destroyedExplosionDownFrames = new ArrayList<Image>();
 	private List<Image> alienBombExplosionFrames = new ArrayList<Image>();
+	private List<Image> implosionFrames = new ArrayList<Image>();
+
+	// Animations
+	private List<Image> playerEngineFrames = new ArrayList<Image>();
+
 
 	// Enemy Projectile Animations
 	private List<Image> seekerProjectileFrames = new ArrayList<Image>();
@@ -280,6 +283,8 @@ public class ImageDatabase {
 			return this.bombaLargeExhaustFrames;
 		case ("Bomba Projectile Explosion"):
 			return this.bombaProjectileExplosion;
+		case("Implosion"):
+			return this.implosionFrames;
 		}
 		return null;
 	}
@@ -407,6 +412,10 @@ public class ImageDatabase {
 		reader.setInput(new FileImageInputStream(
 				new File("src/resources/images/Ships/Ship 6/Ship 6 - Projectile Explosion.gif")));
 		bombaProjectileExplosion = gifToImageIcons(reader);
+		
+		// Explosions
+		reader.setInput(new FileImageInputStream(new File("src/resources/images/gif/Implosion.gif")));
+		implosionFrames = gifToImageIcons(reader);
 
 	}
 

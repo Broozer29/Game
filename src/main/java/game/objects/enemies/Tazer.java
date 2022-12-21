@@ -8,6 +8,7 @@ public class Tazer extends Enemy {
 		super(x, y, direction, "Tazer", scale);
 		loadImage("Tazer");
 		setExhaustanimation("Tazer Large Exhaust");
+		this.exhaustAnimation.setFrameDelay(3);
 		this.initBoardBlockSpeeds();
 		this.hitPoints = 50;
 		this.angleModuloDivider = angleModuloDivider;
@@ -33,7 +34,6 @@ public class Tazer extends Enemy {
 		this.boardBlockSpeeds.add(7, 3);
 	}
 
-
 	// Called every game tick. If weapon is not on cooldown, fire a shot.
 	// Current board block attack is set to 7, this shouldnt be a hardcoded value
 	// This function doesn't discern enemy types yet either, should be re-written
@@ -45,7 +45,7 @@ public class Tazer extends Enemy {
 
 		if (currentAttackSpeedFrameCount >= attackSpeedFrameCount) {
 			missileManager.addEnemyMissile(this.xCoordinate, this.yCoordinate + calculateRandomWeaponHeightOffset(),
-					"Tazer Projectile", 0, "Left", "Left", this.scale);
+					"Tazer Projectile", "Tazer Projectile Explosion", 0, "Left", "Left", this.scale);
 			currentAttackSpeedFrameCount = 0;
 		}
 		if (currentAttackSpeedFrameCount < attackSpeedFrameCount) {

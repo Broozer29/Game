@@ -8,6 +8,7 @@ public class Bulldozer extends Enemy {
 		super(x, y, direction, "Bulldozer", scale);
 		loadImage("Bulldozer");
 		setExhaustanimation("Bulldozer Large Exhaust");
+		this.exhaustAnimation.setFrameDelay(3);
 		this.initBoardBlockSpeeds();
 		this.angleModuloDivider = angleModuloDivider;
 		this.hitPoints = 50;
@@ -43,12 +44,12 @@ public class Bulldozer extends Enemy {
 		}
 
 		if (currentAttackSpeedFrameCount >= attackSpeedFrameCount) {
-			missileManager.addEnemyMissile(this.xCoordinate, this.yCoordinate, "Bulldozer Projectile", 10, "LeftUp",
-					"LeftUp", this.scale);
-			missileManager.addEnemyMissile(this.xCoordinate, this.yCoordinate, "Bulldozer Projectile", 10, "LeftDown",
-					"LeftDown", this.scale);
-			missileManager.addEnemyMissile(this.xCoordinate, this.yCoordinate, "Bulldozer Projectile", 0, "Left",
-					"Left", this.scale);
+			missileManager.addEnemyMissile(this.xCoordinate, this.yCoordinate, "Bulldozer Projectile",
+					"Bulldozer Projectile Explosion", 10, "LeftUp", "LeftUp", this.scale);
+			missileManager.addEnemyMissile(this.xCoordinate, this.yCoordinate, "Bulldozer Projectile",
+					"Bulldozer Projectile Explosion", 10, "LeftDown", "LeftDown", this.scale);
+			missileManager.addEnemyMissile(this.xCoordinate, this.yCoordinate, "Bulldozer Projectile",
+					"Bulldozer Projectile Explosion", 0, "Left", "Left", this.scale);
 			currentAttackSpeedFrameCount = 0;
 		}
 		if (currentAttackSpeedFrameCount < attackSpeedFrameCount) {
