@@ -2,6 +2,8 @@ package game.objects.enemies;
 
 import java.util.List;
 
+import data.DataClass;
+import data.movement.Trajectory;
 import game.managers.MissileManager;
 
 public class Energizer extends Enemy {
@@ -22,10 +24,12 @@ public class Energizer extends Enemy {
 		this.hasAttack = true;
 		this.showHealthBar = true;
 		this.deathSound = "Large Ship Destroyed";
-		this.trajectory.setEnemyTrajectoryType(this);
+		this.trajectory = new Trajectory(direction, totalDistance(), movementSpeed, angleModuloDivider, true);
 		this.setVisible(true);
 		this.setRotation(direction);
 	}
+	
+	
 
 	private void initBoardBlockSpeeds() {
 		this.boardBlockSpeeds.add(0, 1);

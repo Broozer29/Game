@@ -1,6 +1,7 @@
 package game.objects.missiles;
 
 import data.DataClass;
+import data.movement.Trajectory;
 
 public class AlienLaserbeam extends Missile {
 
@@ -9,15 +10,10 @@ public class AlienLaserbeam extends Missile {
 		super(x, y, missileType, explosionType, missileDirection, angleModuloDivider, rotation, scale);
 		loadImage("Alien Laserbeam");
 		this.missileDamage = (float) 2.5;
-		initMissile();
+		this.missileMovementSpeed = 3;
+		this.trajectory = new Trajectory(missileDirection, totalDistance(), missileMovementSpeed, angleModuloDivider, true);
 	}
 
-	private void initMissile() {
-		this.missileMovementSpeed = 3;
-		this.maxMissileLength = (int) (DataClass.getInstance().getWindowWidth() * 1.5);
-		this.trajectory.setMissileTrajectoryType(this);
-	}
-	
 	public void missileAction() {
 		
 	}

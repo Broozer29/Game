@@ -1,5 +1,7 @@
 package game.objects.enemies;
 
+import data.movement.Trajectory;
+
 public class AlienBomb extends Enemy {
 
 	public AlienBomb(int x, int y, String direction, int angleModuloDivider, float scale) {
@@ -16,7 +18,7 @@ public class AlienBomb extends Enemy {
 		this.deathSound = "Destroyed Explosion";
 		this.hasAttack = false;
 		this.showHealthBar = false;
-		this.trajectory.setEnemyTrajectoryType(this);
+		this.trajectory = new Trajectory(direction, totalDistance(), movementSpeed, angleModuloDivider, true);
 		this.setVisible(true);
 		this.setRotation(direction);
 	}

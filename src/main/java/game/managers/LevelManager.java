@@ -7,6 +7,7 @@ import game.objects.enemies.AlienBomb;
 import game.objects.enemies.Bomba;
 import game.objects.enemies.Bulldozer;
 import game.objects.enemies.Enemy;
+import game.objects.enemies.Energizer;
 import game.objects.enemies.Flamer;
 import game.objects.enemies.Seeker;
 import game.objects.enemies.Tazer;
@@ -72,18 +73,18 @@ public class LevelManager {
 	private void saturateLevelOne() {
 		int angleModuloDivider = 2;
 		CustomTimer timer = null;
-		timer = timerManager.createTimer("Bombs", 20, 10000, true, "Left", angleModuloDivider, 1);
-		timerManager.addTimerToList(timer);
-		timer = timerManager.createTimer("Bomba", 3, 2000, true, "Left", angleModuloDivider, 1);
-		timerManager.addTimerToList(timer);
-		timer = timerManager.createTimer("Flamer", 3, 2000, true, "Left", angleModuloDivider, 1);
-		timerManager.addTimerToList(timer);
-		timer = timerManager.createTimer("Tazer", 3, 2000, true, "Left", angleModuloDivider, 1);
-		timerManager.addTimerToList(timer);
-		timer = timerManager.createTimer("Seeker", 3, 2000, true, "Left", angleModuloDivider, 1);
-		timerManager.addTimerToList(timer);
-		timer = timerManager.createTimer("Bulldozer", 3, 2000, true, "Left", angleModuloDivider, 1);
-		timerManager.addTimerToList(timer);
+//		timer = timerManager.createTimer("Bombs", 20, 10000, true, "Left", angleModuloDivider, 1);
+//		timerManager.addTimerToList(timer);
+//		timer = timerManager.createTimer("Bomba", 3, 2000, true, "Left", angleModuloDivider, 1);
+//		timerManager.addTimerToList(timer);
+//		timer = timerManager.createTimer("Flamer", 3, 2000, true, "Left", angleModuloDivider, 1);
+//		timerManager.addTimerToList(timer);
+//		timer = timerManager.createTimer("Tazer", 3, 2000, true, "Left", angleModuloDivider, 1);
+//		timerManager.addTimerToList(timer);
+//		timer = timerManager.createTimer("Seeker", 3, 2000, true, "Left", angleModuloDivider, 1);
+//		timerManager.addTimerToList(timer);
+//		timer = timerManager.createTimer("Bulldozer", 3, 2000, true, "Left", angleModuloDivider, 1);
+//		timerManager.addTimerToList(timer);
 		timer = timerManager.createTimer("Energizer", 3, 2000, true, "Left", angleModuloDivider, 1);
 		timerManager.addTimerToList(timer);
 	}
@@ -182,7 +183,7 @@ public class LevelManager {
 
 	private void spawnEnergizer(int xCoordinate, int yCoordinate, String direction, int angleModuloDivider,
 			float scale) {
-		Enemy enemy = new Bomba(xCoordinate, yCoordinate, direction, angleModuloDivider, scale);
+		Enemy enemy = new Energizer(xCoordinate, yCoordinate, direction, angleModuloDivider, scale);
 		if (validCoordinates(enemy)) {
 			enemyManager.addEnemy(enemy);
 		}

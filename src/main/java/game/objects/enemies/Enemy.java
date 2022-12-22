@@ -29,7 +29,7 @@ public class Enemy extends Sprite {
 	protected int currentBoardBlock;
 	protected String rotation;
 	protected String direction;
-	protected Trajectory trajectory = new Trajectory();
+	protected Trajectory trajectory;
 	protected int angleModuloDivider;
 	
 	//Enemy miscellanious attributes
@@ -176,14 +176,20 @@ public class Enemy extends Sprite {
 	public Animation getDestroyedAnimation() {
 		return this.deathAnimation;
 	}
+	
+	protected int totalDistance() {
+		if(direction.equals("Up") || direction.equals("Down")) {
+			return DataClass.getInstance().getWindowHeight() + getAdditionalYSteps();
+		} else return DataClass.getInstance().getWindowWidth() + getAdditionalXSteps();
+	}
 
 	// Required for the trajectory to determine the length of the distance travelled
-	public int getAdditionalXSteps() {
+	protected int getAdditionalXSteps() {
 		return Math.abs(DataClass.getInstance().getWindowWidth() - xCoordinate + width);
 	}
 
 	// Required for the trajectory to determine the length of the distance travelled
-	public int getAdditionalYSteps() {
+	protected int getAdditionalYSteps() {
 		switch (direction) {
 		case ("Up"):
 			return Math.abs(DataClass.getInstance().getWindowHeight() - yCoordinate);

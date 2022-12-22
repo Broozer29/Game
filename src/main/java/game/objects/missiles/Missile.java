@@ -11,7 +11,7 @@ import image.objects.Sprite;
 public class Missile extends Sprite {
 
 	protected float missileDamage;
-	protected Trajectory trajectory = new Trajectory();
+	protected Trajectory trajectory;
 	protected String missileDirection;
 	protected int angleModuloDivider;
 	protected int missileMovementSpeed;
@@ -31,7 +31,6 @@ public class Missile extends Sprite {
 		this.rotationAngle = rotationAngle;
 		this.missileType = missileType;
 		this.missileDirection = missileDirection;
-
 	}
 
 	public void updateGameTick() {
@@ -63,6 +62,12 @@ public class Missile extends Sprite {
 		explosionAnimation.setX(xCoordinate);
 		explosionAnimation.setY(yCoordinate);
 	}
+	
+	protected int totalDistance() {
+		if(missileDirection.equals("Up") || missileDirection.equals("Down")) {
+			return DataClass.getInstance().getWindowHeight() + this.getWidth();
+		} else return DataClass.getInstance().getWindowWidth() + this.getHeight();
+	}
 
 	public float getMissileDamage() {
 		return this.missileDamage;
@@ -80,7 +85,7 @@ public class Missile extends Sprite {
 		return this.maxMissileLength;
 	}
 
-	public int getAngleSize() {
+	public int getAngleModuloDivider() {
 		return this.angleModuloDivider;
 	}
 
