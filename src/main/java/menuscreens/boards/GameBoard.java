@@ -257,7 +257,7 @@ public class GameBoard extends JPanel implements ActionListener {
 			animationManager.updateGameTick();
 			backgroundManager.updateGameTick();
 			timerManager.updateGameTick();
-			audioDatabase.updateGameTick();
+			audioDatabase.resetFinishedClips();
 			explosionManager.updateGametick();
 		}
 

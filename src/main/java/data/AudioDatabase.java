@@ -21,10 +21,12 @@ public class AudioDatabase {
 	// kunnen afspelen.
 
 	private int clipListSize = 10;
+	private List<Clip> allActiveClips = new ArrayList<Clip>();
 	private List<Clip> alienBombImpactList = new ArrayList<Clip>();
 	private List<Clip> laserBeamClipList = new ArrayList<Clip>();
 	private List<Clip> destroyedExplosionClipList = new ArrayList<Clip>();
 	private List<Clip> alienSpaceshipDestroyedClipList = new ArrayList<Clip>();
+	private List<Clip> largeShipDestroyed = new ArrayList<Clip>();
 
 	private AudioDatabase() {
 		initializeAudiofiles();
@@ -44,33 +46,18 @@ public class AudioDatabase {
 	}
 
 	// Resets clips that have finished playing
-	public void updateGameTick() {
-		for (int i = 0; i < laserBeamClipList.size(); i++) {
-			if (!laserBeamClipList.get(i).isRunning()) {
-				laserBeamClipList.get(i).stop();
-				laserBeamClipList.get(i).setFramePosition(400);
+	public void resetFinishedClips() {
+		for(int i = 0; i < allActiveClips.size(); i++) {
+			if(!allActiveClips.get(i).isRunning()) {
+				allActiveClips.get(i).stop();
+				if(laserBeamClipList.contains(allActiveClips.get(i))) {
+					allActiveClips.get(i).setFramePosition(400);
+				} else {
+					allActiveClips.get(i).setFramePosition(0);
+				}
+				allActiveClips.remove(allActiveClips.get(i));
 			}
 		}
-
-		for (int i = 0; i < destroyedExplosionClipList.size(); i++) {
-			if (!destroyedExplosionClipList.get(i).isRunning()) {
-				destroyedExplosionClipList.get(i).stop();
-				destroyedExplosionClipList.get(i).setFramePosition(0);
-			}
-		}
-		for (int i = 0; i < alienSpaceshipDestroyedClipList.size(); i++) {
-			if (!alienSpaceshipDestroyedClipList.get(i).isRunning()) {
-				alienSpaceshipDestroyedClipList.get(i).stop();
-				alienSpaceshipDestroyedClipList.get(i).setFramePosition(0);
-			}
-		}
-		for (int i = 0; i < alienBombImpactList.size(); i++) {
-			if (!alienBombImpactList.get(i).isRunning()) {
-				alienBombImpactList.get(i).stop();
-				alienBombImpactList.get(i).setFramePosition(0);
-			}
-		}
-
 	}
 
 	private void initMusic() throws LineUnavailableException {
@@ -90,6 +77,8 @@ public class AudioDatabase {
 			alienSpaceshipDestroyedClipList.add(tempAlienSpaceshipExplosionClip);
 			Clip tempAlienBombImpactClip = audioLoader.getSoundfile("Alien Bomb Impact");
 			alienBombImpactList.add(tempAlienBombImpactClip);
+			Clip tempLargeShipDestroyed = audioLoader.getSoundfile("Large Ship Destroyed");
+			largeShipDestroyed.add(tempLargeShipDestroyed);
 		}
 
 	}
@@ -113,6 +102,7 @@ public class AudioDatabase {
 	public Clip getLaserBeam() {
 		for (int i = 0; i < laserBeamClipList.size(); i++) {
 			if (!laserBeamClipList.get(i).isActive()) {
+				allActiveClips.add(laserBeamClipList.get(i));
 				return laserBeamClipList.get(i);
 			}
 		}
@@ -122,6 +112,7 @@ public class AudioDatabase {
 	public Clip getDestroyedExplosion() {
 		for (int i = 0; i < destroyedExplosionClipList.size(); i++) {
 			if (!destroyedExplosionClipList.get(i).isActive()) {
+				allActiveClips.add(destroyedExplosionClipList.get(i));
 				return destroyedExplosionClipList.get(i);
 			}
 		}
@@ -131,6 +122,7 @@ public class AudioDatabase {
 	public Clip getDefaultAlienExplosion() {
 		for (int i = 0; i < alienSpaceshipDestroyedClipList.size(); i++) {
 			if (!alienSpaceshipDestroyedClipList.get(i).isActive()) {
+				allActiveClips.add(alienSpaceshipDestroyedClipList.get(i));
 				return alienSpaceshipDestroyedClipList.get(i);
 			}
 		}
@@ -140,7 +132,18 @@ public class AudioDatabase {
 	public Clip getAlienBombImpact() {
 		for (int i = 0; i < alienBombImpactList.size(); i++) {
 			if (!alienBombImpactList.get(i).isActive()) {
+				allActiveClips.add(alienBombImpactList.get(i));
 				return alienBombImpactList.get(i);
+			}
+		}
+		return null;
+	}
+	
+	public Clip getLargeShipDestroyed() {
+		for (int i = 0; i < largeShipDestroyed.size(); i++) {
+			if (!largeShipDestroyed.get(i).isActive()) {
+				allActiveClips.add(largeShipDestroyed.get(i));
+				return largeShipDestroyed.get(i);
 			}
 		}
 		return null;

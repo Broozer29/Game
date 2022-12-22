@@ -8,7 +8,9 @@ public class Tazer extends Enemy {
 		super(x, y, direction, "Tazer", scale);
 		loadImage("Tazer");
 		setExhaustanimation("Tazer Large Exhaust");
+		setDeathAnimation("Tazer Destroyed Explosion");
 		this.exhaustAnimation.setFrameDelay(3);
+		this.deathAnimation.setFrameDelay(2);
 		this.initBoardBlockSpeeds();
 		this.hitPoints = 50;
 		this.angleModuloDivider = angleModuloDivider;
@@ -17,7 +19,7 @@ public class Tazer extends Enemy {
 		this.movementSpeed = 2;
 		this.hasAttack = true;
 		this.showHealthBar = true;
-		this.deathSound = "Alien Spaceship Destroyed";
+		this.deathSound = "Large Ship Destroyed";
 		this.trajectory.setEnemyTrajectoryType(this);
 		this.setVisible(true);
 		this.setRotation(direction);

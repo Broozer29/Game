@@ -55,32 +55,8 @@ public class AnimationManager {
 
 	}
 
-	public void addDestroyedExplosion(int xCoordinate, int yCoordinate, float scale) {
-		Random random = new Random();
-		int result = random.nextInt(4 - 1) + 1;
-		String explosionType = null;
-		boolean infiniteLoop = false;
-
-		switch (result) {
-		case (1):
-			explosionType = "Destroyed Explosion";
-			break;
-		case (2):
-			explosionType = "Destroyed Explosion Right";
-			break;
-		case (3):
-			explosionType = "Destroyed Explosion Left";
-			break;
-		case (4):
-			explosionType = "Destroyed Explosion Reverse";
-			break;
-		}
-
-		if (explosionType == null) {
-			explosionType = "Destroyed Explosion";
-		}
-		Animation newAnimation = createAnimation(xCoordinate, yCoordinate, explosionType, infiniteLoop, scale);
-		addUpperAnimation(newAnimation);
+	public void addDestroyedExplosion(Animation animation) {
+		addUpperAnimation(animation);
 	}
 
 	public void addExhaustAnimation(Animation animation) {

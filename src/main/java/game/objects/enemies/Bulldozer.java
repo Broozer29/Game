@@ -8,7 +8,9 @@ public class Bulldozer extends Enemy {
 		super(x, y, direction, "Bulldozer", scale);
 		loadImage("Bulldozer");
 		setExhaustanimation("Bulldozer Large Exhaust");
+		setDeathAnimation("Bulldozer Destroyed Explosion");
 		this.exhaustAnimation.setFrameDelay(3);
+		this.deathAnimation.setFrameDelay(2);
 		this.initBoardBlockSpeeds();
 		this.angleModuloDivider = angleModuloDivider;
 		this.hitPoints = 50;
@@ -17,7 +19,7 @@ public class Bulldozer extends Enemy {
 		this.movementSpeed = 2;
 		this.hasAttack = true;
 		this.showHealthBar = true;
-		this.deathSound = "Alien Spaceship Destroyed";
+		this.deathSound = "Large Ship Destroyed";
 		this.trajectory.setEnemyTrajectoryType(this);
 		this.setVisible(true);
 		this.setRotation(direction);

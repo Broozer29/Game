@@ -5,6 +5,8 @@ public class AlienBomb extends Enemy {
 	public AlienBomb(int x, int y, String direction, int angleModuloDivider, float scale) {
 		super(x, y, direction, "Alien Bomb", scale);
 		loadImage("Alien Bomb");
+		setDeathAnimation("Alien Bomb Explosion");
+		this.deathAnimation.setFrameDelay(2);
 		this.initBoardBlockSpeeds();
 		this.hitPoints = 10;
 		this.angleModuloDivider = angleModuloDivider;

@@ -57,6 +57,12 @@ public class ImageDatabase {
 	private List<Image> destroyedExplosionDownFrames = new ArrayList<Image>();
 	private List<Image> alienBombExplosionFrames = new ArrayList<Image>();
 	private List<Image> implosionFrames = new ArrayList<Image>();
+	private List<Image> seekerDestroyedExplosionFrames = new ArrayList<Image>();
+	private List<Image> tazerDestroyedExplosionFrames = new ArrayList<Image>();
+	private List<Image> energizerDestroyedExplosionFrames = new ArrayList<Image>();
+	private List<Image> bulldozerDestroyedExplosionFrames = new ArrayList<Image>();
+	private List<Image> flamerDestroyedExplosionFrames = new ArrayList<Image>();
+	private List<Image> bombaDestroyedExplosionFrames = new ArrayList<Image>();
 
 	// Animations
 	private List<Image> playerEngineFrames = new ArrayList<Image>();
@@ -285,6 +291,18 @@ public class ImageDatabase {
 			return this.bombaProjectileExplosion;
 		case("Implosion"):
 			return this.implosionFrames;
+		case("Seeker Destroyed Explosion"):
+			return this.seekerDestroyedExplosionFrames;
+		case("Tazer Destroyed Explosion"):
+			return this.seekerDestroyedExplosionFrames;
+		case("Energizer Destroyed Explosion"):
+			return this.seekerDestroyedExplosionFrames;
+		case("Bomba Destroyed Explosion"):
+			return this.seekerDestroyedExplosionFrames;
+		case("Flamer Destroyed Explosion"):
+			return this.seekerDestroyedExplosionFrames;
+		case("Bulldozer Destroyed Explosion"):
+			return this.seekerDestroyedExplosionFrames;
 		}
 		return null;
 	}
@@ -416,6 +434,30 @@ public class ImageDatabase {
 		// Explosions
 		reader.setInput(new FileImageInputStream(new File("src/resources/images/gif/Implosion.gif")));
 		implosionFrames = gifToImageIcons(reader);
+		
+		reader.setInput(new FileImageInputStream(
+				new File("src/resources/images/Ships/Ship 1/Ship 1 - Destroyed Explosion.gif")));
+		seekerDestroyedExplosionFrames = gifToImageIcons(reader);
+		
+		reader.setInput(new FileImageInputStream(
+				new File("src/resources/images/Ships/Ship 2/Ship 2 - Destroyed Explosion.gif")));
+		tazerDestroyedExplosionFrames = gifToImageIcons(reader);
+		
+		reader.setInput(new FileImageInputStream(
+				new File("src/resources/images/Ships/Ship 3/Ship 3 - Destroyed Explosion.gif")));
+		energizerDestroyedExplosionFrames = gifToImageIcons(reader);
+		
+		reader.setInput(new FileImageInputStream(
+				new File("src/resources/images/Ships/Ship 4/Ship 4 - Destroyed Explosion.gif")));
+		bulldozerDestroyedExplosionFrames = gifToImageIcons(reader);
+		
+		reader.setInput(new FileImageInputStream(
+				new File("src/resources/images/Ships/Ship 5/Ship 5 - Destroyed Explosion.gif")));
+		flamerDestroyedExplosionFrames = gifToImageIcons(reader);
+		
+		reader.setInput(new FileImageInputStream(
+				new File("src/resources/images/Ships/Ship 6/Ship 6 - Destroyed Explosion.gif")));
+		bombaDestroyedExplosionFrames = gifToImageIcons(reader);
 
 	}
 

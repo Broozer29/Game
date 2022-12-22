@@ -153,29 +153,6 @@ public class BackgroundManager {
 	// Initially loads all planets so they dont have to be reloaded from files.
 	// Saves memory
 
-//	public List<BackgroundObject> getLevelOnePlanets() {
-//		return levelOnePlanets;
-//	}
-//
-//	public List<BackgroundObject> getLevelTwoPlanets() {
-//		return levelTwoPlanets;
-//	}
-//
-//	public List<BackgroundObject> getLevelThreePlanets() {
-//		return levelThreePlanets;
-//	}
-//
-//	public List<BackgroundObject> getLevelOneStars() {
-//		return levelOneStars;
-//	}
-//
-//	public List<BackgroundObject> getLevelTwoStars() {
-//		return levelTwoStars;
-//	}
-//
-//	public List<BackgroundObject> getLevelThreeStars() {
-//		return levelThreeStars;
-//	}
 
 	public List<BackgroundObject> getAllBGO() {
 		return this.allBackgroundObjects;

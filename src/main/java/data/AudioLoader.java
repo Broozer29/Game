@@ -53,6 +53,8 @@ public class AudioLoader {
 			return "src/resources/audio/music/defaultmusic.wav";
 		case("Alien Bomb Impact"):
 			return "src/resources/audio/Alien Bomb Impact.wav";
+		case("Large Ship Destroyed"):
+			return "src/resources/audio/Large Ship Destroyed.wav";
 		}
 		return null;
 	}

@@ -38,6 +38,7 @@ public class Enemy extends Sprite {
 	protected boolean showHealthBar;
 	protected List<Integer> boardBlockSpeeds = new ArrayList<Integer>();
 	protected Animation exhaustAnimation;
+	protected Animation deathAnimation;
 
 	public Enemy(int x, int y, String direction, String enemyType, float scale) {
 		super(x, y, scale);
@@ -50,6 +51,10 @@ public class Enemy extends Sprite {
 		this.exhaustAnimation = new Animation(xCoordinate, yCoordinate, imageType, true, scale);
 	}
 	
+	protected void setDeathAnimation(String imageType) {
+		this.deathAnimation = new Animation(xCoordinate, yCoordinate, imageType, false, scale);
+	}
+	
 	// Called when there is collision between friendly missile and enemy
 	public void takeDamage(float damageTaken) {
 		if (animationManager == null) {
@@ -57,7 +62,9 @@ public class Enemy extends Sprite {
 		}
 		this.hitPoints -= damageTaken;
 		if (this.hitPoints <= 0) {
-			animationManager.addDestroyedExplosion(xCoordinate, yCoordinate, scale);
+			this.deathAnimation.setX(this.getCenterXCoordinate() - (deathAnimation.getWidth() / 2));
+			this.deathAnimation.setY(this.getCenterYCoordinate() - (deathAnimation.getHeight() / 2));
+			animationManager.addDestroyedExplosion(deathAnimation);
 			this.setVisible(false);
 		}
 	}
@@ -164,6 +171,10 @@ public class Enemy extends Sprite {
 	
 	public int getAngleModuloDivider() {
 		return this.angleModuloDivider;
+	}
+	
+	public Animation getDestroyedAnimation() {
+		return this.deathAnimation;
 	}
 
 	// Required for the trajectory to determine the length of the distance travelled
