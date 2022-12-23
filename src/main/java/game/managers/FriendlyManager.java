@@ -5,6 +5,7 @@ import game.objects.friendlies.SpaceShip;
 public class FriendlyManager {
 
 	private static FriendlyManager instance = new FriendlyManager();
+	private AnimationManager animationManager = AnimationManager.getInstance();
 	private SpaceShip spaceship;
 	private String playerMissileType;
 	private boolean playerAlive;
@@ -60,7 +61,8 @@ public class FriendlyManager {
 	}
 
 	private void initSpaceShip() {
-		this.spaceship = new SpaceShip();
+		this.spaceship = new SpaceShip("Model 3 Better Model Upgrade", "Default Player Engine");
+		animationManager.addExhaustAnimation(spaceship.getExhaustAnimation());
 		this.playerAlive = true;
 	}
 

@@ -109,7 +109,7 @@ public class Animation extends Sprite {
 		}
 		return null;
 	}
-
+	
 	public int getFrame() {
 		return this.currentFrame;
 	}

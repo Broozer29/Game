@@ -59,23 +59,11 @@ public class AudioManager {
 	// Play singular audios
 	private void playAudio(String audioType) throws UnsupportedAudioFileException, IOException {
 		if (audioType != null) {
-			Clip clip = null;
-
-			switch (audioType) {
-			case ("Player Laserbeam"):
-				clip = audioDatabase.getLaserBeam();
-				break;
-			case ("Destroyed Explosion"):
-				clip = audioDatabase.getDestroyedExplosion();
-				break;
-			case ("Alien Spaceship Destroyed"):
-				clip = audioDatabase.getDefaultAlienExplosion();
-				break;
-			case ("Alien Bomb Impact"):
-				clip = audioDatabase.getAlienBombImpact();
-				break;
-			}
-
+			Clip clip = audioDatabase.getAudioClip(audioType);
+//			if(audioType.equals("Large Ship Destroyed")) {
+//				System.out.println("Yoyoyoyoyo");
+//				System.out.println(clip);
+//			}
 			if (clip != null) {
 				// Adjusts volume
 				FloatControl volume = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
@@ -91,7 +79,6 @@ public class AudioManager {
 				case ("Alien Bomb Impact"):
 					volume.setValue(-2);
 				}
-
 				clip.start();
 			}
 		}
@@ -101,20 +88,7 @@ public class AudioManager {
 	// Play the background music
 	public void playMusicAudio(String audioType) throws UnsupportedAudioFileException, IOException {
 		if (backGroundMusic == null) {
-			switch (audioType) {
-			case ("defaultmusic"):
-				backGroundMusicInputStream = audioDatabase.getDefaultMusic();
-				break;
-			case ("Furi - Make this right"):
-				backGroundMusicInputStream = audioDatabase.getFuriMakeThisRight();
-				break;
-			case ("Furi - Wisdom of rage"):
-				backGroundMusicInputStream = audioDatabase.getFuriWisdomOfRage();
-				break;
-			case ("Furi - My only chance"):
-				backGroundMusicInputStream = audioDatabase.getFuriMyOnlyChance();
-				break;
-			}
+			backGroundMusic = audioDatabase.getAudioClip(audioType);
 
 			if (!(backGroundMusicInputStream == null)) {
 				backGroundMusicInputStream.start();

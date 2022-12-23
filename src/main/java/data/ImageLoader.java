@@ -71,6 +71,18 @@ public class ImageLoader {
 			return "src/resources/images/Ships/Ship 5/Ship5.png";
 		case("Bomba"):
 			return "src/resources/images/Ships/Ship 6/Ship6.png";
+		case("Model 3 Better Model Upgrade"):
+			return "src/resources/images/Ships/Player ships/TM_3_Better_Model_Upgrade.png";
+		case("Default Player Engine 1"):
+			return "src/resources/images/gif/PNGtoGIF/Default Player Engine/1.png";
+		case("Default Player Engine 2"):
+			return "src/resources/images/gif/PNGtoGIF/Default Player Engine/2.png";
+		case("Default Player Engine 3"):
+			return "src/resources/images/gif/PNGtoGIF/Default Player Engine/3.png";
+		case("Default Player Engine 7"):
+			return "src/resources/images/gif/PNGtoGIF/Default Player Engine/7.png";
+		case("Default Player Engine 8"):
+			return "src/resources/images/gif/PNGtoGIF/Default Player Engine/8.png";
 		}
 		return "notfound";
 	}

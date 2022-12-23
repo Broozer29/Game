@@ -129,11 +129,6 @@ public class EnemyManager {
 			if (enemy.isVisible()) {
 				enemy.move();
 				enemy.updateBoardBlock();
-				if (enemy.getExhaustAnimation() != null) {
-					enemy.getExhaustAnimation().setX(enemy.getCenterXCoordinate() + (enemy.getWidth() / 2));
-					enemy.getExhaustAnimation()
-							.setY(enemy.getCenterYCoordinate() - (enemy.getExhaustAnimation().getHeight() / 2));
-				}
 			} else {
 				if (enemy.getCurrentHitpoints() < 0) {
 					triggerEnemyDeathSound(enemy);

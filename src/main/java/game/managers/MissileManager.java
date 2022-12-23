@@ -122,6 +122,9 @@ public class MissileManager {
 
 	// Checks collision between friendly missiles and enemies
 	private void checkFriendlyMissileCollision() {
+		if(enemyManager == null) {
+			enemyManager = EnemyManager.getInstance();
+		}
 		for (Missile m : friendlyMissiles) {
 			if (m.isVisible()) {
 				Rectangle r1 = m.getBounds();

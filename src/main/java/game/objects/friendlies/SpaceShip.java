@@ -6,9 +6,11 @@ import java.io.IOException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
 import data.DataClass;
+import data.ImageRotator;
 import game.managers.AudioManager;
 import game.managers.FriendlyManager;
 import game.managers.MissileManager;
+import image.objects.Animation;
 import image.objects.Sprite;
 
 public class SpaceShip extends Sprite {
@@ -23,29 +25,33 @@ public class SpaceShip extends Sprite {
 	private float currentShieldRegenDelayFrame = 0;
 	private float maxHitPoints;
 	private float maxShieldHitPoints;
+	private Animation exhaustAnimation;
 	private MissileManager missileManager = MissileManager.getInstance();
 	private AudioManager audioManager = AudioManager.getInstance();
 	private FriendlyManager friendlyManager = FriendlyManager.getInstance();
+	private ImageRotator imageRotator = ImageRotator.getInstance();
 
 //	private int rotateTestCount = 0;
 //	private int rotateTestMaxCoun = 100;
 //	private int rotatedtimes = 0;
 
-	public SpaceShip() {
+	public SpaceShip(String shipImage, String exhaustImageType) {
 		super(DataClass.getInstance().getWindowWidth() / 10, DataClass.getInstance().getWindowHeight() / 2, 1);
-		initSpaceShip();
+		loadImage(shipImage);
+		setExhaustAnimation(exhaustImageType);
+		setShipHealth();
 	}
 
-	private void initSpaceShip() {
-		loadImage("Player Spaceship");
-		setShipHealth();
+	protected void setExhaustAnimation(String imageType) {
+		this.exhaustAnimation = new Animation(xCoordinate, yCoordinate, imageType, true, scale);
+//		this.exhaustAnimation.rotateAnimetion("Down");
 	}
 
 	// Called when managers need to be reset.
 	public void resetSpaceship() {
 		directionx = 0;
 		directiony = 0;
-		this.hitpoints = 150;
+		this.hitpoints = 150000000;
 		this.maxHitPoints = 150;
 		this.shieldHitpoints = 100;
 		this.maxShieldHitPoints = 100;
@@ -88,20 +94,25 @@ public class SpaceShip extends Sprite {
 	public void move() {
 		xCoordinate += directionx;
 		yCoordinate += directiony;
+		if (this.exhaustAnimation != null) {
+			this.exhaustAnimation.setX(this.getCenterXCoordinate() - (this.getWidth()));
+			this.exhaustAnimation.setY(this.getCenterYCoordinate() - (exhaustAnimation.getHeight() / 2) + 5);
+		}
 	}
 
 	// Launch a missile from the center point of the spaceship
 	public void fire() {
-		if (missileManager == null || friendlyManager == null) {
+		if (missileManager == null || friendlyManager == null || audioManager == null) {
 			missileManager = MissileManager.getInstance();
 			friendlyManager = FriendlyManager.getInstance();
+			audioManager = AudioManager.getInstance();
 		}
 
 		if (currentAttackFrame >= attackSpeed) {
 			try {
 				this.audioManager.firePlayerMissile();
 				this.missileManager.firePlayerMissile(xCoordinate + width, yCoordinate + (height / 2) - 5,
-						friendlyManager.getPlayerMissileType(), "Impact Explosion One" ,0, "Right", 1);
+						friendlyManager.getPlayerMissileType(), "Impact Explosion One", 0, "Right", 1);
 				this.currentAttackFrame = 0;
 			} catch (UnsupportedAudioFileException | IOException e) {
 				e.printStackTrace();
@@ -173,5 +184,9 @@ public class SpaceShip extends Sprite {
 
 	public float getMaxShieldHitpoints() {
 		return this.maxShieldHitPoints;
+	}
+
+	public Animation getExhaustAnimation() {
+		return this.exhaustAnimation;
 	}
 }

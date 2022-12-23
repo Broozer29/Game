@@ -69,22 +69,21 @@ public class LevelManager {
 		}
 	}
 
-	// Spawn command, spawn tries, amount of time required to pass
 	private void saturateLevelOne() {
 		int angleModuloDivider = 2;
 		CustomTimer timer = null;
-//		timer = timerManager.createTimer("Bombs", 20, 10000, true, "Left", angleModuloDivider, 1);
-//		timerManager.addTimerToList(timer);
-//		timer = timerManager.createTimer("Bomba", 3, 2000, true, "Left", angleModuloDivider, 1);
-//		timerManager.addTimerToList(timer);
-//		timer = timerManager.createTimer("Flamer", 3, 2000, true, "Left", angleModuloDivider, 1);
-//		timerManager.addTimerToList(timer);
-//		timer = timerManager.createTimer("Tazer", 3, 2000, true, "Left", angleModuloDivider, 1);
-//		timerManager.addTimerToList(timer);
-//		timer = timerManager.createTimer("Seeker", 3, 2000, true, "Left", angleModuloDivider, 1);
-//		timerManager.addTimerToList(timer);
-//		timer = timerManager.createTimer("Bulldozer", 3, 2000, true, "Left", angleModuloDivider, 1);
-//		timerManager.addTimerToList(timer);
+		timer = timerManager.createTimer("Bombs", 20, 10000, true, "Left", angleModuloDivider, 1);
+		timerManager.addTimerToList(timer);
+		timer = timerManager.createTimer("Bomba", 3, 2000, true, "Left", angleModuloDivider, 1);
+		timerManager.addTimerToList(timer);
+		timer = timerManager.createTimer("Flamer", 3, 2000, true, "Left", angleModuloDivider, 1);
+		timerManager.addTimerToList(timer);
+		timer = timerManager.createTimer("Tazer", 3, 2000, true, "Left", angleModuloDivider, 1);
+		timerManager.addTimerToList(timer);
+		timer = timerManager.createTimer("Seeker", 3, 2000, true, "Left", angleModuloDivider, 1);
+		timerManager.addTimerToList(timer);
+		timer = timerManager.createTimer("Bulldozer", 3, 2000, true, "Left", angleModuloDivider, 1);
+		timerManager.addTimerToList(timer);
 		timer = timerManager.createTimer("Energizer", 3, 2000, true, "Left", angleModuloDivider, 1);
 		timerManager.addTimerToList(timer);
 	}

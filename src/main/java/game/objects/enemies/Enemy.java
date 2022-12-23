@@ -16,23 +16,23 @@ public class Enemy extends Sprite {
 	protected MissileManager missileManager = MissileManager.getInstance();
 	protected AnimationManager animationManager = AnimationManager.getInstance();
 	protected Random random = new Random();
-	
-	//Enemy combat stats
+
+	// Enemy combat stats
 	protected float hitPoints;
 	protected float maxHitPoints;
 	protected float attackSpeedFrameCount;
 	protected float currentAttackSpeedFrameCount = 0;
 	protected boolean hasAttack;
-	
-	//Enemy movement/direction
+
+	// Enemy movement/direction
 	protected int movementSpeed;
 	protected int currentBoardBlock;
 	protected String rotation;
 	protected String direction;
 	protected Trajectory trajectory;
 	protected int angleModuloDivider;
-	
-	//Enemy miscellanious attributes
+
+	// Enemy miscellanious attributes
 	protected String enemyType;
 	protected String deathSound;
 	protected boolean showHealthBar;
@@ -46,15 +46,15 @@ public class Enemy extends Sprite {
 		this.direction = direction;
 		this.currentBoardBlock = 8;
 	}
-	
+
 	protected void setExhaustanimation(String imageType) {
 		this.exhaustAnimation = new Animation(xCoordinate, yCoordinate, imageType, true, scale);
 	}
-	
+
 	protected void setDeathAnimation(String imageType) {
 		this.deathAnimation = new Animation(xCoordinate, yCoordinate, imageType, false, scale);
 	}
-	
+
 	// Called when there is collision between friendly missile and enemy
 	public void takeDamage(float damageTaken) {
 		if (animationManager == null) {
@@ -116,8 +116,12 @@ public class Enemy extends Sprite {
 				this.setVisible(false);
 			}
 		}
+		if (this.exhaustAnimation != null) {
+			this.exhaustAnimation.setX(this.getCenterXCoordinate() + (this.getWidth() / 2));
+			this.exhaustAnimation.setY(this.getCenterYCoordinate() - (exhaustAnimation.getHeight() / 2));
+		}
 	}
-	
+
 	// Random offset for the origin of the missile the enemy shoots
 	protected int calculateRandomWeaponHeightOffset() {
 		int upOrDown = random.nextInt((1 - 0) + 1) + 1;
@@ -160,27 +164,28 @@ public class Enemy extends Sprite {
 	public int getBoardBlockNumber() {
 		return this.currentBoardBlock;
 	}
-	
+
 	public Animation getExhaustAnimation() {
 		return this.exhaustAnimation;
 	}
-	
+
 	public String getEnemyType() {
 		return this.enemyType;
 	}
-	
+
 	public int getAngleModuloDivider() {
 		return this.angleModuloDivider;
 	}
-	
+
 	public Animation getDestroyedAnimation() {
 		return this.deathAnimation;
 	}
-	
+
 	protected int totalDistance() {
-		if(direction.equals("Up") || direction.equals("Down")) {
+		if (direction.equals("Up") || direction.equals("Down")) {
 			return DataClass.getInstance().getWindowHeight() + getAdditionalYSteps();
-		} else return DataClass.getInstance().getWindowWidth() + getAdditionalXSteps();
+		} else
+			return DataClass.getInstance().getWindowWidth() + getAdditionalXSteps();
 	}
 
 	// Required for the trajectory to determine the length of the distance travelled

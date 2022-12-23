@@ -13,11 +13,6 @@ public class AnimationManager {
 	private List<Animation> upperAnimationList = new ArrayList<Animation>();
 	private List<Animation> lowerAnimationList = new ArrayList<Animation>();
 
-	private FriendlyManager friendlyManager = FriendlyManager.getInstance();
-	private Animation playerEngineAnimation = null;
-	private int engineXCoordinate = 0;
-	private int engineYCoordinate = 0;
-
 	public static AnimationManager getInstance() {
 		return instance;
 	}
@@ -27,33 +22,11 @@ public class AnimationManager {
 	public void resetManager() {
 		upperAnimationList = new ArrayList<Animation>();
 		lowerAnimationList = new ArrayList<Animation>();
-		playerEngineAnimation = new Animation(friendlyManager.getSpaceship().getXCoordinate(),
-				friendlyManager.getSpaceship().getYCoordinate(), "Player Engine", true, 1);
-		lowerAnimationList.add(playerEngineAnimation);
-		engineXCoordinate = 0;
-		engineYCoordinate = 0;
 	}
 
 	private AnimationManager() {
-		playerEngineAnimation = new Animation(friendlyManager.getSpaceship().getXCoordinate(),
-				friendlyManager.getSpaceship().getYCoordinate(), "Player Engine", true, 1);
-		lowerAnimationList.add(playerEngineAnimation);
 	}
 
-	// Called every gameloop, sets the engine animation below the spaceship.
-	private void renderPlayerEngine() {
-		engineXCoordinate = friendlyManager.getSpaceship().getXCoordinate()
-				- (playerEngineAnimation.getWidth() / 2 + 5);
-		engineYCoordinate = friendlyManager.getSpaceship().getYCoordinate();
-
-		playerEngineAnimation.setX(engineXCoordinate);
-		playerEngineAnimation.setY(engineYCoordinate);
-
-		if (playerEngineAnimation.getFrame() >= playerEngineAnimation.getTotalFrames()) {
-			playerEngineAnimation.refreshAnimation(engineXCoordinate, engineYCoordinate);
-		}
-
-	}
 
 	public void addDestroyedExplosion(Animation animation) {
 		addUpperAnimation(animation);
@@ -76,7 +49,7 @@ public class AnimationManager {
 	public Animation createAnimation(int xCoordinate, int yCoordinate, String animationType, boolean infiniteLoop, float scale) {
 		return new Animation(xCoordinate, yCoordinate, animationType, infiniteLoop, scale);
 	}
-
+	
 	// Called by EnemyManager when an enemy gets deleted and the belonging
 	// animations need to be removed
 	public void deleteEnemyAnimations(Enemy enemy) {
@@ -119,7 +92,6 @@ public class AnimationManager {
 	}
 
 	public void updateGameTick() {
-		renderPlayerEngine();
 		removeInvisibleAnimations();
 	}
 

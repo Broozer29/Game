@@ -19,6 +19,7 @@ public class ImageDatabase {
 
 	// Friendly images
 	private Image spaceShipImage;
+	private Image model3BetterUpgrade;
 
 	// Enemy images
 	private Image alienSpaceshipImage;
@@ -109,6 +110,9 @@ public class ImageDatabase {
 
 	// testimages
 	private Image testImage;
+	
+	//Images to Gifs
+	private List<Image> defaultPlayerEngine = new ArrayList<Image>();
 
 	private ImageDatabase() {
 		initializeImages();
@@ -129,10 +133,12 @@ public class ImageDatabase {
 		this.initEnemies();
 		this.initMenuImages();
 		this.initProjectiles();
+		this.initPNGtoGIFAnimation();
 	}
 
 	private void initFriendlies() {
 		this.spaceShipImage = imgLoader.getImage("Player Spaceship");
+		this.model3BetterUpgrade = imgLoader.getImage("Model 3 Better Model Upgrade");
 	}
 
 	private void initEnemies() {
@@ -221,6 +227,8 @@ public class ImageDatabase {
 			return this.flamerImage;
 		case ("Bomba"):
 			return this.bombaImage;
+		case("Model 3 Better Model Upgrade"):
+			return this.model3BetterUpgrade;
 		}
 		return testImage;
 	}
@@ -294,15 +302,17 @@ public class ImageDatabase {
 		case("Seeker Destroyed Explosion"):
 			return this.seekerDestroyedExplosionFrames;
 		case("Tazer Destroyed Explosion"):
-			return this.seekerDestroyedExplosionFrames;
+			return this.tazerDestroyedExplosionFrames;
 		case("Energizer Destroyed Explosion"):
-			return this.seekerDestroyedExplosionFrames;
+			return this.energizerDestroyedExplosionFrames;
 		case("Bomba Destroyed Explosion"):
-			return this.seekerDestroyedExplosionFrames;
+			return this.bombaDestroyedExplosionFrames;
 		case("Flamer Destroyed Explosion"):
-			return this.seekerDestroyedExplosionFrames;
+			return this.flamerDestroyedExplosionFrames;
 		case("Bulldozer Destroyed Explosion"):
-			return this.seekerDestroyedExplosionFrames;
+			return this.bulldozerDestroyedExplosionFrames;
+		case("Default Player Engine"):
+			return this.defaultPlayerEngine;
 		}
 		return null;
 	}
@@ -460,6 +470,20 @@ public class ImageDatabase {
 		bombaDestroyedExplosionFrames = gifToImageIcons(reader);
 
 	}
+	
+	private void initPNGtoGIFAnimation() {
+		Image defaultPlayerEngine1 = imgLoader.getImage("Default Player Engine 1");
+		Image defaultPlayerEngine2 = imgLoader.getImage("Default Player Engine 2");
+		Image defaultPlayerEngine3 = imgLoader.getImage("Default Player Engine 3");
+		Image defaultPlayerEngine7 = imgLoader.getImage("Default Player Engine 7");
+		Image defaultPlayerEngine8 = imgLoader.getImage("Default Player Engine 8");
+		defaultPlayerEngine.add(defaultPlayerEngine1);
+		defaultPlayerEngine.add(defaultPlayerEngine2);
+		defaultPlayerEngine.add(defaultPlayerEngine3);
+		defaultPlayerEngine.add(defaultPlayerEngine7);
+		defaultPlayerEngine.add(defaultPlayerEngine8);
+		
+	}
 
 	private List<Image> gifToImageIcons(ImageReader reader) throws IOException {
 		int n = reader.getNumImages(true);
@@ -468,6 +492,10 @@ public class ImageDatabase {
 			imgs.add(new ImageIcon(reader.read(i)).getImage());
 		}
 		return imgs;
+	}
+
+	public Image getModel3BetterUpgrade() {
+		return model3BetterUpgrade;
 	}
 
 }
