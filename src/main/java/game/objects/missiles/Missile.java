@@ -14,7 +14,7 @@ public class Missile extends Sprite {
 	protected Trajectory trajectory;
 	protected String missileDirection;
 	protected int angleModuloDivider;
-	protected int missileMovementSpeed;
+	protected int movementSpeed;
 	protected int maxMissileLength;
 	protected Animation animation;
 	protected Animation explosionAnimation;
@@ -78,7 +78,7 @@ public class Missile extends Sprite {
 	}
 
 	public int getMissileMovementSpeed() {
-		return this.missileMovementSpeed;
+		return this.movementSpeed;
 	}
 
 	public int getMaxMissileLength() {

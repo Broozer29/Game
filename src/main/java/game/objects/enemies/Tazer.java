@@ -21,7 +21,8 @@ public class Tazer extends Enemy {
 		this.hasAttack = true;
 		this.showHealthBar = true;
 		this.deathSound = "Large Ship Destroyed";
-		this.trajectory = new Trajectory(direction, totalDistance(), movementSpeed, angleModuloDivider, true);
+		this.trajectory = new Trajectory();
+		this.trajectory.createRegularTrajectory(direction, totalDistance(), movementSpeed, angleModuloDivider, true, false);		
 		this.setVisible(true);
 		this.setRotation(direction);
 	}

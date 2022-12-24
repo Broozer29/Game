@@ -5,17 +5,51 @@ import java.util.List;
 
 public class Path {
 
+	private String pathType;
 	private String pathDirection;
+
+	// Required for angled & straight lined directions
 	private int moduloDivider;
 	private int stepsToTake;
 	private int stepsTaken;
 	private int stepSize;
+
+	private int startingXCoordinate;
+	private int startingYCoordinate;
+	private int xCoordinateDestination;
+	private int yCoordinateDestination;
 
 	public Path(String pathDirection, int stepsToTake, int stepSize, int moduloDivider) {
 		this.pathDirection = pathDirection;
 		this.stepsToTake = stepsToTake;
 		this.stepSize = stepSize;
 		this.moduloDivider = moduloDivider;
+		this.pathType = "Regular";
+	}
+
+	public Path(int currentXCoordinate, int currentYCoordinate, int stepSize, int xCoordinateDestination,
+			int yCoordinateDestination) {
+		this.pathType = "Homing";
+		this.startingXCoordinate = currentXCoordinate;
+		this.startingYCoordinate = currentYCoordinate;
+		this.xCoordinateDestination = xCoordinateDestination;
+		this.yCoordinateDestination = yCoordinateDestination;
+		this.stepSize = stepSize;
+		this.setHomingDirection();
+	}
+
+	private void setHomingDirection() {
+		if (startingXCoordinate >= xCoordinateDestination) {
+			pathDirection = "Left";
+		} else if (startingXCoordinate < xCoordinateDestination) {
+			pathDirection = "Right";
+		}
+
+		if (startingYCoordinate >= yCoordinateDestination) {
+			pathDirection = pathDirection.concat("Up");
+		} else if (startingYCoordinate < yCoordinateDestination) {
+			pathDirection = pathDirection.concat("Down");
+		}
 	}
 
 	// Returns new X & Y coordinates based on the direction
@@ -61,6 +95,7 @@ public class Path {
 
 		newCoordsList.add(newXCoordinate);
 		newCoordsList.add(newYCoordinate);
+
 		return newCoordsList;
 
 	}
@@ -82,6 +117,7 @@ public class Path {
 			newXCoordinate += stepSize;
 			break;
 		}
+		
 		return newXCoordinate;
 	}
 
@@ -108,19 +144,28 @@ public class Path {
 
 	// Returns wether the path has been completed
 	public boolean isPathWalked() {
-		return stepsTaken >= stepsToTake;
+		if (pathType.equals("Regular")) {
+			return stepsTaken >= stepsToTake;
+		} else if (pathType.equals("Homing")) {
+			return false;
+		}
+		return false;
 	}
 
 	// Called when enemy needs to change speed, for the board block system
 	public void setMovementSpeed(int movementSpeed) {
 		this.stepSize = movementSpeed;
 	}
+	
+	public String getPathType() {
+		return this.pathType;
+	}
 
 	// Use to determine what amount of StepsTaken needs to be taken before another
 	// step can be added to the Y coordinate
 	// Use modulo
 	private boolean isYStepAllowed() {
-		if(moduloDivider == 0) {
+		if (moduloDivider == 0) {
 			return true;
 		}
 		if (stepsTaken % moduloDivider == 0) {

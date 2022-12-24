@@ -1,5 +1,8 @@
 package game.managers;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import game.objects.friendlies.SpaceShip;
 
 public class FriendlyManager {
@@ -25,10 +28,10 @@ public class FriendlyManager {
 		spaceship = null;
 		initSpaceShip();
 		this.playerMissileType = "Player Laserbeam";
-		//True because the player has to start true?
+		// True because the player has to start true?
 		playerAlive = true;
 	}
-	
+
 	public void updateGameTick() {
 		updateSpaceShipMovement();
 		checkPlayerHealth();
@@ -64,6 +67,14 @@ public class FriendlyManager {
 		this.spaceship = new SpaceShip("Model 3 Better Model Upgrade", "Default Player Engine");
 		animationManager.addExhaustAnimation(spaceship.getExhaustAnimation());
 		this.playerAlive = true;
+	}
+
+	public List<Integer> getNearestFriendlyHomingCoordinates() {
+		List<Integer> coordinatesList = new ArrayList<Integer>();
+		coordinatesList.add(spaceship.getCenterXCoordinate());
+		coordinatesList.add(spaceship.getCenterYCoordinate());
+
+		return coordinatesList;
 	}
 
 }

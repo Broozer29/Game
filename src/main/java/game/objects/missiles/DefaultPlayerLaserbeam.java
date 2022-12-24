@@ -11,8 +11,9 @@ public class DefaultPlayerLaserbeam extends Missile {
 		loadImage("Player Laserbeam");
 		setAnimation();
 		
-		this.missileMovementSpeed = 5;
-		this.trajectory = new Trajectory(missileDirection, totalDistance(), missileMovementSpeed, angleModuloDivider, true);
+		this.movementSpeed = 5;
+		this.trajectory = new Trajectory();
+		this.trajectory.createRegularTrajectory(missileDirection, totalDistance(), movementSpeed, angleModuloDivider, true, false);	
 	}
 
 	public void missileAction() {

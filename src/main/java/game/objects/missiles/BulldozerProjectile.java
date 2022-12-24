@@ -10,8 +10,9 @@ public class BulldozerProjectile extends Missile{
 		setAnimation();
 		this.animation.setFrameDelay(3);
 		
-		this.missileMovementSpeed = 5;
-		this.trajectory = new Trajectory(missileDirection, totalDistance(), missileMovementSpeed, angleModuloDivider, true);
+		this.movementSpeed = 5;
+		this.trajectory = new Trajectory();
+		this.trajectory.createRegularTrajectory(missileDirection, totalDistance(), movementSpeed, angleModuloDivider, true, false);	
 	}
 
 	public void missileAction() {

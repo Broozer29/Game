@@ -10,8 +10,9 @@ public class AlienLaserbeam extends Missile {
 		super(x, y, missileType, explosionType, missileDirection, angleModuloDivider, rotation, scale);
 		loadImage("Alien Laserbeam");
 		this.missileDamage = (float) 2.5;
-		this.missileMovementSpeed = 3;
-		this.trajectory = new Trajectory(missileDirection, totalDistance(), missileMovementSpeed, angleModuloDivider, true);
+		this.movementSpeed = 3;
+		this.trajectory = new Trajectory();
+		this.trajectory.createRegularTrajectory(missileDirection, totalDistance(), movementSpeed, angleModuloDivider, true, false);
 	}
 
 	public void missileAction() {

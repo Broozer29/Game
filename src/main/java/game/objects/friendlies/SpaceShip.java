@@ -19,7 +19,7 @@ public class SpaceShip extends Sprite {
 	private int directiony;
 	private float hitpoints;
 	private float shieldHitpoints;
-	private float attackSpeed = 15;
+	private float attackSpeed = 1;
 	private float currentAttackFrame = 0;
 	private float shieldRegenDelay = 300;
 	private float currentShieldRegenDelayFrame = 0;
@@ -114,6 +114,7 @@ public class SpaceShip extends Sprite {
 				this.missileManager.firePlayerMissile(xCoordinate + width, yCoordinate + (height / 2) - 5,
 						friendlyManager.getPlayerMissileType(), "Impact Explosion One", 0, "Right", 1);
 				this.currentAttackFrame = 0;
+				
 			} catch (UnsupportedAudioFileException | IOException e) {
 				e.printStackTrace();
 			}

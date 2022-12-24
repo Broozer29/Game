@@ -48,7 +48,7 @@ public class AudioDatabase {
 	// Resets clips that have finished playing
 	public void resetFinishedClips() {
 		for (int i = 0; i < allActiveClips.size(); i++) {
-			if (!allActiveClips.get(i).isRunning()) {
+			if (!allActiveClips.get(i).isActive()) {
 				allActiveClips.get(i).stop();
 				if (laserBeamClipList.contains(allActiveClips.get(i))) {
 					allActiveClips.get(i).setFramePosition(400);
@@ -124,7 +124,7 @@ public class AudioDatabase {
 
 	private Clip getLaserBeam() {
 		for (int i = 0; i < laserBeamClipList.size(); i++) {
-			if (!laserBeamClipList.get(i).isActive()) {
+			if (!laserBeamClipList.get(i).isRunning()) {
 				allActiveClips.add(laserBeamClipList.get(i));
 				return laserBeamClipList.get(i);
 			}
@@ -134,7 +134,7 @@ public class AudioDatabase {
 
 	private Clip getDestroyedExplosion() {
 		for (int i = 0; i < destroyedExplosionClipList.size(); i++) {
-			if (!destroyedExplosionClipList.get(i).isActive()) {
+			if (!destroyedExplosionClipList.get(i).isRunning()) {
 				allActiveClips.add(destroyedExplosionClipList.get(i));
 				return destroyedExplosionClipList.get(i);
 			}
@@ -144,7 +144,7 @@ public class AudioDatabase {
 
 	private Clip getDefaultAlienExplosion() {
 		for (int i = 0; i < alienSpaceshipDestroyedClipList.size(); i++) {
-			if (!alienSpaceshipDestroyedClipList.get(i).isActive()) {
+			if (!alienSpaceshipDestroyedClipList.get(i).isRunning()) {
 				allActiveClips.add(alienSpaceshipDestroyedClipList.get(i));
 				return alienSpaceshipDestroyedClipList.get(i);
 			}
@@ -154,7 +154,7 @@ public class AudioDatabase {
 
 	private Clip getAlienBombImpact() {
 		for (int i = 0; i < alienBombImpactList.size(); i++) {
-			if (!alienBombImpactList.get(i).isActive()) {
+			if (!alienBombImpactList.get(i).isRunning()) {
 				allActiveClips.add(alienBombImpactList.get(i));
 				return alienBombImpactList.get(i);
 			}
@@ -164,7 +164,7 @@ public class AudioDatabase {
 
 	private Clip getLargeShipDestroyed() {
 		for (int i = 0; i < largeShipDestroyed.size(); i++) {
-			if (!largeShipDestroyed.get(i).isActive()) {
+			if (!largeShipDestroyed.get(i).isRunning()) {
 				allActiveClips.add(largeShipDestroyed.get(i));
 				return largeShipDestroyed.get(i);
 			}

@@ -60,10 +60,6 @@ public class AudioManager {
 	private void playAudio(String audioType) throws UnsupportedAudioFileException, IOException {
 		if (audioType != null) {
 			Clip clip = audioDatabase.getAudioClip(audioType);
-//			if(audioType.equals("Large Ship Destroyed")) {
-//				System.out.println("Yoyoyoyoyo");
-//				System.out.println(clip);
-//			}
 			if (clip != null) {
 				// Adjusts volume
 				FloatControl volume = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);

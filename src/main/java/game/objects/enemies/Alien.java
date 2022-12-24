@@ -17,7 +17,8 @@ public class Alien extends Enemy {
 		this.hasAttack = true;
 		this.deathSound = "Alien Spaceship Destroyed";
 		this.showHealthBar = true;
-		this.trajectory = new Trajectory(direction, totalDistance(), movementSpeed, angleModuloDivider, true);
+		this.trajectory = new Trajectory();
+		this.trajectory.createRegularTrajectory(direction, totalDistance(), movementSpeed, angleModuloDivider, true, false);
 		this.setVisible(true);
 		this.setRotation(direction);
 	}

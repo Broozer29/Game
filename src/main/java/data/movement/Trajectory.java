@@ -17,42 +17,85 @@ public class Trajectory {
 	private Path currentPath;
 	private PathFactory pathFactory = PathFactory.getInstance();
 
-	// enemyDirection, enemyTotalDistance, enemyMovementSpeed
-	// missileDirection, missileLength, missileMovementSpeed, missileAngleSize
+	// Needed for both homing and regular trajectories
 	private String trajectoryDirection;
-	private int totalDistance;
+	private String trajectoryType;
 	private int movementSpeed;
-	private int angleModuloSize;
 	private boolean infiniteMovement;
 
+	// Needed for regular trajectories
+	private int totalDistance;
+	private int angleModuloSize;
 
-	public Trajectory(String trajectoryDirection, int totalDistance, int movementSpeed, int angleModuloSize, boolean infiniteMovement) {
+	// Needed for
+	private boolean friendly;
+	private int startingXCoordinate;
+	private int startingYCoordinate;
+	private int currentXCoordinate;
+	private int currentYCoordinate;
+
+	public Trajectory() {
+
+	}
+
+	public void createRegularTrajectory(String trajectoryDirection, int totalDistance, int movementSpeed, int angleModuloSize,
+			boolean infiniteMovement, boolean friendly) {
 		this.trajectoryDirection = trajectoryDirection;
 		this.totalDistance = totalDistance;
 		this.movementSpeed = movementSpeed;
 		this.angleModuloSize = angleModuloSize;
-		
+		this.infiniteMovement = infiniteMovement;
+		this.trajectoryType = "Regular";
+		createPath();
+	}
+	
+	public void createHomingTrajectory(int currentXCoordinate, int currentYCoordinate, int movementSpeed, boolean friendly) {
+		this.currentXCoordinate = currentXCoordinate;
+		this.currentYCoordinate = currentYCoordinate;
+		this.startingXCoordinate = currentXCoordinate;
+		this.startingYCoordinate = currentYCoordinate;
+		this.friendly = friendly;
+		this.movementSpeed = movementSpeed;
+		this.trajectoryType = "Homing";
+		this.infiniteMovement = true;
 		createPath();
 	}
 
-	//Creates a path based on the given parameters in the constructor.
-	public void createPath() {
+	// Creates a path based on the trajectory type
+	private void createPath() {
+		if (trajectoryType.equals("Regular")) {
+			createRegularPath();
+		}
+
+		if (trajectoryType.equals("Homing")) {
+			createHomingPath();
+		}
+	}
+
+	// Called when needed to create a homing trajectory
+	private void createHomingPath() {
+		Path newPath = pathFactory.getHomingPath(currentXCoordinate, currentYCoordinate, movementSpeed, friendly);
+		addPath(newPath);
+		setCurrentPath();
+	}
+
+	// Called when needed to create a straight or angled line trajectory
+	private void createRegularPath() {
 		Path newPath = null;
 		if (trajectoryDirection.equals("Left") || trajectoryDirection.equals("Right")
 				|| trajectoryDirection.equals("Up") || trajectoryDirection.equals("Down")) {
 			newPath = pathFactory.getStraightLine(trajectoryDirection, totalDistance, movementSpeed);
-			
+
 		} else if (trajectoryDirection.equals("LeftUp") || trajectoryDirection.equals("RightUp")
 				|| trajectoryDirection.equals("LeftDown") || trajectoryDirection.equals("RightDown")) {
 			newPath = pathFactory.getAngledLine(trajectoryDirection, totalDistance, movementSpeed, angleModuloSize);
 		}
-		if(newPath != null) {
+		if (newPath != null) {
 			addPath(newPath);
 			setCurrentPath();
-		} else System.out.println("I couldn't create a path for a missile or enemy!");
-
+		} else
+			System.out.println("I couldn't create a path for a missile or enemy!");
 	}
-
 
 	// Adds the path to the list of paths
 	private void addPath(Path path) {
@@ -63,9 +106,12 @@ public class Trajectory {
 	// needs to be followed.
 	private void removeFinishedPaths() {
 		for (int i = 0; i < pathList.size(); i++) {
-			if (pathList.get(i).isPathWalked()) {
+			if (pathList.get(i).isPathWalked() && pathList.get(i).getPathType().equals("Regular")) {
 				pathList.remove(i);
 				setCurrentPath();
+			} else if(pathList.get(i).getPathType().equals("Homing")) {
+				pathList.remove(i);
+				createHomingPath();
 			}
 		}
 	}
@@ -75,12 +121,7 @@ public class Trajectory {
 		if (pathList.size() > 0) {
 			currentPath = pathList.get(0);
 		}
-		// Creates a brand new path based on the type if the sprite becomes stationary
-		else if (pathList.size() == 0) {
-			if(infiniteMovement) {
-				setCurrentPath();
-			}
-		}
+
 	}
 
 	// Called every move() loop, returns the new X & Y coordinates for the object
@@ -88,9 +129,19 @@ public class Trajectory {
 	public List<Integer> getPathCoordinates(int xCoordinate, int yCoordinate) {
 		List<Integer> coordinatesList = new ArrayList<Integer>();
 		coordinatesList = currentPath.getNewCoordinates(xCoordinate, yCoordinate);
+
+		if (trajectoryType.equals("Homing")) {
+			updateHomingCoordinates(coordinatesList);
+		}
 		removeFinishedPaths();
 		return coordinatesList;
 
+	}
+
+	// Needed for homing trajectories only
+	private void updateHomingCoordinates(List<Integer> coordinatesList) {
+		this.currentXCoordinate = coordinatesList.get(0);
+		this.currentYCoordinate = coordinatesList.get(1);
 	}
 
 	// Updates the movement speed of enemies when they change board blocks
