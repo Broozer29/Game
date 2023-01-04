@@ -18,6 +18,7 @@ public class Animation extends Sprite {
 	private int frameDelayCounter;
 	private int frameDelay = 2;
 	private boolean infiniteLoop;
+	private String imageType;
 
 	public Animation(int x, int y, String imageType, boolean infiniteLoop, float scale) {
 		super(x, y, scale);
@@ -42,7 +43,12 @@ public class Animation extends Sprite {
 		this.frames = ImageDatabase.getInstance().getGif(imageType);
 		this.standardSizeFrames = frames;
 	}
-
+	
+	public void changeFrames(String imageType) {
+		this.frames = ImageDatabase.getInstance().getGif(imageType);
+		this.standardSizeFrames = frames;
+	}
+	
 	// Centers the animation a bit further inwards to the collision spot
 	private void centerAnimationFrame() {
 		this.setX(xCoordinate + (this.getWidth() / 2));
@@ -128,6 +134,10 @@ public class Animation extends Sprite {
 	
 	public void setFrameDelay(int frameDelay) {
 		this.frameDelay = frameDelay;
+	}
+	
+	public String getImageType() {
+		return this.imageType;
 	}
 	
 }

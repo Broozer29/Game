@@ -67,6 +67,7 @@ public class ImageDatabase {
 
 	// Animations
 	private List<Image> playerEngineFrames = new ArrayList<Image>();
+	private List<Image> playerEngineBoostedFrames = new ArrayList<Image>();
 
 
 	// Enemy Projectile Animations
@@ -313,6 +314,8 @@ public class ImageDatabase {
 			return this.bulldozerDestroyedExplosionFrames;
 		case("Default Player Engine"):
 			return this.defaultPlayerEngine;
+		case("Default Player Engine Boosted"):
+			return this.playerEngineBoostedFrames;
 		}
 		return null;
 	}
@@ -472,16 +475,29 @@ public class ImageDatabase {
 	}
 	
 	private void initPNGtoGIFAnimation() {
-		Image defaultPlayerEngine1 = imgLoader.getImage("Default Player Engine 1");
-		Image defaultPlayerEngine2 = imgLoader.getImage("Default Player Engine 2");
-		Image defaultPlayerEngine3 = imgLoader.getImage("Default Player Engine 3");
-		Image defaultPlayerEngine7 = imgLoader.getImage("Default Player Engine 7");
-		Image defaultPlayerEngine8 = imgLoader.getImage("Default Player Engine 8");
-		defaultPlayerEngine.add(defaultPlayerEngine1);
-		defaultPlayerEngine.add(defaultPlayerEngine2);
-		defaultPlayerEngine.add(defaultPlayerEngine3);
-		defaultPlayerEngine.add(defaultPlayerEngine7);
-		defaultPlayerEngine.add(defaultPlayerEngine8);
+		for (int i = 1; i < 6; i++) {
+			String engineString=String.format("Default Player Engine %d",i);  
+			Image image = imgLoader.getImage(engineString);
+			defaultPlayerEngine.add(image);
+		}
+		
+		for (int i = 1; i < 6; i++) {
+			String boostedEngineString=String.format("Default Player Engine Boosted %d",i);  
+			Image image = imgLoader.getImage(boostedEngineString);
+			playerEngineBoostedFrames.add(image);
+		}
+		
+//		Image defaultPlayerEngine1 = imgLoader.getImage("Default Player Engine 1");
+//		Image defaultPlayerEngine2 = imgLoader.getImage("Default Player Engine 2");
+//		Image defaultPlayerEngine3 = imgLoader.getImage("Default Player Engine 3");
+//		Image defaultPlayerEngine7 = imgLoader.getImage("Default Player Engine 7");
+//		Image defaultPlayerEngine8 = imgLoader.getImage("Default Player Engine 8");
+//		
+//		defaultPlayerEngine.add(defaultPlayerEngine1);
+//		defaultPlayerEngine.add(defaultPlayerEngine2);
+//		defaultPlayerEngine.add(defaultPlayerEngine3);
+//		defaultPlayerEngine.add(defaultPlayerEngine7);
+//		defaultPlayerEngine.add(defaultPlayerEngine8);
 		
 	}
 

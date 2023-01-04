@@ -80,7 +80,7 @@ public class LevelManager {
 //		timerManager.addTimerToList(timer);
 		timer = timerManager.createTimer("Tazer", 3, 2000, true, "Left", angleModuloDivider, 1);
 //		timerManager.addTimerToList(timer);
-		timer = timerManager.createTimer("Seeker", 3, 2000, true, "Left", angleModuloDivider, 1);
+		timer = timerManager.createTimer("Seeker", 3, 2000, false, "Left", angleModuloDivider, 1);
 		timerManager.addTimerToList(timer);
 		timer = timerManager.createTimer("Bulldozer", 3, 2000, true, "Left", angleModuloDivider, 1);
 //		timerManager.addTimerToList(timer);

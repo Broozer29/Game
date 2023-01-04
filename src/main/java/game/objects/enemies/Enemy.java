@@ -98,20 +98,19 @@ public class Enemy extends Sprite {
 		List<Integer> newCoordsList = trajectory.getPathCoordinates(xCoordinate, yCoordinate);
 		xCoordinate = newCoordsList.get(0);
 		yCoordinate = newCoordsList.get(1);
-
-		if (direction.equals("Up")) {
+		if (direction.contains("Up")) {
 			if (yCoordinate <= 0) {
 				this.setVisible(false);
 			}
-		} else if (direction.equals("Down")) {
+		} else if (direction.contains("Down")) {
 			if (yCoordinate >= DataClass.getInstance().getWindowHeight()) {
 				this.setVisible(false);
 			}
-		} else if (direction.equals("Left")) {
+		} else if (direction.contains("Left")) {
 			if (xCoordinate < 0) {
 				this.setVisible(false);
 			}
-		} else if (direction.equals("Right")) {
+		} else if (direction.contains("Right")) {
 			if (xCoordinate > DataClass.getInstance().getWindowWidth()) {
 				this.setVisible(false);
 			}
@@ -182,7 +181,7 @@ public class Enemy extends Sprite {
 	}
 
 	protected int totalDistance() {
-		if (direction.equals("Up") || direction.equals("Down")) {
+		if (direction.contains("Up") || direction.contains("Down")) {
 			return DataClass.getInstance().getWindowHeight() + getAdditionalYSteps();
 		} else
 			return DataClass.getInstance().getWindowWidth() + getAdditionalXSteps();
@@ -190,7 +189,9 @@ public class Enemy extends Sprite {
 
 	// Required for the trajectory to determine the length of the distance travelled
 	protected int getAdditionalXSteps() {
-		return Math.abs(DataClass.getInstance().getWindowWidth() - xCoordinate + width);
+		//Somehow comes up short 
+//		return Math.abs(DataClass.getInstance().getWindowWidth() - (xCoordinate + width));
+		return Math.abs(DataClass.getInstance().getWindowWidth());
 	}
 
 	// Required for the trajectory to determine the length of the distance travelled

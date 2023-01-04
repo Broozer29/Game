@@ -2,6 +2,7 @@ package data.movement;
 
 import java.util.List;
 
+import data.DataClass;
 import game.managers.FriendlyManager;
 
 public class PathFactory {
@@ -30,17 +31,22 @@ public class PathFactory {
 		return newPath;
 	}
 
-	public Path getHomingPath(int currentXCoordinate, int currentYCoordinate, int movementSpeed, boolean friendly) {
-		if(friendlyManager == null) {
+	public Path getHomingPath(int currentXCoordinate, int currentYCoordinate, int movementSpeed, boolean friendly,
+			String fallbackDirection, int angleModulo, int xCoordinateDestination, int yCoordinateDestination) {
+		if (friendlyManager == null) {
 			friendlyManager = FriendlyManager.getInstance();
 		}
-		List<Integer> destinationCoordinatesList = friendlyManager.getNearestFriendlyHomingCoordinates();
-		
-		int xCoordinateDestination = destinationCoordinatesList.get(0);
-		int yCoordinateDestination = destinationCoordinatesList.get(1);
-		Path newPath = new Path(currentXCoordinate, currentYCoordinate, movementSpeed, xCoordinateDestination,
-				yCoordinateDestination);
-		return newPath;
-	}
 
+		int xStepsToTake = Math.abs((xCoordinateDestination - currentXCoordinate) / movementSpeed);
+		int yStepsToTake = Math.abs((yCoordinateDestination - currentYCoordinate) / movementSpeed);
+
+		int stepsToTake = 0;
+		if (xStepsToTake > yStepsToTake) {
+			stepsToTake = xStepsToTake;
+		} else
+			stepsToTake = yStepsToTake;
+
+		return new Path(currentXCoordinate, currentYCoordinate, stepsToTake, movementSpeed, xCoordinateDestination,
+				yCoordinateDestination, angleModulo, fallbackDirection);
+	}
 }

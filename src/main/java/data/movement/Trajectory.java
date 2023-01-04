@@ -3,31 +3,27 @@ package data.movement;
 import java.util.ArrayList;
 import java.util.List;
 
-import data.DataClass;
-import game.objects.enemies.Alien;
-import game.objects.enemies.Enemy;
-import game.objects.missiles.AlienLaserbeam;
-import game.objects.missiles.DefaultPlayerLaserbeam;
-import game.objects.missiles.Missile;
-import game.objects.missiles.SeekerProjectile;
+import game.managers.FriendlyManager;
 
 public class Trajectory {
 
 	private List<Path> pathList = new ArrayList<Path>();
 	private Path currentPath;
 	private PathFactory pathFactory = PathFactory.getInstance();
+	private FriendlyManager friendlyManager = FriendlyManager.getInstance();
 
 	// Needed for both homing and regular trajectories
 	private String trajectoryDirection;
 	private String trajectoryType;
 	private int movementSpeed;
 	private boolean infiniteMovement;
+	private int angleModuloSize;
 
 	// Needed for regular trajectories
 	private int totalDistance;
-	private int angleModuloSize;
 
-	// Needed for
+
+	// Needed for homing trajectories
 	private boolean friendly;
 	private int startingXCoordinate;
 	private int startingYCoordinate;
@@ -38,8 +34,8 @@ public class Trajectory {
 
 	}
 
-	public void createRegularTrajectory(String trajectoryDirection, int totalDistance, int movementSpeed, int angleModuloSize,
-			boolean infiniteMovement, boolean friendly) {
+	public void createRegularTrajectory(String trajectoryDirection, int totalDistance, int movementSpeed,
+			int angleModuloSize, boolean infiniteMovement, boolean friendly) {
 		this.trajectoryDirection = trajectoryDirection;
 		this.totalDistance = totalDistance;
 		this.movementSpeed = movementSpeed;
@@ -48,16 +44,19 @@ public class Trajectory {
 		this.trajectoryType = "Regular";
 		createPath();
 	}
-	
-	public void createHomingTrajectory(int currentXCoordinate, int currentYCoordinate, int movementSpeed, boolean friendly) {
+
+	public void createHomingTrajectory(int currentXCoordinate, int currentYCoordinate, int movementSpeed,
+			boolean friendly, String fallbackDirection, int angleModulo) {
 		this.currentXCoordinate = currentXCoordinate;
 		this.currentYCoordinate = currentYCoordinate;
 		this.startingXCoordinate = currentXCoordinate;
 		this.startingYCoordinate = currentYCoordinate;
+		this.angleModuloSize = angleModulo;
 		this.friendly = friendly;
 		this.movementSpeed = movementSpeed;
 		this.trajectoryType = "Homing";
 		this.infiniteMovement = true;
+		this.trajectoryDirection = fallbackDirection;
 		createPath();
 	}
 
@@ -74,7 +73,16 @@ public class Trajectory {
 
 	// Called when needed to create a homing trajectory
 	private void createHomingPath() {
-		Path newPath = pathFactory.getHomingPath(currentXCoordinate, currentYCoordinate, movementSpeed, friendly);
+
+		// Er zou niet steeds opnieuw een pad gemaakt moeten worden. Een homing missile
+		// zou een eindeloos pad moeten zijn dat een fallback heeft na X stappen
+		// of als het te dichtbij de speler komt
+		List<Integer> destinationCoordinatesList = friendlyManager.getNearestFriendlyHomingCoordinates();
+		int xCoordinateDestination = destinationCoordinatesList.get(0);
+		int yCoordinateDestination = destinationCoordinatesList.get(1);
+		
+		Path newPath = pathFactory.getHomingPath(currentXCoordinate, currentYCoordinate, movementSpeed, friendly,
+				trajectoryDirection, angleModuloSize, xCoordinateDestination, yCoordinateDestination);
 		addPath(newPath);
 		setCurrentPath();
 	}
@@ -109,9 +117,9 @@ public class Trajectory {
 			if (pathList.get(i).isPathWalked() && pathList.get(i).getPathType().equals("Regular")) {
 				pathList.remove(i);
 				setCurrentPath();
-			} else if(pathList.get(i).getPathType().equals("Homing")) {
-				pathList.remove(i);
-				createHomingPath();
+			} else if (pathList.get(i).getPathType().equals("Homing")) {
+				List<Integer> coords = FriendlyManager.getInstance().getNearestFriendlyHomingCoordinates();
+				pathList.get(i).updateHomingDestination(coords.get(0), coords.get(1), currentXCoordinate, currentYCoordinate);
 			}
 		}
 	}

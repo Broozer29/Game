@@ -59,9 +59,12 @@ public class AudioManager {
 	// Play singular audios
 	private void playAudio(String audioType) throws UnsupportedAudioFileException, IOException {
 		if (audioType != null) {
+//			audioDatabase.getAudioClip(audioType).start();
+			
 			Clip clip = audioDatabase.getAudioClip(audioType);
 			if (clip != null) {
 				// Adjusts volume
+				
 				FloatControl volume = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
 				switch (audioType) {
 				case ("Player Laserbeam"):

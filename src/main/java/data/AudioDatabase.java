@@ -20,7 +20,7 @@ public class AudioDatabase {
 	// Zo kun je een maximum aantal clips afdwingen per soort zonder dat clips niet
 	// kunnen afspelen.
 
-	private int clipListSize = 10;
+	private int clipListSize = 4;
 	private List<Clip> allActiveClips = new ArrayList<Clip>();
 	private List<Clip> alienBombImpactList = new ArrayList<Clip>();
 	private List<Clip> laserBeamClipList = new ArrayList<Clip>();
@@ -69,17 +69,18 @@ public class AudioDatabase {
 
 	private void initSoundEffects() throws LineUnavailableException {
 		for (int i = 0; i < clipListSize; i++) {
-			Clip tempLaserbeamClip = audioLoader.getSoundfile("Player Laserbeam");
-			laserBeamClipList.add(tempLaserbeamClip);
-			Clip tempDestroyedExplosionClip = audioLoader.getSoundfile("Destroyed Explosion");
-			destroyedExplosionClipList.add(tempDestroyedExplosionClip);
-			Clip tempAlienSpaceshipExplosionClip = audioLoader.getSoundfile("Alien Spaceship Destroyed");
-			alienSpaceshipDestroyedClipList.add(tempAlienSpaceshipExplosionClip);
-			Clip tempAlienBombImpactClip = audioLoader.getSoundfile("Alien Bomb Impact");
-			alienBombImpactList.add(tempAlienBombImpactClip);
-			Clip tempLargeShipDestroyed = audioLoader.getSoundfile("Large Ship Destroyed");
-			largeShipDestroyed.add(tempLargeShipDestroyed);
+//			Clip tempLaserbeamClip = audioLoader.getSoundfile("Player Laserbeam");
+			laserBeamClipList.add(audioLoader.getSoundfile("Player Laserbeam"));
+//			Clip tempDestroyedExplosionClip = audioLoader.getSoundfile("Destroyed Explosion");
+			destroyedExplosionClipList.add(audioLoader.getSoundfile("Destroyed Explosion"));
+//			Clip tempAlienSpaceshipExplosionClip = audioLoader.getSoundfile("Alien Spaceship Destroyed");
+			alienSpaceshipDestroyedClipList.add(audioLoader.getSoundfile("Alien Spaceship Destroyed"));
+//			Clip tempAlienBombImpactClip = audioLoader.getSoundfile("Alien Bomb Impact");
+			alienBombImpactList.add(audioLoader.getSoundfile("Alien Bomb Impact"));
+//			Clip tempLargeShipDestroyed = audioLoader.getSoundfile("Large Ship Destroyed");
+			largeShipDestroyed.add(audioLoader.getSoundfile("Large Ship Destroyed"));
 		}
+
 	}
 
 	public Clip getAudioClip(String audioType) {
@@ -124,7 +125,8 @@ public class AudioDatabase {
 
 	private Clip getLaserBeam() {
 		for (int i = 0; i < laserBeamClipList.size(); i++) {
-			if (!laserBeamClipList.get(i).isRunning()) {
+		
+			if (!laserBeamClipList.get(i).isActive()) {
 				allActiveClips.add(laserBeamClipList.get(i));
 				return laserBeamClipList.get(i);
 			}
@@ -163,7 +165,9 @@ public class AudioDatabase {
 	}
 
 	private Clip getLargeShipDestroyed() {
-		for (int i = 0; i < largeShipDestroyed.size(); i++) {
+		for (int i = 0; i < largeShipDestroyed.size(); i++) { 
+//			System.out.println("Clip ID: " + laserBeamClipList.get(i) + " Active: "
+//					+ laserBeamClipList.get(i).isActive() + " Running: " + laserBeamClipList.get(i).isRunning() + " Frame position: " + laserBeamClipList.get(i).getFramePosition());
 			if (!largeShipDestroyed.get(i).isRunning()) {
 				allActiveClips.add(largeShipDestroyed.get(i));
 				return largeShipDestroyed.get(i);

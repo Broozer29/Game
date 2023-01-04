@@ -9,9 +9,9 @@ public class SeekerProjectile extends Missile {
 		this.missileDamage = (float) 7.5;
 		setAnimation();
 		this.animation.setFrameDelay(3);
-		this.movementSpeed = 5;
+		this.movementSpeed = 2;
 		this.trajectory = new Trajectory();
-		this.trajectory.createHomingTrajectory(xCoordinate, yCoordinate, movementSpeed, false);
+		this.trajectory.createHomingTrajectory(xCoordinate, yCoordinate, 2, false, missileDirection, 3);
 //		this.trajectory.createRegularTrajectory(missileDirection, totalDistance(), movementSpeed, angleModuloDivider, true, false);	
 		}
 
@@ -21,3 +21,4 @@ public class SeekerProjectile extends Missile {
 	}
 
 }
+ 

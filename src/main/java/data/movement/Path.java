@@ -14,10 +14,12 @@ public class Path {
 	private int stepsTaken;
 	private int stepSize;
 
+	// Required for homing missiles
 	private int startingXCoordinate;
 	private int startingYCoordinate;
 	private int xCoordinateDestination;
 	private int yCoordinateDestination;
+	private String fallbackDirection;
 
 	public Path(String pathDirection, int stepsToTake, int stepSize, int moduloDivider) {
 		this.pathDirection = pathDirection;
@@ -27,29 +29,68 @@ public class Path {
 		this.pathType = "Regular";
 	}
 
-	public Path(int currentXCoordinate, int currentYCoordinate, int stepSize, int xCoordinateDestination,
-			int yCoordinateDestination) {
+	public Path(int currentXCoordinate, int currentYCoordinate, int stepsToTake, int stepSize,
+			int xCoordinateDestination, int yCoordinateDestination, int angleModulo, String fallbackDirection) {
 		this.pathType = "Homing";
 		this.startingXCoordinate = currentXCoordinate;
 		this.startingYCoordinate = currentYCoordinate;
 		this.xCoordinateDestination = xCoordinateDestination;
 		this.yCoordinateDestination = yCoordinateDestination;
+		this.moduloDivider = angleModulo;
+		this.stepsToTake = stepsToTake;
 		this.stepSize = stepSize;
+		this.fallbackDirection = fallbackDirection;
 		this.setHomingDirection();
 	}
 
 	private void setHomingDirection() {
-		if (startingXCoordinate >= xCoordinateDestination) {
+		boolean canConcat = false;
+		if (startingXCoordinate >= xCoordinateDestination && fallbackDirection.contains("Left")) {
 			pathDirection = "Left";
-		} else if (startingXCoordinate < xCoordinateDestination) {
+			canConcat = true;
+		} else if (startingXCoordinate < xCoordinateDestination && fallbackDirection.contains("Right")) {
 			pathDirection = "Right";
+			canConcat = true;
 		}
 
-		if (startingYCoordinate >= yCoordinateDestination) {
+		if (startingYCoordinate >= yCoordinateDestination && canConcat) {
 			pathDirection = pathDirection.concat("Up");
-		} else if (startingYCoordinate < yCoordinateDestination) {
+		} else if (startingYCoordinate < yCoordinateDestination && canConcat) {
 			pathDirection = pathDirection.concat("Down");
 		}
+		
+		if(!canConcat){
+			pathDirection = fallbackDirection;
+		}
+	}
+
+	public void updateHomingDestination(int xCoordinate, int yCoordinate, int currentXCoordinate,
+			int currentYCoordinate) {
+		this.xCoordinateDestination = xCoordinate;
+		this.yCoordinateDestination = yCoordinate;
+		boolean passedPlayer = false;
+
+		int xDistance = Math.abs((xCoordinateDestination - currentXCoordinate));
+		int yDistance = Math.abs((yCoordinateDestination - currentYCoordinate));
+		
+		//Hier checken of de missile al voorbij de speler is
+		if(xCoordinateDestination - currentXCoordinate > 0 && fallbackDirection.contains("Left")) {
+			this.pathDirection = fallbackDirection;
+			passedPlayer = true;
+		}
+		
+		if(xCoordinateDestination - currentXCoordinate < 0 && fallbackDirection.contains("Right")) {
+			this.pathDirection = fallbackDirection;
+			passedPlayer = true;
+		}
+		
+		if(passedPlayer) {
+			return;
+		}
+		
+		if (xDistance < 150 && yDistance < 150) {
+			this.pathDirection = fallbackDirection;
+		} else setHomingDirection();
 	}
 
 	// Returns new X & Y coordinates based on the direction
@@ -117,7 +158,7 @@ public class Path {
 			newXCoordinate += stepSize;
 			break;
 		}
-		
+
 		return newXCoordinate;
 	}
 
@@ -144,19 +185,17 @@ public class Path {
 
 	// Returns wether the path has been completed
 	public boolean isPathWalked() {
-		if (pathType.equals("Regular")) {
-			return stepsTaken >= stepsToTake;
-		} else if (pathType.equals("Homing")) {
+		if(pathType.equals("Homing")) {
 			return false;
 		}
-		return false;
+		return stepsTaken >= stepsToTake;
 	}
 
 	// Called when enemy needs to change speed, for the board block system
 	public void setMovementSpeed(int movementSpeed) {
 		this.stepSize = movementSpeed;
 	}
-	
+
 	public String getPathType() {
 		return this.pathType;
 	}
