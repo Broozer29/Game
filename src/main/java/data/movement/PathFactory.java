@@ -18,27 +18,27 @@ public class PathFactory {
 		return instance;
 	}
 
-	public Path getStraightLine(String direction, int totalDistance, int movementSpeed) {
-		int stepsToTake = totalDistance / movementSpeed;
-		Path newPath = new Path(direction, stepsToTake, movementSpeed, 0);
+	public Path getStraightLine(String pathDirection, int totalDistance, int stepSize) {
+		int stepsToTake = totalDistance / stepSize;
+		Path newPath = new RegularPath(pathDirection, stepSize, 0, stepsToTake);
 		return newPath;
 	}
 
 	// Total distance is the X distance to walk
-	public Path getAngledLine(String direction, int totalDistance, int movementSpeed, int moduloDivider) {
-		int stepsToTake = totalDistance / movementSpeed;
-		Path newPath = new Path(direction, stepsToTake, movementSpeed, moduloDivider);
+	public Path getAngledLine(String pathDirection, int totalDistance, int stepSize, int moduloDivider) {
+		int stepsToTake = totalDistance / stepSize;
+		Path newPath = new RegularPath(pathDirection, stepSize, moduloDivider, stepsToTake);
 		return newPath;
 	}
 
-	public Path getHomingPath(int currentXCoordinate, int currentYCoordinate, int movementSpeed, boolean friendly,
-			String fallbackDirection, int angleModulo, int xCoordinateDestination, int yCoordinateDestination) {
+	public Path getHomingPath(int currentXCoordinate, int currentYCoordinate, int stepSize, boolean friendly,
+			String fallbackDirection, int moduloDivider, int xCoordinateDestination, int yCoordinateDestination) {
 		if (friendlyManager == null) {
 			friendlyManager = FriendlyManager.getInstance();
 		}
 
-		int xStepsToTake = Math.abs((xCoordinateDestination - currentXCoordinate) / movementSpeed);
-		int yStepsToTake = Math.abs((yCoordinateDestination - currentYCoordinate) / movementSpeed);
+		int xStepsToTake = Math.abs((xCoordinateDestination - currentXCoordinate) / stepSize);
+		int yStepsToTake = Math.abs((yCoordinateDestination - currentYCoordinate) / stepSize);
 
 		int stepsToTake = 0;
 		if (xStepsToTake > yStepsToTake) {
@@ -46,7 +46,7 @@ public class PathFactory {
 		} else
 			stepsToTake = yStepsToTake;
 
-		return new Path(currentXCoordinate, currentYCoordinate, stepsToTake, movementSpeed, xCoordinateDestination,
-				yCoordinateDestination, angleModulo, fallbackDirection);
+		return new HomingPath(fallbackDirection, stepSize, moduloDivider, currentXCoordinate, currentYCoordinate,
+				xCoordinateDestination, yCoordinateDestination);
 	}
 }

@@ -15,7 +15,7 @@ public class Trajectory {
 	// Needed for both homing and regular trajectories
 	private String trajectoryDirection;
 	private String trajectoryType;
-	private int movementSpeed;
+	private int stepSize;
 	private boolean infiniteMovement;
 	private int angleModuloSize;
 
@@ -34,18 +34,18 @@ public class Trajectory {
 
 	}
 
-	public void createRegularTrajectory(String trajectoryDirection, int totalDistance, int movementSpeed,
+	public void createRegularTrajectory(String trajectoryDirection, int totalDistance, int stepSize,
 			int angleModuloSize, boolean infiniteMovement, boolean friendly) {
 		this.trajectoryDirection = trajectoryDirection;
 		this.totalDistance = totalDistance;
-		this.movementSpeed = movementSpeed;
+		this.stepSize = stepSize;
 		this.angleModuloSize = angleModuloSize;
 		this.infiniteMovement = infiniteMovement;
 		this.trajectoryType = "Regular";
 		createPath();
 	}
 
-	public void createHomingTrajectory(int currentXCoordinate, int currentYCoordinate, int movementSpeed,
+	public void createHomingTrajectory(int currentXCoordinate, int currentYCoordinate, int stepSize,
 			boolean friendly, String fallbackDirection, int angleModulo) {
 		this.currentXCoordinate = currentXCoordinate;
 		this.currentYCoordinate = currentYCoordinate;
@@ -53,7 +53,7 @@ public class Trajectory {
 		this.startingYCoordinate = currentYCoordinate;
 		this.angleModuloSize = angleModulo;
 		this.friendly = friendly;
-		this.movementSpeed = movementSpeed;
+		this.stepSize = stepSize;
 		this.trajectoryType = "Homing";
 		this.infiniteMovement = true;
 		this.trajectoryDirection = fallbackDirection;
@@ -81,7 +81,7 @@ public class Trajectory {
 		int xCoordinateDestination = destinationCoordinatesList.get(0);
 		int yCoordinateDestination = destinationCoordinatesList.get(1);
 		
-		Path newPath = pathFactory.getHomingPath(currentXCoordinate, currentYCoordinate, movementSpeed, friendly,
+		Path newPath = pathFactory.getHomingPath(currentXCoordinate, currentYCoordinate, stepSize, friendly,
 				trajectoryDirection, angleModuloSize, xCoordinateDestination, yCoordinateDestination);
 		addPath(newPath);
 		setCurrentPath();
@@ -92,11 +92,11 @@ public class Trajectory {
 		Path newPath = null;
 		if (trajectoryDirection.equals("Left") || trajectoryDirection.equals("Right")
 				|| trajectoryDirection.equals("Up") || trajectoryDirection.equals("Down")) {
-			newPath = pathFactory.getStraightLine(trajectoryDirection, totalDistance, movementSpeed);
+			newPath = pathFactory.getStraightLine(trajectoryDirection, totalDistance, stepSize);
 
 		} else if (trajectoryDirection.equals("LeftUp") || trajectoryDirection.equals("RightUp")
 				|| trajectoryDirection.equals("LeftDown") || trajectoryDirection.equals("RightDown")) {
-			newPath = pathFactory.getAngledLine(trajectoryDirection, totalDistance, movementSpeed, angleModuloSize);
+			newPath = pathFactory.getAngledLine(trajectoryDirection, totalDistance, stepSize, angleModuloSize);
 		}
 		if (newPath != null) {
 			addPath(newPath);

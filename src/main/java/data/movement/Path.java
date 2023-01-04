@@ -4,15 +4,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Path {
-
+	// Required for both types
 	private String pathType;
 	private String pathDirection;
+	private int stepSize;
+	private int moduloDivider;
 
 	// Required for angled & straight lined directions
-	private int moduloDivider;
 	private int stepsToTake;
 	private int stepsTaken;
-	private int stepSize;
 
 	// Required for homing missiles
 	private int startingXCoordinate;
@@ -21,27 +21,28 @@ public class Path {
 	private int yCoordinateDestination;
 	private String fallbackDirection;
 
-	public Path(String pathDirection, int stepsToTake, int stepSize, int moduloDivider) {
+	public Path(String pathType, String pathDirection, int stepSize, int moduloDivider) {
+		this.pathType = pathType;
 		this.pathDirection = pathDirection;
-		this.stepsToTake = stepsToTake;
 		this.stepSize = stepSize;
 		this.moduloDivider = moduloDivider;
-		this.pathType = "Regular";
 	}
 
-	public Path(int currentXCoordinate, int currentYCoordinate, int stepsToTake, int stepSize,
-			int xCoordinateDestination, int yCoordinateDestination, int angleModulo, String fallbackDirection) {
-		this.pathType = "Homing";
-		this.startingXCoordinate = currentXCoordinate;
-		this.startingYCoordinate = currentYCoordinate;
+	protected void initRegularPath(int stepsToTake) {
+		this.stepsToTake = stepsToTake;
+		this.stepsTaken = 0;
+	}
+
+	protected void initHomingPath(int startingXCoordinate, int startingYCoordinate, int xCoordinateDestination,
+			int yCoordinateDestination, String fallbackstring) {
+		this.startingXCoordinate = startingXCoordinate;
+		this.startingYCoordinate = startingYCoordinate;
 		this.xCoordinateDestination = xCoordinateDestination;
 		this.yCoordinateDestination = yCoordinateDestination;
-		this.moduloDivider = angleModulo;
-		this.stepsToTake = stepsToTake;
-		this.stepSize = stepSize;
-		this.fallbackDirection = fallbackDirection;
-		this.setHomingDirection();
+		this.fallbackDirection = fallbackstring;
 	}
+	
+	
 
 	private void setHomingDirection() {
 		boolean canConcat = false;
@@ -136,7 +137,6 @@ public class Path {
 
 		newCoordsList.add(newXCoordinate);
 		newCoordsList.add(newYCoordinate);
-
 		return newCoordsList;
 
 	}
@@ -212,5 +212,4 @@ public class Path {
 		}
 		return false;
 	}
-
 }
