@@ -2,6 +2,7 @@ package data.movement;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.awt.Rectangle;
 
 public class Path {
 	// Required for both types
@@ -20,6 +21,7 @@ public class Path {
 	private int xCoordinateDestination;
 	private int yCoordinateDestination;
 	private String fallbackDirection;
+	private boolean hasTargetLock;
 
 	public Path(String pathType, String pathDirection, int stepSize, int moduloDivider) {
 		this.pathType = pathType;
@@ -40,9 +42,45 @@ public class Path {
 		this.xCoordinateDestination = xCoordinateDestination;
 		this.yCoordinateDestination = yCoordinateDestination;
 		this.fallbackDirection = fallbackstring;
+		this.hasTargetLock = true;
 	}
-	
-	
+
+	//Gets the rectangles of the spaceship homing square and the missile
+	//Checks if rectangles intersect, if so, lose target lock, if not, update direction
+	private void setHomingPathDirection(Rectangle homingRectangle, Rectangle missileRectangle) {
+		int homingRectangleXCoordinate = (int) Math.round(homingRectangle.getCenterX());
+		int homingRectangleYCoordinate = (int) Math.round(homingRectangle.getCenterY());
+
+		int missileRectangleXCoordinate = (int) Math.round(missileRectangle.getCenterX());
+		int missileRectangleYCoordinate = (int) Math.round(missileRectangle.getCenterY());
+
+		if (!homingRectangle.intersects(missileRectangle) && hasTargetLock) {
+			String leftOrRight = "";
+			String upOrDown = "";
+
+			if (homingRectangleXCoordinate < missileRectangleXCoordinate) {
+				leftOrRight = "Left";
+			} else if (homingRectangleXCoordinate > missileRectangleXCoordinate) {
+				leftOrRight = "Right";
+			}
+
+			if (homingRectangleYCoordinate < missileRectangleYCoordinate) {
+				upOrDown = "Up";
+			} else if (homingRectangleYCoordinate > missileRectangleYCoordinate) {
+				leftOrRight = "Down";
+			}
+
+			pathDirection = leftOrRight + upOrDown;
+			fallbackDirection = pathDirection;
+		} else if (homingRectangle.intersects(missileRectangle) && hasTargetLock) {
+			pathDirection = fallbackDirection;
+			hasTargetLock = false;
+		} else if(!hasTargetLock) {
+			pathDirection = fallbackDirection;
+		}
+		
+
+	}
 
 	private void setHomingDirection() {
 		boolean canConcat = false;
@@ -59,9 +97,11 @@ public class Path {
 		} else if (startingYCoordinate < yCoordinateDestination && canConcat) {
 			pathDirection = pathDirection.concat("Down");
 		}
-		
-		if(!canConcat){
+
+		if (!canConcat) {
 			pathDirection = fallbackDirection;
+		} else if (canConcat) {
+			fallbackDirection = pathDirection;
 		}
 	}
 
@@ -73,28 +113,31 @@ public class Path {
 
 		int xDistance = Math.abs((xCoordinateDestination - currentXCoordinate));
 		int yDistance = Math.abs((yCoordinateDestination - currentYCoordinate));
-		
-		//Hier checken of de missile al voorbij de speler is
-		if(xCoordinateDestination - currentXCoordinate > 0 && fallbackDirection.contains("Left")) {
+
+		// Hier checken of de missile al voorbij de speler is
+		if (xCoordinateDestination - currentXCoordinate > 0 && fallbackDirection.contains("Left")) {
 			this.pathDirection = fallbackDirection;
 			passedPlayer = true;
 		}
-		
-		if(xCoordinateDestination - currentXCoordinate < 0 && fallbackDirection.contains("Right")) {
+
+		if (xCoordinateDestination - currentXCoordinate < 0 && fallbackDirection.contains("Right")) {
 			this.pathDirection = fallbackDirection;
 			passedPlayer = true;
 		}
-		
-		if(passedPlayer) {
+
+		if (passedPlayer) {
 			return;
 		}
-		
+
 		if (xDistance < 150 && yDistance < 150) {
 			this.pathDirection = fallbackDirection;
-		} else setHomingDirection();
+		} else
+			setHomingDirection();
 	}
 
 	// Returns new X & Y coordinates based on the direction
+	// Used for "Regular" type directions, where the direction is set once and never
+	// changes.
 	public List<Integer> getNewCoordinates(int xCoordinate, int yCoordinate) {
 		List<Integer> newCoordsList = new ArrayList<Integer>();
 		int newXCoordinate = xCoordinate;
@@ -185,7 +228,7 @@ public class Path {
 
 	// Returns wether the path has been completed
 	public boolean isPathWalked() {
-		if(pathType.equals("Homing")) {
+		if (pathType.equals("Homing")) {
 			return false;
 		}
 		return stepsTaken >= stepsToTake;

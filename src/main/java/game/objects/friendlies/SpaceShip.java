@@ -1,5 +1,6 @@
 package game.objects.friendlies;
 
+import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
 
@@ -28,12 +29,16 @@ public class SpaceShip extends Sprite {
 	private int movementSpeed = 2;
 	private String currentExhaust;
 	private Animation exhaustAnimation;
+	private float homingRectangleResizeScale;
+	private int homingRectangleXCoordinate;
+	private int homingRectangleYCoordinate;
+	private int homingRectangleWidth;
+	private int homingRectangleHeight;
+
 	private MissileManager missileManager = MissileManager.getInstance();
 	private AudioManager audioManager = AudioManager.getInstance();
 	private FriendlyManager friendlyManager = FriendlyManager.getInstance();
 	private ImageRotator imageRotator = ImageRotator.getInstance();
-	
-	
 
 //	private int rotateTestCount = 0;
 //	private int rotateTestMaxCoun = 100;
@@ -104,6 +109,11 @@ public class SpaceShip extends Sprite {
 		if (this.exhaustAnimation != null) {
 			this.exhaustAnimation.setX(this.getCenterXCoordinate() - (this.getWidth()));
 			this.exhaustAnimation.setY(this.getCenterYCoordinate() - (exhaustAnimation.getHeight() / 2) + 5);
+			homingRectangleResizeScale = (float) 1.5;
+			homingRectangleXCoordinate = (int) (xCoordinate - (width * homingRectangleResizeScale));
+			homingRectangleYCoordinate = (int) (yCoordinate - (height * homingRectangleResizeScale));
+			homingRectangleWidth = (int) (width * (homingRectangleResizeScale * 2));
+			homingRectangleHeight = (int) (height * (homingRectangleResizeScale * 2.25));
 		}
 	}
 
@@ -142,10 +152,8 @@ public class SpaceShip extends Sprite {
 		int privyMovementSpeed = movementSpeed;
 		if (privyMovementSpeed == 2 && currentExhaust.equals("Default Player Engine Boosted")) {
 			privyMovementSpeed = 8;
-			System.out.println("huh");
 		} else if (privyMovementSpeed == 8 && currentExhaust.equals("Default Player Engine")) {
 			privyMovementSpeed = 2;
-			System.out.println("huh2");
 		}
 
 		int key = e.getKeyCode();
@@ -226,5 +234,19 @@ public class SpaceShip extends Sprite {
 
 	public Animation getExhaustAnimation() {
 		return this.exhaustAnimation;
+	}
+
+	//Called by homing missiles, returns the invisible rectangle around the ship where the missiles lose their target lock
+	public Rectangle getHomingRangeBounds() {
+		// Casting leads to problems with anything but integers. Fortunately,
+		// coordinations and pixels cannot have decimals.
+
+		homingRectangleResizeScale = (float) 1.5;
+		homingRectangleXCoordinate = (int) (xCoordinate - (width * homingRectangleResizeScale));
+		homingRectangleYCoordinate = (int) (yCoordinate - (height * homingRectangleResizeScale));
+		homingRectangleWidth = (int) (width * (homingRectangleResizeScale * 2));
+		homingRectangleHeight = (int) (height * (homingRectangleResizeScale * 2.25));
+		return new Rectangle(homingRectangleXCoordinate, homingRectangleYCoordinate, homingRectangleWidth,
+				homingRectangleHeight);
 	}
 }

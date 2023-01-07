@@ -84,7 +84,7 @@ public class Trajectory {
 		Path newPath = pathFactory.getHomingPath(currentXCoordinate, currentYCoordinate, stepSize, friendly,
 				trajectoryDirection, angleModuloSize, xCoordinateDestination, yCoordinateDestination);
 		addPath(newPath);
-		setCurrentPath();
+		setPath();
 	}
 
 	// Called when needed to create a straight or angled line trajectory
@@ -100,7 +100,7 @@ public class Trajectory {
 		}
 		if (newPath != null) {
 			addPath(newPath);
-			setCurrentPath();
+			setPath();
 		} else
 			System.out.println("I couldn't create a path for a missile or enemy!");
 	}
@@ -112,20 +112,26 @@ public class Trajectory {
 
 	// Removes paths that have finished playing out and resets the current path that
 	// needs to be followed.
+	// Homing paths never finish, they get refreshed with every step taken; Homing paths essentially have a maximum of 1 step at a time.
 	private void removeFinishedPaths() {
 		for (int i = 0; i < pathList.size(); i++) {
 			if (pathList.get(i).isPathWalked() && pathList.get(i).getPathType().equals("Regular")) {
 				pathList.remove(i);
-				setCurrentPath();
+				setPath();
 			} else if (pathList.get(i).getPathType().equals("Homing")) {
 				List<Integer> coords = FriendlyManager.getInstance().getNearestFriendlyHomingCoordinates();
 				pathList.get(i).updateHomingDestination(coords.get(0), coords.get(1), currentXCoordinate, currentYCoordinate);
+				
+				//Dit vereist een grote refactor om te verbeteren. Logica van trajectory moet in een movementManager. 
+				//Een sprite moet nog steeds een trajectory hebben, maar movement van enemies moet ook in een soort manager
+				//De manager moet paden refreshen/updaten. 
+//				pathList.get(i).setHomingPathDirection(FriendlyManager.getInstance().getSpaceship().getHomingRangeBounds(), missile.getBounds());
 			}
 		}
 	}
 
 	// Sets the current path to the next item in the pathList.
-	private void setCurrentPath() {
+	private void setPath() {
 		if (pathList.size() > 0) {
 			currentPath = pathList.get(0);
 		}
@@ -135,8 +141,7 @@ public class Trajectory {
 	// Called every move() loop, returns the new X & Y coordinates for the object
 	// retrieved from Path, based on Path's direction
 	public List<Integer> getPathCoordinates(int xCoordinate, int yCoordinate) {
-		List<Integer> coordinatesList = new ArrayList<Integer>();
-		coordinatesList = currentPath.getNewCoordinates(xCoordinate, yCoordinate);
+		List<Integer> coordinatesList = currentPath.getNewCoordinates(xCoordinate, yCoordinate);
 
 		if (trajectoryType.equals("Homing")) {
 			updateHomingCoordinates(coordinatesList);

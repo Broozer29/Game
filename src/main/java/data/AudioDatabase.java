@@ -10,23 +10,23 @@ public class AudioDatabase {
 
 	private static AudioDatabase instance = new AudioDatabase();
 	private AudioLoader audioLoader = AudioLoader.getInstance();
-	private Clip FuriWisdomOfRage;
-	private Clip FuriMyOnlyChance;
-	private Clip FuriMakeThisRight;
-	private Clip DefaultMusic;
+	private CustomAudioClip FuriWisdomOfRage;
+	private CustomAudioClip FuriMyOnlyChance;
+	private CustomAudioClip FuriMakeThisRight;
+	private CustomAudioClip DefaultMusic;
 
 	// Van alle clips een lijst met clips maken, dan vervolgens een clip teruggeven
 	// die niet gebruikt wordt.
 	// Zo kun je een maximum aantal clips afdwingen per soort zonder dat clips niet
 	// kunnen afspelen.
 
-	private int clipListSize = 4;
-	private List<Clip> allActiveClips = new ArrayList<Clip>();
-	private List<Clip> alienBombImpactList = new ArrayList<Clip>();
-	private List<Clip> laserBeamClipList = new ArrayList<Clip>();
-	private List<Clip> destroyedExplosionClipList = new ArrayList<Clip>();
-	private List<Clip> alienSpaceshipDestroyedClipList = new ArrayList<Clip>();
-	private List<Clip> largeShipDestroyed = new ArrayList<Clip>();
+	private int clipListSize = 15;
+	private List<CustomAudioClip> allActiveClips = new ArrayList<CustomAudioClip>();
+	private List<CustomAudioClip> alienBombImpactList = new ArrayList<CustomAudioClip>();
+	private List<CustomAudioClip> laserBeamClipList = new ArrayList<CustomAudioClip>();
+	private List<CustomAudioClip> destroyedExplosionClipList = new ArrayList<CustomAudioClip>();
+	private List<CustomAudioClip> alienSpaceshipDestroyedClipList = new ArrayList<CustomAudioClip>();
+	private List<CustomAudioClip> largeShipDestroyed = new ArrayList<CustomAudioClip>();
 
 	private AudioDatabase() {
 		initializeAudiofiles();
@@ -45,45 +45,59 @@ public class AudioDatabase {
 		}
 	}
 
-	// Resets clips that have finished playing
-	public void resetFinishedClips() {
+	public void updateGameTick() {
+		testResetClips();
+	}
+
+	private void testResetClips() {
 		for (int i = 0; i < allActiveClips.size(); i++) {
-			if (!allActiveClips.get(i).isActive()) {
-				allActiveClips.get(i).stop();
-				if (laserBeamClipList.contains(allActiveClips.get(i))) {
-					allActiveClips.get(i).setFramePosition(400);
-				} else {
+			if (allActiveClips.get(i).getAudioType().equals("Large Ship Destroyed")) {
+				if(allActiveClips.get(i).aboveThreshold()) {
 					allActiveClips.get(i).setFramePosition(0);
+					allActiveClips.get(i).stopClip();
+					allActiveClips.remove(allActiveClips.get(i));
 				}
+			}
+			
+			else if (!allActiveClips.get(i).isActive()) {
+				allActiveClips.get(i).stopClip();
+				allActiveClips.get(i).setFramePosition(0);
 				allActiveClips.remove(allActiveClips.get(i));
 			}
+
 		}
 	}
 
 	private void initMusic() throws LineUnavailableException {
-		DefaultMusic = audioLoader.getSoundfile("DefaultMusic");
-		FuriWisdomOfRage = audioLoader.getSoundfile("Furi - Wisdom of rage");
-		FuriMakeThisRight = audioLoader.getSoundfile("Furi - Make this right");
-		FuriMyOnlyChance = audioLoader.getSoundfile("Furi - My only chance");
+		DefaultMusic = new CustomAudioClip("DefaultMusic", true);
+		FuriWisdomOfRage = new CustomAudioClip("Furi - Wisdom of rage", true);
+		FuriMakeThisRight = new CustomAudioClip("Furi - Make this right", true);
+		FuriMyOnlyChance = new CustomAudioClip("Furi - My only chance", true);
+
 	}
 
 	private void initSoundEffects() throws LineUnavailableException {
 		for (int i = 0; i < clipListSize; i++) {
 //			Clip tempLaserbeamClip = audioLoader.getSoundfile("Player Laserbeam");
-			laserBeamClipList.add(audioLoader.getSoundfile("Player Laserbeam"));
-//			Clip tempDestroyedExplosionClip = audioLoader.getSoundfile("Destroyed Explosion");
-			destroyedExplosionClipList.add(audioLoader.getSoundfile("Destroyed Explosion"));
-//			Clip tempAlienSpaceshipExplosionClip = audioLoader.getSoundfile("Alien Spaceship Destroyed");
-			alienSpaceshipDestroyedClipList.add(audioLoader.getSoundfile("Alien Spaceship Destroyed"));
-//			Clip tempAlienBombImpactClip = audioLoader.getSoundfile("Alien Bomb Impact");
-			alienBombImpactList.add(audioLoader.getSoundfile("Alien Bomb Impact"));
-//			Clip tempLargeShipDestroyed = audioLoader.getSoundfile("Large Ship Destroyed");
-			largeShipDestroyed.add(audioLoader.getSoundfile("Large Ship Destroyed"));
+			CustomAudioClip laserBeamClip = new CustomAudioClip("Player Laserbeam", false);
+			laserBeamClipList.add(laserBeamClip);
+
+			CustomAudioClip destroyedExplosion = new CustomAudioClip("Destroyed Explosion", false);
+			alienSpaceshipDestroyedClipList.add(destroyedExplosion);
+
+			CustomAudioClip alienSpaceshipDestroyed = new CustomAudioClip("Alien Spaceship Destroyed", false);
+			alienSpaceshipDestroyedClipList.add(alienSpaceshipDestroyed);
+
+			CustomAudioClip alienBombImpact = new CustomAudioClip("Alien Bomb Impact", false);
+			alienBombImpactList.add(alienBombImpact);
+
+			CustomAudioClip largeShipDestroyedClip = new CustomAudioClip("Large Ship Destroyed", false);
+			largeShipDestroyed.add(largeShipDestroyedClip);
 		}
 
 	}
 
-	public Clip getAudioClip(String audioType) {
+	public CustomAudioClip getAudioClip(String audioType) {
 		switch (audioType) {
 		case ("Furi - Wisdom of rage"):
 			return getFuriWisdomOfRage();
@@ -107,25 +121,24 @@ public class AudioDatabase {
 		return null;
 	}
 
-	private Clip getFuriWisdomOfRage() {
+	private CustomAudioClip getFuriWisdomOfRage() {
 		return FuriWisdomOfRage;
 	}
 
-	private Clip getFuriMyOnlyChance() {
+	private CustomAudioClip getFuriMyOnlyChance() {
 		return FuriMyOnlyChance;
 	}
 
-	private Clip getFuriMakeThisRight() {
+	private CustomAudioClip getFuriMakeThisRight() {
 		return FuriMakeThisRight;
 	}
 
-	private Clip getDefaultMusic() {
+	private CustomAudioClip getDefaultMusic() {
 		return DefaultMusic;
 	}
 
-	private Clip getLaserBeam() {
+	private CustomAudioClip getLaserBeam() {
 		for (int i = 0; i < laserBeamClipList.size(); i++) {
-		
 			if (!laserBeamClipList.get(i).isActive()) {
 				allActiveClips.add(laserBeamClipList.get(i));
 				return laserBeamClipList.get(i);
@@ -134,7 +147,7 @@ public class AudioDatabase {
 		return null;
 	}
 
-	private Clip getDestroyedExplosion() {
+	private CustomAudioClip getDestroyedExplosion() {
 		for (int i = 0; i < destroyedExplosionClipList.size(); i++) {
 			if (!destroyedExplosionClipList.get(i).isRunning()) {
 				allActiveClips.add(destroyedExplosionClipList.get(i));
@@ -144,7 +157,7 @@ public class AudioDatabase {
 		return null;
 	}
 
-	private Clip getDefaultAlienExplosion() {
+	private CustomAudioClip getDefaultAlienExplosion() {
 		for (int i = 0; i < alienSpaceshipDestroyedClipList.size(); i++) {
 			if (!alienSpaceshipDestroyedClipList.get(i).isRunning()) {
 				allActiveClips.add(alienSpaceshipDestroyedClipList.get(i));
@@ -154,7 +167,7 @@ public class AudioDatabase {
 		return null;
 	}
 
-	private Clip getAlienBombImpact() {
+	private CustomAudioClip getAlienBombImpact() {
 		for (int i = 0; i < alienBombImpactList.size(); i++) {
 			if (!alienBombImpactList.get(i).isRunning()) {
 				allActiveClips.add(alienBombImpactList.get(i));
@@ -164,10 +177,11 @@ public class AudioDatabase {
 		return null;
 	}
 
-	private Clip getLargeShipDestroyed() {
-		for (int i = 0; i < largeShipDestroyed.size(); i++) { 
+	private CustomAudioClip getLargeShipDestroyed() {
+		for (int i = 0; i < largeShipDestroyed.size(); i++) {
 //			System.out.println("Clip ID: " + laserBeamClipList.get(i) + " Active: "
-//					+ laserBeamClipList.get(i).isActive() + " Running: " + laserBeamClipList.get(i).isRunning() + " Frame position: " + laserBeamClipList.get(i).getFramePosition());
+//					+ laserBeamClipList.get(i).isActive() + " Running: " + laserBeamClipList.get(i).isRunning()
+//					+ " Frame position: " + laserBeamClipList.get(i).getFramePosition());
 			if (!largeShipDestroyed.get(i).isRunning()) {
 				allActiveClips.add(largeShipDestroyed.get(i));
 				return largeShipDestroyed.get(i);

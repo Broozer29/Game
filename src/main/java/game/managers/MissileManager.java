@@ -152,6 +152,7 @@ public class MissileManager {
 			if (m.isVisible()) {
 				Rectangle r1 = m.getAnimation().getBounds();
 				Rectangle r2 = friendlyManager.getSpaceship().getBounds();
+				
 				if (r1.intersects(r2)) {
 					friendlyManager.getSpaceship().takeHitpointDamage(m.getMissileDamage());
 					animationManager.addUpperAnimation(m.getExplosionAnimation());
