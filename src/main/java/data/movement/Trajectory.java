@@ -1,137 +1,47 @@
 package data.movement;
 
+import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.List;
 
 import game.managers.FriendlyManager;
+import game.objects.enemies.Enemy;
+import game.objects.missiles.Missile;
 
 public class Trajectory {
 
-	private List<Path> pathList = new ArrayList<Path>();
-	private Path currentPath;
-	private PathFactory pathFactory = PathFactory.getInstance();
-	private FriendlyManager friendlyManager = FriendlyManager.getInstance();
+	protected List<Path> pathList = new ArrayList<Path>();
+	protected Path currentPath;
 
-	// Needed for both homing and regular trajectories
-	private String trajectoryDirection;
-	private String trajectoryType;
-	private int stepSize;
-	private boolean infiniteMovement;
-	private int angleModuloSize;
+	protected String trajectoryDirection;
+	protected String trajectoryType;
+	protected int stepSize;
+	protected boolean infiniteMovement;
+	protected int angleModuloSize;
+	protected boolean friendly;
+	protected int startingXCoordinate;
+	protected int startingYCoordinate;
+	protected int currentXCoordinate;
+	protected int currentYCoordinate;
+	protected int totalDistance;
+	protected boolean lostTargetLock;
 
-	// Needed for regular trajectories
-	private int totalDistance;
-
-
-	// Needed for homing trajectories
-	private boolean friendly;
-	private int startingXCoordinate;
-	private int startingYCoordinate;
-	private int currentXCoordinate;
-	private int currentYCoordinate;
-
-	public Trajectory() {
-
-	}
-
-	public void createRegularTrajectory(String trajectoryDirection, int totalDistance, int stepSize,
-			int angleModuloSize, boolean infiniteMovement, boolean friendly) {
+	public Trajectory(String trajectoryDirection, String trajectoryType, int stepSize, boolean infiniteMovement,
+			int angleModuloSize) {
 		this.trajectoryDirection = trajectoryDirection;
-		this.totalDistance = totalDistance;
+		this.trajectoryType = trajectoryType;
 		this.stepSize = stepSize;
-		this.angleModuloSize = angleModuloSize;
 		this.infiniteMovement = infiniteMovement;
-		this.trajectoryType = "Regular";
-		createPath();
-	}
-
-	public void createHomingTrajectory(int currentXCoordinate, int currentYCoordinate, int stepSize,
-			boolean friendly, String fallbackDirection, int angleModulo) {
-		this.currentXCoordinate = currentXCoordinate;
-		this.currentYCoordinate = currentYCoordinate;
-		this.startingXCoordinate = currentXCoordinate;
-		this.startingYCoordinate = currentYCoordinate;
-		this.angleModuloSize = angleModulo;
-		this.friendly = friendly;
-		this.stepSize = stepSize;
-		this.trajectoryType = "Homing";
-		this.infiniteMovement = true;
-		this.trajectoryDirection = fallbackDirection;
-		createPath();
-	}
-
-	// Creates a path based on the trajectory type
-	private void createPath() {
-		if (trajectoryType.equals("Regular")) {
-			createRegularPath();
-		}
-
-		if (trajectoryType.equals("Homing")) {
-			createHomingPath();
-		}
-	}
-
-	// Called when needed to create a homing trajectory
-	private void createHomingPath() {
-
-		// Er zou niet steeds opnieuw een pad gemaakt moeten worden. Een homing missile
-		// zou een eindeloos pad moeten zijn dat een fallback heeft na X stappen
-		// of als het te dichtbij de speler komt
-		List<Integer> destinationCoordinatesList = friendlyManager.getNearestFriendlyHomingCoordinates();
-		int xCoordinateDestination = destinationCoordinatesList.get(0);
-		int yCoordinateDestination = destinationCoordinatesList.get(1);
-		
-		Path newPath = pathFactory.getHomingPath(currentXCoordinate, currentYCoordinate, stepSize, friendly,
-				trajectoryDirection, angleModuloSize, xCoordinateDestination, yCoordinateDestination);
-		addPath(newPath);
-		setPath();
-	}
-
-	// Called when needed to create a straight or angled line trajectory
-	private void createRegularPath() {
-		Path newPath = null;
-		if (trajectoryDirection.equals("Left") || trajectoryDirection.equals("Right")
-				|| trajectoryDirection.equals("Up") || trajectoryDirection.equals("Down")) {
-			newPath = pathFactory.getStraightLine(trajectoryDirection, totalDistance, stepSize);
-
-		} else if (trajectoryDirection.equals("LeftUp") || trajectoryDirection.equals("RightUp")
-				|| trajectoryDirection.equals("LeftDown") || trajectoryDirection.equals("RightDown")) {
-			newPath = pathFactory.getAngledLine(trajectoryDirection, totalDistance, stepSize, angleModuloSize);
-		}
-		if (newPath != null) {
-			addPath(newPath);
-			setPath();
-		} else
-			System.out.println("I couldn't create a path for a missile or enemy!");
+		this.angleModuloSize = angleModuloSize;
 	}
 
 	// Adds the path to the list of paths
-	private void addPath(Path path) {
+	protected void addPath(Path path) {
 		this.pathList.add(path);
 	}
 
-	// Removes paths that have finished playing out and resets the current path that
-	// needs to be followed.
-	// Homing paths never finish, they get refreshed with every step taken; Homing paths essentially have a maximum of 1 step at a time.
-	private void removeFinishedPaths() {
-		for (int i = 0; i < pathList.size(); i++) {
-			if (pathList.get(i).isPathWalked() && pathList.get(i).getPathType().equals("Regular")) {
-				pathList.remove(i);
-				setPath();
-			} else if (pathList.get(i).getPathType().equals("Homing")) {
-				List<Integer> coords = FriendlyManager.getInstance().getNearestFriendlyHomingCoordinates();
-				pathList.get(i).updateHomingDestination(coords.get(0), coords.get(1), currentXCoordinate, currentYCoordinate);
-				
-				//Dit vereist een grote refactor om te verbeteren. Logica van trajectory moet in een movementManager. 
-				//Een sprite moet nog steeds een trajectory hebben, maar movement van enemies moet ook in een soort manager
-				//De manager moet paden refreshen/updaten. 
-//				pathList.get(i).setHomingPathDirection(FriendlyManager.getInstance().getSpaceship().getHomingRangeBounds(), missile.getBounds());
-			}
-		}
-	}
-
 	// Sets the current path to the next item in the pathList.
-	private void setPath() {
+	protected void setPath() {
 		if (pathList.size() > 0) {
 			currentPath = pathList.get(0);
 		}
@@ -146,7 +56,6 @@ public class Trajectory {
 		if (trajectoryType.equals("Homing")) {
 			updateHomingCoordinates(coordinatesList);
 		}
-		removeFinishedPaths();
 		return coordinatesList;
 
 	}
@@ -157,9 +66,44 @@ public class Trajectory {
 		this.currentYCoordinate = coordinatesList.get(1);
 	}
 
-	// Updates the movement speed of enemies when they change board blocks
-	public void updateMovementSpeed(int movementSpeed) {
-		currentPath.setMovementSpeed(movementSpeed);
+	public void updateRegularPath() {
+		for (int i = 0; i < pathList.size(); i++) {
+			if (pathList.get(i).isPathWalked()) {
+				pathList.remove(i);
+				setPath();
+			}
+		}
+	}
+
+	public void updateEnemyHomingPaths(Enemy enemy) {
+		Rectangle friendlyBounds = FriendlyManager.getInstance().getSpaceship().getHomingRangeBounds();
+		Rectangle enemyBounds = enemy.getBounds();
+		
+		
+		pathList.get(0).setHomingPathDirection(friendlyBounds, enemyBounds);
+	}
+
+	public void updateMissileHomingPaths(Missile missile) {
+		Rectangle friendlyBounds = FriendlyManager.getInstance().getSpaceship().getHomingRangeBounds();
+		Rectangle missileBounds = missile.getBounds();
+		
+		if(missile.getAnimation()!= null) {
+			missileBounds = missile.getAnimation().getBounds();
+		}
+		
+		if (!lostTargetLock) {
+			lostTargetLock = pathList.get(0).withinHomingRectangle(friendlyBounds, missileBounds);
+		}
+		
+		pathList.get(0).setHomingPathDirection(friendlyBounds, missileBounds);
+	}
+
+	public void updateMovementSpeed(int stepSize) {
+		this.stepSize = stepSize;
+	}
+
+	public String getTrajectoryType() {
+		return this.trajectoryType;
 	}
 
 }

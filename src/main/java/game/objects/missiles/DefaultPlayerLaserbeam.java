@@ -1,6 +1,7 @@
 package game.objects.missiles;
 
 import data.DataClass;
+import data.movement.RegularTrajectory;
 import data.movement.Trajectory;
 
 public class DefaultPlayerLaserbeam extends Missile {
@@ -12,8 +13,7 @@ public class DefaultPlayerLaserbeam extends Missile {
 		setAnimation();
 		
 		this.movementSpeed = 5;
-		this.trajectory = new Trajectory();
-		this.trajectory.createRegularTrajectory(missileDirection, totalDistance(), movementSpeed, angleModuloDivider, true, false);	
+		this.trajectory = new RegularTrajectory(direction, movementSpeed, true, angleModuloDivider, getTotalTravelDistance());
 	}
 
 	public void missileAction() {

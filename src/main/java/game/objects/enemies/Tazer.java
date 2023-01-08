@@ -1,5 +1,6 @@
 package game.objects.enemies;
 
+import data.movement.RegularTrajectory;
 import data.movement.Trajectory;
 import game.managers.MissileManager;
 
@@ -21,8 +22,7 @@ public class Tazer extends Enemy {
 		this.hasAttack = true;
 		this.showHealthBar = true;
 		this.deathSound = "Large Ship Destroyed";
-		this.trajectory = new Trajectory();
-		this.trajectory.createRegularTrajectory(direction, totalDistance(), movementSpeed, angleModuloDivider, true, false);		
+		this.trajectory = new RegularTrajectory(direction, movementSpeed, true, angleModuloDivider, getTotalTravelDistance());
 		this.setVisible(true);
 		this.setRotation(direction);
 	}

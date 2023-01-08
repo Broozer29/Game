@@ -1,6 +1,7 @@
 package game.objects.missiles;
 
-import data.movement.Trajectory;
+import data.movement.HomingTrajectory;
+import data.movement.RegularTrajectory;
 
 public class SeekerProjectile extends Missile {
 
@@ -10,9 +11,9 @@ public class SeekerProjectile extends Missile {
 		setAnimation();
 		this.animation.setFrameDelay(3);
 		this.movementSpeed = 2;
-		this.trajectory = new Trajectory();
-		this.trajectory.createHomingTrajectory(xCoordinate, yCoordinate, 2, false, missileDirection, 3);
-//		this.trajectory.createRegularTrajectory(missileDirection, totalDistance(), movementSpeed, angleModuloDivider, true, false);	
+//		this.trajectory = new RegularTrajectory(direction, movementSpeed, true, angleModuloDivider, getTotalTravelDistance());
+		this.trajectory = new HomingTrajectory(direction, movementSpeed, true, angleModuloDivider);
+
 		}
 
 	

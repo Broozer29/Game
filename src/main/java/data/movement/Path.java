@@ -1,8 +1,8 @@
 package data.movement;
 
+import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.List;
-import java.awt.Rectangle;
 
 public class Path {
 	// Required for both types
@@ -16,11 +16,9 @@ public class Path {
 	private int stepsTaken;
 
 	// Required for homing missiles
-	private int startingXCoordinate;
-	private int startingYCoordinate;
-	private int xCoordinateDestination;
-	private int yCoordinateDestination;
 	private String fallbackDirection;
+	private String previousDirection;
+	private List<String> allowedFallbackDirections = new ArrayList<String>();
 	private boolean hasTargetLock;
 
 	public Path(String pathType, String pathDirection, int stepSize, int moduloDivider) {
@@ -35,25 +33,49 @@ public class Path {
 		this.stepsTaken = 0;
 	}
 
-	protected void initHomingPath(int startingXCoordinate, int startingYCoordinate, int xCoordinateDestination,
-			int yCoordinateDestination, String fallbackstring) {
-		this.startingXCoordinate = startingXCoordinate;
-		this.startingYCoordinate = startingYCoordinate;
-		this.xCoordinateDestination = xCoordinateDestination;
-		this.yCoordinateDestination = yCoordinateDestination;
+	protected void initHomingPath(String fallbackstring) {
 		this.fallbackDirection = fallbackstring;
+		initAllowedFallbackDirections(fallbackstring);
 		this.hasTargetLock = true;
 	}
 
-	//Gets the rectangles of the spaceship homing square and the missile
-	//Checks if rectangles intersect, if so, lose target lock, if not, update direction
-	private void setHomingPathDirection(Rectangle homingRectangle, Rectangle missileRectangle) {
+	private void initAllowedFallbackDirections(String fallbackDirection) {
+		if (fallbackDirection.equals("Left") || fallbackDirection.equals("LeftUp")
+				|| fallbackDirection.equals("LeftDown")) {
+			allowedFallbackDirections.add("Left");
+			allowedFallbackDirections.add("LeftUp");
+			allowedFallbackDirections.add("LeftDown");
+		}
+
+		else if (fallbackDirection.equals("Right") || fallbackDirection.equals("RightUp")
+				|| fallbackDirection.equals("RightDown")) {
+			allowedFallbackDirections.add("Right");
+			allowedFallbackDirections.add("RightUp");
+			allowedFallbackDirections.add("RightDown");
+		}
+
+		else if (fallbackDirection.equals("Up")) {
+			allowedFallbackDirections.add("Up");
+			allowedFallbackDirections.add("RightUp");
+			allowedFallbackDirections.add("LeftUp");
+		}
+
+		else if (fallbackDirection.equals("Down")) {
+			allowedFallbackDirections.add("Down");
+			allowedFallbackDirections.add("LeftDown");
+			allowedFallbackDirections.add("RightDown");
+		}
+	}
+
+	// Gets the rectangles of the spaceship homing square and the missile
+	// Checks if rectangles intersect, if so, lose target lock, if not, update
+	// direction
+	public void setHomingPathDirection(Rectangle homingRectangle, Rectangle missileRectangle) {
 		int homingRectangleXCoordinate = (int) Math.round(homingRectangle.getCenterX());
 		int homingRectangleYCoordinate = (int) Math.round(homingRectangle.getCenterY());
 
 		int missileRectangleXCoordinate = (int) Math.round(missileRectangle.getCenterX());
 		int missileRectangleYCoordinate = (int) Math.round(missileRectangle.getCenterY());
-
 		if (!homingRectangle.intersects(missileRectangle) && hasTargetLock) {
 			String leftOrRight = "";
 			String upOrDown = "";
@@ -70,69 +92,25 @@ public class Path {
 				leftOrRight = "Down";
 			}
 
-			pathDirection = leftOrRight + upOrDown;
-			fallbackDirection = pathDirection;
+			if (allowedFallbackDirections.contains(pathDirection)) {
+				previousDirection = pathDirection;
+				pathDirection = leftOrRight + upOrDown;
+				fallbackDirection = pathDirection;
+			} else
+				pathDirection = previousDirection;
+
+			// Check wether or not the missile has already passed the player. Meaning if the
+			// homing rectangle is already passed by the missilerectangle
 		} else if (homingRectangle.intersects(missileRectangle) && hasTargetLock) {
 			pathDirection = fallbackDirection;
 			hasTargetLock = false;
-		} else if(!hasTargetLock) {
+		} else if (!hasTargetLock) {
 			pathDirection = fallbackDirection;
-		}
-		
-
-	}
-
-	private void setHomingDirection() {
-		boolean canConcat = false;
-		if (startingXCoordinate >= xCoordinateDestination && fallbackDirection.contains("Left")) {
-			pathDirection = "Left";
-			canConcat = true;
-		} else if (startingXCoordinate < xCoordinateDestination && fallbackDirection.contains("Right")) {
-			pathDirection = "Right";
-			canConcat = true;
-		}
-
-		if (startingYCoordinate >= yCoordinateDestination && canConcat) {
-			pathDirection = pathDirection.concat("Up");
-		} else if (startingYCoordinate < yCoordinateDestination && canConcat) {
-			pathDirection = pathDirection.concat("Down");
-		}
-
-		if (!canConcat) {
-			pathDirection = fallbackDirection;
-		} else if (canConcat) {
-			fallbackDirection = pathDirection;
 		}
 	}
 
-	public void updateHomingDestination(int xCoordinate, int yCoordinate, int currentXCoordinate,
-			int currentYCoordinate) {
-		this.xCoordinateDestination = xCoordinate;
-		this.yCoordinateDestination = yCoordinate;
-		boolean passedPlayer = false;
-
-		int xDistance = Math.abs((xCoordinateDestination - currentXCoordinate));
-		int yDistance = Math.abs((yCoordinateDestination - currentYCoordinate));
-
-		// Hier checken of de missile al voorbij de speler is
-		if (xCoordinateDestination - currentXCoordinate > 0 && fallbackDirection.contains("Left")) {
-			this.pathDirection = fallbackDirection;
-			passedPlayer = true;
-		}
-
-		if (xCoordinateDestination - currentXCoordinate < 0 && fallbackDirection.contains("Right")) {
-			this.pathDirection = fallbackDirection;
-			passedPlayer = true;
-		}
-
-		if (passedPlayer) {
-			return;
-		}
-
-		if (xDistance < 150 && yDistance < 150) {
-			this.pathDirection = fallbackDirection;
-		} else
-			setHomingDirection();
+	public boolean withinHomingRectangle(Rectangle homingRectangle, Rectangle missileRectangle) {
+		return (homingRectangle.intersects(missileRectangle));
 	}
 
 	// Returns new X & Y coordinates based on the direction
@@ -183,12 +161,6 @@ public class Path {
 		return newCoordsList;
 
 	}
-
-	// Possible directions:
-	/*
-	 * Left = x - 1 Left + Up = x - 1 & y - 1 Left + Down = x - 1 & y + 1 Right = x
-	 * + 1 Right + Up = x + 1 & y - 1 Right + Down = x + 1 & y + 1
-	 */
 
 	// Returns new X coordinates based on the direction & stepsize
 	private int getNewXCoordinate(String direction, int currentXCoordinate) {
@@ -245,7 +217,6 @@ public class Path {
 
 	// Use to determine what amount of StepsTaken needs to be taken before another
 	// step can be added to the Y coordinate
-	// Use modulo
 	private boolean isYStepAllowed() {
 		if (moduloDivider == 0) {
 			return true;

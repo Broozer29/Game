@@ -1,7 +1,5 @@
 package data.movement;
 
-
-
 public class PathFactory {
 
 	private static PathFactory instance = new PathFactory();
@@ -27,9 +25,7 @@ public class PathFactory {
 		return newPath;
 	}
 
-	public Path getHomingPath(int currentXCoordinate, int currentYCoordinate, int stepSize, boolean friendly,
-			String fallbackDirection, int moduloDivider, int xCoordinateDestination, int yCoordinateDestination) {
-		return new HomingPath(fallbackDirection, stepSize, moduloDivider, currentXCoordinate, currentYCoordinate,
-				xCoordinateDestination, yCoordinateDestination);
+	public Path getHomingPath(int stepSize, boolean friendly, String fallbackDirection, int moduloDivider) {
+		return new HomingPath(fallbackDirection, stepSize, moduloDivider);
 	}
 }

@@ -73,19 +73,19 @@ public class LevelManager {
 		int angleModuloDivider = 2;
 		CustomTimer timer = null;
 		timer = timerManager.createTimer("Bombs", 20, 10000, true, "Left", angleModuloDivider, 1);
-		timerManager.addTimerToList(timer);
+//		timerManager.addTimerToList(timer);
 		timer = timerManager.createTimer("Bomba", 3, 2000, true, "Left", angleModuloDivider, 1);
-		timerManager.addTimerToList(timer);
+//		timerManager.addTimerToList(timer);
 		timer = timerManager.createTimer("Flamer", 3, 2000, true, "Left", angleModuloDivider, 1);
-		timerManager.addTimerToList(timer);
+//		timerManager.addTimerToList(timer);
 		timer = timerManager.createTimer("Tazer", 3, 2000, true, "Left", angleModuloDivider, 1);
-		timerManager.addTimerToList(timer);
-		timer = timerManager.createTimer("Seeker", 2, 2000, true, "Left", angleModuloDivider, 1);
+//		timerManager.addTimerToList(timer);
+		timer = timerManager.createTimer("Seeker", 1, 2000, true, "Left", angleModuloDivider, 1);
 		timerManager.addTimerToList(timer);
 		timer = timerManager.createTimer("Bulldozer", 3, 2000, true, "Left", angleModuloDivider, 1);
-		timerManager.addTimerToList(timer);
+//		timerManager.addTimerToList(timer);
 		timer = timerManager.createTimer("Energizer", 3, 2000, true, "Left", angleModuloDivider, 1);
-		timerManager.addTimerToList(timer);
+//		timerManager.addTimerToList(timer);
 	}
 
 	// Called by CustomTimers when they have to spawn an enemy

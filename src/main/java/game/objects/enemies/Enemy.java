@@ -179,8 +179,19 @@ public class Enemy extends Sprite {
 	public Animation getDestroyedAnimation() {
 		return this.deathAnimation;
 	}
+	
+	public void updateTrajectory() {
+		switch(trajectory.getTrajectoryType()) {
+		case("Regular"):
+			trajectory.updateRegularPath();
+			break;
+		case("Homing"):
+			trajectory.updateEnemyHomingPaths(this);
+			break;
+		}
+	}
 
-	protected int totalDistance() {
+	protected int getTotalTravelDistance() {
 		if (direction.contains("Up") || direction.contains("Down")) {
 			return DataClass.getInstance().getWindowHeight() + getAdditionalYSteps();
 		} else

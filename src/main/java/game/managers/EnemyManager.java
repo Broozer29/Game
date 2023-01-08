@@ -25,6 +25,7 @@ public class EnemyManager {
 	private AudioManager audioManager = AudioManager.getInstance();
 	private FriendlyManager friendlyManager = FriendlyManager.getInstance();
 	private AnimationManager animationManager = AnimationManager.getInstance();
+	private MovementManager movementManager = MovementManager.getInstance();
 	private List<Enemy> enemyList = new ArrayList<Enemy>();
 	private List<Alien> alienList = new ArrayList<Alien>();
 	private List<Seeker> seekerList = new ArrayList<Seeker>();
@@ -35,6 +36,7 @@ public class EnemyManager {
 	private List<Energizer> energizerList = new ArrayList<Energizer>();
 	private List<AlienBomb> alienBombList = new ArrayList<AlienBomb>();
 	private DataClass dataClass = DataClass.getInstance();
+	
 
 	private EnemyManager() {
 	}
@@ -127,7 +129,7 @@ public class EnemyManager {
 		for (int i = 0; i < enemyList.size(); i++) {
 			Enemy enemy = enemyList.get(i);
 			if (enemy.isVisible()) {
-				enemy.move();
+				movementManager.moveEnemy(enemy);
 				enemy.updateBoardBlock();
 			} else {
 				if (enemy.getCurrentHitpoints() < 0) {

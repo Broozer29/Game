@@ -1,5 +1,6 @@
 package game.objects.missiles;
 
+import data.movement.RegularTrajectory;
 import data.movement.Trajectory;
 
 public class TazerProjectile extends Missile {
@@ -12,9 +13,7 @@ public class TazerProjectile extends Missile {
 		this.animation.setFrameDelay(3);
 
 		this.movementSpeed = 5;
-		this.trajectory = new Trajectory();
-		this.trajectory.createRegularTrajectory(missileDirection, totalDistance(), movementSpeed, angleModuloDivider, true, false);
-
+		this.trajectory = new RegularTrajectory(direction, movementSpeed, true, angleModuloDivider, getTotalTravelDistance());
 	}
 
 	public void missileAction() {

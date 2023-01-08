@@ -1,6 +1,6 @@
 package game.objects.enemies;
 
-import data.movement.Trajectory;
+import data.movement.RegularTrajectory;
 import game.managers.MissileManager;
 
 public class Alien extends Enemy {
@@ -17,8 +17,7 @@ public class Alien extends Enemy {
 		this.hasAttack = true;
 		this.deathSound = "Alien Spaceship Destroyed";
 		this.showHealthBar = true;
-		this.trajectory = new Trajectory();
-		this.trajectory.createRegularTrajectory(direction, totalDistance(), movementSpeed, angleModuloDivider, true, false);
+		this.trajectory = new RegularTrajectory(direction, movementSpeed, true, angleModuloDivider, getTotalTravelDistance());
 		this.setVisible(true);
 		this.setRotation(direction);
 	}
