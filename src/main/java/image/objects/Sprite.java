@@ -18,6 +18,8 @@ public class Sprite {
 	protected boolean visible;
 	protected Image image;
 	protected float scale;
+	protected int xOffset;
+	protected int yOffset;
 
 	public Sprite(int x, int y, float scale) {
 		this.xCoordinate = x;
@@ -79,11 +81,11 @@ public class Sprite {
 	}
 
 	public int getXCoordinate() {
-		return xCoordinate;
+		return xCoordinate + xOffset;
 	}
 
 	public int getYCoordinate() {
-		return yCoordinate;
+		return yCoordinate + yOffset;
 	}
 
 	public void setX(int xCoordinate) {
@@ -105,5 +107,13 @@ public class Sprite {
 	// Get bounds required for collision detection for objects WITHOUT ANIMATIONS
 	public Rectangle getBounds() {
 		return new Rectangle(xCoordinate, yCoordinate, width, height);
+	}
+	
+	public void addXOffset(int xOffset) {
+		this.xOffset = xOffset;
+	}
+	
+	public void addYOffset(int yoffset) {
+		this.yOffset = yoffset;
 	}
 }

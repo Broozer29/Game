@@ -12,9 +12,9 @@ public class Missile extends Sprite {
 
 	protected float missileDamage;
 	protected Trajectory trajectory;
-	protected String missileDirection;
+	protected String direction;
 	protected int angleModuloDivider;
-	protected int missileMovementSpeed;
+	protected int movementSpeed;
 	protected int maxMissileLength;
 	protected Animation animation;
 	protected Animation explosionAnimation;
@@ -23,25 +23,17 @@ public class Missile extends Sprite {
 	protected String rotationAngle;
 	protected int missileStepsTaken;
 
-	public Missile(int x, int y, String missileType, String explosionType, String missileDirection, int angleModuloDivider,
-			String rotationAngle, float scale) {
+	public Missile(int x, int y, String missileType, String explosionType, String missileDirection,
+			int angleModuloDivider, String rotationAngle, float scale) {
 		super(x, y, scale);
 		this.explosionType = explosionType;
 		this.angleModuloDivider = angleModuloDivider;
 		this.rotationAngle = rotationAngle;
 		this.missileType = missileType;
-		this.missileDirection = missileDirection;
+		this.direction = missileDirection;
 	}
 
-	public void updateGameTick() {
-		move();
-		if (animation != null) {
-			updateAnimationCoordinates();
-		}
-
-	}
-
-	private void move() {
+	public void move() {
 		List<Integer> newCoordsList = trajectory.getPathCoordinates(xCoordinate, yCoordinate);
 		xCoordinate = newCoordsList.get(0);
 		yCoordinate = newCoordsList.get(1);
@@ -51,6 +43,10 @@ public class Missile extends Sprite {
 		}
 		if (xCoordinate < 0) {
 			visible = false;
+		}
+
+		if (animation != null) {
+			updateAnimationCoordinates();
 		}
 	}
 
@@ -62,11 +58,12 @@ public class Missile extends Sprite {
 		explosionAnimation.setX(xCoordinate);
 		explosionAnimation.setY(yCoordinate);
 	}
-	
-	protected int totalDistance() {
-		if(missileDirection.equals("Up") || missileDirection.equals("Down")) {
+
+	protected int getTotalTravelDistance() {
+		if (direction.equals("Up") || direction.equals("Down")) {
 			return DataClass.getInstance().getWindowHeight() + this.getWidth();
-		} else return DataClass.getInstance().getWindowWidth() + this.getHeight();
+		} else
+			return DataClass.getInstance().getWindowWidth() + this.getHeight();
 	}
 
 	public float getMissileDamage() {
@@ -74,11 +71,11 @@ public class Missile extends Sprite {
 	}
 
 	public String getMissileDirection() {
-		return this.missileDirection;
+		return this.direction;
 	}
 
 	public int getMissileMovementSpeed() {
-		return this.missileMovementSpeed;
+		return this.movementSpeed;
 	}
 
 	public int getMaxMissileLength() {
@@ -91,6 +88,17 @@ public class Missile extends Sprite {
 
 	public String getMissileType() {
 		return this.missileType;
+	}
+	
+	public void updateTrajectory() {
+		switch(trajectory.getTrajectoryType()) {
+		case("Regular"):
+			trajectory.updateRegularPath();
+			break;
+		case("Homing"):
+			trajectory.updateMissileHomingPaths(this);
+			break;
+		}
 	}
 
 	protected void setAnimation() {
@@ -107,12 +115,12 @@ public class Missile extends Sprite {
 	}
 
 	public Animation getExplosionAnimation() {
-		if(this.explosionAnimation != null) {
+		if (this.explosionAnimation != null) {
 			return this.explosionAnimation;
 		}
 		return null;
 	}
-	
+
 	public Animation getAnimation() {
 		if (this.animation != null) {
 			return this.animation;

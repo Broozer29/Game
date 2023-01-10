@@ -2,6 +2,7 @@
 package game.objects.missiles;
 
 import data.DataClass;
+import data.movement.RegularTrajectory;
 import data.movement.Trajectory;
 import game.managers.ExplosionManager;
 
@@ -13,9 +14,9 @@ public class BombaProjectile extends Missile {
 		this.missileDamage = (float) 7.5;
 		setAnimation();
 		this.animation.setFrameDelay(3);
-		this.missileMovementSpeed = 5;
-		this.trajectory = new Trajectory(missileDirection, totalDistance(), missileMovementSpeed, angleModuloDivider,
-				true);
+		this.movementSpeed = 5;
+		this.trajectory = new RegularTrajectory(direction, movementSpeed, true, angleModuloDivider, getTotalTravelDistance());
+	
 	}
 
 	public void missileAction() {

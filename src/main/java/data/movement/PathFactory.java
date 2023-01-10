@@ -12,17 +12,20 @@ public class PathFactory {
 		return instance;
 	}
 
-	public Path getStraightLine(String direction, int totalDistance, int movementSpeed) {
-		int stepsToTake = totalDistance / movementSpeed;
-		Path newPath = new Path(direction, stepsToTake, movementSpeed, 0);
+	public Path getStraightLine(String pathDirection, int totalDistance, int stepSize) {
+		int stepsToTake = totalDistance / stepSize;
+		Path newPath = new RegularPath(pathDirection, stepSize, 0, stepsToTake);
 		return newPath;
 	}
-	
-	//Total distance is the X distance to walk
-	public Path getAngledLine(String direction, int totalDistance, int movementSpeed, int moduloDivider) {
-		int stepsToTake = totalDistance / movementSpeed;
-		Path newPath = new Path(direction, stepsToTake, movementSpeed, moduloDivider);
+
+	// Total distance is the X distance to walk
+	public Path getAngledLine(String pathDirection, int totalDistance, int stepSize, int moduloDivider) {
+		int stepsToTake = totalDistance / stepSize;
+		Path newPath = new RegularPath(pathDirection, stepSize, moduloDivider, stepsToTake);
 		return newPath;
 	}
-	
+
+	public Path getHomingPath(int stepSize, boolean friendly, String fallbackDirection, int moduloDivider) {
+		return new HomingPath(fallbackDirection, stepSize, moduloDivider);
+	}
 }

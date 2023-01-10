@@ -22,6 +22,7 @@ public class MissileManager {
 	private EnemyManager enemyManager = EnemyManager.getInstance();
 	private AnimationManager animationManager = AnimationManager.getInstance();
 	private FriendlyManager friendlyManager = FriendlyManager.getInstance();
+	private MovementManager movementManager = MovementManager.getInstance();
 	private List<Missile> enemyMissiles = new ArrayList<Missile>();
 	private List<Missile> friendlyMissiles = new ArrayList<Missile>();
 	private List<AlienLaserbeam> alienLaserbeams = new ArrayList<AlienLaserbeam>();
@@ -152,6 +153,7 @@ public class MissileManager {
 			if (m.isVisible()) {
 				Rectangle r1 = m.getAnimation().getBounds();
 				Rectangle r2 = friendlyManager.getSpaceship().getBounds();
+				
 				if (r1.intersects(r2)) {
 					friendlyManager.getSpaceship().takeHitpointDamage(m.getMissileDamage());
 					animationManager.addUpperAnimation(m.getExplosionAnimation());
@@ -165,9 +167,8 @@ public class MissileManager {
 		// Move friendly missiles
 		for (int i = 0; i < friendlyMissiles.size(); i++) {
 			Missile missile = friendlyMissiles.get(i);
-
 			if (missile.isVisible()) {
-				missile.updateGameTick();
+				movementManager.moveMissile(missile);
 			} else {
 				removeFriendlyMissile(missile);
 			}
@@ -178,7 +179,7 @@ public class MissileManager {
 			Missile missile = enemyMissiles.get(i);
 
 			if (missile.isVisible()) {
-				missile.updateGameTick();
+				movementManager.moveMissile(missile);
 			} else {
 				removeEnemyMissile(missile);
 			}

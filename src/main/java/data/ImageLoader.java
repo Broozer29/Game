@@ -79,10 +79,21 @@ public class ImageLoader {
 			return "src/resources/images/gif/PNGtoGIF/Default Player Engine/2.png";
 		case("Default Player Engine 3"):
 			return "src/resources/images/gif/PNGtoGIF/Default Player Engine/3.png";
-		case("Default Player Engine 7"):
-			return "src/resources/images/gif/PNGtoGIF/Default Player Engine/7.png";
-		case("Default Player Engine 8"):
-			return "src/resources/images/gif/PNGtoGIF/Default Player Engine/8.png";
+		case("Default Player Engine 4"):
+			return "src/resources/images/gif/PNGtoGIF/Default Player Engine/4.png";
+		case("Default Player Engine 5"):
+			return "src/resources/images/gif/PNGtoGIF/Default Player Engine/5.png";
+		case("Default Player Engine Boosted 1"):
+			return "src/resources/images/gif/PNGtoGIF/Default Player Engine Boosted/1.png";
+		case("Default Player Engine Boosted 2"):
+			return "src/resources/images/gif/PNGtoGIF/Default Player Engine Boosted/2.png";
+		case("Default Player Engine Boosted 3"):
+			return "src/resources/images/gif/PNGtoGIF/Default Player Engine Boosted/3.png";
+		case("Default Player Engine Boosted 4"):
+			return "src/resources/images/gif/PNGtoGIF/Default Player Engine Boosted/4.png";
+		case("Default Player Engine Boosted 5"):
+			return "src/resources/images/gif/PNGtoGIF/Default Player Engine Boosted/5.png";
+		
 		}
 		return "notfound";
 	}

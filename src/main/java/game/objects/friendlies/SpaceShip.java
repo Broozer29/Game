@@ -1,5 +1,6 @@
 package game.objects.friendlies;
 
+import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
 
@@ -19,13 +20,21 @@ public class SpaceShip extends Sprite {
 	private int directiony;
 	private float hitpoints;
 	private float shieldHitpoints;
-	private float attackSpeed = 15;
+	private float attackSpeed = 1;
 	private float currentAttackFrame = 0;
 	private float shieldRegenDelay = 300;
 	private float currentShieldRegenDelayFrame = 0;
 	private float maxHitPoints;
 	private float maxShieldHitPoints;
+	private int movementSpeed = 2;
+	private String currentExhaust;
 	private Animation exhaustAnimation;
+	private float homingRectangleResizeScale;
+	private int homingRectangleXCoordinate;
+	private int homingRectangleYCoordinate;
+	private int homingRectangleWidth;
+	private int homingRectangleHeight;
+
 	private MissileManager missileManager = MissileManager.getInstance();
 	private AudioManager audioManager = AudioManager.getInstance();
 	private FriendlyManager friendlyManager = FriendlyManager.getInstance();
@@ -44,6 +53,7 @@ public class SpaceShip extends Sprite {
 
 	protected void setExhaustAnimation(String imageType) {
 		this.exhaustAnimation = new Animation(xCoordinate, yCoordinate, imageType, true, scale);
+		currentExhaust = imageType;
 //		this.exhaustAnimation.rotateAnimetion("Down");
 	}
 
@@ -59,6 +69,7 @@ public class SpaceShip extends Sprite {
 		currentAttackFrame = 0;
 		shieldRegenDelay = 300;
 		currentShieldRegenDelayFrame = 0;
+		movementSpeed = 2;
 	}
 
 	private void setShipHealth() {
@@ -66,6 +77,7 @@ public class SpaceShip extends Sprite {
 		this.maxHitPoints = 150;
 		this.shieldHitpoints = 100;
 		this.maxShieldHitPoints = 100;
+		movementSpeed = 2;
 	}
 
 	public void takeHitpointDamage(float damage) {
@@ -97,6 +109,11 @@ public class SpaceShip extends Sprite {
 		if (this.exhaustAnimation != null) {
 			this.exhaustAnimation.setX(this.getCenterXCoordinate() - (this.getWidth()));
 			this.exhaustAnimation.setY(this.getCenterYCoordinate() - (exhaustAnimation.getHeight() / 2) + 5);
+			homingRectangleResizeScale = (float) 1.5;
+			homingRectangleXCoordinate = (int) (xCoordinate - (width * homingRectangleResizeScale));
+			homingRectangleYCoordinate = (int) (yCoordinate - (height * homingRectangleResizeScale));
+			homingRectangleWidth = (int) (width * (homingRectangleResizeScale * 2));
+			homingRectangleHeight = (int) (height * (homingRectangleResizeScale * 2.25));
 		}
 	}
 
@@ -114,30 +131,51 @@ public class SpaceShip extends Sprite {
 				this.missileManager.firePlayerMissile(xCoordinate + width, yCoordinate + (height / 2) - 5,
 						friendlyManager.getPlayerMissileType(), "Impact Explosion One", 0, "Right", 1);
 				this.currentAttackFrame = 0;
+
 			} catch (UnsupportedAudioFileException | IOException e) {
 				e.printStackTrace();
 			}
 		}
 	}
 
+	private void swapExhaust(String exhaustName, float scale, int xOffset) {
+		if (!exhaustName.equals(exhaustAnimation.getImageType())) {
+			exhaustAnimation.changeFrames(exhaustName);
+			exhaustAnimation.setAnimationScale(scale);
+			exhaustAnimation.addXOffset(xOffset);
+			this.currentExhaust = exhaustName;
+		}
+	}
+
 	// Move the spaceship in target direction
 	public void keyPressed(KeyEvent e) {
+		int privyMovementSpeed = movementSpeed;
+		if (privyMovementSpeed == 2 && currentExhaust.equals("Default Player Engine Boosted")) {
+			privyMovementSpeed = 8;
+		} else if (privyMovementSpeed == 8 && currentExhaust.equals("Default Player Engine")) {
+			privyMovementSpeed = 2;
+		}
+
 		int key = e.getKeyCode();
 		switch (key) {
 		case (KeyEvent.VK_SPACE):
 			fire();
 			break;
 		case (KeyEvent.VK_A):
-			directionx = -2;
+			directionx = -privyMovementSpeed;
 			break;
 		case (KeyEvent.VK_D):
-			directionx = 2;
+			directionx = privyMovementSpeed;
 			break;
 		case (KeyEvent.VK_W):
-			directiony = -2;
+			directiony = -privyMovementSpeed;
 			break;
 		case (KeyEvent.VK_S):
-			directiony = 2;
+			directiony = privyMovementSpeed;
+			break;
+		case (KeyEvent.VK_SHIFT):
+			movementSpeed = 8;
+			swapExhaust("Default Player Engine Boosted", (float) 1, -30);
 			break;
 		}
 	}
@@ -157,6 +195,10 @@ public class SpaceShip extends Sprite {
 			break;
 		case (KeyEvent.VK_S):
 			directiony = 0;
+			break;
+		case (KeyEvent.VK_SHIFT):
+			movementSpeed = 2;
+			swapExhaust("Default Player Engine", (float) 1, 0);
 			break;
 		}
 
@@ -178,6 +220,10 @@ public class SpaceShip extends Sprite {
 		this.shieldHitpoints += healAmount;
 	}
 
+	public void setMovementSpeed(int movementSpeed) {
+		this.movementSpeed = movementSpeed;
+	}
+
 	public float getMaxHitpoints() {
 		return this.maxHitPoints;
 	}
@@ -188,5 +234,19 @@ public class SpaceShip extends Sprite {
 
 	public Animation getExhaustAnimation() {
 		return this.exhaustAnimation;
+	}
+
+	//Called by homing missiles, returns the invisible rectangle around the ship where the missiles lose their target lock
+	public Rectangle getHomingRangeBounds() {
+		// Casting leads to problems with anything but integers. Fortunately,
+		// coordinations and pixels cannot have decimals.
+
+		homingRectangleResizeScale = (float) 1.5;
+		homingRectangleXCoordinate = (int) (xCoordinate - (width * homingRectangleResizeScale));
+		homingRectangleYCoordinate = (int) (yCoordinate - (height * homingRectangleResizeScale));
+		homingRectangleWidth = (int) (width * (homingRectangleResizeScale * 2));
+		homingRectangleHeight = (int) (height * (homingRectangleResizeScale * 2.25));
+		return new Rectangle(homingRectangleXCoordinate, homingRectangleYCoordinate, homingRectangleWidth,
+				homingRectangleHeight);
 	}
 }

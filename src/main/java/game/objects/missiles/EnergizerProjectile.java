@@ -1,5 +1,6 @@
 package game.objects.missiles;
 
+import data.movement.RegularTrajectory;
 import data.movement.Trajectory;
 
 public class EnergizerProjectile extends Missile {
@@ -9,8 +10,8 @@ public class EnergizerProjectile extends Missile {
 		this.missileDamage = (float) 7.5;
 		setAnimation();
 		this.animation.setFrameDelay(3);
-		this.missileMovementSpeed = 5;
-		this.trajectory = new Trajectory(missileDirection, totalDistance(), missileMovementSpeed, angleModuloDivider, true);
+		this.movementSpeed = 5;
+		this.trajectory = new RegularTrajectory(direction, movementSpeed, true, angleModuloDivider, getTotalTravelDistance());
 	}
 	
 	public void missileAction() {
