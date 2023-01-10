@@ -6,20 +6,21 @@ import java.util.List;
 
 public class Path {
 	// Required for both types
-	private String pathType;
-	private String pathDirection;
-	private int stepSize;
-	private int moduloDivider;
+	protected String pathType;
+	protected String pathDirection;
+	protected int stepSize;
+	protected int moduloDivider;
 
 	// Required for angled & straight lined directions
-	private int stepsToTake;
-	private int stepsTaken;
+	protected int stepsToTake;
+	protected int stepsTaken;
 
 	// Required for homing missiles
-	private String fallbackDirection;
-	private String previousDirection;
-	private List<String> allowedFallbackDirections = new ArrayList<String>();
-	private boolean hasTargetLock;
+	protected String originalDirection;
+	protected String fallbackDirection;
+	protected String previousDirection;
+	protected List<String> allowedFallbackDirections = new ArrayList<String>();
+	protected boolean hasTargetLock;
 
 	public Path(String pathType, String pathDirection, int stepSize, int moduloDivider) {
 		this.pathType = pathType;
@@ -28,18 +29,7 @@ public class Path {
 		this.moduloDivider = moduloDivider;
 	}
 
-	protected void initRegularPath(int stepsToTake) {
-		this.stepsToTake = stepsToTake;
-		this.stepsTaken = 0;
-	}
-
-	protected void initHomingPath(String fallbackstring) {
-		this.fallbackDirection = fallbackstring;
-		initAllowedFallbackDirections(fallbackstring);
-		this.hasTargetLock = true;
-	}
-
-	private void initAllowedFallbackDirections(String fallbackDirection) {
+	protected void initAllowedFallbackDirections(String fallbackDirection) {
 		if (fallbackDirection.equals("Left") || fallbackDirection.equals("LeftUp")
 				|| fallbackDirection.equals("LeftDown")) {
 			allowedFallbackDirections.add("Left");
@@ -71,33 +61,39 @@ public class Path {
 	// Checks if rectangles intersect, if so, lose target lock, if not, update
 	// direction
 	public void setHomingPathDirection(Rectangle homingRectangle, Rectangle missileRectangle) {
-		int homingRectangleXCoordinate = (int) Math.round(homingRectangle.getCenterX());
-		int homingRectangleYCoordinate = (int) Math.round(homingRectangle.getCenterY());
+		int homingXCoordinate = (int) Math.round(homingRectangle.getCenterX());
+		int homingYCoordinate = (int) Math.round(homingRectangle.getCenterY());
 
-		int missileRectangleXCoordinate = (int) Math.round(missileRectangle.getCenterX());
-		int missileRectangleYCoordinate = (int) Math.round(missileRectangle.getCenterY());
+		int missileXCoordinate = (int) Math.round(missileRectangle.getCenterX());
+		int missileYCoordinate = (int) Math.round(missileRectangle.getCenterY());
+
+		if (passedPlayer(homingXCoordinate, homingYCoordinate, missileXCoordinate, missileYCoordinate)) {
+			hasTargetLock = false;
+		}
+
 		if (!homingRectangle.intersects(missileRectangle) && hasTargetLock) {
 			String leftOrRight = "";
 			String upOrDown = "";
 
-			if (homingRectangleXCoordinate < missileRectangleXCoordinate) {
+			if (homingXCoordinate < missileXCoordinate) {
 				leftOrRight = "Left";
-			} else if (homingRectangleXCoordinate > missileRectangleXCoordinate) {
+			} else if (homingXCoordinate > missileXCoordinate) {
 				leftOrRight = "Right";
 			}
 
-			if (homingRectangleYCoordinate < missileRectangleYCoordinate) {
+			if (homingYCoordinate < missileYCoordinate) {
 				upOrDown = "Up";
-			} else if (homingRectangleYCoordinate > missileRectangleYCoordinate) {
-				leftOrRight = "Down";
+			} else if (homingYCoordinate > missileYCoordinate) {
+				upOrDown = "Down";
 			}
 
+			pathDirection = leftOrRight + upOrDown;
 			if (allowedFallbackDirections.contains(pathDirection)) {
 				previousDirection = pathDirection;
-				pathDirection = leftOrRight + upOrDown;
 				fallbackDirection = pathDirection;
-			} else
+			} else {
 				pathDirection = previousDirection;
+			}
 
 			// Check wether or not the missile has already passed the player. Meaning if the
 			// homing rectangle is already passed by the missilerectangle
@@ -107,6 +103,43 @@ public class Path {
 		} else if (!hasTargetLock) {
 			pathDirection = fallbackDirection;
 		}
+		if (pathDirection == null) {
+			pathDirection = originalDirection;
+		}
+	}
+
+	private boolean passedPlayer(int homingXCoordinate, int homingYCoordinate, int missileXCoordinate,
+			int missileYCoordinate) {
+		if (originalDirection.equals("Left") || originalDirection.equals("LeftUp")
+				|| originalDirection.equals("LeftDown")) {
+			if (homingXCoordinate > missileXCoordinate) {
+				return true;
+			} else
+				return false;
+		}
+
+		else if (originalDirection.equals("Right") || originalDirection.equals("RightUp")
+				|| originalDirection.equals("RightDown")) {
+			if (missileXCoordinate > homingXCoordinate) {
+				return true;
+			} else
+				return false;
+		}
+
+		else if (originalDirection.equals("Up")) {
+			if (missileYCoordinate > homingYCoordinate) {
+				return true;
+			} else
+				return false;
+		}
+		else if (originalDirection.equals("Down")) {
+			if (homingYCoordinate > missileYCoordinate) {
+				return true;
+			} else
+				return false;
+		}
+
+		return true;
 	}
 
 	public boolean withinHomingRectangle(Rectangle homingRectangle, Rectangle missileRectangle) {

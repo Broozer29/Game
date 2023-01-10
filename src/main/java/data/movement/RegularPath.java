@@ -4,7 +4,8 @@ public class RegularPath extends Path {
 
 	public RegularPath(String pathDirection, int stepSize, int moduloDivider, int stepsToTake) {
 		super("Regular" , pathDirection, stepSize, moduloDivider);
-		this.initRegularPath(stepsToTake);
+		this.stepsToTake = stepsToTake;
+		this.stepsTaken = 0;
 	}
 
 }
