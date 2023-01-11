@@ -1,5 +1,8 @@
 package game.managers;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import data.SpawningCoordinator;
 import game.objects.CustomTimer;
 import game.objects.enemies.Alien;
@@ -16,7 +19,7 @@ public class LevelManager {
 
 	private static LevelManager instance = new LevelManager();
 	private EnemyManager enemyManager = EnemyManager.getInstance();
-	private SpawningCoordinator randomCoordinator = SpawningCoordinator.getInstance();
+	private SpawningCoordinator spawningCoordinator = SpawningCoordinator.getInstance();
 	private TimerManager timerManager = TimerManager.getInstance();
 	private int level = 1;
 
@@ -47,7 +50,7 @@ public class LevelManager {
 
 	public void spawnBombs(int bombTriesAmount) {
 		for (int i = 0; i < bombTriesAmount; i++) {
-			int randomXCoordinate = randomCoordinator.getRandomXBombEnemyCoordinate();
+			int randomXCoordinate = spawningCoordinator.getRandomXBombEnemyCoordinate();
 			spawnAlienBomb(randomXCoordinate);
 		}
 	}
@@ -73,19 +76,19 @@ public class LevelManager {
 		int angleModuloDivider = 2;
 		CustomTimer timer = null;
 		timer = timerManager.createTimer("Bombs", 20, 10000, true, "Left", angleModuloDivider, 1);
-//		timerManager.addTimerToList(timer);
+		timerManager.addTimerToList(timer);
 		timer = timerManager.createTimer("Bomba", 3, 2000, true, "Left", angleModuloDivider, 1);
-//		timerManager.addTimerToList(timer);
+		timerManager.addTimerToList(timer);
 		timer = timerManager.createTimer("Flamer", 3, 2000, true, "Left", angleModuloDivider, 1);
-//		timerManager.addTimerToList(timer);
+		timerManager.addTimerToList(timer);
 		timer = timerManager.createTimer("Tazer", 3, 2000, true, "Left", angleModuloDivider, 1);
-//		timerManager.addTimerToList(timer);
+		timerManager.addTimerToList(timer);
 		timer = timerManager.createTimer("Seeker", 1, 2000, true, "Left", angleModuloDivider, 1);
 		timerManager.addTimerToList(timer);
 		timer = timerManager.createTimer("Bulldozer", 3, 2000, true, "Left", angleModuloDivider, 1);
-//		timerManager.addTimerToList(timer);
+		timerManager.addTimerToList(timer);
 		timer = timerManager.createTimer("Energizer", 3, 2000, true, "Left", angleModuloDivider, 1);
-//		timerManager.addTimerToList(timer);
+		timerManager.addTimerToList(timer);
 	}
 
 	// Called by CustomTimers when they have to spawn an enemy
@@ -93,13 +96,15 @@ public class LevelManager {
 			float scale) {
 		for (int i = 0; i < amountOfAttempts; i++) {
 
-			// Hier afvangen waar hij moet spawnen op basis van schuine lijn
-			int xCoordinate = randomCoordinator.getRandomXEnemyCoordinate();
-			int yCoordinate = randomCoordinator.getRandomYEnemyCoordinate();
+			// Hier afvangen waar hij moet spawnen
+			List<Integer> coordinatesList = getSpawnCoordinatesByDirection(direction);
+
+			int xCoordinate = coordinatesList.get(0);
+			int yCoordinate = coordinatesList.get(1);
 
 			switch (enemyType) {
 			case ("Alien Bomb"):
-				xCoordinate = randomCoordinator.getRandomXBombEnemyCoordinate();
+				xCoordinate = spawningCoordinator.getRandomXBombEnemyCoordinate();
 				spawnAlienBomb(xCoordinate);
 				break;
 			case ("Alien"):
@@ -127,15 +132,62 @@ public class LevelManager {
 		}
 	}
 
+	private List<Integer> getSpawnCoordinatesByDirection(String direction) {
+		int xCoordinate = 0;
+		int yCoordinate = 0;
+		List<Integer> coordinatesList = new ArrayList<Integer>();
+
+		if (direction.equals("Left")) {
+			xCoordinate = spawningCoordinator.getRightBlockXCoordinate();
+			yCoordinate = spawningCoordinator.getRightBlockYCoordinate();
+		} else if (direction.equals("Right")) {
+			xCoordinate = spawningCoordinator.getLeftBlockXCoordinate();
+			yCoordinate = spawningCoordinator.getLeftBlockYCoordinate();
+		} else if (direction.equals("Down")) {
+			xCoordinate = spawningCoordinator.getUpBlockXCoordinate();
+			yCoordinate = spawningCoordinator.getUpBlockYCoordinate();
+		} else if (direction.equals("Up")) {
+			xCoordinate = spawningCoordinator.getDownBlockXCoordinate();
+			yCoordinate = spawningCoordinator.getDownBlockYCoordinate();
+		}
+
+		else if (direction.equals("LeftUp")) {
+			xCoordinate = spawningCoordinator.getRightBlockXCoordinate();
+			yCoordinate = spawningCoordinator.getRightBlockYCoordinate();
+			System.out.println(
+					"Tried spawning in a direction where the corresponding spawning block has nog been created yet!");
+		} else if (direction.equals("LeftDown")) {
+			xCoordinate = spawningCoordinator.getRightBlockXCoordinate();
+			yCoordinate = spawningCoordinator.getRightBlockYCoordinate();
+			System.out.println(
+					"Tried spawning in a direction where the corresponding spawning block has nog been created yet!");
+		} else if (direction.equals("RightUp")) {
+			xCoordinate = spawningCoordinator.getLeftBlockXCoordinate();
+			yCoordinate = spawningCoordinator.getLeftBlockYCoordinate();
+			System.out.println(
+					"Tried spawning in a direction where the corresponding spawning block has nog been created yet!");
+		} else if (direction.equals("RightDown")) {
+			xCoordinate = spawningCoordinator.getLeftBlockXCoordinate();
+			yCoordinate = spawningCoordinator.getLeftBlockYCoordinate();
+			System.out.println(
+					"Tried spawning in a direction where the corresponding spawning block has nog been created yet!");
+		}
+
+		coordinatesList.add(xCoordinate);
+		coordinatesList.add(yCoordinate);
+
+		return coordinatesList;
+	}
+
 	private void spawnAlienBomb(int xCoordinate) {
-		String direction = randomCoordinator.upOrDown();
+		String direction = spawningCoordinator.upOrDown();
 		int yCoordinate = 0;
 		float scale = 1;
 
 		if (direction.equals("Up")) {
-			yCoordinate = randomCoordinator.getRandomYUpBombEnemyCoordinate();
+			yCoordinate = spawningCoordinator.getRandomYUpBombEnemyCoordinate();
 		} else if (direction.equals("Down")) {
-			yCoordinate = randomCoordinator.getRandomYDownBombEnemyCoordinate();
+			yCoordinate = spawningCoordinator.getRandomYDownBombEnemyCoordinate();
 		}
 
 		Enemy enemy = new AlienBomb(xCoordinate, yCoordinate, direction, 0, scale);
@@ -198,9 +250,9 @@ public class LevelManager {
 	// Called by all spawn*Enemy* methods, returns true if there is no overlap
 	// between enemies of the same type
 	private boolean validCoordinates(Enemy enemy) {
-		if (randomCoordinator.checkValidEnemyXCoordinate(enemy, enemyManager.getEnemies(), enemy.getXCoordinate(),
+		if (spawningCoordinator.checkValidEnemyXCoordinate(enemy, enemyManager.getEnemies(), enemy.getXCoordinate(),
 				enemy.getWidth())
-				&& randomCoordinator.checkValidEnemyYCoordinate(enemy, enemyManager.getEnemies(),
+				&& spawningCoordinator.checkValidEnemyYCoordinate(enemy, enemyManager.getEnemies(),
 						enemy.getYCoordinate(), enemy.getHeight())) {
 			return true;
 		}

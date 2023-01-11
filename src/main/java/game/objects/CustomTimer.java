@@ -25,9 +25,6 @@ public class CustomTimer implements ActionListener {
 	private Timer timer;
 	private String status;
 
-	// Attributes for distinguishing timers
-	private String timerPurpose;
-
 	public CustomTimer(int timeBeforeActivation, int amountOfSpawnAttempts, String timerEnemyType, boolean loopable,
 			String enemyMovementDirection, int angleModuloDivider, float enemyScale) {
 		this.enemyScale = enemyScale;

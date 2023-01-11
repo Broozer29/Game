@@ -13,10 +13,7 @@ public class SpawningCoordinator {
 
 	// Al deze ranges moeten eigenlijk dynamisch berekend worden, want nu is het
 	// niet resizable
-	private int maximumEnemyWidthRange = DataClass.getInstance().getWindowWidth() + 500;
-	private int minimumEnemyWidthRange = DataClass.getInstance().getWindowWidth();
-	private int maximumEnemyHeightRange = DataClass.getInstance().getWindowHeight() - 100;
-	private int minimumEnemyHeightRange = 100;
+
 
 	private int maximumBGOWidthRange = DataClass.getInstance().getWindowWidth() + 200;
 	private int minimumBGOWidthRange = -200;
@@ -31,6 +28,29 @@ public class SpawningCoordinator {
 	private int maximumBombEnemyHeightDownRange = 0;
 	private int minimumBombEnemyHeightDownRange = -500;
 	
+	//Left Spawning block
+	private int leftEnemyMaxHeightRange = DataClass.getInstance().getWindowHeight() - 100;
+	private int leftEnemyMinHeightRange = 100;
+	private int leftEnemyMaxWidthRange = 0 - 500;
+	private int leftEnemyMinWidthRange = 0 - 100;
+	
+	//Right Spawning block
+	private int rightEnemyMaxWidthRange = DataClass.getInstance().getWindowWidth() + 500;
+	private int rightEnemyMinWidthRange = DataClass.getInstance().getWindowWidth();
+	private int rightEnemyMaxHeightRange = DataClass.getInstance().getWindowHeight() - 100;
+	private int rightEnemyMinHeightRange = 100;
+	
+	//Up spawning block
+	private int upEnemyMaxWidthRange = DataClass.getInstance().getWindowWidth() - 50;
+	private int upEnemyMinWidthRange = 50;
+	private int upEnemyMaxHeightRange = -200;
+	private int upEnemyMinHeightRange = -100;
+	
+	//Down spawning block
+	private int downEnemyMaxWidthRange = DataClass.getInstance().getWindowWidth() - 50;
+	private int downEnemyMinWidthRange = 50;
+	private int downEnemyMaxHeightRange = DataClass.getInstance().getWindowHeight() + 200;
+	private int downEnemyMinHeightRange = DataClass.getInstance().getWindowHeight() + 100;
 
 	private SpawningCoordinator() {
 
@@ -63,14 +83,40 @@ public class SpawningCoordinator {
 		}
 		return true;
 	}
+	
 
-	public int getRandomXEnemyCoordinate() {
-		return random.nextInt((maximumEnemyWidthRange - minimumEnemyWidthRange) + 1) + minimumEnemyWidthRange;
+	public int getRightBlockXCoordinate() {
+		return random.nextInt((rightEnemyMaxWidthRange - rightEnemyMinWidthRange) + 1) + rightEnemyMinWidthRange;
 	}
 
-	public int getRandomYEnemyCoordinate() {
-		return random.nextInt((maximumEnemyHeightRange - minimumEnemyHeightRange) + 1) + minimumEnemyHeightRange;
+	public int getRightBlockYCoordinate() {
+		return random.nextInt((rightEnemyMaxHeightRange - rightEnemyMinHeightRange) + 1) + rightEnemyMinHeightRange;
 	}
+	
+	public int getLeftBlockXCoordinate() {
+		return random.nextInt((leftEnemyMaxWidthRange - leftEnemyMinWidthRange) + 1) + leftEnemyMinWidthRange;
+	}
+
+	public int getLeftBlockYCoordinate() {
+		return random.nextInt((leftEnemyMaxHeightRange - leftEnemyMinHeightRange) + 1) + leftEnemyMinHeightRange;
+	}
+	
+	public int getUpBlockXCoordinate() {
+		return random.nextInt((upEnemyMaxWidthRange - upEnemyMinWidthRange) + 1) + upEnemyMinWidthRange;
+	}
+
+	public int getUpBlockYCoordinate() {
+		return random.nextInt((upEnemyMaxHeightRange - upEnemyMinHeightRange) + 1) + upEnemyMinHeightRange;
+	}
+	
+	public int getDownBlockXCoordinate() {
+		return random.nextInt((downEnemyMaxWidthRange - downEnemyMinWidthRange) + 1) + downEnemyMinWidthRange;
+	}
+
+	public int getDownBlockYCoordinate() {
+		return random.nextInt((downEnemyMaxHeightRange - downEnemyMinHeightRange) + 1) + downEnemyMinHeightRange;
+	}
+	
 
 	public int getRandomXBombEnemyCoordinate() {
 		return random.nextInt((maximumBombEnemyWidthRange - minimumBombEnemyWidthRange) + 1)
