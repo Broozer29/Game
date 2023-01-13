@@ -24,7 +24,6 @@ public class HomingTrajectory extends Trajectory {
 		List<Integer> destinationCoordinatesList = friendlyManager.getNearestFriendlyHomingCoordinates();
 		int xCoordinateDestination = destinationCoordinatesList.get(0);
 		int yCoordinateDestination = destinationCoordinatesList.get(1);
-
 		Path newPath = pathFactory.getHomingPath(stepSize, friendly, trajectoryDirection, angleModuloSize);
 		addPath(newPath);
 		setPath();

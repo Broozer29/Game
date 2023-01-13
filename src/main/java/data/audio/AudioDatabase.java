@@ -1,4 +1,4 @@
-package data;
+package data.audio;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,14 +51,15 @@ public class AudioDatabase {
 
 	private void testResetClips() {
 		for (int i = 0; i < allActiveClips.size(); i++) {
-			if (allActiveClips.get(i).getAudioType().equals("Large Ship Destroyed")) {
-				if(allActiveClips.get(i).aboveThreshold()) {
+			if (allActiveClips.get(i).getAudioType().equals("Large Ship Destroyed")
+					|| allActiveClips.get(i).getAudioType().equals("Destroyed Explosion")) {
+				if (allActiveClips.get(i).aboveThreshold()) {
 					allActiveClips.get(i).setFramePosition(0);
 					allActiveClips.get(i).stopClip();
 					allActiveClips.remove(allActiveClips.get(i));
 				}
 			}
-			
+
 			else if (!allActiveClips.get(i).isActive()) {
 				allActiveClips.get(i).stopClip();
 				allActiveClips.get(i).setFramePosition(0);
@@ -83,7 +84,7 @@ public class AudioDatabase {
 			laserBeamClipList.add(laserBeamClip);
 
 			CustomAudioClip destroyedExplosion = new CustomAudioClip("Destroyed Explosion", false);
-			alienSpaceshipDestroyedClipList.add(destroyedExplosion);
+			destroyedExplosionClipList.add(destroyedExplosion);
 
 			CustomAudioClip alienSpaceshipDestroyed = new CustomAudioClip("Alien Spaceship Destroyed", false);
 			alienSpaceshipDestroyedClipList.add(alienSpaceshipDestroyed);
@@ -105,7 +106,7 @@ public class AudioDatabase {
 			return getFuriMyOnlyChance();
 		case ("Furi - Make this right"):
 			return getFuriMakeThisRight();
-		case ("getDefaultMusic"):
+		case ("DefaultMusic"):
 			return getDefaultMusic();
 		case ("Player Laserbeam"):
 			return getLaserBeam();

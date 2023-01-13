@@ -16,8 +16,8 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
-import data.AudioDatabase;
 import data.DataClass;
+import data.audio.AudioDatabase;
 import game.managers.AnimationManager;
 import game.managers.AudioManager;
 import game.managers.BackgroundManager;
@@ -27,11 +27,11 @@ import game.managers.FriendlyManager;
 import game.managers.LevelManager;
 import game.managers.MissileManager;
 import game.managers.TimerManager;
+import game.objects.BackgroundObject;
 import game.objects.Explosion;
 import game.objects.enemies.Enemy;
 import game.objects.missiles.Missile;
 import image.objects.Animation;
-import image.objects.BackgroundObject;
 import image.objects.Sprite;
 import menuscreens.BoardManager;
 
@@ -39,7 +39,7 @@ public class GameBoard extends JPanel implements ActionListener {
 
 	private Timer timer;
 	private boolean ingame;
-//	private String currentMusic = "defaultmusic";
+//	private String currentMusic = "DefaultMusic";
 	private String currentMusic = "";
 
 	private DataClass data = DataClass.getInstance();

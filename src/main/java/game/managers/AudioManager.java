@@ -5,15 +5,14 @@ import java.io.IOException;
 import javax.sound.sampled.Clip;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
-import data.AudioDatabase;
-import data.CustomAudioClip;
+import data.audio.AudioDatabase;
+import data.audio.CustomAudioClip;
 
 public class AudioManager {
 
 	private static AudioManager instance = new AudioManager();
 	private FriendlyManager friendlyManager = FriendlyManager.getInstance();
 	private CustomAudioClip backGroundMusic = null;
-	private CustomAudioClip backGroundMusicInputStream = null;
 	private AudioDatabase audioDatabase = AudioDatabase.getInstance();
 
 	private AudioManager() {
@@ -27,7 +26,6 @@ public class AudioManager {
 			backGroundMusic.stopClip();
 			backGroundMusic.closeclip();
 			backGroundMusic = null;
-			backGroundMusicInputStream = null;
 		}
 
 	}
@@ -84,9 +82,8 @@ public class AudioManager {
 	public void playMusicAudio(String audioType) throws UnsupportedAudioFileException, IOException {
 		if (backGroundMusic == null) {
 			backGroundMusic = audioDatabase.getAudioClip(audioType);
-
-			if (!(backGroundMusicInputStream == null)) {
-				backGroundMusicInputStream.startClip();
+			if (!(backGroundMusic == null)) {
+				backGroundMusic.startClip();
 			}
 		}
 	}

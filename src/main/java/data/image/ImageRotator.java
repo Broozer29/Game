@@ -1,4 +1,4 @@
-package data;
+package data.image;
 
 import java.awt.Graphics2D;
 import java.awt.Image;
@@ -50,10 +50,10 @@ public class ImageRotator {
 		int numquadrants = 1;
 		switch (rotation) {
 		case ("Up"):
-			numquadrants = 3;
+			numquadrants = 1;
 			break;
 		case ("Down"):
-			numquadrants = 1;
+			numquadrants = 3;
 			break;
 		case ("Left"):
 			numquadrants = 0;

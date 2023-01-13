@@ -3,7 +3,7 @@ package game.managers;
 import java.util.ArrayList;
 import java.util.List;
 
-import game.objects.CustomTimer;
+import game.spawner.CustomTimer;
 
 public class TimerManager {
 
@@ -78,7 +78,6 @@ public class TimerManager {
 			levelManager = LevelManager.getInstance();
 		}
 		levelManager.spawnEnemy(timer.getTimerEnemy(), timer.getTimerSpawnAttempts(), timer.getEnemyMovementDirection(), timer.getAngleModuloDivider(), timer.getEnemyScale());
-
 		if (timer.getLoopable()) {
 			CustomTimer renewedTimer = createTimer(timer.getTimerEnemy(), timer.getTimerSpawnAttempts(), timer.getTimeBeforeActivation(),
 					timer.getLoopable(), timer.getEnemyMovementDirection(), timer.getAngleModuloDivider(), timer.getEnemyScale());

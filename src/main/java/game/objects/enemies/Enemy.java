@@ -37,7 +37,7 @@ public class Enemy extends Sprite {
 	protected String deathSound;
 	protected boolean showHealthBar;
 	protected List<Integer> boardBlockSpeeds = new ArrayList<Integer>();
-	protected Animation exhaustAnimation;
+	protected Animation exhaustAnimation = null;
 	protected Animation deathAnimation;
 
 	public Enemy(int x, int y, String direction, String enemyType, float scale) {
@@ -165,6 +165,7 @@ public class Enemy extends Sprite {
 	}
 
 	public Animation getExhaustAnimation() {
+//		return null;
 		return this.exhaustAnimation;
 	}
 

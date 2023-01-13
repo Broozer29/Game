@@ -3,9 +3,9 @@ package image.objects;
 import java.awt.Image;
 import java.awt.Rectangle;
 
-import data.ImageDatabase;
-import data.ImageResizer;
-import data.ImageRotator;
+import data.image.ImageDatabase;
+import data.image.ImageResizer;
+import data.image.ImageRotator;
 
 public class Sprite {
 	ImageDatabase imgDatabase = ImageDatabase.getInstance();

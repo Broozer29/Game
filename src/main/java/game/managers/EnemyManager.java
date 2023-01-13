@@ -180,7 +180,7 @@ public class EnemyManager {
 		}
 
 		if (enemy != null) {
-			animationManager.addExhaustAnimation(enemy.getExhaustAnimation());
+//			animationManager.addExhaustAnimation(enemy.getExhaustAnimation());
 			this.enemyList.add(enemy);
 		}
 	}

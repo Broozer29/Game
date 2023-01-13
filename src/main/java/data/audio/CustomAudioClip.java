@@ -1,4 +1,4 @@
-package data;
+package data.audio;
 
 import javax.sound.sampled.Clip;
 import javax.sound.sampled.FloatControl;
@@ -25,7 +25,6 @@ public class CustomAudioClip {
 			e.printStackTrace();
 		}
 
-
 		FloatControl volume = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
 		switch (clipType) {
 		case ("Player Laserbeam"):
@@ -38,21 +37,30 @@ public class CustomAudioClip {
 			break;
 		case ("Alien Bomb Impact"):
 			volume.setValue(-2);
+		case ("DefaultMusic"):
+			volume.setValue(-3);
 		}
 	}
 
 	public int getFramePosition() {
 		return this.clip.getFramePosition();
 	}
-	
+
 	public boolean aboveThreshold() {
-		switch(clipType) {
-		case("Large Ship Destroyed"):
-			if(clip.getFramePosition() > 25000) {
+		switch (clipType) {
+		case ("Large Ship Destroyed"):
+			if (clip.getFramePosition() > 25000) {
 				return true;
-			} else return false;
-	
-		} 
+			} else
+				return false;
+
+		case ("Destroyed Explosion"):
+			if (clip.getFramePosition() > 10000) {
+				return true;
+			} else
+				return false;
+
+		}
 		return true;
 	}
 
@@ -62,10 +70,10 @@ public class CustomAudioClip {
 
 	public void startClip() {
 		this.clip.start();
-		if(loop) {
+		if (loop) {
 			this.clip.loop(Clip.LOOP_CONTINUOUSLY);
 		}
-			
+
 	}
 
 	public void resetFramePosition() {
@@ -87,7 +95,7 @@ public class CustomAudioClip {
 	public void setFramePosition(int framePosition) {
 		this.clip.setFramePosition(framePosition);
 	}
-	
+
 	public String getAudioType() {
 		return this.clipType;
 	}

@@ -49,7 +49,7 @@ public class Seeker extends Enemy {
 
 		if (currentAttackSpeedFrameCount >= attackSpeedFrameCount) {
 			missileManager.addEnemyMissile(this.xCoordinate, this.yCoordinate + calculateRandomWeaponHeightOffset(),
-					"Seeker Projectile", "Seeker Projectile Explosion", 0, "Left", "Left", this.scale);
+					"Seeker Projectile", "Seeker Projectile Explosion", 0, direction, rotation, this.scale);
 			currentAttackSpeedFrameCount = 0;
 		}
 		if (currentAttackSpeedFrameCount < attackSpeedFrameCount) {
