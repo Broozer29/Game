@@ -127,7 +127,7 @@ public class Path {
 		}
 
 		else if (originalDirection.equals("Up")) {
-			if (missileYCoordinate > homingYCoordinate) {
+			if (missileYCoordinate < homingYCoordinate) {
 				return true;
 			} else
 				return false;

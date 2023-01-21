@@ -78,8 +78,6 @@ public class Trajectory {
 	public void updateEnemyHomingPaths(Enemy enemy) {
 		Rectangle friendlyBounds = FriendlyManager.getInstance().getSpaceship().getHomingRangeBounds();
 		Rectangle enemyBounds = enemy.getBounds();
-		
-		
 		pathList.get(0).setHomingPathDirection(friendlyBounds, enemyBounds);
 	}
 

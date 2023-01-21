@@ -165,7 +165,6 @@ public class Enemy extends Sprite {
 	}
 
 	public Animation getExhaustAnimation() {
-//		return null;
 		return this.exhaustAnimation;
 	}
 

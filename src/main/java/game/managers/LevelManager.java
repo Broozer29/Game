@@ -12,7 +12,7 @@ import game.objects.enemies.Energizer;
 import game.objects.enemies.Flamer;
 import game.objects.enemies.Seeker;
 import game.objects.enemies.Tazer;
-import game.spawner.CustomTimer;
+import game.spawner.EnemySpawnTimer;
 
 public class LevelManager {
 
@@ -73,7 +73,7 @@ public class LevelManager {
 
 	private void saturateLevelOne() {
 		int angleModuloDivider = 2;
-		CustomTimer timer = null;
+		EnemySpawnTimer timer = null;
 //		timer = timerManager.createTimer("Alien Bomb", 20, 5000, true, "NaN", angleModuloDivider, 1);
 //		timerManager.addTimerToList(timer);
 //		timer = timerManager.createTimer("Bomba", 1, 6000, true, "Left", angleModuloDivider, 1);
@@ -82,14 +82,14 @@ public class LevelManager {
 //		timerManager.addTimerToList(timer);
 //		timer = timerManager.createTimer("Tazer", 2, 8000, true, "Left", angleModuloDivider, 1);
 //		timerManager.addTimerToList(timer);
-//		timer = timerManager.createTimer("Seeker", 2, 10000, true, "Down", angleModuloDivider, 1);
+		timer = timerManager.createTimer("Seeker", 2, 2000, true, "Down", angleModuloDivider, 1);
 //		timerManager.addTimerToList(timer);
 		timer = timerManager.createTimer("Seeker", 2, 2000, true, "Up", angleModuloDivider, 1);
-//		timerManager.addTimerToList(timer);
+		timerManager.addTimerToList(timer);
 //		timer = timerManager.createTimer("Seeker", 2, 10000, true, "Left", angleModuloDivider, 1);
 //		timerManager.addTimerToList(timer);
 		timer = timerManager.createTimer("Seeker", 2, 2000, true, "Right", angleModuloDivider, 1);
-		timerManager.addTimerToList(timer);
+//		timerManager.addTimerToList(timer);
 //		timer = timerManager.createTimer("Bulldozer", 1, 5000, true, "Left", angleModuloDivider, 1);
 //		timerManager.addTimerToList(timer);
 //		timer = timerManager.createTimer("Energizer", 1, 4500, true, "Left", angleModuloDivider, 1);
