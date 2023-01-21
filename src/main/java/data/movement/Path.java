@@ -70,7 +70,6 @@ public class Path {
 		if (passedPlayer(homingXCoordinate, homingYCoordinate, missileXCoordinate, missileYCoordinate)) {
 			hasTargetLock = false;
 		}
-
 		if (!homingRectangle.intersects(missileRectangle) && hasTargetLock) {
 			String leftOrRight = "";
 			String upOrDown = "";
@@ -86,6 +85,7 @@ public class Path {
 			} else if (homingYCoordinate > missileYCoordinate) {
 				upOrDown = "Down";
 			}
+
 
 			pathDirection = leftOrRight + upOrDown;
 			if (allowedFallbackDirections.contains(pathDirection)) {
@@ -127,13 +127,13 @@ public class Path {
 		}
 
 		else if (originalDirection.equals("Up")) {
-			if (missileYCoordinate > homingYCoordinate) {
+			if (missileYCoordinate < homingYCoordinate) {
 				return true;
 			} else
 				return false;
 		}
 		else if (originalDirection.equals("Down")) {
-			if (homingYCoordinate > missileYCoordinate) {
+			if (homingYCoordinate < missileYCoordinate) {
 				return true;
 			} else
 				return false;

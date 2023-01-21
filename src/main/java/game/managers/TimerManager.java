@@ -3,13 +3,13 @@ package game.managers;
 import java.util.ArrayList;
 import java.util.List;
 
-import game.objects.CustomTimer;
+import game.spawner.EnemySpawnTimer;
 
 public class TimerManager {
 
 	private static TimerManager instance = new TimerManager();
 	private LevelManager levelManager = LevelManager.getInstance();
-	private List<CustomTimer> allTimers = new ArrayList<CustomTimer>();
+	private List<EnemySpawnTimer> allTimers = new ArrayList<EnemySpawnTimer>();
 
 	private TimerManager() {
 
@@ -25,7 +25,7 @@ public class TimerManager {
 
 	public void resetManager() {
 		for (int i = 0; i < allTimers.size(); i++) {
-			CustomTimer selectedTimer = allTimers.get(i);
+			EnemySpawnTimer selectedTimer = allTimers.get(i);
 			selectedTimer.stopTimer();
 			removeTimerFromList(selectedTimer);
 		}
@@ -33,9 +33,9 @@ public class TimerManager {
 
 	// Creates timers for different purposes
 	// int duration, int timedelay (zelfde als game delay), waar de timer voor is
-	public CustomTimer createTimer(String enemyType, int amountOfSpawnAttempts, int timeBeforeActivation,
+	public EnemySpawnTimer createTimer(String enemyType, int amountOfSpawnAttempts, int timeBeforeActivation,
 			boolean loopable, String direction, int angleModuloDivider, float enemyScale) {
-		CustomTimer timer = new CustomTimer(timeBeforeActivation, amountOfSpawnAttempts, enemyType,
+		EnemySpawnTimer timer = new EnemySpawnTimer(timeBeforeActivation, amountOfSpawnAttempts, enemyType,
 				loopable, direction, angleModuloDivider, enemyScale);
 		return timer;
 //		addTimerToList(timer);
@@ -44,7 +44,7 @@ public class TimerManager {
 	// Timers die afgelopen zijn, verwijderen
 	public void updateTimers() {
 		for (int i = 0; i < allTimers.size(); i++) {
-			CustomTimer selectedTimer = allTimers.get(i);
+			EnemySpawnTimer selectedTimer = allTimers.get(i);
 			if (!selectedTimer.getFinished()) {
 				switch (selectedTimer.getStatus()) {
 				case ("primed"):
@@ -64,23 +64,22 @@ public class TimerManager {
 		}
 	}
 
-	private void removeTimerFromList(CustomTimer timerToRemove) {
+	private void removeTimerFromList(EnemySpawnTimer timerToRemove) {
 		allTimers.remove(timerToRemove);
 	}
 
-	public void addTimerToList(CustomTimer timerToAdd) {
+	public void addTimerToList(EnemySpawnTimer timerToAdd) {
 		allTimers.add(timerToAdd);
 	}
 
 	// Called by the timer itself when it's time to activate
-	public void activate(CustomTimer timer) {
+	public void activate(EnemySpawnTimer timer) {
 		if (levelManager == null) {
 			levelManager = LevelManager.getInstance();
 		}
 		levelManager.spawnEnemy(timer.getTimerEnemy(), timer.getTimerSpawnAttempts(), timer.getEnemyMovementDirection(), timer.getAngleModuloDivider(), timer.getEnemyScale());
-
 		if (timer.getLoopable()) {
-			CustomTimer renewedTimer = createTimer(timer.getTimerEnemy(), timer.getTimerSpawnAttempts(), timer.getTimeBeforeActivation(),
+			EnemySpawnTimer renewedTimer = createTimer(timer.getTimerEnemy(), timer.getTimerSpawnAttempts(), timer.getTimeBeforeActivation(),
 					timer.getLoopable(), timer.getEnemyMovementDirection(), timer.getAngleModuloDivider(), timer.getEnemyScale());
 			addTimerToList(renewedTimer);
 		}

@@ -1,4 +1,4 @@
-package game.objects;
+package game.spawner;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -7,7 +7,7 @@ import javax.swing.Timer;
 
 import game.managers.TimerManager;
 
-public class CustomTimer implements ActionListener {
+public class EnemySpawnTimer implements ActionListener {
 
 	private TimerManager timerManager = TimerManager.getInstance();
 
@@ -25,7 +25,7 @@ public class CustomTimer implements ActionListener {
 	private Timer timer;
 	private String status;
 
-	public CustomTimer(int timeBeforeActivation, int amountOfSpawnAttempts, String timerEnemyType, boolean loopable,
+	public EnemySpawnTimer(int timeBeforeActivation, int amountOfSpawnAttempts, String timerEnemyType, boolean loopable,
 			String enemyMovementDirection, int angleModuloDivider, float enemyScale) {
 		this.enemyScale = enemyScale;
 		this.timerEnemyType = timerEnemyType;

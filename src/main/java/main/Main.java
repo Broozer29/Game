@@ -2,8 +2,8 @@ package main;
 
 import java.awt.EventQueue;
 
-import data.AudioDatabase;
-import data.ImageDatabase;
+import data.audio.AudioDatabase;
+import data.image.ImageDatabase;
 import menuscreens.BoardManager;
 
 public class Main {

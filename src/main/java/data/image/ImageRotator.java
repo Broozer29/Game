@@ -1,4 +1,4 @@
-package data;
+package data.image;
 
 import java.awt.Graphics2D;
 import java.awt.Image;
@@ -50,10 +50,10 @@ public class ImageRotator {
 		int numquadrants = 1;
 		switch (rotation) {
 		case ("Up"):
-			numquadrants = 3;
+			numquadrants = 1;
 			break;
 		case ("Down"):
-			numquadrants = 1;
+			numquadrants = 3;
 			break;
 		case ("Left"):
 			numquadrants = 0;
@@ -82,6 +82,9 @@ public class ImageRotator {
 		BufferedImage bImage = toBufferedImage(image);
 		int numquadrants = getNumquadrants(rotation);
 
+		if (numquadrants == 2) {
+			return flipImage(bImage);
+		}
 		int w0 = bImage.getWidth();
 		int h0 = bImage.getHeight();
 		int w1 = w0;
@@ -124,6 +127,14 @@ public class ImageRotator {
 
 		transformedImage = opRotated.filter(bImage, transformedImage);
 		return transformedImage;
+	}
+
+	private BufferedImage flipImage(BufferedImage BImage) {
+		AffineTransform tx = AffineTransform.getScaleInstance(-1, 1);
+		tx.translate(-BImage.getWidth(null), 0);
+		AffineTransformOp op = new AffineTransformOp(tx, AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
+		BufferedImage newimage = op.filter(BImage, null);
+		return newimage;
 	}
 
 }

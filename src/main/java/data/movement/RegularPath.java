@@ -7,5 +7,7 @@ public class RegularPath extends Path {
 		this.stepsToTake = stepsToTake;
 		this.stepsTaken = 0;
 	}
+	
+	
 
 }

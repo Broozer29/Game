@@ -4,9 +4,9 @@ import java.awt.Image;
 import java.util.ArrayList;
 import java.util.List;
 
-import data.ImageDatabase;
-import data.ImageResizer;
-import data.ImageRotator;
+import data.image.ImageDatabase;
+import data.image.ImageResizer;
+import data.image.ImageRotator;
 
 public class Animation extends Sprite {
 

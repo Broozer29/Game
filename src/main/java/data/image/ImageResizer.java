@@ -1,4 +1,4 @@
-package data;
+package data.image;
 
 import java.awt.Graphics2D;
 import java.awt.Image;

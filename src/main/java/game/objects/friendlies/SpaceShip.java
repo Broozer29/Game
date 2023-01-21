@@ -7,7 +7,7 @@ import java.io.IOException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
 import data.DataClass;
-import data.ImageRotator;
+import data.image.ImageRotator;
 import game.managers.AudioManager;
 import game.managers.FriendlyManager;
 import game.managers.MissileManager;
@@ -62,7 +62,7 @@ public class SpaceShip extends Sprite {
 		directionx = 0;
 		directiony = 0;
 		this.hitpoints = 150000000;
-		this.maxHitPoints = 150;
+		this.maxHitPoints = 150000000;
 		this.shieldHitpoints = 100;
 		this.maxShieldHitPoints = 100;
 		attackSpeed = 15;

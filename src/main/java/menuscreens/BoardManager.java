@@ -3,7 +3,7 @@ package menuscreens;
 import javax.swing.JFrame;
 
 import data.DataClass;
-import data.ImageDatabase;
+import data.image.ImageDatabase;
 import database.DatabaseConnection;
 //import database.DatabaseConnection;
 import menuscreens.boards.GameBoard;

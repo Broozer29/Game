@@ -3,7 +3,7 @@ package game.objects.missiles;
 import java.util.List;
 
 import data.DataClass;
-import data.ImageDatabase;
+import data.image.ImageDatabase;
 import data.movement.Trajectory;
 import image.objects.Animation;
 import image.objects.Sprite;

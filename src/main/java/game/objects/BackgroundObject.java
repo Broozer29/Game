@@ -1,7 +1,9 @@
 
-package image.objects;
+package game.objects;
 
 import java.awt.Image;
+
+import image.objects.Sprite;
 
 public class BackgroundObject extends Sprite {
 

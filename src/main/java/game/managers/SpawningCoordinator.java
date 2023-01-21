@@ -1,10 +1,11 @@
-package data;
+package game.managers;
 
 import java.util.List;
 import java.util.Random;
 
+import data.DataClass;
+import game.objects.BackgroundObject;
 import game.objects.enemies.Enemy;
-import image.objects.BackgroundObject;
 
 public class SpawningCoordinator {
 
@@ -31,8 +32,8 @@ public class SpawningCoordinator {
 	//Left Spawning block
 	private int leftEnemyMaxHeightRange = DataClass.getInstance().getWindowHeight() - 100;
 	private int leftEnemyMinHeightRange = 100;
-	private int leftEnemyMaxWidthRange = 0 - 500;
-	private int leftEnemyMinWidthRange = 0 - 100;
+	private int leftEnemyMaxWidthRange = 500;
+	private int leftEnemyMinWidthRange = 100;
 	
 	//Right Spawning block
 	private int rightEnemyMaxWidthRange = DataClass.getInstance().getWindowWidth() + 500;
@@ -43,8 +44,8 @@ public class SpawningCoordinator {
 	//Up spawning block
 	private int upEnemyMaxWidthRange = DataClass.getInstance().getWindowWidth() - 50;
 	private int upEnemyMinWidthRange = 50;
-	private int upEnemyMaxHeightRange = -200;
-	private int upEnemyMinHeightRange = -100;
+	private int upEnemyMaxHeightRange = 300;
+	private int upEnemyMinHeightRange = 0;
 	
 	//Down spawning block
 	private int downEnemyMaxWidthRange = DataClass.getInstance().getWindowWidth() - 50;
@@ -94,7 +95,7 @@ public class SpawningCoordinator {
 	}
 	
 	public int getLeftBlockXCoordinate() {
-		return random.nextInt((leftEnemyMaxWidthRange - leftEnemyMinWidthRange) + 1) + leftEnemyMinWidthRange;
+		return 0 - random.nextInt((leftEnemyMaxWidthRange - leftEnemyMinWidthRange) + 1) + leftEnemyMinWidthRange;
 	}
 
 	public int getLeftBlockYCoordinate() {
@@ -106,7 +107,7 @@ public class SpawningCoordinator {
 	}
 
 	public int getUpBlockYCoordinate() {
-		return random.nextInt((upEnemyMaxHeightRange - upEnemyMinHeightRange) + 1) + upEnemyMinHeightRange;
+		return 0 - random.nextInt((upEnemyMaxHeightRange - upEnemyMinHeightRange) + 1) + upEnemyMinHeightRange;
 	}
 	
 	public int getDownBlockXCoordinate() {

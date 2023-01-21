@@ -1,4 +1,4 @@
-package data;
+package data.image;
 
 import java.awt.Image;
 import java.io.File;

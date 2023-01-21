@@ -8,11 +8,10 @@ import java.util.Map;
 import java.util.Random;
 
 import data.DataClass;
-import data.ImageDatabase;
-import data.ImageLoader;
-import data.ImageResizer;
-import data.SpawningCoordinator;
-import image.objects.BackgroundObject;
+import data.image.ImageDatabase;
+import data.image.ImageLoader;
+import data.image.ImageResizer;
+import game.objects.BackgroundObject;
 
 public class BackgroundManager {
 
