@@ -180,13 +180,13 @@ public class Enemy extends Sprite {
 	public Animation getDestroyedAnimation() {
 		return this.deathAnimation;
 	}
-	
+
 	public void updateTrajectory() {
-		switch(trajectory.getTrajectoryType()) {
-		case("Regular"):
+		switch (trajectory.getTrajectoryType()) {
+		case ("Regular"):
 			trajectory.updateRegularPath();
 			break;
-		case("Homing"):
+		case ("Homing"):
 			trajectory.updateEnemyHomingPaths(this);
 			break;
 		}
@@ -201,18 +201,17 @@ public class Enemy extends Sprite {
 
 	// Required for the trajectory to determine the length of the distance travelled
 	protected int getAdditionalXSteps() {
-		//Somehow comes up short 
+		// Somehow comes up short
 //		return Math.abs(DataClass.getInstance().getWindowWidth() - (xCoordinate + width));
 		return Math.abs(DataClass.getInstance().getWindowWidth());
 	}
 
 	// Required for the trajectory to determine the length of the distance travelled
 	protected int getAdditionalYSteps() {
-		switch (direction) {
-		case ("Up"):
-			return Math.abs(DataClass.getInstance().getWindowHeight() - yCoordinate);
-		case ("Down"):
-			return Math.abs(DataClass.getInstance().getWindowHeight() + Math.abs(yCoordinate));
+		if (direction.contains("Up")) {
+			return Math.abs(DataClass.getInstance().getWindowHeight() - yCoordinate) + 1;
+		} else if (direction.contains("Down")) {
+			return Math.abs(DataClass.getInstance().getWindowHeight() + Math.abs(yCoordinate)) + 1;
 		}
 		return 0;
 	}

@@ -7,8 +7,8 @@ public class DataClass {
 	// classes spread throughout the program
 	private static DataClass instance = new DataClass();
 
-	private int windowWidth = 1440;
-	private int windowHeight = 920;
+	private int windowWidth = 1280;
+	private int windowHeight = 720;
 	
 	
 	
