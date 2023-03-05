@@ -2,9 +2,9 @@ package game.managers;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 import game.objects.enemies.Enemy;
+import game.objects.friendlies.SpaceShip;
 import image.objects.Animation;
 
 public class AnimationManager {
@@ -12,6 +12,7 @@ public class AnimationManager {
 	private static AnimationManager instance = new AnimationManager();
 	private List<Animation> upperAnimationList = new ArrayList<Animation>();
 	private List<Animation> lowerAnimationList = new ArrayList<Animation>();
+
 
 	public static AnimationManager getInstance() {
 		return instance;
@@ -22,11 +23,11 @@ public class AnimationManager {
 	public void resetManager() {
 		upperAnimationList = new ArrayList<Animation>();
 		lowerAnimationList = new ArrayList<Animation>();
+
 	}
 
 	private AnimationManager() {
 	}
-
 
 	public void addDestroyedExplosion(Animation animation) {
 		addUpperAnimation(animation);
@@ -46,10 +47,21 @@ public class AnimationManager {
 		this.lowerAnimationList.add(animation);
 	}
 
-	public Animation createAnimation(int xCoordinate, int yCoordinate, String animationType, boolean infiniteLoop, float scale) {
+	public void createAndAddUpperAnimation(int xCoordinate, int yCoordinate, String animationType, boolean infiniteLoop,
+			float scale) {
+		this.upperAnimationList.add(createAnimation(xCoordinate, yCoordinate, animationType, infiniteLoop, scale));
+	}
+
+	public void createAnddAddLowerAnimation(int xCoordinate, int yCoordinate, String animationType,
+			boolean infiniteLoop, float scale) {
+		this.lowerAnimationList.add(createAnimation(xCoordinate, yCoordinate, animationType, infiniteLoop, scale));
+	}
+
+	public Animation createAnimation(int xCoordinate, int yCoordinate, String animationType, boolean infiniteLoop,
+			float scale) {
 		return new Animation(xCoordinate, yCoordinate, animationType, infiniteLoop, scale);
 	}
-	
+
 	// Called by EnemyManager when an enemy gets deleted and the belonging
 	// animations need to be removed
 	public void deleteEnemyAnimations(Enemy enemy) {
@@ -82,6 +94,7 @@ public class AnimationManager {
 		}
 
 	}
+
 
 	public List<Animation> getUpperAnimations() {
 		return this.upperAnimationList;

@@ -44,12 +44,13 @@ public class Animation extends Sprite {
 		this.standardSizeFrames = frames;
 	}
 	
-	public void changeFrames(String imageType) {
+	public void changeImageType(String imageType) {
+		this.imageType = imageType;
 		this.frames = ImageDatabase.getInstance().getGif(imageType);
 		this.standardSizeFrames = frames;
 	}
 	
-	// Centers the animation a bit further inwards to the collision spot
+	// Aligns the sprite X and Y coordinate to the centre of the animation
 	private void centerAnimationFrame() {
 		this.setX(xCoordinate + (this.getWidth() / 2));
 		this.setY(yCoordinate - (this.getHeight() / 2));

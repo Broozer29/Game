@@ -61,5 +61,9 @@ public class Bomba extends Enemy {
 			this.currentAttackSpeedFrameCount++;
 		}
 	}
+	
+	public void test() {
+		System.out.println("In bomba");
+	}
 
 }

@@ -219,4 +219,8 @@ public class Enemy extends Sprite {
 		this.rotation = rotation;
 		rotateImage(rotation);
 	}
+	
+	public void test() {
+		System.out.println("In Enemy");
+	}
 }
