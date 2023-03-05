@@ -67,7 +67,8 @@ public class ImageDatabase {
 
 	// Animations
 	private List<Image> playerEngineFrames = new ArrayList<Image>();
-	private List<Image> playerEngineBoostedFrames = new ArrayList<Image>();
+	private List<Image> defaultPlayerEngineBoostedFrames = new ArrayList<Image>();
+	private List<Image> defaultPlayerShieldDamage = new ArrayList<Image>();
 
 
 	// Enemy Projectile Animations
@@ -315,7 +316,9 @@ public class ImageDatabase {
 		case("Default Player Engine"):
 			return this.defaultPlayerEngine;
 		case("Default Player Engine Boosted"):
-			return this.playerEngineBoostedFrames;
+			return this.defaultPlayerEngineBoostedFrames;
+		case("Default Player Shield Damage"):
+			return this.defaultPlayerShieldDamage;
 		}
 		return null;
 	}
@@ -476,28 +479,23 @@ public class ImageDatabase {
 	
 	private void initPNGtoGIFAnimation() {
 		for (int i = 1; i < 6; i++) {
-			String engineString=String.format("Default Player Engine %d",i);  
-			Image image = imgLoader.getImage(engineString);
+			String engineString=String.format("src/resources/images/gif/PNGtoGIF/Default Player Engine/%d.png",i);  
+			Image image = imgLoader.getSpritesheetImage(engineString);
 			defaultPlayerEngine.add(image);
 		}
 		
 		for (int i = 1; i < 6; i++) {
-			String boostedEngineString=String.format("Default Player Engine Boosted %d",i);  
-			Image image = imgLoader.getImage(boostedEngineString);
-			playerEngineBoostedFrames.add(image);
+			String boostedEngineString=String.format("src/resources/images/gif/PNGtoGIF/Default Player Engine Boosted/%d.png",i);  
+			Image image = imgLoader.getSpritesheetImage(boostedEngineString);
+			defaultPlayerEngineBoostedFrames.add(image);
 		}
 		
-//		Image defaultPlayerEngine1 = imgLoader.getImage("Default Player Engine 1");
-//		Image defaultPlayerEngine2 = imgLoader.getImage("Default Player Engine 2");
-//		Image defaultPlayerEngine3 = imgLoader.getImage("Default Player Engine 3");
-//		Image defaultPlayerEngine7 = imgLoader.getImage("Default Player Engine 7");
-//		Image defaultPlayerEngine8 = imgLoader.getImage("Default Player Engine 8");
-//		
-//		defaultPlayerEngine.add(defaultPlayerEngine1);
-//		defaultPlayerEngine.add(defaultPlayerEngine2);
-//		defaultPlayerEngine.add(defaultPlayerEngine3);
-//		defaultPlayerEngine.add(defaultPlayerEngine7);
-//		defaultPlayerEngine.add(defaultPlayerEngine8);
+		for (int i = 1; i < 21; i++) {
+			String boostedEngineString=String.format("src/resources/images/gif/PNGtoGIF/Default Player Shield Damage/%d.png",i);  
+			Image image = imgLoader.getSpritesheetImage(boostedEngineString);
+			defaultPlayerShieldDamage.add(image);
+		}
+		
 		
 	}
 

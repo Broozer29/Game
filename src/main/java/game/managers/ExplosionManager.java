@@ -12,6 +12,7 @@ public class ExplosionManager {
 
 	private static ExplosionManager instance = new ExplosionManager();
 	private FriendlyManager friendlyManager = FriendlyManager.getInstance();
+	private AnimationManager animationManager = AnimationManager.getInstance();
 	private List<Explosion> explosionList = new ArrayList<Explosion>();
 
 	private ExplosionManager() {
@@ -63,6 +64,7 @@ public class ExplosionManager {
 					if (!explosion.getDealtDamage()) {
 						friendlyManager.getSpaceship().takeHitpointDamage(explosion.getDamage());
 						explosion.setDealtDamage(true);
+//						animationManager.addPlayerShieldDamageAnimation();
 					}
 				}
 			}
