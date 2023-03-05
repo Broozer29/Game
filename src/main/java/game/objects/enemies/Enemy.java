@@ -219,4 +219,8 @@ public class Enemy extends Sprite {
 		this.rotation = rotation;
 		rotateImage(rotation);
 	}
+	
+	public void fireAction() {
+		//This could contain default behaviour but SHOULD be overriden by specific enemytype classes.
+	}
 }

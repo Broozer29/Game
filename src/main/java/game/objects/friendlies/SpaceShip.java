@@ -1,8 +1,13 @@
 package game.objects.friendlies;
 
+import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
+import java.security.spec.KeySpec;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 
 import javax.sound.sampled.UnsupportedAudioFileException;
 
@@ -138,23 +143,26 @@ public class SpaceShip extends Sprite {
 		}
 	}
 
-	private void swapExhaust(String exhaustName, float scale, int xOffset) {
-		if (!exhaustName.equals(exhaustAnimation.getImageType())) {
-			exhaustAnimation.changeFrames(exhaustName);
+	private void swapExhaust(float scale, int xOffset) {
+		if (currentExhaust.equals("Default Player Engine")) {
+			movementSpeed = 8;
+			currentExhaust = "Default Player Engine Boosted";
+		} else if (currentExhaust.equals("Default Player Engine Boosted")) {
+			movementSpeed = 2;
+			currentExhaust = "Default Player Engine";
+		}
+
+		if (!currentExhaust.equals(exhaustAnimation.getImageType())) {
+			exhaustAnimation.changeFrames(currentExhaust);
 			exhaustAnimation.setAnimationScale(scale);
 			exhaustAnimation.addXOffset(xOffset);
-			this.currentExhaust = exhaustName;
 		}
 	}
 
+	
+
 	// Move the spaceship in target direction
 	public void keyPressed(KeyEvent e) {
-		int privyMovementSpeed = movementSpeed;
-		if (privyMovementSpeed == 2 && currentExhaust.equals("Default Player Engine Boosted")) {
-			privyMovementSpeed = 8;
-		} else if (privyMovementSpeed == 8 && currentExhaust.equals("Default Player Engine")) {
-			privyMovementSpeed = 2;
-		}
 
 		int key = e.getKeyCode();
 		switch (key) {
@@ -162,20 +170,20 @@ public class SpaceShip extends Sprite {
 			fire();
 			break;
 		case (KeyEvent.VK_A):
-			directionx = -privyMovementSpeed;
+			directionx = -movementSpeed;
 			break;
 		case (KeyEvent.VK_D):
-			directionx = privyMovementSpeed;
+			directionx = movementSpeed;
 			break;
 		case (KeyEvent.VK_W):
-			directiony = -privyMovementSpeed;
+			directiony = -movementSpeed;
 			break;
 		case (KeyEvent.VK_S):
-			directiony = privyMovementSpeed;
+			directiony = movementSpeed;
 			break;
 		case (KeyEvent.VK_SHIFT):
 			movementSpeed = 8;
-			swapExhaust("Default Player Engine Boosted", (float) 1, -30);
+			swapExhaust((float) 1, -30);
 			break;
 		}
 	}
@@ -198,7 +206,7 @@ public class SpaceShip extends Sprite {
 			break;
 		case (KeyEvent.VK_SHIFT):
 			movementSpeed = 2;
-			swapExhaust("Default Player Engine", (float) 1, 0);
+			swapExhaust((float) 1, 0);
 			break;
 		}
 
@@ -236,7 +244,8 @@ public class SpaceShip extends Sprite {
 		return this.exhaustAnimation;
 	}
 
-	//Called by homing missiles, returns the invisible rectangle around the ship where the missiles lose their target lock
+	// Called by homing missiles, returns the invisible rectangle around the ship
+	// where the missiles lose their target lock
 	public Rectangle getHomingRangeBounds() {
 		// Casting leads to problems with anything but integers. Fortunately,
 		// coordinations and pixels cannot have decimals.
