@@ -44,7 +44,8 @@ public class Animation extends Sprite {
 		this.standardSizeFrames = frames;
 	}
 	
-	public void changeImageType(String imageType) {
+
+	public void changeImagetype(String imageType) {
 		this.imageType = imageType;
 		this.frames = ImageDatabase.getInstance().getGif(imageType);
 		this.standardSizeFrames = frames;

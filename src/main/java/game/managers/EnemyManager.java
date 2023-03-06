@@ -101,26 +101,29 @@ public class EnemyManager {
 	}
 
 	private void triggerEnemyActions() {
-		for (Alien alien : alienList) {
-			alien.fireAction();
-		}
-		for (Seeker seeker : seekerList) {
-			seeker.fireAction();
-		}
-		for (Tazer tazer : tazerList) {
-			tazer.fireAction();
-		}
-		for (Bulldozer bulldozer : bulldozerList) {
-			bulldozer.fireAction();
-		}
-		for (Energizer energizer : energizerList) {
-			energizer.fireAction();
-		}
-		for (Flamer flamer : flamerList) {
-			flamer.fireAction();
-		}
-		for (Bomba bomba : bombaList) {
-			bomba.fireAction();
+//		for (Alien alien : alienList) {
+//			alien.fireAction();
+//		}
+//		for (Seeker seeker : seekerList) {
+//			seeker.fireAction();
+//		}
+//		for (Tazer tazer : tazerList) {
+//			tazer.fireAction();
+//		}
+//		for (Bulldozer bulldozer : bulldozerList) {
+//			bulldozer.fireAction();
+//		}
+//		for (Energizer energizer : energizerList) {
+//			energizer.fireAction();
+//		}
+//		for (Flamer flamer : flamerList) {
+//			flamer.fireAction();
+//		}
+//		for (Bomba bomba : bombaList) {
+//			bomba.fireAction();
+//		}
+		for (Enemy enemy: enemyList) {
+			enemy.fireAction();
 		}
 		for (Enemy enemy : enemyList) {
 			enemy.test();

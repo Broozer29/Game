@@ -73,7 +73,6 @@ public class GameBoard extends JPanel implements ActionListener {
 	}
 
 	private void initBoard() {
-		addKeyListener(new TAdapter());
 		timer = new Timer(DELAY, this);
 	}
 

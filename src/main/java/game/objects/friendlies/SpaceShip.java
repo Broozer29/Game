@@ -3,8 +3,11 @@ package game.objects.friendlies;
 import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
+
 
 import javax.sound.sampled.UnsupportedAudioFileException;
 
@@ -29,7 +32,8 @@ public class SpaceShip extends Sprite {
 	private float currentShieldRegenDelayFrame;
 	private float maxHitPoints;
 	private float maxShieldHitPoints;
-	private int movementSpeed;
+	private int movementSpeed = 4;
+  
 	private String currentExhaust;
 	private Animation exhaustAnimation;
 	private float homingRectangleResizeScale;
@@ -38,16 +42,16 @@ public class SpaceShip extends Sprite {
 	private int homingRectangleWidth;
 	private int homingRectangleHeight;
 
+	private String defaultEngineType = "Default Player Engine";
+	private String boostedEngineType = "Default Player Engine Boosted";
+
 	private MissileManager missileManager = MissileManager.getInstance();
 	private AudioManager audioManager = AudioManager.getInstance();
 	private FriendlyManager friendlyManager = FriendlyManager.getInstance();
 	private ImageRotator imageRotator = ImageRotator.getInstance();
 
-	private List<Animation> shieldAnimations = new ArrayList<Animation>();
 
-//	private int rotateTestCount = 0;
-//	private int rotateTestMaxCoun = 100;
-//	private int rotatedtimes = 0;
+	private List<Animation> shieldAnimations = new ArrayList<Animation>();
 
 	public SpaceShip(String shipImage, String exhaustImageType) {
 		super(DataClass.getInstance().getWindowWidth() / 10, DataClass.getInstance().getWindowHeight() / 2, 1);
@@ -167,46 +171,55 @@ public class SpaceShip extends Sprite {
 		}
 	}
 
-	private void swapExhaust(String exhaustName, float scale, int xOffset) {
-		if (!exhaustName.equals(exhaustAnimation.getImageType())) {
-			exhaustAnimation.changeImageType(exhaustName);
+
+	private void swapExhaust(String newEngineType) {
+		if (!newEngineType.equals(currentExhaust)) {
+			float scale = 1;
+			int xOffset = 0;
+			if (currentExhaust.contains("Boosted")) {
+				scale = 1;
+				xOffset = 0;
+			} else {
+				scale = 1;
+				xOffset = -30;
+			}
+			exhaustAnimation.changeImagetype(newEngineType);
 			exhaustAnimation.setAnimationScale(scale);
 			exhaustAnimation.addXOffset(xOffset);
-			this.currentExhaust = exhaustName;
+			this.currentExhaust = newEngineType;
 		}
 	}
 
-	// Move the spaceship in target direction
-	public void keyPressed(KeyEvent e) {
-		int privyMovementSpeed = movementSpeed;
-		if (privyMovementSpeed == 2 && currentExhaust.equals("Default Player Engine Boosted")) {
-			privyMovementSpeed = 8;
-		} else if (privyMovementSpeed == 8 && currentExhaust.equals("Default Player Engine")) {
-			privyMovementSpeed = 2;
-		}
 
-		int key = e.getKeyCode();
-		
-		
-		if(key == KeyEvent.VK_SPACE) {
-			fire();
-		}
-		if(key == KeyEvent.VK_A) {
-			directionx = -privyMovementSpeed;
-		}
-		if(key == KeyEvent.VK_D) {
-			directionx = privyMovementSpeed;
-		}
-		if(key == KeyEvent.VK_W) {
-			directiony = -privyMovementSpeed;
-		}
-		if(key == KeyEvent.VK_S) {
-			directiony = privyMovementSpeed;
-		}
-		
-		if(key == KeyEvent.VK_SHIFT) {
-			movementSpeed = 8;
-			swapExhaust("Default Player Engine Boosted", (float) 1, -30);
+	private final Set<Integer> pressedKeys = new HashSet<>();
+
+	public synchronized void keyPressed(KeyEvent e) {
+		pressedKeys.add(e.getKeyCode());
+		if (!pressedKeys.isEmpty()) {
+			for (Iterator<Integer> it = pressedKeys.iterator(); it.hasNext();) {
+				switch (it.next()) {
+				case (KeyEvent.VK_SPACE):
+					fire();
+					break;
+				case (KeyEvent.VK_A):
+					directionx = -movementSpeed;
+					break;
+				case (KeyEvent.VK_D):
+					directionx = movementSpeed;
+					break;
+				case (KeyEvent.VK_W):
+					directiony = -movementSpeed;
+					break;
+				case (KeyEvent.VK_S):
+					directiony = movementSpeed;
+					break;
+				case (KeyEvent.VK_SHIFT):
+					movementSpeed = 8;
+					System.out.println("Naniiii");
+					swapExhaust(boostedEngineType);
+					break;
+				}
+			}
 		}
 //		
 //		switch (key) {
@@ -232,8 +245,9 @@ public class SpaceShip extends Sprite {
 //		}
 	}
 
-	// Halt movement of spaceship
-	public void keyReleased(KeyEvent e) {
+	public synchronized void keyReleased(KeyEvent e) {
+		pressedKeys.remove(e.getKeyCode());
+
 		int key = e.getKeyCode();
 
 		if(key == KeyEvent.VK_SPACE) {
@@ -250,11 +264,12 @@ public class SpaceShip extends Sprite {
 		}
 		if(key == KeyEvent.VK_S) {
 			directiony = 0;
-		}
-		
-		if(key == KeyEvent.VK_SHIFT) {
-			movementSpeed = 2;
-			swapExhaust("Default Player Engine", (float) 1, 0);
+			break;
+		case (KeyEvent.VK_SHIFT):
+			movementSpeed = 4;
+			swapExhaust(defaultEngineType);
+			break;
+
 		}
 		
 		
@@ -278,6 +293,57 @@ public class SpaceShip extends Sprite {
 //		}
 
 	}
+
+	// Move the spaceship in target direction
+//	public void keyPressed(KeyEvent e) {
+//
+//		int key = e.getKeyCode();
+//		switch (key) {
+//		case (KeyEvent.VK_SPACE):
+//			fire();
+//			break;
+//		case (KeyEvent.VK_A):
+//			directionx = -movementSpeed;
+//			break;
+//		case (KeyEvent.VK_D):
+//			directionx = movementSpeed;
+//			break;
+//		case (KeyEvent.VK_W):
+//			directiony = -movementSpeed;
+//			break;
+//		case (KeyEvent.VK_S):
+//			directiony = movementSpeed;
+//			break;
+//		case (KeyEvent.VK_SHIFT):
+//			movementSpeed = 8;
+//			swapExhaust();
+//			break;
+//		}
+//	}
+//
+//	// Halt movement of spaceship
+//	public void keyReleased(KeyEvent e) {
+//		int key = e.getKeyCode();
+//		switch (key) {
+//		case (KeyEvent.VK_A):
+//			directionx = 0;
+//			break;
+//		case (KeyEvent.VK_D):
+//			directionx = 0;
+//			break;
+//		case (KeyEvent.VK_W):
+//			directiony = 0;
+//			break;
+//		case (KeyEvent.VK_S):
+//			directiony = 0;
+//			break;
+//		case (KeyEvent.VK_SHIFT):
+//			movementSpeed = 2;
+//			swapExhaust();
+//			break;
+//		}
+//
+//	}
 
 	public float getHitpoints() {
 		return this.hitpoints;

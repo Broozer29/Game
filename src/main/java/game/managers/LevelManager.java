@@ -75,6 +75,7 @@ public class LevelManager {
 		int angleModuloDivider = 2;
 		EnemySpawnTimer timer = null;
 		timer = timerManager.createTimer("Alien Bomb", 20, 5000, true, "NaN", angleModuloDivider, 1);
+
 //		timerManager.addTimerToList(timer);
 		timer = timerManager.createTimer("Bomba", 1, 6000, true, "Left", angleModuloDivider, 1);
 		timerManager.addTimerToList(timer);

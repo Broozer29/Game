@@ -219,8 +219,9 @@ public class Enemy extends Sprite {
 		this.rotation = rotation;
 		rotateImage(rotation);
 	}
-	
-	public void test() {
-		System.out.println("In Enemy");
+
+	public void fireAction() {
+		//This could contain default behaviour but SHOULD be overriden by specific enemytype classes.
+
 	}
 }
