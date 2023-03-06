@@ -3,14 +3,17 @@ package game.objects.friendlies;
 import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
+
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
+
 
 import javax.sound.sampled.UnsupportedAudioFileException;
 
 import data.DataClass;
 import data.image.ImageRotator;
+import game.managers.AnimationManager;
 import game.managers.AudioManager;
 import game.managers.FriendlyManager;
 import game.managers.MissileManager;
@@ -23,13 +26,14 @@ public class SpaceShip extends Sprite {
 	private int directiony;
 	private float hitpoints;
 	private float shieldHitpoints;
-	private float attackSpeed = 1;
-	private float currentAttackFrame = 0;
-	private float shieldRegenDelay = 300;
-	private float currentShieldRegenDelayFrame = 0;
+	private float attackSpeed;
+	private float currentAttackFrame;
+	private float shieldRegenDelay;
+	private float currentShieldRegenDelayFrame;
 	private float maxHitPoints;
 	private float maxShieldHitPoints;
 	private int movementSpeed = 4;
+  
 	private String currentExhaust;
 	private Animation exhaustAnimation;
 	private float homingRectangleResizeScale;
@@ -47,11 +51,13 @@ public class SpaceShip extends Sprite {
 	private ImageRotator imageRotator = ImageRotator.getInstance();
 
 
+	private List<Animation> shieldAnimations = new ArrayList<Animation>();
+
 	public SpaceShip(String shipImage, String exhaustImageType) {
 		super(DataClass.getInstance().getWindowWidth() / 10, DataClass.getInstance().getWindowHeight() / 2, 1);
 		loadImage(shipImage);
 		setExhaustAnimation(exhaustImageType);
-		setShipHealth();
+		initShip();
 	}
 
 	protected void setExhaustAnimation(String imageType) {
@@ -62,12 +68,17 @@ public class SpaceShip extends Sprite {
 
 	// Called when managers need to be reset.
 	public void resetSpaceship() {
+		initShip();
+	}
+
+	private void initShip() {
 		directionx = 0;
 		directiony = 0;
 		this.hitpoints = 150000000;
 		this.maxHitPoints = 150000000;
 		this.shieldHitpoints = 100;
 		this.maxShieldHitPoints = 100;
+		movementSpeed = 2;
 		attackSpeed = 15;
 		currentAttackFrame = 0;
 		shieldRegenDelay = 300;
@@ -75,12 +86,23 @@ public class SpaceShip extends Sprite {
 		movementSpeed = 2;
 	}
 
-	private void setShipHealth() {
-		this.hitpoints = 150;
-		this.maxHitPoints = 150;
-		this.shieldHitpoints = 100;
-		this.maxShieldHitPoints = 100;
-		movementSpeed = 2;
+	public void addShieldDamageAnimation() {
+		cycleShieldAnimations();
+		if (shieldAnimations.size() < 10) {
+			Animation shieldAnimation = new Animation(this.xCoordinate, this.yCoordinate,
+					"Default Player Shield Damage", false, 1);
+			AnimationManager animationManager = AnimationManager.getInstance();
+			animationManager.addUpperAnimation(shieldAnimation);
+			shieldAnimations.add(shieldAnimation);
+		}
+	}
+
+	private void cycleShieldAnimations() {
+		for (int i = 0; i < shieldAnimations.size(); i++) {
+			if (!shieldAnimations.get(i).isVisible()) {
+				shieldAnimations.remove(i);
+			}
+		}
 	}
 
 	public void takeHitpointDamage(float damage) {
@@ -88,8 +110,11 @@ public class SpaceShip extends Sprite {
 		if (shieldPiercingDamage < 0) {
 			this.hitpoints += shieldPiercingDamage;
 			this.shieldHitpoints = 0;
-		} else
+		} else {
 			shieldHitpoints -= damage;
+			addShieldDamageAnimation();
+		}
+
 		this.currentShieldRegenDelayFrame = 0;
 
 	}
@@ -109,14 +134,19 @@ public class SpaceShip extends Sprite {
 	public void move() {
 		xCoordinate += directionx;
 		yCoordinate += directiony;
+		homingRectangleResizeScale = (float) 1.5;
+		homingRectangleXCoordinate = (int) (xCoordinate - (width * homingRectangleResizeScale));
+		homingRectangleYCoordinate = (int) (yCoordinate - (height * homingRectangleResizeScale));
+		homingRectangleWidth = (int) (width * (homingRectangleResizeScale * 2));
+		homingRectangleHeight = (int) (height * (homingRectangleResizeScale * 2.25));
 		if (this.exhaustAnimation != null) {
 			this.exhaustAnimation.setX(this.getCenterXCoordinate() - (this.getWidth()));
 			this.exhaustAnimation.setY(this.getCenterYCoordinate() - (exhaustAnimation.getHeight() / 2) + 5);
-			homingRectangleResizeScale = (float) 1.5;
-			homingRectangleXCoordinate = (int) (xCoordinate - (width * homingRectangleResizeScale));
-			homingRectangleYCoordinate = (int) (yCoordinate - (height * homingRectangleResizeScale));
-			homingRectangleWidth = (int) (width * (homingRectangleResizeScale * 2));
-			homingRectangleHeight = (int) (height * (homingRectangleResizeScale * 2.25));
+		}
+
+		for (Animation anim : shieldAnimations) {
+			anim.setX(xCoordinate);
+			anim.setY(yCoordinate);
 		}
 	}
 
@@ -141,6 +171,7 @@ public class SpaceShip extends Sprite {
 		}
 	}
 
+
 	private void swapExhaust(String newEngineType) {
 		if (!newEngineType.equals(currentExhaust)) {
 			float scale = 1;
@@ -158,6 +189,7 @@ public class SpaceShip extends Sprite {
 			this.currentExhaust = newEngineType;
 		}
 	}
+
 
 	private final Set<Integer> pressedKeys = new HashSet<>();
 
@@ -189,30 +221,76 @@ public class SpaceShip extends Sprite {
 				}
 			}
 		}
+//		
+//		switch (key) {
+//		case (KeyEvent.VK_SPACE):
+//			fire();
+//			break;
+//		case (KeyEvent.VK_A):
+//			directionx = -privyMovementSpeed;
+//			break;
+//		case (KeyEvent.VK_D):
+//			directionx = privyMovementSpeed;
+//			break;
+//		case (KeyEvent.VK_W):
+//			directiony = -privyMovementSpeed;
+//			break;
+//		case (KeyEvent.VK_S):
+//			directiony = privyMovementSpeed;
+//			break;
+//		case (KeyEvent.VK_SHIFT):
+//			movementSpeed = 8;
+//			swapExhaust("Default Player Engine Boosted", (float) 1, -30);
+//			break;
+//		}
 	}
 
 	public synchronized void keyReleased(KeyEvent e) {
 		pressedKeys.remove(e.getKeyCode());
 
 		int key = e.getKeyCode();
-		switch (key) {
-		case (KeyEvent.VK_A):
+
+		if(key == KeyEvent.VK_SPACE) {
+			fire();
+		}
+		if(key == KeyEvent.VK_A) {
 			directionx = 0;
-			break;
-		case (KeyEvent.VK_D):
+		}
+		if(key == KeyEvent.VK_D) {
 			directionx = 0;
-			break;
-		case (KeyEvent.VK_W):
+		}
+		if(key == KeyEvent.VK_W) {
 			directiony = 0;
-			break;
-		case (KeyEvent.VK_S):
+		}
+		if(key == KeyEvent.VK_S) {
 			directiony = 0;
 			break;
 		case (KeyEvent.VK_SHIFT):
 			movementSpeed = 4;
 			swapExhaust(defaultEngineType);
 			break;
+
 		}
+		
+		
+//		switch (key) {
+//		case (KeyEvent.VK_A):
+//			directionx = 0;
+//			break;
+//		case (KeyEvent.VK_D):
+//			directionx = 0;
+//			break;
+//		case (KeyEvent.VK_W):
+//			directiony = 0;
+//			break;
+//		case (KeyEvent.VK_S):
+//			directiony = 0;
+//			break;
+//		case (KeyEvent.VK_SHIFT):
+//			movementSpeed = 2;
+//			swapExhaust("Default Player Engine", (float) 1, 0);
+//			break;
+//		}
 
 	}
 

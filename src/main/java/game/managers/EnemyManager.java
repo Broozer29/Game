@@ -36,7 +36,6 @@ public class EnemyManager {
 	private List<Energizer> energizerList = new ArrayList<Energizer>();
 	private List<AlienBomb> alienBombList = new ArrayList<AlienBomb>();
 	private DataClass dataClass = DataClass.getInstance();
-	
 
 	private EnemyManager() {
 	}
@@ -85,18 +84,18 @@ public class EnemyManager {
 			if (spaceshipBounds.intersects(enemyBounds)) {
 				if (enemy instanceof AlienBomb) {
 					detonateAlienBomb(enemy);
+					friendlyManager.getSpaceship().takeHitpointDamage(20);
 				} else {
 					friendlyManager.getSpaceship().takeHitpointDamage(1);
 				}
+//				animationManager.addPlayerShieldDamageAnimation();
 			}
 		}
 	}
 
 	private void detonateAlienBomb(Enemy enemy) throws UnsupportedAudioFileException, IOException {
-		friendlyManager.getSpaceship().takeHitpointDamage(20);
-		Animation newAnimation = animationManager.createAnimation(enemy.getXCoordinate(), enemy.getYCoordinate(),
+		animationManager.createAndAddUpperAnimation(enemy.getXCoordinate(), enemy.getYCoordinate(),
 				"Alien Bomb Explosion", false, 1);
-		animationManager.addUpperAnimation(newAnimation);
 		audioManager.addAudio("Alien Bomb Impact");
 		enemy.setVisible(false);
 	}
@@ -125,6 +124,9 @@ public class EnemyManager {
 //		}
 		for (Enemy enemy: enemyList) {
 			enemy.fireAction();
+		}
+		for (Enemy enemy : enemyList) {
+			enemy.test();
 		}
 	}
 

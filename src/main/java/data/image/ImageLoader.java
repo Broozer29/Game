@@ -18,6 +18,11 @@ public class ImageLoader {
 		ImageIcon ii = new ImageIcon(convertImageStringToURL(imageString));
 		return ii.getImage();
 	}
+	
+	public Image getSpritesheetImage(String spritesheetImageString) {
+		ImageIcon ii = new ImageIcon(spritesheetImageString);
+		return ii.getImage();
+	}
 
 	private String convertImageStringToURL(String imageString) {
 		switch (imageString) {

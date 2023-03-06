@@ -158,6 +158,7 @@ public class MissileManager {
 					friendlyManager.getSpaceship().takeHitpointDamage(m.getMissileDamage());
 					animationManager.addUpperAnimation(m.getExplosionAnimation());
 					m.setVisible(false);
+//					animationManager.addPlayerShieldDamageAnimation();
 				}
 			}
 		}
