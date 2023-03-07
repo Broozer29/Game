@@ -59,8 +59,15 @@ public class CustomAudioClip {
 				return true;
 			} else
 				return false;
+		
+		case ("Alien Bomb Impact"):
+			if (clip.getFramePosition() > 25000) {
+				return true;
+			} else
+				return false;
 
 		}
+
 		return true;
 	}
 

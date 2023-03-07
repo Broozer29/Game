@@ -52,7 +52,8 @@ public class AudioDatabase {
 	private void testResetClips() {
 		for (int i = 0; i < allActiveClips.size(); i++) {
 			if (allActiveClips.get(i).getAudioType().equals("Large Ship Destroyed")
-					|| allActiveClips.get(i).getAudioType().equals("Destroyed Explosion")) {
+					|| allActiveClips.get(i).getAudioType().equals("Destroyed Explosion")
+					|| allActiveClips.get(i).getAudioType().equals("Alien Bomb Impact")) {
 				if (allActiveClips.get(i).aboveThreshold()) {
 					allActiveClips.get(i).setFramePosition(0);
 					allActiveClips.get(i).stopClip();

@@ -3,19 +3,19 @@ package game.objects.friendlies;
 import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
-
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
-
 
 import javax.sound.sampled.UnsupportedAudioFileException;
 
 import data.DataClass;
-import data.image.ImageRotator;
 import game.managers.AnimationManager;
 import game.managers.AudioManager;
 import game.managers.FriendlyManager;
+import game.managers.FriendlyObjectManager;
 import game.managers.MissileManager;
 import image.objects.Animation;
 import image.objects.Sprite;
@@ -28,12 +28,14 @@ public class SpaceShip extends Sprite {
 	private float shieldHitpoints;
 	private float attackSpeed;
 	private float currentAttackFrame;
+	private float specialAttackSpeed;
+	private float currentSpecialAttackFrame;
 	private float shieldRegenDelay;
 	private float currentShieldRegenDelayFrame;
 	private float maxHitPoints;
 	private float maxShieldHitPoints;
-	private int movementSpeed = 4;
-  
+	private int movementSpeed;
+
 	private String currentExhaust;
 	private Animation exhaustAnimation;
 	private float homingRectangleResizeScale;
@@ -44,14 +46,14 @@ public class SpaceShip extends Sprite {
 
 	private String defaultEngineType = "Default Player Engine";
 	private String boostedEngineType = "Default Player Engine Boosted";
+	private String playerFireswirl = "Player EMP";
 
 	private MissileManager missileManager = MissileManager.getInstance();
 	private AudioManager audioManager = AudioManager.getInstance();
 	private FriendlyManager friendlyManager = FriendlyManager.getInstance();
-	private ImageRotator imageRotator = ImageRotator.getInstance();
 
-
-	private List<Animation> shieldAnimations = new ArrayList<Animation>();
+	private List<Animation> playerFollowingAnimations = new ArrayList<Animation>();
+	private List<FriendlyObject> playerFollowingObjects = new ArrayList<FriendlyObject>();
 
 	public SpaceShip(String shipImage, String exhaustImageType) {
 		super(DataClass.getInstance().getWindowWidth() / 10, DataClass.getInstance().getWindowHeight() / 2, 1);
@@ -63,7 +65,6 @@ public class SpaceShip extends Sprite {
 	protected void setExhaustAnimation(String imageType) {
 		this.exhaustAnimation = new Animation(xCoordinate, yCoordinate, imageType, true, scale);
 		currentExhaust = imageType;
-//		this.exhaustAnimation.rotateAnimetion("Down");
 	}
 
 	// Called when managers need to be reset.
@@ -74,33 +75,53 @@ public class SpaceShip extends Sprite {
 	private void initShip() {
 		directionx = 0;
 		directiony = 0;
-		this.hitpoints = 150000000;
-		this.maxHitPoints = 150000000;
-		this.shieldHitpoints = 100;
-		this.maxShieldHitPoints = 100;
+		this.hitpoints = 150000;
+		this.maxHitPoints = 150000;
+		this.shieldHitpoints = 10000;
+		this.maxShieldHitPoints = 10000;
 		movementSpeed = 2;
 		attackSpeed = 15;
-		currentAttackFrame = 0;
+		currentAttackFrame = 15;
 		shieldRegenDelay = 300;
 		currentShieldRegenDelayFrame = 0;
-		movementSpeed = 2;
+		movementSpeed = 4;
+		specialAttackSpeed = 100;
+		currentSpecialAttackFrame = 100;
 	}
 
 	public void addShieldDamageAnimation() {
-		cycleShieldAnimations();
-		if (shieldAnimations.size() < 10) {
+		if (playerFollowingAnimations.size() < 10) {
 			Animation shieldAnimation = new Animation(this.xCoordinate, this.yCoordinate,
 					"Default Player Shield Damage", false, 1);
-			AnimationManager animationManager = AnimationManager.getInstance();
-			animationManager.addUpperAnimation(shieldAnimation);
-			shieldAnimations.add(shieldAnimation);
+
+			shieldAnimation.setFrameDelay(2);
+
+//			int xDist = Math.abs(shieldAnimation.getWidth() / 8);
+//			int yDist = Math.abs(this.getCenterYCoordinate() - shieldAnimation.getCenterYCoordinate());
+
+			int yDist = 30;
+			int xDist = 10;
+			shieldAnimation.addXOffset(-xDist);
+			shieldAnimation.addYOffset(-yDist);
+			playerFollowingAnimations.add(shieldAnimation);
+
+			shieldAnimation.setX(this.xCoordinate);
+			shieldAnimation.setY(this.yCoordinate);
+			AnimationManager.getInstance().addUpperAnimation(shieldAnimation);
+
 		}
+
 	}
 
-	private void cycleShieldAnimations() {
-		for (int i = 0; i < shieldAnimations.size(); i++) {
-			if (!shieldAnimations.get(i).isVisible()) {
-				shieldAnimations.remove(i);
+	private void cycleFollowingAnimations() {
+		for (int i = 0; i < playerFollowingAnimations.size(); i++) {
+			if (!playerFollowingAnimations.get(i).isVisible()) {
+				playerFollowingAnimations.remove(i);
+			}
+		}
+		for (int i = 0; i < playerFollowingObjects.size(); i++) {
+			if (!playerFollowingObjects.get(i).isVisible()) {
+				playerFollowingObjects.remove(i);
 			}
 		}
 	}
@@ -122,6 +143,8 @@ public class SpaceShip extends Sprite {
 	public void updateGameTick() {
 		this.currentAttackFrame++;
 		this.currentShieldRegenDelayFrame++;
+		this.currentSpecialAttackFrame++;
+		cycleFollowingAnimations();
 
 		if (currentShieldRegenDelayFrame >= shieldRegenDelay) {
 			if (shieldHitpoints < maxShieldHitPoints) {
@@ -132,6 +155,18 @@ public class SpaceShip extends Sprite {
 
 	// Moves the spaceship
 	public void move() {
+		for (Animation anim : playerFollowingAnimations) {
+			anim.setX(xCoordinate);
+			anim.setY(yCoordinate);
+		}
+
+		for (FriendlyObject friendly : playerFollowingObjects) {
+			friendly.setX(xCoordinate);
+			friendly.setY(yCoordinate);
+			friendly.getAnimation().setX(xCoordinate);
+			friendly.getAnimation().setY(yCoordinate);
+		}
+
 		xCoordinate += directionx;
 		yCoordinate += directiony;
 		homingRectangleResizeScale = (float) 1.5;
@@ -144,14 +179,10 @@ public class SpaceShip extends Sprite {
 			this.exhaustAnimation.setY(this.getCenterYCoordinate() - (exhaustAnimation.getHeight() / 2) + 5);
 		}
 
-		for (Animation anim : shieldAnimations) {
-			anim.setX(xCoordinate);
-			anim.setY(yCoordinate);
-		}
 	}
 
 	// Launch a missile from the center point of the spaceship
-	public void fire() {
+	private void fire() {
 		if (missileManager == null || friendlyManager == null || audioManager == null) {
 			missileManager = MissileManager.getInstance();
 			friendlyManager = FriendlyManager.getInstance();
@@ -171,6 +202,25 @@ public class SpaceShip extends Sprite {
 		}
 	}
 
+	private void fireSpecialAttack() {
+		if (currentSpecialAttackFrame >= specialAttackSpeed) {
+			FriendlyObject specialAttack = new FriendlyObject(this.getCenterXCoordinate(), this.getCenterYCoordinate(), 1);
+			Animation specialAttackAnimation = new Animation(this.getCenterXCoordinate(), this.getCenterYCoordinate(), playerFireswirl, false, 1);
+			specialAttack.setAnimation(specialAttackAnimation);
+			specialAttack.getAnimation().setFrameDelay(3);
+			specialAttack.setDamage(30);
+
+			specialAttack.addXOffset(-(specialAttackAnimation.getWidth() / 2));
+			specialAttack.addYOffset(-(specialAttackAnimation.getHeight() / 2));
+
+			specialAttackAnimation.addXOffset(-(specialAttackAnimation.getWidth() / 2));
+			specialAttackAnimation.addYOffset(-(specialAttackAnimation.getHeight() / 2));
+
+			playerFollowingObjects.add(specialAttack);
+			FriendlyObjectManager.getInstance().addActiveFriendlyObject(specialAttack);
+			this.currentSpecialAttackFrame = 0;
+		}
+	}
 
 	private void swapExhaust(String newEngineType) {
 		if (!newEngineType.equals(currentExhaust)) {
@@ -189,7 +239,6 @@ public class SpaceShip extends Sprite {
 			this.currentExhaust = newEngineType;
 		}
 	}
-
 
 	private final Set<Integer> pressedKeys = new HashSet<>();
 
@@ -213,137 +262,42 @@ public class SpaceShip extends Sprite {
 				case (KeyEvent.VK_S):
 					directiony = movementSpeed;
 					break;
+				case (KeyEvent.VK_ENTER):
+					fireSpecialAttack();
+					break;
 				case (KeyEvent.VK_SHIFT):
 					movementSpeed = 8;
-					System.out.println("Naniiii");
 					swapExhaust(boostedEngineType);
 					break;
 				}
 			}
 		}
-//		
-//		switch (key) {
-//		case (KeyEvent.VK_SPACE):
-//			fire();
-//			break;
-//		case (KeyEvent.VK_A):
-//			directionx = -privyMovementSpeed;
-//			break;
-//		case (KeyEvent.VK_D):
-//			directionx = privyMovementSpeed;
-//			break;
-//		case (KeyEvent.VK_W):
-//			directiony = -privyMovementSpeed;
-//			break;
-//		case (KeyEvent.VK_S):
-//			directiony = privyMovementSpeed;
-//			break;
-//		case (KeyEvent.VK_SHIFT):
-//			movementSpeed = 8;
-//			swapExhaust("Default Player Engine Boosted", (float) 1, -30);
-//			break;
-//		}
 	}
 
 	public synchronized void keyReleased(KeyEvent e) {
 		pressedKeys.remove(e.getKeyCode());
-
 		int key = e.getKeyCode();
 
-		if(key == KeyEvent.VK_SPACE) {
+		if (key == KeyEvent.VK_SPACE) {
 			fire();
 		}
-		if(key == KeyEvent.VK_A) {
+		if (key == KeyEvent.VK_A) {
 			directionx = 0;
 		}
-		if(key == KeyEvent.VK_D) {
+		if (key == KeyEvent.VK_D) {
 			directionx = 0;
 		}
-		if(key == KeyEvent.VK_W) {
+		if (key == KeyEvent.VK_W) {
 			directiony = 0;
 		}
-		if(key == KeyEvent.VK_S) {
+		if (key == KeyEvent.VK_S) {
 			directiony = 0;
-			break;
-		case (KeyEvent.VK_SHIFT):
+		}
+		if (key == KeyEvent.VK_SHIFT) {
 			movementSpeed = 4;
 			swapExhaust(defaultEngineType);
-			break;
-
 		}
-		
-		
-//		switch (key) {
-//		case (KeyEvent.VK_A):
-//			directionx = 0;
-//			break;
-//		case (KeyEvent.VK_D):
-//			directionx = 0;
-//			break;
-//		case (KeyEvent.VK_W):
-//			directiony = 0;
-//			break;
-//		case (KeyEvent.VK_S):
-//			directiony = 0;
-//			break;
-//		case (KeyEvent.VK_SHIFT):
-//			movementSpeed = 2;
-//			swapExhaust("Default Player Engine", (float) 1, 0);
-//			break;
-//		}
-
 	}
-
-	// Move the spaceship in target direction
-//	public void keyPressed(KeyEvent e) {
-//
-//		int key = e.getKeyCode();
-//		switch (key) {
-//		case (KeyEvent.VK_SPACE):
-//			fire();
-//			break;
-//		case (KeyEvent.VK_A):
-//			directionx = -movementSpeed;
-//			break;
-//		case (KeyEvent.VK_D):
-//			directionx = movementSpeed;
-//			break;
-//		case (KeyEvent.VK_W):
-//			directiony = -movementSpeed;
-//			break;
-//		case (KeyEvent.VK_S):
-//			directiony = movementSpeed;
-//			break;
-//		case (KeyEvent.VK_SHIFT):
-//			movementSpeed = 8;
-//			swapExhaust();
-//			break;
-//		}
-//	}
-//
-//	// Halt movement of spaceship
-//	public void keyReleased(KeyEvent e) {
-//		int key = e.getKeyCode();
-//		switch (key) {
-//		case (KeyEvent.VK_A):
-//			directionx = 0;
-//			break;
-//		case (KeyEvent.VK_D):
-//			directionx = 0;
-//			break;
-//		case (KeyEvent.VK_W):
-//			directiony = 0;
-//			break;
-//		case (KeyEvent.VK_S):
-//			directiony = 0;
-//			break;
-//		case (KeyEvent.VK_SHIFT):
-//			movementSpeed = 2;
-//			swapExhaust();
-//			break;
-//		}
-//
-//	}
 
 	public float getHitpoints() {
 		return this.hitpoints;

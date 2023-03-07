@@ -24,12 +24,14 @@ import game.managers.BackgroundManager;
 import game.managers.EnemyManager;
 import game.managers.ExplosionManager;
 import game.managers.FriendlyManager;
+import game.managers.FriendlyObjectManager;
 import game.managers.LevelManager;
 import game.managers.MissileManager;
 import game.managers.TimerManager;
 import game.objects.BackgroundObject;
 import game.objects.Explosion;
 import game.objects.enemies.Enemy;
+import game.objects.friendlies.FriendlyObject;
 import game.objects.missiles.Missile;
 import image.objects.Animation;
 import image.objects.Sprite;
@@ -58,6 +60,7 @@ public class GameBoard extends JPanel implements ActionListener {
 	private BackgroundManager backgroundManager = BackgroundManager.getInstance();
 	private TimerManager timerManager = TimerManager.getInstance();
 	private ExplosionManager explosionManager = ExplosionManager.getInstance();
+	private FriendlyObjectManager friendlyObjectManager = FriendlyObjectManager.getInstance();
 
 	public GameBoard() {
 		animationManager = AnimationManager.getInstance();
@@ -69,6 +72,7 @@ public class GameBoard extends JPanel implements ActionListener {
 		backgroundManager = BackgroundManager.getInstance();
 		timerManager = TimerManager.getInstance();
 		explosionManager = ExplosionManager.getInstance();
+		friendlyObjectManager = FriendlyObjectManager.getInstance();
 		initBoard();
 	}
 
@@ -102,6 +106,8 @@ public class GameBoard extends JPanel implements ActionListener {
 		audioManager.resetManager();
 		backgroundManager.resetManager();
 		timerManager.resetManager();
+		// Add explosion manager
+		// Add friendly object manager
 	}
 
 	@Override
@@ -165,6 +171,12 @@ public class GameBoard extends JPanel implements ActionListener {
 		for (Explosion explosion : explosionManager.getExplosions()) {
 			if (explosion.isVisible()) {
 				drawAnimation(g, explosion.getAnimation());
+			}
+		}
+
+		for (FriendlyObject friendly : friendlyObjectManager.getActiveFriendlyObjects()) {
+			if (friendly.isVisible()) {
+				drawAnimation(g, friendly.getAnimation());
 			}
 		}
 
@@ -258,6 +270,7 @@ public class GameBoard extends JPanel implements ActionListener {
 			timerManager.updateGameTick();
 			audioDatabase.updateGameTick();
 			explosionManager.updateGametick();
+			friendlyObjectManager.updateGameTick();
 		}
 
 		repaint();

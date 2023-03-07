@@ -74,14 +74,14 @@ public class LevelManager {
 	private void saturateLevelOne() {
 		int angleModuloDivider = 2;
 		EnemySpawnTimer timer = null;
-		timer = timerManager.createTimer("Alien Bomb", 20, 5000, true, "NaN", angleModuloDivider, 1);
-
-//		timerManager.addTimerToList(timer);
-		timer = timerManager.createTimer("Bomba", 1, 6000, true, "Left", angleModuloDivider, 1);
+		timer = timerManager.createTimer("Alien Bomb", 20, 2000, true, "NaN", angleModuloDivider, 1);
 		timerManager.addTimerToList(timer);
-		timer = timerManager.createTimer("Flamer", 1, 5500, true, "Left", angleModuloDivider, 1);
+
+		timer = timerManager.createTimer("Bomba", 1, 2000, true, "Left", angleModuloDivider, 1);
 //		timerManager.addTimerToList(timer);
-		timer = timerManager.createTimer("Tazer", 2, 8000, true, "Left", angleModuloDivider, 1);
+		timer = timerManager.createTimer("Flamer", 1, 2500, true, "Left", angleModuloDivider, 1);
+//		timerManager.addTimerToList(timer);
+		timer = timerManager.createTimer("Tazer", 2, 2000, true, "Left", angleModuloDivider, 1);
 //		timerManager.addTimerToList(timer);
 		timer = timerManager.createTimer("Seeker", 2, 10000, true, "Down", angleModuloDivider, 1);
 //		timerManager.addTimerToList(timer);
