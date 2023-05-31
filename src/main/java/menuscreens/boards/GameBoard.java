@@ -33,7 +33,7 @@ import game.objects.Explosion;
 import game.objects.enemies.Enemy;
 import game.objects.friendlies.FriendlyObject;
 import game.objects.missiles.Missile;
-import image.objects.Animation;
+import image.objects.SpriteAnimation;
 import image.objects.Sprite;
 import menuscreens.BoardManager;
 
@@ -41,8 +41,9 @@ public class GameBoard extends JPanel implements ActionListener {
 
 	private Timer timer;
 	private boolean ingame;
-//	private String currentMusic = "DefaultMusic";
-	private String currentMusic = "";
+	private String currentMusic = "DefaultMusic";
+//	private String currentMusic = "Ayasa - The reason why";
+//	private String currentMusic = "";
 
 	private DataClass data = DataClass.getInstance();
 	private AudioDatabase audioDatabase = AudioDatabase.getInstance();
@@ -129,7 +130,7 @@ public class GameBoard extends JPanel implements ActionListener {
 		}
 
 		// Draws lower level animations
-		for (Animation animation : animationManager.getLowerAnimations()) {
+		for (SpriteAnimation animation : animationManager.getLowerAnimations()) {
 			drawAnimation(g, animation);
 		}
 
@@ -183,14 +184,13 @@ public class GameBoard extends JPanel implements ActionListener {
 		drawPlayerHealthBars(g);
 
 		// Draws higher level animations
-		for (Animation animation : animationManager.getUpperAnimations()) {
+		for (SpriteAnimation animation : animationManager.getUpperAnimations()) {
 			drawAnimation(g, animation);
 		}
 
 		// Draw the score/aliens left
 		g.setColor(Color.WHITE);
-		g.drawString("Aliens left: " + enemyManager.getDefaultAlienSpaceshipCount(), 5, 15);
-		g.drawString("Bombs present: " + enemyManager.getAlienBombCount(), 5, 25);
+		g.drawString("Enemies left: " + enemyManager.getEnemyCount(), 5, 15);
 	}
 
 	private void drawImage(Graphics g, Sprite sprite) {
@@ -199,7 +199,7 @@ public class GameBoard extends JPanel implements ActionListener {
 		}
 	}
 
-	private void drawAnimation(Graphics g, Animation animation) {
+	private void drawAnimation(Graphics g, SpriteAnimation animation) {
 		if (animation.getCurrentFrame() != null) {
 			g.drawImage(animation.getCurrentFrame(), animation.getXCoordinate(), animation.getYCoordinate(), this);
 		}

@@ -6,7 +6,7 @@ import java.util.List;
 
 import game.objects.Explosion;
 import game.objects.missiles.Missile;
-import image.objects.Animation;
+import image.objects.SpriteAnimation;
 
 public class ExplosionManager {
 
@@ -29,7 +29,7 @@ public class ExplosionManager {
 	}
 
 	public void addExplosion(int xCoordinate, int yCoordinate, String explosionType, float scale, float damage) {
-		Animation animation = new Animation(xCoordinate, yCoordinate, explosionType, false, scale);
+		SpriteAnimation animation = new SpriteAnimation(xCoordinate, yCoordinate, explosionType, false, scale);
 		animation.setX(xCoordinate - animation.getWidth() / 2);
 		animation.setY(yCoordinate - animation.getHeight() / 2);
 		Explosion explosion = new Explosion(xCoordinate, yCoordinate, scale, animation, damage);

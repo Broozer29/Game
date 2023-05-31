@@ -6,7 +6,7 @@ import java.util.List;
 
 import game.objects.enemies.Enemy;
 import game.objects.friendlies.FriendlyObject;
-import image.objects.Animation;
+import image.objects.SpriteAnimation;
 
 public class FriendlyObjectManager {
 
@@ -44,7 +44,7 @@ public class FriendlyObjectManager {
 
 		for (FriendlyObject friendlyObject : activeFriendlyObjects) {
 			if (friendlyObject.isVisible()) {
-				Animation animation = friendlyObject.getAnimation();
+				SpriteAnimation animation = friendlyObject.getAnimation();
 				for (Enemy enemy : enemyManager.getEnemies()) {
 					Rectangle r1 = animation.getBounds();
 					Rectangle r2 = enemy.getBounds();

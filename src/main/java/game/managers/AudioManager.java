@@ -38,41 +38,12 @@ public class AudioManager {
 		playAudio(audioType);
 	}
 
-	// Voeg een playermissile audio toe op basis van de missile type
-	public void firePlayerMissile() throws UnsupportedAudioFileException, IOException {
-		if (friendlyManager == null) {
-			friendlyManager = FriendlyManager.getInstance();
-		}
-
-		switch (friendlyManager.getPlayerMissileType()) {
-		case ("Player Laserbeam"):
-			playAudio("Player Laserbeam");
-		}
-	}
-
 	// Play singular audios
 	private void playAudio(String audioType) throws UnsupportedAudioFileException, IOException {
 		if (audioType != null) {
-//			audioDatabase.getAudioClip(audioType).start();
-			
 			CustomAudioClip clip = audioDatabase.getAudioClip(audioType);
 			if (clip != null) {
-				// Adjusts volume
-				
-//				FloatControl volume = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
-//				switch (audioType) {
-//				case ("Player Laserbeam"):
-//					volume.setValue(-6);
-//					break;
-//				case ("Destroyed Explosion"):
-//					volume.setValue(-2);
-//					break;
-//				case ("Alien Spaceship Destroyed"):
-//					break;
-//				case ("Alien Bomb Impact"):
-//					volume.setValue(-2);
-//				}
-				clip.startClip();;
+				clip.startClip();
 			}
 		}
 

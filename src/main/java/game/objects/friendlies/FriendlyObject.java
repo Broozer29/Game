@@ -1,11 +1,11 @@
 package game.objects.friendlies;
 
-import image.objects.Animation;
+import image.objects.SpriteAnimation;
 import image.objects.Sprite;
 
 public class FriendlyObject extends Sprite {
 	
-	private Animation animation;
+	private SpriteAnimation animation;
 	private int damage;
 	
 	public FriendlyObject(int x, int y, float scale) {
@@ -20,11 +20,11 @@ public class FriendlyObject extends Sprite {
 		return this.damage;
 	}
 	
-	public void setAnimation(Animation animation) {
+	public void setAnimation(SpriteAnimation animation) {
 		this.animation = animation;
 	}
 	
-	public Animation getAnimation() {
+	public SpriteAnimation getAnimation() {
 		return this.animation;
 	}
 

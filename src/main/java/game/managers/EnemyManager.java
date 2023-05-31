@@ -17,7 +17,7 @@ import game.objects.enemies.Energizer;
 import game.objects.enemies.Flamer;
 import game.objects.enemies.Seeker;
 import game.objects.enemies.Tazer;
-import image.objects.Animation;
+import image.objects.SpriteAnimation;
 
 public class EnemyManager {
 
@@ -113,18 +113,11 @@ public class EnemyManager {
 				movementManager.moveEnemy(enemy);
 				enemy.updateBoardBlock();
 			} else {
-				if (enemy.getCurrentHitpoints() < 0) {
-					triggerEnemyDeathSound(enemy);
-				}
 				animationManager.deleteEnemyAnimations(enemy);
 				removeEnemy(enemy);
 			}
 		}
 
-	}
-
-	private void triggerEnemyDeathSound(Enemy enemy) throws UnsupportedAudioFileException, IOException {
-		audioManager.addAudio(enemy.getDeathSound());
 	}
 
 	// Called by LevelManager, creates an unambiguous enemy and adds it to enemies
@@ -204,36 +197,7 @@ public class EnemyManager {
 		return this.enemyList;
 	}
 
-	public int getDefaultAlienSpaceshipCount() {
-		return alienList.size();
+	public int getEnemyCount() {
+		return enemyList.size();
 	}
-
-	public int getAlienBombCount() {
-		return alienBombList.size();
-	}
-
-	public int getSeekerCount() {
-		return seekerList.size();
-	}
-
-	public int getBulldozerCount() {
-		return this.bulldozerList.size();
-	}
-
-	public int getEnergizerCount() {
-		return this.energizerList.size();
-	}
-
-	public int getFlamerCount() {
-		return this.flamerList.size();
-	}
-
-	public int getBombaCount() {
-		return this.bombaList.size();
-	}
-
-	public int getTazerCount() {
-		return this.tazerList.size();
-	}
-
 }

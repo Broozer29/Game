@@ -35,10 +35,9 @@ public class TimerManager {
 	// int duration, int timedelay (zelfde als game delay), waar de timer voor is
 	public EnemySpawnTimer createTimer(String enemyType, int amountOfSpawnAttempts, int timeBeforeActivation,
 			boolean loopable, String direction, int angleModuloDivider, float enemyScale) {
-		EnemySpawnTimer timer = new EnemySpawnTimer(timeBeforeActivation, amountOfSpawnAttempts, enemyType,
-				loopable, direction, angleModuloDivider, enemyScale);
+		EnemySpawnTimer timer = new EnemySpawnTimer(timeBeforeActivation, amountOfSpawnAttempts, enemyType, loopable,
+				direction, angleModuloDivider, enemyScale);
 		return timer;
-//		addTimerToList(timer);
 	}
 
 	// Timers die afgelopen zijn, verwijderen
@@ -73,15 +72,23 @@ public class TimerManager {
 	}
 
 	// Called by the timer itself when it's time to activate
-	public void activate(EnemySpawnTimer timer) {
+	public void activateSpawnTimer(EnemySpawnTimer timer) {
 		if (levelManager == null) {
 			levelManager = LevelManager.getInstance();
 		}
-		levelManager.spawnEnemy(timer.getTimerEnemy(), timer.getTimerSpawnAttempts(), timer.getEnemyMovementDirection(), timer.getAngleModuloDivider(), timer.getEnemyScale());
+
+		String enemyType = timer.getTimerEnemy();
+		int spawnAttempts = timer.getTimerSpawnAttempts();
+		String movementDirection = timer.getEnemyMovementDirection();
+		int angleModule = timer.getAngleModuloDivider();
+		float enemyScale = timer.getEnemyScale();
+
+		levelManager.spawnEnemy(enemyType, spawnAttempts, movementDirection, angleModule, enemyScale);
+
 		if (timer.getLoopable()) {
-			EnemySpawnTimer renewedTimer = createTimer(timer.getTimerEnemy(), timer.getTimerSpawnAttempts(), timer.getTimeBeforeActivation(),
-					timer.getLoopable(), timer.getEnemyMovementDirection(), timer.getAngleModuloDivider(), timer.getEnemyScale());
-			addTimerToList(renewedTimer);
+			timer.refreshTimer();
+		} else {
+			timer.stopTimer();
 		}
 
 	}
