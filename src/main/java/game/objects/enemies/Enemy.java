@@ -1,25 +1,20 @@
 package game.objects.enemies;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import javax.sound.sampled.UnsupportedAudioFileException;
-
 import data.DataClass;
 import data.movement.Trajectory;
 import game.managers.AnimationManager;
-import game.managers.AudioManager;
 import game.managers.MissileManager;
-import image.objects.SpriteAnimation;
+import image.objects.Animation;
 import image.objects.Sprite;
 
 public class Enemy extends Sprite {
 
 	protected MissileManager missileManager = MissileManager.getInstance();
 	protected AnimationManager animationManager = AnimationManager.getInstance();
-	protected AudioManager audioManager = AudioManager.getInstance();
 	protected Random random = new Random();
 
 	// Enemy combat stats
@@ -42,8 +37,8 @@ public class Enemy extends Sprite {
 	protected String deathSound;
 	protected boolean showHealthBar;
 	protected List<Integer> boardBlockSpeeds = new ArrayList<Integer>();
-	protected SpriteAnimation exhaustAnimation = null;
-	protected SpriteAnimation deathAnimation;
+	protected Animation exhaustAnimation = null;
+	protected Animation deathAnimation;
 
 	public Enemy(int x, int y, String direction, String enemyType, float scale) {
 		super(x, y, scale);
@@ -53,30 +48,23 @@ public class Enemy extends Sprite {
 	}
 
 	protected void setExhaustanimation(String imageType) {
-		this.exhaustAnimation = new SpriteAnimation(xCoordinate, yCoordinate, imageType, true, scale);
+		this.exhaustAnimation = new Animation(xCoordinate, yCoordinate, imageType, true, scale);
 	}
 
 	protected void setDeathAnimation(String imageType) {
-		this.deathAnimation = new SpriteAnimation(xCoordinate, yCoordinate, imageType, false, scale);
+		this.deathAnimation = new Animation(xCoordinate, yCoordinate, imageType, false, scale);
 	}
 
 	// Called when there is collision between friendly missile and enemy
 	public void takeDamage(float damageTaken) {
-		if (animationManager == null || audioManager == null) {
+		if (animationManager == null) {
 			animationManager = AnimationManager.getInstance();
-			audioManager = AudioManager.getInstance();
 		}
-		
 		this.hitPoints -= damageTaken;
 		if (this.hitPoints <= 0) {
 			this.deathAnimation.setX(this.getCenterXCoordinate() - (deathAnimation.getWidth() / 2));
 			this.deathAnimation.setY(this.getCenterYCoordinate() - (deathAnimation.getHeight() / 2));
 			animationManager.addDestroyedExplosion(deathAnimation);
-			try {
-				audioManager.addAudio(deathSound);
-			} catch (UnsupportedAudioFileException | IOException e) {
-				e.printStackTrace();
-			}
 			this.setVisible(false);
 		}
 	}
@@ -164,6 +152,10 @@ public class Enemy extends Sprite {
 		return this.showHealthBar;
 	}
 
+	public String getDeathSound() {
+		return this.deathSound;
+	}
+
 	public boolean getHasAttack() {
 		return this.hasAttack;
 	}
@@ -172,7 +164,7 @@ public class Enemy extends Sprite {
 		return this.currentBoardBlock;
 	}
 
-	public SpriteAnimation getExhaustAnimation() {
+	public Animation getExhaustAnimation() {
 		return this.exhaustAnimation;
 	}
 
@@ -184,7 +176,7 @@ public class Enemy extends Sprite {
 		return this.angleModuloDivider;
 	}
 
-	public SpriteAnimation getDestroyedAnimation() {
+	public Animation getDestroyedAnimation() {
 		return this.deathAnimation;
 	}
 

@@ -238,10 +238,6 @@ public class Path {
 		}
 		return stepsTaken >= stepsToTake;
 	}
-	
-	public void setStepsize(int stepSize) {
-		this.stepSize = stepSize;
-	}
 
 	// Called when enemy needs to change speed, for the board block system
 	public void setMovementSpeed(int movementSpeed) {

@@ -28,7 +28,7 @@ public class CustomAudioClip {
 		FloatControl volume = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
 		switch (clipType) {
 		case ("Player Laserbeam"):
-			volume.setValue(-4);
+			volume.setValue(-6);
 			break;
 		case ("Destroyed Explosion"):
 			volume.setValue(-2);
@@ -37,13 +37,8 @@ public class CustomAudioClip {
 			break;
 		case ("Alien Bomb Impact"):
 			volume.setValue(-2);
-			break;
 		case ("DefaultMusic"):
-			volume.setValue(-2);
-			break;
-		case ("Default EMP"):
-			volume.setValue(-8);
-			break;
+			volume.setValue(-3);
 		}
 	}
 
@@ -60,19 +55,12 @@ public class CustomAudioClip {
 				return false;
 
 		case ("Destroyed Explosion"):
-			if (clip.getFramePosition() > 12000) {
-				return true;
-			} else
-				return false;
-
-		case ("Alien Bomb Impact"):
-			if (clip.getFramePosition() > 25000) {
+			if (clip.getFramePosition() > 10000) {
 				return true;
 			} else
 				return false;
 
 		}
-
 		return true;
 	}
 
@@ -97,7 +85,7 @@ public class CustomAudioClip {
 	}
 
 	public boolean isActive() {
-		return this.clip.isActive();
+		return this.clip.isRunning();
 	}
 
 	public void closeclip() {

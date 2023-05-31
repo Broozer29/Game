@@ -24,16 +24,14 @@ import game.managers.BackgroundManager;
 import game.managers.EnemyManager;
 import game.managers.ExplosionManager;
 import game.managers.FriendlyManager;
-import game.managers.FriendlyObjectManager;
 import game.managers.LevelManager;
 import game.managers.MissileManager;
 import game.managers.TimerManager;
 import game.objects.BackgroundObject;
 import game.objects.Explosion;
 import game.objects.enemies.Enemy;
-import game.objects.friendlies.FriendlyObject;
 import game.objects.missiles.Missile;
-import image.objects.SpriteAnimation;
+import image.objects.Animation;
 import image.objects.Sprite;
 import menuscreens.BoardManager;
 
@@ -41,9 +39,8 @@ public class GameBoard extends JPanel implements ActionListener {
 
 	private Timer timer;
 	private boolean ingame;
-	private String currentMusic = "DefaultMusic";
-//	private String currentMusic = "Ayasa - The reason why";
-//	private String currentMusic = "";
+//	private String currentMusic = "DefaultMusic";
+	private String currentMusic = "";
 
 	private DataClass data = DataClass.getInstance();
 	private AudioDatabase audioDatabase = AudioDatabase.getInstance();
@@ -61,7 +58,6 @@ public class GameBoard extends JPanel implements ActionListener {
 	private BackgroundManager backgroundManager = BackgroundManager.getInstance();
 	private TimerManager timerManager = TimerManager.getInstance();
 	private ExplosionManager explosionManager = ExplosionManager.getInstance();
-	private FriendlyObjectManager friendlyObjectManager = FriendlyObjectManager.getInstance();
 
 	public GameBoard() {
 		animationManager = AnimationManager.getInstance();
@@ -73,7 +69,6 @@ public class GameBoard extends JPanel implements ActionListener {
 		backgroundManager = BackgroundManager.getInstance();
 		timerManager = TimerManager.getInstance();
 		explosionManager = ExplosionManager.getInstance();
-		friendlyObjectManager = FriendlyObjectManager.getInstance();
 		initBoard();
 	}
 
@@ -107,8 +102,6 @@ public class GameBoard extends JPanel implements ActionListener {
 		audioManager.resetManager();
 		backgroundManager.resetManager();
 		timerManager.resetManager();
-		// Add explosion manager
-		// Add friendly object manager
 	}
 
 	@Override
@@ -130,7 +123,7 @@ public class GameBoard extends JPanel implements ActionListener {
 		}
 
 		// Draws lower level animations
-		for (SpriteAnimation animation : animationManager.getLowerAnimations()) {
+		for (Animation animation : animationManager.getLowerAnimations()) {
 			drawAnimation(g, animation);
 		}
 
@@ -175,22 +168,17 @@ public class GameBoard extends JPanel implements ActionListener {
 			}
 		}
 
-		for (FriendlyObject friendly : friendlyObjectManager.getActiveFriendlyObjects()) {
-			if (friendly.isVisible()) {
-				drawAnimation(g, friendly.getAnimation());
-			}
-		}
-
 		drawPlayerHealthBars(g);
 
 		// Draws higher level animations
-		for (SpriteAnimation animation : animationManager.getUpperAnimations()) {
+		for (Animation animation : animationManager.getUpperAnimations()) {
 			drawAnimation(g, animation);
 		}
 
 		// Draw the score/aliens left
 		g.setColor(Color.WHITE);
-		g.drawString("Enemies left: " + enemyManager.getEnemyCount(), 5, 15);
+		g.drawString("Aliens left: " + enemyManager.getDefaultAlienSpaceshipCount(), 5, 15);
+		g.drawString("Bombs present: " + enemyManager.getAlienBombCount(), 5, 25);
 	}
 
 	private void drawImage(Graphics g, Sprite sprite) {
@@ -199,7 +187,7 @@ public class GameBoard extends JPanel implements ActionListener {
 		}
 	}
 
-	private void drawAnimation(Graphics g, SpriteAnimation animation) {
+	private void drawAnimation(Graphics g, Animation animation) {
 		if (animation.getCurrentFrame() != null) {
 			g.drawImage(animation.getCurrentFrame(), animation.getXCoordinate(), animation.getYCoordinate(), this);
 		}
@@ -270,7 +258,6 @@ public class GameBoard extends JPanel implements ActionListener {
 			timerManager.updateGameTick();
 			audioDatabase.updateGameTick();
 			explosionManager.updateGametick();
-			friendlyObjectManager.updateGameTick();
 		}
 
 		repaint();

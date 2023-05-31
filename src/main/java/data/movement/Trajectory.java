@@ -97,7 +97,6 @@ public class Trajectory {
 	}
 
 	public void updateMovementSpeed(int stepSize) {
-		currentPath.setStepsize(stepSize);
 		this.stepSize = stepSize;
 	}
 

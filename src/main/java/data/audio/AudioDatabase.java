@@ -1,19 +1,18 @@
 package data.audio;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
+import javax.sound.sampled.Clip;
 import javax.sound.sampled.LineUnavailableException;
 
 public class AudioDatabase {
 
 	private static AudioDatabase instance = new AudioDatabase();
+	private AudioLoader audioLoader = AudioLoader.getInstance();
 	private CustomAudioClip FuriWisdomOfRage;
 	private CustomAudioClip FuriMyOnlyChance;
 	private CustomAudioClip FuriMakeThisRight;
-	private CustomAudioClip ayasaTheReasonWhy;
 	private CustomAudioClip DefaultMusic;
 
 	// Van alle clips een lijst met clips maken, dan vervolgens een clip teruggeven
@@ -21,20 +20,14 @@ public class AudioDatabase {
 	// Zo kun je een maximum aantal clips afdwingen per soort zonder dat clips niet
 	// kunnen afspelen.
 
-	private int clipListSize = 10;
-	private List<String> clipsWithThresholds = new ArrayList<String>();
-
+	private int clipListSize = 15;
 	private List<CustomAudioClip> allActiveClips = new ArrayList<CustomAudioClip>();
-	private List<CustomAudioClip> defaultEMPClipList = new ArrayList<CustomAudioClip>();
 	private List<CustomAudioClip> alienBombImpactList = new ArrayList<CustomAudioClip>();
 	private List<CustomAudioClip> laserBeamClipList = new ArrayList<CustomAudioClip>();
 	private List<CustomAudioClip> destroyedExplosionClipList = new ArrayList<CustomAudioClip>();
 	private List<CustomAudioClip> alienSpaceshipDestroyedClipList = new ArrayList<CustomAudioClip>();
-	private List<CustomAudioClip> largeShipDestroyedClipList = new ArrayList<CustomAudioClip>();
+	private List<CustomAudioClip> largeShipDestroyed = new ArrayList<CustomAudioClip>();
 
-	
-	private Map<String, List<CustomAudioClip>> audioClipsMap = new HashMap<>();
-	
 	private AudioDatabase() {
 		initializeAudiofiles();
 	}
@@ -44,9 +37,6 @@ public class AudioDatabase {
 	}
 
 	private void initializeAudiofiles() {
-		clipsWithThresholds.add("Large Ship Destroyed");
-		clipsWithThresholds.add("Destroyed Explosion");
-		clipsWithThresholds.add("Alien Bomb Impact");
 		try {
 			initMusic();
 			initSoundEffects();
@@ -56,13 +46,13 @@ public class AudioDatabase {
 	}
 
 	public void updateGameTick() {
-		resetClips();
+		testResetClips();
 	}
 
-	private void resetClips() {
+	private void testResetClips() {
 		for (int i = 0; i < allActiveClips.size(); i++) {
-			if (clipsWithThresholds.contains(allActiveClips.get(i).getAudioType())
-					&& !allActiveClips.get(i).isActive()) {
+			if (allActiveClips.get(i).getAudioType().equals("Large Ship Destroyed")
+					|| allActiveClips.get(i).getAudioType().equals("Destroyed Explosion")) {
 				if (allActiveClips.get(i).aboveThreshold()) {
 					allActiveClips.get(i).setFramePosition(0);
 					allActiveClips.get(i).stopClip();
@@ -84,12 +74,12 @@ public class AudioDatabase {
 		FuriWisdomOfRage = new CustomAudioClip("Furi - Wisdom of rage", true);
 		FuriMakeThisRight = new CustomAudioClip("Furi - Make this right", true);
 		FuriMyOnlyChance = new CustomAudioClip("Furi - My only chance", true);
-		ayasaTheReasonWhy = new CustomAudioClip("Ayasa - The reason why", true);
 
 	}
 
 	private void initSoundEffects() throws LineUnavailableException {
 		for (int i = 0; i < clipListSize; i++) {
+//			Clip tempLaserbeamClip = audioLoader.getSoundfile("Player Laserbeam");
 			CustomAudioClip laserBeamClip = new CustomAudioClip("Player Laserbeam", false);
 			laserBeamClipList.add(laserBeamClip);
 
@@ -103,60 +93,33 @@ public class AudioDatabase {
 			alienBombImpactList.add(alienBombImpact);
 
 			CustomAudioClip largeShipDestroyedClip = new CustomAudioClip("Large Ship Destroyed", false);
-			largeShipDestroyedClipList.add(largeShipDestroyedClip);
-
-			CustomAudioClip defaultEMP = new CustomAudioClip("Default EMP", false);
-			defaultEMPClipList.add(defaultEMP);
+			largeShipDestroyed.add(largeShipDestroyedClip);
 		}
-		
-		audioClipsMap.put("Player Laserbeam", laserBeamClipList);
-		audioClipsMap.put("Destroyed Explosion", destroyedExplosionClipList);
-		audioClipsMap.put("Alien Spaceship Destroyed", alienSpaceshipDestroyedClipList);
-		audioClipsMap.put("Alien Bomb Impact", alienBombImpactList);
-		audioClipsMap.put("Large Ship Destroyed", largeShipDestroyedClipList);
-		audioClipsMap.put("Default EMP", defaultEMPClipList);
 
-	}
-	
-	//Return a Clip which is not running
-	private CustomAudioClip getAvailableClip(String clipType) {
-	    List<CustomAudioClip> clipList = audioClipsMap.get(clipType);
-	    if (clipList != null) {
-	        for (CustomAudioClip clip : clipList) {
-	            if (!clip.isRunning()) {
-	                allActiveClips.add(clip);
-	                return clip;
-	            }
-	        }
-	    }
-	    return null;
 	}
 
 	public CustomAudioClip getAudioClip(String audioType) {
-	    switch (audioType) {
-	        case ("Furi - Wisdom of rage"):
-	            return getFuriWisdomOfRage();
-	        case ("Furi - My only chance"):
-	            return getFuriMyOnlyChance();
-	        case ("Furi - Make this right"):
-	            return getFuriMakeThisRight();
-	        case ("DefaultMusic"):
-	            return getDefaultMusic();
-	        case ("Player Laserbeam"):
-	        case ("Destroyed Explosion"):
-	        case ("Alien Spaceship Destroyed"):
-	        case ("Alien Bomb Impact"):
-	        case ("Large Ship Destroyed"):
-	        case ("Default EMP"):
-	            return getAvailableClip(audioType);
-	        case ("Ayasa - The reason why"):
-	            return getAyasatheReasonWhy();
-	    }
-	    return null;
-	}
-
-	private CustomAudioClip getAyasatheReasonWhy() {
-		return ayasaTheReasonWhy;
+		switch (audioType) {
+		case ("Furi - Wisdom of rage"):
+			return getFuriWisdomOfRage();
+		case ("Furi - My only chance"):
+			return getFuriMyOnlyChance();
+		case ("Furi - Make this right"):
+			return getFuriMakeThisRight();
+		case ("DefaultMusic"):
+			return getDefaultMusic();
+		case ("Player Laserbeam"):
+			return getLaserBeam();
+		case ("Destroyed Explosion"):
+			return getDestroyedExplosion();
+		case ("Alien Spaceship Destroyed"):
+			return getDefaultAlienExplosion();
+		case ("Alien Bomb Impact"):
+			return getAlienBombImpact();
+		case ("Large Ship Destroyed"):
+			return getLargeShipDestroyed();
+		}
+		return null;
 	}
 
 	private CustomAudioClip getFuriWisdomOfRage() {
@@ -173,6 +136,59 @@ public class AudioDatabase {
 
 	private CustomAudioClip getDefaultMusic() {
 		return DefaultMusic;
+	}
+
+	private CustomAudioClip getLaserBeam() {
+		for (int i = 0; i < laserBeamClipList.size(); i++) {
+			if (!laserBeamClipList.get(i).isActive()) {
+				allActiveClips.add(laserBeamClipList.get(i));
+				return laserBeamClipList.get(i);
+			}
+		}
+		return null;
+	}
+
+	private CustomAudioClip getDestroyedExplosion() {
+		for (int i = 0; i < destroyedExplosionClipList.size(); i++) {
+			if (!destroyedExplosionClipList.get(i).isRunning()) {
+				allActiveClips.add(destroyedExplosionClipList.get(i));
+				return destroyedExplosionClipList.get(i);
+			}
+		}
+		return null;
+	}
+
+	private CustomAudioClip getDefaultAlienExplosion() {
+		for (int i = 0; i < alienSpaceshipDestroyedClipList.size(); i++) {
+			if (!alienSpaceshipDestroyedClipList.get(i).isRunning()) {
+				allActiveClips.add(alienSpaceshipDestroyedClipList.get(i));
+				return alienSpaceshipDestroyedClipList.get(i);
+			}
+		}
+		return null;
+	}
+
+	private CustomAudioClip getAlienBombImpact() {
+		for (int i = 0; i < alienBombImpactList.size(); i++) {
+			if (!alienBombImpactList.get(i).isRunning()) {
+				allActiveClips.add(alienBombImpactList.get(i));
+				return alienBombImpactList.get(i);
+			}
+		}
+		return null;
+	}
+
+	private CustomAudioClip getLargeShipDestroyed() {
+		for (int i = 0; i < largeShipDestroyed.size(); i++) {
+//			System.out.println("Clip ID: " + laserBeamClipList.get(i) + " Active: "
+//					+ laserBeamClipList.get(i).isActive() + " Running: " + laserBeamClipList.get(i).isRunning()
+//					+ " Frame position: " + laserBeamClipList.get(i).getFramePosition());
+			if (!largeShipDestroyed.get(i).isRunning()) {
+				allActiveClips.add(largeShipDestroyed.get(i));
+				return largeShipDestroyed.get(i);
+			}
+		}
+		return null;
 	}
 
 }

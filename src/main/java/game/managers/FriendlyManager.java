@@ -28,6 +28,7 @@ public class FriendlyManager {
 		spaceship = null;
 		initSpaceShip();
 		this.playerMissileType = "Player Laserbeam";
+		// True because the player has to start true?
 		playerAlive = true;
 	}
 

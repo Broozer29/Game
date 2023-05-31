@@ -5,7 +5,7 @@ import java.util.List;
 import data.DataClass;
 import data.image.ImageDatabase;
 import data.movement.Trajectory;
-import image.objects.SpriteAnimation;
+import image.objects.Animation;
 import image.objects.Sprite;
 
 public class Missile extends Sprite {
@@ -16,8 +16,8 @@ public class Missile extends Sprite {
 	protected int angleModuloDivider;
 	protected int movementSpeed;
 	protected int maxMissileLength;
-	protected SpriteAnimation animation;
-	protected SpriteAnimation explosionAnimation;
+	protected Animation animation;
+	protected Animation explosionAnimation;
 	protected String missileType;
 	protected String explosionType;
 	protected String rotationAngle;
@@ -104,24 +104,24 @@ public class Missile extends Sprite {
 	protected void setAnimation() {
 		if (!missileType.equals("Alien Laserbeam") && !missileType.equals("Player Laserbeam")) {
 			if (missileType != null) {
-				this.animation = new SpriteAnimation(xCoordinate, yCoordinate, missileType, true, scale);
-				this.explosionAnimation = new SpriteAnimation(xCoordinate, yCoordinate, explosionType, false, scale);
+				this.animation = new Animation(xCoordinate, yCoordinate, missileType, true, scale);
+				this.explosionAnimation = new Animation(xCoordinate, yCoordinate, explosionType, false, scale);
 			}
 		} else {
-			this.animation = new SpriteAnimation(xCoordinate, yCoordinate, "Impact Explosion One", false, scale);
-			this.explosionAnimation = new SpriteAnimation(xCoordinate, yCoordinate, "Impact Explosion One", false, scale);
+			this.animation = new Animation(xCoordinate, yCoordinate, "Impact Explosion One", false, scale);
+			this.explosionAnimation = new Animation(xCoordinate, yCoordinate, "Impact Explosion One", false, scale);
 		}
 		this.animation.rotateAnimetion(rotationAngle);
 	}
 
-	public SpriteAnimation getExplosionAnimation() {
+	public Animation getExplosionAnimation() {
 		if (this.explosionAnimation != null) {
 			return this.explosionAnimation;
 		}
 		return null;
 	}
 
-	public SpriteAnimation getAnimation() {
+	public Animation getAnimation() {
 		if (this.animation != null) {
 			return this.animation;
 		}

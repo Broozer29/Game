@@ -24,7 +24,7 @@ public class Sprite {
 	public Sprite(int x, int y, float scale) {
 		this.xCoordinate = x;
 		this.yCoordinate = y;
-		this.scale = scale;
+		this.scale = scale; 
 		visible = true;
 	}
 
@@ -35,7 +35,7 @@ public class Sprite {
 		getImageDimensions();
 		// Zet collision ook op die getallen en shits & giggles
 	}
-
+	
 	protected void getImageDimensions() {
 		width = image.getWidth(null);
 		height = image.getHeight(null);
@@ -48,28 +48,24 @@ public class Sprite {
 		getImageDimensions();
 	}
 
+
 	protected void rotateImage(String rotation) {
 		this.image = imageRotator.rotate(image, rotation);
 		getImageDimensions();
 	}
-
+	
 	protected void setScale(float newScale) {
 		this.scale = newScale;
 		this.image = imageResizer.getScaledImage(image, scale);
 		getImageDimensions();
 	}
-
+	
 	public int getCenterXCoordinate() {
 		return xCoordinate + (width / 2);
 	}
-
+	
 	public int getCenterYCoordinate() {
 		return yCoordinate + (height / 2);
-	}
-
-	public void setCenterCoordinates(int newXCoordinate, int newYCoordinate) {
-		this.xCoordinate = newXCoordinate - this.width;
-		this.yCoordinate = newYCoordinate - this.height;
 	}
 
 	public int getWidth() {
@@ -110,17 +106,13 @@ public class Sprite {
 
 	// Get bounds required for collision detection for objects WITHOUT ANIMATIONS
 	public Rectangle getBounds() {
-		return new Rectangle(xCoordinate + xOffset, yCoordinate + yOffset, width, height);
+		return new Rectangle(xCoordinate, yCoordinate, width, height);
 	}
-
+	
 	public void addXOffset(int xOffset) {
 		this.xOffset = xOffset;
 	}
-
-	public int getXOffset() {
-		return this.xOffset;
-	}
-
+	
 	public void addYOffset(int yoffset) {
 		this.yOffset = yoffset;
 	}

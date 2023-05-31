@@ -22,4 +22,4 @@ public class SeekerProjectile extends Missile {
 	}
 
 }
- 	
+ 

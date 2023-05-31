@@ -46,27 +46,21 @@ public class EnemySpawnTimer implements ActionListener {
 	public void startTimer() {
 		timer.start();
 		this.status = "running";
-		this.finished = false;
 	}
 
 	public void stopTimer() {
 		this.finished = true;
 		timer.stop();
 	}
-	
-	public void refreshTimer() {
-		timer.restart();
-		this.status = "running";
-		this.finished = false;
-	}
 
 	// Vuur event naar de timerManager dat deze timer voorbij is. Bijvoorbeeld om
 	// bommen te spawnen.
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		timerManager.activateSpawnTimer(this);
+		timerManager.activate(this);
 		this.finished = true;
 		this.status = "finished";
+		stopTimer();
 	}
 
 	public boolean getFinished() {

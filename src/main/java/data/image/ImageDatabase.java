@@ -67,8 +67,6 @@ public class ImageDatabase {
 
 	// Animations
 	private List<Image> playerEngineFrames = new ArrayList<Image>();
-	private List<Image> playerFireSwirlFrames = new ArrayList<Image>();
-	private List<Image> playerEMPFrames = new ArrayList<Image>();
 	private List<Image> defaultPlayerEngineBoostedFrames = new ArrayList<Image>();
 	private List<Image> defaultPlayerShieldDamage = new ArrayList<Image>();
 
@@ -321,10 +319,6 @@ public class ImageDatabase {
 			return this.defaultPlayerEngineBoostedFrames;
 		case("Default Player Shield Damage"):
 			return this.defaultPlayerShieldDamage;
-		case("Player Fireswirl"):
-			return this.playerFireSwirlFrames;
-		case("Player EMP"):
-			return this.playerEMPFrames;
 		}
 		return null;
 	}
@@ -485,34 +479,23 @@ public class ImageDatabase {
 	
 	private void initPNGtoGIFAnimation() {
 		for (int i = 1; i < 6; i++) {
-			String sourceString=String.format("src/resources/images/gif/PNGtoGIF/Default Player Engine/%d.png",i);  
-			Image image = imgLoader.getSpritesheetImage(sourceString);
+			String engineString=String.format("src/resources/images/gif/PNGtoGIF/Default Player Engine/%d.png",i);  
+			Image image = imgLoader.getSpritesheetImage(engineString);
 			defaultPlayerEngine.add(image);
 		}
 		
 		for (int i = 1; i < 6; i++) {
-			String sourceString=String.format("src/resources/images/gif/PNGtoGIF/Default Player Engine Boosted/%d.png",i);  
-			Image image = imgLoader.getSpritesheetImage(sourceString);
+			String boostedEngineString=String.format("src/resources/images/gif/PNGtoGIF/Default Player Engine Boosted/%d.png",i);  
+			Image image = imgLoader.getSpritesheetImage(boostedEngineString);
 			defaultPlayerEngineBoostedFrames.add(image);
 		}
 		
-		for (int i = 1; i < 10; i++) {
-			String sourceString=String.format("src/resources/images/gif/PNGtoGIF/Player Shield Damage/%d.png",i);  
-			Image image = imgLoader.getSpritesheetImage(sourceString);
+		for (int i = 1; i < 21; i++) {
+			String boostedEngineString=String.format("src/resources/images/gif/PNGtoGIF/Default Player Shield Damage/%d.png",i);  
+			Image image = imgLoader.getSpritesheetImage(boostedEngineString);
 			defaultPlayerShieldDamage.add(image);
 		}
 		
-		for (int i = 1; i < 10; i++) {
-			String sourceString=String.format("src/resources/images/gif/PNGtoGIF/Player EMP/%d.png",i);  
-			Image image = imgLoader.getSpritesheetImage(sourceString);
-			playerEMPFrames.add(image);
-		}
-		
-		for (int i = 1; i < 46; i++) {
-			String sourceString=String.format("src/resources/images/gif/PNGtoGIF/Player Fireswirl/tile0%d.png",i);  
-			Image image = imgLoader.getSpritesheetImage(sourceString);
-			playerFireSwirlFrames.add(image);
-		}
 		
 	}
 
