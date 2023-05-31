@@ -1,15 +1,17 @@
 package game.objects.enemies;
 
-import data.movement.RegularTrajectory;
+
+import data.movement.Direction;
+import data.movement.PathFinder;
+import data.movement.Point;
 import game.managers.MissileManager;
 
 public class Alien extends Enemy {
 
-	public Alien(int x, int y, String direction, int angleModuloDivider, float scale) {
-		super(x, y, direction, "Alien", scale);
+	public Alien(int x, int y, Point destination, Direction rotation, float scale, PathFinder pathFinder) {
+		super(x, y, destination, rotation, "Alien", scale, pathFinder);
 		loadImage("Default Alien Spaceship");
 		this.initBoardBlockSpeeds();
-		this.angleModuloDivider=angleModuloDivider;
 		this.hitPoints = 35;
 		this.maxHitPoints = 35;
 		this.attackSpeedFrameCount = 150;
@@ -17,9 +19,8 @@ public class Alien extends Enemy {
 		this.hasAttack = true;
 		this.deathSound = "Alien Spaceship Destroyed";
 		this.showHealthBar = true;
-		this.trajectory = new RegularTrajectory(direction, movementSpeed, true, angleModuloDivider, getTotalTravelDistance());
 		this.setVisible(true);
-		this.setRotation(direction);
+		this.setRotation(rotation);
 	}
 
 	private void initBoardBlockSpeeds() {
@@ -44,7 +45,7 @@ public class Alien extends Enemy {
 		if (currentAttackSpeedFrameCount >= attackSpeedFrameCount) {
 			if (currentBoardBlock < 7) {
 				missileManager.addEnemyMissile(this.xCoordinate, this.yCoordinate + calculateRandomWeaponHeightOffset(),
-						"Alien Laserbeam", "Impact Explosion One", 0, "Left", "Left", this.scale);
+						"Alien Laserbeam", "Impact Explosion One", Direction.LEFT, this.scale);
 				currentAttackSpeedFrameCount = 0;
 			}
 		}

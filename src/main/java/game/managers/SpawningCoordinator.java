@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Random;
 
 import data.DataClass;
+import data.movement.Direction;
 import game.objects.BackgroundObject;
 import game.objects.enemies.Enemy;
 
@@ -134,15 +135,15 @@ public class SpawningCoordinator {
 				+ minimumBombEnemyHeightDownRange;
 	}
 
-	public String upOrDown() {
+	public Direction upOrDown() {
 		int randInt = random.nextInt((1 - 0) + 1) + 0;
 		switch (randInt) {
 		case (0):
-			return "Down";
+			return Direction.DOWN;
 		case (1):
-			return "Up";
+			return Direction.UP;
 		}
-		return "Up";
+		return Direction.UP;
 	}
 
 	// Random functions used for Background objects //

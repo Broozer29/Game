@@ -1,20 +1,20 @@
 package game.objects.enemies;
 
-import data.movement.RegularTrajectory;
-import data.movement.Trajectory;
+import data.movement.Direction;
+import data.movement.PathFinder;
+import data.movement.Point;
 import game.managers.MissileManager;
 
 public class Bulldozer extends Enemy {
 
-	public Bulldozer(int x, int y, String direction, int angleModuloDivider, float scale) {
-		super(x, y, direction, "Bulldozer", scale);
+	public Bulldozer(int x, int y, Point destination, Direction rotation, float scale, PathFinder pathFinder) {
+		super(x, y, destination, rotation, "Bulldozer", scale, pathFinder);
 		loadImage("Bulldozer");
 		setExhaustanimation("Bulldozer Large Exhaust");
 		setDeathAnimation("Bulldozer Destroyed Explosion");
 		this.exhaustAnimation.setFrameDelay(3);
 		this.deathAnimation.setFrameDelay(2);
 		this.initBoardBlockSpeeds();
-		this.angleModuloDivider = angleModuloDivider;
 		this.hitPoints = 50;
 		this.maxHitPoints = 50;
 		this.attackSpeedFrameCount = 100;
@@ -22,9 +22,8 @@ public class Bulldozer extends Enemy {
 		this.hasAttack = true;
 		this.showHealthBar = true;
 		this.deathSound = "Large Ship Destroyed";
-		this.trajectory = new RegularTrajectory(direction, movementSpeed, true, angleModuloDivider, getTotalTravelDistance());
 		this.setVisible(true);
-		this.setRotation(direction);
+		this.setRotation(rotation);
 	}
 
 	private void initBoardBlockSpeeds() {
@@ -49,11 +48,11 @@ public class Bulldozer extends Enemy {
 
 		if (currentAttackSpeedFrameCount >= attackSpeedFrameCount) {
 			missileManager.addEnemyMissile(this.xCoordinate, this.yCoordinate, "Bulldozer Projectile",
-					"Bulldozer Projectile Explosion", 10, "LeftUp", "LeftUp", this.scale);
+					"Bulldozer Projectile Explosion", Direction.LEFT_UP, this.scale);
 			missileManager.addEnemyMissile(this.xCoordinate, this.yCoordinate, "Bulldozer Projectile",
-					"Bulldozer Projectile Explosion", 10, "LeftDown", "LeftDown", this.scale);
+					"Bulldozer Projectile Explosion", Direction.LEFT_UP, this.scale);
 			missileManager.addEnemyMissile(this.xCoordinate, this.yCoordinate, "Bulldozer Projectile",
-					"Bulldozer Projectile Explosion", 0, "Left", "Left", this.scale);
+					"Bulldozer Projectile Explosion", Direction.LEFT, this.scale);
 			currentAttackSpeedFrameCount = 0;
 		}
 		if (currentAttackSpeedFrameCount < attackSpeedFrameCount) {

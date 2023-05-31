@@ -6,6 +6,7 @@ import java.awt.Rectangle;
 import data.image.ImageDatabase;
 import data.image.ImageResizer;
 import data.image.ImageRotator;
+import data.movement.Direction;
 
 public class Sprite {
 	ImageDatabase imgDatabase = ImageDatabase.getInstance();
@@ -48,7 +49,7 @@ public class Sprite {
 		getImageDimensions();
 	}
 
-	protected void rotateImage(String rotation) {
+	protected void rotateImage(Direction rotation) {
 		this.image = imageRotator.rotate(image, rotation);
 		getImageDimensions();
 	}

@@ -1,27 +1,27 @@
 package game.objects.missiles;
 
-import data.movement.RegularTrajectory;
-import data.movement.Trajectory;
+import data.movement.Direction;
+import data.movement.PathFinder;
+import data.movement.Point;
 
-public class FlamerProjectile extends Missile{
+public class FlamerProjectile extends Missile {
 
-	public FlamerProjectile(int x, int y, String missileType, String explosionType, String missileDirection, int angleModuloDivider, String rotation, float scale) {
-		super(x, y, missileType, explosionType, missileDirection, angleModuloDivider, rotation, scale);
+	public FlamerProjectile(int x, int y, Point destination, String missileType, String explosionType,
+			Direction rotation, float scale, PathFinder pathFinder) {
+		super(x, y, destination, missileType, explosionType, rotation, scale, pathFinder);
 		this.missileDamage = (float) 7.5;
 		setAnimation();
 		this.animation.setFrameDelay(3);
-		
+
 		this.movementSpeed = 5;
-		this.trajectory = new RegularTrajectory(direction, movementSpeed, true, angleModuloDivider, getTotalTravelDistance());
 	}
 
-	
 	public void missileAction() {
 		if (missileStepsTaken % 5 == 0 && animation.getScale() < 2.00) {
 			float newScale = (float) (animation.getScale() + 0.05);
-			this.animation.setAnimationScale(newScale);;
+			this.animation.setAnimationScale(newScale);
+			;
 		}
 	}
-
 
 }

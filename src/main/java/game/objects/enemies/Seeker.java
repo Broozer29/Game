@@ -1,20 +1,20 @@
 package game.objects.enemies;
 
-import data.movement.RegularTrajectory;
-import data.movement.Trajectory;
+import data.movement.Direction;
+import data.movement.PathFinder;
+import data.movement.Point;
 import game.managers.MissileManager;
 
 public class Seeker extends Enemy {
 
-	public Seeker(int x, int y, String direction, int angleModuloDivider, float scale) {
-		super(x, y, direction, "Seeker", scale);
+	public Seeker(int x, int y, Point destination, Direction rotation, float scale, PathFinder pathFinder) {
+		super(x, y, destination, rotation, "Seeker", scale, pathFinder);
 		loadImage("Seeker");
 		setExhaustanimation("Seeker Large Exhaust");
 		setDeathAnimation("Seeker Destroyed Explosion");
 		this.exhaustAnimation.setFrameDelay(3);
 		this.deathAnimation.setFrameDelay(2);
 		this.initBoardBlockSpeeds();
-		this.angleModuloDivider = angleModuloDivider;
 		this.hitPoints = 50;
 		this.maxHitPoints = 50;
 		this.attackSpeedFrameCount = 100;
@@ -22,9 +22,8 @@ public class Seeker extends Enemy {
 		this.hasAttack = true;
 		this.showHealthBar = true;
 		this.deathSound = "Large Ship Destroyed";
-		this.trajectory = new RegularTrajectory(direction, movementSpeed, true, angleModuloDivider, getTotalTravelDistance());
 		this.setVisible(true);
-		this.setRotation(direction);
+		this.setRotation(rotation);
 	}
 
 	private void initBoardBlockSpeeds() {
@@ -49,7 +48,7 @@ public class Seeker extends Enemy {
 
 		if (currentAttackSpeedFrameCount >= attackSpeedFrameCount) {
 			missileManager.addEnemyMissile(this.xCoordinate, this.yCoordinate + calculateRandomWeaponHeightOffset(),
-					"Seeker Projectile", "Seeker Projectile Explosion", 0, direction, rotation, this.scale);
+					"Seeker Projectile", "Seeker Projectile Explosion", rotation, this.scale);
 			currentAttackSpeedFrameCount = 0;
 		}
 		if (currentAttackSpeedFrameCount < attackSpeedFrameCount) {

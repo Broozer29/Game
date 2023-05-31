@@ -8,12 +8,15 @@ import java.util.Random;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
 import data.DataClass;
-import data.movement.Trajectory;
+import data.movement.Direction;
+import data.movement.Path;
+import data.movement.PathFinder;
+import data.movement.Point;
 import game.managers.AnimationManager;
 import game.managers.AudioManager;
 import game.managers.MissileManager;
-import image.objects.SpriteAnimation;
 import image.objects.Sprite;
+import image.objects.SpriteAnimation;
 
 public class Enemy extends Sprite {
 
@@ -29,15 +32,16 @@ public class Enemy extends Sprite {
 	protected float currentAttackSpeedFrameCount = 0;
 	protected boolean hasAttack;
 
-	// Enemy movement/direction
+	// Enemy new movement:
+	private Point currentLocation;
+	private Point destination;
+	private PathFinder pathFinder;
+	private Path currentPath;
 	protected int movementSpeed;
 	protected int currentBoardBlock;
-	protected String rotation;
-	protected String direction;
-	protected Trajectory trajectory;
-	protected int angleModuloDivider;
 
 	// Enemy miscellanious attributes
+	protected Direction rotation;
 	protected String enemyType;
 	protected String deathSound;
 	protected boolean showHealthBar;
@@ -45,11 +49,15 @@ public class Enemy extends Sprite {
 	protected SpriteAnimation exhaustAnimation = null;
 	protected SpriteAnimation deathAnimation;
 
-	public Enemy(int x, int y, String direction, String enemyType, float scale) {
+	public Enemy(int x, int y, Point destination, Direction rotation, String enemyType, float scale,
+			PathFinder pathFinder) {
 		super(x, y, scale);
 		this.enemyType = enemyType;
-		this.direction = direction;
+		this.currentLocation = new Point(x, y);
+		this.destination = destination;
+		this.rotation = rotation;
 		this.currentBoardBlock = 8;
+		this.pathFinder = pathFinder;
 	}
 
 	protected void setExhaustanimation(String imageType) {
@@ -66,7 +74,7 @@ public class Enemy extends Sprite {
 			animationManager = AnimationManager.getInstance();
 			audioManager = AudioManager.getInstance();
 		}
-		
+
 		this.hitPoints -= damageTaken;
 		if (this.hitPoints <= 0) {
 			this.deathAnimation.setX(this.getCenterXCoordinate() - (deathAnimation.getWidth() / 2));
@@ -102,35 +110,107 @@ public class Enemy extends Sprite {
 		} else if (xCoordinate > boardBlockSize * 8) {
 			this.movementSpeed = boardBlockSpeeds.get(7);
 		}
-		this.trajectory.updateMovementSpeed(movementSpeed);
 	}
 
 	// Called every loop to move the enemy
+//	public void move() {
+//		List<Integer> newCoordsList = trajectory.getPathCoordinates(xCoordinate, yCoordinate);
+//		xCoordinate = newCoordsList.get(0);
+//		yCoordinate = newCoordsList.get(1);
+//		if (direction.contains("Up")) {
+//			if (yCoordinate <= 0) {
+//				this.setVisible(false);
+//			}
+//		} else if (direction.contains("Down")) {
+//			if (yCoordinate >= DataClass.getInstance().getWindowHeight()) {
+//				this.setVisible(false);
+//			}
+//		} else if (direction.contains("Left")) {
+//			if (xCoordinate < 0) {
+//				this.setVisible(false);
+//			}
+//		} else if (direction.contains("Right")) {
+//			if (xCoordinate > DataClass.getInstance().getWindowWidth()) {
+//				this.setVisible(false);
+//			}
+//		}
+//		if (this.exhaustAnimation != null) {
+//			this.exhaustAnimation.setX(this.getCenterXCoordinate() + (this.getWidth() / 2));
+//			this.exhaustAnimation.setY(this.getCenterYCoordinate() - (exhaustAnimation.getHeight() / 2));
+//		}
+//	}
+
 	public void move() {
-		List<Integer> newCoordsList = trajectory.getPathCoordinates(xCoordinate, yCoordinate);
-		xCoordinate = newCoordsList.get(0);
-		yCoordinate = newCoordsList.get(1);
-		if (direction.contains("Up")) {
-			if (yCoordinate <= 0) {
-				this.setVisible(false);
-			}
-		} else if (direction.contains("Down")) {
-			if (yCoordinate >= DataClass.getInstance().getWindowHeight()) {
-				this.setVisible(false);
-			}
-		} else if (direction.contains("Left")) {
-			if (xCoordinate < 0) {
-				this.setVisible(false);
-			}
-		} else if (direction.contains("Right")) {
-			if (xCoordinate > DataClass.getInstance().getWindowWidth()) {
-				this.setVisible(false);
-			}
+		if (currentPath == null || currentPath.getWaypoints().isEmpty()) {
+			// calculate a new path if necessary
+			currentPath = pathFinder.findPath(currentLocation, destination, movementSpeed);
 		}
+
+		// get the next point from the path
+		Point nextPoint = currentPath.getWaypoints().get(0);
+
+		// move towards the next point
+		currentLocation = nextPoint;
+		this.xCoordinate = nextPoint.getX();
+		this.yCoordinate = nextPoint.getY();
+
+		// if reached the next point, remove it from the path
+		if (currentLocation.equals(nextPoint)) {
+			currentPath.getWaypoints().remove(0);
+		}
+		
 		if (this.exhaustAnimation != null) {
 			this.exhaustAnimation.setX(this.getCenterXCoordinate() + (this.getWidth() / 2));
 			this.exhaustAnimation.setY(this.getCenterYCoordinate() - (exhaustAnimation.getHeight() / 2));
 		}
+
+		switch (rotation) {
+		case UP:
+			if (yCoordinate <= 0) {
+				this.setVisible(false);
+			}
+			break;
+		case DOWN:
+			if (yCoordinate >= DataClass.getInstance().getWindowHeight()) {
+				this.setVisible(false);
+			}
+			break;
+		case LEFT:
+			if (xCoordinate < 0) {
+				this.setVisible(false);
+			}
+			break;
+		case RIGHT:
+			if (xCoordinate > DataClass.getInstance().getWindowWidth()) {
+				this.setVisible(false);
+			}
+			break;
+		case LEFT_DOWN:
+			if (xCoordinate < 0 || yCoordinate >= DataClass.getInstance().getWindowHeight()) {
+				this.setVisible(false);
+			}
+			break;
+		case LEFT_UP:
+			if (xCoordinate < 0 || yCoordinate <= 0) {
+				this.setVisible(false);
+			}
+			break;
+		case NONE:
+			this.setVisible(false);
+			break;
+		case RIGHT_DOWN:
+			if (xCoordinate > DataClass.getInstance().getWindowWidth()
+					|| yCoordinate >= DataClass.getInstance().getWindowHeight()) {
+				this.setVisible(false);
+			}
+			break;
+		case RIGHT_UP:
+			if (xCoordinate > DataClass.getInstance().getWindowWidth() || yCoordinate <= 0) {
+				this.setVisible(false);
+			}
+			break;
+		}
+
 	}
 
 	// Random offset for the origin of the missile the enemy shoots
@@ -150,10 +230,6 @@ public class Enemy extends Sprite {
 
 	public float getMaxHitpoints() {
 		return this.maxHitPoints;
-	}
-
-	public String getEnemyDirection() {
-		return this.direction;
 	}
 
 	public int getMovementSpeed() {
@@ -180,56 +256,19 @@ public class Enemy extends Sprite {
 		return this.enemyType;
 	}
 
-	public int getAngleModuloDivider() {
-		return this.angleModuloDivider;
-	}
-
 	public SpriteAnimation getDestroyedAnimation() {
 		return this.deathAnimation;
 	}
 
-	public void updateTrajectory() {
-		switch (trajectory.getTrajectoryType()) {
-		case ("Regular"):
-			trajectory.updateRegularPath();
-			break;
-		case ("Homing"):
-			trajectory.updateEnemyHomingPaths(this);
-			break;
-		}
-	}
-
-	protected int getTotalTravelDistance() {
-		if (direction.contains("Up") || direction.contains("Down")) {
-			return DataClass.getInstance().getWindowHeight() + getAdditionalYSteps();
-		} else
-			return DataClass.getInstance().getWindowWidth() + getAdditionalXSteps();
-	}
-
-	// Required for the trajectory to determine the length of the distance travelled
-	protected int getAdditionalXSteps() {
-		// Somehow comes up short
-//		return Math.abs(DataClass.getInstance().getWindowWidth() - (xCoordinate + width));
-		return Math.abs(DataClass.getInstance().getWindowWidth());
-	}
-
-	// Required for the trajectory to determine the length of the distance travelled
-	protected int getAdditionalYSteps() {
-		if (direction.contains("Up")) {
-			return Math.abs(DataClass.getInstance().getWindowHeight() - yCoordinate) + 1;
-		} else if (direction.contains("Down")) {
-			return Math.abs(DataClass.getInstance().getWindowHeight() + Math.abs(yCoordinate)) + 1;
-		}
-		return 0;
-	}
-
-	protected void setRotation(String rotation) {
+	protected void setRotation(Direction rotation) {
 		this.rotation = rotation;
 		rotateImage(rotation);
 	}
 
 	public void fireAction() {
-		//This could contain default behaviour but SHOULD be overriden by specific enemytype classes.
+		// This could contain default behaviour but SHOULD be overriden by specific enemytype
+		// classes.
 
 	}
+
 }

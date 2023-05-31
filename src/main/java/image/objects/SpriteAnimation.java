@@ -7,6 +7,7 @@ import java.util.List;
 import data.image.ImageDatabase;
 import data.image.ImageResizer;
 import data.image.ImageRotator;
+import data.movement.Direction;
 
 public class SpriteAnimation extends Sprite {
 
@@ -75,7 +76,7 @@ public class SpriteAnimation extends Sprite {
 	}
 	
 	
-	public void rotateAnimetion(String rotation) {
+	public void rotateAnimetion(Direction rotation) {
 		this.frames = ImageRotator.getInstance().getRotatedFrames(frames, rotation);
 	}
 

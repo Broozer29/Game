@@ -5,6 +5,7 @@ import java.awt.event.ActionListener;
 
 import javax.swing.Timer;
 
+import data.movement.Direction;
 import game.managers.TimerManager;
 
 public class EnemySpawnTimer implements ActionListener {
@@ -13,8 +14,7 @@ public class EnemySpawnTimer implements ActionListener {
 
 	// Attributes required for spawning enemies
 	private int amountOfSpawnAttempts;
-	private int angleModuloDivider;
-	private String enemyMovementDirection;
+	private Direction direction;
 	private String timerEnemyType;
 	private float enemyScale;
 
@@ -26,12 +26,11 @@ public class EnemySpawnTimer implements ActionListener {
 	private String status;
 
 	public EnemySpawnTimer(int timeBeforeActivation, int amountOfSpawnAttempts, String timerEnemyType, boolean loopable,
-			String enemyMovementDirection, int angleModuloDivider, float enemyScale) {
+			Direction direction, float enemyScale) {
 		this.enemyScale = enemyScale;
 		this.timerEnemyType = timerEnemyType;
 		this.amountOfSpawnAttempts = amountOfSpawnAttempts;
-		this.enemyMovementDirection = enemyMovementDirection;
-		this.angleModuloDivider = angleModuloDivider;
+		this.direction = direction;
 		this.loopable = loopable;
 		this.timeBeforeActivation = timeBeforeActivation;
 		this.finished = false;
@@ -81,8 +80,8 @@ public class EnemySpawnTimer implements ActionListener {
 		return this.timerEnemyType;
 	}
 
-	public String getEnemyMovementDirection() {
-		return this.enemyMovementDirection;
+	public Direction getDirection() {
+		return this.direction;
 	}
 
 	public int getTimerSpawnAttempts() {
@@ -91,10 +90,6 @@ public class EnemySpawnTimer implements ActionListener {
 
 	public boolean getLoopable() {
 		return this.loopable;
-	}
-
-	public int getAngleModuloDivider() {
-		return this.angleModuloDivider;
 	}
 
 	public int getTimeBeforeActivation() {

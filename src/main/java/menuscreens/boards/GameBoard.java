@@ -25,7 +25,7 @@ import game.managers.EnemyManager;
 import game.managers.ExplosionManager;
 import game.managers.FriendlyManager;
 import game.managers.FriendlyObjectManager;
-import game.managers.LevelManager;
+import game.managers.LevelSpawnerManager;
 import game.managers.MissileManager;
 import game.managers.TimerManager;
 import game.objects.BackgroundObject;
@@ -55,7 +55,7 @@ public class GameBoard extends JPanel implements ActionListener {
 	private AnimationManager animationManager = AnimationManager.getInstance();
 	private EnemyManager enemyManager = EnemyManager.getInstance();
 	private MissileManager missileManager = MissileManager.getInstance();
-	private LevelManager levelManager = LevelManager.getInstance();
+	private LevelSpawnerManager levelManager = LevelSpawnerManager.getInstance();
 	private FriendlyManager friendlyManager = FriendlyManager.getInstance();
 	private AudioManager audioManager = AudioManager.getInstance();
 	private BackgroundManager backgroundManager = BackgroundManager.getInstance();
@@ -67,7 +67,7 @@ public class GameBoard extends JPanel implements ActionListener {
 		animationManager = AnimationManager.getInstance();
 		enemyManager = EnemyManager.getInstance();
 		missileManager = MissileManager.getInstance();
-		levelManager = LevelManager.getInstance();
+		levelManager = LevelSpawnerManager.getInstance();
 		friendlyManager = FriendlyManager.getInstance();
 		audioManager = AudioManager.getInstance();
 		backgroundManager = BackgroundManager.getInstance();

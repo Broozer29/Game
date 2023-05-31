@@ -2,22 +2,21 @@ package game.objects.enemies;
 
 import java.util.List;
 
-import data.DataClass;
-import data.movement.RegularTrajectory;
-import data.movement.Trajectory;
+import data.movement.Direction;
+import data.movement.PathFinder;
+import data.movement.Point;
 import game.managers.MissileManager;
 
 public class Energizer extends Enemy {
 
-	public Energizer(int x, int y, String direction, int angleModuloDivider, float scale) {
-		super(x, y, direction, "Energizer", scale);
+	public Energizer(int x, int y, Point destination, Direction rotation, float scale, PathFinder pathFinder) {
+		super(x, y, destination, rotation, "Energizer", scale, pathFinder);
 		loadImage("Energizer");
 		setExhaustanimation("Energizer Large Exhaust");
 		setDeathAnimation("Energizer Destroyed Explosion");
 		this.exhaustAnimation.setFrameDelay(3);
 		this.deathAnimation.setFrameDelay(2);
 		this.initBoardBlockSpeeds();
-		this.angleModuloDivider = angleModuloDivider;
 		this.hitPoints = 50;
 		this.maxHitPoints = 50;
 		this.attackSpeedFrameCount = 100;
@@ -25,9 +24,8 @@ public class Energizer extends Enemy {
 		this.hasAttack = true;
 		this.showHealthBar = true;
 		this.deathSound = "Large Ship Destroyed";
-		this.trajectory = new RegularTrajectory(direction, movementSpeed, true, angleModuloDivider, getTotalTravelDistance());
 		this.setVisible(true);
-		this.setRotation(direction);
+		this.setRotation(rotation);
 	}
 	
 	
@@ -54,7 +52,7 @@ public class Energizer extends Enemy {
 
 		if (currentAttackSpeedFrameCount >= attackSpeedFrameCount) {
 			missileManager.addEnemyMissile(this.xCoordinate, this.yCoordinate + calculateRandomWeaponHeightOffset(),
-					"Energizer Projectile", "Energizer Projectile Explosion", 0, "Left", "Left", this.scale);
+					"Energizer Projectile", "Energizer Projectile Explosion", rotation, this.scale);
 			currentAttackSpeedFrameCount = 0;
 		}
 		if (currentAttackSpeedFrameCount < attackSpeedFrameCount) {

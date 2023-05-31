@@ -1,13 +1,14 @@
 package game.objects.enemies;
 
-import data.movement.RegularTrajectory;
-import data.movement.Trajectory;
+import data.movement.Direction;
+import data.movement.PathFinder;
+import data.movement.Point;
 import game.managers.MissileManager;
 
 public class Tazer extends Enemy {
 
-	public Tazer(int x, int y, String direction, int angleModuloDivider, float scale) {
-		super(x, y, direction, "Tazer", scale);
+	public Tazer(int x, int y, Point destination, Direction rotation, float scale, PathFinder pathFinder) {
+		super(x, y, destination, rotation, "Tazer", scale, pathFinder);
 		loadImage("Tazer");
 		setExhaustanimation("Tazer Large Exhaust");
 		setDeathAnimation("Tazer Destroyed Explosion");
@@ -15,16 +16,14 @@ public class Tazer extends Enemy {
 		this.deathAnimation.setFrameDelay(2);
 		this.initBoardBlockSpeeds();
 		this.hitPoints = 50;
-		this.angleModuloDivider = angleModuloDivider;
 		this.maxHitPoints = 50;
 		this.attackSpeedFrameCount = 100;
 		this.movementSpeed = 2;
 		this.hasAttack = true;
 		this.showHealthBar = true;
 		this.deathSound = "Large Ship Destroyed";
-		this.trajectory = new RegularTrajectory(direction, movementSpeed, true, angleModuloDivider, getTotalTravelDistance());
 		this.setVisible(true);
-		this.setRotation(direction);
+		this.setRotation(rotation);
 	}
 
 	private void initBoardBlockSpeeds() {
@@ -49,7 +48,7 @@ public class Tazer extends Enemy {
 
 		if (currentAttackSpeedFrameCount >= attackSpeedFrameCount) {
 			missileManager.addEnemyMissile(this.xCoordinate, this.yCoordinate + calculateRandomWeaponHeightOffset(),
-					"Tazer Projectile", "Tazer Projectile Explosion", 0, "Left", "Left", this.scale);
+					"Tazer Projectile", "Tazer Projectile Explosion", rotation, this.scale);
 			currentAttackSpeedFrameCount = 0;
 		}
 		if (currentAttackSpeedFrameCount < attackSpeedFrameCount) {

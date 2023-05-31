@@ -4,8 +4,11 @@ import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.List;
 
+import data.movement.Direction;
+import data.movement.InitialEndPointCalculator;
+import data.movement.Point;
+import data.movement.RegularPathFinder;
 import game.objects.enemies.Enemy;
-import game.objects.enemies.Tazer;
 import game.objects.missiles.AlienLaserbeam;
 import game.objects.missiles.BombaProjectile;
 import game.objects.missiles.BulldozerProjectile;
@@ -54,11 +57,15 @@ public class MissileManager {
 	}
 
 	public void firePlayerMissile(int xCoordinate, int yCoordinate, String missileType, String explosionType,
-			int angleModuloDivider, String rotation, float scale) {
+			Direction rotation, float scale) {
+
+		InitialEndPointCalculator initEndPointCalc = new InitialEndPointCalculator();
+		Point destination = initEndPointCalc.calculateEndPoint(xCoordinate, yCoordinate, rotation);
+		RegularPathFinder pathFinder = new RegularPathFinder();
 		switch (missileType) {
 		case ("Player Laserbeam"):
-			Missile newMissile = new DefaultPlayerLaserbeam(xCoordinate, yCoordinate, missileType, explosionType,
-					"Right", angleModuloDivider, rotation, scale);
+			Missile newMissile = new DefaultPlayerLaserbeam(xCoordinate, yCoordinate, destination, missileType,
+					explosionType, rotation, scale, pathFinder);
 			this.friendlyMissiles.add(newMissile);
 		}
 
@@ -66,47 +73,51 @@ public class MissileManager {
 
 	// Called by all enemy classes when fireAction() is called.
 	public void addEnemyMissile(int xCoordinate, int yCoordinate, String missileType, String explosionType,
-			int angleModuloDivider, String missileDirection, String rotation, float scale) {
+			Direction rotation, float scale) {
+
+		InitialEndPointCalculator initEndPointCalc = new InitialEndPointCalculator();
+		Point destination = initEndPointCalc.calculateEndPoint(xCoordinate, yCoordinate, rotation);
+		RegularPathFinder pathFinder = new RegularPathFinder();
 		switch (missileType) {
 		case ("Alien Laserbeam"):
-			Missile alienMissile = new AlienLaserbeam(xCoordinate, yCoordinate, missileType, explosionType,
-					missileDirection, angleModuloDivider, rotation, scale);
+			Missile alienMissile = new AlienLaserbeam(xCoordinate, yCoordinate, destination, missileType, explosionType,
+					rotation, scale, pathFinder);
 			this.enemyMissiles.add(alienMissile);
 			this.alienLaserbeams.add((AlienLaserbeam) alienMissile);
 			break;
 		case ("Seeker Projectile"):
-			Missile seekerMissile = new SeekerProjectile(xCoordinate, yCoordinate, missileType, explosionType,
-					missileDirection, angleModuloDivider, rotation, scale);
+			Missile seekerMissile = new SeekerProjectile(xCoordinate, yCoordinate, destination, missileType,
+					explosionType, rotation, scale, pathFinder);
 			this.enemyMissiles.add(seekerMissile);
 			this.seekerProjectiles.add((SeekerProjectile) seekerMissile);
 			break;
 		case ("Flamer Projectile"):
-			Missile flamerMissile = new FlamerProjectile(xCoordinate, yCoordinate, missileType, explosionType,
-					missileDirection, angleModuloDivider, rotation, scale);
+			Missile flamerMissile = new FlamerProjectile(xCoordinate, yCoordinate, destination, missileType,
+					explosionType, rotation, scale, pathFinder);
 			this.enemyMissiles.add(flamerMissile);
 			this.flamerProjectiles.add((FlamerProjectile) flamerMissile);
 			break;
 		case ("Tazer Projectile"):
-			Missile tazerMissile = new TazerProjectile(xCoordinate, yCoordinate, missileType, explosionType,
-					missileDirection, angleModuloDivider, rotation, scale);
+			Missile tazerMissile = new TazerProjectile(xCoordinate, yCoordinate, destination, missileType,
+					explosionType, rotation, scale, pathFinder);
 			this.enemyMissiles.add(tazerMissile);
 			this.tazerProjectiles.add((TazerProjectile) tazerMissile);
 			break;
 		case ("Bulldozer Projectile"):
-			Missile bulldozerMissile = new BulldozerProjectile(xCoordinate, yCoordinate, missileType, explosionType,
-					missileDirection, angleModuloDivider, rotation, scale);
+			Missile bulldozerMissile = new BulldozerProjectile(xCoordinate, yCoordinate, destination, missileType,
+					explosionType, rotation, scale, pathFinder);
 			this.enemyMissiles.add(bulldozerMissile);
 			this.bulldozerProjectiles.add((BulldozerProjectile) bulldozerMissile);
 			break;
 		case ("Bomba Projectile"):
-			Missile bombaMissile = new BombaProjectile(xCoordinate, yCoordinate, missileType, explosionType,
-					missileDirection, angleModuloDivider, rotation, scale);
+			Missile bombaMissile = new BombaProjectile(xCoordinate, yCoordinate, destination, missileType,
+					explosionType, rotation, scale, pathFinder);
 			this.enemyMissiles.add(bombaMissile);
 			this.bombaProjectiles.add((BombaProjectile) bombaMissile);
 			break;
 		case ("Energizer Projectile"):
-			Missile energizerMissile = new EnergizerProjectile(xCoordinate, yCoordinate, missileType, explosionType,
-					missileDirection, angleModuloDivider, rotation, scale);
+			Missile energizerMissile = new EnergizerProjectile(xCoordinate, yCoordinate, destination, missileType,
+					explosionType, rotation, scale, pathFinder);
 			this.enemyMissiles.add(energizerMissile);
 			this.energizerProjectiles.add((EnergizerProjectile) energizerMissile);
 			break;
@@ -123,7 +134,7 @@ public class MissileManager {
 
 	// Checks collision between friendly missiles and enemies
 	private void checkFriendlyMissileCollision() {
-		if(enemyManager == null) {
+		if (enemyManager == null) {
 			enemyManager = EnemyManager.getInstance();
 		}
 		for (Missile m : friendlyMissiles) {
@@ -153,7 +164,7 @@ public class MissileManager {
 			if (m.isVisible()) {
 				Rectangle r1 = m.getAnimation().getBounds();
 				Rectangle r2 = friendlyManager.getSpaceship().getBounds();
-				
+
 				if (r1.intersects(r2)) {
 					friendlyManager.getSpaceship().takeHitpointDamage(m.getMissileDamage());
 					animationManager.addUpperAnimation(m.getExplosionAnimation());
