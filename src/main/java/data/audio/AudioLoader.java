@@ -50,12 +50,16 @@ public class AudioLoader {
 			return "src/resources/audio/music/Furi - Wisdom of rage.wav";
 		case ("Furi - My only chance"):
 			return "src/resources/audio/music/Furi - My only chance.wav";
+		case ("Ayasa - The reason why"):
+			return "src/resources/audio/music/Ayasa - The reason why.wav";
 		case ("DefaultMusic"):
 			return "src/resources/audio/music/defaultmusic.wav";
 		case("Alien Bomb Impact"):
 			return "src/resources/audio/Alien Bomb Impact.wav";
 		case("Large Ship Destroyed"):
 			return "src/resources/audio/Large Ship Destroyed.wav";
+		case("Default EMP"):
+			return "src/resources/audio/Default EMP.wav";
 		}
 		return null;
 	}

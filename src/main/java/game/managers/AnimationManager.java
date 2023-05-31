@@ -5,13 +5,13 @@ import java.util.List;
 
 import game.objects.enemies.Enemy;
 import game.objects.friendlies.SpaceShip;
-import image.objects.Animation;
+import image.objects.SpriteAnimation;
 
 public class AnimationManager {
 
 	private static AnimationManager instance = new AnimationManager();
-	private List<Animation> upperAnimationList = new ArrayList<Animation>();
-	private List<Animation> lowerAnimationList = new ArrayList<Animation>();
+	private List<SpriteAnimation> upperAnimationList = new ArrayList<SpriteAnimation>();
+	private List<SpriteAnimation> lowerAnimationList = new ArrayList<SpriteAnimation>();
 
 
 	public static AnimationManager getInstance() {
@@ -21,29 +21,29 @@ public class AnimationManager {
 	// Called when a game instance needs to be deleted and the manager needs to be
 	// reset.
 	public void resetManager() {
-		upperAnimationList = new ArrayList<Animation>();
-		lowerAnimationList = new ArrayList<Animation>();
+		upperAnimationList = new ArrayList<SpriteAnimation>();
+		lowerAnimationList = new ArrayList<SpriteAnimation>();
 
 	}
 
 	private AnimationManager() {
 	}
 
-	public void addDestroyedExplosion(Animation animation) {
+	public void addDestroyedExplosion(SpriteAnimation animation) {
 		addUpperAnimation(animation);
 	}
 
-	public void addExhaustAnimation(Animation animation) {
+	public void addExhaustAnimation(SpriteAnimation animation) {
 		if (animation != null) {
 			this.lowerAnimationList.add(animation);
 		}
 	}
 
-	public void addUpperAnimation(Animation animation) {
+	public void addUpperAnimation(SpriteAnimation animation) {
 		this.upperAnimationList.add(animation);
 	}
 
-	public void addLowerAnimation(Animation animation) {
+	public void addLowerAnimation(SpriteAnimation animation) {
 		this.lowerAnimationList.add(animation);
 	}
 
@@ -57,9 +57,9 @@ public class AnimationManager {
 		this.lowerAnimationList.add(createAnimation(xCoordinate, yCoordinate, animationType, infiniteLoop, scale));
 	}
 
-	public Animation createAnimation(int xCoordinate, int yCoordinate, String animationType, boolean infiniteLoop,
+	public SpriteAnimation createAnimation(int xCoordinate, int yCoordinate, String animationType, boolean infiniteLoop,
 			float scale) {
-		return new Animation(xCoordinate, yCoordinate, animationType, infiniteLoop, scale);
+		return new SpriteAnimation(xCoordinate, yCoordinate, animationType, infiniteLoop, scale);
 	}
 
 	// Called by EnemyManager when an enemy gets deleted and the belonging
@@ -70,7 +70,7 @@ public class AnimationManager {
 		}
 	}
 
-	private void deleteAnimation(Animation animation) {
+	private void deleteAnimation(SpriteAnimation animation) {
 		if (animation == null) {
 			return;
 		}
@@ -96,11 +96,11 @@ public class AnimationManager {
 	}
 
 
-	public List<Animation> getUpperAnimations() {
+	public List<SpriteAnimation> getUpperAnimations() {
 		return this.upperAnimationList;
 	}
 
-	public List<Animation> getLowerAnimations() {
+	public List<SpriteAnimation> getLowerAnimations() {
 		return this.lowerAnimationList;
 	}
 

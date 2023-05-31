@@ -2,23 +2,23 @@ package game.objects;
 
 import java.awt.Rectangle;
 
-import image.objects.Animation;
+import image.objects.SpriteAnimation;
 import image.objects.Sprite;
 
 public class Explosion extends Sprite{
 
-	private Animation animation;
+	private SpriteAnimation animation;
 	private float damage;
 	private boolean dealtDamage;
 	
-	public Explosion(int x, int y, float scale, Animation animation, float damage) {
+	public Explosion(int x, int y, float scale, SpriteAnimation animation, float damage) {
 		super(x, y, scale);
 		this.animation = animation;
 		this.damage = damage;
 		this.dealtDamage = false;
 	}
 	
-	public Animation getAnimation() {
+	public SpriteAnimation getAnimation() {
 		return this.animation;
 	}
 	
