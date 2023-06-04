@@ -2,15 +2,14 @@ package game.managers;
 
 import java.awt.Image;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
 
 import data.DataClass;
 import data.image.ImageDatabase;
-import data.image.ImageLoader;
 import data.image.ImageResizer;
+import data.image.enums.BGOEnums;
+import data.image.enums.ImageEnums;
 import game.objects.BackgroundObject;
 
 public class BackgroundManager {
@@ -28,7 +27,7 @@ public class BackgroundManager {
 	private List<BackgroundObject> levelTwoStars = new ArrayList<BackgroundObject>();
 	private List<BackgroundObject> levelThreeStars = new ArrayList<BackgroundObject>();
 
-	private List<String> planetBGOStringList = new ArrayList<String>();
+	private List<ImageEnums> planetBGOEnumsList = new ArrayList<ImageEnums>();
 	Random random = new Random();
 	private int updateFrameCounter = 0;
 
@@ -54,12 +53,12 @@ public class BackgroundManager {
 	}
 
 	private void initManager() {
-		planetBGOStringList.add("Moon");
-		planetBGOStringList.add("Lava Planet");
-		planetBGOStringList.add("Mars Planet");
-		planetBGOStringList.add("Planet One");
-		planetBGOStringList.add("Planet Two");
-		planetBGOStringList.add("Planet Three");
+		planetBGOEnumsList.add(ImageEnums.Moon);
+		planetBGOEnumsList.add(ImageEnums.Lava_Planet);
+		planetBGOEnumsList.add(ImageEnums.Mars_Planet);
+		planetBGOEnumsList.add(ImageEnums.Planet_One);
+		planetBGOEnumsList.add(ImageEnums.Planet_Two);
+		planetBGOEnumsList.add(ImageEnums.Planet_Three);
 		initLists();
 	}
 
@@ -68,13 +67,13 @@ public class BackgroundManager {
 	}
 
 	private void initLists() {
-		fillBGOList(levelOneStars, "Star", "Star", (float) 0.5, 25);
-		fillBGOList(levelTwoStars, "Star", "Star", (float) 0.75, 25);
-		fillBGOList(levelThreeStars, "Star", "Star", (float) 1, 25);
+		fillBGOList(levelOneStars,ImageEnums.Star, BGOEnums.Star, (float) 0.5, 25);
+		fillBGOList(levelTwoStars, ImageEnums.Star, BGOEnums.Star, (float) 0.75, 25);
+		fillBGOList(levelThreeStars, ImageEnums.Star, BGOEnums.Star, (float) 1, 25);
 
-		fillBGOList(levelOnePlanets, getRandomPlanetString(), "Planet", (float) 0.2, 1);
-		fillBGOList(levelTwoPlanets, getRandomPlanetString(), "Planet", (float) 0.4, 1);
-		fillBGOList(levelThreePlanets, getRandomPlanetString(), "Planet", (float) 0.6, 1);
+		fillBGOList(levelOnePlanets, getRandomPlanetString(), BGOEnums.Planet, (float) 0.2, 1);
+		fillBGOList(levelTwoPlanets, getRandomPlanetString(), BGOEnums.Planet, (float) 0.4, 1);
+		fillBGOList(levelThreePlanets, getRandomPlanetString(), BGOEnums.Planet, (float) 0.6, 1);
 
 	}
 
@@ -82,7 +81,7 @@ public class BackgroundManager {
 		updateObjects();
 	}
 
-	private void fillBGOList(List<BackgroundObject> listToFill, String imageType, String bgoType, float scale,
+	private void fillBGOList(List<BackgroundObject> listToFill, ImageEnums imageType, BGOEnums bgoType, float scale,
 			int amount) {
 		Image bgoImage = imageDatabase.getImage(imageType);
 		bgoImage = imageResizer.getScaledImage(bgoImage, scale);
@@ -96,10 +95,10 @@ public class BackgroundManager {
 					&& randomCoordinator.checkValidBGOYCoordinate(listToFill, randomYCoordinate,
 							bgoImage.getHeight(null))) {
 
-				BackgroundObject test = new BackgroundObject(randomXCoordinate, randomYCoordinate, bgoImage, scale,
+				BackgroundObject BGO = new BackgroundObject(randomXCoordinate, randomYCoordinate, bgoImage, scale,
 						bgoType);
-				listToFill.add(test);
-				allBackgroundObjects.add(test);
+				listToFill.add(BGO);
+				allBackgroundObjects.add(BGO);
 			}
 		}
 	}
@@ -110,7 +109,7 @@ public class BackgroundManager {
 				bgObject.setX(dataClass.getWindowWidth() + 200);
 				bgObject.setY(randomCoordinator.getRandomYBGOCoordinate());
 
-				if (bgObject.getBGOtype().equals("Planet")) {
+				if (bgObject.getBGOtype().equals(BGOEnums.Planet)) {
 					Image newBGOImage = imageDatabase.getImage(getRandomPlanetString());
 					bgObject.setNewPlanetImage(newBGOImage);
 				}
@@ -143,10 +142,10 @@ public class BackgroundManager {
 	}
 
 	// Returns a random planet string code
-	private String getRandomPlanetString() {
-		int randomPlanet = random.nextInt((planetBGOStringList.size() - 1) + 1) + 0;
-		String randomPlanetString = planetBGOStringList.get(randomPlanet);
-		return randomPlanetString;
+	private ImageEnums getRandomPlanetString() {
+		int randomPlanet = random.nextInt((planetBGOEnumsList.size() - 1) + 1) + 0;
+		ImageEnums randomPlanetEnum = planetBGOEnumsList.get(randomPlanet);
+		return randomPlanetEnum;
 	}
 
 	// Initially loads all planets so they dont have to be reloaded from files.

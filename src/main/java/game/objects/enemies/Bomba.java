@@ -1,18 +1,24 @@
 package game.objects.enemies;
 
 
-import data.movement.Direction;
-import data.movement.PathFinder;
-import data.movement.Point;
+import data.audio.AudioEnums;
+import data.image.enums.EnemyEnums;
+import data.image.enums.ImageEnums;
 import game.managers.MissileManager;
+import game.movement.Direction;
+import game.movement.PathFinder;
+import game.movement.Point;
+import game.movement.RegularPathFinder;
 
 public class Bomba extends Enemy {
+	
+	private PathFinder missilePathFinder;
 
 	public Bomba(int x, int y, Point destination, Direction rotation, float scale, PathFinder pathFinder) {
-		super(x, y, destination, rotation, "Bomba", scale, pathFinder);
-		loadImage("Bomba");
-		setExhaustanimation("Bomba Large Exhaust");
-		setDeathAnimation("Bomba Destroyed Explosion");
+		super(x, y, destination, rotation, EnemyEnums.Bomba, scale, pathFinder);
+		loadImage(ImageEnums.Bomba);
+		setExhaustanimation(ImageEnums.Bomba_Normal_Exhaust);
+		setDeathAnimation(ImageEnums.Bomba_Destroyed_Explosion);
 		this.exhaustAnimation.setFrameDelay(3);
 		this.deathAnimation.setFrameDelay(2);
 		this.initBoardBlockSpeeds();
@@ -22,11 +28,12 @@ public class Bomba extends Enemy {
 		this.movementSpeed = 2;
 		this.hasAttack = true;
 		this.showHealthBar = true;
-		this.deathSound = "Large Ship Destroyed";
+		this.deathSound = AudioEnums.Large_Ship_Destroyed;
 		this.setVisible(true);
 		this.setRotation(rotation);
+		this.missilePathFinder = new RegularPathFinder();
 	}
-
+	
 	private void initBoardBlockSpeeds() {
 		this.boardBlockSpeeds.add(0, 1);
 		this.boardBlockSpeeds.add(1, 1);
@@ -43,22 +50,27 @@ public class Bomba extends Enemy {
 	// This function doesn't discern enemy types yet either, should be re-written
 	// when new enemies are introduced
 	public void fireAction() {
-//		if (missileManager == null) {
-//			missileManager = MissileManager.getInstance();
-//		}
-//
-//		if (currentAttackSpeedFrameCount >= attackSpeedFrameCount) {
+		if (missileManager == null) {
+			missileManager = MissileManager.getInstance();
+		}
+
+		if (currentAttackSpeedFrameCount >= attackSpeedFrameCount) {
 //			missileManager.addEnemyMissile(this.xCoordinate, this.yCoordinate + this.height / 2, "Bomba Projectile",
 //					"Bomba Projectile Explosion", Direction.LEFT, this.scale);
 //			missileManager.addEnemyMissile(this.xCoordinate, this.yCoordinate + this.height / 2, "Bomba Projectile",
 //					"Bomba Projectile Explosion", Direction.LEFT_UP, this.scale);
 //			missileManager.addEnemyMissile(this.xCoordinate, this.yCoordinate + this.height / 2, "Bomba Projectile",
 //					"Bomba Projectile Explosion", Direction.LEFT_DOWN, this.scale);
-//			currentAttackSpeedFrameCount = 0;
-//		}
-//		if (currentAttackSpeedFrameCount < attackSpeedFrameCount) {
-//			this.currentAttackSpeedFrameCount++;
-//		}
+
+			
+			missileManager.addEnemyMissile(this.xCoordinate, this.yCoordinate + this.height / 2, ImageEnums.Bomba_Missile,
+					ImageEnums.Bomba_Missile_Explosion, Direction.LEFT_DOWN, this.scale, missilePathFinder);
+			
+			currentAttackSpeedFrameCount = 0;
+		}
+		if (currentAttackSpeedFrameCount < attackSpeedFrameCount) {
+			this.currentAttackSpeedFrameCount++;
+		}
 	}
 	
 }

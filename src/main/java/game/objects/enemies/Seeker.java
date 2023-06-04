@@ -1,17 +1,22 @@
 package game.objects.enemies;
 
-import data.movement.Direction;
-import data.movement.PathFinder;
-import data.movement.Point;
+import data.audio.AudioEnums;
+import data.image.enums.EnemyEnums;
+import data.image.enums.ImageEnums;
 import game.managers.MissileManager;
+import game.movement.Direction;
+import game.movement.PathFinder;
+import game.movement.Point;
+import game.movement.RegularPathFinder;
 
 public class Seeker extends Enemy {
 
+	private PathFinder missilePathFinder;
 	public Seeker(int x, int y, Point destination, Direction rotation, float scale, PathFinder pathFinder) {
-		super(x, y, destination, rotation, "Seeker", scale, pathFinder);
-		loadImage("Seeker");
-		setExhaustanimation("Seeker Large Exhaust");
-		setDeathAnimation("Seeker Destroyed Explosion");
+		super(x, y, destination, rotation, EnemyEnums.Seeker, scale, pathFinder);
+		loadImage(ImageEnums.Seeker);
+		setExhaustanimation(ImageEnums.Seeker_Normal_Exhaust);
+		setDeathAnimation(ImageEnums.Seeker_Destroyed_Explosion);
 		this.exhaustAnimation.setFrameDelay(3);
 		this.deathAnimation.setFrameDelay(2);
 		this.initBoardBlockSpeeds();
@@ -21,9 +26,10 @@ public class Seeker extends Enemy {
 		this.movementSpeed = 2;
 		this.hasAttack = true;
 		this.showHealthBar = true;
-		this.deathSound = "Large Ship Destroyed";
+		this.deathSound = AudioEnums.Large_Ship_Destroyed;
 		this.setVisible(true);
 		this.setRotation(rotation);
+		this.missilePathFinder = new RegularPathFinder();
 	}
 
 	private void initBoardBlockSpeeds() {
@@ -48,7 +54,7 @@ public class Seeker extends Enemy {
 
 		if (currentAttackSpeedFrameCount >= attackSpeedFrameCount) {
 			missileManager.addEnemyMissile(this.xCoordinate, this.yCoordinate + calculateRandomWeaponHeightOffset(),
-					"Seeker Projectile", "Seeker Projectile Explosion", rotation, this.scale);
+					ImageEnums.Seeker_Missile, ImageEnums.Seeker_Missile_Explosion, rotation, this.scale, missilePathFinder);
 			currentAttackSpeedFrameCount = 0;
 		}
 		if (currentAttackSpeedFrameCount < attackSpeedFrameCount) {

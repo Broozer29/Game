@@ -1,0 +1,92 @@
+package data.image.enums;
+
+public enum ImageEnums {
+	
+	//// Menu Buttons
+	Start_Game,
+	User_One,
+	User_Two,
+	User_Three,
+	Select_User_Menu,
+	Test_Image,
+	User_Menu_To_Main_Menu,
+	
+	//// Animations
+	Impact_Explosion_One,
+	Player_Engine,
+	Destroyed_Explosion,
+	Destroyed_Explosion_Right,
+	Destroyed_Explosion_Left,
+	Destroyed_Explosion_Down,
+	Alien_Bomb_Explosion,
+	Seeker_Normal_Exhaust,
+	Seeker_Large_Exhaust,
+	Tazer_Normal_Exhaust,
+	Tazer_Large_Exhaust,
+	Energizer_Normal_Exhaust,
+	Energizer_Large_Exhaust,
+	Bulldozer_Normal_Exhaust,
+	Bulldozer_Large_Exhaust,
+	Flamer_Normal_Exhaust,
+	Flamer_Large_Exhaust,
+	Bomba_Normal_Exhaust,
+	Bomba_Large_Exhaust,
+	Seeker_Destroyed_Explosion,
+	Tazer_Destroyed_Explosion,
+	Energizer_Destroyed_Explosion,
+	Bomba_Destroyed_Explosion,
+	Flamer_Destroyed_Explosion,
+	Bulldozer_Destroyed_Explosion,
+	Default_Player_Engine,
+	Default_Player_Engine_Boosted,
+	Default_Player_Shield_Damage,
+	Player_Fireswirl,
+	Player_EMP,
+	
+	////Background Objects
+	Moon,
+	Lava_Planet,
+	Planet_One,
+	Planet_Two,
+	Planet_Three,
+	Mars_Planet,
+	Star,
+	
+	//Missile Animations
+	Seeker_Missile,
+	Tazer_Missile,
+	Energizer_Missile,
+	Bulldozer_Missile,
+	Flamer_Missile,
+	Bomba_Missile,
+	Seeker_Missile_Explosion,
+	Tazer_Missile_Explosion,
+	Energizer_Missile_Explosion,
+	Bulldozer_Missile_Explosion,
+	Flamer_Missile_Explosion,
+	Bomba_Missile_Explosion,
+	
+	//Missile Images
+	Player_Laserbeam,
+	Alien_Laserbeam,
+	
+	
+	//Friendly images
+	Player_Spaceship,
+	Player_Spaceship_Model_3,
+	
+	
+	//Enemy images
+	Alien_Bomb,
+	Seeker,
+	Tazer,
+	Energizer,
+	Bulldozer,
+	Flamer,
+	Bomba, 
+	Alien,
+	
+	//Unused?
+	Implosion
+	
+}

@@ -2,10 +2,10 @@ package game.managers;
 
 import java.io.IOException;
 
-import javax.sound.sampled.Clip;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
 import data.audio.AudioDatabase;
+import data.audio.AudioEnums;
 import data.audio.CustomAudioClip;
 
 public class AudioManager {
@@ -34,12 +34,12 @@ public class AudioManager {
 		return instance;
 	}
 
-	public void addAudio(String audioType) throws UnsupportedAudioFileException, IOException {
+	public void addAudio(AudioEnums audioType) throws UnsupportedAudioFileException, IOException {
 		playAudio(audioType);
 	}
 
 	// Play singular audios
-	private void playAudio(String audioType) throws UnsupportedAudioFileException, IOException {
+	private void playAudio(AudioEnums audioType) throws UnsupportedAudioFileException, IOException {
 		if (audioType != null) {
 			CustomAudioClip clip = audioDatabase.getAudioClip(audioType);
 			if (clip != null) {
@@ -50,7 +50,7 @@ public class AudioManager {
 	}
 
 	// Play the background music
-	public void playMusicAudio(String audioType) throws UnsupportedAudioFileException, IOException {
+	public void playMusicAudio(AudioEnums audioType) throws UnsupportedAudioFileException, IOException {
 		if (backGroundMusic == null) {
 			backGroundMusic = audioDatabase.getAudioClip(audioType);
 			if (!(backGroundMusic == null)) {

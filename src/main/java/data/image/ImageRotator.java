@@ -8,7 +8,7 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 
-import data.movement.Direction;
+import game.movement.Direction;
 
 
 public class ImageRotator {

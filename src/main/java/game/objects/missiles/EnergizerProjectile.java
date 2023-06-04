@@ -1,12 +1,13 @@
 package game.objects.missiles;
 
-import data.movement.Direction;
-import data.movement.PathFinder;
-import data.movement.Point;
+import data.image.enums.ImageEnums;
+import game.movement.Direction;
+import game.movement.PathFinder;
+import game.movement.Point;
 
 public class EnergizerProjectile extends Missile {
 
-	public EnergizerProjectile(int x, int y, Point destination, String missileType, String explosionType, Direction rotation,
+	public EnergizerProjectile(int x, int y, Point destination, ImageEnums missileType, ImageEnums explosionType, Direction rotation,
 			float scale, PathFinder pathFinder) {
 		super(x, y, destination, missileType, explosionType, rotation, scale, pathFinder);
 		this.missileDamage = (float) 7.5;

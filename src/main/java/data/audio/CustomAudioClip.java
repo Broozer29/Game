@@ -9,10 +9,10 @@ public class CustomAudioClip {
 	AudioLoader audioLoader = AudioLoader.getInstance();
 
 	Clip clip;
-	String clipType;
+	AudioEnums clipType;
 	boolean loop;
 
-	public CustomAudioClip(String clipType, boolean loop) {
+	public CustomAudioClip(AudioEnums clipType, boolean loop) {
 		this.clipType = clipType;
 		this.loop = loop;
 		initClip();
@@ -27,22 +27,20 @@ public class CustomAudioClip {
 
 		FloatControl volume = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
 		switch (clipType) {
-		case ("Player Laserbeam"):
+		case Player_Laserbeam:
 			volume.setValue(-4);
 			break;
-		case ("Destroyed Explosion"):
+		case Large_Ship_Destroyed:
 			volume.setValue(-2);
 			break;
-		case ("Alien Spaceship Destroyed"):
-			break;
-		case ("Alien Bomb Impact"):
+		case Alien_Bomb_Impact:
 			volume.setValue(-2);
 			break;
-		case ("DefaultMusic"):
+		case Apple_Holder_Remix:
 			volume.setValue(-2);
 			break;
-		case ("Default EMP"):
-			volume.setValue(-8);
+		case Default_EMP:
+			volume.setValue(-15);
 			break;
 		}
 	}
@@ -53,26 +51,24 @@ public class CustomAudioClip {
 
 	public boolean aboveThreshold() {
 		switch (clipType) {
-		case ("Large Ship Destroyed"):
+		case Large_Ship_Destroyed:
 			if (clip.getFramePosition() > 25000) {
 				return true;
 			} else
 				return false;
 
-		case ("Destroyed Explosion"):
+		case Destroyed_Explosion:
 			if (clip.getFramePosition() > 12000) {
 				return true;
 			} else
 				return false;
 
-		case ("Alien Bomb Impact"):
+		case Alien_Bomb_Impact:
 			if (clip.getFramePosition() > 25000) {
 				return true;
 			} else
 				return false;
-
 		}
-
 		return true;
 	}
 
@@ -108,7 +104,7 @@ public class CustomAudioClip {
 		this.clip.setFramePosition(framePosition);
 	}
 
-	public String getAudioType() {
+	public AudioEnums getAudioType() {
 		return this.clipType;
 	}
 }

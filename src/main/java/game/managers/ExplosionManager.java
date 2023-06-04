@@ -4,8 +4,8 @@ import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.List;
 
+import data.image.enums.ImageEnums;
 import game.objects.Explosion;
-import game.objects.missiles.Missile;
 import image.objects.SpriteAnimation;
 
 public class ExplosionManager {
@@ -28,7 +28,7 @@ public class ExplosionManager {
 		return instance;
 	}
 
-	public void addExplosion(int xCoordinate, int yCoordinate, String explosionType, float scale, float damage) {
+	public void addExplosion(int xCoordinate, int yCoordinate, ImageEnums explosionType, float scale, float damage) {
 		SpriteAnimation animation = new SpriteAnimation(xCoordinate, yCoordinate, explosionType, false, scale);
 		animation.setX(xCoordinate - animation.getWidth() / 2);
 		animation.setY(yCoordinate - animation.getHeight() / 2);

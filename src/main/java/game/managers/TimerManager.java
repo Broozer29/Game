@@ -3,7 +3,8 @@ package game.managers;
 import java.util.ArrayList;
 import java.util.List;
 
-import data.movement.Direction;
+import data.image.enums.EnemyEnums;
+import game.movement.Direction;
 import game.spawner.EnemySpawnTimer;
 
 public class TimerManager {
@@ -34,7 +35,7 @@ public class TimerManager {
 
 	// Creates timers for different purposes
 	// int duration, int timedelay (zelfde als game delay), waar de timer voor is
-	public EnemySpawnTimer createTimer(String enemyType, int amountOfSpawnAttempts, int timeBeforeActivation,
+	public EnemySpawnTimer createTimer(EnemyEnums enemyType, int amountOfSpawnAttempts, int timeBeforeActivation,
 			boolean loopable, Direction direction, float enemyScale) {
 		EnemySpawnTimer timer = new EnemySpawnTimer(timeBeforeActivation, amountOfSpawnAttempts, enemyType, loopable,
 				direction, enemyScale);
@@ -78,7 +79,7 @@ public class TimerManager {
 			levelManager = LevelSpawnerManager.getInstance();
 		}
 
-		String enemyType = timer.getTimerEnemy();
+		EnemyEnums enemyType = timer.getTimerEnemy();
 		int spawnAttempts = timer.getTimerSpawnAttempts();
 		Direction direction = timer.getDirection();
 		float enemyScale = timer.getEnemyScale();

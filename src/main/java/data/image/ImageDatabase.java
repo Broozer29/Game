@@ -12,6 +12,8 @@ import javax.imageio.ImageReader;
 import javax.imageio.stream.FileImageInputStream;
 import javax.swing.ImageIcon;
 
+import data.image.enums.ImageEnums;
+
 public class ImageDatabase {
 
 	private static ImageDatabase instance = new ImageDatabase();
@@ -141,189 +143,190 @@ public class ImageDatabase {
 	}
 
 	private void initFriendlies() {
-		this.spaceShipImage = imgLoader.getImage("Player Spaceship");
-		this.model3BetterUpgrade = imgLoader.getImage("Model 3 Better Model Upgrade");
+		this.spaceShipImage = imgLoader.getImage(ImageEnums.Player_Spaceship);
+		this.model3BetterUpgrade = imgLoader.getImage(ImageEnums.Player_Spaceship_Model_3);
 	}
 
 	private void initEnemies() {
-		this.alienSpaceshipImage = imgLoader.getImage("Default Alien Spaceship");
-		this.alienBombImage = imgLoader.getImage("Alien Bomb");
-		this.seekerImage = imgLoader.getImage("Seeker");
-		this.tazerImage = imgLoader.getImage("Tazer");
-		this.energizerImage = imgLoader.getImage("Energizer");
-		this.bulldozerImage = imgLoader.getImage("Bulldozer");
-		this.flamerImage = imgLoader.getImage("Flamer");
-		this.bombaImage = imgLoader.getImage("Bomba");
+		this.alienSpaceshipImage = imgLoader.getImage(ImageEnums.Alien);
+		this.alienBombImage = imgLoader.getImage(ImageEnums.Alien_Bomb);
+		this.seekerImage = imgLoader.getImage(ImageEnums.Seeker);
+		this.tazerImage = imgLoader.getImage(ImageEnums.Tazer);
+		this.energizerImage = imgLoader.getImage(ImageEnums.Energizer);
+		this.bulldozerImage = imgLoader.getImage(ImageEnums.Bulldozer);
+		this.flamerImage = imgLoader.getImage(ImageEnums.Flamer);
+		this.bombaImage = imgLoader.getImage(ImageEnums.Bomba);
 	}
 
 	private void initProjectiles() {
-		this.laserBeamImage = imgLoader.getImage("Player Laserbeam");
-		this.alienLaserbeamImage = imgLoader.getImage("Alien Laserbeam");
+		this.laserBeamImage = imgLoader.getImage(ImageEnums.Player_Laserbeam);
+		this.alienLaserbeamImage = imgLoader.getImage(ImageEnums.Alien_Laserbeam);
 	}
 
 	private void initMenuImages() {
-		this.startGameImage = imgLoader.getImage("StartGame");
-		this.userOneImage = imgLoader.getImage("UserOne");
-		this.userTwoImage = imgLoader.getImage("UserTwo");
-		this.userThreeImage = imgLoader.getImage("UserThree");
-		this.selectUserMenuImage = imgLoader.getImage("SelectUserMenu");
-		this.testImage = imgLoader.getImage("testimage");
-		this.userMenuToMainMenu = imgLoader.getImage("userMenuToMainMenu");
+		this.startGameImage = imgLoader.getImage(ImageEnums.Start_Game);
+		this.userOneImage = imgLoader.getImage(ImageEnums.User_One);
+		this.userTwoImage = imgLoader.getImage(ImageEnums.User_Two);
+		this.userThreeImage = imgLoader.getImage(ImageEnums.User_Three);
+		this.selectUserMenuImage = imgLoader.getImage(ImageEnums.Select_User_Menu);
+		this.testImage = imgLoader.getImage(ImageEnums.Test_Image);
+		this.userMenuToMainMenu = imgLoader.getImage(ImageEnums.User_Menu_To_Main_Menu);
 	}
 
 	private void initBackgroundObjects() {
-		this.moon = imgLoader.getImage("Moon");
-		this.lavaPlanet = imgLoader.getImage("Lava Planet");
-		this.planetOne = imgLoader.getImage("Planet One");
-		this.planetTwo = imgLoader.getImage("Planet Two");
-		this.planetThree = imgLoader.getImage("Planet Three");
-		this.marsPlanet = imgLoader.getImage("Mars Planet");
-		this.star = imgLoader.getImage("Star");
+		this.moon = imgLoader.getImage(ImageEnums.Moon);
+		this.lavaPlanet = imgLoader.getImage(ImageEnums.Lava_Planet);
+		this.planetOne = imgLoader.getImage(ImageEnums.Planet_One);
+		this.planetTwo = imgLoader.getImage(ImageEnums.Planet_Two);
+		this.planetThree = imgLoader.getImage(ImageEnums.Planet_Three);
+		this.marsPlanet = imgLoader.getImage(ImageEnums.Mars_Planet);
+		this.star = imgLoader.getImage(ImageEnums.Star);
 	}
 
-	public Image getImage(String imageType) {
+	public Image getImage(ImageEnums imageType) {
 		switch (imageType) {
-		case ("Player Spaceship"):
+		case Player_Spaceship:
 			return this.spaceShipImage;
-		case ("Player Laserbeam"):
+		case Player_Laserbeam:
 			return this.laserBeamImage;
-		case ("Default Alien Spaceship"):
+		case Alien:
 			return this.alienSpaceshipImage;
-		case ("Alien Bomb"):
+		case Alien_Bomb:
 			return this.alienBombImage;
-		case ("Alien Laserbeam"):
+		case Alien_Laserbeam:
 			return this.alienLaserbeamImage;
-		case ("StartGame"):
+		case Start_Game:
 			return this.startGameImage;
-		case ("UserOne"):
+		case User_One:
 			return this.userOneImage;
-		case ("UserTwo"):
+		case User_Two:
 			return this.userTwoImage;
-		case ("UserThree"):
+		case User_Three:
 			return this.userThreeImage;
-		case ("SelectUserMenu"):
+		case Select_User_Menu:
 			return this.selectUserMenuImage;
-		case ("userMenuToMainMenu"):
+		case User_Menu_To_Main_Menu:
 			return this.userMenuToMainMenu;
-		case ("Moon"):
+		case Moon:
 			return this.moon;
-		case ("Lava Planet"):
+		case Lava_Planet:
 			return this.lavaPlanet;
-		case ("Mars Planet"):
+		case Mars_Planet:
 			return this.marsPlanet;
-		case ("Planet One"):
+		case Planet_One:
 			return this.planetOne;
-		case ("Planet Two"):
+		case Planet_Two:
 			return this.planetTwo;
-		case ("Planet Three"):
+		case Planet_Three:
 			return this.planetThree;
-		case ("Star"):
+		case Star:
 			return this.star;
-		case ("Seeker"):
+		case Seeker:
 			return this.seekerImage;
-		case ("Tazer"):
+		case Tazer:
 			return this.tazerImage;
-		case ("Energizer"):
+		case Energizer:
 			return this.energizerImage;
-		case ("Bulldozer"):
+		case Bulldozer:
 			return this.bulldozerImage;
-		case ("Flamer"):
+		case Flamer:
 			return this.flamerImage;
-		case ("Bomba"):
+		case Bomba:
 			return this.bombaImage;
-		case("Model 3 Better Model Upgrade"):
+		case Player_Spaceship_Model_3:
 			return this.model3BetterUpgrade;
+		default:
+			return testImage;
 		}
-		return testImage;
 	}
 
-	public List<Image> getGif(String imageType) {
+	public List<Image> getGif(ImageEnums imageType) {
 		switch (imageType) {
-		case ("Impact Explosion One"):
+		case Impact_Explosion_One:
 			return this.impactExplosionOneFrames;
-		case ("Player Engine"):
+		case Player_Engine:
 			return this.playerEngineFrames;
-		case ("Destroyed Explosion"):
+		case Destroyed_Explosion:
 			return this.destroyedExplosionUpFrames;
-		case ("Destroyed Explosion Right"):
+		case Destroyed_Explosion_Right:
 			return this.destroyedExplosionRightFrames;
-		case ("Destroyed Explosion Down"):
+		case Destroyed_Explosion_Down:
 			return this.destroyedExplosionDownFrames;
-		case ("Destroyed Explosion Left"):
+		case Destroyed_Explosion_Left:
 			return this.destroyedExplosionLeftFrames;
-		case ("Alien Bomb Explosion"):
+		case Alien_Bomb_Explosion:
 			return this.alienBombExplosionFrames;
-		case ("Seeker Projectile"):
+		case Seeker_Missile:
 			return this.seekerProjectileFrames;
-		case ("Tazer Projectile"):
+		case Tazer_Missile:
 			return this.tazerProjectileFrames;
-		case ("Energizer Projectile"):
+		case Energizer_Missile:
 			return this.energizerProjectileFrames;
-		case ("Bulldozer Projectile"):
+		case Bulldozer_Missile:
 			return this.bulldozerProjectileFrames;
-		case ("Flamer Projectile"):
+		case Flamer_Missile:
 			return this.flamerProjectileFrames;
-		case ("Bomba Projectile"):
+		case Bomba_Missile:
 			return this.bombaProjectileFrames;
-		case ("Seeker Normal Exhaust"):
+		case Seeker_Normal_Exhaust:
 			return this.seekerNormalExhaustFrames;
-		case ("Seeker Large Exhaust"):
+		case Seeker_Large_Exhaust:
 			return this.seekerLargeExhaustFrames;
-		case ("Seeker Projectile Explosion"):
+		case Seeker_Missile_Explosion:
 			return this.seekerProjectileExplosion;
-		case ("Tazer Normal Exhaust"):
+		case Tazer_Normal_Exhaust:
 			return this.tazerNormalExhaustFrames;
-		case ("Tazer Large Exhaust"):
+		case Tazer_Large_Exhaust:
 			return this.tazerLargeExhaustFrames;
-		case ("Tazer Projectile Explosion"):
+		case Tazer_Missile_Explosion:
 			return this.tazerProjectileExplosion;
-		case ("Energizer Normal Exhaust"):
+		case Energizer_Normal_Exhaust:
 			return this.energizerNormalExhaustFrames;
-		case ("Energizer Large Exhaust"):
+		case Energizer_Large_Exhaust:
 			return this.energizerLargeExhaustFrames;
-		case ("Energizer Projectile Explosion"):
+		case Energizer_Missile_Explosion:
 			return this.energizerProjectileExplosion;
-		case ("Bulldozer Normal Exhaust"):
+		case Bulldozer_Normal_Exhaust:
 			return this.bulldozerNormalExhaustFrames;
-		case ("Bulldozer Large Exhaust"):
+		case Bulldozer_Large_Exhaust:
 			return this.bulldozerLargeExhaustFrames;
-		case ("Bulldozer Projectile Explosion"):
+		case Bulldozer_Missile_Explosion:
 			return this.bulldozerProjectileExplosion;
-		case ("Flamer Normal Exhaust"):
+		case Flamer_Normal_Exhaust:
 			return this.flamerNormalExhaustFrames;
-		case ("Flamer Large Exhaust"):
+		case Flamer_Large_Exhaust:
 			return this.flamerLargeExhaustFrames;
-		case ("Flamer Projectile Explosion"):
+		case Flamer_Missile_Explosion:
 			return this.flamerProjectileExplosion;
-		case ("Bomba Normal Exhaust"):
+		case Bomba_Normal_Exhaust:
 			return this.bombaNormalExhaustFrames;
-		case ("Bomba Large Exhaust"):
+		case Bomba_Large_Exhaust:
 			return this.bombaLargeExhaustFrames;
-		case ("Bomba Projectile Explosion"):
+		case Bomba_Missile_Explosion:
 			return this.bombaProjectileExplosion;
-		case("Implosion"):
+		case Implosion:
 			return this.implosionFrames;
-		case("Seeker Destroyed Explosion"):
+		case Seeker_Destroyed_Explosion:
 			return this.seekerDestroyedExplosionFrames;
-		case("Tazer Destroyed Explosion"):
+		case Tazer_Destroyed_Explosion:
 			return this.tazerDestroyedExplosionFrames;
-		case("Energizer Destroyed Explosion"):
+		case Energizer_Destroyed_Explosion:
 			return this.energizerDestroyedExplosionFrames;
-		case("Bomba Destroyed Explosion"):
+		case Bomba_Destroyed_Explosion:
 			return this.bombaDestroyedExplosionFrames;
-		case("Flamer Destroyed Explosion"):
+		case Flamer_Destroyed_Explosion:
 			return this.flamerDestroyedExplosionFrames;
-		case("Bulldozer Destroyed Explosion"):
+		case Bulldozer_Destroyed_Explosion:
 			return this.bulldozerDestroyedExplosionFrames;
-		case("Default Player Engine"):
+		case Default_Player_Engine:
 			return this.defaultPlayerEngine;
-		case("Default Player Engine Boosted"):
+		case Default_Player_Engine_Boosted:
 			return this.defaultPlayerEngineBoostedFrames;
-		case("Default Player Shield Damage"):
+		case Default_Player_Shield_Damage:
 			return this.defaultPlayerShieldDamage;
-		case("Player Fireswirl"):
+		case Player_Fireswirl:
 			return this.playerFireSwirlFrames;
-		case("Player EMP"):
+		case Player_EMP:
 			return this.playerEMPFrames;
 		}
 		return null;

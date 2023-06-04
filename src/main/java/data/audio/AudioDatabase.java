@@ -22,7 +22,7 @@ public class AudioDatabase {
 	// kunnen afspelen.
 
 	private int clipListSize = 10;
-	private List<String> clipsWithThresholds = new ArrayList<String>();
+	private List<AudioEnums> clipsWithThresholds = new ArrayList<AudioEnums>();
 
 	private List<CustomAudioClip> allActiveClips = new ArrayList<CustomAudioClip>();
 	private List<CustomAudioClip> defaultEMPClipList = new ArrayList<CustomAudioClip>();
@@ -33,7 +33,7 @@ public class AudioDatabase {
 	private List<CustomAudioClip> largeShipDestroyedClipList = new ArrayList<CustomAudioClip>();
 
 	
-	private Map<String, List<CustomAudioClip>> audioClipsMap = new HashMap<>();
+	private Map<AudioEnums, List<CustomAudioClip>> audioClipsMap = new HashMap<>();
 	
 	private AudioDatabase() {
 		initializeAudiofiles();
@@ -44,9 +44,9 @@ public class AudioDatabase {
 	}
 
 	private void initializeAudiofiles() {
-		clipsWithThresholds.add("Large Ship Destroyed");
-		clipsWithThresholds.add("Destroyed Explosion");
-		clipsWithThresholds.add("Alien Bomb Impact");
+		clipsWithThresholds.add(AudioEnums.Large_Ship_Destroyed);
+		clipsWithThresholds.add(AudioEnums.Destroyed_Explosion);
+		clipsWithThresholds.add(AudioEnums.Alien_Bomb_Impact);
 		try {
 			initMusic();
 			initSoundEffects();
@@ -80,46 +80,46 @@ public class AudioDatabase {
 	}
 
 	private void initMusic() throws LineUnavailableException {
-		DefaultMusic = new CustomAudioClip("DefaultMusic", true);
-		FuriWisdomOfRage = new CustomAudioClip("Furi - Wisdom of rage", true);
-		FuriMakeThisRight = new CustomAudioClip("Furi - Make this right", true);
-		FuriMyOnlyChance = new CustomAudioClip("Furi - My only chance", true);
-		ayasaTheReasonWhy = new CustomAudioClip("Ayasa - The reason why", true);
+		DefaultMusic = new CustomAudioClip(AudioEnums.Apple_Holder_Remix, true);
+		FuriWisdomOfRage = new CustomAudioClip(AudioEnums.Furi_Wisdowm_Of_Rage, true);
+		FuriMakeThisRight = new CustomAudioClip(AudioEnums.Furi_Make_This_Right , true);
+		FuriMyOnlyChance = new CustomAudioClip(AudioEnums.Furi_My_Only_Chance, true);
+		ayasaTheReasonWhy = new CustomAudioClip(AudioEnums.Ayasa_The_Reason_Why, true);
 
 	}
 
 	private void initSoundEffects() throws LineUnavailableException {
 		for (int i = 0; i < clipListSize; i++) {
-			CustomAudioClip laserBeamClip = new CustomAudioClip("Player Laserbeam", false);
+			CustomAudioClip laserBeamClip = new CustomAudioClip(AudioEnums.Player_Laserbeam, false);
 			laserBeamClipList.add(laserBeamClip);
 
-			CustomAudioClip destroyedExplosion = new CustomAudioClip("Destroyed Explosion", false);
+			CustomAudioClip destroyedExplosion = new CustomAudioClip(AudioEnums.Destroyed_Explosion, false);
 			destroyedExplosionClipList.add(destroyedExplosion);
 
-			CustomAudioClip alienSpaceshipDestroyed = new CustomAudioClip("Alien Spaceship Destroyed", false);
+			CustomAudioClip alienSpaceshipDestroyed = new CustomAudioClip(AudioEnums.Alien_Spaceship_Destroyed, false);
 			alienSpaceshipDestroyedClipList.add(alienSpaceshipDestroyed);
 
-			CustomAudioClip alienBombImpact = new CustomAudioClip("Alien Bomb Impact", false);
+			CustomAudioClip alienBombImpact = new CustomAudioClip(AudioEnums.Alien_Bomb_Impact, false);
 			alienBombImpactList.add(alienBombImpact);
 
-			CustomAudioClip largeShipDestroyedClip = new CustomAudioClip("Large Ship Destroyed", false);
+			CustomAudioClip largeShipDestroyedClip = new CustomAudioClip(AudioEnums.Large_Ship_Destroyed, false);
 			largeShipDestroyedClipList.add(largeShipDestroyedClip);
 
-			CustomAudioClip defaultEMP = new CustomAudioClip("Default EMP", false);
+			CustomAudioClip defaultEMP = new CustomAudioClip(AudioEnums.Default_EMP, false);
 			defaultEMPClipList.add(defaultEMP);
 		}
 		
-		audioClipsMap.put("Player Laserbeam", laserBeamClipList);
-		audioClipsMap.put("Destroyed Explosion", destroyedExplosionClipList);
-		audioClipsMap.put("Alien Spaceship Destroyed", alienSpaceshipDestroyedClipList);
-		audioClipsMap.put("Alien Bomb Impact", alienBombImpactList);
-		audioClipsMap.put("Large Ship Destroyed", largeShipDestroyedClipList);
-		audioClipsMap.put("Default EMP", defaultEMPClipList);
+		audioClipsMap.put(AudioEnums.Player_Laserbeam, laserBeamClipList);
+		audioClipsMap.put(AudioEnums.Destroyed_Explosion, destroyedExplosionClipList);
+		audioClipsMap.put(AudioEnums.Alien_Spaceship_Destroyed, alienSpaceshipDestroyedClipList);
+		audioClipsMap.put(AudioEnums.Alien_Bomb_Impact, alienBombImpactList);
+		audioClipsMap.put(AudioEnums.Large_Ship_Destroyed, largeShipDestroyedClipList);
+		audioClipsMap.put(AudioEnums.Default_EMP, defaultEMPClipList);
 
 	}
 	
 	//Return a Clip which is not running
-	private CustomAudioClip getAvailableClip(String clipType) {
+	private CustomAudioClip getAvailableClip(AudioEnums clipType) {
 	    List<CustomAudioClip> clipList = audioClipsMap.get(clipType);
 	    if (clipList != null) {
 	        for (CustomAudioClip clip : clipList) {
@@ -132,24 +132,25 @@ public class AudioDatabase {
 	    return null;
 	}
 
-	public CustomAudioClip getAudioClip(String audioType) {
+	public CustomAudioClip getAudioClip(AudioEnums audioType) {
 	    switch (audioType) {
-	        case ("Furi - Wisdom of rage"):
+	        case Furi_Wisdowm_Of_Rage:
 	            return getFuriWisdomOfRage();
-	        case ("Furi - My only chance"):
+	        case Furi_My_Only_Chance:
 	            return getFuriMyOnlyChance();
-	        case ("Furi - Make this right"):
+	        case Furi_Make_This_Right:
 	            return getFuriMakeThisRight();
-	        case ("DefaultMusic"):
+	        case Apple_Holder_Remix:
 	            return getDefaultMusic();
-	        case ("Player Laserbeam"):
-	        case ("Destroyed Explosion"):
-	        case ("Alien Spaceship Destroyed"):
-	        case ("Alien Bomb Impact"):
-	        case ("Large Ship Destroyed"):
-	        case ("Default EMP"):
+	        case Player_Laserbeam:
+	        case Destroyed_Explosion:
+	        case Alien_Spaceship_Destroyed:
+	        case Alien_Bomb_Impact:
+	        case Large_Ship_Destroyed:
+	        case Default_EMP:
+	        case Alien_Bomb_Destroyed:
 	            return getAvailableClip(audioType);
-	        case ("Ayasa - The reason why"):
+	        case Ayasa_The_Reason_Why:
 	            return getAyasatheReasonWhy();
 	    }
 	    return null;

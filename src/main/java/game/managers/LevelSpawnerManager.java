@@ -3,11 +3,12 @@ package game.managers;
 import java.util.ArrayList;
 import java.util.List;
 
-import data.DataClass;
-import data.movement.Direction;
-import data.movement.InitialEndPointCalculator;
-import data.movement.Point;
-import data.movement.RegularPathFinder;
+import data.image.enums.EnemyEnums;
+import game.movement.Direction;
+import game.movement.HomingPathFinder;
+import game.movement.PathFinder;
+import game.movement.Point;
+import game.movement.RegularPathFinder;
 import game.objects.enemies.Alien;
 import game.objects.enemies.AlienBomb;
 import game.objects.enemies.Bomba;
@@ -52,13 +53,6 @@ public class LevelSpawnerManager {
 		this.setLevel(this.level);
 	}
 
-	public void spawnBombs(int bombTriesAmount) {
-		for (int i = 0; i < bombTriesAmount; i++) {
-			int randomXCoordinate = spawningCoordinator.getRandomXBombEnemyCoordinate();
-			spawnAlienBomb(randomXCoordinate);
-		}
-	}
-
 	// Called every gameloop to see if enough aliens are dead to advance to the next
 	// level
 	private void checkLevelUpdate() {
@@ -77,44 +71,48 @@ public class LevelSpawnerManager {
 	}
 
 	private void saturateLevelOne() {
-		int angleModuloDivider = 2;
 		EnemySpawnTimer timer = null;
-//		timer = timerManager.createTimer("Alien Bomb", 20, 10000, true, "NaN", angleModuloDivider, 1);
-//		timerManager.addTimerToList(timer);
-
-		timer = timerManager.createTimer("Bomba", 1, 100, false, Direction.LEFT, 1);
+		timer = timerManager.createTimer(EnemyEnums.Alien_Bomb, 100, 100, false, Direction.UP, 1);
 		timerManager.addTimerToList(timer);
-//		timer = timerManager.createTimer("Flamer", 1, 4500, true, Direction.LEFT, 1);
+		timer = timerManager.createTimer(EnemyEnums.Alien_Bomb, 100, 100, false, Direction.DOWN, 1);
+		timerManager.addTimerToList(timer);
+
+//		timer = timerManager.createTimer(EnemyEnums.Bomba, 1, 100, false, Direction.LEFT, 1);
 //		timerManager.addTimerToList(timer);
-//		timer = timerManager.createTimer("Tazer", 2, 5000, true, Direction.LEFT, 1);
+//		timer = timerManager.createTimer(EnemyEnums.Flamer, 1, 100, false, Direction.LEFT, 1);
 //		timerManager.addTimerToList(timer);
-//		timer = timerManager.createTimer("Seeker", 2, 15000, true, Direction.DOWN, 1);
+//		timer = timerManager.createTimer(EnemyEnums.Tazer, 2, 5000, true, Direction.LEFT, 1);
 //		timerManager.addTimerToList(timer);
-//		timer = timerManager.createTimer("Seeker", 2, 15000, true, Direction.UP, 1);
+//		timer = timerManager.createTimer(EnemyEnums.Seeker, 1, 100, false, Direction.UP, 1);
 //		timerManager.addTimerToList(timer);
-//		timer = timerManager.createTimer("Seeker", 2, 15000, true, Direction.LEFT, 1);
+//		timer = timerManager.createTimer(EnemyEnums.Seeker, 1, 100, false, Direction.DOWN, 1);
 //		timerManager.addTimerToList(timer);
-//		timer = timerManager.createTimer("Seeker", 2, 15000, true, Direction.RIGHT, 1);
+//		timer = timerManager.createTimer(EnemyEnums.Seeker, 2, 100, true, Direction.UP, 1);
 //		timerManager.addTimerToList(timer);
-//		timer = timerManager.createTimer("Bulldozer", 1, 6000, true, Direction.LEFT, 1);
+//		timer = timerManager.createTimer(EnemyEnums.Seeker, 2, 15000, true, Direction.LEFT, 1);
 //		timerManager.addTimerToList(timer);
-//		timer = timerManager.createTimer("Energizer", 1, 5500, true, Direction.LEFT, 1);
+//		timer = timerManager.createTimer(EnemyEnums.Seeker, 2, 15000, true, Direction.RIGHT, 1);
+//		timerManager.addTimerToList(timer);
+//		timer = timerManager.createTimer(EnemyEnums.Bulldozer, 1, 6000, true, Direction.LEFT, 1);
+//		timerManager.addTimerToList(timer);
+//		timer = timerManager.createTimer(EnemyEnums.Energizer, 1, 5500, true, Direction.LEFT, 1);
 //		timerManager.addTimerToList(timer);
 	}
 
 	// Called by CustomTimers when they have to spawn an enemy
-	public void spawnEnemy(String enemyType, int amountOfAttempts, Direction direction, float scale) {
+	public void spawnEnemy(EnemyEnums enemyType, int amountOfAttempts, Direction direction, float scale) {
 		for (int i = 0; i < amountOfAttempts; i++) {
 			List<Integer> coordinatesList = getSpawnCoordinatesByDirection(direction);
 			int xCoordinate = coordinatesList.get(0);
 			int yCoordinate = coordinatesList.get(1);
 
-			if (enemyType.equals("Alien Bomb")) {
+			if (enemyType.equals(EnemyEnums.Alien_Bomb)) {
+				if (direction.equals(Direction.UP) || direction.equals(Direction.LEFT_UP )|| direction.equals(Direction.RIGHT_UP)) {
+					yCoordinate = spawningCoordinator.getRandomYDownBombEnemyCoordinate();
+				} else if (direction.equals(Direction.DOWN) || direction.equals(Direction.LEFT_DOWN )|| direction.equals(Direction.RIGHT_DOWN)) {
+					yCoordinate = spawningCoordinator.getRandomYUpBombEnemyCoordinate();
+				}
 				xCoordinate = spawningCoordinator.getRandomXBombEnemyCoordinate();
-				Direction bombDirection = spawningCoordinator.upOrDown();
-				yCoordinate = bombDirection.equals(Direction.UP) ? spawningCoordinator.getRandomYUpBombEnemyCoordinate()
-						: spawningCoordinator.getRandomYDownBombEnemyCoordinate();
-				enemyType = "Alien";
 				scale = 1;
 			}
 
@@ -123,6 +121,7 @@ public class LevelSpawnerManager {
 				enemyManager.addEnemy(enemy);
 			}
 		}
+
 	}
 
 	private List<Integer> getSpawnCoordinatesByDirection(Direction direction) {
@@ -172,45 +171,31 @@ public class LevelSpawnerManager {
 		return coordinatesList;
 	}
 
-	private void spawnAlienBomb(int xCoordinate) {
-		Direction direction = spawningCoordinator.upOrDown();
-		int yCoordinate = 0;
-		float scale = 1;
+	private Enemy createEnemy(EnemyEnums type, int xCoordinate, int yCoordinate, Direction rotation, float scale) {
 
-		if (direction.equals(Direction.UP)) {
-			yCoordinate = spawningCoordinator.getRandomYUpBombEnemyCoordinate();
-		} else if (direction.equals(Direction.DOWN)) {
-			yCoordinate = spawningCoordinator.getRandomYDownBombEnemyCoordinate();
-		}
-		RegularPathFinder regularPathFinder = new RegularPathFinder();
-		InitialEndPointCalculator initEndPointCalc = new InitialEndPointCalculator();
-		Point destination = initEndPointCalc.calculateEndPoint(xCoordinate, yCoordinate, direction);
-		Enemy enemy = new AlienBomb(xCoordinate, yCoordinate, destination, direction, scale, regularPathFinder);
-		if (validCoordinates(enemy)) {
-			enemyManager.addEnemy(enemy);
-		}
-	}
+		PathFinder regularPathFinder = new RegularPathFinder();
+		PathFinder homingPathFinder = new HomingPathFinder();
 
-	private Enemy createEnemy(String type, int xCoordinate, int yCoordinate, Direction rotation, float scale) {
-		RegularPathFinder regularPathFinder = new RegularPathFinder();
-		InitialEndPointCalculator initEndPointCalc = new InitialEndPointCalculator();
-		Point destination = initEndPointCalc.calculateEndPoint(xCoordinate, yCoordinate, rotation);
-
+		Point currentPoint = new Point(xCoordinate, yCoordinate);
+		Point regularDestination = regularPathFinder.calculateInitialEndpoint(currentPoint, rotation);
+		Point homingDestination = homingPathFinder.calculateInitialEndpoint(currentPoint, rotation);
 		switch (type) {
-		case "Alien":
-			return new Alien(xCoordinate, yCoordinate, destination, rotation, scale, regularPathFinder);
-		case "Bomba":
-			return new Bomba(xCoordinate, yCoordinate, destination, rotation, scale, regularPathFinder);
-		case "Flamer":
-			return new Flamer(xCoordinate, yCoordinate, destination, rotation, scale, regularPathFinder);
-		case "Bulldozer":
-			return new Bulldozer(xCoordinate, yCoordinate, destination, rotation, scale, regularPathFinder);
-		case "Energizer":
-			return new Energizer(xCoordinate, yCoordinate, destination, rotation, scale, regularPathFinder);
-		case "Seeker":
-			return new Seeker(xCoordinate, yCoordinate, destination, rotation, scale, regularPathFinder);
-		case "Tazer":
-			return new Tazer(xCoordinate, yCoordinate, destination, rotation, scale, regularPathFinder);
+		case Alien:
+			return new Alien(xCoordinate, yCoordinate, regularDestination, rotation, scale, regularPathFinder);
+		case Bomba:
+			return new Bomba(xCoordinate, yCoordinate, regularDestination, rotation, scale, regularPathFinder);
+		case Flamer:
+			return new Flamer(xCoordinate, yCoordinate, regularDestination, rotation, scale, regularPathFinder);
+		case Bulldozer:
+			return new Bulldozer(xCoordinate, yCoordinate, regularDestination, rotation, scale, regularPathFinder);
+		case Energizer:
+			return new Energizer(xCoordinate, yCoordinate, regularDestination, rotation, scale, regularPathFinder);
+		case Seeker:
+			return new Seeker(xCoordinate, yCoordinate, regularDestination, rotation, scale, regularPathFinder);
+		case Tazer:
+			return new Tazer(xCoordinate, yCoordinate, regularDestination, rotation, scale, regularPathFinder);
+		case Alien_Bomb:
+			return new AlienBomb(xCoordinate, yCoordinate, regularDestination, rotation, scale, regularPathFinder);
 		}
 		return null;
 	}

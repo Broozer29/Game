@@ -1,27 +1,29 @@
 package game.objects.enemies;
 
-import data.movement.Direction;
-import data.movement.PathFinder;
-import data.movement.Point;
-import game.managers.MissileManager;
+import data.audio.AudioEnums;
+import data.image.enums.EnemyEnums;
+import data.image.enums.ImageEnums;
+import game.movement.Direction;
+import game.movement.PathFinder;
+import game.movement.Point;
 
 public class AlienBomb extends Enemy {
 
 	public AlienBomb(int x, int y, Point destination, Direction rotation, float scale, PathFinder pathFinder) {
-		super(x, y, destination, rotation, "Alien Bomb", scale, pathFinder);
-		loadImage("Alien Bomb");
-		setDeathAnimation("Alien Bomb Explosion");
+		super(x, y, destination, rotation, EnemyEnums.Alien_Bomb, scale, pathFinder);
+		loadImage(ImageEnums.Alien_Bomb);
+		setDeathAnimation(ImageEnums.Alien_Bomb_Explosion);
 		this.deathAnimation.setFrameDelay(2);
 		this.initBoardBlockSpeeds();
 		this.hitPoints = 10;
 		this.maxHitPoints = 10;
 		this.attackSpeedFrameCount = 999999;
 		this.movementSpeed = 1;
-		this.deathSound = "Destroyed Explosion";
+		this.deathSound = AudioEnums.Destroyed_Explosion;
 		this.hasAttack = false;
 		this.showHealthBar = false;
 		this.setVisible(true);
-		this.setRotation(rotation);
+		this.setRotation(rotation);	
 	}
 
 	private void initBoardBlockSpeeds() {

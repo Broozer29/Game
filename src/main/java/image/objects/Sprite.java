@@ -6,7 +6,8 @@ import java.awt.Rectangle;
 import data.image.ImageDatabase;
 import data.image.ImageResizer;
 import data.image.ImageRotator;
-import data.movement.Direction;
+import data.image.enums.ImageEnums;
+import game.movement.Direction;
 
 public class Sprite {
 	ImageDatabase imgDatabase = ImageDatabase.getInstance();
@@ -29,7 +30,7 @@ public class Sprite {
 		visible = true;
 	}
 
-	protected void loadImage(String imageName) {
+	protected void loadImage(ImageEnums imageName) {
 		image = imgDatabase.getImage(imageName);
 		this.image = imageResizer.getScaledImage(image, scale);
 //		setImageToScale();

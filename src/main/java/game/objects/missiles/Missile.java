@@ -1,10 +1,11 @@
 package game.objects.missiles;
 
 import data.DataClass;
-import data.movement.Direction;
-import data.movement.Path;
-import data.movement.PathFinder;
-import data.movement.Point;
+import data.image.enums.ImageEnums;
+import game.movement.Direction;
+import game.movement.Path;
+import game.movement.PathFinder;
+import game.movement.Point;
 import image.objects.Sprite;
 import image.objects.SpriteAnimation;
 
@@ -14,8 +15,8 @@ public class Missile extends Sprite {
 	protected int movementSpeed;
 	protected SpriteAnimation animation;
 	protected SpriteAnimation explosionAnimation;
-	protected String missileType;
-	protected String explosionType;
+	protected ImageEnums missileType;
+	protected ImageEnums explosionType;
 	protected Direction rotation;
 	protected int missileStepsTaken;
 
@@ -23,8 +24,10 @@ public class Missile extends Sprite {
 	private Point destination;
 	private PathFinder pathFinder;
 	private Path currentPath;
+	private int lastUsedMovementSpeed;
+	private boolean hasLock;
 
-	public Missile(int x, int y, Point destination, String missileType, String explosionType, Direction rotation,
+	public Missile(int x, int y, Point destination, ImageEnums missileType, ImageEnums explosionType, Direction rotation,
 			float scale, PathFinder pathFinder) {
 		super(x, y, scale);
 		this.currentLocation = new Point(x, y);
@@ -34,21 +37,49 @@ public class Missile extends Sprite {
 		this.missileType = missileType;
 		this.missileStepsTaken = 0;
 		this.pathFinder = pathFinder;
+		this.hasLock = true;
 	}
 
 	public void move() {
-		if (currentPath == null || currentPath.getWaypoints().isEmpty()) {
+		if (currentPath == null || currentPath.getWaypoints().isEmpty() || movementSpeed != lastUsedMovementSpeed) {
 			// calculate a new path if necessary
-			currentPath = pathFinder.findPath(currentLocation, destination, movementSpeed);
+			currentPath = pathFinder.findPath(currentLocation, destination, movementSpeed, rotation);
+			lastUsedMovementSpeed = movementSpeed;
+			currentPath.setCurrentLocation(new Point(xCoordinate, yCoordinate));
 		}
 
-		// get the next point from the path
-		Point nextPoint = currentPath.getWaypoints().get(0);
+		// check if the missile has lost lock
+		boolean hasPassedPlayerOrNeverHadLock = false;
+		
+		if (pathFinder.shouldRecalculatePath(currentPath)) {
+			hasPassedPlayerOrNeverHadLock = true; // if it should recalculate path, it means it lost lock or never had one
+		}
+		
+		if(hasPassedPlayerOrNeverHadLock) {
+			hasLock = false;
+		}
 
-		// move towards the next point
+		// declare the nextPoint variable here, before the if-else block
+		Point nextPoint = null;
+
+		// only calculate next direction and update location if missile still has lock
+		if (hasLock) {
+			// Get the direction of the next step
+			Direction nextStep = pathFinder.getNextStep(currentLocation, currentPath, movementSpeed, rotation);
+			// Based on the direction, calculate the next point
+			nextPoint = calculateNextPoint(currentLocation, nextStep, movementSpeed);
+			currentPath.setFallbackDirection(nextStep);
+		} else {
+			// if missile lost lock, it should keep moving in the last direction
+			rotation = currentPath.getFallbackDirection();
+			nextPoint = calculateNextPoint(currentLocation, currentPath.getFallbackDirection(), movementSpeed);
+		}
+
+		// Update the current location
 		currentLocation = nextPoint;
 		this.xCoordinate = nextPoint.getX();
 		this.yCoordinate = nextPoint.getY();
+
 		this.missileStepsTaken += 1;
 		// if reached the next point, remove it from the path
 		if (currentLocation.equals(nextPoint)) {
@@ -58,7 +89,11 @@ public class Missile extends Sprite {
 		if (animation != null) {
 			updateAnimationCoordinates();
 		}
-		
+
+		updateVisibility();
+	}
+	
+	private void updateVisibility() {
 		switch (rotation) {
 		case UP:
 			if (yCoordinate <= 0) {
@@ -107,6 +142,48 @@ public class Missile extends Sprite {
 		}
 	}
 
+	//Needed for all PathFinders, so added to missiles
+	private Point calculateNextPoint(Point currentLocation, Direction direction, int stepSize) {
+		int x = currentLocation.getX();
+		int y = currentLocation.getY();
+
+		switch (direction) {
+		case UP:
+			y -= stepSize;
+			break;
+		case DOWN:
+			y += stepSize;
+			break;
+		case LEFT:
+			x -= stepSize;
+			break;
+		case RIGHT:
+			x += stepSize;
+			break;
+		case LEFT_UP:
+			x -= stepSize;
+			y -= stepSize;
+			break;
+		case LEFT_DOWN:
+			x -= stepSize;
+			y += stepSize;
+			break;
+		case RIGHT_UP:
+			x += stepSize;
+			y -= stepSize;
+			break;
+		case RIGHT_DOWN:
+			x += stepSize;
+			y += stepSize;
+			break;
+		case NONE:
+			// no movement
+			break;
+		}
+
+		return new Point(x, y);
+	}
+
 	// Sets the animations (the graphics of missile) to align with the missiles
 	// coordinates
 	private void updateAnimationCoordinates() {
@@ -124,19 +201,19 @@ public class Missile extends Sprite {
 		return this.movementSpeed;
 	}
 
-	public String getMissileType() {
+	public ImageEnums getMissileType() {
 		return this.missileType;
 	}
 
 	protected void setAnimation() {
-		if (!missileType.equals("Alien Laserbeam") && !missileType.equals("Player Laserbeam")) {
+		if (!missileType.equals(ImageEnums.Alien_Laserbeam) && !missileType.equals(ImageEnums.Player_Laserbeam)) {
 			if (missileType != null) {
 				this.animation = new SpriteAnimation(xCoordinate, yCoordinate, missileType, true, scale);
 				this.explosionAnimation = new SpriteAnimation(xCoordinate, yCoordinate, explosionType, false, scale);
 			}
 		} else {
-			this.animation = new SpriteAnimation(xCoordinate, yCoordinate, "Impact Explosion One", false, scale);
-			this.explosionAnimation = new SpriteAnimation(xCoordinate, yCoordinate, "Impact Explosion One", false,
+			this.animation = new SpriteAnimation(xCoordinate, yCoordinate, ImageEnums.Impact_Explosion_One, false, scale);
+			this.explosionAnimation = new SpriteAnimation(xCoordinate, yCoordinate, ImageEnums.Impact_Explosion_One, false,
 					scale);
 		}
 		this.animation.rotateAnimetion(rotation);

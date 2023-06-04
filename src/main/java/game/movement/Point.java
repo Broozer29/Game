@@ -1,4 +1,4 @@
-package data.movement;
+package game.movement;
 
 public class Point {
 	private int x;

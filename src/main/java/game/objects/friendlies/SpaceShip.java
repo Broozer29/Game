@@ -12,14 +12,18 @@ import java.util.Set;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
 import data.DataClass;
-import data.movement.Direction;
+import data.audio.AudioEnums;
+import data.image.enums.ImageEnums;
 import game.managers.AnimationManager;
 import game.managers.AudioManager;
 import game.managers.FriendlyManager;
 import game.managers.FriendlyObjectManager;
 import game.managers.MissileManager;
-import image.objects.SpriteAnimation;
+import game.movement.Direction;
+import game.movement.PathFinder;
+import game.movement.RegularPathFinder;
 import image.objects.Sprite;
+import image.objects.SpriteAnimation;
 
 public class SpaceShip extends Sprite {
 
@@ -37,7 +41,7 @@ public class SpaceShip extends Sprite {
 	private float maxShieldHitPoints;
 	private int movementSpeed;
 
-	private String currentExhaust;
+	private ImageEnums currentExhaust;
 	private SpriteAnimation exhaustAnimation;
 	private float homingRectangleResizeScale;
 	private int homingRectangleXCoordinate;
@@ -45,9 +49,9 @@ public class SpaceShip extends Sprite {
 	private int homingRectangleWidth;
 	private int homingRectangleHeight;
 
-	private String defaultEngineType = "Default Player Engine";
-	private String boostedEngineType = "Default Player Engine Boosted";
-	private String playerEMPType = "Player EMP";
+	private ImageEnums defaultEngineType = ImageEnums.Default_Player_Engine;
+	private ImageEnums boostedEngineType = ImageEnums.Default_Player_Engine_Boosted;
+	private ImageEnums playerEMPType = ImageEnums.Player_EMP;
 
 	private MissileManager missileManager = MissileManager.getInstance();
 	private AudioManager audioManager = AudioManager.getInstance();
@@ -55,15 +59,16 @@ public class SpaceShip extends Sprite {
 
 	private List<SpriteAnimation> playerFollowingAnimations = new ArrayList<SpriteAnimation>();
 	private List<FriendlyObject> playerFollowingObjects = new ArrayList<FriendlyObject>();
+	private PathFinder missilePathFinder;
 
-	public SpaceShip(String shipImage, String exhaustImageType) {
+	public SpaceShip(ImageEnums shipImage, ImageEnums exhaustImageType) {
 		super(DataClass.getInstance().getWindowWidth() / 10, DataClass.getInstance().getWindowHeight() / 2, 1);
 		loadImage(shipImage);
 		setExhaustAnimation(exhaustImageType);
 		initShip();
 	}
 
-	protected void setExhaustAnimation(String imageType) {
+	protected void setExhaustAnimation(ImageEnums imageType) {
 		this.exhaustAnimation = new SpriteAnimation(xCoordinate, yCoordinate, imageType, true, scale);
 		currentExhaust = imageType;
 	}
@@ -88,12 +93,13 @@ public class SpaceShip extends Sprite {
 		movementSpeed = 4;
 		specialAttackSpeed = 100;
 		currentSpecialAttackFrame = 100;
+		this.missilePathFinder = new RegularPathFinder();
 	}
 
 	public void addShieldDamageAnimation() {
 		if (playerFollowingAnimations.size() < 10) {
 			SpriteAnimation shieldAnimation = new SpriteAnimation(this.xCoordinate, this.yCoordinate,
-					"Default Player Shield Damage", false, 1);
+					ImageEnums.Default_Player_Shield_Damage, false, 1);
 
 			shieldAnimation.setFrameDelay(2);
 
@@ -192,9 +198,9 @@ public class SpaceShip extends Sprite {
 
 		if (currentAttackFrame >= attackSpeed) {
 			try {
-				this.audioManager.addAudio(friendlyManager.getPlayerMissileType());
+				this.audioManager.addAudio(AudioEnums.Player_Laserbeam);
 				this.missileManager.firePlayerMissile(xCoordinate + width, yCoordinate + (height / 2) - 5,
-						friendlyManager.getPlayerMissileType(), "Impact Explosion One", Direction.RIGHT, 1);
+						friendlyManager.getPlayerMissileType(), ImageEnums.Impact_Explosion_One, Direction.RIGHT, 1, missilePathFinder);
 				this.currentAttackFrame = 0;
 
 			} catch (UnsupportedAudioFileException | IOException e) {
@@ -220,7 +226,7 @@ public class SpaceShip extends Sprite {
 			specialAttackAnimation.addYOffset(-(specialAttackAnimation.getHeight() / 2));
 
 			try {
-				AudioManager.getInstance().addAudio("Default EMP");
+				AudioManager.getInstance().addAudio(AudioEnums.Default_EMP);
 				playerFollowingObjects.add(specialAttack);
 				FriendlyObjectManager.getInstance().addActiveFriendlyObject(specialAttack);
 			} catch (UnsupportedAudioFileException | IOException e) {
@@ -230,11 +236,11 @@ public class SpaceShip extends Sprite {
 		}
 	}
 
-	private void swapExhaust(String newEngineType) {
+	private void swapExhaust(ImageEnums newEngineType) {
 		if (!newEngineType.equals(currentExhaust)) {
 			float scale = 1;
 			int xOffset = 0;
-			if (currentExhaust.contains("Boosted")) {
+			if (currentExhaust.equals(ImageEnums.Default_Player_Engine_Boosted)) {
 				scale = 1;
 				xOffset = 0;
 			} else {

@@ -5,8 +5,9 @@ import java.awt.event.ActionListener;
 
 import javax.swing.Timer;
 
-import data.movement.Direction;
+import data.image.enums.EnemyEnums;
 import game.managers.TimerManager;
+import game.movement.Direction;
 
 public class EnemySpawnTimer implements ActionListener {
 
@@ -15,7 +16,7 @@ public class EnemySpawnTimer implements ActionListener {
 	// Attributes required for spawning enemies
 	private int amountOfSpawnAttempts;
 	private Direction direction;
-	private String timerEnemyType;
+	private EnemyEnums timerEnemyType;
 	private float enemyScale;
 
 	// Attributes required for timing
@@ -25,7 +26,7 @@ public class EnemySpawnTimer implements ActionListener {
 	private Timer timer;
 	private String status;
 
-	public EnemySpawnTimer(int timeBeforeActivation, int amountOfSpawnAttempts, String timerEnemyType, boolean loopable,
+	public EnemySpawnTimer(int timeBeforeActivation, int amountOfSpawnAttempts, EnemyEnums timerEnemyType, boolean loopable,
 			Direction direction, float enemyScale) {
 		this.enemyScale = enemyScale;
 		this.timerEnemyType = timerEnemyType;
@@ -76,7 +77,7 @@ public class EnemySpawnTimer implements ActionListener {
 		return this.status;
 	}
 
-	public String getTimerEnemy() {
+	public EnemyEnums getTimerEnemy() {
 		return this.timerEnemyType;
 	}
 

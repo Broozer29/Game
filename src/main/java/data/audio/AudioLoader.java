@@ -21,7 +21,7 @@ public class AudioLoader {
 		return instance;
 	}
 
-	public Clip getSoundfile(String audioFile) throws LineUnavailableException {
+	public Clip getSoundfile(AudioEnums audioFile) throws LineUnavailableException {
 		try {
 			Clip clip = AudioSystem.getClip();
 			AudioInputStream audioInputStream = AudioSystem
@@ -36,30 +36,33 @@ public class AudioLoader {
 		return null;
 	}
 
-	private String convertAudioToFileString(String audioFile) {
+	private String convertAudioToFileString(AudioEnums audioFile) {
 		switch (audioFile) {
-		case ("Player Laserbeam"):
+		case Player_Laserbeam:
 			return "src/resources/audio/laserbeam1.wav";
-		case ("Destroyed Explosion"):
+		case Destroyed_Explosion:
 			return "src/resources/audio/Destroyed Explosion.wav";
-		case ("Alien Spaceship Destroyed"):
+		case Alien_Spaceship_Destroyed:
 			return "src/resources/audio/Alien Spaceship Destroyed.wav";
-		case ("Furi - Make this right"):
+		case Furi_Make_This_Right:
 			return "src/resources/audio/music/Furi - Make this right.wav";
-		case ("Furi - Wisdom of rage"):
+		case Furi_Wisdowm_Of_Rage:
 			return "src/resources/audio/music/Furi - Wisdom of rage.wav";
-		case ("Furi - My only chance"):
+		case Furi_My_Only_Chance:
 			return "src/resources/audio/music/Furi - My only chance.wav";
-		case ("Ayasa - The reason why"):
+		case Ayasa_The_Reason_Why:
 			return "src/resources/audio/music/Ayasa - The reason why.wav";
-		case ("DefaultMusic"):
+		case Apple_Holder_Remix:
 			return "src/resources/audio/music/defaultmusic.wav";
-		case("Alien Bomb Impact"):
+		case Alien_Bomb_Impact:
 			return "src/resources/audio/Alien Bomb Impact.wav";
-		case("Large Ship Destroyed"):
+		case Large_Ship_Destroyed:
 			return "src/resources/audio/Large Ship Destroyed.wav";
-		case("Default EMP"):
+		case Default_EMP:
 			return "src/resources/audio/Default EMP.wav";
+		case Alien_Bomb_Destroyed:
+			// DUPLICATE
+			return "src/resources/audio/Destroyed Explosion.wav";
 		}
 		return null;
 	}

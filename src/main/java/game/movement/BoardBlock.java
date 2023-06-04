@@ -1,4 +1,4 @@
-package data.movement;
+package game.movement;
 
 import java.awt.Rectangle;
 

@@ -18,6 +18,7 @@ import javax.swing.Timer;
 
 import data.DataClass;
 import data.audio.AudioDatabase;
+import data.audio.AudioEnums;
 import game.managers.AnimationManager;
 import game.managers.AudioManager;
 import game.managers.BackgroundManager;
@@ -33,17 +34,17 @@ import game.objects.Explosion;
 import game.objects.enemies.Enemy;
 import game.objects.friendlies.FriendlyObject;
 import game.objects.missiles.Missile;
-import image.objects.SpriteAnimation;
 import image.objects.Sprite;
+import image.objects.SpriteAnimation;
 import menuscreens.BoardManager;
 
 public class GameBoard extends JPanel implements ActionListener {
 
 	private Timer timer;
 	private boolean ingame;
-	private String currentMusic = "DefaultMusic";
+//	private String currentMusic = "DefaultMusic";
 //	private String currentMusic = "Ayasa - The reason why";
-//	private String currentMusic = "";
+	private AudioEnums currentMusic = AudioEnums.Furi_Wisdowm_Of_Rage;
 
 	private DataClass data = DataClass.getInstance();
 	private AudioDatabase audioDatabase = AudioDatabase.getInstance();

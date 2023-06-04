@@ -1,19 +1,22 @@
 package game.objects.enemies;
 
-import java.util.List;
-
-import data.movement.Direction;
-import data.movement.PathFinder;
-import data.movement.Point;
+import data.audio.AudioEnums;
+import data.image.enums.EnemyEnums;
+import data.image.enums.ImageEnums;
 import game.managers.MissileManager;
+import game.movement.Direction;
+import game.movement.PathFinder;
+import game.movement.Point;
+import game.movement.RegularPathFinder;
 
 public class Energizer extends Enemy {
+	private PathFinder missilePathFinder;
 
 	public Energizer(int x, int y, Point destination, Direction rotation, float scale, PathFinder pathFinder) {
-		super(x, y, destination, rotation, "Energizer", scale, pathFinder);
-		loadImage("Energizer");
-		setExhaustanimation("Energizer Large Exhaust");
-		setDeathAnimation("Energizer Destroyed Explosion");
+		super(x, y, destination, rotation, EnemyEnums.Energizer, scale, pathFinder);
+		loadImage(ImageEnums.Energizer);
+		setExhaustanimation(ImageEnums.Energizer_Normal_Exhaust);
+		setDeathAnimation(ImageEnums.Energizer_Destroyed_Explosion);
 		this.exhaustAnimation.setFrameDelay(3);
 		this.deathAnimation.setFrameDelay(2);
 		this.initBoardBlockSpeeds();
@@ -23,9 +26,10 @@ public class Energizer extends Enemy {
 		this.movementSpeed = 2;
 		this.hasAttack = true;
 		this.showHealthBar = true;
-		this.deathSound = "Large Ship Destroyed";
+		this.deathSound = AudioEnums.Large_Ship_Destroyed;
 		this.setVisible(true);
 		this.setRotation(rotation);
+		this.missilePathFinder = new RegularPathFinder();
 	}
 	
 	
@@ -52,7 +56,7 @@ public class Energizer extends Enemy {
 
 		if (currentAttackSpeedFrameCount >= attackSpeedFrameCount) {
 			missileManager.addEnemyMissile(this.xCoordinate, this.yCoordinate + calculateRandomWeaponHeightOffset(),
-					"Energizer Projectile", "Energizer Projectile Explosion", rotation, this.scale);
+					ImageEnums.Energizer_Missile, ImageEnums.Energizer_Missile_Explosion, rotation, this.scale, missilePathFinder);
 			currentAttackSpeedFrameCount = 0;
 		}
 		if (currentAttackSpeedFrameCount < attackSpeedFrameCount) {

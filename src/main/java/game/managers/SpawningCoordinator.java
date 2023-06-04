@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Random;
 
 import data.DataClass;
-import data.movement.Direction;
+import game.movement.Direction;
 import game.objects.BackgroundObject;
 import game.objects.enemies.Enemy;
 
@@ -125,12 +125,13 @@ public class SpawningCoordinator {
 				+ minimumBombEnemyWidthRange;
 	}
 
-	public int getRandomYUpBombEnemyCoordinate() {
+	//Recently swapped
+	public int getRandomYDownBombEnemyCoordinate() {
 		return random.nextInt((maximumBombEnemyHeightUpRange - minimumBombEnemyHeightUpRange) + 1)
 				+ minimumBombEnemyHeightUpRange;
 	}
 
-	public int getRandomYDownBombEnemyCoordinate() {
+	public int getRandomYUpBombEnemyCoordinate() {
 		return random.nextInt((maximumBombEnemyHeightDownRange - minimumBombEnemyHeightDownRange) + 1)
 				+ minimumBombEnemyHeightDownRange;
 	}

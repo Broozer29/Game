@@ -8,13 +8,16 @@ import java.util.Random;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
 import data.DataClass;
-import data.movement.Direction;
-import data.movement.Path;
-import data.movement.PathFinder;
-import data.movement.Point;
+import data.audio.AudioEnums;
+import data.image.enums.EnemyEnums;
+import data.image.enums.ImageEnums;
 import game.managers.AnimationManager;
 import game.managers.AudioManager;
 import game.managers.MissileManager;
+import game.movement.Direction;
+import game.movement.Path;
+import game.movement.PathFinder;
+import game.movement.Point;
 import image.objects.Sprite;
 import image.objects.SpriteAnimation;
 
@@ -38,18 +41,19 @@ public class Enemy extends Sprite {
 	private PathFinder pathFinder;
 	private Path currentPath;
 	protected int movementSpeed;
+	private int lastUsedMovementSpeed;
 	protected int currentBoardBlock;
 
 	// Enemy miscellanious attributes
 	protected Direction rotation;
-	protected String enemyType;
-	protected String deathSound;
+	protected EnemyEnums enemyType;
+	protected AudioEnums deathSound;
 	protected boolean showHealthBar;
 	protected List<Integer> boardBlockSpeeds = new ArrayList<Integer>();
 	protected SpriteAnimation exhaustAnimation = null;
 	protected SpriteAnimation deathAnimation;
 
-	public Enemy(int x, int y, Point destination, Direction rotation, String enemyType, float scale,
+	public Enemy(int x, int y, Point destination, Direction rotation, EnemyEnums enemyType, float scale,
 			PathFinder pathFinder) {
 		super(x, y, scale);
 		this.enemyType = enemyType;
@@ -60,11 +64,11 @@ public class Enemy extends Sprite {
 		this.pathFinder = pathFinder;
 	}
 
-	protected void setExhaustanimation(String imageType) {
+	protected void setExhaustanimation(ImageEnums imageType) {
 		this.exhaustAnimation = new SpriteAnimation(xCoordinate, yCoordinate, imageType, true, scale);
 	}
 
-	protected void setDeathAnimation(String imageType) {
+	protected void setDeathAnimation(ImageEnums imageType) {
 		this.deathAnimation = new SpriteAnimation(xCoordinate, yCoordinate, imageType, false, scale);
 	}
 
@@ -89,63 +93,50 @@ public class Enemy extends Sprite {
 		}
 	}
 
+	boolean changedMovementSpeed = false;
+
 	public void updateBoardBlock() {
 		int boardBlockSize = DataClass.getInstance().getWindowWidth() / 8;
 		if (xCoordinate >= 0 && xCoordinate <= (boardBlockSize * 1)) {
 			this.movementSpeed = boardBlockSpeeds.get(0);
+			changedMovementSpeed = true;
 		} else if (xCoordinate >= (boardBlockSize * 1) && xCoordinate <= (boardBlockSize * 2)) {
 			this.movementSpeed = boardBlockSpeeds.get(1);
+			changedMovementSpeed = true;
 		} else if (xCoordinate >= (boardBlockSize * 2) && xCoordinate <= (boardBlockSize * 3)) {
 			this.movementSpeed = boardBlockSpeeds.get(2);
+			changedMovementSpeed = true;
 		} else if (xCoordinate >= (boardBlockSize * 3) && xCoordinate <= (boardBlockSize * 4)) {
 			this.movementSpeed = boardBlockSpeeds.get(3);
+			changedMovementSpeed = true;
 		} else if (xCoordinate >= (boardBlockSize * 4) && xCoordinate <= (boardBlockSize * 5)) {
 			this.movementSpeed = boardBlockSpeeds.get(4);
+			changedMovementSpeed = true;
 		} else if (xCoordinate >= (boardBlockSize * 5) && xCoordinate <= (boardBlockSize * 6)) {
 			this.movementSpeed = boardBlockSpeeds.get(5);
+			changedMovementSpeed = true;
 		} else if (xCoordinate >= (boardBlockSize * 6) && xCoordinate <= (boardBlockSize * 7)) {
 			this.movementSpeed = boardBlockSpeeds.get(6);
+			changedMovementSpeed = true;
 		} else if (xCoordinate >= (boardBlockSize * 7) && xCoordinate <= (boardBlockSize * 8)) {
 			this.movementSpeed = boardBlockSpeeds.get(7);
+			changedMovementSpeed = true;
 		} else if (xCoordinate > boardBlockSize * 8) {
+			changedMovementSpeed = true;
 			this.movementSpeed = boardBlockSpeeds.get(7);
 		}
+
 	}
 
-	// Called every loop to move the enemy
-//	public void move() {
-//		List<Integer> newCoordsList = trajectory.getPathCoordinates(xCoordinate, yCoordinate);
-//		xCoordinate = newCoordsList.get(0);
-//		yCoordinate = newCoordsList.get(1);
-//		if (direction.contains("Up")) {
-//			if (yCoordinate <= 0) {
-//				this.setVisible(false);
-//			}
-//		} else if (direction.contains("Down")) {
-//			if (yCoordinate >= DataClass.getInstance().getWindowHeight()) {
-//				this.setVisible(false);
-//			}
-//		} else if (direction.contains("Left")) {
-//			if (xCoordinate < 0) {
-//				this.setVisible(false);
-//			}
-//		} else if (direction.contains("Right")) {
-//			if (xCoordinate > DataClass.getInstance().getWindowWidth()) {
-//				this.setVisible(false);
-//			}
-//		}
-//		if (this.exhaustAnimation != null) {
-//			this.exhaustAnimation.setX(this.getCenterXCoordinate() + (this.getWidth() / 2));
-//			this.exhaustAnimation.setY(this.getCenterYCoordinate() - (exhaustAnimation.getHeight() / 2));
-//		}
-//	}
-
 	public void move() {
-		if (currentPath == null || currentPath.getWaypoints().isEmpty()) {
+		if (currentPath == null || currentPath.getWaypoints().isEmpty() || movementSpeed != lastUsedMovementSpeed
+				|| pathFinder.shouldRecalculatePath(currentPath)) {
 			// calculate a new path if necessary
-			currentPath = pathFinder.findPath(currentLocation, destination, movementSpeed);
+			currentPath = pathFinder.findPath(currentLocation, destination, movementSpeed, rotation);
+			lastUsedMovementSpeed = movementSpeed;
 		}
 
+		currentPath.updateCurrentLocation(currentLocation);
 		// get the next point from the path
 		Point nextPoint = currentPath.getWaypoints().get(0);
 
@@ -154,11 +145,16 @@ public class Enemy extends Sprite {
 		this.xCoordinate = nextPoint.getX();
 		this.yCoordinate = nextPoint.getY();
 
+//		System.out.println(xCoordinate);
+//		System.out.println(yCoordinate);
+//		System.out.println(rotation);
+//		System.out.println("  ");
+
 		// if reached the next point, remove it from the path
 		if (currentLocation.equals(nextPoint)) {
 			currentPath.getWaypoints().remove(0);
 		}
-		
+
 		if (this.exhaustAnimation != null) {
 			this.exhaustAnimation.setX(this.getCenterXCoordinate() + (this.getWidth() / 2));
 			this.exhaustAnimation.setY(this.getCenterYCoordinate() - (exhaustAnimation.getHeight() / 2));
@@ -166,14 +162,16 @@ public class Enemy extends Sprite {
 
 		switch (rotation) {
 		case UP:
-			if (yCoordinate <= 0) {
-				this.setVisible(false);
-			}
+//			if (yCoordinate <= 0) {
+//				System.out.println("Deleted it from Upside");
+//				this.setVisible(false);
+//			}
 			break;
 		case DOWN:
-			if (yCoordinate >= DataClass.getInstance().getWindowHeight()) {
-				this.setVisible(false);
-			}
+//			if (yCoordinate >= DataClass.getInstance().getWindowHeight()) {
+//				System.out.println("Deleted it from downside");
+//				this.setVisible(false);
+//			}
 			break;
 		case LEFT:
 			if (xCoordinate < 0) {
@@ -252,7 +250,7 @@ public class Enemy extends Sprite {
 		return this.exhaustAnimation;
 	}
 
-	public String getEnemyType() {
+	public EnemyEnums getEnemyType() {
 		return this.enemyType;
 	}
 

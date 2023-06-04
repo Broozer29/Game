@@ -3,8 +3,8 @@ package game.managers;
 import java.util.ArrayList;
 import java.util.List;
 
+import data.image.enums.ImageEnums;
 import game.objects.enemies.Enemy;
-import game.objects.friendlies.SpaceShip;
 import image.objects.SpriteAnimation;
 
 public class AnimationManager {
@@ -47,17 +47,17 @@ public class AnimationManager {
 		this.lowerAnimationList.add(animation);
 	}
 
-	public void createAndAddUpperAnimation(int xCoordinate, int yCoordinate, String animationType, boolean infiniteLoop,
+	public void createAndAddUpperAnimation(int xCoordinate, int yCoordinate, ImageEnums animationType, boolean infiniteLoop,
 			float scale) {
 		this.upperAnimationList.add(createAnimation(xCoordinate, yCoordinate, animationType, infiniteLoop, scale));
 	}
 
-	public void createAnddAddLowerAnimation(int xCoordinate, int yCoordinate, String animationType,
+	public void createAnddAddLowerAnimation(int xCoordinate, int yCoordinate, ImageEnums animationType,
 			boolean infiniteLoop, float scale) {
 		this.lowerAnimationList.add(createAnimation(xCoordinate, yCoordinate, animationType, infiniteLoop, scale));
 	}
 
-	public SpriteAnimation createAnimation(int xCoordinate, int yCoordinate, String animationType, boolean infiniteLoop,
+	public SpriteAnimation createAnimation(int xCoordinate, int yCoordinate, ImageEnums animationType, boolean infiniteLoop,
 			float scale) {
 		return new SpriteAnimation(xCoordinate, yCoordinate, animationType, infiniteLoop, scale);
 	}
