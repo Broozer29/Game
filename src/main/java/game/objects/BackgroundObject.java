@@ -2,9 +2,10 @@
 package game.objects;
 
 import java.awt.Image;
+import java.util.Random;
 
 import data.image.enums.BGOEnums;
-import data.image.enums.ImageEnums;
+import game.movement.Direction;
 import image.objects.Sprite;
 
 public class BackgroundObject extends Sprite {
@@ -28,6 +29,15 @@ public class BackgroundObject extends Sprite {
 		this.bgoType = bgoType;
 	}
 	
+	public void rotateRandomDegrees() {
+		rotateImage(selectRandomSpaceTheme());
+	}
 	
+	private Direction selectRandomSpaceTheme() {
+		Direction[] enums = Direction.values();
+		Random random = new Random();
+		Direction randomValue = enums[random.nextInt(enums.length)];
+		return randomValue;
+	}
 	
 }

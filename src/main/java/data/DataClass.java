@@ -1,7 +1,5 @@
 package data;
 
-import domain.User;
-
 public class DataClass {
 	// A singleton class that holds information that is relevant for multiple
 	// classes spread throughout the program
@@ -16,7 +14,6 @@ public class DataClass {
 	
 	
 	// Tijdelijke string user, liever een domain object
-	private String currentUser;
 
 	private DataClass() {
 	}
@@ -31,10 +28,6 @@ public class DataClass {
 
 	public int getWindowHeight() {
 		return this.windowHeight;
-	}
-
-	public void setCurrentUser(String user) {
-		this.currentUser = user;
 	}
 
 }

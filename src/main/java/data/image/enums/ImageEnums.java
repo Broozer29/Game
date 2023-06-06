@@ -51,7 +51,29 @@ public enum ImageEnums {
 	Planet_Three,
 	Mars_Planet,
 	Star,
-	
+	Warm_Nebula,
+	Cold_Nebula,
+	Regular_Nebula,
+	Blue_Nebula_1,
+	Blue_Nebula_2,
+	Blue_Nebula_3,
+	Blue_Nebula_4,
+	Blue_Nebula_5,
+	Blue_Nebula_6,
+	Green_Nebula_1,
+	Green_Nebula_2,
+	Green_Nebula_3,
+	Green_Nebula_4,
+	Green_Nebula_5,
+	Green_Nebula_6,
+	Green_Nebula_7,
+	Purple_Nebula_1,
+	Purple_Nebula_2,
+	Purple_Nebula_3,
+	Purple_Nebula_4,
+	Purple_Nebula_5,
+	Purple_Nebula_6,
+	Purple_Nebula_7,
 	//Missile Animations
 	Seeker_Missile,
 	Tazer_Missile,
@@ -87,6 +109,16 @@ public enum ImageEnums {
 	Alien,
 	
 	//Unused?
-	Implosion
+	Implosion,
+	
+	
+	//GUI
+	Health_Bar,
+	Shield_Bar,
+	Icon_Border,
+	Health_Shield_Frames,
+	Frame,
+	Red_Filling,
+	Gold_Filling
 	
 }

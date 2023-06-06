@@ -19,8 +19,8 @@ public class SpawningCoordinator {
 
 	private int maximumBGOWidthRange = DataClass.getInstance().getWindowWidth() + 200;
 	private int minimumBGOWidthRange = -200;
-	private int maximumBGOHeightRange = DataClass.getInstance().getWindowHeight() + 50;
-	private int minimumBGOHeightRange = -50;
+	private int maximumBGOHeightRange = DataClass.getInstance().getWindowHeight();
+	private int minimumBGOHeightRange = 0;
 
 	private int maximumBombEnemyWidthRange = DataClass.getInstance().getWindowWidth() - 250;
 	private int minimumBombEnemyWidthRange = 250;

@@ -3,6 +3,7 @@ package game.managers;
 import java.util.ArrayList;
 import java.util.List;
 
+import data.PlayerStats;
 import data.image.enums.ImageEnums;
 import game.objects.friendlies.SpaceShip;
 
@@ -10,13 +11,13 @@ public class FriendlyManager {
 
 	private static FriendlyManager instance = new FriendlyManager();
 	private AnimationManager animationManager = AnimationManager.getInstance();
+	private PlayerStats playerStats = PlayerStats.getInstance();
 	private SpaceShip spaceship;
-	private ImageEnums playerMissileType;
+
 	private boolean playerAlive;
 
 	private FriendlyManager() {
 		initSpaceShip();
-		this.playerMissileType = ImageEnums.Player_Laserbeam;
 	}
 
 	public static FriendlyManager getInstance() {
@@ -28,7 +29,6 @@ public class FriendlyManager {
 	public void resetManager() {
 		spaceship = null;
 		initSpaceShip();
-		this.playerMissileType = ImageEnums.Player_Laserbeam;
 		playerAlive = true;
 	}
 
@@ -46,12 +46,8 @@ public class FriendlyManager {
 		return this.playerAlive;
 	}
 
-	public ImageEnums getPlayerMissileType() {
-		return this.playerMissileType;
-	}
-
 	private void checkPlayerHealth() {
-		if (spaceship.getHitpoints() <= 0) {
+		if (playerStats.getHitpoints() <= 0) {
 			this.playerAlive = false;
 			spaceship.setVisible(false);
 		}
@@ -64,8 +60,8 @@ public class FriendlyManager {
 	}
 
 	private void initSpaceShip() {
-		this.spaceship = new SpaceShip(ImageEnums.Player_Spaceship_Model_3, ImageEnums.Default_Player_Engine);
-		animationManager.addExhaustAnimation(spaceship.getExhaustAnimation());
+		this.spaceship = new SpaceShip();
+		animationManager.addExhaustAnimation(playerStats.getExhaustAnimation());
 		this.playerAlive = true;
 	}
 

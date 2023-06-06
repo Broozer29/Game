@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Random;
 
 import data.DataClass;
+import data.BGOEnums.NebulaThemeEnums;
+import data.BGOEnums.SpaceThemeEnums;
 import data.image.ImageDatabase;
 import data.image.ImageResizer;
 import data.image.enums.BGOEnums;
@@ -26,10 +28,14 @@ public class BackgroundManager {
 	private List<BackgroundObject> levelOneStars = new ArrayList<BackgroundObject>();
 	private List<BackgroundObject> levelTwoStars = new ArrayList<BackgroundObject>();
 	private List<BackgroundObject> levelThreeStars = new ArrayList<BackgroundObject>();
+	private List<BackgroundObject> NebulaList = new ArrayList<BackgroundObject>();
 
 	private List<ImageEnums> planetBGOEnumsList = new ArrayList<ImageEnums>();
 	Random random = new Random();
 	private int updateFrameCounter = 0;
+
+	private SpaceThemeEnums spaceTheme;
+	private NebulaThemeEnums nebulaTheme;
 
 	private BackgroundManager() {
 		initManager();
@@ -53,12 +59,22 @@ public class BackgroundManager {
 	}
 
 	private void initManager() {
-		planetBGOEnumsList.add(ImageEnums.Moon);
-		planetBGOEnumsList.add(ImageEnums.Lava_Planet);
-		planetBGOEnumsList.add(ImageEnums.Mars_Planet);
-		planetBGOEnumsList.add(ImageEnums.Planet_One);
-		planetBGOEnumsList.add(ImageEnums.Planet_Two);
-		planetBGOEnumsList.add(ImageEnums.Planet_Three);
+		this.spaceTheme = selectRandomSpaceTheme();
+		switch (this.spaceTheme) {
+		case Default:
+			planetBGOEnumsList.add(ImageEnums.Moon);
+			planetBGOEnumsList.add(ImageEnums.Lava_Planet);
+			planetBGOEnumsList.add(ImageEnums.Mars_Planet);
+			break;
+		case Three_Random_Planets:
+			planetBGOEnumsList.add(ImageEnums.Planet_One);
+			planetBGOEnumsList.add(ImageEnums.Planet_Two);
+			planetBGOEnumsList.add(ImageEnums.Planet_Three);
+			break;
+		}
+
+		this.nebulaTheme = selectRandomNebulaTheme();
+		// Fill the backgroundenumslist met de objects die horen bij het thema.
 		initLists();
 	}
 
@@ -66,8 +82,14 @@ public class BackgroundManager {
 		return instance;
 	}
 
+	public void updateGameTick() {
+		updateObjects();
+	}
+
 	private void initLists() {
-		fillBGOList(levelOneStars,ImageEnums.Star, BGOEnums.Star, (float) 0.5, 25);
+		fillBGOList(NebulaList, getNebulaImage(), BGOEnums.Nebula, 1, 3);
+
+		fillBGOList(levelOneStars, ImageEnums.Star, BGOEnums.Star, (float) 0.5, 25);
 		fillBGOList(levelTwoStars, ImageEnums.Star, BGOEnums.Star, (float) 0.75, 25);
 		fillBGOList(levelThreeStars, ImageEnums.Star, BGOEnums.Star, (float) 1, 25);
 
@@ -77,41 +99,61 @@ public class BackgroundManager {
 
 	}
 
-	public void updateGameTick() {
-		updateObjects();
-	}
-
 	private void fillBGOList(List<BackgroundObject> listToFill, ImageEnums imageType, BGOEnums bgoType, float scale,
 			int amount) {
 		Image bgoImage = imageDatabase.getImage(imageType);
 		bgoImage = imageResizer.getScaledImage(bgoImage, scale);
 		int attemptedTries = 0;
+		int nebulaSpawned = 0;
 
 		while (listToFill.size() < amount && attemptedTries < 50) {
-			int randomXCoordinate = randomCoordinator.getRandomXBGOCoordinate();
-			int randomYCoordinate = randomCoordinator.getRandomYBGOCoordinate();
-			attemptedTries++;
-			if (randomCoordinator.checkValidBGOXCoordinate(listToFill, randomXCoordinate, bgoImage.getWidth(null))
-					&& randomCoordinator.checkValidBGOYCoordinate(listToFill, randomYCoordinate,
-							bgoImage.getHeight(null))) {
+			int randomXCoordinate = 0;
+			int randomYCoordinate = 0;
+			switch (bgoType) {
+			case Nebula:
+				int nebulaXcoordinate = (-100 + (1024 * nebulaSpawned));
+				int nebulaYCoordinate = -0;
 
-				BackgroundObject BGO = new BackgroundObject(randomXCoordinate, randomYCoordinate, bgoImage, scale,
+				BackgroundObject NebulaBGO = new BackgroundObject(nebulaXcoordinate, nebulaYCoordinate, bgoImage, 1,
 						bgoType);
-				listToFill.add(BGO);
-				allBackgroundObjects.add(BGO);
+				listToFill.add(NebulaBGO);
+				allBackgroundObjects.add(NebulaBGO);
+				nebulaSpawned++;
+				break;
+			case Planet:
+			case Star:
+				randomXCoordinate = randomCoordinator.getRandomXBGOCoordinate();
+				randomYCoordinate = randomCoordinator.getRandomYBGOCoordinate();
+
+				if (randomCoordinator.checkValidBGOXCoordinate(listToFill, randomXCoordinate, bgoImage.getWidth(null))
+						&& randomCoordinator.checkValidBGOYCoordinate(listToFill, randomYCoordinate,
+								bgoImage.getHeight(null))) {
+
+					BackgroundObject BGO = new BackgroundObject(randomXCoordinate, randomYCoordinate, bgoImage, scale,
+							bgoType);
+					listToFill.add(BGO);
+					allBackgroundObjects.add(BGO);
+				}
+
+				break;
 			}
+			attemptedTries++;
+
 		}
 	}
 
 	private void moveBGOList(List<BackgroundObject> listToMove) {
 		for (BackgroundObject bgObject : listToMove) {
 			if ((bgObject.getXCoordinate() + bgObject.getWidth()) < 0) {
-				bgObject.setX(dataClass.getWindowWidth() + 200);
-				bgObject.setY(randomCoordinator.getRandomYBGOCoordinate());
 
-				if (bgObject.getBGOtype().equals(BGOEnums.Planet)) {
+				if (bgObject.getBGOtype().equals(BGOEnums.Planet) || bgObject.getBGOtype().equals(BGOEnums.Star)) {
 					Image newBGOImage = imageDatabase.getImage(getRandomPlanetString());
+					bgObject.setX(dataClass.getWindowWidth() + 200);
+					bgObject.setY(randomCoordinator.getRandomYBGOCoordinate());
 					bgObject.setNewPlanetImage(newBGOImage);
+					
+				} else if (bgObject.getBGOtype().equals(BGOEnums.Nebula)) {
+					bgObject.setX(-2048);
 				}
 			}
 			bgObject.setX(bgObject.getXCoordinate() - 1);
@@ -120,6 +162,10 @@ public class BackgroundManager {
 
 	// Move all background objects based on the framecounter
 	private void updateObjects() {
+		if (updateFrameCounter % 10 == 0) {
+			moveBGOList(NebulaList);
+		}
+
 		if (updateFrameCounter % 4 == 0) {
 			moveBGOList(levelOneStars);
 			moveBGOList(levelOnePlanets);
@@ -148,12 +194,72 @@ public class BackgroundManager {
 		return randomPlanetEnum;
 	}
 
+	// Returns a random planet string code
+	private ImageEnums getNebulaImage() {
+		switch (this.nebulaTheme) {
+		case Blue_Nebula_1:
+			return ImageEnums.Blue_Nebula_1;
+		case Blue_Nebula_2:
+			return ImageEnums.Blue_Nebula_2;
+		case Blue_Nebula_3:
+			return ImageEnums.Blue_Nebula_3;
+		case Blue_Nebula_4:
+			return ImageEnums.Blue_Nebula_4;
+		case Blue_Nebula_5:
+			return ImageEnums.Blue_Nebula_5;
+		case Blue_Nebula_6:
+			return ImageEnums.Blue_Nebula_6;
+		case Green_Nebula_1:
+			return ImageEnums.Green_Nebula_1;
+		case Green_Nebula_2:
+			return ImageEnums.Green_Nebula_2;
+		case Green_Nebula_3:
+			return ImageEnums.Green_Nebula_3;
+		case Green_Nebula_4:
+			return ImageEnums.Green_Nebula_4;
+		case Green_Nebula_5:
+			return ImageEnums.Green_Nebula_5;
+		case Green_Nebula_6:
+			return ImageEnums.Green_Nebula_6;
+		case Green_Nebula_7:
+			return ImageEnums.Green_Nebula_7;
+		case Purple_Nebula_1:
+			return ImageEnums.Purple_Nebula_1;
+		case Purple_Nebula_2:
+			return ImageEnums.Purple_Nebula_2;
+		case Purple_Nebula_3:
+			return ImageEnums.Purple_Nebula_3;
+		case Purple_Nebula_4:
+			return ImageEnums.Purple_Nebula_4;
+		case Purple_Nebula_5:
+			return ImageEnums.Purple_Nebula_5;
+		case Purple_Nebula_6:
+			return ImageEnums.Purple_Nebula_6;
+		case Purple_Nebula_7:
+			return ImageEnums.Purple_Nebula_7;
+		}
+		return null;
+	}
+
 	// Initially loads all planets so they dont have to be reloaded from files.
 	// Saves memory
-
-
 	public List<BackgroundObject> getAllBGO() {
 		return this.allBackgroundObjects;
+	}
+
+	private SpaceThemeEnums selectRandomSpaceTheme() {
+		SpaceThemeEnums[] enums = SpaceThemeEnums.values();
+		Random random = new Random();
+		SpaceThemeEnums randomValue = enums[random.nextInt(enums.length)];
+		return randomValue;
+	}
+
+	private NebulaThemeEnums selectRandomNebulaTheme() {
+		NebulaThemeEnums[] enums = NebulaThemeEnums.values();
+		Random random = new Random();
+		NebulaThemeEnums randomValue = enums[random.nextInt(enums.length)];
+		System.out.println(randomValue);
+		return randomValue;
 	}
 
 }

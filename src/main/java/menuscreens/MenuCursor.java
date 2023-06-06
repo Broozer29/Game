@@ -13,7 +13,7 @@ public class MenuCursor extends Sprite {
 	}
 
 	private void initCursorImage() {
-		loadImage(ImageEnums.Player_Laserbeam);
+		loadImage(ImageEnums.Player_Spaceship_Model_3);
 		getImageDimensions();
 	}
 

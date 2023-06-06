@@ -81,6 +81,66 @@ public class ImageLoader {
 			return "src/resources/images/Ships/Ship 6/Ship6.png";
 		case Player_Spaceship_Model_3:
 			return "src/resources/images/Ships/Player ships/TM_3_Better_Model_Upgrade.png";
+		case Health_Bar:
+			return "src/resources/images/UI/HealthBar.png";
+		case Shield_Bar:
+			return "src/resources/images/UI/ShieldBar.png";
+		case Health_Shield_Frames:
+			return "src/resources/images/UI/HealthShieldFrames.png";
+		case Icon_Border:
+			return "src/resources/images/UI/IconFrame.png";
+		case Frame:
+			return "src/resources/images/UI/Frame.png";
+		case Gold_Filling:
+			return "src/resources/images/UI/GoldFilling.png";
+		case Red_Filling:
+			return "src/resources/images/UI/RedFilling.png";
+		case Warm_Nebula:
+			return "src/resources/images/background/WarmNebula.png";
+		case Cold_Nebula:
+			return "src/resources/images/background/ColdNebula.png";
+		case Regular_Nebula:
+			return "src/resources/images/background/RegularNebula.png";
+		case Blue_Nebula_1:
+			return "src/resources/images/background/Blue Nebula 1 - 1024x1024.png";
+		case Blue_Nebula_2:
+			return "src/resources/images/background/Blue Nebula 2 - 1024x1024.png";
+		case Blue_Nebula_3:
+			return "src/resources/images/background/Blue Nebula 3 - 1024x1024.png";
+		case Blue_Nebula_4:
+			return "src/resources/images/background/Blue Nebula 4 - 1024x1024.png";
+		case Blue_Nebula_5:
+			return "src/resources/images/background/Blue Nebula 5 - 1024x1024.png";
+		case Blue_Nebula_6:
+			return "src/resources/images/background/Blue Nebula 6 - 1024x1024.png";
+		case Green_Nebula_1:
+			return "src/resources/images/background/Green Nebula 1 - 1024x1024.png";
+		case Green_Nebula_2:
+			return "src/resources/images/background/Green Nebula 2 - 1024x1024.png";
+		case Green_Nebula_3:
+			return "src/resources/images/background/Green Nebula 3 - 1024x1024.png";
+		case Green_Nebula_4:
+			return "src/resources/images/background/Green Nebula 4 - 1024x1024.png";
+		case Green_Nebula_5:
+			return "src/resources/images/background/Green Nebula 5 - 1024x1024.png";
+		case Green_Nebula_6:
+			return "src/resources/images/background/Green Nebula 6 - 1024x1024.png";
+		case Green_Nebula_7:
+			return "src/resources/images/background/Green Nebula 7 - 1024x1024.png";
+		case Purple_Nebula_1:
+			return "src/resources/images/background/Purple Nebula 1 - 1024x1024.png";
+		case Purple_Nebula_2:
+			return "src/resources/images/background/Purple Nebula 2 - 1024x1024.png";
+		case Purple_Nebula_3:
+			return "src/resources/images/background/Purple Nebula 3 - 1024x1024.png";
+		case Purple_Nebula_4:
+			return "src/resources/images/background/Purple Nebula 4 - 1024x1024.png";
+		case Purple_Nebula_5:
+			return "src/resources/images/background/Purple Nebula 5 - 1024x1024.png";
+		case Purple_Nebula_6:
+			return "src/resources/images/background/Purple Nebula 6 - 1024x1024.png";
+		case Purple_Nebula_7:
+			return "src/resources/images/background/Purple Nebula 7 - 1024x1024.png";
 		default:
 			break;
 			

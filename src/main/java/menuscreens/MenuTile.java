@@ -29,18 +29,6 @@ public class MenuTile extends Sprite {
 		} else if (this.tileType.equals(ImageEnums.Select_User_Menu)) {
 			BoardManager.getInstance().initUserSelection();
 
-		//Selects the first user
-		} else if (tileType.equals(ImageEnums.User_One)) {
-			dataClass.setCurrentUser("UserOne");
-
-		//Selects the second user
-		} else if (tileType.equals(ImageEnums.User_Two)) {
-			dataClass.setCurrentUser("UserTwo");
-
-		//Selects the third user
-		} else if (tileType.equals(ImageEnums.User_Three)) {
-			dataClass.setCurrentUser("UserThree");
-
 		//Changes the user selection board to the main menu board.
 		} else if (tileType.equals(ImageEnums.Select_User_Menu)) {
 			BoardManager.getInstance().userSelectionToMainMenu();

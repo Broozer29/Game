@@ -111,11 +111,11 @@ public class RegularPathFinder implements PathFinder {
 
 		switch (rotation) {
 		case UP:
-			endYCoordinate = -50;
+			endYCoordinate = -150;
 			endXCoordinate = xCoordinate;
 			break;
 		case DOWN:
-			endYCoordinate = dataClass.getWindowHeight() + 50;
+			endYCoordinate = dataClass.getWindowHeight() + 150;
 			endXCoordinate = xCoordinate;
 			break;
 		case LEFT:
@@ -124,33 +124,30 @@ public class RegularPathFinder implements PathFinder {
 			break;
 		case RIGHT:
 			endYCoordinate = yCoordinate;
-			endXCoordinate = dataClass.getWindowWidth() + 50;
+			endXCoordinate = dataClass.getWindowWidth() + 150;
 			break;
 		case RIGHT_UP:
-			endYCoordinate = 0 - 50;
-			endXCoordinate = dataClass.getWindowWidth() + 50;
+			endYCoordinate = 0 - 150;
+			endXCoordinate = dataClass.getWindowWidth() + 150;
 			break;
 		case RIGHT_DOWN:
-			endYCoordinate = dataClass.getWindowHeight() + 50;
-			endXCoordinate = dataClass.getWindowWidth() + 50;
+			endYCoordinate = dataClass.getWindowHeight() + 150;
+			endXCoordinate = dataClass.getWindowWidth() + 150;
 			break;
 		case LEFT_UP:
-			endYCoordinate = 0 - 50;
+			endYCoordinate = 0 - 150;
 			endXCoordinate = 0;
 			break;
 		case LEFT_DOWN:
-			endYCoordinate = dataClass.getWindowHeight() + 50;
-			endXCoordinate = 0 + 50;
+			endYCoordinate = dataClass.getWindowHeight() + 150;
+			endXCoordinate = 0 + 150;
 			break;
 		default:
 			endYCoordinate = yCoordinate;
-			endXCoordinate = 0 + 50;
+			endXCoordinate = 0 + 150;
 			break;
 		}
 		
-		System.out.println("Starting point: " + yCoordinate);
-		System.out.println("Ending point: " + endYCoordinate);
-		System.out.println("  ");
 		Point endPoint = new Point(endXCoordinate, endYCoordinate);
 		return endPoint;
 	}

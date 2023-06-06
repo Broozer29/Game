@@ -60,10 +60,8 @@ public class MissileManager {
 			Direction rotation, float scale, PathFinder pathFinder) {
 		Point start = new Point(xCoordinate, yCoordinate);
 		Point destination = pathFinder.calculateInitialEndpoint(start, rotation);
-
 		Missile missile = createMissile(missileType, xCoordinate, yCoordinate, destination, explosionType, rotation,
 				scale, pathFinder);
-
 		this.friendlyMissiles.add(missile);
 
 	}

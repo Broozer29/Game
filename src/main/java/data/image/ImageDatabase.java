@@ -35,8 +35,8 @@ public class ImageDatabase {
 
 	// Ship numbers to names:
 	/*
-	 * Ship1 = Seeker Ship2 = Tazer Ship3 = Energizer Ship4 = Bulldozer Ship5 =
-	 * Flamer Ship6 = Bomba
+	 * Ship1 = Seeker Ship2 = Tazer Ship3 = Energizer Ship4 = Bulldozer Ship5 = Flamer
+	 * Ship6 = Bomba
 	 */
 
 	// Projectile images
@@ -50,8 +50,15 @@ public class ImageDatabase {
 	private Image userThreeImage;
 	private Image selectUserMenuImage;
 	private Image userMenuToMainMenu;
-	
-	
+
+	// Game GUI images
+	private Image healthBarImage;
+	private Image shieldBarImage;
+	private Image Frame;
+	private Image iconBorder;
+	private Image redFilling;
+	private Image goldFilling;
+
 	// Explosion animations
 	private List<Image> impactExplosionOneFrames = new ArrayList<Image>();
 	private List<Image> destroyedExplosionUpFrames = new ArrayList<Image>();
@@ -73,7 +80,6 @@ public class ImageDatabase {
 	private List<Image> playerEMPFrames = new ArrayList<Image>();
 	private List<Image> defaultPlayerEngineBoostedFrames = new ArrayList<Image>();
 	private List<Image> defaultPlayerShieldDamage = new ArrayList<Image>();
-
 
 	// Enemy Projectile Animations
 	private List<Image> seekerProjectileFrames = new ArrayList<Image>();
@@ -113,11 +119,414 @@ public class ImageDatabase {
 	private Image planetTwo;
 	private Image planetThree;
 	private Image star;
+	private Image warmNebula;
+	private Image coldNebula;
+	private Image regularNebula;
+	private Image blueNebula1;
+	private Image blueNebula2;
+	private Image blueNebula3;
+	private Image blueNebula4;
+	private Image blueNebula5;
+	private Image blueNebula6;
+	private Image greenNebula1;
+	private Image greenNebula2;
+	private Image greenNebula3;
+	private Image greenNebula4;
+	private Image greenNebula5;
+	private Image greenNebula6;
+	private Image greenNebula7;
+	private Image purpleNebula1;
+	private Image purpleNebula2;
+	private Image purpleNebula3;
+	private Image purpleNebula4;
+	private Image purpleNebula5;
+	private Image purpleNebula6;
+	private Image purpleNebula7;
+
+	public ImageLoader getImgLoader() {
+		return imgLoader;
+	}
+
+	public Image getSpaceShipImage() {
+		return spaceShipImage;
+	}
+
+	public Image getAlienSpaceshipImage() {
+		return alienSpaceshipImage;
+	}
+
+	public Image getAlienBombImage() {
+		return alienBombImage;
+	}
+
+	public Image getSeekerImage() {
+		return seekerImage;
+	}
+
+	public Image getTazerImage() {
+		return tazerImage;
+	}
+
+	public Image getEnergizerImage() {
+		return energizerImage;
+	}
+
+	public Image getBulldozerImage() {
+		return bulldozerImage;
+	}
+
+	public Image getFlamerImage() {
+		return flamerImage;
+	}
+
+	public Image getBombaImage() {
+		return bombaImage;
+	}
+
+	public Image getAlienLaserbeamImage() {
+		return alienLaserbeamImage;
+	}
+
+	public Image getLaserBeamImage() {
+		return laserBeamImage;
+	}
+
+	public Image getStartGameImage() {
+		return startGameImage;
+	}
+
+	public Image getUserOneImage() {
+		return userOneImage;
+	}
+
+	public Image getUserTwoImage() {
+		return userTwoImage;
+	}
+
+	public Image getUserThreeImage() {
+		return userThreeImage;
+	}
+
+	public Image getSelectUserMenuImage() {
+		return selectUserMenuImage;
+	}
+
+	public Image getUserMenuToMainMenu() {
+		return userMenuToMainMenu;
+	}
+
+	public Image getHealthBarImage() {
+		return healthBarImage;
+	}
+
+	public Image getShieldBarImage() {
+		return shieldBarImage;
+	}
+
+	public Image getFrame() {
+		return Frame;
+	}
+
+	public Image getIconBorder() {
+		return iconBorder;
+	}
+
+	public Image getRedFilling() {
+		return redFilling;
+	}
+
+	public Image getGoldFilling() {
+		return goldFilling;
+	}
+
+	public List<Image> getImpactExplosionOneFrames() {
+		return impactExplosionOneFrames;
+	}
+
+	public List<Image> getDestroyedExplosionUpFrames() {
+		return destroyedExplosionUpFrames;
+	}
+
+	public List<Image> getDestroyedExplosionLeftFrames() {
+		return destroyedExplosionLeftFrames;
+	}
+
+	public List<Image> getDestroyedExplosionRightFrames() {
+		return destroyedExplosionRightFrames;
+	}
+
+	public List<Image> getDestroyedExplosionDownFrames() {
+		return destroyedExplosionDownFrames;
+	}
+
+	public List<Image> getAlienBombExplosionFrames() {
+		return alienBombExplosionFrames;
+	}
+
+	public List<Image> getImplosionFrames() {
+		return implosionFrames;
+	}
+
+	public List<Image> getSeekerDestroyedExplosionFrames() {
+		return seekerDestroyedExplosionFrames;
+	}
+
+	public List<Image> getTazerDestroyedExplosionFrames() {
+		return tazerDestroyedExplosionFrames;
+	}
+
+	public List<Image> getEnergizerDestroyedExplosionFrames() {
+		return energizerDestroyedExplosionFrames;
+	}
+
+	public List<Image> getBulldozerDestroyedExplosionFrames() {
+		return bulldozerDestroyedExplosionFrames;
+	}
+
+	public List<Image> getFlamerDestroyedExplosionFrames() {
+		return flamerDestroyedExplosionFrames;
+	}
+
+	public List<Image> getBombaDestroyedExplosionFrames() {
+		return bombaDestroyedExplosionFrames;
+	}
+
+	public List<Image> getPlayerEngineFrames() {
+		return playerEngineFrames;
+	}
+
+	public List<Image> getPlayerFireSwirlFrames() {
+		return playerFireSwirlFrames;
+	}
+
+	public List<Image> getPlayerEMPFrames() {
+		return playerEMPFrames;
+	}
+
+	public List<Image> getDefaultPlayerEngineBoostedFrames() {
+		return defaultPlayerEngineBoostedFrames;
+	}
+
+	public List<Image> getDefaultPlayerShieldDamage() {
+		return defaultPlayerShieldDamage;
+	}
+
+	public List<Image> getSeekerProjectileFrames() {
+		return seekerProjectileFrames;
+	}
+
+	public List<Image> getTazerProjectileFrames() {
+		return tazerProjectileFrames;
+	}
+
+	public List<Image> getEnergizerProjectileFrames() {
+		return energizerProjectileFrames;
+	}
+
+	public List<Image> getBulldozerProjectileFrames() {
+		return bulldozerProjectileFrames;
+	}
+
+	public List<Image> getFlamerProjectileFrames() {
+		return flamerProjectileFrames;
+	}
+
+	public List<Image> getBombaProjectileFrames() {
+		return bombaProjectileFrames;
+	}
+
+	public List<Image> getSeekerNormalExhaustFrames() {
+		return seekerNormalExhaustFrames;
+	}
+
+	public List<Image> getSeekerLargeExhaustFrames() {
+		return seekerLargeExhaustFrames;
+	}
+
+	public List<Image> getTazerNormalExhaustFrames() {
+		return tazerNormalExhaustFrames;
+	}
+
+	public List<Image> getTazerLargeExhaustFrames() {
+		return tazerLargeExhaustFrames;
+	}
+
+	public List<Image> getEnergizerNormalExhaustFrames() {
+		return energizerNormalExhaustFrames;
+	}
+
+	public List<Image> getEnergizerLargeExhaustFrames() {
+		return energizerLargeExhaustFrames;
+	}
+
+	public List<Image> getBulldozerNormalExhaustFrames() {
+		return bulldozerNormalExhaustFrames;
+	}
+
+	public List<Image> getBulldozerLargeExhaustFrames() {
+		return bulldozerLargeExhaustFrames;
+	}
+
+	public List<Image> getFlamerNormalExhaustFrames() {
+		return flamerNormalExhaustFrames;
+	}
+
+	public List<Image> getFlamerLargeExhaustFrames() {
+		return flamerLargeExhaustFrames;
+	}
+
+	public List<Image> getBombaNormalExhaustFrames() {
+		return bombaNormalExhaustFrames;
+	}
+
+	public List<Image> getBombaLargeExhaustFrames() {
+		return bombaLargeExhaustFrames;
+	}
+
+	public List<Image> getSeekerProjectileExplosion() {
+		return seekerProjectileExplosion;
+	}
+
+	public List<Image> getTazerProjectileExplosion() {
+		return tazerProjectileExplosion;
+	}
+
+	public List<Image> getEnergizerProjectileExplosion() {
+		return energizerProjectileExplosion;
+	}
+
+	public List<Image> getBulldozerProjectileExplosion() {
+		return bulldozerProjectileExplosion;
+	}
+
+	public List<Image> getFlamerProjectileExplosion() {
+		return flamerProjectileExplosion;
+	}
+
+	public List<Image> getBombaProjectileExplosion() {
+		return bombaProjectileExplosion;
+	}
+
+	public Image getMoon() {
+		return moon;
+	}
+
+	public Image getLavaPlanet() {
+		return lavaPlanet;
+	}
+
+	public Image getMarsPlanet() {
+		return marsPlanet;
+	}
+
+	public Image getPlanetOne() {
+		return planetOne;
+	}
+
+	public Image getPlanetTwo() {
+		return planetTwo;
+	}
+
+	public Image getPlanetThree() {
+		return planetThree;
+	}
+
+	public Image getStar() {
+		return star;
+	}
+
+	public Image getBlueNebula1() {
+		return blueNebula1;
+	}
+
+	public Image getBlueNebula2() {
+		return blueNebula2;
+	}
+
+	public Image getBlueNebula3() {
+		return blueNebula3;
+	}
+
+	public Image getBlueNebula4() {
+		return blueNebula4;
+	}
+
+	public Image getBlueNebula5() {
+		return blueNebula5;
+	}
+
+	public Image getBlueNebula6() {
+		return blueNebula6;
+	}
+
+	public Image getGreenNebula1() {
+		return greenNebula1;
+	}
+
+	public Image getGreenNebula2() {
+		return greenNebula2;
+	}
+
+	public Image getGreenNebula3() {
+		return greenNebula3;
+	}
+
+	public Image getGreenNebula4() {
+		return greenNebula4;
+	}
+
+	public Image getGreenNebula5() {
+		return greenNebula5;
+	}
+
+	public Image getGreenNebula6() {
+		return greenNebula6;
+	}
+
+	public Image getGreenNebula7() {
+		return greenNebula7;
+	}
+
+	public Image getPurpleNebula1() {
+		return purpleNebula1;
+	}
+
+	public Image getPurpleNebula2() {
+		return purpleNebula2;
+	}
+
+	public Image getPurpleNebula3() {
+		return purpleNebula3;
+	}
+
+	public Image getPurpleNebula4() {
+		return purpleNebula4;
+	}
+
+	public Image getPurpleNebula5() {
+		return purpleNebula5;
+	}
+
+	public Image getPurpleNebula6() {
+		return purpleNebula6;
+	}
+
+	public Image getPurpleNebula7() {
+		return purpleNebula7;
+	}
+
+	public Image getTestImage() {
+		return testImage;
+	}
+
+	public List<Image> getDefaultPlayerEngine() {
+		return defaultPlayerEngine;
+	}
 
 	// testimages
 	private Image testImage;
-	
-	//Images to Gifs
+
+	// Images to Gifs
 	private List<Image> defaultPlayerEngine = new ArrayList<Image>();
 
 	private ImageDatabase() {
@@ -140,6 +549,7 @@ public class ImageDatabase {
 		this.initMenuImages();
 		this.initProjectiles();
 		this.initPNGtoGIFAnimation();
+		this.initGameUIobjects();
 	}
 
 	private void initFriendlies() {
@@ -173,6 +583,15 @@ public class ImageDatabase {
 		this.userMenuToMainMenu = imgLoader.getImage(ImageEnums.User_Menu_To_Main_Menu);
 	}
 
+	private void initGameUIobjects() {
+		this.healthBarImage = imgLoader.getImage(ImageEnums.Health_Bar);
+		this.shieldBarImage = imgLoader.getImage(ImageEnums.Shield_Bar);
+		this.Frame = imgLoader.getImage(ImageEnums.Frame);
+		this.iconBorder = imgLoader.getImage(ImageEnums.Icon_Border);
+		this.redFilling = imgLoader.getImage(ImageEnums.Red_Filling);
+		this.goldFilling = imgLoader.getImage(ImageEnums.Gold_Filling);
+	}
+
 	private void initBackgroundObjects() {
 		this.moon = imgLoader.getImage(ImageEnums.Moon);
 		this.lavaPlanet = imgLoader.getImage(ImageEnums.Lava_Planet);
@@ -181,6 +600,30 @@ public class ImageDatabase {
 		this.planetThree = imgLoader.getImage(ImageEnums.Planet_Three);
 		this.marsPlanet = imgLoader.getImage(ImageEnums.Mars_Planet);
 		this.star = imgLoader.getImage(ImageEnums.Star);
+		this.coldNebula = imgLoader.getImage(ImageEnums.Cold_Nebula);
+		this.warmNebula = imgLoader.getImage(ImageEnums.Warm_Nebula);
+		this.regularNebula = imgLoader.getImage(ImageEnums.Regular_Nebula);
+		this.blueNebula1 = imgLoader.getImage(ImageEnums.Blue_Nebula_1);
+		this.blueNebula2 = imgLoader.getImage(ImageEnums.Blue_Nebula_2);
+		this.blueNebula3 = imgLoader.getImage(ImageEnums.Blue_Nebula_3);
+		this.blueNebula4 = imgLoader.getImage(ImageEnums.Blue_Nebula_4);
+		this.blueNebula5 = imgLoader.getImage(ImageEnums.Blue_Nebula_5);
+		this.blueNebula6 = imgLoader.getImage(ImageEnums.Blue_Nebula_6);
+		this.greenNebula1 = imgLoader.getImage(ImageEnums.Green_Nebula_1);
+		this.greenNebula2 = imgLoader.getImage(ImageEnums.Green_Nebula_2);
+		this.greenNebula3 = imgLoader.getImage(ImageEnums.Green_Nebula_3);
+		this.greenNebula4 = imgLoader.getImage(ImageEnums.Green_Nebula_4);
+		this.greenNebula5 = imgLoader.getImage(ImageEnums.Green_Nebula_5);
+		this.greenNebula6 = imgLoader.getImage(ImageEnums.Green_Nebula_6);
+		this.greenNebula7 = imgLoader.getImage(ImageEnums.Green_Nebula_7);
+		this.purpleNebula1 = imgLoader.getImage(ImageEnums.Purple_Nebula_1);
+		this.purpleNebula2 = imgLoader.getImage(ImageEnums.Purple_Nebula_2);
+		this.purpleNebula3 = imgLoader.getImage(ImageEnums.Purple_Nebula_3);
+		this.purpleNebula4 = imgLoader.getImage(ImageEnums.Purple_Nebula_4);
+		this.purpleNebula5 = imgLoader.getImage(ImageEnums.Purple_Nebula_5);
+		this.purpleNebula6 = imgLoader.getImage(ImageEnums.Purple_Nebula_6);
+		this.purpleNebula7 = imgLoader.getImage(ImageEnums.Purple_Nebula_7);
+		
 	}
 
 	public Image getImage(ImageEnums imageType) {
@@ -235,6 +678,64 @@ public class ImageDatabase {
 			return this.bombaImage;
 		case Player_Spaceship_Model_3:
 			return this.model3BetterUpgrade;
+		case Health_Bar:
+			return this.healthBarImage;
+		case Shield_Bar:
+			return this.shieldBarImage;
+		case Frame:
+			return this.Frame;
+		case Icon_Border:
+			return this.iconBorder;
+		case Red_Filling:
+			return this.redFilling;
+		case Gold_Filling:
+			return this.goldFilling;
+		case Cold_Nebula:
+			return coldNebula;
+		case Warm_Nebula:
+			return warmNebula;
+		case Regular_Nebula:
+			return regularNebula;
+		case Blue_Nebula_1:
+			return blueNebula1;
+		case Blue_Nebula_2:
+			return blueNebula2;
+		case Blue_Nebula_3:
+			return blueNebula3;
+		case Blue_Nebula_4:
+			return blueNebula4;
+		case Blue_Nebula_5:
+			return blueNebula5;
+		case Blue_Nebula_6:
+			return blueNebula6;
+		case Green_Nebula_1:
+			return greenNebula1;
+		case Green_Nebula_2:
+			return greenNebula2;
+		case Green_Nebula_3:
+			return greenNebula3;
+		case Green_Nebula_4:
+			return greenNebula4;
+		case Green_Nebula_5:
+			return greenNebula5;
+		case Green_Nebula_6:
+			return greenNebula6;
+		case Green_Nebula_7:
+			return greenNebula7;
+		case Purple_Nebula_1:
+			return purpleNebula1;
+		case Purple_Nebula_2:
+			return purpleNebula2;
+		case Purple_Nebula_3:
+			return purpleNebula3;
+		case Purple_Nebula_4:
+			return purpleNebula4;
+		case Purple_Nebula_5:
+			return purpleNebula5;
+		case Purple_Nebula_6:
+			return purpleNebula6;
+		case Purple_Nebula_7:
+			return purpleNebula7;
 		default:
 			return testImage;
 		}
@@ -455,68 +956,69 @@ public class ImageDatabase {
 		reader.setInput(new FileImageInputStream(
 				new File("src/resources/images/Ships/Ship 6/Ship 6 - Projectile Explosion.gif")));
 		bombaProjectileExplosion = gifToImageIcons(reader);
-		
+
 		// Explosions
 		reader.setInput(new FileImageInputStream(new File("src/resources/images/gif/Implosion.gif")));
 		implosionFrames = gifToImageIcons(reader);
-		
+
 		reader.setInput(new FileImageInputStream(
 				new File("src/resources/images/Ships/Ship 1/Ship 1 - Destroyed Explosion.gif")));
 		seekerDestroyedExplosionFrames = gifToImageIcons(reader);
-		
+
 		reader.setInput(new FileImageInputStream(
 				new File("src/resources/images/Ships/Ship 2/Ship 2 - Destroyed Explosion.gif")));
 		tazerDestroyedExplosionFrames = gifToImageIcons(reader);
-		
+
 		reader.setInput(new FileImageInputStream(
 				new File("src/resources/images/Ships/Ship 3/Ship 3 - Destroyed Explosion.gif")));
 		energizerDestroyedExplosionFrames = gifToImageIcons(reader);
-		
+
 		reader.setInput(new FileImageInputStream(
 				new File("src/resources/images/Ships/Ship 4/Ship 4 - Destroyed Explosion.gif")));
 		bulldozerDestroyedExplosionFrames = gifToImageIcons(reader);
-		
+
 		reader.setInput(new FileImageInputStream(
 				new File("src/resources/images/Ships/Ship 5/Ship 5 - Destroyed Explosion.gif")));
 		flamerDestroyedExplosionFrames = gifToImageIcons(reader);
-		
+
 		reader.setInput(new FileImageInputStream(
 				new File("src/resources/images/Ships/Ship 6/Ship 6 - Destroyed Explosion.gif")));
 		bombaDestroyedExplosionFrames = gifToImageIcons(reader);
 
 	}
-	
+
 	private void initPNGtoGIFAnimation() {
 		for (int i = 1; i < 6; i++) {
-			String sourceString=String.format("src/resources/images/gif/PNGtoGIF/Default Player Engine/%d.png",i);  
+			String sourceString = String.format("src/resources/images/gif/PNGtoGIF/Default Player Engine/%d.png", i);
 			Image image = imgLoader.getSpritesheetImage(sourceString);
 			defaultPlayerEngine.add(image);
 		}
-		
+
 		for (int i = 1; i < 6; i++) {
-			String sourceString=String.format("src/resources/images/gif/PNGtoGIF/Default Player Engine Boosted/%d.png",i);  
+			String sourceString = String
+					.format("src/resources/images/gif/PNGtoGIF/Default Player Engine Boosted/%d.png", i);
 			Image image = imgLoader.getSpritesheetImage(sourceString);
 			defaultPlayerEngineBoostedFrames.add(image);
 		}
-		
+
 		for (int i = 1; i < 10; i++) {
-			String sourceString=String.format("src/resources/images/gif/PNGtoGIF/Player Shield Damage/%d.png",i);  
+			String sourceString = String.format("src/resources/images/gif/PNGtoGIF/Player Shield Damage/%d.png", i);
 			Image image = imgLoader.getSpritesheetImage(sourceString);
 			defaultPlayerShieldDamage.add(image);
 		}
-		
+
 		for (int i = 1; i < 10; i++) {
-			String sourceString=String.format("src/resources/images/gif/PNGtoGIF/Player EMP/%d.png",i);  
+			String sourceString = String.format("src/resources/images/gif/PNGtoGIF/Player EMP/%d.png", i);
 			Image image = imgLoader.getSpritesheetImage(sourceString);
 			playerEMPFrames.add(image);
 		}
-		
+
 		for (int i = 1; i < 46; i++) {
-			String sourceString=String.format("src/resources/images/gif/PNGtoGIF/Player Fireswirl/tile0%d.png",i);  
+			String sourceString = String.format("src/resources/images/gif/PNGtoGIF/Player Fireswirl/tile0%d.png", i);
 			Image image = imgLoader.getSpritesheetImage(sourceString);
 			playerFireSwirlFrames.add(image);
 		}
-		
+
 	}
 
 	private List<Image> gifToImageIcons(ImageReader reader) throws IOException {
@@ -530,6 +1032,18 @@ public class ImageDatabase {
 
 	public Image getModel3BetterUpgrade() {
 		return model3BetterUpgrade;
+	}
+
+	public Image getWarmNebula() {
+		return warmNebula;
+	}
+
+	public Image getColdNebula() {
+		return coldNebula;
+	}
+
+	public Image getRegularNebula() {
+		return regularNebula;
 	}
 
 }

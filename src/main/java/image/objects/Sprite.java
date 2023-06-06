@@ -3,6 +3,7 @@ package image.objects;
 import java.awt.Image;
 import java.awt.Rectangle;
 
+import data.image.ImageCropper;
 import data.image.ImageDatabase;
 import data.image.ImageResizer;
 import data.image.ImageRotator;
@@ -125,5 +126,10 @@ public class Sprite {
 
 	public void addYOffset(int yoffset) {
 		this.yOffset = yoffset;
+	}
+	
+	protected void cropWidth(float cropPercentage) {
+		ImageCropper imageCropper = ImageCropper.getInstance();
+		this.image = imageCropper.cropImage(this.image, cropPercentage);
 	}
 }

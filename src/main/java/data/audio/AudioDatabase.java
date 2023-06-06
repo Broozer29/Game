@@ -152,6 +152,8 @@ public class AudioDatabase {
 	            return getAvailableClip(audioType);
 	        case Ayasa_The_Reason_Why:
 	            return getAyasatheReasonWhy();
+		case NONE:
+			break;
 	    }
 	    return null;
 	}

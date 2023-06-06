@@ -38,7 +38,7 @@ public class ImageResizer {
 // Een harde cast, het kan omdat er geen afbeeldingen zijn met komma getallen qua dimensies, maar indien die er zijn gaat dit tot problemen leiden		
 		int newWidth = (int) Math.floor((image.getWidth(null) * scale));
 		int newHeight = (int) Math.floor((image.getHeight(null) * scale));
-		
+
 		BufferedImage before = toBufferedImage(image);
 		BufferedImage after = new BufferedImage(newWidth, newHeight, BufferedImage.TYPE_INT_ARGB);
 		AffineTransform at = new AffineTransform();
@@ -60,5 +60,14 @@ public class ImageResizer {
 		}
 
 		return newFrames;
+	}
+
+
+	public BufferedImage resizeImageToDimensions(Image image, int width, int height) {
+		// Een harde cast, het kan omdat er geen afbeeldingen zijn met komma getallen qua
+		// dimensies, maar indien die er zijn gaat dit tot problemen leiden
+		Image resizedImage = image.getScaledInstance(width, height, Image.SCALE_DEFAULT);
+		BufferedImage bufferedVersion = toBufferedImage(resizedImage);
+		return bufferedVersion;
 	}
 }

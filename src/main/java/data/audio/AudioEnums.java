@@ -12,5 +12,6 @@ public enum AudioEnums {
 	Furi_Make_This_Right,
 	Ayasa_The_Reason_Why,
 	Apple_Holder_Remix,
-	Destroyed_Explosion
+	Destroyed_Explosion,
+	NONE
 }
