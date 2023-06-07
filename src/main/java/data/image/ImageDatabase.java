@@ -119,6 +119,11 @@ public class ImageDatabase {
 	private Image planetTwo;
 	private Image planetThree;
 	private Image star;
+	private Image parralex1;
+	private Image parralex2;
+	private Image parralex3;
+	private Image parralex4;
+	private Image parralex5;
 	private Image warmNebula;
 	private Image coldNebula;
 	private Image regularNebula;
@@ -600,6 +605,11 @@ public class ImageDatabase {
 		this.planetThree = imgLoader.getImage(ImageEnums.Planet_Three);
 		this.marsPlanet = imgLoader.getImage(ImageEnums.Mars_Planet);
 		this.star = imgLoader.getImage(ImageEnums.Star);
+		this.parralex1 = imgLoader.getImage(ImageEnums.Parallex_1);
+		this.parralex2 = imgLoader.getImage(ImageEnums.Parallex_2);
+		this.parralex3 = imgLoader.getImage(ImageEnums.Parallex_3);
+		this.parralex4 = imgLoader.getImage(ImageEnums.Parallex_4);
+		this.parralex5 = imgLoader.getImage(ImageEnums.Parallex_5);
 		this.coldNebula = imgLoader.getImage(ImageEnums.Cold_Nebula);
 		this.warmNebula = imgLoader.getImage(ImageEnums.Warm_Nebula);
 		this.regularNebula = imgLoader.getImage(ImageEnums.Regular_Nebula);
@@ -736,6 +746,16 @@ public class ImageDatabase {
 			return purpleNebula6;
 		case Purple_Nebula_7:
 			return purpleNebula7;
+		case Parallex_1:
+			return parralex1;
+		case Parallex_2:
+			return parralex2;
+		case Parallex_3:
+			return parralex3;
+		case Parallex_4:
+			return parralex4;
+		case Parallex_5:
+			return parralex5;
 		default:
 			return testImage;
 		}
@@ -1044,6 +1064,26 @@ public class ImageDatabase {
 
 	public Image getRegularNebula() {
 		return regularNebula;
+	}
+	
+	public Image getParralex1() {
+		return parralex1;
+	}
+
+	public Image getParralex2() {
+		return parralex2;
+	}
+
+	public Image getParralex3() {
+		return parralex3;
+	}
+
+	public Image getParralex4() {
+		return parralex4;
+	}
+
+	public Image getParralex5() {
+		return parralex5;
 	}
 
 }

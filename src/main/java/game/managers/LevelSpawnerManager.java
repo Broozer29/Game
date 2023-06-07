@@ -72,31 +72,31 @@ public class LevelSpawnerManager {
 
 	private void saturateLevelOne() {
 		EnemySpawnTimer timer = null;
-		timer = timerManager.createTimer(EnemyEnums.Alien_Bomb, 100, 100, false, Direction.UP, 1);
-		timerManager.addTimerToList(timer);
-		timer = timerManager.createTimer(EnemyEnums.Alien_Bomb, 100, 100, false, Direction.DOWN, 1);
-		timerManager.addTimerToList(timer);
+//		timer = timerManager.createTimer(EnemyEnums.Alien_Bomb, 100, 100, false, Direction.UP, 1);
+//		timerManager.addTimerToList(timer);
+//		timer = timerManager.createTimer(EnemyEnums.Alien_Bomb, 100, 100, false, Direction.DOWN, 1);
+//		timerManager.addTimerToList(timer);
 
 		timer = timerManager.createTimer(EnemyEnums.Bomba, 1, 100, false, Direction.LEFT, 1);
 		timerManager.addTimerToList(timer);
-		timer = timerManager.createTimer(EnemyEnums.Flamer, 1, 100, false, Direction.LEFT, 1);
-		timerManager.addTimerToList(timer);
-		timer = timerManager.createTimer(EnemyEnums.Tazer, 2, 5000, true, Direction.LEFT, 1);
-		timerManager.addTimerToList(timer);
-		timer = timerManager.createTimer(EnemyEnums.Seeker, 1, 100, false, Direction.UP, 1);
-		timerManager.addTimerToList(timer);
-		timer = timerManager.createTimer(EnemyEnums.Seeker, 1, 100, false, Direction.DOWN, 1);
-		timerManager.addTimerToList(timer);
-		timer = timerManager.createTimer(EnemyEnums.Seeker, 2, 100, true, Direction.UP, 1);
-		timerManager.addTimerToList(timer);
-		timer = timerManager.createTimer(EnemyEnums.Seeker, 2, 15000, true, Direction.LEFT, 1);
-		timerManager.addTimerToList(timer);
-		timer = timerManager.createTimer(EnemyEnums.Seeker, 2, 15000, true, Direction.RIGHT, 1);
-		timerManager.addTimerToList(timer);
-		timer = timerManager.createTimer(EnemyEnums.Bulldozer, 1, 6000, true, Direction.LEFT, 1);
-		timerManager.addTimerToList(timer);
-		timer = timerManager.createTimer(EnemyEnums.Energizer, 1, 5500, true, Direction.LEFT, 1);
-		timerManager.addTimerToList(timer);
+//		timer = timerManager.createTimer(EnemyEnums.Flamer, 1, 100, false, Direction.LEFT, 1);
+//		timerManager.addTimerToList(timer);
+//		timer = timerManager.createTimer(EnemyEnums.Tazer, 2, 5000, true, Direction.LEFT, 1);
+//		timerManager.addTimerToList(timer);
+//		timer = timerManager.createTimer(EnemyEnums.Seeker, 1, 100, false, Direction.UP, 1);
+//		timerManager.addTimerToList(timer);
+//		timer = timerManager.createTimer(EnemyEnums.Seeker, 1, 100, false, Direction.DOWN, 1);
+//		timerManager.addTimerToList(timer);
+//		timer = timerManager.createTimer(EnemyEnums.Seeker, 2, 100, true, Direction.UP, 1);
+//		timerManager.addTimerToList(timer);
+//		timer = timerManager.createTimer(EnemyEnums.Seeker, 2, 15000, true, Direction.LEFT, 1);
+//		timerManager.addTimerToList(timer);
+//		timer = timerManager.createTimer(EnemyEnums.Seeker, 2, 15000, true, Direction.RIGHT, 1);
+//		timerManager.addTimerToList(timer);
+//		timer = timerManager.createTimer(EnemyEnums.Bulldozer, 1, 6000, true, Direction.LEFT, 1);
+//		timerManager.addTimerToList(timer);
+//		timer = timerManager.createTimer(EnemyEnums.Energizer, 1, 5500, true, Direction.LEFT, 1);
+//		timerManager.addTimerToList(timer);
 	}
 
 	// Called by CustomTimers when they have to spawn an enemy

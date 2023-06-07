@@ -141,6 +141,16 @@ public class ImageLoader {
 			return "src/resources/images/background/Purple Nebula 6 - 1024x1024.png";
 		case Purple_Nebula_7:
 			return "src/resources/images/background/Purple Nebula 7 - 1024x1024.png";
+		case Parallex_1:
+			return "src/resources/images/background/Parallex_1.png";
+		case Parallex_2:
+			return "src/resources/images/background/Parallex_2.png";
+		case Parallex_3:
+			return "src/resources/images/background/Parallex_3.png";
+		case Parallex_4:
+			return "src/resources/images/background/Parallex_4.png";
+		case Parallex_5:
+			return "src/resources/images/background/Parallex_5.png";
 		default:
 			break;
 			

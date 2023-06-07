@@ -120,7 +120,7 @@ public class RegularPathFinder implements PathFinder {
 			break;
 		case LEFT:
 			endYCoordinate = yCoordinate;
-			endXCoordinate = 0;
+			endXCoordinate = 0 - 150;
 			break;
 		case RIGHT:
 			endYCoordinate = yCoordinate;
@@ -136,11 +136,11 @@ public class RegularPathFinder implements PathFinder {
 			break;
 		case LEFT_UP:
 			endYCoordinate = 0 - 150;
-			endXCoordinate = 0;
+			endXCoordinate = 0 - 150;
 			break;
 		case LEFT_DOWN:
 			endYCoordinate = dataClass.getWindowHeight() + 150;
-			endXCoordinate = 0 + 150;
+			endXCoordinate = 0 - 150;
 			break;
 		default:
 			endYCoordinate = yCoordinate;

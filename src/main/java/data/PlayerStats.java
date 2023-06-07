@@ -16,18 +16,18 @@ public class PlayerStats {
 	public static PlayerStats getInstance() {
 		return instance;
 	}
-	
+
 	private float playerDamage;
 	private float hitpoints;
 	private float shieldHitpoints;
 	private float attackSpeed;
 	private float shieldRegenDelay;
 	private float specialAttackSpeed;
-	
+
 	private float maxHitPoints;
 	private float maxShieldHitPoints;
 	private int movementSpeed;
-	
+
 	private ImageEnums currentExhaust;
 	private ImageEnums spaceShipImage;
 	private ImageEnums exhaustImage;
@@ -40,11 +40,11 @@ public class PlayerStats {
 	private int homingRectangleYCoordinate;
 	private int homingRectangleWidth;
 	private int homingRectangleHeight;
-	
+
 	private ImageEnums playerMissileType;
 	private ImageEnums playerMissileImpactType;
 	private float missileImpactScale;
-	
+
 	private PathFinder missilePathFinder;
 
 	public void initDefaultSettings() {
@@ -67,7 +67,7 @@ public class PlayerStats {
 		setBoostedEngineType(ImageEnums.Default_Player_Engine_Boosted);
 		setPlayerEMPType(ImageEnums.Player_EMP);
 	}
-	
+
 	public float getPlayerDamage() {
 		return playerDamage;
 	}
@@ -219,13 +219,19 @@ public class PlayerStats {
 	public void setExhaustImage(ImageEnums exhaustImage) {
 		this.exhaustImage = exhaustImage;
 	}
-	
+
 	public void changeHitPoints(float change) {
-		this.hitpoints += change;
+	    this.hitpoints += change;
+	    if (this.hitpoints > maxHitPoints) {
+	        this.hitpoints = maxHitPoints;
+	    }
 	}
-	
+
 	public void changeShieldHitpoints(float change) {
-		this.shieldHitpoints += change;
+	    this.shieldHitpoints += change;
+	    if (this.shieldHitpoints > maxShieldHitPoints) {
+	        this.shieldHitpoints = maxShieldHitPoints;
+	    }
 	}
 
 	public ImageEnums getPlayerMissileType() {

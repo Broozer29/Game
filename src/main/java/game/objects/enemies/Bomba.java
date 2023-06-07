@@ -55,13 +55,10 @@ public class Bomba extends Enemy {
 		}
 
 		if (currentAttackSpeedFrameCount >= attackSpeedFrameCount) {
-//			missileManager.addEnemyMissile(this.xCoordinate, this.yCoordinate + this.height / 2, "Bomba Projectile",
-//					"Bomba Projectile Explosion", Direction.LEFT, this.scale);
-//			missileManager.addEnemyMissile(this.xCoordinate, this.yCoordinate + this.height / 2, "Bomba Projectile",
-//					"Bomba Projectile Explosion", Direction.LEFT_UP, this.scale);
-//			missileManager.addEnemyMissile(this.xCoordinate, this.yCoordinate + this.height / 2, "Bomba Projectile",
-//					"Bomba Projectile Explosion", Direction.LEFT_DOWN, this.scale);
-
+//			missileManager.addEnemyMissile(this.xCoordinate, this.yCoordinate + this.height / 2, ImageEnums.Bomba_Missile,
+//					ImageEnums.Bomba_Missile_Explosion, Direction.LEFT_UP, this.scale, missilePathFinder);
+//			missileManager.addEnemyMissile(this.xCoordinate, this.yCoordinate + this.height / 2, ImageEnums.Bomba_Missile,
+//					ImageEnums.Bomba_Missile_Explosion, Direction.LEFT, this.scale, missilePathFinder);
 			
 			missileManager.addEnemyMissile(this.xCoordinate, this.yCoordinate + this.height / 2, ImageEnums.Bomba_Missile,
 					ImageEnums.Bomba_Missile_Explosion, Direction.LEFT_DOWN, this.scale, missilePathFinder);

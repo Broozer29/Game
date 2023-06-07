@@ -77,7 +77,7 @@ public class MissileManager {
 				scale, pathFinder);
 
 		this.enemyMissiles.add(missile);
-
+		System.out.println(destination);
 		switch (missileType) {
 		case Alien_Laserbeam:
 			this.alienLaserbeams.add((AlienLaserbeam) missile);
@@ -96,6 +96,9 @@ public class MissileManager {
 			break;
 		case Energizer_Missile:
 			this.energizerProjectiles.add((EnergizerProjectile) missile);
+			break;
+		case Bomba_Missile:
+			this.bombaProjectiles.add((BombaProjectile) missile);
 			break;
 		}
 

@@ -275,8 +275,8 @@ public class GameBoard extends JPanel implements ActionListener {
 	    // Calculate what this percentage is of thirdNumber
 	    int width = (int) Math.ceil(percentage / 100 * healthBarSize);
 	    
-	    if(width > 120) {
-	    	width = 120;
+	    if(width > uiManager.getHealthBarWidth()) {
+	    	width = uiManager.getHealthBarWidth();
 	    } else if (width < 1) {
 	    	width = 1;
 	    }
