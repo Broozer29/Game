@@ -25,7 +25,8 @@ public class Bomba extends Enemy {
 		this.hitPoints = 50;
 		this.maxHitPoints = 50;
 		this.attackSpeedFrameCount = 100;
-		this.movementSpeed = 2;
+		this.XMovementSpeed = 2;
+		this.YMovementSpeed = 1;
 		this.hasAttack = true;
 		this.showHealthBar = true;
 		this.deathSound = AudioEnums.Large_Ship_Destroyed;
@@ -55,11 +56,10 @@ public class Bomba extends Enemy {
 		}
 
 		if (currentAttackSpeedFrameCount >= attackSpeedFrameCount) {
-//			missileManager.addEnemyMissile(this.xCoordinate, this.yCoordinate + this.height / 2, ImageEnums.Bomba_Missile,
-//					ImageEnums.Bomba_Missile_Explosion, Direction.LEFT_UP, this.scale, missilePathFinder);
-//			missileManager.addEnemyMissile(this.xCoordinate, this.yCoordinate + this.height / 2, ImageEnums.Bomba_Missile,
-//					ImageEnums.Bomba_Missile_Explosion, Direction.LEFT, this.scale, missilePathFinder);
-			
+			missileManager.addEnemyMissile(this.xCoordinate, this.yCoordinate + this.height / 2, ImageEnums.Bomba_Missile,
+					ImageEnums.Bomba_Missile_Explosion, Direction.LEFT_UP, this.scale, missilePathFinder);
+			missileManager.addEnemyMissile(this.xCoordinate, this.yCoordinate + this.height / 2, ImageEnums.Bomba_Missile,
+					ImageEnums.Bomba_Missile_Explosion, Direction.LEFT, this.scale, missilePathFinder);
 			missileManager.addEnemyMissile(this.xCoordinate, this.yCoordinate + this.height / 2, ImageEnums.Bomba_Missile,
 					ImageEnums.Bomba_Missile_Explosion, Direction.LEFT_DOWN, this.scale, missilePathFinder);
 			

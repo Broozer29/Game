@@ -77,7 +77,6 @@ public class MissileManager {
 				scale, pathFinder);
 
 		this.enemyMissiles.add(missile);
-		System.out.println(destination);
 		switch (missileType) {
 		case Alien_Laserbeam:
 			this.alienLaserbeams.add((AlienLaserbeam) missile);
@@ -116,17 +115,17 @@ public class MissileManager {
 		if (enemyManager == null) {
 			enemyManager = EnemyManager.getInstance();
 		}
-		for (Missile m : friendlyMissiles) {
-			if (m.isVisible()) {
-				Rectangle r1 = m.getBounds();
+		for (Missile missile : friendlyMissiles) {
+			if (missile.isVisible()) {
+				Rectangle r1 = missile.getBounds();
 				for (Enemy enemy : enemyManager.getEnemies()) {
 					Rectangle r2 = enemy.getBounds();
 					if (r1.intersects(r2)) {
-						enemy.takeDamage(m.getMissileDamage());
-						if (m.getExplosionAnimation() != null) {
-							animationManager.addUpperAnimation(m.getExplosionAnimation());
+						enemy.takeDamage(missile.getMissileDamage());
+						if (missile.getExplosionAnimation() != null) {
+							animationManager.addUpperAnimation(missile.getExplosionAnimation());
 						}
-						m.setVisible(false);
+						missile.setVisible(false);
 					}
 				}
 			}
@@ -139,15 +138,15 @@ public class MissileManager {
 			animationManager = AnimationManager.getInstance();
 			friendlyManager = FriendlyManager.getInstance();
 		}
-		for (Missile m : enemyMissiles) {
-			if (m.isVisible()) {
-				Rectangle r1 = m.getAnimation().getBounds();
+		for (Missile missile : enemyMissiles) {
+			if (missile.isVisible()) {
+				Rectangle r1 = missile.getAnimation().getBounds();
 				Rectangle r2 = friendlyManager.getSpaceship().getBounds();
 
 				if (r1.intersects(r2)) {
-					friendlyManager.getSpaceship().takeHitpointDamage(m.getMissileDamage());
-					animationManager.addUpperAnimation(m.getExplosionAnimation());
-					m.setVisible(false);
+					friendlyManager.getSpaceship().takeHitpointDamage(missile.getMissileDamage());
+					animationManager.addUpperAnimation(missile.getExplosionAnimation());
+					missile.setVisible(false);
 //					animationManager.addPlayerShieldDamageAnimation();
 				}
 			}

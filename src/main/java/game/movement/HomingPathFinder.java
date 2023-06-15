@@ -7,14 +7,14 @@ import game.managers.FriendlyManager;
 
 public class HomingPathFinder implements PathFinder {
 	@Override
-	public Path findPath(Point start, Point end, int stepSize, Direction fallbackDirection) {
+	public Path findPath(Point start, Point end, int XstepSize, int YStepSize, Direction fallbackDirection) {
 		List<Point> waypoints = new ArrayList<>();
 		waypoints.add(start);
 		return new Path(waypoints, fallbackDirection, true);
 	}
 
 	@Override
-	public Direction getNextStep(Point currentLocation, Path path, int stepSize, Direction fallbackDirection) {
+	public Direction getNextStep(Point currentLocation, Path path, Direction fallbackDirection) {
 		if (shouldRecalculatePath(path)) {
 			return fallbackDirection;
 		} else {

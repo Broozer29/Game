@@ -18,7 +18,8 @@ public class AlienBomb extends Enemy {
 		this.hitPoints = 10;
 		this.maxHitPoints = 10;
 		this.attackSpeedFrameCount = 999999;
-		this.movementSpeed = 1;
+		this.XMovementSpeed = 1;
+		this.YMovementSpeed = 1;
 		this.deathSound = AudioEnums.Destroyed_Explosion;
 		this.hasAttack = false;
 		this.showHealthBar = false;

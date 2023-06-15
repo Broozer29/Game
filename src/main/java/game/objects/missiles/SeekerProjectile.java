@@ -13,7 +13,8 @@ public class SeekerProjectile extends Missile {
 		this.missileDamage = (float) 7.5;
 		setAnimation();
 		this.animation.setFrameDelay(3);
-		this.movementSpeed = 2;
+		this.xMovementSpeed = 2;
+		this.yMovementSpeed = 2;
 		}
 
 	

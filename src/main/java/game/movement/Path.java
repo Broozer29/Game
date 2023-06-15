@@ -48,7 +48,6 @@ public class Path {
 	}
 
 	public void setFallbackDirection(Direction fallbackDirection) {
-//		System.out.println(fallbackDirection);
 		this.fallbackDirection = fallbackDirection;
 	}
 

@@ -14,7 +14,8 @@ public class BulldozerProjectile extends Missile {
 		setAnimation();
 		this.animation.setFrameDelay(3);
 
-		this.movementSpeed = 5;
+		this.xMovementSpeed = 5;
+		this.yMovementSpeed = 2;
 	}
 
 	public void missileAction() {

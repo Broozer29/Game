@@ -63,6 +63,8 @@ public class AudioLoader {
 		case Alien_Bomb_Destroyed:
 			// DUPLICATE
 			return "src/resources/audio/Destroyed Explosion.wav";
+		case Power_Up_Acquired:
+			return "src/resources/audio/PowerUpAcquired.wav";
 		}
 		return null;
 	}

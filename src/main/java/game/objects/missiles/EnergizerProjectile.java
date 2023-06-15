@@ -13,7 +13,8 @@ public class EnergizerProjectile extends Missile {
 		this.missileDamage = (float) 7.5;
 		setAnimation();
 		this.animation.setFrameDelay(3);
-		this.movementSpeed = 5;
+		this.xMovementSpeed = 5;
+		this.yMovementSpeed = 2;
 	}
 	
 	public void missileAction() {

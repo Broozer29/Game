@@ -13,5 +13,6 @@ public enum AudioEnums {
 	Ayasa_The_Reason_Why,
 	Apple_Holder_Remix,
 	Destroyed_Explosion,
+	Power_Up_Acquired,
 	NONE
 }

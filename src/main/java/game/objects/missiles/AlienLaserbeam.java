@@ -12,7 +12,8 @@ public class AlienLaserbeam extends Missile {
 		super(x, y, destination, missileType, explosionType, rotation, scale, pathFinder);
 		loadImage(missileType);
 		this.missileDamage = (float) 2.5;
-		this.movementSpeed = 3;
+		this.xMovementSpeed = 3;
+		this.yMovementSpeed = 2;
 	}
 
 	public void missileAction() {

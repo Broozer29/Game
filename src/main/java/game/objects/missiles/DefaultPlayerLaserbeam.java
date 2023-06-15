@@ -14,7 +14,8 @@ public class DefaultPlayerLaserbeam extends Missile {
 		loadImage(missileType);
 		setAnimation();
 
-		this.movementSpeed = 5;
+		this.xMovementSpeed = 5;
+		this.yMovementSpeed = 2;
 	}
 
 	public void missileAction() {

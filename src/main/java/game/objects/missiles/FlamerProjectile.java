@@ -13,8 +13,8 @@ public class FlamerProjectile extends Missile {
 		this.missileDamage = (float) 7.5;
 		setAnimation();
 		this.animation.setFrameDelay(3);
-
-		this.movementSpeed = 5;
+		this.yMovementSpeed = 2;
+		this.xMovementSpeed = 5;
 	}
 
 	public void missileAction() {

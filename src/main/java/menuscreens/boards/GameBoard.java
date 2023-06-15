@@ -31,11 +31,13 @@ import game.managers.FriendlyManager;
 import game.managers.FriendlyObjectManager;
 import game.managers.LevelSpawnerManager;
 import game.managers.MissileManager;
+import game.managers.PowerUpManager;
 import game.managers.TimerManager;
 import game.objects.BackgroundObject;
 import game.objects.Explosion;
 import game.objects.enemies.Enemy;
 import game.objects.friendlies.FriendlyObject;
+import game.objects.friendlies.PowerUp;
 import game.objects.missiles.Missile;
 import image.objects.Sprite;
 import image.objects.SpriteAnimation;
@@ -68,6 +70,7 @@ public class GameBoard extends JPanel implements ActionListener {
 	private FriendlyObjectManager friendlyObjectManager = FriendlyObjectManager.getInstance();
 	private PlayerStats playerStats = PlayerStats.getInstance();
 	private CustomUIManager uiManager = CustomUIManager.getInstance();
+	private PowerUpManager powerUpManager = PowerUpManager.getInstance();
 	
 
 	public GameBoard() {
@@ -82,6 +85,8 @@ public class GameBoard extends JPanel implements ActionListener {
 		explosionManager = ExplosionManager.getInstance();
 		friendlyObjectManager = FriendlyObjectManager.getInstance();
 		playerStats = PlayerStats.getInstance();
+		uiManager = CustomUIManager.getInstance();
+		powerUpManager = PowerUpManager.getInstance();
 		initBoard();
 	}
 
@@ -120,6 +125,7 @@ public class GameBoard extends JPanel implements ActionListener {
 		// Add playerstats
 		// Add friendly object manager
 		// Add UImanager
+		// Add Powerup manahger
 	}
 
 	@Override
@@ -191,6 +197,12 @@ public class GameBoard extends JPanel implements ActionListener {
 				drawAnimation(g, friendly.getAnimation());
 			}
 		}
+		
+		for (PowerUp powerUp : powerUpManager.getPowerUpsOnTheField()) {
+			if(powerUp.isVisible()) {
+				drawImage(g, powerUp);
+			}
+		}
 
 		drawPlayerHealthBars(g);
 
@@ -239,13 +251,6 @@ public class GameBoard extends JPanel implements ActionListener {
 		
 		UIObject healthFrame = uiManager.getHealthFrame();
 		drawImage(g, healthFrame);
-//		float playerHealthFactor = playerHealth / playerMaxHealth;
-//		int actualHealthAmount = (int) Math.round(200 * playerHealthFactor);
-//
-//		g.setColor(Color.RED);
-//		g.fillRect(10, 30, 200, 15);
-//		g.setColor(Color.GREEN);
-//		g.fillRect(10, 30, actualHealthAmount, 15);
 
 		float playerShields = playerStats.getShieldHitpoints();
 		float playerMaxShields = playerStats.getMaxShieldHitPoints();
@@ -260,12 +265,6 @@ public class GameBoard extends JPanel implements ActionListener {
 		UIObject shieldFrame = uiManager.getShieldFrame();
 		drawImage(g, shieldFrame);
 		
-//		float playerShieldFactor = playerShields / playerMaxShields;
-//		int actualShieldAmount = (int) Math.round(200 * playerShieldFactor);
-//		g.setColor(Color.BLUE);
-//		g.fillRect(10, 50, 200, 15);
-//		g.setColor(Color.CYAN);
-//		g.fillRect(10, 50, actualShieldAmount, 15);
 
 	}
 	
@@ -313,6 +312,7 @@ public class GameBoard extends JPanel implements ActionListener {
 			audioDatabase.updateGameTick();
 			explosionManager.updateGametick();
 			friendlyObjectManager.updateGameTick();
+			powerUpManager.updateGameTick();
 		}
 
 		repaint();
