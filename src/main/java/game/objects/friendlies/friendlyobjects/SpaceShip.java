@@ -1,4 +1,4 @@
-package game.objects.friendlies;
+package game.objects.friendlies.friendlyobjects;
 
 import java.awt.event.KeyEvent;
 import java.io.IOException;
@@ -11,6 +11,7 @@ import java.util.Set;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
 import data.DataClass;
+import data.PlayerPowerUpEffects;
 import data.PlayerStats;
 import data.audio.AudioEnums;
 import data.image.enums.ImageEnums;
@@ -36,6 +37,7 @@ public class SpaceShip extends Sprite {
 	private AudioManager audioManager = AudioManager.getInstance();
 	private FriendlyManager friendlyManager = FriendlyManager.getInstance();
 	private PlayerStats playerStats = PlayerStats.getInstance();
+	private PlayerPowerUpEffects powerUpEffects = PlayerPowerUpEffects.getInstance();
 
 	private List<SpriteAnimation> playerFollowingAnimations = new ArrayList<SpriteAnimation>();
 	private List<FriendlyObject> playerFollowingObjects = new ArrayList<FriendlyObject>();
@@ -43,6 +45,7 @@ public class SpaceShip extends Sprite {
 	public SpaceShip() {
 		super(DataClass.getInstance().getWindowWidth() / 10, DataClass.getInstance().getWindowHeight() / 2, 1);
 		playerStats = PlayerStats.getInstance();
+		powerUpEffects = PlayerPowerUpEffects.getInstance();
 		loadImage(playerStats.getSpaceShipImage());
 		setExhaustAnimation(playerStats.getExhaustImage());
 		initShip();
@@ -65,6 +68,7 @@ public class SpaceShip extends Sprite {
 		currentShieldRegenDelayFrame = 0;
 		currentSpecialAttackFrame = 100;
 		playerStats.initDefaultSettings();
+		powerUpEffects.initDefaultSettings();
 	}
 
 	public void addShieldDamageAnimation() {
@@ -124,7 +128,7 @@ public class SpaceShip extends Sprite {
 		if (currentShieldRegenDelayFrame >= playerStats.getShieldRegenDelay()) {
 			if (playerStats.getShieldHitpoints() < playerStats.getMaxShieldHitPoints()) {
 				repairShields((float) 0.4);
-				repairHealth((float)(0.4));
+				repairHealth((float) (0.4));
 			}
 		}
 	}
@@ -161,7 +165,7 @@ public class SpaceShip extends Sprite {
 	}
 
 	// Launch a missile from the center point of the spaceship
-	private void fire() {
+	private void fire() throws UnsupportedAudioFileException, IOException {
 		if (missileManager == null || friendlyManager == null || audioManager == null) {
 			missileManager = MissileManager.getInstance();
 			friendlyManager = FriendlyManager.getInstance();
@@ -169,14 +173,37 @@ public class SpaceShip extends Sprite {
 		}
 
 		if (currentAttackFrame >= playerStats.getAttackSpeed()) {
-			try {
-				this.audioManager.addAudio(AudioEnums.Player_Laserbeam);
+			this.currentAttackFrame = 0;
+
+			if (powerUpEffects.getTripleShotActive()) {
+				this.missileManager.firePlayerMissile(xCoordinate + width, yCoordinate + (height / 2) - 5,
+						playerStats.getPlayerMissileType(), playerStats.getPlayerMissileImpactType(),
+						Direction.RIGHT_UP, playerStats.getMissileImpactScale(), playerStats.getMissilePathFinder());
+				this.missileManager.firePlayerMissile(xCoordinate + width, yCoordinate + (height / 2) - 5,
+						playerStats.getPlayerMissileType(), playerStats.getPlayerMissileImpactType(),
+						Direction.RIGHT_DOWN, playerStats.getMissileImpactScale(), playerStats.getMissilePathFinder());
 				this.missileManager.firePlayerMissile(xCoordinate + width, yCoordinate + (height / 2) - 5,
 						playerStats.getPlayerMissileType(), playerStats.getPlayerMissileImpactType(), Direction.RIGHT,
 						playerStats.getMissileImpactScale(), playerStats.getMissilePathFinder());
-				this.currentAttackFrame = 0;
-			} catch (UnsupportedAudioFileException | IOException e) {
-				e.printStackTrace();
+				this.audioManager.addAudio(AudioEnums.Player_Laserbeam);
+				this.audioManager.addAudio(AudioEnums.Player_Laserbeam);
+
+			} else if (powerUpEffects.getDoubleShotActive()) {
+				this.missileManager.firePlayerMissile(xCoordinate + width, yCoordinate + (height / 2) - 5,
+						playerStats.getPlayerMissileType(), playerStats.getPlayerMissileImpactType(), Direction.RIGHT_UP,
+						playerStats.getMissileImpactScale(), playerStats.getMissilePathFinder());
+				this.missileManager.firePlayerMissile(xCoordinate + width, yCoordinate + (height / 2) - 5,
+						playerStats.getPlayerMissileType(), playerStats.getPlayerMissileImpactType(), Direction.RIGHT,
+						playerStats.getMissileImpactScale(), playerStats.getMissilePathFinder());
+				this.audioManager.addAudio(AudioEnums.Player_Laserbeam);
+				this.audioManager.addAudio(AudioEnums.Player_Laserbeam);
+
+			} else {
+				this.missileManager.firePlayerMissile(xCoordinate + width, yCoordinate + (height / 2) - 5,
+						playerStats.getPlayerMissileType(), playerStats.getPlayerMissileImpactType(), Direction.RIGHT,
+						playerStats.getMissileImpactScale(), playerStats.getMissilePathFinder());
+				this.audioManager.addAudio(AudioEnums.Player_Laserbeam);
+
 			}
 		}
 	}
@@ -234,7 +261,11 @@ public class SpaceShip extends Sprite {
 			for (Iterator<Integer> it = pressedKeys.iterator(); it.hasNext();) {
 				switch (it.next()) {
 				case (KeyEvent.VK_SPACE):
-					fire();
+					try {
+						fire();
+					} catch (UnsupportedAudioFileException | IOException e1) {
+						e1.printStackTrace();
+					}
 					break;
 				case (KeyEvent.VK_A):
 				case (KeyEvent.VK_LEFT):

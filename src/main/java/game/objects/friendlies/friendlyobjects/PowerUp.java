@@ -1,10 +1,14 @@
-package game.objects.friendlies;
+package game.objects.friendlies.friendlyobjects;
 
 import data.image.enums.ImageEnums;
+import game.managers.TimerManager;
 import game.movement.Direction;
 import game.movement.Path;
 import game.movement.Point;
 import game.movement.PowerUpDirectionBouncer;
+import game.objects.friendlies.PowerUpEffect;
+import game.objects.friendlies.PowerUps;
+import game.spawner.PowerUpTimer;
 import image.objects.Sprite;
 
 public class PowerUp extends Sprite{
@@ -56,10 +60,17 @@ public class PowerUp extends Sprite{
 	    
 	}
 	
-	public void activatePowerUp() {
-		//TO DO
-		// Use TimerManager!!!
+	public void activatePowerUpTimer() {
+		PowerUpTimer powerUpTimer = new PowerUpTimer(10, this, false);
+		TimerManager timerManager = TimerManager.getInstance();
+		timerManager.addPowerUpTimerToList(powerUpTimer);
 	}
+	
+	public void activatePowerEffect() {
+		PowerUpEffect powerUpEffect = new PowerUpEffect(powerUpType);
+		powerUpEffect.activatePowerEffect();
+	}
+	
 	
 	public Direction getDirection() {
 		return direction;

@@ -5,13 +5,16 @@ import java.util.List;
 
 import data.image.enums.EnemyEnums;
 import game.movement.Direction;
+import game.objects.friendlies.friendlyobjects.PowerUp;
 import game.spawner.EnemySpawnTimer;
+import game.spawner.PowerUpTimer;
 
 public class TimerManager {
 
 	private static TimerManager instance = new TimerManager();
 	private LevelSpawnerManager levelManager = LevelSpawnerManager.getInstance();
-	private List<EnemySpawnTimer> allTimers = new ArrayList<EnemySpawnTimer>();
+	private List<EnemySpawnTimer> allEnemyTimers = new ArrayList<EnemySpawnTimer>();
+	private List<PowerUpTimer> allPowerUpTimers = new ArrayList<PowerUpTimer>();
 
 	private TimerManager() {
 
@@ -26,10 +29,10 @@ public class TimerManager {
 	}
 
 	public void resetManager() {
-		for (int i = 0; i < allTimers.size(); i++) {
-			EnemySpawnTimer selectedTimer = allTimers.get(i);
+		for (int i = 0; i < allEnemyTimers.size(); i++) {
+			EnemySpawnTimer selectedTimer = allEnemyTimers.get(i);
 			selectedTimer.stopTimer();
-			removeTimerFromList(selectedTimer);
+			removeEnemyTimerFromList(selectedTimer);
 		}
 	}
 
@@ -44,8 +47,8 @@ public class TimerManager {
 
 	// Timers die afgelopen zijn, verwijderen
 	public void updateTimers() {
-		for (int i = 0; i < allTimers.size(); i++) {
-			EnemySpawnTimer selectedTimer = allTimers.get(i);
+		for (int i = 0; i < allEnemyTimers.size(); i++) {
+			EnemySpawnTimer selectedTimer = allEnemyTimers.get(i);
 			if (!selectedTimer.getFinished()) {
 				switch (selectedTimer.getStatus()) {
 				case ("primed"):
@@ -53,24 +56,53 @@ public class TimerManager {
 					break;
 				case ("finished"):
 					selectedTimer.stopTimer();
-					removeTimerFromList(selectedTimer);
+					removeEnemyTimerFromList(selectedTimer);
 					break;
 				case ("running"):
 					break;
 				}
 			}
 			if (selectedTimer.getFinished()) {
-				removeTimerFromList(selectedTimer);
+				removeEnemyTimerFromList(selectedTimer);
+			}
+		}
+
+		for (int i = 0; i < allPowerUpTimers.size(); i++) {
+			PowerUpTimer selectedTimer = allPowerUpTimers.get(i);
+			if (!selectedTimer.getFinished()) {
+				switch (selectedTimer.getStatus()) {
+				case ("primed"):
+					selectedTimer.startTimer();
+					break;
+				case ("finished"):
+					selectedTimer.stopTimer();
+					removePowerUpTimerFromList(selectedTimer);
+					break;
+				case ("running"):
+					break;
+				}
+			}
+			if (selectedTimer.getFinished()) {
+				removePowerUpTimerFromList(selectedTimer);
 			}
 		}
 	}
 
-	private void removeTimerFromList(EnemySpawnTimer timerToRemove) {
-		allTimers.remove(timerToRemove);
+	private void removeEnemyTimerFromList(EnemySpawnTimer timerToRemove) {
+		allEnemyTimers.remove(timerToRemove);
 	}
 
-	public void addTimerToList(EnemySpawnTimer timerToAdd) {
-		allTimers.add(timerToAdd);
+	private void removePowerUpTimerFromList(PowerUpTimer timerToRemove) {
+		allPowerUpTimers.remove(timerToRemove);
+	}
+
+	public void addEnemyTimerToList(EnemySpawnTimer timerToAdd) {
+		allEnemyTimers.add(timerToAdd);
+
+	}
+
+	public void addPowerUpTimerToList(PowerUpTimer timerToAdd) {
+		allPowerUpTimers.add(timerToAdd);
 	}
 
 	// Called by the timer itself when it's time to activate
@@ -91,6 +123,15 @@ public class TimerManager {
 		} else {
 			timer.stopTimer();
 		}
+	}
 
+	public void activatePowerUpTimer(PowerUpTimer timer, PowerUp powerUp) {
+		powerUp.activatePowerEffect();
+		
+		if (timer.getLoopable()) {
+			timer.refreshTimer();
+		} else {
+			timer.stopTimer();
+		}
 	}
 }

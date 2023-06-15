@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import data.DataClass;
-import game.objects.friendlies.PowerUp;
+import game.objects.friendlies.friendlyobjects.PowerUp;
 
 public class PowerUpDirectionBouncer {
 

@@ -1,4 +1,4 @@
-package game.objects.friendlies;
+package game.objects.friendlies.friendlyobjects;
 
 import image.objects.SpriteAnimation;
 import image.objects.Sprite;

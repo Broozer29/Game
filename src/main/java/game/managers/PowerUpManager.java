@@ -9,8 +9,9 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 
 import data.audio.AudioEnums;
 import game.movement.Direction;
-import game.objects.friendlies.PowerUp;
 import game.objects.friendlies.PowerUps;
+import game.objects.friendlies.friendlyobjects.PowerUp;
+import game.spawner.PowerUpTimer;
 
 public class PowerUpManager {
 
@@ -18,15 +19,14 @@ public class PowerUpManager {
 	private List<PowerUp> powerUpsOnTheField = new ArrayList<PowerUp>();
 
 	private PowerUpManager() {
-		PowerUp newPowerUp = new PowerUp(500, 500, 1, Direction.LEFT_DOWN, PowerUps.DOUBLE_SHOT);
-		addPowerUp(newPowerUp);
+		createPowerUp();
 	}
 
 	public static PowerUpManager getInstance() {
 		return instance;
 	}
 
-	public void addPowerUp(PowerUp powerUp) {
+	public void addNewPowerUpToField(PowerUp powerUp) {
 		if (!this.powerUpsOnTheField.contains(powerUp)) {
 			this.powerUpsOnTheField.add(powerUp);
 		}
@@ -64,7 +64,7 @@ public class PowerUpManager {
 				Rectangle r1 = powerUp.getBounds();
 				Rectangle r2 = friendlyManager.getSpaceship().getBounds();
 				if (r1.intersects(r2)) {
-					powerUp.activatePowerUp();
+					powerUp.activatePowerUpTimer();
 					powerUp.setVisible(false);
 					try {
 						audioManager.addAudio(AudioEnums.Power_Up_Acquired);
@@ -74,6 +74,14 @@ public class PowerUpManager {
 				}
 			}
 		}
+	}
+	
+	private void createPowerUp() {
+		PowerUp newPowerUp = new PowerUp(500, 500, 1, Direction.LEFT_DOWN, PowerUps.DOUBLE_SHOT);
+		powerUpsOnTheField.add(newPowerUp);
+		
+		PowerUp newPowerUp2 = new PowerUp(100, 100, 1, Direction.LEFT_UP, PowerUps.TRIPLE_SHOT);
+		powerUpsOnTheField.add(newPowerUp2);
 	}
 
 }

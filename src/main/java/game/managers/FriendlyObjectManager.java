@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import game.objects.enemies.Enemy;
-import game.objects.friendlies.FriendlyObject;
+import game.objects.friendlies.friendlyobjects.FriendlyObject;
 import image.objects.SpriteAnimation;
 
 public class FriendlyObjectManager {

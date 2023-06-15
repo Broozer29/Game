@@ -5,7 +5,7 @@ import java.util.List;
 
 import data.PlayerStats;
 import data.image.enums.ImageEnums;
-import game.objects.friendlies.SpaceShip;
+import game.objects.friendlies.friendlyobjects.SpaceShip;
 
 public class FriendlyManager {
 
