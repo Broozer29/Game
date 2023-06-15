@@ -42,6 +42,7 @@ public enum ImageEnums {
 	Default_Player_Shield_Damage,
 	Player_Fireswirl,
 	Player_EMP,
+	Player_EMP_Plus,
 	
 	////Background Objects
 	Moon,
@@ -79,6 +80,7 @@ public enum ImageEnums {
 	Purple_Nebula_5,
 	Purple_Nebula_6,
 	Purple_Nebula_7,
+	
 	//Missile Animations
 	Seeker_Missile,
 	Tazer_Missile,

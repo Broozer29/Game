@@ -1,6 +1,8 @@
 package data.image;
 
+import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -78,6 +80,7 @@ public class ImageDatabase {
 	private List<Image> playerEngineFrames = new ArrayList<Image>();
 	private List<Image> playerFireSwirlFrames = new ArrayList<Image>();
 	private List<Image> playerEMPFrames = new ArrayList<Image>();
+	private List<Image> playerEMPPlusFrames = new ArrayList<Image>();
 	private List<Image> defaultPlayerEngineBoostedFrames = new ArrayList<Image>();
 	private List<Image> defaultPlayerShieldDamage = new ArrayList<Image>();
 
@@ -148,386 +151,6 @@ public class ImageDatabase {
 	private Image purpleNebula6;
 	private Image purpleNebula7;
 
-	public ImageLoader getImgLoader() {
-		return imgLoader;
-	}
-
-	public Image getSpaceShipImage() {
-		return spaceShipImage;
-	}
-
-	public Image getAlienSpaceshipImage() {
-		return alienSpaceshipImage;
-	}
-
-	public Image getAlienBombImage() {
-		return alienBombImage;
-	}
-
-	public Image getSeekerImage() {
-		return seekerImage;
-	}
-
-	public Image getTazerImage() {
-		return tazerImage;
-	}
-
-	public Image getEnergizerImage() {
-		return energizerImage;
-	}
-
-	public Image getBulldozerImage() {
-		return bulldozerImage;
-	}
-
-	public Image getFlamerImage() {
-		return flamerImage;
-	}
-
-	public Image getBombaImage() {
-		return bombaImage;
-	}
-
-	public Image getAlienLaserbeamImage() {
-		return alienLaserbeamImage;
-	}
-
-	public Image getLaserBeamImage() {
-		return laserBeamImage;
-	}
-
-	public Image getStartGameImage() {
-		return startGameImage;
-	}
-
-	public Image getUserOneImage() {
-		return userOneImage;
-	}
-
-	public Image getUserTwoImage() {
-		return userTwoImage;
-	}
-
-	public Image getUserThreeImage() {
-		return userThreeImage;
-	}
-
-	public Image getSelectUserMenuImage() {
-		return selectUserMenuImage;
-	}
-
-	public Image getUserMenuToMainMenu() {
-		return userMenuToMainMenu;
-	}
-
-	public Image getHealthBarImage() {
-		return healthBarImage;
-	}
-
-	public Image getShieldBarImage() {
-		return shieldBarImage;
-	}
-
-	public Image getFrame() {
-		return Frame;
-	}
-
-	public Image getIconBorder() {
-		return iconBorder;
-	}
-
-	public Image getRedFilling() {
-		return redFilling;
-	}
-
-	public Image getGoldFilling() {
-		return goldFilling;
-	}
-
-	public List<Image> getImpactExplosionOneFrames() {
-		return impactExplosionOneFrames;
-	}
-
-	public List<Image> getDestroyedExplosionUpFrames() {
-		return destroyedExplosionUpFrames;
-	}
-
-	public List<Image> getDestroyedExplosionLeftFrames() {
-		return destroyedExplosionLeftFrames;
-	}
-
-	public List<Image> getDestroyedExplosionRightFrames() {
-		return destroyedExplosionRightFrames;
-	}
-
-	public List<Image> getDestroyedExplosionDownFrames() {
-		return destroyedExplosionDownFrames;
-	}
-
-	public List<Image> getAlienBombExplosionFrames() {
-		return alienBombExplosionFrames;
-	}
-
-	public List<Image> getImplosionFrames() {
-		return implosionFrames;
-	}
-
-	public List<Image> getSeekerDestroyedExplosionFrames() {
-		return seekerDestroyedExplosionFrames;
-	}
-
-	public List<Image> getTazerDestroyedExplosionFrames() {
-		return tazerDestroyedExplosionFrames;
-	}
-
-	public List<Image> getEnergizerDestroyedExplosionFrames() {
-		return energizerDestroyedExplosionFrames;
-	}
-
-	public List<Image> getBulldozerDestroyedExplosionFrames() {
-		return bulldozerDestroyedExplosionFrames;
-	}
-
-	public List<Image> getFlamerDestroyedExplosionFrames() {
-		return flamerDestroyedExplosionFrames;
-	}
-
-	public List<Image> getBombaDestroyedExplosionFrames() {
-		return bombaDestroyedExplosionFrames;
-	}
-
-	public List<Image> getPlayerEngineFrames() {
-		return playerEngineFrames;
-	}
-
-	public List<Image> getPlayerFireSwirlFrames() {
-		return playerFireSwirlFrames;
-	}
-
-	public List<Image> getPlayerEMPFrames() {
-		return playerEMPFrames;
-	}
-
-	public List<Image> getDefaultPlayerEngineBoostedFrames() {
-		return defaultPlayerEngineBoostedFrames;
-	}
-
-	public List<Image> getDefaultPlayerShieldDamage() {
-		return defaultPlayerShieldDamage;
-	}
-
-	public List<Image> getSeekerProjectileFrames() {
-		return seekerProjectileFrames;
-	}
-
-	public List<Image> getTazerProjectileFrames() {
-		return tazerProjectileFrames;
-	}
-
-	public List<Image> getEnergizerProjectileFrames() {
-		return energizerProjectileFrames;
-	}
-
-	public List<Image> getBulldozerProjectileFrames() {
-		return bulldozerProjectileFrames;
-	}
-
-	public List<Image> getFlamerProjectileFrames() {
-		return flamerProjectileFrames;
-	}
-
-	public List<Image> getBombaProjectileFrames() {
-		return bombaProjectileFrames;
-	}
-
-	public List<Image> getSeekerNormalExhaustFrames() {
-		return seekerNormalExhaustFrames;
-	}
-
-	public List<Image> getSeekerLargeExhaustFrames() {
-		return seekerLargeExhaustFrames;
-	}
-
-	public List<Image> getTazerNormalExhaustFrames() {
-		return tazerNormalExhaustFrames;
-	}
-
-	public List<Image> getTazerLargeExhaustFrames() {
-		return tazerLargeExhaustFrames;
-	}
-
-	public List<Image> getEnergizerNormalExhaustFrames() {
-		return energizerNormalExhaustFrames;
-	}
-
-	public List<Image> getEnergizerLargeExhaustFrames() {
-		return energizerLargeExhaustFrames;
-	}
-
-	public List<Image> getBulldozerNormalExhaustFrames() {
-		return bulldozerNormalExhaustFrames;
-	}
-
-	public List<Image> getBulldozerLargeExhaustFrames() {
-		return bulldozerLargeExhaustFrames;
-	}
-
-	public List<Image> getFlamerNormalExhaustFrames() {
-		return flamerNormalExhaustFrames;
-	}
-
-	public List<Image> getFlamerLargeExhaustFrames() {
-		return flamerLargeExhaustFrames;
-	}
-
-	public List<Image> getBombaNormalExhaustFrames() {
-		return bombaNormalExhaustFrames;
-	}
-
-	public List<Image> getBombaLargeExhaustFrames() {
-		return bombaLargeExhaustFrames;
-	}
-
-	public List<Image> getSeekerProjectileExplosion() {
-		return seekerProjectileExplosion;
-	}
-
-	public List<Image> getTazerProjectileExplosion() {
-		return tazerProjectileExplosion;
-	}
-
-	public List<Image> getEnergizerProjectileExplosion() {
-		return energizerProjectileExplosion;
-	}
-
-	public List<Image> getBulldozerProjectileExplosion() {
-		return bulldozerProjectileExplosion;
-	}
-
-	public List<Image> getFlamerProjectileExplosion() {
-		return flamerProjectileExplosion;
-	}
-
-	public List<Image> getBombaProjectileExplosion() {
-		return bombaProjectileExplosion;
-	}
-
-	public Image getMoon() {
-		return moon;
-	}
-
-	public Image getLavaPlanet() {
-		return lavaPlanet;
-	}
-
-	public Image getMarsPlanet() {
-		return marsPlanet;
-	}
-
-	public Image getPlanetOne() {
-		return planetOne;
-	}
-
-	public Image getPlanetTwo() {
-		return planetTwo;
-	}
-
-	public Image getPlanetThree() {
-		return planetThree;
-	}
-
-	public Image getStar() {
-		return star;
-	}
-
-	public Image getBlueNebula1() {
-		return blueNebula1;
-	}
-
-	public Image getBlueNebula2() {
-		return blueNebula2;
-	}
-
-	public Image getBlueNebula3() {
-		return blueNebula3;
-	}
-
-	public Image getBlueNebula4() {
-		return blueNebula4;
-	}
-
-	public Image getBlueNebula5() {
-		return blueNebula5;
-	}
-
-	public Image getBlueNebula6() {
-		return blueNebula6;
-	}
-
-	public Image getGreenNebula1() {
-		return greenNebula1;
-	}
-
-	public Image getGreenNebula2() {
-		return greenNebula2;
-	}
-
-	public Image getGreenNebula3() {
-		return greenNebula3;
-	}
-
-	public Image getGreenNebula4() {
-		return greenNebula4;
-	}
-
-	public Image getGreenNebula5() {
-		return greenNebula5;
-	}
-
-	public Image getGreenNebula6() {
-		return greenNebula6;
-	}
-
-	public Image getGreenNebula7() {
-		return greenNebula7;
-	}
-
-	public Image getPurpleNebula1() {
-		return purpleNebula1;
-	}
-
-	public Image getPurpleNebula2() {
-		return purpleNebula2;
-	}
-
-	public Image getPurpleNebula3() {
-		return purpleNebula3;
-	}
-
-	public Image getPurpleNebula4() {
-		return purpleNebula4;
-	}
-
-	public Image getPurpleNebula5() {
-		return purpleNebula5;
-	}
-
-	public Image getPurpleNebula6() {
-		return purpleNebula6;
-	}
-
-	public Image getPurpleNebula7() {
-		return purpleNebula7;
-	}
-
-	public Image getTestImage() {
-		return testImage;
-	}
-
-	public List<Image> getDefaultPlayerEngine() {
-		return defaultPlayerEngine;
-	}
-
 	// testimages
 	private Image testImage;
 
@@ -555,6 +178,7 @@ public class ImageDatabase {
 		this.initProjectiles();
 		this.initPNGtoGIFAnimation();
 		this.initGameUIobjects();
+		this.initSpriteSheets();
 	}
 
 	private void initFriendlies() {
@@ -633,7 +257,7 @@ public class ImageDatabase {
 		this.purpleNebula5 = imgLoader.getImage(ImageEnums.Purple_Nebula_5);
 		this.purpleNebula6 = imgLoader.getImage(ImageEnums.Purple_Nebula_6);
 		this.purpleNebula7 = imgLoader.getImage(ImageEnums.Purple_Nebula_7);
-		
+
 	}
 
 	public Image getImage(ImageEnums imageType) {
@@ -849,6 +473,8 @@ public class ImageDatabase {
 			return this.playerFireSwirlFrames;
 		case Player_EMP:
 			return this.playerEMPFrames;
+		case Player_EMP_Plus:
+			return this.playerEMPPlusFrames;
 		}
 		return null;
 	}
@@ -1040,6 +666,12 @@ public class ImageDatabase {
 		}
 
 	}
+	
+	private void initSpriteSheets() {
+		Image empImage = imgLoader.getImage(ImageEnums.Player_EMP_Plus);
+		playerEMPPlusFrames = cutSpriteSheetToImages(empImage, 8, 8);
+				
+	}
 
 	private List<Image> gifToImageIcons(ImageReader reader) throws IOException {
 		int n = reader.getNumImages(true);
@@ -1050,40 +682,37 @@ public class ImageDatabase {
 		return imgs;
 	}
 
-	public Image getModel3BetterUpgrade() {
-		return model3BetterUpgrade;
-	}
-
-	public Image getWarmNebula() {
-		return warmNebula;
-	}
-
-	public Image getColdNebula() {
-		return coldNebula;
-	}
-
-	public Image getRegularNebula() {
-		return regularNebula;
+	private List<Image> cutSpriteSheetToImages(Image image, int rows, int cols) {
+		final int spriteWidth = image.getWidth(null) / cols; // width of a single sprite
+		final int spriteHeight = image.getHeight(null) / rows; // height of a single sprite
+		List<Image> sprites = new ArrayList<Image>();
+		BufferedImage spriteSheetImage = toBufferedImage(image);
+		// load the sprite sheet
+		// split the sprite sheet into individual sprites
+		for (int i = 0; i < rows; i++) {
+			for (int j = 0; j < cols; j++) {
+				// get the subimage from the sprite sheet
+				Image sprite = spriteSheetImage.getSubimage(j * spriteWidth, i * spriteHeight, spriteWidth,
+						spriteHeight);
+				sprites.add(sprite);
+			}
+		}
+		
+		return sprites;
 	}
 	
-	public Image getParralex1() {
-		return parralex1;
-	}
+	private BufferedImage toBufferedImage(Image image) {
+		if (image instanceof BufferedImage) {
+			return (BufferedImage) image;
+		}
 
-	public Image getParralex2() {
-		return parralex2;
-	}
+		BufferedImage buff = new BufferedImage(image.getWidth(null), image.getHeight(null),
+				BufferedImage.TYPE_INT_ARGB);
+		Graphics2D g = buff.createGraphics();
+		g.drawImage(image, 0, 0, null);
+		g.dispose();
 
-	public Image getParralex3() {
-		return parralex3;
-	}
-
-	public Image getParralex4() {
-		return parralex4;
-	}
-
-	public Image getParralex5() {
-		return parralex5;
+		return buff;
 	}
 
 }

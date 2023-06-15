@@ -151,6 +151,8 @@ public class ImageLoader {
 			return "src/resources/images/background/Parallex_4.png";
 		case Parallex_5:
 			return "src/resources/images/background/Parallex_5.png";
+		case Player_EMP_Plus:
+			return "src/resources/images/gif/SpriteSheets/Player_Default_EMP.png";
 		default:
 			break;
 			
