@@ -8,6 +8,8 @@ import java.util.List;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
 import data.DataClass;
+import data.audio.AudioEnums;
+import data.image.enums.ImageEnums;
 import game.objects.enemies.Alien;
 import game.objects.enemies.AlienBomb;
 import game.objects.enemies.Bomba;
@@ -95,8 +97,8 @@ public class EnemyManager {
 
 	private void detonateAlienBomb(Enemy enemy) throws UnsupportedAudioFileException, IOException {
 		animationManager.createAndAddUpperAnimation(enemy.getXCoordinate(), enemy.getYCoordinate(),
-				"Alien Bomb Explosion", false, 1);
-		audioManager.addAudio("Alien Bomb Impact");
+				ImageEnums.Alien_Bomb_Explosion, false, 1);
+		audioManager.addAudio(AudioEnums.Alien_Bomb_Impact);
 		enemy.setVisible(false);
 	}
 
@@ -127,28 +129,28 @@ public class EnemyManager {
 		}
 
 		switch (enemy.getEnemyType()) {
-		case ("Alien Bomb"):
+		case Alien_Bomb:
 			alienBombList.add((AlienBomb) enemy);
 			break;
-		case ("Flamer"):
+		case Flamer:
 			flamerList.add((Flamer) enemy);
 			break;
-		case ("Tazer"):
+		case Tazer:
 			tazerList.add((Tazer) enemy);
 			break;
-		case ("Seeker"):
+		case Seeker:
 			seekerList.add((Seeker) enemy);
 			break;
-		case ("Bomba"):
+		case Bomba:
 			bombaList.add((Bomba) enemy);
 			break;
-		case ("Bulldozer"):
+		case Bulldozer:
 			bulldozerList.add((Bulldozer) enemy);
 			break;
-		case ("Energizer"):
+		case Energizer:
 			energizerList.add((Energizer) enemy);
 			break;
-		case ("Alien"):
+		case Alien:
 			alienList.add((Alien) enemy);
 			break;
 		}
@@ -166,28 +168,28 @@ public class EnemyManager {
 
 	private void removeEnemyFromSpecialisedList(Enemy enemy) {
 		switch (enemy.getEnemyType()) {
-		case ("Alien"):
+		case Alien:
 			alienList.remove(enemy);
 			break;
-		case ("Alien Bomb"):
+		case Alien_Bomb:
 			alienBombList.remove(enemy);
 			break;
-		case ("Tazer"):
+		case Tazer:
 			tazerList.remove(enemy);
 			break;
-		case ("Energizer"):
+		case Energizer:
 			energizerList.remove(enemy);
 			break;
-		case ("Seeker"):
+		case Seeker:
 			seekerList.remove(enemy);
 			break;
-		case ("Bomba"):
+		case Bomba:
 			bombaList.remove(enemy);
 			break;
-		case ("Flamer"):
+		case Flamer:
 			flamerList.remove(enemy);
 			break;
-		case ("Bulldozer"):
+		case Bulldozer:
 			bulldozerList.remove(enemy);
 			break;
 		}

@@ -17,15 +17,19 @@ import javax.swing.JPanel;
 import javax.swing.Timer;
 
 import data.DataClass;
+import data.PlayerStats;
 import data.audio.AudioDatabase;
+import data.audio.AudioEnums;
+import game.UI.UIObject;
 import game.managers.AnimationManager;
 import game.managers.AudioManager;
 import game.managers.BackgroundManager;
+import game.managers.CustomUIManager;
 import game.managers.EnemyManager;
 import game.managers.ExplosionManager;
 import game.managers.FriendlyManager;
 import game.managers.FriendlyObjectManager;
-import game.managers.LevelManager;
+import game.managers.LevelSpawnerManager;
 import game.managers.MissileManager;
 import game.managers.TimerManager;
 import game.objects.BackgroundObject;
@@ -33,17 +37,17 @@ import game.objects.Explosion;
 import game.objects.enemies.Enemy;
 import game.objects.friendlies.FriendlyObject;
 import game.objects.missiles.Missile;
-import image.objects.SpriteAnimation;
 import image.objects.Sprite;
+import image.objects.SpriteAnimation;
 import menuscreens.BoardManager;
 
 public class GameBoard extends JPanel implements ActionListener {
 
 	private Timer timer;
 	private boolean ingame;
-	private String currentMusic = "DefaultMusic";
+//	private String currentMusic = "DefaultMusic";
 //	private String currentMusic = "Ayasa - The reason why";
-//	private String currentMusic = "";
+	private AudioEnums currentMusic = AudioEnums.NONE;
 
 	private DataClass data = DataClass.getInstance();
 	private AudioDatabase audioDatabase = AudioDatabase.getInstance();
@@ -55,25 +59,29 @@ public class GameBoard extends JPanel implements ActionListener {
 	private AnimationManager animationManager = AnimationManager.getInstance();
 	private EnemyManager enemyManager = EnemyManager.getInstance();
 	private MissileManager missileManager = MissileManager.getInstance();
-	private LevelManager levelManager = LevelManager.getInstance();
+	private LevelSpawnerManager levelManager = LevelSpawnerManager.getInstance();
 	private FriendlyManager friendlyManager = FriendlyManager.getInstance();
 	private AudioManager audioManager = AudioManager.getInstance();
 	private BackgroundManager backgroundManager = BackgroundManager.getInstance();
 	private TimerManager timerManager = TimerManager.getInstance();
 	private ExplosionManager explosionManager = ExplosionManager.getInstance();
 	private FriendlyObjectManager friendlyObjectManager = FriendlyObjectManager.getInstance();
+	private PlayerStats playerStats = PlayerStats.getInstance();
+	private CustomUIManager uiManager = CustomUIManager.getInstance();
+	
 
 	public GameBoard() {
 		animationManager = AnimationManager.getInstance();
 		enemyManager = EnemyManager.getInstance();
 		missileManager = MissileManager.getInstance();
-		levelManager = LevelManager.getInstance();
+		levelManager = LevelSpawnerManager.getInstance();
 		friendlyManager = FriendlyManager.getInstance();
 		audioManager = AudioManager.getInstance();
 		backgroundManager = BackgroundManager.getInstance();
 		timerManager = TimerManager.getInstance();
 		explosionManager = ExplosionManager.getInstance();
 		friendlyObjectManager = FriendlyObjectManager.getInstance();
+		playerStats = PlayerStats.getInstance();
 		initBoard();
 	}
 
@@ -87,6 +95,7 @@ public class GameBoard extends JPanel implements ActionListener {
 		setBackground(Color.BLACK);
 		setPreferredSize(new Dimension(boardWidth, boardHeight));
 		ingame = true;
+		uiManager.createGameBoardGUI();
 		levelManager.startLevel();
 
 		timer.start();
@@ -108,7 +117,9 @@ public class GameBoard extends JPanel implements ActionListener {
 		backgroundManager.resetManager();
 		timerManager.resetManager();
 		// Add explosion manager
+		// Add playerstats
 		// Add friendly object manager
+		// Add UImanager
 	}
 
 	@Override
@@ -217,28 +228,59 @@ public class GameBoard extends JPanel implements ActionListener {
 	}
 
 	private void drawPlayerHealthBars(Graphics g) {
-		float playerHealth = friendlyManager.getSpaceship().getHitpoints();
-		float playerMaxHealth = friendlyManager.getSpaceship().getMaxHitpoints();
+		float playerHealth = playerStats.getHitpoints();
+		float playerMaxHealth = playerStats.getMaxHitPoints();
+		
+		UIObject healthBar = uiManager.getHealthBar();
+		int healthBarWidth = calculateHealthbarWidth(playerHealth, playerMaxHealth, healthBar.getWidth());
+		healthBar.resizeToDimensions(healthBarWidth, healthBar.getHeight());
+		drawImage(g, healthBar);
+		
+		
+		UIObject healthFrame = uiManager.getHealthFrame();
+		drawImage(g, healthFrame);
+//		float playerHealthFactor = playerHealth / playerMaxHealth;
+//		int actualHealthAmount = (int) Math.round(200 * playerHealthFactor);
+//
+//		g.setColor(Color.RED);
+//		g.fillRect(10, 30, 200, 15);
+//		g.setColor(Color.GREEN);
+//		g.fillRect(10, 30, actualHealthAmount, 15);
 
-		float playerHealthFactor = playerHealth / playerMaxHealth;
-		int actualHealthAmount = (int) Math.round(200 * playerHealthFactor);
+		float playerShields = playerStats.getShieldHitpoints();
+		float playerMaxShields = playerStats.getMaxShieldHitPoints();
+		
+		UIObject shieldBar = uiManager.getShieldBar();
+		
+		int shieldBarWidth = calculateHealthbarWidth(playerShields, playerMaxShields, shieldBar.getWidth());
+		shieldBar.resizeToDimensions(shieldBarWidth, shieldBar.getHeight());
+		drawImage(g, shieldBar);
+		
+		
+		UIObject shieldFrame = uiManager.getShieldFrame();
+		drawImage(g, shieldFrame);
+		
+//		float playerShieldFactor = playerShields / playerMaxShields;
+//		int actualShieldAmount = (int) Math.round(200 * playerShieldFactor);
+//		g.setColor(Color.BLUE);
+//		g.fillRect(10, 50, 200, 15);
+//		g.setColor(Color.CYAN);
+//		g.fillRect(10, 50, actualShieldAmount, 15);
 
-		g.setColor(Color.RED);
-		g.fillRect(10, 30, 200, 15);
-		g.setColor(Color.GREEN);
-		g.fillRect(10, 30, actualHealthAmount, 15);
-
-		float playerShields = friendlyManager.getSpaceship().getShieldHitpoints();
-		float playerMaxShields = friendlyManager.getSpaceship().getMaxShieldHitpoints();
-
-		float playerShieldFactor = playerShields / playerMaxShields;
-		int actualShieldAmount = (int) Math.round(200 * playerShieldFactor);
-
-		g.setColor(Color.BLUE);
-		g.fillRect(10, 50, 200, 15);
-		g.setColor(Color.CYAN);
-		g.fillRect(10, 50, actualShieldAmount, 15);
-
+	}
+	
+	public int calculateHealthbarWidth(float currentHitpoints, float maximumHitpoints, int healthBarSize) {
+	    // Calculate the percentage of currentHitpoints out of maximumHitpoints
+	    double percentage = (double) currentHitpoints / maximumHitpoints * 100;
+	    // Calculate what this percentage is of thirdNumber
+	    int width = (int) Math.ceil(percentage / 100 * healthBarSize);
+	    
+	    if(width > uiManager.getHealthBarWidth()) {
+	    	width = uiManager.getHealthBarWidth();
+	    } else if (width < 1) {
+	    	width = 1;
+	    }
+	    return width;
 	}
 
 	// Draw the game over screen

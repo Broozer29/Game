@@ -1,30 +1,35 @@
 package game.objects.enemies;
 
-import data.movement.RegularTrajectory;
-import data.movement.Trajectory;
+import data.audio.AudioEnums;
+import data.image.enums.EnemyEnums;
+import data.image.enums.ImageEnums;
 import game.managers.MissileManager;
+import game.movement.Direction;
+import game.movement.PathFinder;
+import game.movement.Point;
+import game.movement.RegularPathFinder;
 
 public class Bulldozer extends Enemy {
+	private PathFinder missilePathFinder;
 
-	public Bulldozer(int x, int y, String direction, int angleModuloDivider, float scale) {
-		super(x, y, direction, "Bulldozer", scale);
-		loadImage("Bulldozer");
-		setExhaustanimation("Bulldozer Large Exhaust");
-		setDeathAnimation("Bulldozer Destroyed Explosion");
+	public Bulldozer(int x, int y, Point destination, Direction rotation, float scale, PathFinder pathFinder) {
+		super(x, y, destination, rotation, EnemyEnums.Bulldozer, scale, pathFinder);
+		loadImage(ImageEnums.Bulldozer);
+		setExhaustanimation(ImageEnums.Bulldozer_Normal_Exhaust);
+		setDeathAnimation(ImageEnums.Bulldozer_Destroyed_Explosion);
 		this.exhaustAnimation.setFrameDelay(3);
 		this.deathAnimation.setFrameDelay(2);
 		this.initBoardBlockSpeeds();
-		this.angleModuloDivider = angleModuloDivider;
 		this.hitPoints = 50;
 		this.maxHitPoints = 50;
 		this.attackSpeedFrameCount = 100;
 		this.movementSpeed = 2;
 		this.hasAttack = true;
 		this.showHealthBar = true;
-		this.deathSound = "Large Ship Destroyed";
-		this.trajectory = new RegularTrajectory(direction, movementSpeed, true, angleModuloDivider, getTotalTravelDistance());
+		this.deathSound = AudioEnums.Large_Ship_Destroyed;
 		this.setVisible(true);
-		this.setRotation(direction);
+		this.setRotation(rotation);
+		this.missilePathFinder = new RegularPathFinder();
 	}
 
 	private void initBoardBlockSpeeds() {
@@ -48,12 +53,12 @@ public class Bulldozer extends Enemy {
 		}
 
 		if (currentAttackSpeedFrameCount >= attackSpeedFrameCount) {
-			missileManager.addEnemyMissile(this.xCoordinate, this.yCoordinate, "Bulldozer Projectile",
-					"Bulldozer Projectile Explosion", 10, "LeftUp", "LeftUp", this.scale);
-			missileManager.addEnemyMissile(this.xCoordinate, this.yCoordinate, "Bulldozer Projectile",
-					"Bulldozer Projectile Explosion", 10, "LeftDown", "LeftDown", this.scale);
-			missileManager.addEnemyMissile(this.xCoordinate, this.yCoordinate, "Bulldozer Projectile",
-					"Bulldozer Projectile Explosion", 0, "Left", "Left", this.scale);
+			missileManager.addEnemyMissile(this.xCoordinate, this.yCoordinate, ImageEnums.Bulldozer_Missile,
+					ImageEnums.Bulldozer_Missile_Explosion, Direction.LEFT_UP, this.scale, missilePathFinder);
+			missileManager.addEnemyMissile(this.xCoordinate, this.yCoordinate, ImageEnums.Bulldozer_Missile,
+					ImageEnums.Bulldozer_Missile_Explosion, Direction.LEFT_DOWN, this.scale, missilePathFinder);
+			missileManager.addEnemyMissile(this.xCoordinate, this.yCoordinate, ImageEnums.Bulldozer_Missile,
+					ImageEnums.Bulldozer_Missile_Explosion, Direction.LEFT, this.scale, missilePathFinder);
 			currentAttackSpeedFrameCount = 0;
 		}
 		if (currentAttackSpeedFrameCount < attackSpeedFrameCount) {

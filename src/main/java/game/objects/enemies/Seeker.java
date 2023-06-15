@@ -1,30 +1,35 @@
 package game.objects.enemies;
 
-import data.movement.RegularTrajectory;
-import data.movement.Trajectory;
+import data.audio.AudioEnums;
+import data.image.enums.EnemyEnums;
+import data.image.enums.ImageEnums;
 import game.managers.MissileManager;
+import game.movement.Direction;
+import game.movement.PathFinder;
+import game.movement.Point;
+import game.movement.RegularPathFinder;
 
 public class Seeker extends Enemy {
 
-	public Seeker(int x, int y, String direction, int angleModuloDivider, float scale) {
-		super(x, y, direction, "Seeker", scale);
-		loadImage("Seeker");
-		setExhaustanimation("Seeker Large Exhaust");
-		setDeathAnimation("Seeker Destroyed Explosion");
+	private PathFinder missilePathFinder;
+	public Seeker(int x, int y, Point destination, Direction rotation, float scale, PathFinder pathFinder) {
+		super(x, y, destination, rotation, EnemyEnums.Seeker, scale, pathFinder);
+		loadImage(ImageEnums.Seeker);
+		setExhaustanimation(ImageEnums.Seeker_Normal_Exhaust);
+		setDeathAnimation(ImageEnums.Seeker_Destroyed_Explosion);
 		this.exhaustAnimation.setFrameDelay(3);
 		this.deathAnimation.setFrameDelay(2);
 		this.initBoardBlockSpeeds();
-		this.angleModuloDivider = angleModuloDivider;
 		this.hitPoints = 50;
 		this.maxHitPoints = 50;
 		this.attackSpeedFrameCount = 100;
 		this.movementSpeed = 2;
 		this.hasAttack = true;
 		this.showHealthBar = true;
-		this.deathSound = "Large Ship Destroyed";
-		this.trajectory = new RegularTrajectory(direction, movementSpeed, true, angleModuloDivider, getTotalTravelDistance());
+		this.deathSound = AudioEnums.Large_Ship_Destroyed;
 		this.setVisible(true);
-		this.setRotation(direction);
+		this.setRotation(rotation);
+		this.missilePathFinder = new RegularPathFinder();
 	}
 
 	private void initBoardBlockSpeeds() {
@@ -49,7 +54,7 @@ public class Seeker extends Enemy {
 
 		if (currentAttackSpeedFrameCount >= attackSpeedFrameCount) {
 			missileManager.addEnemyMissile(this.xCoordinate, this.yCoordinate + calculateRandomWeaponHeightOffset(),
-					"Seeker Projectile", "Seeker Projectile Explosion", 0, direction, rotation, this.scale);
+					ImageEnums.Seeker_Missile, ImageEnums.Seeker_Missile_Explosion, rotation, this.scale, missilePathFinder);
 			currentAttackSpeedFrameCount = 0;
 		}
 		if (currentAttackSpeedFrameCount < attackSpeedFrameCount) {

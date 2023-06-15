@@ -1,53 +1,187 @@
 package game.objects.missiles;
 
-import java.util.List;
-
 import data.DataClass;
-import data.image.ImageDatabase;
-import data.movement.Trajectory;
-import image.objects.SpriteAnimation;
+import data.image.enums.ImageEnums;
+import game.movement.Direction;
+import game.movement.Path;
+import game.movement.PathFinder;
+import game.movement.Point;
 import image.objects.Sprite;
+import image.objects.SpriteAnimation;
 
 public class Missile extends Sprite {
 
 	protected float missileDamage;
-	protected Trajectory trajectory;
-	protected String direction;
-	protected int angleModuloDivider;
 	protected int movementSpeed;
-	protected int maxMissileLength;
 	protected SpriteAnimation animation;
 	protected SpriteAnimation explosionAnimation;
-	protected String missileType;
-	protected String explosionType;
-	protected String rotationAngle;
+	protected ImageEnums missileType;
+	protected ImageEnums explosionType;
+	protected Direction rotation;
 	protected int missileStepsTaken;
 
-	public Missile(int x, int y, String missileType, String explosionType, String missileDirection,
-			int angleModuloDivider, String rotationAngle, float scale) {
+	private Point currentLocation;
+	private Point destination;
+	private PathFinder pathFinder;
+	private Path currentPath;
+	private int lastUsedMovementSpeed;
+	private boolean hasLock;
+
+	public Missile(int x, int y, Point destination, ImageEnums missileType, ImageEnums explosionType, Direction rotation,
+			float scale, PathFinder pathFinder) {
 		super(x, y, scale);
+		this.currentLocation = new Point(x, y);
+		this.destination = destination;
 		this.explosionType = explosionType;
-		this.angleModuloDivider = angleModuloDivider;
-		this.rotationAngle = rotationAngle;
+		this.rotation = rotation;
 		this.missileType = missileType;
-		this.direction = missileDirection;
+		this.missileStepsTaken = 0;
+		this.pathFinder = pathFinder;
+		this.hasLock = true;
 	}
 
 	public void move() {
-		List<Integer> newCoordsList = trajectory.getPathCoordinates(xCoordinate, yCoordinate);
-		xCoordinate = newCoordsList.get(0);
-		yCoordinate = newCoordsList.get(1);
-		missileStepsTaken++;
-		if (xCoordinate > DataClass.getInstance().getWindowWidth()) {
-			visible = false;
+		if (currentPath == null || currentPath.getWaypoints().isEmpty() || movementSpeed != lastUsedMovementSpeed) {
+			// calculate a new path if necessary
+			currentPath = pathFinder.findPath(currentLocation, destination, movementSpeed, rotation);
+			lastUsedMovementSpeed = movementSpeed;
+			currentPath.setCurrentLocation(new Point(xCoordinate, yCoordinate));
 		}
-		if (xCoordinate < 0) {
-			visible = false;
+
+		// check if the missile has lost lock
+		boolean hasPassedPlayerOrNeverHadLock = false;
+		
+		if (pathFinder.shouldRecalculatePath(currentPath)) {
+			hasPassedPlayerOrNeverHadLock = true; // if it should recalculate path, it means it lost lock or never had one
+		}
+		
+		if(hasPassedPlayerOrNeverHadLock) {
+			hasLock = false;
+		}
+
+		// declare the nextPoint variable here, before the if-else block
+		Point nextPoint = null;
+
+		// only calculate next direction and update location if missile still has lock
+		if (hasLock) {
+			// Get the direction of the next step
+			Direction nextStep = pathFinder.getNextStep(currentLocation, currentPath, movementSpeed, rotation);
+			// Based on the direction, calculate the next point
+			nextPoint = calculateNextPoint(currentLocation, nextStep, movementSpeed);
+			currentPath.setFallbackDirection(nextStep);
+		} else {
+			// if missile lost lock, it should keep moving in the last direction
+			rotation = currentPath.getFallbackDirection();
+			nextPoint = calculateNextPoint(currentLocation, currentPath.getFallbackDirection(), movementSpeed);
+		}
+
+		// Update the current location
+		currentLocation = nextPoint;
+		this.xCoordinate = nextPoint.getX();
+		this.yCoordinate = nextPoint.getY();
+
+		this.missileStepsTaken += 1;
+		// if reached the next point, remove it from the path
+		if (currentLocation.equals(nextPoint)) {
+			currentPath.getWaypoints().remove(0);
 		}
 
 		if (animation != null) {
 			updateAnimationCoordinates();
 		}
+
+		updateVisibility();
+	}
+	
+	private void updateVisibility() {
+		switch (rotation) {
+		case UP:
+			if (yCoordinate <= 0) {
+				this.setVisible(false);
+			}
+			break;
+		case DOWN:
+			if (yCoordinate >= DataClass.getInstance().getWindowHeight()) {
+				this.setVisible(false);
+			}
+			break;
+		case LEFT:
+			if (xCoordinate < 0) {
+				this.setVisible(false);
+			}
+			break;
+		case RIGHT:
+			if (xCoordinate > DataClass.getInstance().getWindowWidth()) {
+				this.setVisible(false);
+			}
+			break;
+		case LEFT_DOWN:
+			if (xCoordinate < 0 || yCoordinate >= DataClass.getInstance().getWindowHeight()) {
+				this.setVisible(false);
+			}
+			break;
+		case LEFT_UP:
+			if (xCoordinate < 0 || yCoordinate <= 0) {
+				this.setVisible(false);
+			}
+			break;
+		case NONE:
+			this.setVisible(false);
+			break;
+		case RIGHT_DOWN:
+			if (xCoordinate > DataClass.getInstance().getWindowWidth()
+					|| yCoordinate >= DataClass.getInstance().getWindowHeight()) {
+				this.setVisible(false);
+			}
+			break;
+		case RIGHT_UP:
+			if (xCoordinate > DataClass.getInstance().getWindowWidth() || yCoordinate <= 0) {
+				this.setVisible(false);
+			}
+			break;
+		}
+	}
+
+	//Needed for all PathFinders, so added to missiles
+	private Point calculateNextPoint(Point currentLocation, Direction direction, int stepSize) {
+		int x = currentLocation.getX();
+		int y = currentLocation.getY();
+
+		switch (direction) {
+		case UP:
+			y -= stepSize;
+			break;
+		case DOWN:
+			y += stepSize;
+			break;
+		case LEFT:
+			x -= stepSize;
+			break;
+		case RIGHT:
+			x += stepSize;
+			break;
+		case LEFT_UP:
+			x -= stepSize;
+			y -= stepSize;
+			break;
+		case LEFT_DOWN:
+			x -= stepSize;
+			y += stepSize;
+			break;
+		case RIGHT_UP:
+			x += stepSize;
+			y -= stepSize;
+			break;
+		case RIGHT_DOWN:
+			x += stepSize;
+			y += stepSize;
+			break;
+		case NONE:
+			// no movement
+			break;
+		}
+
+		return new Point(x, y);
 	}
 
 	// Sets the animations (the graphics of missile) to align with the missiles
@@ -59,59 +193,30 @@ public class Missile extends Sprite {
 		explosionAnimation.setY(yCoordinate);
 	}
 
-	protected int getTotalTravelDistance() {
-		if (direction.equals("Up") || direction.equals("Down")) {
-			return DataClass.getInstance().getWindowHeight() + this.getWidth();
-		} else
-			return DataClass.getInstance().getWindowWidth() + this.getHeight();
-	}
-
 	public float getMissileDamage() {
 		return this.missileDamage;
-	}
-
-	public String getMissileDirection() {
-		return this.direction;
 	}
 
 	public int getMissileMovementSpeed() {
 		return this.movementSpeed;
 	}
 
-	public int getMaxMissileLength() {
-		return this.maxMissileLength;
-	}
-
-	public int getAngleModuloDivider() {
-		return this.angleModuloDivider;
-	}
-
-	public String getMissileType() {
+	public ImageEnums getMissileType() {
 		return this.missileType;
-	}
-	
-	public void updateTrajectory() {
-		switch(trajectory.getTrajectoryType()) {
-		case("Regular"):
-			trajectory.updateRegularPath();
-			break;
-		case("Homing"):
-			trajectory.updateMissileHomingPaths(this);
-			break;
-		}
 	}
 
 	protected void setAnimation() {
-		if (!missileType.equals("Alien Laserbeam") && !missileType.equals("Player Laserbeam")) {
+		if (!missileType.equals(ImageEnums.Alien_Laserbeam) && !missileType.equals(ImageEnums.Player_Laserbeam)) {
 			if (missileType != null) {
 				this.animation = new SpriteAnimation(xCoordinate, yCoordinate, missileType, true, scale);
 				this.explosionAnimation = new SpriteAnimation(xCoordinate, yCoordinate, explosionType, false, scale);
 			}
 		} else {
-			this.animation = new SpriteAnimation(xCoordinate, yCoordinate, "Impact Explosion One", false, scale);
-			this.explosionAnimation = new SpriteAnimation(xCoordinate, yCoordinate, "Impact Explosion One", false, scale);
+			this.animation = new SpriteAnimation(xCoordinate, yCoordinate, ImageEnums.Impact_Explosion_One, false, scale);
+			this.explosionAnimation = new SpriteAnimation(xCoordinate, yCoordinate, ImageEnums.Impact_Explosion_One, false,
+					scale);
 		}
-		this.animation.rotateAnimetion(rotationAngle);
+		this.animation.rotateAnimetion(rotation);
 	}
 
 	public SpriteAnimation getExplosionAnimation() {

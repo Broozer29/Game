@@ -1,33 +1,35 @@
 package game.objects.enemies;
 
-import java.util.List;
-
-import data.DataClass;
-import data.movement.RegularTrajectory;
-import data.movement.Trajectory;
+import data.audio.AudioEnums;
+import data.image.enums.EnemyEnums;
+import data.image.enums.ImageEnums;
 import game.managers.MissileManager;
+import game.movement.Direction;
+import game.movement.PathFinder;
+import game.movement.Point;
+import game.movement.RegularPathFinder;
 
 public class Energizer extends Enemy {
+	private PathFinder missilePathFinder;
 
-	public Energizer(int x, int y, String direction, int angleModuloDivider, float scale) {
-		super(x, y, direction, "Energizer", scale);
-		loadImage("Energizer");
-		setExhaustanimation("Energizer Large Exhaust");
-		setDeathAnimation("Energizer Destroyed Explosion");
+	public Energizer(int x, int y, Point destination, Direction rotation, float scale, PathFinder pathFinder) {
+		super(x, y, destination, rotation, EnemyEnums.Energizer, scale, pathFinder);
+		loadImage(ImageEnums.Energizer);
+		setExhaustanimation(ImageEnums.Energizer_Normal_Exhaust);
+		setDeathAnimation(ImageEnums.Energizer_Destroyed_Explosion);
 		this.exhaustAnimation.setFrameDelay(3);
 		this.deathAnimation.setFrameDelay(2);
 		this.initBoardBlockSpeeds();
-		this.angleModuloDivider = angleModuloDivider;
 		this.hitPoints = 50;
 		this.maxHitPoints = 50;
 		this.attackSpeedFrameCount = 100;
 		this.movementSpeed = 2;
 		this.hasAttack = true;
 		this.showHealthBar = true;
-		this.deathSound = "Large Ship Destroyed";
-		this.trajectory = new RegularTrajectory(direction, movementSpeed, true, angleModuloDivider, getTotalTravelDistance());
+		this.deathSound = AudioEnums.Large_Ship_Destroyed;
 		this.setVisible(true);
-		this.setRotation(direction);
+		this.setRotation(rotation);
+		this.missilePathFinder = new RegularPathFinder();
 	}
 	
 	
@@ -54,7 +56,7 @@ public class Energizer extends Enemy {
 
 		if (currentAttackSpeedFrameCount >= attackSpeedFrameCount) {
 			missileManager.addEnemyMissile(this.xCoordinate, this.yCoordinate + calculateRandomWeaponHeightOffset(),
-					"Energizer Projectile", "Energizer Projectile Explosion", 0, "Left", "Left", this.scale);
+					ImageEnums.Energizer_Missile, ImageEnums.Energizer_Missile_Explosion, rotation, this.scale, missilePathFinder);
 			currentAttackSpeedFrameCount = 0;
 		}
 		if (currentAttackSpeedFrameCount < attackSpeedFrameCount) {

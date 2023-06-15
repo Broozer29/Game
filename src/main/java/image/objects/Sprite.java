@@ -3,9 +3,12 @@ package image.objects;
 import java.awt.Image;
 import java.awt.Rectangle;
 
+import data.image.ImageCropper;
 import data.image.ImageDatabase;
 import data.image.ImageResizer;
 import data.image.ImageRotator;
+import data.image.enums.ImageEnums;
+import game.movement.Direction;
 
 public class Sprite {
 	ImageDatabase imgDatabase = ImageDatabase.getInstance();
@@ -28,7 +31,7 @@ public class Sprite {
 		visible = true;
 	}
 
-	protected void loadImage(String imageName) {
+	protected void loadImage(ImageEnums imageName) {
 		image = imgDatabase.getImage(imageName);
 		this.image = imageResizer.getScaledImage(image, scale);
 //		setImageToScale();
@@ -48,7 +51,7 @@ public class Sprite {
 		getImageDimensions();
 	}
 
-	protected void rotateImage(String rotation) {
+	protected void rotateImage(Direction rotation) {
 		this.image = imageRotator.rotate(image, rotation);
 		getImageDimensions();
 	}
@@ -123,5 +126,10 @@ public class Sprite {
 
 	public void addYOffset(int yoffset) {
 		this.yOffset = yoffset;
+	}
+	
+	protected void cropWidth(float cropPercentage) {
+		ImageCropper imageCropper = ImageCropper.getInstance();
+		this.image = imageCropper.cropImage(this.image, cropPercentage);
 	}
 }

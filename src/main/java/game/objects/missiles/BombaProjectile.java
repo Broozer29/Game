@@ -1,28 +1,28 @@
 
 package game.objects.missiles;
 
-import data.DataClass;
-import data.movement.RegularTrajectory;
-import data.movement.Trajectory;
+import data.image.enums.ImageEnums;
 import game.managers.ExplosionManager;
+import game.movement.Direction;
+import game.movement.PathFinder;
+import game.movement.Point;
 
 public class BombaProjectile extends Missile {
 
-	public BombaProjectile(int x, int y, String missileType, String explosionType, String missileDirection,
-			int angleModuloDivider, String rotationAngle, float scale) {
-		super(x, y, missileType, explosionType, missileDirection, angleModuloDivider, rotationAngle, scale);
+	public BombaProjectile(int x, int y, Point destination, ImageEnums missileType, ImageEnums explosionType,
+			Direction rotation, float scale, PathFinder pathFinder) {
+		super(x, y, destination, missileType, explosionType, rotation, scale, pathFinder);
 		this.missileDamage = (float) 7.5;
 		setAnimation();
 		this.animation.setFrameDelay(3);
 		this.movementSpeed = 5;
-		this.trajectory = new RegularTrajectory(direction, movementSpeed, true, angleModuloDivider, getTotalTravelDistance());
 	
 	}
 
 	public void missileAction() {
 		if (missileStepsTaken >= 75) {
 			ExplosionManager.getInstance().addExplosion(getCenterXCoordinate(), getCenterYCoordinate(),
-					"Bomba Projectile Explosion", scale, 20);
+					ImageEnums.Bomba_Missile_Explosion, scale, 20);
 			this.setVisible(false);
 		}
 	}

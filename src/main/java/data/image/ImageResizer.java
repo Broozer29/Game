@@ -61,4 +61,13 @@ public class ImageResizer {
 
 		return newFrames;
 	}
+
+
+	public BufferedImage resizeImageToDimensions(Image image, int width, int height) {
+		// Een harde cast, het kan omdat er geen afbeeldingen zijn met komma getallen qua
+		// dimensies, maar indien die er zijn gaat dit tot problemen leiden
+		Image resizedImage = image.getScaledInstance(width, height, Image.SCALE_DEFAULT);
+		BufferedImage bufferedVersion = toBufferedImage(resizedImage);
+		return bufferedVersion;
+	}
 }

@@ -7,6 +7,8 @@ import java.util.List;
 import data.image.ImageDatabase;
 import data.image.ImageResizer;
 import data.image.ImageRotator;
+import data.image.enums.ImageEnums;
+import game.movement.Direction;
 
 public class SpriteAnimation extends Sprite {
 
@@ -18,9 +20,9 @@ public class SpriteAnimation extends Sprite {
 	private int frameDelayCounter;
 	private int frameDelay = 2;
 	private boolean infiniteLoop;
-	private String imageType;
+	private ImageEnums imageType;
 
-	public SpriteAnimation(int x, int y, String imageType, boolean infiniteLoop, float scale) {
+	public SpriteAnimation(int x, int y, ImageEnums imageType, boolean infiniteLoop, float scale) {
 		super(x, y, scale);
 		loadGifFrames(imageType);
 		this.initAnimation();
@@ -39,13 +41,13 @@ public class SpriteAnimation extends Sprite {
 	
 	// Sets frames, Animation shouldn't call the ImageDatabase, it should get it
 	// from a manager when created.
-	private void loadGifFrames(String imageType) {
+	private void loadGifFrames(ImageEnums imageType) {
 		this.frames = ImageDatabase.getInstance().getGif(imageType);
 		this.standardSizeFrames = frames;
 	}
 	
 
-	public void changeImagetype(String imageType) {
+	public void changeImagetype(ImageEnums imageType) {
 		this.imageType = imageType;
 		this.frames = ImageDatabase.getInstance().getGif(imageType);
 		this.standardSizeFrames = frames;
@@ -75,7 +77,7 @@ public class SpriteAnimation extends Sprite {
 	}
 	
 	
-	public void rotateAnimetion(String rotation) {
+	public void rotateAnimetion(Direction rotation) {
 		this.frames = ImageRotator.getInstance().getRotatedFrames(frames, rotation);
 	}
 
@@ -138,7 +140,7 @@ public class SpriteAnimation extends Sprite {
 		this.frameDelay = frameDelay;
 	}
 	
-	public String getImageType() {
+	public ImageEnums getImageType() {
 		return this.imageType;
 	}
 	

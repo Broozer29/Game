@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Random;
 
 import data.DataClass;
+import game.movement.Direction;
 import game.objects.BackgroundObject;
 import game.objects.enemies.Enemy;
 
@@ -18,8 +19,8 @@ public class SpawningCoordinator {
 
 	private int maximumBGOWidthRange = DataClass.getInstance().getWindowWidth() + 200;
 	private int minimumBGOWidthRange = -200;
-	private int maximumBGOHeightRange = DataClass.getInstance().getWindowHeight() + 50;
-	private int minimumBGOHeightRange = -50;
+	private int maximumBGOHeightRange = DataClass.getInstance().getWindowHeight();
+	private int minimumBGOHeightRange = 0;
 
 	private int maximumBombEnemyWidthRange = DataClass.getInstance().getWindowWidth() - 250;
 	private int minimumBombEnemyWidthRange = 250;
@@ -124,25 +125,26 @@ public class SpawningCoordinator {
 				+ minimumBombEnemyWidthRange;
 	}
 
-	public int getRandomYUpBombEnemyCoordinate() {
+	//Recently swapped
+	public int getRandomYDownBombEnemyCoordinate() {
 		return random.nextInt((maximumBombEnemyHeightUpRange - minimumBombEnemyHeightUpRange) + 1)
 				+ minimumBombEnemyHeightUpRange;
 	}
 
-	public int getRandomYDownBombEnemyCoordinate() {
+	public int getRandomYUpBombEnemyCoordinate() {
 		return random.nextInt((maximumBombEnemyHeightDownRange - minimumBombEnemyHeightDownRange) + 1)
 				+ minimumBombEnemyHeightDownRange;
 	}
 
-	public String upOrDown() {
+	public Direction upOrDown() {
 		int randInt = random.nextInt((1 - 0) + 1) + 0;
 		switch (randInt) {
 		case (0):
-			return "Down";
+			return Direction.DOWN;
 		case (1):
-			return "Up";
+			return Direction.UP;
 		}
-		return "Up";
+		return Direction.UP;
 	}
 
 	// Random functions used for Background objects //

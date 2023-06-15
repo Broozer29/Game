@@ -1,30 +1,35 @@
 package game.objects.enemies;
 
-import data.movement.RegularTrajectory;
-import data.movement.Trajectory;
+import data.audio.AudioEnums;
+import data.image.enums.EnemyEnums;
+import data.image.enums.ImageEnums;
 import game.managers.MissileManager;
+import game.movement.Direction;
+import game.movement.PathFinder;
+import game.movement.Point;
+import game.movement.RegularPathFinder;
 
 public class Tazer extends Enemy {
 
-	public Tazer(int x, int y, String direction, int angleModuloDivider, float scale) {
-		super(x, y, direction, "Tazer", scale);
-		loadImage("Tazer");
-		setExhaustanimation("Tazer Large Exhaust");
-		setDeathAnimation("Tazer Destroyed Explosion");
+	private PathFinder missilePathFinder;
+	public Tazer(int x, int y, Point destination, Direction rotation, float scale, PathFinder pathFinder) {
+		super(x, y, destination, rotation, EnemyEnums.Tazer, scale, pathFinder);
+		loadImage(ImageEnums.Tazer);
+		setExhaustanimation(ImageEnums.Tazer_Normal_Exhaust);
+		setDeathAnimation(ImageEnums.Tazer_Destroyed_Explosion);
 		this.exhaustAnimation.setFrameDelay(3);
 		this.deathAnimation.setFrameDelay(2);
 		this.initBoardBlockSpeeds();
 		this.hitPoints = 50;
-		this.angleModuloDivider = angleModuloDivider;
 		this.maxHitPoints = 50;
 		this.attackSpeedFrameCount = 100;
 		this.movementSpeed = 2;
 		this.hasAttack = true;
 		this.showHealthBar = true;
-		this.deathSound = "Large Ship Destroyed";
-		this.trajectory = new RegularTrajectory(direction, movementSpeed, true, angleModuloDivider, getTotalTravelDistance());
+		this.deathSound = AudioEnums.Large_Ship_Destroyed;
 		this.setVisible(true);
-		this.setRotation(direction);
+		this.setRotation(rotation);
+		this.missilePathFinder = new RegularPathFinder();
 	}
 
 	private void initBoardBlockSpeeds() {
@@ -49,7 +54,7 @@ public class Tazer extends Enemy {
 
 		if (currentAttackSpeedFrameCount >= attackSpeedFrameCount) {
 			missileManager.addEnemyMissile(this.xCoordinate, this.yCoordinate + calculateRandomWeaponHeightOffset(),
-					"Tazer Projectile", "Tazer Projectile Explosion", 0, "Left", "Left", this.scale);
+					ImageEnums.Tazer_Missile, ImageEnums.Tazer_Missile_Explosion, rotation, this.scale, missilePathFinder);
 			currentAttackSpeedFrameCount = 0;
 		}
 		if (currentAttackSpeedFrameCount < attackSpeedFrameCount) {

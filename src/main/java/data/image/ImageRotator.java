@@ -8,7 +8,8 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 
-import javafx.scene.shape.Rectangle;
+import game.movement.Direction;
+
 
 public class ImageRotator {
 
@@ -36,7 +37,7 @@ public class ImageRotator {
 		return buff;
 	}
 
-	public ArrayList<Image> getRotatedFrames(List<Image> frames, String rotation) {
+	public ArrayList<Image> getRotatedFrames(List<Image> frames, Direction rotation) {
 		ArrayList<Image> newFrames = new ArrayList<Image>();
 		for (int i = 0; i < frames.size(); i++) {
 			Image temp = frames.get(i);
@@ -46,31 +47,31 @@ public class ImageRotator {
 		return newFrames;
 	}
 
-	private int getNumquadrants(String rotation) {
+	private int getNumquadrants(Direction rotation) {
 		int numquadrants = 1;
 		switch (rotation) {
-		case ("Up"):
+		case UP:
 			numquadrants = 1;
 			break;
-		case ("Down"):
+		case DOWN:
 			numquadrants = 3;
 			break;
-		case ("Left"):
+		case LEFT:
 			numquadrants = 0;
 			break;
-		case ("LeftUp"):
+		case LEFT_UP:
 			numquadrants = 0;
 			break;
-		case ("LeftDown"):
+		case LEFT_DOWN:
 			numquadrants = 0;
 			break;
-		case ("Right"):
+		case RIGHT:
 			numquadrants = 2;
 			break;
-		case ("RightUp"):
+		case RIGHT_UP:
 			numquadrants = 2;
 			break;
-		case ("RightDown"):
+		case RIGHT_DOWN:
 			numquadrants = 2;
 			break;
 		}
@@ -78,7 +79,7 @@ public class ImageRotator {
 		return numquadrants;
 	}
 
-	public BufferedImage rotate(Image image, String rotation) {
+	public BufferedImage rotate(Image image, Direction rotation) {
 		BufferedImage bImage = toBufferedImage(image);
 		int numquadrants = getNumquadrants(rotation);
 

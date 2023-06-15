@@ -1,5 +1,6 @@
 package menuscreens;
 
+import data.image.enums.ImageEnums;
 import image.objects.Sprite;
 
 public class MenuCursor extends Sprite {
@@ -12,7 +13,7 @@ public class MenuCursor extends Sprite {
 	}
 
 	private void initCursorImage() {
-		loadImage("Player Laserbeam");
+		loadImage(ImageEnums.Player_Spaceship_Model_3);
 		getImageDimensions();
 	}
 

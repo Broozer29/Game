@@ -1,15 +1,15 @@
 package menuscreens;
 
 import data.DataClass;
+import data.image.enums.ImageEnums;
 import image.objects.Sprite;
-import javafx.scene.image.Image;
 
 public class MenuTile extends Sprite {
 
 	private DataClass dataClass = DataClass.getInstance();
-	private String tileType;
+	private ImageEnums tileType;
 
-	public MenuTile(String tileType, int xCoordinate, int yCoordinate, float scale) {
+	public MenuTile(ImageEnums tileType, int xCoordinate, int yCoordinate, float scale) {
 		super(xCoordinate, yCoordinate, scale);
 		this.tileType = tileType;
 		initTile();
@@ -22,36 +22,24 @@ public class MenuTile extends Sprite {
 
 	public void menuTileAction() {
 		//Starts the game from the main menu
-		if (this.tileType.equals("StartGame")) {
+		if (this.tileType.equals(ImageEnums.Start_Game)) {
 			BoardManager.getInstance().initGame();
 
 		//Opens the user menu from the main menu
-		} else if (this.tileType.equals("SelectUserMenu")) {
+		} else if (this.tileType.equals(ImageEnums.Select_User_Menu)) {
 			BoardManager.getInstance().initUserSelection();
 
-		//Selects the first user
-		} else if (tileType.equals("UserOne")) {
-			dataClass.setCurrentUser("UserOne");
-
-		//Selects the second user
-		} else if (tileType.equals("UserTwo")) {
-			dataClass.setCurrentUser("UserTwo");
-
-		//Selects the third user
-		} else if (tileType.equals("UserThree")) {
-			dataClass.setCurrentUser("UserThree");
-
 		//Changes the user selection board to the main menu board.
-		} else if (tileType.equals("userMenuToMainMenu")) {
+		} else if (tileType.equals(ImageEnums.Select_User_Menu)) {
 			BoardManager.getInstance().userSelectionToMainMenu();
 		}
 	}
 
-	public String getTileType() {
+	public ImageEnums getTileType() {
 		return tileType;
 	}
 
-	public void setTileType(String tileType) {
+	public void setTileType(ImageEnums tileType) {
 		this.tileType = tileType;
 	}
 

@@ -1,6 +1,8 @@
 package data.image;
 
+import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -11,6 +13,8 @@ import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
 import javax.imageio.stream.FileImageInputStream;
 import javax.swing.ImageIcon;
+
+import data.image.enums.ImageEnums;
 
 public class ImageDatabase {
 
@@ -33,8 +37,8 @@ public class ImageDatabase {
 
 	// Ship numbers to names:
 	/*
-	 * Ship1 = Seeker Ship2 = Tazer Ship3 = Energizer Ship4 = Bulldozer Ship5 =
-	 * Flamer Ship6 = Bomba
+	 * Ship1 = Seeker Ship2 = Tazer Ship3 = Energizer Ship4 = Bulldozer Ship5 = Flamer
+	 * Ship6 = Bomba
 	 */
 
 	// Projectile images
@@ -48,8 +52,15 @@ public class ImageDatabase {
 	private Image userThreeImage;
 	private Image selectUserMenuImage;
 	private Image userMenuToMainMenu;
-	
-	
+
+	// Game GUI images
+	private Image healthBarImage;
+	private Image shieldBarImage;
+	private Image Frame;
+	private Image iconBorder;
+	private Image redFilling;
+	private Image goldFilling;
+
 	// Explosion animations
 	private List<Image> impactExplosionOneFrames = new ArrayList<Image>();
 	private List<Image> destroyedExplosionUpFrames = new ArrayList<Image>();
@@ -69,9 +80,9 @@ public class ImageDatabase {
 	private List<Image> playerEngineFrames = new ArrayList<Image>();
 	private List<Image> playerFireSwirlFrames = new ArrayList<Image>();
 	private List<Image> playerEMPFrames = new ArrayList<Image>();
+	private List<Image> playerEMPPlusFrames = new ArrayList<Image>();
 	private List<Image> defaultPlayerEngineBoostedFrames = new ArrayList<Image>();
 	private List<Image> defaultPlayerShieldDamage = new ArrayList<Image>();
-
 
 	// Enemy Projectile Animations
 	private List<Image> seekerProjectileFrames = new ArrayList<Image>();
@@ -111,11 +122,39 @@ public class ImageDatabase {
 	private Image planetTwo;
 	private Image planetThree;
 	private Image star;
+	private Image parralex1;
+	private Image parralex2;
+	private Image parralex3;
+	private Image parralex4;
+	private Image parralex5;
+	private Image warmNebula;
+	private Image coldNebula;
+	private Image regularNebula;
+	private Image blueNebula1;
+	private Image blueNebula2;
+	private Image blueNebula3;
+	private Image blueNebula4;
+	private Image blueNebula5;
+	private Image blueNebula6;
+	private Image greenNebula1;
+	private Image greenNebula2;
+	private Image greenNebula3;
+	private Image greenNebula4;
+	private Image greenNebula5;
+	private Image greenNebula6;
+	private Image greenNebula7;
+	private Image purpleNebula1;
+	private Image purpleNebula2;
+	private Image purpleNebula3;
+	private Image purpleNebula4;
+	private Image purpleNebula5;
+	private Image purpleNebula6;
+	private Image purpleNebula7;
 
 	// testimages
 	private Image testImage;
-	
-	//Images to Gifs
+
+	// Images to Gifs
 	private List<Image> defaultPlayerEngine = new ArrayList<Image>();
 
 	private ImageDatabase() {
@@ -138,193 +177,304 @@ public class ImageDatabase {
 		this.initMenuImages();
 		this.initProjectiles();
 		this.initPNGtoGIFAnimation();
+		this.initGameUIobjects();
+		this.initSpriteSheets();
 	}
 
 	private void initFriendlies() {
-		this.spaceShipImage = imgLoader.getImage("Player Spaceship");
-		this.model3BetterUpgrade = imgLoader.getImage("Model 3 Better Model Upgrade");
+		this.spaceShipImage = imgLoader.getImage(ImageEnums.Player_Spaceship);
+		this.model3BetterUpgrade = imgLoader.getImage(ImageEnums.Player_Spaceship_Model_3);
 	}
 
 	private void initEnemies() {
-		this.alienSpaceshipImage = imgLoader.getImage("Default Alien Spaceship");
-		this.alienBombImage = imgLoader.getImage("Alien Bomb");
-		this.seekerImage = imgLoader.getImage("Seeker");
-		this.tazerImage = imgLoader.getImage("Tazer");
-		this.energizerImage = imgLoader.getImage("Energizer");
-		this.bulldozerImage = imgLoader.getImage("Bulldozer");
-		this.flamerImage = imgLoader.getImage("Flamer");
-		this.bombaImage = imgLoader.getImage("Bomba");
+		this.alienSpaceshipImage = imgLoader.getImage(ImageEnums.Alien);
+		this.alienBombImage = imgLoader.getImage(ImageEnums.Alien_Bomb);
+		this.seekerImage = imgLoader.getImage(ImageEnums.Seeker);
+		this.tazerImage = imgLoader.getImage(ImageEnums.Tazer);
+		this.energizerImage = imgLoader.getImage(ImageEnums.Energizer);
+		this.bulldozerImage = imgLoader.getImage(ImageEnums.Bulldozer);
+		this.flamerImage = imgLoader.getImage(ImageEnums.Flamer);
+		this.bombaImage = imgLoader.getImage(ImageEnums.Bomba);
 	}
 
 	private void initProjectiles() {
-		this.laserBeamImage = imgLoader.getImage("Player Laserbeam");
-		this.alienLaserbeamImage = imgLoader.getImage("Alien Laserbeam");
+		this.laserBeamImage = imgLoader.getImage(ImageEnums.Player_Laserbeam);
+		this.alienLaserbeamImage = imgLoader.getImage(ImageEnums.Alien_Laserbeam);
 	}
 
 	private void initMenuImages() {
-		this.startGameImage = imgLoader.getImage("StartGame");
-		this.userOneImage = imgLoader.getImage("UserOne");
-		this.userTwoImage = imgLoader.getImage("UserTwo");
-		this.userThreeImage = imgLoader.getImage("UserThree");
-		this.selectUserMenuImage = imgLoader.getImage("SelectUserMenu");
-		this.testImage = imgLoader.getImage("testimage");
-		this.userMenuToMainMenu = imgLoader.getImage("userMenuToMainMenu");
+		this.startGameImage = imgLoader.getImage(ImageEnums.Start_Game);
+		this.userOneImage = imgLoader.getImage(ImageEnums.User_One);
+		this.userTwoImage = imgLoader.getImage(ImageEnums.User_Two);
+		this.userThreeImage = imgLoader.getImage(ImageEnums.User_Three);
+		this.selectUserMenuImage = imgLoader.getImage(ImageEnums.Select_User_Menu);
+		this.testImage = imgLoader.getImage(ImageEnums.Test_Image);
+		this.userMenuToMainMenu = imgLoader.getImage(ImageEnums.User_Menu_To_Main_Menu);
+	}
+
+	private void initGameUIobjects() {
+		this.healthBarImage = imgLoader.getImage(ImageEnums.Health_Bar);
+		this.shieldBarImage = imgLoader.getImage(ImageEnums.Shield_Bar);
+		this.Frame = imgLoader.getImage(ImageEnums.Frame);
+		this.iconBorder = imgLoader.getImage(ImageEnums.Icon_Border);
+		this.redFilling = imgLoader.getImage(ImageEnums.Red_Filling);
+		this.goldFilling = imgLoader.getImage(ImageEnums.Gold_Filling);
 	}
 
 	private void initBackgroundObjects() {
-		this.moon = imgLoader.getImage("Moon");
-		this.lavaPlanet = imgLoader.getImage("Lava Planet");
-		this.planetOne = imgLoader.getImage("Planet One");
-		this.planetTwo = imgLoader.getImage("Planet Two");
-		this.planetThree = imgLoader.getImage("Planet Three");
-		this.marsPlanet = imgLoader.getImage("Mars Planet");
-		this.star = imgLoader.getImage("Star");
+		this.moon = imgLoader.getImage(ImageEnums.Moon);
+		this.lavaPlanet = imgLoader.getImage(ImageEnums.Lava_Planet);
+		this.planetOne = imgLoader.getImage(ImageEnums.Planet_One);
+		this.planetTwo = imgLoader.getImage(ImageEnums.Planet_Two);
+		this.planetThree = imgLoader.getImage(ImageEnums.Planet_Three);
+		this.marsPlanet = imgLoader.getImage(ImageEnums.Mars_Planet);
+		this.star = imgLoader.getImage(ImageEnums.Star);
+		this.parralex1 = imgLoader.getImage(ImageEnums.Parallex_1);
+		this.parralex2 = imgLoader.getImage(ImageEnums.Parallex_2);
+		this.parralex3 = imgLoader.getImage(ImageEnums.Parallex_3);
+		this.parralex4 = imgLoader.getImage(ImageEnums.Parallex_4);
+		this.parralex5 = imgLoader.getImage(ImageEnums.Parallex_5);
+		this.coldNebula = imgLoader.getImage(ImageEnums.Cold_Nebula);
+		this.warmNebula = imgLoader.getImage(ImageEnums.Warm_Nebula);
+		this.regularNebula = imgLoader.getImage(ImageEnums.Regular_Nebula);
+		this.blueNebula1 = imgLoader.getImage(ImageEnums.Blue_Nebula_1);
+		this.blueNebula2 = imgLoader.getImage(ImageEnums.Blue_Nebula_2);
+		this.blueNebula3 = imgLoader.getImage(ImageEnums.Blue_Nebula_3);
+		this.blueNebula4 = imgLoader.getImage(ImageEnums.Blue_Nebula_4);
+		this.blueNebula5 = imgLoader.getImage(ImageEnums.Blue_Nebula_5);
+		this.blueNebula6 = imgLoader.getImage(ImageEnums.Blue_Nebula_6);
+		this.greenNebula1 = imgLoader.getImage(ImageEnums.Green_Nebula_1);
+		this.greenNebula2 = imgLoader.getImage(ImageEnums.Green_Nebula_2);
+		this.greenNebula3 = imgLoader.getImage(ImageEnums.Green_Nebula_3);
+		this.greenNebula4 = imgLoader.getImage(ImageEnums.Green_Nebula_4);
+		this.greenNebula5 = imgLoader.getImage(ImageEnums.Green_Nebula_5);
+		this.greenNebula6 = imgLoader.getImage(ImageEnums.Green_Nebula_6);
+		this.greenNebula7 = imgLoader.getImage(ImageEnums.Green_Nebula_7);
+		this.purpleNebula1 = imgLoader.getImage(ImageEnums.Purple_Nebula_1);
+		this.purpleNebula2 = imgLoader.getImage(ImageEnums.Purple_Nebula_2);
+		this.purpleNebula3 = imgLoader.getImage(ImageEnums.Purple_Nebula_3);
+		this.purpleNebula4 = imgLoader.getImage(ImageEnums.Purple_Nebula_4);
+		this.purpleNebula5 = imgLoader.getImage(ImageEnums.Purple_Nebula_5);
+		this.purpleNebula6 = imgLoader.getImage(ImageEnums.Purple_Nebula_6);
+		this.purpleNebula7 = imgLoader.getImage(ImageEnums.Purple_Nebula_7);
+
 	}
 
-	public Image getImage(String imageType) {
+	public Image getImage(ImageEnums imageType) {
 		switch (imageType) {
-		case ("Player Spaceship"):
+		case Player_Spaceship:
 			return this.spaceShipImage;
-		case ("Player Laserbeam"):
+		case Player_Laserbeam:
 			return this.laserBeamImage;
-		case ("Default Alien Spaceship"):
+		case Alien:
 			return this.alienSpaceshipImage;
-		case ("Alien Bomb"):
+		case Alien_Bomb:
 			return this.alienBombImage;
-		case ("Alien Laserbeam"):
+		case Alien_Laserbeam:
 			return this.alienLaserbeamImage;
-		case ("StartGame"):
+		case Start_Game:
 			return this.startGameImage;
-		case ("UserOne"):
+		case User_One:
 			return this.userOneImage;
-		case ("UserTwo"):
+		case User_Two:
 			return this.userTwoImage;
-		case ("UserThree"):
+		case User_Three:
 			return this.userThreeImage;
-		case ("SelectUserMenu"):
+		case Select_User_Menu:
 			return this.selectUserMenuImage;
-		case ("userMenuToMainMenu"):
+		case User_Menu_To_Main_Menu:
 			return this.userMenuToMainMenu;
-		case ("Moon"):
+		case Moon:
 			return this.moon;
-		case ("Lava Planet"):
+		case Lava_Planet:
 			return this.lavaPlanet;
-		case ("Mars Planet"):
+		case Mars_Planet:
 			return this.marsPlanet;
-		case ("Planet One"):
+		case Planet_One:
 			return this.planetOne;
-		case ("Planet Two"):
+		case Planet_Two:
 			return this.planetTwo;
-		case ("Planet Three"):
+		case Planet_Three:
 			return this.planetThree;
-		case ("Star"):
+		case Star:
 			return this.star;
-		case ("Seeker"):
+		case Seeker:
 			return this.seekerImage;
-		case ("Tazer"):
+		case Tazer:
 			return this.tazerImage;
-		case ("Energizer"):
+		case Energizer:
 			return this.energizerImage;
-		case ("Bulldozer"):
+		case Bulldozer:
 			return this.bulldozerImage;
-		case ("Flamer"):
+		case Flamer:
 			return this.flamerImage;
-		case ("Bomba"):
+		case Bomba:
 			return this.bombaImage;
-		case("Model 3 Better Model Upgrade"):
+		case Player_Spaceship_Model_3:
 			return this.model3BetterUpgrade;
+		case Health_Bar:
+			return this.healthBarImage;
+		case Shield_Bar:
+			return this.shieldBarImage;
+		case Frame:
+			return this.Frame;
+		case Icon_Border:
+			return this.iconBorder;
+		case Red_Filling:
+			return this.redFilling;
+		case Gold_Filling:
+			return this.goldFilling;
+		case Cold_Nebula:
+			return coldNebula;
+		case Warm_Nebula:
+			return warmNebula;
+		case Regular_Nebula:
+			return regularNebula;
+		case Blue_Nebula_1:
+			return blueNebula1;
+		case Blue_Nebula_2:
+			return blueNebula2;
+		case Blue_Nebula_3:
+			return blueNebula3;
+		case Blue_Nebula_4:
+			return blueNebula4;
+		case Blue_Nebula_5:
+			return blueNebula5;
+		case Blue_Nebula_6:
+			return blueNebula6;
+		case Green_Nebula_1:
+			return greenNebula1;
+		case Green_Nebula_2:
+			return greenNebula2;
+		case Green_Nebula_3:
+			return greenNebula3;
+		case Green_Nebula_4:
+			return greenNebula4;
+		case Green_Nebula_5:
+			return greenNebula5;
+		case Green_Nebula_6:
+			return greenNebula6;
+		case Green_Nebula_7:
+			return greenNebula7;
+		case Purple_Nebula_1:
+			return purpleNebula1;
+		case Purple_Nebula_2:
+			return purpleNebula2;
+		case Purple_Nebula_3:
+			return purpleNebula3;
+		case Purple_Nebula_4:
+			return purpleNebula4;
+		case Purple_Nebula_5:
+			return purpleNebula5;
+		case Purple_Nebula_6:
+			return purpleNebula6;
+		case Purple_Nebula_7:
+			return purpleNebula7;
+		case Parallex_1:
+			return parralex1;
+		case Parallex_2:
+			return parralex2;
+		case Parallex_3:
+			return parralex3;
+		case Parallex_4:
+			return parralex4;
+		case Parallex_5:
+			return parralex5;
+		default:
+			return testImage;
 		}
-		return testImage;
 	}
 
-	public List<Image> getGif(String imageType) {
+	public List<Image> getGif(ImageEnums imageType) {
 		switch (imageType) {
-		case ("Impact Explosion One"):
+		case Impact_Explosion_One:
 			return this.impactExplosionOneFrames;
-		case ("Player Engine"):
+		case Player_Engine:
 			return this.playerEngineFrames;
-		case ("Destroyed Explosion"):
+		case Destroyed_Explosion:
 			return this.destroyedExplosionUpFrames;
-		case ("Destroyed Explosion Right"):
+		case Destroyed_Explosion_Right:
 			return this.destroyedExplosionRightFrames;
-		case ("Destroyed Explosion Down"):
+		case Destroyed_Explosion_Down:
 			return this.destroyedExplosionDownFrames;
-		case ("Destroyed Explosion Left"):
+		case Destroyed_Explosion_Left:
 			return this.destroyedExplosionLeftFrames;
-		case ("Alien Bomb Explosion"):
+		case Alien_Bomb_Explosion:
 			return this.alienBombExplosionFrames;
-		case ("Seeker Projectile"):
+		case Seeker_Missile:
 			return this.seekerProjectileFrames;
-		case ("Tazer Projectile"):
+		case Tazer_Missile:
 			return this.tazerProjectileFrames;
-		case ("Energizer Projectile"):
+		case Energizer_Missile:
 			return this.energizerProjectileFrames;
-		case ("Bulldozer Projectile"):
+		case Bulldozer_Missile:
 			return this.bulldozerProjectileFrames;
-		case ("Flamer Projectile"):
+		case Flamer_Missile:
 			return this.flamerProjectileFrames;
-		case ("Bomba Projectile"):
+		case Bomba_Missile:
 			return this.bombaProjectileFrames;
-		case ("Seeker Normal Exhaust"):
+		case Seeker_Normal_Exhaust:
 			return this.seekerNormalExhaustFrames;
-		case ("Seeker Large Exhaust"):
+		case Seeker_Large_Exhaust:
 			return this.seekerLargeExhaustFrames;
-		case ("Seeker Projectile Explosion"):
+		case Seeker_Missile_Explosion:
 			return this.seekerProjectileExplosion;
-		case ("Tazer Normal Exhaust"):
+		case Tazer_Normal_Exhaust:
 			return this.tazerNormalExhaustFrames;
-		case ("Tazer Large Exhaust"):
+		case Tazer_Large_Exhaust:
 			return this.tazerLargeExhaustFrames;
-		case ("Tazer Projectile Explosion"):
+		case Tazer_Missile_Explosion:
 			return this.tazerProjectileExplosion;
-		case ("Energizer Normal Exhaust"):
+		case Energizer_Normal_Exhaust:
 			return this.energizerNormalExhaustFrames;
-		case ("Energizer Large Exhaust"):
+		case Energizer_Large_Exhaust:
 			return this.energizerLargeExhaustFrames;
-		case ("Energizer Projectile Explosion"):
+		case Energizer_Missile_Explosion:
 			return this.energizerProjectileExplosion;
-		case ("Bulldozer Normal Exhaust"):
+		case Bulldozer_Normal_Exhaust:
 			return this.bulldozerNormalExhaustFrames;
-		case ("Bulldozer Large Exhaust"):
+		case Bulldozer_Large_Exhaust:
 			return this.bulldozerLargeExhaustFrames;
-		case ("Bulldozer Projectile Explosion"):
+		case Bulldozer_Missile_Explosion:
 			return this.bulldozerProjectileExplosion;
-		case ("Flamer Normal Exhaust"):
+		case Flamer_Normal_Exhaust:
 			return this.flamerNormalExhaustFrames;
-		case ("Flamer Large Exhaust"):
+		case Flamer_Large_Exhaust:
 			return this.flamerLargeExhaustFrames;
-		case ("Flamer Projectile Explosion"):
+		case Flamer_Missile_Explosion:
 			return this.flamerProjectileExplosion;
-		case ("Bomba Normal Exhaust"):
+		case Bomba_Normal_Exhaust:
 			return this.bombaNormalExhaustFrames;
-		case ("Bomba Large Exhaust"):
+		case Bomba_Large_Exhaust:
 			return this.bombaLargeExhaustFrames;
-		case ("Bomba Projectile Explosion"):
+		case Bomba_Missile_Explosion:
 			return this.bombaProjectileExplosion;
-		case("Implosion"):
+		case Implosion:
 			return this.implosionFrames;
-		case("Seeker Destroyed Explosion"):
+		case Seeker_Destroyed_Explosion:
 			return this.seekerDestroyedExplosionFrames;
-		case("Tazer Destroyed Explosion"):
+		case Tazer_Destroyed_Explosion:
 			return this.tazerDestroyedExplosionFrames;
-		case("Energizer Destroyed Explosion"):
+		case Energizer_Destroyed_Explosion:
 			return this.energizerDestroyedExplosionFrames;
-		case("Bomba Destroyed Explosion"):
+		case Bomba_Destroyed_Explosion:
 			return this.bombaDestroyedExplosionFrames;
-		case("Flamer Destroyed Explosion"):
+		case Flamer_Destroyed_Explosion:
 			return this.flamerDestroyedExplosionFrames;
-		case("Bulldozer Destroyed Explosion"):
+		case Bulldozer_Destroyed_Explosion:
 			return this.bulldozerDestroyedExplosionFrames;
-		case("Default Player Engine"):
+		case Default_Player_Engine:
 			return this.defaultPlayerEngine;
-		case("Default Player Engine Boosted"):
+		case Default_Player_Engine_Boosted:
 			return this.defaultPlayerEngineBoostedFrames;
-		case("Default Player Shield Damage"):
+		case Default_Player_Shield_Damage:
 			return this.defaultPlayerShieldDamage;
-		case("Player Fireswirl"):
+		case Player_Fireswirl:
 			return this.playerFireSwirlFrames;
-		case("Player EMP"):
+		case Player_EMP:
 			return this.playerEMPFrames;
+		case Player_EMP_Plus:
+			return this.playerEMPPlusFrames;
 		}
 		return null;
 	}
@@ -452,68 +602,75 @@ public class ImageDatabase {
 		reader.setInput(new FileImageInputStream(
 				new File("src/resources/images/Ships/Ship 6/Ship 6 - Projectile Explosion.gif")));
 		bombaProjectileExplosion = gifToImageIcons(reader);
-		
+
 		// Explosions
 		reader.setInput(new FileImageInputStream(new File("src/resources/images/gif/Implosion.gif")));
 		implosionFrames = gifToImageIcons(reader);
-		
+
 		reader.setInput(new FileImageInputStream(
 				new File("src/resources/images/Ships/Ship 1/Ship 1 - Destroyed Explosion.gif")));
 		seekerDestroyedExplosionFrames = gifToImageIcons(reader);
-		
+
 		reader.setInput(new FileImageInputStream(
 				new File("src/resources/images/Ships/Ship 2/Ship 2 - Destroyed Explosion.gif")));
 		tazerDestroyedExplosionFrames = gifToImageIcons(reader);
-		
+
 		reader.setInput(new FileImageInputStream(
 				new File("src/resources/images/Ships/Ship 3/Ship 3 - Destroyed Explosion.gif")));
 		energizerDestroyedExplosionFrames = gifToImageIcons(reader);
-		
+
 		reader.setInput(new FileImageInputStream(
 				new File("src/resources/images/Ships/Ship 4/Ship 4 - Destroyed Explosion.gif")));
 		bulldozerDestroyedExplosionFrames = gifToImageIcons(reader);
-		
+
 		reader.setInput(new FileImageInputStream(
 				new File("src/resources/images/Ships/Ship 5/Ship 5 - Destroyed Explosion.gif")));
 		flamerDestroyedExplosionFrames = gifToImageIcons(reader);
-		
+
 		reader.setInput(new FileImageInputStream(
 				new File("src/resources/images/Ships/Ship 6/Ship 6 - Destroyed Explosion.gif")));
 		bombaDestroyedExplosionFrames = gifToImageIcons(reader);
 
 	}
-	
+
 	private void initPNGtoGIFAnimation() {
 		for (int i = 1; i < 6; i++) {
-			String sourceString=String.format("src/resources/images/gif/PNGtoGIF/Default Player Engine/%d.png",i);  
+			String sourceString = String.format("src/resources/images/gif/PNGtoGIF/Default Player Engine/%d.png", i);
 			Image image = imgLoader.getSpritesheetImage(sourceString);
 			defaultPlayerEngine.add(image);
 		}
-		
+
 		for (int i = 1; i < 6; i++) {
-			String sourceString=String.format("src/resources/images/gif/PNGtoGIF/Default Player Engine Boosted/%d.png",i);  
+			String sourceString = String
+					.format("src/resources/images/gif/PNGtoGIF/Default Player Engine Boosted/%d.png", i);
 			Image image = imgLoader.getSpritesheetImage(sourceString);
 			defaultPlayerEngineBoostedFrames.add(image);
 		}
-		
+
 		for (int i = 1; i < 10; i++) {
-			String sourceString=String.format("src/resources/images/gif/PNGtoGIF/Player Shield Damage/%d.png",i);  
+			String sourceString = String.format("src/resources/images/gif/PNGtoGIF/Player Shield Damage/%d.png", i);
 			Image image = imgLoader.getSpritesheetImage(sourceString);
 			defaultPlayerShieldDamage.add(image);
 		}
-		
+
 		for (int i = 1; i < 10; i++) {
-			String sourceString=String.format("src/resources/images/gif/PNGtoGIF/Player EMP/%d.png",i);  
+			String sourceString = String.format("src/resources/images/gif/PNGtoGIF/Player EMP/%d.png", i);
 			Image image = imgLoader.getSpritesheetImage(sourceString);
 			playerEMPFrames.add(image);
 		}
-		
+
 		for (int i = 1; i < 46; i++) {
-			String sourceString=String.format("src/resources/images/gif/PNGtoGIF/Player Fireswirl/tile0%d.png",i);  
+			String sourceString = String.format("src/resources/images/gif/PNGtoGIF/Player Fireswirl/tile0%d.png", i);
 			Image image = imgLoader.getSpritesheetImage(sourceString);
 			playerFireSwirlFrames.add(image);
 		}
-		
+
+	}
+	
+	private void initSpriteSheets() {
+		Image empImage = imgLoader.getImage(ImageEnums.Player_EMP_Plus);
+		playerEMPPlusFrames = cutSpriteSheetToImages(empImage, 8, 8);
+				
 	}
 
 	private List<Image> gifToImageIcons(ImageReader reader) throws IOException {
@@ -525,8 +682,37 @@ public class ImageDatabase {
 		return imgs;
 	}
 
-	public Image getModel3BetterUpgrade() {
-		return model3BetterUpgrade;
+	private List<Image> cutSpriteSheetToImages(Image image, int rows, int cols) {
+		final int spriteWidth = image.getWidth(null) / cols; // width of a single sprite
+		final int spriteHeight = image.getHeight(null) / rows; // height of a single sprite
+		List<Image> sprites = new ArrayList<Image>();
+		BufferedImage spriteSheetImage = toBufferedImage(image);
+		// load the sprite sheet
+		// split the sprite sheet into individual sprites
+		for (int i = 0; i < rows; i++) {
+			for (int j = 0; j < cols; j++) {
+				// get the subimage from the sprite sheet
+				Image sprite = spriteSheetImage.getSubimage(j * spriteWidth, i * spriteHeight, spriteWidth,
+						spriteHeight);
+				sprites.add(sprite);
+			}
+		}
+		
+		return sprites;
+	}
+	
+	private BufferedImage toBufferedImage(Image image) {
+		if (image instanceof BufferedImage) {
+			return (BufferedImage) image;
+		}
+
+		BufferedImage buff = new BufferedImage(image.getWidth(null), image.getHeight(null),
+				BufferedImage.TYPE_INT_ARGB);
+		Graphics2D g = buff.createGraphics();
+		g.drawImage(image, 0, 0, null);
+		g.dispose();
+
+		return buff;
 	}
 
 }

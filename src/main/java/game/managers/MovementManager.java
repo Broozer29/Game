@@ -2,7 +2,6 @@ package game.managers;
 
 import java.util.List;
 
-import data.movement.Trajectory;
 import game.objects.enemies.Enemy;
 import game.objects.missiles.Missile;
 
@@ -20,12 +19,10 @@ public class MovementManager {
 	
 	public void moveEnemy(Enemy enemy) {
 		enemy.move();
-		enemy.updateTrajectory();
 	}
 	
 	public void moveMissile(Missile missile) {
 		missile.move();
-		missile.updateTrajectory();
 	}
 	
 }

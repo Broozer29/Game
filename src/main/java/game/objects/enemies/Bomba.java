@@ -1,33 +1,39 @@
 package game.objects.enemies;
 
 
-import data.movement.RegularTrajectory;
-import data.movement.Trajectory;
+import data.audio.AudioEnums;
+import data.image.enums.EnemyEnums;
+import data.image.enums.ImageEnums;
 import game.managers.MissileManager;
+import game.movement.Direction;
+import game.movement.PathFinder;
+import game.movement.Point;
+import game.movement.RegularPathFinder;
 
 public class Bomba extends Enemy {
+	
+	private PathFinder missilePathFinder;
 
-	public Bomba(int x, int y, String direction, int angleModuloDivider, float scale) {
-		super(x, y, direction, "Bomba", scale);
-		loadImage("Bomba");
-		setExhaustanimation("Bomba Large Exhaust");
-		setDeathAnimation("Bomba Destroyed Explosion");
+	public Bomba(int x, int y, Point destination, Direction rotation, float scale, PathFinder pathFinder) {
+		super(x, y, destination, rotation, EnemyEnums.Bomba, scale, pathFinder);
+		loadImage(ImageEnums.Bomba);
+		setExhaustanimation(ImageEnums.Bomba_Normal_Exhaust);
+		setDeathAnimation(ImageEnums.Bomba_Destroyed_Explosion);
 		this.exhaustAnimation.setFrameDelay(3);
 		this.deathAnimation.setFrameDelay(2);
 		this.initBoardBlockSpeeds();
-		this.angleModuloDivider = angleModuloDivider;
 		this.hitPoints = 50;
 		this.maxHitPoints = 50;
 		this.attackSpeedFrameCount = 100;
 		this.movementSpeed = 2;
 		this.hasAttack = true;
 		this.showHealthBar = true;
-		this.deathSound = "Large Ship Destroyed";
-		this.trajectory = new RegularTrajectory(direction, movementSpeed, true, angleModuloDivider, getTotalTravelDistance());
+		this.deathSound = AudioEnums.Large_Ship_Destroyed;
 		this.setVisible(true);
-		this.setRotation(direction);
+		this.setRotation(rotation);
+		this.missilePathFinder = new RegularPathFinder();
 	}
-
+	
 	private void initBoardBlockSpeeds() {
 		this.boardBlockSpeeds.add(0, 1);
 		this.boardBlockSpeeds.add(1, 1);
@@ -49,12 +55,14 @@ public class Bomba extends Enemy {
 		}
 
 		if (currentAttackSpeedFrameCount >= attackSpeedFrameCount) {
-			missileManager.addEnemyMissile(this.xCoordinate, this.yCoordinate + this.height / 2, "Bomba Projectile",
-					"Bomba Projectile Explosion", 0, "Left", "Left", this.scale);
-			missileManager.addEnemyMissile(this.xCoordinate, this.yCoordinate + this.height / 2, "Bomba Projectile",
-					"Bomba Projectile Explosion", 3, "LeftDown", "Left", this.scale);
-			missileManager.addEnemyMissile(this.xCoordinate, this.yCoordinate + this.height / 2, "Bomba Projectile",
-					"Bomba Projectile Explosion", 3, "LeftUp", "Left", this.scale);
+//			missileManager.addEnemyMissile(this.xCoordinate, this.yCoordinate + this.height / 2, ImageEnums.Bomba_Missile,
+//					ImageEnums.Bomba_Missile_Explosion, Direction.LEFT_UP, this.scale, missilePathFinder);
+//			missileManager.addEnemyMissile(this.xCoordinate, this.yCoordinate + this.height / 2, ImageEnums.Bomba_Missile,
+//					ImageEnums.Bomba_Missile_Explosion, Direction.LEFT, this.scale, missilePathFinder);
+			
+			missileManager.addEnemyMissile(this.xCoordinate, this.yCoordinate + this.height / 2, ImageEnums.Bomba_Missile,
+					ImageEnums.Bomba_Missile_Explosion, Direction.LEFT_DOWN, this.scale, missilePathFinder);
+			
 			currentAttackSpeedFrameCount = 0;
 		}
 		if (currentAttackSpeedFrameCount < attackSpeedFrameCount) {
@@ -62,8 +70,4 @@ public class Bomba extends Enemy {
 		}
 	}
 	
-	public void test() {
-		System.out.println("In bomba");
-	}
-
 }
