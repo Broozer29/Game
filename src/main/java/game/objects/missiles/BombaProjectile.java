@@ -22,8 +22,8 @@ public class BombaProjectile extends Missile {
 
 	public void missileAction() {
 		if (missileStepsTaken >= 75) {
-			ExplosionManager.getInstance().addExplosion(getCenterXCoordinate(), getCenterYCoordinate(),
-					ImageEnums.Bomba_Missile_Explosion, scale, 20);
+			ExplosionManager.getInstance().createAndAddExplosion(getCenterXCoordinate(), getCenterYCoordinate(),
+					ImageEnums.Bomba_Missile_Explosion, scale, 20, false);
 			this.setVisible(false);
 		}
 	}

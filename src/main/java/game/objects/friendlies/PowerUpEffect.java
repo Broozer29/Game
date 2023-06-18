@@ -9,13 +9,25 @@ public class PowerUpEffect {
 		this.powerupType = powerUpType;
 	}
 	
-	public void activatePowerEffect() {
-		switch (this.powerupType) {
+	//activate start of power effect
+	public void activateImmediatePowerEffect() {
+		switch(this.powerupType) {
 		case DOUBLE_SHOT:
 			activateDoubleShot();
 			break;
 		case TRIPLE_SHOT:
 			activateTripleShot();
+			break;
+		
+		}
+	}
+	
+	//Activate end of power effect
+	public void activateEndOfPowerEffect() {
+		switch (this.powerupType) {
+		case DOUBLE_SHOT:
+			break;
+		case TRIPLE_SHOT:
 			break;
 		}
 	}

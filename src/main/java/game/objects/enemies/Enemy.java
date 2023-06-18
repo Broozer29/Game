@@ -42,7 +42,8 @@ public class Enemy extends Sprite {
 	private Path currentPath;
 	protected int XMovementSpeed;
 	protected int YMovementSpeed;
-	private int lastUsedMovementSpeed;
+	private int lastUsedXMovementSpeed;
+	private int lastUsedYMovementSpeed;
 	protected int currentBoardBlock;
 
 	// Enemy miscellanious attributes
@@ -130,11 +131,12 @@ public class Enemy extends Sprite {
 	}
 
 	public void move() {
-		if (currentPath == null || currentPath.getWaypoints().isEmpty() || XMovementSpeed != lastUsedMovementSpeed
-				|| pathFinder.shouldRecalculatePath(currentPath)) {
+		if (currentPath == null || currentPath.getWaypoints().isEmpty() || XMovementSpeed != lastUsedXMovementSpeed
+				|| YMovementSpeed != lastUsedYMovementSpeed || pathFinder.shouldRecalculatePath(currentPath)) {
 			// calculate a new path if necessary
 			currentPath = pathFinder.findPath(currentLocation, destination, XMovementSpeed, YMovementSpeed, rotation);
-			lastUsedMovementSpeed = XMovementSpeed;
+			lastUsedXMovementSpeed = XMovementSpeed;
+			lastUsedYMovementSpeed = YMovementSpeed;
 		}
 
 		currentPath.updateCurrentLocation(currentLocation);
@@ -145,7 +147,6 @@ public class Enemy extends Sprite {
 		currentLocation = nextPoint;
 		this.xCoordinate = nextPoint.getX();
 		this.yCoordinate = nextPoint.getY();
-
 
 		// if reached the next point, remove it from the path
 		if (currentLocation.equals(nextPoint)) {
@@ -228,7 +229,7 @@ public class Enemy extends Sprite {
 	public int getXMovementSpeed() {
 		return this.XMovementSpeed;
 	}
-	
+
 	public int getYMovementSpeed() {
 		return this.XMovementSpeed;
 	}

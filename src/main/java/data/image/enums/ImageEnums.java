@@ -126,6 +126,8 @@ public enum ImageEnums {
 	Health_Shield_Frames,
 	Frame,
 	Red_Filling,
-	Gold_Filling
+	Gold_Filling,
 	
+	//Icons
+	MultiShotIcon
 }

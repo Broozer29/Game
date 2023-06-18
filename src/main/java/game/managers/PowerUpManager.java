@@ -64,7 +64,7 @@ public class PowerUpManager {
 				Rectangle r1 = powerUp.getBounds();
 				Rectangle r2 = friendlyManager.getSpaceship().getBounds();
 				if (r1.intersects(r2)) {
-					powerUp.activatePowerUpTimer();
+					powerUp.startPowerUpTimer();
 					powerUp.setVisible(false);
 					try {
 						audioManager.addAudio(AudioEnums.Power_Up_Acquired);
@@ -77,10 +77,10 @@ public class PowerUpManager {
 	}
 	
 	private void createPowerUp() {
-		PowerUp newPowerUp = new PowerUp(500, 500, 1, Direction.LEFT_DOWN, PowerUps.DOUBLE_SHOT);
+		PowerUp newPowerUp = new PowerUp(500, 500, 1, Direction.LEFT_DOWN, PowerUps.DOUBLE_SHOT, 0, false);
 		powerUpsOnTheField.add(newPowerUp);
 		
-		PowerUp newPowerUp2 = new PowerUp(100, 100, 1, Direction.LEFT_UP, PowerUps.TRIPLE_SHOT);
+		PowerUp newPowerUp2 = new PowerUp(100, 100, 1, Direction.LEFT_UP, PowerUps.TRIPLE_SHOT, 0, false);
 		powerUpsOnTheField.add(newPowerUp2);
 	}
 

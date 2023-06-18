@@ -44,6 +44,7 @@ public class PlayerStats {
 	private ImageEnums playerMissileType;
 	private ImageEnums playerMissileImpactType;
 	private float missileImpactScale;
+	private float missileScale;
 
 	private PathFinder missilePathFinder;
 
@@ -62,6 +63,7 @@ public class PlayerStats {
 		setExhaustImage(ImageEnums.Default_Player_Engine);
 		setPlayerMissileType(ImageEnums.Player_Laserbeam);
 		setPlayerMissileImpactType(ImageEnums.Impact_Explosion_One);
+		setMissileScale(1);
 		setMissileImpactScale(1);
 		setDefaultEngineType(ImageEnums.Default_Player_Engine);
 		setBoostedEngineType(ImageEnums.Default_Player_Engine_Boosted);
@@ -280,6 +282,14 @@ public class PlayerStats {
 
 	public void setPlayerEMPType(ImageEnums playerEMPType) {
 		this.playerEMPType = playerEMPType;
+	}
+
+	public float getMissileScale() {
+		return missileScale;
+	}
+
+	public void setMissileScale(float missileScale) {
+		this.missileScale = missileScale;
 	}
 
 }

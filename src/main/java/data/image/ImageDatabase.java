@@ -60,6 +60,9 @@ public class ImageDatabase {
 	private Image iconBorder;
 	private Image redFilling;
 	private Image goldFilling;
+	
+	// Icons
+	private Image multiShotIcon;
 
 	// Explosion animations
 	private List<Image> impactExplosionOneFrames = new ArrayList<Image>();
@@ -179,6 +182,7 @@ public class ImageDatabase {
 		this.initPNGtoGIFAnimation();
 		this.initGameUIobjects();
 		this.initSpriteSheets();
+		this.initIcons();
 	}
 
 	private void initFriendlies() {
@@ -219,6 +223,10 @@ public class ImageDatabase {
 		this.iconBorder = imgLoader.getImage(ImageEnums.Icon_Border);
 		this.redFilling = imgLoader.getImage(ImageEnums.Red_Filling);
 		this.goldFilling = imgLoader.getImage(ImageEnums.Gold_Filling);
+	}
+	
+	private void initIcons() {
+		this.multiShotIcon = imgLoader.getImage(ImageEnums.MultiShotIcon);
 	}
 
 	private void initBackgroundObjects() {
@@ -380,6 +388,8 @@ public class ImageDatabase {
 			return parralex4;
 		case Parallex_5:
 			return parralex5;
+		case MultiShotIcon:
+			return multiShotIcon;
 		default:
 			return testImage;
 		}
@@ -713,6 +723,10 @@ public class ImageDatabase {
 		g.dispose();
 
 		return buff;
+	}
+
+	public Image getMultiShotIcon() {
+		return multiShotIcon;
 	}
 
 }

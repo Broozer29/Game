@@ -47,15 +47,14 @@ public class PowerUpTimer implements ActionListener {
 		this.finished = false;
 	}
 
-	// Vuur event naar de timerManager dat deze timer voorbij is. Bijvoorbeeld om
-	// bommen te spawnen.
+	//This method gets executed by the end of the Timer
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		timerManager.activatePowerUpTimer(this, this.powerUp);
 		this.finished = true;
 		this.status = "finished";
 	}
-
+	
 	public boolean getFinished() {
 		return this.finished;
 	}

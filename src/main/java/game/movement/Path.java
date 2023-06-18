@@ -59,5 +59,4 @@ public class Path {
 		this.isHoming = isHoming;
 	}
 
-	// constructor, getters, setters, etc.
 }

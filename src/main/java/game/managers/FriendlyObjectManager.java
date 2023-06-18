@@ -25,6 +25,7 @@ public class FriendlyObjectManager {
 	public void updateGameTick() {
 		cycleActiveFriendlyObjects();
 		checkFriendlyObjectCollision();
+		moveFriendlyObjects();
 	}
 
 	private void cycleActiveFriendlyObjects() {
@@ -33,6 +34,15 @@ public class FriendlyObjectManager {
 			if (!friendly.getAnimation().isVisible()) {
 				activeFriendlyObjects.remove(i);
 				friendly.setVisible(false);
+			}
+		}
+	}
+	
+	private void moveFriendlyObjects() {
+		for (int i = 0; i < activeFriendlyObjects.size(); i++) {
+			FriendlyObject friendly = activeFriendlyObjects.get(i);
+			if (friendly.getAnimation().isVisible()) {
+				friendly.move();
 			}
 		}
 	}
@@ -49,7 +59,6 @@ public class FriendlyObjectManager {
 					Rectangle r1 = animation.getBounds();
 					Rectangle r2 = enemy.getBounds();
 					if (r1.intersects(r2)) {
-						enemy.takeDamage(friendlyObject.getDamage());
 					}
 				}
 			}

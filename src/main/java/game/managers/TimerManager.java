@@ -126,7 +126,7 @@ public class TimerManager {
 	}
 
 	public void activatePowerUpTimer(PowerUpTimer timer, PowerUp powerUp) {
-		powerUp.activatePowerEffect();
+		powerUp.activateEndOfTimerEffect();
 		
 		if (timer.getLoopable()) {
 			timer.refreshTimer();

@@ -10,9 +10,11 @@ public class Explosion extends Sprite{
 	private SpriteAnimation animation;
 	private float damage;
 	private boolean dealtDamage;
+	boolean friendly;
 	
-	public Explosion(int x, int y, float scale, SpriteAnimation animation, float damage) {
+	public Explosion(int x, int y, float scale, SpriteAnimation animation, float damage, boolean friendly) {
 		super(x, y, scale);
+		this.friendly = friendly;
 		this.animation = animation;
 		this.damage = damage;
 		this.dealtDamage = false;
@@ -42,5 +44,8 @@ public class Explosion extends Sprite{
 		return this.dealtDamage;
 	}
 	
+	public boolean isFriendly() {
+		return friendly;
+	}
 	
 }
