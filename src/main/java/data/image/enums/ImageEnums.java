@@ -43,6 +43,7 @@ public enum ImageEnums {
 	Player_Fireswirl,
 	Player_EMP,
 	Player_EMP_Plus,
+	Guardian_Bot,
 	
 	////Background Objects
 	Moon,

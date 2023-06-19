@@ -12,8 +12,8 @@ import game.movement.OrbitPathFinder;
 import game.movement.Path;
 import game.movement.PathFinder;
 import game.movement.Point;
-import image.objects.Sprite;
-import image.objects.SpriteAnimation;
+import visual.objects.Sprite;
+import visual.objects.SpriteAnimation;
 
 public class FriendlyObject extends Sprite {
 
@@ -44,7 +44,7 @@ public class FriendlyObject extends Sprite {
 	protected boolean showHealthBar;
 	protected SpriteAnimation exhaustAnimation = null;
 	protected SpriteAnimation deathAnimation = null;
-	private SpriteAnimation animation = null;
+	protected SpriteAnimation animation = null;
 	private boolean isFriendly = true;
 
 	public FriendlyObject(int x, int y, Point destination, Direction rotation, FriendlyEnums friendlyType, float scale,
@@ -173,4 +173,5 @@ public class FriendlyObject extends Sprite {
 		this.animation = animation;
 	}
 
+	
 }

@@ -21,8 +21,8 @@ import game.managers.ExplosionManager;
 import game.managers.FriendlyObjectManager;
 import game.movement.Direction;
 import game.objects.Explosion;
-import image.objects.Sprite;
-import image.objects.SpriteAnimation;
+import visual.objects.Sprite;
+import visual.objects.SpriteAnimation;
 
 public class SpaceShip extends Sprite {
 

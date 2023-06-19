@@ -7,7 +7,7 @@ import java.util.List;
 import data.image.enums.ImageEnums;
 import game.objects.Explosion;
 import game.objects.enemies.Enemy;
-import image.objects.SpriteAnimation;
+import visual.objects.SpriteAnimation;
 
 public class ExplosionManager {
 

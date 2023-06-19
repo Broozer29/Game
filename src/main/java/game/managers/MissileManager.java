@@ -62,8 +62,8 @@ public class MissileManager {
 		Point destination = pathFinder.calculateInitialEndpoint(start, rotation);
 		Missile missile = createMissile(missileType, xCoordinate, yCoordinate, destination, explosionType, rotation,
 				scale, pathFinder);
+		missile.setVisible(true);
 		this.friendlyMissiles.add(missile);
-
 	}
 
 	// Called by all enemy classes when fireAction() is called.
@@ -117,13 +117,22 @@ public class MissileManager {
 		}
 		for (Missile missile : friendlyMissiles) {
 			if (missile.isVisible()) {
-				Rectangle r1 = missile.getBounds();
+				Rectangle r1 = null;
+				if (missile.getAnimation() != null) {
+					r1 = missile.getAnimation().getBounds();
+				} else {
+					r1 = missile.getBounds();
+				}
+
 				for (Enemy enemy : enemyManager.getEnemies()) {
 					Rectangle r2 = enemy.getBounds();
 					if (r1.intersects(r2)) {
 						enemy.takeDamage(missile.getMissileDamage());
 						if (missile.getExplosionAnimation() != null) {
 							animationManager.addUpperAnimation(missile.getExplosionAnimation());
+						}
+						if (missile.getAnimation() != null) {
+							missile.getAnimation().setVisible(false);
 						}
 						missile.setVisible(false);
 					}
@@ -257,8 +266,8 @@ public class MissileManager {
 			return new EnergizerProjectile(xCoordinate, yCoordinate, destination, missileType, explosionType, rotation,
 					scale, pathFinder);
 		case Player_Laserbeam:
-			return new DefaultPlayerLaserbeam(xCoordinate, yCoordinate, destination, missileType, explosionType, rotation,
-					scale, pathFinder);
+			return new DefaultPlayerLaserbeam(xCoordinate, yCoordinate, destination, missileType, explosionType,
+					rotation, scale, pathFinder);
 		default:
 			throw new IllegalArgumentException("Invalid missile type: " + missileType);
 		}

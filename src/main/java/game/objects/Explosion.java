@@ -2,8 +2,8 @@ package game.objects;
 
 import java.awt.Rectangle;
 
-import image.objects.SpriteAnimation;
-import image.objects.Sprite;
+import visual.objects.Sprite;
+import visual.objects.SpriteAnimation;
 
 public class Explosion extends Sprite{
 

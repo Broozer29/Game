@@ -3,7 +3,7 @@ package game.movement;
 import java.util.ArrayList;
 import java.util.List;
 
-import image.objects.Sprite;
+import visual.objects.Sprite;
 
 public class OrbitPathFinder implements PathFinder {
     private Sprite target;

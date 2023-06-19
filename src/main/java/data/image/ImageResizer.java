@@ -24,12 +24,17 @@ public class ImageResizer {
 		if (image instanceof BufferedImage) {
 			return (BufferedImage) image;
 		}
-
-		BufferedImage buff = new BufferedImage(image.getWidth(null), image.getHeight(null),
-				BufferedImage.TYPE_INT_ARGB);
-		Graphics2D g = buff.createGraphics();
-		g.drawImage(image, 0, 0, null);
-		g.dispose();
+		BufferedImage buff = null;
+		try {
+			buff = new BufferedImage(image.getWidth(null), image.getHeight(null), BufferedImage.TYPE_INT_ARGB);
+			Graphics2D g = buff.createGraphics();
+			g.drawImage(image, 0, 0, null);
+			g.dispose();
+		} catch (IllegalArgumentException | NullPointerException e) {
+			// Handle the exception
+			System.out.println("An exception occurred: " + e.getMessage());
+			System.out.println("Image dimensions given: " + image.getWidth(null) + "," + image.getHeight(null) + " Make sure the image that is being resized is actually loaded the file");
+		}
 
 		return buff;
 	}
@@ -38,7 +43,7 @@ public class ImageResizer {
 // Een harde cast, het kan omdat er geen afbeeldingen zijn met komma getallen qua dimensies, maar indien die er zijn gaat dit tot problemen leiden		
 		int newWidth = (int) Math.floor((image.getWidth(null) * scale));
 		int newHeight = (int) Math.floor((image.getHeight(null) * scale));
-		
+
 		BufferedImage before = toBufferedImage(image);
 		BufferedImage after = new BufferedImage(newWidth, newHeight, BufferedImage.TYPE_INT_ARGB);
 		AffineTransform at = new AffineTransform();
@@ -61,7 +66,6 @@ public class ImageResizer {
 
 		return newFrames;
 	}
-
 
 	public BufferedImage resizeImageToDimensions(Image image, int width, int height) {
 		// Een harde cast, het kan omdat er geen afbeeldingen zijn met komma getallen qua

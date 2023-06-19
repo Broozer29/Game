@@ -39,9 +39,9 @@ import game.objects.enemies.Enemy;
 import game.objects.friendlies.friendlyobjects.FriendlyObject;
 import game.objects.friendlies.friendlyobjects.PowerUp;
 import game.objects.missiles.Missile;
-import image.objects.Sprite;
-import image.objects.SpriteAnimation;
 import menuscreens.BoardManager;
+import visual.objects.Sprite;
+import visual.objects.SpriteAnimation;
 
 public class GameBoard extends JPanel implements ActionListener {
 
@@ -71,7 +71,6 @@ public class GameBoard extends JPanel implements ActionListener {
 	private PlayerStats playerStats = PlayerStats.getInstance();
 	private CustomUIManager uiManager = CustomUIManager.getInstance();
 	private PowerUpManager powerUpManager = PowerUpManager.getInstance();
-	
 
 	public GameBoard() {
 		animationManager = AnimationManager.getInstance();
@@ -159,7 +158,11 @@ public class GameBoard extends JPanel implements ActionListener {
 		// Draw friendly missiles
 		for (Missile missile : missileManager.getFriendlyMissiles()) {
 			if (missile.isVisible()) {
-				drawImage(g, missile);
+				if (missile.getAnimation() != null) {
+					drawAnimation(g, missile.getAnimation());
+				} else {
+					drawImage(g, missile);
+				}
 			}
 		}
 
@@ -197,9 +200,9 @@ public class GameBoard extends JPanel implements ActionListener {
 				drawAnimation(g, friendly.getAnimation());
 			}
 		}
-		
+
 		for (PowerUp powerUp : powerUpManager.getPowerUpsOnTheField()) {
-			if(powerUp.isVisible()) {
+			if (powerUp.isVisible()) {
 				drawImage(g, powerUp);
 			}
 		}
@@ -242,44 +245,41 @@ public class GameBoard extends JPanel implements ActionListener {
 	private void drawPlayerHealthBars(Graphics g) {
 		float playerHealth = playerStats.getHitpoints();
 		float playerMaxHealth = playerStats.getMaxHitPoints();
-		
+
 		UIObject healthBar = uiManager.getHealthBar();
 		int healthBarWidth = calculateHealthbarWidth(playerHealth, playerMaxHealth, healthBar.getWidth());
 		healthBar.resizeToDimensions(healthBarWidth, healthBar.getHeight());
 		drawImage(g, healthBar);
-		
-		
+
 		UIObject healthFrame = uiManager.getHealthFrame();
 		drawImage(g, healthFrame);
 
 		float playerShields = playerStats.getShieldHitpoints();
 		float playerMaxShields = playerStats.getMaxShieldHitPoints();
-		
+
 		UIObject shieldBar = uiManager.getShieldBar();
-		
+
 		int shieldBarWidth = calculateHealthbarWidth(playerShields, playerMaxShields, shieldBar.getWidth());
 		shieldBar.resizeToDimensions(shieldBarWidth, shieldBar.getHeight());
 		drawImage(g, shieldBar);
-		
-		
+
 		UIObject shieldFrame = uiManager.getShieldFrame();
 		drawImage(g, shieldFrame);
-		
 
 	}
-	
+
 	public int calculateHealthbarWidth(float currentHitpoints, float maximumHitpoints, int healthBarSize) {
-	    // Calculate the percentage of currentHitpoints out of maximumHitpoints
-	    double percentage = (double) currentHitpoints / maximumHitpoints * 100;
-	    // Calculate what this percentage is of thirdNumber
-	    int width = (int) Math.ceil(percentage / 100 * healthBarSize);
-	    
-	    if(width > uiManager.getHealthBarWidth()) {
-	    	width = uiManager.getHealthBarWidth();
-	    } else if (width < 1) {
-	    	width = 1;
-	    }
-	    return width;
+		// Calculate the percentage of currentHitpoints out of maximumHitpoints
+		double percentage = (double) currentHitpoints / maximumHitpoints * 100;
+		// Calculate what this percentage is of thirdNumber
+		int width = (int) Math.ceil(percentage / 100 * healthBarSize);
+
+		if (width > uiManager.getHealthBarWidth()) {
+			width = uiManager.getHealthBarWidth();
+		} else if (width < 1) {
+			width = 1;
+		}
+		return width;
 	}
 
 	// Draw the game over screen

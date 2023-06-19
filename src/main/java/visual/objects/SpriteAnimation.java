@@ -1,4 +1,4 @@
-package image.objects;
+package visual.objects;
 
 import java.awt.Image;
 import java.util.ArrayList;

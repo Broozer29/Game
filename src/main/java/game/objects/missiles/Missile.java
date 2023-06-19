@@ -6,8 +6,8 @@ import game.movement.Direction;
 import game.movement.Path;
 import game.movement.PathFinder;
 import game.movement.Point;
-import image.objects.Sprite;
-import image.objects.SpriteAnimation;
+import visual.objects.Sprite;
+import visual.objects.SpriteAnimation;
 
 public class Missile extends Sprite {
 
@@ -240,5 +240,7 @@ public class Missile extends Sprite {
 		}
 		return null;
 	}
+
+
 
 }

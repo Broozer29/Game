@@ -1,7 +1,7 @@
 package menuscreens;
 
 import data.image.enums.ImageEnums;
-import image.objects.Sprite;
+import visual.objects.Sprite;
 
 public class MenuCursor extends Sprite {
 

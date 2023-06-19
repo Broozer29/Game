@@ -3,7 +3,7 @@ package data;
 import data.image.enums.ImageEnums;
 import game.movement.PathFinder;
 import game.movement.RegularPathFinder;
-import image.objects.SpriteAnimation;
+import visual.objects.SpriteAnimation;
 
 public class PlayerStats {
 

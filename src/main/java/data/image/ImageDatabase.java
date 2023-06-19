@@ -86,6 +86,7 @@ public class ImageDatabase {
 	private List<Image> playerEMPPlusFrames = new ArrayList<Image>();
 	private List<Image> defaultPlayerEngineBoostedFrames = new ArrayList<Image>();
 	private List<Image> defaultPlayerShieldDamage = new ArrayList<Image>();
+	private List<Image> guardianBotFrames = new ArrayList<Image>();
 
 	// Enemy Projectile Animations
 	private List<Image> seekerProjectileFrames = new ArrayList<Image>();
@@ -485,6 +486,8 @@ public class ImageDatabase {
 			return this.playerEMPFrames;
 		case Player_EMP_Plus:
 			return this.playerEMPPlusFrames;
+		case Guardian_Bot:
+			return this.guardianBotFrames;
 		}
 		return null;
 	}
@@ -667,6 +670,12 @@ public class ImageDatabase {
 			String sourceString = String.format("src/resources/images/gif/PNGtoGIF/Player EMP/%d.png", i);
 			Image image = imgLoader.getSpritesheetImage(sourceString);
 			playerEMPFrames.add(image);
+		}
+		
+		for (int i = 1; i < 16; i++) {
+			String sourceString = String.format("src/resources/images/Ships/Guardian Bot/GuardianBot%d.png", i);
+			Image image = imgLoader.getSpritesheetImage(sourceString);
+			guardianBotFrames.add(image);
 		}
 
 		for (int i = 1; i < 46; i++) {

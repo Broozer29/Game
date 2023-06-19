@@ -43,24 +43,23 @@ public class SpaceShipRegularGun {
 	        int x = xCoordinate + spaceShipWidth;
 	        int y = yCoordinate + (spaceShipHeight / 2) - 5;
 	        ImageEnums type = playerStats.getPlayerMissileType();
-	        ImageEnums impactType = playerStats.getPlayerMissileImpactType();
+	        ImageEnums imageType = playerStats.getPlayerMissileType();
 	        float scale = playerStats.getMissileScale();
-//	        PathFinder pathFinder = playerStats.getMissilePathFinder();
-			PathFinder pathFinder = new HomingPathFinder();
-
+	        PathFinder pathFinder = playerStats.getMissilePathFinder();
+//			PathFinder pathFinder = new HomingPathFinder();
 			if (powerUpEffects.getTripleShotActive()) {
-				this.fireMissile(x, y, type, impactType, Direction.RIGHT_UP, scale, pathFinder);
-				this.fireMissile(x, y, type, impactType, Direction.RIGHT, scale, pathFinder);
-				this.fireMissile(x, y, type, impactType, Direction.RIGHT_DOWN, scale, pathFinder);
+				this.fireMissile(x, y, type, imageType, Direction.RIGHT_UP, scale, pathFinder);
+				this.fireMissile(x, y, type, imageType, Direction.RIGHT, scale, pathFinder);
+				this.fireMissile(x, y, type, imageType, Direction.RIGHT_DOWN, scale, pathFinder);
 				playMissileAudio(AudioEnums.Player_Laserbeam);
 
 			} else if (powerUpEffects.getDoubleShotActive()) {
-				this.fireMissile(x, y, type, impactType, Direction.RIGHT_UP, scale, pathFinder);
-				this.fireMissile(x, y, type, impactType, Direction.RIGHT, scale, pathFinder);
+				this.fireMissile(x, y, type, imageType, Direction.RIGHT_UP, scale, pathFinder);
+				this.fireMissile(x, y, type, imageType, Direction.RIGHT, scale, pathFinder);
 				playMissileAudio(AudioEnums.Player_Laserbeam);
 
 			} else {
-				this.fireMissile(x, y, type, impactType, Direction.RIGHT, scale, pathFinder);
+				this.fireMissile(x, y, type, imageType, Direction.RIGHT, scale, pathFinder);
 				playMissileAudio(AudioEnums.Player_Laserbeam);
 
 			}

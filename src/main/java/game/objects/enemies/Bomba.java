@@ -22,8 +22,8 @@ public class Bomba extends Enemy {
 		this.exhaustAnimation.setFrameDelay(3);
 		this.deathAnimation.setFrameDelay(2);
 		this.initBoardBlockSpeeds();
-		this.hitPoints = 50;
-		this.maxHitPoints = 50;
+		this.hitPoints = 50000;
+		this.maxHitPoints = 50000;
 		this.attackSpeedFrameCount = 100;
 		this.XMovementSpeed = 2;
 		this.YMovementSpeed = 1;

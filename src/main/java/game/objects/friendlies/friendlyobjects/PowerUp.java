@@ -9,7 +9,7 @@ import game.movement.PowerUpDirectionBouncer;
 import game.objects.friendlies.PowerUpEffect;
 import game.objects.friendlies.PowerUps;
 import game.spawner.PowerUpTimer;
-import image.objects.Sprite;
+import visual.objects.Sprite;
 
 public class PowerUp extends Sprite {
 

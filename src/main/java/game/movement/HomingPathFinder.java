@@ -25,15 +25,16 @@ public class HomingPathFinder implements PathFinder {
 		}
 	}
 
-	// If the missile is friendly but there are no enemies, return false
+	// If the missile is friendly but there are no enemies, return true
 	public boolean shouldRecalculatePath(Path currentPath) {
 		boolean hasPassed = false;
-		if (currentPath.isFriendly()) {
-			return EnemyManager.getInstance().enemiesToHomeTo();
-		} else {
+		if (currentPath.isFriendly() && !EnemyManager.getInstance().enemiesToHomeTo()) {
 			hasPassed = hasPassedTarget(currentPath);
+		} else if (!currentPath.isFriendly()) {
+			hasPassed = hasPassedTarget(currentPath);
+		} else if (currentPath.isFriendly() && EnemyManager.getInstance().enemiesToHomeTo()) {
+			hasPassed = true;
 		}
-
 		return hasPassed;
 	}
 

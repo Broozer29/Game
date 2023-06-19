@@ -2,7 +2,7 @@ package game.UI;
 
 import data.image.ImageResizer;
 import data.image.enums.ImageEnums;
-import image.objects.Sprite;
+import visual.objects.Sprite;
 
 public class UIObject extends Sprite {
 

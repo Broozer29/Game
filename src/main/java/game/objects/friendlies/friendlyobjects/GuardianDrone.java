@@ -1,6 +1,7 @@
 package game.objects.friendlies.friendlyobjects;
 
 import data.image.enums.ImageEnums;
+import game.managers.AnimationManager;
 import game.managers.EnemyManager;
 import game.managers.ExplosionManager;
 import game.managers.MissileManager;
@@ -11,11 +12,11 @@ import game.movement.Point;
 import game.objects.Explosion;
 import game.objects.enemies.Enemy;
 import game.objects.missiles.Missile;
-import image.objects.SpriteAnimation;
+import visual.objects.SpriteAnimation;
 
 public class GuardianDrone extends FriendlyObject {
 
-	FriendlyEnums friendlyType;
+	FriendlyEnums guardianType;
 	int attackSpeedCooldown;
 	int attackFrameCount;
 
@@ -23,10 +24,13 @@ public class GuardianDrone extends FriendlyObject {
 			PathFinder pathFinder, int attackSpeedCooldown) {
 		super(x, y, destination, rotation, friendlyType, scale, pathFinder);
 		this.attackSpeedCooldown = attackSpeedCooldown;
+		this.guardianType = friendlyType;
+		SpriteAnimation anim = new SpriteAnimation(x, y, ImageEnums.Guardian_Bot, true, scale);
+		this.animation = anim;
 	}
-
+	
 	public void activateGuardianDrone() {
-		switch (friendlyType) {
+		switch (guardianType) {
 		case Absorbtion_Guardian_Bot:
 			break;
 		case Explosion_Guardian_Bot:
@@ -58,9 +62,11 @@ public class GuardianDrone extends FriendlyObject {
 	private void fireHomingMissile() {
 		if (attackFrameCount >= attackSpeedCooldown) {
 			PathFinder pathFinder = new HomingPathFinder();
-			MissileManager.getInstance().addFriendlyMissile(this.getCenterXCoordinate(), this.getCenterYCoordinate(),
-					ImageEnums.Default_Player_Engine_Boosted, ImageEnums.Impact_Explosion_One, Direction.NONE, 1,
+			MissileManager missileManager = MissileManager.getInstance();
+			missileManager.addFriendlyMissile(this.getCenterXCoordinate(), this.getCenterYCoordinate(),
+					ImageEnums.Player_Laserbeam, ImageEnums.Impact_Explosion_One, Direction.RIGHT, 1,
 					pathFinder);
+			attackFrameCount = 0;
 
 		} else {
 			attackFrameCount++;
