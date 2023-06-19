@@ -9,6 +9,9 @@ public class OrbitPathFinder implements PathFinder {
     private Sprite target;
     private int radius;
     private int totalFrames;
+    
+    int oldTargetX;
+    int oldTargetY;
 
     public OrbitPathFinder(Sprite target, int radius, int totalFrames) {
         this.target = target;
@@ -17,7 +20,7 @@ public class OrbitPathFinder implements PathFinder {
     }
 
     @Override
-    public Path findPath(Point start, Point end, int XstepSize, int yStepSize, Direction fallbackDirection) {
+    public Path findPath(Point start, Point end, int XstepSize, int yStepSize, Direction fallbackDirection, boolean isFriendly) {
         double angleStep = Math.PI * 2 / totalFrames;
         List<Point> waypoints = new ArrayList<>();
 
@@ -30,7 +33,7 @@ public class OrbitPathFinder implements PathFinder {
             waypoints.add(new Point(x, y));
         }
 
-        return new Path(waypoints, fallbackDirection, false);
+        return new Path(waypoints, fallbackDirection, false, isFriendly);
     }
 
     @Override
@@ -112,6 +115,10 @@ public class OrbitPathFinder implements PathFinder {
         	waypoint.setX(waypoint.getX() + targetDeltaX);
         	waypoint.setY(waypoint.getY() + targetDeltaY);
         }
+    }
+    
+    public Sprite getTarget() {
+        return target;
     }
 }
 

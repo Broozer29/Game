@@ -3,14 +3,16 @@ package game.movement;
 import java.util.ArrayList;
 import java.util.List;
 
+import game.managers.EnemyManager;
 import game.managers.FriendlyManager;
 
 public class HomingPathFinder implements PathFinder {
 	@Override
-	public Path findPath(Point start, Point end, int XstepSize, int YStepSize, Direction fallbackDirection) {
+	public Path findPath(Point start, Point end, int XstepSize, int YStepSize, Direction fallbackDirection,
+			boolean isFriendly) {
 		List<Point> waypoints = new ArrayList<>();
 		waypoints.add(start);
-		return new Path(waypoints, fallbackDirection, true);
+		return new Path(waypoints, fallbackDirection, true, isFriendly);
 	}
 
 	@Override
@@ -23,8 +25,15 @@ public class HomingPathFinder implements PathFinder {
 		}
 	}
 
+	// If the missile is friendly but there are no enemies, return false
 	public boolean shouldRecalculatePath(Path currentPath) {
-		boolean hasPassed = hasPassedTarget(currentPath);
+		boolean hasPassed = false;
+		if (currentPath.isFriendly()) {
+			return EnemyManager.getInstance().enemiesToHomeTo();
+		} else {
+			hasPassed = hasPassedTarget(currentPath);
+		}
+
 		return hasPassed;
 	}
 
@@ -90,8 +99,7 @@ public class HomingPathFinder implements PathFinder {
 		FriendlyManager friendlyManager = FriendlyManager.getInstance();
 		int xCoordinate = friendlyManager.getNearestFriendlyHomingCoordinates().get(0);
 		int yCoordinate = friendlyManager.getNearestFriendlyHomingCoordinates().get(1);
-		
-		
+
 		return new Point(xCoordinate, yCoordinate);
 	}
 

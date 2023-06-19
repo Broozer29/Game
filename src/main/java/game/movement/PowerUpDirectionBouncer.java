@@ -26,7 +26,8 @@ public class PowerUpDirectionBouncer {
 
 		Point newEndpoint = new Point(endCoordinates.get(0), endCoordinates.get(1));
 		RegularPathFinder regPathFinder = new RegularPathFinder();
-		Path newPath = regPathFinder.findPath(currentPoint, newEndpoint, 1, 1, newDirection);
+		boolean isFriendly = true;
+		Path newPath = regPathFinder.findPath(currentPoint, newEndpoint, 1, 1, newDirection, isFriendly);
 
 		return newPath;
 	}

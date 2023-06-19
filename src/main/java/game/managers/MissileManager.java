@@ -56,7 +56,7 @@ public class MissileManager {
 		return friendlyMissiles;
 	}
 
-	public void firePlayerMissile(int xCoordinate, int yCoordinate, ImageEnums missileType, ImageEnums explosionType,
+	public void addFriendlyMissile(int xCoordinate, int yCoordinate, ImageEnums missileType, ImageEnums explosionType,
 			Direction rotation, float scale, PathFinder pathFinder) {
 		Point start = new Point(xCoordinate, yCoordinate);
 		Point destination = pathFinder.calculateInitialEndpoint(start, rotation);

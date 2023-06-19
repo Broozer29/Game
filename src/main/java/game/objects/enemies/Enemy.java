@@ -47,6 +47,7 @@ public class Enemy extends Sprite {
 	protected int currentBoardBlock;
 
 	// Enemy miscellanious attributes
+	private boolean isFriendly = false;
 	protected Direction rotation;
 	protected EnemyEnums enemyType;
 	protected AudioEnums deathSound;
@@ -134,7 +135,7 @@ public class Enemy extends Sprite {
 		if (currentPath == null || currentPath.getWaypoints().isEmpty() || XMovementSpeed != lastUsedXMovementSpeed
 				|| YMovementSpeed != lastUsedYMovementSpeed || pathFinder.shouldRecalculatePath(currentPath)) {
 			// calculate a new path if necessary
-			currentPath = pathFinder.findPath(currentLocation, destination, XMovementSpeed, YMovementSpeed, rotation);
+			currentPath = pathFinder.findPath(currentLocation, destination, XMovementSpeed, YMovementSpeed, rotation, isFriendly);
 			lastUsedXMovementSpeed = XMovementSpeed;
 			lastUsedYMovementSpeed = YMovementSpeed;
 		}

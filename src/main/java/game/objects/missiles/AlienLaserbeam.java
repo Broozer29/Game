@@ -9,7 +9,7 @@ public class AlienLaserbeam extends Missile {
 
 	public AlienLaserbeam(int x, int y, Point destination, ImageEnums missileType, ImageEnums explosionType, Direction rotation,
 			float scale, PathFinder pathFinder) {
-		super(x, y, destination, missileType, explosionType, rotation, scale, pathFinder);
+		super(x, y, destination, missileType, explosionType, rotation, scale, pathFinder, false);
 		loadImage(missileType);
 		this.missileDamage = (float) 2.5;
 		this.xMovementSpeed = 3;

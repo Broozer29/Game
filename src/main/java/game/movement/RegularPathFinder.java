@@ -7,7 +7,7 @@ import data.DataClass;
 
 public class RegularPathFinder implements PathFinder {
 
-	public Path findPath(Point start, Point end, int XStepSize, int YStepSize, Direction fallbackDirection) {
+	public Path findPath(Point start, Point end, int XStepSize, int YStepSize, Direction fallbackDirection,boolean isFriendly) {
 		List<Point> pathList = new ArrayList<>();
 		Point currentPoint = start;
 		pathList.add(start);
@@ -25,7 +25,7 @@ public class RegularPathFinder implements PathFinder {
 			steps++;
 
 		}
-		Path path = new Path(pathList, fallbackDirection, false);
+		Path path = new Path(pathList, fallbackDirection, false, isFriendly);
 		return path;
 	}
 

@@ -12,6 +12,7 @@ import game.managers.AudioManager;
 import game.managers.FriendlyManager;
 import game.managers.MissileManager;
 import game.movement.Direction;
+import game.movement.HomingPathFinder;
 import game.movement.PathFinder;
 
 public class SpaceShipRegularGun {
@@ -44,8 +45,8 @@ public class SpaceShipRegularGun {
 	        ImageEnums type = playerStats.getPlayerMissileType();
 	        ImageEnums impactType = playerStats.getPlayerMissileImpactType();
 	        float scale = playerStats.getMissileScale();
-	        PathFinder pathFinder = playerStats.getMissilePathFinder();
-			
+//	        PathFinder pathFinder = playerStats.getMissilePathFinder();
+			PathFinder pathFinder = new HomingPathFinder();
 
 			if (powerUpEffects.getTripleShotActive()) {
 				this.fireMissile(x, y, type, impactType, Direction.RIGHT_UP, scale, pathFinder);
@@ -68,7 +69,7 @@ public class SpaceShipRegularGun {
 
 	private void fireMissile(int xCoordinate, int yCoordinate, ImageEnums playerMissileType, ImageEnums playerMissileImpactType, Direction direction, 
 			float missileScale, PathFinder missilePathFinder) {
-		this.missileManager.firePlayerMissile(xCoordinate, yCoordinate, playerMissileType, playerMissileImpactType, direction, missileScale, missilePathFinder);
+		this.missileManager.addFriendlyMissile(xCoordinate, yCoordinate, playerMissileType, playerMissileImpactType, direction, missileScale, missilePathFinder);
 		
 	}
 	

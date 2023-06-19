@@ -4,7 +4,15 @@ import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.print.attribute.standard.Destination;
+
+import data.image.enums.ImageEnums;
+import game.movement.Direction;
+import game.movement.OrbitPathFinder;
+import game.movement.PathFinder;
+import game.movement.Point;
 import game.objects.enemies.Enemy;
+import game.objects.friendlies.friendlyobjects.FriendlyEnums;
 import game.objects.friendlies.friendlyobjects.FriendlyObject;
 import image.objects.SpriteAnimation;
 
@@ -15,7 +23,20 @@ public class FriendlyObjectManager {
 	private List<FriendlyObject> activeFriendlyObjects = new ArrayList<FriendlyObject>();
 
 	private FriendlyObjectManager() {
-
+		
+		int xCoordinate = FriendlyManager.getInstance().getSpaceship().getCenterXCoordinate();
+		int yCoordinate = FriendlyManager.getInstance().getSpaceship().getCenterYCoordinate();
+		float scale = (float) 1.0;
+		FriendlyEnums friendlyType = FriendlyEnums.Absorbtion_Guardian_Bot;
+		Point destination = null;
+		Direction rotation = Direction.RIGHT;
+		PathFinder pathFinder = new OrbitPathFinder(FriendlyManager.getInstance().getSpaceship(), 30, 60);
+		
+		
+		FriendlyObject friendlyObject = new FriendlyObject(xCoordinate, yCoordinate, destination, rotation, friendlyType, scale, pathFinder);
+		SpriteAnimation animation = new SpriteAnimation(xCoordinate, yCoordinate, ImageEnums.Default_Player_Engine, true, scale);
+		friendlyObject.setAnimation(animation);;
+		addActiveFriendlyObject(friendlyObject);
 	}
 
 	public static FriendlyObjectManager getInstance() {
@@ -63,6 +84,10 @@ public class FriendlyObjectManager {
 				}
 			}
 		}
+	}
+	
+	public void createGuardianDrone() {
+		
 	}
 
 	public void addActiveFriendlyObject(FriendlyObject friendlyObject) {

@@ -28,11 +28,12 @@ public class Missile extends Sprite {
 	private Point destination;
 	private PathFinder pathFinder;
 	private Path currentPath;
+	private boolean isFriendly;
 
 	private boolean hasLock;
 
 	public Missile(int x, int y, Point destination, ImageEnums missileType, ImageEnums explosionType, Direction rotation,
-			float scale, PathFinder pathFinder) {
+			float scale, PathFinder pathFinder, boolean isFriendly) {
 		super(x, y, scale);
 		this.currentLocation = new Point(x, y);
 		this.destination = destination;
@@ -42,13 +43,14 @@ public class Missile extends Sprite {
 		this.missileStepsTaken = 0;
 		this.pathFinder = pathFinder;
 		this.hasLock = true;
+		this.isFriendly = isFriendly;
 	}
 
 	public void move() {
 		if (currentPath == null || currentPath.getWaypoints().isEmpty() || xMovementSpeed != lastUsedXMovementSpeed
 				|| yMovementSpeed != lastUsedYMovementSpeed) {
 			// calculate a new path if necessary
-			currentPath = pathFinder.findPath(currentLocation, destination, xMovementSpeed, yMovementSpeed, rotation);
+			currentPath = pathFinder.findPath(currentLocation, destination, xMovementSpeed, yMovementSpeed, rotation, isFriendly);
 			lastUsedXMovementSpeed = xMovementSpeed;
 			lastUsedYMovementSpeed = yMovementSpeed;
 			currentPath.setCurrentLocation(new Point(xCoordinate, yCoordinate));
