@@ -31,6 +31,7 @@ public class AudioDatabase {
 	private List<CustomAudioClip> destroyedExplosionClipList = new ArrayList<CustomAudioClip>();
 	private List<CustomAudioClip> alienSpaceshipDestroyedClipList = new ArrayList<CustomAudioClip>();
 	private List<CustomAudioClip> largeShipDestroyedClipList = new ArrayList<CustomAudioClip>();
+	private List<CustomAudioClip> powerUpAcquiredClipList = new ArrayList<CustomAudioClip>();
 
 	
 	private Map<AudioEnums, List<CustomAudioClip>> audioClipsMap = new HashMap<>();
@@ -107,6 +108,9 @@ public class AudioDatabase {
 
 			CustomAudioClip defaultEMP = new CustomAudioClip(AudioEnums.Default_EMP, false);
 			defaultEMPClipList.add(defaultEMP);
+			
+			CustomAudioClip powerUpAcquired = new CustomAudioClip(AudioEnums.Power_Up_Acquired, false);
+			powerUpAcquiredClipList.add(powerUpAcquired);
 		}
 		
 		audioClipsMap.put(AudioEnums.Player_Laserbeam, laserBeamClipList);
@@ -115,6 +119,7 @@ public class AudioDatabase {
 		audioClipsMap.put(AudioEnums.Alien_Bomb_Impact, alienBombImpactList);
 		audioClipsMap.put(AudioEnums.Large_Ship_Destroyed, largeShipDestroyedClipList);
 		audioClipsMap.put(AudioEnums.Default_EMP, defaultEMPClipList);
+		audioClipsMap.put(AudioEnums.Power_Up_Acquired, powerUpAcquiredClipList);
 
 	}
 	
@@ -149,6 +154,7 @@ public class AudioDatabase {
 	        case Large_Ship_Destroyed:
 	        case Default_EMP:
 	        case Alien_Bomb_Destroyed:
+	        case Power_Up_Acquired:
 	            return getAvailableClip(audioType);
 	        case Ayasa_The_Reason_Why:
 	            return getAyasatheReasonWhy();

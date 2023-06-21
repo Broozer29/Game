@@ -6,7 +6,7 @@ import java.util.Random;
 
 import data.image.enums.BGOEnums;
 import game.movement.Direction;
-import image.objects.Sprite;
+import visual.objects.Sprite;
 
 public class BackgroundObject extends Sprite {
 
@@ -30,10 +30,10 @@ public class BackgroundObject extends Sprite {
 	}
 	
 	public void rotateRandomDegrees() {
-		rotateImage(selectRandomSpaceTheme());
+		rotateImage(selectRandomDirection());
 	}
 	
-	private Direction selectRandomSpaceTheme() {
+	private Direction selectRandomDirection() {
 		Direction[] enums = Direction.values();
 		Random random = new Random();
 		Direction randomValue = enums[random.nextInt(enums.length)];

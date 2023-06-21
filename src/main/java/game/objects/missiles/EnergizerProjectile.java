@@ -9,11 +9,12 @@ public class EnergizerProjectile extends Missile {
 
 	public EnergizerProjectile(int x, int y, Point destination, ImageEnums missileType, ImageEnums explosionType, Direction rotation,
 			float scale, PathFinder pathFinder) {
-		super(x, y, destination, missileType, explosionType, rotation, scale, pathFinder);
+		super(x, y, destination, missileType, explosionType, rotation, scale, pathFinder, false);
 		this.missileDamage = (float) 7.5;
 		setAnimation();
 		this.animation.setFrameDelay(3);
-		this.movementSpeed = 5;
+		this.xMovementSpeed = 5;
+		this.yMovementSpeed = 2;
 	}
 	
 	public void missileAction() {

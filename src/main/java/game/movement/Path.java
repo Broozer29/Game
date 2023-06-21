@@ -2,18 +2,22 @@ package game.movement;
 
 import java.util.List;
 
+import game.managers.EnemyManager;
 import game.managers.FriendlyManager;
+import game.objects.enemies.Enemy;
 
 public class Path {
 	private List<Point> waypoints;
 	private Point currentLocation;
 	private Direction fallbackDirection;
 	private boolean isHoming;
+	private boolean isFriendly;
 
-	public Path(List<Point> wayPoints, Direction fallbackDirection, boolean isHoming) {
+	public Path(List<Point> wayPoints, Direction fallbackDirection, boolean isHoming, boolean isFriendly) {
 		this.waypoints = wayPoints;
 		this.setFallbackDirection(fallbackDirection);
 		this.setHoming(isHoming);
+		this.setFriendly(isFriendly);
 	}
 
 	public List<Point> getWaypoints() {
@@ -23,24 +27,30 @@ public class Path {
 	public void setWaypoints(List<Point> waypoints) {
 		this.waypoints = waypoints;
 	}
-	
+
 	public void updateCurrentLocation(Point point) {
 		this.currentLocation = point;
 	}
-	
+
 	public Point getCurrentLocation() {
 		return this.currentLocation;
 	}
-	
+
 	public void setCurrentLocation(Point point) {
 		this.currentLocation = point;
 	}
-	
+
 	public Point getHomingTargetLocation() {
-		FriendlyManager friendlyManager = FriendlyManager.getInstance();
-		int x = friendlyManager.getNearestFriendlyHomingCoordinates().get(0);
-		int y = friendlyManager.getNearestFriendlyHomingCoordinates().get(1);
-		return new Point(x,y);
+		if (isFriendly) {
+			EnemyManager enemyManager = EnemyManager.getInstance();
+			Point closestEnemyPoint = enemyManager.getClosestEnemy();
+			return closestEnemyPoint;
+		} else {
+			FriendlyManager friendlyManager = FriendlyManager.getInstance();
+			int x = friendlyManager.getNearestFriendlyHomingCoordinates().get(0);
+			int y = friendlyManager.getNearestFriendlyHomingCoordinates().get(1);
+			return new Point(x, y);
+		}
 	}
 
 	public Direction getFallbackDirection() {
@@ -48,7 +58,6 @@ public class Path {
 	}
 
 	public void setFallbackDirection(Direction fallbackDirection) {
-//		System.out.println(fallbackDirection);
 		this.fallbackDirection = fallbackDirection;
 	}
 
@@ -59,6 +68,13 @@ public class Path {
 	public void setHoming(boolean isHoming) {
 		this.isHoming = isHoming;
 	}
+	
+	public void setFriendly(boolean isFriendly) {
+		this.isFriendly = isFriendly;
+	}
+	
+	public boolean isFriendly() {
+		return this.isFriendly;
+	}
 
-	// constructor, getters, setters, etc.
 }

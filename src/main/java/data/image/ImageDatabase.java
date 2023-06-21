@@ -60,6 +60,72 @@ public class ImageDatabase {
 	private Image iconBorder;
 	private Image redFilling;
 	private Image goldFilling;
+	
+	// Icons
+	private Image tripleShotIcon;
+	private Image doubleShotIcon;
+	private Image starcraft2_Point_Defense_Drone;
+	private Image starcraft2_Protoss_Cloak;
+	private Image starcraft2_Protoss_Shield_Disintegrate;
+	private Image starcraft2_Protoss_Shields_1;
+	private Image starcraft2_Protoss_Shields_2;
+	private Image starcraft2_Protoss_Shields_3;
+	private Image starcraft2_Psi_Storm1;
+	private Image starcraft2_Psi_Storm2;
+	private Image starcraft2_Psi_Storm3;
+	private Image starcraft2_Pulse_Grenade;
+	private Image starcraft2_Pulse_Laser;
+	private Image starcraft2_Repair_Blink;
+	private Image starcraft2_Rocket_Cluster;
+	private Image starcraft2_Dual_Rockets;
+	private Image starcraft2_Artanis_Shield;
+	private Image starcraft2_Auto_Tracking;
+	private Image starcraft2_Blink;
+	private Image starcraft2_Blue_Flame;
+	private Image starcraft2_Concussive_Shells;
+	private Image starcraft2_Corsair_Cloak;
+	private Image starcraft2_Drone_Cloak;
+	private Image starcraft2_DT_Blink;
+	private Image starcraft2_Energizer_Speed;
+	private Image starcraft2_Energizer_Speed2;
+	private Image starcraft2_Fire_Cloak;
+	private Image starcraft2_Energy_Siphon;
+	private Image starcraft2_Fire_Hardened_Shields;
+	private Image starcraft2_Flame_Turret;
+	private Image starcraft2_Force_Field;
+	private Image starcraft2_Guardian_Shield;
+	private Image starcraft2_Hardened_Shields;
+	private Image starcraft2_Health_Upgrade_1;
+	private Image starcraft2_Health_Upgrade_2;
+	private Image starcraft2_Ignite_Afterburners;
+	private Image starcraft2_Immortal_Barrier;
+	private Image starcraft2_Immortal_Original_Barrier;
+	private Image starcraft2_LaserBeam;
+	private Image starcraft2_LaserDrill;
+	private Image starcraft2_MovementSpeed;
+	private Image starcraft2_Seeker_Missile;
+	private Image starcraft2_Shield_Barrier;
+	private Image starcraft2_Shield_Piercing;
+	private Image starcraft2_Stim1;
+	private Image starcraft2_Stim2;
+	private Image starcraft2_Stim3;
+	private Image starcraft2_Terran_Plating1;
+	private Image starcraft2_Terran_Plating2;
+	private Image starcraft2_Terran_Plating3;
+	private Image starcraft2_Terran_Speed1;
+	private Image starcraft2_Terran_Speed2;
+	private Image starcraft2_Terran_Speed3;
+	private Image starcraft2_Terran_Weapons1;
+	private Image starcraft2_Terran_Weapons2;
+	private Image starcraft2_Terran_Weapons3;
+	private Image starcraft2_Third_Blink;
+	private Image starcraft2_Time_Warp;
+	private Image starcraft2_Vespene_Gas;
+	private Image starcraft2_Vespene_Siphon;
+	private Image starcraft2_Vespene_Drone;
+	private Image starcraft2_Wraith_Cloak;
+	private Image starcraft2_Yellow_Blink;
+	private Image starcraft2_Heal;
 
 	// Explosion animations
 	private List<Image> impactExplosionOneFrames = new ArrayList<Image>();
@@ -83,6 +149,7 @@ public class ImageDatabase {
 	private List<Image> playerEMPPlusFrames = new ArrayList<Image>();
 	private List<Image> defaultPlayerEngineBoostedFrames = new ArrayList<Image>();
 	private List<Image> defaultPlayerShieldDamage = new ArrayList<Image>();
+	private List<Image> guardianBotFrames = new ArrayList<Image>();
 
 	// Enemy Projectile Animations
 	private List<Image> seekerProjectileFrames = new ArrayList<Image>();
@@ -179,6 +246,7 @@ public class ImageDatabase {
 		this.initPNGtoGIFAnimation();
 		this.initGameUIobjects();
 		this.initSpriteSheets();
+		this.initIcons();
 	}
 
 	private void initFriendlies() {
@@ -219,6 +287,73 @@ public class ImageDatabase {
 		this.iconBorder = imgLoader.getImage(ImageEnums.Icon_Border);
 		this.redFilling = imgLoader.getImage(ImageEnums.Red_Filling);
 		this.goldFilling = imgLoader.getImage(ImageEnums.Gold_Filling);
+	}
+	
+	private void initIcons() {
+		this.tripleShotIcon = imgLoader.getImage(ImageEnums.TripleShotIcon);
+		this.doubleShotIcon = imgLoader.getImage(ImageEnums.DoubleShotIcon);
+		this.starcraft2_Point_Defense_Drone = imgLoader.getImage(ImageEnums.Starcraft2_Point_Defense_Drone);
+		this.starcraft2_Protoss_Cloak = imgLoader.getImage(ImageEnums.Starcraft2_Protoss_Cloak);
+		this.starcraft2_Protoss_Shield_Disintegrate = imgLoader.getImage(ImageEnums.Starcraft2_Protoss_Shield_Disintegrate);
+		this.starcraft2_Protoss_Shields_1 = imgLoader.getImage(ImageEnums.Starcraft2_Protoss_Shields_1);
+		this.starcraft2_Protoss_Shields_2 = imgLoader.getImage(ImageEnums.Starcraft2_Protoss_Shields_2);
+		this.starcraft2_Protoss_Shields_3 = imgLoader.getImage(ImageEnums.Starcraft2_Protoss_Shields_3);
+		this.starcraft2_Psi_Storm1 = imgLoader.getImage(ImageEnums.Starcraft2_Psi_Storm1);
+		this.starcraft2_Psi_Storm2 = imgLoader.getImage(ImageEnums.Starcraft2_Psi_Storm2);
+		this.starcraft2_Psi_Storm3 = imgLoader.getImage(ImageEnums.Starcraft2_Psi_Storm3);
+		this.starcraft2_Pulse_Grenade = imgLoader.getImage(ImageEnums.Starcraft2_Pulse_Grenade);
+		this.starcraft2_Pulse_Laser = imgLoader.getImage(ImageEnums.Starcraft2_Pulse_Laser);
+		this.starcraft2_Repair_Blink = imgLoader.getImage(ImageEnums.Starcraft2_Repair_Blink);
+		this.starcraft2_Rocket_Cluster = imgLoader.getImage(ImageEnums.Starcraft2_Rocket_Cluster);
+		this.starcraft2_Dual_Rockets = imgLoader.getImage(ImageEnums.Starcraft2_Dual_Rockets);
+		this.starcraft2_Artanis_Shield = imgLoader.getImage(ImageEnums.Starcraft2_Artanis_Shield);
+		this.starcraft2_Auto_Tracking = imgLoader.getImage(ImageEnums.Starcraft2_Auto_Tracking);
+		this.starcraft2_Blink = imgLoader.getImage(ImageEnums.Starcraft2_Blink);
+		this.starcraft2_Blue_Flame = imgLoader.getImage(ImageEnums.Starcraft2_Blue_Flame);
+		this.starcraft2_Concussive_Shells = imgLoader.getImage(ImageEnums.Starcraft2_Concussive_Shells);
+		this.starcraft2_Corsair_Cloak = imgLoader.getImage(ImageEnums.Starcraft2_Corsair_Cloak);
+		this.starcraft2_Drone_Cloak = imgLoader.getImage(ImageEnums.Starcraft2_Drone_Cloak);
+		this.starcraft2_DT_Blink = imgLoader.getImage(ImageEnums.Starcraft2_DT_Blink);
+		this.starcraft2_Energizer_Speed = imgLoader.getImage(ImageEnums.Starcraft2_Energizer_Speed);
+		this.starcraft2_Energizer_Speed2 = imgLoader.getImage(ImageEnums.Starcraft2_Energizer_Speed2);
+		this.starcraft2_Fire_Cloak = imgLoader.getImage(ImageEnums.Starcraft2_Fire_Cloak);
+		this.starcraft2_Energy_Siphon = imgLoader.getImage(ImageEnums.Starcraft2_Energy_Siphon);
+		this.starcraft2_Fire_Hardened_Shields = imgLoader.getImage(ImageEnums.Starcraft2_Fire_Hardened_Shields);
+		this.starcraft2_Flame_Turret = imgLoader.getImage(ImageEnums.Starcraft2_Flame_Turret);
+		this.starcraft2_Force_Field = imgLoader.getImage(ImageEnums.Starcraft2_Force_Field);
+		this.starcraft2_Guardian_Shield = imgLoader.getImage(ImageEnums.Starcraft2_Guardian_Shield);
+		this.starcraft2_Hardened_Shields = imgLoader.getImage(ImageEnums.Starcraft2_Hardened_Shields);
+		this.starcraft2_Health_Upgrade_1 = imgLoader.getImage(ImageEnums.Starcraft2_Health_Upgrade_1);
+		this.starcraft2_Health_Upgrade_2 = imgLoader.getImage(ImageEnums.Starcraft2_Health_Upgrade_2);
+		this.starcraft2_Ignite_Afterburners = imgLoader.getImage(ImageEnums.Starcraft2_Ignite_Afterburners);
+		this.starcraft2_Immortal_Barrier = imgLoader.getImage(ImageEnums.Starcraft2_Immortal_Barrier);
+		this.starcraft2_Immortal_Original_Barrier = imgLoader.getImage(ImageEnums.Starcraft2_Immortal_Original_Barrier);
+		this.starcraft2_LaserBeam = imgLoader.getImage(ImageEnums.Starcraft2_LaserBeam);
+		this.starcraft2_LaserDrill = imgLoader.getImage(ImageEnums.Starcraft2_LaserDrill);
+		this.starcraft2_MovementSpeed = imgLoader.getImage(ImageEnums.Starcraft2_MovementSpeed);
+		this.starcraft2_Seeker_Missile = imgLoader.getImage(ImageEnums.Starcraft2_Seeker_Missile);
+		this.starcraft2_Shield_Barrier = imgLoader.getImage(ImageEnums.Starcraft2_Shield_Barrier);
+		this.starcraft2_Shield_Piercing = imgLoader.getImage(ImageEnums.Starcraft2_Shield_Piercing);
+		this.starcraft2_Stim1 = imgLoader.getImage(ImageEnums.Starcraft2_Stim1);
+		this.starcraft2_Stim2 = imgLoader.getImage(ImageEnums.Starcraft2_Stim2);
+		this.starcraft2_Stim3 = imgLoader.getImage(ImageEnums.Starcraft2_Stim3);
+		this.starcraft2_Terran_Plating1 = imgLoader.getImage(ImageEnums.Starcraft2_Terran_Plating1);
+		this.starcraft2_Terran_Plating2 = imgLoader.getImage(ImageEnums.Starcraft2_Terran_Plating2);
+		this.starcraft2_Terran_Plating3 = imgLoader.getImage(ImageEnums.Starcraft2_Terran_Plating3);
+		this.starcraft2_Terran_Speed1 = imgLoader.getImage(ImageEnums.Starcraft2_Terran_Speed1);
+		this.starcraft2_Terran_Speed2 = imgLoader.getImage(ImageEnums.Starcraft2_Terran_Speed2);
+		this.starcraft2_Terran_Speed3 = imgLoader.getImage(ImageEnums.Starcraft2_Terran_Speed3);
+		this.starcraft2_Terran_Weapons1 = imgLoader.getImage(ImageEnums.Starcraft2_Terran_Weapons1);
+		this.starcraft2_Terran_Weapons2 = imgLoader.getImage(ImageEnums.Starcraft2_Terran_Weapons2);
+		this.starcraft2_Terran_Weapons3 = imgLoader.getImage(ImageEnums.Starcraft2_Terran_Weapons3);
+		this.starcraft2_Third_Blink = imgLoader.getImage(ImageEnums.Starcraft2_Third_Blink);
+		this.starcraft2_Time_Warp = imgLoader.getImage(ImageEnums.Starcraft2_Time_Warp);
+		this.starcraft2_Vespene_Gas = imgLoader.getImage(ImageEnums.Starcraft2_Vespene_Gas);
+		this.starcraft2_Vespene_Siphon = imgLoader.getImage(ImageEnums.Starcraft2_Vespene_Siphon);
+		this.starcraft2_Vespene_Drone = imgLoader.getImage(ImageEnums.Starcraft2_Vespene_Drone);
+		this.starcraft2_Wraith_Cloak = imgLoader.getImage(ImageEnums.Starcraft2_Wraith_Cloak);
+		this.starcraft2_Yellow_Blink = imgLoader.getImage(ImageEnums.Starcraft2_Yellow_Blink);
+		this.starcraft2_Heal = imgLoader.getImage(ImageEnums.Starcraft2_Heal);
 	}
 
 	private void initBackgroundObjects() {
@@ -380,6 +515,134 @@ public class ImageDatabase {
 			return parralex4;
 		case Parallex_5:
 			return parralex5;
+		case TripleShotIcon:
+			return tripleShotIcon;
+		case DoubleShotIcon:
+			return doubleShotIcon;
+		case Starcraft2_Point_Defense_Drone:
+			return starcraft2_Point_Defense_Drone;
+		case Starcraft2_Protoss_Cloak:
+			return starcraft2_Protoss_Cloak;
+		case Starcraft2_Protoss_Shield_Disintegrate:
+			return starcraft2_Protoss_Shield_Disintegrate;
+		case Starcraft2_Protoss_Shields_1:
+			return starcraft2_Protoss_Shields_1;
+		case Starcraft2_Protoss_Shields_2:
+			return starcraft2_Protoss_Shields_2;
+		case Starcraft2_Protoss_Shields_3:
+			return starcraft2_Protoss_Shields_3;
+		case Starcraft2_Psi_Storm1:
+			return starcraft2_Psi_Storm1;
+		case Starcraft2_Psi_Storm2:
+			return starcraft2_Psi_Storm2;
+		case Starcraft2_Psi_Storm3:
+			return starcraft2_Psi_Storm3;
+		case Starcraft2_Pulse_Grenade:
+			return starcraft2_Pulse_Grenade;
+		case Starcraft2_Pulse_Laser:
+			return starcraft2_Pulse_Laser;
+		case Starcraft2_Repair_Blink:
+			return starcraft2_Repair_Blink;
+		case Starcraft2_Rocket_Cluster:
+			return starcraft2_Rocket_Cluster;
+		case Starcraft2_Dual_Rockets:
+			return starcraft2_Dual_Rockets;
+		case Starcraft2_Artanis_Shield:
+			return starcraft2_Artanis_Shield;
+		case Starcraft2_Auto_Tracking:
+			return starcraft2_Auto_Tracking;
+		case Starcraft2_Blink:
+			return starcraft2_Blink;
+		case Starcraft2_Blue_Flame:
+			return starcraft2_Blue_Flame;
+		case Starcraft2_Concussive_Shells:
+			return starcraft2_Concussive_Shells;
+		case Starcraft2_Corsair_Cloak:
+			return starcraft2_Corsair_Cloak;
+		case Starcraft2_Drone_Cloak:
+			return starcraft2_Drone_Cloak;
+		case Starcraft2_DT_Blink:
+			return starcraft2_DT_Blink;
+		case Starcraft2_Energizer_Speed:
+			return starcraft2_Energizer_Speed;
+		case Starcraft2_Energizer_Speed2:
+			return starcraft2_Energizer_Speed2;
+		case Starcraft2_Fire_Cloak:
+			return starcraft2_Fire_Cloak;
+		case Starcraft2_Energy_Siphon:
+			return starcraft2_Energy_Siphon;
+		case Starcraft2_Fire_Hardened_Shields:
+			return starcraft2_Fire_Hardened_Shields;
+		case Starcraft2_Flame_Turret:
+			return starcraft2_Flame_Turret;
+		case Starcraft2_Force_Field:
+			return starcraft2_Force_Field;
+		case Starcraft2_Guardian_Shield:
+			return starcraft2_Guardian_Shield;
+		case Starcraft2_Hardened_Shields:
+			return starcraft2_Hardened_Shields;
+		case Starcraft2_Health_Upgrade_1:
+			return starcraft2_Health_Upgrade_1;
+		case Starcraft2_Health_Upgrade_2:
+			return starcraft2_Health_Upgrade_2;
+		case Starcraft2_Ignite_Afterburners:
+			return starcraft2_Ignite_Afterburners;
+		case Starcraft2_Immortal_Barrier:
+			return starcraft2_Immortal_Barrier;
+		case Starcraft2_Immortal_Original_Barrier:
+			return starcraft2_Immortal_Original_Barrier;
+		case Starcraft2_LaserBeam:
+			return starcraft2_LaserBeam;
+		case Starcraft2_LaserDrill:
+			return starcraft2_LaserDrill;
+		case Starcraft2_MovementSpeed:
+			return starcraft2_MovementSpeed;
+		case Starcraft2_Seeker_Missile:
+			return starcraft2_Seeker_Missile;
+		case Starcraft2_Shield_Barrier:
+			return starcraft2_Shield_Barrier;
+		case Starcraft2_Shield_Piercing:
+			return starcraft2_Shield_Piercing;
+		case Starcraft2_Stim1:
+			return starcraft2_Stim1;
+		case Starcraft2_Stim2:
+			return starcraft2_Stim2;
+		case Starcraft2_Stim3:
+			return starcraft2_Stim3;
+		case Starcraft2_Terran_Plating1:
+			return starcraft2_Terran_Plating1;
+		case Starcraft2_Terran_Plating2:
+			return starcraft2_Terran_Plating2;
+		case Starcraft2_Terran_Plating3:
+			return starcraft2_Terran_Plating3;
+		case Starcraft2_Terran_Speed1:
+			return starcraft2_Terran_Speed1;
+		case Starcraft2_Terran_Speed2:
+			return starcraft2_Terran_Speed2;
+		case Starcraft2_Terran_Speed3:
+			return starcraft2_Terran_Speed3;
+		case Starcraft2_Terran_Weapons1:
+			return starcraft2_Terran_Weapons1;
+		case Starcraft2_Terran_Weapons2:
+			return starcraft2_Terran_Weapons2;
+		case Starcraft2_Terran_Weapons3:
+			return starcraft2_Terran_Weapons3;
+		case Starcraft2_Third_Blink:
+			return starcraft2_Third_Blink;
+		case Starcraft2_Time_Warp:
+			return starcraft2_Time_Warp;
+		case Starcraft2_Vespene_Gas:
+			return starcraft2_Vespene_Gas;
+		case Starcraft2_Vespene_Siphon:
+			return starcraft2_Vespene_Siphon;
+		case Starcraft2_Vespene_Drone:
+			return starcraft2_Vespene_Drone;
+		case Starcraft2_Wraith_Cloak:
+			return starcraft2_Wraith_Cloak;
+		case Starcraft2_Yellow_Blink:
+			return starcraft2_Yellow_Blink;
+		case Starcraft2_Heal:
+			return starcraft2_Heal;
 		default:
 			return testImage;
 		}
@@ -475,6 +738,8 @@ public class ImageDatabase {
 			return this.playerEMPFrames;
 		case Player_EMP_Plus:
 			return this.playerEMPPlusFrames;
+		case Guardian_Bot:
+			return this.guardianBotFrames;
 		}
 		return null;
 	}
@@ -657,6 +922,12 @@ public class ImageDatabase {
 			String sourceString = String.format("src/resources/images/gif/PNGtoGIF/Player EMP/%d.png", i);
 			Image image = imgLoader.getSpritesheetImage(sourceString);
 			playerEMPFrames.add(image);
+		}
+		
+		for (int i = 1; i < 16; i++) {
+			String sourceString = String.format("src/resources/images/Ships/Guardian Bot/GuardianBot%d.png", i);
+			Image image = imgLoader.getSpritesheetImage(sourceString);
+			guardianBotFrames.add(image);
 		}
 
 		for (int i = 1; i < 46; i++) {

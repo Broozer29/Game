@@ -3,18 +3,20 @@ package game.movement;
 import java.util.ArrayList;
 import java.util.List;
 
+import game.managers.EnemyManager;
 import game.managers.FriendlyManager;
 
 public class HomingPathFinder implements PathFinder {
 	@Override
-	public Path findPath(Point start, Point end, int stepSize, Direction fallbackDirection) {
+	public Path findPath(Point start, Point end, int XstepSize, int YStepSize, Direction fallbackDirection,
+			boolean isFriendly) {
 		List<Point> waypoints = new ArrayList<>();
 		waypoints.add(start);
-		return new Path(waypoints, fallbackDirection, true);
+		return new Path(waypoints, fallbackDirection, true, isFriendly);
 	}
 
 	@Override
-	public Direction getNextStep(Point currentLocation, Path path, int stepSize, Direction fallbackDirection) {
+	public Direction getNextStep(Point currentLocation, Path path, Direction fallbackDirection) {
 		if (shouldRecalculatePath(path)) {
 			return fallbackDirection;
 		} else {
@@ -23,8 +25,16 @@ public class HomingPathFinder implements PathFinder {
 		}
 	}
 
+	// If the missile is friendly but there are no enemies, return true
 	public boolean shouldRecalculatePath(Path currentPath) {
-		boolean hasPassed = hasPassedTarget(currentPath);
+		boolean hasPassed = false;
+		if (currentPath.isFriendly() && !EnemyManager.getInstance().enemiesToHomeTo()) {
+			hasPassed = hasPassedTarget(currentPath);
+		} else if (!currentPath.isFriendly()) {
+			hasPassed = hasPassedTarget(currentPath);
+		} else if (currentPath.isFriendly() && EnemyManager.getInstance().enemiesToHomeTo()) {
+			hasPassed = true;
+		}
 		return hasPassed;
 	}
 
@@ -90,8 +100,7 @@ public class HomingPathFinder implements PathFinder {
 		FriendlyManager friendlyManager = FriendlyManager.getInstance();
 		int xCoordinate = friendlyManager.getNearestFriendlyHomingCoordinates().get(0);
 		int yCoordinate = friendlyManager.getNearestFriendlyHomingCoordinates().get(1);
-		
-		
+
 		return new Point(xCoordinate, yCoordinate);
 	}
 

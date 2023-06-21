@@ -12,9 +12,9 @@ import data.DataClass;
 import data.image.enums.ImageEnums;
 import game.managers.BackgroundManager;
 import game.objects.BackgroundObject;
-import image.objects.Sprite;
 import menuscreens.MenuCursor;
 import menuscreens.MenuTile;
+import visual.objects.Sprite;
 
 import java.awt.Graphics;
 import java.awt.Toolkit;

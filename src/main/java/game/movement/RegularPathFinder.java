@@ -7,7 +7,7 @@ import data.DataClass;
 
 public class RegularPathFinder implements PathFinder {
 
-	public Path findPath(Point start, Point end, int stepSize, Direction fallbackDirection) {
+	public Path findPath(Point start, Point end, int XStepSize, int YStepSize, Direction fallbackDirection,boolean isFriendly) {
 		List<Point> pathList = new ArrayList<>();
 		Point currentPoint = start;
 		pathList.add(start);
@@ -20,17 +20,17 @@ public class RegularPathFinder implements PathFinder {
 			if (!currentPoint.equals(end) || shouldContinue) {
 				direction = calculateDirection(currentPoint, end);
 			}
-			currentPoint = stepTowards(currentPoint, direction, stepSize);
+			currentPoint = stepTowards(currentPoint, direction, XStepSize, YStepSize);
 			pathList.add(currentPoint);
 			steps++;
 
 		}
-		Path path = new Path(pathList, fallbackDirection, false);
+		Path path = new Path(pathList, fallbackDirection, false, isFriendly);
 		return path;
 	}
 
 	@Override
-	public Direction getNextStep(Point currentLocation, Path path, int stepSize, Direction fallbackDirection) {
+	public Direction getNextStep(Point currentLocation, Path path, Direction fallbackDirection) {
 		if (!path.getWaypoints().isEmpty()) {
 			Point nextPoint = path.getWaypoints().get(0);
 			return calculateDirection(currentLocation, nextPoint);
@@ -46,26 +46,27 @@ public class RegularPathFinder implements PathFinder {
 	public Direction calculateDirection(Point start, Point end) {
 		int dx = end.getX() - start.getX();
 		int dy = end.getY() - start.getY();
-		
+
+		// Fuck it, om een of andere reden is dy de tegenovergestelde richting.
+		// Waarom dit is I dont fucking know maar het werkt op deze manier
 		if (dx > 0) {
-			if (dy > 0) {
+			if (dy < 0) {
 				return Direction.RIGHT_UP;
-			} else if (dy < 0) {
+			} else if (dy > 0) {
 				return Direction.RIGHT_DOWN;
 			} else {
 				return Direction.RIGHT;
 			}
 		} else if (dx < 0) {
-			if (dy > 0) {
+			if (dy < 0) {
 				return Direction.LEFT_UP;
-			} else if (dy < 0) {
+			} else if (dy > 0) {
 				return Direction.LEFT_DOWN;
 			} else {
 				return Direction.LEFT;
 			}
 		} else {
-			
-			//Fuck it, deze zijn omgedraaid om een of andere reden.
+
 			if (dy < 0) {
 				return Direction.UP;
 			} else if (dy > 0) {
@@ -76,26 +77,26 @@ public class RegularPathFinder implements PathFinder {
 		}
 	}
 
-	public Point stepTowards(Point point, Direction direction, int stepSize) {
+	public Point stepTowards(Point point, Direction direction, int XStepSize, int YStepSize) {
 		int x = point.getX();
 		int y = point.getY();
 		switch (direction) {
 		case UP:
-			return new Point(x, y - stepSize);
+			return new Point(x, y - YStepSize);
 		case DOWN:
-			return new Point(x, y + stepSize);
+			return new Point(x, y + YStepSize);
 		case LEFT:
-			return new Point(x - stepSize, y);
+			return new Point(x - XStepSize, y);
 		case RIGHT:
-			return new Point(x + stepSize, y);
+			return new Point(x + XStepSize, y);
 		case RIGHT_UP:
-			return new Point(x + stepSize, y - stepSize);
+			return new Point(x + XStepSize, y - YStepSize);
 		case RIGHT_DOWN:
-			return new Point(x + stepSize, y + stepSize);
+			return new Point(x + XStepSize, y + YStepSize);
 		case LEFT_UP:
-			return new Point(x - stepSize, y - stepSize);
+			return new Point(x - XStepSize, y - YStepSize);
 		case LEFT_DOWN:
-			return new Point(x - stepSize, y + stepSize);
+			return new Point(x - XStepSize, y + YStepSize);
 		default:
 			throw new IllegalArgumentException("Invalid direction: " + direction);
 		}
@@ -147,7 +148,7 @@ public class RegularPathFinder implements PathFinder {
 			endXCoordinate = 0 + 150;
 			break;
 		}
-		
+
 		Point endPoint = new Point(endXCoordinate, endYCoordinate);
 		return endPoint;
 	}

@@ -10,6 +10,7 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 import data.DataClass;
 import data.audio.AudioEnums;
 import data.image.enums.ImageEnums;
+import game.movement.Point;
 import game.objects.enemies.Alien;
 import game.objects.enemies.AlienBomb;
 import game.objects.enemies.Bomba;
@@ -19,7 +20,6 @@ import game.objects.enemies.Energizer;
 import game.objects.enemies.Flamer;
 import game.objects.enemies.Seeker;
 import game.objects.enemies.Tazer;
-import image.objects.SpriteAnimation;
 
 public class EnemyManager {
 
@@ -103,7 +103,7 @@ public class EnemyManager {
 	}
 
 	private void triggerEnemyActions() {
-		for (Enemy enemy: enemyList) {
+		for (Enemy enemy : enemyList) {
 			enemy.fireAction();
 		}
 	}
@@ -201,5 +201,48 @@ public class EnemyManager {
 
 	public int getEnemyCount() {
 		return enemyList.size();
+	}
+	
+	public boolean enemiesToHomeTo() {
+		if(enemyList.size() == 0) {
+			return true;
+		} else return false;
+	}
+
+	public Point getClosestEnemy() {
+		int playerXCoordinate = FriendlyManager.getInstance().getSpaceship().getCenterXCoordinate();
+		int playerYCoordinate = FriendlyManager.getInstance().getSpaceship().getCenterYCoordinate();
+
+		Enemy closestEnemy = null;
+		double minDistance = Double.MAX_VALUE;
+
+		for (Enemy enemy : enemyList) {
+			int enemyXCoordinate = enemy.getCenterXCoordinate();
+			int enemyYcoordinate = enemy.getCenterYCoordinate();
+
+			// Compute the distance between player and enemy using Euclidean distance formula
+			double distance = Math.sqrt(Math.pow((playerXCoordinate - enemyXCoordinate), 2)
+					+ Math.pow((playerYCoordinate - enemyYcoordinate), 2));
+
+			// If this enemy is closer than the previous closest enemy, update closestEnemy and
+			// minDistance
+			if (distance < minDistance) {
+				minDistance = distance;
+				closestEnemy = enemy;
+			}
+		}
+		Point point = null;
+		if (closestEnemy != null) {
+			point = new Point(closestEnemy.getCenterXCoordinate(), closestEnemy.getCenterYCoordinate());
+		} else {
+			point = getBackUpPoint();
+		}
+		return point;
+	}
+	
+	private Point getBackUpPoint() {
+		int endXCoordinate = DataClass.getInstance().getWindowWidth();
+		int endYCoordinate = FriendlyManager.getInstance().getSpaceship().getCenterYCoordinate();
+		return new Point(endXCoordinate, endYCoordinate);
 	}
 }

@@ -9,12 +9,12 @@ public class FlamerProjectile extends Missile {
 
 	public FlamerProjectile(int x, int y, Point destination, ImageEnums missileType, ImageEnums explosionType,
 			Direction rotation, float scale, PathFinder pathFinder) {
-		super(x, y, destination, missileType, explosionType, rotation, scale, pathFinder);
+		super(x, y, destination, missileType, explosionType, rotation, scale, pathFinder, false);
 		this.missileDamage = (float) 7.5;
 		setAnimation();
 		this.animation.setFrameDelay(3);
-
-		this.movementSpeed = 5;
+		this.yMovementSpeed = 2;
+		this.xMovementSpeed = 5;
 	}
 
 	public void missileAction() {

@@ -78,7 +78,7 @@ public class LevelSpawnerManager {
 //		timerManager.addTimerToList(timer);
 
 		timer = timerManager.createTimer(EnemyEnums.Bomba, 1, 100, false, Direction.LEFT, 1);
-		timerManager.addTimerToList(timer);
+		timerManager.addEnemyTimerToList(timer);
 //		timer = timerManager.createTimer(EnemyEnums.Flamer, 1, 100, false, Direction.LEFT, 1);
 //		timerManager.addTimerToList(timer);
 //		timer = timerManager.createTimer(EnemyEnums.Tazer, 2, 5000, true, Direction.LEFT, 1);

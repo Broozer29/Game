@@ -23,7 +23,8 @@ public class Bulldozer extends Enemy {
 		this.hitPoints = 50;
 		this.maxHitPoints = 50;
 		this.attackSpeedFrameCount = 100;
-		this.movementSpeed = 2;
+		this.XMovementSpeed = 2;
+		this.YMovementSpeed = 1;
 		this.hasAttack = true;
 		this.showHealthBar = true;
 		this.deathSound = AudioEnums.Large_Ship_Destroyed;

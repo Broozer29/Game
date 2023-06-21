@@ -19,7 +19,8 @@ public class Alien extends Enemy {
 		this.hitPoints = 35;
 		this.maxHitPoints = 35;
 		this.attackSpeedFrameCount = 150;
-		this.movementSpeed = 1;
+		this.XMovementSpeed = 1;
+		this.YMovementSpeed = 1;
 		this.hasAttack = true;
 		this.deathSound = AudioEnums.Alien_Spaceship_Destroyed;
 		this.showHealthBar = true;

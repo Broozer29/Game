@@ -6,13 +6,17 @@ import game.movement.Direction;
 import game.movement.Path;
 import game.movement.PathFinder;
 import game.movement.Point;
-import image.objects.Sprite;
-import image.objects.SpriteAnimation;
+import visual.objects.Sprite;
+import visual.objects.SpriteAnimation;
 
 public class Missile extends Sprite {
 
 	protected float missileDamage;
-	protected int movementSpeed;
+	protected int xMovementSpeed;
+	protected int yMovementSpeed;
+	private int lastUsedXMovementSpeed;
+	private int lastUsedYMovementSpeed;
+	
 	protected SpriteAnimation animation;
 	protected SpriteAnimation explosionAnimation;
 	protected ImageEnums missileType;
@@ -24,11 +28,12 @@ public class Missile extends Sprite {
 	private Point destination;
 	private PathFinder pathFinder;
 	private Path currentPath;
-	private int lastUsedMovementSpeed;
+	private boolean isFriendly;
+
 	private boolean hasLock;
 
 	public Missile(int x, int y, Point destination, ImageEnums missileType, ImageEnums explosionType, Direction rotation,
-			float scale, PathFinder pathFinder) {
+			float scale, PathFinder pathFinder, boolean isFriendly) {
 		super(x, y, scale);
 		this.currentLocation = new Point(x, y);
 		this.destination = destination;
@@ -38,13 +43,16 @@ public class Missile extends Sprite {
 		this.missileStepsTaken = 0;
 		this.pathFinder = pathFinder;
 		this.hasLock = true;
+		this.isFriendly = isFriendly;
 	}
 
 	public void move() {
-		if (currentPath == null || currentPath.getWaypoints().isEmpty() || movementSpeed != lastUsedMovementSpeed) {
+		if (currentPath == null || currentPath.getWaypoints().isEmpty() || xMovementSpeed != lastUsedXMovementSpeed
+				|| yMovementSpeed != lastUsedYMovementSpeed) {
 			// calculate a new path if necessary
-			currentPath = pathFinder.findPath(currentLocation, destination, movementSpeed, rotation);
-			lastUsedMovementSpeed = movementSpeed;
+			currentPath = pathFinder.findPath(currentLocation, destination, xMovementSpeed, yMovementSpeed, rotation, isFriendly);
+			lastUsedXMovementSpeed = xMovementSpeed;
+			lastUsedYMovementSpeed = yMovementSpeed;
 			currentPath.setCurrentLocation(new Point(xCoordinate, yCoordinate));
 		}
 
@@ -65,14 +73,14 @@ public class Missile extends Sprite {
 		// only calculate next direction and update location if missile still has lock
 		if (hasLock) {
 			// Get the direction of the next step
-			Direction nextStep = pathFinder.getNextStep(currentLocation, currentPath, movementSpeed, rotation);
+			Direction nextStep = pathFinder.getNextStep(currentLocation, currentPath, rotation);
 			// Based on the direction, calculate the next point
-			nextPoint = calculateNextPoint(currentLocation, nextStep, movementSpeed);
+			nextPoint = calculateNextPoint(currentLocation, nextStep, xMovementSpeed, yMovementSpeed);
 			currentPath.setFallbackDirection(nextStep);
 		} else {
 			// if missile lost lock, it should keep moving in the last direction
 			rotation = currentPath.getFallbackDirection();
-			nextPoint = calculateNextPoint(currentLocation, currentPath.getFallbackDirection(), movementSpeed);
+			nextPoint = calculateNextPoint(currentLocation, currentPath.getFallbackDirection(), xMovementSpeed, yMovementSpeed);
 		}
 
 		// Update the current location
@@ -143,38 +151,38 @@ public class Missile extends Sprite {
 	}
 
 	//Needed for all PathFinders, so added to missiles
-	private Point calculateNextPoint(Point currentLocation, Direction direction, int stepSize) {
+	private Point calculateNextPoint(Point currentLocation, Direction direction, int XStepSize, int YStepSize) {
 		int x = currentLocation.getX();
 		int y = currentLocation.getY();
 
 		switch (direction) {
 		case UP:
-			y -= stepSize;
+			y -= YStepSize;
 			break;
 		case DOWN:
-			y += stepSize;
+			y += YStepSize;
 			break;
 		case LEFT:
-			x -= stepSize;
+			x -= XStepSize;
 			break;
 		case RIGHT:
-			x += stepSize;
+			x += XStepSize;
 			break;
 		case LEFT_UP:
-			x -= stepSize;
-			y -= stepSize;
+			x -= XStepSize;
+			y -= YStepSize;
 			break;
 		case LEFT_DOWN:
-			x -= stepSize;
-			y += stepSize;
+			x -= XStepSize;
+			y += YStepSize;
 			break;
 		case RIGHT_UP:
-			x += stepSize;
-			y -= stepSize;
+			x += XStepSize;
+			y -= YStepSize;
 			break;
 		case RIGHT_DOWN:
-			x += stepSize;
-			y += stepSize;
+			x += XStepSize;
+			y += YStepSize;
 			break;
 		case NONE:
 			// no movement
@@ -198,7 +206,7 @@ public class Missile extends Sprite {
 	}
 
 	public int getMissileMovementSpeed() {
-		return this.movementSpeed;
+		return this.xMovementSpeed;
 	}
 
 	public ImageEnums getMissileType() {
@@ -232,5 +240,7 @@ public class Missile extends Sprite {
 		}
 		return null;
 	}
+
+
 
 }

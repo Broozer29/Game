@@ -5,6 +5,7 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -31,15 +32,19 @@ import game.managers.FriendlyManager;
 import game.managers.FriendlyObjectManager;
 import game.managers.LevelSpawnerManager;
 import game.managers.MissileManager;
+import game.managers.OnScreenTextManager;
+import game.managers.PowerUpManager;
 import game.managers.TimerManager;
 import game.objects.BackgroundObject;
 import game.objects.Explosion;
 import game.objects.enemies.Enemy;
-import game.objects.friendlies.FriendlyObject;
+import game.objects.friendlies.friendlyobjects.FriendlyObject;
+import game.objects.friendlies.powerups.PowerUp;
+import game.objects.friendlies.powerups.PowerUpAcquiredText;
 import game.objects.missiles.Missile;
-import image.objects.Sprite;
-import image.objects.SpriteAnimation;
 import menuscreens.BoardManager;
+import visual.objects.Sprite;
+import visual.objects.SpriteAnimation;
 
 public class GameBoard extends JPanel implements ActionListener {
 
@@ -68,7 +73,8 @@ public class GameBoard extends JPanel implements ActionListener {
 	private FriendlyObjectManager friendlyObjectManager = FriendlyObjectManager.getInstance();
 	private PlayerStats playerStats = PlayerStats.getInstance();
 	private CustomUIManager uiManager = CustomUIManager.getInstance();
-	
+	private PowerUpManager powerUpManager = PowerUpManager.getInstance();
+	private OnScreenTextManager textManager = OnScreenTextManager.getInstance();
 
 	public GameBoard() {
 		animationManager = AnimationManager.getInstance();
@@ -82,6 +88,9 @@ public class GameBoard extends JPanel implements ActionListener {
 		explosionManager = ExplosionManager.getInstance();
 		friendlyObjectManager = FriendlyObjectManager.getInstance();
 		playerStats = PlayerStats.getInstance();
+		uiManager = CustomUIManager.getInstance();
+		powerUpManager = PowerUpManager.getInstance();
+		textManager = OnScreenTextManager.getInstance();
 		initBoard();
 	}
 
@@ -120,20 +129,24 @@ public class GameBoard extends JPanel implements ActionListener {
 		// Add playerstats
 		// Add friendly object manager
 		// Add UImanager
+		// Add Powerup manahger
+		// Add text manager
 	}
 
 	@Override
 	public void paintComponent(Graphics g) {
-		super.paintComponent(g);
-		if (ingame) {
-			drawObjects(g);
-		} else {
-			drawGameOver(g);
-		}
-		Toolkit.getDefaultToolkit().sync();
+	    super.paintComponent(g);
+	    Graphics2D g2d = (Graphics2D) g;
+
+	    if (ingame) {
+	        drawObjects(g2d);
+	    } else {
+	        drawGameOver(g2d);
+	    }
+	    Toolkit.getDefaultToolkit().sync();
 	}
 
-	private void drawObjects(Graphics g) {
+	private void drawObjects(Graphics2D g) {
 
 		// Draws all background objects
 		for (BackgroundObject bgObject : backgroundManager.getAllBGO()) {
@@ -153,7 +166,11 @@ public class GameBoard extends JPanel implements ActionListener {
 		// Draw friendly missiles
 		for (Missile missile : missileManager.getFriendlyMissiles()) {
 			if (missile.isVisible()) {
-				drawImage(g, missile);
+				if (missile.getAnimation() != null) {
+					drawAnimation(g, missile.getAnimation());
+				} else {
+					drawImage(g, missile);
+				}
 			}
 		}
 
@@ -192,32 +209,62 @@ public class GameBoard extends JPanel implements ActionListener {
 			}
 		}
 
+		for (PowerUp powerUp : powerUpManager.getPowerUpsOnTheField()) {
+			if (powerUp.isVisible()) {
+				drawImage(g, powerUp);
+			}
+		}
+
 		drawPlayerHealthBars(g);
 
 		// Draws higher level animations
 		for (SpriteAnimation animation : animationManager.getUpperAnimations()) {
 			drawAnimation(g, animation);
 		}
+		
+		for (PowerUpAcquiredText text : textManager.getPowerUpTexts()) {
+			drawText(g, text);
+		}
 
 		// Draw the score/aliens left
 		g.setColor(Color.WHITE);
 		g.drawString("Enemies left: " + enemyManager.getEnemyCount(), 5, 15);
 	}
+	
+	private void drawText(Graphics2D g, PowerUpAcquiredText text) {
+	    // Ensure that transparency value is within the appropriate bounds.
+	    float transparency = Math.max(0, Math.min(1, text.getTransparencyValue()));
+	    Color originalColor = g.getColor(); // store the original color
+	    
+	    // Set the color with the specified transparency.
+	    g.setColor(new Color(1.0f, 1.0f, 1.0f, transparency)); // White with transparency
 
-	private void drawImage(Graphics g, Sprite sprite) {
+	    // Draw the text at the current coordinates.
+	    g.drawString(text.getText(), text.getXCoordinate(), text.getYCoordinate());
+
+	    // Update the Y coordinate of the text to make it scroll upwards.
+	    text.setYCoordinate(text.getYCoordinate() - 1);
+
+	    // Decrease the transparency for the next draw
+	    text.setTransparency(transparency - 0.01f); // decrease transparency 
+
+	    g.setColor(originalColor); // restore the original color
+	}
+
+	private void drawImage(Graphics2D g, Sprite sprite) {
 		if (sprite.getImage() != null) {
 			g.drawImage(sprite.getImage(), sprite.getXCoordinate(), sprite.getYCoordinate(), this);
 		}
 	}
 
-	private void drawAnimation(Graphics g, SpriteAnimation animation) {
+	private void drawAnimation(Graphics2D g, SpriteAnimation animation) {
 		if (animation.getCurrentFrame() != null) {
 			g.drawImage(animation.getCurrentFrame(), animation.getXCoordinate(), animation.getYCoordinate(), this);
 		}
 	}
 
 	// Primitive healthbar generator for enemies
-	private void drawHealthBars(Graphics g, Enemy enemy) {
+	private void drawHealthBars(Graphics2D g, Enemy enemy) {
 		float factor = enemy.getCurrentHitpoints() / enemy.getMaxHitpoints();
 		int actualAmount = (int) Math.round(enemy.getHeight() * factor);
 
@@ -227,64 +274,48 @@ public class GameBoard extends JPanel implements ActionListener {
 		g.fillRect((enemy.getXCoordinate() + enemy.getWidth() + 10), enemy.getYCoordinate(), 5, actualAmount);
 	}
 
-	private void drawPlayerHealthBars(Graphics g) {
+	private void drawPlayerHealthBars(Graphics2D g) {
 		float playerHealth = playerStats.getHitpoints();
 		float playerMaxHealth = playerStats.getMaxHitPoints();
-		
+
 		UIObject healthBar = uiManager.getHealthBar();
 		int healthBarWidth = calculateHealthbarWidth(playerHealth, playerMaxHealth, healthBar.getWidth());
 		healthBar.resizeToDimensions(healthBarWidth, healthBar.getHeight());
 		drawImage(g, healthBar);
-		
-		
+
 		UIObject healthFrame = uiManager.getHealthFrame();
 		drawImage(g, healthFrame);
-//		float playerHealthFactor = playerHealth / playerMaxHealth;
-//		int actualHealthAmount = (int) Math.round(200 * playerHealthFactor);
-//
-//		g.setColor(Color.RED);
-//		g.fillRect(10, 30, 200, 15);
-//		g.setColor(Color.GREEN);
-//		g.fillRect(10, 30, actualHealthAmount, 15);
 
 		float playerShields = playerStats.getShieldHitpoints();
 		float playerMaxShields = playerStats.getMaxShieldHitPoints();
-		
+
 		UIObject shieldBar = uiManager.getShieldBar();
-		
+
 		int shieldBarWidth = calculateHealthbarWidth(playerShields, playerMaxShields, shieldBar.getWidth());
 		shieldBar.resizeToDimensions(shieldBarWidth, shieldBar.getHeight());
 		drawImage(g, shieldBar);
-		
-		
+
 		UIObject shieldFrame = uiManager.getShieldFrame();
 		drawImage(g, shieldFrame);
-		
-//		float playerShieldFactor = playerShields / playerMaxShields;
-//		int actualShieldAmount = (int) Math.round(200 * playerShieldFactor);
-//		g.setColor(Color.BLUE);
-//		g.fillRect(10, 50, 200, 15);
-//		g.setColor(Color.CYAN);
-//		g.fillRect(10, 50, actualShieldAmount, 15);
 
 	}
-	
+
 	public int calculateHealthbarWidth(float currentHitpoints, float maximumHitpoints, int healthBarSize) {
-	    // Calculate the percentage of currentHitpoints out of maximumHitpoints
-	    double percentage = (double) currentHitpoints / maximumHitpoints * 100;
-	    // Calculate what this percentage is of thirdNumber
-	    int width = (int) Math.ceil(percentage / 100 * healthBarSize);
-	    
-	    if(width > uiManager.getHealthBarWidth()) {
-	    	width = uiManager.getHealthBarWidth();
-	    } else if (width < 1) {
-	    	width = 1;
-	    }
-	    return width;
+		// Calculate the percentage of currentHitpoints out of maximumHitpoints
+		double percentage = (double) currentHitpoints / maximumHitpoints * 100;
+		// Calculate what this percentage is of thirdNumber
+		int width = (int) Math.ceil(percentage / 100 * healthBarSize);
+
+		if (width > uiManager.getHealthBarWidth()) {
+			width = uiManager.getHealthBarWidth();
+		} else if (width < 1) {
+			width = 1;
+		}
+		return width;
 	}
 
 	// Draw the game over screen
-	private void drawGameOver(Graphics g) {
+	private void drawGameOver(Graphics2D g) {
 		String msg = "Game Over";
 		Font small = new Font("Helvetica", Font.BOLD, 14);
 		FontMetrics fm = getFontMetrics(small);
@@ -313,6 +344,7 @@ public class GameBoard extends JPanel implements ActionListener {
 			audioDatabase.updateGameTick();
 			explosionManager.updateGametick();
 			friendlyObjectManager.updateGameTick();
+			powerUpManager.updateGameTick();
 		}
 
 		repaint();

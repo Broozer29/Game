@@ -1,4 +1,4 @@
-package image.objects;
+package visual.objects;
 
 import java.awt.Image;
 import java.awt.Rectangle;
@@ -9,6 +9,7 @@ import data.image.ImageResizer;
 import data.image.ImageRotator;
 import data.image.enums.ImageEnums;
 import game.movement.Direction;
+import game.movement.Point;
 
 public class Sprite {
 	ImageDatabase imgDatabase = ImageDatabase.getInstance();
@@ -128,8 +129,18 @@ public class Sprite {
 		this.yOffset = yoffset;
 	}
 	
+	public void setImageDimensions(int newWidth, int newHeight) {
+		ImageResizer imageResizer = ImageResizer.getInstance();
+		this.image = imageResizer.resizeImageToDimensions(this.image, newWidth, newHeight);
+		getImageDimensions();
+		
+	}
+	
 	protected void cropWidth(float cropPercentage) {
 		ImageCropper imageCropper = ImageCropper.getInstance();
 		this.image = imageCropper.cropImage(this.image, cropPercentage);
+	}
+	public Point getPoint() {
+		return new Point(this.xCoordinate, this.yCoordinate);
 	}
 }
