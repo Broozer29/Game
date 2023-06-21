@@ -5,7 +5,7 @@ import java.util.List;
 
 import data.image.enums.EnemyEnums;
 import game.movement.Direction;
-import game.objects.friendlies.friendlyobjects.PowerUp;
+import game.objects.friendlies.powerups.PowerUp;
 import game.spawner.EnemySpawnTimer;
 import game.spawner.PowerUpTimer;
 

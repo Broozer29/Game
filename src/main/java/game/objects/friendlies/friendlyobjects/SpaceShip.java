@@ -11,7 +11,7 @@ import java.util.Set;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
 import data.DataClass;
-import data.PlayerPowerUpEffects;
+import data.TemporaryGameSettings;
 import data.PlayerStats;
 import data.audio.AudioEnums;
 import data.image.enums.ImageEnums;
@@ -32,10 +32,10 @@ public class SpaceShip extends Sprite {
 	private float currentSpecialAttackFrame;
 	private float currentShieldRegenDelayFrame;
 
+	private boolean isEngineBoosted;
 
 	private PlayerStats playerStats = PlayerStats.getInstance();
-	private PlayerPowerUpEffects powerUpEffects = PlayerPowerUpEffects.getInstance();
-	
+	private TemporaryGameSettings powerUpEffects = TemporaryGameSettings.getInstance();
 
 	private List<SpriteAnimation> playerFollowingAnimations = new ArrayList<SpriteAnimation>();
 	private List<Explosion> playerFollowingExplosions = new ArrayList<Explosion>();
@@ -44,7 +44,7 @@ public class SpaceShip extends Sprite {
 	public SpaceShip() {
 		super(DataClass.getInstance().getWindowWidth() / 10, DataClass.getInstance().getWindowHeight() / 2, 1);
 		playerStats = PlayerStats.getInstance();
-		powerUpEffects = PlayerPowerUpEffects.getInstance();
+		powerUpEffects = TemporaryGameSettings.getInstance();
 		loadImage(playerStats.getSpaceShipImage());
 		setExhaustAnimation(playerStats.getExhaustImage());
 		initShip();
@@ -65,7 +65,8 @@ public class SpaceShip extends Sprite {
 		directionx = 0;
 		directiony = 0;
 		currentShieldRegenDelayFrame = 0;
-		currentSpecialAttackFrame = 100;
+		currentSpecialAttackFrame = 10000;
+		isEngineBoosted = false;
 		playerStats.initDefaultSettings();
 		powerUpEffects.initDefaultSettings();
 		SpaceShipRegularGun gun = new SpaceShipRegularGun();
@@ -121,7 +122,7 @@ public class SpaceShip extends Sprite {
 	}
 
 	public void updateGameTick() {
-		for(SpaceShipRegularGun gun : spaceShipGuns) {
+		for (SpaceShipRegularGun gun : spaceShipGuns) {
 			gun.updateFrameCount();
 		}
 		this.currentShieldRegenDelayFrame++;
@@ -179,9 +180,9 @@ public class SpaceShip extends Sprite {
 			SpriteAnimation specialAttackAnimation = new SpriteAnimation(this.getCenterXCoordinate(),
 					this.getCenterYCoordinate(), playerStats.getPlayerEMPType(), false, 1);
 			specialAttackAnimation.setFrameDelay(4);
-			
-			
-			Explosion specialAttack = new Explosion(this.getCenterXCoordinate(), this.getCenterYCoordinate(), 1, specialAttackAnimation, 3, true);
+
+			Explosion specialAttack = new Explosion(this.getCenterXCoordinate(), this.getCenterYCoordinate(), 1,
+					specialAttackAnimation, playerStats.getSpecialAttackDamage(), true);
 			specialAttack.addXOffset(-(specialAttackAnimation.getWidth() / 4));
 			specialAttack.addYOffset(-(specialAttackAnimation.getHeight() / 2));
 
@@ -233,19 +234,19 @@ public class SpaceShip extends Sprite {
 					break;
 				case (KeyEvent.VK_A):
 				case (KeyEvent.VK_LEFT):
-					directionx = -playerStats.getMovementSpeed();
+					directionx = -playerStats.getCurrentMovementSpeed(isEngineBoosted);
 					break;
 				case (KeyEvent.VK_D):
 				case (KeyEvent.VK_RIGHT):
-					directionx = playerStats.getMovementSpeed();
+					directionx = playerStats.getCurrentMovementSpeed(isEngineBoosted);
 					break;
 				case (KeyEvent.VK_W):
 				case (KeyEvent.VK_UP):
-					directiony = -playerStats.getMovementSpeed();
+					directiony = -playerStats.getCurrentMovementSpeed(isEngineBoosted);
 					break;
 				case (KeyEvent.VK_S):
 				case (KeyEvent.VK_DOWN):
-					directiony = playerStats.getMovementSpeed();
+					directiony = playerStats.getCurrentMovementSpeed(isEngineBoosted);
 					break;
 				case (KeyEvent.VK_Q):
 				case (KeyEvent.VK_ENTER):
@@ -253,7 +254,7 @@ public class SpaceShip extends Sprite {
 					break;
 				case (KeyEvent.VK_SHIFT):
 				case (KeyEvent.VK_E):
-					playerStats.setMovementSpeed(8);
+					isEngineBoosted = true;
 					swapExhaust(playerStats.getBoostedEngineType());
 					break;
 				}
@@ -280,7 +281,7 @@ public class SpaceShip extends Sprite {
 			directiony = 0;
 		}
 		if (key == KeyEvent.VK_SHIFT || key == KeyEvent.VK_E) {
-			playerStats.setMovementSpeed(4);
+			isEngineBoosted = false;
 			swapExhaust(playerStats.getDefaultEngineType());
 		}
 	}

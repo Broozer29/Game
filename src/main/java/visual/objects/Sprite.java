@@ -129,6 +129,13 @@ public class Sprite {
 		this.yOffset = yoffset;
 	}
 	
+	public void setImageDimensions(int newWidth, int newHeight) {
+		ImageResizer imageResizer = ImageResizer.getInstance();
+		this.image = imageResizer.resizeImageToDimensions(this.image, newWidth, newHeight);
+		getImageDimensions();
+		
+	}
+	
 	protected void cropWidth(float cropPercentage) {
 		ImageCropper imageCropper = ImageCropper.getInstance();
 		this.image = imageCropper.cropImage(this.image, cropPercentage);

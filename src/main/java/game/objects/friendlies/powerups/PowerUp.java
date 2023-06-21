@@ -1,13 +1,13 @@
-package game.objects.friendlies.friendlyobjects;
+package game.objects.friendlies.powerups;
 
+import data.image.ImageResizer;
 import data.image.enums.ImageEnums;
+import game.managers.OnScreenTextManager;
 import game.managers.TimerManager;
 import game.movement.Direction;
 import game.movement.Path;
 import game.movement.Point;
 import game.movement.PowerUpDirectionBouncer;
-import game.objects.friendlies.PowerUpEffect;
-import game.objects.friendlies.PowerUps;
 import game.spawner.PowerUpTimer;
 import visual.objects.Sprite;
 
@@ -23,14 +23,14 @@ public class PowerUp extends Sprite {
 	private boolean loopable;
 	private PowerUpEffect powerUpEffect;
 
-	public PowerUp(int x, int y, float scale, Direction direction, PowerUps powerUpType, int timeBeforeActivation,
+	public PowerUp(int x, int y, float scale, Direction direction, PowerUps powerUpType, ImageEnums powerUpImage, int timeBeforeActivation,
 			boolean loopable) {
 		super(x, y, scale);
 		this.direction = direction;
 		this.setPowerUpType(powerUpType);
 		this.timeBeforeActivation = timeBeforeActivation;
 		this.loopable = loopable;
-		this.loadImage(ImageEnums.MultiShotIcon);
+		this.loadImage(powerUpImage);
 	}
 
 	public void move() {
@@ -63,7 +63,6 @@ public class PowerUp extends Sprite {
 			direction = newDirection;
 			currentPath = bouncer.calculateNewPath(this);
 		}
-//	    System.out.println(newDirection);
 
 	}
 
@@ -72,14 +71,19 @@ public class PowerUp extends Sprite {
 	public void startPowerUpTimer() {
 		PowerUpTimer powerUpTimer = new PowerUpTimer(timeBeforeActivation, this, loopable);
 		TimerManager timerManager = TimerManager.getInstance();
-		this.powerUpEffect = new PowerUpEffect(powerUpType);
-		this.powerUpEffect.activateImmediatePowerEffect();
+		PowerUpEffectFactory powerUpFactory = PowerUpEffectFactory.getInstance();
+		this.powerUpEffect = powerUpFactory.createPowerUpEffect(powerUpType);
+		this.powerUpEffect.activatePower();
+		PowerUpAcquiredText text = new PowerUpAcquiredText(xCoordinate, yCoordinate, powerUpType);
+		OnScreenTextManager textManager = OnScreenTextManager.getInstance();
+		textManager.addPowerUpText(text);
+		
 		timerManager.addPowerUpTimerToList(powerUpTimer);
 	}
 
 	//Gets called at the end of the powerUp timer
 	public void activateEndOfTimerEffect() {
-		powerUpEffect.activateEndOfPowerEffect();
+		powerUpEffect.deactivatePower();
 	}
 
 	public Direction getDirection() {
@@ -120,6 +124,14 @@ public class PowerUp extends Sprite {
 
 	public void setPowerUpType(PowerUps powerUpType) {
 		this.powerUpType = powerUpType;
+	}
+
+	@Override
+	public String toString() {
+		return "PowerUp [direction=" + direction + ", currentLocation=" + currentLocation + ", destination="
+				+ destination + ", currentPath=" + currentPath + ", powerUpType=" + powerUpType
+				+ ", timeBeforeActivation=" + timeBeforeActivation + ", loopable=" + loopable + ", powerUpEffect="
+				+ powerUpEffect + "]";
 	}
 
 }

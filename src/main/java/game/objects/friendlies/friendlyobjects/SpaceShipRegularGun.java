@@ -4,7 +4,7 @@ import java.io.IOException;
 
 import javax.sound.sampled.UnsupportedAudioFileException;
 
-import data.PlayerPowerUpEffects;
+import data.TemporaryGameSettings;
 import data.PlayerStats;
 import data.audio.AudioEnums;
 import data.image.enums.ImageEnums;
@@ -22,7 +22,7 @@ public class SpaceShipRegularGun {
 	private AudioManager audioManager = AudioManager.getInstance();
 	private FriendlyManager friendlyManager = FriendlyManager.getInstance();
 	private PlayerStats playerStats = PlayerStats.getInstance();
-	private PlayerPowerUpEffects powerUpEffects = PlayerPowerUpEffects.getInstance();
+	private TemporaryGameSettings powerUpEffects = TemporaryGameSettings.getInstance();
 
 	private float currentAttackFrame;
 

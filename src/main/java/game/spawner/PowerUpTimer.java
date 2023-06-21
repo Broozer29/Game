@@ -6,7 +6,7 @@ import java.awt.event.ActionListener;
 import javax.swing.Timer;
 
 import game.managers.TimerManager;
-import game.objects.friendlies.friendlyobjects.PowerUp;
+import game.objects.friendlies.powerups.PowerUp;
 
 public class PowerUpTimer implements ActionListener {
 
@@ -21,6 +21,7 @@ public class PowerUpTimer implements ActionListener {
 
 	public PowerUpTimer(int timeBeforeActivation, PowerUp powerUp, boolean loopOrNot) {
 		this.status = "primed";
+		this.timeBeforeActivation = timeBeforeActivation;
 		this.loopable = loopOrNot;
 		this.powerUp = powerUp;
 		initTimer();

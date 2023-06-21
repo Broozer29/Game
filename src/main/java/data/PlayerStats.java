@@ -17,17 +17,31 @@ public class PlayerStats {
 		return instance;
 	}
 
-	private float playerDamage;
-	private float hitpoints;
-	private float shieldHitpoints;
+	// Player damage
+	private float defaultAttackDamage;
+	private float bonusAttackDamage;
+	private float defaultSpecialAttackDamage;
+	private float bonusSpecialAttackDamage;
 	private float attackSpeed;
-	private float shieldRegenDelay;
+	private float bonusAttackSpeed;
 	private float specialAttackSpeed;
+	private float bonusSpecialAttackSpeed;
 
+	// Player Health
 	private float maxHitPoints;
 	private float maxShieldHitPoints;
-	private int movementSpeed;
+	private float hitpoints;
+	private float shieldHitpoints;
+	private float shieldRegenDelay;
 
+	// Movement
+	private int currentMovementSpeed;
+	private int defaultMovementSpeed;
+	private int bonusMovementSpeed;
+	private int defaultBoostedMovementSpeed;
+	private int boostedBonusMovementSpeed;
+
+	// Visual aspects of player
 	private ImageEnums currentExhaust;
 	private ImageEnums spaceShipImage;
 	private ImageEnums exhaustImage;
@@ -35,17 +49,19 @@ public class PlayerStats {
 	private ImageEnums boostedEngineType;
 	private ImageEnums playerEMPType;
 	private SpriteAnimation exhaustAnimation;
+
+	// Player "homing" coordinate box
 	private float homingRectangleResizeScale;
 	private int homingRectangleXCoordinate;
 	private int homingRectangleYCoordinate;
 	private int homingRectangleWidth;
 	private int homingRectangleHeight;
 
+	// Player missile type & visuals
 	private ImageEnums playerMissileType;
 	private ImageEnums playerMissileImpactType;
 	private float missileImpactScale;
 	private float missileScale;
-
 	private PathFinder missilePathFinder;
 
 	public void initDefaultSettings() {
@@ -54,9 +70,12 @@ public class PlayerStats {
 		setShieldHitpoints(100);
 		setMaxShieldHitPoints(100);
 		setMovementSpeed(2);
+		addBonusMovementSpeed(0);
+		setDefaultBoostedMovementSpeed(4);
+		addBoostedBonusMovementSpeed(0);
 		setAttackSpeed(15);
-		setShieldRegenDelay(300);
 		setSpecialAttackSpeed(100);
+		setShieldRegenDelay(300);
 		setHomingRectangleResizeScale((float) 1.5);
 		setMissilePathFinder(new RegularPathFinder());
 		setSpaceShipImage(ImageEnums.Player_Spaceship_Model_3);
@@ -70,12 +89,17 @@ public class PlayerStats {
 		setPlayerEMPType(ImageEnums.Player_EMP);
 	}
 
-	public float getPlayerDamage() {
-		return playerDamage;
+	public float getNormalAttackDamage() {
+		float attackDamage = this.defaultAttackDamage + this.bonusAttackDamage;
+		if (attackDamage < 1) {
+			return 1;
+		} else {
+			return attackDamage;
+		}
 	}
 
 	public void setPlayerDamage(float playerDamage) {
-		this.playerDamage = playerDamage;
+		this.defaultAttackDamage = playerDamage;
 	}
 
 	public float getHitpoints() {
@@ -95,7 +119,12 @@ public class PlayerStats {
 	}
 
 	public float getAttackSpeed() {
-		return attackSpeed;
+		float currentAttackSpeed = this.attackSpeed + bonusAttackSpeed;
+		if (currentAttackSpeed < 1) {
+			return 1;
+		} else {
+			return currentAttackSpeed;
+		}
 	}
 
 	public void setAttackSpeed(float attackSpeed) {
@@ -111,7 +140,12 @@ public class PlayerStats {
 	}
 
 	public float getSpecialAttackSpeed() {
-		return specialAttackSpeed;
+		float currentSpecialAttackSpeed = this.specialAttackSpeed + bonusSpecialAttackSpeed;
+		if (currentSpecialAttackSpeed < 1) {
+			return 1;
+		} else {
+			return currentSpecialAttackSpeed;
+		}
 	}
 
 	public void setSpecialAttackSpeed(float specialAttackSpeed) {
@@ -135,11 +169,13 @@ public class PlayerStats {
 	}
 
 	public int getMovementSpeed() {
-		return movementSpeed;
+		return defaultMovementSpeed;
 	}
 
 	public void setMovementSpeed(int movementSpeed) {
-		this.movementSpeed = movementSpeed;
+		if (movementSpeed > 0) {
+			this.defaultMovementSpeed = movementSpeed;
+		}
 	}
 
 	public ImageEnums getCurrentExhaust() {
@@ -223,17 +259,17 @@ public class PlayerStats {
 	}
 
 	public void changeHitPoints(float change) {
-	    this.hitpoints += change;
-	    if (this.hitpoints > maxHitPoints) {
-	        this.hitpoints = maxHitPoints;
-	    }
+		this.hitpoints += change;
+		if (this.hitpoints > maxHitPoints) {
+			this.hitpoints = maxHitPoints;
+		}
 	}
 
 	public void changeShieldHitpoints(float change) {
-	    this.shieldHitpoints += change;
-	    if (this.shieldHitpoints > maxShieldHitPoints) {
-	        this.shieldHitpoints = maxShieldHitPoints;
-	    }
+		this.shieldHitpoints += change;
+		if (this.shieldHitpoints > maxShieldHitPoints) {
+			this.shieldHitpoints = maxShieldHitPoints;
+		}
 	}
 
 	public ImageEnums getPlayerMissileType() {
@@ -290,6 +326,96 @@ public class PlayerStats {
 
 	public void setMissileScale(float missileScale) {
 		this.missileScale = missileScale;
+	}
+
+	public int getBonusMovementSpeed() {
+		return bonusMovementSpeed;
+	}
+
+	public void addBonusMovementSpeed(int bonusMovementSpeed) {
+		this.bonusMovementSpeed += bonusMovementSpeed;
+	}
+
+	public int getBoostedMovementSpeed() {
+		return defaultBoostedMovementSpeed;
+	}
+
+	public void setDefaultBoostedMovementSpeed(int boostedMovementSpeed) {
+		this.defaultBoostedMovementSpeed = boostedMovementSpeed;
+	}
+
+	public int getBoostedBonusMovementSpeed() {
+		return boostedBonusMovementSpeed;
+	}
+
+	public void addBoostedBonusMovementSpeed(int boostedBonusMovementSpeed) {
+		this.boostedBonusMovementSpeed += boostedBonusMovementSpeed;
+	}
+
+	public int getCurrentMovementSpeed(boolean boosted) {
+		currentMovementSpeed = 0;
+		if (boosted) {
+			currentMovementSpeed = defaultBoostedMovementSpeed + boostedBonusMovementSpeed;
+		} else {
+			currentMovementSpeed = defaultMovementSpeed + bonusMovementSpeed;
+		}
+
+		if (currentMovementSpeed < 1) {
+			return 1;
+		} else
+			return currentMovementSpeed;
+
+	}
+
+	public void setCurrentMovementSpeed(int currentMovementSpeed) {
+		this.currentMovementSpeed = currentMovementSpeed;
+	}
+
+	public float getBonusAttackSpeed() {
+		return bonusAttackSpeed;
+	}
+
+	// Negative value increase attack speed, positive values decrease attack speed
+	public void addBonusAttackSpeed(float bonusAttackSpeed) {
+		this.bonusAttackSpeed += bonusAttackSpeed;
+	}
+
+	public float getBonusSpecialAttackSpeed() {
+		return bonusSpecialAttackSpeed;
+	}
+
+	// Negative value increase attack speed, positive values decrease attack speed
+	public void addBonusSpecialAttackSpeed(float bonusSpecialAttackSpeed) {
+		this.bonusSpecialAttackSpeed += bonusSpecialAttackSpeed;
+	}
+
+	public float getBonusDefaultAttackDamage() {
+		return bonusAttackDamage;
+	}
+
+	public void addBonusDefaultAttackDamage(float bonusDefaultAttackDamage) {
+		this.bonusAttackDamage += bonusDefaultAttackDamage;
+	}
+
+	public float getSpecialAttackDamage() {
+		float specialAttackDamage = defaultSpecialAttackDamage + bonusSpecialAttackDamage;
+		if (specialAttackDamage < 0) {
+			return (float) 0.5;
+		} else {
+			return specialAttackDamage;
+		}
+	}
+
+	public void setDefaultSpecialAttackDamage(float defaultSpecialAttackDamage) {
+		this.defaultSpecialAttackDamage = defaultSpecialAttackDamage;
+	}
+
+	public float getBonusDefaultSpecialAttackDamage() {
+		return bonusSpecialAttackDamage;
+	}
+
+	public void addBonusSpecialAttackDamage(float bonusDefaultSpecialAttackDamage) {
+		this.bonusSpecialAttackDamage += bonusDefaultSpecialAttackDamage;
 	}
 
 }

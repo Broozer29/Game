@@ -1,6 +1,7 @@
 package data.image;
 
 import java.awt.Image;
+import java.util.stream.DoubleStream;
 
 import javax.swing.ImageIcon;
 
@@ -19,6 +20,9 @@ public class ImageLoader {
 
 	public Image getImage(ImageEnums image) {
 		ImageIcon ii = new ImageIcon(convertImageStringToURL(image));
+		if(ii.getIconWidth() == -1) {
+			System.out.println(image);
+		}
 		return ii.getImage();
 	}
 	
@@ -153,8 +157,134 @@ public class ImageLoader {
 			return "src/resources/images/background/Parallex_5.png";
 		case Player_EMP_Plus:
 			return "src/resources/images/gif/SpriteSheets/Player_Default_EMP.png";
-		case MultiShotIcon:
+		case TripleShotIcon:
 			return  "src/resources/images/Icons/MultiShotIcon.png";
+		case DoubleShotIcon:
+			return  "src/resources/images/Icons/Double_Shot.png";
+		case Starcraft2_Artanis_Shield:
+			return  "src/resources/images/Icons/Starcraft2 Artanis Shield.png";
+		case Starcraft2_Auto_Tracking:
+			return  "src/resources/images/Icons/Starcraft2 Auto Tracking.png";
+		case Starcraft2_Blink:
+			return  "src/resources/images/Icons/Starcraft2 Blink.png";
+		case Starcraft2_Blue_Flame:
+			return  "src/resources/images/Icons/Starcraft2 Blue Flame.png";
+		case Starcraft2_Concussive_Shells:
+			return  "src/resources/images/Icons/Starcraft2 Concussive Shells.png";
+		case Starcraft2_Corsair_Cloak:
+			return  "src/resources/images/Icons/Starcraft2 Corsair Cloak.png";
+		case Starcraft2_Drone_Cloak:
+			return  "src/resources/images/Icons/Starcraft2 Drone Cloak.png";
+		case Starcraft2_DT_Blink:
+			return  "src/resources/images/Icons/Starcraft2 DT Blink.png";
+		case Starcraft2_Dual_Rockets:
+			return  "src/resources/images/Icons/Starcraft2 Dual Rockets.png";
+		case Starcraft2_Energizer_Speed:
+			return  "src/resources/images/Icons/Starcraft2 Energizer Speed.png";
+		case Starcraft2_Energizer_Speed2:
+			return  "src/resources/images/Icons/Starcraft2 Energizer Speed2.png";
+		case Starcraft2_Energy_Siphon:
+			return  "src/resources/images/Icons/Starcraft2 Energy Siphon.png";
+		case Starcraft2_Fire_Cloak:
+			return  "src/resources/images/Icons/Starcraft2 Fire Cloak.png";
+		case Starcraft2_Fire_Hardened_Shields:
+			return  "src/resources/images/Icons/Starcraft2 Fire Hardened Shields.png";
+		case Starcraft2_Flame_Turret:
+			return  "src/resources/images/Icons/Starcraft2 Flame Turret.png";
+		case Starcraft2_Force_Field:
+			return  "src/resources/images/Icons/Starcraft2 Force Field.png";
+		case Starcraft2_Guardian_Shield:
+			return  "src/resources/images/Icons/Starcraft2 Guardian Shield.png";
+		case Starcraft2_Hardened_Shields:
+			return  "src/resources/images/Icons/Starcraft2 Hardened Shields.png";
+		case Starcraft2_Health_Upgrade_1:
+			return  "src/resources/images/Icons/Starcraft2 Health Upgrade.png";
+		case Starcraft2_Health_Upgrade_2:
+			return  "src/resources/images/Icons/Starcraft2 Health Upgrade 2.png";
+		case Starcraft2_Ignite_Afterburners:
+			return  "src/resources/images/Icons/Starcraft2 Ignite Afterburners.png";
+		case Starcraft2_Immortal_Barrier:
+			return  "src/resources/images/Icons/Starcraft2 Immortal Barrier.png";
+		case Starcraft2_Immortal_Original_Barrier:
+			return  "src/resources/images/Icons/Starcraft2 Immortal Original Barrier.png";
+		case Starcraft2_LaserBeam:
+			return  "src/resources/images/Icons/Starcraft2 LaserBeam.png";
+		case Starcraft2_LaserDrill:
+			return  "src/resources/images/Icons/Starcraft2 LaserDrill.png";
+		case Starcraft2_MovementSpeed:
+			return  "src/resources/images/Icons/Starcraft2 Movement Speed.png";
+		case Starcraft2_Point_Defense_Drone:
+			return  "src/resources/images/Icons/Starcraft2 Point Defense Drone.png";
+		case Starcraft2_Protoss_Cloak:
+			return  "src/resources/images/Icons/Starcraft2 Protoss Cloak.png";
+		case Starcraft2_Protoss_Shield_Disintegrate:
+			return  "src/resources/images/Icons/Starcraft2 Protoss Shield Disintegration.png";			
+		case Starcraft2_Protoss_Shields_1:
+			return  "src/resources/images/Icons/Starcraft2 Protoss Shields1.png";
+		case Starcraft2_Protoss_Shields_2:
+			return  "src/resources/images/Icons/Starcraft2 Protoss Shields2.png";
+		case Starcraft2_Protoss_Shields_3:
+			return  "src/resources/images/Icons/Starcraft2 Protoss Shields3.png";
+		case Starcraft2_Psi_Storm1:
+			return  "src/resources/images/Icons/Starcraft2 Psi Storm1.png";
+		case Starcraft2_Psi_Storm2:
+			return  "src/resources/images/Icons/Starcraft2 Psi Storm2.png";
+		case Starcraft2_Psi_Storm3:
+			return  "src/resources/images/Icons/Starcraft2 Psi Storm3.png";
+		case Starcraft2_Pulse_Grenade:
+			return  "src/resources/images/Icons/Starcraft2 Pulse Grenade.png";
+		case Starcraft2_Pulse_Laser:
+			return  "src/resources/images/Icons/Starcraft2 Pulse Laser.png";
+		case Starcraft2_Repair_Blink:
+			return  "src/resources/images/Icons/Starcraft2 Repair Blink.png";
+		case Starcraft2_Rocket_Cluster:
+			return  "src/resources/images/Icons/Starcraft2 Rocket Cluster.png";
+		case Starcraft2_Seeker_Missile:
+			return  "src/resources/images/Icons/Starcraft2 Seeker Missile.png";
+		case Starcraft2_Shield_Barrier:
+			return  "src/resources/images/Icons/Starcraft2 Shield Barrier.png";
+		case Starcraft2_Shield_Piercing:
+			return  "src/resources/images/Icons/Starcraft2 Shield Piercing.png";
+		case Starcraft2_Stim1:
+			return  "src/resources/images/Icons/Starcraft2 Stim1.png";
+		case Starcraft2_Stim2:
+			return  "src/resources/images/Icons/Starcraft2 Stim2.png";
+		case Starcraft2_Stim3:
+			return  "src/resources/images/Icons/Starcraft2 Stim3.png";
+		case Starcraft2_Terran_Plating1:
+			return  "src/resources/images/Icons/Starcraft2 Terran Plating 1.png";
+		case Starcraft2_Terran_Plating2:
+			return  "src/resources/images/Icons/Starcraft2 Terran Plating 2.png";
+		case Starcraft2_Terran_Plating3:
+			return  "src/resources/images/Icons/Starcraft2 Terran Plating 3.png";
+		case Starcraft2_Terran_Speed1:
+			return "src/resources/images/Icons/Starcraft2 Terran Speed1.png";
+		case Starcraft2_Terran_Speed2:
+			return  "src/resources/images/Icons/Starcraft2 Terran Speed2.png";
+		case Starcraft2_Terran_Speed3:
+			return  "src/resources/images/Icons/Starcraft2 Terran Speed3.png";
+		case Starcraft2_Terran_Weapons1:
+			return  "src/resources/images/Icons/Starcraft2 Terran Weapons1.png";
+		case Starcraft2_Terran_Weapons2:
+			return  "src/resources/images/Icons/Starcraft2 Terran Weapons2.png";			
+		case Starcraft2_Terran_Weapons3:
+			return  "src/resources/images/Icons/Starcraft2 Terran Weapons3.png";
+		case Starcraft2_Third_Blink:
+			return  "src/resources/images/Icons/Starcraft2 Third Blink.png";
+		case Starcraft2_Time_Warp:
+			return  "src/resources/images/Icons/Starcraft2 Time Warp.png";
+		case Starcraft2_Vespene_Drone:
+			return  "src/resources/images/Icons/Starcraft2 Drone Vespene Siphon.png";
+		case Starcraft2_Vespene_Gas:
+			return  "src/resources/images/Icons/Starcraft2 Vespene Gas.png";
+		case Starcraft2_Vespene_Siphon:
+			return  "src/resources/images/Icons/Starcraft2 Vespene Siphon.png";
+		case Starcraft2_Wraith_Cloak:
+			return  "src/resources/images/Icons/Starcraft2 Wraith Cloak.png";
+		case Starcraft2_Yellow_Blink:
+			return  "src/resources/images/Icons/Starcraft2 Yellow Blink.png";
+		case Starcraft2_Heal:
+			return  "src/resources/images/Icons/Starcraft2 Heal.png";
 		default:
 			break;
 			

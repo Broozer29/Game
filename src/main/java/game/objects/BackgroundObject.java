@@ -30,10 +30,10 @@ public class BackgroundObject extends Sprite {
 	}
 	
 	public void rotateRandomDegrees() {
-		rotateImage(selectRandomSpaceTheme());
+		rotateImage(selectRandomDirection());
 	}
 	
-	private Direction selectRandomSpaceTheme() {
+	private Direction selectRandomDirection() {
 		Direction[] enums = Direction.values();
 		Random random = new Random();
 		Direction randomValue = enums[random.nextInt(enums.length)];
