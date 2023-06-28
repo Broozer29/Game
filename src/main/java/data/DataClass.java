@@ -29,5 +29,9 @@ public class DataClass {
 	public int getWindowHeight() {
 		return this.windowHeight;
 	}
+	
+	public int getBoardBlockWidth() {
+		return this.windowWidth / 8;
+	}
 
 }

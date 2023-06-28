@@ -25,8 +25,7 @@ public class OnScreenTextManager {
 	
 	private void removeInvisibleText() {
 		for (int i = 0; i < powerUpTexts.size(); i++){
-			PowerUpAcquiredText text = powerUpTexts.get(i);
-			if(text.getTransparencyValue() < 0.05) {
+			if(powerUpTexts.get(i).getTransparencyValue() < 0.05) {
 				powerUpTexts.remove(i);
 			}
 		}
@@ -41,6 +40,10 @@ public class OnScreenTextManager {
 
 	public List<PowerUpAcquiredText> getPowerUpTexts() {
 		return powerUpTexts;
+	}
+
+	public void resetManager() {
+		powerUpTexts = new ArrayList<PowerUpAcquiredText>();
 	}
 
 }

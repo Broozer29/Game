@@ -1,8 +1,7 @@
 package game.objects.enemies;
 
 import data.audio.AudioEnums;
-import data.image.enums.EnemyEnums;
-import data.image.enums.ImageEnums;
+import data.image.ImageEnums;
 import game.managers.MissileManager;
 import game.movement.Direction;
 import game.movement.PathFinder;
@@ -18,11 +17,11 @@ public class Bulldozer extends Enemy {
 		setExhaustanimation(ImageEnums.Bulldozer_Normal_Exhaust);
 		setDeathAnimation(ImageEnums.Bulldozer_Destroyed_Explosion);
 		this.exhaustAnimation.setFrameDelay(3);
-		this.deathAnimation.setFrameDelay(2);
+		this.deathAnimation.setFrameDelay(4);
 		this.initBoardBlockSpeeds();
 		this.hitPoints = 50;
 		this.maxHitPoints = 50;
-		this.attackSpeedFrameCount = 100;
+		this.attackSpeedFrameCount = 250;
 		this.XMovementSpeed = 2;
 		this.YMovementSpeed = 1;
 		this.hasAttack = true;
@@ -52,14 +51,18 @@ public class Bulldozer extends Enemy {
 		if (missileManager == null) {
 			missileManager = MissileManager.getInstance();
 		}
-
+		int xMovementSpeed = 5;
+		int yMovementSpeed = 2;
 		if (currentAttackSpeedFrameCount >= attackSpeedFrameCount) {
 			missileManager.addEnemyMissile(this.xCoordinate, this.yCoordinate, ImageEnums.Bulldozer_Missile,
-					ImageEnums.Bulldozer_Missile_Explosion, Direction.LEFT_UP, this.scale, missilePathFinder);
+					ImageEnums.Bulldozer_Missile_Explosion, Direction.LEFT_UP, this.scale, missilePathFinder,
+					xMovementSpeed, yMovementSpeed);
 			missileManager.addEnemyMissile(this.xCoordinate, this.yCoordinate, ImageEnums.Bulldozer_Missile,
-					ImageEnums.Bulldozer_Missile_Explosion, Direction.LEFT_DOWN, this.scale, missilePathFinder);
+					ImageEnums.Bulldozer_Missile_Explosion, Direction.LEFT_DOWN, this.scale, missilePathFinder,
+					xMovementSpeed, yMovementSpeed);
 			missileManager.addEnemyMissile(this.xCoordinate, this.yCoordinate, ImageEnums.Bulldozer_Missile,
-					ImageEnums.Bulldozer_Missile_Explosion, Direction.LEFT, this.scale, missilePathFinder);
+					ImageEnums.Bulldozer_Missile_Explosion, Direction.LEFT, this.scale, missilePathFinder,
+					xMovementSpeed, yMovementSpeed);
 			currentAttackSpeedFrameCount = 0;
 		}
 		if (currentAttackSpeedFrameCount < attackSpeedFrameCount) {

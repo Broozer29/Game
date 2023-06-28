@@ -1,8 +1,7 @@
 package game.objects.enemies;
 
 import data.audio.AudioEnums;
-import data.image.enums.EnemyEnums;
-import data.image.enums.ImageEnums;
+import data.image.ImageEnums;
 import game.managers.MissileManager;
 import game.movement.Direction;
 import game.movement.PathFinder;
@@ -18,11 +17,11 @@ public class Tazer extends Enemy {
 		setExhaustanimation(ImageEnums.Tazer_Normal_Exhaust);
 		setDeathAnimation(ImageEnums.Tazer_Destroyed_Explosion);
 		this.exhaustAnimation.setFrameDelay(3);
-		this.deathAnimation.setFrameDelay(2);
+		this.deathAnimation.setFrameDelay(4);
 		this.initBoardBlockSpeeds();
 		this.hitPoints = 50;
 		this.maxHitPoints = 50;
-		this.attackSpeedFrameCount = 100;
+		this.attackSpeedFrameCount = 250;
 		this.XMovementSpeed = 2;
 		this.YMovementSpeed = 1;
 		this.hasAttack = true;
@@ -52,10 +51,11 @@ public class Tazer extends Enemy {
 		if (missileManager == null) {
 			missileManager = MissileManager.getInstance();
 		}
-
+		int xMovementSpeed = 5;
+		int yMovementSpeed = 2;
 		if (currentAttackSpeedFrameCount >= attackSpeedFrameCount) {
 			missileManager.addEnemyMissile(this.xCoordinate, this.yCoordinate + calculateRandomWeaponHeightOffset(),
-					ImageEnums.Tazer_Missile, ImageEnums.Tazer_Missile_Explosion, rotation, this.scale, missilePathFinder);
+					ImageEnums.Tazer_Missile, ImageEnums.Tazer_Missile_Explosion, rotation, this.scale, missilePathFinder, xMovementSpeed, yMovementSpeed);
 			currentAttackSpeedFrameCount = 0;
 		}
 		if (currentAttackSpeedFrameCount < attackSpeedFrameCount) {

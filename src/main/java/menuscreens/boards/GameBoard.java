@@ -11,16 +11,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.io.IOException;
 
-import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
 import data.DataClass;
 import data.PlayerStats;
+import data.TemporaryGameSettings;
 import data.audio.AudioDatabase;
-import data.audio.AudioEnums;
 import game.UI.UIObject;
 import game.managers.AnimationManager;
 import game.managers.AudioManager;
@@ -29,19 +27,22 @@ import game.managers.CustomUIManager;
 import game.managers.EnemyManager;
 import game.managers.ExplosionManager;
 import game.managers.FriendlyManager;
-import game.managers.FriendlyObjectManager;
 import game.managers.LevelSpawnerManager;
 import game.managers.MissileManager;
 import game.managers.OnScreenTextManager;
+import game.managers.PlayerManager;
 import game.managers.PowerUpManager;
 import game.managers.TimerManager;
 import game.objects.BackgroundObject;
 import game.objects.Explosion;
 import game.objects.enemies.Enemy;
-import game.objects.friendlies.friendlyobjects.FriendlyObject;
+import game.objects.friendlies.FriendlyObject;
 import game.objects.friendlies.powerups.PowerUp;
 import game.objects.friendlies.powerups.PowerUpAcquiredText;
+import game.objects.friendlies.spaceship.SpecialAttack;
 import game.objects.missiles.Missile;
+import game.playerpresets.FlamethrowerPreset;
+import game.playerpresets.PlayerPreset;
 import menuscreens.BoardManager;
 import visual.objects.Sprite;
 import visual.objects.SpriteAnimation;
@@ -50,9 +51,6 @@ public class GameBoard extends JPanel implements ActionListener {
 
 	private Timer timer;
 	private boolean ingame;
-//	private String currentMusic = "DefaultMusic";
-//	private String currentMusic = "Ayasa - The reason why";
-	private AudioEnums currentMusic = AudioEnums.NONE;
 
 	private DataClass data = DataClass.getInstance();
 	private AudioDatabase audioDatabase = AudioDatabase.getInstance();
@@ -65,28 +63,29 @@ public class GameBoard extends JPanel implements ActionListener {
 	private EnemyManager enemyManager = EnemyManager.getInstance();
 	private MissileManager missileManager = MissileManager.getInstance();
 	private LevelSpawnerManager levelManager = LevelSpawnerManager.getInstance();
-	private FriendlyManager friendlyManager = FriendlyManager.getInstance();
+	private PlayerManager playerManager = PlayerManager.getInstance();
 	private AudioManager audioManager = AudioManager.getInstance();
 	private BackgroundManager backgroundManager = BackgroundManager.getInstance();
 	private TimerManager timerManager = TimerManager.getInstance();
 	private ExplosionManager explosionManager = ExplosionManager.getInstance();
-	private FriendlyObjectManager friendlyObjectManager = FriendlyObjectManager.getInstance();
+	private FriendlyManager friendlyManager = FriendlyManager.getInstance();
 	private PlayerStats playerStats = PlayerStats.getInstance();
 	private CustomUIManager uiManager = CustomUIManager.getInstance();
 	private PowerUpManager powerUpManager = PowerUpManager.getInstance();
 	private OnScreenTextManager textManager = OnScreenTextManager.getInstance();
+	private TemporaryGameSettings tempSettings = TemporaryGameSettings.getInstance();
 
 	public GameBoard() {
 		animationManager = AnimationManager.getInstance();
 		enemyManager = EnemyManager.getInstance();
 		missileManager = MissileManager.getInstance();
 		levelManager = LevelSpawnerManager.getInstance();
-		friendlyManager = FriendlyManager.getInstance();
+		playerManager = PlayerManager.getInstance();
 		audioManager = AudioManager.getInstance();
 		backgroundManager = BackgroundManager.getInstance();
 		timerManager = TimerManager.getInstance();
 		explosionManager = ExplosionManager.getInstance();
-		friendlyObjectManager = FriendlyObjectManager.getInstance();
+		friendlyManager = FriendlyManager.getInstance();
 		playerStats = PlayerStats.getInstance();
 		uiManager = CustomUIManager.getInstance();
 		powerUpManager = PowerUpManager.getInstance();
@@ -103,16 +102,17 @@ public class GameBoard extends JPanel implements ActionListener {
 		setFocusable(true);
 		setBackground(Color.BLACK);
 		setPreferredSize(new Dimension(boardWidth, boardHeight));
+
+		// Dit moet uit een "out-of-game state manager" gehaald worden
+		PlayerPreset preset = new FlamethrowerPreset();
+		playerStats.setPreset(preset);
+		preset.loadPreset();
+
 		ingame = true;
 		uiManager.createGameBoardGUI();
 		levelManager.startLevel();
-
 		timer.start();
-		try {
-			audioManager.playMusicAudio(currentMusic);
-		} catch (UnsupportedAudioFileException | IOException e) {
-			e.printStackTrace();
-		}
+		powerUpManager.createPowerUpTimer();
 	}
 
 	// Resets the game
@@ -121,29 +121,35 @@ public class GameBoard extends JPanel implements ActionListener {
 		enemyManager.resetManager();
 		missileManager.resetManager();
 		levelManager.resetManager();
-		friendlyManager.resetManager();
+		playerManager.resetManager();
 		audioManager.resetManager();
 		backgroundManager.resetManager();
 		timerManager.resetManager();
-		// Add explosion manager
-		// Add playerstats
-		// Add friendly object manager
-		// Add UImanager
-		// Add Powerup manahger
-		// Add text manager
+		explosionManager.resetManager();
+		friendlyManager.resetManager();
+		uiManager.resetManager();
+		powerUpManager.resetManager();
+		textManager.resetManager();
+		playerStats.resetPlayerStats();
+		tempSettings.resetGameSettings();
+
+		// Dit moet uit een "out-of-game state manager" gehaald worden
+		PlayerPreset preset = new FlamethrowerPreset();
+		playerStats.setPreset(preset);
+		preset.loadPreset();
 	}
 
 	@Override
 	public void paintComponent(Graphics g) {
-	    super.paintComponent(g);
-	    Graphics2D g2d = (Graphics2D) g;
+		super.paintComponent(g);
+		Graphics2D g2d = (Graphics2D) g;
 
-	    if (ingame) {
-	        drawObjects(g2d);
-	    } else {
-	        drawGameOver(g2d);
-	    }
-	    Toolkit.getDefaultToolkit().sync();
+		if (ingame) {
+			drawObjects(g2d);
+		} else {
+			drawGameOver(g2d);
+		}
+		Toolkit.getDefaultToolkit().sync();
 	}
 
 	private void drawObjects(Graphics2D g) {
@@ -159,19 +165,8 @@ public class GameBoard extends JPanel implements ActionListener {
 		}
 
 		// Draw friendly spaceship
-		if (friendlyManager.getSpaceship().isVisible()) {
-			drawImage(g, friendlyManager.getSpaceship());
-		}
-
-		// Draw friendly missiles
-		for (Missile missile : missileManager.getFriendlyMissiles()) {
-			if (missile.isVisible()) {
-				if (missile.getAnimation() != null) {
-					drawAnimation(g, missile.getAnimation());
-				} else {
-					drawImage(g, missile);
-				}
-			}
+		if (playerManager.getSpaceship().isVisible()) {
+			drawImage(g, playerManager.getSpaceship());
 		}
 
 		// Draw enemy missiles
@@ -180,11 +175,23 @@ public class GameBoard extends JPanel implements ActionListener {
 				drawImage(g, missile);
 			}
 		}
+		
 
 		// Draw enemy missiles with an animation
 		for (Missile missile : missileManager.getEnemyMissiles()) {
 			if (missile.isVisible() && missile.getAnimation() != null) {
 				drawAnimation(g, missile.getAnimation());
+			}
+		}
+		
+		// Draw friendly missiles
+		for (Missile missile : missileManager.getFriendlyMissiles()) {
+			if (missile.isVisible()) {
+				if (missile.getAnimation() != null) {
+					drawAnimation(g, missile.getAnimation());
+				} else {
+					drawImage(g, missile);
+				}
 			}
 		}
 
@@ -203,9 +210,21 @@ public class GameBoard extends JPanel implements ActionListener {
 			}
 		}
 
-		for (FriendlyObject friendly : friendlyObjectManager.getActiveFriendlyObjects()) {
+		for (FriendlyObject friendly : friendlyManager.getActiveFriendlyObjects()) {
 			if (friendly.isVisible()) {
 				drawAnimation(g, friendly.getAnimation());
+			}
+		}
+
+
+
+		for (SpecialAttack specialAttack : missileManager.getSpecialAttacks()) {
+			if (specialAttack.isVisible()) {
+				if (specialAttack.getAnimation() != null) {
+					drawAnimation(g, specialAttack.getAnimation());
+				} else {
+					drawImage(g, specialAttack);
+				}
 			}
 		}
 
@@ -221,7 +240,7 @@ public class GameBoard extends JPanel implements ActionListener {
 		for (SpriteAnimation animation : animationManager.getUpperAnimations()) {
 			drawAnimation(g, animation);
 		}
-		
+
 		for (PowerUpAcquiredText text : textManager.getPowerUpTexts()) {
 			drawText(g, text);
 		}
@@ -230,25 +249,25 @@ public class GameBoard extends JPanel implements ActionListener {
 		g.setColor(Color.WHITE);
 		g.drawString("Enemies left: " + enemyManager.getEnemyCount(), 5, 15);
 	}
-	
+
 	private void drawText(Graphics2D g, PowerUpAcquiredText text) {
-	    // Ensure that transparency value is within the appropriate bounds.
-	    float transparency = Math.max(0, Math.min(1, text.getTransparencyValue()));
-	    Color originalColor = g.getColor(); // store the original color
-	    
-	    // Set the color with the specified transparency.
-	    g.setColor(new Color(1.0f, 1.0f, 1.0f, transparency)); // White with transparency
+		// Ensure that transparency value is within the appropriate bounds.
+		float transparency = Math.max(0, Math.min(1, text.getTransparencyValue()));
+		Color originalColor = g.getColor(); // store the original color
 
-	    // Draw the text at the current coordinates.
-	    g.drawString(text.getText(), text.getXCoordinate(), text.getYCoordinate());
+		// Set the color with the specified transparency.
+		g.setColor(new Color(1.0f, 1.0f, 1.0f, transparency)); // White with transparency
 
-	    // Update the Y coordinate of the text to make it scroll upwards.
-	    text.setYCoordinate(text.getYCoordinate() - 1);
+		// Draw the text at the current coordinates.
+		g.drawString(text.getText(), text.getXCoordinate(), text.getYCoordinate());
 
-	    // Decrease the transparency for the next draw
-	    text.setTransparency(transparency - 0.01f); // decrease transparency 
+		// Update the Y coordinate of the text to make it scroll upwards.
+		text.setYCoordinate(text.getYCoordinate() - 1);
 
-	    g.setColor(originalColor); // restore the original color
+		// Decrease the transparency for the next draw
+		text.setTransparency(transparency - 0.01f); // decrease transparency
+
+		g.setColor(originalColor); // restore the original color
 	}
 
 	private void drawImage(Graphics2D g, Sprite sprite) {
@@ -334,7 +353,7 @@ public class GameBoard extends JPanel implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 		inGame();
 		if (ingame) {
-			friendlyManager.updateGameTick();
+			playerManager.updateGameTick();
 			missileManager.updateGameTick();
 			enemyManager.updateGameTick();
 			levelManager.updateGameTick();
@@ -343,7 +362,7 @@ public class GameBoard extends JPanel implements ActionListener {
 			timerManager.updateGameTick();
 			audioDatabase.updateGameTick();
 			explosionManager.updateGametick();
-			friendlyObjectManager.updateGameTick();
+			friendlyManager.updateGameTick();
 			powerUpManager.updateGameTick();
 		}
 
@@ -352,7 +371,7 @@ public class GameBoard extends JPanel implements ActionListener {
 
 	// Checks wether the game is still running, stops the timer is not.
 	private void inGame() {
-		ingame = friendlyManager.getPlayerStatus();
+		ingame = playerManager.getPlayerStatus();
 		if (!ingame) {
 			timer.stop();
 		}
@@ -363,12 +382,12 @@ public class GameBoard extends JPanel implements ActionListener {
 
 		@Override
 		public void keyReleased(KeyEvent e) {
-			friendlyManager.getSpaceship().keyReleased(e);
+			playerManager.getSpaceship().keyReleased(e);
 		}
 
 		@Override
 		public void keyPressed(KeyEvent e) {
-			friendlyManager.getSpaceship().keyPressed(e);
+			playerManager.getSpaceship().keyPressed(e);
 		}
 	}
 

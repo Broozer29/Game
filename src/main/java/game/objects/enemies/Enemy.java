@@ -9,8 +9,7 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 
 import data.DataClass;
 import data.audio.AudioEnums;
-import data.image.enums.EnemyEnums;
-import data.image.enums.ImageEnums;
+import data.image.ImageEnums;
 import game.managers.AnimationManager;
 import game.managers.AudioManager;
 import game.managers.MissileManager;
@@ -99,32 +98,39 @@ public class Enemy extends Sprite {
 	boolean changedMovementSpeed = false;
 
 	public void updateBoardBlock() {
-		int boardBlockSize = DataClass.getInstance().getWindowWidth() / 8;
-		if (xCoordinate >= 0 && xCoordinate <= (boardBlockSize * 1)) {
+
+		if (xCoordinate >= 0 && xCoordinate <= (DataClass.getInstance().getBoardBlockWidth() * 1)) {
 			this.XMovementSpeed = boardBlockSpeeds.get(0);
 			changedMovementSpeed = true;
-		} else if (xCoordinate >= (boardBlockSize * 1) && xCoordinate <= (boardBlockSize * 2)) {
+		} else if (xCoordinate >= (DataClass.getInstance().getBoardBlockWidth() * 1)
+				&& xCoordinate <= (DataClass.getInstance().getBoardBlockWidth() * 2)) {
 			this.XMovementSpeed = boardBlockSpeeds.get(1);
 			changedMovementSpeed = true;
-		} else if (xCoordinate >= (boardBlockSize * 2) && xCoordinate <= (boardBlockSize * 3)) {
+		} else if (xCoordinate >= (DataClass.getInstance().getBoardBlockWidth() * 2)
+				&& xCoordinate <= (DataClass.getInstance().getBoardBlockWidth() * 3)) {
 			this.XMovementSpeed = boardBlockSpeeds.get(2);
 			changedMovementSpeed = true;
-		} else if (xCoordinate >= (boardBlockSize * 3) && xCoordinate <= (boardBlockSize * 4)) {
+		} else if (xCoordinate >= (DataClass.getInstance().getBoardBlockWidth() * 3)
+				&& xCoordinate <= (DataClass.getInstance().getBoardBlockWidth())) {
 			this.XMovementSpeed = boardBlockSpeeds.get(3);
 			changedMovementSpeed = true;
-		} else if (xCoordinate >= (boardBlockSize * 4) && xCoordinate <= (boardBlockSize * 5)) {
+		} else if (xCoordinate >= (DataClass.getInstance().getBoardBlockWidth() * 4)
+				&& xCoordinate <= (DataClass.getInstance().getBoardBlockWidth() * 5)) {
 			this.XMovementSpeed = boardBlockSpeeds.get(4);
 			changedMovementSpeed = true;
-		} else if (xCoordinate >= (boardBlockSize * 5) && xCoordinate <= (boardBlockSize * 6)) {
+		} else if (xCoordinate >= (DataClass.getInstance().getBoardBlockWidth() * 5)
+				&& xCoordinate <= (DataClass.getInstance().getBoardBlockWidth() * 6)) {
 			this.XMovementSpeed = boardBlockSpeeds.get(5);
 			changedMovementSpeed = true;
-		} else if (xCoordinate >= (boardBlockSize * 6) && xCoordinate <= (boardBlockSize * 7)) {
+		} else if (xCoordinate >= (DataClass.getInstance().getBoardBlockWidth() * 6)
+				&& xCoordinate <= (DataClass.getInstance().getBoardBlockWidth() * 7)) {
 			this.XMovementSpeed = boardBlockSpeeds.get(6);
 			changedMovementSpeed = true;
-		} else if (xCoordinate >= (boardBlockSize * 7) && xCoordinate <= (boardBlockSize * 8)) {
+		} else if (xCoordinate >= (DataClass.getInstance().getBoardBlockWidth() * 7)
+				&& xCoordinate <= (DataClass.getInstance().getBoardBlockWidth() * 8)) {
 			this.XMovementSpeed = boardBlockSpeeds.get(7);
 			changedMovementSpeed = true;
-		} else if (xCoordinate > boardBlockSize * 8) {
+		} else if (xCoordinate > DataClass.getInstance().getBoardBlockWidth() * 8) {
 			changedMovementSpeed = true;
 			this.XMovementSpeed = boardBlockSpeeds.get(7);
 		}
@@ -135,22 +141,23 @@ public class Enemy extends Sprite {
 		if (currentPath == null || currentPath.getWaypoints().isEmpty() || XMovementSpeed != lastUsedXMovementSpeed
 				|| YMovementSpeed != lastUsedYMovementSpeed || pathFinder.shouldRecalculatePath(currentPath)) {
 			// calculate a new path if necessary
-			currentPath = pathFinder.findPath(currentLocation, destination, XMovementSpeed, YMovementSpeed, rotation, isFriendly);
+//			System.out.println("ik doe path vinden");
+			currentPath = pathFinder.findPath(currentLocation, destination, XMovementSpeed, YMovementSpeed, rotation,
+					isFriendly);
 			lastUsedXMovementSpeed = XMovementSpeed;
 			lastUsedYMovementSpeed = YMovementSpeed;
 		}
-
+//		System.out.println(currentPath);
 		currentPath.updateCurrentLocation(currentLocation);
 		// get the next point from the path
-		Point nextPoint = currentPath.getWaypoints().get(0);
 
 		// move towards the next point
-		currentLocation = nextPoint;
-		this.xCoordinate = nextPoint.getX();
-		this.yCoordinate = nextPoint.getY();
+		currentLocation = currentPath.getWaypoints().get(0);
+		this.xCoordinate = currentPath.getWaypoints().get(0).getX();
+		this.yCoordinate = currentPath.getWaypoints().get(0).getY();
 
 		// if reached the next point, remove it from the path
-		if (currentLocation.equals(nextPoint)) {
+		if (currentLocation.equals(currentPath.getWaypoints().get(0))) {
 			currentPath.getWaypoints().remove(0);
 		}
 
@@ -158,6 +165,8 @@ public class Enemy extends Sprite {
 			this.exhaustAnimation.setX(this.getCenterXCoordinate() + (this.getWidth() / 2));
 			this.exhaustAnimation.setY(this.getCenterYCoordinate() - (exhaustAnimation.getHeight() / 2));
 		}
+
+		bounds.setBounds(xCoordinate + xOffset, yCoordinate + yOffset, width, height);
 
 		switch (rotation) {
 		case UP:

@@ -1,76 +1,113 @@
 package game.managers;
 
+import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.List;
 
-import data.PlayerStats;
-import data.image.enums.ImageEnums;
-import game.objects.friendlies.friendlyobjects.SpaceShip;
+import data.image.ImageEnums;
+import game.movement.Direction;
+import game.movement.OrbitPathFinder;
+import game.movement.PathFinder;
+import game.movement.Point;
+import game.objects.enemies.Enemy;
+import game.objects.friendlies.FriendlyEnums;
+import game.objects.friendlies.FriendlyObject;
+import game.objects.friendlies.GuardianDrone;
+import visual.objects.SpriteAnimation;
 
 public class FriendlyManager {
 
 	private static FriendlyManager instance = new FriendlyManager();
-	private AnimationManager animationManager = AnimationManager.getInstance();
-	private PlayerStats playerStats = PlayerStats.getInstance();
-	private SpaceShip spaceship;
-
-	private boolean playerAlive;
+	private EnemyManager enemyManager = EnemyManager.getInstance();
+	private MovementInitiator movementManager = MovementInitiator.getInstance();
+	private List<FriendlyObject> activeFriendlyObjects = new ArrayList<FriendlyObject>();
+	private List<GuardianDrone> guardianDrones = new ArrayList<GuardianDrone>();
 
 	private FriendlyManager() {
-		initSpaceShip();
+		
+
 	}
 
 	public static FriendlyManager getInstance() {
 		return instance;
 	}
 
-	// Called when a game instance needs to be deleted and the manager needs to be
-	// reset.
-	public void resetManager() {
-		spaceship = null;
-		initSpaceShip();
-		playerAlive = true;
-	}
-
 	public void updateGameTick() {
-		updateSpaceShipMovement();
-		checkPlayerHealth();
-		spaceship.updateGameTick();
+		cycleActiveFriendlyObjects();
+		checkFriendlyObjectCollision();
+		moveFriendlyObjects();
 	}
 
-	public SpaceShip getSpaceship() {
-		return this.spaceship;
-	}
-
-	public boolean getPlayerStatus() {
-		return this.playerAlive;
-	}
-
-	private void checkPlayerHealth() {
-		if (playerStats.getHitpoints() <= 0) {
-			this.playerAlive = false;
-			spaceship.setVisible(false);
+	private void moveFriendlyObjects() {
+		for (int i = 0; i < activeFriendlyObjects.size(); i++) {
+			if (activeFriendlyObjects.get(i).getAnimation().isVisible()) {
+				movementManager.moveFriendlyObjects(activeFriendlyObjects.get(i));
+			}
 		}
 	}
 
-	private void updateSpaceShipMovement() {
-		if (spaceship.isVisible()) {
-			spaceship.move();
+	private void cycleActiveFriendlyObjects() {
+		for (int i = 0; i < activeFriendlyObjects.size(); i++) {
+			if (!activeFriendlyObjects.get(i).getAnimation().isVisible()) {
+				activeFriendlyObjects.remove(i);
+				activeFriendlyObjects.get(i).setVisible(false);
+			}
+		}
+		
+		for(GuardianDrone drone : guardianDrones) {
+			drone.activateGuardianDrone();
 		}
 	}
 
-	private void initSpaceShip() {
-		this.spaceship = new SpaceShip();
-		animationManager.addExhaustAnimation(playerStats.getExhaustAnimation());
-		this.playerAlive = true;
+	//Checks collision between friendly objects and enemies
+	//Intentionally broken, fix manually
+	private void checkFriendlyObjectCollision() {
+		if (enemyManager == null) {
+			enemyManager = EnemyManager.getInstance();
+		}
+
+		for (FriendlyObject friendlyObject : activeFriendlyObjects) {
+			if (friendlyObject.isVisible()) {
+				SpriteAnimation animation = friendlyObject.getAnimation();
+				for (Enemy enemy : enemyManager.getEnemies()) {
+					Rectangle r1 = animation.getBounds();
+					Rectangle r2 = enemy.getBounds();
+					if (r1.intersects(r2)) {
+					}
+				}
+			}
+		}
 	}
 
-	public List<Integer> getNearestFriendlyHomingCoordinates() {
-		List<Integer> coordinatesList = new ArrayList<Integer>();
-		coordinatesList.add(spaceship.getCenterXCoordinate());
-		coordinatesList.add(spaceship.getCenterYCoordinate());
+	//UNCALLED BUT THIS WORKS
+	public void createGuardianDrone() {
+		int xCoordinate = PlayerManager.getInstance().getSpaceship().getCenterXCoordinate();
+		int yCoordinate = PlayerManager.getInstance().getSpaceship().getCenterYCoordinate();
+		float scale = (float) 0.5;
+		FriendlyEnums friendlyType = FriendlyEnums.Homing_Missile_Guardian_Bot;
+		Point destination = null;
+		Direction rotation = Direction.RIGHT;
+		PathFinder pathFinder = new OrbitPathFinder(PlayerManager.getInstance().getSpaceship(), 100, 300);
+		
+		FriendlyObject friendlyObject = new GuardianDrone(xCoordinate, yCoordinate, destination, rotation, friendlyType, scale, pathFinder, 50);
+		guardianDrones.add((GuardianDrone) friendlyObject);
+		SpriteAnimation animation = new SpriteAnimation(xCoordinate, yCoordinate, ImageEnums.Guardian_Bot, true, scale);
+		
+		friendlyObject.setAnimation(animation);;
+		addActiveFriendlyObject(friendlyObject);
+	}
 
-		return coordinatesList;
+	public void addActiveFriendlyObject(FriendlyObject friendlyObject) {
+		this.activeFriendlyObjects.add(friendlyObject);
+	}
+
+	public List<FriendlyObject> getActiveFriendlyObjects() {
+		return this.activeFriendlyObjects;
+	}
+	
+	public void resetManager() {
+		activeFriendlyObjects = new ArrayList<FriendlyObject>();
+		guardianDrones = new ArrayList<GuardianDrone>();
 	}
 
 }

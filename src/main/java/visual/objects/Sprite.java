@@ -5,16 +5,16 @@ import java.awt.Rectangle;
 
 import data.image.ImageCropper;
 import data.image.ImageDatabase;
+import data.image.ImageEnums;
 import data.image.ImageResizer;
 import data.image.ImageRotator;
-import data.image.enums.ImageEnums;
 import game.movement.Direction;
 import game.movement.Point;
 
 public class Sprite {
-	ImageDatabase imgDatabase = ImageDatabase.getInstance();
-	ImageRotator imageRotator = ImageRotator.getInstance();
-	ImageResizer imageResizer = ImageResizer.getInstance();
+	private ImageDatabase imgDatabase = ImageDatabase.getInstance();
+	private ImageRotator imageRotator = ImageRotator.getInstance();
+	private ImageResizer imageResizer = ImageResizer.getInstance();
 	protected int xCoordinate;
 	protected int yCoordinate;
 	protected int width;
@@ -24,20 +24,29 @@ public class Sprite {
 	protected float scale;
 	protected int xOffset;
 	protected int yOffset;
+	protected Rectangle bounds;
+	protected Point currentLocation;
+	
 
 	public Sprite(int x, int y, float scale) {
 		this.xCoordinate = x;
 		this.yCoordinate = y;
 		this.scale = scale;
-		visible = true;
+		this.visible = true;
+		this.bounds = new Rectangle();
+		currentLocation = new Point(x,y);
 	}
 
 	protected void loadImage(ImageEnums imageName) {
-		image = imgDatabase.getImage(imageName);
+		this.image = imgDatabase.getImage(imageName);
+		if (this.image == null) {
+			System.out.println("Crashed because getting " + imageName + " returned an empty/null image");
+		}
+//		if (scale != 1 && this.image != null) {
 		this.image = imageResizer.getScaledImage(image, scale);
-//		setImageToScale();
+//		}
 		getImageDimensions();
-		// Zet collision ook op die getallen en shits & giggles
+//		 Zet collision ook op die getallen en shits & giggles
 	}
 
 	protected void getImageDimensions() {
@@ -58,9 +67,16 @@ public class Sprite {
 	}
 
 	protected void setScale(float newScale) {
-		this.scale = newScale;
-		this.image = imageResizer.getScaledImage(image, scale);
-		getImageDimensions();
+		if (this.scale != newScale) {
+			this.scale = newScale;
+
+			if (this.image == null) {
+				System.out.println("Crashed because resizing an image that was null/empty");
+			}
+			this.image = imageResizer.getScaledImage(image, scale);
+			getImageDimensions();
+		}
+
 	}
 
 	public int getCenterXCoordinate() {
@@ -112,10 +128,6 @@ public class Sprite {
 		this.visible = visible;
 	}
 
-	// Get bounds required for collision detection for objects WITHOUT ANIMATIONS
-	public Rectangle getBounds() {
-		return new Rectangle(xCoordinate + xOffset, yCoordinate + yOffset, width, height);
-	}
 
 	public void addXOffset(int xOffset) {
 		this.xOffset = xOffset;
@@ -128,19 +140,24 @@ public class Sprite {
 	public void addYOffset(int yoffset) {
 		this.yOffset = yoffset;
 	}
-	
+
 	public void setImageDimensions(int newWidth, int newHeight) {
 		ImageResizer imageResizer = ImageResizer.getInstance();
 		this.image = imageResizer.resizeImageToDimensions(this.image, newWidth, newHeight);
 		getImageDimensions();
-		
+
 	}
-	
+
 	protected void cropWidth(float cropPercentage) {
 		ImageCropper imageCropper = ImageCropper.getInstance();
 		this.image = imageCropper.cropImage(this.image, cropPercentage);
 	}
+
 	public Point getPoint() {
-		return new Point(this.xCoordinate, this.yCoordinate);
+		return this.currentLocation;
+	}
+	
+	public Rectangle getBounds() {
+		return this.bounds;
 	}
 }

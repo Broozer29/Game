@@ -3,7 +3,7 @@ package game.managers;
 import java.util.ArrayList;
 import java.util.List;
 
-import data.image.enums.ImageEnums;
+import data.image.ImageEnums;
 import game.UI.UIObject;
 
 public class CustomUIManager {
@@ -69,8 +69,10 @@ public class CustomUIManager {
 	public UIObject getShieldBar() {
 		return shieldBar;
 	}
-	
-	
-	
+
+	public void resetManager() {
+		createHealthBar();
+		createShieldBar();
+	}
 
 }

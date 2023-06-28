@@ -5,9 +5,9 @@ import java.awt.event.ActionListener;
 
 import javax.swing.Timer;
 
-import data.image.enums.EnemyEnums;
 import game.managers.TimerManager;
 import game.movement.Direction;
+import game.objects.enemies.EnemyEnums;
 
 public class EnemySpawnTimer implements ActionListener {
 
@@ -25,22 +25,25 @@ public class EnemySpawnTimer implements ActionListener {
 	private boolean loopable;
 	private Timer timer;
 	private String status;
+	private int additionalDelay;
 
 	public EnemySpawnTimer(int timeBeforeActivation, int amountOfSpawnAttempts, EnemyEnums timerEnemyType, boolean loopable,
-			Direction direction, float enemyScale) {
+			Direction direction, float enemyScale, int additionalDelay) {
 		this.enemyScale = enemyScale;
 		this.timerEnemyType = timerEnemyType;
 		this.amountOfSpawnAttempts = amountOfSpawnAttempts;
 		this.direction = direction;
 		this.loopable = loopable;
 		this.timeBeforeActivation = timeBeforeActivation;
+		//Disabled because of the memory/cpu fiasco, probably harmless
+//		this.setAdditionalDelay(additionalDelay);
 		this.finished = false;
 		this.status = "primed";
 		initTimer();
 	}
 
 	private void initTimer() {
-		timer = new Timer(timeBeforeActivation, this);
+		timer = new Timer(timeBeforeActivation + additionalDelay, this);
 	}
 
 	public void startTimer() {
@@ -67,6 +70,11 @@ public class EnemySpawnTimer implements ActionListener {
 		timerManager.activateSpawnTimer(this);
 		this.finished = true;
 		this.status = "finished";
+	}
+	
+	public void removeDelay() {
+		this.additionalDelay = 0;
+		timer = new Timer(timeBeforeActivation + additionalDelay, this);
 	}
 
 	public boolean getFinished() {
@@ -99,6 +107,14 @@ public class EnemySpawnTimer implements ActionListener {
 
 	public float getEnemyScale() {
 		return this.enemyScale;
+	}
+
+	public int getAdditionalDelay() {
+		return additionalDelay;
+	}
+
+	public void setAdditionalDelay(int additionalDelay) {
+		this.additionalDelay = additionalDelay;
 	}
 
 }

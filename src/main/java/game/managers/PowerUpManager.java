@@ -11,8 +11,7 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 import data.DataClass;
 import data.TemporaryGameSettings;
 import data.audio.AudioEnums;
-import data.image.ImageResizer;
-import data.image.enums.ImageEnums;
+import data.image.ImageEnums;
 import game.movement.Direction;
 import game.objects.friendlies.powerups.PowerUp;
 import game.objects.friendlies.powerups.PowerUpSpawnTimer;
@@ -22,9 +21,19 @@ public class PowerUpManager {
 
 	private static PowerUpManager instance = new PowerUpManager();
 	private List<PowerUp> powerUpsOnTheField = new ArrayList<PowerUp>();
+	private Random random = new Random();
+
+	private int minY = 0;
+	private int maxY = DataClass.getInstance().getWindowHeight();
+	private int minX = 0;
+	private int maxX = DataClass.getInstance().getWindowWidth();
+
+	private Direction[] directionEnums = Direction.values();
+	private PowerUps[] powerupEnums = PowerUps.values();
+	private List<Integer> randomCoordinates = new ArrayList<Integer>();
 
 	private PowerUpManager() {
-		createPowerUpTimer();
+
 	}
 
 	public static PowerUpManager getInstance() {
@@ -62,7 +71,7 @@ public class PowerUpManager {
 	}
 
 	private void checkPowerUpCollision() {
-		FriendlyManager friendlyManager = FriendlyManager.getInstance();
+		PlayerManager friendlyManager = PlayerManager.getInstance();
 		AudioManager audioManager = AudioManager.getInstance();
 		for (PowerUp powerUp : powerUpsOnTheField) {
 			if (powerUp.isVisible()) {
@@ -82,12 +91,9 @@ public class PowerUpManager {
 	}
 
 	public void spawnPowerUp(PowerUps powerUpType) {
-		List<Integer> randomCoordinates = getRandomSpawnCoords();
-		int randomX = randomCoordinates.get(0);
-		int randomY = randomCoordinates.get(1);
-		Direction randomDirection = selectRandomDirection();
-		PowerUp newPowerUp = new PowerUp(randomX, randomY, 1, randomDirection, powerUpType,
-				getIconByPowerUp(powerUpType), getEffectDuration(powerUpType), false);
+		getRandomSpawnCoords();
+		PowerUp newPowerUp = new PowerUp(randomCoordinates.get(0), randomCoordinates.get(1), 1, selectRandomDirection(),
+				powerUpType, getIconByPowerUp(powerUpType), getEffectDuration(powerUpType), false);
 		newPowerUp.setImageDimensions(50, 50);
 		powerUpsOnTheField.add(newPowerUp);
 	}
@@ -98,29 +104,25 @@ public class PowerUpManager {
 
 	private int getRandomTimeForSpawner() {
 		TemporaryGameSettings tempSettings = TemporaryGameSettings.getInstance();
-		Random random = new Random();
+
 		return random.nextInt((tempSettings.getMaxTimeForPowerUpSpawn() - tempSettings.getMinTimeForPowerUpSpawn()) + 1)
 				+ tempSettings.getMinTimeForPowerUpSpawn();
 	}
 
 	private PowerUps selectRandomPowerUp() {
-		PowerUps[] enums = PowerUps.values();
-		Random random = new Random();
-		PowerUps randomValue = enums[random.nextInt(enums.length)];
-
+		PowerUps randomValue = powerupEnums[random.nextInt(powerupEnums.length)];
 //	    if (randomValue == PowerUps.DOUBLE_SHOT || 
 //	    		randomValue == PowerUps.TRIPLE_SHOT) {
 //	        return selectRandomPowerUp();
 //	    }
-
+		if (randomValue == PowerUps.DUMMY_DO_NOT_USE) {
+			return selectRandomPowerUp();
+		}
 		return randomValue;
 	}
 
 	private Direction selectRandomDirection() {
-		Direction[] enums = Direction.values();
-		Random random = new Random();
-		Direction randomValue = enums[random.nextInt(enums.length)];
-		
+		Direction randomValue = directionEnums[random.nextInt(directionEnums.length)];
 		if (randomValue == Direction.NONE) {
 			return selectRandomDirection();
 		}
@@ -128,21 +130,13 @@ public class PowerUpManager {
 	}
 
 	private List<Integer> getRandomSpawnCoords() {
-		Random random = new Random();
-
-		int minY = 0;
-		int maxY = DataClass.getInstance().getWindowHeight();
-
-		int minX = 0;
-		int maxX = DataClass.getInstance().getWindowWidth();
-
-		int randomY = random.nextInt((maxY - minY) + 1) + minY;
-		int randomX = random.nextInt((maxX - minX) + 1) + minX;
-
-		List<Integer> randomCoordinates = new ArrayList<Integer>();
-		randomCoordinates.add(randomX);
-		randomCoordinates.add(randomY);
-
+		if (randomCoordinates.size() > 0) {
+			randomCoordinates.set(0, random.nextInt((maxX - minX) + 1) + minX);
+			randomCoordinates.set(1, random.nextInt((maxY - minY) + 1) + minY);
+		} else {
+			randomCoordinates.add(random.nextInt((maxX - minX) + 1) + minX);
+			randomCoordinates.add(random.nextInt((maxY - minY) + 1) + minY);
+		}
 		return randomCoordinates;
 	}
 
@@ -187,6 +181,14 @@ public class PowerUpManager {
 			return ImageEnums.Test_Image;
 
 		}
+	}
+
+	public void resetManager() {
+		powerUpsOnTheField = new ArrayList<PowerUp>();
+		directionEnums = Direction.values();
+		powerupEnums = PowerUps.values();
+		randomCoordinates = new ArrayList<Integer>();
+		random = new Random();
 	}
 
 }

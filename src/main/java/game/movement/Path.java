@@ -3,7 +3,7 @@ package game.movement;
 import java.util.List;
 
 import game.managers.EnemyManager;
-import game.managers.FriendlyManager;
+import game.managers.PlayerManager;
 import game.objects.enemies.Enemy;
 
 public class Path {
@@ -46,7 +46,7 @@ public class Path {
 			Point closestEnemyPoint = enemyManager.getClosestEnemy();
 			return closestEnemyPoint;
 		} else {
-			FriendlyManager friendlyManager = FriendlyManager.getInstance();
+			PlayerManager friendlyManager = PlayerManager.getInstance();
 			int x = friendlyManager.getNearestFriendlyHomingCoordinates().get(0);
 			int y = friendlyManager.getNearestFriendlyHomingCoordinates().get(1);
 			return new Point(x, y);

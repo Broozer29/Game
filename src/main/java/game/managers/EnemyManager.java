@@ -1,6 +1,5 @@
 package game.managers;
 
-import java.awt.Rectangle;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -9,7 +8,7 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 
 import data.DataClass;
 import data.audio.AudioEnums;
-import data.image.enums.ImageEnums;
+import data.image.ImageEnums;
 import game.movement.Point;
 import game.objects.enemies.Alien;
 import game.objects.enemies.AlienBomb;
@@ -25,9 +24,9 @@ public class EnemyManager {
 
 	private static EnemyManager instance = new EnemyManager();
 	private AudioManager audioManager = AudioManager.getInstance();
-	private FriendlyManager friendlyManager = FriendlyManager.getInstance();
+	private PlayerManager friendlyManager = PlayerManager.getInstance();
 	private AnimationManager animationManager = AnimationManager.getInstance();
-	private MovementManager movementManager = MovementManager.getInstance();
+	private MovementInitiator movementManager = MovementInitiator.getInstance();
 	private List<Enemy> enemyList = new ArrayList<Enemy>();
 	private List<Alien> alienList = new ArrayList<Alien>();
 	private List<Seeker> seekerList = new ArrayList<Seeker>();
@@ -58,7 +57,7 @@ public class EnemyManager {
 		bulldozerList = new ArrayList<Bulldozer>();
 		tazerList = new ArrayList<Tazer>();
 		energizerList = new ArrayList<Energizer>();
-		friendlyManager = FriendlyManager.getInstance();
+		friendlyManager = PlayerManager.getInstance();
 		dataClass = DataClass.getInstance();
 		audioManager = AudioManager.getInstance();
 	}
@@ -76,14 +75,12 @@ public class EnemyManager {
 	private void checkSpaceshipCollisions() throws UnsupportedAudioFileException, IOException {
 		if (friendlyManager == null || animationManager == null) {
 			this.animationManager = AnimationManager.getInstance();
-			this.friendlyManager = FriendlyManager.getInstance();
+			this.friendlyManager = PlayerManager.getInstance();
 		}
-		Rectangle spaceshipBounds = friendlyManager.getSpaceship().getBounds();
 
 		// Checks collision between spaceship and enemies
 		for (Enemy enemy : enemyList) {
-			Rectangle enemyBounds = enemy.getBounds();
-			if (spaceshipBounds.intersects(enemyBounds)) {
+			if (friendlyManager.getSpaceship().getBounds().intersects(enemy.getBounds())) {
 				if (enemy instanceof AlienBomb) {
 					detonateAlienBomb(enemy);
 					friendlyManager.getSpaceship().takeHitpointDamage(20);
@@ -210,8 +207,8 @@ public class EnemyManager {
 	}
 
 	public Point getClosestEnemy() {
-		int playerXCoordinate = FriendlyManager.getInstance().getSpaceship().getCenterXCoordinate();
-		int playerYCoordinate = FriendlyManager.getInstance().getSpaceship().getCenterYCoordinate();
+		int playerXCoordinate = PlayerManager.getInstance().getSpaceship().getCenterXCoordinate();
+		int playerYCoordinate = PlayerManager.getInstance().getSpaceship().getCenterYCoordinate();
 
 		Enemy closestEnemy = null;
 		double minDistance = Double.MAX_VALUE;
@@ -242,7 +239,7 @@ public class EnemyManager {
 	
 	private Point getBackUpPoint() {
 		int endXCoordinate = DataClass.getInstance().getWindowWidth();
-		int endYCoordinate = FriendlyManager.getInstance().getSpaceship().getCenterYCoordinate();
+		int endYCoordinate = PlayerManager.getInstance().getSpaceship().getCenterYCoordinate();
 		return new Point(endXCoordinate, endYCoordinate);
 	}
 }

@@ -2,11 +2,11 @@ package game.objects.friendlies.powerups;
 
 import data.PlayerStats;
 import data.TemporaryGameSettings;
-import game.managers.FriendlyManager;
-import game.objects.friendlies.friendlyobjects.SpaceShip;
+import game.managers.PlayerManager;
+import game.objects.friendlies.spaceship.SpaceShip;
 
 public class PowerUpEffect {
-	protected FriendlyManager friendlyManager = FriendlyManager.getInstance();
+	protected PlayerManager friendlyManager = PlayerManager.getInstance();
 	protected TemporaryGameSettings temporaryGameSettings = TemporaryGameSettings.getInstance();
 	protected PlayerStats playerStats = PlayerStats.getInstance();
 	protected SpaceShip playerSpaceShip = friendlyManager.getSpaceship();
@@ -14,7 +14,7 @@ public class PowerUpEffect {
 	protected PowerUps powerUpType;
 	public PowerUpEffect(PowerUps powerUpType) {
 		this.powerUpType = powerUpType;
-		friendlyManager = FriendlyManager.getInstance();
+		friendlyManager = PlayerManager.getInstance();
 		temporaryGameSettings = TemporaryGameSettings.getInstance();
 		playerStats = PlayerStats.getInstance();
 		playerSpaceShip = friendlyManager.getSpaceship();

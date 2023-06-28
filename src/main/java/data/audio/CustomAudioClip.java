@@ -37,7 +37,7 @@ public class CustomAudioClip {
 			volume.setValue(-2);
 			break;
 		case Apple_Holder_Remix:
-			volume.setValue(-2);
+			volume.setValue(-10);
 			break;
 		case Furi_Wisdowm_Of_Rage:
 			volume.setValue(-5);

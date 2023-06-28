@@ -43,6 +43,8 @@ public class PowerUpAcquiredText {
 		case TRIPLE_SHOT:
 			this.text = "Triple Shot";
 			break;
+		case DUMMY_DO_NOT_USE:
+			this.text = "Test text";
 		default:
 			break;
 		

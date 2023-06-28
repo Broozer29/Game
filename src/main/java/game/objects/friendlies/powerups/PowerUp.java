@@ -1,7 +1,7 @@
 package game.objects.friendlies.powerups;
 
+import data.image.ImageEnums;
 import data.image.ImageResizer;
-import data.image.enums.ImageEnums;
 import game.managers.OnScreenTextManager;
 import game.managers.TimerManager;
 import game.movement.Direction;
@@ -14,7 +14,7 @@ import visual.objects.Sprite;
 public class PowerUp extends Sprite {
 
 	private Direction direction;
-	private Point currentLocation;
+
 	private Point destination;
 	private Path currentPath;
 	private PowerUps powerUpType;
@@ -36,8 +36,7 @@ public class PowerUp extends Sprite {
 	public void move() {
 		if (currentPath == null || currentPath.getWaypoints().isEmpty()) {
 			// calculate a new path if necessary
-			PowerUpDirectionBouncer bouncer = new PowerUpDirectionBouncer();
-			currentPath = bouncer.calculateNewPath(this);
+			currentPath = PowerUpDirectionBouncer.getInstance().calculateNewPath(this);
 		}
 
 		// Update current location on the path
@@ -57,11 +56,10 @@ public class PowerUp extends Sprite {
 		}
 
 		// Check for collision with walls and bounce if necessary
-		PowerUpDirectionBouncer bouncer = new PowerUpDirectionBouncer();
-		Direction newDirection = bouncer.getNewDirection(this);
+		Direction newDirection = PowerUpDirectionBouncer.getInstance().getNewDirection(this);
 		if (newDirection != direction) {
 			direction = newDirection;
-			currentPath = bouncer.calculateNewPath(this);
+			currentPath = PowerUpDirectionBouncer.getInstance().calculateNewPath(this);
 		}
 
 	}
@@ -88,10 +86,6 @@ public class PowerUp extends Sprite {
 
 	public Direction getDirection() {
 		return direction;
-	}
-
-	public Point getCurrentLocation() {
-		return currentLocation;
 	}
 
 	public void setCurrentLocation(Point currentLocation) {

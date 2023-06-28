@@ -5,8 +5,6 @@ import java.util.stream.DoubleStream;
 
 import javax.swing.ImageIcon;
 
-import data.image.enums.ImageEnums;
-
 public class ImageLoader {
 
 	private static ImageLoader instance = new ImageLoader();
@@ -285,31 +283,132 @@ public class ImageLoader {
 			return  "src/resources/images/Icons/Starcraft2 Yellow Blink.png";
 		case Starcraft2_Heal:
 			return  "src/resources/images/Icons/Starcraft2 Heal.png";
+	    case Letter_A:
+	        return  "src/resources/images/Letters/Letter-A.png";
+	    case Letter_B:
+	        return  "src/resources/images/Letters/Letter-B.png";
+	    case Letter_C:
+	        return  "src/resources/images/Letters/Letter-C.png";
+	    case Letter_Closing_Bracket:
+	        return  "src/resources/images/Letters/Letter-].png";
+	    case Letter_Dot:
+	    	return "src/resources/images/Letters/Letter-Dot.png";
+	    case Letter_D:
+	        return  "src/resources/images/Letters/Letter-D.png";
+	    case Letter_E:
+	        return  "src/resources/images/Letters/Letter-E.png";
+	    case Letter_F:
+	        return  "src/resources/images/Letters/Letter-F.png";
+	    case Letter_G:
+	        return  "src/resources/images/Letters/Letter-G.png";
+	    case Letter_H:
+	        return  "src/resources/images/Letters/Letter-H van Hooi.png";
+	    case Letter_I:
+	        return  "src/resources/images/Letters/Letter-I.png";
+	    case Letter_J:
+	        return  "src/resources/images/Letters/Letter-J.png";
+	    case Letter_K:
+	        return  "src/resources/images/Letters/Letter-K.png";
+	    case Letter_L:
+	        return  "src/resources/images/Letters/Letter-L.png";
+	    case Letter_M:
+	        return  "src/resources/images/Letters/Letter-M.png";
+	    case Letter_N:
+	        return  "src/resources/images/Letters/Letter-N.png";
+	    case Letter_O:
+	        return  "src/resources/images/Letters/Letter-O.png";
+	    case Letter_Open_Bracket:
+	        return  "src/resources/images/Letters/Letter-[.png";
+	    case Letter_P:
+	        return  "src/resources/images/Letters/Letter-P.png";
+	    case Letter_Q:
+	        return  "src/resources/images/Letters/Letter-Q.png";
+	    case Letter_R:
+	        return  "src/resources/images/Letters/Letter-R.png";
+	    case Letter_S:
+	        return  "src/resources/images/Letters/Letter-S.png";
+	    case Letter_T:
+	        return  "src/resources/images/Letters/Letter-T.png";
+	    case Letter_U:
+	        return  "src/resources/images/Letters/Letter-U.png";
+	    case Letter_V:
+	        return  "src/resources/images/Letters/Letter-V.png";
+	    case Letter_W:
+	        return  "src/resources/images/Letters/Letter-W.png";
+	    case Letter_X:
+	        return  "src/resources/images/Letters/Letter-X.png";
+	    case Letter_Y:
+	        return  "src/resources/images/Letters/Letter-Y.png";
+	    case Letter_Z:
+	        return  "src/resources/images/Letters/Letter-Z.png";
+	    case Letter_a:
+	        return  "src/resources/images/Letters/Letter-LowercaseA.png";
+	    case Letter_b:
+	        return  "src/resources/images/Letters/Letter-LowercaseB.png";
+	    case Letter_c:
+	        return  "src/resources/images/Letters/Letter-LowercaseC.png";
+	    case Letter_d:
+	        return  "src/resources/images/Letters/Letter-LowercaseD.png";
+	    case Letter_double_points:
+	        return  "src/resources/images/Letters/Letter-DubbelePunt.png";
+	    case Letter_e:
+	        return  "src/resources/images/Letters/Letter-LowercaseE.png";
+	    case Letter_equals:
+	        return  "src/resources/images/Letters/Letter-Equals.png";
+	    case Letter_f:
+	        return  "src/resources/images/Letters/Letter-LowercaseF.png";
+	    case Letter_g:
+	        return  "src/resources/images/Letters/Letter-LowercaseG.png";
+	    case Letter_greater_than:
+	        return  "src/resources/images/Letters/Letter-GreaterThan.png";
+	    case Letter_h:
+	        return  "src/resources/images/Letters/Letter-LowercaseH.png";
+	    case Letter_i:
+	        return  "src/resources/images/Letters/Letter-LowercaseI.png";
+	    case Letter_j:
+	        return  "src/resources/images/Letters/Letter-LowercaseJ.png";
+	    case Letter_k:
+	        return  "src/resources/images/Letters/Letter-LowercaseK.png";
+	    case Letter_l:
+	        return  "src/resources/images/Letters/Letter-LowercaseL.png";
+	    case Letter_m:
+	        return  "src/resources/images/Letters/Letter-LowercaseM.png";
+	    case Letter_n:
+	        return  "src/resources/images/Letters/Letter-LowercaseN.png";
+	    case Letter_o:
+	        return  "src/resources/images/Letters/Letter-LowercaseO.png";
+	    case Letter_p:
+	        return  "src/resources/images/Letters/Letter-LowercaseP.png";
+	    case Letter_point_comma:
+	        return  "src/resources/images/Letters/Letter-PuntKomma.png";
+	    case Letter_q:
+	        return  "src/resources/images/Letters/Letter-LowercaseQ.png";
+	    case Letter_r:
+	        return  "src/resources/images/Letters/Letter-LowercaseR.png";
+	    case Letter_s:
+	        return  "src/resources/images/Letters/Letter-LowercaseS.png";
+	    case Letter_smaller_than:
+	        return  "src/resources/images/Letters/Letter-SmallerThan.png";
+	    case Letter_t:
+	        return  "src/resources/images/Letters/Letter-LowercaseT.png";
+	    case Letter_u:
+	        return  "src/resources/images/Letters/Letter-LowercaseU.png";
+	    case Letter_v:
+	        return  "src/resources/images/Letters/Letter-LowercaseV.png";
+	    case Letter_w:
+	        return  "src/resources/images/Letters/Letter-LowercaseW.png";
+	    case Letter_x:
+	        return  "src/resources/images/Letters/Letter-LowercaseX.png";
+	    case Letter_y:
+	        return  "src/resources/images/Letters/Letter-LowercaseY.png";
+	    case Letter_z:
+	        return  "src/resources/images/Letters/Letter-LowercaseZ.png";
+	    case Title_Image:
+			return "src/resources/images/TitleImage.png";
+	    case Invisible:
+	    	return "src/resources/images/invisible.png";
 		default:
 			break;
-			
-			
-			//Can be safely deleted?
-//		case("Default Player Engine 1"):
-//			return "src/resources/images/gif/PNGtoGIF/Default Player Engine/1.png";
-//		case("Default Player Engine 2"):
-//			return "src/resources/images/gif/PNGtoGIF/Default Player Engine/2.png";
-//		case("Default Player Engine 3"):
-//			return "src/resources/images/gif/PNGtoGIF/Default Player Engine/3.png";
-//		case("Default Player Engine 4"):
-//			return "src/resources/images/gif/PNGtoGIF/Default Player Engine/4.png";
-//		case("Default Player Engine 5"):
-//			return "src/resources/images/gif/PNGtoGIF/Default Player Engine/5.png";
-//		case("Default Player Engine Boosted 1"):
-//			return "src/resources/images/gif/PNGtoGIF/Default Player Engine Boosted/1.png";
-//		case("Default Player Engine Boosted 2"):
-//			return "src/resources/images/gif/PNGtoGIF/Default Player Engine Boosted/2.png";
-//		case("Default Player Engine Boosted 3"):
-//			return "src/resources/images/gif/PNGtoGIF/Default Player Engine Boosted/3.png";
-//		case("Default Player Engine Boosted 4"):
-//			return "src/resources/images/gif/PNGtoGIF/Default Player Engine Boosted/4.png";
-//		case("Default Player Engine Boosted 5"):
-//			return "src/resources/images/gif/PNGtoGIF/Default Player Engine Boosted/5.png";
 		
 		}
 		return "notfound";

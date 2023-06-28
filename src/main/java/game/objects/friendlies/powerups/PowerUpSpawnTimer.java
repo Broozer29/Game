@@ -5,10 +5,10 @@ import java.awt.event.ActionListener;
 
 import javax.swing.Timer;
 
-import data.image.enums.EnemyEnums;
 import game.managers.PowerUpManager;
 import game.managers.TimerManager;
 import game.movement.Direction;
+import game.objects.enemies.EnemyEnums;
 
 public class PowerUpSpawnTimer implements ActionListener {
 

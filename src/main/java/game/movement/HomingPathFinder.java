@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import game.managers.EnemyManager;
-import game.managers.FriendlyManager;
+import game.managers.PlayerManager;
 
 public class HomingPathFinder implements PathFinder {
 	@Override
@@ -97,7 +97,17 @@ public class HomingPathFinder implements PathFinder {
 
 	@Override
 	public Point calculateInitialEndpoint(Point start, Direction rotation) {
-		FriendlyManager friendlyManager = FriendlyManager.getInstance();
+		PlayerManager friendlyManager = PlayerManager.getInstance();
+		int xCoordinate = friendlyManager.getNearestFriendlyHomingCoordinates().get(0);
+		int yCoordinate = friendlyManager.getNearestFriendlyHomingCoordinates().get(1);
+
+		return new Point(xCoordinate, yCoordinate);
+	}
+
+	@Override
+	public Point calculateEndPointBySteps(Point start, Direction rotation, int steps, int xMovementspeed,
+			int yMovementspeed) {
+		PlayerManager friendlyManager = PlayerManager.getInstance();
 		int xCoordinate = friendlyManager.getNearestFriendlyHomingCoordinates().get(0);
 		int yCoordinate = friendlyManager.getNearestFriendlyHomingCoordinates().get(1);
 

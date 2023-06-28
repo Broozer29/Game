@@ -2,8 +2,9 @@ package data.image;
 
 import java.awt.Graphics2D;
 import java.awt.Image;
-import java.awt.image.AffineTransformOp;
+import java.awt.MediaTracker;
 import java.awt.geom.AffineTransform;
+import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
@@ -67,11 +68,23 @@ public class ImageResizer {
 		return newFrames;
 	}
 
-	public BufferedImage resizeImageToDimensions(Image image, int width, int height) {
-		// Een harde cast, het kan omdat er geen afbeeldingen zijn met komma getallen qua
-		// dimensies, maar indien die er zijn gaat dit tot problemen leiden
-		Image resizedImage = image.getScaledInstance(width, height, Image.SCALE_DEFAULT);
-		BufferedImage bufferedVersion = toBufferedImage(resizedImage);
-		return bufferedVersion;
-	}
+	  public BufferedImage resizeImageToDimensions(Image image, int width, int height) {
+	        BufferedImage bufferedVersion = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+	        Graphics2D g = bufferedVersion.createGraphics();
+
+	        // Create a MediaTracker to wait for the image to finish loading
+	        MediaTracker tracker = new MediaTracker(new java.awt.Container());
+	        tracker.addImage(image, 0);
+	        try {
+	            tracker.waitForID(0);
+	        } catch (InterruptedException e) {
+	            e.printStackTrace();
+	        }
+
+	        // Draw the resized image onto the bufferedVersion
+	        g.drawImage(image.getScaledInstance(width, height, Image.SCALE_DEFAULT), 0, 0, null);
+	        g.dispose();
+
+	        return bufferedVersion;
+	    }
 }

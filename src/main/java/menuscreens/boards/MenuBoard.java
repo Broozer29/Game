@@ -2,39 +2,47 @@ package menuscreens.boards;
 
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
-import javax.swing.JPanel;
-import javax.swing.Timer;
-
-import data.DataClass;
-import data.image.enums.ImageEnums;
-import game.managers.BackgroundManager;
-import game.objects.BackgroundObject;
-import menuscreens.MenuCursor;
-import menuscreens.MenuTile;
-import visual.objects.Sprite;
-
 import java.awt.Graphics;
 import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.JPanel;
+import javax.swing.Timer;
 
+import data.DataClass;
+import game.managers.BackgroundManager;
+import game.objects.BackgroundObject;
+import menuscreens.MenuCursor;
+import menuscreens.MenuFunctionEnums;
+import menuscreens.MenuObject;
+import menuscreens.MenuObjectEnums;
+import menuscreens.MenuObjectPart;
+import visual.objects.Sprite;
 
 public class MenuBoard extends JPanel implements ActionListener {
 	private DataClass data = DataClass.getInstance();
 	private BackgroundManager backgroundManager = BackgroundManager.getInstance();
 	private final int boardWidth = data.getWindowWidth();;
 	private final int boardHeight = data.getWindowHeight();;
-	private List<MenuTile> tiles = new ArrayList<MenuTile>();
+	private List<MenuObject> firstRow = new ArrayList<MenuObject>();
+	private List<MenuObject> secondRow = new ArrayList<MenuObject>();
+	private List<MenuObject> thirdRow = new ArrayList<MenuObject>();
+	private List<List<MenuObject>> grid = new ArrayList<>();
 	private MenuCursor menuCursor;
-	private MenuTile startGameTile;
-	private MenuTile selectUserTile;
-    private Timer timer;
+	private MenuObject startGameTile;
+	private MenuObject selectUserTile;
+	private Timer timer;
+	private MenuObject titleImage;
+	private MenuObject selectUserTile2;
+	private MenuObject selectUserTile3;
+
+	private int selectedRow = 0;
+	private int selectedColumn = 0;
 
 	public MenuBoard() {
 		addKeyListener(new TAdapter());
@@ -42,64 +50,157 @@ public class MenuBoard extends JPanel implements ActionListener {
 		setBackground(Color.BLACK);
 		setPreferredSize(new Dimension(boardWidth, boardHeight));
 		initMenuTiles();
-		
-        timer = new Timer(16, e -> repaint());
-        timer.start();
+
+		timer = new Timer(16, e -> repaint());
+		timer.start();
 	}
 
-	//Initialize all starter pointers
+	// Initialize all starter pointers
 	private void initMenuTiles() {
-		this.startGameTile = new MenuTile(ImageEnums.Start_Game, (boardWidth / 2), (boardHeight / 2), 1);
-		this.menuCursor = new MenuCursor((boardWidth / 2 - 50), startGameTile.getYCoordinate(), 1);
+		float imageScale = 1;
+		float textScale = (float) 1.3;
+		this.startGameTile = new MenuObject((boardWidth / 2), (boardHeight / 2), textScale, "Start Game",
+				MenuObjectEnums.Text_Block, MenuFunctionEnums.Start_Game);
+
+		int initCursorX = startGameTile.getXCoordinate();
+		int initCursorY = startGameTile.getYCoordinate();
+		this.menuCursor = new MenuCursor(initCursorX, initCursorY, imageScale);
+		menuCursor.setXCoordinate(startGameTile.getXCoordinate() - (menuCursor.getxDistanceToKeep()));
+
+		this.selectUserTile = new MenuObject((boardWidth / 2), (boardHeight / 2) + 50, textScale, "Select Setup A",
+				MenuObjectEnums.Text_Block, MenuFunctionEnums.Select_Setup_Menu);
+		this.selectUserTile2 = new MenuObject((boardWidth / 2) + 300, (boardHeight / 2), textScale, "Select Setup B",
+				MenuObjectEnums.Text_Block, MenuFunctionEnums.Select_Setup_Menu);
+		this.selectUserTile3 = new MenuObject((boardWidth / 2) + 300, (boardHeight / 2) + 50, textScale,
+				"Select Setup C", MenuObjectEnums.Text_Block, MenuFunctionEnums.Select_Setup_Menu);
+
+		this.titleImage = new MenuObject(200, (boardHeight / 2) / 2, imageScale, null, MenuObjectEnums.Title_Image,
+				MenuFunctionEnums.NONE);
+
 		this.menuCursor.setSelectedMenuTile(startGameTile);
-		this.selectUserTile = new MenuTile(ImageEnums.Select_User_Menu, (boardWidth / 2), (boardHeight / 2) + 50, 1);
+
+		grid.add(firstRow);
+		grid.add(secondRow);
+		grid.add(thirdRow);
+
 	}
-	//Recreate the tilesList that gets drawn by drawComponents	
+
+	// Recreate the tilesList that gets drawn by drawComponents
 	private void recreateList() {
-		tiles.clear();
-		addTileToList(startGameTile);
-		addTileToList(selectUserTile);
+		firstRow.clear();
+		secondRow.clear();
+		thirdRow.clear();
+
+		addTileToFirstRow(startGameTile);
+		addTileToFirstRow(selectUserTile2);
+		addTileToSecondRow(selectUserTile);
+		addTileToSecondRow(selectUserTile3);
+
 	}
 
-	private void addTileToList(MenuTile menuTile) {
-		tiles.add(menuTile);
+	private void addTileToFirstRow(MenuObject menuTile) {
+		firstRow.add(menuTile);
 	}
 
-	//Activate the functionality of the specific menutile
+	private void addTileToSecondRow(MenuObject menuTile) {
+		secondRow.add(menuTile);
+	}
+
+	private void addTileToThirdRow(MenuObject menuTile) {
+		thirdRow.add(menuTile);
+	}
+
+	/*------------------------Navigation methods--------------------------------*/
+
+	// Activate the functionality of the specific menutile
 	private void selectMenuTile() {
-		for(MenuTile tile : tiles) {
-			if (menuCursor.getSelectedMenuTile().equals(tile)) {
-				tile.menuTileAction();
-				timer.stop();
-			}
-		}
+		grid.get(selectedRow).get(selectedColumn).menuTileAction();
+		timer.stop();
 	}
 
-	// Go one menu tile upwards
 	private void previousMenuTile() {
-		for (int i = 0; i < tiles.size(); i++) {
-			if ((menuCursor.getSelectedMenuTile().equals(tiles.get(i)))) {
-				if ((i > 0)) {
-					menuCursor.setY(tiles.get(i - 1).getYCoordinate());
-					menuCursor.setX(tiles.get(i - 1).getXCoordinate() - 50);
-					menuCursor.setSelectedMenuTile(tiles.get(i - 1));
-					break;
-				}
-			}
+		if (isGridEmpty()) {
+			return; // Do nothing if the grid is empty
 		}
+
+		int originalRow = selectedRow; // Keep track of the starting row to avoid infinite loop
+
+		do {
+			selectedRow--;
+			if (selectedRow < 0) {
+				selectedRow = grid.size() - 1; // Wrap around to the bottom row
+			}
+		} while (grid.get(selectedRow).isEmpty() && selectedRow != originalRow); // Repeat until a non-empty row is
+																					// found or we've checked all rows
+
+		// Adjust column to be within the new row
+		if (!grid.get(selectedRow).isEmpty() && selectedColumn >= grid.get(selectedRow).size()) {
+			selectedColumn = grid.get(selectedRow).size() - 1;
+		}
+		updateCursor();
 	}
 
 	// Go one menu tile downwards
 	private void nextMenuTile() {
-		for (int i = 0; i < tiles.size(); i++) {
-			if ((menuCursor.getSelectedMenuTile().equals(tiles.get(i)))) {
-				if ((i + 1) < tiles.size()) {
-					menuCursor.setY(tiles.get(i + 1).getYCoordinate());
-					menuCursor.setX(tiles.get(i + 1).getXCoordinate() - 50);
-					menuCursor.setSelectedMenuTile(tiles.get(i + 1));
-					break;
-				}
+		if (isGridEmpty()) {
+			return; // Do nothing if the grid is empty
+		}
+
+		int originalRow = selectedRow; // Keep track of the starting row to avoid infinite loop
+
+		do {
+			selectedRow++;
+			if (selectedRow >= grid.size()) {
+				selectedRow = 0; // Wrap around to the top row
 			}
+		} while (grid.get(selectedRow).isEmpty() && selectedRow != originalRow); // Repeat until a non-empty row is
+																					// found or we've checked all rows
+
+		// Adjust column to be within the new row
+		if (!grid.get(selectedRow).isEmpty() && selectedColumn >= grid.get(selectedRow).size()) {
+			selectedColumn = grid.get(selectedRow).size() - 1;
+		}
+		updateCursor();
+	}
+
+	// Check if the grid is empty
+	private boolean isGridEmpty() {
+		for (List<MenuObject> row : grid) {
+			if (!row.isEmpty()) {
+				return false; // Return false as soon as a non-empty row is found
+			}
+		}
+		return true; // If no non-empty rows are found, the grid is empty
+	}
+
+	// Go one menu tile to the left
+	private void previousMenuColumn() {
+		selectedColumn--;
+		if (selectedColumn < 0) {
+			selectedColumn = grid.get(selectedRow).size() - 1; // Wrap around to the rightmost column
+		}
+		updateCursor();
+	}
+
+	// Go one menu tile to the right
+	private void nextMenuColumn() {
+		selectedColumn++;
+		if (selectedColumn >= grid.get(selectedRow).size()) {
+			selectedColumn = 0; // Wrap around to the leftmost column
+		}
+		updateCursor();
+	}
+
+	// Update the cursor's position and selected menu tile
+	private void updateCursor() {
+		if (grid.get(selectedRow).isEmpty()) { // Check if the selected row is empty
+			menuCursor.setSelectedMenuTile(null); // You might need to decide how you want to handle this situation in
+													// your application
+		} else {
+			MenuObject selectedTile = grid.get(selectedRow).get(selectedColumn);
+			menuCursor.setSelectedMenuTile(selectedTile);
+			menuCursor.setYCoordinate(selectedTile.getYCoordinate());
+			menuCursor.setXCoordinate(selectedTile.getXCoordinate() - (menuCursor.getxDistanceToKeep()));
 		}
 	}
 
@@ -113,8 +214,10 @@ public class MenuBoard extends JPanel implements ActionListener {
 				selectMenuTile();
 				break;
 			case (KeyEvent.VK_A):
+				previousMenuColumn();
 				break;
 			case (KeyEvent.VK_D):
+				nextMenuColumn();
 				break;
 			case (KeyEvent.VK_W):
 				previousMenuTile();
@@ -142,8 +245,10 @@ public class MenuBoard extends JPanel implements ActionListener {
 			}
 		}
 	}
-	
-	
+
+	/*-----------------------------End of navigation methods--------------------------*/
+
+	/*---------------------------Drawing methods-------------------------------*/
 	@Override
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
@@ -155,20 +260,31 @@ public class MenuBoard extends JPanel implements ActionListener {
 		backgroundManager.updateGameTick();
 		Toolkit.getDefaultToolkit().sync();
 	}
-	
+
 	private void drawObjects(Graphics g) {
 		recreateList();
-		g.drawImage(menuCursor.getImage(), menuCursor.getXCoordinate(), menuCursor.getYCoordinate(), this);
-		for (MenuTile tile : tiles) {
-			g.drawImage(tile.getImage(), tile.getXCoordinate(), tile.getYCoordinate(), this);
+		g.drawImage(menuCursor.getMenuImages().get(0).getImage(), menuCursor.getXCoordinate(),
+				menuCursor.getYCoordinate(), this);
+		g.drawImage(titleImage.getMenuImages().get(0).getImage(), titleImage.getXCoordinate(),
+				titleImage.getYCoordinate(), this);
+
+		for (List<MenuObject> list : grid) {
+			for (MenuObject object : list) {
+				for (MenuObjectPart menuPart : object.getMenuImages()) {
+					g.drawImage(menuPart.getImage(), menuPart.getXCoordinate(), menuPart.getYCoordinate(), this);
+				}
+			}
 		}
+
 	}
-	
+
 	private void drawImage(Graphics g, Sprite sprite) {
 		if (sprite.getImage() != null) {
 			g.drawImage(sprite.getImage(), sprite.getXCoordinate(), sprite.getYCoordinate(), this);
 		}
 	}
+
+	/*------------------------------End of Drawing methods-------------------------------*/
 
 	@Override
 	public void actionPerformed(ActionEvent e) {

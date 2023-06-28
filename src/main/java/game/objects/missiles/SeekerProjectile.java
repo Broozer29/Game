@@ -1,6 +1,6 @@
 package game.objects.missiles;
 
-import data.image.enums.ImageEnums;
+import data.image.ImageEnums;
 import game.movement.Direction;
 import game.movement.PathFinder;
 import game.movement.Point;
@@ -8,13 +8,11 @@ import game.movement.Point;
 public class SeekerProjectile extends Missile {
 
 	public SeekerProjectile(int x, int y, Point destination, ImageEnums missileType, ImageEnums explosionType, Direction rotation,
-			float scale, PathFinder pathFinder) {
-		super(x, y, destination, missileType, explosionType, rotation, scale, pathFinder, false);
+			float scale, PathFinder pathFinder, int xMovementSpeed, int yMovementSpeed) {
+		super(x, y, destination, missileType, explosionType, rotation, scale, pathFinder, false, xMovementSpeed, yMovementSpeed);
 		this.missileDamage = (float) 7.5;
 		setAnimation();
 		this.animation.setFrameDelay(3);
-		this.xMovementSpeed = 2;
-		this.yMovementSpeed = 2;
 		}
 
 	

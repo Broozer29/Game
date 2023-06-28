@@ -1,9 +1,13 @@
 package game.managers;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import data.image.enums.EnemyEnums;
+import javax.sound.sampled.UnsupportedAudioFileException;
+
+import data.audio.AudioEnums;
+import game.levels.BadAppleLevel;
 import game.movement.Direction;
 import game.movement.HomingPathFinder;
 import game.movement.PathFinder;
@@ -14,6 +18,7 @@ import game.objects.enemies.AlienBomb;
 import game.objects.enemies.Bomba;
 import game.objects.enemies.Bulldozer;
 import game.objects.enemies.Enemy;
+import game.objects.enemies.EnemyEnums;
 import game.objects.enemies.Energizer;
 import game.objects.enemies.Flamer;
 import game.objects.enemies.Seeker;
@@ -40,7 +45,6 @@ public class LevelSpawnerManager {
 	}
 
 	public void updateGameTick() {
-		checkLevelUpdate();
 	}
 
 	// Called when all aliens are dead
@@ -50,39 +54,27 @@ public class LevelSpawnerManager {
 
 	// Called when a level starts, to saturate enemy list
 	public void startLevel() {
-		this.setLevel(this.level);
-	}
-
-	// Called every gameloop to see if enough aliens are dead to advance to the next
-	// level
-	private void checkLevelUpdate() {
-//		if (enemyManager.getDefaultAlienSpaceshipCount() <= 0) {
-//			levelUp();
-//			startLevel();
+//		BadAppleLevel baddAppleSong = new BadAppleLevel();
+//		AudioManager audioManager = AudioManager.getInstance();
+//		for(EnemySpawnTimer timer : baddAppleSong.getTimers()) {
+//			timerManager.addEnemyTimerToList(timer);
 //		}
-	}
-
-	private void setLevel(int level) {
-		switch (level) {
-		case (1):
-			this.saturateLevelOne();
-			return;
-		}
-	}
-
-	private void saturateLevelOne() {
-		EnemySpawnTimer timer = null;
-//		timer = timerManager.createTimer(EnemyEnums.Alien_Bomb, 100, 100, false, Direction.UP, 1);
-//		timerManager.addTimerToList(timer);
+//		
+//		try {
+//			AudioEnums currentMusic = baddAppleSong.getSong();
+//			audioManager.playMusicAudio(currentMusic);
+//		} catch (UnsupportedAudioFileException | IOException e) {
+//			e.printStackTrace();
+//		}
 //		timer = timerManager.createTimer(EnemyEnums.Alien_Bomb, 100, 100, false, Direction.DOWN, 1);
-//		timerManager.addTimerToList(timer);
 
-		timer = timerManager.createTimer(EnemyEnums.Bomba, 1, 100, false, Direction.LEFT, 1);
+
+		EnemySpawnTimer timer = timerManager.createTimer(EnemyEnums.Bomba, 1, 3000, false, Direction.LEFT, 1, 1);
 		timerManager.addEnemyTimerToList(timer);
 //		timer = timerManager.createTimer(EnemyEnums.Flamer, 1, 100, false, Direction.LEFT, 1);
 //		timerManager.addTimerToList(timer);
-//		timer = timerManager.createTimer(EnemyEnums.Tazer, 2, 5000, true, Direction.LEFT, 1);
-//		timerManager.addTimerToList(timer);
+//		EnemySpawnTimer timer = timerManager.createTimer(EnemyEnums.Alien_Bomb, 100, 3000, true, Direction.LEFT, 1, 1);
+//		timerManager.addEnemyTimerToList(timer);
 //		timer = timerManager.createTimer(EnemyEnums.Seeker, 1, 100, false, Direction.UP, 1);
 //		timerManager.addTimerToList(timer);
 //		timer = timerManager.createTimer(EnemyEnums.Seeker, 1, 100, false, Direction.DOWN, 1);
@@ -125,48 +117,43 @@ public class LevelSpawnerManager {
 	}
 
 	private List<Integer> getSpawnCoordinatesByDirection(Direction direction) {
-		int xCoordinate = 0;
-		int yCoordinate = 0;
 		List<Integer> coordinatesList = new ArrayList<Integer>();
 
 		if (direction.equals(Direction.LEFT)) {
-			xCoordinate = spawningCoordinator.getRightBlockXCoordinate();
-			yCoordinate = spawningCoordinator.getRightBlockYCoordinate();
+			coordinatesList.add(spawningCoordinator.getRightBlockXCoordinate());
+			coordinatesList.add(spawningCoordinator.getRightBlockYCoordinate());
 		} else if (direction.equals(Direction.RIGHT)) {
-			xCoordinate = spawningCoordinator.getLeftBlockXCoordinate();
-			yCoordinate = spawningCoordinator.getLeftBlockYCoordinate();
+			coordinatesList.add(spawningCoordinator.getLeftBlockXCoordinate());
+			coordinatesList.add( spawningCoordinator.getLeftBlockYCoordinate());
 		} else if (direction.equals(Direction.DOWN)) {
-			xCoordinate = spawningCoordinator.getUpBlockXCoordinate();
-			yCoordinate = spawningCoordinator.getUpBlockYCoordinate();
+			coordinatesList.add(spawningCoordinator.getUpBlockXCoordinate());
+			coordinatesList.add(spawningCoordinator.getUpBlockYCoordinate());
 		} else if (direction.equals(Direction.UP)) {
-			xCoordinate = spawningCoordinator.getDownBlockXCoordinate();
-			yCoordinate = spawningCoordinator.getDownBlockYCoordinate();
+			coordinatesList.add(spawningCoordinator.getDownBlockXCoordinate());
+			coordinatesList.add(spawningCoordinator.getDownBlockYCoordinate());
 		}
 
 		else if (direction.equals(Direction.LEFT_UP)) {
-			xCoordinate = spawningCoordinator.getRightBlockXCoordinate();
-			yCoordinate = spawningCoordinator.getRightBlockYCoordinate();
-			System.out.println(
-					"Tried spawning in a direction where the corresponding spawning block has nog been created yet!");
+			coordinatesList.add(spawningCoordinator.getRightBlockXCoordinate());
+			coordinatesList.add(spawningCoordinator.getBottomRightBlockYCoordinate());
+//			System.out.println(
+//					"Tried spawning in a direction where the corresponding spawning block has nog been created yet!");
 		} else if (direction.equals(Direction.LEFT_DOWN)) {
-			xCoordinate = spawningCoordinator.getRightBlockXCoordinate();
-			yCoordinate = spawningCoordinator.getRightBlockYCoordinate();
-			System.out.println(
-					"Tried spawning in a direction where the corresponding spawning block has nog been created yet!");
+			coordinatesList.add(spawningCoordinator.getRightBlockXCoordinate());
+			coordinatesList.add(spawningCoordinator.getTopRightBlockYCoordinate());
+//			System.out.println(
+//					"Tried spawning in a direction where the corresponding spawning block has nog been created yet!");
 		} else if (direction.equals(Direction.RIGHT_UP)) {
-			xCoordinate = spawningCoordinator.getLeftBlockXCoordinate();
-			yCoordinate = spawningCoordinator.getLeftBlockYCoordinate();
-			System.out.println(
-					"Tried spawning in a direction where the corresponding spawning block has nog been created yet!");
+			coordinatesList.add(spawningCoordinator.getLeftBlockXCoordinate());
+			coordinatesList.add(spawningCoordinator.getBottomLeftBlockYCoordinate());
+//			System.out.println(
+//					"Tried spawning in a direction where the corresponding spawning block has nog been created yet!");
 		} else if (direction.equals(Direction.RIGHT_DOWN)) {
-			xCoordinate = spawningCoordinator.getLeftBlockXCoordinate();
-			yCoordinate = spawningCoordinator.getLeftBlockYCoordinate();
-			System.out.println(
-					"Tried spawning in a direction where the corresponding spawning block has nog been created yet!");
+			coordinatesList.add(spawningCoordinator.getLeftBlockXCoordinate());
+			coordinatesList.add(spawningCoordinator.getTopLeftBlockYCoordinate());
+//			System.out.println(
+//					"Tried spawning in a direction where the corresponding spawning block has nog been created yet!");
 		}
-
-		coordinatesList.add(xCoordinate);
-		coordinatesList.add(yCoordinate);
 
 		return coordinatesList;
 	}
@@ -175,10 +162,12 @@ public class LevelSpawnerManager {
 
 		PathFinder regularPathFinder = new RegularPathFinder();
 		PathFinder homingPathFinder = new HomingPathFinder();
-
+		
+		//Can be refactored to be more efficient
 		Point currentPoint = new Point(xCoordinate, yCoordinate);
 		Point regularDestination = regularPathFinder.calculateInitialEndpoint(currentPoint, rotation);
-		Point homingDestination = homingPathFinder.calculateInitialEndpoint(currentPoint, rotation);
+//		Point homingDestination = homingPathFinder.calculateInitialEndpoint(currentPoint, rotation);
+		
 		switch (type) {
 		case Alien:
 			return new Alien(xCoordinate, yCoordinate, regularDestination, rotation, scale, regularPathFinder);

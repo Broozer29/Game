@@ -120,8 +120,14 @@ public class OrbitPathFinder implements PathFinder {
     public Sprite getTarget() {
         return target;
     }
-}
 
+	@Override
+	public Point calculateEndPointBySteps(Point start, Direction rotation, int steps, int xMovementspeed,
+			int yMovementspeed) {
+		//Should not be used for OrbitPathFinders
+		return start;
+	}
+}
 
 
 

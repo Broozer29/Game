@@ -11,7 +11,6 @@ import data.audio.CustomAudioClip;
 public class AudioManager {
 
 	private static AudioManager instance = new AudioManager();
-	private FriendlyManager friendlyManager = FriendlyManager.getInstance();
 	private CustomAudioClip backGroundMusic = null;
 	private AudioDatabase audioDatabase = AudioDatabase.getInstance();
 

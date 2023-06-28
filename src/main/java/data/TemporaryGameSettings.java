@@ -35,8 +35,8 @@ public class TemporaryGameSettings {
 		playerStats = PlayerStats.getInstance();
 		doubleShotActive = false;
 		tripleShotActive = false;
-		setMinTimeForPowerUpSpawn(1000);
-		setMaxTimeForPowerUpSpawn(5000);
+		setMinTimeForPowerUpSpawn(15000);
+		setMaxTimeForPowerUpSpawn(20000);
 		setRepairPackageHealthRestore(playerStats.getMaxHitPoints() / 2);
 		setRepairPackageShieldRestore(playerStats.getMaxShieldHitPoints());
 		setDefaultMovementSpeedBoostAmount(2);
@@ -154,6 +154,10 @@ public class TemporaryGameSettings {
 
 	public void setDefaultSpecialAttackDamageBonus(int defaultSpecialAttackDamageBonus) {
 		this.defaultSpecialAttackDamageBonus = defaultSpecialAttackDamageBonus;
+	}
+
+	public void resetGameSettings() {
+		initDefaultSettings();
 	}
 
 }

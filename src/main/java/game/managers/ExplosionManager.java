@@ -4,7 +4,7 @@ import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.List;
 
-import data.image.enums.ImageEnums;
+import data.image.ImageEnums;
 import game.objects.Explosion;
 import game.objects.enemies.Enemy;
 import visual.objects.SpriteAnimation;
@@ -12,7 +12,7 @@ import visual.objects.SpriteAnimation;
 public class ExplosionManager {
 
 	private static ExplosionManager instance = new ExplosionManager();
-	private FriendlyManager friendlyManager = FriendlyManager.getInstance();
+	private PlayerManager friendlyManager = PlayerManager.getInstance();
 	private EnemyManager enemyManager = EnemyManager.getInstance();
 	private List<Explosion> explosionList = new ArrayList<Explosion>();
 
@@ -62,9 +62,10 @@ public class ExplosionManager {
 	}
 
 // used for explosions of the enemy
+	//Broken intentionally, rework this manually
 	private void checkExplosionPlayerCollision() {
 		if (friendlyManager == null) {
-			friendlyManager = FriendlyManager.getInstance();
+			friendlyManager = PlayerManager.getInstance();
 		}
 		for (Explosion explosion : explosionList) {
 			if (explosion.isVisible() && !explosion.isFriendly()) {

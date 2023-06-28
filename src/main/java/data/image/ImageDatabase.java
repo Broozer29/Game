@@ -14,8 +14,6 @@ import javax.imageio.ImageReader;
 import javax.imageio.stream.FileImageInputStream;
 import javax.swing.ImageIcon;
 
-import data.image.enums.ImageEnums;
-
 public class ImageDatabase {
 
 	private static ImageDatabase instance = new ImageDatabase();
@@ -52,6 +50,7 @@ public class ImageDatabase {
 	private Image userThreeImage;
 	private Image selectUserMenuImage;
 	private Image userMenuToMainMenu;
+	private Image TitleImage;
 
 	// Game GUI images
 	private Image healthBarImage;
@@ -126,7 +125,76 @@ public class ImageDatabase {
 	private Image starcraft2_Wraith_Cloak;
 	private Image starcraft2_Yellow_Blink;
 	private Image starcraft2_Heal;
+	
+	
+	//Font Letters
+	private Image letter_A;
+	private Image letter_B;
+	private Image letter_LowercaseA;
+	private Image letter_LowercaseB;
 
+	private Image letter_C;
+	private Image letter_D;
+	private Image letter_E;
+	private Image letter_F;
+	private Image letter_G;
+	private Image letter_H;
+	private Image letter_I;
+	private Image letter_J;
+	private Image letter_K;
+	private Image letter_L;
+	private Image letter_M;
+	private Image letter_N;
+	private Image letter_O;
+	private Image letter_P;
+	private Image letter_Q;
+	private Image letter_R;
+	private Image letter_S;
+	private Image letter_T;
+	private Image letter_U;
+	private Image letter_V;
+	private Image letter_W;
+	private Image letter_X;
+	private Image letter_Y;
+	private Image letter_Z;
+
+	private Image letter_LowercaseC;
+	private Image letter_LowercaseD;
+	private Image letter_LowercaseE;
+	private Image letter_LowercaseF;
+	private Image letter_LowercaseG;
+	private Image letter_LowercaseH;
+	private Image letter_LowercaseI;
+	private Image letter_LowercaseJ;
+	private Image letter_LowercaseK;
+	private Image letter_LowercaseL;
+	private Image letter_LowercaseM;
+	private Image letter_LowercaseN;
+	private Image letter_LowercaseO;
+	private Image letter_LowercaseP;
+	private Image letter_LowercaseQ;
+	private Image letter_LowercaseR;
+	private Image letter_LowercaseS;
+	private Image letter_LowercaseT;
+	private Image letter_LowercaseU;
+	private Image letter_LowercaseV;
+	private Image letter_LowercaseW;
+	private Image letter_LowercaseX;
+	private Image letter_LowercaseY;
+	private Image letter_LowercaseZ;
+
+	private Image letter_Open_Bracket;
+	private Image letter_Closing_Bracket;
+	private Image letter_Double_Points;
+	private Image letter_Equals;
+	private Image letter_Point_Comma;
+	private Image letter_Greater_Than;
+	private Image letter_Smaller_Than;
+	private Image letter_Dot;
+	
+	
+	
+	
 	// Explosion animations
 	private List<Image> impactExplosionOneFrames = new ArrayList<Image>();
 	private List<Image> destroyedExplosionUpFrames = new ArrayList<Image>();
@@ -150,6 +218,7 @@ public class ImageDatabase {
 	private List<Image> defaultPlayerEngineBoostedFrames = new ArrayList<Image>();
 	private List<Image> defaultPlayerShieldDamage = new ArrayList<Image>();
 	private List<Image> guardianBotFrames = new ArrayList<Image>();
+	private List<Image> firewallParticleFrames = new ArrayList<Image>();
 
 	// Enemy Projectile Animations
 	private List<Image> seekerProjectileFrames = new ArrayList<Image>();
@@ -220,6 +289,8 @@ public class ImageDatabase {
 
 	// testimages
 	private Image testImage;
+	private Image invisibile;
+	private List<Image> invisibleAnimation = new ArrayList<Image>();
 
 	// Images to Gifs
 	private List<Image> defaultPlayerEngine = new ArrayList<Image>();
@@ -247,6 +318,7 @@ public class ImageDatabase {
 		this.initGameUIobjects();
 		this.initSpriteSheets();
 		this.initIcons();
+		this.initLetters();
 	}
 
 	private void initFriendlies() {
@@ -268,6 +340,7 @@ public class ImageDatabase {
 	private void initProjectiles() {
 		this.laserBeamImage = imgLoader.getImage(ImageEnums.Player_Laserbeam);
 		this.alienLaserbeamImage = imgLoader.getImage(ImageEnums.Alien_Laserbeam);
+		this.invisibile = imgLoader.getImage(ImageEnums.Invisible);
 	}
 
 	private void initMenuImages() {
@@ -278,6 +351,7 @@ public class ImageDatabase {
 		this.selectUserMenuImage = imgLoader.getImage(ImageEnums.Select_User_Menu);
 		this.testImage = imgLoader.getImage(ImageEnums.Test_Image);
 		this.userMenuToMainMenu = imgLoader.getImage(ImageEnums.User_Menu_To_Main_Menu);
+		this.TitleImage = imgLoader.getImage(ImageEnums.Title_Image);
 	}
 
 	private void initGameUIobjects() {
@@ -354,6 +428,71 @@ public class ImageDatabase {
 		this.starcraft2_Wraith_Cloak = imgLoader.getImage(ImageEnums.Starcraft2_Wraith_Cloak);
 		this.starcraft2_Yellow_Blink = imgLoader.getImage(ImageEnums.Starcraft2_Yellow_Blink);
 		this.starcraft2_Heal = imgLoader.getImage(ImageEnums.Starcraft2_Heal);
+	}
+	
+	private void initLetters() {
+		this.letter_A = imgLoader.getImage(ImageEnums.Letter_A);
+		this.letter_B = imgLoader.getImage(ImageEnums.Letter_B);
+		this.letter_C = imgLoader.getImage(ImageEnums.Letter_C);
+		this.letter_D = imgLoader.getImage(ImageEnums.Letter_D);
+		this.letter_E = imgLoader.getImage(ImageEnums.Letter_E);
+		this.letter_F = imgLoader.getImage(ImageEnums.Letter_F);
+		this.letter_G = imgLoader.getImage(ImageEnums.Letter_G);
+		this.letter_H = imgLoader.getImage(ImageEnums.Letter_H);
+		this.letter_I = imgLoader.getImage(ImageEnums.Letter_I);
+		this.letter_J = imgLoader.getImage(ImageEnums.Letter_J);
+		this.letter_K = imgLoader.getImage(ImageEnums.Letter_K);
+		this.letter_L = imgLoader.getImage(ImageEnums.Letter_L);
+		this.letter_M = imgLoader.getImage(ImageEnums.Letter_M);
+		this.letter_N = imgLoader.getImage(ImageEnums.Letter_N);
+		this.letter_O = imgLoader.getImage(ImageEnums.Letter_O);
+		this.letter_P = imgLoader.getImage(ImageEnums.Letter_P);
+		this.letter_Q = imgLoader.getImage(ImageEnums.Letter_Q);
+		this.letter_R = imgLoader.getImage(ImageEnums.Letter_R);
+		this.letter_S = imgLoader.getImage(ImageEnums.Letter_S);
+		this.letter_T = imgLoader.getImage(ImageEnums.Letter_T);
+		this.letter_U = imgLoader.getImage(ImageEnums.Letter_U);
+		this.letter_V = imgLoader.getImage(ImageEnums.Letter_V);
+		this.letter_W = imgLoader.getImage(ImageEnums.Letter_W);
+		this.letter_X = imgLoader.getImage(ImageEnums.Letter_X);
+		this.letter_Y = imgLoader.getImage(ImageEnums.Letter_Y);
+		this.letter_Z = imgLoader.getImage(ImageEnums.Letter_Z);
+
+		this.letter_LowercaseA = imgLoader.getImage(ImageEnums.Letter_a);
+		this.letter_LowercaseB = imgLoader.getImage(ImageEnums.Letter_b);
+		this.letter_LowercaseC = imgLoader.getImage(ImageEnums.Letter_c);
+		this.letter_LowercaseD = imgLoader.getImage(ImageEnums.Letter_d);
+		this.letter_LowercaseE = imgLoader.getImage(ImageEnums.Letter_e);
+		this.letter_LowercaseF = imgLoader.getImage(ImageEnums.Letter_f);
+		this.letter_LowercaseG = imgLoader.getImage(ImageEnums.Letter_g);
+		this.letter_LowercaseH = imgLoader.getImage(ImageEnums.Letter_h);
+		this.letter_LowercaseI = imgLoader.getImage(ImageEnums.Letter_i);
+		this.letter_LowercaseJ = imgLoader.getImage(ImageEnums.Letter_j);
+		this.letter_LowercaseK = imgLoader.getImage(ImageEnums.Letter_k);
+		this.letter_LowercaseL = imgLoader.getImage(ImageEnums.Letter_l);
+		this.letter_LowercaseM = imgLoader.getImage(ImageEnums.Letter_m);
+		this.letter_LowercaseN = imgLoader.getImage(ImageEnums.Letter_n);
+		this.letter_LowercaseO = imgLoader.getImage(ImageEnums.Letter_o);
+		this.letter_LowercaseP = imgLoader.getImage(ImageEnums.Letter_p);
+		this.letter_LowercaseQ = imgLoader.getImage(ImageEnums.Letter_q);
+		this.letter_LowercaseR = imgLoader.getImage(ImageEnums.Letter_r);
+		this.letter_LowercaseS = imgLoader.getImage(ImageEnums.Letter_s);
+		this.letter_LowercaseT = imgLoader.getImage(ImageEnums.Letter_t);
+		this.letter_LowercaseU = imgLoader.getImage(ImageEnums.Letter_u);
+		this.letter_LowercaseV = imgLoader.getImage(ImageEnums.Letter_v);
+		this.letter_LowercaseW = imgLoader.getImage(ImageEnums.Letter_w);
+		this.letter_LowercaseX = imgLoader.getImage(ImageEnums.Letter_x);
+		this.letter_LowercaseY = imgLoader.getImage(ImageEnums.Letter_y);
+		this.letter_LowercaseZ = imgLoader.getImage(ImageEnums.Letter_z);
+
+		this.letter_Open_Bracket = imgLoader.getImage(ImageEnums.Letter_Open_Bracket);
+		this.letter_Closing_Bracket = imgLoader.getImage(ImageEnums.Letter_Closing_Bracket);
+		this.letter_Double_Points = imgLoader.getImage(ImageEnums.Letter_double_points);
+		this.letter_Equals = imgLoader.getImage(ImageEnums.Letter_equals);
+		this.letter_Point_Comma = imgLoader.getImage(ImageEnums.Letter_point_comma);
+		this.letter_Greater_Than = imgLoader.getImage(ImageEnums.Letter_greater_than);
+		this.letter_Smaller_Than = imgLoader.getImage(ImageEnums.Letter_smaller_than);
+		this.letter_Dot = imgLoader.getImage(ImageEnums.Letter_Dot);
 	}
 
 	private void initBackgroundObjects() {
@@ -643,6 +782,131 @@ public class ImageDatabase {
 			return starcraft2_Yellow_Blink;
 		case Starcraft2_Heal:
 			return starcraft2_Heal;
+		case Letter_A:
+			return letter_A;
+		case Letter_a:
+			return letter_LowercaseA;
+		case Letter_B:
+		    return letter_B;
+		case Letter_C:
+		    return letter_C;
+		case Letter_D:
+		    return letter_D;
+		case Letter_E:
+		    return letter_E;
+		case Letter_F:
+		    return letter_F;
+		case Letter_G:
+		    return letter_G;
+		case Letter_H:
+		    return letter_H;
+		case Letter_I:
+		    return letter_I;
+		case Letter_J:
+		    return letter_J;
+		case Letter_K:
+		    return letter_K;
+		case Letter_L:
+		    return letter_L;
+		case Letter_M:
+		    return letter_M;
+		case Letter_N:
+		    return letter_N;
+		case Letter_O:
+		    return letter_O;
+		case Letter_P:
+		    return letter_P;
+		case Letter_Q:
+		    return letter_Q;
+		case Letter_R:
+		    return letter_R;
+		case Letter_S:
+		    return letter_S;
+		case Letter_T:
+		    return letter_T;
+		case Letter_U:
+		    return letter_U;
+		case Letter_V:
+		    return letter_V;
+		case Letter_W:
+		    return letter_W;
+		case Letter_X:
+		    return letter_X;
+		case Letter_Y:
+		    return letter_Y;
+		case Letter_Z:
+		    return letter_Z;
+		case Letter_b:
+		    return letter_LowercaseB;
+		case Letter_c:
+		    return letter_LowercaseC;
+		case Letter_z:
+		    return letter_LowercaseZ;
+		case Letter_Open_Bracket:
+		    return letter_Open_Bracket;
+		case Letter_Closing_Bracket:
+		    return letter_Closing_Bracket;
+		case Letter_double_points:
+		    return letter_Double_Points;
+		case Letter_equals:
+		    return letter_Equals;
+		case Letter_point_comma:
+		    return letter_Point_Comma;
+		case Letter_greater_than:
+		    return letter_Greater_Than;
+		case Letter_smaller_than:
+		    return letter_Smaller_Than;
+		case Letter_Dot:
+		    return letter_Dot;
+		case Letter_d:
+		    return letter_LowercaseD;
+		case Letter_e:
+		    return letter_LowercaseE;
+		case Letter_f:
+		    return letter_LowercaseF;
+		case Letter_g:
+		    return letter_LowercaseG;
+		case Letter_h:
+		    return letter_LowercaseH;
+		case Letter_i:
+		    return letter_LowercaseI;
+		case Letter_j:
+		    return letter_LowercaseJ;
+		case Letter_k:
+		    return letter_LowercaseK;
+		case Letter_l:
+		    return letter_LowercaseL;
+		case Letter_m:
+		    return letter_LowercaseM;
+		case Letter_n:
+		    return letter_LowercaseN;
+		case Letter_o:
+		    return letter_LowercaseO;
+		case Letter_p:
+		    return letter_LowercaseP;
+		case Letter_q:
+		    return letter_LowercaseQ;
+		case Letter_r:
+		    return letter_LowercaseR;
+		case Letter_s:
+		    return letter_LowercaseS;
+		case Letter_t:
+		    return letter_LowercaseT;
+		case Letter_u:
+		    return letter_LowercaseU;
+		case Letter_v:
+		    return letter_LowercaseV;
+		case Letter_w:
+		    return letter_LowercaseW;
+		case Letter_x:
+		    return letter_LowercaseX;
+		case Letter_y:
+		    return letter_LowercaseY;
+		case Title_Image:
+			return TitleImage;
+		case Invisible:
+			return invisibile;
+
 		default:
 			return testImage;
 		}
@@ -740,6 +1004,12 @@ public class ImageDatabase {
 			return this.playerEMPPlusFrames;
 		case Guardian_Bot:
 			return this.guardianBotFrames;
+		case Flamethrower_Animation:
+			return this.destroyedExplosionRightFrames;
+		case FirewallParticle:
+			return firewallParticleFrames;
+		case Invisible_Animation:
+			return invisibleAnimation;
 		}
 		return null;
 	}
@@ -899,6 +1169,7 @@ public class ImageDatabase {
 	}
 
 	private void initPNGtoGIFAnimation() {
+		//Start all of them with 1 because the filenames start with numbering with 1
 		for (int i = 1; i < 6; i++) {
 			String sourceString = String.format("src/resources/images/gif/PNGtoGIF/Default Player Engine/%d.png", i);
 			Image image = imgLoader.getSpritesheetImage(sourceString);
@@ -934,6 +1205,18 @@ public class ImageDatabase {
 			String sourceString = String.format("src/resources/images/gif/PNGtoGIF/Player Fireswirl/tile0%d.png", i);
 			Image image = imgLoader.getSpritesheetImage(sourceString);
 			playerFireSwirlFrames.add(image);
+		}
+		
+		for (int i = 1; i < 5; i++) {
+			String sourceString = String.format("src/resources/images/gif/PNGtoGIF/Firewall/flame%d.png", i);
+			Image image = imgLoader.getSpritesheetImage(sourceString);
+			firewallParticleFrames.add(image);
+		}
+		
+		
+		for (int i = 1; i < 4; i++) {
+			Image image = imgLoader.getImage(ImageEnums.Invisible);
+			invisibleAnimation.add(image);
 		}
 
 	}

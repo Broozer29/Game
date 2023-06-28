@@ -6,13 +6,13 @@ import java.util.List;
 import java.util.Random;
 
 import data.DataClass;
-import data.BGOEnums.NebulaThemeEnums;
-import data.BGOEnums.SpaceThemeEnums;
 import data.image.ImageDatabase;
+import data.image.ImageEnums;
 import data.image.ImageResizer;
-import data.image.enums.BGOEnums;
-import data.image.enums.ImageEnums;
+import game.objects.BGOEnums;
 import game.objects.BackgroundObject;
+import game.objects.NebulaThemeEnums;
+import game.objects.SpaceThemeEnums;
 
 public class BackgroundManager {
 
@@ -37,7 +37,7 @@ public class BackgroundManager {
 	private List<BackgroundObject> parralex5List = new ArrayList<BackgroundObject>();
 
 	private List<ImageEnums> planetBGOEnumsList = new ArrayList<ImageEnums>();
-	Random random = new Random();
+	private Random random = new Random();
 	private int updateFrameCounter = 0;
 
 	private SpaceThemeEnums spaceTheme;
@@ -62,11 +62,15 @@ public class BackgroundManager {
 		parralex3List = new ArrayList<BackgroundObject>();
 		parralex4List = new ArrayList<BackgroundObject>();
 		parralex5List = new ArrayList<BackgroundObject>();
+		NebulaList = new ArrayList<BackgroundObject>();
+		planetBGOEnumsList = new ArrayList<ImageEnums>();
+		updateFrameCounter = 0;
+		random = new Random();
 
 		imageResizer = ImageResizer.getInstance();
 		randomCoordinator = SpawningCoordinator.getInstance();
 		imageDatabase = ImageDatabase.getInstance();
-		initLists();
+		initManager();
 	}
 
 	private void initManager() {
@@ -120,7 +124,12 @@ public class BackgroundManager {
 	private void fillBGOList(List<BackgroundObject> listToFill, ImageEnums imageType, BGOEnums bgoType, float scale,
 			int amount) {
 		Image bgoImage = imageDatabase.getImage(imageType);
-		bgoImage = imageResizer.getScaledImage(bgoImage, scale);
+		if (bgoImage == null) {
+			System.out.println("Crashed because an empty BackgroundObject image");
+		}
+		if (scale != 1) {
+			bgoImage = imageResizer.getScaledImage(bgoImage, scale);
+		}
 		int attemptedTries = 0;
 		int bgoSpawned = 0;
 
@@ -172,12 +181,10 @@ public class BackgroundManager {
 	private void moveBGOList(List<BackgroundObject> listToMove) {
 		for (BackgroundObject bgObject : listToMove) {
 			if ((bgObject.getXCoordinate() + bgObject.getWidth()) < 0) {
-
 				if (bgObject.getBGOtype().equals(BGOEnums.Planet)) {
-					Image newBGOImage = imageDatabase.getImage(getRandomPlanetEnum());
 					bgObject.setX(dataClass.getWindowWidth() + 200);
 					bgObject.setY(randomCoordinator.getRandomYBGOCoordinate());
-					bgObject.setNewPlanetImage(newBGOImage);
+					bgObject.setNewPlanetImage(imageDatabase.getImage(getRandomPlanetEnum()));
 				} else if (bgObject.getBGOtype().equals(BGOEnums.Nebula)
 						|| bgObject.getBGOtype().equals(BGOEnums.Parallex)) {
 					bgObject.setX(-2048);
@@ -289,14 +296,12 @@ public class BackgroundManager {
 
 	private SpaceThemeEnums selectRandomSpaceTheme() {
 		SpaceThemeEnums[] enums = SpaceThemeEnums.values();
-		Random random = new Random();
 		SpaceThemeEnums randomValue = enums[random.nextInt(enums.length)];
 		return randomValue;
 	}
 
 	private NebulaThemeEnums selectRandomNebulaTheme() {
 		NebulaThemeEnums[] enums = NebulaThemeEnums.values();
-		Random random = new Random();
 		NebulaThemeEnums randomValue = enums[random.nextInt(enums.length)];
 		return randomValue;
 	}

@@ -1,28 +1,26 @@
 package menuscreens;
 
-import data.image.enums.ImageEnums;
-import visual.objects.Sprite;
+import data.image.ImageEnums;
 
-public class MenuCursor extends Sprite {
+public class MenuCursor extends MenuObject {
 
-	MenuTile selectedMenuTile;
+	private MenuObject selectedMenuTile;
+	private int xDistanceToKeep = 100;
 
 	public MenuCursor(int xCoordinate, int yCoordinate, float scale) {
-		super(xCoordinate, yCoordinate,  scale);
-		initCursorImage();
+		super(yCoordinate, yCoordinate, scale, null, MenuObjectEnums.Cursor_Image, MenuFunctionEnums.Menu_Cursor);
 	}
 
-	private void initCursorImage() {
-		loadImage(ImageEnums.Player_Spaceship_Model_3);
-		getImageDimensions();
-	}
-
-	public MenuTile getSelectedMenuTile() {
+	public MenuObject getSelectedMenuTile() {
 		return selectedMenuTile;
 	}
 
-	public void setSelectedMenuTile(MenuTile selectedMenuTile) {
+	public void setSelectedMenuTile(MenuObject selectedMenuTile) {
 		this.selectedMenuTile = selectedMenuTile;
+	}
+
+	public int getxDistanceToKeep() {
+		return xDistanceToKeep;
 	}
 
 }
