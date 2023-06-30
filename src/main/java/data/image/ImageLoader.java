@@ -1,9 +1,10 @@
 package data.image;
 
-import java.awt.Image;
-import java.util.stream.DoubleStream;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 
-import javax.swing.ImageIcon;
+import javax.imageio.ImageIO;
 
 public class ImageLoader {
 
@@ -16,17 +17,26 @@ public class ImageLoader {
 		return instance;
 	}
 
-	public Image getImage(ImageEnums image) {
-		ImageIcon ii = new ImageIcon(convertImageStringToURL(image));
-		if(ii.getIconWidth() == -1) {
-			System.out.println(image);
+	public BufferedImage getImage(ImageEnums image) {
+		try {
+			BufferedImage img = ImageIO.read(new File(convertImageStringToURL(image)));
+			return img;
+		} catch (IOException e) {
+			System.out.println("Failed to load image: " + image);
+			e.printStackTrace();
+			return null;
 		}
-		return ii.getImage();
 	}
 	
-	public Image getSpritesheetImage(String spritesheetImageString) {
-		ImageIcon ii = new ImageIcon(spritesheetImageString);
-		return ii.getImage();
+	public BufferedImage getSpritesheetImage(String spritesheetImageString) {
+		try {
+			BufferedImage img = ImageIO.read(new File(spritesheetImageString));
+			return img;
+		} catch (IOException e) {
+			System.out.println("Failed to load spritesheet image: " + spritesheetImageString);
+			e.printStackTrace();
+			return null;
+		}
 	}
 
 	private String convertImageStringToURL(ImageEnums image) {

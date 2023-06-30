@@ -2,6 +2,7 @@
 package game.objects;
 
 import java.awt.Image;
+import java.awt.image.BufferedImage;
 import java.util.Random;
 
 import game.movement.Direction;
@@ -11,14 +12,14 @@ public class BackgroundObject extends Sprite {
 
 	private BGOEnums bgoType;
 	private Random random;
-	public BackgroundObject(int x, int y, Image planetImage, float scale, BGOEnums bgoType) {
+	public BackgroundObject(int x, int y, BufferedImage planetImage, float scale, BGOEnums bgoType) {
 		super(x, y, scale);
 		setImage(planetImage);
 		this.bgoType = bgoType;
 		this.random = new Random();
 	}
 	
-	public void setNewPlanetImage(Image image) {
+	public void setNewPlanetImage(BufferedImage image) {
 		setImage(image);
 	}
 	

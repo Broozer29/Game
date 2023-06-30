@@ -1,6 +1,6 @@
 package game.managers;
 
-import java.awt.Image;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -123,7 +123,7 @@ public class BackgroundManager {
 	/*- Fills the given BGO list depending using the given image type, depending on the bgotype */
 	private void fillBGOList(List<BackgroundObject> listToFill, ImageEnums imageType, BGOEnums bgoType, float scale,
 			int amount) {
-		Image bgoImage = imageDatabase.getImage(imageType);
+		BufferedImage bgoImage = imageDatabase.getImage(imageType);
 		if (bgoImage == null) {
 			System.out.println("Crashed because an empty BackgroundObject image");
 		}

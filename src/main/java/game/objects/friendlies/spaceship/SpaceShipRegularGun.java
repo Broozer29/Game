@@ -68,7 +68,7 @@ public class SpaceShipRegularGun {
 			PathFinder pathFinder = playerStats.getMissilePathFinder();
 			PlayerAttackTypes attackType = PlayerAttackTypes.Flamethrower;
 			
-			this.fireMissile(x, y, type, impactType, Direction.RIGHT, scale, pathFinder, xMovementSpeed, yMovementSpeed, attackType);
+			this.fireMissile(x, y, type, impactType, Direction.RIGHT, (float) 1.5, pathFinder, xMovementSpeed, yMovementSpeed, attackType);
 //			playMissileAudio(AudioEnums.Player_Laserbeam);
 		}
 	}

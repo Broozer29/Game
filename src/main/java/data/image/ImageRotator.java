@@ -1,7 +1,5 @@
 package data.image;
 
-import java.awt.Graphics2D;
-import java.awt.Image;
 import java.awt.geom.AffineTransform;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
@@ -9,7 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import game.movement.Direction;
-
 
 public class ImageRotator {
 
@@ -23,24 +20,10 @@ public class ImageRotator {
 		return instance;
 	}
 
-	private BufferedImage toBufferedImage(Image image) {
-		if (image instanceof BufferedImage) {
-			return (BufferedImage) image;
-		}
-
-		BufferedImage buff = new BufferedImage(image.getWidth(null), image.getHeight(null),
-				BufferedImage.TYPE_INT_ARGB);
-		Graphics2D g = buff.createGraphics();
-		g.drawImage(image, 0, 0, null);
-		g.dispose();
-
-		return buff;
-	}
-
-	public ArrayList<Image> getRotatedFrames(List<Image> frames, Direction rotation) {
-		ArrayList<Image> newFrames = new ArrayList<Image>();
+	public ArrayList<BufferedImage> getRotatedFrames(List<BufferedImage> frames, Direction rotation) {
+		ArrayList<BufferedImage> newFrames = new ArrayList<BufferedImage>();
 		for (int i = 0; i < frames.size(); i++) {
-			Image temp = frames.get(i);
+			BufferedImage temp = frames.get(i);
 			temp = rotate(temp, rotation);
 			newFrames.add(temp);
 		}
@@ -74,20 +57,21 @@ public class ImageRotator {
 		case RIGHT_DOWN:
 			numquadrants = 2;
 			break;
+		case NONE:
+			numquadrants = 2;
 		}
 
 		return numquadrants;
 	}
 
-	public BufferedImage rotate(Image image, Direction rotation) {
-		BufferedImage bImage = toBufferedImage(image);
+	public BufferedImage rotate(BufferedImage image, Direction rotation) {
 		int numquadrants = getNumquadrants(rotation);
 
 		if (numquadrants == 2) {
-			return flipImage(bImage);
+			return flipImage(image);
 		}
-		int w0 = bImage.getWidth();
-		int h0 = bImage.getHeight();
+		int w0 = image.getWidth();
+		int h0 = image.getHeight();
 		int w1 = w0;
 		int h1 = h0;
 
@@ -126,7 +110,7 @@ public class ImageRotator {
 
 		BufferedImage transformedImage = new BufferedImage(w1, h1, BufferedImage.TYPE_INT_ARGB);
 
-		transformedImage = opRotated.filter(bImage, transformedImage);
+		transformedImage = opRotated.filter(image, transformedImage);
 		return transformedImage;
 	}
 

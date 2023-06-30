@@ -2,6 +2,7 @@ package visual.objects;
 
 import java.awt.Image;
 import java.awt.Rectangle;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,8 +17,8 @@ public class SpriteAnimation extends Sprite {
 	ImageResizer imageResizer = ImageResizer.getInstance();
 	private int currentFrame;
 	private int totalFrames;
-	private List<Image> standardSizeFrames = new ArrayList<Image>();
-	private List<Image> frames = new ArrayList<Image>();
+	private List<BufferedImage> standardSizeFrames = new ArrayList<BufferedImage>();
+	private List<BufferedImage> frames = new ArrayList<BufferedImage>();
 	private int frameDelayCounter;
 	private int frameDelay = 2;
 	private boolean infiniteLoop;

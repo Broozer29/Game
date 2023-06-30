@@ -2,6 +2,7 @@ package visual.objects;
 
 import java.awt.Image;
 import java.awt.Rectangle;
+import java.awt.image.BufferedImage;
 
 import data.image.ImageCropper;
 import data.image.ImageDatabase;
@@ -20,7 +21,7 @@ public class Sprite {
 	protected int width;
 	protected int height;
 	protected boolean visible;
-	protected Image image;
+	protected BufferedImage image;
 	protected float scale;
 	protected int xOffset;
 	protected int yOffset;
@@ -56,7 +57,7 @@ public class Sprite {
 
 	// Only used to re-use objects and change the image. Currently only used for
 	// background planets.
-	protected void setImage(Image image) {
+	protected void setImage(BufferedImage image) {
 		this.image = image;
 		getImageDimensions();
 	}
