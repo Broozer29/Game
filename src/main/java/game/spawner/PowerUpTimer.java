@@ -8,7 +8,7 @@ import javax.swing.Timer;
 import game.managers.TimerManager;
 import game.objects.friendlies.powerups.PowerUp;
 
-public class PowerUpTimer implements ActionListener {
+public class PowerUpTimer {
 
 	private TimerManager timerManager = TimerManager.getInstance();
 	private PowerUp powerUp;
@@ -16,45 +16,48 @@ public class PowerUpTimer implements ActionListener {
 	private int timeBeforeActivation;
 	private boolean finished;
 	private boolean loopable;
-	private Timer timer;
 	private String status;
+	private int currentTime;
 
 	public PowerUpTimer(int timeBeforeActivation, PowerUp powerUp, boolean loopOrNot) {
 		this.status = "primed";
 		this.timeBeforeActivation = timeBeforeActivation;
 		this.loopable = loopOrNot;
 		this.powerUp = powerUp;
-		initTimer();
-	}
-
-	private void initTimer() {
-		timer = new Timer(timeBeforeActivation, this);
+		setCurrentTime(0);
 	}
 
 	public void startTimer() {
-		timer.start();
 		this.status = "running";
 		this.finished = false;
 	}
 
 	public void stopTimer() {
 		this.finished = true;
-		timer.stop();
 	}
 
 	public void refreshTimer() {
-		timer.restart();
+		this.setCurrentTime(0);
 		this.status = "running";
 		this.finished = false;
 	}
 
-	//This method gets executed by the end of the Timer
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		timerManager.activatePowerUpTimer(this, this.powerUp);
+	// This method gets executed by the end of the Timer
+	public void activateTimer() {
 		this.finished = true;
 		this.status = "finished";
+		
+		if (this.loopable) {
+			this.currentTime = 0;
+			this.finished = false;
+			startTimer();
+		} else {
+			this.finished = true;
+			this.status = "finished";
+			powerUp.activateEndOfTimerEffect();
+		}
 	}
+	
 	
 	public boolean getFinished() {
 		return this.finished;
@@ -71,9 +74,25 @@ public class PowerUpTimer implements ActionListener {
 	public int getTimeBeforeActivation() {
 		return this.timeBeforeActivation;
 	}
-	
+
 	public PowerUp getPowerUp() {
 		return powerUp;
+	}
+
+	public int getCurrentTime() {
+		return currentTime;
+	}
+
+	public boolean shouldActivate() {
+		return (currentTime >= timeBeforeActivation);
+	}
+
+	public void setCurrentTime(int currentTime) {
+		this.currentTime = currentTime;
+	}
+
+	public void increaseTimerTick() {
+		currentTime++;
 	}
 
 }

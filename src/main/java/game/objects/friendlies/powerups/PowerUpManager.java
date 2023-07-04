@@ -15,6 +15,7 @@ import data.image.ImageEnums;
 import game.managers.AudioManager;
 import game.managers.PlayerManager;
 import game.movement.Direction;
+import game.spawner.PowerUpSpawnTimer;
 import visual.objects.Sprite;
 
 public class PowerUpManager {
@@ -29,7 +30,6 @@ public class PowerUpManager {
 	private int maxX = DataClass.getInstance().getWindowWidth();
 
 	private Direction[] directionEnums = Direction.values();
-	private PowerUps[] powerupEnums = PowerUps.values();
 	private List<Integer> randomCoordinates = new ArrayList<Integer>();
 
 	private PowerUpManager() {
@@ -113,27 +113,16 @@ public class PowerUpManager {
 		powerUpsOnTheField.add(newPowerUp);
 	}
 
-	public void createPowerUpTimer() {
-		PowerUpSpawnTimer timer = new PowerUpSpawnTimer(getRandomTimeForSpawner(), selectRandomPowerUp());
+	public PowerUpSpawnTimer createPowerUpTimer(PowerUps powerUp, boolean loopable, int additionaldelay) {
+		return new PowerUpSpawnTimer(getRandomTimeForSpawner(), powerUp, loopable, additionaldelay);
 	}
 
 	private int getRandomTimeForSpawner() {
 		TemporaryGameSettings tempSettings = TemporaryGameSettings.getInstance();
 
+		
 		return random.nextInt((tempSettings.getMaxTimeForPowerUpSpawn() - tempSettings.getMinTimeForPowerUpSpawn()) + 1)
 				+ tempSettings.getMinTimeForPowerUpSpawn();
-	}
-
-	private PowerUps selectRandomPowerUp() {
-		PowerUps randomValue = powerupEnums[random.nextInt(powerupEnums.length)];
-//	    if (randomValue == PowerUps.DOUBLE_SHOT || 
-//	    		randomValue == PowerUps.TRIPLE_SHOT) {
-//	        return selectRandomPowerUp();
-//	    }
-		if (randomValue == PowerUps.DUMMY_DO_NOT_USE) {
-			return selectRandomPowerUp();
-		}
-		return randomValue;
 	}
 
 	private Direction selectRandomDirection() {
@@ -201,7 +190,6 @@ public class PowerUpManager {
 	public void resetManager() {
 		powerUpsOnTheField = new ArrayList<PowerUp>();
 		directionEnums = Direction.values();
-		powerupEnums = PowerUps.values();
 		randomCoordinates = new ArrayList<Integer>();
 		random = new Random();
 	}

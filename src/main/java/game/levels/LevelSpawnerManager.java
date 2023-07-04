@@ -71,9 +71,8 @@ public class LevelSpawnerManager {
 //		}
 //		timer = timerManager.createTimer(EnemyEnums.Alien_Bomb, 100, 100, false, Direction.DOWN, 1);
 
-
-		EnemySpawnTimer timer = timerManager.createTimer(EnemyEnums.Bomba, 1, 5000, true, Direction.LEFT, 1, -3000);
-		timerManager.addEnemyTimerToList(timer);
+		EnemySpawnTimer timer = new EnemySpawnTimer(100, 1, EnemyEnums.Bomba, true, Direction.LEFT, 1, 0);
+		TimerManager.getInstance().addEnemyTimerToList(timer);
 //		timer = timerManager.createTimer(EnemyEnums.Flamer, 1, 100, false, Direction.LEFT, 1);
 //		timerManager.addTimerToList(timer);
 //		EnemySpawnTimer timer = timerManager.createTimer(EnemyEnums.Alien_Bomb, 100, 3000, true, Direction.LEFT, 1, 1);
@@ -102,9 +101,11 @@ public class LevelSpawnerManager {
 			int yCoordinate = coordinatesList.get(1);
 
 			if (enemyType.equals(EnemyEnums.Alien_Bomb)) {
-				if (direction.equals(Direction.UP) || direction.equals(Direction.LEFT_UP )|| direction.equals(Direction.RIGHT_UP)) {
+				if (direction.equals(Direction.UP) || direction.equals(Direction.LEFT_UP)
+						|| direction.equals(Direction.RIGHT_UP)) {
 					yCoordinate = spawningCoordinator.getRandomYDownBombEnemyCoordinate();
-				} else if (direction.equals(Direction.DOWN) || direction.equals(Direction.LEFT_DOWN )|| direction.equals(Direction.RIGHT_DOWN)) {
+				} else if (direction.equals(Direction.DOWN) || direction.equals(Direction.LEFT_DOWN)
+						|| direction.equals(Direction.RIGHT_DOWN)) {
 					yCoordinate = spawningCoordinator.getRandomYUpBombEnemyCoordinate();
 				}
 				xCoordinate = spawningCoordinator.getRandomXBombEnemyCoordinate();
@@ -127,7 +128,7 @@ public class LevelSpawnerManager {
 			coordinatesList.add(spawningCoordinator.getRightBlockYCoordinate());
 		} else if (direction.equals(Direction.RIGHT)) {
 			coordinatesList.add(spawningCoordinator.getLeftBlockXCoordinate());
-			coordinatesList.add( spawningCoordinator.getLeftBlockYCoordinate());
+			coordinatesList.add(spawningCoordinator.getLeftBlockYCoordinate());
 		} else if (direction.equals(Direction.DOWN)) {
 			coordinatesList.add(spawningCoordinator.getUpBlockXCoordinate());
 			coordinatesList.add(spawningCoordinator.getUpBlockYCoordinate());
@@ -165,12 +166,12 @@ public class LevelSpawnerManager {
 
 		PathFinder regularPathFinder = new RegularPathFinder();
 		PathFinder homingPathFinder = new HomingPathFinder();
-		
-		//Can be refactored to be more efficient
+
+		// Can be refactored to be more efficient
 		Point currentPoint = new Point(xCoordinate, yCoordinate);
 		Point regularDestination = regularPathFinder.calculateInitialEndpoint(currentPoint, rotation);
 //		Point homingDestination = homingPathFinder.calculateInitialEndpoint(currentPoint, rotation);
-		
+
 		switch (type) {
 		case Alien:
 			return new Alien(xCoordinate, yCoordinate, regularDestination, rotation, scale, regularPathFinder);

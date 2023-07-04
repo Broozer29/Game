@@ -115,7 +115,6 @@ public class GameBoard extends JPanel implements ActionListener {
 		uiManager.createGameBoardGUI();
 		levelManager.startLevel();
 		timer.start();
-		powerUpManager.createPowerUpTimer();
 	}
 
 	// Resets the game

@@ -41,7 +41,7 @@ public class TemporaryGameSettings {
 		setRepairPackageShieldRestore(playerStats.getMaxShieldHitPoints());
 		setDefaultMovementSpeedBoostAmount(2);
 		setDefaultBoostedMovementSpeedBoostAmount(2);
-		setTemporaryPowerUpDuration(5000);
+		setTemporaryPowerUpDuration(20);
 		setDefaultAttackSpeedBonus(15);
 		setDefaultSpecialAttackSpeedBonus(50);
 		setDefaultAttackDamageBonus(10);

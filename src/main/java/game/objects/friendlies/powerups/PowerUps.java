@@ -15,6 +15,10 @@ public enum PowerUps {
 	INCREASED_SPECIAL_ATTACK_SPEED,
 	HEALTH_AND_SHIELD_RESTORE,
 	
+	
+	//For the use of generating random powerup effects
+	RANDOM,
+	
 	//For debugging uses
 	DUMMY_DO_NOT_USE
 	
