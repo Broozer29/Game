@@ -10,7 +10,9 @@ import java.util.List;
 public class ImageResizer {
 
 	private static ImageResizer instance = new ImageResizer();
-
+	private BufferedImage bufferedImage = null;
+	private AffineTransform transform = new AffineTransform();
+	private AffineTransformOp transformop = null;
 	private ImageResizer() {
 
 	}
@@ -20,33 +22,33 @@ public class ImageResizer {
 	}
 
 	public BufferedImage getScaledImage(BufferedImage image, float scale) {
-		AffineTransform at = new AffineTransform();
-		at.scale(scale, scale);
-		AffineTransformOp scaleOp = new AffineTransformOp(at, AffineTransformOp.TYPE_BILINEAR);
+		transform.setToIdentity();
+		transform.scale(scale, scale);
+		transformop = new AffineTransformOp(transform, AffineTransformOp.TYPE_BILINEAR);
 		
-		BufferedImage after = scaleOp.filter(image, null); // null as the second parameter
-		return after;
+		bufferedImage = transformop.filter(image, null); // null as the second parameter
+		return bufferedImage;
 	}
 
 	public ArrayList<BufferedImage> getScaledFrames(List<BufferedImage> frames, float scale) {
 		ArrayList<BufferedImage> newFrames = new ArrayList<BufferedImage>();
 		for (int i = 0; i < frames.size(); i++) {
-			BufferedImage temp = frames.get(i);
-			BufferedImage tempBuffer = getScaledImage(temp, scale);
-			newFrames.add(tempBuffer);
+			bufferedImage = frames.get(i);
+			bufferedImage = getScaledImage(bufferedImage, scale);
+			newFrames.add(bufferedImage);
 		}
 
 		return newFrames;
 	}
 
 	public BufferedImage resizeImageToDimensions(BufferedImage image, int width, int height) {
-		BufferedImage bufferedVersion = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-		Graphics2D g = bufferedVersion.createGraphics();
+		bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+		Graphics2D g = bufferedImage.createGraphics();
 
 		// Draw the resized image onto the bufferedVersion
 		g.drawImage(image.getScaledInstance(width, height, BufferedImage.SCALE_DEFAULT), 0, 0, null);
 		g.dispose();
 
-		return bufferedVersion;
+		return bufferedImage;
 	}
 }

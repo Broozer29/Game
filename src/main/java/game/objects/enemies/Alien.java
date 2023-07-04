@@ -2,10 +2,10 @@ package game.objects.enemies;
 
 import data.audio.AudioEnums;
 import data.image.ImageEnums;
-import game.managers.MissileManager;
 import game.movement.Direction;
 import game.movement.PathFinder;
 import game.movement.Point;
+import game.objects.missiles.MissileManager;
 
 public class Alien extends Enemy {
 

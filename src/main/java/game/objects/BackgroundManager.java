@@ -1,7 +1,8 @@
-package game.managers;
+package game.objects;
 
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Random;
 
@@ -9,10 +10,7 @@ import data.DataClass;
 import data.image.ImageDatabase;
 import data.image.ImageEnums;
 import data.image.ImageResizer;
-import game.objects.BGOEnums;
-import game.objects.BackgroundObject;
-import game.objects.NebulaThemeEnums;
-import game.objects.SpaceThemeEnums;
+import game.managers.SpawningCoordinator;
 
 public class BackgroundManager {
 
@@ -39,7 +37,7 @@ public class BackgroundManager {
 	private List<ImageEnums> planetBGOEnumsList = new ArrayList<ImageEnums>();
 	private Random random = new Random();
 	private int updateFrameCounter = 0;
-
+	private int bgoStepSize = 50;
 	private SpaceThemeEnums spaceTheme;
 	private NebulaThemeEnums nebulaTheme;
 
@@ -102,7 +100,8 @@ public class BackgroundManager {
 	}
 
 	private void initLists() {
-		fillBGOList(NebulaList, getNebulaImage(), BGOEnums.Nebula, 1, 3);
+		ImageEnums nebula = getNebulaImage();
+		fillBGOList(NebulaList, nebula, BGOEnums.Nebula, (float) 1, 5);
 
 //		fillBGOList(parralex1List, ImageEnums.Parallex_1, BGOEnums.Parallex, 1, 3);
 //		fillBGOList(parralex2List, ImageEnums.Parallex_2, BGOEnums.Parallex, 1, 3);
@@ -136,8 +135,8 @@ public class BackgroundManager {
 		while (listToFill.size() < amount && attemptedTries < 50) {
 			switch (bgoType) {
 			case Nebula:
-				int nebulaXcoordinate = (-100 + (1024 * bgoSpawned));
-				int nebulaYCoordinate = -0;
+				int nebulaXcoordinate = ((bgoImage.getWidth() * bgoSpawned));
+				int nebulaYCoordinate = 0;
 
 				BackgroundObject NebulaBGO = new BackgroundObject(nebulaXcoordinate, nebulaYCoordinate, bgoImage, 1,
 						bgoType);
@@ -146,8 +145,8 @@ public class BackgroundManager {
 				bgoSpawned++;
 				break;
 			case Parallex:
-				int parralexXcoordinate = (-100 + (1024 * bgoSpawned));
-				int parralexYCoordinate = -0;
+				int parralexXcoordinate = ((bgoImage.getWidth() * bgoSpawned) + bgoSpawned);
+				int parralexYCoordinate = 0;
 
 				BackgroundObject parralexBGO = new BackgroundObject(parralexXcoordinate, parralexYCoordinate, bgoImage,
 						1, bgoType);
@@ -173,32 +172,46 @@ public class BackgroundManager {
 				break;
 			}
 			attemptedTries++;
-
 		}
 	}
 
+
 	// Moves all BGO
 	private void moveBGOList(List<BackgroundObject> listToMove) {
-		for (BackgroundObject bgObject : listToMove) {
-			if ((bgObject.getXCoordinate() + bgObject.getWidth()) < 0) {
-				if (bgObject.getBGOtype().equals(BGOEnums.Planet)) {
-					bgObject.setX(dataClass.getWindowWidth() + 200);
-					bgObject.setY(randomCoordinator.getRandomYBGOCoordinate());
-					bgObject.setNewPlanetImage(imageDatabase.getImage(getRandomPlanetEnum()));
-				} else if (bgObject.getBGOtype().equals(BGOEnums.Nebula)
-						|| bgObject.getBGOtype().equals(BGOEnums.Parallex)) {
-					bgObject.setX(-2048);
-				} else if (bgObject.getBGOtype().equals(BGOEnums.Star)) {
-					bgObject.setX(dataClass.getWindowWidth() + 200);
-					bgObject.setY(randomCoordinator.getRandomYBGOCoordinate());
-				}
-			}
-			bgObject.setX(bgObject.getXCoordinate() - 1);
-		}
+	    for (BackgroundObject bgObject : listToMove) {
+	        if ((bgObject.getXCoordinate() + bgObject.getWidth()) < 0) {
+	            if (bgObject.getBGOtype().equals(BGOEnums.Planet)) {
+	                bgObject.setX(dataClass.getWindowWidth() + 200);
+	                bgObject.setY(randomCoordinator.getRandomYBGOCoordinate());
+	                bgObject.setNewPlanetImage(imageDatabase.getImage(getRandomPlanetEnum()));
+	            } else if (bgObject.getBGOtype().equals(BGOEnums.Nebula)
+	                    || bgObject.getBGOtype().equals(BGOEnums.Parallex)) {
+
+	                if (listToMove.size() > 1) {
+	                    // get the last element in the list
+	                    BackgroundObject lastBGO = listToMove.get(listToMove.size() - 1);
+	                    if (bgObject.equals(lastBGO)) {
+	                        // if current object is the last one, put it back to right side of the screen
+	                        bgObject.setX(dataClass.getWindowWidth());
+	                    } else {
+	                        // else, put it right after the last image
+	                        bgObject.setX(lastBGO.getXCoordinate() + lastBGO.getWidth());
+	                    }
+	                } else {
+	                    bgObject.setX(dataClass.getWindowWidth()); // Positioned just outside the right edge of the screen
+	                }
+	            } else if (bgObject.getBGOtype().equals(BGOEnums.Star)) {
+	                bgObject.setX(dataClass.getWindowWidth() + 200);
+	                bgObject.setY(randomCoordinator.getRandomYBGOCoordinate());
+	            }
+	        }
+	        bgObject.setX(bgObject.getXCoordinate() - 1);
+	    }
 	}
 
 	// Move all background objects based on the framecounter
 	private void updateObjects() {
+		NebulaList.sort(Comparator.comparingInt(BackgroundObject::getXCoordinate));
 		if (updateFrameCounter % 6 == 0) {
 			moveBGOList(NebulaList);
 		}
@@ -257,7 +270,8 @@ public class BackgroundManager {
 		case Blue_Nebula_6:
 			return ImageEnums.Blue_Nebula_6;
 		case Green_Nebula_1:
-			return ImageEnums.Green_Nebula_1;
+			// Return 2 because 1 isn't actually seamless
+			return ImageEnums.Green_Nebula_2;
 		case Green_Nebula_2:
 			return ImageEnums.Green_Nebula_2;
 		case Green_Nebula_3:

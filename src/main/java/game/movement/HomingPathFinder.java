@@ -3,8 +3,8 @@ package game.movement;
 import java.util.ArrayList;
 import java.util.List;
 
-import game.managers.EnemyManager;
 import game.managers.PlayerManager;
+import game.objects.enemies.EnemyManager;
 
 public class HomingPathFinder implements PathFinder {
 	@Override

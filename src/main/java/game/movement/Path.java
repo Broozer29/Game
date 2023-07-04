@@ -2,9 +2,9 @@ package game.movement;
 
 import java.util.List;
 
-import game.managers.EnemyManager;
 import game.managers.PlayerManager;
 import game.objects.enemies.Enemy;
+import game.objects.enemies.EnemyManager;
 
 public class Path {
 	private List<Point> waypoints;

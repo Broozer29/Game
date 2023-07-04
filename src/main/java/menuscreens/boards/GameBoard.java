@@ -20,28 +20,28 @@ import data.PlayerStats;
 import data.TemporaryGameSettings;
 import data.audio.AudioDatabase;
 import game.UI.UIObject;
+import game.levels.LevelSpawnerManager;
 import game.managers.AnimationManager;
 import game.managers.AudioManager;
-import game.managers.BackgroundManager;
 import game.managers.CustomUIManager;
-import game.managers.EnemyManager;
 import game.managers.ExplosionManager;
-import game.managers.FriendlyManager;
-import game.managers.LevelSpawnerManager;
-import game.managers.MissileManager;
 import game.managers.OnScreenTextManager;
 import game.managers.PlayerManager;
-import game.managers.PowerUpManager;
 import game.managers.TimerManager;
+import game.objects.BackgroundManager;
 import game.objects.BackgroundObject;
 import game.objects.Explosion;
 import game.objects.enemies.Enemy;
+import game.objects.enemies.EnemyManager;
+import game.objects.friendlies.FriendlyManager;
 import game.objects.friendlies.FriendlyObject;
 import game.objects.friendlies.powerups.PowerUp;
 import game.objects.friendlies.powerups.PowerUpAcquiredText;
-import game.objects.friendlies.spaceship.SpecialAttack;
+import game.objects.friendlies.powerups.PowerUpManager;
+import game.objects.friendlies.spaceship.specialAttacks.SpecialAttack;
 import game.objects.missiles.Missile;
-import game.playerpresets.FlamethrowerPreset;
+import game.objects.missiles.MissileManager;
+import game.playerpresets.LaserbeamPreset;
 import game.playerpresets.PlayerPreset;
 import menuscreens.BoardManager;
 import visual.objects.Sprite;
@@ -58,6 +58,7 @@ public class GameBoard extends JPanel implements ActionListener {
 	private final int boardHeight = data.getWindowHeight();
 
 	private final int DELAY = 15;
+	
 	private BoardManager boardManager = BoardManager.getInstance();
 	private AnimationManager animationManager = AnimationManager.getInstance();
 	private EnemyManager enemyManager = EnemyManager.getInstance();
@@ -104,9 +105,11 @@ public class GameBoard extends JPanel implements ActionListener {
 		setPreferredSize(new Dimension(boardWidth, boardHeight));
 
 		// Dit moet uit een "out-of-game state manager" gehaald worden
-		PlayerPreset preset = new FlamethrowerPreset();
-		playerStats.setPreset(preset);
-		preset.loadPreset();
+		if(playerStats.getPreset() == null) {
+			PlayerPreset preset = new LaserbeamPreset();
+			playerStats.setPreset(preset);
+		}
+		playerStats.getPreset().loadPreset();
 
 		ingame = true;
 		uiManager.createGameBoardGUI();
@@ -116,6 +119,7 @@ public class GameBoard extends JPanel implements ActionListener {
 	}
 
 	// Resets the game
+	// This needs to be reworked in seperate (startManagers) and (endManagers)
 	public void resetGame() {
 		animationManager.resetManager();
 		enemyManager.resetManager();
@@ -134,9 +138,7 @@ public class GameBoard extends JPanel implements ActionListener {
 		tempSettings.resetGameSettings();
 
 		// Dit moet uit een "out-of-game state manager" gehaald worden
-		PlayerPreset preset = new FlamethrowerPreset();
-		playerStats.setPreset(preset);
-		preset.loadPreset();
+		playerStats.getPreset().loadPreset();
 	}
 
 	@Override
@@ -153,7 +155,6 @@ public class GameBoard extends JPanel implements ActionListener {
 	}
 
 	private void drawObjects(Graphics2D g) {
-
 		// Draws all background objects
 		for (BackgroundObject bgObject : backgroundManager.getAllBGO()) {
 			drawImage(g, bgObject);
@@ -175,7 +176,6 @@ public class GameBoard extends JPanel implements ActionListener {
 				drawImage(g, missile);
 			}
 		}
-		
 
 		// Draw enemy missiles with an animation
 		for (Missile missile : missileManager.getEnemyMissiles()) {
@@ -183,7 +183,7 @@ public class GameBoard extends JPanel implements ActionListener {
 				drawAnimation(g, missile.getAnimation());
 			}
 		}
-		
+
 		// Draw friendly missiles
 		for (Missile missile : missileManager.getFriendlyMissiles()) {
 			if (missile.isVisible()) {
@@ -215,8 +215,6 @@ public class GameBoard extends JPanel implements ActionListener {
 				drawAnimation(g, friendly.getAnimation());
 			}
 		}
-
-
 
 		for (SpecialAttack specialAttack : missileManager.getSpecialAttacks()) {
 			if (specialAttack.isVisible()) {

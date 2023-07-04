@@ -20,7 +20,7 @@ public class BadAppleLevel {
 	}
 
 	private void initBadAppleTimers() {
-		initRepeatableTimers();
+//		initRepeatableTimers();
 		initDelayedTimers();
 		initSingleFireTimers();
 	}

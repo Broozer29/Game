@@ -1,10 +1,18 @@
 package menuscreens;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.sound.sampled.UnsupportedAudioFileException;
+
+import data.PlayerStats;
+import data.audio.AudioDatabase;
+import data.audio.AudioEnums;
 import data.image.ImageEnums;
-import visual.objects.Sprite;
+import game.managers.AudioManager;
+import game.playerpresets.FlamethrowerPreset;
+import game.playerpresets.LaserbeamPreset;
 
 public class MenuObject {
 
@@ -39,18 +47,26 @@ public class MenuObject {
 		}
 	}
 
-	public void menuTileAction() {
-		// Starts the game from the main menu
-		if (this.menuFunctionality.equals(MenuFunctionEnums.Start_Game)) {
+	public void menuTileAction() throws UnsupportedAudioFileException, IOException {
+		AudioManager audioManager = AudioManager.getInstance();
+		AudioDatabase.getInstance().updateGameTick();
+		switch(this.menuFunctionality) {
+		case Start_Game:
 			BoardManager.getInstance().initGame();
-
-			// Opens the user menu from the main menu
-		} else if (this.menuFunctionality.equals(MenuFunctionEnums.Select_Setup_Menu)) {
-			BoardManager.getInstance().initUserSelection();
-
-			// Changes the user selection board to the main menu board.
-		} else if (menuFunctionality.equals(MenuFunctionEnums.Return_To_Main_Menu)) {
+			break;
+		case Select_Setup_Menu:
+			break;
+		case Select_Laserbeam_Preset:
+			audioManager.addAudio(AudioEnums.Player_Laserbeam);
+			PlayerStats.getInstance().setPreset(new LaserbeamPreset());
+			break;
+		case Select_Flamethrower_Preset:
+			audioManager.addAudio(AudioEnums.Power_Up_Acquired);
+			PlayerStats.getInstance().setPreset(new FlamethrowerPreset());
+			break;
+		case Return_To_Main_Menu:
 			BoardManager.getInstance().userSelectionToMainMenu();
+			break;
 		}
 	}
 
@@ -89,6 +105,10 @@ public class MenuObject {
 
 	public List<MenuObjectPart> getMenuImages() {
 		return menuTiles;
+	}
+	
+	public MenuFunctionEnums getMenuFunction() {
+		return this.menuFunctionality;
 	}
 
 }

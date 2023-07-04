@@ -4,6 +4,7 @@ import java.awt.Image;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 
+import data.DataClass;
 import data.image.ImageCropper;
 import data.image.ImageDatabase;
 import data.image.ImageEnums;
@@ -27,7 +28,8 @@ public class Sprite {
 	protected int yOffset;
 	protected Rectangle bounds;
 	protected Point currentLocation;
-	
+
+	protected int currentBoardBlock;
 
 	public Sprite(int x, int y, float scale) {
 		this.xCoordinate = x;
@@ -35,7 +37,7 @@ public class Sprite {
 		this.scale = scale;
 		this.visible = true;
 		this.bounds = new Rectangle();
-		currentLocation = new Point(x,y);
+		currentLocation = new Point(x, y);
 	}
 
 	protected void loadImage(ImageEnums imageName) {
@@ -43,9 +45,9 @@ public class Sprite {
 		if (this.image == null) {
 			System.out.println("Crashed because getting " + imageName + " returned an empty/null image");
 		}
-//		if (scale != 1 && this.image != null) {
-		this.image = imageResizer.getScaledImage(image, scale);
-//		}
+		if (scale != 1 && this.image != null) {
+			this.image = imageResizer.getScaledImage(image, scale);
+		}
 		getImageDimensions();
 //		 Zet collision ook op die getallen en shits & giggles
 	}
@@ -63,8 +65,10 @@ public class Sprite {
 	}
 
 	protected void rotateImage(Direction rotation) {
-		this.image = imageRotator.rotate(image, rotation);
-		getImageDimensions();
+		if (rotation != Direction.LEFT) {
+			this.image = imageRotator.rotate(image, rotation);
+			getImageDimensions();
+		}
 	}
 
 	protected void setScale(float newScale) {
@@ -129,7 +133,6 @@ public class Sprite {
 		this.visible = visible;
 	}
 
-
 	public void addXOffset(int xOffset) {
 		this.xOffset = xOffset;
 	}
@@ -157,8 +160,48 @@ public class Sprite {
 	public Point getPoint() {
 		return this.currentLocation;
 	}
-	
+
 	public Rectangle getBounds() {
+		if (this instanceof SpriteAnimation) {
+			System.out.println("I returned Sprite bounds for a SpriteAnimation!");
+		}
 		return this.bounds;
+	}
+
+	protected void setBounds(int xCoordinate, int yCoordinate, int width, int height) {
+		this.bounds.setBounds(xCoordinate, yCoordinate, width, height);
+	}
+
+	public void updateCurrentBoardBlock() {
+		if (xCoordinate >= 0 && xCoordinate <= (DataClass.getInstance().getBoardBlockWidth() * 1)) {
+			this.currentBoardBlock = 0;
+		} else if (xCoordinate >= (DataClass.getInstance().getBoardBlockWidth() * 1)
+				&& xCoordinate <= (DataClass.getInstance().getBoardBlockWidth() * 2)) {
+			this.currentBoardBlock = 1;
+		} else if (xCoordinate >= (DataClass.getInstance().getBoardBlockWidth() * 2)
+				&& xCoordinate <= (DataClass.getInstance().getBoardBlockWidth() * 3)) {
+			this.currentBoardBlock = 2;
+		} else if (xCoordinate >= (DataClass.getInstance().getBoardBlockWidth() * 3)
+				&& xCoordinate <= (DataClass.getInstance().getBoardBlockWidth())) {
+			this.currentBoardBlock = 3;
+		} else if (xCoordinate >= (DataClass.getInstance().getBoardBlockWidth() * 4)
+				&& xCoordinate <= (DataClass.getInstance().getBoardBlockWidth() * 5)) {
+			this.currentBoardBlock = 4;
+		} else if (xCoordinate >= (DataClass.getInstance().getBoardBlockWidth() * 5)
+				&& xCoordinate <= (DataClass.getInstance().getBoardBlockWidth() * 6)) {
+			this.currentBoardBlock = 5;
+		} else if (xCoordinate >= (DataClass.getInstance().getBoardBlockWidth() * 6)
+				&& xCoordinate <= (DataClass.getInstance().getBoardBlockWidth() * 7)) {
+			this.currentBoardBlock = 6;
+		} else if (xCoordinate >= (DataClass.getInstance().getBoardBlockWidth() * 7)
+				&& xCoordinate <= (DataClass.getInstance().getBoardBlockWidth() * 8)) {
+			this.currentBoardBlock = 7;
+		} else if (xCoordinate > DataClass.getInstance().getBoardBlockWidth() * 8) {
+			this.currentBoardBlock = 8;
+		}
+	}
+
+	public int getCurrentBoardBlock() {
+		return this.currentBoardBlock;
 	}
 }

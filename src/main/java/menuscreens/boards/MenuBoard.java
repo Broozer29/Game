@@ -8,14 +8,17 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
 import data.DataClass;
-import game.managers.BackgroundManager;
+import game.managers.AudioManager;
+import game.objects.BackgroundManager;
 import game.objects.BackgroundObject;
 import menuscreens.MenuCursor;
 import menuscreens.MenuFunctionEnums;
@@ -40,6 +43,9 @@ public class MenuBoard extends JPanel implements ActionListener {
 	private MenuObject titleImage;
 	private MenuObject selectUserTile2;
 	private MenuObject selectUserTile3;
+	private MenuObject wasdExplanation;
+	private MenuObject shiftExplanation;
+	private MenuObject attackExplanation;
 
 	private int selectedRow = 0;
 	private int selectedColumn = 0;
@@ -67,14 +73,25 @@ public class MenuBoard extends JPanel implements ActionListener {
 		this.menuCursor = new MenuCursor(initCursorX, initCursorY, imageScale);
 		menuCursor.setXCoordinate(startGameTile.getXCoordinate() - (menuCursor.getxDistanceToKeep()));
 
-		this.selectUserTile = new MenuObject((boardWidth / 2), (boardHeight / 2) + 50, textScale, "Select Setup A",
-				MenuObjectEnums.Text_Block, MenuFunctionEnums.Select_Setup_Menu);
-		this.selectUserTile2 = new MenuObject((boardWidth / 2) + 300, (boardHeight / 2), textScale, "Select Setup B",
-				MenuObjectEnums.Text_Block, MenuFunctionEnums.Select_Setup_Menu);
+		this.selectUserTile = new MenuObject((boardWidth / 2), (boardHeight / 2) + 50, textScale, "Laserbeam Setup",
+				MenuObjectEnums.Text_Block, MenuFunctionEnums.Select_Laserbeam_Preset);
+		this.selectUserTile2 = new MenuObject((boardWidth / 2) + 300, (boardHeight / 2), textScale,
+				"Flamethrower Setup", MenuObjectEnums.Text_Block, MenuFunctionEnums.Select_Flamethrower_Preset);
 		this.selectUserTile3 = new MenuObject((boardWidth / 2) + 300, (boardHeight / 2) + 50, textScale,
-				"Select Setup C", MenuObjectEnums.Text_Block, MenuFunctionEnums.Select_Setup_Menu);
+				"Unimplemented", MenuObjectEnums.Text_Block, MenuFunctionEnums.NONE);
 
 		this.titleImage = new MenuObject(200, (boardHeight / 2) / 2, imageScale, null, MenuObjectEnums.Title_Image,
+				MenuFunctionEnums.NONE);
+
+		int explanationXCoordinate = boardWidth / 100;
+		int explanationYCoordinate = boardHeight / 2 + 300;
+		this.wasdExplanation = new MenuObject(explanationXCoordinate, explanationYCoordinate + 0, textScale,
+				"Movement can be done with WASD or arrow keys", MenuObjectEnums.Text_Block, MenuFunctionEnums.NONE);
+		this.shiftExplanation = new MenuObject(explanationXCoordinate, explanationYCoordinate + 20, textScale,
+				"Hold left shift for increased movement speed", MenuObjectEnums.Text_Block, MenuFunctionEnums.NONE);
+
+		this.attackExplanation = new MenuObject(explanationXCoordinate, explanationYCoordinate + 40, textScale,
+				"Spacebar for normal attacks. Q or Enter for special attacks", MenuObjectEnums.Text_Block,
 				MenuFunctionEnums.NONE);
 
 		this.menuCursor.setSelectedMenuTile(startGameTile);
@@ -114,8 +131,15 @@ public class MenuBoard extends JPanel implements ActionListener {
 
 	// Activate the functionality of the specific menutile
 	private void selectMenuTile() {
-		grid.get(selectedRow).get(selectedColumn).menuTileAction();
-		timer.stop();
+		try {
+			grid.get(selectedRow).get(selectedColumn).menuTileAction();
+			if (grid.get(selectedRow).get(selectedColumn).getMenuFunction() == MenuFunctionEnums.Start_Game) {
+				timer.stop();
+			}
+		} catch (UnsupportedAudioFileException | IOException e) {
+			e.printStackTrace();
+		}
+
 	}
 
 	private void previousMenuTile() {
@@ -267,6 +291,18 @@ public class MenuBoard extends JPanel implements ActionListener {
 				menuCursor.getYCoordinate(), this);
 		g.drawImage(titleImage.getMenuImages().get(0).getImage(), titleImage.getXCoordinate(),
 				titleImage.getYCoordinate(), this);
+
+		for (MenuObjectPart letter : wasdExplanation.getMenuImages()) {
+			g.drawImage(letter.getImage(), letter.getXCoordinate(), letter.getYCoordinate(), this);
+		}
+
+		for (MenuObjectPart letter : shiftExplanation.getMenuImages()) {
+			g.drawImage(letter.getImage(), letter.getXCoordinate(), letter.getYCoordinate(), this);
+		}
+
+		for (MenuObjectPart letter : attackExplanation.getMenuImages()) {
+			g.drawImage(letter.getImage(), letter.getXCoordinate(), letter.getYCoordinate(), this);
+		}
 
 		for (List<MenuObject> list : grid) {
 			for (MenuObject object : list) {

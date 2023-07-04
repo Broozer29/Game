@@ -1,4 +1,4 @@
-package game.managers;
+package game.objects.friendlies.powerups;
 
 import java.awt.Rectangle;
 import java.io.IOException;
@@ -12,10 +12,10 @@ import data.DataClass;
 import data.TemporaryGameSettings;
 import data.audio.AudioEnums;
 import data.image.ImageEnums;
+import game.managers.AudioManager;
+import game.managers.PlayerManager;
 import game.movement.Direction;
-import game.objects.friendlies.powerups.PowerUp;
-import game.objects.friendlies.powerups.PowerUpSpawnTimer;
-import game.objects.friendlies.powerups.PowerUps;
+import visual.objects.Sprite;
 
 public class PowerUpManager {
 
@@ -75,19 +75,34 @@ public class PowerUpManager {
 		AudioManager audioManager = AudioManager.getInstance();
 		for (PowerUp powerUp : powerUpsOnTheField) {
 			if (powerUp.isVisible()) {
-				Rectangle r1 = powerUp.getBounds();
-				Rectangle r2 = friendlyManager.getSpaceship().getBounds();
-				if (r1.intersects(r2)) {
-					powerUp.startPowerUpTimer();
-					powerUp.setVisible(false);
-					try {
-						audioManager.addAudio(AudioEnums.Power_Up_Acquired);
-					} catch (UnsupportedAudioFileException | IOException e) {
-						e.printStackTrace();
+				if (isNearby(powerUp, friendlyManager.getSpaceship())) {
+					if (powerUp.getBounds().intersects(friendlyManager.getSpaceship().getBounds())) {
+						powerUp.startPowerUpTimer();
+						powerUp.setVisible(false);
+						try {
+							audioManager.addAudio(AudioEnums.Power_Up_Acquired);
+						} catch (UnsupportedAudioFileException | IOException e) {
+							e.printStackTrace();
+						}
 					}
 				}
 			}
 		}
+	}
+
+	private boolean isWithinBoardBlockThreshold(Sprite sprite1, Sprite sprite2) {
+		int blockDifference = Math.abs(sprite1.getCurrentBoardBlock() - sprite2.getCurrentBoardBlock());
+		return blockDifference <= 2;
+	}
+
+	private boolean isNearby(Sprite sprite1, Sprite sprite2) {
+		if (!isWithinBoardBlockThreshold(sprite1, sprite2)) {
+			return false;
+		}
+
+		double distance = Math.hypot(sprite1.getXCoordinate() - sprite2.getXCoordinate(),
+				sprite1.getYCoordinate() - sprite2.getYCoordinate());
+		return distance < 150;
 	}
 
 	public void spawnPowerUp(PowerUps powerUpType) {

@@ -2,17 +2,17 @@ package game.objects.friendlies;
 
 import data.image.ImageEnums;
 import game.managers.AnimationManager;
-import game.managers.EnemyManager;
 import game.managers.ExplosionManager;
-import game.managers.MissileManager;
 import game.movement.Direction;
 import game.movement.HomingPathFinder;
 import game.movement.PathFinder;
 import game.movement.Point;
 import game.objects.Explosion;
 import game.objects.enemies.Enemy;
+import game.objects.enemies.EnemyManager;
 import game.objects.friendlies.spaceship.PlayerAttackTypes;
 import game.objects.missiles.Missile;
+import game.objects.missiles.MissileManager;
 import visual.objects.SpriteAnimation;
 
 public class GuardianDrone extends FriendlyObject {

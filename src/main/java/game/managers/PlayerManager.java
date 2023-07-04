@@ -54,6 +54,7 @@ public class PlayerManager {
 	private void updateSpaceShipMovement() {
 		if (spaceship.isVisible()) {
 			spaceship.move();
+			spaceship.updateCurrentBoardBlock();
 		}
 	}
 

@@ -3,6 +3,7 @@ package game.managers;
 import java.util.ArrayList;
 import java.util.List;
 
+import game.levels.LevelSpawnerManager;
 import game.movement.Direction;
 import game.objects.enemies.EnemyEnums;
 import game.objects.friendlies.powerups.PowerUp;

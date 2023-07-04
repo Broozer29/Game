@@ -1,4 +1,4 @@
-package game.objects.friendlies.spaceship;
+package game.objects.friendlies.spaceship.specialAttacks;
 
 import java.util.ArrayList;
 import java.util.List;

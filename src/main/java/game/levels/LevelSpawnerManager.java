@@ -1,4 +1,4 @@
-package game.managers;
+package game.levels;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -7,7 +7,9 @@ import java.util.List;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
 import data.audio.AudioEnums;
-import game.levels.BadAppleLevel;
+import game.managers.AudioManager;
+import game.managers.SpawningCoordinator;
+import game.managers.TimerManager;
 import game.movement.Direction;
 import game.movement.HomingPathFinder;
 import game.movement.PathFinder;
@@ -19,6 +21,7 @@ import game.objects.enemies.Bomba;
 import game.objects.enemies.Bulldozer;
 import game.objects.enemies.Enemy;
 import game.objects.enemies.EnemyEnums;
+import game.objects.enemies.EnemyManager;
 import game.objects.enemies.Energizer;
 import game.objects.enemies.Flamer;
 import game.objects.enemies.Seeker;
@@ -69,7 +72,7 @@ public class LevelSpawnerManager {
 //		timer = timerManager.createTimer(EnemyEnums.Alien_Bomb, 100, 100, false, Direction.DOWN, 1);
 
 
-		EnemySpawnTimer timer = timerManager.createTimer(EnemyEnums.Bomba, 1, 3000, false, Direction.LEFT, 1, 1);
+		EnemySpawnTimer timer = timerManager.createTimer(EnemyEnums.Bomba, 1, 5000, true, Direction.LEFT, 1, -3000);
 		timerManager.addEnemyTimerToList(timer);
 //		timer = timerManager.createTimer(EnemyEnums.Flamer, 1, 100, false, Direction.LEFT, 1);
 //		timerManager.addTimerToList(timer);

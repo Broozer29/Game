@@ -74,11 +74,12 @@ public class FriendlyObject extends Sprite {
 		currentLocation = currentPath.getWaypoints().get(0);
 		this.xCoordinate = currentPath.getWaypoints().get(0).getX();
 		this.yCoordinate = currentPath.getWaypoints().get(0).getY();
-
 		if (this.animation != null) {
 			animation.setX(currentPath.getWaypoints().get(0).getX());
 			animation.setY(currentPath.getWaypoints().get(0).getY());
+			animation.updateCurrentBoardBlock();
 		}
+		updateCurrentBoardBlock();
 
 		// if reached the next point, remove it from the path
 		if (currentLocation.equals(currentPath.getWaypoints().get(0))) {

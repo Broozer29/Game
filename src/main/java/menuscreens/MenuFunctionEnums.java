@@ -5,5 +5,7 @@ public enum MenuFunctionEnums {
 	Select_Setup_Menu,
 	Return_To_Main_Menu,
 	Menu_Cursor,
+	Select_Laserbeam_Preset,
+	Select_Flamethrower_Preset,
 	NONE
 }

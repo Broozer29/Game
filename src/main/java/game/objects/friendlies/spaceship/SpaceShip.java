@@ -17,6 +17,7 @@ import data.image.ImageEnums;
 import game.managers.AnimationManager;
 import game.managers.MovementInitiator;
 import game.objects.Explosion;
+import game.objects.friendlies.spaceship.specialAttacks.SpecialAttack;
 import visual.objects.Sprite;
 import visual.objects.SpriteAnimation;
 
@@ -161,6 +162,7 @@ public class SpaceShip extends Sprite {
 		playerStats.setHomingRectangleXCoordinate((int) (xCoordinate - (width * playerStats.getHomingRectangleResizeScale())));
 		playerStats.setHomingRectangleWidth((int) (width * (playerStats.getHomingRectangleResizeScale() * 2)));
 		playerStats.setHomingRectangleHeight((int) (height * (playerStats.getHomingRectangleResizeScale() * 2.25)));
+		
 		bounds.setBounds(xCoordinate + xOffset, yCoordinate + yOffset, width, height);
 		
 		if (playerStats.getExhaustAnimation() != null) {

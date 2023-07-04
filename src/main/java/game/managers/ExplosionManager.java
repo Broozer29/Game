@@ -7,6 +7,8 @@ import java.util.List;
 import data.image.ImageEnums;
 import game.objects.Explosion;
 import game.objects.enemies.Enemy;
+import game.objects.enemies.EnemyManager;
+import visual.objects.Sprite;
 import visual.objects.SpriteAnimation;
 
 public class ExplosionManager {
@@ -62,19 +64,20 @@ public class ExplosionManager {
 	}
 
 // used for explosions of the enemy
-	//Broken intentionally, rework this manually
+	// Broken intentionally, rework this manually
 	private void checkExplosionPlayerCollision() {
 		if (friendlyManager == null) {
 			friendlyManager = PlayerManager.getInstance();
 		}
 		for (Explosion explosion : explosionList) {
 			if (explosion.isVisible() && !explosion.isFriendly()) {
-				Rectangle r1 = explosion.getAnimation().getBounds();
-				Rectangle r2 = friendlyManager.getSpaceship().getBounds();
-				if (r1.intersects(r2)) {
-					if (!explosion.getDealtDamage()) {
-						friendlyManager.getSpaceship().takeHitpointDamage(explosion.getDamage());
-						explosion.setDealtDamage(true);
+				if (isNearby(explosion, friendlyManager.getSpaceship())) {
+					if (explosion.getAnimation().getAnimationBounds()
+							.intersects(friendlyManager.getSpaceship().getBounds())) {
+						if (!explosion.getDealtDamage()) {
+							friendlyManager.getSpaceship().takeHitpointDamage(explosion.getDamage());
+							explosion.setDealtDamage(true);
+						}
 					}
 				}
 			}
@@ -88,16 +91,31 @@ public class ExplosionManager {
 		}
 		for (Explosion explosion : explosionList) {
 			if (explosion.isVisible() && explosion.isFriendly()) {
-				Rectangle r1 = explosion.getAnimation().getBounds();
 				for (Enemy enemy : enemyManager.getEnemies()) {
-					Rectangle r2 = enemy.getBounds();
-					if (r1.intersects(r2)) {
-						enemy.takeDamage(explosion.getDamage());
+					if (isNearby(explosion, enemy)) {
+						if (explosion.getAnimation().getBounds().intersects(enemy.getBounds())) {
+							enemy.takeDamage(explosion.getDamage());
+						}
 					}
 				}
 
 			}
 		}
+	}
+
+	private boolean isWithinBoardBlockThreshold(Sprite sprite1, Sprite sprite2) {
+		int blockDifference = Math.abs(sprite1.getCurrentBoardBlock() - sprite2.getCurrentBoardBlock());
+		return blockDifference <= 2;
+	}
+
+	private boolean isNearby(Sprite sprite1, Sprite sprite2) {
+		if (!isWithinBoardBlockThreshold(sprite1, sprite2)) {
+			return false;
+		}
+
+		double distance = Math.hypot(sprite1.getXCoordinate() - sprite2.getXCoordinate(),
+				sprite1.getYCoordinate() - sprite2.getYCoordinate());
+		return distance < 150;
 	}
 
 	public void resetManager() {

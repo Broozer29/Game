@@ -1,5 +1,6 @@
 package data.image;
 
+import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
@@ -11,6 +12,9 @@ import game.movement.Direction;
 public class ImageRotator {
 
 	private static ImageRotator instance = new ImageRotator();
+	private BufferedImage bufferedImage = null;
+	private AffineTransform transform = new AffineTransform();
+	private AffineTransformOp transformop = null;
 
 	private ImageRotator() {
 
@@ -23,103 +27,76 @@ public class ImageRotator {
 	public ArrayList<BufferedImage> getRotatedFrames(List<BufferedImage> frames, Direction rotation) {
 		ArrayList<BufferedImage> newFrames = new ArrayList<BufferedImage>();
 		for (int i = 0; i < frames.size(); i++) {
-			BufferedImage temp = frames.get(i);
-			temp = rotate(temp, rotation);
-			newFrames.add(temp);
+			bufferedImage = frames.get(i);
+			bufferedImage = rotate(bufferedImage, rotation);
+			newFrames.add(bufferedImage);
 		}
 		return newFrames;
 	}
 
-	private int getNumquadrants(Direction rotation) {
-		int numquadrants = 1;
-		switch (rotation) {
-		case UP:
-			numquadrants = 1;
-			break;
-		case DOWN:
-			numquadrants = 3;
-			break;
-		case LEFT:
-			numquadrants = 0;
-			break;
-		case LEFT_UP:
-			numquadrants = 0;
-			break;
-		case LEFT_DOWN:
-			numquadrants = 0;
-			break;
-		case RIGHT:
-			numquadrants = 2;
-			break;
-		case RIGHT_UP:
-			numquadrants = 2;
-			break;
-		case RIGHT_DOWN:
-			numquadrants = 2;
-			break;
-		case NONE:
-			numquadrants = 2;
-		}
-
-		return numquadrants;
+	// In ImageRotator class
+	public BufferedImage rotate(BufferedImage image, Direction direction) {
+		double angle = direction.toAngle();
+		return rotate(image, angle);
 	}
 
-	public BufferedImage rotate(BufferedImage image, Direction rotation) {
-		int numquadrants = getNumquadrants(rotation);
+	public BufferedImage rotate(BufferedImage image, double angle) {
+		// Convert the angle to radians
+		transform.setToIdentity();
+		double rad = Math.toRadians(angle);
 
-		if (numquadrants == 2) {
-			return flipImage(image);
-		}
-		int w0 = image.getWidth();
-		int h0 = image.getHeight();
-		int w1 = w0;
-		int h1 = h0;
+		// Calculate the diagonal length of the image
+		double diagonal = Math.sqrt(Math.pow(image.getWidth(), 2) + Math.pow(image.getHeight(), 2));
 
-		int centerX = w0 / 2;
-		int centerY = h0 / 2;
+		// Create a new image that is a square with side length equal to the diagonal of the
+		// original image
+		bufferedImage = new BufferedImage((int) diagonal, (int) diagonal, BufferedImage.TYPE_INT_ARGB);
 
-		if (numquadrants % 2 == 1) {
-			w1 = h0;
-			h1 = w0;
-		}
+		// Create a graphics object to draw the original image onto the square image
+		Graphics2D g = (Graphics2D) bufferedImage.getGraphics();
 
-		if (numquadrants % 4 == 1) {
-			if (w0 > h0) {
-				centerX = h0 / 2;
-				centerY = h0 / 2;
-			} else if (h0 > w0) {
-				centerX = w0 / 2;
-				centerY = w0 / 2;
-			}
-			// if h0 == w0, then use default
-		} else if (numquadrants % 4 == 3) {
-			if (w0 > h0) {
-				centerX = w0 / 2;
-				centerY = w0 / 2;
-			} else if (h0 > w0) {
-				centerX = h0 / 2;
-				centerY = h0 / 2;
-			}
-			// if h0 == w0, then use default
-		}
+		// Draw the original image centered onto the square image
+		int x = (int) ((diagonal - image.getWidth()) / 2);
+		int y = (int) ((diagonal - image.getHeight()) / 2);
+		g.drawImage(image, x, y, null);
+		g.dispose();
 
-		AffineTransform affineTransform = new AffineTransform();
-		affineTransform.setToQuadrantRotation(numquadrants, centerX, centerY);
+		// Create an affine transform to rotate the square image
+		transform.rotate(rad, bufferedImage.getWidth() / 2.0, bufferedImage.getHeight() / 2.0);
 
-		AffineTransformOp opRotated = new AffineTransformOp(affineTransform, AffineTransformOp.TYPE_BICUBIC);
+		// Create an affine transform operation
+		transformop = new AffineTransformOp(transform, AffineTransformOp.TYPE_BICUBIC);
 
-		BufferedImage transformedImage = new BufferedImage(w1, h1, BufferedImage.TYPE_INT_ARGB);
-
-		transformedImage = opRotated.filter(image, transformedImage);
-		return transformedImage;
+		// Apply the operation and return the result
+		bufferedImage = cropTransparentPixels(bufferedImage);
+		return transformop.filter(bufferedImage, null);
 	}
 
-	private BufferedImage flipImage(BufferedImage BImage) {
-		AffineTransform tx = AffineTransform.getScaleInstance(-1, 1);
-		tx.translate(-BImage.getWidth(null), 0);
-		AffineTransformOp op = new AffineTransformOp(tx, AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
-		BufferedImage newimage = op.filter(BImage, null);
-		return newimage;
+	public BufferedImage cropTransparentPixels(BufferedImage image) {
+		int minX = image.getWidth();
+		int minY = image.getHeight();
+		int maxX = 0;
+		int maxY = 0;
+
+		for (int y = 0; y < image.getHeight(); y++) {
+			for (int x = 0; x < image.getWidth(); x++) {
+				int alpha = (image.getRGB(x, y) >> 24) & 255;
+				if (alpha > 0) { // if pixel is not transparent
+					if (x < minX)
+						minX = x;
+					if (y < minY)
+						minY = y;
+					if (x > maxX)
+						maxX = x;
+					if (y > maxY)
+						maxY = y;
+				}
+			}
+		}
+
+		// Add 1 to maxX/maxY because subimage's second parameter is exclusive
+		bufferedImage = image.getSubimage(minX, minY, maxX - minX + 1, maxY - minY + 1);
+		return bufferedImage;
 	}
 
 }

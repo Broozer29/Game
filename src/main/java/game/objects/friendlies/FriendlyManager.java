@@ -1,18 +1,19 @@
-package game.managers;
+package game.objects.friendlies;
 
 import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.List;
 
 import data.image.ImageEnums;
+import game.managers.MovementInitiator;
+import game.managers.PlayerManager;
 import game.movement.Direction;
 import game.movement.OrbitPathFinder;
 import game.movement.PathFinder;
 import game.movement.Point;
 import game.objects.enemies.Enemy;
-import game.objects.friendlies.FriendlyEnums;
-import game.objects.friendlies.FriendlyObject;
-import game.objects.friendlies.GuardianDrone;
+import game.objects.enemies.EnemyManager;
+import visual.objects.Sprite;
 import visual.objects.SpriteAnimation;
 
 public class FriendlyManager {
@@ -24,7 +25,6 @@ public class FriendlyManager {
 	private List<GuardianDrone> guardianDrones = new ArrayList<GuardianDrone>();
 
 	private FriendlyManager() {
-		
 
 	}
 
@@ -53,14 +53,14 @@ public class FriendlyManager {
 				activeFriendlyObjects.get(i).setVisible(false);
 			}
 		}
-		
-		for(GuardianDrone drone : guardianDrones) {
+
+		for (GuardianDrone drone : guardianDrones) {
 			drone.activateGuardianDrone();
 		}
 	}
 
-	//Checks collision between friendly objects and enemies
-	//Intentionally broken, fix manually
+	// Checks collision between friendly objects and enemies
+	// Intentionally broken, fix manually
 	private void checkFriendlyObjectCollision() {
 		if (enemyManager == null) {
 			enemyManager = EnemyManager.getInstance();
@@ -70,16 +70,32 @@ public class FriendlyManager {
 			if (friendlyObject.isVisible()) {
 				SpriteAnimation animation = friendlyObject.getAnimation();
 				for (Enemy enemy : enemyManager.getEnemies()) {
-					Rectangle r1 = animation.getBounds();
-					Rectangle r2 = enemy.getBounds();
-					if (r1.intersects(r2)) {
+					if (isNearby(animation, friendlyObject)) {
+						if (enemy.getBounds().intersects(animation.getAnimationBounds())) {
+							System.out.println("Unimplemeted collision between friendly object and enemy in FriendlyManager: 75");
+						}
 					}
 				}
 			}
 		}
 	}
 
-	//UNCALLED BUT THIS WORKS
+	private boolean isWithinBoardBlockThreshold(Sprite sprite1, Sprite sprite2) {
+		int blockDifference = Math.abs(sprite1.getCurrentBoardBlock() - sprite2.getCurrentBoardBlock());
+		return blockDifference <= 2;
+	}
+
+	private boolean isNearby(Sprite sprite1, Sprite sprite2) {
+		if (!isWithinBoardBlockThreshold(sprite1, sprite2)) {
+			return false;
+		}
+
+		double distance = Math.hypot(sprite1.getXCoordinate() - sprite2.getXCoordinate(),
+				sprite1.getYCoordinate() - sprite2.getYCoordinate());
+		return distance < 150;
+	}
+
+	// UNCALLED BUT THIS WORKS
 	public void createGuardianDrone() {
 		int xCoordinate = PlayerManager.getInstance().getSpaceship().getCenterXCoordinate();
 		int yCoordinate = PlayerManager.getInstance().getSpaceship().getCenterYCoordinate();
@@ -88,12 +104,14 @@ public class FriendlyManager {
 		Point destination = null;
 		Direction rotation = Direction.RIGHT;
 		PathFinder pathFinder = new OrbitPathFinder(PlayerManager.getInstance().getSpaceship(), 100, 300);
-		
-		FriendlyObject friendlyObject = new GuardianDrone(xCoordinate, yCoordinate, destination, rotation, friendlyType, scale, pathFinder, 50);
+
+		FriendlyObject friendlyObject = new GuardianDrone(xCoordinate, yCoordinate, destination, rotation, friendlyType,
+				scale, pathFinder, 50);
 		guardianDrones.add((GuardianDrone) friendlyObject);
 		SpriteAnimation animation = new SpriteAnimation(xCoordinate, yCoordinate, ImageEnums.Guardian_Bot, true, scale);
-		
-		friendlyObject.setAnimation(animation);;
+
+		friendlyObject.setAnimation(animation);
+		;
 		addActiveFriendlyObject(friendlyObject);
 	}
 
@@ -104,7 +122,7 @@ public class FriendlyManager {
 	public List<FriendlyObject> getActiveFriendlyObjects() {
 		return this.activeFriendlyObjects;
 	}
-	
+
 	public void resetManager() {
 		activeFriendlyObjects = new ArrayList<FriendlyObject>();
 		guardianDrones = new ArrayList<GuardianDrone>();

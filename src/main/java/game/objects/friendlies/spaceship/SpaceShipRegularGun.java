@@ -10,11 +10,11 @@ import data.audio.AudioEnums;
 import data.image.ImageEnums;
 import game.managers.AudioManager;
 import game.managers.PlayerManager;
-import game.managers.MissileManager;
 import game.movement.Direction;
 import game.movement.HomingPathFinder;
 import game.movement.PathFinder;
 import game.movement.Point;
+import game.objects.missiles.MissileManager;
 
 public class SpaceShipRegularGun {
 	// Implement "fire()" behaviour here

@@ -1,6 +1,5 @@
 package game.objects.friendlies.spaceship.specialAttacks;
 
-import game.objects.friendlies.spaceship.SpecialAttack;
 import visual.objects.SpriteAnimation;
 
 public class ElectroShred extends SpecialAttack{

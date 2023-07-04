@@ -1,4 +1,4 @@
-package game.managers;
+package game.objects.enemies;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -9,16 +9,12 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 import data.DataClass;
 import data.audio.AudioEnums;
 import data.image.ImageEnums;
+import game.managers.AnimationManager;
+import game.managers.AudioManager;
+import game.managers.MovementInitiator;
+import game.managers.PlayerManager;
 import game.movement.Point;
-import game.objects.enemies.Alien;
-import game.objects.enemies.AlienBomb;
-import game.objects.enemies.Bomba;
-import game.objects.enemies.Bulldozer;
-import game.objects.enemies.Enemy;
-import game.objects.enemies.Energizer;
-import game.objects.enemies.Flamer;
-import game.objects.enemies.Seeker;
-import game.objects.enemies.Tazer;
+import visual.objects.Sprite;
 
 public class EnemyManager {
 
@@ -80,16 +76,32 @@ public class EnemyManager {
 
 		// Checks collision between spaceship and enemies
 		for (Enemy enemy : enemyList) {
-			if (friendlyManager.getSpaceship().getBounds().intersects(enemy.getBounds())) {
-				if (enemy instanceof AlienBomb) {
-					detonateAlienBomb(enemy);
-					friendlyManager.getSpaceship().takeHitpointDamage(20);
-				} else {
-					friendlyManager.getSpaceship().takeHitpointDamage(1);
+			if (isNearby(enemy, friendlyManager.getSpaceship())) {
+				if (friendlyManager.getSpaceship().getBounds().intersects(enemy.getBounds())) {
+					if (enemy instanceof AlienBomb) {
+						detonateAlienBomb(enemy);
+						friendlyManager.getSpaceship().takeHitpointDamage(20);
+					} else {
+						friendlyManager.getSpaceship().takeHitpointDamage(1);
+					}
 				}
-//				animationManager.addPlayerShieldDamageAnimation();
 			}
 		}
+	}
+
+	private boolean isWithinBoardBlockThreshold(Sprite sprite1, Sprite sprite2) {
+		int blockDifference = Math.abs(sprite1.getCurrentBoardBlock() - sprite2.getCurrentBoardBlock());
+		return blockDifference <= 2;
+	}
+
+	private boolean isNearby(Sprite sprite1, Sprite sprite2) {
+		if (!isWithinBoardBlockThreshold(sprite1, sprite2)) {
+			return false;
+		}
+
+		double distance = Math.hypot(sprite1.getXCoordinate() - sprite2.getXCoordinate(),
+				sprite1.getYCoordinate() - sprite2.getYCoordinate());
+		return distance < 150;
 	}
 
 	private void detonateAlienBomb(Enemy enemy) throws UnsupportedAudioFileException, IOException {
@@ -110,7 +122,7 @@ public class EnemyManager {
 			Enemy enemy = enemyList.get(i);
 			if (enemy.isVisible()) {
 				movementManager.moveEnemy(enemy);
-				enemy.updateBoardBlock();
+				enemy.updateBoardBlockSpeed();
 			} else {
 				animationManager.deleteEnemyAnimations(enemy);
 				removeEnemy(enemy);
@@ -199,11 +211,12 @@ public class EnemyManager {
 	public int getEnemyCount() {
 		return enemyList.size();
 	}
-	
+
 	public boolean enemiesToHomeTo() {
-		if(enemyList.size() == 0) {
+		if (enemyList.size() == 0) {
 			return true;
-		} else return false;
+		} else
+			return false;
 	}
 
 	public Point getClosestEnemy() {
@@ -236,7 +249,7 @@ public class EnemyManager {
 		}
 		return point;
 	}
-	
+
 	private Point getBackUpPoint() {
 		int endXCoordinate = DataClass.getInstance().getWindowWidth();
 		int endYCoordinate = PlayerManager.getInstance().getSpaceship().getCenterYCoordinate();

@@ -31,7 +31,7 @@ public class Missile extends Sprite {
 	protected boolean isFriendly;
 
 	protected boolean hasLock;
-	
+
 	private Point nextPoint;
 
 	public Missile(int x, int y, Point destination, ImageEnums missileType, ImageEnums explosionType,
@@ -101,12 +101,8 @@ public class Missile extends Sprite {
 			currentPath.getWaypoints().remove(0);
 		}
 		bounds.setBounds(xCoordinate + xOffset, yCoordinate + yOffset, width, height);
-		if (animation != null) {
-			updateAnimationCoordinates();
-			animation.setAnimationBounds(xCoordinate, yCoordinate);
-		}
-		
-	
+		updateCurrentBoardBlock();
+		updateAnimationCoordinates();
 		updateVisibility();
 	}
 
@@ -207,11 +203,15 @@ public class Missile extends Sprite {
 		if (animation != null) {
 			animation.setX(xCoordinate);
 			animation.setY(yCoordinate);
+			animation.setAnimationBounds(animation.getXCoordinate(), animation.getYCoordinate());
+			animation.updateCurrentBoardBlock();
 		}
 
 		if (explosionAnimation != null) {
 			explosionAnimation.setX(xCoordinate);
 			explosionAnimation.setY(yCoordinate);
+			explosionAnimation.setAnimationBounds(explosionAnimation.getXCoordinate(), explosionAnimation.getYCoordinate());
+			explosionAnimation.updateCurrentBoardBlock();
 		}
 	}
 
@@ -231,9 +231,9 @@ public class Missile extends Sprite {
 		if (!missileType.equals(ImageEnums.Alien_Laserbeam) && !missileType.equals(ImageEnums.Player_Laserbeam)) {
 			if (missileType != null) {
 				this.animation = new SpriteAnimation(xCoordinate, yCoordinate, missileType, true, scale);
-				
-				//Below commented because the memory/cpu 
-				//this.animation.rotateAnimetion(rotation);
+
+				// Below commented because the memory/cpu
+				// this.animation.rotateAnimetion(rotation);
 			}
 		}
 		if (explosionType != null) {

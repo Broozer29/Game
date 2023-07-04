@@ -9,7 +9,7 @@ import javax.imageio.ImageIO;
 public class ImageLoader {
 
 	private static ImageLoader instance = new ImageLoader();
-
+	private BufferedImage bufferedImage = null;
 	private ImageLoader() {
 	}
 
@@ -19,8 +19,8 @@ public class ImageLoader {
 
 	public BufferedImage getImage(ImageEnums image) {
 		try {
-			BufferedImage img = ImageIO.read(new File(convertImageStringToURL(image)));
-			return img;
+			bufferedImage = ImageIO.read(new File(convertImageStringToURL(image)));
+			return bufferedImage;
 		} catch (IOException e) {
 			System.out.println("Failed to load image: " + image);
 			e.printStackTrace();
@@ -30,8 +30,8 @@ public class ImageLoader {
 	
 	public BufferedImage getSpritesheetImage(String spritesheetImageString) {
 		try {
-			BufferedImage img = ImageIO.read(new File(spritesheetImageString));
-			return img;
+			bufferedImage = ImageIO.read(new File(spritesheetImageString));
+			return bufferedImage;
 		} catch (IOException e) {
 			System.out.println("Failed to load spritesheet image: " + spritesheetImageString);
 			e.printStackTrace();

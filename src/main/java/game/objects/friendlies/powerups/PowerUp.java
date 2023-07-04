@@ -54,7 +54,9 @@ public class PowerUp extends Sprite {
 		if (currentLocation.equals(nextPoint)) {
 			currentPath.getWaypoints().remove(0);
 		}
-
+		
+		bounds.setBounds(xCoordinate + xOffset, yCoordinate + yOffset, width, height);
+		updateCurrentBoardBlock();
 		// Check for collision with walls and bounce if necessary
 		Direction newDirection = PowerUpDirectionBouncer.getInstance().getNewDirection(this);
 		if (newDirection != direction) {

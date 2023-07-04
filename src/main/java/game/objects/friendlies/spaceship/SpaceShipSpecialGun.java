@@ -8,13 +8,14 @@ import data.PlayerStats;
 import data.audio.AudioEnums;
 import data.image.ImageEnums;
 import game.managers.AudioManager;
-import game.managers.MissileManager;
 import game.managers.PlayerManager;
 import game.movement.Direction;
 import game.movement.PathFinder;
 import game.movement.RegularPathFinder;
 import game.objects.friendlies.spaceship.specialAttacks.ElectroShred;
 import game.objects.friendlies.spaceship.specialAttacks.Firewall;
+import game.objects.friendlies.spaceship.specialAttacks.SpecialAttack;
+import game.objects.missiles.MissileManager;
 import visual.objects.SpriteAnimation;
 
 public class SpaceShipSpecialGun {
