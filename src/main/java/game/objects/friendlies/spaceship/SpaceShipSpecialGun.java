@@ -97,4 +97,8 @@ public class SpaceShipSpecialGun {
 	public void updateFrameCount() {
 		this.currentSpecialAttackFrame++;
 	}
+	
+	public float getCurrentSpecialAttackFrame() {
+		return this.currentSpecialAttackFrame;
+	}
 }

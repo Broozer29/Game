@@ -103,7 +103,7 @@ public class OrbitPathFinder implements PathFinder {
     }
 
     @Override
-    public Point calculateInitialEndpoint(Point start, Direction rotation) {
+    public Point calculateInitialEndpoint(Point start, Direction rotation, boolean friendly) {
         // This method could return the first waypoint on the path.
     	return start;
     }

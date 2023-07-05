@@ -5,7 +5,7 @@ import data.image.ImageResizer;
 import visual.objects.Sprite;
 
 public class UIObject extends Sprite {
-
+	
 	public UIObject(int x, int y, float scale, ImageEnums imageType) {
 		super(x, y, scale);
 		loadImage(imageType);

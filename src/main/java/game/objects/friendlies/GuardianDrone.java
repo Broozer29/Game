@@ -12,6 +12,7 @@ import game.objects.enemies.Enemy;
 import game.objects.enemies.EnemyManager;
 import game.objects.friendlies.spaceship.PlayerAttackTypes;
 import game.objects.missiles.Missile;
+import game.objects.missiles.MissileCreator;
 import game.objects.missiles.MissileManager;
 import visual.objects.SpriteAnimation;
 
@@ -29,7 +30,7 @@ public class GuardianDrone extends FriendlyObject {
 		SpriteAnimation anim = new SpriteAnimation(x, y, ImageEnums.Guardian_Bot, true, scale);
 		this.animation = anim;
 	}
-	
+
 	public void activateGuardianDrone() {
 		switch (guardianType) {
 		case Absorbtion_Guardian_Bot:
@@ -64,12 +65,13 @@ public class GuardianDrone extends FriendlyObject {
 		if (attackFrameCount >= attackSpeedCooldown) {
 			PathFinder pathFinder = new HomingPathFinder();
 			MissileManager missileManager = MissileManager.getInstance();
-			
+
 			int xMovementSpeed = 5;
 			int yMovementSpeed = 2;
-			missileManager.addFriendlyMissile(this.getCenterXCoordinate(), this.getCenterYCoordinate(),
-					ImageEnums.Player_Laserbeam, ImageEnums.Impact_Explosion_One, Direction.RIGHT, 1,
-					pathFinder, xMovementSpeed, yMovementSpeed, PlayerAttackTypes.Laserbeam);
+			missileManager.addExistingMissile(MissileCreator.getInstance().createFriendlyMissile(
+					this.getCenterXCoordinate(), this.getCenterYCoordinate(), ImageEnums.Player_Laserbeam,
+					ImageEnums.Impact_Explosion_One, Direction.RIGHT, 1, pathFinder, xMovementSpeed, yMovementSpeed,
+					PlayerAttackTypes.Laserbeam));
 			attackFrameCount = 0;
 
 		} else {

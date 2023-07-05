@@ -59,55 +59,12 @@ public class MissileManager {
 	public void addExistingMissile(Missile missile) {
 		missile.setVisible(true);
 		if (missile.isFriendly()) {
-			friendlyMissiles.add(missile);
+			this.friendlyMissiles.add(missile);
 		} else {
-			enemyMissiles.add(missile);
+			this.enemyMissiles.add(missile);
 		}
 	}
-
-	public void addFriendlyMissile(int xCoordinate, int yCoordinate, ImageEnums missileType, ImageEnums explosionType,
-			Direction rotation, float scale, PathFinder pathFinder, int xMovementSpeed, int yMovementSpeed,
-			PlayerAttackTypes attackType) {
-		Point start = new Point(xCoordinate, yCoordinate);
-		Point destination = null;
-		switch (attackType) {
-		case Flamethrower:
-			destination = pathFinder.calculateEndPointBySteps(start, rotation,
-					PlayerStats.getInstance().getFlameThrowerMaxSteps(), xMovementSpeed, yMovementSpeed);
-			break;
-		case Laserbeam:
-			destination = pathFinder.calculateInitialEndpoint(start, rotation);
-			break;
-		case Rocket:
-			break;
-		case Shotgun:
-			break;
-		default:
-			destination = pathFinder.calculateInitialEndpoint(start, rotation);
-			break;
-		}
-
-		Missile missile = createMissile(missileType, xCoordinate, yCoordinate, destination, explosionType, rotation,
-				scale, pathFinder, xMovementSpeed, yMovementSpeed);
-		missile.setVisible(true);
-
-		this.friendlyMissiles.add(missile);
-	}
-
-	// Called by all enemy classes when fireAction() is called.
-	public void addEnemyMissile(int xCoordinate, int yCoordinate, ImageEnums missileType, ImageEnums explosionType,
-			Direction rotation, float scale, PathFinder pathFinder, int xMovementSpeed, int yMovementSpeed) {
-
-		Point start = new Point(xCoordinate, yCoordinate);
-		Point destination = pathFinder.calculateInitialEndpoint(start, rotation);
-
-		Missile missile = createMissile(missileType, xCoordinate, yCoordinate, destination, explosionType, rotation,
-				scale, pathFinder, xMovementSpeed, yMovementSpeed);
-
-		this.enemyMissiles.add(missile);
-
-	}
-
+	
 	public void updateGameTick() {
 		if (animationManager == null || friendlyManager == null || enemyManager == null) {
 			animationManager = AnimationManager.getInstance();
@@ -155,7 +112,12 @@ public class MissileManager {
 	// Handles collision for enemies and friendlymissiles (
 	private void handleCollision(Enemy enemy, Missile friendlyMissile) {
 
-		enemy.takeDamage(friendlyMissile.getMissileDamage());
+		if (friendlyMissile.getMissileType() == ImageEnums.Rocket_1) {
+			friendlyMissile.missileAction();
+		} else {
+			enemy.takeDamage(friendlyMissile.getMissileDamage());
+		}
+
 		if (friendlyMissile.getExplosionAnimation() != null) {
 			animationManager.addUpperAnimation(friendlyMissile.getExplosionAnimation());
 		}
@@ -278,13 +240,16 @@ public class MissileManager {
 	}
 
 	private void triggerMissileAction() {
-
 		for (Missile missile : friendlyMissiles) {
-			missile.missileAction();
+			if (missile.getMissileType() != ImageEnums.Rocket_1) {
+				missile.missileAction();
+			}
 		}
 
 		for (Missile missile : enemyMissiles) {
-			missile.missileAction();
+			if (missile.getMissileType() != ImageEnums.Rocket_1) {
+				missile.missileAction();
+			}
 		}
 
 	}
@@ -295,44 +260,6 @@ public class MissileManager {
 
 	private void removeEnemyMissile(Missile missile) {
 		this.enemyMissiles.remove(missile);
-	}
-
-	public Missile createMissile(ImageEnums missileType, int xCoordinate, int yCoordinate, Point destination,
-			ImageEnums explosionType, Direction rotation, float scale, PathFinder pathFinder, int xMovementSpeed,
-			int yMovementSpeed) {
-		switch (missileType) {
-		case Alien_Laserbeam:
-			return new AlienLaserbeam(xCoordinate, yCoordinate, destination, missileType, explosionType, rotation,
-					scale, pathFinder, xMovementSpeed, yMovementSpeed);
-		case Seeker_Missile:
-			return new SeekerProjectile(xCoordinate, yCoordinate, destination, missileType, explosionType, rotation,
-					scale, pathFinder, xMovementSpeed, yMovementSpeed);
-		case Flamer_Missile:
-			return new FlamerProjectile(xCoordinate, yCoordinate, destination, missileType, explosionType, rotation,
-					scale, pathFinder, xMovementSpeed, yMovementSpeed);
-		case Tazer_Missile:
-			return new TazerProjectile(xCoordinate, yCoordinate, destination, missileType, explosionType, rotation,
-					scale, pathFinder, xMovementSpeed, yMovementSpeed);
-		case Bulldozer_Missile:
-			return new BulldozerProjectile(xCoordinate, yCoordinate, destination, missileType, explosionType, rotation,
-					scale, pathFinder, xMovementSpeed, yMovementSpeed);
-		case Bomba_Missile:
-			return new BombaProjectile(xCoordinate, yCoordinate, destination, missileType, explosionType, rotation,
-					scale, pathFinder, xMovementSpeed, yMovementSpeed);
-		case Energizer_Missile:
-			return new EnergizerProjectile(xCoordinate, yCoordinate, destination, missileType, explosionType, rotation,
-					scale, pathFinder, xMovementSpeed, yMovementSpeed);
-		case Player_Laserbeam:
-			return new DefaultPlayerLaserbeam(xCoordinate, yCoordinate, destination, missileType, explosionType,
-					rotation, scale, pathFinder, PlayerStats.getInstance().getNormalAttackDamage(), xMovementSpeed,
-					yMovementSpeed);
-		case Flamethrower_Animation:
-			return new FlamethrowerProjectile(xCoordinate, yCoordinate, destination, ImageEnums.Flamethrower_Animation,
-					explosionType, rotation, scale, pathFinder, PlayerStats.getInstance().getNormalAttackDamage(),
-					xMovementSpeed, yMovementSpeed);
-		default:
-			throw new IllegalArgumentException("Invalid missile type: " + missileType);
-		}
 	}
 
 	public void addSpecialAttack(SpecialAttack specialAttack) {

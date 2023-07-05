@@ -38,11 +38,13 @@ import game.objects.friendlies.FriendlyObject;
 import game.objects.friendlies.powerups.PowerUp;
 import game.objects.friendlies.powerups.PowerUpAcquiredText;
 import game.objects.friendlies.powerups.PowerUpManager;
+import game.objects.friendlies.spaceship.SpaceShipSpecialGun;
 import game.objects.friendlies.spaceship.specialAttacks.SpecialAttack;
 import game.objects.missiles.Missile;
 import game.objects.missiles.MissileManager;
 import game.playerpresets.LaserbeamPreset;
 import game.playerpresets.PlayerPreset;
+import game.playerpresets.RocketPreset;
 import menuscreens.BoardManager;
 import visual.objects.Sprite;
 import visual.objects.SpriteAnimation;
@@ -58,7 +60,7 @@ public class GameBoard extends JPanel implements ActionListener {
 	private final int boardHeight = data.getWindowHeight();
 
 	private final int DELAY = 15;
-	
+
 	private BoardManager boardManager = BoardManager.getInstance();
 	private AnimationManager animationManager = AnimationManager.getInstance();
 	private EnemyManager enemyManager = EnemyManager.getInstance();
@@ -105,7 +107,7 @@ public class GameBoard extends JPanel implements ActionListener {
 		setPreferredSize(new Dimension(boardWidth, boardHeight));
 
 		// Dit moet uit een "out-of-game state manager" gehaald worden
-		if(playerStats.getPreset() == null) {
+		if (playerStats.getPreset() == null) {
 			PlayerPreset preset = new LaserbeamPreset();
 			playerStats.setPreset(preset);
 		}
@@ -232,6 +234,7 @@ public class GameBoard extends JPanel implements ActionListener {
 		}
 
 		drawPlayerHealthBars(g);
+		drawSpecialAttackFrame(g);
 
 		// Draws higher level animations
 		for (SpriteAnimation animation : animationManager.getUpperAnimations()) {
@@ -313,6 +316,27 @@ public class GameBoard extends JPanel implements ActionListener {
 
 		UIObject shieldFrame = uiManager.getShieldFrame();
 		drawImage(g, shieldFrame);
+	}
+
+	private void drawSpecialAttackFrame(Graphics2D g) {
+		drawImage(g, uiManager.getSpecialAttackFrame());
+
+		   for (SpaceShipSpecialGun gun : playerManager.getSpaceship().getSpecialGuns()) {
+		        if (gun.getCurrentSpecialAttackFrame() >= playerStats.getSpecialAttackSpeed()) {
+		            drawAnimation(g, uiManager.getSpecialAttackHighlight());
+		        } else {
+		            float percentage = (float) gun.getCurrentSpecialAttackFrame() / playerStats.getSpecialAttackSpeed();
+
+		            int barWidth = (int) (uiManager.getSpecialAttackFrame().getWidth() * percentage);
+
+		            // Draw the cooldown progress bar
+		            g.setColor(new Color(160, 160, 160, 160)); // Semi-transparent gray
+		            g.fillRect(uiManager.getSpecialAttackFrame().getXCoordinate(),
+		                    uiManager.getSpecialAttackFrame().getYCoordinate(),
+		                    barWidth,
+		                    uiManager.getSpecialAttackFrame().getHeight());
+		        }
+		    }
 
 	}
 

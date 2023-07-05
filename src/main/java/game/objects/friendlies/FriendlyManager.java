@@ -25,7 +25,7 @@ public class FriendlyManager {
 	private List<GuardianDrone> guardianDrones = new ArrayList<GuardianDrone>();
 
 	private FriendlyManager() {
-
+//		createGuardianDrone();
 	}
 
 	public static FriendlyManager getInstance() {
@@ -110,8 +110,7 @@ public class FriendlyManager {
 		guardianDrones.add((GuardianDrone) friendlyObject);
 		SpriteAnimation animation = new SpriteAnimation(xCoordinate, yCoordinate, ImageEnums.Guardian_Bot, true, scale);
 
-		friendlyObject.setAnimation(animation);
-		;
+		friendlyObject.setAnimation(animation);;
 		addActiveFriendlyObject(friendlyObject);
 	}
 

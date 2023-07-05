@@ -33,6 +33,7 @@ public class Missile extends Sprite {
 	protected boolean hasLock;
 
 	private Point nextPoint;
+	private Sprite target;
 
 	public Missile(int x, int y, Point destination, ImageEnums missileType, ImageEnums explosionType,
 			Direction rotation, float scale, PathFinder pathFinder, boolean isFriendly, int xMovementSpeed,
@@ -61,20 +62,22 @@ public class Missile extends Sprite {
 			lastUsedYMovementSpeed = yMovementSpeed;
 			currentPath.setCurrentLocation(new Point(xCoordinate, yCoordinate));
 		}
+		
+		if(this.target != null) {
+			currentPath.setTarget(this.target);
+		}
 
 		// check if the missile has lost lock
 		boolean hasPassedPlayerOrNeverHadLock = false;
 
 		if (pathFinder.shouldRecalculatePath(currentPath)) {
 			hasPassedPlayerOrNeverHadLock = true; // if it should recalculate path, it means it lost lock or never had
-													// one
 		}
 
 		if (hasPassedPlayerOrNeverHadLock) {
 			hasLock = false;
 		}
 
-		// declare the nextPoint variable here, before the if-else block
 
 		// only calculate next direction and update location if missile still has lock
 		if (hasLock) {
@@ -261,7 +264,14 @@ public class Missile extends Sprite {
 
 	public boolean isFriendly() {
 		return this.isFriendly;
+	}
+	
+	public Sprite getTarget() {
+		return target;
+	}
 
+	public void setTarget(Sprite target) {
+		this.target = target;
 	}
 
 }

@@ -6,28 +6,28 @@ public enum Direction {
 	public double toAngle() {
         switch (this) {
             case LEFT:
-                return 0;
+                return 0; // correct
             case RIGHT:
-                return 90.0;
+                return 180.0; // correct
             case UP:
-                return 0.0;
+                return 90.0; // correct
             case DOWN:
-                return 180.0;
+                return 270.0; //correct
             case RIGHT_UP:
-                return 45.0;
+                return 135.0; // corrected
             case RIGHT_DOWN:
-                return 135.0;
+                return 225.0; // corrected
             case LEFT_UP:
-                return 315.0;
+                return 45.0; // corrected
             case LEFT_DOWN:
-                return 225.0;
+                return 315.0; // corrected
             case NONE:
             default:
                 return 0.0;
         }
     }
 	
-	public double toAngleReal() {
+	public double toAngleOld() {
         switch (this) {
             case LEFT:
                 return 0;

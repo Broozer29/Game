@@ -7,5 +7,5 @@ public enum MenuFunctionEnums {
 	Menu_Cursor,
 	Select_Laserbeam_Preset,
 	Select_Flamethrower_Preset,
-	NONE
+	NONE, Select_Rocket_Preset
 }

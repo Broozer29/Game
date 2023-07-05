@@ -5,6 +5,8 @@ import data.image.ImageEnums;
 import game.movement.Direction;
 import game.movement.PathFinder;
 import game.movement.Point;
+import game.objects.friendlies.spaceship.PlayerAttackTypes;
+import game.objects.missiles.MissileCreator;
 import game.objects.missiles.MissileManager;
 
 public class Alien extends Enemy {
@@ -48,9 +50,10 @@ public class Alien extends Enemy {
 		}
 		if (currentAttackSpeedFrameCount >= attackSpeedFrameCount) {
 			if (currentBoardBlock < 7) {
-				missileManager.addEnemyMissile(this.xCoordinate, this.yCoordinate + calculateRandomWeaponHeightOffset(),
-						ImageEnums.Alien_Laserbeam, ImageEnums.Impact_Explosion_One, Direction.LEFT, this.scale,
-						missilePathFinder, 5, 2);
+				missileManager.addExistingMissile(MissileCreator.getInstance().createEnemyMissile(
+						xCoordinate, yCoordinate + calculateRandomWeaponHeightOffset()
+						, ImageEnums.Alien_Laserbeam, ImageEnums.Impact_Explosion_One, rotation, 
+						scale, missilePathFinder, XMovementSpeed, XMovementSpeed, (float) 7.5));
 				currentAttackSpeedFrameCount = 0;
 			}
 		}

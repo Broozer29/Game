@@ -8,10 +8,10 @@ import game.movement.Point;
 public class EnergizerProjectile extends Missile {
 
 	public EnergizerProjectile(int x, int y, Point destination, ImageEnums missileType, ImageEnums explosionType,
-			Direction rotation, float scale, PathFinder pathFinder, int xMovementSpeed, int yMovementSpeed) {
-		super(x, y, destination, missileType, explosionType, rotation, scale, pathFinder, false, xMovementSpeed,
+			Direction rotation, float scale, PathFinder pathFinder, int xMovementSpeed, int yMovementSpeed, boolean isFriendly, float damage) {
+		super(x, y, destination, missileType, explosionType, rotation, scale, pathFinder, isFriendly, xMovementSpeed,
 				yMovementSpeed);
-		this.missileDamage = (float) 7.5;
+		this.missileDamage = damage;
 		setAnimation();
 		this.animation.setFrameDelay(3);
 	}

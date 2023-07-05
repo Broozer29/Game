@@ -122,7 +122,10 @@ public class ImageDatabase {
 	private BufferedImage starcraft2_Wraith_Cloak;
 	private BufferedImage starcraft2_Yellow_Blink;
 	private BufferedImage starcraft2_Heal;
-
+	private BufferedImage starcraft2_Electric_Field;
+	private BufferedImage starcraft2_Firebat_Weapon;
+	
+	
 	//Font Letters
 	private BufferedImage letter_A;
 	private BufferedImage letter_B;
@@ -223,6 +226,8 @@ public class ImageDatabase {
 	private List<BufferedImage> bulldozerProjectileFrames = new ArrayList<BufferedImage>();
 	private List<BufferedImage> flamerProjectileFrames = new ArrayList<BufferedImage>();
 	private List<BufferedImage> bombaProjectileFrames = new ArrayList<BufferedImage>();
+	private List<BufferedImage> Rocket1ProjectileFrames = new ArrayList<BufferedImage>();
+	private List<BufferedImage> Rocket1ExplosionFrames = new ArrayList<BufferedImage>();
 
 	// Enemy Exhaust Animations
 	private List<BufferedImage> seekerNormalExhaustFrames = new ArrayList<BufferedImage>();
@@ -245,6 +250,7 @@ public class ImageDatabase {
 	private List<BufferedImage> bulldozerProjectileExplosion = new ArrayList<BufferedImage>();
 	private List<BufferedImage> flamerProjectileExplosion = new ArrayList<BufferedImage>();
 	private List<BufferedImage> bombaProjectileExplosion = new ArrayList<BufferedImage>();
+	
 
 	// Background images
 	private BufferedImage moon;
@@ -282,6 +288,7 @@ public class ImageDatabase {
 	private BufferedImage purpleNebula5;
 	private BufferedImage purpleNebula6;
 	private BufferedImage purpleNebula7;
+	private List<BufferedImage> HighlightImages = new ArrayList<BufferedImage>();
 
 	// testimages
 	private BufferedImage testImage;
@@ -424,6 +431,8 @@ public class ImageDatabase {
 		this.starcraft2_Wraith_Cloak = imgLoader.getImage(ImageEnums.Starcraft2_Wraith_Cloak);
 		this.starcraft2_Yellow_Blink = imgLoader.getImage(ImageEnums.Starcraft2_Yellow_Blink);
 		this.starcraft2_Heal = imgLoader.getImage(ImageEnums.Starcraft2_Heal);
+		this.starcraft2_Electric_Field = imgLoader.getImage(ImageEnums.Starcraft2_Electric_Field);
+		this.starcraft2_Firebat_Weapon = imgLoader.getImage(ImageEnums.Starcraft2_Firebat_Weapon);
 	}
 	
 	private void initLetters() {
@@ -902,7 +911,10 @@ public class ImageDatabase {
 			return titleImage;
 		case Invisible:
 			return invisibile;
-
+		case Starcraft2_Electric_Field:
+			return starcraft2_Electric_Field;
+		case Starcraft2_Firebat_Weapon:
+			return starcraft2_Firebat_Weapon;
 		default:
 			return testImage;
 		}
@@ -1006,6 +1018,12 @@ public class ImageDatabase {
 			return firewallParticleFrames;
 		case Invisible_Animation:
 			return invisibleAnimation;
+		case Highlight:
+			return HighlightImages;
+		case Rocket_1:
+			return Rocket1ProjectileFrames;
+		case Rocket_1_Explosion:
+			return Rocket1ExplosionFrames;
 		}
 		return null;
 	}
@@ -1213,6 +1231,26 @@ public class ImageDatabase {
 		for (int i = 1; i < 4; i++) {
 			BufferedImage image = imgLoader.getImage(ImageEnums.Invisible);
 			invisibleAnimation.add(image);
+		}
+		
+		for (int i = 1; i < 21; i++) {
+			String sourceString = String.format("src/resources/images/gif/PNGtoGIF/Highlight/highlight%d.png", i);
+			BufferedImage image = imgLoader.getSpritesheetImage(sourceString);
+			HighlightImages.add(image);
+		}
+		
+		
+		for (int i = 0; i < 9; i++) {
+			String sourceString = String.format("src/resources/images/gif/PNGtoGIF/Missile1/Missile_1_Explosion_00%d.png", i);
+			BufferedImage image = imgLoader.getSpritesheetImage(sourceString);
+			Rocket1ExplosionFrames.add(image);
+		}
+		
+		
+		for (int i = 0; i < 10; i++) {
+			String sourceString = String.format("src/resources/images/gif/PNGtoGIF/Missile1/Missile_1_Flying_00%d.png", i);
+			BufferedImage image = imgLoader.getSpritesheetImage(sourceString);
+			Rocket1ProjectileFrames.add(image);
 		}
 
 	}

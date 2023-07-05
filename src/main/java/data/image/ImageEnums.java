@@ -24,7 +24,7 @@ public enum ImageEnums {
 	// Missile Animations
 	Seeker_Missile, Tazer_Missile, Energizer_Missile, Bulldozer_Missile, Flamer_Missile, Bomba_Missile,
 	Seeker_Missile_Explosion, Tazer_Missile_Explosion, Energizer_Missile_Explosion, Bulldozer_Missile_Explosion,
-	Flamer_Missile_Explosion, Bomba_Missile_Explosion, Flamethrower_Animation,
+	Flamer_Missile_Explosion, Bomba_Missile_Explosion, Flamethrower_Animation, Rocket_1, Rocket_1_Explosion,
 
 	// Missile Images
 	Player_Laserbeam, Alien_Laserbeam,
@@ -39,7 +39,7 @@ public enum ImageEnums {
 	Implosion, Invisible, Invisible_Animation,
 
 	// GUI
-	Health_Bar, Shield_Bar, Icon_Border, Health_Shield_Frames, Frame, Red_Filling, Gold_Filling,
+	Health_Bar, Shield_Bar, Icon_Border, Health_Shield_Frames, Frame, Red_Filling, Gold_Filling, Highlight,
 
 	// Icons
 	TripleShotIcon, DoubleShotIcon, Starcraft2_Point_Defense_Drone, Starcraft2_Protoss_Cloak,
@@ -58,7 +58,7 @@ public enum ImageEnums {
 	Starcraft2_Terran_Speed2, Starcraft2_Terran_Speed3, Starcraft2_Terran_Weapons1, Starcraft2_Terran_Weapons2,
 	Starcraft2_Terran_Weapons3, Starcraft2_Third_Blink, Starcraft2_Time_Warp, Starcraft2_Vespene_Gas,
 	Starcraft2_Vespene_Siphon, Starcraft2_Vespene_Drone, Starcraft2_Wraith_Cloak, Starcraft2_Yellow_Blink,
-	Starcraft2_Heal,
+	Starcraft2_Heal, Starcraft2_Electric_Field, Starcraft2_Firebat_Weapon,
 
 	// Letters
 	Letter_a, Letter_b, Letter_c, Letter_d, Letter_e, Letter_f, Letter_g, Letter_h, Letter_i, Letter_j, Letter_k,

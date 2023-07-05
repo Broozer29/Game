@@ -8,16 +8,15 @@ import game.movement.Point;
 
 public class FirewallMissile extends Missile {
 
-	public FirewallMissile(int x, int y, Point destination, ImageEnums missileType, ImageEnums explosionType,
-			Direction rotation, float scale, PathFinder pathFinder, boolean isFriendly, int xMovementSpeed,
-			int yMovementSpeed, float damage) {
-		super(x, y, destination, missileType, explosionType, rotation, scale, pathFinder, isFriendly, xMovementSpeed,
+	public FirewallMissile(int xCoordinate, int yCoordinate, Point destination, ImageEnums missileType,
+			ImageEnums explosionType, Direction rotation, float scale, PathFinder pathFinder, int xMovementSpeed,
+			int yMovementSpeed, float specialAttackDamage, boolean friendly) {
+		super(xCoordinate, yCoordinate, destination, missileType, explosionType, rotation, scale, pathFinder, friendly, xMovementSpeed,
 				yMovementSpeed);
 		this.setAnimation();
 		this.animation.setFrameDelay(10);
-		this.missileDamage = damage;
-	}
-	
+		this.missileDamage = specialAttackDamage;	}
+
 	public void missileAction() {
 		//Pulse with a firenova or something??
 	}

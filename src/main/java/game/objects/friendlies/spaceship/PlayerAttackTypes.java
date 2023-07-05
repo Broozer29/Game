@@ -5,6 +5,7 @@ public enum PlayerAttackTypes {
 	Shotgun,
 	Flamethrower,
 	Rocket,
+	Firewall,
 	NONE,
 	DUMMY_VALUE
 }

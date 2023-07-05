@@ -6,6 +6,7 @@ import game.movement.Direction;
 import game.movement.PathFinder;
 import game.movement.Point;
 import game.movement.RegularPathFinder;
+import game.objects.missiles.MissileCreator;
 import game.objects.missiles.MissileManager;
 
 public class Bulldozer extends Enemy {
@@ -54,15 +55,10 @@ public class Bulldozer extends Enemy {
 		int xMovementSpeed = 5;
 		int yMovementSpeed = 2;
 		if (currentAttackSpeedFrameCount >= attackSpeedFrameCount) {
-			missileManager.addEnemyMissile(this.xCoordinate, this.yCoordinate, ImageEnums.Bulldozer_Missile,
-					ImageEnums.Bulldozer_Missile_Explosion, Direction.LEFT_UP, this.scale, missilePathFinder,
-					xMovementSpeed, yMovementSpeed);
-			missileManager.addEnemyMissile(this.xCoordinate, this.yCoordinate, ImageEnums.Bulldozer_Missile,
-					ImageEnums.Bulldozer_Missile_Explosion, Direction.LEFT_DOWN, this.scale, missilePathFinder,
-					xMovementSpeed, yMovementSpeed);
-			missileManager.addEnemyMissile(this.xCoordinate, this.yCoordinate, ImageEnums.Bulldozer_Missile,
-					ImageEnums.Bulldozer_Missile_Explosion, Direction.LEFT, this.scale, missilePathFinder,
-					xMovementSpeed, yMovementSpeed);
+			missileManager.addExistingMissile(MissileCreator.getInstance().createEnemyMissile(
+					xCoordinate, yCoordinate + + this.height / 2
+					, ImageEnums.Bulldozer_Missile, ImageEnums.Bulldozer_Missile_Explosion, rotation, 
+					scale, missilePathFinder, xMovementSpeed, yMovementSpeed, (float) 7.5));
 			currentAttackSpeedFrameCount = 0;
 		}
 		if (currentAttackSpeedFrameCount < attackSpeedFrameCount) {

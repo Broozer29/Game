@@ -158,7 +158,14 @@ public class SpriteAnimation extends Sprite {
 			this.animationBounds.setBounds(xCoordinate, yCoordinate, frames.get(frames.size() - 1).getWidth(null),
 					frames.get(frames.size() - 1).getHeight(null));
 		}
-
+	}
+	
+	public void setImageDimensions(int newWidth, int newHeight) {
+		ImageResizer imageResizer = ImageResizer.getInstance();
+		
+		for(BufferedImage image : frames) {
+			image = imageResizer.resizeImageToDimensions(image, newWidth, newHeight);
+		}
 	}
 	
 }

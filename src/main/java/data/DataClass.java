@@ -6,7 +6,7 @@ public class DataClass {
 	private static DataClass instance = new DataClass();
 
 	private int windowWidth = 1440;
-	private int windowHeight = 920;
+	private int windowHeight = 875;
 	
 //	private int windowWidth = 1280;
 //	private int windowHeight = 720;

@@ -417,6 +417,10 @@ public class ImageLoader {
 			return "src/resources/images/TitleImage.png";
 	    case Invisible:
 	    	return "src/resources/images/invisible.png";
+	    case Starcraft2_Firebat_Weapon:
+	    	return "src/resources/images/Icons/Starcraft2_Firebat_Weapon.png";
+	    case Starcraft2_Electric_Field:
+	    	return  "src/resources/images/Icons/Starcraft2 Electric Field.png";
 		default:
 			break;
 		

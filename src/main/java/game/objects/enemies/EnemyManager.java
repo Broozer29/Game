@@ -219,7 +219,7 @@ public class EnemyManager {
 			return false;
 	}
 
-	public Point getClosestEnemy() {
+	public Enemy getClosestEnemy() {
 		int playerXCoordinate = PlayerManager.getInstance().getSpaceship().getCenterXCoordinate();
 		int playerYCoordinate = PlayerManager.getInstance().getSpaceship().getCenterYCoordinate();
 
@@ -241,18 +241,8 @@ public class EnemyManager {
 				closestEnemy = enemy;
 			}
 		}
-		Point point = null;
-		if (closestEnemy != null) {
-			point = new Point(closestEnemy.getCenterXCoordinate(), closestEnemy.getCenterYCoordinate());
-		} else {
-			point = getBackUpPoint();
-		}
-		return point;
+		return closestEnemy;
 	}
 
-	private Point getBackUpPoint() {
-		int endXCoordinate = DataClass.getInstance().getWindowWidth();
-		int endYCoordinate = PlayerManager.getInstance().getSpaceship().getCenterYCoordinate();
-		return new Point(endXCoordinate, endYCoordinate);
-	}
+
 }

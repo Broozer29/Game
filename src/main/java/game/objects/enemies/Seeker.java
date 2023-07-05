@@ -6,6 +6,7 @@ import game.movement.Direction;
 import game.movement.PathFinder;
 import game.movement.Point;
 import game.movement.RegularPathFinder;
+import game.objects.missiles.MissileCreator;
 import game.objects.missiles.MissileManager;
 
 public class Seeker extends Enemy {
@@ -54,11 +55,15 @@ public class Seeker extends Enemy {
 		}
 		int xMovementSpeed = 5;
 		int yMovementSpeed = 2;
+		
+		
+		// Hier een missile maken, en na het maken een target toeveogen aan de missile. De missile kan dan zijn target geven aan path. 
+		//PAth kan vervolgens zijn target tracken en constant de nextStep() naar de target teruggeven.
 		if (currentAttackSpeedFrameCount >= attackSpeedFrameCount) {
-			missileManager.addEnemyMissile(this.xCoordinate, this.yCoordinate + calculateRandomWeaponHeightOffset(),
-					ImageEnums.Seeker_Missile, ImageEnums.Seeker_Missile_Explosion, rotation, this.scale,
-					missilePathFinder, xMovementSpeed, yMovementSpeed);
-			currentAttackSpeedFrameCount = 0;
+			missileManager.addExistingMissile(MissileCreator.getInstance().createEnemyMissile(
+					xCoordinate, yCoordinate + + this.height / 2
+					, ImageEnums.Seeker_Missile, ImageEnums.Seeker_Missile_Explosion, rotation, 
+					scale, missilePathFinder, xMovementSpeed, yMovementSpeed, (float) 7.5));
 		}
 		if (currentAttackSpeedFrameCount < attackSpeedFrameCount) {
 			this.currentAttackSpeedFrameCount++;

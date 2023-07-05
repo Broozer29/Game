@@ -8,9 +8,9 @@ import game.movement.Point;
 public class FlamerProjectile extends Missile {
 
 	public FlamerProjectile(int x, int y, Point destination, ImageEnums missileType, ImageEnums explosionType,
-			Direction rotation, float scale, PathFinder pathFinder, int xMovementSpeed, int yMovementSpeed) {
-		super(x, y, destination, missileType, explosionType, rotation, scale, pathFinder, false, xMovementSpeed, yMovementSpeed);
-		this.missileDamage = (float) 7.5;
+			Direction rotation, float scale, PathFinder pathFinder, int xMovementSpeed, int yMovementSpeed, boolean friendly, float damage) {
+		super(x, y, destination, missileType, explosionType, rotation, scale, pathFinder, friendly, xMovementSpeed, yMovementSpeed);
+		this.missileDamage = damage;
 		setAnimation();
 		this.animation.setFrameDelay(3);
 	}

@@ -1,5 +1,7 @@
 package game.objects.enemies;
 
+import java.util.ArrayList;
+import java.util.List;
 
 import data.audio.AudioEnums;
 import data.image.ImageEnums;
@@ -7,11 +9,13 @@ import game.movement.Direction;
 import game.movement.PathFinder;
 import game.movement.Point;
 import game.movement.RegularPathFinder;
+import game.objects.missiles.MissileCreator;
 import game.objects.missiles.MissileManager;
 
 public class Bomba extends Enemy {
-	
+
 	private PathFinder missilePathFinder;
+	private List<Direction> missileDirections = new ArrayList<Direction>();
 
 	public Bomba(int x, int y, Point destination, Direction rotation, float scale, PathFinder pathFinder) {
 		super(x, y, destination, rotation, EnemyEnums.Bomba, scale, pathFinder);
@@ -32,8 +36,9 @@ public class Bomba extends Enemy {
 		this.setVisible(true);
 		this.setRotation(rotation);
 		this.missilePathFinder = new RegularPathFinder();
+		this.initDirectionFromRotation();
 	}
-	
+
 	private void initBoardBlockSpeeds() {
 		this.boardBlockSpeeds.add(0, 1);
 		this.boardBlockSpeeds.add(1, 1);
@@ -56,18 +61,53 @@ public class Bomba extends Enemy {
 		int xMovementSpeed = 5;
 		int yMovementSpeed = 2;
 		if (currentAttackSpeedFrameCount >= attackSpeedFrameCount) {
-			missileManager.addEnemyMissile(this.xCoordinate, this.yCoordinate + this.height / 2, ImageEnums.Bomba_Missile,
-					ImageEnums.Bomba_Missile_Explosion, Direction.LEFT_UP, this.scale, missilePathFinder, xMovementSpeed, yMovementSpeed);
-			missileManager.addEnemyMissile(this.xCoordinate, this.yCoordinate + this.height / 2, ImageEnums.Bomba_Missile,
-					ImageEnums.Bomba_Missile_Explosion, Direction.LEFT, this.scale, missilePathFinder, xMovementSpeed, yMovementSpeed);
-			missileManager.addEnemyMissile(this.xCoordinate, this.yCoordinate + this.height / 2, ImageEnums.Bomba_Missile,
-					ImageEnums.Bomba_Missile_Explosion, Direction.LEFT_DOWN, this.scale, missilePathFinder, xMovementSpeed, yMovementSpeed);
-			
+
+			for (Direction direction : missileDirections) {
+				missileManager.addExistingMissile(MissileCreator.getInstance().createEnemyMissile(xCoordinate,
+						yCoordinate + +this.height / 2, ImageEnums.Bomba_Missile, ImageEnums.Bomba_Missile_Explosion,
+						direction, scale, missilePathFinder, xMovementSpeed, yMovementSpeed, (float) 7.5));
+			}
+
 			currentAttackSpeedFrameCount = 0;
 		}
 		if (currentAttackSpeedFrameCount < attackSpeedFrameCount) {
 			this.currentAttackSpeedFrameCount++;
 		}
 	}
-	
+
+	private void initDirectionFromRotation() {
+		switch (this.rotation) {
+		case DOWN:
+			missileDirections.add(Direction.LEFT_DOWN);
+			missileDirections.add(Direction.DOWN);
+			missileDirections.add(Direction.RIGHT_DOWN);
+			break;
+		case LEFT:
+		case LEFT_DOWN:
+		case LEFT_UP:
+			missileDirections.add(Direction.LEFT_DOWN);
+			missileDirections.add(Direction.LEFT);
+			missileDirections.add(Direction.LEFT_UP);
+			break;
+		case NONE:
+			missileDirections.add(Direction.LEFT);
+			break;
+		case RIGHT:
+		case RIGHT_DOWN:
+		case RIGHT_UP:
+			missileDirections.add(Direction.RIGHT_UP);
+			missileDirections.add(Direction.RIGHT);
+			missileDirections.add(Direction.RIGHT_DOWN);
+			break;
+		case UP:
+			missileDirections.add(Direction.LEFT_UP);
+			missileDirections.add(Direction.UP);
+			missileDirections.add(Direction.RIGHT_UP);
+			break;
+		default:
+			missileDirections.add(Direction.LEFT);
+			break;
+
+		}
+	}
 }

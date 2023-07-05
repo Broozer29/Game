@@ -7,10 +7,12 @@ import game.movement.Point;
 
 public class TazerProjectile extends Missile {
 
-	public TazerProjectile(int x, int y, Point destination, ImageEnums missileType, ImageEnums explosionType, Direction rotation,
-			float scale, PathFinder pathFinder, int xMovementSpeed, int yMovementSpeed) {
-		super(x, y, destination, missileType, explosionType, rotation, scale, pathFinder, false, xMovementSpeed, yMovementSpeed);
-		this.missileDamage = (float) 7.5;
+	public TazerProjectile(int x, int y, Point destination, ImageEnums missileType, ImageEnums explosionType,
+			Direction rotation, float scale, PathFinder pathFinder, int xMovementSpeed, int yMovementSpeed,
+			boolean friendly, float damage) {
+		super(x, y, destination, missileType, explosionType, rotation, scale, pathFinder, friendly, xMovementSpeed,
+				yMovementSpeed);
+		this.missileDamage = damage;
 		setAnimation();
 		this.animation.setFrameDelay(3);
 

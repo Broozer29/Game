@@ -115,13 +115,14 @@ public class RegularPathFinder implements PathFinder {
 	}
 
 	@Override
-	public Point calculateInitialEndpoint(Point start, Direction rotation) {
+	public Point calculateInitialEndpoint(Point start, Direction rotation, boolean friendly) {
 		int endXCoordinate = 0;
 		int endYCoordinate = 0;
 		int xCoordinate = start.getX();
 		int yCoordinate = start.getY();
 		DataClass dataClass = DataClass.getInstance();
 
+		//friendly is not used for regular paths
 		switch (rotation) {
 		case UP:
 			endYCoordinate = -150;

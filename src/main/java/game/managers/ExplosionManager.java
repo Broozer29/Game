@@ -93,7 +93,7 @@ public class ExplosionManager {
 			if (explosion.isVisible() && explosion.isFriendly()) {
 				for (Enemy enemy : enemyManager.getEnemies()) {
 					if (isNearby(explosion, enemy)) {
-						if (explosion.getAnimation().getBounds().intersects(enemy.getBounds())) {
+						if (explosion.getAnimation().getAnimationBounds().intersects(enemy.getBounds())) {
 							enemy.takeDamage(explosion.getDamage());
 						}
 					}

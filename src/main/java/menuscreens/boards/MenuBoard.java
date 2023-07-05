@@ -78,7 +78,7 @@ public class MenuBoard extends JPanel implements ActionListener {
 		this.selectUserTile2 = new MenuObject((boardWidth / 2) + 300, (boardHeight / 2), textScale,
 				"Flamethrower Setup", MenuObjectEnums.Text_Block, MenuFunctionEnums.Select_Flamethrower_Preset);
 		this.selectUserTile3 = new MenuObject((boardWidth / 2) + 300, (boardHeight / 2) + 50, textScale,
-				"Unimplemented", MenuObjectEnums.Text_Block, MenuFunctionEnums.NONE);
+				"Rocket setup missing special attack lol", MenuObjectEnums.Text_Block, MenuFunctionEnums.Select_Rocket_Preset);
 
 		this.titleImage = new MenuObject(200, (boardHeight / 2) / 2, imageScale, null, MenuObjectEnums.Title_Image,
 				MenuFunctionEnums.NONE);

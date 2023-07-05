@@ -1,10 +1,9 @@
 package game.managers;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import data.PlayerStats;
 import data.image.ImageEnums;
 import game.UI.UIObject;
+import visual.objects.SpriteAnimation;
 
 public class CustomUIManager {
 
@@ -17,6 +16,11 @@ public class CustomUIManager {
 
 	private UIObject shieldFrame;
 	private UIObject shieldBar;
+	
+	private UIObject specialAttackFrame;
+	private SpriteAnimation specialAttackHighlight;
+	
+	
 	private static CustomUIManager instance = new CustomUIManager();
 
 	private CustomUIManager() {
@@ -30,6 +34,30 @@ public class CustomUIManager {
 	public void createGameBoardGUI() {
 		createHealthBar();
 		createShieldBar();
+		createSpecialAttackUIObjects();
+	}
+	
+	private void createSpecialAttackUIObjects() {
+		ImageEnums frameType = null;
+		switch(PlayerStats.getInstance().getPlayerSpecialAttackType()) {
+		case EMP:
+			frameType = ImageEnums.Starcraft2_Electric_Field;
+			break;
+		case Firewall:
+			frameType = ImageEnums.Starcraft2_Firebat_Weapon;
+			break;
+		case Rocket_Cluster:
+			break;
+		default:
+			break;
+		
+		}
+
+		specialAttackFrame = new UIObject(150, 20, (float) 0.7, frameType);
+		specialAttackHighlight = new SpriteAnimation(50, 30, ImageEnums.Highlight, true, (float) 0.7);
+		specialAttackHighlight.setImageDimensions(specialAttackFrame.getWidth(), specialAttackFrame.getHeight());
+		specialAttackHighlight.setX(specialAttackFrame.getXCoordinate() - 2);
+		specialAttackHighlight.setY(specialAttackFrame.getYCoordinate() - 2);
 	}
 
 	private void createHealthBar() {
@@ -73,6 +101,14 @@ public class CustomUIManager {
 	public void resetManager() {
 		createHealthBar();
 		createShieldBar();
+	}
+
+	public UIObject getSpecialAttackFrame() {
+		return specialAttackFrame;
+	}
+
+	public SpriteAnimation getSpecialAttackHighlight() {
+		return specialAttackHighlight;
 	}
 
 }

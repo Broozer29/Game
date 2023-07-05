@@ -13,6 +13,7 @@ import data.image.ImageEnums;
 import game.managers.AudioManager;
 import game.playerpresets.FlamethrowerPreset;
 import game.playerpresets.LaserbeamPreset;
+import game.playerpresets.RocketPreset;
 
 public class MenuObject {
 
@@ -66,6 +67,14 @@ public class MenuObject {
 			break;
 		case Return_To_Main_Menu:
 			BoardManager.getInstance().userSelectionToMainMenu();
+			break;
+		case NONE:
+			break;
+		case Select_Rocket_Preset:
+			audioManager.addAudio(AudioEnums.Power_Up_Acquired);
+			PlayerStats.getInstance().setPreset(new RocketPreset());
+			break;
+		default:
 			break;
 		}
 	}

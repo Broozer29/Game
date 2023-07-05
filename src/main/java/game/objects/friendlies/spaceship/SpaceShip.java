@@ -283,5 +283,9 @@ public class SpaceShip extends Sprite {
 	public void repairShields(float healAmount) {
 		playerStats.changeShieldHitpoints(healAmount);
 	}
+	
+	public List<SpaceShipSpecialGun> getSpecialGuns() {
+		return this.spaceShipSpecialGuns;
+	}
 
 }

@@ -73,6 +73,8 @@ public class LevelSpawnerManager {
 
 		EnemySpawnTimer timer = new EnemySpawnTimer(100, 1, EnemyEnums.Bomba, true, Direction.LEFT, 1, 0);
 		TimerManager.getInstance().addEnemyTimerToList(timer);
+//		EnemySpawnTimer timer2 = new EnemySpawnTimer(100, 1, EnemyEnums.Bomba, true, Direction.LEFT_UP, 1, 0);
+//		TimerManager.getInstance().addEnemyTimerToList(timer2);
 //		timer = timerManager.createTimer(EnemyEnums.Flamer, 1, 100, false, Direction.LEFT, 1);
 //		timerManager.addTimerToList(timer);
 //		EnemySpawnTimer timer = timerManager.createTimer(EnemyEnums.Alien_Bomb, 100, 3000, true, Direction.LEFT, 1, 1);
@@ -169,7 +171,7 @@ public class LevelSpawnerManager {
 
 		// Can be refactored to be more efficient
 		Point currentPoint = new Point(xCoordinate, yCoordinate);
-		Point regularDestination = regularPathFinder.calculateInitialEndpoint(currentPoint, rotation);
+		Point regularDestination = regularPathFinder.calculateInitialEndpoint(currentPoint, rotation, false);
 //		Point homingDestination = homingPathFinder.calculateInitialEndpoint(currentPoint, rotation);
 
 		switch (type) {
