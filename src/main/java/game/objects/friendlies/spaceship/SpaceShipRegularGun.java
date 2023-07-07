@@ -76,6 +76,7 @@ public class SpaceShipRegularGun {
 			PlayerAttackTypes attackType = PlayerAttackTypes.Rocket;
 			
 			this.fireMissile(x, y, type, impactType, Direction.RIGHT, scale, pathFinder, xMovementSpeed, yMovementSpeed, attackType, null);
+			playMissileAudio(AudioEnums.Rocket_Launcher);
 		}
 	}
 
@@ -94,7 +95,7 @@ public class SpaceShipRegularGun {
 			PlayerAttackTypes attackType = PlayerAttackTypes.Flamethrower;
 			
 			this.fireMissile(x, y, type, impactType, Direction.RIGHT, scale, pathFinder, xMovementSpeed, yMovementSpeed, attackType, null);
-//			playMissileAudio(AudioEnums.Player_Laserbeam);
+			playMissileAudio(AudioEnums.Flamethrower);
 		}
 	}
 

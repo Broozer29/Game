@@ -1,6 +1,6 @@
 package game.objects.friendlies.powerups;
 
-public enum PowerUps {
+public enum PowerUpEnums {
 	
 	
 	//Permanent upgrades from a store or smth
@@ -14,6 +14,9 @@ public enum PowerUps {
 	INCREASED_NORMAL_ATTACK_SPEED,
 	INCREASED_SPECIAL_ATTACK_SPEED,
 	HEALTH_AND_SHIELD_RESTORE,
+	
+	//Guardian drones
+	Guardian_Drone_Homing_Missile,
 	
 	
 	//For the use of generating random powerup effects

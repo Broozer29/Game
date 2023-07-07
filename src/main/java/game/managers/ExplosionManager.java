@@ -70,13 +70,21 @@ public class ExplosionManager {
 			friendlyManager = PlayerManager.getInstance();
 		}
 		for (Explosion explosion : explosionList) {
-			if (explosion.isVisible() && !explosion.isFriendly()) {
-				if (isNearby(explosion, friendlyManager.getSpaceship())) {
-					if (explosion.getAnimation().getAnimationBounds()
-							.intersects(friendlyManager.getSpaceship().getBounds())) {
-						if (!explosion.getDealtDamage()) {
-							friendlyManager.getSpaceship().takeHitpointDamage(explosion.getDamage());
-							explosion.setDealtDamage(true);
+			// Check if the explosion should deal damage at all
+			if (explosion.shouldDealDamage()) {
+				// Check if the explosion is visible and hostile
+				if (explosion.isVisible() && !explosion.isFriendly()) {
+					// Check if the explosion already did damage/collided to the player
+					if (!explosion.getCollidedSprites().contains(friendlyManager.getSpaceship())) {
+						// If the explosion is close to the player
+						if (isNearby(explosion, friendlyManager.getSpaceship())) {
+							// If the explosion intersects with the player
+							if (explosion.getAnimation().getAnimationBounds()
+									.intersects(friendlyManager.getSpaceship().getBounds())) {
+								// Collision!
+								friendlyManager.getSpaceship().takeHitpointDamage(explosion.getDamage());
+								explosion.addCollidedSprite(friendlyManager.getSpaceship());
+							}
 						}
 					}
 				}
@@ -90,22 +98,27 @@ public class ExplosionManager {
 			enemyManager = EnemyManager.getInstance();
 		}
 		for (Explosion explosion : explosionList) {
-			if (explosion.isVisible() && explosion.isFriendly()) {
-				for (Enemy enemy : enemyManager.getEnemies()) {
-					if (isNearby(explosion, enemy)) {
-						if (explosion.getAnimation().getAnimationBounds().intersects(enemy.getBounds())) {
-							enemy.takeDamage(explosion.getDamage());
+			if (explosion.shouldDealDamage()) {
+				if (explosion.isVisible() && explosion.isFriendly()) {
+					for (Enemy enemy : enemyManager.getEnemies()) {
+						if (!explosion.getCollidedSprites().contains(enemy)) {
+							if (isNearby(explosion, enemy)) {
+								if (explosion.getAnimation().getAnimationBounds().intersects(enemy.getBounds())) {
+									enemy.takeDamage(explosion.getDamage());
+									explosion.addCollidedSprite(enemy);
+								}
+							}
 						}
 					}
-				}
 
+				}
 			}
 		}
 	}
 
 	private boolean isWithinBoardBlockThreshold(Sprite sprite1, Sprite sprite2) {
 		int blockDifference = Math.abs(sprite1.getCurrentBoardBlock() - sprite2.getCurrentBoardBlock());
-		return blockDifference <= 2;
+		return blockDifference <= 4;
 	}
 
 	private boolean isNearby(Sprite sprite1, Sprite sprite2) {
@@ -115,7 +128,7 @@ public class ExplosionManager {
 
 		double distance = Math.hypot(sprite1.getXCoordinate() - sprite2.getXCoordinate(),
 				sprite1.getYCoordinate() - sprite2.getYCoordinate());
-		return distance < 150;
+		return distance < 400;
 	}
 
 	public void resetManager() {

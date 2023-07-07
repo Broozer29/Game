@@ -14,6 +14,7 @@ import game.objects.friendlies.spaceship.PlayerAttackTypes;
 import game.objects.missiles.Missile;
 import game.objects.missiles.MissileCreator;
 import game.objects.missiles.MissileManager;
+import visual.objects.Sprite;
 import visual.objects.SpriteAnimation;
 
 public class GuardianDrone extends FriendlyObject {
@@ -46,6 +47,7 @@ public class GuardianDrone extends FriendlyObject {
 		}
 	}
 
+	//Untested
 	private void createExplosion() {
 		if (attackFrameCount >= attackSpeedCooldown) {
 			SpriteAnimation explosionAnimation = new SpriteAnimation(this.getCenterXCoordinate(),
@@ -61,22 +63,44 @@ public class GuardianDrone extends FriendlyObject {
 		}
 	}
 
+	//Fire a homing missile (hardcoded to lasers)
 	private void fireHomingMissile() {
 		if (attackFrameCount >= attackSpeedCooldown) {
 			PathFinder pathFinder = new HomingPathFinder();
-			MissileManager missileManager = MissileManager.getInstance();
 
 			int xMovementSpeed = 5;
 			int yMovementSpeed = 2;
-			missileManager.addExistingMissile(MissileCreator.getInstance().createFriendlyMissile(
-					this.getCenterXCoordinate(), this.getCenterYCoordinate(), ImageEnums.Player_Laserbeam,
+
+			Sprite target = null;
+
+			if (pathFinder instanceof HomingPathFinder) {
+				target = ((HomingPathFinder) pathFinder).getTarget(true);
+			}
+
+			fireMissile(this.getCenterXCoordinate(), this.getCenterYCoordinate(), ImageEnums.Player_Laserbeam,
 					ImageEnums.Impact_Explosion_One, Direction.RIGHT, 1, pathFinder, xMovementSpeed, yMovementSpeed,
-					PlayerAttackTypes.Laserbeam));
+					PlayerAttackTypes.Laserbeam, target);
 			attackFrameCount = 0;
 
 		} else {
 			attackFrameCount++;
 		}
+	}
+
+	
+	//Should be used for all fireXMissile methods
+	private void fireMissile(int xCoordinate, int yCoordinate, ImageEnums playerMissileType,
+			ImageEnums playerMissileImpactType, Direction direction, float missileScale, PathFinder missilePathFinder,
+			int xMovementspeed, int yMovementspeed, PlayerAttackTypes attackType, Sprite target) {
+		Missile missile = MissileCreator.getInstance().createFriendlyMissile(xCoordinate, yCoordinate,
+				playerMissileType, playerMissileImpactType, direction, missileScale, missilePathFinder, xMovementspeed,
+				yMovementspeed, attackType);
+
+		if (target != null) {
+			missile.setTarget(target);
+		}
+		MissileManager.getInstance().addExistingMissile(missile);
+
 	}
 
 }

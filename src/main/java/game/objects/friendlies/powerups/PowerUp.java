@@ -17,13 +17,13 @@ public class PowerUp extends Sprite {
 
 	private Point destination;
 	private Path currentPath;
-	private PowerUps powerUpType;
+	private PowerUpEnums powerUpType;
 
 	private int timeBeforeActivation;
 	private boolean loopable;
 	private PowerUpEffect powerUpEffect;
 
-	public PowerUp(int x, int y, float scale, Direction direction, PowerUps powerUpType, ImageEnums powerUpImage, int timeBeforeActivation,
+	public PowerUp(int x, int y, float scale, Direction direction, PowerUpEnums powerUpType, ImageEnums powerUpImage, int timeBeforeActivation,
 			boolean loopable) {
 		super(x, y, scale);
 		this.direction = direction;
@@ -114,11 +114,11 @@ public class PowerUp extends Sprite {
 		this.direction = direction;
 	}
 
-	public PowerUps getPowerUpType() {
+	public PowerUpEnums getPowerUpType() {
 		return powerUpType;
 	}
 
-	public void setPowerUpType(PowerUps powerUpType) {
+	public void setPowerUpType(PowerUpEnums powerUpType) {
 		this.powerUpType = powerUpType;
 	}
 

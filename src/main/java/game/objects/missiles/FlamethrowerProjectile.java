@@ -6,7 +6,7 @@ import game.movement.Direction;
 import game.movement.PathFinder;
 import game.movement.Point;
 import game.objects.friendlies.powerups.PowerUpAcquiredText;
-import game.objects.friendlies.powerups.PowerUps;
+import game.objects.friendlies.powerups.PowerUpEnums;
 
 public class FlamethrowerProjectile extends Missile {
 

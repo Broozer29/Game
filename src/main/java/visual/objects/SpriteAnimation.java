@@ -37,7 +37,7 @@ public class SpriteAnimation extends Sprite {
 
 	protected void initAnimation() {
 		setImage(frames.get(0));
-		getImageDimensions();
+//		getImageDimensions();
 		centerAnimationFrame();
 		totalFrames = frames.size();
 	}
@@ -45,6 +45,7 @@ public class SpriteAnimation extends Sprite {
 	// Sets frames, Animation shouldn't call the ImageDatabase, it should get it
 	// from a manager when created.
 	private void loadGifFrames(ImageEnums imageType) {
+		this.imageType = imageType;
 		this.frames = ImageDatabase.getInstance().getGif(imageType);
 		this.standardSizeFrames = frames;
 	}
@@ -118,7 +119,7 @@ public class SpriteAnimation extends Sprite {
 		}
 		return null;
 	}
-	
+
 	public int getFrame() {
 		return this.currentFrame;
 	}
@@ -159,12 +160,21 @@ public class SpriteAnimation extends Sprite {
 					frames.get(frames.size() - 1).getHeight(null));
 		}
 	}
-	
+
 	public void setImageDimensions(int newWidth, int newHeight) {
 		ImageResizer imageResizer = ImageResizer.getInstance();
-		
-		for(BufferedImage image : frames) {
+		for (BufferedImage image : frames) {
 			image = imageResizer.resizeImageToDimensions(image, newWidth, newHeight);
+		}
+	}
+
+	public void setCenterCoordinates(int newXCoordinate, int newYCoordinate) {
+		if (currentFrame < frames.size()) {
+			this.xCoordinate = newXCoordinate - (frames.get(currentFrame).getWidth(null) / 2);
+			this.yCoordinate = newYCoordinate - (frames.get(currentFrame).getHeight(null) / 2);
+		} else {
+			this.xCoordinate = newXCoordinate - (frames.get(currentFrame - 1).getWidth(null) / 2);
+			this.yCoordinate = newYCoordinate - (frames.get(currentFrame - 1).getHeight(null) / 2);
 		}
 	}
 	

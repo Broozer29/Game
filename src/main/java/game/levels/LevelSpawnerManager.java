@@ -1,12 +1,8 @@
 package game.levels;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.sound.sampled.UnsupportedAudioFileException;
-
-import data.audio.AudioEnums;
 import game.managers.AudioManager;
 import game.managers.SpawningCoordinator;
 import game.managers.TimerManager;
@@ -34,9 +30,10 @@ public class LevelSpawnerManager {
 	private EnemyManager enemyManager = EnemyManager.getInstance();
 	private SpawningCoordinator spawningCoordinator = SpawningCoordinator.getInstance();
 	private TimerManager timerManager = TimerManager.getInstance();
-	private int level = 1;
-
+	
+	private Level currentLevel;
 	private LevelSpawnerManager() {
+		
 	}
 
 	public static LevelSpawnerManager getInstance() {
@@ -44,24 +41,26 @@ public class LevelSpawnerManager {
 	}
 
 	public void resetManager() {
-		level = 1;
+		currentLevel = null;
 	}
 
 	public void updateGameTick() {
+		
 	}
-
-	// Called when all aliens are dead
-	public void levelUp() {
-		this.level += 1;
+	
+	public void activateTimers(int currentSongFrame) {
+		for(EnemySpawnTimer timer : currentLevel.getTimers()) {
+			
+		}
 	}
 
 	// Called when a level starts, to saturate enemy list
 	public void startLevel() {
-//		BadAppleLevel baddAppleSong = new BadAppleLevel();
-//		AudioManager audioManager = AudioManager.getInstance();
-//		for(EnemySpawnTimer timer : baddAppleSong.getTimers()) {
-//			timerManager.addEnemyTimerToList(timer);
-//		}
+		currentLevel = new BadAppleLevel();
+		AudioManager audioManager = AudioManager.getInstance();
+		for(EnemySpawnTimer timer : currentLevel.getTimers()) {
+			timerManager.addEnemyTimerToList(timer);
+		}
 //		
 //		try {
 //			AudioEnums currentMusic = baddAppleSong.getSong();
@@ -124,7 +123,6 @@ public class LevelSpawnerManager {
 
 	private List<Integer> getSpawnCoordinatesByDirection(Direction direction) {
 		List<Integer> coordinatesList = new ArrayList<Integer>();
-
 		if (direction.equals(Direction.LEFT)) {
 			coordinatesList.add(spawningCoordinator.getRightBlockXCoordinate());
 			coordinatesList.add(spawningCoordinator.getRightBlockYCoordinate());
@@ -160,15 +158,12 @@ public class LevelSpawnerManager {
 //			System.out.println(
 //					"Tried spawning in a direction where the corresponding spawning block has nog been created yet!");
 		}
-
 		return coordinatesList;
 	}
 
 	private Enemy createEnemy(EnemyEnums type, int xCoordinate, int yCoordinate, Direction rotation, float scale) {
-
 		PathFinder regularPathFinder = new RegularPathFinder();
 		PathFinder homingPathFinder = new HomingPathFinder();
-
 		// Can be refactored to be more efficient
 		Point currentPoint = new Point(xCoordinate, yCoordinate);
 		Point regularDestination = regularPathFinder.calculateInitialEndpoint(currentPoint, rotation, false);

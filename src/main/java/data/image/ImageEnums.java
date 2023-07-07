@@ -24,7 +24,7 @@ public enum ImageEnums {
 	// Missile Animations
 	Seeker_Missile, Tazer_Missile, Energizer_Missile, Bulldozer_Missile, Flamer_Missile, Bomba_Missile,
 	Seeker_Missile_Explosion, Tazer_Missile_Explosion, Energizer_Missile_Explosion, Bulldozer_Missile_Explosion,
-	Flamer_Missile_Explosion, Bomba_Missile_Explosion, Flamethrower_Animation, Rocket_1, Rocket_1_Explosion,
+	Flamer_Missile_Explosion, Bomba_Missile_Explosion, Flamethrower_Animation, Rocket_1, Rocket_1_Explosion, Firespout_Animation,
 
 	// Missile Images
 	Player_Laserbeam, Alien_Laserbeam,
@@ -39,7 +39,7 @@ public enum ImageEnums {
 	Implosion, Invisible, Invisible_Animation,
 
 	// GUI
-	Health_Bar, Shield_Bar, Icon_Border, Health_Shield_Frames, Frame, Red_Filling, Gold_Filling, Highlight,
+	Health_Bar, Shield_Bar, Icon_Border, Health_Shield_Frames, Frame, Red_Filling, Gold_Filling, Highlight, Long_Card, Wide_Card, Square_Card,
 
 	// Icons
 	TripleShotIcon, DoubleShotIcon, Starcraft2_Point_Defense_Drone, Starcraft2_Protoss_Cloak,

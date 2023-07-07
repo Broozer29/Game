@@ -7,9 +7,9 @@ import java.util.List;
 import data.PlayerStats;
 import data.image.ImageEnums;
 import game.managers.AnimationManager;
-import game.managers.MovementInitiator;
 import game.managers.PlayerManager;
 import game.movement.Direction;
+import game.movement.MovementInitiator;
 import game.movement.PathFinder;
 import game.movement.Point;
 import game.objects.enemies.Enemy;
@@ -29,8 +29,8 @@ public class MissileManager {
 	private List<Missile> friendlyMissiles = new ArrayList<Missile>();
 	private List<SpecialAttack> specialAttacks = new ArrayList<SpecialAttack>();
 
-	private int threshold = 150;
-	private int boardBlockThreshold = 2;
+	private int threshold = 300;
+	private int boardBlockThreshold = 3;
 
 	private MissileManager() {
 	}
@@ -64,7 +64,7 @@ public class MissileManager {
 			this.enemyMissiles.add(missile);
 		}
 	}
-	
+
 	public void updateGameTick() {
 		if (animationManager == null || friendlyManager == null || enemyManager == null) {
 			animationManager = AnimationManager.getInstance();
@@ -85,7 +85,6 @@ public class MissileManager {
 		for (Missile missile : friendlyMissiles) {
 			if (missile.isVisible()) {
 				Rectangle r1 = getMissileBounds(missile);
-
 				for (Enemy enemy : enemyManager.getEnemies()) {
 					if (isNearby(missile, enemy)) {
 						Rectangle r2 = enemy.getBounds();
@@ -155,7 +154,7 @@ public class MissileManager {
 				}
 			}
 		}
-
+		
 		for (Enemy enemy : enemyManager.getEnemies()) {
 			if (isNearby(specialAttack.getAnimation(), enemy)) {
 				if (specialAttack.getAnimation().getAnimationBounds().intersects(enemy.getBounds())) {
@@ -199,6 +198,7 @@ public class MissileManager {
 		switch (missile.getMissileType()) {
 		case Flamethrower_Animation:
 		case FirewallParticle:
+		case Firespout_Animation:
 			break;
 		default:
 			missile.setVisible(false);
@@ -212,6 +212,7 @@ public class MissileManager {
 	private void setSpecialAttackMissileVisbility(Missile missile) {
 		switch (missile.getMissileType()) {
 		case FirewallParticle:
+		case Firespout_Animation:
 			break;
 		default:
 			missile.setVisible(false);
@@ -226,6 +227,7 @@ public class MissileManager {
 				movementManager.moveMissile(friendlyMissiles.get(i));
 			} else {
 				removeFriendlyMissile(friendlyMissiles.get(i));
+
 			}
 		}
 
@@ -235,6 +237,34 @@ public class MissileManager {
 				movementManager.moveMissile(enemyMissiles.get(i));
 			} else {
 				removeEnemyMissile(enemyMissiles.get(i));
+			}
+		}
+
+		// Handle special attacks
+		for (int i = specialAttacks.size() - 1; i >= 0; i--) {
+			SpecialAttack specialAttack = specialAttacks.get(i);
+
+			boolean allMissilesInvisible = true;
+			List<Missile> specialAttackMissiles = specialAttack.getSpecialAttackMissiles();
+			for (Missile missile : specialAttackMissiles) {
+				if (missile.isVisible()) {
+					allMissilesInvisible = false;
+					break; // No need to check the rest
+				}
+			}
+
+			
+			//It is vital that special attacks which exist of missiles only have an invisible animation
+			if(specialAttack.getAnimation() != null && specialAttack.getAnimation().getImageType() != ImageEnums.Invisible_Animation) {
+				allMissilesInvisible = false;
+			}
+			
+
+			if (allMissilesInvisible) {
+				specialAttack.setVisible(false);
+				specialAttack.getAnimation().setVisible(false);
+			} else if (!specialAttack.isVisible()) {
+				removeSpecialAttack(specialAttack);
 			}
 		}
 	}
@@ -252,6 +282,10 @@ public class MissileManager {
 			}
 		}
 
+	}
+
+	private void removeSpecialAttack(SpecialAttack specialAttack) {
+		this.specialAttacks.remove(specialAttack);
 	}
 
 	private void removeFriendlyMissile(Missile missile) {

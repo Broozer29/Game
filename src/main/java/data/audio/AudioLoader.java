@@ -65,6 +65,12 @@ public class AudioLoader {
 			return "src/resources/audio/Destroyed Explosion.wav";
 		case Power_Up_Acquired:
 			return "src/resources/audio/PowerUpAcquired.wav";
+		case Rocket_Launcher:
+			return "src/resources/audio/Rocket Launcher.wav";
+		case Flamethrower: 
+			return "src/resources/audio/Flamethrower.wav";
+		case Firewall:
+			return "src/resources/audio/Firewall.wav";
 		}
 		return null;
 	}

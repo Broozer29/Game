@@ -25,26 +25,33 @@ public class CustomAudioClip {
 			e.printStackTrace();
 		}
 
-		FloatControl volume = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
-		switch (clipType) {
-		case Player_Laserbeam:
-			volume.setValue(-4);
-			break;
-		case Large_Ship_Destroyed:
-			volume.setValue(-2);
-			break;
-		case Alien_Bomb_Impact:
-			volume.setValue(-2);
-			break;
-		case Apple_Holder_Remix:
-			volume.setValue(-10);
-			break;
-		case Furi_Wisdowm_Of_Rage:
-			volume.setValue(-5);
-		case Default_EMP:
-			volume.setValue(-15);
-			break;
+		if (clip.isControlSupported(FloatControl.Type.MASTER_GAIN)) {
+		    FloatControl volume = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
+			switch (clipType) {
+			case Player_Laserbeam:
+				volume.setValue(-4);
+				break;
+			case Large_Ship_Destroyed:
+				volume.setValue(-2);
+				break;
+			case Alien_Bomb_Impact:
+				volume.setValue(-2);
+				break;
+			case Apple_Holder_Remix:
+				volume.setValue(-10);
+				break;
+			case Furi_Wisdowm_Of_Rage:
+				volume.setValue(-5);
+			case Default_EMP:
+				volume.setValue(-15);
+				break;
+			}
+		} else {
+		    System.out.println("Master Gain control is not supported: " + clipType);
+		    // Handle the situation where Master Gain is not supported
 		}
+		
+		
 	}
 
 	public int getFramePosition() {

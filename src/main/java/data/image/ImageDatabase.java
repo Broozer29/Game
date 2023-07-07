@@ -48,6 +48,9 @@ public class ImageDatabase {
 	private BufferedImage selectUserMenuImage;
 	private BufferedImage userMenuToMainMenu;
 	private BufferedImage titleImage;
+	private BufferedImage longCard;
+	private BufferedImage wideCard;
+	private BufferedImage squareCard;
 
 	// Game GUI images
 	private BufferedImage healthBarImage;
@@ -218,6 +221,7 @@ public class ImageDatabase {
 	private List<BufferedImage> defaultPlayerShieldDamage = new ArrayList<BufferedImage>();
 	private List<BufferedImage> guardianBotFrames = new ArrayList<BufferedImage>();
 	private List<BufferedImage> firewallParticleFrames = new ArrayList<BufferedImage>();
+	private List<BufferedImage> fireSpoutFrames = new ArrayList<BufferedImage>();
 
 	// Enemy Projectile Animations
 	private List<BufferedImage> seekerProjectileFrames = new ArrayList<BufferedImage>();
@@ -498,6 +502,10 @@ public class ImageDatabase {
 		this.letter_Greater_Than = imgLoader.getImage(ImageEnums.Letter_greater_than);
 		this.letter_Smaller_Than = imgLoader.getImage(ImageEnums.Letter_smaller_than);
 		this.letter_Dot = imgLoader.getImage(ImageEnums.Letter_Dot);
+		
+		this.longCard = imgLoader.getImage(ImageEnums.Long_Card);
+		this.wideCard = imgLoader.getImage(ImageEnums.Wide_Card);
+		this.squareCard = imgLoader.getImage(ImageEnums.Square_Card);
 	}
 
 	private void initBackgroundObjects() {
@@ -915,6 +923,12 @@ public class ImageDatabase {
 			return starcraft2_Electric_Field;
 		case Starcraft2_Firebat_Weapon:
 			return starcraft2_Firebat_Weapon;
+		case Long_Card:
+			return longCard;
+		case Square_Card:
+			return squareCard;
+		case Wide_Card:
+			return wideCard;
 		default:
 			return testImage;
 		}
@@ -1024,6 +1038,8 @@ public class ImageDatabase {
 			return Rocket1ProjectileFrames;
 		case Rocket_1_Explosion:
 			return Rocket1ExplosionFrames;
+		case Firespout_Animation:
+			return fireSpoutFrames;
 		}
 		return null;
 	}
@@ -1251,6 +1267,12 @@ public class ImageDatabase {
 			String sourceString = String.format("src/resources/images/gif/PNGtoGIF/Missile1/Missile_1_Flying_00%d.png", i);
 			BufferedImage image = imgLoader.getSpritesheetImage(sourceString);
 			Rocket1ProjectileFrames.add(image);
+		}
+		
+		for (int i = 1; i < 31; i++) {
+			String sourceString = String.format("src/resources/images/gif/PNGtoGIF/FireSpout/Firespout%d.png", i);
+			BufferedImage image = imgLoader.getSpritesheetImage(sourceString);
+			fireSpoutFrames.add(image);
 		}
 
 	}

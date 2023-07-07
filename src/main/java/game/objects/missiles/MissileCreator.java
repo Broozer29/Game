@@ -109,6 +109,7 @@ public class MissileCreator {
 			return new Rocket1(xCoordinate, yCoordinate, destination, missileType, explosionType, rotation, scale,
 					pathFinder, xMovementSpeed, yMovementSpeed, damage, friendly);
 		case FirewallParticle:
+		case Firespout_Animation:
 			return new FirewallMissile(xCoordinate, yCoordinate, destination, missileType, explosionType, rotation, scale,
 					pathFinder, xMovementSpeed, yMovementSpeed, damage, friendly);
 		default:

@@ -1,11 +1,11 @@
 package game.objects.friendlies.powerups.powerupeffects;
 
 import game.objects.friendlies.powerups.PowerUpEffect;
-import game.objects.friendlies.powerups.PowerUps;
+import game.objects.friendlies.powerups.PowerUpEnums;
 
 public class IncreasedAttackSpeed extends PowerUpEffect{
 	int attackSpeedBonus;
-	public IncreasedAttackSpeed(PowerUps powerUpType) {
+	public IncreasedAttackSpeed(PowerUpEnums powerUpType) {
 		super(powerUpType);
 	}
 	

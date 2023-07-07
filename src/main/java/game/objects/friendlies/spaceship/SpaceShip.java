@@ -15,7 +15,7 @@ import data.PlayerStats;
 import data.TemporaryGameSettings;
 import data.image.ImageEnums;
 import game.managers.AnimationManager;
-import game.managers.MovementInitiator;
+import game.movement.MovementInitiator;
 import game.objects.Explosion;
 import game.objects.friendlies.spaceship.specialAttacks.SpecialAttack;
 import visual.objects.Sprite;
@@ -37,21 +37,19 @@ public class SpaceShip extends Sprite {
 	private List<Explosion> playerFollowingExplosions = new ArrayList<Explosion>();
 	private List<SpaceShipRegularGun> spaceShipGuns = new ArrayList<SpaceShipRegularGun>();
 	private List<SpaceShipSpecialGun> spaceShipSpecialGuns = new ArrayList<SpaceShipSpecialGun>();
-	public List<SpecialAttack> playerFollowingSpecialAttacks = new ArrayList<SpecialAttack>();
+	private List<SpecialAttack> playerFollowingSpecialAttacks = new ArrayList<SpecialAttack>();
 
 	public SpaceShip() {
 		super(DataClass.getInstance().getWindowWidth() / 10, DataClass.getInstance().getWindowHeight() / 2, 1);
 		playerStats = PlayerStats.getInstance();
 		powerUpEffects = TemporaryGameSettings.getInstance();
-		loadImage(playerStats.getSpaceShipImage());
-		setExhaustAnimation(playerStats.getExhaustImage());
-		initShip();
 	}
 
 	protected void setExhaustAnimation(ImageEnums imageType) {
 		SpriteAnimation exhaustAnimation = new SpriteAnimation(xCoordinate, yCoordinate, imageType, true, scale);
 		playerStats.setExhaustAnimation(exhaustAnimation);
 		playerStats.setCurrentExhaust(imageType);
+		AnimationManager.getInstance().addUpperAnimation(exhaustAnimation);
 	}
 
 	// Called when managers need to be reset.
@@ -62,6 +60,7 @@ public class SpaceShip extends Sprite {
 	private void initShip() {
 		directionx = 0;
 		directiony = 0;
+		loadImage(playerStats.getSpaceShipImage());
 		currentShieldRegenDelayFrame = 0;
 		isEngineBoosted = false;
 		playerStats.initDefaultSettings();
@@ -70,7 +69,7 @@ public class SpaceShip extends Sprite {
 		this.spaceShipGuns.add(gun);
 		SpaceShipSpecialGun specialGun = new SpaceShipSpecialGun();
 		this.spaceShipSpecialGuns.add(specialGun);
-		
+		setExhaustAnimation(playerStats.getExhaustImage());
 	}
 
 	public void addShieldDamageAnimation() {
@@ -94,15 +93,21 @@ public class SpaceShip extends Sprite {
 
 	}
 
-	private void cycleFollowingAnimations() {
+	private void removeInvisibleAnimations() {
 		for (int i = 0; i < playerFollowingAnimations.size(); i++) {
 			if (!playerFollowingAnimations.get(i).isVisible()) {
 				playerFollowingAnimations.remove(i);
 			}
 		}
 		for (int i = 0; i < playerFollowingExplosions.size(); i++) {
-			if (!playerFollowingExplosions.get(i).isVisible()) {
+			if (!playerFollowingExplosions.get(i).getAnimation().isVisible()) {
 				playerFollowingExplosions.remove(i);
+			}
+		}
+		
+		for (int i = 0; i < playerFollowingSpecialAttacks.size(); i++) {
+			if (!playerFollowingSpecialAttacks.get(i).getAnimation().isVisible()) {
+				playerFollowingSpecialAttacks.remove(i);
 			}
 		}
 	}
@@ -130,7 +135,24 @@ public class SpaceShip extends Sprite {
 			specialGun.updateFrameCount();
 		}
 		this.currentShieldRegenDelayFrame++;
-		cycleFollowingAnimations();
+		
+		for (SpriteAnimation anim : playerFollowingAnimations) {
+			anim.setX(xCoordinate);
+			anim.setY(yCoordinate);
+			anim.updateCurrentBoardBlock();
+		}
+
+		for (Explosion explosion : playerFollowingExplosions) {
+			MovementInitiator.getInstance().movePlayerFollowingExplosion(explosion, this);
+			explosion.updateCurrentBoardBlock();
+		}
+		
+		for (SpecialAttack attack : playerFollowingSpecialAttacks) {
+			MovementInitiator.getInstance().movePlayerFollowingSpecialAttack(attack, this);
+			attack.updateCurrentBoardBlock();
+		}
+		
+		removeInvisibleAnimations();
 
 		if (currentShieldRegenDelayFrame >= playerStats.getShieldRegenDelay()) {
 			if (playerStats.getShieldHitpoints() < playerStats.getMaxShieldHitPoints()) {
@@ -142,18 +164,7 @@ public class SpaceShip extends Sprite {
 
 	// Moves the spaceship
 	public void move() {
-		for (SpriteAnimation anim : playerFollowingAnimations) {
-			anim.setX(xCoordinate);
-			anim.setY(yCoordinate);
-		}
 
-		for (Explosion explosion : playerFollowingExplosions) {
-			MovementInitiator.getInstance().movePlayerFollowingExplosion(explosion, this);
-		}
-		
-		for (SpecialAttack attack : playerFollowingSpecialAttacks) {
-			MovementInitiator.getInstance().movePlayerFollowingSpecialAttack(attack, this);
-		}
 
 		xCoordinate += directionx;
 		yCoordinate += directiony;
@@ -286,6 +297,11 @@ public class SpaceShip extends Sprite {
 	
 	public List<SpaceShipSpecialGun> getSpecialGuns() {
 		return this.spaceShipSpecialGuns;
+	}
+	
+	public void addFollowingSpecialAttack(SpecialAttack specialAttack) {
+		this.playerFollowingSpecialAttacks.add(specialAttack);
+		AnimationManager.getInstance().addUpperAnimation(specialAttack.getAnimation());
 	}
 
 }

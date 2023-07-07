@@ -38,13 +38,14 @@ import game.objects.friendlies.FriendlyObject;
 import game.objects.friendlies.powerups.PowerUp;
 import game.objects.friendlies.powerups.PowerUpAcquiredText;
 import game.objects.friendlies.powerups.PowerUpManager;
+import game.objects.friendlies.spaceship.PlayerAttackTypes;
+import game.objects.friendlies.spaceship.PlayerSpecialAttackTypes;
 import game.objects.friendlies.spaceship.SpaceShipSpecialGun;
 import game.objects.friendlies.spaceship.specialAttacks.SpecialAttack;
 import game.objects.missiles.Missile;
 import game.objects.missiles.MissileManager;
-import game.playerpresets.LaserbeamPreset;
-import game.playerpresets.PlayerPreset;
-import game.playerpresets.RocketPreset;
+import game.playerpresets.GunPreset;
+import game.playerpresets.SpecialGunPreset;
 import menuscreens.BoardManager;
 import visual.objects.Sprite;
 import visual.objects.SpriteAnimation;
@@ -105,14 +106,22 @@ public class GameBoard extends JPanel implements ActionListener {
 		setFocusable(true);
 		setBackground(Color.BLACK);
 		setPreferredSize(new Dimension(boardWidth, boardHeight));
-
+		animationManager.resetManager();
+		PlayerManager.getInstance().getSpaceship().resetSpaceship();
 		// Dit moet uit een "out-of-game state manager" gehaald worden
-		if (playerStats.getPreset() == null) {
-			PlayerPreset preset = new LaserbeamPreset();
-			playerStats.setPreset(preset);
+		if (playerStats.getNormalGunPreset() == null) {
+			GunPreset preset = new GunPreset(PlayerAttackTypes.Laserbeam);
+			playerStats.setNormalGunPreset(preset);
 		}
-		playerStats.getPreset().loadPreset();
-
+		playerStats.getNormalGunPreset().loadPreset();
+		
+		// Dit moet uit een "out-of-game state manager" gehaald worden
+		if (playerStats.getSpecialGunPreset() == null) {
+			SpecialGunPreset preset = new SpecialGunPreset(PlayerSpecialAttackTypes.EMP);
+			playerStats.setSpecialGunPreset(preset);
+		}
+		playerStats.getSpecialGunPreset().loadPreset();
+		
 		ingame = true;
 		uiManager.createGameBoardGUI();
 		levelManager.startLevel();
@@ -139,7 +148,7 @@ public class GameBoard extends JPanel implements ActionListener {
 		tempSettings.resetGameSettings();
 
 		// Dit moet uit een "out-of-game state manager" gehaald worden
-		playerStats.getPreset().loadPreset();
+		playerStats.getNormalGunPreset().loadPreset();
 	}
 
 	@Override

@@ -9,7 +9,7 @@ import game.movement.Direction;
 import game.objects.enemies.EnemyEnums;
 import game.spawner.EnemySpawnTimer;
 
-public class BadAppleLevel {
+public class BadAppleLevel implements Level{
 
 	private AudioEnums song = AudioEnums.Apple_Holder_Remix;
 	private TimerManager timerManager = TimerManager.getInstance();
@@ -26,7 +26,7 @@ public class BadAppleLevel {
 	}
 
 	// Create the timers that repeat
-	private void initRepeatableTimers() {
+	public void initRepeatableTimers() {
 		boolean loopable = true;
 		int spawnAttempts = 0;
 		int timeBeforeActivation = 0;
@@ -68,7 +68,7 @@ public class BadAppleLevel {
 	}
 
 	// Create the timers that have a delay, for things like the drop or beat increasing
-	private void initDelayedTimers() {
+	public void initDelayedTimers() {
 //		boolean loopable = false;
 //		int spawnAttempts = 100;
 //		int timeBeforeActivation = 0;
@@ -83,7 +83,7 @@ public class BadAppleLevel {
 	}
 
 	// Create the timers that fire a single time
-	private void initSingleFireTimers() {
+	public void initSingleFireTimers() {
 		boolean loopable = false;
 		int spawnAttempts = 100;
 		int timeBeforeActivation = 0;

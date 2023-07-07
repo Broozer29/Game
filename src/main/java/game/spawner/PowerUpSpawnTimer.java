@@ -2,16 +2,17 @@ package game.spawner;
 
 import java.util.Random;
 
+import game.objects.friendlies.powerups.PowerUpCreator;
+import game.objects.friendlies.powerups.PowerUpEnums;
 import game.objects.friendlies.powerups.PowerUpManager;
-import game.objects.friendlies.powerups.PowerUps;
 
 public class PowerUpSpawnTimer{
 
 	PowerUpManager powerUpManager = PowerUpManager.getInstance();
 	
 	private int timeBeforeActivation;
-	private PowerUps powerUpType;
-	private PowerUps[] powerupEnums = PowerUps.values();
+	private PowerUpEnums powerUpType;
+	private PowerUpEnums[] powerupEnums = PowerUpEnums.values();
 	private Random random = new Random();
 	
 	private int currentTime;
@@ -19,10 +20,10 @@ public class PowerUpSpawnTimer{
 	private boolean loopable;
 	private String status;
 	private int additionalDelay;
-	private PowerUps originalPowerUpType;
+	private PowerUpEnums originalPowerUpType;
 	
 	
-	public PowerUpSpawnTimer(int timeBeforeActivation, PowerUps powerUpType, boolean loopable, int additionalDelay) {
+	public PowerUpSpawnTimer(int timeBeforeActivation, PowerUpEnums powerUpType, boolean loopable, int additionalDelay) {
 		this.timeBeforeActivation = timeBeforeActivation;
 		this.powerUpType = powerUpType;
 		this.originalPowerUpType = powerUpType;
@@ -35,7 +36,7 @@ public class PowerUpSpawnTimer{
 	}
 	
 	public void activateTimer() {
-		PowerUpManager.getInstance().spawnPowerUp(powerUpType);
+		PowerUpCreator.getInstance().spawnPowerUp(powerUpType);
 		
 		if (this.loopable) {
 			this.additionalDelay = 0;
@@ -79,21 +80,23 @@ public class PowerUpSpawnTimer{
 	}
 	
 	private void setPowerUp() {
-		if(this.originalPowerUpType == PowerUps.RANDOM) {
+		if(this.originalPowerUpType == PowerUpEnums.RANDOM) {
 			this.powerUpType = selectRandomPowerUp();
 		}
 	}
 	
-	private PowerUps selectRandomPowerUp() {
-		PowerUps randomValue = powerupEnums[random.nextInt(powerupEnums.length)];
+	private PowerUpEnums selectRandomPowerUp() {
+		PowerUpEnums randomValue = powerupEnums[random.nextInt(powerupEnums.length)];
 //	    if (randomValue == PowerUps.DOUBLE_SHOT || 
 //	    		randomValue == PowerUps.TRIPLE_SHOT) {
 //	        return selectRandomPowerUp();
 //	    }
-		if (randomValue == PowerUps.DUMMY_DO_NOT_USE || 
-				randomValue == PowerUps.RANDOM) {
+		if (randomValue == PowerUpEnums.DUMMY_DO_NOT_USE || 
+				randomValue == PowerUpEnums.RANDOM) {
 			return selectRandomPowerUp();
 		}
+		
+//		return PowerUpEnums.Guardian_Drone_Homing_Missile;
 		return randomValue;
 	}
 

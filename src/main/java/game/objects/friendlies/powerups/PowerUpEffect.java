@@ -11,8 +11,8 @@ public class PowerUpEffect {
 	protected PlayerStats playerStats = PlayerStats.getInstance();
 	protected SpaceShip playerSpaceShip = friendlyManager.getSpaceship();
 	
-	protected PowerUps powerUpType;
-	public PowerUpEffect(PowerUps powerUpType) {
+	protected PowerUpEnums powerUpType;
+	public PowerUpEffect(PowerUpEnums powerUpType) {
 		this.powerUpType = powerUpType;
 		friendlyManager = PlayerManager.getInstance();
 		temporaryGameSettings = TemporaryGameSettings.getInstance();

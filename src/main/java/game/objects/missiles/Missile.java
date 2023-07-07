@@ -2,10 +2,13 @@ package game.objects.missiles;
 
 import data.DataClass;
 import data.image.ImageEnums;
+import game.managers.OnScreenTextManager;
 import game.movement.Direction;
 import game.movement.Path;
 import game.movement.PathFinder;
 import game.movement.Point;
+import game.objects.friendlies.powerups.PowerUpAcquiredText;
+import game.objects.friendlies.powerups.PowerUpEnums;
 import visual.objects.Sprite;
 import visual.objects.SpriteAnimation;
 
@@ -155,6 +158,12 @@ public class Missile extends Sprite {
 				this.setVisible(false);
 			}
 			break;
+		}
+		
+		if(!this.visible && this.animation != null) {
+			this.animation.setVisible(false);
+			PowerUpAcquiredText text = new PowerUpAcquiredText(xCoordinate - 200, yCoordinate, PowerUpEnums.DUMMY_DO_NOT_USE);
+			OnScreenTextManager.getInstance().addPowerUpText(text);
 		}
 	}
 

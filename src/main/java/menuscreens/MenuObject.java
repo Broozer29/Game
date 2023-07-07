@@ -10,10 +10,12 @@ import data.PlayerStats;
 import data.audio.AudioDatabase;
 import data.audio.AudioEnums;
 import data.image.ImageEnums;
+import game.managers.AnimationManager;
 import game.managers.AudioManager;
-import game.playerpresets.FlamethrowerPreset;
-import game.playerpresets.LaserbeamPreset;
-import game.playerpresets.RocketPreset;
+import game.objects.friendlies.spaceship.PlayerAttackTypes;
+import game.objects.friendlies.spaceship.PlayerSpecialAttackTypes;
+import game.playerpresets.GunPreset;
+import game.playerpresets.SpecialGunPreset;
 
 public class MenuObject {
 
@@ -41,8 +43,15 @@ public class MenuObject {
 
 	private void initMenuImages() {
 		if (!(this.menuObjectType == MenuObjectEnums.Text_Block)) {
-			MenuObjectPart newTile = new MenuObjectPart(imageType, xCoordinate, xCoordinate, scale);
-			this.menuTiles.add(newTile);
+			if (this.menuObjectType == MenuObjectEnums.Highlight_Animation) {
+				MenuObjectPart newTile = new MenuObjectPart(ImageEnums.Invisible, xCoordinate, xCoordinate, scale);
+				newTile.setTileAnimation(imageType);
+				this.menuTiles.add(newTile);
+				AnimationManager.getInstance().addUpperAnimation(newTile.getAnimation());
+			} else {
+				MenuObjectPart newTile = new MenuObjectPart(imageType, xCoordinate, xCoordinate, scale);
+				this.menuTiles.add(newTile);
+			}
 		} else if (this.menuObjectType == MenuObjectEnums.Text_Block) {
 			initMenuTextBlock();
 		}
@@ -51,28 +60,42 @@ public class MenuObject {
 	public void menuTileAction() throws UnsupportedAudioFileException, IOException {
 		AudioManager audioManager = AudioManager.getInstance();
 		AudioDatabase.getInstance().updateGameTick();
-		switch(this.menuFunctionality) {
+		switch (this.menuFunctionality) {
 		case Start_Game:
 			BoardManager.getInstance().initGame();
 			break;
 		case Select_Setup_Menu:
 			break;
-		case Select_Laserbeam_Preset:
+		case Select_Laserbeam:
 			audioManager.addAudio(AudioEnums.Player_Laserbeam);
-			PlayerStats.getInstance().setPreset(new LaserbeamPreset());
+			PlayerStats.getInstance().setNormalGunPreset(new GunPreset(PlayerAttackTypes.Laserbeam));
+			PlayerStats.getInstance().setAttackType(PlayerAttackTypes.Laserbeam);
 			break;
-		case Select_Flamethrower_Preset:
-			audioManager.addAudio(AudioEnums.Power_Up_Acquired);
-			PlayerStats.getInstance().setPreset(new FlamethrowerPreset());
+		case Select_Flamethrower:
+			audioManager.addAudio(AudioEnums.Flamethrower);
+			PlayerStats.getInstance().setNormalGunPreset(new GunPreset(PlayerAttackTypes.Flamethrower));
+			PlayerStats.getInstance().setAttackType(PlayerAttackTypes.Flamethrower);
 			break;
 		case Return_To_Main_Menu:
+			// Deprecated
 			BoardManager.getInstance().userSelectionToMainMenu();
 			break;
 		case NONE:
 			break;
-		case Select_Rocket_Preset:
-			audioManager.addAudio(AudioEnums.Power_Up_Acquired);
-			PlayerStats.getInstance().setPreset(new RocketPreset());
+		case Select_Rocket_Launcher:
+			audioManager.addAudio(AudioEnums.Rocket_Launcher);
+			PlayerStats.getInstance().setNormalGunPreset(new GunPreset(PlayerAttackTypes.Rocket));
+			PlayerStats.getInstance().setAttackType(PlayerAttackTypes.Rocket);
+			break;
+		case Select_EMP:
+			audioManager.addAudio(AudioEnums.Default_EMP);
+			PlayerStats.getInstance().setSpecialGunPreset(new SpecialGunPreset(PlayerSpecialAttackTypes.EMP));
+			PlayerStats.getInstance().setPlayerSpecialAttackType(PlayerSpecialAttackTypes.EMP);
+			break;
+		case Select_Firewall:
+			audioManager.addAudio(AudioEnums.Firewall);
+			PlayerStats.getInstance().setSpecialGunPreset(new SpecialGunPreset(PlayerSpecialAttackTypes.Firewall));
+			PlayerStats.getInstance().setPlayerSpecialAttackType(PlayerSpecialAttackTypes.Firewall);
 			break;
 		default:
 			break;
@@ -115,9 +138,20 @@ public class MenuObject {
 	public List<MenuObjectPart> getMenuImages() {
 		return menuTiles;
 	}
-	
+
 	public MenuFunctionEnums getMenuFunction() {
 		return this.menuFunctionality;
+	}
+
+	public MenuObjectEnums getMenuObjectType() {
+		return this.menuObjectType;
+	}
+	
+	public void changeImage(ImageEnums newImage) {
+		this.imageType = newImage;
+		menuTiles = new ArrayList<MenuObjectPart>();
+		initMenuImages();
+		
 	}
 
 }

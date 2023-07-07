@@ -93,8 +93,8 @@ public class Sprite {
 	}
 
 	public void setCenterCoordinates(int newXCoordinate, int newYCoordinate) {
-		this.xCoordinate = newXCoordinate - this.width;
-		this.yCoordinate = newYCoordinate - this.height;
+		this.xCoordinate = newXCoordinate - (this.width / 2);
+		this.yCoordinate = newYCoordinate - (this.height / 2);
 	}
 
 	public int getWidth() {

@@ -4,7 +4,8 @@ import data.image.ImageEnums;
 import game.movement.PathFinder;
 import game.objects.friendlies.spaceship.PlayerAttackTypes;
 import game.objects.friendlies.spaceship.PlayerSpecialAttackTypes;
-import game.playerpresets.PlayerPreset;
+import game.playerpresets.GunPreset;
+import game.playerpresets.SpecialGunPreset;
 import visual.objects.SpriteAnimation;
 
 public class PlayerStats {
@@ -21,19 +22,26 @@ public class PlayerStats {
 
 	public void resetPlayerStats() {
 		initDefaultSettings();
-		if (preset != null) {
-			preset.loadPreset();
+		if (normalGunPreset != null) {
+			normalGunPreset.loadPreset();
 		} else {
-			System.out.println("No preset was loaded! If this happens there has been an oversight in code.");
+			System.out.println("No normal gun preset was loaded! If this happens there has been an oversight in code.");
+		}
+		
+		if(specialGunPreset != null) {
+			specialGunPreset.loadPreset();
+		} else {
+			System.out.println("No special gun preset was loaded! If this happens there has been an oversight in code.");
 		}
 	}
 
 	// Preset type
-	private PlayerPreset preset;
+	private GunPreset normalGunPreset;
+	private SpecialGunPreset specialGunPreset;
 
 	// Player attacks
-	private PlayerAttackTypes attackType;
-	private PlayerSpecialAttackTypes specialAttackType;
+	private PlayerAttackTypes attackType = PlayerAttackTypes.Laserbeam;
+	private PlayerSpecialAttackTypes specialAttackType = PlayerSpecialAttackTypes.EMP;
 	private float attackDamage;
 	private float bonusAttackDamage;
 	private float specialAttackDamage;
@@ -476,14 +484,6 @@ public class PlayerStats {
 		this.flameThrowerBonusMaxSteps += flameThrowerBonusAttackRange;
 	}
 
-	public PlayerPreset getPreset() {
-		return preset;
-	}
-
-	public void setPreset(PlayerPreset preset) {
-		this.preset = preset;
-	}
-
 	public int getFirewallSize() {
 		return firewallSize;
 	}
@@ -506,6 +506,22 @@ public class PlayerStats {
 
 	public void setFirewallSpeed(int firewallSpeed) {
 		this.firewallSpeed = firewallSpeed;
+	}
+	
+	public GunPreset getNormalGunPreset() {
+		return normalGunPreset;
+	}
+
+	public void setNormalGunPreset(GunPreset normalGunPreset) {
+		this.normalGunPreset = normalGunPreset;
+	}
+
+	public SpecialGunPreset getSpecialGunPreset() {
+		return specialGunPreset;
+	}
+
+	public void setSpecialGunPreset(SpecialGunPreset specialGunPreset) {
+		this.specialGunPreset = specialGunPreset;
 	}
 
 }

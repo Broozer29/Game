@@ -41,6 +41,7 @@ public class SpaceShipSpecialGun {
 		}
 	}
 
+	//Creates a special attack with an animation that follows the player
 	private void fireElectroShred(int xCoordinate, int yCoordinate, int spaceShipWidth, int spaceShipHeight) {
 		if (currentSpecialAttackFrame >= playerStats.getSpecialAttackSpeed()) {
 
@@ -48,23 +49,18 @@ public class SpaceShipSpecialGun {
 			SpaceShip spaceShip = playerManager.getSpaceship();
 
 			SpriteAnimation specialAttackAnimation = new SpriteAnimation(spaceShip.getCenterXCoordinate(),
-					spaceShip.getCenterYCoordinate(), ImageEnums.Player_EMP, false, 1);
-			specialAttackAnimation.setFrameDelay(4);
-
+					spaceShip.getCenterYCoordinate(), ImageEnums.Player_EMP, false, 2);
+			specialAttackAnimation.setFrameDelay(10);
+			specialAttackAnimation.setCenterCoordinates(spaceShip.getCenterXCoordinate(), spaceShip.getCenterYCoordinate());
+			
 			SpecialAttack specialAttack = new ElectroShred(spaceShip.getCenterXCoordinate(),
 					spaceShip.getCenterYCoordinate(), 1, specialAttackAnimation, playerStats.getSpecialAttackDamage(),
 					true);
-			specialAttack.addXOffset(-(specialAttackAnimation.getWidth() / 4));
-			specialAttack.addYOffset(-(specialAttackAnimation.getHeight() / 2));
-
-			specialAttackAnimation.addXOffset(-(specialAttackAnimation.getWidth() / 4));
-			specialAttackAnimation.addYOffset(-(specialAttackAnimation.getHeight() / 2));
-
+			specialAttack.setCenteredAroundPlayer(true);
 			try {
 				AudioManager.getInstance().addAudio(AudioEnums.Default_EMP);
-				spaceShip.playerFollowingSpecialAttacks.add(specialAttack);
+				spaceShip.addFollowingSpecialAttack(specialAttack);
 				MissileManager.getInstance().addSpecialAttack(specialAttack);
-
 			} catch (UnsupportedAudioFileException | IOException e) {
 				e.printStackTrace();
 			}
@@ -72,6 +68,8 @@ public class SpaceShipSpecialGun {
 		}
 	}
 
+	
+	//Creates missiles and adds it to the missile manager
 	private void fireFirewall(int xCoordinate, int yCoordinate, int spaceShipWidth, int spaceShipHeight) {
 		if (currentSpecialAttackFrame >= playerStats.getSpecialAttackSpeed()) {
 
@@ -89,7 +87,14 @@ public class SpaceShipSpecialGun {
 			SpecialAttack firewall = new Firewall(centerX, centerY, 1, invisibleAnimation, PlayerStats.getInstance().getFirewallDamage(),
 					true, pathfinder, firewallSize, Direction.RIGHT);
 
-			MissileManager.getInstance().addSpecialAttack(firewall);
+			try {
+				AudioManager.getInstance().addAudio(AudioEnums.Firewall);
+				MissileManager.getInstance().addSpecialAttack(firewall);
+			} catch (UnsupportedAudioFileException | IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
 			this.currentSpecialAttackFrame = 0;
 		}
 	}

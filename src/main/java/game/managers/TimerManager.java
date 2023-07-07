@@ -5,7 +5,8 @@ import java.util.List;
 
 import game.levels.LevelSpawnerManager;
 import game.objects.friendlies.powerups.PowerUpManager;
-import game.objects.friendlies.powerups.PowerUps;
+import game.objects.friendlies.powerups.PowerUpCreator;
+import game.objects.friendlies.powerups.PowerUpEnums;
 import game.spawner.EnemySpawnTimer;
 import game.spawner.PowerUpSpawnTimer;
 import game.spawner.PowerUpTimer;
@@ -38,7 +39,7 @@ public class TimerManager {
 	//Cycles and updates ALL timers
 	public void updateTimers() {
 		if(powerUpSpawnerTimers.size() < 1) {
-			powerUpSpawnerTimers.add(PowerUpManager.getInstance().createPowerUpTimer(PowerUps.RANDOM, true, 0));
+			powerUpSpawnerTimers.add(PowerUpCreator.getInstance().createPowerUpTimer(PowerUpEnums.RANDOM, true, 0));
 		}
 		
 		for (int i = 0; i < allEnemyTimers.size(); i++) {

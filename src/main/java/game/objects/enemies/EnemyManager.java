@@ -11,8 +11,8 @@ import data.audio.AudioEnums;
 import data.image.ImageEnums;
 import game.managers.AnimationManager;
 import game.managers.AudioManager;
-import game.managers.MovementInitiator;
 import game.managers.PlayerManager;
+import game.movement.MovementInitiator;
 import game.movement.Point;
 import visual.objects.Sprite;
 
@@ -91,7 +91,7 @@ public class EnemyManager {
 
 	private boolean isWithinBoardBlockThreshold(Sprite sprite1, Sprite sprite2) {
 		int blockDifference = Math.abs(sprite1.getCurrentBoardBlock() - sprite2.getCurrentBoardBlock());
-		return blockDifference <= 2;
+		return blockDifference <= 3;
 	}
 
 	private boolean isNearby(Sprite sprite1, Sprite sprite2) {
@@ -101,7 +101,7 @@ public class EnemyManager {
 
 		double distance = Math.hypot(sprite1.getXCoordinate() - sprite2.getXCoordinate(),
 				sprite1.getYCoordinate() - sprite2.getYCoordinate());
-		return distance < 150;
+		return distance < 300;
 	}
 
 	private void detonateAlienBomb(Enemy enemy) throws UnsupportedAudioFileException, IOException {

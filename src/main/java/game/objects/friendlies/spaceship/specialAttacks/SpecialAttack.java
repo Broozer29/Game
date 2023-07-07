@@ -12,6 +12,7 @@ public class SpecialAttack extends Sprite {
 	protected float damage;
 	protected boolean friendly;
 	protected List<Missile> specialAttackMissiles = new ArrayList<Missile>();
+	protected boolean centeredAroundPlayer = false;
 	
 
 	public SpecialAttack(int x, int y, float scale, SpriteAnimation animation, float damage, boolean friendly) {
@@ -19,6 +20,7 @@ public class SpecialAttack extends Sprite {
 		this.animation = animation;
 		this.damage = damage;
 		this.friendly = friendly;
+		this.updateCurrentBoardBlock();
 	}
 
 	
@@ -38,10 +40,19 @@ public class SpecialAttack extends Sprite {
 		return friendly;
 	}
 	
+	public boolean centeredAroundPlayer() {
+		return centeredAroundPlayer;
+	}
+	
+	public void setCenteredAroundPlayer(Boolean bool) {
+		this.centeredAroundPlayer = bool;
+	}
+	
 	public void moveSpecialAttackMissiles() {
 		for(Missile missile : specialAttackMissiles) {
 			if(missile.isVisible()) {
 				missile.move();
+				missile.updateCurrentBoardBlock();
 			}
 		}
 	}

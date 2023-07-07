@@ -24,6 +24,27 @@ public class MenuFunctionImageCoupler {
 			break;
 		case Title_Image:
 			return ImageEnums.Title_Image;
+		case Long_Card:
+			return ImageEnums.Long_Card;
+		case Wide_Card:
+			return ImageEnums.Long_Card;
+		case Square_Card:
+			return ImageEnums.Square_Card;
+		case EMP_Icon:
+			return ImageEnums.Starcraft2_Electric_Field;
+		case Firewall_Icon:
+			return ImageEnums.Starcraft2_Firebat_Weapon;
+		case Flamethrower_Icon:
+			return ImageEnums.Starcraft2_Flame_Turret;
+		case Highlight_Animation:
+			return ImageEnums.Highlight;
+		case Laserbeam_Icon:
+			return ImageEnums.Starcraft2_Pulse_Laser;
+		case Rocket_Launcher_Icon:
+			return ImageEnums.Starcraft2_Dual_Rockets;
+		default:
+			break;
+			
 		}
 
 		return null;

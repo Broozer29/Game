@@ -418,9 +418,15 @@ public class ImageLoader {
 	    case Invisible:
 	    	return "src/resources/images/invisible.png";
 	    case Starcraft2_Firebat_Weapon:
-	    	return "src/resources/images/Icons/Starcraft2_Firebat_Weapon.png";
+	    	return "src/resources/images/Icons/Starcraft2 Firebat Weapon.png";
 	    case Starcraft2_Electric_Field:
 	    	return  "src/resources/images/Icons/Starcraft2 Electric Field.png";
+	    case Long_Card:
+	    	return "src/resources/images/UI/Cards/Long Card.png";
+	    case Wide_Card:
+	    	return "src/resources/images/UI/Cards/Wide Card.png";
+	    case Square_Card:
+	    	return "src/resources/images/UI/Cards/Square Card.png";
 		default:
 			break;
 		

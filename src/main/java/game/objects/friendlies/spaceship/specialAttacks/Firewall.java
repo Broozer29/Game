@@ -24,24 +24,28 @@ public class Firewall extends SpecialAttack {
 		for (int i = 0; i < fireWallSize; i++) {
 			int x = this.xCoordinate + 10;
 			int y;
-
-			int fireWallKernel = 20;
+			float scale = (float) 1.5;
+			Direction animationRotation = Direction.LEFT;
+			int fireWallKernel = 19;
 			if (i % 2 == 0) {
 				// even index - go "down"
+				animationRotation = Direction.RIGHT;
 				y = this.yCoordinate + (fireWallKernel * (i / 2));
 			} else {
 				// odd index - go "up"
+				animationRotation = Direction.LEFT;
 				y = this.yCoordinate - (fireWallKernel * ((i + 1) / 2));
 			}
 
-			Point start = new Point(x, y);
 			int firewallSpeed = PlayerStats.getInstance().getFirewallSpeed();
 			Missile firewallParticle = MissileCreator.getInstance().createFriendlyMissile(x, y,
 					ImageEnums.FirewallParticle, null, rotation, scale, pathFinder, firewallSpeed, firewallSpeed,
 					PlayerAttackTypes.Firewall);
+			firewallParticle.getAnimation().rotateAnimetion(animationRotation);
 			this.specialAttackMissiles.add(firewallParticle);
 			MissileManager.getInstance().addExistingMissile(firewallParticle);
 		}
+		
 	}
 
 }
