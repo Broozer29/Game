@@ -14,5 +14,7 @@ public enum AudioEnums {
 	Apple_Holder_Remix,
 	Destroyed_Explosion,
 	Power_Up_Acquired,
-	NONE
+	Flamethrower,
+	Rocket_Launcher,
+	NONE, Firewall
 }

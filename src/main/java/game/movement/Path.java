@@ -2,9 +2,9 @@ package game.movement;
 
 import java.util.List;
 
-import game.managers.EnemyManager;
-import game.managers.FriendlyManager;
-import game.objects.enemies.Enemy;
+import game.managers.PlayerManager;
+import game.objects.enemies.EnemyManager;
+import visual.objects.Sprite;
 
 public class Path {
 	private List<Point> waypoints;
@@ -12,6 +12,7 @@ public class Path {
 	private Direction fallbackDirection;
 	private boolean isHoming;
 	private boolean isFriendly;
+	private Sprite target;
 
 	public Path(List<Point> wayPoints, Direction fallbackDirection, boolean isHoming, boolean isFriendly) {
 		this.waypoints = wayPoints;
@@ -22,6 +23,15 @@ public class Path {
 
 	public List<Point> getWaypoints() {
 		return waypoints;
+	}
+
+	// Used for homing paths
+	public void setTarget(Sprite target) {
+		this.target = target;
+	}
+
+	public Sprite getTarget() {
+		return this.target;
 	}
 
 	public void setWaypoints(List<Point> waypoints) {
@@ -41,16 +51,9 @@ public class Path {
 	}
 
 	public Point getHomingTargetLocation() {
-		if (isFriendly) {
-			EnemyManager enemyManager = EnemyManager.getInstance();
-			Point closestEnemyPoint = enemyManager.getClosestEnemy();
-			return closestEnemyPoint;
-		} else {
-			FriendlyManager friendlyManager = FriendlyManager.getInstance();
-			int x = friendlyManager.getNearestFriendlyHomingCoordinates().get(0);
-			int y = friendlyManager.getNearestFriendlyHomingCoordinates().get(1);
-			return new Point(x, y);
-		}
+		if (target != null) {
+			return target.getPoint();
+		} else return null;
 	}
 
 	public Direction getFallbackDirection() {
@@ -68,11 +71,11 @@ public class Path {
 	public void setHoming(boolean isHoming) {
 		this.isHoming = isHoming;
 	}
-	
+
 	public void setFriendly(boolean isFriendly) {
 		this.isFriendly = isFriendly;
 	}
-	
+
 	public boolean isFriendly() {
 		return this.isFriendly;
 	}

@@ -3,8 +3,10 @@ package game.movement;
 import java.util.ArrayList;
 import java.util.List;
 
-import game.managers.EnemyManager;
-import game.managers.FriendlyManager;
+import data.DataClass;
+import game.managers.PlayerManager;
+import game.objects.enemies.EnemyManager;
+import visual.objects.Sprite;
 
 public class HomingPathFinder implements PathFinder {
 	@Override
@@ -41,7 +43,12 @@ public class HomingPathFinder implements PathFinder {
 	/*-Fallback direction constant updaten met zijn huidige direction werkt niet met deze manier om "passedtarget" te berekenen.*/
 	private boolean hasPassedTarget(Path currentPath) {
 		Point currentLocation = currentPath.getCurrentLocation();
-		Point targetLocation = currentPath.getHomingTargetLocation();
+		Point targetLocation = null;
+		if (currentPath.getHomingTargetLocation() == null) {
+			targetLocation = getTarget(currentPath.isFriendly()).getPoint();
+		} else {
+			targetLocation = currentPath.getHomingTargetLocation();
+		}
 		switch (currentPath.getFallbackDirection()) {
 		case UP:
 			return currentLocation.getY() < targetLocation.getY();
@@ -62,6 +69,7 @@ public class HomingPathFinder implements PathFinder {
 		default:
 			return false;
 		}
+
 	}
 
 	private Direction calculateDirection(Point current, Point target) {
@@ -96,12 +104,39 @@ public class HomingPathFinder implements PathFinder {
 	}
 
 	@Override
-	public Point calculateInitialEndpoint(Point start, Direction rotation) {
-		FriendlyManager friendlyManager = FriendlyManager.getInstance();
+	public Point calculateInitialEndpoint(Point start, Direction rotation, boolean friendly) {
+		if (friendly) {
+			EnemyManager enemyManager = EnemyManager.getInstance();
+			if (enemyManager.getClosestEnemy() == null) {
+				int endXCoordinate = DataClass.getInstance().getWindowWidth();
+				int endYCoordinate = PlayerManager.getInstance().getSpaceship().getCenterYCoordinate();
+				return new Point(endXCoordinate, endYCoordinate);
+			} else
+				return enemyManager.getClosestEnemy().getPoint();
+		} else {
+			PlayerManager friendlyManager = PlayerManager.getInstance();
+			int xCoordinate = friendlyManager.getNearestFriendlyHomingCoordinates().get(0);
+			int yCoordinate = friendlyManager.getNearestFriendlyHomingCoordinates().get(1);
+			return new Point(xCoordinate, yCoordinate);
+		}
+	}
+
+	@Override
+	public Point calculateEndPointBySteps(Point start, Direction rotation, int steps, int xMovementspeed,
+			int yMovementspeed) {
+		PlayerManager friendlyManager = PlayerManager.getInstance();
 		int xCoordinate = friendlyManager.getNearestFriendlyHomingCoordinates().get(0);
 		int yCoordinate = friendlyManager.getNearestFriendlyHomingCoordinates().get(1);
-
 		return new Point(xCoordinate, yCoordinate);
+	}
+
+	public Sprite getTarget(boolean isFriendly) {
+		if (isFriendly) {
+			EnemyManager enemyManager = EnemyManager.getInstance();
+			return enemyManager.getClosestEnemy();
+		} else {
+			return PlayerManager.getInstance().getSpaceship();
+		}
 	}
 
 }

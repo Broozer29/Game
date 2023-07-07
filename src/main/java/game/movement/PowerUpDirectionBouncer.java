@@ -10,24 +10,25 @@ public class PowerUpDirectionBouncer {
 
 	private final int windowWidth;
 	private final int windowHeight;
+	private static PowerUpDirectionBouncer instance = new PowerUpDirectionBouncer();
 
-	public PowerUpDirectionBouncer() {
+	private PowerUpDirectionBouncer() {
 		this.windowWidth = DataClass.getInstance().getWindowWidth();
 		this.windowHeight = DataClass.getInstance().getWindowHeight();
 	}
+	
+	public static PowerUpDirectionBouncer getInstance() {
+		return instance;
+	}
 
 	public Path calculateNewPath(PowerUp powerUp) {
-		int currentXCoordinate = powerUp.getXCoordinate();
-		int currentYCoordinate = powerUp.getYCoordinate();
-		Point currentPoint = new Point(currentXCoordinate, currentYCoordinate);
-
 		Direction newDirection = getNewDirection(powerUp);
 		List<Integer> endCoordinates = getNewEndpointCoordinates(powerUp, newDirection);
 
 		Point newEndpoint = new Point(endCoordinates.get(0), endCoordinates.get(1));
 		RegularPathFinder regPathFinder = new RegularPathFinder();
 		boolean isFriendly = true;
-		Path newPath = regPathFinder.findPath(currentPoint, newEndpoint, 1, 1, newDirection, isFriendly);
+		Path newPath = regPathFinder.findPath(powerUp.getPoint(), newEndpoint, 1, 1, newDirection, isFriendly);
 
 		return newPath;
 	}
@@ -35,7 +36,6 @@ public class PowerUpDirectionBouncer {
 	public Direction getNewDirection(PowerUp powerUp) {
 		int x = powerUp.getXCoordinate();
 		int y = powerUp.getYCoordinate();
-		;
 		int width = powerUp.getWidth();
 		int height = powerUp.getHeight();
 		Direction currentDirection = powerUp.getDirection();

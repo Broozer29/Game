@@ -7,12 +7,25 @@ import data.DataClass;
 
 public class RegularPathFinder implements PathFinder {
 
-	public Path findPath(Point start, Point end, int XStepSize, int YStepSize, Direction fallbackDirection,boolean isFriendly) {
+	public Path findPath(Point start, Point end, int XStepSize, int YStepSize, Direction fallbackDirection,
+			boolean isFriendly) {
 		List<Point> pathList = new ArrayList<>();
 		Point currentPoint = start;
 		pathList.add(start);
-		int maxSteps = 20000;
+		int maxXSteps = (DataClass.getInstance().getWindowWidth() / XStepSize) * 2;
+		int maxYSteps = (DataClass.getInstance().getWindowWidth() / YStepSize) * 2;
 		boolean shouldContinue = true;
+
+		int maxSteps = 0;
+		if (maxXSteps > maxYSteps) {
+			maxSteps = maxXSteps;
+		} else {
+			maxSteps = maxYSteps;
+		}
+
+		if (50 < maxSteps) {
+			maxSteps = 50;
+		}
 
 		int steps = 0;
 		Direction direction = Direction.LEFT;
@@ -32,8 +45,7 @@ public class RegularPathFinder implements PathFinder {
 	@Override
 	public Direction getNextStep(Point currentLocation, Path path, Direction fallbackDirection) {
 		if (!path.getWaypoints().isEmpty()) {
-			Point nextPoint = path.getWaypoints().get(0);
-			return calculateDirection(currentLocation, nextPoint);
+			return calculateDirection(currentLocation, path.getWaypoints().get(0));
 		}
 		return fallbackDirection;
 	}
@@ -103,13 +115,14 @@ public class RegularPathFinder implements PathFinder {
 	}
 
 	@Override
-	public Point calculateInitialEndpoint(Point start, Direction rotation) {
+	public Point calculateInitialEndpoint(Point start, Direction rotation, boolean friendly) {
 		int endXCoordinate = 0;
 		int endYCoordinate = 0;
 		int xCoordinate = start.getX();
 		int yCoordinate = start.getY();
 		DataClass dataClass = DataClass.getInstance();
 
+		//friendly is not used for regular paths
 		switch (rotation) {
 		case UP:
 			endYCoordinate = -150;
@@ -146,6 +159,53 @@ public class RegularPathFinder implements PathFinder {
 		default:
 			endYCoordinate = yCoordinate;
 			endXCoordinate = 0 + 150;
+			break;
+		}
+
+		Point endPoint = new Point(endXCoordinate, endYCoordinate);
+		return endPoint;
+	}
+
+	@Override
+	public Point calculateEndPointBySteps(Point start, Direction rotation, int steps, int xMovementspeed,
+			int yMovementspeed) {
+
+		int endXCoordinate = start.getX();
+		int endYCoordinate = start.getY();
+		int xDelta = steps * xMovementspeed;
+		int yDelta = steps * yMovementspeed;
+
+		switch (rotation) {
+		case UP:
+			endYCoordinate -= yDelta;
+			break;
+		case DOWN:
+			endYCoordinate += yDelta;
+			break;
+		case LEFT:
+			endXCoordinate -= xDelta;
+			break;
+		case RIGHT:
+			endXCoordinate += xDelta;
+			break;
+		case RIGHT_UP:
+			endYCoordinate -= yDelta;
+			endXCoordinate += xDelta;
+			break;
+		case RIGHT_DOWN:
+			endYCoordinate += yDelta;
+			endXCoordinate += xDelta;
+			break;
+		case LEFT_UP:
+			endYCoordinate -= yDelta;
+			endXCoordinate -= xDelta;
+			break;
+		case LEFT_DOWN:
+			endYCoordinate += yDelta;
+			endXCoordinate -= xDelta;
+			break;
+		default:
+			endXCoordinate += xDelta;
 			break;
 		}
 

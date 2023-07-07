@@ -1,8 +1,11 @@
 package data;
 
-import data.image.enums.ImageEnums;
+import data.image.ImageEnums;
 import game.movement.PathFinder;
-import game.movement.RegularPathFinder;
+import game.objects.friendlies.spaceship.PlayerAttackTypes;
+import game.objects.friendlies.spaceship.PlayerSpecialAttackTypes;
+import game.playerpresets.GunPreset;
+import game.playerpresets.SpecialGunPreset;
 import visual.objects.SpriteAnimation;
 
 public class PlayerStats {
@@ -17,15 +20,42 @@ public class PlayerStats {
 		return instance;
 	}
 
-	// Player damage
-	private float defaultAttackDamage;
+	public void resetPlayerStats() {
+		initDefaultSettings();
+		if (normalGunPreset != null) {
+			normalGunPreset.loadPreset();
+		} else {
+			System.out.println("No normal gun preset was loaded! If this happens there has been an oversight in code.");
+		}
+		
+		if(specialGunPreset != null) {
+			specialGunPreset.loadPreset();
+		} else {
+			System.out.println("No special gun preset was loaded! If this happens there has been an oversight in code.");
+		}
+	}
+
+	// Preset type
+	private GunPreset normalGunPreset;
+	private SpecialGunPreset specialGunPreset;
+
+	// Player attacks
+	private PlayerAttackTypes attackType = PlayerAttackTypes.Laserbeam;
+	private PlayerSpecialAttackTypes specialAttackType = PlayerSpecialAttackTypes.EMP;
+	private float attackDamage;
 	private float bonusAttackDamage;
-	private float defaultSpecialAttackDamage;
+	private float specialAttackDamage;
 	private float bonusSpecialAttackDamage;
 	private float attackSpeed;
 	private float bonusAttackSpeed;
 	private float specialAttackSpeed;
 	private float bonusSpecialAttackSpeed;
+
+	private int flameThrowerMaxSteps;
+	private int flameThrowerBonusMaxSteps;
+	private int firewallSize;
+	private int firewallSpeed;
+	private float firewallDamage;
 
 	// Player Health
 	private float maxHitPoints;
@@ -36,18 +66,17 @@ public class PlayerStats {
 
 	// Movement
 	private int currentMovementSpeed;
-	private int defaultMovementSpeed;
+	private int MovementSpeed;
 	private int bonusMovementSpeed;
-	private int defaultBoostedMovementSpeed;
+	private int BoostedMovementSpeed;
 	private int boostedBonusMovementSpeed;
 
 	// Visual aspects of player
 	private ImageEnums currentExhaust;
 	private ImageEnums spaceShipImage;
 	private ImageEnums exhaustImage;
-	private ImageEnums defaultEngineType;
+	private ImageEnums engineType;
 	private ImageEnums boostedEngineType;
-	private ImageEnums playerEMPType;
 	private SpriteAnimation exhaustAnimation;
 
 	// Player "homing" coordinate box
@@ -65,32 +94,36 @@ public class PlayerStats {
 	private PathFinder missilePathFinder;
 
 	public void initDefaultSettings() {
+		// Health
 		setHitpoints(100);
 		setMaxHitPoints(100);
 		setShieldHitpoints(100);
 		setMaxShieldHitPoints(100);
+		setShieldRegenDelay(300);
+
+		// Movement speed
 		setMovementSpeed(2);
 		addBonusMovementSpeed(0);
-		setDefaultBoostedMovementSpeed(4);
+		setBoostedMovementSpeed(4);
 		addBoostedBonusMovementSpeed(0);
-		setAttackSpeed(15);
+
+		// Special attack
+		setSpecialAttackDamage(5);
 		setSpecialAttackSpeed(100);
-		setShieldRegenDelay(300);
+
+		// HomingRectangle target size (the larger, the quicker homing missiles lose lock)
 		setHomingRectangleResizeScale((float) 1.5);
-		setMissilePathFinder(new RegularPathFinder());
+
+		// Visuals
 		setSpaceShipImage(ImageEnums.Player_Spaceship_Model_3);
 		setExhaustImage(ImageEnums.Default_Player_Engine);
-		setPlayerMissileType(ImageEnums.Player_Laserbeam);
-		setPlayerMissileImpactType(ImageEnums.Impact_Explosion_One);
-		setMissileScale(1);
-		setMissileImpactScale(1);
-		setDefaultEngineType(ImageEnums.Default_Player_Engine);
+		setEngineType(ImageEnums.Default_Player_Engine);
 		setBoostedEngineType(ImageEnums.Default_Player_Engine_Boosted);
-		setPlayerEMPType(ImageEnums.Player_EMP);
+
 	}
 
 	public float getNormalAttackDamage() {
-		float attackDamage = this.defaultAttackDamage + this.bonusAttackDamage;
+		float attackDamage = this.attackDamage + this.bonusAttackDamage;
 		if (attackDamage < 1) {
 			return 1;
 		} else {
@@ -99,7 +132,7 @@ public class PlayerStats {
 	}
 
 	public void setPlayerDamage(float playerDamage) {
-		this.defaultAttackDamage = playerDamage;
+		this.attackDamage = playerDamage;
 	}
 
 	public float getHitpoints() {
@@ -125,6 +158,10 @@ public class PlayerStats {
 		} else {
 			return currentAttackSpeed;
 		}
+	}
+
+	public void setAttackDamage(float attackDamage) {
+		this.attackDamage = attackDamage;
 	}
 
 	public void setAttackSpeed(float attackSpeed) {
@@ -169,12 +206,12 @@ public class PlayerStats {
 	}
 
 	public int getMovementSpeed() {
-		return defaultMovementSpeed;
+		return MovementSpeed;
 	}
 
 	public void setMovementSpeed(int movementSpeed) {
 		if (movementSpeed > 0) {
-			this.defaultMovementSpeed = movementSpeed;
+			this.MovementSpeed = movementSpeed;
 		}
 	}
 
@@ -296,12 +333,12 @@ public class PlayerStats {
 		this.missileImpactScale = missileImpactScale;
 	}
 
-	public ImageEnums getDefaultEngineType() {
-		return defaultEngineType;
+	public ImageEnums getEngineType() {
+		return engineType;
 	}
 
-	public void setDefaultEngineType(ImageEnums defaultEngineType) {
-		this.defaultEngineType = defaultEngineType;
+	public void setEngineType(ImageEnums engineType) {
+		this.engineType = engineType;
 	}
 
 	public ImageEnums getBoostedEngineType() {
@@ -312,12 +349,12 @@ public class PlayerStats {
 		this.boostedEngineType = boostedEngineType;
 	}
 
-	public ImageEnums getPlayerEMPType() {
-		return playerEMPType;
+	public PlayerSpecialAttackTypes getPlayerSpecialAttackType() {
+		return specialAttackType;
 	}
 
-	public void setPlayerEMPType(ImageEnums playerEMPType) {
-		this.playerEMPType = playerEMPType;
+	public void setPlayerSpecialAttackType(PlayerSpecialAttackTypes playerEMPType) {
+		this.specialAttackType = playerEMPType;
 	}
 
 	public float getMissileScale() {
@@ -337,11 +374,11 @@ public class PlayerStats {
 	}
 
 	public int getBoostedMovementSpeed() {
-		return defaultBoostedMovementSpeed;
+		return BoostedMovementSpeed;
 	}
 
-	public void setDefaultBoostedMovementSpeed(int boostedMovementSpeed) {
-		this.defaultBoostedMovementSpeed = boostedMovementSpeed;
+	public void setBoostedMovementSpeed(int boostedMovementSpeed) {
+		this.BoostedMovementSpeed = boostedMovementSpeed;
 	}
 
 	public int getBoostedBonusMovementSpeed() {
@@ -355,9 +392,9 @@ public class PlayerStats {
 	public int getCurrentMovementSpeed(boolean boosted) {
 		currentMovementSpeed = 0;
 		if (boosted) {
-			currentMovementSpeed = defaultBoostedMovementSpeed + boostedBonusMovementSpeed;
+			currentMovementSpeed = BoostedMovementSpeed + boostedBonusMovementSpeed;
 		} else {
-			currentMovementSpeed = defaultMovementSpeed + bonusMovementSpeed;
+			currentMovementSpeed = MovementSpeed + bonusMovementSpeed;
 		}
 
 		if (currentMovementSpeed < 1) {
@@ -389,33 +426,102 @@ public class PlayerStats {
 		this.bonusSpecialAttackSpeed += bonusSpecialAttackSpeed;
 	}
 
-	public float getBonusDefaultAttackDamage() {
+	public float getBonusAttackDamage() {
 		return bonusAttackDamage;
 	}
 
-	public void addBonusDefaultAttackDamage(float bonusDefaultAttackDamage) {
-		this.bonusAttackDamage += bonusDefaultAttackDamage;
+	public void addBonusAttackDamage(float bonusAttackDamage) {
+		this.bonusAttackDamage += bonusAttackDamage;
 	}
 
 	public float getSpecialAttackDamage() {
-		float specialAttackDamage = defaultSpecialAttackDamage + bonusSpecialAttackDamage;
-		if (specialAttackDamage < 0) {
+		float tempspecialAttackDamage = specialAttackDamage + bonusSpecialAttackDamage;
+		if (tempspecialAttackDamage < 0.5) {
 			return (float) 0.5;
 		} else {
-			return specialAttackDamage;
+			return tempspecialAttackDamage;
 		}
 	}
 
-	public void setDefaultSpecialAttackDamage(float defaultSpecialAttackDamage) {
-		this.defaultSpecialAttackDamage = defaultSpecialAttackDamage;
+	public void setSpecialAttackDamage(float SpecialAttackDamage) {
+		this.specialAttackDamage = SpecialAttackDamage;
 	}
 
-	public float getBonusDefaultSpecialAttackDamage() {
+	public float getBonusSpecialAttackDamage() {
 		return bonusSpecialAttackDamage;
 	}
 
-	public void addBonusSpecialAttackDamage(float bonusDefaultSpecialAttackDamage) {
-		this.bonusSpecialAttackDamage += bonusDefaultSpecialAttackDamage;
+	public void addBonusSpecialAttackDamage(float bonusSpecialAttackDamage) {
+		this.bonusSpecialAttackDamage += bonusSpecialAttackDamage;
+	}
+
+	public PlayerAttackTypes getAttackType() {
+		return attackType;
+	}
+
+	public void setAttackType(PlayerAttackTypes attackType) {
+		this.attackType = attackType;
+	}
+
+	public int getFlameThrowerMaxSteps() {
+		int attackRange = flameThrowerMaxSteps + flameThrowerBonusMaxSteps;
+		if (attackRange < 1) {
+			return 1;
+		}
+		return flameThrowerMaxSteps;
+	}
+
+	public void setFlameThrowerMaxSteps(int flameThrowerAttackRange) {
+		this.flameThrowerMaxSteps = flameThrowerAttackRange;
+	}
+
+	public int getFlameThrowerBonusMaxSteps() {
+
+		return flameThrowerBonusMaxSteps;
+	}
+
+	public void addFlameThrowerBonusMaxRange(float flameThrowerBonusAttackRange) {
+		this.flameThrowerBonusMaxSteps += flameThrowerBonusAttackRange;
+	}
+
+	public int getFirewallSize() {
+		return firewallSize;
+	}
+
+	public void setFirewallSize(int firewallSize) {
+		this.firewallSize = firewallSize;
+	}
+
+	public float getFirewallDamage() {
+		return firewallDamage;
+	}
+
+	public void setFirewallDamage(float firewallDamage) {
+		this.firewallDamage = firewallDamage;
+	}
+
+	public int getFirewallSpeed() {
+		return firewallSpeed;
+	}
+
+	public void setFirewallSpeed(int firewallSpeed) {
+		this.firewallSpeed = firewallSpeed;
+	}
+	
+	public GunPreset getNormalGunPreset() {
+		return normalGunPreset;
+	}
+
+	public void setNormalGunPreset(GunPreset normalGunPreset) {
+		this.normalGunPreset = normalGunPreset;
+	}
+
+	public SpecialGunPreset getSpecialGunPreset() {
+		return specialGunPreset;
+	}
+
+	public void setSpecialGunPreset(SpecialGunPreset specialGunPreset) {
+		this.specialGunPreset = specialGunPreset;
 	}
 
 }

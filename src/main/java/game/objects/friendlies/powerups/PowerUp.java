@@ -1,7 +1,7 @@
 package game.objects.friendlies.powerups;
 
+import data.image.ImageEnums;
 import data.image.ImageResizer;
-import data.image.enums.ImageEnums;
 import game.managers.OnScreenTextManager;
 import game.managers.TimerManager;
 import game.movement.Direction;
@@ -14,16 +14,16 @@ import visual.objects.Sprite;
 public class PowerUp extends Sprite {
 
 	private Direction direction;
-	private Point currentLocation;
+
 	private Point destination;
 	private Path currentPath;
-	private PowerUps powerUpType;
+	private PowerUpEnums powerUpType;
 
 	private int timeBeforeActivation;
 	private boolean loopable;
 	private PowerUpEffect powerUpEffect;
 
-	public PowerUp(int x, int y, float scale, Direction direction, PowerUps powerUpType, ImageEnums powerUpImage, int timeBeforeActivation,
+	public PowerUp(int x, int y, float scale, Direction direction, PowerUpEnums powerUpType, ImageEnums powerUpImage, int timeBeforeActivation,
 			boolean loopable) {
 		super(x, y, scale);
 		this.direction = direction;
@@ -36,8 +36,7 @@ public class PowerUp extends Sprite {
 	public void move() {
 		if (currentPath == null || currentPath.getWaypoints().isEmpty()) {
 			// calculate a new path if necessary
-			PowerUpDirectionBouncer bouncer = new PowerUpDirectionBouncer();
-			currentPath = bouncer.calculateNewPath(this);
+			currentPath = PowerUpDirectionBouncer.getInstance().calculateNewPath(this);
 		}
 
 		// Update current location on the path
@@ -55,13 +54,14 @@ public class PowerUp extends Sprite {
 		if (currentLocation.equals(nextPoint)) {
 			currentPath.getWaypoints().remove(0);
 		}
-
+		
+		bounds.setBounds(xCoordinate + xOffset, yCoordinate + yOffset, width, height);
+		updateCurrentBoardBlock();
 		// Check for collision with walls and bounce if necessary
-		PowerUpDirectionBouncer bouncer = new PowerUpDirectionBouncer();
-		Direction newDirection = bouncer.getNewDirection(this);
+		Direction newDirection = PowerUpDirectionBouncer.getInstance().getNewDirection(this);
 		if (newDirection != direction) {
 			direction = newDirection;
-			currentPath = bouncer.calculateNewPath(this);
+			currentPath = PowerUpDirectionBouncer.getInstance().calculateNewPath(this);
 		}
 
 	}
@@ -90,10 +90,6 @@ public class PowerUp extends Sprite {
 		return direction;
 	}
 
-	public Point getCurrentLocation() {
-		return currentLocation;
-	}
-
 	public void setCurrentLocation(Point currentLocation) {
 		this.currentLocation = currentLocation;
 	}
@@ -118,11 +114,11 @@ public class PowerUp extends Sprite {
 		this.direction = direction;
 	}
 
-	public PowerUps getPowerUpType() {
+	public PowerUpEnums getPowerUpType() {
 		return powerUpType;
 	}
 
-	public void setPowerUpType(PowerUps powerUpType) {
+	public void setPowerUpType(PowerUpEnums powerUpType) {
 		this.powerUpType = powerUpType;
 	}
 

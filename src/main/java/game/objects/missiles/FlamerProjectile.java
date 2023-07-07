@@ -1,6 +1,6 @@
 package game.objects.missiles;
 
-import data.image.enums.ImageEnums;
+import data.image.ImageEnums;
 import game.movement.Direction;
 import game.movement.PathFinder;
 import game.movement.Point;
@@ -8,19 +8,16 @@ import game.movement.Point;
 public class FlamerProjectile extends Missile {
 
 	public FlamerProjectile(int x, int y, Point destination, ImageEnums missileType, ImageEnums explosionType,
-			Direction rotation, float scale, PathFinder pathFinder) {
-		super(x, y, destination, missileType, explosionType, rotation, scale, pathFinder, false);
-		this.missileDamage = (float) 7.5;
+			Direction rotation, float scale, PathFinder pathFinder, int xMovementSpeed, int yMovementSpeed, boolean friendly, float damage) {
+		super(x, y, destination, missileType, explosionType, rotation, scale, pathFinder, friendly, xMovementSpeed, yMovementSpeed);
+		this.missileDamage = damage;
 		setAnimation();
 		this.animation.setFrameDelay(3);
-		this.yMovementSpeed = 2;
-		this.xMovementSpeed = 5;
 	}
 
 	public void missileAction() {
 		if (missileStepsTaken % 5 == 0 && animation.getScale() < 2.00) {
-			float newScale = (float) (animation.getScale() + 0.05);
-			this.animation.setAnimationScale(newScale);
+			this.animation.setAnimationScale((float) (animation.getScale() + 0.05));
 			;
 		}
 	}

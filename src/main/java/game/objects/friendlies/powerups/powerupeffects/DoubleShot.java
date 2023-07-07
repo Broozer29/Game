@@ -2,11 +2,11 @@ package game.objects.friendlies.powerups.powerupeffects;
 
 import game.objects.friendlies.powerups.PowerUpAcquiredText;
 import game.objects.friendlies.powerups.PowerUpEffect;
-import game.objects.friendlies.powerups.PowerUps;
+import game.objects.friendlies.powerups.PowerUpEnums;
 
 public class DoubleShot extends PowerUpEffect{
 
-	public DoubleShot(PowerUps powerUpType) {
+	public DoubleShot(PowerUpEnums powerUpType) {
 		super(powerUpType);
 	}
 	

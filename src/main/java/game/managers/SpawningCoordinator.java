@@ -36,16 +36,29 @@ public class SpawningCoordinator {
 	private int leftEnemyMaxWidthRange = 500;
 	private int leftEnemyMinWidthRange = 100;
 	
+	private int bottomLeftEnemyMinHeightRange = DataClass.getInstance().getWindowHeight() - 100;
+	private int bottomLeftEnemyMaxHeightRange = DataClass.getInstance().getWindowHeight() + 50;
+	
+	private int topLeftEnemyMinHeightRange = 100;
+	private int topLeftEnemyMaxHeightRange = 400;
+	
 	//Right Spawning block
-	private int rightEnemyMaxWidthRange = DataClass.getInstance().getWindowWidth() + 500;
+	private int rightEnemyMaxWidthRange = DataClass.getInstance().getWindowWidth() + 200;
 	private int rightEnemyMinWidthRange = DataClass.getInstance().getWindowWidth();
 	private int rightEnemyMaxHeightRange = DataClass.getInstance().getWindowHeight() - 100;
 	private int rightEnemyMinHeightRange = 100;
 	
+	private int bottomRightEnemyMinHeightRange = DataClass.getInstance().getWindowHeight() - 100;
+	private int bottomRightEnemyMaxHeightRange = DataClass.getInstance().getWindowHeight() + 50;
+	
+	
+	private int topRightEnemyMinHeightRange = 100;
+	private int topRightEnemyMaxHeightRange = 400;
+	
 	//Up spawning block
 	private int upEnemyMaxWidthRange = DataClass.getInstance().getWindowWidth() - 50;
-	private int upEnemyMinWidthRange = 50;
-	private int upEnemyMaxHeightRange = 300;
+	private int upEnemyMinWidthRange = 100;
+	private int upEnemyMaxHeightRange = 150;
 	private int upEnemyMinHeightRange = 0;
 	
 	//Down spawning block
@@ -95,12 +108,28 @@ public class SpawningCoordinator {
 		return random.nextInt((rightEnemyMaxHeightRange - rightEnemyMinHeightRange) + 1) + rightEnemyMinHeightRange;
 	}
 	
+	public int getBottomRightBlockYCoordinate() {
+		return random.nextInt((bottomRightEnemyMaxHeightRange - bottomRightEnemyMinHeightRange) + 1) + bottomRightEnemyMinHeightRange;
+	}
+	
+	public int getTopRightBlockYCoordinate() {
+		return 0 - random.nextInt((topRightEnemyMaxHeightRange - topRightEnemyMinHeightRange) + 1) + topRightEnemyMinHeightRange;
+	}
+	
 	public int getLeftBlockXCoordinate() {
 		return 0 - random.nextInt((leftEnemyMaxWidthRange - leftEnemyMinWidthRange) + 1) + leftEnemyMinWidthRange;
 	}
 
 	public int getLeftBlockYCoordinate() {
 		return random.nextInt((leftEnemyMaxHeightRange - leftEnemyMinHeightRange) + 1) + leftEnemyMinHeightRange;
+	}
+	
+	public int getBottomLeftBlockYCoordinate() {
+		return random.nextInt((bottomLeftEnemyMaxHeightRange - bottomLeftEnemyMinHeightRange) + 1) + bottomLeftEnemyMinHeightRange;
+	}
+	
+	public int getTopLeftBlockYCoordinate() {
+		return 0 - random.nextInt((topLeftEnemyMaxHeightRange - topLeftEnemyMinHeightRange) + 1) + topLeftEnemyMinHeightRange;
 	}
 	
 	public int getUpBlockXCoordinate() {

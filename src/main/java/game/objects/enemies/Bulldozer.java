@@ -1,13 +1,13 @@
 package game.objects.enemies;
 
 import data.audio.AudioEnums;
-import data.image.enums.EnemyEnums;
-import data.image.enums.ImageEnums;
-import game.managers.MissileManager;
+import data.image.ImageEnums;
 import game.movement.Direction;
 import game.movement.PathFinder;
 import game.movement.Point;
 import game.movement.RegularPathFinder;
+import game.objects.missiles.MissileCreator;
+import game.objects.missiles.MissileManager;
 
 public class Bulldozer extends Enemy {
 	private PathFinder missilePathFinder;
@@ -18,11 +18,11 @@ public class Bulldozer extends Enemy {
 		setExhaustanimation(ImageEnums.Bulldozer_Normal_Exhaust);
 		setDeathAnimation(ImageEnums.Bulldozer_Destroyed_Explosion);
 		this.exhaustAnimation.setFrameDelay(3);
-		this.deathAnimation.setFrameDelay(2);
+		this.deathAnimation.setFrameDelay(4);
 		this.initBoardBlockSpeeds();
 		this.hitPoints = 50;
 		this.maxHitPoints = 50;
-		this.attackSpeedFrameCount = 100;
+		this.attackSpeedFrameCount = 250;
 		this.XMovementSpeed = 2;
 		this.YMovementSpeed = 1;
 		this.hasAttack = true;
@@ -52,14 +52,13 @@ public class Bulldozer extends Enemy {
 		if (missileManager == null) {
 			missileManager = MissileManager.getInstance();
 		}
-
+		int xMovementSpeed = 5;
+		int yMovementSpeed = 2;
 		if (currentAttackSpeedFrameCount >= attackSpeedFrameCount) {
-			missileManager.addEnemyMissile(this.xCoordinate, this.yCoordinate, ImageEnums.Bulldozer_Missile,
-					ImageEnums.Bulldozer_Missile_Explosion, Direction.LEFT_UP, this.scale, missilePathFinder);
-			missileManager.addEnemyMissile(this.xCoordinate, this.yCoordinate, ImageEnums.Bulldozer_Missile,
-					ImageEnums.Bulldozer_Missile_Explosion, Direction.LEFT_DOWN, this.scale, missilePathFinder);
-			missileManager.addEnemyMissile(this.xCoordinate, this.yCoordinate, ImageEnums.Bulldozer_Missile,
-					ImageEnums.Bulldozer_Missile_Explosion, Direction.LEFT, this.scale, missilePathFinder);
+			missileManager.addExistingMissile(MissileCreator.getInstance().createEnemyMissile(
+					xCoordinate, yCoordinate + + this.height / 2
+					, ImageEnums.Bulldozer_Missile, ImageEnums.Bulldozer_Missile_Explosion, rotation, 
+					scale, missilePathFinder, xMovementSpeed, yMovementSpeed, (float) 7.5));
 			currentAttackSpeedFrameCount = 0;
 		}
 		if (currentAttackSpeedFrameCount < attackSpeedFrameCount) {

@@ -1,12 +1,12 @@
 package game.objects.friendlies.powerups.powerupeffects;
 
 import game.objects.friendlies.powerups.PowerUpEffect;
-import game.objects.friendlies.powerups.PowerUps;
+import game.objects.friendlies.powerups.PowerUpEnums;
 
 public class IncreasedSpecialAttackSpeed extends PowerUpEffect {
 	int specialAttackSpeedBonus;
 
-	public IncreasedSpecialAttackSpeed(PowerUps powerUpType) {
+	public IncreasedSpecialAttackSpeed(PowerUpEnums powerUpType) {
 		super(powerUpType);
 		// TODO Auto-generated constructor stub
 	}

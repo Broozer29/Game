@@ -1,17 +1,18 @@
 package game.objects.enemies;
 
-
 import data.audio.AudioEnums;
-import data.image.enums.EnemyEnums;
-import data.image.enums.ImageEnums;
-import game.managers.MissileManager;
+import data.image.ImageEnums;
 import game.movement.Direction;
 import game.movement.PathFinder;
 import game.movement.Point;
+import game.objects.friendlies.spaceship.PlayerAttackTypes;
+import game.objects.missiles.MissileCreator;
+import game.objects.missiles.MissileManager;
 
 public class Alien extends Enemy {
 
 	private PathFinder missilePathFinder;
+
 	public Alien(int x, int y, Point destination, Direction rotation, float scale, PathFinder pathFinder) {
 		super(x, y, destination, rotation, EnemyEnums.Alien, scale, pathFinder);
 		loadImage(ImageEnums.Alien);
@@ -49,8 +50,10 @@ public class Alien extends Enemy {
 		}
 		if (currentAttackSpeedFrameCount >= attackSpeedFrameCount) {
 			if (currentBoardBlock < 7) {
-				missileManager.addEnemyMissile(this.xCoordinate, this.yCoordinate + calculateRandomWeaponHeightOffset(),
-						ImageEnums.Alien_Laserbeam, ImageEnums.Impact_Explosion_One, Direction.LEFT, this.scale, missilePathFinder);
+				missileManager.addExistingMissile(MissileCreator.getInstance().createEnemyMissile(
+						xCoordinate, yCoordinate + calculateRandomWeaponHeightOffset()
+						, ImageEnums.Alien_Laserbeam, ImageEnums.Impact_Explosion_One, rotation, 
+						scale, missilePathFinder, XMovementSpeed, XMovementSpeed, (float) 7.5));
 				currentAttackSpeedFrameCount = 0;
 			}
 		}

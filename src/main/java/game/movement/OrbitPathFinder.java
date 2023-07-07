@@ -103,7 +103,7 @@ public class OrbitPathFinder implements PathFinder {
     }
 
     @Override
-    public Point calculateInitialEndpoint(Point start, Direction rotation) {
+    public Point calculateInitialEndpoint(Point start, Direction rotation, boolean friendly) {
         // This method could return the first waypoint on the path.
     	return start;
     }
@@ -120,8 +120,14 @@ public class OrbitPathFinder implements PathFinder {
     public Sprite getTarget() {
         return target;
     }
-}
 
+	@Override
+	public Point calculateEndPointBySteps(Point start, Direction rotation, int steps, int xMovementspeed,
+			int yMovementspeed) {
+		//Should not be used for OrbitPathFinders
+		return start;
+	}
+}
 
 
 

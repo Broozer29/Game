@@ -1,7 +1,7 @@
 package menuscreens;
 
 import data.DataClass;
-import data.image.enums.ImageEnums;
+import data.image.ImageEnums;
 import visual.objects.Sprite;
 
 public class MenuTile extends Sprite {

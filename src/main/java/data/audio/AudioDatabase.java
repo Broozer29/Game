@@ -32,7 +32,10 @@ public class AudioDatabase {
 	private List<CustomAudioClip> alienSpaceshipDestroyedClipList = new ArrayList<CustomAudioClip>();
 	private List<CustomAudioClip> largeShipDestroyedClipList = new ArrayList<CustomAudioClip>();
 	private List<CustomAudioClip> powerUpAcquiredClipList = new ArrayList<CustomAudioClip>();
-
+	private List<CustomAudioClip> rocketLauncherClipList = new ArrayList<CustomAudioClip>();
+	private List<CustomAudioClip> flamethrowerClipList = new ArrayList<CustomAudioClip>();
+	private List<CustomAudioClip> firewallClipList = new ArrayList<CustomAudioClip>();
+	
 	
 	private Map<AudioEnums, List<CustomAudioClip>> audioClipsMap = new HashMap<>();
 	
@@ -111,6 +114,15 @@ public class AudioDatabase {
 			
 			CustomAudioClip powerUpAcquired = new CustomAudioClip(AudioEnums.Power_Up_Acquired, false);
 			powerUpAcquiredClipList.add(powerUpAcquired);
+
+			CustomAudioClip rocketLauncherClip = new CustomAudioClip(AudioEnums.Rocket_Launcher, false);
+			rocketLauncherClipList.add(rocketLauncherClip);
+			
+			CustomAudioClip flamethrowerClip = new CustomAudioClip(AudioEnums.Flamethrower, false);
+			flamethrowerClipList.add(flamethrowerClip);
+			
+			CustomAudioClip firewallClip = new CustomAudioClip(AudioEnums.Firewall, false);
+			firewallClipList.add(firewallClip);
 		}
 		
 		audioClipsMap.put(AudioEnums.Player_Laserbeam, laserBeamClipList);
@@ -120,7 +132,10 @@ public class AudioDatabase {
 		audioClipsMap.put(AudioEnums.Large_Ship_Destroyed, largeShipDestroyedClipList);
 		audioClipsMap.put(AudioEnums.Default_EMP, defaultEMPClipList);
 		audioClipsMap.put(AudioEnums.Power_Up_Acquired, powerUpAcquiredClipList);
-
+		audioClipsMap.put(AudioEnums.Firewall, firewallClipList);
+		audioClipsMap.put(AudioEnums.Rocket_Launcher, rocketLauncherClipList);
+		audioClipsMap.put(AudioEnums.Flamethrower, flamethrowerClipList);
+		
 	}
 	
 	//Return a Clip which is not running
@@ -155,6 +170,9 @@ public class AudioDatabase {
 	        case Default_EMP:
 	        case Alien_Bomb_Destroyed:
 	        case Power_Up_Acquired:
+	        case Rocket_Launcher:
+	        case Flamethrower:
+	        case Firewall:
 	            return getAvailableClip(audioType);
 	        case Ayasa_The_Reason_Why:
 	            return getAyasatheReasonWhy();

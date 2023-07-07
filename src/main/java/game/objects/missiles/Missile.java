@@ -1,11 +1,14 @@
 package game.objects.missiles;
 
 import data.DataClass;
-import data.image.enums.ImageEnums;
+import data.image.ImageEnums;
+import game.managers.OnScreenTextManager;
 import game.movement.Direction;
 import game.movement.Path;
 import game.movement.PathFinder;
 import game.movement.Point;
+import game.objects.friendlies.powerups.PowerUpAcquiredText;
+import game.objects.friendlies.powerups.PowerUpEnums;
 import visual.objects.Sprite;
 import visual.objects.SpriteAnimation;
 
@@ -14,9 +17,9 @@ public class Missile extends Sprite {
 	protected float missileDamage;
 	protected int xMovementSpeed;
 	protected int yMovementSpeed;
-	private int lastUsedXMovementSpeed;
-	private int lastUsedYMovementSpeed;
-	
+	protected int lastUsedXMovementSpeed;
+	protected int lastUsedYMovementSpeed;
+
 	protected SpriteAnimation animation;
 	protected SpriteAnimation explosionAnimation;
 	protected ImageEnums missileType;
@@ -24,16 +27,20 @@ public class Missile extends Sprite {
 	protected Direction rotation;
 	protected int missileStepsTaken;
 
-	private Point currentLocation;
-	private Point destination;
-	private PathFinder pathFinder;
-	private Path currentPath;
-	private boolean isFriendly;
+	protected Point currentLocation;
+	protected Point destination;
+	protected PathFinder pathFinder;
+	protected Path currentPath;
+	protected boolean isFriendly;
 
-	private boolean hasLock;
+	protected boolean hasLock;
 
-	public Missile(int x, int y, Point destination, ImageEnums missileType, ImageEnums explosionType, Direction rotation,
-			float scale, PathFinder pathFinder, boolean isFriendly) {
+	private Point nextPoint;
+	private Sprite target;
+
+	public Missile(int x, int y, Point destination, ImageEnums missileType, ImageEnums explosionType,
+			Direction rotation, float scale, PathFinder pathFinder, boolean isFriendly, int xMovementSpeed,
+			int yMovementSpeed) {
 		super(x, y, scale);
 		this.currentLocation = new Point(x, y);
 		this.destination = destination;
@@ -44,31 +51,36 @@ public class Missile extends Sprite {
 		this.pathFinder = pathFinder;
 		this.hasLock = true;
 		this.isFriendly = isFriendly;
+		this.xMovementSpeed = xMovementSpeed;
+		this.yMovementSpeed = yMovementSpeed;
 	}
 
 	public void move() {
 		if (currentPath == null || currentPath.getWaypoints().isEmpty() || xMovementSpeed != lastUsedXMovementSpeed
 				|| yMovementSpeed != lastUsedYMovementSpeed) {
 			// calculate a new path if necessary
-			currentPath = pathFinder.findPath(currentLocation, destination, xMovementSpeed, yMovementSpeed, rotation, isFriendly);
+			currentPath = pathFinder.findPath(currentLocation, destination, xMovementSpeed, yMovementSpeed, rotation,
+					isFriendly);
 			lastUsedXMovementSpeed = xMovementSpeed;
 			lastUsedYMovementSpeed = yMovementSpeed;
 			currentPath.setCurrentLocation(new Point(xCoordinate, yCoordinate));
 		}
+		
+		if(this.target != null) {
+			currentPath.setTarget(this.target);
+		}
 
 		// check if the missile has lost lock
 		boolean hasPassedPlayerOrNeverHadLock = false;
-		
+
 		if (pathFinder.shouldRecalculatePath(currentPath)) {
-			hasPassedPlayerOrNeverHadLock = true; // if it should recalculate path, it means it lost lock or never had one
+			hasPassedPlayerOrNeverHadLock = true; // if it should recalculate path, it means it lost lock or never had
 		}
-		
-		if(hasPassedPlayerOrNeverHadLock) {
+
+		if (hasPassedPlayerOrNeverHadLock) {
 			hasLock = false;
 		}
 
-		// declare the nextPoint variable here, before the if-else block
-		Point nextPoint = null;
 
 		// only calculate next direction and update location if missile still has lock
 		if (hasLock) {
@@ -80,7 +92,8 @@ public class Missile extends Sprite {
 		} else {
 			// if missile lost lock, it should keep moving in the last direction
 			rotation = currentPath.getFallbackDirection();
-			nextPoint = calculateNextPoint(currentLocation, currentPath.getFallbackDirection(), xMovementSpeed, yMovementSpeed);
+			nextPoint = calculateNextPoint(currentLocation, currentPath.getFallbackDirection(), xMovementSpeed,
+					yMovementSpeed);
 		}
 
 		// Update the current location
@@ -93,14 +106,12 @@ public class Missile extends Sprite {
 		if (currentLocation.equals(nextPoint)) {
 			currentPath.getWaypoints().remove(0);
 		}
-
-		if (animation != null) {
-			updateAnimationCoordinates();
-		}
-
+		bounds.setBounds(xCoordinate + xOffset, yCoordinate + yOffset, width, height);
+		updateCurrentBoardBlock();
+		updateAnimationCoordinates();
 		updateVisibility();
 	}
-	
+
 	private void updateVisibility() {
 		switch (rotation) {
 		case UP:
@@ -148,9 +159,15 @@ public class Missile extends Sprite {
 			}
 			break;
 		}
+		
+		if(!this.visible && this.animation != null) {
+			this.animation.setVisible(false);
+			PowerUpAcquiredText text = new PowerUpAcquiredText(xCoordinate - 200, yCoordinate, PowerUpEnums.DUMMY_DO_NOT_USE);
+			OnScreenTextManager.getInstance().addPowerUpText(text);
+		}
 	}
 
-	//Needed for all PathFinders, so added to missiles
+	// Needed for all PathFinders, so added to missiles
 	private Point calculateNextPoint(Point currentLocation, Direction direction, int XStepSize, int YStepSize) {
 		int x = currentLocation.getX();
 		int y = currentLocation.getY();
@@ -195,10 +212,19 @@ public class Missile extends Sprite {
 	// Sets the animations (the graphics of missile) to align with the missiles
 	// coordinates
 	private void updateAnimationCoordinates() {
-		animation.setX(xCoordinate);
-		animation.setY(yCoordinate);
-		explosionAnimation.setX(xCoordinate);
-		explosionAnimation.setY(yCoordinate);
+		if (animation != null) {
+			animation.setX(xCoordinate);
+			animation.setY(yCoordinate);
+			animation.setAnimationBounds(animation.getXCoordinate(), animation.getYCoordinate());
+			animation.updateCurrentBoardBlock();
+		}
+
+		if (explosionAnimation != null) {
+			explosionAnimation.setX(xCoordinate);
+			explosionAnimation.setY(yCoordinate);
+			explosionAnimation.setAnimationBounds(explosionAnimation.getXCoordinate(), explosionAnimation.getYCoordinate());
+			explosionAnimation.updateCurrentBoardBlock();
+		}
 	}
 
 	public float getMissileDamage() {
@@ -217,14 +243,14 @@ public class Missile extends Sprite {
 		if (!missileType.equals(ImageEnums.Alien_Laserbeam) && !missileType.equals(ImageEnums.Player_Laserbeam)) {
 			if (missileType != null) {
 				this.animation = new SpriteAnimation(xCoordinate, yCoordinate, missileType, true, scale);
-				this.explosionAnimation = new SpriteAnimation(xCoordinate, yCoordinate, explosionType, false, scale);
+
+				// Below commented because the memory/cpu
+				// this.animation.rotateAnimetion(rotation);
 			}
-		} else {
-			this.animation = new SpriteAnimation(xCoordinate, yCoordinate, ImageEnums.Impact_Explosion_One, false, scale);
-			this.explosionAnimation = new SpriteAnimation(xCoordinate, yCoordinate, ImageEnums.Impact_Explosion_One, false,
-					scale);
 		}
-		this.animation.rotateAnimetion(rotation);
+		if (explosionType != null) {
+			this.explosionAnimation = new SpriteAnimation(xCoordinate, yCoordinate, explosionType, false, scale);
+		}
 	}
 
 	public SpriteAnimation getExplosionAnimation() {
@@ -241,6 +267,20 @@ public class Missile extends Sprite {
 		return null;
 	}
 
+	public void missileAction() {
+		// Exists to be overriden
+	}
 
+	public boolean isFriendly() {
+		return this.isFriendly;
+	}
+	
+	public Sprite getTarget() {
+		return target;
+	}
+
+	public void setTarget(Sprite target) {
+		this.target = target;
+	}
 
 }

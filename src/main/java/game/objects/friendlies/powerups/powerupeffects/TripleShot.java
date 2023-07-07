@@ -1,11 +1,11 @@
 package game.objects.friendlies.powerups.powerupeffects;
 
 import game.objects.friendlies.powerups.PowerUpEffect;
-import game.objects.friendlies.powerups.PowerUps;
+import game.objects.friendlies.powerups.PowerUpEnums;
 
 public class TripleShot extends PowerUpEffect{
 
-	public TripleShot(PowerUps powerUpType) {
+	public TripleShot(PowerUpEnums powerUpType) {
 		super(powerUpType);
 		// TODO Auto-generated constructor stub
 	}

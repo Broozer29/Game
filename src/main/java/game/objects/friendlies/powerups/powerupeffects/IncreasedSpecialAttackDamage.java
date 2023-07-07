@@ -1,12 +1,12 @@
 package game.objects.friendlies.powerups.powerupeffects;
 
 import game.objects.friendlies.powerups.PowerUpEffect;
-import game.objects.friendlies.powerups.PowerUps;
+import game.objects.friendlies.powerups.PowerUpEnums;
 
 public class IncreasedSpecialAttackDamage extends PowerUpEffect {
 	float specialAttackDamageBonus;
 
-	public IncreasedSpecialAttackDamage(PowerUps powerUpType) {
+	public IncreasedSpecialAttackDamage(PowerUpEnums powerUpType) {
 		super(powerUpType);
 		// TODO Auto-generated constructor stub
 	}

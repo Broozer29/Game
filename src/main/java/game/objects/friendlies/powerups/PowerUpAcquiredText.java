@@ -6,9 +6,9 @@ public class PowerUpAcquiredText {
 	private float transparencyValue;
 	private int xCoordinate;
 	private int yCoordinate;
-	private PowerUps powerUpType;
+	private PowerUpEnums powerUpType;
 	
-	public PowerUpAcquiredText(int xCoordinate, int yCoordinate, PowerUps powerUpType) {
+	public PowerUpAcquiredText(int xCoordinate, int yCoordinate, PowerUpEnums powerUpType) {
 		this.xCoordinate = xCoordinate;
 		this.yCoordinate = yCoordinate;
 		this.powerUpType = powerUpType;
@@ -43,6 +43,12 @@ public class PowerUpAcquiredText {
 		case TRIPLE_SHOT:
 			this.text = "Triple Shot";
 			break;
+		case DUMMY_DO_NOT_USE:
+			this.text = "Test text";
+			break;
+		case Guardian_Drone_Homing_Missile:
+			this.text = "Homing Missile Guardian Bot";
+		
 		default:
 			break;
 		

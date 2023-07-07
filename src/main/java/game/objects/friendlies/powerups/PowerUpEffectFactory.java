@@ -1,6 +1,7 @@
 package game.objects.friendlies.powerups;
 
 import game.objects.friendlies.powerups.powerupeffects.DoubleShot;
+import game.objects.friendlies.powerups.powerupeffects.HomingMissileGuardianBot;
 import game.objects.friendlies.powerups.powerupeffects.IncreasedAttackDamage;
 import game.objects.friendlies.powerups.powerupeffects.IncreasedAttackSpeed;
 import game.objects.friendlies.powerups.powerupeffects.IncreasedMovementSpeed;
@@ -22,7 +23,7 @@ public class PowerUpEffectFactory {
 	}
 	
 	
-	public PowerUpEffect createPowerUpEffect(PowerUps powerUpType) {
+	public PowerUpEffect createPowerUpEffect(PowerUpEnums powerUpType) {
 		switch (powerUpType) {
 		case DOUBLE_SHOT:
 			return new DoubleShot(powerUpType);
@@ -40,6 +41,8 @@ public class PowerUpEffectFactory {
 			return new IncreasedSpecialAttackDamage(powerUpType);
 		case TRIPLE_SHOT:
 			return new TripleShot(powerUpType);
+		case Guardian_Drone_Homing_Missile:
+			return new HomingMissileGuardianBot(powerUpType);
 		default:
 			System.out.println("Tried to spawn a powerup that is not implemented: " + powerUpType);
 			return new RestorePackage(powerUpType);

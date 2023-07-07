@@ -1,7 +1,5 @@
 package data.image;
 
-import java.awt.Graphics2D;
-import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -12,9 +10,6 @@ import java.util.List;
 import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
 import javax.imageio.stream.FileImageInputStream;
-import javax.swing.ImageIcon;
-
-import data.image.enums.ImageEnums;
 
 public class ImageDatabase {
 
@@ -22,18 +17,18 @@ public class ImageDatabase {
 	private ImageLoader imgLoader = ImageLoader.getInstance();
 
 	// Friendly images
-	private Image spaceShipImage;
-	private Image model3BetterUpgrade;
+	private BufferedImage spaceShipImage;
+	private BufferedImage model3BetterUpgrade;
 
 	// Enemy images
-	private Image alienSpaceshipImage;
-	private Image alienBombImage;
-	private Image seekerImage;
-	private Image tazerImage;
-	private Image energizerImage;
-	private Image bulldozerImage;
-	private Image flamerImage;
-	private Image bombaImage;
+	private BufferedImage alienSpaceshipImage;
+	private BufferedImage alienBombImage;
+	private BufferedImage seekerImage;
+	private BufferedImage tazerImage;
+	private BufferedImage energizerImage;
+	private BufferedImage bulldozerImage;
+	private BufferedImage flamerImage;
+	private BufferedImage bombaImage;
 
 	// Ship numbers to names:
 	/*
@@ -42,187 +37,270 @@ public class ImageDatabase {
 	 */
 
 	// Projectile images
-	private Image alienLaserbeamImage;
-	private Image laserBeamImage;
+	private BufferedImage alienLaserbeamImage;
+	private BufferedImage laserBeamImage;
 
 	// Menu images
-	private Image startGameImage;
-	private Image userOneImage;
-	private Image userTwoImage;
-	private Image userThreeImage;
-	private Image selectUserMenuImage;
-	private Image userMenuToMainMenu;
+	private BufferedImage startGameImage;
+	private BufferedImage userOneImage;
+	private BufferedImage userTwoImage;
+	private BufferedImage userThreeImage;
+	private BufferedImage selectUserMenuImage;
+	private BufferedImage userMenuToMainMenu;
+	private BufferedImage titleImage;
+	private BufferedImage longCard;
+	private BufferedImage wideCard;
+	private BufferedImage squareCard;
 
 	// Game GUI images
-	private Image healthBarImage;
-	private Image shieldBarImage;
-	private Image Frame;
-	private Image iconBorder;
-	private Image redFilling;
-	private Image goldFilling;
-	
-	// Icons
-	private Image tripleShotIcon;
-	private Image doubleShotIcon;
-	private Image starcraft2_Point_Defense_Drone;
-	private Image starcraft2_Protoss_Cloak;
-	private Image starcraft2_Protoss_Shield_Disintegrate;
-	private Image starcraft2_Protoss_Shields_1;
-	private Image starcraft2_Protoss_Shields_2;
-	private Image starcraft2_Protoss_Shields_3;
-	private Image starcraft2_Psi_Storm1;
-	private Image starcraft2_Psi_Storm2;
-	private Image starcraft2_Psi_Storm3;
-	private Image starcraft2_Pulse_Grenade;
-	private Image starcraft2_Pulse_Laser;
-	private Image starcraft2_Repair_Blink;
-	private Image starcraft2_Rocket_Cluster;
-	private Image starcraft2_Dual_Rockets;
-	private Image starcraft2_Artanis_Shield;
-	private Image starcraft2_Auto_Tracking;
-	private Image starcraft2_Blink;
-	private Image starcraft2_Blue_Flame;
-	private Image starcraft2_Concussive_Shells;
-	private Image starcraft2_Corsair_Cloak;
-	private Image starcraft2_Drone_Cloak;
-	private Image starcraft2_DT_Blink;
-	private Image starcraft2_Energizer_Speed;
-	private Image starcraft2_Energizer_Speed2;
-	private Image starcraft2_Fire_Cloak;
-	private Image starcraft2_Energy_Siphon;
-	private Image starcraft2_Fire_Hardened_Shields;
-	private Image starcraft2_Flame_Turret;
-	private Image starcraft2_Force_Field;
-	private Image starcraft2_Guardian_Shield;
-	private Image starcraft2_Hardened_Shields;
-	private Image starcraft2_Health_Upgrade_1;
-	private Image starcraft2_Health_Upgrade_2;
-	private Image starcraft2_Ignite_Afterburners;
-	private Image starcraft2_Immortal_Barrier;
-	private Image starcraft2_Immortal_Original_Barrier;
-	private Image starcraft2_LaserBeam;
-	private Image starcraft2_LaserDrill;
-	private Image starcraft2_MovementSpeed;
-	private Image starcraft2_Seeker_Missile;
-	private Image starcraft2_Shield_Barrier;
-	private Image starcraft2_Shield_Piercing;
-	private Image starcraft2_Stim1;
-	private Image starcraft2_Stim2;
-	private Image starcraft2_Stim3;
-	private Image starcraft2_Terran_Plating1;
-	private Image starcraft2_Terran_Plating2;
-	private Image starcraft2_Terran_Plating3;
-	private Image starcraft2_Terran_Speed1;
-	private Image starcraft2_Terran_Speed2;
-	private Image starcraft2_Terran_Speed3;
-	private Image starcraft2_Terran_Weapons1;
-	private Image starcraft2_Terran_Weapons2;
-	private Image starcraft2_Terran_Weapons3;
-	private Image starcraft2_Third_Blink;
-	private Image starcraft2_Time_Warp;
-	private Image starcraft2_Vespene_Gas;
-	private Image starcraft2_Vespene_Siphon;
-	private Image starcraft2_Vespene_Drone;
-	private Image starcraft2_Wraith_Cloak;
-	private Image starcraft2_Yellow_Blink;
-	private Image starcraft2_Heal;
+	private BufferedImage healthBarImage;
+	private BufferedImage shieldBarImage;
+	private BufferedImage frame;
+	private BufferedImage iconBorder;
+	private BufferedImage redFilling;
+	private BufferedImage goldFilling;
 
-	// Explosion animations
-	private List<Image> impactExplosionOneFrames = new ArrayList<Image>();
-	private List<Image> destroyedExplosionUpFrames = new ArrayList<Image>();
-	private List<Image> destroyedExplosionLeftFrames = new ArrayList<Image>();
-	private List<Image> destroyedExplosionRightFrames = new ArrayList<Image>();
-	private List<Image> destroyedExplosionDownFrames = new ArrayList<Image>();
-	private List<Image> alienBombExplosionFrames = new ArrayList<Image>();
-	private List<Image> implosionFrames = new ArrayList<Image>();
-	private List<Image> seekerDestroyedExplosionFrames = new ArrayList<Image>();
-	private List<Image> tazerDestroyedExplosionFrames = new ArrayList<Image>();
-	private List<Image> energizerDestroyedExplosionFrames = new ArrayList<Image>();
-	private List<Image> bulldozerDestroyedExplosionFrames = new ArrayList<Image>();
-	private List<Image> flamerDestroyedExplosionFrames = new ArrayList<Image>();
-	private List<Image> bombaDestroyedExplosionFrames = new ArrayList<Image>();
+	// Icons
+	private BufferedImage tripleShotIcon;
+	private BufferedImage doubleShotIcon;
+	private BufferedImage starcraft2_Point_Defense_Drone;
+	private BufferedImage starcraft2_Protoss_Cloak;
+	private BufferedImage starcraft2_Protoss_Shield_Disintegrate;
+	private BufferedImage starcraft2_Protoss_Shields_1;
+	private BufferedImage starcraft2_Protoss_Shields_2;
+	private BufferedImage starcraft2_Protoss_Shields_3;
+	private BufferedImage starcraft2_Psi_Storm1;
+	private BufferedImage starcraft2_Psi_Storm2;
+	private BufferedImage starcraft2_Psi_Storm3;
+	private BufferedImage starcraft2_Pulse_Grenade;
+	private BufferedImage starcraft2_Pulse_Laser;
+	private BufferedImage starcraft2_Repair_Blink;
+	private BufferedImage starcraft2_Rocket_Cluster;
+	private BufferedImage starcraft2_Dual_Rockets;
+	private BufferedImage starcraft2_Artanis_Shield;
+	private BufferedImage starcraft2_Auto_Tracking;
+	private BufferedImage starcraft2_Blink;
+	private BufferedImage starcraft2_Blue_Flame;
+	private BufferedImage starcraft2_Concussive_Shells;
+	private BufferedImage starcraft2_Corsair_Cloak;
+	private BufferedImage starcraft2_Drone_Cloak;
+	private BufferedImage starcraft2_DT_Blink;
+	private BufferedImage starcraft2_Energizer_Speed;
+	private BufferedImage starcraft2_Energizer_Speed2;
+	private BufferedImage starcraft2_Fire_Cloak;
+	private BufferedImage starcraft2_Energy_Siphon;
+	private BufferedImage starcraft2_Fire_Hardened_Shields;
+	private BufferedImage starcraft2_Flame_Turret;
+	private BufferedImage starcraft2_Force_Field;
+	private BufferedImage starcraft2_Guardian_Shield;
+	private BufferedImage starcraft2_Hardened_Shields;
+	private BufferedImage starcraft2_Health_Upgrade_1;
+	private BufferedImage starcraft2_Health_Upgrade_2;
+	private BufferedImage starcraft2_Ignite_Afterburners;
+	private BufferedImage starcraft2_Immortal_Barrier;
+	private BufferedImage starcraft2_Immortal_Original_Barrier;
+	private BufferedImage starcraft2_LaserBeam;
+	private BufferedImage starcraft2_LaserDrill;
+	private BufferedImage starcraft2_MovementSpeed;
+	private BufferedImage starcraft2_Seeker_Missile;
+	private BufferedImage starcraft2_Shield_Barrier;
+	private BufferedImage starcraft2_Shield_Piercing;
+	private BufferedImage starcraft2_Stim1;
+	private BufferedImage starcraft2_Stim2;
+	private BufferedImage starcraft2_Stim3;
+	private BufferedImage starcraft2_Terran_Plating1;
+	private BufferedImage starcraft2_Terran_Plating2;
+	private BufferedImage starcraft2_Terran_Plating3;
+	private BufferedImage starcraft2_Terran_Speed1;
+	private BufferedImage starcraft2_Terran_Speed2;
+	private BufferedImage starcraft2_Terran_Speed3;
+	private BufferedImage starcraft2_Terran_Weapons1;
+	private BufferedImage starcraft2_Terran_Weapons2;
+	private BufferedImage starcraft2_Terran_Weapons3;
+	private BufferedImage starcraft2_Third_Blink;
+	private BufferedImage starcraft2_Time_Warp;
+	private BufferedImage starcraft2_Vespene_Gas;
+	private BufferedImage starcraft2_Vespene_Siphon;
+	private BufferedImage starcraft2_Vespene_Drone;
+	private BufferedImage starcraft2_Wraith_Cloak;
+	private BufferedImage starcraft2_Yellow_Blink;
+	private BufferedImage starcraft2_Heal;
+	private BufferedImage starcraft2_Electric_Field;
+	private BufferedImage starcraft2_Firebat_Weapon;
+	
+	
+	//Font Letters
+	private BufferedImage letter_A;
+	private BufferedImage letter_B;
+	private BufferedImage letter_LowercaseA;
+	private BufferedImage letter_LowercaseB;
+
+	private BufferedImage letter_C;
+	private BufferedImage letter_D;
+	private BufferedImage letter_E;
+	private BufferedImage letter_F;
+	private BufferedImage letter_G;
+	private BufferedImage letter_H;
+	private BufferedImage letter_I;
+	private BufferedImage letter_J;
+	private BufferedImage letter_K;
+	private BufferedImage letter_L;
+	private BufferedImage letter_M;
+	private BufferedImage letter_N;
+	private BufferedImage letter_O;
+	private BufferedImage letter_P;
+	private BufferedImage letter_Q;
+	private BufferedImage letter_R;
+	private BufferedImage letter_S;
+	private BufferedImage letter_T;
+	private BufferedImage letter_U;
+	private BufferedImage letter_V;
+	private BufferedImage letter_W;
+	private BufferedImage letter_X;
+	private BufferedImage letter_Y;
+	private BufferedImage letter_Z;
+
+	private BufferedImage letter_LowercaseC;
+	private BufferedImage letter_LowercaseD;
+	private BufferedImage letter_LowercaseE;
+	private BufferedImage letter_LowercaseF;
+	private BufferedImage letter_LowercaseG;
+	private BufferedImage letter_LowercaseH;
+	private BufferedImage letter_LowercaseI;
+	private BufferedImage letter_LowercaseJ;
+	private BufferedImage letter_LowercaseK;
+	private BufferedImage letter_LowercaseL;
+	private BufferedImage letter_LowercaseM;
+	private BufferedImage letter_LowercaseN;
+	private BufferedImage letter_LowercaseO;
+	private BufferedImage letter_LowercaseP;
+	private BufferedImage letter_LowercaseQ;
+	private BufferedImage letter_LowercaseR;
+	private BufferedImage letter_LowercaseS;
+	private BufferedImage letter_LowercaseT;
+	private BufferedImage letter_LowercaseU;
+	private BufferedImage letter_LowercaseV;
+	private BufferedImage letter_LowercaseW;
+	private BufferedImage letter_LowercaseX;
+	private BufferedImage letter_LowercaseY;
+	private BufferedImage letter_LowercaseZ;
+
+	private BufferedImage letter_Open_Bracket;
+	private BufferedImage letter_Closing_Bracket;
+	private BufferedImage letter_Double_Points;
+	private BufferedImage letter_Equals;
+	private BufferedImage letter_Point_Comma;
+	private BufferedImage letter_Greater_Than;
+	private BufferedImage letter_Smaller_Than;
+	private BufferedImage letter_Dot;
+	
+	
+	
+	
+	// Lists
+	private List<BufferedImage> impactExplosionOneFrames = new ArrayList<BufferedImage>();
+	private List<BufferedImage> destroyedExplosionUpFrames = new ArrayList<BufferedImage>();
+	private List<BufferedImage> destroyedExplosionLeftFrames = new ArrayList<BufferedImage>();
+	private List<BufferedImage> destroyedExplosionRightFrames = new ArrayList<BufferedImage>();
+	private List<BufferedImage> destroyedExplosionDownFrames = new ArrayList<BufferedImage>();
+	private List<BufferedImage> alienBombExplosionFrames = new ArrayList<BufferedImage>();
+	private List<BufferedImage> implosionFrames = new ArrayList<BufferedImage>();
+	private List<BufferedImage> seekerDestroyedExplosionFrames = new ArrayList<BufferedImage>();
+	private List<BufferedImage> tazerDestroyedExplosionFrames = new ArrayList<BufferedImage>();
+	private List<BufferedImage> energizerDestroyedExplosionFrames = new ArrayList<BufferedImage>();
+	private List<BufferedImage> bulldozerDestroyedExplosionFrames = new ArrayList<BufferedImage>();
+	private List<BufferedImage> flamerDestroyedExplosionFrames = new ArrayList<BufferedImage>();
+	private List<BufferedImage> bombaDestroyedExplosionFrames = new ArrayList<BufferedImage>();
 
 	// Animations
-	private List<Image> playerEngineFrames = new ArrayList<Image>();
-	private List<Image> playerFireSwirlFrames = new ArrayList<Image>();
-	private List<Image> playerEMPFrames = new ArrayList<Image>();
-	private List<Image> playerEMPPlusFrames = new ArrayList<Image>();
-	private List<Image> defaultPlayerEngineBoostedFrames = new ArrayList<Image>();
-	private List<Image> defaultPlayerShieldDamage = new ArrayList<Image>();
-	private List<Image> guardianBotFrames = new ArrayList<Image>();
+	private List<BufferedImage> playerEngineFrames = new ArrayList<BufferedImage>();
+	private List<BufferedImage> playerFireSwirlFrames = new ArrayList<BufferedImage>();
+	private List<BufferedImage> playerEMPFrames = new ArrayList<BufferedImage>();
+	private List<BufferedImage> playerEMPPlusFrames = new ArrayList<BufferedImage>();
+	private List<BufferedImage> defaultPlayerEngineBoostedFrames = new ArrayList<BufferedImage>();
+	private List<BufferedImage> defaultPlayerShieldDamage = new ArrayList<BufferedImage>();
+	private List<BufferedImage> guardianBotFrames = new ArrayList<BufferedImage>();
+	private List<BufferedImage> firewallParticleFrames = new ArrayList<BufferedImage>();
+	private List<BufferedImage> fireSpoutFrames = new ArrayList<BufferedImage>();
 
 	// Enemy Projectile Animations
-	private List<Image> seekerProjectileFrames = new ArrayList<Image>();
-	private List<Image> tazerProjectileFrames = new ArrayList<Image>();
-	private List<Image> energizerProjectileFrames = new ArrayList<Image>();
-	private List<Image> bulldozerProjectileFrames = new ArrayList<Image>();
-	private List<Image> flamerProjectileFrames = new ArrayList<Image>();
-	private List<Image> bombaProjectileFrames = new ArrayList<Image>();
+	private List<BufferedImage> seekerProjectileFrames = new ArrayList<BufferedImage>();
+	private List<BufferedImage> tazerProjectileFrames = new ArrayList<BufferedImage>();
+	private List<BufferedImage> energizerProjectileFrames = new ArrayList<BufferedImage>();
+	private List<BufferedImage> bulldozerProjectileFrames = new ArrayList<BufferedImage>();
+	private List<BufferedImage> flamerProjectileFrames = new ArrayList<BufferedImage>();
+	private List<BufferedImage> bombaProjectileFrames = new ArrayList<BufferedImage>();
+	private List<BufferedImage> Rocket1ProjectileFrames = new ArrayList<BufferedImage>();
+	private List<BufferedImage> Rocket1ExplosionFrames = new ArrayList<BufferedImage>();
 
 	// Enemy Exhaust Animations
-	private List<Image> seekerNormalExhaustFrames = new ArrayList<Image>();
-	private List<Image> seekerLargeExhaustFrames = new ArrayList<Image>();
-	private List<Image> tazerNormalExhaustFrames = new ArrayList<Image>();
-	private List<Image> tazerLargeExhaustFrames = new ArrayList<Image>();
-	private List<Image> energizerNormalExhaustFrames = new ArrayList<Image>();
-	private List<Image> energizerLargeExhaustFrames = new ArrayList<Image>();
-	private List<Image> bulldozerNormalExhaustFrames = new ArrayList<Image>();
-	private List<Image> bulldozerLargeExhaustFrames = new ArrayList<Image>();
-	private List<Image> flamerNormalExhaustFrames = new ArrayList<Image>();
-	private List<Image> flamerLargeExhaustFrames = new ArrayList<Image>();
-	private List<Image> bombaNormalExhaustFrames = new ArrayList<Image>();
-	private List<Image> bombaLargeExhaustFrames = new ArrayList<Image>();
+	private List<BufferedImage> seekerNormalExhaustFrames = new ArrayList<BufferedImage>();
+	private List<BufferedImage> seekerLargeExhaustFrames = new ArrayList<BufferedImage>();
+	private List<BufferedImage> tazerNormalExhaustFrames = new ArrayList<BufferedImage>();
+	private List<BufferedImage> tazerLargeExhaustFrames = new ArrayList<BufferedImage>();
+	private List<BufferedImage> energizerNormalExhaustFrames = new ArrayList<BufferedImage>();
+	private List<BufferedImage> energizerLargeExhaustFrames = new ArrayList<BufferedImage>();
+	private List<BufferedImage> bulldozerNormalExhaustFrames = new ArrayList<BufferedImage>();
+	private List<BufferedImage> bulldozerLargeExhaustFrames = new ArrayList<BufferedImage>();
+	private List<BufferedImage> flamerNormalExhaustFrames = new ArrayList<BufferedImage>();
+	private List<BufferedImage> flamerLargeExhaustFrames = new ArrayList<BufferedImage>();
+	private List<BufferedImage> bombaNormalExhaustFrames = new ArrayList<BufferedImage>();
+	private List<BufferedImage> bombaLargeExhaustFrames = new ArrayList<BufferedImage>();
 
 	// Enemy projectile explosions
-	private List<Image> seekerProjectileExplosion = new ArrayList<Image>();
-	private List<Image> tazerProjectileExplosion = new ArrayList<Image>();
-	private List<Image> energizerProjectileExplosion = new ArrayList<Image>();
-	private List<Image> bulldozerProjectileExplosion = new ArrayList<Image>();
-	private List<Image> flamerProjectileExplosion = new ArrayList<Image>();
-	private List<Image> bombaProjectileExplosion = new ArrayList<Image>();
+	private List<BufferedImage> seekerProjectileExplosion = new ArrayList<BufferedImage>();
+	private List<BufferedImage> tazerProjectileExplosion = new ArrayList<BufferedImage>();
+	private List<BufferedImage> energizerProjectileExplosion = new ArrayList<BufferedImage>();
+	private List<BufferedImage> bulldozerProjectileExplosion = new ArrayList<BufferedImage>();
+	private List<BufferedImage> flamerProjectileExplosion = new ArrayList<BufferedImage>();
+	private List<BufferedImage> bombaProjectileExplosion = new ArrayList<BufferedImage>();
+	
 
 	// Background images
-	private Image moon;
-	private Image lavaPlanet;
-	private Image marsPlanet;
-	private Image planetOne;
-	private Image planetTwo;
-	private Image planetThree;
-	private Image star;
-	private Image parralex1;
-	private Image parralex2;
-	private Image parralex3;
-	private Image parralex4;
-	private Image parralex5;
-	private Image warmNebula;
-	private Image coldNebula;
-	private Image regularNebula;
-	private Image blueNebula1;
-	private Image blueNebula2;
-	private Image blueNebula3;
-	private Image blueNebula4;
-	private Image blueNebula5;
-	private Image blueNebula6;
-	private Image greenNebula1;
-	private Image greenNebula2;
-	private Image greenNebula3;
-	private Image greenNebula4;
-	private Image greenNebula5;
-	private Image greenNebula6;
-	private Image greenNebula7;
-	private Image purpleNebula1;
-	private Image purpleNebula2;
-	private Image purpleNebula3;
-	private Image purpleNebula4;
-	private Image purpleNebula5;
-	private Image purpleNebula6;
-	private Image purpleNebula7;
+	private BufferedImage moon;
+	private BufferedImage lavaPlanet;
+	private BufferedImage marsPlanet;
+	private BufferedImage planetOne;
+	private BufferedImage planetTwo;
+	private BufferedImage planetThree;
+	private BufferedImage star;
+	private BufferedImage parralex1;
+	private BufferedImage parralex2;
+	private BufferedImage parralex3;
+	private BufferedImage parralex4;
+	private BufferedImage parralex5;
+	private BufferedImage warmNebula;
+	private BufferedImage coldNebula;
+	private BufferedImage regularNebula;
+	private BufferedImage blueNebula1;
+	private BufferedImage blueNebula2;
+	private BufferedImage blueNebula3;
+	private BufferedImage blueNebula4;
+	private BufferedImage blueNebula5;
+	private BufferedImage blueNebula6;
+	private BufferedImage greenNebula1;
+	private BufferedImage greenNebula2;
+	private BufferedImage greenNebula3;
+	private BufferedImage greenNebula4;
+	private BufferedImage greenNebula5;
+	private BufferedImage greenNebula6;
+	private BufferedImage greenNebula7;
+	private BufferedImage purpleNebula1;
+	private BufferedImage purpleNebula2;
+	private BufferedImage purpleNebula3;
+	private BufferedImage purpleNebula4;
+	private BufferedImage purpleNebula5;
+	private BufferedImage purpleNebula6;
+	private BufferedImage purpleNebula7;
+	private List<BufferedImage> HighlightImages = new ArrayList<BufferedImage>();
 
 	// testimages
-	private Image testImage;
+	private BufferedImage testImage;
+	private BufferedImage invisibile;
+	private List<BufferedImage> invisibleAnimation = new ArrayList<BufferedImage>();
 
 	// Images to Gifs
-	private List<Image> defaultPlayerEngine = new ArrayList<Image>();
+	private List<BufferedImage> defaultPlayerEngine = new ArrayList<BufferedImage>();
 
 	private ImageDatabase() {
 		initializeImages();
@@ -247,6 +325,7 @@ public class ImageDatabase {
 		this.initGameUIobjects();
 		this.initSpriteSheets();
 		this.initIcons();
+		this.initLetters();
 	}
 
 	private void initFriendlies() {
@@ -268,6 +347,7 @@ public class ImageDatabase {
 	private void initProjectiles() {
 		this.laserBeamImage = imgLoader.getImage(ImageEnums.Player_Laserbeam);
 		this.alienLaserbeamImage = imgLoader.getImage(ImageEnums.Alien_Laserbeam);
+		this.invisibile = imgLoader.getImage(ImageEnums.Invisible);
 	}
 
 	private void initMenuImages() {
@@ -278,12 +358,13 @@ public class ImageDatabase {
 		this.selectUserMenuImage = imgLoader.getImage(ImageEnums.Select_User_Menu);
 		this.testImage = imgLoader.getImage(ImageEnums.Test_Image);
 		this.userMenuToMainMenu = imgLoader.getImage(ImageEnums.User_Menu_To_Main_Menu);
+		this.titleImage = imgLoader.getImage(ImageEnums.Title_Image);
 	}
 
 	private void initGameUIobjects() {
 		this.healthBarImage = imgLoader.getImage(ImageEnums.Health_Bar);
 		this.shieldBarImage = imgLoader.getImage(ImageEnums.Shield_Bar);
-		this.Frame = imgLoader.getImage(ImageEnums.Frame);
+		this.frame = imgLoader.getImage(ImageEnums.Frame);
 		this.iconBorder = imgLoader.getImage(ImageEnums.Icon_Border);
 		this.redFilling = imgLoader.getImage(ImageEnums.Red_Filling);
 		this.goldFilling = imgLoader.getImage(ImageEnums.Gold_Filling);
@@ -354,6 +435,77 @@ public class ImageDatabase {
 		this.starcraft2_Wraith_Cloak = imgLoader.getImage(ImageEnums.Starcraft2_Wraith_Cloak);
 		this.starcraft2_Yellow_Blink = imgLoader.getImage(ImageEnums.Starcraft2_Yellow_Blink);
 		this.starcraft2_Heal = imgLoader.getImage(ImageEnums.Starcraft2_Heal);
+		this.starcraft2_Electric_Field = imgLoader.getImage(ImageEnums.Starcraft2_Electric_Field);
+		this.starcraft2_Firebat_Weapon = imgLoader.getImage(ImageEnums.Starcraft2_Firebat_Weapon);
+	}
+	
+	private void initLetters() {
+		this.letter_A = imgLoader.getImage(ImageEnums.Letter_A);
+		this.letter_B = imgLoader.getImage(ImageEnums.Letter_B);
+		this.letter_C = imgLoader.getImage(ImageEnums.Letter_C);
+		this.letter_D = imgLoader.getImage(ImageEnums.Letter_D);
+		this.letter_E = imgLoader.getImage(ImageEnums.Letter_E);
+		this.letter_F = imgLoader.getImage(ImageEnums.Letter_F);
+		this.letter_G = imgLoader.getImage(ImageEnums.Letter_G);
+		this.letter_H = imgLoader.getImage(ImageEnums.Letter_H);
+		this.letter_I = imgLoader.getImage(ImageEnums.Letter_I);
+		this.letter_J = imgLoader.getImage(ImageEnums.Letter_J);
+		this.letter_K = imgLoader.getImage(ImageEnums.Letter_K);
+		this.letter_L = imgLoader.getImage(ImageEnums.Letter_L);
+		this.letter_M = imgLoader.getImage(ImageEnums.Letter_M);
+		this.letter_N = imgLoader.getImage(ImageEnums.Letter_N);
+		this.letter_O = imgLoader.getImage(ImageEnums.Letter_O);
+		this.letter_P = imgLoader.getImage(ImageEnums.Letter_P);
+		this.letter_Q = imgLoader.getImage(ImageEnums.Letter_Q);
+		this.letter_R = imgLoader.getImage(ImageEnums.Letter_R);
+		this.letter_S = imgLoader.getImage(ImageEnums.Letter_S);
+		this.letter_T = imgLoader.getImage(ImageEnums.Letter_T);
+		this.letter_U = imgLoader.getImage(ImageEnums.Letter_U);
+		this.letter_V = imgLoader.getImage(ImageEnums.Letter_V);
+		this.letter_W = imgLoader.getImage(ImageEnums.Letter_W);
+		this.letter_X = imgLoader.getImage(ImageEnums.Letter_X);
+		this.letter_Y = imgLoader.getImage(ImageEnums.Letter_Y);
+		this.letter_Z = imgLoader.getImage(ImageEnums.Letter_Z);
+
+		this.letter_LowercaseA = imgLoader.getImage(ImageEnums.Letter_a);
+		this.letter_LowercaseB = imgLoader.getImage(ImageEnums.Letter_b);
+		this.letter_LowercaseC = imgLoader.getImage(ImageEnums.Letter_c);
+		this.letter_LowercaseD = imgLoader.getImage(ImageEnums.Letter_d);
+		this.letter_LowercaseE = imgLoader.getImage(ImageEnums.Letter_e);
+		this.letter_LowercaseF = imgLoader.getImage(ImageEnums.Letter_f);
+		this.letter_LowercaseG = imgLoader.getImage(ImageEnums.Letter_g);
+		this.letter_LowercaseH = imgLoader.getImage(ImageEnums.Letter_h);
+		this.letter_LowercaseI = imgLoader.getImage(ImageEnums.Letter_i);
+		this.letter_LowercaseJ = imgLoader.getImage(ImageEnums.Letter_j);
+		this.letter_LowercaseK = imgLoader.getImage(ImageEnums.Letter_k);
+		this.letter_LowercaseL = imgLoader.getImage(ImageEnums.Letter_l);
+		this.letter_LowercaseM = imgLoader.getImage(ImageEnums.Letter_m);
+		this.letter_LowercaseN = imgLoader.getImage(ImageEnums.Letter_n);
+		this.letter_LowercaseO = imgLoader.getImage(ImageEnums.Letter_o);
+		this.letter_LowercaseP = imgLoader.getImage(ImageEnums.Letter_p);
+		this.letter_LowercaseQ = imgLoader.getImage(ImageEnums.Letter_q);
+		this.letter_LowercaseR = imgLoader.getImage(ImageEnums.Letter_r);
+		this.letter_LowercaseS = imgLoader.getImage(ImageEnums.Letter_s);
+		this.letter_LowercaseT = imgLoader.getImage(ImageEnums.Letter_t);
+		this.letter_LowercaseU = imgLoader.getImage(ImageEnums.Letter_u);
+		this.letter_LowercaseV = imgLoader.getImage(ImageEnums.Letter_v);
+		this.letter_LowercaseW = imgLoader.getImage(ImageEnums.Letter_w);
+		this.letter_LowercaseX = imgLoader.getImage(ImageEnums.Letter_x);
+		this.letter_LowercaseY = imgLoader.getImage(ImageEnums.Letter_y);
+		this.letter_LowercaseZ = imgLoader.getImage(ImageEnums.Letter_z);
+
+		this.letter_Open_Bracket = imgLoader.getImage(ImageEnums.Letter_Open_Bracket);
+		this.letter_Closing_Bracket = imgLoader.getImage(ImageEnums.Letter_Closing_Bracket);
+		this.letter_Double_Points = imgLoader.getImage(ImageEnums.Letter_double_points);
+		this.letter_Equals = imgLoader.getImage(ImageEnums.Letter_equals);
+		this.letter_Point_Comma = imgLoader.getImage(ImageEnums.Letter_point_comma);
+		this.letter_Greater_Than = imgLoader.getImage(ImageEnums.Letter_greater_than);
+		this.letter_Smaller_Than = imgLoader.getImage(ImageEnums.Letter_smaller_than);
+		this.letter_Dot = imgLoader.getImage(ImageEnums.Letter_Dot);
+		
+		this.longCard = imgLoader.getImage(ImageEnums.Long_Card);
+		this.wideCard = imgLoader.getImage(ImageEnums.Wide_Card);
+		this.squareCard = imgLoader.getImage(ImageEnums.Square_Card);
 	}
 
 	private void initBackgroundObjects() {
@@ -395,7 +547,7 @@ public class ImageDatabase {
 
 	}
 
-	public Image getImage(ImageEnums imageType) {
+	public BufferedImage getImage(ImageEnums imageType) {
 		switch (imageType) {
 		case Player_Spaceship:
 			return this.spaceShipImage;
@@ -452,7 +604,7 @@ public class ImageDatabase {
 		case Shield_Bar:
 			return this.shieldBarImage;
 		case Frame:
-			return this.Frame;
+			return this.frame;
 		case Icon_Border:
 			return this.iconBorder;
 		case Red_Filling:
@@ -643,12 +795,146 @@ public class ImageDatabase {
 			return starcraft2_Yellow_Blink;
 		case Starcraft2_Heal:
 			return starcraft2_Heal;
+		case Letter_A:
+			return letter_A;
+		case Letter_a:
+			return letter_LowercaseA;
+		case Letter_B:
+		    return letter_B;
+		case Letter_C:
+		    return letter_C;
+		case Letter_D:
+		    return letter_D;
+		case Letter_E:
+		    return letter_E;
+		case Letter_F:
+		    return letter_F;
+		case Letter_G:
+		    return letter_G;
+		case Letter_H:
+		    return letter_H;
+		case Letter_I:
+		    return letter_I;
+		case Letter_J:
+		    return letter_J;
+		case Letter_K:
+		    return letter_K;
+		case Letter_L:
+		    return letter_L;
+		case Letter_M:
+		    return letter_M;
+		case Letter_N:
+		    return letter_N;
+		case Letter_O:
+		    return letter_O;
+		case Letter_P:
+		    return letter_P;
+		case Letter_Q:
+		    return letter_Q;
+		case Letter_R:
+		    return letter_R;
+		case Letter_S:
+		    return letter_S;
+		case Letter_T:
+		    return letter_T;
+		case Letter_U:
+		    return letter_U;
+		case Letter_V:
+		    return letter_V;
+		case Letter_W:
+		    return letter_W;
+		case Letter_X:
+		    return letter_X;
+		case Letter_Y:
+		    return letter_Y;
+		case Letter_Z:
+		    return letter_Z;
+		case Letter_b:
+		    return letter_LowercaseB;
+		case Letter_c:
+		    return letter_LowercaseC;
+		case Letter_z:
+		    return letter_LowercaseZ;
+		case Letter_Open_Bracket:
+		    return letter_Open_Bracket;
+		case Letter_Closing_Bracket:
+		    return letter_Closing_Bracket;
+		case Letter_double_points:
+		    return letter_Double_Points;
+		case Letter_equals:
+		    return letter_Equals;
+		case Letter_point_comma:
+		    return letter_Point_Comma;
+		case Letter_greater_than:
+		    return letter_Greater_Than;
+		case Letter_smaller_than:
+		    return letter_Smaller_Than;
+		case Letter_Dot:
+		    return letter_Dot;
+		case Letter_d:
+		    return letter_LowercaseD;
+		case Letter_e:
+		    return letter_LowercaseE;
+		case Letter_f:
+		    return letter_LowercaseF;
+		case Letter_g:
+		    return letter_LowercaseG;
+		case Letter_h:
+		    return letter_LowercaseH;
+		case Letter_i:
+		    return letter_LowercaseI;
+		case Letter_j:
+		    return letter_LowercaseJ;
+		case Letter_k:
+		    return letter_LowercaseK;
+		case Letter_l:
+		    return letter_LowercaseL;
+		case Letter_m:
+		    return letter_LowercaseM;
+		case Letter_n:
+		    return letter_LowercaseN;
+		case Letter_o:
+		    return letter_LowercaseO;
+		case Letter_p:
+		    return letter_LowercaseP;
+		case Letter_q:
+		    return letter_LowercaseQ;
+		case Letter_r:
+		    return letter_LowercaseR;
+		case Letter_s:
+		    return letter_LowercaseS;
+		case Letter_t:
+		    return letter_LowercaseT;
+		case Letter_u:
+		    return letter_LowercaseU;
+		case Letter_v:
+		    return letter_LowercaseV;
+		case Letter_w:
+		    return letter_LowercaseW;
+		case Letter_x:
+		    return letter_LowercaseX;
+		case Letter_y:
+		    return letter_LowercaseY;
+		case Title_Image:
+			return titleImage;
+		case Invisible:
+			return invisibile;
+		case Starcraft2_Electric_Field:
+			return starcraft2_Electric_Field;
+		case Starcraft2_Firebat_Weapon:
+			return starcraft2_Firebat_Weapon;
+		case Long_Card:
+			return longCard;
+		case Square_Card:
+			return squareCard;
+		case Wide_Card:
+			return wideCard;
 		default:
 			return testImage;
 		}
 	}
 
-	public List<Image> getGif(ImageEnums imageType) {
+	public List<BufferedImage> getGif(ImageEnums imageType) {
 		switch (imageType) {
 		case Impact_Explosion_One:
 			return this.impactExplosionOneFrames;
@@ -740,6 +1026,20 @@ public class ImageDatabase {
 			return this.playerEMPPlusFrames;
 		case Guardian_Bot:
 			return this.guardianBotFrames;
+		case Flamethrower_Animation:
+			return this.destroyedExplosionRightFrames;
+		case FirewallParticle:
+			return firewallParticleFrames;
+		case Invisible_Animation:
+			return invisibleAnimation;
+		case Highlight:
+			return HighlightImages;
+		case Rocket_1:
+			return Rocket1ProjectileFrames;
+		case Rocket_1_Explosion:
+			return Rocket1ExplosionFrames;
+		case Firespout_Animation:
+			return fireSpoutFrames;
 		}
 		return null;
 	}
@@ -899,71 +1199,110 @@ public class ImageDatabase {
 	}
 
 	private void initPNGtoGIFAnimation() {
+		//Start all of them with 1 because the filenames start with numbering with 1
 		for (int i = 1; i < 6; i++) {
 			String sourceString = String.format("src/resources/images/gif/PNGtoGIF/Default Player Engine/%d.png", i);
-			Image image = imgLoader.getSpritesheetImage(sourceString);
+			BufferedImage image = imgLoader.getSpritesheetImage(sourceString);
 			defaultPlayerEngine.add(image);
 		}
 
 		for (int i = 1; i < 6; i++) {
 			String sourceString = String
 					.format("src/resources/images/gif/PNGtoGIF/Default Player Engine Boosted/%d.png", i);
-			Image image = imgLoader.getSpritesheetImage(sourceString);
+			BufferedImage image = imgLoader.getSpritesheetImage(sourceString);
 			defaultPlayerEngineBoostedFrames.add(image);
 		}
 
 		for (int i = 1; i < 10; i++) {
 			String sourceString = String.format("src/resources/images/gif/PNGtoGIF/Player Shield Damage/%d.png", i);
-			Image image = imgLoader.getSpritesheetImage(sourceString);
+			BufferedImage image = imgLoader.getSpritesheetImage(sourceString);
 			defaultPlayerShieldDamage.add(image);
 		}
 
 		for (int i = 1; i < 10; i++) {
 			String sourceString = String.format("src/resources/images/gif/PNGtoGIF/Player EMP/%d.png", i);
-			Image image = imgLoader.getSpritesheetImage(sourceString);
+			BufferedImage image = imgLoader.getSpritesheetImage(sourceString);
 			playerEMPFrames.add(image);
 		}
 		
 		for (int i = 1; i < 16; i++) {
 			String sourceString = String.format("src/resources/images/Ships/Guardian Bot/GuardianBot%d.png", i);
-			Image image = imgLoader.getSpritesheetImage(sourceString);
+			BufferedImage image = imgLoader.getSpritesheetImage(sourceString);
 			guardianBotFrames.add(image);
 		}
 
 		for (int i = 1; i < 46; i++) {
 			String sourceString = String.format("src/resources/images/gif/PNGtoGIF/Player Fireswirl/tile0%d.png", i);
-			Image image = imgLoader.getSpritesheetImage(sourceString);
+			BufferedImage image = imgLoader.getSpritesheetImage(sourceString);
 			playerFireSwirlFrames.add(image);
+		}
+		
+		for (int i = 1; i < 5; i++) {
+			String sourceString = String.format("src/resources/images/gif/PNGtoGIF/Firewall/flame%d.png", i);
+			BufferedImage image = imgLoader.getSpritesheetImage(sourceString);
+			firewallParticleFrames.add(image);
+		}
+		
+		
+		for (int i = 1; i < 4; i++) {
+			BufferedImage image = imgLoader.getImage(ImageEnums.Invisible);
+			invisibleAnimation.add(image);
+		}
+		
+		for (int i = 1; i < 21; i++) {
+			String sourceString = String.format("src/resources/images/gif/PNGtoGIF/Highlight/highlight%d.png", i);
+			BufferedImage image = imgLoader.getSpritesheetImage(sourceString);
+			HighlightImages.add(image);
+		}
+		
+		
+		for (int i = 0; i < 9; i++) {
+			String sourceString = String.format("src/resources/images/gif/PNGtoGIF/Missile1/Missile_1_Explosion_00%d.png", i);
+			BufferedImage image = imgLoader.getSpritesheetImage(sourceString);
+			Rocket1ExplosionFrames.add(image);
+		}
+		
+		
+		for (int i = 0; i < 10; i++) {
+			String sourceString = String.format("src/resources/images/gif/PNGtoGIF/Missile1/Missile_1_Flying_00%d.png", i);
+			BufferedImage image = imgLoader.getSpritesheetImage(sourceString);
+			Rocket1ProjectileFrames.add(image);
+		}
+		
+		for (int i = 1; i < 31; i++) {
+			String sourceString = String.format("src/resources/images/gif/PNGtoGIF/FireSpout/Firespout%d.png", i);
+			BufferedImage image = imgLoader.getSpritesheetImage(sourceString);
+			fireSpoutFrames.add(image);
 		}
 
 	}
 	
 	private void initSpriteSheets() {
-		Image empImage = imgLoader.getImage(ImageEnums.Player_EMP_Plus);
+		BufferedImage empImage = imgLoader.getImage(ImageEnums.Player_EMP_Plus);
 		playerEMPPlusFrames = cutSpriteSheetToImages(empImage, 8, 8);
 				
 	}
 
-	private List<Image> gifToImageIcons(ImageReader reader) throws IOException {
+	private List<BufferedImage> gifToImageIcons(ImageReader reader) throws IOException {
 		int n = reader.getNumImages(true);
-		List<Image> imgs = new ArrayList<>();
+		List<BufferedImage> imgs = new ArrayList<>();
 		for (int i = 0; i < n; i++) {
-			imgs.add(new ImageIcon(reader.read(i)).getImage());
+			imgs.add(reader.read(i));
 		}
 		return imgs;
 	}
 
-	private List<Image> cutSpriteSheetToImages(Image image, int rows, int cols) {
+	private List<BufferedImage> cutSpriteSheetToImages(BufferedImage image, int rows, int cols) {
 		final int spriteWidth = image.getWidth(null) / cols; // width of a single sprite
 		final int spriteHeight = image.getHeight(null) / rows; // height of a single sprite
-		List<Image> sprites = new ArrayList<Image>();
-		BufferedImage spriteSheetImage = toBufferedImage(image);
+		List<BufferedImage> sprites = new ArrayList<BufferedImage>();
+//		BufferedImage spriteSheetImage = toBufferedImage(image);
 		// load the sprite sheet
 		// split the sprite sheet into individual sprites
 		for (int i = 0; i < rows; i++) {
 			for (int j = 0; j < cols; j++) {
 				// get the subimage from the sprite sheet
-				Image sprite = spriteSheetImage.getSubimage(j * spriteWidth, i * spriteHeight, spriteWidth,
+				BufferedImage sprite = image.getSubimage(j * spriteWidth, i * spriteHeight, spriteWidth,
 						spriteHeight);
 				sprites.add(sprite);
 			}
@@ -972,18 +1311,18 @@ public class ImageDatabase {
 		return sprites;
 	}
 	
-	private BufferedImage toBufferedImage(Image image) {
-		if (image instanceof BufferedImage) {
-			return (BufferedImage) image;
-		}
-
-		BufferedImage buff = new BufferedImage(image.getWidth(null), image.getHeight(null),
-				BufferedImage.TYPE_INT_ARGB);
-		Graphics2D g = buff.createGraphics();
-		g.drawImage(image, 0, 0, null);
-		g.dispose();
-
-		return buff;
-	}
+//	private BufferedImage toBufferedImage(Image image) {
+//		if (image instanceof BufferedImage) {
+//			return (BufferedImage) image;
+//		}
+//
+//		BufferedImage buff = new BufferedImage(image.getWidth(null), image.getHeight(null),
+//				BufferedImage.TYPE_INT_ARGB);
+//		Graphics2D g = buff.createGraphics();
+//		g.drawImage(image, 0, 0, null);
+//		g.dispose();
+//
+//		return buff;
+//	}
 
 }

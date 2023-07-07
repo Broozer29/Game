@@ -1,6 +1,6 @@
 package game.objects.missiles;
 
-import data.image.enums.ImageEnums;
+import data.image.ImageEnums;
 import game.movement.Direction;
 import game.movement.PathFinder;
 import game.movement.Point;
@@ -8,12 +8,10 @@ import game.movement.Point;
 public class AlienLaserbeam extends Missile {
 
 	public AlienLaserbeam(int x, int y, Point destination, ImageEnums missileType, ImageEnums explosionType, Direction rotation,
-			float scale, PathFinder pathFinder) {
-		super(x, y, destination, missileType, explosionType, rotation, scale, pathFinder, false);
+			float scale, PathFinder pathFinder, int xMovementSpeed, int yMovementSpeed, boolean isFriendly, float damage) {
+		super(x, y, destination, missileType, explosionType, rotation, scale, pathFinder, isFriendly, xMovementSpeed, yMovementSpeed);
 		loadImage(missileType);
-		this.missileDamage = (float) 2.5;
-		this.xMovementSpeed = 3;
-		this.yMovementSpeed = 2;
+		this.missileDamage = damage;
 	}
 
 	public void missileAction() {

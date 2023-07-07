@@ -5,11 +5,12 @@ import java.awt.event.ActionListener;
 
 import javax.swing.Timer;
 
-import data.image.enums.EnemyEnums;
+import game.levels.LevelSpawnerManager;
 import game.managers.TimerManager;
 import game.movement.Direction;
+import game.objects.enemies.EnemyEnums;
 
-public class EnemySpawnTimer implements ActionListener {
+public class EnemySpawnTimer {
 
 	private TimerManager timerManager = TimerManager.getInstance();
 
@@ -23,50 +24,53 @@ public class EnemySpawnTimer implements ActionListener {
 	private int timeBeforeActivation;
 	private boolean finished;
 	private boolean loopable;
-	private Timer timer;
 	private String status;
+	private int additionalDelay;
 
-	public EnemySpawnTimer(int timeBeforeActivation, int amountOfSpawnAttempts, EnemyEnums timerEnemyType, boolean loopable,
-			Direction direction, float enemyScale) {
+	private int currentTime;
+
+	public EnemySpawnTimer(int timeBeforeActivation, int amountOfSpawnAttempts, EnemyEnums timerEnemyType,
+			boolean loopable, Direction direction, float enemyScale, int additionalDelay) {
 		this.enemyScale = enemyScale;
 		this.timerEnemyType = timerEnemyType;
 		this.amountOfSpawnAttempts = amountOfSpawnAttempts;
 		this.direction = direction;
 		this.loopable = loopable;
 		this.timeBeforeActivation = timeBeforeActivation;
+		this.setCurrentTime(0);
+		this.setAdditionalDelay(additionalDelay);
 		this.finished = false;
 		this.status = "primed";
-		initTimer();
 	}
 
-	private void initTimer() {
-		timer = new Timer(timeBeforeActivation, this);
+	public void increaseTimerTick() {
+		currentTime++;
 	}
 
 	public void startTimer() {
-		timer.start();
-		this.status = "running";
-		this.finished = false;
-	}
-
-	public void stopTimer() {
-		this.finished = true;
-		timer.stop();
-	}
-	
-	public void refreshTimer() {
-		timer.restart();
 		this.status = "running";
 		this.finished = false;
 	}
 
 	// Vuur event naar de timerManager dat deze timer voorbij is. Bijvoorbeeld om
 	// bommen te spawnen.
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		timerManager.activateSpawnTimer(this);
-		this.finished = true;
-		this.status = "finished";
+	public void activateTimer() {
+		LevelSpawnerManager.getInstance().spawnEnemy(this.timerEnemyType, this.amountOfSpawnAttempts, this.direction,
+				this.enemyScale);
+
+		if (this.loopable) {
+			this.additionalDelay = 0;
+			this.currentTime = 0;
+			this.finished = false;
+			startTimer();
+		} else {
+			this.finished = true;
+			this.status = "finished";
+		}
+	}
+
+	public void removeDelay() {
+		this.additionalDelay = 0;
 	}
 
 	public boolean getFinished() {
@@ -99,6 +103,34 @@ public class EnemySpawnTimer implements ActionListener {
 
 	public float getEnemyScale() {
 		return this.enemyScale;
+	}
+
+	public int getAdditionalDelay() {
+		return additionalDelay;
+	}
+
+	public void setAdditionalDelay(int additionalDelay) {
+		this.additionalDelay = additionalDelay;
+	}
+
+	public int getCurrentTime() {
+		return currentTime;
+	}
+
+	public void setCurrentTime(int currentTime) {
+		this.currentTime = currentTime;
+	}
+
+	public boolean shouldActivate() {
+		return (currentTime >= (timeBeforeActivation + additionalDelay));
+	}
+
+	@Override
+	public String toString() {
+		return "EnemySpawnTimer [timerManager=" + timerManager + ", amountOfSpawnAttempts=" + amountOfSpawnAttempts
+				+ ", direction=" + direction + ", timerEnemyType=" + timerEnemyType + ", enemyScale=" + enemyScale
+				+ ", timeBeforeActivation=" + timeBeforeActivation + ", finished=" + finished + ", loopable=" + loopable
+				+ ", status=" + status + ", additionalDelay=" + additionalDelay + ", currentTime=" + currentTime + "]";
 	}
 
 }

@@ -1,77 +1,78 @@
 package data.image;
 
 import java.awt.Graphics2D;
-import java.awt.Image;
-import java.awt.image.AffineTransformOp;
 import java.awt.geom.AffineTransform;
+import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public class ImageResizer {
 
 	private static ImageResizer instance = new ImageResizer();
+	private BufferedImage bufferedImage = null;
+	private AffineTransform transform = new AffineTransform();
+	private AffineTransformOp transformop = null;
+
+	private Map<String, BufferedImage> bufferedImageCache = new HashMap<>();
+	private Map<String, ArrayList<BufferedImage>> bufferedImageListCache = new HashMap<>();
 
 	private ImageResizer() {
-
 	}
 
 	public static ImageResizer getInstance() {
 		return instance;
 	}
 
-	private BufferedImage toBufferedImage(Image image) {
-		if (image instanceof BufferedImage) {
-			return (BufferedImage) image;
-		}
-		BufferedImage buff = null;
-		try {
-			buff = new BufferedImage(image.getWidth(null), image.getHeight(null), BufferedImage.TYPE_INT_ARGB);
-			Graphics2D g = buff.createGraphics();
-			g.drawImage(image, 0, 0, null);
-			g.dispose();
-		} catch (IllegalArgumentException | NullPointerException e) {
-			// Handle the exception
-			System.out.println("An exception occurred: " + e.getMessage());
-			System.out.println("Image dimensions given: " + image.getWidth(null) + "," + image.getHeight(null) + " Make sure the image that is being resized is actually loaded the file");
+	public BufferedImage getScaledImage(BufferedImage image, float scale) {
+		String cacheKey = image.hashCode() + "_" + scale;
+
+		if (bufferedImageCache.containsKey(cacheKey)) {
+			return bufferedImageCache.get(cacheKey);
 		}
 
-		return buff;
+		transform.setToIdentity();
+		transform.scale(scale, scale);
+		transformop = new AffineTransformOp(transform, AffineTransformOp.TYPE_BILINEAR);
+
+		bufferedImage = transformop.filter(image, null); // null as the second parameter
+		bufferedImageCache.put(cacheKey, bufferedImage);
+
+		return bufferedImage;
 	}
 
-	public BufferedImage getScaledImage(Image image, float scale) {
-// Een harde cast, het kan omdat er geen afbeeldingen zijn met komma getallen qua dimensies, maar indien die er zijn gaat dit tot problemen leiden		
-		int newWidth = (int) Math.floor((image.getWidth(null) * scale));
-		int newHeight = (int) Math.floor((image.getHeight(null) * scale));
+	public ArrayList<BufferedImage> getScaledFrames(List<BufferedImage> frames, float scale) {
+	    String cacheKey = frames.stream()
+	        .map(image -> Integer.toString(image.hashCode()))
+	        .collect(Collectors.joining("_")) + "_" + scale;
 
-		BufferedImage before = toBufferedImage(image);
-		BufferedImage after = new BufferedImage(newWidth, newHeight, BufferedImage.TYPE_INT_ARGB);
-		AffineTransform at = new AffineTransform();
-		at.scale(scale, scale);
-		AffineTransformOp scaleOp = new AffineTransformOp(at, AffineTransformOp.TYPE_BILINEAR);
-		after = scaleOp.filter(before, after);
-		return after;
+	    if (bufferedImageListCache.containsKey(cacheKey)) {
+	        return bufferedImageListCache.get(cacheKey);
+	    }
+
+	    ArrayList<BufferedImage> newFrames = new ArrayList<>();
+	    for (int i = 0; i < frames.size(); i++) {
+	        bufferedImage = frames.get(i);
+	        bufferedImage = getScaledImage(bufferedImage, scale);
+	        newFrames.add(bufferedImage);
+	    }
+
+	    bufferedImageListCache.put(cacheKey, newFrames);
+
+	    return newFrames;
 	}
 
-	public ArrayList<Image> getScaledFrames(List<Image> frames, float scale) {
-		ArrayList<Image> newFrames = new ArrayList<Image>();
-		for (int i = 0; i < frames.size(); i++) {
-			Image temp = frames.get(i);
-			BufferedImage tempBuffer = getScaledImage(temp, scale);
-			Graphics2D g = tempBuffer.createGraphics();
-			g.drawImage(tempBuffer, 0, 0, null);
-//
-			newFrames.add(tempBuffer);
-		}
+	public BufferedImage resizeImageToDimensions(BufferedImage image, int width, int height) {
+		bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+		Graphics2D g = bufferedImage.createGraphics();
 
-		return newFrames;
-	}
+		// Draw the resized image onto the bufferedVersion
+		g.drawImage(image.getScaledInstance(width, height, BufferedImage.SCALE_DEFAULT), 0, 0, null);
+		g.dispose();
 
-	public BufferedImage resizeImageToDimensions(Image image, int width, int height) {
-		// Een harde cast, het kan omdat er geen afbeeldingen zijn met komma getallen qua
-		// dimensies, maar indien die er zijn gaat dit tot problemen leiden
-		Image resizedImage = image.getScaledInstance(width, height, Image.SCALE_DEFAULT);
-		BufferedImage bufferedVersion = toBufferedImage(resizedImage);
-		return bufferedVersion;
+		return bufferedImage;
 	}
 }
