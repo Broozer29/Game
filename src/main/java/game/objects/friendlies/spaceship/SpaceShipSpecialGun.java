@@ -58,6 +58,8 @@ public class SpaceShipSpecialGun {
 					true);
 			specialAttack.setCenteredAroundPlayer(true);
 			try {
+				specialAttack.updateCurrentBoardBlock();
+				specialAttackAnimation.updateCurrentBoardBlock();
 				AudioManager.getInstance().addAudio(AudioEnums.Default_EMP);
 				spaceShip.addFollowingSpecialAttack(specialAttack);
 				MissileManager.getInstance().addSpecialAttack(specialAttack);

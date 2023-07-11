@@ -1,10 +1,5 @@
 package game.spawner;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
-import javax.swing.Timer;
-
 import game.levels.LevelSpawnerManager;
 import game.managers.TimerManager;
 import game.movement.Direction;
@@ -12,22 +7,24 @@ import game.objects.enemies.EnemyEnums;
 
 public class EnemySpawnTimer {
 
-	private TimerManager timerManager = TimerManager.getInstance();
-
 	// Attributes required for spawning enemies
 	private int amountOfSpawnAttempts;
 	private Direction direction;
 	private EnemyEnums timerEnemyType;
 	private float enemyScale;
+	
+	//Required for formation spawning
+	private EnemyFormation formation = null;
+	private int formationXCoordinate;
+	private int formationYCoordinate;
 
 	// Attributes required for timing
 	private int timeBeforeActivation;
+	private int originalTimeBeforeActivation;
 	private boolean finished;
 	private boolean loopable;
-	private String status;
 	private int additionalDelay;
-
-	private int currentTime;
+	private float currentTime;
 
 	public EnemySpawnTimer(int timeBeforeActivation, int amountOfSpawnAttempts, EnemyEnums timerEnemyType,
 			boolean loopable, Direction direction, float enemyScale, int additionalDelay) {
@@ -36,36 +33,28 @@ public class EnemySpawnTimer {
 		this.amountOfSpawnAttempts = amountOfSpawnAttempts;
 		this.direction = direction;
 		this.loopable = loopable;
+		this.originalTimeBeforeActivation = timeBeforeActivation;
 		this.timeBeforeActivation = timeBeforeActivation;
 		this.setCurrentTime(0);
 		this.setAdditionalDelay(additionalDelay);
-		this.finished = false;
-		this.status = "primed";
-	}
-
-	public void increaseTimerTick() {
-		currentTime++;
-	}
-
-	public void startTimer() {
-		this.status = "running";
 		this.finished = false;
 	}
 
 	// Vuur event naar de timerManager dat deze timer voorbij is. Bijvoorbeeld om
 	// bommen te spawnen.
 	public void activateTimer() {
-		LevelSpawnerManager.getInstance().spawnEnemy(this.timerEnemyType, this.amountOfSpawnAttempts, this.direction,
-				this.enemyScale);
-
+		if (formation == null) {
+			LevelSpawnerManager.getInstance().spawnEnemy(0, 0, this.timerEnemyType, this.amountOfSpawnAttempts,
+					this.direction, this.enemyScale);
+		} else {
+			formation.spawnFormation(formationXCoordinate, formationYCoordinate, timerEnemyType, direction, enemyScale);
+		}
 		if (this.loopable) {
 			this.additionalDelay = 0;
-			this.currentTime = 0;
+			this.timeBeforeActivation = Math.round(currentTime + originalTimeBeforeActivation);
 			this.finished = false;
-			startTimer();
 		} else {
 			this.finished = true;
-			this.status = "finished";
 		}
 	}
 
@@ -75,10 +64,6 @@ public class EnemySpawnTimer {
 
 	public boolean getFinished() {
 		return this.finished;
-	}
-
-	public String getStatus() {
-		return this.status;
 	}
 
 	public EnemyEnums getTimerEnemy() {
@@ -113,7 +98,7 @@ public class EnemySpawnTimer {
 		this.additionalDelay = additionalDelay;
 	}
 
-	public int getCurrentTime() {
+	public float getCurrentTime() {
 		return currentTime;
 	}
 
@@ -121,16 +106,19 @@ public class EnemySpawnTimer {
 		this.currentTime = currentTime;
 	}
 
-	public boolean shouldActivate() {
-		return (currentTime >= (timeBeforeActivation + additionalDelay));
+	public boolean shouldActivate(float currentFrame) {
+		this.currentTime = currentFrame;
+		return (currentFrame >= (timeBeforeActivation + additionalDelay));
 	}
 
-	@Override
-	public String toString() {
-		return "EnemySpawnTimer [timerManager=" + timerManager + ", amountOfSpawnAttempts=" + amountOfSpawnAttempts
-				+ ", direction=" + direction + ", timerEnemyType=" + timerEnemyType + ", enemyScale=" + enemyScale
-				+ ", timeBeforeActivation=" + timeBeforeActivation + ", finished=" + finished + ", loopable=" + loopable
-				+ ", status=" + status + ", additionalDelay=" + additionalDelay + ", currentTime=" + currentTime + "]";
+	public EnemyFormation getFormation() {
+		return formation;
+	}
+
+	public void setFormation(EnemyFormation formation, int formationXCoordinate, int formationYCoordinate) {
+		this.formation = formation;
+		this.formationXCoordinate = formationXCoordinate;
+		this.formationYCoordinate = formationYCoordinate;
 	}
 
 }

@@ -111,8 +111,8 @@ public class SpaceShipRegularGun {
 			ImageEnums type = playerStats.getPlayerMissileType();
 			ImageEnums impactType = playerStats.getPlayerMissileImpactType();
 			float scale = playerStats.getMissileScale();
-//			PathFinder pathFinder = playerStats.getMissilePathFinder();
-			PathFinder pathFinder = new HomingPathFinder();
+			PathFinder pathFinder = playerStats.getMissilePathFinder();
+//			PathFinder pathFinder = new HomingPathFinder();
 			Sprite target = null;
 			
 			

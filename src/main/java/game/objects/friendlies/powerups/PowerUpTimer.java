@@ -1,4 +1,4 @@
-package game.spawner;
+package game.objects.friendlies.powerups;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -6,7 +6,6 @@ import java.awt.event.ActionListener;
 import javax.swing.Timer;
 
 import game.managers.TimerManager;
-import game.objects.friendlies.powerups.PowerUp;
 
 public class PowerUpTimer {
 

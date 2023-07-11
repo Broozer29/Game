@@ -8,7 +8,6 @@ import game.movement.Direction;
 import game.movement.Path;
 import game.movement.Point;
 import game.movement.PowerUpDirectionBouncer;
-import game.spawner.PowerUpTimer;
 import visual.objects.Sprite;
 
 public class PowerUp extends Sprite {

@@ -95,8 +95,8 @@ public class PlayerStats {
 
 	public void initDefaultSettings() {
 		// Health
-		setHitpoints(100);
-		setMaxHitPoints(100);
+		setHitpoints(1000000);
+		setMaxHitPoints(1000000);
 		setShieldHitpoints(100);
 		setMaxShieldHitPoints(100);
 		setShieldRegenDelay(300);

@@ -59,6 +59,7 @@ public class Tazer extends Enemy {
 					xCoordinate, yCoordinate + + this.height / 2
 					, ImageEnums.Tazer_Missile, ImageEnums.Tazer_Missile_Explosion, rotation, 
 					scale, missilePathFinder, xMovementSpeed, yMovementSpeed, (float) 7.5));
+			currentAttackSpeedFrameCount = 0;
 		}
 		if (currentAttackSpeedFrameCount < attackSpeedFrameCount) {
 			this.currentAttackSpeedFrameCount++;

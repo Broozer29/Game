@@ -29,8 +29,8 @@ public class MissileManager {
 	private List<Missile> friendlyMissiles = new ArrayList<Missile>();
 	private List<SpecialAttack> specialAttacks = new ArrayList<SpecialAttack>();
 
-	private int threshold = 300;
-	private int boardBlockThreshold = 3;
+	private int threshold = 600;
+	private int boardBlockThreshold = 4;
 
 	private MissileManager() {
 	}
@@ -154,12 +154,11 @@ public class MissileManager {
 				}
 			}
 		}
-		
+
 		for (Enemy enemy : enemyManager.getEnemies()) {
 			if (isNearby(specialAttack.getAnimation(), enemy)) {
 				if (specialAttack.getAnimation().getAnimationBounds().intersects(enemy.getBounds())) {
 					enemy.takeDamage(specialAttack.getDamage());
-
 				}
 			}
 		}
@@ -179,6 +178,10 @@ public class MissileManager {
 	}
 
 	private boolean isWithinBoardBlockThreshold(Sprite sprite1, Sprite sprite2) {
+		//This causes all other "updatecurrentBoardBlocks" to be redundant
+		sprite1.updateCurrentBoardBlock();
+		sprite2.updateCurrentBoardBlock();
+		
 		int blockDifference = Math.abs(sprite1.getCurrentBoardBlock() - sprite2.getCurrentBoardBlock());
 		return blockDifference <= boardBlockThreshold;
 	}
@@ -190,6 +193,8 @@ public class MissileManager {
 
 		double distance = Math.hypot(sprite1.getXCoordinate() - sprite2.getXCoordinate(),
 				sprite1.getYCoordinate() - sprite2.getYCoordinate());
+		if (distance < threshold) {
+		}
 		return distance < threshold;
 	}
 
@@ -253,17 +258,17 @@ public class MissileManager {
 				}
 			}
 
-			
-			//It is vital that special attacks which exist of missiles only have an invisible animation
-			if(specialAttack.getAnimation() != null && specialAttack.getAnimation().getImageType() != ImageEnums.Invisible_Animation) {
+			// It is vital that special attacks which exist of missiles only have an invisible
+			// animation
+			if (specialAttack.getAnimation() != null
+					&& specialAttack.getAnimation().getImageType() != ImageEnums.Invisible_Animation) {
 				allMissilesInvisible = false;
 			}
-			
 
 			if (allMissilesInvisible) {
 				specialAttack.setVisible(false);
 				specialAttack.getAnimation().setVisible(false);
-			} else if (!specialAttack.isVisible()) {
+			} else if (!specialAttack.getAnimation().isVisible()) {
 				removeSpecialAttack(specialAttack);
 			}
 		}

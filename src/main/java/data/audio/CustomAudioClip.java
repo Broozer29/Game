@@ -8,9 +8,9 @@ public class CustomAudioClip {
 
 	AudioLoader audioLoader = AudioLoader.getInstance();
 
-	Clip clip;
-	AudioEnums clipType;
-	boolean loop;
+	private Clip clip;
+	private AudioEnums clipType;
+	private boolean loop;
 
 	public CustomAudioClip(AudioEnums clipType, boolean loop) {
 		this.clipType = clipType;
@@ -29,10 +29,10 @@ public class CustomAudioClip {
 		    FloatControl volume = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
 			switch (clipType) {
 			case Player_Laserbeam:
-				volume.setValue(-4);
+				volume.setValue(-6);
 				break;
 			case Large_Ship_Destroyed:
-				volume.setValue(-2);
+//				volume.setValue(-6);
 				break;
 			case Alien_Bomb_Impact:
 				volume.setValue(-2);
@@ -42,6 +42,7 @@ public class CustomAudioClip {
 				break;
 			case Furi_Wisdowm_Of_Rage:
 				volume.setValue(-5);
+				break;
 			case Default_EMP:
 				volume.setValue(-15);
 				break;
@@ -54,7 +55,7 @@ public class CustomAudioClip {
 		
 	}
 
-	public int getFramePosition() {
+	public long getFramePosition() {
 		return this.clip.getFramePosition();
 	}
 
@@ -95,6 +96,10 @@ public class CustomAudioClip {
 
 	public void resetFramePosition() {
 		this.clip.setFramePosition(0);
+	}
+	
+	public Clip getClip() {
+		return this.clip;
 	}
 
 	public boolean isRunning() {

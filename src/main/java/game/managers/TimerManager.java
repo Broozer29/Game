@@ -5,11 +5,11 @@ import java.util.List;
 
 import game.levels.LevelSpawnerManager;
 import game.objects.friendlies.powerups.PowerUpManager;
+import game.objects.friendlies.powerups.PowerUpSpawnTimer;
+import game.objects.friendlies.powerups.PowerUpTimer;
 import game.objects.friendlies.powerups.PowerUpCreator;
 import game.objects.friendlies.powerups.PowerUpEnums;
 import game.spawner.EnemySpawnTimer;
-import game.spawner.PowerUpSpawnTimer;
-import game.spawner.PowerUpTimer;
 
 public class TimerManager {
 
@@ -27,8 +27,8 @@ public class TimerManager {
 		return instance;
 	}
 
-	public void updateGameTick() {
-		updateTimers();
+	public void updateGameTick(float currentSongFrame) {
+		updateTimers(currentSongFrame);
 	}
 
 	public void resetManager() {
@@ -37,22 +37,14 @@ public class TimerManager {
 	}
 
 	//Cycles and updates ALL timers
-	public void updateTimers() {
+	public void updateTimers(float currentSongFrame) {
 		if(powerUpSpawnerTimers.size() < 1) {
 			powerUpSpawnerTimers.add(PowerUpCreator.getInstance().createPowerUpTimer(PowerUpEnums.RANDOM, true, 0));
 		}
 		
 		for (int i = 0; i < allEnemyTimers.size(); i++) {
 			if (!allEnemyTimers.get(i).getFinished()) {
-				switch (allEnemyTimers.get(i).getStatus()) {
-				case ("primed"):
-					allEnemyTimers.get(i).startTimer();
-					break;
-				case ("running"):
-					allEnemyTimers.get(i).increaseTimerTick();
-					break;
-				}
-				if (allEnemyTimers.get(i).shouldActivate()) {
+				if (allEnemyTimers.get(i).shouldActivate(currentSongFrame)) {
 					allEnemyTimers.get(i).activateTimer();
 				}
 			}

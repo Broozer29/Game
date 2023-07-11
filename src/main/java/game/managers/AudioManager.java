@@ -57,5 +57,9 @@ public class AudioManager {
 			}
 		}
 	}
+	
+	public CustomAudioClip getBackgroundMusic() {
+		return this.backGroundMusic;
+	}
 
 }

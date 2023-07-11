@@ -8,5 +8,6 @@ public enum EnemyEnums {
 	Bulldozer,
 	Flamer,
 	Bomba, 
+	Random,
 	Alien
 }

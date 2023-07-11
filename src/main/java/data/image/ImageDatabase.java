@@ -29,6 +29,8 @@ public class ImageDatabase {
 	private BufferedImage bulldozerImage;
 	private BufferedImage flamerImage;
 	private BufferedImage bombaImage;
+	
+	private List<BufferedImage> alienBombFrames = new ArrayList<BufferedImage>();
 
 	// Ship numbers to names:
 	/*
@@ -1040,6 +1042,8 @@ public class ImageDatabase {
 			return Rocket1ExplosionFrames;
 		case Firespout_Animation:
 			return fireSpoutFrames;
+		case Alien_Bomb_Animation:
+			return alienBombFrames;
 		}
 		return null;
 	}
@@ -1273,6 +1277,12 @@ public class ImageDatabase {
 			String sourceString = String.format("src/resources/images/gif/PNGtoGIF/FireSpout/Firespout%d.png", i);
 			BufferedImage image = imgLoader.getSpritesheetImage(sourceString);
 			fireSpoutFrames.add(image);
+		}
+		
+		for (int i = 0; i < 10; i++) {
+			String sourceString = String.format("src/resources/images/gif/PNGtoGIF/Alien Bomb/Bomb_3_Idle_00%d.png", i);
+			BufferedImage image = imgLoader.getSpritesheetImage(sourceString);
+			alienBombFrames.add(image);
 		}
 
 	}

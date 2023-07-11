@@ -22,7 +22,7 @@ public class Bulldozer extends Enemy {
 		this.initBoardBlockSpeeds();
 		this.hitPoints = 50;
 		this.maxHitPoints = 50;
-		this.attackSpeedFrameCount = 250;
+		this.attackSpeedFrameCount = 200;
 		this.XMovementSpeed = 2;
 		this.YMovementSpeed = 1;
 		this.hasAttack = true;

@@ -33,7 +33,7 @@ public enum ImageEnums {
 	Player_Spaceship, Player_Spaceship_Model_3,
 
 	// Enemy images
-	Alien_Bomb, Seeker, Tazer, Energizer, Bulldozer, Flamer, Bomba, Alien,
+	Alien_Bomb, Seeker, Tazer, Energizer, Bulldozer, Flamer, Bomba, Alien, Alien_Bomb_Animation,
 
 	// Unused?
 	Implosion, Invisible, Invisible_Animation,

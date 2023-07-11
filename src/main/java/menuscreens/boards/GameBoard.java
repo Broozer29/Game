@@ -19,6 +19,7 @@ import data.DataClass;
 import data.PlayerStats;
 import data.TemporaryGameSettings;
 import data.audio.AudioDatabase;
+import data.audio.AudioPositionCalculator;
 import game.UI.UIObject;
 import game.levels.LevelSpawnerManager;
 import game.managers.AnimationManager;
@@ -61,6 +62,7 @@ public class GameBoard extends JPanel implements ActionListener {
 	private final int boardHeight = data.getWindowHeight();
 
 	private final int DELAY = 15;
+	private float musicSeconds = 0;
 
 	private BoardManager boardManager = BoardManager.getInstance();
 	private AnimationManager animationManager = AnimationManager.getInstance();
@@ -78,6 +80,7 @@ public class GameBoard extends JPanel implements ActionListener {
 	private PowerUpManager powerUpManager = PowerUpManager.getInstance();
 	private OnScreenTextManager textManager = OnScreenTextManager.getInstance();
 	private TemporaryGameSettings tempSettings = TemporaryGameSettings.getInstance();
+	private AudioPositionCalculator audioPosCalc = AudioPositionCalculator.getInstance();
 
 	public GameBoard() {
 		animationManager = AnimationManager.getInstance();
@@ -114,14 +117,14 @@ public class GameBoard extends JPanel implements ActionListener {
 			playerStats.setNormalGunPreset(preset);
 		}
 		playerStats.getNormalGunPreset().loadPreset();
-		
+
 		// Dit moet uit een "out-of-game state manager" gehaald worden
 		if (playerStats.getSpecialGunPreset() == null) {
 			SpecialGunPreset preset = new SpecialGunPreset(PlayerSpecialAttackTypes.EMP);
 			playerStats.setSpecialGunPreset(preset);
 		}
 		playerStats.getSpecialGunPreset().loadPreset();
-		
+
 		ingame = true;
 		uiManager.createGameBoardGUI();
 		levelManager.startLevel();
@@ -257,6 +260,8 @@ public class GameBoard extends JPanel implements ActionListener {
 		// Draw the score/aliens left
 		g.setColor(Color.WHITE);
 		g.drawString("Enemies left: " + enemyManager.getEnemyCount(), 5, 15);
+		
+		g.drawString("Music time: " + musicSeconds, 100, 15);
 	}
 
 	private void drawText(Graphics2D g, PowerUpAcquiredText text) {
@@ -330,22 +335,21 @@ public class GameBoard extends JPanel implements ActionListener {
 	private void drawSpecialAttackFrame(Graphics2D g) {
 		drawImage(g, uiManager.getSpecialAttackFrame());
 
-		   for (SpaceShipSpecialGun gun : playerManager.getSpaceship().getSpecialGuns()) {
-		        if (gun.getCurrentSpecialAttackFrame() >= playerStats.getSpecialAttackSpeed()) {
-		            drawAnimation(g, uiManager.getSpecialAttackHighlight());
-		        } else {
-		            float percentage = (float) gun.getCurrentSpecialAttackFrame() / playerStats.getSpecialAttackSpeed();
+		for (SpaceShipSpecialGun gun : playerManager.getSpaceship().getSpecialGuns()) {
+			if (gun.getCurrentSpecialAttackFrame() >= playerStats.getSpecialAttackSpeed()) {
+				drawAnimation(g, uiManager.getSpecialAttackHighlight());
+			} else {
+				float percentage = (float) gun.getCurrentSpecialAttackFrame() / playerStats.getSpecialAttackSpeed();
 
-		            int barWidth = (int) (uiManager.getSpecialAttackFrame().getWidth() * percentage);
+				int barWidth = (int) (uiManager.getSpecialAttackFrame().getWidth() * percentage);
 
-		            // Draw the cooldown progress bar
-		            g.setColor(new Color(160, 160, 160, 160)); // Semi-transparent gray
-		            g.fillRect(uiManager.getSpecialAttackFrame().getXCoordinate(),
-		                    uiManager.getSpecialAttackFrame().getYCoordinate(),
-		                    barWidth,
-		                    uiManager.getSpecialAttackFrame().getHeight());
-		        }
-		    }
+				// Draw the cooldown progress bar
+				g.setColor(new Color(160, 160, 160, 160)); // Semi-transparent gray
+				g.fillRect(uiManager.getSpecialAttackFrame().getXCoordinate(),
+						uiManager.getSpecialAttackFrame().getYCoordinate(), barWidth,
+						uiManager.getSpecialAttackFrame().getHeight());
+			}
+		}
 
 	}
 
@@ -383,13 +387,23 @@ public class GameBoard extends JPanel implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 		inGame();
 		if (ingame) {
+
+			if (AudioManager.getInstance().getBackgroundMusic() != null) {
+				
+				musicSeconds = audioPosCalc.getPlaybackTimeInSeconds(audioManager.getBackgroundMusic().getClip(),
+						audioManager.getBackgroundMusic().getFramePosition());
+//				musicSeconds = AudioManager.getInstance().getBackgroundMusic().getFramePosition();
+			} else {
+				musicSeconds += 0.1;
+			}
+
 			playerManager.updateGameTick();
 			missileManager.updateGameTick();
 			enemyManager.updateGameTick();
 			levelManager.updateGameTick();
 			animationManager.updateGameTick();
 			backgroundManager.updateGameTick();
-			timerManager.updateGameTick();
+			timerManager.updateGameTick(musicSeconds);
 			audioDatabase.updateGameTick();
 			explosionManager.updateGametick();
 			friendlyManager.updateGameTick();

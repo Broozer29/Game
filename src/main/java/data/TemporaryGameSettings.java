@@ -35,8 +35,8 @@ public class TemporaryGameSettings {
 		playerStats = PlayerStats.getInstance();
 		doubleShotActive = false;
 		tripleShotActive = false;
-		setMinTimeForPowerUpSpawn(350);
-		setMaxTimeForPowerUpSpawn(500);
+		setMinTimeForPowerUpSpawn(750);
+		setMaxTimeForPowerUpSpawn(1250);
 		setRepairPackageHealthRestore(playerStats.getMaxHitPoints() / 2);
 		setRepairPackageShieldRestore(playerStats.getMaxShieldHitPoints());
 		setDefaultMovementSpeedBoostAmount(2);

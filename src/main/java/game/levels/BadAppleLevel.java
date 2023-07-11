@@ -20,7 +20,7 @@ public class BadAppleLevel implements Level{
 	}
 
 	private void initBadAppleTimers() {
-//		initRepeatableTimers();
+		initRepeatableTimers();
 		initDelayedTimers();
 		initSingleFireTimers();
 	}
@@ -34,29 +34,29 @@ public class BadAppleLevel implements Level{
 		int additionalDelay = 0;
 		Direction direction = Direction.LEFT;
 
-		timeBeforeActivation = 7500;
+		timeBeforeActivation = 12;
 		direction = Direction.LEFT;
 		spawnAttempts = 2;
 		addSpawnTimer(EnemyEnums.Bomba, spawnAttempts, timeBeforeActivation, loopable, direction, enemyScale,
 				additionalDelay);
 
-		timeBeforeActivation = 12000;
+		timeBeforeActivation = 10;
 		addSpawnTimer(EnemyEnums.Energizer, spawnAttempts, timeBeforeActivation, loopable, direction, enemyScale,
 				additionalDelay);
 
-		timeBeforeActivation = 16000;
+		timeBeforeActivation = 14;
 		addSpawnTimer(EnemyEnums.Tazer, spawnAttempts, timeBeforeActivation, loopable, direction, enemyScale,
 				additionalDelay);
 
-		timeBeforeActivation = 13000;
+		timeBeforeActivation = 14;
 		addSpawnTimer(EnemyEnums.Bulldozer, spawnAttempts, timeBeforeActivation, loopable, direction, enemyScale,
 				additionalDelay);
 
-		timeBeforeActivation = 15000;
+		timeBeforeActivation = 8;
 		addSpawnTimer(EnemyEnums.Flamer, spawnAttempts, timeBeforeActivation, loopable, direction, enemyScale,
 				additionalDelay);
 
-		timeBeforeActivation = 10000;
+		timeBeforeActivation = 20;
 		spawnAttempts = 3;
 		direction = Direction.LEFT_UP;
 		addSpawnTimer(EnemyEnums.Seeker, spawnAttempts, timeBeforeActivation, loopable, direction, enemyScale,
@@ -92,14 +92,14 @@ public class BadAppleLevel implements Level{
 		Direction direction = Direction.UP;
 
 		// First real beat
-		timeBeforeActivation = 19000;
+		timeBeforeActivation = 14;
 		addSpawnTimer(EnemyEnums.Alien_Bomb, spawnAttempts, timeBeforeActivation, loopable, direction, enemyScale,
 				additionalDelay);
 		direction = Direction.DOWN;
 		addSpawnTimer(EnemyEnums.Alien_Bomb, spawnAttempts, timeBeforeActivation, loopable, direction, enemyScale,
 				additionalDelay);
 
-		timeBeforeActivation = 24000;
+		timeBeforeActivation = 15;
 		spawnAttempts = 2;
 		direction = Direction.LEFT;
 		addSpawnTimer(EnemyEnums.Bomba, spawnAttempts, timeBeforeActivation, loopable, direction, enemyScale,
@@ -107,14 +107,14 @@ public class BadAppleLevel implements Level{
 		addSpawnTimer(EnemyEnums.Energizer, spawnAttempts, timeBeforeActivation, loopable, direction, enemyScale,
 				additionalDelay);
 
-		timeBeforeActivation = 29000;
+		timeBeforeActivation = 16;
 		direction = Direction.LEFT;
 		addSpawnTimer(EnemyEnums.Tazer, spawnAttempts, timeBeforeActivation, loopable, direction, enemyScale,
 				additionalDelay);
 		addSpawnTimer(EnemyEnums.Flamer, spawnAttempts, timeBeforeActivation, loopable, direction, enemyScale,
 				additionalDelay);
 
-		timeBeforeActivation = 35000;
+		timeBeforeActivation = 17;
 		direction = Direction.LEFT;
 		addSpawnTimer(EnemyEnums.Seeker, spawnAttempts, timeBeforeActivation, loopable, direction, enemyScale,
 				additionalDelay);
@@ -122,7 +122,7 @@ public class BadAppleLevel implements Level{
 				additionalDelay);
 
 		// Slight temporary increase
-		timeBeforeActivation = 48000;
+		timeBeforeActivation = 19;
 		spawnAttempts = 100;
 		direction = Direction.UP;
 		addSpawnTimer(EnemyEnums.Alien_Bomb, spawnAttempts, timeBeforeActivation, loopable, direction, enemyScale,
@@ -131,7 +131,7 @@ public class BadAppleLevel implements Level{
 		addSpawnTimer(EnemyEnums.Alien_Bomb, spawnAttempts, timeBeforeActivation, loopable, direction, enemyScale,
 				additionalDelay);
 
-		timeBeforeActivation = 54000;
+		timeBeforeActivation = 21;
 		spawnAttempts = 2;
 		direction = Direction.LEFT;
 		addSpawnTimer(EnemyEnums.Bulldozer, spawnAttempts, timeBeforeActivation, loopable, direction, enemyScale,
@@ -140,7 +140,7 @@ public class BadAppleLevel implements Level{
 		addSpawnTimer(EnemyEnums.Seeker, spawnAttempts, timeBeforeActivation, loopable, direction, enemyScale,
 				additionalDelay);
 
-		timeBeforeActivation = 60000;
+		timeBeforeActivation = 24;
 		spawnAttempts = 2;
 		direction = Direction.LEFT;
 		addSpawnTimer(EnemyEnums.Flamer, spawnAttempts, timeBeforeActivation, loopable, direction, enemyScale,
@@ -149,7 +149,7 @@ public class BadAppleLevel implements Level{
 		addSpawnTimer(EnemyEnums.Energizer, spawnAttempts, timeBeforeActivation, loopable, direction, enemyScale,
 				additionalDelay);
 
-		timeBeforeActivation = 70000;
+		timeBeforeActivation = 24;
 		spawnAttempts = 2;
 		direction = Direction.LEFT;
 		addSpawnTimer(EnemyEnums.Bomba, spawnAttempts, timeBeforeActivation, loopable, direction, enemyScale,
@@ -160,7 +160,7 @@ public class BadAppleLevel implements Level{
 
 		// Second drop
 		spawnAttempts = 200;
-		timeBeforeActivation = 90000;
+		timeBeforeActivation = 48;
 		direction = Direction.UP;
 		addSpawnTimer(EnemyEnums.Alien_Bomb, spawnAttempts, timeBeforeActivation, loopable, direction, enemyScale,
 				additionalDelay);
@@ -169,21 +169,21 @@ public class BadAppleLevel implements Level{
 				additionalDelay);
 
 		spawnAttempts = 2;
-		timeBeforeActivation = 95000;
+		timeBeforeActivation = 48;
 		direction = Direction.LEFT;
 		addSpawnTimer(EnemyEnums.Bomba, spawnAttempts, timeBeforeActivation, loopable, direction, enemyScale,
 				additionalDelay);
 		addSpawnTimer(EnemyEnums.Energizer, spawnAttempts, timeBeforeActivation, loopable, direction, enemyScale,
 				additionalDelay);
 
-		timeBeforeActivation = 100000;
+		timeBeforeActivation = 48;
 		direction = Direction.LEFT;
 		addSpawnTimer(EnemyEnums.Tazer, spawnAttempts, timeBeforeActivation, loopable, direction, enemyScale,
 				additionalDelay);
 		addSpawnTimer(EnemyEnums.Flamer, spawnAttempts, timeBeforeActivation, loopable, direction, enemyScale,
 				additionalDelay);
 
-		timeBeforeActivation = 110000;
+		timeBeforeActivation = 48;
 		direction = Direction.LEFT;
 		addSpawnTimer(EnemyEnums.Seeker, spawnAttempts, timeBeforeActivation, loopable, direction, enemyScale,
 				additionalDelay);
@@ -192,7 +192,7 @@ public class BadAppleLevel implements Level{
 
 		// Eerste pauze
 		spawnAttempts = 100;
-		timeBeforeActivation = 118000;
+		timeBeforeActivation = 96;
 		direction = Direction.UP;
 		addSpawnTimer(EnemyEnums.Alien_Bomb, spawnAttempts, timeBeforeActivation, loopable, direction, enemyScale,
 				additionalDelay);
@@ -201,7 +201,7 @@ public class BadAppleLevel implements Level{
 				additionalDelay);
 
 		// Cooling down
-		timeBeforeActivation = 125000;
+		timeBeforeActivation = 137;
 		direction = Direction.UP;
 		addSpawnTimer(EnemyEnums.Alien_Bomb, spawnAttempts, timeBeforeActivation, loopable, direction, enemyScale,
 				additionalDelay);

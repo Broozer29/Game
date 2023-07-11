@@ -1,8 +1,13 @@
 package game.levels;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
+import javax.sound.sampled.UnsupportedAudioFileException;
+
+import data.audio.AudioEnums;
 import game.managers.AudioManager;
 import game.managers.SpawningCoordinator;
 import game.managers.TimerManager;
@@ -30,10 +35,11 @@ public class LevelSpawnerManager {
 	private EnemyManager enemyManager = EnemyManager.getInstance();
 	private SpawningCoordinator spawningCoordinator = SpawningCoordinator.getInstance();
 	private TimerManager timerManager = TimerManager.getInstance();
-	
+
 	private Level currentLevel;
+
 	private LevelSpawnerManager() {
-		
+
 	}
 
 	public static LevelSpawnerManager getInstance() {
@@ -45,78 +51,70 @@ public class LevelSpawnerManager {
 	}
 
 	public void updateGameTick() {
-		
-	}
-	
-	public void activateTimers(int currentSongFrame) {
-		for(EnemySpawnTimer timer : currentLevel.getTimers()) {
-			
-		}
 	}
 
 	// Called when a level starts, to saturate enemy list
 	public void startLevel() {
-		currentLevel = new BadAppleLevel();
+		currentLevel = new FuriWisdomOfRageLevel();
 		AudioManager audioManager = AudioManager.getInstance();
-		for(EnemySpawnTimer timer : currentLevel.getTimers()) {
+		for (EnemySpawnTimer timer : currentLevel.getTimers()) {
 			timerManager.addEnemyTimerToList(timer);
 		}
-//		
-//		try {
-//			AudioEnums currentMusic = baddAppleSong.getSong();
-//			audioManager.playMusicAudio(currentMusic);
-//		} catch (UnsupportedAudioFileException | IOException e) {
-//			e.printStackTrace();
-//		}
-//		timer = timerManager.createTimer(EnemyEnums.Alien_Bomb, 100, 100, false, Direction.DOWN, 1);
 
-		EnemySpawnTimer timer = new EnemySpawnTimer(100, 1, EnemyEnums.Bomba, true, Direction.LEFT, 1, 0);
-		TimerManager.getInstance().addEnemyTimerToList(timer);
-//		EnemySpawnTimer timer2 = new EnemySpawnTimer(100, 1, EnemyEnums.Bomba, true, Direction.LEFT_UP, 1, 0);
-//		TimerManager.getInstance().addEnemyTimerToList(timer2);
-//		timer = timerManager.createTimer(EnemyEnums.Flamer, 1, 100, false, Direction.LEFT, 1);
-//		timerManager.addTimerToList(timer);
-//		EnemySpawnTimer timer = timerManager.createTimer(EnemyEnums.Alien_Bomb, 100, 3000, true, Direction.LEFT, 1, 1);
+		try {
+			AudioEnums currentMusic = currentLevel.getSong();
+			audioManager.playMusicAudio(currentMusic);
+		} catch (UnsupportedAudioFileException | IOException e) {
+			e.printStackTrace();
+		}
+		
+		
+//		FormationCreator formCreator = new FormationCreator();
+//		EnemySpawnTimer timer = null;
+//		EnemyFormation formation = null;
+//		boolean loopable = false;
+//		float scale = 1;
+//		int additionalDelay = 0;
+//		DataClass dataClass = DataClass.getInstance();
+//		
 //		timerManager.addEnemyTimerToList(timer);
-//		timer = timerManager.createTimer(EnemyEnums.Seeker, 1, 100, false, Direction.UP, 1);
-//		timerManager.addTimerToList(timer);
-//		timer = timerManager.createTimer(EnemyEnums.Seeker, 1, 100, false, Direction.DOWN, 1);
-//		timerManager.addTimerToList(timer);
-//		timer = timerManager.createTimer(EnemyEnums.Seeker, 2, 100, true, Direction.UP, 1);
-//		timerManager.addTimerToList(timer);
-//		timer = timerManager.createTimer(EnemyEnums.Seeker, 2, 15000, true, Direction.LEFT, 1);
-//		timerManager.addTimerToList(timer);
-//		timer = timerManager.createTimer(EnemyEnums.Seeker, 2, 15000, true, Direction.RIGHT, 1);
-//		timerManager.addTimerToList(timer);
-//		timer = timerManager.createTimer(EnemyEnums.Bulldozer, 1, 6000, true, Direction.LEFT, 1);
-//		timerManager.addTimerToList(timer);
-//		timer = timerManager.createTimer(EnemyEnums.Energizer, 1, 5500, true, Direction.LEFT, 1);
-//		timerManager.addTimerToList(timer);
+		
 	}
 
+
+
 	// Called by CustomTimers when they have to spawn an enemy
-	public void spawnEnemy(EnemyEnums enemyType, int amountOfAttempts, Direction direction, float scale) {
-		for (int i = 0; i < amountOfAttempts; i++) {
-			List<Integer> coordinatesList = getSpawnCoordinatesByDirection(direction);
-			int xCoordinate = coordinatesList.get(0);
-			int yCoordinate = coordinatesList.get(1);
+	public void spawnEnemy(int xCoordinate, int yCoordinate, EnemyEnums enemyType, int amountOfAttempts,
+			Direction direction, float scale) {
 
-			if (enemyType.equals(EnemyEnums.Alien_Bomb)) {
-				if (direction.equals(Direction.UP) || direction.equals(Direction.LEFT_UP)
-						|| direction.equals(Direction.RIGHT_UP)) {
-					yCoordinate = spawningCoordinator.getRandomYDownBombEnemyCoordinate();
-				} else if (direction.equals(Direction.DOWN) || direction.equals(Direction.LEFT_DOWN)
-						|| direction.equals(Direction.RIGHT_DOWN)) {
-					yCoordinate = spawningCoordinator.getRandomYUpBombEnemyCoordinate();
+		// Spawn random if there are no given X/Y coords
+		if (xCoordinate == 0 && yCoordinate == 0) {
+			for (int i = 0; i < amountOfAttempts; i++) {
+				List<Integer> coordinatesList = getSpawnCoordinatesByDirection(direction);
+
+				xCoordinate = coordinatesList.get(0);
+				yCoordinate = coordinatesList.get(1);
+
+				if (enemyType.equals(EnemyEnums.Alien_Bomb)) {
+					if (direction.equals(Direction.UP) || direction.equals(Direction.LEFT_UP)
+							|| direction.equals(Direction.RIGHT_UP)) {
+						yCoordinate = spawningCoordinator.getRandomYDownBombEnemyCoordinate();
+					} else if (direction.equals(Direction.DOWN) || direction.equals(Direction.LEFT_DOWN)
+							|| direction.equals(Direction.RIGHT_DOWN)) {
+						yCoordinate = spawningCoordinator.getRandomYUpBombEnemyCoordinate();
+					}
+					xCoordinate = spawningCoordinator.getRandomXBombEnemyCoordinate();
+					scale = 1;
 				}
-				xCoordinate = spawningCoordinator.getRandomXBombEnemyCoordinate();
-				scale = 1;
-			}
 
-			Enemy enemy = createEnemy(enemyType, xCoordinate, yCoordinate, direction, scale);
-			if (enemy != null && validCoordinates(enemy)) {
-				enemyManager.addEnemy(enemy);
+				Enemy enemy = createEnemy(enemyType, xCoordinate, yCoordinate, direction, scale);
+				if (enemy != null && validCoordinates(enemy)) {
+					enemyManager.addEnemy(enemy);
+				}
 			}
+		} else {
+			Enemy enemy = createEnemy(enemyType, xCoordinate, yCoordinate, direction, scale);
+			enemyManager.addEnemy(enemy);
 		}
 
 	}
@@ -202,4 +200,29 @@ public class LevelSpawnerManager {
 		return false;
 	}
 
+	
+	
+	//FOR TESTING PURPOSES only for methods below this!
+	private EnemySpawnTimer createRandomSpawnTimer(EnemyEnums enemyType, int spawnAttempts, int timeBeforeActivation,
+			boolean loopable, Direction direction, float enemyScale, int additionalDelay) {
+
+		if (enemyType == EnemyEnums.Random) {
+			enemyType = selectRandomEnemy();
+		}
+
+		EnemySpawnTimer timer = new EnemySpawnTimer(timeBeforeActivation, spawnAttempts, enemyType, loopable, direction,
+				enemyScale, additionalDelay);
+		return timer;
+	}
+
+	private EnemyEnums selectRandomEnemy() {
+		EnemyEnums[] enums = EnemyEnums.values();
+		Random random = new Random();
+		EnemyEnums randomValue = enums[random.nextInt(enums.length)];
+
+		if (randomValue == EnemyEnums.Alien || randomValue == EnemyEnums.Alien_Bomb) {
+			return selectRandomEnemy();
+		}
+		return randomValue;
+	}
 }

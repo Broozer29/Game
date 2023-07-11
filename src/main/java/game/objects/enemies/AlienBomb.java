@@ -11,6 +11,8 @@ public class AlienBomb extends Enemy {
 	public AlienBomb(int x, int y, Point destination, Direction rotation, float scale, PathFinder pathFinder) {
 		super(x, y, destination, rotation, EnemyEnums.Alien_Bomb, scale, pathFinder);
 		loadImage(ImageEnums.Alien_Bomb);
+//		animation
+		//Create animated enemies lol, kopieer missile
 		setDeathAnimation(ImageEnums.Alien_Bomb_Explosion);
 		this.deathAnimation.setFrameDelay(2);
 		this.initBoardBlockSpeeds();

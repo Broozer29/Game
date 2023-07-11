@@ -15,7 +15,6 @@ import data.image.ImageEnums;
 import game.managers.AudioManager;
 import game.managers.PlayerManager;
 import game.movement.Direction;
-import game.spawner.PowerUpSpawnTimer;
 import visual.objects.Sprite;
 
 public class PowerUpManager {

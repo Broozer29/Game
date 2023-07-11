@@ -23,7 +23,7 @@ public class Seeker extends Enemy {
 		this.initBoardBlockSpeeds();
 		this.hitPoints = 50;
 		this.maxHitPoints = 50;
-		this.attackSpeedFrameCount = 400;
+		this.attackSpeedFrameCount = 200;
 		this.XMovementSpeed = 2;
 		this.YMovementSpeed = 1;
 		this.hasAttack = true;
@@ -56,7 +56,6 @@ public class Seeker extends Enemy {
 		int xMovementSpeed = 5;
 		int yMovementSpeed = 2;
 		
-		
 		// Hier een missile maken, en na het maken een target toeveogen aan de missile. De missile kan dan zijn target geven aan path. 
 		//PAth kan vervolgens zijn target tracken en constant de nextStep() naar de target teruggeven.
 		if (currentAttackSpeedFrameCount >= attackSpeedFrameCount) {
@@ -64,6 +63,7 @@ public class Seeker extends Enemy {
 					xCoordinate, yCoordinate + + this.height / 2
 					, ImageEnums.Seeker_Missile, ImageEnums.Seeker_Missile_Explosion, rotation, 
 					scale, missilePathFinder, xMovementSpeed, yMovementSpeed, (float) 7.5));
+			currentAttackSpeedFrameCount = 0;
 		}
 		if (currentAttackSpeedFrameCount < attackSpeedFrameCount) {
 			this.currentAttackSpeedFrameCount++;

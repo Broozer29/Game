@@ -22,7 +22,7 @@ public class Energizer extends Enemy {
 		this.initBoardBlockSpeeds();
 		this.hitPoints = 50;
 		this.maxHitPoints = 50;
-		this.attackSpeedFrameCount = 250;
+		this.attackSpeedFrameCount = 200;
 		this.XMovementSpeed = 2;
 		this.YMovementSpeed = 1;
 		this.hasAttack = true;
@@ -59,6 +59,7 @@ public class Energizer extends Enemy {
 					xCoordinate, yCoordinate + + this.height / 2
 					, ImageEnums.Energizer_Missile, ImageEnums.Energizer_Missile_Explosion, rotation, 
 					scale, missilePathFinder, xMovementSpeed, yMovementSpeed, (float) 7.5));
+			currentAttackSpeedFrameCount = 0;
 		}
 		if (currentAttackSpeedFrameCount < attackSpeedFrameCount) {
 			this.currentAttackSpeedFrameCount++;

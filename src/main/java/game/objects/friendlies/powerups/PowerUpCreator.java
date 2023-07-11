@@ -8,7 +8,6 @@ import data.DataClass;
 import data.TemporaryGameSettings;
 import data.image.ImageEnums;
 import game.movement.Direction;
-import game.spawner.PowerUpSpawnTimer;
 
 public class PowerUpCreator {
 
@@ -21,6 +20,7 @@ public class PowerUpCreator {
 
 	private Direction[] directionEnums = Direction.values();
 	private List<Integer> randomCoordinates = new ArrayList<Integer>();
+	private PowerUpEnums[] powerupEnums = PowerUpEnums.values();
 	
 	private static PowerUpCreator instance = new PowerUpCreator();
 	private PowerUpCreator() {
@@ -40,6 +40,10 @@ public class PowerUpCreator {
 	
 	public void spawnPowerUp(PowerUpEnums powerUpType) {
 		getRandomSpawnCoords();
+		if(powerUpType == PowerUpEnums.RANDOM) {
+			powerUpType = selectRandomPowerUp();
+		}
+		
 		PowerUp newPowerUp = new PowerUp(randomCoordinates.get(0), randomCoordinates.get(1), 1, selectRandomDirection(),
 				powerUpType, getIconByPowerUp(powerUpType), getEffectDuration(powerUpType), false);
 		newPowerUp.setImageDimensions(50, 50);
@@ -119,6 +123,20 @@ public class PowerUpCreator {
 
 		}
 	}
+	
+	private PowerUpEnums selectRandomPowerUp() {
+		PowerUpEnums randomValue = powerupEnums[random.nextInt(powerupEnums.length)];
+		if (randomValue == PowerUpEnums.DUMMY_DO_NOT_USE || 
+				randomValue == PowerUpEnums.RANDOM ||
+				randomValue == PowerUpEnums.DOUBLE_SHOT ||
+				randomValue == PowerUpEnums.TRIPLE_SHOT) {
+			return selectRandomPowerUp();
+		}
+		
+//		return PowerUpEnums.Guardian_Drone_Homing_Missile;
+		return randomValue;
+	}
+	
 	
 	public void resetManager() {
 		directionEnums = Direction.values();
