@@ -73,6 +73,7 @@ public class BoardManager extends JFrame {
 		add(mBoard);
 		mBoard.revalidate();
 		mBoard.requestFocus();
+		mBoard.getTimer().restart();
 		repaint();
 	}
 

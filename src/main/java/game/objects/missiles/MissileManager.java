@@ -4,17 +4,12 @@ import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.List;
 
-import data.PlayerStats;
 import data.image.ImageEnums;
 import game.managers.AnimationManager;
 import game.managers.PlayerManager;
-import game.movement.Direction;
 import game.movement.MovementInitiator;
-import game.movement.PathFinder;
-import game.movement.Point;
 import game.objects.enemies.Enemy;
 import game.objects.enemies.EnemyManager;
-import game.objects.friendlies.spaceship.PlayerAttackTypes;
 import game.objects.friendlies.spaceship.specialAttacks.SpecialAttack;
 import visual.objects.Sprite;
 
@@ -115,6 +110,7 @@ public class MissileManager {
 			friendlyMissile.missileAction();
 		} else {
 			enemy.takeDamage(friendlyMissile.getMissileDamage());
+			setMissileVisibility(friendlyMissile);
 		}
 
 		if (friendlyMissile.getExplosionAnimation() != null) {
@@ -166,12 +162,13 @@ public class MissileManager {
 
 	// Checks collision between special attacks and enemy missiles
 	private void checkSpecialAttackWithEnemyMissileCollision(SpecialAttack specialAttack) {
-		if (specialAttack.getSpecialAttackMissiles() == null) {
+		if (specialAttack.getSpecialAttackMissiles().size() == 0) {
 			for (Missile enemyMissile : enemyMissiles) {
 				if (isNearby(specialAttack.getAnimation(), enemyMissile))
 					if (enemyMissile.isVisible()
-							&& specialAttack.getAnimation().getAnimationBounds().intersects(enemyMissile.getBounds())) {
+							&& specialAttack.getAnimation().getAnimationBounds().intersects(enemyMissile.getAnimation().getAnimationBounds())) {
 						setMissileVisibility(enemyMissile);
+						
 					}
 			}
 		}
@@ -193,8 +190,6 @@ public class MissileManager {
 
 		double distance = Math.hypot(sprite1.getXCoordinate() - sprite2.getXCoordinate(),
 				sprite1.getYCoordinate() - sprite2.getYCoordinate());
-		if (distance < threshold) {
-		}
 		return distance < threshold;
 	}
 
@@ -202,20 +197,6 @@ public class MissileManager {
 	private void setMissileVisibility(Missile missile) {
 		switch (missile.getMissileType()) {
 		case Flamethrower_Animation:
-		case FirewallParticle:
-		case Firespout_Animation:
-			break;
-		default:
-			missile.setVisible(false);
-			break;
-		}
-	}
-
-	// Both friendly & enemy missiles
-	// Not necesarry if the special attack missiles are within regular friendly/enemy
-	// missiles?
-	private void setSpecialAttackMissileVisbility(Missile missile) {
-		switch (missile.getMissileType()) {
 		case FirewallParticle:
 		case Firespout_Animation:
 			break;

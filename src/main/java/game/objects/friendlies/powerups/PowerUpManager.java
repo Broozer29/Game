@@ -9,7 +9,7 @@ import java.util.Random;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
 import data.DataClass;
-import data.TemporaryGameSettings;
+import data.BoostsUpgradesAndBuffsSettings;
 import data.audio.AudioEnums;
 import data.image.ImageEnums;
 import game.managers.AudioManager;

@@ -1,7 +1,4 @@
-package game.levels;
-
-import game.spawner.EnemyFormation;
-import game.spawner.SpawnFormationEnums;
+package game.spawner;
 
 public class FormationCreator {
 
@@ -100,6 +97,42 @@ public class FormationCreator {
 					"..X..",
 					"...X.", 
 					"....X");
+			break;
+		case Line:
+			pattern = createPatternFromStrings(
+					".....", 
+					".....",
+					"XXXXX",
+					".....", 
+					".....");
+			break;
+		case Reverse_Line:
+			pattern = createPatternFromStrings(
+					"..X..", 
+					"..X..",
+					"..X..",
+					"..X..", 
+					"..X..");
+			break;
+		case V:
+			pattern = createPatternFromStrings(
+					"X...........X", 
+					"..X.......X..", 
+					"....X...X....",
+					"......X......");
+			break;
+		case Reverse_V:
+			pattern = createPatternFromStrings(
+			        "......X......",
+			        "....X...X....",
+			        "..X.......X..",
+			        "X...........X"
+			);
+			break;
+		case Dot:
+			pattern = createPatternFromStrings(
+			        "X"	
+					);
 			break;
 		}
 		newFormation = new EnemyFormation(pattern, widthDistance, heightDistance);

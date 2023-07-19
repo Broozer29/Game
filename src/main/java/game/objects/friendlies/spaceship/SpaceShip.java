@@ -12,7 +12,7 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 
 import data.DataClass;
 import data.PlayerStats;
-import data.TemporaryGameSettings;
+import data.BoostsUpgradesAndBuffsSettings;
 import data.image.ImageEnums;
 import game.managers.AnimationManager;
 import game.movement.MovementInitiator;
@@ -29,9 +29,11 @@ public class SpaceShip extends Sprite {
 	private float currentShieldRegenDelayFrame;
 
 	private boolean isEngineBoosted;
+	private SpriteAnimation deathAnimation = null;
+	private SpriteAnimation exhaustAnimation = null;
 
 	private PlayerStats playerStats = PlayerStats.getInstance();
-	private TemporaryGameSettings powerUpEffects = TemporaryGameSettings.getInstance();
+	private BoostsUpgradesAndBuffsSettings powerUpEffects = BoostsUpgradesAndBuffsSettings.getInstance();
 
 	private List<SpriteAnimation> playerFollowingAnimations = new ArrayList<SpriteAnimation>();
 	private List<Explosion> playerFollowingExplosions = new ArrayList<Explosion>();
@@ -40,16 +42,10 @@ public class SpaceShip extends Sprite {
 	private List<SpecialAttack> playerFollowingSpecialAttacks = new ArrayList<SpecialAttack>();
 
 	public SpaceShip() {
-		super(DataClass.getInstance().getWindowWidth() / 10, DataClass.getInstance().getWindowHeight() / 2, 1);
+		super(DataClass.getInstance().getWindowWidth() / 10, DataClass.getInstance().getWindowHeight() / 2, (float) 0.8);
 		playerStats = PlayerStats.getInstance();
-		powerUpEffects = TemporaryGameSettings.getInstance();
-	}
-
-	protected void setExhaustAnimation(ImageEnums imageType) {
-		SpriteAnimation exhaustAnimation = new SpriteAnimation(xCoordinate, yCoordinate, imageType, true, scale);
-		playerStats.setExhaustAnimation(exhaustAnimation);
-		playerStats.setCurrentExhaust(imageType);
-		AnimationManager.getInstance().addUpperAnimation(exhaustAnimation);
+		powerUpEffects = BoostsUpgradesAndBuffsSettings.getInstance();
+		initShip();
 	}
 
 	// Called when managers need to be reset.
@@ -65,11 +61,25 @@ public class SpaceShip extends Sprite {
 		isEngineBoosted = false;
 		playerStats.initDefaultSettings();
 		powerUpEffects.initDefaultSettings();
+		spaceShipGuns = new ArrayList<SpaceShipRegularGun>();
+		spaceShipSpecialGuns = new ArrayList<SpaceShipSpecialGun>();
 		SpaceShipRegularGun gun = new SpaceShipRegularGun();
 		this.spaceShipGuns.add(gun);
 		SpaceShipSpecialGun specialGun = new SpaceShipSpecialGun();
 		this.spaceShipSpecialGuns.add(specialGun);
-		setExhaustAnimation(playerStats.getExhaustImage());
+		initExhaustAnimation(playerStats.getExhaustImage());
+		initDeathAnimation(ImageEnums.Destroyed_Explosion);
+	}
+
+	private void initExhaustAnimation(ImageEnums imageType) {
+		exhaustAnimation = new SpriteAnimation(xCoordinate, yCoordinate, imageType, true, scale);
+		playerStats.setCurrentExhaust(imageType);
+		AnimationManager.getInstance().addLowerAnimation(exhaustAnimation);
+	}
+
+	private void initDeathAnimation(ImageEnums imageType) {
+		deathAnimation = new SpriteAnimation(xCoordinate, yCoordinate, imageType, false, 5);
+		deathAnimation.setFrameDelay(2);
 	}
 
 	public void addShieldDamageAnimation() {
@@ -104,7 +114,7 @@ public class SpaceShip extends Sprite {
 				playerFollowingExplosions.remove(i);
 			}
 		}
-		
+
 		for (int i = 0; i < playerFollowingSpecialAttacks.size(); i++) {
 			if (!playerFollowingSpecialAttacks.get(i).getAnimation().isVisible()) {
 				playerFollowingSpecialAttacks.remove(i);
@@ -130,12 +140,12 @@ public class SpaceShip extends Sprite {
 		for (SpaceShipRegularGun gun : spaceShipGuns) {
 			gun.updateFrameCount();
 		}
-		
-		for(SpaceShipSpecialGun specialGun : spaceShipSpecialGuns) {
+
+		for (SpaceShipSpecialGun specialGun : spaceShipSpecialGuns) {
 			specialGun.updateFrameCount();
 		}
 		this.currentShieldRegenDelayFrame++;
-		
+
 		for (SpriteAnimation anim : playerFollowingAnimations) {
 			anim.setX(xCoordinate);
 			anim.setY(yCoordinate);
@@ -146,12 +156,12 @@ public class SpaceShip extends Sprite {
 			MovementInitiator.getInstance().movePlayerFollowingExplosion(explosion, this);
 			explosion.updateCurrentBoardBlock();
 		}
-		
+
 		for (SpecialAttack attack : playerFollowingSpecialAttacks) {
 			MovementInitiator.getInstance().movePlayerFollowingSpecialAttack(attack, this);
 			attack.updateCurrentBoardBlock();
 		}
-		
+
 		removeInvisibleAnimations();
 
 		if (currentShieldRegenDelayFrame >= playerStats.getShieldRegenDelay()) {
@@ -164,53 +174,57 @@ public class SpaceShip extends Sprite {
 
 	// Moves the spaceship
 	public void move() {
-
-
 		xCoordinate += directionx;
 		yCoordinate += directiony;
 
-		playerStats.setHomingRectangleYCoordinate((int) (yCoordinate - (height * playerStats.getHomingRectangleResizeScale())));
-		playerStats.setHomingRectangleXCoordinate((int) (xCoordinate - (width * playerStats.getHomingRectangleResizeScale())));
+		playerStats.setHomingRectangleYCoordinate(
+				(int) (yCoordinate - (height * playerStats.getHomingRectangleResizeScale())));
+		playerStats.setHomingRectangleXCoordinate(
+				(int) (xCoordinate - (width * playerStats.getHomingRectangleResizeScale())));
 		playerStats.setHomingRectangleWidth((int) (width * (playerStats.getHomingRectangleResizeScale() * 2)));
 		playerStats.setHomingRectangleHeight((int) (height * (playerStats.getHomingRectangleResizeScale() * 2.25)));
-		
+
 		bounds.setBounds(xCoordinate + xOffset, yCoordinate + yOffset, width, height);
-		
-		if (playerStats.getExhaustAnimation() != null) {
-			playerStats.getExhaustAnimation().setX(this.getCenterXCoordinate() - (this.getWidth()));
-			playerStats.getExhaustAnimation()
-					.setY(this.getCenterYCoordinate() - (playerStats.getExhaustAnimation().getHeight() / 2) + 5);
+
+		if (this.exhaustAnimation != null) {
+			this.exhaustAnimation.setX(this.getCenterXCoordinate() - ((this.getWidth() + 5)));
+			this.exhaustAnimation.setY(this.getCenterYCoordinate() - (this.exhaustAnimation.getHeight() / 2) + 5);
 		}
 
+		if (this.deathAnimation != null) {
+			deathAnimation.setCenterCoordinates(this.xCoordinate, this.yCoordinate);
+		}
 	}
 
 	// Launch a missile from the center point of the spaceship
 	private void fire() throws UnsupportedAudioFileException, IOException {
 		for (SpaceShipRegularGun gun : spaceShipGuns) {
-			gun.fire(this.xCoordinate, this.yCoordinate, this.getWidth(), this.getHeight(), playerStats.getAttackType());
+			gun.fire(this.xCoordinate, this.yCoordinate, this.getWidth(), this.getHeight(),
+					playerStats.getAttackType());
 		}
 	}
 
 	private void fireSpecialAttack() throws UnsupportedAudioFileException, IOException {
-		for(SpaceShipSpecialGun gun : spaceShipSpecialGuns) {
-			gun.fire(this.xCoordinate, this.yCoordinate, this.getWidth(), this.getHeight(), playerStats.getPlayerSpecialAttackType());
+		for (SpaceShipSpecialGun gun : spaceShipSpecialGuns) {
+			gun.fire(this.xCoordinate, this.yCoordinate, this.getWidth(), this.getHeight(),
+					playerStats.getPlayerSpecialAttackType());
 		}
 	}
 
 	private void swapExhaust(ImageEnums newEngineType) {
-		if (!newEngineType.equals(playerStats.getCurrentExhaust())) {
+		if (!newEngineType.equals(this.exhaustAnimation.getImageType())) {
 			float scale = 1;
 			int xOffset = 0;
-			if (playerStats.getCurrentExhaust().equals(ImageEnums.Default_Player_Engine_Boosted)) {
+			if (this.exhaustAnimation.getImageType().equals(ImageEnums.Default_Player_Engine_Boosted)) {
 				scale = 1;
 				xOffset = 0;
 			} else {
 				scale = 1;
 				xOffset = -30;
 			}
-			playerStats.getExhaustAnimation().changeImagetype(newEngineType);
-			playerStats.getExhaustAnimation().setAnimationScale(scale);
-			playerStats.getExhaustAnimation().addXOffset(xOffset);
+			this.exhaustAnimation.changeImagetype(newEngineType);
+			this.exhaustAnimation.setAnimationScale(scale);
+			this.exhaustAnimation.addXOffset(xOffset);
 			playerStats.setCurrentExhaust(newEngineType);
 		}
 	}
@@ -294,14 +308,22 @@ public class SpaceShip extends Sprite {
 	public void repairShields(float healAmount) {
 		playerStats.changeShieldHitpoints(healAmount);
 	}
-	
+
 	public List<SpaceShipSpecialGun> getSpecialGuns() {
 		return this.spaceShipSpecialGuns;
 	}
-	
+
 	public void addFollowingSpecialAttack(SpecialAttack specialAttack) {
 		this.playerFollowingSpecialAttacks.add(specialAttack);
 		AnimationManager.getInstance().addUpperAnimation(specialAttack.getAnimation());
+	}
+
+	public SpriteAnimation getExhaustAnimation() {
+		return this.exhaustAnimation;
+	}
+
+	public SpriteAnimation getDeathAnimation() {
+		return this.deathAnimation;
 	}
 
 }

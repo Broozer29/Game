@@ -77,7 +77,6 @@ public class PlayerStats {
 	private ImageEnums exhaustImage;
 	private ImageEnums engineType;
 	private ImageEnums boostedEngineType;
-	private SpriteAnimation exhaustAnimation;
 
 	// Player "homing" coordinate box
 	private float homingRectangleResizeScale;
@@ -95,14 +94,14 @@ public class PlayerStats {
 
 	public void initDefaultSettings() {
 		// Health
-		setHitpoints(1000000);
-		setMaxHitPoints(1000000);
+		setHitpoints(100);
+		setMaxHitPoints(100);
 		setShieldHitpoints(100);
 		setMaxShieldHitPoints(100);
 		setShieldRegenDelay(300);
 
 		// Movement speed
-		setMovementSpeed(2);
+		setMovementSpeed(4);
 		addBonusMovementSpeed(0);
 		setBoostedMovementSpeed(4);
 		addBoostedBonusMovementSpeed(0);
@@ -221,14 +220,6 @@ public class PlayerStats {
 
 	public void setCurrentExhaust(ImageEnums currentExhaust) {
 		this.currentExhaust = currentExhaust;
-	}
-
-	public SpriteAnimation getExhaustAnimation() {
-		return exhaustAnimation;
-	}
-
-	public void setExhaustAnimation(SpriteAnimation exhaustAnimation) {
-		this.exhaustAnimation = exhaustAnimation;
 	}
 
 	public float getHomingRectangleResizeScale() {

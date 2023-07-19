@@ -7,9 +7,9 @@ import java.util.Random;
 
 import javax.sound.sampled.UnsupportedAudioFileException;
 
+import data.DataClass;
 import data.audio.AudioEnums;
 import game.managers.AudioManager;
-import game.managers.SpawningCoordinator;
 import game.managers.TimerManager;
 import game.movement.Direction;
 import game.movement.HomingPathFinder;
@@ -27,7 +27,11 @@ import game.objects.enemies.Energizer;
 import game.objects.enemies.Flamer;
 import game.objects.enemies.Seeker;
 import game.objects.enemies.Tazer;
+import game.spawner.EnemyFormation;
 import game.spawner.EnemySpawnTimer;
+import game.spawner.FormationCreator;
+import game.spawner.SpawnFormationEnums;
+import game.spawner.SpawningCoordinator;
 
 public class LevelSpawnerManager {
 
@@ -55,33 +59,81 @@ public class LevelSpawnerManager {
 
 	// Called when a level starts, to saturate enemy list
 	public void startLevel() {
-		currentLevel = new FuriWisdomOfRageLevel();
-		AudioManager audioManager = AudioManager.getInstance();
-		for (EnemySpawnTimer timer : currentLevel.getTimers()) {
-			timerManager.addEnemyTimerToList(timer);
-		}
+//		currentLevel = new FuriWisdomOfRageLevel();
+//		AudioManager audioManager = AudioManager.getInstance();
+//		for (EnemySpawnTimer timer : currentLevel.getTimers()) {
+//			timerManager.addEnemyTimerToList(timer);
+//		}
+//
+//		try {
+//			AudioEnums currentMusic = currentLevel.getSong();
+//			audioManager.playMusicAudio(currentMusic);
+//		} catch (UnsupportedAudioFileException | IOException e) {
+//			e.printStackTrace();
+//		}
 
-		try {
-			AudioEnums currentMusic = currentLevel.getSong();
-			audioManager.playMusicAudio(currentMusic);
-		} catch (UnsupportedAudioFileException | IOException e) {
-			e.printStackTrace();
-		}
+		FormationCreator formCreator = new FormationCreator();
+		EnemySpawnTimer timer = null;
+		EnemyFormation formation = null;
+		boolean loopable = false;
+		float scale = 1;
+		int additionalDelay = 0;
+		DataClass dataClass = DataClass.getInstance();
 		
 		
-//		FormationCreator formCreator = new FormationCreator();
-//		EnemySpawnTimer timer = null;
-//		EnemyFormation formation = null;
-//		boolean loopable = false;
-//		float scale = 1;
-//		int additionalDelay = 0;
-//		DataClass dataClass = DataClass.getInstance();
-//		
-//		timerManager.addEnemyTimerToList(timer);
+		timer = createRandomSpawnTimer(EnemyEnums.Seeker, 1, 0, loopable, Direction.LEFT, scale, additionalDelay);
+		formation = formCreator.createFormation(SpawnFormationEnums.Dot, 50, 50);
+		timer.setFormation(formation, dataClass.getWindowWidth() / 2, dataClass.getWindowHeight() / 2);
+		addSpawnTimer(timer);
 		
+		timer = createRandomSpawnTimer(EnemyEnums.Seeker, 1, 0, loopable, Direction.LEFT_DOWN, scale, additionalDelay);
+		formation = formCreator.createFormation(SpawnFormationEnums.Dot, 50, 50);
+		timer.setFormation(formation, dataClass.getWindowWidth() / 2, dataClass.getWindowHeight() / 2);
+		addSpawnTimer(timer);
+		
+		timer = createRandomSpawnTimer(EnemyEnums.Seeker, 1, 0, loopable, Direction.LEFT_UP, scale, additionalDelay);
+		formation = formCreator.createFormation(SpawnFormationEnums.Dot, 50, 50);
+		timer.setFormation(formation, dataClass.getWindowWidth() / 2, dataClass.getWindowHeight() / 2);
+		addSpawnTimer(timer);
+		
+		timer = createRandomSpawnTimer(EnemyEnums.Seeker, 1, 0, loopable, Direction.RIGHT, scale, additionalDelay);
+		formation = formCreator.createFormation(SpawnFormationEnums.Dot, 50, 50);
+		timer.setFormation(formation, dataClass.getWindowWidth() / 2, dataClass.getWindowHeight() / 2);
+		addSpawnTimer(timer);
+		
+		timer = createRandomSpawnTimer(EnemyEnums.Seeker, 1, 0, loopable, Direction.RIGHT_DOWN, scale, additionalDelay);
+		formation = formCreator.createFormation(SpawnFormationEnums.Dot, 50, 50);
+		timer.setFormation(formation, dataClass.getWindowWidth() / 2, dataClass.getWindowHeight() / 2);
+		addSpawnTimer(timer);
+		
+		timer = createRandomSpawnTimer(EnemyEnums.Seeker, 1, 0, loopable, Direction.RIGHT_UP, scale, additionalDelay);
+		formation = formCreator.createFormation(SpawnFormationEnums.Dot, 50, 50);
+		timer.setFormation(formation, dataClass.getWindowWidth() / 2, dataClass.getWindowHeight() / 2);
+		addSpawnTimer(timer);
+		
+//		for(int i = 0; i < 50; i +=5) {
+//			timer = createRandomSpawnTimer(EnemyEnums.Seeker, 1, i, loopable, Direction.LEFT_UP, scale, additionalDelay);
+//			formation = formCreator.createFormation(SpawnFormationEnums.Large_greaterthen, 50, 50);
+//			timer.setFormation(formation, dataClass.getWindowWidth() + 250, dataClass.getWindowHeight() / 2 - 100);
+//			addSpawnTimer(timer);
+//			
+//			timer = createRandomSpawnTimer(EnemyEnums.Seeker, 1, i, loopable, Direction.LEFT_DOWN, scale, additionalDelay);
+//			formation = formCreator.createFormation(SpawnFormationEnums.Large_greaterthen, 50, 50);
+//			timer.setFormation(formation, dataClass.getWindowWidth() + 250, dataClass.getWindowHeight() / 2 - 400);
+//			addSpawnTimer(timer);
+//			
+//			timer = createRandomSpawnTimer(EnemyEnums.Seeker, 1, i, loopable, Direction.RIGHT_UP, scale, additionalDelay);
+//			formation = formCreator.createFormation(SpawnFormationEnums.Large_smallerthen, 50, 50);
+//			timer.setFormation(formation, -550, dataClass.getWindowHeight() / 2 - 100);
+//			addSpawnTimer(timer);
+//			
+//			timer = createRandomSpawnTimer(EnemyEnums.Seeker, 1, i, loopable, Direction.RIGHT_DOWN, scale, additionalDelay);
+//			formation = formCreator.createFormation(SpawnFormationEnums.Large_smallerthen, 50, 50);
+//			timer.setFormation(formation, -550, dataClass.getWindowHeight() / 2 - 400);
+//			addSpawnTimer(timer);
+//		}
+
 	}
-
-
 
 	// Called by CustomTimers when they have to spawn an enemy
 	public void spawnEnemy(int xCoordinate, int yCoordinate, EnemyEnums enemyType, int amountOfAttempts,
@@ -200,9 +252,7 @@ public class LevelSpawnerManager {
 		return false;
 	}
 
-	
-	
-	//FOR TESTING PURPOSES only for methods below this!
+	// FOR TESTING PURPOSES only for methods below this!
 	private EnemySpawnTimer createRandomSpawnTimer(EnemyEnums enemyType, int spawnAttempts, int timeBeforeActivation,
 			boolean loopable, Direction direction, float enemyScale, int additionalDelay) {
 
@@ -213,6 +263,11 @@ public class LevelSpawnerManager {
 		EnemySpawnTimer timer = new EnemySpawnTimer(timeBeforeActivation, spawnAttempts, enemyType, loopable, direction,
 				enemyScale, additionalDelay);
 		return timer;
+	}
+
+	// FOR TESTING PURPOSES ONLY AS WELL
+	private void addSpawnTimer(EnemySpawnTimer timer) {
+		this.timerManager.addEnemyTimerToList(timer);
 	}
 
 	private EnemyEnums selectRandomEnemy() {

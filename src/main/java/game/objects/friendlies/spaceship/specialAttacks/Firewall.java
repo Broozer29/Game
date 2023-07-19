@@ -6,10 +6,10 @@ import game.movement.Direction;
 import game.movement.PathFinder;
 import game.movement.Point;
 import game.objects.friendlies.spaceship.PlayerAttackTypes;
-import game.objects.missiles.FirewallMissile;
 import game.objects.missiles.Missile;
 import game.objects.missiles.MissileCreator;
 import game.objects.missiles.MissileManager;
+import game.objects.missiles.missiletypes.FirewallMissile;
 import visual.objects.SpriteAnimation;
 
 public class Firewall extends SpecialAttack {

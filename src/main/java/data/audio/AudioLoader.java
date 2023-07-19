@@ -2,6 +2,7 @@ package data.audio;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
@@ -22,12 +23,15 @@ public class AudioLoader {
 	}
 
 	public Clip getSoundfile(AudioEnums audioFile) throws LineUnavailableException {
+//		System.out.println("Working Directory = " + System.getProperty("user.dir"));
 		try {
 			Clip clip = AudioSystem.getClip();
-			AudioInputStream audioInputStream = AudioSystem
-					.getAudioInputStream(new File(convertAudioToFileString(audioFile)).getAbsoluteFile());
+			URL url = getClass().getResource(convertAudioToFileString(audioFile));
+			System.out.println("URL for " + audioFile + ": " + url);
+			AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(url);
 			clip.open(audioInputStream);
 			clip.setFramePosition(0);
+			System.out.println(clip.getFrameLength());
 			return clip;
 
 		} catch (UnsupportedAudioFileException | IOException e) {
@@ -36,41 +40,42 @@ public class AudioLoader {
 		return null;
 	}
 
+
 	private String convertAudioToFileString(AudioEnums audioFile) {
 		switch (audioFile) {
 		case Player_Laserbeam:
-			return "src/resources/audio/laserbeam1.wav";
+			return "/audio/laserbeam1.wav";
 		case Destroyed_Explosion:
-			return "src/resources/audio/Destroyed Explosion.wav";
+			return "/audio/Destroyed Explosion.wav";
 		case Alien_Spaceship_Destroyed:
-			return "src/resources/audio/Alien Spaceship Destroyed.wav";
+			return "/audio/Alien Spaceship Destroyed.wav";
 		case Furi_Make_This_Right:
-			return "src/resources/audio/music/Furi - Make this right.wav";
+			return "/audio/music/Furi - Make this right.wav";
 		case Furi_Wisdowm_Of_Rage:
-			return "src/resources/audio/music/Furi - Wisdom of rage.wav";
+			return "/audio/music/Furi - Wisdom of rage.wav";
 		case Furi_My_Only_Chance:
-			return "src/resources/audio/music/Furi - My only chance.wav";
+			return "/audio/music/Furi - My only chance.wav";
 		case Ayasa_The_Reason_Why:
-			return "src/resources/audio/music/Ayasa - The reason why.wav";
+			return "/audio/music/Ayasa - The reason why.wav";
 		case Apple_Holder_Remix:
-			return "src/resources/audio/music/defaultmusic.wav";
+			return "/audio/music/defaultmusic.wav";
 		case Alien_Bomb_Impact:
-			return "src/resources/audio/Alien Bomb Impact.wav";
+			return "/audio/Alien Bomb Impact.wav";
 		case Large_Ship_Destroyed:
-			return "src/resources/audio/Large Ship Destroyed.wav";
+			return "/audio/Large Ship Destroyed.wav";
 		case Default_EMP:
-			return "src/resources/audio/Default EMP.wav";
+			return "/audio/Default EMP.wav";
 		case Alien_Bomb_Destroyed:
 			// DUPLICATE
-			return "src/resources/audio/Destroyed Explosion.wav";
+			return "/audio/Destroyed Explosion.wav";
 		case Power_Up_Acquired:
-			return "src/resources/audio/PowerUpAcquired.wav";
+			return "/audio/PowerUpAcquired.wav";
 		case Rocket_Launcher:
-			return "src/resources/audio/Rocket Launcher.wav";
+			return "/audio/Rocket Launcher.wav";
 		case Flamethrower: 
-			return "src/resources/audio/Flamethrower.wav";
+			return "/audio/Flamethrower.wav";
 		case Firewall:
-			return "src/resources/audio/Firewall.wav";
+			return "/audio/Firewall.wav";
 		}
 		return null;
 	}

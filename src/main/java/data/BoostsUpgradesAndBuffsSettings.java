@@ -1,6 +1,6 @@
 package data;
 
-public class TemporaryGameSettings {
+public class BoostsUpgradesAndBuffsSettings {
 	private boolean doubleShotActive;
 	private boolean tripleShotActive;
 
@@ -21,11 +21,11 @@ public class TemporaryGameSettings {
 	
 
 	private PlayerStats playerStats = PlayerStats.getInstance();
-	private static TemporaryGameSettings instance = new TemporaryGameSettings();
+	private static BoostsUpgradesAndBuffsSettings instance = new BoostsUpgradesAndBuffsSettings();
 
 	
 	//This class contains the values that powerups give to the playerStats
-	private TemporaryGameSettings() {
+	private BoostsUpgradesAndBuffsSettings() {
 		initDefaultSettings();
 	}
 
@@ -48,7 +48,7 @@ public class TemporaryGameSettings {
 		setDefaultSpecialAttackDamageBonus(2);
 	}
 
-	public static TemporaryGameSettings getInstance() {
+	public static BoostsUpgradesAndBuffsSettings getInstance() {
 		return instance;
 	}
 

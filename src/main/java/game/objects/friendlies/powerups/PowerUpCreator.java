@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Random;
 
 import data.DataClass;
-import data.TemporaryGameSettings;
+import data.BoostsUpgradesAndBuffsSettings;
 import data.image.ImageEnums;
 import game.movement.Direction;
 
@@ -55,7 +55,7 @@ public class PowerUpCreator {
 	}
 
 	private int getRandomTimeForSpawner() {
-		TemporaryGameSettings tempSettings = TemporaryGameSettings.getInstance();
+		BoostsUpgradesAndBuffsSettings tempSettings = BoostsUpgradesAndBuffsSettings.getInstance();
 		return random.nextInt((tempSettings.getMaxTimeForPowerUpSpawn() - tempSettings.getMinTimeForPowerUpSpawn()) + 1)
 				+ tempSettings.getMinTimeForPowerUpSpawn();
 	}
@@ -89,7 +89,7 @@ public class PowerUpCreator {
 		case INCREASED_NORMAL_DAMAGE:
 		case INCREASED_SPECIAL_ATTACK_SPEED:
 		case INCREASED_SPECIAL_DAMAGE:
-			return TemporaryGameSettings.getInstance().getTemporaryPowerUpDuration();
+			return BoostsUpgradesAndBuffsSettings.getInstance().getTemporaryPowerUpDuration();
 		case TRIPLE_SHOT:
 			return 0;
 		default:

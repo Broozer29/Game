@@ -282,5 +282,9 @@ public class Missile extends Sprite {
 	public void setTarget(Sprite target) {
 		this.target = target;
 	}
+	
+	protected void rotateMissileAnimation(Direction direction) {
+		this.animation.rotateAnimetion(direction);
+	}
 
 }

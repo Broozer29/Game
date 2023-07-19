@@ -29,7 +29,7 @@ public class ImageDatabase {
 	private BufferedImage bulldozerImage;
 	private BufferedImage flamerImage;
 	private BufferedImage bombaImage;
-	
+
 	private List<BufferedImage> alienBombFrames = new ArrayList<BufferedImage>();
 
 	// Ship numbers to names:
@@ -129,9 +129,8 @@ public class ImageDatabase {
 	private BufferedImage starcraft2_Heal;
 	private BufferedImage starcraft2_Electric_Field;
 	private BufferedImage starcraft2_Firebat_Weapon;
-	
-	
-	//Font Letters
+
+	// Font Letters
 	private BufferedImage letter_A;
 	private BufferedImage letter_B;
 	private BufferedImage letter_LowercaseA;
@@ -195,10 +194,7 @@ public class ImageDatabase {
 	private BufferedImage letter_Greater_Than;
 	private BufferedImage letter_Smaller_Than;
 	private BufferedImage letter_Dot;
-	
-	
-	
-	
+
 	// Lists
 	private List<BufferedImage> impactExplosionOneFrames = new ArrayList<BufferedImage>();
 	private List<BufferedImage> destroyedExplosionUpFrames = new ArrayList<BufferedImage>();
@@ -256,7 +252,6 @@ public class ImageDatabase {
 	private List<BufferedImage> bulldozerProjectileExplosion = new ArrayList<BufferedImage>();
 	private List<BufferedImage> flamerProjectileExplosion = new ArrayList<BufferedImage>();
 	private List<BufferedImage> bombaProjectileExplosion = new ArrayList<BufferedImage>();
-	
 
 	// Background images
 	private BufferedImage moon;
@@ -371,13 +366,14 @@ public class ImageDatabase {
 		this.redFilling = imgLoader.getImage(ImageEnums.Red_Filling);
 		this.goldFilling = imgLoader.getImage(ImageEnums.Gold_Filling);
 	}
-	
+
 	private void initIcons() {
 		this.tripleShotIcon = imgLoader.getImage(ImageEnums.TripleShotIcon);
 		this.doubleShotIcon = imgLoader.getImage(ImageEnums.DoubleShotIcon);
 		this.starcraft2_Point_Defense_Drone = imgLoader.getImage(ImageEnums.Starcraft2_Point_Defense_Drone);
 		this.starcraft2_Protoss_Cloak = imgLoader.getImage(ImageEnums.Starcraft2_Protoss_Cloak);
-		this.starcraft2_Protoss_Shield_Disintegrate = imgLoader.getImage(ImageEnums.Starcraft2_Protoss_Shield_Disintegrate);
+		this.starcraft2_Protoss_Shield_Disintegrate = imgLoader
+				.getImage(ImageEnums.Starcraft2_Protoss_Shield_Disintegrate);
 		this.starcraft2_Protoss_Shields_1 = imgLoader.getImage(ImageEnums.Starcraft2_Protoss_Shields_1);
 		this.starcraft2_Protoss_Shields_2 = imgLoader.getImage(ImageEnums.Starcraft2_Protoss_Shields_2);
 		this.starcraft2_Protoss_Shields_3 = imgLoader.getImage(ImageEnums.Starcraft2_Protoss_Shields_3);
@@ -440,7 +436,7 @@ public class ImageDatabase {
 		this.starcraft2_Electric_Field = imgLoader.getImage(ImageEnums.Starcraft2_Electric_Field);
 		this.starcraft2_Firebat_Weapon = imgLoader.getImage(ImageEnums.Starcraft2_Firebat_Weapon);
 	}
-	
+
 	private void initLetters() {
 		this.letter_A = imgLoader.getImage(ImageEnums.Letter_A);
 		this.letter_B = imgLoader.getImage(ImageEnums.Letter_B);
@@ -504,7 +500,7 @@ public class ImageDatabase {
 		this.letter_Greater_Than = imgLoader.getImage(ImageEnums.Letter_greater_than);
 		this.letter_Smaller_Than = imgLoader.getImage(ImageEnums.Letter_smaller_than);
 		this.letter_Dot = imgLoader.getImage(ImageEnums.Letter_Dot);
-		
+
 		this.longCard = imgLoader.getImage(ImageEnums.Long_Card);
 		this.wideCard = imgLoader.getImage(ImageEnums.Wide_Card);
 		this.squareCard = imgLoader.getImage(ImageEnums.Square_Card);
@@ -802,121 +798,121 @@ public class ImageDatabase {
 		case Letter_a:
 			return letter_LowercaseA;
 		case Letter_B:
-		    return letter_B;
+			return letter_B;
 		case Letter_C:
-		    return letter_C;
+			return letter_C;
 		case Letter_D:
-		    return letter_D;
+			return letter_D;
 		case Letter_E:
-		    return letter_E;
+			return letter_E;
 		case Letter_F:
-		    return letter_F;
+			return letter_F;
 		case Letter_G:
-		    return letter_G;
+			return letter_G;
 		case Letter_H:
-		    return letter_H;
+			return letter_H;
 		case Letter_I:
-		    return letter_I;
+			return letter_I;
 		case Letter_J:
-		    return letter_J;
+			return letter_J;
 		case Letter_K:
-		    return letter_K;
+			return letter_K;
 		case Letter_L:
-		    return letter_L;
+			return letter_L;
 		case Letter_M:
-		    return letter_M;
+			return letter_M;
 		case Letter_N:
-		    return letter_N;
+			return letter_N;
 		case Letter_O:
-		    return letter_O;
+			return letter_O;
 		case Letter_P:
-		    return letter_P;
+			return letter_P;
 		case Letter_Q:
-		    return letter_Q;
+			return letter_Q;
 		case Letter_R:
-		    return letter_R;
+			return letter_R;
 		case Letter_S:
-		    return letter_S;
+			return letter_S;
 		case Letter_T:
-		    return letter_T;
+			return letter_T;
 		case Letter_U:
-		    return letter_U;
+			return letter_U;
 		case Letter_V:
-		    return letter_V;
+			return letter_V;
 		case Letter_W:
-		    return letter_W;
+			return letter_W;
 		case Letter_X:
-		    return letter_X;
+			return letter_X;
 		case Letter_Y:
-		    return letter_Y;
+			return letter_Y;
 		case Letter_Z:
-		    return letter_Z;
+			return letter_Z;
 		case Letter_b:
-		    return letter_LowercaseB;
+			return letter_LowercaseB;
 		case Letter_c:
-		    return letter_LowercaseC;
+			return letter_LowercaseC;
 		case Letter_z:
-		    return letter_LowercaseZ;
+			return letter_LowercaseZ;
 		case Letter_Open_Bracket:
-		    return letter_Open_Bracket;
+			return letter_Open_Bracket;
 		case Letter_Closing_Bracket:
-		    return letter_Closing_Bracket;
+			return letter_Closing_Bracket;
 		case Letter_double_points:
-		    return letter_Double_Points;
+			return letter_Double_Points;
 		case Letter_equals:
-		    return letter_Equals;
+			return letter_Equals;
 		case Letter_point_comma:
-		    return letter_Point_Comma;
+			return letter_Point_Comma;
 		case Letter_greater_than:
-		    return letter_Greater_Than;
+			return letter_Greater_Than;
 		case Letter_smaller_than:
-		    return letter_Smaller_Than;
+			return letter_Smaller_Than;
 		case Letter_Dot:
-		    return letter_Dot;
+			return letter_Dot;
 		case Letter_d:
-		    return letter_LowercaseD;
+			return letter_LowercaseD;
 		case Letter_e:
-		    return letter_LowercaseE;
+			return letter_LowercaseE;
 		case Letter_f:
-		    return letter_LowercaseF;
+			return letter_LowercaseF;
 		case Letter_g:
-		    return letter_LowercaseG;
+			return letter_LowercaseG;
 		case Letter_h:
-		    return letter_LowercaseH;
+			return letter_LowercaseH;
 		case Letter_i:
-		    return letter_LowercaseI;
+			return letter_LowercaseI;
 		case Letter_j:
-		    return letter_LowercaseJ;
+			return letter_LowercaseJ;
 		case Letter_k:
-		    return letter_LowercaseK;
+			return letter_LowercaseK;
 		case Letter_l:
-		    return letter_LowercaseL;
+			return letter_LowercaseL;
 		case Letter_m:
-		    return letter_LowercaseM;
+			return letter_LowercaseM;
 		case Letter_n:
-		    return letter_LowercaseN;
+			return letter_LowercaseN;
 		case Letter_o:
-		    return letter_LowercaseO;
+			return letter_LowercaseO;
 		case Letter_p:
-		    return letter_LowercaseP;
+			return letter_LowercaseP;
 		case Letter_q:
-		    return letter_LowercaseQ;
+			return letter_LowercaseQ;
 		case Letter_r:
-		    return letter_LowercaseR;
+			return letter_LowercaseR;
 		case Letter_s:
-		    return letter_LowercaseS;
+			return letter_LowercaseS;
 		case Letter_t:
-		    return letter_LowercaseT;
+			return letter_LowercaseT;
 		case Letter_u:
-		    return letter_LowercaseU;
+			return letter_LowercaseU;
 		case Letter_v:
-		    return letter_LowercaseV;
+			return letter_LowercaseV;
 		case Letter_w:
-		    return letter_LowercaseW;
+			return letter_LowercaseW;
 		case Letter_x:
-		    return letter_LowercaseX;
+			return letter_LowercaseX;
 		case Letter_y:
-		    return letter_LowercaseY;
+			return letter_LowercaseY;
 		case Title_Image:
 			return titleImage;
 		case Invisible:
@@ -1048,249 +1044,249 @@ public class ImageDatabase {
 		return null;
 	}
 
+
 	public void initAnimations() throws FileNotFoundException, IOException {
 		ImageReader reader = ImageIO.getImageReadersBySuffix("GIF").next();
 
-		reader.setInput(new FileImageInputStream(new File("src/resources/images/gif/explosion.gif")));
+		reader.setInput(ImageIO.createImageInputStream(getClass().getResourceAsStream("/images/gif/explosion.gif")));
 		impactExplosionOneFrames = gifToImageIcons(reader);
 
-		reader.setInput(new FileImageInputStream(new File("src/resources/images/gif/enginesmoke.gif")));
+		reader.setInput(ImageIO.createImageInputStream(getClass().getResourceAsStream("/images/gif/enginesmoke.gif")));
 		playerEngineFrames = gifToImageIcons(reader);
 
-		reader.setInput(new FileImageInputStream(new File("src/resources/images/gif/Destroyed Explosion.gif")));
+		reader.setInput(
+				ImageIO.createImageInputStream(getClass().getResourceAsStream("/images/gif/Destroyed Explosion.gif")));
 		destroyedExplosionUpFrames = gifToImageIcons(reader);
 
-		reader.setInput(new FileImageInputStream(new File("src/resources/images/gif/Destroyed Explosion Right.gif")));
+		reader.setInput(ImageIO
+				.createImageInputStream(getClass().getResourceAsStream("/images/gif/Destroyed Explosion Right.gif")));
 		destroyedExplosionRightFrames = gifToImageIcons(reader);
 
-		reader.setInput(new FileImageInputStream(new File("src/resources/images/gif/Destroyed Explosion Left.gif")));
+		reader.setInput(ImageIO
+				.createImageInputStream(getClass().getResourceAsStream("/images/gif/Destroyed Explosion Left.gif")));
 		destroyedExplosionDownFrames = gifToImageIcons(reader);
 
-		reader.setInput(new FileImageInputStream(new File("src/resources/images/gif/Destroyed Explosion Reverse.gif")));
+		reader.setInput(ImageIO
+				.createImageInputStream(getClass().getResourceAsStream("/images/gif/Destroyed Explosion Reverse.gif")));
 		destroyedExplosionLeftFrames = gifToImageIcons(reader);
 
-		reader.setInput(new FileImageInputStream(new File("src/resources/images/gif/Alien Bomb Explosion.gif")));
+		reader.setInput(
+				ImageIO.createImageInputStream(getClass().getResourceAsStream("/images/gif/Alien Bomb Explosion.gif")));
 		alienBombExplosionFrames = gifToImageIcons(reader);
 
 		// Enemy projectiles
-		reader.setInput(
-				new FileImageInputStream(new File("src/resources/images/Ships/Ship 1/Ship 1 - Projectile.gif")));
+		reader.setInput(ImageIO.createImageInputStream(
+				getClass().getResourceAsStream("/images/Ships/Ship 1/Ship 1 - Projectile.gif")));
 		seekerProjectileFrames = gifToImageIcons(reader);
 
-		reader.setInput(
-				new FileImageInputStream(new File("src/resources/images/Ships/Ship 2/Ship 2 - Projectile.gif")));
+		reader.setInput(ImageIO.createImageInputStream(
+				getClass().getResourceAsStream("/images/Ships/Ship 2/Ship 2 - Projectile.gif")));
 		tazerProjectileFrames = gifToImageIcons(reader);
 
-		reader.setInput(
-				new FileImageInputStream(new File("src/resources/images/Ships/Ship 3/Ship 3 - Projectile.gif")));
+		reader.setInput(ImageIO.createImageInputStream(
+				getClass().getResourceAsStream("/images/Ships/Ship 3/Ship 3 - Projectile.gif")));
 		energizerProjectileFrames = gifToImageIcons(reader);
 
-		reader.setInput(
-				new FileImageInputStream(new File("src/resources/images/Ships/Ship 4/Ship 4 - Projectile.gif")));
+		reader.setInput(ImageIO.createImageInputStream(
+				getClass().getResourceAsStream("/images/Ships/Ship 4/Ship 4 - Projectile.gif")));
 		bulldozerProjectileFrames = gifToImageIcons(reader);
 
-		reader.setInput(
-				new FileImageInputStream(new File("src/resources/images/Ships/Ship 5/Ship 5 - Projectile.gif")));
+		reader.setInput(ImageIO.createImageInputStream(
+				getClass().getResourceAsStream("/images/Ships/Ship 5/Ship 5 - Projectile.gif")));
 		flamerProjectileFrames = gifToImageIcons(reader);
 
-		reader.setInput(
-				new FileImageInputStream(new File("src/resources/images/Ships/Ship 6/Ship 6 - Projectile.gif")));
+		reader.setInput(ImageIO.createImageInputStream(
+				getClass().getResourceAsStream("/images/Ships/Ship 6/Ship 6 - Projectile.gif")));
 		bombaProjectileFrames = gifToImageIcons(reader);
 
 		// Enemy normal exhausts
-		reader.setInput(
-				new FileImageInputStream(new File("src/resources/images/Ships/Ship 1/Ship 1 - Normal Exhaust.gif")));
+		reader.setInput(ImageIO.createImageInputStream(
+				getClass().getResourceAsStream("/images/Ships/Ship 1/Ship 1 - Normal Exhaust.gif")));
 		seekerNormalExhaustFrames = gifToImageIcons(reader);
 
-		reader.setInput(
-				new FileImageInputStream(new File("src/resources/images/Ships/Ship 2/Ship 2 - Normal Exhaust.gif")));
+		reader.setInput(ImageIO.createImageInputStream(
+				getClass().getResourceAsStream("/images/Ships/Ship 2/Ship 2 - Normal Exhaust.gif")));
 		tazerNormalExhaustFrames = gifToImageIcons(reader);
 
-		reader.setInput(
-				new FileImageInputStream(new File("src/resources/images/Ships/Ship 3/Ship 3 - Normal Exhaust.gif")));
+		reader.setInput(ImageIO.createImageInputStream(
+				getClass().getResourceAsStream("/images/Ships/Ship 3/Ship 3 - Normal Exhaust.gif")));
 		energizerNormalExhaustFrames = gifToImageIcons(reader);
 
-		reader.setInput(
-				new FileImageInputStream(new File("src/resources/images/Ships/Ship 4/Ship 4 - Normal Exhaust.gif")));
+		reader.setInput(ImageIO.createImageInputStream(
+				getClass().getResourceAsStream("/images/Ships/Ship 4/Ship 4 - Normal Exhaust.gif")));
 		bulldozerNormalExhaustFrames = gifToImageIcons(reader);
 
-		reader.setInput(
-				new FileImageInputStream(new File("src/resources/images/Ships/Ship 5/Ship 5 - Normal Exhaust.gif")));
+		reader.setInput(ImageIO.createImageInputStream(
+				getClass().getResourceAsStream("/images/Ships/Ship 5/Ship 5 - Normal Exhaust.gif")));
 		flamerNormalExhaustFrames = gifToImageIcons(reader);
 
-		reader.setInput(
-				new FileImageInputStream(new File("src/resources/images/Ships/Ship 6/Ship 6 - Normal Exhaust.gif")));
+		reader.setInput(ImageIO.createImageInputStream(
+				getClass().getResourceAsStream("/images/Ships/Ship 6/Ship 6 - Normal Exhaust.gif")));
 		bombaNormalExhaustFrames = gifToImageIcons(reader);
 
 		// Enemy large exhausts
-		reader.setInput(
-				new FileImageInputStream(new File("src/resources/images/Ships/Ship 1/Ship 1 - Large Exhaust.gif")));
+		reader.setInput(ImageIO.createImageInputStream(
+				getClass().getResourceAsStream("/images/Ships/Ship 1/Ship 1 - Large Exhaust.gif")));
 		seekerLargeExhaustFrames = gifToImageIcons(reader);
 
-		reader.setInput(
-				new FileImageInputStream(new File("src/resources/images/Ships/Ship 2/Ship 2 - Large Exhaust.gif")));
+		reader.setInput(ImageIO.createImageInputStream(
+				getClass().getResourceAsStream("/images/Ships/Ship 2/Ship 2 - Large Exhaust.gif")));
 		tazerLargeExhaustFrames = gifToImageIcons(reader);
 
-		reader.setInput(
-				new FileImageInputStream(new File("src/resources/images/Ships/Ship 3/Ship 3 - Large Exhaust.gif")));
+		reader.setInput(ImageIO.createImageInputStream(
+				getClass().getResourceAsStream("/images/Ships/Ship 3/Ship 3 - Large Exhaust.gif")));
 		energizerLargeExhaustFrames = gifToImageIcons(reader);
 
-		reader.setInput(
-				new FileImageInputStream(new File("src/resources/images/Ships/Ship 4/Ship 4 - Large Exhaust.gif")));
+		reader.setInput(ImageIO.createImageInputStream(
+				getClass().getResourceAsStream("/images/Ships/Ship 4/Ship 4 - Large Exhaust.gif")));
 		bulldozerLargeExhaustFrames = gifToImageIcons(reader);
 
-		reader.setInput(
-				new FileImageInputStream(new File("src/resources/images/Ships/Ship 5/Ship 5 - Large Exhaust.gif")));
+		reader.setInput(ImageIO.createImageInputStream(
+				getClass().getResourceAsStream("/images/Ships/Ship 5/Ship 5 - Large Exhaust.gif")));
 		flamerLargeExhaustFrames = gifToImageIcons(reader);
 
-		reader.setInput(
-				new FileImageInputStream(new File("src/resources/images/Ships/Ship 6/Ship 6 - Large Exhaust.gif")));
+		reader.setInput(ImageIO.createImageInputStream(
+				getClass().getResourceAsStream("/images/Ships/Ship 6/Ship 6 - Large Exhaust.gif")));
 		bombaLargeExhaustFrames = gifToImageIcons(reader);
 
 		// Enemy projectile explosions
-		reader.setInput(new FileImageInputStream(
-				new File("src/resources/images/Ships/Ship 1/Ship 1 - Projectile Explosion.gif")));
+		reader.setInput(ImageIO.createImageInputStream(
+				getClass().getResourceAsStream("/images/Ships/Ship 1/Ship 1 - Projectile Explosion.gif")));
 		seekerProjectileExplosion = gifToImageIcons(reader);
 
-		reader.setInput(new FileImageInputStream(
-				new File("src/resources/images/Ships/Ship 2/Ship 2 - Projectile Explosion.gif")));
+		reader.setInput(ImageIO.createImageInputStream(
+				getClass().getResourceAsStream("/images/Ships/Ship 2/Ship 2 - Projectile Explosion.gif")));
 		tazerProjectileExplosion = gifToImageIcons(reader);
 
-		reader.setInput(new FileImageInputStream(
-				new File("src/resources/images/Ships/Ship 3/Ship 3 - Projectile Explosion.gif")));
+		reader.setInput(ImageIO.createImageInputStream(
+				getClass().getResourceAsStream("/images/Ships/Ship 3/Ship 3 - Projectile Explosion.gif")));
 		energizerProjectileExplosion = gifToImageIcons(reader);
 
-		reader.setInput(new FileImageInputStream(
-				new File("src/resources/images/Ships/Ship 4/Ship 4 - Projectile Explosion.gif")));
+		reader.setInput(ImageIO.createImageInputStream(
+				getClass().getResourceAsStream("/images/Ships/Ship 4/Ship 4 - Projectile Explosion.gif")));
 		bulldozerProjectileExplosion = gifToImageIcons(reader);
 
-		reader.setInput(new FileImageInputStream(
-				new File("src/resources/images/Ships/Ship 5/Ship 5 - Projectile Explosion.gif")));
+		reader.setInput(ImageIO.createImageInputStream(
+				getClass().getResourceAsStream("/images/Ships/Ship 5/Ship 5 - Projectile Explosion.gif")));
 		flamerProjectileExplosion = gifToImageIcons(reader);
 
-		reader.setInput(new FileImageInputStream(
-				new File("src/resources/images/Ships/Ship 6/Ship 6 - Projectile Explosion.gif")));
+		reader.setInput(ImageIO.createImageInputStream(
+				getClass().getResourceAsStream("/images/Ships/Ship 6/Ship 6 - Projectile Explosion.gif")));
 		bombaProjectileExplosion = gifToImageIcons(reader);
 
 		// Explosions
-		reader.setInput(new FileImageInputStream(new File("src/resources/images/gif/Implosion.gif")));
+		reader.setInput(ImageIO.createImageInputStream(getClass().getResourceAsStream("/images/gif/Implosion.gif")));
 		implosionFrames = gifToImageIcons(reader);
 
-		reader.setInput(new FileImageInputStream(
-				new File("src/resources/images/Ships/Ship 1/Ship 1 - Destroyed Explosion.gif")));
+		reader.setInput(ImageIO.createImageInputStream(
+				getClass().getResourceAsStream("/images/Ships/Ship 1/Ship 1 - Destroyed Explosion.gif")));
 		seekerDestroyedExplosionFrames = gifToImageIcons(reader);
 
-		reader.setInput(new FileImageInputStream(
-				new File("src/resources/images/Ships/Ship 2/Ship 2 - Destroyed Explosion.gif")));
+		reader.setInput(ImageIO.createImageInputStream(
+				getClass().getResourceAsStream("/images/Ships/Ship 2/Ship 2 - Destroyed Explosion.gif")));
 		tazerDestroyedExplosionFrames = gifToImageIcons(reader);
 
-		reader.setInput(new FileImageInputStream(
-				new File("src/resources/images/Ships/Ship 3/Ship 3 - Destroyed Explosion.gif")));
+		reader.setInput(ImageIO.createImageInputStream(
+				getClass().getResourceAsStream("/images/Ships/Ship 3/Ship 3 - Destroyed Explosion.gif")));
 		energizerDestroyedExplosionFrames = gifToImageIcons(reader);
 
-		reader.setInput(new FileImageInputStream(
-				new File("src/resources/images/Ships/Ship 4/Ship 4 - Destroyed Explosion.gif")));
+		reader.setInput(ImageIO.createImageInputStream(
+				getClass().getResourceAsStream("/images/Ships/Ship 4/Ship 4 - Destroyed Explosion.gif")));
 		bulldozerDestroyedExplosionFrames = gifToImageIcons(reader);
 
-		reader.setInput(new FileImageInputStream(
-				new File("src/resources/images/Ships/Ship 5/Ship 5 - Destroyed Explosion.gif")));
+		reader.setInput(ImageIO.createImageInputStream(
+				getClass().getResourceAsStream("/images/Ships/Ship 5/Ship 5 - Destroyed Explosion.gif")));
 		flamerDestroyedExplosionFrames = gifToImageIcons(reader);
 
-		reader.setInput(new FileImageInputStream(
-				new File("src/resources/images/Ships/Ship 6/Ship 6 - Destroyed Explosion.gif")));
+		reader.setInput(ImageIO.createImageInputStream(
+				getClass().getResourceAsStream("/images/Ships/Ship 5/Ship 5 - Destroyed Explosion.gif")));
 		bombaDestroyedExplosionFrames = gifToImageIcons(reader);
-
 	}
 
 	private void initPNGtoGIFAnimation() {
-		//Start all of them with 1 because the filenames start with numbering with 1
 		for (int i = 1; i < 6; i++) {
-			String sourceString = String.format("src/resources/images/gif/PNGtoGIF/Default Player Engine/%d.png", i);
-			BufferedImage image = imgLoader.getSpritesheetImage(sourceString);
+			String sourceString = String.format("/images/gif/PNGtoGIF/Default Player Engine/%d.png", i);
+			BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
 			defaultPlayerEngine.add(image);
 		}
 
 		for (int i = 1; i < 6; i++) {
-			String sourceString = String
-					.format("src/resources/images/gif/PNGtoGIF/Default Player Engine Boosted/%d.png", i);
-			BufferedImage image = imgLoader.getSpritesheetImage(sourceString);
+			String sourceString = String.format("/images/gif/PNGtoGIF/Default Player Engine Boosted/%d.png", i);
+			BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
 			defaultPlayerEngineBoostedFrames.add(image);
 		}
 
 		for (int i = 1; i < 10; i++) {
-			String sourceString = String.format("src/resources/images/gif/PNGtoGIF/Player Shield Damage/%d.png", i);
-			BufferedImage image = imgLoader.getSpritesheetImage(sourceString);
+			String sourceString = String.format("/images/gif/PNGtoGIF/Player Shield Damage/%d.png", i);
+			BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
 			defaultPlayerShieldDamage.add(image);
 		}
 
 		for (int i = 1; i < 10; i++) {
-			String sourceString = String.format("src/resources/images/gif/PNGtoGIF/Player EMP/%d.png", i);
-			BufferedImage image = imgLoader.getSpritesheetImage(sourceString);
+			String sourceString = String.format("/images/gif/PNGtoGIF/Player EMP/%d.png", i);
+			BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
 			playerEMPFrames.add(image);
 		}
-		
+
 		for (int i = 1; i < 16; i++) {
-			String sourceString = String.format("src/resources/images/Ships/Guardian Bot/GuardianBot%d.png", i);
-			BufferedImage image = imgLoader.getSpritesheetImage(sourceString);
+			String sourceString = String.format("/images/Ships/Guardian Bot/GuardianBot%d.png", i);
+			BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
 			guardianBotFrames.add(image);
 		}
 
 		for (int i = 1; i < 46; i++) {
-			String sourceString = String.format("src/resources/images/gif/PNGtoGIF/Player Fireswirl/tile0%d.png", i);
-			BufferedImage image = imgLoader.getSpritesheetImage(sourceString);
+			String sourceString = String.format("/images/gif/PNGtoGIF/Player Fireswirl/tile0%d.png", i);
+			BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
 			playerFireSwirlFrames.add(image);
 		}
-		
+
 		for (int i = 1; i < 5; i++) {
-			String sourceString = String.format("src/resources/images/gif/PNGtoGIF/Firewall/flame%d.png", i);
-			BufferedImage image = imgLoader.getSpritesheetImage(sourceString);
+			String sourceString = String.format("/images/gif/PNGtoGIF/Firewall/flame%d.png", i);
+			BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
 			firewallParticleFrames.add(image);
 		}
-		
-		
+
 		for (int i = 1; i < 4; i++) {
 			BufferedImage image = imgLoader.getImage(ImageEnums.Invisible);
 			invisibleAnimation.add(image);
 		}
-		
+
 		for (int i = 1; i < 21; i++) {
-			String sourceString = String.format("src/resources/images/gif/PNGtoGIF/Highlight/highlight%d.png", i);
-			BufferedImage image = imgLoader.getSpritesheetImage(sourceString);
+			String sourceString = String.format("/images/gif/PNGtoGIF/Highlight/highlight%d.png", i);
+			BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
 			HighlightImages.add(image);
 		}
-		
-		
+
 		for (int i = 0; i < 9; i++) {
-			String sourceString = String.format("src/resources/images/gif/PNGtoGIF/Missile1/Missile_1_Explosion_00%d.png", i);
-			BufferedImage image = imgLoader.getSpritesheetImage(sourceString);
+			String sourceString = String.format("/images/gif/PNGtoGIF/Missile1/Missile_1_Explosion_00%d.png", i);
+			BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
 			Rocket1ExplosionFrames.add(image);
 		}
-		
-		
+
 		for (int i = 0; i < 10; i++) {
-			String sourceString = String.format("src/resources/images/gif/PNGtoGIF/Missile1/Missile_1_Flying_00%d.png", i);
-			BufferedImage image = imgLoader.getSpritesheetImage(sourceString);
+			String sourceString = String.format("/images/gif/PNGtoGIF/Missile1/Missile_1_Flying_00%d.png", i);
+			BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
 			Rocket1ProjectileFrames.add(image);
 		}
-		
+
 		for (int i = 1; i < 31; i++) {
-			String sourceString = String.format("src/resources/images/gif/PNGtoGIF/FireSpout/Firespout%d.png", i);
-			BufferedImage image = imgLoader.getSpritesheetImage(sourceString);
+			String sourceString = String.format("/images/gif/PNGtoGIF/FireSpout/Firespout%d.png", i);
+			BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
 			fireSpoutFrames.add(image);
 		}
-		
+
 		for (int i = 0; i < 10; i++) {
-			String sourceString = String.format("src/resources/images/gif/PNGtoGIF/Alien Bomb/Bomb_3_Idle_00%d.png", i);
-			BufferedImage image = imgLoader.getSpritesheetImage(sourceString);
+			String sourceString = String.format("/images/gif/PNGtoGIF/Alien Bomb/Bomb_3_Idle_00%d.png", i);
+			BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
 			alienBombFrames.add(image);
 		}
-
 	}
-	
+
+
 	private void initSpriteSheets() {
 		BufferedImage empImage = imgLoader.getImage(ImageEnums.Player_EMP_Plus);
 		playerEMPPlusFrames = cutSpriteSheetToImages(empImage, 8, 8);
-				
+
 	}
 
 	private List<BufferedImage> gifToImageIcons(ImageReader reader) throws IOException {
@@ -1312,15 +1308,14 @@ public class ImageDatabase {
 		for (int i = 0; i < rows; i++) {
 			for (int j = 0; j < cols; j++) {
 				// get the subimage from the sprite sheet
-				BufferedImage sprite = image.getSubimage(j * spriteWidth, i * spriteHeight, spriteWidth,
-						spriteHeight);
+				BufferedImage sprite = image.getSubimage(j * spriteWidth, i * spriteHeight, spriteWidth, spriteHeight);
 				sprites.add(sprite);
 			}
 		}
-		
+
 		return sprites;
 	}
-	
+
 //	private BufferedImage toBufferedImage(Image image) {
 //		if (image instanceof BufferedImage) {
 //			return (BufferedImage) image;

@@ -1,20 +1,25 @@
 package game.managers;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.sound.sampled.UnsupportedAudioFileException;
+
+import data.GameStateInfo;
+import data.GameStatusEnums;
 import data.PlayerStats;
+import data.audio.AudioEnums;
 import game.objects.friendlies.spaceship.SpaceShip;
 
 public class PlayerManager {
 
 	private static PlayerManager instance = new PlayerManager();
 	private AnimationManager animationManager = AnimationManager.getInstance();
+	private GameStateInfo gameState = GameStateInfo.getInstance();
 	private PlayerStats playerStats = PlayerStats.getInstance();
 	private SpaceShip spaceship;
 	private List<Integer> playerCoordinatesList = new ArrayList<Integer>();
-
-	private boolean playerAlive;
 
 	private PlayerManager() {
 		initSpaceShip();
@@ -40,13 +45,9 @@ public class PlayerManager {
 		return this.spaceship;
 	}
 
-	public boolean getPlayerStatus() {
-		return this.playerAlive;
-	}
-
 	private void checkPlayerHealth() {
-		if (playerStats.getHitpoints() <= 0) {
-			this.playerAlive = false;
+		if (playerStats.getHitpoints() <= 0 && gameState.getGameState() == GameStatusEnums.Playing) {
+			gameState.setGameState(GameStatusEnums.Dying);
 			spaceship.setVisible(false);
 		}
 	}
@@ -60,15 +61,35 @@ public class PlayerManager {
 
 	private void initSpaceShip() {
 		this.spaceship = new SpaceShip();
-		animationManager.addExhaustAnimation(playerStats.getExhaustAnimation());
-		this.playerAlive = true;
+		gameState.setGameState(GameStatusEnums.Playing);
+	}
+
+	public void startDyingScene() {
+		if (playerStats.getHitpoints() <= 0 && gameState.getGameState() == GameStatusEnums.Dying) {
+			if (!animationManager.getUpperAnimations().contains(spaceship.getDeathAnimation())) {
+				animationManager.getUpperAnimations().add(spaceship.getDeathAnimation());
+				animationManager.getLowerAnimations().remove(spaceship.getExhaustAnimation());
+
+				if (AudioManager.getInstance().getBackgroundMusic() != null) {
+					AudioManager.getInstance().getBackgroundMusic().stopClip();
+				}
+				
+				try {
+					AudioManager.getInstance().playMusicAudio(AudioEnums.Destroyed_Explosion);
+				} catch (UnsupportedAudioFileException | IOException e) {
+					e.printStackTrace();
+				}
+			}
+
+			if (spaceship.getDeathAnimation().getFrame() >= spaceship.getDeathAnimation().getTotalFrames()) {
+				gameState.setGameState(GameStatusEnums.Dead);
+			}
+		}
 	}
 
 	public List<Integer> getNearestFriendlyHomingCoordinates() {
-		
-		playerCoordinatesList.set(0,spaceship.getCenterXCoordinate());
-		playerCoordinatesList.set(1,spaceship.getCenterYCoordinate());
-
+		playerCoordinatesList.set(0, spaceship.getCenterXCoordinate());
+		playerCoordinatesList.set(1, spaceship.getCenterYCoordinate());
 		return playerCoordinatesList;
 	}
 

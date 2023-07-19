@@ -1,4 +1,4 @@
-package game.objects.missiles;
+package game.objects.missiles.missiletypes;
 
 import data.image.ImageEnums;
 import game.managers.OnScreenTextManager;
@@ -7,6 +7,7 @@ import game.movement.PathFinder;
 import game.movement.Point;
 import game.objects.friendlies.powerups.PowerUpAcquiredText;
 import game.objects.friendlies.powerups.PowerUpEnums;
+import game.objects.missiles.Missile;
 
 public class FlamethrowerProjectile extends Missile {
 

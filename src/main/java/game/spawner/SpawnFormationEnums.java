@@ -8,5 +8,14 @@ public enum SpawnFormationEnums {
 	Large_greaterthen, //>
 	Cross, //X
 	Divide, // /
-	Reverse_Divide // \
+	Reverse_Divide, // \
+	Line, // -
+	Reverse_Line,// |
+	V, //V
+	Reverse_V, // ^ 
+	Dot //.
+	
+	
+	
 }
+

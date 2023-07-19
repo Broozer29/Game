@@ -37,8 +37,8 @@ public class GunPreset implements GunPresetInterface {
 	}
 	
 	private void initRocketPreset() {
-		PlayerStats.getInstance().setAttackSpeed(25);
-		PlayerStats.getInstance().setAttackDamage(10);
+		PlayerStats.getInstance().setAttackSpeed(15);
+		PlayerStats.getInstance().setAttackDamage(75);
 		PlayerStats.getInstance().setAttackType(PlayerAttackTypes.Rocket);
 		PlayerStats.getInstance().setMissilePathFinder(new RegularPathFinder());
 		PlayerStats.getInstance().setPlayerMissileType(ImageEnums.Rocket_1);

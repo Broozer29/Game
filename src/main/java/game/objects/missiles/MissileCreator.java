@@ -6,6 +6,17 @@ import game.movement.Direction;
 import game.movement.PathFinder;
 import game.movement.Point;
 import game.objects.friendlies.spaceship.PlayerAttackTypes;
+import game.objects.missiles.missiletypes.AlienLaserbeam;
+import game.objects.missiles.missiletypes.BombaProjectile;
+import game.objects.missiles.missiletypes.BulldozerProjectile;
+import game.objects.missiles.missiletypes.DefaultPlayerLaserbeam;
+import game.objects.missiles.missiletypes.EnergizerProjectile;
+import game.objects.missiles.missiletypes.FirewallMissile;
+import game.objects.missiles.missiletypes.FlamerProjectile;
+import game.objects.missiles.missiletypes.FlamethrowerProjectile;
+import game.objects.missiles.missiletypes.Rocket1;
+import game.objects.missiles.missiletypes.SeekerProjectile;
+import game.objects.missiles.missiletypes.TazerProjectile;
 
 public class MissileCreator {
 

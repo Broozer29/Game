@@ -34,6 +34,7 @@ public class AnimationManager {
 	}
 
 	public void addExhaustAnimation(SpriteAnimation animation) {
+		System.out.println(animation.getAnimationBounds());
 		if (animation != null) {
 			this.lowerAnimationList.add(animation);
 		}

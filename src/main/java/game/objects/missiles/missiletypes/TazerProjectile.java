@@ -1,9 +1,10 @@
-package game.objects.missiles;
+package game.objects.missiles.missiletypes;
 
 import data.image.ImageEnums;
 import game.movement.Direction;
 import game.movement.PathFinder;
 import game.movement.Point;
+import game.objects.missiles.Missile;
 
 public class TazerProjectile extends Missile {
 
@@ -15,7 +16,7 @@ public class TazerProjectile extends Missile {
 		this.missileDamage = damage;
 		setAnimation();
 		this.animation.setFrameDelay(3);
-
+		this.rotateMissileAnimation(rotation);
 	}
 
 	public void missileAction() {

@@ -10,7 +10,7 @@ import data.DataClass;
 import data.image.ImageDatabase;
 import data.image.ImageEnums;
 import data.image.ImageResizer;
-import game.managers.SpawningCoordinator;
+import game.spawner.SpawningCoordinator;
 
 public class BackgroundManager {
 

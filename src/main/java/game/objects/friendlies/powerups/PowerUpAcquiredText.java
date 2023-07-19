@@ -44,7 +44,7 @@ public class PowerUpAcquiredText {
 			this.text = "Triple Shot";
 			break;
 		case DUMMY_DO_NOT_USE:
-			this.text = "Test text";
+			this.text = "Test text at: x =" + this.xCoordinate + " y = " + this.yCoordinate;
 			break;
 		case Guardian_Drone_Homing_Missile:
 			this.text = "Homing Missile Guardian Bot";

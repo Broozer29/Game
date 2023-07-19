@@ -1,4 +1,4 @@
-package game.managers;
+package game.spawner;
 
 import java.util.List;
 import java.util.Random;
@@ -22,13 +22,9 @@ public class SpawningCoordinator {
 	private int maximumBGOHeightRange = DataClass.getInstance().getWindowHeight();
 	private int minimumBGOHeightRange = 0;
 
-	private int maximumBombEnemyWidthRange = DataClass.getInstance().getWindowWidth() - 250;
-	private int minimumBombEnemyWidthRange = 250;
-	private int maximumBombEnemyHeightUpRange = DataClass.getInstance().getWindowHeight() + 500;
-	private int minimumBombEnemyHeightUpRange = DataClass.getInstance().getWindowHeight();
 
 	private int maximumBombEnemyHeightDownRange = 0;
-	private int minimumBombEnemyHeightDownRange = -500;
+	private int minimumBombEnemyHeightDownRange = -200;
 	
 	//Left Spawning block
 	private int leftEnemyMaxHeightRange = DataClass.getInstance().getWindowHeight() - 100;
@@ -40,7 +36,7 @@ public class SpawningCoordinator {
 	private int bottomLeftEnemyMaxHeightRange = DataClass.getInstance().getWindowHeight() + 50;
 	
 	private int topLeftEnemyMinHeightRange = 100;
-	private int topLeftEnemyMaxHeightRange = 400;
+	private int topLeftEnemyMaxHeightRange = 200;
 	
 	//Right Spawning block
 	private int rightEnemyMaxWidthRange = DataClass.getInstance().getWindowWidth() + 200;
@@ -53,7 +49,7 @@ public class SpawningCoordinator {
 	
 	
 	private int topRightEnemyMinHeightRange = 100;
-	private int topRightEnemyMaxHeightRange = 400;
+	private int topRightEnemyMaxHeightRange = 200;
 	
 	//Up spawning block
 	private int upEnemyMaxWidthRange = DataClass.getInstance().getWindowWidth() - 50;
@@ -65,7 +61,7 @@ public class SpawningCoordinator {
 	private int downEnemyMaxWidthRange = DataClass.getInstance().getWindowWidth() - 50;
 	private int downEnemyMinWidthRange = 50;
 	private int downEnemyMaxHeightRange = DataClass.getInstance().getWindowHeight() + 200;
-	private int downEnemyMinHeightRange = DataClass.getInstance().getWindowHeight() + 100;
+	private int downEnemyMinHeightRange = DataClass.getInstance().getWindowHeight() + 50;
 
 	private SpawningCoordinator() {
 
@@ -150,19 +146,16 @@ public class SpawningCoordinator {
 	
 
 	public int getRandomXBombEnemyCoordinate() {
-		return random.nextInt((maximumBombEnemyWidthRange - minimumBombEnemyWidthRange) + 1)
-				+ minimumBombEnemyWidthRange;
+		return random.nextInt((downEnemyMaxWidthRange - downEnemyMinWidthRange) + 1) + downEnemyMinWidthRange;
 	}
 
 	//Recently swapped
 	public int getRandomYDownBombEnemyCoordinate() {
-		return random.nextInt((maximumBombEnemyHeightUpRange - minimumBombEnemyHeightUpRange) + 1)
-				+ minimumBombEnemyHeightUpRange;
-	}
+		return random.nextInt((downEnemyMaxHeightRange - downEnemyMinHeightRange) + 1) + downEnemyMinHeightRange;
+		}
 
 	public int getRandomYUpBombEnemyCoordinate() {
-		return random.nextInt((maximumBombEnemyHeightDownRange - minimumBombEnemyHeightDownRange) + 1)
-				+ minimumBombEnemyHeightDownRange;
+		return 0 - random.nextInt((upEnemyMaxHeightRange - upEnemyMinHeightRange) + 1) + upEnemyMinHeightRange;
 	}
 
 	public Direction upOrDown() {

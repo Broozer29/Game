@@ -53,8 +53,8 @@ public class Seeker extends Enemy {
 		if (missileManager == null) {
 			missileManager = MissileManager.getInstance();
 		}
-		int xMovementSpeed = 5;
-		int yMovementSpeed = 2;
+		int xMovementSpeed = 3;
+		int yMovementSpeed = 5;
 		
 		// Hier een missile maken, en na het maken een target toeveogen aan de missile. De missile kan dan zijn target geven aan path. 
 		//PAth kan vervolgens zijn target tracken en constant de nextStep() naar de target teruggeven.

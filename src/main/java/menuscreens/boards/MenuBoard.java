@@ -14,23 +14,24 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.sound.sampled.UnsupportedAudioFileException;
-import javax.swing.Icon;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
+import data.ConnectedControllers;
 import data.DataClass;
 import data.PlayerStats;
 import data.image.ImageEnums;
 import game.managers.AnimationManager;
 import game.objects.BackgroundManager;
 import game.objects.BackgroundObject;
-import game.objects.friendlies.spaceship.PlayerAttackTypes;
 import menuscreens.MenuCursor;
 import menuscreens.MenuFunctionEnums;
-import menuscreens.MenuFunctionImageCoupler;
 import menuscreens.MenuObject;
 import menuscreens.MenuObjectEnums;
 import menuscreens.MenuObjectPart;
+import net.java.games.input.Component;
+import net.java.games.input.Controller;
+import net.java.games.input.ControllerEnvironment;
 import visual.objects.Sprite;
 import visual.objects.SpriteAnimation;
 
@@ -38,6 +39,7 @@ public class MenuBoard extends JPanel implements ActionListener {
 	private DataClass data = DataClass.getInstance();
 	private BackgroundManager backgroundManager = BackgroundManager.getInstance();
 	private AnimationManager animationManager = AnimationManager.getInstance();
+	private ConnectedControllers controllers = ConnectedControllers.getInstance();
 	private final int boardWidth = data.getWindowWidth();;
 	private final int boardHeight = data.getWindowHeight();;
 	private List<MenuObject> firstRow = new ArrayList<MenuObject>();
@@ -67,14 +69,13 @@ public class MenuBoard extends JPanel implements ActionListener {
 	private MenuObject selectSpecialAttackTitle;
 	private MenuObject selectSpecialAttackIcon;
 	private MenuObject selectSpecialAttackIconHighlight;
-	
+
 	private MenuObject selectFlamethrower;
 	private MenuObject selectRocketLauncher;
 	private MenuObject selectLaserbeam;
 	private MenuObject selectEMP;
 	private MenuObject selectFirewall;
-	
-	
+
 	private int selectedRow = 0;
 	private int selectedColumn = 0;
 
@@ -84,7 +85,7 @@ public class MenuBoard extends JPanel implements ActionListener {
 		setBackground(Color.BLACK);
 		setPreferredSize(new Dimension(boardWidth, boardHeight));
 		initMenuTiles();
-
+		controllers.initController();
 		timer = new Timer(16, e -> repaint());
 		timer.start();
 	}
@@ -95,8 +96,8 @@ public class MenuBoard extends JPanel implements ActionListener {
 		// With functionality:
 		float imageScale = 1;
 		float textScale = (float) 2;
-		this.startGameTile = new MenuObject(150, (boardHeight / 2), textScale, "Start Game",
-				MenuObjectEnums.Text_Block, MenuFunctionEnums.Start_Game);
+		this.startGameTile = new MenuObject(150, (boardHeight / 2), textScale, "Start Game", MenuObjectEnums.Text_Block,
+				MenuFunctionEnums.Start_Game);
 
 		int initCursorX = startGameTile.getXCoordinate();
 		int initCursorY = startGameTile.getYCoordinate();
@@ -149,7 +150,7 @@ public class MenuBoard extends JPanel implements ActionListener {
 		this.selectRocketLauncher = new MenuObject(selectNormalAttackCard.getXCoordinate() + 50,
 				selectNormalAttackCard.getYCoordinate() + 175, textScale, "Rocket Launcher", MenuObjectEnums.Text_Block,
 				MenuFunctionEnums.Select_Rocket_Launcher);
-		
+
 		this.selectNormalAttackIcon = new MenuObject(selectNormalAttackCard.getXCoordinate() + 150,
 				selectNormalAttackCard.getYCoordinate() - 75, 1, null, MenuObjectEnums.Laserbeam_Icon,
 				MenuFunctionEnums.NONE);
@@ -160,11 +161,11 @@ public class MenuBoard extends JPanel implements ActionListener {
 
 		this.selectSpecialAttackCard = new MenuObject(boardWidth / 2 + 320, startGameTile.getYCoordinate() - 50, 1,
 				null, MenuObjectEnums.Square_Card, MenuFunctionEnums.NONE);
-		
+
 		this.selectEMP = new MenuObject(selectSpecialAttackCard.getXCoordinate() + 50,
 				selectSpecialAttackCard.getYCoordinate() + 75, textScale, "EMP", MenuObjectEnums.Text_Block,
 				MenuFunctionEnums.Select_EMP);
-		
+
 		this.selectFirewall = new MenuObject(selectSpecialAttackCard.getXCoordinate() + 50,
 				selectSpecialAttackCard.getYCoordinate() + 125, textScale, "Firewall", MenuObjectEnums.Text_Block,
 				MenuFunctionEnums.Select_Firewall);
@@ -172,7 +173,7 @@ public class MenuBoard extends JPanel implements ActionListener {
 		this.selectSpecialAttackTitle = new MenuObject(selectSpecialAttackCard.getXCoordinate() + 25,
 				selectSpecialAttackCard.getYCoordinate() + 30, (float) 1.5, "SELECT A SPECIAL ATTACK",
 				MenuObjectEnums.Text_Block, MenuFunctionEnums.NONE);
-		
+
 		this.selectSpecialAttackIcon = new MenuObject(selectSpecialAttackCard.getXCoordinate() + 150,
 				selectSpecialAttackCard.getYCoordinate() - 75, 1, null, MenuObjectEnums.EMP_Icon,
 				MenuFunctionEnums.NONE);
@@ -180,13 +181,17 @@ public class MenuBoard extends JPanel implements ActionListener {
 		this.selectSpecialAttackIconHighlight = new MenuObject(selectSpecialAttackIcon.getXCoordinate(),
 				selectSpecialAttackIcon.getYCoordinate(), 1, null, MenuObjectEnums.Highlight_Animation,
 				MenuFunctionEnums.NONE);
-		
-		selectNormalAttackIconHighlight.getMenuImages().get(0).getAnimation().setX(selectNormalAttackIcon.getXCoordinate() - 2);
-		selectNormalAttackIconHighlight.getMenuImages().get(0).getAnimation().setY(selectNormalAttackIcon.getYCoordinate() - 2);
-		
-		selectSpecialAttackIconHighlight.getMenuImages().get(0).getAnimation().setX(selectSpecialAttackIcon.getXCoordinate() - 2);
-		selectSpecialAttackIconHighlight.getMenuImages().get(0).getAnimation().setY(selectSpecialAttackIcon.getYCoordinate() - 2);
-		
+
+		selectNormalAttackIconHighlight.getMenuImages().get(0).getAnimation()
+				.setX(selectNormalAttackIcon.getXCoordinate() - 2);
+		selectNormalAttackIconHighlight.getMenuImages().get(0).getAnimation()
+				.setY(selectNormalAttackIcon.getYCoordinate() - 2);
+
+		selectSpecialAttackIconHighlight.getMenuImages().get(0).getAnimation()
+				.setX(selectSpecialAttackIcon.getXCoordinate() - 2);
+		selectSpecialAttackIconHighlight.getMenuImages().get(0).getAnimation()
+				.setY(selectSpecialAttackIcon.getYCoordinate() - 2);
+
 		this.menuCursor.setSelectedMenuTile(startGameTile);
 
 		// IN ORDER OF WHAT NEEDS TO BE SHOWN
@@ -204,7 +209,6 @@ public class MenuBoard extends JPanel implements ActionListener {
 
 		offTheGridObjects.add(selectNormalAttackIcon);
 		offTheGridObjects.add(selectSpecialAttackIcon);
-		
 
 		offTheGridObjects.add(menuCursor);
 		grid.add(firstRow);
@@ -239,10 +243,9 @@ public class MenuBoard extends JPanel implements ActionListener {
 	private void addTileToThirdRow(MenuObject menuTile) {
 		thirdRow.add(menuTile);
 	}
-	
-	
+
 	private void updateActiveAttackIcons() {
-		switch(PlayerStats.getInstance().getAttackType()) {
+		switch (PlayerStats.getInstance().getAttackType()) {
 		case Flamethrower:
 			selectNormalAttackIcon.changeImage(ImageEnums.Starcraft2_Flame_Turret);
 			break;
@@ -255,8 +258,8 @@ public class MenuBoard extends JPanel implements ActionListener {
 		case Shotgun:
 			break;
 		}
-		
-		switch(PlayerStats.getInstance().getPlayerSpecialAttackType()) {
+
+		switch (PlayerStats.getInstance().getPlayerSpecialAttackType()) {
 		case EMP:
 			selectSpecialAttackIcon.changeImage(ImageEnums.Starcraft2_Electric_Field);
 			break;
@@ -267,8 +270,7 @@ public class MenuBoard extends JPanel implements ActionListener {
 			break;
 		}
 	}
-	
-	
+
 	/*------------------------Navigation methods--------------------------------*/
 
 	// Activate the functionality of the specific menutile
@@ -392,7 +394,8 @@ public class MenuBoard extends JPanel implements ActionListener {
 				nextMenuColumn();
 				break;
 			}
-			//Shoddy fix, maybe an updateGameTick? Atleast this way it doesnt constantly check for new icons
+			// Shoddy fix, maybe an updateGameTick? Atleast this way it doesnt constantly check for
+			// new icons
 			updateActiveAttackIcons();
 		}
 
@@ -430,10 +433,8 @@ public class MenuBoard extends JPanel implements ActionListener {
 			drawAnimation(g2d, animation);
 		}
 
-
-
 		drawObjects(g2d);
-		
+
 		for (SpriteAnimation animation : animationManager.getUpperAnimations()) {
 			drawAnimation(g2d, animation);
 		}
@@ -441,6 +442,11 @@ public class MenuBoard extends JPanel implements ActionListener {
 		backgroundManager.updateGameTick();
 		Toolkit.getDefaultToolkit().sync();
 		
+		
+		
+		
+		readControllerState();
+
 	}
 
 	private void drawObjects(Graphics2D g) {
@@ -485,5 +491,69 @@ public class MenuBoard extends JPanel implements ActionListener {
 		// TODO Auto-generated method stub
 
 	}
+
+	public Timer getTimer() {
+		return this.timer;
+	}
+
+	private long lastMoveTime = 0;
+	private static final long MOVE_COOLDOWN = 200; // 500 milliseconds
+
+	public void readControllerState() {
+	    if (controllers.getFirstController() != null) {
+	        controllers.getFirstController().poll();
+	        Component[] components = controllers.getFirstController().getComponents();
+
+	        long currentTime = System.currentTimeMillis();
+	        
+	        for (int i = 0; i < components.length; i++) {
+	            Component component = components[i];
+	            String componentName = component.getName();
+	            float componentValue = component.getPollData();
+
+	            // Handle left joystick horizontal movement
+	            if ((componentName.equals("x") || componentName.equals("z")) && (currentTime - lastMoveTime > MOVE_COOLDOWN)) {
+	                if (componentValue > 0.5) {
+	                    nextMenuTile();
+	                    lastMoveTime = currentTime;
+	                } else if (componentValue < -0.5) {
+	                    previousMenuTile();
+	                    lastMoveTime = currentTime;
+	                }
+	            }
+
+	            // Handle left joystick vertical movement
+	            if ((componentName.equals("y") || componentName.equals("rz")) && (currentTime - lastMoveTime > MOVE_COOLDOWN)) {
+	                if (componentValue > 0.5) {
+	                    nextMenuColumn();
+	                    lastMoveTime = currentTime;
+	                } else if (componentValue < -0.5) {
+	                    previousMenuColumn();
+	                    lastMoveTime = currentTime;
+	                }
+	            }
+
+	            if (componentName.equals("0")) {
+	                if (componentValue == 1.0) {
+	                    selectMenuTile();
+	                	updateActiveAttackIcons();
+	                }
+	            }
+	            
+	    		// Component 4 = Y
+				// Component 1 = B
+				// Component 3 = X
+				// Component 0 = A
+
+				// Component 10 & 11 zijn de middelste 2 knoppies, die voor pauzeren
+
+				// Component 6 = linker schouder
+				// Component 7 = rechter schouder
+
+	            // Remaining components...
+	        }
+	    }
+	}
+
 
 }

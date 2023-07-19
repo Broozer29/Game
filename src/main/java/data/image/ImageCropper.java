@@ -48,6 +48,12 @@ public class ImageCropper {
         maxX = Math.min(img.getWidth() - 1, maxX + SKIP_PIXELS);
         maxY = Math.min(img.getHeight() - 1, maxY + SKIP_PIXELS);
 
+        if (maxX <= minX || maxY <= minY) {
+            // Either fully transparent image or some error occurred
+            // Return the original image or handle the situation in a different way (e.g., throw an exception)
+            return img;
+        }
+
         BufferedImage cropped = img.getSubimage(minX, minY, maxX - minX + 1, maxY - minY + 1);
         return cropped;
     }

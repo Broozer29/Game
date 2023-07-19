@@ -32,7 +32,7 @@ public class SpriteAnimation extends Sprite {
 		this.frameDelayCounter = 0;
 		this.infiniteLoop = infiniteLoop;
 		setAnimationScale(scale);
-		animationBounds = new Rectangle();
+		animationBounds = new Rectangle(xCoordinate, yCoordinate, this.width, this.height);
 	}
 
 	protected void initAnimation() {

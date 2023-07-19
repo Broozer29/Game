@@ -1,4 +1,4 @@
-package game.objects.missiles;
+package game.objects.missiles.missiletypes;
 
 import data.image.ImageEnums;
 import game.managers.ExplosionManager;
@@ -6,6 +6,7 @@ import game.movement.Direction;
 import game.movement.PathFinder;
 import game.movement.Point;
 import game.objects.Explosion;
+import game.objects.missiles.Missile;
 import visual.objects.SpriteAnimation;
 
 public class Rocket1 extends Missile{
@@ -25,15 +26,13 @@ public class Rocket1 extends Missile{
 	
 	
 	public void missileAction() {
-		int explosionScale = 2;
+		int explosionScale = 3;
 		SpriteAnimation explosionAnimation = new SpriteAnimation(xCoordinate, yCoordinate, ImageEnums.Destroyed_Explosion, false, explosionScale);
-		int centeredExplosionX = xCoordinate - (explosionAnimation.getWidth() / 2);
-		int centeredExplosionY = yCoordinate - (explosionAnimation.getHeight() / 2);
-		
-		Explosion explosion = new Explosion(centeredExplosionX, centeredExplosionY, 
+		Explosion explosion = new Explosion(this.xCoordinate, this.yCoordinate, 
 				explosionScale, explosionAnimation, explosionDamage, true);
 		explosion.updateCurrentBoardBlock();
 		explosionAnimation.updateCurrentBoardBlock();
+		explosionAnimation.setCenterCoordinates(this.getCenterXCoordinate() + 50, this.getCenterYCoordinate());
 		ExplosionManager.getInstance().addExistingExplosion(explosion);
 	}
 	

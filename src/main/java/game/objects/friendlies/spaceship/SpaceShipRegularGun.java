@@ -5,7 +5,7 @@ import java.io.IOException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
 import data.PlayerStats;
-import data.TemporaryGameSettings;
+import data.BoostsUpgradesAndBuffsSettings;
 import data.audio.AudioEnums;
 import data.image.ImageEnums;
 import game.managers.AudioManager;
@@ -25,7 +25,7 @@ public class SpaceShipRegularGun {
 	private AudioManager audioManager = AudioManager.getInstance();
 	private PlayerManager friendlyManager = PlayerManager.getInstance();
 	private PlayerStats playerStats = PlayerStats.getInstance();
-	private TemporaryGameSettings powerUpEffects = TemporaryGameSettings.getInstance();
+	private BoostsUpgradesAndBuffsSettings powerUpEffects = BoostsUpgradesAndBuffsSettings.getInstance();
 	private MissileCreator missileCreator = MissileCreator.getInstance();
 
 	private float currentAttackFrame;
@@ -63,8 +63,8 @@ public class SpaceShipRegularGun {
 	private void fireRocket(int xCoordinate, int yCoordinate, int spaceShipWidth, int spaceShipHeight) {
 		if (currentAttackFrame >= playerStats.getAttackSpeed()) {
 			this.currentAttackFrame = 0;
-			int xMovementSpeed = 3;
-			int yMovementSpeed = 3;
+			int xMovementSpeed = 5;
+			int yMovementSpeed = 5;
 			
 			int x = xCoordinate + spaceShipWidth;
 			int y = yCoordinate + (spaceShipHeight / 2) - 5;
@@ -131,11 +131,9 @@ public class SpaceShipRegularGun {
 				this.fireMissile(x, y, type, impactType, Direction.RIGHT_UP, scale, pathFinder, xMovementSpeed, yMovementSpeed, attackType, target);
 				this.fireMissile(x, y, type, impactType, Direction.RIGHT, scale, pathFinder, xMovementSpeed, yMovementSpeed, attackType, target);
 				playMissileAudio(AudioEnums.Player_Laserbeam);
-
 			} else {
 				this.fireMissile(x, y, type, impactType, Direction.RIGHT, scale, pathFinder, xMovementSpeed, yMovementSpeed, attackType, target);
 				playMissileAudio(AudioEnums.Player_Laserbeam);
-
 			}
 		}
 	}
@@ -149,6 +147,8 @@ public class SpaceShipRegularGun {
 		if(target != null) {
 			missile.setTarget(target);
 		}
+		
+
 		this.missileManager.addExistingMissile(missile);
 
 	}

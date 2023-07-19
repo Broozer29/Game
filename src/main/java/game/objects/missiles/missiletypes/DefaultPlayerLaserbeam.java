@@ -1,9 +1,10 @@
-package game.objects.missiles;
+package game.objects.missiles.missiletypes;
 
 import data.image.ImageEnums;
 import game.movement.Direction;
 import game.movement.PathFinder;
 import game.movement.Point;
+import game.objects.missiles.Missile;
 
 public class DefaultPlayerLaserbeam extends Missile {
 
