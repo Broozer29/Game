@@ -27,13 +27,15 @@ public class ImageLoader {
 			if (stream == null) {
 				System.out.println("InputStream is null for path: " + path);
 				return null;
+			} else {
+				System.out.println("Attempting to find a file at: " + path);
 			}
 			bufferedImage = ImageIO.read(stream);
 			if (bufferedImage == null) {
 				System.out.println("This one is broken: " + image + " with a path of " + path);
 				return null;
 			}
-			System.out.println("Loaded image: " + image + " height: " + bufferedImage.getHeight());
+			System.out.println("Loaded image: " + image + " this should not be 0 or 'null' -> " + bufferedImage.getWidth());
 			return bufferedImage;
 		} catch (IOException e) {
 			System.out.println("Failed to load image: " + image);

@@ -31,7 +31,7 @@ public class AudioLoader {
 			AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(url);
 			clip.open(audioInputStream);
 			clip.setFramePosition(0);
-			System.out.println(clip.getFrameLength());
+			System.out.println("Loading audio file: " + audioFile);
 			return clip;
 
 		} catch (UnsupportedAudioFileException | IOException e) {
