@@ -15,6 +15,7 @@ public class SeekerProjectile extends Missile {
 		setAnimation();
 		this.animation.setFrameDelay(3);
 		rotateAccordingToSpeed();
+		
 		}
 	
 	private void rotateAccordingToSpeed() {

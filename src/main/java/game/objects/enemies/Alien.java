@@ -9,6 +9,8 @@ import game.objects.friendlies.spaceship.PlayerAttackTypes;
 import game.objects.missiles.MissileCreator;
 import game.objects.missiles.MissileManager;
 
+
+//Deprecated enemy, trying to use this one will probably cause crashes lol
 public class Alien extends Enemy {
 
 	private PathFinder missilePathFinder;

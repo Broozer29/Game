@@ -18,6 +18,7 @@ public class BombaProjectile extends Missile {
 		this.missileDamage = damage;
 		setAnimation();
 		this.animation.setFrameDelay(3);
+		this.animation.rotateAnimetion(rotation);
 	
 	}
 

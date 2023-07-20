@@ -35,6 +35,7 @@ public class Bomba extends Enemy {
 		this.deathSound = AudioEnums.Large_Ship_Destroyed;
 		this.setVisible(true);
 		this.setRotation(rotation);
+		this.deathAnimation.rotateAnimetion(rotation);
 		this.missilePathFinder = new RegularPathFinder();
 		this.initDirectionFromRotation();
 	}

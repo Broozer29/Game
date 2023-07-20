@@ -22,6 +22,7 @@ public class Rocket1 extends Missile{
 		setAnimation();
 		this.missileDamage = 0;
 		this.explosionDamage = explosionDamage;
+		this.animation.rotateAnimetion(rotation);
 	}
 	
 	

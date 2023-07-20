@@ -16,7 +16,9 @@ public class FirewallMissile extends Missile {
 				yMovementSpeed);
 		this.setAnimation();
 		this.animation.setFrameDelay(10);
-		this.missileDamage = specialAttackDamage;	}
+		this.missileDamage = specialAttackDamage;	
+		this.animation.rotateAnimetion(rotation);		
+	}
 
 	public void missileAction() {
 		//Pulse with a firenova or something??

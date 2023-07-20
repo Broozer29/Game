@@ -24,13 +24,14 @@ public class Seeker extends Enemy {
 		this.hitPoints = 50;
 		this.maxHitPoints = 50;
 		this.attackSpeedFrameCount = 200;
-		this.XMovementSpeed = 2;
+		this.XMovementSpeed = 1;
 		this.YMovementSpeed = 1;
 		this.hasAttack = true;
 		this.showHealthBar = true;
 		this.deathSound = AudioEnums.Large_Ship_Destroyed;
 		this.setVisible(true);
 		this.setRotation(rotation);
+		this.deathAnimation.rotateAnimetion(rotation);
 		this.missilePathFinder = new RegularPathFinder();
 	}
 

@@ -15,6 +15,7 @@ public class EnergizerProjectile extends Missile {
 		this.missileDamage = damage;
 		setAnimation();
 		this.animation.setFrameDelay(3);
+		this.animation.rotateAnimetion(rotation);
 	}
 
 	public void missileAction() {

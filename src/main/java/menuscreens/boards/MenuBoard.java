@@ -75,6 +75,9 @@ public class MenuBoard extends JPanel implements ActionListener {
 	private MenuObject selectLaserbeam;
 	private MenuObject selectEMP;
 	private MenuObject selectFirewall;
+	
+	private boolean foundControllerBool = false;
+	private MenuObject foundController;
 
 	private int selectedRow = 0;
 	private int selectedColumn = 0;
@@ -86,6 +89,9 @@ public class MenuBoard extends JPanel implements ActionListener {
 		setPreferredSize(new Dimension(boardWidth, boardHeight));
 		initMenuTiles();
 		controllers.initController();
+		if(controllers.getFirstController() != null) {
+			foundControllerBool = true;
+		}
 		timer = new Timer(16, e -> repaint());
 		timer.start();
 	}
@@ -192,6 +198,17 @@ public class MenuBoard extends JPanel implements ActionListener {
 		selectSpecialAttackIconHighlight.getMenuImages().get(0).getAnimation()
 				.setY(selectSpecialAttackIcon.getYCoordinate() - 2);
 
+		if(!foundControllerBool) {
+		this.foundController = new MenuObject(100,
+				100, (float) 1.5, "NO CONTROLLER DETECTED. ONLY XBOX WIRELESS BLUETOOTH HAS BEEN TESTED.",
+				MenuObjectEnums.Text_Block, MenuFunctionEnums.NONE);
+		} else {
+			this.foundController = new MenuObject(boardWidth / 2 - 100,
+					100, (float) 1.5, "FOUND A CONTROLLER",
+					MenuObjectEnums.Text_Block, MenuFunctionEnums.NONE);
+		}
+		
+		offTheGridObjects.add(foundController);
 		this.menuCursor.setSelectedMenuTile(startGameTile);
 
 		// IN ORDER OF WHAT NEEDS TO BE SHOWN
