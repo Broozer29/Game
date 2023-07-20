@@ -3,10 +3,10 @@ package game.spawner;
 import java.util.List;
 import java.util.Random;
 
-import data.DataClass;
 import game.movement.Direction;
 import game.objects.BackgroundObject;
 import game.objects.enemies.Enemy;
+import gamedata.DataClass;
 
 public class SpawningCoordinator {
 

@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import data.DataClass;
-import data.BoostsUpgradesAndBuffsSettings;
-import data.image.ImageEnums;
 import game.movement.Direction;
+import gamedata.BoostsUpgradesAndBuffsSettings;
+import gamedata.DataClass;
+import gamedata.image.ImageEnums;
 
 public class PowerUpCreator {
 

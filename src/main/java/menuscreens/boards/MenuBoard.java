@@ -17,13 +17,13 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
-import data.ConnectedControllers;
-import data.DataClass;
-import data.PlayerStats;
-import data.image.ImageEnums;
 import game.managers.AnimationManager;
 import game.objects.BackgroundManager;
 import game.objects.BackgroundObject;
+import gamedata.ConnectedControllers;
+import gamedata.DataClass;
+import gamedata.PlayerStats;
+import gamedata.image.ImageEnums;
 import menuscreens.MenuCursor;
 import menuscreens.MenuFunctionEnums;
 import menuscreens.MenuObject;

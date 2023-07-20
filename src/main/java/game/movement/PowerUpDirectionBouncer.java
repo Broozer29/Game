@@ -3,8 +3,8 @@ package game.movement;
 import java.util.ArrayList;
 import java.util.List;
 
-import data.DataClass;
 import game.objects.friendlies.powerups.PowerUp;
+import gamedata.DataClass;
 
 public class PowerUpDirectionBouncer {
 

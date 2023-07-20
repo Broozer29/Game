@@ -3,9 +3,9 @@ package game.movement;
 import java.util.ArrayList;
 import java.util.List;
 
-import data.DataClass;
 import game.managers.PlayerManager;
 import game.objects.enemies.EnemyManager;
+import gamedata.DataClass;
 import visual.objects.Sprite;
 
 public class HomingPathFinder implements PathFinder {

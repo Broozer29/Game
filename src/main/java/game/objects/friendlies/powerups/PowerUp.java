@@ -1,13 +1,13 @@
 package game.objects.friendlies.powerups;
 
-import data.image.ImageEnums;
-import data.image.ImageResizer;
 import game.managers.OnScreenTextManager;
 import game.managers.TimerManager;
 import game.movement.Direction;
 import game.movement.Path;
 import game.movement.Point;
 import game.movement.PowerUpDirectionBouncer;
+import gamedata.image.ImageEnums;
+import gamedata.image.ImageResizer;
 import visual.objects.Sprite;
 
 public class PowerUp extends Sprite {

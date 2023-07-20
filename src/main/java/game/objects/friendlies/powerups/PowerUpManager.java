@@ -8,13 +8,13 @@ import java.util.Random;
 
 import javax.sound.sampled.UnsupportedAudioFileException;
 
-import data.DataClass;
-import data.BoostsUpgradesAndBuffsSettings;
-import data.audio.AudioEnums;
-import data.image.ImageEnums;
 import game.managers.AudioManager;
 import game.managers.PlayerManager;
 import game.movement.Direction;
+import gamedata.BoostsUpgradesAndBuffsSettings;
+import gamedata.DataClass;
+import gamedata.audio.AudioEnums;
+import gamedata.image.ImageEnums;
 import visual.objects.Sprite;
 
 public class PowerUpManager {

@@ -1,4 +1,4 @@
-package data;
+package gamedata;
 
 public class DataClass {
 	// A singleton class that holds information that is relevant for multiple

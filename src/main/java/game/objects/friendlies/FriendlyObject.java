@@ -3,14 +3,14 @@ package game.objects.friendlies;
 import java.util.ArrayList;
 import java.util.List;
 
-import data.DataClass;
-import data.audio.AudioEnums;
-import data.image.ImageEnums;
 import game.movement.Direction;
 import game.movement.OrbitPathFinder;
 import game.movement.Path;
 import game.movement.PathFinder;
 import game.movement.Point;
+import gamedata.DataClass;
+import gamedata.audio.AudioEnums;
+import gamedata.image.ImageEnums;
 import visual.objects.Sprite;
 import visual.objects.SpriteAnimation;
 

@@ -1,6 +1,6 @@
 package menuscreens;
 
-import data.image.ImageEnums;
+import gamedata.image.ImageEnums;
 
 public class MenuCursor extends MenuObject {
 

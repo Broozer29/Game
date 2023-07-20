@@ -1,13 +1,13 @@
 package game.objects.enemies;
 
-import data.audio.AudioEnums;
-import data.image.ImageEnums;
 import game.movement.Direction;
 import game.movement.PathFinder;
 import game.movement.Point;
 import game.objects.friendlies.spaceship.PlayerAttackTypes;
 import game.objects.missiles.MissileCreator;
 import game.objects.missiles.MissileManager;
+import gamedata.audio.AudioEnums;
+import gamedata.image.ImageEnums;
 
 
 //Deprecated enemy, trying to use this one will probably cause crashes lol

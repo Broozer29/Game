@@ -3,14 +3,14 @@ package game.objects.enemies;
 import java.util.ArrayList;
 import java.util.List;
 
-import data.audio.AudioEnums;
-import data.image.ImageEnums;
 import game.movement.Direction;
 import game.movement.PathFinder;
 import game.movement.Point;
 import game.movement.RegularPathFinder;
 import game.objects.missiles.MissileCreator;
 import game.objects.missiles.MissileManager;
+import gamedata.audio.AudioEnums;
+import gamedata.image.ImageEnums;
 
 public class Bomba extends Enemy {
 

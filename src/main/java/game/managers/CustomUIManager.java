@@ -1,8 +1,8 @@
 package game.managers;
 
-import data.PlayerStats;
-import data.image.ImageEnums;
 import game.UI.UIObject;
+import gamedata.PlayerStats;
+import gamedata.image.ImageEnums;
 import visual.objects.SpriteAnimation;
 
 public class CustomUIManager {

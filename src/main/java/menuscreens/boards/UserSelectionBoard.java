@@ -13,8 +13,8 @@ import java.util.List;
 
 import javax.swing.JPanel;
 
-import data.DataClass;
-import data.image.ImageEnums;
+import gamedata.DataClass;
+import gamedata.image.ImageEnums;
 import menuscreens.MenuCursor;
 import menuscreens.MenuObject;
 import menuscreens.MenuObjectPart;

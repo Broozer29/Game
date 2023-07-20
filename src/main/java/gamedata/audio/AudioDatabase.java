@@ -1,4 +1,4 @@
-package data.audio;
+package gamedata.audio;
 
 import java.util.ArrayList;
 import java.util.HashMap;

@@ -1,4 +1,4 @@
-package data;
+package gamedata;
 
 import net.java.games.input.Component;
 import net.java.games.input.Controller;

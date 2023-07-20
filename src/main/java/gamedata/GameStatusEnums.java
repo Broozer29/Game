@@ -1,4 +1,4 @@
-package data;
+package gamedata;
 
 public enum GameStatusEnums {
 	Waiting,

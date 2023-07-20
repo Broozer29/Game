@@ -6,11 +6,11 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Random;
 
-import data.DataClass;
-import data.image.ImageDatabase;
-import data.image.ImageEnums;
-import data.image.ImageResizer;
 import game.spawner.SpawningCoordinator;
+import gamedata.DataClass;
+import gamedata.image.ImageDatabase;
+import gamedata.image.ImageEnums;
+import gamedata.image.ImageResizer;
 
 public class BackgroundManager {
 

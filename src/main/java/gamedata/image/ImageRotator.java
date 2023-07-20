@@ -1,4 +1,4 @@
-package data.image;
+package gamedata.image;
 
 import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;

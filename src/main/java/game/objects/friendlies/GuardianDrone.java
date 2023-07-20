@@ -1,6 +1,5 @@
 package game.objects.friendlies;
 
-import data.image.ImageEnums;
 import game.managers.AnimationManager;
 import game.managers.ExplosionManager;
 import game.movement.Direction;
@@ -14,6 +13,7 @@ import game.objects.friendlies.spaceship.PlayerAttackTypes;
 import game.objects.missiles.Missile;
 import game.objects.missiles.MissileCreator;
 import game.objects.missiles.MissileManager;
+import gamedata.image.ImageEnums;
 import visual.objects.Sprite;
 import visual.objects.SpriteAnimation;
 

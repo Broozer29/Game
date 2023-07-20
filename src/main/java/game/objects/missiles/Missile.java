@@ -1,7 +1,5 @@
 package game.objects.missiles;
 
-import data.DataClass;
-import data.image.ImageEnums;
 import game.managers.OnScreenTextManager;
 import game.movement.Direction;
 import game.movement.Path;
@@ -9,6 +7,8 @@ import game.movement.PathFinder;
 import game.movement.Point;
 import game.objects.friendlies.powerups.PowerUpAcquiredText;
 import game.objects.friendlies.powerups.PowerUpEnums;
+import gamedata.DataClass;
+import gamedata.image.ImageEnums;
 import visual.objects.Sprite;
 import visual.objects.SpriteAnimation;
 

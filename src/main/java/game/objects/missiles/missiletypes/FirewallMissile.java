@@ -1,11 +1,11 @@
 package game.objects.missiles.missiletypes;
 
-import data.image.ImageEnums;
 import game.managers.ExplosionManager;
 import game.movement.Direction;
 import game.movement.PathFinder;
 import game.movement.Point;
 import game.objects.missiles.Missile;
+import gamedata.image.ImageEnums;
 
 public class FirewallMissile extends Missile {
 

@@ -3,11 +3,11 @@ package game.levels;
 import java.util.ArrayList;
 import java.util.List;
 
-import data.audio.AudioEnums;
 import game.managers.TimerManager;
 import game.movement.Direction;
 import game.objects.enemies.EnemyEnums;
 import game.spawner.EnemySpawnTimer;
+import gamedata.audio.AudioEnums;
 
 public class BadAppleLevel implements Level{
 

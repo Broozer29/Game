@@ -4,14 +4,14 @@ import java.awt.Image;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 
-import data.DataClass;
-import data.image.ImageCropper;
-import data.image.ImageDatabase;
-import data.image.ImageEnums;
-import data.image.ImageResizer;
-import data.image.ImageRotator;
 import game.movement.Direction;
 import game.movement.Point;
+import gamedata.DataClass;
+import gamedata.image.ImageCropper;
+import gamedata.image.ImageDatabase;
+import gamedata.image.ImageEnums;
+import gamedata.image.ImageResizer;
+import gamedata.image.ImageRotator;
 
 public class Sprite {
 	private ImageDatabase imgDatabase = ImageDatabase.getInstance();

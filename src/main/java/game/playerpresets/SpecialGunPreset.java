@@ -1,7 +1,7 @@
 package game.playerpresets;
 
-import data.PlayerStats;
 import game.objects.friendlies.spaceship.PlayerSpecialAttackTypes;
+import gamedata.PlayerStats;
 
 public class SpecialGunPreset implements SpecialGunPresetInterface{
 

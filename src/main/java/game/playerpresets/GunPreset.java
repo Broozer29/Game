@@ -1,10 +1,10 @@
 package game.playerpresets;
 
-import data.PlayerStats;
-import data.image.ImageDatabase;
-import data.image.ImageEnums;
 import game.movement.RegularPathFinder;
 import game.objects.friendlies.spaceship.PlayerAttackTypes;
+import gamedata.PlayerStats;
+import gamedata.image.ImageDatabase;
+import gamedata.image.ImageEnums;
 
 public class GunPreset implements GunPresetInterface {
 	

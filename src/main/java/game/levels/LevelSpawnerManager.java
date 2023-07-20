@@ -7,8 +7,6 @@ import java.util.Random;
 
 import javax.sound.sampled.UnsupportedAudioFileException;
 
-import data.DataClass;
-import data.audio.AudioEnums;
 import game.managers.AudioManager;
 import game.managers.TimerManager;
 import game.movement.Direction;
@@ -32,6 +30,8 @@ import game.spawner.EnemySpawnTimer;
 import game.spawner.FormationCreator;
 import game.spawner.SpawnFormationEnums;
 import game.spawner.SpawningCoordinator;
+import gamedata.DataClass;
+import gamedata.audio.AudioEnums;
 
 public class LevelSpawnerManager {
 

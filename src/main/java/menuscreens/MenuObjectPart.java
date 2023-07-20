@@ -1,6 +1,6 @@
 package menuscreens;
 
-import data.image.ImageEnums;
+import gamedata.image.ImageEnums;
 import visual.objects.Sprite;
 import visual.objects.SpriteAnimation;
 

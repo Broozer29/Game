@@ -1,7 +1,5 @@
 package game.objects.friendlies.spaceship.specialAttacks;
 
-import data.PlayerStats;
-import data.image.ImageEnums;
 import game.movement.Direction;
 import game.movement.PathFinder;
 import game.movement.Point;
@@ -10,6 +8,8 @@ import game.objects.missiles.Missile;
 import game.objects.missiles.MissileCreator;
 import game.objects.missiles.MissileManager;
 import game.objects.missiles.missiletypes.FirewallMissile;
+import gamedata.PlayerStats;
+import gamedata.image.ImageEnums;
 import visual.objects.SpriteAnimation;
 
 public class Firewall extends SpecialAttack {

@@ -4,9 +4,9 @@ import java.io.IOException;
 
 import javax.sound.sampled.UnsupportedAudioFileException;
 
-import data.audio.AudioDatabase;
-import data.audio.AudioEnums;
-import data.audio.CustomAudioClip;
+import gamedata.audio.AudioDatabase;
+import gamedata.audio.AudioEnums;
+import gamedata.audio.CustomAudioClip;
 
 public class AudioManager {
 

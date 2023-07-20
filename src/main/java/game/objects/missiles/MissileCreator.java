@@ -1,7 +1,5 @@
 package game.objects.missiles;
 
-import data.PlayerStats;
-import data.image.ImageEnums;
 import game.movement.Direction;
 import game.movement.PathFinder;
 import game.movement.Point;
@@ -17,6 +15,8 @@ import game.objects.missiles.missiletypes.FlamethrowerProjectile;
 import game.objects.missiles.missiletypes.Rocket1;
 import game.objects.missiles.missiletypes.SeekerProjectile;
 import game.objects.missiles.missiletypes.TazerProjectile;
+import gamedata.PlayerStats;
+import gamedata.image.ImageEnums;
 
 public class MissileCreator {
 

@@ -3,7 +3,7 @@ package game.movement;
 import java.util.ArrayList;
 import java.util.List;
 
-import data.DataClass;
+import gamedata.DataClass;
 
 public class RegularPathFinder implements PathFinder {
 

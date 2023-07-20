@@ -10,14 +10,14 @@ import java.util.Set;
 
 import javax.sound.sampled.UnsupportedAudioFileException;
 
-import data.DataClass;
-import data.PlayerStats;
-import data.BoostsUpgradesAndBuffsSettings;
-import data.image.ImageEnums;
 import game.managers.AnimationManager;
 import game.movement.MovementInitiator;
 import game.objects.Explosion;
 import game.objects.friendlies.spaceship.specialAttacks.SpecialAttack;
+import gamedata.BoostsUpgradesAndBuffsSettings;
+import gamedata.DataClass;
+import gamedata.PlayerStats;
+import gamedata.image.ImageEnums;
 import visual.objects.Sprite;
 import visual.objects.SpriteAnimation;
 

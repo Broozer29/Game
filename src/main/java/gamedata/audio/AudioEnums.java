@@ -1,4 +1,4 @@
-package data.audio;
+package gamedata.audio;
 
 public enum AudioEnums {
 	Player_Laserbeam,

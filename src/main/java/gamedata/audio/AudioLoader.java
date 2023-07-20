@@ -1,4 +1,4 @@
-package data.audio;
+package gamedata.audio;
 
 import java.io.File;
 import java.io.IOException;

@@ -1,11 +1,11 @@
-package data;
+package gamedata;
 
-import data.image.ImageEnums;
 import game.movement.PathFinder;
 import game.objects.friendlies.spaceship.PlayerAttackTypes;
 import game.objects.friendlies.spaceship.PlayerSpecialAttackTypes;
 import game.playerpresets.GunPreset;
 import game.playerpresets.SpecialGunPreset;
+import gamedata.image.ImageEnums;
 import visual.objects.SpriteAnimation;
 
 public class PlayerStats {

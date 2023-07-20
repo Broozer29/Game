@@ -1,4 +1,4 @@
-package data.image;
+package gamedata.image;
 
 public enum ImageEnums {
 

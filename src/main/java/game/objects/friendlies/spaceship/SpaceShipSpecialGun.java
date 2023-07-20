@@ -4,9 +4,6 @@ import java.io.IOException;
 
 import javax.sound.sampled.UnsupportedAudioFileException;
 
-import data.PlayerStats;
-import data.audio.AudioEnums;
-import data.image.ImageEnums;
 import game.managers.AudioManager;
 import game.managers.PlayerManager;
 import game.movement.Direction;
@@ -16,6 +13,9 @@ import game.objects.friendlies.spaceship.specialAttacks.ElectroShred;
 import game.objects.friendlies.spaceship.specialAttacks.Firewall;
 import game.objects.friendlies.spaceship.specialAttacks.SpecialAttack;
 import game.objects.missiles.MissileManager;
+import gamedata.PlayerStats;
+import gamedata.audio.AudioEnums;
+import gamedata.image.ImageEnums;
 import visual.objects.SpriteAnimation;
 
 public class SpaceShipSpecialGun {

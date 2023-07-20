@@ -6,11 +6,11 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 
-import data.image.ImageDatabase;
-import data.image.ImageEnums;
-import data.image.ImageResizer;
-import data.image.ImageRotator;
 import game.movement.Direction;
+import gamedata.image.ImageDatabase;
+import gamedata.image.ImageEnums;
+import gamedata.image.ImageResizer;
+import gamedata.image.ImageRotator;
 
 public class SpriteAnimation extends Sprite {
 

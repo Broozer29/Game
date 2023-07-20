@@ -4,10 +4,6 @@ import java.io.IOException;
 
 import javax.sound.sampled.UnsupportedAudioFileException;
 
-import data.PlayerStats;
-import data.BoostsUpgradesAndBuffsSettings;
-import data.audio.AudioEnums;
-import data.image.ImageEnums;
 import game.managers.AudioManager;
 import game.managers.PlayerManager;
 import game.movement.Direction;
@@ -16,6 +12,10 @@ import game.movement.PathFinder;
 import game.objects.missiles.Missile;
 import game.objects.missiles.MissileCreator;
 import game.objects.missiles.MissileManager;
+import gamedata.BoostsUpgradesAndBuffsSettings;
+import gamedata.PlayerStats;
+import gamedata.audio.AudioEnums;
+import gamedata.image.ImageEnums;
 import visual.objects.Sprite;
 
 public class SpaceShipRegularGun {

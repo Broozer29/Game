@@ -1,13 +1,13 @@
 
 package game.objects.missiles.missiletypes;
 
-import data.image.ImageEnums;
 import game.managers.ExplosionManager;
 import game.movement.Direction;
 import game.movement.PathFinder;
 import game.movement.Point;
 import game.objects.Explosion;
 import game.objects.missiles.Missile;
+import gamedata.image.ImageEnums;
 import visual.objects.SpriteAnimation;
 
 public class BombaProjectile extends Missile {

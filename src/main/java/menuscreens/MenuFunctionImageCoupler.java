@@ -1,7 +1,7 @@
 package menuscreens;
 
-import data.image.ImageEnums;
-import data.image.ImageLoader;
+import gamedata.image.ImageEnums;
+import gamedata.image.ImageLoader;
 import visual.objects.Sprite;
 
 public class MenuFunctionImageCoupler {

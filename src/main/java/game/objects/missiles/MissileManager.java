@@ -4,13 +4,13 @@ import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.List;
 
-import data.image.ImageEnums;
 import game.managers.AnimationManager;
 import game.managers.PlayerManager;
 import game.movement.MovementInitiator;
 import game.objects.enemies.Enemy;
 import game.objects.enemies.EnemyManager;
 import game.objects.friendlies.spaceship.specialAttacks.SpecialAttack;
+import gamedata.image.ImageEnums;
 import visual.objects.Sprite;
 
 public class MissileManager {
