@@ -29,7 +29,7 @@
             <configuration>
               <transformers>
                 <transformer>
-                  <mainClass>main.Main</mainClass>
+                  <mainClass>main.main</mainClass>
                 </transformer>
               </transformers>
             </configuration>
