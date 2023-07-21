@@ -6,7 +6,7 @@ import gamedata.audio.AudioDatabase;
 import gamedata.image.ImageDatabase;
 import menuscreens.BoardManager;
 
-public class Main {
+public class main {
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
