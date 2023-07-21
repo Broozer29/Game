@@ -84,9 +84,9 @@ public class CustomAudioClip {
 				volume.setValue(-10);
 				break;
 			case Furi_Wisdowm_Of_Rage:
-//				volume.setValue(-8);
+				volume.setValue(-8);
 				System.out.println("Set the music to very low volume in customaudioclip at 88");
-				volume.setValue(-50);
+//				volume.setValue(-50);
 				break;
 			case Default_EMP:
 				volume.setValue(-15);

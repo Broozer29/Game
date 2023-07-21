@@ -59,58 +59,58 @@ public class LevelSpawnerManager {
 
 	// Called when a level starts, to saturate enemy list
 	public void startLevel() {
-//		currentLevel = new FuriWisdomOfRageLevel();
-//		AudioManager audioManager = AudioManager.getInstance();
-//		for (EnemySpawnTimer timer : currentLevel.getTimers()) {
-//			timerManager.addEnemyTimerToList(timer);
-//		}
-//
-//		try {
-//			AudioEnums currentMusic = currentLevel.getSong();
-//			audioManager.playMusicAudio(currentMusic);
-//		} catch (UnsupportedAudioFileException | IOException e) {
-//			e.printStackTrace();
-//		}
+		currentLevel = new FuriWisdomOfRageLevel();
+		AudioManager audioManager = AudioManager.getInstance();
+		for (EnemySpawnTimer timer : currentLevel.getTimers()) {
+			timerManager.addEnemyTimerToList(timer);
+		}
 
-		FormationCreator formCreator = new FormationCreator();
-		EnemySpawnTimer timer = null;
-		EnemyFormation formation = null;
-		boolean loopable = false;
-		float scale = 1;
-		int additionalDelay = 0;
-		DataClass dataClass = DataClass.getInstance();
-		
-		
-		timer = createRandomSpawnTimer(EnemyEnums.Seeker, 1, 0, loopable, Direction.LEFT, scale, additionalDelay);
-		formation = formCreator.createFormation(SpawnFormationEnums.Dot, 50, 50);
-		timer.setFormation(formation, dataClass.getWindowWidth() / 2, dataClass.getWindowHeight() / 2);
-		addSpawnTimer(timer);
-		
-		timer = createRandomSpawnTimer(EnemyEnums.Seeker, 1, 0, loopable, Direction.LEFT_DOWN, scale, additionalDelay);
-		formation = formCreator.createFormation(SpawnFormationEnums.Dot, 50, 50);
-		timer.setFormation(formation, dataClass.getWindowWidth() / 2, dataClass.getWindowHeight() / 2);
-		addSpawnTimer(timer);
-		
-		timer = createRandomSpawnTimer(EnemyEnums.Seeker, 1, 0, loopable, Direction.LEFT_UP, scale, additionalDelay);
-		formation = formCreator.createFormation(SpawnFormationEnums.Dot, 50, 50);
-		timer.setFormation(formation, dataClass.getWindowWidth() / 2, dataClass.getWindowHeight() / 2);
-		addSpawnTimer(timer);
-		
-		timer = createRandomSpawnTimer(EnemyEnums.Seeker, 1, 0, loopable, Direction.RIGHT, scale, additionalDelay);
-		formation = formCreator.createFormation(SpawnFormationEnums.Dot, 50, 50);
-		timer.setFormation(formation, dataClass.getWindowWidth() / 2, dataClass.getWindowHeight() / 2);
-		addSpawnTimer(timer);
-		
-		timer = createRandomSpawnTimer(EnemyEnums.Seeker, 1, 0, loopable, Direction.RIGHT_DOWN, scale, additionalDelay);
-		formation = formCreator.createFormation(SpawnFormationEnums.Dot, 50, 50);
-		timer.setFormation(formation, dataClass.getWindowWidth() / 2, dataClass.getWindowHeight() / 2);
-		addSpawnTimer(timer);
-		
-		timer = createRandomSpawnTimer(EnemyEnums.Seeker, 1, 0, loopable, Direction.RIGHT_UP, scale, additionalDelay);
-		formation = formCreator.createFormation(SpawnFormationEnums.Dot, 50, 50);
-		timer.setFormation(formation, dataClass.getWindowWidth() / 2, dataClass.getWindowHeight() / 2);
-		addSpawnTimer(timer);
-		
+		try {
+			AudioEnums currentMusic = currentLevel.getSong();
+			audioManager.playMusicAudio(currentMusic);
+		} catch (UnsupportedAudioFileException | IOException e) {
+			e.printStackTrace();
+		}
+
+//		FormationCreator formCreator = new FormationCreator();
+//		EnemySpawnTimer timer = null;
+//		EnemyFormation formation = null;
+//		boolean loopable = false;
+//		float scale = 1;
+//		int additionalDelay = 0;
+//		DataClass dataClass = DataClass.getInstance();
+//		
+//		
+//		timer = createRandomSpawnTimer(EnemyEnums.Seeker, 1, 0, loopable, Direction.LEFT, scale, additionalDelay);
+//		formation = formCreator.createFormation(SpawnFormationEnums.Dot, 50, 50);
+//		timer.setFormation(formation, dataClass.getWindowWidth() / 2, dataClass.getWindowHeight() / 2);
+//		addSpawnTimer(timer);
+//		
+//		timer = createRandomSpawnTimer(EnemyEnums.Seeker, 1, 0, loopable, Direction.LEFT_DOWN, scale, additionalDelay);
+//		formation = formCreator.createFormation(SpawnFormationEnums.Dot, 50, 50);
+//		timer.setFormation(formation, dataClass.getWindowWidth() / 2, dataClass.getWindowHeight() / 2);
+//		addSpawnTimer(timer);
+//		
+//		timer = createRandomSpawnTimer(EnemyEnums.Seeker, 1, 0, loopable, Direction.LEFT_UP, scale, additionalDelay);
+//		formation = formCreator.createFormation(SpawnFormationEnums.Dot, 50, 50);
+//		timer.setFormation(formation, dataClass.getWindowWidth() / 2, dataClass.getWindowHeight() / 2);
+//		addSpawnTimer(timer);
+//		
+//		timer = createRandomSpawnTimer(EnemyEnums.Seeker, 1, 0, loopable, Direction.RIGHT, scale, additionalDelay);
+//		formation = formCreator.createFormation(SpawnFormationEnums.Dot, 50, 50);
+//		timer.setFormation(formation, dataClass.getWindowWidth() / 2, dataClass.getWindowHeight() / 2);
+//		addSpawnTimer(timer);
+//		
+//		timer = createRandomSpawnTimer(EnemyEnums.Seeker, 1, 0, loopable, Direction.RIGHT_DOWN, scale, additionalDelay);
+//		formation = formCreator.createFormation(SpawnFormationEnums.Dot, 50, 50);
+//		timer.setFormation(formation, dataClass.getWindowWidth() / 2, dataClass.getWindowHeight() / 2);
+//		addSpawnTimer(timer);
+//		
+//		timer = createRandomSpawnTimer(EnemyEnums.Seeker, 1, 0, loopable, Direction.RIGHT_UP, scale, additionalDelay);
+//		formation = formCreator.createFormation(SpawnFormationEnums.Dot, 50, 50);
+//		timer.setFormation(formation, dataClass.getWindowWidth() / 2, dataClass.getWindowHeight() / 2);
+//		addSpawnTimer(timer);
+//		
 //		for(int i = 0; i < 50; i +=5) {
 //			timer = createRandomSpawnTimer(EnemyEnums.Seeker, 1, i, loopable, Direction.LEFT_UP, scale, additionalDelay);
 //			formation = formCreator.createFormation(SpawnFormationEnums.Large_greaterthen, 50, 50);
