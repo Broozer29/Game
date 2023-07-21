@@ -24,7 +24,11 @@ public class SpriteAnimation extends Sprite {
 	private boolean infiniteLoop;
 	private ImageEnums imageType;
 	private Rectangle animationBounds;
-
+	
+    private int originXCoordinate;
+    private int originYCoordinate;
+	
+	
 	public SpriteAnimation(int x, int y, ImageEnums imageType, boolean infiniteLoop, float scale) {
 		super(x, y, scale);
 		loadGifFrames(imageType);
@@ -168,6 +172,7 @@ public class SpriteAnimation extends Sprite {
 		}
 	}
 
+	//Should be used with all animation creation when the animation has different frame dimensions
 	public void setCenterCoordinates(int newXCoordinate, int newYCoordinate) {
 		if (currentFrame < frames.size()) {
 			this.xCoordinate = newXCoordinate - (frames.get(currentFrame).getWidth(null) / 2);
@@ -178,4 +183,17 @@ public class SpriteAnimation extends Sprite {
 		}
 	}
 	
+
+    public void setOriginCoordinates(int xCoordinate, int yCoordinate) {
+        this.originXCoordinate = xCoordinate;
+        this.originYCoordinate = yCoordinate;
+    }
+    
+    public int getOriginXCoordinate() {
+        return this.originXCoordinate;
+    }
+
+    public int getOriginYCoordinate() {
+        return this.originYCoordinate;
+    }
 }

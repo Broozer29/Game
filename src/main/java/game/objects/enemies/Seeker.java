@@ -24,8 +24,8 @@ public class Seeker extends Enemy {
 		this.hitPoints = 50;
 		this.maxHitPoints = 50;
 		this.attackSpeedFrameCount = 200;
-		this.XMovementSpeed = 1;
-		this.YMovementSpeed = 1;
+		this.XMovementSpeed = 2;
+		this.YMovementSpeed = 2;
 		this.hasAttack = true;
 		this.showHealthBar = true;
 		this.deathSound = AudioEnums.Large_Ship_Destroyed;

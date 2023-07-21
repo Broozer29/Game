@@ -13,7 +13,6 @@ public class AnimationManager {
 	private List<SpriteAnimation> upperAnimationList = new ArrayList<SpriteAnimation>();
 	private List<SpriteAnimation> lowerAnimationList = new ArrayList<SpriteAnimation>();
 
-
 	public static AnimationManager getInstance() {
 		return instance;
 	}
@@ -34,7 +33,6 @@ public class AnimationManager {
 	}
 
 	public void addExhaustAnimation(SpriteAnimation animation) {
-		System.out.println(animation.getAnimationBounds());
 		if (animation != null) {
 			this.lowerAnimationList.add(animation);
 		}
@@ -48,8 +46,8 @@ public class AnimationManager {
 		this.lowerAnimationList.add(animation);
 	}
 
-	public void createAndAddUpperAnimation(int xCoordinate, int yCoordinate, ImageEnums animationType, boolean infiniteLoop,
-			float scale) {
+	public void createAndAddUpperAnimation(int xCoordinate, int yCoordinate, ImageEnums animationType,
+			boolean infiniteLoop, float scale) {
 		this.upperAnimationList.add(createAnimation(xCoordinate, yCoordinate, animationType, infiniteLoop, scale));
 	}
 
@@ -58,8 +56,8 @@ public class AnimationManager {
 		this.lowerAnimationList.add(createAnimation(xCoordinate, yCoordinate, animationType, infiniteLoop, scale));
 	}
 
-	public SpriteAnimation createAnimation(int xCoordinate, int yCoordinate, ImageEnums animationType, boolean infiniteLoop,
-			float scale) {
+	public SpriteAnimation createAnimation(int xCoordinate, int yCoordinate, ImageEnums animationType,
+			boolean infiniteLoop, float scale) {
 		return new SpriteAnimation(xCoordinate, yCoordinate, animationType, infiniteLoop, scale);
 	}
 
@@ -96,7 +94,6 @@ public class AnimationManager {
 
 	}
 
-
 	public List<SpriteAnimation> getUpperAnimations() {
 		return this.upperAnimationList;
 	}
@@ -107,6 +104,25 @@ public class AnimationManager {
 
 	public void updateGameTick() {
 		removeInvisibleAnimations();
+		recenterAnimations();
+	}
+
+	// Use for animations that have different sizes
+	private void recenterAnimations() {
+		for (SpriteAnimation anim : upperAnimationList) {
+			if (anim.isVisible()) {
+				if (anim.getOriginXCoordinate() != 0 && anim.getOriginYCoordinate() != 0) {
+					anim.setCenterCoordinates(anim.getOriginXCoordinate(), anim.getOriginYCoordinate());
+				}
+			}
+		}
+		for (SpriteAnimation anim : lowerAnimationList) {
+			if (anim.isVisible()) {
+				if (anim.getOriginXCoordinate() != 0 && anim.getOriginYCoordinate() != 0) {
+					anim.setCenterCoordinates(anim.getOriginXCoordinate(), anim.getOriginYCoordinate());
+				}
+			}
+		}
 	}
 
 }

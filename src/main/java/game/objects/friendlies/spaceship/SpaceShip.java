@@ -147,8 +147,7 @@ public class SpaceShip extends Sprite {
 		this.currentShieldRegenDelayFrame++;
 
 		for (SpriteAnimation anim : playerFollowingAnimations) {
-			anim.setX(xCoordinate);
-			anim.setY(yCoordinate);
+			anim.setOriginCoordinates(xCoordinate, yCoordinate);
 			anim.updateCurrentBoardBlock();
 		}
 

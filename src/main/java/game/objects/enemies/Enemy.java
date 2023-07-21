@@ -85,8 +85,9 @@ public class Enemy extends Sprite {
 
 		this.hitPoints -= damageTaken;
 		if (this.hitPoints <= 0) {
-			this.deathAnimation.setX(this.getCenterXCoordinate() - (deathAnimation.getWidth() / 2));
-			this.deathAnimation.setY(this.getCenterYCoordinate() - (deathAnimation.getHeight() / 2));
+//			this.deathAnimation.setX(this.getCenterXCoordinate() - (deathAnimation.getWidth() / 2));
+//			this.deathAnimation.setY(this.getCenterYCoordinate() - (deathAnimation.getHeight() / 2));
+			this.deathAnimation.setOriginCoordinates(this.getCenterXCoordinate(), this.getCenterYCoordinate());
 			animationManager.addDestroyedExplosion(deathAnimation);
 			try {
 				audioManager.addAudio(deathSound);
@@ -100,13 +101,12 @@ public class Enemy extends Sprite {
 	boolean changedMovementSpeed = false;
 
 	public void updateBoardBlockSpeed() {
-		if(currentBoardBlock != lastBoardBlock) {
+		if (currentBoardBlock != lastBoardBlock) {
 			this.XMovementSpeed = boardBlockSpeeds.get(currentBoardBlock);
 			lastBoardBlock = currentBoardBlock;
 		}
 	}
-	
-	
+
 	public void move() {
 		if (currentPath == null || currentPath.getWaypoints().isEmpty() || XMovementSpeed != lastUsedXMovementSpeed
 				|| YMovementSpeed != lastUsedYMovementSpeed || pathFinder.shouldRecalculatePath(currentPath)) {

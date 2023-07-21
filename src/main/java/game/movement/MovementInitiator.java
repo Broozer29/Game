@@ -7,6 +7,7 @@ import game.objects.friendlies.spaceship.SpaceShip;
 import game.objects.friendlies.spaceship.specialAttacks.SpecialAttack;
 import game.objects.missiles.Missile;
 
+//Class that executes all movement. If movement of an enemy should be impaired, here is where you can check and impair it.
 public class MovementInitiator {
 
 	private static MovementInitiator instance = new MovementInitiator();
