@@ -29,7 +29,7 @@ public class EnemyFormation {
 					
 //					System.out.println("Spawning on:" + spawnX + "  " + spawnY);
 					// Create the new enemy here and add it to the enemies list
-					LevelSpawnerManager.getInstance().spawnEnemy(spawnX, spawnY, timerEnemyType, 1, direction, scale);
+					LevelSpawnerManager.getInstance().spawnEnemy(spawnX, spawnY, timerEnemyType, 1, direction, scale, false);
 				}
 			}
 		}

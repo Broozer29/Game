@@ -45,7 +45,7 @@ public class EnemySpawnTimer {
 	public void activateTimer() {
 		if (formation == null) {
 			LevelSpawnerManager.getInstance().spawnEnemy(0, 0, this.timerEnemyType, this.amountOfSpawnAttempts,
-					this.direction, this.enemyScale);
+					this.direction, this.enemyScale, true);
 		} else {
 			formation.spawnFormation(formationXCoordinate, formationYCoordinate, timerEnemyType, direction, enemyScale);
 		}

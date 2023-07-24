@@ -10,7 +10,7 @@ public class FormationCreator {
 			pattern = createPatternFromStrings(
 					"X...X",
 					".X.X.", 
-					"..XX.", 
+					"..X..", 
 					".X.X.", 
 					"X...X");
 			break;
