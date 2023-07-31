@@ -10,6 +10,8 @@ import java.util.Set;
 
 import javax.sound.sampled.UnsupportedAudioFileException;
 
+import controllerInput.ControllerInput;
+import controllerInput.ControllerInputReader;
 import game.managers.AnimationManager;
 import game.movement.MovementInitiator;
 import game.objects.Explosion;
@@ -27,6 +29,7 @@ public class SpaceShip extends Sprite {
 	private int directiony;
 
 	private float currentShieldRegenDelayFrame;
+	private boolean controlledByKeyboard = true;
 
 	private boolean isEngineBoosted;
 	private SpriteAnimation deathAnimation = null;
@@ -42,7 +45,8 @@ public class SpaceShip extends Sprite {
 	private List<SpecialAttack> playerFollowingSpecialAttacks = new ArrayList<SpecialAttack>();
 
 	public SpaceShip() {
-		super(DataClass.getInstance().getWindowWidth() / 10, DataClass.getInstance().getWindowHeight() / 2, (float) 0.8);
+		super(DataClass.getInstance().getWindowWidth() / 10, DataClass.getInstance().getWindowHeight() / 2,
+				(float) 0.8);
 		playerStats = PlayerStats.getInstance();
 		powerUpEffects = BoostsUpgradesAndBuffsSettings.getInstance();
 		initShip();
@@ -88,15 +92,15 @@ public class SpaceShip extends Sprite {
 					ImageEnums.Default_Player_Shield_Damage, false, 1);
 
 			shieldAnimation.setFrameDelay(2);
-
-			int yDist = 30;
-			int xDist = 10;
-			shieldAnimation.addXOffset(-xDist);
-			shieldAnimation.addYOffset(-yDist);
+			shieldAnimation.setOriginCoordinates(this.xCoordinate, this.yCoordinate);
+			int yDist = 5;
+			int xDist = 30;
+			shieldAnimation.addXOffset(xDist);
+			shieldAnimation.addYOffset(yDist);
 			playerFollowingAnimations.add(shieldAnimation);
 
-			shieldAnimation.setX(this.xCoordinate);
-			shieldAnimation.setY(this.yCoordinate);
+//			shieldAnimation.setX(this.xCoordinate);
+//			shieldAnimation.setY(this.yCoordinate);
 			AnimationManager.getInstance().addUpperAnimation(shieldAnimation);
 
 		}
@@ -171,10 +175,17 @@ public class SpaceShip extends Sprite {
 		}
 	}
 
-	// Moves the spaceship
+	// Moves the spaceship, constantly called
 	public void move() {
 		xCoordinate += directionx;
 		yCoordinate += directiony;
+
+		if (!controlledByKeyboard) {
+			haltMoveDown();
+			haltMoveLeft();
+			haltMoveRight();
+			haltMoveUp();
+		}
 
 		playerStats.setHomingRectangleYCoordinate(
 				(int) (yCoordinate - (height * playerStats.getHomingRectangleResizeScale())));
@@ -228,6 +239,31 @@ public class SpaceShip extends Sprite {
 		}
 	}
 
+	public void repairHealth(float healAmount) {
+		playerStats.changeHitPoints(healAmount);
+	}
+
+	public void repairShields(float healAmount) {
+		playerStats.changeShieldHitpoints(healAmount);
+	}
+
+	public List<SpaceShipSpecialGun> getSpecialGuns() {
+		return this.spaceShipSpecialGuns;
+	}
+
+	public void addFollowingSpecialAttack(SpecialAttack specialAttack) {
+		this.playerFollowingSpecialAttacks.add(specialAttack);
+		AnimationManager.getInstance().addUpperAnimation(specialAttack.getAnimation());
+	}
+
+	public SpriteAnimation getExhaustAnimation() {
+		return this.exhaustAnimation;
+	}
+
+	public SpriteAnimation getDeathAnimation() {
+		return this.deathAnimation;
+	}
+
 	private final Set<Integer> pressedKeys = new HashSet<>();
 
 	public synchronized void keyPressed(KeyEvent e) {
@@ -244,19 +280,19 @@ public class SpaceShip extends Sprite {
 					break;
 				case (KeyEvent.VK_A):
 				case (KeyEvent.VK_LEFT):
-					directionx = -playerStats.getCurrentMovementSpeed(isEngineBoosted);
+					moveLeftQuick();
 					break;
 				case (KeyEvent.VK_D):
 				case (KeyEvent.VK_RIGHT):
-					directionx = playerStats.getCurrentMovementSpeed(isEngineBoosted);
+					moveRightQuick();
 					break;
 				case (KeyEvent.VK_W):
 				case (KeyEvent.VK_UP):
-					directiony = -playerStats.getCurrentMovementSpeed(isEngineBoosted);
+					moveUpQuick();
 					break;
 				case (KeyEvent.VK_S):
 				case (KeyEvent.VK_DOWN):
-					directiony = playerStats.getCurrentMovementSpeed(isEngineBoosted);
+					moveDownQuick();
 					break;
 				case (KeyEvent.VK_Q):
 				case (KeyEvent.VK_ENTER):
@@ -283,16 +319,16 @@ public class SpaceShip extends Sprite {
 		if (key == KeyEvent.VK_SPACE || key == KeyEvent.VK_Q) {
 		}
 		if (key == KeyEvent.VK_A || key == KeyEvent.VK_LEFT) {
-			directionx = 0;
+			haltMoveLeft();
 		}
 		if (key == KeyEvent.VK_D || key == KeyEvent.VK_RIGHT) {
-			directionx = 0;
+			haltMoveRight();
 		}
 		if (key == KeyEvent.VK_W || key == KeyEvent.VK_UP) {
-			directiony = 0;
+			haltMoveUp();
 		}
 		if (key == KeyEvent.VK_S || key == KeyEvent.VK_DOWN) {
-			directiony = 0;
+			haltMoveDown();
 		}
 		if (key == KeyEvent.VK_SHIFT || key == KeyEvent.VK_E) {
 			isEngineBoosted = false;
@@ -300,29 +336,96 @@ public class SpaceShip extends Sprite {
 		}
 	}
 
-	public void repairHealth(float healAmount) {
-		playerStats.changeHitPoints(healAmount);
+	// Called by GameBoard every loop if a controller is connected
+	public void update(ControllerInputReader controllerInputReader) {
+		controlledByKeyboard = false;
+		controllerInputReader.pollController();
+		if (controllerInputReader.isInputActive(ControllerInput.MOVE_LEFT_SLOW)) {
+			moveLeftSlow();
+		} else if (controllerInputReader.isInputActive(ControllerInput.MOVE_LEFT_QUICK)) {
+			moveLeftQuick();
+		}
+
+		if (controllerInputReader.isInputActive(ControllerInput.MOVE_RIGHT_SLOW)) {
+			moveRightSlow();
+		} else if (controllerInputReader.isInputActive(ControllerInput.MOVE_RIGHT_QUICK)) {
+			moveRightQuick();
+		}
+
+		if (controllerInputReader.isInputActive(ControllerInput.MOVE_UP_QUICK)) {
+			moveUpQuick();
+		} else if (controllerInputReader.isInputActive(ControllerInput.MOVE_UP_SLOW)) {
+			moveUpSlow();
+		}
+
+		if (controllerInputReader.isInputActive(ControllerInput.MOVE_DOWN_SLOW)) {
+			moveDownSlow();
+		} else if (controllerInputReader.isInputActive(ControllerInput.MOVE_DOWN_QUICK)) {
+			moveDownQuick();
+		}
+
+		if (controllerInputReader.isInputActive(ControllerInput.FIRE)) {
+			try {
+				fire();
+			} catch (UnsupportedAudioFileException | IOException e) {
+				e.printStackTrace();
+			}
+		}
+		if (controllerInputReader.isInputActive(ControllerInput.SPECIAL_ATTACK)) {
+			try {
+				fireSpecialAttack();
+			} catch (UnsupportedAudioFileException | IOException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
-	public void repairShields(float healAmount) {
-		playerStats.changeShieldHitpoints(healAmount);
+	private void moveLeftSlow() {
+		directionx = -playerStats.getCurrentMovementSpeed(isEngineBoosted);
 	}
 
-	public List<SpaceShipSpecialGun> getSpecialGuns() {
-		return this.spaceShipSpecialGuns;
+	private void moveLeftQuick() {
+		directionx = -playerStats.getCurrentMovementSpeed(isEngineBoosted);
 	}
 
-	public void addFollowingSpecialAttack(SpecialAttack specialAttack) {
-		this.playerFollowingSpecialAttacks.add(specialAttack);
-		AnimationManager.getInstance().addUpperAnimation(specialAttack.getAnimation());
+	private void haltMoveLeft() {
+		directionx = 0;
 	}
 
-	public SpriteAnimation getExhaustAnimation() {
-		return this.exhaustAnimation;
+	private void moveRightSlow() {
+		directionx = playerStats.getCurrentMovementSpeed(isEngineBoosted);
 	}
 
-	public SpriteAnimation getDeathAnimation() {
-		return this.deathAnimation;
+	private void moveRightQuick() {
+		directionx = playerStats.getCurrentMovementSpeed(isEngineBoosted);
+	}
+
+	private void haltMoveRight() {
+		directionx = 0;
+	}
+
+	private void moveUpSlow() {
+		directiony = -playerStats.getCurrentMovementSpeed(isEngineBoosted);
+	}
+
+	private void moveUpQuick() {
+		directiony = -playerStats.getCurrentMovementSpeed(isEngineBoosted);
+	}
+
+	private void haltMoveUp() {
+		directiony = 0;
+	}
+
+	private void moveDownSlow() {
+		directiony = playerStats.getCurrentMovementSpeed(isEngineBoosted);
+	}
+
+	private void moveDownQuick() {
+		directiony = playerStats.getCurrentMovementSpeed(isEngineBoosted);
+	}
+
+	private void haltMoveDown() {
+		directiony = 0;
 	}
 
 }

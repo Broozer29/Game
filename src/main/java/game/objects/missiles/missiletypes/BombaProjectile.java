@@ -1,6 +1,7 @@
 
 package game.objects.missiles.missiletypes;
 
+import game.managers.AnimationManager;
 import game.managers.ExplosionManager;
 import game.movement.Direction;
 import game.movement.PathFinder;
@@ -35,6 +36,20 @@ public class BombaProjectile extends Missile {
 			ExplosionManager.getInstance().addExistingExplosion(explosion);
 			this.setVisible(false);
 		}
+	}
+	
+	//Destroyed explosives explode
+	public void destroyMissile() {
+		SpriteAnimation animation = new SpriteAnimation(xCoordinate, yCoordinate, ImageEnums.Bomba_Missile_Explosion, false, scale);
+		animation.setX(xCoordinate - (animation.getWidth() / 2));
+		animation.setY(yCoordinate - (animation.getHeight() / 2));
+		animation.setFrameDelay(3);
+		Explosion explosion = new Explosion(xCoordinate, yCoordinate, scale, animation, 20, false);
+		explosion.setX(xCoordinate - (animation.getWidth() / 2));
+		explosion.setY(yCoordinate - (animation.getHeight() / 2));
+		
+		ExplosionManager.getInstance().addExistingExplosion(explosion);
+		this.setVisible(false);
 	}
 
 }

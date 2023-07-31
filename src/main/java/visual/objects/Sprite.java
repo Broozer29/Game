@@ -28,8 +28,11 @@ public class Sprite {
 	protected int yOffset;
 	protected Rectangle bounds;
 	protected Point currentLocation;
-
 	protected int currentBoardBlock;
+	
+	protected float transparancyAlpha;
+	protected boolean increaseTransparancy;
+	protected float transparancyStepSize;
 
 	public Sprite(int x, int y, float scale) {
 		this.xCoordinate = x;
@@ -37,7 +40,10 @@ public class Sprite {
 		this.scale = scale;
 		this.visible = true;
 		this.bounds = new Rectangle();
-		currentLocation = new Point(x, y);
+		this.transparancyAlpha = (float) 1.0;
+		this.increaseTransparancy = false;
+		this.transparancyStepSize = 0;
+		this.currentLocation = new Point(x, y);
 	}
 
 	protected void loadImage(ImageEnums imageName) {
@@ -203,5 +209,16 @@ public class Sprite {
 
 	public int getCurrentBoardBlock() {
 		return this.currentBoardBlock;
+	}
+	
+	//Sets the new transparancy values, also tells the managers to increase the transparancy or not
+	public void setTransparancyAlpha(boolean shouldIncrease, float newAlphaTransparancy, float transparacyStepSize) {
+		this.increaseTransparancy = shouldIncrease;
+		this.transparancyAlpha = newAlphaTransparancy;
+		this.transparancyStepSize = transparacyStepSize;
+	}
+	
+	public float getTransparancyAlpha() {
+		return this.transparancyAlpha;
 	}
 }

@@ -1,11 +1,15 @@
 package gamedata;
 
+import gamedata.audio.AudioPositionCalculator;
+import gamedata.audio.CustomAudioClip;
+
 public class GameStateInfo {
 
 	private static GameStateInfo instance = new GameStateInfo();
 	private GameStatusEnums gameState;
 	private int DELAY = 0;
 	private float musicSeconds = 0;
+	private float maxMusicSeconds = 0;
 	
 	private GameStateInfo() {
 		initializeGame();
@@ -45,4 +49,14 @@ public class GameStateInfo {
 	public void setMusicSeconds(float musicSeconds) {
 		this.musicSeconds = musicSeconds;
 	}
+	
+	public void setMaxMusicSeconds(CustomAudioClip music) {
+		this.maxMusicSeconds = AudioPositionCalculator.getInstance().getPlaybackTimeInSeconds(music.getClip(), (long) music.getFrameLength());
+	}
+	
+	public float getMaxMusicSeconds() {
+		return this.maxMusicSeconds;
+	}
+	
+	
 }

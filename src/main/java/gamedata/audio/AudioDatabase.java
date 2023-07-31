@@ -84,11 +84,11 @@ public class AudioDatabase {
 	}
 
 	private void initMusic() throws LineUnavailableException {
-		DefaultMusic = new CustomAudioClip(AudioEnums.Apple_Holder_Remix, true);
-		FuriWisdomOfRage = new CustomAudioClip(AudioEnums.Furi_Wisdowm_Of_Rage, true);
-		FuriMakeThisRight = new CustomAudioClip(AudioEnums.Furi_Make_This_Right , true);
-		FuriMyOnlyChance = new CustomAudioClip(AudioEnums.Furi_My_Only_Chance, true);
-		ayasaTheReasonWhy = new CustomAudioClip(AudioEnums.Ayasa_The_Reason_Why, true);
+		DefaultMusic = new CustomAudioClip(AudioEnums.Apple_Holder_Remix, false);
+		FuriWisdomOfRage = new CustomAudioClip(AudioEnums.Furi_Wisdowm_Of_Rage, false);
+		FuriMakeThisRight = new CustomAudioClip(AudioEnums.Furi_Make_This_Right , false);
+		FuriMyOnlyChance = new CustomAudioClip(AudioEnums.Furi_My_Only_Chance, false);
+		ayasaTheReasonWhy = new CustomAudioClip(AudioEnums.Ayasa_The_Reason_Why, false);
 
 	}
 

@@ -71,7 +71,7 @@ public class Explosion extends Sprite {
 	}
 
 	public boolean shouldDealDamage() {
-		if (this.animation.getFrame() < 5 || this.damage == 0) {
+		if (this.animation.getCurrentFrame() < 5 || this.damage == 0) {
 			return true;
 		} else
 			return false;

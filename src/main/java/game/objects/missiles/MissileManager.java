@@ -201,6 +201,7 @@ public class MissileManager {
 		case Firespout_Animation:
 			break;
 		default:
+			//Create method that destroys the missile and plays an explosion animation of the missile removing
 			missile.setVisible(false);
 			break;
 		}

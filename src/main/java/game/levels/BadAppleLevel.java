@@ -215,7 +215,7 @@ public class BadAppleLevel implements Level{
 			Direction direction, float enemyScale, int additionalDelay) {
 
 		EnemySpawnTimer timer = new EnemySpawnTimer(timeBeforeActivation, spawnAttempts, enemyType, loopable, direction,
-				enemyScale, additionalDelay);
+				enemyScale, additionalDelay, 2, 2);
 		enemySpawnTimers.add(timer);
 	}
 

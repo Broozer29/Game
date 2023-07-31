@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import game.movement.Direction;
+import gamedata.image.ImageCropper;
 import gamedata.image.ImageDatabase;
 import gamedata.image.ImageEnums;
 import gamedata.image.ImageResizer;
@@ -24,11 +25,10 @@ public class SpriteAnimation extends Sprite {
 	private boolean infiniteLoop;
 	private ImageEnums imageType;
 	private Rectangle animationBounds;
-	
-    private int originXCoordinate;
-    private int originYCoordinate;
-	
-	
+
+	private int originXCoordinate;
+	private int originYCoordinate;
+
 	public SpriteAnimation(int x, int y, ImageEnums imageType, boolean infiniteLoop, float scale) {
 		super(x, y, scale);
 		loadGifFrames(imageType);
@@ -100,7 +100,7 @@ public class SpriteAnimation extends Sprite {
 	}
 
 	// returns current frame of the gif
-	public Image getCurrentFrame() {
+	public Image getCurrentFrameImage() {
 		if (currentFrame >= frames.size()) {
 			if (infiniteLoop) {
 				refreshAnimation(this.xCoordinate, this.yCoordinate);
@@ -119,12 +119,18 @@ public class SpriteAnimation extends Sprite {
 			} else
 				frameDelayCounter++;
 			animationBounds.setBounds(xCoordinate + xOffset, yCoordinate + yOffset, width, height);
+
+			if (this.increaseTransparancy) {
+				if (this.transparancyAlpha + this.transparancyStepSize < 1.0f) {
+					this.transparancyAlpha += this.transparancyStepSize;
+				}
+			}
 			return returnImage;
 		}
 		return null;
 	}
 
-	public int getFrame() {
+	public int getCurrentFrame() {
 		return this.currentFrame;
 	}
 
@@ -167,12 +173,14 @@ public class SpriteAnimation extends Sprite {
 
 	public void setImageDimensions(int newWidth, int newHeight) {
 		ImageResizer imageResizer = ImageResizer.getInstance();
-		for (BufferedImage image : frames) {
-			image = imageResizer.resizeImageToDimensions(image, newWidth, newHeight);
+
+		for (int i = 0; i < frames.size(); i++) {
+			frames.set(i, imageResizer.resizeImageToDimensions(frames.get(i), newWidth, newHeight));
 		}
 	}
 
-	//Should be used with all animation creation when the animation has different frame dimensions
+	// Should be used with all animation creation when the animation has different frame
+	// dimensions
 	public void setCenterCoordinates(int newXCoordinate, int newYCoordinate) {
 		if (currentFrame < frames.size()) {
 			this.xCoordinate = newXCoordinate - (frames.get(currentFrame).getWidth(null) / 2);
@@ -182,18 +190,25 @@ public class SpriteAnimation extends Sprite {
 			this.yCoordinate = newYCoordinate - (frames.get(currentFrame - 1).getHeight(null) / 2);
 		}
 	}
-	
 
-    public void setOriginCoordinates(int xCoordinate, int yCoordinate) {
-        this.originXCoordinate = xCoordinate;
-        this.originYCoordinate = yCoordinate;
-    }
-    
-    public int getOriginXCoordinate() {
-        return this.originXCoordinate;
-    }
+	public void setOriginCoordinates(int xCoordinate, int yCoordinate) {
+		this.originXCoordinate = xCoordinate;
+		this.originYCoordinate = yCoordinate;
+	}
 
-    public int getOriginYCoordinate() {
-        return this.originYCoordinate;
-    }
+	public int getOriginXCoordinate() {
+		return this.originXCoordinate;
+	}
+
+	public int getOriginYCoordinate() {
+		return this.originYCoordinate;
+	}
+
+	public void cropAnimation() {
+		ImageCropper imageCropper = ImageCropper.getInstance();
+		for (int i = 0; i < frames.size(); i++) {
+			frames.set(i, imageCropper.cropToContent(frames.get(i)));
+		}
+	}
+
 }

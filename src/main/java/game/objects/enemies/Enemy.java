@@ -51,13 +51,12 @@ public class Enemy extends Sprite {
 	protected EnemyEnums enemyType;
 	protected AudioEnums deathSound;
 	protected boolean showHealthBar;
-	protected List<Integer> boardBlockSpeeds = new ArrayList<Integer>();
 	protected int lastBoardBlock;
 	protected SpriteAnimation exhaustAnimation = null;
 	protected SpriteAnimation deathAnimation;
 
 	public Enemy(int x, int y, Point destination, Direction rotation, EnemyEnums enemyType, float scale,
-			PathFinder pathFinder) {
+			PathFinder pathFinder, int xMovementSpeed, int yMovementSpeed) {
 		super(x, y, scale);
 		this.enemyType = enemyType;
 		this.currentLocation = new Point(x, y);
@@ -66,6 +65,8 @@ public class Enemy extends Sprite {
 		updateCurrentBoardBlock();
 		this.lastBoardBlock = currentBoardBlock;
 		this.pathFinder = pathFinder;
+		this.XMovementSpeed = xMovementSpeed;
+		this.YMovementSpeed = yMovementSpeed;
 	}
 
 	protected void setExhaustanimation(ImageEnums imageType) {
@@ -100,12 +101,6 @@ public class Enemy extends Sprite {
 
 	boolean changedMovementSpeed = false;
 
-	public void updateBoardBlockSpeed() {
-		if (currentBoardBlock != lastBoardBlock) {
-			this.XMovementSpeed = boardBlockSpeeds.get(currentBoardBlock);
-			lastBoardBlock = currentBoardBlock;
-		}
-	}
 
 	public void move() {
 		if (currentPath == null || currentPath.getWaypoints().isEmpty() || XMovementSpeed != lastUsedXMovementSpeed

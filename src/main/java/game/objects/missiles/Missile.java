@@ -1,5 +1,6 @@
 package game.objects.missiles;
 
+import game.managers.AnimationManager;
 import game.managers.OnScreenTextManager;
 import game.movement.Direction;
 import game.movement.Path;
@@ -285,6 +286,13 @@ public class Missile extends Sprite {
 	
 	protected void rotateMissileAnimation(Direction direction) {
 		this.animation.rotateAnimetion(direction);
+	}
+	
+	public void destroyMissile() {
+		if(explosionAnimation != null) {
+			AnimationManager.getInstance().addDestroyedExplosion(explosionAnimation);
+		}
+		this.setVisible(false);
 	}
 
 }

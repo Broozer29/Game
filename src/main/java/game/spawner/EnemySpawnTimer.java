@@ -12,8 +12,8 @@ public class EnemySpawnTimer {
 	private Direction direction;
 	private EnemyEnums timerEnemyType;
 	private float enemyScale;
-	
-	//Required for formation spawning
+
+	// Required for formation spawning
 	private EnemyFormation formation = null;
 	private int formationXCoordinate;
 	private int formationYCoordinate;
@@ -25,9 +25,12 @@ public class EnemySpawnTimer {
 	private boolean loopable;
 	private int additionalDelay;
 	private float currentTime;
+	
+	private int xMovementSpeed;
+	private int yMovementSpeed;
 
 	public EnemySpawnTimer(int timeBeforeActivation, int amountOfSpawnAttempts, EnemyEnums timerEnemyType,
-			boolean loopable, Direction direction, float enemyScale, int additionalDelay) {
+			boolean loopable, Direction direction, float enemyScale, int additionalDelay,int xMovementSpeed, int MovementSpeed) {
 		this.enemyScale = enemyScale;
 		this.timerEnemyType = timerEnemyType;
 		this.amountOfSpawnAttempts = amountOfSpawnAttempts;
@@ -38,6 +41,8 @@ public class EnemySpawnTimer {
 		this.setCurrentTime(0);
 		this.setAdditionalDelay(additionalDelay);
 		this.finished = false;
+		this.xMovementSpeed = xMovementSpeed;
+		this.yMovementSpeed = yMovementSpeed;
 	}
 
 	// Vuur event naar de timerManager dat deze timer voorbij is. Bijvoorbeeld om
@@ -45,9 +50,9 @@ public class EnemySpawnTimer {
 	public void activateTimer() {
 		if (formation == null) {
 			LevelSpawnerManager.getInstance().spawnEnemy(0, 0, this.timerEnemyType, this.amountOfSpawnAttempts,
-					this.direction, this.enemyScale, true);
+					this.direction, this.enemyScale, true, this.xMovementSpeed, this.yMovementSpeed);
 		} else {
-			formation.spawnFormation(formationXCoordinate, formationYCoordinate, timerEnemyType, direction, enemyScale);
+			formation.spawnFormation(formationXCoordinate, formationYCoordinate, timerEnemyType, direction, enemyScale, this.xMovementSpeed, this.yMovementSpeed);
 		}
 		if (this.loopable) {
 			this.additionalDelay = 0;

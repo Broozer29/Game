@@ -15,31 +15,17 @@ public class Alien extends Enemy {
 
 	private PathFinder missilePathFinder;
 
-	public Alien(int x, int y, Point destination, Direction rotation, float scale, PathFinder pathFinder) {
-		super(x, y, destination, rotation, EnemyEnums.Alien, scale, pathFinder);
+	public Alien(int x, int y, Point destination, Direction rotation, float scale, PathFinder pathFinder, int xMovementSpeed, int yMovementSpeed) {
+		super(x, y, destination, rotation, EnemyEnums.Alien, scale, pathFinder, xMovementSpeed,yMovementSpeed);
 		loadImage(ImageEnums.Alien);
-		this.initBoardBlockSpeeds();
 		this.hitPoints = 35;
 		this.maxHitPoints = 35;
 		this.attackSpeedFrameCount = 150;
-		this.XMovementSpeed = 1;
-		this.YMovementSpeed = 1;
 		this.hasAttack = true;
 		this.deathSound = AudioEnums.Alien_Spaceship_Destroyed;
 		this.showHealthBar = true;
 		this.setVisible(true);
 		this.setRotation(rotation);
-	}
-
-	private void initBoardBlockSpeeds() {
-		this.boardBlockSpeeds.add(0, 1);
-		this.boardBlockSpeeds.add(1, 1);
-		this.boardBlockSpeeds.add(2, 1);
-		this.boardBlockSpeeds.add(3, 2);
-		this.boardBlockSpeeds.add(4, 2);
-		this.boardBlockSpeeds.add(5, 2);
-		this.boardBlockSpeeds.add(6, 3);
-		this.boardBlockSpeeds.add(7, 3);
 	}
 
 	// Called every game tick. If weapon is not on cooldown, fire a shot.

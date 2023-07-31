@@ -12,19 +12,16 @@ import gamedata.image.ImageEnums;
 public class Bulldozer extends Enemy {
 	private PathFinder missilePathFinder;
 
-	public Bulldozer(int x, int y, Point destination, Direction rotation, float scale, PathFinder pathFinder) {
-		super(x, y, destination, rotation, EnemyEnums.Bulldozer, scale, pathFinder);
+	public Bulldozer(int x, int y, Point destination, Direction rotation, float scale, PathFinder pathFinder, int xMovementSpeed, int yMovementSpeed) {
+		super(x, y, destination, rotation, EnemyEnums.Bulldozer, scale, pathFinder, xMovementSpeed, yMovementSpeed);
 		loadImage(ImageEnums.Bulldozer);
 		setExhaustanimation(ImageEnums.Bulldozer_Normal_Exhaust);
 		setDeathAnimation(ImageEnums.Bulldozer_Destroyed_Explosion);
 		this.exhaustAnimation.setFrameDelay(3);
 		this.deathAnimation.setFrameDelay(4);
-		this.initBoardBlockSpeeds();
 		this.hitPoints = 50;
 		this.maxHitPoints = 50;
 		this.attackSpeedFrameCount = 200;
-		this.XMovementSpeed = 2;
-		this.YMovementSpeed = 1;
 		this.hasAttack = true;
 		this.showHealthBar = true;
 		this.deathSound = AudioEnums.Large_Ship_Destroyed;
@@ -32,17 +29,6 @@ public class Bulldozer extends Enemy {
 		this.setRotation(rotation);
 		this.deathAnimation.rotateAnimetion(rotation);
 		this.missilePathFinder = new RegularPathFinder();
-	}
-
-	private void initBoardBlockSpeeds() {
-		this.boardBlockSpeeds.add(0, 1);
-		this.boardBlockSpeeds.add(1, 1);
-		this.boardBlockSpeeds.add(2, 1);
-		this.boardBlockSpeeds.add(3, 2);
-		this.boardBlockSpeeds.add(4, 2);
-		this.boardBlockSpeeds.add(5, 2);
-		this.boardBlockSpeeds.add(6, 3);
-		this.boardBlockSpeeds.add(7, 3);
 	}
 
 	// Called every game tick. If weapon is not on cooldown, fire a shot.

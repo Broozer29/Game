@@ -1,6 +1,8 @@
 package menuscreens.boards;
 
+import java.awt.AlphaComposite;
 import java.awt.Color;
+import java.awt.Composite;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontMetrics;
@@ -11,14 +13,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Random;
 
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
+import controllerInput.ConnectedControllers;
 import game.UI.UIObject;
 import game.levels.LevelSpawnerManager;
 import game.managers.AnimationManager;
@@ -47,7 +49,6 @@ import game.objects.missiles.MissileManager;
 import game.playerpresets.GunPreset;
 import game.playerpresets.SpecialGunPreset;
 import gamedata.BoostsUpgradesAndBuffsSettings;
-import gamedata.ConnectedControllers;
 import gamedata.DataClass;
 import gamedata.GameStateInfo;
 import gamedata.GameStatusEnums;
@@ -55,7 +56,6 @@ import gamedata.PlayerStats;
 import gamedata.audio.AudioDatabase;
 import gamedata.audio.AudioPositionCalculator;
 import menuscreens.BoardManager;
-import net.java.games.input.Component;
 import visual.objects.Sprite;
 import visual.objects.SpriteAnimation;
 
@@ -86,6 +86,7 @@ public class GameBoard extends JPanel implements ActionListener {
 	private OnScreenTextManager textManager = OnScreenTextManager.getInstance();
 	private BoostsUpgradesAndBuffsSettings tempSettings = BoostsUpgradesAndBuffsSettings.getInstance();
 	private AudioPositionCalculator audioPosCalc = AudioPositionCalculator.getInstance();
+
 	private ConnectedControllers controllers = ConnectedControllers.getInstance();
 
 	public GameBoard() {
@@ -140,8 +141,9 @@ public class GameBoard extends JPanel implements ActionListener {
 
 		// The cursed ling
 		System.out.println("Skipping time in the level on on GameBoard 142");
-
-//		long framePosition = AudioPositionCalculator.getInstance().getFrameLengthForTime(audioManager.getBackgroundMusic().getClip(), 220);
+//		int seconds = 304;
+//		long framePosition = AudioPositionCalculator.getInstance()
+//				.getFrameLengthForTime(audioManager.getBackgroundMusic().getClip(), seconds);
 //		audioManager.getBackgroundMusic().setFramePosition((int) framePosition);
 	}
 
@@ -174,14 +176,17 @@ public class GameBoard extends JPanel implements ActionListener {
 		super.paintComponent(g);
 		Graphics2D g2d = (Graphics2D) g;
 
-		if (gameState.getGameState() == GameStatusEnums.Playing) {
-			drawObjects(g2d);
-		} else if (gameState.getGameState() == GameStatusEnums.Dying) {
+		if (gameState.getGameState() == GameStatusEnums.Dying) {
 			playerManager.startDyingScene();
 			this.timer.setDelay(75);
 			drawObjects(g2d);
 		} else if (gameState.getGameState() == GameStatusEnums.Dead) {
+			drawObjects(g2d);
 			drawGameOver(g2d);
+		} else if (gameState.getGameState() == GameStatusEnums.Level_Completed) {
+
+		} else {
+			drawObjects(g2d);
 		}
 		Toolkit.getDefaultToolkit().sync();
 	}
@@ -305,13 +310,31 @@ public class GameBoard extends JPanel implements ActionListener {
 
 	private void drawImage(Graphics2D g, Sprite sprite) {
 		if (sprite.getImage() != null) {
+			// Save the original composite
+			Composite originalComposite = g.getComposite();
+
+			// Set the alpha composite
+			g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, sprite.getTransparancyAlpha()));
+
+			// Draw the image
 			g.drawImage(sprite.getImage(), sprite.getXCoordinate(), sprite.getYCoordinate(), this);
+
+			// Reset to the original composite
+			g.setComposite(originalComposite);
 		}
 	}
 
 	private void drawAnimation(Graphics2D g, SpriteAnimation animation) {
-		if (animation.getCurrentFrame() != null) {
-			g.drawImage(animation.getCurrentFrame(), animation.getXCoordinate(), animation.getYCoordinate(), this);
+		if (animation.getCurrentFrameImage() != null) {
+			// Save the original composite
+			Composite originalComposite = g.getComposite();
+			// Set the alpha composite
+			g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, animation.getTransparancyAlpha()));
+
+			g.drawImage(animation.getCurrentFrameImage(), animation.getXCoordinate(), animation.getYCoordinate(), this);
+
+			// Reset to the original composite
+			g.setComposite(originalComposite);
 		}
 	}
 
@@ -388,7 +411,9 @@ public class GameBoard extends JPanel implements ActionListener {
 
 	// Draw the game over screen
 	private void drawGameOver(Graphics2D g) {
-		String msg = "Lmao xd";
+		List<String> strings = Arrays.asList("U died lol", "'Get good.' - Sun Tzu", "Veni vidi vici'd", "Overconfidence is a slow and insidious killer");
+		int rnd = new Random().nextInt(strings.size());
+		String msg = strings.get(rnd);
 		Font font = new Font("Helvetica", Font.BOLD, 140);
 		FontMetrics fm = getFontMetrics(font);
 		g.setColor(Color.white);
@@ -399,12 +424,15 @@ public class GameBoard extends JPanel implements ActionListener {
 			boardManager = BoardManager.getInstance();
 		}
 		timer.stop();
-
+	}
+	
+	private void drawVictoryScreen(Graphics2D g) {
+		
 	}
 
 	// Called on every action/input. Essentially the infinite loop that plays
 	public void actionPerformed(ActionEvent e) {
-		if (gameState.getGameState() == GameStatusEnums.Playing || gameState.getGameState() == GameStatusEnums.Dying) {
+		if (gameState.getGameState() != GameStatusEnums.Dead) {
 
 			if (AudioManager.getInstance().getBackgroundMusic() != null) {
 				gameState.setMusicSeconds(
@@ -412,8 +440,7 @@ public class GameBoard extends JPanel implements ActionListener {
 								audioManager.getBackgroundMusic().getFramePosition()));
 //				musicSeconds = AudioManager.getInstance().getBackgroundMusic().getFramePosition();
 			} else {
-				gameState.setMusicSeconds((float) (gameState.getMusicSeconds() + 0.05
-						));
+				gameState.setMusicSeconds((float) (gameState.getMusicSeconds() + 0.05));
 			}
 			playerManager.updateGameTick();
 			missileManager.updateGameTick();
@@ -426,7 +453,7 @@ public class GameBoard extends JPanel implements ActionListener {
 			explosionManager.updateGametick();
 			friendlyManager.updateGameTick();
 			powerUpManager.updateGameTick();
-			readControllerState();
+			executeControllerInput();
 		}
 		repaint();
 	}
@@ -441,101 +468,15 @@ public class GameBoard extends JPanel implements ActionListener {
 		@Override
 		public void keyPressed(KeyEvent e) {
 			playerManager.getSpaceship().keyPressed(e);
-
 			if (gameState.getGameState() == GameStatusEnums.Dead) {
 				boardManager.gameToMainMenu();
 			}
 		}
 	}
 
-	private final Set<Integer> simulatedPressedKeys = new HashSet<>();
-
-	private final Map<String, Float> pressedButtons = new HashMap<>();
-
-	public void readControllerState() {
+	public void executeControllerInput() {
 		if (controllers.getFirstController() != null) {
-			controllers.getFirstController().poll();
-			Component[] components = controllers.getFirstController().getComponents();
-
-			for (int i = 0; i < components.length; i++) {
-				Component component = components[i];
-				String componentName = component.getName();
-				float componentValue = component.getPollData();
-
-				// Handle button presses
-				if (componentName.equals("0") || componentName.equals("1") || componentName.equals("3")
-						|| componentName.equals("x") || componentName.equals("z") || componentName.equals("y")
-						|| componentName.equals("rz")) {
-					if (Math.abs(componentValue) > 0.5) {
-						pressedButtons.put(componentName, componentValue);
-					} else {
-						pressedButtons.remove(componentName);
-					}
-				}
-			}
-
-			// Handle left joystick horizontal movement
-			if (pressedButtons.containsKey("x")) {
-				if (pressedButtons.get("x") > 0 && !simulatedPressedKeys.contains(KeyEvent.VK_D)) {
-					simulateKeyPress(KeyEvent.VK_D);
-				} else if (pressedButtons.get("x") < 0 && !simulatedPressedKeys.contains(KeyEvent.VK_A)) {
-					simulateKeyPress(KeyEvent.VK_A);
-				}
-			} else if (!pressedButtons.containsKey("x")) {
-				if (simulatedPressedKeys.contains(KeyEvent.VK_D)) {
-					simulateKeyRelease(KeyEvent.VK_D);
-				}
-				if (simulatedPressedKeys.contains(KeyEvent.VK_A)) {
-					simulateKeyRelease(KeyEvent.VK_A);
-				}
-			}
-
-			// Handle left joystick vertical movement
-			if (pressedButtons.containsKey("y")) {
-				if (pressedButtons.get("y") > 0 && !simulatedPressedKeys.contains(KeyEvent.VK_S)) {
-					simulateKeyPress(KeyEvent.VK_S);
-				} else if (pressedButtons.get("y") < 0 && !simulatedPressedKeys.contains(KeyEvent.VK_W)) {
-					simulateKeyPress(KeyEvent.VK_W);
-				}
-			} else if (!pressedButtons.containsKey("y")) {
-				if (simulatedPressedKeys.contains(KeyEvent.VK_S)) {
-					simulateKeyRelease(KeyEvent.VK_S);
-				}
-				if (simulatedPressedKeys.contains(KeyEvent.VK_W)) {
-					simulateKeyRelease(KeyEvent.VK_W);
-				}
-			}
-
-			// Fire
-			if (pressedButtons.containsKey("0")) {
-				simulateKeyPress(KeyEvent.VK_SPACE);
-			}
-		}
-		if (!pressedButtons.containsKey("0") && simulatedPressedKeys.contains(KeyEvent.VK_SPACE)) {
-			simulateKeyRelease(KeyEvent.VK_SPACE);
-		}
-
-		// Special attack
-		if (pressedButtons.containsKey("1")) {
-			simulateKeyPress(KeyEvent.VK_ENTER);
-		}
-		if (!pressedButtons.containsKey("1") && simulatedPressedKeys.contains(KeyEvent.VK_ENTER)) {
-			simulateKeyRelease(KeyEvent.VK_ENTER);
+			playerManager.getSpaceship().update(controllers.getControllerInputReader(controllers.getFirstController()));
 		}
 	}
-
-	private void simulateKeyPress(int keyCode) {
-		KeyEvent keyEvent = new KeyEvent(this, KeyEvent.KEY_PRESSED, System.currentTimeMillis(), 0, keyCode,
-				KeyEvent.CHAR_UNDEFINED);
-		playerManager.getSpaceship().keyPressed(keyEvent);
-		simulatedPressedKeys.add(keyCode);
-	}
-
-	private void simulateKeyRelease(int keyCode) {
-		KeyEvent keyEvent = new KeyEvent(this, KeyEvent.KEY_RELEASED, System.currentTimeMillis(), 0, keyCode,
-				KeyEvent.CHAR_UNDEFINED);
-		playerManager.getSpaceship().keyReleased(keyEvent);
-		simulatedPressedKeys.remove(keyCode);
-	}
-
 }

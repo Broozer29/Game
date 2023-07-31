@@ -220,6 +220,8 @@ public class ImageDatabase {
 	private List<BufferedImage> guardianBotFrames = new ArrayList<BufferedImage>();
 	private List<BufferedImage> firewallParticleFrames = new ArrayList<BufferedImage>();
 	private List<BufferedImage> fireSpoutFrames = new ArrayList<BufferedImage>();
+	private List<BufferedImage> portal5Frames = new ArrayList<BufferedImage>();
+	private List<BufferedImage> warpFrames = new ArrayList<BufferedImage>();
 
 	// Enemy Projectile Animations
 	private List<BufferedImage> seekerProjectileFrames = new ArrayList<BufferedImage>();
@@ -1040,6 +1042,10 @@ public class ImageDatabase {
 			return fireSpoutFrames;
 		case Alien_Bomb_Animation:
 			return alienBombFrames;
+		case Portal5:
+			return portal5Frames;
+		case Warp:
+			return warpFrames;
 		}
 		return null;
 	}
@@ -1279,6 +1285,18 @@ public class ImageDatabase {
 			String sourceString = String.format("/images/gif/PNGtoGIF/Alien Bomb/Bomb_3_Idle_00%d.png", i);
 			BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
 			alienBombFrames.add(image);
+		}
+		
+		for (int i = 1; i < 65; i++) {
+			String sourceString = String.format("/images/gif/PNGtoGIF/Portal5/portal%d.png", i);
+			BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+			portal5Frames.add(image);
+		}
+		
+		for (int i = 1; i < 9; i++) {
+			String sourceString = String.format("/images/gif/PNGtoGIF/WarpFrames/WarpFrame%d.png", i);
+			BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+			warpFrames.add(image);
 		}
 	}
 

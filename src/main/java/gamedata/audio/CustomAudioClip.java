@@ -97,6 +97,10 @@ public class CustomAudioClip {
 		    // Handle the situation where Master Gain is not supported
 		}
 	}
+	
+	public int getFrameLength() {
+		return clip.getFrameLength();
+	}
 
 	public void resetFramePosition() {
 		this.clip.setFramePosition(0);

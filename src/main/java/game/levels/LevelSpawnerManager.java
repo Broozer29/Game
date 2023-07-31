@@ -27,14 +27,18 @@ import game.objects.enemies.Seeker;
 import game.objects.enemies.Tazer;
 import game.spawner.EnemySpawnTimer;
 import game.spawner.SpawningCoordinator;
+import gamedata.GameStateInfo;
+import gamedata.GameStatusEnums;
 import gamedata.audio.AudioEnums;
 
 public class LevelSpawnerManager {
 
 	private static LevelSpawnerManager instance = new LevelSpawnerManager();
+	private AudioManager audioManager = AudioManager.getInstance();
 	private EnemyManager enemyManager = EnemyManager.getInstance();
 	private SpawningCoordinator spawningCoordinator = SpawningCoordinator.getInstance();
 	private TimerManager timerManager = TimerManager.getInstance();
+	private GameStateInfo gameState = GameStateInfo.getInstance();
 
 	private Level currentLevel;
 
@@ -51,6 +55,11 @@ public class LevelSpawnerManager {
 	}
 
 	public void updateGameTick() {
+		// Check if the song has ended, then create the moving out portal
+		if (gameState.getMusicSeconds() >= gameState.getMaxMusicSeconds()) {
+			gameState.setGameState(GameStatusEnums.Song_Finished);
+		}
+
 	}
 
 	// Called when a level starts, to saturate enemy list
@@ -64,6 +73,7 @@ public class LevelSpawnerManager {
 		try {
 			AudioEnums currentMusic = currentLevel.getSong();
 			audioManager.playMusicAudio(currentMusic);
+			GameStateInfo.getInstance().setMaxMusicSeconds(audioManager.getBackgroundMusic());
 		} catch (UnsupportedAudioFileException | IOException e) {
 			e.printStackTrace();
 		}
@@ -77,17 +87,16 @@ public class LevelSpawnerManager {
 //		int additionalDelay = 0;
 //		DataClass dataClass = DataClass.getInstance();
 //		int i = 1;
-//		EnclosingTopBars pattern = new EnclosingTopBars(1, enemyType, scale, false);
+//		TopBottomVRows pattern = new TopBottomVRows(1, enemyType, scale, EnemyEnums.Bomba, Direction.LEFT);
 //		for(int iterator = 0; iterator < pattern.getTimers().size(); iterator++) {
 //			addSpawnTimer(pattern.getTimers().get(iterator));
 //		}
-		
-		
+
 	}
 
 	// Called by CustomTimers when they have to spawn an enemy
 	public void spawnEnemy(int xCoordinate, int yCoordinate, EnemyEnums enemyType, int amountOfAttempts,
-			Direction direction, float scale, boolean random) {
+			Direction direction, float scale, boolean random, int xMovementSpeed, int yMovementSpeed) {
 
 		// Spawn random if there are no given X/Y coords
 		if (random) {
@@ -109,13 +118,15 @@ public class LevelSpawnerManager {
 					scale = 1;
 				}
 
-				Enemy enemy = createEnemy(enemyType, xCoordinate, yCoordinate, direction, scale);
+				Enemy enemy = createEnemy(enemyType, xCoordinate, yCoordinate, direction, scale, xMovementSpeed,
+						yMovementSpeed);
 				if (enemy != null && validCoordinates(enemy)) {
 					enemyManager.addEnemy(enemy);
 				}
 			}
 		} else {
-			Enemy enemy = createEnemy(enemyType, xCoordinate, yCoordinate, direction, scale);
+			Enemy enemy = createEnemy(enemyType, xCoordinate, yCoordinate, direction, scale, xMovementSpeed,
+					yMovementSpeed);
 			enemyManager.addEnemy(enemy);
 		}
 
@@ -161,9 +172,10 @@ public class LevelSpawnerManager {
 		return coordinatesList;
 	}
 
-	private Enemy createEnemy(EnemyEnums type, int xCoordinate, int yCoordinate, Direction rotation, float scale) {
-		
-		//Allocate different pathfinders based on the enemytype
+	private Enemy createEnemy(EnemyEnums type, int xCoordinate, int yCoordinate, Direction rotation, float scale,
+			int xMovementSpeed, int yMovementSpeed) {
+
+		// Allocate different pathfinders based on the enemytype
 		PathFinder regularPathFinder = new RegularPathFinder();
 		PathFinder homingPathFinder = new HomingPathFinder();
 		Point currentPoint = new Point(xCoordinate, yCoordinate);
@@ -172,21 +184,29 @@ public class LevelSpawnerManager {
 
 		switch (type) {
 		case Alien:
-			return new Alien(xCoordinate, yCoordinate, regularDestination, rotation, scale, regularPathFinder);
+			return new Alien(xCoordinate, yCoordinate, regularDestination, rotation, scale, regularPathFinder,
+					xMovementSpeed, yMovementSpeed);
 		case Bomba:
-			return new Bomba(xCoordinate, yCoordinate, regularDestination, rotation, scale, regularPathFinder);
+			return new Bomba(xCoordinate, yCoordinate, regularDestination, rotation, scale, regularPathFinder,
+					xMovementSpeed, yMovementSpeed);
 		case Flamer:
-			return new Flamer(xCoordinate, yCoordinate, regularDestination, rotation, scale, regularPathFinder);
+			return new Flamer(xCoordinate, yCoordinate, regularDestination, rotation, scale, regularPathFinder,
+					xMovementSpeed, yMovementSpeed);
 		case Bulldozer:
-			return new Bulldozer(xCoordinate, yCoordinate, regularDestination, rotation, scale, regularPathFinder);
+			return new Bulldozer(xCoordinate, yCoordinate, regularDestination, rotation, scale, regularPathFinder,
+					xMovementSpeed, yMovementSpeed);
 		case Energizer:
-			return new Energizer(xCoordinate, yCoordinate, regularDestination, rotation, scale, regularPathFinder);
+			return new Energizer(xCoordinate, yCoordinate, regularDestination, rotation, scale, regularPathFinder,
+					xMovementSpeed, yMovementSpeed);
 		case Seeker:
-			return new Seeker(xCoordinate, yCoordinate, regularDestination, rotation, scale, regularPathFinder);
+			return new Seeker(xCoordinate, yCoordinate, regularDestination, rotation, scale, regularPathFinder,
+					xMovementSpeed, yMovementSpeed);
 		case Tazer:
-			return new Tazer(xCoordinate, yCoordinate, regularDestination, rotation, scale, regularPathFinder);
+			return new Tazer(xCoordinate, yCoordinate, regularDestination, rotation, scale, regularPathFinder,
+					xMovementSpeed, yMovementSpeed);
 		case Alien_Bomb:
-			return new AlienBomb(xCoordinate, yCoordinate, regularDestination, rotation, scale, regularPathFinder);
+			return new AlienBomb(xCoordinate, yCoordinate, regularDestination, rotation, scale, regularPathFinder,
+					xMovementSpeed, yMovementSpeed);
 		}
 		return null;
 	}
@@ -205,14 +225,14 @@ public class LevelSpawnerManager {
 
 	// FOR TESTING PURPOSES only for methods below this!
 	private EnemySpawnTimer createSpawnTimer(EnemyEnums enemyType, int spawnAttempts, int timeBeforeActivation,
-			boolean loopable, Direction direction, float enemyScale, int additionalDelay) {
+			boolean loopable, Direction direction, float enemyScale, int additionalDelay, int xMovementSpeed, int yMovementSpeed) {
 
 		if (enemyType == EnemyEnums.Random) {
 			enemyType = selectRandomEnemy();
 		}
 
 		EnemySpawnTimer timer = new EnemySpawnTimer(timeBeforeActivation, spawnAttempts, enemyType, loopable, direction,
-				enemyScale, additionalDelay);
+				enemyScale, additionalDelay, xMovementSpeed, yMovementSpeed);
 		return timer;
 	}
 

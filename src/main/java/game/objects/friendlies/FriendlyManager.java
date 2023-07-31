@@ -4,6 +4,7 @@ import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.List;
 
+import game.managers.AnimationManager;
 import game.managers.PlayerManager;
 import game.movement.Direction;
 import game.movement.MovementInitiator;
@@ -12,6 +13,9 @@ import game.movement.PathFinder;
 import game.movement.Point;
 import game.objects.enemies.Enemy;
 import game.objects.enemies.EnemyManager;
+import gamedata.DataClass;
+import gamedata.GameStateInfo;
+import gamedata.GameStatusEnums;
 import gamedata.image.ImageEnums;
 import visual.objects.Sprite;
 import visual.objects.SpriteAnimation;
@@ -23,11 +27,16 @@ public class FriendlyManager {
 	private MovementInitiator movementManager = MovementInitiator.getInstance();
 	private List<FriendlyObject> activeFriendlyObjects = new ArrayList<FriendlyObject>();
 	private List<GuardianDrone> guardianDrones = new ArrayList<GuardianDrone>();
+	private Portal finishedLevelPortal;
 	
 	
 
 	private FriendlyManager() {
-//		createGuardianDrone();
+		int portalXCoordinate = (int) Math.floor(DataClass.getInstance().getWindowWidth() * 0.55);
+		int portalYCoordinate = (DataClass.getInstance().getWindowHeight() / 2);
+		
+		finishedLevelPortal = new Portal(portalXCoordinate, portalYCoordinate, ImageEnums.Portal5, true, 1);
+		finishedLevelPortal.setCenterCoordinates(portalXCoordinate, portalYCoordinate);
 	}
 
 	public static FriendlyManager getInstance() {
@@ -38,6 +47,15 @@ public class FriendlyManager {
 		cycleActiveFriendlyObjects();
 		checkFriendlyObjectCollision();
 		moveFriendlyObjects();
+		spawnFinishedLevelPortal();
+	}
+	
+	private void spawnFinishedLevelPortal() {
+		if(GameStateInfo.getInstance().getGameState() == GameStatusEnums.Song_Finished && finishedLevelPortal.getSpawned() == false) {
+			finishedLevelPortal.setSpawned(true);
+			finishedLevelPortal.setVisible(true);
+			AnimationManager.getInstance().addUpperAnimation(finishedLevelPortal);
+		}
 	}
 
 	private void moveFriendlyObjects() {
@@ -81,6 +99,16 @@ public class FriendlyManager {
 				}
 			}
 		}
+		
+		if(GameStateInfo.getInstance().getGameState() == GameStatusEnums.Song_Finished) {
+			if(finishedLevelPortal.isVisible()) {
+				if(isNearby(PlayerManager.getInstance().getSpaceship(), finishedLevelPortal)) {
+					if(PlayerManager.getInstance().getSpaceship().getBounds().intersects(finishedLevelPortal.getAnimationBounds())) {
+						GameStateInfo.getInstance().setGameState(GameStatusEnums.Level_Completed);
+					}
+				}
+			}
+		}
 	}
 
 	private boolean isWithinBoardBlockThreshold(Sprite sprite1, Sprite sprite2) {
@@ -98,7 +126,7 @@ public class FriendlyManager {
 		return distance < 300;
 	}
 
-	// UNCALLED BUT THIS WORKS
+	// Called by a power up only so far
 	public void createMissileGuardianBot(int xCoordinate, int yCoordinate, Point destination, Direction rotation,
 			FriendlyEnums friendlyType, float scale, PathFinder pathFinder) {
 		FriendlyObject friendlyObject = new GuardianDrone(xCoordinate, yCoordinate, destination, rotation, friendlyType,

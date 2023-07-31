@@ -16,14 +16,14 @@ import visual.objects.SpriteAnimation;
 
 public class FriendlyObject extends Sprite {
 
-	// Enemy combat stats
+	// FriendlyObject combat stats
 	protected float hitPoints;
 	protected float maxHitPoints;
 	protected float attackSpeedFrameCount;
 	protected float currentAttackSpeedFrameCount = 0;
 	protected boolean hasAttack;
 
-	// Enemy new movement:
+	// FriendlyObject movement:
 	private Point currentLocation;
 	private Point destination;
 	private PathFinder pathFinder;
@@ -36,7 +36,7 @@ public class FriendlyObject extends Sprite {
 	private int lastKnownTargetX;
 	private int lastKnownTargetY;
 
-	// Enemy miscellanious attributes
+	// FriendlyObject miscellanious attributes
 	protected Direction rotation;
 	protected FriendlyEnums friendlyType;
 	protected AudioEnums deathSound;

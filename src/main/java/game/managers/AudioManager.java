@@ -50,14 +50,12 @@ public class AudioManager {
 
 	// Play the background music
 	public void playMusicAudio(AudioEnums audioType) throws UnsupportedAudioFileException, IOException {
-		if (backGroundMusic == null) {
-			backGroundMusic = audioDatabase.getAudioClip(audioType);
-			if (!(backGroundMusic == null)) {
-				backGroundMusic.startClip();
-			}
+		backGroundMusic = audioDatabase.getAudioClip(audioType);
+		if (!(backGroundMusic == null)) {
+			backGroundMusic.startClip();
 		}
 	}
-	
+
 	public CustomAudioClip getBackgroundMusic() {
 		return this.backGroundMusic;
 	}
