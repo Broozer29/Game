@@ -1,6 +1,7 @@
 package game.objects.missiles;
 
 import java.awt.Rectangle;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,6 +13,7 @@ import game.objects.enemies.EnemyManager;
 import game.objects.friendlies.spaceship.specialAttacks.SpecialAttack;
 import gamedata.image.ImageEnums;
 import visual.objects.Sprite;
+import visual.objects.SpriteAnimation;
 
 public class MissileManager {
 
@@ -84,7 +86,9 @@ public class MissileManager {
 					if (isNearby(missile, enemy)) {
 						Rectangle r2 = enemy.getBounds();
 						if (r1.intersects(r2)) {
-							handleCollision(enemy, missile);
+							if (checkPixelCollision(enemy, missile)) {
+								handleCollision(enemy, missile);
+							}
 						}
 					}
 				}
@@ -145,7 +149,9 @@ public class MissileManager {
 				if (isNearby(missile, enemy)) {
 					Rectangle r1 = getMissileBounds(missile);
 					if (r1.intersects(enemy.getBounds())) {
-						enemy.takeDamage(specialAttack.getDamage());
+						if (checkPixelCollision(missile, enemy)) {
+							enemy.takeDamage(specialAttack.getDamage());
+						}
 					}
 				}
 			}
@@ -154,7 +160,9 @@ public class MissileManager {
 		for (Enemy enemy : enemyManager.getEnemies()) {
 			if (isNearby(specialAttack.getAnimation(), enemy)) {
 				if (specialAttack.getAnimation().getAnimationBounds().intersects(enemy.getBounds())) {
-					enemy.takeDamage(specialAttack.getDamage());
+					if (checkPixelCollision(enemy, specialAttack.getAnimation())) {
+						enemy.takeDamage(specialAttack.getDamage());
+					}
 				}
 			}
 		}
@@ -165,20 +173,22 @@ public class MissileManager {
 		if (specialAttack.getSpecialAttackMissiles().size() == 0) {
 			for (Missile enemyMissile : enemyMissiles) {
 				if (isNearby(specialAttack.getAnimation(), enemyMissile))
-					if (enemyMissile.isVisible()
-							&& specialAttack.getAnimation().getAnimationBounds().intersects(enemyMissile.getAnimation().getAnimationBounds())) {
-						setMissileVisibility(enemyMissile);
-						
+					if (enemyMissile.isVisible() && specialAttack.getAnimation().getAnimationBounds()
+							.intersects(enemyMissile.getAnimation().getAnimationBounds())) {
+						if (checkPixelCollision(enemyMissile.getAnimation(), specialAttack.getAnimation())) {
+							setMissileVisibility(enemyMissile);
+						}
+
 					}
 			}
 		}
 	}
 
 	private boolean isWithinBoardBlockThreshold(Sprite sprite1, Sprite sprite2) {
-		//This causes all other "updatecurrentBoardBlocks" to be redundant
+		// This causes all other "updatecurrentBoardBlocks" to be redundant
 		sprite1.updateCurrentBoardBlock();
 		sprite2.updateCurrentBoardBlock();
-		
+
 		int blockDifference = Math.abs(sprite1.getCurrentBoardBlock() - sprite2.getCurrentBoardBlock());
 		return blockDifference <= boardBlockThreshold;
 	}
@@ -193,6 +203,47 @@ public class MissileManager {
 		return distance < threshold;
 	}
 
+	private boolean checkPixelCollision(Sprite sprite1, Sprite sprite2) {
+		BufferedImage img1 = null;
+		BufferedImage img2 = null;
+		if (sprite1 instanceof SpriteAnimation) {
+			img1 = ((SpriteAnimation) sprite1).getCurrentFrameImage(false);
+		} else {
+			img1 = sprite1.getImage();
+		}
+
+		if (sprite2 instanceof SpriteAnimation) {
+			img2 = ((SpriteAnimation) sprite2).getCurrentFrameImage(false);
+		} else {
+			img2 = sprite2.getImage();
+		}
+
+		if (img1 != null || img2 != null) {
+			int xStart = Math.max(sprite1.getXCoordinate(), sprite2.getXCoordinate());
+			int yStart = Math.max(sprite1.getYCoordinate(), sprite2.getYCoordinate());
+			int xEnd = Math.min(sprite1.getXCoordinate() + img1.getWidth(), sprite2.getXCoordinate() + img2.getWidth());
+			int yEnd = Math.min(sprite1.getYCoordinate() + img1.getHeight(),
+					sprite2.getYCoordinate() + img2.getHeight());
+
+			for (int y = yStart; y < yEnd; y++) {
+				for (int x = xStart; x < xEnd; x++) {
+					int pixel1 = img1.getRGB(x - sprite1.getXCoordinate(), y - sprite1.getYCoordinate());
+					int alpha1 = (pixel1 >> 24) & 0xff;
+
+					int pixel2 = img2.getRGB(x - sprite2.getXCoordinate(), y - sprite2.getYCoordinate());
+					int alpha2 = (pixel2 >> 24) & 0xff;
+
+					if (alpha1 != 0 && alpha2 != 0) {
+						return true; // Collision detected
+					}
+				}
+			}
+			return false; // No collision detected
+		} else {
+			return true; //Invisible images, cannot detect pixels because there are none
+		}
+	}
+
 	// Both friendly & enemy missiles
 	private void setMissileVisibility(Missile missile) {
 		switch (missile.getMissileType()) {
@@ -201,7 +252,8 @@ public class MissileManager {
 		case Firespout_Animation:
 			break;
 		default:
-			//Create method that destroys the missile and plays an explosion animation of the missile removing
+			// Create method that destroys the missile and plays an explosion animation of the
+			// missile removing
 			missile.setVisible(false);
 			break;
 		}

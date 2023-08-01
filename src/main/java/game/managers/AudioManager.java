@@ -21,12 +21,14 @@ public class AudioManager {
 	// Called when a game instance needs to be deleted and the manager needs to be
 	// reset.
 	public void resetManager() {
+		backGroundMusic = null;
 		if (backGroundMusic != null) {
 			backGroundMusic.stopClip();
 			backGroundMusic.closeclip();
 			backGroundMusic = null;
 		}
-
+		
+		audioDatabase.resetSongs();
 	}
 
 	public static AudioManager getInstance() {

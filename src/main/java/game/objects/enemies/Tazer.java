@@ -17,8 +17,7 @@ public class Tazer extends Enemy {
 		loadImage(ImageEnums.Tazer);
 		setExhaustanimation(ImageEnums.Tazer_Normal_Exhaust);
 		setDeathAnimation(ImageEnums.Tazer_Destroyed_Explosion);
-		this.exhaustAnimation.setFrameDelay(3);
-		this.deathAnimation.setFrameDelay(4);
+		this.exhaustAnimation.setFrameDelay(1);
 		this.hitPoints = 50;
 		this.maxHitPoints = 50;
 		this.attackSpeedFrameCount = 250;

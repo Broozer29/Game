@@ -56,8 +56,8 @@ public class FuriWisdomOfRageLevel implements Level {
 		float scale = 1;
 		EnemySpawnTimer timer = null;
 		EnemyFormation formation = null;
-		int xMovementSpeed = 1;
-		int yMovementSpeed = 1;
+		int xMovementSpeed = 2;
+		int yMovementSpeed = 2;
 
 		// Enemytype, spawnAmount, Time before activation, looping, direction, scale,
 		// additional delay
@@ -330,7 +330,7 @@ public class FuriWisdomOfRageLevel implements Level {
 		float scale = 1;
 		int additionalDelay = 0;
 		int xMovementSpeed = 2;
-		int yMovementSpeed = 2;
+		int yMovementSpeed = 1;
 		
 		timer = createSpawnTimer(EnemyEnums.Seeker, 22, 22, loopable, Direction.RIGHT_UP, scale, additionalDelay, xMovementSpeed, yMovementSpeed);
 		formation = formCreator.createFormation(SpawnFormationEnums.Reverse_Divide, 50, 50);
@@ -404,7 +404,7 @@ public class FuriWisdomOfRageLevel implements Level {
 		float scale = 1;
 		int additionalDelay = 0; 
 		int xMovementSpeed = 2;
-		int yMovementSpeed = 2;
+		int yMovementSpeed = 1;
 		
 		
 		for(int i = 47; i < 75; i +=5) {
@@ -437,7 +437,7 @@ public class FuriWisdomOfRageLevel implements Level {
 		float scale = 1;
 		int additionalDelay = 0;
 		int xMovementSpeed = 2;
-		int yMovementSpeed = 2;
+		int yMovementSpeed = 1;
 
 		for(int i = 90; i < 130; i +=7) {
 			timer = createSpawnTimer(EnemyEnums.Seeker, 1, i, loopable, Direction.LEFT_UP, scale, additionalDelay, xMovementSpeed, yMovementSpeed);
@@ -498,7 +498,7 @@ public class FuriWisdomOfRageLevel implements Level {
 		int additionalDelay = 0;
 		
 		int xMovementSpeed = 2;
-		int yMovementSpeed = 2;
+		int yMovementSpeed = 1;
 		
 		for(int i = 130; i < 165; i +=8) {
 			timer = createSpawnTimer(EnemyEnums.Seeker, 1, i, loopable, Direction.LEFT, scale, additionalDelay, xMovementSpeed, yMovementSpeed);
@@ -521,7 +521,7 @@ public class FuriWisdomOfRageLevel implements Level {
 		float scale = 1;
 		int additionalDelay = 0;
 		int xMovementSpeed = 2;
-		int yMovementSpeed = 2;
+		int yMovementSpeed = 1;
 		
 		for (int i = 168; i < 220; i += 8) {
 			timer = createSpawnTimer(EnemyEnums.Seeker, 1, i, loopable, Direction.DOWN, scale, additionalDelay, xMovementSpeed, yMovementSpeed);
@@ -591,7 +591,7 @@ public class FuriWisdomOfRageLevel implements Level {
 		float scale = 1;
 		int additionalDelay = 0;
 		int xMovementSpeed = 2;
-		int yMovementSpeed = 2;
+		int yMovementSpeed = 1;
 		
 		
 		for (int i = 225; i < 276; i += 8) {

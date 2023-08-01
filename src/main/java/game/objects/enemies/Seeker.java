@@ -18,8 +18,7 @@ public class Seeker extends Enemy {
 		loadImage(ImageEnums.Seeker);
 		setExhaustanimation(ImageEnums.Seeker_Normal_Exhaust);
 		setDeathAnimation(ImageEnums.Seeker_Destroyed_Explosion);
-		this.exhaustAnimation.setFrameDelay(3);
-		this.deathAnimation.setFrameDelay(4);
+		this.exhaustAnimation.setFrameDelay(1);
 		this.hitPoints = 50;
 		this.maxHitPoints = 50;
 		this.attackSpeedFrameCount = 200;

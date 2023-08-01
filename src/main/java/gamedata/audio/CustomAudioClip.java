@@ -102,10 +102,6 @@ public class CustomAudioClip {
 		return clip.getFrameLength();
 	}
 
-	public void resetFramePosition() {
-		this.clip.setFramePosition(0);
-	}
-	
 	public Clip getClip() {
 		return this.clip;
 	}
@@ -124,6 +120,7 @@ public class CustomAudioClip {
 
 	public void setFramePosition(int framePosition) {
 		this.clip.setFramePosition(framePosition);
+		 System.out.println("Frame position set to: " + this.clip.getFramePosition()); // Debugging line
 	}
 
 	public AudioEnums getAudioType() {

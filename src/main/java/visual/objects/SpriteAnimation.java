@@ -100,33 +100,42 @@ public class SpriteAnimation extends Sprite {
 	}
 
 	// returns current frame of the gif
-	public Image getCurrentFrameImage() {
-		if (currentFrame >= frames.size()) {
-			if (infiniteLoop) {
-				refreshAnimation(this.xCoordinate, this.yCoordinate);
-			} else {
-				removeAnimation();
-			}
-		}
-
-		if (currentFrame < frames.size()) {
-			Image returnImage = frames.get(currentFrame);
-			width = returnImage.getWidth(null);
-			height = returnImage.getHeight(null);
-			if (frameDelayCounter >= frameDelay) {
-				updateFrameCount();
-				frameDelayCounter = 0;
-			} else
-				frameDelayCounter++;
-			animationBounds.setBounds(xCoordinate + xOffset, yCoordinate + yOffset, width, height);
-
-			if (this.increaseTransparancy) {
-				if (this.transparancyAlpha + this.transparancyStepSize < 1.0f) {
-					this.transparancyAlpha += this.transparancyStepSize;
+	public BufferedImage getCurrentFrameImage(boolean increaseAnimationFrame) {
+		if (increaseAnimationFrame) {
+			if (currentFrame >= frames.size()) {
+				if (infiniteLoop) {
+					refreshAnimation(this.xCoordinate, this.yCoordinate);
+				} else {
+					removeAnimation();
 				}
 			}
-			return returnImage;
+
+			if (currentFrame < frames.size()) {
+				BufferedImage returnImage = frames.get(currentFrame);
+				width = returnImage.getWidth(null);
+				height = returnImage.getHeight(null);
+				if (frameDelayCounter >= frameDelay) {
+					updateFrameCount();
+					frameDelayCounter = 0;
+				} else
+					frameDelayCounter++;
+				animationBounds.setBounds(xCoordinate + xOffset, yCoordinate + yOffset, width, height);
+
+				if (this.increaseTransparancy) {
+					if (this.transparancyAlpha + this.transparancyStepSize < 1.0f) {
+						this.transparancyAlpha += this.transparancyStepSize;
+					}
+				}
+				return returnImage;
+			}
+		} else {
+			if (currentFrame >= frames.size()) {
+				return frames.get(frames.size() - 1);
+			} else {
+				return frames.get(currentFrame);
+			}
 		}
+
 		return null;
 	}
 

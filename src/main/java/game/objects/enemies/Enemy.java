@@ -54,6 +54,7 @@ public class Enemy extends Sprite {
 	protected int lastBoardBlock;
 	protected SpriteAnimation exhaustAnimation = null;
 	protected SpriteAnimation deathAnimation;
+	protected SpriteAnimation animation = null;
 
 	public Enemy(int x, int y, Point destination, Direction rotation, EnemyEnums enemyType, float scale,
 			PathFinder pathFinder, int xMovementSpeed, int yMovementSpeed) {
@@ -75,6 +76,10 @@ public class Enemy extends Sprite {
 
 	protected void setDeathAnimation(ImageEnums imageType) {
 		this.deathAnimation = new SpriteAnimation(xCoordinate, yCoordinate, imageType, false, scale);
+	}
+	
+	protected void setAnimation(ImageEnums imageType) {
+		this.animation = new SpriteAnimation(xCoordinate, yCoordinate, imageType, false, scale);
 	}
 
 	// Called when there is collision between friendly missile and enemy
@@ -236,6 +241,10 @@ public class Enemy extends Sprite {
 	protected void setRotation(Direction rotation) {
 		this.rotation = rotation;
 		rotateImage(rotation);
+	}
+	
+	public SpriteAnimation getAnimation() {
+		return this.animation;
 	}
 
 	public void fireAction() {

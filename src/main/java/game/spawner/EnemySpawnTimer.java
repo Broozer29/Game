@@ -30,7 +30,7 @@ public class EnemySpawnTimer {
 	private int yMovementSpeed;
 
 	public EnemySpawnTimer(int timeBeforeActivation, int amountOfSpawnAttempts, EnemyEnums timerEnemyType,
-			boolean loopable, Direction direction, float enemyScale, int additionalDelay,int xMovementSpeed, int MovementSpeed) {
+			boolean loopable, Direction direction, float enemyScale, int additionalDelay,int xMovementSpeed, int yMovementSpeed) {
 		this.enemyScale = enemyScale;
 		this.timerEnemyType = timerEnemyType;
 		this.amountOfSpawnAttempts = amountOfSpawnAttempts;

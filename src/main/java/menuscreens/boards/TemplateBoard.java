@@ -395,8 +395,8 @@ public class TemplateBoard extends JPanel implements ActionListener {
 	}
 
 	private void drawAnimation(Graphics2D g, SpriteAnimation animation) {
-		if (animation.getCurrentFrameImage() != null) {
-			g.drawImage(animation.getCurrentFrameImage(), animation.getXCoordinate(), animation.getYCoordinate(), this);
+		if (animation.getCurrentFrameImage(false) != null) {
+			g.drawImage(animation.getCurrentFrameImage(true), animation.getXCoordinate(), animation.getYCoordinate(), this);
 		}
 	}
 

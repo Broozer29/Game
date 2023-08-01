@@ -61,13 +61,16 @@ import visual.objects.SpriteAnimation;
 
 public class GameBoard extends JPanel implements ActionListener {
 
-	private Timer timer;
+	private Timer drawTimer;
 
 	private DataClass data = DataClass.getInstance();
 	private AudioDatabase audioDatabase = AudioDatabase.getInstance();
 	private GameStateInfo gameState = GameStateInfo.getInstance();
 	private final int boardWidth = data.getWindowWidth();
 	private final int boardHeight = data.getWindowHeight();
+
+	private float zoningInAlpha = 1.0f;
+	private float zoningOutAlpha = 0.0f;
 
 	private BoardManager boardManager = BoardManager.getInstance();
 	private AnimationManager animationManager = AnimationManager.getInstance();
@@ -110,7 +113,7 @@ public class GameBoard extends JPanel implements ActionListener {
 	}
 
 	private void initBoard() {
-		timer = new Timer(gameState.getDELAY(), this);
+		drawTimer = new Timer(gameState.getDELAY(), this);
 	}
 
 	public void startGame() {
@@ -133,11 +136,9 @@ public class GameBoard extends JPanel implements ActionListener {
 			playerStats.setSpecialGunPreset(preset);
 		}
 		playerStats.getSpecialGunPreset().loadPreset();
-
-		gameState.setGameState(GameStatusEnums.Playing);
 		uiManager.createGameBoardGUI();
-		levelManager.startLevel();
-		timer.start();
+		gameState.setGameState(GameStatusEnums.Zoning_In);
+		drawTimer.start();
 
 		// The cursed ling
 		System.out.println("Skipping time in the level on on GameBoard 142");
@@ -148,7 +149,6 @@ public class GameBoard extends JPanel implements ActionListener {
 	}
 
 	// Resets the game
-	// This needs to be reworked in seperate (startManagers) and (endManagers)
 	public void resetGame() {
 		animationManager.resetManager();
 		enemyManager.resetManager();
@@ -165,10 +165,20 @@ public class GameBoard extends JPanel implements ActionListener {
 		textManager.resetManager();
 		playerStats.resetPlayerStats();
 		tempSettings.resetGameSettings();
-		this.timer.setDelay(gameState.getDELAY());
-
-		// Dit moet uit een "out-of-game state manager" gehaald worden
+		this.drawTimer.setDelay(gameState.getDELAY());
+		zoningInAlpha = 1.0f;
+		zoningOutAlpha = 0.0f;
+		
+		if (playerStats.getNormalGunPreset() == null) {
+			GunPreset preset = new GunPreset(PlayerAttackTypes.Laserbeam);
+			playerStats.setNormalGunPreset(preset);
+		}
 		playerStats.getNormalGunPreset().loadPreset();
+
+		if (playerStats.getSpecialGunPreset() == null) {
+			SpecialGunPreset preset = new SpecialGunPreset(PlayerSpecialAttackTypes.EMP);
+			playerStats.setSpecialGunPreset(preset);
+		}
 	}
 
 	@Override
@@ -178,17 +188,55 @@ public class GameBoard extends JPanel implements ActionListener {
 
 		if (gameState.getGameState() == GameStatusEnums.Dying) {
 			playerManager.startDyingScene();
-			this.timer.setDelay(75);
+			this.drawTimer.setDelay(75);
 			drawObjects(g2d);
 		} else if (gameState.getGameState() == GameStatusEnums.Dead) {
 			drawObjects(g2d);
 			drawGameOver(g2d);
 		} else if (gameState.getGameState() == GameStatusEnums.Level_Completed) {
-
+			drawObjects(g2d);
+			drawVictoryScreen(g2d);
+//			System.out.println("Draw level completed screen at GameBoard 187");
+		} else if (gameState.getGameState() == GameStatusEnums.Zoning_In) {
+			drawObjects(g2d);
+			drawZoningIn(g2d);
+		} else if (gameState.getGameState() == GameStatusEnums.Zoning_Out) {
+			drawObjects(g2d);
+			drawZoningOut(g2d);
 		} else {
 			drawObjects(g2d);
 		}
 		Toolkit.getDefaultToolkit().sync();
+	}
+
+	private void drawZoningIn(Graphics2D g2d) {
+		if (zoningInAlpha <= 0) {
+			return;
+		}
+		// Set color to black with the current alpha
+		g2d.setColor(new Color(0, 0, 0, zoningInAlpha));
+
+		// Draw a rectangle covering the whole screen
+		g2d.fillRect(0, 0, boardWidth, boardHeight);
+
+		// Decrease alpha for next time
+		zoningInAlpha -= 0.02f; // Adjust this value to control the speed of the fade
+	}
+
+	private void drawZoningOut(Graphics2D g2d) {
+		// If the black screen is already fully opaque, just return
+		if (zoningOutAlpha >= 1) {
+			return;
+		}
+
+		// Set color to black with the current alpha
+		g2d.setColor(new Color(0, 0, 0, zoningOutAlpha));
+
+		// Draw a rectangle covering the whole screen
+		g2d.fillRect(0, 0, boardWidth, boardHeight);
+
+		// Increase alpha for next time
+		zoningOutAlpha += 0.02f; // Adjust this value to control the speed of the fade
 	}
 
 	private void drawObjects(Graphics2D g) {
@@ -202,10 +250,7 @@ public class GameBoard extends JPanel implements ActionListener {
 			drawAnimation(g, animation);
 		}
 
-		// Draw friendly spaceship
-		if (playerManager.getSpaceship().isVisible()) {
-			drawImage(g, playerManager.getSpaceship());
-		}
+
 
 		// Draw enemy missiles with an animation
 		for (Missile missile : missileManager.getEnemyMissiles()) {
@@ -232,7 +277,13 @@ public class GameBoard extends JPanel implements ActionListener {
 		// Draw enemies
 		for (Enemy enemy : enemyManager.getEnemies()) {
 			if (enemy.isVisible()) {
-				drawImage(g, enemy);
+				
+				if(enemy.getAnimation() != null) {
+					drawAnimation(g, enemy.getAnimation());
+				} else {
+					drawImage(g, enemy);
+				}
+				
 				if (enemy.showhealthBar())
 					drawHealthBars(g, enemy);
 			}
@@ -248,6 +299,11 @@ public class GameBoard extends JPanel implements ActionListener {
 			if (friendly.isVisible()) {
 				drawAnimation(g, friendly.getAnimation());
 			}
+		}
+		
+		// Draw friendly spaceship
+		if (playerManager.getSpaceship().isVisible()) {
+			drawImage(g, playerManager.getSpaceship());
 		}
 
 		for (SpecialAttack specialAttack : missileManager.getSpecialAttacks()) {
@@ -325,13 +381,13 @@ public class GameBoard extends JPanel implements ActionListener {
 	}
 
 	private void drawAnimation(Graphics2D g, SpriteAnimation animation) {
-		if (animation.getCurrentFrameImage() != null) {
+		if (animation.getCurrentFrameImage(false) != null) {
 			// Save the original composite
 			Composite originalComposite = g.getComposite();
 			// Set the alpha composite
 			g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, animation.getTransparancyAlpha()));
 
-			g.drawImage(animation.getCurrentFrameImage(), animation.getXCoordinate(), animation.getYCoordinate(), this);
+			g.drawImage(animation.getCurrentFrameImage(true), animation.getXCoordinate(), animation.getYCoordinate(), this);
 
 			// Reset to the original composite
 			g.setComposite(originalComposite);
@@ -411,10 +467,11 @@ public class GameBoard extends JPanel implements ActionListener {
 
 	// Draw the game over screen
 	private void drawGameOver(Graphics2D g) {
-		List<String> strings = Arrays.asList("U died lol", "'Get good.' - Sun Tzu", "Veni vidi vici'd", "Overconfidence is a slow and insidious killer");
+		List<String> strings = Arrays.asList("U died lol", "'Get good.' - Sun Tzu", "Veni vidi vici'd",
+				"Overconfidence is a slow and insidious killer");
 		int rnd = new Random().nextInt(strings.size());
 		String msg = strings.get(rnd);
-		Font font = new Font("Helvetica", Font.BOLD, 140);
+		Font font = new Font("Helvetica", Font.BOLD, 25);
 		FontMetrics fm = getFontMetrics(font);
 		g.setColor(Color.white);
 		g.setFont(font);
@@ -423,17 +480,23 @@ public class GameBoard extends JPanel implements ActionListener {
 		if (boardManager == null) {
 			boardManager = BoardManager.getInstance();
 		}
-		timer.stop();
+		drawTimer.stop();
 	}
-	
+
 	private void drawVictoryScreen(Graphics2D g) {
-		
+
 	}
 
 	// Called on every action/input. Essentially the infinite loop that plays
 	public void actionPerformed(ActionEvent e) {
+		if(gameState.getGameState() == GameStatusEnums.Zoning_In) {
+			if(this.zoningInAlpha <= 0.05) {
+				levelManager.startLevel();
+			}
+		}
+		
+		
 		if (gameState.getGameState() != GameStatusEnums.Dead) {
-
 			if (AudioManager.getInstance().getBackgroundMusic() != null) {
 				gameState.setMusicSeconds(
 						audioPosCalc.getPlaybackTimeInSeconds(audioManager.getBackgroundMusic().getClip(),

@@ -24,7 +24,7 @@ public class ControllerInputReader {
 	        String componentName = component.getName();
 	        float componentValue = component.getPollData();
 
-	        if (componentName.equals("x")) {
+	        if (componentName.equals("x") || componentName.equals("X")) {
 	            // Reset previous states
 	            inputState.put(ControllerInput.MOVE_LEFT_SLOW, false);
 	            inputState.put(ControllerInput.MOVE_LEFT_QUICK, false);
@@ -44,7 +44,7 @@ public class ControllerInputReader {
 	                // Hard move right
 	                inputState.put(ControllerInput.MOVE_RIGHT_QUICK, true);
 	            }
-	        } else if (componentName.equals("y")) {
+	        } else if (componentName.equals("y") || componentName.equals("Y")) {
 	            // Reset previous states
 	            inputState.put(ControllerInput.MOVE_UP_SLOW, false);
 	            inputState.put(ControllerInput.MOVE_UP_QUICK, false);

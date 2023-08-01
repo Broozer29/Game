@@ -30,6 +30,7 @@ public class SpaceShip extends Sprite {
 
 	private float currentShieldRegenDelayFrame;
 	private boolean controlledByKeyboard = true;
+	private Set<Integer> pressedKeys = new HashSet<>();
 
 	private boolean isEngineBoosted;
 	private SpriteAnimation deathAnimation = null;
@@ -60,6 +61,7 @@ public class SpaceShip extends Sprite {
 	private void initShip() {
 		directionx = 0;
 		directiony = 0;
+		pressedKeys = new HashSet<>();
 		loadImage(playerStats.getSpaceShipImage());
 		currentShieldRegenDelayFrame = 0;
 		isEngineBoosted = false;
@@ -264,7 +266,6 @@ public class SpaceShip extends Sprite {
 		return this.deathAnimation;
 	}
 
-	private final Set<Integer> pressedKeys = new HashSet<>();
 
 	public synchronized void keyPressed(KeyEvent e) {
 		pressedKeys.add(e.getKeyCode());
@@ -306,6 +307,7 @@ public class SpaceShip extends Sprite {
 				case (KeyEvent.VK_E):
 					isEngineBoosted = true;
 					swapExhaust(playerStats.getBoostedEngineType());
+					takeHitpointDamage(500);
 					break;
 				}
 			}

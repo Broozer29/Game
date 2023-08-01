@@ -111,7 +111,7 @@ public class Sprite {
 		return this.height;
 	}
 
-	public Image getImage() {
+	public BufferedImage getImage() {
 		return image;
 	}
 

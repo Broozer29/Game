@@ -22,11 +22,7 @@ public class RegularPathFinder implements PathFinder {
 		} else {
 			maxSteps = maxYSteps;
 		}
-
-		if (50 < maxSteps) {
-			maxSteps = 50;
-		}
-
+		
 		int steps = 0;
 		Direction direction = Direction.LEFT;
 		while (steps < maxSteps) {

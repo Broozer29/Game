@@ -7,8 +7,10 @@ import game.movement.Direction;
 import game.movement.PathFinder;
 import game.movement.Point;
 import game.movement.RegularPathFinder;
+import game.objects.missiles.Missile;
 import game.objects.missiles.MissileCreator;
 import game.objects.missiles.MissileManager;
+import game.objects.missiles.missiletypes.BombaProjectile;
 import gamedata.audio.AudioEnums;
 import gamedata.image.ImageEnums;
 
@@ -17,13 +19,13 @@ public class Bomba extends Enemy {
 	private PathFinder missilePathFinder;
 	private List<Direction> missileDirections = new ArrayList<Direction>();
 
-	public Bomba(int x, int y, Point destination, Direction rotation, float scale, PathFinder pathFinder, int xMovementSpeed, int yMovementSpeed) {
+	public Bomba(int x, int y, Point destination, Direction rotation, float scale, PathFinder pathFinder,
+			int xMovementSpeed, int yMovementSpeed) {
 		super(x, y, destination, rotation, EnemyEnums.Bomba, scale, pathFinder, xMovementSpeed, yMovementSpeed);
 		loadImage(ImageEnums.Bomba);
 		setExhaustanimation(ImageEnums.Bomba_Normal_Exhaust);
 		setDeathAnimation(ImageEnums.Bomba_Destroyed_Explosion);
-		this.exhaustAnimation.setFrameDelay(3);
-		this.deathAnimation.setFrameDelay(4);
+		this.exhaustAnimation.setFrameDelay(1);
 		this.hitPoints = 100;
 		this.maxHitPoints = 100;
 		this.attackSpeedFrameCount = 200;
@@ -50,9 +52,23 @@ public class Bomba extends Enemy {
 		if (currentAttackSpeedFrameCount >= attackSpeedFrameCount) {
 
 			for (Direction direction : missileDirections) {
-				missileManager.addExistingMissile(MissileCreator.getInstance().createEnemyMissile(xCoordinate,
-						yCoordinate + +this.height / 2, ImageEnums.Bomba_Missile, ImageEnums.Bomba_Missile_Explosion,
-						direction, scale, missilePathFinder, xMovementSpeed, yMovementSpeed, (float) 7.5));
+				Missile newMissile = MissileCreator.getInstance().createEnemyMissile(xCoordinate,
+						yCoordinate + this.height / 2, ImageEnums.Bomba_Missile, ImageEnums.Bomba_Missile_Explosion,
+						direction, scale, missilePathFinder, xMovementSpeed, yMovementSpeed, (float) 7.5);
+				
+				
+				if(missileDirections.contains(Direction.DOWN)) {
+					newMissile.rotateMissileAnimation(Direction.DOWN);
+				} else if(missileDirections.contains(Direction.LEFT)) {
+					newMissile.rotateMissileAnimation(Direction.LEFT);
+				} else if(missileDirections.contains(Direction.RIGHT)) {
+					newMissile.rotateMissileAnimation(Direction.RIGHT);
+				} else if(missileDirections.contains(Direction.UP)) {
+					newMissile.rotateMissileAnimation(Direction.UP);
+				}
+				
+				missileManager.addExistingMissile(newMissile);
+
 			}
 
 			currentAttackSpeedFrameCount = 0;

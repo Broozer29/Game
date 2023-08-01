@@ -15,6 +15,7 @@ public class AudioDatabase {
 	private CustomAudioClip FuriMakeThisRight;
 	private CustomAudioClip ayasaTheReasonWhy;
 	private CustomAudioClip DefaultMusic;
+	private CustomAudioClip NewArcadesSolace;
 
 	// Van alle clips een lijst met clips maken, dan vervolgens een clip teruggeven
 	// die niet gebruikt wordt.
@@ -45,6 +46,31 @@ public class AudioDatabase {
 
 	public static AudioDatabase getInstance() {
 		return instance;
+	}
+	
+	//A reset of background songs that should be called by the AudioManager
+	//This should reset all background songs!
+	public void resetSongs() {
+		FuriWisdomOfRage.setFramePosition(0);
+		FuriMakeThisRight.setFramePosition(0);
+		FuriMyOnlyChance.setFramePosition(0);
+		DefaultMusic.setFramePosition(0);
+		ayasaTheReasonWhy.setFramePosition(0);
+		NewArcadesSolace.setFramePosition(0);
+		
+		
+		for(int i = 0; i< clipListSize; i++) {
+			defaultEMPClipList.get(i).setFramePosition(0);
+			alienBombImpactList.get(i).setFramePosition(0);
+			laserBeamClipList.get(i).setFramePosition(0);
+			destroyedExplosionClipList.get(i).setFramePosition(0);
+			alienSpaceshipDestroyedClipList.get(i).setFramePosition(0);
+			largeShipDestroyedClipList.get(i).setFramePosition(0);
+			powerUpAcquiredClipList.get(i).setFramePosition(0);
+			rocketLauncherClipList.get(i).setFramePosition(0);
+			flamethrowerClipList.get(i).setFramePosition(0);
+			firewallClipList.get(i).setFramePosition(0);
+		}
 	}
 
 	private void initializeAudiofiles() {
@@ -89,6 +115,8 @@ public class AudioDatabase {
 		FuriMakeThisRight = new CustomAudioClip(AudioEnums.Furi_Make_This_Right , false);
 		FuriMyOnlyChance = new CustomAudioClip(AudioEnums.Furi_My_Only_Chance, false);
 		ayasaTheReasonWhy = new CustomAudioClip(AudioEnums.Ayasa_The_Reason_Why, false);
+		NewArcadesSolace = new CustomAudioClip(AudioEnums.New_Arcades_Solace, false);
+				
 
 	}
 
@@ -162,6 +190,8 @@ public class AudioDatabase {
 	            return getFuriMakeThisRight();
 	        case Apple_Holder_Remix:
 	            return getDefaultMusic();
+	        case New_Arcades_Solace:
+	        	return getNewArcadesSolace();
 	        case Player_Laserbeam:
 	        case Destroyed_Explosion:
 	        case Alien_Spaceship_Destroyed:
@@ -200,6 +230,10 @@ public class AudioDatabase {
 
 	private CustomAudioClip getDefaultMusic() {
 		return DefaultMusic;
+	}
+	
+	private CustomAudioClip getNewArcadesSolace() {
+		return NewArcadesSolace;
 	}
 
 }

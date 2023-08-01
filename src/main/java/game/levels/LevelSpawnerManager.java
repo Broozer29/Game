@@ -40,6 +40,7 @@ public class LevelSpawnerManager {
 	private TimerManager timerManager = TimerManager.getInstance();
 	private GameStateInfo gameState = GameStateInfo.getInstance();
 
+	private List<Level> levelsToPlay = new ArrayList<Level>();
 	private Level currentLevel;
 
 	private LevelSpawnerManager() {
@@ -50,20 +51,44 @@ public class LevelSpawnerManager {
 		return instance;
 	}
 
-	public void resetManager() {
-		currentLevel = null;
-	}
-
-	public void updateGameTick() {
-		// Check if the song has ended, then create the moving out portal
-		if (gameState.getMusicSeconds() >= gameState.getMaxMusicSeconds()) {
-			gameState.setGameState(GameStatusEnums.Song_Finished);
+	public void setAlbum(Album album) {
+		for (Level level : album.getLevels()) {
+			levelsToPlay.add(level);
 		}
 
 	}
 
+	public void resetManager() {
+		currentLevel = null;
+		levelsToPlay = new ArrayList<Level>();
+	}
+
+	private void removeFinishedLevel() {
+		if (levelsToPlay.contains(currentLevel)) {
+			this.levelsToPlay.remove(currentLevel);
+		}
+	}
+	
+	private void advanceNextLevel() {
+		if(levelsToPlay.size() > 0) {
+			currentLevel = levelsToPlay.get(0);
+		}
+	}
+
+	public void updateGameTick() {
+		// Check if the song has ended, then create the moving out portal
+		if (gameState.getMusicSeconds() >= gameState.getMaxMusicSeconds() && gameState.getGameState() != GameStatusEnums.Zoning_In) {
+			gameState.setGameState(GameStatusEnums.Song_Finished);
+			removeFinishedLevel();
+			advanceNextLevel();
+		}
+	}
+
 	// Called when a level starts, to saturate enemy list
 	public void startLevel() {
+		if (levelsToPlay.size() > 0) {
+			currentLevel = levelsToPlay.get(0);
+		}
 		currentLevel = new FuriWisdomOfRageLevel();
 		AudioManager audioManager = AudioManager.getInstance();
 		for (EnemySpawnTimer timer : currentLevel.getTimers()) {
@@ -77,6 +102,8 @@ public class LevelSpawnerManager {
 		} catch (UnsupportedAudioFileException | IOException e) {
 			e.printStackTrace();
 		}
+		
+		gameState.setGameState(GameStatusEnums.Playing);
 
 //		FormationCreator formCreator = new FormationCreator();
 //		EnemySpawnTimer timer = null;
@@ -225,7 +252,8 @@ public class LevelSpawnerManager {
 
 	// FOR TESTING PURPOSES only for methods below this!
 	private EnemySpawnTimer createSpawnTimer(EnemyEnums enemyType, int spawnAttempts, int timeBeforeActivation,
-			boolean loopable, Direction direction, float enemyScale, int additionalDelay, int xMovementSpeed, int yMovementSpeed) {
+			boolean loopable, Direction direction, float enemyScale, int additionalDelay, int xMovementSpeed,
+			int yMovementSpeed) {
 
 		if (enemyType == EnemyEnums.Random) {
 			enemyType = selectRandomEnemy();
