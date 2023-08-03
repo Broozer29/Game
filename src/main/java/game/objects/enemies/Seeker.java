@@ -4,6 +4,7 @@ import game.movement.Direction;
 import game.movement.PathFinder;
 import game.movement.Point;
 import game.movement.RegularPathFinder;
+import game.objects.missiles.Missile;
 import game.objects.missiles.MissileCreator;
 import game.objects.missiles.MissileManager;
 import gamedata.audio.AudioEnums;
@@ -21,7 +22,7 @@ public class Seeker extends Enemy {
 		this.exhaustAnimation.setFrameDelay(1);
 		this.hitPoints = 50;
 		this.maxHitPoints = 50;
-		this.attackSpeedFrameCount = 200;
+		this.attackSpeedFrameCount = 250;
 		this.hasAttack = true;
 		this.showHealthBar = true;
 		this.deathSound = AudioEnums.Large_Ship_Destroyed;
@@ -41,15 +42,18 @@ public class Seeker extends Enemy {
 			missileManager = MissileManager.getInstance();
 		}
 		int xMovementSpeed = 3;
-		int yMovementSpeed = 5;
+		int yMovementSpeed = 3;
 		
 		// Hier een missile maken, en na het maken een target toeveogen aan de missile. De missile kan dan zijn target geven aan path. 
 		//PAth kan vervolgens zijn target tracken en constant de nextStep() naar de target teruggeven.
 		if (currentAttackSpeedFrameCount >= attackSpeedFrameCount) {
-			missileManager.addExistingMissile(MissileCreator.getInstance().createEnemyMissile(
-					xCoordinate, yCoordinate + + this.height / 2
-					, ImageEnums.Seeker_Missile, ImageEnums.Seeker_Missile_Explosion, rotation, 
-					scale, missilePathFinder, xMovementSpeed, yMovementSpeed, (float) 7.5));
+			Missile newMissile = MissileCreator.getInstance().createEnemyMissile(xCoordinate,
+					yCoordinate + this.height / 2, ImageEnums.Seeker_Missile,
+					ImageEnums.Seeker_Missile_Explosion, rotation, scale, missilePathFinder, xMovementSpeed,
+					yMovementSpeed, (float) 7.5);
+			
+			newMissile.rotateMissileAnimation(rotation);
+			missileManager.addExistingMissile(newMissile);
 			currentAttackSpeedFrameCount = 0;
 		}
 		if (currentAttackSpeedFrameCount < attackSpeedFrameCount) {

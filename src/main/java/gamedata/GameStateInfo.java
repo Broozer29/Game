@@ -55,6 +55,10 @@ public class GameStateInfo {
 	}
 	
 	public float getMaxMusicSeconds() {
+		//No song loaded or found, so testing purposes
+		if(this.maxMusicSeconds == 0) {
+			return 50000000;
+		}
 		return this.maxMusicSeconds;
 	}
 	

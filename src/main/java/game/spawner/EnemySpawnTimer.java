@@ -1,6 +1,6 @@
 package game.spawner;
 
-import game.levels.LevelSpawnerManager;
+import game.levels.LevelManager;
 import game.managers.TimerManager;
 import game.movement.Direction;
 import game.objects.enemies.EnemyEnums;
@@ -49,7 +49,7 @@ public class EnemySpawnTimer {
 	// bommen te spawnen.
 	public void activateTimer() {
 		if (formation == null) {
-			LevelSpawnerManager.getInstance().spawnEnemy(0, 0, this.timerEnemyType, this.amountOfSpawnAttempts,
+			LevelManager.getInstance().spawnEnemy(0, 0, this.timerEnemyType, this.amountOfSpawnAttempts,
 					this.direction, this.enemyScale, true, this.xMovementSpeed, this.yMovementSpeed);
 		} else {
 			formation.spawnFormation(formationXCoordinate, formationYCoordinate, timerEnemyType, direction, enemyScale, this.xMovementSpeed, this.yMovementSpeed);

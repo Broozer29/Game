@@ -46,8 +46,7 @@ public class SpaceShip extends Sprite {
 	private List<SpecialAttack> playerFollowingSpecialAttacks = new ArrayList<SpecialAttack>();
 
 	public SpaceShip() {
-		super(DataClass.getInstance().getWindowWidth() / 10, DataClass.getInstance().getWindowHeight() / 2,
-				(float) 0.8);
+		super(DataClass.getInstance().getWindowWidth() / 10, DataClass.getInstance().getWindowHeight() / 2, 0.6f);
 		playerStats = PlayerStats.getInstance();
 		powerUpEffects = BoostsUpgradesAndBuffsSettings.getInstance();
 		initShip();
@@ -75,6 +74,7 @@ public class SpaceShip extends Sprite {
 		this.spaceShipSpecialGuns.add(specialGun);
 		initExhaustAnimation(playerStats.getExhaustImage());
 		initDeathAnimation(ImageEnums.Destroyed_Explosion);
+		this.exhaustAnimation.setAnimationScale(0.6f);
 	}
 
 	private void initExhaustAnimation(ImageEnums imageType) {
@@ -84,8 +84,7 @@ public class SpaceShip extends Sprite {
 	}
 
 	private void initDeathAnimation(ImageEnums imageType) {
-		deathAnimation = new SpriteAnimation(xCoordinate, yCoordinate, imageType, false, 5);
-		deathAnimation.setFrameDelay(2);
+		deathAnimation = new SpriteAnimation(xCoordinate, yCoordinate, imageType, false, 2);
 	}
 
 	public void addShieldDamageAnimation() {
@@ -93,7 +92,7 @@ public class SpaceShip extends Sprite {
 			SpriteAnimation shieldAnimation = new SpriteAnimation(this.xCoordinate, this.yCoordinate,
 					ImageEnums.Default_Player_Shield_Damage, false, 1);
 
-			shieldAnimation.setFrameDelay(2);
+			shieldAnimation.setFrameDelay(1);
 			shieldAnimation.setOriginCoordinates(this.xCoordinate, this.yCoordinate);
 			int yDist = 5;
 			int xDist = 30;
@@ -265,7 +264,6 @@ public class SpaceShip extends Sprite {
 	public SpriteAnimation getDeathAnimation() {
 		return this.deathAnimation;
 	}
-
 
 	public synchronized void keyPressed(KeyEvent e) {
 		pressedKeys.add(e.getKeyCode());

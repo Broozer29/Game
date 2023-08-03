@@ -18,16 +18,10 @@ public class HomingMissileGuardianBot extends PowerUpEffect {
 
 	@Override
 	public void activatePower() {
-		int xCoordinate = PlayerManager.getInstance().getSpaceship().getCenterXCoordinate();
-		int yCoordinate = PlayerManager.getInstance().getSpaceship().getCenterYCoordinate();
 		float scale = (float) 0.5;
-		FriendlyEnums friendlyType = FriendlyEnums.Homing_Missile_Guardian_Bot;
-		Point destination = null;
-		Direction rotation = Direction.RIGHT;
-		PathFinder pathFinder = new OrbitPathFinder(PlayerManager.getInstance().getSpaceship(), 75, 300);
+		FriendlyEnums friendlyType = FriendlyEnums.Missile_Guardian_Bot;
 
-		FriendlyManager.getInstance().createMissileGuardianBot(xCoordinate, yCoordinate, destination, rotation,
-				friendlyType, scale, pathFinder);
+		FriendlyManager.getInstance().createMissileGuardianBot(friendlyType, scale);
 	}
 
 	@Override

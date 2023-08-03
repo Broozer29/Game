@@ -41,7 +41,7 @@ public class Alien extends Enemy {
 				missileManager.addExistingMissile(MissileCreator.getInstance().createEnemyMissile(
 						xCoordinate, yCoordinate + calculateRandomWeaponHeightOffset()
 						, ImageEnums.Alien_Laserbeam, ImageEnums.Impact_Explosion_One, rotation, 
-						scale, missilePathFinder, XMovementSpeed, XMovementSpeed, (float) 7.5));
+						scale, missilePathFinder, xMovementSpeed, xMovementSpeed, (float) 7.5));
 				currentAttackSpeedFrameCount = 0;
 			}
 		}

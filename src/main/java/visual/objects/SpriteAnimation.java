@@ -122,9 +122,15 @@ public class SpriteAnimation extends Sprite {
 				animationBounds.setBounds(xCoordinate + xOffset, yCoordinate + yOffset, width, height);
 
 				if (this.increaseTransparancy) {
-					if (this.transparancyAlpha + this.transparancyStepSize < 1.0f) {
+					if (this.transparancyAlpha + this.transparancyStepSize < 1.0f && 
+							this.transparancyAlpha + this.transparancyStepSize > 0.0f) {
 						this.transparancyAlpha += this.transparancyStepSize;
 					}
+				}
+				
+				if(this.transparancyAlpha < 0.05f && this.transparancyStepSize < 0.0f) {
+					this.setVisible(false);
+					this.removeAnimation();
 				}
 				return returnImage;
 			}
@@ -166,7 +172,7 @@ public class SpriteAnimation extends Sprite {
 		return this.imageType;
 	}
 
-	public Rectangle getAnimationBounds() {
+	public Rectangle getBounds() {
 		return animationBounds;
 	}
 

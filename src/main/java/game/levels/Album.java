@@ -7,7 +7,7 @@ public class Album {
 
 	private List<Level> albumLevels = new ArrayList<Level>();
 
-	public void album(AlbumEnums albumEnum) {
+	public Album(AlbumEnums albumEnum) {
 		this.saturateAlbum(albumEnum);
 	}
 
@@ -24,6 +24,8 @@ public class Album {
 	private void saturateFuriAlbum() {
 		FuriWisdomOfRageLevel wisdomOfRage = new FuriWisdomOfRageLevel();
 		this.albumLevels.add(wisdomOfRage);
+		FuriWisdomOfRageLevel wisdomOfRage2 = new FuriWisdomOfRageLevel();
+		this.albumLevels.add(wisdomOfRage2);
 	}
 
 	public List<Level> getLevels() {

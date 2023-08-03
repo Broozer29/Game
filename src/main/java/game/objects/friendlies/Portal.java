@@ -11,7 +11,6 @@ public class Portal extends SpriteAnimation{
 	public Portal(int x, int y, ImageEnums imageType, boolean infiniteLoop, float scale) {
 		super(x, y, imageType, infiniteLoop, scale);
 		setFrameDelay(2);
-		this.setTransparancyAlpha(true, 0.0f, 0.01f);
 		this.setOriginCoordinates(x, y);
 		this.cropAnimation();
 		updateCurrentBoardBlock();

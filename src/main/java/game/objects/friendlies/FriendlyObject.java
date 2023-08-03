@@ -4,10 +4,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 import game.movement.Direction;
+import game.movement.HomingPathFinder;
 import game.movement.OrbitPathFinder;
 import game.movement.Path;
 import game.movement.PathFinder;
 import game.movement.Point;
+import game.movement.RegularPathFinder;
+import game.movement.pathfinderconfigs.HomingPathFinderConfig;
+import game.movement.pathfinderconfigs.OrbitPathFinderConfig;
+import game.movement.pathfinderconfigs.PathFinderConfig;
+import game.movement.pathfinderconfigs.RegularPathFinderConfig;
 import gamedata.DataClass;
 import gamedata.audio.AudioEnums;
 import gamedata.image.ImageEnums;
@@ -61,8 +67,8 @@ public class FriendlyObject extends Sprite {
 		if (currentPath == null || currentPath.getWaypoints().isEmpty() || XMovementSpeed != lastUsedXMovementSpeed
 				|| YMovementSpeed != lastUsedYMovementSpeed || pathFinder.shouldRecalculatePath(currentPath)) {
 			// calculate a new path if necessary
-			currentPath = pathFinder.findPath(currentLocation, destination, XMovementSpeed, YMovementSpeed, rotation,
-					isFriendly);
+			PathFinderConfig config = getConfigByPathFinder(pathFinder);
+			currentPath = pathFinder.findPath(config);
 			lastUsedXMovementSpeed = XMovementSpeed;
 			lastUsedYMovementSpeed = YMovementSpeed;
 		}
@@ -122,52 +128,19 @@ public class FriendlyObject extends Sprite {
 		if (animation != null) {
 			animation.setAnimationBounds(xCoordinate, yCoordinate);
 		}
-		switch (rotation) {
-		case UP:
-			if (yCoordinate <= 0) {
-				this.setVisible(false);
-			}
-			break;
-		case DOWN:
-			if (yCoordinate >= DataClass.getInstance().getWindowHeight()) {
-				this.setVisible(false);
-			}
-			break;
-		case LEFT:
-			if (xCoordinate < 0) {
-				this.setVisible(false);
-			}
-			break;
-		case RIGHT:
-			if (xCoordinate > DataClass.getInstance().getWindowWidth()) {
-				this.setVisible(false);
-			}
-			break;
-		case LEFT_DOWN:
-			if (xCoordinate < 0 || yCoordinate >= DataClass.getInstance().getWindowHeight()) {
-				this.setVisible(false);
-			}
-			break;
-		case LEFT_UP:
-			if (xCoordinate < 0 || yCoordinate <= 0) {
-				this.setVisible(false);
-			}
-			break;
-		case NONE:
-			this.setVisible(false);
-			break;
-		case RIGHT_DOWN:
-			if (xCoordinate > DataClass.getInstance().getWindowWidth()
-					|| yCoordinate >= DataClass.getInstance().getWindowHeight()) {
-				this.setVisible(false);
-			}
-			break;
-		case RIGHT_UP:
-			if (xCoordinate > DataClass.getInstance().getWindowWidth() || yCoordinate <= 0) {
-				this.setVisible(false);
-			}
-			break;
+	}
+	
+	//Used for movement initialization or recalculation
+	private PathFinderConfig getConfigByPathFinder(PathFinder pathFinder) {
+		PathFinderConfig config = null;
+		if (pathFinder instanceof OrbitPathFinder) {
+			config = new OrbitPathFinderConfig(currentLocation, rotation, isFriendly);
+		} else if (pathFinder instanceof RegularPathFinder) {
+			config = new RegularPathFinderConfig(currentLocation, destination, 1, 1, isFriendly, rotation);
+		} else if (pathFinder instanceof HomingPathFinder) {
+			config = new HomingPathFinderConfig(currentLocation, rotation, true, isFriendly);
 		}
+		return config;
 	}
 
 	public SpriteAnimation getAnimation() {
@@ -176,6 +149,10 @@ public class FriendlyObject extends Sprite {
 
 	public void setAnimation(SpriteAnimation animation) {
 		this.animation = animation;
+	}
+	
+	public void setPathFinder(PathFinder newPathFinder) {
+		this.pathFinder = newPathFinder;
 	}
 
 }

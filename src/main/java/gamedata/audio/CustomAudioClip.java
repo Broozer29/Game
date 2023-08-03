@@ -120,7 +120,6 @@ public class CustomAudioClip {
 
 	public void setFramePosition(int framePosition) {
 		this.clip.setFramePosition(framePosition);
-		 System.out.println("Frame position set to: " + this.clip.getFramePosition()); // Debugging line
 	}
 
 	public AudioEnums getAudioType() {

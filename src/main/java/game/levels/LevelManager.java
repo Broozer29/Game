@@ -1,12 +1,11 @@
 package game.levels;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import javax.sound.sampled.UnsupportedAudioFileException;
-
+import game.levels.premadeLevelFormations.EnclosingFromAboveAndBelow;
+import game.levels.premadeLevelFormations.TopBottomVRows;
 import game.managers.AudioManager;
 import game.managers.TimerManager;
 import game.movement.Direction;
@@ -25,15 +24,21 @@ import game.objects.enemies.Energizer;
 import game.objects.enemies.Flamer;
 import game.objects.enemies.Seeker;
 import game.objects.enemies.Tazer;
+import game.objects.friendlies.FriendlyEnums;
+import game.objects.friendlies.FriendlyManager;
+import game.objects.friendlies.FriendlyObject;
+import game.spawner.EnemyFormation;
 import game.spawner.EnemySpawnTimer;
+import game.spawner.FormationCreator;
+import game.spawner.SpawnFormationEnums;
 import game.spawner.SpawningCoordinator;
+import gamedata.DataClass;
 import gamedata.GameStateInfo;
 import gamedata.GameStatusEnums;
-import gamedata.audio.AudioEnums;
 
-public class LevelSpawnerManager {
+public class LevelManager {
 
-	private static LevelSpawnerManager instance = new LevelSpawnerManager();
+	private static LevelManager instance = new LevelManager();
 	private AudioManager audioManager = AudioManager.getInstance();
 	private EnemyManager enemyManager = EnemyManager.getInstance();
 	private SpawningCoordinator spawningCoordinator = SpawningCoordinator.getInstance();
@@ -43,18 +48,19 @@ public class LevelSpawnerManager {
 	private List<Level> levelsToPlay = new ArrayList<Level>();
 	private Level currentLevel;
 
-	private LevelSpawnerManager() {
-
+	private LevelManager() {
+//		Album newAlbum = new Album(AlbumEnums.Furi);
+//		this.setAlbum(newAlbum);
 	}
 
-	public static LevelSpawnerManager getInstance() {
+	public static LevelManager getInstance() {
 		return instance;
 	}
 
 	public void setAlbum(Album album) {
-		for (Level level : album.getLevels()) {
-			levelsToPlay.add(level);
-		}
+//		for (Level level : album.getLevels()) {
+//			levelsToPlay.add(level);
+//		}
 
 	}
 
@@ -72,13 +78,22 @@ public class LevelSpawnerManager {
 	private void advanceNextLevel() {
 		if(levelsToPlay.size() > 0) {
 			currentLevel = levelsToPlay.get(0);
+			audioManager.resetManager();
+		} else {
+			gameState.setGameState(GameStatusEnums.Album_Completed);
 		}
 	}
 
 	public void updateGameTick() {
 		// Check if the song has ended, then create the moving out portal
-		if (gameState.getMusicSeconds() >= gameState.getMaxMusicSeconds() && gameState.getGameState() != GameStatusEnums.Zoning_In) {
+		if (gameState.getMusicSeconds() >= gameState.getMaxMusicSeconds() && gameState.getGameState() == GameStatusEnums.Playing) {
 			gameState.setGameState(GameStatusEnums.Song_Finished);
+		}
+		
+		//NextLevelPortal spawns, now we wait for the player to enter the portal to set it to Level_Completed
+		
+		if(gameState.getGameState() == GameStatusEnums.Level_Completed) {
+			gameState.setGameState(GameStatusEnums.Transitioning_To_Next_Level);
 			removeFinishedLevel();
 			advanceNextLevel();
 		}
@@ -86,37 +101,120 @@ public class LevelSpawnerManager {
 
 	// Called when a level starts, to saturate enemy list
 	public void startLevel() {
-		if (levelsToPlay.size() > 0) {
-			currentLevel = levelsToPlay.get(0);
-		}
-		currentLevel = new FuriWisdomOfRageLevel();
-		AudioManager audioManager = AudioManager.getInstance();
-		for (EnemySpawnTimer timer : currentLevel.getTimers()) {
-			timerManager.addEnemyTimerToList(timer);
-		}
-
-		try {
-			AudioEnums currentMusic = currentLevel.getSong();
-			audioManager.playMusicAudio(currentMusic);
-			GameStateInfo.getInstance().setMaxMusicSeconds(audioManager.getBackgroundMusic());
-		} catch (UnsupportedAudioFileException | IOException e) {
-			e.printStackTrace();
-		}
+//		if (levelsToPlay.size() > 0) {
+//			currentLevel = levelsToPlay.get(0);
+//		}
+//		if(currentLevel == null) {
+//			currentLevel = new FuriWisdomOfRageLevel();
+//		}
+		
+//		AudioManager audioManager = AudioManager.getInstance();
+//		for (EnemySpawnTimer timer : currentLevel.getTimers()) {
+//			timerManager.addEnemyTimerToList(timer);
+//		}
+//
+//		try {
+//			AudioEnums currentMusic = currentLevel.getSong();
+//			audioManager.playMusicAudio(currentMusic);
+//			GameStateInfo.getInstance().setMaxMusicSeconds(audioManager.getBackgroundMusic());
+//		} catch (UnsupportedAudioFileException | IOException e) {
+//			e.printStackTrace();
+//		}
 		
 		gameState.setGameState(GameStatusEnums.Playing);
-
-//		FormationCreator formCreator = new FormationCreator();
-//		EnemySpawnTimer timer = null;
-//		EnemyFormation formation = null;
-//		EnemyEnums enemyType = EnemyEnums.Seeker;
-//		boolean loopable = false;
-//		float scale = 1;
-//		int additionalDelay = 0;
-//		DataClass dataClass = DataClass.getInstance();
-//		int i = 1;
-//		TopBottomVRows pattern = new TopBottomVRows(1, enemyType, scale, EnemyEnums.Bomba, Direction.LEFT);
-//		for(int iterator = 0; iterator < pattern.getTimers().size(); iterator++) {
-//			addSpawnTimer(pattern.getTimers().get(iterator));
+		
+		FormationCreator formCreator = new FormationCreator();
+		EnemySpawnTimer timer = null;
+		EnemyFormation formation = null;
+		EnemyEnums enemyType = EnemyEnums.Seeker;
+		boolean loopable = false;
+		float scale = 1;
+		int additionalDelay = 0;
+		DataClass dataClass = DataClass.getInstance();
+		int xMovementSpeed = 2;
+		int yMovementSpeed = 2;
+		int i = 1;
+		
+		timer = createSpawnTimer(EnemyEnums.Bulldozer, 1, i, loopable, Direction.LEFT, scale, additionalDelay, xMovementSpeed, yMovementSpeed);
+		formation = formCreator.createFormation(SpawnFormationEnums.Dot, 50, 50);
+		timer.setFormation(formation, dataClass.getWindowWidth() + 250, dataClass.getWindowHeight() / 2 - 100);
+		addSpawnTimer(timer);
+		
+//		for(int a = 0; a < 8; a++) {
+//			FriendlyManager.getInstance().createMissileGuardianBot(FriendlyEnums.Missile_Guardian_Bot, 1);
+//		}
+		
+//		for(int i = 0; i < 240; i += 30) {
+//			TopBottomVRows pattern = new TopBottomVRows(i, enemyType, scale, EnemyEnums.Tazer, Direction.LEFT, xMovementSpeed, yMovementSpeed);
+//			for(int iterator = 0; iterator < pattern.getTimers().size(); iterator++) {
+//				addSpawnTimer(pattern.getTimers().get(iterator));
+//			}
+//		}
+//		
+//		yMovementSpeed = 1;
+//		for(int i = 60; i < 300; i += 42) {
+//			EnclosingFromAboveAndBelow pattern = new EnclosingFromAboveAndBelow(i, EnemyEnums.Flamer, scale, xMovementSpeed, yMovementSpeed);
+//			for(int iterator = 0; iterator < pattern.getTimers().size(); iterator++) {
+//				addSpawnTimer(pattern.getTimers().get(iterator));
+//			}
+//		}
+//		
+//		for(int i = 200; i < 600; i += 100) {
+//			EnclosingFromAboveAndBelow pattern = new EnclosingFromAboveAndBelow(i, EnemyEnums.Flamer, scale, xMovementSpeed, yMovementSpeed);
+//			for(int iterator = 0; iterator < pattern.getTimers().size(); iterator++) {
+//				addSpawnTimer(pattern.getTimers().get(iterator));
+//			}
+//		}
+//		
+//		for(int i = 300; i < 600; i += 45) {
+//			timer = createSpawnTimer(EnemyEnums.Seeker, 1, i, loopable, Direction.LEFT_UP, scale, additionalDelay, xMovementSpeed, yMovementSpeed);
+//			formation = formCreator.createFormation(SpawnFormationEnums.Large_greaterthen, 50, 50);
+//			timer.setFormation(formation, dataClass.getWindowWidth() + 250, dataClass.getWindowHeight() / 2 - 100);
+//			addSpawnTimer(timer);
+//			
+//			timer = createSpawnTimer(EnemyEnums.Seeker, 1, i, loopable, Direction.LEFT_DOWN, scale, additionalDelay, xMovementSpeed, yMovementSpeed);
+//			formation = formCreator.createFormation(SpawnFormationEnums.Large_greaterthen, 50, 50);
+//			timer.setFormation(formation, dataClass.getWindowWidth() + 250, dataClass.getWindowHeight() / 2 - 400);
+//			addSpawnTimer(timer);
+//			
+//			timer = createSpawnTimer(EnemyEnums.Seeker, 1, i, loopable, Direction.RIGHT_UP, scale, additionalDelay, xMovementSpeed, yMovementSpeed);
+//			formation = formCreator.createFormation(SpawnFormationEnums.Large_smallerthen, 50, 50);
+//			timer.setFormation(formation, -550, dataClass.getWindowHeight() / 2 - 100);
+//			addSpawnTimer(timer);
+//			
+//			timer = createSpawnTimer(EnemyEnums.Seeker, 1, i, loopable, Direction.RIGHT_DOWN, scale, additionalDelay, xMovementSpeed, yMovementSpeed);
+//			formation = formCreator.createFormation(SpawnFormationEnums.Large_smallerthen, 50, 50);
+//			timer.setFormation(formation, -550, dataClass.getWindowHeight() / 2 - 400);
+//			addSpawnTimer(timer);
+//		}
+//		
+//		for(int i = 300; i < 600; i += 30) {
+//			timer = createSpawnTimer(EnemyEnums.Energizer, 1, i, loopable, Direction.LEFT, scale, additionalDelay, xMovementSpeed, yMovementSpeed);
+//			formation = formCreator.createFormation(SpawnFormationEnums.Small_smallerthen, 50, 50);
+//			timer.setFormation(formation, dataClass.getWindowWidth() + 250, 150);
+//			addSpawnTimer(timer);
+//			
+//			timer = createSpawnTimer(EnemyEnums.Energizer, 1, i, loopable, Direction.LEFT, scale, additionalDelay, xMovementSpeed, yMovementSpeed);
+//			formation = formCreator.createFormation(SpawnFormationEnums.Large_greaterthen, 50, 50);
+//			timer.setFormation(formation, dataClass.getWindowWidth() + 600, 400);
+//			addSpawnTimer(timer);
+//			
+//			timer = createSpawnTimer(EnemyEnums.Energizer, 1, i, loopable, Direction.LEFT, scale, additionalDelay, xMovementSpeed, yMovementSpeed);
+//			formation = formCreator.createFormation(SpawnFormationEnums.Large_smallerthen, 50, 50);
+//			timer.setFormation(formation, dataClass.getWindowWidth() + 950, 750);
+//			addSpawnTimer(timer);
+//		} 
+//		
+//		for(int i = 300; i < 600; i += 45) {
+//			timer = createSpawnTimer(EnemyEnums.Bulldozer, 1, i, loopable, Direction.LEFT_DOWN, scale, additionalDelay, xMovementSpeed, yMovementSpeed);
+//			formation = formCreator.createFormation(SpawnFormationEnums.Small_smallerthen, 50, 50);
+//			timer.setFormation(formation, dataClass.getWindowWidth() + 250, -200);
+//			addSpawnTimer(timer);
+//			
+//			timer = createSpawnTimer(EnemyEnums.Bulldozer, 1, i, loopable, Direction.LEFT_UP, scale, additionalDelay, xMovementSpeed, yMovementSpeed);
+//			formation = formCreator.createFormation(SpawnFormationEnums.Large_smallerthen, 50, 50);
+//			timer.setFormation(formation, dataClass.getWindowWidth() + 250, dataClass.getWindowHeight() + 250);
+//			addSpawnTimer(timer);
 //		}
 
 	}
@@ -279,4 +377,5 @@ public class LevelSpawnerManager {
 		}
 		return randomValue;
 	}
+	
 }

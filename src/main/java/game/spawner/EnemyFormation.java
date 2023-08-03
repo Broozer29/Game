@@ -1,6 +1,6 @@
 package game.spawner;
 
-import game.levels.LevelSpawnerManager;
+import game.levels.LevelManager;
 import game.movement.Direction;
 import game.objects.enemies.EnemyEnums;
 
@@ -30,7 +30,7 @@ public class EnemyFormation {
 
 //					System.out.println("Spawning on:" + spawnX + "  " + spawnY);
 					// Create the new enemy here and add it to the enemies list
-					LevelSpawnerManager.getInstance().spawnEnemy(spawnX, spawnY, timerEnemyType, 1, direction, scale,
+					LevelManager.getInstance().spawnEnemy(spawnX, spawnY, timerEnemyType, 1, direction, scale,
 							false, xMovementSpeed, yMovementSpeed);
 				}
 			}

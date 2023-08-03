@@ -79,7 +79,7 @@ public class ExplosionManager {
 						// If the explosion is close to the player
 						if (isNearby(explosion, friendlyManager.getSpaceship())) {
 							// If the explosion intersects with the player
-							if (explosion.getAnimation().getAnimationBounds()
+							if (explosion.getAnimation().getBounds()
 									.intersects(friendlyManager.getSpaceship().getBounds())) {
 								// Collision!
 								friendlyManager.getSpaceship().takeHitpointDamage(explosion.getDamage());
@@ -103,7 +103,7 @@ public class ExplosionManager {
 					for (Enemy enemy : enemyManager.getEnemies()) {
 						if (!explosion.getCollidedSprites().contains(enemy)) {
 							if (isNearby(explosion, enemy)) {
-								if (explosion.getAnimation().getAnimationBounds().intersects(enemy.getBounds())) {
+								if (explosion.getAnimation().getBounds().intersects(enemy.getBounds())) {
 									enemy.takeDamage(explosion.getDamage());
 									explosion.addCollidedSprite(enemy);
 								}

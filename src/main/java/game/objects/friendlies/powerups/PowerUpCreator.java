@@ -56,8 +56,9 @@ public class PowerUpCreator {
 
 	private int getRandomTimeForSpawner() {
 		BoostsUpgradesAndBuffsSettings tempSettings = BoostsUpgradesAndBuffsSettings.getInstance();
-		return random.nextInt((tempSettings.getMaxTimeForPowerUpSpawn() - tempSettings.getMinTimeForPowerUpSpawn()) + 1)
-				+ tempSettings.getMinTimeForPowerUpSpawn();
+//		return random.nextInt((tempSettings.getMaxTimeForPowerUpSpawn() - tempSettings.getMinTimeForPowerUpSpawn()) + 1)
+//				+ tempSettings.getMinTimeForPowerUpSpawn();
+		return 20;
 	}
 
 	private Direction selectRandomDirection() {
@@ -125,16 +126,16 @@ public class PowerUpCreator {
 	}
 	
 	private PowerUpEnums selectRandomPowerUp() {
-		PowerUpEnums randomValue = powerupEnums[random.nextInt(powerupEnums.length)];
-		if (randomValue == PowerUpEnums.DUMMY_DO_NOT_USE || 
-				randomValue == PowerUpEnums.RANDOM ||
-				randomValue == PowerUpEnums.DOUBLE_SHOT ||
-				randomValue == PowerUpEnums.TRIPLE_SHOT) {
-			return selectRandomPowerUp();
-		}
-		
-//		return PowerUpEnums.Guardian_Drone_Homing_Missile;
-		return randomValue;
+//		PowerUpEnums randomValue = powerupEnums[random.nextInt(powerupEnums.length)];
+//		if (randomValue == PowerUpEnums.DUMMY_DO_NOT_USE || 
+//				randomValue == PowerUpEnums.RANDOM ||
+//				randomValue == PowerUpEnums.DOUBLE_SHOT ||
+//				randomValue == PowerUpEnums.TRIPLE_SHOT) {
+//			return selectRandomPowerUp();
+//		}
+//		return randomValue;
+		return PowerUpEnums.Guardian_Drone_Homing_Missile;
+
 	}
 	
 	

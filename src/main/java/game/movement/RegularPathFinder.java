@@ -3,39 +3,52 @@ package game.movement;
 import java.util.ArrayList;
 import java.util.List;
 
+import game.movement.pathfinderconfigs.PathFinderConfig;
+import game.movement.pathfinderconfigs.RegularPathFinderConfig;
 import gamedata.DataClass;
 
 public class RegularPathFinder implements PathFinder {
 
-	public Path findPath(Point start, Point end, int XStepSize, int YStepSize, Direction fallbackDirection,
-			boolean isFriendly) {
-		List<Point> pathList = new ArrayList<>();
-		Point currentPoint = start;
-		pathList.add(start);
-		int maxXSteps = (DataClass.getInstance().getWindowWidth() / XStepSize) * 2;
-		int maxYSteps = (DataClass.getInstance().getWindowWidth() / YStepSize) * 2;
-		boolean shouldContinue = true;
-
-		int maxSteps = 0;
-		if (maxXSteps > maxYSteps) {
-			maxSteps = maxXSteps;
+	@Override
+	public Path findPath(PathFinderConfig pathFinderConfig) {
+		if (!(pathFinderConfig instanceof RegularPathFinderConfig)) {
+			throw new IllegalArgumentException("Expected RegularPathFinderConfig");
 		} else {
-			maxSteps = maxYSteps;
-		}
-		
-		int steps = 0;
-		Direction direction = Direction.LEFT;
-		while (steps < maxSteps) {
-			if (!currentPoint.equals(end) || shouldContinue) {
-				direction = calculateDirection(currentPoint, end);
-			}
-			currentPoint = stepTowards(currentPoint, direction, XStepSize, YStepSize);
-			pathList.add(currentPoint);
-			steps++;
 
+			Point start = ((RegularPathFinderConfig) pathFinderConfig).getStart();
+			Point end = ((RegularPathFinderConfig) pathFinderConfig).getEnd();
+			Direction fallbackDirection = ((RegularPathFinderConfig) pathFinderConfig).getFallbackDirection();
+			boolean isFriendly = ((RegularPathFinderConfig) pathFinderConfig).isFriendly();
+			int XStepSize = ((RegularPathFinderConfig) pathFinderConfig).getxMovementSpeed();
+			int YStepSize = ((RegularPathFinderConfig) pathFinderConfig).getyMovementSpeed();
+
+			List<Point> pathList = new ArrayList<>();
+			Point currentPoint = start;
+			pathList.add(start);
+			int maxXSteps = (DataClass.getInstance().getWindowWidth() / XStepSize) * 2;
+			int maxYSteps = (DataClass.getInstance().getWindowWidth() / YStepSize) * 2;
+			boolean shouldContinue = true;
+
+			int maxSteps = 0;
+			if (maxXSteps > maxYSteps) {
+				maxSteps = maxXSteps;
+			} else {
+				maxSteps = maxYSteps;
+			}
+
+			int steps = 0;
+			Direction direction = Direction.LEFT;
+			while (steps < maxSteps) {
+				if (!currentPoint.equals(end) || shouldContinue) {
+					direction = calculateDirection(currentPoint, end);
+				}
+				currentPoint = stepTowards(currentPoint, direction, XStepSize, YStepSize);
+				pathList.add(currentPoint);
+				steps++;
+
+			}
+			return new Path(pathList, fallbackDirection, false, isFriendly);
 		}
-		Path path = new Path(pathList, fallbackDirection, false, isFriendly);
-		return path;
 	}
 
 	@Override
@@ -118,7 +131,7 @@ public class RegularPathFinder implements PathFinder {
 		int yCoordinate = start.getY();
 		DataClass dataClass = DataClass.getInstance();
 
-		//friendly is not used for regular paths
+		// friendly is not used for regular paths
 		switch (rotation) {
 		case UP:
 			endYCoordinate = -150;

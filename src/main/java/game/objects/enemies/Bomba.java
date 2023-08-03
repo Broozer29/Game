@@ -47,7 +47,7 @@ public class Bomba extends Enemy {
 		if (missileManager == null) {
 			missileManager = MissileManager.getInstance();
 		}
-		int xMovementSpeed = 5;
+		int xMovementSpeed = 4;
 		int yMovementSpeed = 2;
 		if (currentAttackSpeedFrameCount >= attackSpeedFrameCount) {
 

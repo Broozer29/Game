@@ -4,6 +4,7 @@ import game.movement.Direction;
 import game.movement.PathFinder;
 import game.movement.Point;
 import game.movement.RegularPathFinder;
+import game.objects.missiles.Missile;
 import game.objects.missiles.MissileCreator;
 import game.objects.missiles.MissileManager;
 import gamedata.audio.AudioEnums;
@@ -39,13 +40,16 @@ public class Tazer extends Enemy {
 		if (missileManager == null) {
 			missileManager = MissileManager.getInstance();
 		}
-		int xMovementSpeed = 5;
+		int xMovementSpeed = 4;
 		int yMovementSpeed = 2;
 		if (currentAttackSpeedFrameCount >= attackSpeedFrameCount) {
-			missileManager.addExistingMissile(MissileCreator.getInstance().createEnemyMissile(
-					xCoordinate, yCoordinate + + this.height / 2
-					, ImageEnums.Tazer_Missile, ImageEnums.Tazer_Missile_Explosion, rotation, 
-					scale, missilePathFinder, xMovementSpeed, yMovementSpeed, (float) 7.5));
+			Missile newMissile = MissileCreator.getInstance().createEnemyMissile(xCoordinate,
+					yCoordinate + +this.height / 2, ImageEnums.Tazer_Missile,
+					ImageEnums.Tazer_Missile_Explosion, rotation, scale, missilePathFinder, xMovementSpeed,
+					yMovementSpeed, (float) 7.5);
+			
+			newMissile.rotateMissileAnimation(rotation);
+			missileManager.addExistingMissile(newMissile);
 			currentAttackSpeedFrameCount = 0;
 		}
 		if (currentAttackSpeedFrameCount < attackSpeedFrameCount) {
