@@ -76,6 +76,8 @@ public class AudioLoader {
 			return "/audio/Flamethrower.wav";
 		case Firewall:
 			return "/audio/Firewall.wav";
+		case New_Arcades_Solace:
+			return "/audio/music/NEW ARCADES - SOLACE.wav";
 		}
 		return null;
 	}

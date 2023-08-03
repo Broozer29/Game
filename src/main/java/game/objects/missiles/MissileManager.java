@@ -5,13 +5,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import game.managers.AnimationManager;
+import game.managers.CollisionDetector;
 import game.managers.PlayerManager;
 import game.movement.MovementInitiator;
 import game.objects.enemies.Enemy;
 import game.objects.enemies.EnemyManager;
 import game.objects.friendlies.spaceship.specialAttacks.SpecialAttack;
 import gamedata.image.ImageEnums;
-import visual.objects.Sprite;
 
 public class MissileManager {
 
@@ -20,12 +20,10 @@ public class MissileManager {
 	private AnimationManager animationManager = AnimationManager.getInstance();
 	private PlayerManager friendlyManager = PlayerManager.getInstance();
 	private MovementInitiator movementManager = MovementInitiator.getInstance();
+	private CollisionDetector collisionDetector = CollisionDetector.getInstance();
 	private List<Missile> enemyMissiles = new ArrayList<Missile>();
 	private List<Missile> friendlyMissiles = new ArrayList<Missile>();
 	private List<SpecialAttack> specialAttacks = new ArrayList<SpecialAttack>();
-
-	private int threshold = 600;
-	private int boardBlockThreshold = 4;
 
 	private MissileManager() {
 	}
@@ -33,6 +31,7 @@ public class MissileManager {
 	public void resetManager() {
 		enemyMissiles = new ArrayList<Missile>();
 		friendlyMissiles = new ArrayList<Missile>();
+		specialAttacks = new ArrayList<SpecialAttack>();
 	}
 
 	public static MissileManager getInstance() {
@@ -79,13 +78,9 @@ public class MissileManager {
 		}
 		for (Missile missile : friendlyMissiles) {
 			if (missile.isVisible()) {
-				Rectangle r1 = getMissileBounds(missile);
 				for (Enemy enemy : enemyManager.getEnemies()) {
-					if (isNearby(missile, enemy)) {
-						Rectangle r2 = enemy.getBounds();
-						if (r1.intersects(r2)) {
-							handleCollision(enemy, missile);
-						}
+					if (collisionDetector.detectCollision(enemy, missile)) {
+						handleCollision(enemy, missile);
 					}
 				}
 			}
@@ -100,7 +95,7 @@ public class MissileManager {
 	}
 
 	private Rectangle getMissileBounds(Missile missile) {
-		return missile.getAnimation() != null ? missile.getAnimation().getAnimationBounds() : missile.getBounds();
+		return missile.getAnimation() != null ? missile.getAnimation().getBounds() : missile.getBounds();
 	}
 
 	// Handles collision for enemies and friendlymissiles (
@@ -126,13 +121,10 @@ public class MissileManager {
 	private void checkEnemyMissileWithPlayerCollision() {
 		for (Missile missile : enemyMissiles) {
 			if (missile.isVisible()) {
-				if (isNearby(missile, friendlyManager.getSpaceship())) {
-					Rectangle r1 = getMissileBounds(missile);
-					if (r1.intersects(friendlyManager.getSpaceship().getBounds())) {
-						friendlyManager.getSpaceship().takeHitpointDamage(missile.getMissileDamage());
-						animationManager.addUpperAnimation(missile.getExplosionAnimation());
-						setMissileVisibility(missile);
-					}
+				if(collisionDetector.detectCollision(missile.getAnimation(), friendlyManager.getSpaceship())) {
+					friendlyManager.getSpaceship().takeHitpointDamage(missile.getMissileDamage());
+					animationManager.addUpperAnimation(missile.getExplosionAnimation());
+					setMissileVisibility(missile);
 				}
 			}
 		}
@@ -142,20 +134,15 @@ public class MissileManager {
 	private void checkSpecialAttackWithEnemyCollision(SpecialAttack specialAttack) {
 		for (Missile missile : specialAttack.getSpecialAttackMissiles()) {
 			for (Enemy enemy : enemyManager.getEnemies()) {
-				if (isNearby(missile, enemy)) {
-					Rectangle r1 = getMissileBounds(missile);
-					if (r1.intersects(enemy.getBounds())) {
-						enemy.takeDamage(specialAttack.getDamage());
-					}
+				if(collisionDetector.detectCollision(missile.getAnimation(), enemy)) {
+					enemy.takeDamage(specialAttack.getDamage());
 				}
 			}
 		}
 
 		for (Enemy enemy : enemyManager.getEnemies()) {
-			if (isNearby(specialAttack.getAnimation(), enemy)) {
-				if (specialAttack.getAnimation().getAnimationBounds().intersects(enemy.getBounds())) {
-					enemy.takeDamage(specialAttack.getDamage());
-				}
+			if(collisionDetector.detectCollision(enemy, specialAttack.getAnimation())) {
+				enemy.takeDamage(specialAttack.getDamage());
 			}
 		}
 	}
@@ -164,33 +151,11 @@ public class MissileManager {
 	private void checkSpecialAttackWithEnemyMissileCollision(SpecialAttack specialAttack) {
 		if (specialAttack.getSpecialAttackMissiles().size() == 0) {
 			for (Missile enemyMissile : enemyMissiles) {
-				if (isNearby(specialAttack.getAnimation(), enemyMissile))
-					if (enemyMissile.isVisible()
-							&& specialAttack.getAnimation().getAnimationBounds().intersects(enemyMissile.getAnimation().getAnimationBounds())) {
-						setMissileVisibility(enemyMissile);
-						
-					}
+				if(collisionDetector.detectCollision(enemyMissile.getAnimation(), specialAttack.getAnimation())) {
+					setMissileVisibility(enemyMissile);
+				}
 			}
 		}
-	}
-
-	private boolean isWithinBoardBlockThreshold(Sprite sprite1, Sprite sprite2) {
-		//This causes all other "updatecurrentBoardBlocks" to be redundant
-		sprite1.updateCurrentBoardBlock();
-		sprite2.updateCurrentBoardBlock();
-		
-		int blockDifference = Math.abs(sprite1.getCurrentBoardBlock() - sprite2.getCurrentBoardBlock());
-		return blockDifference <= boardBlockThreshold;
-	}
-
-	private boolean isNearby(Sprite sprite1, Sprite sprite2) {
-		if (!isWithinBoardBlockThreshold(sprite1, sprite2)) {
-			return false;
-		}
-
-		double distance = Math.hypot(sprite1.getXCoordinate() - sprite2.getXCoordinate(),
-				sprite1.getYCoordinate() - sprite2.getYCoordinate());
-		return distance < threshold;
 	}
 
 	// Both friendly & enemy missiles
@@ -201,6 +166,8 @@ public class MissileManager {
 		case Firespout_Animation:
 			break;
 		default:
+			// Create method that destroys the missile and plays an explosion animation of the
+			// missile removing
 			missile.setVisible(false);
 			break;
 		}

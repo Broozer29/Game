@@ -1,6 +1,6 @@
 package game.spawner;
 
-import game.levels.LevelSpawnerManager;
+import game.levels.LevelManager;
 import game.managers.TimerManager;
 import game.movement.Direction;
 import game.objects.enemies.EnemyEnums;
@@ -12,8 +12,8 @@ public class EnemySpawnTimer {
 	private Direction direction;
 	private EnemyEnums timerEnemyType;
 	private float enemyScale;
-	
-	//Required for formation spawning
+
+	// Required for formation spawning
 	private EnemyFormation formation = null;
 	private int formationXCoordinate;
 	private int formationYCoordinate;
@@ -25,9 +25,12 @@ public class EnemySpawnTimer {
 	private boolean loopable;
 	private int additionalDelay;
 	private float currentTime;
+	
+	private int xMovementSpeed;
+	private int yMovementSpeed;
 
 	public EnemySpawnTimer(int timeBeforeActivation, int amountOfSpawnAttempts, EnemyEnums timerEnemyType,
-			boolean loopable, Direction direction, float enemyScale, int additionalDelay) {
+			boolean loopable, Direction direction, float enemyScale, int additionalDelay,int xMovementSpeed, int yMovementSpeed) {
 		this.enemyScale = enemyScale;
 		this.timerEnemyType = timerEnemyType;
 		this.amountOfSpawnAttempts = amountOfSpawnAttempts;
@@ -38,16 +41,18 @@ public class EnemySpawnTimer {
 		this.setCurrentTime(0);
 		this.setAdditionalDelay(additionalDelay);
 		this.finished = false;
+		this.xMovementSpeed = xMovementSpeed;
+		this.yMovementSpeed = yMovementSpeed;
 	}
 
 	// Vuur event naar de timerManager dat deze timer voorbij is. Bijvoorbeeld om
 	// bommen te spawnen.
 	public void activateTimer() {
 		if (formation == null) {
-			LevelSpawnerManager.getInstance().spawnEnemy(0, 0, this.timerEnemyType, this.amountOfSpawnAttempts,
-					this.direction, this.enemyScale);
+			LevelManager.getInstance().spawnEnemy(0, 0, this.timerEnemyType, this.amountOfSpawnAttempts,
+					this.direction, this.enemyScale, true, this.xMovementSpeed, this.yMovementSpeed);
 		} else {
-			formation.spawnFormation(formationXCoordinate, formationYCoordinate, timerEnemyType, direction, enemyScale);
+			formation.spawnFormation(formationXCoordinate, formationYCoordinate, timerEnemyType, direction, enemyScale, this.xMovementSpeed, this.yMovementSpeed);
 		}
 		if (this.loopable) {
 			this.additionalDelay = 0;

@@ -17,10 +17,12 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
+import controllerInput.ConnectedControllers;
+import controllerInput.ControllerInput;
+import controllerInput.ControllerInputReader;
 import game.managers.AnimationManager;
 import game.objects.BackgroundManager;
 import game.objects.BackgroundObject;
-import gamedata.ConnectedControllers;
 import gamedata.DataClass;
 import gamedata.PlayerStats;
 import gamedata.image.ImageEnums;
@@ -30,8 +32,6 @@ import menuscreens.MenuObject;
 import menuscreens.MenuObjectEnums;
 import menuscreens.MenuObjectPart;
 import net.java.games.input.Component;
-import net.java.games.input.Controller;
-import net.java.games.input.ControllerEnvironment;
 import visual.objects.Sprite;
 import visual.objects.SpriteAnimation;
 
@@ -42,9 +42,9 @@ public class MenuBoard extends JPanel implements ActionListener {
 	private ConnectedControllers controllers = ConnectedControllers.getInstance();
 	private final int boardWidth = data.getWindowWidth();;
 	private final int boardHeight = data.getWindowHeight();;
-	private List<MenuObject> firstRow = new ArrayList<MenuObject>();
-	private List<MenuObject> secondRow = new ArrayList<MenuObject>();
-	private List<MenuObject> thirdRow = new ArrayList<MenuObject>();
+	private List<MenuObject> firstColumn = new ArrayList<MenuObject>();
+	private List<MenuObject> secondColumn = new ArrayList<MenuObject>();
+	private List<MenuObject> thirdColumn = new ArrayList<MenuObject>();
 	private List<List<MenuObject>> grid = new ArrayList<>();
 
 	private List<MenuObject> offTheGridObjects = new ArrayList<MenuObject>();
@@ -75,9 +75,13 @@ public class MenuBoard extends JPanel implements ActionListener {
 	private MenuObject selectLaserbeam;
 	private MenuObject selectEMP;
 	private MenuObject selectFirewall;
-	
+	private MenuObject selectTalentSelectionBoard;
+	private MenuObject selectLevelBoard;
+
 	private boolean foundControllerBool = false;
+	private boolean initializedMenuObjects = false;
 	private MenuObject foundController;
+	private ControllerInputReader controllerInputReader;
 
 	private int selectedRow = 0;
 	private int selectedColumn = 0;
@@ -87,11 +91,14 @@ public class MenuBoard extends JPanel implements ActionListener {
 		setFocusable(true);
 		setBackground(Color.BLACK);
 		setPreferredSize(new Dimension(boardWidth, boardHeight));
-		initMenuTiles();
+
 		controllers.initController();
-		if(controllers.getFirstController() != null) {
+		if (controllers.getFirstController() != null) {
 			foundControllerBool = true;
+			controllerInputReader = controllers.getControllerInputReader(controllers.getFirstController());
 		}
+
+		initMenuTiles();
 		timer = new Timer(16, e -> repaint());
 		timer.start();
 	}
@@ -101,8 +108,8 @@ public class MenuBoard extends JPanel implements ActionListener {
 
 		// With functionality:
 		float imageScale = 1;
-		float textScale = (float) 2;
-		this.startGameTile = new MenuObject(150, (boardHeight / 2), textScale, "Start Game", MenuObjectEnums.Text_Block,
+		float textScale = 1;
+		this.startGameTile = new MenuObject(150, (boardHeight / 2), textScale, "START GAME", MenuObjectEnums.Text_Block,
 				MenuFunctionEnums.Start_Game);
 
 		int initCursorX = startGameTile.getXCoordinate();
@@ -123,16 +130,16 @@ public class MenuBoard extends JPanel implements ActionListener {
 
 		int xCoordinate = boardWidth / 100;
 		int yCoordinate = boardHeight / 2 + 300;
-		this.wasdExplanation = new MenuObject(xCoordinate, yCoordinate + 0, textScale, "Movement = WASD or arrows",
-				MenuObjectEnums.Text_Block, MenuFunctionEnums.NONE);
-		this.shiftExplanation = new MenuObject(xCoordinate, yCoordinate + 20, textScale, "SHIFT = Speed boost",
+		this.wasdExplanation = new MenuObject(xCoordinate, yCoordinate + 0, textScale,
+				"MOVEMENT = WASD OR ARROWS ORJOYSTICK", MenuObjectEnums.Text_Block, MenuFunctionEnums.NONE);
+		this.shiftExplanation = new MenuObject(xCoordinate, yCoordinate + 20, textScale, "SHIFT = SPEED BOOST",
 				MenuObjectEnums.Text_Block, MenuFunctionEnums.NONE);
 
-		this.attackExplanation = new MenuObject(xCoordinate, yCoordinate + 40, textScale, "Spacebar = Normal attack",
+		this.attackExplanation = new MenuObject(xCoordinate, yCoordinate + 40, textScale, "SPACEBAR = NORMAL ATTACK",
 				MenuObjectEnums.Text_Block, MenuFunctionEnums.NONE);
 
 		this.specialAttackExplanation = new MenuObject(xCoordinate, yCoordinate + 60, textScale,
-				"Q and ENTER = Special attack", MenuObjectEnums.Text_Block, MenuFunctionEnums.NONE);
+				"Q AND ENTER = SPECIAL ATTACK", MenuObjectEnums.Text_Block, MenuFunctionEnums.NONE);
 
 		this.startGameCard = new MenuObject(startGameTile.getXCoordinate() - 120, startGameTile.getYCoordinate() - 50,
 				1, null, MenuObjectEnums.Square_Card, MenuFunctionEnums.NONE);
@@ -146,15 +153,15 @@ public class MenuBoard extends JPanel implements ActionListener {
 				MenuObjectEnums.Text_Block, MenuFunctionEnums.NONE);
 
 		this.selectLaserbeam = new MenuObject(selectNormalAttackCard.getXCoordinate() + 50,
-				selectNormalAttackCard.getYCoordinate() + 75, textScale, "Laserbeam", MenuObjectEnums.Text_Block,
+				selectNormalAttackCard.getYCoordinate() + 75, textScale, "LASERBEAM", MenuObjectEnums.Text_Block,
 				MenuFunctionEnums.Select_Laserbeam);
 
 		this.selectFlamethrower = new MenuObject(selectNormalAttackCard.getXCoordinate() + 50,
-				selectNormalAttackCard.getYCoordinate() + 125, textScale, "Flamethrower", MenuObjectEnums.Text_Block,
+				selectNormalAttackCard.getYCoordinate() + 125, textScale, "FLAMETHROWER", MenuObjectEnums.Text_Block,
 				MenuFunctionEnums.Select_Flamethrower);
 
 		this.selectRocketLauncher = new MenuObject(selectNormalAttackCard.getXCoordinate() + 50,
-				selectNormalAttackCard.getYCoordinate() + 175, textScale, "Rocket Launcher", MenuObjectEnums.Text_Block,
+				selectNormalAttackCard.getYCoordinate() + 175, textScale, "ROCKET LAUNCHER", MenuObjectEnums.Text_Block,
 				MenuFunctionEnums.Select_Rocket_Launcher);
 
 		this.selectNormalAttackIcon = new MenuObject(selectNormalAttackCard.getXCoordinate() + 150,
@@ -173,7 +180,7 @@ public class MenuBoard extends JPanel implements ActionListener {
 				MenuFunctionEnums.Select_EMP);
 
 		this.selectFirewall = new MenuObject(selectSpecialAttackCard.getXCoordinate() + 50,
-				selectSpecialAttackCard.getYCoordinate() + 125, textScale, "Firewall", MenuObjectEnums.Text_Block,
+				selectSpecialAttackCard.getYCoordinate() + 125, textScale, "FIREWALL", MenuObjectEnums.Text_Block,
 				MenuFunctionEnums.Select_Firewall);
 
 		this.selectSpecialAttackTitle = new MenuObject(selectSpecialAttackCard.getXCoordinate() + 25,
@@ -188,6 +195,14 @@ public class MenuBoard extends JPanel implements ActionListener {
 				selectSpecialAttackIcon.getYCoordinate(), 1, null, MenuObjectEnums.Highlight_Animation,
 				MenuFunctionEnums.NONE);
 
+		this.selectTalentSelectionBoard = new MenuObject(startGameTile.getXCoordinate(),
+				startGameTile.getYCoordinate() + 50, 1, "SELECT TALENTS TEST BOARD", MenuObjectEnums.Text_Block,
+				MenuFunctionEnums.Select_Talent_Selection_Board);
+		
+		this.selectLevelBoard = new MenuObject(selectTalentSelectionBoard.getXCoordinate(),
+				selectTalentSelectionBoard.getYCoordinate() + 50, 1, "SELECT LEVEL",
+				MenuObjectEnums.Text_Block, MenuFunctionEnums.Select_Level_Board);
+
 		selectNormalAttackIconHighlight.getMenuImages().get(0).getAnimation()
 				.setX(selectNormalAttackIcon.getXCoordinate() - 2);
 		selectNormalAttackIconHighlight.getMenuImages().get(0).getAnimation()
@@ -198,67 +213,91 @@ public class MenuBoard extends JPanel implements ActionListener {
 		selectSpecialAttackIconHighlight.getMenuImages().get(0).getAnimation()
 				.setY(selectSpecialAttackIcon.getYCoordinate() - 2);
 
-		if(!foundControllerBool) {
-		this.foundController = new MenuObject(100,
-				100, (float) 1.5, "NO CONTROLLER DETECTED. ONLY XBOX WIRELESS BLUETOOTH HAS BEEN TESTED.",
-				MenuObjectEnums.Text_Block, MenuFunctionEnums.NONE);
+		if (!foundControllerBool) {
+			this.foundController = new MenuObject(100, 100, (float) 1.5,
+					"NO CONTROLLER COULD BE FOUND. MAKE SURE THE CONTROLLER IS CONNECTED AND ON THEN RESTART",
+					MenuObjectEnums.Text_Block, MenuFunctionEnums.NONE);
 		} else {
-			this.foundController = new MenuObject(boardWidth / 2 - 100,
-					100, (float) 1.5, "FOUND A CONTROLLER",
+			this.foundController = new MenuObject(boardWidth / 2 - 100, 100, (float) 1.5, "FOUND A CONTROLLER",
 					MenuObjectEnums.Text_Block, MenuFunctionEnums.NONE);
 		}
-		
-		offTheGridObjects.add(foundController);
-		this.menuCursor.setSelectedMenuTile(startGameTile);
 
-		// IN ORDER OF WHAT NEEDS TO BE SHOWN
-		offTheGridObjects.add(wasdExplanation);
-		offTheGridObjects.add(shiftExplanation);
-		offTheGridObjects.add(attackExplanation);
-		offTheGridObjects.add(specialAttackExplanation);
-		offTheGridObjects.add(startGameCard);
+		initializedMenuObjects = true;
+	}
 
-		offTheGridObjects.add(titleImage);
-		offTheGridObjects.add(selectNormalAttackCard);
-		offTheGridObjects.add(selectSpecialAttackCard);
-		offTheGridObjects.add(selectNormalAttackTitle);
-		offTheGridObjects.add(selectSpecialAttackTitle);
+	public void recreateWindow() {
+		if (initializedMenuObjects) {
+			animationManager.resetManager();
+			firstColumn.clear();
+			secondColumn.clear();
+			thirdColumn.clear();
+			offTheGridObjects.clear();
 
-		offTheGridObjects.add(selectNormalAttackIcon);
-		offTheGridObjects.add(selectSpecialAttackIcon);
 
-		offTheGridObjects.add(menuCursor);
-		grid.add(firstRow);
-		grid.add(secondRow);
-		grid.add(thirdRow);
+			addTilesToColumns();
 
+			offTheGridObjects.add(wasdExplanation);
+			offTheGridObjects.add(shiftExplanation);
+			offTheGridObjects.add(attackExplanation);
+			offTheGridObjects.add(specialAttackExplanation);
+			offTheGridObjects.add(startGameCard);
+
+			offTheGridObjects.add(titleImage);
+			offTheGridObjects.add(selectNormalAttackCard);
+			offTheGridObjects.add(selectSpecialAttackCard);
+			offTheGridObjects.add(selectNormalAttackTitle);
+			offTheGridObjects.add(selectSpecialAttackTitle);
+
+			offTheGridObjects.add(selectNormalAttackIcon);
+			offTheGridObjects.add(selectSpecialAttackIcon);
+
+			offTheGridObjects.add(menuCursor);
+
+			AnimationManager.getInstance()
+					.addUpperAnimation(selectNormalAttackIconHighlight.getMenuImages().get(0).getAnimation());
+			AnimationManager.getInstance()
+					.addUpperAnimation(selectSpecialAttackIconHighlight.getMenuImages().get(0).getAnimation());
+
+			offTheGridObjects.add(foundController);
+			this.menuCursor.setSelectedMenuTile(startGameTile);
+
+			grid.add(firstColumn);
+			grid.add(secondColumn);
+			grid.add(thirdColumn);
+		}
 	}
 
 	// Recreate the tilesList that gets drawn by drawComponents
 	private void recreateList() {
-		firstRow.clear();
-		secondRow.clear();
-		thirdRow.clear();
-
-		addTileToFirstRow(startGameTile);
-		addTileToSecondRow(selectLaserbeam);
-		addTileToSecondRow(selectFlamethrower);
-		addTileToSecondRow(selectRocketLauncher);
-		addTileToThirdRow(selectEMP);
-		addTileToThirdRow(selectFirewall);
+		firstColumn.clear();
+		secondColumn.clear();
+		thirdColumn.clear();
+		addTilesToColumns();
 
 	}
-
-	private void addTileToFirstRow(MenuObject menuTile) {
-		firstRow.add(menuTile);
+	
+	private void addTilesToColumns() {
+		//Move start game tile to selectLevelBoard
+		addTileToFirstColumn(startGameTile);
+		addTileToFirstColumn(selectTalentSelectionBoard);
+		addTileToFirstColumn(selectLevelBoard);
+		addTileToSecondColumn(selectLaserbeam);
+		addTileToSecondColumn(selectFlamethrower);
+		addTileToSecondColumn(selectRocketLauncher);
+		addTileToThirdColumn(selectEMP);
+		addTileToThirdColumn(selectFirewall);
 	}
 
-	private void addTileToSecondRow(MenuObject menuTile) {
-		secondRow.add(menuTile);
+	private void addTileToFirstColumn(MenuObject menuTile) {
+		firstColumn.add(menuTile);
 	}
 
-	private void addTileToThirdRow(MenuObject menuTile) {
-		thirdRow.add(menuTile);
+	private void addTileToSecondColumn(MenuObject menuTile) {
+		secondColumn.add(menuTile);
+	}
+
+	private void addTileToThirdColumn(MenuObject menuTile) {
+		thirdColumn.add(menuTile);
 	}
 
 	private void updateActiveAttackIcons() {
@@ -434,6 +473,65 @@ public class MenuBoard extends JPanel implements ActionListener {
 		}
 	}
 
+	// Component 4 = Y
+	// Component 1 = B
+	// Component 3 = X
+	// Component 0 = A
+
+	// Component 10 & 11 zijn de middelste 2 knoppies, die voor pauzeren
+
+	// Component 6 = linker schouder
+	// Component 7 = rechter schouder
+
+	// Remaining components...
+
+	private long lastMoveTime = 0;
+	private static final long MOVE_COOLDOWN = 200; // 500 milliseconds
+
+	public void executeControllerInput() {
+		if (controllers.getFirstController() != null) {
+			controllerInputReader.pollController();
+			long currentTime = System.currentTimeMillis();
+
+			// Left and right navigation
+			if (currentTime - lastMoveTime > MOVE_COOLDOWN) {
+				if (controllerInputReader.isInputActive(ControllerInput.MOVE_LEFT_SLOW)
+						|| controllerInputReader.isInputActive(ControllerInput.MOVE_LEFT_QUICK)) {
+					// Menu option to the left
+					previousMenuTile();
+					lastMoveTime = currentTime;
+				} else if (controllerInputReader.isInputActive(ControllerInput.MOVE_RIGHT_SLOW)
+						|| controllerInputReader.isInputActive(ControllerInput.MOVE_RIGHT_QUICK)) {
+					// Menu option to the right
+					nextMenuTile();
+					lastMoveTime = currentTime;
+				}
+			}
+
+			// Up and down navigation
+			if (currentTime - lastMoveTime > MOVE_COOLDOWN) {
+				if (controllerInputReader.isInputActive(ControllerInput.MOVE_UP_SLOW)
+						|| controllerInputReader.isInputActive(ControllerInput.MOVE_UP_QUICK)) {
+					// Menu option upwards
+					previousMenuColumn();
+					lastMoveTime = currentTime;
+				} else if (controllerInputReader.isInputActive(ControllerInput.MOVE_DOWN_SLOW)
+						|| controllerInputReader.isInputActive(ControllerInput.MOVE_DOWN_QUICK)) {
+					// Menu option downwards
+					nextMenuColumn();
+					lastMoveTime = currentTime;
+				}
+			}
+
+			// Fire action
+			if (controllerInputReader.isInputActive(ControllerInput.FIRE)) {
+				// Select menu option
+				selectMenuTile();
+				updateActiveAttackIcons();
+			}
+		}
+	}
+
 	/*-----------------------------End of navigation methods--------------------------*/
 
 	/*---------------------------Drawing methods-------------------------------*/
@@ -458,11 +556,9 @@ public class MenuBoard extends JPanel implements ActionListener {
 		animationManager.updateGameTick();
 		backgroundManager.updateGameTick();
 		Toolkit.getDefaultToolkit().sync();
-		
-		
-		
-		
-		readControllerState();
+
+//		readControllerState();
+		executeControllerInput();
 
 	}
 
@@ -496,8 +592,8 @@ public class MenuBoard extends JPanel implements ActionListener {
 	}
 
 	private void drawAnimation(Graphics2D g, SpriteAnimation animation) {
-		if (animation.getCurrentFrame() != null) {
-			g.drawImage(animation.getCurrentFrame(), animation.getXCoordinate(), animation.getYCoordinate(), this);
+		if (animation.getCurrentFrameImage(false) != null) {
+			g.drawImage(animation.getCurrentFrameImage(true), animation.getXCoordinate(), animation.getYCoordinate(), this);
 		}
 	}
 
@@ -512,65 +608,5 @@ public class MenuBoard extends JPanel implements ActionListener {
 	public Timer getTimer() {
 		return this.timer;
 	}
-
-	private long lastMoveTime = 0;
-	private static final long MOVE_COOLDOWN = 200; // 500 milliseconds
-
-	public void readControllerState() {
-	    if (controllers.getFirstController() != null) {
-	        controllers.getFirstController().poll();
-	        Component[] components = controllers.getFirstController().getComponents();
-
-	        long currentTime = System.currentTimeMillis();
-	        
-	        for (int i = 0; i < components.length; i++) {
-	            Component component = components[i];
-	            String componentName = component.getName();
-	            float componentValue = component.getPollData();
-
-	            // Handle left joystick horizontal movement
-	            if ((componentName.equals("x") || componentName.equals("z")) && (currentTime - lastMoveTime > MOVE_COOLDOWN)) {
-	                if (componentValue > 0.5) {
-	                    nextMenuTile();
-	                    lastMoveTime = currentTime;
-	                } else if (componentValue < -0.5) {
-	                    previousMenuTile();
-	                    lastMoveTime = currentTime;
-	                }
-	            }
-
-	            // Handle left joystick vertical movement
-	            if ((componentName.equals("y") || componentName.equals("rz")) && (currentTime - lastMoveTime > MOVE_COOLDOWN)) {
-	                if (componentValue > 0.5) {
-	                    nextMenuColumn();
-	                    lastMoveTime = currentTime;
-	                } else if (componentValue < -0.5) {
-	                    previousMenuColumn();
-	                    lastMoveTime = currentTime;
-	                }
-	            }
-
-	            if (componentName.equals("0")) {
-	                if (componentValue == 1.0) {
-	                    selectMenuTile();
-	                	updateActiveAttackIcons();
-	                }
-	            }
-	            
-	    		// Component 4 = Y
-				// Component 1 = B
-				// Component 3 = X
-				// Component 0 = A
-
-				// Component 10 & 11 zijn de middelste 2 knoppies, die voor pauzeren
-
-				// Component 6 = linker schouder
-				// Component 7 = rechter schouder
-
-	            // Remaining components...
-	        }
-	    }
-	}
-
 
 }

@@ -4,17 +4,27 @@ import java.util.ArrayList;
 import java.util.List;
 
 import game.managers.PlayerManager;
+import game.movement.pathfinderconfigs.HomingPathFinderConfig;
+import game.movement.pathfinderconfigs.PathFinderConfig;
 import game.objects.enemies.EnemyManager;
 import gamedata.DataClass;
 import visual.objects.Sprite;
 
 public class HomingPathFinder implements PathFinder {
 	@Override
-	public Path findPath(Point start, Point end, int XstepSize, int YStepSize, Direction fallbackDirection,
-			boolean isFriendly) {
-		List<Point> waypoints = new ArrayList<>();
-		waypoints.add(start);
-		return new Path(waypoints, fallbackDirection, true, isFriendly);
+	public Path findPath(PathFinderConfig pathFinderConfig) {
+		if (!(pathFinderConfig instanceof HomingPathFinderConfig)) {
+			throw new IllegalArgumentException("Expected HomingPathFinderConfig");
+		} else {
+			Point start = ((HomingPathFinderConfig) pathFinderConfig).getStart();
+			Direction fallbackDirection = ((HomingPathFinderConfig) pathFinderConfig).getFallbackDirection();
+			boolean isHoming = ((HomingPathFinderConfig) pathFinderConfig).isHoming();
+			boolean isFriendly = ((HomingPathFinderConfig) pathFinderConfig).isFriendly();
+
+			List<Point> waypoints = new ArrayList<>();
+			waypoints.add(start);
+			return new Path(waypoints, fallbackDirection, isHoming, isFriendly);
+		}
 	}
 
 	@Override

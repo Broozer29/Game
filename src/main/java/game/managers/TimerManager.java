@@ -3,7 +3,7 @@ package game.managers;
 import java.util.ArrayList;
 import java.util.List;
 
-import game.levels.LevelSpawnerManager;
+import game.levels.LevelManager;
 import game.objects.friendlies.powerups.PowerUpManager;
 import game.objects.friendlies.powerups.PowerUpSpawnTimer;
 import game.objects.friendlies.powerups.PowerUpTimer;
@@ -14,7 +14,7 @@ import game.spawner.EnemySpawnTimer;
 public class TimerManager {
 
 	private static TimerManager instance = new TimerManager();
-	private LevelSpawnerManager levelManager = LevelSpawnerManager.getInstance();
+	private LevelManager levelManager = LevelManager.getInstance();
 	private List<EnemySpawnTimer> allEnemyTimers = new ArrayList<EnemySpawnTimer>();
 	private List<PowerUpTimer> activePowerUpTimers = new ArrayList<PowerUpTimer>();
 	private List<PowerUpSpawnTimer> powerUpSpawnerTimers = new ArrayList<PowerUpSpawnTimer>();

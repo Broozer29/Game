@@ -1,69 +1,74 @@
 package game.objects.enemies;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import game.managers.PlayerManager;
 import game.movement.Direction;
+import game.movement.OrbitPathFinder;
 import game.movement.PathFinder;
 import game.movement.Point;
 import game.movement.RegularPathFinder;
-import game.objects.missiles.MissileCreator;
+import game.objects.friendlies.FriendlyObject;
+import game.objects.friendlies.GuardianDrone;
 import game.objects.missiles.MissileManager;
 import gamedata.audio.AudioEnums;
 import gamedata.image.ImageEnums;
+import visual.objects.SpriteAnimation;
 
 public class Bulldozer extends Enemy {
-	private PathFinder missilePathFinder;
 
-	public Bulldozer(int x, int y, Point destination, Direction rotation, float scale, PathFinder pathFinder) {
-		super(x, y, destination, rotation, EnemyEnums.Bulldozer, scale, pathFinder);
+	public Bulldozer(int x, int y, Point destination, Direction rotation, float scale, PathFinder pathFinder,
+			int xMovementSpeed, int yMovementSpeed) {
+		super(x, y, destination, rotation, EnemyEnums.Bulldozer, scale, pathFinder, xMovementSpeed, yMovementSpeed);
 		loadImage(ImageEnums.Bulldozer);
 		setExhaustanimation(ImageEnums.Bulldozer_Normal_Exhaust);
 		setDeathAnimation(ImageEnums.Bulldozer_Destroyed_Explosion);
-		this.exhaustAnimation.setFrameDelay(3);
-		this.deathAnimation.setFrameDelay(4);
-		this.initBoardBlockSpeeds();
+		this.exhaustAnimation.setFrameDelay(1);
 		this.hitPoints = 50;
 		this.maxHitPoints = 50;
 		this.attackSpeedFrameCount = 200;
-		this.XMovementSpeed = 2;
-		this.YMovementSpeed = 1;
 		this.hasAttack = true;
 		this.showHealthBar = true;
 		this.deathSound = AudioEnums.Large_Ship_Destroyed;
 		this.setVisible(true);
 		this.setRotation(rotation);
 		this.deathAnimation.rotateAnimetion(rotation);
-		this.missilePathFinder = new RegularPathFinder();
+		createRotatingBombs();
 	}
 
-	private void initBoardBlockSpeeds() {
-		this.boardBlockSpeeds.add(0, 1);
-		this.boardBlockSpeeds.add(1, 1);
-		this.boardBlockSpeeds.add(2, 1);
-		this.boardBlockSpeeds.add(3, 2);
-		this.boardBlockSpeeds.add(4, 2);
-		this.boardBlockSpeeds.add(5, 2);
-		this.boardBlockSpeeds.add(6, 3);
-		this.boardBlockSpeeds.add(7, 3);
-	}
+	private void createRotatingBombs() {
+	    // The center around which the AlienBombs will orbit
+	    double meanX = this.getCenterXCoordinate();
+	    double meanY = this.getCenterYCoordinate();
 
-	// Called every game tick. If weapon is not on cooldown, fire a shot.
-	// Current board block attack is set to 7, this shouldnt be a hardcoded value
-	// This function doesn't discern enemy types yet either, should be re-written
-	// when new enemies are introduced
+	    // Calculate the angle increment based on how many bombs you want
+	    double angleIncrement = 2 * Math.PI / 8; // 8 is the total number of bombs
+
+	    for (int iterator = 0; iterator < 8; iterator++) {
+	        // 2. Find the next angle
+	        double nextAngle = angleIncrement * iterator;
+
+	        // 3. Place the new drone
+	        int radius = 75; // Example radius
+	        int x = (int) (meanX + Math.cos(nextAngle) * radius);
+	        int y = (int) (meanY + Math.sin(nextAngle) * radius);
+
+	        System.out.println("MeanY = " + meanY + " MeanX = " + meanX + " X = " + x + " Y = " + y);
+
+	        PathFinder pathFinder = new OrbitPathFinder(this, radius, 300, nextAngle);
+	        Enemy alienBomb = new AlienBomb(x, y, null, Direction.LEFT, scale, pathFinder, 1, 1);
+	        this.followingEnemies.add(alienBomb);
+	        EnemyManager.getInstance().addEnemy(alienBomb);
+	    }
+	}
+	
+
+	
 	public void fireAction() {
 		if (missileManager == null) {
 			missileManager = MissileManager.getInstance();
-		}
-		int xMovementSpeed = 5;
-		int yMovementSpeed = 2;
-		if (currentAttackSpeedFrameCount >= attackSpeedFrameCount) {
-			missileManager.addExistingMissile(MissileCreator.getInstance().createEnemyMissile(
-					xCoordinate, yCoordinate + + this.height / 2
-					, ImageEnums.Bulldozer_Missile, ImageEnums.Bulldozer_Missile_Explosion, rotation, 
-					scale, missilePathFinder, xMovementSpeed, yMovementSpeed, (float) 7.5));
-			currentAttackSpeedFrameCount = 0;
-		}
-		if (currentAttackSpeedFrameCount < attackSpeedFrameCount) {
-			this.currentAttackSpeedFrameCount++;
 		}
 	}
 

@@ -47,7 +47,6 @@ public class MenuObject {
 				MenuObjectPart newTile = new MenuObjectPart(ImageEnums.Invisible, xCoordinate, xCoordinate, scale);
 				newTile.setTileAnimation(imageType);
 				this.menuTiles.add(newTile);
-				AnimationManager.getInstance().addUpperAnimation(newTile.getAnimation());
 			} else {
 				MenuObjectPart newTile = new MenuObjectPart(imageType, xCoordinate, xCoordinate, scale);
 				this.menuTiles.add(newTile);
@@ -64,7 +63,8 @@ public class MenuObject {
 		case Start_Game:
 			BoardManager.getInstance().initGame();
 			break;
-		case Select_Setup_Menu:
+		case Select_Talent_Selection_Board:
+			BoardManager.getInstance().initTalentSelectionBoard();
 			break;
 		case Select_Laserbeam:
 			audioManager.addAudio(AudioEnums.Player_Laserbeam);
@@ -77,8 +77,7 @@ public class MenuObject {
 			PlayerStats.getInstance().setAttackType(PlayerAttackTypes.Flamethrower);
 			break;
 		case Return_To_Main_Menu:
-			// Deprecated
-			BoardManager.getInstance().userSelectionToMainMenu();
+			BoardManager.getInstance().initMainMenu();
 			break;
 		case NONE:
 			break;
@@ -97,7 +96,12 @@ public class MenuObject {
 			PlayerStats.getInstance().setSpecialGunPreset(new SpecialGunPreset(PlayerSpecialAttackTypes.Firewall));
 			PlayerStats.getInstance().setPlayerSpecialAttackType(PlayerSpecialAttackTypes.Firewall);
 			break;
+		case Select_Level_Board:
+			BoardManager.getInstance().initLevelSelectionBoard();
+			break;
+			
 		default:
+			System.out.println("Unimplemented MenuObject behaviour was attempted!");
 			break;
 		}
 	}

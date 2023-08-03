@@ -1,7 +1,7 @@
 package game.objects.enemies;
 
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
@@ -10,9 +10,16 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 import game.managers.AnimationManager;
 import game.managers.AudioManager;
 import game.movement.Direction;
+import game.movement.HomingPathFinder;
+import game.movement.OrbitPathFinder;
 import game.movement.Path;
 import game.movement.PathFinder;
 import game.movement.Point;
+import game.movement.RegularPathFinder;
+import game.movement.pathfinderconfigs.HomingPathFinderConfig;
+import game.movement.pathfinderconfigs.OrbitPathFinderConfig;
+import game.movement.pathfinderconfigs.PathFinderConfig;
+import game.movement.pathfinderconfigs.RegularPathFinderConfig;
 import game.objects.missiles.MissileManager;
 import gamedata.DataClass;
 import gamedata.audio.AudioEnums;
@@ -39,25 +46,30 @@ public class Enemy extends Sprite {
 	private Point destination;
 	private PathFinder pathFinder;
 	private Path currentPath;
-	protected int XMovementSpeed;
-	protected int YMovementSpeed;
+	protected int xMovementSpeed;
+	protected int yMovementSpeed;
 	private int lastUsedXMovementSpeed;
 	private int lastUsedYMovementSpeed;
 	protected int currentBoardBlock;
 
 	// Enemy miscellanious attributes
 	private boolean isFriendly = false;
+	private boolean gotANewPathFinder = false;
 	protected Direction rotation;
 	protected EnemyEnums enemyType;
 	protected AudioEnums deathSound;
 	protected boolean showHealthBar;
-	protected List<Integer> boardBlockSpeeds = new ArrayList<Integer>();
 	protected int lastBoardBlock;
 	protected SpriteAnimation exhaustAnimation = null;
 	protected SpriteAnimation deathAnimation;
+	protected SpriteAnimation animation = null;
+	
+	protected List<Enemy> followingEnemies = new LinkedList<Enemy>();
+	private int lastKnownTargetX;
+	private int lastKnownTargetY;
 
 	public Enemy(int x, int y, Point destination, Direction rotation, EnemyEnums enemyType, float scale,
-			PathFinder pathFinder) {
+			PathFinder pathFinder, int xMovementSpeed, int yMovementSpeed) {
 		super(x, y, scale);
 		this.enemyType = enemyType;
 		this.currentLocation = new Point(x, y);
@@ -66,6 +78,8 @@ public class Enemy extends Sprite {
 		updateCurrentBoardBlock();
 		this.lastBoardBlock = currentBoardBlock;
 		this.pathFinder = pathFinder;
+		this.xMovementSpeed = xMovementSpeed;
+		this.yMovementSpeed = yMovementSpeed;
 	}
 
 	protected void setExhaustanimation(ImageEnums imageType) {
@@ -74,6 +88,10 @@ public class Enemy extends Sprite {
 
 	protected void setDeathAnimation(ImageEnums imageType) {
 		this.deathAnimation = new SpriteAnimation(xCoordinate, yCoordinate, imageType, false, scale);
+	}
+	
+	protected void setAnimation(ImageEnums imageType) {
+		this.animation = new SpriteAnimation(xCoordinate, yCoordinate, imageType, false, scale);
 	}
 
 	// Called when there is collision between friendly missile and enemy
@@ -89,6 +107,11 @@ public class Enemy extends Sprite {
 //			this.deathAnimation.setY(this.getCenterYCoordinate() - (deathAnimation.getHeight() / 2));
 			this.deathAnimation.setOriginCoordinates(this.getCenterXCoordinate(), this.getCenterYCoordinate());
 			animationManager.addDestroyedExplosion(deathAnimation);
+			
+			for(Enemy enemy : followingEnemies) {
+				enemy.takeDamage(99999);
+			}
+			
 			try {
 				audioManager.addAudio(deathSound);
 			} catch (UnsupportedAudioFileException | IOException e) {
@@ -98,28 +121,47 @@ public class Enemy extends Sprite {
 		}
 	}
 
-	boolean changedMovementSpeed = false;
-
-	public void updateBoardBlockSpeed() {
-		if (currentBoardBlock != lastBoardBlock) {
-			this.XMovementSpeed = boardBlockSpeeds.get(currentBoardBlock);
-			lastBoardBlock = currentBoardBlock;
-		}
-	}
-
 	public void move() {
-		if (currentPath == null || currentPath.getWaypoints().isEmpty() || XMovementSpeed != lastUsedXMovementSpeed
-				|| YMovementSpeed != lastUsedYMovementSpeed || pathFinder.shouldRecalculatePath(currentPath)) {
+		if (currentPath == null || currentPath.getWaypoints().isEmpty() || xMovementSpeed != lastUsedXMovementSpeed
+				|| yMovementSpeed != lastUsedYMovementSpeed || pathFinder.shouldRecalculatePath(currentPath) || gotANewPathFinder) {
 			// calculate a new path if necessary
-//			System.out.println("ik doe path vinden");
-			currentPath = pathFinder.findPath(currentLocation, destination, XMovementSpeed, YMovementSpeed, rotation,
-					isFriendly);
-			lastUsedXMovementSpeed = XMovementSpeed;
-			lastUsedYMovementSpeed = YMovementSpeed;
+			PathFinderConfig config = getConfigByPathFinder(pathFinder);
+			currentPath = pathFinder.findPath(config);
+			lastUsedXMovementSpeed = xMovementSpeed;
+			lastUsedYMovementSpeed = yMovementSpeed;
+			gotANewPathFinder = false;
 		}
-//		System.out.println(currentPath);
 		currentPath.updateCurrentLocation(currentLocation);
 		// get the next point from the path
+		
+		
+		if (pathFinder instanceof OrbitPathFinder) {
+			// Check if the target's position has changed
+			Sprite target = ((OrbitPathFinder) pathFinder).getTarget();
+
+			if (target.getCenterXCoordinate() != lastKnownTargetX
+					|| target.getCenterYCoordinate() != lastKnownTargetY) {
+
+				int deltaX = 0;
+				int deltaY = 0;
+
+				if (lastKnownTargetX == 0 || lastKnownTargetY == 0) {
+					deltaX = 0;
+					deltaY = 0;
+				} else {
+					deltaX = target.getCenterXCoordinate() - lastKnownTargetX;
+					deltaY = target.getCenterYCoordinate() - lastKnownTargetY;
+				}
+
+				// Update the last known position
+				lastKnownTargetX = target.getCenterXCoordinate();
+				lastKnownTargetY = target.getCenterYCoordinate();
+
+				// Adjust the orbit path based on the deltas
+				((OrbitPathFinder) pathFinder).adjustPathForTargetMovement(currentPath, deltaX, deltaY);
+			}
+		}
+		
 
 		// move towards the next point
 		currentLocation = currentPath.getWaypoints().get(0);
@@ -135,7 +177,7 @@ public class Enemy extends Sprite {
 			this.exhaustAnimation.setX(this.getCenterXCoordinate() + (this.getWidth() / 2));
 			this.exhaustAnimation.setY(this.getCenterYCoordinate() - (exhaustAnimation.getHeight() / 2));
 		}
-
+		
 		bounds.setBounds(xCoordinate + xOffset, yCoordinate + yOffset, width, height);
 		updateCurrentBoardBlock();
 		switch (rotation) {
@@ -184,7 +226,19 @@ public class Enemy extends Sprite {
 			}
 			break;
 		}
-
+	}
+	
+	//Used for movement initialization or recalculation
+	private PathFinderConfig getConfigByPathFinder(PathFinder pathFinder) {
+		PathFinderConfig config = null;
+		if (pathFinder instanceof OrbitPathFinder) {
+			config = new OrbitPathFinderConfig(currentLocation, rotation, isFriendly);
+		} else if (pathFinder instanceof RegularPathFinder) {
+			config = new RegularPathFinderConfig(currentLocation, destination, xMovementSpeed, yMovementSpeed, isFriendly, rotation);
+		} else if (pathFinder instanceof HomingPathFinder) {
+			config = new HomingPathFinderConfig(currentLocation, rotation, true, isFriendly);
+		}
+		return config;
 	}
 
 	// Random offset for the origin of the missile the enemy shoots
@@ -207,11 +261,11 @@ public class Enemy extends Sprite {
 	}
 
 	public int getXMovementSpeed() {
-		return this.XMovementSpeed;
+		return this.xMovementSpeed;
 	}
 
 	public int getYMovementSpeed() {
-		return this.XMovementSpeed;
+		return this.xMovementSpeed;
 	}
 
 	public boolean showhealthBar() {
@@ -242,11 +296,24 @@ public class Enemy extends Sprite {
 		this.rotation = rotation;
 		rotateImage(rotation);
 	}
+	
+	public SpriteAnimation getAnimation() {
+		return this.animation;
+	}
 
 	public void fireAction() {
 		// This could contain default behaviour but SHOULD be overriden by specific enemytype
 		// classes.
 
+	}
+	
+	public PathFinder getPathFinder() {
+		return this.pathFinder;
+	}
+	
+	public void setPathFinder(PathFinder pathFinder) {
+		this.pathFinder = pathFinder;
+		gotANewPathFinder = true;
 	}
 
 }

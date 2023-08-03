@@ -3,6 +3,7 @@ package game.movement;
 import java.util.ArrayList;
 import java.util.List;
 
+import game.movement.pathfinderconfigs.RegularPathFinderConfig;
 import game.objects.friendlies.powerups.PowerUp;
 import gamedata.DataClass;
 
@@ -16,7 +17,7 @@ public class PowerUpDirectionBouncer {
 		this.windowWidth = DataClass.getInstance().getWindowWidth();
 		this.windowHeight = DataClass.getInstance().getWindowHeight();
 	}
-	
+
 	public static PowerUpDirectionBouncer getInstance() {
 		return instance;
 	}
@@ -28,8 +29,10 @@ public class PowerUpDirectionBouncer {
 		Point newEndpoint = new Point(endCoordinates.get(0), endCoordinates.get(1));
 		RegularPathFinder regPathFinder = new RegularPathFinder();
 		boolean isFriendly = true;
-		Path newPath = regPathFinder.findPath(powerUp.getPoint(), newEndpoint, 1, 1, newDirection, isFriendly);
 
+		RegularPathFinderConfig config = new RegularPathFinderConfig(powerUp.getPoint(), newEndpoint, 1, 1, isFriendly,
+				newDirection);
+		Path newPath = regPathFinder.findPath(config);
 		return newPath;
 	}
 

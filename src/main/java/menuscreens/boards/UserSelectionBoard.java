@@ -19,6 +19,7 @@ import menuscreens.MenuCursor;
 import menuscreens.MenuObject;
 import menuscreens.MenuObjectPart;
 
+//Legacy code, probably never to be used again
 public class UserSelectionBoard extends JPanel implements ActionListener {
 	private DataClass data = DataClass.getInstance();
 	private final int boardWidth = data.getWindowWidth();;

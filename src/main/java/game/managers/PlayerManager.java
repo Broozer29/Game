@@ -81,7 +81,7 @@ public class PlayerManager {
 				}
 			}
 
-			if (spaceship.getDeathAnimation().getFrame() >= spaceship.getDeathAnimation().getTotalFrames()) {
+			if (spaceship.getDeathAnimation().getCurrentFrame() >= spaceship.getDeathAnimation().getTotalFrames()) {
 				gameState.setGameState(GameStatusEnums.Dead);
 			}
 		}

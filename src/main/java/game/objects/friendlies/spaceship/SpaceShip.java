@@ -10,6 +10,8 @@ import java.util.Set;
 
 import javax.sound.sampled.UnsupportedAudioFileException;
 
+import controllerInput.ControllerInput;
+import controllerInput.ControllerInputReader;
 import game.managers.AnimationManager;
 import game.movement.MovementInitiator;
 import game.objects.Explosion;
@@ -27,6 +29,8 @@ public class SpaceShip extends Sprite {
 	private int directiony;
 
 	private float currentShieldRegenDelayFrame;
+	private boolean controlledByKeyboard = true;
+	private Set<Integer> pressedKeys = new HashSet<>();
 
 	private boolean isEngineBoosted;
 	private SpriteAnimation deathAnimation = null;
@@ -42,7 +46,7 @@ public class SpaceShip extends Sprite {
 	private List<SpecialAttack> playerFollowingSpecialAttacks = new ArrayList<SpecialAttack>();
 
 	public SpaceShip() {
-		super(DataClass.getInstance().getWindowWidth() / 10, DataClass.getInstance().getWindowHeight() / 2, (float) 0.8);
+		super(DataClass.getInstance().getWindowWidth() / 10, DataClass.getInstance().getWindowHeight() / 2, 0.6f);
 		playerStats = PlayerStats.getInstance();
 		powerUpEffects = BoostsUpgradesAndBuffsSettings.getInstance();
 		initShip();
@@ -56,6 +60,7 @@ public class SpaceShip extends Sprite {
 	private void initShip() {
 		directionx = 0;
 		directiony = 0;
+		pressedKeys = new HashSet<>();
 		loadImage(playerStats.getSpaceShipImage());
 		currentShieldRegenDelayFrame = 0;
 		isEngineBoosted = false;
@@ -69,6 +74,7 @@ public class SpaceShip extends Sprite {
 		this.spaceShipSpecialGuns.add(specialGun);
 		initExhaustAnimation(playerStats.getExhaustImage());
 		initDeathAnimation(ImageEnums.Destroyed_Explosion);
+		this.exhaustAnimation.setAnimationScale(0.6f);
 	}
 
 	private void initExhaustAnimation(ImageEnums imageType) {
@@ -78,8 +84,7 @@ public class SpaceShip extends Sprite {
 	}
 
 	private void initDeathAnimation(ImageEnums imageType) {
-		deathAnimation = new SpriteAnimation(xCoordinate, yCoordinate, imageType, false, 5);
-		deathAnimation.setFrameDelay(2);
+		deathAnimation = new SpriteAnimation(xCoordinate, yCoordinate, imageType, false, 2);
 	}
 
 	public void addShieldDamageAnimation() {
@@ -87,16 +92,16 @@ public class SpaceShip extends Sprite {
 			SpriteAnimation shieldAnimation = new SpriteAnimation(this.xCoordinate, this.yCoordinate,
 					ImageEnums.Default_Player_Shield_Damage, false, 1);
 
-			shieldAnimation.setFrameDelay(2);
-
-			int yDist = 30;
-			int xDist = 10;
-			shieldAnimation.addXOffset(-xDist);
-			shieldAnimation.addYOffset(-yDist);
+			shieldAnimation.setFrameDelay(1);
+			shieldAnimation.setOriginCoordinates(this.xCoordinate, this.yCoordinate);
+			int yDist = 5;
+			int xDist = 30;
+			shieldAnimation.addXOffset(xDist);
+			shieldAnimation.addYOffset(yDist);
 			playerFollowingAnimations.add(shieldAnimation);
 
-			shieldAnimation.setX(this.xCoordinate);
-			shieldAnimation.setY(this.yCoordinate);
+//			shieldAnimation.setX(this.xCoordinate);
+//			shieldAnimation.setY(this.yCoordinate);
 			AnimationManager.getInstance().addUpperAnimation(shieldAnimation);
 
 		}
@@ -171,10 +176,17 @@ public class SpaceShip extends Sprite {
 		}
 	}
 
-	// Moves the spaceship
+	// Moves the spaceship, constantly called
 	public void move() {
 		xCoordinate += directionx;
 		yCoordinate += directiony;
+
+		if (!controlledByKeyboard) {
+			haltMoveDown();
+			haltMoveLeft();
+			haltMoveRight();
+			haltMoveUp();
+		}
 
 		playerStats.setHomingRectangleYCoordinate(
 				(int) (yCoordinate - (height * playerStats.getHomingRectangleResizeScale())));
@@ -228,78 +240,6 @@ public class SpaceShip extends Sprite {
 		}
 	}
 
-	private final Set<Integer> pressedKeys = new HashSet<>();
-
-	public synchronized void keyPressed(KeyEvent e) {
-		pressedKeys.add(e.getKeyCode());
-		if (!pressedKeys.isEmpty()) {
-			for (Iterator<Integer> it = pressedKeys.iterator(); it.hasNext();) {
-				switch (it.next()) {
-				case (KeyEvent.VK_SPACE):
-					try {
-						fire();
-					} catch (UnsupportedAudioFileException | IOException e1) {
-						e1.printStackTrace();
-					}
-					break;
-				case (KeyEvent.VK_A):
-				case (KeyEvent.VK_LEFT):
-					directionx = -playerStats.getCurrentMovementSpeed(isEngineBoosted);
-					break;
-				case (KeyEvent.VK_D):
-				case (KeyEvent.VK_RIGHT):
-					directionx = playerStats.getCurrentMovementSpeed(isEngineBoosted);
-					break;
-				case (KeyEvent.VK_W):
-				case (KeyEvent.VK_UP):
-					directiony = -playerStats.getCurrentMovementSpeed(isEngineBoosted);
-					break;
-				case (KeyEvent.VK_S):
-				case (KeyEvent.VK_DOWN):
-					directiony = playerStats.getCurrentMovementSpeed(isEngineBoosted);
-					break;
-				case (KeyEvent.VK_Q):
-				case (KeyEvent.VK_ENTER):
-					try {
-						fireSpecialAttack();
-					} catch (UnsupportedAudioFileException | IOException e1) {
-						e1.printStackTrace();
-					}
-					break;
-				case (KeyEvent.VK_SHIFT):
-				case (KeyEvent.VK_E):
-					isEngineBoosted = true;
-					swapExhaust(playerStats.getBoostedEngineType());
-					break;
-				}
-			}
-		}
-	}
-
-	public synchronized void keyReleased(KeyEvent e) {
-		pressedKeys.remove(e.getKeyCode());
-		int key = e.getKeyCode();
-
-		if (key == KeyEvent.VK_SPACE || key == KeyEvent.VK_Q) {
-		}
-		if (key == KeyEvent.VK_A || key == KeyEvent.VK_LEFT) {
-			directionx = 0;
-		}
-		if (key == KeyEvent.VK_D || key == KeyEvent.VK_RIGHT) {
-			directionx = 0;
-		}
-		if (key == KeyEvent.VK_W || key == KeyEvent.VK_UP) {
-			directiony = 0;
-		}
-		if (key == KeyEvent.VK_S || key == KeyEvent.VK_DOWN) {
-			directiony = 0;
-		}
-		if (key == KeyEvent.VK_SHIFT || key == KeyEvent.VK_E) {
-			isEngineBoosted = false;
-			swapExhaust(playerStats.getEngineType());
-		}
-	}
-
 	public void repairHealth(float healAmount) {
 		playerStats.changeHitPoints(healAmount);
 	}
@@ -323,6 +263,169 @@ public class SpaceShip extends Sprite {
 
 	public SpriteAnimation getDeathAnimation() {
 		return this.deathAnimation;
+	}
+
+	public synchronized void keyPressed(KeyEvent e) {
+		pressedKeys.add(e.getKeyCode());
+		if (!pressedKeys.isEmpty()) {
+			for (Iterator<Integer> it = pressedKeys.iterator(); it.hasNext();) {
+				switch (it.next()) {
+				case (KeyEvent.VK_SPACE):
+					try {
+						fire();
+					} catch (UnsupportedAudioFileException | IOException e1) {
+						e1.printStackTrace();
+					}
+					break;
+				case (KeyEvent.VK_A):
+				case (KeyEvent.VK_LEFT):
+					moveLeftQuick();
+					break;
+				case (KeyEvent.VK_D):
+				case (KeyEvent.VK_RIGHT):
+					moveRightQuick();
+					break;
+				case (KeyEvent.VK_W):
+				case (KeyEvent.VK_UP):
+					moveUpQuick();
+					break;
+				case (KeyEvent.VK_S):
+				case (KeyEvent.VK_DOWN):
+					moveDownQuick();
+					break;
+				case (KeyEvent.VK_Q):
+				case (KeyEvent.VK_ENTER):
+					try {
+						fireSpecialAttack();
+					} catch (UnsupportedAudioFileException | IOException e1) {
+						e1.printStackTrace();
+					}
+					break;
+				case (KeyEvent.VK_SHIFT):
+				case (KeyEvent.VK_E):
+					isEngineBoosted = true;
+					swapExhaust(playerStats.getBoostedEngineType());
+					takeHitpointDamage(500);
+					break;
+				}
+			}
+		}
+	}
+
+	public synchronized void keyReleased(KeyEvent e) {
+		pressedKeys.remove(e.getKeyCode());
+		int key = e.getKeyCode();
+
+		if (key == KeyEvent.VK_SPACE || key == KeyEvent.VK_Q) {
+		}
+		if (key == KeyEvent.VK_A || key == KeyEvent.VK_LEFT) {
+			haltMoveLeft();
+		}
+		if (key == KeyEvent.VK_D || key == KeyEvent.VK_RIGHT) {
+			haltMoveRight();
+		}
+		if (key == KeyEvent.VK_W || key == KeyEvent.VK_UP) {
+			haltMoveUp();
+		}
+		if (key == KeyEvent.VK_S || key == KeyEvent.VK_DOWN) {
+			haltMoveDown();
+		}
+		if (key == KeyEvent.VK_SHIFT || key == KeyEvent.VK_E) {
+			isEngineBoosted = false;
+			swapExhaust(playerStats.getEngineType());
+		}
+	}
+
+	// Called by GameBoard every loop if a controller is connected
+	public void update(ControllerInputReader controllerInputReader) {
+		controlledByKeyboard = false;
+		controllerInputReader.pollController();
+		if (controllerInputReader.isInputActive(ControllerInput.MOVE_LEFT_SLOW)) {
+			moveLeftSlow();
+		} else if (controllerInputReader.isInputActive(ControllerInput.MOVE_LEFT_QUICK)) {
+			moveLeftQuick();
+		}
+
+		if (controllerInputReader.isInputActive(ControllerInput.MOVE_RIGHT_SLOW)) {
+			moveRightSlow();
+		} else if (controllerInputReader.isInputActive(ControllerInput.MOVE_RIGHT_QUICK)) {
+			moveRightQuick();
+		}
+
+		if (controllerInputReader.isInputActive(ControllerInput.MOVE_UP_QUICK)) {
+			moveUpQuick();
+		} else if (controllerInputReader.isInputActive(ControllerInput.MOVE_UP_SLOW)) {
+			moveUpSlow();
+		}
+
+		if (controllerInputReader.isInputActive(ControllerInput.MOVE_DOWN_SLOW)) {
+			moveDownSlow();
+		} else if (controllerInputReader.isInputActive(ControllerInput.MOVE_DOWN_QUICK)) {
+			moveDownQuick();
+		}
+
+		if (controllerInputReader.isInputActive(ControllerInput.FIRE)) {
+			try {
+				fire();
+			} catch (UnsupportedAudioFileException | IOException e) {
+				e.printStackTrace();
+			}
+		}
+		if (controllerInputReader.isInputActive(ControllerInput.SPECIAL_ATTACK)) {
+			try {
+				fireSpecialAttack();
+			} catch (UnsupportedAudioFileException | IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	private void moveLeftSlow() {
+		directionx = -playerStats.getCurrentMovementSpeed(isEngineBoosted);
+	}
+
+	private void moveLeftQuick() {
+		directionx = -playerStats.getCurrentMovementSpeed(isEngineBoosted);
+	}
+
+	private void haltMoveLeft() {
+		directionx = 0;
+	}
+
+	private void moveRightSlow() {
+		directionx = playerStats.getCurrentMovementSpeed(isEngineBoosted);
+	}
+
+	private void moveRightQuick() {
+		directionx = playerStats.getCurrentMovementSpeed(isEngineBoosted);
+	}
+
+	private void haltMoveRight() {
+		directionx = 0;
+	}
+
+	private void moveUpSlow() {
+		directiony = -playerStats.getCurrentMovementSpeed(isEngineBoosted);
+	}
+
+	private void moveUpQuick() {
+		directiony = -playerStats.getCurrentMovementSpeed(isEngineBoosted);
+	}
+
+	private void haltMoveUp() {
+		directiony = 0;
+	}
+
+	private void moveDownSlow() {
+		directiony = playerStats.getCurrentMovementSpeed(isEngineBoosted);
+	}
+
+	private void moveDownQuick() {
+		directiony = playerStats.getCurrentMovementSpeed(isEngineBoosted);
+	}
+
+	private void haltMoveDown() {
+		directiony = 0;
 	}
 
 }

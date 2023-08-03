@@ -12,7 +12,8 @@ public enum ImageEnums {
 	Bulldozer_Large_Exhaust, Flamer_Normal_Exhaust, Flamer_Large_Exhaust, Bomba_Normal_Exhaust, Bomba_Large_Exhaust,
 	Seeker_Destroyed_Explosion, Tazer_Destroyed_Explosion, Energizer_Destroyed_Explosion, Bomba_Destroyed_Explosion,
 	Flamer_Destroyed_Explosion, Bulldozer_Destroyed_Explosion, Default_Player_Engine, Default_Player_Engine_Boosted,
-	Default_Player_Shield_Damage, Player_Fireswirl, Player_EMP, Player_EMP_Plus, Guardian_Bot, FirewallParticle,
+	Default_Player_Shield_Damage, Player_Fireswirl, Player_EMP, Player_EMP_Plus, Guardian_Bot, FirewallParticle, Portal5,
+	Warp,
 
 	//// Background Objects
 	Moon, Lava_Planet, Planet_One, Planet_Two, Planet_Three, Mars_Planet, Star, Parallex_1, Parallex_2, Parallex_3,

@@ -122,7 +122,6 @@ public class EnemyManager {
 			Enemy enemy = enemyList.get(i);
 			if (enemy.isVisible()) {
 				movementManager.moveEnemy(enemy);
-				enemy.updateBoardBlockSpeed();
 			} else {
 				animationManager.deleteEnemyAnimations(enemy);
 				removeEnemy(enemy);

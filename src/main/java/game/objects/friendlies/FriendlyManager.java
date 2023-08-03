@@ -1,9 +1,10 @@
 package game.objects.friendlies;
 
-import java.awt.Rectangle;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
+import game.managers.AnimationManager;
 import game.managers.PlayerManager;
 import game.movement.Direction;
 import game.movement.MovementInitiator;
@@ -12,6 +13,9 @@ import game.movement.PathFinder;
 import game.movement.Point;
 import game.objects.enemies.Enemy;
 import game.objects.enemies.EnemyManager;
+import gamedata.DataClass;
+import gamedata.GameStateInfo;
+import gamedata.GameStatusEnums;
 import gamedata.image.ImageEnums;
 import visual.objects.Sprite;
 import visual.objects.SpriteAnimation;
@@ -22,12 +26,11 @@ public class FriendlyManager {
 	private EnemyManager enemyManager = EnemyManager.getInstance();
 	private MovementInitiator movementManager = MovementInitiator.getInstance();
 	private List<FriendlyObject> activeFriendlyObjects = new ArrayList<FriendlyObject>();
-	private List<GuardianDrone> guardianDrones = new ArrayList<GuardianDrone>();
-	
-	
+	private Portal finishedLevelPortal;
+	private GameStateInfo gameState = GameStateInfo.getInstance();
 
 	private FriendlyManager() {
-//		createGuardianDrone();
+		initPortal();
 	}
 
 	public static FriendlyManager getInstance() {
@@ -38,6 +41,16 @@ public class FriendlyManager {
 		cycleActiveFriendlyObjects();
 		checkFriendlyObjectCollision();
 		moveFriendlyObjects();
+		spawnFinishedLevelPortal();
+	}
+
+	private void spawnFinishedLevelPortal() {
+		if (gameState.getGameState() == GameStatusEnums.Song_Finished && finishedLevelPortal.getSpawned() == false) {
+			finishedLevelPortal.setSpawned(true);
+			finishedLevelPortal.setVisible(true);
+			finishedLevelPortal.setTransparancyAlpha(true, 0.0f, 0.01f);
+			AnimationManager.getInstance().addUpperAnimation(finishedLevelPortal);
+		}
 	}
 
 	private void moveFriendlyObjects() {
@@ -56,8 +69,12 @@ public class FriendlyManager {
 			}
 		}
 
-		for (GuardianDrone drone : guardianDrones) {
-			drone.activateGuardianDrone();
+		// Yuck, this below here is gross and should be changed before adding upon but too busy
+		// with something
+		for (FriendlyObject object : activeFriendlyObjects) {
+			if (object instanceof GuardianDrone) {
+				((GuardianDrone) object).activateGuardianDrone();
+			}
 		}
 	}
 
@@ -73,10 +90,22 @@ public class FriendlyManager {
 				SpriteAnimation animation = friendlyObject.getAnimation();
 				for (Enemy enemy : enemyManager.getEnemies()) {
 					if (isNearby(animation, friendlyObject)) {
-						if (enemy.getBounds().intersects(animation.getAnimationBounds())) {
-							System.out.println(
-									"Unimplemeted collision between friendly object and enemy in FriendlyManager: 75");
+						if (enemy.getBounds().intersects(animation.getBounds())) {
 						}
+					}
+				}
+			}
+		}
+
+		// Checks collision between the finished level portal and player
+		if (gameState.getGameState() == GameStatusEnums.Song_Finished) {
+			if (finishedLevelPortal.isVisible()) {
+				if (isNearby(PlayerManager.getInstance().getSpaceship(), finishedLevelPortal)) {
+					if (PlayerManager.getInstance().getSpaceship().getBounds()
+							.intersects(finishedLevelPortal.getBounds())) {
+						gameState.setGameState(GameStatusEnums.Level_Completed);
+						finishedLevelPortal.setTransparancyAlpha(true, 1.0f, -0.02f);
+						finishedLevelPortal.setSpawned(false);
 					}
 				}
 			}
@@ -98,15 +127,135 @@ public class FriendlyManager {
 		return distance < 300;
 	}
 
-	// UNCALLED BUT THIS WORKS
-	public void createMissileGuardianBot(int xCoordinate, int yCoordinate, Point destination, Direction rotation,
-			FriendlyEnums friendlyType, float scale, PathFinder pathFinder) {
-		FriendlyObject friendlyObject = new GuardianDrone(xCoordinate, yCoordinate, destination, rotation, friendlyType,
-				scale, pathFinder, 50);
-		guardianDrones.add((GuardianDrone) friendlyObject);
-		SpriteAnimation animation = new SpriteAnimation(xCoordinate, yCoordinate, ImageEnums.Guardian_Bot, true, scale);
+//	public void createMissileGuardianBot(FriendlyEnums friendlyType, float scale) {
+//		// 1. Calculate the mean center
+//		double meanX = PlayerManager.getInstance().getSpaceship().getCenterXCoordinate();
+//		double meanY = PlayerManager.getInstance().getSpaceship().getCenterYCoordinate();
+//		if (!activeFriendlyObjects.isEmpty()) {
+//			meanX = 0;
+//			meanY = 0;
+//			for (FriendlyObject drone : activeFriendlyObjects) {
+//				meanX += drone.getXCoordinate();
+//				meanY += drone.getYCoordinate();
+//			}
+//			meanX /= activeFriendlyObjects.size();
+//			meanY /= activeFriendlyObjects.size();
+//		}
+//
+//		// 2. Find the next angle
+//		double nextAngle = 0;
+//		if (!activeFriendlyObjects.isEmpty()) {
+//			// Calculate angles for existing drones relative to mean center
+//			List<Double> angles = new ArrayList<>();
+//			for (FriendlyObject drone : activeFriendlyObjects) {
+//				double angle = Math.atan2(drone.getYCoordinate() - meanY, drone.getXCoordinate() - meanX);
+//				angles.add(angle);
+//			}
+//			// Sort the angles and find the largest gap
+//			Collections.sort(angles);
+//			double maxGap = 0;
+//			for (int i = 0; i < angles.size(); i++) {
+//				double gap = angles.get((i + 1) % angles.size()) - angles.get(i);
+//				if (gap < 0)
+//					gap += Math.PI * 2;
+//				if (gap > maxGap) {
+//					maxGap = gap;
+//					nextAngle = angles.get(i) + gap / 2;
+//				}
+//			}
+//		}
+//
+//		// 3. Place the new drone
+//		int radius = 75; // Example radius
+//		int x = (int) (meanX + Math.cos(nextAngle) * radius);
+//		int y = (int) (meanY + Math.sin(nextAngle) * radius);
+//
+//		PathFinder pathFinder = new OrbitPathFinder(PlayerManager.getInstance().getSpaceship(), radius, 300, nextAngle);
+//		FriendlyObject friendlyObject = new GuardianDrone(x, y, null, Direction.RIGHT, friendlyType, scale, pathFinder,
+//				50);
+//		activeFriendlyObjects.add((GuardianDrone) friendlyObject);
+//		SpriteAnimation animation = new SpriteAnimation(x, y, ImageEnums.Guardian_Bot, true, scale);
+//		friendlyObject.setAnimation(animation);
+//		addActiveFriendlyObject(friendlyObject);
+//	}
+
+	
+	public void createMissileGuardianBot(FriendlyEnums droneType, float scale) {
+		createAndAddDrone(scale, droneType);
+		reOrganizeOrbitingDroneFormation();
+	}
+
+	private void createAndAddDrone(float scale, FriendlyEnums droneType) {
+		double meanX = PlayerManager.getInstance().getSpaceship().getCenterXCoordinate();
+		double meanY = PlayerManager.getInstance().getSpaceship().getCenterYCoordinate();
+		double nextAngle = 0;
+		if (!activeFriendlyObjects.isEmpty()) {
+			List<Double> angles = new ArrayList<>();
+			for (FriendlyObject drone : activeFriendlyObjects) {
+				double angle = Math.atan2(drone.getYCoordinate() - meanY, drone.getXCoordinate() - meanX);
+				angles.add(angle);
+			}
+			Collections.sort(angles);
+			double maxGap = 0;
+			for (int i = 0; i < angles.size(); i++) {
+				double gap = angles.get((i + 1) % angles.size()) - angles.get(i);
+				if (gap < 0) {
+					gap += Math.PI * 2;
+				}
+				if (gap > maxGap) {
+					maxGap = gap;
+					nextAngle = angles.get(i) + gap / 2;
+				}
+			}
+		}
+
+		int radius = 75; // Example radius
+		int x = (int) (meanX + Math.cos(nextAngle) * radius);
+		int y = (int) (meanY + Math.sin(nextAngle) * radius);
+
+		PathFinder pathFinder = new OrbitPathFinder(PlayerManager.getInstance().getSpaceship(), radius, 300, nextAngle);
+		FriendlyObject friendlyObject = new GuardianDrone(x, y, null, Direction.RIGHT, droneType, scale, pathFinder,
+				50);
+		activeFriendlyObjects.add((GuardianDrone) friendlyObject);
+		SpriteAnimation animation = new SpriteAnimation(x, y, ImageEnums.Guardian_Bot, true, scale);
 		friendlyObject.setAnimation(animation);
 		addActiveFriendlyObject(friendlyObject);
+	}
+
+	//Add the logic of this method to a seperate class, which takes a rotating target and the list of objects as a parameter
+	private void reOrganizeOrbitingDroneFormation() {
+		// The center around which the GuardianDrones will orbit
+		double meanX = PlayerManager.getInstance().getSpaceship().getCenterXCoordinate();
+		double meanY = PlayerManager.getInstance().getSpaceship().getCenterYCoordinate();
+
+		// Counting only the GuardianDrones
+		int numberOfDrones = (int) activeFriendlyObjects.stream().filter(obj -> obj instanceof GuardianDrone).count();
+		double angleIncrement = 2 * Math.PI / numberOfDrones;
+
+		int totalFrames = 300; // You may replace this with an appropriate value
+		int radius = 75; // Example radius
+
+		int iterator = 0;
+		for (FriendlyObject friendlyObject : activeFriendlyObjects) {
+			if (friendlyObject instanceof GuardianDrone) {
+				double nextAngle = angleIncrement * iterator;
+
+				int x = (int) (meanX + Math.cos(nextAngle) * radius);
+				int y = (int) (meanY + Math.sin(nextAngle) * radius);
+
+				GuardianDrone drone = (GuardianDrone) friendlyObject;
+				drone.setX(x);
+				drone.setY(y);
+
+				// Create a new OrbitPathFinder with the correct offset angle
+				OrbitPathFinder newOrbit = new OrbitPathFinder(PlayerManager.getInstance().getSpaceship(), radius,
+						totalFrames, nextAngle);
+				// Update the GuardianDrone's path finder
+				drone.setPathFinder(newOrbit);
+
+				iterator++;
+			}
+		}
 	}
 
 	public void addActiveFriendlyObject(FriendlyObject friendlyObject) {
@@ -119,7 +268,14 @@ public class FriendlyManager {
 
 	public void resetManager() {
 		activeFriendlyObjects = new ArrayList<FriendlyObject>();
-		guardianDrones = new ArrayList<GuardianDrone>();
+		initPortal();
 	}
 
+	private void initPortal() {
+		int portalXCoordinate = (int) Math.floor(DataClass.getInstance().getWindowWidth() * 0.55);
+		int portalYCoordinate = (DataClass.getInstance().getWindowHeight() / 2);
+
+		finishedLevelPortal = new Portal(portalXCoordinate, portalYCoordinate, ImageEnums.Portal5, true, 1);
+		finishedLevelPortal.setCenterCoordinates(portalXCoordinate, portalYCoordinate);
+	}
 }

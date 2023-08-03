@@ -16,5 +16,6 @@ public enum AudioEnums {
 	Power_Up_Acquired,
 	Flamethrower,
 	Rocket_Launcher,
-	NONE, Firewall
+	NONE, Firewall,
+	New_Arcades_Solace
 }

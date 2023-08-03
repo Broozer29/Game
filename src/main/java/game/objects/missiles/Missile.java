@@ -1,10 +1,21 @@
 package game.objects.missiles;
 
+import java.util.Locale.IsoCountryCode;
+
+import game.managers.AnimationManager;
 import game.managers.OnScreenTextManager;
 import game.movement.Direction;
+import game.movement.HomingPathFinder;
+import game.movement.OrbitPathFinder;
 import game.movement.Path;
 import game.movement.PathFinder;
 import game.movement.Point;
+import game.movement.RegularPathFinder;
+import game.movement.pathfinderconfigs.HomingPathFinderConfig;
+import game.movement.pathfinderconfigs.OrbitPathFinderConfig;
+import game.movement.pathfinderconfigs.PathFinderConfig;
+import game.movement.pathfinderconfigs.RegularPathFinderConfig;
+import game.objects.friendlies.FriendlyEnums;
 import game.objects.friendlies.powerups.PowerUpAcquiredText;
 import game.objects.friendlies.powerups.PowerUpEnums;
 import gamedata.DataClass;
@@ -55,18 +66,20 @@ public class Missile extends Sprite {
 		this.yMovementSpeed = yMovementSpeed;
 	}
 
+
+
 	public void move() {
 		if (currentPath == null || currentPath.getWaypoints().isEmpty() || xMovementSpeed != lastUsedXMovementSpeed
 				|| yMovementSpeed != lastUsedYMovementSpeed) {
 			// calculate a new path if necessary
-			currentPath = pathFinder.findPath(currentLocation, destination, xMovementSpeed, yMovementSpeed, rotation,
-					isFriendly);
+			PathFinderConfig config = getConfigByPathFinder(pathFinder);
+			currentPath = pathFinder.findPath(config);
 			lastUsedXMovementSpeed = xMovementSpeed;
 			lastUsedYMovementSpeed = yMovementSpeed;
 			currentPath.setCurrentLocation(new Point(xCoordinate, yCoordinate));
 		}
-		
-		if(this.target != null) {
+
+		if (this.target != null) {
 			currentPath.setTarget(this.target);
 		}
 
@@ -80,7 +93,6 @@ public class Missile extends Sprite {
 		if (hasPassedPlayerOrNeverHadLock) {
 			hasLock = false;
 		}
-
 
 		// only calculate next direction and update location if missile still has lock
 		if (hasLock) {
@@ -159,10 +171,11 @@ public class Missile extends Sprite {
 			}
 			break;
 		}
-		
-		if(!this.visible && this.animation != null) {
+
+		if (!this.visible && this.animation != null) {
 			this.animation.setVisible(false);
-			PowerUpAcquiredText text = new PowerUpAcquiredText(xCoordinate - 200, yCoordinate, PowerUpEnums.DUMMY_DO_NOT_USE);
+			PowerUpAcquiredText text = new PowerUpAcquiredText(xCoordinate - 200, yCoordinate,
+					PowerUpEnums.DUMMY_DO_NOT_USE);
 			OnScreenTextManager.getInstance().addPowerUpText(text);
 		}
 	}
@@ -205,8 +218,20 @@ public class Missile extends Sprite {
 			// no movement
 			break;
 		}
-
 		return new Point(x, y);
+	}
+	
+	//Used for movement initialization or recalculation
+	private PathFinderConfig getConfigByPathFinder(PathFinder pathFinder) {
+		PathFinderConfig config = null;
+		if (pathFinder instanceof OrbitPathFinder) {
+			config = new OrbitPathFinderConfig(currentLocation, rotation, isFriendly);
+		} else if (pathFinder instanceof RegularPathFinder) {
+			config = new RegularPathFinderConfig(currentLocation, destination, xMovementSpeed, yMovementSpeed, isFriendly, rotation);
+		} else if (pathFinder instanceof HomingPathFinder) {
+			config = new HomingPathFinderConfig(currentLocation, rotation, true, isFriendly);
+		}
+		return config;
 	}
 
 	// Sets the animations (the graphics of missile) to align with the missiles
@@ -222,7 +247,8 @@ public class Missile extends Sprite {
 		if (explosionAnimation != null) {
 			explosionAnimation.setX(xCoordinate);
 			explosionAnimation.setY(yCoordinate);
-			explosionAnimation.setAnimationBounds(explosionAnimation.getXCoordinate(), explosionAnimation.getYCoordinate());
+			explosionAnimation.setAnimationBounds(explosionAnimation.getXCoordinate(),
+					explosionAnimation.getYCoordinate());
 			explosionAnimation.updateCurrentBoardBlock();
 		}
 	}
@@ -274,7 +300,7 @@ public class Missile extends Sprite {
 	public boolean isFriendly() {
 		return this.isFriendly;
 	}
-	
+
 	public Sprite getTarget() {
 		return target;
 	}
@@ -282,9 +308,16 @@ public class Missile extends Sprite {
 	public void setTarget(Sprite target) {
 		this.target = target;
 	}
-	
-	protected void rotateMissileAnimation(Direction direction) {
+
+	public void rotateMissileAnimation(Direction direction) {
 		this.animation.rotateAnimetion(direction);
+	}
+
+	public void destroyMissile() {
+		if (explosionAnimation != null) {
+			AnimationManager.getInstance().addDestroyedExplosion(explosionAnimation);
+		}
+		this.setVisible(false);
 	}
 
 }

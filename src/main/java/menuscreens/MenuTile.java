@@ -24,14 +24,6 @@ public class MenuTile extends Sprite {
 		//Starts the game from the main menu
 		if (this.tileType.equals(ImageEnums.Start_Game)) {
 			BoardManager.getInstance().initGame();
-
-		//Opens the user menu from the main menu
-		} else if (this.tileType.equals(ImageEnums.Select_User_Menu)) {
-			BoardManager.getInstance().initUserSelection();
-
-		//Changes the user selection board to the main menu board.
-		} else if (tileType.equals(ImageEnums.Select_User_Menu)) {
-			BoardManager.getInstance().userSelectionToMainMenu();
 		}
 	}
 

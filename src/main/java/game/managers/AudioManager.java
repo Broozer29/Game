@@ -21,12 +21,14 @@ public class AudioManager {
 	// Called when a game instance needs to be deleted and the manager needs to be
 	// reset.
 	public void resetManager() {
+		backGroundMusic = null;
 		if (backGroundMusic != null) {
 			backGroundMusic.stopClip();
 			backGroundMusic.closeclip();
 			backGroundMusic = null;
 		}
-
+		
+		audioDatabase.resetSongs();
 	}
 
 	public static AudioManager getInstance() {
@@ -50,14 +52,12 @@ public class AudioManager {
 
 	// Play the background music
 	public void playMusicAudio(AudioEnums audioType) throws UnsupportedAudioFileException, IOException {
-		if (backGroundMusic == null) {
-			backGroundMusic = audioDatabase.getAudioClip(audioType);
-			if (!(backGroundMusic == null)) {
-				backGroundMusic.startClip();
-			}
+		backGroundMusic = audioDatabase.getAudioClip(audioType);
+		if (!(backGroundMusic == null)) {
+			backGroundMusic.startClip();
 		}
 	}
-	
+
 	public CustomAudioClip getBackgroundMusic() {
 		return this.backGroundMusic;
 	}

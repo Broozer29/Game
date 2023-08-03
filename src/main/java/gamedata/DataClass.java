@@ -8,13 +8,6 @@ public class DataClass {
 	private int windowWidth = 1440;
 	private int windowHeight = 875;
 	
-//	private int windowWidth = 1280;
-//	private int windowHeight = 720;
-	
-	
-	
-	// Tijdelijke string user, liever een domain object
-
 	private DataClass() {
 	}
 

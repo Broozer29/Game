@@ -6,6 +6,7 @@ import game.movement.Direction;
 import game.movement.HomingPathFinder;
 import game.movement.PathFinder;
 import game.movement.Point;
+import game.movement.RegularPathFinder;
 import game.objects.Explosion;
 import game.objects.enemies.Enemy;
 import game.objects.enemies.EnemyManager;
@@ -39,8 +40,8 @@ public class GuardianDrone extends FriendlyObject {
 		case Explosion_Guardian_Bot:
 			createExplosion();
 			break;
-		case Homing_Missile_Guardian_Bot:
-			fireHomingMissile();
+		case Missile_Guardian_Bot:
+			fireMissile();
 			break;
 		default:
 			break;
@@ -64,22 +65,22 @@ public class GuardianDrone extends FriendlyObject {
 	}
 
 	//Fire a homing missile (hardcoded to lasers)
-	private void fireHomingMissile() {
+	private void fireMissile() {
 		if (attackFrameCount >= attackSpeedCooldown) {
-			PathFinder pathFinder = new HomingPathFinder();
+			PathFinder pathFinder = new RegularPathFinder();
 
 			int xMovementSpeed = 5;
 			int yMovementSpeed = 2;
 
-			Sprite target = null;
-
-			if (pathFinder instanceof HomingPathFinder) {
-				target = ((HomingPathFinder) pathFinder).getTarget(true);
-			}
+//			Sprite target = null;
+//
+//			if (pathFinder instanceof HomingPathFinder) {
+//				target = ((HomingPathFinder) pathFinder).getTarget(true);
+//			}
 
 			fireMissile(this.getCenterXCoordinate(), this.getCenterYCoordinate(), ImageEnums.Player_Laserbeam,
 					ImageEnums.Impact_Explosion_One, Direction.RIGHT, 1, pathFinder, xMovementSpeed, yMovementSpeed,
-					PlayerAttackTypes.Laserbeam, target);
+					PlayerAttackTypes.Laserbeam, null);
 			attackFrameCount = 0;
 
 		} else {
