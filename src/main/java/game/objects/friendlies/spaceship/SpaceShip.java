@@ -56,6 +56,15 @@ public class SpaceShip extends Sprite {
 	public void resetSpaceship() {
 		initShip();
 	}
+	
+	//Used for going from level A to level B
+	public void resetSpaceshipFollowingObjects() {
+		playerFollowingSpecialAttacks = new ArrayList<SpecialAttack>();
+		playerFollowingExplosions = new ArrayList<Explosion>();
+		playerFollowingAnimations = new ArrayList<SpriteAnimation>();
+		powerUpEffects.initDefaultSettings();
+		playerStats.initDefaultSettings();
+	}
 
 	private void initShip() {
 		directionx = 0;

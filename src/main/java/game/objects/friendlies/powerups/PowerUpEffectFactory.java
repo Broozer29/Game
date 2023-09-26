@@ -1,7 +1,7 @@
 package game.objects.friendlies.powerups;
 
 import game.objects.friendlies.powerups.powerupeffects.DoubleShot;
-import game.objects.friendlies.powerups.powerupeffects.HomingMissileGuardianBot;
+import game.objects.friendlies.powerups.powerupeffects.MissileGuardianBot;
 import game.objects.friendlies.powerups.powerupeffects.IncreasedAttackDamage;
 import game.objects.friendlies.powerups.powerupeffects.IncreasedAttackSpeed;
 import game.objects.friendlies.powerups.powerupeffects.IncreasedMovementSpeed;
@@ -42,7 +42,7 @@ public class PowerUpEffectFactory {
 		case TRIPLE_SHOT:
 			return new TripleShot(powerUpType);
 		case Guardian_Drone_Homing_Missile:
-			return new HomingMissileGuardianBot(powerUpType);
+			return new MissileGuardianBot(powerUpType);
 		default:
 			System.out.println("Tried to spawn a powerup that is not implemented: " + powerUpType);
 			return new RestorePackage(powerUpType);

@@ -32,10 +32,10 @@ public class ImageLoader {
 			}
 			bufferedImage = ImageIO.read(stream);
 			if (bufferedImage == null) {
-				System.out.println("This one is broken: " + image + " with a path of " + path);
+				System.out.println("Loading of path failed: " + path);
 				return null;
 			}
-			System.out.println("Loaded image: " + image + " this should not be 0 or 'null' -> " + bufferedImage.getWidth());
+//			System.out.println("Loaded image: " + image + " this should not be 0 or 'null' -> " + bufferedImage.getWidth());
 			return bufferedImage;
 		} catch (IOException e) {
 			System.out.println("Failed to load image: " + image);

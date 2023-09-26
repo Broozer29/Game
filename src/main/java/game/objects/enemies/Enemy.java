@@ -8,7 +8,6 @@ import java.util.Random;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
 import game.managers.AnimationManager;
-import game.managers.AudioManager;
 import game.movement.Direction;
 import game.movement.HomingPathFinder;
 import game.movement.OrbitPathFinder;
@@ -23,6 +22,7 @@ import game.movement.pathfinderconfigs.RegularPathFinderConfig;
 import game.objects.missiles.MissileManager;
 import gamedata.DataClass;
 import gamedata.audio.AudioEnums;
+import gamedata.audio.AudioManager;
 import gamedata.image.ImageEnums;
 import visual.objects.Sprite;
 import visual.objects.SpriteAnimation;

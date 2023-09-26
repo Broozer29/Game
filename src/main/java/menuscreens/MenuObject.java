@@ -7,7 +7,6 @@ import java.util.List;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
 import game.managers.AnimationManager;
-import game.managers.AudioManager;
 import game.objects.friendlies.spaceship.PlayerAttackTypes;
 import game.objects.friendlies.spaceship.PlayerSpecialAttackTypes;
 import game.playerpresets.GunPreset;
@@ -15,6 +14,7 @@ import game.playerpresets.SpecialGunPreset;
 import gamedata.PlayerStats;
 import gamedata.audio.AudioDatabase;
 import gamedata.audio.AudioEnums;
+import gamedata.audio.AudioManager;
 import gamedata.image.ImageEnums;
 
 public class MenuObject {

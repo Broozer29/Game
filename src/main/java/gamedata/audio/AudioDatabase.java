@@ -16,6 +16,7 @@ public class AudioDatabase {
 	private CustomAudioClip ayasaTheReasonWhy;
 	private CustomAudioClip DefaultMusic;
 	private CustomAudioClip NewArcadesSolace;
+	private CustomAudioClip mainmenu;
 
 	// Van alle clips een lijst met clips maken, dan vervolgens een clip teruggeven
 	// die niet gebruikt wordt.
@@ -57,6 +58,7 @@ public class AudioDatabase {
 		DefaultMusic.setFramePosition(0);
 		ayasaTheReasonWhy.setFramePosition(0);
 		NewArcadesSolace.setFramePosition(0);
+		mainmenu.setFramePosition(0);
 		
 		
 		for(int i = 0; i< clipListSize; i++) {
@@ -116,7 +118,7 @@ public class AudioDatabase {
 		FuriMyOnlyChance = new CustomAudioClip(AudioEnums.Furi_My_Only_Chance, false);
 		ayasaTheReasonWhy = new CustomAudioClip(AudioEnums.Ayasa_The_Reason_Why, false);
 		NewArcadesSolace = new CustomAudioClip(AudioEnums.New_Arcades_Solace, false);
-				
+		mainmenu = new CustomAudioClip(AudioEnums.mainmenu, true);
 
 	}
 
@@ -183,15 +185,15 @@ public class AudioDatabase {
 	public CustomAudioClip getAudioClip(AudioEnums audioType) {
 	    switch (audioType) {
 	        case Furi_Wisdowm_Of_Rage:
-	            return getFuriWisdomOfRage();
+	            return FuriWisdomOfRage;
 	        case Furi_My_Only_Chance:
-	            return getFuriMyOnlyChance();
+	            return FuriMyOnlyChance;
 	        case Furi_Make_This_Right:
-	            return getFuriMakeThisRight();
+	            return FuriMakeThisRight;
 	        case Apple_Holder_Remix:
-	            return getDefaultMusic();
+	            return DefaultMusic;
 	        case New_Arcades_Solace:
-	        	return getNewArcadesSolace();
+	        	return NewArcadesSolace;
 	        case Player_Laserbeam:
 	        case Destroyed_Explosion:
 	        case Alien_Spaceship_Destroyed:
@@ -205,35 +207,14 @@ public class AudioDatabase {
 	        case Firewall:
 	            return getAvailableClip(audioType);
 	        case Ayasa_The_Reason_Why:
-	            return getAyasatheReasonWhy();
+	            return ayasaTheReasonWhy;
+	        case mainmenu:
+	        	return this.mainmenu;
+	        		
 		case NONE:
 			break;
 	    }
 	    return null;
-	}
-
-	private CustomAudioClip getAyasatheReasonWhy() {
-		return ayasaTheReasonWhy;
-	}
-
-	private CustomAudioClip getFuriWisdomOfRage() {
-		return FuriWisdomOfRage;
-	}
-
-	private CustomAudioClip getFuriMyOnlyChance() {
-		return FuriMyOnlyChance;
-	}
-
-	private CustomAudioClip getFuriMakeThisRight() {
-		return FuriMakeThisRight;
-	}
-
-	private CustomAudioClip getDefaultMusic() {
-		return DefaultMusic;
-	}
-	
-	private CustomAudioClip getNewArcadesSolace() {
-		return NewArcadesSolace;
 	}
 
 }

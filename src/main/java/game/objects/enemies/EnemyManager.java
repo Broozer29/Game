@@ -7,12 +7,12 @@ import java.util.List;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
 import game.managers.AnimationManager;
-import game.managers.AudioManager;
 import game.managers.PlayerManager;
 import game.movement.MovementInitiator;
 import game.movement.Point;
 import gamedata.DataClass;
 import gamedata.audio.AudioEnums;
+import gamedata.audio.AudioManager;
 import gamedata.image.ImageEnums;
 import visual.objects.Sprite;
 

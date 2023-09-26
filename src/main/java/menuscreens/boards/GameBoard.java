@@ -26,7 +26,6 @@ import controllerInput.ControllerInputReader;
 import game.UI.UIObject;
 import game.levels.LevelManager;
 import game.managers.AnimationManager;
-import game.managers.AudioManager;
 import game.managers.CustomUIManager;
 import game.managers.ExplosionManager;
 import game.managers.OnScreenTextManager;
@@ -56,6 +55,7 @@ import gamedata.GameStateInfo;
 import gamedata.GameStatusEnums;
 import gamedata.PlayerStats;
 import gamedata.audio.AudioDatabase;
+import gamedata.audio.AudioManager;
 import gamedata.audio.AudioPositionCalculator;
 import menuscreens.BoardManager;
 import visual.objects.Sprite;
@@ -64,6 +64,8 @@ import visual.objects.SpriteAnimation;
 public class GameBoard extends JPanel implements ActionListener {
 
 	private Timer drawTimer;
+	
+	private GameStatusEnums lastKnownState = null;
 
 	private DataClass data = DataClass.getInstance();
 	private AudioDatabase audioDatabase = AudioDatabase.getInstance();
@@ -193,30 +195,26 @@ public class GameBoard extends JPanel implements ActionListener {
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		Graphics2D g2d = (Graphics2D) g;
-
+		drawObjects(g2d);
 		if (gameState.getGameState() == GameStatusEnums.Dying) {
 			playerManager.startDyingScene();
 			this.drawTimer.setDelay(75);
-			drawObjects(g2d);
 		} else if (gameState.getGameState() == GameStatusEnums.Dead) {
-			drawObjects(g2d);
 			drawGameOver(g2d);
 		} else if (gameState.getGameState() == GameStatusEnums.Transitioning_To_Next_Level) {
-			drawObjects(g2d);
 			drawZoningOut(g2d);
+			playerManager.resetSpaceshipForNextLevel();
+			friendlyManager.resetManagerForNextLevel();
+			powerUpManager.resetManager();
 			goToNextLevel();
 		} else if (gameState.getGameState() == GameStatusEnums.Zoning_In) {
-			drawObjects(g2d);
 			drawZoningIn(g2d);
 		} else if (gameState.getGameState() == GameStatusEnums.Zoning_Out) {
-			drawObjects(g2d);
 			drawZoningOut(g2d);
 		} else if (gameState.getGameState() == GameStatusEnums.Album_Completed) {
-			drawObjects(g2d);
 			drawVictoryScreen(g2d);
-		} else {
-			drawObjects(g2d);
-		}
+		} 
+
 		Toolkit.getDefaultToolkit().sync();
 	}
 
@@ -519,10 +517,10 @@ public class GameBoard extends JPanel implements ActionListener {
 				zoningInAlpha = 1.0f;
 				
 				System.out.println("Skipping time in the level on on GameBoard 517");
-//				int seconds = 305;
-//				long framePosition = AudioPositionCalculator.getInstance()
-//						.getFrameLengthForTime(audioManager.getBackgroundMusic().getClip(), seconds);
-//				audioManager.getBackgroundMusic().setFramePosition((int) framePosition);
+				int seconds = 300;
+				long framePosition = AudioPositionCalculator.getInstance()
+						.getFrameLengthForTime(audioManager.getBackgroundMusic().getClip(), seconds);
+				audioManager.getBackgroundMusic().setFramePosition((int) framePosition);
 
 			}
 		}
@@ -555,7 +553,12 @@ public class GameBoard extends JPanel implements ActionListener {
 			currentWaitingTime++;
 		}
 		
-//		System.out.println(gameState.getGameState());
+		if(lastKnownState == null || lastKnownState != gameState.getGameState()) {
+			lastKnownState = gameState.getGameState();
+			System.out.println(lastKnownState);
+		}
+		
+		
 		repaint();
 	}
 
