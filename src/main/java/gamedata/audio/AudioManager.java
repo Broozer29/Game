@@ -45,7 +45,8 @@ public class AudioManager {
 	public void playMusicAudio(AudioEnums audioType) throws UnsupportedAudioFileException, IOException {
 		backGroundMusic = audioDatabase.getAudioClip(audioType);
 		if (!(backGroundMusic == null)) {
-			backGroundMusic.startClip();
+//			backGroundMusic.startClip();
+			System.out.println("I tried to start a soundtrack in AudioManager line 49");
 		}
 	}
 	

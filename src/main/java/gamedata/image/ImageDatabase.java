@@ -222,7 +222,27 @@ public class ImageDatabase {
 	private List<BufferedImage> fireSpoutFrames = new ArrayList<BufferedImage>();
 	private List<BufferedImage> portal5Frames = new ArrayList<BufferedImage>();
 	private List<BufferedImage> warpFrames = new ArrayList<BufferedImage>();
-
+	private List<BufferedImage> shield4Frames = new ArrayList<BufferedImage>();
+	private List<BufferedImage> shield3Frames = new ArrayList<BufferedImage>();
+	private List<BufferedImage> shield2Frames = new ArrayList<BufferedImage>();
+	private List<BufferedImage> chargingFrames = new ArrayList<BufferedImage>();
+	private List<BufferedImage> energyCircleFrames = new ArrayList<BufferedImage>();
+	private List<BufferedImage> flamewarpFrames = new ArrayList<BufferedImage>();
+	private List<BufferedImage> frontShieldFrames = new ArrayList<BufferedImage>();
+	private List<BufferedImage> frontShieldBFrames = new ArrayList<BufferedImage>();
+	private List<BufferedImage> pulsatingShieldFrames = new ArrayList<BufferedImage>();
+	private List<BufferedImage> pulsatingStarFrames = new ArrayList<BufferedImage>();
+	private List<BufferedImage> radarFrames = new ArrayList<BufferedImage>();
+	private List<BufferedImage> rotatingBoxesFrames = new ArrayList<BufferedImage>();
+	private List<BufferedImage> rotatingConeFrames = new ArrayList<BufferedImage>();
+	private List<BufferedImage> greenEnergyOrbFrames = new ArrayList<BufferedImage>();
+	private List<BufferedImage> purpleEnergyBlockFrames = new ArrayList<BufferedImage>();
+	private List<BufferedImage> fireshieldFrames = new ArrayList<BufferedImage>();
+	private List<BufferedImage> energyFlowerFrames = new ArrayList<BufferedImage>();
+	private List<BufferedImage> purpleEnergyBarrier = new ArrayList<BufferedImage>();
+	private List<BufferedImage> redHoleFrames = new ArrayList<BufferedImage>();
+	private List<BufferedImage> crossingEnergyBeams = new ArrayList<BufferedImage>();
+	
 	// Enemy Projectile Animations
 	private List<BufferedImage> seekerProjectileFrames = new ArrayList<BufferedImage>();
 	private List<BufferedImage> tazerProjectileFrames = new ArrayList<BufferedImage>();
@@ -1046,10 +1066,49 @@ public class ImageDatabase {
 			return portal5Frames;
 		case Warp:
 			return warpFrames;
+		case Shield4:
+			return shield4Frames; // animation addition update: unused
+		case Shield3:
+			return shield3Frames; // animation addition update: unused
+		case Shield2:
+			return shield2Frames; // animation addition update: unused
+		case Charging:
+			return chargingFrames; // animation addition update: unused
+		case EnergyCircle:
+			return energyCircleFrames; // animation addition update: unused
+		case Flamewarp:
+			return flamewarpFrames; // animation addition update: unused
+		case Frontshield:
+			return frontShieldFrames; // animation addition update: unused
+		case FrontshieldB:
+			return frontShieldBFrames; // animation addition update: unused
+		case PulsatingShield:
+			return pulsatingShieldFrames; // animation addition update: unused
+		case PulsatingStar:
+			return pulsatingStarFrames; // animation addition update: unused
+		case Radar:
+			return radarFrames; // animation addition update: unused
+		case RotatingBoxes:
+			return rotatingBoxesFrames; // animation addition update: unused
+		case RotatingCones:
+			return rotatingConeFrames; // animation addition update: unused
+		case GreenEnergyOrb:
+			return greenEnergyOrbFrames; // animation addition update: unused
+		case PurpleEnergyBlocks:
+			return purpleEnergyBlockFrames; // animation addition update: unused
+		case Fireshield:
+			return fireshieldFrames; // animation addition update: unused
+		case EnergyFlower:
+			return energyFlowerFrames; // animation addition update: unused
+		case PurpleEnergyBarrier:
+			return purpleEnergyBarrier; // animation addition update: unused
+		case RedHole:
+			return redHoleFrames; // animation addition update: unused
+		case CrossingEnergyBeams:
+			return crossingEnergyBeams;  // animation addition update: unused
 		}
 		return null;
 	}
-
 
 	public void initAnimations() throws FileNotFoundException, IOException {
 		ImageReader reader = ImageIO.getImageReadersBySuffix("GIF").next();
@@ -1286,20 +1345,141 @@ public class ImageDatabase {
 			BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
 			alienBombFrames.add(image);
 		}
-		
+
 		for (int i = 1; i < 65; i++) {
 			String sourceString = String.format("/images/gif/PNGtoGIF/Portal5/portal%d.png", i);
 			BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
 			portal5Frames.add(image);
 		}
-		
+
 		for (int i = 1; i < 9; i++) {
 			String sourceString = String.format("/images/gif/PNGtoGIF/WarpFrames/WarpFrame%d.png", i);
 			BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
 			warpFrames.add(image);
 		}
-	}
 
+		for (int i = 0; i < 20; i++) {
+			String sourceString = String.format("/images/gif/PNGtoGIF/Shield4/shield4%d.png", i);
+			BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+			shield4Frames.add(image);
+		}
+
+		for (int i = 0; i < 11; i++) {
+			String sourceString = String.format("/images/gif/PNGtoGIF/Shield3/shield3%d.png", i);
+			BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+			shield3Frames.add(image);
+		}
+
+		for (int i = 0; i < 12; i++) {
+			String sourceString = String.format("/images/gif/PNGtoGIF/Shield2/shield2%d.png", i);
+			BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+			shield2Frames.add(image);
+		}
+
+		for (int i = 0; i < 9; i++) {
+			String sourceString = String.format("/images/gif/PNGtoGIF/Charging/charging%d.png", i);
+			BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+			chargingFrames.add(image);
+		}
+		
+		for (int i = 0; i < 8; i++) {
+			String sourceString = String.format("/images/gif/PNGtoGIF/Energy Circle/energycircle%d.png", i);
+			BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+			energyCircleFrames.add(image);
+		}
+		
+		for (int i = 0; i < 19; i++) {
+			String sourceString = String.format("/images/gif/PNGtoGIF/Flamewarp/flamewarp%d.png", i);
+			BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+			flamewarpFrames.add(image);
+		}
+		
+		for (int i = 1; i < 17; i++) {
+			String sourceString = String.format("/images/gif/PNGtoGIF/Frontshield/frontshield%d.png", i);
+			BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+			frontShieldFrames.add(image);
+		}
+		
+		for (int i = 1; i < 17; i++) {
+			String sourceString = String.format("/images/gif/PNGtoGIF/Frontshield2/frontshieldb%d.png", i);
+			BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+			frontShieldBFrames.add(image);
+		}
+		
+		for (int i = 0; i < 8; i++) {
+			String sourceString = String.format("/images/gif/PNGtoGIF/Pulsating shield/pulsatingshield%d.png", i);
+			BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+			pulsatingShieldFrames.add(image);
+		}
+		
+		for (int i = 0; i < 6; i++) {
+			String sourceString = String.format("/images/gif/PNGtoGIF/Pulsating star/pulsatingstar%d.png", i);
+			BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+			pulsatingStarFrames.add(image);
+		}
+
+		for (int i = 0; i < 13; i++) {
+			String sourceString = String.format("/images/gif/PNGtoGIF/Radar/radar%d.png", i);
+			BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+			radarFrames.add(image);
+		}
+		
+		for (int i = 1; i < 14; i++) {
+			String sourceString = String.format("/images/gif/PNGtoGIF/Rotatingboxes/rotatingboxes%d.png", i);
+			BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+			rotatingBoxesFrames.add(image);
+		}
+		
+		for (int i = 1; i < 17; i++) {
+			String sourceString = String.format("/images/gif/PNGtoGIF/Rotatingcone/rotatingcone%d.png", i);
+			BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+			rotatingConeFrames.add(image);
+		}
+		
+		for (int i = 0; i < 20; i++) {
+			String sourceString = String.format("/images/gif/PNGtoGIF/GreenEnergyOrbs/greenEnergyOrbs%d.png", i);
+			BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+			greenEnergyOrbFrames.add(image);
+		}
+		
+		for (int i = 0; i < 20; i++) {
+			String sourceString = String.format("/images/gif/PNGtoGIF/PurpleEnergyBlocks/purpleEnergyBlocks%d.png", i);
+			BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+			purpleEnergyBlockFrames.add(image);
+		}
+		
+		for (int i = 0; i < 20; i++) {
+			String sourceString = String.format("/images/gif/PNGtoGIF/Fireshield/fireshield%d.png", i);
+			BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+			fireshieldFrames.add(image);
+		}
+		
+		for (int i = 0; i < 20; i++) {
+			String sourceString = String.format("/images/gif/PNGtoGIF/EnergyFlower/energyflower%d.png", i);
+			BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+			energyFlowerFrames.add(image);
+		}
+		
+		for (int i = 0; i < 20; i++) {
+			String sourceString = String.format("/images/gif/PNGtoGIF/PurpleEnergyBarrier/purpleenergybarrier%d.png", i);
+			BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+			purpleEnergyBarrier.add(image);
+		}
+		
+		for (int i = 0; i < 20; i++) {
+			String sourceString = String.format("/images/gif/PNGtoGIF/RedHole/7200%d.png", i);
+			BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+			redHoleFrames.add(image);
+		}
+		
+		for (int i = 0; i < 12; i++) {
+			String sourceString = String.format("/images/gif/PNGtoGIF/CrossingEnergyBeams/1000%d.png", i);
+			BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+			crossingEnergyBeams.add(image);
+		}
+		
+
+	}
 
 	private void initSpriteSheets() {
 		BufferedImage empImage = imgLoader.getImage(ImageEnums.Player_EMP_Plus);

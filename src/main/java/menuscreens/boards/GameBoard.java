@@ -517,10 +517,10 @@ public class GameBoard extends JPanel implements ActionListener {
 				zoningInAlpha = 1.0f;
 				
 				System.out.println("Skipping time in the level on on GameBoard 517");
-				int seconds = 300;
-				long framePosition = AudioPositionCalculator.getInstance()
-						.getFrameLengthForTime(audioManager.getBackgroundMusic().getClip(), seconds);
-				audioManager.getBackgroundMusic().setFramePosition((int) framePosition);
+//				int seconds = 300;
+//				long framePosition = AudioPositionCalculator.getInstance()
+//						.getFrameLengthForTime(audioManager.getBackgroundMusic().getClip(), seconds);
+//				audioManager.getBackgroundMusic().setFramePosition((int) framePosition);
 
 			}
 		}
