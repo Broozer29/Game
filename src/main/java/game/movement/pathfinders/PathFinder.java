@@ -1,5 +1,8 @@
-package game.movement;
+package game.movement.pathfinders;
 
+import game.movement.Direction;
+import game.movement.Path;
+import game.movement.Point;
 import game.movement.pathfinderconfigs.PathFinderConfig;
 
 public interface PathFinder {

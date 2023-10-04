@@ -1,8 +1,11 @@
-package game.movement;
+package game.movement.pathfinders;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import game.movement.Direction;
+import game.movement.Path;
+import game.movement.Point;
 import game.movement.pathfinderconfigs.PathFinderConfig;
 import game.movement.pathfinderconfigs.RegularPathFinderConfig;
 import gamedata.DataClass;

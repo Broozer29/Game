@@ -6,8 +6,8 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 
 import game.managers.PlayerManager;
 import game.movement.Direction;
-import game.movement.HomingPathFinder;
-import game.movement.PathFinder;
+import game.movement.pathfinders.HomingPathFinder;
+import game.movement.pathfinders.PathFinder;
 import game.objects.missiles.Missile;
 import game.objects.missiles.MissileCreator;
 import game.objects.missiles.MissileManager;

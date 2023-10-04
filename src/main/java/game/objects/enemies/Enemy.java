@@ -9,18 +9,18 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 
 import game.managers.AnimationManager;
 import game.movement.Direction;
-import game.movement.HomingPathFinder;
 import game.movement.MovementConfiguration;
-import game.movement.OrbitPathFinder;
-import game.movement.PathFinder;
 import game.movement.Point;
-import game.movement.RegularPathFinder;
 import game.movement.SpriteMover;
 import game.movement.SpriteRemover;
 import game.movement.pathfinderconfigs.HomingPathFinderConfig;
 import game.movement.pathfinderconfigs.OrbitPathFinderConfig;
 import game.movement.pathfinderconfigs.PathFinderConfig;
 import game.movement.pathfinderconfigs.RegularPathFinderConfig;
+import game.movement.pathfinders.HomingPathFinder;
+import game.movement.pathfinders.OrbitPathFinder;
+import game.movement.pathfinders.PathFinder;
+import game.movement.pathfinders.RegularPathFinder;
 import game.objects.missiles.MissileManager;
 import gamedata.DataClass;
 import gamedata.audio.AudioEnums;
@@ -72,7 +72,6 @@ public class Enemy extends Sprite {
 	
 	private void initMovementConfiguration(Point currentLocation, Point destination, PathFinder pathFinder,
 			Direction rotation, int xMovementSpeed, int yMovementSpeed) {
-		moveConfig = new MovementConfiguration();
 		moveConfig.setPathFinder(pathFinder);
 		moveConfig.setCurrentLocation(currentLocation);
 		moveConfig.setDestination(destination);

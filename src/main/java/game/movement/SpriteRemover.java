@@ -1,7 +1,7 @@
 package game.movement;
 
 import game.managers.OnScreenTextManager;
-import game.objects.friendlies.powerups.PowerUpAcquiredText;
+import game.objects.friendlies.powerups.OnScreenText;
 import game.objects.friendlies.powerups.PowerUpEnums;
 import gamedata.DataClass;
 import visual.objects.Sprite;

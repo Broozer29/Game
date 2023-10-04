@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import game.movement.Direction;
-import game.movement.PathFinder;
 import game.movement.Point;
-import game.movement.RegularPathFinder;
+import game.movement.pathfinders.PathFinder;
+import game.movement.pathfinders.RegularPathFinder;
 import game.objects.missiles.Missile;
 import game.objects.missiles.MissileCreator;
 import game.objects.missiles.MissileManager;

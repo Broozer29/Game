@@ -1,8 +1,8 @@
 package game.objects.enemies;
 
 import game.movement.Direction;
-import game.movement.PathFinder;
 import game.movement.Point;
+import game.movement.pathfinders.PathFinder;
 import game.objects.friendlies.spaceship.PlayerAttackTypes;
 import game.objects.missiles.MissileCreator;
 import game.objects.missiles.MissileManager;

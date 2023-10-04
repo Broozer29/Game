@@ -39,7 +39,7 @@ import game.objects.enemies.EnemyManager;
 import game.objects.friendlies.FriendlyManager;
 import game.objects.friendlies.FriendlyObject;
 import game.objects.friendlies.powerups.PowerUp;
-import game.objects.friendlies.powerups.PowerUpAcquiredText;
+import game.objects.friendlies.powerups.OnScreenText;
 import game.objects.friendlies.powerups.PowerUpManager;
 import game.objects.friendlies.spaceship.PlayerAttackTypes;
 import game.objects.friendlies.spaceship.PlayerSpecialAttackTypes;
@@ -373,7 +373,7 @@ public class GameBoard extends JPanel implements ActionListener {
 			drawAnimation(g, animation);
 		}
 
-		for (PowerUpAcquiredText text : textManager.getPowerUpTexts()) {
+		for (OnScreenText text : textManager.getPowerUpTexts()) {
 			drawText(g, text);
 		}
 
@@ -387,7 +387,7 @@ public class GameBoard extends JPanel implements ActionListener {
 		}
 	}
 
-	private void drawText(Graphics2D g, PowerUpAcquiredText text) {
+	private void drawText(Graphics2D g, OnScreenText text) {
 		// Ensure that transparency value is within the appropriate bounds.
 		float transparency = Math.max(0, Math.min(1, text.getTransparencyValue()));
 		Color originalColor = g.getColor(); // store the original color

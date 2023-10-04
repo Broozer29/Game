@@ -1,6 +1,6 @@
 package gamedata;
 
-import game.movement.PathFinder;
+import game.movement.pathfinders.PathFinder;
 import game.objects.friendlies.spaceship.PlayerAttackTypes;
 import game.objects.friendlies.spaceship.PlayerSpecialAttackTypes;
 import game.playerpresets.GunPreset;

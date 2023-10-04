@@ -1,8 +1,8 @@
 package game.objects.missiles.missiletypes;
 
 import game.movement.Direction;
-import game.movement.PathFinder;
 import game.movement.Point;
+import game.movement.pathfinders.PathFinder;
 import game.objects.missiles.Missile;
 import gamedata.image.ImageEnums;
 

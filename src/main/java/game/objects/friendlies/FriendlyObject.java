@@ -1,18 +1,18 @@
 package game.objects.friendlies;
 
 import game.movement.Direction;
-import game.movement.HomingPathFinder;
 import game.movement.MovementConfiguration;
-import game.movement.OrbitPathFinder;
 import game.movement.Path;
-import game.movement.PathFinder;
 import game.movement.Point;
-import game.movement.RegularPathFinder;
 import game.movement.SpriteMover;
 import game.movement.pathfinderconfigs.HomingPathFinderConfig;
 import game.movement.pathfinderconfigs.OrbitPathFinderConfig;
 import game.movement.pathfinderconfigs.PathFinderConfig;
 import game.movement.pathfinderconfigs.RegularPathFinderConfig;
+import game.movement.pathfinders.HomingPathFinder;
+import game.movement.pathfinders.OrbitPathFinder;
+import game.movement.pathfinders.PathFinder;
+import game.movement.pathfinders.RegularPathFinder;
 import gamedata.audio.AudioEnums;
 import gamedata.image.ImageEnums;
 import visual.objects.Sprite;

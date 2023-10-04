@@ -1,6 +1,6 @@
 package game.objects.friendlies.powerups.powerupeffects;
 
-import game.objects.friendlies.powerups.PowerUpAcquiredText;
+import game.objects.friendlies.powerups.OnScreenText;
 import game.objects.friendlies.powerups.PowerUpEffect;
 import game.objects.friendlies.powerups.PowerUpEnums;
 

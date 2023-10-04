@@ -1,6 +1,6 @@
 package game.objects.friendlies.powerups;
 
-public class PowerUpAcquiredText {
+public class OnScreenText {
 
 	private String text;
 	private float transparencyValue;
@@ -8,7 +8,7 @@ public class PowerUpAcquiredText {
 	private int yCoordinate;
 	private PowerUpEnums powerUpType;
 	
-	public PowerUpAcquiredText(int xCoordinate, int yCoordinate, PowerUpEnums powerUpType) {
+	public OnScreenText(int xCoordinate, int yCoordinate, PowerUpEnums powerUpType) {
 		this.xCoordinate = xCoordinate;
 		this.yCoordinate = yCoordinate;
 		this.powerUpType = powerUpType;

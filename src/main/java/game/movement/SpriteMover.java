@@ -1,9 +1,14 @@
 package game.movement;
 
+import game.movement.pathfinderconfigs.BouncingPathFinderConfig;
 import game.movement.pathfinderconfigs.HomingPathFinderConfig;
 import game.movement.pathfinderconfigs.OrbitPathFinderConfig;
 import game.movement.pathfinderconfigs.PathFinderConfig;
 import game.movement.pathfinderconfigs.RegularPathFinderConfig;
+import game.movement.pathfinders.BouncingPathFinder;
+import game.movement.pathfinders.HomingPathFinder;
+import game.movement.pathfinders.OrbitPathFinder;
+import game.movement.pathfinders.RegularPathFinder;
 import visual.objects.Sprite;
 
 public class SpriteMover {
@@ -41,6 +46,8 @@ public class SpriteMover {
 		} else if (moveConfig.getPathFinder() instanceof HomingPathFinder) {
 			config = new HomingPathFinderConfig(sprite.getCurrentLocation(), moveConfig.getRotation(), true,
 					sprite.isFriendly());
+		} else if (moveConfig.getPathFinder() instanceof BouncingPathFinder) {
+			config = new BouncingPathFinderConfig(sprite, moveConfig.getRotation());
 		}
 		return config;
 	}
@@ -66,6 +73,14 @@ public class SpriteMover {
 		if (sprite.getCurrentLocation().equals(moveConfig.getCurrentPath().getWaypoints().get(0))) {
 			moveConfig.getCurrentPath().getWaypoints().remove(0);
 		}
+		
+		if(moveConfig.getPathFinder() instanceof BouncingPathFinder) {
+			Direction newDirection = (Direction) ((BouncingPathFinder) moveConfig.getPathFinder()).getNewDirection(sprite, moveConfig.getRotation());
+			if (newDirection != moveConfig.getRotation()) {
+				moveConfig.setRotation(newDirection);
+				moveConfig.setCurrentPath(moveConfig.getPathFinder().findPath(getConfigByPathFinder(sprite, moveConfig)));
+			}
+		}
 
 		// move towards the next point
 
@@ -74,7 +89,7 @@ public class SpriteMover {
 			sprite.setX(moveConfig.getCurrentPath().getWaypoints().get(0).getX());
 			sprite.setY(moveConfig.getCurrentPath().getWaypoints().get(0).getY());
 		}
-
+		
 		if (moveConfig.getPathFinder() instanceof OrbitPathFinder) {
 			adjustOrbitPath(moveConfig);
 		}

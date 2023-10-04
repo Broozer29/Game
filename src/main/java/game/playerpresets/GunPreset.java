@@ -1,6 +1,6 @@
 package game.playerpresets;
 
-import game.movement.RegularPathFinder;
+import game.movement.pathfinders.RegularPathFinder;
 import game.objects.friendlies.spaceship.PlayerAttackTypes;
 import gamedata.PlayerStats;
 import gamedata.image.ImageDatabase;

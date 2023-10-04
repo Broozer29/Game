@@ -6,10 +6,10 @@ import java.util.List;
 
 import game.managers.PlayerManager;
 import game.movement.Direction;
-import game.movement.OrbitPathFinder;
-import game.movement.PathFinder;
 import game.movement.Point;
-import game.movement.RegularPathFinder;
+import game.movement.pathfinders.OrbitPathFinder;
+import game.movement.pathfinders.PathFinder;
+import game.movement.pathfinders.RegularPathFinder;
 import game.objects.friendlies.FriendlyObject;
 import game.objects.friendlies.GuardianDrone;
 import game.objects.missiles.MissileManager;

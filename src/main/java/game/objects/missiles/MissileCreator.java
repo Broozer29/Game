@@ -1,8 +1,8 @@
 package game.objects.missiles;
 
 import game.movement.Direction;
-import game.movement.PathFinder;
 import game.movement.Point;
+import game.movement.pathfinders.PathFinder;
 import game.objects.friendlies.spaceship.PlayerAttackTypes;
 import game.objects.missiles.missiletypes.AlienLaserbeam;
 import game.objects.missiles.missiletypes.BombaProjectile;
