@@ -1,10 +1,15 @@
 package menuscreens;
 
+import java.io.IOException;
+
+import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import database.DatabaseConnection;
 import gamedata.DataClass;
+import gamedata.audio.AudioEnums;
+import gamedata.audio.AudioManager;
 //import database.DatabaseConnection;
 import menuscreens.boards.GameBoard;
 import menuscreens.boards.LevelSelectionBoard;
@@ -22,6 +27,7 @@ public class BoardManager extends JFrame {
 	private TalentSelectionBoard talentBoard;
 	private LevelSelectionBoard levelSelectionBoard;
 	private static BoardManager instance = new BoardManager();
+	private AudioManager audioManager = AudioManager.getInstance();
 
 	private JPanel currentBoard = null;
 
@@ -41,22 +47,37 @@ public class BoardManager extends JFrame {
 		return instance;
 	}
 
+	private void playMenuMusic() {
+		if (audioManager.getBackgroundMusic() == null) {
+			try {
+				audioManager.playMusicAudio(AudioEnums.mainmenu);
+			} catch (UnsupportedAudioFileException | IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
 	public void initMainMenu() {
+		playMenuMusic();
 		changeMenuScreen(menuBoard);
 		menuBoard.recreateWindow();
+
 	}
 
 	public void initGame() {
+		audioManager.stopMusicAudio();
 		changeMenuScreen(gameBoard);
 		gameBoard.startGame();
 	}
-	
+
 	public void initLevelSelectionBoard() {
+		playMenuMusic();
 		changeMenuScreen(talentBoard);
 		talentBoard.recreateWindow();
 	}
 
 	public void initTalentSelectionBoard() {
+		playMenuMusic();
 		changeMenuScreen(levelSelectionBoard);
 		levelSelectionBoard.recreateWindow();
 	}
@@ -66,6 +87,7 @@ public class BoardManager extends JFrame {
 		changeMenuScreen(menuBoard);
 		menuBoard.recreateWindow();
 		menuBoard.getTimer().restart();
+		playMenuMusic();
 	}
 
 	private void changeMenuScreen(JPanel newBoard) {
@@ -79,7 +101,5 @@ public class BoardManager extends JFrame {
 		currentBoard.requestFocus();
 		repaint();
 	}
-
-	
 
 }

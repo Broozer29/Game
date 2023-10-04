@@ -4,8 +4,8 @@ package game.objects.missiles.missiletypes;
 import game.managers.AnimationManager;
 import game.managers.ExplosionManager;
 import game.movement.Direction;
-import game.movement.PathFinder;
 import game.movement.Point;
+import game.movement.pathfinders.PathFinder;
 import game.objects.Explosion;
 import game.objects.missiles.Missile;
 import gamedata.image.ImageEnums;
@@ -24,7 +24,7 @@ public class BombaProjectile extends Missile {
 	}
 
 	public void missileAction() {
-		if (missileStepsTaken >= 75) {
+		if (moveConfig.getStepsTaken() >= 75) {
 			SpriteAnimation animation = new SpriteAnimation(xCoordinate, yCoordinate, ImageEnums.Bomba_Missile_Explosion, false, scale);
 			animation.setX(xCoordinate - (animation.getWidth() / 2));
 			animation.setY(yCoordinate - (animation.getHeight() / 2));

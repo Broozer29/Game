@@ -1,9 +1,9 @@
 package game.objects.enemies;
 
 import game.movement.Direction;
-import game.movement.PathFinder;
 import game.movement.Point;
-import game.movement.RegularPathFinder;
+import game.movement.pathfinders.PathFinder;
+import game.movement.pathfinders.RegularPathFinder;
 import game.objects.missiles.Missile;
 import game.objects.missiles.MissileCreator;
 import game.objects.missiles.MissileManager;
@@ -49,10 +49,10 @@ public class Seeker extends Enemy {
 		if (currentAttackSpeedFrameCount >= attackSpeedFrameCount) {
 			Missile newMissile = MissileCreator.getInstance().createEnemyMissile(xCoordinate,
 					yCoordinate + this.height / 2, ImageEnums.Seeker_Missile,
-					ImageEnums.Seeker_Missile_Explosion, rotation, scale, missilePathFinder, xMovementSpeed,
+					ImageEnums.Seeker_Missile_Explosion, moveConfig.getRotation(), scale, missilePathFinder, xMovementSpeed,
 					yMovementSpeed, (float) 7.5);
 			
-			newMissile.rotateMissileAnimation(rotation);
+			newMissile.rotateMissileAnimation(moveConfig.getRotation());
 			missileManager.addExistingMissile(newMissile);
 			currentAttackSpeedFrameCount = 0;
 		}

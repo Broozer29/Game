@@ -1,8 +1,8 @@
 package game.objects.friendlies.spaceship.specialAttacks;
 
 import game.movement.Direction;
-import game.movement.PathFinder;
 import game.movement.Point;
+import game.movement.pathfinders.PathFinder;
 import game.objects.friendlies.spaceship.PlayerAttackTypes;
 import game.objects.missiles.Missile;
 import game.objects.missiles.MissileCreator;

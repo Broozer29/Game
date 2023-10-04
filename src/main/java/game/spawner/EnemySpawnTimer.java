@@ -25,12 +25,13 @@ public class EnemySpawnTimer {
 	private boolean loopable;
 	private int additionalDelay;
 	private float currentTime;
-	
+
 	private int xMovementSpeed;
 	private int yMovementSpeed;
 
 	public EnemySpawnTimer(int timeBeforeActivation, int amountOfSpawnAttempts, EnemyEnums timerEnemyType,
-			boolean loopable, Direction direction, float enemyScale, int additionalDelay,int xMovementSpeed, int yMovementSpeed) {
+			boolean loopable, Direction direction, float enemyScale, int additionalDelay, int xMovementSpeed,
+			int yMovementSpeed) {
 		this.enemyScale = enemyScale;
 		this.timerEnemyType = timerEnemyType;
 		this.amountOfSpawnAttempts = amountOfSpawnAttempts;
@@ -49,10 +50,11 @@ public class EnemySpawnTimer {
 	// bommen te spawnen.
 	public void activateTimer() {
 		if (formation == null) {
-			LevelManager.getInstance().spawnEnemy(0, 0, this.timerEnemyType, this.amountOfSpawnAttempts,
-					this.direction, this.enemyScale, true, this.xMovementSpeed, this.yMovementSpeed);
+			LevelManager.getInstance().spawnEnemy(0, 0, this.timerEnemyType, this.amountOfSpawnAttempts, this.direction,
+					this.enemyScale, true, this.xMovementSpeed, this.yMovementSpeed);
 		} else {
-			formation.spawnFormation(formationXCoordinate, formationYCoordinate, timerEnemyType, direction, enemyScale, this.xMovementSpeed, this.yMovementSpeed);
+			formation.spawnFormation(formationXCoordinate, formationYCoordinate, timerEnemyType, direction, enemyScale,
+					this.xMovementSpeed, this.yMovementSpeed);
 		}
 		if (this.loopable) {
 			this.additionalDelay = 0;
@@ -113,6 +115,11 @@ public class EnemySpawnTimer {
 
 	public boolean shouldActivate(float currentFrame) {
 		this.currentTime = currentFrame;
+		if ((timeBeforeActivation + additionalDelay) - currentFrame < -4) {
+//			System.out.println("Skipped a timer, I wanted to spawn on: " + timeBeforeActivation + " seconds but it's currently: " + currentFrame + " seconds");
+			this.finished = true;
+			return false;
+		}
 		return (currentFrame >= (timeBeforeActivation + additionalDelay));
 	}
 

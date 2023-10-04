@@ -8,9 +8,9 @@ import game.managers.AnimationManager;
 import game.managers.PlayerManager;
 import game.movement.Direction;
 import game.movement.MovementInitiator;
-import game.movement.OrbitPathFinder;
-import game.movement.PathFinder;
 import game.movement.Point;
+import game.movement.pathfinders.OrbitPathFinder;
+import game.movement.pathfinders.PathFinder;
 import game.objects.enemies.Enemy;
 import game.objects.enemies.EnemyManager;
 import gamedata.DataClass;
@@ -127,58 +127,6 @@ public class FriendlyManager {
 		return distance < 300;
 	}
 
-//	public void createMissileGuardianBot(FriendlyEnums friendlyType, float scale) {
-//		// 1. Calculate the mean center
-//		double meanX = PlayerManager.getInstance().getSpaceship().getCenterXCoordinate();
-//		double meanY = PlayerManager.getInstance().getSpaceship().getCenterYCoordinate();
-//		if (!activeFriendlyObjects.isEmpty()) {
-//			meanX = 0;
-//			meanY = 0;
-//			for (FriendlyObject drone : activeFriendlyObjects) {
-//				meanX += drone.getXCoordinate();
-//				meanY += drone.getYCoordinate();
-//			}
-//			meanX /= activeFriendlyObjects.size();
-//			meanY /= activeFriendlyObjects.size();
-//		}
-//
-//		// 2. Find the next angle
-//		double nextAngle = 0;
-//		if (!activeFriendlyObjects.isEmpty()) {
-//			// Calculate angles for existing drones relative to mean center
-//			List<Double> angles = new ArrayList<>();
-//			for (FriendlyObject drone : activeFriendlyObjects) {
-//				double angle = Math.atan2(drone.getYCoordinate() - meanY, drone.getXCoordinate() - meanX);
-//				angles.add(angle);
-//			}
-//			// Sort the angles and find the largest gap
-//			Collections.sort(angles);
-//			double maxGap = 0;
-//			for (int i = 0; i < angles.size(); i++) {
-//				double gap = angles.get((i + 1) % angles.size()) - angles.get(i);
-//				if (gap < 0)
-//					gap += Math.PI * 2;
-//				if (gap > maxGap) {
-//					maxGap = gap;
-//					nextAngle = angles.get(i) + gap / 2;
-//				}
-//			}
-//		}
-//
-//		// 3. Place the new drone
-//		int radius = 75; // Example radius
-//		int x = (int) (meanX + Math.cos(nextAngle) * radius);
-//		int y = (int) (meanY + Math.sin(nextAngle) * radius);
-//
-//		PathFinder pathFinder = new OrbitPathFinder(PlayerManager.getInstance().getSpaceship(), radius, 300, nextAngle);
-//		FriendlyObject friendlyObject = new GuardianDrone(x, y, null, Direction.RIGHT, friendlyType, scale, pathFinder,
-//				50);
-//		activeFriendlyObjects.add((GuardianDrone) friendlyObject);
-//		SpriteAnimation animation = new SpriteAnimation(x, y, ImageEnums.Guardian_Bot, true, scale);
-//		friendlyObject.setAnimation(animation);
-//		addActiveFriendlyObject(friendlyObject);
-//	}
-
 	
 	public void createMissileGuardianBot(FriendlyEnums droneType, float scale) {
 		createAndAddDrone(scale, droneType);
@@ -269,6 +217,10 @@ public class FriendlyManager {
 	public void resetManager() {
 		activeFriendlyObjects = new ArrayList<FriendlyObject>();
 		initPortal();
+	}
+	
+	public void resetManagerForNextLevel() {
+		activeFriendlyObjects = new ArrayList<FriendlyObject>();
 	}
 
 	private void initPortal() {

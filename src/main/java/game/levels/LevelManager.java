@@ -1,18 +1,19 @@
 package game.levels;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import game.levels.premadeLevelFormations.EnclosingFromAboveAndBelow;
-import game.levels.premadeLevelFormations.TopBottomVRows;
-import game.managers.AudioManager;
+import javax.sound.sampled.UnsupportedAudioFileException;
+
+import game.managers.PlayerManager;
 import game.managers.TimerManager;
 import game.movement.Direction;
-import game.movement.HomingPathFinder;
-import game.movement.PathFinder;
 import game.movement.Point;
-import game.movement.RegularPathFinder;
+import game.movement.pathfinders.HomingPathFinder;
+import game.movement.pathfinders.PathFinder;
+import game.movement.pathfinders.RegularPathFinder;
 import game.objects.enemies.Alien;
 import game.objects.enemies.AlienBomb;
 import game.objects.enemies.Bomba;
@@ -24,17 +25,13 @@ import game.objects.enemies.Energizer;
 import game.objects.enemies.Flamer;
 import game.objects.enemies.Seeker;
 import game.objects.enemies.Tazer;
-import game.objects.friendlies.FriendlyEnums;
 import game.objects.friendlies.FriendlyManager;
-import game.objects.friendlies.FriendlyObject;
-import game.spawner.EnemyFormation;
 import game.spawner.EnemySpawnTimer;
-import game.spawner.FormationCreator;
-import game.spawner.SpawnFormationEnums;
 import game.spawner.SpawningCoordinator;
-import gamedata.DataClass;
 import gamedata.GameStateInfo;
 import gamedata.GameStatusEnums;
+import gamedata.audio.AudioEnums;
+import gamedata.audio.AudioManager;
 
 public class LevelManager {
 
@@ -49,8 +46,8 @@ public class LevelManager {
 	private Level currentLevel;
 
 	private LevelManager() {
-//		Album newAlbum = new Album(AlbumEnums.Furi);
-//		this.setAlbum(newAlbum);
+		Album newAlbum = new Album(AlbumEnums.Furi);
+		this.setAlbum(newAlbum);
 	}
 
 	public static LevelManager getInstance() {
@@ -58,9 +55,9 @@ public class LevelManager {
 	}
 
 	public void setAlbum(Album album) {
-//		for (Level level : album.getLevels()) {
-//			levelsToPlay.add(level);
-//		}
+		for (Level level : album.getLevels()) {
+			levelsToPlay.add(level);
+		}
 
 	}
 
@@ -94,51 +91,53 @@ public class LevelManager {
 		
 		if(gameState.getGameState() == GameStatusEnums.Level_Completed) {
 			gameState.setGameState(GameStatusEnums.Transitioning_To_Next_Level);
+			
 			removeFinishedLevel();
 			advanceNextLevel();
+			//Now the GameBoard completes the transition and zoning in to the next level
 		}
 	}
 
 	// Called when a level starts, to saturate enemy list
 	public void startLevel() {
-//		if (levelsToPlay.size() > 0) {
-//			currentLevel = levelsToPlay.get(0);
-//		}
-//		if(currentLevel == null) {
-//			currentLevel = new FuriWisdomOfRageLevel();
-//		}
+		if (levelsToPlay.size() > 0) {
+			currentLevel = levelsToPlay.get(0);
+		}
+		if(currentLevel == null) {
+			currentLevel = new FuriWisdomOfRageLevel();
+		}
 		
-//		AudioManager audioManager = AudioManager.getInstance();
-//		for (EnemySpawnTimer timer : currentLevel.getTimers()) {
-//			timerManager.addEnemyTimerToList(timer);
-//		}
-//
-//		try {
-//			AudioEnums currentMusic = currentLevel.getSong();
-//			audioManager.playMusicAudio(currentMusic);
-//			GameStateInfo.getInstance().setMaxMusicSeconds(audioManager.getBackgroundMusic());
-//		} catch (UnsupportedAudioFileException | IOException e) {
-//			e.printStackTrace();
-//		}
+		AudioManager audioManager = AudioManager.getInstance();
+		for (EnemySpawnTimer timer : currentLevel.getTimers()) {
+			timerManager.addEnemyTimerToList(timer);
+		}
+
+		try {
+			AudioEnums currentMusic = currentLevel.getSong();
+			audioManager.playMusicAudio(currentMusic);
+			GameStateInfo.getInstance().setMaxMusicSeconds(audioManager.getBackgroundMusic());
+		} catch (UnsupportedAudioFileException | IOException e) {
+			e.printStackTrace();
+		}
 		
 		gameState.setGameState(GameStatusEnums.Playing);
-		
-		FormationCreator formCreator = new FormationCreator();
-		EnemySpawnTimer timer = null;
-		EnemyFormation formation = null;
-		EnemyEnums enemyType = EnemyEnums.Seeker;
-		boolean loopable = false;
-		float scale = 1;
-		int additionalDelay = 0;
-		DataClass dataClass = DataClass.getInstance();
-		int xMovementSpeed = 2;
-		int yMovementSpeed = 2;
-		int i = 1;
-		
-		timer = createSpawnTimer(EnemyEnums.Bulldozer, 1, i, loopable, Direction.LEFT, scale, additionalDelay, xMovementSpeed, yMovementSpeed);
-		formation = formCreator.createFormation(SpawnFormationEnums.Dot, 50, 50);
-		timer.setFormation(formation, dataClass.getWindowWidth() + 250, dataClass.getWindowHeight() / 2 - 100);
-		addSpawnTimer(timer);
+//		
+//		FormationCreator formCreator = new FormationCreator();
+//		EnemySpawnTimer timer = null;
+//		EnemyFormation formation = null;
+//		EnemyEnums enemyType = EnemyEnums.Seeker;
+//		boolean loopable = false;
+//		float scale = 1;
+//		int additionalDelay = 0;
+//		DataClass dataClass = DataClass.getInstance();
+//		int xMovementSpeed = 2;
+//		int yMovementSpeed = 2;
+//		int i = 1;
+//		
+//		timer = createSpawnTimer(EnemyEnums.Bulldozer, 1, i, loopable, Direction.LEFT, scale, additionalDelay, xMovementSpeed, yMovementSpeed);
+//		formation = formCreator.createFormation(SpawnFormationEnums.Dot, 50, 50);
+//		timer.setFormation(formation, dataClass.getWindowWidth() + 250, dataClass.getWindowHeight() / 2 - 100);
+//		addSpawnTimer(timer);
 		
 //		for(int a = 0; a < 8; a++) {
 //			FriendlyManager.getInstance().createMissileGuardianBot(FriendlyEnums.Missile_Guardian_Bot, 1);

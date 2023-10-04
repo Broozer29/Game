@@ -1,8 +1,8 @@
 package game.objects.enemies;
 
 import game.movement.Direction;
-import game.movement.PathFinder;
 import game.movement.Point;
+import game.movement.pathfinders.PathFinder;
 import gamedata.audio.AudioEnums;
 import gamedata.image.ImageEnums;
 

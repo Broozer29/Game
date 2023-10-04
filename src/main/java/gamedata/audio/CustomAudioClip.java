@@ -115,6 +115,7 @@ public class CustomAudioClip {
 	}
 
 	public void closeclip() {
+		this.clip.setFramePosition(0);
 		this.clip.close();
 	}
 

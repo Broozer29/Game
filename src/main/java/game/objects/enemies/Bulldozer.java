@@ -6,10 +6,10 @@ import java.util.List;
 
 import game.managers.PlayerManager;
 import game.movement.Direction;
-import game.movement.OrbitPathFinder;
-import game.movement.PathFinder;
 import game.movement.Point;
-import game.movement.RegularPathFinder;
+import game.movement.pathfinders.OrbitPathFinder;
+import game.movement.pathfinders.PathFinder;
+import game.movement.pathfinders.RegularPathFinder;
 import game.objects.friendlies.FriendlyObject;
 import game.objects.friendlies.GuardianDrone;
 import game.objects.missiles.MissileManager;
@@ -54,8 +54,6 @@ public class Bulldozer extends Enemy {
 	        int radius = 75; // Example radius
 	        int x = (int) (meanX + Math.cos(nextAngle) * radius);
 	        int y = (int) (meanY + Math.sin(nextAngle) * radius);
-
-	        System.out.println("MeanY = " + meanY + " MeanX = " + meanX + " X = " + x + " Y = " + y);
 
 	        PathFinder pathFinder = new OrbitPathFinder(this, radius, 300, nextAngle);
 	        Enemy alienBomb = new AlienBomb(x, y, null, Direction.LEFT, scale, pathFinder, 1, 1);

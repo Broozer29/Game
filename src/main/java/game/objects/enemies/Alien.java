@@ -1,8 +1,8 @@
 package game.objects.enemies;
 
 import game.movement.Direction;
-import game.movement.PathFinder;
 import game.movement.Point;
+import game.movement.pathfinders.PathFinder;
 import game.objects.friendlies.spaceship.PlayerAttackTypes;
 import game.objects.missiles.MissileCreator;
 import game.objects.missiles.MissileManager;
@@ -40,8 +40,8 @@ public class Alien extends Enemy {
 			if (currentBoardBlock < 7) {
 				missileManager.addExistingMissile(MissileCreator.getInstance().createEnemyMissile(
 						xCoordinate, yCoordinate + calculateRandomWeaponHeightOffset()
-						, ImageEnums.Alien_Laserbeam, ImageEnums.Impact_Explosion_One, rotation, 
-						scale, missilePathFinder, xMovementSpeed, xMovementSpeed, (float) 7.5));
+						, ImageEnums.Alien_Laserbeam, ImageEnums.Impact_Explosion_One, moveConfig.getRotation(), 
+						scale, missilePathFinder, 3, 3, (float) 7.5));
 				currentAttackSpeedFrameCount = 0;
 			}
 		}

@@ -3,12 +3,12 @@ package game.managers;
 import java.util.ArrayList;
 import java.util.List;
 
-import game.objects.friendlies.powerups.PowerUpAcquiredText;
+import game.objects.friendlies.powerups.OnScreenText;
 
 public class OnScreenTextManager {
 
 	private static OnScreenTextManager instance = new OnScreenTextManager();
-	private List<PowerUpAcquiredText> powerUpTexts = new ArrayList<PowerUpAcquiredText>();
+	private List<OnScreenText> powerUpTexts = new ArrayList<OnScreenText>();
 
 	private OnScreenTextManager() {
 
@@ -31,19 +31,19 @@ public class OnScreenTextManager {
 		}
 	}
 
-	public void addPowerUpText(PowerUpAcquiredText text) {
+	public void addPowerUpText(OnScreenText text) {
 		if (!powerUpTexts.contains(text)) {
 			powerUpTexts.add(text);
 		}
 	}
 	
 
-	public List<PowerUpAcquiredText> getPowerUpTexts() {
+	public List<OnScreenText> getPowerUpTexts() {
 		return powerUpTexts;
 	}
 
 	public void resetManager() {
-		powerUpTexts = new ArrayList<PowerUpAcquiredText>();
+		powerUpTexts = new ArrayList<OnScreenText>();
 	}
 
 }

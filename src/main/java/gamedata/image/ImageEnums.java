@@ -13,7 +13,8 @@ public enum ImageEnums {
 	Seeker_Destroyed_Explosion, Tazer_Destroyed_Explosion, Energizer_Destroyed_Explosion, Bomba_Destroyed_Explosion,
 	Flamer_Destroyed_Explosion, Bulldozer_Destroyed_Explosion, Default_Player_Engine, Default_Player_Engine_Boosted,
 	Default_Player_Shield_Damage, Player_Fireswirl, Player_EMP, Player_EMP_Plus, Guardian_Bot, FirewallParticle, Portal5,
-	Warp,
+	Warp, Shield4, Shield3, Shield2, Charging, EnergyCircle, Flamewarp, Frontshield, FrontshieldB, PulsatingShield, PulsatingStar, Radar,
+	RotatingBoxes, RotatingCones, GreenEnergyOrb, PurpleEnergyBlocks, Fireshield, EnergyFlower, PurpleEnergyBarrier, RedHole, CrossingEnergyBeams,
 
 	//// Background Objects
 	Moon, Lava_Planet, Planet_One, Planet_Two, Planet_Three, Mars_Planet, Star, Parallex_1, Parallex_2, Parallex_3,

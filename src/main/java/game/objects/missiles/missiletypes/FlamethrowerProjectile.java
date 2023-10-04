@@ -1,11 +1,8 @@
 package game.objects.missiles.missiletypes;
 
-import game.managers.OnScreenTextManager;
 import game.movement.Direction;
-import game.movement.PathFinder;
 import game.movement.Point;
-import game.objects.friendlies.powerups.PowerUpAcquiredText;
-import game.objects.friendlies.powerups.PowerUpEnums;
+import game.movement.pathfinders.PathFinder;
 import game.objects.missiles.Missile;
 import gamedata.image.ImageEnums;
 
@@ -22,26 +19,20 @@ public class FlamethrowerProjectile extends Missile {
 
 	// Remove the flamethrower
 	public void missileAction() {
-		int xPointDifference = Math.abs(this.xCoordinate - this.destination.getX());
-		int yPointDifference = Math.abs(this.yCoordinate - this.destination.getY());
+		int xPointDifference = Math.abs(this.xCoordinate - moveConfig.getDestination().getX());
+		int yPointDifference = Math.abs(this.yCoordinate - moveConfig.getDestination().getY());
 
-		if (this.rotation == Direction.RIGHT || this.rotation == Direction.RIGHT_DOWN
-				|| this.rotation == Direction.RIGHT_UP) {
+		if (moveConfig.getRotation() == Direction.RIGHT || moveConfig.getRotation() == Direction.RIGHT_DOWN
+				|| moveConfig.getRotation() == Direction.RIGHT_UP) {
 			if (xPointDifference < 10) {
 				this.setVisible(false);
-//				PowerUpAcquiredText text = new PowerUpAcquiredText(this.xCoordinate, this.yCoordinate,
-//						PowerUps.DUMMY_DO_NOT_USE);
-//				OnScreenTextManager.getInstance().addPowerUpText(text);
 			}
 		}
 
-		if (this.rotation == Direction.LEFT || this.rotation == Direction.LEFT_DOWN
-				|| this.rotation == Direction.LEFT_UP) {
+		if (moveConfig.getRotation() == Direction.LEFT || moveConfig.getRotation() == Direction.LEFT_DOWN
+				|| moveConfig.getRotation() == Direction.LEFT_UP) {
 			if (yPointDifference < 10) {
 				this.setVisible(false);
-//				PowerUpAcquiredText text = new PowerUpAcquiredText(this.xCoordinate, this.yCoordinate,
-//						PowerUps.DUMMY_DO_NOT_USE);
-//				OnScreenTextManager.getInstance().addPowerUpText(text);
 			}
 		}
 
