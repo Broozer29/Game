@@ -79,7 +79,7 @@ public class Bomba extends Enemy {
 	}
 
 	private void initDirectionFromRotation() {
-		switch (this.rotation) {
+		switch (this.moveConfig.getRotation()) {
 		case DOWN:
 			missileDirections.add(Direction.LEFT_DOWN);
 			missileDirections.add(Direction.DOWN);

@@ -9,7 +9,8 @@ import gamedata.image.ImageEnums;
 public class BulldozerProjectile extends Missile {
 
 	public BulldozerProjectile(int x, int y, Point destination, ImageEnums missileType, ImageEnums explosionType,
-			Direction rotation, float scale, PathFinder pathFinder, int xMovementSpeed, int yMovementSpeed, boolean isFriendly, float damage) {
+			Direction rotation, float scale, PathFinder pathFinder, int xMovementSpeed, int yMovementSpeed,
+			boolean isFriendly, float damage) {
 		super(x, y, destination, missileType, explosionType, rotation, scale, pathFinder, isFriendly, xMovementSpeed,
 				yMovementSpeed);
 		this.missileDamage = damage;

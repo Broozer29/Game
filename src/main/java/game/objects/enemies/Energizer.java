@@ -46,10 +46,10 @@ public class Energizer extends Enemy {
 
 			Missile newMissile = MissileCreator.getInstance().createEnemyMissile(xCoordinate,
 					yCoordinate + this.height / 2, ImageEnums.Energizer_Missile,
-					ImageEnums.Energizer_Missile_Explosion, rotation, scale, missilePathFinder, xMovementSpeed,
+					ImageEnums.Energizer_Missile_Explosion, moveConfig.getRotation(), scale, missilePathFinder, xMovementSpeed,
 					yMovementSpeed, (float) 7.5);
 			
-			newMissile.rotateMissileAnimation(rotation);
+			newMissile.rotateMissileAnimation(moveConfig.getRotation());
 			missileManager.addExistingMissile(newMissile);
 			currentAttackSpeedFrameCount = 0;
 		}

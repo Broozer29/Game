@@ -55,7 +55,7 @@ public class HomingPathFinder implements PathFinder {
 		Point currentLocation = currentPath.getCurrentLocation();
 		Point targetLocation = null;
 		if (currentPath.getHomingTargetLocation() == null) {
-			targetLocation = getTarget(currentPath.isFriendly()).getPoint();
+			targetLocation = getTarget(currentPath.isFriendly()).getCurrentLocation();
 		} else {
 			targetLocation = currentPath.getHomingTargetLocation();
 		}
@@ -122,7 +122,7 @@ public class HomingPathFinder implements PathFinder {
 				int endYCoordinate = PlayerManager.getInstance().getSpaceship().getCenterYCoordinate();
 				return new Point(endXCoordinate, endYCoordinate);
 			} else
-				return enemyManager.getClosestEnemy().getPoint();
+				return enemyManager.getClosestEnemy().getCurrentLocation();
 		} else {
 			PlayerManager friendlyManager = PlayerManager.getInstance();
 			int xCoordinate = friendlyManager.getNearestFriendlyHomingCoordinates().get(0);

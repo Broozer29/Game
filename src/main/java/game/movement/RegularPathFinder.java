@@ -21,7 +21,7 @@ public class RegularPathFinder implements PathFinder {
 			boolean isFriendly = ((RegularPathFinderConfig) pathFinderConfig).isFriendly();
 			int XStepSize = ((RegularPathFinderConfig) pathFinderConfig).getxMovementSpeed();
 			int YStepSize = ((RegularPathFinderConfig) pathFinderConfig).getyMovementSpeed();
-
+			
 			List<Point> pathList = new ArrayList<>();
 			Point currentPoint = start;
 			pathList.add(start);

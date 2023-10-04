@@ -6,11 +6,14 @@ import game.managers.AnimationManager;
 import game.managers.OnScreenTextManager;
 import game.movement.Direction;
 import game.movement.HomingPathFinder;
+import game.movement.MovementConfiguration;
 import game.movement.OrbitPathFinder;
 import game.movement.Path;
 import game.movement.PathFinder;
 import game.movement.Point;
 import game.movement.RegularPathFinder;
+import game.movement.SpriteMover;
+import game.movement.SpriteRemover;
 import game.movement.pathfinderconfigs.HomingPathFinderConfig;
 import game.movement.pathfinderconfigs.OrbitPathFinderConfig;
 import game.movement.pathfinderconfigs.PathFinderConfig;
@@ -25,213 +28,72 @@ import visual.objects.SpriteAnimation;
 
 public class Missile extends Sprite {
 
+	
+	protected MovementConfiguration moveConfig;
 	protected float missileDamage;
-	protected int xMovementSpeed;
-	protected int yMovementSpeed;
-	protected int lastUsedXMovementSpeed;
-	protected int lastUsedYMovementSpeed;
-
 	protected SpriteAnimation animation;
 	protected SpriteAnimation explosionAnimation;
 	protected ImageEnums missileType;
 	protected ImageEnums explosionType;
-	protected Direction rotation;
-	protected int missileStepsTaken;
-
-	protected Point currentLocation;
-	protected Point destination;
-	protected PathFinder pathFinder;
-	protected Path currentPath;
 	protected boolean isFriendly;
 
-	protected boolean hasLock;
-
-	private Point nextPoint;
-	private Sprite target;
 
 	public Missile(int x, int y, Point destination, ImageEnums missileType, ImageEnums explosionType,
 			Direction rotation, float scale, PathFinder pathFinder, boolean isFriendly, int xMovementSpeed,
 			int yMovementSpeed) {
 		super(x, y, scale);
 		this.currentLocation = new Point(x, y);
-		this.destination = destination;
 		this.explosionType = explosionType;
-		this.rotation = rotation;
 		this.missileType = missileType;
-		this.missileStepsTaken = 0;
-		this.pathFinder = pathFinder;
-		this.hasLock = true;
 		this.isFriendly = isFriendly;
-		this.xMovementSpeed = xMovementSpeed;
-		this.yMovementSpeed = yMovementSpeed;
+		
+		initMovementConfiguration(currentLocation, destination, pathFinder, rotation, xMovementSpeed, yMovementSpeed);
+		this.currentLocation = new Point(x, y);
+		this.setIsFriendly(isFriendly);
+	}
+	
+	private void initMovementConfiguration(Point currentLocation, Point destination, PathFinder pathFinder,
+			Direction rotation, int xMovementSpeed, int yMovementSpeed) {
+		moveConfig = new MovementConfiguration();
+		moveConfig.setPathFinder(pathFinder);
+		moveConfig.setCurrentLocation(currentLocation);
+		moveConfig.setDestination(destination);
+		moveConfig.setRotation(rotation);
+		moveConfig.setXMovementSpeed(xMovementSpeed);
+		moveConfig.setYMovementSpeed(yMovementSpeed);
+		moveConfig.setStepsTaken(0);
+		moveConfig.setHasLock(true);
 	}
 
 
 
 	public void move() {
-		if (currentPath == null || currentPath.getWaypoints().isEmpty() || xMovementSpeed != lastUsedXMovementSpeed
-				|| yMovementSpeed != lastUsedYMovementSpeed) {
-			// calculate a new path if necessary
-			PathFinderConfig config = getConfigByPathFinder(pathFinder);
-			currentPath = pathFinder.findPath(config);
-			lastUsedXMovementSpeed = xMovementSpeed;
-			lastUsedYMovementSpeed = yMovementSpeed;
-			currentPath.setCurrentLocation(new Point(xCoordinate, yCoordinate));
+		SpriteMover.getInstance().moveSprite(this, moveConfig);
+		if (this.animation != null) {
+			if (moveConfig.getCurrentPath().getWaypoints().size() > 0) {
+				animation.setX(moveConfig.getCurrentPath().getWaypoints().get(0).getX());
+				animation.setY(moveConfig.getCurrentPath().getWaypoints().get(0).getY());
+				animation.updateCurrentBoardBlock();
+			}
 		}
-
-		if (this.target != null) {
-			currentPath.setTarget(this.target);
-		}
-
-		// check if the missile has lost lock
-		boolean hasPassedPlayerOrNeverHadLock = false;
-
-		if (pathFinder.shouldRecalculatePath(currentPath)) {
-			hasPassedPlayerOrNeverHadLock = true; // if it should recalculate path, it means it lost lock or never had
-		}
-
-		if (hasPassedPlayerOrNeverHadLock) {
-			hasLock = false;
-		}
-
-		// only calculate next direction and update location if missile still has lock
-		if (hasLock) {
-			// Get the direction of the next step
-			Direction nextStep = pathFinder.getNextStep(currentLocation, currentPath, rotation);
-			// Based on the direction, calculate the next point
-			nextPoint = calculateNextPoint(currentLocation, nextStep, xMovementSpeed, yMovementSpeed);
-			currentPath.setFallbackDirection(nextStep);
-		} else {
-			// if missile lost lock, it should keep moving in the last direction
-			rotation = currentPath.getFallbackDirection();
-			nextPoint = calculateNextPoint(currentLocation, currentPath.getFallbackDirection(), xMovementSpeed,
-					yMovementSpeed);
-		}
-
-		// Update the current location
-		currentLocation = nextPoint;
-		this.xCoordinate = nextPoint.getX();
-		this.yCoordinate = nextPoint.getY();
-
-		this.missileStepsTaken += 1;
-		// if reached the next point, remove it from the path
-		if (currentLocation.equals(nextPoint)) {
-			currentPath.getWaypoints().remove(0);
-		}
+		
 		bounds.setBounds(xCoordinate + xOffset, yCoordinate + yOffset, width, height);
 		updateCurrentBoardBlock();
 		updateAnimationCoordinates();
 		updateVisibility();
 	}
 
+
+	//Remove the missile if it's out of bounds, and remove it's animation if it has one
 	private void updateVisibility() {
-		switch (rotation) {
-		case UP:
-			if (yCoordinate <= 0) {
-				this.setVisible(false);
-			}
-			break;
-		case DOWN:
-			if (yCoordinate >= DataClass.getInstance().getWindowHeight()) {
-				this.setVisible(false);
-			}
-			break;
-		case LEFT:
-			if (xCoordinate < 0) {
-				this.setVisible(false);
-			}
-			break;
-		case RIGHT:
-			if (xCoordinate > DataClass.getInstance().getWindowWidth()) {
-				this.setVisible(false);
-			}
-			break;
-		case LEFT_DOWN:
-			if (xCoordinate < 0 || yCoordinate >= DataClass.getInstance().getWindowHeight()) {
-				this.setVisible(false);
-			}
-			break;
-		case LEFT_UP:
-			if (xCoordinate < 0 || yCoordinate <= 0) {
-				this.setVisible(false);
-			}
-			break;
-		case NONE:
-			this.setVisible(false);
-			break;
-		case RIGHT_DOWN:
-			if (xCoordinate > DataClass.getInstance().getWindowWidth()
-					|| yCoordinate >= DataClass.getInstance().getWindowHeight()) {
-				this.setVisible(false);
-			}
-			break;
-		case RIGHT_UP:
-			if (xCoordinate > DataClass.getInstance().getWindowWidth() || yCoordinate <= 0) {
-				this.setVisible(false);
-			}
-			break;
+		if(SpriteRemover.getInstance().shouldRemoveVisibility(this, moveConfig)) {
+			this.visible = false;
 		}
-
-		if (!this.visible && this.animation != null) {
+		
+		if (!this.isVisible() && this.animation != null) {
 			this.animation.setVisible(false);
-			PowerUpAcquiredText text = new PowerUpAcquiredText(xCoordinate - 200, yCoordinate,
-					PowerUpEnums.DUMMY_DO_NOT_USE);
-			OnScreenTextManager.getInstance().addPowerUpText(text);
 		}
-	}
-
-	// Needed for all PathFinders, so added to missiles
-	private Point calculateNextPoint(Point currentLocation, Direction direction, int XStepSize, int YStepSize) {
-		int x = currentLocation.getX();
-		int y = currentLocation.getY();
-
-		switch (direction) {
-		case UP:
-			y -= YStepSize;
-			break;
-		case DOWN:
-			y += YStepSize;
-			break;
-		case LEFT:
-			x -= XStepSize;
-			break;
-		case RIGHT:
-			x += XStepSize;
-			break;
-		case LEFT_UP:
-			x -= XStepSize;
-			y -= YStepSize;
-			break;
-		case LEFT_DOWN:
-			x -= XStepSize;
-			y += YStepSize;
-			break;
-		case RIGHT_UP:
-			x += XStepSize;
-			y -= YStepSize;
-			break;
-		case RIGHT_DOWN:
-			x += XStepSize;
-			y += YStepSize;
-			break;
-		case NONE:
-			// no movement
-			break;
-		}
-		return new Point(x, y);
-	}
-	
-	//Used for movement initialization or recalculation
-	private PathFinderConfig getConfigByPathFinder(PathFinder pathFinder) {
-		PathFinderConfig config = null;
-		if (pathFinder instanceof OrbitPathFinder) {
-			config = new OrbitPathFinderConfig(currentLocation, rotation, isFriendly);
-		} else if (pathFinder instanceof RegularPathFinder) {
-			config = new RegularPathFinderConfig(currentLocation, destination, xMovementSpeed, yMovementSpeed, isFriendly, rotation);
-		} else if (pathFinder instanceof HomingPathFinder) {
-			config = new HomingPathFinderConfig(currentLocation, rotation, true, isFriendly);
-		}
-		return config;
+		
 	}
 
 	// Sets the animations (the graphics of missile) to align with the missiles
@@ -257,10 +119,6 @@ public class Missile extends Sprite {
 		return this.missileDamage;
 	}
 
-	public int getMissileMovementSpeed() {
-		return this.xMovementSpeed;
-	}
-
 	public ImageEnums getMissileType() {
 		return this.missileType;
 	}
@@ -269,9 +127,6 @@ public class Missile extends Sprite {
 		if (!missileType.equals(ImageEnums.Alien_Laserbeam) && !missileType.equals(ImageEnums.Player_Laserbeam)) {
 			if (missileType != null) {
 				this.animation = new SpriteAnimation(xCoordinate, yCoordinate, missileType, true, scale);
-
-				// Below commented because the memory/cpu
-				// this.animation.rotateAnimetion(rotation);
 			}
 		}
 		if (explosionType != null) {
@@ -302,11 +157,11 @@ public class Missile extends Sprite {
 	}
 
 	public Sprite getTarget() {
-		return target;
+		return moveConfig.getTarget();
 	}
 
 	public void setTarget(Sprite target) {
-		this.target = target;
+		moveConfig.setTarget(target);
 	}
 
 	public void rotateMissileAnimation(Direction direction) {

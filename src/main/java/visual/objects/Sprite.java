@@ -24,15 +24,21 @@ public class Sprite {
 	protected boolean visible;
 	protected BufferedImage image;
 	protected float scale;
+	
+	protected float transparancyAlpha;
+	protected boolean increaseTransparancy;
+	protected float transparancyStepSize;
+	
+	
+	//Game logic variables
 	protected int xOffset;
 	protected int yOffset;
 	protected Rectangle bounds;
 	protected Point currentLocation;
 	protected int currentBoardBlock;
+	protected boolean isFriendly; 
 	
-	protected float transparancyAlpha;
-	protected boolean increaseTransparancy;
-	protected float transparancyStepSize;
+
 
 	public Sprite(int x, int y, float scale) {
 		this.xCoordinate = x;
@@ -163,7 +169,7 @@ public class Sprite {
 		this.image = imageCropper.cropImage(this.image, cropPercentage);
 	}
 
-	public Point getPoint() {
+	public Point getCurrentLocation() {
 		return this.currentLocation;
 	}
 
@@ -210,15 +216,28 @@ public class Sprite {
 	public int getCurrentBoardBlock() {
 		return this.currentBoardBlock;
 	}
-	
-	//Sets the new transparancy values, also tells the managers to increase the transparancy or not
+
+	// Sets the new transparancy values, also tells the managers to increase the
+	// transparancy or not
 	public void setTransparancyAlpha(boolean shouldIncrease, float newAlphaTransparancy, float transparacyStepSize) {
 		this.increaseTransparancy = shouldIncrease;
 		this.transparancyAlpha = newAlphaTransparancy;
 		this.transparancyStepSize = transparacyStepSize;
 	}
-	
+
 	public float getTransparancyAlpha() {
 		return this.transparancyAlpha;
+	}
+
+	public void updateCurrentLocation(Point newLocation) {
+		this.currentLocation = newLocation;
+	}
+	
+	public void setIsFriendly(boolean isFriendly) {
+		this.isFriendly = isFriendly;
+	}
+	
+	public boolean isFriendly() {
+		return this.isFriendly;
 	}
 }

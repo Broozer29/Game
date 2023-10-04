@@ -30,7 +30,7 @@ public class PowerUpDirectionBouncer {
 		RegularPathFinder regPathFinder = new RegularPathFinder();
 		boolean isFriendly = true;
 
-		RegularPathFinderConfig config = new RegularPathFinderConfig(powerUp.getPoint(), newEndpoint, 1, 1, isFriendly,
+		RegularPathFinderConfig config = new RegularPathFinderConfig(powerUp.getCurrentLocation(), newEndpoint, 2, 2, isFriendly,
 				newDirection);
 		Path newPath = regPathFinder.findPath(config);
 		return newPath;

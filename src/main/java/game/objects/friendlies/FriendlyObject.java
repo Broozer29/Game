@@ -1,20 +1,18 @@
 package game.objects.friendlies;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import game.movement.Direction;
 import game.movement.HomingPathFinder;
+import game.movement.MovementConfiguration;
 import game.movement.OrbitPathFinder;
 import game.movement.Path;
 import game.movement.PathFinder;
 import game.movement.Point;
 import game.movement.RegularPathFinder;
+import game.movement.SpriteMover;
 import game.movement.pathfinderconfigs.HomingPathFinderConfig;
 import game.movement.pathfinderconfigs.OrbitPathFinderConfig;
 import game.movement.pathfinderconfigs.PathFinderConfig;
 import game.movement.pathfinderconfigs.RegularPathFinderConfig;
-import gamedata.DataClass;
 import gamedata.audio.AudioEnums;
 import gamedata.image.ImageEnums;
 import visual.objects.Sprite;
@@ -30,91 +28,45 @@ public class FriendlyObject extends Sprite {
 	protected boolean hasAttack;
 
 	// FriendlyObject movement:
-	private Point currentLocation;
-	private Point destination;
-	private PathFinder pathFinder;
-	private Path currentPath;
-	protected int XMovementSpeed;
-	protected int YMovementSpeed;
-	private int lastUsedXMovementSpeed;
-	private int lastUsedYMovementSpeed;
-	protected int currentBoardBlock;
-	private int lastKnownTargetX;
-	private int lastKnownTargetY;
+	private MovementConfiguration moveConfig;
 
 	// FriendlyObject miscellanious attributes
-	protected Direction rotation;
 	protected FriendlyEnums friendlyType;
 	protected AudioEnums deathSound;
 	protected boolean showHealthBar;
 	protected SpriteAnimation exhaustAnimation = null;
 	protected SpriteAnimation deathAnimation = null;
 	protected SpriteAnimation animation = null;
-	private boolean isFriendly = true;
 
 	public FriendlyObject(int x, int y, Point destination, Direction rotation, FriendlyEnums friendlyType, float scale,
 			PathFinder pathFinder) {
 		super(x, y, scale);
 		this.friendlyType = friendlyType;
 		this.loadImage(ImageEnums.Test_Image);
+
+		initMovementConfiguration(new Point(x, y), destination, pathFinder, rotation);
 		this.currentLocation = new Point(x, y);
-		this.destination = destination;
-		this.rotation = rotation;
-		this.pathFinder = pathFinder;
+		this.setIsFriendly(true);
+
+	}
+
+	private void initMovementConfiguration(Point currentLocation, Point destination, PathFinder pathFinder,
+			Direction rotation) {
+		moveConfig = new MovementConfiguration();
+		moveConfig.setPathFinder(pathFinder);
+		moveConfig.setCurrentLocation(currentLocation);
+		moveConfig.setDestination(destination);
+		moveConfig.setRotation(rotation);
+
 	}
 
 	public void move() {
-		if (currentPath == null || currentPath.getWaypoints().isEmpty() || XMovementSpeed != lastUsedXMovementSpeed
-				|| YMovementSpeed != lastUsedYMovementSpeed || pathFinder.shouldRecalculatePath(currentPath)) {
-			// calculate a new path if necessary
-			PathFinderConfig config = getConfigByPathFinder(pathFinder);
-			currentPath = pathFinder.findPath(config);
-			lastUsedXMovementSpeed = XMovementSpeed;
-			lastUsedYMovementSpeed = YMovementSpeed;
-		}
-
-		currentPath.updateCurrentLocation(currentLocation);
-		// get the next point from the path
-
-		// move towards the next point
-		currentLocation = currentPath.getWaypoints().get(0);
-		this.xCoordinate = currentPath.getWaypoints().get(0).getX();
-		this.yCoordinate = currentPath.getWaypoints().get(0).getY();
+		SpriteMover.getInstance().moveSprite(this, moveConfig);
 		if (this.animation != null) {
-			animation.setX(currentPath.getWaypoints().get(0).getX());
-			animation.setY(currentPath.getWaypoints().get(0).getY());
-			animation.updateCurrentBoardBlock();
-		}
-		updateCurrentBoardBlock();
-
-		// if reached the next point, remove it from the path
-		if (currentLocation.equals(currentPath.getWaypoints().get(0))) {
-			currentPath.getWaypoints().remove(0);
-		}
-
-		if (pathFinder instanceof OrbitPathFinder) {
-			// Check if the target's position has changed
-			Sprite target = ((OrbitPathFinder) pathFinder).getTarget();
-			if (target.getCenterXCoordinate() != lastKnownTargetX
-					|| target.getCenterYCoordinate() != lastKnownTargetY) {
-
-				int deltaX = 0;
-				int deltaY = 0;
-
-				if (lastKnownTargetX == 0 || lastKnownTargetY == 0) {
-					deltaX = 0;
-					deltaY = 0;
-				} else {
-					deltaX = target.getCenterXCoordinate() - lastKnownTargetX;
-					deltaY = target.getCenterYCoordinate() - lastKnownTargetY;
-				}
-
-				// Update the last known position
-				lastKnownTargetX = target.getCenterXCoordinate();
-				lastKnownTargetY = target.getCenterYCoordinate();
-
-				// Adjust the orbit path based on the deltas
-				((OrbitPathFinder) pathFinder).adjustPathForTargetMovement(currentPath, deltaX, deltaY);
+			if (moveConfig.getCurrentPath().getWaypoints().size() > 0) {
+				animation.setX(moveConfig.getCurrentPath().getWaypoints().get(0).getX());
+				animation.setY(moveConfig.getCurrentPath().getWaypoints().get(0).getY());
+				animation.updateCurrentBoardBlock();
 			}
 		}
 
@@ -124,23 +76,10 @@ public class FriendlyObject extends Sprite {
 		}
 
 		bounds.setBounds(xCoordinate + xOffset, yCoordinate + yOffset, width, height);
-		
+
 		if (animation != null) {
 			animation.setAnimationBounds(xCoordinate, yCoordinate);
 		}
-	}
-	
-	//Used for movement initialization or recalculation
-	private PathFinderConfig getConfigByPathFinder(PathFinder pathFinder) {
-		PathFinderConfig config = null;
-		if (pathFinder instanceof OrbitPathFinder) {
-			config = new OrbitPathFinderConfig(currentLocation, rotation, isFriendly);
-		} else if (pathFinder instanceof RegularPathFinder) {
-			config = new RegularPathFinderConfig(currentLocation, destination, 1, 1, isFriendly, rotation);
-		} else if (pathFinder instanceof HomingPathFinder) {
-			config = new HomingPathFinderConfig(currentLocation, rotation, true, isFriendly);
-		}
-		return config;
 	}
 
 	public SpriteAnimation getAnimation() {
@@ -150,9 +89,13 @@ public class FriendlyObject extends Sprite {
 	public void setAnimation(SpriteAnimation animation) {
 		this.animation = animation;
 	}
-	
+
 	public void setPathFinder(PathFinder newPathFinder) {
-		this.pathFinder = newPathFinder;
+		if (this.moveConfig != null) {
+			this.moveConfig.setPathFinder(newPathFinder);
+		} else {
+			System.out.println("Tried to adjust a PathFinder without having an existing MovementConfiguration");
+		}
 	}
 
 }

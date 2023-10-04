@@ -52,7 +52,7 @@ public class Path {
 
 	public Point getHomingTargetLocation() {
 		if (target != null) {
-			return target.getPoint();
+			return target.getCurrentLocation();
 		} else return null;
 	}
 

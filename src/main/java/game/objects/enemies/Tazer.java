@@ -45,10 +45,10 @@ public class Tazer extends Enemy {
 		if (currentAttackSpeedFrameCount >= attackSpeedFrameCount) {
 			Missile newMissile = MissileCreator.getInstance().createEnemyMissile(xCoordinate,
 					yCoordinate + +this.height / 2, ImageEnums.Tazer_Missile,
-					ImageEnums.Tazer_Missile_Explosion, rotation, scale, missilePathFinder, xMovementSpeed,
+					ImageEnums.Tazer_Missile_Explosion, moveConfig.getRotation(), scale, missilePathFinder, xMovementSpeed,
 					yMovementSpeed, (float) 7.5);
 			
-			newMissile.rotateMissileAnimation(rotation);
+			newMissile.rotateMissileAnimation(moveConfig.getRotation());
 			missileManager.addExistingMissile(newMissile);
 			currentAttackSpeedFrameCount = 0;
 		}

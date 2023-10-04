@@ -21,46 +21,46 @@ public class SeekerProjectile extends Missile {
 	}
 
 	private void rotateAccordingToSpeed() {
-		switch (this.rotation) {
+		switch (moveConfig.getRotation()) {
 		case DOWN:
-			this.animation.rotateAnimetion(rotation);
+			this.animation.rotateAnimetion(moveConfig.getRotation());
 			break;
 		case LEFT:
-			this.animation.rotateAnimetion(rotation);
+			this.animation.rotateAnimetion(moveConfig.getRotation());
 			break;
 		case LEFT_DOWN:
-			if (yMovementSpeed > xMovementSpeed) {
-				this.animation.rotateAnimetion(rotation);
+			if (moveConfig.getYMovementSpeed() > moveConfig.getXMovementSpeed()) {
+				this.animation.rotateAnimetion(moveConfig.getRotation());
 			} else {
 				this.animation.rotateAnimetion(Direction.LEFT);
 			}
 			break;
 		case LEFT_UP:
-			if (yMovementSpeed > xMovementSpeed) {
-				this.animation.rotateAnimetion(rotation);
+			if (moveConfig.getYMovementSpeed() > moveConfig.getXMovementSpeed()) {
+				this.animation.rotateAnimetion(moveConfig.getRotation());
 			} else {
 				this.animation.rotateAnimetion(Direction.LEFT);
 			}
 			break;
 		case RIGHT:
-			this.animation.rotateAnimetion(rotation);
+			this.animation.rotateAnimetion(moveConfig.getRotation());
 			break;
 		case RIGHT_DOWN:
-			if (yMovementSpeed > xMovementSpeed) {
-				this.animation.rotateAnimetion(rotation);
+			if (moveConfig.getYMovementSpeed() > moveConfig.getXMovementSpeed()) {
+				this.animation.rotateAnimetion(moveConfig.getRotation());
 			} else {
 				this.animation.rotateAnimetion(Direction.RIGHT);
 			}
 			break;
 		case RIGHT_UP:
-			if (yMovementSpeed > xMovementSpeed) {
-				this.animation.rotateAnimetion(rotation);
+			if (moveConfig.getYMovementSpeed() > moveConfig.getXMovementSpeed()) {
+				this.animation.rotateAnimetion(moveConfig.getRotation());
 			} else {
 				this.animation.rotateAnimetion(Direction.RIGHT);
 			}
 			break;
 		case UP:
-			this.animation.rotateAnimetion(rotation);
+			this.animation.rotateAnimetion(moveConfig.getRotation());
 			break;
 		default:
 			break;
@@ -69,15 +69,15 @@ public class SeekerProjectile extends Missile {
 	}
 
 	public void missileAction() {
-		if (this.missileStepsTaken == 20) {
-			this.xMovementSpeed += 1;
-			this.yMovementSpeed += 1;
-		} else if (this.missileStepsTaken == 30) {
-			this.xMovementSpeed += 1;
-			this.yMovementSpeed += 1;
-		} else if (this.missileStepsTaken == 45) {
-			this.xMovementSpeed += 1;
-			this.yMovementSpeed += 1;
+		if (moveConfig.getStepsTaken() == 20) {
+			moveConfig.setXMovementSpeed(moveConfig.getXMovementSpeed() + 1);
+			moveConfig.setYMovementSpeed(moveConfig.getYMovementSpeed() + 1);
+		} else if (moveConfig.getStepsTaken() == 30) {
+			moveConfig.setXMovementSpeed(moveConfig.getXMovementSpeed() + 1);
+			moveConfig.setYMovementSpeed(moveConfig.getYMovementSpeed() + 1);
+		} else if (moveConfig.getStepsTaken() == 45) {
+			moveConfig.setXMovementSpeed(moveConfig.getXMovementSpeed() + 1);
+			moveConfig.setYMovementSpeed(moveConfig.getYMovementSpeed() + 1);
 		}
 
 	}

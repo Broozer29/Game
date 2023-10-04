@@ -49,10 +49,7 @@ public class SpaceShipSpecialGun {
 			SpaceShip spaceShip = playerManager.getSpaceship();
 
 			SpriteAnimation specialAttackAnimation = new SpriteAnimation(spaceShip.getCenterXCoordinate(),
-					spaceShip.getCenterYCoordinate(), ImageEnums.CrossingEnergyBeams, false, (float) 1.5);
-			
-//			SpriteAnimation specialAttackAnimation = new SpriteAnimation(spaceShip.getCenterXCoordinate(),
-//					spaceShip.getCenterYCoordinate(), ImageEnums.Player_EMP, false, (float) 1.5);
+					spaceShip.getCenterYCoordinate(), ImageEnums.Player_EMP, false, (float) 1.5);
 			specialAttackAnimation.setFrameDelay(4);
 			specialAttackAnimation.setCenterCoordinates(spaceShip.getCenterXCoordinate(), spaceShip.getCenterYCoordinate());
 			
