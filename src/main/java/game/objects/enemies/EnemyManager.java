@@ -8,8 +8,15 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 
 import game.managers.AnimationManager;
 import game.managers.PlayerManager;
-import game.movement.MovementInitiator;
 import game.movement.Point;
+import game.objects.enemies.enemytypes.Alien;
+import game.objects.enemies.enemytypes.AlienBomb;
+import game.objects.enemies.enemytypes.Bomba;
+import game.objects.enemies.enemytypes.Bulldozer;
+import game.objects.enemies.enemytypes.Energizer;
+import game.objects.enemies.enemytypes.Flamer;
+import game.objects.enemies.enemytypes.Seeker;
+import game.objects.enemies.enemytypes.Tazer;
 import gamedata.DataClass;
 import gamedata.audio.AudioEnums;
 import gamedata.audio.AudioManager;
@@ -22,7 +29,6 @@ public class EnemyManager {
 	private AudioManager audioManager = AudioManager.getInstance();
 	private PlayerManager friendlyManager = PlayerManager.getInstance();
 	private AnimationManager animationManager = AnimationManager.getInstance();
-	private MovementInitiator movementManager = MovementInitiator.getInstance();
 	private List<Enemy> enemyList = new ArrayList<Enemy>();
 	private List<Alien> alienList = new ArrayList<Alien>();
 	private List<Seeker> seekerList = new ArrayList<Seeker>();
@@ -121,7 +127,8 @@ public class EnemyManager {
 		for (int i = 0; i < enemyList.size(); i++) {
 			Enemy enemy = enemyList.get(i);
 			if (enemy.isVisible()) {
-				movementManager.moveEnemy(enemy);
+				enemy.move();
+				enemy.updateCurrentBoardBlock();
 			} else {
 				animationManager.deleteEnemyAnimations(enemy);
 				removeEnemy(enemy);

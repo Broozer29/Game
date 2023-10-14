@@ -7,7 +7,6 @@ import java.util.List;
 import game.managers.AnimationManager;
 import game.managers.PlayerManager;
 import game.movement.Direction;
-import game.movement.MovementInitiator;
 import game.movement.Point;
 import game.movement.pathfinders.OrbitPathFinder;
 import game.movement.pathfinders.PathFinder;
@@ -24,7 +23,6 @@ public class FriendlyManager {
 
 	private static FriendlyManager instance = new FriendlyManager();
 	private EnemyManager enemyManager = EnemyManager.getInstance();
-	private MovementInitiator movementManager = MovementInitiator.getInstance();
 	private List<FriendlyObject> activeFriendlyObjects = new ArrayList<FriendlyObject>();
 	private Portal finishedLevelPortal;
 	private GameStateInfo gameState = GameStateInfo.getInstance();
@@ -56,7 +54,8 @@ public class FriendlyManager {
 	private void moveFriendlyObjects() {
 		for (int i = 0; i < activeFriendlyObjects.size(); i++) {
 			if (activeFriendlyObjects.get(i).getAnimation().isVisible()) {
-				movementManager.moveFriendlyObjects(activeFriendlyObjects.get(i));
+				activeFriendlyObjects.get(i).move();
+				activeFriendlyObjects.get(i).updateCurrentBoardBlock();
 			}
 		}
 	}

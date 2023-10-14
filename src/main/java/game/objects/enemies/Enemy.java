@@ -47,6 +47,7 @@ public class Enemy extends Sprite {
 	protected MovementConfiguration moveConfig;
 	
 	// Enemy miscellanious attributes
+	protected EnemyStatus enemyStatus;
 	private boolean isFriendly = false;
 	protected EnemyEnums enemyType;
 	protected AudioEnums deathSound;
@@ -68,6 +69,7 @@ public class Enemy extends Sprite {
 		this.lastBoardBlock = currentBoardBlock;
 		initMovementConfiguration(currentLocation, destination, pathFinder, rotation, xMovementSpeed, yMovementSpeed);
 		this.setIsFriendly(isFriendly);
+		this.enemyStatus = EnemyStatus.IDLE;
 	}
 	
 	private void initMovementConfiguration(Point currentLocation, Point destination, PathFinder pathFinder,

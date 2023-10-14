@@ -13,7 +13,6 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 import controllerInput.ControllerInput;
 import controllerInput.ControllerInputReader;
 import game.managers.AnimationManager;
-import game.movement.MovementInitiator;
 import game.objects.Explosion;
 import game.objects.friendlies.spaceship.specialAttacks.SpecialAttack;
 import gamedata.BoostsUpgradesAndBuffsSettings;
@@ -151,6 +150,8 @@ public class SpaceShip extends Sprite {
 	}
 
 	public void updateGameTick() {
+		this.currentShieldRegenDelayFrame++;
+		
 		for (SpaceShipRegularGun gun : spaceShipGuns) {
 			gun.updateFrameCount();
 		}
@@ -158,30 +159,58 @@ public class SpaceShip extends Sprite {
 		for (SpaceShipSpecialGun specialGun : spaceShipSpecialGuns) {
 			specialGun.updateFrameCount();
 		}
-		this.currentShieldRegenDelayFrame++;
 
-		for (SpriteAnimation anim : playerFollowingAnimations) {
-			anim.setOriginCoordinates(xCoordinate, yCoordinate);
-			anim.updateCurrentBoardBlock();
-		}
-
-		for (Explosion explosion : playerFollowingExplosions) {
-			MovementInitiator.getInstance().movePlayerFollowingExplosion(explosion, this);
-			explosion.updateCurrentBoardBlock();
-		}
-
-		for (SpecialAttack attack : playerFollowingSpecialAttacks) {
-			MovementInitiator.getInstance().movePlayerFollowingSpecialAttack(attack, this);
-			attack.updateCurrentBoardBlock();
-		}
-
+		movePlayerAnimations();
+		moveExplosions();
+		moveSpecialAttacks();
 		removeInvisibleAnimations();
 
 		if (currentShieldRegenDelayFrame >= playerStats.getShieldRegenDelay()) {
 			if (playerStats.getShieldHitpoints() < playerStats.getMaxShieldHitPoints()) {
 				repairShields((float) 0.4);
-				repairHealth((float) (0.4));
+				repairHealth((float) 0.4);
 			}
+		}
+	}
+	
+	private void movePlayerAnimations() {
+		for (SpriteAnimation anim : playerFollowingAnimations) {
+			anim.setOriginCoordinates(xCoordinate, yCoordinate);
+			anim.updateCurrentBoardBlock();
+		}
+	}
+	
+	private void moveExplosions() {
+		for (Explosion explosion : playerFollowingExplosions) {
+			if (explosion.centeredAroundPlayer()) {
+				explosion.setCenterCoordinates(this.getCenterXCoordinate(), this.getCenterYCoordinate());
+				explosion.getAnimation().setCenterCoordinates(this.getCenterXCoordinate(), this.getCenterYCoordinate());
+			} else {
+				explosion.setX(this.getXCoordinate());
+				explosion.setY(this.getYCoordinate());
+				explosion.getAnimation().setX(this.getXCoordinate());
+				explosion.getAnimation().setY(this.getYCoordinate());
+			}
+			explosion.updateCurrentBoardBlock();
+			explosion.getAnimation().setAnimationBounds(explosion.getAnimation().getXCoordinate(), explosion.getAnimation().getYCoordinate());
+			explosion.getAnimation().updateCurrentBoardBlock();
+		}
+	}
+	
+	private void moveSpecialAttacks() {
+		for (SpecialAttack specialAttack : playerFollowingSpecialAttacks) {
+			if (specialAttack.centeredAroundPlayer()) {
+				specialAttack.setCenterCoordinates(this.getCenterXCoordinate(), this.getCenterYCoordinate());
+				specialAttack.getAnimation().setCenterCoordinates(this.getCenterXCoordinate(), this.getCenterYCoordinate());
+			} else {
+				specialAttack.setX(this.getXCoordinate());
+				specialAttack.setY(this.getYCoordinate());
+				specialAttack.getAnimation().setX(this.getXCoordinate());
+				specialAttack.getAnimation().setY(this.getYCoordinate());
+			}
+			specialAttack.updateCurrentBoardBlock();
+			specialAttack.getAnimation().setAnimationBounds(specialAttack.getAnimation().getXCoordinate(), specialAttack.getAnimation().getYCoordinate());
+			specialAttack.getAnimation().updateCurrentBoardBlock();
 		}
 	}
 

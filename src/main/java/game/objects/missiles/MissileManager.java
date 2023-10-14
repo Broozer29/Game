@@ -7,7 +7,6 @@ import java.util.List;
 import game.managers.AnimationManager;
 import game.managers.CollisionDetector;
 import game.managers.PlayerManager;
-import game.movement.MovementInitiator;
 import game.objects.enemies.Enemy;
 import game.objects.enemies.EnemyManager;
 import game.objects.friendlies.spaceship.specialAttacks.SpecialAttack;
@@ -19,7 +18,6 @@ public class MissileManager {
 	private EnemyManager enemyManager = EnemyManager.getInstance();
 	private AnimationManager animationManager = AnimationManager.getInstance();
 	private PlayerManager friendlyManager = PlayerManager.getInstance();
-	private MovementInitiator movementManager = MovementInitiator.getInstance();
 	private CollisionDetector collisionDetector = CollisionDetector.getInstance();
 	private List<Missile> enemyMissiles = new ArrayList<Missile>();
 	private List<Missile> friendlyMissiles = new ArrayList<Missile>();
@@ -177,7 +175,8 @@ public class MissileManager {
 		// Move friendly missiles
 		for (int i = friendlyMissiles.size() - 1; i >= 0; i--) {
 			if (friendlyMissiles.get(i).isVisible()) {
-				movementManager.moveMissile(friendlyMissiles.get(i));
+				friendlyMissiles.get(i).move();
+				friendlyMissiles.get(i).updateCurrentBoardBlock();
 			} else {
 				removeFriendlyMissile(friendlyMissiles.get(i));
 
@@ -187,7 +186,8 @@ public class MissileManager {
 		// Move enemy missiles
 		for (int i = enemyMissiles.size() - 1; i >= 0; i--) {
 			if (enemyMissiles.get(i).isVisible()) {
-				movementManager.moveMissile(enemyMissiles.get(i));
+				enemyMissiles.get(i).move();
+				enemyMissiles.get(i).updateCurrentBoardBlock();
 			} else {
 				removeEnemyMissile(enemyMissiles.get(i));
 			}

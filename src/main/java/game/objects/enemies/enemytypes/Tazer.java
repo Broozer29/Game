@@ -1,9 +1,11 @@
-package game.objects.enemies;
+package game.objects.enemies.enemytypes;
 
 import game.movement.Direction;
 import game.movement.Point;
 import game.movement.pathfinders.PathFinder;
 import game.movement.pathfinders.RegularPathFinder;
+import game.objects.enemies.Enemy;
+import game.objects.enemies.EnemyEnums;
 import game.objects.missiles.Missile;
 import game.objects.missiles.MissileCreator;
 import game.objects.missiles.MissileManager;

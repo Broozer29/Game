@@ -1,4 +1,4 @@
-package game.objects.enemies;
+package game.objects.enemies.enemytypes;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -10,6 +10,9 @@ import game.movement.Point;
 import game.movement.pathfinders.OrbitPathFinder;
 import game.movement.pathfinders.PathFinder;
 import game.movement.pathfinders.RegularPathFinder;
+import game.objects.enemies.Enemy;
+import game.objects.enemies.EnemyEnums;
+import game.objects.enemies.EnemyManager;
 import game.objects.friendlies.FriendlyObject;
 import game.objects.friendlies.GuardianDrone;
 import game.objects.missiles.MissileManager;
