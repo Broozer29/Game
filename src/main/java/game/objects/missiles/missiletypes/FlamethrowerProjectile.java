@@ -13,24 +13,24 @@ public class FlamethrowerProjectile extends Missile {
 			int yMovementSpeed, boolean friendly) {
 		super(x, y, destination, missileType, explosionType, rotation, scale, pathFinder, friendly, xMovementSpeed,
 				yMovementSpeed);
-		setAnimation();
-		this.missileDamage = damage;
+//		setAnimation();
+		this.damage = damage;
 	}
 
 	// Remove the flamethrower
 	public void missileAction() {
-		int xPointDifference = Math.abs(this.xCoordinate - moveConfig.getDestination().getX());
-		int yPointDifference = Math.abs(this.yCoordinate - moveConfig.getDestination().getY());
+		int xPointDifference = Math.abs(this.xCoordinate - movementConfiguration.getDestination().getX());
+		int yPointDifference = Math.abs(this.yCoordinate - movementConfiguration.getDestination().getY());
 
-		if (moveConfig.getRotation() == Direction.RIGHT || moveConfig.getRotation() == Direction.RIGHT_DOWN
-				|| moveConfig.getRotation() == Direction.RIGHT_UP) {
+		if (movementConfiguration.getRotation() == Direction.RIGHT || movementConfiguration.getRotation() == Direction.RIGHT_DOWN
+				|| movementConfiguration.getRotation() == Direction.RIGHT_UP) {
 			if (xPointDifference < 10) {
 				this.setVisible(false);
 			}
 		}
 
-		if (moveConfig.getRotation() == Direction.LEFT || moveConfig.getRotation() == Direction.LEFT_DOWN
-				|| moveConfig.getRotation() == Direction.LEFT_UP) {
+		if (movementConfiguration.getRotation() == Direction.LEFT || movementConfiguration.getRotation() == Direction.LEFT_DOWN
+				|| movementConfiguration.getRotation() == Direction.LEFT_UP) {
 			if (yPointDifference < 10) {
 				this.setVisible(false);
 			}

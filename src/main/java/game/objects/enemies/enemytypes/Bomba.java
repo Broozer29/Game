@@ -15,6 +15,7 @@ import game.objects.missiles.MissileManager;
 import game.objects.missiles.missiletypes.BombaProjectile;
 import gamedata.audio.AudioEnums;
 import gamedata.image.ImageEnums;
+import visual.objects.SpriteAnimation;
 
 public class Bomba extends Enemy {
 
@@ -25,18 +26,19 @@ public class Bomba extends Enemy {
 			int xMovementSpeed, int yMovementSpeed) {
 		super(x, y, destination, rotation, EnemyEnums.Bomba, scale, pathFinder, xMovementSpeed, yMovementSpeed);
 		loadImage(ImageEnums.Bomba);
-		setExhaustanimation(ImageEnums.Bomba_Normal_Exhaust);
-		setDeathAnimation(ImageEnums.Bomba_Destroyed_Explosion);
+
+		this.exhaustAnimation = new SpriteAnimation(x, y, ImageEnums.Bomba_Normal_Exhaust, true, scale);
+		this.destructionAnimation = new SpriteAnimation(x, y, ImageEnums.Bomba_Destroyed_Explosion, false, scale);
+
 		this.exhaustAnimation.setFrameDelay(1);
-		this.hitPoints = 100;
+		this.currentHitpoints = 100;
 		this.maxHitPoints = 100;
-		this.attackSpeedFrameCount = 200;
+		this.attackSpeed = 200;
 		this.hasAttack = true;
 		this.showHealthBar = true;
 		this.deathSound = AudioEnums.Large_Ship_Destroyed;
 		this.setVisible(true);
-		this.setRotation(rotation);
-		this.deathAnimation.rotateAnimetion(rotation);
+		rotateGameObject(rotation);
 		this.missilePathFinder = new RegularPathFinder();
 		this.initDirectionFromRotation();
 	}
@@ -51,7 +53,7 @@ public class Bomba extends Enemy {
 		}
 		int xMovementSpeed = 4;
 		int yMovementSpeed = 2;
-		if (currentAttackSpeedFrameCount >= attackSpeedFrameCount) {
+		if (attackSpeedCurrentFrameCount >= attackSpeed) {
 
 			for (Direction direction : missileDirections) {
 				Missile newMissile = MissileCreator.getInstance().createEnemyMissile(xCoordinate,
@@ -60,28 +62,28 @@ public class Bomba extends Enemy {
 				
 				
 				if(missileDirections.contains(Direction.DOWN)) {
-					newMissile.rotateMissileAnimation(Direction.DOWN);
+					newMissile.rotateGameObject(Direction.DOWN);
 				} else if(missileDirections.contains(Direction.LEFT)) {
-					newMissile.rotateMissileAnimation(Direction.LEFT);
+					newMissile.rotateGameObject(Direction.LEFT);
 				} else if(missileDirections.contains(Direction.RIGHT)) {
-					newMissile.rotateMissileAnimation(Direction.RIGHT);
+					newMissile.rotateGameObject(Direction.RIGHT);
 				} else if(missileDirections.contains(Direction.UP)) {
-					newMissile.rotateMissileAnimation(Direction.UP);
+					newMissile.rotateGameObject(Direction.UP);
 				}
 				
 				missileManager.addExistingMissile(newMissile);
 
 			}
 
-			currentAttackSpeedFrameCount = 0;
+			attackSpeedCurrentFrameCount = 0;
 		}
-		if (currentAttackSpeedFrameCount < attackSpeedFrameCount) {
-			this.currentAttackSpeedFrameCount++;
+		if (attackSpeedCurrentFrameCount < attackSpeed) {
+			this.attackSpeedCurrentFrameCount++;
 		}
 	}
 
 	private void initDirectionFromRotation() {
-		switch (this.moveConfig.getRotation()) {
+		switch (this.movementConfiguration.getRotation()) {
 		case DOWN:
 			missileDirections.add(Direction.LEFT_DOWN);
 			missileDirections.add(Direction.DOWN);

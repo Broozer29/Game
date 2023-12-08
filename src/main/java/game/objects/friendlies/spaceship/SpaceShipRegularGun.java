@@ -8,6 +8,7 @@ import game.managers.PlayerManager;
 import game.movement.Direction;
 import game.movement.pathfinders.HomingPathFinder;
 import game.movement.pathfinders.PathFinder;
+import game.objects.GameObject;
 import game.objects.missiles.Missile;
 import game.objects.missiles.MissileCreator;
 import game.objects.missiles.MissileManager;
@@ -143,12 +144,11 @@ public class SpaceShipRegularGun {
 			int xMovementspeed, int yMovementspeed, PlayerAttackTypes attackType, Sprite target) {
 		Missile missile = MissileCreator.getInstance().createFriendlyMissile(xCoordinate, yCoordinate, playerMissileType, playerMissileImpactType,
 				direction, missileScale, missilePathFinder, xMovementspeed, yMovementspeed, attackType);
-		
-		if(target != null) {
-			missile.setTarget(target);
-		}
-		
 
+		if(target != null) {
+			missile.setObjectToChase(target);
+		}
+		missile.setFriendly(true); //??? it shouldnt be false before this, rework the amount of parameters beaause overzicht is gewoon weg man lets be honest
 		this.missileManager.addExistingMissile(missile);
 
 	}

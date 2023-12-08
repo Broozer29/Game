@@ -6,11 +6,9 @@ import java.util.List;
 import game.movement.Direction;
 import game.movement.Path;
 import game.movement.Point;
-import game.movement.PowerUpDirectionBouncer;
 import game.movement.pathfinderconfigs.BouncingPathFinderConfig;
 import game.movement.pathfinderconfigs.PathFinderConfig;
 import game.movement.pathfinderconfigs.RegularPathFinderConfig;
-import game.objects.friendlies.powerups.PowerUp;
 import gamedata.DataClass;
 import visual.objects.Sprite;
 
@@ -39,8 +37,7 @@ public class BouncingPathFinder implements PathFinder {
 			Direction newDirection = getNewDirection(((BouncingPathFinderConfig) pathFinderConfig).getSprite(), spriteRotation);
 			List<Integer> endCoordinates = getNewEndpointCoordinates(xCoordinate,yCoordinate, spriteWidth, spriteHeight, newDirection);
 
-			System.out.println();
-			
+
 			Point newEndpoint = new Point(endCoordinates.get(0), endCoordinates.get(1));
 			RegularPathFinder regPathFinder = new RegularPathFinder();
 			boolean isFriendly = true;

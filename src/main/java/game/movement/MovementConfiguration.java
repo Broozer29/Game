@@ -57,7 +57,6 @@ public class MovementConfiguration {
 		this.pathFinder = pathFinder;
 	}
 
-
 	public Path getCurrentPath() {
 		return currentPath;
 	}

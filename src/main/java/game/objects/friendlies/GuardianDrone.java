@@ -1,15 +1,11 @@
 package game.objects.friendlies;
 
-import game.managers.AnimationManager;
 import game.managers.ExplosionManager;
 import game.movement.Direction;
 import game.movement.Point;
-import game.movement.pathfinders.HomingPathFinder;
 import game.movement.pathfinders.PathFinder;
 import game.movement.pathfinders.RegularPathFinder;
-import game.objects.Explosion;
-import game.objects.enemies.Enemy;
-import game.objects.enemies.EnemyManager;
+import game.objects.neutral.Explosion;
 import game.objects.friendlies.spaceship.PlayerAttackTypes;
 import game.objects.missiles.Missile;
 import game.objects.missiles.MissileCreator;
@@ -30,7 +26,7 @@ public class GuardianDrone extends FriendlyObject {
 		this.attackSpeedCooldown = attackSpeedCooldown;
 		this.guardianType = friendlyType;
 		SpriteAnimation anim = new SpriteAnimation(x, y, ImageEnums.Guardian_Bot, true, scale);
-		this.animation = anim;
+		this.setAnimation(anim);
 	}
 
 	public void activateGuardianDrone() {
@@ -98,7 +94,7 @@ public class GuardianDrone extends FriendlyObject {
 				yMovementspeed, attackType);
 
 		if (target != null) {
-			missile.setTarget(target);
+			missile.setObjectToChase(target);
 		}
 		MissileManager.getInstance().addExistingMissile(missile);
 

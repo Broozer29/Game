@@ -12,8 +12,8 @@ public class EnergizerProjectile extends Missile {
 			Direction rotation, float scale, PathFinder pathFinder, int xMovementSpeed, int yMovementSpeed, boolean isFriendly, float damage) {
 		super(x, y, destination, missileType, explosionType, rotation, scale, pathFinder, isFriendly, xMovementSpeed,
 				yMovementSpeed);
-		this.missileDamage = damage;
-		setAnimation();
+		this.damage = damage;
+//		setAnimation();
 		this.animation.setFrameDelay(3);
 		this.animation.rotateAnimetion(rotation);
 	}

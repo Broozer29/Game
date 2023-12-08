@@ -8,6 +8,7 @@ import game.objects.enemies.EnemyEnums;
 import game.objects.friendlies.spaceship.PlayerAttackTypes;
 import game.objects.missiles.MissileCreator;
 import game.objects.missiles.MissileManager;
+import game.utils.WeaponOffsetCalculator;
 import gamedata.audio.AudioEnums;
 import gamedata.image.ImageEnums;
 
@@ -20,14 +21,13 @@ public class Alien extends Enemy {
 	public Alien(int x, int y, Point destination, Direction rotation, float scale, PathFinder pathFinder, int xMovementSpeed, int yMovementSpeed) {
 		super(x, y, destination, rotation, EnemyEnums.Alien, scale, pathFinder, xMovementSpeed,yMovementSpeed);
 		loadImage(ImageEnums.Alien);
-		this.hitPoints = 35;
+		this.currentHitpoints = 35;
 		this.maxHitPoints = 35;
-		this.attackSpeedFrameCount = 150;
+		this.attackSpeed = 150;
 		this.hasAttack = true;
 		this.deathSound = AudioEnums.Alien_Spaceship_Destroyed;
 		this.showHealthBar = true;
 		this.setVisible(true);
-		this.setRotation(rotation);
 	}
 
 	// Called every game tick. If weapon is not on cooldown, fire a shot.
@@ -38,17 +38,17 @@ public class Alien extends Enemy {
 		if (missileManager == null) {
 			missileManager = MissileManager.getInstance();
 		}
-		if (currentAttackSpeedFrameCount >= attackSpeedFrameCount) {
+		if (attackSpeedCurrentFrameCount >= attackSpeed) {
 			if (currentBoardBlock < 7) {
 				missileManager.addExistingMissile(MissileCreator.getInstance().createEnemyMissile(
-						xCoordinate, yCoordinate + calculateRandomWeaponHeightOffset()
-						, ImageEnums.Alien_Laserbeam, ImageEnums.Impact_Explosion_One, moveConfig.getRotation(), 
+						xCoordinate, yCoordinate + WeaponOffsetCalculator.calculateRandomWeaponHeightOffset(height)
+						, ImageEnums.Alien_Laserbeam, ImageEnums.Impact_Explosion_One, movementConfiguration.getRotation(),
 						scale, missilePathFinder, 3, 3, (float) 7.5));
-				currentAttackSpeedFrameCount = 0;
+				attackSpeedCurrentFrameCount = 0;
 			}
 		}
-		if (currentAttackSpeedFrameCount < attackSpeedFrameCount) {
-			this.currentAttackSpeedFrameCount++;
+		if (attackSpeedCurrentFrameCount < attackSpeed) {
+			this.attackSpeedCurrentFrameCount++;
 		}
 
 	}

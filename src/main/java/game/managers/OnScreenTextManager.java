@@ -9,9 +9,7 @@ public class OnScreenTextManager {
 
 	private static OnScreenTextManager instance = new OnScreenTextManager();
 	private List<OnScreenText> powerUpTexts = new ArrayList<OnScreenText>();
-
 	private OnScreenTextManager() {
-
 	}
 
 	public static OnScreenTextManager getInstance() {

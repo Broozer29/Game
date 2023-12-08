@@ -10,6 +10,7 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 
 import game.managers.PlayerManager;
 import game.movement.Direction;
+import game.utils.BoundsCalculator;
 import gamedata.BoostsUpgradesAndBuffsSettings;
 import gamedata.DataClass;
 import gamedata.audio.AudioEnums;
@@ -60,7 +61,9 @@ public class PowerUpManager {
 		for (PowerUp powerUp : powerUpsOnTheField) {
 			if (powerUp.isVisible()) {
 				if (isNearby(powerUp, friendlyManager.getSpaceship())) {
-					if (powerUp.getBounds().intersects(friendlyManager.getSpaceship().getBounds())) {
+					if (BoundsCalculator.getGameObjectBounds(powerUp)
+							.intersects(BoundsCalculator.getGameObjectBounds(friendlyManager.getSpaceship()))
+					) {
 						powerUp.startPowerUpTimer();
 						powerUp.setVisible(false);
 						try {

@@ -17,7 +17,7 @@ public class MenuTile extends Sprite {
 
 	private void initTile() {
 		loadImage(tileType);
-		getImageDimensions();
+		configureImageDimensions();
 	}
 
 	public void menuTileAction() {

@@ -3,14 +3,12 @@ package game.objects.friendlies.spaceship.specialAttacks;
 import java.util.ArrayList;
 import java.util.List;
 
+import game.objects.GameObject;
 import game.objects.missiles.Missile;
 import visual.objects.Sprite;
 import visual.objects.SpriteAnimation;
 
-public class SpecialAttack extends Sprite {
-	protected SpriteAnimation animation;
-	protected float damage;
-	protected boolean friendly;
+public class SpecialAttack extends GameObject {
 	protected List<Missile> specialAttackMissiles = new ArrayList<Missile>();
 	protected boolean centeredAroundPlayer = false;
 	
@@ -30,14 +28,6 @@ public class SpecialAttack extends Sprite {
 	
 	public void setScale(float newScale) {
 		this.animation.setAnimationScale(newScale);
-	}
-	
-	public float getDamage() {
-		return this.damage;
-	}
-	
-	public boolean isFriendly() {
-		return friendly;
 	}
 	
 	public boolean centeredAroundPlayer() {

@@ -13,16 +13,16 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 import controllerInput.ControllerInput;
 import controllerInput.ControllerInputReader;
 import game.managers.AnimationManager;
-import game.objects.Explosion;
+import game.objects.neutral.Explosion;
+import game.objects.GameObject;
 import game.objects.friendlies.spaceship.specialAttacks.SpecialAttack;
 import gamedata.BoostsUpgradesAndBuffsSettings;
 import gamedata.DataClass;
 import gamedata.PlayerStats;
 import gamedata.image.ImageEnums;
-import visual.objects.Sprite;
 import visual.objects.SpriteAnimation;
 
-public class SpaceShip extends Sprite {
+public class SpaceShip extends GameObject {
 
 	private int directionx;
 	private int directiony;
@@ -32,14 +32,14 @@ public class SpaceShip extends Sprite {
 	private Set<Integer> pressedKeys = new HashSet<>();
 
 	private boolean isEngineBoosted;
-	private SpriteAnimation deathAnimation = null;
-	private SpriteAnimation exhaustAnimation = null;
+	private SpriteAnimation deathAnimation = null;  //inherit from gameobject
+	private SpriteAnimation exhaustAnimation = null;  //inherit from gameobject
 
 	private PlayerStats playerStats = PlayerStats.getInstance();
 	private BoostsUpgradesAndBuffsSettings powerUpEffects = BoostsUpgradesAndBuffsSettings.getInstance();
 
-	private List<SpriteAnimation> playerFollowingAnimations = new ArrayList<SpriteAnimation>();
-	private List<Explosion> playerFollowingExplosions = new ArrayList<Explosion>();
+	private List<SpriteAnimation> playerFollowingAnimations = new ArrayList<SpriteAnimation>();  //inherit from gameobject?
+	private List<Explosion> playerFollowingExplosions = new ArrayList<Explosion>();  //inherit from gameobject?
 	private List<SpaceShipRegularGun> spaceShipGuns = new ArrayList<SpaceShipRegularGun>();
 	private List<SpaceShipSpecialGun> spaceShipSpecialGuns = new ArrayList<SpaceShipSpecialGun>();
 	private List<SpecialAttack> playerFollowingSpecialAttacks = new ArrayList<SpecialAttack>();
@@ -182,15 +182,16 @@ public class SpaceShip extends Sprite {
 	
 	private void moveExplosions() {
 		for (Explosion explosion : playerFollowingExplosions) {
-			if (explosion.centeredAroundPlayer()) {
-				explosion.setCenterCoordinates(this.getCenterXCoordinate(), this.getCenterYCoordinate());
-				explosion.getAnimation().setCenterCoordinates(this.getCenterXCoordinate(), this.getCenterYCoordinate());
-			} else {
+			//Whatever this functionality was, it has to be shouldered by GameObject following the spaceship
+//			if (explosion.centeredAroundPlayer()) {
+//				explosion.setCenterCoordinates(this.getCenterXCoordinate(), this.getCenterYCoordinate());
+//				explosion.getAnimation().setCenterCoordinates(this.getCenterXCoordinate(), this.getCenterYCoordinate());
+//			} else {
 				explosion.setX(this.getXCoordinate());
 				explosion.setY(this.getYCoordinate());
 				explosion.getAnimation().setX(this.getXCoordinate());
 				explosion.getAnimation().setY(this.getYCoordinate());
-			}
+//			}
 			explosion.updateCurrentBoardBlock();
 			explosion.getAnimation().setAnimationBounds(explosion.getAnimation().getXCoordinate(), explosion.getAnimation().getYCoordinate());
 			explosion.getAnimation().updateCurrentBoardBlock();

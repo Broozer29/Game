@@ -9,6 +9,7 @@ import game.movement.pathfinders.BouncingPathFinder;
 import game.movement.pathfinders.HomingPathFinder;
 import game.movement.pathfinders.OrbitPathFinder;
 import game.movement.pathfinders.RegularPathFinder;
+import game.objects.GameObject;
 import visual.objects.Sprite;
 
 public class SpriteMover {
@@ -34,7 +35,7 @@ public class SpriteMover {
 	}
 
 	// Used for movement initialization or recalculation
-	private PathFinderConfig getConfigByPathFinder(Sprite sprite, MovementConfiguration moveConfig) {
+	private PathFinderConfig getConfigByPathFinder(GameObject sprite, MovementConfiguration moveConfig) {
 		PathFinderConfig config = null;
 		if (moveConfig.getPathFinder() instanceof OrbitPathFinder) {
 			config = new OrbitPathFinderConfig(sprite.getCurrentLocation(), moveConfig.getRotation(),
@@ -54,7 +55,7 @@ public class SpriteMover {
 
 	// Moves the sprite only, not it's corresponding animations!
 	// Add the "out of bounds" detector!
-	public void moveSprite(Sprite sprite, MovementConfiguration moveConfig) {
+	public void moveSprite(GameObject sprite, MovementConfiguration moveConfig) {
 		if (shouldUpdatePathSettings(moveConfig)) {
 			// calculate a new path if necessary
 			PathFinderConfig config = getConfigByPathFinder(sprite, moveConfig);
@@ -98,7 +99,7 @@ public class SpriteMover {
 
 	}
 
-	private void moveHomingPathFinders(Sprite sprite, MovementConfiguration moveConfig) {
+	private void moveHomingPathFinders(GameObject sprite, MovementConfiguration moveConfig) {
 		if (moveConfig.getTarget() != null) {
 			moveConfig.getCurrentPath().setTarget(moveConfig.getTarget());
 		}

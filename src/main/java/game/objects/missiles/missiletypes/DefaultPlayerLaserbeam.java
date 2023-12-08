@@ -12,8 +12,7 @@ public class DefaultPlayerLaserbeam extends Missile {
 			float scale, PathFinder pathFinder, float damage, int xMovementSpeed, int yMovementSpeed, boolean isFriendly) {
 		super(x, y, destination, missileType, explosionType, rotation, scale, pathFinder, isFriendly, xMovementSpeed, yMovementSpeed);
 		loadImage(missileType);
-		setAnimation();
-		this.missileDamage = damage;
+		this.damage = damage;
 	}
 
 	public void missileAction() {

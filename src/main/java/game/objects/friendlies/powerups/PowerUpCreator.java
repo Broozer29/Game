@@ -39,15 +39,16 @@ public class PowerUpCreator {
 	}
 	
 	public void spawnPowerUp(PowerUpEnums powerUpType) {
-		getRandomSpawnCoords();
-		if(powerUpType == PowerUpEnums.RANDOM) {
-			powerUpType = selectRandomPowerUp();
-		}
-		
-		PowerUp newPowerUp = new PowerUp(randomCoordinates.get(0), randomCoordinates.get(1), 1, selectRandomDirection(),
-				powerUpType, getIconByPowerUp(powerUpType), getEffectDuration(powerUpType), false);
-		newPowerUp.setImageDimensions(50, 50);
-		PowerUpManager.getInstance().getPowerUpsOnTheField().add(newPowerUp);
+//		getRandomSpawnCoords();
+//		if(powerUpType == PowerUpEnums.RANDOM) {
+//			powerUpType = selectRandomPowerUp();
+//		}
+		System.out.println("power up creator 46 staat uitgecomment zet weer aan om een powerup te spawnen");
+//
+//		PowerUp newPowerUp = new PowerUp(randomCoordinates.get(0), randomCoordinates.get(1), 1, selectRandomDirection(),
+//				powerUpType, getIconByPowerUp(powerUpType), getEffectDuration(powerUpType), false);
+//		newPowerUp.setImageDimensions(50, 50);
+//		PowerUpManager.getInstance().getPowerUpsOnTheField().add(newPowerUp);
 	}
 
 	public PowerUpSpawnTimer createPowerUpTimer(PowerUpEnums powerUp, boolean loopable, int additionaldelay) {

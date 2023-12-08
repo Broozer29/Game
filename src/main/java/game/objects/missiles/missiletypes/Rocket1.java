@@ -4,7 +4,7 @@ import game.managers.ExplosionManager;
 import game.movement.Direction;
 import game.movement.Point;
 import game.movement.pathfinders.PathFinder;
-import game.objects.Explosion;
+import game.objects.neutral.Explosion;
 import game.objects.missiles.Missile;
 import gamedata.image.ImageEnums;
 import visual.objects.SpriteAnimation;
@@ -18,9 +18,7 @@ public class Rocket1 extends Missile{
 			int yMovementSpeed, float explosionDamage, boolean friendly) {
 		super(x, y, destination, missileType, explosionType, rotation, scale, pathFinder, friendly, xMovementSpeed,
 				yMovementSpeed);
-		this.explosionType = ImageEnums.Rocket_1_Explosion;
-		setAnimation();
-		this.missileDamage = 0;
+		this.damage = 0;
 		this.explosionDamage = explosionDamage;
 		this.animation.rotateAnimetion(rotation);
 	}

@@ -1,6 +1,5 @@
 package visual.objects;
 
-import java.awt.Image;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 
@@ -36,8 +35,7 @@ public class Sprite {
 	protected Rectangle bounds;
 	protected Point currentLocation;
 	protected int currentBoardBlock;
-	protected boolean isFriendly; 
-	
+
 
 
 	public Sprite(int x, int y, float scale) {
@@ -60,11 +58,11 @@ public class Sprite {
 		if (scale != 1 && this.image != null) {
 			this.image = imageResizer.getScaledImage(image, scale);
 		}
-		getImageDimensions();
+		configureImageDimensions();
 //		 Zet collision ook op die getallen en shits & giggles
 	}
 
-	protected void getImageDimensions() {
+	protected void configureImageDimensions () {
 		width = image.getWidth(null);
 		height = image.getHeight(null);
 	}
@@ -73,13 +71,13 @@ public class Sprite {
 	// background planets.
 	protected void setImage(BufferedImage image) {
 		this.image = image;
-		getImageDimensions();
+		configureImageDimensions();
 	}
 
 	protected void rotateImage(Direction rotation) {
 		if (rotation != Direction.LEFT) {
 			this.image = imageRotator.rotate(image, rotation);
-			getImageDimensions();
+			configureImageDimensions();
 		}
 	}
 
@@ -91,7 +89,7 @@ public class Sprite {
 				System.out.println("Crashed because resizing an image that was null/empty");
 			}
 			this.image = imageResizer.getScaledImage(image, scale);
-			getImageDimensions();
+			configureImageDimensions();
 		}
 
 	}
@@ -160,7 +158,7 @@ public class Sprite {
 	public void setImageDimensions(int newWidth, int newHeight) {
 		ImageResizer imageResizer = ImageResizer.getInstance();
 		this.image = imageResizer.resizeImageToDimensions(this.image, newWidth, newHeight);
-		getImageDimensions();
+		configureImageDimensions();
 
 	}
 
@@ -233,11 +231,4 @@ public class Sprite {
 		this.currentLocation = newLocation;
 	}
 	
-	public void setIsFriendly(boolean isFriendly) {
-		this.isFriendly = isFriendly;
-	}
-	
-	public boolean isFriendly() {
-		return this.isFriendly;
-	}
 }

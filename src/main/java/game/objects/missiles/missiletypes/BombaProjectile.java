@@ -1,12 +1,11 @@
 
 package game.objects.missiles.missiletypes;
 
-import game.managers.AnimationManager;
 import game.managers.ExplosionManager;
 import game.movement.Direction;
 import game.movement.Point;
 import game.movement.pathfinders.PathFinder;
-import game.objects.Explosion;
+import game.objects.neutral.Explosion;
 import game.objects.missiles.Missile;
 import gamedata.image.ImageEnums;
 import visual.objects.SpriteAnimation;
@@ -16,15 +15,15 @@ public class BombaProjectile extends Missile {
 	public BombaProjectile(int x, int y, Point destination, ImageEnums missileType, ImageEnums explosionType,
 			Direction rotation, float scale, PathFinder pathFinder, int xMovementSpeed, int yMovementSpeed, boolean isFriendly, float damage) {
 		super(x, y, destination, missileType, explosionType, rotation, scale, pathFinder, isFriendly, xMovementSpeed, yMovementSpeed);
-		this.missileDamage = damage;
-		setAnimation();
+		this.damage = damage;
+//		setMissileAnimation(); What did this refer to?
 		this.animation.setFrameDelay(3);
 		this.animation.rotateAnimetion(rotation);
 	
 	}
 
 	public void missileAction() {
-		if (moveConfig.getStepsTaken() >= 75) {
+		if (movementConfiguration.getStepsTaken() >= 75) {
 			SpriteAnimation animation = new SpriteAnimation(xCoordinate, yCoordinate, ImageEnums.Bomba_Missile_Explosion, false, scale);
 			animation.setX(xCoordinate - (animation.getWidth() / 2));
 			animation.setY(yCoordinate - (animation.getHeight() / 2));

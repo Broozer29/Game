@@ -11,6 +11,7 @@ import game.objects.missiles.MissileCreator;
 import game.objects.missiles.MissileManager;
 import gamedata.audio.AudioEnums;
 import gamedata.image.ImageEnums;
+import visual.objects.SpriteAnimation;
 
 public class Seeker extends Enemy {
 
@@ -19,18 +20,18 @@ public class Seeker extends Enemy {
 	public Seeker(int x, int y, Point destination, Direction rotation, float scale, PathFinder pathFinder, int xMovementSpeed, int yMovementSpeed) {
 		super(x, y, destination, rotation, EnemyEnums.Seeker, scale, pathFinder, xMovementSpeed, yMovementSpeed);
 		loadImage(ImageEnums.Seeker);
-		setExhaustanimation(ImageEnums.Seeker_Normal_Exhaust);
-		setDeathAnimation(ImageEnums.Seeker_Destroyed_Explosion);
+
+		this.exhaustAnimation = new SpriteAnimation(x, y, ImageEnums.Seeker_Normal_Exhaust, true, scale);
+		this.destructionAnimation = new SpriteAnimation(x, y, ImageEnums.Seeker_Destroyed_Explosion, false, scale);
 		this.exhaustAnimation.setFrameDelay(1);
-		this.hitPoints = 50;
+		this.currentHitpoints = 50;
 		this.maxHitPoints = 50;
-		this.attackSpeedFrameCount = 250;
+		this.attackSpeed = 250;
 		this.hasAttack = true;
 		this.showHealthBar = true;
 		this.deathSound = AudioEnums.Large_Ship_Destroyed;
 		this.setVisible(true);
-		this.setRotation(rotation);
-		this.deathAnimation.rotateAnimetion(rotation);
+		rotateGameObject(rotation);
 		this.missilePathFinder = new RegularPathFinder();
 	}
 
@@ -48,18 +49,18 @@ public class Seeker extends Enemy {
 		
 		// Hier een missile maken, en na het maken een target toeveogen aan de missile. De missile kan dan zijn target geven aan path. 
 		//PAth kan vervolgens zijn target tracken en constant de nextStep() naar de target teruggeven.
-		if (currentAttackSpeedFrameCount >= attackSpeedFrameCount) {
+		if (attackSpeedCurrentFrameCount >= attackSpeed) {
 			Missile newMissile = MissileCreator.getInstance().createEnemyMissile(xCoordinate,
 					yCoordinate + this.height / 2, ImageEnums.Seeker_Missile,
-					ImageEnums.Seeker_Missile_Explosion, moveConfig.getRotation(), scale, missilePathFinder, xMovementSpeed,
+					ImageEnums.Seeker_Missile_Explosion, movementConfiguration.getRotation(), scale, missilePathFinder, xMovementSpeed,
 					yMovementSpeed, (float) 7.5);
 			
-			newMissile.rotateMissileAnimation(moveConfig.getRotation());
+			newMissile.rotateGameObject(movementConfiguration.getRotation());
 			missileManager.addExistingMissile(newMissile);
-			currentAttackSpeedFrameCount = 0;
+			attackSpeedCurrentFrameCount = 0;
 		}
-		if (currentAttackSpeedFrameCount < attackSpeedFrameCount) {
-			this.currentAttackSpeedFrameCount++;
+		if (attackSpeedCurrentFrameCount < attackSpeed) {
+			this.attackSpeedCurrentFrameCount++;
 		}
 	}
 

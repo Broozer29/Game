@@ -13,10 +13,10 @@ public class TazerProjectile extends Missile {
 			boolean friendly, float damage) {
 		super(x, y, destination, missileType, explosionType, rotation, scale, pathFinder, friendly, xMovementSpeed,
 				yMovementSpeed);
-		this.missileDamage = damage;
-		setAnimation();
+		this.damage = damage;
+//		setAnimation();
 		this.animation.setFrameDelay(3);
-		this.rotateMissileAnimation(rotation);
+		this.rotateGameObject(rotation);
 	}
 
 	public void missileAction() {

@@ -5,7 +5,7 @@ import gamedata.PlayerStats;
 import gamedata.image.ImageEnums;
 import visual.objects.SpriteAnimation;
 
-public class CustomUIManager {
+public class GameUIManager {
 
 	private int healthBarWidth = 120;
 	private int healthBarHeight = 20;
@@ -21,13 +21,13 @@ public class CustomUIManager {
 	private SpriteAnimation specialAttackHighlight;
 	
 	
-	private static CustomUIManager instance = new CustomUIManager();
+	private static GameUIManager instance = new GameUIManager();
 
-	private CustomUIManager() {
+	private GameUIManager () {
 
 	}
 
-	public static CustomUIManager getInstance() {
+	public static GameUIManager getInstance() {
 		return instance;
 	}
 

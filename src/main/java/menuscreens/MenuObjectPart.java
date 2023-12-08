@@ -17,7 +17,7 @@ public class MenuObjectPart extends Sprite {
 
 	private void initTile() {
 		loadImage(tileType);
-		getImageDimensions();
+		configureImageDimensions();
 	}
 	
 	public void setTileAnimation(ImageEnums tileAnimation) {

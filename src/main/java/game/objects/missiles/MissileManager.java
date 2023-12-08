@@ -49,7 +49,7 @@ public class MissileManager {
 	}
 
 	public void addExistingMissile(Missile missile) {
-		missile.setVisible(true);
+		System.out.println(missile.isFriendly()); //false for friendly missiles somehow
 		if (missile.isFriendly()) {
 			this.friendlyMissiles.add(missile);
 		} else {
@@ -76,6 +76,7 @@ public class MissileManager {
 		}
 		for (Missile missile : friendlyMissiles) {
 			if (missile.isVisible()) {
+
 				for (Enemy enemy : enemyManager.getEnemies()) {
 					if (collisionDetector.detectCollision(enemy, missile)) {
 						handleCollision(enemy, missile);
@@ -92,22 +93,18 @@ public class MissileManager {
 		}
 	}
 
-	private Rectangle getMissileBounds(Missile missile) {
-		return missile.getAnimation() != null ? missile.getAnimation().getBounds() : missile.getBounds();
-	}
 
 	// Handles collision for enemies and friendlymissiles (
 	private void handleCollision(Enemy enemy, Missile friendlyMissile) {
-
 		if (friendlyMissile.getMissileType() == ImageEnums.Rocket_1) {
 			friendlyMissile.missileAction();
 		} else {
-			enemy.takeDamage(friendlyMissile.getMissileDamage());
+			enemy.takeDamage(friendlyMissile.getDamage());
 			setMissileVisibility(friendlyMissile);
 		}
 
-		if (friendlyMissile.getExplosionAnimation() != null) {
-			animationManager.addUpperAnimation(friendlyMissile.getExplosionAnimation());
+		if (friendlyMissile.getDestructionAnimation() != null) {
+			animationManager.addUpperAnimation(friendlyMissile.getDestructionAnimation());
 		}
 		if (friendlyMissile.getAnimation() != null) {
 			friendlyMissile.getAnimation().setVisible(false);
@@ -119,9 +116,9 @@ public class MissileManager {
 	private void checkEnemyMissileWithPlayerCollision() {
 		for (Missile missile : enemyMissiles) {
 			if (missile.isVisible()) {
-				if(collisionDetector.detectCollision(missile.getAnimation(), friendlyManager.getSpaceship())) {
-					friendlyManager.getSpaceship().takeHitpointDamage(missile.getMissileDamage());
-					animationManager.addUpperAnimation(missile.getExplosionAnimation());
+				if(collisionDetector.detectCollision(missile, friendlyManager.getSpaceship())) {
+					friendlyManager.getSpaceship().takeHitpointDamage(missile.getDamage());
+					animationManager.addUpperAnimation(missile.getDestructionAnimation());
 					setMissileVisibility(missile);
 				}
 			}
@@ -132,14 +129,14 @@ public class MissileManager {
 	private void checkSpecialAttackWithEnemyCollision(SpecialAttack specialAttack) {
 		for (Missile missile : specialAttack.getSpecialAttackMissiles()) {
 			for (Enemy enemy : enemyManager.getEnemies()) {
-				if(collisionDetector.detectCollision(missile.getAnimation(), enemy)) {
+				if(collisionDetector.detectCollision(missile, enemy)) {
 					enemy.takeDamage(specialAttack.getDamage());
 				}
 			}
 		}
 
 		for (Enemy enemy : enemyManager.getEnemies()) {
-			if(collisionDetector.detectCollision(enemy, specialAttack.getAnimation())) {
+			if(collisionDetector.detectCollision(enemy, specialAttack)) {
 				enemy.takeDamage(specialAttack.getDamage());
 			}
 		}
@@ -149,7 +146,7 @@ public class MissileManager {
 	private void checkSpecialAttackWithEnemyMissileCollision(SpecialAttack specialAttack) {
 		if (specialAttack.getSpecialAttackMissiles().size() == 0) {
 			for (Missile enemyMissile : enemyMissiles) {
-				if(collisionDetector.detectCollision(enemyMissile.getAnimation(), specialAttack.getAnimation())) {
+				if(collisionDetector.detectCollision(enemyMissile, specialAttack)) {
 					setMissileVisibility(enemyMissile);
 				}
 			}

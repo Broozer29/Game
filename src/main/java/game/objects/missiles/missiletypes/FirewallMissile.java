@@ -14,9 +14,9 @@ public class FirewallMissile extends Missile {
 			int yMovementSpeed, float specialAttackDamage, boolean friendly) {
 		super(xCoordinate, yCoordinate, destination, missileType, explosionType, rotation, scale, pathFinder, friendly, xMovementSpeed,
 				yMovementSpeed);
-		this.setAnimation();
+//		this.setAnimation();
 		this.animation.setFrameDelay(10);
-		this.missileDamage = specialAttackDamage;	
+		this.damage = specialAttackDamage;
 		this.animation.rotateAnimetion(rotation);		
 	}
 

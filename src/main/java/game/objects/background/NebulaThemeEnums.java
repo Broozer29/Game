@@ -1,4 +1,6 @@
-package game.objects;
+package game.objects.background;
+
+import java.util.Random;
 
 public enum NebulaThemeEnums {
 	Blue_Nebula_1,
@@ -20,5 +22,12 @@ public enum NebulaThemeEnums {
 	Purple_Nebula_4,
 	Purple_Nebula_5,
 	Purple_Nebula_6,
-	Purple_Nebula_7,
+	Purple_Nebula_7;
+
+	private static final Random random = new Random();
+
+	public static NebulaThemeEnums selectRandomNebulaScene() {
+		NebulaThemeEnums[] enums = NebulaThemeEnums.values();
+		return enums[random.nextInt(enums.length)];
+	}
 }

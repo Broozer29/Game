@@ -41,7 +41,6 @@ public class SpriteAnimation extends Sprite {
 
 	protected void initAnimation() {
 		setImage(frames.get(0));
-//		getImageDimensions();
 		centerAnimationFrame();
 		totalFrames = frames.size();
 	}
@@ -74,7 +73,7 @@ public class SpriteAnimation extends Sprite {
 
 	public void setAnimationScale(float newScale) {
 		this.scale = newScale;
-		if (this.image == null) {
+		if (this.frames == null) {
 			System.out.println("Crashed because resizing an image that was null/empty");
 		}
 		this.frames = imageResizer.getScaledFrames(standardSizeFrames, newScale);
@@ -122,12 +121,12 @@ public class SpriteAnimation extends Sprite {
 				animationBounds.setBounds(xCoordinate + xOffset, yCoordinate + yOffset, width, height);
 
 				if (this.increaseTransparancy) {
-					if (this.transparancyAlpha + this.transparancyStepSize < 1.0f && 
+					if (this.transparancyAlpha + this.transparancyStepSize < 1.0f &&
 							this.transparancyAlpha + this.transparancyStepSize > 0.0f) {
 						this.transparancyAlpha += this.transparancyStepSize;
 					}
 				}
-				
+
 				if(this.transparancyAlpha < 0.05f && this.transparancyStepSize < 0.0f) {
 					this.setVisible(false);
 					this.removeAnimation();

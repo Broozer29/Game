@@ -22,55 +22,54 @@ import visual.objects.SpriteAnimation;
 
 public class Bulldozer extends Enemy {
 
-	public Bulldozer(int x, int y, Point destination, Direction rotation, float scale, PathFinder pathFinder,
-			int xMovementSpeed, int yMovementSpeed) {
-		super(x, y, destination, rotation, EnemyEnums.Bulldozer, scale, pathFinder, xMovementSpeed, yMovementSpeed);
-		loadImage(ImageEnums.Bulldozer);
-		setExhaustanimation(ImageEnums.Bulldozer_Normal_Exhaust);
-		setDeathAnimation(ImageEnums.Bulldozer_Destroyed_Explosion);
-		this.exhaustAnimation.setFrameDelay(1);
-		this.hitPoints = 50;
-		this.maxHitPoints = 50;
-		this.attackSpeedFrameCount = 200;
-		this.hasAttack = true;
-		this.showHealthBar = true;
-		this.deathSound = AudioEnums.Large_Ship_Destroyed;
-		this.setVisible(true);
-		this.setRotation(rotation);
-		this.deathAnimation.rotateAnimetion(rotation);
-		createRotatingBombs();
-	}
+    public Bulldozer (int x, int y, Point destination, Direction rotation, float scale, PathFinder pathFinder,
+                      int xMovementSpeed, int yMovementSpeed) {
+        super(x, y, destination, rotation, EnemyEnums.Bulldozer, scale, pathFinder, xMovementSpeed, yMovementSpeed);
+        loadImage(ImageEnums.Bulldozer);
 
-	private void createRotatingBombs() {
-	    // The center around which the AlienBombs will orbit
-	    double meanX = this.getCenterXCoordinate();
-	    double meanY = this.getCenterYCoordinate();
+        this.exhaustAnimation = new SpriteAnimation(x, y, ImageEnums.Bulldozer_Normal_Exhaust, true, scale);
+        this.destructionAnimation = new SpriteAnimation(x, y, ImageEnums.Bulldozer_Destroyed_Explosion, false, scale);
+        this.exhaustAnimation.setFrameDelay(1);
+        this.currentHitpoints = 50;
+        this.maxHitPoints = 50;
+        this.attackSpeed = 200;
+        this.hasAttack = true;
+        this.showHealthBar = true;
+        this.deathSound = AudioEnums.Large_Ship_Destroyed;
+        this.setVisible(true);
+        rotateGameObject(rotation);
+        createRotatingBombs();
+    }
 
-	    // Calculate the angle increment based on how many bombs you want
-	    double angleIncrement = 2 * Math.PI / 8; // 8 is the total number of bombs
+    private void createRotatingBombs () {
+        // The center around which the AlienBombs will orbit
+        double meanX = this.getCenterXCoordinate();
+        double meanY = this.getCenterYCoordinate();
 
-	    for (int iterator = 0; iterator < 8; iterator++) {
-	        // 2. Find the next angle
-	        double nextAngle = angleIncrement * iterator;
+        // Calculate the angle increment based on how many bombs you want
+        double angleIncrement = 2 * Math.PI / 8; // 8 is the total number of bombs
 
-	        // 3. Place the new drone
-	        int radius = 75; // Example radius
-	        int x = (int) (meanX + Math.cos(nextAngle) * radius);
-	        int y = (int) (meanY + Math.sin(nextAngle) * radius);
+        for (int iterator = 0; iterator < 8; iterator++) {
+            // 2. Find the next angle
+            double nextAngle = angleIncrement * iterator;
 
-	        PathFinder pathFinder = new OrbitPathFinder(this, radius, 300, nextAngle);
-	        Enemy alienBomb = new AlienBomb(x, y, null, Direction.LEFT, scale, pathFinder, 1, 1);
-	        this.followingEnemies.add(alienBomb);
-	        EnemyManager.getInstance().addEnemy(alienBomb);
-	    }
-	}
-	
+            // 3. Place the new drone
+            int radius = 75; // Example radius
+            int x = (int) (meanX + Math.cos(nextAngle) * radius);
+            int y = (int) (meanY + Math.sin(nextAngle) * radius);
 
-	
-	public void fireAction() {
-		if (missileManager == null) {
-			missileManager = MissileManager.getInstance();
-		}
-	}
+            PathFinder pathFinder = new OrbitPathFinder(this, radius, 300, nextAngle);
+            Enemy alienBomb = new AlienBomb(x, y, null, Direction.LEFT, scale, pathFinder, 1, 1);
+            this.followingEnemies.add(alienBomb);
+            EnemyManager.getInstance().addEnemy(alienBomb);
+        }
+    }
+
+
+    public void fireAction () {
+        if (missileManager == null) {
+            missileManager = MissileManager.getInstance();
+        }
+    }
 
 }

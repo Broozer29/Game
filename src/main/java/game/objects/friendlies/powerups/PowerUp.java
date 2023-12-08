@@ -6,16 +6,15 @@ import game.movement.Direction;
 import game.movement.MovementConfiguration;
 import game.movement.Path;
 import game.movement.Point;
-import game.movement.PowerUpDirectionBouncer;
 import game.movement.SpriteMover;
-import game.movement.pathfinderconfigs.BouncingPathFinderConfig;
 import game.movement.pathfinders.BouncingPathFinder;
 import game.movement.pathfinders.PathFinder;
+import game.objects.GameObject;
 import gamedata.image.ImageEnums;
-import visual.objects.Sprite;
 
-public class PowerUp extends Sprite {
+public class PowerUp extends GameObject {
 
+	//Needs to extend gameobject, currently not properly doing so but in the middle of refactor so cant focus on it
 	private PowerUpEnums powerUpType;
 	private int timeBeforeActivation;
 	private boolean loopable;

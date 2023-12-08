@@ -1,8 +1,6 @@
-package game.movement;
+package game.objects;
 
-import game.managers.OnScreenTextManager;
-import game.objects.friendlies.powerups.OnScreenText;
-import game.objects.friendlies.powerups.PowerUpEnums;
+import game.movement.MovementConfiguration;
 import gamedata.DataClass;
 import visual.objects.Sprite;
 

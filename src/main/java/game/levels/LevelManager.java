@@ -7,7 +7,6 @@ import java.util.Random;
 
 import javax.sound.sampled.UnsupportedAudioFileException;
 
-import game.managers.PlayerManager;
 import game.managers.TimerManager;
 import game.movement.Direction;
 import game.movement.Point;
@@ -25,7 +24,6 @@ import game.objects.enemies.enemytypes.Energizer;
 import game.objects.enemies.enemytypes.Flamer;
 import game.objects.enemies.enemytypes.Seeker;
 import game.objects.enemies.enemytypes.Tazer;
-import game.objects.friendlies.FriendlyManager;
 import game.spawner.EnemySpawnTimer;
 import game.spawner.SpawningCoordinator;
 import gamedata.GameStateInfo;

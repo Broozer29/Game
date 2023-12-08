@@ -1,4 +1,4 @@
-package game.objects;
+package game.objects.background;
 
 public enum BGOEnums {
 	Star,

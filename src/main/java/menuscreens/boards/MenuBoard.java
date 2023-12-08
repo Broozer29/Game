@@ -21,8 +21,8 @@ import controllerInput.ConnectedControllers;
 import controllerInput.ControllerInput;
 import controllerInput.ControllerInputReader;
 import game.managers.AnimationManager;
-import game.objects.BackgroundManager;
-import game.objects.BackgroundObject;
+import game.objects.background.BackgroundManager;
+import game.objects.background.BackgroundObject;
 import gamedata.DataClass;
 import gamedata.PlayerStats;
 import gamedata.image.ImageEnums;
@@ -31,7 +31,6 @@ import menuscreens.MenuFunctionEnums;
 import menuscreens.MenuObject;
 import menuscreens.MenuObjectEnums;
 import menuscreens.MenuObjectPart;
-import net.java.games.input.Component;
 import visual.objects.Sprite;
 import visual.objects.SpriteAnimation;
 

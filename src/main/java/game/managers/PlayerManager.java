@@ -6,15 +6,12 @@ import java.util.List;
 
 import javax.sound.sampled.UnsupportedAudioFileException;
 
-import game.objects.Explosion;
 import game.objects.friendlies.spaceship.SpaceShip;
-import game.objects.friendlies.spaceship.specialAttacks.SpecialAttack;
 import gamedata.GameStateInfo;
 import gamedata.GameStatusEnums;
 import gamedata.PlayerStats;
 import gamedata.audio.AudioEnums;
 import gamedata.audio.AudioManager;
-import visual.objects.SpriteAnimation;
 
 public class PlayerManager {
 

@@ -26,17 +26,17 @@ import controllerInput.ControllerInputReader;
 import game.UI.UIObject;
 import game.levels.LevelManager;
 import game.managers.AnimationManager;
-import game.managers.CustomUIManager;
+import game.managers.GameUIManager;
 import game.managers.ExplosionManager;
 import game.managers.OnScreenTextManager;
 import game.managers.PlayerManager;
 import game.managers.TimerManager;
-import game.objects.BackgroundManager;
-import game.objects.BackgroundObject;
-import game.objects.Explosion;
+import game.objects.background.BackgroundManager;
+import game.objects.background.BackgroundObject;
+import game.objects.neutral.Explosion;
 import game.objects.enemies.Enemy;
 import game.objects.enemies.EnemyManager;
-import game.objects.friendlies.FriendlyManager;
+import game.objects.friendlies.FriendlyMover;
 import game.objects.friendlies.FriendlyObject;
 import game.objects.friendlies.powerups.PowerUp;
 import game.objects.friendlies.powerups.OnScreenText;
@@ -94,9 +94,9 @@ public class GameBoard extends JPanel implements ActionListener {
 	private BackgroundManager backgroundManager = BackgroundManager.getInstance();
 	private TimerManager timerManager = TimerManager.getInstance();
 	private ExplosionManager explosionManager = ExplosionManager.getInstance();
-	private FriendlyManager friendlyManager = FriendlyManager.getInstance();
+	private FriendlyMover friendlyMover = FriendlyMover.getInstance();
 	private PlayerStats playerStats = PlayerStats.getInstance();
-	private CustomUIManager uiManager = CustomUIManager.getInstance();
+	private GameUIManager uiManager = GameUIManager.getInstance();
 	private PowerUpManager powerUpManager = PowerUpManager.getInstance();
 	private OnScreenTextManager textManager = OnScreenTextManager.getInstance();
 	private BoostsUpgradesAndBuffsSettings tempSettings = BoostsUpgradesAndBuffsSettings.getInstance();
@@ -114,9 +114,9 @@ public class GameBoard extends JPanel implements ActionListener {
 		backgroundManager = BackgroundManager.getInstance();
 		timerManager = TimerManager.getInstance();
 		explosionManager = ExplosionManager.getInstance();
-		friendlyManager = FriendlyManager.getInstance();
+		friendlyMover = FriendlyMover.getInstance();
 		playerStats = PlayerStats.getInstance();
-		uiManager = CustomUIManager.getInstance();
+		uiManager = GameUIManager.getInstance();
 		powerUpManager = PowerUpManager.getInstance();
 		textManager = OnScreenTextManager.getInstance();
 		audioPosCalc = AudioPositionCalculator.getInstance();
@@ -164,7 +164,7 @@ public class GameBoard extends JPanel implements ActionListener {
 		backgroundManager.resetManager();
 		timerManager.resetManager();
 		explosionManager.resetManager();
-		friendlyManager.resetManager();
+		friendlyMover.resetManager();
 		uiManager.resetManager();
 		powerUpManager.resetManager();
 		textManager.resetManager();
@@ -204,7 +204,7 @@ public class GameBoard extends JPanel implements ActionListener {
 		} else if (gameState.getGameState() == GameStatusEnums.Transitioning_To_Next_Level) {
 			drawZoningOut(g2d);
 			playerManager.resetSpaceshipForNextLevel();
-			friendlyManager.resetManagerForNextLevel();
+			friendlyMover.resetManagerForNextLevel();
 			powerUpManager.resetManager();
 			goToNextLevel();
 		} else if (gameState.getGameState() == GameStatusEnums.Zoning_In) {
@@ -327,7 +327,7 @@ public class GameBoard extends JPanel implements ActionListener {
 					drawImage(g, enemy);
 				}
 
-				if (enemy.showhealthBar())
+				if (enemy.isShowHealthBar())
 					drawHealthBars(g, enemy);
 			}
 		}
@@ -338,7 +338,7 @@ public class GameBoard extends JPanel implements ActionListener {
 			}
 		}
 
-		for (FriendlyObject friendly : friendlyManager.getActiveFriendlyObjects()) {
+		for (FriendlyObject friendly : friendlyMover.getActiveFriendlyObjects()) {
 			if (friendly.isVisible()) {
 				drawAnimation(g, friendly.getAnimation());
 			}
@@ -440,7 +440,7 @@ public class GameBoard extends JPanel implements ActionListener {
 
 	// Primitive healthbar generator for enemies
 	private void drawHealthBars(Graphics2D g, Enemy enemy) {
-		float factor = enemy.getCurrentHitpoints() / enemy.getMaxHitpoints();
+		float factor = enemy.getCurrentHitpoints() / enemy.getMaxHitPoints();
 		int actualAmount = (int) Math.round(enemy.getHeight() * factor);
 
 		g.setColor(Color.RED);
@@ -543,7 +543,7 @@ public class GameBoard extends JPanel implements ActionListener {
 			timerManager.updateGameTick(gameState.getMusicSeconds());
 			audioDatabase.updateGameTick();
 			explosionManager.updateGametick();
-			friendlyManager.updateGameTick();
+			friendlyMover.updateGameTick();
 			powerUpManager.updateGameTick();
 			executeControllerInput();
 		}

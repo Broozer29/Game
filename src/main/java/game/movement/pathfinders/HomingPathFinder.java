@@ -9,6 +9,7 @@ import game.movement.Path;
 import game.movement.Point;
 import game.movement.pathfinderconfigs.HomingPathFinderConfig;
 import game.movement.pathfinderconfigs.PathFinderConfig;
+import game.objects.GameObject;
 import game.objects.enemies.EnemyManager;
 import gamedata.DataClass;
 import visual.objects.Sprite;
