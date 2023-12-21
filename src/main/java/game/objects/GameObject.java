@@ -3,10 +3,13 @@ package game.objects;
 import game.managers.AnimationManager;
 import game.movement.*;
 import game.movement.pathfinders.PathFinder;
+import gamedata.DataClass;
 import gamedata.audio.AudioEnums;
 import gamedata.audio.AudioManager;
 import gamedata.image.ImageResizer;
 import gamedata.image.ImageRotator;
+import visual.objects.CreationConfigurations.SpriteAnimationConfiguration;
+import visual.objects.CreationConfigurations.SpriteConfiguration;
 import visual.objects.Sprite;
 import visual.objects.SpriteAnimation;
 
@@ -26,7 +29,6 @@ public class GameObject extends Sprite {
     protected SpriteAnimation exhaustAnimation;
     protected boolean showHealthBar;
 
-    protected float scale;
     protected float originalScale;
 
     //Audio variables
@@ -56,23 +58,49 @@ public class GameObject extends Sprite {
     protected MovementConfiguration movementConfiguration;
 
     protected int lastBoardBlock;
+    protected Point currentLocation;
+    protected int currentBoardBlock;
 
-    protected Sprite objectToChase; //change to gameobject
+    protected GameObject objectToChase; //change to gameobject
 
 
     //Objects following this object
     protected List<GameObject> objectsFollowingThis = new ArrayList<GameObject>();
 
+    //Other
+    protected String objectType;
+    protected Direction movementDirection;
 
-    public GameObject (int xCoordinate, int yCoordinate, float scale) {
-        super(xCoordinate, yCoordinate, scale);
+
+//    public GameObject (int xCoordinate, int yCoordinate, float scale) {
+//        super(xCoordinate, yCoordinate, scale);
+//        this.currentLocation = new Point(xCoordinate, yCoordinate);
+//    }
+
+    public GameObject (SpriteConfiguration spriteConfiguration) {
+        super(spriteConfiguration);
+        this.currentLocation = new Point(xCoordinate, yCoordinate);
+        if (spriteConfiguration.getImageType() != null) {
+            this.loadImage(spriteConfiguration.getImageType());
+        }
+        this.visible = true;
     }
 
-    public void takeDamage(float damageTaken) {
+    public GameObject (SpriteAnimationConfiguration spriteAnimationConfiguration) {
+        super(spriteAnimationConfiguration.getSpriteConfiguration());
+        this.animation = new SpriteAnimation(spriteAnimationConfiguration);
+        this.currentLocation = new Point(xCoordinate, yCoordinate);
+        this.visible = true;
+    }
+
+    public void takeDamage (float damageTaken) {
         this.currentHitpoints -= damageTaken;
         if (this.currentHitpoints <= 0) {
-            this.destructionAnimation.setOriginCoordinates(this.getCenterXCoordinate(), this.getCenterYCoordinate());
-            AnimationManager.getInstance().addDestroyedExplosion(destructionAnimation);
+
+            if (this.destructionAnimation != null) {
+                this.destructionAnimation.setOriginCoordinates(this.getCenterXCoordinate(), this.getCenterYCoordinate());
+                AnimationManager.getInstance().addDestroyedExplosion(destructionAnimation);
+            }
 
             for (GameObject object : objectsFollowingThis) {
                 object.takeDamage(99999);
@@ -91,7 +119,7 @@ public class GameObject extends Sprite {
     public void move () {
         SpriteMover.getInstance().moveSprite(this, movementConfiguration);
         moveAnimations();
-        bounds.setBounds(xCoordinate + xOffset, yCoordinate + yOffset, width, height);
+        this.bounds.setBounds(xCoordinate + xOffset, yCoordinate + yOffset, width, height);
         updateCurrentBoardBlock();
         updateVisibility();
 
@@ -123,7 +151,6 @@ public class GameObject extends Sprite {
             animation.setX(movementConfiguration.getCurrentPath().getWaypoints().get(0).getX());
             animation.setY(movementConfiguration.getCurrentPath().getWaypoints().get(0).getY());
             animation.setAnimationBounds(animation.getXCoordinate(), animation.getYCoordinate());
-            animation.updateCurrentBoardBlock();
         }
     }
 
@@ -133,7 +160,7 @@ public class GameObject extends Sprite {
             this.visible = false;
         }
 
-        if (!this.isVisible() && this.animation != null) {
+        if (!this.visible && this.animation != null) {
             this.animation.setVisible(false);
         }
     }
@@ -155,10 +182,41 @@ public class GameObject extends Sprite {
     }
 
     private void rotateGameObjectSpriteAnimations (SpriteAnimation sprite, Direction direction) {
-        if(sprite != null){
+        if (sprite != null) {
             sprite.rotateAnimetion(direction);
         }
     }
+
+
+    public void updateCurrentBoardBlock () {
+        if (xCoordinate >= 0 && xCoordinate <= (DataClass.getInstance().getBoardBlockWidth() * 1)) {
+            this.currentBoardBlock = 0;
+        } else if (xCoordinate >= (DataClass.getInstance().getBoardBlockWidth() * 1)
+                && xCoordinate <= (DataClass.getInstance().getBoardBlockWidth() * 2)) {
+            this.currentBoardBlock = 1;
+        } else if (xCoordinate >= (DataClass.getInstance().getBoardBlockWidth() * 2)
+                && xCoordinate <= (DataClass.getInstance().getBoardBlockWidth() * 3)) {
+            this.currentBoardBlock = 2;
+        } else if (xCoordinate >= (DataClass.getInstance().getBoardBlockWidth() * 3)
+                && xCoordinate <= (DataClass.getInstance().getBoardBlockWidth())) {
+            this.currentBoardBlock = 3;
+        } else if (xCoordinate >= (DataClass.getInstance().getBoardBlockWidth() * 4)
+                && xCoordinate <= (DataClass.getInstance().getBoardBlockWidth() * 5)) {
+            this.currentBoardBlock = 4;
+        } else if (xCoordinate >= (DataClass.getInstance().getBoardBlockWidth() * 5)
+                && xCoordinate <= (DataClass.getInstance().getBoardBlockWidth() * 6)) {
+            this.currentBoardBlock = 5;
+        } else if (xCoordinate >= (DataClass.getInstance().getBoardBlockWidth() * 6)
+                && xCoordinate <= (DataClass.getInstance().getBoardBlockWidth() * 7)) {
+            this.currentBoardBlock = 6;
+        } else if (xCoordinate >= (DataClass.getInstance().getBoardBlockWidth() * 7)
+                && xCoordinate <= (DataClass.getInstance().getBoardBlockWidth() * 8)) {
+            this.currentBoardBlock = 7;
+        } else if (xCoordinate > DataClass.getInstance().getBoardBlockWidth() * 8) {
+            this.currentBoardBlock = 8;
+        }
+    }
+
 
     //-------------------------------------getters and setters below------------
 
@@ -168,6 +226,18 @@ public class GameObject extends Sprite {
 
     public void setDestructionAnimation (SpriteAnimation destructionAnimation) {
         this.destructionAnimation = destructionAnimation;
+    }
+
+    public Point getCurrentLocation () {
+        return this.currentLocation;
+    }
+
+    public int getCurrentBoardBlock () {
+        return this.currentBoardBlock;
+    }
+
+    public void updateCurrentLocation (Point newLocation) {
+        this.currentLocation = newLocation;
     }
 
     public SpriteAnimation getShieldDamagedAnimation () {
@@ -303,7 +373,7 @@ public class GameObject extends Sprite {
         return this.animation;
     }
 
-    public void setAnimation(SpriteAnimation spriteAnimation){
+    public void setAnimation (SpriteAnimation spriteAnimation) {
         this.animation = spriteAnimation;
     }
 
@@ -315,12 +385,20 @@ public class GameObject extends Sprite {
         return originalScale;
     }
 
-    public void setObjectToChase(Sprite sprite){
-        this.objectToChase = sprite;
+    public void setObjectToChase (GameObject gameObject) {
+        this.objectToChase = gameObject;
     }
 
-    public Sprite getObjectToChase(){
+    public Sprite getObjectToChase () {
         return this.objectToChase;
+    }
+
+    public String getObjectType () {
+        return this.objectType;
+    }
+
+    public void setObjectType (String objectType) {
+        this.objectType = objectType;
     }
 
     public void setScale (float newScale) {

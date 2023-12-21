@@ -4,34 +4,39 @@ import game.managers.ExplosionManager;
 import game.movement.Direction;
 import game.movement.Point;
 import game.movement.pathfinders.PathFinder;
+import game.objects.missiles.MissileConfiguration;
 import game.objects.neutral.Explosion;
 import game.objects.missiles.Missile;
+import game.objects.neutral.ExplosionConfiguration;
 import gamedata.image.ImageEnums;
+import visual.objects.CreationConfigurations.SpriteAnimationConfiguration;
+import visual.objects.CreationConfigurations.SpriteConfiguration;
 import visual.objects.SpriteAnimation;
 
 public class Rocket1 extends Missile{
 
 	float explosionDamage;
 	
-	public Rocket1(int x, int y, Point destination, ImageEnums missileType, ImageEnums explosionType,
-			Direction rotation, float scale, PathFinder pathFinder, int xMovementSpeed,
-			int yMovementSpeed, float explosionDamage, boolean friendly) {
-		super(x, y, destination, missileType, explosionType, rotation, scale, pathFinder, friendly, xMovementSpeed,
-				yMovementSpeed);
+	public Rocket1(SpriteConfiguration spriteConfiguration, MissileConfiguration missileConfiguration) {
+		super(spriteConfiguration, missileConfiguration);
+		this.animation.rotateAnimetion(missileConfiguration.getMovementDirection());
 		this.damage = 0;
-		this.explosionDamage = explosionDamage;
-		this.animation.rotateAnimetion(rotation);
+		this.explosionDamage = missileConfiguration.getDamage();
 	}
 	
 	
 	public void missileAction() {
-		int explosionScale = 3;
-		SpriteAnimation explosionAnimation = new SpriteAnimation(xCoordinate, yCoordinate, ImageEnums.Destroyed_Explosion, false, explosionScale);
-		Explosion explosion = new Explosion(this.xCoordinate, this.yCoordinate, 
-				explosionScale, explosionAnimation, explosionDamage, true);
+		ExplosionConfiguration explosionConfiguration = new ExplosionConfiguration(isFriendly(), explosionDamage, true);
+
+		SpriteAnimationConfiguration rocketExplosionConfig = new SpriteAnimationConfiguration(spriteConfiguration, 2, false);
+		rocketExplosionConfig.getSpriteConfiguration().setImageType(ImageEnums.Destroyed_Explosion);
+		SpriteAnimation explosionAnimation = new SpriteAnimation(rocketExplosionConfig);
+
+		int explosionScale = 2;
+		Explosion explosion = new Explosion(rocketExplosionConfig, explosionConfiguration);
+		explosion.setScale(explosionScale);
 		explosion.updateCurrentBoardBlock();
-		explosionAnimation.updateCurrentBoardBlock();
-		explosionAnimation.setCenterCoordinates(this.getCenterXCoordinate() + 50, this.getCenterYCoordinate());
+		explosionAnimation.setCenterCoordinates(this.getCenterXCoordinate() + (this.getWidth() / 2), this.getCenterYCoordinate() - (this.height / 2));
 		ExplosionManager.getInstance().addExistingExplosion(explosion);
 	}
 	

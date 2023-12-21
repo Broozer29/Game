@@ -7,11 +7,14 @@ import java.util.List;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
 import game.objects.friendlies.spaceship.SpaceShip;
+import gamedata.DataClass;
 import gamedata.GameStateInfo;
 import gamedata.GameStatusEnums;
 import gamedata.PlayerStats;
 import gamedata.audio.AudioEnums;
 import gamedata.audio.AudioManager;
+import gamedata.image.ImageEnums;
+import visual.objects.CreationConfigurations.SpriteConfiguration;
 
 public class PlayerManager {
 
@@ -66,7 +69,12 @@ public class PlayerManager {
 	}
 
 	private void initSpaceShip() {
-		this.spaceship = new SpaceShip();
+		SpriteConfiguration spriteConfiguration = new SpriteConfiguration();
+		spriteConfiguration.setxCoordinate(DataClass.getInstance().getWindowWidth() / 10);
+		spriteConfiguration.setyCoordinate(DataClass.getInstance().getWindowHeight() /2);
+		spriteConfiguration.setScale(0.6f);
+		spriteConfiguration.setImageType(ImageEnums.Player_Spaceship_Model_3);
+		this.spaceship = new SpaceShip(spriteConfiguration);
 	
 	}
 

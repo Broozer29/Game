@@ -4,15 +4,14 @@ import game.movement.Direction;
 import game.movement.Point;
 import game.movement.pathfinders.PathFinder;
 import game.objects.missiles.Missile;
+import game.objects.missiles.MissileConfiguration;
 import gamedata.image.ImageEnums;
+import visual.objects.CreationConfigurations.SpriteConfiguration;
 
 public class DefaultPlayerLaserbeam extends Missile {
 
-	public DefaultPlayerLaserbeam(int x, int y, Point destination, ImageEnums missileType, ImageEnums explosionType, Direction rotation,
-			float scale, PathFinder pathFinder, float damage, int xMovementSpeed, int yMovementSpeed, boolean isFriendly) {
-		super(x, y, destination, missileType, explosionType, rotation, scale, pathFinder, isFriendly, xMovementSpeed, yMovementSpeed);
-		loadImage(missileType);
-		this.damage = damage;
+	public DefaultPlayerLaserbeam(SpriteConfiguration spriteConfiguration, MissileConfiguration missileConfiguration) {
+		super(spriteConfiguration, missileConfiguration);
 	}
 
 	public void missileAction() {

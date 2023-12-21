@@ -3,24 +3,28 @@ package game.objects.friendlies.spaceship.specialAttacks;
 import game.movement.Direction;
 import game.movement.Point;
 import game.movement.pathfinders.PathFinder;
+import game.movement.pathfinders.RegularPathFinder;
 import game.objects.friendlies.spaceship.PlayerAttackTypes;
 import game.objects.missiles.Missile;
+import game.objects.missiles.MissileConfiguration;
 import game.objects.missiles.MissileCreator;
 import game.objects.missiles.MissileManager;
 import game.objects.missiles.missiletypes.FirewallMissile;
 import gamedata.PlayerStats;
 import gamedata.image.ImageEnums;
+import visual.objects.CreationConfigurations.SpriteAnimationConfiguration;
+import visual.objects.CreationConfigurations.SpriteConfiguration;
 import visual.objects.SpriteAnimation;
 
 public class Firewall extends SpecialAttack {
 
-	public Firewall(int x, int y, float scale, SpriteAnimation animation, float damage, boolean friendly,
-			PathFinder pathFinder, int fireWallSize, Direction rotation) {
-		super(x, y, scale, animation, damage, friendly);
-		initFireWallParticles(pathFinder, fireWallSize, rotation);
+	public Firewall(SpriteAnimationConfiguration spriteAnimationConfiguration, MissileConfiguration missileConfiguration, int fireWallAmount) {
+		super(spriteAnimationConfiguration, missileConfiguration);
+		initFireWallParticles(missileConfiguration, fireWallAmount);
+		this.setObjectType("Firewall");
 	}
 
-	private void initFireWallParticles(PathFinder pathFinder, int fireWallSize, Direction rotation) {
+	private void initFireWallParticles(MissileConfiguration missileConfiguration, int fireWallSize) {
 		for (int i = 0; i < fireWallSize; i++) {
 			int x = this.xCoordinate + 10;
 			int y;
@@ -38,9 +42,21 @@ public class Firewall extends SpecialAttack {
 			}
 
 			int firewallSpeed = PlayerStats.getInstance().getFirewallSpeed();
-			Missile firewallParticle = MissileCreator.getInstance().createFriendlyMissile(x, y,
-					ImageEnums.FirewallParticle, null, rotation, scale, pathFinder, firewallSpeed, firewallSpeed,
-					PlayerAttackTypes.Firewall);
+
+			SpriteConfiguration spriteConfiguration1 = this.spriteConfiguration;
+			spriteConfiguration1.setImageType(ImageEnums.FirewallParticle);
+
+			MissileConfiguration missileConfiguration1 = new MissileConfiguration();
+			missileConfiguration1.setxMovementSpeed(firewallSpeed);
+			missileConfiguration1.setyMovementSpeed(firewallSpeed);
+			missileConfiguration1.setAllowedToDealDamage(true);
+			missileConfiguration1.setMovementDirection(this.movementDirection);
+			missileConfiguration1.setPathfinder(new RegularPathFinder());
+			missileConfiguration1.setDamage(1.5f);
+
+
+
+			Missile firewallParticle = MissileCreator.getInstance().createMissile(spriteConfiguration1, missileConfiguration1);
 			firewallParticle.getAnimation().rotateAnimetion(animationRotation);
 			this.specialAttackMissiles.add(firewallParticle);
 			MissileManager.getInstance().addExistingMissile(firewallParticle);

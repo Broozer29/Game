@@ -5,6 +5,7 @@ import java.awt.image.BufferedImage;
 import java.util.Random;
 
 import game.movement.Direction;
+import visual.objects.CreationConfigurations.SpriteConfiguration;
 import visual.objects.Sprite;
 
 public class BackgroundObject extends Sprite {
@@ -13,12 +14,18 @@ public class BackgroundObject extends Sprite {
     private BGOEnums bgoType;
     private Random random;
 
-    public BackgroundObject (int x, int y, BufferedImage planetImage, float scale, BGOEnums bgoType, int depthLevel) {
-        super(x, y, scale);
-        setImage(planetImage);
-        this.bgoType = bgoType;
+//    public BackgroundObject (int x, int y, BufferedImage planetImage, float scale, BGOEnums bgoType, int depthLevel) {
+//        super(x, y, scale);
+//        setImage(planetImage);
+//        this.bgoType = bgoType;
+//        this.depthLevel = depthLevel;
+//    }
+
+    public BackgroundObject(SpriteConfiguration spriteConfiguration, BackgroundObjectConfiguration bgoConfiguration){
+        super(spriteConfiguration);
+        this.bgoType = bgoConfiguration.getBgoType();
+        this.depthLevel = bgoConfiguration.getDepthLevel();
         this.random = new Random();
-        this.depthLevel = depthLevel;
     }
 
     public void setNewPlanetImage (BufferedImage image) {

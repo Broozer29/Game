@@ -20,6 +20,8 @@ import gamedata.BoostsUpgradesAndBuffsSettings;
 import gamedata.DataClass;
 import gamedata.PlayerStats;
 import gamedata.image.ImageEnums;
+import visual.objects.CreationConfigurations.SpriteAnimationConfiguration;
+import visual.objects.CreationConfigurations.SpriteConfiguration;
 import visual.objects.SpriteAnimation;
 
 public class SpaceShip extends GameObject {
@@ -44,8 +46,8 @@ public class SpaceShip extends GameObject {
 	private List<SpaceShipSpecialGun> spaceShipSpecialGuns = new ArrayList<SpaceShipSpecialGun>();
 	private List<SpecialAttack> playerFollowingSpecialAttacks = new ArrayList<SpecialAttack>();
 
-	public SpaceShip() {
-		super(DataClass.getInstance().getWindowWidth() / 10, DataClass.getInstance().getWindowHeight() / 2, 0.6f);
+	public SpaceShip(SpriteConfiguration spriteConfiguration) {
+		super(spriteConfiguration);
 		playerStats = PlayerStats.getInstance();
 		powerUpEffects = BoostsUpgradesAndBuffsSettings.getInstance();
 		initShip();
@@ -83,24 +85,32 @@ public class SpaceShip extends GameObject {
 		initExhaustAnimation(playerStats.getExhaustImage());
 		initDeathAnimation(ImageEnums.Destroyed_Explosion);
 		this.exhaustAnimation.setAnimationScale(0.6f);
+		this.setObjectType("Player spaceship");
 	}
 
 	private void initExhaustAnimation(ImageEnums imageType) {
-		exhaustAnimation = new SpriteAnimation(xCoordinate, yCoordinate, imageType, true, scale);
+
+		SpriteAnimationConfiguration spriteAnimationConfiguration = new SpriteAnimationConfiguration(this.spriteConfiguration, 2, true);
+		spriteAnimationConfiguration.getSpriteConfiguration().setImageType(imageType);
+		exhaustAnimation = new SpriteAnimation(spriteAnimationConfiguration);
 		playerStats.setCurrentExhaust(imageType);
 		AnimationManager.getInstance().addLowerAnimation(exhaustAnimation);
 	}
 
 	private void initDeathAnimation(ImageEnums imageType) {
-		deathAnimation = new SpriteAnimation(xCoordinate, yCoordinate, imageType, false, 2);
+		SpriteAnimationConfiguration spriteAnimationConfiguration = new SpriteAnimationConfiguration(this.spriteConfiguration, 2, false);
+		spriteAnimationConfiguration.getSpriteConfiguration().setImageType(imageType);
+		deathAnimation = new SpriteAnimation(spriteAnimationConfiguration);
 	}
 
 	public void addShieldDamageAnimation() {
 		if (playerFollowingAnimations.size() < 10) {
-			SpriteAnimation shieldAnimation = new SpriteAnimation(this.xCoordinate, this.yCoordinate,
-					ImageEnums.Default_Player_Shield_Damage, false, 1);
 
-			shieldAnimation.setFrameDelay(1);
+
+			SpriteAnimationConfiguration spriteAnimationConfiguration = new SpriteAnimationConfiguration(this.spriteConfiguration, 1, false);
+			spriteAnimationConfiguration.getSpriteConfiguration().setImageType(ImageEnums.Default_Player_Shield_Damage);
+
+			SpriteAnimation shieldAnimation = new SpriteAnimation(spriteAnimationConfiguration);
 			shieldAnimation.setOriginCoordinates(this.xCoordinate, this.yCoordinate);
 			int yDist = 5;
 			int xDist = 30;
@@ -111,7 +121,6 @@ public class SpaceShip extends GameObject {
 //			shieldAnimation.setX(this.xCoordinate);
 //			shieldAnimation.setY(this.yCoordinate);
 			AnimationManager.getInstance().addUpperAnimation(shieldAnimation);
-
 		}
 
 	}
@@ -176,7 +185,7 @@ public class SpaceShip extends GameObject {
 	private void movePlayerAnimations() {
 		for (SpriteAnimation anim : playerFollowingAnimations) {
 			anim.setOriginCoordinates(xCoordinate, yCoordinate);
-			anim.updateCurrentBoardBlock();
+//			anim.updateCurrentBoardBlock();
 		}
 	}
 	
@@ -194,7 +203,7 @@ public class SpaceShip extends GameObject {
 //			}
 			explosion.updateCurrentBoardBlock();
 			explosion.getAnimation().setAnimationBounds(explosion.getAnimation().getXCoordinate(), explosion.getAnimation().getYCoordinate());
-			explosion.getAnimation().updateCurrentBoardBlock();
+//			explosion.getAnimation().updateCurrentBoardBlock();
 		}
 	}
 	
@@ -211,7 +220,7 @@ public class SpaceShip extends GameObject {
 			}
 			specialAttack.updateCurrentBoardBlock();
 			specialAttack.getAnimation().setAnimationBounds(specialAttack.getAnimation().getXCoordinate(), specialAttack.getAnimation().getYCoordinate());
-			specialAttack.getAnimation().updateCurrentBoardBlock();
+//			specialAttack.getAnimation().updateCurrentBoardBlock();
 		}
 	}
 

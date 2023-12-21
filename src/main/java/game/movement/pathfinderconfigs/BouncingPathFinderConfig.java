@@ -2,6 +2,7 @@ package game.movement.pathfinderconfigs;
 
 import game.movement.Direction;
 import game.movement.Point;
+import game.objects.GameObject;
 import game.objects.friendlies.powerups.PowerUp;
 import visual.objects.Sprite;
 
@@ -13,9 +14,9 @@ public class BouncingPathFinderConfig implements PathFinderConfig {
 	private int spriteWidth;
 	private int spriteHeight;
 	private Direction spriteCurrentDirection;
-	private Sprite bouncingSprite;
+	private GameObject bouncingSprite;
 
-	public BouncingPathFinderConfig(Sprite bouncingSprite, Direction currentDirection) {
+	public BouncingPathFinderConfig(GameObject bouncingSprite, Direction currentDirection) {
 		this.xCoordinate = bouncingSprite.getXCoordinate();
 		this.yCoordinate = bouncingSprite.getYCoordinate();
 		this.spriteWidth = bouncingSprite.getWidth();
@@ -81,7 +82,7 @@ public class BouncingPathFinderConfig implements PathFinderConfig {
 		bouncingSprite.setY(currentLocation.getY());
 	}
 	
-	public Sprite getSprite() {
+	public GameObject getSprite() {
 		return bouncingSprite;
 	}
 

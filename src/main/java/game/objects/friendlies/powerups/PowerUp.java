@@ -11,6 +11,7 @@ import game.movement.pathfinders.BouncingPathFinder;
 import game.movement.pathfinders.PathFinder;
 import game.objects.GameObject;
 import gamedata.image.ImageEnums;
+import visual.objects.CreationConfigurations.SpriteConfiguration;
 
 public class PowerUp extends GameObject {
 
@@ -21,23 +22,21 @@ public class PowerUp extends GameObject {
 	private PowerUpEffect powerUpEffect;
 	private MovementConfiguration moveConfig;
 
-	public PowerUp(int x, int y, float scale, Direction direction, PowerUpEnums powerUpType, ImageEnums powerUpImage, int timeBeforeActivation,
-			boolean loopable) {
-		super(x, y, scale);
-		this.setPowerUpType(powerUpType);
-		this.timeBeforeActivation = timeBeforeActivation;
-		this.loopable = loopable;
-		this.loadImage(powerUpImage);
-		initMoveConfig(direction);
+	public PowerUp(SpriteConfiguration spriteConfiguration, PowerUpConfiguration powerUpConfiguration) {
+		super(spriteConfiguration);
+		this.powerUpType = powerUpConfiguration.getPowerUpType();
+		this.timeBeforeActivation = powerUpConfiguration.getTimeBeforeActivation();
+		this.loopable = powerUpConfiguration.isLoopable();
+		initMoveConfig(powerUpConfiguration);
+		this.setObjectType("Power Up " + powerUpType);
 	}
 	
-	private void initMoveConfig(Direction direction) {
+	private void initMoveConfig(PowerUpConfiguration powerUpConfiguration) {
 		moveConfig = new MovementConfiguration();
-		moveConfig.setXMovementSpeed(2);
-		moveConfig.setYMovementSpeed(2);
-		moveConfig.setRotation(direction);
-		PathFinder pathFinder = new BouncingPathFinder();
-		moveConfig.setPathFinder(pathFinder);
+		moveConfig.setXMovementSpeed(powerUpConfiguration.getxMovementSpeed());
+		moveConfig.setYMovementSpeed(powerUpConfiguration.getyMovementSpeed());
+		moveConfig.setRotation(powerUpConfiguration.getMovementDirection());
+		moveConfig.setPathFinder(powerUpConfiguration.getPathFinder());
 	}
 
 	

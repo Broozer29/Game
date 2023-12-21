@@ -1,11 +1,14 @@
 package game.objects.friendlies.spaceship.specialAttacks;
 
+import game.objects.missiles.MissileConfiguration;
+import visual.objects.CreationConfigurations.SpriteAnimationConfiguration;
 import visual.objects.SpriteAnimation;
 
 public class ElectroShred extends SpecialAttack{
 
-	public ElectroShred(int x, int y, float scale, SpriteAnimation animation, float damage, boolean friendly) {
-		super(x, y, scale, animation, damage, friendly);
+	public ElectroShred(SpriteAnimationConfiguration spriteAnimationConfiguration, MissileConfiguration missileConfiguration) {
+		super(spriteAnimationConfiguration, missileConfiguration);
+		this.setObjectType("ElectroShred");
 	}
 
 	

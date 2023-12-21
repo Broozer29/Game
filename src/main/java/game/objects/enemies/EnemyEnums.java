@@ -1,5 +1,11 @@
 package game.objects.enemies;
 
+import java.util.Random;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
+
 public enum EnemyEnums {
     Alien_Bomb(50,50),
     Seeker(50,50),
@@ -26,5 +32,17 @@ public enum EnemyEnums {
 
     public int getFormationHeightDistance() {
         return height;
+    }
+
+    public gamedata.image.ImageEnums getImageEnum() {
+        return gamedata.image.ImageEnums.valueOf(this.name());
+    }
+
+    public static EnemyEnums getRandomEnemy() {
+        List<EnemyEnums> values = Arrays.stream(EnemyEnums.values())
+                .filter(e -> e != EnemyEnums.Random)
+                .collect(Collectors.toList());
+        Random random = new Random();
+        return values.get(random.nextInt(values.size()));
     }
 }

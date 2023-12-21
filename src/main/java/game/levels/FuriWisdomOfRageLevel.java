@@ -63,9 +63,12 @@ public class FuriWisdomOfRageLevel implements Level {
 		// additional delay
 //		0:00 tot 0:40 is hetzelfde. Start van het level, start met basic enemies
 		addSpawnTimer(createSpawnTimer(EnemyEnums.Bomba, 1, 3, loopable, Direction.LEFT, scale, additionalDelay, xMovementSpeed, yMovementSpeed));
+
+
+
 		for (int i = 2; i < 41; i += 2) {
 			addSpawnTimer(
-					createSpawnTimer(EnemyEnums.Random, 4, i, loopable, Direction.LEFT, scale, additionalDelay, xMovementSpeed, yMovementSpeed));
+					createSpawnTimer(EnemyEnums.getRandomEnemy(), 4, i, loopable, Direction.LEFT, scale, additionalDelay, xMovementSpeed, yMovementSpeed));
 		}
 
 		create22SecondsFormation(timer, formation, formCreator);
@@ -280,7 +283,7 @@ public class FuriWisdomOfRageLevel implements Level {
 //		4:40 tot 5:06 afbouwen, het is over
 		for (int i = 280; i < 306; i += 2) {
 			addSpawnTimer(
-					createSpawnTimer(EnemyEnums.Random, 4, i, loopable, Direction.LEFT, scale, additionalDelay, xMovementSpeed, yMovementSpeed));
+					createSpawnTimer(EnemyEnums.getRandomEnemy(), 4, i, loopable, Direction.LEFT, scale, additionalDelay, xMovementSpeed, yMovementSpeed));
 		}
 	}
 

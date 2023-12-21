@@ -1,7 +1,7 @@
 package game.objects.friendlies.powerups.powerupeffects;
 
-import game.objects.friendlies.FriendlyEnums;
-import game.objects.friendlies.FriendlyMover;
+import game.objects.friendlies.Drones.DroneEnums;
+import game.objects.friendlies.FriendlyManager;
 import game.objects.friendlies.powerups.PowerUpEffect;
 import game.objects.friendlies.powerups.PowerUpEnums;
 
@@ -14,9 +14,9 @@ public class MissileGuardianBot extends PowerUpEffect {
 	@Override
 	public void activatePower() {
 		float scale = (float) 0.5;
-		FriendlyEnums friendlyType = FriendlyEnums.Missile_Guardian_Bot;
+		DroneEnums friendlyType = DroneEnums.Missile_Guardian_Bot;
 
-		FriendlyMover.getInstance().createMissileGuardianBot(friendlyType, scale);
+		FriendlyManager.getInstance().createMissileGuardianBot(friendlyType, scale);
 	}
 
 	@Override

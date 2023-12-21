@@ -144,7 +144,7 @@ public class HomingPathFinder implements PathFinder {
 		return new Point(xCoordinate, yCoordinate);
 	}
 
-	public Sprite getTarget(boolean isFriendly) {
+	public GameObject getTarget(boolean isFriendly) {
 		if (isFriendly) {
 			EnemyManager enemyManager = EnemyManager.getInstance();
 			return enemyManager.getClosestEnemy();

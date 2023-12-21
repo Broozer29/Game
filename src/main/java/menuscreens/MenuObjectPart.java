@@ -1,28 +1,32 @@
 package menuscreens;
 
 import gamedata.image.ImageEnums;
+import visual.objects.CreationConfigurations.SpriteAnimationConfiguration;
+import visual.objects.CreationConfigurations.SpriteConfiguration;
 import visual.objects.Sprite;
 import visual.objects.SpriteAnimation;
 
 public class MenuObjectPart extends Sprite {
 
-	private ImageEnums tileType;
 	private SpriteAnimation tileAnimation;
 
-	public MenuObjectPart(ImageEnums tileType, int xCoordinate, int yCoordinate, float scale) {
-		super(xCoordinate, yCoordinate, scale);
-		this.tileType = tileType;
-		initTile();
+	public MenuObjectPart(SpriteConfiguration spriteConfiguration) {
+		super(spriteConfiguration);
 	}
 
-	private void initTile() {
-		loadImage(tileType);
-		configureImageDimensions();
-	}
-	
+//	private void initTile() {
+//		loadImage(tileType);
+//		configureImageDimensions();
+//	}
+
 	public void setTileAnimation(ImageEnums tileAnimation) {
 		if(tileAnimation == ImageEnums.Highlight) {
-			this.tileAnimation = new SpriteAnimation(xCoordinate, yCoordinate, ImageEnums.Highlight, true, 1);
+			SpriteConfiguration spriteConfiguration = new SpriteConfiguration();
+			spriteConfiguration.setyCoordinate(yCoordinate);
+			spriteConfiguration.setxCoordinate(xCoordinate);
+			spriteConfiguration.setImageType(ImageEnums.Highlight);
+			SpriteAnimationConfiguration spriteAnimationConfiguration = new SpriteAnimationConfiguration(spriteConfiguration, 2, true);
+			this.tileAnimation = new SpriteAnimation(spriteAnimationConfiguration);
 		}
 	}
 	
@@ -30,12 +34,12 @@ public class MenuObjectPart extends Sprite {
 		return this.tileAnimation;
 	}
 
-	public ImageEnums getTileType() {
-		return tileType;
-	}
-
-	public void setTileType(ImageEnums tileType) {
-		this.tileType = tileType;
-	}
+//	public ImageEnums getTileType() {
+//		return tileType;
+//	}
+//
+//	public void setTileType(ImageEnums tileType) {
+//		this.tileType = tileType;
+//	}
 
 }

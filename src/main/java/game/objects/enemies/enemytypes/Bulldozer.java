@@ -1,43 +1,32 @@
 package game.objects.enemies.enemytypes;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-import game.managers.PlayerManager;
 import game.movement.Direction;
-import game.movement.Point;
 import game.movement.pathfinders.OrbitPathFinder;
 import game.movement.pathfinders.PathFinder;
-import game.movement.pathfinders.RegularPathFinder;
+import game.objects.enemies.EnemyConfiguration;
 import game.objects.enemies.Enemy;
 import game.objects.enemies.EnemyEnums;
 import game.objects.enemies.EnemyManager;
-import game.objects.friendlies.FriendlyObject;
-import game.objects.friendlies.GuardianDrone;
 import game.objects.missiles.MissileManager;
 import gamedata.audio.AudioEnums;
 import gamedata.image.ImageEnums;
+import visual.objects.CreationConfigurations.SpriteAnimationConfiguration;
+import visual.objects.CreationConfigurations.SpriteConfiguration;
 import visual.objects.SpriteAnimation;
 
 public class Bulldozer extends Enemy {
 
-    public Bulldozer (int x, int y, Point destination, Direction rotation, float scale, PathFinder pathFinder,
-                      int xMovementSpeed, int yMovementSpeed) {
-        super(x, y, destination, rotation, EnemyEnums.Bulldozer, scale, pathFinder, xMovementSpeed, yMovementSpeed);
-        loadImage(ImageEnums.Bulldozer);
+    public Bulldozer (SpriteConfiguration spriteConfiguration, EnemyConfiguration enemyConfiguration) {
+        super(spriteConfiguration, enemyConfiguration);
 
-        this.exhaustAnimation = new SpriteAnimation(x, y, ImageEnums.Bulldozer_Normal_Exhaust, true, scale);
-        this.destructionAnimation = new SpriteAnimation(x, y, ImageEnums.Bulldozer_Destroyed_Explosion, false, scale);
-        this.exhaustAnimation.setFrameDelay(1);
-        this.currentHitpoints = 50;
-        this.maxHitPoints = 50;
-        this.attackSpeed = 200;
-        this.hasAttack = true;
-        this.showHealthBar = true;
-        this.deathSound = AudioEnums.Large_Ship_Destroyed;
-        this.setVisible(true);
-        rotateGameObject(rotation);
+        SpriteAnimationConfiguration exhaustConfiguration = new SpriteAnimationConfiguration(spriteConfiguration, 0, true);
+        exhaustConfiguration.getSpriteConfiguration().setImageType(ImageEnums.Bulldozer_Normal_Exhaust);
+        this.exhaustAnimation = new SpriteAnimation(exhaustConfiguration);
+
+        SpriteAnimationConfiguration destroyedExplosionfiguration = new SpriteAnimationConfiguration(spriteConfiguration, 1, true);
+        destroyedExplosionfiguration.getSpriteConfiguration().setImageType(ImageEnums.Bulldozer_Destroyed_Explosion);
+        this.destructionAnimation = new SpriteAnimation(destroyedExplosionfiguration);
+
         createRotatingBombs();
     }
 
@@ -59,10 +48,33 @@ public class Bulldozer extends Enemy {
             int y = (int) (meanY + Math.sin(nextAngle) * radius);
 
             PathFinder pathFinder = new OrbitPathFinder(this, radius, 300, nextAngle);
-            Enemy alienBomb = new AlienBomb(x, y, null, Direction.LEFT, scale, pathFinder, 1, 1);
+
+            Enemy alienBomb = getEnemy(x, y, pathFinder);
             this.followingEnemies.add(alienBomb);
             EnemyManager.getInstance().addEnemy(alienBomb);
         }
+    }
+
+    private Enemy getEnemy (int x, int y, PathFinder pathFinder) {
+        SpriteConfiguration spriteConfiguration = new SpriteConfiguration(
+                x,
+                y,
+                scale,
+                ImageEnums.Alien_Bomb,
+                0, 0,
+                (float) 1.0, false, 0
+        );
+
+        EnemyConfiguration enemyConfiguration = new EnemyConfiguration(
+                EnemyEnums.Alien_Bomb,
+                25, 0,
+                false, false, AudioEnums.Alien_Bomb_Destroyed,
+                Direction.LEFT, pathFinder, 1, 1, true, "Alien Bomb",
+                0
+        );
+
+        Enemy alienBomb = new AlienBomb(spriteConfiguration, enemyConfiguration);
+        return alienBomb;
     }
 
 

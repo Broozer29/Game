@@ -5,6 +5,8 @@ import java.util.List;
 
 import game.objects.GameObject;
 import game.objects.missiles.Missile;
+import game.objects.missiles.MissileConfiguration;
+import visual.objects.CreationConfigurations.SpriteAnimationConfiguration;
 import visual.objects.Sprite;
 import visual.objects.SpriteAnimation;
 
@@ -13,11 +15,11 @@ public class SpecialAttack extends GameObject {
 	protected boolean centeredAroundPlayer = false;
 	
 
-	public SpecialAttack(int x, int y, float scale, SpriteAnimation animation, float damage, boolean friendly) {
-		super(x, y, scale);
-		this.animation = animation;
-		this.damage = damage;
-		this.friendly = friendly;
+	public SpecialAttack(SpriteAnimationConfiguration spriteAnimationConfiguration, MissileConfiguration missileConfiguration) {
+		super(spriteAnimationConfiguration);
+		this.damage = missileConfiguration.getDamage();
+		this.friendly = missileConfiguration.isFriendly();
+		this.allowedToDealDamage = missileConfiguration.isAllowedToDealDamage();
 		this.updateCurrentBoardBlock();
 	}
 

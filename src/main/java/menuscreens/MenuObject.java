@@ -16,6 +16,7 @@ import gamedata.audio.AudioDatabase;
 import gamedata.audio.AudioEnums;
 import gamedata.audio.AudioManager;
 import gamedata.image.ImageEnums;
+import visual.objects.CreationConfigurations.SpriteConfiguration;
 
 public class MenuObject {
 
@@ -42,13 +43,21 @@ public class MenuObject {
 	}
 
 	private void initMenuImages() {
+		SpriteConfiguration spriteConfiguration = new SpriteConfiguration();
+		spriteConfiguration.setxCoordinate(xCoordinate);
+		spriteConfiguration.setyCoordinate(yCoordinate);
+		spriteConfiguration.setScale(scale);
+		spriteConfiguration.setImageType(imageType);
+
+
 		if (!(this.menuObjectType == MenuObjectEnums.Text_Block)) {
 			if (this.menuObjectType == MenuObjectEnums.Highlight_Animation) {
-				MenuObjectPart newTile = new MenuObjectPart(ImageEnums.Invisible, xCoordinate, xCoordinate, scale);
+				spriteConfiguration.setImageType(ImageEnums.Invisible);
+				MenuObjectPart newTile = new MenuObjectPart(spriteConfiguration);
 				newTile.setTileAnimation(imageType);
 				this.menuTiles.add(newTile);
 			} else {
-				MenuObjectPart newTile = new MenuObjectPart(imageType, xCoordinate, xCoordinate, scale);
+				MenuObjectPart newTile = new MenuObjectPart(spriteConfiguration);
 				this.menuTiles.add(newTile);
 			}
 		} else if (this.menuObjectType == MenuObjectEnums.Text_Block) {
@@ -115,9 +124,13 @@ public class MenuObject {
 			char stringChar = text.charAt(i);
 			if (stringChar != ' ') {
 				ImageEnums imageType = ImageEnums.fromChar(stringChar); // convert char to Letter enum
-				MenuObjectPart newTile = new MenuObjectPart(imageType, startingXCoordinate + (kernelDistance * i),
-						startingYCoordinate, scale);
+				SpriteConfiguration spriteConfiguration = new SpriteConfiguration();
+				spriteConfiguration.setImageType(imageType);
+				spriteConfiguration.setxCoordinate(startingXCoordinate + (kernelDistance * i));
+				spriteConfiguration.setyCoordinate(startingYCoordinate);
+				spriteConfiguration.setScale(scale);
 
+				MenuObjectPart newTile = new MenuObjectPart(spriteConfiguration);
 				menuTiles.add(newTile);
 			}
 		}

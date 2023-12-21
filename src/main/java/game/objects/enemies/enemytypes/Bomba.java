@@ -4,17 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import game.movement.Direction;
-import game.movement.Point;
 import game.movement.pathfinders.PathFinder;
 import game.movement.pathfinders.RegularPathFinder;
+import game.objects.enemies.EnemyConfiguration;
 import game.objects.enemies.Enemy;
-import game.objects.enemies.EnemyEnums;
-import game.objects.missiles.Missile;
-import game.objects.missiles.MissileCreator;
-import game.objects.missiles.MissileManager;
-import game.objects.missiles.missiletypes.BombaProjectile;
-import gamedata.audio.AudioEnums;
+import game.objects.missiles.*;
 import gamedata.image.ImageEnums;
+import visual.objects.CreationConfigurations.SpriteAnimationConfiguration;
+import visual.objects.CreationConfigurations.SpriteConfiguration;
 import visual.objects.SpriteAnimation;
 
 public class Bomba extends Enemy {
@@ -22,23 +19,20 @@ public class Bomba extends Enemy {
 	private PathFinder missilePathFinder;
 	private List<Direction> missileDirections = new ArrayList<Direction>();
 
-	public Bomba(int x, int y, Point destination, Direction rotation, float scale, PathFinder pathFinder,
-			int xMovementSpeed, int yMovementSpeed) {
-		super(x, y, destination, rotation, EnemyEnums.Bomba, scale, pathFinder, xMovementSpeed, yMovementSpeed);
-		loadImage(ImageEnums.Bomba);
+	public Bomba(SpriteConfiguration spriteConfiguration, EnemyConfiguration enemyConfiguration) {
+		super(spriteConfiguration, enemyConfiguration);
 
-		this.exhaustAnimation = new SpriteAnimation(x, y, ImageEnums.Bomba_Normal_Exhaust, true, scale);
-		this.destructionAnimation = new SpriteAnimation(x, y, ImageEnums.Bomba_Destroyed_Explosion, false, scale);
+		//The correct imageenum can be gotten from a method in enemyenums like the BGO enum method
+		//Below is sloppy and temporary
+		SpriteAnimationConfiguration exhaustConfiguration = new SpriteAnimationConfiguration(spriteConfiguration, 0, true);
+		exhaustConfiguration.getSpriteConfiguration().setImageType(ImageEnums.Bomba_Normal_Exhaust);
+		this.exhaustAnimation = new SpriteAnimation(exhaustConfiguration);
 
-		this.exhaustAnimation.setFrameDelay(1);
-		this.currentHitpoints = 100;
-		this.maxHitPoints = 100;
-		this.attackSpeed = 200;
-		this.hasAttack = true;
-		this.showHealthBar = true;
-		this.deathSound = AudioEnums.Large_Ship_Destroyed;
-		this.setVisible(true);
-		rotateGameObject(rotation);
+		SpriteAnimationConfiguration destroyedExplosionfiguration = new SpriteAnimationConfiguration(spriteConfiguration, 1, true);
+		destroyedExplosionfiguration.getSpriteConfiguration().setImageType(ImageEnums.Bomba_Destroyed_Explosion);
+		this.destructionAnimation = new SpriteAnimation(destroyedExplosionfiguration);
+
+		//Specialized behaviour configuration stuff
 		this.missilePathFinder = new RegularPathFinder();
 		this.initDirectionFromRotation();
 	}
@@ -56,9 +50,17 @@ public class Bomba extends Enemy {
 		if (attackSpeedCurrentFrameCount >= attackSpeed) {
 
 			for (Direction direction : missileDirections) {
-				Missile newMissile = MissileCreator.getInstance().createEnemyMissile(xCoordinate,
-						yCoordinate + this.height / 2, ImageEnums.Bomba_Missile, ImageEnums.Bomba_Missile_Explosion,
-						direction, scale, missilePathFinder, xMovementSpeed, yMovementSpeed, (float) 7.5);
+				SpriteConfiguration missileSpriteConfiguration = this.spriteConfiguration;
+				missileSpriteConfiguration.setyCoordinate(yCoordinate + this.height / 2);
+				missileSpriteConfiguration.setImageType(ImageEnums.Bomba_Missile);
+
+				MissileConfiguration missileConfiguration = new MissileConfiguration(MissileTypeEnums.BombaProjectile,
+						100, 100, null, ImageEnums.Bomba_Missile_Explosion, isFriendly()
+						, new RegularPathFinder(), direction, xMovementSpeed,yMovementSpeed, true
+						, "Bomba Missile", (float) 7.5);
+
+
+				Missile newMissile = MissileCreator.getInstance().createMissile(missileSpriteConfiguration, missileConfiguration);
 				
 				
 				if(missileDirections.contains(Direction.DOWN)) {

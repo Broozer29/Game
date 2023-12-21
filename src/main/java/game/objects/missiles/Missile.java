@@ -4,52 +4,59 @@ import game.managers.AnimationManager;
 import game.movement.Direction;
 import game.movement.MovementConfiguration;
 import game.movement.Point;
+import game.movement.pathfinders.HomingPathFinder;
 import game.movement.pathfinders.PathFinder;
 import game.objects.GameObject;
 import gamedata.image.ImageEnums;
+import visual.objects.CreationConfigurations.SpriteAnimationConfiguration;
+import visual.objects.CreationConfigurations.SpriteConfiguration;
 import visual.objects.SpriteAnimation;
 
 public class Missile extends GameObject {
 
-	protected ImageEnums missileType;
+	private MissileTypeEnums missileType;
 
-	public Missile(int x, int y, Point destination, ImageEnums missileType, ImageEnums destructionType,
-			Direction rotation, float scale, PathFinder pathFinder, boolean isFriendly, int xMovementSpeed,
-			int yMovementSpeed) {
-		super(x, y, scale);
-		this.currentLocation = new Point(x, y);
-		this.missileType = missileType;
-		this.friendly = isFriendly;
-		setMissileAnimation(missileType, destructionType, scale);
-		initMovementConfiguration(currentLocation, destination, pathFinder, rotation, xMovementSpeed, yMovementSpeed);
-		this.currentLocation = new Point(x, y);
+	public Missile(SpriteConfiguration spriteConfiguration, MissileConfiguration missileConfiguration) {
+		super(spriteConfiguration);
+		initMissile(missileConfiguration);
+
+		SpriteAnimationConfiguration spriteAnimationConfiguration = new SpriteAnimationConfiguration(spriteConfiguration, 2, false);
+		this.animation = new SpriteAnimation(spriteAnimationConfiguration);
+
+
+		SpriteAnimationConfiguration destructionAnimation = new SpriteAnimationConfiguration(spriteConfiguration, 2, false);
+		destructionAnimation.getSpriteConfiguration().setImageType(missileConfiguration.getDestructionType());
+		this.destructionAnimation = new SpriteAnimation(destructionAnimation);
+
+		initMovementConfiguration(missileConfiguration);
+	}
+
+	private void initMissile(MissileConfiguration missileConfiguration){
+		this.friendly = missileConfiguration.isFriendly();
+		this.maxHitPoints = missileConfiguration.getMaxHitPoints();
+		this.maxShieldPoints = missileConfiguration.getMaxShields();
+		this.deathSound = missileConfiguration.getDeathSound();
+		this.allowedToDealDamage = missileConfiguration.isAllowedToDealDamage();
+		this.objectType = missileConfiguration.getObjectType();
+		this.damage = missileConfiguration.getDamage();
+		this.missileType = missileConfiguration.getMissileType();
+
 	}
 	
-	private void initMovementConfiguration(Point currentLocation, Point destination, PathFinder pathFinder,
-			Direction rotation, int xMovementSpeed, int yMovementSpeed) {
+	private void initMovementConfiguration(MissileConfiguration missileConfiguration) {
+		PathFinder pathFinder = missileConfiguration.getPathfinder();
 		movementConfiguration = new MovementConfiguration();
 		movementConfiguration.setPathFinder(pathFinder);
 		movementConfiguration.setCurrentLocation(currentLocation);
-		movementConfiguration.setDestination(destination);
-		movementConfiguration.setRotation(rotation);
-		movementConfiguration.setXMovementSpeed(xMovementSpeed);
-		movementConfiguration.setYMovementSpeed(yMovementSpeed);
+		movementConfiguration.setDestination(pathFinder.calculateInitialEndpoint(currentLocation, missileConfiguration.getMovementDirection(), isFriendly()));
+		movementConfiguration.setRotation(missileConfiguration.getMovementDirection());
+		movementConfiguration.setXMovementSpeed(missileConfiguration.getxMovementSpeed());
+		movementConfiguration.setYMovementSpeed(missileConfiguration.getyMovementSpeed());
 		movementConfiguration.setStepsTaken(0);
 		movementConfiguration.setHasLock(true);
-	}
 
-	public ImageEnums getMissileType() {
-		return this.missileType;
-	}
-
-	private void setMissileAnimation (ImageEnums missileType, ImageEnums destructionType, float scale) {
-		if (!missileType.equals(ImageEnums.Alien_Laserbeam) && !missileType.equals(ImageEnums.Player_Laserbeam)) {
-			if (missileType != null) {
-				this.animation = new SpriteAnimation(xCoordinate, yCoordinate, missileType, true, scale);
-			}
-		}
-		if (destructionType != null) {
-			this.destructionAnimation = new SpriteAnimation(xCoordinate, yCoordinate, destructionType, false, scale);
+		if(pathFinder instanceof HomingPathFinder){
+			this.objectToChase = ((HomingPathFinder) pathFinder).getTarget(isFriendly());
 		}
 	}
 
@@ -71,4 +78,11 @@ public class Missile extends GameObject {
 		this.setVisible(false);
 	}
 
+	public MissileTypeEnums getMissileType () {
+		return missileType;
+	}
+
+	public void setMissileType (MissileTypeEnums missileType) {
+		this.missileType = missileType;
+	}
 }

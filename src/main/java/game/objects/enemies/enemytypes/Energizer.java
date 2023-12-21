@@ -1,37 +1,25 @@
 package game.objects.enemies.enemytypes;
 
-import game.movement.Direction;
-import game.movement.Point;
-import game.movement.pathfinders.PathFinder;
 import game.movement.pathfinders.RegularPathFinder;
+import game.objects.enemies.EnemyConfiguration;
 import game.objects.enemies.Enemy;
-import game.objects.enemies.EnemyEnums;
-import game.objects.missiles.Missile;
-import game.objects.missiles.MissileCreator;
-import game.objects.missiles.MissileManager;
-import gamedata.audio.AudioEnums;
+import game.objects.missiles.*;
 import gamedata.image.ImageEnums;
+import visual.objects.CreationConfigurations.SpriteAnimationConfiguration;
+import visual.objects.CreationConfigurations.SpriteConfiguration;
 import visual.objects.SpriteAnimation;
 
 public class Energizer extends Enemy {
-	private PathFinder missilePathFinder;
 
-	public Energizer(int x, int y, Point destination, Direction rotation, float scale, PathFinder pathFinder,
-			int xMovementSpeed, int yMovementSpeed) {
-		super(x, y, destination, rotation, EnemyEnums.Energizer, scale, pathFinder, xMovementSpeed, yMovementSpeed);
-		loadImage(ImageEnums.Energizer);
-		this.exhaustAnimation = new SpriteAnimation(x, y, ImageEnums.Energizer_Destroyed_Explosion, true, scale);
-		this.destructionAnimation = new SpriteAnimation(x, y, ImageEnums.Energizer_Destroyed_Explosion, false, scale);
-		this.exhaustAnimation.setFrameDelay(1);
-		this.currentHitpoints = 50;
-		this.maxHitPoints = 50;
-		this.attackSpeed = 300;
-		this.hasAttack = true;
-		this.showHealthBar = true;
-		this.deathSound = AudioEnums.Large_Ship_Destroyed;
-		this.setVisible(true);
-		this.rotateGameObject(rotation);
-		this.missilePathFinder = new RegularPathFinder();
+	public Energizer(SpriteConfiguration spriteConfiguration, EnemyConfiguration enemyConfiguration) {
+		super(spriteConfiguration, enemyConfiguration);
+		SpriteAnimationConfiguration exhaustConfiguration = new SpriteAnimationConfiguration(spriteConfiguration, 0, true);
+		exhaustConfiguration.getSpriteConfiguration().setImageType(ImageEnums.Energizer_Normal_Exhaust);
+		this.exhaustAnimation = new SpriteAnimation(exhaustConfiguration);
+
+		SpriteAnimationConfiguration destroyedExplosionfiguration = new SpriteAnimationConfiguration(spriteConfiguration, 1, true);
+		destroyedExplosionfiguration.getSpriteConfiguration().setImageType(ImageEnums.Energizer_Destroyed_Explosion);
+		this.destructionAnimation = new SpriteAnimation(destroyedExplosionfiguration);
 	}
 
 	// Called every game tick. If weapon is not on cooldown, fire a shot.
@@ -45,12 +33,19 @@ public class Energizer extends Enemy {
 		int xMovementSpeed = 4;
 		int yMovementSpeed = 2;
 		if (attackSpeedCurrentFrameCount >= attackSpeed) {
+			SpriteConfiguration missileSpriteConfiguration = this.spriteConfiguration;
+			missileSpriteConfiguration.setyCoordinate(yCoordinate + this.height / 2);
+			missileSpriteConfiguration.setImageType(ImageEnums.Energizer_Missile);
 
-			Missile newMissile = MissileCreator.getInstance().createEnemyMissile(xCoordinate,
-					yCoordinate + this.height / 2, ImageEnums.Energizer_Missile,
-					ImageEnums.Energizer_Missile_Explosion, movementConfiguration.getRotation(), scale, missilePathFinder, xMovementSpeed,
-					yMovementSpeed, (float) 7.5);
-			
+			MissileConfiguration missileConfiguration = new MissileConfiguration(MissileTypeEnums.EnergizerProjectile,
+					100, 100, null, ImageEnums.Energizer_Missile_Explosion, isFriendly()
+					, new RegularPathFinder(), movementDirection, xMovementSpeed,yMovementSpeed, true
+					, "Bomba Missile", (float) 7.5);
+
+
+			Missile newMissile = MissileCreator.getInstance().createMissile(missileSpriteConfiguration, missileConfiguration);
+
+
 			newMissile.rotateGameObject(movementConfiguration.getRotation());
 			missileManager.addExistingMissile(newMissile);
 			attackSpeedCurrentFrameCount = 0;

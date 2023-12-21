@@ -3,6 +3,8 @@ package game.managers;
 import game.UI.UIObject;
 import gamedata.PlayerStats;
 import gamedata.image.ImageEnums;
+import javafx.animation.Animation;
+import visual.objects.CreationConfigurations.SpriteConfiguration;
 import visual.objects.SpriteAnimation;
 
 public class GameUIManager {
@@ -53,25 +55,35 @@ public class GameUIManager {
 		
 		}
 
-		specialAttackFrame = new UIObject(150, 20, (float) 0.7, frameType);
-		specialAttackHighlight = new SpriteAnimation(50, 30, ImageEnums.Highlight, true, (float) 0.7);
+		specialAttackFrame = new UIObject(createUIConfiguration(150, 20, (float) 0.7, frameType));
+		specialAttackHighlight = AnimationManager.getInstance().createAnimation(50, 30, ImageEnums.Highlight, true, (float) 0.7);
+//		specialAttackHighlight = new SpriteAnimation(50, 30, ImageEnums.Highlight, true, (float) 0.7);
 		specialAttackHighlight.setImageDimensions(specialAttackFrame.getWidth(), specialAttackFrame.getHeight());
 		specialAttackHighlight.setX(specialAttackFrame.getXCoordinate() - 2);
 		specialAttackHighlight.setY(specialAttackFrame.getYCoordinate() - 2);
 	}
 
 	private void createHealthBar() {
-		healthFrame = new UIObject(0, 30, 1, ImageEnums.Frame);
+		healthFrame = new UIObject(createUIConfiguration(0, 30, 1, ImageEnums.Frame));
 		healthFrame.resizeToDimensions(healthFrameWidth, healthFrameHeight);
-		healthBar = new UIObject(10, 30, 1, ImageEnums.Health_Bar);
+		healthBar = new UIObject(createUIConfiguration(10, 30, 1, ImageEnums.Health_Bar));
 		healthBar.resizeToDimensions(healthBarWidth, healthBarHeight);
 	}
 
 	private void createShieldBar() {
-		shieldFrame = new UIObject(0, 60, 1, ImageEnums.Frame);
+		shieldFrame = new UIObject(createUIConfiguration(0, 60, 1, ImageEnums.Frame));
 		shieldFrame.resizeToDimensions(healthFrameWidth, healthFrameHeight);
-		shieldBar = new UIObject(10, 60, 1, ImageEnums.Shield_Bar);
+		shieldBar = new UIObject(createUIConfiguration(10, 60, 1, ImageEnums.Shield_Bar));
 		shieldBar.resizeToDimensions(healthBarWidth, healthBarHeight);
+	}
+
+	private SpriteConfiguration createUIConfiguration(int xCoordinate, int yCoordinate, float scale, ImageEnums imageType){
+		SpriteConfiguration spriteConfiguration = new SpriteConfiguration();
+		spriteConfiguration.setxCoordinate(xCoordinate);
+		spriteConfiguration.setyCoordinate(yCoordinate);
+		spriteConfiguration.setScale(scale);
+		spriteConfiguration.setImageType(imageType);
+		return spriteConfiguration;
 	}
 
 	public int getHealthBarWidth() {

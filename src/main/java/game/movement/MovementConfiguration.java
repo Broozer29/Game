@@ -1,6 +1,7 @@
 package game.movement;
 
 import game.movement.pathfinders.PathFinder;
+import game.objects.GameObject;
 import visual.objects.Sprite;
 
 public class MovementConfiguration {
@@ -21,7 +22,7 @@ public class MovementConfiguration {
 	
 	protected boolean hasLock;
 	private Point nextPoint;
-	private Sprite target;
+	private GameObject target;
 	
 	
 	public MovementConfiguration() {
@@ -177,12 +178,12 @@ public class MovementConfiguration {
 	}
 
 
-	public Sprite getTarget() {
+	public GameObject getTarget() {
 		return target;
 	}
 
 
-	public void setTarget(Sprite target) {
+	public void setTarget(GameObject target) {
 		this.target = target;
 	}
 	

@@ -33,11 +33,11 @@ import game.managers.PlayerManager;
 import game.managers.TimerManager;
 import game.objects.background.BackgroundManager;
 import game.objects.background.BackgroundObject;
+import game.objects.friendlies.Drones.GuardianDrone;
 import game.objects.neutral.Explosion;
 import game.objects.enemies.Enemy;
 import game.objects.enemies.EnemyManager;
-import game.objects.friendlies.FriendlyMover;
-import game.objects.friendlies.FriendlyObject;
+import game.objects.friendlies.FriendlyManager;
 import game.objects.friendlies.powerups.PowerUp;
 import game.objects.friendlies.powerups.OnScreenText;
 import game.objects.friendlies.powerups.PowerUpManager;
@@ -94,7 +94,7 @@ public class GameBoard extends JPanel implements ActionListener {
 	private BackgroundManager backgroundManager = BackgroundManager.getInstance();
 	private TimerManager timerManager = TimerManager.getInstance();
 	private ExplosionManager explosionManager = ExplosionManager.getInstance();
-	private FriendlyMover friendlyMover = FriendlyMover.getInstance();
+	private FriendlyManager friendlyMover = FriendlyManager.getInstance();
 	private PlayerStats playerStats = PlayerStats.getInstance();
 	private GameUIManager uiManager = GameUIManager.getInstance();
 	private PowerUpManager powerUpManager = PowerUpManager.getInstance();
@@ -114,7 +114,7 @@ public class GameBoard extends JPanel implements ActionListener {
 		backgroundManager = BackgroundManager.getInstance();
 		timerManager = TimerManager.getInstance();
 		explosionManager = ExplosionManager.getInstance();
-		friendlyMover = FriendlyMover.getInstance();
+		friendlyMover = FriendlyManager.getInstance();
 		playerStats = PlayerStats.getInstance();
 		uiManager = GameUIManager.getInstance();
 		powerUpManager = PowerUpManager.getInstance();
@@ -295,9 +295,8 @@ public class GameBoard extends JPanel implements ActionListener {
 			drawAnimation(g, animation);
 		}
 
-		// Draw enemy missiles with an animation
-		for (Missile missile : missileManager.getEnemyMissiles()) {
-			if (missile.isVisible()) {
+		for (Missile missile : missileManager.getMissiles()){
+			if(missile.isVisible()){
 				if (missile.getAnimation() != null) {
 					drawAnimation(g, missile.getAnimation());
 				} else {
@@ -306,16 +305,27 @@ public class GameBoard extends JPanel implements ActionListener {
 			}
 		}
 
-		// Draw friendly missiles
-		for (Missile missile : missileManager.getFriendlyMissiles()) {
-			if (missile.isVisible()) {
-				if (missile.getAnimation() != null) {
-					drawAnimation(g, missile.getAnimation());
-				} else {
-					drawImage(g, missile);
-				}
-			}
-		}
+//		// Draw enemy missiles with an animation
+//		for (Missile missile : missileManager.getEnemyMissiles()) {
+//			if (missile.isVisible()) {
+//				if (missile.getAnimation() != null) {
+//					drawAnimation(g, missile.getAnimation());
+//				} else {
+//					drawImage(g, missile);
+//				}
+//			}
+//		}
+//
+//		// Draw friendly missiles
+//		for (Missile missile : missileManager.getFriendlyMissiles()) {
+//			if (missile.isVisible()) {
+//				if (missile.getAnimation() != null) {
+//					drawAnimation(g, missile.getAnimation());
+//				} else {
+//					drawImage(g, missile);
+//				}
+//			}
+//		}
 
 		// Draw enemies
 		for (Enemy enemy : enemyManager.getEnemies()) {
@@ -338,7 +348,7 @@ public class GameBoard extends JPanel implements ActionListener {
 			}
 		}
 
-		for (FriendlyObject friendly : friendlyMover.getActiveFriendlyObjects()) {
+		for (GuardianDrone friendly : friendlyMover.getGuardianDroneList()) {
 			if (friendly.isVisible()) {
 				drawAnimation(g, friendly.getAnimation());
 			}
@@ -412,6 +422,7 @@ public class GameBoard extends JPanel implements ActionListener {
 			// Save the original composite
 			Composite originalComposite = g.getComposite();
 
+			System.out.println("Kom ik hier " + sprite.getSpriteConfiguration().getImageType());
 			// Set the alpha composite
 			g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, sprite.getTransparancyAlpha()));
 

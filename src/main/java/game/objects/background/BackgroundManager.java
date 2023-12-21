@@ -8,6 +8,7 @@ import gamedata.DataClass;
 import gamedata.image.ImageDatabase;
 import gamedata.image.ImageEnums;
 import gamedata.image.ImageResizer;
+import visual.objects.CreationConfigurations.SpriteConfiguration;
 
 public class BackgroundManager {
 
@@ -85,7 +86,7 @@ public class BackgroundManager {
         int bgoSpawned = 0;
         int tries = 0;
         while (listToFill.size() < amount && tries < maxTries) {
-            BackgroundObject bgo = createBackgroundObject(bgoType, bgoImage, scale, depthLevel, listToFill, bgoSpawned);
+            BackgroundObject bgo = createBackgroundObject(bgoType, imageType, bgoImage, scale, depthLevel, listToFill, bgoSpawned);
             if (bgo != null) {
                 listToFill.add(bgo);
                 bgoSpawned++;
@@ -94,7 +95,7 @@ public class BackgroundManager {
         }
     }
 
-    private BackgroundObject createBackgroundObject (BGOEnums bgoType, BufferedImage bgoImage, float scale, int depthLevel, List<BackgroundObject> existingObjects, int bgoSpawned) {
+    private BackgroundObject createBackgroundObject (BGOEnums bgoType, ImageEnums imageType, BufferedImage bgoImage, float scale, int depthLevel, List<BackgroundObject> existingObjects, int bgoSpawned) {
         int xCoordinate = randomCoordinator.getRandomXBGOCoordinate();
         int yCoordinate = randomCoordinator.getRandomYBGOCoordinate();
 
@@ -102,7 +103,11 @@ public class BackgroundManager {
             List<BackgroundObject> sameDepthObjects = filterByDepthLevel(existingObjects, depthLevel);
             if (randomCoordinator.checkValidBGOXCoordinate(sameDepthObjects, xCoordinate, bgoImage.getWidth(null)) &&
                     randomCoordinator.checkValidBGOYCoordinate(sameDepthObjects, yCoordinate, bgoImage.getHeight(null))) {
-                return new BackgroundObject(xCoordinate, yCoordinate, bgoImage, scale, bgoType, depthLevel);
+
+
+                SpriteConfiguration spriteConfiguration = createSpriteConfiguration(xCoordinate, yCoordinate, imageType, scale);
+                BackgroundObjectConfiguration bgoConfiguration = createBGOConfiguration(depthLevel, bgoType);
+                return new BackgroundObject(spriteConfiguration, bgoConfiguration);
             }
 
         }
@@ -111,11 +116,15 @@ public class BackgroundManager {
             // Place Nebula objects next to each other horizontally
             xCoordinate = bgoImage.getWidth() * bgoSpawned;
             yCoordinate = 0;
-            return new BackgroundObject(xCoordinate, yCoordinate, bgoImage, scale, bgoType, depthLevel);
+            SpriteConfiguration spriteConfiguration = createSpriteConfiguration(xCoordinate, yCoordinate, imageType, scale);
+            BackgroundObjectConfiguration bgoConfiguration = createBGOConfiguration(depthLevel, bgoType);
+            return new BackgroundObject(spriteConfiguration, bgoConfiguration);
         }
 
         return null;
     }
+
+
 
     private List<BackgroundObject> filterByDepthLevel (List<BackgroundObject> existingObjects, int depthLevel) {
         List<BackgroundObject> filteredList = new ArrayList<>();
@@ -263,5 +272,18 @@ public class BackgroundManager {
         initSpaceTheme();
         this.nebulaTheme = NebulaThemeEnums.selectRandomNebulaScene();
         initBackgroundObjects();
+    }
+
+    private SpriteConfiguration createSpriteConfiguration(int xCoordinate, int yCoordinate, ImageEnums imageType, float scale){
+        SpriteConfiguration newConfig = new SpriteConfiguration();
+        newConfig.setxCoordinate(xCoordinate);
+        newConfig.setyCoordinate(yCoordinate);
+        newConfig.setImageType(imageType);
+        newConfig.setScale(scale);
+        return newConfig;
+    }
+
+    private BackgroundObjectConfiguration createBGOConfiguration(int depthLevel, BGOEnums bgoType){
+        return new BackgroundObjectConfiguration(depthLevel, bgoType);
     }
 }

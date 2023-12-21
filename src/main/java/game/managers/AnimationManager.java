@@ -5,6 +5,8 @@ import java.util.List;
 
 import game.objects.enemies.Enemy;
 import gamedata.image.ImageEnums;
+import visual.objects.CreationConfigurations.SpriteAnimationConfiguration;
+import visual.objects.CreationConfigurations.SpriteConfiguration;
 import visual.objects.SpriteAnimation;
 
 public class AnimationManager {
@@ -58,7 +60,14 @@ public class AnimationManager {
 
 	public SpriteAnimation createAnimation(int xCoordinate, int yCoordinate, ImageEnums animationType,
 			boolean infiniteLoop, float scale) {
-		return new SpriteAnimation(xCoordinate, yCoordinate, animationType, infiniteLoop, scale);
+
+		SpriteConfiguration spriteConfiguration = new SpriteConfiguration();
+		spriteConfiguration.setxCoordinate(xCoordinate);
+		spriteConfiguration.setyCoordinate(yCoordinate);
+		spriteConfiguration.setScale(scale);
+		spriteConfiguration.setImageType(animationType);
+		SpriteAnimationConfiguration spriteAnimationConfiguration = new SpriteAnimationConfiguration(spriteConfiguration, 2, infiniteLoop);
+		return new SpriteAnimation(spriteAnimationConfiguration);
 	}
 
 	// Called by EnemyManager when an enemy gets deleted and the belonging

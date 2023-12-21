@@ -11,11 +11,15 @@ import game.movement.pathfinders.RegularPathFinder;
 import game.objects.friendlies.spaceship.specialAttacks.ElectroShred;
 import game.objects.friendlies.spaceship.specialAttacks.Firewall;
 import game.objects.friendlies.spaceship.specialAttacks.SpecialAttack;
+import game.objects.missiles.Missile;
+import game.objects.missiles.MissileConfiguration;
 import game.objects.missiles.MissileManager;
 import gamedata.PlayerStats;
 import gamedata.audio.AudioEnums;
 import gamedata.audio.AudioManager;
 import gamedata.image.ImageEnums;
+import visual.objects.CreationConfigurations.SpriteAnimationConfiguration;
+import visual.objects.CreationConfigurations.SpriteConfiguration;
 import visual.objects.SpriteAnimation;
 
 public class SpaceShipSpecialGun {
@@ -33,9 +37,9 @@ public class SpaceShipSpecialGun {
 		case EMP:
 			fireElectroShred(xCoordinate, yCoordinate, spaceShipWidth, spaceShipHeight);
 			break;
-		case Firewall:
-			fireFirewall(xCoordinate, yCoordinate, spaceShipWidth, spaceShipHeight);
-			break;
+//		case Firewall:
+//			fireFirewall(xCoordinate, yCoordinate, spaceShipWidth, spaceShipHeight);
+//			break;
 		case Rocket_Cluster:
 			break;
 		}
@@ -48,18 +52,23 @@ public class SpaceShipSpecialGun {
 			PlayerManager playerManager = PlayerManager.getInstance();
 			SpaceShip spaceShip = playerManager.getSpaceship();
 
-			SpriteAnimation specialAttackAnimation = new SpriteAnimation(spaceShip.getCenterXCoordinate(),
-					spaceShip.getCenterYCoordinate(), ImageEnums.Player_EMP, false, (float) 1.5);
-			specialAttackAnimation.setFrameDelay(4);
+			SpriteConfiguration spriteConfiguration = new SpriteConfiguration();
+			spriteConfiguration.setxCoordinate(spaceShip.getCenterXCoordinate());
+			spriteConfiguration.setyCoordinate(spaceShip.getCenterYCoordinate());
+			spriteConfiguration.setImageType(ImageEnums.Player_EMP);
+
+			SpriteAnimationConfiguration spriteAnimationConfiguration = new SpriteAnimationConfiguration(spriteConfiguration, 4, false);
+			MissileConfiguration missileConfiguration = new MissileConfiguration();
+			missileConfiguration.setDamage(1.5f);
+
+			SpriteAnimation specialAttackAnimation = new SpriteAnimation(spriteAnimationConfiguration);
 			specialAttackAnimation.setCenterCoordinates(spaceShip.getCenterXCoordinate(), spaceShip.getCenterYCoordinate());
-			
-			SpecialAttack specialAttack = new ElectroShred(spaceShip.getCenterXCoordinate(),
-					spaceShip.getCenterYCoordinate(), 1, specialAttackAnimation, playerStats.getSpecialAttackDamage(),
-					true);
+
+			SpecialAttack specialAttack = new ElectroShred(spriteAnimationConfiguration, missileConfiguration);
 			specialAttack.setCenteredAroundPlayer(true);
 			try {
 				specialAttack.updateCurrentBoardBlock();
-				specialAttackAnimation.updateCurrentBoardBlock();
+//				specialAttackAnimation.updateCurrentBoardBlock();
 				AudioManager.getInstance().addAudio(AudioEnums.Default_EMP);
 				spaceShip.addFollowingSpecialAttack(specialAttack);
 				MissileManager.getInstance().addSpecialAttack(specialAttack);
@@ -70,36 +79,36 @@ public class SpaceShipSpecialGun {
 		}
 	}
 
-	
+
 	//Creates missiles and adds it to the missile manager
-	private void fireFirewall(int xCoordinate, int yCoordinate, int spaceShipWidth, int spaceShipHeight) {
-		if (currentSpecialAttackFrame >= playerStats.getSpecialAttackSpeed()) {
-
-			PlayerManager playerManager = PlayerManager.getInstance();
-			SpaceShip spaceShip = playerManager.getSpaceship();
-
-			int centerX = spaceShip.getCenterXCoordinate() + (spaceShip.getWidth() / 2);
-			int centerY = spaceShip.getCenterYCoordinate();
-
-			SpriteAnimation invisibleAnimation = new SpriteAnimation(centerX, centerY,
-					ImageEnums.Invisible_Animation, true, 1);
-			PathFinder pathfinder = new RegularPathFinder();
-			int firewallSize = PlayerStats.getInstance().getFirewallSize();
-
-			SpecialAttack firewall = new Firewall(centerX, centerY, 1, invisibleAnimation, PlayerStats.getInstance().getFirewallDamage(),
-					true, pathfinder, firewallSize, Direction.RIGHT);
-
-			try {
-				AudioManager.getInstance().addAudio(AudioEnums.Firewall);
-				MissileManager.getInstance().addSpecialAttack(firewall);
-			} catch (UnsupportedAudioFileException | IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-
-			this.currentSpecialAttackFrame = 0;
-		}
-	}
+//	private void fireFirewall(int xCoordinate, int yCoordinate, int spaceShipWidth, int spaceShipHeight) {
+//		if (currentSpecialAttackFrame >= playerStats.getSpecialAttackSpeed()) {
+//
+//			PlayerManager playerManager = PlayerManager.getInstance();
+//			SpaceShip spaceShip = playerManager.getSpaceship();
+//
+//			int centerX = spaceShip.getCenterXCoordinate() + (spaceShip.getWidth() / 2);
+//			int centerY = spaceShip.getCenterYCoordinate();
+//
+//			SpriteAnimation invisibleAnimation = new SpriteAnimation(centerX, centerY,
+//					ImageEnums.Invisible_Animation, true, 1);
+//			PathFinder pathfinder = new RegularPathFinder();
+//			int firewallSize = PlayerStats.getInstance().getFirewallSize();
+//
+//			SpecialAttack firewall = new Firewall(centerX, centerY, 1, invisibleAnimation, PlayerStats.getInstance().getFirewallDamage(),
+//					true, pathfinder, firewallSize, Direction.RIGHT);
+//
+//			try {
+//				AudioManager.getInstance().addAudio(AudioEnums.Firewall);
+//				MissileManager.getInstance().addSpecialAttack(firewall);
+//			} catch (UnsupportedAudioFileException | IOException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+//
+//			this.currentSpecialAttackFrame = 0;
+//		}
+//	}
 
 	public void updateFrameCount() {
 		this.currentSpecialAttackFrame++;

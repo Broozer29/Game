@@ -1,12 +1,12 @@
 package visual.objects;
 
-import java.awt.Image;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 
 import game.movement.Direction;
+import visual.objects.CreationConfigurations.SpriteAnimationConfiguration;
 import gamedata.image.ImageCropper;
 import gamedata.image.ImageDatabase;
 import gamedata.image.ImageEnums;
@@ -23,22 +23,34 @@ public class SpriteAnimation extends Sprite {
 	private int frameDelayCounter;
 	private int frameDelay = 2;
 	private boolean infiniteLoop;
-	private ImageEnums imageType;
+
 	private Rectangle animationBounds;
 
 	private int originXCoordinate;
 	private int originYCoordinate;
 
-	public SpriteAnimation(int x, int y, ImageEnums imageType, boolean infiniteLoop, float scale) {
-		super(x, y, scale);
-		loadGifFrames(imageType);
+//	public SpriteAnimation(int x, int y, ImageEnums imageType, boolean infiniteLoop, float scale) {
+//		super(x, y, scale);
+//		loadGifFrames(imageType);
+//		this.initAnimation();
+//		this.frameDelayCounter = 0;
+//		this.infiniteLoop = infiniteLoop;
+//		setAnimationScale(scale);
+//		animationBounds = new Rectangle(xCoordinate, yCoordinate, this.width, this.height);
+//	}
+
+
+	public SpriteAnimation(SpriteAnimationConfiguration spriteAnimationConfiguration){
+		super(spriteAnimationConfiguration.getSpriteConfiguration());
+		loadGifFrames(spriteAnimationConfiguration.getSpriteConfiguration().getImageType());
 		this.initAnimation();
 		this.frameDelayCounter = 0;
-		this.infiniteLoop = infiniteLoop;
+		this.infiniteLoop = spriteAnimationConfiguration.isInfiniteLoop();
+		this.frameDelay = spriteAnimationConfiguration.getFrameDelay();
 		setAnimationScale(scale);
 		animationBounds = new Rectangle(xCoordinate, yCoordinate, this.width, this.height);
-	}
 
+	}
 	protected void initAnimation() {
 		setImage(frames.get(0));
 		centerAnimationFrame();

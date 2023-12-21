@@ -9,14 +9,13 @@ import game.movement.Direction;
 import game.movement.pathfinders.HomingPathFinder;
 import game.movement.pathfinders.PathFinder;
 import game.objects.GameObject;
-import game.objects.missiles.Missile;
-import game.objects.missiles.MissileCreator;
-import game.objects.missiles.MissileManager;
+import game.objects.missiles.*;
 import gamedata.BoostsUpgradesAndBuffsSettings;
 import gamedata.PlayerStats;
 import gamedata.audio.AudioEnums;
 import gamedata.audio.AudioManager;
 import gamedata.image.ImageEnums;
+import visual.objects.CreationConfigurations.SpriteConfiguration;
 import visual.objects.Sprite;
 
 public class SpaceShipRegularGun {
@@ -74,9 +73,9 @@ public class SpaceShipRegularGun {
 			ImageEnums impactType = playerStats.getPlayerMissileImpactType();
 			float scale = playerStats.getMissileScale();
 			PathFinder pathFinder = playerStats.getMissilePathFinder();
-			PlayerAttackTypes attackType = PlayerAttackTypes.Rocket;
+			MissileTypeEnums attackType = MissileTypeEnums.Rocket1;
 			
-			this.fireMissile(x, y, type, impactType, Direction.RIGHT, scale, pathFinder, xMovementSpeed, yMovementSpeed, attackType, null);
+			this.fireMissile(x, y, type, impactType, Direction.RIGHT, scale, pathFinder, xMovementSpeed, yMovementSpeed, attackType);
 			playMissileAudio(AudioEnums.Rocket_Launcher);
 		}
 	}
@@ -93,9 +92,9 @@ public class SpaceShipRegularGun {
 			ImageEnums impactType = playerStats.getPlayerMissileImpactType();
 			float scale = playerStats.getMissileScale();
 			PathFinder pathFinder = playerStats.getMissilePathFinder();
-			PlayerAttackTypes attackType = PlayerAttackTypes.Flamethrower;
+			MissileTypeEnums attackType = MissileTypeEnums.FlameThrowerProjectile;
 			
-			this.fireMissile(x, y, type, impactType, Direction.RIGHT, scale, pathFinder, xMovementSpeed, yMovementSpeed, attackType, null);
+			this.fireMissile(x, y, type, impactType, Direction.RIGHT, scale, pathFinder, xMovementSpeed, yMovementSpeed, attackType);
 			playMissileAudio(AudioEnums.Flamethrower);
 		}
 	}
@@ -113,42 +112,40 @@ public class SpaceShipRegularGun {
 			ImageEnums impactType = playerStats.getPlayerMissileImpactType();
 			float scale = playerStats.getMissileScale();
 			PathFinder pathFinder = playerStats.getMissilePathFinder();
-//			PathFinder pathFinder = new HomingPathFinder();
-			Sprite target = null;
-			
-			
-			if(pathFinder instanceof HomingPathFinder) {
-				target = ((HomingPathFinder) pathFinder).getTarget(true);
-			}
-			
-			PlayerAttackTypes attackType = PlayerAttackTypes.Laserbeam;
+
+			MissileTypeEnums attackType = MissileTypeEnums.DefaultPlayerLaserbeam;
 			if (powerUpEffects.getTripleShotActive()) {
-				this.fireMissile(x, y, type, impactType, Direction.RIGHT_UP, scale, pathFinder, xMovementSpeed, yMovementSpeed, attackType, target);
-				this.fireMissile(x, y, type, impactType, Direction.RIGHT, scale, pathFinder, xMovementSpeed, yMovementSpeed, attackType, target);
-				this.fireMissile(x, y, type, impactType, Direction.RIGHT_DOWN, scale, pathFinder, xMovementSpeed, yMovementSpeed, attackType, target);
+				this.fireMissile(x, y, type, impactType, Direction.RIGHT_UP, scale, pathFinder, xMovementSpeed, yMovementSpeed, attackType);
+				this.fireMissile(x, y, type, impactType, Direction.RIGHT, scale, pathFinder, xMovementSpeed, yMovementSpeed, attackType);
+				this.fireMissile(x, y, type, impactType, Direction.RIGHT_DOWN, scale, pathFinder, xMovementSpeed, yMovementSpeed, attackType);
 				playMissileAudio(AudioEnums.Player_Laserbeam);
 
 			} else if (powerUpEffects.getDoubleShotActive()) {
-				this.fireMissile(x, y, type, impactType, Direction.RIGHT_UP, scale, pathFinder, xMovementSpeed, yMovementSpeed, attackType, target);
-				this.fireMissile(x, y, type, impactType, Direction.RIGHT, scale, pathFinder, xMovementSpeed, yMovementSpeed, attackType, target);
+				this.fireMissile(x, y, type, impactType, Direction.RIGHT_UP, scale, pathFinder, xMovementSpeed, yMovementSpeed, attackType);
+				this.fireMissile(x, y, type, impactType, Direction.RIGHT, scale, pathFinder, xMovementSpeed, yMovementSpeed, attackType);
 				playMissileAudio(AudioEnums.Player_Laserbeam);
 			} else {
-				this.fireMissile(x, y, type, impactType, Direction.RIGHT, scale, pathFinder, xMovementSpeed, yMovementSpeed, attackType, target);
+				this.fireMissile(x, y, type, impactType, Direction.RIGHT, scale, pathFinder, xMovementSpeed, yMovementSpeed, attackType);
 				playMissileAudio(AudioEnums.Player_Laserbeam);
 			}
 		}
 	}
 
 	private void fireMissile(int xCoordinate, int yCoordinate, ImageEnums playerMissileType,
-			ImageEnums playerMissileImpactType, Direction direction, float missileScale, PathFinder missilePathFinder,
-			int xMovementspeed, int yMovementspeed, PlayerAttackTypes attackType, Sprite target) {
-		Missile missile = MissileCreator.getInstance().createFriendlyMissile(xCoordinate, yCoordinate, playerMissileType, playerMissileImpactType,
-				direction, missileScale, missilePathFinder, xMovementspeed, yMovementspeed, attackType);
+							 ImageEnums playerMissileImpactType, Direction direction, float missileScale, PathFinder missilePathFinder,
+							 int xMovementspeed, int yMovementspeed, MissileTypeEnums attackType) {
 
-		if(target != null) {
-			missile.setObjectToChase(target);
-		}
-		missile.setFriendly(true); //??? it shouldnt be false before this, rework the amount of parameters beaause overzicht is gewoon weg man lets be honest
+		SpriteConfiguration spriteConfiguration = new SpriteConfiguration();
+		spriteConfiguration.setxCoordinate(xCoordinate);
+		spriteConfiguration.setyCoordinate(yCoordinate);
+		spriteConfiguration.setImageType(playerMissileType);
+		spriteConfiguration.setScale(missileScale);
+
+		MissileConfiguration missileConfiguration = new MissileConfiguration(attackType,
+				100,100, null, playerMissileImpactType, true, missilePathFinder
+		, direction, xMovementspeed, yMovementspeed, true, "Player Missile", playerStats.getNormalAttackDamage());
+		Missile missile = MissileCreator.getInstance().createMissile(spriteConfiguration, missileConfiguration);
+
 		this.missileManager.addExistingMissile(missile);
 
 	}

@@ -4,19 +4,14 @@ import game.movement.Direction;
 import game.movement.Point;
 import game.movement.pathfinders.PathFinder;
 import game.objects.missiles.Missile;
+import game.objects.missiles.MissileConfiguration;
 import gamedata.image.ImageEnums;
+import visual.objects.CreationConfigurations.SpriteConfiguration;
 
 public class OrbitingMissile extends Missile {
 
-	public OrbitingMissile(int x, int y, Point destination, ImageEnums missileType, ImageEnums explosionType,
-			Direction rotation, float scale, PathFinder pathFinder, boolean isFriendly, int xMovementSpeed,
-			int yMovementSpeed) {
-		super(x, y, destination, missileType, explosionType, rotation, scale, pathFinder, isFriendly, xMovementSpeed,
-				yMovementSpeed);
-		// TODO Auto-generated constructor stub
-		
-		
-		
+	public OrbitingMissile(SpriteConfiguration spriteConfiguration, MissileConfiguration missileConfiguration) {
+		super(spriteConfiguration, missileConfiguration);
 	}
 
 }
