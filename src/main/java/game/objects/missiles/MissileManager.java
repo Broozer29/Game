@@ -5,13 +5,11 @@ import java.util.List;
 
 import game.managers.AnimationManager;
 import game.managers.CollisionDetector;
-import game.managers.PlayerManager;
+import game.objects.player.PlayerManager;
 import game.objects.enemies.Enemy;
 import game.objects.enemies.EnemyManager;
-import game.objects.friendlies.FriendlyManager;
-import game.objects.friendlies.spaceship.specialAttacks.SpecialAttack;
+import game.objects.player.specialAttacks.SpecialAttack;
 import game.objects.missiles.missiletypes.Rocket1;
-import gamedata.image.ImageEnums;
 
 
 public class MissileManager {
@@ -74,7 +72,6 @@ public class MissileManager {
             Missile missile = missiles.get(i);
             if (missile.isVisible()) {
                 missile.move();
-                missile.updateCurrentBoardBlock();
             } else {
                 missiles.remove(i);
             }

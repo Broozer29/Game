@@ -15,8 +15,6 @@ public class Portal extends GameObject {
 		this.animation.setOriginCoordinates(spriteAnimationConfiguration.getSpriteConfiguration().getxCoordinate(),
 				spriteAnimationConfiguration.getSpriteConfiguration().getyCoordinate());
 		this.animation.cropAnimation();
-		updateCurrentBoardBlock();
-
 	}
 	
 	public void setSpawned(boolean spawned) {

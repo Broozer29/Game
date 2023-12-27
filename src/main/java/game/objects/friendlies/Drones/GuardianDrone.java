@@ -1,22 +1,15 @@
 package game.objects.friendlies.Drones;
 
-import game.managers.ExplosionManager;
 import game.movement.Direction;
 import game.movement.MovementConfiguration;
-import game.movement.Point;
 import game.movement.pathfinders.HomingPathFinder;
 import game.movement.pathfinders.PathFinder;
 import game.movement.pathfinders.RegularPathFinder;
 import game.objects.GameObject;
-import game.objects.enemies.EnemyConfiguration;
 import game.objects.missiles.*;
-import game.objects.neutral.Explosion;
-import game.objects.friendlies.spaceship.PlayerAttackTypes;
 import gamedata.image.ImageEnums;
 import visual.objects.CreationConfigurations.SpriteAnimationConfiguration;
 import visual.objects.CreationConfigurations.SpriteConfiguration;
-import visual.objects.Sprite;
-import visual.objects.SpriteAnimation;
 
 public class GuardianDrone extends GameObject {
 

@@ -29,6 +29,8 @@ public class AudioDatabase {
 	private List<CustomAudioClip> allActiveClips = new ArrayList<CustomAudioClip>();
 	private List<CustomAudioClip> defaultEMPClipList = new ArrayList<CustomAudioClip>();
 	private List<CustomAudioClip> alienBombImpactList = new ArrayList<CustomAudioClip>();
+	private List<CustomAudioClip> alienBombDestroyedList = new ArrayList<CustomAudioClip>();
+
 	private List<CustomAudioClip> laserBeamClipList = new ArrayList<CustomAudioClip>();
 	private List<CustomAudioClip> destroyedExplosionClipList = new ArrayList<CustomAudioClip>();
 	private List<CustomAudioClip> alienSpaceshipDestroyedClipList = new ArrayList<CustomAudioClip>();
@@ -153,12 +155,16 @@ public class AudioDatabase {
 			
 			CustomAudioClip firewallClip = new CustomAudioClip(AudioEnums.Firewall, false);
 			firewallClipList.add(firewallClip);
+
+			CustomAudioClip alienBombDestroyed = new CustomAudioClip(AudioEnums.Alien_Bomb_Destroyed, false);
+			alienBombDestroyedList.add(alienBombDestroyed);
 		}
 		
 		audioClipsMap.put(AudioEnums.Player_Laserbeam, laserBeamClipList);
 		audioClipsMap.put(AudioEnums.Destroyed_Explosion, destroyedExplosionClipList);
 		audioClipsMap.put(AudioEnums.Alien_Spaceship_Destroyed, alienSpaceshipDestroyedClipList);
 		audioClipsMap.put(AudioEnums.Alien_Bomb_Impact, alienBombImpactList);
+		audioClipsMap.put(AudioEnums.Alien_Bomb_Destroyed, alienBombDestroyedList);
 		audioClipsMap.put(AudioEnums.Large_Ship_Destroyed, largeShipDestroyedClipList);
 		audioClipsMap.put(AudioEnums.Default_EMP, defaultEMPClipList);
 		audioClipsMap.put(AudioEnums.Power_Up_Acquired, powerUpAcquiredClipList);

@@ -10,7 +10,7 @@ public class SpriteConfiguration {
     private int xOffset;
     private int yOffset;
 
-    private float transparancyAlpha = 1;
+    private float transparancyAlpha;
     private boolean increaseTransparancy;
     private float transparancyStepSize;
 
@@ -29,7 +29,9 @@ public class SpriteConfiguration {
     }
 
     public SpriteConfiguration(){
-
+        this.transparancyAlpha = 1;
+        this.xOffset = 0;
+        this.yOffset = 0;
     }
 
     public int getxCoordinate () {

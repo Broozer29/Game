@@ -1,24 +1,15 @@
 package game.objects.friendlies.powerups;
 
-import java.awt.Rectangle;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 import javax.sound.sampled.UnsupportedAudioFileException;
 
 import game.managers.CollisionDetector;
-import game.managers.PlayerManager;
-import game.movement.Direction;
-import game.objects.GameObject;
-import game.utils.BoundsCalculator;
-import gamedata.BoostsUpgradesAndBuffsSettings;
-import gamedata.DataClass;
+import game.objects.player.PlayerManager;
 import gamedata.audio.AudioEnums;
 import gamedata.audio.AudioManager;
-import gamedata.image.ImageEnums;
-import visual.objects.Sprite;
 
 public class PowerUpManager {
 

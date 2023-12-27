@@ -1,4 +1,4 @@
-package game.objects.friendlies.spaceship;
+package game.objects.player;
 
 public enum PlayerAttackTypes {
 	Laserbeam,

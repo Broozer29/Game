@@ -29,7 +29,7 @@ import game.managers.AnimationManager;
 import game.managers.GameUIManager;
 import game.managers.ExplosionManager;
 import game.managers.OnScreenTextManager;
-import game.managers.PlayerManager;
+import game.objects.player.PlayerManager;
 import game.managers.TimerManager;
 import game.objects.background.BackgroundManager;
 import game.objects.background.BackgroundObject;
@@ -41,19 +41,19 @@ import game.objects.friendlies.FriendlyManager;
 import game.objects.friendlies.powerups.PowerUp;
 import game.objects.friendlies.powerups.OnScreenText;
 import game.objects.friendlies.powerups.PowerUpManager;
-import game.objects.friendlies.spaceship.PlayerAttackTypes;
-import game.objects.friendlies.spaceship.PlayerSpecialAttackTypes;
-import game.objects.friendlies.spaceship.SpaceShipSpecialGun;
-import game.objects.friendlies.spaceship.specialAttacks.SpecialAttack;
+import game.objects.player.PlayerAttackTypes;
+import game.objects.player.PlayerSpecialAttackTypes;
+import game.objects.player.spaceship.SpaceShipSpecialGun;
+import game.objects.player.specialAttacks.SpecialAttack;
 import game.objects.missiles.Missile;
 import game.objects.missiles.MissileManager;
-import game.playerpresets.GunPreset;
-import game.playerpresets.SpecialGunPreset;
-import gamedata.BoostsUpgradesAndBuffsSettings;
+import game.objects.player.playerpresets.GunPreset;
+import game.objects.player.playerpresets.SpecialGunPreset;
+import game.objects.player.BoostsUpgradesAndBuffsSettings;
 import gamedata.DataClass;
 import gamedata.GameStateInfo;
 import gamedata.GameStatusEnums;
-import gamedata.PlayerStats;
+import game.objects.player.PlayerStats;
 import gamedata.audio.AudioDatabase;
 import gamedata.audio.AudioManager;
 import gamedata.audio.AudioPositionCalculator;
@@ -422,7 +422,6 @@ public class GameBoard extends JPanel implements ActionListener {
 			// Save the original composite
 			Composite originalComposite = g.getComposite();
 
-			System.out.println("Kom ik hier " + sprite.getSpriteConfiguration().getImageType());
 			// Set the alpha composite
 			g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, sprite.getTransparancyAlpha()));
 

@@ -1,4 +1,4 @@
-package game.managers;
+package game.objects.player;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -6,11 +6,11 @@ import java.util.List;
 
 import javax.sound.sampled.UnsupportedAudioFileException;
 
-import game.objects.friendlies.spaceship.SpaceShip;
+import game.managers.AnimationManager;
+import game.objects.player.spaceship.SpaceShip;
 import gamedata.DataClass;
 import gamedata.GameStateInfo;
 import gamedata.GameStatusEnums;
-import gamedata.PlayerStats;
 import gamedata.audio.AudioEnums;
 import gamedata.audio.AudioManager;
 import gamedata.image.ImageEnums;
@@ -64,7 +64,6 @@ public class PlayerManager {
 	private void updateSpaceShipMovement() {
 		if (spaceship.isVisible()) {
 			spaceship.move();
-			spaceship.updateCurrentBoardBlock();
 		}
 	}
 
@@ -75,7 +74,6 @@ public class PlayerManager {
 		spriteConfiguration.setScale(0.6f);
 		spriteConfiguration.setImageType(ImageEnums.Player_Spaceship_Model_3);
 		this.spaceship = new SpaceShip(spriteConfiguration);
-	
 	}
 
 	public void startDyingScene() {

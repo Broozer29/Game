@@ -23,7 +23,7 @@ public class Bulldozer extends Enemy {
         exhaustConfiguration.getSpriteConfiguration().setImageType(ImageEnums.Bulldozer_Normal_Exhaust);
         this.exhaustAnimation = new SpriteAnimation(exhaustConfiguration);
 
-        SpriteAnimationConfiguration destroyedExplosionfiguration = new SpriteAnimationConfiguration(spriteConfiguration, 1, true);
+        SpriteAnimationConfiguration destroyedExplosionfiguration = new SpriteAnimationConfiguration(spriteConfiguration, 1, false);
         destroyedExplosionfiguration.getSpriteConfiguration().setImageType(ImageEnums.Bulldozer_Destroyed_Explosion);
         this.destructionAnimation = new SpriteAnimation(destroyedExplosionfiguration);
 

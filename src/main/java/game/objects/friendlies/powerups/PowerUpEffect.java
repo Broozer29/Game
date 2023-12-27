@@ -1,9 +1,9 @@
 package game.objects.friendlies.powerups;
 
-import game.managers.PlayerManager;
-import game.objects.friendlies.spaceship.SpaceShip;
-import gamedata.BoostsUpgradesAndBuffsSettings;
-import gamedata.PlayerStats;
+import game.objects.player.PlayerManager;
+import game.objects.player.spaceship.SpaceShip;
+import game.objects.player.BoostsUpgradesAndBuffsSettings;
+import game.objects.player.PlayerStats;
 
 public class PowerUpEffect {
 	protected PlayerManager friendlyManager = PlayerManager.getInstance();

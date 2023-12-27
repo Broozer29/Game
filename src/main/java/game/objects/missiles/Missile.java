@@ -19,16 +19,11 @@ public class Missile extends GameObject {
 	public Missile(SpriteConfiguration spriteConfiguration, MissileConfiguration missileConfiguration) {
 		super(spriteConfiguration);
 		initMissile(missileConfiguration);
+	}
 
-		SpriteAnimationConfiguration spriteAnimationConfiguration = new SpriteAnimationConfiguration(spriteConfiguration, 2, false);
-		this.animation = new SpriteAnimation(spriteAnimationConfiguration);
-
-
-		SpriteAnimationConfiguration destructionAnimation = new SpriteAnimationConfiguration(spriteConfiguration, 2, false);
-		destructionAnimation.getSpriteConfiguration().setImageType(missileConfiguration.getDestructionType());
-		this.destructionAnimation = new SpriteAnimation(destructionAnimation);
-
-		initMovementConfiguration(missileConfiguration);
+	public Missile(SpriteAnimationConfiguration spriteAnimationConfiguration, MissileConfiguration missileConfiguration){
+		super(spriteAnimationConfiguration);
+		initMissile(missileConfiguration);
 	}
 
 	private void initMissile(MissileConfiguration missileConfiguration){
@@ -40,6 +35,12 @@ public class Missile extends GameObject {
 		this.objectType = missileConfiguration.getObjectType();
 		this.damage = missileConfiguration.getDamage();
 		this.missileType = missileConfiguration.getMissileType();
+
+		SpriteAnimationConfiguration destructionAnimation = new SpriteAnimationConfiguration(spriteConfiguration, 2, false);
+		destructionAnimation.getSpriteConfiguration().setImageType(missileConfiguration.getDestructionType());
+		this.destructionAnimation = new SpriteAnimation(destructionAnimation);
+
+		initMovementConfiguration(missileConfiguration);
 
 	}
 	

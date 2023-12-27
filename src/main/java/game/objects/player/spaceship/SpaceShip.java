@@ -1,4 +1,4 @@
-package game.objects.friendlies.spaceship;
+package game.objects.player.spaceship;
 
 import java.awt.event.KeyEvent;
 import java.io.IOException;
@@ -15,10 +15,9 @@ import controllerInput.ControllerInputReader;
 import game.managers.AnimationManager;
 import game.objects.neutral.Explosion;
 import game.objects.GameObject;
-import game.objects.friendlies.spaceship.specialAttacks.SpecialAttack;
-import gamedata.BoostsUpgradesAndBuffsSettings;
-import gamedata.DataClass;
-import gamedata.PlayerStats;
+import game.objects.player.specialAttacks.SpecialAttack;
+import game.objects.player.BoostsUpgradesAndBuffsSettings;
+import game.objects.player.PlayerStats;
 import gamedata.image.ImageEnums;
 import visual.objects.CreationConfigurations.SpriteAnimationConfiguration;
 import visual.objects.CreationConfigurations.SpriteConfiguration;
@@ -89,7 +88,6 @@ public class SpaceShip extends GameObject {
 	}
 
 	private void initExhaustAnimation(ImageEnums imageType) {
-
 		SpriteAnimationConfiguration spriteAnimationConfiguration = new SpriteAnimationConfiguration(this.spriteConfiguration, 2, true);
 		spriteAnimationConfiguration.getSpriteConfiguration().setImageType(imageType);
 		exhaustAnimation = new SpriteAnimation(spriteAnimationConfiguration);
@@ -201,7 +199,7 @@ public class SpaceShip extends GameObject {
 				explosion.getAnimation().setX(this.getXCoordinate());
 				explosion.getAnimation().setY(this.getYCoordinate());
 //			}
-			explosion.updateCurrentBoardBlock();
+			explosion.updateBoardBlock();
 			explosion.getAnimation().setAnimationBounds(explosion.getAnimation().getXCoordinate(), explosion.getAnimation().getYCoordinate());
 //			explosion.getAnimation().updateCurrentBoardBlock();
 		}
@@ -218,7 +216,7 @@ public class SpaceShip extends GameObject {
 				specialAttack.getAnimation().setX(this.getXCoordinate());
 				specialAttack.getAnimation().setY(this.getYCoordinate());
 			}
-			specialAttack.updateCurrentBoardBlock();
+			specialAttack.updateBoardBlock();
 			specialAttack.getAnimation().setAnimationBounds(specialAttack.getAnimation().getXCoordinate(), specialAttack.getAnimation().getYCoordinate());
 //			specialAttack.getAnimation().updateCurrentBoardBlock();
 		}
@@ -253,6 +251,8 @@ public class SpaceShip extends GameObject {
 		if (this.deathAnimation != null) {
 			deathAnimation.setCenterCoordinates(this.xCoordinate, this.yCoordinate);
 		}
+
+		updateBoardBlock();
 	}
 
 	// Launch a missile from the center point of the spaceship

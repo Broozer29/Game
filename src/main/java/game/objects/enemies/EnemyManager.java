@@ -8,13 +8,12 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 
 import game.managers.AnimationManager;
 import game.managers.CollisionDetector;
-import game.managers.PlayerManager;
-import game.objects.GameObject;
+import game.objects.player.PlayerManager;
 import game.objects.enemies.enemytypes.AlienBomb;
+import game.objects.player.spaceship.SpaceShip;
 import gamedata.DataClass;
 import gamedata.audio.AudioEnums;
 import gamedata.audio.AudioManager;
-import gamedata.image.ImageEnums;
 
 public class EnemyManager {
 
@@ -50,14 +49,14 @@ public class EnemyManager {
     }
 
     private void checkSpaceshipCollisions () throws UnsupportedAudioFileException, IOException {
-        GameObject spaceship = friendlyManager.getSpaceship();
+        SpaceShip spaceship = friendlyManager.getSpaceship();
         for (Enemy enemy : enemyList) {
             if (CollisionDetector.getInstance().detectCollision(enemy, spaceship)) {
                 if (enemy instanceof AlienBomb) {
                     detonateAlienBomb(enemy);
-                    spaceship.takeDamage(20);
+                    spaceship.takeHitpointDamage(20);
                 } else {
-                    spaceship.takeDamage(1);
+                    spaceship.takeHitpointDamage(1);
                 }
             }
         }
@@ -65,7 +64,7 @@ public class EnemyManager {
 
     private void detonateAlienBomb (Enemy enemy) throws UnsupportedAudioFileException, IOException {
         animationManager.createAndAddUpperAnimation(enemy.getXCoordinate(), enemy.getYCoordinate(),
-                ImageEnums.Alien_Bomb_Explosion, false, 1);
+                enemy.enemyType.getDestructionType(), false, 1);
         audioManager.addAudio(AudioEnums.Alien_Bomb_Impact);
         enemy.setVisible(false);
     }
@@ -80,7 +79,6 @@ public class EnemyManager {
         for (int i = 0; i < enemyList.size(); i++) {
             if (enemyList.get(i).isVisible()) {
                 enemyList.get(i).move();
-                enemyList.get(i).updateCurrentBoardBlock();
             } else {
                 animationManager.deleteEnemyAnimations(enemyList.get(i));
                 enemyList.remove(i);

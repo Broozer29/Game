@@ -1,12 +1,12 @@
-package game.playerpresets;
+package game.objects.player.playerpresets;
 
 import game.movement.pathfinders.RegularPathFinder;
-import game.objects.friendlies.spaceship.PlayerAttackTypes;
-import gamedata.PlayerStats;
+import game.objects.player.PlayerAttackTypes;
+import game.objects.player.PlayerStats;
 import gamedata.image.ImageDatabase;
 import gamedata.image.ImageEnums;
 
-public class GunPreset implements GunPresetInterface {
+public class GunPreset {
 	
 	private PlayerAttackTypes attackType;
 	
@@ -14,7 +14,6 @@ public class GunPreset implements GunPresetInterface {
 		this.attackType = attackType;
 	}
 	
-	@Override
 	public void loadPreset() {
 		switch (attackType) {
 		case Flamethrower:

@@ -1,25 +1,22 @@
-package game.objects.friendlies.spaceship;
+package game.objects.player.spaceship;
 
 import java.io.IOException;
 
 import javax.sound.sampled.UnsupportedAudioFileException;
 
-import game.managers.PlayerManager;
 import game.movement.Direction;
-import game.movement.pathfinders.HomingPathFinder;
 import game.movement.pathfinders.PathFinder;
-import game.objects.GameObject;
 import game.objects.missiles.*;
-import gamedata.BoostsUpgradesAndBuffsSettings;
-import gamedata.PlayerStats;
+import game.objects.player.PlayerAttackTypes;
+import game.objects.player.PlayerManager;
+import game.objects.player.BoostsUpgradesAndBuffsSettings;
+import game.objects.player.PlayerStats;
 import gamedata.audio.AudioEnums;
 import gamedata.audio.AudioManager;
 import gamedata.image.ImageEnums;
 import visual.objects.CreationConfigurations.SpriteConfiguration;
-import visual.objects.Sprite;
 
 public class SpaceShipRegularGun {
-	// Implement "fire()" behaviour here
 
 	private MissileManager missileManager = MissileManager.getInstance();
 	private AudioManager audioManager = AudioManager.getInstance();

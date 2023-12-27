@@ -1,12 +1,9 @@
-package gamedata;
+package game.objects.player;
 
 import game.movement.pathfinders.PathFinder;
-import game.objects.friendlies.spaceship.PlayerAttackTypes;
-import game.objects.friendlies.spaceship.PlayerSpecialAttackTypes;
-import game.playerpresets.GunPreset;
-import game.playerpresets.SpecialGunPreset;
+import game.objects.player.playerpresets.GunPreset;
+import game.objects.player.playerpresets.SpecialGunPreset;
 import gamedata.image.ImageEnums;
-import visual.objects.SpriteAnimation;
 
 public class PlayerStats {
 

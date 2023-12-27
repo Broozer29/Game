@@ -3,14 +3,10 @@ package game.managers;
 import java.util.ArrayList;
 import java.util.List;
 
-import game.objects.GameObject;
 import game.objects.neutral.Explosion;
 import game.objects.enemies.Enemy;
 import game.objects.enemies.EnemyManager;
-import game.utils.BoundsCalculator;
-import gamedata.image.ImageEnums;
-import visual.objects.Sprite;
-import visual.objects.SpriteAnimation;
+import game.objects.player.PlayerManager;
 
 public class ExplosionManager {
 

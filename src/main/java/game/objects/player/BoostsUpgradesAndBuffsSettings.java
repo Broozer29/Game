@@ -1,4 +1,4 @@
-package gamedata;
+package game.objects.player;
 
 public class BoostsUpgradesAndBuffsSettings {
 	private boolean doubleShotActive;

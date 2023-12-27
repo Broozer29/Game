@@ -1,20 +1,16 @@
-package game.objects.friendlies.spaceship;
+package game.objects.player.spaceship;
 
 import java.io.IOException;
 
 import javax.sound.sampled.UnsupportedAudioFileException;
 
-import game.managers.PlayerManager;
-import game.movement.Direction;
-import game.movement.pathfinders.PathFinder;
-import game.movement.pathfinders.RegularPathFinder;
-import game.objects.friendlies.spaceship.specialAttacks.ElectroShred;
-import game.objects.friendlies.spaceship.specialAttacks.Firewall;
-import game.objects.friendlies.spaceship.specialAttacks.SpecialAttack;
-import game.objects.missiles.Missile;
+import game.objects.player.PlayerManager;
+import game.objects.player.PlayerSpecialAttackTypes;
+import game.objects.player.specialAttacks.ElectroShred;
+import game.objects.player.specialAttacks.SpecialAttack;
 import game.objects.missiles.MissileConfiguration;
 import game.objects.missiles.MissileManager;
-import gamedata.PlayerStats;
+import game.objects.player.PlayerStats;
 import gamedata.audio.AudioEnums;
 import gamedata.audio.AudioManager;
 import gamedata.image.ImageEnums;
@@ -67,7 +63,6 @@ public class SpaceShipSpecialGun {
 			SpecialAttack specialAttack = new ElectroShred(spriteAnimationConfiguration, missileConfiguration);
 			specialAttack.setCenteredAroundPlayer(true);
 			try {
-				specialAttack.updateCurrentBoardBlock();
 //				specialAttackAnimation.updateCurrentBoardBlock();
 				AudioManager.getInstance().addAudio(AudioEnums.Default_EMP);
 				spaceShip.addFollowingSpecialAttack(specialAttack);

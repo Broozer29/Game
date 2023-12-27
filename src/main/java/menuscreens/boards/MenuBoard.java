@@ -24,7 +24,7 @@ import game.managers.AnimationManager;
 import game.objects.background.BackgroundManager;
 import game.objects.background.BackgroundObject;
 import gamedata.DataClass;
-import gamedata.PlayerStats;
+import game.objects.player.PlayerStats;
 import gamedata.image.ImageEnums;
 import menuscreens.MenuCursor;
 import menuscreens.MenuFunctionEnums;

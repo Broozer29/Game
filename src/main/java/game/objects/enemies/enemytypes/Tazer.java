@@ -22,7 +22,7 @@ public class Tazer extends Enemy {
 		exhaustConfiguration.getSpriteConfiguration().setImageType(ImageEnums.Tazer_Normal_Exhaust);
 		this.exhaustAnimation = new SpriteAnimation(exhaustConfiguration);
 
-		SpriteAnimationConfiguration destroyedExplosionfiguration = new SpriteAnimationConfiguration(spriteConfiguration, 1, true);
+		SpriteAnimationConfiguration destroyedExplosionfiguration = new SpriteAnimationConfiguration(spriteConfiguration, 1, false);
 		destroyedExplosionfiguration.getSpriteConfiguration().setImageType(ImageEnums.Tazer_Destroyed_Explosion);
 		this.destructionAnimation = new SpriteAnimation(destroyedExplosionfiguration);
 	}
@@ -41,7 +41,7 @@ public class Tazer extends Enemy {
 		if (attackSpeedCurrentFrameCount >= attackSpeed) {
 			SpriteConfiguration missileSpriteConfiguration = this.spriteConfiguration;
 			missileSpriteConfiguration.setyCoordinate(yCoordinate + this.height / 2);
-			missileSpriteConfiguration.setImageType(ImageEnums.Tazer);
+			missileSpriteConfiguration.setImageType(ImageEnums.Tazer_Missile);
 
 			MissileConfiguration missileConfiguration = new MissileConfiguration(MissileTypeEnums.TazerProjectile,
 					100, 100, null, ImageEnums.Tazer_Missile_Explosion, isFriendly()

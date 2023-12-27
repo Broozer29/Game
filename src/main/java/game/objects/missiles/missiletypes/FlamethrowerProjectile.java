@@ -6,11 +6,12 @@ import game.movement.pathfinders.PathFinder;
 import game.objects.missiles.Missile;
 import game.objects.missiles.MissileConfiguration;
 import gamedata.image.ImageEnums;
+import visual.objects.CreationConfigurations.SpriteAnimationConfiguration;
 import visual.objects.CreationConfigurations.SpriteConfiguration;
 
 public class FlamethrowerProjectile extends Missile {
 
-	public FlamethrowerProjectile(SpriteConfiguration spriteConfiguration, MissileConfiguration missileConfiguration) {
+	public FlamethrowerProjectile(SpriteAnimationConfiguration spriteConfiguration, MissileConfiguration missileConfiguration) {
 		super(spriteConfiguration, missileConfiguration);
 		this.animation.rotateAnimetion(missileConfiguration.getMovementDirection());
 	}

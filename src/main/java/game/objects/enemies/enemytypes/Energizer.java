@@ -17,7 +17,7 @@ public class Energizer extends Enemy {
 		exhaustConfiguration.getSpriteConfiguration().setImageType(ImageEnums.Energizer_Normal_Exhaust);
 		this.exhaustAnimation = new SpriteAnimation(exhaustConfiguration);
 
-		SpriteAnimationConfiguration destroyedExplosionfiguration = new SpriteAnimationConfiguration(spriteConfiguration, 1, true);
+		SpriteAnimationConfiguration destroyedExplosionfiguration = new SpriteAnimationConfiguration(spriteConfiguration, 1, false);
 		destroyedExplosionfiguration.getSpriteConfiguration().setImageType(ImageEnums.Energizer_Destroyed_Explosion);
 		this.destructionAnimation = new SpriteAnimation(destroyedExplosionfiguration);
 	}

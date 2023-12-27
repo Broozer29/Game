@@ -3,7 +3,7 @@ package game.movement.pathfinders;
 import java.util.ArrayList;
 import java.util.List;
 
-import game.managers.PlayerManager;
+import game.objects.player.PlayerManager;
 import game.movement.Direction;
 import game.movement.Path;
 import game.movement.Point;
@@ -12,7 +12,6 @@ import game.movement.pathfinderconfigs.PathFinderConfig;
 import game.objects.GameObject;
 import game.objects.enemies.EnemyManager;
 import gamedata.DataClass;
-import visual.objects.Sprite;
 
 public class HomingPathFinder implements PathFinder {
 	@Override

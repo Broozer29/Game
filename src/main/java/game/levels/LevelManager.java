@@ -6,11 +6,9 @@ import java.util.Random;
 
 import game.managers.TimerManager;
 import game.movement.Direction;
+import game.movement.pathfinders.PathFinder;
 import game.movement.pathfinders.RegularPathFinder;
-import game.objects.enemies.EnemyConfiguration;
-import game.objects.enemies.Enemy;
-import game.objects.enemies.EnemyEnums;
-import game.objects.enemies.EnemyManager;
+import game.objects.enemies.*;
 import game.objects.enemies.enemytypes.AlienBomb;
 import game.objects.enemies.enemytypes.Bomba;
 import game.objects.enemies.enemytypes.Bulldozer;
@@ -266,68 +264,23 @@ public class LevelManager {
         } else if (direction.equals(Direction.LEFT_UP)) {
             coordinatesList.add(spawningCoordinator.getRightBlockXCoordinate());
             coordinatesList.add(spawningCoordinator.getBottomRightBlockYCoordinate());
-//			System.out.println(
-//					"Tried spawning in a direction where the corresponding spawning block has nog been created yet!");
         } else if (direction.equals(Direction.LEFT_DOWN)) {
             coordinatesList.add(spawningCoordinator.getRightBlockXCoordinate());
             coordinatesList.add(spawningCoordinator.getTopRightBlockYCoordinate());
-//			System.out.println(
-//					"Tried spawning in a direction where the corresponding spawning block has nog been created yet!");
         } else if (direction.equals(Direction.RIGHT_UP)) {
             coordinatesList.add(spawningCoordinator.getLeftBlockXCoordinate());
             coordinatesList.add(spawningCoordinator.getBottomLeftBlockYCoordinate());
-//			System.out.println(
-//					"Tried spawning in a direction where the corresponding spawning block has nog been created yet!");
         } else if (direction.equals(Direction.RIGHT_DOWN)) {
             coordinatesList.add(spawningCoordinator.getLeftBlockXCoordinate());
             coordinatesList.add(spawningCoordinator.getTopLeftBlockYCoordinate());
-//			System.out.println(
-//					"Tried spawning in a direction where the corresponding spawning block has nog been created yet!");
         }
         return coordinatesList;
     }
 
     private Enemy createEnemy (EnemyEnums type, int xCoordinate, int yCoordinate, Direction rotation, float scale,
                                int xMovementSpeed, int yMovementSpeed) {
-        // Allocate different pathfinders based on the enemytype
-        SpriteConfiguration spriteConfiguration = new SpriteConfiguration(
-                xCoordinate,
-                yCoordinate,
-                scale,
-                type.getImageEnum(),
-                0, 0,
-                (float) 1.0, false, 0
-        );
-
-        EnemyConfiguration enemyConfiguration = new EnemyConfiguration(
-                type,
-                100, 100,
-                false, true, AudioEnums.Large_Ship_Destroyed,
-                rotation, new RegularPathFinder(), xMovementSpeed, yMovementSpeed, true, type.name(),
-                200
-        );
-
-        //Attack speeed, hitpoints, maxShields, allowedToDealDamage should be dynamic
-        //HasAttack set to false to allow early testing
-        System.out.println("Things to be fixed on LevelManager 325");
-
-        switch (type) {
-            case Bomba:
-                return new Bomba(spriteConfiguration, enemyConfiguration);
-            case Flamer:
-                return new Flamer(spriteConfiguration, enemyConfiguration);
-            case Bulldozer:
-                return new Bulldozer(spriteConfiguration, enemyConfiguration);
-            case Energizer:
-                return new Energizer(spriteConfiguration, enemyConfiguration);
-            case Seeker:
-                return new Seeker(spriteConfiguration, enemyConfiguration);
-            case Tazer:
-                return new Tazer(spriteConfiguration, enemyConfiguration);
-            case Alien_Bomb:
-                return new AlienBomb(spriteConfiguration, enemyConfiguration);
-        }
-        return null;
+        PathFinder pathFinder = new RegularPathFinder();
+        return EnemyCreator.createEnemy(type, xCoordinate, yCoordinate, rotation, scale, xMovementSpeed, yMovementSpeed, pathFinder);
     }
 
     // Called by all RANDOM spawn*Enemy* methods, returns true if there is no overlap
@@ -347,8 +300,7 @@ public class LevelManager {
     private EnemySpawnTimer createSpawnTimer (EnemyEnums enemyType, int spawnAttempts, int timeBeforeActivation,
                                               boolean loopable, Direction direction, float enemyScale, int additionalDelay, int xMovementSpeed,
                                               int yMovementSpeed) {
-
-        if (enemyType == EnemyEnums.Random) {
+        if (enemyType == null) {
             enemyType = selectRandomEnemy();
         }
 
@@ -361,13 +313,12 @@ public class LevelManager {
     private void addSpawnTimer (EnemySpawnTimer timer) {
         this.timerManager.addEnemyTimerToList(timer);
     }
-
     private EnemyEnums selectRandomEnemy () {
         EnemyEnums[] enums = EnemyEnums.values();
         Random random = new Random();
         EnemyEnums randomValue = enums[random.nextInt(enums.length)];
 
-        if (randomValue == EnemyEnums.Alien || randomValue == EnemyEnums.Alien_Bomb) {
+        if (randomValue == EnemyEnums.Alien_Bomb) {
             return selectRandomEnemy();
         }
         return randomValue;

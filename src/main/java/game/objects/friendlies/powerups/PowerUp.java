@@ -42,13 +42,9 @@ public class PowerUp extends GameObject {
 	
 	//Uses a bouncer which makes it incompatible with spritemover?
 	public void move() {
-		
 		SpriteMover.getInstance().moveSprite(this, moveConfig);
-		
 		bounds.setBounds(xCoordinate + xOffset, yCoordinate + yOffset, width, height);
-		updateCurrentBoardBlock();
-
-
+		updateBoardBlock();
 	}
 
 	// Starts the timer of the powerUp. This method is called when the player collides with

@@ -1,8 +1,9 @@
-package game.objects.friendlies.spaceship.specialAttacks;
+package game.objects.player.specialAttacks;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import game.movement.BoardBlockUpdater;
 import game.objects.GameObject;
 import game.objects.missiles.Missile;
 import game.objects.missiles.MissileConfiguration;
@@ -20,7 +21,7 @@ public class SpecialAttack extends GameObject {
 		this.damage = missileConfiguration.getDamage();
 		this.friendly = missileConfiguration.isFriendly();
 		this.allowedToDealDamage = missileConfiguration.isAllowedToDealDamage();
-		this.updateCurrentBoardBlock();
+		this.currentBoardBlock = BoardBlockUpdater.getBoardBlock(xCoordinate);
 	}
 
 	
@@ -44,7 +45,6 @@ public class SpecialAttack extends GameObject {
 		for(Missile missile : specialAttackMissiles) {
 			if(missile.isVisible()) {
 				missile.move();
-				missile.updateCurrentBoardBlock();
 			}
 		}
 	}

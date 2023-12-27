@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Random;
 
 import game.movement.Direction;
-import gamedata.BoostsUpgradesAndBuffsSettings;
+import game.objects.player.BoostsUpgradesAndBuffsSettings;
 import gamedata.DataClass;
 import gamedata.image.ImageEnums;
 

@@ -17,7 +17,7 @@ public class Rocket1 extends Missile{
 
 	float explosionDamage;
 	
-	public Rocket1(SpriteConfiguration spriteConfiguration, MissileConfiguration missileConfiguration) {
+	public Rocket1(SpriteAnimationConfiguration spriteConfiguration, MissileConfiguration missileConfiguration) {
 		super(spriteConfiguration, missileConfiguration);
 		this.animation.rotateAnimetion(missileConfiguration.getMovementDirection());
 		this.damage = 0;
@@ -35,7 +35,7 @@ public class Rocket1 extends Missile{
 		int explosionScale = 2;
 		Explosion explosion = new Explosion(rocketExplosionConfig, explosionConfiguration);
 		explosion.setScale(explosionScale);
-		explosion.updateCurrentBoardBlock();
+		explosion.updateBoardBlock();
 		explosionAnimation.setCenterCoordinates(this.getCenterXCoordinate() + (this.getWidth() / 2), this.getCenterYCoordinate() - (this.height / 2));
 		ExplosionManager.getInstance().addExistingExplosion(explosion);
 	}

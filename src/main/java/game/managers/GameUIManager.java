@@ -1,9 +1,8 @@
 package game.managers;
 
 import game.UI.UIObject;
-import gamedata.PlayerStats;
+import game.objects.player.PlayerStats;
 import gamedata.image.ImageEnums;
-import javafx.animation.Animation;
 import visual.objects.CreationConfigurations.SpriteConfiguration;
 import visual.objects.SpriteAnimation;
 

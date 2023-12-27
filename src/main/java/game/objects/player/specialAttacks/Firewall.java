@@ -1,20 +1,15 @@
-package game.objects.friendlies.spaceship.specialAttacks;
+package game.objects.player.specialAttacks;
 
 import game.movement.Direction;
-import game.movement.Point;
-import game.movement.pathfinders.PathFinder;
 import game.movement.pathfinders.RegularPathFinder;
-import game.objects.friendlies.spaceship.PlayerAttackTypes;
 import game.objects.missiles.Missile;
 import game.objects.missiles.MissileConfiguration;
 import game.objects.missiles.MissileCreator;
 import game.objects.missiles.MissileManager;
-import game.objects.missiles.missiletypes.FirewallMissile;
-import gamedata.PlayerStats;
+import game.objects.player.PlayerStats;
 import gamedata.image.ImageEnums;
 import visual.objects.CreationConfigurations.SpriteAnimationConfiguration;
 import visual.objects.CreationConfigurations.SpriteConfiguration;
-import visual.objects.SpriteAnimation;
 
 public class Firewall extends SpecialAttack {
 

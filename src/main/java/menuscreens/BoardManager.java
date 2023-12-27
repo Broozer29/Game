@@ -6,11 +6,9 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-import database.DatabaseConnection;
 import gamedata.DataClass;
 import gamedata.audio.AudioEnums;
 import gamedata.audio.AudioManager;
-//import database.DatabaseConnection;
 import menuscreens.boards.GameBoard;
 import menuscreens.boards.LevelSelectionBoard;
 import menuscreens.boards.MenuBoard;
@@ -20,7 +18,6 @@ import menuscreens.boards.UserSelectionBoard;
 public class BoardManager extends JFrame {
 
 	private DataClass data = DataClass.getInstance();
-	private DatabaseConnection connection;
 	private MenuBoard menuBoard;
 	private GameBoard gameBoard;
 	private UserSelectionBoard usBoard;

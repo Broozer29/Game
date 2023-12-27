@@ -6,12 +6,11 @@ import java.util.List;
 
 import javax.sound.sampled.UnsupportedAudioFileException;
 
-import game.managers.AnimationManager;
-import game.objects.friendlies.spaceship.PlayerAttackTypes;
-import game.objects.friendlies.spaceship.PlayerSpecialAttackTypes;
-import game.playerpresets.GunPreset;
-import game.playerpresets.SpecialGunPreset;
-import gamedata.PlayerStats;
+import game.objects.player.PlayerAttackTypes;
+import game.objects.player.PlayerSpecialAttackTypes;
+import game.objects.player.playerpresets.GunPreset;
+import game.objects.player.playerpresets.SpecialGunPreset;
+import game.objects.player.PlayerStats;
 import gamedata.audio.AudioDatabase;
 import gamedata.audio.AudioEnums;
 import gamedata.audio.AudioManager;

@@ -4,7 +4,7 @@ import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 
 import game.objects.GameObject;
-import game.utils.BoundsCalculator;
+import game.managers.utils.BoundsCalculator;
 
 public class CollisionDetector {
 
@@ -47,8 +47,8 @@ public class CollisionDetector {
 
 
     private boolean isWithinBoardBlockThreshold (GameObject gameObject1, GameObject gameObject2) {
-        gameObject1.updateCurrentBoardBlock();
-        gameObject2.updateCurrentBoardBlock();
+        gameObject1.updateBoardBlock();
+        gameObject2.updateBoardBlock();
 
         int blockDifference = Math.abs(gameObject1.getCurrentBoardBlock() - gameObject2.getCurrentBoardBlock());
         return blockDifference <= boardBlockThreshold;

@@ -300,7 +300,7 @@ public class FuriWisdomOfRageLevel implements Level {
 	private EnemySpawnTimer createSpawnTimer(EnemyEnums enemyType, int spawnAttempts, int timeBeforeActivation,
 			boolean loopable, Direction direction, float enemyScale, int additionalDelay, int xMovementSpeed, int yMovementSpeed) {
 
-		if (enemyType == EnemyEnums.Random) {
+		if (enemyType == null) {
 			enemyType = selectRandomEnemy();
 		}
 
@@ -321,7 +321,7 @@ public class FuriWisdomOfRageLevel implements Level {
 		EnemyEnums[] enums = EnemyEnums.values();
 		EnemyEnums randomValue = enums[random.nextInt(enums.length)];
 
-		if (randomValue == EnemyEnums.Alien || randomValue == EnemyEnums.Alien_Bomb) {
+		if (randomValue == EnemyEnums.Alien_Bomb) {
 			return selectRandomEnemy();
 		}
 		return randomValue;

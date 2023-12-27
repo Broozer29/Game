@@ -4,6 +4,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
+import game.movement.BoardBlockUpdater;
 import game.movement.MovementConfiguration;
 import game.movement.Point;
 import game.movement.pathfinders.PathFinder;
@@ -20,19 +21,6 @@ public class Enemy extends GameObject {
     protected EnemyEnums enemyType;
 
     protected List<Enemy> followingEnemies = new LinkedList<Enemy>(); //inherit from gameobject
-
-//    public Enemy (int x, int y, Point destination, Direction rotation, EnemyEnums enemyType, float scale,
-//                  PathFinder pathFinder, int xMovementSpeed, int yMovementSpeed) {
-//        super(x, y, scale);
-//        this.enemyType = enemyType;
-//        this.currentLocation = new Point(x, y);
-//        updateCurrentBoardBlock();
-//        this.lastBoardBlock = currentBoardBlock;
-//        initMovementConfiguration(currentLocation, destination, pathFinder, rotation, xMovementSpeed, yMovementSpeed);
-//        this.setFriendly(false);
-//        this.allowedToDealDamage = true;
-//    }
-
     public Enemy(SpriteConfiguration spriteConfiguration, EnemyConfiguration enemyConfiguration){
         super(spriteConfiguration);
         configureEnemy(enemyConfiguration);
@@ -55,8 +43,8 @@ public class Enemy extends GameObject {
         this.deathSound = enemyConfiguration.getDeathSound();
         this.movementDirection = enemyConfiguration.getMovementDirection();
         this.currentLocation = new Point(xCoordinate, yCoordinate);
-        updateCurrentBoardBlock();
-        this.lastBoardBlock = currentBoardBlock;
+        this.currentBoardBlock = BoardBlockUpdater.getBoardBlock(xCoordinate);
+
         initMovementConfiguration(enemyConfiguration);
         this.setVisible(true);
         this.setFriendly(false);
@@ -90,6 +78,5 @@ public class Enemy extends GameObject {
         // This could contain default behaviour but SHOULD be overriden by specific enemytype
         // classes.
     }
-
 
 }

@@ -16,7 +16,7 @@ import visual.objects.SpriteAnimation;
 
 public class BombaProjectile extends Missile {
 
-	public BombaProjectile(SpriteConfiguration spriteConfiguration, MissileConfiguration missileConfiguration) {
+	public BombaProjectile(SpriteAnimationConfiguration spriteConfiguration, MissileConfiguration missileConfiguration) {
 		super(spriteConfiguration, missileConfiguration);
 		this.animation.setFrameDelay(3);
 		this.animation.rotateAnimetion(missileConfiguration.getMovementDirection());

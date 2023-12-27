@@ -2,10 +2,7 @@ package game.movement;
 
 import java.util.List;
 
-import game.managers.PlayerManager;
 import game.objects.GameObject;
-import game.objects.enemies.EnemyManager;
-import visual.objects.Sprite;
 
 public class Path {
 	private List<Point> waypoints;

@@ -6,11 +6,10 @@ import java.util.List;
 
 import game.managers.AnimationManager;
 import game.managers.CollisionDetector;
-import game.managers.PlayerManager;
+import game.objects.player.PlayerManager;
 import game.movement.Direction;
 import game.movement.pathfinders.OrbitPathFinder;
 import game.movement.pathfinders.PathFinder;
-import game.movement.pathfinders.RegularPathFinder;
 import game.objects.enemies.Enemy;
 import game.objects.enemies.EnemyManager;
 import game.objects.friendlies.Drones.DroneConfiguration;
@@ -22,7 +21,6 @@ import gamedata.GameStatusEnums;
 import gamedata.image.ImageEnums;
 import visual.objects.CreationConfigurations.SpriteAnimationConfiguration;
 import visual.objects.CreationConfigurations.SpriteConfiguration;
-import visual.objects.SpriteAnimation;
 
 public class FriendlyManager {
 
@@ -60,7 +58,6 @@ public class FriendlyManager {
         for (GuardianDrone drone : guardianDroneList) {
             if (drone.getAnimation().isVisible()) {
                 drone.move();
-                drone.updateCurrentBoardBlock();
             }
         }
     }

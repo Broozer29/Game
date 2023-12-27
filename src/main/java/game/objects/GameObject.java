@@ -57,6 +57,8 @@ public class GameObject extends Sprite {
     protected GameObject objectToFollow;
     protected MovementConfiguration movementConfiguration;
 
+    protected MovementTracker movementTracker;
+
     protected int lastBoardBlock;
     protected Point currentLocation;
     protected int currentBoardBlock;
@@ -71,6 +73,8 @@ public class GameObject extends Sprite {
     protected String objectType;
     protected Direction movementDirection;
 
+    private int tijdelijkeTeller = 0;
+
 
 //    public GameObject (int xCoordinate, int yCoordinate, float scale) {
 //        super(xCoordinate, yCoordinate, scale);
@@ -84,6 +88,8 @@ public class GameObject extends Sprite {
             this.loadImage(spriteConfiguration.getImageType());
         }
         this.visible = true;
+        this.movementTracker = new MovementTracker();
+        this.currentBoardBlock = BoardBlockUpdater.getBoardBlock(xCoordinate);
     }
 
     public GameObject (SpriteAnimationConfiguration spriteAnimationConfiguration) {
@@ -91,6 +97,8 @@ public class GameObject extends Sprite {
         this.animation = new SpriteAnimation(spriteAnimationConfiguration);
         this.currentLocation = new Point(xCoordinate, yCoordinate);
         this.visible = true;
+        this.movementTracker = new MovementTracker();
+        this.currentBoardBlock = BoardBlockUpdater.getBoardBlock(xCoordinate);
     }
 
     public void takeDamage (float damageTaken) {
@@ -103,7 +111,7 @@ public class GameObject extends Sprite {
             }
 
             for (GameObject object : objectsFollowingThis) {
-                object.takeDamage(99999);
+                object.takeDamage(9999999);
             }
 
             try {
@@ -120,7 +128,7 @@ public class GameObject extends Sprite {
         SpriteMover.getInstance().moveSprite(this, movementConfiguration);
         moveAnimations();
         this.bounds.setBounds(xCoordinate + xOffset, yCoordinate + yOffset, width, height);
-        updateCurrentBoardBlock();
+        updateBoardBlock();
         updateVisibility();
 
         if (this.exhaustAnimation != null) {
@@ -131,6 +139,15 @@ public class GameObject extends Sprite {
         if (animation != null) {
             animation.setAnimationBounds(xCoordinate, yCoordinate);
         }
+
+//        tijdelijkeTeller++;
+//        this.movementTracker.recordPosition(xCoordinate, yCoordinate);
+//        if (tijdelijkeTeller == 50) {
+//            if (!this.movementTracker.hasMovedInLastTicks(49)) {
+//                System.out.println(this.objectType + " hasn't moved in a while with a position of: " + this.xCoordinate + " " + this.yCoordinate);
+//            }
+//        }
+
     }
 
     private void moveAnimations () {
@@ -188,34 +205,6 @@ public class GameObject extends Sprite {
     }
 
 
-    public void updateCurrentBoardBlock () {
-        if (xCoordinate >= 0 && xCoordinate <= (DataClass.getInstance().getBoardBlockWidth() * 1)) {
-            this.currentBoardBlock = 0;
-        } else if (xCoordinate >= (DataClass.getInstance().getBoardBlockWidth() * 1)
-                && xCoordinate <= (DataClass.getInstance().getBoardBlockWidth() * 2)) {
-            this.currentBoardBlock = 1;
-        } else if (xCoordinate >= (DataClass.getInstance().getBoardBlockWidth() * 2)
-                && xCoordinate <= (DataClass.getInstance().getBoardBlockWidth() * 3)) {
-            this.currentBoardBlock = 2;
-        } else if (xCoordinate >= (DataClass.getInstance().getBoardBlockWidth() * 3)
-                && xCoordinate <= (DataClass.getInstance().getBoardBlockWidth())) {
-            this.currentBoardBlock = 3;
-        } else if (xCoordinate >= (DataClass.getInstance().getBoardBlockWidth() * 4)
-                && xCoordinate <= (DataClass.getInstance().getBoardBlockWidth() * 5)) {
-            this.currentBoardBlock = 4;
-        } else if (xCoordinate >= (DataClass.getInstance().getBoardBlockWidth() * 5)
-                && xCoordinate <= (DataClass.getInstance().getBoardBlockWidth() * 6)) {
-            this.currentBoardBlock = 5;
-        } else if (xCoordinate >= (DataClass.getInstance().getBoardBlockWidth() * 6)
-                && xCoordinate <= (DataClass.getInstance().getBoardBlockWidth() * 7)) {
-            this.currentBoardBlock = 6;
-        } else if (xCoordinate >= (DataClass.getInstance().getBoardBlockWidth() * 7)
-                && xCoordinate <= (DataClass.getInstance().getBoardBlockWidth() * 8)) {
-            this.currentBoardBlock = 7;
-        } else if (xCoordinate > DataClass.getInstance().getBoardBlockWidth() * 8) {
-            this.currentBoardBlock = 8;
-        }
-    }
 
 
     //-------------------------------------getters and setters below------------
@@ -417,5 +406,9 @@ public class GameObject extends Sprite {
         } else {
             System.out.println("Tried to adjust a PathFinder without having an existing MovementConfiguration");
         }
+    }
+
+    public void updateBoardBlock(){
+        this.currentBoardBlock = BoardBlockUpdater.getBoardBlock(xCoordinate);
     }
 }

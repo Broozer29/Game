@@ -1,8 +1,7 @@
-package game.objects.friendlies.spaceship.specialAttacks;
+package game.objects.player.specialAttacks;
 
 import game.objects.missiles.MissileConfiguration;
 import visual.objects.CreationConfigurations.SpriteAnimationConfiguration;
-import visual.objects.SpriteAnimation;
 
 public class ElectroShred extends SpecialAttack{
 

@@ -1,12 +1,7 @@
 package game.objects.missiles;
 
-import game.movement.Direction;
-import game.movement.Point;
-import game.movement.pathfinders.PathFinder;
-import game.objects.friendlies.spaceship.PlayerAttackTypes;
 import game.objects.missiles.missiletypes.*;
-import gamedata.PlayerStats;
-import gamedata.image.ImageEnums;
+import visual.objects.CreationConfigurations.SpriteAnimationConfiguration;
 import visual.objects.CreationConfigurations.SpriteConfiguration;
 
 public class MissileCreator {
@@ -63,37 +58,42 @@ public class MissileCreator {
 				return new AlienLaserbeam(spriteConfiguration,missileConfiguration);
 			}
 			case BombaProjectile -> {
-				return new BombaProjectile(spriteConfiguration,missileConfiguration);
+				return new BombaProjectile(upgradeConfig(spriteConfiguration, 2, true),missileConfiguration);
 			}
 			case BulldozerProjectile -> {
-				return new BulldozerProjectile(spriteConfiguration,missileConfiguration);
+				return new BulldozerProjectile(upgradeConfig(spriteConfiguration, 2, true),missileConfiguration);
 			}
 			case EnergizerProjectile -> {
-				return new EnergizerProjectile(spriteConfiguration,missileConfiguration);
+				return new EnergizerProjectile(upgradeConfig(spriteConfiguration, 2, true),missileConfiguration);
 			}
 			case FlamerProjectile -> {
-				return new FlamerProjectile(spriteConfiguration,missileConfiguration);
+				return new FlamerProjectile(upgradeConfig(spriteConfiguration, 2, true),missileConfiguration);
 			}
 			case SeekerProjectile -> {
-				return new SeekerProjectile(spriteConfiguration,missileConfiguration);
+				return new SeekerProjectile(upgradeConfig(spriteConfiguration, 2, true),missileConfiguration);
 			}
 			case TazerProjectile -> {
-				return new TazerProjectile(spriteConfiguration,missileConfiguration);
+				return new TazerProjectile(upgradeConfig(spriteConfiguration, 2, true),missileConfiguration);
 			}
 			case OrbitingMissile -> {
 				return new OrbitingMissile(spriteConfiguration,missileConfiguration);
 			}
 			case FlameThrowerProjectile -> {
-				return new FlamethrowerProjectile(spriteConfiguration,missileConfiguration);
+				return new FlamethrowerProjectile(upgradeConfig(spriteConfiguration, 2, true),missileConfiguration);
 			}
 			case DefaultPlayerLaserbeam -> {
 				return new DefaultPlayerLaserbeam(spriteConfiguration,missileConfiguration);
 			}
 			case FirewallMissile -> {
-				return new FirewallMissile(spriteConfiguration,missileConfiguration);
+				return new FirewallMissile(upgradeConfig(spriteConfiguration, 2, true),missileConfiguration);
 			}
 		}
 		return null;
 	}
 
+	private SpriteAnimationConfiguration upgradeConfig(SpriteConfiguration spriteConfiguration, int frameDelay, boolean infiniteLoop){
+		return new SpriteAnimationConfiguration(spriteConfiguration, frameDelay, infiniteLoop);
+	}
 }
+
+
