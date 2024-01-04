@@ -7,7 +7,7 @@ import game.managers.TimerManager;
 import game.movement.Direction;
 import game.objects.enemies.EnemyEnums;
 import game.spawner.EnemySpawnTimer;
-import gamedata.audio.AudioEnums;
+import VisualAndAudioData.audio.AudioEnums;
 
 public class BadAppleLevel implements Level{
 
@@ -215,7 +215,7 @@ public class BadAppleLevel implements Level{
 			Direction direction, float enemyScale, int additionalDelay) {
 
 		EnemySpawnTimer timer = new EnemySpawnTimer(timeBeforeActivation, spawnAttempts, enemyType, loopable, direction,
-				enemyScale, additionalDelay, 2, 2);
+				enemyScale, 2, 2);
 		enemySpawnTimers.add(timer);
 	}
 

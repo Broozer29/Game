@@ -11,12 +11,12 @@ import game.objects.player.specialAttacks.SpecialAttack;
 import game.objects.missiles.MissileConfiguration;
 import game.objects.missiles.MissileManager;
 import game.objects.player.PlayerStats;
-import gamedata.audio.AudioEnums;
-import gamedata.audio.AudioManager;
-import gamedata.image.ImageEnums;
-import visual.objects.CreationConfigurations.SpriteAnimationConfiguration;
-import visual.objects.CreationConfigurations.SpriteConfiguration;
-import visual.objects.SpriteAnimation;
+import VisualAndAudioData.audio.AudioEnums;
+import VisualAndAudioData.audio.AudioManager;
+import VisualAndAudioData.image.ImageEnums;
+import visualobjects.SpriteConfigurations.SpriteAnimationConfiguration;
+import visualobjects.SpriteConfigurations.SpriteConfiguration;
+import visualobjects.SpriteAnimation;
 
 public class SpaceShipSpecialGun {
 	private PlayerStats playerStats = PlayerStats.getInstance();
@@ -57,11 +57,15 @@ public class SpaceShipSpecialGun {
 			MissileConfiguration missileConfiguration = new MissileConfiguration();
 			missileConfiguration.setDamage(1.5f);
 
+
 			SpriteAnimation specialAttackAnimation = new SpriteAnimation(spriteAnimationConfiguration);
 			specialAttackAnimation.setCenterCoordinates(spaceShip.getCenterXCoordinate(), spaceShip.getCenterYCoordinate());
+			specialAttackAnimation.setAnimationScale(2);
 
 			SpecialAttack specialAttack = new ElectroShred(spriteAnimationConfiguration, missileConfiguration);
 			specialAttack.setCenteredAroundPlayer(true);
+			specialAttack.setScale(2);
+			
 			try {
 //				specialAttackAnimation.updateCurrentBoardBlock();
 				AudioManager.getInstance().addAudio(AudioEnums.Default_EMP);

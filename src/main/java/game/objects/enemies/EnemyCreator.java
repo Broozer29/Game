@@ -3,8 +3,8 @@ package game.objects.enemies;
 import game.movement.Direction;
 import game.movement.pathfinders.PathFinder;
 import game.objects.enemies.enemytypes.*;
-import gamedata.audio.AudioEnums;
-import visual.objects.CreationConfigurations.SpriteConfiguration;
+import VisualAndAudioData.audio.AudioEnums;
+import visualobjects.SpriteConfigurations.SpriteConfiguration;
 
 public class EnemyCreator {
 
@@ -38,7 +38,7 @@ public class EnemyCreator {
 
 
         return new EnemyConfiguration(enemyType, maxHitpoints, maxShields
-                , hasAttack, showHealthBar, deathSound, movementDirection, pathFinder, xMovementSpeed, yMovementSpeed, allowedToDealDamage,
+                , hasAttack, true, deathSound, movementDirection, pathFinder, xMovementSpeed, yMovementSpeed, allowedToDealDamage,
                 objectType, attackSpeed);
     }
 

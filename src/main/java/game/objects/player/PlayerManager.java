@@ -8,13 +8,13 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 
 import game.managers.AnimationManager;
 import game.objects.player.spaceship.SpaceShip;
-import gamedata.DataClass;
-import gamedata.GameStateInfo;
-import gamedata.GameStatusEnums;
-import gamedata.audio.AudioEnums;
-import gamedata.audio.AudioManager;
-import gamedata.image.ImageEnums;
-import visual.objects.CreationConfigurations.SpriteConfiguration;
+import VisualAndAudioData.DataClass;
+import VisualAndAudioData.GameStateInfo;
+import VisualAndAudioData.GameStatusEnums;
+import VisualAndAudioData.audio.AudioEnums;
+import VisualAndAudioData.audio.AudioManager;
+import VisualAndAudioData.image.ImageEnums;
+import visualobjects.SpriteConfigurations.SpriteConfiguration;
 
 public class PlayerManager {
 

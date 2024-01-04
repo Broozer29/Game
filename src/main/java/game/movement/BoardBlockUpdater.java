@@ -1,6 +1,6 @@
 package game.movement;
 
-import gamedata.DataClass;
+import VisualAndAudioData.DataClass;
 
 public class BoardBlockUpdater {
 

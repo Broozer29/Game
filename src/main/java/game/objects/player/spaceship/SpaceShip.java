@@ -18,10 +18,10 @@ import game.objects.GameObject;
 import game.objects.player.specialAttacks.SpecialAttack;
 import game.objects.player.BoostsUpgradesAndBuffsSettings;
 import game.objects.player.PlayerStats;
-import gamedata.image.ImageEnums;
-import visual.objects.CreationConfigurations.SpriteAnimationConfiguration;
-import visual.objects.CreationConfigurations.SpriteConfiguration;
-import visual.objects.SpriteAnimation;
+import VisualAndAudioData.image.ImageEnums;
+import visualobjects.SpriteConfigurations.SpriteAnimationConfiguration;
+import visualobjects.SpriteConfigurations.SpriteConfiguration;
+import visualobjects.SpriteAnimation;
 
 public class SpaceShip extends GameObject {
 
@@ -257,8 +257,9 @@ public class SpaceShip extends GameObject {
 
 	// Launch a missile from the center point of the spaceship
 	private void fire() throws UnsupportedAudioFileException, IOException {
+
 		for (SpaceShipRegularGun gun : spaceShipGuns) {
-			gun.fire(this.xCoordinate, this.yCoordinate, this.getWidth(), this.getHeight(),
+			gun.fire(this.xCoordinate + this.width, this.yCoordinate + (this.width / 2) - 5,
 					playerStats.getAttackType());
 		}
 	}

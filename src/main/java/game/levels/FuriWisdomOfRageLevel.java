@@ -10,8 +10,8 @@ import game.spawner.EnemyFormation;
 import game.spawner.EnemySpawnTimer;
 import game.spawner.FormationCreator;
 import game.spawner.SpawnFormationEnums;
-import gamedata.DataClass;
-import gamedata.audio.AudioEnums;
+import VisualAndAudioData.DataClass;
+import VisualAndAudioData.audio.AudioEnums;
 
 public class FuriWisdomOfRageLevel implements Level {
 
@@ -305,7 +305,7 @@ public class FuriWisdomOfRageLevel implements Level {
 		}
 
 		EnemySpawnTimer timer = new EnemySpawnTimer(timeBeforeActivation, spawnAttempts, enemyType, loopable, direction,
-				enemyScale, additionalDelay, xMovementSpeed, yMovementSpeed);
+				enemyScale, xMovementSpeed, yMovementSpeed);
 		return timer;
 	}
 

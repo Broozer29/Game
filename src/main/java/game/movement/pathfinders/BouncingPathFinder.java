@@ -9,8 +9,8 @@ import game.movement.Point;
 import game.movement.pathfinderconfigs.BouncingPathFinderConfig;
 import game.movement.pathfinderconfigs.PathFinderConfig;
 import game.movement.pathfinderconfigs.RegularPathFinderConfig;
-import gamedata.DataClass;
-import visual.objects.Sprite;
+import VisualAndAudioData.DataClass;
+import visualobjects.Sprite;
 
 public class BouncingPathFinder implements PathFinder {
 

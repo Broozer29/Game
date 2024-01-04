@@ -11,9 +11,9 @@ import game.managers.CollisionDetector;
 import game.objects.player.PlayerManager;
 import game.objects.enemies.enemytypes.AlienBomb;
 import game.objects.player.spaceship.SpaceShip;
-import gamedata.DataClass;
-import gamedata.audio.AudioEnums;
-import gamedata.audio.AudioManager;
+import VisualAndAudioData.DataClass;
+import VisualAndAudioData.audio.AudioEnums;
+import VisualAndAudioData.audio.AudioManager;
 
 public class EnemyManager {
 

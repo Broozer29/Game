@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import game.objects.enemies.Enemy;
-import gamedata.image.ImageEnums;
-import visual.objects.CreationConfigurations.SpriteAnimationConfiguration;
-import visual.objects.CreationConfigurations.SpriteConfiguration;
-import visual.objects.SpriteAnimation;
+import VisualAndAudioData.image.ImageEnums;
+import visualobjects.SpriteConfigurations.SpriteAnimationConfiguration;
+import visualobjects.SpriteConfigurations.SpriteConfiguration;
+import visualobjects.SpriteAnimation;
 
 public class AnimationManager {
 

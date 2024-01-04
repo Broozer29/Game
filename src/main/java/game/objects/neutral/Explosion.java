@@ -4,9 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import game.objects.GameObject;
-import visual.objects.CreationConfigurations.SpriteAnimationConfiguration;
-import visual.objects.Sprite;
-import visual.objects.SpriteAnimation;
+import visualobjects.SpriteConfigurations.SpriteAnimationConfiguration;
 
 public class Explosion extends GameObject {
 

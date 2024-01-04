@@ -2,10 +2,10 @@ package game.objects.enemies.enemytypes;
 
 import game.objects.enemies.EnemyConfiguration;
 import game.objects.enemies.Enemy;
-import gamedata.image.ImageEnums;
-import visual.objects.CreationConfigurations.SpriteAnimationConfiguration;
-import visual.objects.CreationConfigurations.SpriteConfiguration;
-import visual.objects.SpriteAnimation;
+import VisualAndAudioData.image.ImageEnums;
+import visualobjects.SpriteConfigurations.SpriteAnimationConfiguration;
+import visualobjects.SpriteConfigurations.SpriteConfiguration;
+import visualobjects.SpriteAnimation;
 
 public class AlienBomb extends Enemy {
 

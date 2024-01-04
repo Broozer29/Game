@@ -11,7 +11,7 @@ import game.movement.pathfinderconfigs.HomingPathFinderConfig;
 import game.movement.pathfinderconfigs.PathFinderConfig;
 import game.objects.GameObject;
 import game.objects.enemies.EnemyManager;
-import gamedata.DataClass;
+import VisualAndAudioData.DataClass;
 
 public class HomingPathFinder implements PathFinder {
 	@Override

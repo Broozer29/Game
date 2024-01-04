@@ -4,11 +4,11 @@ import java.awt.image.BufferedImage;
 import java.util.*;
 
 import game.spawner.SpawningCoordinator;
-import gamedata.DataClass;
-import gamedata.image.ImageDatabase;
-import gamedata.image.ImageEnums;
-import gamedata.image.ImageResizer;
-import visual.objects.CreationConfigurations.SpriteConfiguration;
+import VisualAndAudioData.DataClass;
+import VisualAndAudioData.image.ImageDatabase;
+import VisualAndAudioData.image.ImageEnums;
+import VisualAndAudioData.image.ImageResizer;
+import visualobjects.SpriteConfigurations.SpriteConfiguration;
 
 public class BackgroundManager {
 

@@ -2,8 +2,7 @@ package game.objects.enemies;
 
 import game.movement.Direction;
 import game.movement.pathfinders.PathFinder;
-import game.objects.enemies.EnemyEnums;
-import gamedata.audio.AudioEnums;
+import VisualAndAudioData.audio.AudioEnums;
 
 public class EnemyConfiguration {
     private EnemyEnums enemyType;

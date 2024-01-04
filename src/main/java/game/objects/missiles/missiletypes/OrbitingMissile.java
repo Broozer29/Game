@@ -1,12 +1,8 @@
 package game.objects.missiles.missiletypes;
 
-import game.movement.Direction;
-import game.movement.Point;
-import game.movement.pathfinders.PathFinder;
 import game.objects.missiles.Missile;
 import game.objects.missiles.MissileConfiguration;
-import gamedata.image.ImageEnums;
-import visual.objects.CreationConfigurations.SpriteConfiguration;
+import visualobjects.SpriteConfigurations.SpriteConfiguration;
 
 public class OrbitingMissile extends Missile {
 

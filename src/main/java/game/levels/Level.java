@@ -3,7 +3,7 @@ package game.levels;
 import java.util.List;
 
 import game.spawner.EnemySpawnTimer;
-import gamedata.audio.AudioEnums;
+import VisualAndAudioData.audio.AudioEnums;
 
 public interface Level {
 	public void initRepeatableTimers();

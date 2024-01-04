@@ -1,9 +1,10 @@
 package game.objects.player;
 
 import game.movement.pathfinders.PathFinder;
+import game.objects.missiles.MissileTypeEnums;
 import game.objects.player.playerpresets.GunPreset;
 import game.objects.player.playerpresets.SpecialGunPreset;
-import gamedata.image.ImageEnums;
+import VisualAndAudioData.image.ImageEnums;
 
 public class PlayerStats {
 
@@ -37,7 +38,7 @@ public class PlayerStats {
 	private SpecialGunPreset specialGunPreset;
 
 	// Player attacks
-	private PlayerAttackTypes attackType = PlayerAttackTypes.Laserbeam;
+	private MissileTypeEnums attackType = MissileTypeEnums.DefaultPlayerLaserbeam;
 	private PlayerSpecialAttackTypes specialAttackType = PlayerSpecialAttackTypes.EMP;
 	private float attackDamage;
 	private float bonusAttackDamage;
@@ -443,11 +444,11 @@ public class PlayerStats {
 		this.bonusSpecialAttackDamage += bonusSpecialAttackDamage;
 	}
 
-	public PlayerAttackTypes getAttackType() {
+	public MissileTypeEnums getAttackType() {
 		return attackType;
 	}
 
-	public void setAttackType(PlayerAttackTypes attackType) {
+	public void setAttackType(MissileTypeEnums attackType) {
 		this.attackType = attackType;
 	}
 

@@ -1,8 +1,8 @@
 package game.objects.missiles;
 
 import game.objects.missiles.missiletypes.*;
-import visual.objects.CreationConfigurations.SpriteAnimationConfiguration;
-import visual.objects.CreationConfigurations.SpriteConfiguration;
+import visualobjects.SpriteConfigurations.SpriteAnimationConfiguration;
+import visualobjects.SpriteConfigurations.SpriteConfiguration;
 
 public class MissileCreator {
 
@@ -14,43 +14,6 @@ public class MissileCreator {
 	public static MissileCreator getInstance() {
 		return instance;
 	}
-
-//	public Missile createFriendlyMissile(int xCoordinate, int yCoordinate, ImageEnums missileType,
-//			ImageEnums explosionType, Direction rotation, float scale, PathFinder pathFinder, int xMovementSpeed,
-//			int yMovementSpeed, PlayerAttackTypes attackType) {
-//		Point start = new Point(xCoordinate, yCoordinate);
-//		Point destination = null;
-//		float damage = 0;
-//		switch (attackType) {
-//		case Flamethrower:
-//			destination = pathFinder.calculateEndPointBySteps(start, rotation,
-//					PlayerStats.getInstance().getFlameThrowerMaxSteps(), xMovementSpeed, yMovementSpeed);
-//			damage = PlayerStats.getInstance().getNormalAttackDamage();
-//			break;
-//		case Laserbeam:
-//			destination = pathFinder.calculateInitialEndpoint(start, rotation, true);
-//			damage = PlayerStats.getInstance().getNormalAttackDamage();
-//			break;
-//		case Rocket:
-//			destination = pathFinder.calculateInitialEndpoint(start, rotation, true);
-//			damage = PlayerStats.getInstance().getNormalAttackDamage();
-//			break;
-//		case Shotgun:
-//			break;
-//		case Firewall:
-//			destination = pathFinder.calculateInitialEndpoint(start, rotation, true);
-//	        damage = PlayerStats.getInstance().getFirewallDamage();
-//			break;
-//		default:
-//			destination = pathFinder.calculateInitialEndpoint(start, rotation, true);
-//			break;
-//		}
-//
-//		Missile missile = createMissile(missileType, xCoordinate, yCoordinate, destination, explosionType, rotation,
-//				scale, pathFinder, xMovementSpeed, yMovementSpeed, true, damage);
-//		missile.setVisible(true);
-//		return missile;
-//	}
 
 	public Missile createMissile(SpriteConfiguration spriteConfiguration, MissileConfiguration missileConfiguration) {
 		switch (missileConfiguration.getMissileType()) {

@@ -5,8 +5,8 @@ import java.awt.image.BufferedImage;
 import java.util.Random;
 
 import game.movement.Direction;
-import visual.objects.CreationConfigurations.SpriteConfiguration;
-import visual.objects.Sprite;
+import visualobjects.SpriteConfigurations.SpriteConfiguration;
+import visualobjects.Sprite;
 
 public class BackgroundObject extends Sprite {
 

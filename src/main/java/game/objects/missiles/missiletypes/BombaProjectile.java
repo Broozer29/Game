@@ -2,17 +2,13 @@
 package game.objects.missiles.missiletypes;
 
 import game.managers.ExplosionManager;
-import game.movement.Direction;
-import game.movement.Point;
-import game.movement.pathfinders.PathFinder;
 import game.objects.missiles.MissileConfiguration;
 import game.objects.neutral.Explosion;
 import game.objects.missiles.Missile;
 import game.objects.neutral.ExplosionConfiguration;
-import gamedata.image.ImageEnums;
-import visual.objects.CreationConfigurations.SpriteAnimationConfiguration;
-import visual.objects.CreationConfigurations.SpriteConfiguration;
-import visual.objects.SpriteAnimation;
+import VisualAndAudioData.image.ImageEnums;
+import visualobjects.SpriteConfigurations.SpriteAnimationConfiguration;
+import visualobjects.SpriteAnimation;
 
 public class BombaProjectile extends Missile {
 
@@ -37,8 +33,8 @@ public class BombaProjectile extends Missile {
 
 			ExplosionConfiguration explosionConfiguration = new ExplosionConfiguration(isFriendly(), damage, false);
 			Explosion explosion = new Explosion(spriteAnimationConfiguration ,explosionConfiguration);
-//			explosion.setX(xCoordinate - (animation.getWidth() / 2));
-//			explosion.setY(yCoordinate - (animation.getHeight() / 2));
+			explosion.setX(xCoordinate - (animation.getWidth() / 2));
+			explosion.setY(yCoordinate - (animation.getHeight() / 2));
 			
 			ExplosionManager.getInstance().addExistingExplosion(explosion);
 			this.setVisible(false);

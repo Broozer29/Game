@@ -16,9 +16,6 @@ public class SpecialGunPreset {
             case EMP:
                 initEMP();
                 break;
-            case Firewall:
-                initFirewall();
-                break;
             case Rocket_Cluster:
                 break;
             default:
@@ -30,13 +27,4 @@ public class SpecialGunPreset {
     private void initEMP () {
         PlayerStats.getInstance().setPlayerSpecialAttackType(PlayerSpecialAttackTypes.EMP);
     }
-
-    private void initFirewall () {
-        PlayerStats.getInstance().setPlayerSpecialAttackType(PlayerSpecialAttackTypes.Firewall);
-        PlayerStats.getInstance().setFirewallSize(3);
-        PlayerStats.getInstance().setFirewallDamage((float) 0.5);
-        PlayerStats.getInstance().setFirewallSpeed(3);
-        PlayerStats.getInstance().setSpecialAttackSpeed(5);
-    }
-
 }

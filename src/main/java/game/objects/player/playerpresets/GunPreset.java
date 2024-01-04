@@ -1,35 +1,26 @@
 package game.objects.player.playerpresets;
 
 import game.movement.pathfinders.RegularPathFinder;
-import game.objects.player.PlayerAttackTypes;
+import game.objects.missiles.MissileTypeEnums;
 import game.objects.player.PlayerStats;
-import gamedata.image.ImageDatabase;
-import gamedata.image.ImageEnums;
+import VisualAndAudioData.image.ImageEnums;
 
 public class GunPreset {
 	
-	private PlayerAttackTypes attackType;
+	private MissileTypeEnums attackType;
 	
-	public GunPreset(PlayerAttackTypes attackType) {
+	public GunPreset(MissileTypeEnums attackType) {
 		this.attackType = attackType;
 	}
 	
 	public void loadPreset() {
 		switch (attackType) {
-		case Flamethrower:
-			initFlamethrowerPreset();
-			break;
-		case Laserbeam:
+			case DefaultPlayerLaserbeam:
 			initLaserbeamPreset();
 			break;
-		case Rocket:
+			case Rocket1:
 			initRocketPreset();
 			break;
-		case Shotgun:
-			break;
-		case DUMMY_VALUE:
-		case Firewall:
-		case NONE:
 		default:
 			break;
 		}
@@ -38,7 +29,7 @@ public class GunPreset {
 	private void initRocketPreset() {
 		PlayerStats.getInstance().setAttackSpeed(15);
 		PlayerStats.getInstance().setAttackDamage(50);
-		PlayerStats.getInstance().setAttackType(PlayerAttackTypes.Rocket);
+		PlayerStats.getInstance().setAttackType(MissileTypeEnums.Rocket1);
 		PlayerStats.getInstance().setMissilePathFinder(new RegularPathFinder());
 		PlayerStats.getInstance().setPlayerMissileType(ImageEnums.Rocket_1);
 		PlayerStats.getInstance().setPlayerMissileImpactType(ImageEnums.Rocket_1_Explosion);
@@ -46,21 +37,11 @@ public class GunPreset {
 		PlayerStats.getInstance().setMissileImpactScale(1);
 	}
 	
-	private void initFlamethrowerPreset() {
-		PlayerStats.getInstance().setFlameThrowerMaxSteps(ImageDatabase.getInstance().getGif(ImageEnums.Flamethrower_Animation).size());
-		PlayerStats.getInstance().setAttackSpeed(5);
-		PlayerStats.getInstance().setAttackDamage(20);
-		PlayerStats.getInstance().setAttackType(PlayerAttackTypes.Flamethrower);
-		PlayerStats.getInstance().setMissilePathFinder(new RegularPathFinder());
-		PlayerStats.getInstance().setPlayerMissileType(ImageEnums.Flamethrower_Animation);
-		PlayerStats.getInstance().setMissileScale(1);
-		PlayerStats.getInstance().setMissileImpactScale(1);
-	}
 
 	private void initLaserbeamPreset() {
 		PlayerStats.getInstance().setAttackSpeed(15);
 		PlayerStats.getInstance().setAttackDamage(25);
-		PlayerStats.getInstance().setAttackType(PlayerAttackTypes.Laserbeam);
+		PlayerStats.getInstance().setAttackType(MissileTypeEnums.DefaultPlayerLaserbeam);
 		PlayerStats.getInstance().setMissilePathFinder(new RegularPathFinder());
 		PlayerStats.getInstance().setPlayerMissileType(ImageEnums.Player_Laserbeam);
 		PlayerStats.getInstance().setPlayerMissileImpactType(ImageEnums.Impact_Explosion_One);

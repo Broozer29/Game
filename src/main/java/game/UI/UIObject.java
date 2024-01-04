@@ -1,9 +1,8 @@
 package game.UI;
 
-import gamedata.image.ImageEnums;
-import gamedata.image.ImageResizer;
-import visual.objects.CreationConfigurations.SpriteConfiguration;
-import visual.objects.Sprite;
+import VisualAndAudioData.image.ImageResizer;
+import visualobjects.SpriteConfigurations.SpriteConfiguration;
+import visualobjects.Sprite;
 
 public class UIObject extends Sprite {
 	

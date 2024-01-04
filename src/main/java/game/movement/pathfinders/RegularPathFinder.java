@@ -8,7 +8,7 @@ import game.movement.Path;
 import game.movement.Point;
 import game.movement.pathfinderconfigs.PathFinderConfig;
 import game.movement.pathfinderconfigs.RegularPathFinderConfig;
-import gamedata.DataClass;
+import VisualAndAudioData.DataClass;
 
 public class RegularPathFinder implements PathFinder {
 

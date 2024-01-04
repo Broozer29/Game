@@ -1,7 +1,7 @@
 package game.objects.enemies;
 
-import gamedata.audio.AudioEnums;
-import gamedata.image.ImageEnums;
+import VisualAndAudioData.audio.AudioEnums;
+import VisualAndAudioData.image.ImageEnums;
 
 import java.util.Random;
 import java.util.Arrays;

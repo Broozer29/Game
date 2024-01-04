@@ -34,17 +34,7 @@ public class MissileManager {
         specialAttacks = new ArrayList<SpecialAttack>();
     }
 
-    public List<Missile> getMissiles () {
-        return missiles;
-    }
 
-    public List<SpecialAttack> getSpecialAttacks () {
-        return specialAttacks;
-    }
-
-    public void addExistingMissile (Missile missile) {
-        this.missiles.add(missile);
-    }
 
     private void initManagersIfNull () {
         if (enemyManager == null) {
@@ -100,15 +90,17 @@ public class MissileManager {
 
     // Checks collision between special attacks and enemies
     private void checkSpecialAttackWithEnemyCollision (SpecialAttack specialAttack) {
-        for (Missile missile : specialAttack.getSpecialAttackMissiles()) {
-            for (Enemy enemy : enemyManager.getEnemies()) {
-                if (collisionDetector.detectCollision(missile, enemy)) {
-                    enemy.takeDamage(specialAttack.getDamage());
-                }
-            }
-        }
+//        for (Missile missile : specialAttack.getSpecialAttackMissiles()) {
+//            for (Enemy enemy : enemyManager.getEnemies()) {
+//                if (collisionDetector.detectCollision(missile, enemy)) {
+//                    enemy.takeDamage(specialAttack.getDamage());
+//                }
+//            }
+//        }
+
 
         for (Enemy enemy : enemyManager.getEnemies()) {
+//            System.out.println("Kom ik hier " + specialAttack.getBounds());
             if (collisionDetector.detectCollision(enemy, specialAttack)) {
                 enemy.takeDamage(specialAttack.getDamage());
             }
@@ -171,5 +163,17 @@ public class MissileManager {
 
     public void addSpecialAttack (SpecialAttack specialAttack) {
         this.specialAttacks.add(specialAttack);
+    }
+
+    public List<Missile> getMissiles () {
+        return missiles;
+    }
+
+    public List<SpecialAttack> getSpecialAttacks () {
+        return specialAttacks;
+    }
+
+    public void addExistingMissile (Missile missile) {
+        this.missiles.add(missile);
     }
 }

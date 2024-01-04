@@ -2,9 +2,9 @@ package game.managers;
 
 import game.UI.UIObject;
 import game.objects.player.PlayerStats;
-import gamedata.image.ImageEnums;
-import visual.objects.CreationConfigurations.SpriteConfiguration;
-import visual.objects.SpriteAnimation;
+import VisualAndAudioData.image.ImageEnums;
+import visualobjects.SpriteConfigurations.SpriteConfiguration;
+import visualobjects.SpriteAnimation;
 
 public class GameUIManager {
 
@@ -44,10 +44,8 @@ public class GameUIManager {
 		case EMP:
 			frameType = ImageEnums.Starcraft2_Electric_Field;
 			break;
-		case Firewall:
-			frameType = ImageEnums.Starcraft2_Firebat_Weapon;
-			break;
 		case Rocket_Cluster:
+			frameType = ImageEnums.Starcraft2_Dual_Rockets;
 			break;
 		default:
 			break;

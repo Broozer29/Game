@@ -2,7 +2,6 @@ package game.movement;
 
 import game.movement.pathfinders.PathFinder;
 import game.objects.GameObject;
-import visual.objects.Sprite;
 
 public class MovementConfiguration {
 

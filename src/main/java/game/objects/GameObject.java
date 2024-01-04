@@ -3,15 +3,14 @@ package game.objects;
 import game.managers.AnimationManager;
 import game.movement.*;
 import game.movement.pathfinders.PathFinder;
-import gamedata.DataClass;
-import gamedata.audio.AudioEnums;
-import gamedata.audio.AudioManager;
-import gamedata.image.ImageResizer;
-import gamedata.image.ImageRotator;
-import visual.objects.CreationConfigurations.SpriteAnimationConfiguration;
-import visual.objects.CreationConfigurations.SpriteConfiguration;
-import visual.objects.Sprite;
-import visual.objects.SpriteAnimation;
+import VisualAndAudioData.audio.AudioEnums;
+import VisualAndAudioData.audio.AudioManager;
+import VisualAndAudioData.image.ImageResizer;
+import VisualAndAudioData.image.ImageRotator;
+import visualobjects.SpriteConfigurations.SpriteAnimationConfiguration;
+import visualobjects.SpriteConfigurations.SpriteConfiguration;
+import visualobjects.Sprite;
+import visualobjects.SpriteAnimation;
 
 import javax.sound.sampled.UnsupportedAudioFileException;
 import java.io.IOException;
@@ -69,11 +68,16 @@ public class GameObject extends Sprite {
     //Objects following this object
     protected List<GameObject> objectsFollowingThis = new ArrayList<GameObject>();
 
+    protected List<GameObject> objectOrbitingThis = new ArrayList<GameObject>();
+
     //Other
     protected String objectType;
     protected Direction movementDirection;
 
-    private int tijdelijkeTeller = 0;
+    private int movingOrStuckCounter = 0;
+
+
+
 
 
 //    public GameObject (int xCoordinate, int yCoordinate, float scale) {
@@ -410,5 +414,9 @@ public class GameObject extends Sprite {
 
     public void updateBoardBlock(){
         this.currentBoardBlock = BoardBlockUpdater.getBoardBlock(xCoordinate);
+    }
+
+    public List<GameObject> getObjectOrbitingThis () {
+        return objectOrbitingThis;
     }
 }

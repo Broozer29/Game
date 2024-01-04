@@ -10,8 +10,8 @@ import game.movement.Point;
 import game.movement.pathfinders.PathFinder;
 import game.objects.GameObject;
 import game.objects.missiles.MissileManager;
-import visual.objects.CreationConfigurations.SpriteAnimationConfiguration;
-import visual.objects.CreationConfigurations.SpriteConfiguration;
+import visualobjects.SpriteConfigurations.SpriteAnimationConfiguration;
+import visualobjects.SpriteConfigurations.SpriteConfiguration;
 
 public class Enemy extends GameObject {
 

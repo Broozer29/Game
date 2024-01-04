@@ -1,9 +1,7 @@
 package game.objects.friendlies;
 
 import game.objects.GameObject;
-import gamedata.image.ImageEnums;
-import visual.objects.CreationConfigurations.SpriteAnimationConfiguration;
-import visual.objects.SpriteAnimation;
+import visualobjects.SpriteConfigurations.SpriteAnimationConfiguration;
 
 //Used to end the game
 public class Portal extends GameObject {

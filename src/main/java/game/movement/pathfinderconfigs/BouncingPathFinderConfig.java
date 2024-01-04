@@ -3,8 +3,7 @@ package game.movement.pathfinderconfigs;
 import game.movement.Direction;
 import game.movement.Point;
 import game.objects.GameObject;
-import game.objects.friendlies.powerups.PowerUp;
-import visual.objects.Sprite;
+import game.objects.powerups.PowerUp;
 
 public class BouncingPathFinderConfig implements PathFinderConfig {
 

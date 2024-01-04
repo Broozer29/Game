@@ -9,20 +9,11 @@ import game.movement.Direction;
 import game.movement.pathfinders.PathFinder;
 import game.movement.pathfinders.RegularPathFinder;
 import game.objects.enemies.*;
-import game.objects.enemies.enemytypes.AlienBomb;
-import game.objects.enemies.enemytypes.Bomba;
-import game.objects.enemies.enemytypes.Bulldozer;
-import game.objects.enemies.enemytypes.Energizer;
-import game.objects.enemies.enemytypes.Flamer;
-import game.objects.enemies.enemytypes.Seeker;
-import game.objects.enemies.enemytypes.Tazer;
 import game.spawner.EnemySpawnTimer;
 import game.spawner.SpawningCoordinator;
-import gamedata.GameStateInfo;
-import gamedata.GameStatusEnums;
-import gamedata.audio.AudioEnums;
-import gamedata.audio.AudioManager;
-import visual.objects.CreationConfigurations.SpriteConfiguration;
+import VisualAndAudioData.GameStateInfo;
+import VisualAndAudioData.GameStatusEnums;
+import VisualAndAudioData.audio.AudioManager;
 
 public class LevelManager {
 
@@ -100,7 +91,7 @@ public class LevelManager {
 
         AudioManager audioManager = AudioManager.getInstance();
         for (EnemySpawnTimer timer : currentLevel.getTimers()) {
-            timerManager.addEnemyTimerToList(timer);
+            timerManager.addTimer(timer);
         }
 
 //		try {
@@ -305,13 +296,13 @@ public class LevelManager {
         }
 
         EnemySpawnTimer timer = new EnemySpawnTimer(timeBeforeActivation, spawnAttempts, enemyType, loopable, direction,
-                enemyScale, additionalDelay, xMovementSpeed, yMovementSpeed);
+                enemyScale, xMovementSpeed, yMovementSpeed);
         return timer;
     }
 
     // FOR TESTING PURPOSES ONLY AS WELL
     private void addSpawnTimer (EnemySpawnTimer timer) {
-        this.timerManager.addEnemyTimerToList(timer);
+        this.timerManager.addTimer(timer);
     }
     private EnemyEnums selectRandomEnemy () {
         EnemyEnums[] enums = EnemyEnums.values();

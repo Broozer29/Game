@@ -3,8 +3,8 @@ package game.objects.missiles;
 import game.movement.Direction;
 import game.movement.pathfinders.PathFinder;
 import game.objects.GameObject;
-import gamedata.audio.AudioEnums;
-import gamedata.image.ImageEnums;
+import VisualAndAudioData.audio.AudioEnums;
+import VisualAndAudioData.image.ImageEnums;
 
 public class MissileConfiguration {
 

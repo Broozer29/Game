@@ -8,11 +8,11 @@ import game.objects.enemies.Enemy;
 import game.objects.enemies.EnemyEnums;
 import game.objects.enemies.EnemyManager;
 import game.objects.missiles.MissileManager;
-import gamedata.audio.AudioEnums;
-import gamedata.image.ImageEnums;
-import visual.objects.CreationConfigurations.SpriteAnimationConfiguration;
-import visual.objects.CreationConfigurations.SpriteConfiguration;
-import visual.objects.SpriteAnimation;
+import VisualAndAudioData.audio.AudioEnums;
+import VisualAndAudioData.image.ImageEnums;
+import visualobjects.SpriteConfigurations.SpriteAnimationConfiguration;
+import visualobjects.SpriteConfigurations.SpriteConfiguration;
+import visualobjects.SpriteAnimation;
 
 public class Bulldozer extends Enemy {
 

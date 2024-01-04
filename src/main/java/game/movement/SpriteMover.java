@@ -10,7 +10,7 @@ import game.movement.pathfinders.HomingPathFinder;
 import game.movement.pathfinders.OrbitPathFinder;
 import game.movement.pathfinders.RegularPathFinder;
 import game.objects.GameObject;
-import visual.objects.Sprite;
+import visualobjects.Sprite;
 
 public class SpriteMover {
 

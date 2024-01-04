@@ -1,8 +1,8 @@
 package game.objects;
 
 import game.movement.MovementConfiguration;
-import gamedata.DataClass;
-import visual.objects.Sprite;
+import VisualAndAudioData.DataClass;
+import visualobjects.Sprite;
 
 public class SpriteRemover {
 

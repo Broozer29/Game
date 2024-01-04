@@ -1,16 +1,13 @@
 package game.objects.missiles;
 
 import game.managers.AnimationManager;
-import game.movement.Direction;
 import game.movement.MovementConfiguration;
-import game.movement.Point;
 import game.movement.pathfinders.HomingPathFinder;
 import game.movement.pathfinders.PathFinder;
 import game.objects.GameObject;
-import gamedata.image.ImageEnums;
-import visual.objects.CreationConfigurations.SpriteAnimationConfiguration;
-import visual.objects.CreationConfigurations.SpriteConfiguration;
-import visual.objects.SpriteAnimation;
+import visualobjects.SpriteConfigurations.SpriteAnimationConfiguration;
+import visualobjects.SpriteConfigurations.SpriteConfiguration;
+import visualobjects.SpriteAnimation;
 
 public class Missile extends GameObject {
 
@@ -36,10 +33,12 @@ public class Missile extends GameObject {
 		this.damage = missileConfiguration.getDamage();
 		this.missileType = missileConfiguration.getMissileType();
 
-		SpriteAnimationConfiguration destructionAnimation = new SpriteAnimationConfiguration(spriteConfiguration, 2, false);
-		destructionAnimation.getSpriteConfiguration().setImageType(missileConfiguration.getDestructionType());
-		this.destructionAnimation = new SpriteAnimation(destructionAnimation);
 
+		if(missileConfiguration.getDestructionType() != null){
+			SpriteAnimationConfiguration destructionAnimation = new SpriteAnimationConfiguration(spriteConfiguration, 2, false);
+			destructionAnimation.getSpriteConfiguration().setImageType(missileConfiguration.getDestructionType());
+			this.destructionAnimation = new SpriteAnimation(destructionAnimation);
+		}
 		initMovementConfiguration(missileConfiguration);
 
 	}

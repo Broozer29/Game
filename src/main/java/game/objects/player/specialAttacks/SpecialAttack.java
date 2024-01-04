@@ -7,9 +7,8 @@ import game.movement.BoardBlockUpdater;
 import game.objects.GameObject;
 import game.objects.missiles.Missile;
 import game.objects.missiles.MissileConfiguration;
-import visual.objects.CreationConfigurations.SpriteAnimationConfiguration;
-import visual.objects.Sprite;
-import visual.objects.SpriteAnimation;
+import visualobjects.SpriteConfigurations.SpriteAnimationConfiguration;
+import visualobjects.SpriteAnimation;
 
 public class SpecialAttack extends GameObject {
 	protected List<Missile> specialAttackMissiles = new ArrayList<Missile>();
