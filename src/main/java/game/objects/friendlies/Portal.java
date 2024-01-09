@@ -1,20 +1,18 @@
 package game.objects.friendlies;
 
-import gamedata.image.ImageEnums;
-import visual.objects.SpriteAnimation;
+import game.objects.GameObject;
+import visualobjects.SpriteConfigurations.SpriteAnimationConfiguration;
 
 //Used to end the game
-public class Portal extends SpriteAnimation{
+public class Portal extends GameObject {
 	
 	private boolean spawned = false;
 	
-	public Portal(int x, int y, ImageEnums imageType, boolean infiniteLoop, float scale) {
-		super(x, y, imageType, infiniteLoop, scale);
-		setFrameDelay(2);
-		this.setOriginCoordinates(x, y);
-		this.cropAnimation();
-		updateCurrentBoardBlock();
-
+	public Portal(SpriteAnimationConfiguration spriteAnimationConfiguration){
+		super(spriteAnimationConfiguration);
+		this.animation.setOriginCoordinates(spriteAnimationConfiguration.getSpriteConfiguration().getxCoordinate(),
+				spriteAnimationConfiguration.getSpriteConfiguration().getyCoordinate());
+		this.animation.cropAnimation();
 	}
 	
 	public void setSpawned(boolean spawned) {
@@ -24,7 +22,7 @@ public class Portal extends SpriteAnimation{
 	public boolean getSpawned() {
 		return this.spawned;
 	}
-	
-	
-	
+
+
+
 }

@@ -1,9 +1,10 @@
 package game.movement.pathfinderconfigs;
 
 import game.movement.Direction;
+import game.movement.MovementConfiguration;
 import game.movement.Point;
-import game.objects.friendlies.powerups.PowerUp;
-import visual.objects.Sprite;
+import game.objects.GameObject;
+import game.objects.powerups.PowerUp;
 
 public class BouncingPathFinderConfig implements PathFinderConfig {
 
@@ -13,14 +14,14 @@ public class BouncingPathFinderConfig implements PathFinderConfig {
 	private int spriteWidth;
 	private int spriteHeight;
 	private Direction spriteCurrentDirection;
-	private Sprite bouncingSprite;
+	private GameObject bouncingSprite;
 
-	public BouncingPathFinderConfig(Sprite bouncingSprite, Direction currentDirection) {
+	public BouncingPathFinderConfig(GameObject bouncingSprite, MovementConfiguration movementConfiguration) {
 		this.xCoordinate = bouncingSprite.getXCoordinate();
 		this.yCoordinate = bouncingSprite.getYCoordinate();
 		this.spriteWidth = bouncingSprite.getWidth();
 		this.spriteHeight = bouncingSprite.getHeight();
-		this.spriteCurrentDirection = currentDirection;
+		this.spriteCurrentDirection = movementConfiguration.getRotation();
 		this.bouncingSprite = bouncingSprite;
 	}
 
@@ -81,7 +82,7 @@ public class BouncingPathFinderConfig implements PathFinderConfig {
 		bouncingSprite.setY(currentLocation.getY());
 	}
 	
-	public Sprite getSprite() {
+	public GameObject getSprite() {
 		return bouncingSprite;
 	}
 
@@ -98,13 +99,13 @@ public class BouncingPathFinderConfig implements PathFinderConfig {
 	}
 
 	@Override
-	public Direction getFallbackDirection() {
+	public Direction getMovementDirection () {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public void setFallbackDirection(Direction fallbackDirection) {
+	public void setMovementDirection (Direction movementDirection) {
 		// TODO Auto-generated method stub
 
 	}

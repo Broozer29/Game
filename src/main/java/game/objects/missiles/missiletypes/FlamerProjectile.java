@@ -1,24 +1,19 @@
 package game.objects.missiles.missiletypes;
 
-import game.movement.Direction;
-import game.movement.Point;
-import game.movement.pathfinders.PathFinder;
 import game.objects.missiles.Missile;
-import gamedata.image.ImageEnums;
+import game.objects.missiles.MissileConfiguration;
+import visualobjects.SpriteConfigurations.SpriteAnimationConfiguration;
 
 public class FlamerProjectile extends Missile {
 
-	public FlamerProjectile(int x, int y, Point destination, ImageEnums missileType, ImageEnums explosionType,
-			Direction rotation, float scale, PathFinder pathFinder, int xMovementSpeed, int yMovementSpeed, boolean friendly, float damage) {
-		super(x, y, destination, missileType, explosionType, rotation, scale, pathFinder, friendly, xMovementSpeed, yMovementSpeed);
-		this.missileDamage = damage;
-		setAnimation();
+	public FlamerProjectile(SpriteAnimationConfiguration spriteConfiguration, MissileConfiguration missileConfiguration) {
+		super(spriteConfiguration, missileConfiguration);
+		this.animation.rotateAnimetion(missileConfiguration.getMovementDirection());
 		this.animation.setFrameDelay(3);
-		this.animation.rotateAnimetion(rotation);
 	}
 
 	public void missileAction() {
-		if (moveConfig.getStepsTaken() % 5 == 0 && animation.getScale() < 2.00) {
+		if (movementConfiguration.getStepsTaken() % 5 == 0 && animation.getScale() < 2.00) {
 			this.animation.setAnimationScale((float) (animation.getScale() + 0.05));
 			;
 		}

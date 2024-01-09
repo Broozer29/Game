@@ -8,7 +8,7 @@ import game.movement.Path;
 import game.movement.Point;
 import game.movement.pathfinderconfigs.PathFinderConfig;
 import game.movement.pathfinderconfigs.RegularPathFinderConfig;
-import gamedata.DataClass;
+import VisualAndAudioData.DataClass;
 
 public class RegularPathFinder implements PathFinder {
 
@@ -20,7 +20,7 @@ public class RegularPathFinder implements PathFinder {
 
 			Point start = ((RegularPathFinderConfig) pathFinderConfig).getStart();
 			Point end = ((RegularPathFinderConfig) pathFinderConfig).getEnd();
-			Direction fallbackDirection = ((RegularPathFinderConfig) pathFinderConfig).getFallbackDirection();
+			Direction fallbackDirection = ((RegularPathFinderConfig) pathFinderConfig).getMovementDirection();
 			boolean isFriendly = ((RegularPathFinderConfig) pathFinderConfig).isFriendly();
 			int XStepSize = ((RegularPathFinderConfig) pathFinderConfig).getxMovementSpeed();
 			int YStepSize = ((RegularPathFinderConfig) pathFinderConfig).getyMovementSpeed();

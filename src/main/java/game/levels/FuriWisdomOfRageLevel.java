@@ -10,8 +10,8 @@ import game.spawner.EnemyFormation;
 import game.spawner.EnemySpawnTimer;
 import game.spawner.FormationCreator;
 import game.spawner.SpawnFormationEnums;
-import gamedata.DataClass;
-import gamedata.audio.AudioEnums;
+import VisualAndAudioData.DataClass;
+import VisualAndAudioData.audio.AudioEnums;
 
 public class FuriWisdomOfRageLevel implements Level {
 
@@ -63,9 +63,12 @@ public class FuriWisdomOfRageLevel implements Level {
 		// additional delay
 //		0:00 tot 0:40 is hetzelfde. Start van het level, start met basic enemies
 		addSpawnTimer(createSpawnTimer(EnemyEnums.Bomba, 1, 3, loopable, Direction.LEFT, scale, additionalDelay, xMovementSpeed, yMovementSpeed));
+
+
+
 		for (int i = 2; i < 41; i += 2) {
 			addSpawnTimer(
-					createSpawnTimer(EnemyEnums.Random, 4, i, loopable, Direction.LEFT, scale, additionalDelay, xMovementSpeed, yMovementSpeed));
+					createSpawnTimer(EnemyEnums.getRandomEnemy(), 4, i, loopable, Direction.LEFT, scale, additionalDelay, xMovementSpeed, yMovementSpeed));
 		}
 
 		create22SecondsFormation(timer, formation, formCreator);
@@ -280,7 +283,7 @@ public class FuriWisdomOfRageLevel implements Level {
 //		4:40 tot 5:06 afbouwen, het is over
 		for (int i = 280; i < 306; i += 2) {
 			addSpawnTimer(
-					createSpawnTimer(EnemyEnums.Random, 4, i, loopable, Direction.LEFT, scale, additionalDelay, xMovementSpeed, yMovementSpeed));
+					createSpawnTimer(EnemyEnums.getRandomEnemy(), 4, i, loopable, Direction.LEFT, scale, additionalDelay, xMovementSpeed, yMovementSpeed));
 		}
 	}
 
@@ -297,12 +300,12 @@ public class FuriWisdomOfRageLevel implements Level {
 	private EnemySpawnTimer createSpawnTimer(EnemyEnums enemyType, int spawnAttempts, int timeBeforeActivation,
 			boolean loopable, Direction direction, float enemyScale, int additionalDelay, int xMovementSpeed, int yMovementSpeed) {
 
-		if (enemyType == EnemyEnums.Random) {
+		if (enemyType == null) {
 			enemyType = selectRandomEnemy();
 		}
 
 		EnemySpawnTimer timer = new EnemySpawnTimer(timeBeforeActivation, spawnAttempts, enemyType, loopable, direction,
-				enemyScale, additionalDelay, xMovementSpeed, yMovementSpeed);
+				enemyScale, xMovementSpeed, yMovementSpeed);
 		return timer;
 	}
 
@@ -318,7 +321,7 @@ public class FuriWisdomOfRageLevel implements Level {
 		EnemyEnums[] enums = EnemyEnums.values();
 		EnemyEnums randomValue = enums[random.nextInt(enums.length)];
 
-		if (randomValue == EnemyEnums.Alien || randomValue == EnemyEnums.Alien_Bomb) {
+		if (randomValue == EnemyEnums.Alien_Bomb) {
 			return selectRandomEnemy();
 		}
 		return randomValue;

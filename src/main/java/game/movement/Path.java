@@ -2,9 +2,7 @@ package game.movement;
 
 import java.util.List;
 
-import game.managers.PlayerManager;
-import game.objects.enemies.EnemyManager;
-import visual.objects.Sprite;
+import game.objects.GameObject;
 
 public class Path {
 	private List<Point> waypoints;
@@ -12,7 +10,7 @@ public class Path {
 	private Direction fallbackDirection;
 	private boolean isHoming;
 	private boolean isFriendly;
-	private Sprite target;
+	private GameObject target;
 
 	public Path(List<Point> wayPoints, Direction fallbackDirection, boolean isHoming, boolean isFriendly) {
 		this.waypoints = wayPoints;
@@ -26,11 +24,11 @@ public class Path {
 	}
 
 	// Used for homing paths
-	public void setTarget(Sprite target) {
+	public void setTarget(GameObject target) {
 		this.target = target;
 	}
 
-	public Sprite getTarget() {
+	public GameObject getTarget() {
 		return this.target;
 	}
 

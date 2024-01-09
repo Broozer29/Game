@@ -9,7 +9,7 @@ import game.spawner.EnemyFormation;
 import game.spawner.EnemySpawnTimer;
 import game.spawner.FormationCreator;
 import game.spawner.SpawnFormationEnums;
-import gamedata.DataClass;
+import VisualAndAudioData.DataClass;
 
 //Not to scale, just a representation of the pattern
 /*- ...X......................X...
@@ -48,22 +48,22 @@ public class EnclosingFromTheCorners implements PregeneratedFormation {
 	    int offsetY1 = (int) (dataClass.getWindowHeight() * 1.114); // 111.4% of window height
 	    int offsetY2 = (int) (dataClass.getWindowHeight() * 0.4); // 40% of window height
 
-	    timer = new EnemySpawnTimer(activationTime, 1, enemyType, loopable, Direction.RIGHT_UP, scale, 0, xMovementSpeed, yMovementSpeed);
+	    timer = new EnemySpawnTimer(activationTime, 1, enemyType, loopable, Direction.RIGHT_UP, scale,  xMovementSpeed, yMovementSpeed);
 	    formation = formCreator.createFormation(SpawnFormationEnums.Reverse_Divide, enemyType.getFormationWidthDistance(), enemyType.getFormationHeightDistance());
 	    timer.setFormation(formation, -offsetX1, offsetY1);
 	    allTimers.add(timer);
 	    
-	    timer = new EnemySpawnTimer(activationTime, 1, enemyType, loopable, Direction.LEFT_DOWN, scale, 0, xMovementSpeed, yMovementSpeed);
+	    timer = new EnemySpawnTimer(activationTime, 1, enemyType, loopable, Direction.LEFT_DOWN, scale, xMovementSpeed, yMovementSpeed);
 	    formation = formCreator.createFormation(SpawnFormationEnums.Reverse_Divide, enemyType.getFormationWidthDistance(), enemyType.getFormationHeightDistance());
 	    timer.setFormation(formation, dataClass.getWindowWidth() + offsetX2, -offsetY2);
 	    allTimers.add(timer);
 
-	    timer = new EnemySpawnTimer(activationTime, 1, enemyType, loopable, Direction.RIGHT_DOWN, scale, 0, xMovementSpeed, yMovementSpeed);
+	    timer = new EnemySpawnTimer(activationTime, 1, enemyType, loopable, Direction.RIGHT_DOWN, scale, xMovementSpeed, yMovementSpeed);
 	    formation = formCreator.createFormation(SpawnFormationEnums.Divide, enemyType.getFormationWidthDistance(), enemyType.getFormationHeightDistance());
 	    timer.setFormation(formation, -offsetX1, -offsetY2);
 	    allTimers.add(timer);
 
-	    timer = new EnemySpawnTimer(activationTime, 1, enemyType, loopable, Direction.LEFT_UP, scale, 0, xMovementSpeed, yMovementSpeed);
+	    timer = new EnemySpawnTimer(activationTime, 1, enemyType, loopable, Direction.LEFT_UP, scale, xMovementSpeed, yMovementSpeed);
 	    formation = formCreator.createFormation(SpawnFormationEnums.Divide, enemyType.getFormationWidthDistance(), enemyType.getFormationHeightDistance());
 	    timer.setFormation(formation, dataClass.getWindowWidth() + offsetX2, offsetY1);
 	    allTimers.add(timer);

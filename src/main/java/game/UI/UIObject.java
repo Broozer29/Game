@@ -1,14 +1,13 @@
 package game.UI;
 
-import gamedata.image.ImageEnums;
-import gamedata.image.ImageResizer;
-import visual.objects.Sprite;
+import VisualAndAudioData.image.ImageResizer;
+import visualobjects.SpriteConfigurations.SpriteConfiguration;
+import visualobjects.Sprite;
 
 public class UIObject extends Sprite {
 	
-	public UIObject(int x, int y, float scale, ImageEnums imageType) {
-		super(x, y, scale);
-		loadImage(imageType);
+	public UIObject(SpriteConfiguration spriteConfiguration) {
+		super(spriteConfiguration);
 	}
 
 	public void resizeToDimensions(int width, int height) {

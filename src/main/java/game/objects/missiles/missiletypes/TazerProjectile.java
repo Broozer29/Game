@@ -1,22 +1,16 @@
 package game.objects.missiles.missiletypes;
 
-import game.movement.Direction;
-import game.movement.Point;
-import game.movement.pathfinders.PathFinder;
 import game.objects.missiles.Missile;
-import gamedata.image.ImageEnums;
+import game.objects.missiles.MissileConfiguration;
+import visualobjects.SpriteConfigurations.SpriteAnimationConfiguration;
 
 public class TazerProjectile extends Missile {
 
-	public TazerProjectile(int x, int y, Point destination, ImageEnums missileType, ImageEnums explosionType,
-			Direction rotation, float scale, PathFinder pathFinder, int xMovementSpeed, int yMovementSpeed,
-			boolean friendly, float damage) {
-		super(x, y, destination, missileType, explosionType, rotation, scale, pathFinder, friendly, xMovementSpeed,
-				yMovementSpeed);
-		this.missileDamage = damage;
-		setAnimation();
+	public TazerProjectile(SpriteAnimationConfiguration spriteConfiguration, MissileConfiguration missileConfiguration) {
+		super(spriteConfiguration, missileConfiguration);
+		this.animation.rotateAnimetion(missileConfiguration.getMovementDirection());
+//		setAnimation();
 		this.animation.setFrameDelay(3);
-		this.rotateMissileAnimation(rotation);
 	}
 
 	public void missileAction() {

@@ -9,7 +9,7 @@ import game.spawner.EnemyFormation;
 import game.spawner.EnemySpawnTimer;
 import game.spawner.FormationCreator;
 import game.spawner.SpawnFormationEnums;
-import gamedata.DataClass;
+import VisualAndAudioData.DataClass;
 
 //Not to scale, just a representation of the pattern
 /*- .X...X...X..................
@@ -59,22 +59,22 @@ public class TopBottomVRows implements PregeneratedFormation {
 	    int offsetYLeft = (int) (dataClass.getWindowHeight() * 0.240); // 24% from bottom edge of window (equivalent to 210 when windowHeight = 875)
 	    int offsetYLeftCenter = (int) (dataClass.getWindowHeight() * 0.137); // 13.7% from bottom edge of window (equivalent to 120 when windowHeight = 875)
 
-	    timer = new EnemySpawnTimer(activationTime, 1, enemyType, loopable, Direction.LEFT, scale, 0, xMovementSpeed, yMovementSpeed);
+	    timer = new EnemySpawnTimer(activationTime, 1, enemyType, loopable, Direction.LEFT, scale,  xMovementSpeed, yMovementSpeed);
 	    formation = formCreator.createFormation(SpawnFormationEnums.V, enemyType.getFormationWidthDistance(), enemyType.getFormationHeightDistance());
 	    timer.setFormation(formation, dataClass.getWindowWidth() + offsetXLeft, 0);
 	    allTimers.add(timer);
 
-	    timer = new EnemySpawnTimer(activationTime, 1, centerEnemyType, loopable, Direction.LEFT, scale, 0, xMovementSpeed, yMovementSpeed);
+	    timer = new EnemySpawnTimer(activationTime, 1, centerEnemyType, loopable, Direction.LEFT, scale,  xMovementSpeed, yMovementSpeed);
 	    formation = formCreator.createFormation(SpawnFormationEnums.Dot, enemyType.getFormationWidthDistance(), enemyType.getFormationHeightDistance());
 	    timer.setFormation(formation, dataClass.getWindowWidth() + offsetXLeftCenter, 0);
 	    allTimers.add(timer);
 
-	    timer = new EnemySpawnTimer(activationTime, 1, enemyType, loopable, Direction.LEFT, scale, 0, xMovementSpeed, yMovementSpeed);
+	    timer = new EnemySpawnTimer(activationTime, 1, enemyType, loopable, Direction.LEFT, scale,  xMovementSpeed, yMovementSpeed);
 	    formation = formCreator.createFormation(SpawnFormationEnums.Reverse_V, enemyType.getFormationWidthDistance(), enemyType.getFormationHeightDistance());
 	    timer.setFormation(formation, dataClass.getWindowWidth() + offsetXLeft, dataClass.getWindowHeight() - offsetYLeft);
 	    allTimers.add(timer);
 
-	    timer = new EnemySpawnTimer(activationTime, 1, centerEnemyType, loopable, Direction.LEFT, scale, 0, xMovementSpeed, yMovementSpeed);
+	    timer = new EnemySpawnTimer(activationTime, 1, centerEnemyType, loopable, Direction.LEFT, scale,  xMovementSpeed, yMovementSpeed);
 	    formation = formCreator.createFormation(SpawnFormationEnums.Dot, enemyType.getFormationWidthDistance(), enemyType.getFormationHeightDistance());
 	    timer.setFormation(formation, dataClass.getWindowWidth() + offsetXLeftCenter, dataClass.getWindowHeight() - offsetYLeftCenter);
 	    allTimers.add(timer);
@@ -90,22 +90,22 @@ public class TopBottomVRows implements PregeneratedFormation {
 	    int offsetYRight = (int) (dataClass.getWindowHeight() * 0.240); // 24% from bottom edge of window (equivalent to 210 when windowHeight = 875)
 	    int offsetYRightCenter = (int) (dataClass.getWindowHeight() * 0.137); // 13.7% from bottom edge of window (equivalent to 120 when windowHeight = 875)
 
-	    timer = new EnemySpawnTimer(activationTime, 1, enemyType, loopable, Direction.RIGHT, scale, 0, xMovementSpeed, yMovementSpeed);
+	    timer = new EnemySpawnTimer(activationTime, 1, enemyType, loopable, Direction.RIGHT, scale,  xMovementSpeed, yMovementSpeed);
 	    formation = formCreator.createFormation(SpawnFormationEnums.V, enemyType.getFormationWidthDistance(), enemyType.getFormationHeightDistance());
 	    timer.setFormation(formation, -offsetXRight, 0);
 	    allTimers.add(timer);
 
-	    timer = new EnemySpawnTimer(activationTime, 1, centerEnemyType, loopable, Direction.RIGHT, scale, 0, xMovementSpeed, yMovementSpeed);
+	    timer = new EnemySpawnTimer(activationTime, 1, centerEnemyType, loopable, Direction.RIGHT, scale,  xMovementSpeed, yMovementSpeed);
 	    formation = formCreator.createFormation(SpawnFormationEnums.Dot, enemyType.getFormationWidthDistance(), enemyType.getFormationHeightDistance());
 	    timer.setFormation(formation, -offsetXRight, 0);
 	    allTimers.add(timer);
 
-	    timer = new EnemySpawnTimer(activationTime, 1, enemyType, loopable, Direction.RIGHT, scale, 0, xMovementSpeed, yMovementSpeed);
+	    timer = new EnemySpawnTimer(activationTime, 1, enemyType, loopable, Direction.RIGHT, scale,  xMovementSpeed, yMovementSpeed);
 	    formation = formCreator.createFormation(SpawnFormationEnums.Reverse_V, enemyType.getFormationWidthDistance(), enemyType.getFormationHeightDistance());
 	    timer.setFormation(formation, -offsetXRight, dataClass.getWindowHeight() - offsetYRight);
 	    allTimers.add(timer);
 
-	    timer = new EnemySpawnTimer(activationTime, 1, centerEnemyType, loopable, Direction.RIGHT, scale, 0, xMovementSpeed, yMovementSpeed);
+	    timer = new EnemySpawnTimer(activationTime, 1, centerEnemyType, loopable, Direction.RIGHT, scale,  xMovementSpeed, yMovementSpeed);
 	    formation = formCreator.createFormation(SpawnFormationEnums.Dot, enemyType.getFormationWidthDistance(), enemyType.getFormationHeightDistance());
 	    timer.setFormation(formation, -offsetXRight, dataClass.getWindowHeight() - offsetYRightCenter);
 	    allTimers.add(timer);

@@ -1,79 +1,53 @@
 package controllerInput;
 
+import com.studiohartman.jamepad.*;
+
 import java.util.HashMap;
 import java.util.Map;
 
-import net.java.games.input.Component;
-import net.java.games.input.Controller;
-
-//Translates controller input into the corresponding actions
 public class ControllerInputReader {
-
-	private Controller controller;
+	private ControllerManager controllerManager;
+	private int controllerIndex;
 	private Map<ControllerInput, Boolean> inputState = new HashMap<>();
 
-	public ControllerInputReader(Controller controller) {
-		this.controller = controller;
+	public ControllerInputReader(ControllerManager controllerManager, int controllerIndex) {
+		this.controllerManager = controllerManager;
+		this.controllerIndex = controllerIndex;
 	}
 
 	public void pollController() {
-	    controller.poll();
-	    Component[] components = controller.getComponents();
+		controllerManager.update(); // Make sure to update the state of the controllers
+		ControllerIndex currController = controllerManager.getControllerIndex(controllerIndex);
 
-	    for (Component component : components) {
-	        String componentName = component.getName();
-	        float componentValue = component.getPollData();
+		try {
+			// Example for mapping left stick horizontal axis
+			float xAxisValue = currController.getAxisState(ControllerAxis.LEFTX);
+			inputState.put(ControllerInput.MOVE_LEFT_SLOW, xAxisValue > -0.5 && xAxisValue <= -0.2);
+			inputState.put(ControllerInput.MOVE_LEFT_QUICK, xAxisValue <= -0.5);
+			inputState.put(ControllerInput.MOVE_RIGHT_SLOW, xAxisValue >= 0.2 && xAxisValue < 0.5);
+			inputState.put(ControllerInput.MOVE_RIGHT_QUICK, xAxisValue >= 0.5);
 
-	        if (componentName.equals("x") || componentName.equals("X")) {
-	            // Reset previous states
-	            inputState.put(ControllerInput.MOVE_LEFT_SLOW, false);
-	            inputState.put(ControllerInput.MOVE_LEFT_QUICK, false);
-	            inputState.put(ControllerInput.MOVE_RIGHT_SLOW, false);
-	            inputState.put(ControllerInput.MOVE_RIGHT_QUICK, false);
+			float yAxisValue = currController.getAxisState(ControllerAxis.LEFTY);
+			inputState.put(ControllerInput.MOVE_DOWN_SLOW, yAxisValue > -0.5 && yAxisValue <= -0.2);
+			inputState.put(ControllerInput.MOVE_DOWN_QUICK, yAxisValue <= -0.5);
+			inputState.put(ControllerInput.MOVE_UP_SLOW, yAxisValue >= 0.2 && yAxisValue < 0.5);
+			inputState.put(ControllerInput.MOVE_UP_QUICK, yAxisValue >= 0.5);
 
-	            if (componentValue > -0.5 && componentValue <= -0.2) {
-	                // Slow move left:
-	                inputState.put(ControllerInput.MOVE_LEFT_SLOW, true);
-	            } else if (componentValue <= -0.5) {
-	                // Hard move left
-	                inputState.put(ControllerInput.MOVE_LEFT_QUICK, true);
-	            } else if (componentValue >= 0.2 && componentValue < 0.5) {
-	                // Slow move right:
-	                inputState.put(ControllerInput.MOVE_RIGHT_SLOW, true);
-	            } else if (componentValue >= 0.5) {
-	                // Hard move right
-	                inputState.put(ControllerInput.MOVE_RIGHT_QUICK, true);
-	            }
-	        } else if (componentName.equals("y") || componentName.equals("Y")) {
-	            // Reset previous states
-	            inputState.put(ControllerInput.MOVE_UP_SLOW, false);
-	            inputState.put(ControllerInput.MOVE_UP_QUICK, false);
-	            inputState.put(ControllerInput.MOVE_DOWN_SLOW, false);
-	            inputState.put(ControllerInput.MOVE_DOWN_QUICK, false);
 
-	            if (componentValue > -0.5 && componentValue <= -0.2) {
-	                // Slow move up:
-	                inputState.put(ControllerInput.MOVE_UP_SLOW, true);
-	            } else if (componentValue <= -0.5) {
-	                // Hard move up
-	                inputState.put(ControllerInput.MOVE_UP_QUICK, true);
-	            } else if (componentValue >= 0.2 && componentValue < 0.5) {
-	                // Slow move down:
-	                inputState.put(ControllerInput.MOVE_DOWN_SLOW, true);
-	            } else if (componentValue >= 0.5) {
-	                // Hard move down
-	                inputState.put(ControllerInput.MOVE_DOWN_QUICK, true);
-	            }
-	        } else if (componentName.equals("0")) {
-	            inputState.put(ControllerInput.FIRE, componentValue > 0.5);
-	        } else if (componentName.equals("1")) {
-	            inputState.put(ControllerInput.SPECIAL_ATTACK, componentValue > 0.5);
-	        }
-	    }
+			// Similar mappings for other inputs based on the enum
+			// Example for buttons
+			inputState.put(ControllerInput.FIRE, currController.isButtonPressed(ControllerButton.A)); // Assuming 'A' button maps to FIRE
+			inputState.put(ControllerInput.SPECIAL_ATTACK, currController.isButtonPressed(ControllerButton.B)); // Assuming 'B' button maps to SPECIAL_ATTACK
+
+			// Additional mappings as per your ControllerInput enum
+		} catch (ControllerUnpluggedException e) {
+			// Handle disconnected controller
+			System.out.println("Controller disconnected");
+		}
 	}
-
 
 	public boolean isInputActive(ControllerInput input) {
 		return inputState.getOrDefault(input, false);
 	}
+
 }

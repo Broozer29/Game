@@ -1,20 +1,19 @@
 package controllerInput;
 
+import com.studiohartman.jamepad.ControllerManager;
+import com.studiohartman.jamepad.ControllerState;
+
 import java.util.HashMap;
 import java.util.Map;
 
-import net.java.games.input.Component;
-import net.java.games.input.Controller;
-import net.java.games.input.ControllerEnvironment;
-
 public class ConnectedControllers {
     private static ConnectedControllers instance = new ConnectedControllers();
-    private Controller firstController = null;
-    private Map<Controller, ControllerInputReader> controllerInputReaders = new HashMap<>();
-    
+    private ControllerManager controllers = new ControllerManager();
+    private int firstControllerIndex = -1;
+    private Map<Integer, ControllerInputReader> controllerInputReaders = new HashMap<>();
 
     private ConnectedControllers() {
-
+        controllers.initSDLGamepad();
     }
 
     public static ConnectedControllers getInstance() {
@@ -22,41 +21,37 @@ public class ConnectedControllers {
     }
 
     public void initController() {
-        Controller[] controllers = ControllerEnvironment.getDefaultEnvironment().getControllers();
+        controllers.update();
+        int numControllers = controllers.getNumControllers();
 
-        for (int i = 0; i < controllers.length && firstController == null; i++) {
-            if (controllers[i].getType() == Controller.Type.GAMEPAD
-                    || controllers[i].getType() == Controller.Type.STICK) {
-                // Found a controller
-                firstController = controllers[i];
-                // Create a new ControllerInputReader and add it to the map
-                controllerInputReaders.put(firstController, new ControllerInputReader(firstController));
+        for (int i = 0; i < numControllers; i++) {
+            ControllerState state = controllers.getState(i);
+            if (state.isConnected) {
+                firstControllerIndex = i;
+                controllerInputReaders.put(firstControllerIndex, new ControllerInputReader(controllers, firstControllerIndex));
+                break; // Assuming you only want the first controller
             }
         }
-        if (firstController == null) {
-            // Couldn't find a controller
+
+        if (firstControllerIndex == -1) {
             System.out.println("Found no controller");
-            // Optionally: System.exit(0);
         } else {
-
-            System.out.println("First controller is: " + firstController.getName());
-            Component[] components = firstController.getComponents();
-            for (Component component : components) {
-                System.out.println("Component: " + component.getName() + ", Value: " + component.getPollData());
-            }
+            // Get the name of the controller directly from its ControllerState
+            String controllerName = controllers.getState(firstControllerIndex).controllerType;
+            System.out.println("First controller is: " + controllerName);
         }
     }
 
-    public Controller getFirstController() {
-        return firstController;
+    public ControllerInputReader getFirstController() {
+        return controllerInputReaders.get(firstControllerIndex);
     }
 
-    public void setFirstController(Controller firstController) {
-        this.firstController = firstController;
+    public void setFirstControllerIndex(int index) {
+        this.firstControllerIndex = index;
     }
 
-    // Returns the ControllerInputReader associated with the given Controller
-    public ControllerInputReader getControllerInputReader(Controller controller) {
-        return controllerInputReaders.get(controller);
+    // Returns the ControllerInputReader associated with the given controller index
+    public ControllerInputReader getControllerInputReader(int controllerIndex) {
+        return controllerInputReaders.get(controllerIndex);
     }
 }

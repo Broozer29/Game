@@ -12,5 +12,4 @@ public enum ControllerInput {
     FIRE,
     SPECIAL_ATTACK,
     TELEPORT
-    // add any other inputs here
 }

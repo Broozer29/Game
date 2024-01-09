@@ -1,35 +1,38 @@
 
 package game.objects.missiles.missiletypes;
 
-import game.managers.AnimationManager;
 import game.managers.ExplosionManager;
-import game.movement.Direction;
-import game.movement.Point;
-import game.movement.pathfinders.PathFinder;
-import game.objects.Explosion;
+import game.objects.missiles.MissileConfiguration;
+import game.objects.neutral.Explosion;
 import game.objects.missiles.Missile;
-import gamedata.image.ImageEnums;
-import visual.objects.SpriteAnimation;
+import game.objects.neutral.ExplosionConfiguration;
+import VisualAndAudioData.image.ImageEnums;
+import visualobjects.SpriteConfigurations.SpriteAnimationConfiguration;
+import visualobjects.SpriteAnimation;
 
 public class BombaProjectile extends Missile {
 
-	public BombaProjectile(int x, int y, Point destination, ImageEnums missileType, ImageEnums explosionType,
-			Direction rotation, float scale, PathFinder pathFinder, int xMovementSpeed, int yMovementSpeed, boolean isFriendly, float damage) {
-		super(x, y, destination, missileType, explosionType, rotation, scale, pathFinder, isFriendly, xMovementSpeed, yMovementSpeed);
-		this.missileDamage = damage;
-		setAnimation();
+	public BombaProjectile(SpriteAnimationConfiguration spriteConfiguration, MissileConfiguration missileConfiguration) {
+		super(spriteConfiguration, missileConfiguration);
 		this.animation.setFrameDelay(3);
-		this.animation.rotateAnimetion(rotation);
+		this.animation.rotateAnimetion(missileConfiguration.getMovementDirection());
 	
 	}
 
 	public void missileAction() {
-		if (moveConfig.getStepsTaken() >= 75) {
-			SpriteAnimation animation = new SpriteAnimation(xCoordinate, yCoordinate, ImageEnums.Bomba_Missile_Explosion, false, scale);
+		if (movementConfiguration.getStepsTaken() >= 75) {
+
+			SpriteAnimationConfiguration spriteAnimationConfiguration = new SpriteAnimationConfiguration(spriteConfiguration, 2, false);
+			spriteAnimationConfiguration.getSpriteConfiguration().setImageType(ImageEnums.Bomba_Missile_Explosion);
+			SpriteAnimation animation  = new SpriteAnimation(spriteAnimationConfiguration);
+
 			animation.setX(xCoordinate - (animation.getWidth() / 2));
 			animation.setY(yCoordinate - (animation.getHeight() / 2));
 			animation.setFrameDelay(3);
-			Explosion explosion = new Explosion(xCoordinate, yCoordinate, scale, animation, 20, false);
+
+
+			ExplosionConfiguration explosionConfiguration = new ExplosionConfiguration(isFriendly(), damage, false);
+			Explosion explosion = new Explosion(spriteAnimationConfiguration ,explosionConfiguration);
 			explosion.setX(xCoordinate - (animation.getWidth() / 2));
 			explosion.setY(yCoordinate - (animation.getHeight() / 2));
 			
@@ -40,13 +43,20 @@ public class BombaProjectile extends Missile {
 	
 	//Destroyed explosives explode
 	public void destroyMissile() {
-		SpriteAnimation animation = new SpriteAnimation(xCoordinate, yCoordinate, ImageEnums.Bomba_Missile_Explosion, false, scale);
-		animation.setX(xCoordinate - (animation.getWidth() / 2));
-		animation.setY(yCoordinate - (animation.getHeight() / 2));
-		animation.setFrameDelay(3);
-		Explosion explosion = new Explosion(xCoordinate, yCoordinate, scale, animation, 20, false);
-		explosion.setX(xCoordinate - (animation.getWidth() / 2));
-		explosion.setY(yCoordinate - (animation.getHeight() / 2));
+		ExplosionConfiguration explosionConfiguration = new ExplosionConfiguration(isFriendly(), damage, true);
+
+		SpriteAnimationConfiguration rocketExplosionConfig = new SpriteAnimationConfiguration(spriteConfiguration, 2, false);
+		rocketExplosionConfig.getSpriteConfiguration().setImageType(ImageEnums.Destroyed_Explosion);
+		SpriteAnimation explosionAnimation = new SpriteAnimation(rocketExplosionConfig);
+
+		explosionAnimation.setX(xCoordinate - (animation.getWidth() / 2));
+		explosionAnimation.setY(yCoordinate - (animation.getHeight() / 2));
+		explosionAnimation.setFrameDelay(3);
+
+
+		Explosion explosion = new Explosion(rocketExplosionConfig, explosionConfiguration);
+//		explosion.setX(xCoordinate - (animation.getWidth() / 2));
+//		explosion.setY(yCoordinate - (animation.getHeight() / 2));
 		
 		ExplosionManager.getInstance().addExistingExplosion(explosion);
 		this.setVisible(false);

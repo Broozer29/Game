@@ -1,136 +1,93 @@
 package game.spawner;
 
 import game.levels.LevelManager;
-import game.managers.TimerManager;
 import game.movement.Direction;
 import game.objects.enemies.EnemyEnums;
+import game.objects.timers.TimerInterface;
+import game.objects.timers.TimerStatusEnums;
 
-public class EnemySpawnTimer {
+public class EnemySpawnTimer implements TimerInterface {
+	private float timerLength;
+	private boolean loopable;
+	private float currentTime;
+	private EnemyEnums timerEnemyType;
+	private TimerStatusEnums status;
 
-	// Attributes required for spawning enemies
+	// Attributes for enemy spawning
 	private int amountOfSpawnAttempts;
 	private Direction direction;
-	private EnemyEnums timerEnemyType;
 	private float enemyScale;
-
-	// Required for formation spawning
-	private EnemyFormation formation = null;
+	private int xMovementSpeed;
+	private int yMovementSpeed;
+	private EnemyFormation formation;
 	private int formationXCoordinate;
 	private int formationYCoordinate;
 
-	// Attributes required for timing
-	private int timeBeforeActivation;
-	private int originalTimeBeforeActivation;
-	private boolean finished;
-	private boolean loopable;
-	private int additionalDelay;
-	private float currentTime;
-
-	private int xMovementSpeed;
-	private int yMovementSpeed;
-
-	public EnemySpawnTimer(int timeBeforeActivation, int amountOfSpawnAttempts, EnemyEnums timerEnemyType,
-			boolean loopable, Direction direction, float enemyScale, int additionalDelay, int xMovementSpeed,
-			int yMovementSpeed) {
-		this.enemyScale = enemyScale;
+	public EnemySpawnTimer(float timeBeforeActivation, int amountOfSpawnAttempts, EnemyEnums timerEnemyType,
+						   boolean loopable, Direction direction, float enemyScale, int xMovementSpeed, int yMovementSpeed) {
+		this.timerLength = timeBeforeActivation;
 		this.timerEnemyType = timerEnemyType;
 		this.amountOfSpawnAttempts = amountOfSpawnAttempts;
 		this.direction = direction;
+		this.enemyScale = enemyScale;
 		this.loopable = loopable;
-		this.originalTimeBeforeActivation = timeBeforeActivation;
-		this.timeBeforeActivation = timeBeforeActivation;
-		this.setCurrentTime(0);
-		this.setAdditionalDelay(additionalDelay);
-		this.finished = false;
 		this.xMovementSpeed = xMovementSpeed;
 		this.yMovementSpeed = yMovementSpeed;
+		this.currentTime = 0;
+		this.status = TimerStatusEnums.Waiting_To_Start;
 	}
 
-	// Vuur event naar de timerManager dat deze timer voorbij is. Bijvoorbeeld om
-	// bommen te spawnen.
-	public void activateTimer() {
-		if (formation == null) {
-			LevelManager.getInstance().spawnEnemy(0, 0, this.timerEnemyType, this.amountOfSpawnAttempts, this.direction,
-					this.enemyScale, true, this.xMovementSpeed, this.yMovementSpeed);
-		} else {
-			formation.spawnFormation(formationXCoordinate, formationYCoordinate, timerEnemyType, direction, enemyScale,
-					this.xMovementSpeed, this.yMovementSpeed);
+	@Override
+	public void startOfTimer() {
+		// No specific action on start for this timer
+		status = TimerStatusEnums.Running;
+	}
+
+	@Override
+	public void endOfTimer() {
+		if (shouldActivate(currentTime)) {
+			// Enemy spawning logic
+			if (formation == null) {
+				LevelManager.getInstance().spawnEnemy(0, 0, timerEnemyType, amountOfSpawnAttempts, direction,
+						enemyScale, true, xMovementSpeed, yMovementSpeed);
+			} else {
+				formation.spawnFormation(formationXCoordinate, formationYCoordinate, timerEnemyType, direction, enemyScale,
+						xMovementSpeed, yMovementSpeed);
+			}
+			if (this.loopable) {
+				this.currentTime = 0;
+				this.status = TimerStatusEnums.Waiting_To_Start;
+			} else {
+				this.status = TimerStatusEnums.Finished;
+			}
 		}
-		if (this.loopable) {
-			this.additionalDelay = 0;
-			this.timeBeforeActivation = Math.round(currentTime + originalTimeBeforeActivation);
-			this.finished = false;
-		} else {
-			this.finished = true;
-		}
 	}
 
-	public void removeDelay() {
-		this.additionalDelay = 0;
+	@Override
+	public boolean shouldActivate(float currentTime) {
+		this.currentTime = currentTime;
+		return currentTime >= timerLength;
 	}
 
-	public boolean getFinished() {
-		return this.finished;
-	}
-
-	public EnemyEnums getTimerEnemy() {
-		return this.timerEnemyType;
-	}
-
-	public Direction getDirection() {
-		return this.direction;
-	}
-
-	public int getTimerSpawnAttempts() {
-		return this.amountOfSpawnAttempts;
-	}
-
-	public boolean getLoopable() {
-		return this.loopable;
-	}
-
-	public int getTimeBeforeActivation() {
-		return this.timeBeforeActivation;
-	}
-
-	public float getEnemyScale() {
-		return this.enemyScale;
-	}
-
-	public int getAdditionalDelay() {
-		return additionalDelay;
-	}
-
-	public void setAdditionalDelay(int additionalDelay) {
-		this.additionalDelay = additionalDelay;
-	}
-
-	public float getCurrentTime() {
-		return currentTime;
-	}
-
-	public void setCurrentTime(int currentTime) {
+	@Override
+	public void setCurrentTime(float currentTime) {
 		this.currentTime = currentTime;
 	}
 
-	public boolean shouldActivate(float currentFrame) {
-		this.currentTime = currentFrame;
-		if ((timeBeforeActivation + additionalDelay) - currentFrame < -4) {
-//			System.out.println("Skipped a timer, I wanted to spawn on: " + timeBeforeActivation + " seconds but it's currently: " + currentFrame + " seconds");
-			this.finished = true;
-			return false;
-		}
-		return (currentFrame >= (timeBeforeActivation + additionalDelay));
+	@Override
+	public boolean getLoopable() {
+		return loopable;
 	}
 
-	public EnemyFormation getFormation() {
-		return formation;
+	@Override
+	public TimerStatusEnums getStatus() {
+		return status;
 	}
 
+	// Additional methods related to enemy formation
 	public void setFormation(EnemyFormation formation, int formationXCoordinate, int formationYCoordinate) {
 		this.formation = formation;
 		this.formationXCoordinate = formationXCoordinate;
 		this.formationYCoordinate = formationYCoordinate;
 	}
-
 }

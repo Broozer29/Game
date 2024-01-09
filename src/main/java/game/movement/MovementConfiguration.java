@@ -1,7 +1,7 @@
 package game.movement;
 
 import game.movement.pathfinders.PathFinder;
-import visual.objects.Sprite;
+import game.objects.GameObject;
 
 public class MovementConfiguration {
 
@@ -18,12 +18,35 @@ public class MovementConfiguration {
 	private int currentBoardBlock;
 	private int lastKnownTargetX;
 	private int lastKnownTargetY;
+
+	//For the diamond shape pathfinder
+	private int diamondWidth;
+	private int diamondHeight;
+	//
 	
 	protected boolean hasLock;
 	private Point nextPoint;
-	private Sprite target;
-	
-	
+	private GameObject target;
+
+	//For the zigzag pathfinder
+	private int stepsBeforeBounceInOtherDirection;
+	//
+
+	//For the spiral pathfinder
+	private int curveDistance;
+	private double angleStep;
+	private double radius;
+	private double radiusIncrement;
+
+	//
+
+	//For the Triangle pathfinder:
+	private int primaryDirectionStepAmount;
+	private int firstDiagonalDirectionStepAmount;
+	private int secondDiagonalDirectionStepAmount;
+
+
+
 	public MovementConfiguration() {
 	}
 
@@ -56,7 +79,6 @@ public class MovementConfiguration {
 	public void setPathFinder(PathFinder pathFinder) {
 		this.pathFinder = pathFinder;
 	}
-
 
 	public Path getCurrentPath() {
 		return currentPath;
@@ -178,14 +200,97 @@ public class MovementConfiguration {
 	}
 
 
-	public Sprite getTarget() {
+	public GameObject getTarget() {
 		return target;
 	}
 
 
-	public void setTarget(Sprite target) {
+	public void setTarget(GameObject target) {
 		this.target = target;
 	}
-	
-	
+
+	public int getDiamondWidth () {
+		return diamondWidth;
+	}
+
+	public void setDiamondWidth (int diamondWidth) {
+		this.diamondWidth = diamondWidth;
+	}
+
+	public int getDiamondHeight () {
+		return diamondHeight;
+	}
+
+	public void setDiamondHeight (int diamondHeight) {
+		this.diamondHeight = diamondHeight;
+	}
+
+	public boolean isHasLock () {
+		return hasLock;
+	}
+
+	public int getStepsBeforeBounceInOtherDirection () {
+		return stepsBeforeBounceInOtherDirection;
+	}
+
+	public void setStepsBeforeBounceInOtherDirection (int stepsBeforeBounceInOtherDirection) {
+		this.stepsBeforeBounceInOtherDirection = stepsBeforeBounceInOtherDirection;
+	}
+
+	public int getCurveDistance () {
+		return curveDistance;
+	}
+
+	//KEEP THIS SMALL, IT'S THE MOVEMENT SPEED
+	public void setCurveDistance (int curveDistance) {
+		this.curveDistance = curveDistance;
+	}
+
+	public double getAngleStep () {
+		return angleStep;
+	}
+
+	public void setAngleStep (double angleStep) {
+		this.angleStep = angleStep;
+	}
+
+	public double getRadius () {
+		return radius;
+	}
+
+	public void setRadius (double radius) {
+		this.radius = radius;
+	}
+
+	public double getRadiusIncrement () {
+		return radiusIncrement;
+	}
+
+	public void setRadiusIncrement (double radiusIncrement) {
+		this.radiusIncrement = radiusIncrement;
+	}
+
+	public int getPrimaryDirectionStepAmount () {
+		return primaryDirectionStepAmount;
+	}
+
+	public void setPrimaryDirectionStepAmount (int primaryDirectionStepAmount) {
+		this.primaryDirectionStepAmount = primaryDirectionStepAmount;
+	}
+
+	public int getFirstDiagonalDirectionStepAmount () {
+		return firstDiagonalDirectionStepAmount;
+	}
+
+	public void setFirstDiagonalDirectionStepAmount (int firstDiagonalDirectionStepAmount) {
+		this.firstDiagonalDirectionStepAmount = firstDiagonalDirectionStepAmount;
+	}
+
+	public int getSecondDiagonalDirectionStepAmount () {
+		return secondDiagonalDirectionStepAmount;
+	}
+
+	public void setSecondDiagonalDirectionStepAmount (int secondDiagonalDirectionStepAmount) {
+		this.secondDiagonalDirectionStepAmount = secondDiagonalDirectionStepAmount;
+	}
 }

@@ -4,9 +4,9 @@ import java.util.List;
 import java.util.Random;
 
 import game.movement.Direction;
-import game.objects.BackgroundObject;
+import game.objects.background.BackgroundObject;
 import game.objects.enemies.Enemy;
-import gamedata.DataClass;
+import VisualAndAudioData.DataClass;
 
 public class SpawningCoordinator {
 

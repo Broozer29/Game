@@ -3,15 +3,15 @@ package game.movement.pathfinders;
 import java.util.ArrayList;
 import java.util.List;
 
-import game.managers.PlayerManager;
+import game.objects.player.PlayerManager;
 import game.movement.Direction;
 import game.movement.Path;
 import game.movement.Point;
 import game.movement.pathfinderconfigs.HomingPathFinderConfig;
 import game.movement.pathfinderconfigs.PathFinderConfig;
+import game.objects.GameObject;
 import game.objects.enemies.EnemyManager;
-import gamedata.DataClass;
-import visual.objects.Sprite;
+import VisualAndAudioData.DataClass;
 
 public class HomingPathFinder implements PathFinder {
 	@Override
@@ -20,7 +20,7 @@ public class HomingPathFinder implements PathFinder {
 			throw new IllegalArgumentException("Expected HomingPathFinderConfig");
 		} else {
 			Point start = ((HomingPathFinderConfig) pathFinderConfig).getStart();
-			Direction fallbackDirection = ((HomingPathFinderConfig) pathFinderConfig).getFallbackDirection();
+			Direction fallbackDirection = ((HomingPathFinderConfig) pathFinderConfig).getMovementDirection();
 			boolean isHoming = ((HomingPathFinderConfig) pathFinderConfig).isHoming();
 			boolean isFriendly = ((HomingPathFinderConfig) pathFinderConfig).isFriendly();
 
@@ -143,7 +143,7 @@ public class HomingPathFinder implements PathFinder {
 		return new Point(xCoordinate, yCoordinate);
 	}
 
-	public Sprite getTarget(boolean isFriendly) {
+	public GameObject getTarget(boolean isFriendly) {
 		if (isFriendly) {
 			EnemyManager enemyManager = EnemyManager.getInstance();
 			return enemyManager.getClosestEnemy();

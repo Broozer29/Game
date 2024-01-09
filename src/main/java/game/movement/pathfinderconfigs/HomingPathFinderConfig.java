@@ -1,7 +1,9 @@
 package game.movement.pathfinderconfigs;
 
 import game.movement.Direction;
+import game.movement.MovementConfiguration;
 import game.movement.Point;
+import game.objects.GameObject;
 
 public class HomingPathFinderConfig implements PathFinderConfig {
 
@@ -10,12 +12,12 @@ public class HomingPathFinderConfig implements PathFinderConfig {
 	private boolean isHoming = true;
 	private boolean isFriendly;
 
-	public HomingPathFinderConfig(Point start, Direction falbackDirection, boolean isHoming, boolean isFriendly) {
+	public HomingPathFinderConfig(GameObject gameObject, MovementConfiguration movementConfiguration) {
 		super();
-		this.start = start;
-		this.falbackDirection = falbackDirection;
-		this.isHoming = isHoming;
-		this.isFriendly = isFriendly;
+		this.start = gameObject.getCurrentLocation();
+		this.falbackDirection = movementConfiguration.getRotation();
+		this.isHoming = true;
+		this.isFriendly = gameObject.isFriendly();
 	}
 
 	public Point getStart() {
@@ -43,13 +45,13 @@ public class HomingPathFinderConfig implements PathFinderConfig {
 	}
 
 	@Override
-	public Direction getFallbackDirection() {
+	public Direction getMovementDirection () {
 		return this.falbackDirection;
 	}
 
 	@Override
-	public void setFallbackDirection(Direction fallbackDirection) {
-		this.falbackDirection = fallbackDirection;
+	public void setMovementDirection (Direction movementDirection) {
+		this.falbackDirection = movementDirection;
 
 	}
 
