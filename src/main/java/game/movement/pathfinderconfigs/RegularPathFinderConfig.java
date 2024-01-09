@@ -1,7 +1,9 @@
 package game.movement.pathfinderconfigs;
 
 import game.movement.Direction;
+import game.movement.MovementConfiguration;
 import game.movement.Point;
+import game.objects.GameObject;
 
 public class RegularPathFinderConfig implements PathFinderConfig {
 
@@ -21,6 +23,16 @@ public class RegularPathFinderConfig implements PathFinderConfig {
 		this.yMovementSpeed = yMovementSpeed;
 		this.isFriendly = isFriendly;
 		this.fallbackDirection = fallbackDirection;
+	}
+
+	public RegularPathFinderConfig(GameObject gameObject, MovementConfiguration movementConfiguration) {
+		super();
+		this.start = gameObject.getCurrentLocation();
+		this.end = movementConfiguration.getDestination();
+		this.xMovementSpeed = movementConfiguration.getXMovementSpeed();
+		this.yMovementSpeed = movementConfiguration.getYMovementSpeed();
+		this.isFriendly = gameObject.isFriendly();
+		this.fallbackDirection = movementConfiguration.getRotation();
 	}
 
 	public Point getStart() {
@@ -55,12 +67,12 @@ public class RegularPathFinderConfig implements PathFinderConfig {
 		this.isFriendly = isFriendly;
 	}
 
-	public Direction getFallbackDirection() {
+	public Direction getMovementDirection () {
 		return fallbackDirection;
 	}
 
-	public void setFallbackDirection(Direction fallbackDirection) {
-		this.fallbackDirection = fallbackDirection;
+	public void setMovementDirection (Direction movementDirection) {
+		this.fallbackDirection = movementDirection;
 	}
 
 	public Point getEnd() {

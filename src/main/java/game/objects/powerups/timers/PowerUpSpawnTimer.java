@@ -18,12 +18,10 @@ public class PowerUpSpawnTimer implements TimerInterface {
         this.loopable = loopable;
         this.currentTime = 0;
         this.status = TimerStatusEnums.Waiting_To_Start;
-        System.out.println("Yo?");
     }
 
     @Override
     public void startOfTimer() {
-        // No specific action on start for this timer
         status = TimerStatusEnums.Running;
     }
 
@@ -33,8 +31,9 @@ public class PowerUpSpawnTimer implements TimerInterface {
             PowerUpCreator.getInstance().spawnPowerUp(powerUpType); // Actual spawning of the power-up
 
             if (this.loopable) {
-                this.currentTime = 0;
+                this.timerLength = currentTime + PowerUpCreator.getInstance().getRandomTimeForSpawner();
                 this.status = TimerStatusEnums.Waiting_To_Start;
+
             } else {
                 this.status = TimerStatusEnums.Finished;
             }

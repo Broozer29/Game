@@ -1,7 +1,7 @@
 package game.objects.enemies;
 
 import game.movement.Direction;
-import game.movement.pathfinders.PathFinder;
+import game.movement.pathfinders.*;
 import game.objects.enemies.enemytypes.*;
 import VisualAndAudioData.audio.AudioEnums;
 import visualobjects.SpriteConfigurations.SpriteConfiguration;
@@ -9,9 +9,10 @@ import visualobjects.SpriteConfigurations.SpriteConfiguration;
 public class EnemyCreator {
 
     public static Enemy createEnemy (EnemyEnums type, int xCoordinate, int yCoordinate, Direction movementDirection, float scale,
-                                     int xMovementSpeed, int yMovementSpeed, PathFinder pathFinder) {
+                                     int xMovementSpeed, int yMovementSpeed) {
         SpriteConfiguration spriteConfiguration = new SpriteConfiguration(
-                xCoordinate,
+//                xCoordinate,
+                800,
                 yCoordinate,
                 scale,
                 type.getImageEnum(),
@@ -19,6 +20,7 @@ public class EnemyCreator {
                 (float) 1.0, false, 0
         );
 
+        PathFinder pathFinder = new TrianglePathFinder();
         EnemyConfiguration enemyConfiguration = createEnemyConfiguration(type, xMovementSpeed, yMovementSpeed, movementDirection, pathFinder);
         return createSpecificEnemy(spriteConfiguration, enemyConfiguration);
     }
@@ -26,9 +28,7 @@ public class EnemyCreator {
 
     private static EnemyConfiguration createEnemyConfiguration (EnemyEnums enemyType, int xMovementSpeed, int yMovementSpeed, Direction movementDirection, PathFinder pathFinder) {
         int maxHitpoints = enemyType.getBaseHitPoints();
-        ;
         int maxShields = enemyType.getBaseShieldPoints();
-        ;
         boolean hasAttack = enemyType.isHasAttack();
         boolean showHealthBar = enemyType.isShowHealthBar();
         AudioEnums deathSound = enemyType.getDeathSound();

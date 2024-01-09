@@ -4,7 +4,7 @@ import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 
 import game.objects.GameObject;
-import game.managers.utils.BoundsCalculator;
+import game.util.BoundsCalculator;
 
 public class CollisionDetector {
 

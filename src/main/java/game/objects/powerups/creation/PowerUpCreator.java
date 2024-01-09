@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import game.managers.TimerManager;
 import game.movement.Direction;
 import game.movement.pathfinders.BouncingPathFinder;
 import game.objects.player.BoostsUpgradesAndBuffsSettings;
@@ -36,12 +37,11 @@ public class PowerUpCreator {
 	public static PowerUpCreator getInstance() {
 		return instance;
 	}
-	
-	
-	public void addNewPowerUpToField(PowerUp powerUp) {
-		if (PowerUpManager.getInstance().getPowerUpsOnTheField().contains(powerUp)) {
-			PowerUpManager.getInstance().getPowerUpsOnTheField().add(powerUp);
-		}
+
+	public void initializePowerUpSpawnTimers () {
+		PowerUpSpawnTimer spawnTimer = createPowerUpTimer(PowerUpEnums.RANDOM, true);
+		TimerManager.getInstance().addTimer(spawnTimer);
+		spawnTimer.startOfTimer(); // Start the timer for the first spawn
 	}
 	
 	public void spawnPowerUp(PowerUpEnums powerUpType) {
@@ -69,7 +69,7 @@ public class PowerUpCreator {
 		return new PowerUpSpawnTimer(getRandomTimeForSpawner(), powerUp, loopable);
 	}
 
-	private int getRandomTimeForSpawner() {
+	public int getRandomTimeForSpawner() {
 		BoostsUpgradesAndBuffsSettings tempSettings = BoostsUpgradesAndBuffsSettings.getInstance();
 //		return random.nextInt((tempSettings.getMaxTimeForPowerUpSpawn() - tempSettings.getMinTimeForPowerUpSpawn()) + 1)
 //				+ tempSettings.getMinTimeForPowerUpSpawn();

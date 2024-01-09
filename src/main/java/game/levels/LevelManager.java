@@ -4,13 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import VisualAndAudioData.DataClass;
 import game.managers.TimerManager;
 import game.movement.Direction;
 import game.movement.pathfinders.PathFinder;
 import game.movement.pathfinders.RegularPathFinder;
 import game.objects.enemies.*;
-import game.spawner.EnemySpawnTimer;
-import game.spawner.SpawningCoordinator;
+import game.objects.powerups.creation.PowerUpCreator;
+import game.spawner.*;
 import VisualAndAudioData.GameStateInfo;
 import VisualAndAudioData.GameStatusEnums;
 import VisualAndAudioData.audio.AudioManager;
@@ -90,9 +91,11 @@ public class LevelManager {
         }
 
         AudioManager audioManager = AudioManager.getInstance();
-        for (EnemySpawnTimer timer : currentLevel.getTimers()) {
-            timerManager.addTimer(timer);
-        }
+//        for (EnemySpawnTimer timer : currentLevel.getTimers()) {
+//            timerManager.addTimer(timer);
+//        }
+
+        PowerUpCreator.getInstance().initializePowerUpSpawnTimers();
 
 //		try {
 //			AudioEnums currentMusic = currentLevel.getSong();
@@ -104,22 +107,22 @@ public class LevelManager {
 
         gameState.setGameState(GameStatusEnums.Playing);
 //		
-//		FormationCreator formCreator = new FormationCreator();
-//		EnemySpawnTimer timer = null;
-//		EnemyFormation formation = null;
-//		EnemyEnums enemyType = EnemyEnums.Seeker;
-//		boolean loopable = false;
-//		float scale = 1;
-//		int additionalDelay = 0;
-//		DataClass dataClass = DataClass.getInstance();
-//		int xMovementSpeed = 2;
-//		int yMovementSpeed = 2;
-//		int i = 1;
-//		
-//		timer = createSpawnTimer(EnemyEnums.Bulldozer, 1, i, loopable, Direction.LEFT, scale, additionalDelay, xMovementSpeed, yMovementSpeed);
-//		formation = formCreator.createFormation(SpawnFormationEnums.Dot, 50, 50);
-//		timer.setFormation(formation, dataClass.getWindowWidth() + 250, dataClass.getWindowHeight() / 2 - 100);
-//		addSpawnTimer(timer);
+		FormationCreator formCreator = new FormationCreator();
+		EnemySpawnTimer timer = null;
+		EnemyFormation formation = null;
+		EnemyEnums enemyType = EnemyEnums.Seeker;
+		boolean loopable = false;
+		float scale = 1;
+		int additionalDelay = 0;
+		DataClass dataClass = DataClass.getInstance();
+		int xMovementSpeed = 2;
+		int yMovementSpeed = 2;
+		int i = 1;
+
+		timer = createSpawnTimer(EnemyEnums.Bulldozer, 1, i, loopable, Direction.LEFT, scale, additionalDelay, xMovementSpeed, yMovementSpeed);
+		formation = formCreator.createFormation(SpawnFormationEnums.Dot, 50, 50);
+		timer.setFormation(formation, dataClass.getWindowWidth() + 250, dataClass.getWindowHeight() / 2 - 100);
+		addSpawnTimer(timer);
 
 //		for(int a = 0; a < 8; a++) {
 //			FriendlyManager.getInstance().createMissileGuardianBot(FriendlyEnums.Missile_Guardian_Bot, 1);
@@ -270,8 +273,7 @@ public class LevelManager {
 
     private Enemy createEnemy (EnemyEnums type, int xCoordinate, int yCoordinate, Direction rotation, float scale,
                                int xMovementSpeed, int yMovementSpeed) {
-        PathFinder pathFinder = new RegularPathFinder();
-        return EnemyCreator.createEnemy(type, xCoordinate, yCoordinate, rotation, scale, xMovementSpeed, yMovementSpeed, pathFinder);
+        return EnemyCreator.createEnemy(type, xCoordinate, yCoordinate, rotation, scale, xMovementSpeed, yMovementSpeed);
     }
 
     // Called by all RANDOM spawn*Enemy* methods, returns true if there is no overlap

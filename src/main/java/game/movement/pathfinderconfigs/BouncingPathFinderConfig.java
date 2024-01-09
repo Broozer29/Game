@@ -1,6 +1,7 @@
 package game.movement.pathfinderconfigs;
 
 import game.movement.Direction;
+import game.movement.MovementConfiguration;
 import game.movement.Point;
 import game.objects.GameObject;
 import game.objects.powerups.PowerUp;
@@ -15,12 +16,12 @@ public class BouncingPathFinderConfig implements PathFinderConfig {
 	private Direction spriteCurrentDirection;
 	private GameObject bouncingSprite;
 
-	public BouncingPathFinderConfig(GameObject bouncingSprite, Direction currentDirection) {
+	public BouncingPathFinderConfig(GameObject bouncingSprite, MovementConfiguration movementConfiguration) {
 		this.xCoordinate = bouncingSprite.getXCoordinate();
 		this.yCoordinate = bouncingSprite.getYCoordinate();
 		this.spriteWidth = bouncingSprite.getWidth();
 		this.spriteHeight = bouncingSprite.getHeight();
-		this.spriteCurrentDirection = currentDirection;
+		this.spriteCurrentDirection = movementConfiguration.getRotation();
 		this.bouncingSprite = bouncingSprite;
 	}
 
@@ -98,13 +99,13 @@ public class BouncingPathFinderConfig implements PathFinderConfig {
 	}
 
 	@Override
-	public Direction getFallbackDirection() {
+	public Direction getMovementDirection () {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public void setFallbackDirection(Direction fallbackDirection) {
+	public void setMovementDirection (Direction movementDirection) {
 		// TODO Auto-generated method stub
 
 	}

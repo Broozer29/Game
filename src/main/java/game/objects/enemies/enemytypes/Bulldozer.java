@@ -1,6 +1,7 @@
 package game.objects.enemies.enemytypes;
 
 import game.movement.Direction;
+import game.movement.pathfinders.DiamondShapePathFinder;
 import game.movement.pathfinders.OrbitPathFinder;
 import game.movement.pathfinders.PathFinder;
 import game.objects.enemies.EnemyConfiguration;
@@ -35,6 +36,9 @@ public class Bulldozer extends Enemy {
         double meanX = this.getCenterXCoordinate();
         double meanY = this.getCenterYCoordinate();
 
+
+
+
         // Calculate the angle increment based on how many bombs you want
         double angleIncrement = 2 * Math.PI / 8; // 8 is the total number of bombs
 
@@ -48,7 +52,6 @@ public class Bulldozer extends Enemy {
             int y = (int) (meanY + Math.sin(nextAngle) * radius);
 
             PathFinder pathFinder = new OrbitPathFinder(this, radius, 300, nextAngle);
-
             Enemy alienBomb = getEnemy(x, y, pathFinder);
             this.followingEnemies.add(alienBomb);
             EnemyManager.getInstance().addEnemy(alienBomb);

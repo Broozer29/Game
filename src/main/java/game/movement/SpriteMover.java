@@ -1,14 +1,7 @@
 package game.movement;
 
-import game.movement.pathfinderconfigs.BouncingPathFinderConfig;
-import game.movement.pathfinderconfigs.HomingPathFinderConfig;
-import game.movement.pathfinderconfigs.OrbitPathFinderConfig;
-import game.movement.pathfinderconfigs.PathFinderConfig;
-import game.movement.pathfinderconfigs.RegularPathFinderConfig;
-import game.movement.pathfinders.BouncingPathFinder;
-import game.movement.pathfinders.HomingPathFinder;
-import game.movement.pathfinders.OrbitPathFinder;
-import game.movement.pathfinders.RegularPathFinder;
+import game.movement.pathfinderconfigs.*;
+import game.movement.pathfinders.*;
 import game.objects.GameObject;
 import visualobjects.Sprite;
 
@@ -34,32 +27,14 @@ public class SpriteMover {
 			return false;
 	}
 
-	// Used for movement initialization or recalculation
-	private PathFinderConfig getConfigByPathFinder(GameObject sprite, MovementConfiguration moveConfig) {
-		PathFinderConfig config = null;
-		if (moveConfig.getPathFinder() instanceof OrbitPathFinder) {
-			config = new OrbitPathFinderConfig(sprite.getCurrentLocation(), moveConfig.getRotation(),
-					sprite.isFriendly());
-		} else if (moveConfig.getPathFinder() instanceof RegularPathFinder) {
-			config = new RegularPathFinderConfig(sprite.getCurrentLocation(), moveConfig.getDestination(),
-					moveConfig.getXMovementSpeed(), moveConfig.getYMovementSpeed(), sprite.isFriendly(),
-					moveConfig.getRotation());
-		} else if (moveConfig.getPathFinder() instanceof HomingPathFinder) {
-			config = new HomingPathFinderConfig(sprite.getCurrentLocation(), moveConfig.getRotation(), true,
-					sprite.isFriendly());
-		} else if (moveConfig.getPathFinder() instanceof BouncingPathFinder) {
-			config = new BouncingPathFinderConfig(sprite, moveConfig.getRotation());
-		}
-		return config;
-	}
-
 	// Moves the sprite only, not it's corresponding animations!
 	// Add the "out of bounds" detector!
 	public void moveSprite(GameObject gameObject, MovementConfiguration moveConfig) {
 		if (shouldUpdatePathSettings(moveConfig)) {
 			// calculate a new path if necessary
-			PathFinderConfig config = getConfigByPathFinder(gameObject, moveConfig);
+			PathFinderConfig config = PathFinderConfigCreator.createConfig(gameObject, moveConfig);
 			moveConfig.setCurrentPath(moveConfig.getPathFinder().findPath(config));
+
 			moveConfig.setLastUsedXMovementSpeed(moveConfig.getXMovementSpeed());
 			moveConfig.setLastUsedYMovementSpeed(moveConfig.getYMovementSpeed());
 		}
@@ -79,7 +54,7 @@ public class SpriteMover {
 			Direction newDirection = (Direction) ((BouncingPathFinder) moveConfig.getPathFinder()).getNewDirection(gameObject, moveConfig.getRotation());
 			if (newDirection != moveConfig.getRotation()) {
 				moveConfig.setRotation(newDirection);
-				moveConfig.setCurrentPath(moveConfig.getPathFinder().findPath(getConfigByPathFinder(gameObject, moveConfig)));
+				moveConfig.setCurrentPath(moveConfig.getPathFinder().findPath(PathFinderConfigCreator.createConfig(gameObject, moveConfig)));
 			}
 		}
 
@@ -94,7 +69,14 @@ public class SpriteMover {
 		if (moveConfig.getPathFinder() instanceof OrbitPathFinder) {
 			adjustOrbitPath(moveConfig);
 		}
-		
+
+		if(moveConfig.getPathFinder() instanceof  DiamondShapePathFinder){
+			if(moveConfig.getCurrentPath().getWaypoints().isEmpty()){
+				gameObject.setVisible(false);
+			}
+		}
+
+
 		moveConfig.setStepsTaken(moveConfig.getStepsTaken() + 1);
 
 	}
@@ -164,6 +146,7 @@ public class SpriteMover {
 					deltaX, deltaY);
 		}
 	}
+
 
 	// Needed for non-orbiting PathFinders, so added to missiles
 	private Point calculateNextPoint(Point currentLocation, Direction direction, int XStepSize, int YStepSize) {

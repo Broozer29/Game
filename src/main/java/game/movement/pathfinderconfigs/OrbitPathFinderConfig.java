@@ -1,18 +1,19 @@
 package game.movement.pathfinderconfigs;
 
 import game.movement.Direction;
+import game.movement.MovementConfiguration;
 import game.movement.Point;
+import game.objects.GameObject;
 
 public class OrbitPathFinderConfig implements PathFinderConfig {
 	private Point start;
 	private Direction fallbackDirection;
 	private boolean friendly;
 
-	public OrbitPathFinderConfig(Point start, Direction fallbackDirection, boolean friendly) {
-		super();
-		this.start = start;
-		this.fallbackDirection = fallbackDirection;
-		this.friendly = friendly;
+	public OrbitPathFinderConfig(GameObject gameObject, MovementConfiguration movementConfiguration) {
+		this.start = gameObject.getCurrentLocation();
+		this.fallbackDirection = movementConfiguration.getRotation();
+		this.friendly = gameObject.isFriendly();
 	}
 
 	@Override
@@ -26,13 +27,13 @@ public class OrbitPathFinderConfig implements PathFinderConfig {
 	}
 
 	@Override
-	public Direction getFallbackDirection() {
+	public Direction getMovementDirection () {
 		return fallbackDirection;
 	}
 
 	@Override
-	public void setFallbackDirection(Direction fallbackDirection) {
-		this.fallbackDirection = fallbackDirection;
+	public void setMovementDirection (Direction movementDirection) {
+		this.fallbackDirection = movementDirection;
 
 	}
 

@@ -8,15 +8,16 @@ import game.movement.Path;
 import game.movement.Point;
 import game.movement.pathfinderconfigs.OrbitPathFinderConfig;
 import game.movement.pathfinderconfigs.PathFinderConfig;
+import game.objects.GameObject;
 import visualobjects.Sprite;
 
 public class OrbitPathFinder implements PathFinder {
-	private Sprite target;
+	private GameObject target;
 	private int radius;
 	private int totalFrames;
 	private double offsetAngle; // NEW: Angle offset for this drone
 
-	public OrbitPathFinder(Sprite target, int radius, int totalFrames, double offsetAngle) {
+	public OrbitPathFinder(GameObject target, int radius, int totalFrames, double offsetAngle) {
 		this.target = target;
 		this.radius = radius;
 		this.totalFrames = totalFrames;
@@ -30,7 +31,7 @@ public class OrbitPathFinder implements PathFinder {
 		} else {
 
 			Point start = ((OrbitPathFinderConfig) pathFinderConfig).getStart();
-			Direction fallbackDirection = ((OrbitPathFinderConfig) pathFinderConfig).getFallbackDirection();
+			Direction fallbackDirection = ((OrbitPathFinderConfig) pathFinderConfig).getMovementDirection();
 			boolean isFriendly = ((OrbitPathFinderConfig) pathFinderConfig).isFriendly();
 
 			double angleStep = Math.PI * 2 / totalFrames;

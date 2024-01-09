@@ -8,6 +8,7 @@ import game.movement.BoardBlockUpdater;
 import game.movement.MovementConfiguration;
 import game.movement.Point;
 import game.movement.pathfinders.PathFinder;
+import game.movement.pathfinders.SpiralPathFinder;
 import game.objects.GameObject;
 import game.objects.missiles.MissileManager;
 import visualobjects.SpriteConfigurations.SpriteAnimationConfiguration;
@@ -21,17 +22,18 @@ public class Enemy extends GameObject {
     protected EnemyEnums enemyType;
 
     protected List<Enemy> followingEnemies = new LinkedList<Enemy>(); //inherit from gameobject
-    public Enemy(SpriteConfiguration spriteConfiguration, EnemyConfiguration enemyConfiguration){
+
+    public Enemy (SpriteConfiguration spriteConfiguration, EnemyConfiguration enemyConfiguration) {
         super(spriteConfiguration);
         configureEnemy(enemyConfiguration);
     }
 
-    public Enemy(SpriteAnimationConfiguration spriteAnimationConfigurationion, EnemyConfiguration enemyConfiguration){
+    public Enemy (SpriteAnimationConfiguration spriteAnimationConfigurationion, EnemyConfiguration enemyConfiguration) {
         super(spriteAnimationConfigurationion);
         configureEnemy(enemyConfiguration);
     }
 
-    private void configureEnemy(EnemyConfiguration enemyConfiguration){
+    private void configureEnemy (EnemyConfiguration enemyConfiguration) {
         this.enemyType = enemyConfiguration.getEnemyType();
         this.maxHitPoints = enemyConfiguration.getMaxHitPoints();
         this.currentHitpoints = maxHitPoints;
@@ -65,6 +67,22 @@ public class Enemy extends GameObject {
         movementConfiguration.setYMovementSpeed(enemyConfiguration.getyMovementSpeed());
         movementConfiguration.setStepsTaken(0);
         movementConfiguration.setHasLock(true);
+
+        //hardcoded lol, should be in the config file, make a config file factory cause this getting out of hand a lil, too many variables for memory alone
+        movementConfiguration.setDiamondWidth(100);
+        movementConfiguration.setDiamondHeight(100);
+        movementConfiguration.setStepsBeforeBounceInOtherDirection(20);
+
+        movementConfiguration.setAngleStep(0.1);
+        movementConfiguration.setCurveDistance(1);
+        movementConfiguration.setRadius(5);
+        movementConfiguration.setRadiusIncrement(1);
+
+
+        movementConfiguration.setPrimaryDirectionStepAmount(70);
+        movementConfiguration.setFirstDiagonalDirectionStepAmount(25);
+        movementConfiguration.setSecondDiagonalDirectionStepAmount(25);
+
     }
 
 

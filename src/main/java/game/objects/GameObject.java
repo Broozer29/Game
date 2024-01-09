@@ -7,6 +7,7 @@ import VisualAndAudioData.audio.AudioEnums;
 import VisualAndAudioData.audio.AudioManager;
 import VisualAndAudioData.image.ImageResizer;
 import VisualAndAudioData.image.ImageRotator;
+import game.movement.pathfinders.SpiralPathFinder;
 import visualobjects.SpriteConfigurations.SpriteAnimationConfiguration;
 import visualobjects.SpriteConfigurations.SpriteConfiguration;
 import visualobjects.Sprite;
@@ -74,10 +75,7 @@ public class GameObject extends Sprite {
     protected String objectType;
     protected Direction movementDirection;
 
-    private int movingOrStuckCounter = 0;
-
-
-
+    private int movementCounter = 0;
 
 
 //    public GameObject (int xCoordinate, int yCoordinate, float scale) {
@@ -144,14 +142,6 @@ public class GameObject extends Sprite {
             animation.setAnimationBounds(xCoordinate, yCoordinate);
         }
 
-//        tijdelijkeTeller++;
-//        this.movementTracker.recordPosition(xCoordinate, yCoordinate);
-//        if (tijdelijkeTeller == 50) {
-//            if (!this.movementTracker.hasMovedInLastTicks(49)) {
-//                System.out.println(this.objectType + " hasn't moved in a while with a position of: " + this.xCoordinate + " " + this.yCoordinate);
-//            }
-//        }
-
     }
 
     private void moveAnimations () {
@@ -207,8 +197,6 @@ public class GameObject extends Sprite {
             sprite.rotateAnimetion(direction);
         }
     }
-
-
 
 
     //-------------------------------------getters and setters below------------
@@ -412,7 +400,7 @@ public class GameObject extends Sprite {
         }
     }
 
-    public void updateBoardBlock(){
+    public void updateBoardBlock () {
         this.currentBoardBlock = BoardBlockUpdater.getBoardBlock(xCoordinate);
     }
 

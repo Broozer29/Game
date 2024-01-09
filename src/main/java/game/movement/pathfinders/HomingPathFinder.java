@@ -20,7 +20,7 @@ public class HomingPathFinder implements PathFinder {
 			throw new IllegalArgumentException("Expected HomingPathFinderConfig");
 		} else {
 			Point start = ((HomingPathFinderConfig) pathFinderConfig).getStart();
-			Direction fallbackDirection = ((HomingPathFinderConfig) pathFinderConfig).getFallbackDirection();
+			Direction fallbackDirection = ((HomingPathFinderConfig) pathFinderConfig).getMovementDirection();
 			boolean isHoming = ((HomingPathFinderConfig) pathFinderConfig).isHoming();
 			boolean isFriendly = ((HomingPathFinderConfig) pathFinderConfig).isFriendly();
 
