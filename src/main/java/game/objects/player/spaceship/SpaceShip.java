@@ -259,14 +259,14 @@ public class SpaceShip extends GameObject {
 	private void fire() throws UnsupportedAudioFileException, IOException {
 
 		for (SpaceShipRegularGun gun : spaceShipGuns) {
-			gun.fire(this.xCoordinate + this.width, this.yCoordinate + (this.width / 2) - 5,
+			gun.fire(this.xCoordinate + this.width, this.yCoordinate + (this.height / 2),
 					playerStats.getAttackType());
 		}
 	}
 
 	private void fireSpecialAttack() throws UnsupportedAudioFileException, IOException {
 		for (SpaceShipSpecialGun gun : spaceShipSpecialGuns) {
-			gun.fire(this.xCoordinate, this.yCoordinate, this.getWidth(), this.getHeight(),
+			gun.fire(this.xCoordinate - (this.width / 2), this.yCoordinate - (this.height / 2), this.getWidth(), this.getHeight(),
 					playerStats.getPlayerSpecialAttackType());
 		}
 	}

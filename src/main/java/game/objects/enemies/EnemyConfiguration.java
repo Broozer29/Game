@@ -1,8 +1,10 @@
 package game.objects.enemies;
 
 import game.movement.Direction;
+import game.movement.pathfinderconfigs.MovementPatternSize;
 import game.movement.pathfinders.PathFinder;
 import VisualAndAudioData.audio.AudioEnums;
+import game.objects.enemies.enums.EnemyEnums;
 
 public class EnemyConfiguration {
     private EnemyEnums enemyType;
@@ -23,7 +25,12 @@ public class EnemyConfiguration {
 
     private int attackSpeed;
 
-    public EnemyConfiguration (EnemyEnums enemyType, int maxHitPoints, int maxShields, boolean hasAttack, boolean showHealthBar, AudioEnums deathSound, Direction movementDirection, PathFinder movementPathFinder, int xMovementSpeed, int yMovementSpeed, boolean allowedToDealDamage, String objectType, int attackSpeed) {
+    private MovementPatternSize movementPatternSize;
+
+    private boolean isBoxCollision;
+
+    public EnemyConfiguration (EnemyEnums enemyType, int maxHitPoints, int maxShields, boolean hasAttack, boolean showHealthBar, AudioEnums deathSound, Direction movementDirection, PathFinder movementPathFinder, int xMovementSpeed, int yMovementSpeed, boolean allowedToDealDamage, String objectType, int attackSpeed
+            , MovementPatternSize movementPatternSize, boolean boxCollision) {
         this.enemyType = enemyType;
         this.maxHitPoints = maxHitPoints;
         this.maxShields = maxShields;
@@ -37,6 +44,8 @@ public class EnemyConfiguration {
         this.allowedToDealDamage = allowedToDealDamage;
         this.objectType = objectType;
         this.attackSpeed = attackSpeed;
+        this.movementPatternSize = movementPatternSize;
+        this.isBoxCollision = boxCollision;
     }
 
     public EnemyEnums getEnemyType () {
@@ -141,5 +150,21 @@ public class EnemyConfiguration {
 
     public void setAttackSpeed (int attackSpeed) {
         this.attackSpeed = attackSpeed;
+    }
+
+    public MovementPatternSize getMovementPatternSize () {
+        return movementPatternSize;
+    }
+
+    public void setMovementPatternSize (MovementPatternSize movementPatternSize) {
+        this.movementPatternSize = movementPatternSize;
+    }
+
+    public boolean isBoxCollision () {
+        return isBoxCollision;
+    }
+
+    public void setBoxCollision (boolean boxCollision) {
+        isBoxCollision = boxCollision;
     }
 }

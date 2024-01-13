@@ -9,8 +9,8 @@ import game.objects.player.PlayerManager;
 import game.objects.enemies.Enemy;
 import game.objects.enemies.EnemyManager;
 import VisualAndAudioData.DataClass;
-import VisualAndAudioData.GameStateInfo;
-import VisualAndAudioData.GameStatusEnums;
+import game.gamestate.GameStateInfo;
+import game.gamestate.GameStatusEnums;
 import VisualAndAudioData.image.ImageEnums;
 import visualobjects.SpriteConfigurations.SpriteAnimationConfiguration;
 import visualobjects.SpriteConfigurations.SpriteConfiguration;
@@ -39,7 +39,7 @@ public class FriendlyManager {
     }
 
     private void spawnFinishedLevelPortal () {
-        if (gameState.getGameState() == GameStatusEnums.Song_Finished && finishedLevelPortal.getSpawned() == false) {
+        if (gameState.getGameState() == GameStatusEnums.Level_Finished && finishedLevelPortal.getSpawned() == false) {
             finishedLevelPortal.setSpawned(true);
             finishedLevelPortal.setVisible(true);
             finishedLevelPortal.setTransparancyAlpha(true, 0.0f, 0.01f);
@@ -81,7 +81,7 @@ public class FriendlyManager {
         }
 
         // Checks collision between the finished level portal and player
-        if (gameState.getGameState() == GameStatusEnums.Song_Finished && finishedLevelPortal.isVisible()) {
+        if (gameState.getGameState() == GameStatusEnums.Level_Finished && finishedLevelPortal.isVisible()) {
             if (CollisionDetector.getInstance().detectCollision(PlayerManager.getInstance().getSpaceship(), finishedLevelPortal)) {
                 gameState.setGameState(GameStatusEnums.Level_Completed);
                 finishedLevelPortal.setTransparancyAlpha(true, 1.0f, -0.02f);

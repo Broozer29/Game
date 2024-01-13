@@ -18,5 +18,21 @@ public enum AudioEnums {
 	Rocket_Launcher,
 	NONE, Firewall,
 	New_Arcades_Solace,
-	mainmenu
+	mainmenu,
+	Diq_Rose,
+	Five_Seconds_Before_Sunrise,
+	Downtown_Binary_Astral,
+	Carpenter_Brut_Enraged,
+	Carpenter_Brut_Youre_Mine,
+	Alpha_Room_Come_Back,
+	Carpenter_Brut_Danger,
+	Knight_Something_Memorable,
+	Downtown_Binary_Fantasia,
+	Downtown_Binary_Light_Cycles,
+	Marvel_Golden_Dawn,
+	Tonebox_Memory_Upload,
+	Forhill_Iris,
+	Tonebox_Radium_Cloud_Highway,
+	The_Rain_Formerly_Known_As_Purple,
+	Blood_On_The_Dancefloor
 }

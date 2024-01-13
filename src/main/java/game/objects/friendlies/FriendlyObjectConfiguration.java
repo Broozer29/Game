@@ -1,6 +1,7 @@
 package game.objects.friendlies;
 
 import game.movement.Direction;
+import game.movement.pathfinderconfigs.MovementPatternSize;
 import game.movement.pathfinders.PathFinder;
 
 public class FriendlyObjectConfiguration {
@@ -12,13 +13,20 @@ public class FriendlyObjectConfiguration {
     private int xMovementSpeed;
     private int yMovementSpeed;
 
-    public FriendlyObjectConfiguration (FriendlyObjectEnums friendlyType, int attackSpeedCooldown, PathFinder pathFinder, Direction movementDirection, int xMovementSpeed, int yMovementSpeed) {
+    private MovementPatternSize movementPatternSize;
+
+    private boolean boxCollision;
+
+    public FriendlyObjectConfiguration (FriendlyObjectEnums friendlyType, int attackSpeedCooldown, PathFinder pathFinder, Direction movementDirection, int xMovementSpeed, int yMovementSpeed, MovementPatternSize movementPatternSize
+    , boolean boxCollision) {
         this.friendlyType = friendlyType;
         this.attackSpeedCooldown = attackSpeedCooldown;
         this.pathFinder = pathFinder;
         this.movementDirection = movementDirection;
         this.xMovementSpeed = xMovementSpeed;
         this.yMovementSpeed = yMovementSpeed;
+        this.movementPatternSize = movementPatternSize;
+        this.boxCollision = boxCollision;
     }
 
     public PathFinder getPathFinder () {
@@ -53,9 +61,8 @@ public class FriendlyObjectConfiguration {
         this.yMovementSpeed = yMovementSpeed;
     }
 
-    public FriendlyObjectConfiguration(){
-
-    }
+//    public FriendlyObjectConfiguration(){
+//    }
 
     public FriendlyObjectEnums getFriendlyType () {
         return friendlyType;
@@ -73,4 +80,19 @@ public class FriendlyObjectConfiguration {
         this.attackSpeedCooldown = attackSpeedCooldown;
     }
 
+    public MovementPatternSize getMovementPatternSize () {
+        return movementPatternSize;
+    }
+
+    public void setMovementPatternSize (MovementPatternSize movementPatternSize) {
+        this.movementPatternSize = movementPatternSize;
+    }
+
+    public boolean isBoxCollision () {
+        return boxCollision;
+    }
+
+    public void setBoxCollision (boolean boxCollision) {
+        this.boxCollision = boxCollision;
+    }
 }

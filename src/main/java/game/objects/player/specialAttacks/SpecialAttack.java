@@ -21,6 +21,7 @@ public class SpecialAttack extends GameObject {
 		this.friendly = missileConfiguration.isFriendly();
 		this.allowedToDealDamage = missileConfiguration.isAllowedToDealDamage();
 		this.currentBoardBlock = BoardBlockUpdater.getBoardBlock(xCoordinate);
+		this.boxCollision = missileConfiguration.isBoxCollision();
 	}
 
 	

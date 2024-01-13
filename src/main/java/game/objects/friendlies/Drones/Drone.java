@@ -1,6 +1,7 @@
 package game.objects.friendlies.Drones;
 
 import game.movement.Direction;
+import game.movement.pathfinderconfigs.MovementPatternSize;
 import game.movement.pathfinders.HomingPathFinder;
 import game.movement.pathfinders.PathFinder;
 import game.movement.pathfinders.RegularPathFinder;
@@ -41,7 +42,7 @@ public class Drone extends FriendlyObject {
             MissileConfiguration missileConfiguration = new MissileConfiguration(MissileTypeEnums.DefaultPlayerLaserbeam,
                     100, 100, null, null, isFriendly()
                     , pathFinder, Direction.RIGHT, xMovementSpeed, yMovementSpeed, true
-                    , "Drone regular missile", (float) 15);
+                    , "Drone regular missile", (float) 15, MovementPatternSize.SMALL, MissileTypeEnums.DefaultPlayerLaserbeam.isBoxCollision());
 
             if (pathFinder instanceof HomingPathFinder) {
                 missileConfiguration.setTargetToChase(((HomingPathFinder) pathFinder).getTarget(true));

@@ -1,20 +1,23 @@
 package game.levels;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
-import VisualAndAudioData.DataClass;
+import VisualAndAudioData.audio.AudioEnums;
+import game.directors.DirectorManager;
 import game.managers.TimerManager;
 import game.movement.Direction;
-import game.movement.pathfinders.PathFinder;
-import game.movement.pathfinders.RegularPathFinder;
+import game.movement.pathfinderconfigs.MovementPatternSize;
 import game.objects.enemies.*;
+import game.objects.enemies.enums.EnemyEnums;
 import game.objects.powerups.creation.PowerUpCreator;
 import game.spawner.*;
-import VisualAndAudioData.GameStateInfo;
-import VisualAndAudioData.GameStatusEnums;
+import game.gamestate.GameStateInfo;
+import game.gamestate.GameStatusEnums;
 import VisualAndAudioData.audio.AudioManager;
+
+import javax.sound.sampled.UnsupportedAudioFileException;
 
 public class LevelManager {
 
@@ -67,11 +70,9 @@ public class LevelManager {
     public void updateGameTick () {
         // Check if the song has ended, then create the moving out portal
         if (gameState.getMusicSeconds() >= gameState.getMaxMusicSeconds() && gameState.getGameState() == GameStatusEnums.Playing) {
-            gameState.setGameState(GameStatusEnums.Song_Finished);
+            gameState.setGameState(GameStatusEnums.Level_Finished);
         }
-
         //NextLevelPortal spawns, now we wait for the player to enter the portal to set it to Level_Completed
-
         if (gameState.getGameState() == GameStatusEnums.Level_Completed) {
             gameState.setGameState(GameStatusEnums.Transitioning_To_Next_Level);
 
@@ -83,202 +84,68 @@ public class LevelManager {
 
     // Called when a level starts, to saturate enemy list
     public void startLevel () {
-        if (levelsToPlay.size() > 0) {
-            currentLevel = levelsToPlay.get(0);
-        }
-        if (currentLevel == null) {
-            currentLevel = new FuriWisdomOfRageLevel();
-        }
-
-        AudioManager audioManager = AudioManager.getInstance();
+//        if (levelsToPlay.size() > 0) {
+//            currentLevel = levelsToPlay.get(0);
+//        }
+//        if (currentLevel == null) {
+//            currentLevel = new FuriWisdomOfRageLevel();
+//        }
+//
 //        for (EnemySpawnTimer timer : currentLevel.getTimers()) {
 //            timerManager.addTimer(timer);
 //        }
-
-        PowerUpCreator.getInstance().initializePowerUpSpawnTimers();
-
-//		try {
-//			AudioEnums currentMusic = currentLevel.getSong();
-//			audioManager.playMusicAudio(currentMusic);
-//			GameStateInfo.getInstance().setMaxMusicSeconds(audioManager.getBackgroundMusic());
-//		} catch (UnsupportedAudioFileException | IOException e) {
-//			e.printStackTrace();
-//		}
+        AudioManager audioManager = AudioManager.getInstance();
+//        try {
+//            AudioEnums currentMusic = currentLevel.getSong();
+//            audioManager.playMusicAudio(currentMusic);
+//            audioManager.playRandomBackgroundMusic();
+//            GameStateInfo.getInstance().setMaxMusicSeconds(audioManager.getBackgroundMusic());
+//        } catch (UnsupportedAudioFileException | IOException e) {
+//            e.printStackTrace();
+//        }
 
         gameState.setGameState(GameStatusEnums.Playing);
-//		
-		FormationCreator formCreator = new FormationCreator();
-		EnemySpawnTimer timer = null;
-		EnemyFormation formation = null;
-		EnemyEnums enemyType = EnemyEnums.Seeker;
-		boolean loopable = false;
-		float scale = 1;
-		int additionalDelay = 0;
-		DataClass dataClass = DataClass.getInstance();
-		int xMovementSpeed = 2;
-		int yMovementSpeed = 2;
-		int i = 1;
 
-		timer = createSpawnTimer(EnemyEnums.Bulldozer, 1, i, loopable, Direction.LEFT, scale, additionalDelay, xMovementSpeed, yMovementSpeed);
-		formation = formCreator.createFormation(SpawnFormationEnums.Dot, 50, 50);
-		timer.setFormation(formation, dataClass.getWindowWidth() + 250, dataClass.getWindowHeight() / 2 - 100);
-		addSpawnTimer(timer);
+//        PowerUpCreator.getInstance().initializePowerUpSpawnTimers();
+//        DirectorManager.getInstance().createMonsterCards();
+//        DirectorManager.getInstance().createDirectors();
 
-//		for(int a = 0; a < 8; a++) {
-//			FriendlyManager.getInstance().createMissileGuardianBot(FriendlyEnums.Missile_Guardian_Bot, 1);
-//		}
+        Enemy enemy = EnemyCreator.createEnemy(EnemyEnums.Bomba, 1800, 600, game.movement.Direction.LEFT, 1
+        , 2, 2, MovementPatternSize.SMALL, false);
+        EnemyManager.getInstance().addEnemy(enemy);
 
-//		for(int i = 0; i < 240; i += 30) {
-//			TopBottomVRows pattern = new TopBottomVRows(i, enemyType, scale, EnemyEnums.Tazer, Direction.LEFT, xMovementSpeed, yMovementSpeed);
-//			for(int iterator = 0; iterator < pattern.getTimers().size(); iterator++) {
-//				addSpawnTimer(pattern.getTimers().get(iterator));
-//			}
-//		}
-//		
-//		yMovementSpeed = 1;
-//		for(int i = 60; i < 300; i += 42) {
-//			EnclosingFromAboveAndBelow pattern = new EnclosingFromAboveAndBelow(i, EnemyEnums.Flamer, scale, xMovementSpeed, yMovementSpeed);
-//			for(int iterator = 0; iterator < pattern.getTimers().size(); iterator++) {
-//				addSpawnTimer(pattern.getTimers().get(iterator));
-//			}
-//		}
-//		
-//		for(int i = 200; i < 600; i += 100) {
-//			EnclosingFromAboveAndBelow pattern = new EnclosingFromAboveAndBelow(i, EnemyEnums.Flamer, scale, xMovementSpeed, yMovementSpeed);
-//			for(int iterator = 0; iterator < pattern.getTimers().size(); iterator++) {
-//				addSpawnTimer(pattern.getTimers().get(iterator));
-//			}
-//		}
-//		
-//		for(int i = 300; i < 600; i += 45) {
-//			timer = createSpawnTimer(EnemyEnums.Seeker, 1, i, loopable, Direction.LEFT_UP, scale, additionalDelay, xMovementSpeed, yMovementSpeed);
-//			formation = formCreator.createFormation(SpawnFormationEnums.Large_greaterthen, 50, 50);
-//			timer.setFormation(formation, dataClass.getWindowWidth() + 250, dataClass.getWindowHeight() / 2 - 100);
-//			addSpawnTimer(timer);
-//			
-//			timer = createSpawnTimer(EnemyEnums.Seeker, 1, i, loopable, Direction.LEFT_DOWN, scale, additionalDelay, xMovementSpeed, yMovementSpeed);
-//			formation = formCreator.createFormation(SpawnFormationEnums.Large_greaterthen, 50, 50);
-//			timer.setFormation(formation, dataClass.getWindowWidth() + 250, dataClass.getWindowHeight() / 2 - 400);
-//			addSpawnTimer(timer);
-//			
-//			timer = createSpawnTimer(EnemyEnums.Seeker, 1, i, loopable, Direction.RIGHT_UP, scale, additionalDelay, xMovementSpeed, yMovementSpeed);
-//			formation = formCreator.createFormation(SpawnFormationEnums.Large_smallerthen, 50, 50);
-//			timer.setFormation(formation, -550, dataClass.getWindowHeight() / 2 - 100);
-//			addSpawnTimer(timer);
-//			
-//			timer = createSpawnTimer(EnemyEnums.Seeker, 1, i, loopable, Direction.RIGHT_DOWN, scale, additionalDelay, xMovementSpeed, yMovementSpeed);
-//			formation = formCreator.createFormation(SpawnFormationEnums.Large_smallerthen, 50, 50);
-//			timer.setFormation(formation, -550, dataClass.getWindowHeight() / 2 - 400);
-//			addSpawnTimer(timer);
-//		}
-//		
-//		for(int i = 300; i < 600; i += 30) {
-//			timer = createSpawnTimer(EnemyEnums.Energizer, 1, i, loopable, Direction.LEFT, scale, additionalDelay, xMovementSpeed, yMovementSpeed);
-//			formation = formCreator.createFormation(SpawnFormationEnums.Small_smallerthen, 50, 50);
-//			timer.setFormation(formation, dataClass.getWindowWidth() + 250, 150);
-//			addSpawnTimer(timer);
-//			
-//			timer = createSpawnTimer(EnemyEnums.Energizer, 1, i, loopable, Direction.LEFT, scale, additionalDelay, xMovementSpeed, yMovementSpeed);
-//			formation = formCreator.createFormation(SpawnFormationEnums.Large_greaterthen, 50, 50);
-//			timer.setFormation(formation, dataClass.getWindowWidth() + 600, 400);
-//			addSpawnTimer(timer);
-//			
-//			timer = createSpawnTimer(EnemyEnums.Energizer, 1, i, loopable, Direction.LEFT, scale, additionalDelay, xMovementSpeed, yMovementSpeed);
-//			formation = formCreator.createFormation(SpawnFormationEnums.Large_smallerthen, 50, 50);
-//			timer.setFormation(formation, dataClass.getWindowWidth() + 950, 750);
-//			addSpawnTimer(timer);
-//		} 
-//		
-//		for(int i = 300; i < 600; i += 45) {
-//			timer = createSpawnTimer(EnemyEnums.Bulldozer, 1, i, loopable, Direction.LEFT_DOWN, scale, additionalDelay, xMovementSpeed, yMovementSpeed);
-//			formation = formCreator.createFormation(SpawnFormationEnums.Small_smallerthen, 50, 50);
-//			timer.setFormation(formation, dataClass.getWindowWidth() + 250, -200);
-//			addSpawnTimer(timer);
-//			
-//			timer = createSpawnTimer(EnemyEnums.Bulldozer, 1, i, loopable, Direction.LEFT_UP, scale, additionalDelay, xMovementSpeed, yMovementSpeed);
-//			formation = formCreator.createFormation(SpawnFormationEnums.Large_smallerthen, 50, 50);
-//			timer.setFormation(formation, dataClass.getWindowWidth() + 250, dataClass.getWindowHeight() + 250);
-//			addSpawnTimer(timer);
-//		}
 
     }
 
     // Called by CustomTimers when they have to spawn an enemy
     public void spawnEnemy (int xCoordinate, int yCoordinate, EnemyEnums enemyType, int amountOfAttempts,
-                            Direction direction, float scale, boolean random, int xMovementSpeed, int yMovementSpeed) {
-
+                            Direction direction, float scale, boolean random, int xMovementSpeed, int yMovementSpeed, boolean boxCollision) {
         // Spawn random if there are no given X/Y coords
         if (random) {
             for (int i = 0; i < amountOfAttempts; i++) {
-                List<Integer> coordinatesList = getSpawnCoordinatesByDirection(direction);
+                List<Integer> coordinatesList = spawningCoordinator.getSpawnCoordinatesByDirection(direction);
 
                 xCoordinate = coordinatesList.get(0);
                 yCoordinate = coordinatesList.get(1);
 
-                if (enemyType.equals(EnemyEnums.Alien_Bomb)) {
-                    if (direction.equals(Direction.UP) || direction.equals(Direction.LEFT_UP)
-                            || direction.equals(Direction.RIGHT_UP)) {
-                        yCoordinate = spawningCoordinator.getRandomYDownBombEnemyCoordinate();
-                    } else if (direction.equals(Direction.DOWN) || direction.equals(Direction.LEFT_DOWN)
-                            || direction.equals(Direction.RIGHT_DOWN)) {
-                        yCoordinate = spawningCoordinator.getRandomYUpBombEnemyCoordinate();
-                    }
-                    xCoordinate = spawningCoordinator.getRandomXBombEnemyCoordinate();
-                    scale = 1;
-                }
-
-                Enemy enemy = createEnemy(enemyType, xCoordinate, yCoordinate, direction, scale, xMovementSpeed,
-                        yMovementSpeed);
-                if (enemy != null && validCoordinates(enemy)) {
+                Enemy enemy = EnemyCreator.createEnemy(enemyType, xCoordinate, yCoordinate, direction, scale, xMovementSpeed, yMovementSpeed, MovementPatternSize.SMALL, boxCollision);
+                if (validCoordinates(enemy)) {
                     enemyManager.addEnemy(enemy);
+
                 }
             }
         } else {
-            Enemy enemy = createEnemy(enemyType, xCoordinate, yCoordinate, direction, scale, xMovementSpeed,
-                    yMovementSpeed);
-            enemyManager.addEnemy(enemy);
+            Enemy enemy = EnemyCreator.createEnemy(enemyType, xCoordinate, yCoordinate, direction, scale, xMovementSpeed, yMovementSpeed, MovementPatternSize.SMALL, boxCollision);
+
+            if (validCoordinates(enemy)) {
+                enemyManager.addEnemy(enemy);
+
+            }
         }
 
     }
 
-    private List<Integer> getSpawnCoordinatesByDirection (Direction direction) {
-        List<Integer> coordinatesList = new ArrayList<Integer>();
-        if (direction.equals(Direction.LEFT)) {
-            coordinatesList.add(spawningCoordinator.getRightBlockXCoordinate());
-            coordinatesList.add(spawningCoordinator.getRightBlockYCoordinate());
-        } else if (direction.equals(Direction.RIGHT)) {
-            coordinatesList.add(spawningCoordinator.getLeftBlockXCoordinate());
-            coordinatesList.add(spawningCoordinator.getLeftBlockYCoordinate());
-        } else if (direction.equals(Direction.DOWN)) {
-            coordinatesList.add(spawningCoordinator.getUpBlockXCoordinate());
-            coordinatesList.add(spawningCoordinator.getUpBlockYCoordinate());
-        } else if (direction.equals(Direction.UP)) {
-            coordinatesList.add(spawningCoordinator.getDownBlockXCoordinate());
-            coordinatesList.add(spawningCoordinator.getDownBlockYCoordinate());
-        } else if (direction.equals(Direction.LEFT_UP)) {
-            coordinatesList.add(spawningCoordinator.getRightBlockXCoordinate());
-            coordinatesList.add(spawningCoordinator.getBottomRightBlockYCoordinate());
-        } else if (direction.equals(Direction.LEFT_DOWN)) {
-            coordinatesList.add(spawningCoordinator.getRightBlockXCoordinate());
-            coordinatesList.add(spawningCoordinator.getTopRightBlockYCoordinate());
-        } else if (direction.equals(Direction.RIGHT_UP)) {
-            coordinatesList.add(spawningCoordinator.getLeftBlockXCoordinate());
-            coordinatesList.add(spawningCoordinator.getBottomLeftBlockYCoordinate());
-        } else if (direction.equals(Direction.RIGHT_DOWN)) {
-            coordinatesList.add(spawningCoordinator.getLeftBlockXCoordinate());
-            coordinatesList.add(spawningCoordinator.getTopLeftBlockYCoordinate());
-        }
-        return coordinatesList;
-    }
 
-    private Enemy createEnemy (EnemyEnums type, int xCoordinate, int yCoordinate, Direction rotation, float scale,
-                               int xMovementSpeed, int yMovementSpeed) {
-        return EnemyCreator.createEnemy(type, xCoordinate, yCoordinate, rotation, scale, xMovementSpeed, yMovementSpeed);
-    }
-
-    // Called by all RANDOM spawn*Enemy* methods, returns true if there is no overlap
-    // between enemies of the same type
-    //Because of the enemymanager rework, this is essentially deprecated because enemies are treated identically there
     private boolean validCoordinates (Enemy enemy) {
         if (spawningCoordinator.checkValidEnemyXCoordinate(enemy, enemyManager.getEnemies(), enemy.getXCoordinate(),
                 enemy.getWidth())
@@ -289,32 +156,7 @@ public class LevelManager {
         return false;
     }
 
-    // FOR TESTING PURPOSES only for methods below this!
-    private EnemySpawnTimer createSpawnTimer (EnemyEnums enemyType, int spawnAttempts, int timeBeforeActivation,
-                                              boolean loopable, Direction direction, float enemyScale, int additionalDelay, int xMovementSpeed,
-                                              int yMovementSpeed) {
-        if (enemyType == null) {
-            enemyType = selectRandomEnemy();
-        }
 
-        EnemySpawnTimer timer = new EnemySpawnTimer(timeBeforeActivation, spawnAttempts, enemyType, loopable, direction,
-                enemyScale, xMovementSpeed, yMovementSpeed);
-        return timer;
-    }
 
-    // FOR TESTING PURPOSES ONLY AS WELL
-    private void addSpawnTimer (EnemySpawnTimer timer) {
-        this.timerManager.addTimer(timer);
-    }
-    private EnemyEnums selectRandomEnemy () {
-        EnemyEnums[] enums = EnemyEnums.values();
-        Random random = new Random();
-        EnemyEnums randomValue = enums[random.nextInt(enums.length)];
-
-        if (randomValue == EnemyEnums.Alien_Bomb) {
-            return selectRandomEnemy();
-        }
-        return randomValue;
-    }
 
 }

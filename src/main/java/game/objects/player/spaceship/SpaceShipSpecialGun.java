@@ -31,7 +31,7 @@ public class SpaceShipSpecialGun {
 			PlayerSpecialAttackTypes attackType) {
 		switch (attackType) {
 		case EMP:
-			fireElectroShred(xCoordinate, yCoordinate, spaceShipWidth, spaceShipHeight);
+			fireElectroShred(xCoordinate, yCoordinate);
 			break;
 //		case Firewall:
 //			fireFirewall(xCoordinate, yCoordinate, spaceShipWidth, spaceShipHeight);
@@ -42,32 +42,36 @@ public class SpaceShipSpecialGun {
 	}
 
 	//Creates a special attack with an animation that follows the player
-	private void fireElectroShred(int xCoordinate, int yCoordinate, int spaceShipWidth, int spaceShipHeight) {
+	private void fireElectroShred(int xCoordinate, int yCoordinate) {
 		if (currentSpecialAttackFrame >= playerStats.getSpecialAttackSpeed()) {
-
 			PlayerManager playerManager = PlayerManager.getInstance();
 			SpaceShip spaceShip = playerManager.getSpaceship();
 
 			SpriteConfiguration spriteConfiguration = new SpriteConfiguration();
-			spriteConfiguration.setxCoordinate(spaceShip.getCenterXCoordinate());
-			spriteConfiguration.setyCoordinate(spaceShip.getCenterYCoordinate());
+			spriteConfiguration.setxCoordinate(xCoordinate);
+			spriteConfiguration.setyCoordinate(yCoordinate);
 			spriteConfiguration.setImageType(ImageEnums.Player_EMP);
 
 			SpriteAnimationConfiguration spriteAnimationConfiguration = new SpriteAnimationConfiguration(spriteConfiguration, 4, false);
 			MissileConfiguration missileConfiguration = new MissileConfiguration();
 			missileConfiguration.setDamage(1.5f);
+			missileConfiguration.setBoxCollision(true);
 
 
 			SpriteAnimation specialAttackAnimation = new SpriteAnimation(spriteAnimationConfiguration);
-			specialAttackAnimation.setCenterCoordinates(spaceShip.getCenterXCoordinate(), spaceShip.getCenterYCoordinate());
 			specialAttackAnimation.setAnimationScale(2);
 
 			SpecialAttack specialAttack = new ElectroShred(spriteAnimationConfiguration, missileConfiguration);
 			specialAttack.setCenteredAroundPlayer(true);
 			specialAttack.setScale(2);
-			
+
+
+
+
+//			specialAttackAnimation.setCenterCoordinates(spaceShip.getCenterXCoordinate(), spaceShip.getCenterYCoordinate());
+//			specialAttack.setCenterCoordinates(spaceShip.getCenterXCoordinate(), spaceShip.getCenterYCoordinate());
+
 			try {
-//				specialAttackAnimation.updateCurrentBoardBlock();
 				AudioManager.getInstance().addAudio(AudioEnums.Default_EMP);
 				spaceShip.addFollowingSpecialAttack(specialAttack);
 				MissileManager.getInstance().addSpecialAttack(specialAttack);

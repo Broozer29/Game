@@ -155,9 +155,9 @@ public class MissileManager {
 
     private void triggerMissileActions () {
         for (Missile missile : missiles) {
-            if (missile instanceof Rocket1) {
+//            if (missile instanceof Rocket1) {
                 missile.missileAction();
-            }
+//            }
         }
     }
 

@@ -1,5 +1,10 @@
 package game.spawner;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.Random;
+import java.util.stream.Collectors;
+
 public enum SpawnFormationEnums {
 	Square, //[]
 	Small_smallerthen, //<
@@ -13,9 +18,14 @@ public enum SpawnFormationEnums {
 	Reverse_Line,// |
 	V, //V
 	Reverse_V, // ^ 
-	Dot //.
-	
-	
+	Dot; //.
+
+	public static SpawnFormationEnums getRandomFormation () {
+		List<SpawnFormationEnums> values = Arrays.stream(SpawnFormationEnums.values())
+				.collect(Collectors.toList());
+		Random random = new Random();
+		return values.get(random.nextInt(values.size()));
+	}
 	
 }
 

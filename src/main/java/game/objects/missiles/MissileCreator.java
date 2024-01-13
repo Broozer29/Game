@@ -38,9 +38,6 @@ public class MissileCreator {
 			case TazerProjectile -> {
 				return new TazerProjectile(upgradeConfig(spriteConfiguration, 2, true),missileConfiguration);
 			}
-			case OrbitingMissile -> {
-				return new OrbitingMissile(spriteConfiguration,missileConfiguration);
-			}
 			case FlameThrowerProjectile -> {
 				return new FlamethrowerProjectile(upgradeConfig(spriteConfiguration, 2, true),missileConfiguration);
 			}

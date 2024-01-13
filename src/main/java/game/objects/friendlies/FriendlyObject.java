@@ -14,6 +14,7 @@ public class FriendlyObject extends GameObject {
         this.friendlyObjectType = friendlyConfiguration.getFriendlyType();
         this.attackSpeed = friendlyConfiguration.getAttackSpeedCooldown();
         this.setFriendly(true);
+        this.boxCollision = friendlyConfiguration.isBoxCollision();
         initMovementConfiguration(friendlyConfiguration);
     }
 
@@ -22,6 +23,7 @@ public class FriendlyObject extends GameObject {
         this.friendlyObjectType = friendlyConfiguration.getFriendlyType();
         this.attackSpeed = friendlyConfiguration.getAttackSpeedCooldown();
         this.setFriendly(true);
+        this.boxCollision = friendlyConfiguration.isBoxCollision();
         initMovementConfiguration(friendlyConfiguration);
     }
 
@@ -36,9 +38,25 @@ public class FriendlyObject extends GameObject {
         movementConfiguration.setYMovementSpeed(friendlyObjectConfiguration.getyMovementSpeed());
         movementConfiguration.setStepsTaken(0);
         movementConfiguration.setHasLock(true);
+
+        movementConfiguration.setDiamondWidth(friendlyObjectConfiguration.getMovementPatternSize().getDiamondWidth());
+        movementConfiguration.setDiamondHeight(friendlyObjectConfiguration.getMovementPatternSize().getDiamondHeight());
+
+        movementConfiguration.setStepsBeforeBounceInOtherDirection(friendlyObjectConfiguration.getMovementPatternSize().getStepsBeforeBounceInOtherDirection());
+
+        movementConfiguration.setAngleStep(0.1);
+        movementConfiguration.setCurveDistance(1);
+        movementConfiguration.setRadius(5);
+        movementConfiguration.setRadiusIncrement(friendlyObjectConfiguration.getMovementPatternSize().getRadiusIncrement());
+
+
+        movementConfiguration.setPrimaryDirectionStepAmount(friendlyObjectConfiguration.getMovementPatternSize().getPrimaryDirectionStepAmount());
+        movementConfiguration.setFirstDiagonalDirectionStepAmount(friendlyObjectConfiguration.getMovementPatternSize().getSecondaryDirectionStepAmount());
+        movementConfiguration.setSecondDiagonalDirectionStepAmount(friendlyObjectConfiguration.getMovementPatternSize().getSecondaryDirectionStepAmount());
+
     }
 
-    public void activateObjectAction(){
+    public void activateObjectAction () {
         //Exists to be overriden
     }
 }

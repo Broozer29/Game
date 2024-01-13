@@ -15,6 +15,9 @@ public class Explosion extends GameObject {
         this.damage = explosionConfiguration.getDamage();
         this.allowedToDealDamage = explosionConfiguration.isAllowedToDealDamage();
         this.setObjectType("Explosion");
+
+        this.animation.setX(this.xCoordinate - (animation.getWidth() / 2));
+        this.animation.setY(this.yCoordinate - (animation.getHeight() / 2));
     }
 
 

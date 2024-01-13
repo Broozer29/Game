@@ -8,8 +8,8 @@ import game.movement.BoardBlockUpdater;
 import game.movement.MovementConfiguration;
 import game.movement.Point;
 import game.movement.pathfinders.PathFinder;
-import game.movement.pathfinders.SpiralPathFinder;
 import game.objects.GameObject;
+import game.objects.enemies.enums.EnemyEnums;
 import game.objects.missiles.MissileManager;
 import visualobjects.SpriteConfigurations.SpriteAnimationConfiguration;
 import visualobjects.SpriteConfigurations.SpriteConfiguration;
@@ -46,6 +46,7 @@ public class Enemy extends GameObject {
         this.movementDirection = enemyConfiguration.getMovementDirection();
         this.currentLocation = new Point(xCoordinate, yCoordinate);
         this.currentBoardBlock = BoardBlockUpdater.getBoardBlock(xCoordinate);
+        this.boxCollision = enemyConfiguration.isBoxCollision();
 
         initMovementConfiguration(enemyConfiguration);
         this.setVisible(true);
@@ -69,19 +70,19 @@ public class Enemy extends GameObject {
         movementConfiguration.setHasLock(true);
 
         //hardcoded lol, should be in the config file, make a config file factory cause this getting out of hand a lil, too many variables for memory alone
-        movementConfiguration.setDiamondWidth(100);
-        movementConfiguration.setDiamondHeight(100);
-        movementConfiguration.setStepsBeforeBounceInOtherDirection(20);
+        movementConfiguration.setDiamondWidth(enemyConfiguration.getMovementPatternSize().getDiamondWidth());
+        movementConfiguration.setDiamondHeight(enemyConfiguration.getMovementPatternSize().getDiamondHeight());
+        movementConfiguration.setStepsBeforeBounceInOtherDirection(enemyConfiguration.getMovementPatternSize().getStepsBeforeBounceInOtherDirection());
 
         movementConfiguration.setAngleStep(0.1);
         movementConfiguration.setCurveDistance(1);
         movementConfiguration.setRadius(5);
-        movementConfiguration.setRadiusIncrement(1);
+        movementConfiguration.setRadiusIncrement(enemyConfiguration.getMovementPatternSize().getRadiusIncrement());
 
 
-        movementConfiguration.setPrimaryDirectionStepAmount(70);
-        movementConfiguration.setFirstDiagonalDirectionStepAmount(25);
-        movementConfiguration.setSecondDiagonalDirectionStepAmount(25);
+        movementConfiguration.setPrimaryDirectionStepAmount(enemyConfiguration.getMovementPatternSize().getPrimaryDirectionStepAmount());
+        movementConfiguration.setFirstDiagonalDirectionStepAmount(enemyConfiguration.getMovementPatternSize().getSecondaryDirectionStepAmount());
+        movementConfiguration.setSecondDiagonalDirectionStepAmount(enemyConfiguration.getMovementPatternSize().getSecondaryDirectionStepAmount());
 
     }
 
@@ -95,6 +96,14 @@ public class Enemy extends GameObject {
     public void fireAction () {
         // This could contain default behaviour but SHOULD be overriden by specific enemytype
         // classes.
+    }
+
+    public void onCreationEffects(){
+        //Exist to be overriden
+    }
+
+    public void onDeathEffects(){
+        //exist to be overriden
     }
 
 }

@@ -80,6 +80,7 @@ public class EnemyManager {
             if (enemyList.get(i).isVisible()) {
                 enemyList.get(i).move();
             } else {
+                enemyList.get(i).takeDamage(9999999);
                 animationManager.deleteEnemyAnimations(enemyList.get(i));
                 enemyList.remove(i);
                 i--;
@@ -89,6 +90,7 @@ public class EnemyManager {
 
     public void addEnemy (Enemy enemy) {
         if (enemy != null && !enemyList.contains(enemy)) {
+            enemy.onCreationEffects();
             enemyList.add(enemy);
         }
     }

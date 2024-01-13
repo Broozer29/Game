@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Random;
 
 import game.movement.Direction;
-import game.objects.enemies.EnemyEnums;
+import game.objects.enemies.enums.EnemyEnums;
 import game.spawner.EnemyFormation;
 import game.spawner.EnemySpawnTimer;
 import game.spawner.FormationCreator;

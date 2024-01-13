@@ -2,7 +2,7 @@ package game.spawner;
 
 import game.levels.LevelManager;
 import game.movement.Direction;
-import game.objects.enemies.EnemyEnums;
+import game.objects.enemies.enums.EnemyEnums;
 import game.objects.timers.TimerInterface;
 import game.objects.timers.TimerStatusEnums;
 
@@ -49,7 +49,7 @@ public class EnemySpawnTimer implements TimerInterface {
 			// Enemy spawning logic
 			if (formation == null) {
 				LevelManager.getInstance().spawnEnemy(0, 0, timerEnemyType, amountOfSpawnAttempts, direction,
-						enemyScale, true, xMovementSpeed, yMovementSpeed);
+						enemyScale, true, xMovementSpeed, yMovementSpeed, false);
 			} else {
 				formation.spawnFormation(formationXCoordinate, formationYCoordinate, timerEnemyType, direction, enemyScale,
 						xMovementSpeed, yMovementSpeed);

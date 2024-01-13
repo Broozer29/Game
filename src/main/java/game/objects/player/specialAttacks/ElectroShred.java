@@ -6,10 +6,10 @@ import visualobjects.SpriteConfigurations.SpriteAnimationConfiguration;
 public class ElectroShred extends SpecialAttack {
     public ElectroShred (SpriteAnimationConfiguration spriteAnimationConfiguration, MissileConfiguration missileConfiguration) {
         super(spriteAnimationConfiguration, missileConfiguration);
-        this.xOffset = -(this.getWidth() / 2);
-        this.yOffset = -(this.getHeight() / 2);
-        this.animation.addXOffset(-(animation.getWidth() / 2));
-        this.animation.addYOffset(-(animation.getHeight() / 2));
+//        this.xOffset = -(this.getWidth() / 2);
+//        this.yOffset = -(this.getHeight() / 2);
+//        this.animation.addXOffset(-(animation.getWidth() / 2));
+//        this.animation.addYOffset(-(animation.getHeight() / 2));
         this.setObjectType("ElectroShred");
     }
 }

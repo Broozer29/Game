@@ -1,12 +1,12 @@
 package game.objects.enemies.enemytypes;
 
 import game.movement.Direction;
-import game.movement.pathfinders.DiamondShapePathFinder;
+import game.movement.pathfinderconfigs.MovementPatternSize;
 import game.movement.pathfinders.OrbitPathFinder;
 import game.movement.pathfinders.PathFinder;
 import game.objects.enemies.EnemyConfiguration;
 import game.objects.enemies.Enemy;
-import game.objects.enemies.EnemyEnums;
+import game.objects.enemies.enums.EnemyEnums;
 import game.objects.enemies.EnemyManager;
 import game.objects.missiles.MissileManager;
 import VisualAndAudioData.audio.AudioEnums;
@@ -17,9 +17,12 @@ import visualobjects.SpriteAnimation;
 
 public class Bulldozer extends Enemy {
 
+    private boolean spawnedBombs;
+
     public Bulldozer (SpriteConfiguration spriteConfiguration, EnemyConfiguration enemyConfiguration) {
         super(spriteConfiguration, enemyConfiguration);
 
+        spawnedBombs = false;
         SpriteAnimationConfiguration exhaustConfiguration = new SpriteAnimationConfiguration(spriteConfiguration, 0, true);
         exhaustConfiguration.getSpriteConfiguration().setImageType(ImageEnums.Bulldozer_Normal_Exhaust);
         this.exhaustAnimation = new SpriteAnimation(exhaustConfiguration);
@@ -28,16 +31,12 @@ public class Bulldozer extends Enemy {
         destroyedExplosionfiguration.getSpriteConfiguration().setImageType(ImageEnums.Bulldozer_Destroyed_Explosion);
         this.destructionAnimation = new SpriteAnimation(destroyedExplosionfiguration);
 
-        createRotatingBombs();
     }
 
     private void createRotatingBombs () {
         // The center around which the AlienBombs will orbit
         double meanX = this.getCenterXCoordinate();
         double meanY = this.getCenterYCoordinate();
-
-
-
 
         // Calculate the angle increment based on how many bombs you want
         double angleIncrement = 2 * Math.PI / 8; // 8 is the total number of bombs
@@ -47,7 +46,7 @@ public class Bulldozer extends Enemy {
             double nextAngle = angleIncrement * iterator;
 
             // 3. Place the new drone
-            int radius = 75; // Example radius
+            int radius = 75;
             int x = (int) (meanX + Math.cos(nextAngle) * radius);
             int y = (int) (meanY + Math.sin(nextAngle) * radius);
 
@@ -73,11 +72,22 @@ public class Bulldozer extends Enemy {
                 25, 0,
                 false, false, AudioEnums.Alien_Bomb_Destroyed,
                 Direction.LEFT, pathFinder, 1, 1, true, "Alien Bomb",
-                0
+                0, MovementPatternSize.SMALL, EnemyEnums.Alien_Bomb.isBoxCollision()
         );
 
         Enemy alienBomb = new AlienBomb(spriteConfiguration, enemyConfiguration);
         return alienBomb;
+    }
+
+    public void onCreationEffects(){
+        if(!spawnedBombs){
+            createRotatingBombs();
+            spawnedBombs = true;
+        }
+    }
+
+    public void onDeathEffects(){
+        //exist to be overriden
     }
 
 
@@ -85,6 +95,8 @@ public class Bulldozer extends Enemy {
         if (missileManager == null) {
             missileManager = MissileManager.getInstance();
         }
+
+
     }
 
 }

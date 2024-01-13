@@ -1,6 +1,8 @@
 package VisualAndAudioData.audio;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.sound.sampled.UnsupportedAudioFileException;
 
@@ -9,6 +11,8 @@ public class AudioManager {
 	private static AudioManager instance = new AudioManager();
 	private CustomAudioClip backGroundMusic = null;
 	private AudioDatabase audioDatabase = AudioDatabase.getInstance();
+
+	private List<AudioEnums> backgroundMusicTracksThatHavePlayed = new ArrayList<>();
 
 	private AudioManager() {
 
@@ -46,7 +50,27 @@ public class AudioManager {
 		backGroundMusic = audioDatabase.getAudioClip(audioType);
 		if (!(backGroundMusic == null)) {
 			backGroundMusic.startClip();
-			System.out.println("I tried to start a soundtrack in AudioManager line 49");
+		}
+	}
+
+	public void playRandomBackgroundMusic() {
+		AudioEnums backGroundMusicEnum;
+		do {
+			backGroundMusic = audioDatabase.selectRandomMusicTrack();
+			backGroundMusicEnum = backGroundMusic.getAudioType();
+		} while (backgroundMusicTracksThatHavePlayed.contains(backGroundMusicEnum));
+
+		if (backGroundMusic != null) {
+			backGroundMusic.startClip();
+			addTrackToHistory(backGroundMusicEnum);
+		}
+	}
+
+	private void addTrackToHistory(AudioEnums track) {
+		backgroundMusicTracksThatHavePlayed.add(track);
+		// Remove the oldest entry if the list size exceeds 3
+		if (backgroundMusicTracksThatHavePlayed.size() > 3) {
+			backgroundMusicTracksThatHavePlayed.remove(0);
 		}
 	}
 	

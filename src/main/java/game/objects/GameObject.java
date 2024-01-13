@@ -7,7 +7,6 @@ import VisualAndAudioData.audio.AudioEnums;
 import VisualAndAudioData.audio.AudioManager;
 import VisualAndAudioData.image.ImageResizer;
 import VisualAndAudioData.image.ImageRotator;
-import game.movement.pathfinders.SpiralPathFinder;
 import visualobjects.SpriteConfigurations.SpriteAnimationConfiguration;
 import visualobjects.SpriteConfigurations.SpriteConfiguration;
 import visualobjects.Sprite;
@@ -20,9 +19,6 @@ import java.util.List;
 
 public class GameObject extends Sprite {
 
-    //Visual variables
-    //Create a "VisualObject" interface which both sprite and spriteanimation inherit or smth.
-    //Then, basically treat them as one apart van specifieke situaties zoals frame delay ophalen
     protected SpriteAnimation animation; //This is a code smell, because spriteanimation is already extension of sprite, need to untangle this
     protected SpriteAnimation destructionAnimation;
     protected SpriteAnimation shieldDamagedAnimation;
@@ -74,6 +70,7 @@ public class GameObject extends Sprite {
     //Other
     protected String objectType;
     protected Direction movementDirection;
+    protected boolean boxCollision;
 
     private int movementCounter = 0;
 
@@ -196,6 +193,14 @@ public class GameObject extends Sprite {
         if (sprite != null) {
             sprite.rotateAnimetion(direction);
         }
+    }
+
+    public void onCreationEffects(){
+        //Exist to be overriden
+    }
+
+    public void onDeathEffects(){
+        //exist to be overriden
     }
 
 
@@ -407,4 +412,11 @@ public class GameObject extends Sprite {
     public List<GameObject> getObjectOrbitingThis () {
         return objectOrbitingThis;
     }
+
+
+
+    public boolean isBoxCollision(){
+        return boxCollision;
+    }
+
 }

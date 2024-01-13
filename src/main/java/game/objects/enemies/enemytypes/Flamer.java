@@ -1,5 +1,6 @@
 package game.objects.enemies.enemytypes;
 
+import game.movement.pathfinderconfigs.MovementPatternSize;
 import game.movement.pathfinders.PathFinder;
 import game.movement.pathfinders.RegularPathFinder;
 import game.objects.enemies.EnemyConfiguration;
@@ -11,7 +12,6 @@ import visualobjects.SpriteConfigurations.SpriteConfiguration;
 import visualobjects.SpriteAnimation;
 
 public class Flamer extends Enemy {
-    private PathFinder missilePathFinder;
 
     public Flamer (SpriteConfiguration spriteConfiguration, EnemyConfiguration enemyConfiguration) {
         super(spriteConfiguration, enemyConfiguration);
@@ -39,14 +39,18 @@ public class Flamer extends Enemy {
         int yMovementSpeed = 2;
         if (attackSpeedCurrentFrameCount >= attackSpeed) {
 
-            SpriteConfiguration missileSpriteConfiguration = this.spriteConfiguration;
-            missileSpriteConfiguration.setyCoordinate(yCoordinate + this.height / 2);
-            missileSpriteConfiguration.setImageType(ImageEnums.Flamer_Missile);
+            MissileTypeEnums missileType = MissileTypeEnums.FlamerProjectile;
 
-            MissileConfiguration missileConfiguration = new MissileConfiguration(MissileTypeEnums.FlamerProjectile,
-                    100, 100, null, ImageEnums.Energizer_Missile_Explosion, isFriendly()
-                    , new RegularPathFinder(), movementDirection, xMovementSpeed,yMovementSpeed, true
-                    , "Bomba Missile", (float) 7.5);
+            SpriteConfiguration missileSpriteConfiguration = new SpriteConfiguration();
+            missileSpriteConfiguration.setxCoordinate(xCoordinate);
+            missileSpriteConfiguration.setyCoordinate(yCoordinate + this.height / 2);
+            missileSpriteConfiguration.setScale(this.scale);
+            missileSpriteConfiguration.setImageType(missileType.getImageType());
+
+            MissileConfiguration missileConfiguration = new MissileConfiguration(missileType,
+                    100, 100, null, missileType.getDeathOrExplosionImageEnum(), isFriendly()
+                    , new RegularPathFinder(), this.movementDirection, missileType.getxMovementSpeed(),missileType.getyMovementspeed(), true
+                    , missileType.getObjectType(), missileType.getDamage(), MovementPatternSize.SMALL, missileType.isBoxCollision());
 
 
             Missile newMissile = MissileCreator.getInstance().createMissile(missileSpriteConfiguration, missileConfiguration);

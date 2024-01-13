@@ -32,7 +32,7 @@ public class Missile extends GameObject {
 		this.objectType = missileConfiguration.getObjectType();
 		this.damage = missileConfiguration.getDamage();
 		this.missileType = missileConfiguration.getMissileType();
-
+		this.boxCollision = missileConfiguration.isBoxCollision();
 
 		if(missileConfiguration.getDestructionType() != null){
 			SpriteAnimationConfiguration destructionAnimation = new SpriteAnimationConfiguration(spriteConfiguration, 2, false);
@@ -58,6 +58,21 @@ public class Missile extends GameObject {
 		if(pathFinder instanceof HomingPathFinder){
 			this.objectToChase = ((HomingPathFinder) pathFinder).getTarget(isFriendly());
 		}
+
+		movementConfiguration.setDiamondWidth(missileConfiguration.getMovementPatternSize().getDiamondWidth());
+		movementConfiguration.setDiamondHeight(missileConfiguration.getMovementPatternSize().getDiamondHeight());
+		movementConfiguration.setStepsBeforeBounceInOtherDirection(missileConfiguration.getMovementPatternSize().getStepsBeforeBounceInOtherDirection());
+
+		movementConfiguration.setAngleStep(0.1);
+		movementConfiguration.setCurveDistance(1);
+		movementConfiguration.setRadius(5);
+		movementConfiguration.setRadiusIncrement(missileConfiguration.getMovementPatternSize().getRadiusIncrement());
+
+
+		movementConfiguration.setPrimaryDirectionStepAmount(missileConfiguration.getMovementPatternSize().getPrimaryDirectionStepAmount());
+		movementConfiguration.setFirstDiagonalDirectionStepAmount(missileConfiguration.getMovementPatternSize().getSecondaryDirectionStepAmount());
+		movementConfiguration.setSecondDiagonalDirectionStepAmount(missileConfiguration.getMovementPatternSize().getSecondaryDirectionStepAmount());
+
 	}
 
 	public SpriteAnimation getAnimation() {

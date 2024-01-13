@@ -1,6 +1,7 @@
 package game.objects.missiles;
 
 import game.movement.Direction;
+import game.movement.pathfinderconfigs.MovementPatternSize;
 import game.movement.pathfinders.PathFinder;
 import game.objects.GameObject;
 import VisualAndAudioData.audio.AudioEnums;
@@ -32,7 +33,11 @@ public class MissileConfiguration {
 
     private GameObject targetToChase;
 
-    public MissileConfiguration (MissileTypeEnums missileType, int maxHitPoints, int maxShields, AudioEnums deathSound, ImageEnums destructionType, boolean isFriendly, PathFinder pathfinder, Direction movementDirection, int xMovementSpeed, int yMovementSpeed, boolean allowedToDealDamage, String objectType, float damage) {
+    private MovementPatternSize movementPatternSize;
+    private boolean boxCollision;
+
+    public MissileConfiguration (MissileTypeEnums missileType, int maxHitPoints, int maxShields, AudioEnums deathSound, ImageEnums destructionType, boolean isFriendly, PathFinder pathfinder, Direction movementDirection, int xMovementSpeed, int yMovementSpeed, boolean allowedToDealDamage, String objectType, float damage
+            , MovementPatternSize movementPatternSize, boolean boxCollision) {
         this.missileType = missileType;
         this.maxHitPoints = maxHitPoints;
         this.maxShields = maxShields;
@@ -46,6 +51,8 @@ public class MissileConfiguration {
         this.allowedToDealDamage = allowedToDealDamage;
         this.objectType = objectType;
         this.damage = damage;
+        this.movementPatternSize = movementPatternSize;
+        this.boxCollision = boxCollision;
     }
 
     public MissileConfiguration(){
@@ -166,5 +173,21 @@ public class MissileConfiguration {
 
     public void setTargetToChase (GameObject targetToChase) {
         this.targetToChase = targetToChase;
+    }
+
+    public MovementPatternSize getMovementPatternSize () {
+        return movementPatternSize;
+    }
+
+    public void setMovementPatternSize (MovementPatternSize movementPatternSize) {
+        this.movementPatternSize = movementPatternSize;
+    }
+
+    public boolean isBoxCollision(){
+        return boxCollision;
+    }
+
+    public void setBoxCollision (boolean boxCollision) {
+        this.boxCollision = boxCollision;
     }
 }

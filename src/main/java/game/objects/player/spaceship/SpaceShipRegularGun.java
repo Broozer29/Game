@@ -5,6 +5,7 @@ import java.io.IOException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
 import game.movement.Direction;
+import game.movement.pathfinderconfigs.MovementPatternSize;
 import game.movement.pathfinders.PathFinder;
 import game.objects.missiles.*;
 import game.objects.player.PlayerManager;
@@ -70,7 +71,7 @@ public class SpaceShipRegularGun {
 
         MissileConfiguration missileConfiguration = new MissileConfiguration(attackType,
                 1000000, 100000, null, playerMissileImpactType, true, missilePathFinder
-                , direction, xMovementspeed, yMovementspeed, true, "Player Missile", playerStats.getNormalAttackDamage());
+                , direction, xMovementspeed, yMovementspeed, true, "Player Missile", playerStats.getNormalAttackDamage(), MovementPatternSize.SMALL, attackType.isBoxCollision());
         Missile missile = MissileCreator.getInstance().createMissile(spriteConfiguration, missileConfiguration);
 
         this.missileManager.addExistingMissile(missile);
