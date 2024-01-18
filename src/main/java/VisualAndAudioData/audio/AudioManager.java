@@ -60,6 +60,8 @@ public class AudioManager {
 			backGroundMusicEnum = backGroundMusic.getAudioType();
 		} while (backgroundMusicTracksThatHavePlayed.contains(backGroundMusicEnum));
 
+		backGroundMusic = AudioDatabase.getInstance().getAudioClip(AudioEnums.Large_Ship_Destroyed);
+
 		if (backGroundMusic != null) {
 			backGroundMusic.startClip();
 			addTrackToHistory(backGroundMusicEnum);

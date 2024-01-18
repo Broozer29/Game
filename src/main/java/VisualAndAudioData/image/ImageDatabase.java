@@ -240,7 +240,9 @@ public class ImageDatabase {
 	private List<BufferedImage> purpleEnergyBarrier = new ArrayList<BufferedImage>();
 	private List<BufferedImage> redHoleFrames = new ArrayList<BufferedImage>();
 	private List<BufferedImage> crossingEnergyBeams = new ArrayList<BufferedImage>();
-	
+
+	private List<BufferedImage> plasmaCoatedDebuff = new ArrayList<BufferedImage>();
+
 	// Enemy Projectile Animations
 	private List<BufferedImage> seekerProjectileFrames = new ArrayList<BufferedImage>();
 	private List<BufferedImage> tazerProjectileFrames = new ArrayList<BufferedImage>();
@@ -1104,6 +1106,8 @@ public class ImageDatabase {
 			return redHoleFrames; // animation addition update: unused
 		case CrossingEnergyBeams:
 			return crossingEnergyBeams;  // animation addition update: unused
+        case PlasmaCoatedDebuff:
+                return plasmaCoatedDebuff;
 		}
 		return null;
 	}
@@ -1264,6 +1268,8 @@ public class ImageDatabase {
 		reader.setInput(ImageIO.createImageInputStream(
 				getClass().getResourceAsStream("/images/Ships/Ship 5/Ship 5 - Destroyed Explosion.gif")));
 		bombaDestroyedExplosionFrames = gifToImageIcons(reader);
+
+
 	}
 
 	private void initPNGtoGIFAnimation() {
@@ -1379,37 +1385,37 @@ public class ImageDatabase {
 			BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
 			chargingFrames.add(image);
 		}
-		
+
 		for (int i = 0; i < 8; i++) {
 			String sourceString = String.format("/images/gif/PNGtoGIF/Energy Circle/energycircle%d.png", i);
 			BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
 			energyCircleFrames.add(image);
 		}
-		
+
 		for (int i = 0; i < 19; i++) {
 			String sourceString = String.format("/images/gif/PNGtoGIF/Flamewarp/flamewarp%d.png", i);
 			BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
 			flamewarpFrames.add(image);
 		}
-		
+
 		for (int i = 1; i < 17; i++) {
 			String sourceString = String.format("/images/gif/PNGtoGIF/Frontshield/frontshield%d.png", i);
 			BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
 			frontShieldFrames.add(image);
 		}
-		
+
 		for (int i = 1; i < 17; i++) {
 			String sourceString = String.format("/images/gif/PNGtoGIF/Frontshield2/frontshieldb%d.png", i);
 			BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
 			frontShieldBFrames.add(image);
 		}
-		
+
 		for (int i = 0; i < 8; i++) {
 			String sourceString = String.format("/images/gif/PNGtoGIF/Pulsating shield/pulsatingshield%d.png", i);
 			BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
 			pulsatingShieldFrames.add(image);
 		}
-		
+
 		for (int i = 0; i < 6; i++) {
 			String sourceString = String.format("/images/gif/PNGtoGIF/Pulsating star/pulsatingstar%d.png", i);
 			BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
@@ -1421,61 +1427,67 @@ public class ImageDatabase {
 			BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
 			radarFrames.add(image);
 		}
-		
+
 		for (int i = 1; i < 14; i++) {
 			String sourceString = String.format("/images/gif/PNGtoGIF/Rotatingboxes/rotatingboxes%d.png", i);
 			BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
 			rotatingBoxesFrames.add(image);
 		}
-		
+
 		for (int i = 1; i < 17; i++) {
 			String sourceString = String.format("/images/gif/PNGtoGIF/Rotatingcone/rotatingcone%d.png", i);
 			BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
 			rotatingConeFrames.add(image);
 		}
-		
+
 		for (int i = 0; i < 20; i++) {
 			String sourceString = String.format("/images/gif/PNGtoGIF/GreenEnergyOrbs/greenEnergyOrbs%d.png", i);
 			BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
 			greenEnergyOrbFrames.add(image);
 		}
-		
+
 		for (int i = 0; i < 20; i++) {
 			String sourceString = String.format("/images/gif/PNGtoGIF/PurpleEnergyBlocks/purpleEnergyBlocks%d.png", i);
 			BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
 			purpleEnergyBlockFrames.add(image);
 		}
-		
+
 		for (int i = 0; i < 20; i++) {
 			String sourceString = String.format("/images/gif/PNGtoGIF/Fireshield/fireshield%d.png", i);
 			BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
 			fireshieldFrames.add(image);
 		}
-		
+
 		for (int i = 0; i < 20; i++) {
 			String sourceString = String.format("/images/gif/PNGtoGIF/EnergyFlower/energyflower%d.png", i);
 			BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
 			energyFlowerFrames.add(image);
 		}
-		
+
 		for (int i = 0; i < 20; i++) {
 			String sourceString = String.format("/images/gif/PNGtoGIF/PurpleEnergyBarrier/purpleenergybarrier%d.png", i);
 			BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
 			purpleEnergyBarrier.add(image);
 		}
-		
+
 		for (int i = 0; i < 20; i++) {
 			String sourceString = String.format("/images/gif/PNGtoGIF/RedHole/7200%d.png", i);
 			BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
 			redHoleFrames.add(image);
 		}
-		
+
 		for (int i = 0; i < 12; i++) {
 			String sourceString = String.format("/images/gif/PNGtoGIF/CrossingEnergyBeams/1000%d.png", i);
 			BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
 			crossingEnergyBeams.add(image);
 		}
-		
+
+        for (int i = 1; i < 4; i++) {
+            String sourceString = String.format("/images/gif/PNGtoGIF/PlasmaCoatedBurning/%d.png", i);
+            BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+            plasmaCoatedDebuff.add(image);
+        }
+
 
 	}
 

@@ -4,7 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import game.managers.AnimationManager;
-import game.managers.CollisionDetector;
+import game.objects.GameObject;
+import game.objects.player.PlayerStats;
+import game.items.Item;
+import game.items.ItemApplicationEnum;
+import game.util.CollisionDetector;
 import game.objects.player.PlayerManager;
 import game.objects.enemies.Enemy;
 import game.objects.enemies.EnemyManager;
@@ -30,6 +34,17 @@ public class MissileManager {
     }
 
     public void resetManager () {
+
+        for(Missile missile : missiles){
+            missile.setVisible(false);
+        }
+
+        for(SpecialAttack specialAttack: specialAttacks){
+            specialAttack.setVisible(false);
+        }
+
+        removeInvisibleProjectiles();
+
         missiles = new ArrayList<Missile>();
         specialAttacks = new ArrayList<SpecialAttack>();
     }
@@ -53,17 +68,36 @@ public class MissileManager {
     public void updateGameTick () {
         initManagersIfNull();
         moveMissiles();
+        removeInvisibleProjectiles();
         checkMissileCollisions();
         triggerMissileActions();
     }
 
+    private void removeInvisibleProjectiles(){
+        for (int i = 0; i < missiles.size(); i++) {
+            if (!missiles.get(i).isVisible()) {
+                missiles.get(i).deleteObject();
+                missiles.remove(i);
+                i--;
+            }
+        }
+
+        for (int i = 0; i < specialAttacks.size(); i++) {
+            if (!specialAttacks.get(i).isVisible()) {
+                specialAttacks.get(i).deleteObject();
+                specialAttacks.remove(i);
+                i--;
+            }
+        }
+
+
+    }
+
     private void moveMissiles () {
         for (int i = missiles.size() - 1; i >= 0; i--) {
-            Missile missile = missiles.get(i);
-            if (missile.isVisible()) {
-                missile.move();
-            } else {
-                missiles.remove(i);
+            if (missiles.get(i).isVisible()) {
+                missiles.get(i).move();
+                missiles.get(i).updateGameObjectEffects();
             }
         }
     }
@@ -100,9 +134,10 @@ public class MissileManager {
 
 
         for (Enemy enemy : enemyManager.getEnemies()) {
-//            System.out.println("Kom ik hier " + specialAttack.getBounds());
             if (collisionDetector.detectCollision(enemy, specialAttack)) {
+                applyDamageModification(specialAttack, enemy);
                 enemy.takeDamage(specialAttack.getDamage());
+                applyPlayerOnHitEffects(enemy);
             }
         }
     }
@@ -121,15 +156,26 @@ public class MissileManager {
     private void checkMissileCollisionWithEnemies (Missile missile) {
         for (Enemy enemy : enemyManager.getEnemies()) {
             if (collisionDetector.detectCollision(missile, enemy)) {
+                applyDamageModification(missile, enemy);
                 handleCollision(enemy, missile);
+                applyPlayerOnHitEffects(enemy);
             }
         }
     }
 
+
+
     private void checkMissileCollisionWithPlayer (Missile missile) {
         if (collisionDetector.detectCollision(missile, playerManager.getSpaceship())) {
-            playerManager.getSpaceship().takeHitpointDamage(missile.getDamage());
+            playerManager.getSpaceship().takeDamage(missile.getDamage());
             handleMissileDestruction(missile);
+        }
+    }
+
+    private void applyPlayerOnHitEffects(Enemy enemy){
+        List<Item> onHitItems = PlayerStats.getInstance().getPlayerInventory().getItemsByApplicationMethod(ItemApplicationEnum.AfterCollision);
+        for (Item item : onHitItems) {
+            item.applyEffectToObject(enemy); // Assuming applyEffect adds the effect to the GameObject
         }
     }
 
@@ -175,5 +221,11 @@ public class MissileManager {
 
     public void addExistingMissile (Missile missile) {
         this.missiles.add(missile);
+    }
+
+    private void applyDamageModification(GameObject attack, GameObject target){
+        for(Item item : PlayerStats.getInstance().getPlayerInventory().getItemsByApplicationMethod(ItemApplicationEnum.BeforeCollision)){
+            item.modifyAttackValues(attack, target);
+        }
     }
 }

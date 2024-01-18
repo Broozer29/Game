@@ -7,6 +7,7 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 import game.movement.Direction;
 import game.movement.pathfinderconfigs.MovementPatternSize;
 import game.movement.pathfinders.PathFinder;
+import game.movement.pathfinders.RegularPathFinder;
 import game.objects.missiles.*;
 import game.objects.player.PlayerManager;
 import game.objects.player.BoostsUpgradesAndBuffsSettings;
@@ -46,7 +47,7 @@ public class SpaceShipRegularGun {
             ImageEnums visualImage = playerStats.getPlayerMissileType();
             ImageEnums impactType = playerStats.getPlayerMissileImpactType();
             float scale = playerStats.getMissileScale();
-            PathFinder pathFinder = playerStats.getMissilePathFinder();
+            PathFinder pathFinder = new RegularPathFinder();
 
             fireMissile(xCoordinate, yCoordinate, visualImage, impactType, Direction.RIGHT, scale, pathFinder, xMovementSpeed, yMovementSpeed, playerAttackType);
 
@@ -69,9 +70,19 @@ public class SpaceShipRegularGun {
         spriteConfiguration.setImageType(playerMissileType);
         spriteConfiguration.setScale(missileScale);
 
+        int maxHitPoints = 1000;
+        int maxShields = 0;
+        AudioEnums deathSound = null;
+        boolean isFriendly = true;
+        boolean allowedToDealDamage = true;
+        String objectType = "Player Missile";
+        float damage = playerStats.getNormalAttackDamage();
+        MovementPatternSize movementPatternSize = MovementPatternSize.SMALL;
+
         MissileConfiguration missileConfiguration = new MissileConfiguration(attackType,
-                1000000, 100000, null, playerMissileImpactType, true, missilePathFinder
-                , direction, xMovementspeed, yMovementspeed, true, "Player Missile", playerStats.getNormalAttackDamage(), MovementPatternSize.SMALL, attackType.isBoxCollision());
+                maxHitPoints, maxShields, deathSound, playerMissileImpactType, isFriendly, missilePathFinder
+                ,direction, xMovementspeed, yMovementspeed, allowedToDealDamage, objectType,
+                playerStats.getNormalAttackDamage(), movementPatternSize, attackType.isBoxCollision());
         Missile missile = MissileCreator.getInstance().createMissile(spriteConfiguration, missileConfiguration);
 
         this.missileManager.addExistingMissile(missile);

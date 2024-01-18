@@ -22,8 +22,15 @@ public class AnimationManager {
 	// Called when a game instance needs to be deleted and the manager needs to be
 	// reset.
 	public void resetManager() {
-		upperAnimationList = new ArrayList<SpriteAnimation>();
-		lowerAnimationList = new ArrayList<SpriteAnimation>();
+		for(SpriteAnimation animation : upperAnimationList){
+			animation.setVisible(false);
+		}
+
+		for(SpriteAnimation animation : lowerAnimationList){
+			animation.setVisible(false);
+		}
+
+		removeInvisibleAnimations();
 
 	}
 
@@ -72,12 +79,6 @@ public class AnimationManager {
 
 	// Called by EnemyManager when an enemy gets deleted and the belonging
 	// animations need to be removed
-	public void deleteEnemyAnimations(Enemy enemy) {
-		if (enemy.getExhaustAnimation() != null) {
-			deleteAnimation(enemy.getExhaustAnimation());
-		}
-	}
-
 	private void deleteAnimation(SpriteAnimation animation) {
 		if (animation == null) {
 			return;

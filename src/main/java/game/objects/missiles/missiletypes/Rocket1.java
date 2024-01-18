@@ -1,6 +1,6 @@
 package game.objects.missiles.missiletypes;
 
-import game.managers.ExplosionManager;
+import game.objects.neutral.ExplosionManager;
 import game.objects.missiles.MissileConfiguration;
 import game.objects.neutral.Explosion;
 import game.objects.missiles.Missile;
@@ -33,7 +33,7 @@ public class Rocket1 extends Missile{
 		explosion.setScale(explosionScale);
 		explosion.updateBoardBlock();
 		explosionAnimation.setCenterCoordinates(this.getCenterXCoordinate() + (this.getWidth() / 2), this.getCenterYCoordinate() - (this.height / 2));
-		ExplosionManager.getInstance().addExistingExplosion(explosion);
+		ExplosionManager.getInstance().addExplosion(explosion);
 	}
 	
 

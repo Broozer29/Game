@@ -18,7 +18,7 @@ import javax.swing.JPanel;
 import javax.swing.Timer;
 
 import controllerInput.ConnectedControllers;
-import controllerInput.ControllerInput;
+import controllerInput.ControllerInputEnums;
 import controllerInput.ControllerInputReader;
 import game.managers.AnimationManager;
 import game.objects.background.BackgroundManager;
@@ -472,13 +472,13 @@ public class MenuBoard extends JPanel implements ActionListener {
 
 			// Left and right navigation
 			if (currentTime - lastMoveTime > MOVE_COOLDOWN) {
-				if (controllerInputReader.isInputActive(ControllerInput.MOVE_LEFT_SLOW)
-						|| controllerInputReader.isInputActive(ControllerInput.MOVE_LEFT_QUICK)) {
+				if (controllerInputReader.isInputActive(ControllerInputEnums.MOVE_LEFT_SLOW)
+						|| controllerInputReader.isInputActive(ControllerInputEnums.MOVE_LEFT_QUICK)) {
 					// Menu option to the left
 					previousMenuTile();
 					lastMoveTime = currentTime;
-				} else if (controllerInputReader.isInputActive(ControllerInput.MOVE_RIGHT_SLOW)
-						|| controllerInputReader.isInputActive(ControllerInput.MOVE_RIGHT_QUICK)) {
+				} else if (controllerInputReader.isInputActive(ControllerInputEnums.MOVE_RIGHT_SLOW)
+						|| controllerInputReader.isInputActive(ControllerInputEnums.MOVE_RIGHT_QUICK)) {
 					// Menu option to the right
 					nextMenuTile();
 					lastMoveTime = currentTime;
@@ -487,13 +487,13 @@ public class MenuBoard extends JPanel implements ActionListener {
 
 			// Up and down navigation
 			if (currentTime - lastMoveTime > MOVE_COOLDOWN) {
-				if (controllerInputReader.isInputActive(ControllerInput.MOVE_UP_SLOW)
-						|| controllerInputReader.isInputActive(ControllerInput.MOVE_UP_QUICK)) {
+				if (controllerInputReader.isInputActive(ControllerInputEnums.MOVE_UP_SLOW)
+						|| controllerInputReader.isInputActive(ControllerInputEnums.MOVE_UP_QUICK)) {
 					// Menu option upwards
 					previousMenuColumn();
 					lastMoveTime = currentTime;
-				} else if (controllerInputReader.isInputActive(ControllerInput.MOVE_DOWN_SLOW)
-						|| controllerInputReader.isInputActive(ControllerInput.MOVE_DOWN_QUICK)) {
+				} else if (controllerInputReader.isInputActive(ControllerInputEnums.MOVE_DOWN_SLOW)
+						|| controllerInputReader.isInputActive(ControllerInputEnums.MOVE_DOWN_QUICK)) {
 					// Menu option downwards
 					nextMenuColumn();
 					lastMoveTime = currentTime;
@@ -501,7 +501,7 @@ public class MenuBoard extends JPanel implements ActionListener {
 			}
 
 			// Fire action
-			if (controllerInputReader.isInputActive(ControllerInput.FIRE)) {
+			if (controllerInputReader.isInputActive(ControllerInputEnums.FIRE)) {
 				// Select menu option
 				selectMenuTile();
 				updateActiveAttackIcons();

@@ -16,9 +16,10 @@ public class FriendlyObjectConfiguration {
     private MovementPatternSize movementPatternSize;
 
     private boolean boxCollision;
+    private boolean permanentObject;
 
     public FriendlyObjectConfiguration (FriendlyObjectEnums friendlyType, int attackSpeedCooldown, PathFinder pathFinder, Direction movementDirection, int xMovementSpeed, int yMovementSpeed, MovementPatternSize movementPatternSize
-    , boolean boxCollision) {
+    , boolean boxCollision, boolean permanentObject) {
         this.friendlyType = friendlyType;
         this.attackSpeedCooldown = attackSpeedCooldown;
         this.pathFinder = pathFinder;
@@ -27,6 +28,7 @@ public class FriendlyObjectConfiguration {
         this.yMovementSpeed = yMovementSpeed;
         this.movementPatternSize = movementPatternSize;
         this.boxCollision = boxCollision;
+        this.permanentObject = permanentObject;
     }
 
     public PathFinder getPathFinder () {
@@ -94,5 +96,13 @@ public class FriendlyObjectConfiguration {
 
     public void setBoxCollision (boolean boxCollision) {
         this.boxCollision = boxCollision;
+    }
+
+    public boolean isPermanentObject () {
+        return permanentObject;
+    }
+
+    public void setPermanentObject (boolean permanentObject) {
+        this.permanentObject = permanentObject;
     }
 }

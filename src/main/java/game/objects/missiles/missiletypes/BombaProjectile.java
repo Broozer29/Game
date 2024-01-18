@@ -1,14 +1,13 @@
 
 package game.objects.missiles.missiletypes;
 
-import game.managers.ExplosionManager;
+import game.objects.neutral.ExplosionManager;
 import game.objects.missiles.MissileConfiguration;
 import game.objects.neutral.Explosion;
 import game.objects.missiles.Missile;
 import game.objects.neutral.ExplosionConfiguration;
 import VisualAndAudioData.image.ImageEnums;
 import visualobjects.SpriteConfigurations.SpriteAnimationConfiguration;
-import visualobjects.SpriteAnimation;
 import visualobjects.SpriteConfigurations.SpriteConfiguration;
 
 public class BombaProjectile extends Missile {
@@ -35,7 +34,7 @@ public class BombaProjectile extends Missile {
 			ExplosionConfiguration explosionConfiguration = new ExplosionConfiguration(isFriendly(), damage * 5, false);
 			Explosion explosion = new Explosion(spriteAnimationConfiguration, explosionConfiguration);
 
-			ExplosionManager.getInstance().addExistingExplosion(explosion);
+			ExplosionManager.getInstance().addExplosion(explosion);
 			this.setVisible(false);
 		}
 	}

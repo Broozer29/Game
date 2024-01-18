@@ -100,11 +100,7 @@ public class PowerUpCreator {
 		case DOUBLE_SHOT:
 			return 0;
 		case HEALTH_AND_SHIELD_RESTORE:
-		case INCREASED_MOVEMENT_SPEED:
-		case INCREASED_NORMAL_ATTACK_SPEED:
 		case INCREASED_NORMAL_DAMAGE:
-		case INCREASED_SPECIAL_ATTACK_SPEED:
-		case INCREASED_SPECIAL_DAMAGE:
 			return BoostsUpgradesAndBuffsSettings.getInstance().getTemporaryPowerUpDuration();
 		case TRIPLE_SHOT:
 			return 0;
@@ -120,16 +116,8 @@ public class PowerUpCreator {
 			return ImageEnums.DoubleShotIcon;
 		case HEALTH_AND_SHIELD_RESTORE:
 			return ImageEnums.Starcraft2_Heal;
-		case INCREASED_MOVEMENT_SPEED:
-			return ImageEnums.Starcraft2_Energizer_Speed;
-		case INCREASED_NORMAL_ATTACK_SPEED:
-			return ImageEnums.Starcraft2_Dual_Rockets;
 		case INCREASED_NORMAL_DAMAGE:
 			return ImageEnums.Starcraft2_Ignite_Afterburners;
-		case INCREASED_SPECIAL_ATTACK_SPEED:
-			return ImageEnums.Starcraft2_Stim1;
-		case INCREASED_SPECIAL_DAMAGE:
-			return ImageEnums.Starcraft2_Guardian_Shield;
 		case TRIPLE_SHOT:
 			return ImageEnums.TripleShotIcon;
 		case Guardian_Drone_Homing_Missile:

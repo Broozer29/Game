@@ -6,7 +6,7 @@ import java.util.List;
 
 import javax.sound.sampled.UnsupportedAudioFileException;
 
-import game.managers.CollisionDetector;
+import game.util.CollisionDetector;
 import game.objects.player.PlayerManager;
 import VisualAndAudioData.audio.AudioEnums;
 import VisualAndAudioData.audio.AudioManager;
@@ -24,18 +24,23 @@ public class PowerUpManager {
     }
 
     public void updateGameTick () {
-        cyclePowerUps();
+        movePowerUps();
+        removePowerUps();
     }
 
-    private void cyclePowerUps () {
+    private void movePowerUps(){
+        for(PowerUp powerUp : powerUpsOnTheField){
+            powerUp.move();
+            checkPowerUpCollision(powerUp);
+        }
+    }
+
+    private void removePowerUps(){
         for (int i = 0; i < powerUpsOnTheField.size(); i++) {
             if (!powerUpsOnTheField.get(i).isVisible()) {
                 powerUpsOnTheField.remove(i);
-            } else {
-                powerUpsOnTheField.get(i).move();
-                checkPowerUpCollision(powerUpsOnTheField.get(i));
+                i--;
             }
-
         }
     }
 
@@ -60,6 +65,10 @@ public class PowerUpManager {
     }
 
     public void resetManager () {
+        for(PowerUp powerUp : powerUpsOnTheField){
+            powerUp.setVisible(false);
+        }
+        removePowerUps();
         powerUpsOnTheField = new ArrayList<PowerUp>();
     }
 

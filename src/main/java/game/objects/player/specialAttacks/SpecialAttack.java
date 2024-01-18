@@ -40,15 +40,7 @@ public class SpecialAttack extends GameObject {
 	public void setCenteredAroundPlayer(Boolean bool) {
 		this.centeredAroundPlayer = bool;
 	}
-	
-	public void moveSpecialAttackMissiles() {
-		for(Missile missile : specialAttackMissiles) {
-			if(missile.isVisible()) {
-				missile.move();
-			}
-		}
-	}
-	
+
 	public List<Missile> getSpecialAttackMissiles() {
 		return this.specialAttackMissiles;
 	}

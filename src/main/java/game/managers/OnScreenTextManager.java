@@ -41,6 +41,12 @@ public class OnScreenTextManager {
 	}
 
 	public void resetManager() {
+		for(OnScreenText text : powerUpTexts){
+			text.setTransparency(0.00f);
+		}
+
+		removeInvisibleText();
+
 		powerUpTexts = new ArrayList<OnScreenText>();
 	}
 

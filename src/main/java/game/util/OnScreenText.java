@@ -27,20 +27,8 @@ public class OnScreenText {
 		case HEALTH_AND_SHIELD_RESTORE:
 			this.text = "Health & Shield Restore";
 			break;
-		case INCREASED_MOVEMENT_SPEED:
-			this.text = "Increased Movement Speed";
-			break;
-		case INCREASED_NORMAL_ATTACK_SPEED:
-			this.text = "Increased Attack Speed";
-			break;
 		case INCREASED_NORMAL_DAMAGE:
 			this.text = "Increased Attack Damage";
-			break;
-		case INCREASED_SPECIAL_ATTACK_SPEED:
-			this.text = "Increased Special Attack Speed";
-			break;
-		case INCREASED_SPECIAL_DAMAGE:
-			this.text = "Increased Special Attack Damage";
 			break;
 		case TRIPLE_SHOT:
 			this.text = "Triple Shot";

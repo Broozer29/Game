@@ -257,10 +257,24 @@ public class AudioDatabase {
         return null;
     }
 
-    public CustomAudioClip selectRandomMusicTrack () {
+    public CustomAudioClip selectRandomMusicTrack() {
         Random random = new Random();
-        return getAudioClip(backgroundMusicTracks.get(random.nextInt(backgroundMusicTracks.size())).getAudioType());
+        CustomAudioClip clip = null;
+        int attempts = 0;
+        int maxAttempts = backgroundMusicTracks.size(); // Assuming this is the total number of tracks available
 
+        while (clip == null && attempts < maxAttempts) {
+            clip = getAudioClip(backgroundMusicTracks.get(random.nextInt(backgroundMusicTracks.size())).getAudioType());
+            attempts++;
+        }
+
+        if (clip == null) {
+            System.out.println("Man it really went to shit");
+            // Handle the case where no valid track is found after all attempts
+            // You might want to log an error or throw an exception depending on your application's requirements
+        }
+
+        return clip;
     }
 
     public CustomAudioClip getAudioClip (AudioEnums audioType) {

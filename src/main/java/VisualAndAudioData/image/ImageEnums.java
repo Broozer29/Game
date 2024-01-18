@@ -15,6 +15,7 @@ public enum ImageEnums {
     Default_Player_Shield_Damage, Player_Fireswirl, Player_EMP, Player_EMP_Plus, Drone, FirewallParticle, Portal5,
     Warp, Shield4, Shield3, Shield2, Charging, EnergyCircle, Flamewarp, Frontshield, FrontshieldB, PulsatingShield, PulsatingStar, Radar,
     RotatingBoxes, RotatingCones, GreenEnergyOrb, PurpleEnergyBlocks, Fireshield, EnergyFlower, PurpleEnergyBarrier, RedHole, CrossingEnergyBeams,
+    PlasmaCoatedDebuff,
 
     //// Background Objects
     Moon, Lava_Planet, Planet_One, Planet_Two, Planet_Three, Mars_Planet, Star, Parallex_1, Parallex_2, Parallex_3,

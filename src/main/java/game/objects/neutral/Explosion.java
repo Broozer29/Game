@@ -3,11 +3,13 @@ package game.objects.neutral;
 import java.util.ArrayList;
 import java.util.List;
 
+import game.items.effects.EffectInterface;
 import game.objects.GameObject;
 import visualobjects.SpriteConfigurations.SpriteAnimationConfiguration;
 
 public class Explosion extends GameObject {
 
+    private List<EffectInterface> effectsToApply = new ArrayList<>();
 
     public Explosion (SpriteAnimationConfiguration spriteAnimationConfiguration, ExplosionConfiguration explosionConfiguration) {
         super(spriteAnimationConfiguration);
@@ -25,6 +27,16 @@ public class Explosion extends GameObject {
         if (!this.skipCollision.contains(sprite)) {
             this.skipCollision.add(sprite);
         }
+    }
+
+    public void addEffectToApply(EffectInterface effect){
+        if(!this.effectsToApply.contains(effect)){
+            effectsToApply.add(effect);
+        }
+    }
+
+    public List<EffectInterface> getEffectsToApply () {
+        return effectsToApply;
     }
 
     public List<GameObject> getCollidedSprites () {

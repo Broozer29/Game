@@ -1,6 +1,5 @@
 package game.spawner;
 
-import game.levels.LevelManager;
 import game.movement.Direction;
 import game.objects.enemies.enums.EnemyEnums;
 

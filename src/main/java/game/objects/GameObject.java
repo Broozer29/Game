@@ -1,5 +1,8 @@
 package game.objects;
 
+import game.gamestate.GameStateInfo;
+import game.items.effects.EffectActivationTypes;
+import game.items.effects.effecttypes.DamageOverTime;
 import game.managers.AnimationManager;
 import game.movement.*;
 import game.movement.pathfinders.PathFinder;
@@ -7,6 +10,7 @@ import VisualAndAudioData.audio.AudioEnums;
 import VisualAndAudioData.audio.AudioManager;
 import VisualAndAudioData.image.ImageResizer;
 import VisualAndAudioData.image.ImageRotator;
+import game.items.effects.EffectInterface;
 import visualobjects.SpriteConfigurations.SpriteAnimationConfiguration;
 import visualobjects.SpriteConfigurations.SpriteConfiguration;
 import visualobjects.Sprite;
@@ -15,7 +19,9 @@ import visualobjects.SpriteAnimation;
 import javax.sound.sampled.UnsupportedAudioFileException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class GameObject extends Sprite {
 
@@ -71,14 +77,12 @@ public class GameObject extends Sprite {
     protected String objectType;
     protected Direction movementDirection;
     protected boolean boxCollision;
+    protected long lastGameSecondDamageTaken;
 
     private int movementCounter = 0;
 
-
-//    public GameObject (int xCoordinate, int yCoordinate, float scale) {
-//        super(xCoordinate, yCoordinate, scale);
-//        this.currentLocation = new Point(xCoordinate, yCoordinate);
-//    }
+    protected CopyOnWriteArrayList<EffectInterface> effects = new CopyOnWriteArrayList<>();
+    protected List<SpriteAnimation> effectAnimations = new ArrayList<>();
 
     public GameObject (SpriteConfiguration spriteConfiguration) {
         super(spriteConfiguration);
@@ -100,10 +104,114 @@ public class GameObject extends Sprite {
         this.currentBoardBlock = BoardBlockUpdater.getBoardBlock(xCoordinate);
     }
 
+
+    //*****************EFFECTS*******************************
+    public void addEffect (EffectInterface effect) {
+        if (visible && currentHitpoints > 0) {
+            if (!effects.contains(effect)) {
+                effects.add(effect);
+            } else {
+                refreshEffect(effect);
+            }
+
+            if (effect.getAnimation() != null) {
+                boolean effectAnimationExists = false;
+                for (SpriteAnimation effectAnim : effectAnimations) {
+                    if (effectAnim.getImageType().equals(effect.getAnimation().getImageType())) {
+                        effectAnimationExists = true;
+                    }
+                }
+
+                if (!effectAnimationExists) {
+                    effectAnimations.add(effect.getAnimation());
+                    AnimationManager.getInstance().addUpperAnimation(effect.getAnimation());
+                }
+            }
+        }
+    }
+
+    private void activateOnDeathEffects () {
+        activateEffects(EffectActivationTypes.DormentExplosion);
+    }
+
+    public void updateGameObjectEffects () {
+        activateEffects(EffectActivationTypes.DamageOverTime);
+    }
+
+
+    private void activateEffects (EffectActivationTypes providedActivationType) {
+        List<EffectInterface> toRemove = new ArrayList<>();
+        for (EffectInterface effect : effects) {
+            if (effect.getEffectTypesEnums() == providedActivationType) {
+                effect.activateEffect(this);
+                if (effect.shouldBeRemoved()) {
+                    if (effect.getAnimation() != null) {
+                        effect.getAnimation().setVisible(false);
+                        if (effectAnimations.contains(effect.getAnimation())) {
+                            effectAnimations.remove(effect.getAnimation());
+                        }
+                    }
+                    toRemove.add(effect);
+                }
+            }
+        }
+
+        effects.removeAll(toRemove);
+    }
+
+    private void refreshEffect(EffectInterface effect){
+        if(effect.getEffectTypesEnums().equals(EffectActivationTypes.DamageOverTime)){
+            effect.resetDuration();
+            effect.increaseEffectStrength();
+        }
+    }
+
+    //*****************DELETION/DAMAGE*******************************
+
+    public void deleteObject () {
+        if (this.animation != null) {
+            this.animation.setVisible(false);
+        }
+
+        if (this.exhaustAnimation != null) {
+            this.exhaustAnimation.setVisible(false);
+        }
+
+        if (this.shieldDamagedAnimation != null) {
+            this.shieldDamagedAnimation.setVisible(false);
+        }
+
+        if (this.destructionAnimation != null) {
+            this.destructionAnimation.setVisible(false);
+        }
+
+        for (SpriteAnimation spriteAnimation : effectAnimations) {
+            spriteAnimation.setVisible(false);
+        }
+
+        for (GameObject object : objectsFollowingThis) {
+            object.deleteObject();
+        }
+
+        for (GameObject object : objectOrbitingThis) {
+            object.deleteObject();
+        }
+
+        this.visible = false;
+    }
+
     public void takeDamage (float damageTaken) {
         this.currentHitpoints -= damageTaken;
-        if (this.currentHitpoints <= 0) {
 
+        if(damageTaken > 0){
+            lastGameSecondDamageTaken = GameStateInfo.getInstance().getGameSeconds();
+        }
+
+        if(currentHitpoints > maxHitPoints){
+            currentHitpoints = maxHitPoints;
+        }
+
+        if (this.currentHitpoints <= 0) {
             if (this.destructionAnimation != null) {
                 this.destructionAnimation.setOriginCoordinates(this.getCenterXCoordinate(), this.getCenterYCoordinate());
                 AnimationManager.getInstance().addDestroyedExplosion(destructionAnimation);
@@ -119,10 +227,13 @@ public class GameObject extends Sprite {
                 e.printStackTrace();
             }
             this.setVisible(false);
+            activateOnDeathEffects();
         }
     }
 
 
+
+    //*****************MOVEMENT*******************************
     public void move () {
         SpriteMover.getInstance().moveSprite(this, movementConfiguration);
         moveAnimations();
@@ -138,7 +249,6 @@ public class GameObject extends Sprite {
         if (animation != null) {
             animation.setAnimationBounds(xCoordinate, yCoordinate);
         }
-
     }
 
     private void moveAnimations () {
@@ -151,6 +261,9 @@ public class GameObject extends Sprite {
 
         if (this.destructionAnimation != null) {
             moveAnimations(destructionAnimation);
+        }
+        for (SpriteAnimation spriteAnimation : effectAnimations) {
+            moveAnimations(spriteAnimation);
         }
     }
 
@@ -173,6 +286,8 @@ public class GameObject extends Sprite {
         }
     }
 
+
+    //*****************VISUAL ALTERATION*******************************
     public void rotateGameObject (Direction direction) {
         if (this.animation != null) {
             rotateGameObjectSpriteAnimations(animation, direction);
@@ -195,11 +310,12 @@ public class GameObject extends Sprite {
         }
     }
 
-    public void onCreationEffects(){
+    //*****************SPECIFIC ENEMY BEHAVIOURS*******************************
+    public void onCreationEffects () {
         //Exist to be overriden
     }
 
-    public void onDeathEffects(){
+    public void onDeathEffects () {
         //exist to be overriden
     }
 
@@ -414,9 +530,19 @@ public class GameObject extends Sprite {
     }
 
 
-
-    public boolean isBoxCollision(){
+    public boolean isBoxCollision () {
         return boxCollision;
     }
 
+    public void setBoxCollision (boolean boxCollision) {
+        this.boxCollision = boxCollision;
+    }
+
+    public long getLastGameSecondDamageTaken () {
+        return lastGameSecondDamageTaken;
+    }
+
+    public void setLastGameSecondDamageTaken (long lastGameSecondDamageTaken) {
+        this.lastGameSecondDamageTaken = lastGameSecondDamageTaken;
+    }
 }

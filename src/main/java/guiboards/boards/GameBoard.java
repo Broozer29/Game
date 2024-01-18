@@ -21,14 +21,14 @@ import javax.swing.JPanel;
 import javax.swing.Timer;
 
 import controllerInput.ConnectedControllers;
-import controllerInput.ControllerInput;
+import controllerInput.ControllerInputEnums;
 import game.UI.UIObject;
-import game.directors.DirectorManager;
+import game.spawner.directors.DirectorManager;
 import game.gamestate.SpawningMechanic;
-import game.levels.LevelManager;
+import game.spawner.LevelManager;
 import game.managers.AnimationManager;
 import game.managers.GameUIManager;
-import game.managers.ExplosionManager;
+import game.objects.neutral.ExplosionManager;
 import game.managers.OnScreenTextManager;
 import game.objects.friendlies.FriendlyObject;
 import game.objects.missiles.MissileTypeEnums;
@@ -80,6 +80,8 @@ public class GameBoard extends JPanel implements ActionListener {
     private long currentWaitingTime = 0;
     private static final long MOVE_COOLDOWN = 200;
 
+    private boolean resetManagersForNextLevel = false;
+
     private List<String> strings = Arrays.asList("U died lol", "'Get good.' - Sun Tzu", "Veni vidi vici'd",
             "Overconfidence is a slow and insidious killer");
     private int rnd = new Random().nextInt(strings.size());
@@ -95,7 +97,7 @@ public class GameBoard extends JPanel implements ActionListener {
     private BackgroundManager backgroundManager = BackgroundManager.getInstance();
     private TimerManager timerManager = TimerManager.getInstance();
     private ExplosionManager explosionManager = ExplosionManager.getInstance();
-    private FriendlyManager friendlyMover = FriendlyManager.getInstance();
+    private FriendlyManager friendlyManager = FriendlyManager.getInstance();
     private PlayerStats playerStats = PlayerStats.getInstance();
     private GameUIManager uiManager = GameUIManager.getInstance();
     private PowerUpManager powerUpManager = PowerUpManager.getInstance();
@@ -104,6 +106,7 @@ public class GameBoard extends JPanel implements ActionListener {
     private AudioPositionCalculator audioPosCalc = AudioPositionCalculator.getInstance();
 
     private ConnectedControllers controllers = ConnectedControllers.getInstance();
+
 
     public GameBoard () {
         animationManager = AnimationManager.getInstance();
@@ -115,7 +118,7 @@ public class GameBoard extends JPanel implements ActionListener {
         backgroundManager = BackgroundManager.getInstance();
         timerManager = TimerManager.getInstance();
         explosionManager = ExplosionManager.getInstance();
-        friendlyMover = FriendlyManager.getInstance();
+        friendlyManager = FriendlyManager.getInstance();
         playerStats = PlayerStats.getInstance();
         uiManager = GameUIManager.getInstance();
         powerUpManager = PowerUpManager.getInstance();
@@ -165,7 +168,7 @@ public class GameBoard extends JPanel implements ActionListener {
         backgroundManager.resetManager();
         timerManager.resetManager();
         explosionManager.resetManager();
-        friendlyMover.resetManager();
+        friendlyManager.resetManager();
         uiManager.resetManager();
         powerUpManager.resetManager();
         textManager.resetManager();
@@ -192,6 +195,29 @@ public class GameBoard extends JPanel implements ActionListener {
         }
     }
 
+    private void resetManagersForNextLevel(){
+        if(!resetManagersForNextLevel) {
+            animationManager.resetManager();
+            enemyManager.resetManager();
+            missileManager.resetManager();
+            levelManager = LevelManager.getInstance();
+            playerManager.resetSpaceshipForNextLevel();
+            audioManager.resetManager();
+            timerManager.resetManager();
+            explosionManager.resetManager();
+            friendlyManager.resetManager();
+            friendlyManager.resetPortal();
+            uiManager.resetManager();
+            powerUpManager.resetManager();
+            textManager.resetManager();
+
+            //These should probably to be refactored into osmething new
+            tempSettings = BoostsUpgradesAndBuffsSettings.getInstance();
+            playerStats.resetForNextLevel();
+            resetManagersForNextLevel = true;
+        }
+    }
+
     @Override
     public void paintComponent (Graphics g) {
         super.paintComponent(g);
@@ -204,17 +230,16 @@ public class GameBoard extends JPanel implements ActionListener {
             drawGameOver(g2d);
         } else if (gameState.getGameState() == GameStatusEnums.Transitioning_To_Next_Level) {
             drawZoningOut(g2d);
-            playerManager.resetSpaceshipForNextLevel();
-            friendlyMover.resetManagerForNextLevel();
-            powerUpManager.resetManager();
+            resetManagersForNextLevel();
             goToNextLevel();
         } else if (gameState.getGameState() == GameStatusEnums.Zoning_In) {
             drawZoningIn(g2d);
         } else if (gameState.getGameState() == GameStatusEnums.Zoning_Out) {
             drawZoningOut(g2d);
-        } else if (gameState.getGameState() == GameStatusEnums.Album_Completed) {
-            drawVictoryScreen(g2d);
         }
+//        else if (gameState.getGameState() == GameStatusEnums.Album_Completed) {
+//            drawVictoryScreen(g2d);
+//        }
 
         Toolkit.getDefaultToolkit().sync();
     }
@@ -224,6 +249,12 @@ public class GameBoard extends JPanel implements ActionListener {
             playerManager.getSpaceship().setX(DataClass.getInstance().getWindowWidth() / 10);
             playerManager.getSpaceship().setY(DataClass.getInstance().getWindowHeight() / 2);
             gameState.setGameState(GameStatusEnums.Zoning_In);
+            gameState.setStagesCompleted(gameState.getStagesCompleted() + 1);
+            backgroundManager.resetManager();
+
+            zoningInAlpha = 1;
+            zoningOutAlpha = 0;
+            resetManagersForNextLevel = false;
         }
     }
 
@@ -327,7 +358,7 @@ public class GameBoard extends JPanel implements ActionListener {
             }
         }
 
-        for (FriendlyObject friendly : friendlyMover.getFriendlyObjects()) {
+        for (FriendlyObject friendly : friendlyManager.getFriendlyObjects()) {
             if (friendly.isVisible()) {
                 drawAnimation(g, friendly.getAnimation());
             }
@@ -370,10 +401,10 @@ public class GameBoard extends JPanel implements ActionListener {
         g.setColor(Color.WHITE);
         g.drawString("Enemies left: " + enemyManager.getEnemyCount(), 5, 15);
 
-        g.drawString("Music time: " + gameState.getMusicSeconds(), 100, 15);
-        if (audioManager.getBackgroundMusic() != null) {
-            g.drawString("Music frame: " + audioManager.getBackgroundMusic().getFramePosition(), 300, 15);
-        }
+        g.drawString("Music time: " + gameState.getMusicSeconds(), 130, 15);
+
+        g.drawString("Difficulty coeff: " + gameState.getDifficultyCoefficient(), 250, 15);
+        g.drawString("Current stage: " + gameState.getStagesCompleted(), 250, 30);
     }
 
     private void drawText (Graphics2D g, OnScreenText text) {
@@ -504,13 +535,6 @@ public class GameBoard extends JPanel implements ActionListener {
             if (this.zoningInAlpha <= 0.05) {
                 levelManager.startLevel();
                 zoningInAlpha = 1.0f;
-
-                System.out.println("Skipping time in the level on on GameBoard 517");
-//				int seconds = 300;
-//				long framePosition = AudioPositionCalculator.getInstance()
-//						.getFrameLengthForTime(audioManager.getBackgroundMusic().getClip(), seconds);
-//				audioManager.getBackgroundMusic().setFramePosition((int) framePosition);
-
             }
         }
 
@@ -534,15 +558,14 @@ public class GameBoard extends JPanel implements ActionListener {
             timerManager.updateGameTick(gameState.getMusicSeconds());
             audioDatabase.updateGameTick();
             explosionManager.updateGametick();
-            friendlyMover.updateGameTick();
+            friendlyManager.updateGameTick();
             powerUpManager.updateGameTick();
             gameState.addGameTicks(1);
             DirectorManager.getInstance().updateGameTick();
             executeControllerInput();
         }
 
-        if (gameState.getGameState() == GameStatusEnums.Album_Completed ||
-                gameState.getGameState() == GameStatusEnums.Dead) {
+        if (gameState.getGameState() == GameStatusEnums.Dead) {
             currentWaitingTime++;
         }
 
@@ -566,8 +589,7 @@ public class GameBoard extends JPanel implements ActionListener {
 
         @Override
         public void keyPressed (KeyEvent e) {
-            if (gameState.getGameState() == GameStatusEnums.Dead
-                    || gameState.getGameState() == GameStatusEnums.Album_Completed) {
+            if (gameState.getGameState() == GameStatusEnums.Dead) {
                 if (currentWaitingTime >= MOVE_COOLDOWN) {
                     boardManager.gameToMainMenu();
                     drawTimer.stop();
@@ -580,15 +602,14 @@ public class GameBoard extends JPanel implements ActionListener {
 
     public void executeControllerInput () {
         if (controllers.getFirstController() != null) {
-            if (gameState.getGameState() == GameStatusEnums.Dead
-                    || gameState.getGameState() == GameStatusEnums.Album_Completed) {
+            if (gameState.getGameState() == GameStatusEnums.Dead) {
                 controllers.getFirstController().pollController();
-                if (controllers.getFirstController().isInputActive(ControllerInput.FIRE)) {
+                if (controllers.getFirstController().isInputActive(ControllerInputEnums.FIRE)) {
                     boardManager.gameToMainMenu();
                     drawTimer.stop();
                 }
 
-            } else {
+            } else{
                 playerManager.getSpaceship().update(controllers.getFirstController());
             }
         }

@@ -4,6 +4,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
+import com.badlogic.gdx.Game;
 import game.movement.BoardBlockUpdater;
 import game.movement.MovementConfiguration;
 import game.movement.Point;
@@ -11,6 +12,7 @@ import game.movement.pathfinders.PathFinder;
 import game.objects.GameObject;
 import game.objects.enemies.enums.EnemyEnums;
 import game.objects.missiles.MissileManager;
+import visualobjects.SpriteAnimation;
 import visualobjects.SpriteConfigurations.SpriteAnimationConfiguration;
 import visualobjects.SpriteConfigurations.SpriteConfiguration;
 
@@ -105,5 +107,42 @@ public class Enemy extends GameObject {
     public void onDeathEffects(){
         //exist to be overriden
     }
+
+    public void deleteObject(){
+        if(this.animation != null){
+            this.animation.setVisible(false);
+        }
+
+        if(this.exhaustAnimation != null){
+            this.exhaustAnimation.setVisible(false);
+        }
+
+        if(this.shieldDamagedAnimation != null){
+            this.shieldDamagedAnimation.setVisible(false);
+        }
+
+        if(this.destructionAnimation != null){
+            this.destructionAnimation.setVisible(false);
+        }
+
+        for (GameObject object : objectsFollowingThis){
+            object.deleteObject();
+        }
+
+        for(GameObject object : objectOrbitingThis){
+            object.deleteObject();
+        }
+
+        for (Enemy enemy : followingEnemies){
+            enemy.deleteObject();
+        }
+
+        for(SpriteAnimation spriteAnimation : effectAnimations){
+            spriteAnimation.setVisible(false);
+        }
+
+        this.visible = false;
+    }
+
 
 }

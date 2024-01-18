@@ -33,6 +33,11 @@ public class BackgroundManager {
         return instance;
     }
 
+    public void resetManager () {
+        backgroundObjectsMap.clear();
+        initManager();
+    }
+
     private void initManager () {
         this.spaceTheme = SpaceThemeEnums.selectRandomSpaceTheme();
         initSpaceTheme();
@@ -60,15 +65,13 @@ public class BackgroundManager {
         ImageEnums nebula = getNebulaImage(this.nebulaTheme);
         fillBGOList(BGOEnums.Nebula, nebula, 1, 5, 4, 5);
         fillBGOList(BGOEnums.Planet, getRandomPlanetEnum(), (float) 0.4, 3, 3, 5);
-        fillBGOList(BGOEnums.Star, ImageEnums.Star, (float) 0.5, 80, 3, 250);
+        fillBGOList(BGOEnums.Star, ImageEnums.Star, (float) 1, 60, 3, 250);
 
         fillBGOList(BGOEnums.Planet, getRandomPlanetEnum(), (float) 0.6, 3, 2, 5);
-        fillBGOList(BGOEnums.Star, ImageEnums.Star, (float) 0.75, 80, 2, 250);
+        fillBGOList(BGOEnums.Star, ImageEnums.Star, (float) 0.75, 60, 2, 250);
 
         fillBGOList(BGOEnums.Planet, getRandomPlanetEnum(), (float) 0.8, 3, 1, 5);
-        fillBGOList(BGOEnums.Star, ImageEnums.Star, 1, 80, 1, 250);
-
-
+        fillBGOList(BGOEnums.Star, ImageEnums.Star, 0.5f, 60, 1, 250);
     }
 
     private void fillBGOList (BGOEnums bgoType, ImageEnums imageType, float scale, int amount, int depthLevel, int maxTries) {
@@ -85,7 +88,7 @@ public class BackgroundManager {
 
         int bgoSpawned = 0;
         int tries = 0;
-        while (listToFill.size() < amount && tries < maxTries) {
+        while (sizeOfDepthLevel(listToFill, depthLevel) < amount && tries < maxTries) {
             BackgroundObject bgo = createBackgroundObject(bgoType, imageType, bgoImage, scale, depthLevel, listToFill, bgoSpawned);
             if (bgo != null) {
                 listToFill.add(bgo);
@@ -93,6 +96,16 @@ public class BackgroundManager {
             }
             tries++;
         }
+    }
+
+    private int sizeOfDepthLevel (List<BackgroundObject> list, int depthLevel) {
+        int count = 0;
+        for (BackgroundObject obj : list) {
+            if (obj.getDepthLevel() == depthLevel) {
+                count++;
+            }
+        }
+        return count;
     }
 
     private BackgroundObject createBackgroundObject (BGOEnums bgoType, ImageEnums imageType, BufferedImage bgoImage, float scale, int depthLevel, List<BackgroundObject> existingObjects, int bgoSpawned) {
@@ -125,7 +138,6 @@ public class BackgroundManager {
     }
 
 
-
     private List<BackgroundObject> filterByDepthLevel (List<BackgroundObject> existingObjects, int depthLevel) {
         List<BackgroundObject> filteredList = new ArrayList<>();
         for (BackgroundObject obj : existingObjects) {
@@ -142,34 +154,39 @@ public class BackgroundManager {
         int intervalLevel3 = 2; // Fastest movement for depth level 1
         int intervalLevel4 = 6; // Slowest movement for Nebula level (4)
 
-        backgroundObjectsMap.values().stream()
-                .flatMap(List::stream)
-                .forEach(bgObject -> {
-                    int moveInterval = 2;
-                    switch (bgObject.getDepthLevel()) {
-                        case 1:
-                            moveInterval = intervalLevel1;
-                            break;
-                        case 2:
-                            moveInterval = intervalLevel2;
-                            break;
-                        case 3:
-                            moveInterval = intervalLevel3;
-                            break;
-                        case 4:
-                            moveInterval = intervalLevel4;
-                            break;
-                    }
+        for (Map.Entry<BGOEnums, List<BackgroundObject>> entry : backgroundObjectsMap.entrySet()) {
+            List<BackgroundObject> bgObjects = entry.getValue();
+            for (BackgroundObject bgObject : bgObjects) {
+                int moveInterval;
+                switch (bgObject.getDepthLevel()) {
+                    case 1:
+                        moveInterval = intervalLevel1;
+                        break;
+                    case 2:
+                        moveInterval = intervalLevel2;
+                        break;
+                    case 3:
+                        moveInterval = intervalLevel3;
+                        break;
+                    case 4:
+                        moveInterval = intervalLevel4;
+                        break;
+                    default:
+                        moveInterval = 2; // Default interval, you can adjust this
+                        break;
+                }
 
-                    if (updateFrameCounter % moveInterval == 0) {
-                        moveBackgroundObject(bgObject);
-                    }
-                });
+                if (updateFrameCounter % moveInterval == 0) {
+                    moveBackgroundObject(bgObject);
+                }
+            }
+        }
 
         if (updateFrameCounter > intervalLevel4) {
             updateFrameCounter = 0;
+        } else {
+            updateFrameCounter++;
         }
-        updateFrameCounter++;
     }
 
     private void moveBackgroundObject (BackgroundObject bgObject) {
@@ -194,7 +211,6 @@ public class BackgroundManager {
         }
         bgObject.setX(bgObject.getXCoordinate() - 1); // Adjust this value as needed for speed
     }
-
 
 
     private ImageEnums getNebulaImage (NebulaThemeEnums nebulaTheme) {
@@ -266,15 +282,8 @@ public class BackgroundManager {
         return allObjects;
     }
 
-    public void resetManager () {
-        backgroundObjectsMap.clear();
-        this.spaceTheme = SpaceThemeEnums.selectRandomSpaceTheme();
-        initSpaceTheme();
-        this.nebulaTheme = NebulaThemeEnums.selectRandomNebulaScene();
-        initBackgroundObjects();
-    }
 
-    private SpriteConfiguration createSpriteConfiguration(int xCoordinate, int yCoordinate, ImageEnums imageType, float scale){
+    private SpriteConfiguration createSpriteConfiguration (int xCoordinate, int yCoordinate, ImageEnums imageType, float scale) {
         SpriteConfiguration newConfig = new SpriteConfiguration();
         newConfig.setxCoordinate(xCoordinate);
         newConfig.setyCoordinate(yCoordinate);
@@ -283,7 +292,7 @@ public class BackgroundManager {
         return newConfig;
     }
 
-    private BackgroundObjectConfiguration createBGOConfiguration(int depthLevel, BGOEnums bgoType){
+    private BackgroundObjectConfiguration createBGOConfiguration (int depthLevel, BGOEnums bgoType) {
         return new BackgroundObjectConfiguration(depthLevel, bgoType);
     }
 }

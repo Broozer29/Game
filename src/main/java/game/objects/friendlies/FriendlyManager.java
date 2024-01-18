@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import game.managers.AnimationManager;
-import game.managers.CollisionDetector;
+import game.util.CollisionDetector;
 import game.objects.player.PlayerManager;
 import game.objects.enemies.Enemy;
 import game.objects.enemies.EnemyManager;
@@ -32,14 +32,41 @@ public class FriendlyManager {
     }
 
     public void updateGameTick () {
-        cycleActiveFriendlyObjects();
+        activateFriendlyObjects();
         checkFriendlyObjectCollision();
         moveFriendlyObjects();
+        removeInvisibleObjects();
         spawnFinishedLevelPortal();
+    }
+
+    public void resetManager () {
+        for (FriendlyObject friendlyObject : friendlyObjects) {
+            if (!friendlyObject.isPermanentFriendlyObject()) {
+                friendlyObject.setVisible(false);
+            }
+        }
+
+        removeInvisibleObjects();
+        friendlyObjects = new ArrayList<FriendlyObject>();
+
+        initPortal();
+    }
+
+    //Unused but can be used to remove permanent objects that resetManager does not clear.
+    public void clearPermanentAndOtherObjects(){
+        for (FriendlyObject friendlyObject : friendlyObjects) {
+                friendlyObject.setVisible(false);
+        }
+
+        removeInvisibleObjects();
+        friendlyObjects = new ArrayList<FriendlyObject>();
     }
 
     private void spawnFinishedLevelPortal () {
         if (gameState.getGameState() == GameStatusEnums.Level_Finished && finishedLevelPortal.getSpawned() == false) {
+            if (finishedLevelPortal == null) {
+                initPortal();
+            }
             finishedLevelPortal.setSpawned(true);
             finishedLevelPortal.setVisible(true);
             finishedLevelPortal.setTransparancyAlpha(true, 0.0f, 0.01f);
@@ -51,15 +78,24 @@ public class FriendlyManager {
         for (FriendlyObject drone : friendlyObjects) {
             if (drone.getAnimation().isVisible()) {
                 drone.move();
+                drone.updateGameObjectEffects();
             }
         }
     }
 
-    private void cycleActiveFriendlyObjects () {
-        friendlyObjects.removeIf(friendlyObject -> !friendlyObject.getAnimation().isVisible());
-
+    private void activateFriendlyObjects () {
         for (FriendlyObject object : friendlyObjects) {
             object.activateObjectAction();
+        }
+    }
+
+    private void removeInvisibleObjects () {
+        for (int i = 0; i < friendlyObjects.size(); i++) {
+            if (!friendlyObjects.get(i).isVisible()) {
+                friendlyObjects.get(i).deleteObject();
+                friendlyObjects.remove(i);
+                i--;
+            }
         }
     }
 
@@ -141,8 +177,8 @@ public class FriendlyManager {
 //        addActiveFriendlyObject(friendlyObject);
 //    }
 
-    public void addFriendlyObject(FriendlyObject friendlyObject){
-        if(!this.friendlyObjects.contains(friendlyObject)){
+    public void addFriendlyObject (FriendlyObject friendlyObject) {
+        if (!this.friendlyObjects.contains(friendlyObject)) {
             this.friendlyObjects.add(friendlyObject);
         }
     }
@@ -151,13 +187,9 @@ public class FriendlyManager {
         return this.friendlyObjects;
     }
 
-    public void resetManager () {
-        friendlyObjects = new ArrayList<FriendlyObject>();
-        initPortal();
-    }
 
-    public void resetManagerForNextLevel () {
-        friendlyObjects = new ArrayList<FriendlyObject>();
+    public void resetPortal () {
+        initPortal();
     }
 
     private void initPortal () {

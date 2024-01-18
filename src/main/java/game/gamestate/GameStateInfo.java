@@ -20,6 +20,8 @@ public class GameStateInfo {
     private float musicSeconds = 0;
     private float maxMusicSeconds = 0;
 
+    private float difficultyCoefficient;
+
     private GameStateInfo () {
         initializeGame();
     }
@@ -109,5 +111,20 @@ public class GameStateInfo {
 
     public void setStagesCompleted (int stagesCompleted) {
         this.stagesCompleted = stagesCompleted;
+    }
+
+    public float getDifficultyCoefficient () {
+        return difficultyCoefficient;
+    }
+
+    public void updateDifficultyCoefficient() {
+        float playerFactor = 1;
+        float timeFactor = 0.0506f; // The factor for time, increase value to increase difficulty scaling
+        float difficultyValue = 1; // This can be a static value or change based on game settings
+        float stageFactor = (float) Math.pow(1.15, stagesCompleted); // Exponential growth for each stage completed
+
+        float timeInMinutes = gameSeconds / 60.0f; // Convert seconds to minutes
+
+        difficultyCoefficient = (playerFactor + timeInMinutes * timeFactor) * stageFactor;
     }
 }

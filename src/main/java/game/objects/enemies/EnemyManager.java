@@ -7,7 +7,7 @@ import java.util.List;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
 import game.managers.AnimationManager;
-import game.managers.CollisionDetector;
+import game.util.CollisionDetector;
 import game.objects.player.PlayerManager;
 import game.objects.enemies.enemytypes.AlienBomb;
 import game.objects.player.spaceship.SpaceShip;
@@ -32,6 +32,18 @@ public class EnemyManager {
     }
 
     public void resetManager () {
+        for(Enemy enemy : enemyList){
+            enemy.setVisible(false);
+        }
+
+        try {
+            updateEnemies();
+        } catch (UnsupportedAudioFileException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
         enemyList = new ArrayList<Enemy>();
         friendlyManager = PlayerManager.getInstance();
         dataClass = DataClass.getInstance();
@@ -54,9 +66,9 @@ public class EnemyManager {
             if (CollisionDetector.getInstance().detectCollision(enemy, spaceship)) {
                 if (enemy instanceof AlienBomb) {
                     detonateAlienBomb(enemy);
-                    spaceship.takeHitpointDamage(20);
+                    spaceship.takeDamage(20);
                 } else {
-                    spaceship.takeHitpointDamage(1);
+                    spaceship.takeDamage(1);
                 }
             }
         }
@@ -79,9 +91,9 @@ public class EnemyManager {
         for (int i = 0; i < enemyList.size(); i++) {
             if (enemyList.get(i).isVisible()) {
                 enemyList.get(i).move();
+                enemyList.get(i).updateGameObjectEffects();
             } else {
-                enemyList.get(i).takeDamage(9999999);
-                animationManager.deleteEnemyAnimations(enemyList.get(i));
+                enemyList.get(i).deleteObject();
                 enemyList.remove(i);
                 i--;
             }

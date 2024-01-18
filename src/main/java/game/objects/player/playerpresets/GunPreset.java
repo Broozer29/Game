@@ -30,7 +30,6 @@ public class GunPreset {
 		PlayerStats.getInstance().setAttackSpeed(15);
 		PlayerStats.getInstance().setAttackDamage(50);
 		PlayerStats.getInstance().setAttackType(MissileTypeEnums.Rocket1);
-		PlayerStats.getInstance().setMissilePathFinder(new RegularPathFinder());
 		PlayerStats.getInstance().setPlayerMissileType(ImageEnums.Rocket_1);
 		PlayerStats.getInstance().setPlayerMissileImpactType(ImageEnums.Rocket_1_Explosion);
 		PlayerStats.getInstance().setMissileScale(1);
@@ -42,7 +41,6 @@ public class GunPreset {
 		PlayerStats.getInstance().setAttackSpeed(15);
 		PlayerStats.getInstance().setAttackDamage(25);
 		PlayerStats.getInstance().setAttackType(MissileTypeEnums.DefaultPlayerLaserbeam);
-		PlayerStats.getInstance().setMissilePathFinder(new RegularPathFinder());
 		PlayerStats.getInstance().setPlayerMissileType(ImageEnums.Player_Laserbeam);
 		PlayerStats.getInstance().setPlayerMissileImpactType(ImageEnums.Impact_Explosion_One);
 		PlayerStats.getInstance().setMissileScale(1);
