@@ -201,7 +201,7 @@ public class GameBoard extends JPanel implements ActionListener {
             enemyManager.resetManager();
             missileManager.resetManager();
             levelManager = LevelManager.getInstance();
-            playerManager.resetSpaceshipForNextLevel();
+            playerManager.resetManager();
             audioManager.resetManager();
             timerManager.resetManager();
             explosionManager.resetManager();
@@ -213,7 +213,6 @@ public class GameBoard extends JPanel implements ActionListener {
 
             //These should probably to be refactored into osmething new
             tempSettings = BoostsUpgradesAndBuffsSettings.getInstance();
-            playerStats.resetForNextLevel();
             resetManagersForNextLevel = true;
         }
     }
@@ -393,7 +392,7 @@ public class GameBoard extends JPanel implements ActionListener {
             drawAnimation(g, animation);
         }
 
-        for (OnScreenText text : textManager.getPowerUpTexts()) {
+        for (OnScreenText text : textManager.getOnScreenTexts()) {
             drawText(g, text);
         }
 
@@ -405,6 +404,9 @@ public class GameBoard extends JPanel implements ActionListener {
 
         g.drawString("Difficulty coeff: " + gameState.getDifficultyCoefficient(), 250, 15);
         g.drawString("Current stage: " + gameState.getStagesCompleted(), 250, 30);
+
+        g.drawString("Enemies spawned: " + levelManager.getEnemiesSpawned(), 550, 15);
+        g.drawString("Enemies killed: " + levelManager.getEnemiesKilled(), 550, 30);
     }
 
     private void drawText (Graphics2D g, OnScreenText text) {
@@ -470,7 +472,7 @@ public class GameBoard extends JPanel implements ActionListener {
     }
 
     private void drawPlayerHealthBars (Graphics2D g) {
-        float playerHealth = playerStats.getHitpoints();
+        float playerHealth = playerManager.getSpaceship().getCurrentHitpoints();
         float playerMaxHealth = playerStats.getMaxHitPoints();
 
         UIObject healthBar = uiManager.getHealthBar();
@@ -481,7 +483,7 @@ public class GameBoard extends JPanel implements ActionListener {
         UIObject healthFrame = uiManager.getHealthFrame();
         drawImage(g, healthFrame);
 
-        float playerShields = playerStats.getShieldHitpoints();
+        float playerShields = playerManager.getSpaceship().getCurrentShieldPoints();
         float playerMaxShields = playerStats.getMaxShieldHitPoints();
 
         UIObject shieldBar = uiManager.getShieldBar();
@@ -494,15 +496,16 @@ public class GameBoard extends JPanel implements ActionListener {
         drawImage(g, shieldFrame);
     }
 
-    private void drawSpecialAttackFrame (Graphics2D g) {
-        drawImage(g, uiManager.getSpecialAttackFrame());
 
+    private void drawSpecialAttackFrame(Graphics2D g) {
+        drawImage(g, uiManager.getSpecialAttackFrame());
         for (SpaceShipSpecialGun gun : playerManager.getSpaceship().getSpecialGuns()) {
-            if (gun.getCurrentSpecialAttackFrame() >= playerStats.getSpecialAttackSpeed()) {
+            int charges = gun.getSpecialAttackCharges();
+            if (charges > 0) {
                 drawAnimation(g, uiManager.getSpecialAttackHighlight());
             } else {
+                // Only draw the charging rectangle if there are no charges
                 float percentage = (float) gun.getCurrentSpecialAttackFrame() / playerStats.getSpecialAttackSpeed();
-
                 int barWidth = (int) (uiManager.getSpecialAttackFrame().getWidth() * percentage);
 
                 // Draw the cooldown progress bar
@@ -511,9 +514,39 @@ public class GameBoard extends JPanel implements ActionListener {
                         uiManager.getSpecialAttackFrame().getYCoordinate(), barWidth,
                         uiManager.getSpecialAttackFrame().getHeight());
             }
-        }
 
+            if (charges > 1) {
+                g.setColor(Color.green);
+                g.drawString(String.valueOf(charges),
+                        uiManager.getSpecialAttackFrame().getXCoordinate() + uiManager.getSpecialAttackFrame().getWidth() - 20,
+                        uiManager.getSpecialAttackFrame().getYCoordinate() + uiManager.getSpecialAttackFrame().getHeight() - 10
+                );
+
+            }
+        }
     }
+
+
+//    private void drawSpecialAttackFrame (Graphics2D g) {
+//        drawImage(g, uiManager.getSpecialAttackFrame());
+//
+//        for (SpaceShipSpecialGun gun : playerManager.getSpaceship().getSpecialGuns()) {
+//            if (gun.getCurrentSpecialAttackFrame() >= playerStats.getSpecialAttackSpeed()) {
+//                drawAnimation(g, uiManager.getSpecialAttackHighlight());
+//            } else {
+//                float percentage = (float) gun.getCurrentSpecialAttackFrame() / playerStats.getSpecialAttackSpeed();
+//
+//                int barWidth = (int) (uiManager.getSpecialAttackFrame().getWidth() * percentage);
+//
+//                // Draw the cooldown progress bar
+//                g.setColor(new Color(160, 160, 160, 160)); // Semi-transparent gray
+//                g.fillRect(uiManager.getSpecialAttackFrame().getXCoordinate(),
+//                        uiManager.getSpecialAttackFrame().getYCoordinate(), barWidth,
+//                        uiManager.getSpecialAttackFrame().getHeight());
+//            }
+//        }
+//
+//    }
 
     public int calculateHealthbarWidth (float currentHitpoints, float maximumHitpoints, int healthBarSize) {
         // Calculate the percentage of currentHitpoints out of maximumHitpoints

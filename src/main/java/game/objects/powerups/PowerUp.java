@@ -58,7 +58,7 @@ public class PowerUp extends GameObject {
 
         OnScreenText text = new OnScreenText(xCoordinate, yCoordinate, powerUpType);
         OnScreenTextManager textManager = OnScreenTextManager.getInstance();
-        textManager.addPowerUpText(text);
+        textManager.addText(text);
 
     }
 

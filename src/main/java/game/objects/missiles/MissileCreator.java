@@ -47,6 +47,9 @@ public class MissileCreator {
 			case FirewallMissile -> {
 				return new FirewallMissile(upgradeConfig(spriteConfiguration, 2, true),missileConfiguration);
 			}
+			case Rocket1 -> {
+				return new Rocket1(upgradeConfig(spriteConfiguration, 2, true), missileConfiguration);
+			}
 		}
 		return null;
 	}

@@ -12,7 +12,7 @@ public class GameStateInfo {
 
     private int DELAY = 0;
 
-    private long gameSeconds;
+    private double gameSeconds;
     private int stagesCompleted;
 
     private long gameTicksExecuted;
@@ -76,7 +76,7 @@ public class GameStateInfo {
         return this.maxMusicSeconds;
     }
 
-    public long getGameSeconds () {
+    public double getGameSeconds () {
         return gameSeconds;
     }
 
@@ -94,7 +94,7 @@ public class GameStateInfo {
     }
 
     private void updateGameTimeByExecutedGameTicks() {
-        this.gameSeconds = ((gameTicksExecuted * getDELAY()) / 1000);
+        this.gameSeconds = (double)(gameTicksExecuted * getDELAY()) / 1000.0;
     }
 
     public SpawningMechanic getSpawningMechanic () {
@@ -123,8 +123,8 @@ public class GameStateInfo {
         float difficultyValue = 1; // This can be a static value or change based on game settings
         float stageFactor = (float) Math.pow(1.15, stagesCompleted); // Exponential growth for each stage completed
 
-        float timeInMinutes = gameSeconds / 60.0f; // Convert seconds to minutes
+        double timeInMinutes = gameSeconds / 60.0f; // Convert seconds to minutes
 
-        difficultyCoefficient = (playerFactor + timeInMinutes * timeFactor) * stageFactor;
+        difficultyCoefficient = (float) ((playerFactor + timeInMinutes * timeFactor) * stageFactor);
     }
 }

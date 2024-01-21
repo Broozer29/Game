@@ -17,6 +17,13 @@ public class OnScreenText {
 		this.transparencyValue = 1;
 		getTextByPowerUpType();
 	}
+
+	public OnScreenText(int xCoordinate, int yCoordinate, String message){
+		this.xCoordinate = xCoordinate;
+		this.yCoordinate = yCoordinate;
+		this.transparencyValue = 1;
+		this.text = message;
+	}
 	
 	
 	private void getTextByPowerUpType() {

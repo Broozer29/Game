@@ -72,7 +72,7 @@ public class CustomAudioClip {
 		    FloatControl volume = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
 			switch (clipType) {
 			case Player_Laserbeam:
-				volume.setValue(-4);
+				volume.setValue(-7);
 				break;
 			case Large_Ship_Destroyed:
 				volume.setValue(-4);

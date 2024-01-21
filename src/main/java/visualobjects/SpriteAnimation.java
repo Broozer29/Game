@@ -13,7 +13,7 @@ import VisualAndAudioData.image.ImageEnums;
 import VisualAndAudioData.image.ImageResizer;
 import VisualAndAudioData.image.ImageRotator;
 
-public class SpriteAnimation extends Sprite {
+public class SpriteAnimation extends Sprite implements Cloneable{
 
 	ImageResizer imageResizer = ImageResizer.getInstance();
 	private int currentFrame;
@@ -28,16 +28,6 @@ public class SpriteAnimation extends Sprite {
 
 	private int originXCoordinate;
 	private int originYCoordinate;
-
-//	public SpriteAnimation(int x, int y, ImageEnums imageType, boolean infiniteLoop, float scale) {
-//		super(x, y, scale);
-//		loadGifFrames(imageType);
-//		this.initAnimation();
-//		this.frameDelayCounter = 0;
-//		this.infiniteLoop = infiniteLoop;
-//		setAnimationScale(scale);
-//		animationBounds = new Rectangle(xCoordinate, yCoordinate, this.width, this.height);
-//	}
 
 
 	public SpriteAnimation(SpriteAnimationConfiguration spriteAnimationConfiguration){
@@ -102,9 +92,7 @@ public class SpriteAnimation extends Sprite {
 	}
 
 	// Required for the engine to refresh itself
-	public void refreshAnimation(int xCoordinate, int yCoordinate) {
-		this.xCoordinate = xCoordinate;
-		this.yCoordinate = yCoordinate;
+	public void refreshAnimation() {
 		this.currentFrame = 0;
 		this.frameDelayCounter = 0;
 		this.setVisible(true);
@@ -115,7 +103,7 @@ public class SpriteAnimation extends Sprite {
 		if (increaseAnimationFrame) {
 			if (currentFrame >= frames.size()) {
 				if (infiniteLoop) {
-					refreshAnimation(this.xCoordinate, this.yCoordinate);
+					refreshAnimation();
 				} else {
 					removeAnimation();
 				}
@@ -234,6 +222,56 @@ public class SpriteAnimation extends Sprite {
 		ImageCropper imageCropper = ImageCropper.getInstance();
 		for (int i = 0; i < frames.size(); i++) {
 			frames.set(i, imageCropper.cropToContent(frames.get(i)));
+		}
+	}
+
+
+	@Override
+	public String toString () {
+		return "SpriteAnimation{" +
+				"imageResizer=" + imageResizer +
+				", currentFrame=" + currentFrame +
+				", totalFrames=" + totalFrames +
+				", standardSizeFrames=" + standardSizeFrames +
+				", frames=" + frames +
+				", frameDelayCounter=" + frameDelayCounter +
+				", frameDelay=" + frameDelay +
+				", infiniteLoop=" + infiniteLoop +
+				", animationBounds=" + animationBounds +
+				", originXCoordinate=" + originXCoordinate +
+				", originYCoordinate=" + originYCoordinate +
+				", width=" + width +
+				", height=" + height +
+				", visible=" + visible +
+				", image=" + image +
+				", imageType=" + imageType +
+				'}';
+	}
+
+	@Override
+	public SpriteAnimation clone() {
+		try {
+			SpriteAnimation cloned = (SpriteAnimation) super.clone();
+
+			// Load frames from the ImageDatabase
+			cloned.loadGifFrames(this.imageType);
+
+			// Copy other properties
+			cloned.currentFrame = this.currentFrame;
+			cloned.totalFrames = this.totalFrames;
+			cloned.frameDelayCounter = this.frameDelayCounter;
+			cloned.frameDelay = this.frameDelay;
+			cloned.infiniteLoop = this.infiniteLoop;
+			cloned.animationBounds = new Rectangle(this.animationBounds);
+			cloned.originXCoordinate = this.originXCoordinate;
+			cloned.originYCoordinate = this.originYCoordinate;
+
+			// Re-initialize the animation
+			cloned.initAnimation();
+
+			return cloned;
+		} catch (CloneNotSupportedException e) {
+			throw new AssertionError(); // Can never happen
 		}
 	}
 

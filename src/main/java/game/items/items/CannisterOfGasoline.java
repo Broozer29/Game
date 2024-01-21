@@ -35,7 +35,7 @@ public class CannisterOfGasoline extends Item {
     }
 
     private float calculateBurningDamage (int quantity) {
-        return quantity;
+        return quantity / 2f;
     }
 
     private float calculateExplosionDamage (int quantity) {
@@ -43,13 +43,13 @@ public class CannisterOfGasoline extends Item {
     }
 
     private int calculateDuration (int quantity) {
-        return quantity * 5;
+        return quantity * 2;
     }
 
 
     @Override
     public void applyEffectToObject (GameObject gameObject) {
-        DormentExplosion dormentExplosion = new DormentExplosion(explosionDamage, 2, ImageEnums.Rocket_1_Explosion);
+        DormentExplosion dormentExplosion = new DormentExplosion(explosionDamage, 1, ImageEnums.GasolineExplosion);
         dormentExplosion.setBurningDamage(burningDamage);
         dormentExplosion.setBurningDuration(duration);
         gameObject.addEffect(dormentExplosion);

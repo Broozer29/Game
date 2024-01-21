@@ -22,13 +22,11 @@ public class Bomba extends Enemy {
 	public Bomba(SpriteConfiguration spriteConfiguration, EnemyConfiguration enemyConfiguration) {
 		super(spriteConfiguration, enemyConfiguration);
 
-		//The correct imageenum can be gotten from a method in enemyenums like the BGO enum method
-		//Below is sloppy and temporary
-		SpriteAnimationConfiguration exhaustConfiguration = new SpriteAnimationConfiguration(spriteConfiguration, 0, true);
+		SpriteAnimationConfiguration exhaustConfiguration = new SpriteAnimationConfiguration(spriteConfiguration, 2, true);
 		exhaustConfiguration.getSpriteConfiguration().setImageType(ImageEnums.Bomba_Normal_Exhaust);
 		this.exhaustAnimation = new SpriteAnimation(exhaustConfiguration);
 
-		SpriteAnimationConfiguration destroyedExplosionfiguration = new SpriteAnimationConfiguration(spriteConfiguration, 1, false);
+		SpriteAnimationConfiguration destroyedExplosionfiguration = new SpriteAnimationConfiguration(spriteConfiguration, 3, false);
 		destroyedExplosionfiguration.getSpriteConfiguration().setImageType(ImageEnums.Bomba_Destroyed_Explosion);
 		this.destructionAnimation = new SpriteAnimation(destroyedExplosionfiguration);
 
@@ -63,7 +61,7 @@ public class Bomba extends Enemy {
 
 
 				Missile newMissile = MissileCreator.getInstance().createMissile(missileSpriteConfiguration, missileConfiguration);
-				
+				newMissile.setOwnerOrCreator(this);
 				
 				if(missileDirections.contains(Direction.DOWN)) {
 					newMissile.rotateGameObject(Direction.DOWN);

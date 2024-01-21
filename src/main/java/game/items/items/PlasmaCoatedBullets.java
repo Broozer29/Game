@@ -14,7 +14,7 @@ import visualobjects.SpriteConfigurations.SpriteConfiguration;
 public class PlasmaCoatedBullets extends Item {
 
     private float burningDamage;
-    private int duration;
+    private double duration;
 
     public PlasmaCoatedBullets () {
         super(ItemEnums.PlasmaCoatedBullets, 1, EffectActivationTypes.DamageOverTime, ItemApplicationEnum.AfterCollision);
@@ -33,24 +33,23 @@ public class PlasmaCoatedBullets extends Item {
     }
 
     private void calculateDuration () {
-        this.duration = (3 * quantity) / 2;
+        this.duration = (double) (4 * quantity) / 2;
     }
 
     @Override
     public void applyEffectToObject (GameObject gameObject) {
-        DamageOverTime burningEffect = new DamageOverTime(burningDamage, duration);
+
         SpriteConfiguration spriteConfiguration = new SpriteConfiguration();
         spriteConfiguration.setxCoordinate(gameObject.getXCoordinate());
         spriteConfiguration.setyCoordinate(gameObject.getYCoordinate());
         spriteConfiguration.setScale(gameObject.getScale() / 2);
         spriteConfiguration.setImageType(ImageEnums.PlasmaCoatedDebuff);
 
-        SpriteAnimationConfiguration spriteAnimationConfiguration = new SpriteAnimationConfiguration(spriteConfiguration, 5, true);
+        SpriteAnimationConfiguration spriteAnimationConfiguration = new SpriteAnimationConfiguration(spriteConfiguration, 3, true);
         SpriteAnimation spriteAnimation = new SpriteAnimation(spriteAnimationConfiguration);
 
-        burningEffect.setAnimation(spriteAnimation);
-        burningEffect.getAnimation().setCenterCoordinates(gameObject.getCenterXCoordinate(), gameObject.getCenterYCoordinate());
-
+        DamageOverTime burningEffect = new DamageOverTime(burningDamage, duration, spriteAnimation);
+//        burningEffect.getAnimation().setCenterCoordinates(gameObject.getCenterXCoordinate(), gameObject.getCenterYCoordinate());
         gameObject.addEffect(burningEffect);
     }
 

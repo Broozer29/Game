@@ -1,8 +1,10 @@
 package game.items.effects.effecttypes;
 
+import com.badlogic.gdx.Game;
 import game.gamestate.GameStateInfo;
 import game.items.effects.EffectActivationTypes;
 import game.items.effects.EffectInterface;
+import game.managers.AnimationManager;
 import game.objects.GameObject;
 import visualobjects.SpriteAnimation;
 
@@ -10,21 +12,49 @@ public class PassiveHealthRegeneration implements EffectInterface {
 
     private EffectActivationTypes effectActivationTypes;
     private float healingAmount;
-    private long lastTimeDamageTaken;
+    private double lastTimeDamageTaken;
 
     private SpriteAnimation animation;
 
-    public PassiveHealthRegeneration(float healingAmount){
+    public PassiveHealthRegeneration (float healingAmount) {
         this.healingAmount = healingAmount;
         this.lastTimeDamageTaken = GameStateInfo.getInstance().getGameSeconds();
         this.effectActivationTypes = EffectActivationTypes.HealthRegeneration;
     }
 
     @Override
-    public void activateEffect(GameObject gameObject) {
-        long currentTime = GameStateInfo.getInstance().getGameSeconds();
-        if (currentTime - lastTimeDamageTaken > 3) { // More than 3 seconds have passed
+    public void activateEffect (GameObject gameObject) {
+        double currentTime = GameStateInfo.getInstance().getGameSeconds();
+        if (currentTime - gameObject.getLastGameSecondDamageTaken() > 3 && // More than 3 seconds have passed
+                gameObject.getCurrentHitpoints() < gameObject.getMaxHitPoints()) {
+
+            if (animation != null) {
+                showHealingAnimation();
+                centerHealingAnimation(gameObject);
+            }
+
             gameObject.takeDamage(-healingAmount); // Apply healing
+        } else {
+            if (animation != null) {
+                hideHealingAnimation();
+            }
+        }
+    }
+
+    private void centerHealingAnimation (GameObject gameObject) {
+        animation.setCenterCoordinates(gameObject.getCenterXCoordinate(), gameObject.getCenterYCoordinate());
+    }
+
+    private void showHealingAnimation () {
+        if (!AnimationManager.getInstance().getUpperAnimations().contains(animation)) {
+            AnimationManager.getInstance().addUpperAnimation(animation);
+        }
+    }
+
+    private void hideHealingAnimation () {
+        if (AnimationManager.getInstance().getUpperAnimations().contains(animation)) {
+            AnimationManager.getInstance().getUpperAnimations().remove(animation);
+            animation.refreshAnimation();
         }
     }
 
@@ -53,4 +83,15 @@ public class PassiveHealthRegeneration implements EffectInterface {
     public void increaseEffectStrength () {
         //Not needed, the "healingAmount" already factors this in
     }
+
+    @Override
+    public EffectInterface copy () {
+        return null;
+    }
+
+    public void setAnimation (SpriteAnimation spriteAnimation) {
+        this.animation = spriteAnimation;
+    }
+
+
 }

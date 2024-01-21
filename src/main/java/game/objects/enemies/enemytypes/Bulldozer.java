@@ -52,6 +52,7 @@ public class Bulldozer extends Enemy {
 
             PathFinder pathFinder = new OrbitPathFinder(this, radius, 300, nextAngle);
             Enemy alienBomb = getEnemy(x, y, pathFinder);
+            alienBomb.setOwnerOrCreator(this);
             this.followingEnemies.add(alienBomb);
             EnemyManager.getInstance().addEnemy(alienBomb);
         }
@@ -72,7 +73,7 @@ public class Bulldozer extends Enemy {
                 25, 0,
                 false, false, AudioEnums.Alien_Bomb_Destroyed,
                 Direction.LEFT, pathFinder, 1, 1, true, "Alien Bomb",
-                0, MovementPatternSize.SMALL, EnemyEnums.Alien_Bomb.isBoxCollision()
+                0, MovementPatternSize.SMALL, EnemyEnums.Alien_Bomb.isBoxCollision(), EnemyEnums.Alien_Bomb.getBaseArmor()
         );
 
         Enemy alienBomb = new AlienBomb(spriteConfiguration, enemyConfiguration);

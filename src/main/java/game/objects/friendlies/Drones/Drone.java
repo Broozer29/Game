@@ -49,6 +49,7 @@ public class Drone extends FriendlyObject {
             }
 
             Missile newMissile = MissileCreator.getInstance().createMissile(missileSpriteConfiguration, missileConfiguration);
+            newMissile.setOwnerOrCreator(this);
             MissileManager.getInstance().addExistingMissile(newMissile);
             attackSpeedCurrentFrameCount = 0;
 

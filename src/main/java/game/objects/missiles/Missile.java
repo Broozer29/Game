@@ -88,7 +88,7 @@ public class Missile extends GameObject {
 
 	public void destroyMissile() {
 		if (this.destructionAnimation != null) {
-			AnimationManager.getInstance().addDestroyedExplosion(destructionAnimation);
+			AnimationManager.getInstance().addUpperAnimation(destructionAnimation);
 		}
 		this.setVisible(false);
 	}

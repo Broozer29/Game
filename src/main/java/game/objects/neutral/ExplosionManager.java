@@ -22,8 +22,8 @@ public class ExplosionManager {
     private static ExplosionManager instance = new ExplosionManager();
     private PlayerManager friendlyManager = PlayerManager.getInstance();
     private EnemyManager enemyManager = EnemyManager.getInstance();
-//    private List<Explosion> explosionList = new ArrayList<Explosion>();
-private CopyOnWriteArrayList<Explosion> explosionList = new CopyOnWriteArrayList<>();
+    //    private List<Explosion> explosionList = new ArrayList<Explosion>();
+    private CopyOnWriteArrayList<Explosion> explosionList = new CopyOnWriteArrayList<>();
 
     private ExplosionManager () {
 
@@ -35,8 +35,8 @@ private CopyOnWriteArrayList<Explosion> explosionList = new CopyOnWriteArrayList
 
     private void updateExplosions () {
         List<Explosion> toRemove = new ArrayList<>();
-        for(Explosion explosion : explosionList){
-            if(explosion.isVisible()){
+        for (Explosion explosion : explosionList) {
+            if (explosion.isVisible()) {
                 explosion.updateAllowedToDealDamage();
                 checkExplosionCollisions(explosion);
             } else {
@@ -88,6 +88,7 @@ private CopyOnWriteArrayList<Explosion> explosionList = new CopyOnWriteArrayList
         for (Enemy enemy : enemyManager.getEnemies()) {
             if (!explosion.dealtDamageToTarget(enemy)) {
                 if (CollisionDetector.getInstance().detectCollision(explosion, enemy)) {
+                    applyDamageModification(explosion, enemy);
                     enemy.takeDamage(explosion.getDamage());
                     applyPlayerOnHitEffects(enemy);
                     applyExplosionEffects(explosion, enemy);
@@ -104,10 +105,13 @@ private CopyOnWriteArrayList<Explosion> explosionList = new CopyOnWriteArrayList
         }
     }
 
+
     private void applyExplosionEffects (Explosion explosion, GameObject target) {
         for (EffectInterface effect : explosion.getEffectsToApply()) {
-            target.addEffect(effect);
-            System.out.println("Added: " + effect);
+            EffectInterface effectCopy = effect.copy();
+            if (effectCopy != null) {
+                target.addEffect(effectCopy);
+            } else target.addEffect(effect);
         }
     }
 
@@ -115,6 +119,12 @@ private CopyOnWriteArrayList<Explosion> explosionList = new CopyOnWriteArrayList
         if (!explosion.dealtDamageToTarget(friendlyManager.getSpaceship()) && CollisionDetector.getInstance().detectCollision(explosion, friendlyManager.getSpaceship())) {
             friendlyManager.getSpaceship().takeDamage(explosion.getDamage());
             explosion.addCollidedSprite(friendlyManager.getSpaceship());
+        }
+    }
+
+    private void applyDamageModification (GameObject attack, GameObject target) {
+        for (Item item : PlayerStats.getInstance().getPlayerInventory().getItemsByApplicationMethod(ItemApplicationEnum.BeforeCollision)) {
+            item.modifyAttackValues(attack, target);
         }
     }
 

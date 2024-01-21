@@ -6,6 +6,11 @@ import java.util.List;
 
 import javax.sound.sampled.UnsupportedAudioFileException;
 
+import game.items.Item;
+import game.items.ItemApplicationEnum;
+import game.items.ItemEnums;
+import game.items.PlayerInventory;
+import game.items.items.FocusCrystal;
 import game.managers.AnimationManager;
 import game.objects.player.spaceship.SpaceShip;
 import VisualAndAudioData.DataClass;
@@ -14,6 +19,8 @@ import game.gamestate.GameStatusEnums;
 import VisualAndAudioData.audio.AudioEnums;
 import VisualAndAudioData.audio.AudioManager;
 import VisualAndAudioData.image.ImageEnums;
+import visualobjects.SpriteAnimation;
+import visualobjects.SpriteConfigurations.SpriteAnimationConfiguration;
 import visualobjects.SpriteConfigurations.SpriteConfiguration;
 
 public class PlayerManager {
@@ -44,18 +51,17 @@ public class PlayerManager {
 		checkPlayerHealth();
 		spaceship.updateGameTick();
 	}
-	
-	//Removes the temporary buffs from a spaceship for the next level
-	public void resetSpaceshipForNextLevel() {
-		this.spaceship.resetSpaceshipFollowingObjects();
-	}
-	
 	public SpaceShip getSpaceship() {
 		return this.spaceship;
 	}
 
 	private void checkPlayerHealth() {
-		if (playerStats.getHitpoints() <= 0 && gameState.getGameState() == GameStatusEnums.Playing) {
+
+		if(PlayerInventory.getInstance().getItemByName(ItemEnums.EmergencyRepairBot) != null){
+			PlayerInventory.getInstance().getItemByName(ItemEnums.EmergencyRepairBot).applyEffectToObject(spaceship);
+		}
+
+		if (spaceship.getCurrentHitpoints() <= 0 && gameState.getGameState() == GameStatusEnums.Playing) {
 			gameState.setGameState(GameStatusEnums.Dying);
 			spaceship.setVisible(false);
 		}
@@ -77,7 +83,7 @@ public class PlayerManager {
 	}
 
 	public void startDyingScene() {
-		if (playerStats.getHitpoints() <= 0 && gameState.getGameState() == GameStatusEnums.Dying) {
+		if (spaceship.getCurrentHitpoints() <= 0 && gameState.getGameState() == GameStatusEnums.Dying) {
 			if (!animationManager.getUpperAnimations().contains(spaceship.getDeathAnimation())) {
 				animationManager.getUpperAnimations().add(spaceship.getDeathAnimation());
 				animationManager.getLowerAnimations().remove(spaceship.getExhaustAnimation());

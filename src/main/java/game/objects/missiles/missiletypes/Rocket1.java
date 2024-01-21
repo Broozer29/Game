@@ -32,6 +32,7 @@ public class Rocket1 extends Missile{
 		Explosion explosion = new Explosion(rocketExplosionConfig, explosionConfiguration);
 		explosion.setScale(explosionScale);
 		explosion.updateBoardBlock();
+		explosion.setOwnerOrCreator(this.ownerOrCreator);
 		explosionAnimation.setCenterCoordinates(this.getCenterXCoordinate() + (this.getWidth() / 2), this.getCenterYCoordinate() - (this.height / 2));
 		ExplosionManager.getInstance().addExplosion(explosion);
 	}

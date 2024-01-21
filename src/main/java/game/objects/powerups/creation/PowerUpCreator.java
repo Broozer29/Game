@@ -71,9 +71,9 @@ public class PowerUpCreator {
 
 	public int getRandomTimeForSpawner() {
 		BoostsUpgradesAndBuffsSettings tempSettings = BoostsUpgradesAndBuffsSettings.getInstance();
-//		return random.nextInt((tempSettings.getMaxTimeForPowerUpSpawn() - tempSettings.getMinTimeForPowerUpSpawn()) + 1)
-//				+ tempSettings.getMinTimeForPowerUpSpawn();
-		return 20;
+		return random.nextInt((tempSettings.getMaxTimeForPowerUpSpawn() - tempSettings.getMinTimeForPowerUpSpawn()) + 1)
+				+ tempSettings.getMinTimeForPowerUpSpawn();
+//		return 20;
 	}
 
 	private Direction selectRandomDirection() {

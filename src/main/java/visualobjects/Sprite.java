@@ -102,11 +102,11 @@ public class Sprite {
     }
 
     public int getCenterXCoordinate () {
-        return xCoordinate + (width / 2);
+        return xCoordinate + xOffset + (width / 2);
     }
 
     public int getCenterYCoordinate () {
-        return yCoordinate + (height / 2);
+        return yCoordinate + yOffset + (height / 2);
     }
 
     public void setCenterCoordinates (int newXCoordinate, int newYCoordinate) {
@@ -180,7 +180,7 @@ public class Sprite {
             System.out.println("I returned Sprite bounds for a SpriteAnimation!");
         }
         if (this.bounds.getHeight() == 0 || this.bounds.getWidth() == 0) {
-            setBounds(this.xCoordinate, this.yCoordinate, this.width, this.height);
+            setBounds(this.xCoordinate + xOffset, this.yCoordinate + yOffset, this.width, this.height);
         }
         return this.bounds;
     }

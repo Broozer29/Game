@@ -15,4 +15,6 @@ public interface EffectInterface {
     void resetDuration ();
 
     void increaseEffectStrength();
+
+    EffectInterface copy();
 }

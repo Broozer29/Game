@@ -20,7 +20,7 @@ public class Director {
     private float difficultyFactor;
     private float credits;
     private long lastUpdateTime;
-    private long lastSpawnTime;
+    private double lastSpawnTime;
     private long spawnInterval; // Interval for Slow and Fast directors
     private List<MonsterCard> availableCards;
     private List<MonsterCard> affordableMonsters;
@@ -56,7 +56,7 @@ public class Director {
         }
     }
 
-    public void update (long secondsPassed) {
+    public void update (double secondsPassed) {
         if (shouldAttemptSpawn(secondsPassed)) {
             updateAffordableMonsterList();
             attemptSpawn();
@@ -184,7 +184,7 @@ public class Director {
                 .orElse(null);
     }
 
-    private boolean shouldAttemptSpawn(float timeInSeconds) {
+    private boolean shouldAttemptSpawn(double timeInSeconds) {
         if (directorType == DirectorType.Instant) {
             return true;
         } else {

@@ -45,7 +45,7 @@ public class Energizer extends Enemy {
 
 
 			Missile newMissile = MissileCreator.getInstance().createMissile(missileSpriteConfiguration, missileConfiguration);
-
+			newMissile.setOwnerOrCreator(this);
 
 			newMissile.rotateGameObject(movementConfiguration.getRotation());
 			missileManager.addExistingMissile(newMissile);

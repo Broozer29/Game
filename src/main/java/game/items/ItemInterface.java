@@ -7,4 +7,6 @@ public interface ItemInterface {
     void triggerEffectForOneTimeEffects (GameObject gameObject); //Might not be needed
     void modifyAttackValues (GameObject attack, GameObject target);
 
+
+
 }

@@ -242,6 +242,9 @@ public class ImageDatabase {
 	private List<BufferedImage> crossingEnergyBeams = new ArrayList<BufferedImage>();
 
 	private List<BufferedImage> plasmaCoatedDebuff = new ArrayList<BufferedImage>();
+	private List<BufferedImage> gasolineExplosion = new ArrayList<>();
+	private List<BufferedImage> gasolineBurning = new ArrayList<>();
+	private List<BufferedImage> healingAnimation = new ArrayList<>();
 
 	// Enemy Projectile Animations
 	private List<BufferedImage> seekerProjectileFrames = new ArrayList<BufferedImage>();
@@ -1107,7 +1110,13 @@ public class ImageDatabase {
 		case CrossingEnergyBeams:
 			return crossingEnergyBeams;  // animation addition update: unused
         case PlasmaCoatedDebuff:
-                return plasmaCoatedDebuff;
+			return plasmaCoatedDebuff;
+		case GasolineExplosion:
+			return gasolineExplosion;
+		case GasolineBurning:
+			return gasolineBurning;
+		case Healing:
+			return healingAnimation;
 		}
 		return null;
 	}
@@ -1266,7 +1275,7 @@ public class ImageDatabase {
 		flamerDestroyedExplosionFrames = gifToImageIcons(reader);
 
 		reader.setInput(ImageIO.createImageInputStream(
-				getClass().getResourceAsStream("/images/Ships/Ship 5/Ship 5 - Destroyed Explosion.gif")));
+				getClass().getResourceAsStream("/images/Ships/Ship 6/Ship 6 - Destroyed Explosion.gif")));
 		bombaDestroyedExplosionFrames = gifToImageIcons(reader);
 
 
@@ -1487,6 +1496,24 @@ public class ImageDatabase {
             BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
             plasmaCoatedDebuff.add(image);
         }
+
+		for (int i = 1; i < 16; i++) {
+			String sourceString = String.format("/images/gif/PNGtoGIF/GasolineExplosion/%d.png", i);
+			BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+			gasolineExplosion.add(image);
+		}
+
+		for (int i = 1; i < 31; i++) {
+			String sourceString = String.format("/images/gif/PNGtoGIF/GasolineBurning/%d.png", i);
+			BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+			gasolineBurning.add(image);
+		}
+
+		for (int i = 1; i < 5; i++) {
+			String sourceString = String.format("/images/gif/PNGtoGIF/Healing/%d.png", i);
+			BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+			healingAnimation.add(image);
+		}
 
 
 	}

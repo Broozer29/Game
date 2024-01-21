@@ -12,6 +12,8 @@ public class AudioManager {
 	private CustomAudioClip backGroundMusic = null;
 	private AudioDatabase audioDatabase = AudioDatabase.getInstance();
 
+
+
 	private List<AudioEnums> backgroundMusicTracksThatHavePlayed = new ArrayList<>();
 
 	private AudioManager() {
@@ -60,7 +62,7 @@ public class AudioManager {
 			backGroundMusicEnum = backGroundMusic.getAudioType();
 		} while (backgroundMusicTracksThatHavePlayed.contains(backGroundMusicEnum));
 
-		backGroundMusic = AudioDatabase.getInstance().getAudioClip(AudioEnums.Large_Ship_Destroyed);
+		backGroundMusic = AudioDatabase.getInstance().getAudioClip(AudioEnums.Destroyed_Explosion);
 
 		if (backGroundMusic != null) {
 			backGroundMusic.startClip();
@@ -87,5 +89,6 @@ public class AudioManager {
 	public CustomAudioClip getBackgroundMusic() {
 		return this.backGroundMusic;
 	}
+
 
 }

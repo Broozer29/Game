@@ -317,6 +317,8 @@ public class AudioDatabase {
                 return rainFormerlyKnownAsPurple;
             case Blood_On_The_Dancefloor:
                 return bloodOnTheDanceFloor;
+            case Tonebox_Radium_Cloud_Highway:
+                return toneboxRadiumCloudHighway;
             case Player_Laserbeam:
             case Destroyed_Explosion:
             case Alien_Spaceship_Destroyed:

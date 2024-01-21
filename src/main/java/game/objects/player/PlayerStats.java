@@ -35,12 +35,11 @@ public class PlayerStats {
     private float specialAttackDamage;
     private float attackSpeed;
     private float specialAttackSpeed;
+    private float attackSpeedBonus;
 
     // Player Health
     private float maxHitPoints;
     private float maxShieldHitPoints;
-    private float hitpoints;
-    private float shieldHitpoints;
     private float shieldRegenDelay;
 
     // Movement
@@ -63,15 +62,16 @@ public class PlayerStats {
     private ImageEnums playerMissileImpactType;
     private float missileImpactScale;
     private float missileScale;
+    private int maxSpecialAttackCharges;
+    private float criticalStrikeDamageMultiplier;
+
 
 
     private PlayerInventory playerInventory;
 
     public void initDefaultSettings () {
         // Health
-        setHitpoints(100);
         setMaxHitPoints(100);
-        setShieldHitpoints(100);
         setMaxShieldHitPoints(100);
         setShieldRegenDelay(300);
 
@@ -81,6 +81,9 @@ public class PlayerStats {
         // Special attack
         setSpecialAttackDamage(5);
         setSpecialAttackSpeed(100);
+        setMaxSpecialAttackCharges(1);
+
+        setCriticalStrikeDamageMultiplier(2.0f);
 
         // HomingRectangle target size (the larger, the quicker homing missiles lose lock)
         setHomingRectangleResizeScale((float) 1.5);
@@ -99,13 +102,6 @@ public class PlayerStats {
         }
     }
 
-    public void resetForNextLevel () {
-        setHitpoints(this.maxHitPoints);
-        setShieldHitpoints(this.maxShieldHitPoints);
-    }
-
-
-
     //getters and setters below
 
     public float getNormalAttackDamage () {
@@ -121,28 +117,18 @@ public class PlayerStats {
         this.attackDamage = playerDamage;
     }
 
-    public float getHitpoints () {
-        return hitpoints;
-    }
+    public float getAttackSpeed() {
+        float baseAttackSpeed = this.attackSpeed;
+        float attackSpeedIncrease = this.attackSpeedBonus; // Assuming this is a percentage
 
-    public void setHitpoints (float hitpoints) {
-        this.hitpoints = hitpoints;
-    }
+        // Calculate the new attack speed
+        float newAttackSpeed = baseAttackSpeed / (1 + attackSpeedIncrease / 100);
 
-    public float getShieldHitpoints () {
-        return shieldHitpoints;
-    }
-
-    public void setShieldHitpoints (float shieldHitpoints) {
-        this.shieldHitpoints = shieldHitpoints;
-    }
-
-    public float getAttackSpeed () {
-        float currentAttackSpeed = this.attackSpeed;
-        if (currentAttackSpeed < 1) {
+        // Ensure the attack speed does not fall below 1
+        if (newAttackSpeed < 1) {
             return 1;
         } else {
-            return currentAttackSpeed;
+            return newAttackSpeed;
         }
     }
 
@@ -265,19 +251,7 @@ public class PlayerStats {
         this.exhaustImage = exhaustImage;
     }
 
-    public void changeHitPoints (float change) {
-        this.hitpoints += change;
-        if (this.hitpoints > maxHitPoints) {
-            this.hitpoints = maxHitPoints;
-        }
-    }
 
-    public void changeShieldHitpoints (float change) {
-        this.shieldHitpoints += change;
-        if (this.shieldHitpoints > maxShieldHitPoints) {
-            this.shieldHitpoints = maxShieldHitPoints;
-        }
-    }
 
     public ImageEnums getPlayerMissileType () {
         return playerMissileType;
@@ -379,5 +353,29 @@ public class PlayerStats {
 
     public PlayerInventory getPlayerInventory () {
         return playerInventory;
+    }
+
+    public int getMaxSpecialAttackCharges () {
+        return maxSpecialAttackCharges;
+    }
+
+    public void setMaxSpecialAttackCharges (int maxSpecialAttackCharges) {
+        this.maxSpecialAttackCharges = maxSpecialAttackCharges;
+    }
+
+    public float getCriticalStrikeDamageMultiplier () {
+        return criticalStrikeDamageMultiplier;
+    }
+
+    public void setCriticalStrikeDamageMultiplier (float criticalStrikeDamageMultiplier) {
+        this.criticalStrikeDamageMultiplier = criticalStrikeDamageMultiplier;
+    }
+
+    public float getAttackSpeedBonus () {
+        return attackSpeedBonus;
+    }
+
+    public void setAttackSpeedBonus (float attackSpeedBonus) {
+        this.attackSpeedBonus = attackSpeedBonus;
     }
 }

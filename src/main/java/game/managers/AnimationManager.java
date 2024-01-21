@@ -31,14 +31,9 @@ public class AnimationManager {
 		}
 
 		removeInvisibleAnimations();
-
 	}
 
 	private AnimationManager() {
-	}
-
-	public void addDestroyedExplosion(SpriteAnimation animation) {
-		addUpperAnimation(animation);
 	}
 
 	public void addExhaustAnimation(SpriteAnimation animation) {
@@ -58,11 +53,6 @@ public class AnimationManager {
 	public void createAndAddUpperAnimation(int xCoordinate, int yCoordinate, ImageEnums animationType,
 			boolean infiniteLoop, float scale) {
 		this.upperAnimationList.add(createAnimation(xCoordinate, yCoordinate, animationType, infiniteLoop, scale));
-	}
-
-	public void createAnddAddLowerAnimation(int xCoordinate, int yCoordinate, ImageEnums animationType,
-			boolean infiniteLoop, float scale) {
-		this.lowerAnimationList.add(createAnimation(xCoordinate, yCoordinate, animationType, infiniteLoop, scale));
 	}
 
 	public SpriteAnimation createAnimation(int xCoordinate, int yCoordinate, ImageEnums animationType,

@@ -1,9 +1,6 @@
 package game.items;
 
-import game.items.items.CannisterOfGasoline;
-import game.items.items.PlasmaCoatedBullets;
-import game.items.items.PhotonPiercer;
-import game.items.items.SelfRepairingSteel;
+import game.items.items.*;
 
 import java.util.HashMap;
 import java.util.List;
@@ -16,7 +13,8 @@ public class PlayerInventory {
     private Map<ItemEnums, Item> items = new HashMap<>();
 
     private PlayerInventory () {
-        addItem(ItemEnums.SelfRepairingSteel);
+        addItem(ItemEnums.Overclock);
+        addItem(ItemEnums.EmergencyRepairBot);
     }
 
     public static PlayerInventory getInstance () {
@@ -48,6 +46,20 @@ public class PlayerInventory {
                 return new CannisterOfGasoline();
             case SelfRepairingSteel:
                 return new SelfRepairingSteel();
+            case Battery:
+                return new Battery();
+            case FocusCrystal:
+                return new FocusCrystal();
+            case PrecisionAmplifier:
+                return new PrecisionAmplifier();
+            case PlatinumSponge:
+                return new PlatinumSponge();
+            case EmergencyRepairBot:
+                return new EmergencyRepairBot();
+            case Overclock:
+                return new Overclock();
+            case RepulsionArmorPlate:
+                return new RepulsionArmorPlate();
             default:
                 System.out.println("I tried to create: " + itemEnum + " but fell in default, did you forget to add it to the inventory creation?");
                 return null;
@@ -60,7 +72,7 @@ public class PlayerInventory {
                 .collect(Collectors.toList());
     }
 
-    public Item getItemByName(ItemEnums itemName) {
+    public Item getItemByName (ItemEnums itemName) {
         return items.get(itemName);
     }
 

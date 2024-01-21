@@ -11,6 +11,8 @@ import game.gamestate.GameStateInfo;
 import game.gamestate.GameStatusEnums;
 import VisualAndAudioData.audio.AudioManager;
 import game.objects.player.PlayerManager;
+import game.objects.powerups.creation.PowerUpCreator;
+import game.spawner.directors.DirectorManager;
 
 public class LevelManager {
 
@@ -21,6 +23,8 @@ public class LevelManager {
     private TimerManager timerManager = TimerManager.getInstance();
     private GameStateInfo gameState = GameStateInfo.getInstance();
 
+    private int enemiesSpawned;
+    private int enemiesKilled;
 
     private LevelManager () {
     }
@@ -66,15 +70,28 @@ public class LevelManager {
         enemy.setCurrentHitpoints(200);
         EnemyManager.getInstance().addEnemy(enemy);
 
-        Enemy enemy2 = EnemyCreator.createEnemy(EnemyEnums.Bomba, 950, 600, game.movement.Direction.LEFT, 1
+        Enemy enemy2 = EnemyCreator.createEnemy(EnemyEnums.Bomba, 1150, 600, game.movement.Direction.LEFT, 1
                 , 1, 1, MovementPatternSize.SMALL, false);
 
         enemy2.setMaxHitPoints(200);
         enemy2.setCurrentHitpoints(200);
         EnemyManager.getInstance().addEnemy(enemy2);
 
-        PlayerManager.getInstance().getSpaceship().takeDamage(180);
+        Enemy enemy3 = EnemyCreator.createEnemy(EnemyEnums.Bomba, 1300, 600, game.movement.Direction.LEFT, 1
+                , 1, 1, MovementPatternSize.SMALL, false);
 
+        enemy3.setMaxHitPoints(200);
+        enemy3.setCurrentHitpoints(200);
+        EnemyManager.getInstance().addEnemy(enemy3);
+
+        Enemy enemy4 = EnemyCreator.createEnemy(EnemyEnums.Bomba, 1300, 700, game.movement.Direction.LEFT, 1
+                , 1, 1, MovementPatternSize.SMALL, false);
+
+        enemy4.setMaxHitPoints(200);
+        enemy4.setCurrentHitpoints(200);
+        EnemyManager.getInstance().addEnemy(enemy4);
+
+        PlayerManager.getInstance().getSpaceship().takeDamage(180);
 
     }
 
@@ -91,16 +108,15 @@ public class LevelManager {
 
                 Enemy enemy = EnemyCreator.createEnemy(enemyType, xCoordinate, yCoordinate, direction, scale, xMovementSpeed, yMovementSpeed, MovementPatternSize.SMALL, boxCollision);
                 if (validCoordinates(enemy)) {
+                    enemiesSpawned++;
                     enemyManager.addEnemy(enemy);
-
                 }
             }
         } else {
             Enemy enemy = EnemyCreator.createEnemy(enemyType, xCoordinate, yCoordinate, direction, scale, xMovementSpeed, yMovementSpeed, MovementPatternSize.SMALL, boxCollision);
-
             if (validCoordinates(enemy)) {
+                enemiesSpawned++;
                 enemyManager.addEnemy(enemy);
-
             }
         }
 
@@ -115,5 +131,21 @@ public class LevelManager {
             return true;
         }
         return false;
+    }
+
+    public int getEnemiesSpawned () {
+        return enemiesSpawned;
+    }
+
+    public void setEnemiesSpawned (int enemiesSpawned) {
+        this.enemiesSpawned = enemiesSpawned;
+    }
+
+    public int getEnemiesKilled () {
+        return enemiesKilled;
+    }
+
+    public void setEnemiesKilled (int enemiesKilled) {
+        this.enemiesKilled += enemiesKilled;
     }
 }

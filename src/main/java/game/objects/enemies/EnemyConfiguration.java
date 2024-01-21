@@ -29,8 +29,10 @@ public class EnemyConfiguration {
 
     private boolean isBoxCollision;
 
+    private float baseArmor;
+
     public EnemyConfiguration (EnemyEnums enemyType, int maxHitPoints, int maxShields, boolean hasAttack, boolean showHealthBar, AudioEnums deathSound, Direction movementDirection, PathFinder movementPathFinder, int xMovementSpeed, int yMovementSpeed, boolean allowedToDealDamage, String objectType, int attackSpeed
-            , MovementPatternSize movementPatternSize, boolean boxCollision) {
+            , MovementPatternSize movementPatternSize, boolean boxCollision, float baseArmor) {
         this.enemyType = enemyType;
         this.maxHitPoints = maxHitPoints;
         this.maxShields = maxShields;
@@ -46,6 +48,7 @@ public class EnemyConfiguration {
         this.attackSpeed = attackSpeed;
         this.movementPatternSize = movementPatternSize;
         this.isBoxCollision = boxCollision;
+        this.baseArmor = baseArmor;
     }
 
     public EnemyEnums getEnemyType () {
@@ -166,5 +169,13 @@ public class EnemyConfiguration {
 
     public void setBoxCollision (boolean boxCollision) {
         isBoxCollision = boxCollision;
+    }
+
+    public float getBaseArmor () {
+        return baseArmor;
+    }
+
+    public void setBaseArmor (float baseArmor) {
+        this.baseArmor = baseArmor;
     }
 }

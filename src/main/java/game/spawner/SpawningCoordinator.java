@@ -8,6 +8,7 @@ import game.movement.Direction;
 import game.objects.background.BackgroundObject;
 import game.objects.enemies.Enemy;
 import VisualAndAudioData.DataClass;
+import game.objects.enemies.enums.EnemyEnums;
 
 public class SpawningCoordinator {
 
@@ -75,8 +76,10 @@ public class SpawningCoordinator {
     //Function used to prevent enemies of the same type of stacking on top of each other when being spawned in
     public boolean checkValidEnemyXCoordinate (Enemy enemyType, List<Enemy> listToCheck, int xCoordinate, int minimumRange) {
         for (Enemy enemy : listToCheck) {
-            if (Math.abs(enemy.getXCoordinate() - xCoordinate) < minimumRange) {
-                return false;
+            if (!enemy.getEnemyType().equals(EnemyEnums.Alien_Bomb)) {
+                if (Math.abs(enemy.getXCoordinate() - xCoordinate) < minimumRange) {
+                    return false;
+                }
             }
         }
         return true;
@@ -85,8 +88,10 @@ public class SpawningCoordinator {
     //Function used to prevent enemies of the same type of stacking on top of each other when being spawned in
     public boolean checkValidEnemyYCoordinate (Enemy enemyType, List<Enemy> listToCheck, int yCoordinate, int minimumRange) {
         for (Enemy enemy : listToCheck) {
-            if (Math.abs(enemy.getYCoordinate() - yCoordinate) < minimumRange) {
-                return false;
+            if (!enemy.getEnemyType().equals(EnemyEnums.Alien_Bomb)) {
+                if (Math.abs(enemy.getYCoordinate() - yCoordinate) < minimumRange) {
+                    return false;
+                }
             }
         }
         return true;

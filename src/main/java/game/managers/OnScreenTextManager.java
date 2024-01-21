@@ -8,7 +8,7 @@ import game.util.OnScreenText;
 public class OnScreenTextManager {
 
 	private static OnScreenTextManager instance = new OnScreenTextManager();
-	private List<OnScreenText> powerUpTexts = new ArrayList<OnScreenText>();
+	private List<OnScreenText> onScreenTexts = new ArrayList<OnScreenText>();
 	private OnScreenTextManager() {
 	}
 
@@ -22,32 +22,32 @@ public class OnScreenTextManager {
 	}
 	
 	private void removeInvisibleText() {
-		for (int i = 0; i < powerUpTexts.size(); i++){
-			if(powerUpTexts.get(i).getTransparencyValue() < 0.05) {
-				powerUpTexts.remove(i);
+		for (int i = 0; i < onScreenTexts.size(); i++){
+			if(onScreenTexts.get(i).getTransparencyValue() < 0.05) {
+				onScreenTexts.remove(i);
 			}
 		}
 	}
 
-	public void addPowerUpText(OnScreenText text) {
-		if (!powerUpTexts.contains(text)) {
-			powerUpTexts.add(text);
+	public void addText (OnScreenText text) {
+		if (!onScreenTexts.contains(text)) {
+			onScreenTexts.add(text);
 		}
 	}
 	
 
-	public List<OnScreenText> getPowerUpTexts() {
-		return powerUpTexts;
+	public List<OnScreenText> getOnScreenTexts () {
+		return onScreenTexts;
 	}
 
 	public void resetManager() {
-		for(OnScreenText text : powerUpTexts){
+		for(OnScreenText text : onScreenTexts){
 			text.setTransparency(0.00f);
 		}
 
 		removeInvisibleText();
 
-		powerUpTexts = new ArrayList<OnScreenText>();
+		onScreenTexts = new ArrayList<OnScreenText>();
 	}
 
 }

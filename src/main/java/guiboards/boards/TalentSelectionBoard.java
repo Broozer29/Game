@@ -297,13 +297,11 @@ public class TalentSelectionBoard extends JPanel implements ActionListener {
 						|| controllerInputReader.isInputActive(ControllerInputEnums.MOVE_LEFT_QUICK)) {
 					// Menu option to the left
 					previousMenuTile();
-					System.out.println("Move!");
 					lastMoveTime = currentTime;
 				} else if (controllerInputReader.isInputActive(ControllerInputEnums.MOVE_RIGHT_SLOW)
 						|| controllerInputReader.isInputActive(ControllerInputEnums.MOVE_RIGHT_QUICK)) {
 					// Menu option to the right
 					nextMenuTile();
-					System.out.println("Move!");
 					lastMoveTime = currentTime;
 				}
 			}
@@ -314,13 +312,11 @@ public class TalentSelectionBoard extends JPanel implements ActionListener {
 						|| controllerInputReader.isInputActive(ControllerInputEnums.MOVE_UP_QUICK)) {
 					// Menu option upwards
 					previousMenuColumn();
-					System.out.println("Move!");
 					lastMoveTime = currentTime;
 				} else if (controllerInputReader.isInputActive(ControllerInputEnums.MOVE_DOWN_SLOW)
 						|| controllerInputReader.isInputActive(ControllerInputEnums.MOVE_DOWN_QUICK)) {
 					// Menu option downwards
 					nextMenuColumn();
-					System.out.println("Move!");
 					lastMoveTime = currentTime;
 				}
 			}

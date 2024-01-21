@@ -7,12 +7,17 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.sound.sampled.UnsupportedAudioFileException;
 
 import controllerInput.ControllerInputEnums;
 import controllerInput.ControllerInputReader;
 import game.gamestate.GameStateInfo;
+import game.items.Item;
+import game.items.ItemApplicationEnum;
+import game.items.ItemEnums;
+import game.items.items.FocusCrystal;
 import game.managers.AnimationManager;
 import game.objects.neutral.Explosion;
 import game.objects.GameObject;
@@ -20,6 +25,7 @@ import game.objects.player.specialAttacks.SpecialAttack;
 import game.objects.player.BoostsUpgradesAndBuffsSettings;
 import game.objects.player.PlayerStats;
 import VisualAndAudioData.image.ImageEnums;
+import game.util.ArmorCalculator;
 import visualobjects.SpriteConfigurations.SpriteAnimationConfiguration;
 import visualobjects.SpriteConfigurations.SpriteConfiguration;
 import visualobjects.SpriteAnimation;
@@ -57,17 +63,13 @@ public class SpaceShip extends GameObject {
         initShip();
     }
 
-    //Used for going from level A to level B
-    public void resetSpaceshipFollowingObjects () {
-        playerFollowingSpecialAttacks = new ArrayList<SpecialAttack>();
-        playerFollowingExplosions = new ArrayList<Explosion>();
-        playerFollowingAnimations = new ArrayList<SpriteAnimation>();
-        powerUpEffects.initDefaultSettings();
-    }
-
     private void initShip () {
         directionx = 0;
         directiony = 0;
+        this.currentShieldPoints = playerStats.getMaxShieldHitPoints();
+        this.currentHitpoints = playerStats.getMaxHitPoints();
+        this.maxHitPoints = playerStats.getMaxHitPoints();
+        this.maxShieldPoints = playerStats.getMaxShieldHitPoints();
         pressedKeys = new HashSet<>();
         loadImage(playerStats.getSpaceShipImage());
         currentShieldRegenDelayFrame = 0;
@@ -82,6 +84,34 @@ public class SpaceShip extends GameObject {
         initDeathAnimation(ImageEnums.Destroyed_Explosion);
         this.exhaustAnimation.setAnimationScale(0.3f);
         this.setObjectType("Player spaceship");
+        this.effects = new CopyOnWriteArrayList<>();
+        applyOnCreationEffects();
+
+        if(PlayerStats.getInstance().getPlayerInventory().getItemByName(ItemEnums.FocusCrystal) != null){
+            SpriteConfiguration focusCrystalConfig = new SpriteConfiguration();
+            focusCrystalConfig.setxCoordinate(getXCoordinate());
+            focusCrystalConfig.setyCoordinate(getYCoordinate());
+            focusCrystalConfig.setScale(1);
+			focusCrystalConfig.setTransparancyAlpha(0.1f);
+            focusCrystalConfig.setImageType(ImageEnums.Highlight);
+
+            SpriteAnimationConfiguration focusCrystalAnimConfig = new SpriteAnimationConfiguration(focusCrystalConfig, 10, true);
+            SpriteAnimation focusCrystalAnimation = new SpriteAnimation(focusCrystalAnimConfig);
+            focusCrystalAnimation.setVisible(true);
+
+            FocusCrystal focusCrystal = (FocusCrystal) PlayerStats.getInstance().getPlayerInventory().getItemByName(ItemEnums.FocusCrystal);
+			focusCrystalAnimation.setImageDimensions(focusCrystal.getDistance() * 2, focusCrystal.getDistance() * 2);
+			focusCrystalAnimation.setCenterCoordinates(getCenterXCoordinate(), getCenterYCoordinate());
+
+            addPlayerFollowingAnimation(focusCrystalAnimation);
+            AnimationManager.getInstance().addUpperAnimation(focusCrystalAnimation);
+        }
+    }
+
+    private void applyOnCreationEffects(){
+        for(Item item : PlayerStats.getInstance().getPlayerInventory().getItemsByApplicationMethod(ItemApplicationEnum.ApplyOnCreation)){
+            item.applyEffectToObject(this);
+        }
     }
 
     private void initExhaustAnimation (ImageEnums imageType) {
@@ -100,8 +130,6 @@ public class SpaceShip extends GameObject {
 
     public void addShieldDamageAnimation () {
         if (playerFollowingAnimations.size() < 10) {
-
-
             SpriteAnimationConfiguration spriteAnimationConfiguration = new SpriteAnimationConfiguration(this.spriteConfiguration, 1, false);
             spriteAnimationConfiguration.getSpriteConfiguration().setImageType(ImageEnums.Default_Player_Shield_Damage);
 
@@ -115,50 +143,46 @@ public class SpaceShip extends GameObject {
 
             AnimationManager.getInstance().addUpperAnimation(shieldAnimation);
         }
-
     }
 
-    //Might not be needed
-//    private void removeInvisibleAnimations () {
-//        for (int i = 0; i < playerFollowingAnimations.size(); i++) {
-//            if (!playerFollowingAnimations.get(i).isVisible()) {
-//                playerFollowingAnimations.remove(i);
-//            }
-//        }
-//        for (int i = 0; i < playerFollowingExplosions.size(); i++) {
-//            if (!playerFollowingExplosions.get(i).getAnimation().isVisible()) {
-//                playerFollowingExplosions.remove(i);
-//            }
-//        }
-//
-//        for (int i = 0; i < playerFollowingSpecialAttacks.size(); i++) {
-//            if (!playerFollowingSpecialAttacks.get(i).getAnimation().isVisible()) {
-//                playerFollowingSpecialAttacks.remove(i);
-//            }
-//        }
-//    }
+    public void takeDamage(float damageTaken) {
 
-    public void takeDamage (float damage) {
-
-        System.out.println("Damage taken/healed: " + damage);
-        if (damage > 0) {
+        // Armor calculation should only apply if damage is being dealt, not for healing
+        if (damageTaken > 0) {
+            damageTaken = ArmorCalculator.calculateDamage(damageTaken, this);
             lastGameSecondDamageTaken = GameStateInfo.getInstance().getGameSeconds();
             this.currentShieldRegenDelayFrame = 0;
-            float shieldPiercingDamage = playerStats.getShieldHitpoints() - damage;
 
+            // Check if the damage pierces the shield
+            float shieldPiercingDamage = currentShieldPoints - damageTaken;
             if (shieldPiercingDamage < 0) {
-                playerStats.changeHitPoints(shieldPiercingDamage);
-                playerStats.setShieldHitpoints(0);
+                // Apply the damage that pierced through the shield to hit points
+                changeHitPoints(shieldPiercingDamage);
+                currentShieldPoints = 0;
+                addShieldDamageAnimation();
             } else {
-                playerStats.changeShieldHitpoints(-damage);
+                // Shield absorbs all damage
+                changeShieldHitpoints(-damageTaken);
                 addShieldDamageAnimation();
             }
+        } else if (damageTaken < 0) {
+            // Apply healing, ensuring not to exceed max hit points
+            changeHitPoints(-damageTaken);
         }
+    }
 
-        if (damage < 0) {
-            playerStats.changeHitPoints(damage);
+    public void changeHitPoints(float change) {
+        this.currentHitpoints += change;
+        if (this.currentHitpoints > maxHitPoints) {
+            this.currentHitpoints = maxHitPoints;
         }
+    }
 
+    public void changeShieldHitpoints (float change) {
+        this.currentShieldPoints += change;
+        if (this.currentShieldPoints > maxShieldPoints) {
+            this.currentShieldPoints = maxShieldPoints;
+        }
     }
 
     public void updateGameTick () {
@@ -175,12 +199,13 @@ public class SpaceShip extends GameObject {
         movePlayerAnimations();
         moveExplosions();
         moveSpecialAttacks();
-//        removeInvisibleAnimations();
+        removeInvisibleAnimations();
+        updateGameObjectEffects();
 
         if (currentShieldRegenDelayFrame >= playerStats.getShieldRegenDelay()) {
-            if (playerStats.getShieldHitpoints() < playerStats.getMaxShieldHitPoints()) {
+            if (currentShieldPoints < playerStats.getMaxShieldHitPoints()) {
                 repairShields((float) 0.4);
-                repairHealth((float) 0.4);
+//                repairHealth((float) 0.4);
             }
         }
     }
@@ -188,7 +213,19 @@ public class SpaceShip extends GameObject {
     private void movePlayerAnimations () {
         for (SpriteAnimation anim : playerFollowingAnimations) {
             anim.setOriginCoordinates(xCoordinate, yCoordinate);
+            anim.setCenterCoordinates(getCenterXCoordinate(), getCenterYCoordinate());
         }
+    }
+
+    private void removeInvisibleAnimations(){
+        Iterator<SpriteAnimation> iterator = playerFollowingAnimations.iterator();
+        while(iterator.hasNext()){
+            SpriteAnimation animation = iterator.next();
+            if(!animation.isVisible()){
+                iterator.remove();
+            }
+        }
+
     }
 
     private void moveExplosions () {
@@ -241,8 +278,8 @@ public class SpaceShip extends GameObject {
         bounds.setBounds(xCoordinate + xOffset, yCoordinate + yOffset, width, height);
 
         if (this.exhaustAnimation != null) {
-            this.exhaustAnimation.setX(this.getCenterXCoordinate() - ((this.getWidth() + 5)));
-            this.exhaustAnimation.setY(this.getCenterYCoordinate() - (this.exhaustAnimation.getHeight() / 2) + 5);
+            this.exhaustAnimation.setX(this.xCoordinate - (exhaustAnimation.getWidth() / 2));
+            this.exhaustAnimation.setY(this.getCenterYCoordinate() - (this.exhaustAnimation.getHeight() / 2) + 3);
         }
 
         if (this.deathAnimation != null) {
@@ -268,11 +305,11 @@ public class SpaceShip extends GameObject {
     }
 
     public void repairHealth (float healAmount) {
-        playerStats.changeHitPoints(healAmount);
+        changeHitPoints(healAmount);
     }
 
     public void repairShields (float healAmount) {
-        playerStats.changeShieldHitpoints(healAmount);
+        changeShieldHitpoints(healAmount);
     }
 
     public List<SpaceShipSpecialGun> getSpecialGuns () {
@@ -449,6 +486,12 @@ public class SpaceShip extends GameObject {
 
     private void haltMoveDown () {
         directiony = 0;
+    }
+
+    public void addPlayerFollowingAnimation(SpriteAnimation spriteAnimation){
+        if(!this.playerFollowingAnimations.contains(spriteAnimation)){
+            playerFollowingAnimations.add(spriteAnimation);
+        }
     }
 
 }

@@ -49,6 +49,7 @@ public class Enemy extends GameObject {
         this.currentLocation = new Point(xCoordinate, yCoordinate);
         this.currentBoardBlock = BoardBlockUpdater.getBoardBlock(xCoordinate);
         this.boxCollision = enemyConfiguration.isBoxCollision();
+        this.baseArmor = enemyConfiguration.getBaseArmor();
 
         initMovementConfiguration(enemyConfiguration);
         this.setVisible(true);
@@ -100,46 +101,48 @@ public class Enemy extends GameObject {
         // classes.
     }
 
-    public void onCreationEffects(){
+    public void onCreationEffects () {
         //Exist to be overriden
     }
 
-    public void onDeathEffects(){
+    public void onDeathEffects () {
         //exist to be overriden
     }
 
-    public void deleteObject(){
-        if(this.animation != null){
+    public void deleteObject () {
+        if (this.animation != null) {
             this.animation.setVisible(false);
         }
 
-        if(this.exhaustAnimation != null){
+        for (SpriteAnimation spriteAnimation : effectAnimations) {
+            spriteAnimation.setVisible(false);
+        }
+
+        if (this.exhaustAnimation != null) {
             this.exhaustAnimation.setVisible(false);
         }
 
-        if(this.shieldDamagedAnimation != null){
+        if (this.shieldDamagedAnimation != null) {
             this.shieldDamagedAnimation.setVisible(false);
         }
 
-        if(this.destructionAnimation != null){
+        if (this.destructionAnimation != null &&
+                this.currentHitpoints > 1) {
             this.destructionAnimation.setVisible(false);
         }
 
-        for (GameObject object : objectsFollowingThis){
+        for (GameObject object : objectsFollowingThis) {
             object.deleteObject();
         }
 
-        for(GameObject object : objectOrbitingThis){
+        for (GameObject object : objectOrbitingThis) {
             object.deleteObject();
         }
 
-        for (Enemy enemy : followingEnemies){
+        for (Enemy enemy : followingEnemies) {
             enemy.deleteObject();
         }
 
-        for(SpriteAnimation spriteAnimation : effectAnimations){
-            spriteAnimation.setVisible(false);
-        }
 
         this.visible = false;
     }

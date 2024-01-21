@@ -38,11 +38,12 @@ public class EnemyCreator {
         boolean allowedToDealDamage = true;
         String objectType = enemyType.getObjectType();
         int attackSpeed = enemyType.getAttackSpeed();
+        float baseArmor = enemyType.getBaseArmor();
 
 
         return new EnemyConfiguration(enemyType, maxHitpoints, maxShields
                 , hasAttack, true, deathSound, movementDirection, pathFinder, xMovementSpeed, yMovementSpeed, allowedToDealDamage,
-                objectType, attackSpeed, movementPatternSize, boxCollision);
+                objectType, attackSpeed, movementPatternSize, boxCollision, baseArmor);
     }
 
     private static Enemy createSpecificEnemy (SpriteConfiguration spriteConfiguration, EnemyConfiguration enemyConfiguration) {

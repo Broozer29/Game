@@ -84,7 +84,7 @@ public class SpaceShipRegularGun {
                 ,direction, xMovementspeed, yMovementspeed, allowedToDealDamage, objectType,
                 playerStats.getNormalAttackDamage(), movementPatternSize, attackType.isBoxCollision());
         Missile missile = MissileCreator.getInstance().createMissile(spriteConfiguration, missileConfiguration);
-
+        missile.setOwnerOrCreator(PlayerManager.getInstance().getSpaceship());
         this.missileManager.addExistingMissile(missile);
 
     }

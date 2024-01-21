@@ -46,7 +46,7 @@ public class Tazer extends Enemy {
 
 
             Missile newMissile = MissileCreator.getInstance().createMissile(missileSpriteConfiguration, missileConfiguration);
-
+            newMissile.setOwnerOrCreator(this);
             newMissile.rotateGameObject(movementDirection);
             missileManager.addExistingMissile(newMissile);
             attackSpeedCurrentFrameCount = 0;

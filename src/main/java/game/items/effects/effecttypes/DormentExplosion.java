@@ -49,19 +49,23 @@ public class DormentExplosion implements EffectInterface {
         spriteConfiguration.setxCoordinate(gameObject.getXCoordinate());
         spriteConfiguration.setyCoordinate(gameObject.getYCoordinate());
         spriteConfiguration.setScale(scale);
-        System.out.println("Replace imageenums highlight in DormentExplosion row 46 with an actual proper animation");
-        spriteConfiguration.setImageType(ImageEnums.Highlight);
-        SpriteAnimationConfiguration spriteAnimationConfiguration = new SpriteAnimationConfiguration(spriteConfiguration,5 ,false);
+        spriteConfiguration.setImageType(explosionType);
+        SpriteAnimationConfiguration spriteAnimationConfiguration = new SpriteAnimationConfiguration(spriteConfiguration,2 ,false);
         ExplosionConfiguration explosionConfiguration = new ExplosionConfiguration(true, damage, true);
 
         Explosion explosion = new Explosion(spriteAnimationConfiguration, explosionConfiguration);
         explosion.setCenterCoordinates(gameObject.getCenterXCoordinate(), gameObject.getCenterYCoordinate());
         explosion.getAnimation().setCenterCoordinates(gameObject.getCenterXCoordinate(), gameObject.getCenterYCoordinate());
         explosion.setBoxCollision(true);
+        explosion.setOwnerOrCreator(gameObject);
 
 
         if(burningDuration != 0 && burningDamage != 0) {
-            DamageOverTime burning = new DamageOverTime(burningDamage, burningDuration);
+            SpriteAnimationConfiguration burningConfig = new SpriteAnimationConfiguration(spriteConfiguration,2, true);
+            burningConfig.getSpriteConfiguration().setImageType(ImageEnums.GasolineBurning);
+            burningConfig.getSpriteConfiguration().setScale(scale / 2);
+            SpriteAnimation burningAnimation = new SpriteAnimation(burningConfig);
+            DamageOverTime burning = new DamageOverTime(burningDamage, burningDuration, burningAnimation);
             explosion.addEffectToApply(burning);
         }
 
@@ -92,6 +96,12 @@ public class DormentExplosion implements EffectInterface {
     @Override
     public void increaseEffectStrength () {
         //Does nothing for dorment explosion
+    }
+
+    @Override
+    public EffectInterface copy () {
+        DormentExplosion copy = new DormentExplosion(burningDamage, scale, explosionType);
+        return copy;
     }
 
     public float getDamage () {
