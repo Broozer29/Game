@@ -7,7 +7,7 @@ import game.managers.AnimationManager;
 import game.objects.GameObject;
 import game.objects.player.PlayerStats;
 import game.items.Item;
-import game.items.ItemApplicationEnum;
+import game.items.enums.ItemApplicationEnum;
 import game.util.CollisionDetector;
 import game.objects.player.PlayerManager;
 import game.objects.enemies.Enemy;

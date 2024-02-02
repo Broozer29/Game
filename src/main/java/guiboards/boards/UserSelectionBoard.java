@@ -15,7 +15,7 @@ import javax.swing.JPanel;
 
 import VisualAndAudioData.DataClass;
 import guiboards.MenuCursor;
-import guiboards.MenuObject;
+import guiboards.MenuObjectCollection;
 import guiboards.MenuObjectPart;
 
 //Legacy code, probably never to be used again
@@ -25,10 +25,10 @@ public class UserSelectionBoard extends JPanel implements ActionListener {
 	private final int boardHeight = data.getWindowHeight();;
 	private List<MenuObjectPart> tiles = new ArrayList<MenuObjectPart>();
 	private MenuCursor menuCursor;
-	private MenuObject userOneTile;
-	private MenuObject userTwoTile;
-	private MenuObject userThreeTile;
-	private MenuObject returnToMenuTile;
+	private MenuObjectCollection userOneTile;
+	private MenuObjectCollection userTwoTile;
+	private MenuObjectCollection userThreeTile;
+	private MenuObjectCollection returnToMenuTile;
 
 	public UserSelectionBoard() {
 		addKeyListener(new TAdapter());

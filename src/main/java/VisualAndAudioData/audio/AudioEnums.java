@@ -34,5 +34,7 @@ public enum AudioEnums {
 	Forhill_Iris,
 	Tonebox_Radium_Cloud_Highway,
 	The_Rain_Formerly_Known_As_Purple,
-	Blood_On_The_Dancefloor
+	Blood_On_The_Dancefloor,
+	Lemmino_Firecracker,
+	Mydnyte
 }

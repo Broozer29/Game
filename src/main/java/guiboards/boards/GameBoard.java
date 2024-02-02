@@ -195,8 +195,8 @@ public class GameBoard extends JPanel implements ActionListener {
         }
     }
 
-    private void resetManagersForNextLevel(){
-        if(!resetManagersForNextLevel) {
+    private void resetManagersForNextLevel () {
+        if (!resetManagersForNextLevel) {
             animationManager.resetManager();
             enemyManager.resetManager();
             missileManager.resetManager();
@@ -229,7 +229,6 @@ public class GameBoard extends JPanel implements ActionListener {
             drawGameOver(g2d);
         } else if (gameState.getGameState() == GameStatusEnums.Transitioning_To_Next_Level) {
             drawZoningOut(g2d);
-            resetManagersForNextLevel();
             goToNextLevel();
         } else if (gameState.getGameState() == GameStatusEnums.Zoning_In) {
             drawZoningIn(g2d);
@@ -247,13 +246,16 @@ public class GameBoard extends JPanel implements ActionListener {
         if (zoningOutAlpha >= 1) {
             playerManager.getSpaceship().setX(DataClass.getInstance().getWindowWidth() / 10);
             playerManager.getSpaceship().setY(DataClass.getInstance().getWindowHeight() / 2);
-            gameState.setGameState(GameStatusEnums.Zoning_In);
+            gameState.setGameState(GameStatusEnums.Shopping);
             gameState.setStagesCompleted(gameState.getStagesCompleted() + 1);
             backgroundManager.resetManager();
-
             zoningInAlpha = 1;
             zoningOutAlpha = 0;
             resetManagersForNextLevel = false;
+            resetManagersForNextLevel();
+
+            drawTimer.stop();
+            BoardManager.getInstance().openShopWindow();
         }
     }
 
@@ -474,30 +476,49 @@ public class GameBoard extends JPanel implements ActionListener {
     private void drawPlayerHealthBars (Graphics2D g) {
         float playerHealth = playerManager.getSpaceship().getCurrentHitpoints();
         float playerMaxHealth = playerStats.getMaxHitPoints();
-
+        UIObject healthFrame = uiManager.getHealthFrame();
         UIObject healthBar = uiManager.getHealthBar();
+
         int healthBarWidth = calculateHealthbarWidth(playerHealth, playerMaxHealth, healthBar.getWidth());
+        if (healthBarWidth > healthFrame.getWidth()) {
+            healthBarWidth = healthFrame.getWidth();
+        }
+
         healthBar.resizeToDimensions(healthBarWidth, healthBar.getHeight());
         drawImage(g, healthBar);
-
-        UIObject healthFrame = uiManager.getHealthFrame();
         drawImage(g, healthFrame);
 
         float playerShields = playerManager.getSpaceship().getCurrentShieldPoints();
         float playerMaxShields = playerStats.getMaxShieldHitPoints();
-
+        UIObject shieldFrame = uiManager.getShieldFrame();
         UIObject shieldBar = uiManager.getShieldBar();
 
         int shieldBarWidth = calculateHealthbarWidth(playerShields, playerMaxShields, shieldBar.getWidth());
+        if (shieldBarWidth > shieldFrame.getWidth()) {
+            shieldBarWidth = shieldFrame.getWidth();
+        }
+
         shieldBar.resizeToDimensions(shieldBarWidth, shieldBar.getHeight());
         drawImage(g, shieldBar);
 
-        UIObject shieldFrame = uiManager.getShieldFrame();
+        // Check if currentShieldPoints exceed maximumShieldPoints
+        if (playerShields > playerMaxShields) {
+            UIObject overloadingShieldBar = uiManager.getOverloadingShieldBar();
+            // Calculate the width for the overloading shield bar: playerMaxShields * 2 as the maximum theoretical width
+            int overloadingShieldBarWidth = calculateHealthbarWidth(playerShields - playerMaxShields, playerMaxShields * PlayerStats.getInstance().getMaxOverloadingShieldMultiplier(), overloadingShieldBar.getWidth());
+            if (overloadingShieldBarWidth > shieldFrame.getWidth()) {
+                overloadingShieldBarWidth = shieldFrame.getWidth();
+            }
+            overloadingShieldBar.resizeToDimensions(overloadingShieldBarWidth, overloadingShieldBar.getHeight());
+            drawImage(g, overloadingShieldBar);
+        }
+
         drawImage(g, shieldFrame);
     }
 
 
-    private void drawSpecialAttackFrame(Graphics2D g) {
+
+    private void drawSpecialAttackFrame (Graphics2D g) {
         drawImage(g, uiManager.getSpecialAttackFrame());
         for (SpaceShipSpecialGun gun : playerManager.getSpaceship().getSpecialGuns()) {
             int charges = gun.getSpecialAttackCharges();
@@ -526,27 +547,6 @@ public class GameBoard extends JPanel implements ActionListener {
         }
     }
 
-
-//    private void drawSpecialAttackFrame (Graphics2D g) {
-//        drawImage(g, uiManager.getSpecialAttackFrame());
-//
-//        for (SpaceShipSpecialGun gun : playerManager.getSpaceship().getSpecialGuns()) {
-//            if (gun.getCurrentSpecialAttackFrame() >= playerStats.getSpecialAttackSpeed()) {
-//                drawAnimation(g, uiManager.getSpecialAttackHighlight());
-//            } else {
-//                float percentage = (float) gun.getCurrentSpecialAttackFrame() / playerStats.getSpecialAttackSpeed();
-//
-//                int barWidth = (int) (uiManager.getSpecialAttackFrame().getWidth() * percentage);
-//
-//                // Draw the cooldown progress bar
-//                g.setColor(new Color(160, 160, 160, 160)); // Semi-transparent gray
-//                g.fillRect(uiManager.getSpecialAttackFrame().getXCoordinate(),
-//                        uiManager.getSpecialAttackFrame().getYCoordinate(), barWidth,
-//                        uiManager.getSpecialAttackFrame().getHeight());
-//            }
-//        }
-//
-//    }
 
     public int calculateHealthbarWidth (float currentHitpoints, float maximumHitpoints, int healthBarSize) {
         // Calculate the percentage of currentHitpoints out of maximumHitpoints
@@ -642,7 +642,7 @@ public class GameBoard extends JPanel implements ActionListener {
                     drawTimer.stop();
                 }
 
-            } else{
+            } else {
                 playerManager.getSpaceship().update(controllers.getFirstController());
             }
         }

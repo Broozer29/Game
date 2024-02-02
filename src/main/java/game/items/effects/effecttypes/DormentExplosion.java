@@ -1,6 +1,7 @@
 package game.items.effects.effecttypes;
 
 import VisualAndAudioData.image.ImageEnums;
+import game.gamestate.GameStateInfo;
 import game.items.effects.EffectInterface;
 import game.items.effects.EffectActivationTypes;
 import game.objects.GameObject;
@@ -26,32 +27,58 @@ public class DormentExplosion implements EffectInterface {
 
     private float burningDamage;
     private int burningDuration;
+    private DormentExplosionActivationMethods activationMethod;
+    private double activationTime;
+    private boolean allowedToApplyOnHitEffects = false;
 
     private List<EffectInterface> additionalEffects = new ArrayList<>();
 
-    public DormentExplosion(float damage, float scale, ImageEnums explosionType){
+    public DormentExplosion (float damage, float scale, ImageEnums explosionType, DormentExplosionActivationMethods activationMethod) {
         this.damage = damage;
         this.scale = scale;
         this.explosionType = explosionType;
-        effectTypesEnums = EffectActivationTypes.DormentExplosion;
-        activated = false;
+        this.activationMethod = activationMethod;
+        this.effectTypesEnums = EffectActivationTypes.DormentExplosion;
+        this.activated = false;
+        this.activationTime = GameStateInfo.getInstance().getGameSeconds() + 3; //3 seconds after applying
+
+        if(this.activationMethod == DormentExplosionActivationMethods.OnDeath){
+            allowedToApplyOnHitEffects = true;
+        }
+
     }
 
-    public void addAdditionalEffects(EffectInterface effect){
-        if(!additionalEffects.contains(effect)){
+    public void addAdditionalEffects (EffectInterface effect) {
+        if (!additionalEffects.contains(effect)) {
             additionalEffects.add(effect);
         }
     }
 
     @Override
     public void activateEffect (GameObject gameObject) {
+        switch (activationMethod) {
+            case OnDeath -> {
+                if (gameObject.getCurrentHitpoints() <= 0) {
+                    createExplosion(gameObject);
+                }
+            }
+            case Timed -> {
+                if (GameStateInfo.getInstance().getGameSeconds() > activationTime) {
+                    createExplosion(gameObject);
+                }
+            }
+        }
+
+    }
+
+    private void createExplosion (GameObject gameObject) {
         SpriteConfiguration spriteConfiguration = new SpriteConfiguration();
         spriteConfiguration.setxCoordinate(gameObject.getXCoordinate());
         spriteConfiguration.setyCoordinate(gameObject.getYCoordinate());
         spriteConfiguration.setScale(scale);
         spriteConfiguration.setImageType(explosionType);
-        SpriteAnimationConfiguration spriteAnimationConfiguration = new SpriteAnimationConfiguration(spriteConfiguration,2 ,false);
-        ExplosionConfiguration explosionConfiguration = new ExplosionConfiguration(true, damage, true);
+        SpriteAnimationConfiguration spriteAnimationConfiguration = new SpriteAnimationConfiguration(spriteConfiguration, 2, false);
+        ExplosionConfiguration explosionConfiguration = new ExplosionConfiguration(true, damage, true, allowedToApplyOnHitEffects);
 
         Explosion explosion = new Explosion(spriteAnimationConfiguration, explosionConfiguration);
         explosion.setCenterCoordinates(gameObject.getCenterXCoordinate(), gameObject.getCenterYCoordinate());
@@ -60,8 +87,8 @@ public class DormentExplosion implements EffectInterface {
         explosion.setOwnerOrCreator(gameObject);
 
 
-        if(burningDuration != 0 && burningDamage != 0) {
-            SpriteAnimationConfiguration burningConfig = new SpriteAnimationConfiguration(spriteConfiguration,2, true);
+        if (burningDuration != 0 && burningDamage != 0) {
+            SpriteAnimationConfiguration burningConfig = new SpriteAnimationConfiguration(spriteConfiguration, 2, true);
             burningConfig.getSpriteConfiguration().setImageType(ImageEnums.GasolineBurning);
             burningConfig.getSpriteConfiguration().setScale(scale / 2);
             SpriteAnimation burningAnimation = new SpriteAnimation(burningConfig);
@@ -100,7 +127,7 @@ public class DormentExplosion implements EffectInterface {
 
     @Override
     public EffectInterface copy () {
-        DormentExplosion copy = new DormentExplosion(burningDamage, scale, explosionType);
+        DormentExplosion copy = new DormentExplosion(burningDamage, scale, explosionType, activationMethod);
         return copy;
     }
 
@@ -162,6 +189,22 @@ public class DormentExplosion implements EffectInterface {
 
     public void setAdditionalEffects (List<EffectInterface> additionalEffects) {
         this.additionalEffects = additionalEffects;
+    }
+
+    public DormentExplosionActivationMethods getActivationMethod () {
+        return activationMethod;
+    }
+
+    public void setActivationMethod (DormentExplosionActivationMethods activationMethod) {
+        this.activationMethod = activationMethod;
+    }
+
+    public double getActivationTime () {
+        return activationTime;
+    }
+
+    public void setActivationTime (double activationTime) {
+        this.activationTime = activationTime;
     }
 
     @Override

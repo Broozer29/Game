@@ -1,7 +1,7 @@
 package guiboards.boardEnums;
 
 public enum MenuObjectEnums {
-	Text_Block,
+	Text,
 	Title_Image,
 	Cursor_Image,
 	Long_Card,
@@ -12,5 +12,12 @@ public enum MenuObjectEnums {
 	Flamethrower_Icon,
 	Firewall_Icon,
 	Rocket_Launcher_Icon,
-	Highlight_Animation
+	Highlight_Animation,
+	CommonItem,
+	RareItem,
+	LegendaryItem,
+	RelicItem,
+	Song_Selector,
+	Description_Block,
+	ItemIcon,
 }

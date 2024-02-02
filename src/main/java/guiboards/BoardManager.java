@@ -1,26 +1,18 @@
 package guiboards;
 
-import java.io.IOException;
-
-import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import VisualAndAudioData.DataClass;
-import VisualAndAudioData.audio.AudioEnums;
 import VisualAndAudioData.audio.AudioManager;
-import guiboards.boards.GameBoard;
-import guiboards.boards.LevelSelectionBoard;
-import guiboards.boards.MenuBoard;
-import guiboards.boards.TalentSelectionBoard;
-import guiboards.boards.UserSelectionBoard;
+import guiboards.boards.*;
 
 public class BoardManager extends JFrame {
 
 	private DataClass data = DataClass.getInstance();
 	private MenuBoard menuBoard;
 	private GameBoard gameBoard;
-	private UserSelectionBoard usBoard;
+	private ShopBoard shopBoard;
 	private TalentSelectionBoard talentBoard;
 	private LevelSelectionBoard levelSelectionBoard;
 	private static BoardManager instance = new BoardManager();
@@ -37,6 +29,7 @@ public class BoardManager extends JFrame {
 		menuBoard = new MenuBoard();
 		gameBoard = new GameBoard();
 		talentBoard = new TalentSelectionBoard();
+		shopBoard = new ShopBoard();
 		levelSelectionBoard = new LevelSelectionBoard();
 	}
 
@@ -46,11 +39,11 @@ public class BoardManager extends JFrame {
 
 	private void playMenuMusic() {
 		if (audioManager.getBackgroundMusic() == null) {
-			try {
-				audioManager.playMusicAudio(AudioEnums.mainmenu);
-			} catch (UnsupportedAudioFileException | IOException e) {
-				e.printStackTrace();
-			}
+//			try {
+//				audioManager.playMusicAudio(AudioEnums.mainmenu);
+//			} catch (UnsupportedAudioFileException | IOException e) {
+//				e.printStackTrace();
+//			}
 		}
 	}
 
@@ -87,6 +80,13 @@ public class BoardManager extends JFrame {
 		playMenuMusic();
 	}
 
+	public void openShopWindow(){
+		playMenuMusic();
+		changeMenuScreen(shopBoard);
+		shopBoard.createWindow();
+		shopBoard.getTimer().restart();
+	}
+
 	private void changeMenuScreen(JPanel newBoard) {
 		if (currentBoard != null) {
 			remove(currentBoard);
@@ -99,4 +99,7 @@ public class BoardManager extends JFrame {
 		repaint();
 	}
 
+	public ShopBoard getShopBoard () {
+		return shopBoard;
+	}
 }

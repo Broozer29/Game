@@ -90,9 +90,6 @@ public class LevelManager {
         enemy4.setMaxHitPoints(200);
         enemy4.setCurrentHitpoints(200);
         EnemyManager.getInstance().addEnemy(enemy4);
-
-        PlayerManager.getInstance().getSpaceship().takeDamage(180);
-
     }
 
     // Called by CustomTimers when they have to spawn an enemy
@@ -108,6 +105,7 @@ public class LevelManager {
 
                 Enemy enemy = EnemyCreator.createEnemy(enemyType, xCoordinate, yCoordinate, direction, scale, xMovementSpeed, yMovementSpeed, MovementPatternSize.SMALL, boxCollision);
                 if (validCoordinates(enemy)) {
+                    enemy = increaseEnemyStrengthByDifficulty(enemy);
                     enemiesSpawned++;
                     enemyManager.addEnemy(enemy);
                 }
@@ -115,11 +113,22 @@ public class LevelManager {
         } else {
             Enemy enemy = EnemyCreator.createEnemy(enemyType, xCoordinate, yCoordinate, direction, scale, xMovementSpeed, yMovementSpeed, MovementPatternSize.SMALL, boxCollision);
             if (validCoordinates(enemy)) {
+                enemy = increaseEnemyStrengthByDifficulty(enemy);
                 enemiesSpawned++;
                 enemyManager.addEnemy(enemy);
             }
         }
+    }
 
+    private Enemy increaseEnemyStrengthByDifficulty(Enemy enemy){
+        float difficultyCoeff = GameStateInfo.getInstance().getDifficultyCoefficient();
+        enemy.setMaxHitPoints(enemy.getMaxHitPoints() * difficultyCoeff);
+        enemy.setMaxShieldPoints(enemy.getMaxShieldPoints() * difficultyCoeff);
+        enemy.setDamage(enemy.getDamage() * difficultyCoeff);
+        enemy.setBaseArmor(enemy.getBaseArmor() * (1 + (difficultyCoeff / 4)));
+        enemy.setCurrentHitpoints(enemy.getMaxHitPoints());
+        enemy.setCurrentShieldPoints(enemy.getMaxShieldPoints());
+        return enemy;
     }
 
 

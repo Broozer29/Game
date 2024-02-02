@@ -6,11 +6,8 @@ import java.util.List;
 
 import javax.sound.sampled.UnsupportedAudioFileException;
 
-import game.items.Item;
-import game.items.ItemApplicationEnum;
-import game.items.ItemEnums;
+import game.items.enums.ItemEnums;
 import game.items.PlayerInventory;
-import game.items.items.FocusCrystal;
 import game.managers.AnimationManager;
 import game.objects.player.spaceship.SpaceShip;
 import VisualAndAudioData.DataClass;
@@ -19,8 +16,6 @@ import game.gamestate.GameStatusEnums;
 import VisualAndAudioData.audio.AudioEnums;
 import VisualAndAudioData.audio.AudioManager;
 import VisualAndAudioData.image.ImageEnums;
-import visualobjects.SpriteAnimation;
-import visualobjects.SpriteConfigurations.SpriteAnimationConfiguration;
 import visualobjects.SpriteConfigurations.SpriteConfiguration;
 
 public class PlayerManager {
@@ -56,11 +51,9 @@ public class PlayerManager {
 	}
 
 	private void checkPlayerHealth() {
-
 		if(PlayerInventory.getInstance().getItemByName(ItemEnums.EmergencyRepairBot) != null){
 			PlayerInventory.getInstance().getItemByName(ItemEnums.EmergencyRepairBot).applyEffectToObject(spaceship);
 		}
-
 		if (spaceship.getCurrentHitpoints() <= 0 && gameState.getGameState() == GameStatusEnums.Playing) {
 			gameState.setGameState(GameStatusEnums.Dying);
 			spaceship.setVisible(false);
@@ -101,6 +94,7 @@ public class PlayerManager {
 
 			if (spaceship.getDeathAnimation().getCurrentFrame() >= spaceship.getDeathAnimation().getTotalFrames()) {
 				gameState.setGameState(GameStatusEnums.Dead);
+				PlayerInventory.getInstance().resetInventory();
 			}
 		}
 	}

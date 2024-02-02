@@ -13,7 +13,7 @@ import game.objects.background.BackgroundObject;
 import VisualAndAudioData.DataClass;
 import guiboards.MenuCursor;
 import guiboards.boardEnums.MenuFunctionEnums;
-import guiboards.MenuObject;
+import guiboards.MenuObjectCollection;
 import guiboards.boardEnums.MenuObjectEnums;
 import guiboards.MenuObjectPart;
 import visualobjects.Sprite;
@@ -38,20 +38,20 @@ public class TemplateBoard extends JPanel implements ActionListener {
 	private ConnectedControllers controllers = ConnectedControllers.getInstance();
 	private final int boardWidth = data.getWindowWidth();;
 	private final int boardHeight = data.getWindowHeight();;
-	private List<MenuObject> firstColumn = new ArrayList<MenuObject>();
-	private List<MenuObject> secondColumn = new ArrayList<MenuObject>();
-	private List<MenuObject> thirdColumn = new ArrayList<MenuObject>();
-	private List<List<MenuObject>> grid = new ArrayList<>();
+	private List<MenuObjectCollection> firstColumn = new ArrayList<MenuObjectCollection>();
+	private List<MenuObjectCollection> secondColumn = new ArrayList<MenuObjectCollection>();
+	private List<MenuObjectCollection> thirdColumn = new ArrayList<MenuObjectCollection>();
+	private List<List<MenuObjectCollection>> grid = new ArrayList<>();
 
-	private List<MenuObject> offTheGridObjects = new ArrayList<MenuObject>();
+	private List<MenuObjectCollection> offTheGridObjects = new ArrayList<MenuObjectCollection>();
 
 	private Timer timer;
 	private int selectedRow = 0;
 	private int selectedColumn = 0;
 	
 	private MenuCursor menuCursor;
-	private MenuObject dummyTest;
-	private MenuObject returnToMainMenu;
+	private MenuObjectCollection dummyTest;
+	private MenuObjectCollection returnToMainMenu;
 	
 	
 	private ControllerInputReader controllerInputReader;
@@ -76,10 +76,10 @@ public class TemplateBoard extends JPanel implements ActionListener {
 
 		float imageScale = 1;
 		float textScale = 1;
-		this.dummyTest = new MenuObject(150, (boardHeight / 2), textScale, "TESTING TESTING",
-				MenuObjectEnums.Text_Block, MenuFunctionEnums.Start_Game);
+		this.dummyTest = new MenuObjectCollection(150, (boardHeight / 2), textScale, "TESTING TESTING",
+				MenuObjectEnums.Text, MenuFunctionEnums.Start_Game);
 		
-		this.returnToMainMenu = new MenuObject(300, 300, textScale, "RETURN TO MAIN MENU", MenuObjectEnums.Text_Block,
+		this.returnToMainMenu = new MenuObjectCollection(300, 300, textScale, "RETURN TO MAIN MENU", MenuObjectEnums.Text,
 				MenuFunctionEnums.Return_To_Main_Menu);
 		
 		int initCursorX = returnToMainMenu.getXCoordinate();
@@ -122,15 +122,15 @@ public class TemplateBoard extends JPanel implements ActionListener {
 
 	}
 
-	private void addTileToFirstColumn(MenuObject menuTile) {
+	private void addTileToFirstColumn(MenuObjectCollection menuTile) {
 		firstColumn.add(menuTile);
 	}
 
-	private void addTileToSecondColumn(MenuObject menuTile) {
+	private void addTileToSecondColumn(MenuObjectCollection menuTile) {
 		secondColumn.add(menuTile);
 	}
 
-	private void addTileToThirdColumn(MenuObject menuTile) {
+	private void addTileToThirdColumn(MenuObjectCollection menuTile) {
 		thirdColumn.add(menuTile);
 	}
 
@@ -202,7 +202,7 @@ public class TemplateBoard extends JPanel implements ActionListener {
 
 	// Check if the grid is empty
 	private boolean isGridEmpty() {
-		for (List<MenuObject> row : grid) {
+		for (List<MenuObjectCollection> row : grid) {
 			if (!row.isEmpty()) {
 				return false; // Return false as soon as a non-empty row is found
 			}
@@ -234,7 +234,7 @@ public class TemplateBoard extends JPanel implements ActionListener {
 			menuCursor.setSelectedMenuTile(null); // You might need to decide how you want to handle this situation in
 													// your application
 		} else {
-			MenuObject selectedTile = grid.get(selectedRow).get(selectedColumn);
+			MenuObjectCollection selectedTile = grid.get(selectedRow).get(selectedColumn);
 			menuCursor.setSelectedMenuTile(selectedTile);
 			menuCursor.setYCoordinate(selectedTile.getYCoordinate());
 			menuCursor.setXCoordinate(selectedTile.getXCoordinate() - (menuCursor.getxDistanceToKeep()));
@@ -365,8 +365,8 @@ public class TemplateBoard extends JPanel implements ActionListener {
 
 	private void drawObjects(Graphics2D g) {
 		recreateList();
-		for (MenuObject object : offTheGridObjects) {
-			if (object.getMenuObjectType() == MenuObjectEnums.Text_Block) {
+		for (MenuObjectCollection object : offTheGridObjects) {
+			if (object.getMenuObjectType() == MenuObjectEnums.Text) {
 				for (MenuObjectPart letter : object.getMenuImages()) {
 					g.drawImage(letter.getImage(), letter.getXCoordinate(), letter.getYCoordinate(), this);
 				}
@@ -376,8 +376,8 @@ public class TemplateBoard extends JPanel implements ActionListener {
 			}
 		}
 
-		for (List<MenuObject> list : grid) {
-			for (MenuObject object : list) {
+		for (List<MenuObjectCollection> list : grid) {
+			for (MenuObjectCollection object : list) {
 				for (MenuObjectPart menuPart : object.getMenuImages()) {
 					g.drawImage(menuPart.getImage(), menuPart.getXCoordinate(), menuPart.getYCoordinate(), this);
 				}

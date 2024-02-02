@@ -64,7 +64,7 @@ public class PlayerStats {
     private float missileScale;
     private int maxSpecialAttackCharges;
     private float criticalStrikeDamageMultiplier;
-
+    private float maxOverloadingShieldMultiplier;
 
 
     private PlayerInventory playerInventory;
@@ -84,6 +84,7 @@ public class PlayerStats {
         setMaxSpecialAttackCharges(1);
 
         setCriticalStrikeDamageMultiplier(2.0f);
+        setMaxOverloadingShieldMultiplier(2.0f);
 
         // HomingRectangle target size (the larger, the quicker homing missiles lose lock)
         setHomingRectangleResizeScale((float) 1.5);
@@ -377,5 +378,13 @@ public class PlayerStats {
 
     public void setAttackSpeedBonus (float attackSpeedBonus) {
         this.attackSpeedBonus = attackSpeedBonus;
+    }
+
+    public float getMaxOverloadingShieldMultiplier () {
+        return maxOverloadingShieldMultiplier;
+    }
+
+    public void setMaxOverloadingShieldMultiplier (float maxOverloadingShieldMultiplier) {
+        this.maxOverloadingShieldMultiplier = maxOverloadingShieldMultiplier;
     }
 }

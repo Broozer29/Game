@@ -9,5 +9,6 @@ public enum EffectActivationTypes {
     PlayerStatsModification, //Modifies something in the PlayerStats instance
     OutOfCombatArmorBonus,
     CheckEveryGameTick, //Something that gets checked every gametick wether it should fire
+    OnDeath // After a gameobject dies
 
 }

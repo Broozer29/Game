@@ -1,14 +1,11 @@
 package game.objects.neutral;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import game.items.Item;
-import game.items.ItemApplicationEnum;
-import game.items.ItemEnums;
+import game.items.enums.ItemApplicationEnum;
 import game.items.effects.EffectInterface;
 import game.objects.GameObject;
 import game.objects.enemies.Enemy;
@@ -90,7 +87,11 @@ public class ExplosionManager {
                 if (CollisionDetector.getInstance().detectCollision(explosion, enemy)) {
                     applyDamageModification(explosion, enemy);
                     enemy.takeDamage(explosion.getDamage());
-                    applyPlayerOnHitEffects(enemy);
+
+                    if(explosion.isApplyOnHitEffects()) {
+                        applyPlayerOnHitEffects(enemy);
+                    }
+
                     applyExplosionEffects(explosion, enemy);
                     explosion.addCollidedSprite(enemy);
                 }

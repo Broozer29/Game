@@ -17,9 +17,7 @@ import java.util.Random;
 import java.util.stream.Collectors;
 
 public class Director {
-    private float difficultyFactor;
     private float credits;
-    private long lastUpdateTime;
     private double lastSpawnTime;
     private long spawnInterval; // Interval for Slow and Fast directors
     private List<MonsterCard> availableCards;
@@ -151,7 +149,7 @@ public class Director {
             List<MonsterCard> topThreeExpensiveCards = availableCards.stream()
                     .sorted(Comparator.comparing(MonsterCard::getCreditCost).reversed())
                     .limit(3) // Limit to the top three
-                    .collect(Collectors.toList());
+                    .toList();
 
             affordableMonsters.addAll(topThreeExpensiveCards);
         }

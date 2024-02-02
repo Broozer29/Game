@@ -21,6 +21,7 @@ public class Sprite {
     protected int height;
     protected boolean visible;
     protected BufferedImage image;
+    protected BufferedImage originalImage;
     protected float scale;
 
     protected float transparancyAlpha;
@@ -65,6 +66,7 @@ public class Sprite {
         if (scale != 1 && this.image != null) {
             this.image = imageResizer.getScaledImage(image, scale);
         }
+        this.originalImage = image;
         configureImageDimensions();
 //		 Zet collision ook op die getallen en shits & giggles
     }
@@ -164,14 +166,14 @@ public class Sprite {
 
     public void setImageDimensions (int newWidth, int newHeight) {
         ImageResizer imageResizer = ImageResizer.getInstance();
-        this.image = imageResizer.resizeImageToDimensions(this.image, newWidth, newHeight);
+        this.image = imageResizer.resizeImageToDimensions(this.originalImage, newWidth, newHeight);
         configureImageDimensions();
 
     }
 
-    protected void cropWidth (float cropPercentage) {
+    public void cropWidth (float cropPercentage) {
         ImageCropper imageCropper = ImageCropper.getInstance();
-        this.image = imageCropper.cropImage(this.image, cropPercentage);
+        this.image = imageCropper.cropImage(this.originalImage, cropPercentage);
     }
 
 

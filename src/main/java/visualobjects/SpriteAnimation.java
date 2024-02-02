@@ -51,13 +51,13 @@ public class SpriteAnimation extends Sprite implements Cloneable{
 	// from a manager when created.
 	private void loadGifFrames(ImageEnums imageType) {
 		this.imageType = imageType;
-		this.frames = ImageDatabase.getInstance().getGif(imageType);
+		this.frames = ImageDatabase.getInstance().getAnimation(imageType);
 		this.standardSizeFrames = frames;
 	}
 
 	public void changeImagetype(ImageEnums imageType) {
 		this.imageType = imageType;
-		this.frames = ImageDatabase.getInstance().getGif(imageType);
+		this.frames = ImageDatabase.getInstance().getAnimation(imageType);
 		this.standardSizeFrames = frames;
 	}
 

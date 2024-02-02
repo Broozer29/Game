@@ -1,9 +1,8 @@
 package game.items.items;
 
-import com.badlogic.gdx.Game;
 import game.items.Item;
-import game.items.ItemApplicationEnum;
-import game.items.ItemEnums;
+import game.items.enums.ItemApplicationEnum;
+import game.items.enums.ItemEnums;
 import game.items.effects.EffectActivationTypes;
 import game.objects.GameObject;
 import game.objects.player.PlayerStats;

@@ -111,7 +111,17 @@ public class GameObject extends Sprite {
     //*****************EFFECTS*******************************
     public void addEffect (EffectInterface effect) {
         if (visible && currentHitpoints > 0) {
-            if (!effects.contains(effect)) {
+            boolean effectFound = false;
+
+            // Iterate over the effects to check if an instance of the same type exists
+            for (EffectInterface existingEffect : effects) {
+                if (existingEffect.getClass().equals(effect.getClass())) {
+                    effectFound = true;
+                    break; // Exit the loop as we found an instance of the effect
+                }
+            }
+
+            if (!effectFound) {
                 effects.add(effect);
             } else {
                 refreshEffect(effect);
@@ -135,6 +145,7 @@ public class GameObject extends Sprite {
 
     private void activateOnDeathEffects () {
         activateEffects(EffectActivationTypes.DormentExplosion);
+        activateEffects(EffectActivationTypes.OnDeath);
         cleanseAllEffects();
     }
 
@@ -142,6 +153,7 @@ public class GameObject extends Sprite {
         activateEffects(EffectActivationTypes.DamageOverTime);
         activateEffects(EffectActivationTypes.HealthRegeneration);
         activateEffects(EffectActivationTypes.OutOfCombatArmorBonus);
+        activateEffects(EffectActivationTypes.DormentExplosion);
     }
 
 

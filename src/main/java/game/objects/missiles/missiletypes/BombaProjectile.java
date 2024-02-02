@@ -31,7 +31,7 @@ public class BombaProjectile extends Missile {
 			SpriteAnimationConfiguration spriteAnimationConfiguration = new SpriteAnimationConfiguration(spriteConfiguration1, 2, false);
 			spriteAnimationConfiguration.getSpriteConfiguration().setImageType(ImageEnums.Bomba_Missile_Explosion);
 
-			ExplosionConfiguration explosionConfiguration = new ExplosionConfiguration(isFriendly(), damage * 5, false);
+			ExplosionConfiguration explosionConfiguration = new ExplosionConfiguration(isFriendly(), damage * 5, false, false);
 			Explosion explosion = new Explosion(spriteAnimationConfiguration, explosionConfiguration);
 			explosion.setOwnerOrCreator(this.ownerOrCreator);
 			ExplosionManager.getInstance().addExplosion(explosion);

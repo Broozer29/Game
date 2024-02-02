@@ -69,6 +69,7 @@ public class SpaceShipSpecialGun {
         SpecialAttack specialAttack = new ElectroShred(spriteAnimationConfiguration, missileConfiguration);
         specialAttack.setCenteredAroundPlayer(true);
         specialAttack.setScale(2);
+        specialAttack.setOwnerOrCreator(PlayerManager.getInstance().getSpaceship());
 
 //			specialAttackAnimation.setCenterCoordinates(spaceShip.getCenterXCoordinate(), spaceShip.getCenterYCoordinate());
 //			specialAttack.setCenterCoordinates(spaceShip.getCenterXCoordinate(), spaceShip.getCenterYCoordinate());

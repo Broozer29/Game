@@ -15,8 +15,8 @@ import controllerInput.ControllerInputEnums;
 import controllerInput.ControllerInputReader;
 import game.gamestate.GameStateInfo;
 import game.items.Item;
-import game.items.ItemApplicationEnum;
-import game.items.ItemEnums;
+import game.items.enums.ItemApplicationEnum;
+import game.items.enums.ItemEnums;
 import game.items.items.FocusCrystal;
 import game.managers.AnimationManager;
 import game.objects.neutral.Explosion;
@@ -180,8 +180,14 @@ public class SpaceShip extends GameObject {
 
     public void changeShieldHitpoints (float change) {
         this.currentShieldPoints += change;
-        if (this.currentShieldPoints > maxShieldPoints) {
-            this.currentShieldPoints = maxShieldPoints;
+        if(currentShieldPoints > maxShieldPoints * PlayerStats.getInstance().getMaxOverloadingShieldMultiplier()){
+            currentShieldPoints = maxShieldPoints * 2;
+        }
+    }
+
+    private void reduceOverloadedShieldPoints(){
+        if(currentShieldPoints > maxShieldPoints + 1){
+            currentShieldPoints -= 0.5f;
         }
     }
 
@@ -201,6 +207,7 @@ public class SpaceShip extends GameObject {
         moveSpecialAttacks();
         removeInvisibleAnimations();
         updateGameObjectEffects();
+        reduceOverloadedShieldPoints();
 
         if (currentShieldRegenDelayFrame >= playerStats.getShieldRegenDelay()) {
             if (currentShieldPoints < playerStats.getMaxShieldHitPoints()) {

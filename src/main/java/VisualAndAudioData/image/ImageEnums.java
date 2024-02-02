@@ -15,7 +15,7 @@ public enum ImageEnums {
     Default_Player_Shield_Damage, Player_Fireswirl, Player_EMP, Player_EMP_Plus, Drone, FirewallParticle, Portal5,
     Warp, Shield4, Shield3, Shield2, Charging, EnergyCircle, Flamewarp, Frontshield, FrontshieldB, PulsatingShield, PulsatingStar, Radar,
     RotatingBoxes, RotatingCones, GreenEnergyOrb, PurpleEnergyBlocks, Fireshield, EnergyFlower, PurpleEnergyBarrier, RedHole, CrossingEnergyBeams,
-    PlasmaCoatedDebuff, GasolineExplosion, GasolineBurning, Healing,
+    PlasmaCoatedDebuff, GasolineExplosion, GasolineBurning, Healing, StickyDynamiteExplosion,
 
     //// Background Objects
     Moon, Lava_Planet, Planet_One, Planet_Two, Planet_Three, Mars_Planet, Star, Parallex_1, Parallex_2, Parallex_3,
@@ -42,7 +42,7 @@ public enum ImageEnums {
     Implosion, Invisible, Invisible_Animation,
 
     // GUI
-    Health_Bar, Shield_Bar, Icon_Border, Health_Shield_Frames, Frame, Red_Filling, Gold_Filling, Highlight, Long_Card, Wide_Card, Square_Card,
+    Health_Bar, Shield_Bar, Icon_Border, Health_Shield_Frames, Frame, Red_Filling, Gold_Filling,Blue_Filling, Highlight, Long_Card, Wide_Card, Square_Card,
 
     // Icons
     TripleShotIcon, DoubleShotIcon, Starcraft2_Point_Defense_Drone, Starcraft2_Protoss_Cloak,
@@ -61,7 +61,8 @@ public enum ImageEnums {
     Starcraft2_Terran_Speed2, Starcraft2_Terran_Speed3, Starcraft2_Terran_Weapons1, Starcraft2_Terran_Weapons2,
     Starcraft2_Terran_Weapons3, Starcraft2_Third_Blink, Starcraft2_Time_Warp, Starcraft2_Vespene_Gas,
     Starcraft2_Vespene_Siphon, Starcraft2_Vespene_Drone, Starcraft2_Wraith_Cloak, Starcraft2_Yellow_Blink,
-    Starcraft2_Heal, Starcraft2_Electric_Field, Starcraft2_Firebat_Weapon,
+    Starcraft2_Heal, Starcraft2_Electric_Field, Starcraft2_Firebat_Weapon, Starcraft2_Advanced_Optics, CannisterOfGasoline,
+    Starcraft2_Battery, Starcraft2_Focused_Crystal, Starcraft2_Platinum_Sponge,Starcraft2_Overclock,
 
     // Letters
     Letter_a, Letter_b, Letter_c, Letter_d, Letter_e, Letter_f, Letter_g, Letter_h, Letter_i, Letter_j, Letter_k,
@@ -70,7 +71,8 @@ public enum ImageEnums {
     Letter_equals, Letter_point_comma, Letter_greater_than, Letter_smaller_than, Letter_Dot, Letter_A, Letter_B,
     Letter_C, Letter_D, Letter_E, Letter_F, Letter_G, Letter_H, Letter_I, Letter_J, Letter_K, Letter_L, Letter_M,
     Letter_N, Letter_O, Letter_P, Letter_Q, Letter_R, Letter_S, Letter_T, Letter_U, Letter_V, Letter_W, Letter_X,
-    Letter_Y, Letter_Z;
+    Letter_Y, Letter_Z, Letter_Percentage, Letter_Komma, Letter_One, Letter_Two, Letter_Three,Letter_Four, Letter_Five,
+    Letter_Six,Letter_Seven, Letter_Eight, Letter_Nine, Letter_Zero;
 
     public static ImageEnums fromChar (char c) {
         switch (c) {
@@ -194,9 +196,49 @@ public enum ImageEnums {
                 return ImageEnums.Letter_Z;
             case '.':
                 return ImageEnums.Letter_Dot;
+            case '%':
+                return ImageEnums.Letter_Percentage;
+            case',':
+                return ImageEnums.Letter_Komma;
+            case '1':
+                return ImageEnums.Letter_One;
+            case '2':
+                return ImageEnums.Letter_Two;
+            case '3':
+                return ImageEnums.Letter_Three;
+            case '4':
+                return ImageEnums.Letter_Four;
+            case '5':
+                return ImageEnums.Letter_Five;
+            case '6':
+                return ImageEnums.Letter_Six;
+            case '7':
+                return ImageEnums.Letter_Seven;
+            case '8':
+                return ImageEnums.Letter_Eight;
+            case '9':
+                return ImageEnums.Letter_Nine;
+            case '0':
+                return ImageEnums.Letter_Zero;
             default:
                 throw new IllegalArgumentException("No ImageEnums enum constant for character: " + c);
         }
 
+    }
+
+    public static ImageEnums getImageEnumForDigit (char digit) {
+        switch (digit) {
+            case '0': return ImageEnums.Letter_Zero;
+            case '1': return ImageEnums.Letter_One;
+            case '2': return ImageEnums.Letter_Two;
+            case '3': return ImageEnums.Letter_Three;
+            case '4': return ImageEnums.Letter_Four;
+            case '5': return ImageEnums.Letter_Five;
+            case '6': return ImageEnums.Letter_Six;
+            case '7': return ImageEnums.Letter_Seven;
+            case '8': return ImageEnums.Letter_Eight;
+            case '9': return ImageEnums.Letter_Nine;
+            default: throw new IllegalArgumentException("Invalid digit: " + digit);
+        }
     }
 }

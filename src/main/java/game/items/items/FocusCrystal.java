@@ -1,10 +1,9 @@
 package game.items.items;
 
 import game.items.Item;
-import game.items.ItemApplicationEnum;
-import game.items.ItemEnums;
+import game.items.enums.ItemApplicationEnum;
+import game.items.enums.ItemEnums;
 import game.items.effects.EffectActivationTypes;
-import game.movement.Point;
 import game.objects.GameObject;
 
 public class FocusCrystal extends Item {

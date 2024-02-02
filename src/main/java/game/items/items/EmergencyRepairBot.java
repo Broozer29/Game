@@ -3,8 +3,8 @@ package game.items.items;
 import VisualAndAudioData.audio.AudioEnums;
 import VisualAndAudioData.audio.AudioManager;
 import game.items.Item;
-import game.items.ItemApplicationEnum;
-import game.items.ItemEnums;
+import game.items.enums.ItemApplicationEnum;
+import game.items.enums.ItemEnums;
 import game.items.effects.EffectActivationTypes;
 import game.objects.GameObject;
 

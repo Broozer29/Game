@@ -1,6 +1,7 @@
 package guiboards;
 
 import VisualAndAudioData.image.ImageEnums;
+import guiboards.boardEnums.MenuObjectEnums;
 import visualobjects.SpriteConfigurations.SpriteAnimationConfiguration;
 import visualobjects.SpriteConfigurations.SpriteConfiguration;
 import visualobjects.Sprite;
@@ -28,5 +29,4 @@ public class MenuObjectPart extends Sprite {
 	public SpriteAnimation getAnimation() {
 		return this.tileAnimation;
 	}
-
 }
