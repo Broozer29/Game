@@ -4,8 +4,8 @@ package game.objects.background;
 import java.util.Random;
 
 public enum SpaceThemeEnums {
-	Default,
-	Three_Random_Planets;
+
+	Blue, Green, Purple;
 
 	private static final Random random = new Random();
 

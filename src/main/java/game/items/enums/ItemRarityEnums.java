@@ -1,4 +1,4 @@
-package game.items;
+package game.items.enums;
 
 import java.util.Random;
 

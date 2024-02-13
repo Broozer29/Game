@@ -1,5 +1,6 @@
 package VisualAndAudioData.image;
 
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -137,6 +138,9 @@ public class ImageDatabase {
     private BufferedImage starcraft2_FocusedCrystal;
 
     private BufferedImage starcraft2_Overclock;
+    private BufferedImage starcraft2_ArmorPiercing;
+    private BufferedImage moneyPrinter;
+    private BufferedImage stickyDynamite;
 
     // Font Letters
     private BufferedImage letter_A;
@@ -269,6 +273,7 @@ public class ImageDatabase {
     private List<BufferedImage> gasolineBurning = new ArrayList<>();
     private List<BufferedImage> healingAnimation = new ArrayList<>();
     private List<BufferedImage> stickyDynamiteExplosion = new ArrayList<>();
+    private List<BufferedImage> plasmaLauncherMissileFrames = new ArrayList<>();
 
     // Enemy Projectile Animations
     private List<BufferedImage> seekerProjectileFrames = new ArrayList<BufferedImage>();
@@ -304,6 +309,19 @@ public class ImageDatabase {
 
     // Background images
     private BufferedImage moon;
+    private BufferedImage moon1;
+    private BufferedImage moon2;
+    private BufferedImage moon3;
+    private BufferedImage moon4;
+    private BufferedImage moon5;
+    private BufferedImage greenPlanet1;
+    private BufferedImage greenPlanet2;
+    private BufferedImage bluePlanet1;
+    private BufferedImage bluePlanet2;
+    private BufferedImage bluePlanet3;
+    private BufferedImage bluePlanet4;
+    private BufferedImage bluePlanet5;
+    private BufferedImage bluePlanet6;
     private BufferedImage lavaPlanet;
     private BufferedImage marsPlanet;
     private BufferedImage planetOne;
@@ -338,6 +356,32 @@ public class ImageDatabase {
     private BufferedImage purpleNebula5;
     private BufferedImage purpleNebula6;
     private BufferedImage purpleNebula7;
+
+    private BufferedImage starRed1;
+    private BufferedImage starRed2;
+    private BufferedImage starRed3;
+    private BufferedImage starRed4;
+
+    private BufferedImage starYellow1;
+    private BufferedImage starYellow2;
+    private BufferedImage starYellow3;
+    private BufferedImage starYellow4;
+
+    private BufferedImage starWhite1;
+    private BufferedImage starWhite2;
+    private BufferedImage starWhite3;
+    private BufferedImage starWhite4;
+
+    private BufferedImage starBlue1;
+    private BufferedImage starBlue2;
+    private BufferedImage starBlue3;
+    private BufferedImage starBlue4;
+
+    private BufferedImage starOrange1;
+    private BufferedImage starOrange2;
+    private BufferedImage starOrange3;
+    private BufferedImage starOrange4;
+
     private List<BufferedImage> HighlightImages = new ArrayList<BufferedImage>();
 
     // testimages
@@ -491,6 +535,9 @@ public class ImageDatabase {
         this.starcraft2_FocusedCrystal = imgLoader.getImage(ImageEnums.Starcraft2_Focused_Crystal);
         this.starcraft2_PlatinumSponge = imgLoader.getImage(ImageEnums.Starcraft2_Platinum_Sponge);
         this.starcraft2_Overclock = imgLoader.getImage(ImageEnums.Starcraft2_Overclock);
+        this.starcraft2_ArmorPiercing = imgLoader.getImage(ImageEnums.Starcraft2_Armor_Piercing);
+        this.moneyPrinter = imgLoader.getImage(ImageEnums.MoneyPrinter);
+        this.stickyDynamite = imgLoader.getImage(ImageEnums.StickyDynamite);
     }
 
 
@@ -613,13 +660,86 @@ public class ImageDatabase {
         this.purpleNebula6 = imgLoader.getImage(ImageEnums.Purple_Nebula_6);
         this.purpleNebula7 = imgLoader.getImage(ImageEnums.Purple_Nebula_7);
 
+        this.starBlue1 = imgLoader.getImage(ImageEnums.Star_Blue1);
+        this.starBlue2 = imgLoader.getImage(ImageEnums.Star_Blue2);
+        this.starBlue3 = imgLoader.getImage(ImageEnums.Star_Blue3);
+        this.starBlue4 = imgLoader.getImage(ImageEnums.Star_Blue4);
+
+        this.starRed1 = imgLoader.getImage(ImageEnums.Star_Red1);
+        this.starRed2 = imgLoader.getImage(ImageEnums.Star_Red2);
+        this.starRed3 = imgLoader.getImage(ImageEnums.Star_Red3);
+        this.starRed4 = imgLoader.getImage(ImageEnums.Star_Red4);
+
+        this.starOrange1 = imgLoader.getImage(ImageEnums.Star_Orange1);
+        this.starOrange2 = imgLoader.getImage(ImageEnums.Star_Orange2);
+        this.starOrange3 = imgLoader.getImage(ImageEnums.Star_Orange3);
+        this.starOrange4 = imgLoader.getImage(ImageEnums.Star_Orange4);
+
+        this.starWhite1 = imgLoader.getImage(ImageEnums.Star_White1);
+        this.starWhite2 = imgLoader.getImage(ImageEnums.Star_White2);
+        this.starWhite3 = imgLoader.getImage(ImageEnums.Star_White3);
+        this.starWhite4 = imgLoader.getImage(ImageEnums.Star_White4);
+
+        this.starYellow1 = imgLoader.getImage(ImageEnums.Star_Yellow1);
+        this.starYellow2 = imgLoader.getImage(ImageEnums.Star_Yellow2);
+        this.starYellow3 = imgLoader.getImage(ImageEnums.Star_Yellow3);
+        this.starYellow4 = imgLoader.getImage(ImageEnums.Star_Yellow4);
+
+        this.moon2 = imgLoader.getImage(ImageEnums.Moon2);
+        this.moon3 = imgLoader.getImage(ImageEnums.Moon3);
+        this.moon4 = imgLoader.getImage(ImageEnums.Moon4);
+        this.moon5 = imgLoader.getImage(ImageEnums.Moon5);
+        this.greenPlanet1 = imgLoader.getImage(ImageEnums.GreenPlanet1);
+        this.greenPlanet2 = imgLoader.getImage(ImageEnums.GreenPlanet2);
+        this.bluePlanet1  = imgLoader.getImage(ImageEnums.BluePlanet1);
+        this.bluePlanet2  = imgLoader.getImage(ImageEnums.BluePlanet2);
+        this.bluePlanet3  = imgLoader.getImage(ImageEnums.BluePlanet3);
+        this.bluePlanet4  = imgLoader.getImage(ImageEnums.BluePlanet4);
+        this.bluePlanet5  = imgLoader.getImage(ImageEnums.BluePlanet5);
+        this.bluePlanet6  = imgLoader.getImage(ImageEnums.BluePlanet6);
     }
 
     public BufferedImage getImage (ImageEnums imageType) {
         switch (imageType) {
+            case Moon2: return moon2;
+            case Moon3: return moon3;
+            case Moon4: return moon4;
+            case Moon5: return moon5;
+            case GreenPlanet1: return greenPlanet1;
+            case GreenPlanet2: return greenPlanet2;
+            case BluePlanet1: return bluePlanet1;
+            case BluePlanet2: return bluePlanet2;
+            case BluePlanet3: return bluePlanet3;
+            case BluePlanet4: return bluePlanet4;
+            case BluePlanet5: return bluePlanet5;
+            case BluePlanet6: return bluePlanet6;
+            case Star_White1: return starWhite1;
+            case Star_White2: return starWhite2;
+            case Star_White3: return starWhite3;
+            case Star_White4: return starWhite4;
+            case Star_Red1: return starRed1;
+            case Star_Red2: return starRed2;
+            case Star_Red3: return starRed3;
+            case Star_Red4: return starRed4;
+            case Star_Orange1: return starOrange1;
+            case Star_Orange2: return starOrange2;
+            case Star_Orange3: return starOrange3;
+            case Star_Orange4: return starOrange4;
+            case Star_Yellow1: return starYellow1;
+            case Star_Yellow2: return starYellow2;
+            case Star_Yellow3: return starYellow3;
+            case Star_Yellow4: return starYellow4;
+            case Star_Blue1: return starBlue1;
+            case Star_Blue2: return starBlue2;
+            case Star_Blue3: return starBlue3;
+            case Star_Blue4: return starBlue4;
+
             case Starcraft2_Focused_Crystal:return starcraft2_FocusedCrystal;
             case Starcraft2_Platinum_Sponge:return starcraft2_PlatinumSponge;
             case Starcraft2_Overclock: return starcraft2_Overclock;
+            case Starcraft2_Armor_Piercing: return starcraft2_ArmorPiercing;
+            case MoneyPrinter: return moneyPrinter;
+            case StickyDynamite: return stickyDynamite;
             case Player_Spaceship:
                 return this.spaceShipImage;
             case Player_Laserbeam:
@@ -1039,6 +1159,8 @@ public class ImageDatabase {
 
     public List<BufferedImage> getAnimation (ImageEnums imageType) {
         switch (imageType) {
+            case PlasmaLauncherMissile:
+                return plasmaLauncherMissileFrames;
             case StickyDynamiteExplosion:
                 return stickyDynamiteExplosion;
             case Impact_Explosion_One:
@@ -1579,30 +1701,35 @@ public class ImageDatabase {
             plasmaCoatedDebuff.add(image);
         }
 
-        for (int i = 1; i < 16; i++) {
+        for (int i = 0; i < 16; i++) {
             String sourceString = String.format("/images/gif/PNGtoGIF/GasolineExplosion/%d.png", i);
             BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
             gasolineExplosion.add(image);
         }
 
-        for (int i = 1; i < 31; i++) {
+        for (int i = 0; i < 31; i++) {
             String sourceString = String.format("/images/gif/PNGtoGIF/GasolineBurning/%d.png", i);
             BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
             gasolineBurning.add(image);
         }
 
-        for (int i = 1; i < 5; i++) {
+        for (int i = 0; i < 5; i++) {
             String sourceString = String.format("/images/gif/PNGtoGIF/Healing/%d.png", i);
             BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
             healingAnimation.add(image);
         }
 
-        for (int i = 1; i < 39; i++) {
+        for (int i = 0; i < 39; i++) {
             String sourceString = String.format("/images/gif/PNGtoGIF/StickyDynamiteExplosion/%d.png", i);
             BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
             stickyDynamiteExplosion.add(image);
         }
 
+        for (int i = 0; i < 60; i++) {
+            String sourceString = String.format("/images/gif/PNGtoGIF/PlasmaLauncherMissile/%d.png", i);
+            BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+            plasmaLauncherMissileFrames.add(image);
+        }
 
     }
 

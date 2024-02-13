@@ -9,7 +9,7 @@ public class FlamethrowerProjectile extends Missile {
 
 	public FlamethrowerProjectile(SpriteAnimationConfiguration spriteConfiguration, MissileConfiguration missileConfiguration) {
 		super(spriteConfiguration, missileConfiguration);
-		this.animation.rotateAnimetion(missileConfiguration.getMovementDirection());
+		this.animation.rotateAnimation(missileConfiguration.getMovementDirection());
 	}
 
 	// Remove the flamethrower

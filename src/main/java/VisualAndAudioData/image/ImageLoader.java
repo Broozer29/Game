@@ -500,6 +500,76 @@ public class ImageLoader {
                 return  "/images/Icons/Starcraft2 Platinum Sponge.png";
             case Starcraft2_Overclock:
                 return  "/images/Icons/Starcraft2 Overclock.png";
+            case Starcraft2_Armor_Piercing:
+                return  "/images/Icons/Starcraft2 Armor Piercing.png";
+            case MoneyPrinter:
+                return  "/images/Icons/moneyprinter.png";
+            case StickyDynamite:
+                return  "/images/Icons/stickydynamite.png";
+            case Star_Blue1:
+                return "/images/background/LargeStars/star_blue01.png";
+            case Star_Blue2:
+                return "/images/background/LargeStars/star_blue02.png";
+            case Star_Blue3:
+                return "/images/background/LargeStars/star_blue03.png";
+            case Star_Blue4:
+                return "/images/background/LargeStars/star_blue04.png";
+            case Star_Orange1:
+                return "/images/background/LargeStars/star_orange01.png";
+            case Star_Orange2:
+                return "/images/background/LargeStars/star_orange02.png";
+            case Star_Orange3:
+                return "/images/background/LargeStars/star_orange03.png";
+            case Star_Orange4:
+                return "/images/background/LargeStars/star_orange04.png";
+            case Star_Yellow1:
+                return "/images/background/LargeStars/star_yellow01.png";
+            case Star_Yellow2:
+                return "/images/background/LargeStars/star_yellow02.png";
+            case Star_Yellow3:
+                return "/images/background/LargeStars/star_yellow03.png";
+            case Star_Yellow4:
+                return "/images/background/LargeStars/star_yellow04.png";
+            case Star_White1:
+                return "/images/background/LargeStars/star_white01.png";
+            case Star_White2:
+                return "/images/background/LargeStars/star_white02.png";
+            case Star_White3:
+                return "/images/background/LargeStars/star_white03.png";
+            case Star_White4:
+                return "/images/background/LargeStars/star_white04.png";
+            case Star_Red1:
+                return "/images/background/LargeStars/star_red01.png";
+            case Star_Red2:
+                return "/images/background/LargeStars/star_red02.png";
+            case Star_Red3:
+                return "/images/background/LargeStars/star_red03.png";
+            case Star_Red4:
+                return "/images/background/LargeStars/star_red04.png";
+            case Moon2:
+                return "/images/background/Moon 2.png";
+            case Moon3:
+                return "/images/background/Moon 3.png";
+            case Moon4:
+                return "/images/background/Moon 4.png";
+            case Moon5:
+                return "/images/background/Moon 5.png";
+            case GreenPlanet1:
+                return "/images/background/Green planet 1.png";
+            case GreenPlanet2:
+                return "/images/background/Green planet 2.png";
+            case BluePlanet1:
+                return "/images/background/Blue planet 1.png";
+            case BluePlanet2:
+                return "/images/background/Blue planet 2.png";
+            case BluePlanet3:
+                return "/images/background/Blue planet 3.png";
+            case BluePlanet4:
+                return "/images/background/Blue planet 4.png";
+            case BluePlanet5:
+                return "/images/background/Blue planet 5.png";
+            case BluePlanet6:
+                return "/images/background/Blue planet 6.png";
             default:
                 return "";
         }

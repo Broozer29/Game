@@ -19,6 +19,7 @@ import game.items.enums.ItemApplicationEnum;
 import game.items.enums.ItemEnums;
 import game.items.items.FocusCrystal;
 import game.managers.AnimationManager;
+import game.movement.Point;
 import game.objects.neutral.Explosion;
 import game.objects.GameObject;
 import game.objects.player.specialAttacks.SpecialAttack;
@@ -284,6 +285,7 @@ public class SpaceShip extends GameObject {
 
         bounds.setBounds(xCoordinate + xOffset, yCoordinate + yOffset, width, height);
 
+        this.currentLocation = new Point(this.xCoordinate, this.yCoordinate);
         if (this.exhaustAnimation != null) {
             this.exhaustAnimation.setX(this.xCoordinate - (exhaustAnimation.getWidth() / 2));
             this.exhaustAnimation.setY(this.getCenterYCoordinate() - (this.exhaustAnimation.getHeight() / 2) + 3);

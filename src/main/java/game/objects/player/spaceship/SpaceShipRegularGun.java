@@ -55,7 +55,6 @@ public class SpaceShipRegularGun {
                 case DefaultPlayerLaserbeam -> playMissileAudio(AudioEnums.Player_Laserbeam);
                 case Rocket1 -> playMissileAudio(AudioEnums.Rocket_Launcher);
             }
-
         }
     }
 
@@ -82,7 +81,7 @@ public class SpaceShipRegularGun {
         MissileConfiguration missileConfiguration = new MissileConfiguration(attackType,
                 maxHitPoints, maxShields, deathSound, playerMissileImpactType, isFriendly, missilePathFinder
                 ,direction, xMovementspeed, yMovementspeed, allowedToDealDamage, objectType,
-                playerStats.getNormalAttackDamage(), movementPatternSize, attackType.isBoxCollision());
+                damage, movementPatternSize, attackType.isBoxCollision());
         Missile missile = MissileCreator.getInstance().createMissile(spriteConfiguration, missileConfiguration);
         missile.setOwnerOrCreator(PlayerManager.getInstance().getSpaceship());
         this.missileManager.addExistingMissile(missile);

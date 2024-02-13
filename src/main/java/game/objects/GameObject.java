@@ -1,6 +1,7 @@
 package game.objects;
 
 import game.gamestate.GameStateInfo;
+import game.items.PlayerInventory;
 import game.items.effects.EffectActivationTypes;
 import game.managers.AnimationManager;
 import game.movement.*;
@@ -10,8 +11,11 @@ import VisualAndAudioData.audio.AudioManager;
 import VisualAndAudioData.image.ImageResizer;
 import VisualAndAudioData.image.ImageRotator;
 import game.items.effects.EffectInterface;
+import game.objects.missiles.missiletypes.SeekerProjectile;
+import game.objects.player.PlayerManager;
 import game.spawner.LevelManager;
 import game.util.ArmorCalculator;
+import game.util.ExhaustAnimationRotator;
 import visualobjects.SpriteConfigurations.SpriteAnimationConfiguration;
 import visualobjects.SpriteConfigurations.SpriteConfiguration;
 import visualobjects.Sprite;
@@ -30,6 +34,7 @@ public class GameObject extends Sprite {
     protected SpriteAnimation shieldDamagedAnimation;
     protected SpriteAnimation exhaustAnimation;
     protected boolean showHealthBar;
+    protected boolean allowedToMove;
 
     protected float originalScale;
 
@@ -67,8 +72,6 @@ public class GameObject extends Sprite {
     protected Point currentLocation;
     protected int currentBoardBlock;
 
-    protected GameObject objectToChase; //change to gameobject
-
 
     //Objects following this object
     protected List<GameObject> objectsFollowingThis = new ArrayList<GameObject>();
@@ -83,28 +86,34 @@ public class GameObject extends Sprite {
     protected GameObject ownerOrCreator;
 
     private int movementCounter = 0;
+    protected float cashMoneyWorth;
+    protected double rotationAngle;
+    protected boolean allowedVisualsToRotate;
 
     protected CopyOnWriteArrayList<EffectInterface> effects = new CopyOnWriteArrayList<>();
     protected List<SpriteAnimation> effectAnimations = new ArrayList<>();
 
     public GameObject (SpriteConfiguration spriteConfiguration) {
         super(spriteConfiguration);
-        this.currentLocation = new Point(xCoordinate, yCoordinate);
+        initGameObject();
         if (spriteConfiguration.getImageType() != null) {
             this.loadImage(spriteConfiguration.getImageType());
         }
-        this.visible = true;
-        this.movementTracker = new MovementTracker();
-        this.currentBoardBlock = BoardBlockUpdater.getBoardBlock(xCoordinate);
     }
 
     public GameObject (SpriteAnimationConfiguration spriteAnimationConfiguration) {
         super(spriteAnimationConfiguration.getSpriteConfiguration());
         this.animation = new SpriteAnimation(spriteAnimationConfiguration);
+        initGameObject();
+    }
+
+    private void initGameObject () {
         this.currentLocation = new Point(xCoordinate, yCoordinate);
         this.visible = true;
         this.movementTracker = new MovementTracker();
         this.currentBoardBlock = BoardBlockUpdater.getBoardBlock(xCoordinate);
+        this.allowedToMove = true;
+        this.allowedVisualsToRotate = true;
     }
 
 
@@ -222,6 +231,15 @@ public class GameObject extends Sprite {
             object.deleteObject();
         }
 
+        this.objectToFollow = null;
+        this.movementConfiguration.setTarget(null);
+        this.movementConfiguration.setPathFinder(null);
+        this.movementConfiguration.setCurrentPath(null);
+        this.movementConfiguration.setNextPoint(null);
+        this.movementConfiguration = null; //could be dangerous and break shit
+        this.movementTracker = null;
+        this.ownerOrCreator = null;
+
         this.visible = false;
     }
 
@@ -245,6 +263,7 @@ public class GameObject extends Sprite {
             }
 
             for (GameObject object : objectsFollowingThis) {
+                object.setCashMoneyWorth(0);
                 object.takeDamage(9999999);
             }
 
@@ -256,6 +275,7 @@ public class GameObject extends Sprite {
             LevelManager.getInstance().setEnemiesKilled(1);
             this.setVisible(false);
             activateOnDeathEffects();
+            PlayerInventory.getInstance().gainCashMoney(this.cashMoneyWorth);
         }
     }
 
@@ -293,11 +313,9 @@ public class GameObject extends Sprite {
     }
 
     private void moveAnimations (SpriteAnimation animation) {
-        if (movementConfiguration.getCurrentPath().getWaypoints().size() > 0) {
-            animation.setX(movementConfiguration.getCurrentPath().getWaypoints().get(0).getX());
-            animation.setY(movementConfiguration.getCurrentPath().getWaypoints().get(0).getY());
-            animation.setAnimationBounds(animation.getXCoordinate(), animation.getYCoordinate());
-        }
+        animation.setX(this.getXCoordinate());
+        animation.setY(this.getYCoordinate());
+        animation.setAnimationBounds(animation.getXCoordinate(), animation.getYCoordinate());
     }
 
     private void moveAnimationsToCenter (SpriteAnimation animation) {
@@ -306,7 +324,7 @@ public class GameObject extends Sprite {
 
 
     private void updateVisibility () {
-        if (SpriteRemover.getInstance().shouldRemoveVisibility(this, movementConfiguration)) {
+        if (SpriteRemover.getInstance().shouldRemoveVisibility(this)) {
             this.visible = false;
         }
 
@@ -317,7 +335,7 @@ public class GameObject extends Sprite {
 
 
     //*****************VISUAL ALTERATION*******************************
-    public void rotateGameObject (Direction direction) {
+    public void rotateGameObjectTowards (Direction direction) {
         if (this.animation != null) {
             rotateGameObjectSpriteAnimations(animation, direction);
         }
@@ -333,9 +351,32 @@ public class GameObject extends Sprite {
         }
     }
 
+    public void rotateGameObjectTowards (int targetXCoordinate, int targetYCoordinate) {
+        double calculatedAngle = ImageRotator.getInstance().calculateAngle(this.getCenterXCoordinate(), this.getCenterYCoordinate(), targetXCoordinate, targetYCoordinate);
+        if (this.rotationAngle != calculatedAngle) {
+            if (this.image != null) {
+                this.image = ImageRotator.getInstance().rotateOrFlip(this.originalImage, calculatedAngle);
+            }
+
+            if (this.animation != null) {
+                this.animation.rotateAnimation(calculatedAngle);
+            }
+
+            this.rotationAngle = calculatedAngle;
+
+            if (this.exhaustAnimation != null) {
+                Point exhaustLocation = ExhaustAnimationRotator.calculateExhaustPosition(this, this.rotationAngle);
+                this.exhaustAnimation.setX(exhaustLocation.getX());
+                this.exhaustAnimation.setY(exhaustLocation.getY());
+                double exhaustAngle = ImageRotator.getInstance().calculateAngle(exhaustAnimation.getCenterXCoordinate(), exhaustAnimation.getCenterYCoordinate(), targetXCoordinate, targetYCoordinate);
+                this.exhaustAnimation.rotateAnimation(exhaustAngle);
+            }
+        }
+    }
+
     private void rotateGameObjectSpriteAnimations (SpriteAnimation sprite, Direction direction) {
         if (sprite != null) {
-            sprite.rotateAnimetion(direction);
+            sprite.rotateAnimation(direction);
         }
     }
 
@@ -360,7 +401,10 @@ public class GameObject extends Sprite {
     }
 
     public Point getCurrentLocation () {
-        return this.currentLocation;
+        if(this.movementConfiguration == null){
+            return new Point(this.xCoordinate, this.yCoordinate);
+        }
+        return this.movementConfiguration.getCurrentLocation();
     }
 
     public int getCurrentBoardBlock () {
@@ -368,7 +412,7 @@ public class GameObject extends Sprite {
     }
 
     public void updateCurrentLocation (Point newLocation) {
-        this.currentLocation = newLocation;
+        this.movementConfiguration.setCurrentLocation(newLocation);
     }
 
     public SpriteAnimation getShieldDamagedAnimation () {
@@ -516,14 +560,6 @@ public class GameObject extends Sprite {
         return originalScale;
     }
 
-    public void setObjectToChase (GameObject gameObject) {
-        this.objectToChase = gameObject;
-    }
-
-    public Sprite getObjectToChase () {
-        return this.objectToChase;
-    }
-
     public String getObjectType () {
         return this.objectType;
     }
@@ -599,4 +635,35 @@ public class GameObject extends Sprite {
         this.armorBonus += amount; // Modify the armor bonus by the given amount
     }
 
+    public float getCashMoneyWorth () {
+        return cashMoneyWorth;
+    }
+
+    public void setCashMoneyWorth (float cashMoneyWorth) {
+        this.cashMoneyWorth = cashMoneyWorth;
+    }
+
+    public boolean isAllowedToMove () {
+        return allowedToMove;
+    }
+
+    public void setAllowedToMove (boolean allowedToMove) {
+        this.allowedToMove = allowedToMove;
+    }
+
+    public double getRotationAngle () {
+        return rotationAngle;
+    }
+
+    public void setRotationAngle (double rotationAngle) {
+        this.rotationAngle = rotationAngle;
+    }
+
+    public boolean isAllowedVisualsToRotate () {
+        return allowedVisualsToRotate;
+    }
+
+    public void setAllowedVisualsToRotate (boolean allowedVisualsToRotate) {
+        this.allowedVisualsToRotate = allowedVisualsToRotate;
+    }
 }

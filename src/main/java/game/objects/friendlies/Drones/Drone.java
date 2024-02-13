@@ -45,7 +45,7 @@ public class Drone extends FriendlyObject {
                     , "Drone regular missile", (float) 15, MovementPatternSize.SMALL, MissileTypeEnums.DefaultPlayerLaserbeam.isBoxCollision());
 
             if (pathFinder instanceof HomingPathFinder) {
-                missileConfiguration.setTargetToChase(((HomingPathFinder) pathFinder).getTarget(true));
+                missileConfiguration.setTargetToChase(((HomingPathFinder) pathFinder).getTarget(true, this.xCoordinate, this.yCoordinate));
             }
 
             Missile newMissile = MissileCreator.getInstance().createMissile(missileSpriteConfiguration, missileConfiguration);

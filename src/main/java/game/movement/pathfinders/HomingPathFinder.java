@@ -40,7 +40,6 @@ public class HomingPathFinder implements PathFinder {
 		}
 	}
 
-	// If the missile is friendly but there are no enemies, return true
 	public boolean shouldRecalculatePath(Path currentPath) {
 		boolean hasPassed = false;
 		if (currentPath.isFriendly() && !EnemyManager.getInstance().enemiesToHomeTo()) {
@@ -53,12 +52,12 @@ public class HomingPathFinder implements PathFinder {
 		return hasPassed;
 	}
 
-	/*-Fallback direction constant updaten met zijn huidige direction werkt niet met deze manier om "passedtarget" te berekenen.*/
 	private boolean hasPassedTarget(Path currentPath) {
 		Point currentLocation = currentPath.getCurrentLocation();
 		Point targetLocation = null;
 		if (currentPath.getHomingTargetLocation() == null) {
-			targetLocation = getTarget(currentPath.isFriendly()).getCurrentLocation();
+			GameObject target = getTarget(currentPath.isFriendly(), currentLocation.getX(), currentLocation.getY());
+			targetLocation = new Point(target.getCenterXCoordinate(), target.getCenterYCoordinate());
 		} else {
 			targetLocation = currentPath.getHomingTargetLocation();
 		}
@@ -120,12 +119,12 @@ public class HomingPathFinder implements PathFinder {
 	public Point calculateInitialEndpoint(Point start, Direction rotation, boolean friendly) {
 		if (friendly) {
 			EnemyManager enemyManager = EnemyManager.getInstance();
-			if (enemyManager.getClosestEnemy() == null) {
+			if (enemyManager.getClosestEnemy(start.getX(), start.getY()) == null) {
 				int endXCoordinate = DataClass.getInstance().getWindowWidth();
 				int endYCoordinate = PlayerManager.getInstance().getSpaceship().getCenterYCoordinate();
 				return new Point(endXCoordinate, endYCoordinate);
 			} else
-				return enemyManager.getClosestEnemy().getCurrentLocation();
+				return enemyManager.getClosestEnemy(start.getX(), start.getY()).getCurrentLocation();
 		} else {
 			PlayerManager friendlyManager = PlayerManager.getInstance();
 			int xCoordinate = friendlyManager.getNearestFriendlyHomingCoordinates().get(0);
@@ -143,13 +142,106 @@ public class HomingPathFinder implements PathFinder {
 		return new Point(xCoordinate, yCoordinate);
 	}
 
-	public GameObject getTarget(boolean isFriendly) {
+	public GameObject getTarget(boolean isFriendly, int xCoordinate, int yCoordinate) {
 		if (isFriendly) {
-			EnemyManager enemyManager = EnemyManager.getInstance();
-			return enemyManager.getClosestEnemy();
+			return EnemyManager.getInstance().getClosestEnemy(xCoordinate, yCoordinate);
 		} else {
 			return PlayerManager.getInstance().getSpaceship();
 		}
 	}
+
+
+	//Custom method from SpriteMover specifically so homing projectiles can line up
+	public Point calculateNextPoint(Point currentLocation, Direction direction, int XStepSize, int YStepSize, GameObject target) {
+		int x = currentLocation.getX();
+		int y = currentLocation.getY();
+		int targetX = target.getCenterXCoordinate();
+		int targetY = target.getCenterYCoordinate();
+
+		// Adjust XStepSize and YStepSize to not overshoot the target
+		switch (direction) {
+			case UP:
+				if (Math.abs(targetY - y) < YStepSize) {
+					y = targetY;
+				} else {
+					y -= YStepSize;
+				}
+				break;
+			case DOWN:
+				if (Math.abs(targetY - y) < YStepSize) {
+					y = targetY;
+				} else {
+					y += YStepSize;
+				}
+				break;
+			case LEFT:
+				if (Math.abs(targetX - x) < XStepSize) {
+					x = targetX;
+				} else {
+					x -= XStepSize;
+				}
+				break;
+			case RIGHT:
+				if (Math.abs(targetX - x) < XStepSize) {
+					x = targetX;
+				} else {
+					x += XStepSize;
+				}
+				break;
+			case LEFT_UP:
+				if (Math.abs(targetX - x) < XStepSize) {
+					x = targetX;
+				} else {
+					x -= XStepSize;
+				}
+				if (Math.abs(targetY - y) < YStepSize) {
+					y = targetY;
+				} else {
+					y -= YStepSize;
+				}
+				break;
+			case LEFT_DOWN:
+				if (Math.abs(targetX - x) < XStepSize) {
+					x = targetX;
+				} else {
+					x -= XStepSize;
+				}
+				if (Math.abs(targetY - y) < YStepSize) {
+					y = targetY;
+				} else {
+					y += YStepSize;
+				}
+				break;
+			case RIGHT_UP:
+				if (Math.abs(targetX - x) < XStepSize) {
+					x = targetX;
+				} else {
+					x += XStepSize;
+				}
+				if (Math.abs(targetY - y) < YStepSize) {
+					y = targetY;
+				} else {
+					y -= YStepSize;
+				}
+				break;
+			case RIGHT_DOWN:
+				if (Math.abs(targetX - x) < XStepSize) {
+					x = targetX;
+				} else {
+					x += XStepSize;
+				}
+				if (Math.abs(targetY - y) < YStepSize) {
+					y = targetY;
+				} else {
+					y += YStepSize;
+				}
+				break;
+			case NONE:
+				// no movement
+				break;
+		}
+		return new Point(x, y);
+	}
+
 
 }

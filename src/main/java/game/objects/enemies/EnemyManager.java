@@ -122,10 +122,7 @@ public class EnemyManager {
             return false;
     }
 
-    public Enemy getClosestEnemy () {
-        int playerXCoordinate = PlayerManager.getInstance().getSpaceship().getCenterXCoordinate();
-        int playerYCoordinate = PlayerManager.getInstance().getSpaceship().getCenterYCoordinate();
-
+    public Enemy getClosestEnemy (int xCoordinate, int yCoordinate) {
         Enemy closestEnemy = null;
         double minDistance = Double.MAX_VALUE;
 
@@ -134,8 +131,8 @@ public class EnemyManager {
             int enemyYcoordinate = enemy.getCenterYCoordinate();
 
             // Compute the distance between player and enemy using Euclidean distance formula
-            double distance = Math.sqrt(Math.pow((playerXCoordinate - enemyXCoordinate), 2)
-                    + Math.pow((playerYCoordinate - enemyYcoordinate), 2));
+            double distance = Math.sqrt(Math.pow((xCoordinate - enemyXCoordinate), 2)
+                    + Math.pow((yCoordinate - enemyYcoordinate), 2));
 
             // If this enemy is closer than the previous closest enemy, update closestEnemy and
             // minDistance

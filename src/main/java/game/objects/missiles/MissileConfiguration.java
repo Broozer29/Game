@@ -36,8 +36,11 @@ public class MissileConfiguration {
     private MovementPatternSize movementPatternSize;
     private boolean boxCollision;
 
-    public MissileConfiguration (MissileTypeEnums missileType, int maxHitPoints, int maxShields, AudioEnums deathSound, ImageEnums destructionType, boolean isFriendly, PathFinder pathfinder, Direction movementDirection, int xMovementSpeed, int yMovementSpeed, boolean allowedToDealDamage, String objectType, float damage
-            , MovementPatternSize movementPatternSize, boolean boxCollision) {
+    public MissileConfiguration (MissileTypeEnums missileType, int maxHitPoints, int maxShields, AudioEnums deathSound,
+                                 ImageEnums destructionType, boolean isFriendly, PathFinder pathfinder,
+                                 Direction movementDirection, int xMovementSpeed, int yMovementSpeed,
+                                 boolean allowedToDealDamage, String objectType, float damage,
+                                 MovementPatternSize movementPatternSize, boolean boxCollision) {
         this.missileType = missileType;
         this.maxHitPoints = maxHitPoints;
         this.maxShields = maxShields;

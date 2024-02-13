@@ -4,6 +4,7 @@ import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 
 import game.movement.Direction;
+import game.objects.missiles.missiletypes.SeekerProjectile;
 import visualobjects.SpriteConfigurations.SpriteConfiguration;
 import VisualAndAudioData.image.ImageCropper;
 import VisualAndAudioData.image.ImageDatabase;
@@ -207,4 +208,7 @@ public class Sprite {
         return spriteConfiguration;
     }
 
+    public BufferedImage getOriginalImage () {
+        return this.originalImage;
+    }
 }

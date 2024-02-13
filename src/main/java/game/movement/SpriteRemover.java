@@ -1,7 +1,7 @@
 package game.movement;
 
-import VisualAndAudioData.DataClass;
-import visualobjects.Sprite;
+import game.objects.GameObject;
+import game.util.OutOfBoundsCalculator;
 
 public class SpriteRemover {
 
@@ -16,66 +16,11 @@ public class SpriteRemover {
 	}
 	
 	
-	public boolean shouldRemoveVisibility(Sprite sprite, MovementConfiguration moveConfig) {
-		if(isOutOfBounds(sprite, moveConfig)) {
+	public boolean shouldRemoveVisibility(GameObject gameObject) {
+		if(OutOfBoundsCalculator.isOutOfBounds(gameObject)) {
 			return true;
 		} else return false;
 
 	}
-	
-	
-	private boolean isOutOfBounds(Sprite sprite, MovementConfiguration moveConfig) {
 
-		if(moveConfig.getRotation() == null){
-			System.out.println("Iets is null: " + sprite.getClass());
-		}
-
-		switch (moveConfig.getRotation()) {
-		case UP:
-			if (sprite.getYCoordinate() <= 0) {
-				return true;
-			}
-			break;
-		case DOWN:
-			if (sprite.getYCoordinate() >= DataClass.getInstance().getWindowHeight()) {
-				return true;
-			}
-			break;
-		case LEFT:
-			if (sprite.getXCoordinate() < 0) {
-				return true;
-			}
-			break;
-		case RIGHT:
-			if (sprite.getXCoordinate() > DataClass.getInstance().getWindowWidth()) {
-				return true;
-			}
-			break;
-		case LEFT_DOWN:
-			if (sprite.getXCoordinate() < 0 || sprite.getYCoordinate() >= DataClass.getInstance().getWindowHeight()) {
-				return true;
-			}
-			break;
-		case LEFT_UP:
-			if (sprite.getXCoordinate() < 0 || sprite.getYCoordinate() <= 0) {
-				return true;
-			}
-			break;
-		case NONE:
-			return true;
-		case RIGHT_DOWN:
-			if (sprite.getXCoordinate() > DataClass.getInstance().getWindowWidth()
-					|| sprite.getYCoordinate() >= DataClass.getInstance().getWindowHeight()) {
-				return true;
-			}
-			break;
-		case RIGHT_UP:
-			if (sprite.getXCoordinate() > DataClass.getInstance().getWindowWidth() || sprite.getYCoordinate() <= 0) {
-				return true;
-			}
-			break;
-		}
-		return false;
-	}
-	
 }

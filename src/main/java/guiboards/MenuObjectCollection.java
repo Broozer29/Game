@@ -10,8 +10,7 @@ import VisualAndAudioData.audio.AudioDatabase;
 import VisualAndAudioData.audio.AudioEnums;
 import VisualAndAudioData.audio.AudioManager;
 import VisualAndAudioData.image.ImageEnums;
-import com.badlogic.gdx.Audio;
-import game.items.ItemRarityEnums;
+import game.items.enums.ItemRarityEnums;
 import game.items.PlayerInventory;
 import game.items.enums.ItemEnums;
 import game.util.ItemDescriptionRetriever;
@@ -147,10 +146,11 @@ public class MenuObjectCollection {
                 BoardManager.getInstance().openShopWindow();
                 break;
             case PurchaseItem:
-                if (menuItemInformation.isAvailable()) {
+                if (menuItemInformation.isAvailable() && menuItemInformation.canAfford()) {
                     AudioManager.getInstance().addAudio(AudioEnums.Power_Up_Acquired);
                     PlayerInventory.getInstance().addItem(menuItemInformation.getItem());
                     menuItemInformation.setAvailable(false);
+                    PlayerInventory.getInstance().spendCashMoney(menuItemInformation.getCost());
                     lockItemInShop();
                 } else {
                     AudioManager.getInstance().addAudio(AudioEnums.Firewall);

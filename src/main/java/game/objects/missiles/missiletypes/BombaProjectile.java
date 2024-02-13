@@ -15,7 +15,7 @@ public class BombaProjectile extends Missile {
 	public BombaProjectile(SpriteAnimationConfiguration spriteConfiguration, MissileConfiguration missileConfiguration) {
 		super(spriteConfiguration, missileConfiguration);
 		this.animation.setFrameDelay(3);
-		this.animation.rotateAnimetion(missileConfiguration.getMovementDirection());
+		this.animation.rotateAnimation(missileConfiguration.getMovementDirection());
 	
 	}
 

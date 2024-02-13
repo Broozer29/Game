@@ -4,10 +4,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
-import com.badlogic.gdx.Game;
 import game.movement.BoardBlockUpdater;
 import game.movement.MovementConfiguration;
 import game.movement.Point;
+import game.movement.pathfinders.HomingPathFinder;
 import game.movement.pathfinders.PathFinder;
 import game.objects.GameObject;
 import game.objects.enemies.enums.EnemyEnums;
@@ -50,11 +50,12 @@ public class Enemy extends GameObject {
         this.currentBoardBlock = BoardBlockUpdater.getBoardBlock(xCoordinate);
         this.boxCollision = enemyConfiguration.isBoxCollision();
         this.baseArmor = enemyConfiguration.getBaseArmor();
+        this.cashMoneyWorth = enemyType.getCashMoneyWorth();
 
         initMovementConfiguration(enemyConfiguration);
         this.setVisible(true);
         this.setFriendly(false);
-        this.rotateGameObject(movementDirection);
+        this.rotateGameObjectTowards(movementDirection);
         this.objectType = enemyConfiguration.getObjectType();
     }
 
@@ -72,6 +73,10 @@ public class Enemy extends GameObject {
         movementConfiguration.setStepsTaken(0);
         movementConfiguration.setHasLock(true);
 
+        if(pathFinder instanceof HomingPathFinder){
+            movementConfiguration.setTarget(((HomingPathFinder) pathFinder).getTarget(isFriendly(), this.xCoordinate, this.yCoordinate));
+        }
+
         //hardcoded lol, should be in the config file, make a config file factory cause this getting out of hand a lil, too many variables for memory alone
         movementConfiguration.setDiamondWidth(enemyConfiguration.getMovementPatternSize().getDiamondWidth());
         movementConfiguration.setDiamondHeight(enemyConfiguration.getMovementPatternSize().getDiamondHeight());
@@ -81,7 +86,6 @@ public class Enemy extends GameObject {
         movementConfiguration.setCurveDistance(1);
         movementConfiguration.setRadius(5);
         movementConfiguration.setRadiusIncrement(enemyConfiguration.getMovementPatternSize().getRadiusIncrement());
-
 
         movementConfiguration.setPrimaryDirectionStepAmount(enemyConfiguration.getMovementPatternSize().getPrimaryDirectionStepAmount());
         movementConfiguration.setFirstDiagonalDirectionStepAmount(enemyConfiguration.getMovementPatternSize().getSecondaryDirectionStepAmount());
@@ -143,7 +147,18 @@ public class Enemy extends GameObject {
             enemy.deleteObject();
         }
 
+        this.objectToFollow = null;
 
+        if(movementConfiguration!= null) {
+            this.movementConfiguration.setTarget(null);
+            this.movementConfiguration.setPathFinder(null);
+            this.movementConfiguration.setCurrentPath(null);
+            this.movementConfiguration.setNextPoint(null);
+
+        }
+        this.movementConfiguration = null;
+        this.movementTracker = null;
+        this.ownerOrCreator = null;
         this.visible = false;
     }
 

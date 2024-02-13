@@ -17,8 +17,8 @@ public class MissileCreator {
 
 	public Missile createMissile(SpriteConfiguration spriteConfiguration, MissileConfiguration missileConfiguration) {
 		switch (missileConfiguration.getMissileType()) {
-			case AlienLaserbeam -> {
-				return new AlienLaserbeam(spriteConfiguration,missileConfiguration);
+			case AlienLaserbeam, DefaultPlayerLaserbeam -> {
+				return new GenericMissile(spriteConfiguration,missileConfiguration);
 			}
 			case BombaProjectile -> {
 				return new BombaProjectile(upgradeConfig(spriteConfiguration, 2, true),missileConfiguration);
@@ -41,16 +41,13 @@ public class MissileCreator {
 			case FlameThrowerProjectile -> {
 				return new FlamethrowerProjectile(upgradeConfig(spriteConfiguration, 2, true),missileConfiguration);
 			}
-			case DefaultPlayerLaserbeam -> {
-				return new DefaultPlayerLaserbeam(spriteConfiguration,missileConfiguration);
-			}
-			case FirewallMissile -> {
-				return new FirewallMissile(upgradeConfig(spriteConfiguration, 2, true),missileConfiguration);
+            case FirewallMissile, PlasmaLauncherMissile -> {
+				return new GenericMissile(upgradeConfig(spriteConfiguration, 2, true),missileConfiguration);
 			}
 			case Rocket1 -> {
 				return new Rocket1(upgradeConfig(spriteConfiguration, 2, true), missileConfiguration);
 			}
-		}
+        }
 		return null;
 	}
 

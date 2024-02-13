@@ -56,7 +56,7 @@ public class Missile extends GameObject {
 		movementConfiguration.setHasLock(true);
 
 		if(pathFinder instanceof HomingPathFinder){
-			this.objectToChase = ((HomingPathFinder) pathFinder).getTarget(isFriendly());
+			movementConfiguration.setTarget(((HomingPathFinder) pathFinder).getTarget(isFriendly(), this.xCoordinate, this.yCoordinate));
 		}
 
 		movementConfiguration.setDiamondWidth(missileConfiguration.getMovementPatternSize().getDiamondWidth());

@@ -8,7 +8,7 @@ public class TazerProjectile extends Missile {
 
 	public TazerProjectile(SpriteAnimationConfiguration spriteConfiguration, MissileConfiguration missileConfiguration) {
 		super(spriteConfiguration, missileConfiguration);
-		this.animation.rotateAnimetion(missileConfiguration.getMovementDirection());
+		this.animation.rotateAnimation(missileConfiguration.getMovementDirection());
 //		setAnimation();
 		this.animation.setFrameDelay(3);
 	}

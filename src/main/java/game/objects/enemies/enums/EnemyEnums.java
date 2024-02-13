@@ -12,25 +12,25 @@ import java.util.stream.Collectors;
 public enum EnemyEnums {
     Alien_Bomb(10, 10, 25, 0, false,
             false, AudioEnums.Alien_Bomb_Destroyed, "Alien Bomb", 0,
-            ImageEnums.Alien_Bomb, ImageEnums.Alien_Bomb_Explosion, 3, EnemyCategory.Basic, false, 0),
+            ImageEnums.Alien_Bomb, ImageEnums.Alien_Bomb_Explosion, 3, EnemyCategory.Basic, false, 0, 1),
     Seeker(50, 50, 50, 0, true,
             false, AudioEnums.Large_Ship_Destroyed, "Enemy Seeker", 300,
-            ImageEnums.Seeker, ImageEnums.Seeker_Destroyed_Explosion, 8, EnemyCategory.Basic, false, 10),
+            ImageEnums.Seeker, ImageEnums.Seeker_Destroyed_Explosion, 8, EnemyCategory.Basic, false, 10, 2),
     Tazer(50, 50, 50, 0, true,
             false, AudioEnums.Large_Ship_Destroyed, "Enemy Tazer", 450,
-            ImageEnums.Tazer, ImageEnums.Tazer_Destroyed_Explosion, 8, EnemyCategory.Basic, false, 10),
+            ImageEnums.Tazer, ImageEnums.Tazer_Destroyed_Explosion, 8, EnemyCategory.Basic, false, 10, 2),
     Energizer(50, 50, 50, 0, true,
             false, AudioEnums.Large_Ship_Destroyed, "Enemy Energizer", 300,
-            ImageEnums.Energizer, ImageEnums.Energizer_Destroyed_Explosion,8, EnemyCategory.Basic, false, 10),
+            ImageEnums.Energizer, ImageEnums.Energizer_Destroyed_Explosion,8, EnemyCategory.Basic, false, 10, 2),
     Bulldozer(50, 50, 75, 0, false,
             false, AudioEnums.Large_Ship_Destroyed, "Enemy Bulldozer", 0,
-            ImageEnums.Bulldozer, ImageEnums.Bulldozer_Destroyed_Explosion, 12, EnemyCategory.Basic, false, 20),
+            ImageEnums.Bulldozer, ImageEnums.Bulldozer_Destroyed_Explosion, 12, EnemyCategory.Basic, false, 20, 3),
     Flamer(50, 50, 100, 0, true,
             false, AudioEnums.Large_Ship_Destroyed, "Enemy Flamer", 450,
-            ImageEnums.Flamer, ImageEnums.Flamer_Destroyed_Explosion, 8, EnemyCategory.Basic, false, 10),
+            ImageEnums.Flamer, ImageEnums.Flamer_Destroyed_Explosion, 8, EnemyCategory.Basic, false, 10, 3),
     Bomba(50, 50, 125, 0, true,
             false, AudioEnums.Large_Ship_Destroyed, "Enemy Bomba", 350,
-            ImageEnums.Bomba, ImageEnums.Bomba_Destroyed_Explosion, 16, EnemyCategory.Basic, false, 20);
+            ImageEnums.Bomba, ImageEnums.Bomba_Destroyed_Explosion, 16, EnemyCategory.Basic, false, 20, 4);
     private final int width;
     private final int height;
 
@@ -53,10 +53,11 @@ public enum EnemyEnums {
 
     private boolean boxCollision;
     private float baseArmor;
+    private float cashMoneyWorth;
 
     EnemyEnums (int width, int height, int baseHitPoints, int baseShieldPoints, boolean hasAttack, boolean showHealthBar, AudioEnums deathSound, String objectType, int attackSpeed
     ,ImageEnums imageType, ImageEnums destructionType, float creditCost, EnemyCategory enemyCategory, boolean boxCollision,
-                float baseArmor) {
+                float baseArmor, float cashMoneyWorth) {
         this.width = width;
         this.height = height;
         this.baseHitPoints = baseHitPoints;
@@ -72,6 +73,7 @@ public enum EnemyEnums {
         this.enemyCategory = enemyCategory;
         this.boxCollision = boxCollision;
         this.baseArmor = baseArmor;
+        this.cashMoneyWorth = cashMoneyWorth;
     }
 
     //Returns the distance that enemies should have from each other for spawning formations
@@ -145,5 +147,21 @@ public enum EnemyEnums {
 
     public float getBaseArmor () {
         return baseArmor;
+    }
+
+    public int getWidth () {
+        return width;
+    }
+
+    public int getHeight () {
+        return height;
+    }
+
+    public ImageEnums getImageType () {
+        return imageType;
+    }
+
+    public float getCashMoneyWorth () {
+        return cashMoneyWorth;
     }
 }

@@ -2,6 +2,7 @@ package game.objects.player;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import javax.sound.sampled.UnsupportedAudioFileException;
@@ -25,7 +26,6 @@ public class PlayerManager {
 	private GameStateInfo gameState = GameStateInfo.getInstance();
 	private PlayerStats playerStats = PlayerStats.getInstance();
 	private SpaceShip spaceship;
-	private List<Integer> playerCoordinatesList = new ArrayList<Integer>();
 
 	private PlayerManager() {
 		initSpaceShip();
@@ -99,9 +99,10 @@ public class PlayerManager {
 		}
 	}
 
-	public List<Integer> getNearestFriendlyHomingCoordinates() {
-		playerCoordinatesList.set(0, spaceship.getCenterXCoordinate());
-		playerCoordinatesList.set(1, spaceship.getCenterYCoordinate());
+	public LinkedList<Integer> getNearestFriendlyHomingCoordinates() {
+		LinkedList<Integer> playerCoordinatesList = new LinkedList<>();
+		playerCoordinatesList.add(0, spaceship.getCenterXCoordinate());
+		playerCoordinatesList.add(1, spaceship.getCenterYCoordinate());
 		return playerCoordinatesList;
 	}
 

@@ -57,6 +57,7 @@ public class PowerUpManager {
     private void handleCollision (PowerUp powerUp) {
         powerUp.startPowerUpTimer();
         powerUp.setVisible(false);
+        powerUp.deleteObject();
         try {
             AudioManager.getInstance().addAudio(AudioEnums.Power_Up_Acquired);
         } catch (UnsupportedAudioFileException | IOException e) {

@@ -1,7 +1,6 @@
 package game.objects.enemies.enemytypes;
 
 import game.movement.pathfinderconfigs.MovementPatternSize;
-import game.movement.pathfinders.PathFinder;
 import game.movement.pathfinders.RegularPathFinder;
 import game.objects.enemies.EnemyConfiguration;
 import game.objects.enemies.Enemy;
@@ -47,7 +46,7 @@ public class Tazer extends Enemy {
 
             Missile newMissile = MissileCreator.getInstance().createMissile(missileSpriteConfiguration, missileConfiguration);
             newMissile.setOwnerOrCreator(this);
-            newMissile.rotateGameObject(movementDirection);
+            newMissile.rotateGameObjectTowards(movementDirection);
             missileManager.addExistingMissile(newMissile);
             attackSpeedCurrentFrameCount = 0;
         }

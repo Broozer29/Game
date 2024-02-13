@@ -2,7 +2,9 @@ package game.objects.missiles;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
+import game.items.effects.EffectActivationTypes;
 import game.managers.AnimationManager;
 import game.objects.GameObject;
 import game.objects.player.PlayerStats;
@@ -23,8 +25,8 @@ public class MissileManager {
     private AnimationManager animationManager = AnimationManager.getInstance();
     private PlayerManager playerManager = PlayerManager.getInstance();
     private CollisionDetector collisionDetector = CollisionDetector.getInstance();
-    private List<Missile> missiles = new ArrayList<Missile>();
-    private List<SpecialAttack> specialAttacks = new ArrayList<SpecialAttack>();
+    private CopyOnWriteArrayList<Missile> missiles = new CopyOnWriteArrayList<Missile>();
+    private CopyOnWriteArrayList<SpecialAttack> specialAttacks = new CopyOnWriteArrayList<SpecialAttack>();
 
     private MissileManager () {
     }
@@ -45,8 +47,8 @@ public class MissileManager {
 
         removeInvisibleProjectiles();
 
-        missiles = new ArrayList<Missile>();
-        specialAttacks = new ArrayList<SpecialAttack>();
+        missiles = new CopyOnWriteArrayList<Missile>();
+        specialAttacks = new CopyOnWriteArrayList<SpecialAttack>();
     }
 
 
@@ -168,7 +170,15 @@ public class MissileManager {
     private void checkMissileCollisionWithPlayer (Missile missile) {
         if (collisionDetector.detectCollision(missile, playerManager.getSpaceship())) {
             playerManager.getSpaceship().takeDamage(missile.getDamage());
+            applyPlayerTakeDamageOnHitEffects();
             handleMissileDestruction(missile);
+        }
+    }
+
+    private void applyPlayerTakeDamageOnHitEffects(){
+        List<Item> onHitItems = PlayerStats.getInstance().getPlayerInventory().getItemByActivationTypes(EffectActivationTypes.OnPlayerHit);
+        for (Item item : onHitItems) {
+            item.applyEffectToObject(PlayerManager.getInstance().getSpaceship());
         }
     }
 

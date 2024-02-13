@@ -10,7 +10,6 @@ import controllerInput.ControllerInputEnums;
 import controllerInput.ControllerInputReader;
 import game.gamestate.GameStateInfo;
 import game.items.Item;
-import game.items.ItemRarityEnums;
 import game.items.PlayerInventory;
 import game.items.enums.ItemEnums;
 import game.managers.AnimationManager;
@@ -43,9 +42,7 @@ public class ShopBoard extends JPanel implements ActionListener {
     private AnimationManager animationManager = AnimationManager.getInstance();
     private ConnectedControllers controllers = ConnectedControllers.getInstance();
     private final int boardWidth = data.getWindowWidth();
-    ;
     private final int boardHeight = data.getWindowHeight();
-    ;
     private List<MenuObjectCollection> firstRow = new ArrayList<MenuObjectCollection>();
     private List<MenuObjectCollection> secondRow = new ArrayList<MenuObjectCollection>();
     private List<MenuObjectCollection> thirdRow = new ArrayList<MenuObjectCollection>();
@@ -716,6 +713,9 @@ public class ShopBoard extends JPanel implements ActionListener {
 
         }
 
+        g.drawString("Money available: " + PlayerInventory.getInstance().getCashMoney(),
+                itemRowsBackgroundCard.getXCoordinate() + itemRowsBackgroundCard.getMenuImages().get(0).getWidth() + 10,
+                itemRowsBackgroundCard.getYCoordinate() + 30);
         g.drawImage(menuCursor.getMenuImages().get(0).getImage(), menuCursor.getXCoordinate(), menuCursor.getYCoordinate(), this);
 
     }

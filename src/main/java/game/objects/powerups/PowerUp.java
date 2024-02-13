@@ -71,9 +71,6 @@ public class PowerUp extends GameObject {
         return moveConfig.getRotation();
     }
 
-    public void setCurrentLocation (Point currentLocation) {
-        this.currentLocation = currentLocation;
-    }
 
     public Point getDestination () {
         return moveConfig.getDestination();

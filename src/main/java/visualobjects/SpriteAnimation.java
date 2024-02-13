@@ -18,7 +18,7 @@ public class SpriteAnimation extends Sprite implements Cloneable{
 	ImageResizer imageResizer = ImageResizer.getInstance();
 	private int currentFrame;
 	private int totalFrames;
-	private List<BufferedImage> standardSizeFrames = new ArrayList<BufferedImage>();
+	private List<BufferedImage> originalFrames = new ArrayList<BufferedImage>();
 	private List<BufferedImage> frames = new ArrayList<BufferedImage>();
 	private int frameDelayCounter;
 	private int frameDelay = 2;
@@ -52,13 +52,13 @@ public class SpriteAnimation extends Sprite implements Cloneable{
 	private void loadGifFrames(ImageEnums imageType) {
 		this.imageType = imageType;
 		this.frames = ImageDatabase.getInstance().getAnimation(imageType);
-		this.standardSizeFrames = frames;
+		this.originalFrames = frames;
 	}
 
 	public void changeImagetype(ImageEnums imageType) {
 		this.imageType = imageType;
 		this.frames = ImageDatabase.getInstance().getAnimation(imageType);
-		this.standardSizeFrames = frames;
+		this.originalFrames = frames;
 	}
 
 	// Aligns the sprite X and Y coordinate to the centre of the animation
@@ -78,11 +78,15 @@ public class SpriteAnimation extends Sprite implements Cloneable{
 		if (this.frames == null) {
 			System.out.println("Crashed because resizing an image that was null/empty");
 		}
-		this.frames = imageResizer.getScaledFrames(standardSizeFrames, newScale);
+		this.frames = imageResizer.getScaledFrames(originalFrames, newScale);
 	}
 
-	public void rotateAnimetion(Direction rotation) {
-		this.frames = ImageRotator.getInstance().getRotatedFrames(frames, rotation);
+	public void rotateAnimation (Direction rotation) {
+		this.frames = ImageRotator.getInstance().getRotatedFrames(originalFrames, rotation);
+	}
+
+	public void rotateAnimation(double angle){
+		this.frames = ImageRotator.getInstance().getRotatedFrames(originalFrames, angle);
 	}
 
 	private void removeAnimation() {
@@ -232,7 +236,7 @@ public class SpriteAnimation extends Sprite implements Cloneable{
 				"imageResizer=" + imageResizer +
 				", currentFrame=" + currentFrame +
 				", totalFrames=" + totalFrames +
-				", standardSizeFrames=" + standardSizeFrames +
+				", standardSizeFrames=" + originalFrames +
 				", frames=" + frames +
 				", frameDelayCounter=" + frameDelayCounter +
 				", frameDelay=" + frameDelay +

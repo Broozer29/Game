@@ -7,7 +7,7 @@ import game.objects.GameObject;
 
 public class PathFinderConfigCreator {
 
-    public static PathFinderConfig createConfig(GameObject sprite, MovementConfiguration moveConfig){
+    public static PathFinderConfig createConfig (GameObject sprite, MovementConfiguration moveConfig) {
         PathFinderConfig config = null;
         if (moveConfig.getPathFinder() instanceof OrbitPathFinder) {
             config = new OrbitPathFinderConfig(sprite, moveConfig);
@@ -17,14 +17,16 @@ public class PathFinderConfigCreator {
             config = new HomingPathFinderConfig(sprite, moveConfig);
         } else if (moveConfig.getPathFinder() instanceof BouncingPathFinder) {
             config = new BouncingPathFinderConfig(sprite, moveConfig);
-        } else if (moveConfig.getPathFinder() instanceof DiamondShapePathFinder){
+        } else if (moveConfig.getPathFinder() instanceof DiamondShapePathFinder) {
             config = new DiamondShapePathFinderConfig(sprite, moveConfig);
-        } else if (moveConfig.getPathFinder() instanceof ZigZagPathFinder){
+        } else if (moveConfig.getPathFinder() instanceof ZigZagPathFinder) {
             config = new ZigZagPathFinderConfig(sprite, moveConfig);
-        } else if(moveConfig.getPathFinder() instanceof SpiralPathFinder){
+        } else if (moveConfig.getPathFinder() instanceof SpiralPathFinder) {
             config = new SpiralPathFinderConfig(sprite, moveConfig);
-        } else if(moveConfig.getPathFinder() instanceof TrianglePathFinder){
+        } else if (moveConfig.getPathFinder() instanceof TrianglePathFinder) {
             config = new TrianglePathFinderConfig(sprite, moveConfig);
+        } else if (moveConfig.getPathFinder() instanceof StraightLinePathFinder) {
+            config = new StraightLinePathFinderConfig(sprite, moveConfig);
         }
         return config;
     }

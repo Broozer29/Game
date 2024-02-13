@@ -39,7 +39,22 @@ public class ItemDescriptionRetriever {
             case RepulsionArmorPlate -> {
                 return "Increases armor";
             }
+            case ArmorPiercingRounds -> {
+                return "Increases damage dealt to bosses";
+            }
+            case EnergySiphon -> {
+                return "Killing an enemy grants a temporary barrier";
+            }
+            case MoneyPrinter -> {
+                return "Taking damage grants money";
+            }
+            case StickyDynamite -> {
+                return "Attacks apply a delayed explosion";
+            }
+            case PlasmaLauncher -> {
+                return "Chance on hitting an enemy to fire a homing plasma shot";
+            }
         }
-        return "Empty Description, yo mama is a ho";
+        return "This item has no description yet";
     }
 }

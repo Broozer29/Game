@@ -1,6 +1,7 @@
 package game.objects.friendlies;
 
 import game.movement.MovementConfiguration;
+import game.movement.Point;
 import game.movement.pathfinders.PathFinder;
 import game.objects.GameObject;
 import visualobjects.SpriteConfigurations.SpriteAnimationConfiguration;
@@ -35,7 +36,7 @@ public class FriendlyObject extends GameObject {
         PathFinder pathFinder = friendlyObjectConfiguration.getPathFinder();
         movementConfiguration = new MovementConfiguration();
         movementConfiguration.setPathFinder(pathFinder);
-        movementConfiguration.setCurrentLocation(currentLocation);
+        movementConfiguration.setCurrentLocation(new Point(this.xCoordinate, this.yCoordinate));
         movementConfiguration.setDestination(pathFinder.calculateInitialEndpoint(currentLocation, movementDirection, false));
         movementConfiguration.setRotation(friendlyObjectConfiguration.getMovementDirection());
         movementConfiguration.setXMovementSpeed(friendlyObjectConfiguration.getxMovementSpeed());

@@ -1,6 +1,7 @@
 package game.objects.missiles;
 
 import VisualAndAudioData.image.ImageEnums;
+import game.items.items.PlasmaLauncher;
 import game.objects.missiles.missiletypes.*;
 
 public enum MissileTypeEnums {
@@ -11,10 +12,12 @@ public enum MissileTypeEnums {
     FlamerProjectile(false, 3,3,5f, "FlamerProjectile", ImageEnums.Flamer_Missile_Explosion, ImageEnums.Flamer_Missile),
     SeekerProjectile(false, 3,3,5f, "SeekerProjectile", ImageEnums.Seeker_Missile_Explosion, ImageEnums.Seeker_Missile),
     TazerProjectile(false, 3,3,5f, "TazerProjectile", ImageEnums.Tazer_Missile_Explosion, ImageEnums.Tazer_Missile),
-    FlameThrowerProjectile(false, 3,3,5f, "FlameThrowerProjectile", ImageEnums.Flamer_Missile_Explosion, ImageEnums.Flamer_Missile),
-    DefaultPlayerLaserbeam(false, 3,3,99999999f, "DefaultPlayerLaserbeam", null, ImageEnums.Alien_Laserbeam),
-    FirewallMissile(false, 3,3,5f, "FirewallMissile", null, ImageEnums.FirewallParticle),
-    Rocket1(false, 3,3,5f, "Rocket1", ImageEnums.Rocket_1_Explosion, ImageEnums.Rocket_1);
+    FlameThrowerProjectile(false, 3,3,1f, "FlameThrowerProjectile", ImageEnums.Flamer_Missile_Explosion, ImageEnums.Flamer_Missile),
+    DefaultPlayerLaserbeam(false, 3,3,1, "DefaultPlayerLaserbeam", null, ImageEnums.Alien_Laserbeam),
+    FirewallMissile(false, 3,3,1f, "FirewallMissile", null, ImageEnums.FirewallParticle),
+    PlasmaLauncherMissile(false, 3,3,1f, "PlasmaLauncherMissile", null, ImageEnums.PlasmaLauncherMissile),
+    Rocket1(false, 3,3,1f, "Rocket1", ImageEnums.Rocket_1_Explosion, ImageEnums.Rocket_1);
+
 
     private final boolean boxCollision;
     private final int xMovementSpeed;

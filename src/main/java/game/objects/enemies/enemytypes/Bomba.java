@@ -5,7 +5,6 @@ import java.util.List;
 
 import game.movement.Direction;
 import game.movement.pathfinderconfigs.MovementPatternSize;
-import game.movement.pathfinders.PathFinder;
 import game.movement.pathfinders.RegularPathFinder;
 import game.objects.enemies.EnemyConfiguration;
 import game.objects.enemies.Enemy;
@@ -64,13 +63,13 @@ public class Bomba extends Enemy {
 				newMissile.setOwnerOrCreator(this);
 				
 				if(missileDirections.contains(Direction.DOWN)) {
-					newMissile.rotateGameObject(Direction.DOWN);
+					newMissile.rotateGameObjectTowards(Direction.DOWN);
 				} else if(missileDirections.contains(Direction.LEFT)) {
-					newMissile.rotateGameObject(Direction.LEFT);
+					newMissile.rotateGameObjectTowards(Direction.LEFT);
 				} else if(missileDirections.contains(Direction.RIGHT)) {
-					newMissile.rotateGameObject(Direction.RIGHT);
+					newMissile.rotateGameObjectTowards(Direction.RIGHT);
 				} else if(missileDirections.contains(Direction.UP)) {
-					newMissile.rotateGameObject(Direction.UP);
+					newMissile.rotateGameObjectTowards(Direction.UP);
 				}
 				
 				missileManager.addExistingMissile(newMissile);

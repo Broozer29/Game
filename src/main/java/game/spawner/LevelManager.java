@@ -63,33 +63,32 @@ public class LevelManager {
 //        DirectorManager.getInstance().createMonsterCards();
 //        DirectorManager.getInstance().createDirectors();
 
-        Enemy enemy = EnemyCreator.createEnemy(EnemyEnums.Bomba, 1000, 600, game.movement.Direction.LEFT, 1
+        Enemy enemy = EnemyCreator.createEnemy(EnemyEnums.Seeker, 800, 600, Direction.LEFT, 1
                 , 1, 1, MovementPatternSize.SMALL, false);
-
-        enemy.setMaxHitPoints(200);
-        enemy.setCurrentHitpoints(200);
+        enemy.getMovementConfiguration().setXMovementSpeed(0);
+        enemy.getMovementConfiguration().setYMovementSpeed(0);
         EnemyManager.getInstance().addEnemy(enemy);
 
-        Enemy enemy2 = EnemyCreator.createEnemy(EnemyEnums.Bomba, 1150, 600, game.movement.Direction.LEFT, 1
-                , 1, 1, MovementPatternSize.SMALL, false);
-
-        enemy2.setMaxHitPoints(200);
-        enemy2.setCurrentHitpoints(200);
-        EnemyManager.getInstance().addEnemy(enemy2);
-
-        Enemy enemy3 = EnemyCreator.createEnemy(EnemyEnums.Bomba, 1300, 600, game.movement.Direction.LEFT, 1
-                , 1, 1, MovementPatternSize.SMALL, false);
-
-        enemy3.setMaxHitPoints(200);
-        enemy3.setCurrentHitpoints(200);
-        EnemyManager.getInstance().addEnemy(enemy3);
-
-        Enemy enemy4 = EnemyCreator.createEnemy(EnemyEnums.Bomba, 1300, 700, game.movement.Direction.LEFT, 1
-                , 1, 1, MovementPatternSize.SMALL, false);
-
-        enemy4.setMaxHitPoints(200);
-        enemy4.setCurrentHitpoints(200);
-        EnemyManager.getInstance().addEnemy(enemy4);
+//        Enemy enemy2 = EnemyCreator.createEnemy(EnemyEnums.Seeker, 800, 600, Direction.RIGHT_DOWN, 1
+//                , 1, 1, MovementPatternSize.SMALL, false);
+//
+//        EnemyManager.getInstance().addEnemy(enemy2);
+//        Enemy enemy3 = EnemyCreator.createEnemy(EnemyEnums.Seeker, 800, 600, Direction.RIGHT_UP, 1
+//                , 1, 1, MovementPatternSize.SMALL, false);
+//
+//        EnemyManager.getInstance().addEnemy(enemy3);
+//
+//        Enemy enemy4 = EnemyCreator.createEnemy(EnemyEnums.Seeker, 800, 600, Direction.LEFT, 1
+//                , 1, 1, MovementPatternSize.SMALL, false);
+//        EnemyManager.getInstance().addEnemy(enemy4);
+//
+//        Enemy enemy5 = EnemyCreator.createEnemy(EnemyEnums.Seeker, 800, 600, Direction.LEFT_UP, 1
+//                , 1, 1, MovementPatternSize.SMALL, false);
+//        EnemyManager.getInstance().addEnemy(enemy5);
+//
+//        Enemy enemy6 = EnemyCreator.createEnemy(EnemyEnums.Seeker, 800, 600, Direction.LEFT_DOWN, 1
+//                , 1, 1, MovementPatternSize.SMALL, false);
+//        EnemyManager.getInstance().addEnemy(enemy6);
     }
 
     // Called by CustomTimers when they have to spawn an enemy

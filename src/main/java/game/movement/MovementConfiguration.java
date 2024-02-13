@@ -3,6 +3,9 @@ package game.movement;
 import game.movement.pathfinders.PathFinder;
 import game.objects.GameObject;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class MovementConfiguration {
 
 	private Direction rotation;
@@ -44,6 +47,8 @@ public class MovementConfiguration {
 	private int primaryDirectionStepAmount;
 	private int firstDiagonalDirectionStepAmount;
 	private int secondDiagonalDirectionStepAmount;
+
+	private List<GameObject> untrackableObjects = new ArrayList<GameObject>();
 
 
 
@@ -168,9 +173,9 @@ public class MovementConfiguration {
 	public void setRotation(Direction rotation) {
 		this.rotation = rotation;
 	}
-	
-	
-	
+
+
+
 	public void setStepsTaken(int stepAmount) {
 		this.stepsTaken = stepAmount;
 	}
@@ -292,5 +297,13 @@ public class MovementConfiguration {
 
 	public void setSecondDiagonalDirectionStepAmount (int secondDiagonalDirectionStepAmount) {
 		this.secondDiagonalDirectionStepAmount = secondDiagonalDirectionStepAmount;
+	}
+
+	public List<GameObject> getUntrackableObjects () {
+		return untrackableObjects;
+	}
+
+	public void setUntrackableObjects (List<GameObject> untrackableObjects) {
+		this.untrackableObjects = untrackableObjects;
 	}
 }

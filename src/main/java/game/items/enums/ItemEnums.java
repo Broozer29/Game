@@ -1,7 +1,6 @@
 package game.items.enums;
 
 import VisualAndAudioData.image.ImageEnums;
-import game.items.ItemRarityEnums;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,14 +12,17 @@ public enum ItemEnums {
     CannisterOfGasoline(ItemRarityEnums.Rare, ItemCategory.Offense, ImageEnums.CannisterOfGasoline, "Cannister of Gasoline"),
     SelfRepairingSteel(ItemRarityEnums.Common, ItemCategory.Defense, ImageEnums.Starcraft2_Heal, "Self Repairing Steel"),
     Battery(ItemRarityEnums.Common, ItemCategory.Utility, ImageEnums.Starcraft2_Battery, "Battery"),
-    FocusCrystal(ItemRarityEnums.Common, ItemCategory.Offense, ImageEnums.Starcraft2_Focused_Crystal, "Focused Crystal"),
+    FocusCrystal(ItemRarityEnums.Common, ItemCategory.Offense, ImageEnums.Starcraft2_Repair_Blink, "Focused Crystal"),
     PrecisionAmplifier(ItemRarityEnums.Common, ItemCategory.Offense, ImageEnums.Starcraft2_Advanced_Optics, "Advanced Optics"),
     PlatinumSponge(ItemRarityEnums.Common, ItemCategory.Defense, ImageEnums.Starcraft2_Platinum_Sponge, "Platinum Sponge"),
     EmergencyRepairBot(ItemRarityEnums.Common, ItemCategory.Defense, ImageEnums.Starcraft2_Vespene_Drone, "Emergency Repair Bot"),
     Overclock(ItemRarityEnums.Common, ItemCategory.Offense, ImageEnums.Starcraft2_Overclock, "Overclock"),
     RepulsionArmorPlate(ItemRarityEnums.Common, ItemCategory.Defense, ImageEnums.Starcraft2_Health_Upgrade_2, "Repulsion Armor Plate"),
-    EnergySiphon(ItemRarityEnums.Common, ItemCategory.Defense, ImageEnums.Test_Image, "Energy Siphon"),
-    StickyDynamite(ItemRarityEnums.Common, ItemCategory.Offense, ImageEnums.Test_Image, "Sticky Dynamite");
+    EnergySiphon(ItemRarityEnums.Common, ItemCategory.Defense, ImageEnums.Starcraft2_Energy_Siphon, "Energy Siphon"),
+    ArmorPiercingRounds(ItemRarityEnums.Common, ItemCategory.Offense, ImageEnums.Starcraft2_Armor_Piercing, "Armor Piercing Rounds"),
+    MoneyPrinter(ItemRarityEnums.Rare, ItemCategory.Utility, ImageEnums.MoneyPrinter, "Money Printer"),
+    PlasmaLauncher(ItemRarityEnums.Rare, ItemCategory.Offense, ImageEnums.Starcraft2_Focused_Crystal, "Plasma Launcher"),
+    StickyDynamite(ItemRarityEnums.Common, ItemCategory.Offense, ImageEnums.StickyDynamite, "Sticky Dynamite");
 
 
     private ItemRarityEnums itemRarity;
