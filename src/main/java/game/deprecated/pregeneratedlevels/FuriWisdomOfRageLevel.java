@@ -9,9 +9,9 @@ import game.objects.enemies.enums.EnemyEnums;
 import game.spawner.EnemyFormation;
 import game.spawner.EnemySpawnTimer;
 import game.spawner.FormationCreator;
-import game.spawner.SpawnFormationEnums;
+import game.spawner.enums.SpawnFormationEnums;
 import VisualAndAudioData.DataClass;
-import VisualAndAudioData.audio.AudioEnums;
+import VisualAndAudioData.audio.enums.AudioEnums;
 
 public class FuriWisdomOfRageLevel implements Level {
 

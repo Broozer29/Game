@@ -7,12 +7,15 @@ import java.util.List;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
 import VisualAndAudioData.audio.AudioDatabase;
-import VisualAndAudioData.audio.AudioEnums;
+import VisualAndAudioData.audio.enums.AudioEnums;
 import VisualAndAudioData.audio.AudioManager;
 import VisualAndAudioData.image.ImageEnums;
 import game.items.enums.ItemRarityEnums;
 import game.items.PlayerInventory;
 import game.items.enums.ItemEnums;
+import game.spawner.LevelManager;
+import game.spawner.enums.LevelDifficulty;
+import game.spawner.enums.LevelLength;
 import game.util.ItemDescriptionRetriever;
 import guiboards.boardEnums.MenuFunctionEnums;
 import guiboards.boardEnums.MenuObjectEnums;
@@ -20,7 +23,8 @@ import visualobjects.SpriteConfigurations.SpriteConfiguration;
 
 public class MenuObjectCollection {
 
-    private List<MenuObjectPart> menuTiles = new ArrayList<>();
+    private List<MenuObjectPart> menuImages = new ArrayList<>();
+    private List<MenuObjectPart> menuTextImages = new ArrayList<>();
     private int xCoordinate;
     private int yCoordinate;
     private String text;
@@ -29,6 +33,10 @@ public class MenuObjectCollection {
     private ImageEnums imageType;
     private float scale;
     private MenuItemInformation menuItemInformation;
+
+    private LevelDifficulty levelDifficulty;
+
+    private LevelLength levelLength;
 
     public MenuObjectCollection (int xCoordinate, int yCoordinate, float scale, String text,
                                  MenuObjectEnums menuObjectType, MenuFunctionEnums menuFunctionality) {
@@ -79,16 +87,16 @@ public class MenuObjectCollection {
         if (isAnimation) {
             newTile.setTileAnimation(imageType);
         }
-        menuTiles.add(newTile);
+        menuImages.add(newTile);
     }
 
-    public void setNewImage(ItemEnums item){
+    public void setNewImage (ItemEnums item) {
         this.imageType = item.getItemIcon();
         SpriteConfiguration spriteConfiguration = createSpriteConfiguration();
-        this.menuTiles.clear();
+        this.menuImages.clear();
         MenuObjectPart newTile = new MenuObjectPart(spriteConfiguration);
         newTile.setImageDimensions(50, 50);
-        this.menuTiles.add(newTile);
+        this.menuImages.add(newTile);
     }
 
 
@@ -107,17 +115,17 @@ public class MenuObjectCollection {
         this.menuItemInformation = new MenuItemInformation(item, randomItemRarity, itemDesc, true, 50);
         MenuObjectPart newTile = new MenuObjectPart(spriteConfiguration);
         newTile.setImageDimensions(50, 50);
-        this.menuTiles.add(newTile);
+        this.menuImages.add(newTile);
     }
 
     private void lockItemInShop () {
         SpriteConfiguration spriteConfiguration = createSpriteConfiguration();
         spriteConfiguration.setImageType(ImageEnums.Test_Image);
         this.imageType = ImageEnums.Test_Image;
-        this.menuTiles.clear();
+        this.menuImages.clear();
         MenuObjectPart newTile = new MenuObjectPart(spriteConfiguration);
         newTile.setImageDimensions(50, 50);
-        this.menuTiles.add(newTile);
+        this.menuImages.add(newTile);
 
     }
 
@@ -156,6 +164,12 @@ public class MenuObjectCollection {
                     AudioManager.getInstance().addAudio(AudioEnums.Firewall);
                 }
                 break;
+            case SelectSongDifficulty:
+                changeLevelDifficulty();
+                break;
+            case SelectSongLength:
+                changeLevelLength();
+                break;
             default:
                 System.out.println("Unimplemented MenuObject behaviour was attempted!");
                 break;
@@ -179,13 +193,25 @@ public class MenuObjectCollection {
                 spriteConfiguration.setScale(scale);
 
                 MenuObjectPart newTile = new MenuObjectPart(spriteConfiguration);
-                menuTiles.add(newTile);
+                menuTextImages.add(newTile);
             }
         }
     }
 
-    public void addMenuPart(MenuObjectPart menuObjectPart){
-        this.menuTiles.add(menuObjectPart);
+    private void changeLevelDifficulty () {
+        if (this.levelDifficulty != null) {
+            LevelManager.getInstance().setCurrentLevelDifficulty(this.levelDifficulty);
+        }
+    }
+
+    private void changeLevelLength () {
+        if (this.levelLength != null) {
+            LevelManager.getInstance().setCurrentLevelLength(this.levelLength);
+        }
+    }
+
+    public void addMenuPart (MenuObjectPart menuObjectPart) {
+        this.menuImages.add(menuObjectPart);
     }
 
     public int getXCoordinate () {
@@ -205,7 +231,7 @@ public class MenuObjectCollection {
     }
 
     public List<MenuObjectPart> getMenuImages () {
-        return menuTiles;
+        return menuImages;
     }
 
     public MenuFunctionEnums getMenuFunction () {
@@ -218,14 +244,14 @@ public class MenuObjectCollection {
 
     public void changeImage (ImageEnums newImage) {
         this.imageType = newImage;
-        menuTiles = new ArrayList<MenuObjectPart>();
+        menuImages = new ArrayList<MenuObjectPart>();
         initMenuImages();
     }
 
     @Override
     public String toString () {
         return "MenuObject{" +
-                "menuTiles=" + menuTiles +
+                "menuTiles=" + menuImages +
                 ", xCoordinate=" + xCoordinate +
                 ", yCoordinate=" + yCoordinate +
                 ", text='" + text + '\'' +
@@ -246,5 +272,29 @@ public class MenuObjectCollection {
 
     public MenuItemInformation getMenuItemInformation () {
         return menuItemInformation;
+    }
+
+    public LevelDifficulty getLevelDifficulty () {
+        return levelDifficulty;
+    }
+
+    public void setLevelDifficulty (LevelDifficulty levelDifficulty) {
+        if (this.menuFunctionality == MenuFunctionEnums.SelectSongDifficulty) {
+            this.levelDifficulty = levelDifficulty;
+        }
+    }
+
+    public LevelLength getLevelLength () {
+        return levelLength;
+    }
+
+    public void setLevelLength (LevelLength levelLength) {
+        if (this.menuFunctionality == MenuFunctionEnums.SelectSongLength) {
+            this.levelLength = levelLength;
+        }
+    }
+
+    public List<MenuObjectPart> getMenuTextImages () {
+        return menuTextImages;
     }
 }

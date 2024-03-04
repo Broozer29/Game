@@ -6,16 +6,14 @@ import game.items.effects.EffectActivationTypes;
 import game.managers.AnimationManager;
 import game.movement.*;
 import game.movement.pathfinders.PathFinder;
-import VisualAndAudioData.audio.AudioEnums;
+import VisualAndAudioData.audio.enums.AudioEnums;
 import VisualAndAudioData.audio.AudioManager;
 import VisualAndAudioData.image.ImageResizer;
 import VisualAndAudioData.image.ImageRotator;
 import game.items.effects.EffectInterface;
-import game.objects.missiles.missiletypes.SeekerProjectile;
-import game.objects.player.PlayerManager;
+import game.objects.player.PlayerStats;
 import game.spawner.LevelManager;
 import game.util.ArmorCalculator;
-import game.util.ExhaustAnimationRotator;
 import visualobjects.SpriteConfigurations.SpriteAnimationConfiguration;
 import visualobjects.SpriteConfigurations.SpriteConfiguration;
 import visualobjects.Sprite;
@@ -33,6 +31,7 @@ public class GameObject extends Sprite {
     protected SpriteAnimation destructionAnimation;
     protected SpriteAnimation shieldDamagedAnimation;
     protected SpriteAnimation exhaustAnimation;
+    protected SpriteAnimation chargingUpAttackAnimation;
     protected boolean showHealthBar;
     protected boolean allowedToMove;
 
@@ -92,6 +91,8 @@ public class GameObject extends Sprite {
 
     protected CopyOnWriteArrayList<EffectInterface> effects = new CopyOnWriteArrayList<>();
     protected List<SpriteAnimation> effectAnimations = new ArrayList<>();
+
+    protected float xpOnDeath = 0;
 
     public GameObject (SpriteConfiguration spriteConfiguration) {
         super(spriteConfiguration);
@@ -223,6 +224,10 @@ public class GameObject extends Sprite {
             this.destructionAnimation.setVisible(false);
         }
 
+        if (this.chargingUpAttackAnimation != null) {
+            this.chargingUpAttackAnimation.setVisible(false);
+        }
+
         for (GameObject object : objectsFollowingThis) {
             object.deleteObject();
         }
@@ -232,10 +237,7 @@ public class GameObject extends Sprite {
         }
 
         this.objectToFollow = null;
-        this.movementConfiguration.setTarget(null);
-        this.movementConfiguration.setPathFinder(null);
-        this.movementConfiguration.setCurrentPath(null);
-        this.movementConfiguration.setNextPoint(null);
+        this.movementConfiguration.deleteConfiguration();
         this.movementConfiguration = null; //could be dangerous and break shit
         this.movementTracker = null;
         this.ownerOrCreator = null;
@@ -257,6 +259,9 @@ public class GameObject extends Sprite {
         }
 
         if (this.currentHitpoints <= 0) {
+            if (this.xpOnDeath > 0) {
+                PlayerStats.getInstance().addXP(xpOnDeath);
+            }
             if (this.destructionAnimation != null) {
                 this.destructionAnimation.setOriginCoordinates(this.getCenterXCoordinate(), this.getCenterYCoordinate());
                 AnimationManager.getInstance().addUpperAnimation(destructionAnimation);
@@ -288,11 +293,6 @@ public class GameObject extends Sprite {
         updateBoardBlock();
         updateVisibility();
 
-        if (this.exhaustAnimation != null) {
-            this.exhaustAnimation.setX(this.getCenterXCoordinate() + (this.getWidth() / 2));
-            this.exhaustAnimation.setY(this.getCenterYCoordinate() - (exhaustAnimation.getHeight() / 2));
-        }
-
         if (animation != null) {
             animation.setAnimationBounds(xCoordinate, yCoordinate);
         }
@@ -310,6 +310,8 @@ public class GameObject extends Sprite {
         for (SpriteAnimation spriteAnimation : effectAnimations) {
             moveAnimationsToCenter(spriteAnimation);
         }
+
+        updateChargingAttackAnimationCoordination();
     }
 
     private void moveAnimations (SpriteAnimation animation) {
@@ -351,6 +353,14 @@ public class GameObject extends Sprite {
         }
     }
 
+    private void updateChargingAttackAnimationCoordination () {
+        if (this.chargingUpAttackAnimation != null) {
+            double baseDistance = (this.getWidth() + this.getHeight()) / 2.0;
+            Point chargingUpLocation = ImageRotator.getInstance().calculateFrontPosition(this.getCenterXCoordinate(), this.getCenterYCoordinate(), rotationAngle, baseDistance);
+            this.chargingUpAttackAnimation.setCenterCoordinates(chargingUpLocation.getX(), chargingUpLocation.getY());
+        }
+    }
+
     public void rotateGameObjectTowards (int targetXCoordinate, int targetYCoordinate) {
         double calculatedAngle = ImageRotator.getInstance().calculateAngle(this.getCenterXCoordinate(), this.getCenterYCoordinate(), targetXCoordinate, targetYCoordinate);
         if (this.rotationAngle != calculatedAngle) {
@@ -364,13 +374,19 @@ public class GameObject extends Sprite {
 
             this.rotationAngle = calculatedAngle;
 
-            if (this.exhaustAnimation != null) {
-                Point exhaustLocation = ExhaustAnimationRotator.calculateExhaustPosition(this, this.rotationAngle);
-                this.exhaustAnimation.setX(exhaustLocation.getX());
-                this.exhaustAnimation.setY(exhaustLocation.getY());
-                double exhaustAngle = ImageRotator.getInstance().calculateAngle(exhaustAnimation.getCenterXCoordinate(), exhaustAnimation.getCenterYCoordinate(), targetXCoordinate, targetYCoordinate);
-                this.exhaustAnimation.rotateAnimation(exhaustAngle);
-            }
+            updateChargingAttackAnimationCoordination();
+
+            //Exhausts are better added to the sprites themselves by doing some GIMP photoshop and making the enemies an animation
+//            if (this.exhaustAnimation != null) {
+//                double baseDistance = (this.getWidth() + this.getHeight()) / 2.0;
+//                Point exhaustLocation = ImageRotator.getInstance().calculateFrontPosition(this.getCenterXCoordinate(), this.getCenterYCoordinate(), calculatedAngle, baseDistance);
+//                this.exhaustAnimation.setCenterCoordinates(exhaustLocation.getX(), exhaustLocation.getY());
+//                Point exhaustLocation = ExhaustAnimationRotator.calculateExhaustPosition(this, this.rotationAngle);
+//                this.exhaustAnimation.setX(exhaustLocation.getX());
+//                this.exhaustAnimation.setY(exhaustLocation.getY());
+//                double exhaustAngle = ImageRotator.getInstance().calculateAngle(exhaustAnimation.getCenterXCoordinate(), exhaustAnimation.getCenterYCoordinate(), targetXCoordinate, targetYCoordinate);
+//                this.exhaustAnimation.rotateAnimation(exhaustAngle);
+//            }
         }
     }
 
@@ -401,7 +417,7 @@ public class GameObject extends Sprite {
     }
 
     public Point getCurrentLocation () {
-        if(this.movementConfiguration == null){
+        if (this.movementConfiguration == null) {
             return new Point(this.xCoordinate, this.yCoordinate);
         }
         return this.movementConfiguration.getCurrentLocation();

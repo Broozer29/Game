@@ -1,8 +1,15 @@
 package VisualAndAudioData.audio;
 
+import VisualAndAudioData.audio.enums.AudioEnums;
+import VisualAndAudioData.audio.enums.LevelSongs;
+import game.spawner.enums.LevelDifficulty;
+import game.spawner.enums.LevelLength;
+
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 
 import javax.sound.sampled.UnsupportedAudioFileException;
 
@@ -12,9 +19,8 @@ public class AudioManager {
 	private CustomAudioClip backGroundMusic = null;
 	private AudioDatabase audioDatabase = AudioDatabase.getInstance();
 
-
-
-	private List<AudioEnums> backgroundMusicTracksThatHavePlayed = new ArrayList<>();
+	private Queue<LevelSongs> backgroundMusicTracksThatHavePlayed = new LinkedList<>();
+	private LevelSongs currentSong;
 
 	private AudioManager() {
 
@@ -55,28 +61,62 @@ public class AudioManager {
 		}
 	}
 
-	public void playRandomBackgroundMusic() {
-		AudioEnums backGroundMusicEnum;
+
+	public void playRandomBackgroundMusic(LevelDifficulty difficulty, LevelLength length) throws UnsupportedAudioFileException, IOException {
+		LevelSongs backgroundMusic;
 		do {
-			backGroundMusic = audioDatabase.selectRandomMusicTrack();
-			backGroundMusicEnum = backGroundMusic.getAudioType();
-		} while (backgroundMusicTracksThatHavePlayed.contains(backGroundMusicEnum));
+			// Select a song based on provided criteria or randomly if none are provided
+			if (difficulty != null && length != null) {
+				backgroundMusic = LevelSongs.getRandomSong(difficulty, length);
+			} else if (difficulty != null) {
+				backgroundMusic = LevelSongs.getRandomSongByDifficulty(difficulty);
+			} else if (length != null) {
+				backgroundMusic = LevelSongs.getRandomSongByLength(length);
+			} else {
+				backgroundMusic = LevelSongs.getRandomSong();
+			}
+		}
+		while (backgroundMusicTracksThatHavePlayed.contains(backgroundMusic) && backgroundMusic != null);
 
-		backGroundMusic = AudioDatabase.getInstance().getAudioClip(AudioEnums.Destroyed_Explosion);
-
-		if (backGroundMusic != null) {
-			backGroundMusic.startClip();
-			addTrackToHistory(backGroundMusicEnum);
+		if (backgroundMusic != null) {
+			//playMusicAudio(AudioEnums.Large_Ship_Destroyed);
+			playMusicAudio(backgroundMusic.getAudioEnum());
+			addTrackToHistory(backgroundMusic);
+			this.currentSong = backgroundMusic;
 		}
 	}
 
-	private void addTrackToHistory(AudioEnums track) {
+	private void addTrackToHistory(LevelSongs track) {
 		backgroundMusicTracksThatHavePlayed.add(track);
 		// Remove the oldest entry if the list size exceeds 3
 		if (backgroundMusicTracksThatHavePlayed.size() > 3) {
-			backgroundMusicTracksThatHavePlayed.remove(0);
+			backgroundMusicTracksThatHavePlayed.poll(); // This is more efficient for queues
 		}
 	}
+
+
+//	public void playRandomBackgroundMusic() {
+//		AudioEnums backGroundMusicEnum;
+//		do {
+//			backGroundMusic = audioDatabase.selectRandomMusicTrack();
+//			backGroundMusicEnum = backGroundMusic.getAudioType();
+//		} while (backgroundMusicTracksThatHavePlayed.contains(backGroundMusicEnum));
+//
+////		backGroundMusic = AudioDatabase.getInstance().getAudioClip(AudioEnums.Destroyed_Explosion);
+//
+//		if (backGroundMusic != null) {
+//			backGroundMusic.startClip();
+//			addTrackToHistory(backGroundMusicEnum);
+//		}
+//	}
+//
+//	private void addTrackToHistory(AudioEnums track) {
+//		backgroundMusicTracksThatHavePlayed.add(track);
+//		// Remove the oldest entry if the list size exceeds 3
+//		if (backgroundMusicTracksThatHavePlayed.size() > 3) {
+//			backgroundMusicTracksThatHavePlayed.remove(0);
+//		}
+//	}
 	
 	public void stopMusicAudio() {
 		if (backGroundMusic != null) {
@@ -84,6 +124,14 @@ public class AudioManager {
 			backGroundMusic.setFramePosition(0);
 			backGroundMusic = null;
 		}
+	}
+
+	public LevelSongs getCurrentSong () {
+		return currentSong;
+	}
+
+	public void setCurrentSong (LevelSongs currentSong) {
+		this.currentSong = currentSong;
 	}
 
 	public CustomAudioClip getBackgroundMusic() {

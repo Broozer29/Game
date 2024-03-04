@@ -1,17 +1,23 @@
 package game.managers;
 
+import VisualAndAudioData.DataClass;
 import game.UI.UIObject;
+import game.gamestate.GameStateInfo;
 import game.objects.player.PlayerStats;
 import VisualAndAudioData.image.ImageEnums;
+import guiboards.MenuObjectCollection;
 import visualobjects.SpriteConfigurations.SpriteConfiguration;
 import visualobjects.SpriteAnimation;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class GameUIManager {
 
     private int healthBarWidth = 120;
-    private int healthBarHeight = 20;
+    private int healthBarHeight = 15;
     private int healthFrameWidth = 120;
-    private int healthFrameHeight = 15;
+    private int healthFrameHeight = 23;
     private UIObject healthFrame;
     private UIObject healthBar;
 
@@ -22,6 +28,8 @@ public class GameUIManager {
 
     private UIObject specialAttackFrame;
     private SpriteAnimation specialAttackHighlight;
+
+    private List<UIObject> informationCards = new ArrayList<UIObject>();
 
 
     private static GameUIManager instance = new GameUIManager();
@@ -35,9 +43,22 @@ public class GameUIManager {
     }
 
     public void createGameBoardGUI () {
-        createHealthBar();
-        createShieldBar();
-        createSpecialAttackUIObjects();
+        resetManager();
+    }
+
+    private void createInformationCards () {
+        this.informationCards.clear();
+
+        UIObject topInfoCard = new UIObject(createUIConfiguration(0, 0, 1, ImageEnums.InformationCard));
+        topInfoCard.setImageDimensions(DataClass.getInstance().getInformationCardWidth(), DataClass.getInstance().getInformationCardHeight());
+
+        int botInfoCardY = DataClass.getInstance().getPlayableWindowMaxHeight();
+
+        UIObject botInfoCard = new UIObject(createUIConfiguration(0, botInfoCardY, 1, ImageEnums.InformationCard));
+        botInfoCard.setImageDimensions(DataClass.getInstance().getInformationCardWidth(), DataClass.getInstance().getInformationCardHeight());
+
+        this.informationCards.add(topInfoCard);
+        this.informationCards.add(botInfoCard);
     }
 
     private void createSpecialAttackUIObjects () {
@@ -56,25 +77,28 @@ public class GameUIManager {
 
         specialAttackFrame = new UIObject(createUIConfiguration(150, 20, (float) 0.7, frameType));
         specialAttackHighlight = AnimationManager.getInstance().createAnimation(50, 30, ImageEnums.Highlight, true, (float) 0.7);
-//		specialAttackHighlight = new SpriteAnimation(50, 30, ImageEnums.Highlight, true, (float) 0.7);
         specialAttackHighlight.setImageDimensions(specialAttackFrame.getWidth(), specialAttackFrame.getHeight());
         specialAttackHighlight.setX(specialAttackFrame.getXCoordinate() - 2);
         specialAttackHighlight.setY(specialAttackFrame.getYCoordinate() - 2);
     }
 
     private void createHealthBar () {
-        healthFrame = new UIObject(createUIConfiguration(0, 30, 1, ImageEnums.Frame));
+        int xCoordinate = 10;
+        int yCoordinate = 30;
+        healthFrame = new UIObject(createUIConfiguration(xCoordinate, yCoordinate, 1, ImageEnums.Frame));
         healthFrame.resizeToDimensions(healthFrameWidth, healthFrameHeight);
-        healthBar = new UIObject(createUIConfiguration(10, 30, 1, ImageEnums.Red_Filling));
+        healthBar = new UIObject(createUIConfiguration(xCoordinate, yCoordinate, 1, ImageEnums.Red_Filling));
         healthBar.resizeToDimensions(healthBarWidth, healthBarHeight);
     }
 
     private void createShieldBar () {
-        shieldFrame = new UIObject(createUIConfiguration(0, 60, 1, ImageEnums.Frame));
+        int xCoordinate = 10;
+        int yCoordinate = 60;
+        shieldFrame = new UIObject(createUIConfiguration(xCoordinate, yCoordinate, 1, ImageEnums.Frame));
         shieldFrame.resizeToDimensions(healthFrameWidth, healthFrameHeight);
-        shieldBar = new UIObject(createUIConfiguration(10, 60, 1, ImageEnums.Blue_Filling));
+        shieldBar = new UIObject(createUIConfiguration(xCoordinate, yCoordinate, 1, ImageEnums.Blue_Filling));
         shieldBar.resizeToDimensions(healthBarWidth, healthBarHeight);
-        overloadingShieldBar = new UIObject(createUIConfiguration(10, 60, 1, ImageEnums.Gold_Filling));
+        overloadingShieldBar = new UIObject(createUIConfiguration(xCoordinate, yCoordinate, 1, ImageEnums.Gold_Filling));
         overloadingShieldBar.resizeToDimensions(healthBarWidth, healthBarHeight);
     }
 
@@ -119,6 +143,8 @@ public class GameUIManager {
     public void resetManager () {
         createHealthBar();
         createShieldBar();
+        createSpecialAttackUIObjects();
+        createInformationCards();
     }
 
     public UIObject getSpecialAttackFrame () {
@@ -129,4 +155,7 @@ public class GameUIManager {
         return specialAttackHighlight;
     }
 
+    public List<UIObject> getInformationCards () {
+        return informationCards;
+    }
 }

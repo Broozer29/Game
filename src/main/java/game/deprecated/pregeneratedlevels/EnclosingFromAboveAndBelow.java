@@ -8,7 +8,7 @@ import game.objects.enemies.enums.EnemyEnums;
 import game.spawner.EnemyFormation;
 import game.spawner.EnemySpawnTimer;
 import game.spawner.FormationCreator;
-import game.spawner.SpawnFormationEnums;
+import game.spawner.enums.SpawnFormationEnums;
 import VisualAndAudioData.DataClass;
 
 //Not to scale, just a representation of the pattern
@@ -40,8 +40,8 @@ public class EnclosingFromAboveAndBelow implements PregeneratedFormation{
 	    EnemyFormation formation = null;
 
 	    // Calculate proportional offsets based on window dimensions
-	    int offsetY = (int) (dataClass.getWindowHeight() * 0.229); // 22.9% of window height (equivalent to -200 when windowHeight = 875)
-
+//	    int offsetY = (int) (dataClass.getWindowHeight() * 0.229); // 22.9% of window height (equivalent to -200 when windowHeight = 875)
+		int offsetY = 1;
 	    int offsetX1 = 0;
 	    int offsetX2 = (int) (dataClass.getWindowWidth() * 0.382); // 38.2% of window width (equivalent to 550 when windowWidth = 1440)
 	    int offsetX3 = (int) (dataClass.getWindowWidth() * 0.764); // 76.4% of window width (equivalent to 1100 when windowWidth = 1440)

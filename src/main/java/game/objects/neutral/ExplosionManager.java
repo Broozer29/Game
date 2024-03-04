@@ -8,6 +8,7 @@ import game.items.Item;
 import game.items.effects.EffectActivationTypes;
 import game.items.enums.ItemApplicationEnum;
 import game.items.effects.EffectInterface;
+import game.managers.AnimationManager;
 import game.objects.GameObject;
 import game.objects.enemies.Enemy;
 import game.objects.enemies.EnemyManager;
@@ -64,6 +65,7 @@ public class ExplosionManager {
     public void addExplosion (Explosion explosion) {
         if (!this.explosionList.contains(explosion)) {
             this.explosionList.add(explosion);
+            AnimationManager.getInstance().addUpperAnimation(explosion.getAnimation());
         }
     }
 

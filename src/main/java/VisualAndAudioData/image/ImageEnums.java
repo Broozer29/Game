@@ -51,7 +51,9 @@ public enum ImageEnums {
 
     // GUI
     Health_Bar, Shield_Bar, Icon_Border, Health_Shield_Frames, Frame, Red_Filling, Gold_Filling, Blue_Filling, Highlight, Long_Card, Wide_Card, Square_Card,
-
+    InformationCard,
+    YellowWings1, YellowWings2, YellowWings3, YellowWings4, YellowWings5, BlueWings1, BlueWings2, BlueWings3, BlueWings4, BlueWings5,
+    PurpleWings1,PurpleWings2,PurpleWings3,PurpleWings4,PurpleWings5,
     // Icons
     TripleShotIcon, DoubleShotIcon, Starcraft2_Point_Defense_Drone, Starcraft2_Protoss_Cloak,
     Starcraft2_Protoss_Shield_Disintegrate, Starcraft2_Protoss_Shields_1, Starcraft2_Protoss_Shields_2,

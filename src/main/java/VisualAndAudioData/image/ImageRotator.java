@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import game.movement.Direction;
+import game.movement.Point;
 import game.objects.GameObject;
 
 public class ImageRotator {
@@ -98,11 +99,11 @@ public class ImageRotator {
         AffineTransform tx = AffineTransform.getTranslateInstance(translateX, translateY);
 
         // If the angle is 180 degrees or more, flip the image horizontally
-        if (angle == 180 || angle == 225 || angle == 135) {
-            tx.scale(-1, 1);
-            tx.translate(-image.getWidth(), 0);
-            rad = Math.toRadians(angle - 180);
-        }
+//        if (angle == 180 || angle == 225 || angle == 135) {
+//            tx.scale(-1, 1);
+//            tx.translate(-image.getWidth(), 0);
+//            rad = Math.toRadians(angle - 180);
+//        }
 
         // If the angle is 90 or 270 degrees, flip the image vertically
         if (angle == 90 || angle == 270) {
@@ -169,7 +170,7 @@ public class ImageRotator {
         }
 
         // Round to 2 decimal places
-        angleDegrees = Math.round(angleDegrees * 10) / 10.0;
+        angleDegrees = Math.round(angleDegrees);
 
         return angleDegrees;
     }
@@ -182,12 +183,14 @@ public class ImageRotator {
         // Determine if the image is facing the left half of the circle and needs to be flipped vertically.
         boolean isLeftHalf = angleDegrees > 90 && angleDegrees < 270;
 
+
+
         // If the image is on the left half of the circle, mirror the angle for rotation.
         if (isLeftHalf) {
             angleDegrees = 360 - angleDegrees;
         }
 
-        angleDegrees = Math.round(angleDegrees * 10) / 10.0;
+        angleDegrees = Math.round(angleDegrees);
         // Rotate the image to the adjusted angle.
         BufferedImage processedImage = rotate(image, angleDegrees);
 
@@ -198,8 +201,6 @@ public class ImageRotator {
 
         return processedImage;
     }
-
-
 
     public BufferedImage flipHorizontally (BufferedImage image) {
         AffineTransform tx = AffineTransform.getScaleInstance(-1, 1);
@@ -213,6 +214,16 @@ public class ImageRotator {
         tx.translate(0, -image.getHeight(null));
         AffineTransformOp op = new AffineTransformOp(tx, AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
         return op.filter(image, null);
+    }
+
+    public Point calculateFrontPosition(int centerX, int centerY, double angleDegrees, double distanceToFront) {
+        double angleRadians = Math.toRadians(angleDegrees);
+
+        // Calculate the new position using trigonometry
+        int newX = centerX + (int) (Math.cos(angleRadians) * distanceToFront);
+        int newY = centerY + (int) (Math.sin(angleRadians) * distanceToFront);
+
+        return new Point(newX, newY);
     }
 
 

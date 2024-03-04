@@ -7,8 +7,13 @@ public class DataClass {
 
 	private int windowWidth = 1440;
 	private int windowHeight = 875;
+
+	private int informationCardWidth = 0;
+	private int informationCardHeight = 0;
 	
 	private DataClass() {
+		informationCardWidth = windowWidth;
+		informationCardHeight = (int) Math.round(windowHeight * 0.10);
 	}
 
 	public static DataClass getInstance() {
@@ -22,7 +27,23 @@ public class DataClass {
 	public int getWindowHeight() {
 		return this.windowHeight;
 	}
-	
+
+	public int getPlayableWindowMinHeight(){
+		return 0 + informationCardHeight;
+	}
+
+	public int getPlayableWindowMaxHeight(){
+		return windowHeight - informationCardHeight;
+	}
+
+	public int getInformationCardWidth () {
+		return informationCardWidth;
+	}
+
+	public int getInformationCardHeight () {
+		return informationCardHeight;
+	}
+
 	public int getBoardBlockWidth() {
 		return this.windowWidth / 8;
 	}

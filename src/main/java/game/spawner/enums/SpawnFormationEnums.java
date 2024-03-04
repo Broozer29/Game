@@ -1,4 +1,4 @@
-package game.spawner;
+package game.spawner.enums;
 
 import java.util.Arrays;
 import java.util.List;

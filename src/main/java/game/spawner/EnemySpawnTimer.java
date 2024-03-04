@@ -44,22 +44,22 @@ public class EnemySpawnTimer implements TimerInterface {
 
 	@Override
 	public void endOfTimer() {
-		if (shouldActivate(currentTime)) {
-			// Enemy spawning logic
-			if (formation == null) {
-				LevelManager.getInstance().spawnEnemy(0, 0, timerEnemyType, amountOfSpawnAttempts, direction,
-						enemyScale, true, xMovementSpeed, yMovementSpeed, false);
-			} else {
-				formation.spawnFormation(formationXCoordinate, formationYCoordinate, timerEnemyType, direction, enemyScale,
-						xMovementSpeed, yMovementSpeed);
-			}
-			if (this.loopable) {
-				this.currentTime = 0;
-				this.status = TimerStatusEnums.Waiting_To_Start;
-			} else {
-				this.status = TimerStatusEnums.Finished;
-			}
-		}
+//		if (shouldActivate(currentTime)) {
+//			// Enemy spawning logic
+//			if (formation == null) {
+//				LevelManager.getInstance().spawnEnemy(0, 0, timerEnemyType, amountOfSpawnAttempts, direction,
+//						enemyScale, true, xMovementSpeed, yMovementSpeed, false);
+//			} else {
+//				formation.spawnFormation(formationXCoordinate, formationYCoordinate, timerEnemyType, direction, enemyScale,
+//						xMovementSpeed, yMovementSpeed);
+//			}
+//			if (this.loopable) {
+//				this.currentTime = 0;
+//				this.status = TimerStatusEnums.Waiting_To_Start;
+//			} else {
+//				this.status = TimerStatusEnums.Finished;
+//			}
+//		}
 	}
 
 	@Override

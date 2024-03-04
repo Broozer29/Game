@@ -38,9 +38,7 @@ public class MenuBoard extends JPanel implements ActionListener {
     private AnimationManager animationManager = AnimationManager.getInstance();
     private ConnectedControllers controllers = ConnectedControllers.getInstance();
     private final int boardWidth = data.getWindowWidth();
-    ;
     private final int boardHeight = data.getWindowHeight();
-    ;
     private List<MenuObjectCollection> firstColumn = new ArrayList<MenuObjectCollection>();
     private List<MenuObjectCollection> secondColumn = new ArrayList<MenuObjectCollection>();
     private List<MenuObjectCollection> thirdColumn = new ArrayList<MenuObjectCollection>();
@@ -478,24 +476,32 @@ public class MenuBoard extends JPanel implements ActionListener {
     private void drawObjects (Graphics2D g) {
         recreateList();
         for (MenuObjectCollection object : offTheGridObjects) {
-            if (object.getMenuObjectType() == MenuObjectEnums.Text) {
-                for (MenuObjectPart letter : object.getMenuImages()) {
-                    g.drawImage(letter.getImage(), letter.getXCoordinate(), letter.getYCoordinate(), this);
-                }
-            } else {
-                g.drawImage(object.getMenuImages().get(0).getImage(), object.getXCoordinate(), object.getYCoordinate(),
-                        this);
+            if (object != null) {
+                drawMenuObject(g, object);
             }
         }
 
         for (List<MenuObjectCollection> list : grid) {
             for (MenuObjectCollection object : list) {
-                for (MenuObjectPart menuPart : object.getMenuImages()) {
-                    g.drawImage(menuPart.getImage(), menuPart.getXCoordinate(), menuPart.getYCoordinate(), this);
+                if (object != null) {
+                    drawMenuObject(g, object);
                 }
             }
         }
 
+    }
+
+    private void drawMenuObject (Graphics2D g, MenuObjectCollection object) {
+        if (object.getMenuObjectType() == MenuObjectEnums.Text) {
+            for (MenuObjectPart letter : object.getMenuTextImages()) {
+                g.drawImage(letter.getImage(), letter.getXCoordinate(), letter.getYCoordinate(), this);
+            }
+        } else {
+            for (MenuObjectPart image : object.getMenuImages()) {
+                g.drawImage(image.getImage(), object.getXCoordinate(), object.getYCoordinate(),
+                        this);
+            }
+        }
     }
 
     private void drawImage (Graphics g, Sprite sprite) {

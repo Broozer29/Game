@@ -63,7 +63,6 @@ public class DirectorManager {
     }
 
     public void distributeCredits() {
-
         float creditAmount = (float) ((1 + 0.2 * GameStateInfo.getInstance().getDifficultyCoefficient()) * 0.5); // Determine the amount of credits to distribute
         for (Director director : directorList) {
             director.receiveCredits(creditAmount);

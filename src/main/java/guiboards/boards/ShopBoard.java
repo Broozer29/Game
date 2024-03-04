@@ -16,6 +16,8 @@ import game.managers.AnimationManager;
 import game.objects.background.BackgroundManager;
 import game.objects.background.BackgroundObject;
 import VisualAndAudioData.DataClass;
+import game.spawner.enums.LevelDifficulty;
+import game.spawner.enums.LevelLength;
 import guiboards.MenuCursor;
 import guiboards.boardEnums.MenuFunctionEnums;
 import guiboards.MenuObjectCollection;
@@ -118,8 +120,8 @@ public class ShopBoard extends JPanel implements ActionListener {
         createFirstRowOfItems();
         createSecondRowOfItems();
         createThirdRowOfItems();
-        createSpecialItemsSection();
-        createSongSelectorSection();
+        createSongDifficultySection();
+        createSongLengthSection();
         createDescriptionBox();
         initBackgroundCards();
 
@@ -327,23 +329,30 @@ public class ShopBoard extends JPanel implements ActionListener {
         }
     }
 
-    private void createSpecialItemsSection () {
-        // Assuming there are 3 special items
+
+    LevelDifficulty[] difficulties = {LevelDifficulty.Easy, LevelDifficulty.Medium, LevelDifficulty.Hard};
+
+    private void createSongDifficultySection () {
+        //Below is the old way of doing it
         for (int i = 0; i < 3; i++) {
             int x = i * (itemWidth + horizontalSpacing) + horizontalScreenDistance;
-            MenuObjectCollection specialItem = new MenuObjectCollection(x, fourthRowY, imageScale, "Special " + (i + 1), MenuObjectEnums.RelicItem, MenuFunctionEnums.PurchaseRelic);
-            fourthRow.add(specialItem);
+            MenuObjectCollection difficulty = new MenuObjectCollection(x, fourthRowY, imageScale, difficulties[i].toString().toUpperCase(), MenuObjectEnums.Text, MenuFunctionEnums.SelectSongDifficulty);
+            difficulty.setLevelDifficulty(difficulties[i]);
+            fourthRow.add(difficulty);
         }
     }
 
-    private void createSongSelectorSection () {
+    LevelLength[] levelLengths = {LevelLength.Short, LevelLength.Medium, LevelLength.Long};
+
+    private void createSongLengthSection () {
         int xCoord = (3 * (itemWidth + horizontalSpacing)) + (horizontalScreenDistance * 2);
         // Assuming there are 3 songs
         for (int i = 0; i < 3; i++) {
             // Calculate x to be positioned after the last special item
             int x = xCoord + (i * (itemWidth + horizontalSpacing));
-            MenuObjectCollection songSelector = new MenuObjectCollection(x, fourthRowY, imageScale, "Song " + (i + 1), MenuObjectEnums.Song_Selector, MenuFunctionEnums.PurchaseSong);
-            fourthRow.add(songSelector);
+            MenuObjectCollection songLength = new MenuObjectCollection(x, fourthRowY, imageScale, levelLengths[i].toString().toUpperCase(), MenuObjectEnums.Text, MenuFunctionEnums.SelectSongLength);
+            songLength.setLevelLength(levelLengths[i]);
+            fourthRow.add(songLength);
         }
 
 
@@ -674,14 +683,7 @@ public class ShopBoard extends JPanel implements ActionListener {
     private void drawObjects (Graphics2D g) {
         for (MenuObjectCollection object : offTheGridObjects) {
             if (object != null) {
-                if (object.getMenuObjectType() == MenuObjectEnums.Text) {
-                    for (MenuObjectPart letter : object.getMenuImages()) {
-                        g.drawImage(letter.getImage(), letter.getXCoordinate(), letter.getYCoordinate(), this);
-                    }
-                } else {
-                    g.drawImage(object.getMenuImages().get(0).getImage(), object.getXCoordinate(), object.getYCoordinate(),
-                            this);
-                }
+                drawMenuObject(g, object);
             }
         }
 
@@ -692,11 +694,8 @@ public class ShopBoard extends JPanel implements ActionListener {
                             || object.getMenuObjectType().equals(MenuObjectEnums.RareItem)
                             || object.getMenuObjectType().equals(MenuObjectEnums.LegendaryItem)) {
                         drawItemsInShop(g, object);
-                    } else {
-                        for (MenuObjectPart menuPart : object.getMenuImages()) {
-                            g.drawImage(menuPart.getImage(), menuPart.getXCoordinate(), menuPart.getYCoordinate(), this);
-                        }
                     }
+                    drawMenuObject(g, object);
                 }
             }
         }
@@ -704,10 +703,7 @@ public class ShopBoard extends JPanel implements ActionListener {
         if (showInventory) {
             for (MenuObjectCollection object : playerInventoryMenuObjects) {
                 if (object != null) {
-                    for (MenuObjectPart part : object.getMenuImages()) {
-                        g.drawImage(part.getImage(), part.getXCoordinate(), part.getYCoordinate(),
-                                this);
-                    }
+                    drawMenuObject(g, object);
                 }
             }
 
@@ -718,6 +714,19 @@ public class ShopBoard extends JPanel implements ActionListener {
                 itemRowsBackgroundCard.getYCoordinate() + 30);
         g.drawImage(menuCursor.getMenuImages().get(0).getImage(), menuCursor.getXCoordinate(), menuCursor.getYCoordinate(), this);
 
+    }
+
+    private void drawMenuObject (Graphics2D g, MenuObjectCollection object) {
+        if (object.getMenuObjectType() == MenuObjectEnums.Text) {
+            for (MenuObjectPart letter : object.getMenuTextImages()) {
+                g.drawImage(letter.getImage(), letter.getXCoordinate(), letter.getYCoordinate(), this);
+            }
+        } else {
+            for (MenuObjectPart image : object.getMenuImages()) {
+                g.drawImage(image.getImage(), object.getXCoordinate(), object.getYCoordinate(),
+                        this);
+            }
+        }
     }
 
     private void drawItemsInShop (Graphics g, MenuObjectCollection object) {

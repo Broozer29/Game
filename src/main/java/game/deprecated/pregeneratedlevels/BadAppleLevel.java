@@ -7,7 +7,7 @@ import game.managers.TimerManager;
 import game.movement.Direction;
 import game.objects.enemies.enums.EnemyEnums;
 import game.spawner.EnemySpawnTimer;
-import VisualAndAudioData.audio.AudioEnums;
+import VisualAndAudioData.audio.enums.AudioEnums;
 
 public class BadAppleLevel implements Level{
 

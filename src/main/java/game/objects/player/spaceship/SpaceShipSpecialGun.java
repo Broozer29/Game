@@ -11,7 +11,7 @@ import game.objects.player.specialAttacks.SpecialAttack;
 import game.objects.missiles.MissileConfiguration;
 import game.objects.missiles.MissileManager;
 import game.objects.player.PlayerStats;
-import VisualAndAudioData.audio.AudioEnums;
+import VisualAndAudioData.audio.enums.AudioEnums;
 import VisualAndAudioData.audio.AudioManager;
 import VisualAndAudioData.image.ImageEnums;
 import visualobjects.SpriteConfigurations.SpriteAnimationConfiguration;

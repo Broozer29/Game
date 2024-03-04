@@ -4,7 +4,7 @@ import game.movement.Direction;
 import game.movement.pathfinderconfigs.MovementPatternSize;
 import game.movement.pathfinders.*;
 import game.objects.enemies.enemytypes.*;
-import VisualAndAudioData.audio.AudioEnums;
+import VisualAndAudioData.audio.enums.AudioEnums;
 import game.objects.enemies.enums.EnemyEnums;
 import visualobjects.SpriteConfigurations.SpriteConfiguration;
 
@@ -39,11 +39,13 @@ public class EnemyCreator {
         String objectType = enemyType.getObjectType();
         int attackSpeed = enemyType.getAttackSpeed();
         float baseArmor = enemyType.getBaseArmor();
+        float xpOnDeath = enemyType.getXpOnDeath();
+        float cashMoneyWorth = enemyType.getCashMoneyWorth();
 
 
         return new EnemyConfiguration(enemyType, maxHitpoints, maxShields
                 , hasAttack, true, deathSound, movementDirection, pathFinder, xMovementSpeed, yMovementSpeed, allowedToDealDamage,
-                objectType, attackSpeed, movementPatternSize, boxCollision, baseArmor);
+                objectType, attackSpeed, movementPatternSize, boxCollision, baseArmor, cashMoneyWorth, xpOnDeath);
     }
 
     private static Enemy createSpecificEnemy (SpriteConfiguration spriteConfiguration, EnemyConfiguration enemyConfiguration) {

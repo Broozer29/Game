@@ -18,7 +18,7 @@ public class TimerManager {
 	}
 
 	public void updateGameTick(float currentSongFrame) {
-		updateTimers(currentSongFrame);
+		updateTimers(20);
 	}
 
 	public void resetManager() {

@@ -5,6 +5,7 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 
+import game.managers.AnimationManager;
 import game.movement.Direction;
 import visualobjects.SpriteConfigurations.SpriteAnimationConfiguration;
 import VisualAndAudioData.image.ImageCropper;
@@ -279,4 +280,13 @@ public class SpriteAnimation extends Sprite implements Cloneable{
 		}
 	}
 
+	public boolean isPlaying () {
+		if(currentFrame < totalFrames && visible){
+			if(AnimationManager.getInstance().getUpperAnimations().contains(this) ||
+				AnimationManager.getInstance().getLowerAnimations().contains(this)){
+				return true;
+			}
+		}
+		return false;
+	}
 }

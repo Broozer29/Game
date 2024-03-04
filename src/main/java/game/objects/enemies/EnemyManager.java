@@ -12,7 +12,7 @@ import game.objects.player.PlayerManager;
 import game.objects.enemies.enemytypes.AlienBomb;
 import game.objects.player.spaceship.SpaceShip;
 import VisualAndAudioData.DataClass;
-import VisualAndAudioData.audio.AudioEnums;
+import VisualAndAudioData.audio.enums.AudioEnums;
 import VisualAndAudioData.audio.AudioManager;
 
 public class EnemyManager {
@@ -32,7 +32,7 @@ public class EnemyManager {
     }
 
     public void resetManager () {
-        for(Enemy enemy : enemyList){
+        for (Enemy enemy : enemyList) {
             enemy.setVisible(false);
         }
 

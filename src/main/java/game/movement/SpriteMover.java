@@ -1,11 +1,8 @@
 package game.movement;
 
-import VisualAndAudioData.image.ImageRotator;
 import game.movement.pathfinderconfigs.*;
 import game.movement.pathfinders.*;
 import game.objects.GameObject;
-import game.objects.enemies.enemytypes.Seeker;
-import game.objects.missiles.missiletypes.SeekerProjectile;
 import game.objects.player.PlayerManager;
 import game.util.OutOfBoundsCalculator;
 import visualobjects.Sprite;
@@ -13,8 +10,6 @@ import visualobjects.Sprite;
 public class SpriteMover {
 
     private static SpriteMover instance = new SpriteMover();
-
-    private long modulocounter = 0;
 
     private SpriteMover () {
 
@@ -36,8 +31,8 @@ public class SpriteMover {
     }
 
     // Moves the sprite only, not it's corresponding animations!
-    // Add the "out of bounds" detector!
     public void moveSprite (GameObject gameObject, MovementConfiguration moveConfig) {
+        //Check if the path needs to be recreated or initially created
         if (shouldUpdatePathSettings(moveConfig)) {
             // calculate a new path if necessary
             PathFinderConfig config = PathFinderConfigCreator.createConfig(gameObject, moveConfig);
@@ -47,19 +42,18 @@ public class SpriteMover {
             moveConfig.setLastUsedYMovementSpeed(moveConfig.getYMovementSpeed());
         }
 
+        //If homing, go towards another move method
         if (moveConfig.getPathFinder() instanceof HomingPathFinder) {
             moveHomingPathFinders(gameObject, moveConfig);
             return;
         }
-//        else {
-//            moveConfig.getCurrentPath().updateCurrentLocation(gameObject.getCurrentLocation());
-//        }
 
         // if reached the next point, remove it from the path
         if (moveConfig.getCurrentLocation().equals(moveConfig.getCurrentPath().getWaypoints().get(0))) {
             moveConfig.getCurrentPath().getWaypoints().remove(0);
         }
 
+        //Calculate the new direction to bounce towards or keep the current direction
         if (moveConfig.getPathFinder() instanceof BouncingPathFinder) {
             Direction newDirection = (Direction) ((BouncingPathFinder) moveConfig.getPathFinder()).getNewDirection(gameObject, moveConfig.getRotation());
             if (newDirection != moveConfig.getRotation()) {
@@ -68,8 +62,7 @@ public class SpriteMover {
             }
         }
 
-        // move towards the next point
-
+        // move towards the next point, remove the point from the path and update the objects location
         if (moveConfig.getCurrentPath().getWaypoints().size() > 0 && gameObject.isAllowedToMove()) {
             gameObject.updateCurrentLocation(moveConfig.getCurrentPath().getWaypoints().get(0));
             gameObject.setX(moveConfig.getCurrentPath().getWaypoints().get(0).getX());
@@ -78,8 +71,8 @@ public class SpriteMover {
             moveConfig.getCurrentLocation().setX(gameObject.getXCoordinate());
             moveConfig.getCurrentLocation().setY(gameObject.getYCoordinate());
 
-            //Rotate the object towards it's target
-            if(moveConfig.getCurrentPath().getWaypoints().size() > 1 && gameObject.isAllowedVisualsToRotate()){
+            //Rotate the object towards it's target if allowed
+            if (moveConfig.getCurrentPath().getWaypoints().size() > 1 && gameObject.isAllowedVisualsToRotate()) {
                 Point finalPoint = moveConfig.getCurrentPath().getWaypoints().get(moveConfig.getCurrentPath().getWaypoints().size() - 1);
                 gameObject.rotateGameObjectTowards(finalPoint.getX(), finalPoint.getY());
                 gameObject.setAllowedVisualsToRotate(false);
@@ -87,15 +80,21 @@ public class SpriteMover {
 
         }
 
+//            gameObject.rotateGameObjectTowards(PlayerManager.getInstance().getSpaceship().getCenterXCoordinate(), PlayerManager.getInstance().getSpaceship().getCenterYCoordinate());
+        
+        // Adjusts the orbiting path when the target changes coordinates
         if (moveConfig.getPathFinder() instanceof OrbitPathFinder) {
             adjustOrbitPath(moveConfig);
         }
+        // Remove the object if it's looping diamond shape path has been traversed
         if (moveConfig.getPathFinder() instanceof DiamondShapePathFinder) {
             if (moveConfig.getCurrentPath().getWaypoints().isEmpty()) {
                 gameObject.setVisible(false);
             }
         }
-        if (OutOfBoundsCalculator.isOutOfBounds(gameObject)) {
+
+        // If the object is out of bounds, remove it by making it invisible
+        if (OutOfBoundsCalculator.isOutOfBounds(gameObject) && !(moveConfig.getPathFinder() instanceof BouncingPathFinder)) {
             gameObject.setVisible(false);
             gameObject.setAllowedToMove(false);
         }
@@ -115,6 +114,7 @@ public class SpriteMover {
 
         // check if the missile has lost lock
         boolean hasPassedPlayerOrNeverHadLock = false;
+
 
         if (moveConfig.getPathFinder().shouldRecalculatePath(moveConfig.getCurrentPath())) {
             hasPassedPlayerOrNeverHadLock = true; // if it should recalculate path, it means it lost lock or never had
@@ -136,7 +136,7 @@ public class SpriteMover {
 
 
             // Based on the direction, calculate the next point. Overwrite the regular calculator with homing's specific one
-            Point nextPoint = pathfinder.calculateNextPoint(moveConfig.getCurrentLocation(), nextStep,
+            Point nextPoint = pathfinder.calculateNextPoint(moveConfig, nextStep,
                     moveConfig.getXMovementSpeed(), moveConfig.getYMovementSpeed(), moveConfig.getCurrentPath().getTarget());
 
 
@@ -153,15 +153,21 @@ public class SpriteMover {
         // Update the current location
         if (moveConfig.getNextPoint() != null) {
             moveConfig.setCurrentLocation(moveConfig.getNextPoint());
-            gameObject.setCenterCoordinates(moveConfig.getNextPoint().getX(), moveConfig.getNextPoint().getY());
-            Point maxPoint = moveConfig.getCurrentPath().getWaypoints().get(moveConfig.getCurrentPath().getWaypoints().size() - 1);
-            gameObject.rotateGameObjectTowards(maxPoint.getX(), maxPoint.getY());
-        }
-        if(gameObject instanceof SeekerProjectile){
-            System.out.println(gameObject.getMovementConfiguration().getTarget().getCurrentLocation());
-            System.out.println(PlayerManager.getInstance().getSpaceship().getCurrentLocation());
-        }
+            gameObject.setX(moveConfig.getNextPoint().getX());
+            gameObject.setY(moveConfig.getNextPoint().getY());
 
+            //Homing movement rotation is hell, just use 360 degrees visual objects so you dont need to rotate
+//            if (gameObject.isAllowedVisualsToRotate()) {
+//                if (hasPassedPlayerOrNeverHadLock) {
+//                    gameObject.rotateGameObjectTowards(moveConfig.getRotation());
+//                    gameObject.setAllowedVisualsToRotate(false);
+//                } else {
+//                    Point targetPoint = new Point(moveConfig.getTarget().getCenterXCoordinate(), moveConfig.getTarget().getCenterYCoordinate());
+//                    gameObject.rotateGameObjectTowards(targetPoint.getX(), targetPoint.getY());
+//                }
+//            }
+
+        }
     }
 
     //Gets a new nearest target and blacklists the current target, used for friendly homing gameobjects

@@ -3,6 +3,7 @@ package game.objects.enemies.enemytypes;
 import java.util.ArrayList;
 import java.util.List;
 
+import game.managers.AnimationManager;
 import game.movement.Direction;
 import game.movement.pathfinderconfigs.MovementPatternSize;
 import game.movement.pathfinders.RegularPathFinder;
@@ -10,6 +11,7 @@ import game.objects.enemies.EnemyConfiguration;
 import game.objects.enemies.Enemy;
 import game.objects.missiles.*;
 import VisualAndAudioData.image.ImageEnums;
+import game.util.WithinVisualBoundariesCalculator;
 import visualobjects.SpriteConfigurations.SpriteAnimationConfiguration;
 import visualobjects.SpriteConfigurations.SpriteConfiguration;
 import visualobjects.SpriteAnimation;
@@ -21,15 +23,16 @@ public class Bomba extends Enemy {
 	public Bomba(SpriteConfiguration spriteConfiguration, EnemyConfiguration enemyConfiguration) {
 		super(spriteConfiguration, enemyConfiguration);
 
-		SpriteAnimationConfiguration exhaustConfiguration = new SpriteAnimationConfiguration(spriteConfiguration, 2, true);
-		exhaustConfiguration.getSpriteConfiguration().setImageType(ImageEnums.Bomba_Normal_Exhaust);
-		this.exhaustAnimation = new SpriteAnimation(exhaustConfiguration);
+//		SpriteAnimationConfiguration exhaustConfiguration = new SpriteAnimationConfiguration(spriteConfiguration, 2, true);
+//		exhaustConfiguration.getSpriteConfiguration().setImageType(ImageEnums.Bomba_Normal_Exhaust);
+//		this.exhaustAnimation = new SpriteAnimation(exhaustConfiguration);
 
 		SpriteAnimationConfiguration destroyedExplosionfiguration = new SpriteAnimationConfiguration(spriteConfiguration, 3, false);
 		destroyedExplosionfiguration.getSpriteConfiguration().setImageType(ImageEnums.Bomba_Destroyed_Explosion);
 		this.destructionAnimation = new SpriteAnimation(destroyedExplosionfiguration);
 
 		//Specialized behaviour configuration stuff
+		this.attackSpeed = 50;
 		this.initDirectionFromRotation();
 	}
 
@@ -38,48 +41,68 @@ public class Bomba extends Enemy {
 	// This function doesn't discern enemy types yet either, should be re-written
 	// when new enemies are introduced
 	public void fireAction() {
-		if (missileManager == null) {
-			missileManager = MissileManager.getInstance();
-		}
+		// Check if the attack cooldown has been reached
 		if (attackSpeedCurrentFrameCount >= attackSpeed) {
-
-			for (Direction direction : missileDirections) {
-				SpriteConfiguration missileSpriteConfiguration = new SpriteConfiguration();
-
-				MissileTypeEnums missileType = MissileTypeEnums.BombaProjectile;
-
-				missileSpriteConfiguration.setxCoordinate(xCoordinate);
-				missileSpriteConfiguration.setyCoordinate(yCoordinate + this.height / 2);
-				missileSpriteConfiguration.setScale(this.scale);
-				missileSpriteConfiguration.setImageType(missileType.getImageType());
-
-				MissileConfiguration missileConfiguration = new MissileConfiguration(missileType,
-						100, 100, null, missileType.getDeathOrExplosionImageEnum(), isFriendly()
-						, new RegularPathFinder(), direction, missileType.getxMovementSpeed(),missileType.getyMovementspeed(), true
-						, missileType.getObjectType(), missileType.getDamage(), MovementPatternSize.SMALL, missileType.isBoxCollision());
-
-
-				Missile newMissile = MissileCreator.getInstance().createMissile(missileSpriteConfiguration, missileConfiguration);
-				newMissile.setOwnerOrCreator(this);
-				
-				if(missileDirections.contains(Direction.DOWN)) {
-					newMissile.rotateGameObjectTowards(Direction.DOWN);
-				} else if(missileDirections.contains(Direction.LEFT)) {
-					newMissile.rotateGameObjectTowards(Direction.LEFT);
-				} else if(missileDirections.contains(Direction.RIGHT)) {
-					newMissile.rotateGameObjectTowards(Direction.RIGHT);
-				} else if(missileDirections.contains(Direction.UP)) {
-					newMissile.rotateGameObjectTowards(Direction.UP);
+			// Check if the charging animation is not already playing
+			if(WithinVisualBoundariesCalculator.isWithinBoundaries(this)) {
+				if (!chargingUpAttackAnimation.isPlaying()) {
+					// Start charging animation
+					chargingUpAttackAnimation.refreshAnimation(); // Refreshes the animation
+					AnimationManager.getInstance().addUpperAnimation(chargingUpAttackAnimation); // Adds the animation for displaying
 				}
-				
-				missileManager.addExistingMissile(newMissile);
 
+				// Check if the charging animation has finished
+				if (chargingUpAttackAnimation.getCurrentFrame() >= chargingUpAttackAnimation.getTotalFrames() - 1) {
+					shootMissile();
+					// Reset attack speed frame count after firing the missile
+					attackSpeedCurrentFrameCount = 0;
+				}
 			}
 
-			attackSpeedCurrentFrameCount = 0;
+
+
+			// The charging up attack animation is still playing, just wait for it to finish
+			// No need to increment attackSpeedCurrentFrameCount here as we're already at max and waiting for animation to complete
+
+		} else {
+			// If not yet ready to attack, increase the attack speed frame count
+			attackSpeedCurrentFrameCount++;
 		}
-		if (attackSpeedCurrentFrameCount < attackSpeed) {
-			this.attackSpeedCurrentFrameCount++;
+	}
+
+	private void shootMissile(){
+		for (Direction direction : missileDirections) {
+			SpriteConfiguration missileSpriteConfiguration = new SpriteConfiguration();
+
+			MissileTypeEnums missileType = MissileTypeEnums.BombaProjectile;
+
+			missileSpriteConfiguration.setxCoordinate(xCoordinate);
+			missileSpriteConfiguration.setyCoordinate(yCoordinate + this.height / 2);
+			missileSpriteConfiguration.setScale(this.scale);
+			missileSpriteConfiguration.setImageType(missileType.getImageType());
+
+			MissileConfiguration missileConfiguration = new MissileConfiguration(missileType,
+					100, 100, null, missileType.getDeathOrExplosionImageEnum(), isFriendly()
+					, new RegularPathFinder(), direction, missileType.getxMovementSpeed(),missileType.getyMovementSpeed(), true
+					, missileType.getObjectType(), missileType.getDamage(), MovementPatternSize.SMALL, missileType.isBoxCollision());
+
+
+			Missile newMissile = MissileCreator.getInstance().createMissile(missileSpriteConfiguration, missileConfiguration);
+			newMissile.setOwnerOrCreator(this);
+
+			//Not needed anymore?
+//			if(missileDirections.contains(Direction.DOWN)) {
+//				newMissile.rotateGameObjectTowards(Direction.DOWN);
+//			} else if(missileDirections.contains(Direction.LEFT)) {
+//				newMissile.rotateGameObjectTowards(Direction.LEFT);
+//			} else if(missileDirections.contains(Direction.RIGHT)) {
+//				newMissile.rotateGameObjectTowards(Direction.RIGHT);
+//			} else if(missileDirections.contains(Direction.UP)) {
+//				newMissile.rotateGameObjectTowards(Direction.UP);
+//			}
+
+			missileManager.addExistingMissile(newMissile);
+
 		}
 	}
 

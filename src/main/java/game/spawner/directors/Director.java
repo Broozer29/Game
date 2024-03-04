@@ -8,7 +8,7 @@ import game.objects.enemies.enums.EnemyCategory;
 import game.objects.enemies.enums.EnemyEnums;
 import game.spawner.EnemyFormation;
 import game.spawner.FormationCreator;
-import game.spawner.SpawnFormationEnums;
+import game.spawner.enums.SpawnFormationEnums;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -237,7 +237,7 @@ public class Director {
     }
 
     private int calculateBaseY(int totalFormationHeight) {
-        return random.nextInt(DataClass.getInstance().getWindowHeight() - totalFormationHeight + 1); // +1 to include the upper limit
+        return random.nextInt(DataClass.getInstance().getPlayableWindowMinHeight(),DataClass.getInstance().getPlayableWindowMaxHeight() - totalFormationHeight + 1); // +1 to include the upper limit
     }
 
 

@@ -1,36 +1,40 @@
 package game.objects.enemies.enums;
 
-import VisualAndAudioData.audio.AudioEnums;
+import VisualAndAudioData.audio.enums.AudioEnums;
 import VisualAndAudioData.image.ImageEnums;
 
 import java.util.Random;
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
 
 
 public enum EnemyEnums {
     Alien_Bomb(10, 10, 25, 0, false,
             false, AudioEnums.Alien_Bomb_Destroyed, "Alien Bomb", 0,
-            ImageEnums.Alien_Bomb, ImageEnums.Alien_Bomb_Explosion, 3, EnemyCategory.Basic, false, 0, 1),
+            ImageEnums.Alien_Bomb, ImageEnums.Alien_Bomb_Explosion, 3, EnemyCategory.Basic, false, 0, 1,
+            2),
     Seeker(50, 50, 50, 0, true,
             false, AudioEnums.Large_Ship_Destroyed, "Enemy Seeker", 300,
-            ImageEnums.Seeker, ImageEnums.Seeker_Destroyed_Explosion, 8, EnemyCategory.Basic, false, 10, 2),
+            ImageEnums.Seeker, ImageEnums.Seeker_Destroyed_Explosion, 8, EnemyCategory.Basic, false, 10, 2,
+            4),
     Tazer(50, 50, 50, 0, true,
             false, AudioEnums.Large_Ship_Destroyed, "Enemy Tazer", 450,
-            ImageEnums.Tazer, ImageEnums.Tazer_Destroyed_Explosion, 8, EnemyCategory.Basic, false, 10, 2),
+            ImageEnums.Tazer, ImageEnums.Tazer_Destroyed_Explosion, 8, EnemyCategory.Basic, false, 10, 2,
+            4),
     Energizer(50, 50, 50, 0, true,
             false, AudioEnums.Large_Ship_Destroyed, "Enemy Energizer", 300,
-            ImageEnums.Energizer, ImageEnums.Energizer_Destroyed_Explosion,8, EnemyCategory.Basic, false, 10, 2),
+            ImageEnums.Energizer, ImageEnums.Energizer_Destroyed_Explosion, 8, EnemyCategory.Basic, false, 10, 2,
+            4),
     Bulldozer(50, 50, 75, 0, false,
             false, AudioEnums.Large_Ship_Destroyed, "Enemy Bulldozer", 0,
-            ImageEnums.Bulldozer, ImageEnums.Bulldozer_Destroyed_Explosion, 12, EnemyCategory.Basic, false, 20, 3),
+            ImageEnums.Bulldozer, ImageEnums.Bulldozer_Destroyed_Explosion, 12, EnemyCategory.Basic, false, 20, 3,
+            6),
     Flamer(50, 50, 100, 0, true,
             false, AudioEnums.Large_Ship_Destroyed, "Enemy Flamer", 450,
-            ImageEnums.Flamer, ImageEnums.Flamer_Destroyed_Explosion, 8, EnemyCategory.Basic, false, 10, 3),
+            ImageEnums.Flamer, ImageEnums.Flamer_Destroyed_Explosion, 8, EnemyCategory.Basic, false, 10, 3,
+            6),
     Bomba(50, 50, 125, 0, true,
             false, AudioEnums.Large_Ship_Destroyed, "Enemy Bomba", 350,
-            ImageEnums.Bomba, ImageEnums.Bomba_Destroyed_Explosion, 16, EnemyCategory.Basic, false, 20, 4);
+            ImageEnums.Bomba, ImageEnums.Bomba_Destroyed_Explosion, 16, EnemyCategory.Basic, false, 20, 4,
+            8);
     private final int width;
     private final int height;
 
@@ -54,10 +58,11 @@ public enum EnemyEnums {
     private boolean boxCollision;
     private float baseArmor;
     private float cashMoneyWorth;
+    private float xpOnDeath;
 
     EnemyEnums (int width, int height, int baseHitPoints, int baseShieldPoints, boolean hasAttack, boolean showHealthBar, AudioEnums deathSound, String objectType, int attackSpeed
-    ,ImageEnums imageType, ImageEnums destructionType, float creditCost, EnemyCategory enemyCategory, boolean boxCollision,
-                float baseArmor, float cashMoneyWorth) {
+            , ImageEnums imageType, ImageEnums destructionType, float creditCost, EnemyCategory enemyCategory, boolean boxCollision,
+                float baseArmor, float cashMoneyWorth, float xpOnDeath) {
         this.width = width;
         this.height = height;
         this.baseHitPoints = baseHitPoints;
@@ -74,6 +79,7 @@ public enum EnemyEnums {
         this.boxCollision = boxCollision;
         this.baseArmor = baseArmor;
         this.cashMoneyWorth = cashMoneyWorth;
+        this.xpOnDeath = xpOnDeath;
     }
 
     //Returns the distance that enemies should have from each other for spawning formations
@@ -133,15 +139,15 @@ public enum EnemyEnums {
         return destructionType;
     }
 
-    public float getCreditCost (){
+    public float getCreditCost () {
         return creditCost;
     }
 
-    public EnemyCategory getEnemyCategory(){
+    public EnemyCategory getEnemyCategory () {
         return enemyCategory;
     }
 
-    public boolean isBoxCollision(){
+    public boolean isBoxCollision () {
         return boxCollision;
     }
 
@@ -163,5 +169,9 @@ public enum EnemyEnums {
 
     public float getCashMoneyWorth () {
         return cashMoneyWorth;
+    }
+
+    public float getXpOnDeath () {
+        return xpOnDeath;
     }
 }

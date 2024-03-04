@@ -8,7 +8,7 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 
 import game.util.CollisionDetector;
 import game.objects.player.PlayerManager;
-import VisualAndAudioData.audio.AudioEnums;
+import VisualAndAudioData.audio.enums.AudioEnums;
 import VisualAndAudioData.audio.AudioManager;
 
 public class PowerUpManager {
@@ -16,6 +16,7 @@ public class PowerUpManager {
     private static PowerUpManager instance = new PowerUpManager();
     private List<PowerUp> powerUpsOnTheField = new ArrayList<PowerUp>();
 
+    private boolean createPoer = false;
     private PowerUpManager () {
     }
 
@@ -26,6 +27,11 @@ public class PowerUpManager {
     public void updateGameTick () {
         movePowerUps();
         removePowerUps();
+
+//        if(!createPoer){
+//            PowerUpCreator.getInstance().initializePowerUpSpawnTimers();
+//            createPoer = true;
+//        }
     }
 
     private void movePowerUps(){

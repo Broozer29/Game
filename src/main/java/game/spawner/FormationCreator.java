@@ -1,5 +1,7 @@
 package game.spawner;
 
+import game.spawner.enums.SpawnFormationEnums;
+
 public class FormationCreator {
 
 	public EnemyFormation createFormation(SpawnFormationEnums spawnFormation, int widthDistance, int heightDistance) {

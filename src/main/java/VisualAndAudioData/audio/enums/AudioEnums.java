@@ -1,4 +1,4 @@
-package VisualAndAudioData.audio;
+package VisualAndAudioData.audio.enums;
 
 public enum AudioEnums {
 	Player_Laserbeam,

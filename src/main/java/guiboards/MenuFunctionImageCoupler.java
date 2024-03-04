@@ -47,7 +47,7 @@ public class MenuFunctionImageCoupler {
                 return ImageEnums.Test_Image;
             case LegendaryItem:
                 return ImageEnums.Test_Image;
-            case Song_Selector:
+            case Song_Length_Selector:
                 return ImageEnums.Test_Image;
             case Description_Block:
                 return ImageEnums.Test_Image;

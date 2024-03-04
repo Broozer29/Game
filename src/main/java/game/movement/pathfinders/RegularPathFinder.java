@@ -12,6 +12,16 @@ import VisualAndAudioData.DataClass;
 
 public class RegularPathFinder implements PathFinder {
 
+    private final int windowWidth;
+    private final int playableWindowMinHeight;
+    private final int playableWindowMaxHeight;
+
+    public RegularPathFinder () {
+        this.windowWidth = DataClass.getInstance().getWindowWidth();
+        this.playableWindowMinHeight = DataClass.getInstance().getPlayableWindowMinHeight();
+        this.playableWindowMaxHeight = DataClass.getInstance().getPlayableWindowMaxHeight();
+    }
+
     @Override
     public Path findPath (PathFinderConfig pathFinderConfig) {
         if (!(pathFinderConfig instanceof RegularPathFinderConfig)) {
@@ -146,11 +156,11 @@ public class RegularPathFinder implements PathFinder {
         // friendly is not used for regular paths
         switch (rotation) {
             case UP:
-                endYCoordinate = -150;
+                endYCoordinate = this.playableWindowMinHeight - 150;
                 endXCoordinate = xCoordinate;
                 break;
             case DOWN:
-                endYCoordinate = dataClass.getWindowHeight() + 150;
+                endYCoordinate = this.playableWindowMaxHeight + 150;
                 endXCoordinate = xCoordinate;
                 break;
             case LEFT:
@@ -162,19 +172,19 @@ public class RegularPathFinder implements PathFinder {
                 endXCoordinate = dataClass.getWindowWidth() + 150;
                 break;
             case RIGHT_UP:
-                endYCoordinate = 0 - 150;
+                endYCoordinate = this.playableWindowMinHeight -150;
                 endXCoordinate = dataClass.getWindowWidth() + 150;
                 break;
             case RIGHT_DOWN:
-                endYCoordinate = dataClass.getWindowHeight() + 150;
+                endYCoordinate = this.playableWindowMaxHeight + 150;
                 endXCoordinate = dataClass.getWindowWidth() + 150;
                 break;
             case LEFT_UP:
-                endYCoordinate = 0 - 150;
+                endYCoordinate = this.playableWindowMinHeight -150;
                 endXCoordinate = 0 - 150;
                 break;
             case LEFT_DOWN:
-                endYCoordinate = dataClass.getWindowHeight() + 150;
+                endYCoordinate = this.playableWindowMaxHeight + 150;
                 endXCoordinate = 0 - 150;
                 break;
             default:

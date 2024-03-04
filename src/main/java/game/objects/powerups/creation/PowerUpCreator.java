@@ -20,8 +20,8 @@ public class PowerUpCreator {
 
 	private Random random = new Random();
 
-	private int minY = 0;
-	private int maxY = DataClass.getInstance().getWindowHeight();
+	private int minY = DataClass.getInstance().getPlayableWindowMinHeight();
+	private int maxY = DataClass.getInstance().getPlayableWindowMaxHeight();
 	private int minX = 0;
 	private int maxX = DataClass.getInstance().getWindowWidth();
 
@@ -38,7 +38,7 @@ public class PowerUpCreator {
 		return instance;
 	}
 
-	public void initializePowerUpSpawnTimers () {
+	public void initializePowerUpSpawnTimers() {
 		PowerUpSpawnTimer spawnTimer = createPowerUpTimer(PowerUpEnums.RANDOM, true);
 		TimerManager.getInstance().addTimer(spawnTimer);
 		spawnTimer.startOfTimer(); // Start the timer for the first spawn
@@ -49,7 +49,6 @@ public class PowerUpCreator {
 		if(powerUpType == PowerUpEnums.RANDOM) {
 			powerUpType = selectRandomPowerUp();
 		}
-		System.out.println("power up creator 46 staat uitgecomment zet weer aan om een powerup te spawnen");
 
 		SpriteConfiguration spriteConfiguration = new SpriteConfiguration();
 		spriteConfiguration.setImageType(getIconByPowerUp(powerUpType));
@@ -70,10 +69,10 @@ public class PowerUpCreator {
 	}
 
 	public int getRandomTimeForSpawner() {
-		BoostsUpgradesAndBuffsSettings tempSettings = BoostsUpgradesAndBuffsSettings.getInstance();
-		return random.nextInt((tempSettings.getMaxTimeForPowerUpSpawn() - tempSettings.getMinTimeForPowerUpSpawn()) + 1)
-				+ tempSettings.getMinTimeForPowerUpSpawn();
-//		return 20;
+//		BoostsUpgradesAndBuffsSettings tempSettings = BoostsUpgradesAndBuffsSettings.getInstance();
+//		return random.nextInt((tempSettings.getMaxTimeForPowerUpSpawn() - tempSettings.getMinTimeForPowerUpSpawn()) + 1)
+//				+ tempSettings.getMinTimeForPowerUpSpawn();
+		return 20;
 	}
 
 	private Direction selectRandomDirection() {

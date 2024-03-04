@@ -21,8 +21,6 @@ public class BombaProjectile extends Missile {
 
 	public void missileAction() {
 		if (movementConfiguration.getStepsTaken() >= 75) {
-
-
 			SpriteConfiguration spriteConfiguration1 = new SpriteConfiguration();
 			spriteConfiguration1.setxCoordinate(this.xCoordinate);
 			spriteConfiguration1.setyCoordinate(this.yCoordinate);
@@ -34,6 +32,10 @@ public class BombaProjectile extends Missile {
 			ExplosionConfiguration explosionConfiguration = new ExplosionConfiguration(isFriendly(), damage * 5, false, false);
 			Explosion explosion = new Explosion(spriteAnimationConfiguration, explosionConfiguration);
 			explosion.setOwnerOrCreator(this.ownerOrCreator);
+
+			explosion.getAnimation().setOriginCoordinates(this.animation.getCenterXCoordinate(), this.animation.getCenterYCoordinate());
+			explosion.setCenterCoordinates(this.animation.getCenterXCoordinate(), this.animation.getCenterYCoordinate());
+			explosion.getAnimation().setCenterCoordinates(this.animation.getCenterXCoordinate(), this.animation.getCenterYCoordinate());
 			ExplosionManager.getInstance().addExplosion(explosion);
 			this.setVisible(false);
 		}

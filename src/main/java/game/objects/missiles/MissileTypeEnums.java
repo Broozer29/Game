@@ -1,8 +1,6 @@
 package game.objects.missiles;
 
 import VisualAndAudioData.image.ImageEnums;
-import game.items.items.PlasmaLauncher;
-import game.objects.missiles.missiletypes.*;
 
 public enum MissileTypeEnums {
     AlienLaserbeam(false, 2, 2, 7.5f, "AlienLaserbeam", null, ImageEnums.Alien_Laserbeam),
@@ -47,7 +45,7 @@ public enum MissileTypeEnums {
         return xMovementSpeed;
     }
 
-    public int getyMovementspeed () {
+    public int getyMovementSpeed () {
         return yMovementspeed;
     }
 

@@ -8,7 +8,7 @@ import game.objects.enemies.enums.EnemyEnums;
 import game.spawner.EnemyFormation;
 import game.spawner.EnemySpawnTimer;
 import game.spawner.FormationCreator;
-import game.spawner.SpawnFormationEnums;
+import game.spawner.enums.SpawnFormationEnums;
 import VisualAndAudioData.DataClass;
 
 //Not to scale, just a representation of the pattern

@@ -1,5 +1,6 @@
 package game.movement.pathfinders;
 
+import VisualAndAudioData.DataClass;
 import game.movement.Direction;
 import game.movement.Path;
 import game.movement.Point;
@@ -10,7 +11,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TrianglePathFinder implements PathFinder {
+    private final int windowWidth;
+    private final int playableWindowMinHeight;
+    private final int playableWindowMaxHeight;
 
+    public TrianglePathFinder () {
+        this.windowWidth = DataClass.getInstance().getWindowWidth();
+        this.playableWindowMinHeight = DataClass.getInstance().getPlayableWindowMinHeight();
+        this.playableWindowMaxHeight = DataClass.getInstance().getPlayableWindowMaxHeight();
+    }
     @Override
     public Path findPath (PathFinderConfig pathFinderConfig) {
         if (!(pathFinderConfig instanceof TrianglePathFinderConfig)) {
@@ -61,8 +70,56 @@ public class TrianglePathFinder implements PathFinder {
 
     @Override
     public Point calculateInitialEndpoint (Point start, Direction rotation, boolean friendly) {
-        return null;
+        int endXCoordinate = 0;
+        int endYCoordinate = 0;
+        int xCoordinate = start.getX();
+        int yCoordinate = start.getY();
+        DataClass dataClass = DataClass.getInstance();
+
+        // friendly is not used for regular paths
+        switch (rotation) {
+            case UP:
+                endYCoordinate = this.playableWindowMinHeight - 150;
+                endXCoordinate = xCoordinate;
+                break;
+            case DOWN:
+                endYCoordinate = this.playableWindowMaxHeight + 150;
+                endXCoordinate = xCoordinate;
+                break;
+            case LEFT:
+                endYCoordinate = yCoordinate;
+                endXCoordinate = 0 - 150;
+                break;
+            case RIGHT:
+                endYCoordinate = yCoordinate;
+                endXCoordinate = dataClass.getWindowWidth() + 150;
+                break;
+            case RIGHT_UP:
+                endYCoordinate = this.playableWindowMinHeight -150;
+                endXCoordinate = dataClass.getWindowWidth() + 150;
+                break;
+            case RIGHT_DOWN:
+                endYCoordinate = this.playableWindowMaxHeight + 150;
+                endXCoordinate = dataClass.getWindowWidth() + 150;
+                break;
+            case LEFT_UP:
+                endYCoordinate = this.playableWindowMinHeight -150;
+                endXCoordinate = 0 - 150;
+                break;
+            case LEFT_DOWN:
+                endYCoordinate = this.playableWindowMaxHeight + 150;
+                endXCoordinate = 0 - 150;
+                break;
+            default:
+                endYCoordinate = yCoordinate;
+                endXCoordinate = 0 + 150;
+                break;
+        }
+
+        Point endPoint = new Point(endXCoordinate, endYCoordinate);
+        return endPoint;
     }
+
 
     @Override
     public Point calculateEndPointBySteps (Point start, Direction rotation, int steps, int xMovementspeed, int yMovementspeed) {

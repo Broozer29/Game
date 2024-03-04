@@ -36,8 +36,8 @@ public class TalentSelectionBoard extends JPanel implements ActionListener {
 	private BackgroundManager backgroundManager = BackgroundManager.getInstance();
 	private AnimationManager animationManager = AnimationManager.getInstance();
 	private ConnectedControllers controllers = ConnectedControllers.getInstance();
-	private final int boardWidth = data.getWindowWidth();;
-	private final int boardHeight = data.getWindowHeight();;
+	private final int boardWidth = data.getWindowWidth();
+	private final int boardHeight = data.getWindowHeight();
 	private List<MenuObjectCollection> firstColumn = new ArrayList<MenuObjectCollection>();
 	private List<MenuObjectCollection> secondColumn = new ArrayList<MenuObjectCollection>();
 	private List<MenuObjectCollection> thirdColumn = new ArrayList<MenuObjectCollection>();

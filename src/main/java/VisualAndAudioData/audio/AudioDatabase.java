@@ -1,5 +1,7 @@
 package VisualAndAudioData.audio;
 
+import VisualAndAudioData.audio.enums.AudioEnums;
+
 import javax.sound.sampled.LineUnavailableException;
 import java.util.*;
 
@@ -63,6 +65,7 @@ public class AudioDatabase {
 
     private AudioDatabase () {
         initializeAudiofiles();
+        resetSongs();
     }
 
     public static AudioDatabase getInstance () {
@@ -83,7 +86,7 @@ public class AudioDatabase {
         diqRose.setFramePosition(0);
         fiveSecondsBeforeSunrise.setFramePosition(0);
         downtownBinaryAstral.setFramePosition(0);
-        carpenterBrutEnraged.setFramePosition(0);
+        carpenterBrutEnraged.setFramePosition(6048000);
         carpenterBrutYoureMine.setFramePosition(0);
         alphaRoomComeBack.setFramePosition(0);
         carpenterBrutDanger.setFramePosition(0);

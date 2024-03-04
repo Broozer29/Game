@@ -22,7 +22,6 @@ public class PowerUp extends GameObject {
     private int timeBeforeActivation;
     private boolean loopable;
     private PowerUpEffect powerUpEffect;
-    private MovementConfiguration moveConfig;
 
     public PowerUp (SpriteConfiguration spriteConfiguration, PowerUpConfiguration powerUpConfiguration) {
         super(spriteConfiguration);
@@ -32,18 +31,20 @@ public class PowerUp extends GameObject {
         initMoveConfig(powerUpConfiguration);
         this.powerUpEffect =  PowerUpEffectFactory.getInstance().createPowerUpEffect(powerUpType);
         this.setObjectType("Power Up " + powerUpType);
+        this.allowedVisualsToRotate = false;
     }
 
     private void initMoveConfig (PowerUpConfiguration powerUpConfiguration) {
-        moveConfig = new MovementConfiguration();
-        moveConfig.setXMovementSpeed(powerUpConfiguration.getxMovementSpeed());
-        moveConfig.setYMovementSpeed(powerUpConfiguration.getyMovementSpeed());
-        moveConfig.setRotation(powerUpConfiguration.getMovementDirection());
-        moveConfig.setPathFinder(powerUpConfiguration.getPathFinder());
+        this.movementConfiguration = new MovementConfiguration();
+        movementConfiguration.setXMovementSpeed(powerUpConfiguration.getxMovementSpeed());
+        movementConfiguration.setYMovementSpeed(powerUpConfiguration.getyMovementSpeed());
+        movementConfiguration.setRotation(powerUpConfiguration.getMovementDirection());
+        movementConfiguration.setPathFinder(powerUpConfiguration.getPathFinder());
+        movementConfiguration.setCurrentLocation(new Point(xCoordinate,yCoordinate));
     }
 
     public void move () {
-        SpriteMover.getInstance().moveSprite(this, moveConfig);
+        SpriteMover.getInstance().moveSprite(this, movementConfiguration);
         bounds.setBounds(xCoordinate + xOffset, yCoordinate + yOffset, width, height);
         updateBoardBlock();
     }
@@ -68,28 +69,28 @@ public class PowerUp extends GameObject {
     }
 
     public Direction getDirection () {
-        return moveConfig.getRotation();
+        return movementConfiguration.getRotation();
     }
 
 
     public Point getDestination () {
-        return moveConfig.getDestination();
+        return movementConfiguration.getDestination();
     }
 
     public void setDestination (Point destination) {
-        this.moveConfig.setDestination(destination);
+        this.movementConfiguration.setDestination(destination);
     }
 
     public Path getCurrentPath () {
-        return moveConfig.getCurrentPath();
+        return movementConfiguration.getCurrentPath();
     }
 
     public void setCurrentPath (Path currentPath) {
-        this.moveConfig.setCurrentPath(currentPath);
+        this.movementConfiguration.setCurrentPath(currentPath);
     }
 
     public void setDirection (Direction direction) {
-        this.moveConfig.setRotation(direction);
+        this.movementConfiguration.setRotation(direction);
     }
 
     public PowerUpEnums getPowerUpType () {

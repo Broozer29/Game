@@ -76,6 +76,8 @@ public class ImageLoader {
         switch (image) {
             case Player_Spaceship:
                 return "/images/spaceship.png";
+            case InformationCard:
+                return "/images/UI/Cards/InformationCard.png";
             case Player_Laserbeam:
                 return "/images/laserbeam.png";
             case Test_Image:
@@ -570,6 +572,36 @@ public class ImageLoader {
                 return "/images/background/Blue planet 5.png";
             case BluePlanet6:
                 return "/images/background/Blue planet 6.png";
+            case BlueWings1:
+                return "/images/UI/Wings/Blue/01.png";
+            case BlueWings2:
+                return "/images/UI/Wings/Blue/02.png";
+            case BlueWings3:
+                return "/images/UI/Wings/Blue/03.png";
+            case BlueWings4:
+                return "/images/UI/Wings/Blue/04.png";
+            case BlueWings5:
+                return "/images/UI/Wings/Blue/05.png";
+            case PurpleWings1:
+                return "/images/UI/Wings/Purple/01.png";
+            case PurpleWings2:
+                return "/images/UI/Wings/Purple/02.png";
+            case PurpleWings3:
+                return "/images/UI/Wings/Purple/03.png";
+            case PurpleWings4:
+                return "/images/UI/Wings/Purple/04.png";
+            case PurpleWings5:
+                return "/images/UI/Wings/Purple/05.png";
+            case YellowWings1:
+                return "/images/UI/Wings/Yellow/01.png";
+            case YellowWings2:
+                return "/images/UI/Wings/Yellow/01.png";
+            case YellowWings3:
+                return "/images/UI/Wings/Yellow/01.png";
+            case YellowWings4:
+                return "/images/UI/Wings/Yellow/01.png";
+            case YellowWings5:
+                return "/images/UI/Wings/Yellow/01.png";
             default:
                 return "";
         }

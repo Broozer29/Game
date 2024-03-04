@@ -4,6 +4,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
+import VisualAndAudioData.image.ImageEnums;
+import game.gamestate.GameStateInfo;
 import game.movement.BoardBlockUpdater;
 import game.movement.MovementConfiguration;
 import game.movement.Point;
@@ -21,6 +23,7 @@ public class Enemy extends GameObject {
     protected MissileManager missileManager = MissileManager.getInstance();
     protected Random random = new Random();
 
+
     protected EnemyEnums enemyType;
 
     protected List<Enemy> followingEnemies = new LinkedList<Enemy>(); //inherit from gameobject
@@ -28,6 +31,7 @@ public class Enemy extends GameObject {
     public Enemy (SpriteConfiguration spriteConfiguration, EnemyConfiguration enemyConfiguration) {
         super(spriteConfiguration);
         configureEnemy(enemyConfiguration);
+        initChargingUpAnimation(spriteConfiguration);
     }
 
     public Enemy (SpriteAnimationConfiguration spriteAnimationConfigurationion, EnemyConfiguration enemyConfiguration) {
@@ -50,13 +54,37 @@ public class Enemy extends GameObject {
         this.currentBoardBlock = BoardBlockUpdater.getBoardBlock(xCoordinate);
         this.boxCollision = enemyConfiguration.isBoxCollision();
         this.baseArmor = enemyConfiguration.getBaseArmor();
-        this.cashMoneyWorth = enemyType.getCashMoneyWorth();
-
+        this.cashMoneyWorth = enemyConfiguration.getCashMoneyWorth();
+        this.xpOnDeath = enemyConfiguration.getXpOnDeath();
+        modifyStatsBasedOnLevel();
         initMovementConfiguration(enemyConfiguration);
         this.setVisible(true);
         this.setFriendly(false);
         this.rotateGameObjectTowards(movementDirection);
         this.objectType = enemyConfiguration.getObjectType();
+    }
+
+    private void modifyStatsBasedOnLevel () {
+        int enemyLevel = GameStateInfo.getInstance().getMonsterLevel();
+        float difficultyCoeff = GameStateInfo.getInstance().getDifficultyCoefficient();
+
+        if (enemyLevel > 1) {
+            this.maxHitPoints *= (float) Math.pow(1.20, enemyLevel);
+            this.currentHitpoints = maxHitPoints;
+            this.maxShieldPoints *= (float) Math.pow(1.20, enemyLevel);
+            this.currentShieldPoints = maxShieldPoints;
+            this.damage *= (float) Math.pow(1.20, enemyLevel);
+            // XP on death is multiplied by 50% of difficultyCoeff
+            this.xpOnDeath *= (float) (1 + 0.5 * difficultyCoeff);
+            // Cash money worth is multiplied by 100% (double) of difficultyCoeff
+            this.cashMoneyWorth *= (1 + difficultyCoeff);
+        }
+    }
+
+    private void initChargingUpAnimation (SpriteConfiguration spriteConfiguration) {
+        SpriteAnimationConfiguration spriteAnimationConfiguration = new SpriteAnimationConfiguration(spriteConfiguration, 2, false);
+        spriteAnimationConfiguration.getSpriteConfiguration().setImageType(ImageEnums.Charging);
+        this.chargingUpAttackAnimation = new SpriteAnimation(spriteAnimationConfiguration);
     }
 
 
@@ -73,7 +101,7 @@ public class Enemy extends GameObject {
         movementConfiguration.setStepsTaken(0);
         movementConfiguration.setHasLock(true);
 
-        if(pathFinder instanceof HomingPathFinder){
+        if (pathFinder instanceof HomingPathFinder) {
             movementConfiguration.setTarget(((HomingPathFinder) pathFinder).getTarget(isFriendly(), this.xCoordinate, this.yCoordinate));
         }
 
@@ -135,6 +163,10 @@ public class Enemy extends GameObject {
             this.destructionAnimation.setVisible(false);
         }
 
+        if (this.chargingUpAttackAnimation != null) {
+            this.chargingUpAttackAnimation.setVisible(false);
+        }
+
         for (GameObject object : objectsFollowingThis) {
             object.deleteObject();
         }
@@ -149,12 +181,8 @@ public class Enemy extends GameObject {
 
         this.objectToFollow = null;
 
-        if(movementConfiguration!= null) {
-            this.movementConfiguration.setTarget(null);
-            this.movementConfiguration.setPathFinder(null);
-            this.movementConfiguration.setCurrentPath(null);
-            this.movementConfiguration.setNextPoint(null);
-
+        if (movementConfiguration != null) {
+            this.movementConfiguration.deleteConfiguration();
         }
         this.movementConfiguration = null;
         this.movementTracker = null;
@@ -162,5 +190,11 @@ public class Enemy extends GameObject {
         this.visible = false;
     }
 
+    public SpriteAnimation getChargingUpAttackAnimation () {
+        return chargingUpAttackAnimation;
+    }
 
+    public void setChargingUpAttackAnimation (SpriteAnimation chargingUpAttackAnimation) {
+        this.chargingUpAttackAnimation = chargingUpAttackAnimation;
+    }
 }

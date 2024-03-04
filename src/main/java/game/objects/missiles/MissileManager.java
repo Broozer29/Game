@@ -37,11 +37,11 @@ public class MissileManager {
 
     public void resetManager () {
 
-        for(Missile missile : missiles){
+        for (Missile missile : missiles) {
             missile.setVisible(false);
         }
 
-        for(SpecialAttack specialAttack: specialAttacks){
+        for (SpecialAttack specialAttack : specialAttacks) {
             specialAttack.setVisible(false);
         }
 
@@ -50,7 +50,6 @@ public class MissileManager {
         missiles = new CopyOnWriteArrayList<Missile>();
         specialAttacks = new CopyOnWriteArrayList<SpecialAttack>();
     }
-
 
 
     private void initManagersIfNull () {
@@ -75,7 +74,7 @@ public class MissileManager {
         triggerMissileActions();
     }
 
-    private void removeInvisibleProjectiles(){
+    private void removeInvisibleProjectiles () {
         for (int i = 0; i < missiles.size(); i++) {
             if (!missiles.get(i).isVisible()) {
                 missiles.get(i).deleteObject();
@@ -166,7 +165,6 @@ public class MissileManager {
     }
 
 
-
     private void checkMissileCollisionWithPlayer (Missile missile) {
         if (collisionDetector.detectCollision(missile, playerManager.getSpaceship())) {
             playerManager.getSpaceship().takeDamage(missile.getDamage());
@@ -175,14 +173,14 @@ public class MissileManager {
         }
     }
 
-    private void applyPlayerTakeDamageOnHitEffects(){
+    private void applyPlayerTakeDamageOnHitEffects () {
         List<Item> onHitItems = PlayerStats.getInstance().getPlayerInventory().getItemByActivationTypes(EffectActivationTypes.OnPlayerHit);
         for (Item item : onHitItems) {
             item.applyEffectToObject(PlayerManager.getInstance().getSpaceship());
         }
     }
 
-    private void applyPlayerOnHitEffects(Enemy enemy){
+    private void applyPlayerOnHitEffects (Enemy enemy) {
         List<Item> onHitItems = PlayerStats.getInstance().getPlayerInventory().getItemsByApplicationMethod(ItemApplicationEnum.AfterCollision);
         for (Item item : onHitItems) {
             item.applyEffectToObject(enemy); // Assuming applyEffect adds the effect to the GameObject
@@ -205,14 +203,24 @@ public class MissileManager {
     private void handleMissileDestruction (Missile missile) {
         missile.setVisible(false);
         if (missile.getDestructionAnimation() != null) {
+            centerDestructionAnimation(missile);
             animationManager.addUpperAnimation(missile.getDestructionAnimation());
+        }
+    }
+
+    //Needed to center the animation of the destruction around the projectile
+    private void centerDestructionAnimation (Missile missile) {
+        if (missile.getAnimation() != null) {
+            missile.getDestructionAnimation().setOriginCoordinates(missile.getAnimation().getCenterXCoordinate(), missile.getAnimation().getCenterYCoordinate());
+        } else {
+            missile.getDestructionAnimation().setOriginCoordinates(missile.getCenterXCoordinate(), missile.getCenterYCoordinate());
         }
     }
 
     private void triggerMissileActions () {
         for (Missile missile : missiles) {
 //            if (missile instanceof Rocket1) {
-                missile.missileAction();
+            missile.missileAction();
 //            }
         }
     }
@@ -233,8 +241,8 @@ public class MissileManager {
         this.missiles.add(missile);
     }
 
-    private void applyDamageModification(GameObject attack, GameObject target){
-        for(Item item : PlayerStats.getInstance().getPlayerInventory().getItemsByApplicationMethod(ItemApplicationEnum.BeforeCollision)){
+    private void applyDamageModification (GameObject attack, GameObject target) {
+        for (Item item : PlayerStats.getInstance().getPlayerInventory().getItemsByApplicationMethod(ItemApplicationEnum.BeforeCollision)) {
             item.modifyAttackValues(attack, target);
         }
     }

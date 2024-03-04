@@ -13,6 +13,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
@@ -36,7 +37,6 @@ import game.objects.player.PlayerManager;
 import game.managers.TimerManager;
 import game.objects.background.BackgroundManager;
 import game.objects.background.BackgroundObject;
-import game.objects.neutral.Explosion;
 import game.objects.enemies.Enemy;
 import game.objects.enemies.EnemyManager;
 import game.objects.friendlies.FriendlyManager;
@@ -59,6 +59,7 @@ import VisualAndAudioData.audio.AudioDatabase;
 import VisualAndAudioData.audio.AudioManager;
 import VisualAndAudioData.audio.AudioPositionCalculator;
 import guiboards.BoardManager;
+import guiboards.MenuObjectCollection;
 import visualobjects.Sprite;
 import visualobjects.SpriteAnimation;
 
@@ -104,8 +105,8 @@ public class GameBoard extends JPanel implements ActionListener {
     private OnScreenTextManager textManager = OnScreenTextManager.getInstance();
     private BoostsUpgradesAndBuffsSettings tempSettings = BoostsUpgradesAndBuffsSettings.getInstance();
     private AudioPositionCalculator audioPosCalc = AudioPositionCalculator.getInstance();
-
     private ConnectedControllers controllers = ConnectedControllers.getInstance();
+
 
 
     public GameBoard () {
@@ -139,6 +140,7 @@ public class GameBoard extends JPanel implements ActionListener {
         setPreferredSize(new Dimension(boardWidth, boardHeight));
         animationManager.resetManager();
         PlayerManager.getInstance().getSpaceship().resetSpaceship();
+
         // Dit moet uit een "out-of-game state manager" gehaald worden
         if (playerStats.getNormalGunPreset() == null) {
             GunPreset preset = new GunPreset(MissileTypeEnums.DefaultPlayerLaserbeam);
@@ -174,11 +176,11 @@ public class GameBoard extends JPanel implements ActionListener {
         textManager.resetManager();
         playerStats.resetPlayerStats();
         tempSettings.resetGameSettings();
+        gameState.resetGameState();
         this.drawTimer.setDelay(gameState.getDELAY());
         zoningInAlpha = 1.0f;
         zoningOutAlpha = 0.0f;
         currentWaitingTime = 0;
-
 
         rnd = new Random().nextInt(strings.size());
         msg = strings.get(rnd);
@@ -353,11 +355,12 @@ public class GameBoard extends JPanel implements ActionListener {
             }
         }
 
-        for (Explosion explosion : explosionManager.getExplosions()) {
-            if (explosion.isVisible()) {
-                drawAnimation(g, explosion.getAnimation());
-            }
-        }
+        //Should be handled by the animation manager to allow recentering
+//        for (Explosion explosion : explosionManager.getExplosions()) {
+//            if (explosion.isVisible()) {
+//                drawAnimation(g, explosion.getAnimation());
+//            }
+//        }
 
         for (FriendlyObject friendly : friendlyManager.getFriendlyObjects()) {
             if (friendly.isVisible()) {
@@ -386,6 +389,10 @@ public class GameBoard extends JPanel implements ActionListener {
             }
         }
 
+        for(UIObject obj : uiManager.getInformationCards()){
+            drawImage(g, obj);
+        }
+
         drawPlayerHealthBars(g);
         drawSpecialAttackFrame(g);
 
@@ -400,15 +407,19 @@ public class GameBoard extends JPanel implements ActionListener {
 
         // Draw the score/aliens left
         g.setColor(Color.WHITE);
-        g.drawString("Enemies left: " + enemyManager.getEnemyCount(), 5, 15);
+        g.drawString("Enemies alive: " + enemyManager.getEnemyCount(), 5, 15);
 
         g.drawString("Music time: " + gameState.getMusicSeconds(), 130, 15);
 
         g.drawString("Difficulty coeff: " + gameState.getDifficultyCoefficient(), 250, 15);
         g.drawString("Current stage: " + gameState.getStagesCompleted(), 250, 30);
+        g.drawString("Enemy level: " + gameState.getMonsterLevel(), 250, 45);
 
         g.drawString("Enemies spawned: " + levelManager.getEnemiesSpawned(), 550, 15);
         g.drawString("Enemies killed: " + levelManager.getEnemiesKilled(), 550, 30);
+        g.drawString("Player level: " + playerStats.getCurrentLevel(), 550, 45);
+        g.drawString("XP to next level: " + (playerStats.getXpToNextLevel() - playerStats.getCurrentXP()), 550, 60);
+
     }
 
     private void drawText (Graphics2D g, OnScreenText text) {
@@ -517,33 +528,31 @@ public class GameBoard extends JPanel implements ActionListener {
     }
 
 
-
     private void drawSpecialAttackFrame (Graphics2D g) {
         drawImage(g, uiManager.getSpecialAttackFrame());
-        for (SpaceShipSpecialGun gun : playerManager.getSpaceship().getSpecialGuns()) {
-            int charges = gun.getSpecialAttackCharges();
-            if (charges > 0) {
-                drawAnimation(g, uiManager.getSpecialAttackHighlight());
-            } else {
-                // Only draw the charging rectangle if there are no charges
-                float percentage = (float) gun.getCurrentSpecialAttackFrame() / playerStats.getSpecialAttackSpeed();
-                int barWidth = (int) (uiManager.getSpecialAttackFrame().getWidth() * percentage);
+        SpaceShipSpecialGun gun = playerManager.getSpaceship().getSpecialGun();
+        int charges = gun.getSpecialAttackCharges();
+        if (charges > 0) {
+            drawAnimation(g, uiManager.getSpecialAttackHighlight());
+        } else {
+            // Only draw the charging rectangle if there are no charges
+            float percentage = (float) gun.getCurrentSpecialAttackFrame() / playerStats.getSpecialAttackSpeed();
+            int barWidth = (int) (uiManager.getSpecialAttackFrame().getWidth() * percentage);
 
-                // Draw the cooldown progress bar
-                g.setColor(new Color(160, 160, 160, 160)); // Semi-transparent gray
-                g.fillRect(uiManager.getSpecialAttackFrame().getXCoordinate(),
-                        uiManager.getSpecialAttackFrame().getYCoordinate(), barWidth,
-                        uiManager.getSpecialAttackFrame().getHeight());
-            }
+            // Draw the cooldown progress bar
+            g.setColor(new Color(160, 160, 160, 160)); // Semi-transparent gray
+            g.fillRect(uiManager.getSpecialAttackFrame().getXCoordinate(),
+                    uiManager.getSpecialAttackFrame().getYCoordinate(), barWidth,
+                    uiManager.getSpecialAttackFrame().getHeight());
+        }
 
-            if (charges > 1) {
-                g.setColor(Color.green);
-                g.drawString(String.valueOf(charges),
-                        uiManager.getSpecialAttackFrame().getXCoordinate() + uiManager.getSpecialAttackFrame().getWidth() - 20,
-                        uiManager.getSpecialAttackFrame().getYCoordinate() + uiManager.getSpecialAttackFrame().getHeight() - 10
-                );
+        if (charges > 1) {
+            g.setColor(Color.green);
+            g.drawString(String.valueOf(charges),
+                    uiManager.getSpecialAttackFrame().getXCoordinate() + uiManager.getSpecialAttackFrame().getWidth() - 20,
+                    uiManager.getSpecialAttackFrame().getYCoordinate() + uiManager.getSpecialAttackFrame().getHeight() - 10
+            );
 
-            }
         }
     }
 
@@ -631,6 +640,7 @@ public class GameBoard extends JPanel implements ActionListener {
                 playerManager.getSpaceship().keyPressed(e);
             }
         }
+
     }
 
     public void executeControllerInput () {

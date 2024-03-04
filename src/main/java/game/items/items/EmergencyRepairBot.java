@@ -1,6 +1,6 @@
 package game.items.items;
 
-import VisualAndAudioData.audio.AudioEnums;
+import VisualAndAudioData.audio.enums.AudioEnums;
 import VisualAndAudioData.audio.AudioManager;
 import game.items.Item;
 import game.items.enums.ItemApplicationEnum;

@@ -9,7 +9,7 @@ public enum MenuFunctionEnums {
 	Select_Talent_Selection_Board,
 	Open_Shop_Window,
 	PurchaseItem,
-	PurchaseRelic,
-	PurchaseSong,
+	SelectSongDifficulty,
+	SelectSongLength,
 	Open_Inventory;
 }

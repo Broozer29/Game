@@ -3,6 +3,7 @@ package game.movement.pathfinders;
 import java.util.ArrayList;
 import java.util.List;
 
+import game.movement.MovementConfiguration;
 import game.objects.player.PlayerManager;
 import game.movement.Direction;
 import game.movement.Path;
@@ -36,6 +37,9 @@ public class HomingPathFinder implements PathFinder {
 			return fallbackDirection;
 		} else {
 			Direction calculatedDirection = calculateDirection(currentLocation, path.getHomingTargetLocation());
+			if(calculatedDirection == null){
+				calculatedDirection = fallbackDirection;
+			}
 			return calculatedDirection;
 		}
 	}
@@ -61,6 +65,7 @@ public class HomingPathFinder implements PathFinder {
 		} else {
 			targetLocation = currentPath.getHomingTargetLocation();
 		}
+
 		switch (currentPath.getFallbackDirection()) {
 		case UP:
 			return currentLocation.getY() < targetLocation.getY();
@@ -105,15 +110,14 @@ public class HomingPathFinder implements PathFinder {
 				return Direction.LEFT;
 			}
 		} else {
-			if (dy > 0) {
+			if (dy < 0) {
 				return Direction.UP;
-			} else if (dy < 0) {
+			} else if (dy > 0) {
 				return Direction.DOWN;
-			} else {
-				return Direction.NONE; // current and target are the same point
 			}
 		}
-	}
+        return null;
+    }
 
 	@Override
 	public Point calculateInitialEndpoint(Point start, Direction rotation, boolean friendly) {
@@ -152,96 +156,28 @@ public class HomingPathFinder implements PathFinder {
 
 
 	//Custom method from SpriteMover specifically so homing projectiles can line up
-	public Point calculateNextPoint(Point currentLocation, Direction direction, int XStepSize, int YStepSize, GameObject target) {
-		int x = currentLocation.getX();
-		int y = currentLocation.getY();
-		int targetX = target.getCenterXCoordinate();
-		int targetY = target.getCenterYCoordinate();
+	// Custom method for homing projectiles to align precisely with target center
+	public Point calculateNextPoint(MovementConfiguration movementConfiguration, Direction direction, int XStepSize, int YStepSize, GameObject target) {
+		int x = movementConfiguration.getCurrentLocation().getX();
+		int y = movementConfiguration.getCurrentLocation().getY();
+		int targetX = target.getCenterXCoordinate() - target.getWidth() / 2; // Adjust target coordinates for center alignment
+		int targetY = target.getCenterYCoordinate() - target.getHeight() / 2;
 
-		// Adjust XStepSize and YStepSize to not overshoot the target
-		switch (direction) {
-			case UP:
-				if (Math.abs(targetY - y) < YStepSize) {
-					y = targetY;
-				} else {
-					y -= YStepSize;
-				}
-				break;
-			case DOWN:
-				if (Math.abs(targetY - y) < YStepSize) {
-					y = targetY;
-				} else {
-					y += YStepSize;
-				}
-				break;
-			case LEFT:
-				if (Math.abs(targetX - x) < XStepSize) {
-					x = targetX;
-				} else {
-					x -= XStepSize;
-				}
-				break;
-			case RIGHT:
-				if (Math.abs(targetX - x) < XStepSize) {
-					x = targetX;
-				} else {
-					x += XStepSize;
-				}
-				break;
-			case LEFT_UP:
-				if (Math.abs(targetX - x) < XStepSize) {
-					x = targetX;
-				} else {
-					x -= XStepSize;
-				}
-				if (Math.abs(targetY - y) < YStepSize) {
-					y = targetY;
-				} else {
-					y -= YStepSize;
-				}
-				break;
-			case LEFT_DOWN:
-				if (Math.abs(targetX - x) < XStepSize) {
-					x = targetX;
-				} else {
-					x -= XStepSize;
-				}
-				if (Math.abs(targetY - y) < YStepSize) {
-					y = targetY;
-				} else {
-					y += YStepSize;
-				}
-				break;
-			case RIGHT_UP:
-				if (Math.abs(targetX - x) < XStepSize) {
-					x = targetX;
-				} else {
-					x += XStepSize;
-				}
-				if (Math.abs(targetY - y) < YStepSize) {
-					y = targetY;
-				} else {
-					y -= YStepSize;
-				}
-				break;
-			case RIGHT_DOWN:
-				if (Math.abs(targetX - x) < XStepSize) {
-					x = targetX;
-				} else {
-					x += XStepSize;
-				}
-				if (Math.abs(targetY - y) < YStepSize) {
-					y = targetY;
-				} else {
-					y += YStepSize;
-				}
-				break;
-			case NONE:
-				// no movement
-				break;
-		}
+		// Calculate the distance to target
+		double distanceToTargetX = targetX - x;
+		double distanceToTargetY = targetY - y;
+
+		// Dynamically adjust step size based on distance to prevent overshooting
+		int adjustedXStepSize = Math.abs(distanceToTargetX) < XStepSize ? (int)Math.abs(distanceToTargetX) : XStepSize;
+		int adjustedYStepSize = Math.abs(distanceToTargetY) < YStepSize ? (int)Math.abs(distanceToTargetY) : YStepSize;
+
+		// Move towards the target with adjusted step sizes
+		x += Integer.signum((int) distanceToTargetX) * adjustedXStepSize;
+		y += Integer.signum((int) distanceToTargetY) * adjustedYStepSize;
+
 		return new Point(x, y);
 	}
+
 
 
 }

@@ -3,7 +3,7 @@ package game.objects.enemies;
 import game.movement.Direction;
 import game.movement.pathfinderconfigs.MovementPatternSize;
 import game.movement.pathfinders.PathFinder;
-import VisualAndAudioData.audio.AudioEnums;
+import VisualAndAudioData.audio.enums.AudioEnums;
 import game.objects.enemies.enums.EnemyEnums;
 
 public class EnemyConfiguration {
@@ -30,9 +30,12 @@ public class EnemyConfiguration {
     private boolean isBoxCollision;
 
     private float baseArmor;
+    private float xpOnDeath;
+
+    private float cashMoneyWorth;
 
     public EnemyConfiguration (EnemyEnums enemyType, int maxHitPoints, int maxShields, boolean hasAttack, boolean showHealthBar, AudioEnums deathSound, Direction movementDirection, PathFinder movementPathFinder, int xMovementSpeed, int yMovementSpeed, boolean allowedToDealDamage, String objectType, int attackSpeed
-            , MovementPatternSize movementPatternSize, boolean boxCollision, float baseArmor) {
+            , MovementPatternSize movementPatternSize, boolean boxCollision, float baseArmor, float cashMoneyWorth, float xpOnDeath) {
         this.enemyType = enemyType;
         this.maxHitPoints = maxHitPoints;
         this.maxShields = maxShields;
@@ -49,6 +52,8 @@ public class EnemyConfiguration {
         this.movementPatternSize = movementPatternSize;
         this.isBoxCollision = boxCollision;
         this.baseArmor = baseArmor;
+        this.xpOnDeath = xpOnDeath;
+        this.cashMoneyWorth = cashMoneyWorth;
     }
 
     public EnemyEnums getEnemyType () {
@@ -177,5 +182,21 @@ public class EnemyConfiguration {
 
     public void setBaseArmor (float baseArmor) {
         this.baseArmor = baseArmor;
+    }
+
+    public float getXpOnDeath () {
+        return xpOnDeath;
+    }
+
+    public void setXpOnDeath (float xpOnDeath) {
+        this.xpOnDeath = xpOnDeath;
+    }
+
+    public float getCashMoneyWorth () {
+        return cashMoneyWorth;
+    }
+
+    public void setCashMoneyWorth (float cashMoneyWorth) {
+        this.cashMoneyWorth = cashMoneyWorth;
     }
 }

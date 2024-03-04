@@ -1,5 +1,7 @@
 package VisualAndAudioData.audio;
 
+import VisualAndAudioData.audio.enums.AudioEnums;
+
 import java.io.IOException;
 import java.net.URL;
 
@@ -113,9 +115,9 @@ public class AudioLoader {
                 return "/audio/music/The Rain Formerly Known As Purple.wav";
             case Blood_On_The_Dancefloor:
                 return "/audio/music/Blood On The Dancefloor.wav";
-            case Mydnyte:
-                return "/audio/music/lemmino  Firecracker.wav";
             case Lemmino_Firecracker:
+                return "/audio/music/lemmino Firecracker.wav";
+            case Mydnyte:
                 return "/audio/music/mydnyte.wav";
         }
         return null;

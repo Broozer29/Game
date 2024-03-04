@@ -306,4 +306,11 @@ public class MovementConfiguration {
 	public void setUntrackableObjects (List<GameObject> untrackableObjects) {
 		this.untrackableObjects = untrackableObjects;
 	}
+
+	public void deleteConfiguration(){
+		this.target = null;
+		this.pathFinder = null;
+		this.currentPath = null;
+		this.nextPoint = null;
+	}
 }

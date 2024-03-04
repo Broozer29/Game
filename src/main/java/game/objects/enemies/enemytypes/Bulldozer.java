@@ -9,7 +9,7 @@ import game.objects.enemies.Enemy;
 import game.objects.enemies.enums.EnemyEnums;
 import game.objects.enemies.EnemyManager;
 import game.objects.missiles.MissileManager;
-import VisualAndAudioData.audio.AudioEnums;
+import VisualAndAudioData.audio.enums.AudioEnums;
 import VisualAndAudioData.image.ImageEnums;
 import visualobjects.SpriteConfigurations.SpriteAnimationConfiguration;
 import visualobjects.SpriteConfigurations.SpriteConfiguration;
@@ -23,9 +23,9 @@ public class Bulldozer extends Enemy {
         super(spriteConfiguration, enemyConfiguration);
 
         spawnedBombs = false;
-        SpriteAnimationConfiguration exhaustConfiguration = new SpriteAnimationConfiguration(spriteConfiguration, 0, true);
-        exhaustConfiguration.getSpriteConfiguration().setImageType(ImageEnums.Bulldozer_Normal_Exhaust);
-        this.exhaustAnimation = new SpriteAnimation(exhaustConfiguration);
+//        SpriteAnimationConfiguration exhaustConfiguration = new SpriteAnimationConfiguration(spriteConfiguration, 0, true);
+//        exhaustConfiguration.getSpriteConfiguration().setImageType(ImageEnums.Bulldozer_Normal_Exhaust);
+//        this.exhaustAnimation = new SpriteAnimation(exhaustConfiguration);
 
         SpriteAnimationConfiguration destroyedExplosionfiguration = new SpriteAnimationConfiguration(spriteConfiguration, 1, false);
         destroyedExplosionfiguration.getSpriteConfiguration().setImageType(ImageEnums.Bulldozer_Destroyed_Explosion);
@@ -73,21 +73,21 @@ public class Bulldozer extends Enemy {
                 25, 0,
                 false, false, AudioEnums.Alien_Bomb_Destroyed,
                 Direction.LEFT, pathFinder, 1, 1, true, "Alien Bomb",
-                0, MovementPatternSize.SMALL, EnemyEnums.Alien_Bomb.isBoxCollision(), EnemyEnums.Alien_Bomb.getBaseArmor()
-        );
+                0, MovementPatternSize.SMALL, EnemyEnums.Alien_Bomb.isBoxCollision(),
+                EnemyEnums.Alien_Bomb.getBaseArmor(), 0, 0);
 
         Enemy alienBomb = new AlienBomb(spriteConfiguration, enemyConfiguration);
         return alienBomb;
     }
 
-    public void onCreationEffects(){
-        if(!spawnedBombs){
+    public void onCreationEffects () {
+        if (!spawnedBombs) {
             createRotatingBombs();
             spawnedBombs = true;
         }
     }
 
-    public void onDeathEffects(){
+    public void onDeathEffects () {
         //exist to be overriden
     }
 

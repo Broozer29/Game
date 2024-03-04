@@ -16,8 +16,8 @@ public enum MenuObjectEnums {
 	CommonItem,
 	RareItem,
 	LegendaryItem,
-	RelicItem,
-	Song_Selector,
+	Song_Difficulty_Selector,
+	Song_Length_Selector,
 	Description_Block,
 	ItemIcon,
 }

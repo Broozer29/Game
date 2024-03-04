@@ -382,6 +382,25 @@ public class ImageDatabase {
     private BufferedImage starOrange3;
     private BufferedImage starOrange4;
 
+    private BufferedImage yellowWings1;
+    private BufferedImage yellowWings2;
+    private BufferedImage yellowWings3;
+    private BufferedImage yellowWings4;
+    private BufferedImage yellowWings5;
+
+    private BufferedImage blueWings1;
+    private BufferedImage blueWings2;
+    private BufferedImage blueWings3;
+    private BufferedImage blueWings4;
+    private BufferedImage blueWings5;
+    private BufferedImage purpleWings1;
+    private BufferedImage purpleWings2;
+    private BufferedImage purpleWings3;
+    private BufferedImage purpleWings4;
+    private BufferedImage purpleWings5;
+    private BufferedImage informationCard;
+
+
     private List<BufferedImage> HighlightImages = new ArrayList<BufferedImage>();
 
     // testimages
@@ -449,6 +468,7 @@ public class ImageDatabase {
         this.testImage = imgLoader.getImage(ImageEnums.Test_Image);
         this.userMenuToMainMenu = imgLoader.getImage(ImageEnums.User_Menu_To_Main_Menu);
         this.titleImage = imgLoader.getImage(ImageEnums.Title_Image);
+        this.informationCard = imgLoader.getImage(ImageEnums.InformationCard);
     }
 
     private void initGameUIobjects () {
@@ -621,6 +641,24 @@ public class ImageDatabase {
         this.longCard = imgLoader.getImage(ImageEnums.Long_Card);
         this.wideCard = imgLoader.getImage(ImageEnums.Wide_Card);
         this.squareCard = imgLoader.getImage(ImageEnums.Square_Card);
+
+        this.purpleWings1 = imgLoader.getImage(ImageEnums.PurpleWings1);
+        this.purpleWings2 = imgLoader.getImage(ImageEnums.PurpleWings2);
+        this.purpleWings3 = imgLoader.getImage(ImageEnums.PurpleWings3);
+        this.purpleWings4 = imgLoader.getImage(ImageEnums.PurpleWings4);
+        this.purpleWings5 = imgLoader.getImage(ImageEnums.PurpleWings5);
+
+        this.blueWings1 = imgLoader.getImage(ImageEnums.BlueWings1);
+        this.blueWings2 = imgLoader.getImage(ImageEnums.BlueWings2);
+        this.blueWings3 = imgLoader.getImage(ImageEnums.BlueWings3);
+        this.blueWings4 = imgLoader.getImage(ImageEnums.BlueWings4);
+        this.blueWings5 = imgLoader.getImage(ImageEnums.BlueWings5);
+
+        this.yellowWings1 = imgLoader.getImage(ImageEnums.YellowWings1);
+        this.yellowWings2 = imgLoader.getImage(ImageEnums.YellowWings2);
+        this.yellowWings3 = imgLoader.getImage(ImageEnums.YellowWings3);
+        this.yellowWings4 = imgLoader.getImage(ImageEnums.YellowWings4);
+        this.yellowWings5 = imgLoader.getImage(ImageEnums.YellowWings5);
     }
 
     private void initBackgroundObjects () {
@@ -701,6 +739,7 @@ public class ImageDatabase {
 
     public BufferedImage getImage (ImageEnums imageType) {
         switch (imageType) {
+            case InformationCard: return informationCard;
             case Moon2: return moon2;
             case Moon3: return moon3;
             case Moon4: return moon4;
@@ -733,7 +772,21 @@ public class ImageDatabase {
             case Star_Blue2: return starBlue2;
             case Star_Blue3: return starBlue3;
             case Star_Blue4: return starBlue4;
-
+            case PurpleWings1: return purpleWings1;
+            case PurpleWings2: return purpleWings2;
+            case PurpleWings3: return purpleWings3;
+            case PurpleWings4: return purpleWings4;
+            case PurpleWings5: return purpleWings5;
+            case YellowWings1: return yellowWings1;
+            case YellowWings2: return yellowWings2;
+            case YellowWings3: return yellowWings3;
+            case YellowWings4: return yellowWings4;
+            case YellowWings5: return yellowWings5;
+            case BlueWings1: return blueWings1;
+            case BlueWings2: return blueWings2;
+            case BlueWings3: return blueWings3;
+            case BlueWings4: return blueWings4;
+            case BlueWings5: return blueWings5;
             case Starcraft2_Focused_Crystal:return starcraft2_FocusedCrystal;
             case Starcraft2_Platinum_Sponge:return starcraft2_PlatinumSponge;
             case Starcraft2_Overclock: return starcraft2_Overclock;

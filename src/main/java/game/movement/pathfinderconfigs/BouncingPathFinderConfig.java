@@ -13,6 +13,8 @@ public class BouncingPathFinderConfig implements PathFinderConfig {
 	private int yCoordinate;
 	private int spriteWidth;
 	private int spriteHeight;
+	private int xMovementSpeed;
+	private int yMovementSpeed;
 	private Direction spriteCurrentDirection;
 	private GameObject bouncingSprite;
 
@@ -23,6 +25,8 @@ public class BouncingPathFinderConfig implements PathFinderConfig {
 		this.spriteHeight = bouncingSprite.getHeight();
 		this.spriteCurrentDirection = movementConfiguration.getRotation();
 		this.bouncingSprite = bouncingSprite;
+		this.xMovementSpeed = movementConfiguration.getXMovementSpeed();
+		this.yCoordinate = movementConfiguration.getYMovementSpeed();
 	}
 
 	public PowerUp getPowerUp() {
@@ -122,4 +126,19 @@ public class BouncingPathFinderConfig implements PathFinderConfig {
 
 	}
 
+	public int getxMovementSpeed () {
+		return xMovementSpeed;
+	}
+
+	public void setxMovementSpeed (int xMovementSpeed) {
+		this.xMovementSpeed = xMovementSpeed;
+	}
+
+	public int getyMovementSpeed () {
+		return yMovementSpeed;
+	}
+
+	public void setyMovementSpeed (int yMovementSpeed) {
+		this.yMovementSpeed = yMovementSpeed;
+	}
 }

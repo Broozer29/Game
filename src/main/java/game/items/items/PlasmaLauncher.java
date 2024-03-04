@@ -1,6 +1,6 @@
 package game.items.items;
 
-import VisualAndAudioData.audio.AudioEnums;
+import VisualAndAudioData.audio.enums.AudioEnums;
 import VisualAndAudioData.image.ImageEnums;
 import game.items.Item;
 import game.items.effects.EffectActivationTypes;
@@ -10,13 +10,10 @@ import game.movement.Direction;
 import game.movement.pathfinderconfigs.MovementPatternSize;
 import game.movement.pathfinders.HomingPathFinder;
 import game.movement.pathfinders.PathFinder;
-import game.movement.pathfinders.RegularPathFinder;
 import game.objects.GameObject;
 import game.objects.missiles.*;
 import game.objects.player.PlayerManager;
 import game.objects.player.PlayerStats;
-import visualobjects.SpriteAnimation;
-import visualobjects.SpriteConfigurations.SpriteAnimationConfiguration;
 import visualobjects.SpriteConfigurations.SpriteConfiguration;
 
 import java.util.Random;
@@ -63,7 +60,7 @@ public class PlasmaLauncher extends Item {
         int xMovementSpeed = 3;
         int yMovementSpeed = 3;
 
-        ImageEnums impactType = PlayerStats.getInstance().getPlayerMissileImpactType();
+        ImageEnums impactType = PlayerStats.getInstance().getPlayerMissileImpactImage();
         PathFinder pathFinder = new HomingPathFinder();
 
         int maxHitPoints = 1000;

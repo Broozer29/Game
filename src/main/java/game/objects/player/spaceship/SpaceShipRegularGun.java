@@ -12,7 +12,7 @@ import game.objects.missiles.*;
 import game.objects.player.PlayerManager;
 import game.objects.player.BoostsUpgradesAndBuffsSettings;
 import game.objects.player.PlayerStats;
-import VisualAndAudioData.audio.AudioEnums;
+import VisualAndAudioData.audio.enums.AudioEnums;
 import VisualAndAudioData.audio.AudioManager;
 import VisualAndAudioData.image.ImageEnums;
 import visualobjects.SpriteConfigurations.SpriteConfiguration;
@@ -44,8 +44,8 @@ public class SpaceShipRegularGun {
             int xMovementSpeed = 5;
             int yMovementSpeed = 5;
 
-            ImageEnums visualImage = playerStats.getPlayerMissileType();
-            ImageEnums impactType = playerStats.getPlayerMissileImpactType();
+            ImageEnums visualImage = playerStats.getPlayerMissileImage();
+            ImageEnums impactType = playerStats.getPlayerMissileImpactImage();
             float scale = playerStats.getMissileScale();
             PathFinder pathFinder = new RegularPathFinder();
 
@@ -77,6 +77,12 @@ public class SpaceShipRegularGun {
         String objectType = "Player Missile";
         float damage = playerStats.getNormalAttackDamage();
         MovementPatternSize movementPatternSize = MovementPatternSize.SMALL;
+
+
+        switch (attackType){
+            case DefaultPlayerLaserbeam -> damage = playerStats.getNormalAttackDamage();
+            case Rocket1 -> damage = playerStats.getNormalAttackDamage() * 2f;
+        }
 
         MissileConfiguration missileConfiguration = new MissileConfiguration(attackType,
                 maxHitPoints, maxShields, deathSound, playerMissileImpactType, isFriendly, missilePathFinder

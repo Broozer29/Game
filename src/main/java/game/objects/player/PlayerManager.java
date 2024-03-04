@@ -1,9 +1,7 @@
 package game.objects.player;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.List;
 
 import javax.sound.sampled.UnsupportedAudioFileException;
 
@@ -14,7 +12,7 @@ import game.objects.player.spaceship.SpaceShip;
 import VisualAndAudioData.DataClass;
 import game.gamestate.GameStateInfo;
 import game.gamestate.GameStatusEnums;
-import VisualAndAudioData.audio.AudioEnums;
+import VisualAndAudioData.audio.enums.AudioEnums;
 import VisualAndAudioData.audio.AudioManager;
 import VisualAndAudioData.image.ImageEnums;
 import visualobjects.SpriteConfigurations.SpriteConfiguration;
@@ -86,7 +84,7 @@ public class PlayerManager {
 				}
 				
 				try {
-					AudioManager.getInstance().playMusicAudio(AudioEnums.Destroyed_Explosion);
+					AudioManager.getInstance().addAudio(AudioEnums.Destroyed_Explosion);
 				} catch (UnsupportedAudioFileException | IOException e) {
 					e.printStackTrace();
 				}
