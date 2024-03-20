@@ -183,8 +183,6 @@ public class ImageRotator {
         // Determine if the image is facing the left half of the circle and needs to be flipped vertically.
         boolean isLeftHalf = angleDegrees > 90 && angleDegrees < 270;
 
-        System.out.println("");
-
         // If the image is on the left half of the circle, mirror the angle for rotation.
         if (isLeftHalf) {
             angleDegrees = 360 - angleDegrees;
