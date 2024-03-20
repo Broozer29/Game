@@ -117,8 +117,39 @@ public class MissileManager {
         // Handle special attacks
         for (SpecialAttack specialAttack : specialAttacks) {
             if (specialAttack.getAnimation().isVisible()) {
-                checkSpecialAttackWithEnemyCollision(specialAttack);
-                checkSpecialAttackWithEnemyMissileCollision(specialAttack);
+                if (specialAttack.isFriendly()) {
+                    checkSpecialAttackWithEnemyCollision(specialAttack);
+                    checkSpecialAttackWithEnemyMissileCollision(specialAttack);
+                } else {
+                    checkEnemySpecialAttackCollision(specialAttack);
+                    checkEnemySpecialAttackMissileCollision(specialAttack);
+                }
+            }
+        }
+    }
+
+    private void checkEnemySpecialAttackCollision (SpecialAttack specialAttack) {
+        if (specialAttack.getSpecialAttackMissiles().isEmpty()) {
+            if (collisionDetector.detectCollision(PlayerManager.getInstance().getSpaceship(), specialAttack)) {
+                if (specialAttack.isAllowedToDealDamage()) {
+                    PlayerManager.getInstance().getSpaceship().takeDamage(specialAttack.getDamage());
+                }
+
+                if (!specialAttack.isAllowRepeatedDamage()) {
+                    specialAttack.setAllowedToDealDamage(false);
+                }
+            }
+        }
+    }
+
+    private void checkEnemySpecialAttackMissileCollision (SpecialAttack specialAttack) {
+        if (specialAttack.getSpecialAttackMissiles().isEmpty()) {
+            for (Missile missile : missiles) {
+                if (missile.isFriendly()) {
+                    if (collisionDetector.detectCollision(missile, specialAttack)) {
+                        handleMissileDestruction(missile);
+                    }
+                }
             }
         }
     }
@@ -145,10 +176,12 @@ public class MissileManager {
 
     // Checks collision between special attacks and enemy missiles
     private void checkSpecialAttackWithEnemyMissileCollision (SpecialAttack specialAttack) {
-        if (specialAttack.getSpecialAttackMissiles().size() == 0) {
+        if (specialAttack.getSpecialAttackMissiles().isEmpty()) {
             for (Missile missile : missiles) {
-                if (collisionDetector.detectCollision(missile, specialAttack)) {
-                    handleMissileDestruction(missile);
+                if (!missile.isFriendly()) {
+                    if (collisionDetector.detectCollision(missile, specialAttack)) {
+                        handleMissileDestruction(missile);
+                    }
                 }
             }
         }

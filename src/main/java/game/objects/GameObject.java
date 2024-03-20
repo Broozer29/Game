@@ -5,6 +5,7 @@ import game.items.PlayerInventory;
 import game.items.effects.EffectActivationTypes;
 import game.managers.AnimationManager;
 import game.movement.*;
+import game.movement.pathfinders.HomingPathFinder;
 import game.movement.pathfinders.PathFinder;
 import VisualAndAudioData.audio.enums.AudioEnums;
 import VisualAndAudioData.audio.AudioManager;
@@ -14,6 +15,7 @@ import game.items.effects.EffectInterface;
 import game.objects.player.PlayerStats;
 import game.spawner.LevelManager;
 import game.util.ArmorCalculator;
+import game.util.BoardBlockUpdater;
 import visualobjects.SpriteConfigurations.SpriteAnimationConfiguration;
 import visualobjects.SpriteConfigurations.SpriteConfiguration;
 import visualobjects.Sprite;
@@ -79,10 +81,11 @@ public class GameObject extends Sprite {
 
     //Other
     protected String objectType;
-    protected Direction movementDirection;
+    protected Direction movementRotation;
     protected boolean boxCollision;
     protected double lastGameSecondDamageTaken;
     protected GameObject ownerOrCreator;
+    protected boolean centeredAroundObject = false;
 
     private int movementCounter = 0;
     protected float cashMoneyWorth;
@@ -94,18 +97,24 @@ public class GameObject extends Sprite {
 
     protected float xpOnDeath = 0;
 
-    public GameObject (SpriteConfiguration spriteConfiguration) {
+    public GameObject (SpriteConfiguration spriteConfiguration, MovementConfiguration movementConfiguration) {
         super(spriteConfiguration);
         initGameObject();
         if (spriteConfiguration.getImageType() != null) {
             this.loadImage(spriteConfiguration.getImageType());
         }
+        if (movementConfiguration != null) {
+            initMovementConfiguration(movementConfiguration);
+        }
     }
 
-    public GameObject (SpriteAnimationConfiguration spriteAnimationConfiguration) {
+    public GameObject (SpriteAnimationConfiguration spriteAnimationConfiguration, MovementConfiguration movementConfiguration) {
         super(spriteAnimationConfiguration.getSpriteConfiguration());
         this.animation = new SpriteAnimation(spriteAnimationConfiguration);
         initGameObject();
+        if (movementConfiguration != null) {
+            initMovementConfiguration(movementConfiguration);
+        }
     }
 
     private void initGameObject () {
@@ -115,6 +124,19 @@ public class GameObject extends Sprite {
         this.currentBoardBlock = BoardBlockUpdater.getBoardBlock(xCoordinate);
         this.allowedToMove = true;
         this.allowedVisualsToRotate = true;
+    }
+
+    private void initMovementConfiguration (MovementConfiguration movementConfiguration) {
+        this.movementRotation = movementConfiguration.getRotation();
+        movementConfiguration.setCurrentLocation(currentLocation);
+        movementConfiguration.setDestination(movementConfiguration.getPathFinder().calculateInitialEndpoint(currentLocation, movementRotation, false));
+        if (movementConfiguration.getPathFinder() instanceof HomingPathFinder) {
+            movementConfiguration.setTargetToChase(((HomingPathFinder) movementConfiguration.getPathFinder()).getTarget(isFriendly(), this.xCoordinate, this.yCoordinate));
+            movementConfiguration.setHasLock(true);
+        }
+
+        movementConfiguration.setStepsTaken(0);
+        this.movementConfiguration = movementConfiguration;
     }
 
 
@@ -237,7 +259,9 @@ public class GameObject extends Sprite {
         }
 
         this.objectToFollow = null;
-        this.movementConfiguration.deleteConfiguration();
+        if (movementConfiguration != null) {
+            this.movementConfiguration.deleteConfiguration();
+        }
         this.movementConfiguration = null; //could be dangerous and break shit
         this.movementTracker = null;
         this.ownerOrCreator = null;
@@ -296,6 +320,20 @@ public class GameObject extends Sprite {
         if (animation != null) {
             animation.setAnimationBounds(xCoordinate, yCoordinate);
         }
+
+        for (GameObject object : objectsFollowingThis) {
+            if (object.isCenteredAroundObject()) {
+                object.setCenterCoordinates(this.getCenterXCoordinate(), this.getCenterYCoordinate());
+                if (object.getAnimation() != null) {
+                    object.getAnimation().setCenterCoordinates(this.getCenterXCoordinate(), this.getCenterYCoordinate());
+                }
+            } else {
+                //object.move();
+                //Objects here should be in their respective managers. Only special attacks have to be moved like this!
+                //Because they have no movement configuration and don't need one, else they would be missiles
+            }
+        }
+
     }
 
     private void moveAnimations () {
@@ -362,18 +400,22 @@ public class GameObject extends Sprite {
     }
 
     public void rotateGameObjectTowards (int targetXCoordinate, int targetYCoordinate) {
-        double calculatedAngle = ImageRotator.getInstance().calculateAngle(this.getCenterXCoordinate(), this.getCenterYCoordinate(), targetXCoordinate, targetYCoordinate);
+        double calculatedAngle = 0;
+        if(this.animation != null){
+            calculatedAngle = ImageRotator.getInstance().calculateAngle(this.animation.getCenterXCoordinate(), this.animation.getCenterYCoordinate(), targetXCoordinate, targetYCoordinate);
+        } else {
+            calculatedAngle = ImageRotator.getInstance().calculateAngle(this.getCenterXCoordinate(), this.getCenterYCoordinate(), targetXCoordinate, targetYCoordinate);
+        }
+
         if (this.rotationAngle != calculatedAngle) {
-            if (this.image != null) {
+            if (this.animation != null) {
+                this.animation.rotateAnimation(calculatedAngle);
+            } else if (this.image != null) {
                 this.image = ImageRotator.getInstance().rotateOrFlip(this.originalImage, calculatedAngle);
             }
 
-            if (this.animation != null) {
-                this.animation.rotateAnimation(calculatedAngle);
-            }
 
             this.rotationAngle = calculatedAngle;
-
             updateChargingAttackAnimationCoordination();
 
             //Exhausts are better added to the sprites themselves by doing some GIMP photoshop and making the enemies an animation
@@ -541,7 +583,7 @@ public class GameObject extends Sprite {
 
     public void setObjectToFollow (GameObject objectToFollow) {
         this.objectToFollow = objectToFollow;
-        this.movementConfiguration.setTarget(objectToFollow);
+        this.movementConfiguration.setTargetToChase(objectToFollow);
     }
 
     public MovementConfiguration getMovementConfiguration () {
@@ -681,5 +723,24 @@ public class GameObject extends Sprite {
 
     public void setAllowedVisualsToRotate (boolean allowedVisualsToRotate) {
         this.allowedVisualsToRotate = allowedVisualsToRotate;
+    }
+
+    public boolean isCenteredAroundObject () {
+        return centeredAroundObject;
+    }
+
+    public void setCenteredAroundObject (boolean centeredAroundObject) {
+        this.centeredAroundObject = centeredAroundObject;
+    }
+
+    @Override
+    public void setCenterCoordinates (int newXCoordinate, int newYCoordinate) {
+        this.xCoordinate = newXCoordinate - (this.width / 2);
+        this.yCoordinate = newYCoordinate - (this.height / 2);
+
+        if (this.animation != null) {
+            this.animation.setCenterCoordinates(newXCoordinate, newYCoordinate);
+        }
+        //Maybe the other animations too? Requires testing but theoretically it should be fine if they are only updated when needed
     }
 }

@@ -1,6 +1,7 @@
 
 package game.objects.missiles.missiletypes;
 
+import game.movement.MovementConfiguration;
 import game.objects.neutral.ExplosionManager;
 import game.objects.missiles.MissileConfiguration;
 import game.objects.neutral.Explosion;
@@ -12,11 +13,10 @@ import visualobjects.SpriteConfigurations.SpriteConfiguration;
 
 public class BombaProjectile extends Missile {
 
-	public BombaProjectile(SpriteAnimationConfiguration spriteConfiguration, MissileConfiguration missileConfiguration) {
-		super(spriteConfiguration, missileConfiguration);
+	public BombaProjectile(SpriteAnimationConfiguration spriteConfiguration, MissileConfiguration missileConfiguration, MovementConfiguration movementConfiguration) {
+		super(spriteConfiguration, missileConfiguration, movementConfiguration);
 		this.animation.setFrameDelay(3);
-		this.animation.rotateAnimation(missileConfiguration.getMovementDirection());
-	
+		this.animation.rotateAnimation(movementConfiguration.getRotation());
 	}
 
 	public void missileAction() {

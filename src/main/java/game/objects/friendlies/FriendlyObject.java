@@ -12,54 +12,24 @@ public class FriendlyObject extends GameObject {
     protected boolean permanentFriendlyObject;
 
 
-    public FriendlyObject (SpriteConfiguration spriteConfiguration, FriendlyObjectConfiguration friendlyConfiguration) {
-        super(spriteConfiguration);
+    public FriendlyObject (SpriteConfiguration spriteConfiguration, FriendlyObjectConfiguration friendlyConfiguration, MovementConfiguration movementConfiguration) {
+        super(spriteConfiguration, movementConfiguration);
         this.friendlyObjectType = friendlyConfiguration.getFriendlyType();
         this.attackSpeed = friendlyConfiguration.getAttackSpeedCooldown();
         this.setFriendly(true);
         this.boxCollision = friendlyConfiguration.isBoxCollision();
         this.permanentFriendlyObject = friendlyConfiguration.isPermanentObject();
-        initMovementConfiguration(friendlyConfiguration);
     }
 
-    public FriendlyObject (SpriteAnimationConfiguration spriteAnimationConfiguration, FriendlyObjectConfiguration friendlyConfiguration) {
-        super(spriteAnimationConfiguration);
+    public FriendlyObject (SpriteAnimationConfiguration spriteAnimationConfiguration, FriendlyObjectConfiguration friendlyConfiguration, MovementConfiguration movementConfiguration) {
+        super(spriteAnimationConfiguration, movementConfiguration);
         this.friendlyObjectType = friendlyConfiguration.getFriendlyType();
         this.attackSpeed = friendlyConfiguration.getAttackSpeedCooldown();
         this.setFriendly(true);
         this.boxCollision = friendlyConfiguration.isBoxCollision();
         this.permanentFriendlyObject = friendlyConfiguration.isPermanentObject();
-        initMovementConfiguration(friendlyConfiguration);
     }
 
-    protected void initMovementConfiguration (FriendlyObjectConfiguration friendlyObjectConfiguration) {
-        PathFinder pathFinder = friendlyObjectConfiguration.getPathFinder();
-        movementConfiguration = new MovementConfiguration();
-        movementConfiguration.setPathFinder(pathFinder);
-        movementConfiguration.setCurrentLocation(new Point(this.xCoordinate, this.yCoordinate));
-        movementConfiguration.setDestination(pathFinder.calculateInitialEndpoint(currentLocation, movementDirection, false));
-        movementConfiguration.setRotation(friendlyObjectConfiguration.getMovementDirection());
-        movementConfiguration.setXMovementSpeed(friendlyObjectConfiguration.getxMovementSpeed());
-        movementConfiguration.setYMovementSpeed(friendlyObjectConfiguration.getyMovementSpeed());
-        movementConfiguration.setStepsTaken(0);
-        movementConfiguration.setHasLock(true);
-
-        movementConfiguration.setDiamondWidth(friendlyObjectConfiguration.getMovementPatternSize().getDiamondWidth());
-        movementConfiguration.setDiamondHeight(friendlyObjectConfiguration.getMovementPatternSize().getDiamondHeight());
-
-        movementConfiguration.setStepsBeforeBounceInOtherDirection(friendlyObjectConfiguration.getMovementPatternSize().getStepsBeforeBounceInOtherDirection());
-
-        movementConfiguration.setAngleStep(0.1);
-        movementConfiguration.setCurveDistance(1);
-        movementConfiguration.setRadius(5);
-        movementConfiguration.setRadiusIncrement(friendlyObjectConfiguration.getMovementPatternSize().getRadiusIncrement());
-
-
-        movementConfiguration.setPrimaryDirectionStepAmount(friendlyObjectConfiguration.getMovementPatternSize().getPrimaryDirectionStepAmount());
-        movementConfiguration.setFirstDiagonalDirectionStepAmount(friendlyObjectConfiguration.getMovementPatternSize().getSecondaryDirectionStepAmount());
-        movementConfiguration.setSecondDiagonalDirectionStepAmount(friendlyObjectConfiguration.getMovementPatternSize().getSecondaryDirectionStepAmount());
-
-    }
 
     public void activateObjectAction () {
         //Exists to be overriden
