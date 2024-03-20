@@ -17,7 +17,7 @@ import VisualAndAudioData.image.ImageRotator;
 public class SpriteAnimation extends Sprite implements Cloneable{
 
 	ImageResizer imageResizer = ImageResizer.getInstance();
-	private int currentFrame;
+	private int currentFrame = 0;
 	private int totalFrames;
 	private List<BufferedImage> originalFrames = new ArrayList<BufferedImage>();
 	private List<BufferedImage> frames = new ArrayList<BufferedImage>();
@@ -44,7 +44,7 @@ public class SpriteAnimation extends Sprite implements Cloneable{
 	}
 	protected void initAnimation() {
 		setImage(frames.get(0));
-		centerAnimationFrame();
+//		centerAnimationFrame();
 		totalFrames = frames.size();
 	}
 
@@ -192,7 +192,6 @@ public class SpriteAnimation extends Sprite implements Cloneable{
 
 	public void setImageDimensions(int newWidth, int newHeight) {
 		ImageResizer imageResizer = ImageResizer.getInstance();
-
 		for (int i = 0; i < frames.size(); i++) {
 			frames.set(i, imageResizer.resizeImageToDimensions(frames.get(i), newWidth, newHeight));
 		}

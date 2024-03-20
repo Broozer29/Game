@@ -595,13 +595,13 @@ public class ImageLoader {
             case YellowWings1:
                 return "/images/UI/Wings/Yellow/01.png";
             case YellowWings2:
-                return "/images/UI/Wings/Yellow/01.png";
+                return "/images/UI/Wings/Yellow/02.png";
             case YellowWings3:
-                return "/images/UI/Wings/Yellow/01.png";
+                return "/images/UI/Wings/Yellow/03.png";
             case YellowWings4:
-                return "/images/UI/Wings/Yellow/01.png";
+                return "/images/UI/Wings/Yellow/04.png";
             case YellowWings5:
-                return "/images/UI/Wings/Yellow/01.png";
+                return "/images/UI/Wings/Yellow/05.png";
             default:
                 return "";
         }

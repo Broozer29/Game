@@ -13,7 +13,7 @@ public class DataClass {
 	
 	private DataClass() {
 		informationCardWidth = windowWidth;
-		informationCardHeight = (int) Math.round(windowHeight * 0.10);
+		informationCardHeight = 100;
 	}
 
 	public static DataClass getInstance() {
@@ -29,7 +29,8 @@ public class DataClass {
 	}
 
 	public int getPlayableWindowMinHeight(){
-		return 0 + informationCardHeight;
+		return 0;
+//		return 0 + informationCardHeight;
 	}
 
 	public int getPlayableWindowMaxHeight(){

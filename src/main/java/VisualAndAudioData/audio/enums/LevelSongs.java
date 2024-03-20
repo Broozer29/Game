@@ -1,5 +1,6 @@
 package VisualAndAudioData.audio.enums;
 
+import VisualAndAudioData.image.ImageEnums;
 import game.spawner.enums.*;
 
 import java.util.Arrays;
@@ -103,5 +104,26 @@ public enum LevelSongs {
     public static LevelSongs getRandomSong() {
         LevelSongs[] songs = LevelSongs.values();
         return songs[new Random().nextInt(songs.length)];
+    }
+
+    public static int getDifficultyImageIndex(LevelDifficulty difficulty, LevelLength length) {
+        int difficultyWeight = difficulty.ordinal() + 1; // Assuming Enum order is EASY, MEDIUM, HARD
+        int lengthWeight = length.ordinal() + 1; // Assuming Enum order is SHORT, MEDIUM, LONG
+        int combinedScore = difficultyWeight + lengthWeight;
+
+        // Adjusted mapping based on combined score
+        if (combinedScore <= 2) return 1; // Image 1
+        if (combinedScore == 3) return 2; // Image 2
+        if (combinedScore == 4) return 3; // Image 3
+        if (combinedScore == 5) return 4; // Image 4
+        return 5; // Image 5
+    }
+
+    public static ImageEnums getImageEnumByDifficultyScore(int difficultyScore){
+        if (difficultyScore <= 2) return ImageEnums.PurpleWings1; // Image 1
+        if (difficultyScore == 3) return ImageEnums.PurpleWings2; // Image 2
+        if (difficultyScore == 4) return ImageEnums.PurpleWings3; // Image 3
+        if (difficultyScore == 5) return ImageEnums.PurpleWings4; // Image 4
+        return ImageEnums.PurpleWings5; // Image 5
     }
 }

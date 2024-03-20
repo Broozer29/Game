@@ -225,6 +225,4 @@ public class ImageRotator {
 
         return new Point(newX, newY);
     }
-
-
 }

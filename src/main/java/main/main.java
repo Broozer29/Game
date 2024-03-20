@@ -15,8 +15,6 @@ public class main {
 				BoardManager ex = BoardManager.getInstance();
 				ex.initMainMenu();
 				ex.setVisible(true);
-				System.out.println("java.library.path: " + System.getProperty("java.library.path"));
-//				System.out.println(System.getProperty("java.library.path"));
 			}
 		});
 	}

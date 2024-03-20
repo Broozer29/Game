@@ -77,10 +77,10 @@ public class AudioManager {
 			}
 		}
 		while (backgroundMusicTracksThatHavePlayed.contains(backgroundMusic) && backgroundMusic != null);
-
 		if (backgroundMusic != null) {
-			//playMusicAudio(AudioEnums.Large_Ship_Destroyed);
-			playMusicAudio(backgroundMusic.getAudioEnum());
+			playMusicAudio(AudioEnums.Large_Ship_Destroyed);
+//			playMusicAudio(backgroundMusic.getAudioEnum());
+			System.out.println("Comment line 82 in AudioManager for functional music");
 			addTrackToHistory(backgroundMusic);
 			this.currentSong = backgroundMusic;
 		}
