@@ -35,7 +35,7 @@ public class CollisionDetector {
             }
 
             if (r1.intersects(r2)) {
-                if(gameObject1.isBoxCollision() || gameObject2.isBoxCollision()){
+                if (gameObject1.isBoxCollision() || gameObject2.isBoxCollision()) {
                     return true;
                 } else if (checkPixelCollision(gameObject1, gameObject2)) {
                     return true;
@@ -65,38 +65,58 @@ public class CollisionDetector {
         return distance < threshold;
     }
 
-    private boolean checkPixelCollision (GameObject gameObject1, GameObject gameObject2) {
+    private boolean checkPixelCollision(GameObject gameObject1, GameObject gameObject2) {
         BufferedImage img1 = null;
         BufferedImage img2 = null;
+
+        // Use animation coordinates and dimensions if available
+        int x1, y1, x2, y2, width1, height1, width2, height2;
+
         if (gameObject1.getAnimation() != null) {
             img1 = gameObject1.getAnimation().getCurrentFrameImage(false);
+            x1 = gameObject1.getAnimation().getXCoordinate();
+            y1 = gameObject1.getAnimation().getYCoordinate();
+            width1 = img1.getWidth();
+            height1 = img1.getHeight();
         } else {
             img1 = gameObject1.getImage();
+            x1 = gameObject1.getXCoordinate();
+            y1 = gameObject1.getYCoordinate();
+            width1 = img1.getWidth();
+            height1 = img1.getHeight();
         }
 
         if (gameObject2.getAnimation() != null) {
             img2 = gameObject2.getAnimation().getCurrentFrameImage(false);
+            x2 = gameObject2.getAnimation().getXCoordinate();
+            y2 = gameObject2.getAnimation().getYCoordinate();
+            width2 = img2.getWidth();
+            height2 = img2.getHeight();
         } else {
             img2 = gameObject2.getImage();
+            x2 = gameObject2.getXCoordinate();
+            y2 = gameObject2.getYCoordinate();
+            width2 = img2.getWidth();
+            height2 = img2.getHeight();
         }
 
-
         if (img1 != null && img2 != null) {
-            int xStart = Math.max(gameObject1.getXCoordinate(), gameObject2.getXCoordinate());
-            int yStart = Math.max(gameObject1.getYCoordinate(), gameObject2.getYCoordinate());
+            int xStart = Math.max(x1, x2);
+            int yStart = Math.max(y1, y2);
+            int xEnd = Math.min(x1 + width1, x2 + width2);
+            int yEnd = Math.min(y1 + height1, y2 + height2);
 
-            int xEnd = Math.min(gameObject1.getXCoordinate() + img1.getWidth(), gameObject2.getXCoordinate() + img2.getWidth());
-            int yEnd = Math.min(gameObject1.getYCoordinate() + img1.getHeight(),
-                    gameObject2.getYCoordinate() + img2.getHeight());
+//            System.out.println("Bounds for GameObject 2 Animation: x=" + x2 + ", y=" + y2 + ", width=" + width2 + ", height=" + height2);
+//            System.out.println("GameObject 1: Player X/Y " + x1 + "/" + y1 + " dimensions: " + width1 + "/" + height1);
+//            System.out.println("GameObject 2: The attack X/Y " + x2 + "/" + y2 + " dimensions: " + width2 + "/" + height2);
 
             for (int y = yStart; y < yEnd; y++) {
                 for (int x = xStart; x < xEnd; x++) {
-                    int pixel1 = img1.getRGB(x - gameObject1.getXCoordinate(), y - gameObject1.getYCoordinate());
+                    int pixel1 = img1.getRGB(x - x1, y - y1);
                     int alpha1 = (pixel1 >> 24) & 0xff;
 
-                    int pixel2 = img2.getRGB(x - gameObject2.getXCoordinate(), y - gameObject2.getYCoordinate());
+                    int pixel2 = img2.getRGB(x - x2, y - y2);
                     int alpha2 = (pixel2 >> 24) & 0xff;
-
                     if (alpha1 != 0 && alpha2 != 0) {
                         return true; // Collision detected
                     }
@@ -104,7 +124,8 @@ public class CollisionDetector {
             }
             return false; // No collision detected
         } else {
-            return true; //Invisible images, cannot detect pixels because there are none
+            return true; // Invisible images, cannot detect pixels because there are none
         }
     }
+
 }

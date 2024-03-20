@@ -23,25 +23,16 @@ public class PowerUp extends GameObject {
     private boolean loopable;
     private PowerUpEffect powerUpEffect;
 
-    public PowerUp (SpriteConfiguration spriteConfiguration, PowerUpConfiguration powerUpConfiguration) {
-        super(spriteConfiguration);
+    public PowerUp (SpriteConfiguration spriteConfiguration, PowerUpConfiguration powerUpConfiguration, MovementConfiguration movementConfiguration) {
+        super(spriteConfiguration, movementConfiguration);
         this.powerUpType = powerUpConfiguration.getPowerUpType();
         this.timeBeforeActivation = powerUpConfiguration.getTimeBeforeActivation();
         this.loopable = powerUpConfiguration.isLoopable();
-        initMoveConfig(powerUpConfiguration);
         this.powerUpEffect =  PowerUpEffectFactory.getInstance().createPowerUpEffect(powerUpType);
         this.setObjectType("Power Up " + powerUpType);
         this.allowedVisualsToRotate = false;
     }
 
-    private void initMoveConfig (PowerUpConfiguration powerUpConfiguration) {
-        this.movementConfiguration = new MovementConfiguration();
-        movementConfiguration.setXMovementSpeed(powerUpConfiguration.getxMovementSpeed());
-        movementConfiguration.setYMovementSpeed(powerUpConfiguration.getyMovementSpeed());
-        movementConfiguration.setRotation(powerUpConfiguration.getMovementDirection());
-        movementConfiguration.setPathFinder(powerUpConfiguration.getPathFinder());
-        movementConfiguration.setCurrentLocation(new Point(xCoordinate,yCoordinate));
-    }
 
     public void move () {
         SpriteMover.getInstance().moveSprite(this, movementConfiguration);

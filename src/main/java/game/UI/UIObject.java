@@ -14,6 +14,7 @@ public class UIObject extends Sprite {
 		if (height > 0 && width > 0) {
 			ImageResizer imageResizer = ImageResizer.getInstance();
 			this.image = imageResizer.resizeImageToDimensions(this.originalImage, width, height);
+			configureImageDimensions();
 		}
 	}
 

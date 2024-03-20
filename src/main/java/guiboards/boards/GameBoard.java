@@ -13,7 +13,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
@@ -28,7 +27,7 @@ import game.spawner.directors.DirectorManager;
 import game.gamestate.SpawningMechanic;
 import game.spawner.LevelManager;
 import game.managers.AnimationManager;
-import game.managers.GameUIManager;
+import game.UI.GameUIManager;
 import game.objects.neutral.ExplosionManager;
 import game.managers.OnScreenTextManager;
 import game.objects.friendlies.FriendlyObject;
@@ -59,7 +58,6 @@ import VisualAndAudioData.audio.AudioDatabase;
 import VisualAndAudioData.audio.AudioManager;
 import VisualAndAudioData.audio.AudioPositionCalculator;
 import guiboards.BoardManager;
-import guiboards.MenuObjectCollection;
 import visualobjects.Sprite;
 import visualobjects.SpriteAnimation;
 
@@ -393,8 +391,13 @@ public class GameBoard extends JPanel implements ActionListener {
             drawImage(g, obj);
         }
 
+
         drawPlayerHealthBars(g);
         drawSpecialAttackFrame(g);
+
+        if(uiManager.getDifficultyWings() != null) {
+            drawImage(g, uiManager.getDifficultyWings());
+        }
 
         // Draws higher level animations
         for (SpriteAnimation animation : animationManager.getUpperAnimations()) {
@@ -407,18 +410,16 @@ public class GameBoard extends JPanel implements ActionListener {
 
         // Draw the score/aliens left
         g.setColor(Color.WHITE);
-        g.drawString("Enemies alive: " + enemyManager.getEnemyCount(), 5, 15);
+        g.drawString("Enemies alive: " + enemyManager.getEnemyCount(), 650, DataClass.getInstance().getPlayableWindowMaxHeight() + 65);
 
-        g.drawString("Music time: " + gameState.getMusicSeconds(), 130, 15);
+        g.drawString("Difficulty coeff: " + gameState.getDifficultyCoefficient(), 450, DataClass.getInstance().getPlayableWindowMaxHeight() + 25);
+        g.drawString("Current stage: " + gameState.getStagesCompleted(), 450, DataClass.getInstance().getPlayableWindowMaxHeight() + 45);
+        g.drawString("Enemy level: " + gameState.getMonsterLevel(), 450, DataClass.getInstance().getPlayableWindowMaxHeight() + 65);
 
-        g.drawString("Difficulty coeff: " + gameState.getDifficultyCoefficient(), 250, 15);
-        g.drawString("Current stage: " + gameState.getStagesCompleted(), 250, 30);
-        g.drawString("Enemy level: " + gameState.getMonsterLevel(), 250, 45);
-
-        g.drawString("Enemies spawned: " + levelManager.getEnemiesSpawned(), 550, 15);
-        g.drawString("Enemies killed: " + levelManager.getEnemiesKilled(), 550, 30);
-        g.drawString("Player level: " + playerStats.getCurrentLevel(), 550, 45);
-        g.drawString("XP to next level: " + (playerStats.getXpToNextLevel() - playerStats.getCurrentXP()), 550, 60);
+        g.drawString("Enemies spawned: " + levelManager.getEnemiesSpawned(), 650, DataClass.getInstance().getPlayableWindowMaxHeight() + 25);
+        g.drawString("Enemies killed: " + levelManager.getEnemiesKilled(), 650, DataClass.getInstance().getPlayableWindowMaxHeight() + 45);
+        g.drawString("Player level: " + playerStats.getCurrentLevel(), 950, DataClass.getInstance().getPlayableWindowMaxHeight() + 25);
+        g.drawString("XP to next level: " + (playerStats.getXpToNextLevel() - playerStats.getCurrentXP()), 950, DataClass.getInstance().getPlayableWindowMaxHeight() + 45);
 
     }
 
@@ -490,7 +491,7 @@ public class GameBoard extends JPanel implements ActionListener {
         UIObject healthFrame = uiManager.getHealthFrame();
         UIObject healthBar = uiManager.getHealthBar();
 
-        int healthBarWidth = calculateHealthbarWidth(playerHealth, playerMaxHealth, healthBar.getWidth());
+        int healthBarWidth = calculateHealthbarWidth(playerHealth, playerMaxHealth);
         if (healthBarWidth > healthFrame.getWidth()) {
             healthBarWidth = healthFrame.getWidth();
         }
@@ -504,7 +505,7 @@ public class GameBoard extends JPanel implements ActionListener {
         UIObject shieldFrame = uiManager.getShieldFrame();
         UIObject shieldBar = uiManager.getShieldBar();
 
-        int shieldBarWidth = calculateHealthbarWidth(playerShields, playerMaxShields, shieldBar.getWidth());
+        int shieldBarWidth = calculateHealthbarWidth(playerShields, playerMaxShields);
         if (shieldBarWidth > shieldFrame.getWidth()) {
             shieldBarWidth = shieldFrame.getWidth();
         }
@@ -516,7 +517,7 @@ public class GameBoard extends JPanel implements ActionListener {
         if (playerShields > playerMaxShields) {
             UIObject overloadingShieldBar = uiManager.getOverloadingShieldBar();
             // Calculate the width for the overloading shield bar: playerMaxShields * 2 as the maximum theoretical width
-            int overloadingShieldBarWidth = calculateHealthbarWidth(playerShields - playerMaxShields, playerMaxShields * PlayerStats.getInstance().getMaxOverloadingShieldMultiplier(), overloadingShieldBar.getWidth());
+            int overloadingShieldBarWidth = calculateHealthbarWidth(playerShields - playerMaxShields, playerMaxShields * PlayerStats.getInstance().getMaxOverloadingShieldMultiplier());
             if (overloadingShieldBarWidth > shieldFrame.getWidth()) {
                 overloadingShieldBarWidth = shieldFrame.getWidth();
             }
@@ -557,17 +558,18 @@ public class GameBoard extends JPanel implements ActionListener {
     }
 
 
-    public int calculateHealthbarWidth (float currentHitpoints, float maximumHitpoints, int healthBarSize) {
+    public int calculateHealthbarWidth (float currentHitpoints, float maximumHitpoints) {
         // Calculate the percentage of currentHitpoints out of maximumHitpoints
         double percentage = (double) currentHitpoints / maximumHitpoints * 100;
         // Calculate what this percentage is of thirdNumber
-        int width = (int) Math.ceil(percentage / 100 * healthBarSize);
+        int width = (int) Math.ceil((percentage / 100) * uiManager.getHealthBarWidth());
 
         if (width > uiManager.getHealthBarWidth()) {
             width = uiManager.getHealthBarWidth();
         } else if (width < 1) {
             width = 1;
         }
+
         return width;
     }
 

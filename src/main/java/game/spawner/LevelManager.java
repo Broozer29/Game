@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.List;
 
 import VisualAndAudioData.audio.enums.LevelSongs;
+import game.UI.GameUIManager;
 import game.managers.TimerManager;
 import game.movement.Direction;
 import game.movement.pathfinderconfigs.MovementPatternSize;
@@ -31,7 +32,7 @@ public class LevelManager {
     private LevelLength currentLevelLength;
     private int enemiesSpawned;
     private int enemiesKilled;
-
+    private int difficultyModifier;
     private LevelManager () {
         resetManager();
     }
@@ -44,8 +45,8 @@ public class LevelManager {
         enemiesSpawned = 0;
         enemiesKilled = 0;
         currentLevelSong = null;
-        currentLevelDifficulty = LevelDifficulty.Easy;
-        currentLevelLength = LevelLength.Short;
+//        currentLevelDifficulty = LevelDifficulty.Easy;
+//        currentLevelLength = LevelLength.Short;
     }
 
     public void updateGameTick () {
@@ -69,6 +70,14 @@ public class LevelManager {
 
     // Called when a level starts, to saturate enemy list
     public void startLevel () {
+        if(currentLevelDifficulty == null){
+            currentLevelDifficulty = LevelDifficulty.getRandomDifficulty();
+        }
+
+        if(currentLevelLength == null){
+            currentLevelLength = LevelLength.getRandomLength();
+        }
+
         AudioManager audioManager = AudioManager.getInstance();
         try {
             audioManager.playRandomBackgroundMusic(currentLevelDifficulty, currentLevelLength);
@@ -76,6 +85,12 @@ public class LevelManager {
         } catch (UnsupportedAudioFileException | IOException e) {
             throw new RuntimeException(e);
         }
+
+        difficultyModifier = LevelSongs.getDifficultyImageIndex(currentLevelDifficulty, currentLevelLength);
+        if(difficultyModifier < 2){
+            difficultyModifier = 2;
+        }
+        GameUIManager.getInstance().createDifficultyWings();
 
         gameState.setGameState(GameStatusEnums.Playing);
 
@@ -87,27 +102,28 @@ public class LevelManager {
                 , 1, 1, MovementPatternSize.SMALL, false);
         enemy.getMovementConfiguration().setXMovementSpeed(0);
         enemy.getMovementConfiguration().setYMovementSpeed(0);
+
         EnemyManager.getInstance().addEnemy(enemy);
 
-//        Enemy enemy2 = EnemyCreator.createEnemy(EnemyEnums.Seeker, 800, 600, Direction.RIGHT_DOWN, 1
-//                , 1, 1, MovementPatternSize.SMALL, false);
+//        Enemy enemy2 = EnemyCreator.createEnemy(EnemyEnums.Seeker, 900, 600, Direction.RIGHT_DOWN, 1
+//                , 0, 0, MovementPatternSize.SMALL, false);
 //
 //        EnemyManager.getInstance().addEnemy(enemy2);
-//        Enemy enemy3 = EnemyCreator.createEnemy(EnemyEnums.Seeker, 800, 600, Direction.RIGHT_UP, 1
-//                , 1, 1, MovementPatternSize.SMALL, false);
+//        Enemy enemy3 = EnemyCreator.createEnemy(EnemyEnums.Tazer, 700, 600, Direction.RIGHT_UP, 1
+//                , 0, 0, MovementPatternSize.SMALL, false);
 //
 //        EnemyManager.getInstance().addEnemy(enemy3);
 //
-//        Enemy enemy4 = EnemyCreator.createEnemy(EnemyEnums.Seeker, 800, 600, Direction.LEFT, 1
-//                , 1, 1, MovementPatternSize.SMALL, false);
+//        Enemy enemy4 = EnemyCreator.createEnemy(EnemyEnums.Bomba, 600, 600, Direction.LEFT, 1
+//                , 0, 0, MovementPatternSize.SMALL, false);
 //        EnemyManager.getInstance().addEnemy(enemy4);
 //
-//        Enemy enemy5 = EnemyCreator.createEnemy(EnemyEnums.Seeker, 800, 600, Direction.LEFT_UP, 1
-//                , 1, 1, MovementPatternSize.SMALL, false);
+//        Enemy enemy5 = EnemyCreator.createEnemy(EnemyEnums.Energizer, 500, 600, Direction.LEFT_UP, 1
+//                , 0, 0, MovementPatternSize.SMALL, false);
 //        EnemyManager.getInstance().addEnemy(enemy5);
 //
-//        Enemy enemy6 = EnemyCreator.createEnemy(EnemyEnums.Seeker, 800, 600, Direction.LEFT_DOWN, 1
-//                , 1, 1, MovementPatternSize.SMALL, false);
+//        Enemy enemy6 = EnemyCreator.createEnemy(EnemyEnums.Bulldozer, 400, 600, Direction.LEFT_DOWN, 1
+//                , 0, 0, MovementPatternSize.SMALL, false);
 //        EnemyManager.getInstance().addEnemy(enemy6);
     }
 
@@ -199,5 +215,13 @@ public class LevelManager {
 
     public void setCurrentLevelLength (LevelLength currentLevelLength) {
         this.currentLevelLength = currentLevelLength;
+    }
+
+    public int getDifficultyModifier () {
+        return difficultyModifier;
+    }
+
+    public void setDifficultyModifier (int difficultyModifier) {
+        this.difficultyModifier = difficultyModifier;
     }
 }

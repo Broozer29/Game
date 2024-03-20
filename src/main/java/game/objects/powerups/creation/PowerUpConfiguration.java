@@ -12,19 +12,10 @@ public class PowerUpConfiguration {
 
     private boolean loopable;
 
-    private int xMovementSpeed;
-    private int yMovementSpeed;
-    private Direction movementDirection;
-    private PathFinder pathFinder;
-
-    public PowerUpConfiguration (PowerUpEnums powerUpType, int timeBeforeActivation, boolean loopable, int xMovementSpeed, int yMovementSpeed, Direction movementDirection, PathFinder pathFinder) {
+    public PowerUpConfiguration (PowerUpEnums powerUpType, int timeBeforeActivation, boolean loopable) {
         this.powerUpType = powerUpType;
         this.timeBeforeActivation = timeBeforeActivation;
         this.loopable = loopable;
-        this.xMovementSpeed = xMovementSpeed;
-        this.yMovementSpeed = yMovementSpeed;
-        this.movementDirection = movementDirection;
-        this.pathFinder = pathFinder;
     }
 
     public PowerUpEnums getPowerUpType () {
@@ -49,40 +40,5 @@ public class PowerUpConfiguration {
 
     public void setLoopable (boolean loopable) {
         this.loopable = loopable;
-    }
-
-    public int getxMovementSpeed () {
-        return xMovementSpeed;
-    }
-
-    public void setxMovementSpeed (int xMovementSpeed) {
-        this.xMovementSpeed = xMovementSpeed;
-    }
-
-    public int getyMovementSpeed () {
-        return yMovementSpeed;
-    }
-
-    public void setyMovementSpeed (int yMovementSpeed) {
-        this.yMovementSpeed = yMovementSpeed;
-    }
-
-    public Direction getMovementDirection () {
-        return movementDirection;
-    }
-
-    public void setMovementDirection (Direction movementDirection) {
-        this.movementDirection = movementDirection;
-    }
-
-    public PathFinder getPathFinder () {
-        if(pathFinder == null){
-            pathFinder = new BouncingPathFinder();
-        }
-        return pathFinder;
-    }
-
-    public void setPathFinder (PathFinder pathFinder) {
-        this.pathFinder = pathFinder;
     }
 }
