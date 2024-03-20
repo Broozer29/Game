@@ -58,7 +58,7 @@ public class Energizer extends Enemy {
 
 	private void shootMissile () {
 		//Create the sprite configuration which gets upgraded to spriteanimation if needed by the MissileCreator
-		SpriteConfiguration spriteConfiguration = MissileCreator.getInstance().createMissileSpriteConfig(xCoordinate, yCoordinate,ImageEnums.Bomba_Missile
+		SpriteConfiguration spriteConfiguration = MissileCreator.getInstance().createMissileSpriteConfig(xCoordinate, yCoordinate,ImageEnums.Energizer_Missile
 				,this.scale);
 
 

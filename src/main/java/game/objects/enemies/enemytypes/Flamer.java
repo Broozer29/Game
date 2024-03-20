@@ -60,8 +60,8 @@ public class Flamer extends Enemy {
     private void shootMissile () {
 //        MissileTypeEnums missileType = MissileTypeEnums.FlamerProjectile;
         SpriteConfiguration missileSpriteConfiguration = new SpriteConfiguration();
-        missileSpriteConfiguration.setxCoordinate(-85);
-        missileSpriteConfiguration.setyCoordinate(-85);
+        missileSpriteConfiguration.setxCoordinate(this.getCenterXCoordinate());
+        missileSpriteConfiguration.setyCoordinate(this.getCenterYCoordinate());
         missileSpriteConfiguration.setScale(1);
         missileSpriteConfiguration.setImageType(ImageEnums.Player_EMP);
 

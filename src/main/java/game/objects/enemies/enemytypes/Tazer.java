@@ -36,7 +36,7 @@ public class Tazer extends Enemy {
         // Check if the attack cooldown has been reached
         if (attackSpeedCurrentFrameCount >= attackSpeed) {
             // Check if the charging animation is not already playing
-            if(WithinVisualBoundariesCalculator.isWithinBoundaries(this)) {
+            if (WithinVisualBoundariesCalculator.isWithinBoundaries(this)) {
                 if (!chargingUpAttackAnimation.isPlaying()) {
                     // Start charging animation
                     chargingUpAttackAnimation.refreshAnimation(); // Refreshes the animation
@@ -52,7 +52,6 @@ public class Tazer extends Enemy {
             }
 
 
-
         } else {
             // If not yet ready to attack, increase the attack speed frame count
             attackSpeedCurrentFrameCount++;
@@ -62,7 +61,7 @@ public class Tazer extends Enemy {
     private void shootMissile () {
         //Create the sprite configuration which gets upgraded to spriteanimation if needed by the MissileCreator
         SpriteConfiguration spriteConfiguration = MissileCreator.getInstance().createMissileSpriteConfig(xCoordinate,
-                yCoordinate,ImageEnums.Tazer_Missile,this.scale);
+                yCoordinate, ImageEnums.Tazer_Missile, this.scale);
 
 
         //Create missile movement attributes and create a movement configuration
