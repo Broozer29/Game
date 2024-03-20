@@ -1,5 +1,6 @@
 package game.objects.missiles.missiletypes;
 
+import game.movement.MovementConfiguration;
 import game.objects.neutral.ExplosionManager;
 import game.objects.missiles.MissileConfiguration;
 import game.objects.neutral.Explosion;
@@ -13,9 +14,9 @@ public class Rocket1 extends Missile{
 
 	float explosionDamage;
 	
-	public Rocket1(SpriteAnimationConfiguration spriteConfiguration, MissileConfiguration missileConfiguration) {
-		super(spriteConfiguration, missileConfiguration);
-		this.animation.rotateAnimation(missileConfiguration.getMovementDirection());
+	public Rocket1(SpriteAnimationConfiguration spriteConfiguration, MissileConfiguration missileConfiguration, MovementConfiguration movementConfiguration) {
+		super(spriteConfiguration, missileConfiguration, movementConfiguration);
+		this.animation.rotateAnimation(movementConfiguration.getRotation());
 		this.damage = 0;
 		this.explosionDamage = missileConfiguration.getDamage();
 	}

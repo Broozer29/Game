@@ -13,7 +13,7 @@ public class Explosion extends GameObject {
     private boolean applyOnHitEffects;
 
     public Explosion (SpriteAnimationConfiguration spriteAnimationConfiguration, ExplosionConfiguration explosionConfiguration) {
-        super(spriteAnimationConfiguration);
+        super(spriteAnimationConfiguration, null);
         this.friendly = explosionConfiguration.isFriendly();
         this.damage = explosionConfiguration.getDamage();
         this.allowedToDealDamage = explosionConfiguration.isAllowedToDealDamage();

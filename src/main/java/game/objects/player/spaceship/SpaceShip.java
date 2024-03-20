@@ -53,7 +53,7 @@ public class SpaceShip extends GameObject {
     private List<SpecialAttack> playerFollowingSpecialAttacks = new ArrayList<SpecialAttack>();
 
     public SpaceShip (SpriteConfiguration spriteConfiguration) {
-        super(spriteConfiguration);
+        super(spriteConfiguration, null);
         playerStats = PlayerStats.getInstance();
         powerUpEffects = BoostsUpgradesAndBuffsSettings.getInstance();
         initShip();

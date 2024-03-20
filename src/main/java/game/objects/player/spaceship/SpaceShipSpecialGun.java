@@ -14,6 +14,7 @@ import game.objects.player.PlayerStats;
 import VisualAndAudioData.audio.enums.AudioEnums;
 import VisualAndAudioData.audio.AudioManager;
 import VisualAndAudioData.image.ImageEnums;
+import game.objects.player.specialAttacks.SpecialAttackConfiguration;
 import visualobjects.SpriteConfigurations.SpriteAnimationConfiguration;
 import visualobjects.SpriteConfigurations.SpriteConfiguration;
 import visualobjects.SpriteAnimation;
@@ -58,16 +59,14 @@ public class SpaceShipSpecialGun {
         spriteConfiguration.setImageType(ImageEnums.Player_EMP);
 
         SpriteAnimationConfiguration spriteAnimationConfiguration = new SpriteAnimationConfiguration(spriteConfiguration, 4, false);
-        MissileConfiguration missileConfiguration = new MissileConfiguration();
-        missileConfiguration.setDamage(1.5f);
-        missileConfiguration.setBoxCollision(true);
+        SpecialAttackConfiguration missileConfiguration = new SpecialAttackConfiguration(1.5f, true, true, true, true);
 
 
         SpriteAnimation specialAttackAnimation = new SpriteAnimation(spriteAnimationConfiguration);
         specialAttackAnimation.setAnimationScale(2);
 
         SpecialAttack specialAttack = new ElectroShred(spriteAnimationConfiguration, missileConfiguration);
-        specialAttack.setCenteredAroundPlayer(true);
+        specialAttack.setCenteredAroundObject(true);
         specialAttack.setScale(2);
         specialAttack.setOwnerOrCreator(PlayerManager.getInstance().getSpaceship());
 
