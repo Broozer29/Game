@@ -1,10 +1,14 @@
 package game.objects.enemies.enemytypes;
 
+import VisualAndAudioData.audio.enums.AudioEnums;
 import game.managers.AnimationManager;
 import game.movement.Direction;
+import game.movement.MovementConfiguration;
 import game.movement.Point;
 import game.movement.pathfinderconfigs.MovementPatternSize;
 import game.movement.pathfinders.BouncingPathFinder;
+import game.movement.pathfinders.PathFinder;
+import game.movement.pathfinders.RegularPathFinder;
 import game.movement.pathfinders.StraightLinePathFinder;
 import game.objects.enemies.EnemyConfiguration;
 import game.objects.enemies.Enemy;
@@ -19,8 +23,8 @@ import visualobjects.SpriteAnimation;
 public class Seeker extends Enemy {
 
 
-    public Seeker (SpriteConfiguration spriteConfiguration, EnemyConfiguration enemyConfiguration) {
-        super(spriteConfiguration, enemyConfiguration);
+    public Seeker (SpriteConfiguration spriteConfiguration, EnemyConfiguration enemyConfiguration, MovementConfiguration movementConfiguration) {
+        super(spriteConfiguration, enemyConfiguration, movementConfiguration);
 
 //        SpriteAnimationConfiguration exhaustConfiguration = new SpriteAnimationConfiguration(spriteConfiguration, 2, true);
 //        exhaustConfiguration.getSpriteConfiguration().setImageType(ImageEnums.Seeker_Normal_Exhaust);
@@ -30,7 +34,7 @@ public class Seeker extends Enemy {
         destroyedExplosionfiguration.getSpriteConfiguration().setImageType(ImageEnums.Seeker_Destroyed_Explosion);
         this.destructionAnimation = new SpriteAnimation(destroyedExplosionfiguration);
 
-//        this.attackSpeed = 20;
+        this.attackSpeed = 20;
 //		this.attackSpeed= 9999999;
 //		this.attackSpeedCurrentFrameCount= 9999999;
     }
@@ -67,34 +71,48 @@ public class Seeker extends Enemy {
 
     private void shootMissile () {
         // The charging up attack animation has finished, create and fire the missile
+//Create the sprite configuration which gets upgraded to spriteanimation if needed by the MissileCreator
+        SpriteConfiguration spriteConfiguration = MissileCreator.getInstance().createMissileSpriteConfig(xCoordinate, yCoordinate,ImageEnums.Seeker_Missile
+                ,this.scale);
+
+
+        //Create missile movement attributes and create a movement configuration
         MissileTypeEnums missileType = MissileTypeEnums.SeekerProjectile;
+        PathFinder missilePathFinder = new StraightLinePathFinder();
+        MovementPatternSize movementPatternSize = MovementPatternSize.SMALL;
+        MovementConfiguration movementConfiguration = MissileCreator.getInstance().createMissileMovementConfig(
+                missileType.getxMovementSpeed(), missileType.getyMovementSpeed(), missilePathFinder, movementPatternSize, this.movementRotation
+        );
 
-        SpriteConfiguration missileSpriteConfiguration = new SpriteConfiguration();
-        missileSpriteConfiguration.setxCoordinate(chargingUpAttackAnimation.getCenterXCoordinate());
-        missileSpriteConfiguration.setyCoordinate(chargingUpAttackAnimation.getCenterYCoordinate());
-        missileSpriteConfiguration.setScale(this.scale);
-        missileSpriteConfiguration.setImageType(missileType.getImageType());
 
-        MissileConfiguration missileConfiguration = new MissileConfiguration(missileType,
-                100, 100, null, missileType.getDeathOrExplosionImageEnum(), isFriendly(),
-                new StraightLinePathFinder(), Direction.RIGHT, missileType.getxMovementSpeed(), missileType.getyMovementSpeed(), true,
-                missileType.getObjectType(), missileType.getDamage(), MovementPatternSize.SMALL, missileType.isBoxCollision());
+        //Create remaining missile attributes and a missile configuration
+        boolean isFriendly = false;
+        int maxHitPoints = 100;
+        int maxShields = 100;
+        AudioEnums deathSound = null;
+        boolean allowedToDealDamage = true;
+        String objectType = "Seeker Missile";
 
-        Missile newMissile = MissileCreator.getInstance().createMissile(missileSpriteConfiguration, missileConfiguration);
+        MissileConfiguration missileConfiguration = MissileCreator.getInstance().createMissileConfiguration(missileType, maxHitPoints, maxShields,
+                deathSound, missileType.getDamage(), missileType.getDeathOrExplosionImageEnum(), isFriendly, allowedToDealDamage, objectType, false);
 
+
+        //Create the missile and finalize the creation process, then add it to the manager and consequently the game
+        Missile missile = MissileCreator.getInstance().createMissile(spriteConfiguration, missileConfiguration, movementConfiguration);
+
+        //Set destination required for the StraightLinePathFinder
         Point spaceShipCenter = new Point(PlayerManager.getInstance().getSpaceship().getCenterXCoordinate(),
                 PlayerManager.getInstance().getSpaceship().getCenterYCoordinate());
-        newMissile.getMovementConfiguration().setDestination(spaceShipCenter);
+        missile.getMovementConfiguration().setDestination(spaceShipCenter);
 
-        newMissile.rotateGameObjectTowards(newMissile.getMovementConfiguration().getDestination().getX(), newMissile.getMovementConfiguration().getDestination().getY());
-        newMissile.setCenterCoordinates(chargingUpAttackAnimation.getCenterXCoordinate(), chargingUpAttackAnimation.getCenterYCoordinate());
-        newMissile.getAnimation().setCenterCoordinates(chargingUpAttackAnimation.getCenterXCoordinate(), chargingUpAttackAnimation.getCenterYCoordinate());
+        //Rotate the object towards it's destination
+        missile.rotateGameObjectTowards(missile.getMovementConfiguration().getDestination().getX(), missile.getMovementConfiguration().getDestination().getY());
+        missile.setCenterCoordinates(chargingUpAttackAnimation.getCenterXCoordinate(), chargingUpAttackAnimation.getCenterYCoordinate());
+        missile.getAnimation().setCenterCoordinates(chargingUpAttackAnimation.getCenterXCoordinate(), chargingUpAttackAnimation.getCenterYCoordinate());
+        missile.setAllowedVisualsToRotate(false); //Prevent it from being rotated again by the SpriteMover
 
-
-        newMissile.setOwnerOrCreator(this);
-        MissileManager.getInstance().addExistingMissile(newMissile);
-
-
+        missile.setOwnerOrCreator(this);
+        MissileManager.getInstance().addExistingMissile(missile);
     }
 
 

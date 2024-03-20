@@ -3,14 +3,19 @@ package game.objects.enemies.enemytypes;
 import java.util.ArrayList;
 import java.util.List;
 
+import VisualAndAudioData.audio.enums.AudioEnums;
 import game.managers.AnimationManager;
 import game.movement.Direction;
+import game.movement.MovementConfiguration;
 import game.movement.pathfinderconfigs.MovementPatternSize;
+import game.movement.pathfinders.HomingPathFinder;
+import game.movement.pathfinders.PathFinder;
 import game.movement.pathfinders.RegularPathFinder;
 import game.objects.enemies.EnemyConfiguration;
 import game.objects.enemies.Enemy;
 import game.objects.missiles.*;
 import VisualAndAudioData.image.ImageEnums;
+import game.objects.player.PlayerManager;
 import game.util.WithinVisualBoundariesCalculator;
 import visualobjects.SpriteConfigurations.SpriteAnimationConfiguration;
 import visualobjects.SpriteConfigurations.SpriteConfiguration;
@@ -20,8 +25,8 @@ public class Bomba extends Enemy {
 
 	private List<Direction> missileDirections = new ArrayList<Direction>();
 
-	public Bomba(SpriteConfiguration spriteConfiguration, EnemyConfiguration enemyConfiguration) {
-		super(spriteConfiguration, enemyConfiguration);
+	public Bomba(SpriteConfiguration spriteConfiguration, EnemyConfiguration enemyConfiguration, MovementConfiguration movementConfiguration) {
+		super(spriteConfiguration, enemyConfiguration, movementConfiguration);
 
 //		SpriteAnimationConfiguration exhaustConfiguration = new SpriteAnimationConfiguration(spriteConfiguration, 2, true);
 //		exhaustConfiguration.getSpriteConfiguration().setImageType(ImageEnums.Bomba_Normal_Exhaust);
@@ -72,37 +77,39 @@ public class Bomba extends Enemy {
 
 	private void shootMissile(){
 		for (Direction direction : missileDirections) {
-			SpriteConfiguration missileSpriteConfiguration = new SpriteConfiguration();
+			//Create the sprite configuration which gets upgraded to spriteanimation if needed by the MissileCreator
+			SpriteConfiguration spriteConfiguration = MissileCreator.getInstance().createMissileSpriteConfig(xCoordinate, yCoordinate,ImageEnums.Bomba_Missile
+			,this.scale);
 
+
+			//Create missile movement attributes and create a movement configuration
 			MissileTypeEnums missileType = MissileTypeEnums.BombaProjectile;
-
-			missileSpriteConfiguration.setxCoordinate(xCoordinate);
-			missileSpriteConfiguration.setyCoordinate(yCoordinate + this.height / 2);
-			missileSpriteConfiguration.setScale(this.scale);
-			missileSpriteConfiguration.setImageType(missileType.getImageType());
-
-			MissileConfiguration missileConfiguration = new MissileConfiguration(missileType,
-					100, 100, null, missileType.getDeathOrExplosionImageEnum(), isFriendly()
-					, new RegularPathFinder(), direction, missileType.getxMovementSpeed(),missileType.getyMovementSpeed(), true
-					, missileType.getObjectType(), missileType.getDamage(), MovementPatternSize.SMALL, missileType.isBoxCollision());
+			PathFinder missilePathFinder = new RegularPathFinder();
+			MovementPatternSize movementPatternSize = MovementPatternSize.SMALL;
+			MovementConfiguration movementConfiguration = MissileCreator.getInstance().createMissileMovementConfig(
+					missileType.getxMovementSpeed(), missileType.getyMovementSpeed(), missilePathFinder, movementPatternSize, direction
+			);
 
 
-			Missile newMissile = MissileCreator.getInstance().createMissile(missileSpriteConfiguration, missileConfiguration);
-			newMissile.setOwnerOrCreator(this);
+			//Create remaining missile attributes and a missile configuration
+			boolean isFriendly = false;
+			int maxHitPoints = 100;
+			int maxShields = 100;
+			AudioEnums deathSound = null;
+			boolean allowedToDealDamage = true;
+			String objectType = "Bomba Missile";
 
-			//Not needed anymore?
-//			if(missileDirections.contains(Direction.DOWN)) {
-//				newMissile.rotateGameObjectTowards(Direction.DOWN);
-//			} else if(missileDirections.contains(Direction.LEFT)) {
-//				newMissile.rotateGameObjectTowards(Direction.LEFT);
-//			} else if(missileDirections.contains(Direction.RIGHT)) {
-//				newMissile.rotateGameObjectTowards(Direction.RIGHT);
-//			} else if(missileDirections.contains(Direction.UP)) {
-//				newMissile.rotateGameObjectTowards(Direction.UP);
-//			}
+			MissileConfiguration missileConfiguration = MissileCreator.getInstance().createMissileConfiguration(missileType, maxHitPoints, maxShields,
+					deathSound, missileType.getDamage(), missileType.getDeathOrExplosionImageEnum(), isFriendly, allowedToDealDamage, objectType, false);
 
-			missileManager.addExistingMissile(newMissile);
 
+			//Create the missile and finalize the creation process, then add it to the manager and consequently the game
+			Missile missile = MissileCreator.getInstance().createMissile(spriteConfiguration, missileConfiguration, movementConfiguration);
+			missile.setOwnerOrCreator(this);
+			missile.setCenterCoordinates(chargingUpAttackAnimation.getCenterXCoordinate(), chargingUpAttackAnimation.getCenterYCoordinate());
+			missile.getAnimation().setCenterCoordinates(chargingUpAttackAnimation.getCenterXCoordinate(), chargingUpAttackAnimation.getCenterYCoordinate());
+
+			this.missileManager.addExistingMissile(missile);
 		}
 	}
 

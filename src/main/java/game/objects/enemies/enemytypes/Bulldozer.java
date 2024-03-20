@@ -1,6 +1,8 @@
 package game.objects.enemies.enemytypes;
 
 import game.movement.Direction;
+import game.movement.MovementConfiguration;
+import game.movement.Point;
 import game.movement.pathfinderconfigs.MovementPatternSize;
 import game.movement.pathfinders.OrbitPathFinder;
 import game.movement.pathfinders.PathFinder;
@@ -19,8 +21,8 @@ public class Bulldozer extends Enemy {
 
     private boolean spawnedBombs;
 
-    public Bulldozer (SpriteConfiguration spriteConfiguration, EnemyConfiguration enemyConfiguration) {
-        super(spriteConfiguration, enemyConfiguration);
+    public Bulldozer (SpriteConfiguration spriteConfiguration, EnemyConfiguration enemyConfiguration, MovementConfiguration movementConfiguration) {
+        super(spriteConfiguration, enemyConfiguration, movementConfiguration);
 
         spawnedBombs = false;
 //        SpriteAnimationConfiguration exhaustConfiguration = new SpriteAnimationConfiguration(spriteConfiguration, 0, true);
@@ -53,7 +55,8 @@ public class Bulldozer extends Enemy {
             PathFinder pathFinder = new OrbitPathFinder(this, radius, 300, nextAngle);
             Enemy alienBomb = getEnemy(x, y, pathFinder);
             alienBomb.setOwnerOrCreator(this);
-            this.followingEnemies.add(alienBomb);
+            alienBomb.setAllowedVisualsToRotate(false);
+            this.objectOrbitingThis.add(alienBomb);
             EnemyManager.getInstance().addEnemy(alienBomb);
         }
     }
@@ -72,11 +75,21 @@ public class Bulldozer extends Enemy {
                 EnemyEnums.Alien_Bomb,
                 25, 0,
                 false, false, AudioEnums.Alien_Bomb_Destroyed,
-                Direction.LEFT, pathFinder, 1, 1, true, "Alien Bomb",
-                0, MovementPatternSize.SMALL, EnemyEnums.Alien_Bomb.isBoxCollision(),
+                true, "Alien Bomb",
+                0, EnemyEnums.Alien_Bomb.isBoxCollision(),
                 EnemyEnums.Alien_Bomb.getBaseArmor(), 0, 0);
 
-        Enemy alienBomb = new AlienBomb(spriteConfiguration, enemyConfiguration);
+        MovementConfiguration movementConfiguration = new MovementConfiguration();
+        movementConfiguration.setCurrentLocation(new Point(xCoordinate, yCoordinate));
+        movementConfiguration.setXMovementSpeed(1);
+        movementConfiguration.setYMovementSpeed(1);
+        movementConfiguration.setPathFinder(pathFinder);
+        movementConfiguration.setRotation(Direction.LEFT);
+        movementConfiguration.setPatternSize(MovementPatternSize.SMALL);
+
+        movementConfiguration.initDefaultSettingsForSpecializedPathFinders();
+
+        Enemy alienBomb = new AlienBomb(spriteConfiguration, enemyConfiguration, movementConfiguration);
         return alienBomb;
     }
 
