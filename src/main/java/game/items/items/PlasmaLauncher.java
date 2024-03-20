@@ -7,6 +7,7 @@ import game.items.effects.EffectActivationTypes;
 import game.items.enums.ItemApplicationEnum;
 import game.items.enums.ItemEnums;
 import game.movement.Direction;
+import game.movement.MovementConfiguration;
 import game.movement.pathfinderconfigs.MovementPatternSize;
 import game.movement.pathfinders.HomingPathFinder;
 import game.movement.pathfinders.PathFinder;
@@ -59,31 +60,41 @@ public class PlasmaLauncher extends Item {
 
         int xMovementSpeed = 3;
         int yMovementSpeed = 3;
-
-        ImageEnums impactType = PlayerStats.getInstance().getPlayerMissileImpactImage();
+        Direction rotation = Direction.RIGHT;
+        MovementPatternSize movementPatternSize = MovementPatternSize.SMALL;
         PathFinder pathFinder = new HomingPathFinder();
+        MovementConfiguration movementConfiguration = MissileCreator.getInstance().createMissileMovementConfig(
+                xMovementSpeed, yMovementSpeed, pathFinder, movementPatternSize, rotation
+        );
+        movementConfiguration.initDefaultSettingsForSpecializedPathFinders();
 
+
+        boolean isFriendly = true;
+        if (pathFinder instanceof HomingPathFinder) {
+            movementConfiguration.setTargetToChase(((HomingPathFinder) pathFinder).getTarget(isFriendly, spriteConfiguration.getxCoordinate(), spriteConfiguration.getyCoordinate()));
+        }
+
+        MissileConfiguration missileConfiguration = getMissileConfiguration(isFriendly);
+
+        Missile missile = MissileCreator.getInstance().createMissile(spriteConfiguration, missileConfiguration, movementConfiguration);
+        missile.setOwnerOrCreator(player);
+        MissileManager.getInstance().addExistingMissile(missile);
+    }
+
+    private MissileConfiguration getMissileConfiguration (boolean isFriendly) {
+        ImageEnums impactType = PlayerStats.getInstance().getPlayerMissileImpactImage();
         int maxHitPoints = 1000;
         int maxShields = 0;
         AudioEnums deathSound = null;
-        boolean isFriendly = true;
+
         boolean allowedToDealDamage = true;
         String objectType = "Plasma Launcher Missile";
         float damage = PlayerStats.getInstance().getNormalAttackDamage() * damageMultiplier;
-        MovementPatternSize movementPatternSize = MovementPatternSize.SMALL;
 
         MissileConfiguration missileConfiguration = new MissileConfiguration(MissileTypeEnums.PlasmaLauncherMissile,
-                maxHitPoints, maxShields, deathSound, impactType, isFriendly, pathFinder, Direction.RIGHT, xMovementSpeed,
-                yMovementSpeed, allowedToDealDamage, objectType, damage, movementPatternSize, false);
-
-
-        if (pathFinder instanceof HomingPathFinder) {
-            missileConfiguration.setTargetToChase(((HomingPathFinder) pathFinder).getTarget(isFriendly, spriteConfiguration.getxCoordinate(), spriteConfiguration.getyCoordinate()));
-        }
-
-        Missile missile = MissileCreator.getInstance().createMissile(spriteConfiguration, missileConfiguration);
-        missile.setOwnerOrCreator(player);
-        MissileManager.getInstance().addExistingMissile(missile);
+                maxHitPoints, maxShields, deathSound, damage, impactType, isFriendly, allowedToDealDamage,
+                objectType, false);
+        return missileConfiguration;
     }
 
 }

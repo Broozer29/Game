@@ -27,6 +27,8 @@ public class PathFinderConfigCreator {
             config = new TrianglePathFinderConfig(sprite, moveConfig);
         } else if (moveConfig.getPathFinder() instanceof StraightLinePathFinder) {
             config = new StraightLinePathFinderConfig(sprite, moveConfig);
+        } else if(moveConfig.getPathFinder() instanceof HoverPathFinder){
+            config = new HoverPathFinderConfig(sprite, moveConfig);
         }
         return config;
     }

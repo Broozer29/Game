@@ -3,6 +3,8 @@ package game.movement;
 import game.movement.pathfinderconfigs.*;
 import game.movement.pathfinders.*;
 import game.objects.GameObject;
+import game.objects.enemies.enemytypes.Seeker;
+import game.objects.missiles.missiletypes.SeekerProjectile;
 import game.objects.player.PlayerManager;
 import game.util.OutOfBoundsCalculator;
 import visualobjects.Sprite;
@@ -80,8 +82,10 @@ public class SpriteMover {
 
         }
 
-//            gameObject.rotateGameObjectTowards(PlayerManager.getInstance().getSpaceship().getCenterXCoordinate(), PlayerManager.getInstance().getSpaceship().getCenterYCoordinate());
-        
+        if(gameObject instanceof SeekerProjectile) {
+            gameObject.rotateGameObjectTowards(PlayerManager.getInstance().getSpaceship().getCenterXCoordinate(), PlayerManager.getInstance().getSpaceship().getCenterYCoordinate());
+        }
+
         // Adjusts the orbiting path when the target changes coordinates
         if (moveConfig.getPathFinder() instanceof OrbitPathFinder) {
             adjustOrbitPath(moveConfig);
@@ -101,14 +105,14 @@ public class SpriteMover {
     }
 
     private void moveHomingPathFinders (GameObject gameObject, MovementConfiguration moveConfig) {
-        if (moveConfig.getTarget() != null) {
-            moveConfig.getCurrentPath().setTarget(moveConfig.getTarget());
+        if (moveConfig.getTargetToChase() != null) {
+            moveConfig.getCurrentPath().setTarget(moveConfig.getTargetToChase());
             if (!moveConfig.getCurrentPath().getTarget().isVisible()) {
                 acquireNewTarget(gameObject, moveConfig);
             }
         }
 
-        if (moveConfig.getTarget() == null && moveConfig.getCurrentPath().getTarget() == null) {
+        if (moveConfig.getTargetToChase() == null && moveConfig.getCurrentPath().getTarget() == null) {
             acquireNewTarget(gameObject, moveConfig);
         }
 
@@ -118,7 +122,7 @@ public class SpriteMover {
 
         if (moveConfig.getPathFinder().shouldRecalculatePath(moveConfig.getCurrentPath())) {
             hasPassedPlayerOrNeverHadLock = true; // if it should recalculate path, it means it lost lock or never had
-            moveConfig.getUntrackableObjects().add(moveConfig.getTarget());
+            moveConfig.getUntrackableObjects().add(moveConfig.getTargetToChase());
         }
 
         if (hasPassedPlayerOrNeverHadLock) {
@@ -172,14 +176,14 @@ public class SpriteMover {
 
     //Gets a new nearest target and blacklists the current target, used for friendly homing gameobjects
     private void acquireNewTarget (GameObject sprite, MovementConfiguration moveConfig) {
-        moveConfig.getUntrackableObjects().add(moveConfig.getTarget());
+        moveConfig.getUntrackableObjects().add(moveConfig.getTargetToChase());
         moveConfig.getCurrentPath().setTarget(null);
 
         HomingPathFinder pathFinder = (HomingPathFinder) moveConfig.getPathFinder();
         GameObject newObjectToChase = pathFinder.getTarget(sprite.isFriendly(), sprite.getXCoordinate(), sprite.getYCoordinate());
 
         if (!moveConfig.getUntrackableObjects().contains(newObjectToChase)) {
-            moveConfig.setTarget(newObjectToChase);
+            moveConfig.setTargetToChase(newObjectToChase);
             moveConfig.getCurrentPath().setTarget(newObjectToChase);
         }
     }

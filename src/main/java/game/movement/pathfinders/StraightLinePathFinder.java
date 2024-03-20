@@ -13,16 +13,6 @@ import game.util.OutOfBoundsCalculator;
 
 public class StraightLinePathFinder implements PathFinder {
 
-    private final int windowWidth;
-    private final int playableWindowMinHeight;
-    private final int playableWindowMaxHeight;
-
-    public StraightLinePathFinder () {
-        this.windowWidth = DataClass.getInstance().getWindowWidth();
-        this.playableWindowMinHeight = DataClass.getInstance().getPlayableWindowMinHeight();
-        this.playableWindowMaxHeight = DataClass.getInstance().getPlayableWindowMaxHeight();
-    }
-
     @Override
     public Path findPath (PathFinderConfig pathFinderConfig) {
         if (!(pathFinderConfig instanceof StraightLinePathFinderConfig)) {
@@ -142,11 +132,11 @@ public class StraightLinePathFinder implements PathFinder {
         // friendly is not used for regular paths
         switch (rotation) {
             case UP:
-                endYCoordinate = this.playableWindowMinHeight - 150;
+                endYCoordinate = DataClass.getInstance().getPlayableWindowMinHeight();
                 endXCoordinate = xCoordinate;
                 break;
             case DOWN:
-                endYCoordinate = this.playableWindowMaxHeight + 150;
+                endYCoordinate = DataClass.getInstance().getPlayableWindowMaxHeight();
                 endXCoordinate = xCoordinate;
                 break;
             case LEFT:
@@ -158,24 +148,24 @@ public class StraightLinePathFinder implements PathFinder {
                 endXCoordinate = dataClass.getWindowWidth() + 150;
                 break;
             case RIGHT_UP:
-                endYCoordinate = this.playableWindowMinHeight -150;
+                endYCoordinate = DataClass.getInstance().getPlayableWindowMinHeight();
                 endXCoordinate = dataClass.getWindowWidth() + 150;
                 break;
             case RIGHT_DOWN:
-                endYCoordinate = this.playableWindowMaxHeight + 150;
+                endYCoordinate = DataClass.getInstance().getPlayableWindowMaxHeight();
                 endXCoordinate = dataClass.getWindowWidth() + 150;
                 break;
             case LEFT_UP:
-                endYCoordinate = this.playableWindowMinHeight -150;
+                endYCoordinate = DataClass.getInstance().getPlayableWindowMinHeight();
                 endXCoordinate = 0 - 150;
                 break;
             case LEFT_DOWN:
-                endYCoordinate = this.playableWindowMaxHeight + 150;
+                endYCoordinate = DataClass.getInstance().getPlayableWindowMaxHeight();
                 endXCoordinate = 0 - 150;
                 break;
             default:
                 endYCoordinate = yCoordinate;
-                endXCoordinate = 0 + 150;
+                endXCoordinate = 0 - 150;
                 break;
         }
 
@@ -189,5 +179,4 @@ public class StraightLinePathFinder implements PathFinder {
         return null;
     }
 
-    // Other overridden methods and additional private helper methods as needed...
 }
