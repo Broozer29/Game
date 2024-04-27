@@ -34,6 +34,8 @@ public class AudioDatabase {
     private CustomAudioClip bloodOnTheDanceFloor;
     private CustomAudioClip lemminoFireCracker;
     private CustomAudioClip mydnyte;
+    private CustomAudioClip leYouthChills;
+    private CustomAudioClip paintingTheSkies;
 
 
     private List<CustomAudioClip> backgroundMusicTracks = new ArrayList();
@@ -82,6 +84,8 @@ public class AudioDatabase {
         ayasaTheReasonWhy.setFramePosition(0);
         NewArcadesSolace.setFramePosition(0);
         mainmenu.setFramePosition(0);
+        leYouthChills.setFramePosition(0);
+        paintingTheSkies.setFramePosition(0);
 
         diqRose.setFramePosition(0);
         fiveSecondsBeforeSunrise.setFramePosition(0);
@@ -159,6 +163,7 @@ public class AudioDatabase {
         ayasaTheReasonWhy = new CustomAudioClip(AudioEnums.Ayasa_The_Reason_Why, false);
         NewArcadesSolace = new CustomAudioClip(AudioEnums.New_Arcades_Solace, false);
         mainmenu = new CustomAudioClip(AudioEnums.mainmenu, false);
+        paintingTheSkies = new CustomAudioClip(AudioEnums.Robert_Nickson_Painting_The_Skies, false);
 
         diqRose = new CustomAudioClip(AudioEnums.Diq_Rose, false);
         fiveSecondsBeforeSunrise = new CustomAudioClip(AudioEnums.Five_Seconds_Before_Sunrise, false);
@@ -178,6 +183,7 @@ public class AudioDatabase {
         bloodOnTheDanceFloor = new CustomAudioClip(AudioEnums.Blood_On_The_Dancefloor, false);
         lemminoFireCracker = new CustomAudioClip(AudioEnums.Lemmino_Firecracker, false);
         mydnyte = new CustomAudioClip(AudioEnums.Mydnyte, false);
+        leYouthChills = new CustomAudioClip(AudioEnums.Le_Youth_Chills, false);
 
 
         backgroundMusicTracks.add(FuriMyOnlyChance);
@@ -202,6 +208,7 @@ public class AudioDatabase {
         backgroundMusicTracks.add(bloodOnTheDanceFloor);
         backgroundMusicTracks.add(lemminoFireCracker);
         backgroundMusicTracks.add(mydnyte);
+        backgroundMusicTracks.add(leYouthChills);
     }
 
     private void initSoundEffects () throws LineUnavailableException {
@@ -336,6 +343,10 @@ public class AudioDatabase {
                 return mydnyte;
             case Carpenter_Brut_Youre_Mine:
                 return carpenterBrutYoureMine;
+            case Le_Youth_Chills:
+                return leYouthChills;
+            case Robert_Nickson_Painting_The_Skies:
+                return paintingTheSkies;
             case Player_Laserbeam:
             case Destroyed_Explosion:
             case Alien_Spaceship_Destroyed:

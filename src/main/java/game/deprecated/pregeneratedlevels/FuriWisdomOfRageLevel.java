@@ -7,7 +7,7 @@ import java.util.Random;
 import game.movement.Direction;
 import game.objects.enemies.enums.EnemyEnums;
 import game.spawner.EnemyFormation;
-import game.spawner.EnemySpawnTimer;
+import game.objects.powerups.timers.DeprecatedEnemySpawnTimer;
 import game.spawner.FormationCreator;
 import game.spawner.enums.SpawnFormationEnums;
 import VisualAndAudioData.DataClass;
@@ -17,7 +17,7 @@ public class FuriWisdomOfRageLevel implements Level {
 
 	private AudioEnums song = AudioEnums.Furi_Wisdowm_Of_Rage;
 	private DataClass dataClass = DataClass.getInstance();
-	private List<EnemySpawnTimer> enemySpawnTimers = new ArrayList<EnemySpawnTimer>();
+	private List<DeprecatedEnemySpawnTimer> enemySpawnTimers = new ArrayList<DeprecatedEnemySpawnTimer>();
 	private Random random = new Random();
 
 	public FuriWisdomOfRageLevel() {
@@ -54,7 +54,7 @@ public class FuriWisdomOfRageLevel implements Level {
 		int additionalDelay = 0;
 		boolean loopable = false;
 		float scale = 1;
-		EnemySpawnTimer timer = null;
+		DeprecatedEnemySpawnTimer timer = null;
 		EnemyFormation formation = null;
 		int xMovementSpeed = 2;
 		int yMovementSpeed = 2;
@@ -293,18 +293,18 @@ public class FuriWisdomOfRageLevel implements Level {
 
 	}
 
-	private void addSpawnTimer(EnemySpawnTimer timer) {
+	private void addSpawnTimer(DeprecatedEnemySpawnTimer timer) {
 		enemySpawnTimers.add(timer);
 	}
 
-	private EnemySpawnTimer createSpawnTimer(EnemyEnums enemyType, int spawnAttempts, int timeBeforeActivation,
-			boolean loopable, Direction direction, float enemyScale, int additionalDelay, int xMovementSpeed, int yMovementSpeed) {
+	private DeprecatedEnemySpawnTimer createSpawnTimer(EnemyEnums enemyType, int spawnAttempts, int timeBeforeActivation,
+													   boolean loopable, Direction direction, float enemyScale, int additionalDelay, int xMovementSpeed, int yMovementSpeed) {
 
 		if (enemyType == null) {
 			enemyType = selectRandomEnemy();
 		}
 
-		EnemySpawnTimer timer = new EnemySpawnTimer(timeBeforeActivation, spawnAttempts, enemyType, loopable, direction,
+		DeprecatedEnemySpawnTimer timer = new DeprecatedEnemySpawnTimer(timeBeforeActivation, spawnAttempts, enemyType, loopable, direction,
 				enemyScale, xMovementSpeed, yMovementSpeed);
 		return timer;
 	}
@@ -313,7 +313,7 @@ public class FuriWisdomOfRageLevel implements Level {
 		return song;
 	}
 
-	public List<EnemySpawnTimer> getTimers() {
+	public List<DeprecatedEnemySpawnTimer> getTimers() {
 		return this.enemySpawnTimers;
 	}
 
@@ -327,8 +327,8 @@ public class FuriWisdomOfRageLevel implements Level {
 		return randomValue;
 	}
 
-	private void create22SecondsFormation(EnemySpawnTimer timer, EnemyFormation formation,
-			FormationCreator formCreator) {
+	private void create22SecondsFormation(DeprecatedEnemySpawnTimer timer, EnemyFormation formation,
+										  FormationCreator formCreator) {
 		boolean loopable = false;
 		float scale = 1;
 		int additionalDelay = 0;
@@ -401,8 +401,8 @@ public class FuriWisdomOfRageLevel implements Level {
 		addSpawnTimer(timer);
 	}
 
-	private void create51SecondsFormation(EnemySpawnTimer timer, EnemyFormation formation,
-			FormationCreator formCreator) {
+	private void create51SecondsFormation(DeprecatedEnemySpawnTimer timer, EnemyFormation formation,
+										  FormationCreator formCreator) {
 		boolean loopable = false;
 		float scale = 1;
 		int additionalDelay = 0; 
@@ -434,8 +434,8 @@ public class FuriWisdomOfRageLevel implements Level {
 		
 	}
 	
-	private void create71SecondsFormation(EnemySpawnTimer timer, EnemyFormation formation,
-			FormationCreator formCreator) {
+	private void create71SecondsFormation(DeprecatedEnemySpawnTimer timer, EnemyFormation formation,
+										  FormationCreator formCreator) {
 		boolean loopable = false;
 		float scale = 1;
 		int additionalDelay = 0;
@@ -494,8 +494,8 @@ public class FuriWisdomOfRageLevel implements Level {
 		}
 	}
 	
-	private void create130SecondsFormations(EnemySpawnTimer timer, EnemyFormation formation,
-			FormationCreator formCreator) {
+	private void create130SecondsFormations(DeprecatedEnemySpawnTimer timer, EnemyFormation formation,
+											FormationCreator formCreator) {
 		boolean loopable = false;
 		float scale = 1;
 		int additionalDelay = 0;
@@ -517,8 +517,8 @@ public class FuriWisdomOfRageLevel implements Level {
 	}
 	
 	
-	private void create160SecondsFormations(EnemySpawnTimer timer, EnemyFormation formation,
-			FormationCreator formCreator) {
+	private void create160SecondsFormations(DeprecatedEnemySpawnTimer timer, EnemyFormation formation,
+											FormationCreator formCreator) {
 		
 		boolean loopable = false;
 		float scale = 1;
@@ -588,8 +588,8 @@ public class FuriWisdomOfRageLevel implements Level {
 		}
 	}
 	
-	private void createFinalLoodjes(EnemySpawnTimer timer, EnemyFormation formation,
-			FormationCreator formCreator) {
+	private void createFinalLoodjes(DeprecatedEnemySpawnTimer timer, EnemyFormation formation,
+									FormationCreator formCreator) {
 		boolean loopable = false;
 		float scale = 1;
 		int additionalDelay = 0;

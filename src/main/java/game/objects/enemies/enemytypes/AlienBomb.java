@@ -15,6 +15,7 @@ public class AlienBomb extends Enemy {
 		SpriteAnimationConfiguration destroyedExplosionfiguration = new SpriteAnimationConfiguration(spriteConfiguration, 2, false);
 		destroyedExplosionfiguration.getSpriteConfiguration().setImageType(ImageEnums.Alien_Bomb_Explosion);
 		this.destructionAnimation = new SpriteAnimation(destroyedExplosionfiguration);
+		this.detonateOnCollision = true;
 	}
 
 

@@ -1,15 +1,14 @@
 package game.objects.enemies.enemytypes;
 
+import game.gamestate.GameStateInfo;
 import game.managers.AnimationManager;
 import game.movement.MovementConfiguration;
-import game.movement.pathfinderconfigs.MovementPatternSize;
-import game.movement.pathfinders.RegularPathFinder;
 import game.objects.enemies.EnemyConfiguration;
 import game.objects.enemies.Enemy;
 import game.objects.missiles.*;
 import VisualAndAudioData.image.ImageEnums;
-import game.objects.player.specialAttacks.SpecialAttack;
-import game.objects.player.specialAttacks.SpecialAttackConfiguration;
+import game.objects.missiles.specialAttacks.SpecialAttack;
+import game.objects.missiles.specialAttacks.SpecialAttackConfiguration;
 import game.util.WithinVisualBoundariesCalculator;
 import visualobjects.SpriteConfigurations.SpriteAnimationConfiguration;
 import visualobjects.SpriteConfigurations.SpriteConfiguration;
@@ -24,36 +23,25 @@ public class Flamer extends Enemy {
 //        exhaustConfiguration.getSpriteConfiguration().setImageType(ImageEnums.Flamer_Normal_Exhaust);
 //        this.exhaustAnimation = new SpriteAnimation(exhaustConfiguration);
 
-        SpriteAnimationConfiguration destroyedExplosionfiguration = new SpriteAnimationConfiguration(spriteConfiguration, 1, false);
+        SpriteAnimationConfiguration destroyedExplosionfiguration = new SpriteAnimationConfiguration(spriteConfiguration, 3, false);
         destroyedExplosionfiguration.getSpriteConfiguration().setImageType(ImageEnums.Flamer_Destroyed_Explosion);
         this.destructionAnimation = new SpriteAnimation(destroyedExplosionfiguration);
-
+        this.damage = 50;
 //        this.attackSpeed = 150;
     }
 
     public void fireAction () {
-        // Check if the attack cooldown has been reached
-        if (attackSpeedCurrentFrameCount >= attackSpeed) {
-            // Check if the charging animation is not already playing
-            if(WithinVisualBoundariesCalculator.isWithinBoundaries(this)) {
-                if (!chargingUpAttackAnimation.isPlaying()) {
-                    // Start charging animation
-                    chargingUpAttackAnimation.refreshAnimation(); // Refreshes the animation
-                    AnimationManager.getInstance().addUpperAnimation(chargingUpAttackAnimation); // Adds the animation for displaying
-                }
-
-                // Check if the charging animation has finished
-                if (chargingUpAttackAnimation.getCurrentFrame() >= chargingUpAttackAnimation.getTotalFrames() - 1) {
-                    shootMissile();
-                    // Reset attack speed frame count after firing the missile
-                    attackSpeedCurrentFrameCount = 0;
-                }
+        double currentTime = GameStateInfo.getInstance().getGameSeconds();
+        if (currentTime >= lastAttackTime + this.getAttackSpeed() && WithinVisualBoundariesCalculator.isWithinBoundaries(this)) {
+            if (!chargingUpAttackAnimation.isPlaying()) {
+                chargingUpAttackAnimation.refreshAnimation();
+                AnimationManager.getInstance().addUpperAnimation(chargingUpAttackAnimation);
             }
 
-
-        } else {
-            // If not yet ready to attack, increase the attack speed frame count
-            attackSpeedCurrentFrameCount++;
+            if (chargingUpAttackAnimation.getCurrentFrame() >= chargingUpAttackAnimation.getTotalFrames() - 1) {
+                shootMissile();
+                lastAttackTime = currentTime; // Update the last attack time after firing
+            }
         }
     }
 
@@ -62,7 +50,7 @@ public class Flamer extends Enemy {
         SpriteConfiguration missileSpriteConfiguration = new SpriteConfiguration();
         missileSpriteConfiguration.setxCoordinate(this.getCenterXCoordinate());
         missileSpriteConfiguration.setyCoordinate(this.getCenterYCoordinate());
-        missileSpriteConfiguration.setScale(1);
+        missileSpriteConfiguration.setScale(1.5f);
         missileSpriteConfiguration.setImageType(ImageEnums.Player_EMP);
 
         SpriteAnimationConfiguration spriteAnimationConfiguration = new SpriteAnimationConfiguration(missileSpriteConfiguration, 2, false);
@@ -72,7 +60,7 @@ public class Flamer extends Enemy {
 //        AnimationManager.getInstance().addUpperAnimation(anim);
 
 
-        SpecialAttackConfiguration specialAttackConfiguration = new SpecialAttackConfiguration(1, false, true, false, false);
+        SpecialAttackConfiguration specialAttackConfiguration = new SpecialAttackConfiguration(this.getDamage(), false, true, false, false);
         SpecialAttack specialAttack = new SpecialAttack(spriteAnimationConfiguration, specialAttackConfiguration);
         specialAttack.setOwnerOrCreator(this);
         specialAttack.setObjectType("Flamer Special Attack");

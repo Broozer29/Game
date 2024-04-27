@@ -30,11 +30,11 @@ public class CannisterOfGasoline extends Item {
     }
 
     private float calculateBurningDamage (int quantity) {
-        return quantity / 2f;
+        return quantity / 3f;
     }
 
     private float calculateExplosionDamage (int quantity) {
-        return 75 * quantity;
+        return 25 * quantity;
     }
 
     private int calculateDuration (int quantity) {
@@ -44,14 +44,14 @@ public class CannisterOfGasoline extends Item {
 
     @Override
     public void applyEffectToObject (GameObject gameObject) {
-        DormentExplosion dormentExplosion = new DormentExplosion(explosionDamage, 1, ImageEnums.GasolineExplosion, DormentExplosionActivationMethods.OnDeath);
+        DormentExplosion dormentExplosion = new DormentExplosion(explosionDamage, ImageEnums.GasolineExplosion, DormentExplosionActivationMethods.OnDeath, false);
         dormentExplosion.setBurningDamage(burningDamage);
         dormentExplosion.setBurningDuration(duration);
         gameObject.addEffect(dormentExplosion);
     }
 
     @Override
-    public void triggerEffectForOneTimeEffects (GameObject gameObject){
+    public void triggerEffectForOneTimeEffects (GameObject gameObject) {
     }
 
 

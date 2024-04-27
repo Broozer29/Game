@@ -1,21 +1,31 @@
 package game.objects.missiles;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import VisualAndAudioData.image.ImageEnums;
+import game.gamestate.GameStateInfo;
+import game.items.PlayerInventory;
 import game.items.effects.EffectActivationTypes;
+import game.items.effects.effecttypes.AttackSpeedModifierEffect;
+import game.items.effects.effecttypes.DamageModifierEffect;
+import game.items.enums.ItemEnums;
 import game.managers.AnimationManager;
 import game.objects.GameObject;
-import game.objects.player.PlayerStats;
 import game.items.Item;
 import game.items.enums.ItemApplicationEnum;
+import game.objects.missiles.missiletypes.TazerProjectile;
+import game.objects.player.spaceship.SpaceShip;
 import game.util.CollisionDetector;
 import game.objects.player.PlayerManager;
 import game.objects.enemies.Enemy;
 import game.objects.enemies.EnemyManager;
-import game.objects.player.specialAttacks.SpecialAttack;
+import game.objects.missiles.specialAttacks.SpecialAttack;
 import game.objects.missiles.missiletypes.Rocket1;
+import visualobjects.SpriteAnimation;
+import visualobjects.SpriteConfigurations.SpriteAnimationConfiguration;
+import visualobjects.SpriteConfigurations.SpriteConfiguration;
 
 
 public class MissileManager {
@@ -27,6 +37,8 @@ public class MissileManager {
     private CollisionDetector collisionDetector = CollisionDetector.getInstance();
     private CopyOnWriteArrayList<Missile> missiles = new CopyOnWriteArrayList<Missile>();
     private CopyOnWriteArrayList<SpecialAttack> specialAttacks = new CopyOnWriteArrayList<SpecialAttack>();
+
+    private List<String> blackListedOnHitEffectActivatorObjects = Arrays.asList(new String[]{"Plasma Launcher Missile", "Drone Missile"});
 
     private MissileManager () {
     }
@@ -106,10 +118,17 @@ public class MissileManager {
     private void checkMissileCollisions () {
         for (Missile missile : missiles) {
             if (missile.isVisible()) {
-                if (missile.isFriendly()) {
-                    checkMissileCollisionWithEnemies(missile);
-                } else {
+                if(missile.getMissileType().equals(MissileTypeEnums.TazerProjectile)){ //Check special interactions first currently only tazers
                     checkMissileCollisionWithPlayer(missile);
+                    checkMissileCollisionWithEnemies(missile);
+                } else if (missile.isFriendly()) {  //Then generic friendly missiles on enemies
+                    checkMissileCollisionWithEnemies(missile);
+                } else { // Then generic enemy missiles on friendlies
+                    checkMissileCollisionWithPlayer(missile);
+                }
+
+                if(missile.isDestroysMissiles()){
+                    checkMissileCollisionWithMissiles(missile);
                 }
             }
         }
@@ -163,16 +182,25 @@ public class MissileManager {
 //                }
 //            }
 //        }
+        boolean hasAppliedEffects = false;
 
 
         for (Enemy enemy : enemyManager.getEnemies()) {
             if (collisionDetector.detectCollision(enemy, specialAttack)) {
                 applyDamageModification(specialAttack, enemy);
                 enemy.takeDamage(specialAttack.getDamage());
-                applyPlayerOnHitEffects(enemy);
+                if(specialAttack.isAllowOnHitEffects() && specialAttack.canApplyEffectAgain()) {
+                    applyEffectsWhenPlayerHitsEnemy(enemy, specialAttack);
+                    hasAppliedEffects = true;
+                }
             }
         }
+
+        if(hasAppliedEffects){
+            specialAttack.setLastOnHitInterval(GameStateInfo.getInstance().getGameSeconds());
+        }
     }
+
 
     // Checks collision between special attacks and enemy missiles
     private void checkSpecialAttackWithEnemyMissileCollision (SpecialAttack specialAttack) {
@@ -190,9 +218,14 @@ public class MissileManager {
     private void checkMissileCollisionWithEnemies (Missile missile) {
         for (Enemy enemy : enemyManager.getEnemies()) {
             if (collisionDetector.detectCollision(missile, enemy)) {
-                applyDamageModification(missile, enemy);
-                handleCollision(enemy, missile);
-                applyPlayerOnHitEffects(enemy);
+                if(missile.getMissileType().equals(MissileTypeEnums.TazerProjectile)){
+                    handleTazerProjectile(missile, enemy);
+                } else { //It's a player missile
+                    applyDamageModification(missile, enemy);
+                    handleCollision(enemy, missile);
+                    applyEffectsWhenPlayerHitsEnemy(enemy, missile);
+                }
+
             }
         }
     }
@@ -200,25 +233,79 @@ public class MissileManager {
 
     private void checkMissileCollisionWithPlayer (Missile missile) {
         if (collisionDetector.detectCollision(missile, playerManager.getSpaceship())) {
+
+            if(missile.getMissileType().equals(MissileTypeEnums.TazerProjectile)){
+                handleTazerProjectile(missile, playerManager.getSpaceship());
+            }
+
             playerManager.getSpaceship().takeDamage(missile.getDamage());
-            applyPlayerTakeDamageOnHitEffects();
+            applyEffectsWhenPlayerTakesDamage();
             handleMissileDestruction(missile);
         }
     }
 
-    private void applyPlayerTakeDamageOnHitEffects () {
-        List<Item> onHitItems = PlayerStats.getInstance().getPlayerInventory().getItemByActivationTypes(EffectActivationTypes.OnPlayerHit);
+    private void checkMissileCollisionWithMissiles(Missile missile){
+        if(missile.isDestroysMissiles()){
+            if(missile.isFriendly()){
+                //Check for all non-friendly missiles in the missile list, this is used by the player
+                for(Missile enemyMissile : missiles){
+                    if(!enemyMissile.isFriendly() && collisionDetector.detectCollision(missile, enemyMissile)){
+                        handleMissileDestruction(enemyMissile);
+                    }
+                }
+            } else {
+                //Check for all friendly missiles in the missile list, this is used by the enemies
+                for(Missile enemyMissile : missiles){
+                    if(enemyMissile.isFriendly() &&collisionDetector.detectCollision(missile, enemyMissile)){
+                        handleMissileDestruction(enemyMissile);
+                    }
+                }
+            }
+        }
+    }
+
+    private void applyEffectsWhenPlayerTakesDamage () {
+        List<Item> onHitItems = PlayerInventory.getInstance().getItemByActivationTypes(EffectActivationTypes.OnPlayerHit);
         for (Item item : onHitItems) {
             item.applyEffectToObject(PlayerManager.getInstance().getSpaceship());
         }
     }
 
-    private void applyPlayerOnHitEffects (Enemy enemy) {
-        List<Item> onHitItems = PlayerStats.getInstance().getPlayerInventory().getItemsByApplicationMethod(ItemApplicationEnum.AfterCollision);
+    private void applyEffectsWhenPlayerHitsEnemy (Enemy enemy, GameObject source) {
+        List<Item> onHitItems = PlayerInventory.getInstance().getItemsByApplicationMethod(ItemApplicationEnum.AfterCollision);
         for (Item item : onHitItems) {
-            item.applyEffectToObject(enemy); // Assuming applyEffect adds the effect to the GameObject
+            if(item.getItemName().equals(ItemEnums.PlasmaLauncher) && blackListedOnHitEffectActivatorObjects.contains(source.getObjectType())){
+                continue;
+            }
+            item.applyEffectToObject(enemy);
         }
     }
+
+    private void handleTazerProjectile(GameObject missile, GameObject target){
+        if(!(missile instanceof TazerProjectile)){
+            return; //If somehow a missile got here that doesn't belong, do nothing
+        }
+        SpriteConfiguration spriteConfig = new SpriteConfiguration(target.getXCoordinate(), target.getYCoordinate()
+        ,target.getScale(), ImageEnums.SuperChargedBuff, 0,0,1,
+                false,0);
+        SpriteAnimationConfiguration spriteAnimConfig = new SpriteAnimationConfiguration(spriteConfig, 2, true);
+        SpriteAnimation superChargedAnimation = new SpriteAnimation(spriteAnimConfig);
+        DamageModifierEffect damageModifierEffect = null;
+        AttackSpeedModifierEffect attackSpeedModifierEffect = null;
+
+        if(target.isFriendly() || target instanceof SpaceShip){
+            //Debuff the player or player friendly objects
+            attackSpeedModifierEffect = new AttackSpeedModifierEffect(0.75f, 3, null);
+            damageModifierEffect = new DamageModifierEffect(0.75f, 3, superChargedAnimation);
+        } else {
+            //Buff the fellow enemies
+            attackSpeedModifierEffect = new AttackSpeedModifierEffect(3.0f, 6, null);
+            damageModifierEffect = new DamageModifierEffect(1.5f, 6, superChargedAnimation);
+        }
+        target.addEffect(attackSpeedModifierEffect);
+        target.addEffect(damageModifierEffect);
+    }
+
 
     private void handleCollision (Enemy enemy, Missile missile) {
         if (missile instanceof Rocket1) {
@@ -232,6 +319,8 @@ public class MissileManager {
             }
         }
     }
+
+
 
     private void handleMissileDestruction (Missile missile) {
         missile.setVisible(false);
@@ -275,7 +364,7 @@ public class MissileManager {
     }
 
     private void applyDamageModification (GameObject attack, GameObject target) {
-        for (Item item : PlayerStats.getInstance().getPlayerInventory().getItemsByApplicationMethod(ItemApplicationEnum.BeforeCollision)) {
+        for (Item item : PlayerInventory.getInstance().getItemsByApplicationMethod(ItemApplicationEnum.BeforeCollision)) {
             item.modifyAttackValues(attack, target);
         }
     }

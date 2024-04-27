@@ -20,6 +20,9 @@ public class BouncingPathFinder implements PathFinder {
     private final int playableWindowMinHeight;
     private final int playableWindowMaxHeight;
 
+    private int maxBounces = 20;
+    private int currentBounces = 0;
+
     public BouncingPathFinder () {
         this.windowWidth = DataClass.getInstance().getWindowWidth();
         this.playableWindowMinHeight = DataClass.getInstance().getPlayableWindowMinHeight();
@@ -45,7 +48,7 @@ public class BouncingPathFinder implements PathFinder {
 
             Point newEndpoint = new Point(endCoordinates.get(0), endCoordinates.get(1));
             RegularPathFinder regPathFinder = new RegularPathFinder();
-            boolean isFriendly = true;
+            boolean isFriendly = pathFinderConfig.isFriendly();
 
             RegularPathFinderConfig config = new RegularPathFinderConfig(((BouncingPathFinderConfig) pathFinderConfig).getCurrentLocation(), newEndpoint, ((BouncingPathFinderConfig) pathFinderConfig).getxMovementSpeed(),
                     ((BouncingPathFinderConfig) pathFinderConfig).getyMovementSpeed(), isFriendly, newDirection);
@@ -62,8 +65,7 @@ public class BouncingPathFinder implements PathFinder {
 
     @Override
     public boolean shouldRecalculatePath (Path path) {
-        // TODO Auto-generated method stub
-        return false;
+       return(path == null || path.getWaypoints().isEmpty());
     }
 
     @Override
@@ -144,11 +146,10 @@ public class BouncingPathFinder implements PathFinder {
             spriteHeight = gameObject.getHeight();
         }
 
-
         boolean changeX = (isLeft(spriteDirection) && xCoordinate <= 0)
                 || (isRight(spriteDirection) && (xCoordinate + spriteWidth) >= windowWidth);
         boolean changeY = (isUp(spriteDirection) && yCoordinate <= 0)
-                || (isDown(spriteDirection) && (yCoordinate + spriteHeight) >= playableWindowMinHeight);
+                || (isDown(spriteDirection) && (yCoordinate + spriteHeight) >= playableWindowMaxHeight);
         if (changeX && changeY)
             return flipDirection(spriteDirection);
         else if (changeX)
@@ -238,7 +239,6 @@ public class BouncingPathFinder implements PathFinder {
 
     private List<Integer> getNewEndpointCoordinates (int xCoordinate, int yCoordinate, int spriteWidth, int spriteHeight, Direction newDirection) {
         List<Integer> newCoords = new ArrayList<Integer>();
-
         switch (newDirection) {
             case LEFT:
                 xCoordinate = 0;
@@ -250,7 +250,7 @@ public class BouncingPathFinder implements PathFinder {
                 yCoordinate = 0;
                 break;
             case DOWN:
-                yCoordinate = playableWindowMinHeight - (spriteHeight);
+                yCoordinate = playableWindowMaxHeight - (spriteHeight);
                 break;
             case RIGHT_UP:
                 xCoordinate = windowWidth;
@@ -258,7 +258,7 @@ public class BouncingPathFinder implements PathFinder {
                 break;
             case RIGHT_DOWN:
                 xCoordinate = windowWidth;
-                yCoordinate = playableWindowMinHeight - (spriteHeight);
+                yCoordinate = playableWindowMaxHeight - (spriteHeight);
                 break;
             case LEFT_UP:
                 xCoordinate = 0;
@@ -266,7 +266,7 @@ public class BouncingPathFinder implements PathFinder {
                 break;
             case LEFT_DOWN:
                 xCoordinate = 0;
-                yCoordinate = playableWindowMinHeight - (spriteHeight);
+                yCoordinate = playableWindowMaxHeight - (spriteHeight);
                 break;
             default:
                 break;
@@ -277,4 +277,21 @@ public class BouncingPathFinder implements PathFinder {
         return newCoords;
     }
 
+
+
+    public void increaseBounce(){
+        this.currentBounces++;
+    }
+
+    public boolean isAllowedToBounce(){
+        return this.currentBounces <= maxBounces;
+    }
+
+    public int getMaxBounces () {
+        return maxBounces;
+    }
+
+    public void setMaxBounces (int maxBounces) {
+        this.maxBounces = maxBounces;
+    }
 }

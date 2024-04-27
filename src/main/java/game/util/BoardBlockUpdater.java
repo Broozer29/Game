@@ -16,7 +16,7 @@ public class BoardBlockUpdater {
                 && xCoordinate <= (DataClass.getInstance().getBoardBlockWidth() * 3)) {
             return 2;
         } else if (xCoordinate >= (DataClass.getInstance().getBoardBlockWidth() * 3)
-                && xCoordinate <= (DataClass.getInstance().getBoardBlockWidth())) {
+                && xCoordinate <= (DataClass.getInstance().getBoardBlockWidth() * 4)) {
             return 3;
         } else if (xCoordinate >= (DataClass.getInstance().getBoardBlockWidth() * 4)
                 && xCoordinate <= (DataClass.getInstance().getBoardBlockWidth() * 5)) {

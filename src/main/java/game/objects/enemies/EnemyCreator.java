@@ -24,11 +24,29 @@ public class EnemyCreator {
                 (float) 1.0, false, 0
         );
 
-        PathFinder pathFinder = new RegularPathFinder();
+
+
+        PathFinder pathFinder = getPathFinderByEnemy(type);
         
         EnemyConfiguration enemyConfiguration = createEnemyConfiguration(type,boxCollision);
         MovementConfiguration movementConfiguration = createMovementConfiguration(xCoordinate, yCoordinate, movementDirection, xMovementSpeed, yMovementSpeed, movementPatternSize, pathFinder);
+        adjustMovementConfigurationPerEnemy(type,movementConfiguration);
         return createSpecificEnemy(spriteConfiguration, enemyConfiguration, movementConfiguration);
+    }
+
+    private static PathFinder getPathFinderByEnemy(EnemyEnums enemyType){
+        switch (enemyType){
+            case Seeker, Energizer, Tazer -> {return new HoverPathFinder();}
+            default -> {return new RegularPathFinder();}
+        }
+    }
+
+    private static void adjustMovementConfigurationPerEnemy(EnemyEnums enemyType, MovementConfiguration movementConfiguration){
+        switch (enemyType){
+            case Seeker -> {movementConfiguration.setBoardBlockToHoverIn(6);}
+            case Energizer -> {movementConfiguration.setBoardBlockToHoverIn(5);}
+            case Tazer -> {movementConfiguration.setBoardBlockToHoverIn(7);}
+        }
     }
 
     private static MovementConfiguration createMovementConfiguration (int xCoordinate, int yCoordinate, Direction movementDirection, int xMovementSpeed, int yMovementSpeed,
@@ -55,7 +73,7 @@ public class EnemyCreator {
         AudioEnums deathSound = enemyType.getDeathSound();
         boolean allowedToDealDamage = true;
         String objectType = enemyType.getObjectType();
-        int attackSpeed = enemyType.getAttackSpeed();
+        float attackSpeed = enemyType.getAttackSpeed();
         float baseArmor = enemyType.getBaseArmor();
         float xpOnDeath = enemyType.getXpOnDeath();
         float cashMoneyWorth = enemyType.getCashMoneyWorth();
@@ -89,6 +107,12 @@ public class EnemyCreator {
             }
             case Bomba -> {
                 return new Bomba(spriteConfiguration, enemyConfiguration, movementConfiguration);
+            }
+            case Needler -> {
+                return new Needler(spriteConfiguration, enemyConfiguration, movementConfiguration);
+            }
+            case Scout -> {
+                return new Scout(spriteConfiguration, enemyConfiguration, movementConfiguration);
             }
         }
         return new Seeker(spriteConfiguration, enemyConfiguration, movementConfiguration);

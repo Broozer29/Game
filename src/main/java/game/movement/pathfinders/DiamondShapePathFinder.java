@@ -42,7 +42,7 @@ public class DiamondShapePathFinder implements PathFinder {
         List<Point> waypoints = new ArrayList<>();
         Point currentPoint = start;
         int leftwardMovement = 0;
-
+        waypoints.add(start);
 
         for (int i = 0; i < loops; i++) {
             // Upper left side of the diamond
@@ -81,7 +81,7 @@ public class DiamondShapePathFinder implements PathFinder {
 
     @Override
     public boolean shouldRecalculatePath (Path path) {
-        return false;
+        return(path == null || path.getWaypoints().isEmpty());
     }
 
     @Override

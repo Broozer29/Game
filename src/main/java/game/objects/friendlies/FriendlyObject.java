@@ -19,6 +19,9 @@ public class FriendlyObject extends GameObject {
         this.setFriendly(true);
         this.boxCollision = friendlyConfiguration.isBoxCollision();
         this.permanentFriendlyObject = friendlyConfiguration.isPermanentObject();
+        if (movementConfiguration != null) {
+            initMovementConfiguration(movementConfiguration);
+        }
     }
 
     public FriendlyObject (SpriteAnimationConfiguration spriteAnimationConfiguration, FriendlyObjectConfiguration friendlyConfiguration, MovementConfiguration movementConfiguration) {
@@ -28,6 +31,9 @@ public class FriendlyObject extends GameObject {
         this.setFriendly(true);
         this.boxCollision = friendlyConfiguration.isBoxCollision();
         this.permanentFriendlyObject = friendlyConfiguration.isPermanentObject();
+        if (movementConfiguration != null) {
+            initMovementConfiguration(movementConfiguration);
+        }
     }
 
 

@@ -63,6 +63,8 @@ public class ImageDatabase {
     private BufferedImage goldFilling;
     private BufferedImage blueFilling;
 
+    private BufferedImage needler;
+
     // Icons
     private BufferedImage tripleShotIcon;
     private BufferedImage doubleShotIcon;
@@ -219,6 +221,9 @@ public class ImageDatabase {
     private BufferedImage letter_Eight;
     private BufferedImage letter_Nine;
 
+    private BufferedImage topazGem7;
+    private BufferedImage laserBullet;
+
 
     // Lists
     private List<BufferedImage> impactExplosionOneFrames = new ArrayList<BufferedImage>();
@@ -275,6 +280,8 @@ public class ImageDatabase {
     private List<BufferedImage> stickyDynamiteExplosion = new ArrayList<>();
     private List<BufferedImage> plasmaLauncherMissileFrames = new ArrayList<>();
 
+    private List<BufferedImage> superChargedFrames = new ArrayList<>();
+
     // Enemy Projectile Animations
     private List<BufferedImage> seekerProjectileFrames = new ArrayList<BufferedImage>();
     private List<BufferedImage> tazerProjectileFrames = new ArrayList<BufferedImage>();
@@ -284,6 +291,7 @@ public class ImageDatabase {
     private List<BufferedImage> bombaProjectileFrames = new ArrayList<BufferedImage>();
     private List<BufferedImage> Rocket1ProjectileFrames = new ArrayList<BufferedImage>();
     private List<BufferedImage> Rocket1ExplosionFrames = new ArrayList<BufferedImage>();
+    private List<BufferedImage> barrierProjectileDestruction = new ArrayList<BufferedImage>();
 
     // Enemy Exhaust Animations
     private List<BufferedImage> seekerNormalExhaustFrames = new ArrayList<BufferedImage>();
@@ -298,6 +306,7 @@ public class ImageDatabase {
     private List<BufferedImage> flamerLargeExhaustFrames = new ArrayList<BufferedImage>();
     private List<BufferedImage> bombaNormalExhaustFrames = new ArrayList<BufferedImage>();
     private List<BufferedImage> bombaLargeExhaustFrames = new ArrayList<BufferedImage>();
+    private List<BufferedImage> explosion2 = new ArrayList<BufferedImage>();
 
     // Enemy projectile explosions
     private List<BufferedImage> seekerProjectileExplosion = new ArrayList<BufferedImage>();
@@ -306,6 +315,10 @@ public class ImageDatabase {
     private List<BufferedImage> bulldozerProjectileExplosion = new ArrayList<BufferedImage>();
     private List<BufferedImage> flamerProjectileExplosion = new ArrayList<BufferedImage>();
     private List<BufferedImage> bombaProjectileExplosion = new ArrayList<BufferedImage>();
+
+    private List<BufferedImage> barrierProjectile = new ArrayList<BufferedImage>();
+    private List<BufferedImage> lightningProjectile = new ArrayList<BufferedImage>();
+    private List<BufferedImage> lightningOrb = new ArrayList<BufferedImage>();
 
     // Background images
     private BufferedImage moon;
@@ -399,6 +412,8 @@ public class ImageDatabase {
     private BufferedImage purpleWings4;
     private BufferedImage purpleWings5;
     private BufferedImage informationCard;
+    private BufferedImage lockedIcon;
+    private BufferedImage scout;
 
 
     private List<BufferedImage> HighlightImages = new ArrayList<BufferedImage>();
@@ -558,6 +573,7 @@ public class ImageDatabase {
         this.starcraft2_ArmorPiercing = imgLoader.getImage(ImageEnums.Starcraft2_Armor_Piercing);
         this.moneyPrinter = imgLoader.getImage(ImageEnums.MoneyPrinter);
         this.stickyDynamite = imgLoader.getImage(ImageEnums.StickyDynamite);
+        this.topazGem7 = imgLoader.getImage(ImageEnums.TopazGem7);
     }
 
 
@@ -735,10 +751,20 @@ public class ImageDatabase {
         this.bluePlanet4  = imgLoader.getImage(ImageEnums.BluePlanet4);
         this.bluePlanet5  = imgLoader.getImage(ImageEnums.BluePlanet5);
         this.bluePlanet6  = imgLoader.getImage(ImageEnums.BluePlanet6);
+
+        this.lockedIcon = imgLoader.getImage(ImageEnums.LockedIcon);
+        this.needler = imgLoader.getImage(ImageEnums.Needler);
+        this.laserBullet = imgLoader.getImage(ImageEnums.LaserBullet);
+        this.scout = imgLoader.getImage(ImageEnums.Scout);
     }
 
     public BufferedImage getImage (ImageEnums imageType) {
         switch (imageType) {
+            case Scout: return scout;
+            case LaserBullet: return laserBullet;
+            case Needler: return needler;
+            case TopazGem7: return topazGem7;
+            case LockedIcon: return lockedIcon;
             case InformationCard: return informationCard;
             case Moon2: return moon2;
             case Moon3: return moon3;
@@ -1206,12 +1232,23 @@ public class ImageDatabase {
             case Blue_Filling:
                 return blueFilling;
             default:
-                return testImage;
+                return star;
         }
     }
 
     public List<BufferedImage> getAnimation (ImageEnums imageType) {
         switch (imageType) {
+            case Explosion2: return explosion2;
+            case LightningOrb:
+                return lightningOrb;
+            case SuperChargedBuff:
+                return superChargedFrames;
+            case LightningProjectile:
+                return lightningProjectile;
+            case BarrierProjectile:
+                return barrierProjectile;
+            case BarrierProjectileDestruction:
+                return barrierProjectileDestruction;
             case PlasmaLauncherMissile:
                 return plasmaLauncherMissileFrames;
             case StickyDynamiteExplosion:
@@ -1754,8 +1791,8 @@ public class ImageDatabase {
             plasmaCoatedDebuff.add(image);
         }
 
-        for (int i = 0; i < 16; i++) {
-            String sourceString = String.format("/images/gif/PNGtoGIF/GasolineExplosion/%d.png", i);
+        for (int i = 0; i < 63; i++) {
+            String sourceString = String.format("/images/gif/PNGtoGIF/Explosion 1/tile0%d.png", i);
             BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
             gasolineExplosion.add(image);
         }
@@ -1778,12 +1815,46 @@ public class ImageDatabase {
             stickyDynamiteExplosion.add(image);
         }
 
-        for (int i = 0; i < 60; i++) {
+        for (int i = 0; i < 61; i++) {
             String sourceString = String.format("/images/gif/PNGtoGIF/PlasmaLauncherMissile/%d.png", i);
             BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
             plasmaLauncherMissileFrames.add(image);
         }
 
+        for (int i = 0; i < 8; i++) {
+            String sourceString = String.format("/images/gif/PNGtoGIF/Barrier Projectile/0%d.png", i);
+            BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+            barrierProjectile.add(image);
+        }
+
+        for (int i = 0; i < 8; i++) {
+            String sourceString = String.format("/images/gif/PNGtoGIF/Barrier Projectile/Destruction/%d.png", i);
+            BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+            barrierProjectileDestruction.add(image);
+        }
+
+        for (int i = 0; i < 18; i++) {
+            String sourceString = String.format("/images/gif/PNGtoGIF/Lightning/%d.png", i);
+            BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+            lightningProjectile.add(image);
+        }
+
+        for (int i = 0; i < 11; i++) {
+            String sourceString = String.format("/images/gif/PNGtoGIF/SuperCharged/%d.png", i);
+            BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+            superChargedFrames.add(image);
+        }
+
+        for (int i = 1; i < 9; i++) {
+            String sourceString = String.format("/images/gif/PNGtoGIF/TazerProjectile/Thundersphere%d.png", i);
+            BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+            lightningOrb.add(image);
+        }
+        for (int i = 0; i < 64; i++) {
+            String sourceString = String.format("/images/gif/PNGtoGIF/Explosion 2 Unused/tile%d.png", i);
+            BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+            explosion2.add(image);
+        }
     }
 
     private void initSpriteSheets () {

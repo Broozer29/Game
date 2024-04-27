@@ -23,8 +23,14 @@ public class FriendlyCreator {
     public static FriendlyObject createDrone (SpriteConfiguration spriteConfiguration, FriendlyObjectConfiguration friendlyObjectConfiguration) {
         SpriteAnimationConfiguration spriteAnimationConfiguration = new SpriteAnimationConfiguration(spriteConfiguration, 2, true);
         MovementConfiguration movementConfiguration = new MovementConfiguration();
+        movementConfiguration.setPathFinder(new OrbitPathFinder(
+                PlayerManager.getInstance().getSpaceship(),
+                50,300, 2
+        ));
         movementConfiguration.setXMovementSpeed(1);
         movementConfiguration.setYMovementSpeed(1);
+        movementConfiguration.setLastUsedXMovementSpeed(1);
+        movementConfiguration.setLastUsedYMovementSpeed(1);
         movementConfiguration.setRotation(Direction.RIGHT);
         movementConfiguration.setHasLock(true);
         movementConfiguration.initDefaultSettingsForSpecializedPathFinders();

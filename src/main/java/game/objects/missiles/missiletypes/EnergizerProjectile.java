@@ -10,7 +10,7 @@ public class EnergizerProjectile extends Missile {
 	public EnergizerProjectile(SpriteAnimationConfiguration spriteConfiguration, MissileConfiguration missileConfiguration, MovementConfiguration movementConfiguration) {
 		super(spriteConfiguration, missileConfiguration, movementConfiguration);
 		this.animation.setFrameDelay(3);
-		this.animation.rotateAnimation(movementConfiguration.getRotation());
+		this.animation.rotateAnimation(movementConfiguration.getRotation(), true);
 	}
 
 	public void missileAction() {

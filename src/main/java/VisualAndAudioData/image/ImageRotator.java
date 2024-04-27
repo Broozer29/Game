@@ -30,7 +30,7 @@ public class ImageRotator {
         return instance;
     }
 
-    public ArrayList<BufferedImage> getRotatedFrames (List<BufferedImage> frames, Direction rotation) {
+    public ArrayList<BufferedImage> getRotatedFrames (List<BufferedImage> frames, Direction rotation, boolean crop) {
         String cacheKey = frames.stream()
                 .map(image -> Integer.toString(image.hashCode()))
                 .collect(Collectors.joining("_")) + "_" + rotation;
@@ -42,19 +42,19 @@ public class ImageRotator {
 
         ArrayList<BufferedImage> newFrames = new ArrayList<>();
         for (BufferedImage frame : frames) {
-            newFrames.add(rotate(frame, rotation));
+            newFrames.add(rotate(frame, rotation, crop));
         }
         rotatedFramesCache.put(cacheKey, newFrames);
         return newFrames;
     }
 
-    public ArrayList<BufferedImage> getRotatedFrames (List<BufferedImage> frames, double angleInDegrees) {
+    public ArrayList<BufferedImage> getRotatedFrames (List<BufferedImage> frames, double angleInDegrees, boolean crop) {
         // Prepare a list to store the adjusted frames, whether rotated or flipped
         ArrayList<BufferedImage> adjustedFrames = new ArrayList<>();
 
         // Process each frame using the rotateOrFlip method
         for (BufferedImage frame : frames) {
-            BufferedImage adjustedFrame = rotateOrFlip(frame, angleInDegrees);
+            BufferedImage adjustedFrame = rotateOrFlip(frame, angleInDegrees, crop);
             adjustedFrames.add(adjustedFrame);
         }
 
@@ -63,13 +63,13 @@ public class ImageRotator {
     }
 
     // In ImageRotator class
-    public BufferedImage rotate (BufferedImage image, Direction direction) {
+    public BufferedImage rotate (BufferedImage image, Direction direction, boolean crop) {
         double angle = direction.toAngle();
-        return rotate(image, angle);
+        return rotateOrFlip(image, angle, crop);
     }
 
 
-    public BufferedImage rotate (BufferedImage image, double angle) {
+    public BufferedImage rotate (BufferedImage image, double angle, boolean crop) {
         String cacheKey = image.hashCode() + "_" + angle;
         if (rotatedImageCache.containsKey(cacheKey)) {
             return rotatedImageCache.get(cacheKey);
@@ -106,12 +106,12 @@ public class ImageRotator {
 //        }
 
         // If the angle is 90 or 270 degrees, flip the image vertically
-        if (angle == 90 || angle == 270) {
-            tx.scale(1, -1);
-            tx.translate(0, -image.getHeight());
-            if (angle == 90) rad = Math.toRadians(270);
-            else rad = Math.toRadians(90);
-        }
+//        if (angle == 90 || angle == 270) {
+//            tx.scale(1, -1);
+//            tx.translate(0, -image.getHeight());
+//            if (angle == 90) rad = Math.toRadians(270);
+//            else rad = Math.toRadians(90);
+//        }
 
         // Rotate the image around its center
         tx.rotate(rad, centerX, centerY);
@@ -121,9 +121,10 @@ public class ImageRotator {
         g.dispose();
 
         // Crop the image to remove any unnecessary transparent space
-        bufferedImage = cropTransparentPixels(bufferedImage);
-
-        bufferedImage = ImageCropper.getInstance().cropToContent(bufferedImage);
+        if(crop) {
+            bufferedImage = cropTransparentPixels(bufferedImage);
+            bufferedImage = ImageCropper.getInstance().cropToContent(bufferedImage);
+        }
 
         rotatedImageCache.put(cacheKey, bufferedImage);
         return bufferedImage;
@@ -176,7 +177,7 @@ public class ImageRotator {
     }
 
 
-    public BufferedImage rotateOrFlip(BufferedImage image, double angleDegrees) {
+    public BufferedImage rotateOrFlip(BufferedImage image, double angleDegrees, boolean crop) {
         // Normalize the angle to be within the range of 0 to 360.
         angleDegrees = (angleDegrees + 360) % 360;
 
@@ -190,7 +191,7 @@ public class ImageRotator {
 
         angleDegrees = Math.round(angleDegrees);
         // Rotate the image to the adjusted angle.
-        BufferedImage processedImage = rotate(image, angleDegrees);
+        BufferedImage processedImage = rotate(image, angleDegrees, crop);
 
         // If the image was on the left half of the circle, apply the vertical flip after rotation.
         if (isLeftHalf) {

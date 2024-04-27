@@ -4,6 +4,8 @@ import java.util.Random;
 
 import VisualAndAudioData.image.ImageEnums;
 import game.gamestate.GameStateInfo;
+import game.movement.PathFinderEnums;
+import game.movement.pathfinders.PathFinder;
 import game.util.BoardBlockUpdater;
 import game.movement.MovementConfiguration;
 import game.movement.Point;
@@ -18,19 +20,31 @@ public class Enemy extends GameObject {
 
     protected MissileManager missileManager = MissileManager.getInstance();
     protected Random random = new Random();
+    protected boolean allowedToFire;
 
     protected EnemyEnums enemyType;
+    protected PathFinderEnums missileTypePathFinders;
+    protected double lastAttackTime = 0.0;
+
+    protected boolean detonateOnCollision;
 
     public Enemy (SpriteConfiguration spriteConfiguration, EnemyConfiguration enemyConfiguration, MovementConfiguration movementConfiguration) {
         super(spriteConfiguration, movementConfiguration);
+        if (movementConfiguration != null) {
+            initMovementConfiguration(movementConfiguration);
+        }
         configureEnemy(enemyConfiguration);
         initChargingUpAnimation(spriteConfiguration);
     }
 
     public Enemy (SpriteAnimationConfiguration spriteAnimationConfigurationion, EnemyConfiguration enemyConfiguration, MovementConfiguration movementConfiguration) {
         super(spriteAnimationConfigurationion, movementConfiguration);
+        if (movementConfiguration != null) {
+            initMovementConfiguration(movementConfiguration);
+        }
         configureEnemy(enemyConfiguration);
         initChargingUpAnimation(spriteAnimationConfigurationion.getSpriteConfiguration());
+
     }
 
     private void configureEnemy (EnemyConfiguration enemyConfiguration) {
@@ -52,8 +66,9 @@ public class Enemy extends GameObject {
         modifyStatsBasedOnLevel();
         this.setVisible(true);
         this.setFriendly(false);
-        this.rotateGameObjectTowards(movementRotation);
+        this.rotateGameObjectTowards(movementRotation, true);
         this.objectType = enemyConfiguration.getObjectType();
+        this.allowedToFire = true;
     }
 
     private void modifyStatsBasedOnLevel () {
@@ -78,7 +93,6 @@ public class Enemy extends GameObject {
         spriteAnimationConfiguration.getSpriteConfiguration().setImageType(ImageEnums.Charging);
         this.chargingUpAttackAnimation = new SpriteAnimation(spriteAnimationConfiguration);
     }
-
 
 
     public EnemyEnums getEnemyType () {
@@ -149,5 +163,29 @@ public class Enemy extends GameObject {
 
     public void setChargingUpAttackAnimation (SpriteAnimation chargingUpAttackAnimation) {
         this.chargingUpAttackAnimation = chargingUpAttackAnimation;
+    }
+
+    public PathFinderEnums getMissileTypePathFinders () {
+        return missileTypePathFinders;
+    }
+
+    public void setMissileTypePathFinders (PathFinderEnums missileTypePathFinders) {
+        this.missileTypePathFinders = missileTypePathFinders;
+    }
+
+    public boolean isAllowedToFire () {
+        return allowedToFire;
+    }
+
+    public void setAllowedToFire (boolean allowedToFire) {
+        this.allowedToFire = allowedToFire;
+    }
+
+    public double getLastAttackTime () {
+        return lastAttackTime;
+    }
+
+    public void setLastAttackTime (double lastAttackTime) {
+        this.lastAttackTime = lastAttackTime;
     }
 }

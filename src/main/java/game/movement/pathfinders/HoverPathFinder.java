@@ -1,5 +1,6 @@
 package game.movement.pathfinders;
 
+import game.gamestate.GameStateInfo;
 import game.movement.Direction;
 import game.movement.Path;
 import game.movement.Point;
@@ -11,6 +12,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class HoverPathFinder implements PathFinder{
+
+    private double gameSecondsSinceEmptyList;
+    private static double secondsToHoverStill = 5;
 
     public Path findPath(PathFinderConfig pathFinderConfig) {
         if (!(pathFinderConfig instanceof HoverPathFinderConfig)) {
@@ -61,8 +65,33 @@ public class HoverPathFinder implements PathFinder{
 
     @Override
     public boolean shouldRecalculatePath(Path path) {
-        return path == null || path.getWaypoints().isEmpty();
+        if (path == null) {
+            // Path is null, should recalculate immediately.
+            return true;
+        }
+
+        if (path.getWaypoints().isEmpty()) {
+            if (gameSecondsSinceEmptyList == 0) {
+                // Only set the timestamp if it hasn't been set yet.
+                gameSecondsSinceEmptyList = GameStateInfo.getInstance().getGameSeconds();
+            }
+
+            // Check if 3 seconds have passed since the path became empty.
+            if (GameStateInfo.getInstance().getGameSeconds() > gameSecondsSinceEmptyList + secondsToHoverStill) {
+                // After 3 seconds, allow recalculation.
+                gameSecondsSinceEmptyList = 0; // Reset the timer for the next use.
+                return true;
+            }
+
+            // If not enough time has passed, do not recalculate yet.
+            return false;
+        }
+
+        // If the path is not empty, reset the timer as it's not relevant in this case.
+        gameSecondsSinceEmptyList = 0;
+        return false;
     }
+
 
     @Override
     public Point calculateInitialEndpoint (Point start, Direction rotation, boolean friendly) {

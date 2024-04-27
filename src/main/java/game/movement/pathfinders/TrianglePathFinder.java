@@ -32,6 +32,7 @@ public class TrianglePathFinder implements PathFinder {
         Point start = config.getStart();
 
         List<Point> waypoints = new ArrayList<>();
+        waypoints.add(start);
         Point currentPoint = start;
         Direction primaryDirection = config.getMovementDirection();
         Direction[] diagonalDirections = calculateDiagonalDirections(primaryDirection);

@@ -38,6 +38,7 @@ public class ZigZagPathFinder implements PathFinder {
 
         List<Point> waypoints = new ArrayList<>();
         Point currentPoint = start;
+        waypoints.add(start);
         boolean bounceDiagonally = true; // State to keep track of bouncing direction
 
         int bounces = 0;

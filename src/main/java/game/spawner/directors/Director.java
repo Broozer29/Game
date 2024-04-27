@@ -280,7 +280,7 @@ public class Director {
             case Basic:
                 // Decrease weight for Basic enemies as difficulty increases
                 return (float) Math.max(baseWeight * (1 - difficultyCoefficient * basicDecayRate), 0.05);
-            case MiniBoss:
+            case Mercenary:
                 // Increase weight for MiniBoss enemies up to a point, then decrease
                 return (float) (baseWeight * (1 + Math.sin(difficultyCoefficient * minibossGrowthRate)));
             case Boss:

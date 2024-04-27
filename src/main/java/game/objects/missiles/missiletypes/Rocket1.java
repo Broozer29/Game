@@ -16,7 +16,7 @@ public class Rocket1 extends Missile{
 	
 	public Rocket1(SpriteAnimationConfiguration spriteConfiguration, MissileConfiguration missileConfiguration, MovementConfiguration movementConfiguration) {
 		super(spriteConfiguration, missileConfiguration, movementConfiguration);
-		this.animation.rotateAnimation(movementConfiguration.getRotation());
+		this.animation.rotateAnimation(movementConfiguration.getRotation(), true);
 		this.damage = 0;
 		this.explosionDamage = missileConfiguration.getDamage();
 	}

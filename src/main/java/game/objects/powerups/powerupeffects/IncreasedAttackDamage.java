@@ -14,14 +14,14 @@ public class IncreasedAttackDamage extends PowerUpEffect{
 	@Override
 	public void activatePower() {
 		attackDamageBonus = temporaryGameSettings.getDefaultAttackDamageBonus();
-		playerStats.addBonusAttackDamage(attackDamageBonus);
+		playerStats.modifyBonusDamageMultiplier(attackDamageBonus);
 		System.out.println("Added bonus attack damage to a total of: " + playerStats.getNormalAttackDamage());
 	}
 	
 	@Override
 	public void deactivatePower() {
 		attackDamageBonus = temporaryGameSettings.getDefaultAttackDamageBonus();
-		playerStats.addBonusAttackDamage(-attackDamageBonus);
+		playerStats.modifyBonusDamageMultiplier(-attackDamageBonus);
 		System.out.println("Reverted bonus attack damage to a total of: " + playerStats.getNormalAttackDamage());
 	}
 }

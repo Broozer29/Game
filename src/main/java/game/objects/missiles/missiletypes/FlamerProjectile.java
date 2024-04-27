@@ -9,7 +9,7 @@ public class FlamerProjectile extends Missile {
 
 	public FlamerProjectile(SpriteAnimationConfiguration spriteConfiguration, MissileConfiguration missileConfiguration, MovementConfiguration movementConfiguration) {
 		super(spriteConfiguration, missileConfiguration, movementConfiguration);
-		this.animation.rotateAnimation(movementConfiguration.getRotation());
+		this.animation.rotateAnimation(movementConfiguration.getRotation(), true);
 		this.animation.setFrameDelay(3);
 	}
 

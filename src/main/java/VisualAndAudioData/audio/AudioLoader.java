@@ -44,6 +44,10 @@ public class AudioLoader {
 
     private String convertAudioToFileString (AudioEnums audioFile) {
         switch (audioFile) {
+            case Le_Youth_Chills:
+                return "/audio/music/Le Youth - Chills.wav";
+            case Robert_Nickson_Painting_The_Skies:
+                return "/audio/music/Painting The Skies.wav";
             case Player_Laserbeam:
                 return "/audio/laserbeam1.wav";
             case Destroyed_Explosion:

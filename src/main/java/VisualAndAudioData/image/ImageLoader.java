@@ -67,6 +67,7 @@ public class ImageLoader {
         try {
             return ImageIO.read(stream);
         } catch (IOException e) {
+            System.out.println(stream);
             e.printStackTrace();
             return null;
         }
@@ -602,6 +603,16 @@ public class ImageLoader {
                 return "/images/UI/Wings/Yellow/04.png";
             case YellowWings5:
                 return "/images/UI/Wings/Yellow/05.png";
+            case LockedIcon:
+                return "/images/Icons/Locked.png";
+            case TopazGem7:
+                return "/images/Icons/Money/Topaz Gem07.png";
+            case Needler:
+                return "/images/Ships/Enemy Ships/Needler.png";
+            case Scout:
+                return "/images/Ships/Enemy Ships/Scout.png";
+            case LaserBullet:
+                return "/images/laserbullet.png";
             default:
                 return "";
         }

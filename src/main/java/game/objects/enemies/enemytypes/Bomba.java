@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import VisualAndAudioData.audio.enums.AudioEnums;
+import game.gamestate.GameStateInfo;
 import game.managers.AnimationManager;
 import game.movement.Direction;
 import game.movement.MovementConfiguration;
@@ -37,41 +38,22 @@ public class Bomba extends Enemy {
 		this.destructionAnimation = new SpriteAnimation(destroyedExplosionfiguration);
 
 		//Specialized behaviour configuration stuff
-		this.attackSpeed = 50;
 		this.initDirectionFromRotation();
+		this.damage = MissileTypeEnums.BombaProjectile.getDamage();
 	}
 
-	// Called every game tick. If weapon is not on cooldown, fire a shot.
-	// Current board block attack is set to 7, this shouldnt be a hardcoded value
-	// This function doesn't discern enemy types yet either, should be re-written
-	// when new enemies are introduced
 	public void fireAction() {
-		// Check if the attack cooldown has been reached
-		if (attackSpeedCurrentFrameCount >= attackSpeed) {
-			// Check if the charging animation is not already playing
-			if(WithinVisualBoundariesCalculator.isWithinBoundaries(this)) {
-				if (!chargingUpAttackAnimation.isPlaying()) {
-					// Start charging animation
-					chargingUpAttackAnimation.refreshAnimation(); // Refreshes the animation
-					AnimationManager.getInstance().addUpperAnimation(chargingUpAttackAnimation); // Adds the animation for displaying
-				}
-
-				// Check if the charging animation has finished
-				if (chargingUpAttackAnimation.getCurrentFrame() >= chargingUpAttackAnimation.getTotalFrames() - 1) {
-					shootMissile();
-					// Reset attack speed frame count after firing the missile
-					attackSpeedCurrentFrameCount = 0;
-				}
+		double currentTime = GameStateInfo.getInstance().getGameSeconds();
+		if (currentTime >= lastAttackTime + this.getAttackSpeed() && WithinVisualBoundariesCalculator.isWithinBoundaries(this)) {
+			if (!chargingUpAttackAnimation.isPlaying()) {
+				chargingUpAttackAnimation.refreshAnimation();
+				AnimationManager.getInstance().addUpperAnimation(chargingUpAttackAnimation);
 			}
 
-
-
-			// The charging up attack animation is still playing, just wait for it to finish
-			// No need to increment attackSpeedCurrentFrameCount here as we're already at max and waiting for animation to complete
-
-		} else {
-			// If not yet ready to attack, increase the attack speed frame count
-			attackSpeedCurrentFrameCount++;
+			if (chargingUpAttackAnimation.getCurrentFrame() >= chargingUpAttackAnimation.getTotalFrames() - 1) {
+				shootMissile();
+				lastAttackTime = currentTime; // Update the last attack time after firing
+			}
 		}
 	}
 
@@ -100,7 +82,7 @@ public class Bomba extends Enemy {
 			String objectType = "Bomba Missile";
 
 			MissileConfiguration missileConfiguration = MissileCreator.getInstance().createMissileConfiguration(missileType, maxHitPoints, maxShields,
-					deathSound, missileType.getDamage(), missileType.getDeathOrExplosionImageEnum(), isFriendly, allowedToDealDamage, objectType, false);
+					deathSound, this.getDamage(), missileType.getDeathOrExplosionImageEnum(), isFriendly, allowedToDealDamage, objectType, false);
 
 
 			//Create the missile and finalize the creation process, then add it to the manager and consequently the game
@@ -108,7 +90,7 @@ public class Bomba extends Enemy {
 			missile.setOwnerOrCreator(this);
 			missile.setCenterCoordinates(chargingUpAttackAnimation.getCenterXCoordinate(), chargingUpAttackAnimation.getCenterYCoordinate());
 			missile.getAnimation().setCenterCoordinates(chargingUpAttackAnimation.getCenterXCoordinate(), chargingUpAttackAnimation.getCenterYCoordinate());
-
+			missile.resetMovementPath();
 			this.missileManager.addExistingMissile(missile);
 		}
 	}

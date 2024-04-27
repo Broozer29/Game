@@ -29,7 +29,7 @@ public class StickyDynamite extends Item {
 
     @Override
     public void applyEffectToObject (GameObject gameObject) {
-        DormentExplosion dormentExplosion = new DormentExplosion(explosionDamage, 1, ImageEnums.StickyDynamiteExplosion, DormentExplosionActivationMethods.Timed);
+        DormentExplosion dormentExplosion = new DormentExplosion(explosionDamage, ImageEnums.StickyDynamiteExplosion, DormentExplosionActivationMethods.Timed, true);
         gameObject.addEffect(dormentExplosion);
     }
 

@@ -64,9 +64,9 @@ public class EnemyManager {
         SpaceShip spaceship = friendlyManager.getSpaceship();
         for (Enemy enemy : enemyList) {
             if (CollisionDetector.getInstance().detectCollision(enemy, spaceship)) {
-                if (enemy instanceof AlienBomb) {
-                    detonateAlienBomb(enemy);
-                    spaceship.takeDamage(20);
+                if (enemy.detonateOnCollision) {
+                    detonateEnemy(enemy);
+                    spaceship.takeDamage(enemy.getDamage());
                 } else {
                     spaceship.takeDamage(1);
                 }
@@ -74,9 +74,10 @@ public class EnemyManager {
         }
     }
 
-    private void detonateAlienBomb (Enemy enemy) throws UnsupportedAudioFileException, IOException {
-        animationManager.createAndAddUpperAnimation(enemy.getXCoordinate(), enemy.getYCoordinate(),
-                enemy.enemyType.getDestructionType(), false, 1);
+    private void detonateEnemy (Enemy enemy) throws UnsupportedAudioFileException, IOException {
+//        animationManager.createAndAddUpperAnimation(enemy.getXCoordinate(), enemy.getYCoordinate(),
+//                enemy.enemyType.getDestructionImageEnum(), false, enemy.getScale());
+        animationManager.addLowerAnimation(enemy.getDestructionAnimation());
         audioManager.addAudio(AudioEnums.Alien_Bomb_Impact);
         enemy.setVisible(false);
     }

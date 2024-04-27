@@ -7,6 +7,7 @@ import java.util.List;
 
 import game.managers.AnimationManager;
 import game.movement.Direction;
+import game.objects.missiles.missiletypes.BarrierProjectile;
 import visualobjects.SpriteConfigurations.SpriteAnimationConfiguration;
 import VisualAndAudioData.image.ImageCropper;
 import VisualAndAudioData.image.ImageDatabase;
@@ -38,7 +39,7 @@ public class SpriteAnimation extends Sprite implements Cloneable{
 		this.frameDelayCounter = 0;
 		this.infiniteLoop = spriteAnimationConfiguration.isInfiniteLoop();
 		this.frameDelay = spriteAnimationConfiguration.getFrameDelay();
-		setAnimationScale(scale);
+		setAnimationScale(spriteAnimationConfiguration.getSpriteConfiguration().getScale());
 		animationBounds = new Rectangle(xCoordinate, yCoordinate, this.width, this.height);
 
 	}
@@ -54,12 +55,14 @@ public class SpriteAnimation extends Sprite implements Cloneable{
 		this.imageType = imageType;
 		this.frames = ImageDatabase.getInstance().getAnimation(imageType);
 		this.originalFrames = frames;
+		recalculateBoundsAndSize();
 	}
 
 	public void changeImagetype(ImageEnums imageType) {
 		this.imageType = imageType;
 		this.frames = ImageDatabase.getInstance().getAnimation(imageType);
 		this.originalFrames = frames;
+		recalculateBoundsAndSize();
 	}
 
 	// Aligns the sprite X and Y coordinate to the centre of the animation
@@ -80,14 +83,19 @@ public class SpriteAnimation extends Sprite implements Cloneable{
 			System.out.println("Crashed because resizing an image that was null/empty");
 		}
 		this.frames = imageResizer.getScaledFrames(originalFrames, newScale);
+		recalculateBoundsAndSize();
 	}
 
-	public void rotateAnimation (Direction rotation) {
-		this.frames = ImageRotator.getInstance().getRotatedFrames(originalFrames, rotation);
+	public void rotateAnimation (Direction rotation, boolean crop) {
+		//Doesnt use original frames because possible resizes, possible loss of performance and quality but maybe not enough to do anything about it
+		this.frames = ImageRotator.getInstance().getRotatedFrames(frames, rotation, crop);
+		recalculateBoundsAndSize();
 	}
 
-	public void rotateAnimation(double angle){
-		this.frames = ImageRotator.getInstance().getRotatedFrames(originalFrames, angle);
+	public void rotateAnimation(double angle, boolean crop){
+		//Doesnt use original frames because possible resizes, possible loss of performance and quality but maybe not enough to do anything about it
+		this.frames = ImageRotator.getInstance().getRotatedFrames(frames, angle,crop);
+		recalculateBoundsAndSize();
 	}
 
 	private void removeAnimation() {
@@ -104,6 +112,7 @@ public class SpriteAnimation extends Sprite implements Cloneable{
 	}
 
 	// returns current frame of the gif
+
 	public BufferedImage getCurrentFrameImage(boolean increaseAnimationFrame) {
 		if (increaseAnimationFrame) {
 			if (currentFrame >= frames.size()) {
@@ -116,6 +125,7 @@ public class SpriteAnimation extends Sprite implements Cloneable{
 
 			if (currentFrame < frames.size()) {
 				BufferedImage returnImage = frames.get(currentFrame);
+
 				width = returnImage.getWidth(null);
 				height = returnImage.getHeight(null);
 				if (frameDelayCounter >= frameDelay) {
@@ -124,7 +134,7 @@ public class SpriteAnimation extends Sprite implements Cloneable{
 				} else
 					frameDelayCounter++;
 				animationBounds.setBounds(xCoordinate + xOffset, yCoordinate + yOffset, width, height);
-
+				this.bounds = animationBounds;
 				if (this.increaseTransparancy) {
 					if (this.transparancyAlpha + this.transparancyStepSize < 1.0f &&
 							this.transparancyAlpha + this.transparancyStepSize > 0.0f) {
@@ -155,13 +165,6 @@ public class SpriteAnimation extends Sprite implements Cloneable{
 
 	public int getTotalFrames() {
 		return this.totalFrames;
-	}
-
-	public void resizeAnimation(float scale) {
-		if (this.image == null) {
-			System.out.println("Crashed because resizing an image that was null/empty");
-		}
-		this.frames = imageResizer.getScaledFrames(frames, scale);
 	}
 
 	public float getScale() {
@@ -195,18 +198,20 @@ public class SpriteAnimation extends Sprite implements Cloneable{
 		for (int i = 0; i < frames.size(); i++) {
 			frames.set(i, imageResizer.resizeImageToDimensions(frames.get(i), newWidth, newHeight));
 		}
+		recalculateBoundsAndSize();
 	}
 
 	// Should be used with all animation creation when the animation has different frame
 	// dimensions
 	public void setCenterCoordinates(int newXCoordinate, int newYCoordinate) {
 		if (currentFrame < frames.size()) {
-			this.xCoordinate = newXCoordinate - (frames.get(currentFrame).getWidth(null) / 2);
-			this.yCoordinate = newYCoordinate - (frames.get(currentFrame).getHeight(null) / 2);
+			this.xCoordinate = newXCoordinate - (frames.get(currentFrame).getWidth(null) / 2) + xOffset;
+			this.yCoordinate = newYCoordinate - (frames.get(currentFrame).getHeight(null) / 2) + yOffset;
 		} else {
-			this.xCoordinate = newXCoordinate - (frames.get(currentFrame - 1).getWidth(null) / 2);
-			this.yCoordinate = newYCoordinate - (frames.get(currentFrame - 1).getHeight(null) / 2);
+			this.xCoordinate = newXCoordinate - (frames.get(currentFrame - 1).getWidth(null) / 2) + xOffset;
+			this.yCoordinate = newYCoordinate - (frames.get(currentFrame - 1).getHeight(null) / 2) + yOffset;
 		}
+
 	}
 
 	public void setOriginCoordinates(int xCoordinate, int yCoordinate) {
@@ -227,6 +232,15 @@ public class SpriteAnimation extends Sprite implements Cloneable{
 		for (int i = 0; i < frames.size(); i++) {
 			frames.set(i, imageCropper.cropToContent(frames.get(i)));
 		}
+		recalculateBoundsAndSize();
+	}
+
+
+	protected void recalculateBoundsAndSize(){
+		this.width = frames.get(0).getWidth();
+		this.height = frames.get(0).getHeight();
+		this.animationBounds = new Rectangle(xCoordinate, yCoordinate, this.width, this.height);
+		this.bounds = animationBounds;
 	}
 
 

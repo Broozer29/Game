@@ -21,6 +21,7 @@ public enum ImageEnums {
     Warp, Shield4, Shield3, Shield2, Charging, EnergyCircle, Flamewarp, Frontshield, FrontshieldB, PulsatingShield, PulsatingStar, Radar,
     RotatingBoxes, RotatingCones, GreenEnergyOrb, PurpleEnergyBlocks, Fireshield, EnergyFlower, PurpleEnergyBarrier, RedHole, CrossingEnergyBeams,
     PlasmaCoatedDebuff, GasolineExplosion, GasolineBurning, Healing, StickyDynamiteExplosion, MoneyPrinter, StickyDynamite,
+    BarrierProjectile, BarrierProjectileDestruction, LightningProjectile, SuperChargedBuff, LightningOrb, Explosion2,
 
     //// Background Objects
     Moon, Lava_Planet, Planet_One, Planet_Two, Planet_Three, Mars_Planet, Star, Parallex_1, Parallex_2, Parallex_3,
@@ -38,13 +39,13 @@ public enum ImageEnums {
     PlasmaLauncherMissile,
 
     // Missile Images
-    Player_Laserbeam, Alien_Laserbeam,
+    Player_Laserbeam, Alien_Laserbeam, LaserBullet,
 
     // Friendly images
     Player_Spaceship, Player_Spaceship_Model_3,
 
     // Enemy images
-    Alien_Bomb, Seeker, Tazer, Energizer, Bulldozer, Flamer, Bomba, Alien, Alien_Bomb_Animation,
+    Alien_Bomb, Seeker, Tazer, Energizer, Bulldozer, Flamer, Bomba, Alien, Alien_Bomb_Animation, Needler, Scout,
 
     // Unused?
     Implosion, Invisible, Invisible_Animation,
@@ -55,7 +56,7 @@ public enum ImageEnums {
     YellowWings1, YellowWings2, YellowWings3, YellowWings4, YellowWings5, BlueWings1, BlueWings2, BlueWings3, BlueWings4, BlueWings5,
     PurpleWings1,PurpleWings2,PurpleWings3,PurpleWings4,PurpleWings5,
     // Icons
-    TripleShotIcon, DoubleShotIcon, Starcraft2_Point_Defense_Drone, Starcraft2_Protoss_Cloak,
+    TripleShotIcon, DoubleShotIcon, Starcraft2_Point_Defense_Drone, Starcraft2_Protoss_Cloak, LockedIcon, TopazGem7,
     Starcraft2_Protoss_Shield_Disintegrate, Starcraft2_Protoss_Shields_1, Starcraft2_Protoss_Shields_2,
     Starcraft2_Protoss_Shields_3, Starcraft2_Psi_Storm1, Starcraft2_Psi_Storm2, Starcraft2_Psi_Storm3,
     Starcraft2_Pulse_Grenade, Starcraft2_Pulse_Laser, Starcraft2_Repair_Blink, Starcraft2_Rocket_Cluster,

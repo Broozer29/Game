@@ -35,8 +35,8 @@ public class BoostsUpgradesAndBuffsSettings {
 		playerStats = PlayerStats.getInstance();
 		doubleShotActive = false;
 		tripleShotActive = false;
-		setMinTimeForPowerUpSpawn(20000);
-		setMaxTimeForPowerUpSpawn(35000);
+		setMinTimeForPowerUpSpawn(30);
+		setMaxTimeForPowerUpSpawn(60);
 		setRepairPackageHealthRestore(playerStats.getMaxHitPoints() / 2);
 		setRepairPackageShieldRestore(playerStats.getMaxShieldHitPoints());
 		setDefaultMovementSpeedBoostAmount(2);

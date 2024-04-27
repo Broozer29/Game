@@ -36,6 +36,7 @@ public class SpiralPathFinder implements PathFinder {
         int maxStepDistance = 5; // The maximum distance between points
 
         List<Point> waypoints = new ArrayList<>();
+        waypoints.add(start);
         double currentAngle = 0.0;
 
         while (waypoints.size() < MAX_WAYPOINTS) {
@@ -67,9 +68,7 @@ public class SpiralPathFinder implements PathFinder {
 
     @Override
     public boolean shouldRecalculatePath (Path path) {
-        if(path == null || path.getWaypoints().isEmpty()){
-            return true;
-        } else return false;
+        return(path == null || path.getWaypoints().isEmpty());
     }
 
     @Override

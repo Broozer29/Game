@@ -26,7 +26,7 @@ public class GunPreset {
 	}
 	
 	private void initRocketPreset() {
-		PlayerStats.getInstance().setAttackSpeed(15);
+		PlayerStats.getInstance().setAttackSpeed(0.5f);
 		PlayerStats.getInstance().setBaseDamage(25);
 		PlayerStats.getInstance().setAttackType(MissileTypeEnums.Rocket1);
 		PlayerStats.getInstance().setPlayerMissileImage(ImageEnums.Rocket_1);
@@ -37,7 +37,7 @@ public class GunPreset {
 	
 
 	private void initLaserbeamPreset() {
-		PlayerStats.getInstance().setAttackSpeed(15);
+		PlayerStats.getInstance().setAttackSpeed(0.33f);
 		PlayerStats.getInstance().setBaseDamage(25);
 		PlayerStats.getInstance().setAttackType(MissileTypeEnums.DefaultPlayerLaserbeam);
 		PlayerStats.getInstance().setPlayerMissileImage(ImageEnums.Player_Laserbeam);

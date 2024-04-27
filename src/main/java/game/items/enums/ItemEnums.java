@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Random;
 
 public enum ItemEnums {
+    Locked(ItemRarityEnums.Locked, ItemCategory.Utility, ImageEnums.Test_Image, "Locked"),
     PlasmaCoatedBullets(ItemRarityEnums.Common, ItemCategory.Offense, ImageEnums.Starcraft2_Shield_Piercing, "Plasma Coated Bullets"),
     PhotonPiercer(ItemRarityEnums.Common, ItemCategory.Offense, ImageEnums.Starcraft2_Concussive_Shells, "Photon Piercer"),
     CannisterOfGasoline(ItemRarityEnums.Rare, ItemCategory.Offense, ImageEnums.CannisterOfGasoline, "Cannister of Gasoline"),
@@ -42,7 +43,7 @@ public enum ItemEnums {
 
         // Loop through all ItemEnums and add those that match the given category
         for (ItemEnums item : ItemEnums.values()) {
-            if (item.getItemRarity() == category) {
+            if (!item.equals(ItemEnums.Locked) && item.getItemRarity() == category) {
                 matchingItems.add(item);
             }
         }

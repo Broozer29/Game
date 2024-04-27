@@ -22,7 +22,7 @@ public class FocusCrystal extends Item {
     }
 
     private void calculateDamageAmplificationModifier(){
-        damageAmplificationModifier = 1 + (quantity * 0.20f);
+        damageAmplificationModifier = (quantity * 0.20f);
     }
 
     //Not used
@@ -43,8 +43,10 @@ public class FocusCrystal extends Item {
         if (Math.abs(shooterXCoordinate - targetXCoordinate) < distance &&
                 Math.abs(shooterYCoordinate - targetYCoordinate) < distance) {
             // Amplify the attack damage
-            attack.setDamage(attack.getDamage() * damageAmplificationModifier);
+            attack.modifyBonusDamageMultiplier(damageAmplificationModifier);
         }
+
+
     }
 
     public int getDistance () {

@@ -84,11 +84,9 @@ public class Sprite {
         configureImageDimensions();
     }
 
-    protected void rotateImage (Direction rotation) {
-        if (rotation != Direction.LEFT) {
-            this.image = imageRotator.rotate(image, rotation);
-            configureImageDimensions();
-        }
+    protected void rotateImage (Direction rotation, boolean crop) {
+        this.image = imageRotator.rotate(image, rotation, crop);
+        configureImageDimensions();
     }
 
     protected void setScale (float newScale) {
@@ -166,10 +164,11 @@ public class Sprite {
     }
 
     public void setImageDimensions (int newWidth, int newHeight) {
-        ImageResizer imageResizer = ImageResizer.getInstance();
-        this.image = imageResizer.resizeImageToDimensions(this.originalImage, newWidth, newHeight);
-        configureImageDimensions();
-
+        if (this.image.getWidth() != newWidth && this.image.getHeight() != newHeight) {
+            ImageResizer imageResizer = ImageResizer.getInstance();
+            this.image = imageResizer.resizeImageToDimensions(this.originalImage, newWidth, newHeight);
+            configureImageDimensions();
+        }
     }
 
     public void cropWidth (float cropPercentage) {
@@ -210,5 +209,11 @@ public class Sprite {
 
     public BufferedImage getOriginalImage () {
         return this.originalImage;
+    }
+
+    protected void recalculateBoundsAndSize () {
+        this.width = image.getWidth();
+        this.height = image.getHeight();
+        this.bounds = new Rectangle(xCoordinate, yCoordinate, this.width, this.height);
     }
 }

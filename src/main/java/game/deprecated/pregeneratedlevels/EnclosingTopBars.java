@@ -6,7 +6,7 @@ import java.util.List;
 import game.movement.Direction;
 import game.objects.enemies.enums.EnemyEnums;
 import game.spawner.EnemyFormation;
-import game.spawner.EnemySpawnTimer;
+import game.objects.powerups.timers.DeprecatedEnemySpawnTimer;
 import game.spawner.FormationCreator;
 import game.spawner.enums.SpawnFormationEnums;
 import VisualAndAudioData.DataClass;
@@ -32,7 +32,7 @@ public class EnclosingTopBars implements PregeneratedFormation {
 
 	// Copy behaviour from the Furi level here, so it can be re-used for random selection
 
-	private List<EnemySpawnTimer> allTimers = new ArrayList<EnemySpawnTimer>();
+	private List<DeprecatedEnemySpawnTimer> allTimers = new ArrayList<DeprecatedEnemySpawnTimer>();
 	private FormationCreator formCreator = new FormationCreator();
 	private DataClass dataClass = DataClass.getInstance();
 
@@ -46,7 +46,7 @@ public class EnclosingTopBars implements PregeneratedFormation {
 
 	private void createInverseTimers(int activationTime, EnemyEnums enemyType, float scale, int xMovementSpeed, int yMovementSpeed) {
 	    boolean loopable = false;
-	    EnemySpawnTimer timer = null;
+	    DeprecatedEnemySpawnTimer timer = null;
 	    EnemyFormation formation = null;
 
 	    int offsetYInverse = (int) (dataClass.getWindowHeight() * 0.709); // 62.9% of window height (equivalent to 550 when windowHeight = 875)
@@ -54,23 +54,23 @@ public class EnclosingTopBars implements PregeneratedFormation {
 	    int offsetXRight = (int) (dataClass.getWindowWidth() * 0.069); // 6.9% of window width (equivalent to 100 when windowWidth = 1440)
 
 	    // Timers going from right to left
-	    timer = new EnemySpawnTimer(activationTime, 1, enemyType, loopable, Direction.RIGHT, scale,  xMovementSpeed, yMovementSpeed);
+	    timer = new DeprecatedEnemySpawnTimer(activationTime, 1, enemyType, loopable, Direction.RIGHT, scale,  xMovementSpeed, yMovementSpeed);
 	    formation = formCreator.createFormation(SpawnFormationEnums.Small_smallerthen, enemyType.getFormationWidthDistance(), enemyType.getFormationHeightDistance());
 	    timer.setFormation(formation, -offsetX, 0);
 	    allTimers.add(timer);
 
-	    timer = new EnemySpawnTimer(activationTime, 1, enemyType, loopable, Direction.RIGHT, scale,  xMovementSpeed, yMovementSpeed);
+	    timer = new DeprecatedEnemySpawnTimer(activationTime, 1, enemyType, loopable, Direction.RIGHT, scale,  xMovementSpeed, yMovementSpeed);
 	    formation = formCreator.createFormation(SpawnFormationEnums.Small_smallerthen, enemyType.getFormationWidthDistance(), enemyType.getFormationHeightDistance());
 	    timer.setFormation(formation, -offsetX, offsetYInverse);
 	    allTimers.add(timer);
 
 	    // Timers going from left to right
-	    timer = new EnemySpawnTimer(activationTime, 1, enemyType, loopable, Direction.LEFT, scale,  xMovementSpeed, yMovementSpeed);
+	    timer = new DeprecatedEnemySpawnTimer(activationTime, 1, enemyType, loopable, Direction.LEFT, scale,  xMovementSpeed, yMovementSpeed);
 	    formation = formCreator.createFormation(SpawnFormationEnums.Small_greaterthen, enemyType.getFormationWidthDistance(), enemyType.getFormationHeightDistance());
 	    timer.setFormation(formation, dataClass.getWindowWidth() + offsetXRight, 0);
 	    allTimers.add(timer);
 
-	    timer = new EnemySpawnTimer(activationTime, 1, enemyType, loopable, Direction.LEFT, scale,  xMovementSpeed, yMovementSpeed);
+	    timer = new DeprecatedEnemySpawnTimer(activationTime, 1, enemyType, loopable, Direction.LEFT, scale,  xMovementSpeed, yMovementSpeed);
 	    formation = formCreator.createFormation(SpawnFormationEnums.Small_greaterthen, enemyType.getFormationWidthDistance(), enemyType.getFormationHeightDistance());
 	    timer.setFormation(formation, dataClass.getWindowWidth() + offsetXRight, offsetYInverse);
 	    allTimers.add(timer);
@@ -78,7 +78,7 @@ public class EnclosingTopBars implements PregeneratedFormation {
 
 	private void createRegularTimers(int activationTime, EnemyEnums enemyType, float scale, int xMovementSpeed, int yMovementSpeed) {
 	    boolean loopable = false;
-	    EnemySpawnTimer timer = null;
+	    DeprecatedEnemySpawnTimer timer = null;
 	    EnemyFormation formation = null;
 
 	    int offsetYRegular = (int) (dataClass.getWindowHeight() * 0.709); // 70.9% of window height (equivalent to 620 when windowHeight = 875)
@@ -86,23 +86,23 @@ public class EnclosingTopBars implements PregeneratedFormation {
 	    int offsetXRight = (int) (dataClass.getWindowWidth() * 0.069); // 6.9% of window width (equivalent to 100 when windowWidth = 1440)
 
 	    // Timers going from right to left
-	    timer = new EnemySpawnTimer(activationTime, 1, enemyType, loopable, Direction.RIGHT, scale,  xMovementSpeed, yMovementSpeed);
+	    timer = new DeprecatedEnemySpawnTimer(activationTime, 1, enemyType, loopable, Direction.RIGHT, scale,  xMovementSpeed, yMovementSpeed);
 	    formation = formCreator.createFormation(SpawnFormationEnums.Small_greaterthen, enemyType.getFormationWidthDistance(), enemyType.getFormationHeightDistance());
 	    timer.setFormation(formation, -offsetX, 0);
 	    allTimers.add(timer);
 
-	    timer = new EnemySpawnTimer(activationTime, 1, enemyType, loopable, Direction.RIGHT, scale,  xMovementSpeed, yMovementSpeed);
+	    timer = new DeprecatedEnemySpawnTimer(activationTime, 1, enemyType, loopable, Direction.RIGHT, scale,  xMovementSpeed, yMovementSpeed);
 	    formation = formCreator.createFormation(SpawnFormationEnums.Small_greaterthen, enemyType.getFormationWidthDistance(), enemyType.getFormationHeightDistance());
 	    timer.setFormation(formation, -offsetX, offsetYRegular);
 	    allTimers.add(timer);
 
 	    // Timers going from left to right
-	    timer = new EnemySpawnTimer(activationTime, 1, enemyType, loopable, Direction.LEFT, scale,  xMovementSpeed, yMovementSpeed);
+	    timer = new DeprecatedEnemySpawnTimer(activationTime, 1, enemyType, loopable, Direction.LEFT, scale,  xMovementSpeed, yMovementSpeed);
 	    formation = formCreator.createFormation(SpawnFormationEnums.Small_smallerthen, enemyType.getFormationWidthDistance(), enemyType.getFormationHeightDistance());
 	    timer.setFormation(formation, dataClass.getWindowWidth() + offsetXRight, 0);
 	    allTimers.add(timer);
 
-	    timer = new EnemySpawnTimer(activationTime, 1, enemyType, loopable, Direction.LEFT, scale,  xMovementSpeed, yMovementSpeed);
+	    timer = new DeprecatedEnemySpawnTimer(activationTime, 1, enemyType, loopable, Direction.LEFT, scale,  xMovementSpeed, yMovementSpeed);
 	    formation = formCreator.createFormation(SpawnFormationEnums.Small_smallerthen, enemyType.getFormationWidthDistance(), enemyType.getFormationHeightDistance());
 	    timer.setFormation(formation, dataClass.getWindowWidth() + offsetXRight, offsetYRegular);
 	    allTimers.add(timer);
@@ -110,7 +110,7 @@ public class EnclosingTopBars implements PregeneratedFormation {
 
 
 	@Override
-	public List<EnemySpawnTimer> getTimers() {
+	public List<DeprecatedEnemySpawnTimer> getTimers() {
 		return allTimers;
 	}
 }

@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import game.items.Item;
+import game.items.PlayerInventory;
 import game.items.effects.EffectActivationTypes;
 import game.items.enums.ItemApplicationEnum;
 import game.items.effects.EffectInterface;
@@ -103,7 +104,7 @@ public class ExplosionManager {
     }
 
     private void applyPlayerOnHitEffects (Enemy enemy) {
-        List<Item> onHitItems = PlayerStats.getInstance().getPlayerInventory().getItemsByApplicationMethod(ItemApplicationEnum.AfterCollision);
+        List<Item> onHitItems = PlayerInventory.getInstance().getItemsByApplicationMethod(ItemApplicationEnum.AfterCollision);
         for (Item item : onHitItems) {
             item.applyEffectToObject(enemy); // Assuming applyEffect adds the effect to the GameObject
         }
@@ -120,7 +121,8 @@ public class ExplosionManager {
     }
 
     private void checkHostileExplosionCollision (Explosion explosion) {
-        if (!explosion.dealtDamageToTarget(friendlyManager.getSpaceship()) && CollisionDetector.getInstance().detectCollision(explosion, friendlyManager.getSpaceship())) {
+        if (!explosion.dealtDamageToTarget(friendlyManager.getSpaceship()) &&
+                CollisionDetector.getInstance().detectCollision(explosion, friendlyManager.getSpaceship())) {
             friendlyManager.getSpaceship().takeDamage(explosion.getDamage());
             applyPlayerTakeDamageOnHitEffects();
             explosion.addCollidedSprite(friendlyManager.getSpaceship());
@@ -128,14 +130,14 @@ public class ExplosionManager {
     }
 
     private void applyPlayerTakeDamageOnHitEffects(){
-        List<Item> onHitItems = PlayerStats.getInstance().getPlayerInventory().getItemByActivationTypes(EffectActivationTypes.OnPlayerHit);
+        List<Item> onHitItems = PlayerInventory.getInstance().getItemByActivationTypes(EffectActivationTypes.OnPlayerHit);
         for (Item item : onHitItems) {
             item.applyEffectToObject(PlayerManager.getInstance().getSpaceship());
         }
     }
 
     private void applyDamageModification (GameObject attack, GameObject target) {
-        for (Item item : PlayerStats.getInstance().getPlayerInventory().getItemsByApplicationMethod(ItemApplicationEnum.BeforeCollision)) {
+        for (Item item : PlayerInventory.getInstance().getItemsByApplicationMethod(ItemApplicationEnum.BeforeCollision)) {
             item.modifyAttackValues(attack, target);
         }
     }

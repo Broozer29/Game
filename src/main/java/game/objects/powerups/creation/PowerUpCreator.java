@@ -1,14 +1,13 @@
 package game.objects.powerups.creation;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
-import game.managers.TimerManager;
 import game.movement.Direction;
 import game.movement.MovementConfiguration;
 import game.movement.pathfinders.BouncingPathFinder;
-import game.movement.pathfinders.PathFinder;
 import game.objects.player.BoostsUpgradesAndBuffsSettings;
 import VisualAndAudioData.DataClass;
 import VisualAndAudioData.image.ImageEnums;
@@ -16,6 +15,7 @@ import game.objects.powerups.PowerUp;
 import game.objects.powerups.PowerUpEnums;
 import game.objects.powerups.PowerUpManager;
 import game.objects.powerups.timers.PowerUpSpawnTimer;
+import game.objects.powerups.timers.TimerManager;
 import visualobjects.SpriteConfigurations.SpriteConfiguration;
 
 public class PowerUpCreator {
@@ -60,11 +60,11 @@ public class PowerUpCreator {
         spriteConfiguration.setScale(1);
 
         PowerUpConfiguration powerUpConfiguration = new PowerUpConfiguration(powerUpType, getEffectDuration(powerUpType), false);
-        MovementConfiguration movementConfiguration = createMovementConfiguration(2, 2);
+        MovementConfiguration movementConfiguration = createMovementConfiguration(1, 1);
 
 
         PowerUp newPowerUp = new PowerUp(spriteConfiguration, powerUpConfiguration, movementConfiguration);
-        newPowerUp.setImageDimensions(50, 50);
+        newPowerUp.setImageDimensions(30, 30);
         PowerUpManager.getInstance().getPowerUpsOnTheField().add(newPowerUp);
     }
 
@@ -73,6 +73,7 @@ public class PowerUpCreator {
         movementConfiguration.setXMovementSpeed(xSpeed);
         movementConfiguration.setYMovementSpeed(ySpeed);
         movementConfiguration.setRotation(selectRandomDirection());
+//        movementConfiguration.setRotation(Direction.DOWN);
         movementConfiguration.setPathFinder(new BouncingPathFinder());
         movementConfiguration.initDefaultSettingsForSpecializedPathFinders(); //not needed but no reason not to
         return movementConfiguration;
@@ -83,18 +84,25 @@ public class PowerUpCreator {
     }
 
     public int getRandomTimeForSpawner () {
-//		BoostsUpgradesAndBuffsSettings tempSettings = BoostsUpgradesAndBuffsSettings.getInstance();
-//		return random.nextInt((tempSettings.getMaxTimeForPowerUpSpawn() - tempSettings.getMinTimeForPowerUpSpawn()) + 1)
-//				+ tempSettings.getMinTimeForPowerUpSpawn();
-        return 20;
+		BoostsUpgradesAndBuffsSettings tempSettings = BoostsUpgradesAndBuffsSettings.getInstance();
+		return random.nextInt((tempSettings.getMaxTimeForPowerUpSpawn() - tempSettings.getMinTimeForPowerUpSpawn()) + 1)
+				+ tempSettings.getMinTimeForPowerUpSpawn();
+//        return 1;
     }
 
     private Direction selectRandomDirection () {
-        Direction randomValue = directionEnums[random.nextInt(directionEnums.length)];
-        if (randomValue == Direction.NONE) {
-            return selectRandomDirection();
+        List<Direction> viableDirections = Arrays.stream(Direction.values())
+                .filter(direction -> direction != Direction.NONE)
+                .toList();
+
+        Random random = new Random();
+        int randomIndex = random.nextInt(viableDirections.size());
+
+        Direction randomDirection = viableDirections.get(randomIndex);
+        if(randomDirection == Direction.NONE){
+            randomDirection = Direction.LEFT_UP;
         }
-        return randomValue;
+        return randomDirection;
     }
 
     private List<Integer> getRandomSpawnCoords () {
@@ -133,7 +141,7 @@ public class PowerUpCreator {
                 return ImageEnums.Starcraft2_Ignite_Afterburners;
             case TRIPLE_SHOT:
                 return ImageEnums.TripleShotIcon;
-            case Guardian_Drone_Homing_Missile:
+            case Guardian_Drone:
                 return ImageEnums.Starcraft2_Seeker_Missile;
             default:
                 return ImageEnums.Test_Image;
@@ -150,7 +158,7 @@ public class PowerUpCreator {
 //			return selectRandomPowerUp();
 //		}
 //		return randomValue;
-        return PowerUpEnums.Guardian_Drone_Homing_Missile;
+        return PowerUpEnums.Guardian_Drone;
 
     }
 

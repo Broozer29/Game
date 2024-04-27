@@ -21,7 +21,7 @@ public class BackgroundManager {
     private final List<ImageEnums> planetBGOEnumsList = new ArrayList<>();
     private final Random random = new Random();
     private int updateFrameCounter = 0;
-    private final int bgoStepSize = 50;
+    private int rightmostNebulaEdge = 0;
     private SpaceThemeEnums spaceTheme;
     private NebulaThemeEnums nebulaTheme;
 
@@ -90,7 +90,7 @@ public class BackgroundManager {
     private void initBackgroundObjects () {
         // Background objects initialization logic...
         ImageEnums nebula = getNebulaImage(this.nebulaTheme);
-        fillBGOList(BGOEnums.Nebula, nebula, 1, 5, 4, 5);
+        fillBGOList(BGOEnums.Nebula, nebula, 1, 1000, 4, 1000);
         fillBGOList(BGOEnums.Star, ImageEnums.Star, (float) 1, 60, 3, 100);
         fillBGOList(BGOEnums.Star, ImageEnums.Star, (float) 0.75, 60, 2, 100);
         fillBGOList(BGOEnums.Star, ImageEnums.Star, 0.5f, 60, 1, 100);
@@ -216,6 +216,17 @@ public class BackgroundManager {
         }
     }
 
+    private void updateRightmostNebulaEdge() {
+        int maxEdge = 0;
+        for (BackgroundObject obj : backgroundObjectsMap.get(BGOEnums.Nebula)) {
+            int edge = obj.getXCoordinate() + obj.getWidth();
+            if (edge > maxEdge) {
+                maxEdge = edge;
+            }
+        }
+        rightmostNebulaEdge = maxEdge;
+    }
+
     private void moveBackgroundObject (BackgroundObject bgObject) {
         //If the object is outside the window screen, re-place it on the right side
         if ((bgObject.getXCoordinate() + bgObject.getWidth()) < 0) {
@@ -227,8 +238,13 @@ public class BackgroundManager {
                     break;
                 case Nebula:
                 case Parallex:
-                    // Move Nebula or Parallex objects to the right side of the screen
-                    bgObject.setX(dataClass.getWindowWidth());
+                    //This is broken for some inexplicable reason
+                    bgObject.setX(rightmostNebulaEdge);  // Place right after the last nebula
+                    updateRightmostNebulaEdge();  // Update after repositioning
+//                    System.out.println("X coordinate: " + bgObject.getXCoordinate() +
+//                            " Width: " + bgObject.getWidth() +
+//                            " Right most nebula: " + rightmostNebulaEdge +
+//                            " Gap: " + (bgObject.getXCoordinate() - rightmostNebulaEdge + bgObject.getWidth()));
                     break;
                 case Star:
                     bgObject.setX(dataClass.getWindowWidth() + 200);

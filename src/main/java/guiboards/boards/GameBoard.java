@@ -23,6 +23,7 @@ import javax.swing.Timer;
 import controllerInput.ConnectedControllers;
 import controllerInput.ControllerInputEnums;
 import game.UI.UIObject;
+import game.objects.powerups.timers.TimerManager;
 import game.spawner.directors.DirectorManager;
 import game.gamestate.SpawningMechanic;
 import game.spawner.LevelManager;
@@ -33,7 +34,6 @@ import game.managers.OnScreenTextManager;
 import game.objects.friendlies.FriendlyObject;
 import game.objects.missiles.MissileTypeEnums;
 import game.objects.player.PlayerManager;
-import game.managers.TimerManager;
 import game.objects.background.BackgroundManager;
 import game.objects.background.BackgroundObject;
 import game.objects.enemies.Enemy;
@@ -44,7 +44,7 @@ import game.util.OnScreenText;
 import game.objects.powerups.PowerUpManager;
 import game.objects.player.PlayerSpecialAttackTypes;
 import game.objects.player.spaceship.SpaceShipSpecialGun;
-import game.objects.player.specialAttacks.SpecialAttack;
+import game.objects.missiles.specialAttacks.SpecialAttack;
 import game.objects.missiles.Missile;
 import game.objects.missiles.MissileManager;
 import game.objects.player.playerpresets.GunPreset;
@@ -94,7 +94,6 @@ public class GameBoard extends JPanel implements ActionListener {
     private PlayerManager playerManager = PlayerManager.getInstance();
     private AudioManager audioManager = AudioManager.getInstance();
     private BackgroundManager backgroundManager = BackgroundManager.getInstance();
-    private TimerManager timerManager = TimerManager.getInstance();
     private ExplosionManager explosionManager = ExplosionManager.getInstance();
     private FriendlyManager friendlyManager = FriendlyManager.getInstance();
     private PlayerStats playerStats = PlayerStats.getInstance();
@@ -106,7 +105,6 @@ public class GameBoard extends JPanel implements ActionListener {
     private ConnectedControllers controllers = ConnectedControllers.getInstance();
 
 
-
     public GameBoard () {
         animationManager = AnimationManager.getInstance();
         enemyManager = EnemyManager.getInstance();
@@ -115,7 +113,6 @@ public class GameBoard extends JPanel implements ActionListener {
         playerManager = PlayerManager.getInstance();
         audioManager = AudioManager.getInstance();
         backgroundManager = BackgroundManager.getInstance();
-        timerManager = TimerManager.getInstance();
         explosionManager = ExplosionManager.getInstance();
         friendlyManager = FriendlyManager.getInstance();
         playerStats = PlayerStats.getInstance();
@@ -137,7 +134,8 @@ public class GameBoard extends JPanel implements ActionListener {
         setBackground(Color.BLACK);
         setPreferredSize(new Dimension(boardWidth, boardHeight));
         animationManager.resetManager();
-        PlayerManager.getInstance().getSpaceship().resetSpaceship();
+        PlayerManager.getInstance().resetManager();
+        PlayerManager.getInstance().createSpaceShip();
 
         // Dit moet uit een "out-of-game state manager" gehaald worden
         if (playerStats.getNormalGunPreset() == null) {
@@ -166,7 +164,6 @@ public class GameBoard extends JPanel implements ActionListener {
         playerManager.resetManager();
         audioManager.resetManager();
         backgroundManager.resetManager();
-        timerManager.resetManager();
         explosionManager.resetManager();
         friendlyManager.resetManager();
         uiManager.resetManager();
@@ -201,9 +198,9 @@ public class GameBoard extends JPanel implements ActionListener {
             enemyManager.resetManager();
             missileManager.resetManager();
             levelManager = LevelManager.getInstance();
+            powerUpManager.resetManager();
             playerManager.resetManager();
             audioManager.resetManager();
-            timerManager.resetManager();
             explosionManager.resetManager();
             friendlyManager.resetManager();
             friendlyManager.resetPortal();
@@ -387,7 +384,7 @@ public class GameBoard extends JPanel implements ActionListener {
             }
         }
 
-        for(UIObject obj : uiManager.getInformationCards()){
+        for (UIObject obj : uiManager.getInformationCards()) {
             drawImage(g, obj);
         }
 
@@ -395,8 +392,17 @@ public class GameBoard extends JPanel implements ActionListener {
         drawPlayerHealthBars(g);
         drawSpecialAttackFrame(g);
 
-        if(uiManager.getDifficultyWings() != null) {
+        if (uiManager.getDifficultyWings() != null) {
+            UIObject wings = uiManager.getDifficultyWings();
+//            Font font = new Font("Helvetica", Font.PLAIN, 10);
+//            g.setFont(font);
+            g.setColor(Color.WHITE);
+            g.drawString("Difficulty Coefficient: " + levelManager.getCurrentDifficultyCoeff(), wings.getXCoordinate() - (wings.getWidth()/2), wings.getYCoordinate());
             drawImage(g, uiManager.getDifficultyWings());
+
+            if (levelManager.getCurrentLevelSong() != null) {
+                g.drawString("Song: " + levelManager.getCurrentLevelSong().toString(), wings.getXCoordinate() - (wings.getWidth()/2), wings.getYCoordinate() + wings.getHeight());
+            }
         }
 
         // Draws higher level animations
@@ -420,6 +426,7 @@ public class GameBoard extends JPanel implements ActionListener {
         g.drawString("Enemies killed: " + levelManager.getEnemiesKilled(), 650, DataClass.getInstance().getPlayableWindowMaxHeight() + 45);
         g.drawString("Player level: " + playerStats.getCurrentLevel(), 950, DataClass.getInstance().getPlayableWindowMaxHeight() + 25);
         g.drawString("XP to next level: " + (playerStats.getXpToNextLevel() - playerStats.getCurrentXP()), 950, DataClass.getInstance().getPlayableWindowMaxHeight() + 45);
+
 
     }
 
@@ -533,11 +540,27 @@ public class GameBoard extends JPanel implements ActionListener {
         drawImage(g, uiManager.getSpecialAttackFrame());
         SpaceShipSpecialGun gun = playerManager.getSpaceship().getSpecialGun();
         int charges = gun.getSpecialAttackCharges();
+//        if (charges > 0) {
+//            drawAnimation(g, uiManager.getSpecialAttackHighlight());
+//        } else {
+//            // Only draw the charging rectangle if there are no charges
+//            float percentage = (float) gun.getCurrentSpecialAttackFrame() / playerStats.getSpecialAttackSpeed();
+//            int barWidth = (int) (uiManager.getSpecialAttackFrame().getWidth() * percentage);
+//
+//            // Draw the cooldown progress bar
+//            g.setColor(new Color(160, 160, 160, 160)); // Semi-transparent gray
+//            g.fillRect(uiManager.getSpecialAttackFrame().getXCoordinate(),
+//                    uiManager.getSpecialAttackFrame().getYCoordinate(), barWidth,
+//                    uiManager.getSpecialAttackFrame().getHeight());
+//        }
+
         if (charges > 0) {
             drawAnimation(g, uiManager.getSpecialAttackHighlight());
         } else {
-            // Only draw the charging rectangle if there are no charges
-            float percentage = (float) gun.getCurrentSpecialAttackFrame() / playerStats.getSpecialAttackSpeed();
+            // Draw the cooldown progress bar only if there are no charges
+            double remainingSeconds = gun.getCurrentSpecialAttackFrame();
+            double totalCooldown = playerStats.getSpecialAttackSpeed();
+            float percentage = (float) (1.0 - remainingSeconds / totalCooldown); // Properly compute the fill percentage
             int barWidth = (int) (uiManager.getSpecialAttackFrame().getWidth() * percentage);
 
             // Draw the cooldown progress bar
@@ -599,11 +622,11 @@ public class GameBoard extends JPanel implements ActionListener {
             levelManager.updateGameTick();
             animationManager.updateGameTick();
             backgroundManager.updateGameTick();
-            timerManager.updateGameTick(gameState.getMusicSeconds());
             audioDatabase.updateGameTick();
             explosionManager.updateGametick();
             friendlyManager.updateGameTick();
             powerUpManager.updateGameTick();
+            TimerManager.getInstance().updateTimers();
             gameState.addGameTicks(1);
             DirectorManager.getInstance().updateGameTick();
             executeControllerInput();

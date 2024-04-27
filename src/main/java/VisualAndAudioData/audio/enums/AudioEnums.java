@@ -36,5 +36,7 @@ public enum AudioEnums {
 	The_Rain_Formerly_Known_As_Purple,
 	Blood_On_The_Dancefloor,
 	Lemmino_Firecracker,
-	Mydnyte
+	Mydnyte,
+	Le_Youth_Chills,
+	Robert_Nickson_Painting_The_Skies,
 }

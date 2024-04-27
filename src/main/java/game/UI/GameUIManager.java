@@ -50,9 +50,10 @@ public class GameUIManager {
 
     //Called by LevelManager each time a level is generated
     public void createDifficultyWings(){
-        ImageEnums wingsImageEnum = LevelSongs.getImageEnumByDifficultyScore(LevelManager.getInstance().getDifficultyModifier());
-        difficultyWings = new UIObject(createUIConfiguration(1050, DataClass.getInstance().getPlayableWindowMaxHeight(), 1, wingsImageEnum));
-        difficultyWings.setCenterCoordinates(1100, DataClass.getInstance().getPlayableWindowMaxHeight());
+        ImageEnums wingsImageEnum = LevelSongs.getImageEnumByDifficultyScore(LevelManager.getInstance().getCurrentDifficultyCoeff());
+        difficultyWings = new UIObject(createUIConfiguration(1050, DataClass.getInstance().getPlayableWindowMaxHeight(), 1f, wingsImageEnum));
+        difficultyWings.setCenterCoordinates(1200, (DataClass.getInstance().getPlayableWindowMaxHeight() + (difficultyWings.getHeight() / 2) + 10));
+
     }
 
     private void createInformationCards () {
@@ -84,9 +85,12 @@ public class GameUIManager {
 
         specialAttackFrame = new UIObject(createUIConfiguration(healthBarWidth + 10 + 50, DataClass.getInstance().getPlayableWindowMaxHeight() + 10, 1, frameType));
         specialAttackHighlight = AnimationManager.getInstance().createAnimation(150, specialAttackFrame.getYCoordinate(), ImageEnums.Highlight, true,1);
-        specialAttackHighlight.setImageDimensions(specialAttackFrame.getWidth(), specialAttackFrame.getHeight());
+//        specialAttackHighlight.setImageDimensions(specialAttackFrame.getWidth(), specialAttackFrame.getHeight());
+        specialAttackHighlight.setAnimationScale(0.9142f);
+
         specialAttackHighlight.setX(specialAttackFrame.getXCoordinate() - 2);
         specialAttackHighlight.setY(specialAttackFrame.getYCoordinate() - 2);
+
     }
 
     private void createHealthBar () {

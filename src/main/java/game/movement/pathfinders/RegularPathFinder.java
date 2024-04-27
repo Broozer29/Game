@@ -23,54 +23,54 @@ public class RegularPathFinder implements PathFinder {
     }
 
     @Override
-    public Path findPath (PathFinderConfig pathFinderConfig) {
+    public Path findPath(PathFinderConfig pathFinderConfig) {
         if (!(pathFinderConfig instanceof RegularPathFinderConfig)) {
             throw new IllegalArgumentException("Expected RegularPathFinderConfig");
         } else {
+            RegularPathFinderConfig config = (RegularPathFinderConfig) pathFinderConfig;
+            Point start = config.getStart();
+            Point end = config.getEnd();
+            Direction fallbackDirection = config.getMovementDirection();
+            boolean isFriendly = config.isFriendly();
+            int XStepSize = config.getxMovementSpeed();
+            int YStepSize = config.getyMovementSpeed();
 
-            Point start = ((RegularPathFinderConfig) pathFinderConfig).getStart();
-            Point end = ((RegularPathFinderConfig) pathFinderConfig).getEnd();
-            Direction fallbackDirection = ((RegularPathFinderConfig) pathFinderConfig).getMovementDirection();
-            boolean isFriendly = ((RegularPathFinderConfig) pathFinderConfig).isFriendly();
-            int XStepSize = ((RegularPathFinderConfig) pathFinderConfig).getxMovementSpeed();
-            int YStepSize = ((RegularPathFinderConfig) pathFinderConfig).getyMovementSpeed();
+            if (end == null) {
+                end = calculateInitialEndpoint(start, fallbackDirection, isFriendly);
+            }
 
             List<Point> pathList = new ArrayList<>();
             Point currentPoint = start;
             pathList.add(start);
 
-            int maxXSteps = 1;
-
-            if (XStepSize > 0) {
-                maxXSteps = (DataClass.getInstance().getWindowWidth() / XStepSize) * 2;
-            }
-            int maxYSteps = 1;
-            if (YStepSize > 0) {
-                maxYSteps = (DataClass.getInstance().getWindowWidth() / YStepSize) * 2;
-            }
-
-            boolean shouldContinue = true;
-
-            int maxSteps = 0;
-            if (maxXSteps > maxYSteps) {
-                maxSteps = maxXSteps;
-            } else {
-                maxSteps = maxYSteps;
-            }
+            int maxXSteps = XStepSize > 0 ? (DataClass.getInstance().getWindowWidth() / XStepSize) * 2 : 1;
+            int maxYSteps = YStepSize > 0 ? (DataClass.getInstance().getWindowWidth() / YStepSize) * 2 : 1;
+            int maxSteps = Math.max(maxXSteps, maxYSteps);
 
             int steps = 0;
             Direction direction = Direction.LEFT;
             while (steps < maxSteps) {
-                if (!currentPoint.equals(end) || shouldContinue) {
-                    direction = calculateDirection(currentPoint, end);
-                }
-                currentPoint = stepTowards(currentPoint, direction, XStepSize, YStepSize);
-                pathList.add(currentPoint);
-                steps++;
+                direction = calculateDirection(currentPoint, end);
+                Point nextPoint = stepTowards(currentPoint, direction, XStepSize, YStepSize);
 
+                if (isCloseToDestination(nextPoint, end)) {
+                    pathList.add(nextPoint); // Add the final point if it's close to the destination
+                    break; // Stop the loop if close enough to the end
+                }
+
+                pathList.add(nextPoint);
+                currentPoint = nextPoint;
+                steps++;
             }
             return new Path(pathList, fallbackDirection, false, isFriendly);
         }
+    }
+
+    // Helper method to determine if two points are close to each other
+    private boolean isCloseToDestination(Point current, Point destination) {
+        final int proximityThreshold = 2; // Define how close points need to be
+        return Math.abs(current.getX() - destination.getX()) <= proximityThreshold &&
+                Math.abs(current.getY() - destination.getY()) <= proximityThreshold;
     }
 
     @Override
@@ -83,7 +83,7 @@ public class RegularPathFinder implements PathFinder {
 
     @Override
     public boolean shouldRecalculatePath (Path path) {
-        return path == null; // only recalculate if we don't have a path yet
+        return(path == null || path.getWaypoints().isEmpty());
     }
 
     public Direction calculateDirection (Point start, Point end) {

@@ -121,6 +121,14 @@ public class CustomAudioClip {
 		this.clip.close();
 	}
 
+	public boolean isLoop () {
+		return loop;
+	}
+
+	public void setLoop (boolean loop) {
+		this.loop = loop;
+	}
+
 	public void setFramePosition(int framePosition) {
 		this.clip.setFramePosition(framePosition);
 	}

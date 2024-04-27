@@ -2,10 +2,10 @@ package game.deprecated.pregeneratedlevels;
 
 import java.util.List;
 
-import game.spawner.EnemySpawnTimer;
+import game.objects.powerups.timers.DeprecatedEnemySpawnTimer;
 
 public interface PregeneratedFormation {
-	public List<EnemySpawnTimer> getTimers();
+	public List<DeprecatedEnemySpawnTimer> getTimers();
 }
 
 

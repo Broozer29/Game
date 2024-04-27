@@ -10,10 +10,13 @@ public class GenericMissile extends Missile {
 
 	public GenericMissile (SpriteConfiguration spriteConfiguration, MissileConfiguration missileConfiguration, MovementConfiguration movementConfiguration) {
 		super(spriteConfiguration, missileConfiguration, movementConfiguration);
+		this.rotateImage(movementConfiguration.getRotation(), true);
+//		this.animation.rotateAnimation(movementConfiguration.getRotation(), true);
 	}
 
 	public GenericMissile(SpriteAnimationConfiguration spriteConfiguration, MissileConfiguration missileConfiguration, MovementConfiguration movementConfiguration){
 		super(spriteConfiguration, missileConfiguration, movementConfiguration);
+		this.animation.rotateAnimation(movementConfiguration.getRotation(), true);
 	}
 
 	public void missileAction() {

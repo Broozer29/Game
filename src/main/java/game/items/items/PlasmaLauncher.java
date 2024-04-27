@@ -27,7 +27,8 @@ public class PlasmaLauncher extends Item {
 
     public PlasmaLauncher () {
         super(ItemEnums.PlasmaLauncher, 1, EffectActivationTypes.AfterAHit, ItemApplicationEnum.AfterCollision);
-        procChance = 0.2f;
+//        procChance = 0.2f;
+        procChance = 1f;
         calculateDamage();
         rand = new Random();
     }
@@ -74,10 +75,13 @@ public class PlasmaLauncher extends Item {
             movementConfiguration.setTargetToChase(((HomingPathFinder) pathFinder).getTarget(isFriendly, spriteConfiguration.getxCoordinate(), spriteConfiguration.getyCoordinate()));
         }
 
+
         MissileConfiguration missileConfiguration = getMissileConfiguration(isFriendly);
 
         Missile missile = MissileCreator.getInstance().createMissile(spriteConfiguration, missileConfiguration, movementConfiguration);
         missile.setOwnerOrCreator(player);
+        missile.setAllowedVisualsToRotate(false);
+        missile.getAnimation().setAnimationScale(0.6f);
         MissileManager.getInstance().addExistingMissile(missile);
     }
 

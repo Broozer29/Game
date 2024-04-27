@@ -61,6 +61,13 @@ public class MovementConfiguration {
 
 	}
 
+	public void resetMovementPath(){
+		this.currentPath = null;
+		this.nextPoint = null;
+		this.destination = null;
+		this.currentLocation = null;
+	}
+
 	public void initDefaultSettingsForSpecializedPathFinders(){
 		if(patternSize != null) {
 			setDiamondWidth(patternSize.getDiamondWidth());

@@ -13,6 +13,7 @@ import game.util.OutOfBoundsCalculator;
 
 public class StraightLinePathFinder implements PathFinder {
 
+
     @Override
     public Path findPath (PathFinderConfig pathFinderConfig) {
         if (!(pathFinderConfig instanceof StraightLinePathFinderConfig)) {
@@ -116,11 +117,8 @@ public class StraightLinePathFinder implements PathFinder {
 
     @Override
     public boolean shouldRecalculatePath (Path path) {
-        if (path == null || path.getWaypoints().isEmpty()) {
-            return true;
-        } else return false;
+        return(path == null || path.getWaypoints().isEmpty());
     }
-
     @Override
     public Point calculateInitialEndpoint (Point start, Direction rotation, boolean friendly) {
         int endXCoordinate = 0;

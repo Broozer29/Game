@@ -13,15 +13,16 @@ import java.util.stream.Collectors;
 public class PlayerInventory {
     private static PlayerInventory instance = new PlayerInventory();
     private Map<ItemEnums, Item> items = new HashMap<>();
-    private float cashMoney;
+    private float cashMoney = 50000;
 
     private PlayerInventory () {
-        addItem(ItemEnums.PlasmaLauncher);
-
+//        addItem(ItemEnums.CannisterOfGasoline);
+        addItem(ItemEnums.FocusCrystal);
     }
 
     public void resetInventory(){
         items.clear();
+        cashMoney = 0f;
     }
 
     public static PlayerInventory getInstance () {

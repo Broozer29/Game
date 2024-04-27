@@ -52,8 +52,7 @@ public class MenuObjectCollection {
 
     private void initMenuImages () {
         SpriteConfiguration spriteConfiguration = createSpriteConfiguration();
-
-        if (menuObjectType == MenuObjectEnums.Text) {
+        if (menuObjectType == MenuObjectEnums.Text || menuObjectType == MenuObjectEnums.Song_Length_Selector || menuObjectType == MenuObjectEnums.Song_Difficulty_Selector) {
             initMenuText();
         } else {
             if (menuObjectType == MenuObjectEnums.Highlight_Animation) {
@@ -90,12 +89,14 @@ public class MenuObjectCollection {
         menuImages.add(newTile);
     }
 
-    public void setNewImage (ItemEnums item) {
-        this.imageType = item.getItemIcon();
+    public void setNewImage (ImageEnums imageEnums) {
+        this.imageType = imageEnums;
         SpriteConfiguration spriteConfiguration = createSpriteConfiguration();
         this.menuImages.clear();
         MenuObjectPart newTile = new MenuObjectPart(spriteConfiguration);
-        newTile.setImageDimensions(50, 50);
+        if(this.menuFunctionality.equals(MenuFunctionEnums.PurchaseItem)) {
+            newTile.setImageDimensions(50, 50); //Resize if it's a shop item
+        }
         this.menuImages.add(newTile);
     }
 
@@ -106,27 +107,39 @@ public class MenuObjectCollection {
             case CommonItem -> randomItemRarity = ItemRarityEnums.getRandomCommonItemSlot();
             case RareItem -> randomItemRarity = ItemRarityEnums.getRandomRareItemSlot();
             case LegendaryItem -> randomItemRarity = ItemRarityEnums.Legendary;
+            default -> randomItemRarity = ItemRarityEnums.getRandomCommonItemSlot();
         }
+
 
         ItemEnums item = ItemEnums.getRandomItemByRarity(randomItemRarity);
         this.imageType = item.getItemIcon();
         spriteConfiguration.setImageType(imageType);
         String itemDesc = ItemDescriptionRetriever.getDescriptionOfItem(item);
-        this.menuItemInformation = new MenuItemInformation(item, randomItemRarity, itemDesc, true, 50);
+        this.menuItemInformation = new MenuItemInformation(item, randomItemRarity, itemDesc, true, randomItemRarity.getItemCost());
         MenuObjectPart newTile = new MenuObjectPart(spriteConfiguration);
         newTile.setImageDimensions(50, 50);
         this.menuImages.add(newTile);
     }
 
-    private void lockItemInShop () {
+    public void lockItemInShop() {
         SpriteConfiguration spriteConfiguration = createSpriteConfiguration();
-        spriteConfiguration.setImageType(ImageEnums.Test_Image);
-        this.imageType = ImageEnums.Test_Image;
+        spriteConfiguration.setImageType(ImageEnums.LockedIcon);
+        this.imageType = ImageEnums.LockedIcon;
         this.menuImages.clear();
         MenuObjectPart newTile = new MenuObjectPart(spriteConfiguration);
         newTile.setImageDimensions(50, 50);
         this.menuImages.add(newTile);
+        menuItemInformation.setItemDescription("Locked");
+        menuItemInformation.setCost(0);
+        menuItemInformation.setAvailable(false);
+        menuItemInformation.setItemRarity(ItemRarityEnums.Locked);
+        menuItemInformation.setItem(ItemEnums.Locked);
+    }
 
+    private void purchaseItemInShop(){
+        PlayerInventory.getInstance().addItem(menuItemInformation.getItem());
+        PlayerInventory.getInstance().spendCashMoney(menuItemInformation.getCost());
+        menuItemInformation.setAvailable(false);
     }
 
     public void menuTileAction () throws UnsupportedAudioFileException, IOException {
@@ -156,9 +169,7 @@ public class MenuObjectCollection {
             case PurchaseItem:
                 if (menuItemInformation.isAvailable() && menuItemInformation.canAfford()) {
                     AudioManager.getInstance().addAudio(AudioEnums.Power_Up_Acquired);
-                    PlayerInventory.getInstance().addItem(menuItemInformation.getItem());
-                    menuItemInformation.setAvailable(false);
-                    PlayerInventory.getInstance().spendCashMoney(menuItemInformation.getCost());
+                    purchaseItemInShop();
                     lockItemInShop();
                 } else {
                     AudioManager.getInstance().addAudio(AudioEnums.Firewall);
@@ -178,6 +189,9 @@ public class MenuObjectCollection {
 
 
     private void initMenuText () {
+        if(menuTextImages != null){
+            menuTextImages.clear();
+        }
         int startingXCoordinate = this.xCoordinate;
         int startingYCoordinate = this.yCoordinate;
         int kernelDistance = (int) Math.ceil(10 * scale);
@@ -296,5 +310,21 @@ public class MenuObjectCollection {
 
     public List<MenuObjectPart> getMenuTextImages () {
         return menuTextImages;
+    }
+
+    public void setText (String text) {
+        this.text = text;
+        if (menuObjectType == MenuObjectEnums.Text || menuObjectType == MenuObjectEnums.Song_Length_Selector || menuObjectType == MenuObjectEnums.Song_Difficulty_Selector) {
+            initMenuText();
+        }
+    }
+
+    public void setCenterCoordinates (int newXCoordinate, int newYCoordinate) {
+        //Only allowed for menu objects with 1!!! image otherwise they shouldn't be centered
+        if(this.menuImages.size() == 1){
+            this.xCoordinate = newXCoordinate - (this.menuImages.get(0).getWidth() / 2);
+            this.yCoordinate = newYCoordinate - (this.menuImages.get(0).getHeight() / 2);
+        }
+
     }
 }

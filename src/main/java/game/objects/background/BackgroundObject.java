@@ -41,7 +41,7 @@ public class BackgroundObject extends Sprite {
     }
 
     public void rotateRandomDegrees () {
-        rotateImage(selectRandomDirection());
+        rotateImage(selectRandomDirection(), false);
     }
 
     private Direction selectRandomDirection () {

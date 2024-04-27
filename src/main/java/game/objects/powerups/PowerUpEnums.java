@@ -12,7 +12,7 @@ public enum PowerUpEnums {
 	HEALTH_AND_SHIELD_RESTORE,
 	
 	//Guardian drones
-	Guardian_Drone_Homing_Missile,
+	Guardian_Drone,
 	
 	
 	//For the use of generating random powerup effects

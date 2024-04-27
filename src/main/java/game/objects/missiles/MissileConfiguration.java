@@ -25,6 +25,7 @@ public class MissileConfiguration {
     private boolean allowedToDealDamage;
     private String objectType;
     private boolean boxCollision;
+    private boolean destroysMissiles;
 
     public MissileConfiguration (MissileTypeEnums missileType, int maxHitPoints, int maxShields, AudioEnums deathSound,
                                  float damage, ImageEnums destructionType, boolean isFriendly, boolean allowedToDealDamage,
@@ -39,6 +40,7 @@ public class MissileConfiguration {
         this.allowedToDealDamage = allowedToDealDamage;
         this.objectType = objectType;
         this.boxCollision = boxCollision;
+        this.destroysMissiles = false; //Default setting
     }
 
     public MissileConfiguration () {
@@ -128,5 +130,13 @@ public class MissileConfiguration {
 
     public void setBoxCollision (boolean boxCollision) {
         this.boxCollision = boxCollision;
+    }
+
+    public boolean isDestroysMissiles () {
+        return destroysMissiles;
+    }
+
+    public void setDestroysMissiles (boolean destroysMissiles) {
+        this.destroysMissiles = destroysMissiles;
     }
 }

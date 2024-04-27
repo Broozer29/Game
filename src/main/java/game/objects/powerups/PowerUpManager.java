@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.sound.sampled.UnsupportedAudioFileException;
 
+import game.objects.powerups.creation.PowerUpCreator;
 import game.util.CollisionDetector;
 import game.objects.player.PlayerManager;
 import VisualAndAudioData.audio.enums.AudioEnums;
@@ -16,7 +17,8 @@ public class PowerUpManager {
     private static PowerUpManager instance = new PowerUpManager();
     private List<PowerUp> powerUpsOnTheField = new ArrayList<PowerUp>();
 
-    private boolean createPoer = false;
+    private boolean createPowerAtStartOfStage = false;
+
     private PowerUpManager () {
     }
 
@@ -28,20 +30,20 @@ public class PowerUpManager {
         movePowerUps();
         removePowerUps();
 
-//        if(!createPoer){
-//            PowerUpCreator.getInstance().initializePowerUpSpawnTimers();
-//            createPoer = true;
-//        }
+        if (createPowerAtStartOfStage) {
+            PowerUpCreator.getInstance().initializePowerUpSpawnTimers();
+            createPowerAtStartOfStage = false;
+        }
     }
 
-    private void movePowerUps(){
-        for(PowerUp powerUp : powerUpsOnTheField){
+    private void movePowerUps () {
+        for (PowerUp powerUp : powerUpsOnTheField) {
             powerUp.move();
             checkPowerUpCollision(powerUp);
         }
     }
 
-    private void removePowerUps(){
+    private void removePowerUps () {
         for (int i = 0; i < powerUpsOnTheField.size(); i++) {
             if (!powerUpsOnTheField.get(i).isVisible()) {
                 powerUpsOnTheField.remove(i);
@@ -72,7 +74,7 @@ public class PowerUpManager {
     }
 
     public void resetManager () {
-        for(PowerUp powerUp : powerUpsOnTheField){
+        for (PowerUp powerUp : powerUpsOnTheField) {
             powerUp.setVisible(false);
         }
         removePowerUps();

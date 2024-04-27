@@ -1,6 +1,5 @@
 package game.objects.player;
 
-import game.items.PlayerInventory;
 import game.objects.missiles.MissileTypeEnums;
 import game.objects.player.playerpresets.GunPreset;
 import game.objects.player.playerpresets.SpecialGunPreset;
@@ -62,7 +61,6 @@ public class PlayerStats {
     private float maxOverloadingShieldMultiplier;
 
 
-    private PlayerInventory playerInventory;
 
     //Leveling system
     private int currentLevel;
@@ -71,6 +69,8 @@ public class PlayerStats {
 
 
     public void initDefaultSettings () {
+
+        bonusDamageMultiplier = 1f; //Otherwhise it's damage * 0 = 0
         // Health
         setMaxHitPoints(100);
         setMaxShieldHitPoints(100);
@@ -80,7 +80,7 @@ public class PlayerStats {
         setMovementSpeed(4);
 
         // Special attack
-        setSpecialAttackSpeed(100);
+        setSpecialAttackSpeed(1);
         setMaxSpecialAttackCharges(1);
 
         setCriticalStrikeDamageMultiplier(2.0f);
@@ -94,7 +94,6 @@ public class PlayerStats {
         // Visuals
         setSpaceShipImage(ImageEnums.Player_Spaceship_Model_3);
         setExhaustImage(ImageEnums.Default_Player_Engine);
-        playerInventory = PlayerInventory.getInstance();
 
         if (normalGunPreset != null) {
             normalGunPreset.loadPreset();
@@ -134,7 +133,7 @@ public class PlayerStats {
     }
 
     public float getNormalAttackDamage () {
-        float attackDamage = this.baseDamage + this.bonusDamageMultiplier;
+        float attackDamage = this.baseDamage * this.bonusDamageMultiplier;
         if (attackDamage < 1) {
             return 1;
         } else {
@@ -148,14 +147,14 @@ public class PlayerStats {
 
     public float getAttackSpeed () {
         float baseAttackSpeed = this.attackSpeed;
-        float attackSpeedIncrease = this.attackSpeedBonus; // Assuming this is a percentage
+        float attackSpeedIncrease = this.attackSpeedBonus;
 
         // Calculate the new attack speed
         float newAttackSpeed = baseAttackSpeed / (1 + attackSpeedIncrease / 100);
 
         // Ensure the attack speed does not fall below 1
-        if (newAttackSpeed < 1) {
-            return 1;
+        if (newAttackSpeed < 0.05) {
+            return 0.05f;
         } else {
             return newAttackSpeed;
         }
@@ -179,8 +178,8 @@ public class PlayerStats {
 
     public float getSpecialAttackSpeed () {
         float currentSpecialAttackSpeed = this.specialAttackSpeed;
-        if (currentSpecialAttackSpeed < 1) {
-            return 1;
+        if (currentSpecialAttackSpeed < 0.05) {
+            return 0.05f;
         } else {
             return currentSpecialAttackSpeed;
         }
@@ -291,8 +290,9 @@ public class PlayerStats {
         return bonusDamageMultiplier;
     }
 
-    public void addBonusAttackDamage (float bonusAttackDamage) {
-        this.bonusDamageMultiplier += bonusAttackDamage;
+    //This can be used for negative AND positive modifiers
+    public void modifyBonusDamageMultiplier (float bonusDamageMultiplier) {
+        this.bonusDamageMultiplier += bonusDamageMultiplier;
     }
 
     public MissileTypeEnums getAttackType () {
@@ -327,10 +327,6 @@ public class PlayerStats {
         return baseDamage;
     }
 
-    public PlayerInventory getPlayerInventory () {
-        return playerInventory;
-    }
-
     public int getMaxSpecialAttackCharges () {
         return maxSpecialAttackCharges;
     }
@@ -353,6 +349,10 @@ public class PlayerStats {
 
     public void setAttackSpeedBonus (float attackSpeedBonus) {
         this.attackSpeedBonus = attackSpeedBonus;
+    }
+
+    public void modifyAttackSpeedBonus(float attackSpeedBonus){
+        this.attackSpeedBonus += attackSpeedBonus;
     }
 
     public float getMaxOverloadingShieldMultiplier () {

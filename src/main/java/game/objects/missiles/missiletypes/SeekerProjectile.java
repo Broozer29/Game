@@ -16,46 +16,47 @@ public class SeekerProjectile extends Missile {
 	}
 
 	private void rotateAccordingToSpeed() {
+		boolean crop = true;
 		switch (movementConfiguration.getRotation()) {
 		case DOWN:
-			this.animation.rotateAnimation(movementConfiguration.getRotation());
+			this.animation.rotateAnimation(movementConfiguration.getRotation(), crop);
 			break;
 		case LEFT:
-			this.animation.rotateAnimation(movementConfiguration.getRotation());
+			this.animation.rotateAnimation(movementConfiguration.getRotation(), crop);
 			break;
 		case LEFT_DOWN:
 			if (movementConfiguration.getYMovementSpeed() > movementConfiguration.getXMovementSpeed()) {
-				this.animation.rotateAnimation(movementConfiguration.getRotation());
+				this.animation.rotateAnimation(movementConfiguration.getRotation(), crop);
 			} else {
-				this.animation.rotateAnimation(Direction.LEFT);
+				this.animation.rotateAnimation(Direction.LEFT, crop);
 			}
 			break;
 		case LEFT_UP:
 			if (movementConfiguration.getYMovementSpeed() > movementConfiguration.getXMovementSpeed()) {
-				this.animation.rotateAnimation(movementConfiguration.getRotation());
+				this.animation.rotateAnimation(movementConfiguration.getRotation(), crop);
 			} else {
-				this.animation.rotateAnimation(Direction.LEFT);
+				this.animation.rotateAnimation(Direction.LEFT, crop);
 			}
 			break;
 		case RIGHT:
-			this.animation.rotateAnimation(movementConfiguration.getRotation());
+			this.animation.rotateAnimation(movementConfiguration.getRotation(), crop);
 			break;
 		case RIGHT_DOWN:
 			if (movementConfiguration.getYMovementSpeed() > movementConfiguration.getXMovementSpeed()) {
-				this.animation.rotateAnimation(movementConfiguration.getRotation());
+				this.animation.rotateAnimation(movementConfiguration.getRotation(), crop);
 			} else {
-				this.animation.rotateAnimation(Direction.RIGHT);
+				this.animation.rotateAnimation(Direction.RIGHT, crop);
 			}
 			break;
 		case RIGHT_UP:
 			if (movementConfiguration.getYMovementSpeed() > movementConfiguration.getXMovementSpeed()) {
-				this.animation.rotateAnimation(movementConfiguration.getRotation());
+				this.animation.rotateAnimation(movementConfiguration.getRotation(), crop);
 			} else {
-				this.animation.rotateAnimation(Direction.RIGHT);
+				this.animation.rotateAnimation(Direction.RIGHT, crop);
 			}
 			break;
 		case UP:
-			this.animation.rotateAnimation(movementConfiguration.getRotation());
+			this.animation.rotateAnimation(movementConfiguration.getRotation(), crop);
 			break;
 		default:
 			break;

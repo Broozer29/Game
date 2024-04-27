@@ -13,6 +13,8 @@ import game.objects.enemies.EnemyManager;
 import game.objects.missiles.MissileManager;
 import VisualAndAudioData.audio.enums.AudioEnums;
 import VisualAndAudioData.image.ImageEnums;
+import game.objects.player.PlayerManager;
+import game.util.OrbitingObjectsFormatter;
 import visualobjects.SpriteConfigurations.SpriteAnimationConfiguration;
 import visualobjects.SpriteConfigurations.SpriteConfiguration;
 import visualobjects.SpriteAnimation;
@@ -29,7 +31,7 @@ public class Bulldozer extends Enemy {
 //        exhaustConfiguration.getSpriteConfiguration().setImageType(ImageEnums.Bulldozer_Normal_Exhaust);
 //        this.exhaustAnimation = new SpriteAnimation(exhaustConfiguration);
 
-        SpriteAnimationConfiguration destroyedExplosionfiguration = new SpriteAnimationConfiguration(spriteConfiguration, 1, false);
+        SpriteAnimationConfiguration destroyedExplosionfiguration = new SpriteAnimationConfiguration(spriteConfiguration, 3, false);
         destroyedExplosionfiguration.getSpriteConfiguration().setImageType(ImageEnums.Bulldozer_Destroyed_Explosion);
         this.destructionAnimation = new SpriteAnimation(destroyedExplosionfiguration);
 
@@ -56,9 +58,13 @@ public class Bulldozer extends Enemy {
             Enemy alienBomb = getEnemy(x, y, pathFinder);
             alienBomb.setOwnerOrCreator(this);
             alienBomb.setAllowedVisualsToRotate(false);
+            alienBomb.getMovementConfiguration().setLastKnownTargetX(this.getCenterXCoordinate());
+            alienBomb.getMovementConfiguration().setLastKnownTargetY(this.getCenterYCoordinate());
             this.objectOrbitingThis.add(alienBomb);
             EnemyManager.getInstance().addEnemy(alienBomb);
         }
+
+        OrbitingObjectsFormatter.reformatOrbitingObjects(this);
     }
 
     private Enemy getEnemy (int x, int y, PathFinder pathFinder) {

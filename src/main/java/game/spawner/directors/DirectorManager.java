@@ -11,13 +11,13 @@ public class DirectorManager {
     private static DirectorManager instance = new DirectorManager();
     private List<Director> directorList = new ArrayList<>();
     private List<MonsterCard> baseMonsterCards = new ArrayList<>();
+    private boolean enabled;
 
 
 
     private DirectorManager () {
         createMonsterCards();
     }
-
 
 
     public void createDirectors(){
@@ -41,9 +41,11 @@ public class DirectorManager {
         }
 
         for (EnemyEnums enemy : EnemyEnums.values()) {
-            float creditCost = determineCreditCostBasedOnEnemy(enemy);
-            MonsterCard card = new MonsterCard(enemy, creditCost, 1.0F);
-            baseMonsterCards.add(card);
+            if(enemy != EnemyEnums.Alien_Bomb) {
+                float creditCost = determineCreditCostBasedOnEnemy(enemy);
+                MonsterCard card = new MonsterCard(enemy, creditCost, enemy.getWeight());
+                baseMonsterCards.add(card);
+            }
         }
     }
 
@@ -55,14 +57,18 @@ public class DirectorManager {
     }
 
     public void updateGameTick() {
-        distributeCredits();
-        updateDifficultyCoefficient();
-        for (Director director : directorList) {
-            director.update(GameStateInfo.getInstance().getGameSeconds()); // Update each director per game tick
+        if(enabled) {
+            distributeCredits();
+            updateDifficultyCoefficient();
+            for (Director director : directorList) {
+                director.update(GameStateInfo.getInstance().getGameSeconds()); // Update each director per game tick
+            }
         }
     }
 
     public void distributeCredits() {
+
+
         float creditAmount = (float) ((1 + 0.2 * GameStateInfo.getInstance().getDifficultyCoefficient()) * 0.5); // Determine the amount of credits to distribute
         for (Director director : directorList) {
             director.receiveCredits(creditAmount);
@@ -83,5 +89,13 @@ public class DirectorManager {
 
     public List<MonsterCard> getBaseMonsterCards () {
         return baseMonsterCards;
+    }
+
+    public boolean isEnabled () {
+        return enabled;
+    }
+
+    public void setEnabled (boolean enabled) {
+        this.enabled = enabled;
     }
 }

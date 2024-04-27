@@ -11,7 +11,7 @@ public class BulldozerProjectile extends Missile {
 		super(spriteConfiguration, missileConfiguration, movementConfiguration);
 //		setAnimation();
 		this.animation.setFrameDelay(3);
-		this.animation.rotateAnimation(movementConfiguration.getRotation());
+		this.animation.rotateAnimation(movementConfiguration.getRotation(), true);
 
 	}
 

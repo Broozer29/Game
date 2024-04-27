@@ -31,10 +31,10 @@ public class MissileCreator {
     }
 
     public MissileConfiguration createMissileConfiguration (MissileTypeEnums attackType, int maxHitPoints, int maxShields,
-                                                            AudioEnums deathSound, float damage, ImageEnums missileImpactImageType,
+                                                            AudioEnums deathSound, float damage, ImageEnums missileDestructionImage,
                                                             boolean isFriendly, boolean allowedToDealDamage, String objectType, boolean isBoxCollision) {
         MissileConfiguration missileConfiguration = new MissileConfiguration(attackType, maxHitPoints, maxShields,
-                deathSound, damage, missileImpactImageType, isFriendly,
+                deathSound, damage, missileDestructionImage, isFriendly,
                 allowedToDealDamage, objectType, isBoxCollision);
         return missileConfiguration;
     }
@@ -52,7 +52,7 @@ public class MissileCreator {
 
     public Missile createMissile (SpriteConfiguration spriteConfiguration, MissileConfiguration missileConfiguration, MovementConfiguration movementConfiguration) {
         switch (missileConfiguration.getMissileType()) {
-            case AlienLaserbeam, DefaultPlayerLaserbeam -> {
+            case AlienLaserbeam, DefaultPlayerLaserbeam, LaserBullet -> {
                 return new GenericMissile(spriteConfiguration, missileConfiguration, movementConfiguration);
             }
             case BombaProjectile -> {
@@ -81,6 +81,9 @@ public class MissileCreator {
             }
             case Rocket1 -> {
                 return new Rocket1(upgradeConfig(spriteConfiguration, 2, true), missileConfiguration, movementConfiguration);
+            }
+            case BarrierProjectile -> {
+                return new BarrierProjectile(upgradeConfig(spriteConfiguration, 3, true), missileConfiguration, movementConfiguration);
             }
         }
         return null;

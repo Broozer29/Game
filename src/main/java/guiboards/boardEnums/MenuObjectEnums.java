@@ -20,4 +20,5 @@ public enum MenuObjectEnums {
 	Song_Length_Selector,
 	Description_Block,
 	ItemIcon,
+	BlankImage,
 }

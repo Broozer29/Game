@@ -1,22 +1,25 @@
 package game.objects.powerups.timers;
 
+import game.gamestate.GameStateInfo;
 import game.objects.powerups.creation.PowerUpCreator;
 import game.objects.powerups.PowerUpEnums;
 import game.objects.timers.TimerInterface;
 import game.objects.timers.TimerStatusEnums;
 
 public class PowerUpSpawnTimer implements TimerInterface {
-    private float timerLength;
+    private double activateAfterThisTime;
+    private double timeBeforeActivationInSeconds;
     private boolean loopable;
-    private float currentTime;
+    private double currentTime;
     private PowerUpEnums powerUpType;
     private TimerStatusEnums status;
 
-    public PowerUpSpawnTimer(float timeBeforeActivation, PowerUpEnums powerUpType, boolean loopable) {
-        this.timerLength = timeBeforeActivation;
+    public PowerUpSpawnTimer(double timeBeforeActivationInSeconds, PowerUpEnums powerUpType, boolean loopable) {
+        this.currentTime = GameStateInfo.getInstance().getGameSeconds();
+        this.activateAfterThisTime = currentTime + timeBeforeActivationInSeconds;
+        this.timeBeforeActivationInSeconds = timeBeforeActivationInSeconds;
         this.powerUpType = powerUpType;
         this.loopable = loopable;
-        this.currentTime = 0;
         this.status = TimerStatusEnums.Waiting_To_Start;
     }
 
@@ -27,13 +30,11 @@ public class PowerUpSpawnTimer implements TimerInterface {
 
     @Override
     public void endOfTimer() {
-        if (shouldActivate(currentTime)) {
+        if (shouldActivate()) {
             PowerUpCreator.getInstance().spawnPowerUp(powerUpType); // Actual spawning of the power-up
-
             if (this.loopable) {
-                this.timerLength = currentTime + PowerUpCreator.getInstance().getRandomTimeForSpawner();
+                this.activateAfterThisTime = GameStateInfo.getInstance().getGameSeconds() + timeBeforeActivationInSeconds;
                 this.status = TimerStatusEnums.Waiting_To_Start;
-
             } else {
                 this.status = TimerStatusEnums.Finished;
             }
@@ -41,9 +42,8 @@ public class PowerUpSpawnTimer implements TimerInterface {
     }
 
     @Override
-    public boolean shouldActivate(float currentTime) {
-        this.currentTime = currentTime;
-        return currentTime >= timerLength;
+    public boolean shouldActivate() {
+        return GameStateInfo.getInstance().getGameSeconds() >= activateAfterThisTime;
     }
 
     @Override

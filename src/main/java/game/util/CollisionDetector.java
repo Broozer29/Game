@@ -21,7 +21,24 @@ public class CollisionDetector {
 
 
     public boolean detectCollision (GameObject gameObject1, GameObject gameObject2) {
-        if (isNearby(gameObject1, gameObject2)) {
+
+        //Objects should not collide with their owners, that's just silly and not good design so we skip it entirely
+        if(gameObject1.getOwnerOrCreator() != null){
+            if(gameObject1.getOwnerOrCreator().equals(gameObject2)){
+                return false;
+            }
+        }
+
+        if(gameObject2.getOwnerOrCreator() != null){
+            if(gameObject2.getOwnerOrCreator().equals(gameObject1)){
+                return false;
+            }
+        }
+
+
+
+        if (isNearby(gameObject1, gameObject2, threshold)) {
+
             //This doesn't play well with animations, only regular sprites. Needs fixing, width/height are 0
             //This isn't even used by the other managers lmao what the actual fuck
             Rectangle r1 = BoundsCalculator.getGameObjectBounds(gameObject1);
@@ -55,19 +72,27 @@ public class CollisionDetector {
         return blockDifference <= boardBlockThreshold;
     }
 
-    private boolean isNearby (GameObject gameObject1, GameObject gameObject2) {
+    public boolean isNearby(GameObject gameObject1, GameObject gameObject2, int rangeThreshold) {
         if (!isWithinBoardBlockThreshold(gameObject1, gameObject2)) {
             return false;
         }
 
-        double distance = Math.hypot(gameObject1.getXCoordinate() - gameObject2.getXCoordinate(),
-                gameObject1.getYCoordinate() - gameObject2.getYCoordinate());
-        return distance < threshold;
+        int x1 = gameObject1.getAnimation() != null ? gameObject1
+                .getAnimation().getXCoordinate() : gameObject1.getXCoordinate();
+        int y1 = gameObject1.getAnimation() != null ? gameObject1.getAnimation().getYCoordinate() : gameObject1.getYCoordinate();
+
+        int x2 = gameObject2.getAnimation() != null ? gameObject2.getAnimation().getXCoordinate() : gameObject2.getXCoordinate();
+        int y2 = gameObject2.getAnimation() != null ? gameObject2.getAnimation().getYCoordinate() : gameObject2.getYCoordinate();
+
+        double distance = Math.hypot(x1 - x2, y1 - y2);
+        return distance < rangeThreshold;
     }
+
 
     private boolean checkPixelCollision(GameObject gameObject1, GameObject gameObject2) {
         BufferedImage img1 = null;
         BufferedImage img2 = null;
+        int alphaThreshold = 100;
 
         // Use animation coordinates and dimensions if available
         int x1, y1, x2, y2, width1, height1, width2, height2;
@@ -106,10 +131,6 @@ public class CollisionDetector {
             int xEnd = Math.min(x1 + width1, x2 + width2);
             int yEnd = Math.min(y1 + height1, y2 + height2);
 
-//            System.out.println("Bounds for GameObject 2 Animation: x=" + x2 + ", y=" + y2 + ", width=" + width2 + ", height=" + height2);
-//            System.out.println("GameObject 1: Player X/Y " + x1 + "/" + y1 + " dimensions: " + width1 + "/" + height1);
-//            System.out.println("GameObject 2: The attack X/Y " + x2 + "/" + y2 + " dimensions: " + width2 + "/" + height2);
-
             for (int y = yStart; y < yEnd; y++) {
                 for (int x = xStart; x < xEnd; x++) {
                     int pixel1 = img1.getRGB(x - x1, y - y1);
@@ -117,15 +138,16 @@ public class CollisionDetector {
 
                     int pixel2 = img2.getRGB(x - x2, y - y2);
                     int alpha2 = (pixel2 >> 24) & 0xff;
-                    if (alpha1 != 0 && alpha2 != 0) {
+                    if (alpha1 > alphaThreshold && alpha2 > alphaThreshold) {
                         return true; // Collision detected
                     }
                 }
             }
             return false; // No collision detected
         } else {
-            return true; // Invisible images, cannot detect pixels because there are none
+            return true; // Assuming collision if images are not available
         }
     }
+
 
 }

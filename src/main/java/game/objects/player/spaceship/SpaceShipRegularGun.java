@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import javax.sound.sampled.UnsupportedAudioFileException;
 
+import game.gamestate.GameStateInfo;
 import game.movement.Direction;
 import game.movement.MovementConfiguration;
 import game.movement.pathfinderconfigs.MovementPatternSize;
@@ -29,20 +30,17 @@ public class SpaceShipRegularGun {
     private MissileCreator missileCreator = MissileCreator.getInstance();
 
     private float currentAttackFrame;
+    private double lastAttackTime = 0.0;
 
     public SpaceShipRegularGun () {
 
     }
 
-    public void fire (int xCoordinate, int yCoordinate, MissileTypeEnums playerAttackType) {
-        if (missileManager == null || friendlyManager == null || audioManager == null) {
-            missileManager = MissileManager.getInstance();
-            friendlyManager = PlayerManager.getInstance();
-            audioManager = AudioManager.getInstance();
-        }
+    public void fire(int xCoordinate, int yCoordinate, MissileTypeEnums playerAttackType) {
+        double currentTime = GameStateInfo.getInstance().getGameSeconds();
 
-        if (currentAttackFrame >= playerStats.getAttackSpeed()) {
-            this.currentAttackFrame = 0;
+        if (currentTime >= lastAttackTime + playerStats.getAttackSpeed()) {
+            lastAttackTime = currentTime;  // Update the last attack time
             int xMovementSpeed = 5;
             int yMovementSpeed = 5;
 
@@ -53,7 +51,7 @@ public class SpaceShipRegularGun {
 
             fireMissile(xCoordinate, yCoordinate, visualImage, impactType, Direction.RIGHT, scale, pathFinder, xMovementSpeed, yMovementSpeed, playerAttackType);
 
-            switch (playerAttackType){
+            switch (playerAttackType) {
                 case DefaultPlayerLaserbeam -> playMissileAudio(AudioEnums.Player_Laserbeam);
                 case Rocket1 -> playMissileAudio(AudioEnums.Rocket_Launcher);
             }
@@ -98,6 +96,8 @@ public class SpaceShipRegularGun {
 
         Missile missile = MissileCreator.getInstance().createMissile(spriteConfiguration, missileConfiguration, movementConfiguration);
         missile.setOwnerOrCreator(PlayerManager.getInstance().getSpaceship());
+        missile.setCenterCoordinates(missile.getCenterXCoordinate(), PlayerManager.getInstance().getSpaceship().getCenterYCoordinate());
+        missile.resetMovementPath();
         this.missileManager.addExistingMissile(missile);
 
     }
@@ -110,8 +110,8 @@ public class SpaceShipRegularGun {
         }
     }
 
-    public void updateFrameCount () {
-        this.currentAttackFrame++;
-    }
+//    public void updateFrameCount () {
+//        this.currentAttackFrame++;
+//    }
 
 }
