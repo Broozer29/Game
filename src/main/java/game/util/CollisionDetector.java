@@ -21,7 +21,24 @@ public class CollisionDetector {
 
 
     public boolean detectCollision (GameObject gameObject1, GameObject gameObject2) {
-        if (isNearby(gameObject1, gameObject2)) {
+
+        //Objects should not collide with their owners, that's just silly and not good design so we skip it entirely
+        if(gameObject1.getOwnerOrCreator() != null){
+            if(gameObject1.getOwnerOrCreator().equals(gameObject2)){
+                return false;
+            }
+        }
+
+        if(gameObject2.getOwnerOrCreator() != null){
+            if(gameObject2.getOwnerOrCreator().equals(gameObject1)){
+                return false;
+            }
+        }
+
+
+
+        if (isNearby(gameObject1, gameObject2, threshold)) {
+
             //This doesn't play well with animations, only regular sprites. Needs fixing, width/height are 0
             //This isn't even used by the other managers lmao what the actual fuck
             Rectangle r1 = BoundsCalculator.getGameObjectBounds(gameObject1);
@@ -35,7 +52,7 @@ public class CollisionDetector {
             }
 
             if (r1.intersects(r2)) {
-                if(gameObject1.isBoxCollision() || gameObject2.isBoxCollision()){
+                if (gameObject1.isBoxCollision() || gameObject2.isBoxCollision()) {
                     return true;
                 } else if (checkPixelCollision(gameObject1, gameObject2)) {
                     return true;
@@ -55,56 +72,82 @@ public class CollisionDetector {
         return blockDifference <= boardBlockThreshold;
     }
 
-    private boolean isNearby (GameObject gameObject1, GameObject gameObject2) {
+    public boolean isNearby(GameObject gameObject1, GameObject gameObject2, int rangeThreshold) {
         if (!isWithinBoardBlockThreshold(gameObject1, gameObject2)) {
             return false;
         }
 
-        double distance = Math.hypot(gameObject1.getXCoordinate() - gameObject2.getXCoordinate(),
-                gameObject1.getYCoordinate() - gameObject2.getYCoordinate());
-        return distance < threshold;
+        int x1 = gameObject1.getAnimation() != null ? gameObject1
+                .getAnimation().getXCoordinate() : gameObject1.getXCoordinate();
+        int y1 = gameObject1.getAnimation() != null ? gameObject1.getAnimation().getYCoordinate() : gameObject1.getYCoordinate();
+
+        int x2 = gameObject2.getAnimation() != null ? gameObject2.getAnimation().getXCoordinate() : gameObject2.getXCoordinate();
+        int y2 = gameObject2.getAnimation() != null ? gameObject2.getAnimation().getYCoordinate() : gameObject2.getYCoordinate();
+
+        double distance = Math.hypot(x1 - x2, y1 - y2);
+        return distance < rangeThreshold;
     }
 
-    private boolean checkPixelCollision (GameObject gameObject1, GameObject gameObject2) {
+
+    private boolean checkPixelCollision(GameObject gameObject1, GameObject gameObject2) {
         BufferedImage img1 = null;
         BufferedImage img2 = null;
+        int alphaThreshold = 100;
+
+        // Use animation coordinates and dimensions if available
+        int x1, y1, x2, y2, width1, height1, width2, height2;
+
         if (gameObject1.getAnimation() != null) {
             img1 = gameObject1.getAnimation().getCurrentFrameImage(false);
+            x1 = gameObject1.getAnimation().getXCoordinate();
+            y1 = gameObject1.getAnimation().getYCoordinate();
+            width1 = img1.getWidth();
+            height1 = img1.getHeight();
         } else {
             img1 = gameObject1.getImage();
+            x1 = gameObject1.getXCoordinate();
+            y1 = gameObject1.getYCoordinate();
+            width1 = img1.getWidth();
+            height1 = img1.getHeight();
         }
 
         if (gameObject2.getAnimation() != null) {
             img2 = gameObject2.getAnimation().getCurrentFrameImage(false);
+            x2 = gameObject2.getAnimation().getXCoordinate();
+            y2 = gameObject2.getAnimation().getYCoordinate();
+            width2 = img2.getWidth();
+            height2 = img2.getHeight();
         } else {
             img2 = gameObject2.getImage();
+            x2 = gameObject2.getXCoordinate();
+            y2 = gameObject2.getYCoordinate();
+            width2 = img2.getWidth();
+            height2 = img2.getHeight();
         }
 
-
         if (img1 != null && img2 != null) {
-            int xStart = Math.max(gameObject1.getXCoordinate(), gameObject2.getXCoordinate());
-            int yStart = Math.max(gameObject1.getYCoordinate(), gameObject2.getYCoordinate());
-
-            int xEnd = Math.min(gameObject1.getXCoordinate() + img1.getWidth(), gameObject2.getXCoordinate() + img2.getWidth());
-            int yEnd = Math.min(gameObject1.getYCoordinate() + img1.getHeight(),
-                    gameObject2.getYCoordinate() + img2.getHeight());
+            int xStart = Math.max(x1, x2);
+            int yStart = Math.max(y1, y2);
+            int xEnd = Math.min(x1 + width1, x2 + width2);
+            int yEnd = Math.min(y1 + height1, y2 + height2);
 
             for (int y = yStart; y < yEnd; y++) {
                 for (int x = xStart; x < xEnd; x++) {
-                    int pixel1 = img1.getRGB(x - gameObject1.getXCoordinate(), y - gameObject1.getYCoordinate());
+                    int pixel1 = img1.getRGB(x - x1, y - y1);
                     int alpha1 = (pixel1 >> 24) & 0xff;
 
-                    int pixel2 = img2.getRGB(x - gameObject2.getXCoordinate(), y - gameObject2.getYCoordinate());
+                    int pixel2 = img2.getRGB(x - x2, y - y2);
                     int alpha2 = (pixel2 >> 24) & 0xff;
-
-                    if (alpha1 != 0 && alpha2 != 0) {
+                    if (alpha1 > alphaThreshold && alpha2 > alphaThreshold) {
                         return true; // Collision detected
                     }
                 }
             }
             return false; // No collision detected
         } else {
-            return true; //Invisible images, cannot detect pixels because there are none
+            return true; // Assuming collision if images are not available
         }
     }
+
+
 }

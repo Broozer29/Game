@@ -1,5 +1,7 @@
 package VisualAndAudioData.audio;
 
+import VisualAndAudioData.audio.enums.AudioEnums;
+
 import javax.sound.sampled.LineUnavailableException;
 import java.util.*;
 
@@ -30,6 +32,10 @@ public class AudioDatabase {
     private CustomAudioClip knightSomethingMemorable;
     private CustomAudioClip rainFormerlyKnownAsPurple;
     private CustomAudioClip bloodOnTheDanceFloor;
+    private CustomAudioClip lemminoFireCracker;
+    private CustomAudioClip mydnyte;
+    private CustomAudioClip leYouthChills;
+    private CustomAudioClip paintingTheSkies;
 
 
     private List<CustomAudioClip> backgroundMusicTracks = new ArrayList();
@@ -61,6 +67,7 @@ public class AudioDatabase {
 
     private AudioDatabase () {
         initializeAudiofiles();
+        resetSongs();
     }
 
     public static AudioDatabase getInstance () {
@@ -77,11 +84,13 @@ public class AudioDatabase {
         ayasaTheReasonWhy.setFramePosition(0);
         NewArcadesSolace.setFramePosition(0);
         mainmenu.setFramePosition(0);
+        leYouthChills.setFramePosition(0);
+        paintingTheSkies.setFramePosition(0);
 
         diqRose.setFramePosition(0);
         fiveSecondsBeforeSunrise.setFramePosition(0);
         downtownBinaryAstral.setFramePosition(0);
-        carpenterBrutEnraged.setFramePosition(0);
+        carpenterBrutEnraged.setFramePosition(6048000);
         carpenterBrutYoureMine.setFramePosition(0);
         alphaRoomComeBack.setFramePosition(0);
         carpenterBrutDanger.setFramePosition(0);
@@ -94,6 +103,8 @@ public class AudioDatabase {
         knightSomethingMemorable.setFramePosition(0);
         rainFormerlyKnownAsPurple.setFramePosition(0);
         bloodOnTheDanceFloor.setFramePosition(0);
+        mydnyte.setFramePosition(0);
+        lemminoFireCracker.setFramePosition(0);
 
 
         for (int i = 0; i < clipListSize; i++) {
@@ -151,7 +162,8 @@ public class AudioDatabase {
         FuriMyOnlyChance = new CustomAudioClip(AudioEnums.Furi_My_Only_Chance, false);
         ayasaTheReasonWhy = new CustomAudioClip(AudioEnums.Ayasa_The_Reason_Why, false);
         NewArcadesSolace = new CustomAudioClip(AudioEnums.New_Arcades_Solace, false);
-        mainmenu = new CustomAudioClip(AudioEnums.mainmenu, true);
+        mainmenu = new CustomAudioClip(AudioEnums.mainmenu, false);
+        paintingTheSkies = new CustomAudioClip(AudioEnums.Robert_Nickson_Painting_The_Skies, false);
 
         diqRose = new CustomAudioClip(AudioEnums.Diq_Rose, false);
         fiveSecondsBeforeSunrise = new CustomAudioClip(AudioEnums.Five_Seconds_Before_Sunrise, false);
@@ -169,6 +181,9 @@ public class AudioDatabase {
         knightSomethingMemorable = new CustomAudioClip(AudioEnums.Knight_Something_Memorable, false);
         rainFormerlyKnownAsPurple = new CustomAudioClip(AudioEnums.The_Rain_Formerly_Known_As_Purple, false);
         bloodOnTheDanceFloor = new CustomAudioClip(AudioEnums.Blood_On_The_Dancefloor, false);
+        lemminoFireCracker = new CustomAudioClip(AudioEnums.Lemmino_Firecracker, false);
+        mydnyte = new CustomAudioClip(AudioEnums.Mydnyte, false);
+        leYouthChills = new CustomAudioClip(AudioEnums.Le_Youth_Chills, false);
 
 
         backgroundMusicTracks.add(FuriMyOnlyChance);
@@ -191,6 +206,9 @@ public class AudioDatabase {
         backgroundMusicTracks.add(knightSomethingMemorable);
         backgroundMusicTracks.add(rainFormerlyKnownAsPurple);
         backgroundMusicTracks.add(bloodOnTheDanceFloor);
+        backgroundMusicTracks.add(lemminoFireCracker);
+        backgroundMusicTracks.add(mydnyte);
+        backgroundMusicTracks.add(leYouthChills);
     }
 
     private void initSoundEffects () throws LineUnavailableException {
@@ -319,6 +337,16 @@ public class AudioDatabase {
                 return bloodOnTheDanceFloor;
             case Tonebox_Radium_Cloud_Highway:
                 return toneboxRadiumCloudHighway;
+            case Lemmino_Firecracker:
+                return lemminoFireCracker;
+            case Mydnyte:
+                return mydnyte;
+            case Carpenter_Brut_Youre_Mine:
+                return carpenterBrutYoureMine;
+            case Le_Youth_Chills:
+                return leYouthChills;
+            case Robert_Nickson_Painting_The_Skies:
+                return paintingTheSkies;
             case Player_Laserbeam:
             case Destroyed_Explosion:
             case Alien_Spaceship_Destroyed:
@@ -335,7 +363,6 @@ public class AudioDatabase {
                 return ayasaTheReasonWhy;
             case mainmenu:
                 return this.mainmenu;
-
             case NONE:
                 break;
         }

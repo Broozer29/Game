@@ -1,10 +1,11 @@
 package game.objects.player;
 
-import game.items.PlayerInventory;
 import game.objects.missiles.MissileTypeEnums;
 import game.objects.player.playerpresets.GunPreset;
 import game.objects.player.playerpresets.SpecialGunPreset;
 import VisualAndAudioData.image.ImageEnums;
+import game.objects.player.spaceship.SpaceShip;
+import game.util.ExperienceCalculator;
 
 public class PlayerStats {
 
@@ -30,9 +31,8 @@ public class PlayerStats {
     // Player attacks
     private MissileTypeEnums attackType;
     private PlayerSpecialAttackTypes specialAttackType;
-    private float attackDamage;
-    private float bonusAttackDamage;
-    private float specialAttackDamage;
+    private float baseDamage;
+    private float bonusDamageMultiplier;
     private float attackSpeed;
     private float specialAttackSpeed;
     private float attackSpeedBonus;
@@ -50,26 +50,27 @@ public class PlayerStats {
     private ImageEnums spaceShipImage;
     private ImageEnums exhaustImage;
 
-    // Player "homing" coordinate box
-    private float homingRectangleResizeScale;
-    private int homingRectangleXCoordinate;
-    private int homingRectangleYCoordinate;
-    private int homingRectangleWidth;
-    private int homingRectangleHeight;
 
     // Player missile type & visuals
-    private ImageEnums playerMissileType;
-    private ImageEnums playerMissileImpactType;
+    private ImageEnums playerMissileImage;
+    private ImageEnums playerMissileImpactImage;
     private float missileImpactScale;
     private float missileScale;
     private int maxSpecialAttackCharges;
     private float criticalStrikeDamageMultiplier;
+    private float maxOverloadingShieldMultiplier;
 
 
 
-    private PlayerInventory playerInventory;
+    //Leveling system
+    private int currentLevel;
+    private float currentXP;
+    private float xpToNextLevel;
+
 
     public void initDefaultSettings () {
+
+        bonusDamageMultiplier = 1f; //Otherwhise it's damage * 0 = 0
         // Health
         setMaxHitPoints(100);
         setMaxShieldHitPoints(100);
@@ -79,19 +80,20 @@ public class PlayerStats {
         setMovementSpeed(4);
 
         // Special attack
-        setSpecialAttackDamage(5);
-        setSpecialAttackSpeed(100);
+        setSpecialAttackSpeed(1);
         setMaxSpecialAttackCharges(1);
 
         setCriticalStrikeDamageMultiplier(2.0f);
+        setMaxOverloadingShieldMultiplier(2.0f);
 
-        // HomingRectangle target size (the larger, the quicker homing missiles lose lock)
-        setHomingRectangleResizeScale((float) 1.5);
+        //Level
+        setCurrentLevel(1);
+        setCurrentXP(0);
+        setXpToNextLevel(100);
 
         // Visuals
         setSpaceShipImage(ImageEnums.Player_Spaceship_Model_3);
         setExhaustImage(ImageEnums.Default_Player_Engine);
-        playerInventory = PlayerInventory.getInstance();
 
         if (normalGunPreset != null) {
             normalGunPreset.loadPreset();
@@ -102,10 +104,36 @@ public class PlayerStats {
         }
     }
 
-    //getters and setters below
+    public void addXP (float xp) {
+        this.currentXP += xp;
+        int loopBreaker = 0;
+        while (currentXP >= xpToNextLevel) {
+            increasePlayerLevel();
+            loopBreaker++;
+            if (loopBreaker > 10) {
+                return;
+            }
+        }
+    }
+
+    private void increasePlayerLevel () {
+        xpToNextLevel = ExperienceCalculator.getNextLevelXPRequired(xpToNextLevel);
+        currentLevel++;
+
+        baseDamage = ExperienceCalculator.getNextLevelBaseDamage(baseDamage);
+        maxHitPoints = ExperienceCalculator.getNextLevelHitPoints(maxHitPoints);
+        maxShieldHitPoints = ExperienceCalculator.getNextLevelShieldPoints(maxShieldHitPoints);
+
+
+        SpaceShip player = PlayerManager.getInstance().getSpaceship();
+        player.setMaxHitPoints(maxHitPoints);
+        player.setMaxShieldPoints(maxShieldHitPoints);
+        player.setCurrentHitpoints(maxHitPoints);
+        player.setCurrentShieldPoints(maxShieldHitPoints);
+    }
 
     public float getNormalAttackDamage () {
-        float attackDamage = this.attackDamage + this.bonusAttackDamage;
+        float attackDamage = this.baseDamage * this.bonusDamageMultiplier;
         if (attackDamage < 1) {
             return 1;
         } else {
@@ -114,26 +142,26 @@ public class PlayerStats {
     }
 
     public void setPlayerDamage (float playerDamage) {
-        this.attackDamage = playerDamage;
+        this.baseDamage = playerDamage;
     }
 
-    public float getAttackSpeed() {
+    public float getAttackSpeed () {
         float baseAttackSpeed = this.attackSpeed;
-        float attackSpeedIncrease = this.attackSpeedBonus; // Assuming this is a percentage
+        float attackSpeedIncrease = this.attackSpeedBonus;
 
         // Calculate the new attack speed
         float newAttackSpeed = baseAttackSpeed / (1 + attackSpeedIncrease / 100);
 
         // Ensure the attack speed does not fall below 1
-        if (newAttackSpeed < 1) {
-            return 1;
+        if (newAttackSpeed < 0.05) {
+            return 0.05f;
         } else {
             return newAttackSpeed;
         }
     }
 
-    public void setAttackDamage (float attackDamage) {
-        this.attackDamage = attackDamage;
+    public void setBaseDamage (float baseDamage) {
+        this.baseDamage = baseDamage;
     }
 
     public void setAttackSpeed (float attackSpeed) {
@@ -150,8 +178,8 @@ public class PlayerStats {
 
     public float getSpecialAttackSpeed () {
         float currentSpecialAttackSpeed = this.specialAttackSpeed;
-        if (currentSpecialAttackSpeed < 1) {
-            return 1;
+        if (currentSpecialAttackSpeed < 0.05) {
+            return 0.05f;
         } else {
             return currentSpecialAttackSpeed;
         }
@@ -195,45 +223,6 @@ public class PlayerStats {
         this.currentExhaust = currentExhaust;
     }
 
-    public float getHomingRectangleResizeScale () {
-        return homingRectangleResizeScale;
-    }
-
-    public void setHomingRectangleResizeScale (float homingRectangleResizeScale) {
-        this.homingRectangleResizeScale = homingRectangleResizeScale;
-    }
-
-    public int getHomingRectangleXCoordinate () {
-        return homingRectangleXCoordinate;
-    }
-
-    public void setHomingRectangleXCoordinate (int homingRectangleXCoordinate) {
-        this.homingRectangleXCoordinate = homingRectangleXCoordinate;
-    }
-
-    public int getHomingRectangleYCoordinate () {
-        return homingRectangleYCoordinate;
-    }
-
-    public void setHomingRectangleYCoordinate (int homingRectangleYCoordinate) {
-        this.homingRectangleYCoordinate = homingRectangleYCoordinate;
-    }
-
-    public int getHomingRectangleWidth () {
-        return homingRectangleWidth;
-    }
-
-    public void setHomingRectangleWidth (int homingRectangleWidth) {
-        this.homingRectangleWidth = homingRectangleWidth;
-    }
-
-    public int getHomingRectangleHeight () {
-        return homingRectangleHeight;
-    }
-
-    public void setHomingRectangleHeight (int homingRectangleHeight) {
-        this.homingRectangleHeight = homingRectangleHeight;
-    }
 
     public ImageEnums getSpaceShipImage () {
         return spaceShipImage;
@@ -252,21 +241,20 @@ public class PlayerStats {
     }
 
 
-
-    public ImageEnums getPlayerMissileType () {
-        return playerMissileType;
+    public ImageEnums getPlayerMissileImage () {
+        return playerMissileImage;
     }
 
-    public void setPlayerMissileType (ImageEnums playerMissileType) {
-        this.playerMissileType = playerMissileType;
+    public void setPlayerMissileImage (ImageEnums playerMissileImage) {
+        this.playerMissileImage = playerMissileImage;
     }
 
-    public ImageEnums getPlayerMissileImpactType () {
-        return playerMissileImpactType;
+    public ImageEnums getPlayerMissileImpactImage () {
+        return playerMissileImpactImage;
     }
 
-    public void setPlayerMissileImpactType (ImageEnums playerMissileImpactType) {
-        this.playerMissileImpactType = playerMissileImpactType;
+    public void setPlayerMissileImpactImage (ImageEnums playerMissileImpactImage) {
+        this.playerMissileImpactImage = playerMissileImpactImage;
     }
 
     public float getMissileImpactScale () {
@@ -298,25 +286,13 @@ public class PlayerStats {
     }
 
 
-    public float getBonusAttackDamage () {
-        return bonusAttackDamage;
+    public float getBonusDamageMultiplier () {
+        return bonusDamageMultiplier;
     }
 
-    public void addBonusAttackDamage (float bonusAttackDamage) {
-        this.bonusAttackDamage += bonusAttackDamage;
-    }
-
-    public float getSpecialAttackDamage () {
-        float tempspecialAttackDamage = specialAttackDamage;
-        if (tempspecialAttackDamage < 0.5) {
-            return (float) 0.5;
-        } else {
-            return tempspecialAttackDamage;
-        }
-    }
-
-    public void setSpecialAttackDamage (float SpecialAttackDamage) {
-        this.specialAttackDamage = SpecialAttackDamage;
+    //This can be used for negative AND positive modifiers
+    public void modifyBonusDamageMultiplier (float bonusDamageMultiplier) {
+        this.bonusDamageMultiplier += bonusDamageMultiplier;
     }
 
     public MissileTypeEnums getAttackType () {
@@ -347,12 +323,8 @@ public class PlayerStats {
         return specialAttackType;
     }
 
-    public float getAttackDamage () {
-        return attackDamage;
-    }
-
-    public PlayerInventory getPlayerInventory () {
-        return playerInventory;
+    public float getBaseDamage () {
+        return baseDamage;
     }
 
     public int getMaxSpecialAttackCharges () {
@@ -378,4 +350,42 @@ public class PlayerStats {
     public void setAttackSpeedBonus (float attackSpeedBonus) {
         this.attackSpeedBonus = attackSpeedBonus;
     }
+
+    public void modifyAttackSpeedBonus(float attackSpeedBonus){
+        this.attackSpeedBonus += attackSpeedBonus;
+    }
+
+    public float getMaxOverloadingShieldMultiplier () {
+        return maxOverloadingShieldMultiplier;
+    }
+
+    public void setMaxOverloadingShieldMultiplier (float maxOverloadingShieldMultiplier) {
+        this.maxOverloadingShieldMultiplier = maxOverloadingShieldMultiplier;
+    }
+
+    public int getCurrentLevel () {
+        return currentLevel;
+    }
+
+    public void setCurrentLevel (int currentLevel) {
+        this.currentLevel = currentLevel;
+    }
+
+    public float getCurrentXP () {
+        return currentXP;
+    }
+
+    public void setCurrentXP (float currentXP) {
+        this.currentXP = currentXP;
+    }
+
+    public float getXpToNextLevel () {
+        return xpToNextLevel;
+    }
+
+    public void setXpToNextLevel (float xpToNextLevel) {
+        this.xpToNextLevel = xpToNextLevel;
+    }
+
+
 }

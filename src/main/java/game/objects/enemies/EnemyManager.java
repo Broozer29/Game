@@ -12,7 +12,7 @@ import game.objects.player.PlayerManager;
 import game.objects.enemies.enemytypes.AlienBomb;
 import game.objects.player.spaceship.SpaceShip;
 import VisualAndAudioData.DataClass;
-import VisualAndAudioData.audio.AudioEnums;
+import VisualAndAudioData.audio.enums.AudioEnums;
 import VisualAndAudioData.audio.AudioManager;
 
 public class EnemyManager {
@@ -32,7 +32,7 @@ public class EnemyManager {
     }
 
     public void resetManager () {
-        for(Enemy enemy : enemyList){
+        for (Enemy enemy : enemyList) {
             enemy.setVisible(false);
         }
 
@@ -64,9 +64,9 @@ public class EnemyManager {
         SpaceShip spaceship = friendlyManager.getSpaceship();
         for (Enemy enemy : enemyList) {
             if (CollisionDetector.getInstance().detectCollision(enemy, spaceship)) {
-                if (enemy instanceof AlienBomb) {
-                    detonateAlienBomb(enemy);
-                    spaceship.takeDamage(20);
+                if (enemy.detonateOnCollision) {
+                    detonateEnemy(enemy);
+                    spaceship.takeDamage(enemy.getDamage());
                 } else {
                     spaceship.takeDamage(1);
                 }
@@ -74,9 +74,10 @@ public class EnemyManager {
         }
     }
 
-    private void detonateAlienBomb (Enemy enemy) throws UnsupportedAudioFileException, IOException {
-        animationManager.createAndAddUpperAnimation(enemy.getXCoordinate(), enemy.getYCoordinate(),
-                enemy.enemyType.getDestructionType(), false, 1);
+    private void detonateEnemy (Enemy enemy) throws UnsupportedAudioFileException, IOException {
+//        animationManager.createAndAddUpperAnimation(enemy.getXCoordinate(), enemy.getYCoordinate(),
+//                enemy.enemyType.getDestructionImageEnum(), false, enemy.getScale());
+        animationManager.addLowerAnimation(enemy.getDestructionAnimation());
         audioManager.addAudio(AudioEnums.Alien_Bomb_Impact);
         enemy.setVisible(false);
     }
@@ -122,10 +123,7 @@ public class EnemyManager {
             return false;
     }
 
-    public Enemy getClosestEnemy () {
-        int playerXCoordinate = PlayerManager.getInstance().getSpaceship().getCenterXCoordinate();
-        int playerYCoordinate = PlayerManager.getInstance().getSpaceship().getCenterYCoordinate();
-
+    public Enemy getClosestEnemy (int xCoordinate, int yCoordinate) {
         Enemy closestEnemy = null;
         double minDistance = Double.MAX_VALUE;
 
@@ -134,8 +132,8 @@ public class EnemyManager {
             int enemyYcoordinate = enemy.getCenterYCoordinate();
 
             // Compute the distance between player and enemy using Euclidean distance formula
-            double distance = Math.sqrt(Math.pow((playerXCoordinate - enemyXCoordinate), 2)
-                    + Math.pow((playerYCoordinate - enemyYcoordinate), 2));
+            double distance = Math.sqrt(Math.pow((xCoordinate - enemyXCoordinate), 2)
+                    + Math.pow((yCoordinate - enemyYcoordinate), 2));
 
             // If this enemy is closer than the previous closest enemy, update closestEnemy and
             // minDistance

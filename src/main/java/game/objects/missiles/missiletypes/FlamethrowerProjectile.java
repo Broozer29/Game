@@ -1,15 +1,16 @@
 package game.objects.missiles.missiletypes;
 
 import game.movement.Direction;
+import game.movement.MovementConfiguration;
 import game.objects.missiles.Missile;
 import game.objects.missiles.MissileConfiguration;
 import visualobjects.SpriteConfigurations.SpriteAnimationConfiguration;
 
 public class FlamethrowerProjectile extends Missile {
 
-	public FlamethrowerProjectile(SpriteAnimationConfiguration spriteConfiguration, MissileConfiguration missileConfiguration) {
-		super(spriteConfiguration, missileConfiguration);
-		this.animation.rotateAnimetion(missileConfiguration.getMovementDirection());
+	public FlamethrowerProjectile(SpriteAnimationConfiguration spriteConfiguration, MissileConfiguration missileConfiguration, MovementConfiguration movementConfiguration) {
+		super(spriteConfiguration, missileConfiguration, movementConfiguration);
+		this.animation.rotateAnimation(movementConfiguration.getRotation(), true);
 	}
 
 	// Remove the flamethrower

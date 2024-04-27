@@ -84,6 +84,7 @@ public class AnimationManager {
 		for (int i = 0; i < upperAnimationList.size(); i++) {
 			if (!upperAnimationList.get(i).isVisible()) {
 				this.upperAnimationList.remove(upperAnimationList.get(i));
+
 			}
 		}
 		for (int i = 0; i < lowerAnimationList.size(); i++) {

@@ -1,7 +1,11 @@
 package game.movement;
 
+import game.movement.pathfinderconfigs.MovementPatternSize;
 import game.movement.pathfinders.PathFinder;
 import game.objects.GameObject;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MovementConfiguration {
 
@@ -26,7 +30,7 @@ public class MovementConfiguration {
 	
 	protected boolean hasLock;
 	private Point nextPoint;
-	private GameObject target;
+	private GameObject targetToChase;
 
 	//For the zigzag pathfinder
 	private int stepsBeforeBounceInOtherDirection;
@@ -45,9 +49,43 @@ public class MovementConfiguration {
 	private int firstDiagonalDirectionStepAmount;
 	private int secondDiagonalDirectionStepAmount;
 
+	private List<GameObject> untrackableObjects = new ArrayList<GameObject>();
+
+	//For the hover pathfinder
+	private int boardBlockToHoverIn;
+
+	private MovementPatternSize patternSize;
 
 
 	public MovementConfiguration() {
+
+	}
+
+	public void resetMovementPath(){
+		this.currentPath = null;
+		this.nextPoint = null;
+		this.destination = null;
+		this.currentLocation = null;
+	}
+
+	public void initDefaultSettingsForSpecializedPathFinders(){
+		if(patternSize != null) {
+			setDiamondWidth(patternSize.getDiamondWidth());
+			setDiamondHeight(patternSize.getDiamondHeight());
+			setStepsBeforeBounceInOtherDirection(patternSize.getStepsBeforeBounceInOtherDirection());
+
+			setAngleStep(0.1);
+			setCurveDistance(1);
+			setRadius(5);
+			setRadiusIncrement(patternSize.getRadiusIncrement());
+
+			setPrimaryDirectionStepAmount(patternSize.getPrimaryDirectionStepAmount());
+			setFirstDiagonalDirectionStepAmount(patternSize.getSecondaryDirectionStepAmount());
+			setSecondDiagonalDirectionStepAmount(patternSize.getSecondaryDirectionStepAmount());
+
+			setBoardBlockToHoverIn(6);
+			setHasLock(true);
+		}
 	}
 
 
@@ -168,9 +206,9 @@ public class MovementConfiguration {
 	public void setRotation(Direction rotation) {
 		this.rotation = rotation;
 	}
-	
-	
-	
+
+
+
 	public void setStepsTaken(int stepAmount) {
 		this.stepsTaken = stepAmount;
 	}
@@ -200,13 +238,13 @@ public class MovementConfiguration {
 	}
 
 
-	public GameObject getTarget() {
-		return target;
+	public GameObject getTargetToChase () {
+		return targetToChase;
 	}
 
 
-	public void setTarget(GameObject target) {
-		this.target = target;
+	public void setTargetToChase (GameObject targetToChase) {
+		this.targetToChase = targetToChase;
 	}
 
 	public int getDiamondWidth () {
@@ -292,5 +330,36 @@ public class MovementConfiguration {
 
 	public void setSecondDiagonalDirectionStepAmount (int secondDiagonalDirectionStepAmount) {
 		this.secondDiagonalDirectionStepAmount = secondDiagonalDirectionStepAmount;
+	}
+
+	public List<GameObject> getUntrackableObjects () {
+		return untrackableObjects;
+	}
+
+	public void setUntrackableObjects (List<GameObject> untrackableObjects) {
+		this.untrackableObjects = untrackableObjects;
+	}
+
+	public void deleteConfiguration(){
+		this.targetToChase = null;
+		this.pathFinder = null;
+		this.currentPath = null;
+		this.nextPoint = null;
+	}
+
+	public int getBoardBlockToHoverIn () {
+		return boardBlockToHoverIn;
+	}
+
+	public void setBoardBlockToHoverIn (int boardBlockToHoverIn) {
+		this.boardBlockToHoverIn = boardBlockToHoverIn;
+	}
+
+	public MovementPatternSize getPatternSize () {
+		return patternSize;
+	}
+
+	public void setPatternSize (MovementPatternSize patternSize) {
+		this.patternSize = patternSize;
 	}
 }

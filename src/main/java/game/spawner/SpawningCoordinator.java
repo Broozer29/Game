@@ -10,6 +10,8 @@ import game.objects.enemies.Enemy;
 import VisualAndAudioData.DataClass;
 import game.objects.enemies.enums.EnemyEnums;
 
+import javax.xml.crypto.Data;
+
 public class SpawningCoordinator {
 
     private static SpawningCoordinator instance = new SpawningCoordinator();
@@ -29,41 +31,41 @@ public class SpawningCoordinator {
     private int minimumBombEnemyHeightDownRange = -200;
 
     //Left Spawning block
-    private int leftEnemyMaxHeightRange = DataClass.getInstance().getWindowHeight() - 100;
-    private int leftEnemyMinHeightRange = 100;
+    private int leftEnemyMaxHeightRange = DataClass.getInstance().getPlayableWindowMaxHeight() - 100;
+    private int leftEnemyMinHeightRange = DataClass.getInstance().getPlayableWindowMinHeight();
     private int leftEnemyMaxWidthRange = 500;
     private int leftEnemyMinWidthRange = 100;
 
-    private int bottomLeftEnemyMinHeightRange = DataClass.getInstance().getWindowHeight() - 100;
-    private int bottomLeftEnemyMaxHeightRange = DataClass.getInstance().getWindowHeight() + 50;
+    private int bottomLeftEnemyMinHeightRange = DataClass.getInstance().getPlayableWindowMaxHeight() - 100;
+    private int bottomLeftEnemyMaxHeightRange = DataClass.getInstance().getPlayableWindowMaxHeight() + 50;
 
-    private int topLeftEnemyMinHeightRange = 100;
-    private int topLeftEnemyMaxHeightRange = 200;
+    private int topLeftEnemyMinHeightRange = DataClass.getInstance().getPlayableWindowMinHeight();
+    private int topLeftEnemyMaxHeightRange = DataClass.getInstance().getPlayableWindowMinHeight() + 100;
 
     //Right Spawning block
     private int rightEnemyMaxWidthRange = DataClass.getInstance().getWindowWidth() + 200;
     private int rightEnemyMinWidthRange = DataClass.getInstance().getWindowWidth();
-    private int rightEnemyMaxHeightRange = DataClass.getInstance().getWindowHeight() - 100;
-    private int rightEnemyMinHeightRange = 100;
+    private int rightEnemyMaxHeightRange = DataClass.getInstance().getPlayableWindowMaxHeight() - 100;
+    private int rightEnemyMinHeightRange = DataClass.getInstance().getPlayableWindowMinHeight() + 100;
 
-    private int bottomRightEnemyMinHeightRange = DataClass.getInstance().getWindowHeight() - 100;
-    private int bottomRightEnemyMaxHeightRange = DataClass.getInstance().getWindowHeight() + 50;
+    private int bottomRightEnemyMinHeightRange = DataClass.getInstance().getPlayableWindowMaxHeight() - 100;
+    private int bottomRightEnemyMaxHeightRange = DataClass.getInstance().getPlayableWindowMaxHeight() + 50;
 
 
-    private int topRightEnemyMinHeightRange = 100;
-    private int topRightEnemyMaxHeightRange = 200;
+    private int topRightEnemyMinHeightRange = DataClass.getInstance().getPlayableWindowMinHeight() + 100;
+    private int topRightEnemyMaxHeightRange = DataClass.getInstance().getPlayableWindowMinHeight() + 200;
 
     //Up spawning block
     private int upEnemyMaxWidthRange = DataClass.getInstance().getWindowWidth() - 50;
     private int upEnemyMinWidthRange = 100;
-    private int upEnemyMaxHeightRange = 150;
-    private int upEnemyMinHeightRange = 0;
+    private int upEnemyMaxHeightRange = DataClass.getInstance().getPlayableWindowMinHeight() + 150;
+    private int upEnemyMinHeightRange = DataClass.getInstance().getPlayableWindowMinHeight();
 
     //Down spawning block
     private int downEnemyMaxWidthRange = DataClass.getInstance().getWindowWidth() - 50;
     private int downEnemyMinWidthRange = 50;
-    private int downEnemyMaxHeightRange = DataClass.getInstance().getWindowHeight() + 200;
-    private int downEnemyMinHeightRange = DataClass.getInstance().getWindowHeight() + 50;
+    private int downEnemyMaxHeightRange = DataClass.getInstance().getPlayableWindowMaxHeight() + 200;
+    private int downEnemyMinHeightRange = DataClass.getInstance().getPlayableWindowMaxHeight() + 50;
 
     private SpawningCoordinator () {
 

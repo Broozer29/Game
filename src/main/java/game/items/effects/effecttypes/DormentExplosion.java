@@ -1,6 +1,7 @@
 package game.items.effects.effecttypes;
 
 import VisualAndAudioData.image.ImageEnums;
+import game.gamestate.GameStateInfo;
 import game.items.effects.EffectInterface;
 import game.items.effects.EffectActivationTypes;
 import game.objects.GameObject;
@@ -18,59 +19,113 @@ import java.util.Objects;
 public class DormentExplosion implements EffectInterface {
 
     private float damage;
-    private float scale;
 
     private ImageEnums explosionType;
     private EffectActivationTypes effectTypesEnums;
     private boolean activated;
+    private boolean boxCollision;
 
     private float burningDamage;
     private int burningDuration;
+    private DormentExplosionActivationMethods activationMethod;
+    private double activationTime;
+    private boolean allowedToApplyOnHitEffects = false;
 
     private List<EffectInterface> additionalEffects = new ArrayList<>();
 
-    public DormentExplosion(float damage, float scale, ImageEnums explosionType){
+    public DormentExplosion (float damage, ImageEnums explosionType, DormentExplosionActivationMethods activationMethod, boolean boxCollision) {
         this.damage = damage;
-        this.scale = scale;
+        this.boxCollision = boxCollision;
         this.explosionType = explosionType;
-        effectTypesEnums = EffectActivationTypes.DormentExplosion;
-        activated = false;
+        this.activationMethod = activationMethod;
+        this.effectTypesEnums = EffectActivationTypes.DormentExplosion;
+        this.activated = false;
+        this.activationTime = GameStateInfo.getInstance().getGameSeconds() + 3; //3 seconds after applying
+
+        if (this.activationMethod == DormentExplosionActivationMethods.OnDeath) {
+            allowedToApplyOnHitEffects = true;
+        }
+
     }
 
-    public void addAdditionalEffects(EffectInterface effect){
-        if(!additionalEffects.contains(effect)){
+    public void addAdditionalEffects (EffectInterface effect) {
+        if (!additionalEffects.contains(effect)) {
             additionalEffects.add(effect);
         }
     }
 
     @Override
     public void activateEffect (GameObject gameObject) {
+        switch (activationMethod) {
+            case OnDeath -> {
+                if (gameObject.getCurrentHitpoints() <= 0) {
+                    createExplosion(gameObject);
+                }
+            }
+            case Timed -> {
+                if (GameStateInfo.getInstance().getGameSeconds() > activationTime) {
+                    createExplosion(gameObject);
+                }
+            }
+        }
+
+    }
+
+    private void createExplosion (GameObject gameObject) {
         SpriteConfiguration spriteConfiguration = new SpriteConfiguration();
         spriteConfiguration.setxCoordinate(gameObject.getXCoordinate());
         spriteConfiguration.setyCoordinate(gameObject.getYCoordinate());
-        spriteConfiguration.setScale(scale);
+        spriteConfiguration.setScale(getScaleByExplosionType());
         spriteConfiguration.setImageType(explosionType);
-        SpriteAnimationConfiguration spriteAnimationConfiguration = new SpriteAnimationConfiguration(spriteConfiguration,2 ,false);
-        ExplosionConfiguration explosionConfiguration = new ExplosionConfiguration(true, damage, true);
+        SpriteAnimationConfiguration spriteAnimationConfiguration = new SpriteAnimationConfiguration(spriteConfiguration, getFrameDelayByExplosionType(), false);
+        ExplosionConfiguration explosionConfiguration = new ExplosionConfiguration(true, damage, true, allowedToApplyOnHitEffects);
 
         Explosion explosion = new Explosion(spriteAnimationConfiguration, explosionConfiguration);
-        explosion.setCenterCoordinates(gameObject.getCenterXCoordinate(), gameObject.getCenterYCoordinate());
-        explosion.getAnimation().setCenterCoordinates(gameObject.getCenterXCoordinate(), gameObject.getCenterYCoordinate());
-        explosion.setBoxCollision(true);
+        explosion.setScale(getScaleByExplosionType());
+        explosion.getAnimation().setAnimationScale(getScaleByExplosionType());
+
+        replaceAnimationCoordinates(gameObject, explosion);
+
+//        explosion.setCenterCoordinates(gameObject.getCenterXCoordinate(), gameObject.getCenterYCoordinate());
+//        explosion.getAnimation().setCenterCoordinates(gameObject.getCenterXCoordinate(), gameObject.getCenterYCoordinate());
+        explosion.setBoxCollision(boxCollision);
         explosion.setOwnerOrCreator(gameObject);
 
 
-        if(burningDuration != 0 && burningDamage != 0) {
-            SpriteAnimationConfiguration burningConfig = new SpriteAnimationConfiguration(spriteConfiguration,2, true);
+        if (burningDuration != 0 && burningDamage != 0) {
+            SpriteAnimationConfiguration burningConfig = new SpriteAnimationConfiguration(spriteConfiguration, 2, true);
             burningConfig.getSpriteConfiguration().setImageType(ImageEnums.GasolineBurning);
-            burningConfig.getSpriteConfiguration().setScale(scale / 2);
+            burningConfig.getSpriteConfiguration().setScale(0.5f);
             SpriteAnimation burningAnimation = new SpriteAnimation(burningConfig);
             DamageOverTime burning = new DamageOverTime(burningDamage, burningDuration, burningAnimation);
             explosion.addEffectToApply(burning);
         }
 
+
         ExplosionManager.getInstance().addExplosion(explosion);
         activated = true;
+    }
+
+    private int getFrameDelayByExplosionType () {
+        if (explosionType.equals(ImageEnums.GasolineExplosion)) {
+            return 0;
+        } else return 2;
+    }
+
+    private float getScaleByExplosionType () {
+        if (explosionType.equals(ImageEnums.GasolineExplosion)) {
+            return 0.8f;
+        } else return 1;
+    }
+
+    private void replaceAnimationCoordinates (GameObject gameObject, Explosion explosion) {
+        if (explosionType.equals(ImageEnums.GasolineExplosion)) {
+            explosion.setCenterCoordinates(gameObject.getCenterXCoordinate(), gameObject.getCenterYCoordinate());
+            explosion.getAnimation().setCenterCoordinates(gameObject.getCenterXCoordinate() + (gameObject.getWidth() / 3), gameObject.getCenterYCoordinate());
+        } else {
+            explosion.setCenterCoordinates(gameObject.getCenterXCoordinate(), gameObject.getCenterYCoordinate());
+            explosion.getAnimation().setCenterCoordinates(gameObject.getCenterXCoordinate(), gameObject.getCenterYCoordinate());
+        }
     }
 
     @Override
@@ -100,7 +155,7 @@ public class DormentExplosion implements EffectInterface {
 
     @Override
     public EffectInterface copy () {
-        DormentExplosion copy = new DormentExplosion(burningDamage, scale, explosionType);
+        DormentExplosion copy = new DormentExplosion(burningDamage, explosionType, activationMethod, boxCollision);
         return copy;
     }
 
@@ -112,13 +167,6 @@ public class DormentExplosion implements EffectInterface {
         this.damage = damage;
     }
 
-    public float getScale () {
-        return scale;
-    }
-
-    public void setScale (float scale) {
-        this.scale = scale;
-    }
 
     public ImageEnums getExplosionType () {
         return explosionType;
@@ -148,6 +196,23 @@ public class DormentExplosion implements EffectInterface {
         this.burningDamage = burningDamage;
     }
 
+
+    public boolean isAllowedToApplyOnHitEffects () {
+        return allowedToApplyOnHitEffects;
+    }
+
+    public void setAllowedToApplyOnHitEffects (boolean allowedToApplyOnHitEffects) {
+        this.allowedToApplyOnHitEffects = allowedToApplyOnHitEffects;
+    }
+
+    public boolean isBoxCollision () {
+        return boxCollision;
+    }
+
+    public void setBoxCollision (boolean boxCollision) {
+        this.boxCollision = boxCollision;
+    }
+
     public int getBurningDuration () {
         return burningDuration;
     }
@@ -162,6 +227,22 @@ public class DormentExplosion implements EffectInterface {
 
     public void setAdditionalEffects (List<EffectInterface> additionalEffects) {
         this.additionalEffects = additionalEffects;
+    }
+
+    public DormentExplosionActivationMethods getActivationMethod () {
+        return activationMethod;
+    }
+
+    public void setActivationMethod (DormentExplosionActivationMethods activationMethod) {
+        this.activationMethod = activationMethod;
+    }
+
+    public double getActivationTime () {
+        return activationTime;
+    }
+
+    public void setActivationTime (double activationTime) {
+        this.activationTime = activationTime;
     }
 
     @Override

@@ -1,67 +1,79 @@
 package game.objects.enemies.enemytypes;
 
-import game.movement.pathfinderconfigs.MovementPatternSize;
-import game.movement.pathfinders.PathFinder;
-import game.movement.pathfinders.RegularPathFinder;
+import game.gamestate.GameStateInfo;
+import game.managers.AnimationManager;
+import game.movement.MovementConfiguration;
 import game.objects.enemies.EnemyConfiguration;
 import game.objects.enemies.Enemy;
 import game.objects.missiles.*;
 import VisualAndAudioData.image.ImageEnums;
+import game.objects.missiles.specialAttacks.SpecialAttack;
+import game.objects.missiles.specialAttacks.SpecialAttackConfiguration;
+import game.util.WithinVisualBoundariesCalculator;
 import visualobjects.SpriteConfigurations.SpriteAnimationConfiguration;
 import visualobjects.SpriteConfigurations.SpriteConfiguration;
 import visualobjects.SpriteAnimation;
 
 public class Flamer extends Enemy {
 
-    public Flamer (SpriteConfiguration spriteConfiguration, EnemyConfiguration enemyConfiguration) {
-        super(spriteConfiguration, enemyConfiguration);
+    public Flamer (SpriteConfiguration spriteConfiguration, EnemyConfiguration enemyConfiguration, MovementConfiguration movementConfiguration) {
+        super(spriteConfiguration, enemyConfiguration, movementConfiguration);
 
-        //The correct imageenum can be gotten from a method in enemyenums like the BGO enum method
-        //Below is sloppy and temporary
-        SpriteAnimationConfiguration exhaustConfiguration = new SpriteAnimationConfiguration(spriteConfiguration, 0, true);
-        exhaustConfiguration.getSpriteConfiguration().setImageType(ImageEnums.Flamer_Normal_Exhaust);
-        this.exhaustAnimation = new SpriteAnimation(exhaustConfiguration);
+//        SpriteAnimationConfiguration exhaustConfiguration = new SpriteAnimationConfiguration(spriteConfiguration, 0, true);
+//        exhaustConfiguration.getSpriteConfiguration().setImageType(ImageEnums.Flamer_Normal_Exhaust);
+//        this.exhaustAnimation = new SpriteAnimation(exhaustConfiguration);
 
-        SpriteAnimationConfiguration destroyedExplosionfiguration = new SpriteAnimationConfiguration(spriteConfiguration, 1, false);
+        SpriteAnimationConfiguration destroyedExplosionfiguration = new SpriteAnimationConfiguration(spriteConfiguration, 3, false);
         destroyedExplosionfiguration.getSpriteConfiguration().setImageType(ImageEnums.Flamer_Destroyed_Explosion);
         this.destructionAnimation = new SpriteAnimation(destroyedExplosionfiguration);
+        this.damage = 50;
+//        this.attackSpeed = 150;
     }
 
-    // Called every game tick. If weapon is not on cooldown, fire a shot.
-    // Current board block attack is set to 7, this shouldnt be a hardcoded value
-    // This function doesn't discern enemy types yet either, should be re-written
-    // when new enemies are introduced
     public void fireAction () {
-        if (missileManager == null) {
-            missileManager = MissileManager.getInstance();
+        double currentTime = GameStateInfo.getInstance().getGameSeconds();
+        if (currentTime >= lastAttackTime + this.getAttackSpeed() && WithinVisualBoundariesCalculator.isWithinBoundaries(this)) {
+            if (!chargingUpAttackAnimation.isPlaying()) {
+                chargingUpAttackAnimation.refreshAnimation();
+                AnimationManager.getInstance().addUpperAnimation(chargingUpAttackAnimation);
+            }
+
+            if (chargingUpAttackAnimation.getCurrentFrame() >= chargingUpAttackAnimation.getTotalFrames() - 1) {
+                shootMissile();
+                lastAttackTime = currentTime; // Update the last attack time after firing
+            }
         }
-        int xMovementSpeed = 4;
-        int yMovementSpeed = 2;
-        if (attackSpeedCurrentFrameCount >= attackSpeed) {
+    }
 
-            MissileTypeEnums missileType = MissileTypeEnums.FlamerProjectile;
+    private void shootMissile () {
+//        MissileTypeEnums missileType = MissileTypeEnums.FlamerProjectile;
+        SpriteConfiguration missileSpriteConfiguration = new SpriteConfiguration();
+        missileSpriteConfiguration.setxCoordinate(this.getCenterXCoordinate());
+        missileSpriteConfiguration.setyCoordinate(this.getCenterYCoordinate());
+        missileSpriteConfiguration.setScale(1.5f);
+        missileSpriteConfiguration.setImageType(ImageEnums.Player_EMP);
 
-            SpriteConfiguration missileSpriteConfiguration = new SpriteConfiguration();
-            missileSpriteConfiguration.setxCoordinate(xCoordinate);
-            missileSpriteConfiguration.setyCoordinate(yCoordinate + this.height / 2);
-            missileSpriteConfiguration.setScale(this.scale);
-            missileSpriteConfiguration.setImageType(missileType.getImageType());
-
-            MissileConfiguration missileConfiguration = new MissileConfiguration(missileType,
-                    100, 100, null, missileType.getDeathOrExplosionImageEnum(), isFriendly()
-                    , new RegularPathFinder(), this.movementDirection, missileType.getxMovementSpeed(),missileType.getyMovementspeed(), true
-                    , missileType.getObjectType(), missileType.getDamage(), MovementPatternSize.SMALL, missileType.isBoxCollision());
+        SpriteAnimationConfiguration spriteAnimationConfiguration = new SpriteAnimationConfiguration(missileSpriteConfiguration, 2, false);
+//        SpriteAnimation anim = new SpriteAnimation(spriteAnimationConfiguration);
+//        anim.setX(-85);
+//        anim.setY(-85);
+//        AnimationManager.getInstance().addUpperAnimation(anim);
 
 
-            Missile newMissile = MissileCreator.getInstance().createMissile(missileSpriteConfiguration, missileConfiguration);
-            newMissile.setOwnerOrCreator(this);
-            newMissile.rotateGameObject(movementDirection);
-            missileManager.addExistingMissile(newMissile);
-            attackSpeedCurrentFrameCount = 0;
-        }
-        if (attackSpeedCurrentFrameCount < attackSpeed) {
-            this.attackSpeedCurrentFrameCount++;
-        }
+        SpecialAttackConfiguration specialAttackConfiguration = new SpecialAttackConfiguration(this.getDamage(), false, true, false, false);
+        SpecialAttack specialAttack = new SpecialAttack(spriteAnimationConfiguration, specialAttackConfiguration);
+        specialAttack.setOwnerOrCreator(this);
+        specialAttack.setObjectType("Flamer Special Attack");
+
+
+        specialAttack.setObjectToCenterAround(this);
+        specialAttack.setCenteredAroundObject(true);
+
+        specialAttack.setCenterCoordinates(this.getCenterXCoordinate(), this.getCenterYCoordinate());
+        specialAttack.getAnimation().setCenterCoordinates(this.getCenterXCoordinate(), this.getCenterYCoordinate());
+        this.objectsFollowingThis.add(specialAttack);
+
+        MissileManager.getInstance().addSpecialAttack(specialAttack);
     }
 
 }

@@ -126,10 +126,8 @@ public class OrbitPathFinder implements PathFinder {
 	}
 
 	@Override
-	public boolean shouldRecalculatePath(Path path) {
-		// This could return true if the target has moved a significant amount since the last
-		// path calculation.
-		return false;
+	public boolean shouldRecalculatePath (Path path) {
+		return(path == null || path.getWaypoints().isEmpty());
 	}
 
 	@Override
@@ -140,7 +138,6 @@ public class OrbitPathFinder implements PathFinder {
 
 	public void adjustPathForTargetMovement(Path path, int targetDeltaX, int targetDeltaY) {
 		List<Point> waypoints = path.getWaypoints();
-
 		for (Point waypoint : waypoints) {
 			waypoint.setX(waypoint.getX() + targetDeltaX);
 			waypoint.setY(waypoint.getY() + targetDeltaY);

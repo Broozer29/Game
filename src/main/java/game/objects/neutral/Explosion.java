@@ -10,12 +10,14 @@ import visualobjects.SpriteConfigurations.SpriteAnimationConfiguration;
 public class Explosion extends GameObject {
 
     private List<EffectInterface> effectsToApply = new ArrayList<>();
+    private boolean applyOnHitEffects;
 
     public Explosion (SpriteAnimationConfiguration spriteAnimationConfiguration, ExplosionConfiguration explosionConfiguration) {
-        super(spriteAnimationConfiguration);
+        super(spriteAnimationConfiguration, null);
         this.friendly = explosionConfiguration.isFriendly();
         this.damage = explosionConfiguration.getDamage();
         this.allowedToDealDamage = explosionConfiguration.isAllowedToDealDamage();
+        this.applyOnHitEffects = explosionConfiguration.isApplyOnHitEffects();
         this.setObjectType("Explosion");
 
         this.animation.setX(this.xCoordinate - (animation.getWidth() / 2));
@@ -57,4 +59,11 @@ public class Explosion extends GameObject {
         return false;
     }
 
+    public boolean isApplyOnHitEffects () {
+        return applyOnHitEffects;
+    }
+
+    public void setApplyOnHitEffects (boolean applyOnHitEffects) {
+        this.applyOnHitEffects = applyOnHitEffects;
+    }
 }

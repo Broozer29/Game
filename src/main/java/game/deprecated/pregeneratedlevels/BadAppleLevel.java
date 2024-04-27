@@ -3,17 +3,15 @@ package game.deprecated.pregeneratedlevels;
 import java.util.ArrayList;
 import java.util.List;
 
-import game.managers.TimerManager;
 import game.movement.Direction;
 import game.objects.enemies.enums.EnemyEnums;
-import game.spawner.EnemySpawnTimer;
-import VisualAndAudioData.audio.AudioEnums;
+import game.objects.powerups.timers.DeprecatedEnemySpawnTimer;
+import VisualAndAudioData.audio.enums.AudioEnums;
 
 public class BadAppleLevel implements Level{
 
 	private AudioEnums song = AudioEnums.Apple_Holder_Remix;
-	private TimerManager timerManager = TimerManager.getInstance();
-	private List<EnemySpawnTimer> enemySpawnTimers = new ArrayList<EnemySpawnTimer>();
+	private List<DeprecatedEnemySpawnTimer> enemySpawnTimers = new ArrayList<DeprecatedEnemySpawnTimer>();
 
 	public BadAppleLevel() {
 		initBadAppleTimers();
@@ -214,7 +212,7 @@ public class BadAppleLevel implements Level{
 	private void addSpawnTimer(EnemyEnums enemyType, int spawnAttempts, int timeBeforeActivation, boolean loopable,
 			Direction direction, float enemyScale, int additionalDelay) {
 
-		EnemySpawnTimer timer = new EnemySpawnTimer(timeBeforeActivation, spawnAttempts, enemyType, loopable, direction,
+		DeprecatedEnemySpawnTimer timer = new DeprecatedEnemySpawnTimer(timeBeforeActivation, spawnAttempts, enemyType, loopable, direction,
 				enemyScale, 2, 2);
 		enemySpawnTimers.add(timer);
 	}
@@ -223,7 +221,7 @@ public class BadAppleLevel implements Level{
 		return song;
 	}
 
-	public List<EnemySpawnTimer> getTimers() {
+	public List<DeprecatedEnemySpawnTimer> getTimers() {
 		return this.enemySpawnTimers;
 	}
 

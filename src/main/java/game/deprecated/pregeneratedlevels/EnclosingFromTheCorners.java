@@ -6,9 +6,9 @@ import java.util.List;
 import game.movement.Direction;
 import game.objects.enemies.enums.EnemyEnums;
 import game.spawner.EnemyFormation;
-import game.spawner.EnemySpawnTimer;
+import game.objects.powerups.timers.DeprecatedEnemySpawnTimer;
 import game.spawner.FormationCreator;
-import game.spawner.SpawnFormationEnums;
+import game.spawner.enums.SpawnFormationEnums;
 import VisualAndAudioData.DataClass;
 
 //Not to scale, just a representation of the pattern
@@ -28,7 +28,7 @@ import VisualAndAudioData.DataClass;
 //Copy behaviour from the Furi level here, so it can be re-used for random selection
 public class EnclosingFromTheCorners implements PregeneratedFormation {
 
-	private List<EnemySpawnTimer> allTimers = new ArrayList<EnemySpawnTimer>();
+	private List<DeprecatedEnemySpawnTimer> allTimers = new ArrayList<DeprecatedEnemySpawnTimer>();
 	private FormationCreator formCreator = new FormationCreator();
 	private DataClass dataClass = DataClass.getInstance();
 
@@ -38,7 +38,7 @@ public class EnclosingFromTheCorners implements PregeneratedFormation {
 
 	private void createTimers(int activationTime, EnemyEnums enemyType, float scale, int xMovementSpeed, int yMovementSpeed) {
 	    boolean loopable = false;
-	    EnemySpawnTimer timer = null;
+	    DeprecatedEnemySpawnTimer timer = null;
 	    EnemyFormation formation = null;
 
 	    // Calculate proportional offsets based on window dimensions
@@ -48,22 +48,22 @@ public class EnclosingFromTheCorners implements PregeneratedFormation {
 	    int offsetY1 = (int) (dataClass.getWindowHeight() * 1.114); // 111.4% of window height
 	    int offsetY2 = (int) (dataClass.getWindowHeight() * 0.4); // 40% of window height
 
-	    timer = new EnemySpawnTimer(activationTime, 1, enemyType, loopable, Direction.RIGHT_UP, scale,  xMovementSpeed, yMovementSpeed);
+	    timer = new DeprecatedEnemySpawnTimer(activationTime, 1, enemyType, loopable, Direction.RIGHT_UP, scale,  xMovementSpeed, yMovementSpeed);
 	    formation = formCreator.createFormation(SpawnFormationEnums.Reverse_Divide, enemyType.getFormationWidthDistance(), enemyType.getFormationHeightDistance());
 	    timer.setFormation(formation, -offsetX1, offsetY1);
 	    allTimers.add(timer);
 	    
-	    timer = new EnemySpawnTimer(activationTime, 1, enemyType, loopable, Direction.LEFT_DOWN, scale, xMovementSpeed, yMovementSpeed);
+	    timer = new DeprecatedEnemySpawnTimer(activationTime, 1, enemyType, loopable, Direction.LEFT_DOWN, scale, xMovementSpeed, yMovementSpeed);
 	    formation = formCreator.createFormation(SpawnFormationEnums.Reverse_Divide, enemyType.getFormationWidthDistance(), enemyType.getFormationHeightDistance());
 	    timer.setFormation(formation, dataClass.getWindowWidth() + offsetX2, -offsetY2);
 	    allTimers.add(timer);
 
-	    timer = new EnemySpawnTimer(activationTime, 1, enemyType, loopable, Direction.RIGHT_DOWN, scale, xMovementSpeed, yMovementSpeed);
+	    timer = new DeprecatedEnemySpawnTimer(activationTime, 1, enemyType, loopable, Direction.RIGHT_DOWN, scale, xMovementSpeed, yMovementSpeed);
 	    formation = formCreator.createFormation(SpawnFormationEnums.Divide, enemyType.getFormationWidthDistance(), enemyType.getFormationHeightDistance());
 	    timer.setFormation(formation, -offsetX1, -offsetY2);
 	    allTimers.add(timer);
 
-	    timer = new EnemySpawnTimer(activationTime, 1, enemyType, loopable, Direction.LEFT_UP, scale, xMovementSpeed, yMovementSpeed);
+	    timer = new DeprecatedEnemySpawnTimer(activationTime, 1, enemyType, loopable, Direction.LEFT_UP, scale, xMovementSpeed, yMovementSpeed);
 	    formation = formCreator.createFormation(SpawnFormationEnums.Divide, enemyType.getFormationWidthDistance(), enemyType.getFormationHeightDistance());
 	    timer.setFormation(formation, dataClass.getWindowWidth() + offsetX2, offsetY1);
 	    allTimers.add(timer);
@@ -71,7 +71,7 @@ public class EnclosingFromTheCorners implements PregeneratedFormation {
 
 
 	@Override
-	public List<EnemySpawnTimer> getTimers() {
+	public List<DeprecatedEnemySpawnTimer> getTimers() {
 		return this.allTimers;
 	}
 

@@ -1,17 +1,25 @@
 package game.objects;
 
 import game.gamestate.GameStateInfo;
+import game.items.PlayerInventory;
 import game.items.effects.EffectActivationTypes;
 import game.managers.AnimationManager;
 import game.movement.*;
+import game.movement.pathfinders.HomingPathFinder;
+import game.movement.pathfinders.HoverPathFinder;
 import game.movement.pathfinders.PathFinder;
-import VisualAndAudioData.audio.AudioEnums;
+import VisualAndAudioData.audio.enums.AudioEnums;
 import VisualAndAudioData.audio.AudioManager;
 import VisualAndAudioData.image.ImageResizer;
 import VisualAndAudioData.image.ImageRotator;
 import game.items.effects.EffectInterface;
+import game.objects.enemies.Enemy;
+import game.objects.missiles.missiletypes.GenericMissile;
+import game.objects.player.PlayerManager;
+import game.objects.player.PlayerStats;
 import game.spawner.LevelManager;
 import game.util.ArmorCalculator;
+import game.util.BoardBlockUpdater;
 import visualobjects.SpriteConfigurations.SpriteAnimationConfiguration;
 import visualobjects.SpriteConfigurations.SpriteConfiguration;
 import visualobjects.Sprite;
@@ -29,7 +37,10 @@ public class GameObject extends Sprite {
     protected SpriteAnimation destructionAnimation;
     protected SpriteAnimation shieldDamagedAnimation;
     protected SpriteAnimation exhaustAnimation;
+    protected SpriteAnimation chargingUpAttackAnimation;
     protected boolean showHealthBar;
+    protected boolean allowedToMove;
+
 
     protected float originalScale;
 
@@ -48,9 +59,11 @@ public class GameObject extends Sprite {
     //Damage variables
     protected boolean hasAttack;
     protected float damage;
+    protected float bonusDamageMultiplier = 1.0f;
     protected boolean allowedToDealDamage; //Set to false for explosions that hit a target
-    protected int attackSpeed;
+    protected float attackSpeed;
     protected int attackSpeedCurrentFrameCount;
+    protected float attackSpeedBonusModifier;
 
     //Game logic variables
     protected boolean friendly;
@@ -67,8 +80,6 @@ public class GameObject extends Sprite {
     protected Point currentLocation;
     protected int currentBoardBlock;
 
-    protected GameObject objectToChase; //change to gameobject
-
 
     //Objects following this object
     protected List<GameObject> objectsFollowingThis = new ArrayList<GameObject>();
@@ -77,41 +88,111 @@ public class GameObject extends Sprite {
 
     //Other
     protected String objectType;
-    protected Direction movementDirection;
+    protected Direction movementRotation;
     protected boolean boxCollision;
     protected double lastGameSecondDamageTaken;
     protected GameObject ownerOrCreator;
+    protected boolean centeredAroundObject = false;
 
     private int movementCounter = 0;
+    protected float cashMoneyWorth;
+    protected double rotationAngle;
+    protected boolean allowedVisualsToRotate;
 
     protected CopyOnWriteArrayList<EffectInterface> effects = new CopyOnWriteArrayList<>();
     protected List<SpriteAnimation> effectAnimations = new ArrayList<>();
 
-    public GameObject (SpriteConfiguration spriteConfiguration) {
+    protected float xpOnDeath = 0;
+
+    public GameObject (SpriteConfiguration spriteConfiguration, MovementConfiguration movementConfiguration) {
         super(spriteConfiguration);
-        this.currentLocation = new Point(xCoordinate, yCoordinate);
+        initGameObject();
         if (spriteConfiguration.getImageType() != null) {
             this.loadImage(spriteConfiguration.getImageType());
         }
-        this.visible = true;
-        this.movementTracker = new MovementTracker();
-        this.currentBoardBlock = BoardBlockUpdater.getBoardBlock(xCoordinate);
     }
 
-    public GameObject (SpriteAnimationConfiguration spriteAnimationConfiguration) {
+    public GameObject (SpriteAnimationConfiguration spriteAnimationConfiguration, MovementConfiguration movementConfiguration) {
         super(spriteAnimationConfiguration.getSpriteConfiguration());
         this.animation = new SpriteAnimation(spriteAnimationConfiguration);
-        this.currentLocation = new Point(xCoordinate, yCoordinate);
+//        this.animation.setAnimationScale(spriteAnimationConfiguration.getSpriteConfiguration().getScale());
+        initGameObject();
+    }
+
+    protected void initGameObject () {
+        if (this.animation != null) {
+            this.currentLocation = new Point(this.animation.getXCoordinate(), this.animation.getYCoordinate());
+            //Align the object with it's animation
+            this.xCoordinate = this.animation.getXCoordinate();
+            this.yCoordinate = this.animation.getYCoordinate();
+        } else {
+            this.currentLocation = new Point(this.xCoordinate, this.yCoordinate);
+        }
+
         this.visible = true;
         this.movementTracker = new MovementTracker();
         this.currentBoardBlock = BoardBlockUpdater.getBoardBlock(xCoordinate);
+        this.allowedToMove = true;
+        this.allowedVisualsToRotate = true;
+    }
+
+    protected void initMovementConfiguration (MovementConfiguration movementConfiguration) {
+        this.movementRotation = movementConfiguration.getRotation();
+        movementConfiguration.setCurrentLocation(currentLocation);
+        movementConfiguration.setDestination(movementConfiguration.getPathFinder().calculateInitialEndpoint(currentLocation, movementRotation, this.friendly));
+        if (movementConfiguration.getPathFinder() instanceof HomingPathFinder) {
+            movementConfiguration.setTargetToChase(((HomingPathFinder) movementConfiguration.getPathFinder()).getTarget(this.friendly, this.xCoordinate, this.yCoordinate));
+            movementConfiguration.setHasLock(true);
+        }
+
+        movementConfiguration.setStepsTaken(0);
+        this.movementConfiguration = movementConfiguration;
+    }
+
+    public void resetMovementPath () {
+//        if(movementConfiguration == null){
+//            return;
+//        }
+
+        movementConfiguration.resetMovementPath();
+
+        if (this.animation != null) {
+            this.currentLocation = new Point(this.animation.getXCoordinate(), this.animation.getYCoordinate());
+            this.xCoordinate = this.animation.getXCoordinate();
+            this.yCoordinate = this.animation.getYCoordinate();
+        } else {
+            this.currentLocation = new Point(this.xCoordinate, this.yCoordinate);
+        }
+
+
+        movementConfiguration.setCurrentLocation(this.currentLocation);
+        movementConfiguration.setDestination(movementConfiguration.getPathFinder().calculateInitialEndpoint(this.currentLocation, movementRotation, this.friendly));
+
+        if (movementConfiguration.getPathFinder() instanceof HomingPathFinder) {
+            movementConfiguration.setTargetToChase(((HomingPathFinder) movementConfiguration.getPathFinder()).getTarget(this.friendly, this.xCoordinate, this.yCoordinate));
+            movementConfiguration.setHasLock(true);
+        }
+
+        movementConfiguration.setStepsTaken(0);
     }
 
 
     //*****************EFFECTS*******************************
+
+    //Effect animations are NOT moved in this class
     public void addEffect (EffectInterface effect) {
         if (visible && currentHitpoints > 0) {
-            if (!effects.contains(effect)) {
+            boolean effectFound = false;
+
+            // Iterate over the effects to check if an instance of the same type exists
+            for (EffectInterface existingEffect : effects) {
+                if (existingEffect.getClass().equals(effect.getClass())) {
+                    effectFound = true;
+                    break; // Exit the loop as we found an instance of the effect
+                }
+            }
+
+            if (!effectFound) {
                 effects.add(effect);
             } else {
                 refreshEffect(effect);
@@ -135,6 +216,7 @@ public class GameObject extends Sprite {
 
     private void activateOnDeathEffects () {
         activateEffects(EffectActivationTypes.DormentExplosion);
+        activateEffects(EffectActivationTypes.OnDeath);
         cleanseAllEffects();
     }
 
@@ -142,6 +224,8 @@ public class GameObject extends Sprite {
         activateEffects(EffectActivationTypes.DamageOverTime);
         activateEffects(EffectActivationTypes.HealthRegeneration);
         activateEffects(EffectActivationTypes.OutOfCombatArmorBonus);
+        activateEffects(EffectActivationTypes.DormentExplosion);
+        activateEffects(EffectActivationTypes.Debuff);
     }
 
 
@@ -166,10 +250,9 @@ public class GameObject extends Sprite {
     }
 
     private void refreshEffect (EffectInterface effect) {
-        if (effect.getEffectTypesEnums().equals(EffectActivationTypes.DamageOverTime)) {
-            effect.resetDuration();
-            effect.increaseEffectStrength();
-        }
+        //Effects themselves should determine what to do in this scenario
+        effect.resetDuration();
+        effect.increaseEffectStrength();
     }
 
     private void cleanseAllEffects () {
@@ -202,6 +285,10 @@ public class GameObject extends Sprite {
             this.destructionAnimation.setVisible(false);
         }
 
+        if (this.chargingUpAttackAnimation != null) {
+            this.chargingUpAttackAnimation.setVisible(false);
+        }
+
         for (GameObject object : objectsFollowingThis) {
             object.deleteObject();
         }
@@ -209,6 +296,14 @@ public class GameObject extends Sprite {
         for (GameObject object : objectOrbitingThis) {
             object.deleteObject();
         }
+
+        this.objectToFollow = null;
+        if (movementConfiguration != null) {
+            this.movementConfiguration.deleteConfiguration();
+        }
+        this.movementConfiguration = null; //could be dangerous and break shit
+        this.movementTracker = null;
+        this.ownerOrCreator = null;
 
         this.visible = false;
     }
@@ -227,12 +322,16 @@ public class GameObject extends Sprite {
         }
 
         if (this.currentHitpoints <= 0) {
+            if (this.xpOnDeath > 0) {
+                PlayerStats.getInstance().addXP(xpOnDeath);
+            }
             if (this.destructionAnimation != null) {
                 this.destructionAnimation.setOriginCoordinates(this.getCenterXCoordinate(), this.getCenterYCoordinate());
                 AnimationManager.getInstance().addUpperAnimation(destructionAnimation);
             }
 
             for (GameObject object : objectsFollowingThis) {
+                object.setCashMoneyWorth(0);
                 object.takeDamage(9999999);
             }
 
@@ -244,26 +343,41 @@ public class GameObject extends Sprite {
             LevelManager.getInstance().setEnemiesKilled(1);
             this.setVisible(false);
             activateOnDeathEffects();
+            PlayerInventory.getInstance().gainCashMoney(this.cashMoneyWorth);
         }
     }
 
 
     //*****************MOVEMENT*******************************
     public void move () {
-        SpriteMover.getInstance().moveSprite(this, movementConfiguration);
+        SpriteMover.getInstance().moveGameObject(this, movementConfiguration);
         moveAnimations();
         this.bounds.setBounds(xCoordinate + xOffset, yCoordinate + yOffset, width, height);
         updateBoardBlock();
         updateVisibility();
 
-        if (this.exhaustAnimation != null) {
-            this.exhaustAnimation.setX(this.getCenterXCoordinate() + (this.getWidth() / 2));
-            this.exhaustAnimation.setY(this.getCenterYCoordinate() - (exhaustAnimation.getHeight() / 2));
+        if (this.movementConfiguration.getXMovementSpeed() == 0 && this.movementConfiguration.getYMovementSpeed() == 0) {
+            this.rotationAngle = this.movementRotation.toAngle();
         }
 
         if (animation != null) {
-            animation.setAnimationBounds(xCoordinate, yCoordinate);
+//            animation.setAnimationBounds(xCoordinate, yCoordinate);
         }
+
+        for (GameObject object : objectsFollowingThis) {
+            if (object.isCenteredAroundObject()) {
+                object.setCenterCoordinates(this.getCenterXCoordinate(), this.getCenterYCoordinate());
+                if (object.getAnimation() != null) {
+                    object.getAnimation().setCenterCoordinates(this.getCenterXCoordinate(), this.getCenterYCoordinate());
+                }
+            } else {
+
+                //object.move();
+                //Objects here should be in their respective managers. Only special attacks have to be moved like this!
+                //Because they have no movement configuration and don't need one, else they would be missiles
+            }
+        }
+
     }
 
     private void moveAnimations () {
@@ -278,14 +392,14 @@ public class GameObject extends Sprite {
         for (SpriteAnimation spriteAnimation : effectAnimations) {
             moveAnimationsToCenter(spriteAnimation);
         }
+
+        updateChargingAttackAnimationCoordination();
     }
 
     private void moveAnimations (SpriteAnimation animation) {
-        if (movementConfiguration.getCurrentPath().getWaypoints().size() > 0) {
-            animation.setX(movementConfiguration.getCurrentPath().getWaypoints().get(0).getX());
-            animation.setY(movementConfiguration.getCurrentPath().getWaypoints().get(0).getY());
-            animation.setAnimationBounds(animation.getXCoordinate(), animation.getYCoordinate());
-        }
+        animation.setX(this.getXCoordinate());
+        animation.setY(this.getYCoordinate());
+        animation.setAnimationBounds(animation.getXCoordinate(), animation.getYCoordinate());
     }
 
     private void moveAnimationsToCenter (SpriteAnimation animation) {
@@ -294,7 +408,7 @@ public class GameObject extends Sprite {
 
 
     private void updateVisibility () {
-        if (SpriteRemover.getInstance().shouldRemoveVisibility(this, movementConfiguration)) {
+        if (SpriteRemover.getInstance().shouldRemoveVisibility(this)) {
             this.visible = false;
         }
 
@@ -305,25 +419,72 @@ public class GameObject extends Sprite {
 
 
     //*****************VISUAL ALTERATION*******************************
-    public void rotateGameObject (Direction direction) {
+    public void rotateGameObjectTowards (Direction direction, boolean crop) {
+        double angle = direction.toAngle();
+        this.rotationAngle = angle;
+
         if (this.animation != null) {
-            rotateGameObjectSpriteAnimations(animation, direction);
+            rotateGameObjectSpriteAnimations(animation, direction, crop);
         }
         if (this.exhaustAnimation != null) {
-            rotateGameObjectSpriteAnimations(animation, direction);
+            rotateGameObjectSpriteAnimations(animation, direction, crop);
         }
 
         if (this.destructionAnimation != null) {
-            rotateGameObjectSpriteAnimations(animation, direction);
+            rotateGameObjectSpriteAnimations(animation, direction,crop);
         }
         if (this.image != null) {
-            this.image = ImageRotator.getInstance().rotate(image, direction);
+            this.image = ImageRotator.getInstance().rotate(originalImage, direction, crop);
+            super.recalculateBoundsAndSize();
         }
     }
 
-    private void rotateGameObjectSpriteAnimations (SpriteAnimation sprite, Direction direction) {
+    private void updateChargingAttackAnimationCoordination () {
+        if (this.chargingUpAttackAnimation != null) {
+            double baseDistance = (this.getWidth() + this.getHeight()) / 2.0;
+            Point chargingUpLocation = ImageRotator.getInstance().calculateFrontPosition(this.getCenterXCoordinate(), this.getCenterYCoordinate(), rotationAngle, baseDistance);
+            this.chargingUpAttackAnimation.setCenterCoordinates(chargingUpLocation.getX(), chargingUpLocation.getY());
+        }
+
+    }
+
+    public void rotateGameObjectTowards (int targetXCoordinate, int targetYCoordinate, boolean crop) {
+        double calculatedAngle = 0;
+        if (this.animation != null) {
+            calculatedAngle = ImageRotator.getInstance().calculateAngle(this.animation.getCenterXCoordinate(), this.animation.getCenterYCoordinate(), targetXCoordinate, targetYCoordinate);
+        } else {
+            calculatedAngle = ImageRotator.getInstance().calculateAngle(this.getCenterXCoordinate(), this.getCenterYCoordinate(), targetXCoordinate, targetYCoordinate);
+        }
+
+        if (this.rotationAngle != calculatedAngle) {
+            if (this.animation != null) {
+                this.animation.rotateAnimation(calculatedAngle, crop);
+            } else if (this.image != null) {
+                this.image = ImageRotator.getInstance().rotateOrFlip(this.originalImage, calculatedAngle, crop);
+                super.recalculateBoundsAndSize();
+            }
+
+
+            this.rotationAngle = calculatedAngle;
+            updateChargingAttackAnimationCoordination();
+
+            //Exhausts are better added to the sprites themselves by doing some GIMP photoshop and making the enemies an animation
+//            if (this.exhaustAnimation != null) {
+//                double baseDistance = (this.getWidth() + this.getHeight()) / 2.0;
+//                Point exhaustLocation = ImageRotator.getInstance().calculateFrontPosition(this.getCenterXCoordinate(), this.getCenterYCoordinate(), calculatedAngle, baseDistance);
+//                this.exhaustAnimation.setCenterCoordinates(exhaustLocation.getX(), exhaustLocation.getY());
+//                Point exhaustLocation = ExhaustAnimationRotator.calculateExhaustPosition(this, this.rotationAngle);
+//                this.exhaustAnimation.setX(exhaustLocation.getX());
+//                this.exhaustAnimation.setY(exhaustLocation.getY());
+//                double exhaustAngle = ImageRotator.getInstance().calculateAngle(exhaustAnimation.getCenterXCoordinate(), exhaustAnimation.getCenterYCoordinate(), targetXCoordinate, targetYCoordinate);
+//                this.exhaustAnimation.rotateAnimation(exhaustAngle);
+//            }
+        }
+    }
+
+    private void rotateGameObjectSpriteAnimations (SpriteAnimation sprite, Direction direction, boolean crop) {
         if (sprite != null) {
-            sprite.rotateAnimetion(direction);
+            sprite.rotateAnimation(direction, crop);
         }
     }
 
@@ -348,7 +509,10 @@ public class GameObject extends Sprite {
     }
 
     public Point getCurrentLocation () {
-        return this.currentLocation;
+        if (this.movementConfiguration == null) {
+            return new Point(this.xCoordinate, this.yCoordinate);
+        }
+        return this.movementConfiguration.getCurrentLocation();
     }
 
     public int getCurrentBoardBlock () {
@@ -356,7 +520,7 @@ public class GameObject extends Sprite {
     }
 
     public void updateCurrentLocation (Point newLocation) {
-        this.currentLocation = newLocation;
+        this.movementConfiguration.setCurrentLocation(newLocation);
     }
 
     public SpriteAnimation getShieldDamagedAnimation () {
@@ -431,10 +595,6 @@ public class GameObject extends Sprite {
         this.hasAttack = hasAttack;
     }
 
-    public float getDamage () {
-        return damage;
-    }
-
     public void setDamage (float damage) {
         this.damage = damage;
     }
@@ -469,7 +629,7 @@ public class GameObject extends Sprite {
 
     public void setObjectToFollow (GameObject objectToFollow) {
         this.objectToFollow = objectToFollow;
-        this.movementConfiguration.setTarget(objectToFollow);
+        this.movementConfiguration.setTargetToChase(objectToFollow);
     }
 
     public MovementConfiguration getMovementConfiguration () {
@@ -504,14 +664,6 @@ public class GameObject extends Sprite {
         return originalScale;
     }
 
-    public void setObjectToChase (GameObject gameObject) {
-        this.objectToChase = gameObject;
-    }
-
-    public Sprite getObjectToChase () {
-        return this.objectToChase;
-    }
-
     public String getObjectType () {
         return this.objectType;
     }
@@ -527,6 +679,7 @@ public class GameObject extends Sprite {
         } else {
             this.image = ImageResizer.getInstance().getScaledImage(image, scale);
             configureImageDimensions();
+            super.recalculateBoundsAndSize();
         }
     }
 
@@ -539,7 +692,11 @@ public class GameObject extends Sprite {
     }
 
     public void updateBoardBlock () {
-        this.currentBoardBlock = BoardBlockUpdater.getBoardBlock(xCoordinate);
+        if (this.animation != null) {
+            this.currentBoardBlock = BoardBlockUpdater.getBoardBlock(animation.getXCoordinate());
+        } else {
+            this.currentBoardBlock = BoardBlockUpdater.getBoardBlock(xCoordinate);
+        }
     }
 
     public List<GameObject> getObjectOrbitingThis () {
@@ -587,4 +744,176 @@ public class GameObject extends Sprite {
         this.armorBonus += amount; // Modify the armor bonus by the given amount
     }
 
+    public float getCashMoneyWorth () {
+        return cashMoneyWorth;
+    }
+
+    public void setCashMoneyWorth (float cashMoneyWorth) {
+        this.cashMoneyWorth = cashMoneyWorth;
+    }
+
+    public boolean isAllowedToMove () {
+        return allowedToMove;
+    }
+
+    public void setAllowedToMove (boolean allowedToMove) {
+        this.allowedToMove = allowedToMove;
+    }
+
+    public double getRotationAngle () {
+        return rotationAngle;
+    }
+
+    public boolean isAllowedVisualsToRotate () {
+        return allowedVisualsToRotate;
+    }
+
+    public void setAllowedVisualsToRotate (boolean allowedVisualsToRotate) {
+        this.allowedVisualsToRotate = allowedVisualsToRotate;
+    }
+
+    public boolean isCenteredAroundObject () {
+        return centeredAroundObject;
+    }
+
+    public void setCenteredAroundObject (boolean centeredAroundObject) {
+        this.centeredAroundObject = centeredAroundObject;
+    }
+
+    @Override
+    public void setCenterCoordinates (int newXCoordinate, int newYCoordinate) {
+
+        if (this.image != null && this.animation == null) {
+            this.xCoordinate = newXCoordinate - (this.width / 2) + xOffset;
+            this.yCoordinate = newYCoordinate - (this.height / 2) + yOffset;
+            this.currentLocation = new Point(xCoordinate, yCoordinate);
+        }
+
+        if (this.animation != null) {
+            this.animation.setCenterCoordinates(newXCoordinate, newYCoordinate);
+            this.currentLocation = new Point(animation.getXCoordinate(), animation.getYCoordinate());
+        }
+        //Maybe the other animations too? Requires testing but theoretically it should be fine if they are only updated when needed
+    }
+
+
+    public void rotateObject () {
+        if (movementConfiguration.getPathFinder() instanceof HoverPathFinder || movementConfiguration.getCurrentPath().getWaypoints().isEmpty()
+                || (movementConfiguration.getXMovementSpeed() == 0 && movementConfiguration.getYMovementSpeed() == 0)) {
+            handleRotation();
+        }
+    }
+
+    protected void handleRotation () {
+        if (this instanceof Enemy) {
+            Enemy enemyObject = (Enemy) this;
+            boolean crop = true;
+            // Check for specific missile type pathfinders
+            if (enemyObject.getMissileTypePathFinders() == PathFinderEnums.Homing
+                    || enemyObject.getMissileTypePathFinders() == PathFinderEnums.StraightLine) {
+                // Rotate towards the player, assuming these are only used for enemies that aim
+                rotateObjectTowardsPoint(PlayerManager.getInstance().getSpaceship().getCurrentLocation(), crop);
+                updateChargingAttackAnimationCoordination();
+                return;
+            }
+        }
+
+        if (!movementConfiguration.getCurrentPath().getWaypoints().isEmpty()) {
+            rotateObjectTowardsDestination(false);
+//            rotateObjectTowardsRotation();
+        } else {
+            rotateObjectTowardsRotation(false);
+        }
+        updateChargingAttackAnimationCoordination();
+
+    }
+
+    protected void rotateObjectTowardsDestination (boolean crop) {
+        if (this.isAllowedVisualsToRotate() && !movementConfiguration.getCurrentPath().getWaypoints().isEmpty()) {
+            Point destination = movementConfiguration.getCurrentPath().getWaypoints().get(movementConfiguration.getCurrentPath().getWaypoints().size() - 1);
+            destination = adjustDestinationForRotation(this, destination);
+            this.rotateGameObjectTowards(destination.getX(), destination.getY(), crop);
+        }
+    }
+
+    protected void rotateObjectTowardsRotation (boolean crop) {
+        if (this.isAllowedVisualsToRotate() && this.getMovementConfiguration().getRotation() != null) {
+//            if (this.getAnimation() != null) {
+//                this.getAnimation().rotateAnimation(this.getMovementConfiguration().getRotation());
+//            } else {
+
+            this.rotateGameObjectTowards(this.getMovementConfiguration().getRotation(), crop);
+
+//            }
+        }
+    }
+
+    protected void rotateObjectTowardsPoint (Point point, boolean crop) {
+        if (this.isAllowedVisualsToRotate()) {
+            point = adjustDestinationForRotation(this, point);
+            this.rotateGameObjectTowards(point.getX(), point.getY(), crop);
+        }
+    }
+
+    private Point adjustDestinationForRotation (GameObject gameObject, Point destination) {
+        int height = 0;
+        int width = 0;
+        if (gameObject.getAnimation() != null) {
+            height = gameObject.getAnimation().getHeight();
+            width = gameObject.getAnimation().getWidth();
+        } else {
+            height = gameObject.getHeight();
+            width = gameObject.getWidth();
+        }
+
+        // Assuming the GameObject's (x, y) represents its top-left corner,
+        // and we need to adjust the destination to point towards the center of the GameObject.
+        // Calculate the center offsets
+        int centerXOffset = width / 2;
+        int centerYOffset = height / 2;
+
+        // Adjust the destination by adding the calculated offsets
+        // This adjustment assumes the destination point is intended to be the center point
+        // of where the GameObject should rotate towards.
+        Point adjustedDestination = new Point(destination.getX() + centerXOffset, destination.getY() + centerYOffset);
+
+        return adjustedDestination;
+    }
+
+
+    public float getAttackSpeed () {
+        float baseAttackSpeed = this.attackSpeed;
+        float attackSpeedIncrease = this.attackSpeedBonusModifier;
+
+        // Calculate the new attack speed
+        float newAttackSpeed = baseAttackSpeed / (1 + attackSpeedIncrease / 100);
+
+        //Maximum attack speed
+        if (newAttackSpeed < 0.1) {
+            newAttackSpeed = 0.1f;
+        }
+        // Ensure the attack speed does not fall below a minimum threshold
+        return Math.round(newAttackSpeed);
+    }
+
+    public float getDamage () {
+        float attackDamage = this.damage * this.bonusDamageMultiplier;
+        if (attackDamage < 0.1) {
+            return 0.1f;
+        } else {
+            return attackDamage;
+        }
+    }
+
+    public void modifyBonusDamageMultiplier (float bonusPercentage) {
+        this.bonusDamageMultiplier += bonusPercentage;
+    }
+
+    public void setAttackSpeed (int attackSpeed) {
+        this.attackSpeed = attackSpeed;
+    }
+
+    public void modifyAttackSpeedBonus (float bonusPercentage) {
+        this.attackSpeedBonusModifier += bonusPercentage;
+    }
 }

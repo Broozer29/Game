@@ -24,11 +24,9 @@ import game.managers.AnimationManager;
 import game.objects.background.BackgroundManager;
 import game.objects.background.BackgroundObject;
 import VisualAndAudioData.DataClass;
-import game.objects.player.PlayerStats;
-import VisualAndAudioData.image.ImageEnums;
 import guiboards.MenuCursor;
 import guiboards.boardEnums.MenuFunctionEnums;
-import guiboards.MenuObject;
+import guiboards.MenuObjectCollection;
 import guiboards.boardEnums.MenuObjectEnums;
 import guiboards.MenuObjectPart;
 import visualobjects.Sprite;
@@ -40,46 +38,32 @@ public class MenuBoard extends JPanel implements ActionListener {
     private AnimationManager animationManager = AnimationManager.getInstance();
     private ConnectedControllers controllers = ConnectedControllers.getInstance();
     private final int boardWidth = data.getWindowWidth();
-    ;
     private final int boardHeight = data.getWindowHeight();
-    ;
-    private List<MenuObject> firstColumn = new ArrayList<MenuObject>();
-    private List<MenuObject> secondColumn = new ArrayList<MenuObject>();
-    private List<MenuObject> thirdColumn = new ArrayList<MenuObject>();
-    private List<List<MenuObject>> grid = new ArrayList<>();
+    private List<MenuObjectCollection> firstColumn = new ArrayList<MenuObjectCollection>();
+    private List<MenuObjectCollection> secondColumn = new ArrayList<MenuObjectCollection>();
+    private List<MenuObjectCollection> thirdColumn = new ArrayList<MenuObjectCollection>();
+    private List<List<MenuObjectCollection>> grid = new ArrayList<>();
 
-    private List<MenuObject> offTheGridObjects = new ArrayList<MenuObject>();
+    private List<MenuObjectCollection> offTheGridObjects = new ArrayList<MenuObjectCollection>();
 
     private MenuCursor menuCursor;
-    private MenuObject startGameTile;
+    private MenuObjectCollection startGameTile;
 
     private Timer timer;
-    private MenuObject titleImage;
+    private MenuObjectCollection titleImage;
 
-    private MenuObject wasdExplanation;
-    private MenuObject shiftExplanation;
-    private MenuObject attackExplanation;
-    private MenuObject specialAttackExplanation;
+    private MenuObjectCollection wasdExplanation;
+    private MenuObjectCollection shiftExplanation;
+    private MenuObjectCollection attackExplanation;
+    private MenuObjectCollection specialAttackExplanation;
 
-    private MenuObject startGameCard;
-    private MenuObject selectNormalAttackCard;
-    private MenuObject selectSpecialAttackCard;
-    private MenuObject selectNormalAttackTitle;
-    private MenuObject selectNormalAttackIcon;
-    private MenuObject selectNormalAttackIconHighlight;
-    private MenuObject selectSpecialAttackTitle;
-    private MenuObject selectSpecialAttackIcon;
-    private MenuObject selectSpecialAttackIconHighlight;
-
-    private MenuObject selectRocketLauncher;
-    private MenuObject selectLaserbeam;
-    private MenuObject selectEMP;
-    private MenuObject selectTalentSelectionBoard;
-    private MenuObject selectLevelBoard;
+    private MenuObjectCollection startGameCard;
+    private MenuObjectCollection selectTalentSelectionBoard;
+    private MenuObjectCollection openShopBoard;
 
     private boolean foundControllerBool = false;
     private boolean initializedMenuObjects = false;
-    private MenuObject foundController;
+    private MenuObjectCollection foundController;
     private ControllerInputReader controllerInputReader;
 
     private int selectedRow = 0;
@@ -108,7 +92,7 @@ public class MenuBoard extends JPanel implements ActionListener {
         // With functionality:
         float imageScale = 1;
         float textScale = 1;
-        this.startGameTile = new MenuObject(150, (boardHeight / 2), textScale, "START GAME", MenuObjectEnums.Text_Block,
+        this.startGameTile = new MenuObjectCollection(150, (boardHeight / 2), textScale, "START GAME", MenuObjectEnums.Text,
                 MenuFunctionEnums.Start_Game);
 
         int initCursorX = startGameTile.getXCoordinate();
@@ -116,99 +100,44 @@ public class MenuBoard extends JPanel implements ActionListener {
         this.menuCursor = new MenuCursor(initCursorX, initCursorY, imageScale);
         menuCursor.setXCoordinate(startGameTile.getXCoordinate() - (menuCursor.getxDistanceToKeep()));
 
-        this.selectRocketLauncher = new MenuObject((boardWidth / 2) + 300, (boardHeight / 2) + 50, textScale,
-                "Rocket setup missing special attack lol", MenuObjectEnums.Text_Block,
-                MenuFunctionEnums.Select_Rocket_Launcher);
-
-        this.titleImage = new MenuObject((boardWidth / 2) - 357, (boardHeight / 2) - 300, imageScale, null,
+        this.titleImage = new MenuObjectCollection((boardWidth / 2) - 357, (boardHeight / 2) - 300, imageScale, null,
                 MenuObjectEnums.Title_Image, MenuFunctionEnums.NONE);
 
         // Without functionality:
 
         int xCoordinate = boardWidth / 100;
         int yCoordinate = boardHeight / 2 + 300;
-        this.wasdExplanation = new MenuObject(xCoordinate, yCoordinate + 0, textScale,
-                "MOVEMENT = WASD OR ARROWS ORJOYSTICK", MenuObjectEnums.Text_Block, MenuFunctionEnums.NONE);
-        this.shiftExplanation = new MenuObject(xCoordinate, yCoordinate + 20, textScale, "SHIFT = SPEED BOOST",
-                MenuObjectEnums.Text_Block, MenuFunctionEnums.NONE);
+        this.wasdExplanation = new MenuObjectCollection(xCoordinate, yCoordinate + 0, textScale,
+                "MOVEMENT = WASD OR ARROWS OR JOYSTICK", MenuObjectEnums.Text, MenuFunctionEnums.NONE);
+        this.shiftExplanation = new MenuObjectCollection(xCoordinate, yCoordinate + 20, textScale, "SHIFT = SPEED BOOST",
+                MenuObjectEnums.Text, MenuFunctionEnums.NONE);
 
-        this.attackExplanation = new MenuObject(xCoordinate, yCoordinate + 40, textScale, "SPACEBAR = NORMAL ATTACK",
-                MenuObjectEnums.Text_Block, MenuFunctionEnums.NONE);
+        this.attackExplanation = new MenuObjectCollection(xCoordinate, yCoordinate + 40, textScale, "SPACEBAR = NORMAL ATTACK",
+                MenuObjectEnums.Text, MenuFunctionEnums.NONE);
 
-        this.specialAttackExplanation = new MenuObject(xCoordinate, yCoordinate + 60, textScale,
-                "Q AND ENTER = SPECIAL ATTACK", MenuObjectEnums.Text_Block, MenuFunctionEnums.NONE);
+        this.specialAttackExplanation = new MenuObjectCollection(xCoordinate, yCoordinate + 60, textScale,
+                "Q AND ENTER = SPECIAL ATTACK", MenuObjectEnums.Text, MenuFunctionEnums.NONE);
 
-        this.startGameCard = new MenuObject(startGameTile.getXCoordinate() - 120, startGameTile.getYCoordinate() - 50,
+        this.startGameCard = new MenuObjectCollection(startGameTile.getXCoordinate() - 120, startGameTile.getYCoordinate() - 50,
                 1, null, MenuObjectEnums.Square_Card, MenuFunctionEnums.NONE);
         this.startGameCard.getMenuImages().get(0).setImageDimensions(400, 250);
 
-        this.selectNormalAttackCard = new MenuObject(boardWidth / 2 - 100, startGameTile.getYCoordinate() - 50, 1, null,
-                MenuObjectEnums.Square_Card, MenuFunctionEnums.NONE);
 
-        this.selectNormalAttackTitle = new MenuObject(selectNormalAttackCard.getXCoordinate() + 25,
-                selectNormalAttackCard.getYCoordinate() + 30, (float) 1.5, "SELECT A NORMAL ATTACK",
-                MenuObjectEnums.Text_Block, MenuFunctionEnums.NONE);
-
-        this.selectLaserbeam = new MenuObject(selectNormalAttackCard.getXCoordinate() + 50,
-                selectNormalAttackCard.getYCoordinate() + 75, textScale, "LASERBEAM", MenuObjectEnums.Text_Block,
-                MenuFunctionEnums.Select_Laserbeam);
-
-        this.selectRocketLauncher = new MenuObject(selectNormalAttackCard.getXCoordinate() + 50,
-                selectNormalAttackCard.getYCoordinate() + 175, textScale, "ROCKET LAUNCHER", MenuObjectEnums.Text_Block,
-                MenuFunctionEnums.Select_Rocket_Launcher);
-
-        this.selectNormalAttackIcon = new MenuObject(selectNormalAttackCard.getXCoordinate() + 150,
-                selectNormalAttackCard.getYCoordinate() - 75, 1, null, MenuObjectEnums.Laserbeam_Icon,
-                MenuFunctionEnums.NONE);
-
-        this.selectNormalAttackIconHighlight = new MenuObject(selectNormalAttackIcon.getXCoordinate(),
-                selectNormalAttackIcon.getYCoordinate(), 1, null, MenuObjectEnums.Highlight_Animation,
-                MenuFunctionEnums.NONE);
-
-        this.selectSpecialAttackCard = new MenuObject(boardWidth / 2 + 320, startGameTile.getYCoordinate() - 50, 1,
-                null, MenuObjectEnums.Square_Card, MenuFunctionEnums.NONE);
-
-        this.selectEMP = new MenuObject(selectSpecialAttackCard.getXCoordinate() + 50,
-                selectSpecialAttackCard.getYCoordinate() + 75, textScale, "EMP", MenuObjectEnums.Text_Block,
-                MenuFunctionEnums.Select_EMP);
-
-        this.selectSpecialAttackTitle = new MenuObject(selectSpecialAttackCard.getXCoordinate() + 25,
-                selectSpecialAttackCard.getYCoordinate() + 30, (float) 1.5, "SELECT A SPECIAL ATTACK",
-                MenuObjectEnums.Text_Block, MenuFunctionEnums.NONE);
-
-        this.selectSpecialAttackIcon = new MenuObject(selectSpecialAttackCard.getXCoordinate() + 150,
-                selectSpecialAttackCard.getYCoordinate() - 75, 1, null, MenuObjectEnums.EMP_Icon,
-                MenuFunctionEnums.NONE);
-
-        this.selectSpecialAttackIconHighlight = new MenuObject(selectSpecialAttackIcon.getXCoordinate(),
-                selectSpecialAttackIcon.getYCoordinate(), 1, null, MenuObjectEnums.Highlight_Animation,
-                MenuFunctionEnums.NONE);
-
-        this.selectTalentSelectionBoard = new MenuObject(startGameTile.getXCoordinate(),
-                startGameTile.getYCoordinate() + 50, 1, "SELECT TALENTS TEST BOARD", MenuObjectEnums.Text_Block,
+        this.selectTalentSelectionBoard = new MenuObjectCollection(startGameTile.getXCoordinate(),
+                startGameTile.getYCoordinate() + 50, 1, "SELECT TALENTS TEST BOARD", MenuObjectEnums.Text,
                 MenuFunctionEnums.Select_Talent_Selection_Board);
 
-        this.selectLevelBoard = new MenuObject(selectTalentSelectionBoard.getXCoordinate(),
-                selectTalentSelectionBoard.getYCoordinate() + 50, 1, "SELECT LEVEL",
-                MenuObjectEnums.Text_Block, MenuFunctionEnums.Select_Level_Board);
-
-        selectNormalAttackIconHighlight.getMenuImages().get(0).getAnimation()
-                .setX(selectNormalAttackIcon.getXCoordinate() - 2);
-        selectNormalAttackIconHighlight.getMenuImages().get(0).getAnimation()
-                .setY(selectNormalAttackIcon.getYCoordinate() - 2);
-
-        selectSpecialAttackIconHighlight.getMenuImages().get(0).getAnimation()
-                .setX(selectSpecialAttackIcon.getXCoordinate() - 2);
-        selectSpecialAttackIconHighlight.getMenuImages().get(0).getAnimation()
-                .setY(selectSpecialAttackIcon.getYCoordinate() - 2);
+        this.openShopBoard = new MenuObjectCollection(selectTalentSelectionBoard.getXCoordinate(),
+                selectTalentSelectionBoard.getYCoordinate() + 50, 1, "OPEN SHOP",
+                MenuObjectEnums.Text, MenuFunctionEnums.Open_Shop_Window);
 
         if (!foundControllerBool) {
-            this.foundController = new MenuObject(100, 100, (float) 1.5,
+            this.foundController = new MenuObjectCollection(100, 100, (float) 1.5,
                     "NO CONTROLLER COULD BE FOUND. MAKE SURE THE CONTROLLER IS CONNECTED AND ON THEN RESTART",
-                    MenuObjectEnums.Text_Block, MenuFunctionEnums.NONE);
+                    MenuObjectEnums.Text, MenuFunctionEnums.NONE);
         } else {
-            this.foundController = new MenuObject(boardWidth / 2 - 100, 100, (float) 1.5, "FOUND A CONTROLLER",
-                    MenuObjectEnums.Text_Block, MenuFunctionEnums.NONE);
+            this.foundController = new MenuObjectCollection(boardWidth / 2 - 100, 100, (float) 1.5, "FOUND A CONTROLLER",
+                    MenuObjectEnums.Text, MenuFunctionEnums.NONE);
         }
 
         initializedMenuObjects = true;
@@ -232,20 +161,20 @@ public class MenuBoard extends JPanel implements ActionListener {
             offTheGridObjects.add(startGameCard);
 
             offTheGridObjects.add(titleImage);
-            offTheGridObjects.add(selectNormalAttackCard);
-            offTheGridObjects.add(selectSpecialAttackCard);
-            offTheGridObjects.add(selectNormalAttackTitle);
-            offTheGridObjects.add(selectSpecialAttackTitle);
-
-            offTheGridObjects.add(selectNormalAttackIcon);
-            offTheGridObjects.add(selectSpecialAttackIcon);
+//            offTheGridObjects.add(selectNormalAttackCard);
+//            offTheGridObjects.add(selectSpecialAttackCard);
+//            offTheGridObjects.add(selectNormalAttackTitle);
+//            offTheGridObjects.add(selectSpecialAttackTitle);
+//
+//            offTheGridObjects.add(selectNormalAttackIcon);
+//            offTheGridObjects.add(selectSpecialAttackIcon);
 
             offTheGridObjects.add(menuCursor);
 
-            AnimationManager.getInstance()
-                    .addUpperAnimation(selectNormalAttackIconHighlight.getMenuImages().get(0).getAnimation());
-            AnimationManager.getInstance()
-                    .addUpperAnimation(selectSpecialAttackIconHighlight.getMenuImages().get(0).getAnimation());
+//            AnimationManager.getInstance()
+//                    .addUpperAnimation(selectNormalAttackIconHighlight.getMenuImages().get(0).getAnimation());
+//            AnimationManager.getInstance()
+//                    .addUpperAnimation(selectSpecialAttackIconHighlight.getMenuImages().get(0).getAnimation());
 
             offTheGridObjects.add(foundController);
             this.menuCursor.setSelectedMenuTile(startGameTile);
@@ -269,45 +198,45 @@ public class MenuBoard extends JPanel implements ActionListener {
         //Move start game tile to selectLevelBoard
         addTileToFirstColumn(startGameTile);
         addTileToFirstColumn(selectTalentSelectionBoard);
-        addTileToFirstColumn(selectLevelBoard);
-        addTileToSecondColumn(selectLaserbeam);
-        addTileToSecondColumn(selectRocketLauncher);
-        addTileToThirdColumn(selectEMP);
+        addTileToFirstColumn(openShopBoard);
+//        addTileToSecondColumn(selectLaserbeam);
+//        addTileToSecondColumn(selectRocketLauncher);
+//        addTileToThirdColumn(selectEMP);
     }
 
-    private void addTileToFirstColumn (MenuObject menuTile) {
+    private void addTileToFirstColumn (MenuObjectCollection menuTile) {
         firstColumn.add(menuTile);
     }
 
-    private void addTileToSecondColumn (MenuObject menuTile) {
+    private void addTileToSecondColumn (MenuObjectCollection menuTile) {
         secondColumn.add(menuTile);
     }
 
-    private void addTileToThirdColumn (MenuObject menuTile) {
+    private void addTileToThirdColumn (MenuObjectCollection menuTile) {
         thirdColumn.add(menuTile);
     }
 
-    private void updateActiveAttackIcons () {
-        switch (PlayerStats.getInstance().getAttackType()) {
-            case DefaultPlayerLaserbeam:
-            default:
-                selectNormalAttackIcon.changeImage(ImageEnums.Starcraft2_Pulse_Laser);
-                break;
-            case Rocket1:
-                selectNormalAttackIcon.changeImage(ImageEnums.Starcraft2_Dual_Rockets);
-                break;
-        }
-
-        switch (PlayerStats.getInstance().getPlayerSpecialAttackType()) {
-            case EMP:
-            default:
-                selectSpecialAttackIcon.changeImage(ImageEnums.Starcraft2_Electric_Field);
-                break;
-            case Rocket_Cluster:
-                break;
-
-        }
-    }
+//    private void updateActiveAttackIcons () {
+//        switch (PlayerStats.getInstance().getAttackType()) {
+//            case DefaultPlayerLaserbeam:
+//            default:
+//                selectNormalAttackIcon.changeImage(ImageEnums.Starcraft2_Pulse_Laser);
+//                break;
+//            case Rocket1:
+//                selectNormalAttackIcon.changeImage(ImageEnums.Starcraft2_Dual_Rockets);
+//                break;
+//        }
+//
+//        switch (PlayerStats.getInstance().getPlayerSpecialAttackType()) {
+//            case EMP:
+//            default:
+//                selectSpecialAttackIcon.changeImage(ImageEnums.Starcraft2_Electric_Field);
+//                break;
+//            case Rocket_Cluster:
+//                break;
+//
+//        }
+//    }
 
     /*------------------------Navigation methods--------------------------------*/
 
@@ -371,7 +300,7 @@ public class MenuBoard extends JPanel implements ActionListener {
 
     // Check if the grid is empty
     private boolean isGridEmpty () {
-        for (List<MenuObject> row : grid) {
+        for (List<MenuObjectCollection> row : grid) {
             if (!row.isEmpty()) {
                 return false; // Return false as soon as a non-empty row is found
             }
@@ -403,7 +332,7 @@ public class MenuBoard extends JPanel implements ActionListener {
             menuCursor.setSelectedMenuTile(null); // You might need to decide how you want to handle this situation in
             // your application
         } else {
-            MenuObject selectedTile = grid.get(selectedRow).get(selectedColumn);
+            MenuObjectCollection selectedTile = grid.get(selectedRow).get(selectedColumn);
             menuCursor.setSelectedMenuTile(selectedTile);
             menuCursor.setYCoordinate(selectedTile.getYCoordinate());
             menuCursor.setXCoordinate(selectedTile.getXCoordinate() - (menuCursor.getxDistanceToKeep()));
@@ -434,7 +363,7 @@ public class MenuBoard extends JPanel implements ActionListener {
             }
             // Shoddy fix, maybe an updateGameTick? Atleast this way it doesnt constantly check for
             // new icons
-            updateActiveAttackIcons();
+//            updateActiveAttackIcons();
         }
 
         @Override
@@ -509,7 +438,7 @@ public class MenuBoard extends JPanel implements ActionListener {
             if (controllerInputReader.isInputActive(ControllerInputEnums.FIRE)) {
                 // Select menu option
                 selectMenuTile();
-                updateActiveAttackIcons();
+//                updateActiveAttackIcons();
             }
         }
     }
@@ -546,25 +475,33 @@ public class MenuBoard extends JPanel implements ActionListener {
 
     private void drawObjects (Graphics2D g) {
         recreateList();
-        for (MenuObject object : offTheGridObjects) {
-            if (object.getMenuObjectType() == MenuObjectEnums.Text_Block) {
-                for (MenuObjectPart letter : object.getMenuImages()) {
-                    g.drawImage(letter.getImage(), letter.getXCoordinate(), letter.getYCoordinate(), this);
+        for (MenuObjectCollection object : offTheGridObjects) {
+            if (object != null) {
+                drawMenuObject(g, object);
+            }
+        }
+
+        for (List<MenuObjectCollection> list : grid) {
+            for (MenuObjectCollection object : list) {
+                if (object != null) {
+                    drawMenuObject(g, object);
                 }
-            } else {
-                g.drawImage(object.getMenuImages().get(0).getImage(), object.getXCoordinate(), object.getYCoordinate(),
+            }
+        }
+
+    }
+
+    private void drawMenuObject (Graphics2D g, MenuObjectCollection object) {
+        if (object.getMenuObjectType() == MenuObjectEnums.Text) {
+            for (MenuObjectPart letter : object.getMenuTextImages()) {
+                g.drawImage(letter.getImage(), letter.getXCoordinate(), letter.getYCoordinate(), this);
+            }
+        } else {
+            for (MenuObjectPart image : object.getMenuImages()) {
+                g.drawImage(image.getImage(), object.getXCoordinate(), object.getYCoordinate(),
                         this);
             }
         }
-
-        for (List<MenuObject> list : grid) {
-            for (MenuObject object : list) {
-                for (MenuObjectPart menuPart : object.getMenuImages()) {
-                    g.drawImage(menuPart.getImage(), menuPart.getXCoordinate(), menuPart.getYCoordinate(), this);
-                }
-            }
-        }
-
     }
 
     private void drawImage (Graphics g, Sprite sprite) {

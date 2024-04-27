@@ -1,62 +1,98 @@
 package game.objects.missiles;
 
+import VisualAndAudioData.audio.enums.AudioEnums;
+import VisualAndAudioData.image.ImageEnums;
+import game.movement.Direction;
+import game.movement.MovementConfiguration;
+import game.movement.pathfinderconfigs.MovementPatternSize;
+import game.movement.pathfinders.PathFinder;
 import game.objects.missiles.missiletypes.*;
 import visualobjects.SpriteConfigurations.SpriteAnimationConfiguration;
 import visualobjects.SpriteConfigurations.SpriteConfiguration;
 
 public class MissileCreator {
 
-	private static MissileCreator instance = new MissileCreator();
+    private static MissileCreator instance = new MissileCreator();
 
-	private MissileCreator() {
-	}
+    private MissileCreator () {
+    }
 
-	public static MissileCreator getInstance() {
-		return instance;
-	}
+    public static MissileCreator getInstance () {
+        return instance;
+    }
 
-	public Missile createMissile(SpriteConfiguration spriteConfiguration, MissileConfiguration missileConfiguration) {
-		switch (missileConfiguration.getMissileType()) {
-			case AlienLaserbeam -> {
-				return new AlienLaserbeam(spriteConfiguration,missileConfiguration);
-			}
-			case BombaProjectile -> {
-				return new BombaProjectile(upgradeConfig(spriteConfiguration, 2, true),missileConfiguration);
-			}
-			case BulldozerProjectile -> {
-				return new BulldozerProjectile(upgradeConfig(spriteConfiguration, 2, true),missileConfiguration);
-			}
-			case EnergizerProjectile -> {
-				return new EnergizerProjectile(upgradeConfig(spriteConfiguration, 2, true),missileConfiguration);
-			}
-			case FlamerProjectile -> {
-				return new FlamerProjectile(upgradeConfig(spriteConfiguration, 2, true),missileConfiguration);
-			}
-			case SeekerProjectile -> {
-				return new SeekerProjectile(upgradeConfig(spriteConfiguration, 2, true),missileConfiguration);
-			}
-			case TazerProjectile -> {
-				return new TazerProjectile(upgradeConfig(spriteConfiguration, 2, true),missileConfiguration);
-			}
-			case FlameThrowerProjectile -> {
-				return new FlamethrowerProjectile(upgradeConfig(spriteConfiguration, 2, true),missileConfiguration);
-			}
-			case DefaultPlayerLaserbeam -> {
-				return new DefaultPlayerLaserbeam(spriteConfiguration,missileConfiguration);
-			}
-			case FirewallMissile -> {
-				return new FirewallMissile(upgradeConfig(spriteConfiguration, 2, true),missileConfiguration);
-			}
-			case Rocket1 -> {
-				return new Rocket1(upgradeConfig(spriteConfiguration, 2, true), missileConfiguration);
-			}
-		}
-		return null;
-	}
+    public SpriteConfiguration createMissileSpriteConfig (int xCoordinate, int yCoordinate, ImageEnums missileImageType, float scale) {
+        SpriteConfiguration spriteConfiguration = new SpriteConfiguration();
+        spriteConfiguration.setxCoordinate(xCoordinate);
+        spriteConfiguration.setyCoordinate(yCoordinate);
+        spriteConfiguration.setImageType(missileImageType);
+        spriteConfiguration.setScale(scale);
+        return spriteConfiguration;
+    }
 
-	private SpriteAnimationConfiguration upgradeConfig(SpriteConfiguration spriteConfiguration, int frameDelay, boolean infiniteLoop){
-		return new SpriteAnimationConfiguration(spriteConfiguration, frameDelay, infiniteLoop);
-	}
+    public MissileConfiguration createMissileConfiguration (MissileTypeEnums attackType, int maxHitPoints, int maxShields,
+                                                            AudioEnums deathSound, float damage, ImageEnums missileDestructionImage,
+                                                            boolean isFriendly, boolean allowedToDealDamage, String objectType, boolean isBoxCollision) {
+        MissileConfiguration missileConfiguration = new MissileConfiguration(attackType, maxHitPoints, maxShields,
+                deathSound, damage, missileDestructionImage, isFriendly,
+                allowedToDealDamage, objectType, isBoxCollision);
+        return missileConfiguration;
+    }
+
+    public MovementConfiguration createMissileMovementConfig (int xSpeed, int ySpeed, PathFinder pathFinder, MovementPatternSize movementPatternSize, Direction rotation) {
+        MovementConfiguration movementConfiguration = new MovementConfiguration();
+        movementConfiguration.setXMovementSpeed(xSpeed);
+        movementConfiguration.setYMovementSpeed(ySpeed);
+        movementConfiguration.setPathFinder(pathFinder);
+        movementConfiguration.setPatternSize(movementPatternSize);
+        movementConfiguration.setRotation(rotation);
+        movementConfiguration.initDefaultSettingsForSpecializedPathFinders();
+        return movementConfiguration;
+    }
+
+    public Missile createMissile (SpriteConfiguration spriteConfiguration, MissileConfiguration missileConfiguration, MovementConfiguration movementConfiguration) {
+        switch (missileConfiguration.getMissileType()) {
+            case AlienLaserbeam, DefaultPlayerLaserbeam, LaserBullet -> {
+                return new GenericMissile(spriteConfiguration, missileConfiguration, movementConfiguration);
+            }
+            case BombaProjectile -> {
+                return new BombaProjectile(upgradeConfig(spriteConfiguration, 2, true), missileConfiguration, movementConfiguration);
+            }
+            case BulldozerProjectile -> {
+                return new BulldozerProjectile(upgradeConfig(spriteConfiguration, 2, true), missileConfiguration, movementConfiguration);
+            }
+            case EnergizerProjectile -> {
+                return new EnergizerProjectile(upgradeConfig(spriteConfiguration, 2, true), missileConfiguration, movementConfiguration);
+            }
+            case FlamerProjectile -> {
+                return new FlamerProjectile(upgradeConfig(spriteConfiguration, 2, true), missileConfiguration, movementConfiguration);
+            }
+            case SeekerProjectile -> {
+                return new SeekerProjectile(upgradeConfig(spriteConfiguration, 2, true), missileConfiguration, movementConfiguration);
+            }
+            case TazerProjectile -> {
+                return new TazerProjectile(upgradeConfig(spriteConfiguration, 2, true), missileConfiguration, movementConfiguration);
+            }
+            case FlameThrowerProjectile -> {
+                return new FlamethrowerProjectile(upgradeConfig(spriteConfiguration, 2, true), missileConfiguration, movementConfiguration);
+            }
+            case FirewallMissile, PlasmaLauncherMissile -> {
+                return new GenericMissile(upgradeConfig(spriteConfiguration, 2, true), missileConfiguration, movementConfiguration);
+            }
+            case Rocket1 -> {
+                return new Rocket1(upgradeConfig(spriteConfiguration, 2, true), missileConfiguration, movementConfiguration);
+            }
+            case BarrierProjectile -> {
+                return new BarrierProjectile(upgradeConfig(spriteConfiguration, 3, true), missileConfiguration, movementConfiguration);
+            }
+        }
+        return null;
+    }
+
+    private SpriteAnimationConfiguration upgradeConfig (SpriteConfiguration spriteConfiguration, int frameDelay, boolean infiniteLoop) {
+        return new SpriteAnimationConfiguration(spriteConfiguration, frameDelay, infiniteLoop);
+    }
+
 }
 
 

@@ -2,6 +2,10 @@ package game.objects.background;
 
 import java.util.Random;
 
+import java.util.Random;
+import java.util.List;
+import java.util.stream.Collectors;
+
 public enum NebulaThemeEnums {
 	Blue_Nebula_1,
 	Blue_Nebula_2,
@@ -29,5 +33,24 @@ public enum NebulaThemeEnums {
 	public static NebulaThemeEnums selectRandomNebulaScene() {
 		NebulaThemeEnums[] enums = NebulaThemeEnums.values();
 		return enums[random.nextInt(enums.length)];
+	}
+
+	public static NebulaThemeEnums selectNebulaByColour(SpaceThemeEnums spaceThemeEnums) {
+		// Convert the SpaceThemeEnum to a String and prepare it for comparison
+		String colour = spaceThemeEnums.name();
+
+		// Filter NebulaThemeEnums to only those that match the specified color
+		List<NebulaThemeEnums> matchingEnums = List.of(NebulaThemeEnums.values()).stream()
+				.filter(e -> e.name().startsWith(colour))
+				.collect(Collectors.toList());
+
+		// Return a random Nebula from the filtered list
+		if (!matchingEnums.isEmpty()) {
+			return matchingEnums.get(random.nextInt(matchingEnums.size()));
+		} else {
+			// Fallback or error handling if no matching enums are found
+			// This case should not happen unless there is a mismatch in naming conventions
+			throw new IllegalStateException("No matching Nebula found for color: " + colour);
+		}
 	}
 }

@@ -29,10 +29,15 @@ public class OnScreenTextManager {
 		}
 	}
 
-	public void addText (OnScreenText text) {
+	public void addTextObject (OnScreenText text) {
 		if (!onScreenTexts.contains(text)) {
 			onScreenTexts.add(text);
 		}
+	}
+
+	public void addText(String text, int xCoordinate, int yCoordinate){
+		OnScreenText onScreenText = new OnScreenText(xCoordinate, yCoordinate, text);
+		this.onScreenTexts.add(onScreenText);
 	}
 	
 

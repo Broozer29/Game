@@ -1,26 +1,20 @@
 package game.objects.player;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.LinkedList;
 
 import javax.sound.sampled.UnsupportedAudioFileException;
 
-import game.items.Item;
-import game.items.ItemApplicationEnum;
-import game.items.ItemEnums;
+import game.items.enums.ItemEnums;
 import game.items.PlayerInventory;
-import game.items.items.FocusCrystal;
 import game.managers.AnimationManager;
 import game.objects.player.spaceship.SpaceShip;
 import VisualAndAudioData.DataClass;
 import game.gamestate.GameStateInfo;
 import game.gamestate.GameStatusEnums;
-import VisualAndAudioData.audio.AudioEnums;
+import VisualAndAudioData.audio.enums.AudioEnums;
 import VisualAndAudioData.audio.AudioManager;
 import VisualAndAudioData.image.ImageEnums;
-import visualobjects.SpriteAnimation;
-import visualobjects.SpriteConfigurations.SpriteAnimationConfiguration;
 import visualobjects.SpriteConfigurations.SpriteConfiguration;
 
 public class PlayerManager {
@@ -30,7 +24,6 @@ public class PlayerManager {
 	private GameStateInfo gameState = GameStateInfo.getInstance();
 	private PlayerStats playerStats = PlayerStats.getInstance();
 	private SpaceShip spaceship;
-	private List<Integer> playerCoordinatesList = new ArrayList<Integer>();
 
 	private PlayerManager() {
 		initSpaceShip();
@@ -43,6 +36,13 @@ public class PlayerManager {
 	// Called when a game instance needs to be deleted and the manager needs to be
 	// reset.
 	public void resetManager() {
+		if(spaceship != null){
+			spaceship.deleteObject();
+			spaceship = null;
+		}
+	}
+
+	public void createSpaceShip(){
 		initSpaceShip();
 	}
 
@@ -56,11 +56,9 @@ public class PlayerManager {
 	}
 
 	private void checkPlayerHealth() {
-
 		if(PlayerInventory.getInstance().getItemByName(ItemEnums.EmergencyRepairBot) != null){
 			PlayerInventory.getInstance().getItemByName(ItemEnums.EmergencyRepairBot).applyEffectToObject(spaceship);
 		}
-
 		if (spaceship.getCurrentHitpoints() <= 0 && gameState.getGameState() == GameStatusEnums.Playing) {
 			gameState.setGameState(GameStatusEnums.Dying);
 			spaceship.setVisible(false);
@@ -93,7 +91,7 @@ public class PlayerManager {
 				}
 				
 				try {
-					AudioManager.getInstance().playMusicAudio(AudioEnums.Destroyed_Explosion);
+					AudioManager.getInstance().addAudio(AudioEnums.Destroyed_Explosion);
 				} catch (UnsupportedAudioFileException | IOException e) {
 					e.printStackTrace();
 				}
@@ -101,13 +99,15 @@ public class PlayerManager {
 
 			if (spaceship.getDeathAnimation().getCurrentFrame() >= spaceship.getDeathAnimation().getTotalFrames()) {
 				gameState.setGameState(GameStatusEnums.Dead);
+				PlayerInventory.getInstance().resetInventory();
 			}
 		}
 	}
 
-	public List<Integer> getNearestFriendlyHomingCoordinates() {
-		playerCoordinatesList.set(0, spaceship.getCenterXCoordinate());
-		playerCoordinatesList.set(1, spaceship.getCenterYCoordinate());
+	public LinkedList<Integer> getNearestFriendlyHomingCoordinates() {
+		LinkedList<Integer> playerCoordinatesList = new LinkedList<>();
+		playerCoordinatesList.add(0, spaceship.getCenterXCoordinate());
+		playerCoordinatesList.add(1, spaceship.getCenterYCoordinate());
 		return playerCoordinatesList;
 	}
 

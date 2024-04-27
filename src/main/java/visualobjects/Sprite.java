@@ -4,6 +4,7 @@ import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 
 import game.movement.Direction;
+import game.objects.missiles.missiletypes.SeekerProjectile;
 import visualobjects.SpriteConfigurations.SpriteConfiguration;
 import VisualAndAudioData.image.ImageCropper;
 import VisualAndAudioData.image.ImageDatabase;
@@ -21,6 +22,7 @@ public class Sprite {
     protected int height;
     protected boolean visible;
     protected BufferedImage image;
+    protected BufferedImage originalImage;
     protected float scale;
 
     protected float transparancyAlpha;
@@ -65,6 +67,7 @@ public class Sprite {
         if (scale != 1 && this.image != null) {
             this.image = imageResizer.getScaledImage(image, scale);
         }
+        this.originalImage = image;
         configureImageDimensions();
 //		 Zet collision ook op die getallen en shits & giggles
     }
@@ -81,11 +84,9 @@ public class Sprite {
         configureImageDimensions();
     }
 
-    protected void rotateImage (Direction rotation) {
-        if (rotation != Direction.LEFT) {
-            this.image = imageRotator.rotate(image, rotation);
-            configureImageDimensions();
-        }
+    protected void rotateImage (Direction rotation, boolean crop) {
+        this.image = imageRotator.rotate(image, rotation, crop);
+        configureImageDimensions();
     }
 
     protected void setScale (float newScale) {
@@ -163,15 +164,16 @@ public class Sprite {
     }
 
     public void setImageDimensions (int newWidth, int newHeight) {
-        ImageResizer imageResizer = ImageResizer.getInstance();
-        this.image = imageResizer.resizeImageToDimensions(this.image, newWidth, newHeight);
-        configureImageDimensions();
-
+        if (this.image.getWidth() != newWidth && this.image.getHeight() != newHeight) {
+            ImageResizer imageResizer = ImageResizer.getInstance();
+            this.image = imageResizer.resizeImageToDimensions(this.originalImage, newWidth, newHeight);
+            configureImageDimensions();
+        }
     }
 
-    protected void cropWidth (float cropPercentage) {
+    public void cropWidth (float cropPercentage) {
         ImageCropper imageCropper = ImageCropper.getInstance();
-        this.image = imageCropper.cropImage(this.image, cropPercentage);
+        this.image = imageCropper.cropImage(this.originalImage, cropPercentage);
     }
 
 
@@ -205,4 +207,13 @@ public class Sprite {
         return spriteConfiguration;
     }
 
+    public BufferedImage getOriginalImage () {
+        return this.originalImage;
+    }
+
+    protected void recalculateBoundsAndSize () {
+        this.width = image.getWidth();
+        this.height = image.getHeight();
+        this.bounds = new Rectangle(xCoordinate, yCoordinate, this.width, this.height);
+    }
 }

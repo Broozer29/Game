@@ -1,14 +1,15 @@
 package game.objects.missiles.missiletypes;
 
+import game.movement.MovementConfiguration;
 import game.objects.missiles.Missile;
 import game.objects.missiles.MissileConfiguration;
 import visualobjects.SpriteConfigurations.SpriteAnimationConfiguration;
 
 public class FlamerProjectile extends Missile {
 
-	public FlamerProjectile(SpriteAnimationConfiguration spriteConfiguration, MissileConfiguration missileConfiguration) {
-		super(spriteConfiguration, missileConfiguration);
-		this.animation.rotateAnimetion(missileConfiguration.getMovementDirection());
+	public FlamerProjectile(SpriteAnimationConfiguration spriteConfiguration, MissileConfiguration missileConfiguration, MovementConfiguration movementConfiguration) {
+		super(spriteConfiguration, missileConfiguration, movementConfiguration);
+		this.animation.rotateAnimation(movementConfiguration.getRotation(), true);
 		this.animation.setFrameDelay(3);
 	}
 

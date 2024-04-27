@@ -7,6 +7,7 @@ import game.objects.GameObject;
 public class Path {
 	private List<Point> waypoints;
 	private Point currentLocation;
+	private Direction originalDirection;
 	private Direction fallbackDirection;
 	private boolean isHoming;
 	private boolean isFriendly;
@@ -14,6 +15,7 @@ public class Path {
 
 	public Path(List<Point> wayPoints, Direction fallbackDirection, boolean isHoming, boolean isFriendly) {
 		this.waypoints = wayPoints;
+		this.originalDirection = fallbackDirection;
 		this.setFallbackDirection(fallbackDirection);
 		this.setHoming(isHoming);
 		this.setFriendly(isFriendly);
@@ -41,6 +43,9 @@ public class Path {
 	}
 
 	public Point getCurrentLocation() {
+		if(currentLocation == null && !waypoints.isEmpty()){
+			currentLocation = waypoints.get(0);
+		}
 		return this.currentLocation;
 	}
 
@@ -50,7 +55,7 @@ public class Path {
 
 	public Point getHomingTargetLocation() {
 		if (target != null) {
-			return target.getCurrentLocation();
+			return new Point(target.getCenterXCoordinate(), target.getCenterYCoordinate());
 		} else return null;
 	}
 
@@ -78,4 +83,7 @@ public class Path {
 		return this.isFriendly;
 	}
 
+	public Direction getOriginalDirection () {
+		return originalDirection;
+	}
 }

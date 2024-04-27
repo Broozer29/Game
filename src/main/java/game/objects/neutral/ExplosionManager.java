@@ -1,15 +1,15 @@
 package game.objects.neutral;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import game.items.Item;
-import game.items.ItemApplicationEnum;
-import game.items.ItemEnums;
+import game.items.PlayerInventory;
+import game.items.effects.EffectActivationTypes;
+import game.items.enums.ItemApplicationEnum;
 import game.items.effects.EffectInterface;
+import game.managers.AnimationManager;
 import game.objects.GameObject;
 import game.objects.enemies.Enemy;
 import game.objects.enemies.EnemyManager;
@@ -66,6 +66,7 @@ public class ExplosionManager {
     public void addExplosion (Explosion explosion) {
         if (!this.explosionList.contains(explosion)) {
             this.explosionList.add(explosion);
+            AnimationManager.getInstance().addUpperAnimation(explosion.getAnimation());
         }
     }
 
@@ -90,7 +91,11 @@ public class ExplosionManager {
                 if (CollisionDetector.getInstance().detectCollision(explosion, enemy)) {
                     applyDamageModification(explosion, enemy);
                     enemy.takeDamage(explosion.getDamage());
-                    applyPlayerOnHitEffects(enemy);
+
+                    if(explosion.isApplyOnHitEffects()) {
+                        applyPlayerOnHitEffects(enemy);
+                    }
+
                     applyExplosionEffects(explosion, enemy);
                     explosion.addCollidedSprite(enemy);
                 }
@@ -99,7 +104,7 @@ public class ExplosionManager {
     }
 
     private void applyPlayerOnHitEffects (Enemy enemy) {
-        List<Item> onHitItems = PlayerStats.getInstance().getPlayerInventory().getItemsByApplicationMethod(ItemApplicationEnum.AfterCollision);
+        List<Item> onHitItems = PlayerInventory.getInstance().getItemsByApplicationMethod(ItemApplicationEnum.AfterCollision);
         for (Item item : onHitItems) {
             item.applyEffectToObject(enemy); // Assuming applyEffect adds the effect to the GameObject
         }
@@ -116,14 +121,23 @@ public class ExplosionManager {
     }
 
     private void checkHostileExplosionCollision (Explosion explosion) {
-        if (!explosion.dealtDamageToTarget(friendlyManager.getSpaceship()) && CollisionDetector.getInstance().detectCollision(explosion, friendlyManager.getSpaceship())) {
+        if (!explosion.dealtDamageToTarget(friendlyManager.getSpaceship()) &&
+                CollisionDetector.getInstance().detectCollision(explosion, friendlyManager.getSpaceship())) {
             friendlyManager.getSpaceship().takeDamage(explosion.getDamage());
+            applyPlayerTakeDamageOnHitEffects();
             explosion.addCollidedSprite(friendlyManager.getSpaceship());
         }
     }
 
+    private void applyPlayerTakeDamageOnHitEffects(){
+        List<Item> onHitItems = PlayerInventory.getInstance().getItemByActivationTypes(EffectActivationTypes.OnPlayerHit);
+        for (Item item : onHitItems) {
+            item.applyEffectToObject(PlayerManager.getInstance().getSpaceship());
+        }
+    }
+
     private void applyDamageModification (GameObject attack, GameObject target) {
-        for (Item item : PlayerStats.getInstance().getPlayerInventory().getItemsByApplicationMethod(ItemApplicationEnum.BeforeCollision)) {
+        for (Item item : PlayerInventory.getInstance().getItemsByApplicationMethod(ItemApplicationEnum.BeforeCollision)) {
             item.modifyAttackValues(attack, target);
         }
     }

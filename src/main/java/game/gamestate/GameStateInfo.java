@@ -2,6 +2,7 @@ package game.gamestate;
 
 import VisualAndAudioData.audio.AudioPositionCalculator;
 import VisualAndAudioData.audio.CustomAudioClip;
+import game.spawner.LevelManager;
 
 public class GameStateInfo {
 
@@ -9,6 +10,8 @@ public class GameStateInfo {
     private GameStatusEnums gameState;
 
     private SpawningMechanic spawningMechanic;
+
+
 
     private int DELAY = 0;
 
@@ -21,16 +24,18 @@ public class GameStateInfo {
     private float maxMusicSeconds = 0;
 
     private float difficultyCoefficient;
+    private int monsterLevel;
 
+    private float initialOffset;
     private GameStateInfo () {
-        initializeGame();
+        resetGameState();
     }
 
     public static GameStateInfo getInstance () {
         return instance;
     }
 
-    public void initializeGame () {
+    public void resetGameState () {
         setGameState(GameStatusEnums.Waiting);
         setDELAY(15);
         setMusicSeconds(0);
@@ -38,7 +43,40 @@ public class GameStateInfo {
         this.gameSeconds = 0;
         this.spawningMechanic = SpawningMechanic.Director;
         this.stagesCompleted = 0;
+        this.monsterLevel = 1;
+        this.initialOffset = (1 / 0.33f);
     }
+
+
+
+    public void updateDifficultyCoefficient() {
+        float playerFactor = 1;
+        float baseTimeFactor = 0.0606f; // Base factor for time, at LevelManager difficulty 2
+        float maxTimeFactor = 0.1005f; // Define the maximum time factor for LevelManager difficulty 6
+        float stageFactor = (float) Math.pow(1.15, stagesCompleted); // Exponential growth for each stage completed
+
+        float songDifficultyModifier = LevelManager.getInstance().getCurrentDifficultyCoeff(); // This should be obtained from the LevelManager and ranges between 2 and 6 (inclusive)
+
+        // Scale the time factor based on the level difficulty
+        float timeFactor = baseTimeFactor + (maxTimeFactor - baseTimeFactor) * ((songDifficultyModifier - 2) / (6 - 2));
+
+        double timeInMinutes = gameSeconds / 60.0f; // Convert seconds to minutes
+
+        difficultyCoefficient = (float) ((playerFactor + timeInMinutes * timeFactor) * stageFactor);
+        updateMonsterLevel();
+    }
+
+
+    private void updateMonsterLevel() {
+        // Apply the formula and subtract the offset to ensure starting level is 1
+        monsterLevel = (int) Math.round(1 + ((difficultyCoefficient / 0.27) - initialOffset));
+
+        // Ensure monsterLevel never goes below 1
+        monsterLevel = Math.max(1, monsterLevel);
+    }
+
+
+
 
     public GameStatusEnums getGameState () {
         return gameState;
@@ -117,14 +155,13 @@ public class GameStateInfo {
         return difficultyCoefficient;
     }
 
-    public void updateDifficultyCoefficient() {
-        float playerFactor = 1;
-        float timeFactor = 0.0506f; // The factor for time, increase value to increase difficulty scaling
-        float difficultyValue = 1; // This can be a static value or change based on game settings
-        float stageFactor = (float) Math.pow(1.15, stagesCompleted); // Exponential growth for each stage completed
-
-        double timeInMinutes = gameSeconds / 60.0f; // Convert seconds to minutes
-
-        difficultyCoefficient = (float) ((playerFactor + timeInMinutes * timeFactor) * stageFactor);
+    public int getMonsterLevel () {
+        return monsterLevel;
     }
+
+    public void setMonsterLevel (int monsterLevel) {
+        this.monsterLevel = monsterLevel;
+    }
+
+
 }

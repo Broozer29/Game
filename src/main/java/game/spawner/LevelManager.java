@@ -1,18 +1,24 @@
 package game.spawner;
 
+import java.io.IOException;
 import java.util.List;
 
-import game.managers.TimerManager;
+import VisualAndAudioData.audio.enums.LevelSongs;
+import game.UI.GameUIManager;
+import game.managers.ShopManager;
 import game.movement.Direction;
 import game.movement.pathfinderconfigs.MovementPatternSize;
+import game.movement.pathfinders.RegularPathFinder;
 import game.objects.enemies.*;
 import game.objects.enemies.enums.EnemyEnums;
 import game.gamestate.GameStateInfo;
 import game.gamestate.GameStatusEnums;
 import VisualAndAudioData.audio.AudioManager;
-import game.objects.player.PlayerManager;
-import game.objects.powerups.creation.PowerUpCreator;
 import game.spawner.directors.DirectorManager;
+import game.spawner.enums.LevelDifficulty;
+import game.spawner.enums.LevelLength;
+
+import javax.sound.sampled.UnsupportedAudioFileException;
 
 public class LevelManager {
 
@@ -20,13 +26,17 @@ public class LevelManager {
     private AudioManager audioManager = AudioManager.getInstance();
     private EnemyManager enemyManager = EnemyManager.getInstance();
     private SpawningCoordinator spawningCoordinator = SpawningCoordinator.getInstance();
-    private TimerManager timerManager = TimerManager.getInstance();
     private GameStateInfo gameState = GameStateInfo.getInstance();
 
+    private LevelSongs currentLevelSong;
+    private LevelDifficulty currentLevelDifficulty;
+    private LevelLength currentLevelLength;
     private int enemiesSpawned;
     private int enemiesKilled;
+    private int currentDifficultyCoeff;
 
     private LevelManager () {
+        resetManager();
     }
 
     public static LevelManager getInstance () {
@@ -34,17 +44,30 @@ public class LevelManager {
     }
 
     public void resetManager () {
+        enemiesSpawned = 0;
+        enemiesKilled = 0;
+        currentLevelSong = null;
+//        currentLevelDifficulty = LevelDifficulty.Easy;
+//        currentLevelLength = LevelLength.Short;
     }
 
     public void updateGameTick () {
         // Check if the song has ended, then create the moving out portal
         if (gameState.getGameState() == GameStatusEnums.Playing && audioManager.getBackgroundMusic().getFramePosition() >= audioManager.getBackgroundMusic().getFrameLength()) {
             gameState.setGameState(GameStatusEnums.Level_Finished);
+            ShopManager.getInstance().setLastLevelDifficulty(this.currentLevelDifficulty);
+            ShopManager.getInstance().setLastLevelLength(this.currentLevelLength);
+            ShopManager.getInstance().setLastLevelDifficultyCoeff(this.currentDifficultyCoeff);
+            ShopManager.getInstance().setRowsUnlockedByDifficulty(this.currentDifficultyCoeff);
+            DirectorManager.getInstance().setEnabled(false);
         }
 
-        //NextLevelPortal spawns, now we wait for the player to enter the portal to set it to Level_Completed
+        //NextLevelPortal spawns in friendlymanager, now we wait for the player to enter the portal to set it to Level_Completed
         if (gameState.getGameState() == GameStatusEnums.Level_Completed) {
             gameState.setGameState(GameStatusEnums.Transitioning_To_Next_Level);
+            this.currentLevelLength = null;
+            this.currentLevelDifficulty = null;
+            this.currentDifficultyCoeff = 2;
             //Now the GameBoard completes the transition and zoning in to the next level
         }
 //        if (gameState.getMusicSeconds() >= gameState.getMaxMusicSeconds() && gameState.getGameState() == GameStatusEnums.Playing) {
@@ -52,47 +75,77 @@ public class LevelManager {
 //        }
     }
 
+
     // Called when a level starts, to saturate enemy list
     public void startLevel () {
+        if (currentLevelDifficulty == null) {
+            currentLevelDifficulty = LevelDifficulty.getRandomDifficulty();
+        }
+
+        if (currentLevelLength == null) {
+            currentLevelLength = LevelLength.getRandomLength();
+        }
+
         AudioManager audioManager = AudioManager.getInstance();
-        audioManager.playRandomBackgroundMusic();
+        try {
+            audioManager.playRandomBackgroundMusic(currentLevelDifficulty, currentLevelLength);
+            this.currentLevelSong = audioManager.getCurrentSong();
+        } catch (UnsupportedAudioFileException | IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        currentDifficultyCoeff = LevelSongs.getDifficultyImageIndex(currentLevelDifficulty, currentLevelLength);
+        if (currentDifficultyCoeff < 2) {
+            currentDifficultyCoeff = 2;
+        }
+        GameUIManager.getInstance().createDifficultyWings();
+
 
         gameState.setGameState(GameStatusEnums.Playing);
+        DirectorManager.getInstance().setEnabled(true);
 
-//        PowerUpCreator.getInstance().initializePowerUpSpawnTimers();
 //        DirectorManager.getInstance().createMonsterCards();
 //        DirectorManager.getInstance().createDirectors();
 
-        Enemy enemy = EnemyCreator.createEnemy(EnemyEnums.Bomba, 1000, 600, game.movement.Direction.LEFT, 1
-                , 1, 1, MovementPatternSize.SMALL, false);
+        Enemy enemy = EnemyCreator.createEnemy(EnemyEnums.Scout, 800, 100, Direction.LEFT, 1f
+                , 2, 2, MovementPatternSize.SMALL, false);
+//        enemy.getMovementConfiguration().setBoardBlockToHoverIn(5);
+        enemy.getMovementConfiguration().setPathFinder(new RegularPathFinder());
+//        enemy.setAllowedVisualsToRotate(false);
 
-        enemy.setMaxHitPoints(200);
-        enemy.setCurrentHitpoints(200);
+        enemy.getMovementConfiguration().setXMovementSpeed(1);
+        enemy.getMovementConfiguration().setYMovementSpeed(1);
+
         EnemyManager.getInstance().addEnemy(enemy);
 
-        Enemy enemy2 = EnemyCreator.createEnemy(EnemyEnums.Bomba, 1150, 600, game.movement.Direction.LEFT, 1
-                , 1, 1, MovementPatternSize.SMALL, false);
 
-        enemy2.setMaxHitPoints(200);
-        enemy2.setCurrentHitpoints(200);
-        EnemyManager.getInstance().addEnemy(enemy2);
+//        Enemy enemy2 = EnemyCreator.createEnemy(EnemyEnums.Energizer, 500, 100, Direction.LEFT, 1
+//                , 2, 2, MovementPatternSize.SMALL, false);
+//        enemy2.getMovementConfiguration().setPathFinder(new RegularPathFinder());
+//        enemy2.getMovementConfiguration().setXMovementSpeed(0);
+//        enemy2.getMovementConfiguration().setYMovementSpeed(0);
+//        enemy2.setAllowedVisualsToRotate(false);
 
-        Enemy enemy3 = EnemyCreator.createEnemy(EnemyEnums.Bomba, 1300, 600, game.movement.Direction.LEFT, 1
-                , 1, 1, MovementPatternSize.SMALL, false);
+//        enemy2.setScale(1f);
+//        EnemyManager.getInstance().addEnemy(enemy2);
 
-        enemy3.setMaxHitPoints(200);
-        enemy3.setCurrentHitpoints(200);
-        EnemyManager.getInstance().addEnemy(enemy3);
 
-        Enemy enemy4 = EnemyCreator.createEnemy(EnemyEnums.Bomba, 1300, 700, game.movement.Direction.LEFT, 1
-                , 1, 1, MovementPatternSize.SMALL, false);
-
-        enemy4.setMaxHitPoints(200);
-        enemy4.setCurrentHitpoints(200);
-        EnemyManager.getInstance().addEnemy(enemy4);
-
-        PlayerManager.getInstance().getSpaceship().takeDamage(180);
-
+//        Enemy enemy3 = EnemyCreator.createEnemy(EnemyEnums.Seeker, 700, 600, Direction.LEFT, 1
+//                , 2, 2, MovementPatternSize.SMALL, false);
+//
+//        EnemyManager.getInstance().addEnemy(enemy3);
+//
+//        Enemy enemy4 = EnemyCreator.createEnemy(EnemyEnums.Bomba, 600, 600, Direction.LEFT, 1
+//                , 0, 0, MovementPatternSize.SMALL, false);
+//        EnemyManager.getInstance().addEnemy(enemy4);
+//
+//        Enemy enemy5 = EnemyCreator.createEnemy(EnemyEnums.Energizer, 500, 600, Direction.LEFT_UP, 1
+//                , 0, 0, MovementPatternSize.SMALL, false);
+//        EnemyManager.getInstance().addEnemy(enemy5);
+//
+//        Enemy enemy6 = EnemyCreator.createEnemy(EnemyEnums.Bulldozer, 400, 600, Direction.LEFT_DOWN, 1
+//                , 0, 0, MovementPatternSize.SMALL, false);
+//        EnemyManager.getInstance().addEnemy(enemy6);
     }
 
     // Called by CustomTimers when they have to spawn an enemy
@@ -108,6 +161,7 @@ public class LevelManager {
 
                 Enemy enemy = EnemyCreator.createEnemy(enemyType, xCoordinate, yCoordinate, direction, scale, xMovementSpeed, yMovementSpeed, MovementPatternSize.SMALL, boxCollision);
                 if (validCoordinates(enemy)) {
+                    enemy = increaseEnemyStrengthByDifficulty(enemy);
                     enemiesSpawned++;
                     enemyManager.addEnemy(enemy);
                 }
@@ -115,19 +169,30 @@ public class LevelManager {
         } else {
             Enemy enemy = EnemyCreator.createEnemy(enemyType, xCoordinate, yCoordinate, direction, scale, xMovementSpeed, yMovementSpeed, MovementPatternSize.SMALL, boxCollision);
             if (validCoordinates(enemy)) {
+                enemy = increaseEnemyStrengthByDifficulty(enemy);
                 enemiesSpawned++;
                 enemyManager.addEnemy(enemy);
             }
         }
+    }
 
+    private Enemy increaseEnemyStrengthByDifficulty (Enemy enemy) {
+        float difficultyCoeff = GameStateInfo.getInstance().getDifficultyCoefficient();
+        enemy.setMaxHitPoints(enemy.getMaxHitPoints() * difficultyCoeff);
+        enemy.setMaxShieldPoints(enemy.getMaxShieldPoints() * difficultyCoeff);
+        enemy.setDamage(enemy.getDamage() * difficultyCoeff);
+        enemy.setBaseArmor(enemy.getBaseArmor() * (1 + (difficultyCoeff / 4)));
+        enemy.setCurrentHitpoints(enemy.getMaxHitPoints());
+        enemy.setCurrentShieldPoints(enemy.getMaxShieldPoints());
+        return enemy;
     }
 
 
     private boolean validCoordinates (Enemy enemy) {
         if (spawningCoordinator.checkValidEnemyXCoordinate(enemy, enemyManager.getEnemies(), enemy.getXCoordinate(),
-                enemy.getWidth())
+                enemy.getWidth() / 2)
                 && spawningCoordinator.checkValidEnemyYCoordinate(enemy, enemyManager.getEnemies(),
-                enemy.getYCoordinate(), enemy.getHeight())) {
+                enemy.getYCoordinate(), enemy.getHeight() / 2)) {
             return true;
         }
         return false;
@@ -147,5 +212,43 @@ public class LevelManager {
 
     public void setEnemiesKilled (int enemiesKilled) {
         this.enemiesKilled += enemiesKilled;
+    }
+
+    public LevelSongs getCurrentLevelSong () {
+        return currentLevelSong;
+    }
+
+    public void setCurrentLevelSong (LevelSongs currentLevelSong) {
+        this.currentLevelSong = currentLevelSong;
+    }
+
+    public LevelDifficulty getCurrentLevelDifficulty () {
+        if (currentLevelDifficulty == null) {
+            currentLevelDifficulty = LevelDifficulty.getRandomDifficulty();
+        }
+        return currentLevelDifficulty;
+    }
+
+    public void setCurrentLevelDifficulty (LevelDifficulty currentLevelDifficulty) {
+        this.currentLevelDifficulty = currentLevelDifficulty;
+    }
+
+    public LevelLength getCurrentLevelLength () {
+        if (currentLevelLength == null) {
+            currentLevelLength = LevelLength.getRandomLength();
+        }
+        return currentLevelLength;
+    }
+
+    public void setCurrentLevelLength (LevelLength currentLevelLength) {
+        this.currentLevelLength = currentLevelLength;
+    }
+
+    public int getCurrentDifficultyCoeff () {
+        return currentDifficultyCoeff;
+    }
+
+    public void setCurrentDifficultyCoeff (int currentDifficultyCoeff) {
+        this.currentDifficultyCoeff = currentDifficultyCoeff;
     }
 }

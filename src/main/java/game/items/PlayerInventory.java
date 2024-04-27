@@ -1,20 +1,28 @@
 package game.items;
 
+import game.items.effects.EffectActivationTypes;
+import game.items.enums.ItemApplicationEnum;
+import game.items.enums.ItemEnums;
 import game.items.items.*;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class PlayerInventory {
     private static PlayerInventory instance = new PlayerInventory();
     private Map<ItemEnums, Item> items = new HashMap<>();
+    private float cashMoney = 50000;
 
     private PlayerInventory () {
-        addItem(ItemEnums.Overclock);
-        addItem(ItemEnums.EmergencyRepairBot);
+//        addItem(ItemEnums.CannisterOfGasoline);
+        addItem(ItemEnums.FocusCrystal);
+    }
+
+    public void resetInventory(){
+        items.clear();
+        cashMoney = 0f;
     }
 
     public static PlayerInventory getInstance () {
@@ -30,7 +38,7 @@ public class PlayerInventory {
                     return newItem;
                 }
             } else {
-                existingItem.increaseQuantityOfItem(existingItem.getQuantity() + 1);
+                existingItem.increaseQuantityOfItem(1);
             }
             return existingItem;
         });
@@ -38,6 +46,16 @@ public class PlayerInventory {
 
     private Item createItemFromEnum (ItemEnums itemEnum) {
         switch (itemEnum) {
+            case PlasmaLauncher:
+                return new PlasmaLauncher();
+            case MoneyPrinter:
+                return new MoneyPrinter();
+            case ArmorPiercingRounds:
+                return new ArmorPiercingRounds();
+            case EnergySiphon:
+                return new EnergySyphon();
+            case StickyDynamite:
+                return new StickyDynamite();
             case PlasmaCoatedBullets:
                 return new PlasmaCoatedBullets();
             case PhotonPiercer:
@@ -72,9 +90,33 @@ public class PlayerInventory {
                 .collect(Collectors.toList());
     }
 
+    public List<Item> getItemByActivationTypes(EffectActivationTypes activationType){
+        return items.values().stream()
+                .filter(item -> item.getEffectType() == activationType)
+                .collect(Collectors.toList());
+    }
+
     public Item getItemByName (ItemEnums itemName) {
         return items.get(itemName);
     }
 
+    public Map<ItemEnums, Item> getItems () {
+        return items;
+    }
 
+    public float getCashMoney () {
+        return cashMoney;
+    }
+
+    public void setCashMoney (float cashMoney) {
+        this.cashMoney = cashMoney;
+    }
+
+    public void gainCashMoney(float amount){
+        this.cashMoney += amount;
+    }
+
+    public void spendCashMoney(float amount){
+        this.cashMoney -= amount;
+    }
 }

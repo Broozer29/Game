@@ -1,8 +1,8 @@
 package game.items.items;
 
 import game.items.Item;
-import game.items.ItemApplicationEnum;
-import game.items.ItemEnums;
+import game.items.enums.ItemApplicationEnum;
+import game.items.enums.ItemEnums;
 import game.items.effects.EffectActivationTypes;
 import game.managers.OnScreenTextManager;
 import game.objects.GameObject;
@@ -44,7 +44,7 @@ public class PrecisionAmplifier extends Item {
             // Successful critical strike, double the attack's damage
             attack.setDamage(attack.getDamage() * PlayerStats.getInstance().getCriticalStrikeDamageMultiplier());
             OnScreenText text = new OnScreenText(target.getXCoordinate(), target.getYCoordinate(), "CRITICAL HIT");
-            OnScreenTextManager.getInstance().addText(text);
+            OnScreenTextManager.getInstance().addTextObject(text);
         }
     }
 }

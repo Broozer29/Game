@@ -2,22 +2,17 @@ package game.items.items;
 
 import VisualAndAudioData.image.ImageEnums;
 import game.items.Item;
-import game.items.ItemApplicationEnum;
-import game.items.ItemEnums;
+import game.items.effects.effecttypes.DormentExplosionActivationMethods;
+import game.items.enums.ItemApplicationEnum;
+import game.items.enums.ItemEnums;
 import game.items.effects.EffectActivationTypes;
-import game.items.effects.effecttypes.DamageOverTime;
 import game.items.effects.effecttypes.DormentExplosion;
 import game.objects.GameObject;
-import game.objects.neutral.Explosion;
-import game.objects.neutral.ExplosionConfiguration;
-import visualobjects.SpriteConfigurations.SpriteAnimationConfiguration;
-import visualobjects.SpriteConfigurations.SpriteConfiguration;
 
 public class CannisterOfGasoline extends Item {
 
     private float explosionDamage;
     private float burningDamage;
-
     private int duration;
 
     public CannisterOfGasoline () {
@@ -35,11 +30,11 @@ public class CannisterOfGasoline extends Item {
     }
 
     private float calculateBurningDamage (int quantity) {
-        return quantity / 2f;
+        return quantity / 3f;
     }
 
     private float calculateExplosionDamage (int quantity) {
-        return 75 * quantity;
+        return 25 * quantity;
     }
 
     private int calculateDuration (int quantity) {
@@ -49,14 +44,14 @@ public class CannisterOfGasoline extends Item {
 
     @Override
     public void applyEffectToObject (GameObject gameObject) {
-        DormentExplosion dormentExplosion = new DormentExplosion(explosionDamage, 1, ImageEnums.GasolineExplosion);
+        DormentExplosion dormentExplosion = new DormentExplosion(explosionDamage, ImageEnums.GasolineExplosion, DormentExplosionActivationMethods.OnDeath, false);
         dormentExplosion.setBurningDamage(burningDamage);
         dormentExplosion.setBurningDuration(duration);
         gameObject.addEffect(dormentExplosion);
     }
 
     @Override
-    public void triggerEffectForOneTimeEffects (GameObject gameObject){
+    public void triggerEffectForOneTimeEffects (GameObject gameObject) {
     }
 
 

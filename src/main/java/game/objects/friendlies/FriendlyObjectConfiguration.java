@@ -7,7 +7,7 @@ import game.movement.pathfinders.PathFinder;
 public class FriendlyObjectConfiguration {
 
     private FriendlyObjectEnums friendlyType;
-    private int attackSpeedCooldown;
+    private float attackSpeedCooldown;
     private PathFinder pathFinder;
     private Direction movementDirection;
     private int xMovementSpeed;
@@ -18,7 +18,7 @@ public class FriendlyObjectConfiguration {
     private boolean boxCollision;
     private boolean permanentObject;
 
-    public FriendlyObjectConfiguration (FriendlyObjectEnums friendlyType, int attackSpeedCooldown, PathFinder pathFinder, Direction movementDirection, int xMovementSpeed, int yMovementSpeed, MovementPatternSize movementPatternSize
+    public FriendlyObjectConfiguration (FriendlyObjectEnums friendlyType, float attackSpeedCooldown, PathFinder pathFinder, Direction movementDirection, int xMovementSpeed, int yMovementSpeed, MovementPatternSize movementPatternSize
     , boolean boxCollision, boolean permanentObject) {
         this.friendlyType = friendlyType;
         this.attackSpeedCooldown = attackSpeedCooldown;
@@ -74,11 +74,11 @@ public class FriendlyObjectConfiguration {
         this.friendlyType = friendlyType;
     }
 
-    public int getAttackSpeedCooldown () {
+    public float getAttackSpeedCooldown () {
         return attackSpeedCooldown;
     }
 
-    public void setAttackSpeedCooldown (int attackSpeedCooldown) {
+    public void setAttackSpeedCooldown (float attackSpeedCooldown) {
         this.attackSpeedCooldown = attackSpeedCooldown;
     }
 

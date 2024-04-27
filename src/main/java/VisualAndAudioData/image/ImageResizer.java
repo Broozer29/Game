@@ -20,14 +20,14 @@ public class ImageResizer {
     private Map<String, BufferedImage> bufferedImageCache = new HashMap<>();
     private Map<String, ArrayList<BufferedImage>> bufferedImageListCache = new HashMap<>();
 
-    private ImageResizer () {
+    private ImageResizer() {
     }
 
-    public static ImageResizer getInstance () {
+    public static ImageResizer getInstance() {
         return instance;
     }
 
-    public BufferedImage getScaledImage (BufferedImage image, float scale) {
+    public BufferedImage getScaledImage(BufferedImage image, float scale) {
         if (scale != 0) {
             String cacheKey = image.hashCode() + "_" + scale;
 
@@ -37,9 +37,9 @@ public class ImageResizer {
 
             transform.setToIdentity();
             transform.scale(scale, scale);
-            transformop = new AffineTransformOp(transform, AffineTransformOp.TYPE_BILINEAR);
+            transformop = new AffineTransformOp(transform, AffineTransformOp.TYPE_BICUBIC);
 
-            bufferedImage = transformop.filter(image, null); // null as the second parameter
+            bufferedImage = transformop.filter(image, null);
             bufferedImageCache.put(cacheKey, bufferedImage);
 
             return bufferedImage;
@@ -47,7 +47,7 @@ public class ImageResizer {
         return image;
     }
 
-    public ArrayList<BufferedImage> getScaledFrames (List<BufferedImage> frames, float scale) {
+    public ArrayList<BufferedImage> getScaledFrames(List<BufferedImage> frames, float scale) {
         String cacheKey = frames.stream()
                 .map(image -> Integer.toString(image.hashCode()))
                 .collect(Collectors.joining("_")) + "_" + scale;
@@ -58,8 +58,7 @@ public class ImageResizer {
 
         ArrayList<BufferedImage> newFrames = new ArrayList<>();
         for (int i = 0; i < frames.size(); i++) {
-            bufferedImage = frames.get(i);
-            bufferedImage = getScaledImage(bufferedImage, scale);
+            bufferedImage = getScaledImage(frames.get(i), scale);
             newFrames.add(bufferedImage);
         }
 
@@ -68,14 +67,23 @@ public class ImageResizer {
         return newFrames;
     }
 
-    public BufferedImage resizeImageToDimensions (BufferedImage image, int width, int height) {
-        bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-        Graphics2D g = bufferedImage.createGraphics();
+    public BufferedImage resizeImageToDimensions(BufferedImage image, int width, int height) {
+        String cacheKey = image.hashCode() + "_" + width + "x" + height;
 
-        // Draw the resized image onto the bufferedVersion
-        g.drawImage(image.getScaledInstance(width, height, BufferedImage.SCALE_DEFAULT), 0, 0, null);
-        g.dispose();
+        if (bufferedImageCache.containsKey(cacheKey)) {
+            return bufferedImageCache.get(cacheKey);
+        }
+
+        double scaleX = (double) width / image.getWidth();
+        double scaleY = (double) height / image.getHeight();
+        AffineTransform scaleTransform = AffineTransform.getScaleInstance(scaleX, scaleY);
+        AffineTransformOp bilinearScaleOp = new AffineTransformOp(scaleTransform, AffineTransformOp.TYPE_BICUBIC);
+
+        bufferedImage = bilinearScaleOp.filter(image, new BufferedImage(width, height, image.getType()));
+        bufferedImageCache.put(cacheKey, bufferedImage);
 
         return bufferedImage;
     }
+
+
 }

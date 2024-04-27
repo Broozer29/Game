@@ -1,14 +1,14 @@
 package game.objects.enemies;
 
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Random;
 
-import com.badlogic.gdx.Game;
-import game.movement.BoardBlockUpdater;
+import VisualAndAudioData.image.ImageEnums;
+import game.gamestate.GameStateInfo;
+import game.movement.PathFinderEnums;
+import game.movement.pathfinders.PathFinder;
+import game.util.BoardBlockUpdater;
 import game.movement.MovementConfiguration;
 import game.movement.Point;
-import game.movement.pathfinders.PathFinder;
 import game.objects.GameObject;
 import game.objects.enemies.enums.EnemyEnums;
 import game.objects.missiles.MissileManager;
@@ -20,19 +20,31 @@ public class Enemy extends GameObject {
 
     protected MissileManager missileManager = MissileManager.getInstance();
     protected Random random = new Random();
+    protected boolean allowedToFire;
 
     protected EnemyEnums enemyType;
+    protected PathFinderEnums missileTypePathFinders;
+    protected double lastAttackTime = 0.0;
 
-    protected List<Enemy> followingEnemies = new LinkedList<Enemy>(); //inherit from gameobject
+    protected boolean detonateOnCollision;
 
-    public Enemy (SpriteConfiguration spriteConfiguration, EnemyConfiguration enemyConfiguration) {
-        super(spriteConfiguration);
+    public Enemy (SpriteConfiguration spriteConfiguration, EnemyConfiguration enemyConfiguration, MovementConfiguration movementConfiguration) {
+        super(spriteConfiguration, movementConfiguration);
+        if (movementConfiguration != null) {
+            initMovementConfiguration(movementConfiguration);
+        }
         configureEnemy(enemyConfiguration);
+        initChargingUpAnimation(spriteConfiguration);
     }
 
-    public Enemy (SpriteAnimationConfiguration spriteAnimationConfigurationion, EnemyConfiguration enemyConfiguration) {
-        super(spriteAnimationConfigurationion);
+    public Enemy (SpriteAnimationConfiguration spriteAnimationConfigurationion, EnemyConfiguration enemyConfiguration, MovementConfiguration movementConfiguration) {
+        super(spriteAnimationConfigurationion, movementConfiguration);
+        if (movementConfiguration != null) {
+            initMovementConfiguration(movementConfiguration);
+        }
         configureEnemy(enemyConfiguration);
+        initChargingUpAnimation(spriteAnimationConfigurationion.getSpriteConfiguration());
+
     }
 
     private void configureEnemy (EnemyConfiguration enemyConfiguration) {
@@ -45,52 +57,43 @@ public class Enemy extends GameObject {
         this.hasAttack = enemyConfiguration.isHasAttack();
         this.showHealthBar = enemyConfiguration.isShowHealthBar();
         this.deathSound = enemyConfiguration.getDeathSound();
-        this.movementDirection = enemyConfiguration.getMovementDirection();
         this.currentLocation = new Point(xCoordinate, yCoordinate);
         this.currentBoardBlock = BoardBlockUpdater.getBoardBlock(xCoordinate);
         this.boxCollision = enemyConfiguration.isBoxCollision();
         this.baseArmor = enemyConfiguration.getBaseArmor();
-
-        initMovementConfiguration(enemyConfiguration);
+        this.cashMoneyWorth = enemyConfiguration.getCashMoneyWorth();
+        this.xpOnDeath = enemyConfiguration.getXpOnDeath();
+        modifyStatsBasedOnLevel();
         this.setVisible(true);
         this.setFriendly(false);
-        this.rotateGameObject(movementDirection);
+        this.rotateGameObjectTowards(movementRotation, true);
         this.objectType = enemyConfiguration.getObjectType();
+        this.allowedToFire = true;
     }
 
+    private void modifyStatsBasedOnLevel () {
+        int enemyLevel = GameStateInfo.getInstance().getMonsterLevel();
+        float difficultyCoeff = GameStateInfo.getInstance().getDifficultyCoefficient();
 
-    //inherit from gameobject
-    private void initMovementConfiguration (EnemyConfiguration enemyConfiguration) {
-        PathFinder pathFinder = enemyConfiguration.getMovementPathFinder();
-        movementConfiguration = new MovementConfiguration();
-        movementConfiguration.setPathFinder(pathFinder);
-        movementConfiguration.setCurrentLocation(currentLocation);
-        movementConfiguration.setDestination(pathFinder.calculateInitialEndpoint(currentLocation, movementDirection, false));
-        movementConfiguration.setRotation(enemyConfiguration.getMovementDirection());
-        movementConfiguration.setXMovementSpeed(enemyConfiguration.getxMovementSpeed());
-        movementConfiguration.setYMovementSpeed(enemyConfiguration.getyMovementSpeed());
-        movementConfiguration.setStepsTaken(0);
-        movementConfiguration.setHasLock(true);
-
-        //hardcoded lol, should be in the config file, make a config file factory cause this getting out of hand a lil, too many variables for memory alone
-        movementConfiguration.setDiamondWidth(enemyConfiguration.getMovementPatternSize().getDiamondWidth());
-        movementConfiguration.setDiamondHeight(enemyConfiguration.getMovementPatternSize().getDiamondHeight());
-        movementConfiguration.setStepsBeforeBounceInOtherDirection(enemyConfiguration.getMovementPatternSize().getStepsBeforeBounceInOtherDirection());
-
-        movementConfiguration.setAngleStep(0.1);
-        movementConfiguration.setCurveDistance(1);
-        movementConfiguration.setRadius(5);
-        movementConfiguration.setRadiusIncrement(enemyConfiguration.getMovementPatternSize().getRadiusIncrement());
-
-
-        movementConfiguration.setPrimaryDirectionStepAmount(enemyConfiguration.getMovementPatternSize().getPrimaryDirectionStepAmount());
-        movementConfiguration.setFirstDiagonalDirectionStepAmount(enemyConfiguration.getMovementPatternSize().getSecondaryDirectionStepAmount());
-        movementConfiguration.setSecondDiagonalDirectionStepAmount(enemyConfiguration.getMovementPatternSize().getSecondaryDirectionStepAmount());
-
+        if (enemyLevel > 1) {
+            this.maxHitPoints *= (float) Math.pow(1.20, enemyLevel);
+            this.currentHitpoints = maxHitPoints;
+            this.maxShieldPoints *= (float) Math.pow(1.20, enemyLevel);
+            this.currentShieldPoints = maxShieldPoints;
+            this.damage *= (float) Math.pow(1.20, enemyLevel);
+            // XP on death is multiplied by 50% of difficultyCoeff
+            this.xpOnDeath *= (float) (1 + 0.5 * difficultyCoeff);
+            // Cash money worth is multiplied by 100% (double) of difficultyCoeff
+            this.cashMoneyWorth *= (1 + difficultyCoeff);
+        }
     }
 
+    private void initChargingUpAnimation (SpriteConfiguration spriteConfiguration) {
+        SpriteAnimationConfiguration spriteAnimationConfiguration = new SpriteAnimationConfiguration(spriteConfiguration, 2, false);
+        spriteAnimationConfiguration.getSpriteConfiguration().setImageType(ImageEnums.Charging);
+        this.chargingUpAttackAnimation = new SpriteAnimation(spriteAnimationConfiguration);
+    }
 
-    // Random offset for the origin of the missile the enemy shoots
 
     public EnemyEnums getEnemyType () {
         return this.enemyType;
@@ -131,6 +134,10 @@ public class Enemy extends GameObject {
             this.destructionAnimation.setVisible(false);
         }
 
+        if (this.chargingUpAttackAnimation != null) {
+            this.chargingUpAttackAnimation.setVisible(false);
+        }
+
         for (GameObject object : objectsFollowingThis) {
             object.deleteObject();
         }
@@ -139,13 +146,46 @@ public class Enemy extends GameObject {
             object.deleteObject();
         }
 
-        for (Enemy enemy : followingEnemies) {
-            enemy.deleteObject();
+        this.objectToFollow = null;
+
+        if (movementConfiguration != null) {
+            this.movementConfiguration.deleteConfiguration();
         }
-
-
+        this.movementConfiguration = null;
+        this.movementTracker = null;
+        this.ownerOrCreator = null;
         this.visible = false;
     }
 
+    public SpriteAnimation getChargingUpAttackAnimation () {
+        return chargingUpAttackAnimation;
+    }
 
+    public void setChargingUpAttackAnimation (SpriteAnimation chargingUpAttackAnimation) {
+        this.chargingUpAttackAnimation = chargingUpAttackAnimation;
+    }
+
+    public PathFinderEnums getMissileTypePathFinders () {
+        return missileTypePathFinders;
+    }
+
+    public void setMissileTypePathFinders (PathFinderEnums missileTypePathFinders) {
+        this.missileTypePathFinders = missileTypePathFinders;
+    }
+
+    public boolean isAllowedToFire () {
+        return allowedToFire;
+    }
+
+    public void setAllowedToFire (boolean allowedToFire) {
+        this.allowedToFire = allowedToFire;
+    }
+
+    public double getLastAttackTime () {
+        return lastAttackTime;
+    }
+
+    public void setLastAttackTime (double lastAttackTime) {
+        this.lastAttackTime = lastAttackTime;
+    }
 }

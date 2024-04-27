@@ -3,7 +3,7 @@ package game.objects.enemies;
 import game.movement.Direction;
 import game.movement.pathfinderconfigs.MovementPatternSize;
 import game.movement.pathfinders.PathFinder;
-import VisualAndAudioData.audio.AudioEnums;
+import VisualAndAudioData.audio.enums.AudioEnums;
 import game.objects.enemies.enums.EnemyEnums;
 
 public class EnemyConfiguration {
@@ -15,40 +15,33 @@ public class EnemyConfiguration {
     private boolean showHealthBar;
     private AudioEnums deathSound;
 
-    private Direction movementDirection;
-    private PathFinder movementPathFinder;
-    private int xMovementSpeed;
-    private int yMovementSpeed;
     private boolean allowedToDealDamage;
 
     private String objectType;
 
-    private int attackSpeed;
-
-    private MovementPatternSize movementPatternSize;
+    private float attackSpeed;
 
     private boolean isBoxCollision;
 
     private float baseArmor;
+    private float xpOnDeath;
 
-    public EnemyConfiguration (EnemyEnums enemyType, int maxHitPoints, int maxShields, boolean hasAttack, boolean showHealthBar, AudioEnums deathSound, Direction movementDirection, PathFinder movementPathFinder, int xMovementSpeed, int yMovementSpeed, boolean allowedToDealDamage, String objectType, int attackSpeed
-            , MovementPatternSize movementPatternSize, boolean boxCollision, float baseArmor) {
+    private float cashMoneyWorth;
+
+    public EnemyConfiguration (EnemyEnums enemyType, int maxHitPoints, int maxShields, boolean hasAttack, boolean showHealthBar, AudioEnums deathSound, boolean allowedToDealDamage, String objectType, float attackSpeed, boolean isBoxCollision, float baseArmor, float xpOnDeath, float cashMoneyWorth) {
         this.enemyType = enemyType;
         this.maxHitPoints = maxHitPoints;
         this.maxShields = maxShields;
         this.hasAttack = hasAttack;
         this.showHealthBar = showHealthBar;
         this.deathSound = deathSound;
-        this.movementDirection = movementDirection;
-        this.movementPathFinder = movementPathFinder;
-        this.xMovementSpeed = xMovementSpeed;
-        this.yMovementSpeed = yMovementSpeed;
         this.allowedToDealDamage = allowedToDealDamage;
         this.objectType = objectType;
         this.attackSpeed = attackSpeed;
-        this.movementPatternSize = movementPatternSize;
-        this.isBoxCollision = boxCollision;
+        this.isBoxCollision = isBoxCollision;
         this.baseArmor = baseArmor;
+        this.xpOnDeath = xpOnDeath;
+        this.cashMoneyWorth = cashMoneyWorth;
     }
 
     public EnemyEnums getEnemyType () {
@@ -99,38 +92,6 @@ public class EnemyConfiguration {
         this.deathSound = deathSound;
     }
 
-    public Direction getMovementDirection () {
-        return movementDirection;
-    }
-
-    public void setMovementDirection (Direction movementDirection) {
-        this.movementDirection = movementDirection;
-    }
-
-    public PathFinder getMovementPathFinder () {
-        return movementPathFinder;
-    }
-
-    public void setMovementPathFinder (PathFinder movementPathFinder) {
-        this.movementPathFinder = movementPathFinder;
-    }
-
-    public int getxMovementSpeed () {
-        return xMovementSpeed;
-    }
-
-    public void setxMovementSpeed (int xMovementSpeed) {
-        this.xMovementSpeed = xMovementSpeed;
-    }
-
-    public int getyMovementSpeed () {
-        return yMovementSpeed;
-    }
-
-    public void setyMovementSpeed (int yMovementSpeed) {
-        this.yMovementSpeed = yMovementSpeed;
-    }
-
     public boolean isAllowedToDealDamage () {
         return allowedToDealDamage;
     }
@@ -147,20 +108,12 @@ public class EnemyConfiguration {
         this.objectType = objectType;
     }
 
-    public int getAttackSpeed () {
+    public float getAttackSpeed () {
         return attackSpeed;
     }
 
     public void setAttackSpeed (int attackSpeed) {
         this.attackSpeed = attackSpeed;
-    }
-
-    public MovementPatternSize getMovementPatternSize () {
-        return movementPatternSize;
-    }
-
-    public void setMovementPatternSize (MovementPatternSize movementPatternSize) {
-        this.movementPatternSize = movementPatternSize;
     }
 
     public boolean isBoxCollision () {
@@ -177,5 +130,21 @@ public class EnemyConfiguration {
 
     public void setBaseArmor (float baseArmor) {
         this.baseArmor = baseArmor;
+    }
+
+    public float getXpOnDeath () {
+        return xpOnDeath;
+    }
+
+    public void setXpOnDeath (float xpOnDeath) {
+        this.xpOnDeath = xpOnDeath;
+    }
+
+    public float getCashMoneyWorth () {
+        return cashMoneyWorth;
+    }
+
+    public void setCashMoneyWorth (float cashMoneyWorth) {
+        this.cashMoneyWorth = cashMoneyWorth;
     }
 }

@@ -3,20 +3,20 @@ package guiboards;
 import guiboards.boardEnums.MenuFunctionEnums;
 import guiboards.boardEnums.MenuObjectEnums;
 
-public class MenuCursor extends MenuObject {
+public class MenuCursor extends MenuObjectCollection {
 
-	private MenuObject selectedMenuTile;
-	private int xDistanceToKeep = 100;
+	private MenuObjectCollection selectedMenuTile;
+	private int xDistanceToKeep = 75;
 
 	public MenuCursor(int xCoordinate, int yCoordinate, float scale) {
-		super(yCoordinate, yCoordinate, scale, null, MenuObjectEnums.Cursor_Image, MenuFunctionEnums.Menu_Cursor);
+		super(xCoordinate, yCoordinate, scale, null, MenuObjectEnums.Cursor_Image, MenuFunctionEnums.Menu_Cursor);
 	}
 
-	public MenuObject getSelectedMenuTile() {
+	public MenuObjectCollection getSelectedMenuTile() {
 		return selectedMenuTile;
 	}
 
-	public void setSelectedMenuTile(MenuObject selectedMenuTile) {
+	public void setSelectedMenuTile(MenuObjectCollection selectedMenuTile) {
 		this.selectedMenuTile = selectedMenuTile;
 	}
 

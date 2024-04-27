@@ -1,10 +1,9 @@
 package game.items.items;
 
 import game.items.Item;
-import game.items.ItemApplicationEnum;
-import game.items.ItemEnums;
+import game.items.enums.ItemApplicationEnum;
+import game.items.enums.ItemEnums;
 import game.items.effects.EffectActivationTypes;
-import game.movement.Point;
 import game.objects.GameObject;
 
 public class FocusCrystal extends Item {
@@ -23,7 +22,7 @@ public class FocusCrystal extends Item {
     }
 
     private void calculateDamageAmplificationModifier(){
-        damageAmplificationModifier = 1 + (quantity * 0.20f);
+        damageAmplificationModifier = (quantity * 0.20f);
     }
 
     //Not used
@@ -44,8 +43,10 @@ public class FocusCrystal extends Item {
         if (Math.abs(shooterXCoordinate - targetXCoordinate) < distance &&
                 Math.abs(shooterYCoordinate - targetYCoordinate) < distance) {
             // Amplify the attack damage
-            attack.setDamage(attack.getDamage() * damageAmplificationModifier);
+            attack.modifyBonusDamageMultiplier(damageAmplificationModifier);
         }
+
+
     }
 
     public int getDistance () {

@@ -8,7 +8,7 @@ import game.objects.enemies.enums.EnemyCategory;
 import game.objects.enemies.enums.EnemyEnums;
 import game.spawner.EnemyFormation;
 import game.spawner.FormationCreator;
-import game.spawner.SpawnFormationEnums;
+import game.spawner.enums.SpawnFormationEnums;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -17,9 +17,7 @@ import java.util.Random;
 import java.util.stream.Collectors;
 
 public class Director {
-    private float difficultyFactor;
     private float credits;
-    private long lastUpdateTime;
     private double lastSpawnTime;
     private long spawnInterval; // Interval for Slow and Fast directors
     private List<MonsterCard> availableCards;
@@ -151,7 +149,7 @@ public class Director {
             List<MonsterCard> topThreeExpensiveCards = availableCards.stream()
                     .sorted(Comparator.comparing(MonsterCard::getCreditCost).reversed())
                     .limit(3) // Limit to the top three
-                    .collect(Collectors.toList());
+                    .toList();
 
             affordableMonsters.addAll(topThreeExpensiveCards);
         }
@@ -239,7 +237,7 @@ public class Director {
     }
 
     private int calculateBaseY(int totalFormationHeight) {
-        return random.nextInt(DataClass.getInstance().getWindowHeight() - totalFormationHeight + 1); // +1 to include the upper limit
+        return random.nextInt(DataClass.getInstance().getPlayableWindowMinHeight(),DataClass.getInstance().getPlayableWindowMaxHeight() - totalFormationHeight + 1); // +1 to include the upper limit
     }
 
 
@@ -282,7 +280,7 @@ public class Director {
             case Basic:
                 // Decrease weight for Basic enemies as difficulty increases
                 return (float) Math.max(baseWeight * (1 - difficultyCoefficient * basicDecayRate), 0.05);
-            case MiniBoss:
+            case Mercenary:
                 // Increase weight for MiniBoss enemies up to a point, then decrease
                 return (float) (baseWeight * (1 + Math.sin(difficultyCoefficient * minibossGrowthRate)));
             case Boss:

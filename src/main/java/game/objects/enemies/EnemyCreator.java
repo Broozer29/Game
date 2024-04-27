@@ -1,10 +1,12 @@
 package game.objects.enemies;
 
 import game.movement.Direction;
+import game.movement.MovementConfiguration;
+import game.movement.Point;
 import game.movement.pathfinderconfigs.MovementPatternSize;
 import game.movement.pathfinders.*;
 import game.objects.enemies.enemytypes.*;
-import VisualAndAudioData.audio.AudioEnums;
+import VisualAndAudioData.audio.enums.AudioEnums;
 import game.objects.enemies.enums.EnemyEnums;
 import visualobjects.SpriteConfigurations.SpriteConfiguration;
 
@@ -22,14 +24,48 @@ public class EnemyCreator {
                 (float) 1.0, false, 0
         );
 
-        PathFinder pathFinder = new RegularPathFinder();
-        EnemyConfiguration enemyConfiguration = createEnemyConfiguration(type, xMovementSpeed, yMovementSpeed, movementDirection, pathFinder, movementPatternSize, boxCollision);
-        return createSpecificEnemy(spriteConfiguration, enemyConfiguration);
+
+
+        PathFinder pathFinder = getPathFinderByEnemy(type);
+        
+        EnemyConfiguration enemyConfiguration = createEnemyConfiguration(type,boxCollision);
+        MovementConfiguration movementConfiguration = createMovementConfiguration(xCoordinate, yCoordinate, movementDirection, xMovementSpeed, yMovementSpeed, movementPatternSize, pathFinder);
+        adjustMovementConfigurationPerEnemy(type,movementConfiguration);
+        return createSpecificEnemy(spriteConfiguration, enemyConfiguration, movementConfiguration);
+    }
+
+    private static PathFinder getPathFinderByEnemy(EnemyEnums enemyType){
+        switch (enemyType){
+            case Seeker, Energizer, Tazer -> {return new HoverPathFinder();}
+            default -> {return new RegularPathFinder();}
+        }
+    }
+
+    private static void adjustMovementConfigurationPerEnemy(EnemyEnums enemyType, MovementConfiguration movementConfiguration){
+        switch (enemyType){
+            case Seeker -> {movementConfiguration.setBoardBlockToHoverIn(6);}
+            case Energizer -> {movementConfiguration.setBoardBlockToHoverIn(5);}
+            case Tazer -> {movementConfiguration.setBoardBlockToHoverIn(7);}
+        }
+    }
+
+    private static MovementConfiguration createMovementConfiguration (int xCoordinate, int yCoordinate, Direction movementDirection, int xMovementSpeed, int yMovementSpeed,
+                                                                      MovementPatternSize patternSize, PathFinder pathFinder) {
+        MovementConfiguration moveConfig = new MovementConfiguration();
+        moveConfig.setCurrentLocation(new Point(xCoordinate, yCoordinate));
+        moveConfig.setXMovementSpeed(xMovementSpeed);
+        moveConfig.setYMovementSpeed(yMovementSpeed);
+        moveConfig.setPathFinder(pathFinder);
+        moveConfig.setRotation(movementDirection);
+        moveConfig.setPatternSize(patternSize);
+
+        moveConfig.initDefaultSettingsForSpecializedPathFinders();
+        //Specialized specific settings here if non-default settings need to be overwritten
+        return moveConfig;
     }
 
 
-    private static EnemyConfiguration createEnemyConfiguration (EnemyEnums enemyType, int xMovementSpeed, int yMovementSpeed, Direction movementDirection, PathFinder pathFinder, MovementPatternSize movementPatternSize
-    , boolean boxCollision) {
+    private static EnemyConfiguration createEnemyConfiguration (EnemyEnums enemyType,boolean boxCollision) {
         int maxHitpoints = enemyType.getBaseHitPoints();
         int maxShields = enemyType.getBaseShieldPoints();
         boolean hasAttack = enemyType.isHasAttack();
@@ -37,40 +73,48 @@ public class EnemyCreator {
         AudioEnums deathSound = enemyType.getDeathSound();
         boolean allowedToDealDamage = true;
         String objectType = enemyType.getObjectType();
-        int attackSpeed = enemyType.getAttackSpeed();
+        float attackSpeed = enemyType.getAttackSpeed();
         float baseArmor = enemyType.getBaseArmor();
+        float xpOnDeath = enemyType.getXpOnDeath();
+        float cashMoneyWorth = enemyType.getCashMoneyWorth();
 
 
         return new EnemyConfiguration(enemyType, maxHitpoints, maxShields
-                , hasAttack, true, deathSound, movementDirection, pathFinder, xMovementSpeed, yMovementSpeed, allowedToDealDamage,
-                objectType, attackSpeed, movementPatternSize, boxCollision, baseArmor);
+                , hasAttack, true, deathSound, allowedToDealDamage,
+                objectType, attackSpeed, boxCollision, baseArmor, cashMoneyWorth, xpOnDeath);
     }
 
-    private static Enemy createSpecificEnemy (SpriteConfiguration spriteConfiguration, EnemyConfiguration enemyConfiguration) {
+    private static Enemy createSpecificEnemy (SpriteConfiguration spriteConfiguration, EnemyConfiguration enemyConfiguration, MovementConfiguration movementConfiguration) {
         switch (enemyConfiguration.getEnemyType()) {
 
             case Alien_Bomb -> {
-                return new AlienBomb(spriteConfiguration, enemyConfiguration);
+                return new AlienBomb(spriteConfiguration, enemyConfiguration, movementConfiguration);
             }
             case Seeker -> {
-                return new Seeker(spriteConfiguration, enemyConfiguration);
+                return new Seeker(spriteConfiguration, enemyConfiguration, movementConfiguration);
             }
             case Tazer -> {
-                return new Tazer(spriteConfiguration, enemyConfiguration);
+                return new Tazer(spriteConfiguration, enemyConfiguration, movementConfiguration);
             }
             case Energizer -> {
-                return new Energizer(spriteConfiguration, enemyConfiguration);
+                return new Energizer(spriteConfiguration, enemyConfiguration, movementConfiguration);
             }
             case Bulldozer -> {
-                return new Bulldozer(spriteConfiguration, enemyConfiguration);
+                return new Bulldozer(spriteConfiguration, enemyConfiguration, movementConfiguration);
             }
             case Flamer -> {
-                return new Flamer(spriteConfiguration, enemyConfiguration);
+                return new Flamer(spriteConfiguration, enemyConfiguration, movementConfiguration);
             }
             case Bomba -> {
-                return new Bomba(spriteConfiguration, enemyConfiguration);
+                return new Bomba(spriteConfiguration, enemyConfiguration, movementConfiguration);
+            }
+            case Needler -> {
+                return new Needler(spriteConfiguration, enemyConfiguration, movementConfiguration);
+            }
+            case Scout -> {
+                return new Scout(spriteConfiguration, enemyConfiguration, movementConfiguration);
             }
         }
-        return new Seeker(spriteConfiguration, enemyConfiguration);
+        return new Seeker(spriteConfiguration, enemyConfiguration, movementConfiguration);
     }
 }

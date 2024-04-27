@@ -1,5 +1,7 @@
 package VisualAndAudioData.audio;
 
+import VisualAndAudioData.audio.enums.AudioEnums;
+
 import java.io.IOException;
 import java.net.URL;
 
@@ -42,6 +44,10 @@ public class AudioLoader {
 
     private String convertAudioToFileString (AudioEnums audioFile) {
         switch (audioFile) {
+            case Le_Youth_Chills:
+                return "/audio/music/Le Youth - Chills.wav";
+            case Robert_Nickson_Painting_The_Skies:
+                return "/audio/music/Painting The Skies.wav";
             case Player_Laserbeam:
                 return "/audio/laserbeam1.wav";
             case Destroyed_Explosion:
@@ -113,6 +119,10 @@ public class AudioLoader {
                 return "/audio/music/The Rain Formerly Known As Purple.wav";
             case Blood_On_The_Dancefloor:
                 return "/audio/music/Blood On The Dancefloor.wav";
+            case Lemmino_Firecracker:
+                return "/audio/music/lemmino Firecracker.wav";
+            case Mydnyte:
+                return "/audio/music/mydnyte.wav";
         }
         return null;
     }

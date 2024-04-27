@@ -1,7 +1,6 @@
 package game.objects.powerups;
 
 import game.managers.OnScreenTextManager;
-import game.managers.TimerManager;
 import game.movement.Direction;
 import game.movement.MovementConfiguration;
 import game.movement.Path;
@@ -11,7 +10,6 @@ import game.objects.GameObject;
 import game.objects.powerups.creation.PowerUpConfiguration;
 import game.objects.powerups.creation.PowerUpEffect;
 import game.objects.powerups.creation.PowerUpEffectFactory;
-import game.objects.powerups.timers.PowerUpEffectTimer;
 import game.util.OnScreenText;
 import visualobjects.SpriteConfigurations.SpriteConfiguration;
 
@@ -22,28 +20,24 @@ public class PowerUp extends GameObject {
     private int timeBeforeActivation;
     private boolean loopable;
     private PowerUpEffect powerUpEffect;
-    private MovementConfiguration moveConfig;
 
-    public PowerUp (SpriteConfiguration spriteConfiguration, PowerUpConfiguration powerUpConfiguration) {
-        super(spriteConfiguration);
+    public PowerUp (SpriteConfiguration spriteConfiguration, PowerUpConfiguration powerUpConfiguration, MovementConfiguration movementConfiguration) {
+        super(spriteConfiguration, movementConfiguration);
         this.powerUpType = powerUpConfiguration.getPowerUpType();
         this.timeBeforeActivation = powerUpConfiguration.getTimeBeforeActivation();
         this.loopable = powerUpConfiguration.isLoopable();
-        initMoveConfig(powerUpConfiguration);
         this.powerUpEffect =  PowerUpEffectFactory.getInstance().createPowerUpEffect(powerUpType);
         this.setObjectType("Power Up " + powerUpType);
+        this.allowedVisualsToRotate = false;
+
+        if (movementConfiguration != null) {
+            initMovementConfiguration(movementConfiguration);
+        }
     }
 
-    private void initMoveConfig (PowerUpConfiguration powerUpConfiguration) {
-        moveConfig = new MovementConfiguration();
-        moveConfig.setXMovementSpeed(powerUpConfiguration.getxMovementSpeed());
-        moveConfig.setYMovementSpeed(powerUpConfiguration.getyMovementSpeed());
-        moveConfig.setRotation(powerUpConfiguration.getMovementDirection());
-        moveConfig.setPathFinder(powerUpConfiguration.getPathFinder());
-    }
 
     public void move () {
-        SpriteMover.getInstance().moveSprite(this, moveConfig);
+        SpriteMover.getInstance().moveGameObject(this, movementConfiguration);
         bounds.setBounds(xCoordinate + xOffset, yCoordinate + yOffset, width, height);
         updateBoardBlock();
     }
@@ -51,14 +45,16 @@ public class PowerUp extends GameObject {
     // Starts the timer of the powerUp. This method is called when the player collides with
     // the powerup
     public void startPowerUpTimer () {
-        PowerUpEffectTimer powerUpTimer = new PowerUpEffectTimer(timeBeforeActivation, this, loopable);
-        TimerManager.getInstance().addTimer(powerUpTimer);
-        powerUpTimer.startOfTimer(); // Start the timer, which will handle activating the power-up effect
+        //DEPRECATED OLD TIMER SYSTEM
+        //Use effects instead
+//        PowerUpEffectTimer powerUpTimer = new PowerUpEffectTimer(timeBeforeActivation, this, loopable);
+//        TimerManager.getInstance().addTimer(powerUpTimer);
+//        powerUpTimer.startOfTimer(); // Start the timer, which will handle activating the power-up effect
 
 
         OnScreenText text = new OnScreenText(xCoordinate, yCoordinate, powerUpType);
         OnScreenTextManager textManager = OnScreenTextManager.getInstance();
-        textManager.addText(text);
+        textManager.addTextObject(text);
 
     }
 
@@ -68,31 +64,28 @@ public class PowerUp extends GameObject {
     }
 
     public Direction getDirection () {
-        return moveConfig.getRotation();
+        return movementConfiguration.getRotation();
     }
 
-    public void setCurrentLocation (Point currentLocation) {
-        this.currentLocation = currentLocation;
-    }
 
     public Point getDestination () {
-        return moveConfig.getDestination();
+        return movementConfiguration.getDestination();
     }
 
     public void setDestination (Point destination) {
-        this.moveConfig.setDestination(destination);
+        this.movementConfiguration.setDestination(destination);
     }
 
     public Path getCurrentPath () {
-        return moveConfig.getCurrentPath();
+        return movementConfiguration.getCurrentPath();
     }
 
     public void setCurrentPath (Path currentPath) {
-        this.moveConfig.setCurrentPath(currentPath);
+        this.movementConfiguration.setCurrentPath(currentPath);
     }
 
     public void setDirection (Direction direction) {
-        this.moveConfig.setRotation(direction);
+        this.movementConfiguration.setRotation(direction);
     }
 
     public PowerUpEnums getPowerUpType () {

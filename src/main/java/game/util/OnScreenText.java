@@ -43,7 +43,7 @@ public class OnScreenText {
 		case DUMMY_DO_NOT_USE:
 			this.text = "Test text at: x =" + this.xCoordinate + " y = " + this.yCoordinate;
 			break;
-		case Guardian_Drone_Homing_Missile:
+		case Guardian_Drone:
 			this.text = "Homing Missile Guardian Bot";
 		
 		default:

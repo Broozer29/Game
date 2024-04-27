@@ -21,7 +21,7 @@ public class BackgroundManager {
     private final List<ImageEnums> planetBGOEnumsList = new ArrayList<>();
     private final Random random = new Random();
     private int updateFrameCounter = 0;
-    private final int bgoStepSize = 50;
+    private int rightmostNebulaEdge = 0;
     private SpaceThemeEnums spaceTheme;
     private NebulaThemeEnums nebulaTheme;
 
@@ -46,32 +46,59 @@ public class BackgroundManager {
     }
 
     private void initSpaceTheme () {
+        planetBGOEnumsList.clear();
         switch (this.spaceTheme) {
-            case Default:
-                planetBGOEnumsList.add(ImageEnums.Moon);
-                planetBGOEnumsList.add(ImageEnums.Lava_Planet);
-                planetBGOEnumsList.add(ImageEnums.Mars_Planet);
+            case Blue:
+                planetBGOEnumsList.add(ImageEnums.Star_Blue1);
+                planetBGOEnumsList.add(ImageEnums.Star_Blue2);
+                planetBGOEnumsList.add(ImageEnums.Star_Blue3);
+                planetBGOEnumsList.add(ImageEnums.Star_Blue4);
+
+                planetBGOEnumsList.add(ImageEnums.BluePlanet1);
+                planetBGOEnumsList.add(ImageEnums.BluePlanet2);
+                planetBGOEnumsList.add(ImageEnums.BluePlanet3);
+                planetBGOEnumsList.add(ImageEnums.BluePlanet4);
+                planetBGOEnumsList.add(ImageEnums.BluePlanet5);
+                planetBGOEnumsList.add(ImageEnums.BluePlanet6);
+
                 break;
-            case Three_Random_Planets:
+            case Green:
+                planetBGOEnumsList.add(ImageEnums.GreenPlanet1);
+                planetBGOEnumsList.add(ImageEnums.GreenPlanet2);
+                break;
+            case Purple:
                 planetBGOEnumsList.add(ImageEnums.Planet_One);
                 planetBGOEnumsList.add(ImageEnums.Planet_Two);
-                planetBGOEnumsList.add(ImageEnums.Planet_Three);
                 break;
         }
+
+        planetBGOEnumsList.add(ImageEnums.Star_Orange1);
+        planetBGOEnumsList.add(ImageEnums.Star_Orange2);
+        planetBGOEnumsList.add(ImageEnums.Star_Orange3);
+        planetBGOEnumsList.add(ImageEnums.Star_Orange4);
+
+        planetBGOEnumsList.add(ImageEnums.Star_Red1);
+        planetBGOEnumsList.add(ImageEnums.Star_Red2);
+        planetBGOEnumsList.add(ImageEnums.Star_Red3);
+        planetBGOEnumsList.add(ImageEnums.Star_Red4);
+
+        planetBGOEnumsList.add(ImageEnums.Lava_Planet);
+
+
     }
 
     private void initBackgroundObjects () {
         // Background objects initialization logic...
         ImageEnums nebula = getNebulaImage(this.nebulaTheme);
-        fillBGOList(BGOEnums.Nebula, nebula, 1, 5, 4, 5);
-        fillBGOList(BGOEnums.Planet, getRandomPlanetEnum(), (float) 0.4, 3, 3, 5);
-        fillBGOList(BGOEnums.Star, ImageEnums.Star, (float) 1, 60, 3, 250);
+        fillBGOList(BGOEnums.Nebula, nebula, 1, 1000, 4, 1000);
+        fillBGOList(BGOEnums.Star, ImageEnums.Star, (float) 1, 60, 3, 100);
+        fillBGOList(BGOEnums.Star, ImageEnums.Star, (float) 0.75, 60, 2, 100);
+        fillBGOList(BGOEnums.Star, ImageEnums.Star, 0.5f, 60, 1, 100);
 
-        fillBGOList(BGOEnums.Planet, getRandomPlanetEnum(), (float) 0.6, 3, 2, 5);
-        fillBGOList(BGOEnums.Star, ImageEnums.Star, (float) 0.75, 60, 2, 250);
+        fillBGOList(BGOEnums.Planet, getRandomPlanetEnum(), (float) 0.4, 1, 3, 5);
+        fillBGOList(BGOEnums.Planet, getRandomPlanetEnum(), (float) 0.6, 1, 2, 5);
+        fillBGOList(BGOEnums.Planet, getRandomPlanetEnum(), (float) 0.8, 1, 1, 5);
 
-        fillBGOList(BGOEnums.Planet, getRandomPlanetEnum(), (float) 0.8, 3, 1, 5);
-        fillBGOList(BGOEnums.Star, ImageEnums.Star, 0.5f, 60, 1, 250);
     }
 
     private void fillBGOList (BGOEnums bgoType, ImageEnums imageType, float scale, int amount, int depthLevel, int maxTries) {
@@ -189,6 +216,17 @@ public class BackgroundManager {
         }
     }
 
+    private void updateRightmostNebulaEdge() {
+        int maxEdge = 0;
+        for (BackgroundObject obj : backgroundObjectsMap.get(BGOEnums.Nebula)) {
+            int edge = obj.getXCoordinate() + obj.getWidth();
+            if (edge > maxEdge) {
+                maxEdge = edge;
+            }
+        }
+        rightmostNebulaEdge = maxEdge;
+    }
+
     private void moveBackgroundObject (BackgroundObject bgObject) {
         //If the object is outside the window screen, re-place it on the right side
         if ((bgObject.getXCoordinate() + bgObject.getWidth()) < 0) {
@@ -200,8 +238,13 @@ public class BackgroundManager {
                     break;
                 case Nebula:
                 case Parallex:
-                    // Move Nebula or Parallex objects to the right side of the screen
-                    bgObject.setX(dataClass.getWindowWidth());
+                    //This is broken for some inexplicable reason
+                    bgObject.setX(rightmostNebulaEdge);  // Place right after the last nebula
+                    updateRightmostNebulaEdge();  // Update after repositioning
+//                    System.out.println("X coordinate: " + bgObject.getXCoordinate() +
+//                            " Width: " + bgObject.getWidth() +
+//                            " Right most nebula: " + rightmostNebulaEdge +
+//                            " Gap: " + (bgObject.getXCoordinate() - rightmostNebulaEdge + bgObject.getWidth()));
                     break;
                 case Star:
                     bgObject.setX(dataClass.getWindowWidth() + 200);
@@ -228,7 +271,6 @@ public class BackgroundManager {
             case Blue_Nebula_6:
                 return ImageEnums.Blue_Nebula_6;
             case Green_Nebula_1:
-                // Return 2 because 1 isn't actually seamless
                 return ImageEnums.Green_Nebula_2;
             case Green_Nebula_2:
                 return ImageEnums.Green_Nebula_2;
