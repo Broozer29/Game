@@ -29,6 +29,11 @@ public class DirectorManager {
 
         Director fastDirector = new Director(DirectorType.Fast, baseMonsterCards);
         directorList.add(fastDirector);
+
+        Director instantDirector = new Director(DirectorType.Instant, baseMonsterCards);
+        instantDirector.receiveCredits(200);
+        directorList.add(instantDirector);
+
     }
 
     public void resetManager(){
@@ -67,8 +72,6 @@ public class DirectorManager {
     }
 
     public void distributeCredits() {
-
-
         float creditAmount = (float) ((1 + 0.2 * GameStateInfo.getInstance().getDifficultyCoefficient()) * 0.5); // Determine the amount of credits to distribute
         for (Director director : directorList) {
             director.receiveCredits(creditAmount);

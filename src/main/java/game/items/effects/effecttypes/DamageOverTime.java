@@ -1,10 +1,14 @@
 package game.items.effects.effecttypes;
 
 import game.gamestate.GameStateInfo;
+import game.items.PlayerInventory;
+import game.items.effects.EffectIdentifiers;
 import game.items.effects.EffectInterface;
 import game.items.effects.EffectActivationTypes;
 import game.managers.AnimationManager;
+import game.managers.OnScreenTextManager;
 import game.objects.GameObject;
+import game.objects.player.PlayerManager;
 import visualobjects.SpriteAnimation;
 
 import java.util.Objects;
@@ -18,16 +22,19 @@ public class DamageOverTime implements EffectInterface {
     private double startTimeInSeconds;
     private int dotStacks;
     private boolean offsetApplied = false;
+    private boolean scaledToTarget = false;
 
     private SpriteAnimation animation;
+    private EffectIdentifiers effectIdentifier;
 
-    public DamageOverTime (float damage, double durationInSeconds, SpriteAnimation spriteAnimation) {
+    public DamageOverTime (float damage, double durationInSeconds, SpriteAnimation spriteAnimation, EffectIdentifiers effectIdentifier) {
         this.damage = damage;
         this.durationInSeconds = durationInSeconds;
-        this.effectTypesEnums = EffectActivationTypes.DamageOverTime;
+        this.effectTypesEnums = EffectActivationTypes.CheckEveryGameTick;
         this.dotStacks = 1;
         this.startTimeInSeconds = GameStateInfo.getInstance().getGameSeconds();
         this.animation = spriteAnimation;
+        this.effectIdentifier = effectIdentifier;
     }
 
     public void updateDamage (float damage) {
@@ -35,34 +42,103 @@ public class DamageOverTime implements EffectInterface {
     }
 
     @Override
-    public void activateEffect (GameObject gameObject) {
+    public void activateEffect (GameObject target) {
         double currentTime = GameStateInfo.getInstance().getGameSeconds();
-        if (animation != null && !offsetApplied) {
-            applyRandomOffset(gameObject);
-            offsetApplied = true;
+        if (animation != null) {
+            if (!scaledToTarget) {
+                scaleAnimation(target);
+                scaledToTarget = true;
+            }
+            if (!offsetApplied) {
+                applyRandomOffset(target);
+//                offsetApplied = true;
+            }
         }
         if (currentTime - startTimeInSeconds < durationInSeconds) {
-            gameObject.takeDamage(this.damage * dotStacks);
+            target.takeDamage(this.damage * dotStacks);
         } else {
             this.dotStacks = 0;
         }
     }
 
-    private void applyRandomOffset (GameObject object) {
+    //Scales animations if needed, should be added to specific animations & enemies
+    private void scaleAnimation (GameObject target) {
+        animation.cropAnimation();
+        // Retrieve animation dimensions
+        int animationWidth = this.animation.getWidth();
+        int animationHeight = this.animation.getHeight();
+
+        // Retrieve target dimensions
+        int enemyWidth = target.getWidth();
+        int enemyHeight = target.getHeight();
+
+        // If target has its own animation, use those dimensions instead
+        if (target.getAnimation() != null) {
+            enemyWidth = target.getAnimation().getWidth();
+            enemyHeight = target.getAnimation().getHeight();
+        }
+
+        // Calculate the maximum allowed dimensions
+        int maxAllowedWidth = (int) (enemyWidth * 0.6);
+        int maxAllowedHeight = (int) (enemyHeight * 0.6);
+
+        // Calculate the current scale of the animation
+        float currentScale = this.animation.getScale();
+
+
+        // Determine if scaling adjustment is needed
+        if (animationWidth > maxAllowedWidth || animationHeight > maxAllowedHeight) {
+            // Calculate the necessary scale factors to fit within the target dimensions
+            float widthScaleFactor = maxAllowedWidth / (float) animationWidth;
+            float heightScaleFactor = maxAllowedHeight / (float) animationHeight;
+
+            // Choose the larger scale factor to ensure the animation fits within both dimensions
+            float newScaleFactor = Math.max(widthScaleFactor, heightScaleFactor);
+
+            // Apply the new scale, adjusting based on the current scale
+            this.animation.setAnimationScale(currentScale * newScaleFactor);
+        }
+    }
+
+    private void applyRandomOffset (GameObject target) {
+        animation.resetOffset();
+
         Random random = new Random();
-        int halfWidth = object.getWidth() / 2;
-        int halfHeight = object.getHeight() / 2;
 
-        int minWidth = 0;
-        int maxWidth = object.getWidth() - (this.animation.getWidth());
+        // Get the animation dimensions and enemy dimensions
+        int animationWidth = this.animation.getWidth();
+        int animationHeight = this.animation.getHeight();
+        int enemyWidth = target.getWidth();
+        int enemyHeight = target.getHeight();
 
-//        int xOffset = random.nextInt(halfWidth);
+        if (target.getAnimation() != null) {
+            enemyWidth = target.getAnimation().getWidth();
+            enemyHeight = target.getAnimation().getHeight();
+        }
 
-        int xOffsetRange = maxWidth - minWidth;
-        int xOffset = minWidth + (xOffsetRange > 0 ? random.nextInt(xOffsetRange) : 0);
+        // Center animation on the enemy first
+        int animationCenterX = target.getCenterXCoordinate();
+        int animationCenterY = target.getCenterYCoordinate();
 
-        int yOffset = random.nextInt(halfHeight);
+        if (target.getAnimation() != null) {
+            animationCenterX = target.getAnimation().getCenterXCoordinate();
+            animationCenterY = target.getAnimation().getCenterYCoordinate();
+        }
+        animation.setCenterCoordinates(animationCenterX, animationCenterY);
 
+        // Calculate max X offset to ensure animation stays within the enemy's width
+        int maxXOffset = (int) Math.round((enemyWidth * 0.8) - animationWidth / 2);
+        int xOffset = (maxXOffset > 0) ? random.nextInt(maxXOffset * 2 + 1) - maxXOffset : 0;
+
+        // For Y, allow animation's origin to potentially start from below the enemy's base
+        int minYOffset = (int) (enemyHeight * 0.65);  // Start from 45% of the enemy's height for the base of the animation
+
+        // Adjust the range above this base point where the animation can extend, slightly reducing it
+        int maxYOffset = minYOffset + (int) (animationHeight * 0.25);  // Extend the bottom of the animation slightly less beyond the base
+
+        int yOffset = minYOffset + random.nextInt(maxYOffset + 1) - animationHeight;
+
+        // Apply the calculated offsets to the animation's coordinates
         animation.addXOffset(xOffset);
         animation.addYOffset(yOffset);
     }
@@ -71,6 +147,9 @@ public class DamageOverTime implements EffectInterface {
     @Override
     public boolean shouldBeRemoved () {
         if (GameStateInfo.getInstance().getGameSeconds() - startTimeInSeconds >= durationInSeconds) {
+            if (animation != null) {
+                animation.setVisible(false);
+            }
             return true;
         } else return false;
 
@@ -79,6 +158,8 @@ public class DamageOverTime implements EffectInterface {
     @Override
     public void resetDuration () {
         // Reset the start time to the current game time
+//        OnScreenTextManager.getInstance().addText("Refreshed " + this.effectIdentifier, PlayerManager.getInstance().getSpaceship().getXCoordinate(),
+//                PlayerManager.getInstance().getSpaceship().getYCoordinate());
         this.startTimeInSeconds = GameStateInfo.getInstance().getGameSeconds();
     }
 
@@ -89,7 +170,7 @@ public class DamageOverTime implements EffectInterface {
 
     @Override
     public EffectInterface copy () {
-        DamageOverTime copiedEffect = new DamageOverTime(this.damage, this.durationInSeconds, this.animation.clone());
+        DamageOverTime copiedEffect = new DamageOverTime(this.damage, this.durationInSeconds, this.animation.clone(), effectIdentifier);
         // Copy other necessary fields
         copiedEffect.dotStacks = this.dotStacks;
         // Note: startTimeInSeconds may need special handling depending on desired behavior
@@ -119,5 +200,10 @@ public class DamageOverTime implements EffectInterface {
     @Override
     public int hashCode () {
         return Objects.hash(effectTypesEnums);
+    }
+
+    @Override
+    public EffectIdentifiers getEffectIdentifier () {
+        return effectIdentifier;
     }
 }

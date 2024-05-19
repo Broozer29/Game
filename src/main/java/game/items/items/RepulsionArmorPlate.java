@@ -11,7 +11,7 @@ public class RepulsionArmorPlate extends Item {
     private float armorAmount;
 
     public RepulsionArmorPlate(){
-        super(ItemEnums.RepulsionArmorPlate, 1, EffectActivationTypes.PlayerStatsModification, ItemApplicationEnum.ApplyOnCreation);
+        super(ItemEnums.RepulsionArmorPlate, 1, EffectActivationTypes.PlayerStatsModificationOnCreation, ItemApplicationEnum.ApplyOnCreation);
         armorAmount = 10;
     }
 

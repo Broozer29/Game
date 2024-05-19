@@ -73,7 +73,7 @@ public class Seeker extends Enemy {
 
         //Create missile movement attributes and create a movement configuration
         MissileTypeEnums missileType = MissileTypeEnums.SeekerProjectile;
-        PathFinder missilePathFinder = missileTypePathFinders.createInstance();
+        PathFinder missilePathFinder = new StraightLinePathFinder();
         MovementPatternSize movementPatternSize = MovementPatternSize.SMALL;
         MovementConfiguration movementConfiguration = MissileCreator.getInstance().createMissileMovementConfig(
                 missileType.getxMovementSpeed(), missileType.getyMovementSpeed(), missilePathFinder, movementPatternSize, this.movementRotation
@@ -106,6 +106,7 @@ public class Seeker extends Enemy {
         missile.getAnimation().setCenterCoordinates(chargingUpAttackAnimation.getCenterXCoordinate(), chargingUpAttackAnimation.getCenterYCoordinate());
         missile.setAllowedVisualsToRotate(false); //Prevent it from being rotated again by the SpriteMover
         missile.resetMovementPath();
+        missile.getMovementConfiguration().setDestination(spaceShipCenter); // again because reset removes it
         missile.setOwnerOrCreator(this);
         MissileManager.getInstance().addExistingMissile(missile);
     }

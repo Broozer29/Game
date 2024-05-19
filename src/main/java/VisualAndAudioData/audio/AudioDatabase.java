@@ -1,6 +1,7 @@
 package VisualAndAudioData.audio;
 
 import VisualAndAudioData.audio.enums.AudioEnums;
+import com.badlogic.gdx.Audio;
 
 import javax.sound.sampled.LineUnavailableException;
 import java.util.*;
@@ -37,6 +38,20 @@ public class AudioDatabase {
     private CustomAudioClip leYouthChills;
     private CustomAudioClip paintingTheSkies;
 
+    private CustomAudioClip cannonsFireForYou;
+    private CustomAudioClip embrzRainOnMyWindow;
+    private CustomAudioClip embrzLightFalls;
+    private CustomAudioClip deadmau5Monophobia;
+    private CustomAudioClip johnyTheme;
+    private CustomAudioClip viqGirlFromNowhere;
+    private CustomAudioClip spaceSailorsCosmos;
+    private CustomAudioClip newArcadesSevered;
+    private CustomAudioClip arksunArisen;
+    private CustomAudioClip ghostDataGodsOfTheArtificial;
+    private CustomAudioClip ghostDataDarkHarvest;
+    private CustomAudioClip blackGummySuperHuman;
+    private CustomAudioClip madukAlone;
+
 
     private List<CustomAudioClip> backgroundMusicTracks = new ArrayList();
 
@@ -61,6 +76,7 @@ public class AudioDatabase {
     private List<CustomAudioClip> rocketLauncherClipList = new ArrayList<CustomAudioClip>();
     private List<CustomAudioClip> flamethrowerClipList = new ArrayList<CustomAudioClip>();
     private List<CustomAudioClip> firewallClipList = new ArrayList<CustomAudioClip>();
+    private List<CustomAudioClip> notEnoughMineralsClipList = new ArrayList<CustomAudioClip>();
 
 
     private Map<AudioEnums, List<CustomAudioClip>> audioClipsMap = new HashMap<>();
@@ -105,6 +121,19 @@ public class AudioDatabase {
         bloodOnTheDanceFloor.setFramePosition(0);
         mydnyte.setFramePosition(0);
         lemminoFireCracker.setFramePosition(0);
+        cannonsFireForYou.setFramePosition(0);
+        embrzRainOnMyWindow.setFramePosition(0);
+        deadmau5Monophobia.setFramePosition(0);
+        embrzLightFalls.setFramePosition(0);
+        johnyTheme.setFramePosition(0);
+        viqGirlFromNowhere.setFramePosition(0);
+        spaceSailorsCosmos.setFramePosition(0);
+        newArcadesSevered.setFramePosition(0);
+        arksunArisen.setFramePosition(0);
+        ghostDataGodsOfTheArtificial.setFramePosition(0);
+        ghostDataDarkHarvest.setFramePosition(0);
+        blackGummySuperHuman.setFramePosition(0);
+        madukAlone.setFramePosition(0);
 
 
         for (int i = 0; i < clipListSize; i++) {
@@ -118,6 +147,7 @@ public class AudioDatabase {
             rocketLauncherClipList.get(i).setFramePosition(0);
             flamethrowerClipList.get(i).setFramePosition(0);
             firewallClipList.get(i).setFramePosition(0);
+            notEnoughMineralsClipList.get(i).setFramePosition(0);
         }
     }
 
@@ -165,7 +195,7 @@ public class AudioDatabase {
         mainmenu = new CustomAudioClip(AudioEnums.mainmenu, false);
         paintingTheSkies = new CustomAudioClip(AudioEnums.Robert_Nickson_Painting_The_Skies, false);
 
-        diqRose = new CustomAudioClip(AudioEnums.Diq_Rose, false);
+        diqRose = new CustomAudioClip(AudioEnums.Viq_Rose, false);
         fiveSecondsBeforeSunrise = new CustomAudioClip(AudioEnums.Five_Seconds_Before_Sunrise, false);
         downtownBinaryAstral = new CustomAudioClip(AudioEnums.Downtown_Binary_Astral, false);
         carpenterBrutEnraged = new CustomAudioClip(AudioEnums.Carpenter_Brut_Enraged, false);
@@ -184,8 +214,33 @@ public class AudioDatabase {
         lemminoFireCracker = new CustomAudioClip(AudioEnums.Lemmino_Firecracker, false);
         mydnyte = new CustomAudioClip(AudioEnums.Mydnyte, false);
         leYouthChills = new CustomAudioClip(AudioEnums.Le_Youth_Chills, false);
+        cannonsFireForYou = new CustomAudioClip(AudioEnums.Cannons_Fire_For_You, false);
+        embrzRainOnMyWindow = new CustomAudioClip(AudioEnums.EMBRZ_Rain_On_My_Window, false);
+        embrzLightFalls = new CustomAudioClip(AudioEnums.EMBRZ_Light_Falls, false);
+        deadmau5Monophobia = new CustomAudioClip(AudioEnums.Deadmau5_Monophobia, false);
+        johnyTheme = new CustomAudioClip(AudioEnums.Johny_Theme, false);
+        viqGirlFromNowhere = new CustomAudioClip(AudioEnums.Viq_Girl_From_Nowhere, false);
+        spaceSailorsCosmos = new CustomAudioClip(AudioEnums.Space_Sailors_Cosmos, false);
+        newArcadesSevered = new CustomAudioClip(AudioEnums.New_Arcades_Severed, false);
+        arksunArisen = new CustomAudioClip(AudioEnums.Arksun_Arisen, false);
+        ghostDataGodsOfTheArtificial = new CustomAudioClip(AudioEnums.Ghost_Data_Gods_Of_The_Artificial, false);
+        ghostDataDarkHarvest = new CustomAudioClip(AudioEnums.Ghost_Data_Dark_Harvest, false);
+        blackGummySuperHuman = new CustomAudioClip(AudioEnums.BlackGummy_SuperHuman, false);
+        madukAlone = new CustomAudioClip(AudioEnums.Maduk_Alone, false);
 
-
+        backgroundMusicTracks.add(madukAlone);
+        backgroundMusicTracks.add(blackGummySuperHuman);
+        backgroundMusicTracks.add(ghostDataDarkHarvest);
+        backgroundMusicTracks.add(ghostDataGodsOfTheArtificial);
+        backgroundMusicTracks.add(arksunArisen);
+        backgroundMusicTracks.add(newArcadesSevered);
+        backgroundMusicTracks.add(embrzRainOnMyWindow);
+        backgroundMusicTracks.add(spaceSailorsCosmos);
+        backgroundMusicTracks.add(viqGirlFromNowhere);
+        backgroundMusicTracks.add(johnyTheme);
+        backgroundMusicTracks.add(embrzLightFalls);
+        backgroundMusicTracks.add(deadmau5Monophobia);
+        backgroundMusicTracks.add(cannonsFireForYou);
         backgroundMusicTracks.add(FuriMyOnlyChance);
         backgroundMusicTracks.add(FuriWisdomOfRage);
         backgroundMusicTracks.add(FuriMakeThisRight);
@@ -245,6 +300,9 @@ public class AudioDatabase {
 
             CustomAudioClip alienBombDestroyed = new CustomAudioClip(AudioEnums.Alien_Bomb_Destroyed, false);
             alienBombDestroyedList.add(alienBombDestroyed);
+
+            CustomAudioClip notEnoughMinerals = new CustomAudioClip(AudioEnums.NotEnoughMinerals, false);
+            notEnoughMineralsClipList.add(notEnoughMinerals);
         }
 
         audioClipsMap.put(AudioEnums.Player_Laserbeam, laserBeamClipList);
@@ -258,7 +316,7 @@ public class AudioDatabase {
         audioClipsMap.put(AudioEnums.Firewall, firewallClipList);
         audioClipsMap.put(AudioEnums.Rocket_Launcher, rocketLauncherClipList);
         audioClipsMap.put(AudioEnums.Flamethrower, flamethrowerClipList);
-
+        audioClipsMap.put(AudioEnums.NotEnoughMinerals, notEnoughMineralsClipList);
     }
 
     //Return a Clip which is not running
@@ -275,7 +333,7 @@ public class AudioDatabase {
         return null;
     }
 
-    public CustomAudioClip selectRandomMusicTrack() {
+    public CustomAudioClip selectRandomMusicTrack () {
         Random random = new Random();
         CustomAudioClip clip = null;
         int attempts = 0;
@@ -307,7 +365,7 @@ public class AudioDatabase {
                 return DefaultMusic;
             case New_Arcades_Solace:
                 return NewArcadesSolace;
-            case Diq_Rose:
+            case Viq_Rose:
                 return diqRose;
             case Five_Seconds_Before_Sunrise:
                 return fiveSecondsBeforeSunrise;
@@ -347,6 +405,32 @@ public class AudioDatabase {
                 return leYouthChills;
             case Robert_Nickson_Painting_The_Skies:
                 return paintingTheSkies;
+            case Cannons_Fire_For_You:
+                return cannonsFireForYou;
+            case EMBRZ_Rain_On_My_Window:
+                return embrzRainOnMyWindow;
+            case EMBRZ_Light_Falls:
+                return embrzLightFalls;
+            case Deadmau5_Monophobia:
+                return deadmau5Monophobia;
+            case Johny_Theme:
+                return johnyTheme;
+            case Viq_Girl_From_Nowhere:
+                return viqGirlFromNowhere;
+            case Space_Sailors_Cosmos:
+                return spaceSailorsCosmos;
+            case New_Arcades_Severed:
+                return newArcadesSevered;
+            case Arksun_Arisen:
+                return arksunArisen;
+            case Ghost_Data_Gods_Of_The_Artificial:
+                return ghostDataGodsOfTheArtificial;
+            case Ghost_Data_Dark_Harvest:
+                return ghostDataDarkHarvest;
+            case BlackGummy_SuperHuman:
+                return blackGummySuperHuman;
+            case Maduk_Alone:
+                return madukAlone;
             case Player_Laserbeam:
             case Destroyed_Explosion:
             case Alien_Spaceship_Destroyed:
@@ -358,6 +442,7 @@ public class AudioDatabase {
             case Rocket_Launcher:
             case Flamethrower:
             case Firewall:
+            case NotEnoughMinerals:
                 return getAvailableClip(audioType);
             case Ayasa_The_Reason_Why:
                 return ayasaTheReasonWhy;

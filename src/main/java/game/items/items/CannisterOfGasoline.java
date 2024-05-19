@@ -2,7 +2,8 @@ package game.items.items;
 
 import VisualAndAudioData.image.ImageEnums;
 import game.items.Item;
-import game.items.effects.effecttypes.DormentExplosionActivationMethods;
+import game.items.effects.DormentExplosionActivationMethods;
+import game.items.effects.EffectIdentifiers;
 import game.items.enums.ItemApplicationEnum;
 import game.items.enums.ItemEnums;
 import game.items.effects.EffectActivationTypes;
@@ -16,7 +17,7 @@ public class CannisterOfGasoline extends Item {
     private int duration;
 
     public CannisterOfGasoline () {
-        super(ItemEnums.CannisterOfGasoline, 1, EffectActivationTypes.DormentExplosion, ItemApplicationEnum.AfterCollision);
+        super(ItemEnums.CannisterOfGasoline, 1, EffectActivationTypes.OnObjectDeath, ItemApplicationEnum.AfterCollision);
         this.explosionDamage = calculateExplosionDamage(quantity);
         this.burningDamage = calculateBurningDamage(quantity);
         this.duration = calculateDuration(quantity);
@@ -44,7 +45,9 @@ public class CannisterOfGasoline extends Item {
 
     @Override
     public void applyEffectToObject (GameObject gameObject) {
-        DormentExplosion dormentExplosion = new DormentExplosion(explosionDamage, ImageEnums.GasolineExplosion, DormentExplosionActivationMethods.OnDeath, false);
+        DormentExplosion dormentExplosion = new DormentExplosion(explosionDamage, ImageEnums.GasolineExplosion,
+                DormentExplosionActivationMethods.OnDeath, false, EffectIdentifiers.GasolineDormantExplosion,
+                0, super.effectType, true);
         dormentExplosion.setBurningDamage(burningDamage);
         dormentExplosion.setBurningDuration(duration);
         gameObject.addEffect(dormentExplosion);

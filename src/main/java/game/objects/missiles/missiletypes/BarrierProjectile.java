@@ -3,6 +3,7 @@ package game.objects.missiles.missiletypes;
 import game.movement.MovementConfiguration;
 import game.objects.missiles.Missile;
 import game.objects.missiles.MissileConfiguration;
+import visualobjects.SpriteAnimation;
 import visualobjects.SpriteConfigurations.SpriteAnimationConfiguration;
 
 public class BarrierProjectile extends Missile {
@@ -12,6 +13,11 @@ public class BarrierProjectile extends Missile {
 //        this.animation.rotateAnimation(movementConfiguration.getRotation());
         this.destroysMissiles = true;
 
+        if(missileConfiguration.getDestructionType() != null){
+            SpriteAnimationConfiguration destructionAnimation = new SpriteAnimationConfiguration(spriteConfiguration, 2, false);
+            destructionAnimation.getSpriteConfiguration().setImageType(missileConfiguration.getDestructionType());
+            this.destructionAnimation = new SpriteAnimation(destructionAnimation);
+        }
     }
 
     public void missileAction() {

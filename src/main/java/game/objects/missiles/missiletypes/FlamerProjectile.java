@@ -3,6 +3,7 @@ package game.objects.missiles.missiletypes;
 import game.movement.MovementConfiguration;
 import game.objects.missiles.Missile;
 import game.objects.missiles.MissileConfiguration;
+import visualobjects.SpriteAnimation;
 import visualobjects.SpriteConfigurations.SpriteAnimationConfiguration;
 
 public class FlamerProjectile extends Missile {
@@ -11,6 +12,12 @@ public class FlamerProjectile extends Missile {
 		super(spriteConfiguration, missileConfiguration, movementConfiguration);
 		this.animation.rotateAnimation(movementConfiguration.getRotation(), true);
 		this.animation.setFrameDelay(3);
+
+		if(missileConfiguration.getDestructionType() != null){
+			SpriteAnimationConfiguration destructionAnimation = new SpriteAnimationConfiguration(this.spriteConfiguration, 2, false);
+			destructionAnimation.getSpriteConfiguration().setImageType(missileConfiguration.getDestructionType());
+			this.destructionAnimation = new SpriteAnimation(destructionAnimation);
+		}
 	}
 
 	public void missileAction() {

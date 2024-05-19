@@ -19,6 +19,12 @@ public class Rocket1 extends Missile{
 		this.animation.rotateAnimation(movementConfiguration.getRotation(), true);
 		this.damage = 0;
 		this.explosionDamage = missileConfiguration.getDamage();
+
+		if(missileConfiguration.getDestructionType() != null){
+			SpriteAnimationConfiguration destructionAnimation = new SpriteAnimationConfiguration(this.spriteConfiguration, 2, false);
+			destructionAnimation.getSpriteConfiguration().setImageType(missileConfiguration.getDestructionType());
+			this.destructionAnimation = new SpriteAnimation(destructionAnimation);
+		}
 	}
 	
 	

@@ -10,13 +10,13 @@ public enum MissileTypeEnums {
     EnergizerProjectile(false, 3,3,15f, "EnergizeProjectile", ImageEnums.Energizer_Missile_Explosion, ImageEnums.Energizer_Missile),
     FlamerProjectile(false, 3,3,15f, "FlamerProjectile", ImageEnums.Flamer_Missile_Explosion, ImageEnums.Flamer_Missile),
     SeekerProjectile(false, 3,3,15f, "SeekerProjectile", ImageEnums.Seeker_Missile_Explosion, ImageEnums.Seeker_Missile),
-    TazerProjectile(false, 3,3,15f, "TazerProjectile", null, ImageEnums.LightningOrb),
+    TazerProjectile(false, 3,3,15f, "TazerProjectile", ImageEnums.LightningOrbDestruction, ImageEnums.LightningOrb),
     FlameThrowerProjectile(false, 3,3,10f, "FlameThrowerProjectile", ImageEnums.Flamer_Missile_Explosion, ImageEnums.Flamer_Missile),
-    DefaultPlayerLaserbeam(false, 3,3,10, "DefaultPlayerLaserbeam", null, ImageEnums.Alien_Laserbeam),
+    DefaultPlayerLaserbeam(false, 3,3,10, "DefaultPlayerLaserbeam", ImageEnums.Impact_Explosion_One, ImageEnums.Alien_Laserbeam),
     FirewallMissile(false, 3,3,10f, "FirewallMissile", null, ImageEnums.FirewallParticle),
-    PlasmaLauncherMissile(false, 3,3,25f, "PlasmaLauncherMissile", null, ImageEnums.PlasmaLauncherMissile),
+    PlasmaLauncherMissile(false, 3,3,25f, "PlasmaLauncherMissile", ImageEnums.Impact_Explosion_One, ImageEnums.PlasmaLauncherMissile),
     Rocket1(false, 3,3,1f, "Rocket1", ImageEnums.Rocket_1_Explosion, ImageEnums.Rocket_1),
-    LaserBullet(false, 2,2, 15f, "LaserBullet",null , ImageEnums.LaserBullet),
+    LaserBullet(false, 2,2, 15f, "LaserBullet",ImageEnums.LaserBulletDestruction , ImageEnums.LaserBullet),
     BarrierProjectile(false, 1,1, 25f, "BarrierProjectile", ImageEnums.BarrierProjectileDestruction, ImageEnums.BarrierProjectile);
 
     private final boolean boxCollision;

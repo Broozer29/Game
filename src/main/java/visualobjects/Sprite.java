@@ -163,6 +163,11 @@ public class Sprite {
         this.yOffset = yoffset;
     }
 
+    public void resetOffset(){
+        this.yOffset = 0;
+        this.xOffset = 0;
+    }
+
     public void setImageDimensions (int newWidth, int newHeight) {
         if (this.image.getWidth() != newWidth && this.image.getHeight() != newHeight) {
             ImageResizer imageResizer = ImageResizer.getInstance();

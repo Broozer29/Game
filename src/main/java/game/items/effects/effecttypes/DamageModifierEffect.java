@@ -2,6 +2,7 @@ package game.items.effects.effecttypes;
 
 import game.gamestate.GameStateInfo;
 import game.items.effects.EffectActivationTypes;
+import game.items.effects.EffectIdentifiers;
 import game.items.effects.EffectInterface;
 import game.managers.OnScreenTextManager;
 import game.objects.GameObject;
@@ -21,14 +22,16 @@ public class DamageModifierEffect implements EffectInterface {
     private SpriteAnimation animation;
     private GameObject modifiedObject;
     private boolean appliedToObject;
+    private EffectIdentifiers effectIdentifier;
 
-    public DamageModifierEffect (float damageModifierAmount, double durationInSeconds, SpriteAnimation animation) {
+    public DamageModifierEffect (float damageModifierAmount, double durationInSeconds, SpriteAnimation animation, EffectIdentifiers effectIdentifier) {
         this.damageModifierAmount = damageModifierAmount;
         this.durationInSeconds = durationInSeconds;
         this.animation = animation;
         this.startTimeInSeconds = GameStateInfo.getInstance().getGameSeconds();
-        this.effectTypesEnums = EffectActivationTypes.Debuff;
+        this.effectTypesEnums = EffectActivationTypes.CheckEveryGameTick;
         this.appliedToObject = false;
+        this.effectIdentifier = effectIdentifier;
     }
 
     @Override
@@ -71,6 +74,10 @@ public class DamageModifierEffect implements EffectInterface {
             modifiedObject.modifyBonusDamageMultiplier(-0.5f);
 //            OnScreenTextManager.getInstance().addText(modifiedObject.getDamage() + " / " + oldValue,
 //                    modifiedObject.getXCoordinate(), modifiedObject.getYCoordinate());
+        }
+
+        if(animation != null){
+            animation.setVisible(false);
         }
 
     }
@@ -117,7 +124,12 @@ public class DamageModifierEffect implements EffectInterface {
 
     @Override
     public EffectInterface copy () {
-        DamageModifierEffect copiedEffect = new DamageModifierEffect(damageModifierAmount, durationInSeconds, animation.clone());
+        DamageModifierEffect copiedEffect = new DamageModifierEffect(damageModifierAmount, durationInSeconds, animation.clone(), effectIdentifier);
         return copiedEffect;
+    }
+
+    @Override
+    public EffectIdentifiers getEffectIdentifier () {
+        return effectIdentifier;
     }
 }

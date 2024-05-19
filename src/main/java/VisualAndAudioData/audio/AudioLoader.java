@@ -87,7 +87,7 @@ public class AudioLoader {
                 return "/audio/music/NEW ARCADES - SOLACE.wav";
             case mainmenu:
                 return "/audio/music/mainmenu.wav";
-            case Diq_Rose:
+            case Viq_Rose:
                 return "/audio/music/Diq - Rose.wav";
             case Five_Seconds_Before_Sunrise:
                 return "/audio/music/5 Seconds Before Sunrise.wav";
@@ -121,8 +121,36 @@ public class AudioLoader {
                 return "/audio/music/Blood On The Dancefloor.wav";
             case Lemmino_Firecracker:
                 return "/audio/music/lemmino Firecracker.wav";
+            case Cannons_Fire_For_You:
+                return "/audio/music/Cannons - Fire for You.wav";
+            case EMBRZ_Rain_On_My_Window:
+                return "/audio/music/EMBRZ - rain on my window.wav";
+            case EMBRZ_Light_Falls:
+                return "/audio/music/EMBRZ - Light Falls.wav";
             case Mydnyte:
                 return "/audio/music/mydnyte.wav";
+            case Deadmau5_Monophobia:
+                return "/audio/music/deadmau5 - Monophobia.wav";
+            case Johny_Theme:
+                return "/audio/music/Johny Theme.wav";
+            case Viq_Girl_From_Nowhere:
+                return "/audio/music/Viq - Girl from Nowhere.wav";
+            case Space_Sailors_Cosmos:
+                return "/audio/music/Space Sailors - Cosmos.wav";
+            case New_Arcades_Severed:
+                return "/audio/music/New Arcades - Severed.wav";
+            case Arksun_Arisen:
+                return "/audio/music/Arksun - Arisen.wav";
+            case Ghost_Data_Gods_Of_The_Artificial:
+                return "/audio/music/GHOST-DATA-Gods-of-the-Artificial.wav";
+            case Ghost_Data_Dark_Harvest:
+                return "/audio/music/GHOST-DATA-Dark-Harvest.wav";
+            case BlackGummy_SuperHuman:
+                return "/audio/music/BlackGummy - SuperHuman.wav";
+            case Maduk_Alone:
+                return "/audio/music/Maduk - Alone.wav";
+            case NotEnoughMinerals:
+                return "/audio/Not Enough Minerals.wav";
         }
         return null;
     }

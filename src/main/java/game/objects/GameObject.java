@@ -14,6 +14,8 @@ import VisualAndAudioData.image.ImageResizer;
 import VisualAndAudioData.image.ImageRotator;
 import game.items.effects.EffectInterface;
 import game.objects.enemies.Enemy;
+import game.objects.enemies.enemytypes.AlienBomb;
+import game.objects.enemies.enums.EnemyEnums;
 import game.objects.missiles.missiletypes.GenericMissile;
 import game.objects.player.PlayerManager;
 import game.objects.player.PlayerStats;
@@ -182,20 +184,12 @@ public class GameObject extends Sprite {
     //Effect animations are NOT moved in this class
     public void addEffect (EffectInterface effect) {
         if (visible && currentHitpoints > 0) {
-            boolean effectFound = false;
+            EffectInterface existingEffect = getExistingEffect(effect);
 
-            // Iterate over the effects to check if an instance of the same type exists
-            for (EffectInterface existingEffect : effects) {
-                if (existingEffect.getClass().equals(effect.getClass())) {
-                    effectFound = true;
-                    break; // Exit the loop as we found an instance of the effect
-                }
-            }
-
-            if (!effectFound) {
+            if (existingEffect == null) {
                 effects.add(effect);
             } else {
-                refreshEffect(effect);
+                refreshEffect(existingEffect);
             }
 
             if (effect.getAnimation() != null) {
@@ -214,18 +208,20 @@ public class GameObject extends Sprite {
         }
     }
 
+    private EffectInterface getExistingEffect(EffectInterface effect) {
+        return effects.stream()
+                .filter(e -> e.getEffectIdentifier().equals(effect.getEffectIdentifier()))
+                .findFirst()
+                .orElse(null);
+    }
+
     private void activateOnDeathEffects () {
-        activateEffects(EffectActivationTypes.DormentExplosion);
-        activateEffects(EffectActivationTypes.OnDeath);
+        activateEffects(EffectActivationTypes.OnObjectDeath);
         cleanseAllEffects();
     }
 
     public void updateGameObjectEffects () {
-        activateEffects(EffectActivationTypes.DamageOverTime);
-        activateEffects(EffectActivationTypes.HealthRegeneration);
-        activateEffects(EffectActivationTypes.OutOfCombatArmorBonus);
-        activateEffects(EffectActivationTypes.DormentExplosion);
-        activateEffects(EffectActivationTypes.Debuff);
+        activateEffects(EffectActivationTypes.CheckEveryGameTick);
     }
 
 
@@ -350,6 +346,7 @@ public class GameObject extends Sprite {
 
     //*****************MOVEMENT*******************************
     public void move () {
+        toggleHealthBar();
         SpriteMover.getInstance().moveGameObject(this, movementConfiguration);
         moveAnimations();
         this.bounds.setBounds(xCoordinate + xOffset, yCoordinate + yOffset, width, height);
@@ -377,7 +374,12 @@ public class GameObject extends Sprite {
                 //Because they have no movement configuration and don't need one, else they would be missiles
             }
         }
+    }
 
+    private void toggleHealthBar(){
+        if(this.currentHitpoints < this.maxHitPoints){
+            showHealthBar = true;
+        }
     }
 
     private void moveAnimations () {
@@ -420,8 +422,10 @@ public class GameObject extends Sprite {
 
     //*****************VISUAL ALTERATION*******************************
     public void rotateGameObjectTowards (Direction direction, boolean crop) {
-        double angle = direction.toAngle();
-        this.rotationAngle = angle;
+        if(this.rotationAngle == direction.toAngle()){
+            return;
+        }
+        this.rotationAngle = direction.toAngle();
 
         if (this.animation != null) {
             rotateGameObjectSpriteAnimations(animation, direction, crop);
@@ -456,6 +460,11 @@ public class GameObject extends Sprite {
             calculatedAngle = ImageRotator.getInstance().calculateAngle(this.getCenterXCoordinate(), this.getCenterYCoordinate(), targetXCoordinate, targetYCoordinate);
         }
 
+        rotateObjectTowardsAngle(calculatedAngle, crop);
+
+    }
+
+    protected void rotateObjectTowardsAngle(double calculatedAngle, boolean crop){
         if (this.rotationAngle != calculatedAngle) {
             if (this.animation != null) {
                 this.animation.rotateAnimation(calculatedAngle, crop);
@@ -463,7 +472,6 @@ public class GameObject extends Sprite {
                 this.image = ImageRotator.getInstance().rotateOrFlip(this.originalImage, calculatedAngle, crop);
                 super.recalculateBoundsAndSize();
             }
-
 
             this.rotationAngle = calculatedAngle;
             updateChargingAttackAnimationCoordination();
@@ -798,10 +806,10 @@ public class GameObject extends Sprite {
 
 
     public void rotateObject () {
-        if (movementConfiguration.getPathFinder() instanceof HoverPathFinder || movementConfiguration.getCurrentPath().getWaypoints().isEmpty()
-                || (movementConfiguration.getXMovementSpeed() == 0 && movementConfiguration.getYMovementSpeed() == 0)) {
+//        if (movementConfiguration.getPathFinder() instanceof HoverPathFinder || movementConfiguration.getCurrentPath().getWaypoints().isEmpty()
+//                || (movementConfiguration.getXMovementSpeed() == 0 && movementConfiguration.getYMovementSpeed() == 0)) {
             handleRotation();
-        }
+//        }
     }
 
     protected void handleRotation () {
@@ -814,6 +822,12 @@ public class GameObject extends Sprite {
                 // Rotate towards the player, assuming these are only used for enemies that aim
                 rotateObjectTowardsPoint(PlayerManager.getInstance().getSpaceship().getCurrentLocation(), crop);
                 updateChargingAttackAnimationCoordination();
+                return;
+            }
+
+            if(enemyObject.getEnemyType().equals(EnemyEnums.Alien_Bomb)){
+                enemyObject.rotateGameObjectTowards(enemyObject.getOwnerOrCreator().getMovementConfiguration().getRotation(), true);
+//                enemyObject.setAllowedVisualsToRotate(false);
                 return;
             }
         }
@@ -854,6 +868,7 @@ public class GameObject extends Sprite {
             this.rotateGameObjectTowards(point.getX(), point.getY(), crop);
         }
     }
+
 
     private Point adjustDestinationForRotation (GameObject gameObject, Point destination) {
         int height = 0;

@@ -89,14 +89,6 @@ public class SpaceShip extends GameObject {
         applyOnCreationEffects();
     }
 
-    public void resetShipForNextLevel(){
-
-    }
-
-    public void createShipForNextLevel(){
-
-    }
-
     private void applyOnCreationEffects () {
         for (Item item : PlayerInventory.getInstance().getItemsByApplicationMethod(ItemApplicationEnum.ApplyOnCreation)) {
             item.applyEffectToObject(this);

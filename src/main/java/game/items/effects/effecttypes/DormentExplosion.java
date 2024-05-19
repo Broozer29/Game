@@ -2,12 +2,15 @@ package game.items.effects.effecttypes;
 
 import VisualAndAudioData.image.ImageEnums;
 import game.gamestate.GameStateInfo;
+import game.items.effects.DormentExplosionActivationMethods;
+import game.items.effects.EffectIdentifiers;
 import game.items.effects.EffectInterface;
 import game.items.effects.EffectActivationTypes;
 import game.objects.GameObject;
 import game.objects.neutral.Explosion;
 import game.objects.neutral.ExplosionConfiguration;
 import game.objects.neutral.ExplosionManager;
+import game.objects.player.PlayerManager;
 import visualobjects.SpriteAnimation;
 import visualobjects.SpriteConfigurations.SpriteAnimationConfiguration;
 import visualobjects.SpriteConfigurations.SpriteConfiguration;
@@ -21,7 +24,7 @@ public class DormentExplosion implements EffectInterface {
     private float damage;
 
     private ImageEnums explosionType;
-    private EffectActivationTypes effectTypesEnums;
+    private EffectActivationTypes activationTypes;
     private boolean activated;
     private boolean boxCollision;
 
@@ -30,21 +33,24 @@ public class DormentExplosion implements EffectInterface {
     private DormentExplosionActivationMethods activationMethod;
     private double activationTime;
     private boolean allowedToApplyOnHitEffects = false;
+    private float delayBeforeExplosion;
+    private EffectIdentifiers effectIdentifier;
 
     private List<EffectInterface> additionalEffects = new ArrayList<>();
 
-    public DormentExplosion (float damage, ImageEnums explosionType, DormentExplosionActivationMethods activationMethod, boolean boxCollision) {
+    public DormentExplosion (float damage, ImageEnums explosionType, DormentExplosionActivationMethods activationMethod, boolean boxCollision
+            , EffectIdentifiers effectIdentifier, float delayBeforeExplosion, EffectActivationTypes activationType, boolean allowedToApplyOnHitEffects) {
         this.damage = damage;
         this.boxCollision = boxCollision;
         this.explosionType = explosionType;
         this.activationMethod = activationMethod;
-        this.effectTypesEnums = EffectActivationTypes.DormentExplosion;
+        this.activationTypes = activationType;
         this.activated = false;
-        this.activationTime = GameStateInfo.getInstance().getGameSeconds() + 3; //3 seconds after applying
+        this.delayBeforeExplosion = delayBeforeExplosion;
+        this.activationTime = GameStateInfo.getInstance().getGameSeconds() + delayBeforeExplosion;
+        this.effectIdentifier = effectIdentifier;
 
-        if (this.activationMethod == DormentExplosionActivationMethods.OnDeath) {
-            allowedToApplyOnHitEffects = true;
-        }
+        this.allowedToApplyOnHitEffects = allowedToApplyOnHitEffects;
 
     }
 
@@ -56,19 +62,20 @@ public class DormentExplosion implements EffectInterface {
 
     @Override
     public void activateEffect (GameObject gameObject) {
-        switch (activationMethod) {
-            case OnDeath -> {
-                if (gameObject.getCurrentHitpoints() <= 0) {
-                    createExplosion(gameObject);
+        if(!activated) {
+            switch (activationMethod) {
+                case OnDeath -> {
+                    if (gameObject.getCurrentHitpoints() <= 0) {
+                        createExplosion(gameObject);
+                    }
                 }
-            }
-            case Timed -> {
-                if (GameStateInfo.getInstance().getGameSeconds() > activationTime) {
-                    createExplosion(gameObject);
+                case Timed -> {
+                    if (GameStateInfo.getInstance().getGameSeconds() > activationTime) {
+                        createExplosion(gameObject);
+                    }
                 }
             }
         }
-
     }
 
     private void createExplosion (GameObject gameObject) {
@@ -89,15 +96,15 @@ public class DormentExplosion implements EffectInterface {
 //        explosion.setCenterCoordinates(gameObject.getCenterXCoordinate(), gameObject.getCenterYCoordinate());
 //        explosion.getAnimation().setCenterCoordinates(gameObject.getCenterXCoordinate(), gameObject.getCenterYCoordinate());
         explosion.setBoxCollision(boxCollision);
-        explosion.setOwnerOrCreator(gameObject);
+        explosion.setOwnerOrCreator(PlayerManager.getInstance().getSpaceship()); //Assume it's the player who has items, never the enemies. Could hinder later design
 
 
-        if (burningDuration != 0 && burningDamage != 0) {
+        if (burningDuration != 0 && burningDamage != 0) { //Assuming it's always gasoline at this point cause nothing else exists atm
             SpriteAnimationConfiguration burningConfig = new SpriteAnimationConfiguration(spriteConfiguration, 2, true);
             burningConfig.getSpriteConfiguration().setImageType(ImageEnums.GasolineBurning);
-            burningConfig.getSpriteConfiguration().setScale(0.5f);
+            burningConfig.getSpriteConfiguration().setScale(1);
             SpriteAnimation burningAnimation = new SpriteAnimation(burningConfig);
-            DamageOverTime burning = new DamageOverTime(burningDamage, burningDuration, burningAnimation);
+            DamageOverTime burning = new DamageOverTime(burningDamage, burningDuration, burningAnimation, EffectIdentifiers.GasolineBurning);
             explosion.addEffectToApply(burning);
         }
 
@@ -114,7 +121,7 @@ public class DormentExplosion implements EffectInterface {
 
     private float getScaleByExplosionType () {
         if (explosionType.equals(ImageEnums.GasolineExplosion)) {
-            return 0.8f;
+            return 0.5f;
         } else return 1;
     }
 
@@ -140,7 +147,7 @@ public class DormentExplosion implements EffectInterface {
 
     @Override
     public EffectActivationTypes getEffectTypesEnums () {
-        return effectTypesEnums;
+        return activationTypes;
     }
 
     @Override
@@ -155,7 +162,7 @@ public class DormentExplosion implements EffectInterface {
 
     @Override
     public EffectInterface copy () {
-        DormentExplosion copy = new DormentExplosion(burningDamage, explosionType, activationMethod, boxCollision);
+        DormentExplosion copy = new DormentExplosion(burningDamage, explosionType, activationMethod, boxCollision, effectIdentifier, delayBeforeExplosion, activationTypes, allowedToApplyOnHitEffects);
         return copy;
     }
 
@@ -177,7 +184,7 @@ public class DormentExplosion implements EffectInterface {
     }
 
     public void setEffectTypesEnums (EffectActivationTypes effectTypesEnums) {
-        this.effectTypesEnums = effectTypesEnums;
+        this.activationTypes = effectTypesEnums;
     }
 
     public boolean isActivated () {
@@ -250,11 +257,16 @@ public class DormentExplosion implements EffectInterface {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         DormentExplosion that = (DormentExplosion) o;
-        return effectTypesEnums == that.effectTypesEnums;
+        return activationTypes == that.activationTypes;
+    }
+
+    @Override
+    public EffectIdentifiers getEffectIdentifier () {
+        return effectIdentifier;
     }
 
     @Override
     public int hashCode () {
-        return Objects.hash(effectTypesEnums);
+        return Objects.hash(activationTypes);
     }
 }

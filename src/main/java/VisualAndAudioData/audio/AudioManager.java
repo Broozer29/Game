@@ -6,8 +6,7 @@ import game.spawner.enums.LevelDifficulty;
 import game.spawner.enums.LevelLength;
 
 import java.io.IOException;
-import java.util.LinkedList;
-import java.util.Queue;
+import java.util.*;
 
 import javax.sound.sampled.UnsupportedAudioFileException;
 
@@ -16,9 +15,11 @@ public class AudioManager {
     private static AudioManager instance = new AudioManager();
     private CustomAudioClip backGroundMusic = null;
     private AudioDatabase audioDatabase = AudioDatabase.getInstance();
-
-    private Queue<LevelSongs> backgroundMusicTracksThatHavePlayed = new LinkedList<>();
     private LevelSongs currentSong;
+    private Queue<LevelSongs> backgroundMusicTracksThatHavePlayed = new LinkedList<>();
+    private Map<AudioEnums, Long> lastPlayTimeMap = new HashMap<>();
+    private static final long COOLDOWN_DURATION = 1000; // Cooldown in milliseconds, adjust as needed
+
 
     private AudioManager () {
 
@@ -30,6 +31,7 @@ public class AudioManager {
         // transitioning, idfk why tho
         backGroundMusic = null;
         audioDatabase.resetSongs();
+        lastPlayTimeMap.clear();
     }
 
     public static AudioManager getInstance () {
@@ -41,14 +43,30 @@ public class AudioManager {
     }
 
     // Play singular audios
-    private void playAudio (AudioEnums audioType) throws UnsupportedAudioFileException, IOException {
+    private void playAudio(AudioEnums audioType) throws UnsupportedAudioFileException, IOException {
         if (audioType != null) {
             CustomAudioClip clip = audioDatabase.getAudioClip(audioType);
-            if (clip != null) {
+            if (clip != null && canPlayAudio(audioType)) {
                 clip.startClip();
+                lastPlayTimeMap.put(audioType, System.currentTimeMillis()); // Update last played time
             }
         }
+    }
 
+    private static final Set<AudioEnums> soundsWithCooldown = Set.of(
+            AudioEnums.NotEnoughMinerals
+    );
+
+    private boolean canPlayAudio(AudioEnums audioType) {
+        if (!soundsWithCooldown.contains(audioType)) {
+            return true; // No cooldown needed for this sound
+        }
+        Long lastPlayTime = lastPlayTimeMap.get(audioType);
+        if (lastPlayTime == null) {
+            return true; // No record found, can play
+        }
+        long currentTime = System.currentTimeMillis();
+        return (currentTime - lastPlayTime >= COOLDOWN_DURATION);
     }
 
     // Play the background music
@@ -92,7 +110,7 @@ public class AudioManager {
 
         if (backgroundMusic != null) {
             playBackgroundMusic(AudioEnums.Large_Ship_Destroyed, false);
-//             playMusicAudio(backgroundMusic.getAudioEnum());
+//            playBackgroundMusic(backgroundMusic.getAudioEnum(), false);
             addTrackToHistory(backgroundMusic);
             this.currentSong = backgroundMusic;
         }

@@ -17,7 +17,7 @@ import VisualAndAudioData.image.ImageRotator;
 
 public class SpriteAnimation extends Sprite implements Cloneable{
 
-	ImageResizer imageResizer = ImageResizer.getInstance();
+	private ImageResizer imageResizer = ImageResizer.getInstance();
 	private int currentFrame = 0;
 	private int totalFrames;
 	private List<BufferedImage> originalFrames = new ArrayList<BufferedImage>();
@@ -286,7 +286,7 @@ public class SpriteAnimation extends Sprite implements Cloneable{
 
 			// Re-initialize the animation
 			cloned.initAnimation();
-
+			cloned.setAnimationScale(this.scale);
 			return cloned;
 		} catch (CloneNotSupportedException e) {
 			throw new AssertionError(); // Can never happen

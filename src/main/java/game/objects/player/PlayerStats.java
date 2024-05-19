@@ -141,6 +141,7 @@ public class PlayerStats {
         }
     }
 
+
     public void setPlayerDamage (float playerDamage) {
         this.baseDamage = playerDamage;
     }

@@ -4,6 +4,7 @@ import game.movement.Direction;
 import game.movement.MovementConfiguration;
 import game.objects.missiles.Missile;
 import game.objects.missiles.MissileConfiguration;
+import visualobjects.SpriteAnimation;
 import visualobjects.SpriteConfigurations.SpriteAnimationConfiguration;
 
 public class FlamethrowerProjectile extends Missile {
@@ -11,6 +12,12 @@ public class FlamethrowerProjectile extends Missile {
 	public FlamethrowerProjectile(SpriteAnimationConfiguration spriteConfiguration, MissileConfiguration missileConfiguration, MovementConfiguration movementConfiguration) {
 		super(spriteConfiguration, missileConfiguration, movementConfiguration);
 		this.animation.rotateAnimation(movementConfiguration.getRotation(), true);
+
+		if(missileConfiguration.getDestructionType() != null){
+			SpriteAnimationConfiguration destructionAnimation = new SpriteAnimationConfiguration(this.spriteConfiguration, 2, false);
+			destructionAnimation.getSpriteConfiguration().setImageType(missileConfiguration.getDestructionType());
+			this.destructionAnimation = new SpriteAnimation(destructionAnimation);
+		}
 	}
 
 	// Remove the flamethrower

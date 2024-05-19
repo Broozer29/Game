@@ -2,6 +2,7 @@ package game.items.items;
 
 import VisualAndAudioData.image.ImageEnums;
 import game.items.Item;
+import game.items.effects.EffectIdentifiers;
 import game.items.enums.ItemApplicationEnum;
 import game.items.enums.ItemEnums;
 import game.items.effects.EffectActivationTypes;
@@ -15,7 +16,7 @@ public class SelfRepairingSteel extends Item {
     private float repairAmount;
 
     public SelfRepairingSteel(){
-        super(ItemEnums.SelfRepairingSteel, 1, EffectActivationTypes.HealthRegeneration, ItemApplicationEnum.ApplyOnCreation);
+        super(ItemEnums.SelfRepairingSteel, 1, EffectActivationTypes.CheckEveryGameTick, ItemApplicationEnum.ApplyOnCreation);
         calculateHealingAmount();
     }
 
@@ -30,7 +31,7 @@ public class SelfRepairingSteel extends Item {
 
     @Override
     public void applyEffectToObject (GameObject gameObject) {
-        PassiveHealthRegeneration healthRegeneration = new PassiveHealthRegeneration(repairAmount);
+        PassiveHealthRegeneration healthRegeneration = new PassiveHealthRegeneration(repairAmount, EffectIdentifiers.SelfRepairingSteelHealthRegeneration);
         gameObject.addEffect(healthRegeneration);
 
         SpriteConfiguration spriteConfiguration = new SpriteConfiguration();

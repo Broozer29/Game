@@ -21,7 +21,8 @@ public enum ImageEnums {
     Warp, Shield4, Shield3, Shield2, Charging, EnergyCircle, Flamewarp, Frontshield, FrontshieldB, PulsatingShield, PulsatingStar, Radar,
     RotatingBoxes, RotatingCones, GreenEnergyOrb, PurpleEnergyBlocks, Fireshield, EnergyFlower, PurpleEnergyBarrier, RedHole, CrossingEnergyBeams,
     PlasmaCoatedDebuff, GasolineExplosion, GasolineBurning, Healing, StickyDynamiteExplosion, MoneyPrinter, StickyDynamite,
-    BarrierProjectile, BarrierProjectileDestruction, LightningProjectile, SuperChargedBuff, LightningOrb, Explosion2,
+    BarrierProjectile, BarrierProjectileDestruction, LightningProjectile, SuperChargedBuff, LightningOrb, Explosion2, LaserBulletDestruction,
+    LightningOrbDestruction,
 
     //// Background Objects
     Moon, Lava_Planet, Planet_One, Planet_Two, Planet_Three, Mars_Planet, Star, Parallex_1, Parallex_2, Parallex_3,

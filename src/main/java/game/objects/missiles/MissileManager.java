@@ -15,6 +15,7 @@ import game.managers.AnimationManager;
 import game.objects.GameObject;
 import game.items.Item;
 import game.items.enums.ItemApplicationEnum;
+import game.objects.enemies.enemytypes.AlienBomb;
 import game.objects.missiles.missiletypes.TazerProjectile;
 import game.objects.player.spaceship.SpaceShip;
 import game.util.CollisionDetector;
@@ -282,28 +283,9 @@ public class MissileManager {
     }
 
     private void handleTazerProjectile(GameObject missile, GameObject target){
-        if(!(missile instanceof TazerProjectile)){
-            return; //If somehow a missile got here that doesn't belong, do nothing
+        if(missile instanceof TazerProjectile){
+            ((TazerProjectile) missile).handleTazerMissile(missile, target);
         }
-        SpriteConfiguration spriteConfig = new SpriteConfiguration(target.getXCoordinate(), target.getYCoordinate()
-        ,target.getScale(), ImageEnums.SuperChargedBuff, 0,0,1,
-                false,0);
-        SpriteAnimationConfiguration spriteAnimConfig = new SpriteAnimationConfiguration(spriteConfig, 2, true);
-        SpriteAnimation superChargedAnimation = new SpriteAnimation(spriteAnimConfig);
-        DamageModifierEffect damageModifierEffect = null;
-        AttackSpeedModifierEffect attackSpeedModifierEffect = null;
-
-        if(target.isFriendly() || target instanceof SpaceShip){
-            //Debuff the player or player friendly objects
-            attackSpeedModifierEffect = new AttackSpeedModifierEffect(0.75f, 3, null);
-            damageModifierEffect = new DamageModifierEffect(0.75f, 3, superChargedAnimation);
-        } else {
-            //Buff the fellow enemies
-            attackSpeedModifierEffect = new AttackSpeedModifierEffect(3.0f, 6, null);
-            damageModifierEffect = new DamageModifierEffect(1.5f, 6, superChargedAnimation);
-        }
-        target.addEffect(attackSpeedModifierEffect);
-        target.addEffect(damageModifierEffect);
     }
 
 
@@ -323,6 +305,10 @@ public class MissileManager {
 
 
     private void handleMissileDestruction (Missile missile) {
+//        if(missile.getMissileType().equals(MissileTypeEnums.BarrierProjectile)){
+//            return;
+//        }
+
         missile.setVisible(false);
         if (missile.getDestructionAnimation() != null) {
             centerDestructionAnimation(missile);

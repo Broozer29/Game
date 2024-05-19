@@ -46,7 +46,7 @@ public class MissileGuardianBotPowerUpEffect extends PowerUpEffect {
         object.getAnimation().setAnimationScale(0.5f);
 
         PlayerManager.getInstance().getSpaceship().getObjectOrbitingThis().add(object);
-        OrbitingObjectsFormatter.reformatOrbitingObjects(PlayerManager.getInstance().getSpaceship());
+        OrbitingObjectsFormatter.reformatOrbitingObjects(PlayerManager.getInstance().getSpaceship(), 75);
         FriendlyManager.getInstance().addFriendlyObject(object);
 
     }

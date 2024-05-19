@@ -176,9 +176,9 @@ public class BackgroundManager {
     }
 
     private void updateObjects () {
-        int intervalLevel1 = 5; // Slower movement for depth level 3
+        int intervalLevel1 = 2; // Fastest movement for depth level 3
         int intervalLevel2 = 3; // Medium movement for depth level 2
-        int intervalLevel3 = 2; // Fastest movement for depth level 1
+        int intervalLevel3 = 5; // Slower movement for depth level 1
         int intervalLevel4 = 6; // Slowest movement for Nebula level (4)
 
         for (Map.Entry<BGOEnums, List<BackgroundObject>> entry : backgroundObjectsMap.entrySet()) {

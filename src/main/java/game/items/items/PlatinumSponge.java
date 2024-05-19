@@ -1,6 +1,7 @@
 package game.items.items;
 
 import game.items.Item;
+import game.items.effects.EffectIdentifiers;
 import game.items.enums.ItemApplicationEnum;
 import game.items.enums.ItemEnums;
 import game.items.effects.EffectActivationTypes;
@@ -12,7 +13,7 @@ public class PlatinumSponge extends Item {
     float armorBonus;
 
     public PlatinumSponge () {
-        super(ItemEnums.PlatinumSponge, 1, EffectActivationTypes.OutOfCombatArmorBonus, ItemApplicationEnum.ApplyOnCreation);
+        super(ItemEnums.PlatinumSponge, 1, EffectActivationTypes.CheckEveryGameTick, ItemApplicationEnum.ApplyOnCreation);
         calculateArmorBonus();
     }
 
@@ -27,7 +28,7 @@ public class PlatinumSponge extends Item {
 
     @Override
     public void applyEffectToObject (GameObject gameObject) {
-        OutOfCombatArmorBonus effect = new OutOfCombatArmorBonus(armorBonus);
+        OutOfCombatArmorBonus effect = new OutOfCombatArmorBonus(armorBonus, EffectIdentifiers.PlatinumSpongeArmorBonus);
         gameObject.addEffect(effect);
     }
 }

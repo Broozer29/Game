@@ -9,6 +9,7 @@ import game.items.PlayerInventory;
 import game.items.effects.EffectActivationTypes;
 import game.items.enums.ItemApplicationEnum;
 import game.items.effects.EffectInterface;
+import game.items.enums.ItemEnums;
 import game.managers.AnimationManager;
 import game.objects.GameObject;
 import game.objects.enemies.Enemy;
@@ -42,6 +43,10 @@ public class ExplosionManager {
             } else {
                 explosion.deleteObject();
                 toRemove.add(explosion);
+            }
+
+            if(!explosion.getAnimation().isPlaying()){
+                explosion.setVisible(false);
             }
         }
 
@@ -106,6 +111,9 @@ public class ExplosionManager {
     private void applyPlayerOnHitEffects (Enemy enemy) {
         List<Item> onHitItems = PlayerInventory.getInstance().getItemsByApplicationMethod(ItemApplicationEnum.AfterCollision);
         for (Item item : onHitItems) {
+            if(item.getItemName().equals(ItemEnums.StickyDynamite)){
+                continue;
+            }
             item.applyEffectToObject(enemy); // Assuming applyEffect adds the effect to the GameObject
         }
     }

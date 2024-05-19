@@ -65,20 +65,19 @@ public class SpaceShipSpecialGun {
         spriteConfiguration.setyCoordinate(yCoordinate);
         spriteConfiguration.setImageType(ImageEnums.Player_EMP);
 
-        SpriteAnimationConfiguration spriteAnimationConfiguration = new SpriteAnimationConfiguration(spriteConfiguration, 4, false);
+        SpriteAnimationConfiguration spriteAnimationConfiguration = new SpriteAnimationConfiguration(spriteConfiguration, 6, false);
 
         float damage = PlayerStats.getInstance().getNormalAttackDamage() / 10;
-        SpecialAttackConfiguration missileConfiguration = new SpecialAttackConfiguration(damage, true, true, true, true);
+        SpecialAttackConfiguration missileConfiguration = new SpecialAttackConfiguration(damage, true, true, false, true);
 
 
         SpriteAnimation specialAttackAnimation = new SpriteAnimation(spriteAnimationConfiguration);
-        specialAttackAnimation.setAnimationScale(2);
+        specialAttackAnimation.setAnimationScale(1.5f);
 
         SpecialAttack specialAttack = new ElectroShred(spriteAnimationConfiguration, missileConfiguration);
         specialAttack.setCenteredAroundObject(true);
-        specialAttack.setScale(2);
+        specialAttack.setScale(1.5f);
         specialAttack.setOwnerOrCreator(PlayerManager.getInstance().getSpaceship());
-
 //			specialAttackAnimation.setCenterCoordinates(spaceShip.getCenterXCoordinate(), spaceShip.getCenterYCoordinate());
 //			specialAttack.setCenterCoordinates(spaceShip.getCenterXCoordinate(), spaceShip.getCenterYCoordinate());
 

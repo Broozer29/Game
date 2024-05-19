@@ -91,6 +91,7 @@ public class Bomba extends Enemy {
 			missile.setCenterCoordinates(chargingUpAttackAnimation.getCenterXCoordinate(), chargingUpAttackAnimation.getCenterYCoordinate());
 			missile.getAnimation().setCenterCoordinates(chargingUpAttackAnimation.getCenterXCoordinate(), chargingUpAttackAnimation.getCenterYCoordinate());
 			missile.resetMovementPath();
+			missile.setAllowedVisualsToRotate(false);
 			this.missileManager.addExistingMissile(missile);
 		}
 	}

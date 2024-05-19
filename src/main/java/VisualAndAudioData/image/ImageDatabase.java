@@ -281,6 +281,8 @@ public class ImageDatabase {
     private List<BufferedImage> plasmaLauncherMissileFrames = new ArrayList<>();
 
     private List<BufferedImage> superChargedFrames = new ArrayList<>();
+    private List<BufferedImage> laserBulletDeathFrames = new ArrayList<>();
+    private List<BufferedImage> lightningOrbDestruction = new ArrayList<>();
 
     // Enemy Projectile Animations
     private List<BufferedImage> seekerProjectileFrames = new ArrayList<BufferedImage>();
@@ -1238,6 +1240,8 @@ public class ImageDatabase {
 
     public List<BufferedImage> getAnimation (ImageEnums imageType) {
         switch (imageType) {
+            case LaserBulletDestruction: return laserBulletDeathFrames;
+            case LightningOrbDestruction: return lightningOrbDestruction;
             case Explosion2: return explosion2;
             case LightningOrb:
                 return lightningOrb;
@@ -1851,9 +1855,21 @@ public class ImageDatabase {
             lightningOrb.add(image);
         }
         for (int i = 0; i < 64; i++) {
-            String sourceString = String.format("/images/gif/PNGtoGIF/Explosion 2 Unused/tile%d.png", i);
+            String sourceString = String.format("/images/gif/PNGtoGIF/Explosion 2/tile%d.png", i);
             BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
             explosion2.add(image);
+        }
+
+        for (int i = 0; i < 4; i++) {
+            String sourceString = String.format("/images/gif/PNGtoGIF/LaserBulletDeath/LaserBulletDeath%d.png", i);
+            BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+            laserBulletDeathFrames.add(image);
+        }
+
+        for (int i = 1; i < 9; i++) {
+            String sourceString = String.format("/images/gif/PNGtoGIF/TazerProjectile/Destruction/ThundersphereDestruction%d.png", i);
+            BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+            lightningOrbDestruction.add(image);
         }
     }
 

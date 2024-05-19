@@ -80,7 +80,7 @@ public class EnemyCreator {
 
 
         return new EnemyConfiguration(enemyType, maxHitpoints, maxShields
-                , hasAttack, true, deathSound, allowedToDealDamage,
+                , hasAttack, showHealthBar, deathSound, allowedToDealDamage,
                 objectType, attackSpeed, boxCollision, baseArmor, cashMoneyWorth, xpOnDeath);
     }
 

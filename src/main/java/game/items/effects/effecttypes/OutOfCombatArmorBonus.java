@@ -2,6 +2,7 @@ package game.items.effects.effecttypes;
 
 import game.gamestate.GameStateInfo;
 import game.items.effects.EffectActivationTypes;
+import game.items.effects.EffectIdentifiers;
 import game.items.effects.EffectInterface;
 import game.objects.GameObject;
 import visualobjects.SpriteAnimation;
@@ -12,14 +13,16 @@ public class OutOfCombatArmorBonus implements EffectInterface {
     float armorBonus;
     private double lastTimeDamageTaken;
     private boolean bonusApplied;
+    private EffectIdentifiers effectIdentifier;
 
     private SpriteAnimation animation;
 
-    public OutOfCombatArmorBonus(float armorBonus){
+    public OutOfCombatArmorBonus(float armorBonus, EffectIdentifiers effectIdentifier){
         this.armorBonus = armorBonus;
         this.lastTimeDamageTaken = GameStateInfo.getInstance().getGameSeconds();
-        this.effectActivationTypes = EffectActivationTypes.OutOfCombatArmorBonus;
+        this.effectActivationTypes = EffectActivationTypes.CheckEveryGameTick;
         this.bonusApplied = false;
+        this.effectIdentifier = effectIdentifier;
     }
 
     @Override
@@ -81,5 +84,10 @@ public class OutOfCombatArmorBonus implements EffectInterface {
 
     public double getLastTimeDamageTaken () {
         return lastTimeDamageTaken;
+    }
+
+    @Override
+    public EffectIdentifiers getEffectIdentifier () {
+        return effectIdentifier;
     }
 }

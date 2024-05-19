@@ -3,6 +3,7 @@ package game.items.effects.effecttypes;
 import com.badlogic.gdx.Game;
 import game.gamestate.GameStateInfo;
 import game.items.effects.EffectActivationTypes;
+import game.items.effects.EffectIdentifiers;
 import game.items.effects.EffectInterface;
 import game.managers.AnimationManager;
 import game.objects.GameObject;
@@ -13,13 +14,15 @@ public class PassiveHealthRegeneration implements EffectInterface {
     private EffectActivationTypes effectActivationTypes;
     private float healingAmount;
     private double lastTimeDamageTaken;
+    private EffectIdentifiers effectIdentifier;
 
     private SpriteAnimation animation;
 
-    public PassiveHealthRegeneration (float healingAmount) {
+    public PassiveHealthRegeneration (float healingAmount, EffectIdentifiers effectIdentifier) {
         this.healingAmount = healingAmount;
         this.lastTimeDamageTaken = GameStateInfo.getInstance().getGameSeconds();
-        this.effectActivationTypes = EffectActivationTypes.HealthRegeneration;
+        this.effectActivationTypes = EffectActivationTypes.CheckEveryGameTick;
+        this.effectIdentifier = effectIdentifier;
     }
 
     @Override
@@ -92,6 +95,9 @@ public class PassiveHealthRegeneration implements EffectInterface {
     public void setAnimation (SpriteAnimation spriteAnimation) {
         this.animation = spriteAnimation;
     }
-
+    @Override
+    public EffectIdentifiers getEffectIdentifier () {
+        return effectIdentifier;
+    }
 
 }

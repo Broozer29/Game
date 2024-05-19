@@ -1,4 +1,4 @@
-package game.items.effects.effecttypes;
+package game.items.effects;
 
 public enum DormentExplosionActivationMethods {
     OnDeath, Timed

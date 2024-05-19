@@ -553,25 +553,26 @@ public class ShopBoard extends JPanel implements ActionListener {
     }
 
     private long lastMoveTime = 0;
-    private static final long MOVE_COOLDOWN = 200; // 500 milliseconds
+    private static final long MOVE_COOLDOWN = 350; // milliseconds
 
     public void executeControllerInput () {
         if (controllers.getFirstController() != null) {
             boolean needsUpdate = false;
             controllerInputReader.pollController();
             long currentTime = System.currentTimeMillis();
-            System.out.println("THIS IS NOT YET REVERSED FOR CONTROLLER, GONNA HAVE TO FIX IT");
 
             // Left and right navigation
             if (currentTime - lastMoveTime > MOVE_COOLDOWN) {
-                if (controllerInputReader.isInputActive(ControllerInputEnums.MOVE_LEFT_SLOW)
-                        || controllerInputReader.isInputActive(ControllerInputEnums.MOVE_LEFT_QUICK)) {
+                if (controllerInputReader.isInputActive(ControllerInputEnums.MOVE_UP_QUICK)
+                        || controllerInputReader.isInputActive(ControllerInputEnums.MOVE_UP_SLOW)) {
+                    //Gaat naar boven
                     // Menu option to the left
                     previousMenuTile();
                     needsUpdate = true;
                     lastMoveTime = currentTime;
-                } else if (controllerInputReader.isInputActive(ControllerInputEnums.MOVE_RIGHT_SLOW)
-                        || controllerInputReader.isInputActive(ControllerInputEnums.MOVE_RIGHT_QUICK)) {
+                } else if (controllerInputReader.isInputActive(ControllerInputEnums.MOVE_DOWN_QUICK)
+                        || controllerInputReader.isInputActive(ControllerInputEnums.MOVE_DOWN_SLOW)) {
+                    //Gaat nar beneden
                     // Menu option to the right
                     nextMenuTile();
                     needsUpdate = true;
@@ -581,15 +582,17 @@ public class ShopBoard extends JPanel implements ActionListener {
 
             // Up and down navigation
             if (currentTime - lastMoveTime > MOVE_COOLDOWN) {
-                if (controllerInputReader.isInputActive(ControllerInputEnums.MOVE_UP_SLOW)
-                        || controllerInputReader.isInputActive(ControllerInputEnums.MOVE_UP_QUICK)) {
+                if (controllerInputReader.isInputActive(ControllerInputEnums.MOVE_LEFT_QUICK)
+                        || controllerInputReader.isInputActive(ControllerInputEnums.MOVE_LEFT_SLOW)) {
+                    //Gaat naar links
                     // Menu option upwards
                     previousMenuColumn();
                     needsUpdate = true;
                     lastMoveTime = currentTime;
-                } else if (controllerInputReader.isInputActive(ControllerInputEnums.MOVE_DOWN_SLOW)
-                        || controllerInputReader.isInputActive(ControllerInputEnums.MOVE_DOWN_QUICK)) {
+                } else if (controllerInputReader.isInputActive(ControllerInputEnums.MOVE_RIGHT_SLOW)
+                        || controllerInputReader.isInputActive(ControllerInputEnums.MOVE_RIGHT_QUICK)) {
                     // Menu option downwards
+                    //Gaat naar rechts
                     nextMenuColumn();
                     needsUpdate = true;
                     lastMoveTime = currentTime;

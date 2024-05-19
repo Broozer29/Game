@@ -45,26 +45,27 @@ public class Bulldozer extends Enemy {
         // Calculate the angle increment based on how many bombs you want
         double angleIncrement = 2 * Math.PI / 8; // 8 is the total number of bombs
 
+        int radius = 85;
         for (int iterator = 0; iterator < 8; iterator++) {
             // 2. Find the next angle
             double nextAngle = angleIncrement * iterator;
 
             // 3. Place the new drone
-            int radius = 75;
             int x = (int) (meanX + Math.cos(nextAngle) * radius);
             int y = (int) (meanY + Math.sin(nextAngle) * radius);
 
             PathFinder pathFinder = new OrbitPathFinder(this, radius, 300, nextAngle);
             Enemy alienBomb = getEnemy(x, y, pathFinder);
             alienBomb.setOwnerOrCreator(this);
-            alienBomb.setAllowedVisualsToRotate(false);
+//            alienBomb.rotateGameObjectTowards(this.movementConfiguration.getRotation(), false);
+//            alienBomb.setAllowedVisualsToRotate(false);
             alienBomb.getMovementConfiguration().setLastKnownTargetX(this.getCenterXCoordinate());
             alienBomb.getMovementConfiguration().setLastKnownTargetY(this.getCenterYCoordinate());
             this.objectOrbitingThis.add(alienBomb);
             EnemyManager.getInstance().addEnemy(alienBomb);
         }
 
-        OrbitingObjectsFormatter.reformatOrbitingObjects(this);
+        OrbitingObjectsFormatter.reformatOrbitingObjects(this, radius);
     }
 
     private Enemy getEnemy (int x, int y, PathFinder pathFinder) {
@@ -90,12 +91,15 @@ public class Bulldozer extends Enemy {
         movementConfiguration.setXMovementSpeed(1);
         movementConfiguration.setYMovementSpeed(1);
         movementConfiguration.setPathFinder(pathFinder);
-        movementConfiguration.setRotation(Direction.LEFT);
-        movementConfiguration.setPatternSize(MovementPatternSize.SMALL);
 
         movementConfiguration.initDefaultSettingsForSpecializedPathFinders();
+        movementConfiguration.setRotation(Direction.UP);
+        movementConfiguration.setPatternSize(MovementPatternSize.SMALL);
 
         Enemy alienBomb = new AlienBomb(spriteConfiguration, enemyConfiguration, movementConfiguration);
+//        alienBomb.setAllowedVisualsToRotate(true);
+//        alienBomb.rotateGameObjectTowards(Direction.UP, true);
+//        alienBomb.setAllowedVisualsToRotate(false);
         return alienBomb;
     }
 

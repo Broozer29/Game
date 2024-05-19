@@ -45,7 +45,7 @@ public class SpaceShipRegularGun {
             int yMovementSpeed = 5;
 
             ImageEnums visualImage = playerStats.getPlayerMissileImage();
-            ImageEnums impactType = playerStats.getPlayerMissileImpactImage();
+            ImageEnums impactType = playerAttackType.getDeathOrExplosionImageEnum();
             float scale = playerStats.getMissileScale();
             PathFinder pathFinder = new RegularPathFinder();
 

@@ -49,7 +49,7 @@ public class Scout extends Enemy {
 
     private void shootMissile () {
         SpriteConfiguration spriteConfiguration = MissileCreator.getInstance().createMissileSpriteConfig(xCoordinate, yCoordinate, ImageEnums.LaserBullet
-                , this.scale);
+                , this.scale / 2);
 
 
         //Create missile movement attributes and create a movement configuration

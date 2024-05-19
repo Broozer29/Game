@@ -7,7 +7,7 @@ import game.objects.friendlies.FriendlyObject;
 import game.objects.player.PlayerManager;
 
 public class OrbitingObjectsFormatter {
-    public static void reformatOrbitingObjects (GameObject gameObject) {
+    public static void reformatOrbitingObjects (GameObject gameObject, int radius) {
         double meanX = gameObject.getCenterXCoordinate();
         double meanY = gameObject.getCenterYCoordinate();
 
@@ -16,7 +16,6 @@ public class OrbitingObjectsFormatter {
         double angleIncrement = 2 * Math.PI / numberOfDrones;
 
         int totalFrames = 300; // You may replace this with an appropriate value
-        int radius = 75; // Example radius
 
         int iterator = 0;
         for (GameObject object : gameObject.getObjectOrbitingThis()) {

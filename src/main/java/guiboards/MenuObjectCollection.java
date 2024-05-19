@@ -171,8 +171,8 @@ public class MenuObjectCollection {
                     AudioManager.getInstance().addAudio(AudioEnums.Power_Up_Acquired);
                     purchaseItemInShop();
                     lockItemInShop();
-                } else {
-                    AudioManager.getInstance().addAudio(AudioEnums.Firewall);
+                } else if(menuItemInformation.isAvailable() && !menuItemInformation.canAfford()){
+                    AudioManager.getInstance().addAudio(AudioEnums.NotEnoughMinerals);
                 }
                 break;
             case SelectSongDifficulty:

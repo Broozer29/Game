@@ -102,50 +102,38 @@ public class LevelManager {
 
 
         gameState.setGameState(GameStatusEnums.Playing);
-        DirectorManager.getInstance().setEnabled(true);
-
+//        DirectorManager.getInstance().setEnabled(true);
 //        DirectorManager.getInstance().createMonsterCards();
 //        DirectorManager.getInstance().createDirectors();
 
-        Enemy enemy = EnemyCreator.createEnemy(EnemyEnums.Scout, 800, 100, Direction.LEFT, 1f
+        Enemy enemy = EnemyCreator.createEnemy(EnemyEnums.Needler, 800, 100, Direction.LEFT, 1f
                 , 2, 2, MovementPatternSize.SMALL, false);
 //        enemy.getMovementConfiguration().setBoardBlockToHoverIn(5);
         enemy.getMovementConfiguration().setPathFinder(new RegularPathFinder());
-//        enemy.setAllowedVisualsToRotate(false);
-
-        enemy.getMovementConfiguration().setXMovementSpeed(1);
-        enemy.getMovementConfiguration().setYMovementSpeed(1);
-
+        enemy.setAllowedVisualsToRotate(false);
+        enemy.getMovementConfiguration().setXMovementSpeed(0);
+        enemy.getMovementConfiguration().setYMovementSpeed(0);
         EnemyManager.getInstance().addEnemy(enemy);
 
 
-//        Enemy enemy2 = EnemyCreator.createEnemy(EnemyEnums.Energizer, 500, 100, Direction.LEFT, 1
-//                , 2, 2, MovementPatternSize.SMALL, false);
-//        enemy2.getMovementConfiguration().setPathFinder(new RegularPathFinder());
-//        enemy2.getMovementConfiguration().setXMovementSpeed(0);
-//        enemy2.getMovementConfiguration().setYMovementSpeed(0);
-//        enemy2.setAllowedVisualsToRotate(false);
-
-//        enemy2.setScale(1f);
-//        EnemyManager.getInstance().addEnemy(enemy2);
-
-
-//        Enemy enemy3 = EnemyCreator.createEnemy(EnemyEnums.Seeker, 700, 600, Direction.LEFT, 1
-//                , 2, 2, MovementPatternSize.SMALL, false);
+        Enemy enemy2 = EnemyCreator.createEnemy(EnemyEnums.Needler, 700, 100, Direction.LEFT, 1
+                , 2, 2, MovementPatternSize.SMALL, false);
+        enemy2.getMovementConfiguration().setPathFinder(new RegularPathFinder());
+        enemy2.setAllowedVisualsToRotate(false);
+        enemy2.getMovementConfiguration().setXMovementSpeed(0);
+        enemy2.getMovementConfiguration().setYMovementSpeed(0);
+        EnemyManager.getInstance().addEnemy(enemy2);
 //
+//
+//        Enemy enemy3 = EnemyCreator.createEnemy(EnemyEnums.Scout, 900, 100, Direction.LEFT, 1
+//                , 2, 2, MovementPatternSize.SMALL, false);
+//        enemy3.getMovementConfiguration().setPathFinder(new RegularPathFinder());
+//        enemy3.getMovementConfiguration().setXMovementSpeed(0);
+//        enemy3.getMovementConfiguration().setYMovementSpeed(0);
+//        enemy3.setAllowedVisualsToRotate(false);
 //        EnemyManager.getInstance().addEnemy(enemy3);
-//
-//        Enemy enemy4 = EnemyCreator.createEnemy(EnemyEnums.Bomba, 600, 600, Direction.LEFT, 1
-//                , 0, 0, MovementPatternSize.SMALL, false);
-//        EnemyManager.getInstance().addEnemy(enemy4);
-//
-//        Enemy enemy5 = EnemyCreator.createEnemy(EnemyEnums.Energizer, 500, 600, Direction.LEFT_UP, 1
-//                , 0, 0, MovementPatternSize.SMALL, false);
-//        EnemyManager.getInstance().addEnemy(enemy5);
-//
-//        Enemy enemy6 = EnemyCreator.createEnemy(EnemyEnums.Bulldozer, 400, 600, Direction.LEFT_DOWN, 1
-//                , 0, 0, MovementPatternSize.SMALL, false);
-//        EnemyManager.getInstance().addEnemy(enemy6);
+
+
     }
 
     // Called by CustomTimers when they have to spawn an enemy

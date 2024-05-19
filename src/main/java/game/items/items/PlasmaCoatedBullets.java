@@ -2,11 +2,13 @@ package game.items.items;
 
 import VisualAndAudioData.image.ImageEnums;
 import game.items.Item;
+import game.items.effects.EffectIdentifiers;
 import game.items.enums.ItemApplicationEnum;
 import game.items.enums.ItemEnums;
 import game.items.effects.EffectActivationTypes;
 import game.objects.GameObject;
 import game.items.effects.effecttypes.DamageOverTime;
+import game.objects.player.PlayerStats;
 import visualobjects.SpriteAnimation;
 import visualobjects.SpriteConfigurations.SpriteAnimationConfiguration;
 import visualobjects.SpriteConfigurations.SpriteConfiguration;
@@ -17,7 +19,7 @@ public class PlasmaCoatedBullets extends Item {
     private double duration;
 
     public PlasmaCoatedBullets () {
-        super(ItemEnums.PlasmaCoatedBullets, 1, EffectActivationTypes.DamageOverTime, ItemApplicationEnum.AfterCollision);
+        super(ItemEnums.PlasmaCoatedBullets, 1, EffectActivationTypes.CheckEveryGameTick, ItemApplicationEnum.AfterCollision);
         calculateDuration();
         calculateBurningDamage();
     }
@@ -29,7 +31,8 @@ public class PlasmaCoatedBullets extends Item {
     }
 
     private void calculateBurningDamage () {
-        burningDamage = this.quantity / 2f;
+        burningDamage =  PlayerStats.getInstance().getBaseDamage() * 0.1f * this.quantity;
+       ;
     }
 
     private void calculateDuration () {
@@ -48,7 +51,7 @@ public class PlasmaCoatedBullets extends Item {
         SpriteAnimationConfiguration spriteAnimationConfiguration = new SpriteAnimationConfiguration(spriteConfiguration, 3, true);
         SpriteAnimation spriteAnimation = new SpriteAnimation(spriteAnimationConfiguration);
 
-        DamageOverTime burningEffect = new DamageOverTime(burningDamage, duration, spriteAnimation);
+        DamageOverTime burningEffect = new DamageOverTime(0.01f, duration, spriteAnimation, EffectIdentifiers.PlasmaCoatedBulletsBurning);
 //        burningEffect.getAnimation().setCenterCoordinates(gameObject.getCenterXCoordinate(), gameObject.getCenterYCoordinate());
         gameObject.addEffect(burningEffect);
     }

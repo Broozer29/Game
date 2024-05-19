@@ -59,50 +59,37 @@ public class Director {
             updateAffordableMonsterList();
             attemptSpawn();
             lastSpawnTime = secondsPassed;
-            if (directorType == DirectorType.Instant) {
+            if (directorType == DirectorType.Instant && credits < 50) {
                 this.active = false;
             }
         }
     }
 
     private void attemptSpawn() {
-        int loopCount = 0;
-
-        while (credits > minimumMonsterCost() && !affordableMonsters.isEmpty()) {
-            // Randomly select a formation type
-            loopCount++;
+        if (credits > minimumMonsterCost() && !affordableMonsters.isEmpty()) {
             SpawnFormationEnums formationType = SpawnFormationEnums.getRandomFormation();
-            MonsterCard selectedCard = selectMonsterCard(affordableMonsters);
+            MonsterCard selectedCard = selectMonsterCard();
 
             if (selectedCard != null) {
                 EnemyEnums enemyType = selectedCard.getEnemyType();
-
-                // Calculate the total credit cost of the formation
                 float totalFormationCost = calculateFormationCost(formationType, enemyType);
 
                 if (credits >= totalFormationCost) {
-                    // If enough credits, spawn formation
                     spawnFormation(formationType, enemyType);
                     credits -= totalFormationCost;
                 } else if (credits >= selectedCard.getCreditCost()) {
-                    // Otherwise, attempt to spawn a singular enemy
                     spawnEnemy(selectedCard.getEnemyType());
                     credits -= selectedCard.getCreditCost();
                 }
-            } else {
-                break;
             }
-
-            if(loopCount > 30){
-                break;
-            }
-        }
-
-        if (credits > minimumMonsterCost()) {
-            spawnMostExpensiveAffordableMonster();
         }
 
         resetSpawnTimer();
+    }
+
+    private void updateAffordableMonsterList() {
+        float totalDifficultyCoefficient = GameStateInfo.getInstance().getDifficultyCoefficient();
+        affordableMonsters = adjustWeights(availableCards, totalDifficultyCoefficient);
     }
 
     private void spawnMostExpensiveAffordableMonster() {
@@ -138,32 +125,12 @@ public class Director {
         return count;
     }
 
-    private void updateAffordableMonsterList() {
-        // Update the list of monsters that are not considered too cheap
-        affordableMonsters = availableCards.stream()
-                .filter(card -> !isMonsterTooCheap(card))
-                .collect(Collectors.toList());
 
-        if (affordableMonsters.isEmpty()) {
-            // If all monsters are deemed too cheap, add the three most expensive ones
-            List<MonsterCard> topThreeExpensiveCards = availableCards.stream()
-                    .sorted(Comparator.comparing(MonsterCard::getCreditCost).reversed())
-                    .limit(3) // Limit to the top three
-                    .toList();
-
-            affordableMonsters.addAll(topThreeExpensiveCards);
-        }
-//        for(MonsterCard monsterCard : affordableMonsters){
-//            System.out.println(monsterCard.getEnemyType());
-//        }
-    }
 
     private boolean isMonsterTooCheap(MonsterCard card) {
         // Define a threshold below which a monster is considered too cheap
         float tooCheapThreshold = TOO_CHEAP_MULTIPLIER * card.getCreditCost();
 
-//        System.out.println("cheap threshold: " + tooCheapThreshold);
-//        System.out.println("20% of current credits: " + credits / 5);
         return (credits / 5) > tooCheapThreshold;
     }
 
@@ -182,11 +149,15 @@ public class Director {
                 .orElse(null);
     }
 
-    private boolean shouldAttemptSpawn(double timeInSeconds) {
+    private double spawnWindowDuration = 3.0; // seconds, adjust as needed
+
+    private boolean shouldAttemptSpawn(double currentTime) {
         if (directorType == DirectorType.Instant) {
             return true;
         } else {
-            return (lastSpawnTime + spawnInterval) <= timeInSeconds;
+            double spawnWindowStart = lastSpawnTime + spawnInterval;
+            double spawnWindowEnd = spawnWindowStart + spawnWindowDuration;
+            return currentTime >= spawnWindowStart && currentTime <= spawnWindowEnd;
         }
     }
 
@@ -197,9 +168,9 @@ public class Director {
         int xCoordinate = 0; // Will be ignored as random is true
         int yCoordinate = 0; // Will be ignored as random is true
         Direction direction = Direction.LEFT;
-        float scale = 1;
-        int xMovementSpeed = 2;
-        int yMovementSpeed = 2;
+        float scale = enemyType.getDefaultScale();
+        int xMovementSpeed = enemyType.getMovementSpeed();
+        int yMovementSpeed = enemyType.getMovementSpeed();
         int amountOfAttempts = 1;
 
         // Call LevelManager's spawnEnemy method
@@ -208,13 +179,16 @@ public class Director {
 
     private void spawnFormation(SpawnFormationEnums formationType, EnemyEnums enemyType) {
         Direction direction = Direction.LEFT;
-        float scale = 1.0f;
-        int xMovementSpeed = 2;
-        int yMovementSpeed = 2;
+        float scale = enemyType.getDefaultScale();
+        int xMovementSpeed = enemyType.getMovementSpeed();
+        int yMovementSpeed = enemyType.getMovementSpeed();
+
+        int formationWDistance = Math.round(enemyType.getFormationWidthDistance() * scale);
+        int formationHDistance = Math.round(enemyType.getFormationHeightDistance() * scale);
 
         EnemyFormation formation = formationCreator.createFormation(formationType,
-                enemyType.getFormationWidthDistance(),
-                enemyType.getFormationHeightDistance());
+                formationWDistance,
+                formationHDistance);
 
         int totalFormationWidth = (formation.getFormationWidth() * formation.getWidthDistance());
         int totalFormationHeight = (formation.getFormationHeight() * formation.getHeightDistance());
@@ -241,9 +215,10 @@ public class Director {
     }
 
 
-    public void resetSpawnTimer () {
+    public void resetSpawnTimer() {
         if (directorType != DirectorType.Instant) {
-            spawnInterval = calculateInitialSpawnInterval(directorType);
+            lastSpawnTime = GameStateInfo.getInstance().getGameSeconds();  // Capture the current time when resetting
+            spawnInterval = calculateInitialSpawnInterval(directorType);  // Recalculate the next interval
         }
     }
 
@@ -251,51 +226,50 @@ public class Director {
         this.credits += amount;
     }
 
-    private MonsterCard selectMonsterCard (List<MonsterCard> baseMonsterCards) {
-        List<MonsterCard> adjustedCards = adjustWeights(baseMonsterCards);
-        return weightedRandomSelection(adjustedCards);
+    private MonsterCard selectMonsterCard() {
+        if (!affordableMonsters.isEmpty()) {
+//            for(MonsterCard card : affordableMonsters){
+//                System.out.println(card.getEnemyType() + " with weight: " + card.getWeight());
+//            }
+//            System.out.println("");
+            return weightedRandomSelection(affordableMonsters);
+        }
+        return null; // Return null if no affordable monsters are available
     }
-
-    private List<MonsterCard> adjustWeights (List<MonsterCard> baseMonsterCards) {
-        float totalDifficultyCoefficient = GameStateInfo.getInstance().getDifficultyCoefficient();
-
+    private List<MonsterCard> adjustWeights(List<MonsterCard> baseMonsterCards, float difficultyCoefficient) {
         // Adjust the weights based on difficulty coefficient
         return baseMonsterCards.stream().map(card -> {
-            float adjustedWeight = calculateAdjustedWeight(card, totalDifficultyCoefficient);
+            float adjustedWeight = calculateAdjustedWeight(card, difficultyCoefficient);
             return new MonsterCard(card.getEnemyType(), card.getCreditCost(), adjustedWeight);
         }).collect(Collectors.toList());
     }
 
-    private float calculateAdjustedWeight (MonsterCard card, float difficultyCoefficient) {
+
+    private float calculateAdjustedWeight(MonsterCard card, float difficultyCoefficient) {
         EnemyCategory category = card.getEnemyType().getEnemyCategory();
         float baseWeight = card.getWeight();
-
-        // Constants to control the rate of change
-        float basicDecayRate = 0.9f; // Controls how quickly the weight of basic enemies decreases
-        float minibossGrowthRate = 0.2f; // Controls the growth rate for minibosses
-        float bossGrowthStart = 1.5f; // Point at which bosses start getting a non-zero weight
-        float bossGrowthRate = 0.2f;
+        // Adjust these values to finely control spawn behavior
+        float basicIncreaseRate = 2f; // Increase basic enemy weight by a significant factor early on
+        float decayRateForBasicEnemies = 0.2f; // Slower decay for Basic enemies (less aggressive than before)
+        float growthRateForStrongEnemies = 0.1f; // Slower growth for stronger enemies
 
         switch (category) {
             case Basic:
-                // Decrease weight for Basic enemies as difficulty increases
-                return (float) Math.max(baseWeight * (1 - difficultyCoefficient * basicDecayRate), 0.05);
+                // Increase weight significantly for Basic enemies initially and reduce slowly
+                return baseWeight * (basicIncreaseRate - difficultyCoefficient * decayRateForBasicEnemies);
             case Mercenary:
-                // Increase weight for MiniBoss enemies up to a point, then decrease
-                return (float) (baseWeight * (1 + Math.sin(difficultyCoefficient * minibossGrowthRate)));
             case Boss:
-                // Bosses start getting weight past a certain difficulty point
-                if (difficultyCoefficient > bossGrowthStart) {
-                    return (float) (baseWeight * (1 + Math.sin(difficultyCoefficient * bossGrowthRate)));
-                } else {
-                    return 0;
-                }
+                // Gradually increase weight for stronger enemies as difficulty increases
+                return baseWeight * (1 + difficultyCoefficient * growthRateForStrongEnemies);
             default:
-                return baseWeight;
+                return baseWeight;  // Default case for any uncategorized types
         }
     }
 
-    private MonsterCard weightedRandomSelection (List<MonsterCard> adjustedCards) {
+
+
+
+    private MonsterCard weightedRandomSelection(List<MonsterCard> adjustedCards) {
         double totalWeight = adjustedCards.stream().mapToDouble(MonsterCard::getWeight).sum();
         double randomValue = totalWeight * random.nextDouble();
 
@@ -307,12 +281,10 @@ public class Director {
             }
         }
 
-        return null; // Fallback in case no card is selected
+        return null; // Implement a fallback in case no card is selected
     }
 
     public boolean isActive () {
         return this.active;
     }
-
-
 }

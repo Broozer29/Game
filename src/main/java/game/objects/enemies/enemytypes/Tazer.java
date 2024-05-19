@@ -90,7 +90,7 @@ public class Tazer extends Enemy {
         //Create missile movement attributes and create a movement configuration
         MissileTypeEnums missileType = MissileTypeEnums.TazerProjectile;
         BouncingPathFinder missilePathFinder = new BouncingPathFinder();
-        missilePathFinder.setMaxBounces(4);
+        missilePathFinder.setMaxBounces(1);
         MovementPatternSize movementPatternSize = MovementPatternSize.SMALL;
         MovementConfiguration movementConfiguration = MissileCreator.getInstance().createMissileMovementConfig(
                 2,2, missilePathFinder, movementPatternSize, randomDirection
@@ -116,7 +116,7 @@ public class Tazer extends Enemy {
 //        missile.getDestructionAnimation().setFrameDelay(1);
 //        missile.getDestructionAnimation().setAnimationScale(2f);
         missile.setOwnerOrCreator(this);
-        missile.getAnimation().setAnimationScale(0.5f);
+        missile.getAnimation().setAnimationScale(1f);
         missile.setAllowedVisualsToRotate(false);
         missile.setCenterCoordinates(chargingUpAttackAnimation.getCenterXCoordinate(), chargingUpAttackAnimation.getCenterYCoordinate());
         missile.resetMovementPath();

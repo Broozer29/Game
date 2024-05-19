@@ -18,6 +18,7 @@ public class ControllerInputReader {
 	public void pollController() {
 		controllerManager.update(); // Make sure to update the state of the controllers
 		ControllerIndex currController = controllerManager.getControllerIndex(controllerIndex);
+//		testControllerInputs();
 
 		try {
 			// Example for mapping left stick horizontal axis
@@ -39,9 +40,39 @@ public class ControllerInputReader {
 			inputState.put(ControllerInputEnums.FIRE, currController.isButtonPressed(ControllerButton.A)); // Assuming 'A' button maps to FIRE
 			inputState.put(ControllerInputEnums.SPECIAL_ATTACK, currController.isButtonPressed(ControllerButton.B)); // Assuming 'B' button maps to SPECIAL_ATTACK
 
+			//Cannot be tested with the controller I own, I leave it in here because theoretically it should work without problems
+			inputState.put(ControllerInputEnums.MOVE_UP_QUICK, currController.isButtonPressed(ControllerButton.DPAD_UP));
+			inputState.put(ControllerInputEnums.MOVE_DOWN_QUICK, currController.isButtonPressed(ControllerButton.DPAD_DOWN));
+			inputState.put(ControllerInputEnums.MOVE_LEFT_QUICK, currController.isButtonPressed(ControllerButton.DPAD_LEFT));
+			inputState.put(ControllerInputEnums.MOVE_RIGHT_QUICK, currController.isButtonPressed(ControllerButton.DPAD_RIGHT));
+
 			// Additional mappings as per your ControllerInput enum
 		} catch (ControllerUnpluggedException e) {
 			// Handle disconnected controller
+			System.out.println("Controller disconnected");
+		}
+	}
+
+	private void testControllerInputs() {
+		controllerManager.update();
+		ControllerIndex currController = controllerManager.getControllerIndex(controllerIndex);
+
+		try {
+			// Check all buttons to see if they are pressed
+			for (ControllerButton button : ControllerButton.values()) {
+				if (currController.isButtonPressed(button)) {
+					System.out.println(button + " pressed");
+				}
+			}
+
+			// Check all axes for their current state
+			for (ControllerAxis axis : ControllerAxis.values()) {
+				float axisValue = currController.getAxisState(axis);
+				if (axisValue != 0) { // You might want to check a deadzone instead of zero
+					System.out.println(axis + " axis: " + axisValue);
+				}
+			}
+		} catch (ControllerUnpluggedException e) {
 			System.out.println("Controller disconnected");
 		}
 	}

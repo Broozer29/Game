@@ -1,6 +1,7 @@
 package game.items.effects.effecttypes;
 
 import game.items.effects.EffectActivationTypes;
+import game.items.effects.EffectIdentifiers;
 import game.items.effects.EffectInterface;
 import game.objects.GameObject;
 import game.objects.player.PlayerManager;
@@ -10,13 +11,15 @@ public class HealPlayerOnDeath implements EffectInterface {
 
     private boolean healShield;
     private float healAmount;
+    private EffectIdentifiers effectIdentifier;
 
     private EffectActivationTypes effectActivationType;
 
-    public HealPlayerOnDeath (boolean healShield, float healAmount, EffectActivationTypes effectActivationType) {
+    public HealPlayerOnDeath (boolean healShield, float healAmount, EffectActivationTypes effectActivationType, EffectIdentifiers effectIdentifier) {
         this.healAmount = healAmount;
         this.healShield = healShield;
         this.effectActivationType = effectActivationType;
+        this.effectIdentifier = effectIdentifier;
     }
 
 
@@ -60,5 +63,10 @@ public class HealPlayerOnDeath implements EffectInterface {
     public EffectInterface copy () {
         //Shouldn't be used
         return null;
+    }
+
+    @Override
+    public EffectIdentifiers getEffectIdentifier () {
+        return effectIdentifier;
     }
 }
