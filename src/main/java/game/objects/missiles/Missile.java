@@ -2,9 +2,8 @@ package game.objects.missiles;
 
 import game.managers.AnimationManager;
 import game.movement.MovementConfiguration;
-import game.movement.pathfinders.HomingPathFinder;
-import game.movement.pathfinders.PathFinder;
 import game.objects.GameObject;
+import game.objects.missiles.missiletypes.Rocket1;
 import visualobjects.SpriteConfigurations.SpriteAnimationConfiguration;
 import visualobjects.SpriteConfigurations.SpriteConfiguration;
 import visualobjects.SpriteAnimation;
@@ -14,7 +13,7 @@ import java.util.List;
 
 public class Missile extends GameObject {
 
-    protected List<GameObject> collidedEnemies;
+    protected List<GameObject> collidedObjects;
     protected MissileTypeEnums missileType;
     protected boolean destroysMissiles;
     protected boolean piercesThroughObjects;
@@ -48,7 +47,7 @@ public class Missile extends GameObject {
         this.boxCollision = missileConfiguration.isBoxCollision();
         this.piercesThroughObjects = missileConfiguration.isPiercesMissiles();
         this.amountOfPiercesLeft = missileConfiguration.getAmountOfPierces();
-        this.collidedEnemies = new ArrayList<>();
+        this.collidedObjects = new ArrayList<>();
 
         if (missileConfiguration.getDestructionType() != null) {
             SpriteAnimationConfiguration destructionAnimation = new SpriteAnimationConfiguration(spriteConfiguration, 2, false);
@@ -107,13 +106,13 @@ public class Missile extends GameObject {
     }
 
     public void addCollidedObject (GameObject object) {
-        if (!this.collidedEnemies.contains(object)) {
-            this.collidedEnemies.add(object);
+        if (!this.collidedObjects.contains(object)) {
+            this.collidedObjects.add(object);
         }
     }
 
     public boolean collidedWithObject(GameObject object){
-        return collidedEnemies.contains(object);
+        return collidedObjects.contains(object);
     }
 
     public void destroyMissile () {
@@ -124,11 +123,24 @@ public class Missile extends GameObject {
         }
     }
 
-    private void centerDestructionAnimation () {
-        if (this.getAnimation() != null) {
-            this.getDestructionAnimation().setOriginCoordinates(this.getAnimation().getCenterXCoordinate(), this.getAnimation().getCenterYCoordinate());
+    public void handleCollision(GameObject collidedObject){
+        applyDamageModification(collidedObject); // Adjust damage based on any modifiers.
+
+        // Handle different types of missiles
+        if (this instanceof Rocket1) {
+            missileAction();
+            destroyMissile();
         } else {
-            this.getDestructionAnimation().setOriginCoordinates(this.getCenterXCoordinate(), this.getCenterYCoordinate());
+            if (piercesThroughObjects && amountOfPiercesLeft > 0 && !collidedObjects.contains(collidedObject)) {
+                dealDamageToGameObject(collidedObject);
+                addCollidedObject(collidedObject);
+                amountOfPiercesLeft--;
+            } else if (!piercesThroughObjects || amountOfPiercesLeft <= 0 && !collidedObjects.contains(collidedObject)) {
+                dealDamageToGameObject(collidedObject);
+                destroyMissile();
+            }
         }
     }
+
+
 }

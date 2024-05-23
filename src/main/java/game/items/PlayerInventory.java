@@ -5,6 +5,7 @@ import game.items.enums.ItemApplicationEnum;
 import game.items.enums.ItemEnums;
 import game.items.items.*;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,9 +15,9 @@ public class PlayerInventory {
     private static PlayerInventory instance = new PlayerInventory();
     private Map<ItemEnums, Item> items = new HashMap<>();
     private float cashMoney = 5000;
-
+    private List<String> blackListedOnHitEffectActivatorObjects = Arrays.asList(new String[]{"Plasma Launcher Missile", "Drone Missile"});
     private PlayerInventory () {
-//        addItem(ItemEnums.BarrierSuperSizer);
+        addItem(ItemEnums.DrillerModule);
 //        addItem(ItemEnums.StickyDynamite);
     }
 
@@ -84,6 +85,8 @@ public class PlayerInventory {
                 return new CriticalOverloadCapacitor();
             case BarrierSuperSizer:
                 return new BarrierSupersizer();
+            case DrillerModule:
+                return new DrillerModule();
             default:
                 System.out.println("I tried to create: " + itemEnum + " but fell in default, did you forget to add it to the inventory creation?");
                 return null;
@@ -124,5 +127,9 @@ public class PlayerInventory {
 
     public void spendCashMoney(float amount){
         this.cashMoney -= amount;
+    }
+
+    public List<String> getBlackListedOnHitEffectActivatorObjects () {
+        return blackListedOnHitEffectActivatorObjects;
     }
 }

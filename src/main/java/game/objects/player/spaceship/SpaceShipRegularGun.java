@@ -64,12 +64,13 @@ public class SpaceShipRegularGun {
                               ImageEnums playerMissileImpactType, Direction direction, float missileScale, PathFinder missilePathFinder,
                               int xMovementspeed, int yMovementspeed, MissileTypeEnums attackType) {
 
-        SpriteConfiguration spriteConfiguration = MissileCreator.getInstance().createMissileSpriteConfig(xCoordinate, yCoordinate,
+        MissileCreator missileCreator1 = MissileCreator.getInstance();
+        SpriteConfiguration spriteConfiguration = missileCreator1.createMissileSpriteConfig(xCoordinate, yCoordinate,
                 playerMissileType, missileScale);
 
 
         MovementPatternSize movementPatternSize = MovementPatternSize.SMALL; //Hardcoded, should be dynamic somewhere? Idk not decided how i want to use this behaviour yet
-        MovementConfiguration movementConfiguration = MissileCreator.getInstance().createMissileMovementConfig(
+        MovementConfiguration movementConfiguration = missileCreator1.createMissileMovementConfig(
                 xMovementspeed, yMovementspeed, missilePathFinder, movementPatternSize, direction
         );
 
@@ -92,12 +93,16 @@ public class SpaceShipRegularGun {
             case Rocket1 -> damage = playerStats.getNormalAttackDamage() * 2f;
         }
 
-        MissileConfiguration missileConfiguration = MissileCreator.getInstance().createMissileConfiguration(attackType, maxHitPoints, maxShields,
+        MissileConfiguration missileConfiguration = missileCreator1.createMissileConfiguration(attackType, maxHitPoints, maxShields,
                 deathSound, damage, playerMissileImpactType, isFriendly, allowedToDealDamage, objectType, attackType.isBoxCollision());
 
-        Missile missile = MissileCreator.getInstance().createMissile(spriteConfiguration, missileConfiguration, movementConfiguration);
-        missile.setOwnerOrCreator(PlayerManager.getInstance().getSpaceship());
-        missile.setCenterCoordinates(missile.getCenterXCoordinate(), PlayerManager.getInstance().getSpaceship().getCenterYCoordinate());
+        PlayerStats instance = PlayerStats.getInstance();
+        missileConfiguration.setPiercesMissiles(instance.getPiercingMissilesAmount() > 0);
+        missileConfiguration.setAmountOfPierces(instance.getPiercingMissilesAmount());
+        Missile missile = missileCreator1.createMissile(spriteConfiguration, missileConfiguration, movementConfiguration);
+        SpaceShip spaceship = PlayerManager.getInstance().getSpaceship();
+        missile.setOwnerOrCreator(spaceship);
+        missile.setCenterCoordinates(missile.getCenterXCoordinate(), spaceship.getCenterYCoordinate());
         missile.resetMovementPath();
         this.missileManager.addExistingMissile(missile);
 

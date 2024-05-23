@@ -1,8 +1,12 @@
 package game.objects;
 
+import com.badlogic.gdx.Game;
 import game.gamestate.GameStateInfo;
+import game.items.Item;
 import game.items.PlayerInventory;
 import game.items.effects.EffectActivationTypes;
+import game.items.enums.ItemApplicationEnum;
+import game.items.enums.ItemEnums;
 import game.managers.AnimationManager;
 import game.movement.*;
 import game.movement.pathfinders.HomingPathFinder;
@@ -341,6 +345,35 @@ public class GameObject extends Sprite {
             activateOnDeathEffects();
             PlayerInventory.getInstance().gainCashMoney(this.cashMoneyWorth);
         }
+    }
+
+    public void applyEffectsWhenPlayerHitsEnemy (GameObject object) {
+        List<Item> onHitItems = PlayerInventory.getInstance().getItemsByApplicationMethod(ItemApplicationEnum.AfterCollision);
+        for (Item item : onHitItems) {
+            if (item.getItemName().equals(ItemEnums.PlasmaLauncher) &&
+                    PlayerInventory.getInstance().getBlackListedOnHitEffectActivatorObjects().contains(getObjectType())) {
+                continue;
+            }
+            item.applyEffectToObject(object);
+        }
+    }
+
+    public void applyDamageModification (GameObject target) {
+        for (Item item : PlayerInventory.getInstance().getItemsByApplicationMethod(ItemApplicationEnum.BeforeCollision)) {
+            item.modifyAttackValues(this, target);
+        }
+    }
+
+    public void centerDestructionAnimation () {
+        if (this.getAnimation() != null) {
+            this.getDestructionAnimation().setOriginCoordinates(this.getAnimation().getCenterXCoordinate(), this.getAnimation().getCenterYCoordinate());
+        } else {
+            this.getDestructionAnimation().setOriginCoordinates(this.getCenterXCoordinate(), this.getCenterYCoordinate());
+        }
+    }
+
+    public void dealDamageToGameObject(GameObject gameObject){
+        gameObject.takeDamage(getDamage());
     }
 
 

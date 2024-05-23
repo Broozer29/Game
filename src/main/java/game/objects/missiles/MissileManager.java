@@ -32,7 +32,6 @@ public class MissileManager {
     private CopyOnWriteArrayList<Missile> missiles = new CopyOnWriteArrayList<Missile>();
     private CopyOnWriteArrayList<SpecialAttack> specialAttacks = new CopyOnWriteArrayList<SpecialAttack>();
 
-    private List<String> blackListedOnHitEffectActivatorObjects = Arrays.asList(new String[]{"Plasma Launcher Missile", "Drone Missile"});
 
     private MissileManager () {
     }
@@ -159,10 +158,10 @@ public class MissileManager {
         boolean hasAppliedEffects = false;
         for (Enemy enemy : enemyManager.getEnemies()) {
             if (collisionDetector.detectCollision(enemy, specialAttack)) {
-                applyDamageModification(specialAttack, enemy);
-                enemy.takeDamage(specialAttack.getDamage());
+                specialAttack.applyDamageModification(enemy);
+                specialAttack.dealDamageToGameObject(enemy);
                 if (specialAttack.isAllowOnHitEffects() && specialAttack.canApplyEffectAgain()) {
-                    applyEffectsWhenPlayerHitsEnemy(enemy, specialAttack);
+                    specialAttack.applyEffectsWhenPlayerHitsEnemy(enemy);
                     hasAppliedEffects = true;
                 }
             }
@@ -191,11 +190,10 @@ public class MissileManager {
         for (Enemy enemy : enemyManager.getEnemies()) {
             if (collisionDetector.detectCollision(missile, enemy)) {
                 if (missile.getMissileType().equals(MissileTypeEnums.TazerProjectile)) {
-                    handleTazerProjectile(missile, enemy);
+                    ((TazerProjectile) missile).handleTazerMissile(missile, enemy);
                 } else { //It's a player missile
-                    applyDamageModification(missile, enemy);
-                    handleCollision(enemy, missile);
-                    applyEffectsWhenPlayerHitsEnemy(enemy, missile);
+                    missile.handleCollision(enemy);
+                    missile.applyEffectsWhenPlayerHitsEnemy(enemy);
                 }
 
             }
@@ -204,15 +202,14 @@ public class MissileManager {
 
 
     private void checkMissileCollisionWithPlayer (Missile missile) {
-        if (collisionDetector.detectCollision(missile, playerManager.getSpaceship())) {
-
+        SpaceShip spaceship = playerManager.getSpaceship();
+        if (collisionDetector.detectCollision(missile, spaceship)) {
             if (missile.getMissileType().equals(MissileTypeEnums.TazerProjectile)) {
-                handleTazerProjectile(missile, playerManager.getSpaceship());
+                ((TazerProjectile) missile).handleTazerMissile(missile, spaceship);
             }
-
-            playerManager.getSpaceship().takeDamage(missile.getDamage());
+            missile.dealDamageToGameObject(spaceship);
             applyEffectsWhenPlayerTakesDamage();
-            missile.destroyMissile();
+            missile.destroyMissile(); //Assume enemy projectiles always get destroyed on contact
         }
     }
 
@@ -243,39 +240,6 @@ public class MissileManager {
         }
     }
 
-    private void applyEffectsWhenPlayerHitsEnemy (Enemy enemy, GameObject source) {
-        List<Item> onHitItems = PlayerInventory.getInstance().getItemsByApplicationMethod(ItemApplicationEnum.AfterCollision);
-        for (Item item : onHitItems) {
-            if (item.getItemName().equals(ItemEnums.PlasmaLauncher) && blackListedOnHitEffectActivatorObjects.contains(source.getObjectType())) {
-                continue;
-            }
-            item.applyEffectToObject(enemy);
-        }
-    }
-
-    private void handleTazerProjectile (GameObject missile, GameObject target) {
-        if (missile instanceof TazerProjectile) {
-            ((TazerProjectile) missile).handleTazerMissile(missile, target);
-        }
-    }
-
-
-    private void handleCollision (Enemy enemy, Missile missile) {
-        if (missile instanceof Rocket1) {
-            missile.missileAction();
-            missile.destroyMissile();
-        } else {
-            enemy.takeDamage(missile.getDamage());
-            missile.destroyMissile();
-        }
-    }
-
-
-
-
-
-
-
     private void triggerMissileActions () {
         for (Missile missile : missiles) {
             missile.missileAction();
@@ -298,9 +262,5 @@ public class MissileManager {
         this.missiles.add(missile);
     }
 
-    private void applyDamageModification (GameObject attack, GameObject target) {
-        for (Item item : PlayerInventory.getInstance().getItemsByApplicationMethod(ItemApplicationEnum.BeforeCollision)) {
-            item.modifyAttackValues(attack, target);
-        }
-    }
+
 }

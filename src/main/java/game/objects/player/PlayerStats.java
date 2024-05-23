@@ -67,6 +67,7 @@ public class PlayerStats {
     private float maxOverloadingShieldMultiplier = 2.0f;
     private float overloadedShieldDiminishAmount;
     private float maxShieldMultiplier = 1.0f;
+    private int piercingMissilesAmount = 0;
 
 
 
@@ -79,13 +80,14 @@ public class PlayerStats {
 
 
     public void initDefaultSettings () {
-
+        piercingMissilesAmount = 0;
         bonusDamageMultiplier = 1f; //Otherwhise it's damage * 0 = 0
         // Health
         setMaxHitPoints(100);
         setMaxShieldMultiplier(1.0f);
         setMaxShieldHitPoints(100);
         setShieldRegenDelay(300);
+        setOverloadedShieldDiminishAmount(0.5f);
 
         // Movement speed
         setMovementSpeed(4);
@@ -94,10 +96,10 @@ public class PlayerStats {
         setSpecialAttackSpeed(1);
         setMaxSpecialAttackCharges(1);
 
+        //Modifiers/multipliers
         setCriticalStrikeDamageMultiplier(2.0f);
         setMaxOverloadingShieldMultiplier(2.0f);
 
-        setOverloadedShieldDiminishAmount(0.5f);
 
         //Level
         setCurrentLevel(1);
@@ -455,5 +457,17 @@ public class PlayerStats {
 
     public void addMaxShieldMultiplier(float maxShieldMultiplier) {
         this.maxShieldMultiplier += maxShieldMultiplier;
+    }
+
+    public int getPiercingMissilesAmount () {
+        return piercingMissilesAmount;
+    }
+
+    public void setPiercingMissilesAmount (int piercingMissilesAmount) {
+        this.piercingMissilesAmount = piercingMissilesAmount;
+    }
+
+    public void addPiercingMissilesAmount(int piercingMissilesAmount){
+        this.piercingMissilesAmount += piercingMissilesAmount;
     }
 }

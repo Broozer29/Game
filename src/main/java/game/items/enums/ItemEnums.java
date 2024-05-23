@@ -26,6 +26,7 @@ public enum ItemEnums {
     GuardianDrone(ItemRarityEnums.Legendary, ItemCategory.Offense, ImageEnums.Starcraft2_Seeker_Missile, "Guardian Drone"),
     CriticalOverloadCapacitor(ItemRarityEnums.Legendary, ItemCategory.Offense, ImageEnums.Starcraft2_Auto_Tracking, "Critical Overload Capacitor"),
     BarrierSuperSizer(ItemRarityEnums.Common, ItemCategory.Defense, ImageEnums.Starcraft2_Fire_Hardened_Shields, "Barrier Super Sizer"),
+    DrillerModule(ItemRarityEnums.Legendary, ItemCategory.Offense, ImageEnums.Starcraft2_Pulse_Laser, "Driller Module"),
     StickyDynamite(ItemRarityEnums.Common, ItemCategory.Offense, ImageEnums.StickyDynamite, "Sticky Dynamite");
 
 

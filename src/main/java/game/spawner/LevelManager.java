@@ -8,6 +8,7 @@ import game.UI.GameUIManager;
 import game.managers.ShopManager;
 import game.movement.Direction;
 import game.movement.pathfinderconfigs.MovementPatternSize;
+import game.movement.pathfinders.HoverPathFinder;
 import game.movement.pathfinders.RegularPathFinder;
 import game.objects.enemies.*;
 import game.objects.enemies.enums.EnemyEnums;
@@ -117,22 +118,22 @@ public class LevelManager {
         EnemyManager.getInstance().addEnemy(enemy);
 //
 //
-//        Enemy enemy2 = EnemyCreator.createEnemy(EnemyEnums.Energizer, 700, 100, Direction.LEFT, 1
-//                , 2, 2, MovementPatternSize.SMALL, false);
-//        enemy2.getMovementConfiguration().setPathFinder(new HoverPathFinder());
-////        enemy2.setAllowedVisualsToRotate(false);
-//        enemy2.getMovementConfiguration().setXMovementSpeed(1);
-//        enemy2.getMovementConfiguration().setYMovementSpeed(1);
-//        EnemyManager.getInstance().addEnemy(enemy2);
+        Enemy enemy2 = EnemyCreator.createEnemy(EnemyEnums.Energizer, 700, 100, Direction.LEFT, 1
+                , 2, 2, MovementPatternSize.SMALL, false);
+        enemy2.getMovementConfiguration().setPathFinder(new HoverPathFinder());
+//        enemy2.setAllowedVisualsToRotate(false);
+        enemy2.getMovementConfiguration().setXMovementSpeed(1);
+        enemy2.getMovementConfiguration().setYMovementSpeed(1);
+        EnemyManager.getInstance().addEnemy(enemy2);
 
 //
-//        Enemy enemy3 = EnemyCreator.createEnemy(EnemyEnums.Scout, 900, 100, Direction.LEFT, 1
-//                , 2, 2, MovementPatternSize.SMALL, false);
-//        enemy3.getMovementConfiguration().setPathFinder(new RegularPathFinder());
-//        enemy3.getMovementConfiguration().setXMovementSpeed(0);
-//        enemy3.getMovementConfiguration().setYMovementSpeed(0);
-//        enemy3.setAllowedVisualsToRotate(false);
-//        EnemyManager.getInstance().addEnemy(enemy3);
+        Enemy enemy3 = EnemyCreator.createEnemy(EnemyEnums.Scout, 500, 100, Direction.LEFT, 1
+                , 2, 2, MovementPatternSize.SMALL, false);
+        enemy3.getMovementConfiguration().setPathFinder(new RegularPathFinder());
+        enemy3.getMovementConfiguration().setXMovementSpeed(0);
+        enemy3.getMovementConfiguration().setYMovementSpeed(0);
+        enemy3.setAllowedVisualsToRotate(false);
+        EnemyManager.getInstance().addEnemy(enemy3);
 
 
     }
