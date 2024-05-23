@@ -4,6 +4,7 @@ import game.movement.Direction;
 import game.movement.MovementConfiguration;
 import game.movement.Point;
 import game.objects.GameObject;
+import game.objects.friendlies.Drones.Drone;
 
 public class OrbitPathFinderConfig implements PathFinderConfig {
 	private Point start;

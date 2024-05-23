@@ -13,10 +13,10 @@ import java.util.stream.Collectors;
 public class PlayerInventory {
     private static PlayerInventory instance = new PlayerInventory();
     private Map<ItemEnums, Item> items = new HashMap<>();
-    private float cashMoney = 0;
+    private float cashMoney = 5000;
 
     private PlayerInventory () {
-        addItem(ItemEnums.PlasmaCoatedBullets);
+//        addItem(ItemEnums.BarrierSuperSizer);
 //        addItem(ItemEnums.StickyDynamite);
     }
 
@@ -78,6 +78,12 @@ public class PlayerInventory {
                 return new Overclock();
             case RepulsionArmorPlate:
                 return new RepulsionArmorPlate();
+            case GuardianDrone:
+                return new GuardianDrones();
+            case CriticalOverloadCapacitor:
+                return new CriticalOverloadCapacitor();
+            case BarrierSuperSizer:
+                return new BarrierSupersizer();
             default:
                 System.out.println("I tried to create: " + itemEnum + " but fell in default, did you forget to add it to the inventory creation?");
                 return null;

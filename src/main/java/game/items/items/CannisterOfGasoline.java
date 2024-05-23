@@ -9,6 +9,7 @@ import game.items.enums.ItemEnums;
 import game.items.effects.EffectActivationTypes;
 import game.items.effects.effecttypes.DormentExplosion;
 import game.objects.GameObject;
+import game.objects.enemies.enemytypes.AlienBomb;
 
 public class CannisterOfGasoline extends Item {
 
@@ -45,6 +46,10 @@ public class CannisterOfGasoline extends Item {
 
     @Override
     public void applyEffectToObject (GameObject gameObject) {
+        if(gameObject instanceof AlienBomb){ //AlienBombs should be immune to this
+            return;
+        }
+
         DormentExplosion dormentExplosion = new DormentExplosion(explosionDamage, ImageEnums.GasolineExplosion,
                 DormentExplosionActivationMethods.OnDeath, false, EffectIdentifiers.GasolineDormantExplosion,
                 0, super.effectType, true);
@@ -53,9 +58,6 @@ public class CannisterOfGasoline extends Item {
         gameObject.addEffect(dormentExplosion);
     }
 
-    @Override
-    public void triggerEffectForOneTimeEffects (GameObject gameObject) {
-    }
 
 
 }

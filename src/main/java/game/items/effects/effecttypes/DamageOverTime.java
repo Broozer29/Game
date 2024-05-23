@@ -111,19 +111,10 @@ public class DamageOverTime implements EffectInterface {
         int enemyWidth = target.getWidth();
         int enemyHeight = target.getHeight();
 
-        if (target.getAnimation() != null) {
-            enemyWidth = target.getAnimation().getWidth();
-            enemyHeight = target.getAnimation().getHeight();
-        }
-
         // Center animation on the enemy first
         int animationCenterX = target.getCenterXCoordinate();
         int animationCenterY = target.getCenterYCoordinate();
 
-        if (target.getAnimation() != null) {
-            animationCenterX = target.getAnimation().getCenterXCoordinate();
-            animationCenterY = target.getAnimation().getCenterYCoordinate();
-        }
         animation.setCenterCoordinates(animationCenterX, animationCenterY);
 
         // Calculate max X offset to ensure animation stays within the enemy's width

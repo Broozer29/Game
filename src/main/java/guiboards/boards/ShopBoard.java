@@ -599,11 +599,14 @@ public class ShopBoard extends JPanel implements ActionListener {
                 }
             }
 
-            // Fire action
-            if (controllerInputReader.isInputActive(ControllerInputEnums.FIRE)) {
-                // Select menu option
-                selectMenuTile();
-                needsUpdate = true;
+            if (currentTime - lastMoveTime > MOVE_COOLDOWN) {
+                // Fire action
+                if (controllerInputReader.isInputActive(ControllerInputEnums.FIRE)) {
+                    // Select menu option
+                    selectMenuTile();
+                    needsUpdate = true;
+                    lastMoveTime = currentTime;
+                }
             }
 
             if (needsUpdate) {

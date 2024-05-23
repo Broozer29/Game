@@ -5,6 +5,7 @@ import java.io.IOException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
 import game.gamestate.GameStateInfo;
+import game.managers.OnScreenTextManager;
 import game.movement.Direction;
 import game.movement.MovementConfiguration;
 import game.movement.pathfinderconfigs.MovementPatternSize;

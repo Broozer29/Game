@@ -6,79 +6,76 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ControllerInputReader {
-	private ControllerManager controllerManager;
-	private int controllerIndex;
-	private Map<ControllerInputEnums, Boolean> inputState = new HashMap<>();
+    private ControllerManager controllerManager;
+    private int controllerIndex;
+    private Map<ControllerInputEnums, Boolean> inputState = new HashMap<>();
 
-	public ControllerInputReader(ControllerManager controllerManager, int controllerIndex) {
-		this.controllerManager = controllerManager;
-		this.controllerIndex = controllerIndex;
-	}
+    public ControllerInputReader (ControllerManager controllerManager, int controllerIndex) {
+        this.controllerManager = controllerManager;
+        this.controllerIndex = controllerIndex;
+    }
 
-	public void pollController() {
-		controllerManager.update(); // Make sure to update the state of the controllers
-		ControllerIndex currController = controllerManager.getControllerIndex(controllerIndex);
+    public void pollController () {
+        controllerManager.update(); // Make sure to update the state of the controllers
+        ControllerIndex currController = controllerManager.getControllerIndex(controllerIndex);
 //		testControllerInputs();
 
-		try {
-			// Example for mapping left stick horizontal axis
-			float xAxisValue = currController.getAxisState(ControllerAxis.LEFTX);
-			inputState.put(ControllerInputEnums.MOVE_LEFT_SLOW, xAxisValue > -0.5 && xAxisValue <= -0.2);
-			inputState.put(ControllerInputEnums.MOVE_LEFT_QUICK, xAxisValue <= -0.5);
-			inputState.put(ControllerInputEnums.MOVE_RIGHT_SLOW, xAxisValue >= 0.2 && xAxisValue < 0.5);
-			inputState.put(ControllerInputEnums.MOVE_RIGHT_QUICK, xAxisValue >= 0.5);
-
-			float yAxisValue = currController.getAxisState(ControllerAxis.LEFTY);
-			inputState.put(ControllerInputEnums.MOVE_DOWN_SLOW, yAxisValue > -0.5 && yAxisValue <= -0.2);
-			inputState.put(ControllerInputEnums.MOVE_DOWN_QUICK, yAxisValue <= -0.5);
-			inputState.put(ControllerInputEnums.MOVE_UP_SLOW, yAxisValue >= 0.2 && yAxisValue < 0.5);
-			inputState.put(ControllerInputEnums.MOVE_UP_QUICK, yAxisValue >= 0.5);
+        try {
+            // Example for mapping left stick horizontal axis
+            float xAxisValue = currController.getAxisState(ControllerAxis.LEFTX);
+            inputState.put(ControllerInputEnums.MOVE_LEFT_SLOW, xAxisValue > -0.5 && xAxisValue <= -0.2);
+            inputState.put(ControllerInputEnums.MOVE_LEFT_QUICK, xAxisValue <= -0.5);
+            inputState.put(ControllerInputEnums.MOVE_RIGHT_SLOW, xAxisValue >= 0.2 && xAxisValue < 0.5);
+            inputState.put(ControllerInputEnums.MOVE_RIGHT_QUICK, xAxisValue >= 0.5);
 
 
-			// Similar mappings for other inputs based on the enum
-			// Example for buttons
-			inputState.put(ControllerInputEnums.FIRE, currController.isButtonPressed(ControllerButton.A)); // Assuming 'A' button maps to FIRE
-			inputState.put(ControllerInputEnums.SPECIAL_ATTACK, currController.isButtonPressed(ControllerButton.B)); // Assuming 'B' button maps to SPECIAL_ATTACK
 
-			//Cannot be tested with the controller I own, I leave it in here because theoretically it should work without problems
-			inputState.put(ControllerInputEnums.MOVE_UP_QUICK, currController.isButtonPressed(ControllerButton.DPAD_UP));
-			inputState.put(ControllerInputEnums.MOVE_DOWN_QUICK, currController.isButtonPressed(ControllerButton.DPAD_DOWN));
-			inputState.put(ControllerInputEnums.MOVE_LEFT_QUICK, currController.isButtonPressed(ControllerButton.DPAD_LEFT));
-			inputState.put(ControllerInputEnums.MOVE_RIGHT_QUICK, currController.isButtonPressed(ControllerButton.DPAD_RIGHT));
+            float yAxisValue = currController.getAxisState(ControllerAxis.LEFTY);
+            inputState.put(ControllerInputEnums.MOVE_DOWN_SLOW, yAxisValue > -0.5 && yAxisValue <= -0.2);
+            inputState.put(ControllerInputEnums.MOVE_DOWN_QUICK, yAxisValue <= -0.5);
+            inputState.put(ControllerInputEnums.MOVE_UP_SLOW, yAxisValue >= 0.2 && yAxisValue < 0.5);
+            inputState.put(ControllerInputEnums.MOVE_UP_QUICK, yAxisValue >= 0.5);
 
-			// Additional mappings as per your ControllerInput enum
-		} catch (ControllerUnpluggedException e) {
-			// Handle disconnected controller
-			System.out.println("Controller disconnected");
-		}
-	}
+            // Similar mappings for other inputs based on the enum
+            // Example for buttons
+            inputState.put(ControllerInputEnums.FIRE, currController.isButtonPressed(ControllerButton.A)); // Assuming 'A' button maps to FIRE
+            inputState.put(ControllerInputEnums.SPECIAL_ATTACK, currController.isButtonPressed(ControllerButton.B)); // Assuming 'B' button maps to SPECIAL_ATTACK
 
-	private void testControllerInputs() {
-		controllerManager.update();
-		ControllerIndex currController = controllerManager.getControllerIndex(controllerIndex);
+            // Additional mappings as per your ControllerInput enum
+        } catch (ControllerUnpluggedException e) {
+            // Handle disconnected controller
+            System.out.println("Controller disconnected");
+        }
+    }
 
-		try {
-			// Check all buttons to see if they are pressed
-			for (ControllerButton button : ControllerButton.values()) {
-				if (currController.isButtonPressed(button)) {
-					System.out.println(button + " pressed");
-				}
-			}
+    private void testControllerInputs () {
+        controllerManager.update();
+        ControllerIndex currController = controllerManager.getControllerIndex(controllerIndex);
 
-			// Check all axes for their current state
-			for (ControllerAxis axis : ControllerAxis.values()) {
-				float axisValue = currController.getAxisState(axis);
-				if (axisValue != 0) { // You might want to check a deadzone instead of zero
-					System.out.println(axis + " axis: " + axisValue);
-				}
-			}
-		} catch (ControllerUnpluggedException e) {
-			System.out.println("Controller disconnected");
-		}
-	}
+        try {
+            // Check all buttons to see if they are pressed
+            for (ControllerButton button : ControllerButton.values()) {
+                if (currController.isButtonPressed(button)) {
+                    System.out.println(button + " pressed");
+                }
+            }
 
-	public boolean isInputActive(ControllerInputEnums input) {
-		return inputState.getOrDefault(input, false);
-	}
+            // Check all axes for their current state
+            for (ControllerAxis axis : ControllerAxis.values()) {
+                float axisValue = currController.getAxisState(axis);
+                if (axisValue != 0) { // You might want to check a deadzone instead of zero
+                    System.out.println(axis + " axis: " + axisValue);
+                }
+            }
+
+            System.out.println("");
+        } catch (ControllerUnpluggedException e) {
+            System.out.println("Controller disconnected");
+        }
+    }
+
+    public boolean isInputActive (ControllerInputEnums input) {
+        return inputState.getOrDefault(input, false);
+    }
 
 }

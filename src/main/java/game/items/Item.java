@@ -21,17 +21,12 @@ public abstract class Item implements ItemInterface{
 
     @Override
     public void applyEffectToObject (GameObject gameObject) {
-
-    }
-
-    @Override
-    public void triggerEffectForOneTimeEffects (GameObject gameObject) {
-
+        //Applies an effect to an object. It often implements the effect interface.
     }
 
     @Override
     public void modifyAttackValues (GameObject attack, GameObject target){
-
+        //Modifies the ATTACK damage done to TARGET
     };
 
     public ItemEnums getItemName () {

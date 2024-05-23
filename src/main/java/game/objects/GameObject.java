@@ -16,6 +16,7 @@ import game.items.effects.EffectInterface;
 import game.objects.enemies.Enemy;
 import game.objects.enemies.enemytypes.AlienBomb;
 import game.objects.enemies.enums.EnemyEnums;
+import game.objects.friendlies.Drones.Drone;
 import game.objects.missiles.missiletypes.GenericMissile;
 import game.objects.player.PlayerManager;
 import game.objects.player.PlayerStats;
@@ -64,7 +65,6 @@ public class GameObject extends Sprite {
     protected float bonusDamageMultiplier = 1.0f;
     protected boolean allowedToDealDamage; //Set to false for explosions that hit a target
     protected float attackSpeed;
-    protected int attackSpeedCurrentFrameCount;
     protected float attackSpeedBonusModifier;
 
     //Game logic variables
@@ -152,9 +152,9 @@ public class GameObject extends Sprite {
     }
 
     public void resetMovementPath () {
-//        if(movementConfiguration == null){
-//            return;
-//        }
+        if (movementConfiguration == null) {
+            return;
+        }
 
         movementConfiguration.resetMovementPath();
 
@@ -208,7 +208,7 @@ public class GameObject extends Sprite {
         }
     }
 
-    private EffectInterface getExistingEffect(EffectInterface effect) {
+    private EffectInterface getExistingEffect (EffectInterface effect) {
         return effects.stream()
                 .filter(e -> e.getEffectIdentifier().equals(effect.getEffectIdentifier()))
                 .findFirst()
@@ -376,8 +376,8 @@ public class GameObject extends Sprite {
         }
     }
 
-    private void toggleHealthBar(){
-        if(this.currentHitpoints < this.maxHitPoints){
+    private void toggleHealthBar () {
+        if (this.currentHitpoints < this.maxHitPoints) {
             showHealthBar = true;
         }
     }
@@ -422,7 +422,7 @@ public class GameObject extends Sprite {
 
     //*****************VISUAL ALTERATION*******************************
     public void rotateGameObjectTowards (Direction direction, boolean crop) {
-        if(this.rotationAngle == direction.toAngle()){
+        if (this.rotationAngle == direction.toAngle()) {
             return;
         }
         this.rotationAngle = direction.toAngle();
@@ -435,7 +435,7 @@ public class GameObject extends Sprite {
         }
 
         if (this.destructionAnimation != null) {
-            rotateGameObjectSpriteAnimations(animation, direction,crop);
+            rotateGameObjectSpriteAnimations(animation, direction, crop);
         }
         if (this.image != null) {
             this.image = ImageRotator.getInstance().rotate(originalImage, direction, crop);
@@ -464,7 +464,7 @@ public class GameObject extends Sprite {
 
     }
 
-    protected void rotateObjectTowardsAngle(double calculatedAngle, boolean crop){
+    protected void rotateObjectTowardsAngle (double calculatedAngle, boolean crop) {
         if (this.rotationAngle != calculatedAngle) {
             if (this.animation != null) {
                 this.animation.rotateAnimation(calculatedAngle, crop);
@@ -790,7 +790,6 @@ public class GameObject extends Sprite {
 
     @Override
     public void setCenterCoordinates (int newXCoordinate, int newYCoordinate) {
-
         if (this.image != null && this.animation == null) {
             this.xCoordinate = newXCoordinate - (this.width / 2) + xOffset;
             this.yCoordinate = newYCoordinate - (this.height / 2) + yOffset;
@@ -806,10 +805,7 @@ public class GameObject extends Sprite {
 
 
     public void rotateObject () {
-//        if (movementConfiguration.getPathFinder() instanceof HoverPathFinder || movementConfiguration.getCurrentPath().getWaypoints().isEmpty()
-//                || (movementConfiguration.getXMovementSpeed() == 0 && movementConfiguration.getYMovementSpeed() == 0)) {
-            handleRotation();
-//        }
+        handleRotation();
     }
 
     protected void handleRotation () {
@@ -825,7 +821,7 @@ public class GameObject extends Sprite {
                 return;
             }
 
-            if(enemyObject.getEnemyType().equals(EnemyEnums.Alien_Bomb)){
+            if (enemyObject.getEnemyType().equals(EnemyEnums.Alien_Bomb)) {
                 enemyObject.rotateGameObjectTowards(enemyObject.getOwnerOrCreator().getMovementConfiguration().getRotation(), true);
 //                enemyObject.setAllowedVisualsToRotate(false);
                 return;
@@ -930,5 +926,44 @@ public class GameObject extends Sprite {
 
     public void modifyAttackSpeedBonus (float bonusPercentage) {
         this.attackSpeedBonusModifier += bonusPercentage;
+    }
+
+//    public int getXCoordinate () {
+//        if (this.animation != null) {
+//            return this.animation.getXCoordinate();
+//        } else {
+//            return this.xCoordinate;
+//        }
+//    }
+
+
+    public int getCenterXCoordinate () {
+        if (this.animation != null) {
+            return animation.getXCoordinate() + xOffset + (animation.getWidth() / 2);
+        } else
+            return xCoordinate + xOffset + (width / 2);
+    }
+
+    public int getCenterYCoordinate () {
+        if (this.animation != null) {
+            return animation.getYCoordinate() + yOffset + (animation.getHeight() / 2);
+        } else
+            return yCoordinate + yOffset + (height / 2);
+    }
+
+
+    public int getWidth () {
+        if (this.animation != null) {
+            return animation.getWidth();
+        } else
+            return this.width;
+
+    }
+
+    public int getHeight () {
+        if (this.animation != null) {
+            return animation.getHeight();
+        } else
+            return this.height;
     }
 }

@@ -22,11 +22,10 @@ public class PlayerManager {
 	private static PlayerManager instance = new PlayerManager();
 	private AnimationManager animationManager = AnimationManager.getInstance();
 	private GameStateInfo gameState = GameStateInfo.getInstance();
-	private PlayerStats playerStats = PlayerStats.getInstance();
 	private SpaceShip spaceship;
 
 	private PlayerManager() {
-		initSpaceShip();
+//		initSpaceShip();
 	}
 
 	public static PlayerManager getInstance() {
@@ -52,6 +51,9 @@ public class PlayerManager {
 		spaceship.updateGameTick();
 	}
 	public SpaceShip getSpaceship() {
+		if(this.spaceship == null){
+			initSpaceShip();
+		}
 		return this.spaceship;
 	}
 

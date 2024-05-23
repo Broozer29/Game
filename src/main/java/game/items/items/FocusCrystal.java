@@ -34,8 +34,9 @@ public class FocusCrystal extends Item {
     @Override
     public void modifyAttackValues (GameObject attack, GameObject target) {
 
-        int shooterXCoordinate = attack.getOwnerOrCreator().getCenterXCoordinate();
-        int shooterYCoordinate = attack.getOwnerOrCreator().getCenterYCoordinate();
+        GameObject ownerOrCreator = attack.getOwnerOrCreator();
+        int shooterXCoordinate = ownerOrCreator.getCenterXCoordinate();
+        int shooterYCoordinate = ownerOrCreator.getCenterYCoordinate();
 
         int targetXCoordinate = target.getCenterXCoordinate();
         int targetYCoordinate = target.getCenterYCoordinate();

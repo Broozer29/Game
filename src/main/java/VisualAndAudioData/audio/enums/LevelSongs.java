@@ -33,26 +33,25 @@ public enum LevelSongs {
     Tonebox_Radium_Cloud_Highway(AudioEnums.Tonebox_Radium_Cloud_Highway, LevelDifficulty.Easy, LevelLength.Short, true),
     Viq_Rose(AudioEnums.Viq_Rose, LevelDifficulty.Easy, LevelLength.Short, true),
     Cannons_Fire_For_You(AudioEnums.Cannons_Fire_For_You, LevelDifficulty.Easy, LevelLength.Medium, true),
-    EMBRZ_Rain_On_My_Window(AudioEnums.EMBRZ_Rain_On_My_Window, LevelDifficulty.Easy, LevelLength.Medium, true),
+    EMBRZ_Rain_On_My_Window(AudioEnums.EMBRZ_Rain_On_My_Window, LevelDifficulty.Easy, LevelLength.Medium, false),
     Space_Sailors_Cosmos(AudioEnums.Space_Sailors_Cosmos, LevelDifficulty.Easy, LevelLength.Medium, true),
     Ghost_Data_Dark_Harvest(AudioEnums.Ghost_Data_Dark_Harvest, LevelDifficulty.Easy,  LevelLength.Long, true),
 
     //Difficulty: Hard
-    //Missing: Medium
     Apple_Holder_Remix(AudioEnums.Apple_Holder_Remix, LevelDifficulty.Hard, LevelLength.Short, true),
-    Deadmau5_Monophobia(AudioEnums.Deadmau5_Monophobia, LevelDifficulty.Hard, LevelLength.Short, true),
+    Deadmau5_Monophobia(AudioEnums.Deadmau5_Monophobia, LevelDifficulty.Hard, LevelLength.Short, false),
     Carpenter_Brut_Enraged(AudioEnums.Carpenter_Brut_Enraged, LevelDifficulty.Hard, LevelLength.Short, true), //Starts 1,5 minutes later
-    Johny_Theme(AudioEnums.Johny_Theme, LevelDifficulty.Hard, LevelLength.Medium, true),
+    Johny_Theme(AudioEnums.Johny_Theme, LevelDifficulty.Hard, LevelLength.Medium, false),
     Arksun_Arisen(AudioEnums.Arksun_Arisen, LevelDifficulty.Hard, LevelLength.Medium, true),
     Furi_Wisdom_Of_Rage(AudioEnums.Furi_Wisdowm_Of_Rage, LevelDifficulty.Hard, LevelLength.Medium, true),
-    Furi_My_Only_Chance(AudioEnums.Furi_My_Only_Chance, LevelDifficulty.Hard, LevelLength.Long, true),
+    Furi_My_Only_Chance(AudioEnums.Furi_My_Only_Chance, LevelDifficulty.Hard, LevelLength.Long, false),
     Furi_Make_This_Right(AudioEnums.Furi_Make_This_Right, LevelDifficulty.Hard, LevelLength.Long, true),
     Knight_Something_Memorable(AudioEnums.Knight_Something_Memorable, LevelDifficulty.Hard, LevelLength.Long, true),
     Carpenter_Brut_Youre_Mine(AudioEnums.Carpenter_Brut_Youre_Mine, LevelDifficulty.Hard, LevelLength.Long, true),
     Blood_On_The_Dancefloor(AudioEnums.Blood_On_The_Dancefloor, LevelDifficulty.Hard, LevelLength.Long, true),
     Ghost_Data_Gods_Of_The_Artificial(AudioEnums.Ghost_Data_Gods_Of_The_Artificial, LevelDifficulty.Hard, LevelLength.Long, true),
-    blackGummySuperHuman(AudioEnums.BlackGummy_SuperHuman, LevelDifficulty.Hard, LevelLength.Medium, true),
-    Maduk_Alone(AudioEnums.Maduk_Alone, LevelDifficulty.Hard, LevelLength.Medium, true);
+    blackGummySuperHuman(AudioEnums.BlackGummy_SuperHuman, LevelDifficulty.Hard, LevelLength.Medium, false),
+    Maduk_Alone(AudioEnums.Maduk_Alone, LevelDifficulty.Hard, LevelLength.Medium, false);
     ;
 
     private AudioEnums audioEnum;

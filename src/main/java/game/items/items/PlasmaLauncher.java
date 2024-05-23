@@ -27,8 +27,8 @@ public class PlasmaLauncher extends Item {
 
     public PlasmaLauncher () {
         super(ItemEnums.PlasmaLauncher, 1, EffectActivationTypes.AfterAHit, ItemApplicationEnum.AfterCollision);
-//        procChance = 0.2f;
-        procChance = 1f;
+        procChance = 0.2f;
+//        procChance = 1f;
         calculateDamage();
         rand = new Random();
     }

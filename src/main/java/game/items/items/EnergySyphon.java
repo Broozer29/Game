@@ -19,7 +19,7 @@ public class EnergySyphon extends Item {
 
 
     private void calculateBarrierAmount(){
-        this.barrierAmount = 10 * quantity;
+        this.barrierAmount = 25 * quantity;
     }
 
     public void increaseQuantityOfItem(int amount){
@@ -29,7 +29,8 @@ public class EnergySyphon extends Item {
 
     @Override
     public void applyEffectToObject (GameObject gameObject) {
-        HealPlayerOnDeath healPlayerOnDeath = new HealPlayerOnDeath(true, barrierAmount, EffectActivationTypes.CheckEveryGameTick, EffectIdentifiers.EnergySyphonHealPlayerOnDeath);
+        //Heals the player on the death of the object
+        HealPlayerOnDeath healPlayerOnDeath = new HealPlayerOnDeath(true, barrierAmount, EffectActivationTypes.OnObjectDeath, EffectIdentifiers.EnergySyphonHealPlayerOnDeath);
         gameObject.addEffect(healPlayerOnDeath);
     }
 

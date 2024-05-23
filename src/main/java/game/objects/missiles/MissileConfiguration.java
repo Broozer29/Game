@@ -26,6 +26,8 @@ public class MissileConfiguration {
     private String objectType;
     private boolean boxCollision;
     private boolean destroysMissiles;
+    private boolean piercesMissiles;
+    private int amountOfPierces;
 
     public MissileConfiguration (MissileTypeEnums missileType, int maxHitPoints, int maxShields, AudioEnums deathSound,
                                  float damage, ImageEnums destructionType, boolean isFriendly, boolean allowedToDealDamage,
@@ -41,6 +43,8 @@ public class MissileConfiguration {
         this.objectType = objectType;
         this.boxCollision = boxCollision;
         this.destroysMissiles = false; //Default setting
+        this.piercesMissiles = false;
+        this.amountOfPierces = 0;
     }
 
     public MissileConfiguration () {
@@ -138,5 +142,21 @@ public class MissileConfiguration {
 
     public void setDestroysMissiles (boolean destroysMissiles) {
         this.destroysMissiles = destroysMissiles;
+    }
+
+    public boolean isPiercesMissiles () {
+        return piercesMissiles;
+    }
+
+    public void setPiercesMissiles (boolean piercesMissiles) {
+        this.piercesMissiles = piercesMissiles;
+    }
+
+    public int getAmountOfPierces () {
+        return amountOfPierces;
+    }
+
+    public void setAmountOfPierces (int amountOfPierces) {
+        this.amountOfPierces = amountOfPierces;
     }
 }

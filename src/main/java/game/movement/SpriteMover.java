@@ -154,7 +154,7 @@ public class SpriteMover {
     private void handleBouncingPathFinder (GameObject gameObject, MovementConfiguration moveConfig) {
         // Bouncing specific logic
 
-        if(!((BouncingPathFinder) moveConfig.getPathFinder()).isAllowedToBounce()){
+        if (!((BouncingPathFinder) moveConfig.getPathFinder()).isAllowedToBounce()) {
             gameObject.setVisible(false);
         }
 
@@ -185,31 +185,8 @@ public class SpriteMover {
         //Otherwise rotate towards the instantiated rotation
         //Otherwise rotate towards the final point in waypoints
 
-//        if (moveConfig.getPathFinder() instanceof HoverPathFinder || moveConfig.getCurrentPath().getWaypoints().isEmpty()
-//                || (gameObject.getMovementConfiguration().getXMovementSpeed() == 0 && gameObject.getMovementConfiguration().getYMovementSpeed() == 0)
-//        ) {
-//            if (gameObject instanceof Enemy) {
-//                Enemy enemyObject = (Enemy) gameObject;
-//                // Check for specific missile type pathfinders
-//                if (enemyObject.getMissileTypePathFinders() == PathFinderEnums.Homing
-//                        || enemyObject.getMissileTypePathFinders() == PathFinderEnums.StraightLine) {
-//                    // Rotate towards the player, assuming these are only used for enemies that aim
-//                    gameObject.rotateObjectTowardsPoint(PlayerManager.getInstance().getSpaceship().getCurrentLocation());
-//                } else {
-//                    // For stationary enemies or those without specific pathfinders, rotate towards their given direction
-//                    gameObject.rotateObjectTowardsRotation();
-//                }
-//            } else {
-//                gameObject.rotateObjectTowardsRotation();
-//            }
-//        } else {
-//            gameObject.rotateObjectTowardsDestination();
-//        }
-            gameObject.rotateObject();
+        gameObject.rotateObject();
 
-//        if (gameObject instanceof SeekerProjectile) {
-//            gameObject.rotateGameObjectTowards(PlayerManager.getInstance().getSpaceship().getCenterXCoordinate(), PlayerManager.getInstance().getSpaceship().getCenterYCoordinate());
-//        }
 
         if (moveConfig.getPathFinder() instanceof OrbitPathFinder) {
             adjustOrbitPath(moveConfig);
@@ -224,7 +201,6 @@ public class SpriteMover {
             gameObject.setAllowedToMove(false);
         }
     }
-
 
 
     private void adjustOrbitPath (MovementConfiguration moveConfig) {

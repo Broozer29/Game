@@ -2,6 +2,7 @@ package game.objects.enemies;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.sound.sampled.UnsupportedAudioFileException;
@@ -9,7 +10,6 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 import game.managers.AnimationManager;
 import game.util.CollisionDetector;
 import game.objects.player.PlayerManager;
-import game.objects.enemies.enemytypes.AlienBomb;
 import game.objects.player.spaceship.SpaceShip;
 import VisualAndAudioData.DataClass;
 import VisualAndAudioData.audio.enums.AudioEnums;
@@ -89,14 +89,17 @@ public class EnemyManager {
     }
 
     private void updateEnemies () throws UnsupportedAudioFileException, IOException {
-        for (int i = 0; i < enemyList.size(); i++) {
-            if (enemyList.get(i).isVisible()) {
-                enemyList.get(i).move();
-                enemyList.get(i).updateGameObjectEffects();
+
+        Iterator<Enemy> it = enemyList.iterator();
+        while (it.hasNext()){
+            Enemy en = it.next();
+
+            if (en.isVisible()) {
+                en.move();
+                en.updateGameObjectEffects();
             } else {
-                enemyList.get(i).deleteObject();
-                enemyList.remove(i);
-                i--;
+                en.deleteObject();
+                it.remove();
             }
         }
     }

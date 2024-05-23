@@ -108,12 +108,10 @@ public class ExplosionManager {
         }
     }
 
+    //Carefull with this, as explosions can cause a chain reaction of other effects/item activations
     private void applyPlayerOnHitEffects (Enemy enemy) {
         List<Item> onHitItems = PlayerInventory.getInstance().getItemsByApplicationMethod(ItemApplicationEnum.AfterCollision);
         for (Item item : onHitItems) {
-            if(item.getItemName().equals(ItemEnums.StickyDynamite)){
-                continue;
-            }
             item.applyEffectToObject(enemy); // Assuming applyEffect adds the effect to the GameObject
         }
     }

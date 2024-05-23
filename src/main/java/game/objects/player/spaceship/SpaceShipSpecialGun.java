@@ -33,9 +33,9 @@ public class SpaceShipSpecialGun {
         specialAttackCharges = 0;
     }
 
-    public void fire(int xCoordinate, int yCoordinate, int spaceShipWidth, int spaceShipHeight, PlayerSpecialAttackTypes attackType) {
+    public void fire(int xCoordinate, int yCoordinate,PlayerSpecialAttackTypes attackType) {
         double currentTime = GameStateInfo.getInstance().getGameSeconds();
-        if (specialAttackCharges > 0 && currentTime >= (lastSecondsSpecialAttackUsed + 0.3) && allowedToFire) {
+        if (specialAttackCharges > 0 && currentTime >= (lastSecondsSpecialAttackUsed + 0.15) && allowedToFire) {
             switch (attackType) {
                 case EMP:
                     fireElectroShred(xCoordinate, yCoordinate);

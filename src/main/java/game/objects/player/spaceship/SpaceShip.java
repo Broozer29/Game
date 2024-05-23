@@ -21,13 +21,18 @@ import game.items.enums.ItemEnums;
 import game.items.items.FocusCrystal;
 import game.managers.AnimationManager;
 import game.movement.Point;
+import game.objects.friendlies.FriendlyCreator;
+import game.objects.friendlies.FriendlyManager;
+import game.objects.friendlies.FriendlyObject;
 import game.objects.neutral.Explosion;
 import game.objects.GameObject;
 import game.objects.missiles.specialAttacks.SpecialAttack;
 import game.objects.player.BoostsUpgradesAndBuffsSettings;
+import game.objects.player.PlayerManager;
 import game.objects.player.PlayerStats;
 import VisualAndAudioData.image.ImageEnums;
 import game.util.ArmorCalculator;
+import game.util.OrbitingObjectsFormatter;
 import visualobjects.SpriteConfigurations.SpriteAnimationConfiguration;
 import visualobjects.SpriteConfigurations.SpriteConfiguration;
 import visualobjects.SpriteAnimation;
@@ -94,6 +99,7 @@ public class SpaceShip extends GameObject {
             item.applyEffectToObject(this);
         }
 
+
         if (PlayerInventory.getInstance().getItemByName(ItemEnums.FocusCrystal) != null) {
             SpriteConfiguration focusCrystalConfig = new SpriteConfiguration();
             focusCrystalConfig.setxCoordinate(getXCoordinate());
@@ -115,6 +121,20 @@ public class SpaceShip extends GameObject {
         }
     }
 
+    private boolean firedAlready = false;
+
+    private void postCreationActivities () {
+        if (!firedAlready) {
+
+            for (int i = 0; i < PlayerStats.getInstance().getAmountOfDrones(); i++) {
+                FriendlyManager.getInstance().addDrone();
+            }
+            OrbitingObjectsFormatter.reformatOrbitingObjects(this, 85);
+            firedAlready = true;
+        }
+    }
+
+
     private void initExhaustAnimation (ImageEnums imageType) {
         SpriteAnimationConfiguration spriteAnimationConfiguration = new SpriteAnimationConfiguration(this.spriteConfiguration, 2, true);
         spriteAnimationConfiguration.getSpriteConfiguration().setImageType(imageType);
@@ -130,7 +150,11 @@ public class SpaceShip extends GameObject {
     }
 
     public void addShieldDamageAnimation () {
-        if (playerFollowingAnimations.size() < 10) {
+        long shieldAnimationCount = playerFollowingAnimations.stream()
+                .filter(spriteAnimation -> spriteAnimation.getImageType().equals(ImageEnums.Default_Player_Shield_Damage)
+                ).count();
+
+        if (shieldAnimationCount < 10) {
             SpriteAnimationConfiguration spriteAnimationConfiguration = new SpriteAnimationConfiguration(this.spriteConfiguration, 1, false);
             spriteAnimationConfiguration.getSpriteConfiguration().setImageType(ImageEnums.Default_Player_Shield_Damage);
 
@@ -178,20 +202,19 @@ public class SpaceShip extends GameObject {
     public void changeShieldHitpoints (float change) {
         this.currentShieldPoints += change;
         if (currentShieldPoints > maxShieldPoints * PlayerStats.getInstance().getMaxOverloadingShieldMultiplier()) {
-            currentShieldPoints = maxShieldPoints * 2;
+            currentShieldPoints = maxShieldPoints * PlayerStats.getInstance().getMaxOverloadingShieldMultiplier();
         }
     }
 
     private void reduceOverloadedShieldPoints () {
-        if (currentShieldPoints > maxShieldPoints + 1) {
-            currentShieldPoints -= 0.5f;
+        if (currentShieldPoints > maxShieldPoints * PlayerStats.getInstance().getMaxOverloadingShieldMultiplier()) {
+            currentShieldPoints -= PlayerStats.getInstance().getOverloadedShieldDiminishAmount();
         }
     }
 
     public void updateGameTick () {
         this.currentShieldRegenDelayFrame++;
-
-//        spaceShipRegularGun.updateFrameCount();
+        postCreationActivities();
         spaceShipSpecialGun.updateFrameCount();
 
         movePlayerAnimations();
@@ -208,6 +231,7 @@ public class SpaceShip extends GameObject {
             }
         }
     }
+
 
     private void movePlayerAnimations () {
         for (SpriteAnimation anim : playerFollowingAnimations) {
@@ -289,7 +313,7 @@ public class SpaceShip extends GameObject {
     }
 
     private void fireSpecialAttack () throws UnsupportedAudioFileException, IOException {
-        spaceShipSpecialGun.fire(this.getCenterXCoordinate(), this.getCenterYCoordinate(), this.getWidth(), this.getHeight(),
+        spaceShipSpecialGun.fire(this.getCenterXCoordinate(), this.getCenterYCoordinate(),
                 playerStats.getPlayerSpecialAttackType());
     }
 
@@ -430,7 +454,11 @@ public class SpaceShip extends GameObject {
     }
 
     private void moveLeftSlow () {
-        directionx = -Math.round(playerStats.getCurrentMovementSpeed() / 2);
+        int directionAlteration = Math.round(playerStats.getCurrentMovementSpeed() / 2);
+        if (directionAlteration < 1) {
+            directionAlteration = 1;
+        }
+        directionx = -directionAlteration;
     }
 
     private void moveLeftQuick () {
@@ -442,7 +470,11 @@ public class SpaceShip extends GameObject {
     }
 
     private void moveRightSlow () {
-        directionx = Math.round(playerStats.getCurrentMovementSpeed() / 2);
+        int directionAlteration = Math.round(playerStats.getCurrentMovementSpeed() / 2);
+        if (directionAlteration < 1) {
+            directionAlteration = 1;
+        }
+        directionx = directionAlteration;
     }
 
     private void moveRightQuick () {
@@ -454,7 +486,11 @@ public class SpaceShip extends GameObject {
     }
 
     private void moveUpSlow () {
-        directiony = -Math.round(playerStats.getCurrentMovementSpeed() / 2);
+        int directionAlteration = Math.round(playerStats.getCurrentMovementSpeed() / 2);
+        if (directionAlteration < 1) {
+            directionAlteration = 1;
+        }
+        directiony = -directionAlteration;
     }
 
     private void moveUpQuick () {
@@ -466,7 +502,11 @@ public class SpaceShip extends GameObject {
     }
 
     private void moveDownSlow () {
-        directiony = Math.round(playerStats.getCurrentMovementSpeed() / 2);
+        int directionAlteration = Math.round(playerStats.getCurrentMovementSpeed() / 2);
+        if (directionAlteration < 1) {
+            directionAlteration = 1;
+        }
+        directiony = directionAlteration;
     }
 
     private void moveDownQuick () {

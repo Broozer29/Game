@@ -321,6 +321,7 @@ public class ImageDatabase {
     private List<BufferedImage> barrierProjectile = new ArrayList<BufferedImage>();
     private List<BufferedImage> lightningProjectile = new ArrayList<BufferedImage>();
     private List<BufferedImage> lightningOrb = new ArrayList<BufferedImage>();
+    private List<BufferedImage> levelUpAnimation = new ArrayList<BufferedImage>();
 
     // Background images
     private BufferedImage moon;
@@ -1337,6 +1338,7 @@ public class ImageDatabase {
                 return this.defaultPlayerEngine;
             case Default_Player_Engine_Boosted:
                 return this.defaultPlayerEngineBoostedFrames;
+            case LevelUpAnimation: return levelUpAnimation;
             case Default_Player_Shield_Damage:
                 return this.defaultPlayerShieldDamage;
             case Player_Fireswirl:
@@ -1870,6 +1872,12 @@ public class ImageDatabase {
             String sourceString = String.format("/images/gif/PNGtoGIF/TazerProjectile/Destruction/ThundersphereDestruction%d.png", i);
             BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
             lightningOrbDestruction.add(image);
+        }
+
+        for (int i = 0; i < 35; i++) {
+            String sourceString = String.format("/images/gif/PNGtoGIF/Level Up Animation/%d.png", i);
+            BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+            levelUpAnimation.add(image);
         }
     }
 

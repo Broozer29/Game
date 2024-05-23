@@ -25,7 +25,7 @@ public class ItemDescriptionRetriever {
                 return "Enemies in close range take additional damage";
             }
             case PrecisionAmplifier -> {
-                return "Gain 10% crit chance.";
+                return "Gain 10% critical strike chance.";
             }
             case PlatinumSponge -> {
                 return "After not taking damage for a few seconds, gain additional armor.";
@@ -37,7 +37,7 @@ public class ItemDescriptionRetriever {
                 return "Increases attack speed";
             }
             case RepulsionArmorPlate -> {
-                return "Increases armor";
+                return "Increases armor. Armor reduces damage taken by a percentage";
             }
             case ArmorPiercingRounds -> {
                 return "Increases damage dealt to bosses";
@@ -46,13 +46,19 @@ public class ItemDescriptionRetriever {
                 return "Killing an enemy grants a temporary barrier";
             }
             case MoneyPrinter -> {
-                return "Taking damage grants money";
+                return "Chance on enemy kill to gain additional minerals";
             }
             case StickyDynamite -> {
                 return "Attacks apply a delayed explosion";
             }
             case PlasmaLauncher -> {
                 return "Chance on hitting an enemy to fire a homing plasma shot";
+            }
+            case GuardianDrone -> {
+                return "Adds a guardian drone that fires missiles. Max of 8 drones";
+            }
+            case CriticalOverloadCapacitor -> {
+                return "Increases critical damage by 100%";
             }
         }
         return "This item has no description yet";

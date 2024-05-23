@@ -57,10 +57,9 @@ public class Bulldozer extends Enemy {
             PathFinder pathFinder = new OrbitPathFinder(this, radius, 300, nextAngle);
             Enemy alienBomb = getEnemy(x, y, pathFinder);
             alienBomb.setOwnerOrCreator(this);
-//            alienBomb.rotateGameObjectTowards(this.movementConfiguration.getRotation(), false);
-//            alienBomb.setAllowedVisualsToRotate(false);
             alienBomb.getMovementConfiguration().setLastKnownTargetX(this.getCenterXCoordinate());
             alienBomb.getMovementConfiguration().setLastKnownTargetY(this.getCenterYCoordinate());
+            //Bomb rotation is done in GameObject, not initialization because it's dependent on the owner (bulldozer) so it rotates with bulldozer
             this.objectOrbitingThis.add(alienBomb);
             EnemyManager.getInstance().addEnemy(alienBomb);
         }
@@ -93,13 +92,10 @@ public class Bulldozer extends Enemy {
         movementConfiguration.setPathFinder(pathFinder);
 
         movementConfiguration.initDefaultSettingsForSpecializedPathFinders();
-        movementConfiguration.setRotation(Direction.UP);
+        movementConfiguration.setRotation(Direction.LEFT);
         movementConfiguration.setPatternSize(MovementPatternSize.SMALL);
 
         Enemy alienBomb = new AlienBomb(spriteConfiguration, enemyConfiguration, movementConfiguration);
-//        alienBomb.setAllowedVisualsToRotate(true);
-//        alienBomb.rotateGameObjectTowards(Direction.UP, true);
-//        alienBomb.setAllowedVisualsToRotate(false);
         return alienBomb;
     }
 

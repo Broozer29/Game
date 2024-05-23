@@ -12,6 +12,7 @@ import VisualAndAudioData.DataClass;
 import game.gamestate.GameStateInfo;
 import game.gamestate.GameStatusEnums;
 import VisualAndAudioData.image.ImageEnums;
+import game.util.OrbitingObjectsFormatter;
 import visualobjects.SpriteConfigurations.SpriteAnimationConfiguration;
 import visualobjects.SpriteConfigurations.SpriteConfiguration;
 
@@ -27,9 +28,18 @@ public class FriendlyManager {
         initPortal();
     }
 
+    public void addDrone (){
+        FriendlyObject Drone = FriendlyCreator.createDrone();
+        PlayerManager.getInstance().getSpaceship().getObjectOrbitingThis().add(Drone);
+        this.friendlyObjects.add(Drone);
+
+        OrbitingObjectsFormatter.reformatOrbitingObjects(PlayerManager.getInstance().getSpaceship(), 85);
+    }
+
     public static FriendlyManager getInstance () {
         return instance;
     }
+
 
     public void updateGameTick () {
         activateFriendlyObjects();
@@ -38,6 +48,7 @@ public class FriendlyManager {
         removeInvisibleObjects();
         spawnFinishedLevelPortal();
     }
+
 
     public void resetManager () {
         for (FriendlyObject friendlyObject : friendlyObjects) {
@@ -126,56 +137,6 @@ public class FriendlyManager {
         }
     }
 
-//    public void createMissileGuardianBot (FriendlyObjectEnums droneType, float scale) {
-//        createAndAddDrone(scale, droneType);
-//        reOrganizeOrbitingDroneFormation();
-//    }
-
-//    private void createAndAddDrone (float scale, DroneEnums droneType) {
-//        double meanX = PlayerManager.getInstance().getSpaceship().getCenterXCoordinate();
-//        double meanY = PlayerManager.getInstance().getSpaceship().getCenterYCoordinate();
-//        double nextAngle = 0;
-//        if (!guardianDroneList.isEmpty()) {
-//            List<Double> angles = new ArrayList<>();
-//            for (GuardianDrone drone : guardianDroneList) {
-//                double angle = Math.atan2(drone.getYCoordinate() - meanY, drone.getXCoordinate() - meanX);
-//                angles.add(angle);
-//            }
-//            Collections.sort(angles);
-//            double maxGap = 0;
-//            for (int i = 0; i < angles.size(); i++) {
-//                double gap = angles.get((i + 1) % angles.size()) - angles.get(i);
-//                if (gap < 0) {
-//                    gap += Math.PI * 2;
-//                }
-//                if (gap > maxGap) {
-//                    maxGap = gap;
-//                    nextAngle = angles.get(i) + gap / 2;
-//                }
-//            }
-//        }
-//
-//        int radius = 75; // Example radius
-//        int x = (int) (meanX + Math.cos(nextAngle) * radius);
-//        int y = (int) (meanY + Math.sin(nextAngle) * radius);
-//
-//        PathFinder pathFinder = new OrbitPathFinder(PlayerManager.getInstance().getSpaceship(), radius, 300, nextAngle);
-//
-//
-//        SpriteConfiguration spriteConfiguration = new SpriteConfiguration();
-//        spriteConfiguration.setxCoordinate(x);
-//        spriteConfiguration.setyCoordinate(y);
-//        spriteConfiguration.setImageType(ImageEnums.Guardian_Bot);
-//        spriteConfiguration.setScale(scale);
-//
-//        SpriteAnimationConfiguration spriteAnimationConfiguration = new SpriteAnimationConfiguration(spriteConfiguration, 2, true);
-//        DroneConfiguration droneConfiguration = new DroneConfiguration(
-//                DroneEnums.Missile_Guardian_Bot, 200, pathFinder, Direction.RIGHT, 3, 3
-//        );
-//
-//        GuardianDrone friendlyObject = new GuardianDrone(spriteAnimationConfiguration, droneConfiguration);
-//        addActiveFriendlyObject(friendlyObject);
-//    }
 
     public void addFriendlyObject (FriendlyObject friendlyObject) {
         if (!this.friendlyObjects.contains(friendlyObject)) {

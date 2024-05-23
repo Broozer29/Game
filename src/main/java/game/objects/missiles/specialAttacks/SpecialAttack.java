@@ -4,9 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import game.gamestate.GameStateInfo;
+import game.objects.player.PlayerManager;
 import game.util.BoardBlockUpdater;
 import game.objects.GameObject;
 import game.objects.missiles.Missile;
+import game.util.CollisionDetector;
 import visualobjects.SpriteConfigurations.SpriteAnimationConfiguration;
 import visualobjects.SpriteAnimation;
 
@@ -86,5 +88,19 @@ public class SpecialAttack extends GameObject {
 
     public void setAllowOnHitEffects (boolean allowOnHitEffects) {
         this.allowOnHitEffects = allowOnHitEffects;
+    }
+
+    public void checkEnemySpecialAttackCollision (GameObject gameObject) {
+        if (this.getSpecialAttackMissiles().isEmpty()) {
+            if (CollisionDetector.getInstance().detectCollision(gameObject, this)) {
+                if (this.isAllowedToDealDamage()) {
+                    gameObject.takeDamage(this.getDamage());
+                }
+
+                if (!this.isAllowRepeatedDamage()) {
+                    this.setAllowedToDealDamage(false);
+                }
+            }
+        }
     }
 }

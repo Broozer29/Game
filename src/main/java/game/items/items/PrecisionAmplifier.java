@@ -46,5 +46,7 @@ public class PrecisionAmplifier extends Item {
             OnScreenText text = new OnScreenText(target.getXCoordinate(), target.getYCoordinate(), "CRITICAL HIT");
             OnScreenTextManager.getInstance().addTextObject(text);
         }
+
+
     }
 }

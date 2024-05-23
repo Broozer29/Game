@@ -54,9 +54,7 @@ public class CollisionDetector {
             if (r1.intersects(r2)) {
                 if (gameObject1.isBoxCollision() || gameObject2.isBoxCollision()) {
                     return true;
-                } else if (checkPixelCollision(gameObject1, gameObject2)) {
-                    return true;
-                }
+                } else return checkPixelCollision(gameObject1, gameObject2);
             }
         }
 

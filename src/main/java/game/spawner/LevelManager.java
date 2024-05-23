@@ -14,6 +14,8 @@ import game.objects.enemies.enums.EnemyEnums;
 import game.gamestate.GameStateInfo;
 import game.gamestate.GameStatusEnums;
 import VisualAndAudioData.audio.AudioManager;
+import game.objects.friendlies.FriendlyManager;
+import game.objects.player.PlayerStats;
 import game.spawner.directors.DirectorManager;
 import game.spawner.enums.LevelDifficulty;
 import game.spawner.enums.LevelLength;
@@ -94,10 +96,7 @@ public class LevelManager {
             throw new RuntimeException(e);
         }
 
-        currentDifficultyCoeff = LevelSongs.getDifficultyImageIndex(currentLevelDifficulty, currentLevelLength);
-        if (currentDifficultyCoeff < 2) {
-            currentDifficultyCoeff = 2;
-        }
+        currentDifficultyCoeff = LevelSongs.getDifficultyScore(currentLevelDifficulty, currentLevelLength);
         GameUIManager.getInstance().createDifficultyWings();
 
 
@@ -106,7 +105,9 @@ public class LevelManager {
 //        DirectorManager.getInstance().createMonsterCards();
 //        DirectorManager.getInstance().createDirectors();
 
-        Enemy enemy = EnemyCreator.createEnemy(EnemyEnums.Needler, 800, 100, Direction.LEFT, 1f
+//        PlayerStats.getInstance().setBaseDamage(1);
+
+        Enemy enemy = EnemyCreator.createEnemy(EnemyEnums.Bulldozer, 800, 100, Direction.LEFT, 1f
                 , 2, 2, MovementPatternSize.SMALL, false);
 //        enemy.getMovementConfiguration().setBoardBlockToHoverIn(5);
         enemy.getMovementConfiguration().setPathFinder(new RegularPathFinder());
@@ -114,16 +115,16 @@ public class LevelManager {
         enemy.getMovementConfiguration().setXMovementSpeed(0);
         enemy.getMovementConfiguration().setYMovementSpeed(0);
         EnemyManager.getInstance().addEnemy(enemy);
-
-
-        Enemy enemy2 = EnemyCreator.createEnemy(EnemyEnums.Needler, 700, 100, Direction.LEFT, 1
-                , 2, 2, MovementPatternSize.SMALL, false);
-        enemy2.getMovementConfiguration().setPathFinder(new RegularPathFinder());
-        enemy2.setAllowedVisualsToRotate(false);
-        enemy2.getMovementConfiguration().setXMovementSpeed(0);
-        enemy2.getMovementConfiguration().setYMovementSpeed(0);
-        EnemyManager.getInstance().addEnemy(enemy2);
 //
+//
+//        Enemy enemy2 = EnemyCreator.createEnemy(EnemyEnums.Energizer, 700, 100, Direction.LEFT, 1
+//                , 2, 2, MovementPatternSize.SMALL, false);
+//        enemy2.getMovementConfiguration().setPathFinder(new HoverPathFinder());
+////        enemy2.setAllowedVisualsToRotate(false);
+//        enemy2.getMovementConfiguration().setXMovementSpeed(1);
+//        enemy2.getMovementConfiguration().setYMovementSpeed(1);
+//        EnemyManager.getInstance().addEnemy(enemy2);
+
 //
 //        Enemy enemy3 = EnemyCreator.createEnemy(EnemyEnums.Scout, 900, 100, Direction.LEFT, 1
 //                , 2, 2, MovementPatternSize.SMALL, false);

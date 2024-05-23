@@ -1,11 +1,17 @@
 package game.objects.player;
 
+import VisualAndAudioData.audio.AudioManager;
+import VisualAndAudioData.audio.enums.AudioEnums;
 import game.objects.missiles.MissileTypeEnums;
 import game.objects.player.playerpresets.GunPreset;
 import game.objects.player.playerpresets.SpecialGunPreset;
 import VisualAndAudioData.image.ImageEnums;
 import game.objects.player.spaceship.SpaceShip;
 import game.util.ExperienceCalculator;
+import game.util.LevelAnimationPlayer;
+
+import javax.sound.sampled.UnsupportedAudioFileException;
+import java.io.IOException;
 
 public class PlayerStats {
 
@@ -57,8 +63,10 @@ public class PlayerStats {
     private float missileImpactScale;
     private float missileScale;
     private int maxSpecialAttackCharges;
-    private float criticalStrikeDamageMultiplier;
-    private float maxOverloadingShieldMultiplier;
+    private float criticalStrikeDamageMultiplier = 2.0f;
+    private float maxOverloadingShieldMultiplier = 2.0f;
+    private float overloadedShieldDiminishAmount;
+    private float maxShieldMultiplier = 1.0f;
 
 
 
@@ -66,6 +74,8 @@ public class PlayerStats {
     private int currentLevel;
     private float currentXP;
     private float xpToNextLevel;
+    private int amountOfDrones = 0;
+    private int maximumAmountOfDrones = 10;
 
 
     public void initDefaultSettings () {
@@ -73,6 +83,7 @@ public class PlayerStats {
         bonusDamageMultiplier = 1f; //Otherwhise it's damage * 0 = 0
         // Health
         setMaxHitPoints(100);
+        setMaxShieldMultiplier(1.0f);
         setMaxShieldHitPoints(100);
         setShieldRegenDelay(300);
 
@@ -85,6 +96,8 @@ public class PlayerStats {
 
         setCriticalStrikeDamageMultiplier(2.0f);
         setMaxOverloadingShieldMultiplier(2.0f);
+
+        setOverloadedShieldDiminishAmount(0.5f);
 
         //Level
         setCurrentLevel(1);
@@ -130,6 +143,13 @@ public class PlayerStats {
         player.setMaxShieldPoints(maxShieldHitPoints);
         player.setCurrentHitpoints(maxHitPoints);
         player.setCurrentShieldPoints(maxShieldHitPoints);
+
+        LevelAnimationPlayer.playLevelUpAnimation(player);
+        try {
+            AudioManager.getInstance().addAudio(AudioEnums.Power_Up_Acquired);
+        } catch (UnsupportedAudioFileException | IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public float getNormalAttackDamage () {
@@ -203,7 +223,7 @@ public class PlayerStats {
     }
 
     public void setMaxShieldHitPoints (float maxShieldHitPoints) {
-        this.maxShieldHitPoints = maxShieldHitPoints;
+        this.maxShieldHitPoints = maxShieldHitPoints * maxShieldMultiplier;
     }
 
     public int getMovementSpeed () {
@@ -344,6 +364,9 @@ public class PlayerStats {
         this.criticalStrikeDamageMultiplier = criticalStrikeDamageMultiplier;
     }
 
+    public void addCriticalStrikeDamageMultiplier(float criticalStrikeDamageMultiplier){
+        this.criticalStrikeDamageMultiplier += criticalStrikeDamageMultiplier;
+    }
     public float getAttackSpeedBonus () {
         return attackSpeedBonus;
     }
@@ -362,6 +385,10 @@ public class PlayerStats {
 
     public void setMaxOverloadingShieldMultiplier (float maxOverloadingShieldMultiplier) {
         this.maxOverloadingShieldMultiplier = maxOverloadingShieldMultiplier;
+    }
+
+    public void addMaxOverloadingShieldMultiplier(float maxOverloadingShieldMultiplier){
+        this.maxOverloadingShieldMultiplier += maxOverloadingShieldMultiplier;
     }
 
     public int getCurrentLevel () {
@@ -388,5 +415,45 @@ public class PlayerStats {
         this.xpToNextLevel = xpToNextLevel;
     }
 
+    public int getMaximumAmountOfDrones () {
+        return maximumAmountOfDrones;
+    }
 
+    public void setMaximumAmountOfDrones (int maximumAmountOfDrones) {
+        this.maximumAmountOfDrones = maximumAmountOfDrones;
+    }
+
+    public int getAmountOfDrones () {
+        return amountOfDrones;
+    }
+
+    public void setAmountOfDrones (int amountOfDrones) {
+        this.amountOfDrones = amountOfDrones;
+    }
+
+    public void addDrone(int amountOfDrones){
+        if(this.amountOfDrones + amountOfDrones < this.maximumAmountOfDrones){
+            this.amountOfDrones += amountOfDrones;
+        }
+    }
+
+    public float getOverloadedShieldDiminishAmount () {
+        return overloadedShieldDiminishAmount;
+    }
+
+    public void setOverloadedShieldDiminishAmount (float overloadedShieldDiminishAmount) {
+        this.overloadedShieldDiminishAmount = overloadedShieldDiminishAmount;
+    }
+
+    public float getMaxShieldMultiplier () {
+        return maxShieldMultiplier;
+    }
+
+    public void setMaxShieldMultiplier (float maxShieldMultiplier) {
+        this.maxShieldMultiplier = maxShieldMultiplier;
+    }
+
+    public void addMaxShieldMultiplier(float maxShieldMultiplier) {
+        this.maxShieldMultiplier += maxShieldMultiplier;
+    }
 }

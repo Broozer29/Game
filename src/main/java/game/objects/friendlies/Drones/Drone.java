@@ -37,14 +37,14 @@ public class Drone extends FriendlyObject {
 
         double currentTime = GameStateInfo.getInstance().getGameSeconds();
         if (currentTime >= lastAttackTime + this.getAttackSpeed() && WithinVisualBoundariesCalculator.isWithinBoundaries(this)) {
-            if (!chargingUpAttackAnimation.isPlaying()) {
-                chargingUpAttackAnimation.refreshAnimation();
-                AnimationManager.getInstance().addUpperAnimation(chargingUpAttackAnimation);
-            }
-            if (chargingUpAttackAnimation.getCurrentFrame() >= chargingUpAttackAnimation.getTotalFrames() - 1) {
+//            if (!chargingUpAttackAnimation.isPlaying()) {
+//                chargingUpAttackAnimation.refreshAnimation();
+//                AnimationManager.getInstance().addUpperAnimation(chargingUpAttackAnimation);
+//            }
+//            if (chargingUpAttackAnimation.getCurrentFrame() >= chargingUpAttackAnimation.getTotalFrames() - 1) {
                 fireMissile();
                 lastAttackTime = currentTime; // Update the last attack time after firing
-            }
+//            }
         }
     }
 
@@ -80,6 +80,8 @@ public class Drone extends FriendlyObject {
         Missile newMissile = MissileCreator.getInstance().createMissile(missileSpriteConfiguration, missileConfiguration, movementConfiguration);
         newMissile.setOwnerOrCreator(this);
         newMissile.setObjectType("Drone Missile");
+        newMissile.resetMovementPath();
+        newMissile.setCenterCoordinates(this.getAnimation().getCenterXCoordinate(), this.getAnimation().getCenterYCoordinate());
         MissileManager.getInstance().addExistingMissile(newMissile);
     }
 

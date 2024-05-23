@@ -433,14 +433,16 @@ public class MenuBoard extends JPanel implements ActionListener {
                     lastMoveTime = currentTime;
                 }
             }
-
-            // Fire action
-            if (controllerInputReader.isInputActive(ControllerInputEnums.FIRE)) {
-                // Select menu option
-                selectMenuTile();
+            if (currentTime - lastMoveTime > MOVE_COOLDOWN) {
+                lastMoveTime = currentTime;
+                if (controllerInputReader.isInputActive(ControllerInputEnums.FIRE)) {
+                    // Select menu option
+                    selectMenuTile();
 //                updateActiveAttackIcons();
+                }
             }
         }
+
     }
 
     /*-----------------------------End of navigation methods--------------------------*/
