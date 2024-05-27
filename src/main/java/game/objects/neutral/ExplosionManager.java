@@ -16,6 +16,7 @@ import game.objects.enemies.Enemy;
 import game.objects.enemies.EnemyManager;
 import game.objects.player.PlayerManager;
 import game.objects.player.PlayerStats;
+import game.objects.player.spaceship.SpaceShip;
 import game.util.CollisionDetector;
 
 public class ExplosionManager {
@@ -45,7 +46,7 @@ public class ExplosionManager {
                 toRemove.add(explosion);
             }
 
-            if(!explosion.getAnimation().isPlaying()){
+            if (!explosion.getAnimation().isPlaying()) {
                 explosion.setVisible(false);
             }
         }
@@ -94,59 +95,34 @@ public class ExplosionManager {
         for (Enemy enemy : enemyManager.getEnemies()) {
             if (!explosion.dealtDamageToTarget(enemy)) {
                 if (CollisionDetector.getInstance().detectCollision(explosion, enemy)) {
-                    applyDamageModification(explosion, enemy);
-                    enemy.takeDamage(explosion.getDamage());
+                    explosion.applyDamageModification(enemy);
+                    explosion.dealDamageToGameObject(enemy);
 
-                    if(explosion.isApplyOnHitEffects()) {
-                        applyPlayerOnHitEffects(enemy);
+                    if (explosion.isApplyOnHitEffects()) {
+                        explosion.applyEffectsWhenPlayerHitsEnemy(enemy);
                     }
 
-                    applyExplosionEffects(explosion, enemy);
+                    explosion.applyExplosionEffects(enemy);
                     explosion.addCollidedSprite(enemy);
                 }
             }
         }
     }
 
-    //Carefull with this, as explosions can cause a chain reaction of other effects/item activations
-    private void applyPlayerOnHitEffects (Enemy enemy) {
-        List<Item> onHitItems = PlayerInventory.getInstance().getItemsByApplicationMethod(ItemApplicationEnum.AfterCollision);
-        for (Item item : onHitItems) {
-            item.applyEffectToObject(enemy); // Assuming applyEffect adds the effect to the GameObject
-        }
-    }
-
-
-    private void applyExplosionEffects (Explosion explosion, GameObject target) {
-        for (EffectInterface effect : explosion.getEffectsToApply()) {
-            EffectInterface effectCopy = effect.copy();
-            if (effectCopy != null) {
-                target.addEffect(effectCopy);
-            } else target.addEffect(effect);
-        }
-    }
-
     private void checkHostileExplosionCollision (Explosion explosion) {
-        if (!explosion.dealtDamageToTarget(friendlyManager.getSpaceship()) &&
-                CollisionDetector.getInstance().detectCollision(explosion, friendlyManager.getSpaceship())) {
-            friendlyManager.getSpaceship().takeDamage(explosion.getDamage());
+        SpaceShip spaceship = friendlyManager.getSpaceship();
+        if (!explosion.dealtDamageToTarget(spaceship) &&
+                CollisionDetector.getInstance().detectCollision(explosion, spaceship)) {
+            explosion.dealDamageToGameObject(spaceship);
             applyPlayerTakeDamageOnHitEffects();
-            explosion.addCollidedSprite(friendlyManager.getSpaceship());
+            explosion.addCollidedSprite(spaceship);
         }
     }
 
-    private void applyPlayerTakeDamageOnHitEffects(){
+    private void applyPlayerTakeDamageOnHitEffects () {
         List<Item> onHitItems = PlayerInventory.getInstance().getItemByActivationTypes(EffectActivationTypes.OnPlayerHit);
         for (Item item : onHitItems) {
             item.applyEffectToObject(PlayerManager.getInstance().getSpaceship());
         }
     }
-
-    private void applyDamageModification (GameObject attack, GameObject target) {
-        for (Item item : PlayerInventory.getInstance().getItemsByApplicationMethod(ItemApplicationEnum.BeforeCollision)) {
-            item.modifyAttackValues(attack, target);
-        }
-    }
-
-
 }

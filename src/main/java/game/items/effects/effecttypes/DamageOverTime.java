@@ -51,7 +51,7 @@ public class DamageOverTime implements EffectInterface {
             }
             if (!offsetApplied) {
                 applyRandomOffset(target);
-//                offsetApplied = true;
+                offsetApplied = true;
             }
         }
         if (currentTime - startTimeInSeconds < durationInSeconds) {
@@ -104,7 +104,6 @@ public class DamageOverTime implements EffectInterface {
         animation.resetOffset();
 
         Random random = new Random();
-
         // Get the animation dimensions and enemy dimensions
         int animationWidth = this.animation.getWidth();
         int animationHeight = this.animation.getHeight();

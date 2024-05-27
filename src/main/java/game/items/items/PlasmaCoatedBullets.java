@@ -31,8 +31,7 @@ public class PlasmaCoatedBullets extends Item {
     }
 
     private void calculateBurningDamage () {
-        burningDamage =  PlayerStats.getInstance().getBaseDamage() * 0.1f * this.quantity;
-       ;
+        burningDamage =  PlayerStats.getInstance().getBaseDamage() * 0.05f * this.quantity;
     }
 
     private void calculateDuration () {

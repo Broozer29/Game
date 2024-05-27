@@ -63,17 +63,14 @@ public class PlasmaLauncher extends Item {
         int yMovementSpeed = 3;
         Direction rotation = Direction.RIGHT;
         MovementPatternSize movementPatternSize = MovementPatternSize.SMALL;
-        PathFinder pathFinder = new HomingPathFinder();
+        HomingPathFinder pathFinder = new HomingPathFinder();
         MovementConfiguration movementConfiguration = MissileCreator.getInstance().createMissileMovementConfig(
                 xMovementSpeed, yMovementSpeed, pathFinder, movementPatternSize, rotation
         );
         movementConfiguration.initDefaultSettingsForSpecializedPathFinders();
 
-
         boolean isFriendly = true;
-        if (pathFinder instanceof HomingPathFinder) {
-            movementConfiguration.setTargetToChase(((HomingPathFinder) pathFinder).getTarget(isFriendly, spriteConfiguration.getxCoordinate(), spriteConfiguration.getyCoordinate()));
-        }
+        movementConfiguration.setTargetToChase(pathFinder.getTarget(isFriendly, spriteConfiguration.getxCoordinate(), spriteConfiguration.getyCoordinate()));
 
 
         MissileConfiguration missileConfiguration = getMissileConfiguration(isFriendly);
@@ -95,9 +92,9 @@ public class PlasmaLauncher extends Item {
         String objectType = "Plasma Launcher Missile";
         float damage = PlayerStats.getInstance().getNormalAttackDamage() * damageMultiplier;
 
-        MissileConfiguration missileConfiguration = new MissileConfiguration(MissileTypeEnums.PlasmaLauncherMissile,
+        MissileConfiguration missileConfiguration = MissileCreator.getInstance().createMissileConfiguration(MissileEnums.PlasmaLauncherMissile,
                 maxHitPoints, maxShields, deathSound, damage, impactType, isFriendly, allowedToDealDamage,
-                objectType, false);
+                objectType, false, false);
         return missileConfiguration;
     }
 

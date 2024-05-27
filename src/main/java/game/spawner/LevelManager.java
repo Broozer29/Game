@@ -102,38 +102,38 @@ public class LevelManager {
 
 
         gameState.setGameState(GameStatusEnums.Playing);
-//        DirectorManager.getInstance().setEnabled(true);
-//        DirectorManager.getInstance().createMonsterCards();
-//        DirectorManager.getInstance().createDirectors();
+        DirectorManager.getInstance().setEnabled(true);
+        DirectorManager.getInstance().createMonsterCards();
+        DirectorManager.getInstance().createDirectors();
 
 //        PlayerStats.getInstance().setBaseDamage(1);
 
-        Enemy enemy = EnemyCreator.createEnemy(EnemyEnums.Bulldozer, 800, 100, Direction.LEFT, 1f
-                , 2, 2, MovementPatternSize.SMALL, false);
-//        enemy.getMovementConfiguration().setBoardBlockToHoverIn(5);
-        enemy.getMovementConfiguration().setPathFinder(new RegularPathFinder());
-        enemy.setAllowedVisualsToRotate(false);
-        enemy.getMovementConfiguration().setXMovementSpeed(0);
-        enemy.getMovementConfiguration().setYMovementSpeed(0);
-        EnemyManager.getInstance().addEnemy(enemy);
+//        Enemy enemy = EnemyCreator.createEnemy(EnemyEnums.Scout, 800, 100, Direction.LEFT, 1f
+//                , 2, 2, MovementPatternSize.SMALL, false);
+////        enemy.getMovementConfiguration().setBoardBlockToHoverIn(5);
+//        enemy.getMovementConfiguration().setPathFinder(new RegularPathFinder());
+//        enemy.setAllowedVisualsToRotate(false);
+//        enemy.getMovementConfiguration().setXMovementSpeed(0);
+//        enemy.getMovementConfiguration().setYMovementSpeed(0);
+//        EnemyManager.getInstance().addEnemy(enemy);
 //
 //
-        Enemy enemy2 = EnemyCreator.createEnemy(EnemyEnums.Energizer, 700, 100, Direction.LEFT, 1
-                , 2, 2, MovementPatternSize.SMALL, false);
-        enemy2.getMovementConfiguration().setPathFinder(new HoverPathFinder());
-//        enemy2.setAllowedVisualsToRotate(false);
-        enemy2.getMovementConfiguration().setXMovementSpeed(1);
-        enemy2.getMovementConfiguration().setYMovementSpeed(1);
-        EnemyManager.getInstance().addEnemy(enemy2);
-
+//        Enemy enemy2 = EnemyCreator.createEnemy(EnemyEnums.Scout, 700, 100, Direction.LEFT, 1
+//                , 2, 2, MovementPatternSize.SMALL, false);
+//        enemy2.getMovementConfiguration().setPathFinder(new HoverPathFinder());
+////        enemy2.setAllowedVisualsToRotate(false);
+//        enemy2.getMovementConfiguration().setXMovementSpeed(1);
+//        enemy2.getMovementConfiguration().setYMovementSpeed(1);
+//        EnemyManager.getInstance().addEnemy(enemy2);
 //
-        Enemy enemy3 = EnemyCreator.createEnemy(EnemyEnums.Scout, 500, 100, Direction.LEFT, 1
-                , 2, 2, MovementPatternSize.SMALL, false);
-        enemy3.getMovementConfiguration().setPathFinder(new RegularPathFinder());
-        enemy3.getMovementConfiguration().setXMovementSpeed(0);
-        enemy3.getMovementConfiguration().setYMovementSpeed(0);
-        enemy3.setAllowedVisualsToRotate(false);
-        EnemyManager.getInstance().addEnemy(enemy3);
+//
+//        Enemy enemy3 = EnemyCreator.createEnemy(EnemyEnums.Scout, 500, 200, Direction.LEFT, 1
+//                , 2, 2, MovementPatternSize.SMALL, false);
+//        enemy3.getMovementConfiguration().setPathFinder(new RegularPathFinder());
+//        enemy3.getMovementConfiguration().setXMovementSpeed(0);
+//        enemy3.getMovementConfiguration().setYMovementSpeed(0);
+//        enemy3.setAllowedVisualsToRotate(false);
+//        EnemyManager.getInstance().addEnemy(enemy3);
 
 
     }

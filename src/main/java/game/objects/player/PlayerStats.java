@@ -2,9 +2,7 @@ package game.objects.player;
 
 import VisualAndAudioData.audio.AudioManager;
 import VisualAndAudioData.audio.enums.AudioEnums;
-import game.objects.missiles.MissileTypeEnums;
-import game.objects.player.playerpresets.GunPreset;
-import game.objects.player.playerpresets.SpecialGunPreset;
+import game.objects.missiles.MissileEnums;
 import VisualAndAudioData.image.ImageEnums;
 import game.objects.player.spaceship.SpaceShip;
 import game.util.ExperienceCalculator;
@@ -31,11 +29,7 @@ public class PlayerStats {
     }
 
     // Preset type
-    private GunPreset normalGunPreset;
-    private SpecialGunPreset specialGunPreset;
-
-    // Player attacks
-    private MissileTypeEnums attackType;
+    private MissileEnums attackType;
     private PlayerSpecialAttackTypes specialAttackType;
     private float baseDamage;
     private float bonusDamageMultiplier;
@@ -70,7 +64,6 @@ public class PlayerStats {
     private int piercingMissilesAmount = 0;
 
 
-
     //Leveling system
     private int currentLevel;
     private float currentXP;
@@ -82,6 +75,10 @@ public class PlayerStats {
     public void initDefaultSettings () {
         piercingMissilesAmount = 0;
         bonusDamageMultiplier = 1f; //Otherwhise it's damage * 0 = 0
+
+        attackType = MissileEnums.PlayerLaserbeam;
+        specialAttackType = PlayerSpecialAttackTypes.EMP;
+
         // Health
         setMaxHitPoints(100);
         setMaxShieldMultiplier(1.0f);
@@ -110,13 +107,44 @@ public class PlayerStats {
         setSpaceShipImage(ImageEnums.Player_Spaceship_Model_3);
         setExhaustImage(ImageEnums.Default_Player_Engine);
 
-        if (normalGunPreset != null) {
-            normalGunPreset.loadPreset();
-        }
+        loadNormalGunPreset();
+        loadSpecialGunPreset();
+    }
 
-        if (specialGunPreset != null) {
-            specialGunPreset.loadPreset();
+    private void loadSpecialGunPreset () {
+        setPlayerSpecialAttackType(PlayerSpecialAttackTypes.EMP);
+    }
+
+    private void loadNormalGunPreset () {
+        switch (attackType) {
+            case PlayerLaserbeam:
+                initLaserbeamPreset();
+                break;
+            case Rocket1:
+                initRocketPreset();
+                break;
+            default:
+                break;
         }
+    }
+
+    private void initRocketPreset () {
+        setAttackSpeed(0.5f);
+        setBaseDamage(40);
+        setPlayerMissileImage(ImageEnums.Rocket_1);
+        setPlayerMissileImpactImage(ImageEnums.Rocket_1_Explosion);
+        setMissileScale(1);
+        setMissileImpactScale(1);
+    }
+
+
+    private void initLaserbeamPreset () {
+        setAttackSpeed(0.25f);
+        setBaseDamage(20);
+        setPlayerMissileImage(ImageEnums.Player_Laserbeam);
+        setPlayerMissileImpactImage(ImageEnums.Impact_Explosion_One);
+        setMissileScale(1);
+        setMissileImpactScale(1);
     }
 
     public void addXP (float xp) {
@@ -318,28 +346,12 @@ public class PlayerStats {
         this.bonusDamageMultiplier += bonusDamageMultiplier;
     }
 
-    public MissileTypeEnums getAttackType () {
+    public MissileEnums getAttackType () {
         return attackType;
     }
 
-    public void setAttackType (MissileTypeEnums attackType) {
+    public void setAttackType (MissileEnums attackType) {
         this.attackType = attackType;
-    }
-
-    public GunPreset getNormalGunPreset () {
-        return normalGunPreset;
-    }
-
-    public void setNormalGunPreset (GunPreset normalGunPreset) {
-        this.normalGunPreset = normalGunPreset;
-    }
-
-    public SpecialGunPreset getSpecialGunPreset () {
-        return specialGunPreset;
-    }
-
-    public void setSpecialGunPreset (SpecialGunPreset specialGunPreset) {
-        this.specialGunPreset = specialGunPreset;
     }
 
     public PlayerSpecialAttackTypes getSpecialAttackType () {
@@ -366,9 +378,10 @@ public class PlayerStats {
         this.criticalStrikeDamageMultiplier = criticalStrikeDamageMultiplier;
     }
 
-    public void addCriticalStrikeDamageMultiplier(float criticalStrikeDamageMultiplier){
+    public void addCriticalStrikeDamageMultiplier (float criticalStrikeDamageMultiplier) {
         this.criticalStrikeDamageMultiplier += criticalStrikeDamageMultiplier;
     }
+
     public float getAttackSpeedBonus () {
         return attackSpeedBonus;
     }
@@ -377,7 +390,7 @@ public class PlayerStats {
         this.attackSpeedBonus = attackSpeedBonus;
     }
 
-    public void modifyAttackSpeedBonus(float attackSpeedBonus){
+    public void modifyAttackSpeedBonus (float attackSpeedBonus) {
         this.attackSpeedBonus += attackSpeedBonus;
     }
 
@@ -389,7 +402,7 @@ public class PlayerStats {
         this.maxOverloadingShieldMultiplier = maxOverloadingShieldMultiplier;
     }
 
-    public void addMaxOverloadingShieldMultiplier(float maxOverloadingShieldMultiplier){
+    public void addMaxOverloadingShieldMultiplier (float maxOverloadingShieldMultiplier) {
         this.maxOverloadingShieldMultiplier += maxOverloadingShieldMultiplier;
     }
 
@@ -433,8 +446,8 @@ public class PlayerStats {
         this.amountOfDrones = amountOfDrones;
     }
 
-    public void addDrone(int amountOfDrones){
-        if(this.amountOfDrones + amountOfDrones < this.maximumAmountOfDrones){
+    public void addDrone (int amountOfDrones) {
+        if (this.amountOfDrones + amountOfDrones < this.maximumAmountOfDrones) {
             this.amountOfDrones += amountOfDrones;
         }
     }
@@ -455,7 +468,7 @@ public class PlayerStats {
         this.maxShieldMultiplier = maxShieldMultiplier;
     }
 
-    public void addMaxShieldMultiplier(float maxShieldMultiplier) {
+    public void addMaxShieldMultiplier (float maxShieldMultiplier) {
         this.maxShieldMultiplier += maxShieldMultiplier;
     }
 
@@ -467,7 +480,7 @@ public class PlayerStats {
         this.piercingMissilesAmount = piercingMissilesAmount;
     }
 
-    public void addPiercingMissilesAmount(int piercingMissilesAmount){
+    public void addPiercingMissilesAmount (int piercingMissilesAmount) {
         this.piercingMissilesAmount += piercingMissilesAmount;
     }
 }

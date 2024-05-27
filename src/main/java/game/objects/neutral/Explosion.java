@@ -72,6 +72,15 @@ public class Explosion extends GameObject {
         return false;
     }
 
+    public void applyExplosionEffects (GameObject target) {
+        for (EffectInterface effect : effectsToApply) {
+            EffectInterface effectCopy = effect.copy();
+            if (effectCopy != null) {
+                target.addEffect(effectCopy);
+            } else target.addEffect(effect);
+        }
+    }
+
     public boolean isApplyOnHitEffects () {
         return applyOnHitEffects;
     }

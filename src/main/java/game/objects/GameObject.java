@@ -36,6 +36,7 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class GameObject extends Sprite {
@@ -350,8 +351,7 @@ public class GameObject extends Sprite {
     public void applyEffectsWhenPlayerHitsEnemy (GameObject object) {
         List<Item> onHitItems = PlayerInventory.getInstance().getItemsByApplicationMethod(ItemApplicationEnum.AfterCollision);
         for (Item item : onHitItems) {
-            if (item.getItemName().equals(ItemEnums.PlasmaLauncher) &&
-                    PlayerInventory.getInstance().getBlackListedOnHitEffectActivatorObjects().contains(getObjectType())) {
+            if (PlayerInventory.getInstance().getBlackListedOnHitEffectActivatorObjects().contains(getObjectType())) {
                 continue;
             }
             item.applyEffectToObject(object);
@@ -372,7 +372,7 @@ public class GameObject extends Sprite {
         }
     }
 
-    public void dealDamageToGameObject(GameObject gameObject){
+    public void dealDamageToGameObject (GameObject gameObject) {
         gameObject.takeDamage(getDamage());
     }
 
@@ -438,7 +438,7 @@ public class GameObject extends Sprite {
     }
 
     private void moveAnimationsToCenter (SpriteAnimation animation) {
-        animation.setCenterCoordinates(this.getCenterXCoordinate(), this.getYCoordinate());
+        animation.setCenterCoordinates(this.getCenterXCoordinate(), this.getCenterYCoordinate());
     }
 
 
@@ -998,5 +998,19 @@ public class GameObject extends Sprite {
             return animation.getHeight();
         } else
             return this.height;
+    }
+
+
+    @Override
+    public boolean equals (Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        GameObject that = (GameObject) o;
+        return showHealthBar == that.showHealthBar && allowedToMove == that.allowedToMove && Float.compare(originalScale, that.originalScale) == 0 && Float.compare(currentHitpoints, that.currentHitpoints) == 0 && Float.compare(maxHitPoints, that.maxHitPoints) == 0 && Float.compare(currentShieldPoints, that.currentShieldPoints) == 0 && Float.compare(maxShieldPoints, that.maxShieldPoints) == 0 && Float.compare(baseArmor, that.baseArmor) == 0 && Float.compare(armorBonus, that.armorBonus) == 0 && hasAttack == that.hasAttack && Float.compare(damage, that.damage) == 0 && Float.compare(bonusDamageMultiplier, that.bonusDamageMultiplier) == 0 && allowedToDealDamage == that.allowedToDealDamage && Float.compare(attackSpeed, that.attackSpeed) == 0 && Float.compare(attackSpeedBonusModifier, that.attackSpeedBonusModifier) == 0 && friendly == that.friendly && lastBoardBlock == that.lastBoardBlock && currentBoardBlock == that.currentBoardBlock && boxCollision == that.boxCollision && Double.compare(lastGameSecondDamageTaken, that.lastGameSecondDamageTaken) == 0 && centeredAroundObject == that.centeredAroundObject && movementCounter == that.movementCounter && Float.compare(cashMoneyWorth, that.cashMoneyWorth) == 0 && Double.compare(rotationAngle, that.rotationAngle) == 0 && allowedVisualsToRotate == that.allowedVisualsToRotate && Float.compare(xpOnDeath, that.xpOnDeath) == 0 && Objects.equals(animation, that.animation) && Objects.equals(destructionAnimation, that.destructionAnimation) && Objects.equals(shieldDamagedAnimation, that.shieldDamagedAnimation) && Objects.equals(exhaustAnimation, that.exhaustAnimation) && Objects.equals(chargingUpAttackAnimation, that.chargingUpAttackAnimation) && deathSound == that.deathSound && Objects.equals(objectToCenterAround, that.objectToCenterAround) && Objects.equals(objectToFollow, that.objectToFollow) && Objects.equals(movementConfiguration, that.movementConfiguration) && Objects.equals(movementTracker, that.movementTracker) && Objects.equals(currentLocation, that.currentLocation) && Objects.equals(objectsFollowingThis, that.objectsFollowingThis) && Objects.equals(objectOrbitingThis, that.objectOrbitingThis) && Objects.equals(objectType, that.objectType) && movementRotation == that.movementRotation && Objects.equals(ownerOrCreator, that.ownerOrCreator) && Objects.equals(effects, that.effects) && Objects.equals(effectAnimations, that.effectAnimations);
+    }
+
+    @Override
+    public int hashCode () {
+        return Objects.hash(animation, destructionAnimation, shieldDamagedAnimation, exhaustAnimation, chargingUpAttackAnimation, showHealthBar, allowedToMove, originalScale, deathSound, currentHitpoints, maxHitPoints, currentShieldPoints, maxShieldPoints, baseArmor, armorBonus, hasAttack, damage, bonusDamageMultiplier, allowedToDealDamage, attackSpeed, attackSpeedBonusModifier, friendly, objectToCenterAround, objectToFollow, movementConfiguration, movementTracker, lastBoardBlock, currentLocation, currentBoardBlock, objectsFollowingThis, objectOrbitingThis, objectType, movementRotation, boxCollision, lastGameSecondDamageTaken, ownerOrCreator, centeredAroundObject, movementCounter, cashMoneyWorth, rotationAngle, allowedVisualsToRotate, effects, effectAnimations, xpOnDeath);
     }
 }

@@ -30,12 +30,13 @@ public class MissileCreator {
         return spriteConfiguration;
     }
 
-    public MissileConfiguration createMissileConfiguration (MissileTypeEnums attackType, int maxHitPoints, int maxShields,
+    public MissileConfiguration createMissileConfiguration (MissileEnums attackType, int maxHitPoints, int maxShields,
                                                             AudioEnums deathSound, float damage, ImageEnums missileDestructionImage,
-                                                            boolean isFriendly, boolean allowedToDealDamage, String objectType, boolean isBoxCollision) {
+                                                            boolean isFriendly, boolean allowedToDealDamage, String objectType, boolean isBoxCollision,
+                                                            boolean isExplosive) {
         MissileConfiguration missileConfiguration = new MissileConfiguration(attackType, maxHitPoints, maxShields,
                 deathSound, damage, missileDestructionImage, isFriendly,
-                allowedToDealDamage, objectType, isBoxCollision);
+                allowedToDealDamage, objectType, isBoxCollision, isExplosive);
         return missileConfiguration;
     }
 
@@ -52,7 +53,7 @@ public class MissileCreator {
 
     public Missile createMissile (SpriteConfiguration spriteConfiguration, MissileConfiguration missileConfiguration, MovementConfiguration movementConfiguration) {
         switch (missileConfiguration.getMissileType()) {
-            case AlienLaserbeam, DefaultPlayerLaserbeam, LaserBullet -> {
+            case AlienLaserbeam, PlayerLaserbeam, LaserBullet -> {
                 return new GenericMissile(spriteConfiguration, missileConfiguration, movementConfiguration);
             }
             case BombaProjectile -> {

@@ -1,17 +1,13 @@
 package game.objects.missiles;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import game.gamestate.GameStateInfo;
 import game.items.PlayerInventory;
 import game.items.effects.EffectActivationTypes;
-import game.items.enums.ItemEnums;
 import game.managers.AnimationManager;
-import game.objects.GameObject;
 import game.items.Item;
-import game.items.enums.ItemApplicationEnum;
 import game.objects.missiles.missiletypes.TazerProjectile;
 import game.objects.player.spaceship.SpaceShip;
 import game.util.CollisionDetector;
@@ -19,7 +15,6 @@ import game.objects.player.PlayerManager;
 import game.objects.enemies.Enemy;
 import game.objects.enemies.EnemyManager;
 import game.objects.missiles.specialAttacks.SpecialAttack;
-import game.objects.missiles.missiletypes.Rocket1;
 
 
 public class MissileManager {
@@ -111,7 +106,7 @@ public class MissileManager {
     private void checkMissileCollisions () {
         for (Missile missile : missiles) {
             if (missile.isVisible()) {
-                if (missile.getMissileType().equals(MissileTypeEnums.TazerProjectile)) { //Check special interactions first currently only tazers
+                if (missile.getMissileEnum().equals(MissileEnums.TazerProjectile)) { //Check special interactions first currently only tazers
                     checkMissileCollisionWithPlayer(missile);
                     checkMissileCollisionWithEnemies(missile);
                 } else if (missile.isFriendly()) {  //Then generic friendly missiles on enemies
@@ -189,7 +184,7 @@ public class MissileManager {
     private void checkMissileCollisionWithEnemies (Missile missile) {
         for (Enemy enemy : enemyManager.getEnemies()) {
             if (collisionDetector.detectCollision(missile, enemy)) {
-                if (missile.getMissileType().equals(MissileTypeEnums.TazerProjectile)) {
+                if (missile.getMissileEnum().equals(MissileEnums.TazerProjectile)) {
                     ((TazerProjectile) missile).handleTazerMissile(missile, enemy);
                 } else { //It's a player missile
                     missile.handleCollision(enemy);
@@ -204,12 +199,13 @@ public class MissileManager {
     private void checkMissileCollisionWithPlayer (Missile missile) {
         SpaceShip spaceship = playerManager.getSpaceship();
         if (collisionDetector.detectCollision(missile, spaceship)) {
-            if (missile.getMissileType().equals(MissileTypeEnums.TazerProjectile)) {
+            if (missile.getMissileEnum().equals(MissileEnums.TazerProjectile)) {
                 ((TazerProjectile) missile).handleTazerMissile(missile, spaceship);
             }
-            missile.dealDamageToGameObject(spaceship);
+            missile.handleCollision(spaceship);
+//            missile.dealDamageToGameObject(spaceship);
             applyEffectsWhenPlayerTakesDamage();
-            missile.destroyMissile(); //Assume enemy projectiles always get destroyed on contact
+//            missile.destroyMissile(); //Assumes enemy projectiles always get destroyed on contact
         }
     }
 

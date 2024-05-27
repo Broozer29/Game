@@ -9,14 +9,12 @@ import game.managers.AnimationManager;
 import game.movement.Direction;
 import game.movement.MovementConfiguration;
 import game.movement.pathfinderconfigs.MovementPatternSize;
-import game.movement.pathfinders.HomingPathFinder;
 import game.movement.pathfinders.PathFinder;
 import game.movement.pathfinders.RegularPathFinder;
 import game.objects.enemies.EnemyConfiguration;
 import game.objects.enemies.Enemy;
 import game.objects.missiles.*;
 import VisualAndAudioData.image.ImageEnums;
-import game.objects.player.PlayerManager;
 import game.util.WithinVisualBoundariesCalculator;
 import visualobjects.SpriteConfigurations.SpriteAnimationConfiguration;
 import visualobjects.SpriteConfigurations.SpriteConfiguration;
@@ -39,7 +37,7 @@ public class Bomba extends Enemy {
 
 		//Specialized behaviour configuration stuff
 		this.initDirectionFromRotation();
-		this.damage = MissileTypeEnums.BombaProjectile.getDamage();
+		this.damage = MissileEnums.BombaProjectile.getDamage();
 	}
 
 	public void fireAction() {
@@ -65,7 +63,7 @@ public class Bomba extends Enemy {
 
 
 			//Create missile movement attributes and create a movement configuration
-			MissileTypeEnums missileType = MissileTypeEnums.BombaProjectile;
+			MissileEnums missileType = MissileEnums.BombaProjectile;
 			PathFinder missilePathFinder = new RegularPathFinder();
 			MovementPatternSize movementPatternSize = MovementPatternSize.SMALL;
 			MovementConfiguration movementConfiguration = MissileCreator.getInstance().createMissileMovementConfig(
@@ -82,7 +80,8 @@ public class Bomba extends Enemy {
 			String objectType = "Bomba Missile";
 
 			MissileConfiguration missileConfiguration = MissileCreator.getInstance().createMissileConfiguration(missileType, maxHitPoints, maxShields,
-					deathSound, this.getDamage(), missileType.getDeathOrExplosionImageEnum(), isFriendly, allowedToDealDamage, objectType, false);
+					deathSound, this.getDamage(), missileType.getDeathOrExplosionImageEnum(), isFriendly, allowedToDealDamage, objectType, false,
+					true);
 
 
 			//Create the missile and finalize the creation process, then add it to the manager and consequently the game

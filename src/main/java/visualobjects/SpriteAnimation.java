@@ -205,11 +205,11 @@ public class SpriteAnimation extends Sprite implements Cloneable{
 	// dimensions
 	public void setCenterCoordinates(int newXCoordinate, int newYCoordinate) {
 		if (currentFrame < frames.size()) {
-			this.xCoordinate = newXCoordinate - (frames.get(currentFrame).getWidth(null) / 2) + xOffset;
-			this.yCoordinate = newYCoordinate - (frames.get(currentFrame).getHeight(null) / 2) + yOffset;
+			this.xCoordinate = newXCoordinate - (frames.get(currentFrame).getWidth(null) / 2);
+			this.yCoordinate = newYCoordinate - (frames.get(currentFrame).getHeight(null) / 2);
 		} else {
-			this.xCoordinate = newXCoordinate - (frames.get(currentFrame - 1).getWidth(null) / 2) + xOffset;
-			this.yCoordinate = newYCoordinate - (frames.get(currentFrame - 1).getHeight(null) / 2) + yOffset;
+			this.xCoordinate = newXCoordinate - (frames.get(currentFrame - 1).getWidth(null) / 2);
+			this.yCoordinate = newYCoordinate - (frames.get(currentFrame - 1).getHeight(null) / 2);
 		}
 
 	}

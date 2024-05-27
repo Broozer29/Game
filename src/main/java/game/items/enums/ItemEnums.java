@@ -27,6 +27,7 @@ public enum ItemEnums {
     CriticalOverloadCapacitor(ItemRarityEnums.Legendary, ItemCategory.Offense, ImageEnums.Starcraft2_Auto_Tracking, "Critical Overload Capacitor"),
     BarrierSuperSizer(ItemRarityEnums.Common, ItemCategory.Defense, ImageEnums.Starcraft2_Fire_Hardened_Shields, "Barrier Super Sizer"),
     DrillerModule(ItemRarityEnums.Legendary, ItemCategory.Offense, ImageEnums.Starcraft2_Pulse_Laser, "Driller Module"),
+    BouncingModuleAddon(ItemRarityEnums.Legendary, ItemCategory.Offense, ImageEnums.Test_Image, "Bouncing Module Addon"),
     StickyDynamite(ItemRarityEnums.Common, ItemCategory.Offense, ImageEnums.StickyDynamite, "Sticky Dynamite");
 
 

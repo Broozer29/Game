@@ -58,7 +58,16 @@ public class ItemDescriptionRetriever {
                 return "Adds a guardian drone that fires missiles. Max of 8 drones";
             }
             case CriticalOverloadCapacitor -> {
-                return "Increases critical damage by 100%";
+                return "Increases critical damage by 100% (+100%)";
+            }
+            case BarrierSuperSizer -> {
+                return "Inceases maximum shield and maximum overloaded shield by 25 (+25)";
+            }
+            case DrillerModule -> {
+                return "Allows missiles to pierce 1 (+1) additional time";
+            }
+            case BouncingModuleAddon -> {
+                return "Piercing missiles bounce towards enemies instead. Bouncing missiles gain +10% damage (+10%) per bounce";
             }
         }
         return "This item has no description yet";

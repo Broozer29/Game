@@ -15,10 +15,12 @@ public class PlayerInventory {
     private static PlayerInventory instance = new PlayerInventory();
     private Map<ItemEnums, Item> items = new HashMap<>();
     private float cashMoney = 5000;
-    private List<String> blackListedOnHitEffectActivatorObjects = Arrays.asList(new String[]{"Plasma Launcher Missile", "Drone Missile"});
+    private List<String> blackListedOnHitEffectActivatorObjects = Arrays.asList("Plasma Launcher Missile", "Drone Missile");
     private PlayerInventory () {
         addItem(ItemEnums.DrillerModule);
-//        addItem(ItemEnums.StickyDynamite);
+        addItem(ItemEnums.DrillerModule);
+        addItem(ItemEnums.BouncingModuleAddon);
+        addItem(ItemEnums.PlasmaCoatedBullets);
     }
 
     public void resetInventory(){
@@ -87,6 +89,8 @@ public class PlayerInventory {
                 return new BarrierSupersizer();
             case DrillerModule:
                 return new DrillerModule();
+            case BouncingModuleAddon:
+                return new BouncingModuleAddon();
             default:
                 System.out.println("I tried to create: " + itemEnum + " but fell in default, did you forget to add it to the inventory creation?");
                 return null;

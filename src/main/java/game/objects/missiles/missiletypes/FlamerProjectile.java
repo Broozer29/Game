@@ -23,7 +23,6 @@ public class FlamerProjectile extends Missile {
 	public void missileAction() {
 		if (movementConfiguration.getStepsTaken() % 5 == 0 && animation.getScale() < 2.00) {
 			this.animation.setAnimationScale((float) (animation.getScale() + 0.05));
-			;
 		}
 	}
 

@@ -9,14 +9,12 @@ import game.movement.MovementConfiguration;
 import game.movement.pathfinderconfigs.MovementPatternSize;
 import game.movement.pathfinders.BouncingPathFinder;
 import game.movement.pathfinders.HoverPathFinder;
-import game.movement.pathfinders.PathFinder;
-import game.movement.pathfinders.RegularPathFinder;
 import game.objects.enemies.Enemy;
 import game.objects.enemies.EnemyConfiguration;
 import game.objects.missiles.Missile;
 import game.objects.missiles.MissileConfiguration;
 import game.objects.missiles.MissileCreator;
-import game.objects.missiles.MissileTypeEnums;
+import game.objects.missiles.MissileEnums;
 import game.util.WithinVisualBoundariesCalculator;
 import visualobjects.SpriteAnimation;
 import visualobjects.SpriteConfigurations.SpriteAnimationConfiguration;
@@ -42,7 +40,7 @@ public class Tazer extends Enemy {
         destroyedExplosionfiguration.getSpriteConfiguration().setImageType(ImageEnums.Tazer_Destroyed_Explosion);
         this.destructionAnimation = new SpriteAnimation(destroyedExplosionfiguration);
 
-        this.damage = MissileTypeEnums.TazerProjectile.getDamage();
+        this.damage = MissileEnums.TazerProjectile.getDamage();
         initDirectionFromRotation();
 
     }
@@ -82,13 +80,13 @@ public class Tazer extends Enemy {
 
 
     private void shootMissile (Direction randomDirection) {
-        SpriteConfiguration spriteConfiguration = MissileCreator.getInstance().createMissileSpriteConfig(xCoordinate, yCoordinate,MissileTypeEnums.TazerProjectile.getImageType()
+        SpriteConfiguration spriteConfiguration = MissileCreator.getInstance().createMissileSpriteConfig(xCoordinate, yCoordinate, MissileEnums.TazerProjectile.getImageType()
                 ,1);
 
 
 
         //Create missile movement attributes and create a movement configuration
-        MissileTypeEnums missileType = MissileTypeEnums.TazerProjectile;
+        MissileEnums missileType = MissileEnums.TazerProjectile;
         BouncingPathFinder missilePathFinder = new BouncingPathFinder();
         missilePathFinder.setMaxBounces(1);
         MovementPatternSize movementPatternSize = MovementPatternSize.SMALL;
@@ -108,7 +106,8 @@ public class Tazer extends Enemy {
         String objectType = "Tazer Projectile";
 
         MissileConfiguration missileConfiguration = MissileCreator.getInstance().createMissileConfiguration(missileType, maxHitPoints, maxShields,
-                deathSound, this.getDamage(), missileType.getDeathOrExplosionImageEnum(), isFriendly, allowedToDealDamage, objectType, false);
+                deathSound, this.getDamage(), missileType.getDeathOrExplosionImageEnum(), isFriendly, allowedToDealDamage, objectType,
+                false, false);
 
 
         //Create the missile and finalize the creation process, then add it to the manager and consequently the game

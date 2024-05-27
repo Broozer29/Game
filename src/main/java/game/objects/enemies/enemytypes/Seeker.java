@@ -3,7 +3,6 @@ package game.objects.enemies.enemytypes;
 import VisualAndAudioData.audio.enums.AudioEnums;
 import game.gamestate.GameStateInfo;
 import game.managers.AnimationManager;
-import game.movement.Direction;
 import game.movement.MovementConfiguration;
 import game.movement.PathFinderEnums;
 import game.movement.Point;
@@ -33,7 +32,7 @@ public class Seeker extends Enemy {
         destroyedExplosionfiguration.getSpriteConfiguration().setImageType(ImageEnums.Seeker_Destroyed_Explosion);
         this.destructionAnimation = new SpriteAnimation(destroyedExplosionfiguration);
         this.missileTypePathFinders = PathFinderEnums.StraightLine;
-        this.damage = MissileTypeEnums.SeekerProjectile.getDamage();
+        this.damage = MissileEnums.SeekerProjectile.getDamage();
 
 
 //        this.attackSpeed = 20;
@@ -72,7 +71,7 @@ public class Seeker extends Enemy {
 
 
         //Create missile movement attributes and create a movement configuration
-        MissileTypeEnums missileType = MissileTypeEnums.SeekerProjectile;
+        MissileEnums missileType = MissileEnums.SeekerProjectile;
         PathFinder missilePathFinder = new StraightLinePathFinder();
         MovementPatternSize movementPatternSize = MovementPatternSize.SMALL;
         MovementConfiguration movementConfiguration = MissileCreator.getInstance().createMissileMovementConfig(
@@ -89,7 +88,8 @@ public class Seeker extends Enemy {
         String objectType = "Seeker Missile";
 
         MissileConfiguration missileConfiguration = MissileCreator.getInstance().createMissileConfiguration(missileType, maxHitPoints, maxShields,
-                deathSound, this.getDamage(), missileType.getDeathOrExplosionImageEnum(), isFriendly, allowedToDealDamage, objectType, false);
+                deathSound, this.getDamage(), missileType.getDeathOrExplosionImageEnum(), isFriendly, allowedToDealDamage, objectType,
+                false, false);
 
 
         //Create the missile and finalize the creation process, then add it to the manager and consequently the game

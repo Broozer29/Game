@@ -29,18 +29,20 @@ public class Rocket1 extends Missile{
 	
 	
 	public void missileAction() {
+
+	}
+
+	@Override
+	public void detonateMissile(){
 		ExplosionConfiguration explosionConfiguration = new ExplosionConfiguration(isFriendly(), explosionDamage, true, true);
-
-		SpriteAnimationConfiguration rocketExplosionConfig = new SpriteAnimationConfiguration(spriteConfiguration, 2, false);
+		SpriteAnimationConfiguration rocketExplosionConfig = new SpriteAnimationConfiguration(spriteConfiguration, 1, false);
 		rocketExplosionConfig.getSpriteConfiguration().setImageType(ImageEnums.Destroyed_Explosion);
-		SpriteAnimation explosionAnimation = new SpriteAnimation(rocketExplosionConfig);
 
-		int explosionScale = 2;
+		float explosionScale = 1.5f;
 		Explosion explosion = new Explosion(rocketExplosionConfig, explosionConfiguration);
 		explosion.setScale(explosionScale);
-		explosion.updateBoardBlock();
 		explosion.setOwnerOrCreator(this.ownerOrCreator);
-		explosionAnimation.setCenterCoordinates(this.getCenterXCoordinate() + (this.getWidth() / 2), this.getCenterYCoordinate() - (this.height / 2));
+		explosion.setCenterCoordinates(this.getCenterXCoordinate() + explosion.getWidth() / 2, this.getCenterYCoordinate());
 		ExplosionManager.getInstance().addExplosion(explosion);
 	}
 	

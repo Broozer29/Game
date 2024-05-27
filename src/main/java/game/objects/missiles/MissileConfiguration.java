@@ -1,15 +1,11 @@
 package game.objects.missiles;
 
-import game.movement.Direction;
-import game.movement.pathfinderconfigs.MovementPatternSize;
-import game.movement.pathfinders.PathFinder;
-import game.objects.GameObject;
 import VisualAndAudioData.audio.enums.AudioEnums;
 import VisualAndAudioData.image.ImageEnums;
 
 public class MissileConfiguration {
 
-    private MissileTypeEnums missileType;
+    private MissileEnums missileType;
 
     private int maxHitPoints;
     private int maxShields;
@@ -28,10 +24,11 @@ public class MissileConfiguration {
     private boolean destroysMissiles;
     private boolean piercesMissiles;
     private int amountOfPierces;
+    private boolean isExplosive;
 
-    public MissileConfiguration (MissileTypeEnums missileType, int maxHitPoints, int maxShields, AudioEnums deathSound,
+    public MissileConfiguration (MissileEnums missileType, int maxHitPoints, int maxShields, AudioEnums deathSound,
                                  float damage, ImageEnums destructionType, boolean isFriendly, boolean allowedToDealDamage,
-                                 String objectType, boolean boxCollision) {
+                                 String objectType, boolean boxCollision, boolean isExplosive) {
         this.missileType = missileType;
         this.maxHitPoints = maxHitPoints;
         this.maxShields = maxShields;
@@ -43,8 +40,9 @@ public class MissileConfiguration {
         this.objectType = objectType;
         this.boxCollision = boxCollision;
         this.destroysMissiles = false; //Default setting
-        this.piercesMissiles = false;
-        this.amountOfPierces = 0;
+        this.piercesMissiles = false; //Default setting
+        this.amountOfPierces = 0; //Default setting
+        this.isExplosive = isExplosive;
     }
 
     public MissileConfiguration () {
@@ -115,11 +113,11 @@ public class MissileConfiguration {
         this.damage = damage;
     }
 
-    public MissileTypeEnums getMissileType () {
+    public MissileEnums getMissileType () {
         return missileType;
     }
 
-    public void setMissileType (MissileTypeEnums missileType) {
+    public void setMissileType (MissileEnums missileType) {
         this.missileType = missileType;
     }
 
@@ -158,5 +156,13 @@ public class MissileConfiguration {
 
     public void setAmountOfPierces (int amountOfPierces) {
         this.amountOfPierces = amountOfPierces;
+    }
+
+    public boolean isExplosive () {
+        return isExplosive;
+    }
+
+    public void setExplosive (boolean explosive) {
+        isExplosive = explosive;
     }
 }

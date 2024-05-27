@@ -32,7 +32,6 @@ import game.UI.GameUIManager;
 import game.objects.neutral.ExplosionManager;
 import game.managers.OnScreenTextManager;
 import game.objects.friendlies.FriendlyObject;
-import game.objects.missiles.MissileTypeEnums;
 import game.objects.player.PlayerManager;
 import game.objects.background.BackgroundManager;
 import game.objects.background.BackgroundObject;
@@ -42,13 +41,10 @@ import game.objects.friendlies.FriendlyManager;
 import game.objects.powerups.PowerUp;
 import game.util.OnScreenText;
 import game.objects.powerups.PowerUpManager;
-import game.objects.player.PlayerSpecialAttackTypes;
 import game.objects.player.spaceship.SpaceShipSpecialGun;
 import game.objects.missiles.specialAttacks.SpecialAttack;
 import game.objects.missiles.Missile;
 import game.objects.missiles.MissileManager;
-import game.objects.player.playerpresets.GunPreset;
-import game.objects.player.playerpresets.SpecialGunPreset;
 import game.objects.player.BoostsUpgradesAndBuffsSettings;
 import VisualAndAudioData.DataClass;
 import game.gamestate.GameStateInfo;
@@ -136,20 +132,6 @@ public class GameBoard extends JPanel implements ActionListener {
         animationManager.resetManager();
         PlayerManager.getInstance().resetManager();
         PlayerManager.getInstance().createSpaceShip();
-
-        // Dit moet uit een "out-of-game state manager" gehaald worden
-        if (playerStats.getNormalGunPreset() == null) {
-            GunPreset preset = new GunPreset(MissileTypeEnums.DefaultPlayerLaserbeam);
-            playerStats.setNormalGunPreset(preset);
-        }
-        playerStats.getNormalGunPreset().loadPreset();
-
-        // Dit moet uit een "out-of-game state manager" gehaald worden
-        if (playerStats.getSpecialGunPreset() == null) {
-            SpecialGunPreset preset = new SpecialGunPreset(PlayerSpecialAttackTypes.EMP);
-            playerStats.setSpecialGunPreset(preset);
-        }
-        playerStats.getSpecialGunPreset().loadPreset();
         uiManager.createGameBoardGUI();
         gameState.setGameState(GameStatusEnums.Zoning_In);
         drawTimer.start();
@@ -179,17 +161,6 @@ public class GameBoard extends JPanel implements ActionListener {
 
         rnd = new Random().nextInt(strings.size());
         msg = strings.get(rnd);
-
-        if (playerStats.getNormalGunPreset() == null) {
-            GunPreset preset = new GunPreset(MissileTypeEnums.DefaultPlayerLaserbeam);
-            playerStats.setNormalGunPreset(preset);
-        }
-        playerStats.getNormalGunPreset().loadPreset();
-
-        if (playerStats.getSpecialGunPreset() == null) {
-            SpecialGunPreset preset = new SpecialGunPreset(PlayerSpecialAttackTypes.EMP);
-            playerStats.setSpecialGunPreset(preset);
-        }
     }
 
     private void resetManagersForNextLevel () {

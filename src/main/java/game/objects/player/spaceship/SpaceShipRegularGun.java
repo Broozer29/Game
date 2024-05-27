@@ -5,7 +5,6 @@ import java.io.IOException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
 import game.gamestate.GameStateInfo;
-import game.managers.OnScreenTextManager;
 import game.movement.Direction;
 import game.movement.MovementConfiguration;
 import game.movement.pathfinderconfigs.MovementPatternSize;
@@ -37,7 +36,7 @@ public class SpaceShipRegularGun {
 
     }
 
-    public void fire(int xCoordinate, int yCoordinate, MissileTypeEnums playerAttackType) {
+    public void fire (int xCoordinate, int yCoordinate, MissileEnums playerAttackType) {
         double currentTime = GameStateInfo.getInstance().getGameSeconds();
 
         if (currentTime >= lastAttackTime + playerStats.getAttackSpeed()) {
@@ -53,7 +52,7 @@ public class SpaceShipRegularGun {
             fireMissile(xCoordinate, yCoordinate, visualImage, impactType, Direction.RIGHT, scale, pathFinder, xMovementSpeed, yMovementSpeed, playerAttackType);
 
             switch (playerAttackType) {
-                case DefaultPlayerLaserbeam -> playMissileAudio(AudioEnums.Player_Laserbeam);
+                case PlayerLaserbeam -> playMissileAudio(AudioEnums.Player_Laserbeam);
                 case Rocket1 -> playMissileAudio(AudioEnums.Rocket_Launcher);
             }
         }
@@ -62,7 +61,7 @@ public class SpaceShipRegularGun {
 
     private void fireMissile (int xCoordinate, int yCoordinate, ImageEnums playerMissileType,
                               ImageEnums playerMissileImpactType, Direction direction, float missileScale, PathFinder missilePathFinder,
-                              int xMovementspeed, int yMovementspeed, MissileTypeEnums attackType) {
+                              int xMovementspeed, int yMovementspeed, MissileEnums attackType) {
 
         MissileCreator missileCreator1 = MissileCreator.getInstance();
         SpriteConfiguration spriteConfiguration = missileCreator1.createMissileSpriteConfig(xCoordinate, yCoordinate,
@@ -86,19 +85,21 @@ public class SpaceShipRegularGun {
         boolean allowedToDealDamage = true;
         String objectType = "Player Missile";
         float damage = playerStats.getNormalAttackDamage();
+        boolean isExplosive = false;
 
-
-        switch (attackType){
-            case DefaultPlayerLaserbeam -> damage = playerStats.getNormalAttackDamage();
-            case Rocket1 -> damage = playerStats.getNormalAttackDamage() * 2f;
+        switch (attackType) {
+            case Rocket1 -> isExplosive = true;
         }
 
         MissileConfiguration missileConfiguration = missileCreator1.createMissileConfiguration(attackType, maxHitPoints, maxShields,
-                deathSound, damage, playerMissileImpactType, isFriendly, allowedToDealDamage, objectType, attackType.isBoxCollision());
+                deathSound, damage, playerMissileImpactType, isFriendly, allowedToDealDamage, objectType, attackType.isBoxCollision(),
+                isExplosive);
 
         PlayerStats instance = PlayerStats.getInstance();
-        missileConfiguration.setPiercesMissiles(instance.getPiercingMissilesAmount() > 0);
-        missileConfiguration.setAmountOfPierces(instance.getPiercingMissilesAmount());
+        if(!isExplosive) {
+            missileConfiguration.setPiercesMissiles(instance.getPiercingMissilesAmount() > 0);
+            missileConfiguration.setAmountOfPierces(instance.getPiercingMissilesAmount());
+        }
         Missile missile = missileCreator1.createMissile(spriteConfiguration, missileConfiguration, movementConfiguration);
         SpaceShip spaceship = PlayerManager.getInstance().getSpaceship();
         missile.setOwnerOrCreator(spaceship);

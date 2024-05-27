@@ -14,7 +14,7 @@ import game.objects.enemies.enums.EnemyEnums;
 import game.objects.missiles.Missile;
 import game.objects.missiles.MissileConfiguration;
 import game.objects.missiles.MissileCreator;
-import game.objects.missiles.MissileTypeEnums;
+import game.objects.missiles.MissileEnums;
 import game.util.WithinVisualBoundariesCalculator;
 import visualobjects.SpriteAnimation;
 import visualobjects.SpriteConfigurations.SpriteAnimationConfiguration;
@@ -28,7 +28,7 @@ public class Scout extends Enemy {
         this.destructionAnimation = new SpriteAnimation(destroyedExplosionfiguration);
         this.destructionAnimation.setAnimationScale(this.scale / 1.5f);
         this.attackSpeed = this.enemyType.getAttackSpeed();
-        this.damage = MissileTypeEnums.LaserBullet.getDamage();
+        this.damage = MissileEnums.LaserBullet.getDamage();
     }
 
     @Override
@@ -53,7 +53,7 @@ public class Scout extends Enemy {
 
 
         //Create missile movement attributes and create a movement configuration
-        MissileTypeEnums missileType = MissileTypeEnums.LaserBullet;
+        MissileEnums missileType = MissileEnums.LaserBullet;
         PathFinder missilePathFinder = new RegularPathFinder();
         MovementPatternSize movementPatternSize = MovementPatternSize.SMALL;
         MovementConfiguration movementConfiguration = MissileCreator.getInstance().createMissileMovementConfig(
@@ -70,7 +70,8 @@ public class Scout extends Enemy {
         String objectType = "Scout Laser Bullet";
 
         MissileConfiguration missileConfiguration = MissileCreator.getInstance().createMissileConfiguration(missileType, maxHitPoints, maxShields,
-                deathSound, this.getDamage(), missileType.getDeathOrExplosionImageEnum(), isFriendly, allowedToDealDamage, objectType, false);
+                deathSound, this.getDamage(), missileType.getDeathOrExplosionImageEnum(), isFriendly, allowedToDealDamage, objectType,
+                false, false);
 
 
         //Create the missile and finalize the creation process, then add it to the manager and consequently the game

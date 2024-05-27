@@ -29,7 +29,7 @@ public class Energizer extends Enemy {
 		destroyedExplosionfiguration.getSpriteConfiguration().setImageType(ImageEnums.Energizer_Destroyed_Explosion);
 		this.destructionAnimation = new SpriteAnimation(destroyedExplosionfiguration);
 
-		this.damage = MissileTypeEnums.BarrierProjectile.getDamage();
+		this.damage = MissileEnums.BarrierProjectile.getDamage();
 //		allowedToFire = true;
 //		attackSpeed = 20;
 	}
@@ -63,7 +63,7 @@ public class Energizer extends Enemy {
 
 
 		//Create missile movement attributes and create a movement configuration
-		MissileTypeEnums missileType = MissileTypeEnums.BarrierProjectile;
+		MissileEnums missileType = MissileEnums.BarrierProjectile;
 		PathFinder missilePathFinder = new RegularPathFinder();
 		MovementPatternSize movementPatternSize = MovementPatternSize.SMALL;
 		MovementConfiguration movementConfiguration = MissileCreator.getInstance().createMissileMovementConfig(
@@ -80,7 +80,8 @@ public class Energizer extends Enemy {
 		String objectType = "Barrier Projectile";
 
 		MissileConfiguration missileConfiguration = MissileCreator.getInstance().createMissileConfiguration(missileType, maxHitPoints, maxShields,
-				deathSound, this.getDamage(), missileType.getDeathOrExplosionImageEnum(), isFriendly, allowedToDealDamage, objectType, false);
+				deathSound, this.getDamage(), missileType.getDeathOrExplosionImageEnum(), isFriendly, allowedToDealDamage, objectType, false,
+				false);
 
 
 		//Create the missile and finalize the creation process, then add it to the manager and consequently the game

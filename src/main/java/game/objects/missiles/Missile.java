@@ -1,8 +1,15 @@
 package game.objects.missiles;
 
+import game.items.Item;
+import game.items.PlayerInventory;
+import game.items.enums.ItemEnums;
 import game.managers.AnimationManager;
 import game.movement.MovementConfiguration;
+import game.movement.Point;
+import game.movement.pathfinders.RegularPathFinder;
+import game.movement.pathfinders.StraightLinePathFinder;
 import game.objects.GameObject;
+import game.objects.enemies.EnemyManager;
 import game.objects.missiles.missiletypes.Rocket1;
 import visualobjects.SpriteConfigurations.SpriteAnimationConfiguration;
 import visualobjects.SpriteConfigurations.SpriteConfiguration;
@@ -14,7 +21,8 @@ import java.util.List;
 public class Missile extends GameObject {
 
     protected List<GameObject> collidedObjects;
-    protected MissileTypeEnums missileType;
+    protected MissileEnums missileEnum;
+    protected boolean isExplosive;
     protected boolean destroysMissiles;
     protected boolean piercesThroughObjects;
     protected int amountOfPiercesLeft;
@@ -43,10 +51,11 @@ public class Missile extends GameObject {
         this.allowedToDealDamage = missileConfiguration.isAllowedToDealDamage();
         this.objectType = missileConfiguration.getObjectType();
         this.damage = missileConfiguration.getDamage();
-        this.missileType = missileConfiguration.getMissileType();
+        this.missileEnum = missileConfiguration.getMissileType();
         this.boxCollision = missileConfiguration.isBoxCollision();
         this.piercesThroughObjects = missileConfiguration.isPiercesMissiles();
         this.amountOfPiercesLeft = missileConfiguration.getAmountOfPierces();
+        this.isExplosive = missileConfiguration.isExplosive();
         this.collidedObjects = new ArrayList<>();
 
         if (missileConfiguration.getDestructionType() != null) {
@@ -66,7 +75,11 @@ public class Missile extends GameObject {
     }
 
     public void missileAction () {
-        // Exists to be overriden
+        // Exists to be overriden by non-explosive missiles
+    }
+
+    public void detonateMissile (){
+        //Exists to be overriden by explosive missiles
     }
 
     public boolean isDestroysMissiles () {
@@ -77,12 +90,12 @@ public class Missile extends GameObject {
         this.destroysMissiles = destroysMissiles;
     }
 
-    public MissileTypeEnums getMissileType () {
-        return missileType;
+    public MissileEnums getMissileEnum () {
+        return missileEnum;
     }
 
-    public void setMissileType (MissileTypeEnums missileType) {
-        this.missileType = missileType;
+    public void setMissileEnum (MissileEnums missileEnum) {
+        this.missileEnum = missileEnum;
     }
 
     public boolean isPiercesThroughObjects () {
@@ -127,20 +140,54 @@ public class Missile extends GameObject {
         applyDamageModification(collidedObject); // Adjust damage based on any modifiers.
 
         // Handle different types of missiles
-        if (this instanceof Rocket1) {
-            missileAction();
+        if (isExplosive) {
+            detonateMissile();
             destroyMissile();
         } else {
-            if (piercesThroughObjects && amountOfPiercesLeft > 0 && !collidedObjects.contains(collidedObject)) {
-                dealDamageToGameObject(collidedObject);
-                addCollidedObject(collidedObject);
-                amountOfPiercesLeft--;
-            } else if (!piercesThroughObjects || amountOfPiercesLeft <= 0 && !collidedObjects.contains(collidedObject)) {
-                dealDamageToGameObject(collidedObject);
-                destroyMissile();
-            }
+            pierceAndBounce(collidedObject);
         }
     }
 
+    private void pierceAndBounce(GameObject collidedObject){
+        if (piercesThroughObjects && amountOfPiercesLeft > 0 && !collidedObjects.contains(collidedObject)) {
+            dealDamageToGameObject(collidedObject);
+            addCollidedObject(collidedObject);
+            amountOfPiercesLeft--;
 
+            //Rework in a nicer way, just testing
+            Item bouncingModuleAddon = PlayerInventory.getInstance().getItemByName(ItemEnums.BouncingModuleAddon);
+            if(bouncingModuleAddon != null) {
+                GameObject newTarget = EnemyManager.getInstance().getEnemyClosestToGameObject(collidedObject, this.collidedObjects);
+                if (newTarget != null) {
+                    bouncingModuleAddon.applyEffectToObject(this);
+                    bounceToNewTarget(newTarget);
+                }
+            }
+
+        } else if (!piercesThroughObjects || amountOfPiercesLeft <= 0 && !collidedObjects.contains(collidedObject)) {
+            dealDamageToGameObject(collidedObject);
+            destroyMissile();
+        }
+    }
+
+    private void bounceToNewTarget(GameObject newTarget){
+        this.resetMovementPath();
+        this.movementConfiguration.initDefaultSettingsForSpecializedPathFinders();
+        this.movementConfiguration.setRotation(this.movementRotation);
+        this.movementConfiguration.setCurrentLocation(this.currentLocation);
+        this.movementConfiguration.setPathFinder(new StraightLinePathFinder());
+
+        int centerX = newTarget.getCenterXCoordinate() - this.getWidth() / 2;
+        int centerY = newTarget.getCenterYCoordinate() - this.getHeight() / 2;
+
+        this.movementConfiguration.setDestination(new Point(centerX, centerY));
+    }
+
+    public boolean isExplosive () {
+        return isExplosive;
+    }
+
+    public void setExplosive (boolean explosive) {
+        isExplosive = explosive;
+    }
 }

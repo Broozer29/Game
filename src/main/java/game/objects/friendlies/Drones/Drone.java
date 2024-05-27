@@ -1,7 +1,6 @@
 package game.objects.friendlies.Drones;
 
 import game.gamestate.GameStateInfo;
-import game.managers.AnimationManager;
 import game.movement.Direction;
 import game.movement.MovementConfiguration;
 import game.movement.pathfinderconfigs.MovementPatternSize;
@@ -72,9 +71,9 @@ public class Drone extends FriendlyObject {
             movementConfiguration.setTargetToChase(((HomingPathFinder) pathFinder).getTarget(isFriendly, this.xCoordinate, this.yCoordinate));
         }
 
-        MissileConfiguration missileConfiguration = new MissileConfiguration(MissileTypeEnums.DefaultPlayerLaserbeam
+        MissileConfiguration missileConfiguration = MissileCreator.getInstance().createMissileConfiguration(MissileEnums.PlayerLaserbeam
                 , 100, 100, null, damage, ImageEnums.Impact_Explosion_One, isFriendly, allowedToDealDamage, objectType,
-                MissileTypeEnums.DefaultPlayerLaserbeam.isBoxCollision());
+                MissileEnums.PlayerLaserbeam.isBoxCollision(), false);
 
 
         Missile newMissile = MissileCreator.getInstance().createMissile(missileSpriteConfiguration, missileConfiguration, movementConfiguration);

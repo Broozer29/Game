@@ -8,6 +8,8 @@ import java.util.List;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
 import game.managers.AnimationManager;
+import game.managers.OnScreenTextManager;
+import game.objects.GameObject;
 import game.util.CollisionDetector;
 import game.objects.player.PlayerManager;
 import game.objects.player.spaceship.SpaceShip;
@@ -91,7 +93,7 @@ public class EnemyManager {
     private void updateEnemies () throws UnsupportedAudioFileException, IOException {
 
         Iterator<Enemy> it = enemyList.iterator();
-        while (it.hasNext()){
+        while (it.hasNext()) {
             Enemy en = it.next();
 
             if (en.isVisible()) {
@@ -145,6 +147,33 @@ public class EnemyManager {
                 closestEnemy = enemy;
             }
         }
+        return closestEnemy;
+    }
+
+    public GameObject getEnemyClosestToGameObject (GameObject gameObject, List<GameObject> objectsToIgnore) {
+        GameObject closestEnemy = null;
+        double minDistance = Double.MAX_VALUE;
+
+        for (GameObject enemy : enemyList) {
+            if (!enemy.equals(gameObject)) {
+                if (objectsToIgnore != null && !objectsToIgnore.contains(enemy)) {
+                    int enemyXCoordinate = enemy.getCenterXCoordinate();
+                    int enemyYcoordinate = enemy.getCenterYCoordinate();
+
+                    // Compute the distance between player and enemy using Euclidean distance formula
+                    double distance = Math.sqrt(Math.pow((gameObject.getCenterXCoordinate() - enemyXCoordinate), 2)
+                            + Math.pow((gameObject.getCenterYCoordinate() - enemyYcoordinate), 2));
+
+                    // If this enemy is closer than the previous closest enemy, update closestEnemy and
+                    // minDistance
+                    if (distance < minDistance) {
+                        minDistance = distance;
+                        closestEnemy = enemy;
+                    }
+                }
+            }
+        }
+
         return closestEnemy;
     }
 
