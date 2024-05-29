@@ -17,10 +17,10 @@ public class PlayerInventory {
     private float cashMoney = 5000;
     private List<String> blackListedOnHitEffectActivatorObjects = Arrays.asList("Plasma Launcher Missile", "Drone Missile");
     private PlayerInventory () {
-        addItem(ItemEnums.DrillerModule);
-        addItem(ItemEnums.DrillerModule);
-        addItem(ItemEnums.BouncingModuleAddon);
-        addItem(ItemEnums.PlasmaCoatedBullets);
+//        addItem(ItemEnums.DrillerModule);
+//        addItem(ItemEnums.DrillerModule);
+//        addItem(ItemEnums.BouncingModuleAddon);
+//        addItem(ItemEnums.PlasmaCoatedBullets);
     }
 
     public void resetInventory(){

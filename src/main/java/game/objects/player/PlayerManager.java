@@ -84,8 +84,8 @@ public class PlayerManager {
 
 	public void startDyingScene() {
 		if (spaceship.getCurrentHitpoints() <= 0 && gameState.getGameState() == GameStatusEnums.Dying) {
-			if (!animationManager.getUpperAnimations().contains(spaceship.getDeathAnimation())) {
-				animationManager.getUpperAnimations().add(spaceship.getDeathAnimation());
+			if (!animationManager.getUpperAnimations().contains(spaceship.getDestructionAnimation())) {
+				animationManager.getUpperAnimations().add(spaceship.getDestructionAnimation());
 				animationManager.getLowerAnimations().remove(spaceship.getExhaustAnimation());
 
 				if (AudioManager.getInstance().getBackgroundMusic() != null) {
@@ -99,7 +99,7 @@ public class PlayerManager {
 				}
 			}
 
-			if (spaceship.getDeathAnimation().getCurrentFrame() >= spaceship.getDeathAnimation().getTotalFrames()) {
+			if (spaceship.getDestructionAnimation().getCurrentFrame() >= spaceship.getDestructionAnimation().getTotalFrames()) {
 				gameState.setGameState(GameStatusEnums.Dead);
 				PlayerInventory.getInstance().resetInventory();
 			}

@@ -10,6 +10,9 @@ public class ControllerInputReader {
     private int controllerIndex;
     private Map<ControllerInputEnums, Boolean> inputState = new HashMap<>();
 
+    private float xAxisValue;
+    private float yAxisValue;
+
     public ControllerInputReader (ControllerManager controllerManager, int controllerIndex) {
         this.controllerManager = controllerManager;
         this.controllerIndex = controllerIndex;
@@ -22,19 +25,19 @@ public class ControllerInputReader {
 
         try {
             // Example for mapping left stick horizontal axis
-            float xAxisValue = currController.getAxisState(ControllerAxis.LEFTX);
-            inputState.put(ControllerInputEnums.MOVE_LEFT_SLOW, xAxisValue > -0.5 && xAxisValue <= -0.2);
-            inputState.put(ControllerInputEnums.MOVE_LEFT_QUICK, xAxisValue <= -0.5);
-            inputState.put(ControllerInputEnums.MOVE_RIGHT_SLOW, xAxisValue >= 0.2 && xAxisValue < 0.5);
-            inputState.put(ControllerInputEnums.MOVE_RIGHT_QUICK, xAxisValue >= 0.5);
+            xAxisValue = currController.getAxisState(ControllerAxis.LEFTX);
+//            inputState.put(ControllerInputEnums.MOVE_LEFT_SLOW, xAxisValue > -0.5 && xAxisValue <= -0.2);
+            inputState.put(ControllerInputEnums.MOVE_LEFT_QUICK, xAxisValue <= -0.2);
+//            inputState.put(ControllerInputEnums.MOVE_RIGHT_SLOW, xAxisValue >= 0.2 && xAxisValue < 0.5);
+            inputState.put(ControllerInputEnums.MOVE_RIGHT_QUICK, xAxisValue >= 0.2);
 
 
 
-            float yAxisValue = currController.getAxisState(ControllerAxis.LEFTY);
-            inputState.put(ControllerInputEnums.MOVE_DOWN_SLOW, yAxisValue > -0.5 && yAxisValue <= -0.2);
-            inputState.put(ControllerInputEnums.MOVE_DOWN_QUICK, yAxisValue <= -0.5);
-            inputState.put(ControllerInputEnums.MOVE_UP_SLOW, yAxisValue >= 0.2 && yAxisValue < 0.5);
-            inputState.put(ControllerInputEnums.MOVE_UP_QUICK, yAxisValue >= 0.5);
+            yAxisValue = currController.getAxisState(ControllerAxis.LEFTY);
+//            inputState.put(ControllerInputEnums.MOVE_DOWN_SLOW, yAxisValue > -0.5 && yAxisValue <= -0.2);
+            inputState.put(ControllerInputEnums.MOVE_DOWN_QUICK, yAxisValue <= -0.2);
+//            inputState.put(ControllerInputEnums.MOVE_UP_SLOW, yAxisValue >= 0.2 && yAxisValue < 0.5);
+            inputState.put(ControllerInputEnums.MOVE_UP_QUICK, yAxisValue >= 0.2);
 
             // Similar mappings for other inputs based on the enum
             // Example for buttons
@@ -46,6 +49,10 @@ public class ControllerInputReader {
             // Handle disconnected controller
             System.out.println("Controller disconnected");
         }
+    }
+
+    public boolean isInputActive (ControllerInputEnums input) {
+        return inputState.getOrDefault(input, false);
     }
 
     private void testControllerInputs () {
@@ -74,8 +81,11 @@ public class ControllerInputReader {
         }
     }
 
-    public boolean isInputActive (ControllerInputEnums input) {
-        return inputState.getOrDefault(input, false);
+    public float getxAxisValue () {
+        return xAxisValue;
     }
 
+    public float getyAxisValue () {
+        return yAxisValue;
+    }
 }

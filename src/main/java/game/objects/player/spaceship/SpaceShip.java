@@ -21,14 +21,11 @@ import game.items.enums.ItemEnums;
 import game.items.items.FocusCrystal;
 import game.managers.AnimationManager;
 import game.movement.Point;
-import game.objects.friendlies.FriendlyCreator;
 import game.objects.friendlies.FriendlyManager;
-import game.objects.friendlies.FriendlyObject;
 import game.objects.neutral.Explosion;
 import game.objects.GameObject;
 import game.objects.missiles.specialAttacks.SpecialAttack;
 import game.objects.player.BoostsUpgradesAndBuffsSettings;
-import game.objects.player.PlayerManager;
 import game.objects.player.PlayerStats;
 import VisualAndAudioData.image.ImageEnums;
 import game.util.ArmorCalculator;
@@ -39,14 +36,16 @@ import visualobjects.SpriteAnimation;
 
 public class SpaceShip extends GameObject {
 
-    private int directionx;
-    private int directiony;
+    private float directionx;
+    private float directiony;
+
+    private float accumulatedXCoordinate;
+    private float accumulatedYCoordinate;
 
     private float currentShieldRegenDelayFrame;
     private boolean controlledByKeyboard = true;
     private Set<Integer> pressedKeys = new HashSet<>();
 
-    private SpriteAnimation deathAnimation = null;  //inherit from gameobject
     private SpriteAnimation exhaustAnimation = null;  //inherit from gameobject
 
     private PlayerStats playerStats = PlayerStats.getInstance();
@@ -80,6 +79,8 @@ public class SpaceShip extends GameObject {
         this.playerFollowingAnimations.clear();
         this.playerFollowingExplosions.clear();
         this.playerFollowingSpecialAttacks.clear();
+        this.accumulatedYCoordinate = this.yCoordinate;
+        this.accumulatedXCoordinate = this.xCoordinate;
         pressedKeys = new HashSet<>();
         loadImage(playerStats.getSpaceShipImage());
         currentShieldRegenDelayFrame = 0;
@@ -146,7 +147,7 @@ public class SpaceShip extends GameObject {
     private void initDeathAnimation (ImageEnums imageType) {
         SpriteAnimationConfiguration spriteAnimationConfiguration = new SpriteAnimationConfiguration(this.spriteConfiguration, 2, false);
         spriteAnimationConfiguration.getSpriteConfiguration().setImageType(imageType);
-        deathAnimation = new SpriteAnimation(spriteAnimationConfiguration);
+        destructionAnimation = new SpriteAnimation(spriteAnimationConfiguration);
     }
 
     public void addShieldDamageAnimation () {
@@ -281,8 +282,12 @@ public class SpaceShip extends GameObject {
 
     // Moves the spaceship, constantly called
     public void move () {
-        xCoordinate += directionx;
-        yCoordinate += directiony;
+        accumulatedXCoordinate += directionx;
+        accumulatedYCoordinate += directiony;
+
+        // Convert the accumulated float coordinates to integer coordinates
+        xCoordinate = Math.round(accumulatedXCoordinate);
+        yCoordinate = Math.round(accumulatedYCoordinate);
 
         if (!controlledByKeyboard) {
             haltMoveDown();
@@ -299,8 +304,8 @@ public class SpaceShip extends GameObject {
             this.exhaustAnimation.setY(this.getCenterYCoordinate() - (this.exhaustAnimation.getHeight() / 2) + 3);
         }
 
-        if (this.deathAnimation != null) {
-            deathAnimation.setCenterCoordinates(this.xCoordinate, this.yCoordinate);
+        if (this.destructionAnimation != null) {
+            destructionAnimation.setCenterCoordinates(this.xCoordinate, this.yCoordinate);
         }
 
         updateBoardBlock();
@@ -338,9 +343,6 @@ public class SpaceShip extends GameObject {
         return this.exhaustAnimation;
     }
 
-    public SpriteAnimation getDeathAnimation () {
-        return this.deathAnimation;
-    }
 
     public synchronized void keyPressed (KeyEvent e) {
         pressedKeys.add(e.getKeyCode());
@@ -356,19 +358,19 @@ public class SpaceShip extends GameObject {
                         break;
                     case (KeyEvent.VK_A):
                     case (KeyEvent.VK_LEFT):
-                        moveLeftQuick();
+                        moveLeftQuick(1);
                         break;
                     case (KeyEvent.VK_D):
                     case (KeyEvent.VK_RIGHT):
-                        moveRightQuick();
+                        moveRightQuick(1);
                         break;
                     case (KeyEvent.VK_W):
                     case (KeyEvent.VK_UP):
-                        moveUpQuick();
+                        moveUpQuick(1);
                         break;
                     case (KeyEvent.VK_S):
                     case (KeyEvent.VK_DOWN):
-                        moveDownQuick();
+                        moveDownQuick(1);
                         break;
                     case (KeyEvent.VK_Q):
                     case (KeyEvent.VK_ENTER):
@@ -378,7 +380,7 @@ public class SpaceShip extends GameObject {
                             e1.printStackTrace();
                         }
                         break;
-                    case (KeyEvent.VK_SHIFT):
+//                    case (KeyEvent.VK_SHIFT):
                     case (KeyEvent.VK_E):
                         takeDamage(500);
                         break;
@@ -413,28 +415,20 @@ public class SpaceShip extends GameObject {
     public void update (ControllerInputReader controllerInputReader) {
         controlledByKeyboard = false;
         controllerInputReader.pollController();
-        if (controllerInputReader.isInputActive(ControllerInputEnums.MOVE_LEFT_SLOW)) {
-            moveLeftSlow();
-        } else if (controllerInputReader.isInputActive(ControllerInputEnums.MOVE_LEFT_QUICK)) {
-            moveLeftQuick();
+        if (controllerInputReader.isInputActive(ControllerInputEnums.MOVE_LEFT_QUICK)) {
+            moveLeftQuick(controllerInputReader.getxAxisValue());
         }
 
-        if (controllerInputReader.isInputActive(ControllerInputEnums.MOVE_RIGHT_SLOW)) {
-            moveRightSlow();
-        } else if (controllerInputReader.isInputActive(ControllerInputEnums.MOVE_RIGHT_QUICK)) {
-            moveRightQuick();
+        if (controllerInputReader.isInputActive(ControllerInputEnums.MOVE_RIGHT_QUICK)) {
+            moveRightQuick(controllerInputReader.getxAxisValue());
         }
 
         if (controllerInputReader.isInputActive(ControllerInputEnums.MOVE_UP_QUICK)) {
-            moveUpQuick();
-        } else if (controllerInputReader.isInputActive(ControllerInputEnums.MOVE_UP_SLOW)) {
-            moveUpSlow();
+            moveUpQuick(controllerInputReader.getyAxisValue());
         }
 
-        if (controllerInputReader.isInputActive(ControllerInputEnums.MOVE_DOWN_SLOW)) {
-            moveDownSlow();
-        } else if (controllerInputReader.isInputActive(ControllerInputEnums.MOVE_DOWN_QUICK)) {
-            moveDownQuick();
+        if (controllerInputReader.isInputActive(ControllerInputEnums.MOVE_DOWN_QUICK)) {
+            moveDownQuick(controllerInputReader.getyAxisValue());
         }
 
         if (controllerInputReader.isInputActive(ControllerInputEnums.FIRE)) {
@@ -453,64 +447,35 @@ public class SpaceShip extends GameObject {
         }
     }
 
-    private void moveLeftSlow () {
-        int directionAlteration = Math.round(playerStats.getCurrentMovementSpeed() / 2);
-        if (directionAlteration < 1) {
-            directionAlteration = 1;
-        }
-        directionx = -directionAlteration;
-    }
-
-    private void moveLeftQuick () {
-        directionx = -playerStats.getCurrentMovementSpeed();
+    private void moveLeftQuick (float multiplier) {
+        directionx = -(Math.abs(multiplier) * playerStats.getCurrentMovementSpeed());
     }
 
     private void haltMoveLeft () {
         directionx = 0;
     }
 
-    private void moveRightSlow () {
-        int directionAlteration = Math.round(playerStats.getCurrentMovementSpeed() / 2);
-        if (directionAlteration < 1) {
-            directionAlteration = 1;
-        }
-        directionx = directionAlteration;
-    }
 
-    private void moveRightQuick () {
-        directionx = playerStats.getCurrentMovementSpeed();
+    private void moveRightQuick (float multiplier) {
+        directionx = Math.abs(multiplier) * playerStats.getCurrentMovementSpeed();
     }
 
     private void haltMoveRight () {
         directionx = 0;
     }
 
-    private void moveUpSlow () {
-        int directionAlteration = Math.round(playerStats.getCurrentMovementSpeed() / 2);
-        if (directionAlteration < 1) {
-            directionAlteration = 1;
-        }
-        directiony = -directionAlteration;
-    }
 
-    private void moveUpQuick () {
-        directiony = -playerStats.getCurrentMovementSpeed();
+    private void moveUpQuick (float multiplier) {
+        directiony = -(Math.abs(multiplier) * playerStats.getCurrentMovementSpeed());
     }
 
     private void haltMoveUp () {
         directiony = 0;
     }
 
-    private void moveDownSlow () {
-        int directionAlteration = Math.round(playerStats.getCurrentMovementSpeed() / 2);
-        if (directionAlteration < 1) {
-            directionAlteration = 1;
-        }
-        directiony = directionAlteration;
-    }
 
-    private void moveDownQuick () {
-        directiony = playerStats.getCurrentMovementSpeed();
+    private void moveDownQuick (float multiplier) {
+        directiony = Math.abs(multiplier) * playerStats.getCurrentMovementSpeed();
     }
 
     private void haltMoveDown () {

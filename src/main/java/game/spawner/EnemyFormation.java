@@ -4,7 +4,7 @@ import game.movement.Direction;
 import game.objects.enemies.enums.EnemyEnums;
 
 public class EnemyFormation {
-	private boolean[][] formationPattern; // Your formation pattern
+	private boolean[][] formationPattern;
 	private int formationWidth;
 	private int formationHeight;
 

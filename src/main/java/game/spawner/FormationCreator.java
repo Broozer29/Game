@@ -125,7 +125,7 @@ public class FormationCreator {
 			break;
 		case Reverse_V:
 			pattern = createPatternFromStrings(
-			        "......X......",
+					"......X......",
 			        "....X...X....",
 			        "..X.......X..",
 			        "X...........X"
