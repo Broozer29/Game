@@ -58,7 +58,7 @@ public class StraightLinePathFinder implements PathFinder {
 
         // Optionally, add extra steps beyond the destination if needed
         boolean breakLoop = false;
-        for (int i = 1; i <= 500; i++) {
+        for (int i = 1; i <= 1000; i++) {
             if(breakLoop){
                 break;
             }

@@ -109,8 +109,8 @@ public class AudioManager {
         while (backgroundMusicTracksThatHavePlayed.contains(backgroundMusic) && !allowDuplicates && backgroundMusic != null);
 
         if (backgroundMusic != null) {
-//            playBackgroundMusic(AudioEnums.Large_Ship_Destroyed, false);
-            playBackgroundMusic(backgroundMusic.getAudioEnum(), false);
+            playBackgroundMusic(AudioEnums.Large_Ship_Destroyed, false);
+//            playBackgroundMusic(backgroundMusic.getAudioEnum(), false);
             addTrackToHistory(backgroundMusic);
             this.currentSong = backgroundMusic;
         }

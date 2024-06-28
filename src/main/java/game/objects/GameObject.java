@@ -1,5 +1,6 @@
 package game.objects;
 
+import VisualAndAudioData.image.ImageEnums;
 import com.badlogic.gdx.Game;
 import game.gamestate.GameStateInfo;
 import game.items.Item;
@@ -71,10 +72,10 @@ public class GameObject extends Sprite {
     protected boolean allowedToDealDamage; //Set to false for explosions that hit a target
     protected float attackSpeed;
     protected float attackSpeedBonusModifier;
+    protected boolean appliesOnHitEffects;
 
     //Game logic variables
     protected boolean friendly;
-
 
     //Movement variables
     protected GameObject objectToCenterAround;
@@ -151,7 +152,9 @@ public class GameObject extends Sprite {
             movementConfiguration.setTargetToChase(((HomingPathFinder) movementConfiguration.getPathFinder()).getTarget(this.friendly, this.xCoordinate, this.yCoordinate));
             movementConfiguration.setHasLock(true);
         }
-
+        if (movementConfiguration.getXMovementSpeed() == 0 && movementConfiguration.getYMovementSpeed() == 0) {
+            this.rotationAngle = this.movementRotation.toAngle();
+        }
         movementConfiguration.setStepsTaken(0);
         this.movementConfiguration = movementConfiguration;
     }
@@ -241,6 +244,10 @@ public class GameObject extends Sprite {
                         if (effectAnimations.contains(effect.getAnimation())) {
                             effectAnimations.remove(effect.getAnimation());
                         }
+                        //This is here to possibly remove the bug of persistent effect animations
+                        if (AnimationManager.getInstance().getUpperAnimations().contains(effect.getAnimation())) {
+                            AnimationManager.getInstance().getUpperAnimations().remove(effect.getAnimation());
+                        }
                     }
                     toRemove.add(effect);
                 }
@@ -302,7 +309,7 @@ public class GameObject extends Sprite {
         if (movementConfiguration != null) {
             this.movementConfiguration.deleteConfiguration();
         }
-        this.movementConfiguration = null; //could be dangerous and break shit
+        this.movementConfiguration = null;
         this.movementTracker = null;
         this.ownerOrCreator = null;
 
@@ -328,6 +335,7 @@ public class GameObject extends Sprite {
             }
             if (this.destructionAnimation != null) {
                 this.destructionAnimation.setOriginCoordinates(this.getCenterXCoordinate(), this.getCenterYCoordinate());
+                this.destructionAnimation.rotateAnimation(this.rotationAngle, false);
                 AnimationManager.getInstance().addUpperAnimation(destructionAnimation);
             }
 
@@ -349,12 +357,11 @@ public class GameObject extends Sprite {
     }
 
     public void applyEffectsWhenPlayerHitsEnemy (GameObject object) {
-        List<Item> onHitItems = PlayerInventory.getInstance().getItemsByApplicationMethod(ItemApplicationEnum.AfterCollision);
-        for (Item item : onHitItems) {
-            if (PlayerInventory.getInstance().getBlackListedOnHitEffectActivatorObjects().contains(getObjectType())) {
-                continue;
+        if (this.appliesOnHitEffects) {
+            List<Item> onHitItems = PlayerInventory.getInstance().getItemsByApplicationMethod(ItemApplicationEnum.AfterCollision);
+            for (Item item : onHitItems) {
+                item.applyEffectToObject(object);
             }
-            item.applyEffectToObject(object);
         }
     }
 
@@ -385,10 +392,6 @@ public class GameObject extends Sprite {
         this.bounds.setBounds(xCoordinate + xOffset, yCoordinate + yOffset, width, height);
         updateBoardBlock();
         updateVisibility();
-
-        if (this.movementConfiguration.getXMovementSpeed() == 0 && this.movementConfiguration.getYMovementSpeed() == 0) {
-            this.rotationAngle = this.movementRotation.toAngle();
-        }
 
         if (animation != null) {
 //            animation.setAnimationBounds(xCoordinate, yCoordinate);
@@ -464,11 +467,11 @@ public class GameObject extends Sprite {
             rotateGameObjectSpriteAnimations(animation, direction, crop);
         }
         if (this.exhaustAnimation != null) {
-            rotateGameObjectSpriteAnimations(animation, direction, crop);
+            rotateGameObjectSpriteAnimations(exhaustAnimation, direction, crop);
         }
 
         if (this.destructionAnimation != null) {
-            rotateGameObjectSpriteAnimations(animation, direction, crop);
+            rotateGameObjectSpriteAnimations(destructionAnimation, direction, crop);
         }
         if (this.image != null) {
             this.image = ImageRotator.getInstance().rotate(originalImage, direction, crop);
@@ -482,19 +485,11 @@ public class GameObject extends Sprite {
             Point chargingUpLocation = ImageRotator.getInstance().calculateFrontPosition(this.getCenterXCoordinate(), this.getCenterYCoordinate(), rotationAngle, baseDistance);
             this.chargingUpAttackAnimation.setCenterCoordinates(chargingUpLocation.getX(), chargingUpLocation.getY());
         }
-
     }
 
     public void rotateGameObjectTowards (int targetXCoordinate, int targetYCoordinate, boolean crop) {
-        double calculatedAngle = 0;
-        if (this.animation != null) {
-            calculatedAngle = ImageRotator.getInstance().calculateAngle(this.animation.getCenterXCoordinate(), this.animation.getCenterYCoordinate(), targetXCoordinate, targetYCoordinate);
-        } else {
-            calculatedAngle = ImageRotator.getInstance().calculateAngle(this.getCenterXCoordinate(), this.getCenterYCoordinate(), targetXCoordinate, targetYCoordinate);
-        }
-
+        double calculatedAngle = ImageRotator.getInstance().calculateAngle(this.getCenterXCoordinate(), this.getCenterYCoordinate(), targetXCoordinate, targetYCoordinate);
         rotateObjectTowardsAngle(calculatedAngle, crop);
-
     }
 
     protected void rotateObjectTowardsAngle (double calculatedAngle, boolean crop) {
@@ -698,6 +693,9 @@ public class GameObject extends Sprite {
     }
 
     public float getScale () {
+        if (this.animation != null) {
+            return animation.getScale();
+        }
         return scale;
     }
 
@@ -833,7 +831,6 @@ public class GameObject extends Sprite {
             this.animation.setCenterCoordinates(newXCoordinate, newYCoordinate);
             this.currentLocation = new Point(animation.getXCoordinate(), animation.getYCoordinate());
         }
-        //Maybe the other animations too? Requires testing but theoretically it should be fine if they are only updated when needed
     }
 
 
@@ -849,23 +846,28 @@ public class GameObject extends Sprite {
             if (enemyObject.getMissileTypePathFinders() == PathFinderEnums.Homing
                     || enemyObject.getMissileTypePathFinders() == PathFinderEnums.StraightLine) {
                 // Rotate towards the player, assuming these are only used for enemies that aim
-                rotateObjectTowardsPoint(PlayerManager.getInstance().getSpaceship().getCurrentLocation(), crop);
+                Point point = new Point(PlayerManager.getInstance().getSpaceship().getCenterXCoordinate(),
+                        PlayerManager.getInstance().getSpaceship().getCenterYCoordinate());
+                rotateObjectTowardsPoint(point, crop);
+//                rotateObjectTowardsPoint(PlayerManager.getInstance().getSpaceship().getCurrentLocation(), crop);
                 updateChargingAttackAnimationCoordination();
                 return;
             }
 
             if (enemyObject.getEnemyType().equals(EnemyEnums.Alien_Bomb)) {
-                enemyObject.rotateGameObjectTowards(enemyObject.getOwnerOrCreator().getMovementConfiguration().getRotation(), true);
+                if (enemyObject.getOwnerOrCreator() != null) {
+                    enemyObject.rotateGameObjectTowards(enemyObject.getOwnerOrCreator().getMovementConfiguration().getRotation(), true);
 //                enemyObject.setAllowedVisualsToRotate(false);
+                }
                 return;
             }
         }
 
         if (!movementConfiguration.getCurrentPath().getWaypoints().isEmpty()) {
-            rotateObjectTowardsDestination(false);
+            rotateObjectTowardsDestination(true);
 //            rotateObjectTowardsRotation();
         } else {
-            rotateObjectTowardsRotation(false);
+            rotateObjectTowardsRotation(true);
         }
         updateChargingAttackAnimationCoordination();
 
@@ -881,23 +883,15 @@ public class GameObject extends Sprite {
 
     protected void rotateObjectTowardsRotation (boolean crop) {
         if (this.isAllowedVisualsToRotate() && this.getMovementConfiguration().getRotation() != null) {
-//            if (this.getAnimation() != null) {
-//                this.getAnimation().rotateAnimation(this.getMovementConfiguration().getRotation());
-//            } else {
-
             this.rotateGameObjectTowards(this.getMovementConfiguration().getRotation(), crop);
-
-//            }
         }
     }
 
     protected void rotateObjectTowardsPoint (Point point, boolean crop) {
         if (this.isAllowedVisualsToRotate()) {
-            point = adjustDestinationForRotation(this, point);
             this.rotateGameObjectTowards(point.getX(), point.getY(), crop);
         }
     }
-
 
     private Point adjustDestinationForRotation (GameObject gameObject, Point destination) {
         int height = 0;
@@ -998,6 +992,14 @@ public class GameObject extends Sprite {
             return animation.getHeight();
         } else
             return this.height;
+    }
+
+    public void setTransparancyAlpha (boolean shouldIncrease, float newAlphaTransparancy, float transparacyStepSize) {
+        if (this.animation != null) {
+            this.animation.setTransparancyAlpha(shouldIncrease, newAlphaTransparancy, transparacyStepSize);
+        } else {
+            super.setTransparancyAlpha(shouldIncrease, newAlphaTransparancy, transparacyStepSize);
+        }
     }
 
 

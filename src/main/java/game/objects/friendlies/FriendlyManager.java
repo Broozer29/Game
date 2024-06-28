@@ -74,7 +74,7 @@ public class FriendlyManager {
     }
 
     private void spawnFinishedLevelPortal () {
-        if (gameState.getGameState() == GameStatusEnums.Level_Finished && finishedLevelPortal.getSpawned() == false) {
+        if (gameState.getGameState() == GameStatusEnums.Level_Finished && !finishedLevelPortal.getSpawned()) {
             if (finishedLevelPortal == null) {
                 initPortal();
             }
@@ -111,7 +111,6 @@ public class FriendlyManager {
     }
 
     // Checks collision between friendly objects and enemies
-    // Intentionally broken, fix manually
     private void checkFriendlyObjectCollision () {
         if (enemyManager == null) {
             enemyManager = EnemyManager.getInstance();
@@ -120,7 +119,7 @@ public class FriendlyManager {
         for (FriendlyObject drone : friendlyObjects) {
             if (drone.isVisible()) {
                 for (Enemy enemy : enemyManager.getEnemies()) {
-                    if (CollisionDetector.getInstance().detectCollision(drone, enemy)) {
+                    if (CollisionDetector.getInstance().detectCollision(drone, enemy)) { //old way of handling collision, check other managers
                         // Collision logic here
                     }
                 }

@@ -13,6 +13,7 @@ import game.objects.enemies.Enemy;
 import game.objects.missiles.*;
 import VisualAndAudioData.image.ImageEnums;
 import game.objects.player.PlayerManager;
+import game.objects.player.spaceship.SpaceShip;
 import game.util.WithinVisualBoundariesCalculator;
 import visualobjects.SpriteConfigurations.SpriteAnimationConfiguration;
 import visualobjects.SpriteConfigurations.SpriteConfiguration;
@@ -21,12 +22,19 @@ import visualobjects.SpriteAnimation;
 public class Seeker extends Enemy {
 
 
+    public Seeker (SpriteAnimationConfiguration spriteConfiguration, EnemyConfiguration enemyConfiguration, MovementConfiguration movementConfiguration) {
+        super(spriteConfiguration, enemyConfiguration, movementConfiguration);
+        SpriteAnimationConfiguration destroyedExplosionfiguration = new SpriteAnimationConfiguration(spriteConfiguration.getSpriteConfiguration(), 3, false);
+        destroyedExplosionfiguration.getSpriteConfiguration().setImageType(ImageEnums.Seeker_Destroyed_Explosion);
+        this.destructionAnimation = new SpriteAnimation(destroyedExplosionfiguration);
+        this.missileTypePathFinders = PathFinderEnums.StraightLine;
+        this.damage = MissileEnums.SeekerProjectile.getDamage();
+
+//        this.attackSpeed = 1;
+    }
+
     public Seeker (SpriteConfiguration spriteConfiguration, EnemyConfiguration enemyConfiguration, MovementConfiguration movementConfiguration) {
         super(spriteConfiguration, enemyConfiguration, movementConfiguration);
-
-//        SpriteAnimationConfiguration exhaustConfiguration = new SpriteAnimationConfiguration(spriteConfiguration, 2, true);
-//        exhaustConfiguration.getSpriteConfiguration().setImageType(ImageEnums.Seeker_Normal_Exhaust);
-//        this.exhaustAnimation = new SpriteAnimation(exhaustConfiguration);
 
         SpriteAnimationConfiguration destroyedExplosionfiguration = new SpriteAnimationConfiguration(spriteConfiguration, 3, false);
         destroyedExplosionfiguration.getSpriteConfiguration().setImageType(ImageEnums.Seeker_Destroyed_Explosion);
@@ -34,10 +42,6 @@ public class Seeker extends Enemy {
         this.missileTypePathFinders = PathFinderEnums.StraightLine;
         this.damage = MissileEnums.SeekerProjectile.getDamage();
 
-
-//        this.attackSpeed = 20;
-//		this.attackSpeed= 9999999;
-//		this.attackSpeedCurrentFrameCount= 9999999;
     }
 
 
@@ -65,7 +69,7 @@ public class Seeker extends Enemy {
 
     private void shootMissile () {
         // The charging up attack animation has finished, create and fire the missile
-//Create the sprite configuration which gets upgraded to spriteanimation if needed by the MissileCreator
+        //Create the sprite configuration which gets upgraded to spriteanimation if needed by the MissileCreator
         SpriteConfiguration spriteConfiguration = MissileCreator.getInstance().createMissileSpriteConfig(xCoordinate, yCoordinate, ImageEnums.Seeker_Missile
                 , this.scale);
 
@@ -89,25 +93,35 @@ public class Seeker extends Enemy {
 
         MissileConfiguration missileConfiguration = MissileCreator.getInstance().createMissileConfiguration(missileType, maxHitPoints, maxShields,
                 deathSound, this.getDamage(), missileType.getDeathOrExplosionImageEnum(), isFriendly, allowedToDealDamage, objectType,
-                false, false);
+                false, false, true);
 
 
         //Create the missile and finalize the creation process, then add it to the manager and consequently the game
         Missile missile = MissileCreator.getInstance().createMissile(spriteConfiguration, missileConfiguration, movementConfiguration);
 
-        //Set destination required for the StraightLinePathFinder
-        Point spaceShipCenter = new Point(PlayerManager.getInstance().getSpaceship().getCenterXCoordinate(),
-                PlayerManager.getInstance().getSpaceship().getCenterYCoordinate());
-        missile.getMovementConfiguration().setDestination(spaceShipCenter);
+        //get the coordinates for rotation of the missile
+        SpaceShip spaceship = PlayerManager.getInstance().getSpaceship();
+        Point rotationCoordinates = new Point(spaceship.getCenterXCoordinate(),
+                spaceship.getCenterYCoordinate());
 
-        //Rotate the object towards it's destination
-        missile.rotateGameObjectTowards(missile.getMovementConfiguration().getDestination().getX(), missile.getMovementConfiguration().getDestination().getY(), true);
+        // Any visual resizing BEFORE replacing starting coordinates and rotation
+//        missile.setScale(0.3f);
+
+        //Place the missile at the correct location, then rotate it and disable further rotations
         missile.setCenterCoordinates(chargingUpAttackAnimation.getCenterXCoordinate(), chargingUpAttackAnimation.getCenterYCoordinate());
         missile.getAnimation().setCenterCoordinates(chargingUpAttackAnimation.getCenterXCoordinate(), chargingUpAttackAnimation.getCenterYCoordinate());
+        missile.rotateGameObjectTowards(rotationCoordinates.getX(), rotationCoordinates.getY(), false);
         missile.setAllowedVisualsToRotate(false); //Prevent it from being rotated again by the SpriteMover
+
+        //Get the coordinates required for the pathfinders
+        Point movementDestinationCoordinates = new Point(rotationCoordinates.getX() - missile.getWidth() / 2, rotationCoordinates.getY() - missile.getHeight() / 2);
+
+        //Resets the movement configuration and sets the new desination, adjusted for the dimensions of the missile
         missile.resetMovementPath();
-        missile.getMovementConfiguration().setDestination(spaceShipCenter); // again because reset removes it
+        missile.getMovementConfiguration().setDestination(movementDestinationCoordinates); // again because reset removes it
         missile.setOwnerOrCreator(this);
+
+        //Finalized and ready for addition to the game
         MissileManager.getInstance().addExistingMissile(missile);
     }
 

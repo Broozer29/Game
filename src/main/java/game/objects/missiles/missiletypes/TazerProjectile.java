@@ -1,13 +1,11 @@
 package game.objects.missiles.missiletypes;
 
 import VisualAndAudioData.image.ImageEnums;
-import com.badlogic.gdx.Game;
 import game.items.effects.EffectIdentifiers;
-import game.items.effects.effecttypes.AttackSpeedModifierEffect;
-import game.items.effects.effecttypes.DamageModifierEffect;
+import game.items.effects.effectimplementations.AttackSpeedModifierEffect;
+import game.items.effects.effectimplementations.DamageModifierEffect;
 import game.movement.MovementConfiguration;
 import game.objects.GameObject;
-import game.objects.enemies.Enemy;
 import game.objects.enemies.enemytypes.AlienBomb;
 import game.objects.missiles.Missile;
 import game.objects.missiles.MissileConfiguration;

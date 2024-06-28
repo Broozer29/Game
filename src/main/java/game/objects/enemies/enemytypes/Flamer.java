@@ -16,18 +16,13 @@ import visualobjects.SpriteAnimation;
 
 public class Flamer extends Enemy {
 
-    public Flamer (SpriteConfiguration spriteConfiguration, EnemyConfiguration enemyConfiguration, MovementConfiguration movementConfiguration) {
+    public Flamer (SpriteAnimationConfiguration spriteConfiguration, EnemyConfiguration enemyConfiguration, MovementConfiguration movementConfiguration) {
         super(spriteConfiguration, enemyConfiguration, movementConfiguration);
 
-//        SpriteAnimationConfiguration exhaustConfiguration = new SpriteAnimationConfiguration(spriteConfiguration, 0, true);
-//        exhaustConfiguration.getSpriteConfiguration().setImageType(ImageEnums.Flamer_Normal_Exhaust);
-//        this.exhaustAnimation = new SpriteAnimation(exhaustConfiguration);
-
-        SpriteAnimationConfiguration destroyedExplosionfiguration = new SpriteAnimationConfiguration(spriteConfiguration, 3, false);
+        SpriteAnimationConfiguration destroyedExplosionfiguration = new SpriteAnimationConfiguration(spriteConfiguration.getSpriteConfiguration(), 3, false);
         destroyedExplosionfiguration.getSpriteConfiguration().setImageType(ImageEnums.Flamer_Destroyed_Explosion);
         this.destructionAnimation = new SpriteAnimation(destroyedExplosionfiguration);
         this.damage = 50;
-//        this.attackSpeed = 150;
     }
 
     public void fireAction () {

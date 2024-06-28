@@ -49,7 +49,7 @@ public class SpaceShipRegularGun {
             float scale = playerStats.getMissileScale();
             PathFinder pathFinder = new RegularPathFinder();
 
-            fireMissile(xCoordinate, yCoordinate, visualImage, impactType, Direction.RIGHT, scale, pathFinder, xMovementSpeed, yMovementSpeed, playerAttackType);
+            fireMissile(xCoordinate, yCoordinate, visualImage, scale, pathFinder, playerAttackType);
 
             switch (playerAttackType) {
                 case PlayerLaserbeam -> playMissileAudio(AudioEnums.Player_Laserbeam);
@@ -60,17 +60,19 @@ public class SpaceShipRegularGun {
 
 
     private void fireMissile (int xCoordinate, int yCoordinate, ImageEnums playerMissileType,
-                              ImageEnums playerMissileImpactType, Direction direction, float missileScale, PathFinder missilePathFinder,
-                              int xMovementspeed, int yMovementspeed, MissileEnums attackType) {
+                              float missileScale, PathFinder missilePathFinder, MissileEnums attackType) {
+
+        attackType = MissileEnums.OrbitCenter;
+        playerMissileType = attackType.getImageType();
+        missileScale = 0.4f;
 
         MissileCreator missileCreator1 = MissileCreator.getInstance();
         SpriteConfiguration spriteConfiguration = missileCreator1.createMissileSpriteConfig(xCoordinate, yCoordinate,
                 playerMissileType, missileScale);
 
-
         MovementPatternSize movementPatternSize = MovementPatternSize.SMALL; //Hardcoded, should be dynamic somewhere? Idk not decided how i want to use this behaviour yet
         MovementConfiguration movementConfiguration = missileCreator1.createMissileMovementConfig(
-                xMovementspeed, yMovementspeed, missilePathFinder, movementPatternSize, direction
+                attackType.getxMovementSpeed(), attackType.getyMovementSpeed(), missilePathFinder, movementPatternSize, Direction.RIGHT
         );
 
 
@@ -80,7 +82,7 @@ public class SpaceShipRegularGun {
         }
 
         int maxHitPoints = 100;
-        int maxShields = 100;
+        int maxShields = 0;
         AudioEnums deathSound = null;
         boolean allowedToDealDamage = true;
         String objectType = "Player Missile";
@@ -91,9 +93,11 @@ public class SpaceShipRegularGun {
             case Rocket1 -> isExplosive = true;
         }
 
+
+
         MissileConfiguration missileConfiguration = missileCreator1.createMissileConfiguration(attackType, maxHitPoints, maxShields,
-                deathSound, damage, playerMissileImpactType, isFriendly, allowedToDealDamage, objectType, attackType.isBoxCollision(),
-                isExplosive);
+                deathSound, damage, attackType.getDeathOrExplosionImageEnum(), isFriendly, allowedToDealDamage, objectType, attackType.isBoxCollision(),
+                isExplosive, true);
 
         PlayerStats instance = PlayerStats.getInstance();
         if(!isExplosive) {

@@ -76,13 +76,13 @@ public class Enemy extends GameObject {
         float difficultyCoeff = GameStateInfo.getInstance().getDifficultyCoefficient();
 
         if (enemyLevel > 1) {
-            this.maxHitPoints *= (float) Math.pow(1.20, enemyLevel);
+            this.maxHitPoints *= (float) Math.pow(1.15, enemyLevel);
             this.currentHitpoints = maxHitPoints;
-            this.maxShieldPoints *= (float) Math.pow(1.20, enemyLevel);
+            this.maxShieldPoints *= (float) Math.pow(1.15, enemyLevel);
             this.currentShieldPoints = maxShieldPoints;
-            this.damage *= (float) Math.pow(1.20, enemyLevel);
+            this.damage *= (float) Math.pow(1.15, enemyLevel);
             // XP on death is multiplied by 50% of difficultyCoeff
-            this.xpOnDeath *= (float) (1 + 0.5 * difficultyCoeff);
+            this.xpOnDeath *= (float) (1 + (0.5 * difficultyCoeff));
             // Cash money worth is multiplied by 100% (double) of difficultyCoeff
             this.cashMoneyWorth *= (1 + difficultyCoeff);
         }

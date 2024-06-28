@@ -71,12 +71,12 @@ public class FuriWisdomOfRageLevel implements Level {
 					createSpawnTimer(EnemyEnums.getRandomEnemy(), 4, i, loopable, Direction.LEFT, scale, additionalDelay, xMovementSpeed, yMovementSpeed));
 		}
 
-		create22SecondsFormation(timer, formation, formCreator);
-		create51SecondsFormation(timer, formation, formCreator);
-		create71SecondsFormation(timer, formation, formCreator);
-		create130SecondsFormations(timer, formation, formCreator);
-		create160SecondsFormations(timer, formation, formCreator);
-		createFinalLoodjes(timer, formation, formCreator);
+//		create22SecondsFormation(timer, formation, formCreator);
+//		create51SecondsFormation(timer, formation, formCreator);
+//		create71SecondsFormation(timer, formation, formCreator);
+//		create130SecondsFormations(timer, formation, formCreator);
+//		create160SecondsFormations(timer, formation, formCreator);
+//		createFinalLoodjes(timer, formation, formCreator);
 		
 		
 //
@@ -327,352 +327,352 @@ public class FuriWisdomOfRageLevel implements Level {
 		return randomValue;
 	}
 
-	private void create22SecondsFormation(DeprecatedEnemySpawnTimer timer, EnemyFormation formation,
-										  FormationCreator formCreator) {
-		boolean loopable = false;
-		float scale = 1;
-		int additionalDelay = 0;
-		int xMovementSpeed = 2;
-		int yMovementSpeed = 1;
-		
-		timer = createSpawnTimer(EnemyEnums.Seeker, 22, 22, loopable, Direction.RIGHT_UP, scale, additionalDelay, xMovementSpeed, yMovementSpeed);
-		formation = formCreator.createFormation(SpawnFormationEnums.Reverse_Divide, 50, 50);
-		timer.setFormation(formation, -400, dataClass.getWindowHeight() + 100);
-		addSpawnTimer(timer);
-
-		timer = createSpawnTimer(EnemyEnums.Seeker, 22, 22, loopable, Direction.LEFT_DOWN, scale,
-				additionalDelay, xMovementSpeed, yMovementSpeed);
-		formation = formCreator.createFormation(SpawnFormationEnums.Reverse_Divide, 50, 50);
-		timer.setFormation(formation, dataClass.getWindowWidth() + 200, -250);
-		addSpawnTimer(timer);
-
-		timer = createSpawnTimer(EnemyEnums.Seeker, 22, 22, loopable, Direction.RIGHT_DOWN, scale,
-				additionalDelay, xMovementSpeed, yMovementSpeed);
-		formation = formCreator.createFormation(SpawnFormationEnums.Divide, 50, 50);
-		timer.setFormation(formation, -400, -250);
-		addSpawnTimer(timer);
-
-		timer = createSpawnTimer(EnemyEnums.Seeker, 22, 22, loopable, Direction.LEFT_UP, scale, additionalDelay, xMovementSpeed, yMovementSpeed);
-		formation = formCreator.createFormation(SpawnFormationEnums.Divide, 50, 50);
-		timer.setFormation(formation, dataClass.getWindowWidth() + 200, dataClass.getWindowHeight() + 100);
-		addSpawnTimer(timer);
-
-		timer = createSpawnTimer(EnemyEnums.Flamer, 22, 29, loopable, Direction.RIGHT_UP, scale, additionalDelay, xMovementSpeed, yMovementSpeed);
-		formation = formCreator.createFormation(SpawnFormationEnums.Reverse_Divide, 50, 50);
-		timer.setFormation(formation, -400, dataClass.getWindowHeight() + 100);
-		addSpawnTimer(timer);
-
-		timer = createSpawnTimer(EnemyEnums.Flamer, 22, 29, loopable, Direction.LEFT_DOWN, scale,
-				additionalDelay, xMovementSpeed, yMovementSpeed);
-		formation = formCreator.createFormation(SpawnFormationEnums.Reverse_Divide, 50, 50);
-		timer.setFormation(formation, dataClass.getWindowWidth() + 200, -250);
-		addSpawnTimer(timer);
-
-		timer = createSpawnTimer(EnemyEnums.Flamer, 22, 29, loopable, Direction.RIGHT_DOWN, scale,
-				additionalDelay, xMovementSpeed, yMovementSpeed);
-		formation = formCreator.createFormation(SpawnFormationEnums.Divide, 50, 50);
-		timer.setFormation(formation, -400, -250);
-		addSpawnTimer(timer);
-
-		timer = createSpawnTimer(EnemyEnums.Flamer, 22, 29, loopable, Direction.LEFT_UP, scale, additionalDelay, xMovementSpeed, yMovementSpeed);
-		formation = formCreator.createFormation(SpawnFormationEnums.Divide, 50, 50);
-		timer.setFormation(formation, dataClass.getWindowWidth() + 200, dataClass.getWindowHeight() + 100);
-		addSpawnTimer(timer);
-
-		timer = createSpawnTimer(EnemyEnums.Tazer, 22, 33, loopable, Direction.RIGHT_UP, scale, additionalDelay, xMovementSpeed, yMovementSpeed);
-		formation = formCreator.createFormation(SpawnFormationEnums.Reverse_Divide, 50, 50);
-		timer.setFormation(formation, -400, dataClass.getWindowHeight() + 100);
-		addSpawnTimer(timer);
-
-		timer = createSpawnTimer(EnemyEnums.Tazer, 22, 33, loopable, Direction.LEFT_DOWN, scale, additionalDelay, xMovementSpeed, yMovementSpeed);
-		formation = formCreator.createFormation(SpawnFormationEnums.Reverse_Divide, 50, 50);
-		timer.setFormation(formation, dataClass.getWindowWidth() + 200, -250);
-		addSpawnTimer(timer);
-
-		timer = createSpawnTimer(EnemyEnums.Tazer, 22, 33, loopable, Direction.RIGHT_DOWN, scale,
-				additionalDelay, xMovementSpeed, yMovementSpeed);
-		formation = formCreator.createFormation(SpawnFormationEnums.Divide, 50, 50);
-		timer.setFormation(formation, -400, -250);
-		addSpawnTimer(timer);
-
-		timer = createSpawnTimer(EnemyEnums.Tazer, 22, 33, loopable, Direction.LEFT_UP, scale, additionalDelay, xMovementSpeed, yMovementSpeed);
-		formation = formCreator.createFormation(SpawnFormationEnums.Divide, 50, 50);
-		timer.setFormation(formation, dataClass.getWindowWidth() + 200, dataClass.getWindowHeight() + 100);
-		addSpawnTimer(timer);
-	}
-
-	private void create51SecondsFormation(DeprecatedEnemySpawnTimer timer, EnemyFormation formation,
-										  FormationCreator formCreator) {
-		boolean loopable = false;
-		float scale = 1;
-		int additionalDelay = 0; 
-		int xMovementSpeed = 2;
-		int yMovementSpeed = 1;
-		
-		
-		for(int i = 47; i < 75; i +=5) {
-			timer = createSpawnTimer(EnemyEnums.Seeker, 1, i, loopable, Direction.LEFT_UP, scale, additionalDelay, xMovementSpeed, yMovementSpeed);
-			formation = formCreator.createFormation(SpawnFormationEnums.Large_greaterthen, 50, 50);
-			timer.setFormation(formation, dataClass.getWindowWidth() + 250, dataClass.getWindowHeight() / 2 - 100);
-			addSpawnTimer(timer);
-			
-			timer = createSpawnTimer(EnemyEnums.Seeker, 1, i, loopable, Direction.LEFT_DOWN, scale, additionalDelay, xMovementSpeed, yMovementSpeed);
-			formation = formCreator.createFormation(SpawnFormationEnums.Large_greaterthen, 50, 50);
-			timer.setFormation(formation, dataClass.getWindowWidth() + 250, dataClass.getWindowHeight() / 2 - 400);
-			addSpawnTimer(timer);
-			
-			timer = createSpawnTimer(EnemyEnums.Seeker, 1, i, loopable, Direction.RIGHT_UP, scale, additionalDelay, xMovementSpeed, yMovementSpeed);
-			formation = formCreator.createFormation(SpawnFormationEnums.Large_smallerthen, 50, 50);
-			timer.setFormation(formation, -550, dataClass.getWindowHeight() / 2 - 100);
-			addSpawnTimer(timer);
-			
-			timer = createSpawnTimer(EnemyEnums.Seeker, 1, i, loopable, Direction.RIGHT_DOWN, scale, additionalDelay, xMovementSpeed, yMovementSpeed);
-			formation = formCreator.createFormation(SpawnFormationEnums.Large_smallerthen, 50, 50);
-			timer.setFormation(formation, -550, dataClass.getWindowHeight() / 2 - 400);
-			addSpawnTimer(timer);
-		}
-		
-	}
-	
-	private void create71SecondsFormation(DeprecatedEnemySpawnTimer timer, EnemyFormation formation,
-										  FormationCreator formCreator) {
-		boolean loopable = false;
-		float scale = 1;
-		int additionalDelay = 0;
-		int xMovementSpeed = 2;
-		int yMovementSpeed = 1;
-
-		for(int i = 90; i < 130; i +=7) {
-			timer = createSpawnTimer(EnemyEnums.Seeker, 1, i, loopable, Direction.LEFT_UP, scale, additionalDelay, xMovementSpeed, yMovementSpeed);
-			formation = formCreator.createFormation(SpawnFormationEnums.Large_greaterthen, 50, 50);
-			timer.setFormation(formation, dataClass.getWindowWidth() + 250, dataClass.getWindowHeight() / 2 - 100);
-			addSpawnTimer(timer);
-			
-			timer = createSpawnTimer(EnemyEnums.Seeker, 1, i, loopable, Direction.LEFT_DOWN, scale, additionalDelay, xMovementSpeed, yMovementSpeed);
-			formation = formCreator.createFormation(SpawnFormationEnums.Large_greaterthen, 50, 50);
-			timer.setFormation(formation, dataClass.getWindowWidth() + 250, dataClass.getWindowHeight() / 2 - 400);
-			addSpawnTimer(timer);
-			
-			timer = createSpawnTimer(EnemyEnums.Seeker, 1, i, loopable, Direction.RIGHT_UP, scale, additionalDelay, xMovementSpeed, yMovementSpeed);
-			formation = formCreator.createFormation(SpawnFormationEnums.Large_smallerthen, 50, 50);
-			timer.setFormation(formation, -550, dataClass.getWindowHeight() / 2 - 100);
-			addSpawnTimer(timer);
-			
-			timer = createSpawnTimer(EnemyEnums.Seeker, 1, i, loopable, Direction.RIGHT_DOWN, scale, additionalDelay, xMovementSpeed, yMovementSpeed);
-			formation = formCreator.createFormation(SpawnFormationEnums.Large_smallerthen, 50, 50);
-			timer.setFormation(formation, -550, dataClass.getWindowHeight() / 2 - 400);
-			addSpawnTimer(timer);
-		}
-		
-		for(int i = 73; i < 130; i +=8) {
-			timer = createSpawnTimer(EnemyEnums.Seeker, 1, i, loopable, Direction.LEFT, scale, additionalDelay, xMovementSpeed, yMovementSpeed);
-			formation = formCreator.createFormation(SpawnFormationEnums.V, 50, 50);
-			timer.setFormation(formation, dataClass.getWindowWidth() + 250, 0);
-			addSpawnTimer(timer);
-			
-			timer = createSpawnTimer(EnemyEnums.Bomba, 1, i, loopable, Direction.LEFT, scale, additionalDelay, xMovementSpeed, yMovementSpeed);
-			formation = formCreator.createFormation(SpawnFormationEnums.Dot, 50, 50);
-			timer.setFormation(formation, dataClass.getWindowWidth() + 520, 0);
-			addSpawnTimer(timer);
-			
-			timer = createSpawnTimer(EnemyEnums.Seeker, 1, i, loopable, Direction.LEFT, scale, additionalDelay, xMovementSpeed, yMovementSpeed);
-			formation = formCreator.createFormation(SpawnFormationEnums.Reverse_V, 50, 50);
-			timer.setFormation(formation, dataClass.getWindowWidth() + 250, dataClass.getWindowHeight() - 210);
-			addSpawnTimer(timer);
-			
-			timer = createSpawnTimer(EnemyEnums.Bomba, 1, i, loopable, Direction.LEFT, scale, additionalDelay, xMovementSpeed, yMovementSpeed);
-			formation = formCreator.createFormation(SpawnFormationEnums.Dot, 50, 50);
-			timer.setFormation(formation, dataClass.getWindowWidth() + 520, dataClass.getWindowHeight() - 120);
-			addSpawnTimer(timer);
-		}
-		
-		for(int i = 105; i < 130; i +=5) {
-			timer = createSpawnTimer(EnemyEnums.Flamer, 1, i, loopable, Direction.LEFT, scale, additionalDelay, xMovementSpeed, yMovementSpeed);
-			formation = formCreator.createFormation(SpawnFormationEnums.Small_smallerthen, 50, 50);
-			timer.setFormation(formation, dataClass.getWindowWidth() + 250, dataClass.getWindowHeight() / 2 - 150);
-			addSpawnTimer(timer);
-		}
-	}
-	
-	private void create130SecondsFormations(DeprecatedEnemySpawnTimer timer, EnemyFormation formation,
-											FormationCreator formCreator) {
-		boolean loopable = false;
-		float scale = 1;
-		int additionalDelay = 0;
-		
-		int xMovementSpeed = 2;
-		int yMovementSpeed = 1;
-		
-		for(int i = 130; i < 165; i +=8) {
-			timer = createSpawnTimer(EnemyEnums.Seeker, 1, i, loopable, Direction.LEFT, scale, additionalDelay, xMovementSpeed, yMovementSpeed);
-			formation = formCreator.createFormation(SpawnFormationEnums.Small_smallerthen, 50, 50);
-			timer.setFormation(formation, dataClass.getWindowWidth() + 250, 0);
-			addSpawnTimer(timer);
-			
-			timer = createSpawnTimer(EnemyEnums.Seeker, 1, i, loopable, Direction.LEFT, scale, additionalDelay, xMovementSpeed, yMovementSpeed);
-			formation = formCreator.createFormation(SpawnFormationEnums.Small_smallerthen, 50, 50);
-			timer.setFormation(formation, dataClass.getWindowWidth() + 250, dataClass.getWindowHeight() - 210);
-			addSpawnTimer(timer);
-		}
-	}
-	
-	
-	private void create160SecondsFormations(DeprecatedEnemySpawnTimer timer, EnemyFormation formation,
-											FormationCreator formCreator) {
-		
-		boolean loopable = false;
-		float scale = 1;
-		int additionalDelay = 0;
-		int xMovementSpeed = 2;
-		int yMovementSpeed = 1;
-		
-		for (int i = 168; i < 220; i += 8) {
-			timer = createSpawnTimer(EnemyEnums.Seeker, 1, i, loopable, Direction.DOWN, scale, additionalDelay, xMovementSpeed, yMovementSpeed);
-			formation = formCreator.createFormation(SpawnFormationEnums.V, 50, 50);
-			timer.setFormation(formation, 0, -200);
-			addSpawnTimer(timer);
-
-			timer = createSpawnTimer(EnemyEnums.Seeker, 1, i , loopable, Direction.DOWN, scale, additionalDelay, xMovementSpeed, yMovementSpeed);
-			formation = formCreator.createFormation(SpawnFormationEnums.V, 50, 50);
-			timer.setFormation(formation, 550, -200);
-			addSpawnTimer(timer);
-			
-			timer = createSpawnTimer(EnemyEnums.Seeker, 1, i , loopable, Direction.DOWN, scale, additionalDelay, xMovementSpeed, yMovementSpeed);
-			formation = formCreator.createFormation(SpawnFormationEnums.V, 50, 50);
-			timer.setFormation(formation, 1100, -200);
-			addSpawnTimer(timer);
-			timer = createSpawnTimer(EnemyEnums.Seeker, 1, i, loopable, Direction.UP, scale, additionalDelay, xMovementSpeed, yMovementSpeed);
-			formation = formCreator.createFormation(SpawnFormationEnums.Reverse_V, 50, 50);
-			timer.setFormation(formation, 0, dataClass.getWindowHeight());
-			addSpawnTimer(timer);
-			
-			timer = createSpawnTimer(EnemyEnums.Seeker, 1, i, loopable, Direction.UP, scale, additionalDelay, xMovementSpeed, yMovementSpeed);
-			formation = formCreator.createFormation(SpawnFormationEnums.Reverse_V, 50, 50);
-			timer.setFormation(formation, 550, dataClass.getWindowHeight());
-			addSpawnTimer(timer);
-			
-			timer = createSpawnTimer(EnemyEnums.Seeker, 1, i, loopable, Direction.UP, scale, additionalDelay, xMovementSpeed, yMovementSpeed);
-			formation = formCreator.createFormation(SpawnFormationEnums.Reverse_V, 50, 50);
-			timer.setFormation(formation, 1100, dataClass.getWindowHeight());
-			addSpawnTimer(timer);
-		}
-		
-		for (int i = 180; i < 220; i += 8) {
-			timer = createSpawnTimer(EnemyEnums.Seeker, 1, i, loopable, Direction.RIGHT, scale, additionalDelay, xMovementSpeed, yMovementSpeed);
-			formation = formCreator.createFormation(SpawnFormationEnums.Small_greaterthen, 50, 50);
-			timer.setFormation(formation, -300, 0);
-			addSpawnTimer(timer);
-			
-			timer = createSpawnTimer(EnemyEnums.Seeker, 1, i, loopable, Direction.RIGHT, scale, additionalDelay, xMovementSpeed, yMovementSpeed);
-			formation = formCreator.createFormation(SpawnFormationEnums.Small_greaterthen, 50, 50);
-			timer.setFormation(formation, -300, 550);
-			addSpawnTimer(timer);
-			
-			timer = createSpawnTimer(EnemyEnums.Seeker, 1, i, loopable, Direction.LEFT, scale, additionalDelay, xMovementSpeed, yMovementSpeed);
-			formation = formCreator.createFormation(SpawnFormationEnums.Small_greaterthen, 50, 50);
-			timer.setFormation(formation, dataClass.getWindowWidth() + 100, 0);
-			addSpawnTimer(timer);
-			
-			timer = createSpawnTimer(EnemyEnums.Seeker, 1, i, loopable, Direction.LEFT, scale, additionalDelay, xMovementSpeed, yMovementSpeed);
-			formation = formCreator.createFormation(SpawnFormationEnums.Small_greaterthen, 50, 50);
-			timer.setFormation(formation, dataClass.getWindowWidth() + 100, 550);
-			addSpawnTimer(timer);
-			
-		}
-		
-		for (int i = 193; i < 220; i += 8) {
-			timer = createSpawnTimer(EnemyEnums.Bomba, 1, i, loopable, Direction.LEFT, scale, additionalDelay, xMovementSpeed, yMovementSpeed);
-			formation = formCreator.createFormation(SpawnFormationEnums.Dot, 50, 50);
-			timer.setFormation(formation, dataClass.getWindowWidth() + 100, dataClass.getWindowHeight() / 2 - 50);
-			addSpawnTimer(timer);
-		}
-	}
-	
-	private void createFinalLoodjes(DeprecatedEnemySpawnTimer timer, EnemyFormation formation,
-									FormationCreator formCreator) {
-		boolean loopable = false;
-		float scale = 1;
-		int additionalDelay = 0;
-		int xMovementSpeed = 2;
-		int yMovementSpeed = 1;
-		
-		
-		for (int i = 225; i < 276; i += 8) {
-			timer = createSpawnTimer(EnemyEnums.Tazer, 1, i, loopable, Direction.RIGHT, scale, additionalDelay, xMovementSpeed, yMovementSpeed);
-			formation = formCreator.createFormation(SpawnFormationEnums.Small_smallerthen, 50, 50);
-			timer.setFormation(formation, -300, 0);
-			addSpawnTimer(timer);
-
-			timer = createSpawnTimer(EnemyEnums.Tazer, 1, i, loopable, Direction.RIGHT, scale, additionalDelay, xMovementSpeed, yMovementSpeed);
-			formation = formCreator.createFormation(SpawnFormationEnums.Small_smallerthen, 50, 50);
-			timer.setFormation(formation, -300, 620);
-			addSpawnTimer(timer);
-
-			timer = createSpawnTimer(EnemyEnums.Tazer, 1, i, loopable, Direction.LEFT, scale, additionalDelay, xMovementSpeed, yMovementSpeed);
-			formation = formCreator.createFormation(SpawnFormationEnums.Small_greaterthen, 50, 50);
-			timer.setFormation(formation, dataClass.getWindowWidth() + 100, 0);
-			addSpawnTimer(timer);
-			timer = createSpawnTimer(EnemyEnums.Tazer, 1, i, loopable, Direction.LEFT, scale, additionalDelay, xMovementSpeed, yMovementSpeed);
-			formation = formCreator.createFormation(SpawnFormationEnums.Small_greaterthen, 50, 50);
-			timer.setFormation(formation, dataClass.getWindowWidth() + 100, 620);
-			addSpawnTimer(timer);
-
-			timer = createSpawnTimer(EnemyEnums.Bomba, 1, i, loopable, Direction.LEFT, scale, additionalDelay, xMovementSpeed, yMovementSpeed);
-			formation = formCreator.createFormation(SpawnFormationEnums.Dot, 50, 50);
-			timer.setFormation(formation, dataClass.getWindowWidth() + 100, dataClass.getWindowHeight() / 2 - 50);
-			addSpawnTimer(timer);
-		}
-
-		for (int i = 244; i < 276; i += 8) {
-			timer = createSpawnTimer(EnemyEnums.Seeker, 1, i, loopable, Direction.DOWN, scale, additionalDelay, xMovementSpeed, yMovementSpeed);
-			formation = formCreator.createFormation(SpawnFormationEnums.V, 50, 50);
-			timer.setFormation(formation, 0, -300);
-			addSpawnTimer(timer);
-
-			timer = createSpawnTimer(EnemyEnums.Seeker, 1, i, loopable, Direction.DOWN, scale, additionalDelay, xMovementSpeed, yMovementSpeed);
-			formation = formCreator.createFormation(SpawnFormationEnums.V, 50, 50);
-			timer.setFormation(formation, 550, -300);
-			addSpawnTimer(timer);
-
-			timer = createSpawnTimer(EnemyEnums.Seeker, 1, i, loopable, Direction.DOWN, scale, additionalDelay, xMovementSpeed, yMovementSpeed);
-			formation = formCreator.createFormation(SpawnFormationEnums.V, 50, 50);
-			timer.setFormation(formation, 1100, -300);
-			addSpawnTimer(timer);
-
-			timer = createSpawnTimer(EnemyEnums.Seeker, 1, i, loopable, Direction.UP, scale, additionalDelay, xMovementSpeed, yMovementSpeed);
-			formation = formCreator.createFormation(SpawnFormationEnums.Reverse_V, 50, 50);
-			timer.setFormation(formation, 0, dataClass.getWindowHeight());
-			addSpawnTimer(timer);
-
-			timer = createSpawnTimer(EnemyEnums.Seeker, 1, i, loopable, Direction.UP, scale, additionalDelay, xMovementSpeed, yMovementSpeed);
-			formation = formCreator.createFormation(SpawnFormationEnums.Reverse_V, 50, 50);
-			timer.setFormation(formation, 550, dataClass.getWindowHeight());
-			addSpawnTimer(timer);
-
-			timer = createSpawnTimer(EnemyEnums.Seeker, 1, i, loopable, Direction.UP, scale, additionalDelay, xMovementSpeed, yMovementSpeed);
-			formation = formCreator.createFormation(SpawnFormationEnums.Reverse_V, 50, 50);
-			timer.setFormation(formation, 1100, dataClass.getWindowHeight());
-			addSpawnTimer(timer);
-		}
-
-		for (int i = 280; i < 300; i += 5) {
-			timer = createSpawnTimer(EnemyEnums.Flamer, 1, i, loopable, Direction.LEFT_UP, scale,
-					additionalDelay, xMovementSpeed, yMovementSpeed);
-			formation = formCreator.createFormation(SpawnFormationEnums.Reverse_Divide, 50, 50);
-			timer.setFormation(formation, dataClass.getWindowWidth(), dataClass.getWindowHeight());
-			addSpawnTimer(timer);
-			
-			timer = createSpawnTimer(EnemyEnums.Flamer, 1, i, loopable, Direction.LEFT_DOWN, scale,
-					additionalDelay, xMovementSpeed, yMovementSpeed);
-			formation = formCreator.createFormation(SpawnFormationEnums.Divide, 50, 50);
-			timer.setFormation(formation, dataClass.getWindowWidth(), -350);
-			addSpawnTimer(timer);
-			
-			timer = createSpawnTimer(EnemyEnums.Bomba, 1, i, loopable, Direction.LEFT, scale,
-					additionalDelay, xMovementSpeed, yMovementSpeed);
-			formation = formCreator.createFormation(SpawnFormationEnums.Cross, 80, 80);
-			timer.setFormation(formation, dataClass.getWindowWidth() + 100, dataClass.getWindowHeight() / 2 - 200);
-			addSpawnTimer(timer);
-		}
-	}
+//	private void create22SecondsFormation(DeprecatedEnemySpawnTimer timer, EnemyFormation formation,
+//										  FormationCreator formCreator) {
+//		boolean loopable = false;
+//		float scale = 1;
+//		int additionalDelay = 0;
+//		int xMovementSpeed = 2;
+//		int yMovementSpeed = 1;
+//
+//		timer = createSpawnTimer(EnemyEnums.Seeker, 22, 22, loopable, Direction.RIGHT_UP, scale, additionalDelay, xMovementSpeed, yMovementSpeed);
+//		formation = formCreator.createFormation(SpawnFormationEnums.Reverse_Divide, 50, 50);
+//		timer.setFormation(formation, -400, dataClass.getWindowHeight() + 100);
+//		addSpawnTimer(timer);
+//
+//		timer = createSpawnTimer(EnemyEnums.Seeker, 22, 22, loopable, Direction.LEFT_DOWN, scale,
+//				additionalDelay, xMovementSpeed, yMovementSpeed);
+//		formation = formCreator.createFormation(SpawnFormationEnums.Reverse_Divide, 50, 50);
+//		timer.setFormation(formation, dataClass.getWindowWidth() + 200, -250);
+//		addSpawnTimer(timer);
+//
+//		timer = createSpawnTimer(EnemyEnums.Seeker, 22, 22, loopable, Direction.RIGHT_DOWN, scale,
+//				additionalDelay, xMovementSpeed, yMovementSpeed);
+//		formation = formCreator.createFormation(SpawnFormationEnums.Divide, 50, 50);
+//		timer.setFormation(formation, -400, -250);
+//		addSpawnTimer(timer);
+//
+//		timer = createSpawnTimer(EnemyEnums.Seeker, 22, 22, loopable, Direction.LEFT_UP, scale, additionalDelay, xMovementSpeed, yMovementSpeed);
+//		formation = formCreator.createFormation(SpawnFormationEnums.Divide, 50, 50);
+//		timer.setFormation(formation, dataClass.getWindowWidth() + 200, dataClass.getWindowHeight() + 100);
+//		addSpawnTimer(timer);
+//
+//		timer = createSpawnTimer(EnemyEnums.Flamer, 22, 29, loopable, Direction.RIGHT_UP, scale, additionalDelay, xMovementSpeed, yMovementSpeed);
+//		formation = formCreator.createFormation(SpawnFormationEnums.Reverse_Divide, 50, 50);
+//		timer.setFormation(formation, -400, dataClass.getWindowHeight() + 100);
+//		addSpawnTimer(timer);
+//
+//		timer = createSpawnTimer(EnemyEnums.Flamer, 22, 29, loopable, Direction.LEFT_DOWN, scale,
+//				additionalDelay, xMovementSpeed, yMovementSpeed);
+//		formation = formCreator.createFormation(SpawnFormationEnums.Reverse_Divide, 50, 50);
+//		timer.setFormation(formation, dataClass.getWindowWidth() + 200, -250);
+//		addSpawnTimer(timer);
+//
+//		timer = createSpawnTimer(EnemyEnums.Flamer, 22, 29, loopable, Direction.RIGHT_DOWN, scale,
+//				additionalDelay, xMovementSpeed, yMovementSpeed);
+//		formation = formCreator.createFormation(SpawnFormationEnums.Divide, 50, 50);
+//		timer.setFormation(formation, -400, -250);
+//		addSpawnTimer(timer);
+//
+//		timer = createSpawnTimer(EnemyEnums.Flamer, 22, 29, loopable, Direction.LEFT_UP, scale, additionalDelay, xMovementSpeed, yMovementSpeed);
+//		formation = formCreator.createFormation(SpawnFormationEnums.Divide, 50, 50);
+//		timer.setFormation(formation, dataClass.getWindowWidth() + 200, dataClass.getWindowHeight() + 100);
+//		addSpawnTimer(timer);
+//
+//		timer = createSpawnTimer(EnemyEnums.Tazer, 22, 33, loopable, Direction.RIGHT_UP, scale, additionalDelay, xMovementSpeed, yMovementSpeed);
+//		formation = formCreator.createFormation(SpawnFormationEnums.Reverse_Divide, 50, 50);
+//		timer.setFormation(formation, -400, dataClass.getWindowHeight() + 100);
+//		addSpawnTimer(timer);
+//
+//		timer = createSpawnTimer(EnemyEnums.Tazer, 22, 33, loopable, Direction.LEFT_DOWN, scale, additionalDelay, xMovementSpeed, yMovementSpeed);
+//		formation = formCreator.createFormation(SpawnFormationEnums.Reverse_Divide, 50, 50);
+//		timer.setFormation(formation, dataClass.getWindowWidth() + 200, -250);
+//		addSpawnTimer(timer);
+//
+//		timer = createSpawnTimer(EnemyEnums.Tazer, 22, 33, loopable, Direction.RIGHT_DOWN, scale,
+//				additionalDelay, xMovementSpeed, yMovementSpeed);
+//		formation = formCreator.createFormation(SpawnFormationEnums.Divide, 50, 50);
+//		timer.setFormation(formation, -400, -250);
+//		addSpawnTimer(timer);
+//
+//		timer = createSpawnTimer(EnemyEnums.Tazer, 22, 33, loopable, Direction.LEFT_UP, scale, additionalDelay, xMovementSpeed, yMovementSpeed);
+//		formation = formCreator.createFormation(SpawnFormationEnums.Divide, 50, 50);
+//		timer.setFormation(formation, dataClass.getWindowWidth() + 200, dataClass.getWindowHeight() + 100);
+//		addSpawnTimer(timer);
+//	}
+//
+//	private void create51SecondsFormation(DeprecatedEnemySpawnTimer timer, EnemyFormation formation,
+//										  FormationCreator formCreator) {
+//		boolean loopable = false;
+//		float scale = 1;
+//		int additionalDelay = 0;
+//		int xMovementSpeed = 2;
+//		int yMovementSpeed = 1;
+//
+//
+//		for(int i = 47; i < 75; i +=5) {
+//			timer = createSpawnTimer(EnemyEnums.Seeker, 1, i, loopable, Direction.LEFT_UP, scale, additionalDelay, xMovementSpeed, yMovementSpeed);
+//			formation = formCreator.createFormation(SpawnFormationEnums.Large_greaterthen, 50, 50);
+//			timer.setFormation(formation, dataClass.getWindowWidth() + 250, dataClass.getWindowHeight() / 2 - 100);
+//			addSpawnTimer(timer);
+//
+//			timer = createSpawnTimer(EnemyEnums.Seeker, 1, i, loopable, Direction.LEFT_DOWN, scale, additionalDelay, xMovementSpeed, yMovementSpeed);
+//			formation = formCreator.createFormation(SpawnFormationEnums.Large_greaterthen, 50, 50);
+//			timer.setFormation(formation, dataClass.getWindowWidth() + 250, dataClass.getWindowHeight() / 2 - 400);
+//			addSpawnTimer(timer);
+//
+//			timer = createSpawnTimer(EnemyEnums.Seeker, 1, i, loopable, Direction.RIGHT_UP, scale, additionalDelay, xMovementSpeed, yMovementSpeed);
+//			formation = formCreator.createFormation(SpawnFormationEnums.Large_smallerthen, 50, 50);
+//			timer.setFormation(formation, -550, dataClass.getWindowHeight() / 2 - 100);
+//			addSpawnTimer(timer);
+//
+//			timer = createSpawnTimer(EnemyEnums.Seeker, 1, i, loopable, Direction.RIGHT_DOWN, scale, additionalDelay, xMovementSpeed, yMovementSpeed);
+//			formation = formCreator.createFormation(SpawnFormationEnums.Large_smallerthen, 50, 50);
+//			timer.setFormation(formation, -550, dataClass.getWindowHeight() / 2 - 400);
+//			addSpawnTimer(timer);
+//		}
+//
+//	}
+//
+//	private void create71SecondsFormation(DeprecatedEnemySpawnTimer timer, EnemyFormation formation,
+//										  FormationCreator formCreator) {
+//		boolean loopable = false;
+//		float scale = 1;
+//		int additionalDelay = 0;
+//		int xMovementSpeed = 2;
+//		int yMovementSpeed = 1;
+//
+//		for(int i = 90; i < 130; i +=7) {
+//			timer = createSpawnTimer(EnemyEnums.Seeker, 1, i, loopable, Direction.LEFT_UP, scale, additionalDelay, xMovementSpeed, yMovementSpeed);
+//			formation = formCreator.createFormation(SpawnFormationEnums.Large_greaterthen, 50, 50);
+//			timer.setFormation(formation, dataClass.getWindowWidth() + 250, dataClass.getWindowHeight() / 2 - 100);
+//			addSpawnTimer(timer);
+//
+//			timer = createSpawnTimer(EnemyEnums.Seeker, 1, i, loopable, Direction.LEFT_DOWN, scale, additionalDelay, xMovementSpeed, yMovementSpeed);
+//			formation = formCreator.createFormation(SpawnFormationEnums.Large_greaterthen, 50, 50);
+//			timer.setFormation(formation, dataClass.getWindowWidth() + 250, dataClass.getWindowHeight() / 2 - 400);
+//			addSpawnTimer(timer);
+//
+//			timer = createSpawnTimer(EnemyEnums.Seeker, 1, i, loopable, Direction.RIGHT_UP, scale, additionalDelay, xMovementSpeed, yMovementSpeed);
+//			formation = formCreator.createFormation(SpawnFormationEnums.Large_smallerthen, 50, 50);
+//			timer.setFormation(formation, -550, dataClass.getWindowHeight() / 2 - 100);
+//			addSpawnTimer(timer);
+//
+//			timer = createSpawnTimer(EnemyEnums.Seeker, 1, i, loopable, Direction.RIGHT_DOWN, scale, additionalDelay, xMovementSpeed, yMovementSpeed);
+//			formation = formCreator.createFormation(SpawnFormationEnums.Large_smallerthen, 50, 50);
+//			timer.setFormation(formation, -550, dataClass.getWindowHeight() / 2 - 400);
+//			addSpawnTimer(timer);
+//		}
+//
+//		for(int i = 73; i < 130; i +=8) {
+//			timer = createSpawnTimer(EnemyEnums.Seeker, 1, i, loopable, Direction.LEFT, scale, additionalDelay, xMovementSpeed, yMovementSpeed);
+//			formation = formCreator.createFormation(SpawnFormationEnums.V, 50, 50);
+//			timer.setFormation(formation, dataClass.getWindowWidth() + 250, 0);
+//			addSpawnTimer(timer);
+//
+//			timer = createSpawnTimer(EnemyEnums.Bomba, 1, i, loopable, Direction.LEFT, scale, additionalDelay, xMovementSpeed, yMovementSpeed);
+//			formation = formCreator.createFormation(SpawnFormationEnums.Dot, 50, 50);
+//			timer.setFormation(formation, dataClass.getWindowWidth() + 520, 0);
+//			addSpawnTimer(timer);
+//
+//			timer = createSpawnTimer(EnemyEnums.Seeker, 1, i, loopable, Direction.LEFT, scale, additionalDelay, xMovementSpeed, yMovementSpeed);
+//			formation = formCreator.createFormation(SpawnFormationEnums.Reverse_V, 50, 50);
+//			timer.setFormation(formation, dataClass.getWindowWidth() + 250, dataClass.getWindowHeight() - 210);
+//			addSpawnTimer(timer);
+//
+//			timer = createSpawnTimer(EnemyEnums.Bomba, 1, i, loopable, Direction.LEFT, scale, additionalDelay, xMovementSpeed, yMovementSpeed);
+//			formation = formCreator.createFormation(SpawnFormationEnums.Dot, 50, 50);
+//			timer.setFormation(formation, dataClass.getWindowWidth() + 520, dataClass.getWindowHeight() - 120);
+//			addSpawnTimer(timer);
+//		}
+//
+//		for(int i = 105; i < 130; i +=5) {
+//			timer = createSpawnTimer(EnemyEnums.Flamer, 1, i, loopable, Direction.LEFT, scale, additionalDelay, xMovementSpeed, yMovementSpeed);
+//			formation = formCreator.createFormation(SpawnFormationEnums.Small_smallerthen, 50, 50);
+//			timer.setFormation(formation, dataClass.getWindowWidth() + 250, dataClass.getWindowHeight() / 2 - 150);
+//			addSpawnTimer(timer);
+//		}
+//	}
+//
+//	private void create130SecondsFormations(DeprecatedEnemySpawnTimer timer, EnemyFormation formation,
+//											FormationCreator formCreator) {
+//		boolean loopable = false;
+//		float scale = 1;
+//		int additionalDelay = 0;
+//
+//		int xMovementSpeed = 2;
+//		int yMovementSpeed = 1;
+//
+//		for(int i = 130; i < 165; i +=8) {
+//			timer = createSpawnTimer(EnemyEnums.Seeker, 1, i, loopable, Direction.LEFT, scale, additionalDelay, xMovementSpeed, yMovementSpeed);
+//			formation = formCreator.createFormation(SpawnFormationEnums.Small_smallerthen, 50, 50);
+//			timer.setFormation(formation, dataClass.getWindowWidth() + 250, 0);
+//			addSpawnTimer(timer);
+//
+//			timer = createSpawnTimer(EnemyEnums.Seeker, 1, i, loopable, Direction.LEFT, scale, additionalDelay, xMovementSpeed, yMovementSpeed);
+//			formation = formCreator.createFormation(SpawnFormationEnums.Small_smallerthen, 50, 50);
+//			timer.setFormation(formation, dataClass.getWindowWidth() + 250, dataClass.getWindowHeight() - 210);
+//			addSpawnTimer(timer);
+//		}
+//	}
+//
+//
+//	private void create160SecondsFormations(DeprecatedEnemySpawnTimer timer, EnemyFormation formation,
+//											FormationCreator formCreator) {
+//
+//		boolean loopable = false;
+//		float scale = 1;
+//		int additionalDelay = 0;
+//		int xMovementSpeed = 2;
+//		int yMovementSpeed = 1;
+//
+//		for (int i = 168; i < 220; i += 8) {
+//			timer = createSpawnTimer(EnemyEnums.Seeker, 1, i, loopable, Direction.DOWN, scale, additionalDelay, xMovementSpeed, yMovementSpeed);
+//			formation = formCreator.createFormation(SpawnFormationEnums.V, 50, 50);
+//			timer.setFormation(formation, 0, -200);
+//			addSpawnTimer(timer);
+//
+//			timer = createSpawnTimer(EnemyEnums.Seeker, 1, i , loopable, Direction.DOWN, scale, additionalDelay, xMovementSpeed, yMovementSpeed);
+//			formation = formCreator.createFormation(SpawnFormationEnums.V, 50, 50);
+//			timer.setFormation(formation, 550, -200);
+//			addSpawnTimer(timer);
+//
+//			timer = createSpawnTimer(EnemyEnums.Seeker, 1, i , loopable, Direction.DOWN, scale, additionalDelay, xMovementSpeed, yMovementSpeed);
+//			formation = formCreator.createFormation(SpawnFormationEnums.V, 50, 50);
+//			timer.setFormation(formation, 1100, -200);
+//			addSpawnTimer(timer);
+//			timer = createSpawnTimer(EnemyEnums.Seeker, 1, i, loopable, Direction.UP, scale, additionalDelay, xMovementSpeed, yMovementSpeed);
+//			formation = formCreator.createFormation(SpawnFormationEnums.Reverse_V, 50, 50);
+//			timer.setFormation(formation, 0, dataClass.getWindowHeight());
+//			addSpawnTimer(timer);
+//
+//			timer = createSpawnTimer(EnemyEnums.Seeker, 1, i, loopable, Direction.UP, scale, additionalDelay, xMovementSpeed, yMovementSpeed);
+//			formation = formCreator.createFormation(SpawnFormationEnums.Reverse_V, 50, 50);
+//			timer.setFormation(formation, 550, dataClass.getWindowHeight());
+//			addSpawnTimer(timer);
+//
+//			timer = createSpawnTimer(EnemyEnums.Seeker, 1, i, loopable, Direction.UP, scale, additionalDelay, xMovementSpeed, yMovementSpeed);
+//			formation = formCreator.createFormation(SpawnFormationEnums.Reverse_V, 50, 50);
+//			timer.setFormation(formation, 1100, dataClass.getWindowHeight());
+//			addSpawnTimer(timer);
+//		}
+//
+//		for (int i = 180; i < 220; i += 8) {
+//			timer = createSpawnTimer(EnemyEnums.Seeker, 1, i, loopable, Direction.RIGHT, scale, additionalDelay, xMovementSpeed, yMovementSpeed);
+//			formation = formCreator.createFormation(SpawnFormationEnums.Small_greaterthen, 50, 50);
+//			timer.setFormation(formation, -300, 0);
+//			addSpawnTimer(timer);
+//
+//			timer = createSpawnTimer(EnemyEnums.Seeker, 1, i, loopable, Direction.RIGHT, scale, additionalDelay, xMovementSpeed, yMovementSpeed);
+//			formation = formCreator.createFormation(SpawnFormationEnums.Small_greaterthen, 50, 50);
+//			timer.setFormation(formation, -300, 550);
+//			addSpawnTimer(timer);
+//
+//			timer = createSpawnTimer(EnemyEnums.Seeker, 1, i, loopable, Direction.LEFT, scale, additionalDelay, xMovementSpeed, yMovementSpeed);
+//			formation = formCreator.createFormation(SpawnFormationEnums.Small_greaterthen, 50, 50);
+//			timer.setFormation(formation, dataClass.getWindowWidth() + 100, 0);
+//			addSpawnTimer(timer);
+//
+//			timer = createSpawnTimer(EnemyEnums.Seeker, 1, i, loopable, Direction.LEFT, scale, additionalDelay, xMovementSpeed, yMovementSpeed);
+//			formation = formCreator.createFormation(SpawnFormationEnums.Small_greaterthen, 50, 50);
+//			timer.setFormation(formation, dataClass.getWindowWidth() + 100, 550);
+//			addSpawnTimer(timer);
+//
+//		}
+//
+//		for (int i = 193; i < 220; i += 8) {
+//			timer = createSpawnTimer(EnemyEnums.Bomba, 1, i, loopable, Direction.LEFT, scale, additionalDelay, xMovementSpeed, yMovementSpeed);
+//			formation = formCreator.createFormation(SpawnFormationEnums.Dot, 50, 50);
+//			timer.setFormation(formation, dataClass.getWindowWidth() + 100, dataClass.getWindowHeight() / 2 - 50);
+//			addSpawnTimer(timer);
+//		}
+//	}
+//
+//	private void createFinalLoodjes(DeprecatedEnemySpawnTimer timer, EnemyFormation formation,
+//									FormationCreator formCreator) {
+//		boolean loopable = false;
+//		float scale = 1;
+//		int additionalDelay = 0;
+//		int xMovementSpeed = 2;
+//		int yMovementSpeed = 1;
+//
+//
+//		for (int i = 225; i < 276; i += 8) {
+//			timer = createSpawnTimer(EnemyEnums.Tazer, 1, i, loopable, Direction.RIGHT, scale, additionalDelay, xMovementSpeed, yMovementSpeed);
+//			formation = formCreator.createFormation(SpawnFormationEnums.Small_smallerthen, 50, 50);
+//			timer.setFormation(formation, -300, 0);
+//			addSpawnTimer(timer);
+//
+//			timer = createSpawnTimer(EnemyEnums.Tazer, 1, i, loopable, Direction.RIGHT, scale, additionalDelay, xMovementSpeed, yMovementSpeed);
+//			formation = formCreator.createFormation(SpawnFormationEnums.Small_smallerthen, 50, 50);
+//			timer.setFormation(formation, -300, 620);
+//			addSpawnTimer(timer);
+//
+//			timer = createSpawnTimer(EnemyEnums.Tazer, 1, i, loopable, Direction.LEFT, scale, additionalDelay, xMovementSpeed, yMovementSpeed);
+//			formation = formCreator.createFormation(SpawnFormationEnums.Small_greaterthen, 50, 50);
+//			timer.setFormation(formation, dataClass.getWindowWidth() + 100, 0);
+//			addSpawnTimer(timer);
+//			timer = createSpawnTimer(EnemyEnums.Tazer, 1, i, loopable, Direction.LEFT, scale, additionalDelay, xMovementSpeed, yMovementSpeed);
+//			formation = formCreator.createFormation(SpawnFormationEnums.Small_greaterthen, 50, 50);
+//			timer.setFormation(formation, dataClass.getWindowWidth() + 100, 620);
+//			addSpawnTimer(timer);
+//
+//			timer = createSpawnTimer(EnemyEnums.Bomba, 1, i, loopable, Direction.LEFT, scale, additionalDelay, xMovementSpeed, yMovementSpeed);
+//			formation = formCreator.createFormation(SpawnFormationEnums.Dot, 50, 50);
+//			timer.setFormation(formation, dataClass.getWindowWidth() + 100, dataClass.getWindowHeight() / 2 - 50);
+//			addSpawnTimer(timer);
+//		}
+//
+//		for (int i = 244; i < 276; i += 8) {
+//			timer = createSpawnTimer(EnemyEnums.Seeker, 1, i, loopable, Direction.DOWN, scale, additionalDelay, xMovementSpeed, yMovementSpeed);
+//			formation = formCreator.createFormation(SpawnFormationEnums.V, 50, 50);
+//			timer.setFormation(formation, 0, -300);
+//			addSpawnTimer(timer);
+//
+//			timer = createSpawnTimer(EnemyEnums.Seeker, 1, i, loopable, Direction.DOWN, scale, additionalDelay, xMovementSpeed, yMovementSpeed);
+//			formation = formCreator.createFormation(SpawnFormationEnums.V, 50, 50);
+//			timer.setFormation(formation, 550, -300);
+//			addSpawnTimer(timer);
+//
+//			timer = createSpawnTimer(EnemyEnums.Seeker, 1, i, loopable, Direction.DOWN, scale, additionalDelay, xMovementSpeed, yMovementSpeed);
+//			formation = formCreator.createFormation(SpawnFormationEnums.V, 50, 50);
+//			timer.setFormation(formation, 1100, -300);
+//			addSpawnTimer(timer);
+//
+//			timer = createSpawnTimer(EnemyEnums.Seeker, 1, i, loopable, Direction.UP, scale, additionalDelay, xMovementSpeed, yMovementSpeed);
+//			formation = formCreator.createFormation(SpawnFormationEnums.Reverse_V, 50, 50);
+//			timer.setFormation(formation, 0, dataClass.getWindowHeight());
+//			addSpawnTimer(timer);
+//
+//			timer = createSpawnTimer(EnemyEnums.Seeker, 1, i, loopable, Direction.UP, scale, additionalDelay, xMovementSpeed, yMovementSpeed);
+//			formation = formCreator.createFormation(SpawnFormationEnums.Reverse_V, 50, 50);
+//			timer.setFormation(formation, 550, dataClass.getWindowHeight());
+//			addSpawnTimer(timer);
+//
+//			timer = createSpawnTimer(EnemyEnums.Seeker, 1, i, loopable, Direction.UP, scale, additionalDelay, xMovementSpeed, yMovementSpeed);
+//			formation = formCreator.createFormation(SpawnFormationEnums.Reverse_V, 50, 50);
+//			timer.setFormation(formation, 1100, dataClass.getWindowHeight());
+//			addSpawnTimer(timer);
+//		}
+//
+//		for (int i = 280; i < 300; i += 5) {
+//			timer = createSpawnTimer(EnemyEnums.Flamer, 1, i, loopable, Direction.LEFT_UP, scale,
+//					additionalDelay, xMovementSpeed, yMovementSpeed);
+//			formation = formCreator.createFormation(SpawnFormationEnums.Reverse_Divide, 50, 50);
+//			timer.setFormation(formation, dataClass.getWindowWidth(), dataClass.getWindowHeight());
+//			addSpawnTimer(timer);
+//
+//			timer = createSpawnTimer(EnemyEnums.Flamer, 1, i, loopable, Direction.LEFT_DOWN, scale,
+//					additionalDelay, xMovementSpeed, yMovementSpeed);
+//			formation = formCreator.createFormation(SpawnFormationEnums.Divide, 50, 50);
+//			timer.setFormation(formation, dataClass.getWindowWidth(), -350);
+//			addSpawnTimer(timer);
+//
+//			timer = createSpawnTimer(EnemyEnums.Bomba, 1, i, loopable, Direction.LEFT, scale,
+//					additionalDelay, xMovementSpeed, yMovementSpeed);
+//			formation = formCreator.createFormation(SpawnFormationEnums.Cross, 80, 80);
+//			timer.setFormation(formation, dataClass.getWindowWidth() + 100, dataClass.getWindowHeight() / 2 - 200);
+//			addSpawnTimer(timer);
+//		}
+//	}
 }

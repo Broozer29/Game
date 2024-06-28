@@ -117,16 +117,16 @@ public class ImageLoader {
                 return "/images/background/star.png";
             case Seeker:
                 return "/images/Ships/Ship 1/Ship1.png";
-            case Tazer:
-                return "/images/Ships/Ship 2/Ship2.png";
-            case Energizer:
-                return "/images/Ships/Ship 3/Ship3.png";
-            case Bulldozer:
-                return "/images/Ships/Ship 4/Ship4.png";
-            case Flamer:
-                return "/images/Ships/Ship 5/Ship5.png";
-            case Bomba:
-                return "/images/Ships/Ship 6/Ship6.png";
+//            case Tazer:
+//                return "/images/Ships/Ship 2/Ship2.png";
+//            case Energizer:
+//                return "/images/Ships/Ship 3/Ship3.png";
+//            case Bulldozer:
+//                return "/images/Ships/Ship 4/Ship4.png";
+//            case Flamer:
+//                return "/images/Ships/Ship 5/Ship5.png";
+//            case Bomba:
+//                return "/images/Ships/Ship 6/Ship6.png";
             case Player_Spaceship_Model_3:
                 return "/images/Ships/Player Ships/TM_3_Better_Model_Upgrade.png";
             case Health_Bar:
@@ -607,12 +607,14 @@ public class ImageLoader {
                 return "/images/Icons/Locked.png";
             case TopazGem7:
                 return "/images/Icons/Money/Topaz Gem07.png";
-            case Needler:
-                return "/images/Ships/Enemy Ships/Needler.png";
-            case Scout:
-                return "/images/Ships/Enemy Ships/Scout.png";
+//            case Needler:
+//                return "/images/Ships/Enemy Ships/Needler.png";
+//            case Scout:
+//                return "/images/Ships/Enemy Ships/Scout.png";
             case LaserBullet:
                 return "/images/laserbullet.png";
+            case CashCarrier:
+                return "/images/Ships/Enemy Ships/CashCarrier.png";
             default:
                 return "";
         }

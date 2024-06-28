@@ -13,7 +13,6 @@ public class OutOfBoundsCalculator {
             System.out.println("Iets is null: " + gameObject.getClass());
         }
 
-
         return calculateOutOfBounds(gameObject);
     }
 
@@ -21,14 +20,14 @@ public class OutOfBoundsCalculator {
         return calculateOutOfBounds(xCoordinate, yCoordinate, rotation);
     }
 
-    private static boolean calculateOutOfBounds(GameObject gameObject){
+    private static boolean calculateOutOfBounds (GameObject gameObject) {
         int xCoordinate = 0;
         int yCoordinate = 0;
         int width = 0;
         int height = 0;
 
 
-        if(gameObject.getAnimation() != null){
+        if (gameObject.getAnimation() != null) {
             xCoordinate = gameObject.getAnimation().getXCoordinate();
             yCoordinate = gameObject.getAnimation().getYCoordinate();
             width = gameObject.getAnimation().getWidth();
@@ -46,53 +45,65 @@ public class OutOfBoundsCalculator {
 //        }
 
         Direction direction = null;
-        if(gameObject.getMovementConfiguration().getCurrentPath() != null){
+        if (gameObject.getMovementConfiguration().getCurrentPath() != null) {
             direction = gameObject.getMovementConfiguration().getCurrentPath().getFallbackDirection();
         } else {
             direction = gameObject.getMovementConfiguration().getRotation();
         }
 
-        switch(direction){
+        int playableWindowMaxHeight = DataClass.getInstance().getPlayableWindowMaxHeight();
+        int playableWindowMinHeight = DataClass.getInstance().getPlayableWindowMinHeight();
+        int windowMaxWidth = DataClass.getInstance().getWindowWidth();
+        int windowMinWidth = 0;
+        switch (direction) {
             case UP:
-                if (yCoordinate <= (DataClass.getInstance().getPlayableWindowMinHeight() - height)) {
+                if (yCoordinate <= (playableWindowMinHeight - height)
+                        || xCoordinate <= windowMinWidth - width
+                        || xCoordinate >= windowMaxWidth + width) {
                     return true;
                 }
                 break;
             case DOWN:
-                if (yCoordinate >= (DataClass.getInstance().getPlayableWindowMaxHeight() + height)) {
+                if (yCoordinate >= (playableWindowMaxHeight + height)
+                        || xCoordinate <= windowMinWidth - width
+                        || xCoordinate >= windowMaxWidth + width) {
                     return true;
                 }
                 break;
             case LEFT:
-                if (xCoordinate <= 0 - width) {
+                if (xCoordinate <= windowMinWidth - width
+                        || yCoordinate <= (playableWindowMinHeight - height)
+                        || yCoordinate >= (playableWindowMaxHeight + height)) {
                     return true;
                 }
                 break;
             case RIGHT:
-                if (xCoordinate >= DataClass.getInstance().getWindowWidth() + width) {
+                if (xCoordinate >= windowMaxWidth + width
+                        || yCoordinate <= (playableWindowMinHeight - height)
+                        || yCoordinate >= (playableWindowMaxHeight + height)) {
                     return true;
                 }
                 break;
             case LEFT_DOWN:
-                if (xCoordinate <= 0 - width || yCoordinate >= (DataClass.getInstance().getPlayableWindowMaxHeight() + height)) {
+                if (xCoordinate <= 0 - width || yCoordinate >= (playableWindowMaxHeight + height)) {
                     return true;
                 }
                 break;
             case LEFT_UP:
-                if (xCoordinate <= 0 - width || yCoordinate <= (DataClass.getInstance().getPlayableWindowMinHeight() - height)) {
+                if (xCoordinate <= 0 - width || yCoordinate <= (playableWindowMinHeight - height)) {
                     return true;
                 }
                 break;
             case NONE:
                 return true;
             case RIGHT_DOWN:
-                if (xCoordinate >= DataClass.getInstance().getWindowWidth() + width
-                        || yCoordinate >= (DataClass.getInstance().getPlayableWindowMaxHeight() + height)) {
+                if (xCoordinate >= windowMaxWidth + width
+                        || yCoordinate >= (playableWindowMaxHeight + height)) {
                     return true;
                 }
                 break;
             case RIGHT_UP:
-                if (xCoordinate >= DataClass.getInstance().getWindowWidth() + width || yCoordinate <= (DataClass.getInstance().getPlayableWindowMinHeight() - height)) {
+                if (xCoordinate >= windowMaxWidth + width || yCoordinate <= (playableWindowMinHeight - height)) {
                     return true;
                 }
                 break;
@@ -105,45 +116,45 @@ public class OutOfBoundsCalculator {
     private static boolean calculateOutOfBounds (int xCoordinate, int yCoordinate, Direction direction) {
         switch (direction) {
             case UP:
-                if (yCoordinate <= (DataClass.getInstance().getPlayableWindowMinHeight() - 250)) {
+                if (yCoordinate <= (DataClass.getInstance().getPlayableWindowMinHeight() - 350)) {
                     return true;
                 }
                 break;
             case DOWN:
-                if (yCoordinate >= (DataClass.getInstance().getPlayableWindowMaxHeight() + 250)) {
+                if (yCoordinate >= (DataClass.getInstance().getPlayableWindowMaxHeight() + 350)) {
                     return true;
                 }
                 break;
             case LEFT:
-                if (xCoordinate <= -250) {
+                if (xCoordinate <= -350) {
                     return true;
                 }
                 break;
             case RIGHT:
-                if (xCoordinate >= DataClass.getInstance().getWindowWidth() + 250) {
+                if (xCoordinate >= DataClass.getInstance().getWindowWidth() + 350) {
                     return true;
                 }
                 break;
             case LEFT_DOWN:
-                if (xCoordinate <= -50 || yCoordinate >= (DataClass.getInstance().getPlayableWindowMaxHeight() + 250)) {
+                if (xCoordinate <= -350 || yCoordinate >= (DataClass.getInstance().getPlayableWindowMaxHeight() + 350)) {
                     return true;
                 }
                 break;
             case LEFT_UP:
-                if (xCoordinate <= -50 || yCoordinate <= (DataClass.getInstance().getPlayableWindowMinHeight() - 250)) {
+                if (xCoordinate <= -350 || yCoordinate <= (DataClass.getInstance().getPlayableWindowMinHeight() - 350)) {
                     return true;
                 }
                 break;
             case NONE:
                 return true;
             case RIGHT_DOWN:
-                if (xCoordinate >= DataClass.getInstance().getWindowWidth() + 250
-                        || yCoordinate >= (DataClass.getInstance().getPlayableWindowMaxHeight() + 250)) {
+                if (xCoordinate >= DataClass.getInstance().getWindowWidth() + 350
+                        || yCoordinate >= (DataClass.getInstance().getPlayableWindowMaxHeight() + 350)) {
                     return true;
                 }
                 break;
             case RIGHT_UP:
-                if (xCoordinate >= DataClass.getInstance().getWindowWidth() + 250 || yCoordinate <= (DataClass.getInstance().getPlayableWindowMinHeight() - 250)) {
+                if (xCoordinate >= DataClass.getInstance().getWindowWidth() + 350 || yCoordinate <= (DataClass.getInstance().getPlayableWindowMinHeight() - 350)) {
                     return true;
                 }
                 break;

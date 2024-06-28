@@ -32,10 +32,6 @@ public class Tazer extends Enemy {
     public Tazer (SpriteConfiguration spriteConfiguration, EnemyConfiguration enemyConfiguration, MovementConfiguration movementConfiguration) {
         super(spriteConfiguration, enemyConfiguration, movementConfiguration);
 
-//        SpriteAnimationConfiguration exhaustConfiguration = new SpriteAnimationConfiguration(spriteConfiguration, 0, true);
-//        exhaustConfiguration.getSpriteConfiguration().setImageType(ImageEnums.Tazer_Normal_Exhaust);
-//        this.exhaustAnimation = new SpriteAnimation(exhaustConfiguration);
-
         SpriteAnimationConfiguration destroyedExplosionfiguration = new SpriteAnimationConfiguration(spriteConfiguration, 3, false);
         destroyedExplosionfiguration.getSpriteConfiguration().setImageType(ImageEnums.Tazer_Destroyed_Explosion);
         this.destructionAnimation = new SpriteAnimation(destroyedExplosionfiguration);
@@ -45,20 +41,32 @@ public class Tazer extends Enemy {
 
     }
 
+    public Tazer (SpriteAnimationConfiguration spriteConfiguration, EnemyConfiguration enemyConfiguration, MovementConfiguration movementConfiguration) {
+        super(spriteConfiguration, enemyConfiguration, movementConfiguration);
+
+        SpriteAnimationConfiguration destroyedExplosionfiguration = new SpriteAnimationConfiguration(spriteConfiguration.getSpriteConfiguration(), 3, false);
+        destroyedExplosionfiguration.getSpriteConfiguration().setImageType(ImageEnums.Tazer_Destroyed_Explosion);
+        this.destructionAnimation = new SpriteAnimation(destroyedExplosionfiguration);
+
+        this.damage = MissileEnums.TazerProjectile.getDamage();
+        initDirectionFromRotation();
+    }
+
 
     public void fireAction () {
         if(this.movementConfiguration.getPathFinder() instanceof HoverPathFinder){
             allowedToFire = this.movementConfiguration.getCurrentPath().getWaypoints().isEmpty();
         }
+
+        boolean fired = false;
         // Check if the attack cooldown has been reached
         double currentTime = GameStateInfo.getInstance().getGameSeconds();
         if (currentTime >= lastAttackTime + this.getAttackSpeed() && WithinVisualBoundariesCalculator.isWithinBoundaries(this)
         && allowedToFire) {
-
             if(randomDirection == null) {
                 randomDirection = selectRandomMissileDirection();
             }
-            this.rotateGameObjectTowards(randomDirection, true);
+            this.rotateGameObjectTowards(randomDirection, false);
             this.allowedVisualsToRotate = false;
 
             if (!chargingUpAttackAnimation.isPlaying()) {
@@ -70,10 +78,11 @@ public class Tazer extends Enemy {
                 shootMissile(randomDirection);
                 lastAttackTime = currentTime; // Update the last attack time after firing
                 randomDirection = null;
+                fired = true;
             }
         }
 
-        if(!allowedToFire){
+        if(fired){
             this.allowedVisualsToRotate = true;
         }
     }
@@ -107,7 +116,7 @@ public class Tazer extends Enemy {
 
         MissileConfiguration missileConfiguration = MissileCreator.getInstance().createMissileConfiguration(missileType, maxHitPoints, maxShields,
                 deathSound, this.getDamage(), missileType.getDeathOrExplosionImageEnum(), isFriendly, allowedToDealDamage, objectType,
-                false, false);
+                false, false, true);
 
 
         //Create the missile and finalize the creation process, then add it to the manager and consequently the game

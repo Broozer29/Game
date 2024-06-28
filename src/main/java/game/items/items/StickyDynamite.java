@@ -4,7 +4,7 @@ import VisualAndAudioData.image.ImageEnums;
 import game.items.Item;
 import game.items.effects.EffectActivationTypes;
 import game.items.effects.EffectIdentifiers;
-import game.items.effects.effecttypes.DormentExplosion;
+import game.items.effects.effectimplementations.DormentExplosion;
 import game.items.effects.DormentExplosionActivationMethods;
 import game.items.enums.ItemApplicationEnum;
 import game.items.enums.ItemEnums;

@@ -1,6 +1,5 @@
 package VisualAndAudioData.image;
 
-import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -22,14 +21,17 @@ public class ImageDatabase {
     // Enemy images
     private BufferedImage alienSpaceshipImage;
     private BufferedImage alienBombImage;
-    private BufferedImage seekerImage;
-    private BufferedImage tazerImage;
-    private BufferedImage energizerImage;
-    private BufferedImage bulldozerImage;
-    private BufferedImage flamerImage;
-    private BufferedImage bombaImage;
+
+    private List<BufferedImage> seekerFrames = new ArrayList<BufferedImage>();
+    private List<BufferedImage> tazer = new ArrayList<>();
+    private List<BufferedImage> energizer = new ArrayList<>();
+    private List<BufferedImage> bulldozer = new ArrayList<>();
+    private List<BufferedImage> flamer = new ArrayList<>();
+    private List<BufferedImage> bomba = new ArrayList<>();
 
     private List<BufferedImage> alienBombFrames = new ArrayList<BufferedImage>();
+    private List<BufferedImage> needler = new ArrayList<BufferedImage>();
+    private List<BufferedImage> destructableOrbitCenterMissile = new ArrayList<BufferedImage>();
 
     // Ship numbers to names:
     /*
@@ -63,7 +65,7 @@ public class ImageDatabase {
     private BufferedImage goldFilling;
     private BufferedImage blueFilling;
 
-    private BufferedImage needler;
+    private BufferedImage cashCarrier;
 
     // Icons
     private BufferedImage tripleShotIcon;
@@ -309,6 +311,8 @@ public class ImageDatabase {
     private List<BufferedImage> bombaNormalExhaustFrames = new ArrayList<BufferedImage>();
     private List<BufferedImage> bombaLargeExhaustFrames = new ArrayList<BufferedImage>();
     private List<BufferedImage> explosion2 = new ArrayList<BufferedImage>();
+    private List<BufferedImage> circlingRings = new ArrayList<BufferedImage>();
+    private List<BufferedImage> spiralingGreenEnergy = new ArrayList<BufferedImage>();
 
     // Enemy projectile explosions
     private List<BufferedImage> seekerProjectileExplosion = new ArrayList<BufferedImage>();
@@ -322,6 +326,7 @@ public class ImageDatabase {
     private List<BufferedImage> lightningProjectile = new ArrayList<BufferedImage>();
     private List<BufferedImage> lightningOrb = new ArrayList<BufferedImage>();
     private List<BufferedImage> levelUpAnimation = new ArrayList<BufferedImage>();
+    private List<BufferedImage> cashExplosion = new ArrayList<BufferedImage>();
 
     // Background images
     private BufferedImage moon;
@@ -416,7 +421,7 @@ public class ImageDatabase {
     private BufferedImage purpleWings5;
     private BufferedImage informationCard;
     private BufferedImage lockedIcon;
-    private BufferedImage scout;
+    private List<BufferedImage> scout = new ArrayList<BufferedImage>();
 
 
     private List<BufferedImage> HighlightImages = new ArrayList<BufferedImage>();
@@ -463,12 +468,7 @@ public class ImageDatabase {
     private void initEnemies () {
         this.alienSpaceshipImage = imgLoader.getImage(ImageEnums.Alien);
         this.alienBombImage = imgLoader.getImage(ImageEnums.Alien_Bomb);
-        this.seekerImage = imgLoader.getImage(ImageEnums.Seeker);
-        this.tazerImage = imgLoader.getImage(ImageEnums.Tazer);
-        this.energizerImage = imgLoader.getImage(ImageEnums.Energizer);
-        this.bulldozerImage = imgLoader.getImage(ImageEnums.Bulldozer);
-        this.flamerImage = imgLoader.getImage(ImageEnums.Flamer);
-        this.bombaImage = imgLoader.getImage(ImageEnums.Bomba);
+        this.cashCarrier = imgLoader.getImage(ImageEnums.CashCarrier);
     }
 
     private void initProjectiles () {
@@ -756,16 +756,13 @@ public class ImageDatabase {
         this.bluePlanet6  = imgLoader.getImage(ImageEnums.BluePlanet6);
 
         this.lockedIcon = imgLoader.getImage(ImageEnums.LockedIcon);
-        this.needler = imgLoader.getImage(ImageEnums.Needler);
         this.laserBullet = imgLoader.getImage(ImageEnums.LaserBullet);
-        this.scout = imgLoader.getImage(ImageEnums.Scout);
     }
 
     public BufferedImage getImage (ImageEnums imageType) {
         switch (imageType) {
-            case Scout: return scout;
+            case CashCarrier: return cashCarrier;
             case LaserBullet: return laserBullet;
-            case Needler: return needler;
             case TopazGem7: return topazGem7;
             case LockedIcon: return lockedIcon;
             case InformationCard: return informationCard;
@@ -858,18 +855,6 @@ public class ImageDatabase {
                 return this.planetThree;
             case Star:
                 return this.star;
-            case Seeker:
-                return this.seekerImage;
-            case Tazer:
-                return this.tazerImage;
-            case Energizer:
-                return this.energizerImage;
-            case Bulldozer:
-                return this.bulldozerImage;
-            case Flamer:
-                return this.flamerImage;
-            case Bomba:
-                return this.bombaImage;
             case Player_Spaceship_Model_3:
                 return this.model3BetterUpgrade;
             case Health_Bar:
@@ -1241,9 +1226,15 @@ public class ImageDatabase {
 
     public List<BufferedImage> getAnimation (ImageEnums imageType) {
         switch (imageType) {
+            case Tazer: return tazer;
+            case Seeker: return seekerFrames;
+            case CashExplosion: return cashExplosion;
             case LaserBulletDestruction: return laserBulletDeathFrames;
             case LightningOrbDestruction: return lightningOrbDestruction;
             case Explosion2: return explosion2;
+            case Flamer: return flamer;
+            case Bomba: return bomba;
+            case DestructableOrbitCenterMissile: return destructableOrbitCenterMissile;
             case LightningOrb:
                 return lightningOrb;
             case SuperChargedBuff:
@@ -1339,6 +1330,8 @@ public class ImageDatabase {
             case Default_Player_Engine_Boosted:
                 return this.defaultPlayerEngineBoostedFrames;
             case LevelUpAnimation: return levelUpAnimation;
+            case CirclingRings: return circlingRings;
+            case SpiralingGreenEnergy: return spiralingGreenEnergy;
             case Default_Player_Shield_Damage:
                 return this.defaultPlayerShieldDamage;
             case Player_Fireswirl:
@@ -1417,6 +1410,14 @@ public class ImageDatabase {
                 return gasolineBurning;
             case Healing:
                 return healingAnimation;
+            case Scout:
+                return scout;
+            case Needler:
+                return needler;
+            case Energizer:
+                return energizer;
+            case Bulldozer:
+                return bulldozer;
         }
         return null;
     }
@@ -1878,6 +1879,78 @@ public class ImageDatabase {
             String sourceString = String.format("/images/gif/PNGtoGIF/Level Up Animation/%d.png", i);
             BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
             levelUpAnimation.add(image);
+        }
+
+        for (int i = 0; i < 64; i++) {
+            String sourceString = String.format("/images/gif/PNGtoGIF/CoinExplosion/%d.png", i);
+            BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+            cashExplosion.add(image);
+        }
+
+        for (int i = 1; i < 5; i++) {
+            String sourceString = String.format("/images/Ships/Ship 1/Animated/%d.png", i);
+            BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+            seekerFrames.add(image);
+        }
+
+        for (int i = 1; i < 5; i++) {
+            String sourceString = String.format("/images/Ships/Enemy Ships/ScoutAnimated/%d.png", i);
+            BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+            scout.add(image);
+        }
+
+        for (int i = 1; i < 5; i++) {
+            String sourceString = String.format("/images/Ships/Enemy Ships/NeedlerAnimated/%d.png", i);
+            BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+            needler.add(image);
+        }
+
+        for (int i = 1; i < 5; i++) {
+            String sourceString = String.format("/images/Ships/Ship 2/Animated/%d.png", i);
+            BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+            tazer.add(image);
+        }
+
+        for (int i = 1; i < 5; i++) {
+            String sourceString = String.format("/images/Ships/Ship 3/Animated/%d.png", i);
+            BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+            energizer.add(image);
+        }
+
+        for (int i = 1; i < 5; i++) {
+            String sourceString = String.format("/images/Ships/Ship 4/Animated/%d.png", i);
+            BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+            bulldozer.add(image);
+        }
+
+        for (int i = 1; i < 5; i++) {
+            String sourceString = String.format("/images/Ships/Ship 5/Animated/%d.png", i);
+            BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+            flamer.add(image);
+        }
+
+        for (int i = 1; i < 5; i++) {
+            String sourceString = String.format("/images/Ships/Ship 6/Animated/%d.png", i);
+            BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+            bomba.add(image);
+        }
+
+        for (int i = 1; i < 4; i++) {
+            String sourceString = String.format("/images/Ships/Enemy Ships/Spacebombs/%d.png", i);
+            BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+            destructableOrbitCenterMissile.add(image);
+        }
+
+        for (int i = 1; i < 13; i++) {
+            String sourceString = String.format("/images/gif/PNGtoGIF/Rings/%d.png", i);
+            BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+            circlingRings.add(image);
+        }
+
+        for (int i = 0; i < 48; i++) {
+            String sourceString = String.format("/images/gif/PNGtoGIF/SpiralingGreenEnergy/%d.png", i);
+            BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+            spiralingGreenEnergy.add(image);
         }
     }
 

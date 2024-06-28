@@ -74,8 +74,8 @@ public class SpaceShip extends GameObject {
         directiony = 0;
         this.currentShieldPoints = playerStats.getMaxShieldHitPoints();
         this.currentHitpoints = playerStats.getMaxHitPoints();
-        this.maxHitPoints = playerStats.getMaxHitPoints();
-        this.maxShieldPoints = playerStats.getMaxShieldHitPoints();
+//        this.maxHitPoints = playerStats.getMaxHitPoints();
+//        this.maxShieldPoints = playerStats.getMaxShieldHitPoints();
         this.playerFollowingAnimations.clear();
         this.playerFollowingExplosions.clear();
         this.playerFollowingSpecialAttacks.clear();
@@ -123,11 +123,10 @@ public class SpaceShip extends GameObject {
     }
 
     private boolean firedAlready = false;
-
     private void postCreationActivities () {
+        //This method exists because some managers or methods REQUIRE the spaceship to have finished initializing
         if (!firedAlready) {
-
-            for (int i = 0; i < PlayerStats.getInstance().getAmountOfDrones(); i++) {
+            for (int i = 0; i < playerStats.getAmountOfDrones(); i++) {
                 FriendlyManager.getInstance().addDrone();
             }
             OrbitingObjectsFormatter.reformatOrbitingObjects(this, 85);
@@ -195,6 +194,7 @@ public class SpaceShip extends GameObject {
 
     public void changeHitPoints (float change) {
         this.currentHitpoints += change;
+        float maxHitPoints = playerStats.getMaxHitPoints();
         if (this.currentHitpoints > maxHitPoints) {
             this.currentHitpoints = maxHitPoints;
         }
@@ -202,14 +202,19 @@ public class SpaceShip extends GameObject {
 
     public void changeShieldHitpoints (float change) {
         this.currentShieldPoints += change;
-        if (currentShieldPoints > maxShieldPoints * PlayerStats.getInstance().getMaxOverloadingShieldMultiplier()) {
-            currentShieldPoints = maxShieldPoints * PlayerStats.getInstance().getMaxOverloadingShieldMultiplier();
+        float maxShieldPoints = playerStats.getMaxShieldHitPoints();
+        float maxOverloadingShieldMultiplier = playerStats.getMaxOverloadingShieldMultiplier();
+        if (currentShieldPoints > (maxShieldPoints * maxOverloadingShieldMultiplier)) {
+            currentShieldPoints = maxShieldPoints * maxOverloadingShieldMultiplier;
         }
     }
 
     private void reduceOverloadedShieldPoints () {
-        if (currentShieldPoints > maxShieldPoints * PlayerStats.getInstance().getMaxOverloadingShieldMultiplier()) {
-            currentShieldPoints -= PlayerStats.getInstance().getOverloadedShieldDiminishAmount();
+        float maxShieldPoints = playerStats.getMaxShieldHitPoints();
+        float maxShieldMultiplier = playerStats.getMaxShieldMultiplier();
+
+        if (currentShieldPoints > maxShieldPoints * maxShieldMultiplier) {
+            currentShieldPoints -= playerStats.getOverloadedShieldDiminishAmount();
         }
     }
 

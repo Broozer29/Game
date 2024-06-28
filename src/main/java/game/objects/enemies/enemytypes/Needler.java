@@ -18,10 +18,10 @@ import visualobjects.SpriteConfigurations.SpriteConfiguration;
 import java.awt.*;
 
 public class Needler extends Enemy {
-    public Needler (SpriteConfiguration spriteConfiguration, EnemyConfiguration enemyConfiguration, MovementConfiguration movementConfiguration) {
+    public Needler (SpriteAnimationConfiguration spriteConfiguration, EnemyConfiguration enemyConfiguration, MovementConfiguration movementConfiguration) {
         super(spriteConfiguration, enemyConfiguration, movementConfiguration);
 
-        SpriteAnimationConfiguration destroyedExplosionfiguration = new SpriteAnimationConfiguration(spriteConfiguration, 0, false);
+        SpriteAnimationConfiguration destroyedExplosionfiguration = new SpriteAnimationConfiguration(spriteConfiguration.getSpriteConfiguration(), 0, false);
         destroyedExplosionfiguration.getSpriteConfiguration().setImageType(EnemyEnums.Needler.getDestructionImageEnum());
         this.destructionAnimation = new SpriteAnimation(destroyedExplosionfiguration);
         this.destructionAnimation.setAnimationScale(this.scale / 1.5f);
@@ -70,7 +70,8 @@ public class Needler extends Enemy {
             }
 
 
-            Point destination = PlayerManager.getInstance().getSpaceship().getCurrentLocation();
+            SpaceShip spaceship = PlayerManager.getInstance().getSpaceship();
+            Point destination = new Point(spaceship.getCenterXCoordinate(), spaceship.getCenterYCoordinate());
             this.movementConfiguration.setDestination(destination);
             this.movementConfiguration.setPathFinder(new StraightLinePathFinder());
 //            this.allowedVisualsToRotate = true;

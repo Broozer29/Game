@@ -25,10 +25,11 @@ public class MissileConfiguration {
     private boolean piercesMissiles;
     private int amountOfPierces;
     private boolean isExplosive;
+    private boolean appliesOnHitEffects;
 
     public MissileConfiguration (MissileEnums missileType, int maxHitPoints, int maxShields, AudioEnums deathSound,
                                  float damage, ImageEnums destructionType, boolean isFriendly, boolean allowedToDealDamage,
-                                 String objectType, boolean boxCollision, boolean isExplosive) {
+                                 String objectType, boolean boxCollision, boolean isExplosive, boolean appliesOnHitEffects) {
         this.missileType = missileType;
         this.maxHitPoints = maxHitPoints;
         this.maxShields = maxShields;
@@ -43,6 +44,7 @@ public class MissileConfiguration {
         this.piercesMissiles = false; //Default setting
         this.amountOfPierces = 0; //Default setting
         this.isExplosive = isExplosive;
+        this.appliesOnHitEffects = appliesOnHitEffects;
     }
 
     public MissileConfiguration () {
@@ -164,5 +166,13 @@ public class MissileConfiguration {
 
     public void setExplosive (boolean explosive) {
         isExplosive = explosive;
+    }
+
+    public boolean isAppliesOnHitEffects () {
+        return appliesOnHitEffects;
+    }
+
+    public void setAppliesOnHitEffects (boolean appliesOnHitEffects) {
+        this.appliesOnHitEffects = appliesOnHitEffects;
     }
 }

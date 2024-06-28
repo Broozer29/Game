@@ -14,10 +14,8 @@ import java.util.stream.Collectors;
 public class PlayerInventory {
     private static PlayerInventory instance = new PlayerInventory();
     private Map<ItemEnums, Item> items = new HashMap<>();
-    private float cashMoney = 5000;
-    private List<String> blackListedOnHitEffectActivatorObjects = Arrays.asList("Plasma Launcher Missile", "Drone Missile");
+    private float cashMoney = 2000;
     private PlayerInventory () {
-//        addItem(ItemEnums.DrillerModule);
 //        addItem(ItemEnums.DrillerModule);
 //        addItem(ItemEnums.BouncingModuleAddon);
 //        addItem(ItemEnums.PlasmaCoatedBullets);
@@ -133,7 +131,4 @@ public class PlayerInventory {
         this.cashMoney -= amount;
     }
 
-    public List<String> getBlackListedOnHitEffectActivatorObjects () {
-        return blackListedOnHitEffectActivatorObjects;
-    }
 }

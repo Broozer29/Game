@@ -36,8 +36,8 @@ public enum PathFinderEnums {
             return null;
         }
 
-        public PathFinder createInstance(GameObject target, int radius, int totalFrames, double offset) {
-            return new OrbitPathFinder(target, radius, totalFrames, offset);
+        public PathFinder createInstance(GameObject target) {
+            return new OrbitPathFinder(target, 85, 300, 0);
         }
     },
     Regular {

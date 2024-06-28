@@ -32,9 +32,13 @@ public class SpriteMover {
     }
 
     private boolean shouldUpdatePathSettings (MovementConfiguration moveConfig) {
-        return moveConfig.getCurrentPath() == null || moveConfig.getPathFinder().shouldRecalculatePath(moveConfig.getCurrentPath())
-                || moveConfig.getXMovementSpeed() != moveConfig.getLastUsedXMovementSpeed()
-                || moveConfig.getYMovementSpeed() != moveConfig.getLastUsedYMovementSpeed();
+        boolean bool = false;
+        bool =
+                moveConfig.getCurrentPath() == null ||
+                        moveConfig.getPathFinder().shouldRecalculatePath(moveConfig.getCurrentPath()) ||
+                        moveConfig.getXMovementSpeed() != moveConfig.getLastUsedXMovementSpeed() ||
+                        moveConfig.getYMovementSpeed() != moveConfig.getLastUsedYMovementSpeed();
+        return bool; //This returns TRUE, and thus a new path is generated
     }
 
     public void moveGameObject (GameObject gameObject, MovementConfiguration moveConfig) {
@@ -56,7 +60,6 @@ public class SpriteMover {
             if (moveConfig.getPathFinder() instanceof BouncingPathFinder) {
                 handleBouncingPathFinder(gameObject, moveConfig);
             }
-
             moveTowardsNextPoint(gameObject, moveConfig);
         }
 
@@ -84,7 +87,6 @@ public class SpriteMover {
 
         // check if the missile has lost lock
         boolean hasPassedPlayerOrNeverHadLock = false;
-
 
         if (moveConfig.getPathFinder().shouldRecalculatePath(moveConfig.getCurrentPath())) {
             hasPassedPlayerOrNeverHadLock = true; // if it should recalculate path, it means it lost lock or never had
@@ -184,7 +186,6 @@ public class SpriteMover {
         //If stationary and hovering and an enemy, rotate towards the player if firing at player
         //Otherwise rotate towards the instantiated rotation
         //Otherwise rotate towards the final point in waypoints
-
         gameObject.rotateObject();
 
 
@@ -216,7 +217,7 @@ public class SpriteMover {
         }
     }
 
-    // Example helper method for acquiring a new target, used in homing pathfinders
+    //Helper method for acquiring a new target, used in homing pathfinders
     private void acquireNewTarget (GameObject sprite, MovementConfiguration moveConfig) {
         moveConfig.getUntrackableObjects().add(moveConfig.getTargetToChase());
         moveConfig.getCurrentPath().setTarget(null);

@@ -54,9 +54,11 @@ public class ImageRotator {
 
         // Process each frame using the rotateOrFlip method
         for (BufferedImage frame : frames) {
-            BufferedImage adjustedFrame = rotateOrFlip(frame, angleInDegrees, crop);
+            BufferedImage adjustedFrame = rotateOrFlip(frame, angleInDegrees, false);
             adjustedFrames.add(adjustedFrame);
         }
+
+        ImageCropper.getInstance().cropFramesToUniformContent(adjustedFrames);
 
         // Return the list of adjusted frames
         return adjustedFrames;
@@ -97,21 +99,6 @@ public class ImageRotator {
 
         // Move the image to the center of the square image
         AffineTransform tx = AffineTransform.getTranslateInstance(translateX, translateY);
-
-        // If the angle is 180 degrees or more, flip the image horizontally
-//        if (angle == 180 || angle == 225 || angle == 135) {
-//            tx.scale(-1, 1);
-//            tx.translate(-image.getWidth(), 0);
-//            rad = Math.toRadians(angle - 180);
-//        }
-
-        // If the angle is 90 or 270 degrees, flip the image vertically
-//        if (angle == 90 || angle == 270) {
-//            tx.scale(1, -1);
-//            tx.translate(0, -image.getHeight());
-//            if (angle == 90) rad = Math.toRadians(270);
-//            else rad = Math.toRadians(90);
-//        }
 
         // Rotate the image around its center
         tx.rotate(rad, centerX, centerY);

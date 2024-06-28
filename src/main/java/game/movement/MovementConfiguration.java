@@ -36,13 +36,14 @@ public class MovementConfiguration {
 	private int stepsBeforeBounceInOtherDirection;
 	//
 
-	//For the spiral pathfinder
+	//For the spiral / Orbit pathfinder
 	private int curveDistance;
 	private double angleStep;
-	private double radius;
+	private double spiralRadius;
 	private double radiusIncrement;
 
-	//
+	//For orbit
+	private double orbitRadius;
 
 	//For the Triangle pathfinder:
 	private int primaryDirectionStepAmount;
@@ -70,22 +71,33 @@ public class MovementConfiguration {
 
 	public void initDefaultSettingsForSpecializedPathFinders(){
 		if(patternSize != null) {
+			//Diamnond
 			setDiamondWidth(patternSize.getDiamondWidth());
 			setDiamondHeight(patternSize.getDiamondHeight());
 			setStepsBeforeBounceInOtherDirection(patternSize.getStepsBeforeBounceInOtherDirection());
 
-			setAngleStep(0.1);
-			setCurveDistance(1);
-			setRadius(5);
+			//Spiral
 			setRadiusIncrement(patternSize.getRadiusIncrement());
 
+			//Triangle
 			setPrimaryDirectionStepAmount(patternSize.getPrimaryDirectionStepAmount());
 			setFirstDiagonalDirectionStepAmount(patternSize.getSecondaryDirectionStepAmount());
 			setSecondDiagonalDirectionStepAmount(patternSize.getSecondaryDirectionStepAmount());
 
-			setBoardBlockToHoverIn(6);
-			setHasLock(true);
+
 		}
+		//spiral
+		setAngleStep(0.1);
+		setCurveDistance(1);
+		setSpiralRadius(5);
+
+
+		//Hover
+		setBoardBlockToHoverIn(6);
+		setHasLock(true);
+
+		//orbit
+		setOrbitRadius(85);
 	}
 
 
@@ -292,12 +304,12 @@ public class MovementConfiguration {
 		this.angleStep = angleStep;
 	}
 
-	public double getRadius () {
-		return radius;
+	public double getSpiralRadius () {
+		return spiralRadius;
 	}
 
-	public void setRadius (double radius) {
-		this.radius = radius;
+	public void setSpiralRadius (double spiralRadius) {
+		this.spiralRadius = spiralRadius;
 	}
 
 	public double getRadiusIncrement () {
@@ -345,6 +357,14 @@ public class MovementConfiguration {
 		this.pathFinder = null;
 		this.currentPath = null;
 		this.nextPoint = null;
+	}
+
+	public double getOrbitRadius () {
+		return orbitRadius;
+	}
+
+	public void setOrbitRadius (double orbitRadius) {
+		this.orbitRadius = orbitRadius;
 	}
 
 	public int getBoardBlockToHoverIn () {

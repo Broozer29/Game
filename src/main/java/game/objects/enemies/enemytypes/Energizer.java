@@ -4,6 +4,7 @@ import VisualAndAudioData.audio.enums.AudioEnums;
 import game.gamestate.GameStateInfo;
 import game.managers.AnimationManager;
 import game.movement.MovementConfiguration;
+import game.movement.Point;
 import game.movement.pathfinderconfigs.MovementPatternSize;
 import game.movement.pathfinders.HoverPathFinder;
 import game.movement.pathfinders.PathFinder;
@@ -19,13 +20,13 @@ import visualobjects.SpriteAnimation;
 
 public class Energizer extends Enemy {
 
-	public Energizer(SpriteConfiguration spriteConfiguration, EnemyConfiguration enemyConfiguration, MovementConfiguration movementConfiguration) {
+	public Energizer(SpriteAnimationConfiguration spriteConfiguration, EnemyConfiguration enemyConfiguration, MovementConfiguration movementConfiguration) {
 		super(spriteConfiguration, enemyConfiguration, movementConfiguration);
 //		SpriteAnimationConfiguration exhaustConfiguration = new SpriteAnimationConfiguration(spriteConfiguration, 0, true);
 //		exhaustConfiguration.getSpriteConfiguration().setImageType(ImageEnums.Energizer_Normal_Exhaust);
 //		this.exhaustAnimation = new SpriteAnimation(exhaustConfiguration);
 
-		SpriteAnimationConfiguration destroyedExplosionfiguration = new SpriteAnimationConfiguration(spriteConfiguration, 3, false);
+		SpriteAnimationConfiguration destroyedExplosionfiguration = new SpriteAnimationConfiguration(spriteConfiguration.getSpriteConfiguration(), 3, false);
 		destroyedExplosionfiguration.getSpriteConfiguration().setImageType(ImageEnums.Energizer_Destroyed_Explosion);
 		this.destructionAnimation = new SpriteAnimation(destroyedExplosionfiguration);
 
@@ -81,7 +82,7 @@ public class Energizer extends Enemy {
 
 		MissileConfiguration missileConfiguration = MissileCreator.getInstance().createMissileConfiguration(missileType, maxHitPoints, maxShields,
 				deathSound, this.getDamage(), missileType.getDeathOrExplosionImageEnum(), isFriendly, allowedToDealDamage, objectType, false,
-				false);
+				false, true);
 
 
 		//Create the missile and finalize the creation process, then add it to the manager and consequently the game
@@ -90,10 +91,8 @@ public class Energizer extends Enemy {
 		missile.getDestructionAnimation().setAnimationScale(0.3f);
 		missile.setOwnerOrCreator(this);
 		missile.getAnimation().setAnimationScale(0.3f);
-		missile.setAllowedVisualsToRotate(false);
 		missile.setCenterCoordinates(chargingUpAttackAnimation.getCenterXCoordinate(), chargingUpAttackAnimation.getCenterYCoordinate());
 		missile.resetMovementPath();
-
 
 		this.missileManager.addExistingMissile(missile);
 	}

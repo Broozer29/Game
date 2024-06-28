@@ -29,33 +29,28 @@ public class OrbitPathFinder implements PathFinder {
 		if (!(pathFinderConfig instanceof OrbitPathFinderConfig)) {
 			throw new IllegalArgumentException("Expected OrbitPathFinderConfig");
 		} else {
-
-			Point start = ((OrbitPathFinderConfig) pathFinderConfig).getStart();
-			Direction fallbackDirection = ((OrbitPathFinderConfig) pathFinderConfig).getMovementDirection();
-			boolean isFriendly = ((OrbitPathFinderConfig) pathFinderConfig).isFriendly();
+			OrbitPathFinderConfig orbitConfig = (OrbitPathFinderConfig) pathFinderConfig;
+			Direction fallbackDirection = orbitConfig.getMovementDirection();
+			boolean isFriendly = orbitConfig.isFriendly();
+			double radius = orbitConfig.getRadius(); // Use the radius from the config
+			int totalFrames = 300; // Use the total frames from the config
+			GameObject object = orbitConfig.getGameObject();
 
 			double angleStep = Math.PI * 2 / totalFrames;
 			List<Point> waypoints = new ArrayList<>();
 
 			// Determine the angle for the starting point relative to the target
-			double startAngle = Math.atan2(start.getY() - target.getCenterYCoordinate(),
-					start.getX() - target.getCenterXCoordinate());
-
-			// Adjust the offset angle if it's more than 2 * PI away from the start angle
-			while (Math.abs(startAngle - offsetAngle) > Math.PI) {
-				if (startAngle < offsetAngle) {
-					startAngle += Math.PI * 2;
-				} else {
-					startAngle -= Math.PI * 2;
-				}
-			}
+			double startAngle = Math.atan2(
+					(object.getYCoordinate() + object.getHeight() / 2.0) - (target.getYCoordinate() + target.getHeight() / 2.0),
+					(object.getXCoordinate() + object.getWidth() / 2.0) - (target.getXCoordinate() + target.getWidth() / 2.0)
+			);
 
 			// Generate waypoints that include a smooth transition from start to orbit
 			for (int i = 0; i < totalFrames; i++) {
-				double angle = angleStep * i + startAngle; // Use startAngle instead of offsetAngle
+				double angle = angleStep * i + startAngle; // Start angle relative to the initial position
 
-				int x = target.getCenterXCoordinate() + (int) (Math.cos(angle) * radius);
-				int y = target.getCenterYCoordinate() + (int) (Math.sin(angle) * radius);
+				int x = (int) (target.getXCoordinate() + target.getWidth() / 2.0 + Math.cos(angle) * radius - object.getWidth() / 2.0);
+				int y = (int) (target.getYCoordinate() + target.getHeight() / 2.0 + Math.sin(angle) * radius - object.getHeight() / 2.0);
 
 				waypoints.add(new Point(x, y));
 			}
@@ -63,6 +58,8 @@ public class OrbitPathFinder implements PathFinder {
 			return new Path(waypoints, fallbackDirection, false, isFriendly);
 		}
 	}
+
+
 
 	@Override
 	public Direction getNextStep(Point currentLocation, Path path, Direction fallbackDirection) {

@@ -249,7 +249,7 @@ public class PlayerStats {
     }
 
     public float getMaxShieldHitPoints () {
-        return maxShieldHitPoints;
+        return maxShieldHitPoints * maxShieldMultiplier;
     }
 
     public void setMaxShieldHitPoints (float maxShieldHitPoints) {

@@ -79,7 +79,8 @@ public class SpawningCoordinator {
     public boolean checkValidEnemyXCoordinate (Enemy enemyType, List<Enemy> listToCheck, int xCoordinate, int minimumRange) {
         for (Enemy enemy : listToCheck) {
             if (!enemy.getEnemyType().equals(EnemyEnums.Alien_Bomb)) {
-                if (Math.abs(enemy.getXCoordinate() - xCoordinate) < minimumRange) {
+                int testX = enemy.getXCoordinate();
+                if (Math.abs(testX - xCoordinate) < minimumRange) {
                     return false;
                 }
             }
@@ -91,7 +92,8 @@ public class SpawningCoordinator {
     public boolean checkValidEnemyYCoordinate (Enemy enemyType, List<Enemy> listToCheck, int yCoordinate, int minimumRange) {
         for (Enemy enemy : listToCheck) {
             if (!enemy.getEnemyType().equals(EnemyEnums.Alien_Bomb)) {
-                if (Math.abs(enemy.getYCoordinate() - yCoordinate) < minimumRange) {
+                int testY = enemy.getYCoordinate();
+                if (Math.abs(testY - yCoordinate) < minimumRange) {
                     return false;
                 }
             }

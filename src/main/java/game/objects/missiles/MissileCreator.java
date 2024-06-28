@@ -33,10 +33,10 @@ public class MissileCreator {
     public MissileConfiguration createMissileConfiguration (MissileEnums attackType, int maxHitPoints, int maxShields,
                                                             AudioEnums deathSound, float damage, ImageEnums missileDestructionImage,
                                                             boolean isFriendly, boolean allowedToDealDamage, String objectType, boolean isBoxCollision,
-                                                            boolean isExplosive) {
+                                                            boolean isExplosive, boolean appliesOnHitEffects) {
         MissileConfiguration missileConfiguration = new MissileConfiguration(attackType, maxHitPoints, maxShields,
                 deathSound, damage, missileDestructionImage, isFriendly,
-                allowedToDealDamage, objectType, isBoxCollision, isExplosive);
+                allowedToDealDamage, objectType, isBoxCollision, isExplosive, appliesOnHitEffects);
         return missileConfiguration;
     }
 
@@ -57,41 +57,44 @@ public class MissileCreator {
                 return new GenericMissile(spriteConfiguration, missileConfiguration, movementConfiguration);
             }
             case BombaProjectile -> {
-                return new BombaProjectile(upgradeConfig(spriteConfiguration, 2, true), missileConfiguration, movementConfiguration);
+                return new BombaProjectile(upgradeConfig(spriteConfiguration, 2), missileConfiguration, movementConfiguration);
             }
             case BulldozerProjectile -> {
-                return new BulldozerProjectile(upgradeConfig(spriteConfiguration, 2, true), missileConfiguration, movementConfiguration);
+                return new BulldozerProjectile(upgradeConfig(spriteConfiguration, 2), missileConfiguration, movementConfiguration);
             }
             case EnergizerProjectile -> {
-                return new EnergizerProjectile(upgradeConfig(spriteConfiguration, 2, true), missileConfiguration, movementConfiguration);
+                return new EnergizerProjectile(upgradeConfig(spriteConfiguration, 2), missileConfiguration, movementConfiguration);
             }
             case FlamerProjectile -> {
-                return new FlamerProjectile(upgradeConfig(spriteConfiguration, 2, true), missileConfiguration, movementConfiguration);
+                return new FlamerProjectile(upgradeConfig(spriteConfiguration, 2), missileConfiguration, movementConfiguration);
             }
             case SeekerProjectile -> {
-                return new SeekerProjectile(upgradeConfig(spriteConfiguration, 2, true), missileConfiguration, movementConfiguration);
+                return new SeekerProjectile(upgradeConfig(spriteConfiguration, 2), missileConfiguration, movementConfiguration);
             }
             case TazerProjectile -> {
-                return new TazerProjectile(upgradeConfig(spriteConfiguration, 2, true), missileConfiguration, movementConfiguration);
+                return new TazerProjectile(upgradeConfig(spriteConfiguration, 2), missileConfiguration, movementConfiguration);
             }
             case FlameThrowerProjectile -> {
-                return new FlamethrowerProjectile(upgradeConfig(spriteConfiguration, 2, true), missileConfiguration, movementConfiguration);
+                return new FlamethrowerProjectile(upgradeConfig(spriteConfiguration, 2), missileConfiguration, movementConfiguration);
             }
-            case FirewallMissile, PlasmaLauncherMissile -> {
-                return new GenericMissile(upgradeConfig(spriteConfiguration, 2, true), missileConfiguration, movementConfiguration);
+            case FirewallMissile, PlasmaLauncherMissile, Orbitter -> {
+                return new GenericMissile(upgradeConfig(spriteConfiguration, 2), missileConfiguration, movementConfiguration);
             }
             case Rocket1 -> {
-                return new Rocket1(upgradeConfig(spriteConfiguration, 2, true), missileConfiguration, movementConfiguration);
+                return new Rocket1(upgradeConfig(spriteConfiguration, 2), missileConfiguration, movementConfiguration);
             }
             case BarrierProjectile -> {
-                return new BarrierProjectile(upgradeConfig(spriteConfiguration, 3, true), missileConfiguration, movementConfiguration);
+                return new BarrierProjectile(upgradeConfig(spriteConfiguration, 3), missileConfiguration, movementConfiguration);
+            }
+            case OrbitCenter -> {
+                return new OrbitterWithOrbits(upgradeConfig(spriteConfiguration, 4), missileConfiguration, movementConfiguration);
             }
         }
         return null;
     }
 
-    private SpriteAnimationConfiguration upgradeConfig (SpriteConfiguration spriteConfiguration, int frameDelay, boolean infiniteLoop) {
-        return new SpriteAnimationConfiguration(spriteConfiguration, frameDelay, infiniteLoop);
+    private SpriteAnimationConfiguration upgradeConfig (SpriteConfiguration spriteConfiguration, int frameDelay) {
+        return new SpriteAnimationConfiguration(spriteConfiguration, frameDelay, true);
     }
 
 }

@@ -309,7 +309,6 @@ public class GameBoard extends JPanel implements ActionListener {
         // Draw enemies
         for (Enemy enemy : enemyManager.getEnemies()) {
             if (enemy.isVisible()) {
-
                 if (enemy.getAnimation() != null) {
                     drawAnimation(g, enemy.getAnimation());
                 } else {

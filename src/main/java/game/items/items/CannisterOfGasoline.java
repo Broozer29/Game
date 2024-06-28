@@ -7,7 +7,7 @@ import game.items.effects.EffectIdentifiers;
 import game.items.enums.ItemApplicationEnum;
 import game.items.enums.ItemEnums;
 import game.items.effects.EffectActivationTypes;
-import game.items.effects.effecttypes.DormentExplosion;
+import game.items.effects.effectimplementations.DormentExplosion;
 import game.objects.GameObject;
 import game.objects.enemies.enemytypes.AlienBomb;
 

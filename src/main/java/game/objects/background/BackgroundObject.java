@@ -40,16 +40,6 @@ public class BackgroundObject extends Sprite {
         this.bgoType = bgoType;
     }
 
-    public void rotateRandomDegrees () {
-        rotateImage(selectRandomDirection(), false);
-    }
-
-    private Direction selectRandomDirection () {
-        Direction[] enums = Direction.values();
-        Direction randomValue = enums[random.nextInt(enums.length)];
-        return randomValue;
-    }
-
     public int getDepthLevel () {
         return depthLevel;
     }

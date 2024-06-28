@@ -31,9 +31,13 @@ public class DirectorManager {
         directorList.add(fastDirector);
 
         Director instantDirector = new Director(DirectorType.Instant, baseMonsterCards);
-        instantDirector.receiveCredits(200);
+        instantDirector.receiveCredits(Math.max(200 * GameStateInfo.getInstance().getDifficultyCoefficient(), 1000));
         directorList.add(instantDirector);
 
+    }
+
+    public Director getTestDirector(){
+       return new Director(DirectorType.Fast, baseMonsterCards);
     }
 
     public void resetManager(){
@@ -46,7 +50,9 @@ public class DirectorManager {
         }
 
         for (EnemyEnums enemy : EnemyEnums.values()) {
-            if(enemy != EnemyEnums.Alien_Bomb) {
+            if(enemy == EnemyEnums.Alien_Bomb || enemy == EnemyEnums.CashCarrier){
+                continue;
+            } else {
                 float creditCost = determineCreditCostBasedOnEnemy(enemy);
                 MonsterCard card = new MonsterCard(enemy, creditCost, enemy.getWeight());
                 baseMonsterCards.add(card);
@@ -72,7 +78,7 @@ public class DirectorManager {
     }
 
     public void distributeCredits() {
-        float creditAmount = (float) ((1 + 0.2 * GameStateInfo.getInstance().getDifficultyCoefficient()) * 0.5); // Determine the amount of credits to distribute
+        float creditAmount = (float) ((1 + 0.1 * GameStateInfo.getInstance().getDifficultyCoefficient()) * 0.5); // Determine the amount of credits to distribute
         for (Director director : directorList) {
             director.receiveCredits(creditAmount);
         }

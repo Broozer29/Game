@@ -27,6 +27,7 @@ public class Missile extends GameObject {
     protected boolean piercesThroughObjects;
     protected int amountOfPiercesLeft;
 
+
     public Missile (SpriteConfiguration spriteConfiguration, MissileConfiguration missileConfiguration, MovementConfiguration movementConfiguration) {
         super(spriteConfiguration, movementConfiguration);
         initMissile(missileConfiguration);
@@ -57,6 +58,7 @@ public class Missile extends GameObject {
         this.amountOfPiercesLeft = missileConfiguration.getAmountOfPierces();
         this.isExplosive = missileConfiguration.isExplosive();
         this.collidedObjects = new ArrayList<>();
+        this.appliesOnHitEffects = missileConfiguration.isAppliesOnHitEffects();
 
         if (missileConfiguration.getDestructionType() != null) {
             SpriteAnimationConfiguration destructionAnimation = new SpriteAnimationConfiguration(spriteConfiguration, 2, false);

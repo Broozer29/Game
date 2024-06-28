@@ -4,14 +4,14 @@ import game.movement.Direction;
 import game.objects.enemies.enums.EnemyEnums;
 
 public class EnemyFormation {
-	private boolean[][] formationPattern;
+	private String[][] formationPattern;
 	private int formationWidth;
 	private int formationHeight;
 
 	private int heightDistance;
 	private int widthDistance;
 
-	public EnemyFormation(boolean[][] formationPattern, int heightDistance, int widthDistance) {
+	public EnemyFormation(String[][] formationPattern, int heightDistance, int widthDistance) {
 		this.formationPattern = formationPattern;
 		this.formationWidth = formationPattern[0].length;
 		this.formationHeight = formationPattern.length;
@@ -19,22 +19,25 @@ public class EnemyFormation {
 		this.widthDistance = widthDistance;
 	}
 
-	public boolean[][] getFormationPattern () {
+	public String[][] getFormationPattern () {
 		return formationPattern;
 	}
 
-	public void spawnFormation(int baseX, int baseY, EnemyEnums timerEnemyType, Direction direction, float scale,
+	public void spawnFormation(int baseX, int baseY, EnemyEnums defaultEnemyType, EnemyEnums escortedType, Direction direction,
 							   int xMovementSpeed, int yMovementSpeed) {
 		for (int i = 0; i < formationHeight; i++) {
 			for (int j = 0; j < formationWidth; j++) {
-				if (formationPattern[i][j]) { // If there is an enemy at this position in the formation
+				char type = formationPattern[i][j].charAt(0);
+				if (type != '.') { // Assuming '.' means no enemy
 					int spawnX = baseX + (j * widthDistance);
 					int spawnY = baseY + (i * heightDistance);
 
-//					System.out.println("Spawning on:" + spawnX + "  " + spawnY);
+					// Check the type of enemy to spawn based on the character
+					EnemyEnums enemyTypeToSpawn = (type == 'A') ? escortedType : defaultEnemyType;
+
 					// Create the new enemy here and add it to the enemies list
-					LevelManager.getInstance().spawnEnemy(spawnX, spawnY, timerEnemyType, 1, direction, scale,
-							false, xMovementSpeed, yMovementSpeed, timerEnemyType.isBoxCollision());
+					LevelManager.getInstance().spawnEnemy(spawnX, spawnY, enemyTypeToSpawn, direction, enemyTypeToSpawn.getDefaultScale(),
+							false, xMovementSpeed, yMovementSpeed, enemyTypeToSpawn.isBoxCollision());
 				}
 			}
 		}

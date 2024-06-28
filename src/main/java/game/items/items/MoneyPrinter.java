@@ -1,10 +1,9 @@
 package game.items.items;
 
 import game.items.Item;
-import game.items.PlayerInventory;
 import game.items.effects.EffectActivationTypes;
 import game.items.effects.EffectIdentifiers;
-import game.items.effects.effecttypes.GainGoldOnDeath;
+import game.items.effects.effectimplementations.GainGoldOnDeath;
 import game.items.enums.ItemApplicationEnum;
 import game.items.enums.ItemEnums;
 import game.objects.GameObject;

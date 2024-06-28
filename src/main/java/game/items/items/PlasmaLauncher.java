@@ -27,8 +27,8 @@ public class PlasmaLauncher extends Item {
 
     public PlasmaLauncher () {
         super(ItemEnums.PlasmaLauncher, 1, EffectActivationTypes.AfterAHit, ItemApplicationEnum.AfterCollision);
-        procChance = 0.2f;
-//        procChance = 1f;
+//        procChance = 0.2f;
+        procChance = 0.1f;
         calculateDamage();
         rand = new Random();
     }
@@ -94,7 +94,7 @@ public class PlasmaLauncher extends Item {
 
         MissileConfiguration missileConfiguration = MissileCreator.getInstance().createMissileConfiguration(MissileEnums.PlasmaLauncherMissile,
                 maxHitPoints, maxShields, deathSound, damage, impactType, isFriendly, allowedToDealDamage,
-                objectType, false, false);
+                objectType, false, false, false);
         return missileConfiguration;
     }
 

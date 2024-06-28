@@ -22,7 +22,7 @@ public enum ImageEnums {
     RotatingBoxes, RotatingCones, GreenEnergyOrb, PurpleEnergyBlocks, Fireshield, EnergyFlower, PurpleEnergyBarrier, RedHole, CrossingEnergyBeams,
     PlasmaCoatedDebuff, GasolineExplosion, GasolineBurning, Healing, StickyDynamiteExplosion, MoneyPrinter, StickyDynamite,
     BarrierProjectile, BarrierProjectileDestruction, LightningProjectile, SuperChargedBuff, LightningOrb, Explosion2, LaserBulletDestruction,
-    LightningOrbDestruction, LevelUpAnimation,
+    LightningOrbDestruction, LevelUpAnimation, CirclingRings, SpiralingGreenEnergy,
 
     //// Background Objects
     Moon, Lava_Planet, Planet_One, Planet_Two, Planet_Three, Mars_Planet, Star, Parallex_1, Parallex_2, Parallex_3,
@@ -32,12 +32,12 @@ public enum ImageEnums {
     Purple_Nebula_5, Purple_Nebula_6, Purple_Nebula_7, Star_Blue1, Star_Blue2, Star_Blue3, Star_Blue4, Star_Red1, Star_Red2,
     Star_Red3, Star_Red4, Star_Yellow1, Star_Yellow2, Star_Yellow3, Star_Yellow4, Star_Orange1, Star_Orange2, Star_Orange3, Star_Orange4,
     Star_White1, Star_White2, Star_White3, Star_White4, Moon2, Moon3, Moon4, Moon5, GreenPlanet1, GreenPlanet2, BluePlanet1,
-    BluePlanet2, BluePlanet3, BluePlanet4, BluePlanet5, BluePlanet6,
+    BluePlanet2, BluePlanet3, BluePlanet4, BluePlanet5, BluePlanet6, CashCarrier, CashExplosion,
     // Missile Animations
     Seeker_Missile, Tazer_Missile, Energizer_Missile, Bulldozer_Missile, Flamer_Missile, Bomba_Missile,
     Seeker_Missile_Explosion, Tazer_Missile_Explosion, Energizer_Missile_Explosion, Bulldozer_Missile_Explosion,
     Flamer_Missile_Explosion, Bomba_Missile_Explosion, Flamethrower_Animation, Rocket_1, Rocket_1_Explosion, Firespout_Animation,
-    PlasmaLauncherMissile,
+    PlasmaLauncherMissile, DestructableOrbitCenterMissile,
 
     // Missile Images
     Player_Laserbeam, Alien_Laserbeam, LaserBullet,

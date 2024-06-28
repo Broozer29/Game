@@ -6,13 +6,13 @@ public class FormationCreator {
 
 	public EnemyFormation createFormation(SpawnFormationEnums spawnFormation, int widthDistance, int heightDistance) {
 		EnemyFormation newFormation = null;
-		boolean[][] pattern = null;
+		String[][] pattern = null;
 		switch (spawnFormation) {
 		case Cross:
 			pattern = createPatternFromStrings(
 					"X...X",
 					".X.X.", 
-					"..X..", 
+					"..A..",
 					".X.X.", 
 					"X...X");
 			break;
@@ -22,7 +22,7 @@ public class FormationCreator {
 					".X.....", 
 					"..X....", 
 					"...X...", 
-					"....X..", 
+					"....A..",
 					"...X...",
 					"..X....", 
 					".X.....", 
@@ -34,7 +34,7 @@ public class FormationCreator {
 					".....X.", 
 					"....X..", 
 					"...X...", 
-					"..X....", 
+					"..A....",
 					"...X...",
 					"....X..", 
 					".....X.", 
@@ -44,7 +44,7 @@ public class FormationCreator {
 			pattern = createPatternFromStrings(
 					"X....", 
 					".X...", 
-					"..X..", 
+					"..A..",
 					".X...", 
 					"X....");
 			break;
@@ -52,7 +52,7 @@ public class FormationCreator {
 			pattern = createPatternFromStrings(
 					"....X", 
 					"...X.", 
-					"..X..",
+					"..A..",
 					"...X.", 
 					"....X");
 			break;
@@ -60,7 +60,7 @@ public class FormationCreator {
 			pattern = createPatternFromStrings(
 					"XXXXXXX", 
 					"X.....X",
-					"X.....X",
+					"X..A..X",
 					"X.....X", 
 					"XXXXXXX");
 			break;
@@ -88,7 +88,7 @@ public class FormationCreator {
 			pattern = createPatternFromStrings(
 					"....X", 
 					"...X.",
-					"..X..",
+					"..A..",
 					".X...", 
 					"X....");
 			break;
@@ -96,7 +96,7 @@ public class FormationCreator {
 			pattern = createPatternFromStrings(
 					"X....", 
 					".X...",
-					"..X..",
+					"..A..",
 					"...X.", 
 					"....X");
 			break;
@@ -104,7 +104,7 @@ public class FormationCreator {
 			pattern = createPatternFromStrings(
 					".....", 
 					".....",
-					"XXXXX",
+					"XXAXX",
 					".....", 
 					".....");
 			break;
@@ -112,14 +112,14 @@ public class FormationCreator {
 			pattern = createPatternFromStrings(
 					"..X..", 
 					"..X..",
-					"..X..",
+					"..A..",
 					"..X..", 
 					"..X..");
 			break;
 		case V:
 			pattern = createPatternFromStrings(
 					"X...........X", 
-					"..X.......X..", 
+					"..X...A...X..",
 					"....X...X....",
 					"......X......");
 			break;
@@ -127,26 +127,26 @@ public class FormationCreator {
 			pattern = createPatternFromStrings(
 					"......X......",
 			        "....X...X....",
-			        "..X.......X..",
+			        "..X...A...X..",
 			        "X...........X"
 			);
 			break;
-		case Dot:
-			pattern = createPatternFromStrings(
-			        "X"	
-					);
-			break;
+//		case Dot:
+//			pattern = createPatternFromStrings(
+//			        "X"
+//					);
+//			break;
 		}
-		newFormation = new EnemyFormation(pattern, widthDistance, heightDistance);
+		newFormation = new EnemyFormation(pattern, heightDistance, widthDistance);
 		return newFormation;
 	}
 
-	public boolean[][] createPatternFromStrings(String... lines) {
-		boolean[][] pattern = new boolean[lines.length][];
+	public String[][] createPatternFromStrings(String... lines) {
+		String[][] pattern = new String[lines.length][];
 		for (int i = 0; i < lines.length; i++) {
-			pattern[i] = new boolean[lines[i].length()];
+			pattern[i] = new String[lines[i].length()];
 			for (int j = 0; j < lines[i].length(); j++) {
-				pattern[i][j] = lines[i].charAt(j) == 'X';
+				pattern[i][j] = String.valueOf(lines[i].charAt(j));
 			}
 		}
 		return pattern;

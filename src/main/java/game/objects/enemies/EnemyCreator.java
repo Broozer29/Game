@@ -8,6 +8,7 @@ import game.movement.pathfinders.*;
 import game.objects.enemies.enemytypes.*;
 import VisualAndAudioData.audio.enums.AudioEnums;
 import game.objects.enemies.enums.EnemyEnums;
+import visualobjects.SpriteConfigurations.SpriteAnimationConfiguration;
 import visualobjects.SpriteConfigurations.SpriteConfiguration;
 
 public class EnemyCreator {
@@ -91,30 +92,37 @@ public class EnemyCreator {
                 return new AlienBomb(spriteConfiguration, enemyConfiguration, movementConfiguration);
             }
             case Seeker -> {
-                return new Seeker(spriteConfiguration, enemyConfiguration, movementConfiguration);
+                return new Seeker(upgradeConfig(spriteConfiguration, 1, true), enemyConfiguration, movementConfiguration);
             }
             case Tazer -> {
-                return new Tazer(spriteConfiguration, enemyConfiguration, movementConfiguration);
+                return new Tazer(upgradeConfig(spriteConfiguration, 4, true), enemyConfiguration, movementConfiguration);
             }
             case Energizer -> {
-                return new Energizer(spriteConfiguration, enemyConfiguration, movementConfiguration);
+                return new Energizer(upgradeConfig(spriteConfiguration, 1, true), enemyConfiguration, movementConfiguration);
             }
             case Bulldozer -> {
-                return new Bulldozer(spriteConfiguration, enemyConfiguration, movementConfiguration);
+                return new Bulldozer(upgradeConfig(spriteConfiguration, 3, true), enemyConfiguration, movementConfiguration);
             }
             case Flamer -> {
-                return new Flamer(spriteConfiguration, enemyConfiguration, movementConfiguration);
+                return new Flamer(upgradeConfig(spriteConfiguration, 3, true), enemyConfiguration, movementConfiguration);
             }
             case Bomba -> {
-                return new Bomba(spriteConfiguration, enemyConfiguration, movementConfiguration);
+                return new Bomba(upgradeConfig(spriteConfiguration, 2, true), enemyConfiguration, movementConfiguration);
             }
             case Needler -> {
-                return new Needler(spriteConfiguration, enemyConfiguration, movementConfiguration);
+                return new Needler(upgradeConfig(spriteConfiguration, 4, true), enemyConfiguration, movementConfiguration);
             }
             case Scout -> {
-                return new Scout(spriteConfiguration, enemyConfiguration, movementConfiguration);
+                return new Scout(upgradeConfig(spriteConfiguration, 1, true), enemyConfiguration, movementConfiguration);
+            }
+            case CashCarrier -> {
+                return new CashCarrier(spriteConfiguration, enemyConfiguration, movementConfiguration);
             }
         }
-        return new Seeker(spriteConfiguration, enemyConfiguration, movementConfiguration);
+        return new Seeker(upgradeConfig(spriteConfiguration, 1, true), enemyConfiguration, movementConfiguration);
+    }
+
+    private static SpriteAnimationConfiguration upgradeConfig (SpriteConfiguration spriteConfiguration, int frameDelay, boolean infiniteLoop) {
+        return new SpriteAnimationConfiguration(spriteConfiguration, frameDelay, infiniteLoop);
     }
 }

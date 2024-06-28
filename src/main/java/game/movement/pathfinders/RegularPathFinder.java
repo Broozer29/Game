@@ -156,40 +156,40 @@ public class RegularPathFinder implements PathFinder {
         // friendly is not used for regular paths
         switch (rotation) {
             case UP:
-                endYCoordinate = this.playableWindowMinHeight - 150;
+                endYCoordinate = this.playableWindowMinHeight - 350;
                 endXCoordinate = xCoordinate;
                 break;
             case DOWN:
-                endYCoordinate = this.playableWindowMaxHeight + 150;
+                endYCoordinate = this.playableWindowMaxHeight + 350;
                 endXCoordinate = xCoordinate;
                 break;
             case LEFT:
                 endYCoordinate = yCoordinate;
-                endXCoordinate = 0 - 150;
+                endXCoordinate = 0 - 350;
                 break;
             case RIGHT:
                 endYCoordinate = yCoordinate;
-                endXCoordinate = dataClass.getWindowWidth() + 150;
+                endXCoordinate = dataClass.getWindowWidth() + 350;
                 break;
             case RIGHT_UP:
-                endYCoordinate = this.playableWindowMinHeight -150;
-                endXCoordinate = dataClass.getWindowWidth() + 150;
+                endYCoordinate = this.playableWindowMinHeight -350;
+                endXCoordinate = dataClass.getWindowWidth() + 350;
                 break;
             case RIGHT_DOWN:
-                endYCoordinate = this.playableWindowMaxHeight + 150;
-                endXCoordinate = dataClass.getWindowWidth() + 150;
+                endYCoordinate = this.playableWindowMaxHeight + 350;
+                endXCoordinate = dataClass.getWindowWidth() + 350;
                 break;
             case LEFT_UP:
-                endYCoordinate = this.playableWindowMinHeight -150;
-                endXCoordinate = 0 - 150;
+                endYCoordinate = this.playableWindowMinHeight -350;
+                endXCoordinate = 0 - 350;
                 break;
             case LEFT_DOWN:
-                endYCoordinate = this.playableWindowMaxHeight + 150;
-                endXCoordinate = 0 - 150;
+                endYCoordinate = this.playableWindowMaxHeight + 350;
+                endXCoordinate = 0 - 350;
                 break;
             default:
                 endYCoordinate = yCoordinate;
-                endXCoordinate = 0 + 150;
+                endXCoordinate = 0 + 350;
                 break;
         }
 

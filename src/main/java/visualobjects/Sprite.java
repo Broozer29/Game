@@ -4,7 +4,6 @@ import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 
 import game.movement.Direction;
-import game.objects.missiles.missiletypes.SeekerProjectile;
 import visualobjects.SpriteConfigurations.SpriteConfiguration;
 import VisualAndAudioData.image.ImageCropper;
 import VisualAndAudioData.image.ImageDatabase;
@@ -84,8 +83,8 @@ public class Sprite {
         configureImageDimensions();
     }
 
-    protected void rotateImage (Direction rotation, boolean crop) {
-        this.image = imageRotator.rotate(image, rotation, crop);
+    protected void rotateImage (Direction rotation) {
+        this.image = imageRotator.rotate(image, rotation, true);
         configureImageDimensions();
     }
 

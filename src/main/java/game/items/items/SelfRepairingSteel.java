@@ -6,7 +6,7 @@ import game.items.effects.EffectIdentifiers;
 import game.items.enums.ItemApplicationEnum;
 import game.items.enums.ItemEnums;
 import game.items.effects.EffectActivationTypes;
-import game.items.effects.effecttypes.PassiveHealthRegeneration;
+import game.items.effects.effectimplementations.PassiveHealthRegeneration;
 import game.objects.GameObject;
 import visualobjects.SpriteAnimation;
 import visualobjects.SpriteConfigurations.SpriteAnimationConfiguration;

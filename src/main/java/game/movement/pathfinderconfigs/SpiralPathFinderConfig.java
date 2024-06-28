@@ -22,7 +22,7 @@ public class SpiralPathFinderConfig implements PathFinderConfig {
         this.isFriendly = gameObject.isFriendly();
         this.curveDistance = movementConfiguration.getCurveDistance();
         this.angleStep = movementConfiguration.getAngleStep();
-        this.radius = movementConfiguration.getRadius();
+        this.radius = movementConfiguration.getSpiralRadius();
         this.radiusIncrement = movementConfiguration.getRadiusIncrement();
     }
 

@@ -3,7 +3,7 @@ package game.items.items;
 import game.items.Item;
 import game.items.effects.EffectActivationTypes;
 import game.items.effects.EffectIdentifiers;
-import game.items.effects.effecttypes.HealPlayerOnDeath;
+import game.items.effects.effectimplementations.HealPlayerOnDeath;
 import game.items.enums.ItemApplicationEnum;
 import game.items.enums.ItemEnums;
 import game.objects.GameObject;

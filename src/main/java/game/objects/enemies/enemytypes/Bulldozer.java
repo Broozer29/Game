@@ -23,15 +23,12 @@ public class Bulldozer extends Enemy {
 
     private boolean spawnedBombs;
 
-    public Bulldozer (SpriteConfiguration spriteConfiguration, EnemyConfiguration enemyConfiguration, MovementConfiguration movementConfiguration) {
+    public Bulldozer (SpriteAnimationConfiguration spriteConfiguration, EnemyConfiguration enemyConfiguration, MovementConfiguration movementConfiguration) {
         super(spriteConfiguration, enemyConfiguration, movementConfiguration);
 
         spawnedBombs = false;
-//        SpriteAnimationConfiguration exhaustConfiguration = new SpriteAnimationConfiguration(spriteConfiguration, 0, true);
-//        exhaustConfiguration.getSpriteConfiguration().setImageType(ImageEnums.Bulldozer_Normal_Exhaust);
-//        this.exhaustAnimation = new SpriteAnimation(exhaustConfiguration);
 
-        SpriteAnimationConfiguration destroyedExplosionfiguration = new SpriteAnimationConfiguration(spriteConfiguration, 3, false);
+        SpriteAnimationConfiguration destroyedExplosionfiguration = new SpriteAnimationConfiguration(spriteConfiguration.getSpriteConfiguration(), 3, false);
         destroyedExplosionfiguration.getSpriteConfiguration().setImageType(ImageEnums.Bulldozer_Destroyed_Explosion);
         this.destructionAnimation = new SpriteAnimation(destroyedExplosionfiguration);
 
@@ -43,10 +40,12 @@ public class Bulldozer extends Enemy {
         double meanY = this.getCenterYCoordinate();
 
         // Calculate the angle increment based on how many bombs you want
-        double angleIncrement = 2 * Math.PI / 8; // 8 is the total number of bombs
+        int amountOfBombs = 14;
+
+        double angleIncrement = 2 * Math.PI / amountOfBombs;
 
         int radius = 85;
-        for (int iterator = 0; iterator < 8; iterator++) {
+        for (int iterator = 0; iterator < amountOfBombs; iterator++) {
             // 2. Find the next angle
             double nextAngle = angleIncrement * iterator;
 
@@ -54,11 +53,12 @@ public class Bulldozer extends Enemy {
             int x = (int) (meanX + Math.cos(nextAngle) * radius);
             int y = (int) (meanY + Math.sin(nextAngle) * radius);
 
-            PathFinder pathFinder = new OrbitPathFinder(this, radius, 300, nextAngle);
+            PathFinder pathFinder = new OrbitPathFinder(this, 85, 300, 0);
             Enemy alienBomb = getEnemy(x, y, pathFinder);
             alienBomb.setOwnerOrCreator(this);
             alienBomb.getMovementConfiguration().setLastKnownTargetX(this.getCenterXCoordinate());
             alienBomb.getMovementConfiguration().setLastKnownTargetY(this.getCenterYCoordinate());
+            alienBomb.getMovementConfiguration().setOrbitRadius(85);
             //Bomb rotation is done in GameObject, not initialization because it's dependent on the owner (bulldozer) so it rotates with bulldozer
             this.objectOrbitingThis.add(alienBomb);
             EnemyManager.getInstance().addEnemy(alienBomb);

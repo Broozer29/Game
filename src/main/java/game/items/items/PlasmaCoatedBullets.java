@@ -7,7 +7,7 @@ import game.items.enums.ItemApplicationEnum;
 import game.items.enums.ItemEnums;
 import game.items.effects.EffectActivationTypes;
 import game.objects.GameObject;
-import game.items.effects.effecttypes.DamageOverTime;
+import game.items.effects.effectimplementations.DamageOverTime;
 import game.objects.player.PlayerStats;
 import visualobjects.SpriteAnimation;
 import visualobjects.SpriteConfigurations.SpriteAnimationConfiguration;
@@ -31,7 +31,7 @@ public class PlasmaCoatedBullets extends Item {
     }
 
     private void calculateBurningDamage () {
-        burningDamage =  PlayerStats.getInstance().getBaseDamage() * 0.05f * this.quantity;
+        burningDamage =  PlayerStats.getInstance().getBaseDamage() * 0.025f * this.quantity;
     }
 
     private void calculateDuration () {

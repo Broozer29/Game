@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.List;
 
 import VisualAndAudioData.audio.enums.LevelSongs;
+import VisualAndAudioData.image.ImageEnums;
 import game.UI.GameUIManager;
 import game.managers.ShopManager;
 import game.movement.Direction;
@@ -16,10 +17,14 @@ import game.gamestate.GameStateInfo;
 import game.gamestate.GameStatusEnums;
 import VisualAndAudioData.audio.AudioManager;
 import game.objects.friendlies.FriendlyManager;
+import game.objects.player.PlayerManager;
 import game.objects.player.PlayerStats;
+import game.spawner.directors.Director;
 import game.spawner.directors.DirectorManager;
 import game.spawner.enums.LevelDifficulty;
 import game.spawner.enums.LevelLength;
+import game.spawner.enums.SpawnFormationEnums;
+import game.util.OutOfBoundsCalculator;
 
 import javax.sound.sampled.UnsupportedAudioFileException;
 
@@ -102,28 +107,35 @@ public class LevelManager {
 
 
         gameState.setGameState(GameStatusEnums.Playing);
-        DirectorManager.getInstance().setEnabled(true);
-        DirectorManager.getInstance().createMonsterCards();
-        DirectorManager.getInstance().createDirectors();
+//        DirectorManager.getInstance().setEnabled(true);
+//        DirectorManager.getInstance().createMonsterCards();
+//        DirectorManager.getInstance().createDirectors();
+
 
 //        PlayerStats.getInstance().setBaseDamage(1);
 
-//        Enemy enemy = EnemyCreator.createEnemy(EnemyEnums.Scout, 800, 100, Direction.LEFT, 1f
-//                , 2, 2, MovementPatternSize.SMALL, false);
-////        enemy.getMovementConfiguration().setBoardBlockToHoverIn(5);
-//        enemy.getMovementConfiguration().setPathFinder(new RegularPathFinder());
+//        Director testDirector = DirectorManager.getInstance().getTestDirector();
+//        testDirector.spawnRegularFormation(SpawnFormationEnums.V, EnemyEnums.Scout);
+
+        EnemyEnums enemyType = EnemyEnums.Bulldozer;
+        Enemy enemy = EnemyCreator.createEnemy(enemyType, 1000, 100, Direction.LEFT, enemyType.getDefaultScale()
+                , enemyType.getMovementSpeed(), enemyType.getMovementSpeed(), MovementPatternSize.SMALL, enemyType.isBoxCollision());
+        enemy.getMovementConfiguration().setBoardBlockToHoverIn(5);
+        enemy.getMovementConfiguration().setPathFinder(new RegularPathFinder());
 //        enemy.setAllowedVisualsToRotate(false);
 //        enemy.getMovementConfiguration().setXMovementSpeed(0);
 //        enemy.getMovementConfiguration().setYMovementSpeed(0);
-//        EnemyManager.getInstance().addEnemy(enemy);
+//        enemy.getAnimation().changeImagetype(ImageEnums.Scout);
+        EnemyManager.getInstance().addEnemy(enemy);
 //
-//
-//        Enemy enemy2 = EnemyCreator.createEnemy(EnemyEnums.Scout, 700, 100, Direction.LEFT, 1
-//                , 2, 2, MovementPatternSize.SMALL, false);
-//        enemy2.getMovementConfiguration().setPathFinder(new HoverPathFinder());
-////        enemy2.setAllowedVisualsToRotate(false);
-//        enemy2.getMovementConfiguration().setXMovementSpeed(1);
-//        enemy2.getMovementConfiguration().setYMovementSpeed(1);
+//        EnemyEnums enemyType2 = EnemyEnums.Energizer;
+//        Enemy enemy2 = EnemyCreator.createEnemy(enemyType2, 800, 600, Direction.LEFT, enemyType2.getDefaultScale()
+//                , enemyType2.getMovementSpeed(), enemyType2.getMovementSpeed(), MovementPatternSize.SMALL, enemyType2.isBoxCollision());
+////        enemy2.getMovementConfiguration().setBoardBlockToHoverIn(5);
+//        enemy2.getMovementConfiguration().setPathFinder(new RegularPathFinder());
+//        enemy2.setAllowedVisualsToRotate(false);
+//        enemy2.getMovementConfiguration().setXMovementSpeed(0);
+//        enemy2.getMovementConfiguration().setYMovementSpeed(0);
 //        EnemyManager.getInstance().addEnemy(enemy2);
 //
 //
@@ -139,50 +151,40 @@ public class LevelManager {
     }
 
     // Called by CustomTimers when they have to spawn an enemy
-    public void spawnEnemy (int xCoordinate, int yCoordinate, EnemyEnums enemyType, int amountOfAttempts,
+    public void spawnEnemy (int xCoordinate, int yCoordinate, EnemyEnums enemyType,
                             Direction direction, float scale, boolean random, int xMovementSpeed, int yMovementSpeed, boolean boxCollision) {
         // Spawn random if there are no given X/Y coords
         if (random) {
-            for (int i = 0; i < amountOfAttempts; i++) {
-                List<Integer> coordinatesList = spawningCoordinator.getSpawnCoordinatesByDirection(direction);
+            List<Integer> coordinatesList = spawningCoordinator.getSpawnCoordinatesByDirection(direction);
 
-                xCoordinate = coordinatesList.get(0);
-                yCoordinate = coordinatesList.get(1);
+            xCoordinate = coordinatesList.get(0);
+            yCoordinate = coordinatesList.get(1);
 
-                Enemy enemy = EnemyCreator.createEnemy(enemyType, xCoordinate, yCoordinate, direction, scale, xMovementSpeed, yMovementSpeed, MovementPatternSize.SMALL, boxCollision);
-                if (validCoordinates(enemy)) {
-                    enemy = increaseEnemyStrengthByDifficulty(enemy);
-                    enemiesSpawned++;
-                    enemyManager.addEnemy(enemy);
-                }
+            Enemy enemy = EnemyCreator.createEnemy(enemyType, xCoordinate, yCoordinate, direction, scale, xMovementSpeed, yMovementSpeed, MovementPatternSize.SMALL, boxCollision);
+            if (validCoordinates(enemy)) {
+                enemiesSpawned++;
+                enemyManager.addEnemy(enemy);
             }
         } else {
             Enemy enemy = EnemyCreator.createEnemy(enemyType, xCoordinate, yCoordinate, direction, scale, xMovementSpeed, yMovementSpeed, MovementPatternSize.SMALL, boxCollision);
+            enemy.setCenterCoordinates(xCoordinate, yCoordinate);
+            enemy.resetMovementPath();
             if (validCoordinates(enemy)) {
-                enemy = increaseEnemyStrengthByDifficulty(enemy);
                 enemiesSpawned++;
                 enemyManager.addEnemy(enemy);
             }
         }
     }
 
-    private Enemy increaseEnemyStrengthByDifficulty (Enemy enemy) {
-        float difficultyCoeff = GameStateInfo.getInstance().getDifficultyCoefficient();
-        enemy.setMaxHitPoints(enemy.getMaxHitPoints() * difficultyCoeff);
-        enemy.setMaxShieldPoints(enemy.getMaxShieldPoints() * difficultyCoeff);
-        enemy.setDamage(enemy.getDamage() * difficultyCoeff);
-        enemy.setBaseArmor(enemy.getBaseArmor() * (1 + (difficultyCoeff / 4)));
-        enemy.setCurrentHitpoints(enemy.getMaxHitPoints());
-        enemy.setCurrentShieldPoints(enemy.getMaxShieldPoints());
-        return enemy;
-    }
-
-
     private boolean validCoordinates (Enemy enemy) {
+        if(enemy.getEnemyType().equals(EnemyEnums.CashCarrier)){
+            return true;
+        }
+
         if (spawningCoordinator.checkValidEnemyXCoordinate(enemy, enemyManager.getEnemies(), enemy.getXCoordinate(),
-                enemy.getWidth() / 2)
-                && spawningCoordinator.checkValidEnemyYCoordinate(enemy, enemyManager.getEnemies(),
-                enemy.getYCoordinate(), enemy.getHeight() / 2)) {
+                enemy.getWidth())
+                || spawningCoordinator.checkValidEnemyYCoordinate(enemy, enemyManager.getEnemies(),
+                enemy.getYCoordinate(), enemy.getHeight())) {
             return true;
         }
         return false;

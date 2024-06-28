@@ -21,6 +21,7 @@ public class SpriteAnimation extends Sprite implements Cloneable{
 	private int currentFrame = 0;
 	private int totalFrames;
 	private List<BufferedImage> originalFrames = new ArrayList<BufferedImage>();
+	private List<BufferedImage> increasedSizeFrames = new ArrayList<BufferedImage>();
 	private List<BufferedImage> frames = new ArrayList<BufferedImage>();
 	private int frameDelayCounter;
 	private int frameDelay = 2;
@@ -61,15 +62,11 @@ public class SpriteAnimation extends Sprite implements Cloneable{
 	public void changeImagetype(ImageEnums imageType) {
 		this.imageType = imageType;
 		this.frames = ImageDatabase.getInstance().getAnimation(imageType);
+		this.increasedSizeFrames = frames;
 		this.originalFrames = frames;
 		recalculateBoundsAndSize();
 	}
 
-	// Aligns the sprite X and Y coordinate to the centre of the animation
-	private void centerAnimationFrame() {
-		this.setX(xCoordinate + (this.getWidth() / 2));
-		this.setY(yCoordinate - (this.getHeight() / 2));
-	}
 
 	// Updates the current frame of the animation, and sets it invisible if it's
 	// fully played out
@@ -83,18 +80,27 @@ public class SpriteAnimation extends Sprite implements Cloneable{
 			System.out.println("Crashed because resizing an image that was null/empty");
 		}
 		this.frames = imageResizer.getScaledFrames(originalFrames, newScale);
+		this.increasedSizeFrames = frames;
 		recalculateBoundsAndSize();
 	}
 
 	public void rotateAnimation (Direction rotation, boolean crop) {
 		//Doesnt use original frames because possible resizes, possible loss of performance and quality but maybe not enough to do anything about it
-		this.frames = ImageRotator.getInstance().getRotatedFrames(frames, rotation, crop);
+		if(!this.increasedSizeFrames.isEmpty()){
+			this.frames = ImageRotator.getInstance().getRotatedFrames(increasedSizeFrames, rotation, crop);
+		} else {
+			this.frames = ImageRotator.getInstance().getRotatedFrames(frames, rotation, crop);
+		}
 		recalculateBoundsAndSize();
 	}
 
 	public void rotateAnimation(double angle, boolean crop){
 		//Doesnt use original frames because possible resizes, possible loss of performance and quality but maybe not enough to do anything about it
-		this.frames = ImageRotator.getInstance().getRotatedFrames(frames, angle,crop);
+		if(!this.increasedSizeFrames.isEmpty()){
+			this.frames = ImageRotator.getInstance().getRotatedFrames(increasedSizeFrames, angle, crop);
+		} else {
+			this.frames = ImageRotator.getInstance().getRotatedFrames(frames, angle, crop);
+		}
 		recalculateBoundsAndSize();
 	}
 

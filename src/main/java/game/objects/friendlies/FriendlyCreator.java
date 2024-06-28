@@ -35,6 +35,7 @@ public class FriendlyCreator {
         FriendlyObject object = FriendlyCreator.createDrone(spriteConfiguration, friendlyObjectConfiguration);
         object.getMovementConfiguration().setLastKnownTargetX(PlayerManager.getInstance().getSpaceship().getCenterXCoordinate());
         object.getMovementConfiguration().setLastKnownTargetY(PlayerManager.getInstance().getSpaceship().getCenterYCoordinate());
+        object.getMovementConfiguration().setOrbitRadius(85);
         object.setAllowedVisualsToRotate(false);
 //        object.setScale(scale);
 //        object.getAnimation().setAnimationScale(scale);
@@ -48,16 +49,15 @@ public class FriendlyCreator {
         SpriteAnimationConfiguration spriteAnimationConfiguration = new SpriteAnimationConfiguration(spriteConfiguration, 2, true);
         MovementConfiguration movementConfiguration = new MovementConfiguration();
         movementConfiguration.setPathFinder(new OrbitPathFinder(
-                PlayerManager.getInstance().getSpaceship(),
-                50, 300, 2
-        ));
+                PlayerManager.getInstance().getSpaceship(), 85, 300, 0));
+        movementConfiguration.initDefaultSettingsForSpecializedPathFinders();
         movementConfiguration.setXMovementSpeed(1);
         movementConfiguration.setYMovementSpeed(1);
         movementConfiguration.setLastUsedXMovementSpeed(1);
         movementConfiguration.setLastUsedYMovementSpeed(1);
         movementConfiguration.setRotation(Direction.RIGHT);
-        movementConfiguration.setHasLock(true);
-        movementConfiguration.initDefaultSettingsForSpecializedPathFinders();
+        movementConfiguration.setOrbitRadius(50);
+
         return new Drone(spriteAnimationConfiguration, friendlyObjectConfiguration, movementConfiguration);
     }
 
