@@ -25,13 +25,14 @@ public class OrbitterWithOrbits extends Missile {
         super(spriteConfiguration, missileConfiguration, movementConfiguration);
         this.rotateImage(movementConfiguration.getRotation());
         initDestructionAnimation(missileConfiguration, movementConfiguration);
-
+        this.isDestructable = true;
     }
 
     public OrbitterWithOrbits(SpriteAnimationConfiguration spriteConfiguration, MissileConfiguration missileConfiguration, MovementConfiguration movementConfiguration){
         super(spriteConfiguration, missileConfiguration, movementConfiguration);
         this.animation.rotateAnimation(movementConfiguration.getRotation(), true);
         initDestructionAnimation(missileConfiguration, movementConfiguration);
+        this.isDestructable = true;
     }
 
     private void initOrbits() {
@@ -66,7 +67,7 @@ public class OrbitterWithOrbits extends Missile {
     private Missile createOrbitingMissile(GameObject target, int orbitRadius) {
         SpriteConfiguration spriteConfig = MissileCreator.getInstance().createMissileSpriteConfig(
                 target.getXCoordinate(), target.getYCoordinate(),
-                MissileEnums.Orbitter.getImageType(), target.getScale());
+                MissileEnums.Orbitter.getImageType(), 0.2f);
 
         MovementConfiguration movementConfiguration1 = target.getMovementConfiguration();
         MovementConfiguration moveConfig = MissileCreator.getInstance().createMissileMovementConfig(

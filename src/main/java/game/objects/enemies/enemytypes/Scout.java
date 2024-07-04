@@ -48,12 +48,14 @@ public class Scout extends Enemy {
     }
 
     private void shootMissile () {
-        SpriteConfiguration spriteConfiguration = MissileCreator.getInstance().createMissileSpriteConfig(xCoordinate, yCoordinate, ImageEnums.LaserBullet
+        MissileEnums missileType = MissileEnums.OrbitCenter;
+
+        SpriteConfiguration spriteConfiguration = MissileCreator.getInstance().createMissileSpriteConfig(xCoordinate, yCoordinate, missileType.getImageType()
                 , this.scale / 2);
 
 
         //Create missile movement attributes and create a movement configuration
-        MissileEnums missileType = MissileEnums.LaserBullet;
+
         PathFinder missilePathFinder = new RegularPathFinder();
         MovementPatternSize movementPatternSize = MovementPatternSize.SMALL;
         MovementConfiguration movementConfiguration = MissileCreator.getInstance().createMissileMovementConfig(
@@ -64,7 +66,7 @@ public class Scout extends Enemy {
         //Create remaining missile attributes and a missile configuration
         boolean isFriendly = false;
         int maxHitPoints = 100;
-        int maxShields = 100;
+        int maxShields = 0;
         AudioEnums deathSound = null;
         boolean allowedToDealDamage = true;
         String objectType = "Scout Laser Bullet";

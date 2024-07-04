@@ -6,7 +6,7 @@ import VisualAndAudioData.image.ImageEnums;
 public class MissileConfiguration {
 
     private MissileEnums missileType;
-
+    private boolean isDestructable;
     private int maxHitPoints;
     private int maxShields;
 
@@ -43,6 +43,7 @@ public class MissileConfiguration {
         this.destroysMissiles = false; //Default setting
         this.piercesMissiles = false; //Default setting
         this.amountOfPierces = 0; //Default setting
+        this.isDestructable = false; //Default setting
         this.isExplosive = isExplosive;
         this.appliesOnHitEffects = appliesOnHitEffects;
     }
@@ -174,5 +175,13 @@ public class MissileConfiguration {
 
     public void setAppliesOnHitEffects (boolean appliesOnHitEffects) {
         this.appliesOnHitEffects = appliesOnHitEffects;
+    }
+
+    public boolean isDestructable () {
+        return isDestructable;
+    }
+
+    public void setDestructable (boolean destructable) {
+        isDestructable = destructable;
     }
 }

@@ -1,17 +1,13 @@
 package game.objects;
 
-import VisualAndAudioData.image.ImageEnums;
-import com.badlogic.gdx.Game;
 import game.gamestate.GameStateInfo;
 import game.items.Item;
 import game.items.PlayerInventory;
 import game.items.effects.EffectActivationTypes;
 import game.items.enums.ItemApplicationEnum;
-import game.items.enums.ItemEnums;
 import game.managers.AnimationManager;
 import game.movement.*;
 import game.movement.pathfinders.HomingPathFinder;
-import game.movement.pathfinders.HoverPathFinder;
 import game.movement.pathfinders.PathFinder;
 import VisualAndAudioData.audio.enums.AudioEnums;
 import VisualAndAudioData.audio.AudioManager;
@@ -19,10 +15,7 @@ import VisualAndAudioData.image.ImageResizer;
 import VisualAndAudioData.image.ImageRotator;
 import game.items.effects.EffectInterface;
 import game.objects.enemies.Enemy;
-import game.objects.enemies.enemytypes.AlienBomb;
 import game.objects.enemies.enums.EnemyEnums;
-import game.objects.friendlies.Drones.Drone;
-import game.objects.missiles.missiletypes.GenericMissile;
 import game.objects.player.PlayerManager;
 import game.objects.player.PlayerStats;
 import game.spawner.LevelManager;
@@ -288,8 +281,7 @@ public class GameObject extends Sprite {
             this.shieldDamagedAnimation.setVisible(false);
         }
 
-        if (this.destructionAnimation != null &&
-                this.currentHitpoints > 1) {
+        if (this.destructionAnimation != null && !this.destructionAnimation.isPlaying()) {
             this.destructionAnimation.setVisible(false);
         }
 
@@ -317,6 +309,11 @@ public class GameObject extends Sprite {
     }
 
     public void takeDamage (float damageTaken) {
+
+        if(currentHitpoints <= 0){
+            return; //The target is already dead, no need to go through here again
+        }
+
         if (damageTaken > 0) {
             damageTaken = ArmorCalculator.calculateDamage(damageTaken, this);
         }
@@ -340,8 +337,17 @@ public class GameObject extends Sprite {
             }
 
             for (GameObject object : objectsFollowingThis) {
-                object.setCashMoneyWorth(0);
-                object.takeDamage(9999999);
+                if(object.isVisible()) {
+                    object.setCashMoneyWorth(0);
+                    object.takeDamage(object.getMaxHitPoints() * 5);
+                }
+            }
+
+            for(GameObject object : objectOrbitingThis){
+                if(object.isVisible()) {
+                    object.setCashMoneyWorth(0);
+                    object.takeDamage(object.getMaxHitPoints() * 5);
+                }
             }
 
             try {
@@ -349,11 +355,18 @@ public class GameObject extends Sprite {
             } catch (UnsupportedAudioFileException | IOException e) {
                 e.printStackTrace();
             }
-            LevelManager.getInstance().setEnemiesKilled(1);
+
+
+            triggerClassSpecificOnDeathTriggers();
+
             this.setVisible(false);
             activateOnDeathEffects();
             PlayerInventory.getInstance().gainCashMoney(this.cashMoneyWorth);
         }
+    }
+
+    public void triggerClassSpecificOnDeathTriggers(){
+        //Supposed to be overriden. Used for "Enemy kill counter" for example
     }
 
     public void applyEffectsWhenPlayerHitsEnemy (GameObject object) {
@@ -527,10 +540,6 @@ public class GameObject extends Sprite {
     //*****************SPECIFIC ENEMY BEHAVIOURS*******************************
     public void onCreationEffects () {
         //Exist to be overriden
-    }
-
-    public void onDeathEffects () {
-        //exist to be overriden
     }
 
 

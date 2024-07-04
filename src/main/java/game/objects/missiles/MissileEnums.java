@@ -16,7 +16,7 @@ public enum MissileEnums {
     PlasmaLauncherMissile(false, 3,3,25f, "PlasmaLauncherMissile", ImageEnums.Impact_Explosion_One, ImageEnums.PlasmaLauncherMissile),
     Rocket1(false, 3,3,1f, "Rocket1", ImageEnums.Rocket_1_Explosion, ImageEnums.Rocket_1),
     LaserBullet(false, 2,2, 15f, "LaserBullet",ImageEnums.LaserBulletDestruction , ImageEnums.LaserBullet),
-    OrbitCenter(false, 2,2, 10f, "OrbitCenter", ImageEnums.Destroyed_Explosion, ImageEnums.BarrierProjectile),
+    OrbitCenter(false, 2,2, 10f, "OrbitCenter", ImageEnums.Destroyed_Explosion, ImageEnums.DestructableOrbitCenterMissile),
     Orbitter(false, 2,2, 10f, "Orbitter", ImageEnums.BarrierProjectileDestruction, ImageEnums.BarrierProjectile),
     BarrierProjectile(false, 1,1, 25f, "BarrierProjectile", ImageEnums.BarrierProjectileDestruction, ImageEnums.BarrierProjectile);
 

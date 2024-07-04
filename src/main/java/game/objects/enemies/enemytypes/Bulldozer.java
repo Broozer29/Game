@@ -21,17 +21,13 @@ import visualobjects.SpriteAnimation;
 
 public class Bulldozer extends Enemy {
 
-    private boolean spawnedBombs;
 
     public Bulldozer (SpriteAnimationConfiguration spriteConfiguration, EnemyConfiguration enemyConfiguration, MovementConfiguration movementConfiguration) {
         super(spriteConfiguration, enemyConfiguration, movementConfiguration);
-
-        spawnedBombs = false;
-
         SpriteAnimationConfiguration destroyedExplosionfiguration = new SpriteAnimationConfiguration(spriteConfiguration.getSpriteConfiguration(), 3, false);
         destroyedExplosionfiguration.getSpriteConfiguration().setImageType(ImageEnums.Bulldozer_Destroyed_Explosion);
         this.destructionAnimation = new SpriteAnimation(destroyedExplosionfiguration);
-
+        createRotatingBombs ();
     }
 
     private void createRotatingBombs () {
@@ -98,18 +94,6 @@ public class Bulldozer extends Enemy {
         Enemy alienBomb = new AlienBomb(spriteConfiguration, enemyConfiguration, movementConfiguration);
         return alienBomb;
     }
-
-    public void onCreationEffects () {
-        if (!spawnedBombs) {
-            createRotatingBombs();
-            spawnedBombs = true;
-        }
-    }
-
-    public void onDeathEffects () {
-        //exist to be overriden
-    }
-
 
     public void fireAction () {
         if (missileManager == null) {

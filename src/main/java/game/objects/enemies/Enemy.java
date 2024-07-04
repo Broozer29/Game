@@ -6,6 +6,7 @@ import VisualAndAudioData.image.ImageEnums;
 import game.gamestate.GameStateInfo;
 import game.movement.PathFinderEnums;
 import game.movement.pathfinders.PathFinder;
+import game.spawner.LevelManager;
 import game.util.BoardBlockUpdater;
 import game.movement.MovementConfiguration;
 import game.movement.Point;
@@ -94,6 +95,9 @@ public class Enemy extends GameObject {
         this.chargingUpAttackAnimation = new SpriteAnimation(spriteAnimationConfiguration);
     }
 
+    public void triggerClassSpecificOnDeathTriggers(){
+        LevelManager.getInstance().addEnemyKilled(1);
+    }
 
     public EnemyEnums getEnemyType () {
         return this.enemyType;
@@ -102,14 +106,6 @@ public class Enemy extends GameObject {
     public void fireAction () {
         // This could contain default behaviour but SHOULD be overriden by specific enemytype
         // classes.
-    }
-
-    public void onCreationEffects () {
-        //Exist to be overriden
-    }
-
-    public void onDeathEffects () {
-        //exist to be overriden
     }
 
     public void deleteObject () {

@@ -4,27 +4,19 @@ import java.io.IOException;
 import java.util.List;
 
 import VisualAndAudioData.audio.enums.LevelSongs;
-import VisualAndAudioData.image.ImageEnums;
 import game.UI.GameUIManager;
 import game.managers.ShopManager;
 import game.movement.Direction;
 import game.movement.pathfinderconfigs.MovementPatternSize;
-import game.movement.pathfinders.HoverPathFinder;
 import game.movement.pathfinders.RegularPathFinder;
 import game.objects.enemies.*;
 import game.objects.enemies.enums.EnemyEnums;
 import game.gamestate.GameStateInfo;
 import game.gamestate.GameStatusEnums;
 import VisualAndAudioData.audio.AudioManager;
-import game.objects.friendlies.FriendlyManager;
-import game.objects.player.PlayerManager;
-import game.objects.player.PlayerStats;
-import game.spawner.directors.Director;
 import game.spawner.directors.DirectorManager;
 import game.spawner.enums.LevelDifficulty;
 import game.spawner.enums.LevelLength;
-import game.spawner.enums.SpawnFormationEnums;
-import game.util.OutOfBoundsCalculator;
 
 import javax.sound.sampled.UnsupportedAudioFileException;
 
@@ -120,11 +112,11 @@ public class LevelManager {
         EnemyEnums enemyType = EnemyEnums.Bulldozer;
         Enemy enemy = EnemyCreator.createEnemy(enemyType, 1000, 100, Direction.LEFT, enemyType.getDefaultScale()
                 , enemyType.getMovementSpeed(), enemyType.getMovementSpeed(), MovementPatternSize.SMALL, enemyType.isBoxCollision());
-        enemy.getMovementConfiguration().setBoardBlockToHoverIn(5);
+//        enemy.getMovementConfiguration().setBoardBlockToHoverIn(5);
         enemy.getMovementConfiguration().setPathFinder(new RegularPathFinder());
-//        enemy.setAllowedVisualsToRotate(false);
-//        enemy.getMovementConfiguration().setXMovementSpeed(0);
-//        enemy.getMovementConfiguration().setYMovementSpeed(0);
+        enemy.setAllowedVisualsToRotate(false);
+        enemy.getMovementConfiguration().setXMovementSpeed(0);
+        enemy.getMovementConfiguration().setYMovementSpeed(0);
 //        enemy.getAnimation().changeImagetype(ImageEnums.Scout);
         EnemyManager.getInstance().addEnemy(enemy);
 //
@@ -202,7 +194,7 @@ public class LevelManager {
         return enemiesKilled;
     }
 
-    public void setEnemiesKilled (int enemiesKilled) {
+    public void addEnemyKilled (int enemiesKilled) {
         this.enemiesKilled += enemiesKilled;
     }
 

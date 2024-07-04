@@ -3,6 +3,7 @@ package game.util;
 import VisualAndAudioData.DataClass;
 import com.badlogic.gdx.Game;
 import game.movement.Direction;
+import game.movement.pathfinders.OrbitPathFinder;
 import game.objects.GameObject;
 import game.objects.missiles.missiletypes.SeekerProjectile;
 import game.objects.player.PlayerManager;
@@ -11,6 +12,14 @@ public class OutOfBoundsCalculator {
     public static boolean isOutOfBounds (GameObject gameObject) {
         if (gameObject.getMovementConfiguration().getRotation() == null) {
             System.out.println("Iets is null: " + gameObject.getClass());
+        }
+
+        if(gameObject.getMovementConfiguration() != null){
+            if(gameObject.getMovementConfiguration().getPathFinder() != null){
+                if(gameObject.getMovementConfiguration().getPathFinder() instanceof OrbitPathFinder){
+                    return false; //These should be deleted when their owner is deleted, not by themselves for going out of bounds
+                }
+            }
         }
 
         return calculateOutOfBounds(gameObject);

@@ -6,11 +6,9 @@ import game.items.enums.ItemEnums;
 import game.managers.AnimationManager;
 import game.movement.MovementConfiguration;
 import game.movement.Point;
-import game.movement.pathfinders.RegularPathFinder;
 import game.movement.pathfinders.StraightLinePathFinder;
 import game.objects.GameObject;
 import game.objects.enemies.EnemyManager;
-import game.objects.missiles.missiletypes.Rocket1;
 import visualobjects.SpriteConfigurations.SpriteAnimationConfiguration;
 import visualobjects.SpriteConfigurations.SpriteConfiguration;
 import visualobjects.SpriteAnimation;
@@ -26,6 +24,8 @@ public class Missile extends GameObject {
     protected boolean destroysMissiles;
     protected boolean piercesThroughObjects;
     protected int amountOfPiercesLeft;
+
+    protected boolean isDestructable;
 
 
     public Missile (SpriteConfiguration spriteConfiguration, MissileConfiguration missileConfiguration, MovementConfiguration movementConfiguration) {
@@ -48,6 +48,8 @@ public class Missile extends GameObject {
         this.friendly = missileConfiguration.isFriendly();
         this.maxHitPoints = missileConfiguration.getMaxHitPoints();
         this.maxShieldPoints = missileConfiguration.getMaxShields();
+        this.currentHitpoints = maxHitPoints;
+        this.currentShieldPoints = maxShieldPoints;
         this.deathSound = missileConfiguration.getDeathSound();
         this.allowedToDealDamage = missileConfiguration.isAllowedToDealDamage();
         this.objectType = missileConfiguration.getObjectType();
@@ -59,6 +61,7 @@ public class Missile extends GameObject {
         this.isExplosive = missileConfiguration.isExplosive();
         this.collidedObjects = new ArrayList<>();
         this.appliesOnHitEffects = missileConfiguration.isAppliesOnHitEffects();
+        this.isDestructable = missileConfiguration.isDestructable();
 
         if (missileConfiguration.getDestructionType() != null) {
             SpriteAnimationConfiguration destructionAnimation = new SpriteAnimationConfiguration(spriteConfiguration, 2, false);
@@ -84,8 +87,8 @@ public class Missile extends GameObject {
         //Exists to be overriden by explosive missiles
     }
 
-    public boolean isDestroysMissiles () {
-        return destroysMissiles;
+    public boolean interactsWithMissiles () {
+        return destroysMissiles || isDestructable;
     }
 
     public void setDestroysMissiles (boolean destroysMissiles) {
@@ -192,4 +195,17 @@ public class Missile extends GameObject {
     public void setExplosive (boolean explosive) {
         isExplosive = explosive;
     }
+
+    public boolean isDestructable () {
+        return isDestructable;
+    }
+
+    public void setDestructable (boolean destructable) {
+        isDestructable = destructable;
+    }
+
+    public boolean isDeletesMissiles (){
+        return destroysMissiles;
+    }
+
 }

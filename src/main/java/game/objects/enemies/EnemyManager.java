@@ -108,7 +108,6 @@ public class EnemyManager {
 
     public void addEnemy (Enemy enemy) {
         if (enemy != null && !enemyList.contains(enemy)) {
-            enemy.onCreationEffects();
             enemyList.add(enemy);
         }
     }

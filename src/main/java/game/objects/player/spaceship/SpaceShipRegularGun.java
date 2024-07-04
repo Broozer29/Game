@@ -62,9 +62,9 @@ public class SpaceShipRegularGun {
     private void fireMissile (int xCoordinate, int yCoordinate, ImageEnums playerMissileType,
                               float missileScale, PathFinder missilePathFinder, MissileEnums attackType) {
 
-        attackType = MissileEnums.OrbitCenter;
-        playerMissileType = attackType.getImageType();
-        missileScale = 0.4f;
+//        attackType = MissileEnums.OrbitCenter;
+//        playerMissileType = attackType.getImageType();
+//        missileScale = 0.4f;
 
         MissileCreator missileCreator1 = MissileCreator.getInstance();
         SpriteConfiguration spriteConfiguration = missileCreator1.createMissileSpriteConfig(xCoordinate, yCoordinate,

@@ -23,6 +23,7 @@ import javax.swing.Timer;
 import controllerInput.ConnectedControllers;
 import controllerInput.ControllerInputEnums;
 import game.UI.UIObject;
+import game.objects.GameObject;
 import game.objects.powerups.timers.TimerManager;
 import game.spawner.directors.DirectorManager;
 import game.gamestate.SpawningMechanic;
@@ -303,6 +304,9 @@ public class GameBoard extends JPanel implements ActionListener {
                 } else {
                     drawImage(g, missile);
                 }
+
+                if (missile.isShowHealthBar())
+                    drawHealthBars(g, missile);
             }
         }
 
@@ -394,8 +398,8 @@ public class GameBoard extends JPanel implements ActionListener {
 
         g.drawString("Enemies spawned: " + levelManager.getEnemiesSpawned(), 650, DataClass.getInstance().getPlayableWindowMaxHeight() + 25);
         g.drawString("Enemies killed: " + levelManager.getEnemiesKilled(), 650, DataClass.getInstance().getPlayableWindowMaxHeight() + 45);
-        g.drawString("Player level: " + playerStats.getCurrentLevel(), 950, DataClass.getInstance().getPlayableWindowMaxHeight() + 25);
-        g.drawString("XP to next level: " + (playerStats.getXpToNextLevel() - playerStats.getCurrentXP()), 950, DataClass.getInstance().getPlayableWindowMaxHeight() + 45);
+        g.drawString("Player level: " + Math.round(playerStats.getCurrentLevel()), 950, DataClass.getInstance().getPlayableWindowMaxHeight() + 25);
+        g.drawString("XP to next level: " + Math.round(playerStats.getXpToNextLevel() - playerStats.getCurrentXP()), 950, DataClass.getInstance().getPlayableWindowMaxHeight() + 45);
 
 
     }
@@ -452,14 +456,14 @@ public class GameBoard extends JPanel implements ActionListener {
     }
 
     // Primitive healthbar generator for enemies
-    private void drawHealthBars (Graphics2D g, Enemy enemy) {
-        float factor = enemy.getCurrentHitpoints() / enemy.getMaxHitPoints();
-        int actualAmount = (int) Math.round(enemy.getHeight() * factor);
+    private void drawHealthBars (Graphics2D g, GameObject gameobject) {
+        float factor = gameobject.getCurrentHitpoints() / gameobject.getMaxHitPoints();
+        int actualAmount = (int) Math.round(gameobject.getHeight() * factor);
 
         g.setColor(Color.RED);
-        g.fillRect((enemy.getXCoordinate() + enemy.getWidth() + 10), enemy.getYCoordinate(), 2, enemy.getHeight());
+        g.fillRect((gameobject.getXCoordinate() + gameobject.getWidth() + 10), gameobject.getYCoordinate(), 2, gameobject.getHeight());
         g.setColor(Color.GREEN);
-        g.fillRect((enemy.getXCoordinate() + enemy.getWidth() + 10), enemy.getYCoordinate(), 2, actualAmount);
+        g.fillRect((gameobject.getXCoordinate() + gameobject.getWidth() + 10), gameobject.getYCoordinate(), 2, actualAmount);
     }
 
     private void drawPlayerHealthBars (Graphics2D g) {

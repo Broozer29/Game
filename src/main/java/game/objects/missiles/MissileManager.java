@@ -115,7 +115,7 @@ public class MissileManager {
                     checkMissileCollisionWithPlayer(missile);
                 }
 
-                if (missile.isDestroysMissiles()) {
+                if (missile.interactsWithMissiles()) {
                     checkMissileCollisionWithMissiles(missile);
                 }
             }
@@ -210,19 +210,40 @@ public class MissileManager {
     }
 
     private void checkMissileCollisionWithMissiles (Missile missile) {
-        if (missile.isDestroysMissiles()) {
+        if (missile.interactsWithMissiles()) {
             if (missile.isFriendly()) {
                 //Check for all non-friendly missiles in the missile list, this is used by the player
                 for (Missile enemyMissile : missiles) {
                     if (!enemyMissile.isFriendly() && collisionDetector.detectCollision(missile, enemyMissile)) {
-                        enemyMissile.destroyMissile();
+
+
+                        if (missile.isDeletesMissiles()) {
+                            enemyMissile.destroyMissile();
+                        }
+
+                        else if(missile.isDestructable()){
+                            missile.takeDamage(enemyMissile.getDamage());
+                            missile.setShowHealthBar(true);
+                            enemyMissile.destroyMissile();
+                        }
+
                     }
                 }
             } else {
                 //Check for all friendly missiles in the missile list, this is used by the enemies
-                for (Missile enemyMissile : missiles) {
-                    if (enemyMissile.isFriendly() && collisionDetector.detectCollision(missile, enemyMissile)) {
-                        enemyMissile.destroyMissile();
+                for (Missile friendlyMissile : missiles) {
+                    if (friendlyMissile.isFriendly() && collisionDetector.detectCollision(missile, friendlyMissile)) {
+
+
+                        if (missile.isDeletesMissiles()) {
+                            friendlyMissile.destroyMissile();
+                        }
+
+                        else if(missile.isDestructable()){
+                            missile.takeDamage(friendlyMissile.getDamage());
+                            missile.setShowHealthBar(true);
+                            friendlyMissile.destroyMissile();
+                        }
                     }
                 }
             }

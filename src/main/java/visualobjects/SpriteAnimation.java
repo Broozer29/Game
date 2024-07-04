@@ -301,11 +301,13 @@ public class SpriteAnimation extends Sprite implements Cloneable{
 
 	public boolean isPlaying () {
 		if(currentFrame < totalFrames && visible){
-			if(AnimationManager.getInstance().getUpperAnimations().contains(this) ||
-				AnimationManager.getInstance().getLowerAnimations().contains(this)){
-				return true;
-			}
+            return AnimationManager.getInstance().getUpperAnimations().contains(this) ||
+                    AnimationManager.getInstance().getLowerAnimations().contains(this);
 		}
 		return false;
 	}
+
+	public boolean isFinished () {
+        return currentFrame >= totalFrames;
+    }
 }
