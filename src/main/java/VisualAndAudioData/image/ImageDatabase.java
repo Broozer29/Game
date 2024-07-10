@@ -59,6 +59,9 @@ public class ImageDatabase {
     // Game GUI images
     private BufferedImage healthBarImage;
     private BufferedImage shieldBarImage;
+
+    private BufferedImage progressBar;
+    private BufferedImage progressBarFilling;
     private BufferedImage frame;
     private BufferedImage iconBorder;
     private BufferedImage redFilling;
@@ -229,6 +232,8 @@ public class ImageDatabase {
 
     // Lists
     private List<BufferedImage> impactExplosionOneFrames = new ArrayList<BufferedImage>();
+    private List<BufferedImage> greenEnergyOrb2Looping = new ArrayList<BufferedImage>();
+    private List<BufferedImage> greenEnergyOrb2 = new ArrayList<BufferedImage>();
     private List<BufferedImage> destroyedExplosionUpFrames = new ArrayList<BufferedImage>();
     private List<BufferedImage> destroyedExplosionLeftFrames = new ArrayList<BufferedImage>();
     private List<BufferedImage> destroyedExplosionRightFrames = new ArrayList<BufferedImage>();
@@ -321,6 +326,7 @@ public class ImageDatabase {
     private List<BufferedImage> bulldozerProjectileExplosion = new ArrayList<BufferedImage>();
     private List<BufferedImage> flamerProjectileExplosion = new ArrayList<BufferedImage>();
     private List<BufferedImage> bombaProjectileExplosion = new ArrayList<BufferedImage>();
+    private List<BufferedImage> alienLaserBeamAnimated = new ArrayList<BufferedImage>();
 
     private List<BufferedImage> barrierProjectile = new ArrayList<BufferedImage>();
     private List<BufferedImage> lightningProjectile = new ArrayList<BufferedImage>();
@@ -678,6 +684,9 @@ public class ImageDatabase {
         this.yellowWings3 = imgLoader.getImage(ImageEnums.YellowWings3);
         this.yellowWings4 = imgLoader.getImage(ImageEnums.YellowWings4);
         this.yellowWings5 = imgLoader.getImage(ImageEnums.YellowWings5);
+
+        this.progressBar = imgLoader.getImage(ImageEnums.ProgressBar);
+        this.progressBarFilling = imgLoader.getImage(ImageEnums.ProgressBarFilling);
     }
 
     private void initBackgroundObjects () {
@@ -761,6 +770,8 @@ public class ImageDatabase {
 
     public BufferedImage getImage (ImageEnums imageType) {
         switch (imageType) {
+            case ProgressBar: return progressBar;
+            case ProgressBarFilling: return progressBarFilling;
             case CashCarrier: return cashCarrier;
             case LaserBullet: return laserBullet;
             case TopazGem7: return topazGem7;
@@ -1235,6 +1246,9 @@ public class ImageDatabase {
             case Flamer: return flamer;
             case Bomba: return bomba;
             case DestructableOrbitCenterMissile: return destructableOrbitCenterMissile;
+            case GreenEnergyOrb2: return greenEnergyOrb2;
+            case GreenEnergyOrb2Looping: return greenEnergyOrb2Looping;
+            case AlienLaserBeamAnimated: return alienLaserBeamAnimated;
             case LightningOrb:
                 return lightningOrb;
             case SuperChargedBuff:
@@ -1951,6 +1965,24 @@ public class ImageDatabase {
             String sourceString = String.format("/images/gif/PNGtoGIF/SpiralingGreenEnergy/%d.png", i);
             BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
             spiralingGreenEnergy.add(image);
+        }
+
+        for (int i = 10; i < 28; i++) {
+            String sourceString = String.format("/images/gif/PNGtoGIF/GreenEnergyOrb2/Looping/%d.png", i);
+            BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+            greenEnergyOrb2Looping.add(image);
+        }
+
+        for (int i = 0; i < 35; i++) {
+            String sourceString = String.format("/images/gif/PNGtoGIF/GreenEnergyOrb2/%d.png", i);
+            BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+            greenEnergyOrb2.add(image);
+        }
+
+        for (int i = 1; i < 5; i++) {
+            String sourceString = String.format("/images/gif/PNGtoGIF/AlienLaserbeam/%d.png", i);
+            BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+            alienLaserBeamAnimated.add(image);
         }
     }
 

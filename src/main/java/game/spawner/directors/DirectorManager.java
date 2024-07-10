@@ -1,7 +1,7 @@
 package game.spawner.directors;
 
 import game.gamestate.GameStateInfo;
-import game.objects.enemies.enums.EnemyEnums;
+import game.gameobjects.enemies.enums.EnemyEnums;
 
 import java.util.ArrayList;
 import java.util.List;

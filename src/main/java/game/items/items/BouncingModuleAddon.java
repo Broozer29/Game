@@ -4,8 +4,7 @@ import game.items.Item;
 import game.items.effects.EffectActivationTypes;
 import game.items.enums.ItemApplicationEnum;
 import game.items.enums.ItemEnums;
-import game.objects.GameObject;
-import game.objects.player.PlayerStats;
+import game.gameobjects.GameObject;
 
 public class BouncingModuleAddon extends Item {
 

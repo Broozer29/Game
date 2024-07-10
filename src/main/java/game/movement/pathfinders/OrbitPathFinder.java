@@ -8,7 +8,7 @@ import game.movement.Path;
 import game.movement.Point;
 import game.movement.pathfinderconfigs.OrbitPathFinderConfig;
 import game.movement.pathfinderconfigs.PathFinderConfig;
-import game.objects.GameObject;
+import game.gameobjects.GameObject;
 import visualobjects.Sprite;
 
 public class OrbitPathFinder implements PathFinder {

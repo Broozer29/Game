@@ -1,6 +1,6 @@
 package game.items;
 
-import game.objects.GameObject;
+import game.gameobjects.GameObject;
 
 public interface ItemInterface {
     void applyEffectToObject (GameObject gameObject);

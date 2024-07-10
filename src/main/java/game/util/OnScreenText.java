@@ -1,6 +1,8 @@
 package game.util;
 
-import game.objects.powerups.PowerUpEnums;
+import game.gameobjects.powerups.PowerUpEnums;
+
+import java.awt.*;
 
 public class OnScreenText {
 
@@ -9,12 +11,19 @@ public class OnScreenText {
 	private int xCoordinate;
 	private int yCoordinate;
 	private PowerUpEnums powerUpType;
-	
+
+	private float transparancyStepSize;
+	private int fontSize;
+	private Color color;
+
 	public OnScreenText(int xCoordinate, int yCoordinate, PowerUpEnums powerUpType) {
 		this.xCoordinate = xCoordinate;
 		this.yCoordinate = yCoordinate;
 		this.powerUpType = powerUpType;
 		this.transparencyValue = 1;
+		this.transparancyStepSize = (float) 0.01;
+		this.fontSize = 10;
+		this.color = Color.WHITE;
 		getTextByPowerUpType();
 	}
 
@@ -22,10 +31,12 @@ public class OnScreenText {
 		this.xCoordinate = xCoordinate;
 		this.yCoordinate = yCoordinate;
 		this.transparencyValue = 1;
+		this.transparancyStepSize = (float) 0.01;
 		this.text = message;
+		this.fontSize = 10;
+		this.color = Color.WHITE;
 	}
-	
-	
+
 	private void getTextByPowerUpType() {
 		switch(this.powerUpType) {
 		case DOUBLE_SHOT:
@@ -81,5 +92,29 @@ public class OnScreenText {
 	
 	public void setTransparency(float transparancy) {
 		this.transparencyValue = transparancy;
+	}
+
+	public float getTransparancyStepSize () {
+		return transparancyStepSize;
+	}
+
+	public void setTransparancyStepSize (float transparancyStepSize) {
+		this.transparancyStepSize = transparancyStepSize;
+	}
+
+	public int getFontSize () {
+		return fontSize;
+	}
+
+	public void setFontSize (int fontSize) {
+		this.fontSize = fontSize;
+	}
+
+	public Color getColor () {
+		return color;
+	}
+
+	public void setColor (Color color) {
+		this.color = color;
 	}
 }

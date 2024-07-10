@@ -5,7 +5,7 @@ import game.items.effects.EffectActivationTypes;
 import game.items.effects.EffectIdentifiers;
 import game.items.effects.EffectInterface;
 import game.managers.AnimationManager;
-import game.objects.GameObject;
+import game.gameobjects.GameObject;
 import visualobjects.SpriteAnimation;
 
 public class PassiveHealthRegeneration implements EffectInterface {
@@ -35,7 +35,7 @@ public class PassiveHealthRegeneration implements EffectInterface {
                 centerHealingAnimation(gameObject);
             }
 
-            gameObject.takeDamage(-healingAmount); // Apply healing
+            gameObject.takeDamage(-healingAmount, false); // Apply healing
         } else {
             if (animation != null) {
                 hideHealingAnimation();

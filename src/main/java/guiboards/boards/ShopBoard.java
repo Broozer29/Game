@@ -15,8 +15,8 @@ import game.items.PlayerInventory;
 import game.items.enums.ItemEnums;
 import game.managers.AnimationManager;
 import game.managers.ShopManager;
-import game.objects.background.BackgroundManager;
-import game.objects.background.BackgroundObject;
+import game.gameobjects.background.BackgroundManager;
+import game.gameobjects.background.BackgroundObject;
 import VisualAndAudioData.DataClass;
 import game.spawner.LevelManager;
 import game.spawner.enums.LevelDifficulty;
@@ -125,7 +125,7 @@ public class ShopBoard extends JPanel implements ActionListener {
             controllerInputReader = controllers.getFirstController();
         }
 
-        timer = new Timer(GameStateInfo.getInstance().getDELAY(), e -> repaint());
+        timer = new Timer(GameStateInfo.getInstance().getDELAY(), e ->  repaint(0, 0, DataClass.getInstance().getWindowWidth(), DataClass.getInstance().getWindowHeight()));
         timer.start();
     }
 

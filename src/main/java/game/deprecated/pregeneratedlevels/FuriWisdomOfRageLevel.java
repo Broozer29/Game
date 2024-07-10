@@ -5,11 +5,10 @@ import java.util.List;
 import java.util.Random;
 
 import game.movement.Direction;
-import game.objects.enemies.enums.EnemyEnums;
+import game.gameobjects.enemies.enums.EnemyEnums;
 import game.spawner.EnemyFormation;
-import game.objects.powerups.timers.DeprecatedEnemySpawnTimer;
+import game.gameobjects.powerups.timers.DeprecatedEnemySpawnTimer;
 import game.spawner.FormationCreator;
-import game.spawner.enums.SpawnFormationEnums;
 import VisualAndAudioData.DataClass;
 import VisualAndAudioData.audio.enums.AudioEnums;
 

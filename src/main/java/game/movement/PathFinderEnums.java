@@ -1,7 +1,7 @@
 package game.movement;
 
 import game.movement.pathfinders.*;
-import game.objects.GameObject;
+import game.gameobjects.GameObject;
 
 public enum PathFinderEnums {
     Bouncing {

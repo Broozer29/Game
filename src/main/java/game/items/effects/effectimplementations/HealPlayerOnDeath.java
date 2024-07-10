@@ -3,8 +3,8 @@ package game.items.effects.effectimplementations;
 import game.items.effects.EffectActivationTypes;
 import game.items.effects.EffectIdentifiers;
 import game.items.effects.EffectInterface;
-import game.objects.GameObject;
-import game.objects.player.PlayerManager;
+import game.gameobjects.GameObject;
+import game.gameobjects.player.PlayerManager;
 import visualobjects.SpriteAnimation;
 
 public class HealPlayerOnDeath implements EffectInterface {

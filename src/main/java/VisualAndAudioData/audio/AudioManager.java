@@ -20,6 +20,7 @@ public class AudioManager {
     private Map<AudioEnums, Long> lastPlayTimeMap = new HashMap<>();
     private static final long COOLDOWN_DURATION = 1000; // Cooldown in milliseconds, adjust as needed
 
+    public boolean testMode = false;
 
     private AudioManager () {
 
@@ -43,7 +44,7 @@ public class AudioManager {
     }
 
     // Play singular audios
-    private void playAudio(AudioEnums audioType) throws UnsupportedAudioFileException, IOException {
+    private void playAudio (AudioEnums audioType) throws UnsupportedAudioFileException, IOException {
         if (audioType != null) {
             CustomAudioClip clip = audioDatabase.getAudioClip(audioType);
             if (clip != null && canPlayAudio(audioType)) {
@@ -57,7 +58,7 @@ public class AudioManager {
             AudioEnums.NotEnoughMinerals
     );
 
-    private boolean canPlayAudio(AudioEnums audioType) {
+    private boolean canPlayAudio (AudioEnums audioType) {
         if (!soundsWithCooldown.contains(audioType)) {
             return true; // No cooldown needed for this sound
         }
@@ -79,7 +80,7 @@ public class AudioManager {
     }
 
 
-    public void playRandomBackgroundMusic(LevelDifficulty difficulty, LevelLength length) throws UnsupportedAudioFileException, IOException {
+    public void playRandomBackgroundMusic (LevelDifficulty difficulty, LevelLength length) throws UnsupportedAudioFileException, IOException {
         LevelSongs backgroundMusic = null;
         int attempts = 0; // Initialize a counter for the number of attempts
         boolean allowDuplicates = false; // Flag to allow duplicates after 10 attempts
@@ -95,7 +96,7 @@ public class AudioManager {
             } else {
                 backgroundMusic = LevelSongs.getRandomSong();
             }
-            System.out.println("I'm in a do-while loop trying to select: " + difficulty + " / " + length + " and selected " +backgroundMusic.getAudioEnum());
+            System.out.println("I'm in a do-while loop trying to select: " + difficulty + " / " + length + " and selected " + backgroundMusic.getAudioEnum());
 
             attempts++; // Increment the attempt counter
 
@@ -109,8 +110,13 @@ public class AudioManager {
         while (backgroundMusicTracksThatHavePlayed.contains(backgroundMusic) && !allowDuplicates && backgroundMusic != null);
 
         if (backgroundMusic != null) {
-            playBackgroundMusic(AudioEnums.Large_Ship_Destroyed, false);
-//            playBackgroundMusic(backgroundMusic.getAudioEnum(), false);
+
+            if (testMode) {
+                playBackgroundMusic(AudioEnums.Large_Ship_Destroyed, false);
+            } else {
+                playBackgroundMusic(backgroundMusic.getAudioEnum(), false);
+            }
+
             addTrackToHistory(backgroundMusic);
             this.currentSong = backgroundMusic;
         }
@@ -129,7 +135,7 @@ public class AudioManager {
         if (backGroundMusic != null) {
             backGroundMusic.stopClip();
             backGroundMusic.setFramePosition(0);
-            backGroundMusic = null;
+//            backGroundMusic = null;
         }
     }
 

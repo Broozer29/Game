@@ -10,9 +10,7 @@ import game.movement.pathfinderconfigs.BouncingPathFinderConfig;
 import game.movement.pathfinderconfigs.PathFinderConfig;
 import game.movement.pathfinderconfigs.RegularPathFinderConfig;
 import VisualAndAudioData.DataClass;
-import game.objects.GameObject;
-
-import javax.xml.crypto.Data;
+import game.gameobjects.GameObject;
 
 public class BouncingPathFinder implements PathFinder {
 

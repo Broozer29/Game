@@ -9,6 +9,7 @@ public enum GameStatusEnums {
 	Level_Completed, //Player has entered portal, show score screen of something
 	Zoning_In, // Starting a level, fade in
 	Zoning_Out, // Ending a level, fade away
-	Transitioning_To_Next_Level,
+	Show_Level_Score_Card,
+	Transition_To_Next_Stage,
 	Shopping,
 }

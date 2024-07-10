@@ -3,12 +3,9 @@ package game.deprecated.pregeneratedlevels;
 import java.util.ArrayList;
 import java.util.List;
 
-import game.movement.Direction;
-import game.objects.enemies.enums.EnemyEnums;
-import game.spawner.EnemyFormation;
-import game.objects.powerups.timers.DeprecatedEnemySpawnTimer;
+import game.gameobjects.enemies.enums.EnemyEnums;
+import game.gameobjects.powerups.timers.DeprecatedEnemySpawnTimer;
 import game.spawner.FormationCreator;
-import game.spawner.enums.SpawnFormationEnums;
 import VisualAndAudioData.DataClass;
 
 //Not to scale, just a representation of the pattern

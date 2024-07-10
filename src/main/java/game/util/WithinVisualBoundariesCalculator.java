@@ -1,9 +1,7 @@
 package game.util;
 
 import VisualAndAudioData.DataClass;
-import com.badlogic.gdx.Game;
-import game.gamestate.GameStateInfo;
-import game.objects.GameObject;
+import game.gameobjects.GameObject;
 
 public class WithinVisualBoundariesCalculator {
 

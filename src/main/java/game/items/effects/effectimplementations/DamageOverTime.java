@@ -4,7 +4,7 @@ import game.gamestate.GameStateInfo;
 import game.items.effects.EffectIdentifiers;
 import game.items.effects.EffectInterface;
 import game.items.effects.EffectActivationTypes;
-import game.objects.GameObject;
+import game.gameobjects.GameObject;
 import visualobjects.SpriteAnimation;
 
 import java.util.Objects;
@@ -51,7 +51,7 @@ public class DamageOverTime implements EffectInterface {
             }
         }
         if (currentTime - startTimeInSeconds < durationInSeconds) {
-            target.takeDamage(this.damage * dotStacks);
+            target.takeDamage(this.damage * dotStacks, false);
 //            if(target.getCurrentHitpoints() <= target.getMaxHitPoints() && this.animation != null){
 //                this.animation.setVisible(false);
 //            }

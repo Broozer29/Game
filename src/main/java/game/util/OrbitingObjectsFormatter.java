@@ -1,8 +1,8 @@
 package game.util;
 
 import game.movement.pathfinders.OrbitPathFinder;
-import game.objects.GameObject;
-import game.objects.player.spaceship.SpaceShip;
+import game.gameobjects.GameObject;
+import game.gameobjects.player.spaceship.SpaceShip;
 
 public class OrbitingObjectsFormatter {
     public static void reformatOrbitingObjects(GameObject gameObject, int radius) {

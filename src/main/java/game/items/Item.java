@@ -3,7 +3,7 @@ package game.items;
 import game.items.effects.EffectActivationTypes;
 import game.items.enums.ItemApplicationEnum;
 import game.items.enums.ItemEnums;
-import game.objects.GameObject;
+import game.gameobjects.GameObject;
 
 public abstract class Item implements ItemInterface{
 

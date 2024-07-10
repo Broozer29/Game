@@ -4,7 +4,7 @@ import game.gamestate.GameStateInfo;
 import game.items.effects.EffectActivationTypes;
 import game.items.effects.EffectIdentifiers;
 import game.items.effects.EffectInterface;
-import game.objects.GameObject;
+import game.gameobjects.GameObject;
 import visualobjects.SpriteAnimation;
 
 public class OutOfCombatArmorBonus implements EffectInterface {

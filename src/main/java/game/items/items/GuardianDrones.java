@@ -4,14 +4,8 @@ import game.items.Item;
 import game.items.effects.EffectActivationTypes;
 import game.items.enums.ItemApplicationEnum;
 import game.items.enums.ItemEnums;
-import game.objects.GameObject;
-import game.objects.friendlies.FriendlyCreator;
-import game.objects.friendlies.FriendlyManager;
-import game.objects.friendlies.FriendlyObject;
-import game.objects.player.PlayerManager;
-import game.objects.player.PlayerStats;
-import game.objects.player.spaceship.SpaceShip;
-import game.util.OrbitingObjectsFormatter;
+import game.gameobjects.GameObject;
+import game.gameobjects.player.PlayerStats;
 
 public class GuardianDrones extends Item {
 

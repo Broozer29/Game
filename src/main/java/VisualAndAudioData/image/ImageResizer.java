@@ -68,6 +68,7 @@ public class ImageResizer {
     }
 
     public BufferedImage resizeImageToDimensions(BufferedImage image, int width, int height) {
+
         String cacheKey = image.hashCode() + "_" + width + "x" + height;
 
         if (bufferedImageCache.containsKey(cacheKey)) {

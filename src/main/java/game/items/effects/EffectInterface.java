@@ -1,6 +1,6 @@
 package game.items.effects;
 
-import game.objects.GameObject;
+import game.gameobjects.GameObject;
 import visualobjects.SpriteAnimation;
 
 public interface EffectInterface {

@@ -2,7 +2,7 @@ package game.deprecated.pregeneratedlevels;
 
 import java.util.List;
 
-import game.objects.powerups.timers.DeprecatedEnemySpawnTimer;
+import game.gameobjects.powerups.timers.DeprecatedEnemySpawnTimer;
 import VisualAndAudioData.audio.enums.AudioEnums;
 
 public interface Level {

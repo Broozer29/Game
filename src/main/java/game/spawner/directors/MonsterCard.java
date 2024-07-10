@@ -1,6 +1,6 @@
 package game.spawner.directors;
 
-import game.objects.enemies.enums.EnemyEnums;
+import game.gameobjects.enemies.enums.EnemyEnums;
 
 public class MonsterCard {
     private EnemyEnums enemyType;

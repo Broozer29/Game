@@ -8,7 +8,7 @@ import game.items.effects.effectimplementations.DormentExplosion;
 import game.items.effects.DormentExplosionActivationMethods;
 import game.items.enums.ItemApplicationEnum;
 import game.items.enums.ItemEnums;
-import game.objects.GameObject;
+import game.gameobjects.GameObject;
 
 public class StickyDynamite extends Item {
 

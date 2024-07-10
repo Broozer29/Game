@@ -1,10 +1,9 @@
 package game.movement.pathfinderconfigs;
 
-import com.badlogic.gdx.Game;
 import game.movement.Direction;
 import game.movement.MovementConfiguration;
 import game.movement.Point;
-import game.objects.GameObject;
+import game.gameobjects.GameObject;
 
 public class ZigZagPathFinderConfig implements PathFinderConfig {
 

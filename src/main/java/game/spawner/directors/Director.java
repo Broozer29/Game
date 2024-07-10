@@ -3,12 +3,12 @@ package game.spawner.directors;
 import VisualAndAudioData.DataClass;
 import game.gamestate.GameStateInfo;
 import game.movement.pathfinderconfigs.MovementPatternSize;
-import game.objects.enemies.Enemy;
-import game.objects.enemies.EnemyCreator;
+import game.gameobjects.enemies.Enemy;
+import game.gameobjects.enemies.EnemyCreator;
 import game.spawner.LevelManager;
 import game.movement.Direction;
-import game.objects.enemies.enums.EnemyCategory;
-import game.objects.enemies.enums.EnemyEnums;
+import game.gameobjects.enemies.enums.EnemyCategory;
+import game.gameobjects.enemies.enums.EnemyEnums;
 import game.spawner.EnemyFormation;
 import game.spawner.FormationCreator;
 import game.spawner.enums.SpawnFormationEnums;
@@ -193,7 +193,7 @@ public class Director {
 
 
     private void spawnFormationWithParameters (SpawnFormationEnums formationType, EnemyEnums primaryEnemyType, EnemyEnums secondaryEnemyType, boolean isEntourage) {
-        Direction direction = Direction.LEFT_DOWN;
+        Direction direction = Direction.LEFT;
         int xMovementSpeed = isEntourage ? secondaryEnemyType.getMovementSpeed() : primaryEnemyType.getMovementSpeed();
         int yMovementSpeed = xMovementSpeed;
 
@@ -224,23 +224,34 @@ public class Director {
     }
 
 
-    private int calculateBaseX (int totalFormationWidth, Direction direction) {
+    private int calculateBaseX(int totalFormationWidth, Direction direction) {
         DataClass instance = DataClass.getInstance();
         if (direction == Direction.LEFT) {
             // For LEFT direction, spawn at or beyond the right edge of the board
-            return instance.getWindowWidth() + (random.nextInt(totalFormationWidth) * 3);
+            int bound = instance.getWindowWidth() + (random.nextInt(totalFormationWidth) * 3);
+            return instance.getWindowWidth() + Math.max(0, bound);
         } else if (direction == Direction.RIGHT) {
             // For RIGHT direction, spawn at or before the left edge of the board
-            return -(random.nextInt(totalFormationWidth) * 3);
+            int bound = -(random.nextInt(totalFormationWidth) * 3);
+            return Math.min(0, bound);
         } else if (direction == Direction.DOWN || direction == Direction.UP) {
-            return random.nextInt(0, instance.getWindowWidth() - totalFormationWidth);
-        } else if(direction == Direction.LEFT_UP || direction == Direction.LEFT_DOWN){
+            int min = 0;
+            int max = instance.getWindowWidth() - totalFormationWidth;
+            if (min > max) {
+                return min; // Fallback to min if bounds are invalid
+            }
+            return random.nextInt(min, max + 1);
+        } else if (direction == Direction.LEFT_UP || direction == Direction.LEFT_DOWN) {
             int randomXIncrease = random.nextInt(instance.getWindowWidth() / 2);
-            return random.nextInt(instance.getWindowWidth() / 2 + randomXIncrease, Math.round(instance.getWindowWidth() + randomXIncrease) - totalFormationWidth);
-        } if (direction == Direction.RIGHT_UP || direction == Direction.RIGHT_DOWN) {
+            int min = instance.getWindowWidth() / 2 + randomXIncrease;
+            int max = Math.round(instance.getWindowWidth() + randomXIncrease) - totalFormationWidth;
+            if (min > max) {
+                return min; // Fallback to min if bounds are invalid
+            }
+            return random.nextInt(min, max + 1);
+        } else if (direction == Direction.RIGHT_UP || direction == Direction.RIGHT_DOWN) {
             // Calculate 25% of the window width
             int quarterWindowWidth = instance.getWindowWidth() / 4;
-
             // Define the maximum possible value for the random range
             int maxRange = quarterWindowWidth;
             // Get a random number from -maxRange to maxRange
@@ -257,22 +268,38 @@ public class Director {
     }
 
 
-    private int calculateBaseY (int totalFormationHeight, Direction direction) {
+
+    private int calculateBaseY(int totalFormationHeight, Direction direction) {
         DataClass instance = DataClass.getInstance();
         if (direction == Direction.LEFT || direction == Direction.RIGHT) {
             if (totalFormationHeight > instance.getPlayableWindowMaxHeight()) {
                 totalFormationHeight = instance.getPlayableWindowMaxHeight();
             }
-            return random.nextInt(instance.getPlayableWindowMinHeight(), instance.getPlayableWindowMaxHeight() - totalFormationHeight + 1); // +1 to include the upper limit
+            int min = instance.getPlayableWindowMinHeight();
+            int max = instance.getPlayableWindowMaxHeight() - totalFormationHeight + 1;
+            if (min > max) {
+                return min; // Fallback to min if bounds are invalid
+            }
+            return random.nextInt(min, max);
         } else if (direction == Direction.DOWN || direction == Direction.LEFT_DOWN || direction == Direction.RIGHT_DOWN) {
-            return random.nextInt(instance.getPlayableWindowMinHeight() - Math.round(totalFormationHeight * 1.5f), instance.getPlayableWindowMinHeight() - 10);
+            int min = instance.getPlayableWindowMinHeight() - Math.round(totalFormationHeight * 1.5f);
+            int max = instance.getPlayableWindowMinHeight() - 10;
+            if (min > max) {
+                return min; // Fallback to min if bounds are invalid
+            }
+            return random.nextInt(min, max + 1);
         } else if (direction == Direction.UP || direction == Direction.LEFT_UP || direction == Direction.RIGHT_UP) {
-            return random.nextInt(instance.getPlayableWindowMaxHeight() + 10, (instance.getPlayableWindowMaxHeight() + Math.round(totalFormationHeight * 1.5f)));
+            int min = instance.getPlayableWindowMaxHeight() + 10;
+            int max = instance.getPlayableWindowMaxHeight() + Math.round(totalFormationHeight * 1.5f);
+            if (min > max) {
+                return min; // Fallback to min if bounds are invalid
+            }
+            return random.nextInt(min, max + 1);
         }
-
 
         return instance.getPlayableWindowMinHeight();
     }
+
 
     private boolean coinFlip(){
         double randomNumber = random.nextDouble();

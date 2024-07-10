@@ -1,12 +1,9 @@
 package game.util;
 
 import VisualAndAudioData.DataClass;
-import com.badlogic.gdx.Game;
 import game.movement.Direction;
 import game.movement.pathfinders.OrbitPathFinder;
-import game.objects.GameObject;
-import game.objects.missiles.missiletypes.SeekerProjectile;
-import game.objects.player.PlayerManager;
+import game.gameobjects.GameObject;
 
 public class OutOfBoundsCalculator {
     public static boolean isOutOfBounds (GameObject gameObject) {

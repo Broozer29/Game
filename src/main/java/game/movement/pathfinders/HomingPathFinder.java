@@ -4,14 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import game.movement.MovementConfiguration;
-import game.objects.player.PlayerManager;
+import game.gameobjects.player.PlayerManager;
 import game.movement.Direction;
 import game.movement.Path;
 import game.movement.Point;
 import game.movement.pathfinderconfigs.HomingPathFinderConfig;
 import game.movement.pathfinderconfigs.PathFinderConfig;
-import game.objects.GameObject;
-import game.objects.enemies.EnemyManager;
+import game.gameobjects.GameObject;
+import game.gameobjects.enemies.EnemyManager;
 import VisualAndAudioData.DataClass;
 
 public class HomingPathFinder implements PathFinder {

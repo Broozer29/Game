@@ -6,7 +6,7 @@ import game.items.Item;
 import game.items.enums.ItemApplicationEnum;
 import game.items.enums.ItemEnums;
 import game.items.effects.EffectActivationTypes;
-import game.objects.GameObject;
+import game.gameobjects.GameObject;
 
 import javax.sound.sampled.UnsupportedAudioFileException;
 import java.io.IOException;
@@ -29,7 +29,7 @@ public class EmergencyRepairBot extends Item {
         // Check if current HP is 25% or lower of the max HP and if more than 1 quantity is left
         if (currentHp <= maxHp * 0.25 && this.quantity >= 1) {
             float healingAmount = maxHp * healingFactor; // Calculate 75% of max HP
-            gameObject.takeDamage(-healingAmount); // Apply healing
+            gameObject.takeDamage(-healingAmount, false); // Apply healing
             // Reduce the quantity of the item by 1
             this.decreaseQuantityOfItem(1);
             try {

@@ -3,7 +3,7 @@ package game.util;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 
-import game.objects.GameObject;
+import game.gameobjects.GameObject;
 
 public class CollisionDetector {
 

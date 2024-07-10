@@ -5,11 +5,13 @@ import VisualAndAudioData.audio.enums.AudioEnums;
 import javax.sound.sampled.Clip;
 import javax.sound.sampled.FloatControl;
 import javax.sound.sampled.LineUnavailableException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class CustomAudioClip {
 
-    AudioLoader audioLoader = AudioLoader.getInstance();
-
+    private AudioLoader audioLoader = AudioLoader.getInstance();
+//    private static final ExecutorService audioExecutor = Executors.newCachedThreadPool();
     private Clip clip;
     private AudioEnums clipType;
     private boolean loop;
@@ -35,7 +37,7 @@ public class CustomAudioClip {
 
     public boolean aboveThreshold () {
         switch (clipType) {
-            case Large_Ship_Destroyed:
+            case Large_Ship_Destroyed, Alien_Bomb_Impact:
                 if (clip.getFramePosition() > 25000) {
                     return true;
                 } else
@@ -43,12 +45,6 @@ public class CustomAudioClip {
 
             case Destroyed_Explosion:
                 if (clip.getFramePosition() > 12000) {
-                    return true;
-                } else
-                    return false;
-
-            case Alien_Bomb_Impact:
-                if (clip.getFramePosition() > 25000) {
                     return true;
                 } else
                     return false;
@@ -66,7 +62,6 @@ public class CustomAudioClip {
         if (loop) {
             this.clip.loop(Clip.LOOP_CONTINUOUSLY);
         }
-
     }
 
     private void adjustVolume () {
@@ -104,6 +99,7 @@ public class CustomAudioClip {
     }
 
     public int getFrameLength () {
+        //If audio needs to be cut earlier, like the reset manager does, this needs to be refactored here.
         return clip.getFrameLength();
     }
 

@@ -6,7 +6,7 @@ import game.items.effects.EffectIdentifiers;
 import game.items.effects.effectimplementations.GainGoldOnDeath;
 import game.items.enums.ItemApplicationEnum;
 import game.items.enums.ItemEnums;
-import game.objects.GameObject;
+import game.gameobjects.GameObject;
 
 import java.util.Random;
 

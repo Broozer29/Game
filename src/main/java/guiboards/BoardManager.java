@@ -72,16 +72,12 @@ public class BoardManager extends JFrame {
 	public void initGame() {
 		audioManager.stopMusicAudio();
 		changeMenuScreen(gameBoard);
+		menuBoard.getTimer().stop();
 		gameBoard.startGame();
 	}
 
-	public void initLevelSelectionBoard() {
-		playMenuMusic();
-		changeMenuScreen(talentBoard);
-		talentBoard.recreateWindow();
-	}
-
 	public void initTalentSelectionBoard() {
+		menuBoard.getTimer().stop();
 		playMenuMusic();
 		changeMenuScreen(levelSelectionBoard);
 		levelSelectionBoard.recreateWindow();
@@ -90,6 +86,7 @@ public class BoardManager extends JFrame {
 	public void gameToMainMenu() {
 		audioManager.stopMusicAudio();
 		gameBoard.resetGame();
+		gameBoard.getTimer().stop();
 		changeMenuScreen(menuBoard);
 		menuBoard.recreateWindow();
 		menuBoard.getTimer().restart();
@@ -100,6 +97,8 @@ public class BoardManager extends JFrame {
 		audioManager.stopMusicAudio();
 		playShopMenuMusic();
 		changeMenuScreen(shopBoard);
+		gameBoard.getTimer().stop();
+		menuBoard.getTimer().stop();
 		shopBoard.createWindow();
 		shopBoard.getTimer().restart();
 	}

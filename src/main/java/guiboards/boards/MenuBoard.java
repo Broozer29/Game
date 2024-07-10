@@ -21,8 +21,8 @@ import controllerInput.ConnectedControllers;
 import controllerInput.ControllerInputEnums;
 import controllerInput.ControllerInputReader;
 import game.managers.AnimationManager;
-import game.objects.background.BackgroundManager;
-import game.objects.background.BackgroundObject;
+import game.gameobjects.background.BackgroundManager;
+import game.gameobjects.background.BackgroundObject;
 import VisualAndAudioData.DataClass;
 import guiboards.MenuCursor;
 import guiboards.boardEnums.MenuFunctionEnums;
@@ -82,7 +82,7 @@ public class MenuBoard extends JPanel implements ActionListener {
         }
 
         initMenuTiles();
-        timer = new Timer(16, e -> repaint());
+        timer = new Timer(16, e ->  repaint(0, 0, DataClass.getInstance().getWindowWidth(), DataClass.getInstance().getWindowHeight()));
         timer.start();
     }
 
@@ -247,6 +247,7 @@ public class MenuBoard extends JPanel implements ActionListener {
             if (grid.get(selectedRow).get(selectedColumn).getMenuFunction() == MenuFunctionEnums.Start_Game) {
                 timer.stop();
             }
+
         } catch (UnsupportedAudioFileException | IOException e) {
             e.printStackTrace();
         }
@@ -449,30 +450,35 @@ public class MenuBoard extends JPanel implements ActionListener {
 
     /*---------------------------Drawing methods-------------------------------*/
     @Override
-    public void paintComponent (Graphics g) {
+    public void paintComponent(Graphics g) {
         super.paintComponent(g);
-        Graphics2D g2d = (Graphics2D) g;
-        // Draws all background objects
-        for (BackgroundObject bgObject : backgroundManager.getAllBGO()) {
-            drawImage(g2d, bgObject);
+        Graphics2D g2d = (Graphics2D) g.create(); // Create a copy to avoid modifying the original graphics context
+
+        try {
+            // Draws all background objects
+             for (BackgroundObject bgObject : backgroundManager.getAllBGO()) {
+                 drawImage(g2d, bgObject);
+             }
+
+            for (SpriteAnimation animation : animationManager.getLowerAnimations()) {
+                drawAnimation(g2d, animation);
+            }
+
+            drawObjects(g2d);
+
+            for (SpriteAnimation animation : animationManager.getUpperAnimations()) {
+                drawAnimation(g2d, animation);
+            }
+        } finally {
+            g2d.dispose(); // Ensure resources are released
         }
 
-        for (SpriteAnimation animation : animationManager.getLowerAnimations()) {
-            drawAnimation(g2d, animation);
-        }
-
-        drawObjects(g2d);
-
-        for (SpriteAnimation animation : animationManager.getUpperAnimations()) {
-            drawAnimation(g2d, animation);
-        }
         animationManager.updateGameTick();
-        backgroundManager.updateGameTick();
+         backgroundManager.updateGameTick();
         Toolkit.getDefaultToolkit().sync();
 
-//		readControllerState();
+        // readControllerState();
         executeControllerInput();
-
     }
 
     private void drawObjects (Graphics2D g) {

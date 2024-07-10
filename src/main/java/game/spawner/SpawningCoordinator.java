@@ -5,12 +5,10 @@ import java.util.List;
 import java.util.Random;
 
 import game.movement.Direction;
-import game.objects.background.BackgroundObject;
-import game.objects.enemies.Enemy;
+import game.gameobjects.background.BackgroundObject;
+import game.gameobjects.enemies.Enemy;
 import VisualAndAudioData.DataClass;
-import game.objects.enemies.enums.EnemyEnums;
-
-import javax.xml.crypto.Data;
+import game.gameobjects.enemies.enums.EnemyEnums;
 
 public class SpawningCoordinator {
 
@@ -76,7 +74,7 @@ public class SpawningCoordinator {
     }
 
     //Function used to prevent enemies of the same type of stacking on top of each other when being spawned in
-    public boolean checkValidEnemyXCoordinate (Enemy enemyType, List<Enemy> listToCheck, int xCoordinate, int minimumRange) {
+    public boolean checkValidEnemyXCoordinate (List<Enemy> listToCheck, int xCoordinate, int minimumRange) {
         for (Enemy enemy : listToCheck) {
             if (!enemy.getEnemyType().equals(EnemyEnums.Alien_Bomb)) {
                 int testX = enemy.getXCoordinate();
@@ -89,7 +87,7 @@ public class SpawningCoordinator {
     }
 
     //Function used to prevent enemies of the same type of stacking on top of each other when being spawned in
-    public boolean checkValidEnemyYCoordinate (Enemy enemyType, List<Enemy> listToCheck, int yCoordinate, int minimumRange) {
+    public boolean checkValidEnemyYCoordinate (List<Enemy> listToCheck, int yCoordinate, int minimumRange) {
         for (Enemy enemy : listToCheck) {
             if (!enemy.getEnemyType().equals(EnemyEnums.Alien_Bomb)) {
                 int testY = enemy.getYCoordinate();

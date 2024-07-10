@@ -4,9 +4,9 @@ import game.gamestate.GameStateInfo;
 import game.items.effects.EffectActivationTypes;
 import game.items.effects.EffectIdentifiers;
 import game.items.effects.EffectInterface;
-import game.objects.GameObject;
-import game.objects.player.PlayerStats;
-import game.objects.player.spaceship.SpaceShip;
+import game.gameobjects.GameObject;
+import game.gameobjects.player.PlayerStats;
+import game.gameobjects.player.spaceship.SpaceShip;
 import visualobjects.SpriteAnimation;
 
 public class DamageModifierEffect implements EffectInterface {

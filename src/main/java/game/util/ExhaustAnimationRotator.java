@@ -1,7 +1,7 @@
 package game.util;
 
 import game.movement.Point;
-import game.objects.GameObject;
+import game.gameobjects.GameObject;
 
 public class ExhaustAnimationRotator {
 

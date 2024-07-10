@@ -1,22 +1,8 @@
 package game.movement;
 
-import com.badlogic.gdx.Game;
 import game.movement.pathfinderconfigs.*;
 import game.movement.pathfinders.*;
-import game.objects.GameObject;
-import game.objects.enemies.Enemy;
-import game.objects.enemies.enemytypes.Bomba;
-import game.objects.friendlies.Drones.Drone;
-import game.objects.missiles.missiletypes.SeekerProjectile;
-import game.objects.player.PlayerManager;
-import game.util.OutOfBoundsCalculator;
-import visualobjects.Sprite;
-
-import game.movement.pathfinderconfigs.*;
-import game.movement.pathfinders.*;
-import game.objects.GameObject;
-import game.objects.missiles.missiletypes.SeekerProjectile;
-import game.objects.player.PlayerManager;
+import game.gameobjects.GameObject;
 import game.util.OutOfBoundsCalculator;
 import visualobjects.Sprite;
 
@@ -186,7 +172,7 @@ public class SpriteMover {
         //If stationary and hovering and an enemy, rotate towards the player if firing at player
         //Otherwise rotate towards the instantiated rotation
         //Otherwise rotate towards the final point in waypoints
-        gameObject.rotateObject();
+        gameObject.rotateAfterMovement();
 
 
         if (moveConfig.getPathFinder() instanceof OrbitPathFinder) {

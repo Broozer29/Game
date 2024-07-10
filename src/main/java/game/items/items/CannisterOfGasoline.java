@@ -8,8 +8,8 @@ import game.items.enums.ItemApplicationEnum;
 import game.items.enums.ItemEnums;
 import game.items.effects.EffectActivationTypes;
 import game.items.effects.effectimplementations.DormentExplosion;
-import game.objects.GameObject;
-import game.objects.enemies.enemytypes.AlienBomb;
+import game.gameobjects.GameObject;
+import game.gameobjects.enemies.enemytypes.AlienBomb;
 
 public class CannisterOfGasoline extends Item {
 

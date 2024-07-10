@@ -114,6 +114,14 @@ public class Sprite {
         this.yCoordinate = newYCoordinate - (this.height / 2);
     }
 
+    public void setCenterYCoordinate(int newYCoordinate){
+        this.yCoordinate = newYCoordinate - (this.height / 2);
+    }
+
+    public void setCenterXCoordinate(int newXCoordinate){
+        this.xCoordinate = newXCoordinate - (this.width / 2);
+    }
+
     public int getWidth () {
         return this.width;
     }
@@ -156,6 +164,10 @@ public class Sprite {
 
     public int getXOffset () {
         return this.xOffset;
+    }
+
+    public int getYOffset(){
+        return this.yOffset;
     }
 
     public void addYOffset (int yoffset) {

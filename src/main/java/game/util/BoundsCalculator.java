@@ -1,6 +1,6 @@
 package game.util;
 
-import game.objects.GameObject;
+import game.gameobjects.GameObject;
 
 import java.awt.*;
 

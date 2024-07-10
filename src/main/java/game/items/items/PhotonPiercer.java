@@ -4,7 +4,7 @@ import game.items.Item;
 import game.items.enums.ItemApplicationEnum;
 import game.items.enums.ItemEnums;
 import game.items.effects.EffectActivationTypes;
-import game.objects.GameObject;
+import game.gameobjects.GameObject;
 
 public class PhotonPiercer extends Item {
 

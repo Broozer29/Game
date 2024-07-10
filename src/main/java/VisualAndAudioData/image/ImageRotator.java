@@ -4,15 +4,17 @@ import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
+import java.awt.image.RasterFormatException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import VisualAndAudioData.DataClass;
+import game.managers.OnScreenTextManager;
 import game.movement.Direction;
 import game.movement.Point;
-import game.objects.GameObject;
 
 public class ImageRotator {
 
@@ -118,7 +120,7 @@ public class ImageRotator {
     }
 
 
-    private BufferedImage cropTransparentPixels (BufferedImage image) {
+    private BufferedImage cropTransparentPixels(BufferedImage image) {
         int minX = image.getWidth();
         int minY = image.getHeight();
         int maxX = 0;
@@ -141,7 +143,54 @@ public class ImageRotator {
         }
 
         // Add 1 to maxX/maxY because subimage's second parameter is exclusive
-        bufferedImage = image.getSubimage(minX, minY, maxX - minX + 1, maxY - minY + 1);
+        int subImageWidth = maxX - minX + 1;
+        int subImageHeight = maxY - minY + 1;
+
+        // Check if the calculated dimensions are valid
+        if (minX < 0 || minY < 0 || minX + subImageWidth > image.getWidth() || minY + subImageHeight > image.getHeight()) {
+            // Print out the values and identify the incorrect value
+            System.out.println("Invalid subimage dimensions calculated:");
+            System.out.println("minX: " + minX);
+            System.out.println("minY: " + minY);
+            System.out.println("maxX: " + maxX);
+            System.out.println("maxY: " + maxY);
+            System.out.println("subImageWidth: " + subImageWidth);
+            System.out.println("subImageHeight: " + subImageHeight);
+            System.out.println("Image Width: " + image.getWidth());
+            System.out.println("Image Height: " + image.getHeight());
+
+            if (minX < 0) System.out.println("Error: minX is less than 0");
+            if (minY < 0) System.out.println("Error: minY is less than 0");
+            if (minX + subImageWidth > image.getWidth()) System.out.println("Error: (minX + subImageWidth) is greater than image width");
+            if (minY + subImageHeight > image.getHeight()) System.out.println("Error: (minY + subImageHeight) is greater than image height");
+
+            // Return the original image if the dimensions are invalid
+            return image;
+        }
+
+        try {
+            bufferedImage = image.getSubimage(minX, minY, subImageWidth, subImageHeight);
+        } catch(RasterFormatException exception){
+            System.out.println(exception);
+            System.out.println("minX: " + minX);
+            System.out.println("minY: " + minY);
+            System.out.println("maxX: " + maxX);
+            System.out.println("maxY: " + maxY);
+            System.out.println("subImageWidth: " + subImageWidth);
+            System.out.println("subImageHeight: " + subImageHeight);
+            System.out.println("Image Width: " + image.getWidth());
+            System.out.println("Image Height: " + image.getHeight());
+
+            if (minX < 0) System.out.println("Error: minX is less than 0");
+            if (minY < 0) System.out.println("Error: minY is less than 0");
+            if (minX + subImageWidth > image.getWidth()) System.out.println("Error: (minX + subImageWidth) is greater than image width");
+            if (minY + subImageHeight > image.getHeight()) System.out.println("Error: (minY + subImageHeight) is greater than image height");
+
+            OnScreenTextManager.getInstance().addText("MAJOR ROTATION ERROR, CHECK CONSOLE LOGS",
+                    DataClass.getInstance().getWindowWidth() / 2,
+                    DataClass.getInstance().getWindowHeight() / 2);
+            return image;
+        }
         return bufferedImage;
     }
 

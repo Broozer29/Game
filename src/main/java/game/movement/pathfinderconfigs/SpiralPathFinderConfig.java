@@ -3,7 +3,7 @@ package game.movement.pathfinderconfigs;
 import game.movement.Direction;
 import game.movement.MovementConfiguration;
 import game.movement.Point;
-import game.objects.GameObject;
+import game.gameobjects.GameObject;
 
 public class SpiralPathFinderConfig implements PathFinderConfig {
 

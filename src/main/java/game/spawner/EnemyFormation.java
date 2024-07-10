@@ -1,7 +1,7 @@
 package game.spawner;
 
 import game.movement.Direction;
-import game.objects.enemies.enums.EnemyEnums;
+import game.gameobjects.enemies.enums.EnemyEnums;
 
 public class EnemyFormation {
 	private String[][] formationPattern;

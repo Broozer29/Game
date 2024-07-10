@@ -1,6 +1,6 @@
 package game.movement;
 
-import game.objects.GameObject;
+import game.gameobjects.GameObject;
 import game.util.OutOfBoundsCalculator;
 
 public class SpriteRemover {

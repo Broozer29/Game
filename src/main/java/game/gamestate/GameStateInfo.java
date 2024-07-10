@@ -62,7 +62,7 @@ public class GameStateInfo {
 
         double timeInMinutes = gameSeconds / 60.0f; // Convert seconds to minutes
 
-        difficultyCoefficient = (float) ((playerFactor + timeInMinutes * timeFactor) * stageFactor) + 3;
+        difficultyCoefficient = (float) ((playerFactor + timeInMinutes * timeFactor) * stageFactor);
         updateMonsterLevel();
     }
 

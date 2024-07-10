@@ -2,7 +2,7 @@ package game.movement;
 
 import java.util.List;
 
-import game.objects.GameObject;
+import game.gameobjects.GameObject;
 
 public class Path {
 	private List<Point> waypoints;

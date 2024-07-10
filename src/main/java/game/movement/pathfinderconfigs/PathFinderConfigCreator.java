@@ -1,9 +1,8 @@
 package game.movement.pathfinderconfigs;
 
 import game.movement.MovementConfiguration;
-import game.movement.Point;
 import game.movement.pathfinders.*;
-import game.objects.GameObject;
+import game.gameobjects.GameObject;
 
 public class PathFinderConfigCreator {
 

@@ -10,11 +10,10 @@ import game.movement.Direction;
 import game.movement.MovementConfiguration;
 import game.movement.pathfinderconfigs.MovementPatternSize;
 import game.movement.pathfinders.HomingPathFinder;
-import game.movement.pathfinders.PathFinder;
-import game.objects.GameObject;
-import game.objects.missiles.*;
-import game.objects.player.PlayerManager;
-import game.objects.player.PlayerStats;
+import game.gameobjects.GameObject;
+import game.gameobjects.missiles.*;
+import game.gameobjects.player.PlayerManager;
+import game.gameobjects.player.PlayerStats;
 import visualobjects.SpriteConfigurations.SpriteConfiguration;
 
 import java.util.Random;
@@ -94,7 +93,7 @@ public class PlasmaLauncher extends Item {
 
         MissileConfiguration missileConfiguration = MissileCreator.getInstance().createMissileConfiguration(MissileEnums.PlasmaLauncherMissile,
                 maxHitPoints, maxShields, deathSound, damage, impactType, isFriendly, allowedToDealDamage,
-                objectType, false, false, false);
+                objectType, false, false, false, false);
         return missileConfiguration;
     }
 

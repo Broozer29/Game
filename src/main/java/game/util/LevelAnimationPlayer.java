@@ -2,9 +2,9 @@ package game.util;
 
 import VisualAndAudioData.image.ImageEnums;
 import game.managers.AnimationManager;
-import game.objects.GameObject;
-import game.objects.player.PlayerManager;
-import game.objects.player.spaceship.SpaceShip;
+import game.gameobjects.GameObject;
+import game.gameobjects.player.PlayerManager;
+import game.gameobjects.player.spaceship.SpaceShip;
 import visualobjects.SpriteAnimation;
 import visualobjects.SpriteConfigurations.SpriteAnimationConfiguration;
 import visualobjects.SpriteConfigurations.SpriteConfiguration;

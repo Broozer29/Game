@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 public class PlayerInventory {
     private static PlayerInventory instance = new PlayerInventory();
     private Map<ItemEnums, Item> items = new HashMap<>();
-    private float cashMoney = 2000;
+    private float cashMoney = 100;
     private PlayerInventory () {
 //        addItem(ItemEnums.DrillerModule);
 //        addItem(ItemEnums.BouncingModuleAddon);

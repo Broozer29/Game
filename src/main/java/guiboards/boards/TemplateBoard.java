@@ -8,8 +8,8 @@ import controllerInput.ConnectedControllers;
 import controllerInput.ControllerInputEnums;
 import controllerInput.ControllerInputReader;
 import game.managers.AnimationManager;
-import game.objects.background.BackgroundManager;
-import game.objects.background.BackgroundObject;
+import game.gameobjects.background.BackgroundManager;
+import game.gameobjects.background.BackgroundObject;
 import VisualAndAudioData.DataClass;
 import guiboards.MenuCursor;
 import guiboards.boardEnums.MenuFunctionEnums;
@@ -66,7 +66,7 @@ public class TemplateBoard extends JPanel implements ActionListener {
 			controllerInputReader = controllers.getFirstController();
 		}
 
-		timer = new Timer(16, e -> repaint());
+		timer = new Timer(16, e ->  repaint(0, 0, DataClass.getInstance().getWindowWidth(), DataClass.getInstance().getWindowHeight()));
 		timer.start();
 	}
 

@@ -3,7 +3,6 @@ package game.managers;
 import java.util.ArrayList;
 import java.util.List;
 
-import game.objects.enemies.Enemy;
 import VisualAndAudioData.image.ImageEnums;
 import visualobjects.SpriteConfigurations.SpriteAnimationConfiguration;
 import visualobjects.SpriteConfigurations.SpriteConfiguration;

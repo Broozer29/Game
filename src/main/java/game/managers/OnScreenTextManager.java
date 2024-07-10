@@ -1,5 +1,6 @@
 package game.managers;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,6 +38,14 @@ public class OnScreenTextManager {
 
 	public void addText(String text, int xCoordinate, int yCoordinate){
 		OnScreenText onScreenText = new OnScreenText(xCoordinate, yCoordinate, text);
+		this.onScreenTexts.add(onScreenText);
+	}
+
+	public void addDamageNumberText(float damageNumber, int xCoordinate, int yCoordinate){
+		OnScreenText onScreenText = new OnScreenText(xCoordinate, yCoordinate, String.valueOf(Math.round(damageNumber)));
+		onScreenText.setTransparancyStepSize(0.02f);
+		onScreenText.setFontSize(14);
+		onScreenText.setColor(Color.YELLOW);
 		this.onScreenTexts.add(onScreenText);
 	}
 	

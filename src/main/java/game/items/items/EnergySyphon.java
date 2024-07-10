@@ -6,7 +6,7 @@ import game.items.effects.EffectIdentifiers;
 import game.items.effects.effectimplementations.HealPlayerOnDeath;
 import game.items.enums.ItemApplicationEnum;
 import game.items.enums.ItemEnums;
-import game.objects.GameObject;
+import game.gameobjects.GameObject;
 
 public class EnergySyphon extends Item {
 

@@ -4,9 +4,9 @@ import game.items.Item;
 import game.items.effects.EffectActivationTypes;
 import game.items.enums.ItemApplicationEnum;
 import game.items.enums.ItemEnums;
-import game.objects.GameObject;
-import game.objects.enemies.Enemy;
-import game.objects.enemies.enums.EnemyCategory;
+import game.gameobjects.GameObject;
+import game.gameobjects.enemies.Enemy;
+import game.gameobjects.enemies.enums.EnemyCategory;
 
 public class ArmorPiercingRounds extends Item {
 

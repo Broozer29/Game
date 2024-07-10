@@ -7,7 +7,6 @@ import java.util.List;
 
 import game.managers.AnimationManager;
 import game.movement.Direction;
-import game.objects.missiles.missiletypes.BarrierProjectile;
 import visualobjects.SpriteConfigurations.SpriteAnimationConfiguration;
 import VisualAndAudioData.image.ImageCropper;
 import VisualAndAudioData.image.ImageDatabase;

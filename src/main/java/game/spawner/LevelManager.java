@@ -4,16 +4,17 @@ import java.io.IOException;
 import java.util.List;
 
 import VisualAndAudioData.audio.enums.LevelSongs;
-import game.UI.GameUIManager;
+import VisualAndAudioData.image.ImageEnums;
+import game.UI.GameUICreator;
 import game.managers.ShopManager;
 import game.movement.Direction;
 import game.movement.pathfinderconfigs.MovementPatternSize;
-import game.movement.pathfinders.RegularPathFinder;
-import game.objects.enemies.*;
-import game.objects.enemies.enums.EnemyEnums;
+import game.gameobjects.enemies.*;
+import game.gameobjects.enemies.enums.EnemyEnums;
 import game.gamestate.GameStateInfo;
 import game.gamestate.GameStatusEnums;
 import VisualAndAudioData.audio.AudioManager;
+import game.movement.pathfinders.RegularPathFinder;
 import game.spawner.directors.DirectorManager;
 import game.spawner.enums.LevelDifficulty;
 import game.spawner.enums.LevelLength;
@@ -64,7 +65,7 @@ public class LevelManager {
 
         //NextLevelPortal spawns in friendlymanager, now we wait for the player to enter the portal to set it to Level_Completed
         if (gameState.getGameState() == GameStatusEnums.Level_Completed) {
-            gameState.setGameState(GameStatusEnums.Transitioning_To_Next_Level);
+            gameState.setGameState(GameStatusEnums.Show_Level_Score_Card);
             this.currentLevelLength = null;
             this.currentLevelDifficulty = null;
             this.currentDifficultyCoeff = 2;
@@ -88,6 +89,7 @@ public class LevelManager {
 
         AudioManager audioManager = AudioManager.getInstance();
         try {
+            audioManager.testMode = true;
             audioManager.playRandomBackgroundMusic(currentLevelDifficulty, currentLevelLength);
             this.currentLevelSong = audioManager.getCurrentSong();
         } catch (UnsupportedAudioFileException | IOException e) {
@@ -95,7 +97,7 @@ public class LevelManager {
         }
 
         currentDifficultyCoeff = LevelSongs.getDifficultyScore(currentLevelDifficulty, currentLevelLength);
-        GameUIManager.getInstance().createDifficultyWings();
+        GameUICreator.getInstance().createDifficultyWings();
 
 
         gameState.setGameState(GameStatusEnums.Playing);
@@ -109,7 +111,7 @@ public class LevelManager {
 //        Director testDirector = DirectorManager.getInstance().getTestDirector();
 //        testDirector.spawnRegularFormation(SpawnFormationEnums.V, EnemyEnums.Scout);
 
-        EnemyEnums enemyType = EnemyEnums.Bulldozer;
+        EnemyEnums enemyType = EnemyEnums.Scout;
         Enemy enemy = EnemyCreator.createEnemy(enemyType, 1000, 100, Direction.LEFT, enemyType.getDefaultScale()
                 , enemyType.getMovementSpeed(), enemyType.getMovementSpeed(), MovementPatternSize.SMALL, enemyType.isBoxCollision());
 //        enemy.getMovementConfiguration().setBoardBlockToHoverIn(5);
@@ -120,15 +122,15 @@ public class LevelManager {
 //        enemy.getAnimation().changeImagetype(ImageEnums.Scout);
         EnemyManager.getInstance().addEnemy(enemy);
 //
-//        EnemyEnums enemyType2 = EnemyEnums.Energizer;
-//        Enemy enemy2 = EnemyCreator.createEnemy(enemyType2, 800, 600, Direction.LEFT, enemyType2.getDefaultScale()
-//                , enemyType2.getMovementSpeed(), enemyType2.getMovementSpeed(), MovementPatternSize.SMALL, enemyType2.isBoxCollision());
-////        enemy2.getMovementConfiguration().setBoardBlockToHoverIn(5);
-//        enemy2.getMovementConfiguration().setPathFinder(new RegularPathFinder());
+        EnemyEnums enemyType2 = EnemyEnums.Seeker;
+        Enemy enemy2 = EnemyCreator.createEnemy(enemyType2, 800, 600, Direction.LEFT, enemyType2.getDefaultScale()
+                , enemyType2.getMovementSpeed(), enemyType2.getMovementSpeed(), MovementPatternSize.SMALL, enemyType2.isBoxCollision());
+//        enemy2.getMovementConfiguration().setBoardBlockToHoverIn(5);
+        enemy2.getMovementConfiguration().setPathFinder(new RegularPathFinder());
 //        enemy2.setAllowedVisualsToRotate(false);
-//        enemy2.getMovementConfiguration().setXMovementSpeed(0);
-//        enemy2.getMovementConfiguration().setYMovementSpeed(0);
-//        EnemyManager.getInstance().addEnemy(enemy2);
+        enemy2.getMovementConfiguration().setXMovementSpeed(0);
+        enemy2.getMovementConfiguration().setYMovementSpeed(0);
+        EnemyManager.getInstance().addEnemy(enemy2);
 //
 //
 //        Enemy enemy3 = EnemyCreator.createEnemy(EnemyEnums.Scout, 500, 200, Direction.LEFT, 1
@@ -152,31 +154,35 @@ public class LevelManager {
             xCoordinate = coordinatesList.get(0);
             yCoordinate = coordinatesList.get(1);
 
-            Enemy enemy = EnemyCreator.createEnemy(enemyType, xCoordinate, yCoordinate, direction, scale, xMovementSpeed, yMovementSpeed, MovementPatternSize.SMALL, boxCollision);
-            if (validCoordinates(enemy)) {
-                enemiesSpawned++;
+            if (validCoordinates(xCoordinate, yCoordinate, enemyType, scale)) {
+                Enemy enemy = EnemyCreator.createEnemy(enemyType, xCoordinate, yCoordinate, direction, scale, xMovementSpeed, yMovementSpeed, MovementPatternSize.SMALL, boxCollision);
                 enemyManager.addEnemy(enemy);
+                enemiesSpawned++;
             }
         } else {
-            Enemy enemy = EnemyCreator.createEnemy(enemyType, xCoordinate, yCoordinate, direction, scale, xMovementSpeed, yMovementSpeed, MovementPatternSize.SMALL, boxCollision);
-            enemy.setCenterCoordinates(xCoordinate, yCoordinate);
-            enemy.resetMovementPath();
-            if (validCoordinates(enemy)) {
-                enemiesSpawned++;
+
+            if (validCoordinates(xCoordinate, yCoordinate, enemyType, scale)) {
+                Enemy enemy = EnemyCreator.createEnemy(enemyType, xCoordinate, yCoordinate, direction, scale, xMovementSpeed, yMovementSpeed, MovementPatternSize.SMALL, boxCollision);
+                enemy.setCenterCoordinates(xCoordinate, yCoordinate);
+                enemy.resetMovementPath();
                 enemyManager.addEnemy(enemy);
+                enemiesSpawned++;
             }
         }
     }
 
-    private boolean validCoordinates (Enemy enemy) {
-        if(enemy.getEnemyType().equals(EnemyEnums.CashCarrier)){
+    private boolean validCoordinates (int xCoordinate, int yCoordinate, EnemyEnums enemyType, float scale) {
+        if (enemyType.equals(EnemyEnums.CashCarrier)) {
             return true;
         }
 
-        if (spawningCoordinator.checkValidEnemyXCoordinate(enemy, enemyManager.getEnemies(), enemy.getXCoordinate(),
-                enemy.getWidth())
-                || spawningCoordinator.checkValidEnemyYCoordinate(enemy, enemyManager.getEnemies(),
-                enemy.getYCoordinate(), enemy.getHeight())) {
+        int actualWidth = Math.round(enemyType.getBaseWidth() * scale);
+        int actualHeight = Math.round(enemyType.getBaseHeight() * scale);
+
+        if (spawningCoordinator.checkValidEnemyXCoordinate(enemyManager.getEnemies(), xCoordinate,
+                actualWidth)
+                || spawningCoordinator.checkValidEnemyYCoordinate(enemyManager.getEnemies(),
+                yCoordinate, actualHeight)) {
             return true;
         }
         return false;

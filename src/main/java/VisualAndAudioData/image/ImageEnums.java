@@ -1,14 +1,14 @@
 package VisualAndAudioData.image;
 
-import game.items.items.CannisterOfGasoline;
-import game.objects.enemies.enemytypes.*;
-
-import java.awt.*;
+import game.gameobjects.enemies.enemytypes.Flamer;
+import game.gameobjects.enemies.enemytypes.Seeker;
+import game.gameobjects.friendlies.Drones.Drone;
+import game.gameobjects.missiles.missiletypes.BarrierProjectile;
 
 public enum ImageEnums {
 
     //// Menu Buttons
-    Start_Game, User_One, User_Two, User_Three, Select_User_Menu, Test_Image, User_Menu_To_Main_Menu, Title_Image,
+    Start_Game, User_One, User_Two, User_Three, Select_User_Menu, Test_Image, User_Menu_To_Main_Menu, Title_Image, ProgressBar, ProgressBarFilling,
 
     //// Animations
     Impact_Explosion_One, Player_Engine, Destroyed_Explosion, Destroyed_Explosion_Right, Destroyed_Explosion_Left,
@@ -22,7 +22,7 @@ public enum ImageEnums {
     RotatingBoxes, RotatingCones, GreenEnergyOrb, PurpleEnergyBlocks, Fireshield, EnergyFlower, PurpleEnergyBarrier, RedHole, CrossingEnergyBeams,
     PlasmaCoatedDebuff, GasolineExplosion, GasolineBurning, Healing, StickyDynamiteExplosion, MoneyPrinter, StickyDynamite,
     BarrierProjectile, BarrierProjectileDestruction, LightningProjectile, SuperChargedBuff, LightningOrb, Explosion2, LaserBulletDestruction,
-    LightningOrbDestruction, LevelUpAnimation, CirclingRings, SpiralingGreenEnergy,
+    LightningOrbDestruction, LevelUpAnimation, CirclingRings, SpiralingGreenEnergy,GreenEnergyOrb2Looping,GreenEnergyOrb2,
 
     //// Background Objects
     Moon, Lava_Planet, Planet_One, Planet_Two, Planet_Three, Mars_Planet, Star, Parallex_1, Parallex_2, Parallex_3,
@@ -40,7 +40,7 @@ public enum ImageEnums {
     PlasmaLauncherMissile, DestructableOrbitCenterMissile,
 
     // Missile Images
-    Player_Laserbeam, Alien_Laserbeam, LaserBullet,
+    Player_Laserbeam, Alien_Laserbeam, AlienLaserBeamAnimated, LaserBullet,
 
     // Friendly images
     Player_Spaceship, Player_Spaceship_Model_3,

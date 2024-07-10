@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import game.movement.Direction;
-import game.objects.enemies.enums.EnemyEnums;
-import game.objects.powerups.timers.DeprecatedEnemySpawnTimer;
+import game.gameobjects.enemies.enums.EnemyEnums;
+import game.gameobjects.powerups.timers.DeprecatedEnemySpawnTimer;
 import VisualAndAudioData.audio.enums.AudioEnums;
 
 public class BadAppleLevel implements Level{

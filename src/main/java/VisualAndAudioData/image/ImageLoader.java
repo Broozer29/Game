@@ -79,6 +79,10 @@ public class ImageLoader {
                 return "/images/spaceship.png";
             case InformationCard:
                 return "/images/UI/Cards/InformationCard.png";
+            case ProgressBar:
+                return "/images/UI/progressbar.png";
+            case ProgressBarFilling:
+                return "/images/UI/progressbarfilling.png";
             case Player_Laserbeam:
                 return "/images/laserbeam.png";
             case Test_Image:

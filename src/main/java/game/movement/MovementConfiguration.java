@@ -2,7 +2,7 @@ package game.movement;
 
 import game.movement.pathfinderconfigs.MovementPatternSize;
 import game.movement.pathfinders.PathFinder;
-import game.objects.GameObject;
+import game.gameobjects.GameObject;
 
 import java.util.ArrayList;
 import java.util.List;
