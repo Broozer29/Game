@@ -4,27 +4,24 @@ import java.util.ArrayList;
 import java.util.List;
 
 import VisualAndAudioData.DataClass;
+import game.gameobjects.GameObject;
 import game.movement.Direction;
+import game.movement.MovementConfiguration;
 import game.movement.Path;
 import game.movement.Point;
-import game.movement.pathfinderconfigs.PathFinderConfig;
-import game.movement.pathfinderconfigs.StraightLinePathFinderConfig;
 import game.util.OutOfBoundsCalculator;
 
 public class StraightLinePathFinder implements PathFinder {
 
 
     @Override
-    public Path findPath (PathFinderConfig pathFinderConfig) {
-        if (!(pathFinderConfig instanceof StraightLinePathFinderConfig)) {
-            throw new IllegalArgumentException("Expected StraightLinePathFinderConfig");
-        }
+    public Path findPath (GameObject gameObject) {
+        MovementConfiguration config = gameObject.getMovementConfiguration();
 
-        StraightLinePathFinderConfig config = (StraightLinePathFinderConfig) pathFinderConfig;
-        Point start = config.getStart();
-        Point end = config.getEnd();
-        int maxStepSizeX = config.getxMovementSpeed();
-        int maxStepSizeY = config.getyMovementSpeed();
+        Point start = new Point(gameObject.getXCoordinate(), gameObject.getYCoordinate());
+        Point end = config.getDestination();
+        int maxStepSizeX = config.getXMovementSpeed();
+        int maxStepSizeY = config.getYMovementSpeed();
 
         List<Point> pathList = new ArrayList<>();
         pathList.add(start);
@@ -71,7 +68,7 @@ public class StraightLinePathFinder implements PathFinder {
             }
 
         }
-        return new Path(pathList, direction, false, pathFinderConfig.isFriendly());
+        return new Path(pathList, direction);
     }
 
 
@@ -111,14 +108,16 @@ public class StraightLinePathFinder implements PathFinder {
 
 
     @Override
-    public Direction getNextStep (Point currentLocation, Path path, Direction fallbackDirection) {
+    public Direction getNextStep (GameObject gameObject, Direction fallbackDirection) {
         return null;
     }
 
     @Override
-    public boolean shouldRecalculatePath (Path path) {
-        return(path == null || path.getWaypoints().isEmpty());
+    public boolean shouldRecalculatePath (GameObject gameObject) {
+        MovementConfiguration configuration = gameObject.getMovementConfiguration();
+        return(configuration.getCurrentPath() == null || configuration.getCurrentPath().getWaypoints().isEmpty());
     }
+
     @Override
     public Point calculateInitialEndpoint (Point start, Direction rotation, boolean friendly) {
         int endXCoordinate = 0;

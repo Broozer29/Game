@@ -12,7 +12,7 @@ public enum EnemyEnums {
             ImageEnums.Alien_Bomb, ImageEnums.Alien_Bomb_Explosion, 3, EnemyCategory.Basic, false, 0, 0,
             2, 0, 1, 1, 25, 15),
     Seeker(100, 0, true,
-            false, AudioEnums.Large_Ship_Destroyed, "Enemy Seeker", 6f,
+            false, AudioEnums.Large_Ship_Destroyed, "Enemy Seeker", 5f,
             ImageEnums.Seeker, ImageEnums.Explosion2, 50, EnemyCategory.Mercenary, false, 10, 1,
             4, 0.5f, 1, 1, 75, 29),
     Tazer(100, 0, true,

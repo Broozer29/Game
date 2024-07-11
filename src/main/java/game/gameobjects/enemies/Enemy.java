@@ -118,7 +118,8 @@ public class Enemy extends GameObject {
         if (this.getMissileTypePathFinders() == PathFinderEnums.Homing
                 || this.getMissileTypePathFinders() == PathFinderEnums.StraightLine) {
             // Rotate towards the player, assuming these are only used for enemies that aim
-            Point point = new Point(PlayerManager.getInstance().getSpaceship().getCenterXCoordinate(),
+            Point point = new Point(
+                    PlayerManager.getInstance().getSpaceship().getCenterXCoordinate(),
                     PlayerManager.getInstance().getSpaceship().getCenterYCoordinate());
             rotateObjectTowardsPoint(point, true);
             updateChargingAttackAnimationCoordination();
@@ -183,7 +184,6 @@ public class Enemy extends GameObject {
             this.movementConfiguration.deleteConfiguration();
         }
         this.movementConfiguration = null;
-        this.movementTracker = null;
         this.ownerOrCreator = null;
         this.visible = false;
     }

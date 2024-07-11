@@ -1,5 +1,6 @@
 package game.gameobjects;
 
+import game.gameobjects.missiles.missiletypes.BarrierProjectile;
 import game.gamestate.GameStateInfo;
 import game.items.Item;
 import game.items.PlayerInventory;
@@ -15,10 +16,7 @@ import VisualAndAudioData.audio.AudioManager;
 import VisualAndAudioData.image.ImageResizer;
 import VisualAndAudioData.image.ImageRotator;
 import game.items.effects.EffectInterface;
-import game.gameobjects.enemies.Enemy;
-import game.gameobjects.enemies.enums.EnemyEnums;
 import game.gameobjects.missiles.specialAttacks.ElectroShred;
-import game.gameobjects.player.PlayerManager;
 import game.gameobjects.player.PlayerStats;
 import game.util.ArmorCalculator;
 import game.util.BoardBlockUpdater;
@@ -76,7 +74,6 @@ public class GameObject extends Sprite {
     protected GameObject objectToFollow;
     protected MovementConfiguration movementConfiguration;
 
-    protected MovementTracker movementTracker;
 
     protected int lastBoardBlock;
     protected Point currentLocation;
@@ -132,7 +129,6 @@ public class GameObject extends Sprite {
         }
 
         this.visible = true;
-        this.movementTracker = new MovementTracker();
         this.currentBoardBlock = BoardBlockUpdater.getBoardBlock(xCoordinate);
         this.allowedToMove = true;
         this.allowedVisualsToRotate = true;
@@ -303,7 +299,6 @@ public class GameObject extends Sprite {
             this.movementConfiguration.deleteConfiguration();
         }
         this.movementConfiguration = null;
-        this.movementTracker = null;
         this.ownerOrCreator = null;
 
         this.visible = false;
@@ -517,6 +512,7 @@ public class GameObject extends Sprite {
         if(!allowedVisualsToRotate){
             return;
         }
+
         double calculatedAngle = ImageRotator.getInstance().calculateAngle(this.getCenterXCoordinate(), this.getCenterYCoordinate(), targetXCoordinate, targetYCoordinate);
         rotateObjectTowardsAngle(calculatedAngle, crop);
     }
@@ -539,6 +535,75 @@ public class GameObject extends Sprite {
         if (sprite != null) {
             sprite.rotateAnimation(direction, crop);
         }
+    }
+
+    public void rotateAfterMovement () {
+        updateChargingAttackAnimationCoordination();
+        if(!this.allowedVisualsToRotate){
+            return;
+        }
+        //Rotate towards the destination if one is found, else rotate towards its rotation enum value
+        if (!movementConfiguration.getCurrentPath().getWaypoints().isEmpty()) {
+            rotateObjectTowardsDestination(true);
+            setAllowedVisualsToRotate(false);
+        } else {
+            rotateObjectTowardsRotation(true);
+            setAllowedVisualsToRotate(false);
+        }
+    }
+
+    public void rotateObjectTowardsDestination (boolean crop) {
+        if(!this.isAllowedVisualsToRotate()){
+            return;
+        }
+
+        Point destination = null;
+
+        if(movementConfiguration.getCurrentPath() != null && !movementConfiguration.getCurrentPath().getWaypoints().isEmpty()){
+            destination = movementConfiguration.getCurrentPath().getWaypoints().get(movementConfiguration.getCurrentPath().getWaypoints().size() - 1);
+        } else if(movementConfiguration.getDestination() != null){
+            destination = movementConfiguration.getDestination();
+        }
+
+        destination = adjustDestinationForRotationUsingDimensions(this, destination);
+        this.rotateGameObjectTowards(destination.getX(), destination.getY(), crop);
+    }
+
+    public void rotateObjectTowardsRotation (boolean crop) {
+        if (this.isAllowedVisualsToRotate() && this.getMovementConfiguration().getRotation() != null) {
+            this.rotateGameObjectTowards(this.getMovementConfiguration().getRotation(), crop);
+        }
+    }
+
+    protected void rotateObjectTowardsPoint (Point point, boolean crop) {
+        if (this.isAllowedVisualsToRotate()) {
+            this.rotateGameObjectTowards(point.getX(), point.getY(), crop);
+        }
+    }
+
+    private Point adjustDestinationForRotationUsingDimensions (GameObject gameObject, Point destination) {
+        int height = 0;
+        int width = 0;
+        if (gameObject.getAnimation() != null) {
+            height = gameObject.getAnimation().getHeight();
+            width = gameObject.getAnimation().getWidth();
+        } else {
+            height = gameObject.getHeight();
+            width = gameObject.getWidth();
+        }
+
+        // Assuming the GameObject's (x, y) represents its top-left corner,
+        // and we need to adjust the destination to point towards the center of the GameObject.
+        // Calculate the center offsets
+        int centerXOffset = width / 2;
+        int centerYOffset = height / 2;
+
+        // Adjust the destination by adding the calculated offsets
+        // This adjustment assumes the destination point is intended to be the center point
+        // of where the GameObject should rotate towards.
+        Point adjustedDestination = new Point(destination.getX() + centerXOffset, destination.getY() + centerYOffset);
+
+        return adjustedDestination;
     }
 
     //*****************SPECIFIC ENEMY BEHAVIOURS*******************************
@@ -849,66 +914,7 @@ public class GameObject extends Sprite {
     }
 
 
-    public void rotateAfterMovement () {
-        updateChargingAttackAnimationCoordination();
-        if(!this.allowedVisualsToRotate){
-            return;
-        }
 
-        //Rotate towards the destination if one is found, else rotate towards its rotation enum value
-        if (!movementConfiguration.getCurrentPath().getWaypoints().isEmpty()) {
-            rotateObjectTowardsDestination(true);
-            setAllowedVisualsToRotate(false);
-        } else {
-            rotateObjectTowardsRotation(true);
-            setAllowedVisualsToRotate(false);
-        }
-    }
-
-    protected void rotateObjectTowardsDestination (boolean crop) {
-        if (this.isAllowedVisualsToRotate() && !movementConfiguration.getCurrentPath().getWaypoints().isEmpty()) {
-            Point destination = movementConfiguration.getCurrentPath().getWaypoints().get(movementConfiguration.getCurrentPath().getWaypoints().size() - 1);
-            destination = adjustDestinationForRotation(this, destination);
-            this.rotateGameObjectTowards(destination.getX(), destination.getY(), crop);
-        }
-    }
-
-    protected void rotateObjectTowardsRotation (boolean crop) {
-        if (this.isAllowedVisualsToRotate() && this.getMovementConfiguration().getRotation() != null) {
-            this.rotateGameObjectTowards(this.getMovementConfiguration().getRotation(), crop);
-        }
-    }
-
-    protected void rotateObjectTowardsPoint (Point point, boolean crop) {
-        if (this.isAllowedVisualsToRotate()) {
-            this.rotateGameObjectTowards(point.getX(), point.getY(), crop);
-        }
-    }
-
-    private Point adjustDestinationForRotation (GameObject gameObject, Point destination) {
-        int height = 0;
-        int width = 0;
-        if (gameObject.getAnimation() != null) {
-            height = gameObject.getAnimation().getHeight();
-            width = gameObject.getAnimation().getWidth();
-        } else {
-            height = gameObject.getHeight();
-            width = gameObject.getWidth();
-        }
-
-        // Assuming the GameObject's (x, y) represents its top-left corner,
-        // and we need to adjust the destination to point towards the center of the GameObject.
-        // Calculate the center offsets
-        int centerXOffset = width / 2;
-        int centerYOffset = height / 2;
-
-        // Adjust the destination by adding the calculated offsets
-        // This adjustment assumes the destination point is intended to be the center point
-        // of where the GameObject should rotate towards.
-        Point adjustedDestination = new Point(destination.getX() + centerXOffset, destination.getY() + centerYOffset);
-
-        return adjustedDestination;
-    }
 
 
     public float getAttackSpeed () {
@@ -1000,11 +1006,11 @@ public class GameObject extends Sprite {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         GameObject that = (GameObject) o;
-        return showHealthBar == that.showHealthBar && allowedToMove == that.allowedToMove && Float.compare(originalScale, that.originalScale) == 0 && Float.compare(currentHitpoints, that.currentHitpoints) == 0 && Float.compare(maxHitPoints, that.maxHitPoints) == 0 && Float.compare(currentShieldPoints, that.currentShieldPoints) == 0 && Float.compare(maxShieldPoints, that.maxShieldPoints) == 0 && Float.compare(baseArmor, that.baseArmor) == 0 && Float.compare(armorBonus, that.armorBonus) == 0 && hasAttack == that.hasAttack && Float.compare(damage, that.damage) == 0 && Float.compare(bonusDamageMultiplier, that.bonusDamageMultiplier) == 0 && allowedToDealDamage == that.allowedToDealDamage && Float.compare(attackSpeed, that.attackSpeed) == 0 && Float.compare(attackSpeedBonusModifier, that.attackSpeedBonusModifier) == 0 && friendly == that.friendly && lastBoardBlock == that.lastBoardBlock && currentBoardBlock == that.currentBoardBlock && boxCollision == that.boxCollision && Double.compare(lastGameSecondDamageTaken, that.lastGameSecondDamageTaken) == 0 && centeredAroundObject == that.centeredAroundObject && movementCounter == that.movementCounter && Float.compare(cashMoneyWorth, that.cashMoneyWorth) == 0 && Double.compare(rotationAngle, that.rotationAngle) == 0 && allowedVisualsToRotate == that.allowedVisualsToRotate && Float.compare(xpOnDeath, that.xpOnDeath) == 0 && Objects.equals(animation, that.animation) && Objects.equals(destructionAnimation, that.destructionAnimation) && Objects.equals(shieldDamagedAnimation, that.shieldDamagedAnimation) && Objects.equals(exhaustAnimation, that.exhaustAnimation) && Objects.equals(chargingUpAttackAnimation, that.chargingUpAttackAnimation) && deathSound == that.deathSound && Objects.equals(objectToCenterAround, that.objectToCenterAround) && Objects.equals(objectToFollow, that.objectToFollow) && Objects.equals(movementConfiguration, that.movementConfiguration) && Objects.equals(movementTracker, that.movementTracker) && Objects.equals(currentLocation, that.currentLocation) && Objects.equals(objectsFollowingThis, that.objectsFollowingThis) && Objects.equals(objectOrbitingThis, that.objectOrbitingThis) && Objects.equals(objectType, that.objectType) && movementRotation == that.movementRotation && Objects.equals(ownerOrCreator, that.ownerOrCreator) && Objects.equals(effects, that.effects) && Objects.equals(effectAnimations, that.effectAnimations);
+        return showHealthBar == that.showHealthBar && allowedToMove == that.allowedToMove && Float.compare(originalScale, that.originalScale) == 0 && Float.compare(currentHitpoints, that.currentHitpoints) == 0 && Float.compare(maxHitPoints, that.maxHitPoints) == 0 && Float.compare(currentShieldPoints, that.currentShieldPoints) == 0 && Float.compare(maxShieldPoints, that.maxShieldPoints) == 0 && Float.compare(baseArmor, that.baseArmor) == 0 && Float.compare(armorBonus, that.armorBonus) == 0 && hasAttack == that.hasAttack && Float.compare(damage, that.damage) == 0 && Float.compare(bonusDamageMultiplier, that.bonusDamageMultiplier) == 0 && allowedToDealDamage == that.allowedToDealDamage && Float.compare(attackSpeed, that.attackSpeed) == 0 && Float.compare(attackSpeedBonusModifier, that.attackSpeedBonusModifier) == 0 && friendly == that.friendly && lastBoardBlock == that.lastBoardBlock && currentBoardBlock == that.currentBoardBlock && boxCollision == that.boxCollision && Double.compare(lastGameSecondDamageTaken, that.lastGameSecondDamageTaken) == 0 && centeredAroundObject == that.centeredAroundObject && movementCounter == that.movementCounter && Float.compare(cashMoneyWorth, that.cashMoneyWorth) == 0 && Double.compare(rotationAngle, that.rotationAngle) == 0 && allowedVisualsToRotate == that.allowedVisualsToRotate && Float.compare(xpOnDeath, that.xpOnDeath) == 0 && Objects.equals(animation, that.animation) && Objects.equals(destructionAnimation, that.destructionAnimation) && Objects.equals(shieldDamagedAnimation, that.shieldDamagedAnimation) && Objects.equals(exhaustAnimation, that.exhaustAnimation) && Objects.equals(chargingUpAttackAnimation, that.chargingUpAttackAnimation) && deathSound == that.deathSound && Objects.equals(objectToCenterAround, that.objectToCenterAround) && Objects.equals(objectToFollow, that.objectToFollow) && Objects.equals(movementConfiguration, that.movementConfiguration) &&  Objects.equals(currentLocation, that.currentLocation) && Objects.equals(objectsFollowingThis, that.objectsFollowingThis) && Objects.equals(objectOrbitingThis, that.objectOrbitingThis) && Objects.equals(objectType, that.objectType) && movementRotation == that.movementRotation && Objects.equals(ownerOrCreator, that.ownerOrCreator) && Objects.equals(effects, that.effects) && Objects.equals(effectAnimations, that.effectAnimations);
     }
 
     @Override
     public int hashCode () {
-        return Objects.hash(animation, destructionAnimation, shieldDamagedAnimation, exhaustAnimation, chargingUpAttackAnimation, showHealthBar, allowedToMove, originalScale, deathSound, currentHitpoints, maxHitPoints, currentShieldPoints, maxShieldPoints, baseArmor, armorBonus, hasAttack, damage, bonusDamageMultiplier, allowedToDealDamage, attackSpeed, attackSpeedBonusModifier, friendly, objectToCenterAround, objectToFollow, movementConfiguration, movementTracker, lastBoardBlock, currentLocation, currentBoardBlock, objectsFollowingThis, objectOrbitingThis, objectType, movementRotation, boxCollision, lastGameSecondDamageTaken, ownerOrCreator, centeredAroundObject, movementCounter, cashMoneyWorth, rotationAngle, allowedVisualsToRotate, effects, effectAnimations, xpOnDeath);
+        return Objects.hash(animation, destructionAnimation, shieldDamagedAnimation, exhaustAnimation, chargingUpAttackAnimation, showHealthBar, allowedToMove, originalScale, deathSound, currentHitpoints, maxHitPoints, currentShieldPoints, maxShieldPoints, baseArmor, armorBonus, hasAttack, damage, bonusDamageMultiplier, allowedToDealDamage, attackSpeed, attackSpeedBonusModifier, friendly, objectToCenterAround, objectToFollow, movementConfiguration, lastBoardBlock, currentLocation, currentBoardBlock, objectsFollowingThis, objectOrbitingThis, objectType, movementRotation, boxCollision, lastGameSecondDamageTaken, ownerOrCreator, centeredAroundObject, movementCounter, cashMoneyWorth, rotationAngle, allowedVisualsToRotate, effects, effectAnimations, xpOnDeath);
     }
 }

@@ -6,7 +6,7 @@ import game.gamestate.GameStateInfo;
 import game.managers.AnimationManager;
 import game.movement.Direction;
 import game.movement.MovementConfiguration;
-import game.movement.pathfinderconfigs.MovementPatternSize;
+import game.movement.deprecatedpathfinderconfigs.MovementPatternSize;
 import game.movement.pathfinders.BouncingPathFinder;
 import game.movement.pathfinders.HoverPathFinder;
 import game.gameobjects.enemies.Enemy;

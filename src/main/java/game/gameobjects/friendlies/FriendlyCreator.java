@@ -3,7 +3,7 @@ package game.gameobjects.friendlies;
 import VisualAndAudioData.image.ImageEnums;
 import game.movement.Direction;
 import game.movement.MovementConfiguration;
-import game.movement.pathfinderconfigs.MovementPatternSize;
+import game.movement.deprecatedpathfinderconfigs.MovementPatternSize;
 import game.movement.pathfinders.OrbitPathFinder;
 import game.movement.pathfinders.PathFinder;
 import game.gameobjects.friendlies.Drones.Drone;

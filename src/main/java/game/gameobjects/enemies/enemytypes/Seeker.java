@@ -6,7 +6,7 @@ import game.managers.AnimationManager;
 import game.movement.MovementConfiguration;
 import game.movement.PathFinderEnums;
 import game.movement.Point;
-import game.movement.pathfinderconfigs.MovementPatternSize;
+import game.movement.deprecatedpathfinderconfigs.MovementPatternSize;
 import game.movement.pathfinders.*;
 import game.gameobjects.enemies.EnemyConfiguration;
 import game.gameobjects.enemies.Enemy;
@@ -70,7 +70,7 @@ public class Seeker extends Enemy {
     private void shootMissile () {
         // The charging up attack animation has finished, create and fire the missile
         //Create the sprite configuration which gets upgraded to spriteanimation if needed by the MissileCreator
-        SpriteConfiguration spriteConfiguration = MissileCreator.getInstance().createMissileSpriteConfig(xCoordinate, yCoordinate, ImageEnums.Seeker_Missile
+        SpriteConfiguration spriteConfiguration = MissileCreator.getInstance().createMissileSpriteConfig(xCoordinate, yCoordinate, ImageEnums.BarrierProjectile
                 , this.scale);
 
 
@@ -101,25 +101,22 @@ public class Seeker extends Enemy {
 
         //get the coordinates for rotation of the missile
         SpaceShip spaceship = PlayerManager.getInstance().getSpaceship();
-        Point rotationCoordinates = new Point(spaceship.getCenterXCoordinate(),
-                spaceship.getCenterYCoordinate());
+        Point rotationCoordinates = new Point(
+                spaceship.getCenterXCoordinate() - missile.getWidth() / 2,
+                spaceship.getCenterYCoordinate() - missile.getHeight() / 2
+        );
 
         // Any visual resizing BEFORE replacing starting coordinates and rotation
 //        missile.setScale(0.3f);
 
-        //Place the missile at the correct location, then rotate it and disable further rotations
+        missile.resetMovementPath();
+
         missile.setCenterCoordinates(chargingUpAttackAnimation.getCenterXCoordinate(), chargingUpAttackAnimation.getCenterYCoordinate());
-        missile.getAnimation().setCenterCoordinates(chargingUpAttackAnimation.getCenterXCoordinate(), chargingUpAttackAnimation.getCenterYCoordinate());
-        missile.rotateGameObjectTowards(rotationCoordinates.getX(), rotationCoordinates.getY(), false);
-        missile.getAnimation().setCenterCoordinates(chargingUpAttackAnimation.getCenterXCoordinate(), chargingUpAttackAnimation.getCenterYCoordinate());
+        missile.getMovementConfiguration().setDestination(rotationCoordinates); // again because reset removes it
+        missile.rotateObjectTowardsDestination(true);
+        missile.setCenterCoordinates(chargingUpAttackAnimation.getCenterXCoordinate(), chargingUpAttackAnimation.getCenterYCoordinate());
         missile.setAllowedVisualsToRotate(false); //Prevent it from being rotated again by the SpriteMover
 
-        //Get the coordinates required for the pathfinders
-        Point movementDestinationCoordinates = new Point(rotationCoordinates.getX() - missile.getWidth() / 2, rotationCoordinates.getY() - missile.getHeight() / 2);
-
-        //Resets the movement configuration and sets the new desination, adjusted for the dimensions of the missile
-        missile.resetMovementPath();
-        missile.getMovementConfiguration().setDestination(movementDestinationCoordinates); // again because reset removes it
         missile.setOwnerOrCreator(this);
 
         //Finalized and ready for addition to the game

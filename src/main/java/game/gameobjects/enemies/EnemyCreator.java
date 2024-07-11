@@ -3,7 +3,7 @@ package game.gameobjects.enemies;
 import game.movement.Direction;
 import game.movement.MovementConfiguration;
 import game.movement.Point;
-import game.movement.pathfinderconfigs.MovementPatternSize;
+import game.movement.deprecatedpathfinderconfigs.MovementPatternSize;
 import game.movement.pathfinders.*;
 import game.gameobjects.enemies.enemytypes.*;
 import VisualAndAudioData.audio.enums.AudioEnums;

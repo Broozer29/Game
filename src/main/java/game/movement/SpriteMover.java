@@ -1,6 +1,5 @@
 package game.movement;
 
-import game.movement.pathfinderconfigs.*;
 import game.movement.pathfinders.*;
 import game.gameobjects.GameObject;
 import game.util.OutOfBoundsCalculator;
@@ -17,11 +16,13 @@ public class SpriteMover {
         return instance;
     }
 
-    private boolean shouldUpdatePathSettings (MovementConfiguration moveConfig) {
+    private boolean shouldUpdatePathSettings (GameObject gameObject) {
+
+        MovementConfiguration moveConfig = gameObject.getMovementConfiguration();
         boolean bool = false;
         bool =
                 moveConfig.getCurrentPath() == null ||
-                        moveConfig.getPathFinder().shouldRecalculatePath(moveConfig.getCurrentPath()) ||
+                        moveConfig.getPathFinder().shouldRecalculatePath(gameObject) ||
                         moveConfig.getXMovementSpeed() != moveConfig.getLastUsedXMovementSpeed() ||
                         moveConfig.getYMovementSpeed() != moveConfig.getLastUsedYMovementSpeed();
         return bool; //This returns TRUE, and thus a new path is generated
@@ -32,7 +33,7 @@ public class SpriteMover {
             moveConfig.setCurrentLocation(gameObject.getCurrentLocation());
         }
 
-        if (shouldUpdatePathSettings(moveConfig)) {
+        if (shouldUpdatePathSettings(gameObject)) {
             updatePath(gameObject, moveConfig);
         }
         if (moveConfig.getPathFinder() instanceof HomingPathFinder) {
@@ -53,8 +54,8 @@ public class SpriteMover {
     }
 
     private void updatePath (GameObject gameObject, MovementConfiguration moveConfig) {
-        PathFinderConfig config = PathFinderConfigCreator.createConfig(gameObject, moveConfig);
-        moveConfig.setCurrentPath(moveConfig.getPathFinder().findPath(config));
+//        PathFinderConfig config = PathFinderConfigCreator.createConfig(gameObject, moveConfig);
+        moveConfig.setCurrentPath(moveConfig.getPathFinder().findPath(gameObject));
         moveConfig.setLastUsedXMovementSpeed(moveConfig.getXMovementSpeed());
         moveConfig.setLastUsedYMovementSpeed(moveConfig.getYMovementSpeed());
     }
@@ -74,7 +75,7 @@ public class SpriteMover {
         // check if the missile has lost lock
         boolean hasPassedPlayerOrNeverHadLock = false;
 
-        if (moveConfig.getPathFinder().shouldRecalculatePath(moveConfig.getCurrentPath())) {
+        if (moveConfig.getPathFinder().shouldRecalculatePath(gameObject)) {
             hasPassedPlayerOrNeverHadLock = true; // if it should recalculate path, it means it lost lock or never had
             moveConfig.getUntrackableObjects().add(moveConfig.getTargetToChase());
         }
@@ -89,8 +90,7 @@ public class SpriteMover {
             // Get the direction of the next step
             HomingPathFinder pathfinder = (HomingPathFinder) moveConfig.getPathFinder();
 
-            Direction nextStep = pathfinder.getNextStep(moveConfig.getCurrentLocation(),
-                    moveConfig.getCurrentPath(), moveConfig.getRotation());
+            Direction nextStep = pathfinder.getNextStep(gameObject, moveConfig.getRotation());
 
 
             // Based on the direction, calculate the next point. Overwrite the regular calculator with homing's specific one

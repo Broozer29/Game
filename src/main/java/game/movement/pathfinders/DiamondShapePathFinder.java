@@ -1,11 +1,11 @@
 package game.movement.pathfinders;
 
 import VisualAndAudioData.DataClass;
+import game.gameobjects.GameObject;
 import game.movement.Direction;
+import game.movement.MovementConfiguration;
 import game.movement.Path;
 import game.movement.Point;
-import game.movement.pathfinderconfigs.DiamondShapePathFinderConfig;
-import game.movement.pathfinderconfigs.PathFinderConfig;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,17 +27,13 @@ public class DiamondShapePathFinder implements PathFinder {
     }
 
     @Override
-    public Path findPath(PathFinderConfig pathFinderConfig) {
-        if (!(pathFinderConfig instanceof DiamondShapePathFinderConfig)) {
-            throw new IllegalArgumentException("Expected DiamondShapePathFinderConfig");
-        }
+    public Path findPath(GameObject gameObject) {
 
-        DiamondShapePathFinderConfig config = (DiamondShapePathFinderConfig) pathFinderConfig;
-        Point start = config.getStart();
-        int xMovementSpeed = 1;
-        int yMovementSpeed = 1;
-        int zigzagWidth = config.getDiamondWidth(); // Use the configured zigzag width
-        int zigzagHeight = config.getDiamondHeight(); // Use the configured zigzag height
+        Point start = new Point(gameObject.getXCoordinate(), gameObject.getYCoordinate());
+        int xMovementSpeed = gameObject.getMovementConfiguration().getXMovementSpeed();
+        int yMovementSpeed = gameObject.getMovementConfiguration().getYMovementSpeed();
+        int zigzagWidth = gameObject.getMovementConfiguration().getDiamondWidth(); // Use the configured zigzag width
+        int zigzagHeight = gameObject.getMovementConfiguration().getDiamondHeight(); // Use the configured zigzag height
 
         List<Point> waypoints = new ArrayList<>();
         Point currentPoint = start;
@@ -69,19 +65,19 @@ public class DiamondShapePathFinder implements PathFinder {
         }
 
         // Create the Path object with the waypoints
-        Path newPath = new Path(waypoints, pathFinderConfig.getMovementDirection(), false, pathFinderConfig.isFriendly());
+        Path newPath = new Path(waypoints, gameObject.getMovementConfiguration().getRotation());
         return newPath;
     }
 
     @Override
-    public Direction getNextStep (Point currentLocation, Path path, Direction fallbackDirection) {
+    public Direction getNextStep (GameObject gameObject, Direction fallbackDirection) {
         //Not needed for ZigZag movement
         return null;
     }
 
-    @Override
-    public boolean shouldRecalculatePath (Path path) {
-        return(path == null || path.getWaypoints().isEmpty());
+    public boolean shouldRecalculatePath (GameObject gameObject) {
+        MovementConfiguration configuration = gameObject.getMovementConfiguration();
+        return(configuration.getCurrentPath() == null || configuration.getCurrentPath().getWaypoints().isEmpty());
     }
 
     @Override

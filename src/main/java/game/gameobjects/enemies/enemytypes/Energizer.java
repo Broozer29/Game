@@ -4,7 +4,7 @@ import VisualAndAudioData.audio.enums.AudioEnums;
 import game.gamestate.GameStateInfo;
 import game.managers.AnimationManager;
 import game.movement.MovementConfiguration;
-import game.movement.pathfinderconfigs.MovementPatternSize;
+import game.movement.deprecatedpathfinderconfigs.MovementPatternSize;
 import game.movement.pathfinders.HoverPathFinder;
 import game.movement.pathfinders.PathFinder;
 import game.movement.pathfinders.RegularPathFinder;
@@ -87,7 +87,7 @@ public class Energizer extends Enemy {
 		missile.setOwnerOrCreator(this);
 		missile.getAnimation().setAnimationScale(0.3f);
 		missile.setCenterCoordinates(chargingUpAttackAnimation.getCenterXCoordinate(), chargingUpAttackAnimation.getCenterYCoordinate());
-		missile.rotateGameObjectTowards(missile.getMovementConfiguration().getDestination().getX(), missile.getMovementConfiguration().getDestination().getY(), true);
+		missile.rotateObjectTowardsDestination(true);
 		missile.setCenterCoordinates(chargingUpAttackAnimation.getCenterXCoordinate(), chargingUpAttackAnimation.getCenterYCoordinate());
 		missile.setAllowedVisualsToRotate(false);
 		missile.resetMovementPath();

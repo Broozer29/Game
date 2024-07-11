@@ -8,32 +8,32 @@ import game.gameobjects.player.PlayerManager;
 import game.movement.Direction;
 import game.movement.Path;
 import game.movement.Point;
-import game.movement.pathfinderconfigs.HomingPathFinderConfig;
-import game.movement.pathfinderconfigs.PathFinderConfig;
 import game.gameobjects.GameObject;
 import game.gameobjects.enemies.EnemyManager;
 import VisualAndAudioData.DataClass;
 
 public class HomingPathFinder implements PathFinder {
     @Override
-    public Path findPath (PathFinderConfig pathFinderConfig) {
-        if (!(pathFinderConfig instanceof HomingPathFinderConfig)) {
-            throw new IllegalArgumentException("Expected HomingPathFinderConfig");
-        } else {
-            Point start = ((HomingPathFinderConfig) pathFinderConfig).getStart();
-            Direction fallbackDirection = ((HomingPathFinderConfig) pathFinderConfig).getMovementDirection();
-            boolean isHoming = ((HomingPathFinderConfig) pathFinderConfig).isHoming();
-            boolean isFriendly = ((HomingPathFinderConfig) pathFinderConfig).isFriendly();
+    public Path findPath (GameObject gameObject) {
+            Point start = new Point(gameObject.getXCoordinate(), gameObject.getYCoordinate());
+            Direction fallbackDirection = gameObject.getMovementConfiguration().getRotation();
 
             List<Point> waypoints = new ArrayList<>();
             waypoints.add(start);
-            return new Path(waypoints, fallbackDirection, isHoming, isFriendly);
-        }
+            Path path = new Path(waypoints, fallbackDirection);
+            path.setHoming(true);
+            path.setFriendly(gameObject.isFriendly());
+
+            return new Path(waypoints, fallbackDirection);
     }
 
     @Override
-    public Direction getNextStep (Point currentLocation, Path path, Direction fallbackDirection) {
-        if (shouldRecalculatePath(path)) {
+    public Direction getNextStep (GameObject gameObject, Direction fallbackDirection) {
+        Path path = gameObject.getMovementConfiguration().getCurrentPath();
+        Point currentLocation = gameObject.getCurrentLocation();
+
+
+        if (shouldRecalculatePath(gameObject)) {
             return fallbackDirection;
         } else {
             Direction calculatedDirection;
@@ -49,7 +49,13 @@ public class HomingPathFinder implements PathFinder {
         }
     }
 
-    public boolean shouldRecalculatePath (Path currentPath) {
+    public boolean shouldRecalculatePath (GameObject gameObject) {
+        Path currentPath = gameObject.getMovementConfiguration().getCurrentPath();
+
+        if(currentPath == null){
+            return true;
+        }
+
         boolean hasPassed = false;
         if (currentPath.isFriendly() && !EnemyManager.getInstance().enemiesToHomeTo()) {
             hasPassed = hasPassedTarget(currentPath);

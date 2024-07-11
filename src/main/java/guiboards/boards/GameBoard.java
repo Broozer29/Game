@@ -197,7 +197,8 @@ public class GameBoard extends JPanel implements ActionListener {
         } else if (gameState.getGameState() == GameStatusEnums.Dead) {
             drawGameOver(g2d);
         } else if (gameState.getGameState() == GameStatusEnums.Show_Level_Score_Card) {
-
+            gameState.setGameState(GameStatusEnums.Transition_To_Next_Stage);
+            //Temporary, to allow the code to function, implement proper end screen card
         } else if (gameState.getGameState() == GameStatusEnums.Transition_To_Next_Stage) {
             drawZoningOut(g2d);
             goToNextLevel();

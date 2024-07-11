@@ -1,11 +1,11 @@
 package game.movement.pathfinders;
 
+import game.gameobjects.GameObject;
 import game.gamestate.GameStateInfo;
 import game.movement.Direction;
+import game.movement.MovementConfiguration;
 import game.movement.Path;
 import game.movement.Point;
-import game.movement.pathfinderconfigs.HoverPathFinderConfig;
-import game.movement.pathfinderconfigs.PathFinderConfig;
 import game.util.BoardBlockUpdater;
 
 import java.util.ArrayList;
@@ -16,24 +16,22 @@ public class HoverPathFinder implements PathFinder{
     private double gameSecondsSinceEmptyList;
     private static double secondsToHoverStill = 5;
 
-    public Path findPath(PathFinderConfig pathFinderConfig) {
-        if (!(pathFinderConfig instanceof HoverPathFinderConfig)) {
-            throw new IllegalArgumentException("Expected HoverPathFinderConfig");
-        }
+    public Path findPath(GameObject gameObject) {
 
-        HoverPathFinderConfig config = (HoverPathFinderConfig) pathFinderConfig;
-
+        MovementConfiguration config = gameObject.getMovementConfiguration();
         // Generate a random end point within the specified board block
-        Point endPoint = getRandomCoordinateInBlock(config.getBoardBlockToHoverIn(), config.getWidth(), config.getHeight());
+        Point endPoint = getRandomCoordinateInBlock(config.getBoardBlockToHoverIn(), gameObject.getWidth(), gameObject.getHeight());
+        Point start = new Point(gameObject.getXCoordinate(), gameObject.getYCoordinate());
+
 
         // Calculate the path to the randomly chosen end point
-        List<Point> pathList = calculatePath(config.getStart(), endPoint, config.getxMovementSpeed(), config.getyMovementSpeed());
+        List<Point> pathList = calculatePath(start, endPoint, config.getXMovementSpeed(), config.getYMovementSpeed());
 
-        return new Path(pathList, config.getFallbackDirection(), false, config.isFriendly());
+        return new Path(pathList, config.getRotation());
     }
 
     @Override
-    public Direction getNextStep (Point currentLocation, Path path, Direction fallbackDirection) {
+    public Direction getNextStep (GameObject gameObject, Direction fallbackDirection) {
         //Not needed
         return null;
     }
@@ -64,7 +62,10 @@ public class HoverPathFinder implements PathFinder{
     }
 
     @Override
-    public boolean shouldRecalculatePath(Path path) {
+    public boolean shouldRecalculatePath(GameObject gameObject) {
+        Path path = gameObject.getMovementConfiguration().getCurrentPath();
+
+
         if (path == null) {
             // Path is null, should recalculate immediately.
             return true;
@@ -74,12 +75,20 @@ public class HoverPathFinder implements PathFinder{
             if (gameSecondsSinceEmptyList == 0) {
                 // Only set the timestamp if it hasn't been set yet.
                 gameSecondsSinceEmptyList = GameStateInfo.getInstance().getGameSeconds();
+                System.out.println("Rotate towards shooting direction");
+                gameObject.setAllowedVisualsToRotate(true);
+                gameObject.rotateObjectTowardsRotation(true);
+                gameObject.setAllowedVisualsToRotate(false);
+
             }
 
             // Check if 3 seconds have passed since the path became empty.
             if (GameStateInfo.getInstance().getGameSeconds() > gameSecondsSinceEmptyList + secondsToHoverStill) {
                 // After 3 seconds, allow recalculation.
                 gameSecondsSinceEmptyList = 0; // Reset the timer for the next use.
+
+                System.out.println("Set visuals rotate to true");
+                gameObject.setAllowedVisualsToRotate(true);
                 return true;
             }
 

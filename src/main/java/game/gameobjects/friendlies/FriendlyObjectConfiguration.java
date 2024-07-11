@@ -1,7 +1,7 @@
 package game.gameobjects.friendlies;
 
 import game.movement.Direction;
-import game.movement.pathfinderconfigs.MovementPatternSize;
+import game.movement.deprecatedpathfinderconfigs.MovementPatternSize;
 import game.movement.pathfinders.PathFinder;
 
 public class FriendlyObjectConfiguration {

@@ -2,7 +2,7 @@ package game.spawner.directors;
 
 import VisualAndAudioData.DataClass;
 import game.gamestate.GameStateInfo;
-import game.movement.pathfinderconfigs.MovementPatternSize;
+import game.movement.deprecatedpathfinderconfigs.MovementPatternSize;
 import game.gameobjects.enemies.Enemy;
 import game.gameobjects.enemies.EnemyCreator;
 import game.spawner.LevelManager;

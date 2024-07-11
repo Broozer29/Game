@@ -1,4 +1,4 @@
-package game.movement.pathfinderconfigs;
+package game.movement.deprecatedpathfinderconfigs;
 
 public enum MovementPatternSize {
     SMALL(100,100,30,1,70,30),

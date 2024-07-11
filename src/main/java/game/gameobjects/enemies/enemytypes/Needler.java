@@ -66,7 +66,9 @@ public class Needler extends Enemy {
 
 
             SpaceShip spaceship = PlayerManager.getInstance().getSpaceship();
-            Point destination = new Point(spaceship.getCenterXCoordinate() - this.getWidth() / 2, spaceship.getCenterYCoordinate() - this.getHeight() / 2);
+            Point destination = new Point(
+                    spaceship.getCenterXCoordinate() - this.getWidth() / 2,
+                    spaceship.getCenterYCoordinate() - this.getHeight() / 2);
             this.movementConfiguration.setDestination(destination);
             this.movementConfiguration.setPathFinder(new StraightLinePathFinder());
             this.allowedVisualsToRotate = true;

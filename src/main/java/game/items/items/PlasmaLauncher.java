@@ -8,7 +8,7 @@ import game.items.enums.ItemApplicationEnum;
 import game.items.enums.ItemEnums;
 import game.movement.Direction;
 import game.movement.MovementConfiguration;
-import game.movement.pathfinderconfigs.MovementPatternSize;
+import game.movement.deprecatedpathfinderconfigs.MovementPatternSize;
 import game.movement.pathfinders.HomingPathFinder;
 import game.gameobjects.GameObject;
 import game.gameobjects.missiles.*;

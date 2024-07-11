@@ -3,11 +3,11 @@ package game.movement.pathfinders;
 import java.util.ArrayList;
 import java.util.List;
 
+import game.gameobjects.GameObject;
 import game.movement.Direction;
+import game.movement.MovementConfiguration;
 import game.movement.Path;
 import game.movement.Point;
-import game.movement.pathfinderconfigs.PathFinderConfig;
-import game.movement.pathfinderconfigs.RegularPathFinderConfig;
 import VisualAndAudioData.DataClass;
 
 public class RegularPathFinder implements PathFinder {
@@ -23,68 +23,68 @@ public class RegularPathFinder implements PathFinder {
     }
 
     @Override
-    public Path findPath(PathFinderConfig pathFinderConfig) {
-        if (!(pathFinderConfig instanceof RegularPathFinderConfig)) {
-            throw new IllegalArgumentException("Expected RegularPathFinderConfig");
-        } else {
-            RegularPathFinderConfig config = (RegularPathFinderConfig) pathFinderConfig;
-            Point start = config.getStart();
-            Point end = config.getEnd();
-            Direction fallbackDirection = config.getMovementDirection();
-            boolean isFriendly = config.isFriendly();
-            int XStepSize = config.getxMovementSpeed();
-            int YStepSize = config.getyMovementSpeed();
+    public Path findPath (GameObject gameObject) {
 
-            if (end == null) {
-                end = calculateInitialEndpoint(start, fallbackDirection, isFriendly);
-            }
+        Point start = new Point(gameObject.getXCoordinate(), gameObject.getYCoordinate());
+        MovementConfiguration config = gameObject.getMovementConfiguration();
+        Point end = config.getDestination();
+        Direction fallbackDirection = config.getRotation();
+        boolean isFriendly = gameObject.isFriendly();
+        int XStepSize = config.getXMovementSpeed();
+        int YStepSize = config.getYMovementSpeed();
 
-            List<Point> pathList = new ArrayList<>();
-            Point currentPoint = start;
-            pathList.add(start);
-
-            int maxXSteps = XStepSize > 0 ? (DataClass.getInstance().getWindowWidth() / XStepSize) * 2 : 1;
-            int maxYSteps = YStepSize > 0 ? (DataClass.getInstance().getWindowWidth() / YStepSize) * 2 : 1;
-            int maxSteps = Math.max(maxXSteps, maxYSteps);
-
-            int steps = 0;
-            Direction direction = Direction.LEFT;
-            while (steps < maxSteps) {
-                direction = calculateDirection(currentPoint, end);
-                Point nextPoint = stepTowards(currentPoint, direction, XStepSize, YStepSize);
-
-                if (isCloseToDestination(nextPoint, end)) {
-                    pathList.add(nextPoint); // Add the final point if it's close to the destination
-                    break; // Stop the loop if close enough to the end
-                }
-
-                pathList.add(nextPoint);
-                currentPoint = nextPoint;
-                steps++;
-            }
-            return new Path(pathList, fallbackDirection, false, isFriendly);
+        if (end == null) {
+            end = calculateInitialEndpoint(start, fallbackDirection, isFriendly);
         }
+
+        List<Point> pathList = new ArrayList<>();
+        Point currentPoint = start;
+        pathList.add(start);
+
+        int maxXSteps = XStepSize > 0 ? (DataClass.getInstance().getWindowWidth() / XStepSize) * 2 : 1;
+        int maxYSteps = YStepSize > 0 ? (DataClass.getInstance().getWindowWidth() / YStepSize) * 2 : 1;
+        int maxSteps = Math.max(maxXSteps, maxYSteps);
+
+        int steps = 0;
+        Direction direction = Direction.LEFT;
+        while (steps < maxSteps) {
+            direction = calculateDirection(currentPoint, end);
+            Point nextPoint = stepTowards(currentPoint, direction, XStepSize, YStepSize);
+
+            if (isCloseToDestination(nextPoint, end)) {
+                pathList.add(nextPoint); // Add the final point if it's close to the destination
+                break; // Stop the loop if close enough to the end
+            }
+
+            pathList.add(nextPoint);
+            currentPoint = nextPoint;
+            steps++;
+        }
+        return new Path(pathList, fallbackDirection);
     }
 
     // Helper method to determine if two points are close to each other
-    private boolean isCloseToDestination(Point current, Point destination) {
+    private boolean isCloseToDestination (Point current, Point destination) {
         final int proximityThreshold = 2; // Define how close points need to be
         return Math.abs(current.getX() - destination.getX()) <= proximityThreshold &&
                 Math.abs(current.getY() - destination.getY()) <= proximityThreshold;
     }
 
     @Override
-    public Direction getNextStep (Point currentLocation, Path path, Direction fallbackDirection) {
+    public Direction getNextStep (GameObject gameObject, Direction fallbackDirection) {
+        Path path = gameObject.getMovementConfiguration().getCurrentPath();
         if (!path.getWaypoints().isEmpty()) {
-            return calculateDirection(currentLocation, path.getWaypoints().get(0));
+            return calculateDirection(gameObject.getCurrentLocation(), path.getWaypoints().get(0));
         }
         return fallbackDirection;
     }
 
     @Override
-    public boolean shouldRecalculatePath (Path path) {
-        return(path == null || path.getWaypoints().isEmpty());
+    public boolean shouldRecalculatePath (GameObject gameObject) {
+        MovementConfiguration configuration = gameObject.getMovementConfiguration();
+        return(configuration.getCurrentPath() == null || configuration.getCurrentPath().getWaypoints().isEmpty());
     }
+
 
     public Direction calculateDirection (Point start, Point end) {
         int dx = end.getX() - start.getX();
@@ -172,7 +172,7 @@ public class RegularPathFinder implements PathFinder {
                 endXCoordinate = dataClass.getWindowWidth() + 350;
                 break;
             case RIGHT_UP:
-                endYCoordinate = this.playableWindowMinHeight -350;
+                endYCoordinate = this.playableWindowMinHeight - 350;
                 endXCoordinate = dataClass.getWindowWidth() + 350;
                 break;
             case RIGHT_DOWN:
@@ -180,7 +180,7 @@ public class RegularPathFinder implements PathFinder {
                 endXCoordinate = dataClass.getWindowWidth() + 350;
                 break;
             case LEFT_UP:
-                endYCoordinate = this.playableWindowMinHeight -350;
+                endYCoordinate = this.playableWindowMinHeight - 350;
                 endXCoordinate = 0 - 350;
                 break;
             case LEFT_DOWN:

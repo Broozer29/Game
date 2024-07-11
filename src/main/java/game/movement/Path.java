@@ -13,12 +13,10 @@ public class Path {
 	private boolean isFriendly;
 	private GameObject target;
 
-	public Path(List<Point> wayPoints, Direction fallbackDirection, boolean isHoming, boolean isFriendly) {
+	public Path(List<Point> wayPoints, Direction fallbackDirection) {
 		this.waypoints = wayPoints;
 		this.originalDirection = fallbackDirection;
 		this.setFallbackDirection(fallbackDirection);
-		this.setHoming(isHoming);
-		this.setFriendly(isFriendly);
 	}
 
 	public List<Point> getWaypoints() {

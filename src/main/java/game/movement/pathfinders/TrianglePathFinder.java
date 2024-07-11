@@ -1,11 +1,11 @@
 package game.movement.pathfinders;
 
 import VisualAndAudioData.DataClass;
+import game.gameobjects.GameObject;
 import game.movement.Direction;
+import game.movement.MovementConfiguration;
 import game.movement.Path;
 import game.movement.Point;
-import game.movement.pathfinderconfigs.PathFinderConfig;
-import game.movement.pathfinderconfigs.TrianglePathFinderConfig;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,20 +21,17 @@ public class TrianglePathFinder implements PathFinder {
         this.playableWindowMaxHeight = DataClass.getInstance().getPlayableWindowMaxHeight();
     }
     @Override
-    public Path findPath (PathFinderConfig pathFinderConfig) {
-        if (!(pathFinderConfig instanceof TrianglePathFinderConfig)) {
-            throw new IllegalArgumentException("Expected TrianglePathFinderConfig");
-        }
+    public Path findPath (GameObject gameObject) {
 
-        TrianglePathFinderConfig config = (TrianglePathFinderConfig) pathFinderConfig;
-        int xMovementSpeed = config.getxMovementSpeed(); // Horizontal step size
-        int yMovementSpeed = config.getyMovementSpeed(); // Vertical step size
-        Point start = config.getStart();
+        MovementConfiguration config = gameObject.getMovementConfiguration();
+        int xMovementSpeed = config.getXMovementSpeed(); // Horizontal step size
+        int yMovementSpeed = config.getYMovementSpeed(); // Vertical step size
+        Point start = new Point(gameObject.getXCoordinate(), gameObject.getYCoordinate());
 
         List<Point> waypoints = new ArrayList<>();
         waypoints.add(start);
         Point currentPoint = start;
-        Direction primaryDirection = config.getMovementDirection();
+        Direction primaryDirection = config.getRotation();
         Direction[] diagonalDirections = calculateDiagonalDirections(primaryDirection);
 
         // Move left for a fixed number of steps
@@ -53,21 +50,19 @@ public class TrianglePathFinder implements PathFinder {
             waypoints.add(currentPoint);
         }
 
-        return new Path(waypoints, primaryDirection, false, config.isFriendly());
+        return new Path(waypoints, primaryDirection);
     }
 
     @Override
-    public Direction getNextStep (Point currentLocation, Path path, Direction fallbackDirection) {
+    public Direction getNextStep (GameObject gameObject, Direction fallbackDirection) {
         return null;
     }
 
-    @Override
-    public boolean shouldRecalculatePath (Path path) {
-        if (path == null || path.getWaypoints().isEmpty()) {
-            return true;
-        }
-        return false;
+    public boolean shouldRecalculatePath (GameObject gameObject) {
+        MovementConfiguration configuration = gameObject.getMovementConfiguration();
+        return(configuration.getCurrentPath() == null || configuration.getCurrentPath().getWaypoints().isEmpty());
     }
+
 
     @Override
     public Point calculateInitialEndpoint (Point start, Direction rotation, boolean friendly) {

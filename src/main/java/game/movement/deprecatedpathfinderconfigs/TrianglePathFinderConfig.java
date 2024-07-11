@@ -1,4 +1,4 @@
-package game.movement.pathfinderconfigs;
+package game.movement.deprecatedpathfinderconfigs;
 
 import game.movement.Direction;
 import game.movement.MovementConfiguration;

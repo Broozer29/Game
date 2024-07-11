@@ -4,11 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import game.movement.Direction;
+import game.movement.MovementConfiguration;
 import game.movement.Path;
 import game.movement.Point;
-import game.movement.pathfinderconfigs.BouncingPathFinderConfig;
-import game.movement.pathfinderconfigs.PathFinderConfig;
-import game.movement.pathfinderconfigs.RegularPathFinderConfig;
 import VisualAndAudioData.DataClass;
 import game.gameobjects.GameObject;
 
@@ -29,41 +27,35 @@ public class BouncingPathFinder implements PathFinder {
     }
 
     @Override
-    public Path findPath (PathFinderConfig pathFinderConfig) {
-        if (!(pathFinderConfig instanceof BouncingPathFinderConfig)) {
-            throw new IllegalArgumentException("Expected BouncingPathFinderConfig");
-        } else {
+    public Path findPath (GameObject gameObject) {
+            int xCoordinate = gameObject.getXCoordinate();
+            int yCoordinate = gameObject.getYCoordinate();
+            int spriteWidth = gameObject.getWidth();
+            int spriteHeight = gameObject.getHeight();
+            Direction spriteRotation = gameObject.getMovementConfiguration().getRotation();
 
-            int xCoordinate = ((BouncingPathFinderConfig) pathFinderConfig).getXCoordinate();
-            int yCoordinate = ((BouncingPathFinderConfig) pathFinderConfig).getYCoordinate();
-            int spriteWidth = ((BouncingPathFinderConfig) pathFinderConfig).getSpriteWidth();
-            int spriteHeight = ((BouncingPathFinderConfig) pathFinderConfig).getSpriteHeight();
-            Direction spriteRotation = ((BouncingPathFinderConfig) pathFinderConfig).getSpriteDirection();
-
-            Direction newDirection = getNewDirection(((BouncingPathFinderConfig) pathFinderConfig).getSprite(), spriteRotation);
+            Direction newDirection = getNewDirection(gameObject, spriteRotation);
             List<Integer> endCoordinates = getNewEndpointCoordinates(xCoordinate, yCoordinate, spriteWidth, spriteHeight, newDirection);
 
 
             Point newEndpoint = new Point(endCoordinates.get(0), endCoordinates.get(1));
-            RegularPathFinder regPathFinder = new RegularPathFinder();
-            boolean isFriendly = pathFinderConfig.isFriendly();
+            gameObject.getMovementConfiguration().setDestination(newEndpoint);
 
-            RegularPathFinderConfig config = new RegularPathFinderConfig(((BouncingPathFinderConfig) pathFinderConfig).getCurrentLocation(), newEndpoint, ((BouncingPathFinderConfig) pathFinderConfig).getxMovementSpeed(),
-                    ((BouncingPathFinderConfig) pathFinderConfig).getyMovementSpeed(), isFriendly, newDirection);
-            Path newPath = regPathFinder.findPath(config);
+            RegularPathFinder regPathFinder = new RegularPathFinder();
+            Path newPath = regPathFinder.findPath(gameObject);
             return newPath;
-        }
     }
 
     @Override
-    public Direction getNextStep (Point currentLocation, Path path, Direction fallbackDirection) {
+    public Direction getNextStep (GameObject gameObject, Direction fallbackDirection) {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public boolean shouldRecalculatePath (Path path) {
-       return(path == null || path.getWaypoints().isEmpty());
+    public boolean shouldRecalculatePath (GameObject gameObject) {
+        MovementConfiguration configuration = gameObject.getMovementConfiguration();
+        return(configuration.getCurrentPath() == null || configuration.getCurrentPath().getWaypoints().isEmpty());
     }
 
     @Override
@@ -239,32 +231,32 @@ public class BouncingPathFinder implements PathFinder {
         List<Integer> newCoords = new ArrayList<Integer>();
         switch (newDirection) {
             case LEFT:
-                xCoordinate = 0;
+                xCoordinate = 0 - spriteWidth;
                 break;
             case RIGHT:
                 xCoordinate = windowWidth;
                 break;
             case UP:
-                yCoordinate = 0;
+                yCoordinate = 0 - spriteHeight;
                 break;
             case DOWN:
-                yCoordinate = playableWindowMaxHeight - (spriteHeight);
+                yCoordinate = playableWindowMaxHeight + (spriteHeight);
                 break;
             case RIGHT_UP:
                 xCoordinate = windowWidth;
-                yCoordinate = 0;
+                yCoordinate = 0 - spriteHeight;
                 break;
             case RIGHT_DOWN:
                 xCoordinate = windowWidth;
-                yCoordinate = playableWindowMaxHeight - (spriteHeight);
+                yCoordinate = playableWindowMaxHeight + (spriteHeight);
                 break;
             case LEFT_UP:
-                xCoordinate = 0;
-                yCoordinate = 0;
+                xCoordinate = 0 - spriteWidth;
+                yCoordinate = 0 - spriteHeight;
                 break;
             case LEFT_DOWN:
-                xCoordinate = 0;
-                yCoordinate = playableWindowMaxHeight - (spriteHeight);
+                xCoordinate = 0 - spriteWidth;
+                yCoordinate = playableWindowMaxHeight + (spriteHeight);
                 break;
             default:
                 break;

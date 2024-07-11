@@ -7,7 +7,7 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 import game.gamestate.GameStateInfo;
 import game.movement.Direction;
 import game.movement.MovementConfiguration;
-import game.movement.pathfinderconfigs.MovementPatternSize;
+import game.movement.deprecatedpathfinderconfigs.MovementPatternSize;
 import game.movement.pathfinders.HomingPathFinder;
 import game.movement.pathfinders.PathFinder;
 import game.movement.pathfinders.RegularPathFinder;

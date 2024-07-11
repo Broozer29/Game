@@ -3,7 +3,7 @@ package game.gameobjects.enemies.enemytypes;
 import game.movement.Direction;
 import game.movement.MovementConfiguration;
 import game.movement.Point;
-import game.movement.pathfinderconfigs.MovementPatternSize;
+import game.movement.deprecatedpathfinderconfigs.MovementPatternSize;
 import game.movement.pathfinders.OrbitPathFinder;
 import game.movement.pathfinders.PathFinder;
 import game.gameobjects.enemies.EnemyConfiguration;

@@ -4,7 +4,7 @@ import VisualAndAudioData.audio.enums.AudioEnums;
 import game.gamestate.GameStateInfo;
 import game.managers.AnimationManager;
 import game.movement.MovementConfiguration;
-import game.movement.pathfinderconfigs.MovementPatternSize;
+import game.movement.deprecatedpathfinderconfigs.MovementPatternSize;
 import game.movement.pathfinders.PathFinder;
 import game.movement.pathfinders.RegularPathFinder;
 import game.gameobjects.enemies.Enemy;

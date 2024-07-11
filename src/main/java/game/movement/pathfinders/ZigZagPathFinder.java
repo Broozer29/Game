@@ -1,11 +1,11 @@
 package game.movement.pathfinders;
 
 import VisualAndAudioData.DataClass;
+import game.gameobjects.GameObject;
 import game.movement.Direction;
+import game.movement.MovementConfiguration;
 import game.movement.Path;
 import game.movement.Point;
-import game.movement.pathfinderconfigs.PathFinderConfig;
-import game.movement.pathfinderconfigs.ZigZagPathFinderConfig;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,17 +24,14 @@ public class ZigZagPathFinder implements PathFinder {
     }
 
     @Override
-    public Path findPath(PathFinderConfig pathFinderConfig) {
-        if (!(pathFinderConfig instanceof ZigZagPathFinderConfig)) {
-            throw new IllegalArgumentException("Expected ZigZagPathFinderConfig");
-        }
+    public Path findPath(GameObject gameObject) {
 
-        ZigZagPathFinderConfig config = (ZigZagPathFinderConfig) pathFinderConfig;
-        Point start = config.getStart();
-        Direction direction = config.getDirection();
-        int xMovementSpeed = config.getxMovementSpeed();
-        int yMovementSpeed = config.getyMovementSpeed();
-        int stepsBeforeBounce = config.getStepsBeforeBounceToOtherDirection();
+        MovementConfiguration config = gameObject.getMovementConfiguration();
+        Point start = new Point(gameObject.getXCoordinate(), gameObject.getYCoordinate());
+        Direction direction = config.getRotation();
+        int xMovementSpeed = config.getXMovementSpeed();
+        int yMovementSpeed = config.getYMovementSpeed();
+        int stepsBeforeBounce = config.getStepsBeforeBounceInOtherDirection();
 
         List<Point> waypoints = new ArrayList<>();
         Point currentPoint = start;
@@ -57,7 +54,7 @@ public class ZigZagPathFinder implements PathFinder {
             bounces++;
         }
 
-        return new Path(waypoints, direction, false, config.isFriendly());
+        return new Path(waypoints, direction);
     }
 
     private Point stepTowards(Point point, Direction direction, int xStepSize, int yStepSize) {
@@ -78,17 +75,17 @@ public class ZigZagPathFinder implements PathFinder {
     }
 
     @Override
-    public Direction getNextStep(Point currentLocation, Path path, Direction fallbackDirection) {
+    public Direction getNextStep(GameObject gameObject, Direction fallbackDirection) {
         // Implement logic to get the next direction from the current location
         // based on the path waypoints
         return fallbackDirection; // Placeholder
     }
 
-    @Override
-    public boolean shouldRecalculatePath(Path path) {
-        // Return true if path is null, or waypoints are null or empty
-        return path == null || path.getWaypoints() == null || path.getWaypoints().isEmpty();
+    public boolean shouldRecalculatePath (GameObject gameObject) {
+        MovementConfiguration configuration = gameObject.getMovementConfiguration();
+        return(configuration.getCurrentPath() == null || configuration.getCurrentPath().getWaypoints().isEmpty());
     }
+
 
     @Override
     public Point calculateInitialEndpoint (Point start, Direction rotation, boolean friendly) {

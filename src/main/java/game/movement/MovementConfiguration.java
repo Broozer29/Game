@@ -1,6 +1,6 @@
 package game.movement;
 
-import game.movement.pathfinderconfigs.MovementPatternSize;
+import game.movement.deprecatedpathfinderconfigs.MovementPatternSize;
 import game.movement.pathfinders.PathFinder;
 import game.gameobjects.GameObject;
 
@@ -56,6 +56,7 @@ public class MovementConfiguration {
 	private int boardBlockToHoverIn;
 
 	private MovementPatternSize patternSize;
+	private int orbitSpeed;
 
 
 	public MovementConfiguration() {
@@ -98,6 +99,7 @@ public class MovementConfiguration {
 
 		//orbit
 		setOrbitRadius(85);
+		setOrbitSpeed(300);
 	}
 
 
@@ -361,6 +363,14 @@ public class MovementConfiguration {
 
 	public double getOrbitRadius () {
 		return orbitRadius;
+	}
+
+	public int getOrbitSpeed () {
+		return orbitSpeed;
+	}
+
+	public void setOrbitSpeed (int orbitSpeed) {
+		this.orbitSpeed = orbitSpeed;
 	}
 
 	public void setOrbitRadius (double orbitRadius) {

@@ -1,29 +1,38 @@
-package game.movement.pathfinderconfigs;
+package game.movement.deprecatedpathfinderconfigs;
 
 import game.movement.Direction;
 import game.movement.MovementConfiguration;
 import game.movement.Point;
 import game.gameobjects.GameObject;
 
-public class DiamondShapePathFinderConfig implements PathFinderConfig {
+public class StraightLinePathFinderConfig implements PathFinderConfig {
+
     private Point start;
+    private Point end;
     private int xMovementSpeed;
     private int yMovementSpeed;
     private boolean isFriendly;
     private Direction fallbackDirection;
 
-    private int diamondWidth;
-    private int diamondHeight;
+    public StraightLinePathFinderConfig (Point start, Point end, int xMovementSpeed, int yMovementSpeed, boolean isFriendly,
+                                         Direction fallbackDirection) {
+        super();
+        this.start = start;
+        this.end = end;
+        this.xMovementSpeed = xMovementSpeed;
+        this.yMovementSpeed = yMovementSpeed;
+        this.isFriendly = isFriendly;
+        this.fallbackDirection = fallbackDirection;
+    }
 
-    public DiamondShapePathFinderConfig (GameObject gameObject, MovementConfiguration movementConfiguration) {
+    public StraightLinePathFinderConfig (GameObject gameObject, MovementConfiguration movementConfiguration) {
         super();
         this.start = gameObject.getCurrentLocation();
+        this.end = movementConfiguration.getDestination();
         this.xMovementSpeed = movementConfiguration.getXMovementSpeed();
         this.yMovementSpeed = movementConfiguration.getYMovementSpeed();
         this.isFriendly = gameObject.isFriendly();
         this.fallbackDirection = movementConfiguration.getRotation();
-        this.diamondWidth = movementConfiguration.getDiamondWidth();
-        this.diamondHeight = movementConfiguration.getDiamondHeight();
     }
 
     public Point getStart () {
@@ -66,19 +75,11 @@ public class DiamondShapePathFinderConfig implements PathFinderConfig {
         this.fallbackDirection = movementDirection;
     }
 
-    public int getDiamondWidth () {
-        return diamondWidth;
+    public Point getEnd () {
+        return end;
     }
 
-    public void setDiamondWidth (int diamondWidth) {
-        this.diamondWidth = diamondWidth;
-    }
-
-    public int getDiamondHeight () {
-        return diamondHeight;
-    }
-
-    public void setDiamondHeight (int diamondHeight) {
-        this.diamondHeight = diamondHeight;
+    public void setEnd (Point end) {
+        this.end = end;
     }
 }

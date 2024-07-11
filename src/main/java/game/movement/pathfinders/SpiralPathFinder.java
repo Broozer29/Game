@@ -1,11 +1,11 @@
 package game.movement.pathfinders;
 
 import VisualAndAudioData.DataClass;
+import game.gameobjects.GameObject;
 import game.movement.Direction;
+import game.movement.MovementConfiguration;
 import game.movement.Path;
 import game.movement.Point;
-import game.movement.pathfinderconfigs.PathFinderConfig;
-import game.movement.pathfinderconfigs.SpiralPathFinderConfig;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,14 +24,11 @@ public class SpiralPathFinder implements PathFinder {
     }
 
     @Override
-    public Path findPath(PathFinderConfig pathFinderConfig) {
-        if (!(pathFinderConfig instanceof SpiralPathFinderConfig)) {
-            throw new IllegalArgumentException("Expected SpiralPathFinderConfig");
-        }
+    public Path findPath(GameObject gameObject) {
 
-        SpiralPathFinderConfig config = (SpiralPathFinderConfig) pathFinderConfig;
-        Point start = config.getStart();
-        double radius = config.getRadius();
+        MovementConfiguration config = gameObject.getMovementConfiguration();
+        Point start = new Point(gameObject.getXCoordinate(), gameObject.getYCoordinate());
+        double radius = config.getSpiralRadius();
         double radiusIncrement = config.getRadiusIncrement();
         int maxStepDistance = 5; // The maximum distance between points
 
@@ -55,21 +52,23 @@ public class SpiralPathFinder implements PathFinder {
             radius += radiusIncrement; // Increment the radius for the next point
         }
 
-        return new Path(waypoints, Direction.LEFT, false, config.isFriendly());
+        return new Path(waypoints, Direction.LEFT);
     }
 
 
 
 
     @Override
-    public Direction getNextStep (Point currentLocation, Path path, Direction fallbackDirection) {
+    public Direction getNextStep (GameObject gameObject, Direction fallbackDirection) {
         return null;
     }
 
     @Override
-    public boolean shouldRecalculatePath (Path path) {
-        return(path == null || path.getWaypoints().isEmpty());
+    public boolean shouldRecalculatePath (GameObject gameObject) {
+        MovementConfiguration configuration = gameObject.getMovementConfiguration();
+        return(configuration.getCurrentPath() == null || configuration.getCurrentPath().getWaypoints().isEmpty());
     }
+
 
     @Override
     public Point calculateInitialEndpoint (Point start, Direction rotation, boolean friendly) {
