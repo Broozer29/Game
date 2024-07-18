@@ -5,6 +5,7 @@ import java.io.IOException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
 import game.gamestate.GameStateInfo;
+import game.gamestate.GameStatsTracker;
 import game.movement.Direction;
 import game.movement.MovementConfiguration;
 import game.movement.deprecatedpathfinderconfigs.MovementPatternSize;
@@ -106,6 +107,8 @@ public class SpaceShipRegularGun {
         missile.setOwnerOrCreator(spaceship);
         missile.setCenterCoordinates(missile.getCenterXCoordinate(), spaceship.getCenterYCoordinate());
         missile.resetMovementPath();
+
+        GameStatsTracker.getInstance().addShotFired(1);
         this.missileManager.addExistingMissile(missile);
 
     }

@@ -56,6 +56,18 @@ public class ImageDatabase {
     private BufferedImage wideCard;
     private BufferedImage squareCard;
 
+    private BufferedImage sc2GradeBronze;
+    private BufferedImage sc2GradeSilver;
+    private BufferedImage sc2GradeGold;
+    private BufferedImage sc2GradePlatinum;
+    private BufferedImage sc2GradeDiamond;
+    private BufferedImage sc2GradeMaster;
+    private BufferedImage sc2GradeGrandMaster;
+
+    private BufferedImage UIScoreTextImage;
+    private BufferedImage UIYouDied;
+    private BufferedImage UILevelCompleted;
+
     // Game GUI images
     private BufferedImage healthBarImage;
     private BufferedImage shieldBarImage;
@@ -228,6 +240,43 @@ public class ImageDatabase {
 
     private BufferedImage topazGem7;
     private BufferedImage laserBullet;
+
+    private BufferedImage peepoDeepFriedSadge;
+    private BufferedImage peepoFeelsCringeMan;
+    private BufferedImage peepoFeelsRetardedMan;
+    private BufferedImage peepoHmmm;
+    private BufferedImage peepoLookingDown;
+    private BufferedImage peepoMonkaHmmm;
+    private BufferedImage peepoMonkaLaugh;
+    private BufferedImage peepoPauseChamp;
+    private BufferedImage peepoClown;
+    private BufferedImage peepoCringe;
+    private BufferedImage peepoLaugh;
+    private BufferedImage peepoLyingSadge;
+    private BufferedImage peepoOkay;
+    private BufferedImage peepoSad;
+    private BufferedImage peepoSad2;
+    private BufferedImage peepoShrug;
+    private BufferedImage peepoSmadge;
+    private BufferedImage peepoSmokedge;
+    private BufferedImage peepoSmug;
+    private BufferedImage peepoStare;
+    private BufferedImage peepoUhm;
+    private BufferedImage peepoAngy;
+    private BufferedImage peepoBruh;
+    private BufferedImage peepoCoffee;
+    private BufferedImage peepoConfused;
+    private BufferedImage peepoGottem;
+    private BufferedImage peepoHands;
+    private BufferedImage peepoLaugh2;
+    private BufferedImage peepoPointLaugh;
+    private BufferedImage peepoW;
+    private BufferedImage peepoSadClown;
+    private BufferedImage peepoSadge;
+    private BufferedImage peepoSadgeCry;
+    private BufferedImage peepoShruge;
+    private BufferedImage peepoSkillIssue;
+
 
 
     // Lists
@@ -687,6 +736,55 @@ public class ImageDatabase {
 
         this.progressBar = imgLoader.getImage(ImageEnums.ProgressBar);
         this.progressBarFilling = imgLoader.getImage(ImageEnums.ProgressBarFilling);
+
+        this.UILevelCompleted = imgLoader.getImage(ImageEnums.UILevelComplete);
+        this.UIYouDied = imgLoader.getImage(ImageEnums.UIYouDied);
+        this.UIScoreTextImage = imgLoader.getImage(ImageEnums.UIScoreTextCard);
+
+        this.sc2GradeBronze = imgLoader.getImage(ImageEnums.GradeBronze);
+        this.sc2GradeSilver = imgLoader.getImage(ImageEnums.GradeSilver);
+        this.sc2GradeGold = imgLoader.getImage(ImageEnums.GradeGold);
+        this.sc2GradePlatinum = imgLoader.getImage(ImageEnums.GradePlatinum);
+        this.sc2GradeDiamond = imgLoader.getImage(ImageEnums.GradeDiamond);
+        this.sc2GradeMaster = imgLoader.getImage(ImageEnums.GradeMaster);
+        this.sc2GradeGrandMaster = imgLoader.getImage(ImageEnums.GradeGrandMaster);
+
+        this.peepoDeepFriedSadge = imgLoader.getImage(ImageEnums.peepoDeepFriedSadge);
+        this.peepoFeelsCringeMan = imgLoader.getImage(ImageEnums.peepoFeelsCringeMan);
+        this.peepoFeelsRetardedMan = imgLoader.getImage(ImageEnums.peepoFeelsRetardedMan);
+        this.peepoHmmm = imgLoader.getImage(ImageEnums.peepoHmmm);
+        this.peepoLookingDown = imgLoader.getImage(ImageEnums.peepoLookingDown);
+        this.peepoMonkaHmmm = imgLoader.getImage(ImageEnums.peepoMonkaHmmm);
+        this.peepoMonkaLaugh = imgLoader.getImage(ImageEnums.peepoMonkaLaugh);
+        this.peepoPauseChamp = imgLoader.getImage(ImageEnums.peepoPauseChamp);
+        this.peepoClown = imgLoader.getImage(ImageEnums.peepoClown);
+        this.peepoCringe = imgLoader.getImage(ImageEnums.peepoCringe);
+        this.peepoLaugh = imgLoader.getImage(ImageEnums.peepoLaugh);
+        this.peepoLyingSadge = imgLoader.getImage(ImageEnums.peepoLyingSadge);
+        this.peepoOkay = imgLoader.getImage(ImageEnums.peepoOkay);
+        this.peepoSad = imgLoader.getImage(ImageEnums.peepoSad);
+        this.peepoSad2 = imgLoader.getImage(ImageEnums.peepoSad2);
+        this.peepoShrug = imgLoader.getImage(ImageEnums.peepoShrug);
+        this.peepoSmadge = imgLoader.getImage(ImageEnums.peepoSmadge);
+        this.peepoSmokedge = imgLoader.getImage(ImageEnums.peepoSmokedge);
+        this.peepoSmug = imgLoader.getImage(ImageEnums.peepoSmug);
+        this.peepoStare = imgLoader.getImage(ImageEnums.peepoStare);
+        this.peepoUhm = imgLoader.getImage(ImageEnums.peepoUhm);
+        this.peepoAngy = imgLoader.getImage(ImageEnums.peepoAngy);
+        this.peepoBruh = imgLoader.getImage(ImageEnums.peepoBruh);
+        this.peepoCoffee = imgLoader.getImage(ImageEnums.peepoCoffee);
+        this.peepoConfused = imgLoader.getImage(ImageEnums.peepoConfused);
+        this.peepoGottem = imgLoader.getImage(ImageEnums.peepoGottem);
+        this.peepoHands = imgLoader.getImage(ImageEnums.peepoHands);
+        this.peepoLaugh2 = imgLoader.getImage(ImageEnums.peepoLaugh2);
+        this.peepoPointLaugh = imgLoader.getImage(ImageEnums.peepoPointLaugh);
+        this.peepoW = imgLoader.getImage(ImageEnums.peepoW);
+        this.peepoSadClown = imgLoader.getImage(ImageEnums.peepoSadClown);
+        this.peepoSadge = imgLoader.getImage(ImageEnums.peepoSadge);
+        this.peepoSadgeCry = imgLoader.getImage(ImageEnums.peepoSadgeCry);
+        this.peepoShruge = imgLoader.getImage(ImageEnums.peepoShruge);
+        this.peepoSkillIssue = imgLoader.getImage(ImageEnums.peepoSkillIssue);
+
     }
 
     private void initBackgroundObjects () {
@@ -770,6 +868,51 @@ public class ImageDatabase {
 
     public BufferedImage getImage (ImageEnums imageType) {
         switch (imageType) {
+            case peepoDeepFriedSadge: return peepoDeepFriedSadge;
+            case peepoFeelsCringeMan: return peepoFeelsCringeMan;
+            case peepoFeelsRetardedMan: return peepoFeelsRetardedMan;
+            case peepoHmmm: return peepoHmmm;
+            case peepoLookingDown: return peepoLookingDown;
+            case peepoMonkaHmmm: return peepoMonkaHmmm;
+            case peepoMonkaLaugh: return peepoMonkaLaugh;
+            case peepoPauseChamp: return peepoPauseChamp;
+            case peepoClown: return peepoClown;
+            case peepoCringe: return peepoCringe;
+            case peepoLaugh: return peepoLaugh;
+            case peepoLyingSadge: return peepoLyingSadge;
+            case peepoOkay: return peepoOkay;
+            case peepoSad: return peepoSad;
+            case peepoSad2: return peepoSad2;
+            case peepoShrug: return peepoShrug;
+            case peepoSmadge: return peepoSmadge;
+            case peepoSmokedge: return peepoSmokedge;
+            case peepoSmug: return peepoSmug;
+            case peepoStare: return peepoStare;
+            case peepoUhm: return peepoUhm;
+            case peepoAngy: return peepoAngy;
+            case peepoBruh: return peepoBruh;
+            case peepoCoffee: return peepoCoffee;
+            case peepoConfused: return peepoConfused;
+            case peepoGottem: return peepoGottem;
+            case peepoHands: return peepoHands;
+            case peepoLaugh2: return peepoLaugh2;
+            case peepoPointLaugh: return peepoPointLaugh;
+            case peepoW: return peepoW;
+            case peepoSadClown: return peepoSadClown;
+            case peepoSadge: return peepoSadge;
+            case peepoSadgeCry: return peepoSadgeCry;
+            case peepoShruge: return peepoShruge;
+            case peepoSkillIssue: return peepoSkillIssue;
+            case UIScoreTextCard: return UIScoreTextImage;
+            case UIYouDied: return UIYouDied;
+            case UILevelComplete: return UILevelCompleted;
+            case GradeBronze: return sc2GradeBronze;
+            case GradeSilver: return sc2GradeSilver;
+            case GradeGold: return sc2GradeGold;
+            case GradePlatinum: return sc2GradePlatinum;
+            case GradeDiamond: return sc2GradeDiamond;
+            case GradeMaster: return sc2GradeMaster;
+            case GradeGrandMaster: return sc2GradeGrandMaster;
             case ProgressBar: return progressBar;
             case ProgressBarFilling: return progressBarFilling;
             case CashCarrier: return cashCarrier;

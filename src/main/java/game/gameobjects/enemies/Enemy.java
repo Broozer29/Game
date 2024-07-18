@@ -3,8 +3,10 @@ package game.gameobjects.enemies;
 import java.util.Random;
 
 import VisualAndAudioData.image.ImageEnums;
+import game.gameobjects.enemies.enums.EnemyCategory;
 import game.gameobjects.player.PlayerManager;
 import game.gamestate.GameStateInfo;
+import game.gamestate.GameStatsTracker;
 import game.movement.PathFinderEnums;
 import game.spawner.LevelManager;
 import game.util.BoardBlockUpdater;
@@ -96,7 +98,9 @@ public class Enemy extends GameObject {
     }
 
     public void triggerClassSpecificOnDeathTriggers () {
-        LevelManager.getInstance().addEnemyKilled(1);
+        if(!this.enemyType.getEnemyCategory().equals(EnemyCategory.Summon)) {
+            GameStatsTracker.getInstance().addEnemyKilled(1);
+        }
     }
 
     public EnemyEnums getEnemyType () {

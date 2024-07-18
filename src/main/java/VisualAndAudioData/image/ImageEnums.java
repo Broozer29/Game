@@ -1,10 +1,5 @@
 package VisualAndAudioData.image;
 
-import game.gameobjects.enemies.enemytypes.Flamer;
-import game.gameobjects.enemies.enemytypes.Seeker;
-import game.gameobjects.friendlies.Drones.Drone;
-import game.gameobjects.missiles.missiletypes.BarrierProjectile;
-
 public enum ImageEnums {
 
     //// Menu Buttons
@@ -32,7 +27,8 @@ public enum ImageEnums {
     Purple_Nebula_5, Purple_Nebula_6, Purple_Nebula_7, Star_Blue1, Star_Blue2, Star_Blue3, Star_Blue4, Star_Red1, Star_Red2,
     Star_Red3, Star_Red4, Star_Yellow1, Star_Yellow2, Star_Yellow3, Star_Yellow4, Star_Orange1, Star_Orange2, Star_Orange3, Star_Orange4,
     Star_White1, Star_White2, Star_White3, Star_White4, Moon2, Moon3, Moon4, Moon5, GreenPlanet1, GreenPlanet2, BluePlanet1,
-    BluePlanet2, BluePlanet3, BluePlanet4, BluePlanet5, BluePlanet6, CashCarrier, CashExplosion,
+    BluePlanet2, BluePlanet3, BluePlanet4, BluePlanet5, BluePlanet6, CashCarrier, CashExplosion, GradeBronze, GradeSilver, GradeGold, GradePlatinum, GradeDiamond
+    , GradeMaster, GradeGrandMaster, UIScoreTextCard, UIYouDied, UILevelComplete,
     // Missile Animations
     Seeker_Missile, Tazer_Missile, Energizer_Missile, Bulldozer_Missile, Flamer_Missile, Bomba_Missile,
     Seeker_Missile_Explosion, Tazer_Missile_Explosion, Energizer_Missile_Explosion, Bulldozer_Missile_Explosion,
@@ -75,6 +71,14 @@ public enum ImageEnums {
     Starcraft2_Vespene_Siphon, Starcraft2_Vespene_Drone, Starcraft2_Wraith_Cloak, Starcraft2_Yellow_Blink,
     Starcraft2_Heal, Starcraft2_Electric_Field, Starcraft2_Firebat_Weapon, Starcraft2_Advanced_Optics, CannisterOfGasoline,
     Starcraft2_Battery, Starcraft2_Focused_Crystal, Starcraft2_Platinum_Sponge, Starcraft2_Overclock, Starcraft2_Armor_Piercing,
+
+
+    //Peepo's
+    peepoDeepFriedSadge, peepoFeelsCringeMan, peepoFeelsRetardedMan, peepoHmmm, peepoLookingDown, peepoMonkaHmmm, peepoMonkaLaugh,
+    peepoPauseChamp, peepoClown, peepoCringe, peepoLaugh, peepoLyingSadge, peepoOkay, peepoSad, peepoSad2, peepoShrug,
+    peepoSmadge, peepoSmokedge, peepoSmug, peepoStare, peepoUhm, peepoAngy, peepoBruh, peepoCoffee, peepoConfused, peepoGottem,
+    peepoHands, peepoLaugh2, peepoPointLaugh, peepoW, peepoSadClown, peepoSadge, peepoSadgeCry, peepoShruge, peepoSkillIssue,
+
 
     // Letters
     Letter_a, Letter_b, Letter_c, Letter_d, Letter_e, Letter_f, Letter_g, Letter_h, Letter_i, Letter_j, Letter_k,

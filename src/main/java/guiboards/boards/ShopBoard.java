@@ -229,6 +229,12 @@ public class ShopBoard extends JPanel implements ActionListener {
         updateCursor();
     }
 
+    private void rerollShop(){
+        firstRow = shopBoardCreator.createFirstRowOfItems();
+        secondRow = shopBoardCreator.createSecondRowOfItems();
+        thirdRow = shopBoardCreator.createThirdRowOfItems();
+    }
+
 
     private int calculateLevelDifficulty (LevelDifficulty difficulty, LevelLength length) {
         return LevelSongs.getDifficultyScore(difficulty, length);

@@ -88,9 +88,14 @@ public class ShopBoardCreator {
     }
 
     public MenuObjectCollection createNextLevelDifficultyIcon(MenuObjectCollection nextLevelDifficultyBackground){
-        int diffiX = nextLevelDifficultyBackground.getXCoordinate() + nextLevelDifficultyBackground.getMenuImages().get(0).getWidth() / 8;
-        int diffiY = nextLevelDifficultyBackground.getYCoordinate() + nextLevelDifficultyBackground.getMenuImages().get(0).getHeight() / 3;
-        return new MenuObjectCollection(diffiX, diffiY, textScale, "NEXT:", MenuObjectEnums.Text, MenuFunctionEnums.NONE);
+        MenuObjectPart moneyBackgroundCard = nextLevelDifficultyBackground.getMenuImages().get(0);
+        int diffiX = moneyBackgroundCard.getCenterXCoordinate();
+        int diffiY = moneyBackgroundCard.getCenterYCoordinate() ;
+        MenuObjectCollection icon = new MenuObjectCollection(diffiX, diffiY, textScale, "NEXT:", MenuObjectEnums.Text, MenuFunctionEnums.NONE);
+
+
+
+        return icon;
     }
 
     public MenuObjectCollection createDifficultyObject(MenuObjectCollection nextLevelDifficultyBackground){
@@ -203,8 +208,15 @@ public class ShopBoardCreator {
     }
 
     public MenuObjectCollection createNextLevelDifficultyBackground (){
-        return new MenuObjectCollection((boardWidth - (boardWidth / 4)) + boardWidth / 28, fourthRowY / 4,
-                0.4f, null, MenuObjectEnums.Square_Card, MenuFunctionEnums.NONE);
+        int xCoordinate = Math.round(boardWidth - (boardWidth * 0.2f));
+        int yCoordinate = 20;
+
+
+        MenuObjectCollection backgroundCard = new MenuObjectCollection(
+                xCoordinate, yCoordinate, 0.3f, null, MenuObjectEnums.Square_Card, MenuFunctionEnums.NONE);
+
+
+        return backgroundCard;
     }
 
     public MenuObjectCollection createSelectEasyDifficulty(MenuObjectCollection songDifficultyBackgroundCard){

@@ -11,9 +11,11 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.sound.sampled.UnsupportedAudioFileException;
 
+import com.badlogic.gdx.Game;
 import controllerInput.ControllerInputEnums;
 import controllerInput.ControllerInputReader;
 import game.gamestate.GameStateInfo;
+import game.gamestate.GameStatsTracker;
 import game.items.Item;
 import game.items.PlayerInventory;
 import game.items.enums.ItemApplicationEnum;
@@ -174,13 +176,19 @@ public class SpaceShip extends GameObject {
             lastGameSecondDamageTaken = GameStateInfo.getInstance().getGameSeconds();
             this.currentShieldRegenDelayFrame = 0;
 
+            GameStatsTracker.getInstance().addDamageTaken(damageTaken);
+
             // Check if the damage pierces the shield
             float shieldPiercingDamage = currentShieldPoints - damageTaken;
             if (shieldPiercingDamage < 0) {
                 // Apply the damage that pierced through the shield to hit points
                 changeHitPoints(shieldPiercingDamage);
+                //If there were any shields left, show the animation
+                if(currentShieldPoints > 0){
+                    addShieldDamageAnimation();
+                }
                 currentShieldPoints = 0;
-                addShieldDamageAnimation();
+
             } else {
                 // Shield absorbs all damage
                 changeShieldHitpoints(-damageTaken);

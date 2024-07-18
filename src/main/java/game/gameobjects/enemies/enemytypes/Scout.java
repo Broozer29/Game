@@ -5,6 +5,7 @@ import game.gamestate.GameStateInfo;
 import game.managers.AnimationManager;
 import game.movement.MovementConfiguration;
 import game.movement.deprecatedpathfinderconfigs.MovementPatternSize;
+import game.movement.pathfinders.HoverPathFinder;
 import game.movement.pathfinders.PathFinder;
 import game.movement.pathfinders.RegularPathFinder;
 import game.gameobjects.enemies.Enemy;
@@ -26,15 +27,27 @@ public class Scout extends Enemy {
         destroyedExplosionfiguration.getSpriteConfiguration().setImageType(EnemyEnums.Scout.getDestructionImageEnum());
         this.destructionAnimation = new SpriteAnimation(destroyedExplosionfiguration);
         this.destructionAnimation.setAnimationScale(this.scale / 1.5f);
-//        this.attackSpeed = this.enemyType.getAttackSpeed();
-        this.attackSpeed = 1;
+        this.attackSpeed = this.enemyType.getAttackSpeed();
         this.damage = MissileEnums.LaserBullet.getDamage();
+
+
+        if(this.movementConfiguration.getPathFinder() instanceof HoverPathFinder){
+            HoverPathFinder pathFinder = (HoverPathFinder) this.movementConfiguration.getPathFinder();
+            movementConfiguration.setBoardBlockToHoverIn(7);
+            pathFinder.setShouldDecreaseBoardBlock(true);
+            pathFinder.setDecreaseBoardBlockAmountBy(1);
+        }
     }
 
     @Override
     public void fireAction(){
+        if(this.movementConfiguration.getPathFinder() instanceof HoverPathFinder){
+            allowedToFire = this.movementConfiguration.getCurrentPath().getWaypoints().isEmpty();
+        }
+
+
         double currentTime = GameStateInfo.getInstance().getGameSeconds();
-        if (currentTime >= lastAttackTime + this.getAttackSpeed() && WithinVisualBoundariesCalculator.isWithinBoundaries(this)) {
+        if (allowedToFire && currentTime >= lastAttackTime + this.getAttackSpeed() && WithinVisualBoundariesCalculator.isWithinBoundaries(this)) {
             if (!chargingUpAttackAnimation.isPlaying()) {
                 chargingUpAttackAnimation.refreshAnimation();
                 AnimationManager.getInstance().addUpperAnimation(chargingUpAttackAnimation);

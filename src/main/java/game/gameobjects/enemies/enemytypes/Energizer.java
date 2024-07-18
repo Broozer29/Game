@@ -27,7 +27,6 @@ public class Energizer extends Enemy {
 
 		this.damage = MissileEnums.BarrierProjectile.getDamage();
 //		allowedToFire = true;
-		attackSpeed = 1;
 	}
 
 	@Override

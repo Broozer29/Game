@@ -21,6 +21,7 @@ public class AudioManager {
     private static final long COOLDOWN_DURATION = 1000; // Cooldown in milliseconds, adjust as needed
 
     public boolean testMode = false;
+    public boolean muteMode = false;
 
     private AudioManager () {
 
@@ -74,6 +75,9 @@ public class AudioManager {
     public void playBackgroundMusic (AudioEnums audioType, boolean loop) throws UnsupportedAudioFileException, IOException {
         backGroundMusic = audioDatabase.getAudioClip(audioType);
         if (!(backGroundMusic == null)) {
+            if(muteMode){
+                backGroundMusic.muteAudioClip();
+            }
             backGroundMusic.setLoop(loop);
             backGroundMusic.startClip();
         }

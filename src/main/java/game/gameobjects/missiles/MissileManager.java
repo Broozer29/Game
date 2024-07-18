@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import game.gamestate.GameStateInfo;
+import game.gamestate.GameStatsTracker;
 import game.items.PlayerInventory;
 import game.items.effects.EffectActivationTypes;
 import game.managers.AnimationManager;
@@ -215,16 +216,16 @@ public class MissileManager {
                 //Check for all non-friendly missiles in the missile list, this is used by the player
                 for (Missile enemyMissile : missiles) {
                     if (!enemyMissile.isFriendly() && collisionDetector.detectCollision(missile, enemyMissile)) {
-
-
                         if (missile.isDeletesMissiles()) {
                             enemyMissile.destroyMissile();
+                            addHitToStatsTracker(missile);
                         }
 
                         else if(missile.isDestructable()){
                             enemyMissile.dealDamageToGameObject(missile);
                             missile.setShowHealthBar(true);
                             enemyMissile.destroyMissile();
+                            addHitToStatsTracker(missile);
                         }
 
                     }
@@ -233,7 +234,6 @@ public class MissileManager {
                 //Check for all friendly missiles in the missile list, this is used by the enemies
                 for (Missile friendlyMissile : missiles) {
                     if (friendlyMissile.isFriendly() && collisionDetector.detectCollision(missile, friendlyMissile)) {
-
 
                         if (missile.isDeletesMissiles()) {
                             friendlyMissile.destroyMissile();
@@ -247,6 +247,12 @@ public class MissileManager {
                     }
                 }
             }
+        }
+    }
+
+    private void addHitToStatsTracker(Missile missile){
+        if(missile.getOwnerOrCreator().equals(PlayerManager.getInstance().getSpaceship())){
+            GameStatsTracker.getInstance().addShotHit(1);
         }
     }
 

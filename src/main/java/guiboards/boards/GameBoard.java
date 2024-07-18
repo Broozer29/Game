@@ -19,11 +19,14 @@ import java.util.Random;
 
 import javax.swing.*;
 
+import VisualAndAudioData.image.ImageEnums;
 import controllerInput.ConnectedControllers;
 import controllerInput.ControllerInputEnums;
 import game.UI.UIObject;
 import game.gameobjects.GameObject;
 import game.gameobjects.powerups.timers.TimerManager;
+import game.gamestate.GameStatsTracker;
+import game.movement.Direction;
 import game.spawner.directors.DirectorManager;
 import game.gamestate.SpawningMechanic;
 import game.spawner.LevelManager;
@@ -195,10 +198,9 @@ public class GameBoard extends JPanel implements ActionListener {
             playerManager.startDyingScene();
             this.drawTimer.setDelay(75);
         } else if (gameState.getGameState() == GameStatusEnums.Dead) {
-            drawGameOver(g2d);
+            drawEndOfLevelScreen(g2d, false);
         } else if (gameState.getGameState() == GameStatusEnums.Show_Level_Score_Card) {
-            gameState.setGameState(GameStatusEnums.Transition_To_Next_Stage);
-            //Temporary, to allow the code to function, implement proper end screen card
+            drawEndOfLevelScreen(g2d, true);
         } else if (gameState.getGameState() == GameStatusEnums.Transition_To_Next_Stage) {
             drawZoningOut(g2d);
             goToNextLevel();
@@ -228,47 +230,152 @@ public class GameBoard extends JPanel implements ActionListener {
 
             drawTimer.stop();
             BoardManager.getInstance().openShopWindow();
+            GameStatsTracker.getInstance().resetStatsForNextRound();
         }
     }
 
     // Draw the game over screen
-    private void drawGameOver (Graphics2D g) {
-        Font font = new Font("Helvetica", Font.BOLD, 25);
+    private void drawEndOfLevelScreen (Graphics2D g, boolean hasSurvived) {
+        //Create font
+        Font font = new Font("Monospaced", Font.PLAIN, 15);
         FontMetrics fm = getFontMetrics(font);
-
-        UIObject gameOverCard = GameUICreator.getInstance().getGameOverCard();
-
-        g.drawImage(gameOverCard.getImage(), gameOverCard.getXCoordinate(), gameOverCard.getYCoordinate(), this);
         g.setColor(Color.white);
         g.setFont(font);
 
-        g.drawString(msg,
-                (gameOverCard.getCenterXCoordinate() - fm.stringWidth(msg)) / 2,
-                gameOverCard.getCenterYCoordinate() / 2);
+        //Draw the background
+        GameUICreator gameUICreator = GameUICreator.getInstance();
+        UIObject gameOverCard = gameUICreator.getGameOverCard();
+        drawImage(g, gameOverCard);
 
-        if(inputDelay > MOVE_COOLDOWN){
-            g.drawString("Press fire to go back to the main menu",
-                    (gameOverCard.getCenterXCoordinate() - fm.stringWidth(msg)) / 2,
-                    Math.round(gameOverCard.getCenterYCoordinate() * 0.75f));
+
+
+        //Draw the first column of messages
+
+        GameStatsTracker gameStatsTracker = GameStatsTracker.getInstance();
+        int firstRowXCoordinate = Math.round(gameOverCard.getXCoordinate() + (gameOverCard.getWidth() * 0.1f));
+        int firstRowYCoordinate = Math.round(gameOverCard.getYCoordinate() + (gameOverCard.getHeight() * 0.3f));
+        int messageHeight = 24;
+        String  msgToDraw = "Enemies killed this level:             " + gameStatsTracker.getEnemiesKilledThisRound();
+
+
+        if(hasSurvived) {
+            g.drawString(msgToDraw, firstRowXCoordinate, firstRowYCoordinate);
+
+            firstRowYCoordinate += messageHeight;
+            msgToDraw = "Enemies spawned this level:            " + gameStatsTracker.getEnemiesSpawnedThisRound();
+            g.drawString(msgToDraw, firstRowXCoordinate, firstRowYCoordinate);
+
+            firstRowYCoordinate += messageHeight;
+            msgToDraw = "Enemies missed this level:             " + gameStatsTracker.getAmountOfEnemiesMissedThisRound();
+            g.drawString(msgToDraw, firstRowXCoordinate, firstRowYCoordinate);
+
+//            firstRowYCoordinate += messageHeight;
+//            msgToDraw = "Enemy percentage killed: " + gameStatsTracker.getPercentageOfEnemiesKilledThisRound();
+//            g.drawString(msgToDraw, firstRowXCoordinate, firstRowYCoordinate);
+
+            firstRowYCoordinate += messageHeight;
+            msgToDraw = "Minerals acquired this level:          " + gameStatsTracker.getMineralsGainedThisRound();
+            g.drawString(msgToDraw, firstRowXCoordinate, firstRowYCoordinate);
+
+            firstRowYCoordinate += messageHeight;
+            msgToDraw = "Damage taken this round:               " + gameStatsTracker.getDamageTakenThisRound();
+            g.drawString(msgToDraw, firstRowXCoordinate, firstRowYCoordinate);
+
+            firstRowYCoordinate += messageHeight;
+            msgToDraw = "Highest hit so far:                    " + gameStatsTracker.getHighestDamageDealt();
+            g.drawString(msgToDraw, firstRowXCoordinate, firstRowYCoordinate);
+
+
+        } else {
+            msgToDraw = "Total enemies killed:                  " + gameStatsTracker.getEnemiesKilled();
+            g.drawString(msgToDraw, firstRowXCoordinate, firstRowYCoordinate);
+
+            firstRowYCoordinate += messageHeight;
+            msgToDraw = "Total enemies spawned:                 " + gameStatsTracker.getEnemiesSpawned();
+            g.drawString(msgToDraw, firstRowXCoordinate, firstRowYCoordinate);
+
+            firstRowYCoordinate += messageHeight;
+            msgToDraw = "Total spawned enemies killed:          " + gameStatsTracker.getPercentageOfTotalSpawnedEnemiesKilled() + "%";
+            g.drawString(msgToDraw, firstRowXCoordinate, firstRowYCoordinate);
+
+            firstRowYCoordinate += messageHeight;
+            msgToDraw = "Highest damage dealt:                  " + gameStatsTracker.getHighestDamageDealt();
+            g.drawString(msgToDraw, firstRowXCoordinate, firstRowYCoordinate);
+
+            firstRowYCoordinate += messageHeight;
+            msgToDraw = "Total damage done:                     " + gameStatsTracker.getTotalDamageDealt();
+            g.drawString(msgToDraw, firstRowXCoordinate, firstRowYCoordinate);
+
+            firstRowYCoordinate += messageHeight;
+            msgToDraw = "Total damage taken:                    " + gameStatsTracker.getTotalDamageTaken();
+            g.drawString(msgToDraw, firstRowXCoordinate, firstRowYCoordinate);
+
+            firstRowYCoordinate += messageHeight;
+            msgToDraw = "Amount of missiles fired:              " + gameStatsTracker.getShotsFired();
+            g.drawString(msgToDraw, firstRowXCoordinate, firstRowYCoordinate);
+
+            firstRowYCoordinate += messageHeight;
+            msgToDraw = "Amount of missiles that hit a target:  " + gameStatsTracker.getShotsHit();
+            g.drawString(msgToDraw, firstRowXCoordinate, firstRowYCoordinate);
+
+            firstRowYCoordinate += messageHeight;
+            msgToDraw = "Accuracy:                              " + gameStatsTracker.getAccuracy() + "%";
+            g.drawString(msgToDraw, firstRowXCoordinate, firstRowYCoordinate);
+
+            firstRowYCoordinate += messageHeight;
+            msgToDraw = "Amount of minerals collected:          " + gameStatsTracker.getMineralsAcquired();
+            g.drawString(msgToDraw, firstRowXCoordinate, firstRowYCoordinate);
         }
 
-        if (boardManager == null) {
-            boardManager = BoardManager.getInstance();
+
+
+        //Draw the UIObjects
+        UIObject grade = gameUICreator.getGradeSC2iconObject();
+        UIObject gradeText = gameUICreator.getGradeTextObject();
+        UIObject titleText = gameUICreator.getGameOverCardTitle();
+
+
+        if (hasSurvived) {
+            grade.changeImage(gameStatsTracker.getGradeImageTypeByCurrentRoundScore());
+            titleText.changeImage(ImageEnums.UILevelComplete);
+            msgToDraw = "Enemy percentage killed: " + gameStatsTracker.getPercentageOfEnemiesKilledThisRound() + "%";
+            int percentageKilledXCoordinate = gradeText.getXCoordinate() + 10;
+            int percentageKilledYCoordinate = grade.getYCoordinate() + Math.round(grade.getHeight() * 1.2f);
+            g.drawString(msgToDraw, percentageKilledXCoordinate, percentageKilledYCoordinate);
+
+        } else {
+            ImageEnums randomGameOverPeepo = gameUICreator.getRandomGameOverPeepo();
+            if(!grade.getImageEnum().equals(randomGameOverPeepo)) {
+                int oldXCenter = grade.getCenterXCoordinate();
+                int oldYCenter = grade.getCenterYCoordinate();
+                grade.changeImage(randomGameOverPeepo);
+                grade.setImageDimensions(112, 112);
+                grade.rotateImage(Direction.LEFT);
+                grade.setCenterCoordinates(oldXCenter, oldYCenter);
+            }
+
+            if (!titleText.getImageEnum().equals(ImageEnums.UIYouDied)) {
+                int oldXCenter = titleText.getCenterXCoordinate();
+                int oldYCenter = titleText.getCenterYCoordinate();
+                titleText.changeImage(ImageEnums.UIYouDied);
+                titleText.setCenterCoordinates(oldXCenter, oldYCenter);
+            }
+
         }
+        drawImage(g, grade);
+        drawImage(g, gradeText);
+        drawImage(g, titleText);
+
+
+        //Draw the next level/main menu instructions
+        if (inputDelay > MOVE_COOLDOWN) {
+            msgToDraw = "Press fire to go back to the main menu";
+            int goNextYCoordinate = Math.round(gameOverCard.getYCoordinate() + (gameOverCard.getHeight() * 0.9f));
+            g.drawString(msgToDraw, firstRowXCoordinate, goNextYCoordinate);
+        }
+
+        //Reset the drawTimer delay to the regular speed because slow-mo death animation slows it
         drawTimer.setDelay(gameState.getDELAY());
-    }
-
-    private void drawVictoryScreen (Graphics2D g) {
-        String msg = "Yoooo you beat the level";
-        Font font = new Font("Helvetica", Font.BOLD, 25);
-        FontMetrics fm = getFontMetrics(font);
-        g.setColor(Color.white);
-        g.setFont(font);
-        g.drawString(msg, (boardWidth - fm.stringWidth(msg)) / 2, boardHeight / 2);
-
-        if (boardManager == null) {
-            boardManager = BoardManager.getInstance();
-        }
     }
 
     private void drawZoningIn (Graphics2D g2d) {
@@ -461,6 +568,7 @@ public class GameBoard extends JPanel implements ActionListener {
         }
     }
 
+
     private void drawAnimation (Graphics2D g, SpriteAnimation animation) {
         if (animation.getCurrentFrameImage(false) != null) {
             // Save the original composite
@@ -623,12 +731,15 @@ public class GameBoard extends JPanel implements ActionListener {
             friendlyManager.updateGameTick();
             powerUpManager.updateGameTick();
             TimerManager.getInstance().updateTimers();
+
+//            if(gameState.getGameState().equals(GameStatusEnums.Playing)) {
             gameState.addGameTicks(1);
             DirectorManager.getInstance().updateGameTick();
+//            }
             executeControllerInput();
         }
 
-        if (gameState.getGameState() == GameStatusEnums.Dead) {
+        if (gameState.getGameState() == GameStatusEnums.Dead || gameState.getGameState().equals(GameStatusEnums.Show_Level_Score_Card)) {
             inputDelay++;
         }
 
@@ -647,8 +758,6 @@ public class GameBoard extends JPanel implements ActionListener {
 
     // Required to read key presses
     private class TAdapter extends KeyAdapter {
-
-
         @Override
         public void keyReleased (KeyEvent e) {
             playerManager.getSpaceship().keyReleased(e);
@@ -656,10 +765,23 @@ public class GameBoard extends JPanel implements ActionListener {
 
         @Override
         public void keyPressed (KeyEvent e) {
+
+            if(boardManager == null){
+                boardManager = BoardManager.getInstance();
+            }
+
             if (gameState.getGameState() == GameStatusEnums.Dead) {
                 if (inputDelay >= MOVE_COOLDOWN) {
                     boardManager.gameToMainMenu();
                     drawTimer.stop();
+                    inputDelay = 0;
+                    GameStatsTracker.getInstance().resetGameStatsTracker();
+                }
+            }
+            if (gameState.getGameState() == GameStatusEnums.Show_Level_Score_Card) {
+                if (inputDelay >= MOVE_COOLDOWN) {
+                    gameState.setGameState(GameStatusEnums.Transition_To_Next_Stage);
+                    inputDelay = 0;
                 }
             } else {
                 playerManager.getSpaceship().keyPressed(e);
@@ -669,14 +791,26 @@ public class GameBoard extends JPanel implements ActionListener {
     }
 
     public void executeControllerInput () {
+        if(boardManager == null){
+            boardManager = BoardManager.getInstance();
+        }
+
         if (controllers.getFirstController() != null) {
             if (gameState.getGameState() == GameStatusEnums.Dead) {
                 controllers.getFirstController().pollController();
                 if (controllers.getFirstController().isInputActive(ControllerInputEnums.FIRE)) {
                     boardManager.gameToMainMenu();
+                    inputDelay = 0;
+                    GameStatsTracker.getInstance().resetGameStatsTracker();
                     drawTimer.stop();
                 }
 
+            } else if (gameState.getGameState() == GameStatusEnums.Show_Level_Score_Card) {
+                controllers.getFirstController().pollController();
+                if (controllers.getFirstController().isInputActive(ControllerInputEnums.FIRE)) {
+                    gameState.setGameState(GameStatusEnums.Transition_To_Next_Stage);
+                    inputDelay = 0;
+                }
             } else {
                 playerManager.getSpaceship().update(controllers.getFirstController());
             }

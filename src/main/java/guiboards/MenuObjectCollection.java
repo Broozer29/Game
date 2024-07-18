@@ -232,6 +232,7 @@ public class MenuObjectCollection {
         return xCoordinate;
     }
 
+
     public void setXCoordinate (int xCoordinate) {
         this.xCoordinate = xCoordinate;
     }

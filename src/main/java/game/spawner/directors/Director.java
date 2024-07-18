@@ -355,6 +355,8 @@ public class Director {
             case Boss:
                 // Gradually increase weight for stronger enemies as difficulty increases
                 return baseWeight * (1 + difficultyCoefficient * growthRateForStrongEnemies);
+            case Summon:
+                return 0; //Should never be spawned
             default:
                 return baseWeight;  // Default case for any uncategorized types
         }

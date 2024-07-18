@@ -15,6 +15,7 @@ public class PlayerInventory {
     private static PlayerInventory instance = new PlayerInventory();
     private Map<ItemEnums, Item> items = new HashMap<>();
     private float cashMoney = 100;
+    private int rerollTokens = 0;
     private PlayerInventory () {
 //        addItem(ItemEnums.DrillerModule);
 //        addItem(ItemEnums.BouncingModuleAddon);
@@ -24,6 +25,7 @@ public class PlayerInventory {
     public void resetInventory(){
         items.clear();
         cashMoney = 0f;
+        rerollTokens = 0;
     }
 
     public static PlayerInventory getInstance () {
@@ -131,4 +133,11 @@ public class PlayerInventory {
         this.cashMoney -= amount;
     }
 
+    public int getRerollTokens () {
+        return rerollTokens;
+    }
+
+    public void addRerollToken(int amount){
+        this.rerollTokens += amount;
+    }
 }

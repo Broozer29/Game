@@ -70,7 +70,7 @@ public class Seeker extends Enemy {
     private void shootMissile () {
         // The charging up attack animation has finished, create and fire the missile
         //Create the sprite configuration which gets upgraded to spriteanimation if needed by the MissileCreator
-        SpriteConfiguration spriteConfiguration = MissileCreator.getInstance().createMissileSpriteConfig(xCoordinate, yCoordinate, ImageEnums.BarrierProjectile
+        SpriteConfiguration spriteConfiguration = MissileCreator.getInstance().createMissileSpriteConfig(xCoordinate, yCoordinate, ImageEnums.Seeker_Missile
                 , this.scale);
 
 

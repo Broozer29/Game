@@ -11,5 +11,6 @@ public enum MenuFunctionEnums {
 	PurchaseItem,
 	SelectSongDifficulty,
 	SelectSongLength,
+	RerollShop,
 	Open_Inventory;
 }

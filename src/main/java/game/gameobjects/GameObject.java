@@ -2,6 +2,7 @@ package game.gameobjects;
 
 import game.gameobjects.missiles.missiletypes.BarrierProjectile;
 import game.gamestate.GameStateInfo;
+import game.gamestate.GameStatsTracker;
 import game.items.Item;
 import game.items.PlayerInventory;
 import game.items.effects.EffectActivationTypes;
@@ -305,7 +306,6 @@ public class GameObject extends Sprite {
     }
 
     public void takeDamage (float damageTaken, boolean showDamageText) {
-
         if(currentHitpoints <= 0){
             return; //The target is already dead, no need to go through here again
         }
@@ -313,6 +313,13 @@ public class GameObject extends Sprite {
         if (damageTaken > 0) {
             damageTaken = ArmorCalculator.calculateDamage(damageTaken, this);
         }
+
+        if(!this.isFriendly()){
+            //Assume that if its not friendly, the damage came from the player
+            GameStatsTracker.getInstance().addDamageDealt(damageTaken);
+            GameStatsTracker.getInstance().setHighestDamageDealt(damageTaken);
+        }
+
         this.currentHitpoints -= damageTaken;
         if (damageTaken > 0) {
             lastGameSecondDamageTaken = GameStateInfo.getInstance().getGameSeconds();
@@ -362,6 +369,7 @@ public class GameObject extends Sprite {
             this.setVisible(false);
             activateOnDeathEffects();
             PlayerInventory.getInstance().gainCashMoney(this.cashMoneyWorth);
+            GameStatsTracker.getInstance().addMoneyAcquired(this.cashMoneyWorth);
         }
     }
 
@@ -398,6 +406,8 @@ public class GameObject extends Sprite {
         if(this instanceof ElectroShred){
             showDamage = false;
         }
+
+
 
         gameObject.takeDamage(getDamage(), showDamage);
     }

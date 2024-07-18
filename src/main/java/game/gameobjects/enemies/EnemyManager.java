@@ -7,6 +7,8 @@ import java.util.List;
 
 import javax.sound.sampled.UnsupportedAudioFileException;
 
+import game.gameobjects.enemies.enums.EnemyCategory;
+import game.gamestate.GameStatsTracker;
 import game.managers.AnimationManager;
 import game.gameobjects.GameObject;
 import game.util.CollisionDetector;
@@ -109,6 +111,10 @@ public class EnemyManager {
         if (enemy != null && !enemyList.contains(enemy)) {
             enemy.onCreationEffects();
             enemyList.add(enemy);
+
+            if(enemy.getEnemyType().getEnemyCategory() != EnemyCategory.Summon) {
+                GameStatsTracker.getInstance().addEnemySpawned(1);
+            }
         }
     }
 

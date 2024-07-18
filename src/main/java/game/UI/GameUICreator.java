@@ -11,6 +11,7 @@ import visualobjects.SpriteAnimation;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class GameUICreator {
 
@@ -35,19 +36,63 @@ public class GameUICreator {
     private UIObject progressBarFilling;
     private UIObject progressBarSpaceShipIndicator;
     private UIObject gameOverCard;
+    private UIObject gradeSC2iconObject;
+    private UIObject gradeTextObject;
+    private UIObject gameOverCardTitle;
 
     private List<UIObject> informationCards = new ArrayList<UIObject>();
+
+    private List<ImageEnums> gameOverPeepos = new ArrayList();
 
 
     private static GameUICreator instance = new GameUICreator();
 
     private GameUICreator () {
-
+        initGameOverPeepos();
     }
 
     public static GameUICreator getInstance () {
         return instance;
     }
+
+    private void initGameOverPeepos() {
+        gameOverPeepos.add(ImageEnums.peepoDeepFriedSadge);
+        gameOverPeepos.add(ImageEnums.peepoFeelsCringeMan);
+        gameOverPeepos.add(ImageEnums.peepoFeelsRetardedMan);
+        gameOverPeepos.add(ImageEnums.peepoHmmm);
+        gameOverPeepos.add(ImageEnums.peepoLookingDown);
+        gameOverPeepos.add(ImageEnums.peepoMonkaHmmm);
+        gameOverPeepos.add(ImageEnums.peepoMonkaLaugh);
+        gameOverPeepos.add(ImageEnums.peepoPauseChamp);
+        gameOverPeepos.add(ImageEnums.peepoClown);
+        gameOverPeepos.add(ImageEnums.peepoCringe);
+        gameOverPeepos.add(ImageEnums.peepoLaugh);
+        gameOverPeepos.add(ImageEnums.peepoLyingSadge);
+        gameOverPeepos.add(ImageEnums.peepoOkay);
+        gameOverPeepos.add(ImageEnums.peepoSad);
+        gameOverPeepos.add(ImageEnums.peepoSad2);
+        gameOverPeepos.add(ImageEnums.peepoShrug);
+        gameOverPeepos.add(ImageEnums.peepoSmadge);
+        gameOverPeepos.add(ImageEnums.peepoSmokedge);
+        gameOverPeepos.add(ImageEnums.peepoSmug);
+        gameOverPeepos.add(ImageEnums.peepoStare);
+        gameOverPeepos.add(ImageEnums.peepoUhm);
+        gameOverPeepos.add(ImageEnums.peepoAngy);
+        gameOverPeepos.add(ImageEnums.peepoBruh);
+        gameOverPeepos.add(ImageEnums.peepoCoffee);
+        gameOverPeepos.add(ImageEnums.peepoConfused);
+        gameOverPeepos.add(ImageEnums.peepoGottem);
+        gameOverPeepos.add(ImageEnums.peepoHands);
+        gameOverPeepos.add(ImageEnums.peepoLaugh2);
+        gameOverPeepos.add(ImageEnums.peepoPointLaugh);
+        gameOverPeepos.add(ImageEnums.peepoW);
+        gameOverPeepos.add(ImageEnums.peepoSadClown);
+        gameOverPeepos.add(ImageEnums.peepoSadge);
+        gameOverPeepos.add(ImageEnums.peepoSadgeCry);
+        gameOverPeepos.add(ImageEnums.peepoShruge);
+        gameOverPeepos.add(ImageEnums.peepoSkillIssue);
+    }
+
 
     public void createGameBoardGUI () {
         resetManager();
@@ -155,12 +200,38 @@ public class GameUICreator {
     private void createGameOverCard(){
         int centerScreenX = DataClass.getInstance().getWindowWidth() / 2;
         int centerScreenY = DataClass.getInstance().getWindowHeight() / 2;
+        gameOverCard = new UIObject((createUIConfiguration(0, 0, 0.75f, ImageEnums.Wide_Card)));
+        gameOverCard.setCenterCoordinates(centerScreenX, centerScreenY - (centerScreenY / 5));
 
-        gameOverCard = new UIObject((createUIConfiguration(0, 0, 1, ImageEnums.Wide_Card)));
-        gameOverCard.setCenterCoordinates(centerScreenX, centerScreenY);
 
+        int gradeObjectX = Math.round(gameOverCard.getCenterXCoordinate() + (gameOverCard.getWidth() * 0.3f));
+        int gradeObjectY = Math.round(gameOverCard.getCenterYCoordinate());
+        gradeSC2iconObject = new UIObject((createUIConfiguration(gradeObjectX, gradeObjectY, 1, ImageEnums.GradeBronze)));
+        gradeSC2iconObject.setCenterCoordinates(gradeObjectX, gradeObjectY);
+
+
+        int gradeTitleCardX = gradeSC2iconObject.getCenterXCoordinate();
+        int gradeTitleCardY = gradeSC2iconObject.getCenterYCoordinate();
+        gradeTextObject = new UIObject((createUIConfiguration(gradeTitleCardX, gradeTitleCardY, 0.3f, ImageEnums.UIScoreTextCard)));
+        gradeTitleCardY = gradeSC2iconObject.getYCoordinate() - gradeTextObject.getHeight();
+        gradeTextObject.setCenterCoordinates(gradeTitleCardX, gradeTitleCardY);
+
+
+        int titleCardX = gameOverCard.getCenterXCoordinate();
+        int titleCardY = gameOverCard.getYCoordinate() + Math.round(gameOverCard.getHeight() * 0.15f);
+        gameOverCardTitle = new UIObject(createUIConfiguration(titleCardX, titleCardY, 0.25f, ImageEnums.UILevelComplete));
+        gameOverCardTitle.setCenterCoordinates(titleCardX, titleCardY);
     }
 
+
+    private int gameOverPeepoRandomNumber = -100;
+    public ImageEnums getRandomGameOverPeepo(){
+        if(gameOverPeepoRandomNumber < 0) {
+            Random random = new Random();
+            gameOverPeepoRandomNumber = random.nextInt(0, gameOverPeepos.size() - 1);
+        }
+        return gameOverPeepos.get(gameOverPeepoRandomNumber);
+    }
 
     public int calculateProgressBarFillingWidth(long currentFrame, long maxFrames) {
         return (int) ((double) currentFrame / maxFrames * (progressBar.getWidth() - 10));
@@ -201,6 +272,7 @@ public class GameUICreator {
         createInformationCards();
         createProgressBar();
         createGameOverCard();
+        gameOverPeepoRandomNumber = -100;
     }
 
     public UIObject getSpecialAttackFrame () {
@@ -233,5 +305,17 @@ public class GameUICreator {
 
     public UIObject getGameOverCard () {
         return gameOverCard;
+    }
+
+    public UIObject getGradeSC2iconObject () {
+        return gradeSC2iconObject;
+    }
+
+    public UIObject getGradeTextObject () {
+        return gradeTextObject;
+    }
+
+    public UIObject getGameOverCardTitle () {
+        return gameOverCardTitle;
     }
 }

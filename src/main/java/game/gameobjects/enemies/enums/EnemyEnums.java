@@ -9,7 +9,7 @@ import java.util.Random;
 public enum EnemyEnums {
     Alien_Bomb(25, 0, false,
             false, AudioEnums.Alien_Bomb_Destroyed, "Alien Bomb", 0,
-            ImageEnums.Alien_Bomb, ImageEnums.Alien_Bomb_Explosion, 3, EnemyCategory.Basic, false, 0, 0,
+            ImageEnums.Alien_Bomb, ImageEnums.Alien_Bomb_Explosion, 3, EnemyCategory.Summon, false, 0, 0,
             2, 0, 1, 1, 25, 15),
     Seeker(100, 0, true,
             false, AudioEnums.Large_Ship_Destroyed, "Enemy Seeker", 5f,
@@ -44,7 +44,7 @@ public enum EnemyEnums {
             false, 30, 35, 35, 0, 2, 0.5f, 171, 98),
     Scout(50, 0, true, false, AudioEnums.Alien_Spaceship_Destroyed,
             "Enemy Scout", 5f, ImageEnums.Scout, ImageEnums.Explosion2, 10, EnemyCategory.Basic,
-            false, 10, 2, 3, 1, 1, 0.8f, 65, 38);
+            false, 10, 2, 3, 1, 2, 0.8f, 65, 38);
 
     private final int baseHitPoints;
     private final int baseShieldPoints;

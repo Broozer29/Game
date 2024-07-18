@@ -1,5 +1,7 @@
 package game.gameobjects.missiles;
 
+import game.gameobjects.player.PlayerManager;
+import game.gamestate.GameStatsTracker;
 import game.items.Item;
 import game.items.PlayerInventory;
 import game.items.enums.ItemEnums;
@@ -141,6 +143,8 @@ public class Missile extends GameObject {
         }
     }
 
+
+    private boolean hasPiercedForStatsTracker = false;
     public void handleCollision(GameObject collidedObject){
         applyDamageModification(collidedObject); // Adjust damage based on any modifiers.
 
@@ -148,9 +152,16 @@ public class Missile extends GameObject {
         if (isExplosive) {
             detonateMissile();
             destroyMissile();
+            if(ownerOrCreator.equals(PlayerManager.getInstance().getSpaceship())){
+                GameStatsTracker.getInstance().addShotHit(1);
+            }
         } else {
             pierceAndBounce(collidedObject);
+            if(!hasPiercedForStatsTracker && ownerOrCreator.equals(PlayerManager.getInstance().getSpaceship())){
+                GameStatsTracker.getInstance().addShotHit(1);
+            }
         }
+
     }
 
     private void pierceAndBounce(GameObject collidedObject){
@@ -158,6 +169,7 @@ public class Missile extends GameObject {
             dealDamageToGameObject(collidedObject);
             addCollidedObject(collidedObject);
             amountOfPiercesLeft--;
+            hasPiercedForStatsTracker = true;
 
             //Rework in a nicer way, just testing
             Item bouncingModuleAddon = PlayerInventory.getInstance().getItemByName(ItemEnums.BouncingModuleAddon);

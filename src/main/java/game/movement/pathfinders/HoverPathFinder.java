@@ -15,14 +15,15 @@ public class HoverPathFinder implements PathFinder{
 
     private double gameSecondsSinceEmptyList;
     private static double secondsToHoverStill = 5;
+    private boolean shouldDecreaseBoardBlock;
+    private int decreaseBoardBlockAmountBy;
+
 
     public Path findPath(GameObject gameObject) {
-
         MovementConfiguration config = gameObject.getMovementConfiguration();
         // Generate a random end point within the specified board block
         Point endPoint = getRandomCoordinateInBlock(config.getBoardBlockToHoverIn(), gameObject.getWidth(), gameObject.getHeight());
         Point start = new Point(gameObject.getXCoordinate(), gameObject.getYCoordinate());
-
 
         // Calculate the path to the randomly chosen end point
         List<Point> pathList = calculatePath(start, endPoint, config.getXMovementSpeed(), config.getYMovementSpeed());
@@ -73,21 +74,29 @@ public class HoverPathFinder implements PathFinder{
 
         if (path.getWaypoints().isEmpty()) {
             if (gameSecondsSinceEmptyList == 0) {
-                // Only set the timestamp if it hasn't been set yet.
+                // Only set the timestamp if it hasn't been set yet. If true, stay still on the current location and rotate it
                 gameSecondsSinceEmptyList = GameStateInfo.getInstance().getGameSeconds();
-                System.out.println("Rotate towards shooting direction");
                 gameObject.setAllowedVisualsToRotate(true);
                 gameObject.rotateObjectTowardsRotation(true);
                 gameObject.setAllowedVisualsToRotate(false);
 
+                if(shouldDecreaseBoardBlock){
+                    int newBoardBlock = gameObject.getMovementConfiguration().getBoardBlockToHoverIn();
+                    newBoardBlock -= decreaseBoardBlockAmountBy;
+                    if(newBoardBlock < 1){
+                        gameObject.getMovementConfiguration().setPathFinder(new RegularPathFinder());
+                    } else {
+                        gameObject.getMovementConfiguration().setBoardBlockToHoverIn(newBoardBlock);
+                    }
+                }
+
+
             }
 
-            // Check if 3 seconds have passed since the path became empty.
+            // Check if 3 seconds have passed since the path became empty. If true, move
             if (GameStateInfo.getInstance().getGameSeconds() > gameSecondsSinceEmptyList + secondsToHoverStill) {
                 // After 3 seconds, allow recalculation.
                 gameSecondsSinceEmptyList = 0; // Reset the timer for the next use.
-
-                System.out.println("Set visuals rotate to true");
                 gameObject.setAllowedVisualsToRotate(true);
                 return true;
             }
@@ -112,5 +121,21 @@ public class HoverPathFinder implements PathFinder{
     public Point calculateEndPointBySteps (Point start, Direction rotation, int steps, int xMovementspeed, int yMovementspeed) {
         //Not needed
         return null;
+    }
+
+    public boolean isShouldDecreaseBoardBlock () {
+        return shouldDecreaseBoardBlock;
+    }
+
+    public void setShouldDecreaseBoardBlock (boolean shouldDecreaseBoardBlock) {
+        this.shouldDecreaseBoardBlock = shouldDecreaseBoardBlock;
+    }
+
+    public int getDecreaseBoardBlockAmountBy () {
+        return decreaseBoardBlockAmountBy;
+    }
+
+    public void setDecreaseBoardBlockAmountBy (int decreaseBoardBlockAmountBy) {
+        this.decreaseBoardBlockAmountBy = decreaseBoardBlockAmountBy;
     }
 }

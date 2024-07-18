@@ -37,13 +37,14 @@ public class EnemyCreator {
 
     private static PathFinder getPathFinderByEnemy(EnemyEnums enemyType){
         switch (enemyType){
-            case Seeker, Energizer, Tazer -> {return new HoverPathFinder();}
+            case Seeker, Energizer, Tazer, Scout -> {return new HoverPathFinder();}
             default -> {return new RegularPathFinder();}
         }
     }
 
     private static void adjustMovementConfigurationPerEnemy(EnemyEnums enemyType, MovementConfiguration movementConfiguration){
         switch (enemyType){
+            case Scout -> movementConfiguration.setBoardBlockToHoverIn(7);
             case Seeker -> {movementConfiguration.setBoardBlockToHoverIn(6);}
             case Energizer -> {movementConfiguration.setBoardBlockToHoverIn(5);}
             case Tazer -> {movementConfiguration.setBoardBlockToHoverIn(7);}

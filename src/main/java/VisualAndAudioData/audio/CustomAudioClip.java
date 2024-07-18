@@ -64,6 +64,13 @@ public class CustomAudioClip {
         }
     }
 
+    public void muteAudioClip(){
+        if (this.clip.isControlSupported(FloatControl.Type.MASTER_GAIN)) {
+            FloatControl volume = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
+            volume.setValue(-70);
+        }
+    }
+
     private void adjustVolume () {
         if (this.clip.isControlSupported(FloatControl.Type.MASTER_GAIN)) {
             FloatControl volume = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);

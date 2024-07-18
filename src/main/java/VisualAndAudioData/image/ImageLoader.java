@@ -619,6 +619,61 @@ public class ImageLoader {
                 return "/images/laserbullet.png";
             case CashCarrier:
                 return "/images/Ships/Enemy Ships/CashCarrier.png";
+            case GradeBronze:
+                return "/images/Icons/grade bronze copy.png";
+            case GradeSilver:
+                return "/images/Icons/grade silver copy.png";
+            case GradeGold:
+                return "/images/Icons/grade gold copy.png";
+            case GradePlatinum:
+                return "/images/Icons/grade platinum copy.png";
+            case GradeDiamond:
+                return "/images/Icons/grade diamond copy.png";
+            case GradeMaster:
+                return "/images/Icons/grade master copy.png";
+            case GradeGrandMaster:
+                return "/images/Icons/grade grandmaster copy.png";
+            case UIYouDied:
+                return "/images/UI/youdiedlight.png";
+            case UILevelComplete:
+                return "/images/UI/levelcompletelight.png";
+            case UIScoreTextCard:
+                return "/images/UI/gradelight.png";
+            case peepoDeepFriedSadge: return "/images/Icons/Pepeicons/deepFriedSadge.png";
+            case peepoFeelsCringeMan: return "/images/Icons/Pepeicons/feelsCringeMan.png";
+            case peepoFeelsRetardedMan: return "/images/Icons/Pepeicons/feelsretardedman.png";
+            case peepoHmmm: return "/images/Icons/Pepeicons/Hmmm.png";
+            case peepoLookingDown: return "/images/Icons/Pepeicons/lookingDown.png";
+            case peepoMonkaHmmm: return "/images/Icons/Pepeicons/monkaHmmm.png";
+            case peepoMonkaLaugh: return "/images/Icons/Pepeicons/MonkaLaugh.png";
+            case peepoPauseChamp: return "/images/Icons/Pepeicons/PauseChamp.png";
+            case peepoClown: return "/images/Icons/Pepeicons/peepoClown.png";
+            case peepoCringe: return "/images/Icons/Pepeicons/peepoCringe.png";
+            case peepoLaugh: return "/images/Icons/Pepeicons/peepoLaugh.png";
+            case peepoLyingSadge: return "/images/Icons/Pepeicons/peepoLyingSadge.png";
+            case peepoOkay: return "/images/Icons/Pepeicons/peepoOkay.png";
+            case peepoSad: return "/images/Icons/Pepeicons/peeposad.png";
+            case peepoSad2: return "/images/Icons/Pepeicons/peeposad2.png";
+            case peepoShrug: return "/images/Icons/Pepeicons/peeposhrug.png";
+            case peepoSmadge: return "/images/Icons/Pepeicons/peepoSmadge.png";
+            case peepoSmokedge: return "/images/Icons/Pepeicons/peepoSmokedge.png";
+            case peepoSmug: return "/images/Icons/Pepeicons/peepoSmug.png";
+            case peepoStare: return "/images/Icons/Pepeicons/peepostare.png";
+            case peepoUhm: return "/images/Icons/Pepeicons/peepoUhm.png";
+            case peepoAngy: return "/images/Icons/Pepeicons/pepeAngy.png";
+            case peepoBruh: return "/images/Icons/Pepeicons/pepebruh.png";
+            case peepoCoffee: return "/images/Icons/Pepeicons/pepeCoffee.png";
+            case peepoConfused: return "/images/Icons/Pepeicons/pepeConfused.png";
+            case peepoGottem: return "/images/Icons/Pepeicons/pepeGottem.png";
+            case peepoHands: return "/images/Icons/Pepeicons/pepehands.png";
+            case peepoLaugh2: return "/images/Icons/Pepeicons/PepeLaugh.png";
+            case peepoPointLaugh: return "/images/Icons/Pepeicons/pepePointLaugh.png";
+            case peepoW: return "/images/Icons/Pepeicons/pepeW.png";
+            case peepoSadClown: return "/images/Icons/Pepeicons/sadClown.png";
+            case peepoSadge: return "/images/Icons/Pepeicons/sadge.png";
+            case peepoSadgeCry: return "/images/Icons/Pepeicons/sadgeCry.png";
+            case peepoShruge: return "/images/Icons/Pepeicons/shruge.png";
+            case peepoSkillIssue: return "/images/Icons/Pepeicons/skillissue.png";
             default:
                 return "";
         }
