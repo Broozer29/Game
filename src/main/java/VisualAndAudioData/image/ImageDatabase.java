@@ -488,6 +488,7 @@ public class ImageDatabase {
 
     // Images to Gifs
     private List<BufferedImage> defaultPlayerEngine = new ArrayList<BufferedImage>();
+    private BufferedImage guirefresh;
 
     private ImageDatabase () {
         initializeImages();
@@ -864,10 +865,12 @@ public class ImageDatabase {
 
         this.lockedIcon = imgLoader.getImage(ImageEnums.LockedIcon);
         this.laserBullet = imgLoader.getImage(ImageEnums.LaserBullet);
+        this.guirefresh = imgLoader.getImage(ImageEnums.GUIRefresh);
     }
 
     public BufferedImage getImage (ImageEnums imageType) {
         switch (imageType) {
+            case GUIRefresh: return guirefresh;
             case peepoDeepFriedSadge: return peepoDeepFriedSadge;
             case peepoFeelsCringeMan: return peepoFeelsCringeMan;
             case peepoFeelsRetardedMan: return peepoFeelsRetardedMan;
@@ -2161,19 +2164,4 @@ public class ImageDatabase {
 
         return sprites;
     }
-
-//	private BufferedImage toBufferedImage(Image image) {
-//		if (image instanceof BufferedImage) {
-//			return (BufferedImage) image;
-//		}
-//
-//		BufferedImage buff = new BufferedImage(image.getWidth(null), image.getHeight(null),
-//				BufferedImage.TYPE_INT_ARGB);
-//		Graphics2D g = buff.createGraphics();
-//		g.drawImage(image, 0, 0, null);
-//		g.dispose();
-//
-//		return buff;
-//	}
-
 }

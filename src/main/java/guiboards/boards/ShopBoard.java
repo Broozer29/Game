@@ -1,10 +1,8 @@
 package guiboards.boards;
 
-import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
-import VisualAndAudioData.audio.enums.LevelSongs;
 import VisualAndAudioData.image.ImageEnums;
 import controllerInput.ConnectedControllers;
 import controllerInput.ControllerInputEnums;
@@ -18,15 +16,10 @@ import game.managers.ShopManager;
 import game.gameobjects.background.BackgroundManager;
 import game.gameobjects.background.BackgroundObject;
 import VisualAndAudioData.DataClass;
-import game.spawner.LevelManager;
-import game.spawner.enums.LevelDifficulty;
-import game.spawner.enums.LevelLength;
-import guiboards.MenuCursor;
 import guiboards.boardEnums.MenuFunctionEnums;
-import guiboards.MenuObjectCollection;
 import guiboards.boardEnums.MenuObjectEnums;
-import guiboards.MenuObjectPart;
 import guiboards.boardcreators.ShopBoardCreator;
+import guiboards.guicomponents.*;
 import visualobjects.Sprite;
 import visualobjects.SpriteAnimation;
 import visualobjects.SpriteConfigurations.SpriteConfiguration;
@@ -36,7 +29,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -50,67 +42,51 @@ public class ShopBoard extends JPanel implements ActionListener {
     private ShopManager shopManager = ShopManager.getInstance();
     private final int boardWidth = data.getWindowWidth();
     private final int boardHeight = data.getWindowHeight();
-    private List<MenuObjectCollection> firstRow = new ArrayList<MenuObjectCollection>();
-    private List<MenuObjectCollection> secondRow = new ArrayList<MenuObjectCollection>();
-    private List<MenuObjectCollection> thirdRow = new ArrayList<MenuObjectCollection>();
-    private List<MenuObjectCollection> fourthRow = new ArrayList<MenuObjectCollection>();
-    private List<MenuObjectCollection> fifthRow = new ArrayList<MenuObjectCollection>();
-    private List<List<MenuObjectCollection>> grid = new ArrayList<>();
 
-    private List<MenuObjectCollection> offTheGridObjects = new ArrayList<MenuObjectCollection>();
+    private List<GUIComponent> firstRow = new ArrayList<>();
+    private List<GUIComponent> secondRow = new ArrayList<>();
+    private List<GUIComponent> thirdRow = new ArrayList<>();
+    private List<GUIComponent> fourthRow = new ArrayList<>();
+    private List<GUIComponent> fifthRow = new ArrayList<>();
+    private List<List<GUIComponent>> grid = new ArrayList<>();
+    private List<GUIComponent> offTheGridObjects = new ArrayList<>();
 
-    private List<MenuObjectCollection> playerInventoryMenuObjects = new ArrayList<>();
+    private DisplayOnly itemRowsBackgroundCard;
+    private DisplayOnly songLengthBackgroundCard;
+    private DisplayOnly songDifficultyBackgroundCard;
+    private DisplayOnly descriptionRowsBackgroundCard;
+    private DisplayOnly inventoryBackgroundCard;
+    private DisplayOnly nextLevelDifficultyBackground;
 
-    private MenuObjectCollection itemRowsBackgroundCard;
-    private MenuObjectCollection songLengthBackgroundCard;
-    private MenuObjectCollection songDifficultyBackgroundCard;
-    private MenuObjectCollection descriptionRowsBackgroundCard;
-    private MenuObjectCollection itemDescription;
-    private MenuObjectCollection moneyIcon;
-    private MenuObjectCollection nextLevelDifficultyIcon;
-    private MenuObjectCollection nextLevelDifficultyBackground;
+    private GUIComponent selectEasyDifficulty;
+    private GUIComponent selectMediumDifficulty;
+    private GUIComponent selectHardDifficulty;
+    private GUIComponent shortSong;
+    private GUIComponent mediumSong;
+    private GUIComponent longSong;
+    private GUITextCollection difficultySelectionText;
+    private GUITextCollection lengthSelectionText;
+    private GUITextCollection nextLevelDifficultyIcon;
 
-    private MenuObjectCollection lengthSelectionText;
-    private MenuObjectCollection difficultySelectionText;
 
+    private MenuCursor menuCursor;
+    private GUITextCollection returnToMainMenu;
+    private GUITextCollection nextLevelButton;
+    private GUITextCollection playerInventoryButton;
+    private GUIComponent itemDescription;
+    private GUIComponent rerollButton;
+    private GUITextCollection rerollCostText;
+    private GUIComponent rerollBackgroundCard;
+
+
+    private GUITextCollection moneyIcon;
+    private List<GUIComponent> playerInventoryMenuObjects = new ArrayList<>();
     private Timer timer;
     private int selectedRow = 0;
     private int selectedColumn = 0;
-
-    private MenuCursor menuCursor;
-    private MenuObjectCollection returnToMainMenu;
-    private MenuObjectCollection nextLevelButton;
-
-    private MenuObjectCollection inventoryBackgroundCard;
-    private MenuObjectCollection playerInventoryCollection;
-    private MenuObjectCollection playerInventoryButton;
-
     private ControllerInputReader controllerInputReader;
-    private boolean initializedMenuObjects = false;
-
-
-    private float imageScale = 1;
-    private float textScale = 1;
-    private int itemWidth = 100; // assuming each MenuObject will be 100 pixels wide
-    private int itemHeight = 100; // assuming each MenuObject will be 100 pixels tall
-    private int horizontalSpacing = 35; // space between items horizontally
-    private int verticalSpacing = 60; // space between items vertically
-    private int horizontalScreenDistance = 75;
-    private int verticalScreenDistance = 20;
-
-    private MenuObjectCollection easyDifficulty;
-    private MenuObjectCollection mediumDifficulty;
-    private MenuObjectCollection hardDifficulty;
-    private MenuObjectCollection shortSong;
-    private MenuObjectCollection mediumSong;
-    private MenuObjectCollection longSong;
-    private MenuObjectCollection difficultyIcon;
-
-
     private boolean showInventory;
     private ShopBoardCreator shopBoardCreator;
-
-    private int fourthRowY = 3 * (itemHeight + verticalSpacing) + verticalSpacing;
 
 
     public ShopBoard () {
@@ -125,7 +101,7 @@ public class ShopBoard extends JPanel implements ActionListener {
             controllerInputReader = controllers.getFirstController();
         }
 
-        timer = new Timer(GameStateInfo.getInstance().getDELAY(), e ->  repaint(0, 0, DataClass.getInstance().getWindowWidth(), DataClass.getInstance().getWindowHeight()));
+        timer = new Timer(GameStateInfo.getInstance().getDELAY(), e -> repaint(0, 0, DataClass.getInstance().getWindowWidth(), DataClass.getInstance().getWindowHeight()));
         timer.start();
     }
 
@@ -137,57 +113,72 @@ public class ShopBoard extends JPanel implements ActionListener {
         descriptionRowsBackgroundCard = shopBoardCreator.createDescriptionRowsBackgroundCard();
         inventoryBackgroundCard = shopBoardCreator.createInventoryBackgroundCard();
         nextLevelDifficultyBackground = shopBoardCreator.createNextLevelDifficultyBackground();
+        rerollBackgroundCard = shopBoardCreator.createRerollBackgroundCard(nextLevelDifficultyBackground);
 
         // Create other UI components
-        firstRow = shopBoardCreator.createFirstRowOfItems();
-        secondRow = shopBoardCreator.createSecondRowOfItems();
-        thirdRow = shopBoardCreator.createThirdRowOfItems();
+        firstRow = shopBoardCreator.createNewFirstRowOfItems();
+        secondRow = shopBoardCreator.createNewSecondRowOfItems();
+        thirdRow = shopBoardCreator.createNewThirdRowOfItems();
+
 
         // Create difficulty and song length settings using the respective background cards
-        easyDifficulty = shopBoardCreator.createSelectEasyDifficulty(songDifficultyBackgroundCard);
-        mediumDifficulty = shopBoardCreator.createSelectMediumDifficulty(songDifficultyBackgroundCard);
-        hardDifficulty = shopBoardCreator.createSelectHardDifficulty(songDifficultyBackgroundCard);
-        difficultySelectionText = shopBoardCreator.createSelectDifficultyText(songDifficultyBackgroundCard, hardDifficulty);
-        nextLevelDifficultyIcon = shopBoardCreator.createNextLevelDifficultyIcon(nextLevelDifficultyBackground);
+        selectEasyDifficulty = shopBoardCreator.createSelectEasyDifficulty(songDifficultyBackgroundCard);
+        selectMediumDifficulty = shopBoardCreator.createSelectMediumDifficulty(songDifficultyBackgroundCard);
+        selectHardDifficulty = shopBoardCreator.createSelectHardDifficulty(songDifficultyBackgroundCard);
+        difficultySelectionText = shopBoardCreator.createSelectDifficultyText(songDifficultyBackgroundCard, selectHardDifficulty);
 
-        fourthRow.add(easyDifficulty);
-        fourthRow.add(mediumDifficulty);
-        fourthRow.add(hardDifficulty);
-        offTheGridObjects.add(difficultySelectionText);
+
+        fourthRow.add(selectEasyDifficulty);
+        fourthRow.add(selectMediumDifficulty);
+        fourthRow.add(selectHardDifficulty);
+        offTheGridObjects.addAll(difficultySelectionText.getComponents());
+        //
 
         shortSong = shopBoardCreator.createShortSongSelection(songLengthBackgroundCard);
         mediumSong = shopBoardCreator.createMediumSongSelection(songLengthBackgroundCard);
-        longSong = shopBoardCreator.createLongSongSelection(songLengthBackgroundCard);
+        longSong = shopBoardCreator.createLongSelection(songLengthBackgroundCard);
         lengthSelectionText = shopBoardCreator.createSongSelectionText(songLengthBackgroundCard, longSong);
-
+        nextLevelDifficultyIcon = shopBoardCreator.createNextLevelDifficultyIcon(nextLevelDifficultyBackground);
         fourthRow.add(shortSong);
         fourthRow.add(mediumSong);
         fourthRow.add(longSong);
-        offTheGridObjects.add(lengthSelectionText);
+        offTheGridObjects.addAll(lengthSelectionText.getComponents());
+        offTheGridObjects.add(rerollBackgroundCard);
 
         // Setup buttons and cursor
         returnToMainMenu = shopBoardCreator.createReturnToMainMenu();
         nextLevelButton = shopBoardCreator.createStartNextLevelButton();
         playerInventoryButton = shopBoardCreator.createPlayerInventoryButton();
-        fifthRow.add(returnToMainMenu);
-        fifthRow.add(nextLevelButton);
-        fifthRow.add(playerInventoryButton);
+        fifthRow.add(returnToMainMenu.getComponents().get(0));
+        addAllButFirstComponent(returnToMainMenu);
+        fifthRow.add(nextLevelButton.getComponents().get(0));
+        addAllButFirstComponent(nextLevelButton);
+        fifthRow.add(playerInventoryButton.getComponents().get(0));
+        addAllButFirstComponent(playerInventoryButton);
+        rerollButton = shopBoardCreator.createRerollButton(rerollBackgroundCard);
+        thirdRow.add(rerollButton);
+        rerollCostText = shopBoardCreator.createRerollCostText(rerollBackgroundCard);
+        offTheGridObjects.addAll(rerollCostText.getComponents());
 
         itemDescription = shopBoardCreator.createDescriptionBox();
+
 
         menuCursor = shopBoardCreator.createCursor(returnToMainMenu);
 
         // Money and Difficulty indicators
         moneyIcon = shopBoardCreator.createMoneyObject(nextLevelDifficultyBackground);
-        difficultyIcon = shopBoardCreator.createDifficultyObject(nextLevelDifficultyBackground);
-        offTheGridObjects.add(moneyIcon);
-        offTheGridObjects.add(difficultyIcon);
+        offTheGridObjects.addAll(moneyIcon.getComponents());
 
         // Add all the created items to respective rows or lists
 
-
         // Rebuild the UI elements list
         recreateList();
+    }
+
+    private void addAllButFirstComponent(GUITextCollection textCollection){
+        for(int i = 1; i < textCollection.getComponents().size(); i++){
+            offTheGridObjects.add(textCollection.getComponents().get(i));
+        }
     }
 
 
@@ -195,9 +186,17 @@ public class ShopBoard extends JPanel implements ActionListener {
         grid.clear();
         offTheGridObjects.clear();
         playerInventoryMenuObjects.clear();
-        addTileToFifthRow(returnToMainMenu);
-        addTileToFifthRow(nextLevelButton);
-        addTileToFifthRow(playerInventoryButton);
+
+
+//        fifthRow.clear();
+//        fifthRow.add(returnToMainMenu.getComponents().get(0));
+        addAllButFirstComponent(returnToMainMenu);
+//        fifthRow.add(nextLevelButton.getComponents().get(0));
+        addAllButFirstComponent(nextLevelButton);
+//        fifthRow.add(playerInventoryButton.getComponents().get(0));
+        addAllButFirstComponent(playerInventoryButton);
+
+
 
         grid.add(firstRow);
         grid.add(secondRow);
@@ -205,63 +204,47 @@ public class ShopBoard extends JPanel implements ActionListener {
         grid.add(fourthRow);
         grid.add(fifthRow);
 
-        offTheGridObjects.add(nextLevelDifficultyBackground);
-        offTheGridObjects.add(itemRowsBackgroundCard);
-        offTheGridObjects.add(descriptionRowsBackgroundCard);
-        offTheGridObjects.add(songLengthBackgroundCard);
-        offTheGridObjects.add(songDifficultyBackgroundCard);
-        offTheGridObjects.add(itemDescription);
-        offTheGridObjects.add(moneyIcon);
-        offTheGridObjects.add(nextLevelDifficultyIcon);
-        offTheGridObjects.add(lengthSelectionText);
-        offTheGridObjects.add(difficultySelectionText);
 
 
         updateNextLevelDifficultyIcon();
         updateMoneyIcon();
 
+        offTheGridObjects.add(nextLevelDifficultyBackground);
+        offTheGridObjects.add(itemRowsBackgroundCard);
+        offTheGridObjects.add(descriptionRowsBackgroundCard);
+        offTheGridObjects.add(songLengthBackgroundCard);
+        offTheGridObjects.add(songDifficultyBackgroundCard);
+        offTheGridObjects.addAll(moneyIcon.getComponents());
+        offTheGridObjects.addAll(nextLevelDifficultyIcon.getComponents());
+        offTheGridObjects.addAll(lengthSelectionText.getComponents());
+        offTheGridObjects.addAll(difficultySelectionText.getComponents());
+        offTheGridObjects.add(rerollBackgroundCard);
+        offTheGridObjects.addAll(rerollCostText.getComponents());
+
+
         if (this.showInventory) {
             playerInventoryMenuObjects.add(inventoryBackgroundCard);
-            playerInventoryMenuObjects.add(playerInventoryCollection);
             createPlayerInventory();
         }
+
 
         updateCursor();
     }
 
-    private void rerollShop(){
-        firstRow = shopBoardCreator.createFirstRowOfItems();
-        secondRow = shopBoardCreator.createSecondRowOfItems();
-        thirdRow = shopBoardCreator.createThirdRowOfItems();
+    public void rerollShop(){
+        firstRow = shopBoardCreator.createNewFirstRowOfItems();
+        secondRow = shopBoardCreator.createNewSecondRowOfItems();
+        thirdRow = shopBoardCreator.createNewThirdRowOfItems();
     }
 
-
-    private int calculateLevelDifficulty (LevelDifficulty difficulty, LevelLength length) {
-        return LevelSongs.getDifficultyScore(difficulty, length);
-    }
 
     private void updateNextLevelDifficultyIcon () {
-        int difficulty = calculateLevelDifficulty(
-                LevelManager.getInstance().getCurrentLevelDifficulty(),
-                LevelManager.getInstance().getCurrentLevelLength()
-        );
-
-
-        nextLevelDifficultyIcon.setText("NEXT:   " + difficulty);
-        nextLevelDifficultyIcon.setNewImage(LevelSongs.getImageEnumByDifficultyScore(difficulty));
-        MenuObjectPart difficultyImage = nextLevelDifficultyIcon.getMenuImages().get(0);
-
-
-        int diffiX = nextLevelDifficultyBackground.getXCoordinate() + nextLevelDifficultyBackground.getMenuImages().get(0).getWidth() / 2;
-        int diffiY = nextLevelDifficultyBackground.getYCoordinate() + nextLevelDifficultyBackground.getMenuImages().get(0).getHeight() / 2;
-
-        difficultyImage.setCenterCoordinates(diffiX, diffiY);
+        nextLevelDifficultyIcon = shopBoardCreator.createNextLevelDifficultyIcon(nextLevelDifficultyBackground);
     }
 
-    private void updateMoneyIcon(){
-        moneyIcon.setText("MONEY: " + PlayerInventory.getInstance().getCashMoney());
+    private void updateMoneyIcon () {
+        moneyIcon = shopBoardCreator.createMoneyObject(nextLevelDifficultyBackground);
     }
-
 
 
     private void createPlayerInventory () {
@@ -272,8 +255,8 @@ public class ShopBoard extends JPanel implements ActionListener {
         int backgroundXPadding = 50;
         int backgroundYPadding = 30;
 
-        int maxWidth = inventoryBackgroundCard.getMenuImages().get(0).getWidth() - backgroundXPadding;
-        int maxHeight = inventoryBackgroundCard.getMenuImages().get(0).getHeight() - backgroundYPadding;
+        int maxWidth = inventoryBackgroundCard.getWidth() - backgroundXPadding;
+        int maxHeight = inventoryBackgroundCard.getHeight() - backgroundYPadding;
         int scale = 1;
         MenuObjectEnums objectEnum = MenuObjectEnums.ItemIcon;
 
@@ -287,13 +270,14 @@ public class ShopBoard extends JPanel implements ActionListener {
         // Loop over each item in the inventory
         for (ItemEnums itemEnum : itemMap.keySet()) {
             // Create a menu object for the item
-            MenuObjectCollection menuObjectCollection = new MenuObjectCollection(
-                    xCoordinate, yCoordinate, scale, "Dummy text", objectEnum, MenuFunctionEnums.NONE);
-            menuObjectCollection.changeImage(itemMap.get(itemEnum).getItemName().getItemIcon());
-            menuObjectCollection.getMenuImages().get(0).setImageDimensions(50, 50);
-            // Add it to the list
-            playerInventoryMenuObjects.add(menuObjectCollection);
+            SpriteConfiguration spriteConfiguration = new SpriteConfiguration();
+            spriteConfiguration.setxCoordinate(xCoordinate);
+            spriteConfiguration.setyCoordinate(yCoordinateStart);
+            spriteConfiguration.setScale(scale);
+            spriteConfiguration.setImageType(itemMap.get(itemEnum).getItemName().getItemIcon());
 
+            GUIComponent itemComponent = new DisplayOnly(spriteConfiguration);
+            playerInventoryMenuObjects.add(itemComponent);
 
             int quantity = itemMap.get(itemEnum).getQuantity();
             String quantityStr = String.valueOf(quantity);
@@ -312,8 +296,9 @@ public class ShopBoard extends JPanel implements ActionListener {
                 digitSpriteConfig.setScale(scale);
                 digitSpriteConfig.setImageType(digitImage);
 
-                MenuObjectPart digitPart = new MenuObjectPart(digitSpriteConfig);
-                menuObjectCollection.addMenuPart(digitPart);
+
+                GUIComponent itemAmount = new DisplayOnly(digitSpriteConfig);
+                playerInventoryMenuObjects.add(itemAmount);
             }
 
             // Update xCoordinate, wrapping and resetting yCoordinate as needed
@@ -331,9 +316,10 @@ public class ShopBoard extends JPanel implements ActionListener {
             }
         }
     }
+
     private void updateDescriptionBox (Graphics2D g2d) {
-        MenuObjectCollection selectedTile = menuCursor.getSelectedMenuTile();
-        int boxWidth = descriptionRowsBackgroundCard.getMenuImages().get(0).getWidth();
+        GUIComponent selectedTile = menuCursor.getSelectedMenuTile();
+        int boxWidth = descriptionRowsBackgroundCard.getWidth();
         g2d.setFont(new Font("Lucida Grande", Font.PLAIN, 20));
         g2d.setColor(Color.white);
 
@@ -346,16 +332,10 @@ public class ShopBoard extends JPanel implements ActionListener {
             int descriptionX = itemDescription.getXCoordinate() + horizontalPadding;
             int descriptionY = itemDescription.getYCoordinate() + verticalPadding;
 
-            switch (selectedTile.getMenuObjectType()) {
-                case CommonItem:
-                case RareItem:
-                case LegendaryItem:
-                    text = selectedTile.getMenuItemInformation().getItemDescription();
-                    break;
-                case Song_Length_Selector:
-                case Song_Difficulty_Selector:
-                    text = selectedTile.getText();
-                    break;
+            if(selectedTile instanceof ShopItem){
+                text = ((ShopItem) selectedTile).getMenuItemInformation().getItemDescription();
+            } else {
+                text = selectedTile.getDescriptionOfComponent();
             }
 
             if (text != null) {
@@ -389,13 +369,6 @@ public class ShopBoard extends JPanel implements ActionListener {
     }
 
 
-    private void addTileToFifthRow (MenuObjectCollection menuTile) {
-        if (!fifthRow.contains(menuTile)) {
-            fifthRow.add(menuTile);
-        }
-
-    }
-
     public Timer getTimer () {
         return timer;
     }
@@ -410,13 +383,17 @@ public class ShopBoard extends JPanel implements ActionListener {
 
     // Activate the functionality of the specific menutile
     private void selectMenuTile () {
-        try {
-            grid.get(selectedRow).get(selectedColumn).menuTileAction();
-            if (grid.get(selectedRow).get(selectedColumn).getMenuFunction() == MenuFunctionEnums.Start_Game) {
-                timer.stop();
-            }
-        } catch (UnsupportedAudioFileException | IOException e) {
-            e.printStackTrace();
+//        if(selectedRow >= grid.size()){
+//            selectedRow = grid.size() - 1;
+//            return;
+//        }
+//        if(selectedColumn >= grid.get(selectedRow).size()){
+//            selectedColumn = grid.get(selectedRow).size() - 1;
+//            return;
+//        }
+        grid.get(selectedRow).get(selectedColumn).activateComponent();
+        if (grid.get(selectedRow).get(selectedColumn).getMenuFunctionality() == MenuFunctionEnums.Start_Game) {
+            timer.stop();
         }
     }
 
@@ -467,7 +444,7 @@ public class ShopBoard extends JPanel implements ActionListener {
 
     // Check if the grid is empty
     private boolean isGridEmpty () {
-        for (List<MenuObjectCollection> row : grid) {
+        for (List<GUIComponent> row : grid) {
             if (!row.isEmpty()) {
                 return false; // Return false as soon as a non-empty row is found
             }
@@ -498,10 +475,10 @@ public class ShopBoard extends JPanel implements ActionListener {
         if (grid.get(selectedRow).isEmpty()) {
             menuCursor.setSelectedMenuTile(null);
         } else {
-            MenuObjectCollection selectedTile = grid.get(selectedRow).get(selectedColumn);
-            menuCursor.setSelectedMenuTile(selectedTile);
-            menuCursor.setYCoordinate(selectedTile.getYCoordinate());
-            menuCursor.setXCoordinate(selectedTile.getXCoordinate() - (menuCursor.getxDistanceToKeep()));
+            GUIComponent selectedComponent = grid.get(selectedRow).get(selectedColumn);
+            menuCursor.setSelectedMenuTile(selectedComponent);
+            menuCursor.setY(selectedComponent.getYCoordinate());
+            menuCursor.setX(selectedComponent.getXCoordinate() - (menuCursor.getxDistanceToKeep()));
         }
     }
 
@@ -652,69 +629,44 @@ public class ShopBoard extends JPanel implements ActionListener {
     }
 
     private void drawObjects (Graphics2D g) {
-        for (MenuObjectCollection object : offTheGridObjects) {
-            if (object != null) {
-                drawMenuObject(g, object);
+        for (GUIComponent component : offTheGridObjects) {
+            if (component != null) {
+                drawGUIComponent(g, component);
             }
         }
 
-        for (List<MenuObjectCollection> list : grid) {
-            for (MenuObjectCollection object : list) {
-                if (object != null) {
-                    if (object.getMenuObjectType().equals(MenuObjectEnums.CommonItem)
-                            || object.getMenuObjectType().equals(MenuObjectEnums.RareItem)
-                            || object.getMenuObjectType().equals(MenuObjectEnums.LegendaryItem)) {
-                        drawItemsInShop(g, object);
-                    }
-                    drawMenuObject(g, object);
+
+        for (List<GUIComponent> list : grid) {
+            for (GUIComponent component : list) {
+                if (component instanceof ShopItem) {
+                    drawItemsInShop(g, (ShopItem) component);
+                }
+                drawGUIComponent(g, component);
+            }
+        }
+
+        if(showInventory){
+            for(GUIComponent component : playerInventoryMenuObjects){
+                if(component != null){
+                    drawGUIComponent(g, component);
                 }
             }
         }
 
-        if (showInventory) {
-            for (MenuObjectCollection object : playerInventoryMenuObjects) {
-                if (object != null) {
-                    drawMenuObject(g, object);
-                }
-            }
-
-        }
-
-//        g.drawString("Money available: " + PlayerInventory.getInstance().getCashMoney(),
-//                itemRowsBackgroundCard.getXCoordinate() + itemRowsBackgroundCard.getMenuImages().get(0).getWidth() + 10,
-//                itemRowsBackgroundCard.getYCoordinate() + 30);
-        g.drawImage(menuCursor.getMenuImages().get(0).getImage(), menuCursor.getXCoordinate(), menuCursor.getYCoordinate(), this);
-
+        drawGUIComponent(g, menuCursor);
     }
 
-    private void drawMenuObject (Graphics2D g, MenuObjectCollection object) {
-        if (object.getMenuObjectType() == MenuObjectEnums.Text
-//                || object.getMenuObjectType() == MenuObjectEnums.Song_Length_Selector || object.getMenuObjectType() == MenuObjectEnums.Song_Difficulty_Selector
-        ) {
-            if (object.getMenuImages() != null && !object.getMenuImages().isEmpty()) {
-                for (MenuObjectPart image : object.getMenuImages()) {
-                    g.drawImage(image.getImage(), image.getXCoordinate(), image.getYCoordinate(), this);
-                }
-            }
 
-            for (MenuObjectPart letter : object.getMenuTextImages()) {
-                g.drawImage(letter.getImage(), letter.getXCoordinate(), letter.getYCoordinate(), this);
-            }
-
-        } else {
-            for (MenuObjectPart image : object.getMenuImages()) {
-                g.drawImage(image.getImage(), object.getXCoordinate(), object.getYCoordinate(),
-                        this);
-            }
-        }
+    private void drawGUIComponent (Graphics2D g, GUIComponent component) {
+        g.drawImage(component.getImage(), component.getXCoordinate(), component.getYCoordinate(), this);
     }
 
-    private void drawItemsInShop (Graphics g, MenuObjectCollection object) {
+    private void drawItemsInShop (Graphics g, ShopItem object) {
 
-        int xCoordinate = object.getMenuImages().get(0).getXCoordinate();
-        int yCoordinate = object.getMenuImages().get(0).getYCoordinate();
+        int xCoordinate = object.getXCoordinate();
+        int yCoordinate = object.getYCoordinate();
 
-        g.drawImage(object.getMenuImages().get(0).getImage(), xCoordinate, yCoordinate, this);
+        g.drawImage(object.getImage(), xCoordinate, yCoordinate, this);
 
         switch (object.getMenuItemInformation().getItem().getItemRarity()) {
             case Common -> {
@@ -735,21 +687,21 @@ public class ShopBoard extends JPanel implements ActionListener {
             g.setFont(new Font("Lucida Grande", Font.BOLD, 10));
             g.drawString(object.getMenuItemInformation().getItem().getItemName(),
                     xCoordinate,
-                    yCoordinate + object.getMenuImages().get(0).getHeight() + 10);
+                    yCoordinate + object.getHeight() + 10);
 
             g.setFont(new Font("Lucida Grande", Font.PLAIN, 10));
             g.drawString(object.getMenuItemInformation().getItemRarity().toString()
                     , xCoordinate
-                    , yCoordinate + object.getMenuImages().get(0).getHeight() + 22);
+                    , yCoordinate + object.getHeight() + 22);
 
             g.drawString("$" + object.getMenuItemInformation().getCost()
                     , xCoordinate
-                    , yCoordinate + object.getMenuImages().get(0).getHeight() + 34);
+                    , yCoordinate + object.getHeight() + 34);
         } else {
             g.setFont(new Font("Lucida Grande", Font.PLAIN, 10));
             g.drawString("Unavailable!",
                     xCoordinate,
-                    yCoordinate + object.getMenuImages().get(0).getHeight() + 10);
+                    yCoordinate + object.getHeight() + 10);
         }
     }
 

@@ -402,13 +402,9 @@ public class GameObject extends Sprite {
 
     public void dealDamageToGameObject (GameObject gameObject) {
         boolean showDamage = true;
-
         if(this instanceof ElectroShred){
             showDamage = false;
         }
-
-
-
         gameObject.takeDamage(getDamage(), showDamage);
     }
 

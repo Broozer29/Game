@@ -26,7 +26,6 @@ public class Director {
     private double spawnCashCarrierChance;
     private double lastFormationSpawnTime;
     private List<MonsterCard> availableCards;
-    private List<MonsterCard> affordableMonsters;
 
     private FormationCreator formationCreator;
 
@@ -38,7 +37,7 @@ public class Director {
     private double currentTime;
     private boolean active;
 
-    public Director (DirectorType directorType, List<MonsterCard> availableCards) {
+    public Director(DirectorType directorType, List<MonsterCard> availableCards) {
         this.directorType = directorType;
         this.credits = 0;
         this.lastSpawnTime = 0;
@@ -50,7 +49,7 @@ public class Director {
         this.formationCreator = new FormationCreator();
     }
 
-    private long calculateInitialSpawnInterval (DirectorType directorType) {
+    private long calculateInitialSpawnInterval(DirectorType directorType) {
         switch (directorType) {
             case Slow:
                 return 15 + (long) (Math.random() * 10); // 15-25 seconds
@@ -61,35 +60,30 @@ public class Director {
         }
     }
 
-    private double calculateCashCarrierChance (DirectorType directorType) {
+    private double calculateCashCarrierChance(DirectorType directorType) {
         switch (directorType) {
             case Slow:
                 return 0.1f;
-//                return 1f;
             case Fast:
-//                return 1f;
                 return 0.05f;
             default:
                 return 0f; // instant directors should not spawn cash carriers
         }
     }
 
-    public void update (double secondsPassed) {
+    public void update(double secondsPassed) {
         currentTime = secondsPassed;
         if (shouldAttemptSpawn(secondsPassed)) {
-            updateAffordableMonsterList();
             attemptSpawn();
             lastSpawnTime = secondsPassed;
-
 
             if (directorType == DirectorType.Instant && credits < 50) {
                 this.active = false;
             }
-
         }
     }
 
-    private void attemptSpawn () {
+    private void attemptSpawn() {
         double randomNumber = random.nextDouble();  // Generate a random number between 0 and 1
         double timeSinceLastCashCarrier = currentTime - lastCashCarrierSpawnTime;
 
@@ -99,8 +93,7 @@ public class Director {
             spawnCashCarrier(formationType);  // Always a scout as of now
         }
 
-
-        if (credits > minimumMonsterCost() && !affordableMonsters.isEmpty()) {
+        if (credits > minimumMonsterCost()) {
             SpawnFormationEnums formationType = SpawnFormationEnums.getRandomFormation();
             MonsterCard selectedCard = selectMonsterCard();
 
@@ -121,7 +114,7 @@ public class Director {
         resetSpawnTimer();
     }
 
-    private boolean shouldSpawnFormation (EnemyEnums enemyType) {
+    private boolean shouldSpawnFormation(EnemyEnums enemyType) {
         double time = currentTime - lastFormationSpawnTime;
         if (time < 3) {
             return false;
@@ -134,29 +127,22 @@ public class Director {
             case Bomba, Tazer, Flamer, Seeker, Bulldozer, Energizer -> 0.1f; //10% chance of spawning formation
         };
 
-
         return randomDouble < chanceThreshold;
     }
 
-
-    private void updateAffordableMonsterList () {
-        float totalDifficultyCoefficient = GameStateInfo.getInstance().getDifficultyCoefficient();
-        affordableMonsters = adjustWeights(availableCards, totalDifficultyCoefficient);
-    }
-
-    private float minimumMonsterCost () {
+    private float minimumMonsterCost() {
         return availableCards.stream()
                 .map(MonsterCard::getCreditCost)
                 .min(Float::compare)
                 .orElse(Float.MAX_VALUE);
     }
 
-    private float calculateFormationCost (SpawnFormationEnums formationType, EnemyEnums enemyType) {
+    private float calculateFormationCost(SpawnFormationEnums formationType, EnemyEnums enemyType) {
         float enemyCount = formationType.getEnemyCountInFormation();
         return enemyCount * (enemyType.getCreditCost() * 1.5f); //50% increased price for a formation!
     }
 
-    private boolean shouldAttemptSpawn (double currentTime) {
+    private boolean shouldAttemptSpawn(double currentTime) {
         if (directorType == DirectorType.Instant) {
             return true;
         } else {
@@ -166,8 +152,7 @@ public class Director {
         }
     }
 
-
-    private void spawnEnemy (EnemyEnums enemyType) {
+    private void spawnEnemy(EnemyEnums enemyType) {
         // Set parameters for spawning
         Direction direction = Direction.LEFT;
         float scale = enemyType.getDefaultScale();
@@ -178,25 +163,23 @@ public class Director {
         LevelManager.getInstance().spawnEnemy(0, 0, enemyType, direction, scale, true, xMovementSpeed, yMovementSpeed, enemyType.isBoxCollision());
     }
 
-    public void spawnRegularFormation (SpawnFormationEnums formationType, EnemyEnums enemyType) {
+    public void spawnRegularFormation(SpawnFormationEnums formationType, EnemyEnums enemyType) {
         spawnFormationWithParameters(formationType, enemyType, null, false);
     }
 
-    private void spawnCashCarrier (SpawnFormationEnums formationType) {
+    private void spawnCashCarrier(SpawnFormationEnums formationType) {
         spawnEntourageFormation(formationType, EnemyEnums.Scout, EnemyEnums.CashCarrier);
         this.lastCashCarrierSpawnTime = currentTime;
     }
 
-    private void spawnEntourageFormation (SpawnFormationEnums formationType, EnemyEnums primaryEnemy, EnemyEnums secondaryEnemy) {
+    private void spawnEntourageFormation(SpawnFormationEnums formationType, EnemyEnums primaryEnemy, EnemyEnums secondaryEnemy) {
         spawnFormationWithParameters(formationType, primaryEnemy, secondaryEnemy, true);
     }
 
-
-    private void spawnFormationWithParameters (SpawnFormationEnums formationType, EnemyEnums primaryEnemyType, EnemyEnums secondaryEnemyType, boolean isEntourage) {
+    private void spawnFormationWithParameters(SpawnFormationEnums formationType, EnemyEnums primaryEnemyType, EnemyEnums secondaryEnemyType, boolean isEntourage) {
         Direction direction = Direction.LEFT;
         int xMovementSpeed = isEntourage ? secondaryEnemyType.getMovementSpeed() : primaryEnemyType.getMovementSpeed();
         int yMovementSpeed = xMovementSpeed;
-
 
         Enemy enemy = null;
         if (isEntourage) {
@@ -222,7 +205,6 @@ public class Director {
         }
         lastFormationSpawnTime = currentTime;
     }
-
 
     private int calculateBaseX(int totalFormationWidth, Direction direction) {
         DataClass instance = DataClass.getInstance();
@@ -267,8 +249,6 @@ public class Director {
         return 0;
     }
 
-
-
     private int calculateBaseY(int totalFormationHeight, Direction direction) {
         DataClass instance = DataClass.getInstance();
         if (direction == Direction.LEFT || direction == Direction.RIGHT) {
@@ -300,37 +280,26 @@ public class Director {
         return instance.getPlayableWindowMinHeight();
     }
 
-
-    private boolean coinFlip(){
-        double randomNumber = random.nextDouble();
-        return randomNumber < 0.5;
-    }
-
-
-
-    public void resetSpawnTimer () {
+    public void resetSpawnTimer() {
         if (directorType != DirectorType.Instant) {
             lastSpawnTime = currentTime;  // Capture the current time when resetting
             spawnInterval = calculateInitialSpawnInterval(directorType);  // Recalculate the next interval
         }
     }
 
-    public void receiveCredits (float amount) {
+    public void receiveCredits(float amount) {
         this.credits += amount;
     }
 
-    private MonsterCard selectMonsterCard () {
-        if (!affordableMonsters.isEmpty()) {
-//            for(MonsterCard card : affordableMonsters){
-//                System.out.println(card.getEnemyType() + " with weight: " + card.getWeight());
-//            }
-//            System.out.println("");
-            return weightedRandomSelection(affordableMonsters);
+    private MonsterCard selectMonsterCard() {
+        List<MonsterCard> adjustedCards = adjustWeights(availableCards, GameStateInfo.getInstance().getDifficultyCoefficient());
+        if (!adjustedCards.isEmpty()) {
+            return weightedRandomSelection(adjustedCards);
         }
-        return null; // Return null if no affordable monsters are available
+        return null; // Return null if no adjusted monsters are available
     }
 
-    private List<MonsterCard> adjustWeights (List<MonsterCard> baseMonsterCards, float difficultyCoefficient) {
+    private List<MonsterCard> adjustWeights(List<MonsterCard> baseMonsterCards, float difficultyCoefficient) {
         // Adjust the weights based on difficulty coefficient
         return baseMonsterCards.stream().map(card -> {
             float adjustedWeight = calculateAdjustedWeight(card, difficultyCoefficient);
@@ -338,14 +307,13 @@ public class Director {
         }).collect(Collectors.toList());
     }
 
-
-    private float calculateAdjustedWeight (MonsterCard card, float difficultyCoefficient) {
+    private float calculateAdjustedWeight(MonsterCard card, float difficultyCoefficient) {
         EnemyCategory category = card.getEnemyType().getEnemyCategory();
         float baseWeight = card.getWeight();
         // Adjust these values to finely control spawn behavior
         float basicIncreaseRate = 2f; // Increase basic enemy weight by a significant factor early on
         float decayRateForBasicEnemies = 0.2f; // Slower decay for Basic enemies (less aggressive than before)
-        float growthRateForStrongEnemies = 0.05f; // Slower growth for stronger enemies
+        float growthRateForStrongEnemies = 0.2f; // Slower growth for stronger enemies
 
         switch (category) {
             case Basic:
@@ -356,14 +324,13 @@ public class Director {
                 // Gradually increase weight for stronger enemies as difficulty increases
                 return baseWeight * (1 + difficultyCoefficient * growthRateForStrongEnemies);
             case Summon:
-                return 0; //Should never be spawned
+                return 0; // Should never be spawned
             default:
                 return baseWeight;  // Default case for any uncategorized types
         }
     }
 
-
-    private MonsterCard weightedRandomSelection (List<MonsterCard> adjustedCards) {
+    private MonsterCard weightedRandomSelection(List<MonsterCard> adjustedCards) {
         double totalWeight = adjustedCards.stream().mapToDouble(MonsterCard::getWeight).sum();
         double randomValue = totalWeight * random.nextDouble();
 
@@ -378,7 +345,7 @@ public class Director {
         return null; // Implement a fallback in case no card is selected
     }
 
-    public boolean isActive () {
+    public boolean isActive() {
         return this.active;
     }
 }

@@ -17,8 +17,6 @@ public class BoardManager extends JFrame {
 	private MenuBoard menuBoard;
 	private GameBoard gameBoard;
 	private ShopBoard shopBoard;
-	private TalentSelectionBoard talentBoard;
-	private LevelSelectionBoard levelSelectionBoard;
 	private static BoardManager instance = new BoardManager();
 	private AudioManager audioManager = AudioManager.getInstance();
 
@@ -32,9 +30,7 @@ public class BoardManager extends JFrame {
 		setSize(data.getWindowWidth(), data.getWindowHeight());
 		menuBoard = new MenuBoard();
 		gameBoard = new GameBoard();
-		talentBoard = new TalentSelectionBoard();
 		shopBoard = new ShopBoard();
-		levelSelectionBoard = new LevelSelectionBoard();
 	}
 
 	public static BoardManager getInstance() {
@@ -77,10 +73,7 @@ public class BoardManager extends JFrame {
 	}
 
 	public void initTalentSelectionBoard() {
-		menuBoard.getTimer().stop();
-		playMenuMusic();
-		changeMenuScreen(levelSelectionBoard);
-		levelSelectionBoard.recreateWindow();
+		System.out.println("Doet niks lol");
 	}
 
 	public void gameToMainMenu() {

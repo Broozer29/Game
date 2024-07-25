@@ -155,11 +155,14 @@ public class MissileManager {
         for (Enemy enemy : enemyManager.getEnemies()) {
             if (collisionDetector.detectCollision(enemy, specialAttack)) {
                 specialAttack.applyDamageModification(enemy);
-                specialAttack.dealDamageToGameObject(enemy);
+
                 if (specialAttack.isAllowOnHitEffects() && specialAttack.canApplyEffectAgain()) {
                     specialAttack.applyEffectsWhenPlayerHitsEnemy(enemy);
                     hasAppliedEffects = true;
                 }
+
+                specialAttack.dealDamageToGameObject(enemy);
+
             }
         }
 
@@ -188,8 +191,8 @@ public class MissileManager {
                 if (missile.getMissileEnum().equals(MissileEnums.TazerProjectile)) {
                     ((TazerProjectile) missile).handleTazerMissile(missile, enemy);
                 } else { //It's a player missile
-                    missile.handleCollision(enemy);
                     missile.applyEffectsWhenPlayerHitsEnemy(enemy);
+                    missile.handleCollision(enemy);
                 }
 
             }

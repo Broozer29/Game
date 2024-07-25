@@ -674,6 +674,7 @@ public class ImageLoader {
             case peepoSadgeCry: return "/images/Icons/Pepeicons/sadgeCry.png";
             case peepoShruge: return "/images/Icons/Pepeicons/shruge.png";
             case peepoSkillIssue: return "/images/Icons/Pepeicons/skillissue.png";
+            case GUIRefresh: return "/images/Icons/refresh.png";
             default:
                 return "";
         }

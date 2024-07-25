@@ -11,8 +11,6 @@ public class GameStateInfo {
 
     private SpawningMechanic spawningMechanic;
 
-
-
     private int DELAY = 0;
 
     private double gameSeconds;

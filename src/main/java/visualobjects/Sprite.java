@@ -232,4 +232,8 @@ public class Sprite {
         this.height = image.getHeight();
         this.bounds = new Rectangle(xCoordinate, yCoordinate, this.width, this.height);
     }
+
+    public float getScale () {
+        return scale;
+    }
 }

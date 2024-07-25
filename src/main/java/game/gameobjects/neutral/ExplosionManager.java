@@ -91,7 +91,7 @@ public class ExplosionManager {
             if (!explosion.dealtDamageToTarget(enemy)) {
                 if (CollisionDetector.getInstance().detectCollision(explosion, enemy)) {
                     explosion.applyDamageModification(enemy);
-                    explosion.dealDamageToGameObject(enemy);
+
 
                     if (explosion.isApplyOnHitEffects()) {
                         explosion.applyEffectsWhenPlayerHitsEnemy(enemy);
@@ -99,6 +99,7 @@ public class ExplosionManager {
 
                     explosion.applyExplosionEffects(enemy);
                     explosion.addCollidedSprite(enemy);
+                    explosion.dealDamageToGameObject(enemy);
                 }
             }
         }

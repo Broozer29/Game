@@ -1,17 +1,15 @@
 package game.movement.pathfinders;
 
 import game.gameobjects.GameObject;
+import game.gameobjects.enemies.Enemy;
 import game.gamestate.GameStateInfo;
-import game.movement.Direction;
-import game.movement.MovementConfiguration;
-import game.movement.Path;
-import game.movement.Point;
+import game.movement.*;
 import game.util.BoardBlockUpdater;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class HoverPathFinder implements PathFinder{
+public class HoverPathFinder implements PathFinder {
 
     private double gameSecondsSinceEmptyList;
     private static double secondsToHoverStill = 5;
@@ -19,7 +17,7 @@ public class HoverPathFinder implements PathFinder{
     private int decreaseBoardBlockAmountBy;
 
 
-    public Path findPath(GameObject gameObject) {
+    public Path findPath (GameObject gameObject) {
         MovementConfiguration config = gameObject.getMovementConfiguration();
         // Generate a random end point within the specified board block
         Point endPoint = getRandomCoordinateInBlock(config.getBoardBlockToHoverIn(), gameObject.getWidth(), gameObject.getHeight());
@@ -37,7 +35,7 @@ public class HoverPathFinder implements PathFinder{
         return null;
     }
 
-    private List<Point> calculatePath(Point start, Point end, int maxStepSizeX, int maxStepSizeY) {
+    private List<Point> calculatePath (Point start, Point end, int maxStepSizeX, int maxStepSizeY) {
         List<Point> pathList = new ArrayList<>();
         pathList.add(start);
 
@@ -57,13 +55,13 @@ public class HoverPathFinder implements PathFinder{
         return pathList;
     }
 
-    private Point getRandomCoordinateInBlock(int blockIndex, int objectWidth, int objectHeight) {
+    private Point getRandomCoordinateInBlock (int blockIndex, int objectWidth, int objectHeight) {
         // Assuming BoardBlockUpdater.getRandomCoordinateInBlock is implemented as discussed
         return BoardBlockUpdater.getRandomCoordinateInBlock(blockIndex, objectWidth, objectHeight);
     }
 
     @Override
-    public boolean shouldRecalculatePath(GameObject gameObject) {
+    public boolean shouldRecalculatePath (GameObject gameObject) {
         Path path = gameObject.getMovementConfiguration().getCurrentPath();
 
 
@@ -76,14 +74,17 @@ public class HoverPathFinder implements PathFinder{
             if (gameSecondsSinceEmptyList == 0) {
                 // Only set the timestamp if it hasn't been set yet. If true, stay still on the current location and rotate it
                 gameSecondsSinceEmptyList = GameStateInfo.getInstance().getGameSeconds();
-                gameObject.setAllowedVisualsToRotate(true);
-                gameObject.rotateObjectTowardsRotation(true);
-                gameObject.setAllowedVisualsToRotate(false);
 
-                if(shouldDecreaseBoardBlock){
+                if (allowRotation(gameObject)) {
+                    gameObject.setAllowedVisualsToRotate(true);
+                    gameObject.rotateObjectTowardsRotation(true);
+                    gameObject.setAllowedVisualsToRotate(false);
+                }
+
+                if (shouldDecreaseBoardBlock) {
                     int newBoardBlock = gameObject.getMovementConfiguration().getBoardBlockToHoverIn();
                     newBoardBlock -= decreaseBoardBlockAmountBy;
-                    if(newBoardBlock < 1){
+                    if (newBoardBlock < 1) {
                         gameObject.getMovementConfiguration().setPathFinder(new RegularPathFinder());
                     } else {
                         gameObject.getMovementConfiguration().setBoardBlockToHoverIn(newBoardBlock);
@@ -108,6 +109,20 @@ public class HoverPathFinder implements PathFinder{
         // If the path is not empty, reset the timer as it's not relevant in this case.
         gameSecondsSinceEmptyList = 0;
         return false;
+    }
+
+    private boolean allowRotation(GameObject gameObject){
+        if (gameObject instanceof Enemy) {
+            Enemy enemy = (Enemy) gameObject;
+            if(enemy.getMissileTypePathFinders() != null) {
+                if (enemy.getMissileTypePathFinders().equals(PathFinderEnums.StraightLine) ||
+                        enemy.getMissileTypePathFinders().equals(PathFinderEnums.Homing)) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
     }
 
 
