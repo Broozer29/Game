@@ -19,8 +19,8 @@ public class TrianglePathFinderConfig implements PathFinderConfig{
 
     public TrianglePathFinderConfig (GameObject gameObject, MovementConfiguration movementConfiguration) {
         start = gameObject.getCurrentLocation();
-        xMovementSpeed = movementConfiguration.getXMovementSpeed();
-        yMovementSpeed = movementConfiguration.getYMovementSpeed();
+//        xMovementSpeed = movementConfiguration.getXMovementSpeed();
+//        yMovementSpeed = movementConfiguration.getYMovementSpeed();
         isFriendly = gameObject.isFriendly();
         movementDirection = movementConfiguration.getRotation();
         primaryDirectionStepAmount = movementConfiguration.getPrimaryDirectionStepAmount();

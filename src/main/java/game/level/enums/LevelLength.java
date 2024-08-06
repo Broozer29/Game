@@ -1,4 +1,4 @@
-package game.spawner.enums;
+package game.level.enums;
 
 import java.util.Random;
 

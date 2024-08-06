@@ -5,9 +5,9 @@ import VisualAndAudioData.image.ImageEnums;
 import game.items.PlayerInventory;
 import game.items.enums.ItemRarityEnums;
 import game.managers.ShopManager;
-import game.spawner.LevelManager;
-import game.spawner.enums.LevelDifficulty;
-import game.spawner.enums.LevelLength;
+import game.level.LevelManager;
+import game.level.enums.LevelDifficulty;
+import game.level.enums.LevelLength;
 import guiboards.boardEnums.MenuFunctionEnums;
 import guiboards.guicomponents.*;
 import visualobjects.SpriteConfigurations.SpriteConfiguration;
@@ -186,7 +186,7 @@ public class ShopBoardCreator {
     public GUITextCollection createRerollCostText(GUIComponent backgroundCard){
         int xCoordinate = backgroundCard.getXCoordinate();
         int yCoordinate = backgroundCard.getYCoordinate();
-        String string = "REROLL COST: " + 100;
+        String string = "REROLL COST: " + ShopManager.getInstance().getRerollCost();
         GUITextCollection textCollection = new GUITextCollection(xCoordinate,yCoordinate, string);
         GUIComponent lastComponent = textCollection.getComponents().get(textCollection.getComponents().size() - 1);
         GUIComponent firstComponent = textCollection.getComponents().get(0);

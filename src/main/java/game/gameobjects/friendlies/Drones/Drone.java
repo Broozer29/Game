@@ -1,5 +1,6 @@
 package game.gameobjects.friendlies.Drones;
 
+import game.gameobjects.player.PlayerStats;
 import game.gamestate.GameStateInfo;
 import game.movement.Direction;
 import game.movement.MovementConfiguration;
@@ -57,7 +58,7 @@ public class Drone extends FriendlyObject {
 
         int xMovementSpeed = 5;
         int yMovementSpeed = 5;
-        float damage = 15f;
+        float damage = PlayerStats.getInstance().getBaseDamage();
         Direction rotation = Direction.RIGHT;
         MovementPatternSize movementPatternSize = MovementPatternSize.SMALL;
         PathFinder pathFinder = new RegularPathFinder();

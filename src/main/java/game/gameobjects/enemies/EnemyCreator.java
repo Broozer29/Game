@@ -14,7 +14,7 @@ import visualobjects.SpriteConfigurations.SpriteConfiguration;
 public class EnemyCreator {
 
     public static Enemy createEnemy (EnemyEnums type, int xCoordinate, int yCoordinate, Direction movementDirection, float scale,
-                                     int xMovementSpeed, int yMovementSpeed, MovementPatternSize movementPatternSize, boolean boxCollision) {
+                                     float xMovementSpeed, float yMovementSpeed, MovementPatternSize movementPatternSize, boolean boxCollision) {
         SpriteConfiguration spriteConfiguration = new SpriteConfiguration(
                 xCoordinate,
 //                800,
@@ -51,7 +51,7 @@ public class EnemyCreator {
         }
     }
 
-    private static MovementConfiguration createMovementConfiguration (int xCoordinate, int yCoordinate, Direction movementDirection, int xMovementSpeed, int yMovementSpeed,
+    private static MovementConfiguration createMovementConfiguration (int xCoordinate, int yCoordinate, Direction movementDirection, float xMovementSpeed, float yMovementSpeed,
                                                                       MovementPatternSize patternSize, PathFinder pathFinder) {
         MovementConfiguration moveConfig = new MovementConfiguration();
         moveConfig.setCurrentLocation(new Point(xCoordinate, yCoordinate));

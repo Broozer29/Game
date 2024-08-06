@@ -5,7 +5,7 @@ import VisualAndAudioData.audio.enums.LevelSongs;
 import game.managers.AnimationManager;
 import game.gameobjects.player.PlayerStats;
 import VisualAndAudioData.image.ImageEnums;
-import game.spawner.LevelManager;
+import game.level.LevelManager;
 import visualobjects.SpriteConfigurations.SpriteConfiguration;
 import visualobjects.SpriteAnimation;
 

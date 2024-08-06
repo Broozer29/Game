@@ -6,9 +6,9 @@ import java.util.Random;
 
 import game.movement.Direction;
 import game.gameobjects.enemies.enums.EnemyEnums;
-import game.spawner.EnemyFormation;
+import game.level.EnemyFormation;
 import game.gameobjects.powerups.timers.DeprecatedEnemySpawnTimer;
-import game.spawner.FormationCreator;
+import game.level.FormationCreator;
 import VisualAndAudioData.DataClass;
 import VisualAndAudioData.audio.enums.AudioEnums;
 

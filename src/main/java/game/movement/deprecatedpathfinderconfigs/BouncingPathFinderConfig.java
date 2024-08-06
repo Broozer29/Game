@@ -25,8 +25,8 @@ public class BouncingPathFinderConfig implements PathFinderConfig {
         this.spriteHeight = bouncingSprite.getHeight();
         this.spriteCurrentDirection = movementConfiguration.getRotation();
         this.bouncingSprite = bouncingSprite;
-        this.xMovementSpeed = movementConfiguration.getXMovementSpeed();
-        this.yMovementSpeed = movementConfiguration.getYMovementSpeed();
+//        this.xMovementSpeed = movementConfiguration.getXMovementSpeed();
+//        this.yMovementSpeed = movementConfiguration.getYMovementSpeed();
 
     }
 

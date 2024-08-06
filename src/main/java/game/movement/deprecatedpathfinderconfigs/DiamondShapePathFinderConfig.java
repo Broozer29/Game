@@ -18,8 +18,8 @@ public class DiamondShapePathFinderConfig implements PathFinderConfig {
     public DiamondShapePathFinderConfig (GameObject gameObject, MovementConfiguration movementConfiguration) {
         super();
         this.start = gameObject.getCurrentLocation();
-        this.xMovementSpeed = movementConfiguration.getXMovementSpeed();
-        this.yMovementSpeed = movementConfiguration.getYMovementSpeed();
+//        this.xMovementSpeed = movementConfiguration.getXMovementSpeed();
+//        this.yMovementSpeed = movementConfiguration.getYMovementSpeed();
         this.isFriendly = gameObject.isFriendly();
         this.fallbackDirection = movementConfiguration.getRotation();
         this.diamondWidth = movementConfiguration.getDiamondWidth();

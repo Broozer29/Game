@@ -16,8 +16,8 @@ public class ZigZagPathFinderConfig implements PathFinderConfig {
 
     public ZigZagPathFinderConfig (GameObject gameObject, MovementConfiguration movementConfiguration) {
         this.direction = movementConfiguration.getRotation();
-        this.xMovementSpeed = movementConfiguration.getXMovementSpeed();
-        this.yMovementSpeed = movementConfiguration.getYMovementSpeed();
+//        this.xMovementSpeed = movementConfiguration.getXMovementSpeed();
+//        this.yMovementSpeed = movementConfiguration.getYMovementSpeed();
         this.stepsBeforeBounceToOtherDirection = movementConfiguration.getStepsBeforeBounceInOtherDirection();
         this.startPoint = gameObject.getCurrentLocation();
     }

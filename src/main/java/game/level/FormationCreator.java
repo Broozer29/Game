@@ -1,6 +1,6 @@
-package game.spawner;
+package game.level;
 
-import game.spawner.enums.SpawnFormationEnums;
+import game.level.enums.SpawnFormationEnums;
 
 public class FormationCreator {
 

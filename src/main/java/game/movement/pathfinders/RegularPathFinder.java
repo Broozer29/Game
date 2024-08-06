@@ -30,8 +30,8 @@ public class RegularPathFinder implements PathFinder {
         Point end = config.getDestination();
         Direction fallbackDirection = config.getRotation();
         boolean isFriendly = gameObject.isFriendly();
-        int XStepSize = config.getXMovementSpeed();
-        int YStepSize = config.getYMovementSpeed();
+        float XStepSize = config.getXMovementSpeed();
+        float YStepSize = config.getYMovementSpeed();
 
         if (end == null) {
             end = calculateInitialEndpoint(start, fallbackDirection, isFriendly);
@@ -41,8 +41,8 @@ public class RegularPathFinder implements PathFinder {
         Point currentPoint = start;
         pathList.add(start);
 
-        int maxXSteps = XStepSize > 0 ? (DataClass.getInstance().getWindowWidth() / XStepSize) * 2 : 1;
-        int maxYSteps = YStepSize > 0 ? (DataClass.getInstance().getWindowWidth() / YStepSize) * 2 : 1;
+        int maxXSteps = Math.round(XStepSize > 0 ? (DataClass.getInstance().getWindowWidth() / XStepSize) * 2 : 1);
+        int maxYSteps = Math.round(YStepSize > 0 ? (DataClass.getInstance().getWindowWidth() / YStepSize) * 2 : 1);
         int maxSteps = Math.max(maxXSteps, maxYSteps);
 
         int steps = 0;
@@ -120,7 +120,7 @@ public class RegularPathFinder implements PathFinder {
         }
     }
 
-    public Point stepTowards (Point point, Direction direction, int XStepSize, int YStepSize) {
+    public Point stepTowards (Point point, Direction direction, float XStepSize, float YStepSize) {
         int x = point.getX();
         int y = point.getY();
         switch (direction) {

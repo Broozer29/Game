@@ -15,10 +15,10 @@ public class MovementConfiguration {
 	private PathFinder pathFinder;
 	private Path currentPath;
 	private int stepsTaken;
-	private int XMovementSpeed;
-	private int YMovementSpeed;
-	private int lastUsedXMovementSpeed;
-	private int lastUsedYMovementSpeed;
+	private float XMovementSpeed;
+	private float YMovementSpeed;
+	private float lastUsedXMovementSpeed;
+	private float lastUsedYMovementSpeed;
 	private int currentBoardBlock;
 	private int lastKnownTargetX;
 	private int lastKnownTargetY;
@@ -142,42 +142,42 @@ public class MovementConfiguration {
 	}
 
 
-	public int getXMovementSpeed() {
+	public float getXMovementSpeed() {
 		return XMovementSpeed;
 	}
 
 
-	public void setXMovementSpeed(int xMovementSpeed) {
+	public void setXMovementSpeed(float xMovementSpeed) {
 		XMovementSpeed = xMovementSpeed;
 	}
 
 
-	public int getYMovementSpeed() {
+	public float getYMovementSpeed() {
 		return YMovementSpeed;
 	}
 
 
-	public void setYMovementSpeed(int yMovementSpeed) {
+	public void setYMovementSpeed(float yMovementSpeed) {
 		YMovementSpeed = yMovementSpeed;
 	}
 
 
-	public int getLastUsedXMovementSpeed() {
+	public float getLastUsedXMovementSpeed() {
 		return lastUsedXMovementSpeed;
 	}
 
 
-	public void setLastUsedXMovementSpeed(int lastUsedXMovementSpeed) {
+	public void setLastUsedXMovementSpeed(float lastUsedXMovementSpeed) {
 		this.lastUsedXMovementSpeed = lastUsedXMovementSpeed;
 	}
 
 
-	public int getLastUsedYMovementSpeed() {
+	public float getLastUsedYMovementSpeed() {
 		return lastUsedYMovementSpeed;
 	}
 
 
-	public void setLastUsedYMovementSpeed(int lastUsedYMovementSpeed) {
+	public void setLastUsedYMovementSpeed(float lastUsedYMovementSpeed) {
 		this.lastUsedYMovementSpeed = lastUsedYMovementSpeed;
 	}
 

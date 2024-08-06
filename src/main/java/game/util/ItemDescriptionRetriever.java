@@ -7,55 +7,55 @@ public class ItemDescriptionRetriever {
     public static String getDescriptionOfItem(ItemEnums itemEnums){
         switch (itemEnums){
             case PlasmaCoatedBullets -> {
-                return "Attacks deal additional damage over time.";
+                return "Attacks deal additional 150% (+150%) damage every 2 seconds.";
             }
             case PhotonPiercer -> {
-                return "Attacks against enemies with 90% or more health deals additional damage.";
+                return "Attacks against enemies with 90% or more health deals 75% (+75%) additional damage.";
             }
             case CannisterOfGasoline -> {
-                return "Enemies explode on death, creating an explosion that deals damage and ignites enemies.";
+                return "Enemies explode on death, creating an explosion that ignites enemies for 100% (+100%) damage.";
             }
             case SelfRepairingSteel -> {
-                return "After not taking damage for a few seconds, start regenerating hitpoints.";
+                return "After not taking damage for 3 seconds, rapidly regenerate 0.5 (+0.5) hitpoints";
             }
             case Battery -> {
-                return "Your special attack has an additional charge.";
+                return "Your special attack gains 1 (+1) additional charge.";
             }
             case FocusCrystal -> {
-                return "Enemies in close range take additional damage";
+                return "Attacks that hit enemies in close range deal 20% (+20%) additional damage";
             }
             case PrecisionAmplifier -> {
                 return "Gain 10% critical strike chance.";
             }
             case PlatinumSponge -> {
-                return "After not taking damage for a few seconds, gain additional armor.";
+                return "After not taking damage for 3 seconds, gain +100 (+100) additional armor.";
             }
             case EmergencyRepairBot -> {
                 return "When dropping below 25% health, heals you for 75% max hitpoints. Consumed on use.";
             }
             case Overclock -> {
-                return "Increases attack speed";
+                return "Increases attack speed by 15% (+15%)";
             }
             case RepulsionArmorPlate -> {
-                return "Increases armor. Armor reduces damage taken by a percentage";
+                return "Gain 10 armor. Armor increases damage reduction.";
             }
             case ArmorPiercingRounds -> {
-                return "Increases damage dealt to bosses";
+                return "Increases damage dealt to Mercenaries by 25%";
             }
             case EnergySiphon -> {
-                return "Killing an enemy grants a temporary barrier";
+                return "Killing an enemy grants 25 (+25) temporary barrier";
             }
             case MoneyPrinter -> {
                 return "Chance on enemy kill to gain additional minerals";
             }
             case StickyDynamite -> {
-                return "Attacks apply a delayed explosion";
+                return "Every 5th attack applies an instantaneous explosion for 150% (+150%) damage";
             }
             case PlasmaLauncher -> {
-                return "Chance on hitting an enemy to fire a homing plasma shot";
+                return "10% Chance on hitting an enemy to fire a homing plasma shot dealing 300% (+300%) damage";
             }
             case GuardianDrone -> {
-                return "Adds a guardian drone that fires missiles. Max of 8 drones";
+                return "Gain 1 (+1) invincible drone at the start of the round. The drone deals 100% damage";
             }
             case CriticalOverloadCapacitor -> {
                 return "Increases critical damage by 100% (+100%)";
@@ -68,6 +68,12 @@ public class ItemDescriptionRetriever {
             }
             case BouncingModuleAddon -> {
                 return "Piercing missiles bounce towards enemies instead. Bouncing missiles gain +10% damage (+10%) per bounce";
+            }
+            case VIPTicket -> {
+                return "Reduces the cost of refreshing the shop by 20% (+20%)";
+            }
+            case ElectricDestabilizer -> {
+                return "Your Electro Shred now freezes enemies, preventing them from moving and shooting for 2 (+2) seconds";
             }
         }
         return "This item has no description yet";

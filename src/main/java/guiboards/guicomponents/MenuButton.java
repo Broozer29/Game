@@ -1,14 +1,20 @@
 package guiboards.guicomponents;
 
 import VisualAndAudioData.audio.AudioDatabase;
-import game.spawner.LevelManager;
-import game.spawner.enums.LevelDifficulty;
-import game.spawner.enums.LevelLength;
+import VisualAndAudioData.audio.AudioManager;
+import VisualAndAudioData.audio.enums.AudioEnums;
+import game.items.PlayerInventory;
+import game.managers.ShopManager;
+import game.level.LevelManager;
+import game.level.enums.LevelDifficulty;
+import game.level.enums.LevelLength;
 import guiboards.BoardManager;
-import guiboards.boards.ShopBoard;
 import visualobjects.SpriteAnimation;
 import visualobjects.SpriteConfigurations.SpriteAnimationConfiguration;
 import visualobjects.SpriteConfigurations.SpriteConfiguration;
+
+import javax.sound.sampled.UnsupportedAudioFileException;
+import java.io.IOException;
 
 public class MenuButton extends GUIComponent {
 
@@ -48,7 +54,18 @@ public class MenuButton extends GUIComponent {
                 changeLevelLength();
                 break;
             case RerollShop:
-                boardManager.getShopBoard().rerollShop();
+                PlayerInventory inventory = PlayerInventory.getInstance();
+                int rerollCost = ShopManager.getInstance().getRerollCost();
+                if(inventory.getCashMoney() >= rerollCost) {
+                    boardManager.getShopBoard().rerollShop();
+                    inventory.spendCashMoney(rerollCost);
+                } else {
+                    try {
+                        AudioManager.getInstance().addAudio(AudioEnums.NotEnoughMinerals);
+                    } catch (UnsupportedAudioFileException | IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
                 break;
         }
 

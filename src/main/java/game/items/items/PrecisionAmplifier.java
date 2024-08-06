@@ -36,7 +36,7 @@ public class PrecisionAmplifier extends Item {
     }
 
     @Override
-    public void modifyAttackValues(GameObject attack, GameObject target) {
+    public void applyEffectToObject(GameObject attack, GameObject target) {
         float roll = random.nextFloat() * 100; // Roll a number between 0 and 100
 
         // Check if the roll is within the crit chance

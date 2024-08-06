@@ -35,25 +35,25 @@ public class HoverPathFinder implements PathFinder {
         return null;
     }
 
-    private List<Point> calculatePath (Point start, Point end, int maxStepSizeX, int maxStepSizeY) {
+    private List<Point> calculatePath(Point start, Point end, float maxStepSizeX, float maxStepSizeY) {
         List<Point> pathList = new ArrayList<>();
         pathList.add(start);
 
         int totalDistanceX = end.getX() - start.getX();
         int totalDistanceY = end.getY() - start.getY();
-        int stepsToEndpoint = Math.max(Math.abs(totalDistanceX) / maxStepSizeX, Math.abs(totalDistanceY) / maxStepSizeY);
+        int stepsToEndpoint = (int) Math.max(Math.abs(totalDistanceX) / maxStepSizeX, Math.abs(totalDistanceY) / maxStepSizeY);
 
-        double stepSizeX = totalDistanceX / (double) stepsToEndpoint;
-        double stepSizeY = totalDistanceY / (double) stepsToEndpoint;
+        float stepSizeX = totalDistanceX / (float) stepsToEndpoint;
+        float stepSizeY = totalDistanceY / (float) stepsToEndpoint;
 
         for (int i = 1; i <= stepsToEndpoint; i++) {
-            int nextX = start.getX() + (int) (stepSizeX * i);
-            int nextY = start.getY() + (int) (stepSizeY * i);
+            float nextX = start.getX() + stepSizeX * i;
+            float nextY = start.getY() + stepSizeY * i;
             pathList.add(new Point(nextX, nextY));
         }
-
         return pathList;
     }
+
 
     private Point getRandomCoordinateInBlock (int blockIndex, int objectWidth, int objectHeight) {
         // Assuming BoardBlockUpdater.getRandomCoordinateInBlock is implemented as discussed

@@ -29,8 +29,8 @@ public class ZigZagPathFinder implements PathFinder {
         MovementConfiguration config = gameObject.getMovementConfiguration();
         Point start = new Point(gameObject.getXCoordinate(), gameObject.getYCoordinate());
         Direction direction = config.getRotation();
-        int xMovementSpeed = config.getXMovementSpeed();
-        int yMovementSpeed = config.getYMovementSpeed();
+        float xMovementSpeed = config.getXMovementSpeed();
+        float yMovementSpeed = config.getYMovementSpeed();
         int stepsBeforeBounce = config.getStepsBeforeBounceInOtherDirection();
 
         List<Point> waypoints = new ArrayList<>();
@@ -57,7 +57,7 @@ public class ZigZagPathFinder implements PathFinder {
         return new Path(waypoints, direction);
     }
 
-    private Point stepTowards(Point point, Direction direction, int xStepSize, int yStepSize) {
+    private Point stepTowards(Point point, Direction direction, float xStepSize, float yStepSize) {
         int x = point.getX();
         int y = point.getY();
         switch (direction) {

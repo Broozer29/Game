@@ -156,7 +156,9 @@ public class MissileManager {
             if (collisionDetector.detectCollision(enemy, specialAttack)) {
                 specialAttack.applyDamageModification(enemy);
 
-                if (specialAttack.isAllowOnHitEffects() && specialAttack.canApplyEffectAgain()) {
+                if (specialAttack.isAllowOnHitEffects()
+                        && specialAttack.canApplyEffectAgain()
+                ) {
                     specialAttack.applyEffectsWhenPlayerHitsEnemy(enemy);
                     hasAppliedEffects = true;
                 }
@@ -222,9 +224,7 @@ public class MissileManager {
                         if (missile.isDeletesMissiles()) {
                             enemyMissile.destroyMissile();
                             addHitToStatsTracker(missile);
-                        }
-
-                        else if(missile.isDestructable()){
+                        } else if (missile.isDestructable()) {
                             enemyMissile.dealDamageToGameObject(missile);
                             missile.setShowHealthBar(true);
                             enemyMissile.destroyMissile();
@@ -240,9 +240,7 @@ public class MissileManager {
 
                         if (missile.isDeletesMissiles()) {
                             friendlyMissile.destroyMissile();
-                        }
-
-                        else if(missile.isDestructable()){
+                        } else if (missile.isDestructable()) {
                             friendlyMissile.dealDamageToGameObject(missile);
                             missile.setShowHealthBar(true);
                             friendlyMissile.destroyMissile();
@@ -253,8 +251,8 @@ public class MissileManager {
         }
     }
 
-    private void addHitToStatsTracker(Missile missile){
-        if(missile.getOwnerOrCreator().equals(PlayerManager.getInstance().getSpaceship())){
+    private void addHitToStatsTracker (Missile missile) {
+        if (missile.getOwnerOrCreator().equals(PlayerManager.getInstance().getSpaceship())) {
             GameStatsTracker.getInstance().addShotHit(1);
         }
     }

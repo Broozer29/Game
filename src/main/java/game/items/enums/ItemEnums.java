@@ -28,6 +28,8 @@ public enum ItemEnums {
     BarrierSuperSizer(ItemRarityEnums.Common, ItemCategory.Defense, ImageEnums.Starcraft2_Fire_Hardened_Shields, "Barrier Super Sizer"),
     DrillerModule(ItemRarityEnums.Legendary, ItemCategory.Offense, ImageEnums.Starcraft2_Pulse_Laser, "Driller Module"),
     BouncingModuleAddon(ItemRarityEnums.Legendary, ItemCategory.Offense, ImageEnums.Test_Image, "Bouncing Module Addon"),
+    VIPTicket(ItemRarityEnums.Legendary, ItemCategory.Utility, ImageEnums.Test_Image, "VIP Ticket"),
+    ElectricDestabilizer(ItemRarityEnums.Legendary, ItemCategory.Offense, ImageEnums.Test_Image, "Electric Destabilizer"),
     StickyDynamite(ItemRarityEnums.Common, ItemCategory.Offense, ImageEnums.StickyDynamite, "Sticky Dynamite");
 
 

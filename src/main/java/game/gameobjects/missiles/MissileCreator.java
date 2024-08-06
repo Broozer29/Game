@@ -40,7 +40,7 @@ public class MissileCreator {
         return missileConfiguration;
     }
 
-    public MovementConfiguration createMissileMovementConfig (int xSpeed, int ySpeed, PathFinder pathFinder, MovementPatternSize movementPatternSize, Direction rotation) {
+    public MovementConfiguration createMissileMovementConfig (float xSpeed, float ySpeed, PathFinder pathFinder, MovementPatternSize movementPatternSize, Direction rotation) {
         MovementConfiguration movementConfiguration = new MovementConfiguration();
         movementConfiguration.setXMovementSpeed(xSpeed);
         movementConfiguration.setYMovementSpeed(ySpeed);

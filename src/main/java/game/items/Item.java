@@ -25,7 +25,7 @@ public abstract class Item implements ItemInterface{
     }
 
     @Override
-    public void modifyAttackValues (GameObject attack, GameObject target){
+    public void applyEffectToObject (GameObject applier, GameObject target){
         //Modifies the ATTACK damage done to TARGET
     };
 

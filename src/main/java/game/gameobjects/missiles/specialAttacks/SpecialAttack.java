@@ -14,7 +14,6 @@ import visualobjects.SpriteAnimation;
 public class SpecialAttack extends GameObject {
     protected List<Missile> specialAttackMissiles = new ArrayList<Missile>();
     protected boolean allowRepeatedDamage;
-    protected boolean allowOnHitEffects;
     protected float onHitInterval;
     protected double lastOnHitInterval = 0f;
 
@@ -81,13 +80,6 @@ public class SpecialAttack extends GameObject {
         this.allowRepeatedDamage = allowRepeatedDamage;
     }
 
-    public boolean isAllowOnHitEffects () {
-        return allowOnHitEffects;
-    }
-
-    public void setAllowOnHitEffects (boolean allowOnHitEffects) {
-        this.allowOnHitEffects = allowOnHitEffects;
-    }
 
     public void checkEnemySpecialAttackCollision (GameObject gameObject) {
         if (this.getSpecialAttackMissiles().isEmpty()) {
@@ -101,5 +93,9 @@ public class SpecialAttack extends GameObject {
                 }
             }
         }
+    }
+
+    public boolean isAllowOnHitEffects () {
+        return this.appliesOnHitEffects;
     }
 }

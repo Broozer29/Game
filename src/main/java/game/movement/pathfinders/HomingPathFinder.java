@@ -171,9 +171,9 @@ public class HomingPathFinder implements PathFinder {
 
     //Custom method from SpriteMover specifically so homing projectiles can line up
     // Custom method for homing projectiles to align precisely with target center
-    public Point calculateNextPoint (MovementConfiguration movementConfiguration, Direction direction, int XStepSize, int YStepSize, GameObject target) {
-        int x = movementConfiguration.getCurrentLocation().getX();
-        int y = movementConfiguration.getCurrentLocation().getY();
+    public Point calculateNextPoint (MovementConfiguration movementConfiguration, Direction direction, float XStepSize, float YStepSize, GameObject target) {
+        float x = movementConfiguration.getCurrentLocation().getX();
+        float y = movementConfiguration.getCurrentLocation().getY();
         int targetX = target.getCenterXCoordinate() - target.getWidth() / 2; // Adjust target coordinates for center alignment
         int targetY = target.getCenterYCoordinate() - target.getHeight() / 2;
 
@@ -182,8 +182,8 @@ public class HomingPathFinder implements PathFinder {
         double distanceToTargetY = targetY - y;
 
         // Dynamically adjust step size based on distance to prevent overshooting
-        int adjustedXStepSize = Math.abs(distanceToTargetX) < XStepSize ? (int) Math.abs(distanceToTargetX) : XStepSize;
-        int adjustedYStepSize = Math.abs(distanceToTargetY) < YStepSize ? (int) Math.abs(distanceToTargetY) : YStepSize;
+        double adjustedXStepSize = Math.abs(distanceToTargetX) < XStepSize ? Math.abs(distanceToTargetX) : XStepSize;
+        double adjustedYStepSize = Math.abs(distanceToTargetY) < YStepSize ? Math.abs(distanceToTargetY) : YStepSize;
 
         // Move towards the target with adjusted step sizes
         x += Integer.signum((int) distanceToTargetX) * adjustedXStepSize;

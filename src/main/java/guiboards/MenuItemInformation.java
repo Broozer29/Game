@@ -1,5 +1,6 @@
 package guiboards;
 
+import game.gameobjects.player.PlayerStats;
 import game.items.PlayerInventory;
 import game.items.enums.ItemRarityEnums;
 import game.items.enums.ItemEnums;
@@ -41,7 +42,7 @@ public class MenuItemInformation {
     }
 
     public boolean canAfford(){
-        return PlayerInventory.getInstance().getCashMoney() >= this.cost;
+        return PlayerInventory.getInstance().getCashMoney() >= cost;
     }
 
     public void setAvailable (boolean available) {

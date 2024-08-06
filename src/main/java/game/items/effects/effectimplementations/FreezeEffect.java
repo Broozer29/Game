@@ -1,47 +1,39 @@
 package game.items.effects.effectimplementations;
 
+import game.gameobjects.GameObject;
+import game.gameobjects.enemies.Enemy;
 import game.gamestate.GameStateInfo;
+import game.items.effects.EffectActivationTypes;
 import game.items.effects.EffectIdentifiers;
 import game.items.effects.EffectInterface;
-import game.items.effects.EffectActivationTypes;
-import game.gameobjects.GameObject;
 import visualobjects.SpriteAnimation;
 
-import java.util.Objects;
 import java.util.Random;
 
-public class DamageOverTime implements EffectInterface {
+public class FreezeEffect implements EffectInterface {
 
-    private EffectActivationTypes effectTypesEnums;
-    private float damage;
     private double durationInSeconds;
     private double startTimeInSeconds;
-    private int dotStacks;
+
+
     private boolean offsetApplied = false;
     private boolean scaledToTarget = false;
 
     private SpriteAnimation animation;
     private EffectIdentifiers effectIdentifier;
+    private EffectActivationTypes effectTypesEnums;
+    private GameObject target;
 
-    public DamageOverTime (float damage, double durationInSeconds, SpriteAnimation spriteAnimation, EffectIdentifiers effectIdentifier) {
-        this.damage = damage;
+    public FreezeEffect(double durationInSeconds, SpriteAnimation spriteAnimation){
+        this.effectIdentifier = EffectIdentifiers.ElectricDestabilizerFreeze;
         this.durationInSeconds = durationInSeconds;
         this.effectTypesEnums = EffectActivationTypes.CheckEveryGameTick;
-        this.dotStacks = 1;
-        this.startTimeInSeconds = GameStateInfo.getInstance().getGameSeconds();
         this.animation = spriteAnimation;
-        this.effectIdentifier = effectIdentifier;
+        this.startTimeInSeconds = GameStateInfo.getInstance().getGameSeconds();
     }
-
-    public void updateDamage (float damage) {
-        this.damage = damage;
-    }
-
-    private double lastDamageTime = 0;
-    private final double damageInterval = 1.0; // 2 seconds delay between damage ticks
-
     @Override
-    public void activateEffect(GameObject target) {
+    public void activateEffect (GameObject target) {
+        this.target = target;
         double currentTime = GameStateInfo.getInstance().getGameSeconds();
         if (animation != null) {
             if (!scaledToTarget) {
@@ -53,17 +45,15 @@ public class DamageOverTime implements EffectInterface {
                 offsetApplied = true;
             }
         }
+//
         if (currentTime - startTimeInSeconds < durationInSeconds) {
-            if (currentTime - lastDamageTime >= damageInterval) {
-                target.takeDamage(this.damage * dotStacks, false);
-                lastDamageTime = currentTime; // Update the last damage time
+            target.setAllowedToMove(false);
+            if(target instanceof Enemy){
+                ((Enemy) target).setAllowedToFire(false);
             }
-        } else {
-            this.dotStacks = 0;
         }
     }
 
-    //Scales animations if needed, should be added to specific animations & enemies
     private void scaleAnimation (GameObject target) {
         animation.cropAnimation();
         // Retrieve animation dimensions
@@ -81,8 +71,8 @@ public class DamageOverTime implements EffectInterface {
         }
 
         // Calculate the maximum allowed dimensions
-        int maxAllowedWidth = (int) (enemyWidth * 0.4);
-        int maxAllowedHeight = (int) (enemyHeight * 0.4);
+        int maxAllowedWidth = (int) (enemyWidth * 0.6);
+        int maxAllowedHeight = (int) (enemyHeight * 0.6);
 
         // Calculate the current scale of the animation
         float currentScale = this.animation.getScale();
@@ -142,9 +132,24 @@ public class DamageOverTime implements EffectInterface {
             if (animation != null) {
                 animation.setVisible(false);
             }
+            target.setAllowedToMove(true);
+
+            if(target instanceof Enemy){
+                ((Enemy) target).setAllowedToFire(true);
+            }
             return true;
         } else return false;
 
+    }
+
+    @Override
+    public SpriteAnimation getAnimation () {
+        return animation;
+    }
+
+    @Override
+    public EffectActivationTypes getEffectTypesEnums () {
+        return this.effectTypesEnums;
     }
 
     @Override
@@ -157,45 +162,31 @@ public class DamageOverTime implements EffectInterface {
 
     @Override
     public void increaseEffectStrength () {
-//        this.dotStacks += 1;
-    }
-
-    @Override
-    public EffectInterface copy () {
-        DamageOverTime copiedEffect = new DamageOverTime(this.damage, this.durationInSeconds, this.animation.clone(), effectIdentifier);
-        // Copy other necessary fields
-        copiedEffect.dotStacks = this.dotStacks;
-        // Note: startTimeInSeconds may need special handling depending on desired behavior
-        return copiedEffect;
-    }
-
-    public SpriteAnimation getAnimation () {
-        return animation;
-    }
-
-    public void setAnimation (SpriteAnimation animation) {
-        this.animation = animation;
-    }
-
-    public EffectActivationTypes getEffectTypesEnums () {
-        return effectTypesEnums;
-    }
-
-    @Override
-    public boolean equals (Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        DamageOverTime that = (DamageOverTime) o;
-        return Float.compare(damage, that.damage) == 0 && Double.compare(durationInSeconds, that.durationInSeconds) == 0 && Double.compare(startTimeInSeconds, that.startTimeInSeconds) == 0 && dotStacks == that.dotStacks && offsetApplied == that.offsetApplied && effectTypesEnums == that.effectTypesEnums && Objects.equals(animation, that.animation);
-    }
-
-    @Override
-    public int hashCode () {
-        return Objects.hash(effectTypesEnums);
+//does nothing
     }
 
     @Override
     public EffectIdentifiers getEffectIdentifier () {
         return effectIdentifier;
     }
+
+    @Override
+    public EffectInterface copy () {
+        FreezeEffect copiedEffect = new FreezeEffect(this.durationInSeconds, this.animation);
+        // Copy other necessary fields
+        copiedEffect.startTimeInSeconds = this.startTimeInSeconds;
+        copiedEffect.effectIdentifier = this.effectIdentifier;
+        // Note: startTimeInSeconds may need special handling depending on desired behavior
+        return copiedEffect;
+    }
+
+    public void setEffectIdentifier (EffectIdentifiers effectIdentifier) {
+        this.effectIdentifier = effectIdentifier;
+    }
+
+    public void setEffectTypesEnums (EffectActivationTypes effectTypesEnums) {
+        this.effectTypesEnums = effectTypesEnums;
+    }
+
+
 }

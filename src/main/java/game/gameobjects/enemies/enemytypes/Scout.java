@@ -27,7 +27,8 @@ public class Scout extends Enemy {
         destroyedExplosionfiguration.getSpriteConfiguration().setImageType(EnemyEnums.Scout.getDestructionImageEnum());
         this.destructionAnimation = new SpriteAnimation(destroyedExplosionfiguration);
         this.destructionAnimation.setAnimationScale(this.scale / 1.5f);
-        this.attackSpeed = this.enemyType.getAttackSpeed();
+//        this.attackSpeed = this.enemyType.getAttackSpeed();
+        this.attackSpeed = 1;
         this.damage = MissileEnums.LaserBullet.getDamage();
 
 
@@ -35,7 +36,7 @@ public class Scout extends Enemy {
             HoverPathFinder pathFinder = (HoverPathFinder) this.movementConfiguration.getPathFinder();
             movementConfiguration.setBoardBlockToHoverIn(7);
             pathFinder.setShouldDecreaseBoardBlock(true);
-            pathFinder.setDecreaseBoardBlockAmountBy(1);
+            pathFinder.setDecreaseBoardBlockAmountBy(2);
         }
     }
 

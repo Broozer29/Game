@@ -30,7 +30,7 @@ public class PhotonPiercer extends Item {
     }
 
     @Override
-    public void modifyAttackValues (GameObject attack, GameObject target) {
+    public void applyEffectToObject (GameObject attack, GameObject target) {
         // Check if the current hit points are 90% or more of the maximum hit points
         if (target.getCurrentHitpoints() >= 0.9 * target.getMaxHitPoints()) {
             attack.setDamage(attack.getDamage() * damageAmplificationModifier);

@@ -29,8 +29,8 @@ public class RegularPathFinderConfig implements PathFinderConfig {
 		super();
 		this.start = gameObject.getCurrentLocation();
 		this.end = movementConfiguration.getDestination();
-		this.xMovementSpeed = movementConfiguration.getXMovementSpeed();
-		this.yMovementSpeed = movementConfiguration.getYMovementSpeed();
+//		this.xMovementSpeed = movementConfiguration.getXMovementSpeed();
+//		this.yMovementSpeed = movementConfiguration.getYMovementSpeed();
 		this.isFriendly = gameObject.isFriendly();
 		this.fallbackDirection = movementConfiguration.getRotation();
 	}

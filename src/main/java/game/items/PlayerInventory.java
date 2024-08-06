@@ -17,7 +17,10 @@ public class PlayerInventory {
     private float cashMoney = 100;
     private int rerollTokens = 0;
     private PlayerInventory () {
-//        addItem(ItemEnums.DrillerModule);
+        addItem(ItemEnums.ElectricDestabilizer);
+//        addItem(ItemEnums.VIPTicket);
+//        addItem(ItemEnums.VIPTicket);
+//        addItem(ItemEnums.VIPTicket);
 //        addItem(ItemEnums.BouncingModuleAddon);
 //        addItem(ItemEnums.PlasmaCoatedBullets);
     }
@@ -38,13 +41,21 @@ public class PlayerInventory {
             if (existingItem == null) {
                 Item newItem = createItemFromEnum(itemEnum);
                 if (newItem != null) {
+                    activateItem(newItem);
                     return newItem;
                 }
             } else {
                 existingItem.increaseQuantityOfItem(1);
+                activateItem(existingItem);
             }
             return existingItem;
         });
+    }
+
+    private void activateItem(Item item){
+        if(item.getEffectType().equals(EffectActivationTypes.UponPurchase)){
+            item.applyEffectToObject(null);
+        }
     }
 
     private Item createItemFromEnum (ItemEnums itemEnum) {
@@ -91,6 +102,10 @@ public class PlayerInventory {
                 return new DrillerModule();
             case BouncingModuleAddon:
                 return new BouncingModuleAddon();
+            case VIPTicket:
+                return new VIPTicket();
+            case ElectricDestabilizer:
+                return new ElectricStabilizer();
             default:
                 System.out.println("I tried to create: " + itemEnum + " but fell in default, did you forget to add it to the inventory creation?");
                 return null;

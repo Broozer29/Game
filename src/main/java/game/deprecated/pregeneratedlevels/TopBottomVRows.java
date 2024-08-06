@@ -6,7 +6,7 @@ import java.util.List;
 import game.movement.Direction;
 import game.gameobjects.enemies.enums.EnemyEnums;
 import game.gameobjects.powerups.timers.DeprecatedEnemySpawnTimer;
-import game.spawner.FormationCreator;
+import game.level.FormationCreator;
 import VisualAndAudioData.DataClass;
 
 //Not to scale, just a representation of the pattern

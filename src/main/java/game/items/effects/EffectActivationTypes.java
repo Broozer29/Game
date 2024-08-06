@@ -7,5 +7,6 @@ public enum EffectActivationTypes {
     CheckEveryGameTick, //Something that gets checked every gametick wether it should fire
     OnPlayerHit, // After the player is hit by something (not by taking damage!)
     OnObjectDeath,
+    UponPurchase, //Directly after it is purchased, for out-of-game variables only!
 
 }

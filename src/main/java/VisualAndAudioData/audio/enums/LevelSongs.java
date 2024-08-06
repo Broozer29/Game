@@ -1,8 +1,7 @@
 package VisualAndAudioData.audio.enums;
 
 import VisualAndAudioData.image.ImageEnums;
-import com.badlogic.gdx.Audio;
-import game.spawner.enums.*;
+import game.level.enums.*;
 
 import java.util.Arrays;
 import java.util.List;

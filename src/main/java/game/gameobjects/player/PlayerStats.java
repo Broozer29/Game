@@ -71,6 +71,9 @@ public class PlayerStats {
     private int amountOfDrones = 0;
     private int maximumAmountOfDrones = 10;
 
+    //Willekeurig:
+    private int shopRerollDiscount = 0;
+
 
     public void initDefaultSettings () {
         piercingMissilesAmount = 0;
@@ -90,7 +93,7 @@ public class PlayerStats {
         setMovementSpeed(4);
 
         // Special attack
-        setSpecialAttackSpeed(1);
+        setSpecialAttackSpeed(1.25f);
         setMaxSpecialAttackCharges(1);
 
         //Modifiers/multipliers
@@ -139,7 +142,7 @@ public class PlayerStats {
 
 
     private void initLaserbeamPreset () {
-        setAttackSpeed(0.25f);
+        setAttackSpeed(0.3125f);
         setBaseDamage(20);
         setPlayerMissileImage(ImageEnums.AlienLaserBeamAnimated);
         setPlayerMissileImpactImage(ImageEnums.Impact_Explosion_One);
@@ -482,5 +485,13 @@ public class PlayerStats {
 
     public void addPiercingMissilesAmount (int piercingMissilesAmount) {
         this.piercingMissilesAmount += piercingMissilesAmount;
+    }
+
+    public int getShopRerollDiscount () {
+        return shopRerollDiscount;
+    }
+
+    public void setShopRerollDiscount (int shopRerollDiscount) {
+        this.shopRerollDiscount = shopRerollDiscount;
     }
 }

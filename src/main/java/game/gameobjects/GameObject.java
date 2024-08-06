@@ -382,13 +382,14 @@ public class GameObject extends Sprite {
             List<Item> onHitItems = PlayerInventory.getInstance().getItemsByApplicationMethod(ItemApplicationEnum.AfterCollision);
             for (Item item : onHitItems) {
                 item.applyEffectToObject(object);
+                item.applyEffectToObject(this, object);
             }
         }
     }
 
     public void applyDamageModification (GameObject target) {
         for (Item item : PlayerInventory.getInstance().getItemsByApplicationMethod(ItemApplicationEnum.BeforeCollision)) {
-            item.modifyAttackValues(this, target);
+            item.applyEffectToObject(this, target);
         }
     }
 

@@ -7,7 +7,7 @@ public class ElectroShred extends SpecialAttack {
         super(spriteAnimationConfiguration, missileConfiguration);
         this.setObjectType("ElectroShred");
         this.allowRepeatedDamage = true;
-        this.allowOnHitEffects = true;
+        this.appliesOnHitEffects = true;
         this.onHitInterval = 0.3f;
     }
 }

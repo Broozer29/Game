@@ -39,21 +39,23 @@ public class BoardManager extends JFrame {
 
 	private void playMenuMusic() {
 		if (audioManager.getBackgroundMusic() == null) {
-			try {
-				audioManager.playBackgroundMusic(AudioEnums.mainmenu, true);
-			} catch (UnsupportedAudioFileException | IOException e) {
-				e.printStackTrace();
-			}
+			System.out.println("Muted background music");
+//			try {
+//				audioManager.playBackgroundMusic(AudioEnums.mainmenu, true);
+//			} catch (UnsupportedAudioFileException | IOException e) {
+//				e.printStackTrace();
+//			}
 		}
 	}
 
 	private void playShopMenuMusic(){
 		if (audioManager.getBackgroundMusic() == null) {
-			try {
-				audioManager.playBackgroundMusic(AudioEnums.Lemmino_Firecracker, true);
-			} catch (UnsupportedAudioFileException | IOException e) {
-				e.printStackTrace();
-			}
+			System.out.println("Muted background music");
+//			try {
+//				audioManager.playBackgroundMusic(AudioEnums.Lemmino_Firecracker, true);
+//			} catch (UnsupportedAudioFileException | IOException e) {
+//				e.printStackTrace();
+//			}
 		}
 	}
 

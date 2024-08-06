@@ -14,7 +14,7 @@ public class StickyDynamite extends Item {
 
     private float explosionDamage;
 
-    public StickyDynamite(){
+    public StickyDynamite () {
         super(ItemEnums.StickyDynamite, 1, EffectActivationTypes.CheckEveryGameTick, ItemApplicationEnum.AfterCollision);
         this.explosionDamage = calculateExplosionDamage(quantity);
     }
@@ -28,11 +28,21 @@ public class StickyDynamite extends Item {
         return 75f * quantity;
     }
 
+
+    private int stackCounter = 0;
+
     @Override
     public void applyEffectToObject (GameObject gameObject) {
-        DormentExplosion dormentExplosion = new DormentExplosion(explosionDamage, ImageEnums.StickyDynamiteExplosion, DormentExplosionActivationMethods.Timed, false
-        , EffectIdentifiers.StickyDynamiteDormantExplosion, 2, effectType, false);
-        gameObject.addEffect(dormentExplosion);
+        stackCounter += 1;
+
+        if (stackCounter >= 5) {
+            DormentExplosion dormentExplosion = new DormentExplosion(explosionDamage, ImageEnums.StickyDynamiteExplosion,
+                    DormentExplosionActivationMethods.Timed, false, EffectIdentifiers.StickyDynamiteDormantExplosion,
+                    0.05f, effectType, false);
+            gameObject.addEffect(dormentExplosion);
+            stackCounter = 0;
+        }
+
     }
 
 }

@@ -1,6 +1,7 @@
 package game.items.items;
 
 import VisualAndAudioData.image.ImageEnums;
+import game.gameobjects.player.PlayerStats;
 import game.items.Item;
 import game.items.effects.DormentExplosionActivationMethods;
 import game.items.effects.EffectIdentifiers;
@@ -32,11 +33,11 @@ public class CannisterOfGasoline extends Item {
     }
 
     private float calculateBurningDamage (int quantity) {
-        return quantity / 3f;
+        return PlayerStats.getInstance().getBaseDamage() * quantity;
     }
 
     private float calculateExplosionDamage (int quantity) {
-        return 25 * quantity;
+        return 0;
     }
 
     private int calculateDuration (int quantity) {

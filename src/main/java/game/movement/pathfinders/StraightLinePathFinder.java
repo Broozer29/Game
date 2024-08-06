@@ -20,15 +20,15 @@ public class StraightLinePathFinder implements PathFinder {
 
         Point start = new Point(gameObject.getXCoordinate(), gameObject.getYCoordinate());
         Point end = config.getDestination();
-        int maxStepSizeX = config.getXMovementSpeed();
-        int maxStepSizeY = config.getYMovementSpeed();
+        float maxStepSizeX = config.getXMovementSpeed();
+        float maxStepSizeY = config.getYMovementSpeed();
 
         List<Point> pathList = new ArrayList<>();
         pathList.add(start);
 
         int totalDistanceX = end.getX() - start.getX();
         int totalDistanceY = end.getY() - start.getY();
-        int stepsToEndpoint = Math.max(Math.abs(totalDistanceX) / maxStepSizeX, Math.abs(totalDistanceY) / maxStepSizeY);
+        int stepsToEndpoint = Math.round(Math.max(Math.abs(totalDistanceX) / maxStepSizeX, Math.abs(totalDistanceY) / maxStepSizeY));
 
         double stepSizeX = totalDistanceX / (double) stepsToEndpoint;
         double stepSizeY = totalDistanceY / (double) stepsToEndpoint;

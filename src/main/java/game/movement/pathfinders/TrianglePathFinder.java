@@ -24,8 +24,8 @@ public class TrianglePathFinder implements PathFinder {
     public Path findPath (GameObject gameObject) {
 
         MovementConfiguration config = gameObject.getMovementConfiguration();
-        int xMovementSpeed = config.getXMovementSpeed(); // Horizontal step size
-        int yMovementSpeed = config.getYMovementSpeed(); // Vertical step size
+        float xMovementSpeed = config.getXMovementSpeed(); // Horizontal step size
+        float yMovementSpeed = config.getYMovementSpeed(); // Vertical step size
         Point start = new Point(gameObject.getXCoordinate(), gameObject.getYCoordinate());
 
         List<Point> waypoints = new ArrayList<>();
@@ -123,7 +123,7 @@ public class TrianglePathFinder implements PathFinder {
     }
 
     // Utility method for stepping towards a direction
-    private Point stepTowards (Point point, Direction direction, int XStepSize, int YStepSize) {
+    private Point stepTowards (Point point, Direction direction, float XStepSize, float YStepSize) {
         int x = point.getX();
         int y = point.getY();
         switch (direction) {

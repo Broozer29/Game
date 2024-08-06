@@ -188,13 +188,16 @@ public class ShopBoard extends JPanel implements ActionListener {
         playerInventoryMenuObjects.clear();
 
 
-//        fifthRow.clear();
 //        fifthRow.add(returnToMainMenu.getComponents().get(0));
         addAllButFirstComponent(returnToMainMenu);
 //        fifthRow.add(nextLevelButton.getComponents().get(0));
         addAllButFirstComponent(nextLevelButton);
 //        fifthRow.add(playerInventoryButton.getComponents().get(0));
         addAllButFirstComponent(playerInventoryButton);
+
+        if(!thirdRow.contains(rerollButton)) {
+            thirdRow.add(rerollButton);
+        }
 
 
 

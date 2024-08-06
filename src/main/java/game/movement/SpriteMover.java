@@ -218,9 +218,9 @@ public class SpriteMover {
     }
 
     // Needed for non-orbiting PathFinders, so added to missiles
-    private Point calculateNextPoint (Point currentLocation, Direction direction, int XStepSize, int YStepSize) {
-        int x = currentLocation.getX();
-        int y = currentLocation.getY();
+    private Point calculateNextPoint (Point currentLocation, Direction direction, float XStepSize, float YStepSize) {
+        float x = currentLocation.getX();
+        float y = currentLocation.getY();
 
         switch (direction) {
             case UP:
@@ -255,7 +255,10 @@ public class SpriteMover {
                 // no movement
                 break;
         }
-        return new Point(x, y);
+
+
+
+        return new Point(Math.round(x), Math.round(y));
     }
 
 }

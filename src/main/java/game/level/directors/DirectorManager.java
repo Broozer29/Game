@@ -1,4 +1,4 @@
-package game.spawner.directors;
+package game.level.directors;
 
 import game.gamestate.GameStateInfo;
 import game.gameobjects.enemies.enums.EnemyEnums;

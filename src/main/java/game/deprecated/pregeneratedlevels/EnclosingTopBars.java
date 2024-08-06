@@ -5,7 +5,7 @@ import java.util.List;
 
 import game.gameobjects.enemies.enums.EnemyEnums;
 import game.gameobjects.powerups.timers.DeprecatedEnemySpawnTimer;
-import game.spawner.FormationCreator;
+import game.level.FormationCreator;
 import VisualAndAudioData.DataClass;
 
 public class EnclosingTopBars implements PregeneratedFormation {

@@ -1,4 +1,4 @@
-package game.spawner;
+package game.level;
 
 import game.movement.Direction;
 import game.gameobjects.enemies.enums.EnemyEnums;
@@ -24,7 +24,7 @@ public class EnemyFormation {
 	}
 
 	public void spawnFormation(int baseX, int baseY, EnemyEnums defaultEnemyType, EnemyEnums escortedType, Direction direction,
-							   int xMovementSpeed, int yMovementSpeed) {
+							   float xMovementSpeed, float yMovementSpeed) {
 		for (int i = 0; i < formationHeight; i++) {
 			for (int j = 0; j < formationWidth; j++) {
 				char type = formationPattern[i][j].charAt(0);

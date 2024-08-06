@@ -2,8 +2,8 @@ package VisualAndAudioData.audio;
 
 import VisualAndAudioData.audio.enums.AudioEnums;
 import VisualAndAudioData.audio.enums.LevelSongs;
-import game.spawner.enums.LevelDifficulty;
-import game.spawner.enums.LevelLength;
+import game.level.enums.LevelDifficulty;
+import game.level.enums.LevelLength;
 
 import java.io.IOException;
 import java.util.*;

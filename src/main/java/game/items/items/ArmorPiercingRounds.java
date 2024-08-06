@@ -13,7 +13,7 @@ public class ArmorPiercingRounds extends Item {
     private float damageModifier;
 
     public ArmorPiercingRounds(){
-        super(ItemEnums.ArmorPiercingRounds, 1, EffectActivationTypes.DamageModification, ItemApplicationEnum.AfterCollision);
+        super(ItemEnums.ArmorPiercingRounds, 1, EffectActivationTypes.DamageModification, ItemApplicationEnum.BeforeCollision);
         calculateDamageModifier();
     }
 
@@ -22,10 +22,10 @@ public class ArmorPiercingRounds extends Item {
     }
 
     @Override
-    public void modifyAttackValues (GameObject attack, GameObject target){
+    public void applyEffectToObject (GameObject applier, GameObject target){
         if(target instanceof Enemy){
-            if(((Enemy) target).getEnemyType().getEnemyCategory() == EnemyCategory.Boss){
-                attack.setDamage(attack.getDamage() * damageModifier);
+            if(((Enemy) target).getEnemyType().getEnemyCategory() == EnemyCategory.Mercenary){
+                applier.setDamage(applier.getDamage() * damageModifier);
             }
         }
     };

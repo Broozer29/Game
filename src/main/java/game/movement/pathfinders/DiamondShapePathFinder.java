@@ -30,8 +30,8 @@ public class DiamondShapePathFinder implements PathFinder {
     public Path findPath(GameObject gameObject) {
 
         Point start = new Point(gameObject.getXCoordinate(), gameObject.getYCoordinate());
-        int xMovementSpeed = gameObject.getMovementConfiguration().getXMovementSpeed();
-        int yMovementSpeed = gameObject.getMovementConfiguration().getYMovementSpeed();
+        float xMovementSpeed = gameObject.getMovementConfiguration().getXMovementSpeed();
+        float yMovementSpeed = gameObject.getMovementConfiguration().getYMovementSpeed();
         int zigzagWidth = gameObject.getMovementConfiguration().getDiamondWidth(); // Use the configured zigzag width
         int zigzagHeight = gameObject.getMovementConfiguration().getDiamondHeight(); // Use the configured zigzag height
 
@@ -138,7 +138,7 @@ public class DiamondShapePathFinder implements PathFinder {
         return null;
     }
 
-    public Point stepTowards(Point point, Direction direction, int XStepSize, int YStepSize) {
+    public Point stepTowards(Point point, Direction direction, float XStepSize, float YStepSize) {
         int x = point.getX();
         int y = point.getY();
         switch (direction) {

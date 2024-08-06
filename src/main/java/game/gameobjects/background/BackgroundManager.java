@@ -3,7 +3,7 @@ package game.gameobjects.background;
 import java.awt.image.BufferedImage;
 import java.util.*;
 
-import game.spawner.SpawningCoordinator;
+import game.level.SpawningCoordinator;
 import VisualAndAudioData.DataClass;
 import VisualAndAudioData.image.ImageDatabase;
 import VisualAndAudioData.image.ImageEnums;

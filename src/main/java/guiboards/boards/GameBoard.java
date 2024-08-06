@@ -27,9 +27,9 @@ import game.gameobjects.GameObject;
 import game.gameobjects.powerups.timers.TimerManager;
 import game.gamestate.GameStatsTracker;
 import game.movement.Direction;
-import game.spawner.directors.DirectorManager;
+import game.level.directors.DirectorManager;
 import game.gamestate.SpawningMechanic;
-import game.spawner.LevelManager;
+import game.level.LevelManager;
 import game.managers.AnimationManager;
 import game.UI.GameUICreator;
 import game.gameobjects.neutral.ExplosionManager;
@@ -640,9 +640,14 @@ public class GameBoard extends JPanel implements ActionListener {
     }
 
     private void drawSongProgressBar (Graphics2D g) {
+        long currentMusicFramePosition = 0;
+        long maximumMusicFrames = 1;
         // Get the current and maximum frame positions of the background music
-        long currentMusicFramePosition = AudioManager.getInstance().getBackgroundMusic().getFramePosition();
-        long maximumMusicFrames = AudioManager.getInstance().getBackgroundMusic().getFrameLength();
+        if(AudioManager.getInstance().getBackgroundMusic() != null){
+            currentMusicFramePosition = AudioManager.getInstance().getBackgroundMusic().getFramePosition();
+            maximumMusicFrames = AudioManager.getInstance().getBackgroundMusic().getFrameLength();
+        }
+
 
         UIObject progressBar = uiManager.getProgressBar();
         UIObject progressBarFilling = uiManager.getProgressBarFilling();

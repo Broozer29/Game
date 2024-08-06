@@ -31,8 +31,9 @@ public class FocusCrystal extends Item {
         //Not needed
     }
 
-    @Override
-    public void modifyAttackValues (GameObject attack, GameObject target) {
+
+
+    public void applyEffectToObject (GameObject attack, GameObject target) {
 
         GameObject ownerOrCreator = attack.getOwnerOrCreator();
         int shooterXCoordinate = ownerOrCreator.getCenterXCoordinate();

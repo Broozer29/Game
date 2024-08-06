@@ -1,17 +1,17 @@
-package game.spawner.directors;
+package game.level.directors;
 
 import VisualAndAudioData.DataClass;
 import game.gamestate.GameStateInfo;
 import game.movement.deprecatedpathfinderconfigs.MovementPatternSize;
 import game.gameobjects.enemies.Enemy;
 import game.gameobjects.enemies.EnemyCreator;
-import game.spawner.LevelManager;
+import game.level.LevelManager;
 import game.movement.Direction;
 import game.gameobjects.enemies.enums.EnemyCategory;
 import game.gameobjects.enemies.enums.EnemyEnums;
-import game.spawner.EnemyFormation;
-import game.spawner.FormationCreator;
-import game.spawner.enums.SpawnFormationEnums;
+import game.level.EnemyFormation;
+import game.level.FormationCreator;
+import game.level.enums.SpawnFormationEnums;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -139,7 +139,7 @@ public class Director {
 
     private float calculateFormationCost(SpawnFormationEnums formationType, EnemyEnums enemyType) {
         float enemyCount = formationType.getEnemyCountInFormation();
-        return enemyCount * (enemyType.getCreditCost() * 1.5f); //50% increased price for a formation!
+        return enemyCount * enemyType.getCreditCost();
     }
 
     private boolean shouldAttemptSpawn(double currentTime) {
@@ -156,8 +156,8 @@ public class Director {
         // Set parameters for spawning
         Direction direction = Direction.LEFT;
         float scale = enemyType.getDefaultScale();
-        int xMovementSpeed = enemyType.getMovementSpeed();
-        int yMovementSpeed = enemyType.getMovementSpeed();
+        float xMovementSpeed = enemyType.getMovementSpeed();
+        float yMovementSpeed = enemyType.getMovementSpeed();
 
         // Call LevelManager's spawnEnemy method
         LevelManager.getInstance().spawnEnemy(0, 0, enemyType, direction, scale, true, xMovementSpeed, yMovementSpeed, enemyType.isBoxCollision());
@@ -168,7 +168,7 @@ public class Director {
     }
 
     private void spawnCashCarrier(SpawnFormationEnums formationType) {
-        spawnEntourageFormation(formationType, EnemyEnums.Scout, EnemyEnums.CashCarrier);
+        spawnEntourageFormation(formationType, EnemyEnums.getRandomEnemy(EnemyCategory.Mercenary), EnemyEnums.CashCarrier);
         this.lastCashCarrierSpawnTime = currentTime;
     }
 
@@ -178,8 +178,8 @@ public class Director {
 
     private void spawnFormationWithParameters(SpawnFormationEnums formationType, EnemyEnums primaryEnemyType, EnemyEnums secondaryEnemyType, boolean isEntourage) {
         Direction direction = Direction.LEFT;
-        int xMovementSpeed = isEntourage ? secondaryEnemyType.getMovementSpeed() : primaryEnemyType.getMovementSpeed();
-        int yMovementSpeed = xMovementSpeed;
+        float xMovementSpeed = isEntourage ? secondaryEnemyType.getMovementSpeed() : primaryEnemyType.getMovementSpeed();
+        float yMovementSpeed = xMovementSpeed;
 
         Enemy enemy = null;
         if (isEntourage) {
@@ -313,7 +313,7 @@ public class Director {
         // Adjust these values to finely control spawn behavior
         float basicIncreaseRate = 2f; // Increase basic enemy weight by a significant factor early on
         float decayRateForBasicEnemies = 0.2f; // Slower decay for Basic enemies (less aggressive than before)
-        float growthRateForStrongEnemies = 0.2f; // Slower growth for stronger enemies
+        float growthRateForStrongEnemies = 0.15f; // Slower growth for stronger enemies
 
         switch (category) {
             case Basic:

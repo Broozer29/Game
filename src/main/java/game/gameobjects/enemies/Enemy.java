@@ -8,7 +8,6 @@ import game.gameobjects.player.PlayerManager;
 import game.gamestate.GameStateInfo;
 import game.gamestate.GameStatsTracker;
 import game.movement.PathFinderEnums;
-import game.spawner.LevelManager;
 import game.util.BoardBlockUpdater;
 import game.movement.MovementConfiguration;
 import game.movement.Point;

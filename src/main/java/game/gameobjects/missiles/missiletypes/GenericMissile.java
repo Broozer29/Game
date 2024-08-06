@@ -1,6 +1,7 @@
 package game.gameobjects.missiles.missiletypes;
 
 import VisualAndAudioData.image.ImageEnums;
+import game.gameobjects.enemies.enemytypes.Scout;
 import game.movement.MovementConfiguration;
 import game.gameobjects.missiles.Missile;
 import game.gameobjects.missiles.MissileConfiguration;
@@ -38,8 +39,20 @@ public class GenericMissile extends Missile {
 	}
 
 
+
+
+	private int stepsTaken = 0;
+	private int moduloDivider = 90;
 	public void missileAction() {
-		//Shouldn't do anything cause generic missile
+		if(this.ownerOrCreator instanceof Scout){
+			stepsTaken++;
+
+			if(stepsTaken % moduloDivider == 0){
+				this.movementConfiguration.setXMovementSpeed(this.getMovementConfiguration().getXMovementSpeed() * 1.2f);
+				this.movementConfiguration.setYMovementSpeed(this.getMovementConfiguration().getYMovementSpeed() * 1.2f);
+				moduloDivider = Math.round(moduloDivider * 1.5f);
+			}
+		}
 	}
 
 }

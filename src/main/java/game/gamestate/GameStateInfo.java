@@ -2,7 +2,7 @@ package game.gamestate;
 
 import VisualAndAudioData.audio.AudioPositionCalculator;
 import VisualAndAudioData.audio.CustomAudioClip;
-import game.spawner.LevelManager;
+import game.level.LevelManager;
 
 public class GameStateInfo {
 

@@ -1,11 +1,10 @@
-package game.spawner;
+package game.level;
 
 import java.io.IOException;
 import java.util.List;
 
 import VisualAndAudioData.audio.enums.LevelSongs;
 import game.UI.GameUICreator;
-import game.gamestate.GameStatsTracker;
 import game.managers.ShopManager;
 import game.movement.Direction;
 import game.movement.deprecatedpathfinderconfigs.MovementPatternSize;
@@ -15,10 +14,9 @@ import game.gamestate.GameStateInfo;
 import game.gamestate.GameStatusEnums;
 import VisualAndAudioData.audio.AudioManager;
 import game.movement.pathfinders.HoverPathFinder;
-import game.movement.pathfinders.RegularPathFinder;
-import game.spawner.directors.DirectorManager;
-import game.spawner.enums.LevelDifficulty;
-import game.spawner.enums.LevelLength;
+import game.level.directors.DirectorManager;
+import game.level.enums.LevelDifficulty;
+import game.level.enums.LevelLength;
 
 import javax.sound.sampled.UnsupportedAudioFileException;
 
@@ -53,11 +51,13 @@ public class LevelManager {
         // Check if the song has ended, then create the moving out portal
         if (gameState.getGameState() == GameStatusEnums.Playing && audioManager.getBackgroundMusic().getFramePosition() >= audioManager.getBackgroundMusic().getFrameLength()) {
             gameState.setGameState(GameStatusEnums.Level_Finished);
-            ShopManager.getInstance().setLastLevelDifficulty(this.currentLevelDifficulty);
-            ShopManager.getInstance().setLastLevelLength(this.currentLevelLength);
-            ShopManager.getInstance().setLastLevelDifficultyCoeff(this.currentDifficultyCoeff);
-            ShopManager.getInstance().setRowsUnlockedByDifficulty(this.currentDifficultyCoeff);
+            ShopManager shopManager = ShopManager.getInstance();
+            shopManager.setLastLevelDifficulty(this.currentLevelDifficulty);
+            shopManager.setLastLevelLength(this.currentLevelLength);
+            shopManager.setLastLevelDifficultyCoeff(this.currentDifficultyCoeff);
+            shopManager.setRowsUnlockedByDifficulty(this.currentDifficultyCoeff);
             DirectorManager.getInstance().setEnabled(false);
+            shopManager.calculateRerollCost();
         }
 
         //NextLevelPortal spawns in friendlymanager, now we wait for the player to enter the portal to set it to Level_Completed
@@ -86,7 +86,7 @@ public class LevelManager {
 
         AudioManager audioManager = AudioManager.getInstance();
         try {
-//            audioManager.testMode = true;
+            audioManager.testMode = true;
             audioManager.muteMode = true;
             audioManager.playRandomBackgroundMusic(currentLevelDifficulty, currentLevelLength);
             this.currentLevelSong = audioManager.getCurrentSong();
@@ -99,9 +99,9 @@ public class LevelManager {
 
 
         gameState.setGameState(GameStatusEnums.Playing);
-        DirectorManager.getInstance().setEnabled(true);
-        DirectorManager.getInstance().createMonsterCards();
-        DirectorManager.getInstance().createDirectors();
+//        DirectorManager.getInstance().setEnabled(true);
+//        DirectorManager.getInstance().createMonsterCards();
+//        DirectorManager.getInstance().createDirectors();
 
 
 //        PlayerStats.getInstance().setBaseDamage(1);
@@ -112,19 +112,19 @@ public class LevelManager {
         EnemyEnums enemyType = EnemyEnums.Scout;
         Enemy enemy = EnemyCreator.createEnemy(enemyType, 1000, 100, Direction.LEFT, enemyType.getDefaultScale()
                 , enemyType.getMovementSpeed(), enemyType.getMovementSpeed(), MovementPatternSize.SMALL, enemyType.isBoxCollision());
-//        enemy.getMovementConfiguration().setBoardBlockToHoverIn(5);
-//        enemy.getMovementConfiguration().setPathFinder(new HoverPathFinder());
+        enemy.getMovementConfiguration().setBoardBlockToHoverIn(5);
+        enemy.getMovementConfiguration().setPathFinder(new HoverPathFinder());
 //        enemy.setAllowedVisualsToRotate(false);
-//        enemy.getMovementConfiguration().setXMovementSpeed(3);
-//        enemy.getMovementConfiguration().setYMovementSpeed(3);
+//        enemy.getMovementConfiguration().setXMovementSpeed(0.3f);
+//        enemy.getMovementConfiguration().setYMovementSpeed(0.3f);
 //        enemy.getAnimation().changeImagetype(ImageEnums.Scout);
-//        EnemyManager.getInstance().addEnemy(enemy);
-////
-        EnemyEnums enemyType2 = EnemyEnums.Needler;
-        Enemy enemy2 = EnemyCreator.createEnemy(enemyType2, 800, 600, Direction.LEFT, enemyType2.getDefaultScale()
-                , enemyType2.getMovementSpeed(), enemyType2.getMovementSpeed(), MovementPatternSize.SMALL, enemyType2.isBoxCollision());
-//        enemy2.getMovementConfiguration().setBoardBlockToHoverIn(5);
-        enemy2.getMovementConfiguration().setPathFinder(new RegularPathFinder());
+        EnemyManager.getInstance().addEnemy(enemy);
+//////
+//        EnemyEnums enemyType2 = EnemyEnums.Needler;
+//        Enemy enemy2 = EnemyCreator.createEnemy(enemyType2, 800, 600, Direction.LEFT, enemyType2.getDefaultScale()
+//                , enemyType2.getMovementSpeed(), enemyType2.getMovementSpeed(), MovementPatternSize.SMALL, enemyType2.isBoxCollision());
+////        enemy2.getMovementConfiguration().setBoardBlockToHoverIn(5);
+//        enemy2.getMovementConfiguration().setPathFinder(new RegularPathFinder());
 //        enemy2.setAllowedVisualsToRotate(false);
 //        enemy2.getMovementConfiguration().setXMovementSpeed(0);
 //        enemy2.getMovementConfiguration().setYMovementSpeed(0);
@@ -144,7 +144,7 @@ public class LevelManager {
 
     // Called by CustomTimers when they have to spawn an enemy
     public void spawnEnemy (int xCoordinate, int yCoordinate, EnemyEnums enemyType,
-                            Direction direction, float scale, boolean random, int xMovementSpeed, int yMovementSpeed, boolean boxCollision) {
+                            Direction direction, float scale, boolean random, float xMovementSpeed, float yMovementSpeed, boolean boxCollision) {
         // Spawn random if there are no given X/Y coords
         if (random) {
             List<Integer> coordinatesList = spawningCoordinator.getSpawnCoordinatesByDirection(direction);

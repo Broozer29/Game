@@ -4,7 +4,7 @@ import game.movement.Direction;
 import game.gameobjects.enemies.enums.EnemyEnums;
 import game.gameobjects.timers.TimerInterface;
 import game.gameobjects.timers.TimerStatusEnums;
-import game.spawner.EnemyFormation;
+import game.level.EnemyFormation;
 
 public class DeprecatedEnemySpawnTimer implements TimerInterface {
 	private float timerLength;

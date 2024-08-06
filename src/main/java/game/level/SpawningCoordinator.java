@@ -1,4 +1,4 @@
-package game.spawner;
+package game.level;
 
 import java.util.ArrayList;
 import java.util.List;
