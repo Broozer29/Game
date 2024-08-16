@@ -18,7 +18,7 @@ public class ElectricStabilizer extends Item {
     private float duration;
 
     public ElectricStabilizer(){
-        super(ItemEnums.ElectricDestabilizer, 1,EffectActivationTypes.AfterAHit, ItemApplicationEnum.AfterCollision);
+        super(ItemEnums.ElectricDestabilizer, 1, ItemApplicationEnum.AfterCollision);
         calculateDuration();
 
     }

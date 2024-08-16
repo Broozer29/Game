@@ -19,7 +19,7 @@ public class CannisterOfGasoline extends Item {
     private int duration;
 
     public CannisterOfGasoline () {
-        super(ItemEnums.CannisterOfGasoline, 1, EffectActivationTypes.OnObjectDeath, ItemApplicationEnum.AfterCollision);
+        super(ItemEnums.CannisterOfGasoline, 1, ItemApplicationEnum.AfterCollision);
         this.explosionDamage = calculateExplosionDamage(quantity);
         this.burningDamage = calculateBurningDamage(quantity);
         this.duration = calculateDuration(quantity);
@@ -33,7 +33,7 @@ public class CannisterOfGasoline extends Item {
     }
 
     private float calculateBurningDamage (int quantity) {
-        return PlayerStats.getInstance().getBaseDamage() * quantity;
+        return PlayerStats.getInstance().getBaseDamage() * 0.15f * quantity;
     }
 
     private float calculateExplosionDamage (int quantity) {
@@ -53,7 +53,7 @@ public class CannisterOfGasoline extends Item {
 
         DormentExplosion dormentExplosion = new DormentExplosion(explosionDamage, ImageEnums.GasolineExplosion,
                 DormentExplosionActivationMethods.OnDeath, false, EffectIdentifiers.GasolineDormantExplosion,
-                0, super.effectType, true);
+                0, EffectActivationTypes.OnObjectDeath, true);
         dormentExplosion.setBurningDamage(burningDamage);
         dormentExplosion.setBurningDuration(duration);
         gameObject.addEffect(dormentExplosion);

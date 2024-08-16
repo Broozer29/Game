@@ -1,6 +1,5 @@
 package game.movement;
 
-import game.movement.deprecatedpathfinderconfigs.MovementPatternSize;
 import game.movement.pathfinders.PathFinder;
 import game.gameobjects.GameObject;
 

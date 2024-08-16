@@ -19,7 +19,7 @@ public class PlasmaCoatedBullets extends Item {
     private double duration;
 
     public PlasmaCoatedBullets () {
-        super(ItemEnums.PlasmaCoatedBullets, 1, EffectActivationTypes.CheckEveryGameTick, ItemApplicationEnum.AfterCollision);
+        super(ItemEnums.PlasmaCoatedBullets, 1, ItemApplicationEnum.AfterCollision);
         calculateDuration();
         calculateBurningDamage();
     }
@@ -31,7 +31,7 @@ public class PlasmaCoatedBullets extends Item {
     }
 
     private void calculateBurningDamage () {
-        burningDamage =  PlayerStats.getInstance().getBaseDamage() * 1.5f * this.quantity;
+        burningDamage =  PlayerStats.getInstance().getBaseDamage() * 0.1f * this.quantity;
     }
 
     private void calculateDuration () {

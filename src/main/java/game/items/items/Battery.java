@@ -10,7 +10,7 @@ import game.gameobjects.player.PlayerStats;
 public class Battery extends Item {
 
     public Battery () {
-        super(ItemEnums.Battery, 1, EffectActivationTypes.PlayerStatsModificationOnCreation, ItemApplicationEnum.ApplyOnCreation);
+        super(ItemEnums.Battery, 1, ItemApplicationEnum.ApplyOnCreation);
     }
 
     @Override

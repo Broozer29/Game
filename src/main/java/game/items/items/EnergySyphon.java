@@ -13,7 +13,7 @@ public class EnergySyphon extends Item {
     private float barrierAmount;
 
     public EnergySyphon(){
-        super(ItemEnums.EnergySiphon, 1, EffectActivationTypes.CheckEveryGameTick, ItemApplicationEnum.AfterCollision);
+        super(ItemEnums.EnergySiphon, 1, ItemApplicationEnum.AfterCollision);
         calculateBarrierAmount();
     }
 

@@ -9,13 +9,11 @@ public abstract class Item implements ItemInterface{
 
     protected ItemEnums itemName;
     protected int quantity;
-    protected EffectActivationTypes effectType;
     protected ItemApplicationEnum applicationMethod;
 
-    public Item (ItemEnums itemEnum, int quantity, EffectActivationTypes effectType, ItemApplicationEnum applicationMethod) {
+    public Item(ItemEnums itemEnum, int quantity, ItemApplicationEnum applicationMethod){
         this.itemName = itemEnum;
         this.quantity = quantity;
-        this.effectType = effectType;
         this.applicationMethod = applicationMethod;
     }
 
@@ -45,13 +43,6 @@ public abstract class Item implements ItemInterface{
         this.quantity += amount;
     }
 
-    public EffectActivationTypes getEffectType () {
-        return effectType;
-    }
-
-    public void setEffectType (EffectActivationTypes effectType) {
-        this.effectType = effectType;
-    }
 
     public ItemApplicationEnum getApplicationMethod () {
         return applicationMethod;

@@ -8,13 +8,12 @@ import game.gamestate.GameStateInfo;
 import game.gamestate.GameStatsTracker;
 import game.movement.Direction;
 import game.movement.MovementConfiguration;
-import game.movement.deprecatedpathfinderconfigs.MovementPatternSize;
+import game.movement.MovementPatternSize;
 import game.movement.pathfinders.HomingPathFinder;
 import game.movement.pathfinders.PathFinder;
 import game.movement.pathfinders.RegularPathFinder;
 import game.gameobjects.missiles.*;
 import game.gameobjects.player.PlayerManager;
-import game.gameobjects.player.BoostsUpgradesAndBuffsSettings;
 import game.gameobjects.player.PlayerStats;
 import VisualAndAudioData.audio.enums.AudioEnums;
 import VisualAndAudioData.audio.AudioManager;
@@ -27,7 +26,6 @@ public class SpaceShipRegularGun {
     private AudioManager audioManager = AudioManager.getInstance();
     private PlayerManager friendlyManager = PlayerManager.getInstance();
     private PlayerStats playerStats = PlayerStats.getInstance();
-    private BoostsUpgradesAndBuffsSettings powerUpEffects = BoostsUpgradesAndBuffsSettings.getInstance();
     private MissileCreator missileCreator = MissileCreator.getInstance();
 
     private float currentAttackFrame;
@@ -61,7 +59,7 @@ public class SpaceShipRegularGun {
                               float missileScale, PathFinder missilePathFinder, MissileEnums attackType) {
 
 //        attackType = MissileEnums.OrbitCenter;
-//        playerMissileType = attackType.getImageType();
+//        playerMissileType = ImageEnums.ThornsDamage;
 //        missileScale = 0.4f;
 
         MissileCreator missileCreator1 = MissileCreator.getInstance();

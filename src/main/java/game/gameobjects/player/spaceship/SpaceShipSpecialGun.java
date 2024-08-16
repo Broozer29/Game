@@ -65,11 +65,14 @@ public class SpaceShipSpecialGun {
         spriteConfiguration.setyCoordinate(yCoordinate);
         spriteConfiguration.setImageType(ImageEnums.Player_EMP);
 
+        float damage = playerStats.getSpecialDamage();
+
+        if(playerStats.isHasImprovedElectroShred()){
+            spriteConfiguration.setImageType(ImageEnums.ElectroShredImproved);
+        }
+
         SpriteAnimationConfiguration spriteAnimationConfiguration = new SpriteAnimationConfiguration(spriteConfiguration, 6, false);
-
-        float damage = PlayerStats.getInstance().getNormalAttackDamage() / 10;
         SpecialAttackConfiguration missileConfiguration = new SpecialAttackConfiguration(damage, true, true, false, true);
-
 
         SpriteAnimation specialAttackAnimation = new SpriteAnimation(spriteAnimationConfiguration);
         specialAttackAnimation.setAnimationScale(1.5f);

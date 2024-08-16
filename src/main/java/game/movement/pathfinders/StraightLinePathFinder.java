@@ -68,6 +68,8 @@ public class StraightLinePathFinder implements PathFinder {
             }
 
         }
+
+        config.setDestination(pathList.get(pathList.size() - 1));
         return new Path(pathList, direction);
     }
 

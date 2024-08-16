@@ -13,7 +13,7 @@ public class PlatinumSponge extends Item {
     float armorBonus;
 
     public PlatinumSponge () {
-        super(ItemEnums.PlatinumSponge, 1, EffectActivationTypes.CheckEveryGameTick, ItemApplicationEnum.ApplyOnCreation);
+        super(ItemEnums.PlatinumSponge, 1,  ItemApplicationEnum.ApplyOnCreation);
         calculateArmorBonus();
     }
 

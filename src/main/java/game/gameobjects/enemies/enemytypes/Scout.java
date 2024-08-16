@@ -4,7 +4,7 @@ import VisualAndAudioData.audio.enums.AudioEnums;
 import game.gamestate.GameStateInfo;
 import game.managers.AnimationManager;
 import game.movement.MovementConfiguration;
-import game.movement.deprecatedpathfinderconfigs.MovementPatternSize;
+import game.movement.MovementPatternSize;
 import game.movement.pathfinders.HoverPathFinder;
 import game.movement.pathfinders.PathFinder;
 import game.movement.pathfinders.RegularPathFinder;
@@ -27,8 +27,8 @@ public class Scout extends Enemy {
         destroyedExplosionfiguration.getSpriteConfiguration().setImageType(EnemyEnums.Scout.getDestructionImageEnum());
         this.destructionAnimation = new SpriteAnimation(destroyedExplosionfiguration);
         this.destructionAnimation.setAnimationScale(this.scale / 1.5f);
-//        this.attackSpeed = this.enemyType.getAttackSpeed();
-        this.attackSpeed = 1;
+        this.attackSpeed = this.enemyType.getAttackSpeed();
+//        this.attackSpeed = 1;
         this.damage = MissileEnums.LaserBullet.getDamage();
 
 
@@ -92,6 +92,7 @@ public class Scout extends Enemy {
         //Create the missile and finalize the creation process, then add it to the manager and consequently the game
         Missile missile = MissileCreator.getInstance().createMissile(spriteConfiguration, missileConfiguration, movementConfiguration);
         missile.setOwnerOrCreator(this);
+        missile.setSpeedsUp(true);
 //        missile.setAllowedVisualsToRotate(true);
         missile.setCenterCoordinates(chargingUpAttackAnimation.getCenterXCoordinate(), chargingUpAttackAnimation.getCenterYCoordinate());
         missile.rotateGameObjectTowards(missile.getMovementConfiguration().getDestination().getX(), missile.getMovementConfiguration().getDestination().getY(), true);

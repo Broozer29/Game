@@ -1,7 +1,16 @@
 package game.items.effects;
 
 public enum EffectIdentifiers {
-    TazerAttackSpeedModifier, TazerDamageModifier, PlasmaCoatedBulletsBurning, GasolineDormantExplosion,
-    GasolineBurning, StickyDynamiteDormantExplosion,
-    EnergySyphonHealPlayerOnDeath, PlatinumSpongeArmorBonus, SelfRepairingSteelHealthRegeneration, MoneyPrinterGoldOnDeath, CashCarrierGoldGain, ElectricDestabilizerFreeze,
+    TazerAttackSpeedModifier,
+    TazerDamageModifier,
+    PlasmaCoatedBulletsBurning,
+    GasolineDormantExplosion,
+    GasolineBurning,
+    StickyDynamiteDormantExplosion,
+    EnergySyphonHealPlayerOnDeath,
+    PlatinumSpongeArmorBonus,
+    SelfRepairingSteelHealthRegeneration,
+    MoneyPrinterGoldOnDeath,
+    CashCarrierGoldGain,
+    ElectricDestabilizerFreeze,
 }

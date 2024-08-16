@@ -24,7 +24,6 @@ import controllerInput.ConnectedControllers;
 import controllerInput.ControllerInputEnums;
 import game.UI.UIObject;
 import game.gameobjects.GameObject;
-import game.gameobjects.powerups.timers.TimerManager;
 import game.gamestate.GameStatsTracker;
 import game.movement.Direction;
 import game.level.directors.DirectorManager;
@@ -41,14 +40,11 @@ import game.gameobjects.background.BackgroundObject;
 import game.gameobjects.enemies.Enemy;
 import game.gameobjects.enemies.EnemyManager;
 import game.gameobjects.friendlies.FriendlyManager;
-import game.gameobjects.powerups.PowerUp;
 import game.util.OnScreenText;
-import game.gameobjects.powerups.PowerUpManager;
 import game.gameobjects.player.spaceship.SpaceShipSpecialGun;
 import game.gameobjects.missiles.specialAttacks.SpecialAttack;
 import game.gameobjects.missiles.Missile;
 import game.gameobjects.missiles.MissileManager;
-import game.gameobjects.player.BoostsUpgradesAndBuffsSettings;
 import VisualAndAudioData.DataClass;
 import game.gamestate.GameStateInfo;
 import game.gamestate.GameStatusEnums;
@@ -97,9 +93,7 @@ public class GameBoard extends JPanel implements ActionListener {
     private FriendlyManager friendlyManager = FriendlyManager.getInstance();
     private PlayerStats playerStats = PlayerStats.getInstance();
     private GameUICreator uiManager = GameUICreator.getInstance();
-    private PowerUpManager powerUpManager = PowerUpManager.getInstance();
     private OnScreenTextManager textManager = OnScreenTextManager.getInstance();
-    private BoostsUpgradesAndBuffsSettings tempSettings = BoostsUpgradesAndBuffsSettings.getInstance();
     private AudioPositionCalculator audioPosCalc = AudioPositionCalculator.getInstance();
     private ConnectedControllers controllers = ConnectedControllers.getInstance();
 
@@ -116,10 +110,8 @@ public class GameBoard extends JPanel implements ActionListener {
         friendlyManager = FriendlyManager.getInstance();
         playerStats = PlayerStats.getInstance();
         uiManager = GameUICreator.getInstance();
-        powerUpManager = PowerUpManager.getInstance();
         textManager = OnScreenTextManager.getInstance();
         audioPosCalc = AudioPositionCalculator.getInstance();
-        tempSettings = BoostsUpgradesAndBuffsSettings.getInstance();
         initBoard();
     }
 
@@ -153,10 +145,8 @@ public class GameBoard extends JPanel implements ActionListener {
         explosionManager.resetManager();
         friendlyManager.resetManager();
         uiManager.resetManager();
-        powerUpManager.resetManager();
         textManager.resetManager();
         playerStats.resetPlayerStats();
-        tempSettings.resetGameSettings();
         gameState.resetGameState();
         this.drawTimer.setDelay(gameState.getDELAY());
         zoningInAlpha = 1.0f;
@@ -173,18 +163,15 @@ public class GameBoard extends JPanel implements ActionListener {
             enemyManager.resetManager();
             missileManager.resetManager();
             levelManager = LevelManager.getInstance();
-            powerUpManager.resetManager();
             playerManager.resetManager();
             audioManager.resetManager();
             explosionManager.resetManager();
             friendlyManager.resetManager();
             friendlyManager.resetPortal();
             uiManager.resetManager();
-            powerUpManager.resetManager();
             textManager.resetManager();
 
             //These should probably to be refactored into osmething new
-            tempSettings = BoostsUpgradesAndBuffsSettings.getInstance();
             hasResetManagersForNextLevel = true;
         }
     }
@@ -474,12 +461,6 @@ public class GameBoard extends JPanel implements ActionListener {
             }
         }
 
-        for (PowerUp powerUp : powerUpManager.getPowerUpsOnTheField()) {
-            if (powerUp.isVisible()) {
-                drawImage(g, powerUp);
-            }
-        }
-
         for (UIObject obj : uiManager.getInformationCards()) {
             drawImage(g, obj);
         }
@@ -734,8 +715,6 @@ public class GameBoard extends JPanel implements ActionListener {
             audioDatabase.updateGameTick();
             explosionManager.updateGametick();
             friendlyManager.updateGameTick();
-            powerUpManager.updateGameTick();
-            TimerManager.getInstance().updateTimers();
 
 //            if(gameState.getGameState().equals(GameStatusEnums.Playing)) {
             gameState.addGameTicks(1);

@@ -2,7 +2,7 @@ package game.level.directors;
 
 import VisualAndAudioData.DataClass;
 import game.gamestate.GameStateInfo;
-import game.movement.deprecatedpathfinderconfigs.MovementPatternSize;
+import game.movement.MovementPatternSize;
 import game.gameobjects.enemies.Enemy;
 import game.gameobjects.enemies.EnemyCreator;
 import game.level.LevelManager;

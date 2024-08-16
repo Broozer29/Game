@@ -12,7 +12,9 @@ public class DirectorManager {
     private List<Director> directorList = new ArrayList<>();
     private List<MonsterCard> baseMonsterCards = new ArrayList<>();
     private boolean enabled;
+    public boolean testingRichMode; //used for testing only
 
+    private int testingCreditsBonus = 3;
 
 
     private DirectorManager () {
@@ -79,6 +81,11 @@ public class DirectorManager {
 
     public void distributeCredits() {
         float creditAmount = (float) ((1 + 0.05 * GameStateInfo.getInstance().getDifficultyCoefficient()) * 0.5); // Determine the amount of credits to distribute
+
+        if(testingRichMode){
+            creditAmount = creditAmount * this.testingCreditsBonus;
+        }
+
         for (Director director : directorList) {
             director.receiveCredits(creditAmount);
         }
@@ -107,4 +114,6 @@ public class DirectorManager {
     public void setEnabled (boolean enabled) {
         this.enabled = enabled;
     }
+
+
 }

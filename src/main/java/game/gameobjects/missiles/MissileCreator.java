@@ -4,7 +4,7 @@ import VisualAndAudioData.audio.enums.AudioEnums;
 import VisualAndAudioData.image.ImageEnums;
 import game.movement.Direction;
 import game.movement.MovementConfiguration;
-import game.movement.deprecatedpathfinderconfigs.MovementPatternSize;
+import game.movement.MovementPatternSize;
 import game.movement.pathfinders.PathFinder;
 import game.gameobjects.missiles.missiletypes.*;
 import visualobjects.SpriteConfigurations.SpriteAnimationConfiguration;
@@ -77,7 +77,7 @@ public class MissileCreator {
             case FlameThrowerProjectile -> {
                 return new FlamethrowerProjectile(upgradeConfig(spriteConfiguration, 2), missileConfiguration, movementConfiguration);
             }
-            case FirewallMissile, PlasmaLauncherMissile, Orbitter -> {
+            case FirewallMissile, PlasmaLauncherMissile, Orbitter, PlayerLaserbeam -> {
                 return new GenericMissile(upgradeConfig(spriteConfiguration, 2), missileConfiguration, movementConfiguration);
             }
             case Rocket1 -> {
@@ -88,9 +88,6 @@ public class MissileCreator {
             }
             case OrbitCenter -> {
                 return new OrbitterWithOrbits(upgradeConfig(spriteConfiguration, 4), missileConfiguration, movementConfiguration);
-            }
-            case PlayerLaserbeam -> {
-                return new GenericMissile(upgradeConfig(spriteConfiguration, 2), missileConfiguration, movementConfiguration);
             }
         }
         return null;

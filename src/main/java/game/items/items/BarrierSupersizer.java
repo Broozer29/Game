@@ -11,7 +11,7 @@ public class BarrierSupersizer extends Item {
     private float modifierBonus;
 
     public BarrierSupersizer(){
-        super(ItemEnums.BarrierSuperSizer, 1, EffectActivationTypes.PlayerStatsModificationOnCreation, ItemApplicationEnum.ApplyOnCreation);
+        super(ItemEnums.BarrierSuperSizer, 1, ItemApplicationEnum.ApplyOnCreation);
         calculateModifierBonusAmount();
     }
 

@@ -5,7 +5,6 @@ import game.items.enums.ItemApplicationEnum;
 import game.items.enums.ItemEnums;
 import game.items.items.*;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,20 +14,21 @@ public class PlayerInventory {
     private static PlayerInventory instance = new PlayerInventory();
     private Map<ItemEnums, Item> items = new HashMap<>();
     private float cashMoney = 100;
-    private int rerollTokens = 0;
     private PlayerInventory () {
-        addItem(ItemEnums.ElectricDestabilizer);
+        addItem(ItemEnums.BarbedAegis);
+        addItem(ItemEnums.RepulsionArmorPlate);
+        addItem(ItemEnums.RepulsionArmorPlate);
+        addItem(ItemEnums.RepulsionArmorPlate);
+        addItem(ItemEnums.RepulsionArmorPlate);
+//        addItem(ItemEnums.ModuleAccuracy);
 //        addItem(ItemEnums.VIPTicket);
-//        addItem(ItemEnums.VIPTicket);
-//        addItem(ItemEnums.VIPTicket);
-//        addItem(ItemEnums.BouncingModuleAddon);
-//        addItem(ItemEnums.PlasmaCoatedBullets);
+//        addItem(ItemEnums.DrillerModule);
+        addItem(ItemEnums.PlasmaCoatedBullets);
     }
 
     public void resetInventory(){
         items.clear();
-        cashMoney = 0f;
-        rerollTokens = 0;
+        cashMoney = 100f;
     }
 
     public static PlayerInventory getInstance () {
@@ -53,7 +53,7 @@ public class PlayerInventory {
     }
 
     private void activateItem(Item item){
-        if(item.getEffectType().equals(EffectActivationTypes.UponPurchase)){
+        if(item.getApplicationMethod().equals(ItemApplicationEnum.UponPurchase)){
             item.applyEffectToObject(null);
         }
     }
@@ -106,6 +106,16 @@ public class PlayerInventory {
                 return new VIPTicket();
             case ElectricDestabilizer:
                 return new ElectricStabilizer();
+            case ModuleAccuracy:
+                return new ModuleAccuracy();
+            case ElectricSupercharger:
+                return new ElectricSupercharger();
+            case ThornedPlates:
+                return new ThornedPlates();
+            case Thornweaver:
+                return new Thornweaver();
+            case BarbedAegis:
+                return new BarbedAegis();
             default:
                 System.out.println("I tried to create: " + itemEnum + " but fell in default, did you forget to add it to the inventory creation?");
                 return null;
@@ -118,11 +128,6 @@ public class PlayerInventory {
                 .collect(Collectors.toList());
     }
 
-    public List<Item> getItemByActivationTypes(EffectActivationTypes activationType){
-        return items.values().stream()
-                .filter(item -> item.getEffectType() == activationType)
-                .collect(Collectors.toList());
-    }
 
     public Item getItemByName (ItemEnums itemName) {
         return items.get(itemName);
@@ -140,7 +145,7 @@ public class PlayerInventory {
         this.cashMoney = cashMoney;
     }
 
-    public void gainCashMoney(float amount){
+    public void addMinerals (float amount){
         this.cashMoney += amount;
     }
 
@@ -148,11 +153,4 @@ public class PlayerInventory {
         this.cashMoney -= amount;
     }
 
-    public int getRerollTokens () {
-        return rerollTokens;
-    }
-
-    public void addRerollToken(int amount){
-        this.rerollTokens += amount;
-    }
 }

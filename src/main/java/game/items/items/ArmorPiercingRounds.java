@@ -13,19 +13,19 @@ public class ArmorPiercingRounds extends Item {
     private float damageModifier;
 
     public ArmorPiercingRounds(){
-        super(ItemEnums.ArmorPiercingRounds, 1, EffectActivationTypes.DamageModification, ItemApplicationEnum.BeforeCollision);
+        super(ItemEnums.ArmorPiercingRounds, 1,ItemApplicationEnum.BeforeCollision);
         calculateDamageModifier();
     }
 
     private void calculateDamageModifier(){
-        damageModifier = 1 + (quantity * 0.2f);
+        damageModifier = (quantity * 0.2f);
     }
 
     @Override
     public void applyEffectToObject (GameObject applier, GameObject target){
         if(target instanceof Enemy){
             if(((Enemy) target).getEnemyType().getEnemyCategory() == EnemyCategory.Mercenary){
-                applier.setDamage(applier.getDamage() * damageModifier);
+                applier.modifyBonusDamageMultiplier(damageModifier);
             }
         }
     };

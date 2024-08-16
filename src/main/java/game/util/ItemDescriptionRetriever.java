@@ -7,13 +7,13 @@ public class ItemDescriptionRetriever {
     public static String getDescriptionOfItem(ItemEnums itemEnums){
         switch (itemEnums){
             case PlasmaCoatedBullets -> {
-                return "Attacks deal additional 150% (+150%) damage every 2 seconds.";
+                return "Attacks deal additional 10% (+10%) damage every 1.5 (+1.5) seconds.";
             }
             case PhotonPiercer -> {
                 return "Attacks against enemies with 90% or more health deals 75% (+75%) additional damage.";
             }
             case CannisterOfGasoline -> {
-                return "Enemies explode on death, creating an explosion that ignites enemies for 100% (+100%) damage.";
+                return "Enemies explode on death, creating an explosion that ignites enemies for 15% (+15%) damage that lasts for 2 (+2) seconds.";
             }
             case SelfRepairingSteel -> {
                 return "After not taking damage for 3 seconds, rapidly regenerate 0.5 (+0.5) hitpoints";
@@ -74,6 +74,21 @@ public class ItemDescriptionRetriever {
             }
             case ElectricDestabilizer -> {
                 return "Your Electro Shred now freezes enemies, preventing them from moving and shooting for 2 (+2) seconds";
+            }
+            case ModuleAccuracy -> {
+                return "Drones now fire towards the enemy closest to you. Drones deal 25% (+25%) increased damage.";
+            }
+            case ElectricSupercharger -> {
+                return "Your Electro Shred ability is now improved. Electro Shred gains an additional +20% (+20%) damage.";
+            }
+            case ThornedPlates -> {
+                return "Gain 10% (+10%) thorns damage. When taking damage, you deal thorns damage to the opponent that damaged you.";
+            }
+            case Thornweaver -> {
+                return "Your thorns damage now has 10% (+10%) chance of applying your on-hit effects.";
+            }
+            case BarbedAegis -> {
+                return "Your thorns damage is increased by 25% (+25%) of your armor. When taking damage, you deal thorns damage to the opponent that damaged you.";
             }
         }
         return "This item has no description yet";

@@ -11,7 +11,7 @@ public class BouncingModuleAddon extends Item {
     private float bonusDamagePercentage = 0;
 
     public BouncingModuleAddon(){
-        super(ItemEnums.BouncingModuleAddon, 1, EffectActivationTypes.PlayerStatsModificationOnCreation, ItemApplicationEnum.ApplyOnCreation);
+        super(ItemEnums.BouncingModuleAddon, 1, ItemApplicationEnum.ApplyOnCreation);
     }
 
     @Override

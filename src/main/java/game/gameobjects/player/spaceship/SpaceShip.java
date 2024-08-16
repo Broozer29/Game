@@ -11,7 +11,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.sound.sampled.UnsupportedAudioFileException;
 
-import com.badlogic.gdx.Game;
 import controllerInput.ControllerInputEnums;
 import controllerInput.ControllerInputReader;
 import game.gamestate.GameStateInfo;
@@ -20,14 +19,11 @@ import game.items.Item;
 import game.items.PlayerInventory;
 import game.items.enums.ItemApplicationEnum;
 import game.items.enums.ItemEnums;
-import game.items.items.FocusCrystal;
 import game.managers.AnimationManager;
 import game.movement.Point;
 import game.gameobjects.friendlies.FriendlyManager;
-import game.gameobjects.neutral.Explosion;
 import game.gameobjects.GameObject;
 import game.gameobjects.missiles.specialAttacks.SpecialAttack;
-import game.gameobjects.player.BoostsUpgradesAndBuffsSettings;
 import game.gameobjects.player.PlayerStats;
 import VisualAndAudioData.image.ImageEnums;
 import game.util.ArmorCalculator;
@@ -51,10 +47,8 @@ public class SpaceShip extends GameObject {
     private SpriteAnimation exhaustAnimation = null;  //inherit from gameobject
 
     private PlayerStats playerStats = PlayerStats.getInstance();
-    private BoostsUpgradesAndBuffsSettings powerUpEffects = BoostsUpgradesAndBuffsSettings.getInstance();
 
     private List<SpriteAnimation> playerFollowingAnimations = new ArrayList<SpriteAnimation>();  //inherit from gameobject?
-    private List<Explosion> playerFollowingExplosions = new ArrayList<Explosion>();  //inherit from gameobject?
     private SpaceShipRegularGun spaceShipRegularGun = null;
     private SpaceShipSpecialGun spaceShipSpecialGun = null;
     private List<SpecialAttack> playerFollowingSpecialAttacks = new ArrayList<SpecialAttack>();
@@ -62,7 +56,6 @@ public class SpaceShip extends GameObject {
     public SpaceShip (SpriteConfiguration spriteConfiguration) {
         super(spriteConfiguration, null);
         playerStats = PlayerStats.getInstance();
-        powerUpEffects = BoostsUpgradesAndBuffsSettings.getInstance();
         initShip();
     }
 
@@ -76,17 +69,13 @@ public class SpaceShip extends GameObject {
         directiony = 0;
         this.currentShieldPoints = playerStats.getMaxShieldHitPoints();
         this.currentHitpoints = playerStats.getMaxHitPoints();
-//        this.maxHitPoints = playerStats.getMaxHitPoints();
-//        this.maxShieldPoints = playerStats.getMaxShieldHitPoints();
         this.playerFollowingAnimations.clear();
-        this.playerFollowingExplosions.clear();
         this.playerFollowingSpecialAttacks.clear();
         this.accumulatedYCoordinate = this.yCoordinate;
         this.accumulatedXCoordinate = this.xCoordinate;
         pressedKeys = new HashSet<>();
         loadImage(playerStats.getSpaceShipImage());
         currentShieldRegenDelayFrame = 0;
-        powerUpEffects.initDefaultSettings();
         this.spaceShipRegularGun = new SpaceShipRegularGun();
         this.spaceShipSpecialGun = new SpaceShipSpecialGun();
         initExhaustAnimation(playerStats.getExhaustImage());
@@ -114,7 +103,7 @@ public class SpaceShip extends GameObject {
             SpriteAnimationConfiguration focusCrystalAnimConfig = new SpriteAnimationConfiguration(focusCrystalConfig, 10, true);
             SpriteAnimation focusCrystalAnimation = new SpriteAnimation(focusCrystalAnimConfig);
 
-            FocusCrystal focusCrystal = (FocusCrystal) PlayerInventory.getInstance().getItemByName(ItemEnums.FocusCrystal);
+//            FocusCrystal focusCrystal = (FocusCrystal) PlayerInventory.getInstance().getItemByName(ItemEnums.FocusCrystal);
 //            focusCrystalAnimation.setImageDimensions(focusCrystal.getDistance() * 2, focusCrystal.getDistance() * 2);
             focusCrystalAnimation.setAnimationScale(5.714f);
 
@@ -124,15 +113,16 @@ public class SpaceShip extends GameObject {
         }
     }
 
-    private boolean firedAlready = false;
+    private boolean firedPostCreationEffects = false;
+
     private void postCreationActivities () {
         //This method exists because some managers or methods REQUIRE the spaceship to have finished initializing
-        if (!firedAlready) {
+        if (!firedPostCreationEffects) {
             for (int i = 0; i < playerStats.getAmountOfDrones(); i++) {
                 FriendlyManager.getInstance().addDrone();
             }
             OrbitingObjectsFormatter.reformatOrbitingObjects(this, 85);
-            firedAlready = true;
+            firedPostCreationEffects = true;
         }
     }
 
@@ -168,11 +158,9 @@ public class SpaceShip extends GameObject {
         }
     }
 
-    public void takeDamage (float damageTaken, boolean showDamageText) {
-
+    public void takeDamage (float damageTaken) {
         // Armor calculation should only apply if damage is being dealt, not for healing
         if (damageTaken > 0) {
-            damageTaken = ArmorCalculator.calculateDamage(damageTaken, this);
             lastGameSecondDamageTaken = GameStateInfo.getInstance().getGameSeconds();
             this.currentShieldRegenDelayFrame = 0;
 
@@ -184,7 +172,7 @@ public class SpaceShip extends GameObject {
                 // Apply the damage that pierced through the shield to hit points
                 changeHitPoints(shieldPiercingDamage);
                 //If there were any shields left, show the animation
-                if(currentShieldPoints > 0){
+                if (currentShieldPoints > 0) {
                     addShieldDamageAnimation();
                 }
                 currentShieldPoints = 0;
@@ -195,7 +183,7 @@ public class SpaceShip extends GameObject {
                 addShieldDamageAnimation();
             }
         } else if (damageTaken < 0) {
-            // Apply healing, ensuring not to exceed max hit points
+            // Apply healing
             changeHitPoints(-damageTaken);
         }
     }
@@ -232,7 +220,6 @@ public class SpaceShip extends GameObject {
         spaceShipSpecialGun.updateFrameCount();
 
         movePlayerAnimations();
-        moveExplosions();
         moveSpecialAttacks();
         removeInvisibleAnimations();
         updateGameObjectEffects();
@@ -265,31 +252,15 @@ public class SpaceShip extends GameObject {
 
     }
 
-    private void moveExplosions () {
-        for (Explosion explosion : playerFollowingExplosions) {
-            explosion.setX(this.getXCoordinate());
-            explosion.setY(this.getYCoordinate());
-            explosion.getAnimation().setX(this.getXCoordinate());
-            explosion.getAnimation().setY(this.getYCoordinate());
-            explosion.updateBoardBlock();
-            explosion.getAnimation().setAnimationBounds(explosion.getAnimation().getXCoordinate(), explosion.getAnimation().getYCoordinate());
-        }
-    }
 
     private void moveSpecialAttacks () {
         for (SpecialAttack specialAttack : playerFollowingSpecialAttacks) {
             if (specialAttack.centeredAroundPlayer()) {
                 specialAttack.setCenterCoordinates(this.getCenterXCoordinate(), this.getCenterYCoordinate());
-                specialAttack.getAnimation().setCenterCoordinates(this.getCenterXCoordinate(), this.getCenterYCoordinate());
-            } else {
-                specialAttack.setX(this.getXCoordinate());
-                specialAttack.setY(this.getYCoordinate());
-                specialAttack.getAnimation().setX(this.getXCoordinate());
-                specialAttack.getAnimation().setY(this.getYCoordinate());
+//                specialAttack.getAnimation().setCenterCoordinates(this.getCenterXCoordinate(), this.getCenterYCoordinate());
             }
             specialAttack.updateBoardBlock();
             specialAttack.getAnimation().setAnimationBounds(specialAttack.getAnimation().getXCoordinate(), specialAttack.getAnimation().getYCoordinate());
-//			specialAttack.getAnimation().updateCurrentBoardBlock();
         }
     }
 

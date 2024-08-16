@@ -1,6 +1,5 @@
 package game.gameobjects;
 
-import game.gameobjects.missiles.missiletypes.BarrierProjectile;
 import game.gamestate.GameStateInfo;
 import game.gamestate.GameStatsTracker;
 import game.items.Item;
@@ -102,7 +101,9 @@ public class GameObject extends Sprite {
     protected CopyOnWriteArrayList<EffectInterface> effects = new CopyOnWriteArrayList<>();
     protected List<SpriteAnimation> effectAnimations = new ArrayList<>();
 
+
     protected float xpOnDeath = 0;
+    protected boolean isACrit = false;
 
     public GameObject (SpriteConfiguration spriteConfiguration, MovementConfiguration movementConfiguration) {
         super(spriteConfiguration);
@@ -305,8 +306,8 @@ public class GameObject extends Sprite {
         this.visible = false;
     }
 
-    public void takeDamage (float damageTaken, boolean showDamageText) {
-        if(currentHitpoints <= 0){
+    public void takeDamage (float damageTaken) {
+        if (currentHitpoints <= 0) {
             return; //The target is already dead, no need to go through here again
         }
 
@@ -314,8 +315,8 @@ public class GameObject extends Sprite {
             damageTaken = ArmorCalculator.calculateDamage(damageTaken, this);
         }
 
-        if(!this.isFriendly()){
-            //Assume that if its not friendly, the damage came from the player
+        if (!this.isFriendly()) {
+            //Assume that if this object is not friendly, the damage came from the player
             GameStatsTracker.getInstance().addDamageDealt(damageTaken);
             GameStatsTracker.getInstance().setHighestDamageDealt(damageTaken);
         }
@@ -329,9 +330,6 @@ public class GameObject extends Sprite {
             currentHitpoints = maxHitPoints;
         }
 
-        if(showDamageText){
-            OnScreenTextManager.getInstance().addDamageNumberText(damageTaken, this.getCenterXCoordinate(), this.getCenterYCoordinate());
-        }
 
         if (this.currentHitpoints <= 0) {
             if (this.xpOnDeath > 0) {
@@ -344,16 +342,16 @@ public class GameObject extends Sprite {
             }
 
             for (GameObject object : objectsFollowingThis) {
-                if(object.isVisible()) {
+                if (object.isVisible()) {
                     object.setCashMoneyWorth(0);
-                    object.takeDamage(object.getMaxHitPoints() * 5, false);
+                    object.takeDamage(object.getMaxHitPoints() * 5);
                 }
             }
 
-            for(GameObject object : objectOrbitingThis){
-                if(object.isVisible()) {
+            for (GameObject object : objectOrbitingThis) {
+                if (object.isVisible()) {
                     object.setCashMoneyWorth(0);
-                    object.takeDamage(object.getMaxHitPoints() * 5, false);
+                    object.takeDamage(object.getMaxHitPoints() * 5);
                 }
             }
 
@@ -368,26 +366,26 @@ public class GameObject extends Sprite {
 
             this.setVisible(false);
             activateOnDeathEffects();
-            PlayerInventory.getInstance().gainCashMoney(this.cashMoneyWorth);
+            PlayerInventory.getInstance().addMinerals(this.cashMoneyWorth);
             GameStatsTracker.getInstance().addMoneyAcquired(this.cashMoneyWorth);
         }
     }
 
-    public void triggerClassSpecificOnDeathTriggers(){
+    public void triggerClassSpecificOnDeathTriggers () {
         //Supposed to be overriden. Used for "Enemy kill counter" for example
     }
 
-    public void applyEffectsWhenPlayerHitsEnemy (GameObject object) {
+    public void applyAfterCollisionEffects (GameObject target) {
         if (this.appliesOnHitEffects) {
             List<Item> onHitItems = PlayerInventory.getInstance().getItemsByApplicationMethod(ItemApplicationEnum.AfterCollision);
             for (Item item : onHitItems) {
-                item.applyEffectToObject(object);
-                item.applyEffectToObject(this, object);
+                item.applyEffectToObject(target);
+                item.applyEffectToObject(this, target);
             }
         }
     }
 
-    public void applyDamageModification (GameObject target) {
+    public void applyBeforeCollisionEffects (GameObject target) {
         for (Item item : PlayerInventory.getInstance().getItemsByApplicationMethod(ItemApplicationEnum.BeforeCollision)) {
             item.applyEffectToObject(this, target);
         }
@@ -401,12 +399,20 @@ public class GameObject extends Sprite {
         }
     }
 
-    public void dealDamageToGameObject (GameObject gameObject) {
+    public void dealDamageToGameObject (GameObject target) {
         boolean showDamage = true;
-        if(this instanceof ElectroShred){
+        if (this instanceof ElectroShred) {
             showDamage = false;
         }
-        gameObject.takeDamage(getDamage(), showDamage);
+
+        float damage = ArmorCalculator.calculateDamage(getDamage(), target);
+        target.takeDamage(damage);
+
+        if (showDamage) {
+            OnScreenTextManager.getInstance().addDamageNumberText(Math.round(damage), target.getCenterXCoordinate(),
+                    target.getCenterYCoordinate(), isACrit);
+        }
+
     }
 
 
@@ -424,17 +430,7 @@ public class GameObject extends Sprite {
         }
 
         for (GameObject object : objectsFollowingThis) {
-            if (object.isCenteredAroundObject()) {
-                object.setCenterCoordinates(this.getCenterXCoordinate(), this.getCenterYCoordinate());
-                if (object.getAnimation() != null) {
-                    object.getAnimation().setCenterCoordinates(this.getCenterXCoordinate(), this.getCenterYCoordinate());
-                }
-            } else {
-
-                //object.move();
-                //Objects here should be in their respective managers. Only special attacks have to be moved like this!
-                //Because they have no movement configuration and don't need one, else they would be missiles
-            }
+            object.setCenterCoordinates(this.getCenterXCoordinate(), this.getCenterYCoordinate());
         }
     }
 
@@ -516,7 +512,7 @@ public class GameObject extends Sprite {
 
     public void rotateGameObjectTowards (int targetXCoordinate, int targetYCoordinate, boolean crop) {
         //Not cropping caused the bug
-        if(!allowedVisualsToRotate){
+        if (!allowedVisualsToRotate) {
             return;
         }
 
@@ -546,7 +542,7 @@ public class GameObject extends Sprite {
 
     public void rotateAfterMovement () {
         updateChargingAttackAnimationCoordination();
-        if(!this.allowedVisualsToRotate){
+        if (!this.allowedVisualsToRotate) {
             return;
         }
         //Rotate towards the destination if one is found, else rotate towards its rotation enum value
@@ -560,15 +556,15 @@ public class GameObject extends Sprite {
     }
 
     public void rotateObjectTowardsDestination (boolean crop) {
-        if(!this.isAllowedVisualsToRotate()){
+        if (!this.isAllowedVisualsToRotate()) {
             return;
         }
 
         Point destination = null;
 
-        if(movementConfiguration.getCurrentPath() != null && !movementConfiguration.getCurrentPath().getWaypoints().isEmpty()){
+        if (movementConfiguration.getCurrentPath() != null && !movementConfiguration.getCurrentPath().getWaypoints().isEmpty()) {
             destination = movementConfiguration.getCurrentPath().getWaypoints().get(movementConfiguration.getCurrentPath().getWaypoints().size() - 1);
-        } else if(movementConfiguration.getDestination() != null){
+        } else if (movementConfiguration.getDestination() != null) {
             destination = movementConfiguration.getDestination();
         }
 
@@ -714,10 +710,6 @@ public class GameObject extends Sprite {
 
     public void setHasAttack (boolean hasAttack) {
         this.hasAttack = hasAttack;
-    }
-
-    public void setDamage (float damage) {
-        this.damage = damage;
     }
 
     public boolean isAllowedToDealDamage () {
@@ -921,9 +913,6 @@ public class GameObject extends Sprite {
     }
 
 
-
-
-
     public float getAttackSpeed () {
         float baseAttackSpeed = this.attackSpeed;
         float attackSpeedIncrease = this.attackSpeedBonusModifier;
@@ -936,17 +925,21 @@ public class GameObject extends Sprite {
             newAttackSpeed = 0.1f;
         }
         // Ensure the attack speed does not fall below a minimum threshold
-        return Math.round(newAttackSpeed);
+        return newAttackSpeed;
     }
 
     public float getDamage () {
         float attackDamage = this.damage * this.bonusDamageMultiplier;
+        if (isACrit) {
+            attackDamage *= PlayerStats.getInstance().getCriticalStrikeDamageMultiplier();
+        }
         if (attackDamage < 0.1) {
             return 0.1f;
         } else {
             return attackDamage;
         }
     }
+
 
     public void modifyBonusDamageMultiplier (float bonusPercentage) {
         this.bonusDamageMultiplier += bonusPercentage;
@@ -1007,13 +1000,20 @@ public class GameObject extends Sprite {
         }
     }
 
+    public boolean isACrit () {
+        return isACrit;
+    }
+
+    public void setACrit (boolean ACrit) {
+        isACrit = ACrit;
+    }
 
     @Override
     public boolean equals (Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         GameObject that = (GameObject) o;
-        return showHealthBar == that.showHealthBar && allowedToMove == that.allowedToMove && Float.compare(originalScale, that.originalScale) == 0 && Float.compare(currentHitpoints, that.currentHitpoints) == 0 && Float.compare(maxHitPoints, that.maxHitPoints) == 0 && Float.compare(currentShieldPoints, that.currentShieldPoints) == 0 && Float.compare(maxShieldPoints, that.maxShieldPoints) == 0 && Float.compare(baseArmor, that.baseArmor) == 0 && Float.compare(armorBonus, that.armorBonus) == 0 && hasAttack == that.hasAttack && Float.compare(damage, that.damage) == 0 && Float.compare(bonusDamageMultiplier, that.bonusDamageMultiplier) == 0 && allowedToDealDamage == that.allowedToDealDamage && Float.compare(attackSpeed, that.attackSpeed) == 0 && Float.compare(attackSpeedBonusModifier, that.attackSpeedBonusModifier) == 0 && friendly == that.friendly && lastBoardBlock == that.lastBoardBlock && currentBoardBlock == that.currentBoardBlock && boxCollision == that.boxCollision && Double.compare(lastGameSecondDamageTaken, that.lastGameSecondDamageTaken) == 0 && centeredAroundObject == that.centeredAroundObject && movementCounter == that.movementCounter && Float.compare(cashMoneyWorth, that.cashMoneyWorth) == 0 && Double.compare(rotationAngle, that.rotationAngle) == 0 && allowedVisualsToRotate == that.allowedVisualsToRotate && Float.compare(xpOnDeath, that.xpOnDeath) == 0 && Objects.equals(animation, that.animation) && Objects.equals(destructionAnimation, that.destructionAnimation) && Objects.equals(shieldDamagedAnimation, that.shieldDamagedAnimation) && Objects.equals(exhaustAnimation, that.exhaustAnimation) && Objects.equals(chargingUpAttackAnimation, that.chargingUpAttackAnimation) && deathSound == that.deathSound && Objects.equals(objectToCenterAround, that.objectToCenterAround) && Objects.equals(objectToFollow, that.objectToFollow) && Objects.equals(movementConfiguration, that.movementConfiguration) &&  Objects.equals(currentLocation, that.currentLocation) && Objects.equals(objectsFollowingThis, that.objectsFollowingThis) && Objects.equals(objectOrbitingThis, that.objectOrbitingThis) && Objects.equals(objectType, that.objectType) && movementRotation == that.movementRotation && Objects.equals(ownerOrCreator, that.ownerOrCreator) && Objects.equals(effects, that.effects) && Objects.equals(effectAnimations, that.effectAnimations);
+        return showHealthBar == that.showHealthBar && allowedToMove == that.allowedToMove && Float.compare(originalScale, that.originalScale) == 0 && Float.compare(currentHitpoints, that.currentHitpoints) == 0 && Float.compare(maxHitPoints, that.maxHitPoints) == 0 && Float.compare(currentShieldPoints, that.currentShieldPoints) == 0 && Float.compare(maxShieldPoints, that.maxShieldPoints) == 0 && Float.compare(baseArmor, that.baseArmor) == 0 && Float.compare(armorBonus, that.armorBonus) == 0 && hasAttack == that.hasAttack && Float.compare(damage, that.damage) == 0 && Float.compare(bonusDamageMultiplier, that.bonusDamageMultiplier) == 0 && allowedToDealDamage == that.allowedToDealDamage && Float.compare(attackSpeed, that.attackSpeed) == 0 && Float.compare(attackSpeedBonusModifier, that.attackSpeedBonusModifier) == 0 && friendly == that.friendly && lastBoardBlock == that.lastBoardBlock && currentBoardBlock == that.currentBoardBlock && boxCollision == that.boxCollision && Double.compare(lastGameSecondDamageTaken, that.lastGameSecondDamageTaken) == 0 && centeredAroundObject == that.centeredAroundObject && movementCounter == that.movementCounter && Float.compare(cashMoneyWorth, that.cashMoneyWorth) == 0 && Double.compare(rotationAngle, that.rotationAngle) == 0 && allowedVisualsToRotate == that.allowedVisualsToRotate && Float.compare(xpOnDeath, that.xpOnDeath) == 0 && Objects.equals(animation, that.animation) && Objects.equals(destructionAnimation, that.destructionAnimation) && Objects.equals(shieldDamagedAnimation, that.shieldDamagedAnimation) && Objects.equals(exhaustAnimation, that.exhaustAnimation) && Objects.equals(chargingUpAttackAnimation, that.chargingUpAttackAnimation) && deathSound == that.deathSound && Objects.equals(objectToCenterAround, that.objectToCenterAround) && Objects.equals(objectToFollow, that.objectToFollow) && Objects.equals(movementConfiguration, that.movementConfiguration) && Objects.equals(currentLocation, that.currentLocation) && Objects.equals(objectsFollowingThis, that.objectsFollowingThis) && Objects.equals(objectOrbitingThis, that.objectOrbitingThis) && Objects.equals(objectType, that.objectType) && movementRotation == that.movementRotation && Objects.equals(ownerOrCreator, that.ownerOrCreator) && Objects.equals(effects, that.effects) && Objects.equals(effectAnimations, that.effectAnimations);
     }
 
     @Override

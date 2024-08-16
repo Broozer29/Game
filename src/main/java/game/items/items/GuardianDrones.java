@@ -12,7 +12,7 @@ public class GuardianDrones extends Item {
     private int maxAmount = 8;
 
     public GuardianDrones () {
-        super(ItemEnums.GuardianDrone, 1, EffectActivationTypes.PlayerStatsModificationOnCreation, ItemApplicationEnum.ApplyOnCreation);
+        super(ItemEnums.GuardianDrone, 1, ItemApplicationEnum.ApplyOnCreation);
     }
 
     @Override

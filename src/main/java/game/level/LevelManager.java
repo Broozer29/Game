@@ -5,18 +5,19 @@ import java.util.List;
 
 import VisualAndAudioData.audio.enums.LevelSongs;
 import game.UI.GameUICreator;
+import game.items.PlayerInventory;
 import game.managers.ShopManager;
 import game.movement.Direction;
-import game.movement.deprecatedpathfinderconfigs.MovementPatternSize;
+import game.movement.MovementPatternSize;
 import game.gameobjects.enemies.*;
 import game.gameobjects.enemies.enums.EnemyEnums;
 import game.gamestate.GameStateInfo;
 import game.gamestate.GameStatusEnums;
 import VisualAndAudioData.audio.AudioManager;
-import game.movement.pathfinders.HoverPathFinder;
 import game.level.directors.DirectorManager;
 import game.level.enums.LevelDifficulty;
 import game.level.enums.LevelLength;
+import game.movement.pathfinders.RegularPathFinder;
 
 import javax.sound.sampled.UnsupportedAudioFileException;
 
@@ -99,9 +100,20 @@ public class LevelManager {
 
 
         gameState.setGameState(GameStatusEnums.Playing);
-//        DirectorManager.getInstance().setEnabled(true);
-//        DirectorManager.getInstance().createMonsterCards();
-//        DirectorManager.getInstance().createDirectors();
+        DirectorManager directorManager = DirectorManager.getInstance();
+//        directorManager.setEnabled(true);
+//        directorManager.createMonsterCards();
+//        directorManager.createDirectors();
+
+
+//        PlayerStats.getInstance().setShopRerollDiscount(99);
+        PlayerInventory.getInstance().addMinerals(1000000);
+
+
+//        for(int i = 0; i < 150; i++){
+//            PlayerInventory.getInstance().addItem(ItemEnums.getRandomItemByRarity(ItemRarityEnums.Common));
+//        }
+//        directorManager.testingRichMode = true;
 
 
 //        PlayerStats.getInstance().setBaseDamage(1);
@@ -112,23 +124,23 @@ public class LevelManager {
         EnemyEnums enemyType = EnemyEnums.Scout;
         Enemy enemy = EnemyCreator.createEnemy(enemyType, 1000, 100, Direction.LEFT, enemyType.getDefaultScale()
                 , enemyType.getMovementSpeed(), enemyType.getMovementSpeed(), MovementPatternSize.SMALL, enemyType.isBoxCollision());
-        enemy.getMovementConfiguration().setBoardBlockToHoverIn(5);
-        enemy.getMovementConfiguration().setPathFinder(new HoverPathFinder());
-//        enemy.setAllowedVisualsToRotate(false);
-//        enemy.getMovementConfiguration().setXMovementSpeed(0.3f);
-//        enemy.getMovementConfiguration().setYMovementSpeed(0.3f);
+//        enemy.getMovementConfiguration().setBoardBlockToHoverIn(5);
+        enemy.getMovementConfiguration().setPathFinder(new RegularPathFinder());
+        enemy.setAllowedVisualsToRotate(false);
+        enemy.getMovementConfiguration().setXMovementSpeed(0f);
+        enemy.getMovementConfiguration().setYMovementSpeed(0f);
 //        enemy.getAnimation().changeImagetype(ImageEnums.Scout);
         EnemyManager.getInstance().addEnemy(enemy);
-//////
-//        EnemyEnums enemyType2 = EnemyEnums.Needler;
-//        Enemy enemy2 = EnemyCreator.createEnemy(enemyType2, 800, 600, Direction.LEFT, enemyType2.getDefaultScale()
-//                , enemyType2.getMovementSpeed(), enemyType2.getMovementSpeed(), MovementPatternSize.SMALL, enemyType2.isBoxCollision());
-////        enemy2.getMovementConfiguration().setBoardBlockToHoverIn(5);
-//        enemy2.getMovementConfiguration().setPathFinder(new RegularPathFinder());
-//        enemy2.setAllowedVisualsToRotate(false);
-//        enemy2.getMovementConfiguration().setXMovementSpeed(0);
-//        enemy2.getMovementConfiguration().setYMovementSpeed(0);
-//        EnemyManager.getInstance().addEnemy(enemy2);
+////
+        EnemyEnums enemyType2 = EnemyEnums.Bomba;
+        Enemy enemy2 = EnemyCreator.createEnemy(enemyType2, 800, 600, Direction.LEFT, enemyType2.getDefaultScale()
+                , enemyType2.getMovementSpeed(), enemyType2.getMovementSpeed(), MovementPatternSize.SMALL, enemyType2.isBoxCollision());
+//        enemy2.getMovementConfiguration().setBoardBlockToHoverIn(5);
+        enemy2.getMovementConfiguration().setPathFinder(new RegularPathFinder());
+        enemy2.setAllowedVisualsToRotate(false);
+        enemy2.getMovementConfiguration().setXMovementSpeed(0);
+        enemy2.getMovementConfiguration().setYMovementSpeed(0);
+        EnemyManager.getInstance().addEnemy(enemy2);
 //
 //
 //        Enemy enemy3 = EnemyCreator.createEnemy(EnemyEnums.Scout, 500, 200, Direction.LEFT, 1

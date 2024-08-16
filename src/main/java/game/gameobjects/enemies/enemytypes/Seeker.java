@@ -6,7 +6,7 @@ import game.managers.AnimationManager;
 import game.movement.MovementConfiguration;
 import game.movement.PathFinderEnums;
 import game.movement.Point;
-import game.movement.deprecatedpathfinderconfigs.MovementPatternSize;
+import game.movement.MovementPatternSize;
 import game.movement.pathfinders.*;
 import game.gameobjects.enemies.EnemyConfiguration;
 import game.gameobjects.enemies.Enemy;

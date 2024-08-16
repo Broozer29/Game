@@ -11,7 +11,7 @@ public enum MissileEnums {
     SeekerProjectile(false, 3,3,15f, "SeekerProjectile", ImageEnums.Seeker_Missile_Explosion, ImageEnums.Seeker_Missile),
     TazerProjectile(false, 3,3,15f, "TazerProjectile", ImageEnums.LightningOrbDestruction, ImageEnums.LightningOrb),
     FlameThrowerProjectile(false, 3,3,10f, "FlameThrowerProjectile", ImageEnums.Flamer_Missile_Explosion, ImageEnums.Flamer_Missile),
-    PlayerLaserbeam(false, 3,3,10, "DefaultPlayerLaserbeam", ImageEnums.Impact_Explosion_One, ImageEnums.Alien_Laserbeam),
+    PlayerLaserbeam(false, 3,3,10, "DefaultPlayerLaserbeam", ImageEnums.Impact_Explosion_One, ImageEnums.AlienLaserBeamAnimated),
     FirewallMissile(false, 3,3,10f, "FirewallMissile", null, ImageEnums.FirewallParticle),
     PlasmaLauncherMissile(false, 3,3,25f, "PlasmaLauncherMissile", ImageEnums.Impact_Explosion_One, ImageEnums.PlasmaLauncherMissile),
     Rocket1(false, 3,3,1f, "Rocket1", ImageEnums.Rocket_1_Explosion, ImageEnums.Rocket_1),

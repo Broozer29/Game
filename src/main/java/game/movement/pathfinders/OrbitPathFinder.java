@@ -3,6 +3,7 @@ package game.movement.pathfinders;
 import java.util.ArrayList;
 import java.util.List;
 
+import game.gameobjects.friendlies.Drones.Drone;
 import game.movement.Direction;
 import game.movement.MovementConfiguration;
 import game.movement.Path;
@@ -11,7 +12,9 @@ import game.gameobjects.GameObject;
 import visualobjects.Sprite;
 
 public class OrbitPathFinder implements PathFinder {
+
     private GameObject target;
+
     private int radius;
     private int totalFrames;
     private double offsetAngle; // NEW: Angle offset for this drone
@@ -32,6 +35,11 @@ public class OrbitPathFinder implements PathFinder {
         double radius = orbitConfig.getOrbitRadius(); // Use the radius from the config
         int totalFrames = orbitConfig.getOrbitSpeed(); // Use the total frames from the config
 
+        int maximumSteps = 300;
+        if(gameObject instanceof Drone){
+            maximumSteps = 20000;
+        }
+
         double angleStep = Math.PI * 2 / totalFrames;
         List<Point> waypoints = new ArrayList<>();
 
@@ -42,11 +50,21 @@ public class OrbitPathFinder implements PathFinder {
         );
 
         // Generate waypoints that include a smooth transition from start to orbit
-        for (int i = 0; i < totalFrames; i++) {
+        // Precompute constant values
+        double centerX = target.getXCoordinate() + target.getWidth() / 2.0;
+        double centerY = target.getYCoordinate() + target.getHeight() / 2.0;
+        double gameObjectHalfWidth = gameObject.getWidth() / 2.0;
+        double gameObjectHalfHeight = gameObject.getHeight() / 2.0;
+
+        // Initialize waypoints with an appropriate size
+        waypoints = new ArrayList<>(maximumSteps);
+
+        for (int i = 0; i < maximumSteps; i++) {
             double angle = angleStep * i + startAngle; // Start angle relative to the initial position
 
-            int x = (int) (target.getXCoordinate() + target.getWidth() / 2.0 + Math.cos(angle) * radius - gameObject.getWidth() / 2.0);
-            int y = (int) (target.getYCoordinate() + target.getHeight() / 2.0 + Math.sin(angle) * radius - gameObject.getHeight() / 2.0);
+            // Efficiently calculate x and y
+            int x = (int) (centerX + Math.cos(angle) * radius - gameObjectHalfWidth);
+            int y = (int) (centerY + Math.sin(angle) * radius - gameObjectHalfHeight);
 
             waypoints.add(new Point(x, y));
         }
@@ -59,7 +77,7 @@ public class OrbitPathFinder implements PathFinder {
     public Direction getNextStep (GameObject gameObject, Direction fallbackDirection) {
         MovementConfiguration moveconfig = gameObject.getMovementConfiguration();
         Point currentLocation = gameObject.getCurrentLocation();
-;        // Get the list of waypoints from the path
+        ;        // Get the list of waypoints from the path
         List<Point> waypoints = moveconfig.getCurrentPath().getWaypoints();
 
         // Check if there are any waypoints left. If not, return the fallback direction.
@@ -121,7 +139,7 @@ public class OrbitPathFinder implements PathFinder {
     @Override
     public boolean shouldRecalculatePath (GameObject gameObject) {
         MovementConfiguration configuration = gameObject.getMovementConfiguration();
-        return(configuration.getCurrentPath() == null || configuration.getCurrentPath().getWaypoints().isEmpty());
+        return (configuration.getCurrentPath() == null || configuration.getCurrentPath().getWaypoints().isEmpty());
     }
 
 

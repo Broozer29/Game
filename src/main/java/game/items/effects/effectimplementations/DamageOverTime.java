@@ -23,6 +23,9 @@ public class DamageOverTime implements EffectInterface {
     private SpriteAnimation animation;
     private EffectIdentifiers effectIdentifier;
 
+    private double lastDamageTime = 0;
+    private final double damageInterval = 0.1;
+
     public DamageOverTime (float damage, double durationInSeconds, SpriteAnimation spriteAnimation, EffectIdentifiers effectIdentifier) {
         this.damage = damage;
         this.durationInSeconds = durationInSeconds;
@@ -37,8 +40,7 @@ public class DamageOverTime implements EffectInterface {
         this.damage = damage;
     }
 
-    private double lastDamageTime = 0;
-    private final double damageInterval = 1.0; // 2 seconds delay between damage ticks
+
 
     @Override
     public void activateEffect(GameObject target) {
@@ -55,7 +57,7 @@ public class DamageOverTime implements EffectInterface {
         }
         if (currentTime - startTimeInSeconds < durationInSeconds) {
             if (currentTime - lastDamageTime >= damageInterval) {
-                target.takeDamage(this.damage * dotStacks, false);
+                target.takeDamage(this.damage * dotStacks);
                 lastDamageTime = currentTime; // Update the last damage time
             }
         } else {
@@ -73,12 +75,6 @@ public class DamageOverTime implements EffectInterface {
         // Retrieve target dimensions
         int enemyWidth = target.getWidth();
         int enemyHeight = target.getHeight();
-
-        // If target has its own animation, use those dimensions instead
-        if (target.getAnimation() != null) {
-            enemyWidth = target.getAnimation().getWidth();
-            enemyHeight = target.getAnimation().getHeight();
-        }
 
         // Calculate the maximum allowed dimensions
         int maxAllowedWidth = (int) (enemyWidth * 0.4);

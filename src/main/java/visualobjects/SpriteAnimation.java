@@ -54,6 +54,8 @@ public class SpriteAnimation extends Sprite implements Cloneable{
 	private void loadGifFrames(ImageEnums imageType) {
 		this.imageType = imageType;
 		this.frames = ImageDatabase.getInstance().getAnimation(imageType);
+
+
 		this.originalFrames = frames;
 		recalculateBoundsAndSize();
 	}

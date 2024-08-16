@@ -246,7 +246,7 @@ public class ShopBoardCreator {
 
             SpriteConfiguration spriteConfiguration = createSpriteConfiguration(x,y,1, ImageEnums.Invisible);
             ShopItem shopItem = new ShopItem(spriteConfiguration, type);
-            shopItem.getMenuItemInformation().setCost(shopItem.getMenuItemInformation().getCost() * 1.25f);
+//            shopItem.getMenuItemInformation().setCost(shopItem.getMenuItemInformation().getCost() * 1.25f);
 
 
             if (shopManager.getRowsUnlocked() < 2) {
@@ -270,7 +270,7 @@ public class ShopBoardCreator {
 
             SpriteConfiguration spriteConfiguration = createSpriteConfiguration(x,y,1, ImageEnums.Invisible);
             ShopItem shopItem = new ShopItem(spriteConfiguration, type);
-            shopItem.getMenuItemInformation().setCost(shopItem.getMenuItemInformation().getCost() * 1.5f);
+//            shopItem.getMenuItemInformation().setCost(shopItem.getMenuItemInformation().getCost() * 1.5f);
 
 
             if (shopManager.getRowsUnlocked() < 3) {
@@ -347,8 +347,9 @@ public class ShopBoardCreator {
     }
 
     public DisplayOnly createInventoryBackgroundCard () {
-        float widthRatio = 800 / 1440f;
-        float heightRatio = 500 / 875f;
+        float widthRatio = 1000 / 1440f;
+        float heightRatio = 700 / 875f;
+
         int cardWidth = (int) (boardWidth * widthRatio);
         int cardHeight = (int) (boardHeight * heightRatio);
         SpriteConfiguration spriteConfiguration = createSpriteConfiguration(
@@ -357,6 +358,8 @@ public class ShopBoardCreator {
                 1, ImageEnums.Square_Card);
         DisplayOnly backgroundCard = new DisplayOnly(spriteConfiguration);
         backgroundCard.setImageDimensions(cardWidth, cardHeight);
+        backgroundCard.setX(40);
+        backgroundCard.setY(20);
 
         return backgroundCard;
     }

@@ -16,7 +16,7 @@ public class SelfRepairingSteel extends Item {
     private float repairAmount;
 
     public SelfRepairingSteel(){
-        super(ItemEnums.SelfRepairingSteel, 1, EffectActivationTypes.CheckEveryGameTick, ItemApplicationEnum.ApplyOnCreation);
+        super(ItemEnums.SelfRepairingSteel, 1, ItemApplicationEnum.ApplyOnCreation);
         calculateHealingAmount();
     }
 

@@ -11,7 +11,7 @@ public class PhotonPiercer extends Item {
     private float damageAmplificationModifier;
 
     public PhotonPiercer () {
-        super(ItemEnums.PhotonPiercer, 1, EffectActivationTypes.DamageModification, ItemApplicationEnum.BeforeCollision);
+        super(ItemEnums.PhotonPiercer, 1, ItemApplicationEnum.BeforeCollision);
         calculateDamageAmplificationModifier();
     }
 
@@ -21,7 +21,7 @@ public class PhotonPiercer extends Item {
     }
 
     private void calculateDamageAmplificationModifier(){
-        damageAmplificationModifier = 1 + (quantity * 0.75f);
+        damageAmplificationModifier = (quantity * 0.75f);
     }
 
     //Not used
@@ -33,7 +33,7 @@ public class PhotonPiercer extends Item {
     public void applyEffectToObject (GameObject attack, GameObject target) {
         // Check if the current hit points are 90% or more of the maximum hit points
         if (target.getCurrentHitpoints() >= 0.9 * target.getMaxHitPoints()) {
-            attack.setDamage(attack.getDamage() * damageAmplificationModifier);
+            attack.modifyBonusDamageMultiplier(damageAmplificationModifier);
         }
     }
 

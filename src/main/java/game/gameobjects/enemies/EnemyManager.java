@@ -41,9 +41,7 @@ public class EnemyManager {
 
         try {
             updateEnemies();
-        } catch (UnsupportedAudioFileException e) {
-            throw new RuntimeException(e);
-        } catch (IOException e) {
+        } catch (UnsupportedAudioFileException | IOException e) {
             throw new RuntimeException(e);
         }
 
@@ -71,7 +69,7 @@ public class EnemyManager {
                     detonateEnemy(enemy);
                     enemy.dealDamageToGameObject(spaceship);
                 } else {
-                    spaceship.takeDamage(0.5f, false);
+                    spaceship.takeDamage(0.5f);
                 }
             }
         }

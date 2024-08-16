@@ -10,10 +10,10 @@ public class OrbitingObjectsFormatter {
         double meanY = gameObject.getCenterYCoordinate();
 
         // Adjust the center if the object is a SpaceShip
-        if (gameObject instanceof SpaceShip) {
-            meanX -= 10;
-            meanY -= 20;
-        }
+//        if (gameObject instanceof SpaceShip) {
+//            meanX -= 10;
+//            meanY -= 20;
+//        }
 
         // Adjust for the dimensions of the gameObject
 
@@ -37,7 +37,7 @@ public class OrbitingObjectsFormatter {
             object.setCenterCoordinates(x, y);
 
             // Create a new OrbitPathFinder with the correct offset angle
-            OrbitPathFinder newOrbit = new OrbitPathFinder(gameObject, 85, 300, 0);
+            OrbitPathFinder newOrbit = new OrbitPathFinder(gameObject, radius, 300, 0);
             // Update the GuardianDrone's path finder
             object.resetMovementPath();
             object.setPathFinder(newOrbit);

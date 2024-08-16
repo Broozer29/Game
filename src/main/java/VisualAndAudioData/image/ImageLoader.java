@@ -235,6 +235,8 @@ public class ImageLoader {
                 return "/images/Icons/Starcraft2 Energizer Speed2.png";
             case Starcraft2_Energy_Siphon:
                 return "/images/Icons/Starcraft2 Energy Siphon.png";
+            case Starcraft2BouncingLaser:
+                return "/images/Icons/Starcraft2 Bouncing Laser.png";
             case Starcraft2_Fire_Cloak:
                 return "/images/Icons/Starcraft2 Fire Cloak.png";
             case Starcraft2_Fire_Hardened_Shields:
@@ -339,6 +341,8 @@ public class ImageLoader {
                 return "/images/Icons/Starcraft2 Electric Field.png";
             case Starcraft2_Firebat_Weapon:
                 return "/images/Icons/Starcraft2 Firebat Weapon.png";
+            case Starcraft2Keystone:
+                return "/images/Icons/Starcraft2 Keystone.png";
             case Letter_A:
                 return "/images/Letters/Letter-A.png";
             case Letter_B:
@@ -615,6 +619,12 @@ public class ImageLoader {
 //                return "/images/Ships/Enemy Ships/Needler.png";
 //            case Scout:
 //                return "/images/Ships/Enemy Ships/Scout.png";
+            case VIPTicket:
+                return "/images/Icons/VIPTicket.png";
+            case PiercingLaser:
+                return "/images/Icons/PiercingLaser.png";
+            case Starcraft2LockOn:
+                return "/images/Icons/Starcraft2 LockOn.png";
             case LaserBullet:
                 return "/images/laserbullet.png";
             case CashCarrier:

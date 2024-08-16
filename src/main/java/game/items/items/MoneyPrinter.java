@@ -18,7 +18,7 @@ public class MoneyPrinter extends Item {
 
 
     public MoneyPrinter(){
-        super(ItemEnums.MoneyPrinter, 1, EffectActivationTypes.OnPlayerHit, ItemApplicationEnum.AfterCollision);
+        super(ItemEnums.MoneyPrinter, 1, ItemApplicationEnum.AfterCollision);
         calculateMoneyGainAmount();
 //        procChance = 0.1f;
         procChance = 1f;

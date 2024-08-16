@@ -41,14 +41,21 @@ public class OnScreenTextManager {
 		this.onScreenTexts.add(onScreenText);
 	}
 
-	public void addDamageNumberText(float damageNumber, int xCoordinate, int yCoordinate){
+	public void addDamageNumberText(float damageNumber, int xCoordinate, int yCoordinate, boolean isCrit){
 		OnScreenText onScreenText = new OnScreenText(xCoordinate, yCoordinate, String.valueOf(Math.round(damageNumber)));
 		onScreenText.setTransparancyStepSize(0.02f);
-		onScreenText.setFontSize(14);
-		onScreenText.setColor(Color.YELLOW);
+
+		if(isCrit){
+			onScreenText.setFontSize(16);
+			onScreenText.setColor(Color.ORANGE);
+		} else {
+			onScreenText.setFontSize(14);
+			onScreenText.setColor(Color.YELLOW);
+		}
 		this.onScreenTexts.add(onScreenText);
 	}
-	
+
+
 
 	public List<OnScreenText> getOnScreenTexts () {
 		return onScreenTexts;

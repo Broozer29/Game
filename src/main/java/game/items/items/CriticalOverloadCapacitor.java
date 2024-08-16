@@ -9,7 +9,7 @@ import game.gameobjects.player.PlayerStats;
 
 public class CriticalOverloadCapacitor extends Item {
     public CriticalOverloadCapacitor () {
-        super(ItemEnums.CriticalOverloadCapacitor, 1, EffectActivationTypes.PlayerStatsModificationOnCreation, ItemApplicationEnum.ApplyOnCreation);
+        super(ItemEnums.CriticalOverloadCapacitor, 1, ItemApplicationEnum.ApplyOnCreation);
     }
 
     @Override

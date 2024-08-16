@@ -160,6 +160,7 @@ public class ImageDatabase {
     private BufferedImage starcraft2_ArmorPiercing;
     private BufferedImage moneyPrinter;
     private BufferedImage stickyDynamite;
+    private BufferedImage starcraft2Keystone;
 
     // Font Letters
     private BufferedImage letter_A;
@@ -277,6 +278,9 @@ public class ImageDatabase {
     private BufferedImage peepoShruge;
     private BufferedImage peepoSkillIssue;
 
+    private BufferedImage VIPTicket;
+    private BufferedImage piercingLaser;
+
 
 
     // Lists
@@ -367,6 +371,7 @@ public class ImageDatabase {
     private List<BufferedImage> explosion2 = new ArrayList<BufferedImage>();
     private List<BufferedImage> circlingRings = new ArrayList<BufferedImage>();
     private List<BufferedImage> spiralingGreenEnergy = new ArrayList<BufferedImage>();
+    private List<BufferedImage> electroShredImproved = new ArrayList<BufferedImage>();
 
     // Enemy projectile explosions
     private List<BufferedImage> seekerProjectileExplosion = new ArrayList<BufferedImage>();
@@ -480,6 +485,7 @@ public class ImageDatabase {
 
 
     private List<BufferedImage> HighlightImages = new ArrayList<BufferedImage>();
+    private List<BufferedImage> thornsDamage = new ArrayList<BufferedImage>();
 
     // testimages
     private BufferedImage testImage;
@@ -489,6 +495,8 @@ public class ImageDatabase {
     // Images to Gifs
     private List<BufferedImage> defaultPlayerEngine = new ArrayList<BufferedImage>();
     private BufferedImage guirefresh;
+    private BufferedImage warcraft3HealingWave;
+    private BufferedImage starcraft2LockOn;
 
     private ImageDatabase () {
         initializeImages();
@@ -633,6 +641,8 @@ public class ImageDatabase {
         this.moneyPrinter = imgLoader.getImage(ImageEnums.MoneyPrinter);
         this.stickyDynamite = imgLoader.getImage(ImageEnums.StickyDynamite);
         this.topazGem7 = imgLoader.getImage(ImageEnums.TopazGem7);
+        this.VIPTicket = imgLoader.getImage(ImageEnums.VIPTicket);
+        this.piercingLaser = imgLoader.getImage(ImageEnums.PiercingLaser);
     }
 
 
@@ -866,10 +876,18 @@ public class ImageDatabase {
         this.lockedIcon = imgLoader.getImage(ImageEnums.LockedIcon);
         this.laserBullet = imgLoader.getImage(ImageEnums.LaserBullet);
         this.guirefresh = imgLoader.getImage(ImageEnums.GUIRefresh);
+        this.starcraft2Keystone = imgLoader.getImage(ImageEnums.Starcraft2Keystone);
+        this.warcraft3HealingWave = imgLoader.getImage(ImageEnums.Starcraft2BouncingLaser);
+        this.starcraft2LockOn = imgLoader.getImage(ImageEnums.Starcraft2LockOn);
     }
 
     public BufferedImage getImage (ImageEnums imageType) {
         switch (imageType) {
+            case Starcraft2LockOn: return starcraft2LockOn;
+            case VIPTicket: return VIPTicket;
+            case PiercingLaser: return piercingLaser;
+            case Starcraft2BouncingLaser: return warcraft3HealingWave;
+            case Starcraft2Keystone: return starcraft2Keystone;
             case GUIRefresh: return guirefresh;
             case peepoDeepFriedSadge: return peepoDeepFriedSadge;
             case peepoFeelsCringeMan: return peepoFeelsCringeMan;
@@ -1383,6 +1401,8 @@ public class ImageDatabase {
 
     public List<BufferedImage> getAnimation (ImageEnums imageType) {
         switch (imageType) {
+            case ThornsDamage: return thornsDamage;
+            case ElectroShredImproved: return electroShredImproved;
             case Tazer: return tazer;
             case Seeker: return seekerFrames;
             case CashExplosion: return cashExplosion;
@@ -2129,6 +2149,18 @@ public class ImageDatabase {
             String sourceString = String.format("/images/gif/PNGtoGIF/AlienLaserbeam/%d.png", i);
             BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
             alienLaserBeamAnimated.add(image);
+        }
+
+        for (int i = 1; i < 10; i++) {
+            String sourceString = String.format("/images/gif/PNGtoGIF/Player EMP/doubled/%d.png", i);
+            BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+            electroShredImproved.add(image);
+        }
+
+        for (int i = 0; i < 7; i++) {
+            String sourceString = String.format("/images/gif/PNGtoGIF/Thorns/%d.png", i);
+            BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+            thornsDamage.add(image);
         }
     }
 

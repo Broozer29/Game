@@ -28,6 +28,7 @@ public class Missile extends GameObject {
     protected int amountOfPiercesLeft;
 
     protected boolean isDestructable;
+    protected boolean speedsUp;
 
 
     public Missile (SpriteConfiguration spriteConfiguration, MissileConfiguration missileConfiguration, MovementConfiguration movementConfiguration) {
@@ -85,7 +86,7 @@ public class Missile extends GameObject {
         // Exists to be overriden by non-explosive missiles
     }
 
-    public void detonateMissile (){
+    public void detonateMissile () {
         //Exists to be overriden by explosive missiles
     }
 
@@ -131,7 +132,7 @@ public class Missile extends GameObject {
         }
     }
 
-    public boolean collidedWithObject(GameObject object){
+    public boolean collidedWithObject (GameObject object) {
         return collidedObjects.contains(object);
     }
 
@@ -145,26 +146,26 @@ public class Missile extends GameObject {
 
 
     private boolean hasPiercedForStatsTracker = false;
-    public void handleCollision(GameObject collidedObject){
-        applyDamageModification(collidedObject); // Adjust damage based on any modifiers.
 
+    public void handleCollision (GameObject collidedObject) {
         // Handle different types of missiles
         if (isExplosive) {
             detonateMissile();
             destroyMissile();
-            if(ownerOrCreator.equals(PlayerManager.getInstance().getSpaceship())){
+            if (ownerOrCreator.equals(PlayerManager.getInstance().getSpaceship())) {
                 GameStatsTracker.getInstance().addShotHit(1);
             }
         } else {
             pierceAndBounce(collidedObject);
-            if(!hasPiercedForStatsTracker && ownerOrCreator.equals(PlayerManager.getInstance().getSpaceship())){
+            if (!hasPiercedForStatsTracker && ownerOrCreator.equals(PlayerManager.getInstance().getSpaceship())) {
                 GameStatsTracker.getInstance().addShotHit(1);
             }
         }
 
     }
 
-    private void pierceAndBounce(GameObject collidedObject){
+    private void pierceAndBounce (GameObject collidedObject) {
+        //We only want to fire this once per enemy, thus the collidedobjects check
         if (piercesThroughObjects && amountOfPiercesLeft > 0 && !collidedObjects.contains(collidedObject)) {
             dealDamageToGameObject(collidedObject);
             addCollidedObject(collidedObject);
@@ -173,7 +174,7 @@ public class Missile extends GameObject {
 
             //Rework in a nicer way, just testing
             Item bouncingModuleAddon = PlayerInventory.getInstance().getItemByName(ItemEnums.BouncingModuleAddon);
-            if(bouncingModuleAddon != null) {
+            if (bouncingModuleAddon != null) {
                 GameObject newTarget = EnemyManager.getInstance().getEnemyClosestToGameObject(collidedObject, this.collidedObjects);
                 if (newTarget != null) {
                     bouncingModuleAddon.applyEffectToObject(this);
@@ -181,14 +182,16 @@ public class Missile extends GameObject {
                 }
             }
 
-        } else if (!piercesThroughObjects || amountOfPiercesLeft <= 0 && !collidedObjects.contains(collidedObject)) {
+        } else if (!piercesThroughObjects || amountOfPiercesLeft <= 0) {
             dealDamageToGameObject(collidedObject);
             destroyMissile();
+
         }
     }
 
-    private void bounceToNewTarget(GameObject newTarget){
+    private void bounceToNewTarget (GameObject newTarget) {
         this.resetMovementPath();
+        this.allowedVisualsToRotate = true;
         this.movementConfiguration.initDefaultSettingsForSpecializedPathFinders();
         this.movementConfiguration.setRotation(this.movementRotation);
         this.movementConfiguration.setCurrentLocation(this.currentLocation);
@@ -198,6 +201,8 @@ public class Missile extends GameObject {
         int centerY = newTarget.getCenterYCoordinate() - this.getHeight() / 2;
 
         this.movementConfiguration.setDestination(new Point(centerX, centerY));
+        this.rotateObjectTowardsDestination(true);
+        this.allowedVisualsToRotate = false;
     }
 
     public boolean isExplosive () {
@@ -216,8 +221,15 @@ public class Missile extends GameObject {
         isDestructable = destructable;
     }
 
-    public boolean isDeletesMissiles (){
+    public boolean isDeletesMissiles () {
         return destroysMissiles;
     }
 
+    public boolean isSpeedsUp () {
+        return speedsUp;
+    }
+
+    public void setSpeedsUp (boolean speedsUp) {
+        this.speedsUp = speedsUp;
+    }
 }

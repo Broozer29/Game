@@ -175,8 +175,12 @@ public class ShopBoard extends JPanel implements ActionListener {
         recreateList();
     }
 
-    private void addAllButFirstComponent(GUITextCollection textCollection){
-        for(int i = 1; i < textCollection.getComponents().size(); i++){
+    public void remakeShopRerollText(){
+        rerollCostText = shopBoardCreator.createRerollCostText(rerollBackgroundCard);
+    }
+
+    private void addAllButFirstComponent (GUITextCollection textCollection) {
+        for (int i = 1; i < textCollection.getComponents().size(); i++) {
             offTheGridObjects.add(textCollection.getComponents().get(i));
         }
     }
@@ -195,10 +199,9 @@ public class ShopBoard extends JPanel implements ActionListener {
 //        fifthRow.add(playerInventoryButton.getComponents().get(0));
         addAllButFirstComponent(playerInventoryButton);
 
-        if(!thirdRow.contains(rerollButton)) {
+        if (!thirdRow.contains(rerollButton)) {
             thirdRow.add(rerollButton);
         }
-
 
 
         grid.add(firstRow);
@@ -206,7 +209,6 @@ public class ShopBoard extends JPanel implements ActionListener {
         grid.add(thirdRow);
         grid.add(fourthRow);
         grid.add(fifthRow);
-
 
 
         updateNextLevelDifficultyIcon();
@@ -234,7 +236,7 @@ public class ShopBoard extends JPanel implements ActionListener {
         updateCursor();
     }
 
-    public void rerollShop(){
+    public void rerollShop () {
         firstRow = shopBoardCreator.createNewFirstRowOfItems();
         secondRow = shopBoardCreator.createNewSecondRowOfItems();
         thirdRow = shopBoardCreator.createNewThirdRowOfItems();
@@ -255,17 +257,17 @@ public class ShopBoard extends JPanel implements ActionListener {
         int xCoordinateStart = inventoryBackgroundCard.getXCoordinate();
         int yCoordinateStart = inventoryBackgroundCard.getYCoordinate();
 
-        int backgroundXPadding = 50;
-        int backgroundYPadding = 30;
+        int backgroundXPadding = 60;
+        int backgroundYPadding = 60;
 
-        int maxWidth = inventoryBackgroundCard.getWidth() - backgroundXPadding;
-        int maxHeight = inventoryBackgroundCard.getHeight() - backgroundYPadding;
+        int padding = 15; // Space between items
+        int itemSize = 80; //set the icon dimensions
+
+        int maxWidth = inventoryBackgroundCard.getWidth() - backgroundXPadding - padding;
+        int maxHeight = inventoryBackgroundCard.getHeight() - backgroundYPadding - padding;
         int scale = 1;
-        MenuObjectEnums objectEnum = MenuObjectEnums.ItemIcon;
 
         // Variables to control the layout within the inventory card
-        int padding = 10; // Space between items
-        int itemSize = 64; // Assuming each item icon is 64x64 pixels
         int itemsPerRow = maxWidth / (itemSize + padding);
         int xCoordinate = xCoordinateStart + padding + backgroundXPadding;
         int yCoordinate = yCoordinateStart + padding + backgroundYPadding;
@@ -275,40 +277,29 @@ public class ShopBoard extends JPanel implements ActionListener {
             // Create a menu object for the item
             SpriteConfiguration spriteConfiguration = new SpriteConfiguration();
             spriteConfiguration.setxCoordinate(xCoordinate);
-            spriteConfiguration.setyCoordinate(yCoordinateStart);
+            spriteConfiguration.setyCoordinate(yCoordinate);
             spriteConfiguration.setScale(scale);
             spriteConfiguration.setImageType(itemMap.get(itemEnum).getItemName().getItemIcon());
 
             GUIComponent itemComponent = new DisplayOnly(spriteConfiguration);
+            itemComponent.setImageDimensions(itemSize, itemSize);
             playerInventoryMenuObjects.add(itemComponent);
 
             int quantity = itemMap.get(itemEnum).getQuantity();
-            String quantityStr = String.valueOf(quantity);
 
             // Calculate the position for the quantity indicator
             int quantityX = xCoordinate + itemSize - 25; // Adjust for proper placement
-            int quantityY = yCoordinate + itemSize - 25; // Adjust for proper placement
+            int quantityY = yCoordinate + itemSize - 10; // Adjust for proper placement
 
-            // Create a MenuObjectPart for each digit in the quantity
-            for (int i = 0; i < quantityStr.length(); i++) {
-                char digit = quantityStr.charAt(i);
-                ImageEnums digitImage = ImageEnums.getImageEnumForDigit(digit);
-                SpriteConfiguration digitSpriteConfig = new SpriteConfiguration();
-                digitSpriteConfig.setxCoordinate(quantityX + (i * 8)); // Adjust spacing between digits
-                digitSpriteConfig.setyCoordinate(quantityY);
-                digitSpriteConfig.setScale(scale);
-                digitSpriteConfig.setImageType(digitImage);
-
-
-                GUIComponent itemAmount = new DisplayOnly(digitSpriteConfig);
-                playerInventoryMenuObjects.add(itemAmount);
-            }
+            GUITextCollection itemAmount = new GUITextCollection(quantityX, quantityY, String.valueOf(quantity));
+            itemAmount.setScale(1.5f);
+            playerInventoryMenuObjects.addAll(itemAmount.getComponents());
 
             // Update xCoordinate, wrapping and resetting yCoordinate as needed
             if ((xCoordinate - xCoordinateStart) / (itemSize + padding) >= itemsPerRow - 1) {
                 // Move down to the next row and reset xCoordinate
                 yCoordinate += itemSize + padding;
-                xCoordinate = xCoordinateStart + padding;
+                xCoordinate = xCoordinateStart + padding + backgroundXPadding;
                 // If yCoordinate goes outside of the maxHeight, break out of the loop
                 if (yCoordinate + itemSize > yCoordinateStart + maxHeight) {
                     break;
@@ -335,7 +326,7 @@ public class ShopBoard extends JPanel implements ActionListener {
             int descriptionX = itemDescription.getXCoordinate() + horizontalPadding;
             int descriptionY = itemDescription.getYCoordinate() + verticalPadding;
 
-            if(selectedTile instanceof ShopItem){
+            if (selectedTile instanceof ShopItem) {
                 text = ((ShopItem) selectedTile).getMenuItemInformation().getItemDescription();
             } else {
                 text = selectedTile.getDescriptionOfComponent();
@@ -648,9 +639,9 @@ public class ShopBoard extends JPanel implements ActionListener {
             }
         }
 
-        if(showInventory){
-            for(GUIComponent component : playerInventoryMenuObjects){
-                if(component != null){
+        if (showInventory) {
+            for (GUIComponent component : playerInventoryMenuObjects) {
+                if (component != null) {
                     drawGUIComponent(g, component);
                 }
             }

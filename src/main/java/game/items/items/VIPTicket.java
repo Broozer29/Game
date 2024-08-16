@@ -7,13 +7,15 @@ import game.items.effects.EffectActivationTypes;
 import game.items.enums.ItemApplicationEnum;
 import game.items.enums.ItemEnums;
 import game.managers.ShopManager;
+import guiboards.BoardManager;
+import guiboards.boards.ShopBoard;
 
 public class VIPTicket extends Item {
 
     private int discount;
 
     public VIPTicket () {
-        super(ItemEnums.VIPTicket, 1, EffectActivationTypes.UponPurchase, ItemApplicationEnum.ApplyOnCreation);
+        super(ItemEnums.VIPTicket, 1, ItemApplicationEnum.ApplyOnCreation);
         calculateDiscount();
     }
 
@@ -30,5 +32,6 @@ public class VIPTicket extends Item {
     public void applyEffectToObject (GameObject gameObject) {
         PlayerStats.getInstance().setShopRerollDiscount(discount);
         ShopManager.getInstance().calculateRerollCost();
+        BoardManager.getInstance().getShopBoard().remakeShopRerollText();
     }
 }

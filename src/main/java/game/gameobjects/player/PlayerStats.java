@@ -2,9 +2,11 @@ package game.gameobjects.player;
 
 import VisualAndAudioData.audio.AudioManager;
 import VisualAndAudioData.audio.enums.AudioEnums;
+import game.gameobjects.GameObject;
 import game.gameobjects.missiles.MissileEnums;
 import VisualAndAudioData.image.ImageEnums;
 import game.gameobjects.player.spaceship.SpaceShip;
+import game.movement.PathFinderEnums;
 import game.util.ExperienceCalculator;
 import game.util.LevelAnimationPlayer;
 
@@ -33,6 +35,9 @@ public class PlayerStats {
     private PlayerSpecialAttackTypes specialAttackType;
     private float baseDamage;
     private float bonusDamageMultiplier;
+
+    private float specialBaseDamage;
+    private float specialBonusDamageMultiplier;
     private float attackSpeed;
     private float specialAttackSpeed;
     private float attackSpeedBonus;
@@ -62,6 +67,7 @@ public class PlayerStats {
     private float overloadedShieldDiminishAmount;
     private float maxShieldMultiplier = 1.0f;
     private int piercingMissilesAmount = 0;
+    private float thornsDamageRatio = 0.0f;
 
 
     //Leveling system
@@ -73,7 +79,13 @@ public class PlayerStats {
 
     //Willekeurig:
     private int shopRerollDiscount = 0;
-
+    private PathFinderEnums dronePathFinder = PathFinderEnums.Regular;
+    private float droneDamageBonusRatio = 0;
+    private float droneDamageRatio = 1;
+    private boolean hasImprovedElectroShred = false;
+    private boolean attacksApplyThorns = false;
+    private float chanceForThornsToApplyOnHitEffects = 0;
+    private float thornsArmorDamageBonusRatio = 0;
 
     public void initDefaultSettings () {
         piercingMissilesAmount = 0;
@@ -81,6 +93,14 @@ public class PlayerStats {
 
         attackType = MissileEnums.PlayerLaserbeam;
         specialAttackType = PlayerSpecialAttackTypes.EMP;
+        attacksApplyThorns = false;
+        chanceForThornsToApplyOnHitEffects = 0;
+        thornsArmorDamageBonusRatio = 0;
+        setThornsDamageRatio(0);
+        setDroneDamageRatio(1);
+        setDroneDamageBonusRatio(0);
+        setShopRerollDiscount(0);
+        dronePathFinder = PathFinderEnums.Regular;
 
         // Health
         setMaxHitPoints(100);
@@ -94,6 +114,7 @@ public class PlayerStats {
 
         // Special attack
         setSpecialAttackSpeed(1.25f);
+        setSpecialBonusDamageMultiplier(1); //Otherwhise it's damage * 0 = 0
         setMaxSpecialAttackCharges(1);
 
         //Modifiers/multipliers
@@ -116,6 +137,8 @@ public class PlayerStats {
 
     private void loadSpecialGunPreset () {
         setPlayerSpecialAttackType(PlayerSpecialAttackTypes.EMP);
+        setSpecialBaseDamage(baseDamage * 0.1f);
+        setHasImprovedElectroShred(false);
     }
 
     private void loadNormalGunPreset () {
@@ -144,7 +167,7 @@ public class PlayerStats {
     private void initLaserbeamPreset () {
         setAttackSpeed(0.3125f);
         setBaseDamage(20);
-        setPlayerMissileImage(ImageEnums.AlienLaserBeamAnimated);
+        setPlayerMissileImage(this.attackType.getImageType());
         setPlayerMissileImpactImage(ImageEnums.Impact_Explosion_One);
         setMissileScale(1);
         setMissileImpactScale(1);
@@ -493,5 +516,119 @@ public class PlayerStats {
 
     public void setShopRerollDiscount (int shopRerollDiscount) {
         this.shopRerollDiscount = shopRerollDiscount;
+    }
+
+    public void addDroneBonusDamage (float damageBonus) {
+        this.droneDamageBonusRatio += damageBonus;
+    }
+
+    public void setDroneStraightLinePathFinder (PathFinderEnums pathFinderEnums) {
+        this.dronePathFinder = pathFinderEnums;
+    }
+
+    public PathFinderEnums getDronePathFinder () {
+        return dronePathFinder;
+    }
+
+    public void setDronePathFinder (PathFinderEnums dronePathFinder) {
+        this.dronePathFinder = dronePathFinder;
+    }
+
+    public float getDroneDamageBonusRatio () {
+        return droneDamageBonusRatio;
+    }
+
+    public void setDroneDamageBonusRatio (float droneDamageBonusRatio) {
+        this.droneDamageBonusRatio = droneDamageBonusRatio;
+    }
+
+    public float getDroneDamageRatio () {
+        return droneDamageRatio + droneDamageBonusRatio;
+    }
+
+    public void setDroneDamageRatio (float droneDamageRatio) {
+        this.droneDamageRatio = droneDamageRatio;
+    }
+
+    public boolean isHasImprovedElectroShred () {
+        return hasImprovedElectroShred;
+    }
+
+    public void setHasImprovedElectroShred (boolean hasImprovedElectroShred) {
+        this.hasImprovedElectroShred = hasImprovedElectroShred;
+    }
+
+    public float getSpecialBaseDamage () {
+        return specialBaseDamage;
+    }
+
+    public void setSpecialBaseDamage (float specialBaseDamage) {
+        this.specialBaseDamage = specialBaseDamage;
+    }
+
+    public float getSpecialDamage () {
+        return this.specialBaseDamage * this.specialBonusDamageMultiplier;
+    }
+
+
+    public float getSpecialBonusDamageMultiplier () {
+        return specialBonusDamageMultiplier;
+    }
+
+    public void setSpecialBonusDamageMultiplier (float specialBonusDamageMultiplier) {
+        this.specialBonusDamageMultiplier = specialBonusDamageMultiplier;
+    }
+
+    public void modifySpecialBonusDamageMultiplier (float specialBonusDamageMultiplier) {
+        this.specialBonusDamageMultiplier += specialBonusDamageMultiplier;
+    }
+
+    public float getThornsDamageRatio () {
+        return thornsDamageRatio;
+    }
+
+    public void setThornsDamageRatio (float thornsDamageRatio) {
+        this.thornsDamageRatio = thornsDamageRatio;
+    }
+
+    public void modifyThornsDamageRatio (float thornsDamageRatio) {
+        this.thornsDamageRatio += thornsDamageRatio;
+    }
+
+    public float getThornsDamage () {
+        float thornsDamage = 0;
+        if (thornsDamageRatio > 0) {
+            thornsDamage = baseDamage * thornsDamageRatio;
+        }
+        if(thornsArmorDamageBonusRatio > 0){
+            GameObject spaceShip = PlayerManager.getInstance().getSpaceship();
+            thornsDamage += thornsArmorDamageBonusRatio * (spaceShip.getBaseArmor() + spaceShip.getArmorBonus());
+        }
+
+        return thornsDamage;
+    }
+
+    public boolean isAttacksApplyThorns () {
+        return attacksApplyThorns;
+    }
+
+    public void setAttacksApplyThorns (boolean attacksApplyThorns) {
+        this.attacksApplyThorns = attacksApplyThorns;
+    }
+
+    public float getChanceForThornsToApplyOnHitEffects () {
+        return chanceForThornsToApplyOnHitEffects;
+    }
+
+    public void setChanceForThornsToApplyOnHitEffects (float chanceForThornsToApplyOnHitEffects) {
+        this.chanceForThornsToApplyOnHitEffects = chanceForThornsToApplyOnHitEffects;
+    }
+
+    public float getThornsArmorDamageBonusRatio () {
+        return thornsArmorDamageBonusRatio;
+    }
+
+    public void setThornsArmorDamageBonusRatio (float thornsArmorDamageBonusRatio) {
+        this.thornsArmorDamageBonusRatio = thornsArmorDamageBonusRatio;
     }
 }

@@ -44,7 +44,7 @@ public class GenericMissile extends Missile {
 	private int stepsTaken = 0;
 	private int moduloDivider = 90;
 	public void missileAction() {
-		if(this.ownerOrCreator instanceof Scout){
+		if(this.speedsUp){
 			stepsTaken++;
 
 			if(stepsTaken % moduloDivider == 0){

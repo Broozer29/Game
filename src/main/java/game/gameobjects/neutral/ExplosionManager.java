@@ -13,6 +13,7 @@ import game.gameobjects.enemies.EnemyManager;
 import game.gameobjects.player.PlayerManager;
 import game.gameobjects.player.spaceship.SpaceShip;
 import game.util.CollisionDetector;
+import game.util.ThornsDamageDealer;
 
 public class ExplosionManager {
 
@@ -90,11 +91,11 @@ public class ExplosionManager {
         for (Enemy enemy : enemyManager.getEnemies()) {
             if (!explosion.dealtDamageToTarget(enemy)) {
                 if (CollisionDetector.getInstance().detectCollision(explosion, enemy)) {
-                    explosion.applyDamageModification(enemy);
+                    explosion.applyBeforeCollisionEffects(enemy);
 
 
                     if (explosion.isApplyOnHitEffects()) {
-                        explosion.applyEffectsWhenPlayerHitsEnemy(enemy);
+                        explosion.applyAfterCollisionEffects(enemy);
                     }
 
                     explosion.applyExplosionEffects(enemy);
@@ -109,16 +110,13 @@ public class ExplosionManager {
         SpaceShip spaceship = friendlyManager.getSpaceship();
         if (!explosion.dealtDamageToTarget(spaceship) &&
                 CollisionDetector.getInstance().detectCollision(explosion, spaceship)) {
+
+            //if thorns: reflect damage
+            ThornsDamageDealer.getInstance().dealThornsDamageTo(explosion.getOwnerOrCreator());
+
             explosion.dealDamageToGameObject(spaceship);
-            applyPlayerTakeDamageOnHitEffects();
             explosion.addCollidedSprite(spaceship);
         }
     }
 
-    private void applyPlayerTakeDamageOnHitEffects () {
-        List<Item> onHitItems = PlayerInventory.getInstance().getItemByActivationTypes(EffectActivationTypes.OnPlayerHit);
-        for (Item item : onHitItems) {
-            item.applyEffectToObject(PlayerManager.getInstance().getSpaceship());
-        }
-    }
 }

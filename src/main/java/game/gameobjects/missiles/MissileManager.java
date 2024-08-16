@@ -16,6 +16,7 @@ import game.gameobjects.player.PlayerManager;
 import game.gameobjects.enemies.Enemy;
 import game.gameobjects.enemies.EnemyManager;
 import game.gameobjects.missiles.specialAttacks.SpecialAttack;
+import game.util.ThornsDamageDealer;
 
 
 public class MissileManager {
@@ -154,12 +155,12 @@ public class MissileManager {
         boolean hasAppliedEffects = false;
         for (Enemy enemy : enemyManager.getEnemies()) {
             if (collisionDetector.detectCollision(enemy, specialAttack)) {
-                specialAttack.applyDamageModification(enemy);
+                specialAttack.applyBeforeCollisionEffects(enemy);
 
                 if (specialAttack.isAllowOnHitEffects()
                         && specialAttack.canApplyEffectAgain()
                 ) {
-                    specialAttack.applyEffectsWhenPlayerHitsEnemy(enemy);
+                    specialAttack.applyAfterCollisionEffects(enemy);
                     hasAppliedEffects = true;
                 }
 
@@ -193,8 +194,10 @@ public class MissileManager {
                 if (missile.getMissileEnum().equals(MissileEnums.TazerProjectile)) {
                     ((TazerProjectile) missile).handleTazerMissile(missile, enemy);
                 } else { //It's a player missile
-                    missile.applyEffectsWhenPlayerHitsEnemy(enemy);
+                    missile.applyBeforeCollisionEffects(enemy);
                     missile.handleCollision(enemy);
+                    missile.applyAfterCollisionEffects(enemy);
+
                 }
 
             }
@@ -208,10 +211,13 @@ public class MissileManager {
             if (missile.getMissileEnum().equals(MissileEnums.TazerProjectile)) {
                 ((TazerProjectile) missile).handleTazerMissile(missile, spaceship);
             }
+            //if deflect: deflect missile, else:
             missile.handleCollision(spaceship);
-//            missile.dealDamageToGameObject(spaceship);
-            applyEffectsWhenPlayerTakesDamage();
-//            missile.destroyMissile(); //Assumes enemy projectiles always get destroyed on contact
+
+            //if thorns & not explosive (explosive reflection is in explosion manager): reflect damage
+            if(!missile.isExplosive()){
+                ThornsDamageDealer.getInstance().dealThornsDamageTo(missile.getOwnerOrCreator());
+            }
         }
     }
 
@@ -257,12 +263,6 @@ public class MissileManager {
         }
     }
 
-    private void applyEffectsWhenPlayerTakesDamage () {
-        List<Item> onHitItems = PlayerInventory.getInstance().getItemByActivationTypes(EffectActivationTypes.OnPlayerHit);
-        for (Item item : onHitItems) {
-            item.applyEffectToObject(PlayerManager.getInstance().getSpaceship());
-        }
-    }
 
     private void triggerMissileActions () {
         for (Missile missile : missiles) {

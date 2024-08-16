@@ -47,7 +47,7 @@ public class GainGoldOnDeath implements EffectInterface {
     @Override
     public void activateEffect (GameObject gameObject) {
         if (gameObject.getCurrentHitpoints() <= 0 && !activated) {
-            PlayerInventory.getInstance().gainCashMoney(goldAmount * GameStateInfo.getInstance().getDifficultyCoefficient());
+            PlayerInventory.getInstance().addMinerals(goldAmount * GameStateInfo.getInstance().getDifficultyCoefficient());
             activated = true;
 
             if(additionalAnimation != null){

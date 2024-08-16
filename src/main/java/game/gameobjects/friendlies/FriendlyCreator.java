@@ -3,7 +3,7 @@ package game.gameobjects.friendlies;
 import VisualAndAudioData.image.ImageEnums;
 import game.movement.Direction;
 import game.movement.MovementConfiguration;
-import game.movement.deprecatedpathfinderconfigs.MovementPatternSize;
+import game.movement.MovementPatternSize;
 import game.movement.pathfinders.OrbitPathFinder;
 import game.movement.pathfinders.PathFinder;
 import game.gameobjects.friendlies.Drones.Drone;
@@ -25,7 +25,7 @@ public class FriendlyCreator {
 
         PathFinder pathFinder = new OrbitPathFinder(PlayerManager.getInstance().getSpaceship(), 85, 300, 0);
         FriendlyObjectConfiguration friendlyObjectConfiguration = new FriendlyObjectConfiguration(friendlyType,
-                1.5f, pathFinder,
+                0.75f, pathFinder,
                 Direction.RIGHT, 1, 1, MovementPatternSize.SMALL, friendlyType.isBoxCollision(), friendlyType.isPermanentObject());
         FriendlyObject object = FriendlyCreator.createDrone(spriteConfiguration, friendlyObjectConfiguration);
         object.getMovementConfiguration().setLastKnownTargetX(PlayerManager.getInstance().getSpaceship().getCenterXCoordinate());

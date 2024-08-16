@@ -10,7 +10,7 @@ import game.gameobjects.player.PlayerStats;
 public class DrillerModule extends Item {
 
     public DrillerModule(){
-        super(ItemEnums.DrillerModule, 1, EffectActivationTypes.PlayerStatsModificationOnCreation, ItemApplicationEnum.ApplyOnCreation);
+        super(ItemEnums.DrillerModule, 1, ItemApplicationEnum.ApplyOnCreation);
     }
 
     @Override

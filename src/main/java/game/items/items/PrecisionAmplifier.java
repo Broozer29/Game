@@ -17,7 +17,7 @@ public class PrecisionAmplifier extends Item {
     private Random random = new Random();
 
     public PrecisionAmplifier () {
-        super(ItemEnums.PrecisionAmplifier, 1, EffectActivationTypes.DamageModification, ItemApplicationEnum.BeforeCollision);
+        super(ItemEnums.PrecisionAmplifier, 1,  ItemApplicationEnum.BeforeCollision);
         calculateCritChance();
     }
 
@@ -42,9 +42,9 @@ public class PrecisionAmplifier extends Item {
         // Check if the roll is within the crit chance
         if (roll < critChance) {
             // Successful critical strike, double the attack's damage
-            attack.setDamage(attack.getDamage() * PlayerStats.getInstance().getCriticalStrikeDamageMultiplier());
-            OnScreenText text = new OnScreenText(target.getXCoordinate(), target.getYCoordinate(), "CRITICAL HIT");
-            OnScreenTextManager.getInstance().addTextObject(text);
+            attack.setACrit(true);
+//            OnScreenText text = new OnScreenText(target.getXCoordinate(), target.getYCoordinate(), "CRITICAL HIT");
+//            OnScreenTextManager.getInstance().addTextObject(text);
         }
 
 

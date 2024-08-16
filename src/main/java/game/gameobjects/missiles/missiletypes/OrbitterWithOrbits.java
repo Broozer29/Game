@@ -2,7 +2,7 @@ package game.gameobjects.missiles.missiletypes;
 
 import VisualAndAudioData.image.ImageEnums;
 import game.movement.MovementConfiguration;
-import game.movement.deprecatedpathfinderconfigs.MovementPatternSize;
+import game.movement.MovementPatternSize;
 import game.movement.pathfinders.OrbitPathFinder;
 import game.gameobjects.GameObject;
 import game.gameobjects.missiles.*;

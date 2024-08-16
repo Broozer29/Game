@@ -3,12 +3,11 @@ package game.items.items;
 import VisualAndAudioData.audio.enums.AudioEnums;
 import VisualAndAudioData.image.ImageEnums;
 import game.items.Item;
-import game.items.effects.EffectActivationTypes;
 import game.items.enums.ItemApplicationEnum;
 import game.items.enums.ItemEnums;
 import game.movement.Direction;
 import game.movement.MovementConfiguration;
-import game.movement.deprecatedpathfinderconfigs.MovementPatternSize;
+import game.movement.MovementPatternSize;
 import game.movement.pathfinders.HomingPathFinder;
 import game.gameobjects.GameObject;
 import game.gameobjects.missiles.*;
@@ -25,7 +24,7 @@ public class PlasmaLauncher extends Item {
     private Random rand;
 
     public PlasmaLauncher () {
-        super(ItemEnums.PlasmaLauncher, 1, EffectActivationTypes.AfterAHit, ItemApplicationEnum.AfterCollision);
+        super(ItemEnums.PlasmaLauncher, 1, ItemApplicationEnum.AfterCollision);
 //        procChance = 0.2f;
         procChance = 0.1f;
         calculateDamage();

@@ -12,7 +12,7 @@ public class FocusCrystal extends Item {
     private int distance = 200;
 
     public FocusCrystal () {
-        super(ItemEnums.FocusCrystal, 1, EffectActivationTypes.DamageModification, ItemApplicationEnum.BeforeCollision);
+        super(ItemEnums.FocusCrystal, 1, ItemApplicationEnum.BeforeCollision);
         calculateDamageAmplificationModifier();
     }
 
@@ -34,7 +34,6 @@ public class FocusCrystal extends Item {
 
 
     public void applyEffectToObject (GameObject attack, GameObject target) {
-
         GameObject ownerOrCreator = attack.getOwnerOrCreator();
         int shooterXCoordinate = ownerOrCreator.getCenterXCoordinate();
         int shooterYCoordinate = ownerOrCreator.getCenterYCoordinate();

@@ -12,7 +12,7 @@ public class Overclock extends Item {
     //Applies 10% attack speed increase
 
     public Overclock(){
-        super(ItemEnums.Overclock, 1, EffectActivationTypes.PlayerStatsModificationOnCreation, ItemApplicationEnum.ApplyOnCreation);
+        super(ItemEnums.Overclock, 1,  ItemApplicationEnum.ApplyOnCreation);
     }
 
     @Override
