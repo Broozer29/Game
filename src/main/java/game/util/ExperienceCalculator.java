@@ -16,7 +16,7 @@ public class ExperienceCalculator {
     }
 
     public static float getNextLevelBaseDamage(float currentDamage){
-        return currentDamage*1.05f;
+        return currentDamage*1.04f;
     }
 
 }

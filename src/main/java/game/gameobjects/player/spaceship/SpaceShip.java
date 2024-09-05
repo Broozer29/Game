@@ -139,6 +139,7 @@ public class SpaceShip extends GameObject {
         SpriteAnimationConfiguration spriteAnimationConfiguration = new SpriteAnimationConfiguration(this.spriteConfiguration, 2, false);
         spriteAnimationConfiguration.getSpriteConfiguration().setImageType(imageType);
         destructionAnimation = new SpriteAnimation(spriteAnimationConfiguration);
+        destructionAnimation.setAnimationScale(2f);
     }
 
     public void addShieldDamageAnimation () {

@@ -20,7 +20,6 @@ public class ElectricStabilizer extends Item {
     public ElectricStabilizer(){
         super(ItemEnums.ElectricDestabilizer, 1, ItemApplicationEnum.AfterCollision);
         calculateDuration();
-
     }
 
     @Override
@@ -30,9 +29,9 @@ public class ElectricStabilizer extends Item {
             spriteConfiguration.setxCoordinate(target.getXCoordinate());
             spriteConfiguration.setyCoordinate(target.getYCoordinate());
             spriteConfiguration.setScale(1);
-            spriteConfiguration.setImageType(ImageEnums.Healing);
+            spriteConfiguration.setImageType(ImageEnums.FreezeEffect);
 
-            SpriteAnimationConfiguration spriteAnimationConfiguration = new SpriteAnimationConfiguration(spriteConfiguration, 3, true);
+            SpriteAnimationConfiguration spriteAnimationConfiguration = new SpriteAnimationConfiguration(spriteConfiguration, 0, true);
             SpriteAnimation spriteAnimation = new SpriteAnimation(spriteAnimationConfiguration);
 
             FreezeEffect freezeEffect = new FreezeEffect(duration, spriteAnimation);

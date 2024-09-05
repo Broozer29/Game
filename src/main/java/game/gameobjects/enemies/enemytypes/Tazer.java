@@ -29,26 +29,14 @@ public class Tazer extends Enemy {
     private List<Direction> missileDirections = new ArrayList<>();
     private Direction randomDirection = null;
 
-    public Tazer (SpriteConfiguration spriteConfiguration, EnemyConfiguration enemyConfiguration, MovementConfiguration movementConfiguration) {
-        super(spriteConfiguration, enemyConfiguration, movementConfiguration);
-
-        SpriteAnimationConfiguration destroyedExplosionfiguration = new SpriteAnimationConfiguration(spriteConfiguration, 3, false);
-        destroyedExplosionfiguration.getSpriteConfiguration().setImageType(ImageEnums.Tazer_Destroyed_Explosion);
-        this.destructionAnimation = new SpriteAnimation(destroyedExplosionfiguration);
-
-        this.damage = MissileEnums.TazerProjectile.getDamage();
-        initDirectionFromRotation();
-
-    }
-
     public Tazer (SpriteAnimationConfiguration spriteConfiguration, EnemyConfiguration enemyConfiguration, MovementConfiguration movementConfiguration) {
         super(spriteConfiguration, enemyConfiguration, movementConfiguration);
 
         SpriteAnimationConfiguration destroyedExplosionfiguration = new SpriteAnimationConfiguration(spriteConfiguration.getSpriteConfiguration(), 3, false);
         destroyedExplosionfiguration.getSpriteConfiguration().setImageType(ImageEnums.Tazer_Destroyed_Explosion);
         this.destructionAnimation = new SpriteAnimation(destroyedExplosionfiguration);
-
-        this.damage = MissileEnums.TazerProjectile.getDamage();
+        this.attackSpeed = 6f;
+        this.damage = 15;
         initDirectionFromRotation();
     }
 
@@ -97,7 +85,7 @@ public class Tazer extends Enemy {
         //Create missile movement attributes and create a movement configuration
         MissileEnums missileType = MissileEnums.TazerProjectile;
         BouncingPathFinder missilePathFinder = new BouncingPathFinder();
-        missilePathFinder.setMaxBounces(1);
+        missilePathFinder.setMaxBounces(3);
         MovementPatternSize movementPatternSize = MovementPatternSize.SMALL;
         MovementConfiguration movementConfiguration = MissileCreator.getInstance().createMissileMovementConfig(
                 2,2, missilePathFinder, movementPatternSize, randomDirection
@@ -137,29 +125,26 @@ public class Tazer extends Enemy {
         switch (this.movementConfiguration.getRotation()) {
             case DOWN:
                 missileDirections.add(Direction.LEFT_DOWN);
-                missileDirections.add(Direction.DOWN);
+//                missileDirections.add(Direction.DOWN);
                 missileDirections.add(Direction.RIGHT_DOWN);
                 break;
             case LEFT:
             case LEFT_DOWN:
             case LEFT_UP:
                 missileDirections.add(Direction.LEFT_DOWN);
-                missileDirections.add(Direction.LEFT);
+//                missileDirections.add(Direction.LEFT);
                 missileDirections.add(Direction.LEFT_UP);
-                break;
-            case NONE:
-                missileDirections.add(Direction.LEFT);
                 break;
             case RIGHT:
             case RIGHT_DOWN:
             case RIGHT_UP:
                 missileDirections.add(Direction.RIGHT_UP);
-                missileDirections.add(Direction.RIGHT);
+//                missileDirections.add(Direction.RIGHT);
                 missileDirections.add(Direction.RIGHT_DOWN);
                 break;
             case UP:
                 missileDirections.add(Direction.LEFT_UP);
-                missileDirections.add(Direction.UP);
+//                missileDirections.add(Direction.UP);
                 missileDirections.add(Direction.RIGHT_UP);
                 break;
             default:
@@ -170,7 +155,6 @@ public class Tazer extends Enemy {
     }
 
     private Direction selectRandomMissileDirection(){
-        Random rand = new Random();
         return missileDirections.get(random.nextInt(missileDirections.size()));
     }
 }

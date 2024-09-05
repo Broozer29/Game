@@ -15,7 +15,6 @@ public class GameStateInfo {
 
     private double gameSeconds;
     private int stagesCompleted;
-
     private long gameTicksExecuted;
 
     private float musicSeconds = 0;
@@ -47,20 +46,23 @@ public class GameStateInfo {
 
 
 
+
+    int temporaryBonus = 1;
     public void updateDifficultyCoefficient() {
         float playerFactor = 1;
         float baseTimeFactor = 0.0606f; // Base factor for time, at LevelManager difficulty 2
-        float maxTimeFactor = 0.1005f; // Define the maximum time factor for LevelManager difficulty 6
+        float maxTimeFactor = 0.125f; // Define the maximum time factor for LevelManager difficulty 6
         float stageFactor = (float) Math.pow(1.15, stagesCompleted); // Exponential growth for each stage completed
 
-        float songDifficultyModifier = LevelManager.getInstance().getCurrentDifficultyCoeff(); // This should be obtained from the LevelManager and ranges between 2 and 6 (inclusive)
+
+        float songDifficultyModifier = LevelManager.getInstance().getCurrentLevelDifficultyScore(); // This should be obtained from the LevelManager and ranges between 2 and 6 (inclusive)
 
         // Scale the time factor based on the level difficulty
         float timeFactor = baseTimeFactor + (maxTimeFactor - baseTimeFactor) * ((songDifficultyModifier - 2) / (6 - 2));
 
         double timeInMinutes = gameSeconds / 60.0f; // Convert seconds to minutes
 
-        difficultyCoefficient = (float) ((playerFactor + timeInMinutes * timeFactor) * stageFactor);
+        difficultyCoefficient = (float) ((playerFactor + timeInMinutes * timeFactor) * stageFactor) + temporaryBonus;
         updateMonsterLevel();
     }
 

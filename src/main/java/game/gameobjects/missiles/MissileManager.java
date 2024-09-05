@@ -215,7 +215,7 @@ public class MissileManager {
             missile.handleCollision(spaceship);
 
             //if thorns & not explosive (explosive reflection is in explosion manager): reflect damage
-            if(!missile.isExplosive()){
+            if (!missile.isExplosive()) {
                 ThornsDamageDealer.getInstance().dealThornsDamageTo(missile.getOwnerOrCreator());
             }
         }

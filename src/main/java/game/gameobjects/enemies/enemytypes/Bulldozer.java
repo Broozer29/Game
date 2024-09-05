@@ -80,8 +80,7 @@ public class Bulldozer extends Enemy {
                 EnemyEnums.Alien_Bomb,
                 25, 0,
                 false, false, AudioEnums.Alien_Bomb_Destroyed,
-                true, "Alien Bomb",
-                0, EnemyEnums.Alien_Bomb.isBoxCollision(),
+                true, "Alien Bomb", false,
                 EnemyEnums.Alien_Bomb.getBaseArmor(), 0, 0);
 
         MovementConfiguration movementConfiguration = new MovementConfiguration();

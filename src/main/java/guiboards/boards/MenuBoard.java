@@ -9,11 +9,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
@@ -73,7 +71,7 @@ public class MenuBoard extends JPanel implements ActionListener {
         }
 
         initMenuTiles();
-        timer = new Timer(16, e ->  repaint(0, 0, DataClass.getInstance().getWindowWidth(), DataClass.getInstance().getWindowHeight()));
+        timer = new Timer(16, e -> repaint(0, 0, DataClass.getInstance().getWindowWidth(), DataClass.getInstance().getWindowHeight()));
         timer.start();
     }
 
@@ -103,8 +101,8 @@ public class MenuBoard extends JPanel implements ActionListener {
 
             addTilesToColumns();
 
-            for(GUITextCollection explanation : controlExplanations){
-                for(GUIComponent component : explanation.getComponents()){
+            for (GUITextCollection explanation : controlExplanations) {
+                for (GUIComponent component : explanation.getComponents()) {
                     offTheGridObjects.add(component);
                 }
             }
@@ -132,8 +130,8 @@ public class MenuBoard extends JPanel implements ActionListener {
 
     }
 
-    private void addAllButFirstComponent(GUITextCollection textCollection){
-        for(int i = 1; i < textCollection.getComponents().size(); i++){
+    private void addAllButFirstComponent (GUITextCollection textCollection) {
+        for (int i = 1; i < textCollection.getComponents().size(); i++) {
             offTheGridObjects.add(textCollection.getComponents().get(i));
         }
     }
@@ -287,67 +285,67 @@ public class MenuBoard extends JPanel implements ActionListener {
         }
     }
 
-    private long lastMoveTime = 0;
-    private static final long MOVE_COOLDOWN = 200; // 200 milliseconds
+    private int inputDelay;
+    private static final long MOVE_COOLDOWN = 50; // 50 milliseconds
 
     public void executeControllerInput () {
         if (controllers.getFirstController() != null) {
             controllerInputReader.pollController();
-            long currentTime = System.currentTimeMillis();
 
             // Left and right navigation
-            if (currentTime - lastMoveTime > MOVE_COOLDOWN) {
+            if (inputDelay >= MOVE_COOLDOWN) {
                 if (controllerInputReader.isInputActive(ControllerInputEnums.MOVE_LEFT_SLOW)
                         || controllerInputReader.isInputActive(ControllerInputEnums.MOVE_LEFT_QUICK)) {
                     // Menu option to the left
                     previousMenuTile();
-                    lastMoveTime = currentTime;
+                    inputDelay = 0;
                 } else if (controllerInputReader.isInputActive(ControllerInputEnums.MOVE_RIGHT_SLOW)
                         || controllerInputReader.isInputActive(ControllerInputEnums.MOVE_RIGHT_QUICK)) {
                     // Menu option to the right
                     nextMenuTile();
-                    lastMoveTime = currentTime;
+                    inputDelay = 0;
                 }
-            }
 
-            // Up and down navigation
-            if (currentTime - lastMoveTime > MOVE_COOLDOWN) {
+                // Up and down navigation
                 if (controllerInputReader.isInputActive(ControllerInputEnums.MOVE_UP_SLOW)
                         || controllerInputReader.isInputActive(ControllerInputEnums.MOVE_UP_QUICK)) {
                     // Menu option upwards
                     previousMenuColumn();
-                    lastMoveTime = currentTime;
+                    inputDelay = 0;
                 } else if (controllerInputReader.isInputActive(ControllerInputEnums.MOVE_DOWN_SLOW)
                         || controllerInputReader.isInputActive(ControllerInputEnums.MOVE_DOWN_QUICK)) {
                     // Menu option downwards
                     nextMenuColumn();
-                    lastMoveTime = currentTime;
+                    inputDelay = 0;
                 }
-            }
-            if (currentTime - lastMoveTime > MOVE_COOLDOWN) {
-                lastMoveTime = currentTime;
+
                 if (controllerInputReader.isInputActive(ControllerInputEnums.FIRE)) {
                     // Select menu option
                     selectMenuTile();
+                    inputDelay = 0;
                 }
             }
         }
+    }
 
+
+    public void resetLastMoveTime () {
+        inputDelay = 0;
     }
 
     /*-----------------------------End of navigation methods--------------------------*/
 
     /*---------------------------Drawing methods-------------------------------*/
     @Override
-    public void paintComponent(Graphics g) {
+    public void paintComponent (Graphics g) {
         super.paintComponent(g);
         Graphics2D g2d = (Graphics2D) g.create(); // Create a copy to avoid modifying the original graphics context
 
         try {
             // Draws all background objects
-             for (BackgroundObject bgObject : backgroundManager.getAllBGO()) {
-                 drawImage(g2d, bgObject);
-             }
+            for (BackgroundObject bgObject : backgroundManager.getAllBGO()) {
+                drawImage(g2d, bgObject);
+            }
 
             for (SpriteAnimation animation : animationManager.getLowerAnimations()) {
                 drawAnimation(g2d, animation);
@@ -368,6 +366,7 @@ public class MenuBoard extends JPanel implements ActionListener {
 
         // readControllerState();
         executeControllerInput();
+        inputDelay++;
     }
 
     private void drawObjects (Graphics2D g) {

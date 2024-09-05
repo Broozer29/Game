@@ -112,7 +112,7 @@ public class ImageRotator {
         // Crop the image to remove any unnecessary transparent space
         if(crop) {
             bufferedImage = cropTransparentPixels(bufferedImage);
-            bufferedImage = ImageCropper.getInstance().cropToContent(bufferedImage);
+//            bufferedImage = ImageCropper.getInstance().cropToContent(bufferedImage); Not needed as it's already cropped
         }
 
         rotatedImageCache.put(cacheKey, bufferedImage);
@@ -126,29 +126,36 @@ public class ImageRotator {
         int maxX = 0;
         int maxY = 0;
 
+        // Traverse the image to find the bounding box of non-transparent pixels
         for (int y = 0; y < image.getHeight(); y++) {
             for (int x = 0; x < image.getWidth(); x++) {
                 int alpha = (image.getRGB(x, y) >> 24) & 255;
-                if (alpha > 0) { // if pixel is not transparent
-                    if (x < minX)
-                        minX = x;
-                    if (y < minY)
-                        minY = y;
-                    if (x > maxX)
-                        maxX = x;
-                    if (y > maxY)
-                        maxY = y;
+                if (alpha > 0) { // Pixel is not fully transparent
+                    if (x < minX) minX = x;
+                    if (y < minY) minY = y;
+                    if (x > maxX) maxX = x;
+                    if (y > maxY) maxY = y;
                 }
             }
         }
 
-        // Add 1 to maxX/maxY because subimage's second parameter is exclusive
+        // Check if the bounding box is valid
+        if (maxX < minX || maxY < minY) {
+            System.out.println("Invalid bounds detected:");
+            System.out.println("minX: " + minX);
+            System.out.println("minY: " + minY);
+            System.out.println("maxX: " + maxX);
+            System.out.println("maxY: " + maxY);
+            System.out.println("Returning the original image.");
+            return image; // No valid non-transparent area found
+        }
+
+        // Calculate width and height for the subimage
         int subImageWidth = maxX - minX + 1;
         int subImageHeight = maxY - minY + 1;
 
-        // Check if the calculated dimensions are valid
+        // Ensure subimage dimensions are within the image bounds
         if (minX < 0 || minY < 0 || minX + subImageWidth > image.getWidth() || minY + subImageHeight > image.getHeight()) {
-            // Print out the values and identify the incorrect value
             System.out.println("Invalid subimage dimensions calculated:");
             System.out.println("minX: " + minX);
             System.out.println("minY: " + minY);
@@ -159,40 +166,21 @@ public class ImageRotator {
             System.out.println("Image Width: " + image.getWidth());
             System.out.println("Image Height: " + image.getHeight());
 
-            if (minX < 0) System.out.println("Error: minX is less than 0");
-            if (minY < 0) System.out.println("Error: minY is less than 0");
-            if (minX + subImageWidth > image.getWidth()) System.out.println("Error: (minX + subImageWidth) is greater than image width");
-            if (minY + subImageHeight > image.getHeight()) System.out.println("Error: (minY + subImageHeight) is greater than image height");
-
-            // Return the original image if the dimensions are invalid
             return image;
         }
 
         try {
-            bufferedImage = image.getSubimage(minX, minY, subImageWidth, subImageHeight);
-        } catch(RasterFormatException exception){
+            // Crop the image using the calculated bounding box
+            BufferedImage croppedImage = image.getSubimage(minX, minY, subImageWidth, subImageHeight);
+            return croppedImage;
+        } catch (RasterFormatException exception) {
+            System.out.println("RasterFormatException occurred:");
             System.out.println(exception);
-            System.out.println("minX: " + minX);
-            System.out.println("minY: " + minY);
-            System.out.println("maxX: " + maxX);
-            System.out.println("maxY: " + maxY);
-            System.out.println("subImageWidth: " + subImageWidth);
-            System.out.println("subImageHeight: " + subImageHeight);
-            System.out.println("Image Width: " + image.getWidth());
-            System.out.println("Image Height: " + image.getHeight());
-
-            if (minX < 0) System.out.println("Error: minX is less than 0");
-            if (minY < 0) System.out.println("Error: minY is less than 0");
-            if (minX + subImageWidth > image.getWidth()) System.out.println("Error: (minX + subImageWidth) is greater than image width");
-            if (minY + subImageHeight > image.getHeight()) System.out.println("Error: (minY + subImageHeight) is greater than image height");
-
-            OnScreenTextManager.getInstance().addText("MAJOR ROTATION ERROR, CHECK CONSOLE LOGS",
-                    DataClass.getInstance().getWindowWidth() / 2,
-                    DataClass.getInstance().getWindowHeight() / 2);
+            System.out.println("Returning the original image.");
             return image;
         }
-        return bufferedImage;
     }
+
 
     public double calculateAngle(int sourceX, int sourceY, int targetX, int targetY) {
         // Calculate the angle in radians from the horizontal axis to the line connecting the two points

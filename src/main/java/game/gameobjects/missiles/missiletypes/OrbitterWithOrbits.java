@@ -24,13 +24,13 @@ public class OrbitterWithOrbits extends Missile {
         this.isDestructable = true;
     }
 
-    public OrbitterWithOrbits(SpriteAnimationConfiguration spriteConfiguration, MissileConfiguration missileConfiguration, MovementConfiguration movementConfiguration){
+    public OrbitterWithOrbits (SpriteAnimationConfiguration spriteConfiguration, MissileConfiguration missileConfiguration, MovementConfiguration movementConfiguration) {
         super(spriteConfiguration, missileConfiguration, movementConfiguration);
         this.animation.rotateAnimation(movementConfiguration.getRotation(), true);
         initDestructionAnimation(missileConfiguration, movementConfiguration);
     }
 
-    private void initOrbits() {
+    private void initOrbits () {
         int orbitRadius = 150;
         for (int i = 0; i < 8; i++) {
             Missile missile = createOrbitingMissile(this, orbitRadius);
@@ -44,7 +44,7 @@ public class OrbitterWithOrbits extends Missile {
         }
     }
 
-    private void createSecondWaveOfOrbits() {
+    private void createSecondWaveOfOrbits () {
         int orbitRadius = 100;
         for (GameObject object : firstWaveOfOrbits) {
             for (int i = 0; i < 8; i++) {
@@ -59,7 +59,7 @@ public class OrbitterWithOrbits extends Missile {
         }
     }
 
-    private Missile createOrbitingMissile(GameObject target, int orbitRadius) {
+    private Missile createOrbitingMissile (GameObject target, int orbitRadius) {
         SpriteConfiguration spriteConfig = MissileCreator.getInstance().createMissileSpriteConfig(
                 target.getXCoordinate(), target.getYCoordinate(),
                 MissileEnums.Orbitter.getImageType(), 0.2f);
@@ -76,11 +76,13 @@ public class OrbitterWithOrbits extends Missile {
         moveConfig.setLastUsedYMovementSpeed(movementConfiguration1.getYMovementSpeed());
         moveConfig.setOrbitRadius(orbitRadius);
 
+        float damage = 10;
+
         MissileConfiguration missileConfig = MissileCreator.getInstance().createMissileConfiguration(
-                MissileEnums.Orbitter, 100, 0, null, MissileEnums.Orbitter.getDamage(),
+                MissileEnums.Orbitter, 100, 0, null, damage,
                 MissileEnums.Orbitter.getDeathOrExplosionImageEnum(),
                 target.isFriendly(), true, "OrbitterMissile", false, false, true
-        ,false);
+                , false);
 
         Missile orbitingMissile = MissileCreator.getInstance().createMissile(spriteConfig, missileConfig, moveConfig);
         orbitingMissile.setAllowedVisualsToRotate(false);
@@ -89,13 +91,13 @@ public class OrbitterWithOrbits extends Missile {
     }
 
 
-    private void initDestructionAnimation(MissileConfiguration missileConfiguration, MovementConfiguration movementConfiguration){
-        if(missileConfiguration.getDestructionType() != null){
+    private void initDestructionAnimation (MissileConfiguration missileConfiguration, MovementConfiguration movementConfiguration) {
+        if (missileConfiguration.getDestructionType() != null) {
             SpriteAnimationConfiguration destructionAnimation = new SpriteAnimationConfiguration(this.spriteConfiguration, 2, false);
             destructionAnimation.getSpriteConfiguration().setImageType(missileConfiguration.getDestructionType());
             this.destructionAnimation = new SpriteAnimation(destructionAnimation);
 
-            if(this.destructionAnimation.getImageType().equals(ImageEnums.LaserBulletDestruction)){
+            if (this.destructionAnimation.getImageType().equals(ImageEnums.LaserBulletDestruction)) {
                 this.destructionAnimation.rotateAnimation(movementConfiguration.getRotation(), false);
                 this.destructionAnimation.setFrameDelay(1);
             }
@@ -104,8 +106,9 @@ public class OrbitterWithOrbits extends Missile {
 
 
     boolean hasFired = false;
+
     public void missileAction () {
-        if(!hasFired) {
+        if (!hasFired) {
             initOrbits();
 //            createSecondWaveOfOrbits();
             hasFired = true;

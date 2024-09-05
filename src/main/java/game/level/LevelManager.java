@@ -5,7 +5,6 @@ import java.util.List;
 
 import VisualAndAudioData.audio.enums.LevelSongs;
 import game.UI.GameUICreator;
-import game.items.PlayerInventory;
 import game.managers.ShopManager;
 import game.movement.Direction;
 import game.movement.MovementPatternSize;
@@ -17,6 +16,9 @@ import VisualAndAudioData.audio.AudioManager;
 import game.level.directors.DirectorManager;
 import game.level.enums.LevelDifficulty;
 import game.level.enums.LevelLength;
+import game.movement.Point;
+import game.movement.pathfinders.DestinationPathFinder;
+import game.movement.pathfinders.HoverPathFinder;
 import game.movement.pathfinders.RegularPathFinder;
 
 import javax.sound.sampled.UnsupportedAudioFileException;
@@ -32,7 +34,7 @@ public class LevelManager {
     private LevelSongs currentLevelSong;
     private LevelDifficulty currentLevelDifficulty;
     private LevelLength currentLevelLength;
-    private int currentDifficultyCoeff;
+    private int currentLevelDifficultyScore;
 
     private LevelManager () {
         resetManager();
@@ -55,8 +57,8 @@ public class LevelManager {
             ShopManager shopManager = ShopManager.getInstance();
             shopManager.setLastLevelDifficulty(this.currentLevelDifficulty);
             shopManager.setLastLevelLength(this.currentLevelLength);
-            shopManager.setLastLevelDifficultyCoeff(this.currentDifficultyCoeff);
-            shopManager.setRowsUnlockedByDifficulty(this.currentDifficultyCoeff);
+            shopManager.setLastLevelDifficultyCoeff(this.currentLevelDifficultyScore);
+            shopManager.setRowsUnlockedByDifficulty(this.currentLevelDifficultyScore);
             DirectorManager.getInstance().setEnabled(false);
             shopManager.calculateRerollCost();
         }
@@ -66,7 +68,7 @@ public class LevelManager {
             gameState.setGameState(GameStatusEnums.Show_Level_Score_Card);
             this.currentLevelLength = null;
             this.currentLevelDifficulty = null;
-            this.currentDifficultyCoeff = 2;
+            this.currentLevelDifficultyScore = 2;
             //Now the GameBoard handles the following transition into "going to shop" or "back to main menu"
         }
 //        if (gameState.getMusicSeconds() >= gameState.getMaxMusicSeconds() && gameState.getGameState() == GameStatusEnums.Playing) {
@@ -87,7 +89,7 @@ public class LevelManager {
 
         AudioManager audioManager = AudioManager.getInstance();
         try {
-            audioManager.testMode = true;
+//            audioManager.testMode = true;
             audioManager.muteMode = true;
             audioManager.playRandomBackgroundMusic(currentLevelDifficulty, currentLevelLength);
             this.currentLevelSong = audioManager.getCurrentSong();
@@ -95,7 +97,7 @@ public class LevelManager {
             throw new RuntimeException(e);
         }
 
-        currentDifficultyCoeff = LevelSongs.getDifficultyScore(currentLevelDifficulty, currentLevelLength);
+        currentLevelDifficultyScore = LevelSongs.getDifficultyScore(currentLevelDifficulty, currentLevelLength);
         GameUICreator.getInstance().createDifficultyWings();
 
 
@@ -107,7 +109,7 @@ public class LevelManager {
 
 
 //        PlayerStats.getInstance().setShopRerollDiscount(99);
-        PlayerInventory.getInstance().addMinerals(1000000);
+//        PlayerInventory.getInstance().addMinerals(1000000);
 
 
 //        for(int i = 0; i < 150; i++){
@@ -121,26 +123,27 @@ public class LevelManager {
 //        Director testDirector = DirectorManager.getInstance().getTestDirector();
 //        testDirector.spawnRegularFormation(SpawnFormationEnums.V, EnemyEnums.Scout);
 
-        EnemyEnums enemyType = EnemyEnums.Scout;
-        Enemy enemy = EnemyCreator.createEnemy(enemyType, 1000, 100, Direction.LEFT, enemyType.getDefaultScale()
-                , enemyType.getMovementSpeed(), enemyType.getMovementSpeed(), MovementPatternSize.SMALL, enemyType.isBoxCollision());
-//        enemy.getMovementConfiguration().setBoardBlockToHoverIn(5);
-        enemy.getMovementConfiguration().setPathFinder(new RegularPathFinder());
-        enemy.setAllowedVisualsToRotate(false);
-        enemy.getMovementConfiguration().setXMovementSpeed(0f);
-        enemy.getMovementConfiguration().setYMovementSpeed(0f);
+        EnemyEnums enemyType = EnemyEnums.RedBoss;
+        Enemy enemy = EnemyCreator.createEnemy(enemyType, 1200, 300, Direction.LEFT, enemyType.getDefaultScale()
+                , enemyType.getMovementSpeed(), enemyType.getMovementSpeed(), MovementPatternSize.SMALL, false);
+        enemy.getMovementConfiguration().setBoardBlockToHoverIn(4);
+        enemy.getMovementConfiguration().setPathFinder(new HoverPathFinder());
+//        enemy.getMovementConfiguration().setDestination(new Point(800, 300));
+//        enemy.setAllowedVisualsToRotate(false);
+//        enemy.getMovementConfiguration().setXMovementSpeed(2f);
+//        enemy.getMovementConfiguration().setYMovementSpeed(2f);
 //        enemy.getAnimation().changeImagetype(ImageEnums.Scout);
         EnemyManager.getInstance().addEnemy(enemy);
-////
-        EnemyEnums enemyType2 = EnemyEnums.Bomba;
-        Enemy enemy2 = EnemyCreator.createEnemy(enemyType2, 800, 600, Direction.LEFT, enemyType2.getDefaultScale()
-                , enemyType2.getMovementSpeed(), enemyType2.getMovementSpeed(), MovementPatternSize.SMALL, enemyType2.isBoxCollision());
-//        enemy2.getMovementConfiguration().setBoardBlockToHoverIn(5);
-        enemy2.getMovementConfiguration().setPathFinder(new RegularPathFinder());
-        enemy2.setAllowedVisualsToRotate(false);
-        enemy2.getMovementConfiguration().setXMovementSpeed(0);
-        enemy2.getMovementConfiguration().setYMovementSpeed(0);
-        EnemyManager.getInstance().addEnemy(enemy2);
+//////
+//        EnemyEnums enemyType2 = EnemyEnums.Bomba;
+//        Enemy enemy2 = EnemyCreator.createEnemy(enemyType2, 800, 600, Direction.LEFT, enemyType2.getDefaultScale()
+//                , enemyType2.getMovementSpeed(), enemyType2.getMovementSpeed(), MovementPatternSize.SMALL, false);
+////        enemy2.getMovementConfiguration().setBoardBlockToHoverIn(5);
+//        enemy2.getMovementConfiguration().setPathFinder(new RegularPathFinder());
+//        enemy2.setAllowedVisualsToRotate(false);
+//        enemy2.getMovementConfiguration().setXMovementSpeed(0);
+//        enemy2.getMovementConfiguration().setYMovementSpeed(0);
+//        EnemyManager.getInstance().addEnemy(enemy2);
 //
 //
 //        Enemy enemy3 = EnemyCreator.createEnemy(EnemyEnums.Scout, 500, 200, Direction.LEFT, 1
@@ -227,11 +230,11 @@ public class LevelManager {
         this.currentLevelLength = currentLevelLength;
     }
 
-    public int getCurrentDifficultyCoeff () {
-        return currentDifficultyCoeff;
+    public int getCurrentLevelDifficultyScore () {
+        return currentLevelDifficultyScore;
     }
 
-    public void setCurrentDifficultyCoeff (int currentDifficultyCoeff) {
-        this.currentDifficultyCoeff = currentDifficultyCoeff;
+    public void setCurrentLevelDifficultyScore (int currentLevelDifficultyScore) {
+        this.currentLevelDifficultyScore = currentLevelDifficultyScore;
     }
 }

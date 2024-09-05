@@ -13,11 +13,12 @@ public enum ImageEnums {
     Seeker_Destroyed_Explosion, Tazer_Destroyed_Explosion, Energizer_Destroyed_Explosion, Bomba_Destroyed_Explosion,
     Flamer_Destroyed_Explosion, Bulldozer_Destroyed_Explosion, Default_Player_Engine, Default_Player_Engine_Boosted,
     Default_Player_Shield_Damage, Player_Fireswirl, Player_EMP, Player_EMP_Plus, Drone, FirewallParticle, Portal5,
-    Warp, Shield4, Shield3, Shield2, Charging, EnergyCircle, Flamewarp, Frontshield, FrontshieldB, PulsatingShield, PulsatingStar, Radar,
+    WarpIn, Shield4, Shield3, Shield2, Charging, EnergyCircle, Flamewarp, Frontshield, FrontshieldB, PulsatingShield, PulsatingStar, Radar,
     RotatingBoxes, RotatingCones, GreenEnergyOrb, PurpleEnergyBlocks, Fireshield, EnergyFlower, PurpleEnergyBarrier, RedHole, CrossingEnergyBeams,
     PlasmaCoatedDebuff, GasolineExplosion, GasolineBurning, Healing, StickyDynamiteExplosion, MoneyPrinter, StickyDynamite,
     BarrierProjectile, BarrierProjectileDestruction, LightningProjectile, SuperChargedBuff, LightningOrb, Explosion2, LaserBulletDestruction,
     LightningOrbDestruction, LevelUpAnimation, CirclingRings, SpiralingGreenEnergy,GreenEnergyOrb2Looping,GreenEnergyOrb2, ElectroShredImproved, ThornsDamage,
+    FreezeEffect,
 
     //// Background Objects
     Moon, Lava_Planet, Planet_One, Planet_Two, Planet_Three, Mars_Planet, Star, Parallex_1, Parallex_2, Parallex_3,
@@ -29,7 +30,7 @@ public enum ImageEnums {
     Star_White1, Star_White2, Star_White3, Star_White4, Moon2, Moon3, Moon4, Moon5, GreenPlanet1, GreenPlanet2, BluePlanet1,
     BluePlanet2, BluePlanet3, BluePlanet4, BluePlanet5, BluePlanet6, CashCarrier, CashExplosion, GradeBronze, GradeSilver, GradeGold, GradePlatinum, GradeDiamond
     , GradeMaster, GradeGrandMaster, UIScoreTextCard, UIYouDied, UILevelComplete, Starcraft2Keystone, Starcraft2BouncingLaser, VIPTicket, PiercingLaser,
-    Starcraft2LockOn,
+    Starcraft2LockOn, ThornWeaver, BarbedMissiles, BarbedAegis, Thornedplates,
     // Missile Animations
     Seeker_Missile, Tazer_Missile, Energizer_Missile, Bulldozer_Missile, Flamer_Missile, Bomba_Missile,
     Seeker_Missile_Explosion, Tazer_Missile_Explosion, Energizer_Missile_Explosion, Bulldozer_Missile_Explosion,
@@ -43,7 +44,8 @@ public enum ImageEnums {
     Player_Spaceship, Player_Spaceship_Model_3,
 
     // Enemy images
-    Alien_Bomb, Seeker, Tazer, Energizer, Bulldozer, Flamer, Bomba, Alien, Alien_Bomb_Animation, Needler, Scout,
+    Alien_Bomb, Seeker, Tazer, Energizer, Bulldozer, Flamer, Bomba, Alien, Alien_Bomb_Animation, Needler, Scout, FourDirectionalDrone,
+    RedBoss,
 
     // Unused?
     Implosion, Invisible, Invisible_Animation,

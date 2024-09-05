@@ -103,7 +103,7 @@ public class SpriteMover {
         } else {
             // if missile lost lock, it should keep moving in the last direction
             moveConfig.setRotation(moveConfig.getCurrentPath().getFallbackDirection());
-            moveConfig.setNextPoint(calculateNextPoint(moveConfig.getCurrentLocation(),
+            moveConfig.setNextPoint(calculateNextPointForHomingPathFinder(moveConfig.getCurrentLocation(),
                     moveConfig.getCurrentPath().getFallbackDirection(), moveConfig.getXMovementSpeed(),
                     moveConfig.getYMovementSpeed()));
         }
@@ -168,10 +168,6 @@ public class SpriteMover {
 
     private void handleAdditionalBehaviors (GameObject gameObject, MovementConfiguration moveConfig) {
 
-        //Rotate the object based on settings
-        //If stationary and hovering and an enemy, rotate towards the player if firing at player
-        //Otherwise rotate towards the instantiated rotation
-        //Otherwise rotate towards the final point in waypoints
         gameObject.rotateAfterMovement();
 
 
@@ -218,7 +214,7 @@ public class SpriteMover {
     }
 
     // Needed for non-orbiting PathFinders, so added to missiles
-    private Point calculateNextPoint (Point currentLocation, Direction direction, float XStepSize, float YStepSize) {
+    private Point calculateNextPointForHomingPathFinder (Point currentLocation, Direction direction, float XStepSize, float YStepSize) {
         float x = currentLocation.getX();
         float y = currentLocation.getY();
 

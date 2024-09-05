@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.sound.sampled.UnsupportedAudioFileException;
 
@@ -24,7 +25,7 @@ public class EnemyManager {
     private AudioManager audioManager = AudioManager.getInstance();
     private PlayerManager friendlyManager = PlayerManager.getInstance();
     private AnimationManager animationManager = AnimationManager.getInstance();
-    private List<Enemy> enemyList = new ArrayList<Enemy>();
+    private CopyOnWriteArrayList<Enemy> enemyList = new CopyOnWriteArrayList<Enemy>();
     private DataClass dataClass = DataClass.getInstance();
 
     private EnemyManager () {
@@ -45,7 +46,7 @@ public class EnemyManager {
             throw new RuntimeException(e);
         }
 
-        enemyList = new ArrayList<Enemy>();
+        enemyList = new CopyOnWriteArrayList<Enemy>();
         friendlyManager = PlayerManager.getInstance();
         dataClass = DataClass.getInstance();
         audioManager = AudioManager.getInstance();
@@ -89,18 +90,14 @@ public class EnemyManager {
         }
     }
 
-    private void updateEnemies () throws UnsupportedAudioFileException, IOException {
-
-        Iterator<Enemy> it = enemyList.iterator();
-        while (it.hasNext()) {
-            Enemy en = it.next();
-
+    private void updateEnemies() throws UnsupportedAudioFileException, IOException {
+        for (Enemy en : enemyList) {
             if (en.isVisible()) {
                 en.move();
                 en.updateGameObjectEffects();
             } else {
                 en.deleteObject();
-                it.remove();
+                enemyList.remove(en); // Remove directly from CopyOnWriteArrayList
             }
         }
     }
@@ -125,7 +122,7 @@ public class EnemyManager {
     }
 
     public boolean enemiesToHomeTo () {
-        if (enemyList.size() == 0) {
+        if (enemyList.isEmpty()) {
             return true;
         } else
             return false;

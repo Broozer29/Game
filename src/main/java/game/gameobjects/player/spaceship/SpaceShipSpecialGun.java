@@ -98,13 +98,13 @@ public class SpaceShipSpecialGun {
         double currentTime = GameStateInfo.getInstance().getGameSeconds();
 
         // Allow firing if enough time has passed since the last shot
-        if (currentTime >= lastSecondsSpecialAttackUsed + playerStats.getSpecialAttackSpeed()) {
+        if (currentTime >= lastSecondsSpecialAttackUsed + playerStats.getSpecialAttackCooldown()) {
             allowedToFire = true;
         }
 
         // Gain a new charge if enough time has passed since the last charge was gained and there is a slot available
         if (specialAttackCharges < playerStats.getMaxSpecialAttackCharges()) {
-            if (currentTime >= lastSecondsSpecialAttackChargeGained + playerStats.getSpecialAttackSpeed()) {
+            if (currentTime >= lastSecondsSpecialAttackChargeGained + playerStats.getSpecialAttackCooldown()) {
                 lastSecondsSpecialAttackChargeGained = currentTime;
                 specialAttackCharges++;
             }
@@ -112,7 +112,7 @@ public class SpaceShipSpecialGun {
 
         // Calculate time until next charge
         if (specialAttackCharges < playerStats.getMaxSpecialAttackCharges()) {
-            secondsUntilNextSpecialAttackCharge = playerStats.getSpecialAttackSpeed() - (currentTime - lastSecondsSpecialAttackChargeGained);
+            secondsUntilNextSpecialAttackCharge = playerStats.getSpecialAttackCooldown() - (currentTime - lastSecondsSpecialAttackChargeGained);
         } else {
             secondsUntilNextSpecialAttackCharge = 0; // No charging if full
         }

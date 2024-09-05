@@ -82,10 +82,10 @@ public class CustomAudioClip {
                     volume.setValue(-4);
                     break;
                 case Alien_Bomb_Impact:
-                    volume.setValue(-2);
+                    volume.setValue(-6);
                     break;
                 case Apple_Holder_Remix:
-                    volume.setValue(-10);
+                    volume.setValue(-6);
                     break;
                 case Furi_Wisdowm_Of_Rage:
                     volume.setValue(-8);
@@ -93,7 +93,7 @@ public class CustomAudioClip {
 //				volume.setValue(-50);
                     break;
                 case Default_EMP:
-                    volume.setValue(-15);
+                    volume.setValue(-25);
                     break;
                 case NotEnoughMinerals:
                     volume.setValue(-4);

@@ -52,9 +52,9 @@ public class Director {
     private long calculateInitialSpawnInterval(DirectorType directorType) {
         switch (directorType) {
             case Slow:
-                return 15 + (long) (Math.random() * 10); // 15-25 seconds
+                return 10 + (long) (Math.random() * 8); // 15-25 seconds
             case Fast:
-                return 5 + (long) (Math.random() * 8); // 5-13 seconds
+                return 5 + (long) (Math.random() * 6); // 5-13 seconds
             default:
                 return 0; // Instant directors don't use intervals
         }
@@ -122,7 +122,7 @@ public class Director {
 
         double randomDouble = random.nextDouble();
         double chanceThreshold = switch (enemyType) {
-            case CashCarrier, Alien_Bomb -> -1f;
+            case CashCarrier, Alien_Bomb, FourDirectionalDrone, RedBoss -> -1f;
             case Needler, Scout -> 0.2f; //20% chance of spawning a formation
             case Bomba, Tazer, Flamer, Seeker, Bulldozer, Energizer -> 0.1f; //10% chance of spawning formation
         };
@@ -160,7 +160,7 @@ public class Director {
         float yMovementSpeed = enemyType.getMovementSpeed();
 
         // Call LevelManager's spawnEnemy method
-        LevelManager.getInstance().spawnEnemy(0, 0, enemyType, direction, scale, true, xMovementSpeed, yMovementSpeed, enemyType.isBoxCollision());
+        LevelManager.getInstance().spawnEnemy(0, 0, enemyType, direction, scale, true, xMovementSpeed, yMovementSpeed, false);
     }
 
     public void spawnRegularFormation(SpawnFormationEnums formationType, EnemyEnums enemyType) {

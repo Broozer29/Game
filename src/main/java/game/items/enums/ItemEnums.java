@@ -32,9 +32,10 @@ public enum ItemEnums {
     ElectricDestabilizer(ItemRarityEnums.Legendary, ItemCategory.Offense, ImageEnums.Starcraft2_Protoss_Shield_Disintegrate, "Electric Destabilizer"),
     ModuleAccuracy(ItemRarityEnums.Legendary, ItemCategory.Offense, ImageEnums.Starcraft2LockOn, "Module: Accuracy"),
     ElectricSupercharger(ItemRarityEnums.Legendary, ItemCategory.Offense, ImageEnums.Starcraft2_Psi_Storm2, "Electric Supercharger"),
-    ThornedPlates(ItemRarityEnums.Rare, ItemCategory.Offense, ImageEnums.Test_Image, "Thorned Armor Plate"),
-    Thornweaver(ItemRarityEnums.Rare, ItemCategory.Offense, ImageEnums.Test_Image, "Thornweaver"),
-    BarbedAegis(ItemRarityEnums.Rare, ItemCategory.Offense, ImageEnums.Test_Image, "Barbed Aegis"),
+    ThornedPlates(ItemRarityEnums.Rare, ItemCategory.Offense, ImageEnums.Thornedplates, "Thorned Armor Plate"),
+    Thornweaver(ItemRarityEnums.Rare, ItemCategory.Offense, ImageEnums.ThornWeaver, "Thornweaver"),
+    BarbedAegis(ItemRarityEnums.Rare, ItemCategory.Offense, ImageEnums.BarbedAegis, "Barbed Aegis"),
+    BarbedMissiles(ItemRarityEnums.Legendary, ItemCategory.Offense, ImageEnums.BarbedMissiles, "Barbed Missiles"),
     StickyDynamite(ItemRarityEnums.Common, ItemCategory.Offense, ImageEnums.StickyDynamite, "Sticky Dynamite");
 
 

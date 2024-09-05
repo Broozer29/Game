@@ -100,7 +100,7 @@ public class GameUICreator {
 
     //Called by LevelManager each time a level is generated
     public void createDifficultyWings(){
-        ImageEnums wingsImageEnum = LevelSongs.getImageEnumByDifficultyScore(LevelManager.getInstance().getCurrentDifficultyCoeff());
+        ImageEnums wingsImageEnum = LevelSongs.getImageEnumByDifficultyScore(LevelManager.getInstance().getCurrentLevelDifficultyScore());
         difficultyWings = new UIObject(createUIConfiguration(800, DataClass.getInstance().getPlayableWindowMaxHeight() + 20, 1f, wingsImageEnum));
         difficultyWings.setCenterCoordinates(800, (DataClass.getInstance().getPlayableWindowMaxHeight() + (difficultyWings.getHeight() / 2) + 10));
 

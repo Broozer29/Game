@@ -76,7 +76,7 @@ public class Drone extends FriendlyObject {
 
         MissileConfiguration missileConfiguration = MissileCreator.getInstance().createMissileConfiguration(missileType
                 , 100, 100, null, damage, ImageEnums.Impact_Explosion_One, isFriendly, allowedToDealDamage, objectType,
-                missileType.isBoxCollision(), false, false, false);
+                missileType.isUsesBoxCollision(), false, false, false);
 
 
         Missile missile = MissileCreator.getInstance().createMissile(missileSpriteConfiguration, missileConfiguration, movementConfiguration);

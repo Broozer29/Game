@@ -37,7 +37,7 @@ public class EnemyFormation {
 
 					// Create the new enemy here and add it to the enemies list
 					LevelManager.getInstance().spawnEnemy(spawnX, spawnY, enemyTypeToSpawn, direction, enemyTypeToSpawn.getDefaultScale(),
-							false, xMovementSpeed, yMovementSpeed, enemyTypeToSpawn.isBoxCollision());
+							false, xMovementSpeed, yMovementSpeed, false);
 				}
 			}
 		}

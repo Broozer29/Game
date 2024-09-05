@@ -25,6 +25,7 @@ public class AudioDatabase {
     private CustomAudioClip carpenterBrutDanger;
     private CustomAudioClip downtownBinaryFantasia;
     private CustomAudioClip downtownBinaryLightCycles;
+    private CustomAudioClip kingPalmRunway;
     private CustomAudioClip marvelGoldenDawn;
     private CustomAudioClip toneboxMemoryUpload;
     private CustomAudioClip forhillIris;
@@ -51,7 +52,9 @@ public class AudioDatabase {
     private CustomAudioClip ghostDataDarkHarvest;
     private CustomAudioClip blackGummySuperHuman;
     private CustomAudioClip madukAlone;
-
+    private CustomAudioClip approachingNirvanaThousandPictures;
+    private CustomAudioClip approachingNiravanaNoStringsAttached;
+    private CustomAudioClip vendlaSonrisa;
 
     private List<CustomAudioClip> backgroundMusicTracks = new ArrayList();
 
@@ -227,7 +230,13 @@ public class AudioDatabase {
         ghostDataDarkHarvest = new CustomAudioClip(AudioEnums.Ghost_Data_Dark_Harvest, false);
         blackGummySuperHuman = new CustomAudioClip(AudioEnums.BlackGummy_SuperHuman, false);
         madukAlone = new CustomAudioClip(AudioEnums.Maduk_Alone, false);
+        kingPalmRunway = new CustomAudioClip(AudioEnums.KingPalmRunway, false);
+        approachingNiravanaNoStringsAttached = new CustomAudioClip(AudioEnums.ApproachingNirvanaNoStringsAttached, false);
+        approachingNirvanaThousandPictures = new CustomAudioClip(AudioEnums.ApproachingNirvanaThousandPictures, false);
+        vendlaSonrisa = new CustomAudioClip(AudioEnums.VendlaSonrisa, false);
 
+        backgroundMusicTracks.add(approachingNiravanaNoStringsAttached);
+        backgroundMusicTracks.add(approachingNirvanaThousandPictures);
         backgroundMusicTracks.add(madukAlone);
         backgroundMusicTracks.add(blackGummySuperHuman);
         backgroundMusicTracks.add(ghostDataDarkHarvest);
@@ -264,6 +273,7 @@ public class AudioDatabase {
         backgroundMusicTracks.add(lemminoFireCracker);
         backgroundMusicTracks.add(mydnyte);
         backgroundMusicTracks.add(leYouthChills);
+        backgroundMusicTracks.add(kingPalmRunway);
     }
 
     private void initSoundEffects () throws LineUnavailableException {
@@ -355,6 +365,10 @@ public class AudioDatabase {
 
     public CustomAudioClip getAudioClip (AudioEnums audioType) {
         switch (audioType) {
+            case ApproachingNirvanaThousandPictures: return approachingNirvanaThousandPictures;
+            case ApproachingNirvanaNoStringsAttached: return approachingNiravanaNoStringsAttached;
+            case VendlaSonrisa: return vendlaSonrisa;
+            case KingPalmRunway: return kingPalmRunway;
             case Furi_Wisdowm_Of_Rage:
                 return FuriWisdomOfRage;
             case Furi_My_Only_Chance:

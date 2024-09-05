@@ -8,6 +8,7 @@ import game.gameobjects.player.PlayerManager;
 import game.gamestate.GameStateInfo;
 import game.gamestate.GameStatsTracker;
 import game.movement.PathFinderEnums;
+import game.movement.pathfinders.DestinationPathFinder;
 import game.util.BoardBlockUpdater;
 import game.movement.MovementConfiguration;
 import game.movement.Point;
@@ -54,7 +55,6 @@ public class Enemy extends GameObject {
         this.maxHitPoints = enemyConfiguration.getMaxHitPoints();
         this.currentHitpoints = maxHitPoints;
         this.maxShieldPoints = enemyConfiguration.getMaxShields();
-        this.attackSpeed = enemyConfiguration.getAttackSpeed();
         this.currentShieldPoints = maxShieldPoints;
         this.hasAttack = enemyConfiguration.isHasAttack();
         this.showHealthBar = enemyConfiguration.isShowHealthBar();
@@ -141,9 +141,10 @@ public class Enemy extends GameObject {
         if (!movementConfiguration.getCurrentPath().getWaypoints().isEmpty()) {
             rotateObjectTowardsDestination(true);
             setAllowedVisualsToRotate(false);
-        } else {
-            rotateObjectTowardsRotation(true);
-            setAllowedVisualsToRotate(false);
+        } else if (!(movementConfiguration.getPathFinder() instanceof DestinationPathFinder)) {
+                System.out.println("I've encountered an empty waypoints, this shouldnt happen outside explicit testing -> Enemy.java, line 145");
+                setAllowedVisualsToRotate(false);
+
         }
     }
 

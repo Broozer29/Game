@@ -685,6 +685,11 @@ public class ImageLoader {
             case peepoShruge: return "/images/Icons/Pepeicons/shruge.png";
             case peepoSkillIssue: return "/images/Icons/Pepeicons/skillissue.png";
             case GUIRefresh: return "/images/Icons/refresh.png";
+            case ThornWeaver: return "/images/Icons/Thornweaver.png";
+            case Thornedplates: return "/images/Icons/ThornedPlates.png";
+            case BarbedAegis: return "/images/Icons/BarbedAegis.png";
+            case BarbedMissiles:return "/images/Icons/Barbed Missiles.png";
+            case FourDirectionalDrone: return "/images/Ships/Enemy Ships/FourDirectionDrone.png";
             default:
                 return "";
         }

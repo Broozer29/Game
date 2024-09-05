@@ -25,7 +25,8 @@ public class Energizer extends Enemy {
 		destroyedExplosionfiguration.getSpriteConfiguration().setImageType(ImageEnums.Energizer_Destroyed_Explosion);
 		this.destructionAnimation = new SpriteAnimation(destroyedExplosionfiguration);
 
-		this.damage = MissileEnums.BarrierProjectile.getDamage();
+		this.damage = 15;
+		this.attackSpeed = 7f;
 //		allowedToFire = true;
 	}
 
@@ -56,13 +57,14 @@ public class Energizer extends Enemy {
 		SpriteConfiguration spriteConfiguration = MissileCreator.getInstance().createMissileSpriteConfig(xCoordinate, yCoordinate,ImageEnums.BarrierProjectile
 				,1);
 
+		int movementSpeed = 3;
 
 		//Create missile movement attributes and create a movement configuration
 		MissileEnums missileType = MissileEnums.BarrierProjectile;
 		PathFinder missilePathFinder = new RegularPathFinder();
 		MovementPatternSize movementPatternSize = MovementPatternSize.SMALL;
 		MovementConfiguration movementConfiguration = MissileCreator.getInstance().createMissileMovementConfig(
-				missileType.getxMovementSpeed(), missileType.getyMovementSpeed(), missilePathFinder, movementPatternSize, this.movementRotation
+				movementSpeed, movementSpeed, missilePathFinder, movementPatternSize, this.movementRotation
 		);
 
 

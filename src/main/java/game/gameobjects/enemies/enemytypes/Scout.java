@@ -27,9 +27,8 @@ public class Scout extends Enemy {
         destroyedExplosionfiguration.getSpriteConfiguration().setImageType(EnemyEnums.Scout.getDestructionImageEnum());
         this.destructionAnimation = new SpriteAnimation(destroyedExplosionfiguration);
         this.destructionAnimation.setAnimationScale(this.scale / 1.5f);
-        this.attackSpeed = this.enemyType.getAttackSpeed();
-//        this.attackSpeed = 1;
-        this.damage = MissileEnums.LaserBullet.getDamage();
+        this.attackSpeed = 5;
+        this.damage = 10;
 
 
         if(this.movementConfiguration.getPathFinder() instanceof HoverPathFinder){
@@ -62,17 +61,18 @@ public class Scout extends Enemy {
     }
 
     private void shootMissile () {
-        MissileEnums missileType = MissileEnums.LaserBullet;
+        MissileEnums missileType = MissileEnums.ScoutLaserBullet;
 
         SpriteConfiguration spriteConfiguration = MissileCreator.getInstance().createMissileSpriteConfig(xCoordinate, yCoordinate, missileType.getImageType()
                 , this.scale / 2);
 
+        int movementSpeed = 3;
 
         //Create missile movement attributes and create a movement configuration
         PathFinder missilePathFinder = new RegularPathFinder();
         MovementPatternSize movementPatternSize = MovementPatternSize.SMALL;
         MovementConfiguration movementConfiguration = MissileCreator.getInstance().createMissileMovementConfig(
-                missileType.getxMovementSpeed(), missileType.getyMovementSpeed(), missilePathFinder, movementPatternSize, this.movementRotation
+                movementSpeed,movementSpeed, missilePathFinder, movementPatternSize, this.movementRotation
         );
 
 
@@ -102,6 +102,5 @@ public class Scout extends Enemy {
         missile.resetMovementPath();
 
         this.missileManager.addExistingMissile(missile);
-
     }
 }

@@ -52,6 +52,10 @@ public enum AudioEnums {
 	Ghost_Data_Dark_Harvest,
 	BlackGummy_SuperHuman,
 	Maduk_Alone,
+	KingPalmRunway,
+	ApproachingNirvanaThousandPictures,
+	ApproachingNirvanaNoStringsAttached,
+	VendlaSonrisa,
 
 	NotEnoughMinerals,
 }

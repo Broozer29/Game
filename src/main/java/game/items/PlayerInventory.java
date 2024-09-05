@@ -15,15 +15,15 @@ public class PlayerInventory {
     private Map<ItemEnums, Item> items = new HashMap<>();
     private float cashMoney = 100;
     private PlayerInventory () {
-        addItem(ItemEnums.BarbedAegis);
-        addItem(ItemEnums.RepulsionArmorPlate);
-        addItem(ItemEnums.RepulsionArmorPlate);
-        addItem(ItemEnums.RepulsionArmorPlate);
-        addItem(ItemEnums.RepulsionArmorPlate);
+//        addItem(ItemEnums.GuardianDrone);
+//        addItem(ItemEnums.GuardianDrone);
+//        addItem(ItemEnums.GuardianDrone);
+//        addItem(ItemEnums.GuardianDrone);
+//        addItem(ItemEnums.GuardianDrone);
+//        addItem(ItemEnums.GuardianDrone);
+//        addItem(ItemEnums.GuardianDrone);
+//        addItem(ItemEnums.GuardianDrone);
 //        addItem(ItemEnums.ModuleAccuracy);
-//        addItem(ItemEnums.VIPTicket);
-//        addItem(ItemEnums.DrillerModule);
-        addItem(ItemEnums.PlasmaCoatedBullets);
     }
 
     public void resetInventory(){
@@ -116,6 +116,8 @@ public class PlayerInventory {
                 return new Thornweaver();
             case BarbedAegis:
                 return new BarbedAegis();
+            case BarbedMissiles:
+                return new BarbedMissiles();
             default:
                 System.out.println("I tried to create: " + itemEnum + " but fell in default, did you forget to add it to the inventory creation?");
                 return null;

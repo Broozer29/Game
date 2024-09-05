@@ -16,7 +16,6 @@ public class EnemyConfiguration {
 
     private String objectType;
 
-    private float attackSpeed;
 
     private boolean isBoxCollision;
 
@@ -25,7 +24,7 @@ public class EnemyConfiguration {
 
     private float cashMoneyWorth;
 
-    public EnemyConfiguration (EnemyEnums enemyType, int maxHitPoints, int maxShields, boolean hasAttack, boolean showHealthBar, AudioEnums deathSound, boolean allowedToDealDamage, String objectType, float attackSpeed, boolean isBoxCollision, float baseArmor, float xpOnDeath, float cashMoneyWorth) {
+    public EnemyConfiguration (EnemyEnums enemyType, int maxHitPoints, int maxShields, boolean hasAttack, boolean showHealthBar, AudioEnums deathSound, boolean allowedToDealDamage, String objectType, boolean isBoxCollision, float baseArmor, float xpOnDeath, float cashMoneyWorth) {
         this.enemyType = enemyType;
         this.maxHitPoints = maxHitPoints;
         this.maxShields = maxShields;
@@ -34,7 +33,6 @@ public class EnemyConfiguration {
         this.deathSound = deathSound;
         this.allowedToDealDamage = allowedToDealDamage;
         this.objectType = objectType;
-        this.attackSpeed = attackSpeed;
         this.isBoxCollision = isBoxCollision;
         this.baseArmor = baseArmor;
         this.xpOnDeath = xpOnDeath;
@@ -105,13 +103,6 @@ public class EnemyConfiguration {
         this.objectType = objectType;
     }
 
-    public float getAttackSpeed () {
-        return attackSpeed;
-    }
-
-    public void setAttackSpeed (int attackSpeed) {
-        this.attackSpeed = attackSpeed;
-    }
 
     public boolean isBoxCollision () {
         return isBoxCollision;

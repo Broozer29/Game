@@ -20,7 +20,7 @@ public class Needler extends Enemy {
         destroyedExplosionfiguration.getSpriteConfiguration().setImageType(EnemyEnums.Needler.getDestructionImageEnum());
         this.destructionAnimation = new SpriteAnimation(destroyedExplosionfiguration);
         this.destructionAnimation.setAnimationScale(this.scale / 1.5f);
-        this.damage = 50;
+        this.damage = 20;
         this.detonateOnCollision = true;
     }
 

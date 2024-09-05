@@ -13,12 +13,15 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
+import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.*;
 
+import VisualAndAudioData.audio.enums.AudioEnums;
 import VisualAndAudioData.image.ImageEnums;
 import controllerInput.ConnectedControllers;
 import controllerInput.ControllerInputEnums;
@@ -52,6 +55,7 @@ import game.gameobjects.player.PlayerStats;
 import VisualAndAudioData.audio.AudioDatabase;
 import VisualAndAudioData.audio.AudioManager;
 import VisualAndAudioData.audio.AudioPositionCalculator;
+import game.util.ThornsDamageDealer;
 import guiboards.BoardManager;
 import visualobjects.Sprite;
 import visualobjects.SpriteAnimation;
@@ -221,8 +225,26 @@ public class GameBoard extends JPanel implements ActionListener {
         }
     }
 
+    private void playDeathMusic(){
+        if(!audioManager.getBackgroundMusic().getAudioType().equals(AudioEnums.VendlaSonrisa)){
+            audioManager.stopMusicAudio();
+            try {
+                audioManager.playBackgroundMusic(AudioEnums.VendlaSonrisa, false);
+            } catch (UnsupportedAudioFileException | IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
     // Draw the game over screen
     private void drawEndOfLevelScreen (Graphics2D g, boolean hasSurvived) {
+        if(!hasSurvived){
+            playDeathMusic();
+
+        }
+
+
+
         //Create font
         Font font = new Font("Monospaced", Font.PLAIN, 15);
         FontMetrics fm = getFontMetrics(font);
@@ -475,7 +497,7 @@ public class GameBoard extends JPanel implements ActionListener {
 //            Font font = new Font("Helvetica", Font.PLAIN, 10);
 //            g.setFont(font);
             g.setColor(Color.WHITE);
-            g.drawString("Difficulty Coefficient: " + levelManager.getCurrentDifficultyCoeff(), wings.getXCoordinate() + (wings.getWidth()), wings.getYCoordinate() + Math.round(wings.getHeight() * 0.25));
+            g.drawString("Level difficulty: " + levelManager.getCurrentLevelDifficultyScore(), wings.getXCoordinate() + (wings.getWidth()), wings.getYCoordinate() + Math.round(wings.getHeight() * 0.25));
             drawImage(g, uiManager.getDifficultyWings());
         }
 
@@ -664,7 +686,7 @@ public class GameBoard extends JPanel implements ActionListener {
         } else {
             // Draw the cooldown progress bar only if there are no charges
             double remainingSeconds = gun.getCurrentSpecialAttackFrame();
-            double totalCooldown = playerStats.getSpecialAttackSpeed();
+            double totalCooldown = playerStats.getSpecialAttackCooldown();
             float percentage = (float) (1.0 - remainingSeconds / totalCooldown); // Properly compute the fill percentage
             int barWidth = (int) (uiManager.getSpecialAttackFrame().getWidth() * percentage);
 
@@ -686,7 +708,7 @@ public class GameBoard extends JPanel implements ActionListener {
     }
 
 
-    // Called on every action/input. Essentially the infinite loop that plays
+    // Called on every action/input. Essentially the infinite loop that plays the game
     public void actionPerformed (ActionEvent e) {
         if (gameState.getGameState() == GameStatusEnums.Zoning_In) {
             if (this.zoningInAlpha <= 0.05) {
@@ -700,12 +722,7 @@ public class GameBoard extends JPanel implements ActionListener {
                 gameState.setMusicSeconds(
                         audioPosCalc.getPlaybackTimeInSeconds(audioManager.getBackgroundMusic().getClip(),
                                 audioManager.getBackgroundMusic().getFramePosition()));
-//				musicSeconds = AudioManager.getInstance().getBackgroundMusic().getFramePosition();
             }
-//			else {
-////            Used for playing a level without it's actual track, should be deprecated with director spawning
-//				gameState.setMusicSeconds((float) (gameState.getMusicSeconds() + 0.05));
-//			}
             playerManager.updateGameTick();
             missileManager.updateGameTick();
             enemyManager.updateGameTick();
@@ -715,13 +732,14 @@ public class GameBoard extends JPanel implements ActionListener {
             audioDatabase.updateGameTick();
             explosionManager.updateGametick();
             friendlyManager.updateGameTick();
+            ThornsDamageDealer.getInstance().updateGameTick();
 
 //            if(gameState.getGameState().equals(GameStatusEnums.Playing)) {
             gameState.addGameTicks(1);
             DirectorManager.getInstance().updateGameTick();
 //            }
-            executeControllerInput();
         }
+        executeControllerInput();
 
         if (gameState.getGameState() == GameStatusEnums.Dead || gameState.getGameState().equals(GameStatusEnums.Show_Level_Score_Card)) {
             inputDelay++;
@@ -782,7 +800,7 @@ public class GameBoard extends JPanel implements ActionListener {
         if (controllers.getFirstController() != null) {
             if (gameState.getGameState() == GameStatusEnums.Dead) {
                 controllers.getFirstController().pollController();
-                if (controllers.getFirstController().isInputActive(ControllerInputEnums.FIRE)) {
+                if (controllers.getFirstController().isInputActive(ControllerInputEnums.FIRE) && inputDelay >= MOVE_COOLDOWN) {
                     boardManager.gameToMainMenu();
                     inputDelay = 0;
                     GameStatsTracker.getInstance().resetGameStatsTracker();
@@ -791,7 +809,7 @@ public class GameBoard extends JPanel implements ActionListener {
 
             } else if (gameState.getGameState() == GameStatusEnums.Show_Level_Score_Card) {
                 controllers.getFirstController().pollController();
-                if (controllers.getFirstController().isInputActive(ControllerInputEnums.FIRE)) {
+                if (controllers.getFirstController().isInputActive(ControllerInputEnums.FIRE) && inputDelay >= MOVE_COOLDOWN) {
                     gameState.setGameState(GameStatusEnums.Transition_To_Next_Stage);
                     inputDelay = 0;
                 }

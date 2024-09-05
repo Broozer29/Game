@@ -113,7 +113,7 @@ public class PlayerStats {
         setMovementSpeed(4);
 
         // Special attack
-        setSpecialAttackSpeed(1.25f);
+        setSpecialAttackSpeed(3f);
         setSpecialBonusDamageMultiplier(1); //Otherwhise it's damage * 0 = 0
         setMaxSpecialAttackCharges(1);
 
@@ -146,7 +146,7 @@ public class PlayerStats {
             case PlayerLaserbeam:
                 initLaserbeamPreset();
                 break;
-            case Rocket1:
+            case DefaultRocket:
                 initRocketPreset();
                 break;
             default:
@@ -166,7 +166,7 @@ public class PlayerStats {
 
     private void initLaserbeamPreset () {
         setAttackSpeed(0.3125f);
-        setBaseDamage(20);
+        setBaseDamage(10);
         setPlayerMissileImage(this.attackType.getImageType());
         setPlayerMissileImpactImage(ImageEnums.Impact_Explosion_One);
         setMissileScale(1);
@@ -253,7 +253,7 @@ public class PlayerStats {
         this.shieldRegenDelay = shieldRegenDelay;
     }
 
-    public float getSpecialAttackSpeed () {
+    public float getSpecialAttackCooldown () {
         float currentSpecialAttackSpeed = this.specialAttackSpeed;
         if (currentSpecialAttackSpeed < 0.05) {
             return 0.05f;

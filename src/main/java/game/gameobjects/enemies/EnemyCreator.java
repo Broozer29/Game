@@ -1,5 +1,6 @@
 package game.gameobjects.enemies;
 
+import game.gameobjects.enemies.boss.RedBoss;
 import game.movement.Direction;
 import game.movement.MovementConfiguration;
 import game.movement.Point;
@@ -38,6 +39,7 @@ public class EnemyCreator {
     private static PathFinder getPathFinderByEnemy(EnemyEnums enemyType){
         switch (enemyType){
             case Seeker, Energizer, Tazer, Scout -> {return new HoverPathFinder();}
+            case FourDirectionalDrone -> {return new DestinationPathFinder();}
             default -> {return new RegularPathFinder();}
         }
     }
@@ -71,11 +73,10 @@ public class EnemyCreator {
         int maxHitpoints = enemyType.getBaseHitPoints();
         int maxShields = enemyType.getBaseShieldPoints();
         boolean hasAttack = enemyType.isHasAttack();
-        boolean showHealthBar = enemyType.isShowHealthBar();
+        boolean showHealthBar = false;
         AudioEnums deathSound = enemyType.getDeathSound();
         boolean allowedToDealDamage = true;
         String objectType = enemyType.getObjectType();
-        float attackSpeed = enemyType.getAttackSpeed();
         float baseArmor = enemyType.getBaseArmor();
         float xpOnDeath = enemyType.getXpOnDeath();
         float cashMoneyWorth = enemyType.getCashMoneyWorth();
@@ -83,12 +84,17 @@ public class EnemyCreator {
 
         return new EnemyConfiguration(enemyType, maxHitpoints, maxShields
                 , hasAttack, showHealthBar, deathSound, allowedToDealDamage,
-                objectType, attackSpeed, boxCollision, baseArmor, cashMoneyWorth, xpOnDeath);
+                objectType, boxCollision, baseArmor, cashMoneyWorth, xpOnDeath);
     }
 
     private static Enemy createSpecificEnemy (SpriteConfiguration spriteConfiguration, EnemyConfiguration enemyConfiguration, MovementConfiguration movementConfiguration) {
         switch (enemyConfiguration.getEnemyType()) {
-
+            case RedBoss -> {
+                return new RedBoss(upgradeConfig(spriteConfiguration, 1, true), enemyConfiguration, movementConfiguration);
+            }
+            case FourDirectionalDrone -> {
+                return new FourDirectionalDrone(spriteConfiguration, enemyConfiguration, movementConfiguration);
+            }
             case Alien_Bomb -> {
                 return new AlienBomb(spriteConfiguration, enemyConfiguration, movementConfiguration);
             }

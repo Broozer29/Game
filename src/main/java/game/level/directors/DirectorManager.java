@@ -1,10 +1,13 @@
 package game.level.directors;
 
+import game.gameobjects.enemies.enums.EnemyCategory;
 import game.gamestate.GameStateInfo;
 import game.gameobjects.enemies.enums.EnemyEnums;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class DirectorManager {
 
@@ -22,7 +25,7 @@ public class DirectorManager {
     }
 
 
-    public void createDirectors(){
+    public void createDirectors () {
         directorList = new ArrayList<>();
 
 //        Create fast & slow director(s)
@@ -33,44 +36,46 @@ public class DirectorManager {
         directorList.add(fastDirector);
 
         Director instantDirector = new Director(DirectorType.Instant, baseMonsterCards);
-        instantDirector.receiveCredits(Math.max(100 * GameStateInfo.getInstance().getDifficultyCoefficient(), 750));
+        instantDirector.receiveCredits(Math.min(75 * GameStateInfo.getInstance().getDifficultyCoefficient(), 750));
         directorList.add(instantDirector);
 
     }
 
-    public Director getTestDirector(){
-       return new Director(DirectorType.Fast, baseMonsterCards);
+    public Director getTestDirector () {
+        return new Director(DirectorType.Fast, baseMonsterCards);
     }
 
-    public void resetManager(){
+    public void resetManager () {
         directorList = new ArrayList<>();
     }
 
     public void createMonsterCards () {
-        if(!baseMonsterCards.isEmpty()){
+        if (!baseMonsterCards.isEmpty()) {
             baseMonsterCards = new ArrayList<>();
         }
 
-        for (EnemyEnums enemy : EnemyEnums.values()) {
-            if(enemy == EnemyEnums.Alien_Bomb || enemy == EnemyEnums.CashCarrier){
-                continue;
-            } else {
-                float creditCost = determineCreditCostBasedOnEnemy(enemy);
-                MonsterCard card = new MonsterCard(enemy, creditCost, enemy.getWeight());
-                baseMonsterCards.add(card);
-            }
+        List<EnemyEnums> availableMonsters = Arrays.stream(EnemyEnums.values())
+                .filter(enemyEnums -> enemyEnums.getMinimumStageLevelRequired() <= GameStateInfo.getInstance().getStagesCompleted())
+                .filter(enemyEnums -> enemyEnums.getEnemyCategory() != EnemyCategory.Special
+                        && enemyEnums.getEnemyCategory() != EnemyCategory.Summon
+                        && enemyEnums.getEnemyCategory() != EnemyCategory.Boss)
+                .toList();
+
+        for (EnemyEnums enemy : availableMonsters) {
+            float creditCost = determineCreditCostBasedOnEnemy(enemy);
+            MonsterCard card = new MonsterCard(enemy, creditCost, enemy.getWeight());
+            baseMonsterCards.add(card);
         }
     }
 
-    private float determineCreditCostBasedOnEnemy(EnemyEnums enemy) {
+    private float determineCreditCostBasedOnEnemy (EnemyEnums enemy) {
         // Implement logic to determine the credit cost of each enemy
         //Needs to be multiplied by the stats of the enemy to some degree as the stats grow
-
         return enemy.getCreditCost();
     }
 
-    public void updateGameTick() {
-        if(enabled) {
+    public void updateGameTick () {
+        if (enabled) {
             distributeCredits();
             updateDifficultyCoefficient();
             for (Director director : directorList) {
@@ -79,10 +84,11 @@ public class DirectorManager {
         }
     }
 
-    public void distributeCredits() {
-        float creditAmount = (float) ((1 + 0.05 * GameStateInfo.getInstance().getDifficultyCoefficient()) * 0.5); // Determine the amount of credits to distribute
+    public void distributeCredits () {
+        GameStateInfo gameStateInfo = GameStateInfo.getInstance();
+        float creditAmount = (float) ((1 + 0.05 * gameStateInfo.getDifficultyCoefficient()) * 0.5) + gameStateInfo.getStagesCompleted(); // Determine the amount of credits to distribute
 
-        if(testingRichMode){
+        if (testingRichMode) {
             creditAmount = creditAmount * this.testingCreditsBonus;
         }
 
@@ -91,7 +97,7 @@ public class DirectorManager {
         }
     }
 
-    private void updateDifficultyCoefficient() {
+    private void updateDifficultyCoefficient () {
         GameStateInfo.getInstance().updateDifficultyCoefficient();
     }
 

@@ -38,24 +38,26 @@ public class BoardManager extends JFrame {
 	}
 
 	private void playMenuMusic() {
-		if (audioManager.getBackgroundMusic() == null) {
-			System.out.println("Muted background music");
-//			try {
-//				audioManager.playBackgroundMusic(AudioEnums.mainmenu, true);
-//			} catch (UnsupportedAudioFileException | IOException e) {
-//				e.printStackTrace();
-//			}
+		if (audioManager.getBackgroundMusic() == null || audioManager.getBackgroundMusic().getAudioType() != AudioEnums.mainmenu) {
+			audioManager.stopMusicAudio();
+//			System.out.println("Muted background music");
+			try {
+				audioManager.playBackgroundMusic(AudioEnums.mainmenu, true);
+			} catch (UnsupportedAudioFileException | IOException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 
 	private void playShopMenuMusic(){
-		if (audioManager.getBackgroundMusic() == null) {
-			System.out.println("Muted background music");
-//			try {
-//				audioManager.playBackgroundMusic(AudioEnums.Lemmino_Firecracker, true);
-//			} catch (UnsupportedAudioFileException | IOException e) {
-//				e.printStackTrace();
-//			}
+		if (audioManager.getBackgroundMusic() == null || audioManager.getBackgroundMusic().getAudioType() != AudioEnums.Lemmino_Firecracker) {
+			audioManager.stopMusicAudio();
+//			System.out.println("Muted background music");
+			try {
+				audioManager.playBackgroundMusic(AudioEnums.Lemmino_Firecracker, true);
+			} catch (UnsupportedAudioFileException | IOException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -74,9 +76,6 @@ public class BoardManager extends JFrame {
 		gameBoard.startGame();
 	}
 
-	public void initTalentSelectionBoard() {
-		System.out.println("Doet niks lol");
-	}
 
 	public void gameToMainMenu() {
 		audioManager.stopMusicAudio();
@@ -85,6 +84,7 @@ public class BoardManager extends JFrame {
 		changeMenuScreen(menuBoard);
 		menuBoard.recreateWindow();
 		menuBoard.getTimer().restart();
+		menuBoard.resetLastMoveTime();
 		playMenuMusic();
 	}
 

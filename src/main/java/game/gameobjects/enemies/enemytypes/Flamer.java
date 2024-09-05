@@ -23,6 +23,7 @@ public class Flamer extends Enemy {
         destroyedExplosionfiguration.getSpriteConfiguration().setImageType(ImageEnums.Flamer_Destroyed_Explosion);
         this.destructionAnimation = new SpriteAnimation(destroyedExplosionfiguration);
         this.damage = 50;
+        this.attackSpeed = 5;
     }
 
     public void fireAction () {

@@ -489,13 +489,14 @@ public class GameObject extends Sprite {
         if (this.animation != null) {
             rotateGameObjectSpriteAnimations(animation, direction, crop);
         }
-        if (this.exhaustAnimation != null) {
-            rotateGameObjectSpriteAnimations(exhaustAnimation, direction, crop);
-        }
+//        if (this.exhaustAnimation != null) {
+//            rotateGameObjectSpriteAnimations(exhaustAnimation, direction, crop);
+//        }
 
-        if (this.destructionAnimation != null) {
-            rotateGameObjectSpriteAnimations(destructionAnimation, direction, crop);
-        }
+//        if (this.destructionAnimation != null) {
+//            rotateGameObjectSpriteAnimations(destructionAnimation, direction, crop);
+//        }
+
         if (this.image != null) {
             this.image = ImageRotator.getInstance().rotate(originalImage, direction, crop);
             super.recalculateBoundsAndSize();
@@ -526,6 +527,11 @@ public class GameObject extends Sprite {
                 this.animation.rotateAnimation(calculatedAngle, crop);
             } else if (this.image != null) {
                 this.image = ImageRotator.getInstance().rotateOrFlip(this.originalImage, calculatedAngle, crop);
+
+                if(this.scale != 1){
+                    this.setScale(this.scale);
+                }
+
                 super.recalculateBoundsAndSize();
             }
 

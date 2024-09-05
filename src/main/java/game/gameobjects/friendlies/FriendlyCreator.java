@@ -25,7 +25,7 @@ public class FriendlyCreator {
 
         PathFinder pathFinder = new OrbitPathFinder(PlayerManager.getInstance().getSpaceship(), 85, 300, 0);
         FriendlyObjectConfiguration friendlyObjectConfiguration = new FriendlyObjectConfiguration(friendlyType,
-                0.75f, pathFinder,
+                0.5f, pathFinder,
                 Direction.RIGHT, 1, 1, MovementPatternSize.SMALL, friendlyType.isBoxCollision(), friendlyType.isPermanentObject());
         FriendlyObject object = FriendlyCreator.createDrone(spriteConfiguration, friendlyObjectConfiguration);
         object.getMovementConfiguration().setLastKnownTargetX(PlayerManager.getInstance().getSpaceship().getCenterXCoordinate());

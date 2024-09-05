@@ -2,6 +2,7 @@ package game.movement.pathfinders;
 
 import game.gameobjects.GameObject;
 import game.gameobjects.enemies.Enemy;
+import game.gameobjects.enemies.enums.EnemyCategory;
 import game.gamestate.GameStateInfo;
 import game.movement.*;
 import game.util.BoardBlockUpdater;
@@ -98,7 +99,10 @@ public class HoverPathFinder implements PathFinder {
             if (GameStateInfo.getInstance().getGameSeconds() > gameSecondsSinceEmptyList + secondsToHoverStill) {
                 // After 3 seconds, allow recalculation.
                 gameSecondsSinceEmptyList = 0; // Reset the timer for the next use.
-                gameObject.setAllowedVisualsToRotate(true);
+
+                if (allowRotation(gameObject)) {
+                    gameObject.setAllowedVisualsToRotate(true);
+                }
                 return true;
             }
 
@@ -119,6 +123,10 @@ public class HoverPathFinder implements PathFinder {
                         enemy.getMissileTypePathFinders().equals(PathFinderEnums.Homing)) {
                     return false;
                 }
+            }
+
+            if(enemy.getEnemyType().getEnemyCategory().equals(EnemyCategory.Boss)){
+                return false;
             }
         }
 

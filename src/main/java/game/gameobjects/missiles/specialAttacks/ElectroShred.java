@@ -8,6 +8,6 @@ public class ElectroShred extends SpecialAttack {
         this.setObjectType("ElectroShred");
         this.allowRepeatedDamage = true;
         this.appliesOnHitEffects = true;
-        this.onHitInterval = 0.3f;
+        setOnHitInterval(0.3f);
     }
 }

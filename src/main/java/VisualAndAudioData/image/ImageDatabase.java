@@ -280,6 +280,11 @@ public class ImageDatabase {
 
     private BufferedImage VIPTicket;
     private BufferedImage piercingLaser;
+    private BufferedImage thornweaver;
+    private BufferedImage thornedplates;
+    private BufferedImage barbedmissiles;
+    private BufferedImage barbedaegis;
+    private BufferedImage fourDirectionalDrone;
 
 
 
@@ -343,6 +348,7 @@ public class ImageDatabase {
     private List<BufferedImage> superChargedFrames = new ArrayList<>();
     private List<BufferedImage> laserBulletDeathFrames = new ArrayList<>();
     private List<BufferedImage> lightningOrbDestruction = new ArrayList<>();
+    private List<BufferedImage> freezeEffect = new ArrayList<>();
 
     // Enemy Projectile Animations
     private List<BufferedImage> seekerProjectileFrames = new ArrayList<BufferedImage>();
@@ -387,6 +393,7 @@ public class ImageDatabase {
     private List<BufferedImage> lightningOrb = new ArrayList<BufferedImage>();
     private List<BufferedImage> levelUpAnimation = new ArrayList<BufferedImage>();
     private List<BufferedImage> cashExplosion = new ArrayList<BufferedImage>();
+    private List<BufferedImage> redBossFrames = new ArrayList<BufferedImage>();
 
     // Background images
     private BufferedImage moon;
@@ -533,6 +540,7 @@ public class ImageDatabase {
         this.alienSpaceshipImage = imgLoader.getImage(ImageEnums.Alien);
         this.alienBombImage = imgLoader.getImage(ImageEnums.Alien_Bomb);
         this.cashCarrier = imgLoader.getImage(ImageEnums.CashCarrier);
+        this.fourDirectionalDrone = imgLoader.getImage(ImageEnums.FourDirectionalDrone);
     }
 
     private void initProjectiles () {
@@ -879,10 +887,19 @@ public class ImageDatabase {
         this.starcraft2Keystone = imgLoader.getImage(ImageEnums.Starcraft2Keystone);
         this.warcraft3HealingWave = imgLoader.getImage(ImageEnums.Starcraft2BouncingLaser);
         this.starcraft2LockOn = imgLoader.getImage(ImageEnums.Starcraft2LockOn);
+        this.thornedplates = imgLoader.getImage(ImageEnums.Thornedplates);
+        this.thornweaver = imgLoader.getImage(ImageEnums.ThornWeaver);
+        this.barbedmissiles = imgLoader.getImage(ImageEnums.BarbedMissiles);
+        this.barbedaegis = imgLoader.getImage(ImageEnums.BarbedAegis);
     }
 
     public BufferedImage getImage (ImageEnums imageType) {
         switch (imageType) {
+            case FourDirectionalDrone: return fourDirectionalDrone;
+            case ThornWeaver: return thornweaver;
+            case BarbedMissiles: return barbedmissiles;
+            case BarbedAegis: return barbedaegis;
+            case Thornedplates: return thornedplates;
             case Starcraft2LockOn: return starcraft2LockOn;
             case VIPTicket: return VIPTicket;
             case PiercingLaser: return piercingLaser;
@@ -1401,6 +1418,7 @@ public class ImageDatabase {
 
     public List<BufferedImage> getAnimation (ImageEnums imageType) {
         switch (imageType) {
+            case FreezeEffect: return freezeEffect;
             case ThornsDamage: return thornsDamage;
             case ElectroShredImproved: return electroShredImproved;
             case Tazer: return tazer;
@@ -1415,6 +1433,7 @@ public class ImageDatabase {
             case GreenEnergyOrb2: return greenEnergyOrb2;
             case GreenEnergyOrb2Looping: return greenEnergyOrb2Looping;
             case AlienLaserBeamAnimated: return alienLaserBeamAnimated;
+            case RedBoss: return redBossFrames;
             case LightningOrb:
                 return lightningOrb;
             case SuperChargedBuff:
@@ -1540,7 +1559,7 @@ public class ImageDatabase {
                 return alienBombFrames;
             case Portal5:
                 return portal5Frames;
-            case Warp:
+            case WarpIn:
                 return warpFrames;
             case Shield4:
                 return shield4Frames; // animation addition update: unused
@@ -1846,8 +1865,8 @@ public class ImageDatabase {
             portal5Frames.add(image);
         }
 
-        for (int i = 1; i < 9; i++) {
-            String sourceString = String.format("/images/gif/PNGtoGIF/WarpFrames/WarpFrame%d.png", i);
+        for (int i = 1; i < 10; i++) {
+            String sourceString = String.format("/images/gif/PNGtoGIF/WarpFrames/%d.png", i);
             BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
             warpFrames.add(image);
         }
@@ -2037,7 +2056,7 @@ public class ImageDatabase {
             BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
             lightningOrb.add(image);
         }
-        for (int i = 0; i < 64; i++) {
+        for (int i = 2; i < 64; i++) {
             String sourceString = String.format("/images/gif/PNGtoGIF/Explosion 2/tile%d.png", i);
             BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
             explosion2.add(image);
@@ -2115,6 +2134,13 @@ public class ImageDatabase {
             bomba.add(image);
         }
 
+
+        for (int i = 1; i < 5; i++) {
+            String sourceString = String.format("/images/Ships/Enemy Ships/RedBossAnimated/%d.png", i);
+            BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+            redBossFrames.add(image);
+        }
+
         for (int i = 1; i < 4; i++) {
             String sourceString = String.format("/images/Ships/Enemy Ships/Spacebombs/%d.png", i);
             BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
@@ -2161,6 +2187,12 @@ public class ImageDatabase {
             String sourceString = String.format("/images/gif/PNGtoGIF/Thorns/%d.png", i);
             BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
             thornsDamage.add(image);
+        }
+
+        for (int i = 0; i < 36; i++) {
+            String sourceString = String.format("/images/gif/PNGtoGIF/FreezeEffect/%d.png", i);
+            BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+            freezeEffect.add(image);
         }
     }
 

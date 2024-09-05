@@ -28,22 +28,10 @@ public class Seeker extends Enemy {
         destroyedExplosionfiguration.getSpriteConfiguration().setImageType(ImageEnums.Seeker_Destroyed_Explosion);
         this.destructionAnimation = new SpriteAnimation(destroyedExplosionfiguration);
         this.missileTypePathFinders = PathFinderEnums.StraightLine;
-        this.damage = MissileEnums.SeekerProjectile.getDamage();
-
+        this.damage = 15;
+        this.attackSpeed = 5;
 //        this.attackSpeed = 1;
     }
-
-    public Seeker (SpriteConfiguration spriteConfiguration, EnemyConfiguration enemyConfiguration, MovementConfiguration movementConfiguration) {
-        super(spriteConfiguration, enemyConfiguration, movementConfiguration);
-
-        SpriteAnimationConfiguration destroyedExplosionfiguration = new SpriteAnimationConfiguration(spriteConfiguration, 3, false);
-        destroyedExplosionfiguration.getSpriteConfiguration().setImageType(ImageEnums.Seeker_Destroyed_Explosion);
-        this.destructionAnimation = new SpriteAnimation(destroyedExplosionfiguration);
-        this.missileTypePathFinders = PathFinderEnums.StraightLine;
-        this.damage = MissileEnums.SeekerProjectile.getDamage();
-
-    }
-
 
     @Override
     public void fireAction () {
@@ -74,12 +62,13 @@ public class Seeker extends Enemy {
                 , this.scale);
 
 
+        int movementSpeed = 3;
         //Create missile movement attributes and create a movement configuration
         MissileEnums missileType = MissileEnums.SeekerProjectile;
         PathFinder missilePathFinder = new StraightLinePathFinder();
         MovementPatternSize movementPatternSize = MovementPatternSize.SMALL;
         MovementConfiguration movementConfiguration = MissileCreator.getInstance().createMissileMovementConfig(
-                missileType.getxMovementSpeed(), missileType.getyMovementSpeed(), missilePathFinder, movementPatternSize, this.movementRotation
+                movementSpeed,movementSpeed, missilePathFinder, movementPatternSize, this.movementRotation
         );
 
 

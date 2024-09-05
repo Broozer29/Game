@@ -151,6 +151,11 @@ public class AudioLoader {
                 return "/audio/music/Maduk - Alone.wav";
             case NotEnoughMinerals:
                 return "/audio/Not Enough Minerals.wav";
+            case KingPalmRunway:
+                return "/audio/music/KING PALM - Runway.wav";
+            case VendlaSonrisa:return "/audio/music/Vendla - Sonrisa (Royalty Free Music).wav";
+            case ApproachingNirvanaNoStringsAttached: return "/audio/music/Approaching Nirvana - No Strings Attached (Edit).wav";
+            case ApproachingNirvanaThousandPictures: return "/audio/music/Approaching Nirvana - Worth a Thousand Pictures.wav";
         }
         return null;
     }

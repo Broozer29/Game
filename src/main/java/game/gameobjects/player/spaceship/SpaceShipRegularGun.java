@@ -49,7 +49,7 @@ public class SpaceShipRegularGun {
 
             switch (playerAttackType) {
                 case PlayerLaserbeam -> playMissileAudio(AudioEnums.Player_Laserbeam);
-                case Rocket1 -> playMissileAudio(AudioEnums.Rocket_Launcher);
+                case DefaultRocket -> playMissileAudio(AudioEnums.Rocket_Launcher);
             }
         }
     }
@@ -62,13 +62,17 @@ public class SpaceShipRegularGun {
 //        playerMissileType = ImageEnums.ThornsDamage;
 //        missileScale = 0.4f;
 
+        int movementSpeed = 3;
+
         MissileCreator missileCreator1 = MissileCreator.getInstance();
         SpriteConfiguration spriteConfiguration = missileCreator1.createMissileSpriteConfig(xCoordinate, yCoordinate,
                 playerMissileType, missileScale);
 
+
+
         MovementPatternSize movementPatternSize = MovementPatternSize.SMALL; //Hardcoded, should be dynamic somewhere? Idk not decided how i want to use this behaviour yet
         MovementConfiguration movementConfiguration = missileCreator1.createMissileMovementConfig(
-                attackType.getxMovementSpeed(), attackType.getyMovementSpeed(), missilePathFinder, movementPatternSize, Direction.RIGHT
+                movementSpeed,movementSpeed, missilePathFinder, movementPatternSize, Direction.RIGHT
         );
 
 
@@ -86,13 +90,13 @@ public class SpaceShipRegularGun {
         boolean isExplosive = false;
 
         switch (attackType) {
-            case Rocket1 -> isExplosive = true;
+            case DefaultRocket -> isExplosive = true;
         }
 
 
 
         MissileConfiguration missileConfiguration = missileCreator1.createMissileConfiguration(attackType, maxHitPoints, maxShields,
-                deathSound, damage, attackType.getDeathOrExplosionImageEnum(), isFriendly, allowedToDealDamage, objectType, attackType.isBoxCollision(),
+                deathSound, damage, attackType.getDeathOrExplosionImageEnum(), isFriendly, allowedToDealDamage, objectType, attackType.isUsesBoxCollision(),
                 isExplosive, true, false);
 
         PlayerStats instance = PlayerStats.getInstance();

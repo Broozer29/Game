@@ -90,6 +90,9 @@ public class ItemDescriptionRetriever {
             case BarbedAegis -> {
                 return "Your thorns damage is increased by 25% (+25%) of your armor. When taking damage, you deal thorns damage to the opponent that damaged you.";
             }
+            case BarbedMissiles -> {
+                return "Your attacks now additionally apply your thorns damage 1 (+1) time.";
+            }
         }
         return "This item has no description yet";
     }

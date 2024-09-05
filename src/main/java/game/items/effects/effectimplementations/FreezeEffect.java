@@ -16,7 +16,6 @@ public class FreezeEffect implements EffectInterface {
     private double startTimeInSeconds;
 
 
-    private boolean offsetApplied = false;
     private boolean scaledToTarget = false;
 
     private SpriteAnimation animation;
@@ -39,10 +38,7 @@ public class FreezeEffect implements EffectInterface {
             if (!scaledToTarget) {
                 scaleAnimation(target);
                 scaledToTarget = true;
-            }
-            if (!offsetApplied) {
-                applyRandomOffset(target);
-                offsetApplied = true;
+                animation.setCenterCoordinates(target.getCenterXCoordinate(), target.getCenterYCoordinate());
             }
         }
 //
@@ -92,38 +88,6 @@ public class FreezeEffect implements EffectInterface {
         }
     }
 
-    private void applyRandomOffset (GameObject target) {
-        animation.resetOffset();
-
-        Random random = new Random();
-        // Get the animation dimensions and enemy dimensions
-        int animationWidth = this.animation.getWidth();
-        int animationHeight = this.animation.getHeight();
-        int enemyWidth = target.getWidth();
-        int enemyHeight = target.getHeight();
-
-        // Center animation on the enemy first
-        int animationCenterX = target.getCenterXCoordinate();
-        int animationCenterY = target.getCenterYCoordinate();
-
-        animation.setCenterCoordinates(animationCenterX, animationCenterY);
-
-        // Calculate max X offset to ensure animation stays within the enemy's width
-        int maxXOffset = (int) Math.round((enemyWidth * 0.8) - animationWidth / 2);
-        int xOffset = (maxXOffset > 0) ? random.nextInt(maxXOffset * 2 + 1) - maxXOffset : 0;
-
-        // For Y, allow animation's origin to potentially start from below the enemy's base
-        int minYOffset = (int) (enemyHeight * 0.65);  // Start from 45% of the enemy's height for the base of the animation
-
-        // Adjust the range above this base point where the animation can extend, slightly reducing it
-        int maxYOffset = minYOffset + (int) (animationHeight * 0.25);  // Extend the bottom of the animation slightly less beyond the base
-
-        int yOffset = minYOffset + random.nextInt(maxYOffset + 1) - animationHeight;
-
-        // Apply the calculated offsets to the animation's coordinates
-        animation.addXOffset(xOffset);
-        animation.addYOffset(yOffset);
-    }
 
 
     @Override
@@ -155,8 +119,6 @@ public class FreezeEffect implements EffectInterface {
     @Override
     public void resetDuration () {
         // Reset the start time to the current game time
-//        OnScreenTextManager.getInstance().addText("Refreshed " + this.effectIdentifier, PlayerManager.getInstance().getSpaceship().getXCoordinate(),
-//                PlayerManager.getInstance().getSpaceship().getYCoordinate());
         this.startTimeInSeconds = GameStateInfo.getInstance().getGameSeconds();
     }
 

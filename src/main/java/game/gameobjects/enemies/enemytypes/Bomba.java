@@ -33,7 +33,8 @@ public class Bomba extends Enemy {
 
 		//Specialized behaviour configuration stuff
 		this.initDirectionFromRotation();
-		this.damage = MissileEnums.BombaProjectile.getDamage();
+		this.damage = 40;
+		this.attackSpeed = 7;
 	}
 
 	public void fireAction() {
@@ -57,13 +58,15 @@ public class Bomba extends Enemy {
 			SpriteConfiguration spriteConfiguration = MissileCreator.getInstance().createMissileSpriteConfig(xCoordinate, yCoordinate,ImageEnums.Bomba_Missile
 			,this.scale);
 
+			int movementSpeed = 3;
+
 
 			//Create missile movement attributes and create a movement configuration
 			MissileEnums missileType = MissileEnums.BombaProjectile;
 			PathFinder missilePathFinder = new RegularPathFinder();
 			MovementPatternSize movementPatternSize = MovementPatternSize.SMALL;
 			MovementConfiguration movementConfiguration = MissileCreator.getInstance().createMissileMovementConfig(
-					missileType.getxMovementSpeed(), missileType.getyMovementSpeed(), missilePathFinder, movementPatternSize, direction
+					movementSpeed, movementSpeed, missilePathFinder, movementPatternSize, direction
 			);
 
 
