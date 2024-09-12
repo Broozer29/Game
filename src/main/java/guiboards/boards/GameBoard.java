@@ -670,9 +670,12 @@ public class GameBoard extends JPanel implements ActionListener {
         drawImage(g, progressBarFilling);
         drawImage(g, spaceShipIndicator);
 
-        if (levelManager.getCurrentLevelSong() != null) {
+        if (levelManager.getCurrentLevelSong() != null && !levelManager.isNextLevelABossLevel()) {
             g.setColor(Color.white);
             g.drawString("Song: " + levelManager.getCurrentLevelSong().toString(), progressBar.getXCoordinate(), progressBar.getYCoordinate() + progressBar.getHeight());
+        } else if(levelManager.isNextLevelABossLevel()) {
+            g.setColor(Color.white);
+            g.drawString("Defeat the boss!", progressBar.getXCoordinate(), progressBar.getYCoordinate() + progressBar.getHeight());
         }
     }
 
@@ -719,9 +722,10 @@ public class GameBoard extends JPanel implements ActionListener {
 
         if (gameState.getGameState() != GameStatusEnums.Dead) {
             if (gameState.getSpawningMechanic() == SpawningMechanic.PreGeneratedLevels && AudioManager.getInstance().getBackgroundMusic() != null) {
-                gameState.setMusicSeconds(
-                        audioPosCalc.getPlaybackTimeInSeconds(audioManager.getBackgroundMusic().getClip(),
-                                audioManager.getBackgroundMusic().getFramePosition()));
+//                gameState.setMusicSeconds(
+//                        audioPosCalc.getPlaybackTimeInSeconds(
+//                                audioManager.getBackgroundMusic().getClip(),
+//                                audioManager.getBackgroundMusic().getFramePosition()));
             }
             playerManager.updateGameTick();
             missileManager.updateGameTick();

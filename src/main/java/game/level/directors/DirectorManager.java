@@ -3,6 +3,7 @@ package game.level.directors;
 import game.gameobjects.enemies.enums.EnemyCategory;
 import game.gamestate.GameStateInfo;
 import game.gameobjects.enemies.enums.EnemyEnums;
+import game.level.enums.LevelTypes;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -25,7 +26,27 @@ public class DirectorManager {
     }
 
 
-    public void createDirectors () {
+    public void createDirectors (LevelTypes levelType) {
+        switch (levelType) {
+            case Regular -> {
+                createDirectorsForRegularLevel();
+            }
+            case Boss -> {
+                createBossDirectors();
+            }
+            case Special -> {
+                //to do
+            }
+        }
+    }
+
+    private void createBossDirectors () {
+        directorList = new ArrayList<>();
+        Director bossDirector = new Director(DirectorType.Boss, baseMonsterCards);
+        directorList.add(bossDirector);
+    }
+
+    private void createDirectorsForRegularLevel () {
         directorList = new ArrayList<>();
 
 //        Create fast & slow director(s)
@@ -38,7 +59,6 @@ public class DirectorManager {
         Director instantDirector = new Director(DirectorType.Instant, baseMonsterCards);
         instantDirector.receiveCredits(Math.min(75 * GameStateInfo.getInstance().getDifficultyCoefficient(), 750));
         directorList.add(instantDirector);
-
     }
 
     public Director getTestDirector () {
@@ -79,7 +99,9 @@ public class DirectorManager {
             distributeCredits();
             updateDifficultyCoefficient();
             for (Director director : directorList) {
-                director.update(GameStateInfo.getInstance().getGameSeconds()); // Update each director per game tick
+                if (director.isActive()) {
+                    director.update(GameStateInfo.getInstance().getGameSeconds()); // Update each director per game tick
+                }
             }
         }
     }

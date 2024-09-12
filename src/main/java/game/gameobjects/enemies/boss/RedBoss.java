@@ -1,14 +1,13 @@
 package game.gameobjects.enemies.boss;
 
 import VisualAndAudioData.image.ImageEnums;
-import VisualAndAudioData.image.ImageRotator;
 import game.gameobjects.enemies.Enemy;
 import game.gameobjects.enemies.EnemyConfiguration;
-import game.gamestate.GameStateInfo;
-import game.managers.AnimationManager;
+import game.gameobjects.enemies.boss.behaviour.BossActionable;
+import game.gameobjects.enemies.boss.behaviour.BurstMainAttackBossBehaviour;
+import game.gameobjects.enemies.boss.behaviour.SpawnFourDirectionalDrone;
+import game.gameobjects.enemies.boss.behaviour.SpawnShuriken;
 import game.movement.MovementConfiguration;
-import game.movement.Point;
-import game.util.OutOfBoundsCalculator;
 import game.util.WithinVisualBoundariesCalculator;
 import visualobjects.SpriteAnimation;
 import visualobjects.SpriteConfigurations.SpriteAnimationConfiguration;
@@ -19,6 +18,7 @@ import java.util.List;
 public class RedBoss extends Enemy {
 
     private List<BossActionable> bossBehaviourList = new ArrayList<>();
+    private BossActionable currentActiveBehavior = null;
 
     public RedBoss (SpriteAnimationConfiguration spriteConfiguration, EnemyConfiguration enemyConfiguration, MovementConfiguration movementConfiguration) {
         super(spriteConfiguration, enemyConfiguration, movementConfiguration);
@@ -29,14 +29,14 @@ public class RedBoss extends Enemy {
         this.damage = 10;
         this.allowedVisualsToRotate = false;
 
-//        BurstMainAttackBossBehaviour bossBehaviour = new BurstMainAttackBossBehaviour();
-//        bossBehaviourList.add(bossBehaviour);
+        BossActionable bossBehaviour1 = new SpawnShuriken();
+        bossBehaviourList.add(bossBehaviour1);
 
-        SpawnFourDirectionalDrone bossBehaviour = new SpawnFourDirectionalDrone();
-        bossBehaviourList.add(bossBehaviour);
+        BossActionable bossBehaviour2 = new BurstMainAttackBossBehaviour();
+        bossBehaviourList.add(bossBehaviour2);
 
-        this.chargingUpAttackAnimation.setAnimationScale(1.5f);
-        this.chargingUpAttackAnimation.setFrameDelay(3);
+        BossActionable bossBehaviour3 = new SpawnFourDirectionalDrone();
+        bossBehaviourList.add(bossBehaviour3);
     }
 
 
@@ -50,15 +50,32 @@ public class RedBoss extends Enemy {
     }
 
     @Override
-    public void fireAction () {
+    public void fireAction() {
         if (WithinVisualBoundariesCalculator.isWithinBoundaries(this)) {
-            this.allowedToFire = true; //Bosses should ALWAYS be allowed to fire, this check allows it to be immune to CC from the player
+            this.allowedToFire = true; // Boss is allowed to fire
         }
 
+
+        // If there's an active behavior, try to execute it
+        if (currentActiveBehavior != null) {
+            boolean isCompleted = currentActiveBehavior.activateBehaviour(this);
+            if (isCompleted) {
+                currentActiveBehavior = null; // Behavior finished, reset for next one
+            } else {
+                return; // If current behavior is still ongoing, stop further actions
+            }
+        }
+
+        // If no current behavior is active, find the next behavior to execute
         for (BossActionable bossActionable : bossBehaviourList) {
-            bossActionable.activateBehaviour(this);
+            // Attempt to execute the behavior
+            boolean isCompleted = bossActionable.activateBehaviour(this);
+            if (!isCompleted) {
+                currentActiveBehavior = bossActionable; // Set this as the current active behavior
+                break; // Stop looking at other behaviors, only execute one at a time
+            }
         }
-
     }
+
 
 }

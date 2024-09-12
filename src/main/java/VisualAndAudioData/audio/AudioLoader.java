@@ -42,7 +42,7 @@ public class AudioLoader {
     }
 
 
-    private String convertAudioToFileString (AudioEnums audioFile) {
+    public String convertAudioToFileString (AudioEnums audioFile) {
         switch (audioFile) {
             case Le_Youth_Chills:
                 return "/audio/music/Le Youth - Chills.wav";
@@ -156,6 +156,11 @@ public class AudioLoader {
             case VendlaSonrisa:return "/audio/music/Vendla - Sonrisa (Royalty Free Music).wav";
             case ApproachingNirvanaNoStringsAttached: return "/audio/music/Approaching Nirvana - No Strings Attached (Edit).wav";
             case ApproachingNirvanaThousandPictures: return "/audio/music/Approaching Nirvana - Worth a Thousand Pictures.wav";
+            case WaveshaperMonster: return "/audio/music/Waveshaper - Monster.wav";
+            case TonyLeysSnowdinRemix: return "/audio/music/Tony Leys - Snowdin Shopkeep.wav";
+            case GustyGardenGalaxyRemix: return "/audio/music/Gusty Garden Galaxy Remix.wav";
+            case WePlantsAreHappyPlantsTimeRemix: return "/audio/music/We Plants Are Happy Plants - Time.wav";
+            case BossBattle: return "/audio/music/boss battle.wav";
         }
         return null;
     }

@@ -58,12 +58,14 @@ public class Tazer extends Enemy {
             this.allowedVisualsToRotate = false;
 
             if (!chargingUpAttackAnimation.isPlaying()) {
+                this.isAttacking = true;
                 chargingUpAttackAnimation.refreshAnimation();
                 AnimationManager.getInstance().addUpperAnimation(chargingUpAttackAnimation);
             }
 
             if (chargingUpAttackAnimation.getCurrentFrame() >= chargingUpAttackAnimation.getTotalFrames() - 1) {
                 shootMissile(randomDirection);
+                this.isAttacking = false;
                 lastAttackTime = currentTime; // Update the last attack time after firing
                 randomDirection = null;
                 fired = true;

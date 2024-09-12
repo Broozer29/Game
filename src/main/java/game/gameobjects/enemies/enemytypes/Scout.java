@@ -49,12 +49,14 @@ public class Scout extends Enemy {
         double currentTime = GameStateInfo.getInstance().getGameSeconds();
         if (allowedToFire && currentTime >= lastAttackTime + this.getAttackSpeed() && WithinVisualBoundariesCalculator.isWithinBoundaries(this)) {
             if (!chargingUpAttackAnimation.isPlaying()) {
+                this.isAttacking = true;
                 chargingUpAttackAnimation.refreshAnimation();
                 AnimationManager.getInstance().addUpperAnimation(chargingUpAttackAnimation);
             }
 
             if (chargingUpAttackAnimation.getCurrentFrame() >= chargingUpAttackAnimation.getTotalFrames() - 1) {
                 shootMissile();
+                this.isAttacking = false;
                 lastAttackTime = currentTime; // Update the last attack time after firing
             }
         }

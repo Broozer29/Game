@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.stream.Collectors;
 
 import javax.sound.sampled.UnsupportedAudioFileException;
 
@@ -26,8 +27,7 @@ public class EnemyManager {
     private PlayerManager friendlyManager = PlayerManager.getInstance();
     private AnimationManager animationManager = AnimationManager.getInstance();
     private CopyOnWriteArrayList<Enemy> enemyList = new CopyOnWriteArrayList<Enemy>();
-    private DataClass dataClass = DataClass.getInstance();
-
+    private boolean hasSpawnedABoss = false;
     private EnemyManager () {
     }
 
@@ -48,8 +48,8 @@ public class EnemyManager {
 
         enemyList = new CopyOnWriteArrayList<Enemy>();
         friendlyManager = PlayerManager.getInstance();
-        dataClass = DataClass.getInstance();
         audioManager = AudioManager.getInstance();
+        hasSpawnedABoss = false;
     }
 
     public void updateGameTick () {
@@ -60,6 +60,17 @@ public class EnemyManager {
         } catch (UnsupportedAudioFileException | IOException e) {
             e.printStackTrace();
         }
+    }
+
+
+    public boolean isBossAlive(){
+        if(!hasSpawnedABoss){
+            return true;
+        } else if(hasSpawnedABoss) {
+            return enemyList.stream().anyMatch(enemy -> enemy.getEnemyType().getEnemyCategory().equals(EnemyCategory.Boss));
+        }
+
+        return true;
     }
 
     private void checkSpaceshipCollisions () throws UnsupportedAudioFileException, IOException {
@@ -77,10 +88,11 @@ public class EnemyManager {
     }
 
     private void detonateEnemy (Enemy enemy) throws UnsupportedAudioFileException, IOException {
-//        animationManager.createAndAddUpperAnimation(enemy.getXCoordinate(), enemy.getYCoordinate(),
-//                enemy.enemyType.getDestructionImageEnum(), false, enemy.getScale());
-        animationManager.addLowerAnimation(enemy.getDestructionAnimation());
-        audioManager.addAudio(AudioEnums.Alien_Bomb_Impact);
+        if(enemy.getDestructionAnimation() != null){
+            enemy.getDestructionAnimation().setCenterCoordinates(enemy.getCenterXCoordinate(), enemy.getCenterYCoordinate());
+            animationManager.addLowerAnimation(enemy.getDestructionAnimation());
+        }
+        audioManager.addAudio(enemy.getDeathSound());
         enemy.setVisible(false);
     }
 
@@ -177,5 +189,11 @@ public class EnemyManager {
         return closestEnemy;
     }
 
+    public boolean isHasSpawnedABoss () {
+        return hasSpawnedABoss;
+    }
 
+    public void setHasSpawnedABoss (boolean hasSpawnedABoss) {
+        this.hasSpawnedABoss = hasSpawnedABoss;
+    }
 }

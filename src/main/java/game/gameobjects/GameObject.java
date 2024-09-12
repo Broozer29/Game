@@ -1006,6 +1006,14 @@ public class GameObject extends Sprite {
         }
     }
 
+    public float getTransparancyAlpha(){
+        if (this.animation != null) {
+            return animation.getTransparancyAlpha();
+        } else {
+            return transparancyAlpha;
+        }
+    }
+
     public boolean isACrit () {
         return isACrit;
     }

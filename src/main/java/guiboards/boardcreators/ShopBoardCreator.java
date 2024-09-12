@@ -4,6 +4,7 @@ import VisualAndAudioData.audio.enums.LevelSongs;
 import VisualAndAudioData.image.ImageEnums;
 import game.items.PlayerInventory;
 import game.items.enums.ItemRarityEnums;
+import game.level.enums.LevelTypes;
 import game.managers.ShopManager;
 import game.level.LevelManager;
 import game.level.enums.LevelDifficulty;
@@ -128,18 +129,29 @@ public class ShopBoardCreator {
     public GUITextCollection createNextLevelDifficultyIcon (GUIComponent backgroundCard){
         int xCoordinate = backgroundCard.getCenterXCoordinate();
         int YCoordinate = backgroundCard.getCenterYCoordinate();
+        int difficulty = 0;
+        ImageEnums iconEnum = null;
+        String string = "";
 
-        int difficulty = LevelSongs.getDifficultyScore(
-                LevelManager.getInstance().getCurrentLevelDifficulty(),
-                LevelManager.getInstance().getCurrentLevelLength()
-        );
+        if(LevelManager.getInstance().isNextLevelABossLevel()) {
+            iconEnum = ImageEnums.RedWings5;
+            difficulty = 6;
+            string = "NEXT: BOSS LEVEL";
+        } else {
+            difficulty = LevelSongs.getDifficultyScore(
+                    LevelManager.getInstance().getCurrentLevelDifficulty(),
+                    LevelManager.getInstance().getCurrentLevelLength()
+            );
 
+            iconEnum = LevelSongs.getImageEnumByDifficultyScore(difficulty);
+            string = "NEXT DIFFICULTY: " + difficulty;
+        }
 
         //The difficulty icon
-        SpriteConfiguration spriteConfiguration = createSpriteConfiguration(xCoordinate,YCoordinate, textScale, LevelSongs.getImageEnumByDifficultyScore(difficulty));
+        SpriteConfiguration spriteConfiguration = createSpriteConfiguration(xCoordinate,YCoordinate, textScale, iconEnum);
         DisplayOnly icon = new DisplayOnly(spriteConfiguration);
         icon.setCenterCoordinates(xCoordinate, YCoordinate);
-        String string = "NEXT DIFFICULTY: " + difficulty;
+
 
         GUITextCollection textCollection = new GUITextCollection(xCoordinate, YCoordinate, string);
         GUIComponent lastComponent = textCollection.getComponents().get(textCollection.getComponents().size() - 1);
@@ -475,7 +487,7 @@ public class ShopBoardCreator {
         button.setLevelLength(LevelLength.Long);
         button.setMenuFunctionality(MenuFunctionEnums.SelectSongLength);
         button.setCenterCoordinates(x2, y);
-        button.setDescriptionOfComponent("Sets the length of the next song between 5 or more minutes, increases the difficulty score by 3");
+        button.setDescriptionOfComponent("Sets the length of the next song to 5 or more minutes, increases the difficulty score by 3");
         return button;
     }
 

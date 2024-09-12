@@ -17,16 +17,9 @@ public class EnemyCreator {
     public static Enemy createEnemy (EnemyEnums type, int xCoordinate, int yCoordinate, Direction movementDirection, float scale,
                                      float xMovementSpeed, float yMovementSpeed, MovementPatternSize movementPatternSize, boolean boxCollision) {
         SpriteConfiguration spriteConfiguration = new SpriteConfiguration(
-                xCoordinate,
-//                800,
-                yCoordinate,
-                scale,
-                type.getImageEnum(),
-                0, 0,
-                (float) 1.0, false, 0
+                xCoordinate, yCoordinate, scale, type.getImageEnum(),
+                0, 0, 1.0f, false, 0
         );
-
-
 
         PathFinder pathFinder = getPathFinderByEnemy(type);
         
@@ -38,7 +31,7 @@ public class EnemyCreator {
 
     private static PathFinder getPathFinderByEnemy(EnemyEnums enemyType){
         switch (enemyType){
-            case Seeker, Energizer, Tazer, Scout -> {return new HoverPathFinder();}
+            case Seeker, Energizer, Tazer, Scout, RedBoss -> {return new HoverPathFinder();}
             case FourDirectionalDrone -> {return new DestinationPathFinder();}
             default -> {return new RegularPathFinder();}
         }
@@ -50,6 +43,7 @@ public class EnemyCreator {
             case Seeker -> {movementConfiguration.setBoardBlockToHoverIn(6);}
             case Energizer -> {movementConfiguration.setBoardBlockToHoverIn(5);}
             case Tazer -> {movementConfiguration.setBoardBlockToHoverIn(7);}
+            case RedBoss -> {movementConfiguration.setBoardBlockToHoverIn(4);}
         }
     }
 
@@ -89,6 +83,9 @@ public class EnemyCreator {
 
     private static Enemy createSpecificEnemy (SpriteConfiguration spriteConfiguration, EnemyConfiguration enemyConfiguration, MovementConfiguration movementConfiguration) {
         switch (enemyConfiguration.getEnemyType()) {
+            case Shuriken -> {
+                return new Shuriken(upgradeConfig(spriteConfiguration, 0, true), enemyConfiguration, movementConfiguration);
+            }
             case RedBoss -> {
                 return new RedBoss(upgradeConfig(spriteConfiguration, 1, true), enemyConfiguration, movementConfiguration);
             }

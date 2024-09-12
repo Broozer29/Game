@@ -1,4 +1,4 @@
-package game.gameobjects.enemies.boss;
+package game.gameobjects.enemies.boss.behaviour;
 
 import VisualAndAudioData.image.ImageEnums;
 import game.gameobjects.enemies.Enemy;
@@ -10,6 +10,7 @@ import game.managers.AnimationManager;
 import game.movement.Direction;
 import game.movement.MovementPatternSize;
 import game.movement.Point;
+import game.movement.pathfinders.BouncingPathFinder;
 import game.util.BoardBlockUpdater;
 import game.util.WithinVisualBoundariesCalculator;
 import visualobjects.SpriteAnimation;
@@ -18,17 +19,15 @@ import visualobjects.SpriteConfigurations.SpriteConfiguration;
 
 import java.util.Random;
 
-public class SpawnFourDirectionalDrone implements BossActionable {
-
-
+public class SpawnShuriken implements BossActionable{
     private double lastSpawnedTime = 0;
-    private double spawnCooldown = 5;
+    private double spawnCooldown = 10;
     private Random random;
 
     private SpriteAnimation spawnAnimation;
 
     @Override
-    public void activateBehaviour (Enemy enemy) {
+    public boolean activateBehaviour(Enemy enemy){
         double currentTime = GameStateInfo.getInstance().getGameSeconds();
         if(spawnAnimation == null) {
             initSpawnAnimation(enemy);
@@ -39,19 +38,26 @@ public class SpawnFourDirectionalDrone implements BossActionable {
 
             if (!spawnAnimation.isPlaying()) {
                 spawnAnimation.refreshAnimation();
+                enemy.setAttacking(true);
                 AnimationManager.getInstance().addUpperAnimation(spawnAnimation);
             }
 
 
             if(spawnAnimation.isPlaying() && spawnAnimation.getCurrentFrame() == 4) {
-                Enemy fourDirectionalDrone = createFourDirectionalDrone(enemy);
+                Enemy fourDirectionalDrone = createShuriken(enemy);
                 fourDirectionalDrone.setCenterCoordinates(spawnAnimation.getCenterXCoordinate(), spawnAnimation.getCenterYCoordinate());
                 EnemyManager.getInstance().addEnemy(fourDirectionalDrone);
                 lastSpawnedTime = currentTime;
+                enemy.setAttacking(false);
+                return true; //We finished
             }
+            return false; //We still running this behaviour
         }
+        return true; //We still running this behaviour
 
     }
+
+
 
     private void initSpawnAnimation (Enemy enemy) {
         SpriteConfiguration spriteConfiguration = new SpriteConfiguration();
@@ -71,27 +77,29 @@ public class SpawnFourDirectionalDrone implements BossActionable {
         spawnAnimation.setCenterCoordinates(enemy.getXCoordinate(), enemy.getCenterYCoordinate());
     }
 
-    private int getRandomBoardBlock () {
-        if (random == null) {
+    private Enemy createShuriken (Enemy enemy){
+        EnemyEnums enemyType = EnemyEnums.Shuriken;
+        Direction direction = getRandomDirection();
+        Enemy shuriken = EnemyCreator.createEnemy(enemyType, enemy.getXCoordinate(), enemy.getYCoordinate(), direction,
+                enemyType.getDefaultScale(), enemyType.getMovementSpeed(),enemyType.getMovementSpeed(), MovementPatternSize.SMALL, false);
+
+        BouncingPathFinder pathFinder = new BouncingPathFinder();
+        pathFinder.setMaxBounces(15);
+        shuriken.getMovementConfiguration().setPathFinder(new BouncingPathFinder());
+        shuriken.setOwnerOrCreator(enemy);
+        return shuriken;
+    }
+
+    private Direction getRandomDirection(){
+        if(random == null){
             random = new Random();
         }
 
-        return random.nextInt(2, 6);
-    }
-
-    private Enemy createFourDirectionalDrone(Enemy enemy){
-        SpriteConfiguration spriteConfiguration = new SpriteConfiguration();
-        spriteConfiguration.setImageType(ImageEnums.FourDirectionalDrone);
-        spriteConfiguration.setScale(0.4f);
-        spriteConfiguration.setxCoordinate(enemy.getXCoordinate());
-        spriteConfiguration.setyCoordinate(enemy.getYCoordinate());
-
-        Enemy fourDirectionalDrone = EnemyCreator.createEnemy(EnemyEnums.FourDirectionalDrone, enemy.getXCoordinate(), enemy.getYCoordinate(), Direction.LEFT,
-                1, 2,2, MovementPatternSize.SMALL, false);
-
-        fourDirectionalDrone.setScale(0.4f);
-        Point point = BoardBlockUpdater.getRandomCoordinateInBlock(getRandomBoardBlock(), fourDirectionalDrone.getWidth(), fourDirectionalDrone.getHeight());
-        fourDirectionalDrone.getMovementConfiguration().setDestination(point);
-        return fourDirectionalDrone;
+        int number = random.nextInt(0, 2);
+        return switch (number) {
+            case 0 -> Direction.LEFT_UP;
+            case 1 -> Direction.LEFT_DOWN;
+            default -> Direction.LEFT;
+        };
     }
 }

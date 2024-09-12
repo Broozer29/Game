@@ -55,8 +55,11 @@ public class AudioDatabase {
     private CustomAudioClip approachingNirvanaThousandPictures;
     private CustomAudioClip approachingNiravanaNoStringsAttached;
     private CustomAudioClip vendlaSonrisa;
-
-    private List<CustomAudioClip> backgroundMusicTracks = new ArrayList();
+    private CustomAudioClip waveshaperMonster;
+    private CustomAudioClip tonyleysSnowdingRemix;
+    private CustomAudioClip gustyGardenGalaxyRemix;
+    private CustomAudioClip wePlantsTimeRemix;
+    private CustomAudioClip bossBattle;
 
     // Van alle clips een lijst met clips maken, dan vervolgens een clip teruggeven
     // die niet gebruikt wordt.
@@ -234,46 +237,12 @@ public class AudioDatabase {
         approachingNiravanaNoStringsAttached = new CustomAudioClip(AudioEnums.ApproachingNirvanaNoStringsAttached, false);
         approachingNirvanaThousandPictures = new CustomAudioClip(AudioEnums.ApproachingNirvanaThousandPictures, false);
         vendlaSonrisa = new CustomAudioClip(AudioEnums.VendlaSonrisa, false);
+        waveshaperMonster = new CustomAudioClip(AudioEnums.WaveshaperMonster, false);
+        tonyleysSnowdingRemix = new CustomAudioClip(AudioEnums.TonyLeysSnowdinRemix, false);
+        gustyGardenGalaxyRemix = new CustomAudioClip(AudioEnums.GustyGardenGalaxyRemix, false);
+        wePlantsTimeRemix = new CustomAudioClip(AudioEnums.WePlantsAreHappyPlantsTimeRemix, false);
+        bossBattle = new CustomAudioClip(AudioEnums.BossBattle, false);
 
-        backgroundMusicTracks.add(approachingNiravanaNoStringsAttached);
-        backgroundMusicTracks.add(approachingNirvanaThousandPictures);
-        backgroundMusicTracks.add(madukAlone);
-        backgroundMusicTracks.add(blackGummySuperHuman);
-        backgroundMusicTracks.add(ghostDataDarkHarvest);
-        backgroundMusicTracks.add(ghostDataGodsOfTheArtificial);
-        backgroundMusicTracks.add(arksunArisen);
-        backgroundMusicTracks.add(newArcadesSevered);
-        backgroundMusicTracks.add(embrzRainOnMyWindow);
-        backgroundMusicTracks.add(spaceSailorsCosmos);
-        backgroundMusicTracks.add(viqGirlFromNowhere);
-        backgroundMusicTracks.add(johnyTheme);
-        backgroundMusicTracks.add(embrzLightFalls);
-        backgroundMusicTracks.add(deadmau5Monophobia);
-        backgroundMusicTracks.add(cannonsFireForYou);
-        backgroundMusicTracks.add(FuriMyOnlyChance);
-        backgroundMusicTracks.add(FuriWisdomOfRage);
-        backgroundMusicTracks.add(FuriMakeThisRight);
-        backgroundMusicTracks.add(NewArcadesSolace);
-        backgroundMusicTracks.add(diqRose);
-        backgroundMusicTracks.add(fiveSecondsBeforeSunrise);
-        backgroundMusicTracks.add(downtownBinaryAstral);
-        backgroundMusicTracks.add(carpenterBrutEnraged);
-        backgroundMusicTracks.add(carpenterBrutYoureMine);
-        backgroundMusicTracks.add(alphaRoomComeBack);
-        backgroundMusicTracks.add(carpenterBrutDanger);
-        backgroundMusicTracks.add(downtownBinaryFantasia);
-        backgroundMusicTracks.add(downtownBinaryLightCycles);
-        backgroundMusicTracks.add(marvelGoldenDawn);
-        backgroundMusicTracks.add(toneboxMemoryUpload);
-        backgroundMusicTracks.add(forhillIris);
-        backgroundMusicTracks.add(toneboxRadiumCloudHighway);
-        backgroundMusicTracks.add(knightSomethingMemorable);
-        backgroundMusicTracks.add(rainFormerlyKnownAsPurple);
-        backgroundMusicTracks.add(bloodOnTheDanceFloor);
-        backgroundMusicTracks.add(lemminoFireCracker);
-        backgroundMusicTracks.add(mydnyte);
-        backgroundMusicTracks.add(leYouthChills);
-        backgroundMusicTracks.add(kingPalmRunway);
     }
 
     private void initSoundEffects () throws LineUnavailableException {
@@ -343,28 +312,14 @@ public class AudioDatabase {
         return null;
     }
 
-    public CustomAudioClip selectRandomMusicTrack () {
-        Random random = new Random();
-        CustomAudioClip clip = null;
-        int attempts = 0;
-        int maxAttempts = backgroundMusicTracks.size(); // Assuming this is the total number of tracks available
-
-        while (clip == null && attempts < maxAttempts) {
-            clip = getAudioClip(backgroundMusicTracks.get(random.nextInt(backgroundMusicTracks.size())).getAudioType());
-            attempts++;
-        }
-
-        if (clip == null) {
-            System.out.println("Man it really went to shit");
-            // Handle the case where no valid track is found after all attempts
-            // You might want to log an error or throw an exception depending on your application's requirements
-        }
-
-        return clip;
-    }
 
     public CustomAudioClip getAudioClip (AudioEnums audioType) {
         switch (audioType) {
+            case BossBattle: return bossBattle;
+            case WaveshaperMonster: return waveshaperMonster;
+            case TonyLeysSnowdinRemix: return tonyleysSnowdingRemix;
+            case GustyGardenGalaxyRemix: return gustyGardenGalaxyRemix;
+            case WePlantsAreHappyPlantsTimeRemix: return wePlantsTimeRemix;
             case ApproachingNirvanaThousandPictures: return approachingNirvanaThousandPictures;
             case ApproachingNirvanaNoStringsAttached: return approachingNiravanaNoStringsAttached;
             case VendlaSonrisa: return vendlaSonrisa;

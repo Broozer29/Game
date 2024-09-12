@@ -129,9 +129,11 @@ public class FriendlyManager {
         // Checks collision between the finished level portal and player
         if (gameState.getGameState() == GameStatusEnums.Level_Finished && finishedLevelPortal.isVisible()) {
             if (CollisionDetector.getInstance().detectCollision(PlayerManager.getInstance().getSpaceship(), finishedLevelPortal)) {
-                gameState.setGameState(GameStatusEnums.Level_Completed);
-                finishedLevelPortal.setTransparancyAlpha(true, 1.0f, -0.02f);
-                finishedLevelPortal.setSpawned(false);
+                if(finishedLevelPortal.getTransparancyAlpha() >= 0.5f) {
+                    gameState.setGameState(GameStatusEnums.Level_Completed);
+                    finishedLevelPortal.setTransparancyAlpha(true, 1.0f, -0.02f);
+                    finishedLevelPortal.setSpawned(false);
+                }
             }
         }
     }

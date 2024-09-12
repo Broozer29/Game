@@ -1,7 +1,10 @@
 package game.level.directors;
 
 import VisualAndAudioData.DataClass;
+import game.gameobjects.enemies.EnemyManager;
+import game.gameobjects.player.PlayerManager;
 import game.gamestate.GameStateInfo;
+import game.managers.OnScreenTextManager;
 import game.movement.MovementPatternSize;
 import game.gameobjects.enemies.Enemy;
 import game.gameobjects.enemies.EnemyCreator;
@@ -20,7 +23,7 @@ import java.util.stream.Collectors;
 
 public class Director {
     private float credits;
-    private double lastSpawnTime;
+    private double lastSpawnTime = 0;
     private long spawnInterval; // Interval for Slow and Fast directors
     private double lastCashCarrierSpawnTime;
     private double spawnCashCarrierChance;
@@ -28,6 +31,7 @@ public class Director {
     private List<MonsterCard> availableCards;
 
     private FormationCreator formationCreator;
+    private boolean isInSpawnWindow = false; // New flag to track if we're in the spawn window
 
     private double spawnWindowDuration = 3.0; // seconds, adjust as needed
 
@@ -50,40 +54,49 @@ public class Director {
     }
 
     private long calculateInitialSpawnInterval(DirectorType directorType) {
-        switch (directorType) {
-            case Slow:
-                return 10 + (long) (Math.random() * 8); // 15-25 seconds
-            case Fast:
-                return 5 + (long) (Math.random() * 6); // 5-13 seconds
-            default:
-                return 0; // Instant directors don't use intervals
-        }
+        return switch (directorType) {
+            case Slow -> 10 + (long) (Math.random() * 5); // 10-15 seconds
+            case Fast -> 5 + (long) (Math.random() * 5); // 5-10 seconds
+            default -> 0; // Instant directors don't use intervals
+        };
     }
 
     private double calculateCashCarrierChance(DirectorType directorType) {
-        switch (directorType) {
-            case Slow:
-                return 0.1f;
-            case Fast:
-                return 0.05f;
-            default:
-                return 0f; // instant directors should not spawn cash carriers
-        }
+        return switch (directorType) {
+            case Slow -> 0.1f;
+            case Fast -> 0.05f;
+            default -> 0f; // instant directors should not spawn cash carriers
+        };
     }
 
     public void update(double secondsPassed) {
         currentTime = secondsPassed;
-        if (shouldAttemptSpawn(secondsPassed)) {
-            attemptSpawn();
-            lastSpawnTime = secondsPassed;
 
+        // Check if we should spawn enemies
+        if (shouldAttemptSpawn(secondsPassed)) {
+            attemptSpawn(); // Spawn enemies
+
+            // Only update lastSpawnTime after the entire window has passed
+            if (!shouldAttemptSpawn(secondsPassed)) {
+                lastSpawnTime = secondsPassed; // Move to cooldown period
+            }
+
+            // Check for conditions to deactivate the Director
             if (directorType == DirectorType.Instant && credits < 50) {
+                this.active = false;
+            }
+            if (directorType == DirectorType.Boss) {
                 this.active = false;
             }
         }
     }
 
     private void attemptSpawn() {
+        if(directorType == DirectorType.Boss){
+            spawnBoss();
+            return; //We dont want to do anything else but spawning the boss at this time, subject to change
+        }
+
         double randomNumber = random.nextDouble();  // Generate a random number between 0 and 1
         double timeSinceLastCashCarrier = currentTime - lastCashCarrierSpawnTime;
 
@@ -110,8 +123,11 @@ public class Director {
                 }
             }
         }
+    }
 
-        resetSpawnTimer();
+    private void spawnBoss(){
+        spawnEnemy(EnemyEnums.RedBoss);
+        EnemyManager.getInstance().setHasSpawnedABoss(true);
     }
 
     private boolean shouldSpawnFormation(EnemyEnums enemyType) {
@@ -122,7 +138,7 @@ public class Director {
 
         double randomDouble = random.nextDouble();
         double chanceThreshold = switch (enemyType) {
-            case CashCarrier, Alien_Bomb, FourDirectionalDrone, RedBoss -> -1f;
+            case CashCarrier, Alien_Bomb, FourDirectionalDrone, RedBoss, Shuriken -> -1f;
             case Needler, Scout -> 0.2f; //20% chance of spawning a formation
             case Bomba, Tazer, Flamer, Seeker, Bulldozer, Energizer -> 0.1f; //10% chance of spawning formation
         };
@@ -143,12 +159,15 @@ public class Director {
     }
 
     private boolean shouldAttemptSpawn(double currentTime) {
-        if (directorType == DirectorType.Instant) {
-            return true;
+        if (directorType == DirectorType.Instant || directorType == DirectorType.Boss) {
+            return true; // Always spawn for Instant or Boss types
         } else {
             double spawnWindowStart = lastSpawnTime + spawnInterval;
             double spawnWindowEnd = spawnWindowStart + spawnWindowDuration;
-            return currentTime >= spawnWindowStart && currentTime <= spawnWindowEnd;
+
+            // Determine if we're in the spawn window
+            isInSpawnWindow = currentTime >= spawnWindowStart && currentTime <= spawnWindowEnd;
+            return isInSpawnWindow;
         }
     }
 
@@ -280,12 +299,6 @@ public class Director {
         return instance.getPlayableWindowMinHeight();
     }
 
-    public void resetSpawnTimer() {
-        if (directorType != DirectorType.Instant) {
-            lastSpawnTime = currentTime;  // Capture the current time when resetting
-            spawnInterval = calculateInitialSpawnInterval(directorType);  // Recalculate the next interval
-        }
-    }
 
     public void receiveCredits(float amount) {
         this.credits += amount;

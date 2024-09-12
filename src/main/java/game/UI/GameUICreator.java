@@ -99,8 +99,13 @@ public class GameUICreator {
     }
 
     //Called by LevelManager each time a level is generated
-    public void createDifficultyWings(){
-        ImageEnums wingsImageEnum = LevelSongs.getImageEnumByDifficultyScore(LevelManager.getInstance().getCurrentLevelDifficultyScore());
+    public void createDifficultyWings(boolean isBossLevel, int currentLevelDifficultyScore){
+        ImageEnums wingsImageEnum = null;
+        if(isBossLevel){
+            wingsImageEnum = ImageEnums.RedWings5;
+        } else {
+            wingsImageEnum = LevelSongs.getImageEnumByDifficultyScore(currentLevelDifficultyScore);
+        }
         difficultyWings = new UIObject(createUIConfiguration(800, DataClass.getInstance().getPlayableWindowMaxHeight() + 20, 1f, wingsImageEnum));
         difficultyWings.setCenterCoordinates(800, (DataClass.getInstance().getPlayableWindowMaxHeight() + (difficultyWings.getHeight() / 2) + 10));
 
@@ -169,7 +174,7 @@ public class GameUICreator {
         progressBarFilling = new UIObject((createUIConfiguration(xCoordinate + 5, yCoordinate, 0.95f, ImageEnums.ProgressBarFilling)));
         progressBarFilling.setCenterYCoordinate(progressBar.getCenterYCoordinate());
 
-        progressBarSpaceShipIndicator = new UIObject(createUIConfiguration(xCoordinate,yCoordinate, 0.5f, ImageEnums.Player_Spaceship_Model_3));
+        progressBarSpaceShipIndicator = new UIObject(createUIConfiguration(xCoordinate,yCoordinate, 0.3f, ImageEnums.Player_Spaceship_Model_3));
         progressBarSpaceShipIndicator.setCenterYCoordinate(progressBarFilling.getCenterYCoordinate());
     }
 

@@ -18,7 +18,7 @@ public enum ImageEnums {
     PlasmaCoatedDebuff, GasolineExplosion, GasolineBurning, Healing, StickyDynamiteExplosion, MoneyPrinter, StickyDynamite,
     BarrierProjectile, BarrierProjectileDestruction, LightningProjectile, SuperChargedBuff, LightningOrb, Explosion2, LaserBulletDestruction,
     LightningOrbDestruction, LevelUpAnimation, CirclingRings, SpiralingGreenEnergy,GreenEnergyOrb2Looping,GreenEnergyOrb2, ElectroShredImproved, ThornsDamage,
-    FreezeEffect,
+    FreezeEffect, ShurikenEnemy,
 
     //// Background Objects
     Moon, Lava_Planet, Planet_One, Planet_Two, Planet_Three, Mars_Planet, Star, Parallex_1, Parallex_2, Parallex_3,
@@ -54,7 +54,7 @@ public enum ImageEnums {
     Health_Bar, Shield_Bar, Icon_Border, Health_Shield_Frames, Frame, Red_Filling, Gold_Filling, Blue_Filling, Highlight, Long_Card, Wide_Card, Square_Card,
     InformationCard,
     YellowWings1, YellowWings2, YellowWings3, YellowWings4, YellowWings5, BlueWings1, BlueWings2, BlueWings3, BlueWings4, BlueWings5,
-    PurpleWings1,PurpleWings2,PurpleWings3,PurpleWings4,PurpleWings5,
+    PurpleWings1,PurpleWings2,PurpleWings3,PurpleWings4,PurpleWings5, RedWings1, RedWings2, RedWings3, RedWings4, RedWings5,
     // Icons
     TripleShotIcon, DoubleShotIcon, Starcraft2_Point_Defense_Drone, Starcraft2_Protoss_Cloak, LockedIcon, TopazGem7,
     Starcraft2_Protoss_Shield_Disintegrate, Starcraft2_Protoss_Shields_1, Starcraft2_Protoss_Shields_2,

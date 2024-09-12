@@ -41,12 +41,14 @@ public class Energizer extends Enemy {
 		if (currentTime >= lastAttackTime + this.getAttackSpeed() && WithinVisualBoundariesCalculator.isWithinBoundaries(this)
 		&& allowedToFire) {
 			if (!chargingUpAttackAnimation.isPlaying()) {
+				this.isAttacking = true;
 				chargingUpAttackAnimation.refreshAnimation();
 				AnimationManager.getInstance().addUpperAnimation(chargingUpAttackAnimation);
 			}
 
 			if (chargingUpAttackAnimation.getCurrentFrame() >= chargingUpAttackAnimation.getTotalFrames() - 1) {
 				shootMissile();
+				this.isAttacking = false;
 				lastAttackTime = currentTime; // Update the last attack time after firing
 			}
 		}

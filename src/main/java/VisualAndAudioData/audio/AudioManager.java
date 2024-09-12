@@ -2,6 +2,7 @@ package VisualAndAudioData.audio;
 
 import VisualAndAudioData.audio.enums.AudioEnums;
 import VisualAndAudioData.audio.enums.LevelSongs;
+import com.badlogic.gdx.Audio;
 import game.level.enums.LevelDifficulty;
 import game.level.enums.LevelLength;
 
@@ -15,8 +16,8 @@ public class AudioManager {
     private static AudioManager instance = new AudioManager();
     private CustomAudioClip backGroundMusic = null;
     private AudioDatabase audioDatabase = AudioDatabase.getInstance();
-    private LevelSongs currentSong;
-    private Queue<LevelSongs> backgroundMusicTracksThatHavePlayed = new LinkedList<>();
+    private AudioEnums currentSong;
+    private Queue<AudioEnums> backgroundMusicTracksThatHavePlayed = new LinkedList<>();
     private Map<AudioEnums, Long> lastPlayTimeMap = new HashMap<>();
     private static final long COOLDOWN_DURATION = 1000; // Cooldown in milliseconds, adjust as needed
 
@@ -71,8 +72,12 @@ public class AudioManager {
         return (currentTime - lastPlayTime >= COOLDOWN_DURATION);
     }
 
-    // Play the background music
+    // Plays the background music directly, overwriting existing music
     public void playBackgroundMusic (AudioEnums audioType, boolean loop) throws UnsupportedAudioFileException, IOException {
+        if(backGroundMusic != null){
+            backGroundMusic.stopClip();
+        }
+
         backGroundMusic = audioDatabase.getAudioClip(audioType);
         if (!(backGroundMusic == null)) {
             if(muteMode){
@@ -80,12 +85,14 @@ public class AudioManager {
             }
             backGroundMusic.setLoop(loop);
             backGroundMusic.startClip();
+            this.currentSong = backGroundMusic.getAudioType();
+
         }
     }
 
 
-    public void playRandomBackgroundMusic (LevelDifficulty difficulty, LevelLength length) throws UnsupportedAudioFileException, IOException {
-        LevelSongs backgroundMusic = null;
+    public void playRandomBackgroundMusic (LevelDifficulty difficulty, LevelLength length, boolean loop) throws UnsupportedAudioFileException, IOException {
+        AudioEnums backgroundMusic = null;
         int attempts = 0; // Initialize a counter for the number of attempts
         boolean allowDuplicates = false; // Flag to allow duplicates after 10 attempts
 
@@ -100,7 +107,7 @@ public class AudioManager {
             } else {
                 backgroundMusic = LevelSongs.getRandomSong();
             }
-            System.out.println("I'm in a do-while loop trying to select: " + difficulty + " / " + length + " and selected " + backgroundMusic.getAudioEnum());
+            System.out.println("I'm in a do-while loop trying to select: " + difficulty + " / " + length + " and selected " + backgroundMusic);
 
             attempts++; // Increment the attempt counter
 
@@ -112,13 +119,11 @@ public class AudioManager {
         }
         // Continue if the track has not been played recently or if duplicates are allowed
         while (backgroundMusicTracksThatHavePlayed.contains(backgroundMusic) && !allowDuplicates && backgroundMusic != null);
-
         if (backgroundMusic != null) {
-
             if (testMode) {
                 playBackgroundMusic(AudioEnums.Large_Ship_Destroyed, false);
             } else {
-                playBackgroundMusic(backgroundMusic.getAudioEnum(), false);
+                playBackgroundMusic(backgroundMusic, loop);
             }
 
             addTrackToHistory(backgroundMusic);
@@ -127,7 +132,7 @@ public class AudioManager {
     }
 
 
-    private void addTrackToHistory (LevelSongs track) {
+    private void addTrackToHistory (AudioEnums track) {
         backgroundMusicTracksThatHavePlayed.add(track);
         // Remove the oldest entry if the list size exceeds 3
         if (backgroundMusicTracksThatHavePlayed.size() > 3) {
@@ -143,11 +148,11 @@ public class AudioManager {
         }
     }
 
-    public LevelSongs getCurrentSong () {
+    public AudioEnums getCurrentSong () {
         return currentSong;
     }
 
-    public void setCurrentSong (LevelSongs currentSong) {
+    public void setCurrentSong (AudioEnums currentSong) {
         this.currentSong = currentSong;
     }
 

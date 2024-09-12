@@ -32,6 +32,7 @@ public class ImageDatabase {
     private List<BufferedImage> alienBombFrames = new ArrayList<BufferedImage>();
     private List<BufferedImage> needler = new ArrayList<BufferedImage>();
     private List<BufferedImage> destructableOrbitCenterMissile = new ArrayList<BufferedImage>();
+    private List<BufferedImage> shurikenEnemy = new ArrayList<BufferedImage>();
 
     // Ship numbers to names:
     /*
@@ -476,6 +477,12 @@ public class ImageDatabase {
     private BufferedImage yellowWings4;
     private BufferedImage yellowWings5;
 
+    private BufferedImage redWings1;
+    private BufferedImage redWings2;
+    private BufferedImage redWings3;
+    private BufferedImage redWings4;
+    private BufferedImage redWings5;
+
     private BufferedImage blueWings1;
     private BufferedImage blueWings2;
     private BufferedImage blueWings3;
@@ -651,6 +658,12 @@ public class ImageDatabase {
         this.topazGem7 = imgLoader.getImage(ImageEnums.TopazGem7);
         this.VIPTicket = imgLoader.getImage(ImageEnums.VIPTicket);
         this.piercingLaser = imgLoader.getImage(ImageEnums.PiercingLaser);
+
+        this.redWings1 = imgLoader.getImage(ImageEnums.RedWings1);
+        this.redWings2 = imgLoader.getImage(ImageEnums.RedWings2);
+        this.redWings3 = imgLoader.getImage(ImageEnums.RedWings3);
+        this.redWings4 = imgLoader.getImage(ImageEnums.RedWings4);
+        this.redWings5 = imgLoader.getImage(ImageEnums.RedWings5);
     }
 
 
@@ -895,6 +908,11 @@ public class ImageDatabase {
 
     public BufferedImage getImage (ImageEnums imageType) {
         switch (imageType) {
+            case RedWings1: return redWings1;
+            case RedWings2: return redWings2;
+            case RedWings3: return redWings3;
+            case RedWings4: return redWings4;
+            case RedWings5: return redWings5;
             case FourDirectionalDrone: return fourDirectionalDrone;
             case ThornWeaver: return thornweaver;
             case BarbedMissiles: return barbedmissiles;
@@ -1418,6 +1436,7 @@ public class ImageDatabase {
 
     public List<BufferedImage> getAnimation (ImageEnums imageType) {
         switch (imageType) {
+            case ShurikenEnemy: return shurikenEnemy;
             case FreezeEffect: return freezeEffect;
             case ThornsDamage: return thornsDamage;
             case ElectroShredImproved: return electroShredImproved;
@@ -2193,6 +2212,12 @@ public class ImageDatabase {
             String sourceString = String.format("/images/gif/PNGtoGIF/FreezeEffect/%d.png", i);
             BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
             freezeEffect.add(image);
+        }
+
+        for (int i = 0; i < 91; i++) {
+            String sourceString = String.format("/images/gif/PNGtoGIF/Shuriken/%d.png", i);
+            BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+            shurikenEnemy.add(image);
         }
     }
 

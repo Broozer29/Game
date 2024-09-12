@@ -47,7 +47,7 @@ public class GameStateInfo {
 
 
 
-    int temporaryBonus = 1;
+    private int testingVariableBonus = 0;
     public void updateDifficultyCoefficient() {
         float playerFactor = 1;
         float baseTimeFactor = 0.0606f; // Base factor for time, at LevelManager difficulty 2
@@ -62,7 +62,11 @@ public class GameStateInfo {
 
         double timeInMinutes = gameSeconds / 60.0f; // Convert seconds to minutes
 
-        difficultyCoefficient = (float) ((playerFactor + timeInMinutes * timeFactor) * stageFactor) + temporaryBonus;
+        if(testingVariableBonus > 0){
+            System.out.println("Adding additional difficulty coefficient in GameStateInfo 66");
+        }
+
+        difficultyCoefficient = (float) ((playerFactor + timeInMinutes * timeFactor) * stageFactor) + testingVariableBonus;
         updateMonsterLevel();
     }
 
@@ -100,10 +104,6 @@ public class GameStateInfo {
 
     public void setMusicSeconds (float musicSeconds) {
         this.musicSeconds = musicSeconds;
-    }
-
-    public void setMaxMusicSeconds (CustomAudioClip music) {
-        this.maxMusicSeconds = AudioPositionCalculator.getInstance().getPlaybackTimeInSeconds(music.getClip(), (long) music.getFrameLength());
     }
 
     public float getMaxMusicSeconds () {

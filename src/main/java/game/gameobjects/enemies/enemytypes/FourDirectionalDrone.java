@@ -77,12 +77,14 @@ public class FourDirectionalDrone extends Enemy {
 
             for (SpriteAnimation chargingUpAnimation : this.chargingUpAnimations) {
                 if (!chargingUpAnimation.isPlaying()) {
+                    this.isAttacking = true;
                     chargingUpAnimation.refreshAnimation();
                     AnimationManager.getInstance().addUpperAnimation(chargingUpAnimation);
                 }
 
                 if (chargingUpAnimation.getCurrentFrame() >= chargingUpAnimation.getTotalFrames() - 1) {
                     shootMissiles(chargingUpAnimation); // Actually fire the missiles
+                    this.isAttacking = false;
                     super.rotateObjectTowardsAngle(increaseRotationAngle(this.rotationAngle), true); // Rotate the object
                     lastAttackTime = currentTime; // Update the last attack time after firing
                 }

@@ -611,6 +611,16 @@ public class ImageLoader {
                 return "/images/UI/Wings/Yellow/04.png";
             case YellowWings5:
                 return "/images/UI/Wings/Yellow/05.png";
+            case RedWings1:
+                return "/images/UI/Wings/Red/01.png";
+            case RedWings2:
+                return "/images/UI/Wings/Red/02.png";
+            case RedWings3:
+                return "/images/UI/Wings/Red/03.png";
+            case RedWings4:
+                return "/images/UI/Wings/Red/04.png";
+            case RedWings5:
+                return "/images/UI/Wings/Red/05.png";
             case LockedIcon:
                 return "/images/Icons/Locked.png";
             case TopazGem7:

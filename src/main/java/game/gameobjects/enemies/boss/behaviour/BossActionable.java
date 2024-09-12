@@ -1,8 +1,9 @@
-package game.gameobjects.enemies.boss;
+package game.gameobjects.enemies.boss.behaviour;
 
 import game.gameobjects.GameObject;
 import game.gameobjects.enemies.Enemy;
 
 public interface BossActionable {
-    public void activateBehaviour(Enemy enemy);
+    public boolean activateBehaviour(Enemy enemy);
+
 }

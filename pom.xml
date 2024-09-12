@@ -38,28 +38,6 @@
 			<artifactId>sdl2gdx</artifactId>
 			<version>1.0.4</version>
 		</dependency>
-
-
-<!--		<dependency>-->
-<!--			<groupId>net.java.jinput</groupId>-->
-<!--			<artifactId>jinput</artifactId>-->
-<!--			<version>2.0.9</version>-->
-<!--		</dependency>-->
-
-<!--		&lt;!&ndash; https://mvnrepository.com/artifact/net.java.jinput/osx-plugin &ndash;&gt;-->
-<!--		<dependency>-->
-<!--			<groupId>net.java.jinput</groupId>-->
-<!--			<artifactId>osx-plugin</artifactId>-->
-<!--			<version>2.0.9</version>-->
-<!--		</dependency>-->
-
-<!--		<dependency>-->
-<!--			<groupId>net.java.jinput</groupId>-->
-<!--			<artifactId>jinput</artifactId>-->
-<!--			<version>2.0.9</version>-->
-<!--			<classifier>natives-all</classifier>-->
-<!--		</dependency>-->
-
 	</dependencies>
 	<build>
 		<plugins>

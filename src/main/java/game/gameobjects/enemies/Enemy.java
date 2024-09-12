@@ -24,6 +24,7 @@ public class Enemy extends GameObject {
     protected MissileManager missileManager = MissileManager.getInstance();
     protected Random random = new Random();
     protected boolean allowedToFire;
+    protected boolean isAttacking;
 
     protected EnemyEnums enemyType;
     protected PathFinderEnums missileTypePathFinders;
@@ -65,6 +66,7 @@ public class Enemy extends GameObject {
         this.baseArmor = enemyConfiguration.getBaseArmor();
         this.cashMoneyWorth = enemyConfiguration.getCashMoneyWorth();
         this.xpOnDeath = enemyConfiguration.getXpOnDeath();
+        this.isAttacking = false;
         modifyStatsBasedOnLevel();
         this.setVisible(true);
         this.setFriendly(false);
@@ -85,8 +87,8 @@ public class Enemy extends GameObject {
             this.damage *= (float) Math.pow(1.15, enemyLevel);
             // XP on death is multiplied by 50% of difficultyCoeff
             this.xpOnDeath *= (float) (1 + (0.5 * difficultyCoeff));
-            // Cash money worth is multiplied by 100% (double) of difficultyCoeff
-            this.cashMoneyWorth *= (1 + difficultyCoeff);
+            // Cash money worth is multiplied by 50% of difficultyCoeff
+            this.cashMoneyWorth *= (float) (1 + (0.5 * difficultyCoeff));
         }
     }
 
@@ -166,7 +168,8 @@ public class Enemy extends GameObject {
         }
 
         if (this.destructionAnimation != null &&
-                this.currentHitpoints > 1) {
+                this.currentHitpoints > 1 &&
+                !this.destructionAnimation.isPlaying()) {
             this.destructionAnimation.setVisible(false);
         }
 
@@ -222,5 +225,13 @@ public class Enemy extends GameObject {
 
     public void setLastAttackTime (double lastAttackTime) {
         this.lastAttackTime = lastAttackTime;
+    }
+
+    public boolean isAttacking () {
+        return isAttacking;
+    }
+
+    public void setAttacking (boolean attacking) {
+        isAttacking = attacking;
     }
 }

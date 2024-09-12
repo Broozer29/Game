@@ -1,4 +1,4 @@
-package game.gameobjects.enemies.boss;
+package game.gameobjects.enemies.boss.behaviour;
 
 import VisualAndAudioData.audio.enums.AudioEnums;
 import VisualAndAudioData.image.ImageEnums;
@@ -32,7 +32,7 @@ public class BurstMainAttackBossBehaviour implements BossActionable {
 
 
     @Override
-    public void activateBehaviour (Enemy enemy) {
+    public boolean activateBehaviour (Enemy enemy) {
         double currentTime = GameStateInfo.getInstance().getGameSeconds();
 
         if (chargingAttackAnimation == null) {
@@ -44,6 +44,7 @@ public class BurstMainAttackBossBehaviour implements BossActionable {
 
             if (!chargingAttackAnimation.isPlaying() && !allowedToFireBurst) {
                 chargingAttackAnimation.refreshAnimation();
+                enemy.setAttacking(true);
                 AnimationManager.getInstance().addUpperAnimation(chargingAttackAnimation);
                 burstShotsFired = 0; // Reset the burst shot counter, so that it is ready for the actual firing
             }
@@ -56,7 +57,6 @@ public class BurstMainAttackBossBehaviour implements BossActionable {
 
         if (allowedToFireBurst) {
             boolean canFireAgain = currentTime >= lastSingleShotAttackTime + intermittenAttackCooldown;
-
             if (burstShotsFired < amountOfShotsPerBurst && canFireAgain) {
                 // Fire a missile and update lastAttackTime
                 fireMissile(enemy);
@@ -67,9 +67,13 @@ public class BurstMainAttackBossBehaviour implements BossActionable {
                     // After the 4th shot, the burst is finished
                     lastAttackTime = currentTime;
                     allowedToFireBurst = false;
+                    enemy.setAttacking(false);
+                    return true; //We finished
                 }
             }
+            return false; //We still running this behaviour
         }
+        return true; //We dont have anything to do at this point
     }
 
     private void initChargingAttackAnimation (Enemy enemy) {
