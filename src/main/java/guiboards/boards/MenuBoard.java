@@ -238,8 +238,8 @@ public class MenuBoard extends JPanel implements ActionListener {
         } else {
             GUIComponent selectedTile = grid.get(selectedRow).get(selectedColumn);
             menuCursor.setSelectedMenuTile(selectedTile);
-            menuCursor.setY(selectedTile.getYCoordinate() - menuCursor.getHeight() / 2);
-            menuCursor.setX(selectedTile.getXCoordinate() - (menuCursor.getxDistanceToKeep()));
+            menuCursor.setYCoordinate(selectedTile.getYCoordinate() - menuCursor.getHeight() / 2);
+            menuCursor.setXCoordinate(selectedTile.getXCoordinate() - (menuCursor.getxDistanceToKeep()));
         }
     }
 

@@ -26,7 +26,6 @@ import game.gameobjects.GameObject;
 import game.gameobjects.missiles.specialAttacks.SpecialAttack;
 import game.gameobjects.player.PlayerStats;
 import VisualAndAudioData.image.ImageEnums;
-import game.util.ArmorCalculator;
 import game.util.OrbitingObjectsFormatter;
 import visualobjects.SpriteConfigurations.SpriteAnimationConfiguration;
 import visualobjects.SpriteConfigurations.SpriteConfiguration;
@@ -285,8 +284,8 @@ public class SpaceShip extends GameObject {
 
         this.currentLocation = new Point(this.xCoordinate, this.yCoordinate);
         if (this.exhaustAnimation != null) {
-            this.exhaustAnimation.setX(this.xCoordinate - (exhaustAnimation.getWidth() / 2));
-            this.exhaustAnimation.setY(this.getCenterYCoordinate() - (this.exhaustAnimation.getHeight() / 2) + 3);
+            this.exhaustAnimation.setXCoordinate(this.xCoordinate - (exhaustAnimation.getWidth() / 2));
+            this.exhaustAnimation.setYCoordinate(this.getCenterYCoordinate() - (this.exhaustAnimation.getHeight() / 2) + 3);
         }
 
         if (this.destructionAnimation != null) {

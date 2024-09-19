@@ -15,7 +15,7 @@ public class CashCarrier extends Enemy {
     public CashCarrier (SpriteConfiguration spriteConfiguration, EnemyConfiguration enemyConfiguration, MovementConfiguration movementConfiguration) {
         super(spriteConfiguration, enemyConfiguration, movementConfiguration);
         SpriteAnimationConfiguration destroyedExplosionfiguration = new SpriteAnimationConfiguration(spriteConfiguration, 0, false);
-        destroyedExplosionfiguration.getSpriteConfiguration().setImageType(EnemyEnums.CashCarrier.getDestructionImageEnum());
+        destroyedExplosionfiguration.getSpriteConfiguration().setImageType(this.enemyType.getDestructionType());
         this.destructionAnimation = new SpriteAnimation(destroyedExplosionfiguration);
         this.destructionAnimation.setAnimationScale(this.scale * 1.5f);
 

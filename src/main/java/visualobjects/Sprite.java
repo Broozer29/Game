@@ -142,11 +142,11 @@ public class Sprite {
         return yCoordinate + yOffset;
     }
 
-    public void setX (int xCoordinate) {
+    public void setXCoordinate (int xCoordinate) {
         this.xCoordinate = xCoordinate;
     }
 
-    public void setY (int yCoordinate) {
+    public void setYCoordinate (int yCoordinate) {
         this.yCoordinate = yCoordinate;
     }
 

@@ -22,7 +22,7 @@ public class Energizer extends Enemy {
 	public Energizer(SpriteAnimationConfiguration spriteConfiguration, EnemyConfiguration enemyConfiguration, MovementConfiguration movementConfiguration) {
 		super(spriteConfiguration, enemyConfiguration, movementConfiguration);
 		SpriteAnimationConfiguration destroyedExplosionfiguration = new SpriteAnimationConfiguration(spriteConfiguration.getSpriteConfiguration(), 3, false);
-		destroyedExplosionfiguration.getSpriteConfiguration().setImageType(ImageEnums.Energizer_Destroyed_Explosion);
+		destroyedExplosionfiguration.getSpriteConfiguration().setImageType(this.enemyType.getDestructionType());
 		this.destructionAnimation = new SpriteAnimation(destroyedExplosionfiguration);
 
 		this.damage = 15;

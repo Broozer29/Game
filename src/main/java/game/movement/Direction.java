@@ -6,21 +6,21 @@ public enum Direction {
 	public double toAngle() {
 		switch (this) {
 			case LEFT:
-				return 180; // Was 0, now flipped to 180 for left
+				return 180;
 			case RIGHT:
-				return 0;   // Was 180, now flipped to 0 for right
+				return 0;
 			case UP:
-				return 270; // Was 90, flipped to 270 for up
+				return 270;
 			case DOWN:
-				return 90;  // Was 270, flipped to 90 for down
+				return 90;
 			case RIGHT_UP:
-				return 315; // Was 225, adjusted to 315 for right and up
+				return 315;
 			case RIGHT_DOWN:
-				return 45;  // Was 135, adjusted to 45 for right and down
+				return 45;
 			case LEFT_UP:
-				return 225; // Was 45, adjusted to 225 for left and up
+				return 225;
 			case LEFT_DOWN:
-				return 135; // Was 315, adjusted to 135 for left and down
+				return 135;
 			case NONE:
 			default:
 				return 0.0;

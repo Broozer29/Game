@@ -1,5 +1,6 @@
 package VisualAndAudioData.image;
 
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +19,15 @@ public class ImageCropper {
 
     public BufferedImage cropImage(BufferedImage img, float widthPercentage) {
         int newWidth = (int) Math.ceil(img.getWidth() * widthPercentage / 100);
-        BufferedImage cropped = img.getSubimage(0, 0, newWidth, img.getHeight());
+
+        // Create a new BufferedImage to avoid shared references
+        BufferedImage cropped = new BufferedImage(newWidth, img.getHeight(), BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g = cropped.createGraphics();
+
+        // Draw the desired portion of the original image into the new image
+        g.drawImage(img, 0, 0, newWidth, img.getHeight(), 0, 0, newWidth, img.getHeight(), null);
+        g.dispose();
+
         return cropped;
     }
     

@@ -419,19 +419,17 @@ public class GameObject extends Sprite {
     //*****************MOVEMENT*******************************
     public void move () {
         toggleHealthBar();
-        SpriteMover.getInstance().moveGameObject(this, movementConfiguration);
-        moveAnimations();
-        this.bounds.setBounds(xCoordinate + xOffset, yCoordinate + yOffset, width, height);
+        if(this.isAllowedToMove()) {
+            SpriteMover.getInstance().moveGameObject(this, movementConfiguration);
+            moveAnimations();
+            this.bounds.setBounds(xCoordinate + xOffset, yCoordinate + yOffset, width, height);
+
+            for (GameObject object : objectsFollowingThis) {
+                object.setCenterCoordinates(this.getCenterXCoordinate(), this.getCenterYCoordinate());
+            }
+        }
         updateBoardBlock();
         updateVisibility();
-
-        if (animation != null) {
-//            animation.setAnimationBounds(xCoordinate, yCoordinate);
-        }
-
-        for (GameObject object : objectsFollowingThis) {
-            object.setCenterCoordinates(this.getCenterXCoordinate(), this.getCenterYCoordinate());
-        }
     }
 
     private void toggleHealthBar () {
@@ -457,8 +455,8 @@ public class GameObject extends Sprite {
     }
 
     private void moveAnimations (SpriteAnimation animation) {
-        animation.setX(this.getXCoordinate());
-        animation.setY(this.getYCoordinate());
+        animation.setXCoordinate(this.getXCoordinate());
+        animation.setYCoordinate(this.getYCoordinate());
         animation.setAnimationBounds(animation.getXCoordinate(), animation.getYCoordinate());
     }
 

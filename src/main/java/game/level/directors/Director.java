@@ -137,10 +137,10 @@ public class Director {
         }
 
         double randomDouble = random.nextDouble();
-        double chanceThreshold = switch (enemyType) {
-            case CashCarrier, Alien_Bomb, FourDirectionalDrone, RedBoss, Shuriken -> -1f;
-            case Needler, Scout -> 0.2f; //20% chance of spawning a formation
-            case Bomba, Tazer, Flamer, Seeker, Bulldozer, Energizer -> 0.1f; //10% chance of spawning formation
+        double chanceThreshold = switch (enemyType.getEnemyCategory()) {
+            case Summon, Special, Boss -> -1f;
+            case Basic -> 0.2f; //20% chance of spawning a formation
+            case Mercenary -> 0.1f; //10% chance of spawning formation
         };
 
         return randomDouble < chanceThreshold;

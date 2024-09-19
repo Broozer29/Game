@@ -5,7 +5,6 @@ import VisualAndAudioData.audio.enums.LevelSongs;
 import game.managers.AnimationManager;
 import game.gameobjects.player.PlayerStats;
 import VisualAndAudioData.image.ImageEnums;
-import game.level.LevelManager;
 import visualobjects.SpriteConfigurations.SpriteConfiguration;
 import visualobjects.SpriteAnimation;
 
@@ -141,8 +140,8 @@ public class GameUICreator {
 //        specialAttackHighlight.setImageDimensions(specialAttackFrame.getWidth(), specialAttackFrame.getHeight());
         specialAttackHighlight.setAnimationScale(0.9142f);
 
-        specialAttackHighlight.setX(specialAttackFrame.getXCoordinate() - 2);
-        specialAttackHighlight.setY(specialAttackFrame.getYCoordinate() - 2);
+        specialAttackHighlight.setXCoordinate(specialAttackFrame.getXCoordinate() - 2);
+        specialAttackHighlight.setYCoordinate(specialAttackFrame.getYCoordinate() - 2);
 
     }
 

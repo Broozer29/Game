@@ -166,7 +166,7 @@ public class PlayerStats {
 
     private void initLaserbeamPreset () {
         setAttackSpeed(0.3125f);
-        setBaseDamage(10);
+        setBaseDamage(15);
         setPlayerMissileImage(this.attackType.getImageType());
         setPlayerMissileImpactImage(ImageEnums.Impact_Explosion_One);
         setMissileScale(1);

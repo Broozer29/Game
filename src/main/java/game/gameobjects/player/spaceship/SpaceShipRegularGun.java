@@ -62,7 +62,7 @@ public class SpaceShipRegularGun {
 //        playerMissileType = ImageEnums.ThornsDamage;
 //        missileScale = 0.4f;
 
-        int movementSpeed = 3;
+        int movementSpeed = 5;
 
         MissileCreator missileCreator1 = MissileCreator.getInstance();
         SpriteConfiguration spriteConfiguration = missileCreator1.createMissileSpriteConfig(xCoordinate, yCoordinate,

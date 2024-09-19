@@ -27,6 +27,7 @@ import controllerInput.ConnectedControllers;
 import controllerInput.ControllerInputEnums;
 import game.UI.UIObject;
 import game.gameobjects.GameObject;
+import game.gameobjects.missiles.specialAttacks.Laserbeam;
 import game.gamestate.GameStatsTracker;
 import game.movement.Direction;
 import game.level.directors.DirectorManager;
@@ -209,8 +210,8 @@ public class GameBoard extends JPanel implements ActionListener {
 
     private void goToNextLevel () {
         if (zoningOutAlpha >= 1) {
-            playerManager.getSpaceship().setX(DataClass.getInstance().getWindowWidth() / 10);
-            playerManager.getSpaceship().setY(DataClass.getInstance().getWindowHeight() / 2);
+            playerManager.getSpaceship().setXCoordinate(DataClass.getInstance().getWindowWidth() / 10);
+            playerManager.getSpaceship().setYCoordinate(DataClass.getInstance().getWindowHeight() / 2);
             gameState.setGameState(GameStatusEnums.Shopping);
             gameState.setStagesCompleted(gameState.getStagesCompleted() + 1);
             backgroundManager.resetManager();
@@ -225,8 +226,8 @@ public class GameBoard extends JPanel implements ActionListener {
         }
     }
 
-    private void playDeathMusic(){
-        if(!audioManager.getBackgroundMusic().getAudioType().equals(AudioEnums.VendlaSonrisa)){
+    private void playDeathMusic () {
+        if (!audioManager.getBackgroundMusic().getAudioType().equals(AudioEnums.VendlaSonrisa)) {
             audioManager.stopMusicAudio();
             try {
                 audioManager.playBackgroundMusic(AudioEnums.VendlaSonrisa, false);
@@ -238,11 +239,10 @@ public class GameBoard extends JPanel implements ActionListener {
 
     // Draw the game over screen
     private void drawEndOfLevelScreen (Graphics2D g, boolean hasSurvived) {
-        if(!hasSurvived){
+        if (!hasSurvived) {
             playDeathMusic();
 
         }
-
 
 
         //Create font
@@ -257,17 +257,16 @@ public class GameBoard extends JPanel implements ActionListener {
         drawImage(g, gameOverCard);
 
 
-
         //Draw the first column of messages
 
         GameStatsTracker gameStatsTracker = GameStatsTracker.getInstance();
         int firstRowXCoordinate = Math.round(gameOverCard.getXCoordinate() + (gameOverCard.getWidth() * 0.1f));
         int firstRowYCoordinate = Math.round(gameOverCard.getYCoordinate() + (gameOverCard.getHeight() * 0.3f));
         int messageHeight = 24;
-        String  msgToDraw = "Enemies killed this level:             " + gameStatsTracker.getEnemiesKilledThisRound();
+        String msgToDraw = "Enemies killed this level:             " + gameStatsTracker.getEnemiesKilledThisRound();
 
 
-        if(hasSurvived) {
+        if (hasSurvived) {
             g.drawString(msgToDraw, firstRowXCoordinate, firstRowYCoordinate);
 
             firstRowYCoordinate += messageHeight;
@@ -337,7 +336,6 @@ public class GameBoard extends JPanel implements ActionListener {
         }
 
 
-
         //Draw the UIObjects
         UIObject grade = gameUICreator.getGradeSC2iconObject();
         UIObject gradeText = gameUICreator.getGradeTextObject();
@@ -354,7 +352,7 @@ public class GameBoard extends JPanel implements ActionListener {
 
         } else {
             ImageEnums randomGameOverPeepo = gameUICreator.getRandomGameOverPeepo();
-            if(!grade.getImageEnum().equals(randomGameOverPeepo)) {
+            if (!grade.getImageEnum().equals(randomGameOverPeepo)) {
                 int oldXCenter = grade.getCenterXCoordinate();
                 int oldYCenter = grade.getCenterYCoordinate();
                 grade.changeImage(randomGameOverPeepo);
@@ -423,6 +421,18 @@ public class GameBoard extends JPanel implements ActionListener {
             drawImage(g, bgObject);
         }
 
+        for (Laserbeam laserbeam : missileManager.getLaserbeams()) {
+            if (laserbeam.getLaserBodies() != null) {
+                for (SpriteAnimation laserbeamBodyAnim : laserbeam.getLaserBodies()) {
+                    drawAnimation(g, laserbeamBodyAnim);
+                }
+            }
+
+            if (laserbeam.getLaserOriginAnimation() != null) {
+                drawAnimation(g, laserbeam.getLaserOriginAnimation());
+            }
+        }
+
         // Draws lower level animations
         for (SpriteAnimation animation : animationManager.getLowerAnimations()) {
             drawAnimation(g, animation);
@@ -440,6 +450,7 @@ public class GameBoard extends JPanel implements ActionListener {
                     drawHealthBars(g, missile);
             }
         }
+
 
         // Draw enemies
         for (Enemy enemy : enemyManager.getEnemies()) {
@@ -646,7 +657,7 @@ public class GameBoard extends JPanel implements ActionListener {
         long currentMusicFramePosition = 0;
         long maximumMusicFrames = 1;
         // Get the current and maximum frame positions of the background music
-        if(AudioManager.getInstance().getBackgroundMusic() != null){
+        if (AudioManager.getInstance().getBackgroundMusic() != null) {
             currentMusicFramePosition = AudioManager.getInstance().getBackgroundMusic().getFramePosition();
             maximumMusicFrames = AudioManager.getInstance().getBackgroundMusic().getFrameLength();
         }
@@ -663,7 +674,7 @@ public class GameBoard extends JPanel implements ActionListener {
         progressBarFilling.resizeToDimensions(progressBarWidth, progressBarFilling.getHeight());
 
         // Place the spaceship indicator at the edge of the filling
-        spaceShipIndicator.setX((progressBarFilling.getXCoordinate() + progressBarFilling.getWidth()) - spaceShipIndicator.getWidth());
+        spaceShipIndicator.setXCoordinate((progressBarFilling.getXCoordinate() + progressBarFilling.getWidth()) - spaceShipIndicator.getWidth());
 
         // Draw the progress bar components
         drawImage(g, progressBar);
@@ -673,7 +684,7 @@ public class GameBoard extends JPanel implements ActionListener {
         if (levelManager.getCurrentLevelSong() != null && !levelManager.isNextLevelABossLevel()) {
             g.setColor(Color.white);
             g.drawString("Song: " + levelManager.getCurrentLevelSong().toString(), progressBar.getXCoordinate(), progressBar.getYCoordinate() + progressBar.getHeight());
-        } else if(levelManager.isNextLevelABossLevel()) {
+        } else if (levelManager.isNextLevelABossLevel()) {
             g.setColor(Color.white);
             g.drawString("Defeat the boss!", progressBar.getXCoordinate(), progressBar.getYCoordinate() + progressBar.getHeight());
         }
@@ -772,7 +783,7 @@ public class GameBoard extends JPanel implements ActionListener {
         @Override
         public void keyPressed (KeyEvent e) {
 
-            if(boardManager == null){
+            if (boardManager == null) {
                 boardManager = BoardManager.getInstance();
             }
 
@@ -797,7 +808,7 @@ public class GameBoard extends JPanel implements ActionListener {
     }
 
     public void executeControllerInput () {
-        if(boardManager == null){
+        if (boardManager == null) {
             boardManager = BoardManager.getInstance();
         }
 

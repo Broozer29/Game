@@ -3,6 +3,7 @@ package game.gameobjects.missiles;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import game.gameobjects.missiles.specialAttacks.Laserbeam;
 import game.gamestate.GameStateInfo;
 import game.gamestate.GameStatsTracker;
 import game.items.PlayerInventory;
@@ -11,6 +12,7 @@ import game.managers.AnimationManager;
 import game.items.Item;
 import game.gameobjects.missiles.missiletypes.TazerProjectile;
 import game.gameobjects.player.spaceship.SpaceShip;
+import game.managers.OnScreenTextManager;
 import game.util.CollisionDetector;
 import game.gameobjects.player.PlayerManager;
 import game.gameobjects.enemies.Enemy;
@@ -28,6 +30,7 @@ public class MissileManager {
     private CollisionDetector collisionDetector = CollisionDetector.getInstance();
     private CopyOnWriteArrayList<Missile> missiles = new CopyOnWriteArrayList<Missile>();
     private CopyOnWriteArrayList<SpecialAttack> specialAttacks = new CopyOnWriteArrayList<SpecialAttack>();
+    private CopyOnWriteArrayList<Laserbeam> laserbeams = new CopyOnWriteArrayList<>();
 
 
     private MissileManager () {
@@ -47,10 +50,15 @@ public class MissileManager {
             specialAttack.setVisible(false);
         }
 
+        for(Laserbeam laserbeam : laserbeams){
+            laserbeam.setVisible(false);
+        }
+
         removeInvisibleProjectiles();
 
-        missiles = new CopyOnWriteArrayList<Missile>();
-        specialAttacks = new CopyOnWriteArrayList<SpecialAttack>();
+        missiles.clear();
+        specialAttacks.clear();
+        laserbeams.clear();
     }
 
 
@@ -74,6 +82,16 @@ public class MissileManager {
         removeInvisibleProjectiles();
         checkMissileCollisions();
         triggerMissileActions();
+        updateLaserBeams();
+    }
+
+    private void updateLaserBeams(){
+        for(Laserbeam laserbeam : laserbeams){
+            laserbeam.update();
+            if(CollisionDetector.getInstance().detectCollision(PlayerManager.getInstance().getSpaceship(), laserbeam)){
+                OnScreenTextManager.getInstance().addText("Collision", 100,100);
+            }
+        }
     }
 
     private void removeInvisibleProjectiles () {
@@ -177,9 +195,9 @@ public class MissileManager {
 
     // Checks collision between special attacks and enemy missiles
     private void checkSpecialAttackWithEnemyMissileCollision (SpecialAttack specialAttack) {
-        if (specialAttack.getSpecialAttackMissiles().isEmpty()) {
+        if (specialAttack.getSpecialAttackMissiles().isEmpty() && specialAttack.isDestroysMissiles()) {
             for (Missile missile : missiles) {
-                if (!missile.isFriendly()) {
+                if (!missile.isFriendly() ) {
                     if (collisionDetector.detectCollision(missile, specialAttack)) {
                         missile.destroyMissile();
                     }
@@ -286,5 +304,13 @@ public class MissileManager {
         this.missiles.add(missile);
     }
 
+    public CopyOnWriteArrayList<Laserbeam> getLaserbeams () {
+        return laserbeams;
+    }
 
+    public void addLaserBeam(Laserbeam laserbeam){
+        if(!this.laserbeams.contains(laserbeam)){
+            laserbeams.add(laserbeam);
+        }
+    }
 }

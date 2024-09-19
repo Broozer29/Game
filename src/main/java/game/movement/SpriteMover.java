@@ -111,8 +111,8 @@ public class SpriteMover {
         // Update the current location
         if (moveConfig.getNextPoint() != null) {
             moveConfig.setCurrentLocation(moveConfig.getNextPoint());
-            gameObject.setX(moveConfig.getNextPoint().getX());
-            gameObject.setY(moveConfig.getNextPoint().getY());
+            gameObject.setXCoordinate(moveConfig.getNextPoint().getX());
+            gameObject.setYCoordinate(moveConfig.getNextPoint().getY());
 
             //Homing movement rotation is hell, just use 360 degrees visual objects so you dont need to rotate
             //Leave the code in this method but comment it out
@@ -158,8 +158,8 @@ public class SpriteMover {
     private void moveTowardsNextPoint (GameObject gameObject, MovementConfiguration moveConfig) {
         if (gameObject.isAllowedToMove() && !moveConfig.getCurrentPath().getWaypoints().isEmpty()) {
             gameObject.updateCurrentLocation(moveConfig.getCurrentPath().getWaypoints().get(0));
-            gameObject.setX(moveConfig.getCurrentPath().getWaypoints().get(0).getX());
-            gameObject.setY(moveConfig.getCurrentPath().getWaypoints().get(0).getY());
+            gameObject.setXCoordinate(moveConfig.getCurrentPath().getWaypoints().get(0).getX());
+            gameObject.setYCoordinate(moveConfig.getCurrentPath().getWaypoints().get(0).getY());
             moveConfig.setStepsTaken(moveConfig.getStepsTaken() + 1);
             moveConfig.getCurrentLocation().setX(gameObject.getXCoordinate());
             moveConfig.getCurrentLocation().setY(gameObject.getYCoordinate());
@@ -167,7 +167,6 @@ public class SpriteMover {
     }
 
     private void handleAdditionalBehaviors (GameObject gameObject, MovementConfiguration moveConfig) {
-
         gameObject.rotateAfterMovement();
 
 

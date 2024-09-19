@@ -25,9 +25,9 @@ public class Shuriken extends Enemy {
         spriteConfiguration1.setScale(1);
         spriteConfiguration1.setxCoordinate(this.xCoordinate);
         spriteConfiguration1.setyCoordinate(this.yCoordinate);
-        spriteConfiguration1.setImageType(ImageEnums.Explosion2);
+        spriteConfiguration1.setImageType(this.enemyType.getDestructionType());
         SpriteAnimationConfiguration destroyedExplosionfiguration = new SpriteAnimationConfiguration(spriteConfiguration1, 0, false);
-        destroyedExplosionfiguration.getSpriteConfiguration().setImageType(ImageEnums.Explosion2);
+        destroyedExplosionfiguration.getSpriteConfiguration().setImageType(this.enemyType.getDestructionType());
         this.destructionAnimation = new SpriteAnimation(destroyedExplosionfiguration);
         this.deathSound = AudioEnums.Alien_Bomb_Impact;
         this.detonateOnCollision = true;

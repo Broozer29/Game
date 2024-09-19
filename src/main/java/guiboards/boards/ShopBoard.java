@@ -3,7 +3,6 @@ package guiboards.boards;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
-import VisualAndAudioData.image.ImageEnums;
 import controllerInput.ConnectedControllers;
 import controllerInput.ControllerInputEnums;
 import controllerInput.ControllerInputReader;
@@ -17,7 +16,6 @@ import game.gameobjects.background.BackgroundManager;
 import game.gameobjects.background.BackgroundObject;
 import VisualAndAudioData.DataClass;
 import guiboards.boardEnums.MenuFunctionEnums;
-import guiboards.boardEnums.MenuObjectEnums;
 import guiboards.boardcreators.ShopBoardCreator;
 import guiboards.guicomponents.*;
 import visualobjects.Sprite;
@@ -471,8 +469,8 @@ public class ShopBoard extends JPanel implements ActionListener {
         } else {
             GUIComponent selectedComponent = grid.get(selectedRow).get(selectedColumn);
             menuCursor.setSelectedMenuTile(selectedComponent);
-            menuCursor.setY(selectedComponent.getYCoordinate());
-            menuCursor.setX(selectedComponent.getXCoordinate() - (menuCursor.getxDistanceToKeep()));
+            menuCursor.setYCoordinate(selectedComponent.getYCoordinate());
+            menuCursor.setXCoordinate(selectedComponent.getXCoordinate() - (menuCursor.getxDistanceToKeep()));
         }
     }
 

@@ -64,7 +64,13 @@ public enum EnemyEnums {
     Shuriken(200, 0, false,
             AudioEnums.Alien_Spaceship_Destroyed, "Shuriken",
             ImageEnums.ShurikenEnemy, ImageEnums.Explosion2, 0, EnemyCategory.Summon,  10, 0,
-            0, 0, 2.5f, 0.35f, 300, 300, 0)
+            0, 0, 2.5f, 0.35f, 300, 300, 0),
+
+    PulsingDrone(200, 0, true,
+                         AudioEnums.Alien_Spaceship_Destroyed, "Pulsing Drone",
+                         ImageEnums.DestructableOrbitCenterMissile, ImageEnums.Explosion2, 0, EnemyCategory.Summon,  0, 0,
+                                 0, 0, 0f, 0.3f, 160, 119, 0),
+
     ;
 
     private final int baseHitPoints;

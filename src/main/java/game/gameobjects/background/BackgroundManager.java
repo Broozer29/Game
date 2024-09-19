@@ -232,14 +232,14 @@ public class BackgroundManager {
         if ((bgObject.getXCoordinate() + bgObject.getWidth()) < 0) {
             switch (bgObject.getBGOtype()) {
                 case Planet:
-                    bgObject.setX(dataClass.getWindowWidth() + 200);
-                    bgObject.setY(randomCoordinator.getRandomYBGOCoordinate());
+                    bgObject.setXCoordinate(dataClass.getWindowWidth() + 200);
+                    bgObject.setYCoordinate(randomCoordinator.getRandomYBGOCoordinate());
                     bgObject.setNewPlanetImage(imageDatabase.getImage(getRandomPlanetEnum()));
                     break;
                 case Nebula:
                 case Parallex:
                     //This is broken for some inexplicable reason
-                    bgObject.setX(rightmostNebulaEdge);  // Place right after the last nebula
+                    bgObject.setXCoordinate(rightmostNebulaEdge);  // Place right after the last nebula
                     updateRightmostNebulaEdge();  // Update after repositioning
 //                    System.out.println("X coordinate: " + bgObject.getXCoordinate() +
 //                            " Width: " + bgObject.getWidth() +
@@ -247,12 +247,12 @@ public class BackgroundManager {
 //                            " Gap: " + (bgObject.getXCoordinate() - rightmostNebulaEdge + bgObject.getWidth()));
                     break;
                 case Star:
-                    bgObject.setX(dataClass.getWindowWidth() + 200);
-                    bgObject.setY(randomCoordinator.getRandomYBGOCoordinate());
+                    bgObject.setXCoordinate(dataClass.getWindowWidth() + 200);
+                    bgObject.setYCoordinate(randomCoordinator.getRandomYBGOCoordinate());
                     break;
             }
         }
-        bgObject.setX(bgObject.getXCoordinate() - 1); // Adjust this value as needed for speed
+        bgObject.setXCoordinate(bgObject.getXCoordinate() - 1); // Adjust this value as needed for speed
     }
 
 

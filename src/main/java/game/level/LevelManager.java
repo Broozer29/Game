@@ -5,7 +5,12 @@ import java.util.List;
 
 import VisualAndAudioData.audio.enums.AudioEnums;
 import VisualAndAudioData.audio.enums.LevelSongs;
+import VisualAndAudioData.image.ImageEnums;
 import game.UI.GameUICreator;
+import game.gameobjects.missiles.MissileManager;
+import game.gameobjects.missiles.specialAttacks.Laserbeam;
+import game.gameobjects.missiles.specialAttacks.LaserbeamConfiguration;
+import game.gameobjects.player.PlayerManager;
 import game.level.enums.LevelTypes;
 import game.managers.ShopManager;
 import game.movement.Direction;
@@ -18,7 +23,9 @@ import VisualAndAudioData.audio.AudioManager;
 import game.level.directors.DirectorManager;
 import game.level.enums.LevelDifficulty;
 import game.level.enums.LevelLength;
+import game.movement.Point;
 import game.movement.pathfinders.HoverPathFinder;
+import game.movement.pathfinders.RegularPathFinder;
 
 import javax.sound.sampled.UnsupportedAudioFileException;
 
@@ -114,11 +121,11 @@ public class LevelManager {
         gameState.setGameState(GameStatusEnums.Playing);
 
         AudioManager audioManager = AudioManager.getInstance();
-//        audioManager.testMode = true;
-//        audioManager.muteMode = true;
+        audioManager.testMode = true;
+        audioManager.muteMode = true;
 
 
-        activateDirectors(this.levelType);
+//        activateDirectors(this.levelType);
         try {
             activateMusic(this.levelType);
         } catch (UnsupportedAudioFileException | IOException e) {
@@ -139,18 +146,50 @@ public class LevelManager {
 //        Director testDirector = DirectorManager.getInstance().getTestDirector();
 //        testDirector.spawnRegularFormation(SpawnFormationEnums.V, EnemyEnums.Scout);
 
-//        EnemyEnums enemyType = EnemyEnums.RedBoss;
-//        Enemy enemy = EnemyCreator.createEnemy(enemyType, 1200, 300, Direction.LEFT, enemyType.getDefaultScale()
+//        EnemyEnums enemyType = EnemyEnums.Scout;
+//        Enemy enemy = EnemyCreator.createEnemy(enemyType, 300, 300, Direction.LEFT, enemyType.getDefaultScale()
 //                , enemyType.getMovementSpeed(), enemyType.getMovementSpeed(), MovementPatternSize.SMALL, false);
-//        enemy.getMovementConfiguration().setBoardBlockToHoverIn(4);
-//        enemy.getMovementConfiguration().setPathFinder(new HoverPathFinder());
-//        enemy.getMovementConfiguration().setDestination(new Point(800, 300));
+////        enemy.getMovementConfiguration().setBoardBlockToHoverIn(4);
+//        enemy.getMovementConfiguration().setPathFinder(new RegularPathFinder());
+////        enemy.getMovementConfiguration().setDestination(new Point(100, 300));
 //        enemy.setAllowedVisualsToRotate(false);
-//        enemy.getMovementConfiguration().setXMovementSpeed(2f);
-//        enemy.getMovementConfiguration().setYMovementSpeed(2f);
-//        enemy.getAnimation().changeImagetype(ImageEnums.Scout);
+//        enemy.getMovementConfiguration().setXMovementSpeed(0f);
+//        enemy.getMovementConfiguration().setYMovementSpeed(0f);
+////        enemy.getAnimation().changeImagetype(ImageEnums.Scout);
 //        EnemyManager.getInstance().addEnemy(enemy);
 
+        LaserbeamConfiguration config = new LaserbeamConfiguration( 0,0,
+                PlayerManager.getInstance().getSpaceship(), Direction.LEFT_UP, PlayerManager.getInstance().getSpaceship());
+        Laserbeam laserBeam = new Laserbeam(config);
+        MissileManager.getInstance().addLaserBeam(laserBeam);
+
+        config.setDirection(Direction.LEFT_DOWN);
+        Laserbeam laserBeam4 = new Laserbeam(config);
+        MissileManager.getInstance().addLaserBeam(laserBeam4);
+
+        config.setDirection(Direction.RIGHT_UP);
+        Laserbeam laserBeam2 = new Laserbeam(config);
+        MissileManager.getInstance().addLaserBeam(laserBeam2);
+
+        config.setDirection(Direction.RIGHT_DOWN);
+        Laserbeam laserBeam3 = new Laserbeam(config);
+        MissileManager.getInstance().addLaserBeam(laserBeam3);
+
+        config.setDirection(Direction.LEFT);
+        Laserbeam laserBeam5 = new Laserbeam(config);
+        MissileManager.getInstance().addLaserBeam(laserBeam5);
+
+        config.setDirection(Direction.UP);
+        Laserbeam laserBeam6 = new Laserbeam(config);
+        MissileManager.getInstance().addLaserBeam(laserBeam6);
+
+        config.setDirection(Direction.RIGHT);
+        Laserbeam laserBeam7 = new Laserbeam(config);
+        MissileManager.getInstance().addLaserBeam(laserBeam7);
+
+        config.setDirection(Direction.DOWN);
+        Laserbeam laserBeam8 = new Laserbeam(config);
+        MissileManager.getInstance().addLaserBeam(laserBeam8);
 
     }
 

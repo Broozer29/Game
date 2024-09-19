@@ -4,7 +4,6 @@ import VisualAndAudioData.audio.enums.LevelSongs;
 import VisualAndAudioData.image.ImageEnums;
 import game.items.PlayerInventory;
 import game.items.enums.ItemRarityEnums;
-import game.level.enums.LevelTypes;
 import game.managers.ShopManager;
 import game.level.LevelManager;
 import game.level.enums.LevelDifficulty;
@@ -119,7 +118,7 @@ public class ShopBoardCreator {
         SpriteConfiguration spriteConfiguration = createSpriteConfiguration(moneyX1, moneyY1, 0.5f, ImageEnums.TopazGem7);
         DisplayOnly moneyImage = new DisplayOnly(spriteConfiguration);
 
-        moneyImage.setY(moneyY1 - moneyImage.getHeight() / 2);
+        moneyImage.setYCoordinate(moneyY1 - moneyImage.getHeight() / 2);
 
         textCollection.addComponentToCollection(moneyImage);
         return textCollection;
@@ -215,7 +214,7 @@ public class ShopBoardCreator {
         int iconYCoordinate = lastComponent.getYCoordinate();
         SpriteConfiguration spriteConfiguration = createSpriteConfiguration(iconXCoordinate,iconYCoordinate, 0.4f, ImageEnums.TopazGem7);
         DisplayOnly icon = new DisplayOnly(spriteConfiguration);
-        icon.setY(icon.getYCoordinate() - (icon.getHeight() / 4));
+        icon.setYCoordinate(icon.getYCoordinate() - (icon.getHeight() / 4));
         textCollection.addComponentToCollection(icon);
         return textCollection;
     }
@@ -370,8 +369,8 @@ public class ShopBoardCreator {
                 1, ImageEnums.Square_Card);
         DisplayOnly backgroundCard = new DisplayOnly(spriteConfiguration);
         backgroundCard.setImageDimensions(cardWidth, cardHeight);
-        backgroundCard.setX(40);
-        backgroundCard.setY(20);
+        backgroundCard.setXCoordinate(40);
+        backgroundCard.setYCoordinate(20);
 
         return backgroundCard;
     }

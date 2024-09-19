@@ -21,6 +21,8 @@ public class ImageDatabase {
     // Enemy images
     private BufferedImage alienSpaceshipImage;
     private BufferedImage alienBombImage;
+    private List<BufferedImage> laserbeamBody = new ArrayList<BufferedImage>();
+    private List<BufferedImage> laserbeamHead = new ArrayList<BufferedImage>();
 
     private List<BufferedImage> seekerFrames = new ArrayList<BufferedImage>();
     private List<BufferedImage> tazer = new ArrayList<>();
@@ -1436,6 +1438,8 @@ public class ImageDatabase {
 
     public List<BufferedImage> getAnimation (ImageEnums imageType) {
         switch (imageType) {
+            case LaserbeamHead: return laserbeamHead;
+            case LaserbeamBody: return laserbeamBody;
             case ShurikenEnemy: return shurikenEnemy;
             case FreezeEffect: return freezeEffect;
             case ThornsDamage: return thornsDamage;
@@ -2219,6 +2223,20 @@ public class ImageDatabase {
             BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
             shurikenEnemy.add(image);
         }
+
+        for (int i = 0; i < 4; i++) {
+            String sourceString = String.format("/images/gif/PNGtoGIF/Laserbeam/Body/%d.png", i);
+            BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+            laserbeamBody.add(image);
+        }
+
+        for (int i = 0; i < 4; i++) {
+            String sourceString = String.format("/images/gif/PNGtoGIF/Laserbeam/Head/%d.png", i);
+            BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+            laserbeamHead.add(image);
+        }
+
+
     }
 
     private void initSpriteSheets () {

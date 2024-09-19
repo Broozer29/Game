@@ -1,18 +1,32 @@
 package game.gameobjects.missiles.specialAttacks;
 
+import game.movement.Point;
+
 public class SpecialAttackConfiguration {
     private float damage;
     private boolean friendly;
     private boolean allowedToDealDamage;
     private boolean boxCollision;
     private boolean allowRepeatedDamage;
+    private boolean destroysMissiles;
+    private Point destination;
 
-    public SpecialAttackConfiguration (float damage, boolean friendly, boolean allowedToDealDamage, boolean boxCollision, boolean allowRepeatedDamage) {
+
+    public SpecialAttackConfiguration (float damage, boolean friendly, boolean allowedToDealDamage, boolean boxCollision, boolean allowRepeatedDamage, boolean destorysMissiles) {
         this.damage = damage;
         this.friendly = friendly;
         this.allowedToDealDamage = allowedToDealDamage;
         this.boxCollision = boxCollision;
         this.allowRepeatedDamage = allowRepeatedDamage;
+        this.destroysMissiles = destorysMissiles;
+    }
+
+    public boolean isDestroysMissiles () {
+        return destroysMissiles;
+    }
+
+    public void setDestorysMissiles (boolean destorysMissiles) {
+        this.destroysMissiles = destorysMissiles;
     }
 
     public float getDamage () {
@@ -53,5 +67,17 @@ public class SpecialAttackConfiguration {
 
     public void setAllowRepeatedDamage (boolean allowRepeatedDamage) {
         this.allowRepeatedDamage = allowRepeatedDamage;
+    }
+
+    public void setDestroysMissiles (boolean destroysMissiles) {
+        this.destroysMissiles = destroysMissiles;
+    }
+
+    public Point getDestination () {
+        return destination;
+    }
+
+    public void setDestination (Point destination) {
+        this.destination = destination;
     }
 }

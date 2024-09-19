@@ -32,7 +32,7 @@ public class EnemyCreator {
     private static PathFinder getPathFinderByEnemy(EnemyEnums enemyType){
         switch (enemyType){
             case Seeker, Energizer, Tazer, Scout, RedBoss -> {return new HoverPathFinder();}
-            case FourDirectionalDrone -> {return new DestinationPathFinder();}
+            case FourDirectionalDrone, PulsingDrone -> {return new DestinationPathFinder();}
             default -> {return new RegularPathFinder();}
         }
     }
@@ -83,6 +83,9 @@ public class EnemyCreator {
 
     private static Enemy createSpecificEnemy (SpriteConfiguration spriteConfiguration, EnemyConfiguration enemyConfiguration, MovementConfiguration movementConfiguration) {
         switch (enemyConfiguration.getEnemyType()) {
+            case PulsingDrone -> {
+                return new PulsingDrone(upgradeConfig(spriteConfiguration, 5, true), enemyConfiguration, movementConfiguration);
+            }
             case Shuriken -> {
                 return new Shuriken(upgradeConfig(spriteConfiguration, 0, true), enemyConfiguration, movementConfiguration);
             }

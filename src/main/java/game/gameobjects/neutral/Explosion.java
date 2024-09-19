@@ -21,8 +21,8 @@ public class Explosion extends GameObject {
         this.applyOnHitEffects = explosionConfiguration.isApplyOnHitEffects();
         this.setObjectType("Explosion");
 
-        this.animation.setX(this.xCoordinate - (animation.getWidth() / 2));
-        this.animation.setY(this.yCoordinate - (animation.getHeight() / 2));
+        this.animation.setXCoordinate(this.xCoordinate - (animation.getWidth() / 2));
+        this.animation.setYCoordinate(this.yCoordinate - (animation.getHeight() / 2));
         initAllowedToDealDamageFramesAmount();
     }
 

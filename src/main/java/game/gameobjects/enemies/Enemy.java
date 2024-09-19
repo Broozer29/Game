@@ -93,7 +93,15 @@ public class Enemy extends GameObject {
     }
 
     private void initChargingUpAnimation (SpriteConfiguration spriteConfiguration) {
-        SpriteAnimationConfiguration spriteAnimationConfiguration = new SpriteAnimationConfiguration(spriteConfiguration, 2, false);
+
+        SpriteConfiguration newSpriteConfig = spriteConfiguration;
+
+        if(spriteConfiguration.getScale() < 0.85f){
+            newSpriteConfig.setScale(0.85f);
+        }
+
+
+        SpriteAnimationConfiguration spriteAnimationConfiguration = new SpriteAnimationConfiguration(newSpriteConfig, 2, false);
         spriteAnimationConfiguration.getSpriteConfiguration().setImageType(ImageEnums.Charging);
         this.chargingUpAttackAnimation = new SpriteAnimation(spriteAnimationConfiguration);
     }

@@ -16,6 +16,7 @@ public class SpecialAttack extends GameObject {
     protected boolean allowRepeatedDamage;
     protected float onHitInterval;
     protected double lastOnHitInterval = 0f;
+    protected boolean destroysMissiles;
 
     public SpecialAttack (SpriteAnimationConfiguration spriteAnimationConfiguration, SpecialAttackConfiguration specialAttackConfiguration) {
         super(spriteAnimationConfiguration, null);
@@ -24,6 +25,7 @@ public class SpecialAttack extends GameObject {
         this.allowedToDealDamage = specialAttackConfiguration.isAllowedToDealDamage();
         this.currentBoardBlock = BoardBlockUpdater.getBoardBlock(xCoordinate);
         this.boxCollision = specialAttackConfiguration.isBoxCollision();
+        this.destroysMissiles = specialAttackConfiguration.isDestroysMissiles();
     }
 
     public float getOnHitInterval () {
@@ -97,5 +99,13 @@ public class SpecialAttack extends GameObject {
 
     public boolean isAllowOnHitEffects () {
         return this.appliesOnHitEffects;
+    }
+
+    public boolean isDestroysMissiles () {
+        return destroysMissiles;
+    }
+
+    public void setDestroysMissiles (boolean destroysMissiles) {
+        this.destroysMissiles = destroysMissiles;
     }
 }

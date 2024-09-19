@@ -1,6 +1,6 @@
 package visualobjects;
 
-import java.awt.Rectangle;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
@@ -308,7 +308,24 @@ public class SpriteAnimation extends Sprite implements Cloneable{
 		return false;
 	}
 
+	public void setCurrentFrame (int currentFrame) {
+		this.currentFrame = currentFrame;
+	}
+
 	public boolean isFinished () {
         return currentFrame >= totalFrames;
     }
+
+	public void deepCopyFrames() {
+		List<BufferedImage> copiedFrames = new ArrayList<>();
+		for (BufferedImage frame : this.frames) {
+			BufferedImage copy = new BufferedImage(frame.getWidth(), frame.getHeight(), BufferedImage.TYPE_INT_ARGB);
+			Graphics2D g2d = copy.createGraphics();
+			g2d.drawImage(frame, 0, 0, null);
+			g2d.dispose();
+			copiedFrames.add(copy);
+		}
+		this.frames = copiedFrames;
+		this.originalFrames = new ArrayList<>(copiedFrames);
+	}
 }

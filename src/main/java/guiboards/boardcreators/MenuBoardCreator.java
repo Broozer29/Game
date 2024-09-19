@@ -40,8 +40,8 @@ public class MenuBoardCreator {
         MenuCursor menuCursor = new MenuCursor(spriteConfiguration);
         menuCursor.setSelectedMenuTile(initialSelectedButton);
         menuCursor.setDescriptionOfComponent("Menu Cursor");
-        menuCursor.setX(menuCursor.getXCoordinate() - menuCursor.getxDistanceToKeep());
-        menuCursor.setY(menuCursor.getYCoordinate() - menuCursor.getHeight() / 2);
+        menuCursor.setXCoordinate(menuCursor.getXCoordinate() - menuCursor.getxDistanceToKeep());
+        menuCursor.setYCoordinate(menuCursor.getYCoordinate() - menuCursor.getHeight() / 2);
         return menuCursor;
     }
 

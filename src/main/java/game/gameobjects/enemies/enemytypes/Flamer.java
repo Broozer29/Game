@@ -20,7 +20,7 @@ public class Flamer extends Enemy {
         super(spriteConfiguration, enemyConfiguration, movementConfiguration);
 
         SpriteAnimationConfiguration destroyedExplosionfiguration = new SpriteAnimationConfiguration(spriteConfiguration.getSpriteConfiguration(), 3, false);
-        destroyedExplosionfiguration.getSpriteConfiguration().setImageType(ImageEnums.Flamer_Destroyed_Explosion);
+        destroyedExplosionfiguration.getSpriteConfiguration().setImageType(this.enemyType.getDestructionType());
         this.destructionAnimation = new SpriteAnimation(destroyedExplosionfiguration);
         this.damage = 50;
         this.attackSpeed = 5;
@@ -58,7 +58,7 @@ public class Flamer extends Enemy {
 //        AnimationManager.getInstance().addUpperAnimation(anim);
 
 
-        SpecialAttackConfiguration specialAttackConfiguration = new SpecialAttackConfiguration(this.getDamage(), false, true, false, false);
+        SpecialAttackConfiguration specialAttackConfiguration = new SpecialAttackConfiguration(this.getDamage(), false, true, false, false, true);
         SpecialAttack specialAttack = new SpecialAttack(spriteAnimationConfiguration, specialAttackConfiguration);
         specialAttack.setOwnerOrCreator(this);
         specialAttack.setObjectType("Flamer Special Attack");
