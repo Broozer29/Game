@@ -7,7 +7,8 @@ import game.gamestate.GameStateInfo;
 import game.util.BoardBlockUpdater;
 import game.gameobjects.GameObject;
 import game.gameobjects.missiles.Missile;
-import game.util.CollisionDetector;
+import game.util.collision.CollisionDetector;
+import game.util.collision.CollisionInfo;
 import visualobjects.SpriteConfigurations.SpriteAnimationConfiguration;
 import visualobjects.SpriteAnimation;
 
@@ -85,7 +86,8 @@ public class SpecialAttack extends GameObject {
 
     public void checkEnemySpecialAttackCollision (GameObject gameObject) {
         if (this.getSpecialAttackMissiles().isEmpty()) {
-            if (CollisionDetector.getInstance().detectCollision(gameObject, this)) {
+            CollisionInfo collisionInfo = CollisionDetector.getInstance().detectCollision(gameObject, this);
+            if (collisionInfo != null) {
                 if (this.isAllowedToDealDamage()) {
                     this.dealDamageToGameObject(gameObject);
                 }

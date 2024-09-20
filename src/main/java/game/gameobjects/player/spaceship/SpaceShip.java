@@ -1,5 +1,6 @@
 package game.gameobjects.player.spaceship;
 
+import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -13,6 +14,8 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 
 import controllerInput.ControllerInputEnums;
 import controllerInput.ControllerInputReader;
+import game.gameobjects.missiles.MissileManager;
+import game.gameobjects.missiles.specialAttacks.Laserbeam;
 import game.gamestate.GameStateInfo;
 import game.gamestate.GameStatsTracker;
 import game.items.Item;
@@ -26,7 +29,9 @@ import game.gameobjects.GameObject;
 import game.gameobjects.missiles.specialAttacks.SpecialAttack;
 import game.gameobjects.player.PlayerStats;
 import VisualAndAudioData.image.ImageEnums;
+import game.util.collision.CollisionDetector;
 import game.util.OrbitingObjectsFormatter;
+import game.util.collision.CollisionInfo;
 import visualobjects.SpriteConfigurations.SpriteAnimationConfiguration;
 import visualobjects.SpriteConfigurations.SpriteConfiguration;
 import visualobjects.SpriteAnimation;
@@ -38,6 +43,9 @@ public class SpaceShip extends GameObject {
 
     private float accumulatedXCoordinate;
     private float accumulatedYCoordinate;
+    private boolean overridePlayerControls = false;
+    private ArrayList<Point> movementDirectionsToExecute = new ArrayList<>();
+    private final float knockbackDamping = 0.9f;  // How quickly knockback reduces each update
 
     private float currentShieldRegenDelayFrame;
     private boolean controlledByKeyboard = true;
@@ -265,14 +273,70 @@ public class SpaceShip extends GameObject {
     }
 
     // Moves the spaceship, constantly called
-    public void move () {
-        accumulatedXCoordinate += directionx;
-        accumulatedYCoordinate += directiony;
+    private float knockbackVelocityX = 0;
+    private float knockbackVelocityY = 0;
+    private boolean knockbackActive = false;
 
-        // Convert the accumulated float coordinates to integer coordinates
+    private float previousAccumulatedX;
+    private float previousAccumulatedY;
+    private int previousXCoordinate;
+    private int previousYCoordinate;
+    public void move() {
+        if (overridePlayerControls) {
+            return;  // Ignore movement if controls are overridden
+        }
+
+        // Update queued movements with player input
+        if (directionx != 0 || directiony != 0) {
+            movementDirectionsToExecute.add(new Point(directionx, directiony));
+        }
+
+        // Process movement every frame
+        Point playerInputMovement = new Point(0, 0); // Default to zero movement
+
+        if (!movementDirectionsToExecute.isEmpty()) {
+            playerInputMovement = movementDirectionsToExecute.get(0);
+            // Remove player input movement from the queue after processing it
+            movementDirectionsToExecute.remove(0);
+        }
+
+        // Combine player input with knockback velocities
+        float totalMovementX = playerInputMovement.getX();
+        float totalMovementY = playerInputMovement.getY();
+
+        if (knockbackActive) {
+            totalMovementX += knockbackVelocityX;
+            totalMovementY += knockbackVelocityY;
+
+            // Apply damping to knockback velocities
+            knockbackVelocityX *= knockbackDamping;
+            knockbackVelocityY *= knockbackDamping;
+
+            // If knockback velocities are very small, stop knockback
+            if (Math.abs(knockbackVelocityX) < 0.01f && Math.abs(knockbackVelocityY) < 0.01f) {
+                knockbackVelocityX = 0;
+                knockbackVelocityY = 0;
+                knockbackActive = false;
+            }
+        }
+
+        // Store previous coordinates
+        previousAccumulatedX = accumulatedXCoordinate;
+        previousAccumulatedY = accumulatedYCoordinate;
+        previousXCoordinate = xCoordinate;
+        previousYCoordinate = yCoordinate;
+
+        // Update coordinates
+        accumulatedXCoordinate += totalMovementX;
+        accumulatedYCoordinate += totalMovementY;
         xCoordinate = Math.round(accumulatedXCoordinate);
         yCoordinate = Math.round(accumulatedYCoordinate);
 
+        // Update bounds and other properties
+        bounds.setBounds(xCoordinate + xOffset, yCoordinate + yOffset, width, height);
+        this.currentLocation = new Point(this.xCoordinate, this.yCoordinate);
+
+        // Reset directions if controlled by keyboard
         if (!controlledByKeyboard) {
             haltMoveDown();
             haltMoveLeft();
@@ -280,9 +344,6 @@ public class SpaceShip extends GameObject {
             haltMoveUp();
         }
 
-        bounds.setBounds(xCoordinate + xOffset, yCoordinate + yOffset, width, height);
-
-        this.currentLocation = new Point(this.xCoordinate, this.yCoordinate);
         if (this.exhaustAnimation != null) {
             this.exhaustAnimation.setXCoordinate(this.xCoordinate - (exhaustAnimation.getWidth() / 2));
             this.exhaustAnimation.setYCoordinate(this.getCenterYCoordinate() - (this.exhaustAnimation.getHeight() / 2) + 3);
@@ -294,6 +355,44 @@ public class SpaceShip extends GameObject {
 
         updateBoardBlock();
     }
+
+    public void applyKnockback(CollisionInfo collisionInfo, float knockbackStrength) {
+        Point collisionPoint = collisionInfo.getCollisionPoint();
+
+        // Determine the knockback direction based on collision point
+        float knockbackDirectionX = this.getCenterXCoordinate() - collisionPoint.getX();
+        float knockbackDirectionY = this.getCenterYCoordinate() - collisionPoint.getY();
+
+        // Normalize the knockback direction
+        float length = (float) Math.sqrt(knockbackDirectionX * knockbackDirectionX + knockbackDirectionY * knockbackDirectionY);
+        if (length != 0) {
+            knockbackDirectionX /= length;
+            knockbackDirectionY /= length;
+        } else {
+            // If length is zero, set a default knockback direction
+            knockbackDirectionX = -1;
+            knockbackDirectionY = 0; // Arbitrary direction upwards
+        }
+
+        // Set initial knockback velocities
+        knockbackVelocityX = knockbackDirectionX * knockbackStrength;
+        knockbackVelocityY = knockbackDirectionY * knockbackStrength;
+
+        knockbackActive = true;
+    }
+
+    public void resetToPreviousPosition() {
+        accumulatedXCoordinate = previousAccumulatedX;
+        accumulatedYCoordinate = previousAccumulatedY;
+        xCoordinate = previousXCoordinate;
+        yCoordinate = previousYCoordinate;
+
+        // Update bounds and other properties
+        bounds.setBounds(xCoordinate + xOffset, yCoordinate + yOffset, width, height);
+        this.currentLocation = new Point(this.xCoordinate, this.yCoordinate);
+    }
+
+
 
     // Launch a missile from the center point of the spaceship
     private void fire () throws UnsupportedAudioFileException, IOException {

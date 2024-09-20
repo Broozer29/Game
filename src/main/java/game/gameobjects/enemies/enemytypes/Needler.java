@@ -5,10 +5,9 @@ import game.movement.Point;
 import game.movement.pathfinders.StraightLinePathFinder;
 import game.gameobjects.enemies.Enemy;
 import game.gameobjects.enemies.EnemyConfiguration;
-import game.gameobjects.enemies.enums.EnemyEnums;
 import game.gameobjects.player.PlayerManager;
 import game.gameobjects.player.spaceship.SpaceShip;
-import game.util.CollisionDetector;
+import game.util.collision.CollisionDetector;
 import visualobjects.SpriteAnimation;
 import visualobjects.SpriteConfigurations.SpriteAnimationConfiguration;
 

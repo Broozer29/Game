@@ -29,6 +29,8 @@ public class Laserbeam {
     private int yOffset;
     private GameObject owner;
 
+    private boolean blocksMovement;
+
 
     public Laserbeam (LaserbeamConfiguration laserbeamConfiguration) {
         this.bodyWidth = Math.round(this.bodyWidth * scale);
@@ -395,5 +397,9 @@ public class Laserbeam {
 
     public void setOwner (GameObject owner) {
         this.owner = owner;
+    }
+
+    public float getKnockBackStrength () {
+        return 10;
     }
 }

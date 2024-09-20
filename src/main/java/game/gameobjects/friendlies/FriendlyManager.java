@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import game.managers.AnimationManager;
-import game.util.CollisionDetector;
+import game.util.collision.CollisionDetector;
 import game.gameobjects.player.PlayerManager;
 import game.gameobjects.enemies.Enemy;
 import game.gameobjects.enemies.EnemyManager;
@@ -13,6 +13,7 @@ import game.gamestate.GameStateInfo;
 import game.gamestate.GameStatusEnums;
 import VisualAndAudioData.image.ImageEnums;
 import game.util.OrbitingObjectsFormatter;
+import game.util.collision.CollisionInfo;
 import visualobjects.SpriteConfigurations.SpriteAnimationConfiguration;
 import visualobjects.SpriteConfigurations.SpriteConfiguration;
 
@@ -119,7 +120,8 @@ public class FriendlyManager {
         for (FriendlyObject drone : friendlyObjects) {
             if (drone.isVisible()) {
                 for (Enemy enemy : enemyManager.getEnemies()) {
-                    if (CollisionDetector.getInstance().detectCollision(drone, enemy)) { //old way of handling collision, check other managers
+                    CollisionInfo collisionInfo = CollisionDetector.getInstance().detectCollision(drone, enemy);
+                    if (collisionInfo != null) { //old way of handling collision, check other managers
                         // Collision logic here
                     }
                 }
@@ -128,7 +130,8 @@ public class FriendlyManager {
 
         // Checks collision between the finished level portal and player
         if (gameState.getGameState() == GameStatusEnums.Level_Finished && finishedLevelPortal.isVisible()) {
-            if (CollisionDetector.getInstance().detectCollision(PlayerManager.getInstance().getSpaceship(), finishedLevelPortal)) {
+            CollisionInfo collisionInfo =CollisionDetector.getInstance().detectCollision(PlayerManager.getInstance().getSpaceship(), finishedLevelPortal);
+            if (collisionInfo != null) {
                 if(finishedLevelPortal.getTransparancyAlpha() >= 0.5f) {
                     gameState.setGameState(GameStatusEnums.Level_Completed);
                     finishedLevelPortal.setTransparancyAlpha(true, 1.0f, -0.02f);

@@ -6,19 +6,17 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import game.gameobjects.missiles.specialAttacks.Laserbeam;
 import game.gamestate.GameStateInfo;
 import game.gamestate.GameStatsTracker;
-import game.items.PlayerInventory;
-import game.items.effects.EffectActivationTypes;
 import game.managers.AnimationManager;
-import game.items.Item;
 import game.gameobjects.missiles.missiletypes.TazerProjectile;
 import game.gameobjects.player.spaceship.SpaceShip;
 import game.managers.OnScreenTextManager;
-import game.util.CollisionDetector;
+import game.util.collision.CollisionDetector;
 import game.gameobjects.player.PlayerManager;
 import game.gameobjects.enemies.Enemy;
 import game.gameobjects.enemies.EnemyManager;
 import game.gameobjects.missiles.specialAttacks.SpecialAttack;
 import game.util.ThornsDamageDealer;
+import game.util.collision.CollisionInfo;
 
 
 public class MissileManager {
@@ -50,7 +48,7 @@ public class MissileManager {
             specialAttack.setVisible(false);
         }
 
-        for(Laserbeam laserbeam : laserbeams){
+        for (Laserbeam laserbeam : laserbeams) {
             laserbeam.setVisible(false);
         }
 
@@ -85,11 +83,13 @@ public class MissileManager {
         updateLaserBeams();
     }
 
-    private void updateLaserBeams(){
-        for(Laserbeam laserbeam : laserbeams){
+    private void updateLaserBeams () {
+        for (Laserbeam laserbeam : laserbeams) {
             laserbeam.update();
-            if(CollisionDetector.getInstance().detectCollision(PlayerManager.getInstance().getSpaceship(), laserbeam)){
-                OnScreenTextManager.getInstance().addText("Collision", 100,100);
+            CollisionInfo collisionInfo = CollisionDetector.getInstance().detectCollision(PlayerManager.getInstance().getSpaceship(), laserbeam);
+            if (collisionInfo.isCollided()) {
+                PlayerManager.getInstance().getSpaceship().resetToPreviousPosition();
+                PlayerManager.getInstance().getSpaceship().applyKnockback(collisionInfo, laserbeam.getKnockBackStrength());
             }
         }
     }
@@ -160,7 +160,8 @@ public class MissileManager {
         if (specialAttack.getSpecialAttackMissiles().isEmpty()) {
             for (Missile missile : missiles) {
                 if (missile.isFriendly()) {
-                    if (collisionDetector.detectCollision(missile, specialAttack)) {
+                    CollisionInfo collisionInfo = collisionDetector.detectCollision(missile, specialAttack);
+                    if (collisionInfo != null) {
                         missile.destroyMissile();
                     }
                 }
@@ -172,7 +173,8 @@ public class MissileManager {
     private void checkSpecialAttackWithEnemyCollision (SpecialAttack specialAttack) {
         boolean hasAppliedEffects = false;
         for (Enemy enemy : enemyManager.getEnemies()) {
-            if (collisionDetector.detectCollision(enemy, specialAttack)) {
+            CollisionInfo collisionInfo = collisionDetector.detectCollision(enemy, specialAttack);
+            if (collisionInfo != null) {
                 specialAttack.applyBeforeCollisionEffects(enemy);
 
                 if (specialAttack.isAllowOnHitEffects()
@@ -197,8 +199,9 @@ public class MissileManager {
     private void checkSpecialAttackWithEnemyMissileCollision (SpecialAttack specialAttack) {
         if (specialAttack.getSpecialAttackMissiles().isEmpty() && specialAttack.isDestroysMissiles()) {
             for (Missile missile : missiles) {
-                if (!missile.isFriendly() ) {
-                    if (collisionDetector.detectCollision(missile, specialAttack)) {
+                if (!missile.isFriendly()) {
+                    CollisionInfo collisionInfo = collisionDetector.detectCollision(missile, specialAttack);
+                    if (collisionInfo != null) {
                         missile.destroyMissile();
                     }
                 }
@@ -208,7 +211,8 @@ public class MissileManager {
 
     private void checkMissileCollisionWithEnemies (Missile missile) {
         for (Enemy enemy : enemyManager.getEnemies()) {
-            if (collisionDetector.detectCollision(missile, enemy)) {
+            CollisionInfo collisionInfo = collisionDetector.detectCollision(missile, enemy);
+            if (collisionInfo != null) {
                 if (missile.getMissileEnum().equals(MissileEnums.TazerProjectile)) {
                     ((TazerProjectile) missile).handleTazerMissile(missile, enemy);
                 } else { //It's a player missile
@@ -225,7 +229,8 @@ public class MissileManager {
 
     private void checkMissileCollisionWithPlayer (Missile missile) {
         SpaceShip spaceship = playerManager.getSpaceship();
-        if (collisionDetector.detectCollision(missile, spaceship)) {
+        CollisionInfo collisionInfo = collisionDetector.detectCollision(missile, spaceship);
+        if (collisionInfo != null) {
             if (missile.getMissileEnum().equals(MissileEnums.TazerProjectile)) {
                 ((TazerProjectile) missile).handleTazerMissile(missile, spaceship);
             }
@@ -244,30 +249,35 @@ public class MissileManager {
             if (missile.isFriendly()) {
                 //Check for all non-friendly missiles in the missile list, this is used by the player
                 for (Missile enemyMissile : missiles) {
-                    if (!enemyMissile.isFriendly() && collisionDetector.detectCollision(missile, enemyMissile)) {
-                        if (missile.isDeletesMissiles()) {
-                            enemyMissile.destroyMissile();
-                            addHitToStatsTracker(missile);
-                        } else if (missile.isDestructable()) {
-                            enemyMissile.dealDamageToGameObject(missile);
-                            missile.setShowHealthBar(true);
-                            enemyMissile.destroyMissile();
-                            addHitToStatsTracker(missile);
+                    if (!enemyMissile.isFriendly()) {
+                        CollisionInfo collisionInfo = collisionDetector.detectCollision(missile, enemyMissile);
+                        if (collisionInfo != null) {
+                            if (missile.isDeletesMissiles()) {
+                                enemyMissile.destroyMissile();
+                                addHitToStatsTracker(missile);
+                            } else if (missile.isDestructable()) {
+                                enemyMissile.dealDamageToGameObject(missile);
+                                missile.setShowHealthBar(true);
+                                enemyMissile.destroyMissile();
+                                addHitToStatsTracker(missile);
+                            }
                         }
-
                     }
+
                 }
             } else {
                 //Check for all friendly missiles in the missile list, this is used by the enemies
                 for (Missile friendlyMissile : missiles) {
-                    if (friendlyMissile.isFriendly() && collisionDetector.detectCollision(missile, friendlyMissile)) {
-
-                        if (missile.isDeletesMissiles()) {
-                            friendlyMissile.destroyMissile();
-                        } else if (missile.isDestructable()) {
-                            friendlyMissile.dealDamageToGameObject(missile);
-                            missile.setShowHealthBar(true);
-                            friendlyMissile.destroyMissile();
+                    if (friendlyMissile.isFriendly()) {
+                        CollisionInfo collisionInfo = collisionDetector.detectCollision(missile, friendlyMissile);
+                        if (collisionInfo != null) {
+                            if (missile.isDeletesMissiles()) {
+                                friendlyMissile.destroyMissile();
+                            } else if (missile.isDestructable()) {
+                                friendlyMissile.dealDamageToGameObject(missile);
+                                missile.setShowHealthBar(true);
+                                friendlyMissile.destroyMissile();
+                            }
                         }
                     }
                 }
@@ -308,8 +318,8 @@ public class MissileManager {
         return laserbeams;
     }
 
-    public void addLaserBeam(Laserbeam laserbeam){
-        if(!this.laserbeams.contains(laserbeam)){
+    public void addLaserBeam (Laserbeam laserbeam) {
+        if (!this.laserbeams.contains(laserbeam)) {
             laserbeams.add(laserbeam);
         }
     }

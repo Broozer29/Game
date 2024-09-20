@@ -14,20 +14,30 @@ public class LaserbeamConfiguration {
     private Direction direction;
 
     private GameObject owner;
-    public LaserbeamConfiguration (int xOffset, int yOffset, Point originPoint, Direction direction, GameObject owner) {
+    private boolean blocksMovement;
+    private float damage;
+
+
+    public LaserbeamConfiguration (int xOffset, int yOffset, Point originPoint, Direction direction, GameObject owner, boolean blocksMovement,
+                                   float damage) {
         this.xOffset = xOffset;
         this.yOffset = yOffset;
         this.originPoint = originPoint;
         this.direction = direction;
         this.owner = owner;
+        this.blocksMovement = blocksMovement;
+        this.damage = damage;
     }
 
-    public LaserbeamConfiguration (int xOffset, int yOffset, GameObject originObject, Direction direction, GameObject owner) {
+    public LaserbeamConfiguration (int xOffset, int yOffset, GameObject originObject, Direction direction, GameObject owner, boolean blocksMovement,
+                                   float damage) {
         this.xOffset = xOffset;
         this.yOffset = yOffset;
         this.originObject = originObject;
         this.direction = direction;
         this.owner = owner;
+        this.blocksMovement = blocksMovement;
+        this.damage = damage;
     }
 
     public int getxOffset () {
@@ -76,5 +86,21 @@ public class LaserbeamConfiguration {
 
     public void setDirection (Direction direction) {
         this.direction = direction;
+    }
+
+    public boolean isBlocksMovement () {
+        return blocksMovement;
+    }
+
+    public void setBlocksMovement (boolean blocksMovement) {
+        this.blocksMovement = blocksMovement;
+    }
+
+    public float getDamage () {
+        return damage;
+    }
+
+    public void setDamage (float damage) {
+        this.damage = damage;
     }
 }

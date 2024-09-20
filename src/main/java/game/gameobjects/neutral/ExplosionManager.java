@@ -4,16 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import game.items.Item;
-import game.items.PlayerInventory;
-import game.items.effects.EffectActivationTypes;
 import game.managers.AnimationManager;
 import game.gameobjects.enemies.Enemy;
 import game.gameobjects.enemies.EnemyManager;
 import game.gameobjects.player.PlayerManager;
 import game.gameobjects.player.spaceship.SpaceShip;
-import game.util.CollisionDetector;
+import game.util.collision.CollisionDetector;
 import game.util.ThornsDamageDealer;
+import game.util.collision.CollisionInfo;
 
 public class ExplosionManager {
 
@@ -90,7 +88,8 @@ public class ExplosionManager {
     private void checkFriendlyExplosionCollision (Explosion explosion) {
         for (Enemy enemy : enemyManager.getEnemies()) {
             if (!explosion.dealtDamageToTarget(enemy)) {
-                if (CollisionDetector.getInstance().detectCollision(explosion, enemy)) {
+                CollisionInfo collisionInfo = CollisionDetector.getInstance().detectCollision(explosion, enemy);
+                if (collisionInfo != null) {
                     explosion.applyBeforeCollisionEffects(enemy);
 
 
@@ -108,14 +107,14 @@ public class ExplosionManager {
 
     private void checkHostileExplosionCollision (Explosion explosion) {
         SpaceShip spaceship = friendlyManager.getSpaceship();
-        if (!explosion.dealtDamageToTarget(spaceship) &&
-                CollisionDetector.getInstance().detectCollision(explosion, spaceship)) {
-
-            //if thorns: reflect damage
-            ThornsDamageDealer.getInstance().dealThornsDamageTo(explosion.getOwnerOrCreator());
-
-            explosion.dealDamageToGameObject(spaceship);
-            explosion.addCollidedSprite(spaceship);
+        if (!explosion.dealtDamageToTarget(spaceship)) {
+            CollisionInfo collisionInfo = CollisionDetector.getInstance().detectCollision(explosion, spaceship);
+            if (collisionInfo != null) {
+                //if thorns: reflect damage
+                ThornsDamageDealer.getInstance().dealThornsDamageTo(explosion.getOwnerOrCreator());
+                explosion.dealDamageToGameObject(spaceship);
+                explosion.addCollidedSprite(spaceship);
+            }
         }
     }
 

@@ -1,11 +1,8 @@
 package game.gameobjects.enemies;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.stream.Collectors;
 
 import javax.sound.sampled.UnsupportedAudioFileException;
 
@@ -13,12 +10,11 @@ import game.gameobjects.enemies.enums.EnemyCategory;
 import game.gamestate.GameStatsTracker;
 import game.managers.AnimationManager;
 import game.gameobjects.GameObject;
-import game.util.CollisionDetector;
+import game.util.collision.CollisionDetector;
 import game.gameobjects.player.PlayerManager;
 import game.gameobjects.player.spaceship.SpaceShip;
-import VisualAndAudioData.DataClass;
-import VisualAndAudioData.audio.enums.AudioEnums;
 import VisualAndAudioData.audio.AudioManager;
+import game.util.collision.CollisionInfo;
 
 public class EnemyManager {
 
@@ -76,12 +72,16 @@ public class EnemyManager {
     private void checkSpaceshipCollisions () throws UnsupportedAudioFileException, IOException {
         SpaceShip spaceship = friendlyManager.getSpaceship();
         for (Enemy enemy : enemyList) {
-            if (CollisionDetector.getInstance().detectCollision(enemy, spaceship)) {
+
+            CollisionInfo collisionInfo = CollisionDetector.getInstance().detectCollision(enemy, spaceship);
+            if (collisionInfo != null) {
                 if (enemy.detonateOnCollision) {
                     detonateEnemy(enemy);
                     enemy.dealDamageToGameObject(spaceship);
                 } else {
-                    spaceship.takeDamage(0.5f);
+                    spaceship.takeDamage(5f);
+                    spaceship.resetToPreviousPosition();
+                    spaceship.applyKnockback(collisionInfo, 10);
                 }
             }
         }

@@ -25,6 +25,14 @@ public class Point {
 		this.x = x;
 	}
 
+	public void setX(float x){
+		this.x = Math.round(x);
+	}
+
+	public void setY(float y){
+		this.y = Math.round(y);
+	}
+
 	public int getY() {
 		return y;
 	}

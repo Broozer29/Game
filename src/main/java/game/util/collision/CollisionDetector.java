@@ -1,10 +1,13 @@
-package game.util;
+package game.util.collision;
 
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 
 import game.gameobjects.GameObject;
 import game.gameobjects.missiles.specialAttacks.Laserbeam;
+import game.movement.Point;
+import game.util.BoardBlockUpdater;
+import game.util.BoundsCalculator;
 import visualobjects.SpriteAnimation;
 
 public class CollisionDetector {
@@ -13,19 +16,19 @@ public class CollisionDetector {
     private int threshold = 400;
     private int boardBlockThreshold = 3;
 
-    private CollisionDetector() {
+    private CollisionDetector () {
 
     }
 
-    public static CollisionDetector getInstance() {
+    public static CollisionDetector getInstance () {
         return instance;
     }
 
     // Public method for GameObject vs. GameObject collision
-    public boolean detectCollision(GameObject gameObject1, GameObject gameObject2) {
+    public CollisionInfo detectCollision (GameObject gameObject1, GameObject gameObject2) {
         // Objects should not collide with their owners
         if (isOwnerOrCreator(gameObject1, gameObject2) || isOwnerOrCreator(gameObject2, gameObject1)) {
-            return false;
+            return null;
         }
 
         if (isNearby(gameObject1, gameObject2, threshold)) {
@@ -33,86 +36,75 @@ public class CollisionDetector {
             Rectangle r2 = BoundsCalculator.getGameObjectBounds(gameObject2);
 
             if (r1.intersects(r2)) {
-                if (gameObject1.isBoxCollision() || gameObject2.isBoxCollision()) {
-                    return true;
-                } else {
-                    return checkPixelCollision(gameObject1, gameObject2);
+                Point collisionPoint = checkPixelCollision(gameObject1, gameObject2);
+                if (collisionPoint != null) {
+                    return new CollisionInfo(true, collisionPoint);
                 }
             }
         }
 
-        return false;
+
+        return null;
     }
 
+
     // Public method for GameObject vs. Laserbeam collision
-    public boolean detectCollision(GameObject gameObject, Laserbeam laserbeam) {
-        if(laserbeam.getOwner() != null){
-            if(laserbeam.getOwner().equals(gameObject)){
-                return false;
-            }
+    public CollisionInfo detectCollision (GameObject gameObject, Laserbeam laserbeam) {
+        if (laserbeam.getOwner() != null && laserbeam.getOwner().equals(gameObject)) {
+            return new CollisionInfo(false, null);
         }
-
-
-        int playerBoardBlock = gameObject.getCurrentBoardBlock();
 
         // Optionally, check collision with laser origin animation
         SpriteAnimation laserOrigin = laserbeam.getLaserOriginAnimation();
         if (laserOrigin != null) {
-            int laserOriginBlock = BoardBlockUpdater.getBoardBlock(laserOrigin.getXCoordinate());
-
-            if (Math.abs(playerBoardBlock - laserOriginBlock) <= 2) {
-                if (isNearby(gameObject, laserOrigin, 50)) {
-                    if (detectCollision(gameObject, laserOrigin)) {
-                        return true;
-                    }
+            if (isNearby(gameObject, laserOrigin, 50)) {
+                CollisionInfo collisionInfo = detectCollision(gameObject, laserOrigin);
+                if (collisionInfo.isCollided()) {
+                    return collisionInfo;
                 }
             }
         }
 
         // Check collision with laser bodies
         for (SpriteAnimation laserSegment : laserbeam.getLaserBodies()) {
-            int laserSegmentBlock = BoardBlockUpdater.getBoardBlock(laserSegment.getXCoordinate());
-
-            // Check if the player's board block is within 2 of the laser segment's block
-            if (Math.abs(playerBoardBlock - laserSegmentBlock) > 2) {
-                continue; // Skip this segment
-            }
-
-            // Check if the player is within 50 pixels of the laser segment
             if (!isNearby(gameObject, laserSegment, 50)) {
                 continue; // Skip this segment
             }
 
-            // Perform collision detection
-            if (detectCollision(gameObject, laserSegment)) {
-                return true;
+            CollisionInfo collisionInfo = detectCollision(gameObject, laserSegment);
+            if (collisionInfo.isCollided()) {
+                return collisionInfo;
             }
         }
 
-        return false;
+        return new CollisionInfo(false, null);
     }
 
+
     // Helper method to detect collision between a GameObject and a SpriteAnimation
-    private boolean detectCollision(GameObject gameObject, SpriteAnimation spriteAnimation) {
+    private CollisionInfo detectCollision (GameObject gameObject, SpriteAnimation spriteAnimation) {
         // First, check bounding boxes
         Rectangle gameObjectBounds = BoundsCalculator.getGameObjectBounds(gameObject);
         Rectangle spriteBounds = getSpriteBounds(spriteAnimation);
 
         if (gameObjectBounds.intersects(spriteBounds)) {
             // Perform pixel-perfect collision detection
-            return checkPixelCollision(gameObject, spriteAnimation);
+            Point collisionPoint = checkPixelCollision(gameObject, spriteAnimation);
+            if (collisionPoint != null) {
+                return new CollisionInfo(true, collisionPoint);
+            }
         }
 
-        return false;
+        return new CollisionInfo(false, null);
     }
 
     // Private method to check if one GameObject is the owner or creator of another
-    private boolean isOwnerOrCreator(GameObject gameObject1, GameObject gameObject2) {
+    private boolean isOwnerOrCreator (GameObject gameObject1, GameObject gameObject2) {
         return gameObject1.getOwnerOrCreator() != null && gameObject1.getOwnerOrCreator().equals(gameObject2);
     }
 
     // Reusable method for pixel-perfect collision detection
-    private boolean checkPixelCollision(BufferedImage img1, int x1, int y1, BufferedImage img2, int x2, int y2) {
+    private Point checkPixelCollision (BufferedImage img1, int x1, int y1, BufferedImage img2, int x2, int y2) {
         int alphaThreshold = 100;
 
         if (img1 != null && img2 != null) {
@@ -130,18 +122,19 @@ public class CollisionDetector {
                     int pixel2 = img2.getRGB(x - x2, y - y2);
                     int alpha2 = (pixel2 >> 24) & 0xff;
                     if (alpha1 > alphaThreshold && alpha2 > alphaThreshold) {
-                        return true; // Collision detected
+                        // Collision detected at (x, y)
+                        return new Point(x, y);
                     }
                 }
             }
-            return false; // No collision detected
+            return null; // No collision detected
         } else {
-            return false; // One of the images is missing; assume no collision
+            return null; // One of the images is missing; assume no collision
         }
     }
 
     // Refactored pixel-perfect collision between two GameObjects
-    private boolean checkPixelCollision(GameObject gameObject1, GameObject gameObject2) {
+    private Point checkPixelCollision (GameObject gameObject1, GameObject gameObject2) {
         BufferedImage img1 = getGameObjectImage(gameObject1);
         BufferedImage img2 = getGameObjectImage(gameObject2);
 
@@ -155,7 +148,7 @@ public class CollisionDetector {
     }
 
     // Refactored pixel-perfect collision between a GameObject and a SpriteAnimation
-    private boolean checkPixelCollision(GameObject gameObject, SpriteAnimation spriteAnimation) {
+    private Point checkPixelCollision (GameObject gameObject, SpriteAnimation spriteAnimation) {
         BufferedImage gameObjectImage = getGameObjectImage(gameObject);
         BufferedImage spriteImage = spriteAnimation.getCurrentFrameImage(false); // Get rotated image
 
@@ -169,7 +162,7 @@ public class CollisionDetector {
     }
 
     // Helper methods to get GameObject image and coordinates
-    private BufferedImage getGameObjectImage(GameObject gameObject) {
+    private BufferedImage getGameObjectImage (GameObject gameObject) {
         if (gameObject.getAnimation() != null) {
             return gameObject.getAnimation().getCurrentFrameImage(false);
         } else {
@@ -177,16 +170,16 @@ public class CollisionDetector {
         }
     }
 
-    private int getGameObjectXCoordinate(GameObject gameObject) {
+    private int getGameObjectXCoordinate (GameObject gameObject) {
         return gameObject.getAnimation() != null ? gameObject.getAnimation().getXCoordinate() : gameObject.getXCoordinate();
     }
 
-    private int getGameObjectYCoordinate(GameObject gameObject) {
+    private int getGameObjectYCoordinate (GameObject gameObject) {
         return gameObject.getAnimation() != null ? gameObject.getAnimation().getYCoordinate() : gameObject.getYCoordinate();
     }
 
     // Helper method to get the bounds of a SpriteAnimation
-    private Rectangle getSpriteBounds(SpriteAnimation spriteAnimation) {
+    private Rectangle getSpriteBounds (SpriteAnimation spriteAnimation) {
         int x = spriteAnimation.getXCoordinate();
         int y = spriteAnimation.getYCoordinate();
         BufferedImage image = spriteAnimation.getCurrentFrameImage(true); // Get rotated image
@@ -196,7 +189,7 @@ public class CollisionDetector {
     }
 
     // Helper method to check if two GameObjects are nearby
-    public boolean isNearby(GameObject gameObject1, GameObject gameObject2, int rangeThreshold) {
+    public boolean isNearby (GameObject gameObject1, GameObject gameObject2, int rangeThreshold) {
         if (!isWithinBoardBlockThreshold(gameObject1, gameObject2)) {
             return false;
         }
@@ -212,7 +205,7 @@ public class CollisionDetector {
     }
 
     // Helper method to check if a GameObject and SpriteAnimation are nearby
-    private boolean isNearby(GameObject gameObject, SpriteAnimation spriteAnimation, int rangeThreshold) {
+    private boolean isNearby (GameObject gameObject, SpriteAnimation spriteAnimation, int rangeThreshold) {
         int x1 = getGameObjectXCoordinate(gameObject);
         int y1 = getGameObjectYCoordinate(gameObject);
 
@@ -224,7 +217,7 @@ public class CollisionDetector {
     }
 
     // Helper method to check if two GameObjects are within board block threshold
-    private boolean isWithinBoardBlockThreshold(GameObject gameObject1, GameObject gameObject2) {
+    private boolean isWithinBoardBlockThreshold (GameObject gameObject1, GameObject gameObject2) {
         gameObject1.updateBoardBlock();
         gameObject2.updateBoardBlock();
 

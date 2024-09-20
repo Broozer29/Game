@@ -146,50 +146,61 @@ public class LevelManager {
 //        Director testDirector = DirectorManager.getInstance().getTestDirector();
 //        testDirector.spawnRegularFormation(SpawnFormationEnums.V, EnemyEnums.Scout);
 
-//        EnemyEnums enemyType = EnemyEnums.Scout;
-//        Enemy enemy = EnemyCreator.createEnemy(enemyType, 300, 300, Direction.LEFT, enemyType.getDefaultScale()
-//                , enemyType.getMovementSpeed(), enemyType.getMovementSpeed(), MovementPatternSize.SMALL, false);
-////        enemy.getMovementConfiguration().setBoardBlockToHoverIn(4);
-//        enemy.getMovementConfiguration().setPathFinder(new RegularPathFinder());
-////        enemy.getMovementConfiguration().setDestination(new Point(100, 300));
-//        enemy.setAllowedVisualsToRotate(false);
-//        enemy.getMovementConfiguration().setXMovementSpeed(0f);
-//        enemy.getMovementConfiguration().setYMovementSpeed(0f);
-////        enemy.getAnimation().changeImagetype(ImageEnums.Scout);
-//        EnemyManager.getInstance().addEnemy(enemy);
+        EnemyEnums enemyType = EnemyEnums.Scout;
+        Enemy enemy = EnemyCreator.createEnemy(enemyType, 100, 100, Direction.LEFT, enemyType.getDefaultScale()
+                , enemyType.getMovementSpeed(), enemyType.getMovementSpeed(), MovementPatternSize.SMALL, false);
+//        enemy.getMovementConfiguration().setBoardBlockToHoverIn(4);
+        enemy.getMovementConfiguration().setPathFinder(new RegularPathFinder());
+//        enemy.getMovementConfiguration().setDestination(new Point(100, 300));
+        enemy.setAllowedVisualsToRotate(false);
+        enemy.getMovementConfiguration().setXMovementSpeed(0f);
+        enemy.getMovementConfiguration().setYMovementSpeed(0f);
+//        enemy.getAnimation().changeImagetype(ImageEnums.Scout);
+        EnemyManager.getInstance().addEnemy(enemy);
 
         LaserbeamConfiguration config = new LaserbeamConfiguration( 0,0,
-                PlayerManager.getInstance().getSpaceship(), Direction.LEFT_UP, PlayerManager.getInstance().getSpaceship());
+                new Point(200, 200), Direction.RIGHT_DOWN, null,
+                false, 0);
+
+
         Laserbeam laserBeam = new Laserbeam(config);
         MissileManager.getInstance().addLaserBeam(laserBeam);
 
-        config.setDirection(Direction.LEFT_DOWN);
-        Laserbeam laserBeam4 = new Laserbeam(config);
-        MissileManager.getInstance().addLaserBeam(laserBeam4);
-
-        config.setDirection(Direction.RIGHT_UP);
-        Laserbeam laserBeam2 = new Laserbeam(config);
-        MissileManager.getInstance().addLaserBeam(laserBeam2);
-
-        config.setDirection(Direction.RIGHT_DOWN);
-        Laserbeam laserBeam3 = new Laserbeam(config);
-        MissileManager.getInstance().addLaserBeam(laserBeam3);
-
-        config.setDirection(Direction.LEFT);
-        Laserbeam laserBeam5 = new Laserbeam(config);
-        MissileManager.getInstance().addLaserBeam(laserBeam5);
-
-        config.setDirection(Direction.UP);
-        Laserbeam laserBeam6 = new Laserbeam(config);
-        MissileManager.getInstance().addLaserBeam(laserBeam6);
-
-        config.setDirection(Direction.RIGHT);
-        Laserbeam laserBeam7 = new Laserbeam(config);
-        MissileManager.getInstance().addLaserBeam(laserBeam7);
-
-        config.setDirection(Direction.DOWN);
-        Laserbeam laserBeam8 = new Laserbeam(config);
-        MissileManager.getInstance().addLaserBeam(laserBeam8);
+//        config.setOriginPoint(new Point(300, 200));
+//        config.setDirection(Direction.LEFT_DOWN);
+//        Laserbeam laserBeam4 = new Laserbeam(config);
+//        MissileManager.getInstance().addLaserBeam(laserBeam4);
+//
+//        config.setOriginPoint(new Point(400, 200));
+//        config.setDirection(Direction.RIGHT_UP);
+//        Laserbeam laserBeam2 = new Laserbeam(config);
+//        MissileManager.getInstance().addLaserBeam(laserBeam2);
+//
+//        config.setOriginPoint(new Point(500, 200));
+//        config.setDirection(Direction.RIGHT_DOWN);
+//        Laserbeam laserBeam3 = new Laserbeam(config);
+//        MissileManager.getInstance().addLaserBeam(laserBeam3);
+//
+//
+//        config.setOriginPoint(new Point(600, 200));
+//        config.setDirection(Direction.LEFT);
+//        Laserbeam laserBeam5 = new Laserbeam(config);
+//        MissileManager.getInstance().addLaserBeam(laserBeam5);
+//
+//        config.setOriginPoint(new Point(200, 200));
+//        config.setDirection(Direction.UP);
+//        Laserbeam laserBeam6 = new Laserbeam(config);
+//        MissileManager.getInstance().addLaserBeam(laserBeam6);
+//
+//        config.setOriginPoint(new Point(200, 150));
+//        config.setDirection(Direction.RIGHT);
+//        Laserbeam laserBeam7 = new Laserbeam(config);
+//        MissileManager.getInstance().addLaserBeam(laserBeam7);
+//
+//        config.setOriginPoint(new Point(200, 200));
+//        config.setDirection(Direction.DOWN);
+//        Laserbeam laserBeam8 = new Laserbeam(config);
+//        MissileManager.getInstance().addLaserBeam(laserBeam8);
 
     }
 
