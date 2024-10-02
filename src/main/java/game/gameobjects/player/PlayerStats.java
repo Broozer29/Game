@@ -86,6 +86,7 @@ public class PlayerStats {
     private boolean attacksApplyThorns = false;
     private float chanceForThornsToApplyOnHitEffects = 0;
     private float thornsArmorDamageBonusRatio = 0;
+    private float knockBackDamping;
 
     public void initDefaultSettings () {
         piercingMissilesAmount = 0;
@@ -96,6 +97,7 @@ public class PlayerStats {
         attacksApplyThorns = false;
         chanceForThornsToApplyOnHitEffects = 0;
         thornsArmorDamageBonusRatio = 0;
+        setKnockBackDamping(0.85f);
         setThornsDamageRatio(0);
         setDroneDamageRatio(1);
         setDroneDamageBonusRatio(0);
@@ -630,5 +632,13 @@ public class PlayerStats {
 
     public void setThornsArmorDamageBonusRatio (float thornsArmorDamageBonusRatio) {
         this.thornsArmorDamageBonusRatio = thornsArmorDamageBonusRatio;
+    }
+
+    public float getKnockBackDamping () {
+        return knockBackDamping;
+    }
+
+    public void setKnockBackDamping (float knockBackDamping) {
+        this.knockBackDamping = knockBackDamping;
     }
 }

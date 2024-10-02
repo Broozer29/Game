@@ -30,6 +30,8 @@ public class Seeker extends Enemy {
         this.missileTypePathFinders = PathFinderEnums.StraightLine;
         this.damage = 15;
         this.attackSpeed = 5;
+        this.detonateOnCollision = false;
+        this.knockbackStrength = 8;
 //        this.attackSpeed = 1;
     }
 

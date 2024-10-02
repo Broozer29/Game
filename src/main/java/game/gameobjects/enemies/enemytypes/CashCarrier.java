@@ -22,6 +22,8 @@ public class CashCarrier extends Enemy {
         //Gold gain should be 0, as this effect is cosmetic ONLY!
         GainGoldOnDeath goldOnDeathEffect = new GainGoldOnDeath(EffectActivationTypes.OnObjectDeath, EffectIdentifiers.CashCarrierGoldGain, 0);
         this.addEffect(goldOnDeathEffect);
+        this.detonateOnCollision = false;
+        this.knockbackStrength = 8;
     }
 
     public void fireAction(){

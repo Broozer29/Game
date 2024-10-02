@@ -149,19 +149,6 @@ public class SpawningCoordinator {
     }
 
 
-    public int getRandomXBombEnemyCoordinate () {
-        return random.nextInt((downEnemyMaxWidthRange - downEnemyMinWidthRange) + 1) + downEnemyMinWidthRange;
-    }
-
-    //Recently swapped
-    public int getRandomYDownBombEnemyCoordinate () {
-        return random.nextInt((downEnemyMaxHeightRange - downEnemyMinHeightRange) + 1) + downEnemyMinHeightRange;
-    }
-
-    public int getRandomYUpBombEnemyCoordinate () {
-        return 0 - random.nextInt((upEnemyMaxHeightRange - upEnemyMinHeightRange) + 1) + upEnemyMinHeightRange;
-    }
-
     public Direction upOrDown () {
         int randInt = random.nextInt((1 - 0) + 1) + 0;
         switch (randInt) {

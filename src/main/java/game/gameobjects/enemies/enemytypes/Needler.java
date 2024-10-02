@@ -21,6 +21,7 @@ public class Needler extends Enemy {
         this.destructionAnimation.setAnimationScale(this.scale / 1.5f);
         this.damage = 20;
         this.detonateOnCollision = true;
+        this.knockbackStrength = 10;
     }
 
     @Override

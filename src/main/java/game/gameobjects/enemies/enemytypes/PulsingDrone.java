@@ -27,6 +27,8 @@ public class PulsingDrone extends Enemy {
         this.attackSpeed = 5;
         this.chargingUpAttackAnimation.setFrameDelay(5);
         this.chargingUpAttackAnimation.setAnimationScale(1);
+        this.detonateOnCollision = false;
+        this.knockbackStrength = 5;
     }
 
 

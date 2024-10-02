@@ -9,7 +9,7 @@ public class Portal extends GameObject {
 	private boolean spawned = false;
 	
 	public Portal(SpriteAnimationConfiguration spriteAnimationConfiguration){
-		super(spriteAnimationConfiguration, null);
+		super(spriteAnimationConfiguration);
 		this.animation.setOriginCoordinates(spriteAnimationConfiguration.getSpriteConfiguration().getxCoordinate(),
 				spriteAnimationConfiguration.getSpriteConfiguration().getyCoordinate());
 		this.animation.cropAnimation();

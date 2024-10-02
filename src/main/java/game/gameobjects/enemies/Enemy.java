@@ -31,9 +31,10 @@ public class Enemy extends GameObject {
     protected double lastAttackTime = 0.0;
 
     protected boolean detonateOnCollision;
+    protected int knockbackStrength;
 
     public Enemy (SpriteConfiguration spriteConfiguration, EnemyConfiguration enemyConfiguration, MovementConfiguration movementConfiguration) {
-        super(spriteConfiguration, movementConfiguration);
+        super(spriteConfiguration);
         if (movementConfiguration != null) {
             initMovementConfiguration(movementConfiguration);
         }
@@ -42,7 +43,7 @@ public class Enemy extends GameObject {
     }
 
     public Enemy (SpriteAnimationConfiguration spriteAnimationConfigurationion, EnemyConfiguration enemyConfiguration, MovementConfiguration movementConfiguration) {
-        super(spriteAnimationConfigurationion, movementConfiguration);
+        super(spriteAnimationConfigurationion);
         if (movementConfiguration != null) {
             initMovementConfiguration(movementConfiguration);
         }
@@ -241,5 +242,21 @@ public class Enemy extends GameObject {
 
     public void setAttacking (boolean attacking) {
         isAttacking = attacking;
+    }
+
+    public boolean isDetonateOnCollision () {
+        return detonateOnCollision;
+    }
+
+    public void setDetonateOnCollision (boolean detonateOnCollision) {
+        this.detonateOnCollision = detonateOnCollision;
+    }
+
+    public int getKnockbackStrength () {
+        return knockbackStrength;
+    }
+
+    public void setKnockbackStrength (int knockbackStrength) {
+        this.knockbackStrength = knockbackStrength;
     }
 }

@@ -27,7 +27,7 @@ import controllerInput.ConnectedControllers;
 import controllerInput.ControllerInputEnums;
 import game.UI.UIObject;
 import game.gameobjects.GameObject;
-import game.gameobjects.missiles.specialAttacks.Laserbeam;
+import game.gameobjects.missiles.laserbeams.Laserbeam;
 import game.gamestate.GameStatsTracker;
 import game.movement.Direction;
 import game.level.directors.DirectorManager;
@@ -421,17 +421,7 @@ public class GameBoard extends JPanel implements ActionListener {
             drawImage(g, bgObject);
         }
 
-        for (Laserbeam laserbeam : missileManager.getLaserbeams()) {
-            if (laserbeam.getLaserBodies() != null) {
-                for (SpriteAnimation laserbeamBodyAnim : laserbeam.getLaserBodies()) {
-                    drawAnimation(g, laserbeamBodyAnim);
-                }
-            }
 
-            if (laserbeam.getLaserOriginAnimation() != null) {
-                drawAnimation(g, laserbeam.getLaserOriginAnimation());
-            }
-        }
 
         // Draws lower level animations
         for (SpriteAnimation animation : animationManager.getLowerAnimations()) {
@@ -492,6 +482,15 @@ public class GameBoard extends JPanel implements ActionListener {
                     drawImage(g, specialAttack);
                 }
             }
+        }
+
+        for (Laserbeam laserbeam : missileManager.getLaserbeams()) {
+            if (laserbeam.getLaserBodies() != null) {
+                for (SpriteAnimation laserbeamBodyAnim : laserbeam.getLaserBodies()) {
+                    drawAnimation(g, laserbeamBodyAnim);
+                }
+            }
+
         }
 
         for (UIObject obj : uiManager.getInformationCards()) {

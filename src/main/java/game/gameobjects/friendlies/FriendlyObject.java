@@ -11,7 +11,7 @@ public class FriendlyObject extends GameObject {
 
 
     public FriendlyObject (SpriteConfiguration spriteConfiguration, FriendlyObjectConfiguration friendlyConfiguration, MovementConfiguration movementConfiguration) {
-        super(spriteConfiguration, movementConfiguration);
+        super(spriteConfiguration);
         this.friendlyObjectType = friendlyConfiguration.getFriendlyType();
         this.attackSpeed = friendlyConfiguration.getAttackSpeedCooldown();
         this.setFriendly(true);
@@ -23,7 +23,7 @@ public class FriendlyObject extends GameObject {
     }
 
     public FriendlyObject (SpriteAnimationConfiguration spriteAnimationConfiguration, FriendlyObjectConfiguration friendlyConfiguration, MovementConfiguration movementConfiguration) {
-        super(spriteAnimationConfiguration, movementConfiguration);
+        super(spriteAnimationConfiguration);
         this.friendlyObjectType = friendlyConfiguration.getFriendlyType();
         this.attackSpeed = friendlyConfiguration.getAttackSpeedCooldown();
         this.setFriendly(true);

@@ -24,6 +24,7 @@ public class SpawnFourDirectionalDrone implements BossActionable {
     private double lastSpawnedTime = 0;
     private double spawnCooldown = 15;
     private Random random;
+    private int priority = 2;
 
     private SpriteAnimation spawnAnimation;
 
@@ -93,5 +94,14 @@ public class SpawnFourDirectionalDrone implements BossActionable {
         fourDirectionalDrone.getMovementConfiguration().setDestination(point);
         fourDirectionalDrone.setOwnerOrCreator(enemy);
         return fourDirectionalDrone;
+    }
+
+    @Override
+    public int getPriority () {
+        return priority;
+    }
+
+    public void setPriority (int priority) {
+        this.priority = priority;
     }
 }

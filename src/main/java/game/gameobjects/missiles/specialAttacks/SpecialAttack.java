@@ -20,7 +20,7 @@ public class SpecialAttack extends GameObject {
     protected boolean destroysMissiles;
 
     public SpecialAttack (SpriteAnimationConfiguration spriteAnimationConfiguration, SpecialAttackConfiguration specialAttackConfiguration) {
-        super(spriteAnimationConfiguration, null);
+        super(spriteAnimationConfiguration);
         this.damage = specialAttackConfiguration.getDamage();
         this.friendly = specialAttackConfiguration.isFriendly();
         this.allowedToDealDamage = specialAttackConfiguration.isAllowedToDealDamage();

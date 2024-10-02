@@ -23,6 +23,7 @@ public class SpawnShuriken implements BossActionable{
     private double lastSpawnedTime = 0;
     private double spawnCooldown = 10;
     private Random random;
+    private int priority = 2;
 
     private SpriteAnimation spawnAnimation;
 
@@ -101,5 +102,14 @@ public class SpawnShuriken implements BossActionable{
             case 1 -> Direction.LEFT_DOWN;
             default -> Direction.LEFT;
         };
+    }
+
+    @Override
+    public int getPriority () {
+        return priority;
+    }
+
+    public void setPriority (int priority) {
+        this.priority = priority;
     }
 }

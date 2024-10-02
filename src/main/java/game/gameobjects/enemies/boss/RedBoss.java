@@ -13,7 +13,9 @@ import visualobjects.SpriteAnimation;
 import visualobjects.SpriteConfigurations.SpriteAnimationConfiguration;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class RedBoss extends Enemy {
 
@@ -37,8 +39,12 @@ public class RedBoss extends Enemy {
 
         BossActionable bossBehaviour3 = new SpawnFourDirectionalDrone();
         bossBehaviourList.add(bossBehaviour3);
-    }
 
+        bossBehaviourList = bossBehaviourList.stream()
+                .sorted(Comparator.comparingInt(BossActionable::getPriority).reversed())
+                .collect(Collectors.toList());
+
+    }
 
 
     protected void updateChargingAttackAnimationCoordination () {
@@ -50,7 +56,7 @@ public class RedBoss extends Enemy {
     }
 
     @Override
-    public void fireAction() {
+    public void fireAction () {
         if (WithinVisualBoundariesCalculator.isWithinBoundaries(this)) {
             this.allowedToFire = true; // Boss is allowed to fire
         }
@@ -65,6 +71,7 @@ public class RedBoss extends Enemy {
                 return; // If current behavior is still ongoing, stop further actions
             }
         }
+
 
         // If no current behavior is active, find the next behavior to execute
         for (BossActionable bossActionable : bossBehaviourList) {

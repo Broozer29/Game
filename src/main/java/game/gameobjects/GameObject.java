@@ -105,7 +105,7 @@ public class GameObject extends Sprite {
     protected float xpOnDeath = 0;
     protected boolean isACrit = false;
 
-    public GameObject (SpriteConfiguration spriteConfiguration, MovementConfiguration movementConfiguration) {
+    public GameObject (SpriteConfiguration spriteConfiguration) {
         super(spriteConfiguration);
         initGameObject();
         if (spriteConfiguration.getImageType() != null) {
@@ -113,7 +113,7 @@ public class GameObject extends Sprite {
         }
     }
 
-    public GameObject (SpriteAnimationConfiguration spriteAnimationConfiguration, MovementConfiguration movementConfiguration) {
+    public GameObject (SpriteAnimationConfiguration spriteAnimationConfiguration) {
         super(spriteAnimationConfiguration.getSpriteConfiguration());
         this.animation = new SpriteAnimation(spriteAnimationConfiguration);
 //        this.animation.setAnimationScale(spriteAnimationConfiguration.getSpriteConfiguration().getScale());
@@ -139,7 +139,10 @@ public class GameObject extends Sprite {
     protected void initMovementConfiguration (MovementConfiguration movementConfiguration) {
         this.movementRotation = movementConfiguration.getRotation();
         movementConfiguration.setCurrentLocation(currentLocation);
-        movementConfiguration.setDestination(movementConfiguration.getPathFinder().calculateInitialEndpoint(currentLocation, movementRotation, this.friendly));
+
+        if(movementConfiguration.getDestination() == null){
+            movementConfiguration.setDestination(movementConfiguration.getPathFinder().calculateInitialEndpoint(currentLocation, movementRotation, this.friendly));
+        }
         if (movementConfiguration.getPathFinder() instanceof HomingPathFinder) {
             movementConfiguration.setTargetToChase(((HomingPathFinder) movementConfiguration.getPathFinder()).getTarget(this.friendly, this.xCoordinate, this.yCoordinate));
             movementConfiguration.setHasLock(true);

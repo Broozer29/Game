@@ -51,8 +51,17 @@ public class ImageRotator {
     }
 
     public ArrayList<BufferedImage> getRotatedFrames (List<BufferedImage> frames, double angleInDegrees, boolean crop) {
+        String cacheKey = frames.stream()
+                .map(image -> Integer.toString(image.hashCode()))
+                .collect(Collectors.joining("_")) + "_" + angleInDegrees;
+
+        if (rotatedFramesCache.containsKey(cacheKey)) {
+            return rotatedFramesCache.get(cacheKey);
+        }
+
         // Prepare a list to store the adjusted frames, whether rotated or flipped
         ArrayList<BufferedImage> adjustedFrames = new ArrayList<>();
+
 
         // Process each frame using the rotateOrFlip method
         for (BufferedImage frame : frames) {
@@ -61,7 +70,7 @@ public class ImageRotator {
         }
 
         ImageCropper.getInstance().cropFramesToUniformContent(adjustedFrames);
-
+        rotatedFramesCache.put(cacheKey, adjustedFrames);
         // Return the list of adjusted frames
         return adjustedFrames;
     }

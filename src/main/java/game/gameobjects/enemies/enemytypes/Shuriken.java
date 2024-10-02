@@ -32,6 +32,7 @@ public class Shuriken extends Enemy {
         this.deathSound = AudioEnums.Alien_Bomb_Impact;
         this.detonateOnCollision = true;
         this.damage = 40;
+        this.knockbackStrength = 10;
     }
 
 }

@@ -3,13 +3,12 @@ package game.gameobjects.missiles;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import game.gameobjects.missiles.specialAttacks.Laserbeam;
+import game.gameobjects.missiles.laserbeams.Laserbeam;
 import game.gamestate.GameStateInfo;
 import game.gamestate.GameStatsTracker;
 import game.managers.AnimationManager;
 import game.gameobjects.missiles.missiletypes.TazerProjectile;
 import game.gameobjects.player.spaceship.SpaceShip;
-import game.managers.OnScreenTextManager;
 import game.util.collision.CollisionDetector;
 import game.gameobjects.player.PlayerManager;
 import game.gameobjects.enemies.Enemy;
@@ -86,10 +85,14 @@ public class MissileManager {
     private void updateLaserBeams () {
         for (Laserbeam laserbeam : laserbeams) {
             laserbeam.update();
-            CollisionInfo collisionInfo = CollisionDetector.getInstance().detectCollision(PlayerManager.getInstance().getSpaceship(), laserbeam);
+            SpaceShip spaceship = PlayerManager.getInstance().getSpaceship();
+            CollisionInfo collisionInfo = CollisionDetector.getInstance().detectCollision(spaceship, laserbeam);
             if (collisionInfo.isCollided()) {
-                PlayerManager.getInstance().getSpaceship().resetToPreviousPosition();
-                PlayerManager.getInstance().getSpaceship().applyKnockback(collisionInfo, laserbeam.getKnockBackStrength());
+                if(laserbeam.isBlocksMovement()) {
+                    spaceship.resetToPreviousPosition();
+                    spaceship.applyKnockback(collisionInfo, laserbeam.getKnockBackStrength());
+                }
+                spaceship.takeDamage(laserbeam.getDamage());
             }
         }
     }

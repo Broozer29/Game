@@ -75,13 +75,13 @@ public class EnemyManager {
 
             CollisionInfo collisionInfo = CollisionDetector.getInstance().detectCollision(enemy, spaceship);
             if (collisionInfo != null) {
-                if (enemy.detonateOnCollision) {
+                if (enemy.isDetonateOnCollision()) {
                     detonateEnemy(enemy);
                     enemy.dealDamageToGameObject(spaceship);
                 } else {
                     spaceship.takeDamage(5f);
                     spaceship.resetToPreviousPosition();
-                    spaceship.applyKnockback(collisionInfo, 10);
+                    spaceship.applyKnockback(collisionInfo, enemy.getKnockbackStrength());
                 }
             }
         }

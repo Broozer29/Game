@@ -38,6 +38,8 @@ public class Tazer extends Enemy {
         this.attackSpeed = 6f;
         this.damage = 15;
         initDirectionFromRotation();
+        this.detonateOnCollision = false;
+        this.knockbackStrength = 8;
     }
 
 

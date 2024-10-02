@@ -23,7 +23,8 @@ public class ImageDatabase {
     private BufferedImage alienBombImage;
     private List<BufferedImage> laserbeamBody = new ArrayList<BufferedImage>();
     private List<BufferedImage> laserbeamHead = new ArrayList<BufferedImage>();
-
+    private List<BufferedImage> laserbeamStart = new ArrayList<BufferedImage>();
+    private List<BufferedImage> laserbeamEnd = new ArrayList<BufferedImage>();
     private List<BufferedImage> seekerFrames = new ArrayList<BufferedImage>();
     private List<BufferedImage> tazer = new ArrayList<>();
     private List<BufferedImage> energizer = new ArrayList<>();
@@ -35,6 +36,7 @@ public class ImageDatabase {
     private List<BufferedImage> needler = new ArrayList<BufferedImage>();
     private List<BufferedImage> destructableOrbitCenterMissile = new ArrayList<BufferedImage>();
     private List<BufferedImage> shurikenEnemy = new ArrayList<BufferedImage>();
+
 
     // Ship numbers to names:
     /*
@@ -1438,6 +1440,8 @@ public class ImageDatabase {
 
     public List<BufferedImage> getAnimation (ImageEnums imageType) {
         switch (imageType) {
+            case LaserbeamEnd: return laserbeamEnd;
+            case LaserbeamStart: return laserbeamStart;
             case LaserbeamHead: return laserbeamHead;
             case LaserbeamBody: return laserbeamBody;
             case ShurikenEnemy: return shurikenEnemy;
@@ -2234,6 +2238,18 @@ public class ImageDatabase {
             String sourceString = String.format("/images/gif/PNGtoGIF/Laserbeam/Head/%d.png", i);
             BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
             laserbeamHead.add(image);
+        }
+
+        for (int i = 0; i < 4; i++) {
+            String sourceString = String.format("/images/gif/PNGtoGIF/Laserbeam/Start/%d.png", i);
+            BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+            laserbeamStart.add(image);
+        }
+
+        for (int i = 0; i < 4; i++) {
+            String sourceString = String.format("/images/gif/PNGtoGIF/Laserbeam/End/%d.png", i);
+            BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+            laserbeamEnd.add(image);
         }
 
 

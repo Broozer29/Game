@@ -29,6 +29,8 @@ public class Scout extends Enemy {
         this.destructionAnimation.setAnimationScale(this.scale / 1.5f);
         this.attackSpeed = 5;
         this.damage = 10;
+        this.detonateOnCollision = false;
+        this.knockbackStrength = 5;
 
 
         if(this.movementConfiguration.getPathFinder() instanceof HoverPathFinder){

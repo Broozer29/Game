@@ -1,5 +1,8 @@
 package VisualAndAudioData.image;
 
+import game.gameobjects.enemies.enemytypes.Needler;
+import game.gameobjects.enemies.enemytypes.Seeker;
+
 public enum ImageEnums {
 
     //// Menu Buttons
@@ -35,7 +38,7 @@ public enum ImageEnums {
     Seeker_Missile, Tazer_Missile, Energizer_Missile, Bulldozer_Missile, Flamer_Missile, Bomba_Missile,
     Seeker_Missile_Explosion, Tazer_Missile_Explosion, Energizer_Missile_Explosion, Bulldozer_Missile_Explosion,
     Flamer_Missile_Explosion, Bomba_Missile_Explosion, Flamethrower_Animation, Rocket_1, Rocket_1_Explosion, Firespout_Animation,
-    PlasmaLauncherMissile, DestructableOrbitCenterMissile, LaserbeamBody, LaserbeamHead,
+    PlasmaLauncherMissile, DestructableOrbitCenterMissile, LaserbeamBody, LaserbeamHead, LaserbeamStart, LaserbeamEnd,
 
     // Missile Images
     Player_Laserbeam, Alien_Laserbeam, AlienLaserBeamAnimated, LaserBullet,

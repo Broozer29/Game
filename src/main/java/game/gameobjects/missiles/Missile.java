@@ -32,7 +32,7 @@ public class Missile extends GameObject {
 
 
     public Missile (SpriteConfiguration spriteConfiguration, MissileConfiguration missileConfiguration, MovementConfiguration movementConfiguration) {
-        super(spriteConfiguration, movementConfiguration);
+        super(spriteConfiguration);
         initMissile(missileConfiguration);
         if (movementConfiguration != null) {
             initMovementConfiguration(movementConfiguration);
@@ -40,7 +40,7 @@ public class Missile extends GameObject {
     }
 
     public Missile (SpriteAnimationConfiguration spriteAnimationConfiguration, MissileConfiguration missileConfiguration, MovementConfiguration movementConfiguration) {
-        super(spriteAnimationConfiguration, movementConfiguration);
+        super(spriteAnimationConfiguration);
         initMissile(missileConfiguration);
         if (movementConfiguration != null) {
             initMovementConfiguration(movementConfiguration);

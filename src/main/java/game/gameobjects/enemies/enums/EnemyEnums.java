@@ -71,6 +71,11 @@ public enum EnemyEnums {
                          ImageEnums.DestructableOrbitCenterMissile, ImageEnums.Explosion2, 0, EnemyCategory.Summon,  0, 0,
                                  0, 0, 0f, 0.3f, 160, 119, 0),
 
+    LaserOriginDrone(200, 0, false,
+            AudioEnums.Alien_Spaceship_Destroyed, "LaserOriginDrone",
+            ImageEnums.FourDirectionalDrone, ImageEnums.Explosion2, 0, EnemyCategory.Summon,  0, 0,
+            0, 0, 0f, 0.5f, 170, 170, 0),
+
     ;
 
     private final int baseHitPoints;

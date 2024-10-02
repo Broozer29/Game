@@ -1,21 +1,15 @@
 package game.gameobjects.player.spaceship;
 
-import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
+import java.util.*;
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.sound.sampled.UnsupportedAudioFileException;
 
 import controllerInput.ControllerInputEnums;
 import controllerInput.ControllerInputReader;
-import game.gameobjects.missiles.MissileManager;
-import game.gameobjects.missiles.specialAttacks.Laserbeam;
 import game.gamestate.GameStateInfo;
 import game.gamestate.GameStatsTracker;
 import game.items.Item;
@@ -29,7 +23,6 @@ import game.gameobjects.GameObject;
 import game.gameobjects.missiles.specialAttacks.SpecialAttack;
 import game.gameobjects.player.PlayerStats;
 import VisualAndAudioData.image.ImageEnums;
-import game.util.collision.CollisionDetector;
 import game.util.OrbitingObjectsFormatter;
 import game.util.collision.CollisionInfo;
 import visualobjects.SpriteConfigurations.SpriteAnimationConfiguration;
@@ -45,7 +38,7 @@ public class SpaceShip extends GameObject {
     private float accumulatedYCoordinate;
     private boolean overridePlayerControls = false;
     private ArrayList<Point> movementDirectionsToExecute = new ArrayList<>();
-    private final float knockbackDamping = 0.9f;  // How quickly knockback reduces each update
+    private float knockbackDamping = 0.9f;  // How quickly knockback reduces each update
 
     private float currentShieldRegenDelayFrame;
     private boolean controlledByKeyboard = true;
@@ -61,7 +54,7 @@ public class SpaceShip extends GameObject {
     private List<SpecialAttack> playerFollowingSpecialAttacks = new ArrayList<SpecialAttack>();
 
     public SpaceShip (SpriteConfiguration spriteConfiguration) {
-        super(spriteConfiguration, null);
+        super(spriteConfiguration);
         playerStats = PlayerStats.getInstance();
         initShip();
     }
@@ -80,6 +73,7 @@ public class SpaceShip extends GameObject {
         this.playerFollowingSpecialAttacks.clear();
         this.accumulatedYCoordinate = this.yCoordinate;
         this.accumulatedXCoordinate = this.xCoordinate;
+        this.knockbackDamping = playerStats.getKnockBackDamping();
         pressedKeys = new HashSet<>();
         loadImage(playerStats.getSpaceShipImage());
         currentShieldRegenDelayFrame = 0;
@@ -381,7 +375,10 @@ public class SpaceShip extends GameObject {
         knockbackActive = true;
     }
 
+
+    private LinkedList<Point> resetPositions = new LinkedList<>();
     public void resetToPreviousPosition() {
+        // Reset to previous position
         accumulatedXCoordinate = previousAccumulatedX;
         accumulatedYCoordinate = previousAccumulatedY;
         xCoordinate = previousXCoordinate;
@@ -390,7 +387,49 @@ public class SpaceShip extends GameObject {
         // Update bounds and other properties
         bounds.setBounds(xCoordinate + xOffset, yCoordinate + yOffset, width, height);
         this.currentLocation = new Point(this.xCoordinate, this.yCoordinate);
+
+        // Add the new position to resetPositions
+        Point newPosition = new Point(xCoordinate, yCoordinate);
+        resetPositions.add(newPosition);
+
+        // Keep the list size up to 4
+        if (resetPositions.size() > 4) {
+            resetPositions.removeFirst();
+        }
+
+        // Check if we are bouncing between two positions
+        if (resetPositions.size() == 4) {
+            boolean isStuck = resetPositions.get(0).equals(resetPositions.get(1)) &&
+                    resetPositions.get(1).equals(resetPositions.get(2)) &&
+                    resetPositions.get(2).equals(resetPositions.get(3));
+
+            if (isStuck) {
+                // Player is stuck
+                // Move the player to a safe position
+                float addedDirectionX = 6;
+                float addedDirectionY = -3;
+                if(directionx != 0){
+                    addedDirectionX = directionx;
+                }
+                if (directiony != 0){
+                    addedDirectionY = directiony;
+                }
+
+                accumulatedXCoordinate += (addedDirectionX * 3); // Adjust the offset as needed
+                accumulatedYCoordinate += (addedDirectionY * 3);
+                xCoordinate = Math.round(accumulatedXCoordinate);
+                yCoordinate = Math.round(accumulatedYCoordinate);
+
+                // Clear the resetPositions list
+                resetPositions.clear();
+
+                // Update bounds and other properties
+                bounds.setBounds(xCoordinate + xOffset, yCoordinate + yOffset, width, height);
+                this.currentLocation = new Point(this.xCoordinate, this.yCoordinate);
+            }
+        }
     }
+
 
 
 

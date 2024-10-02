@@ -1,4 +1,4 @@
-package game.gameobjects.missiles.specialAttacks;
+package game.gameobjects.missiles.laserbeams;
 
 import game.gameobjects.GameObject;
 import game.movement.Direction;
@@ -10,32 +10,18 @@ public class LaserbeamConfiguration {
     private int yOffset;
 
     private Point originPoint;
+    private Point aimingPoint;
     private GameObject originObject;
+    private GameObject targetToAimAt;
     private Direction direction;
 
     private GameObject owner;
     private boolean blocksMovement;
     private float damage;
+    private int amountOfLaserbeamSegments;
+    private double angleDegrees;
 
-
-    public LaserbeamConfiguration (int xOffset, int yOffset, Point originPoint, Direction direction, GameObject owner, boolean blocksMovement,
-                                   float damage) {
-        this.xOffset = xOffset;
-        this.yOffset = yOffset;
-        this.originPoint = originPoint;
-        this.direction = direction;
-        this.owner = owner;
-        this.blocksMovement = blocksMovement;
-        this.damage = damage;
-    }
-
-    public LaserbeamConfiguration (int xOffset, int yOffset, GameObject originObject, Direction direction, GameObject owner, boolean blocksMovement,
-                                   float damage) {
-        this.xOffset = xOffset;
-        this.yOffset = yOffset;
-        this.originObject = originObject;
-        this.direction = direction;
-        this.owner = owner;
+    public LaserbeamConfiguration(boolean blocksMovement, float damage){
         this.blocksMovement = blocksMovement;
         this.damage = damage;
     }
@@ -102,5 +88,37 @@ public class LaserbeamConfiguration {
 
     public void setDamage (float damage) {
         this.damage = damage;
+    }
+
+    public int getAmountOfLaserbeamSegments () {
+        return amountOfLaserbeamSegments;
+    }
+
+    public void setAmountOfLaserbeamSegments (int amountOfLaserbeamSegments) {
+        this.amountOfLaserbeamSegments = amountOfLaserbeamSegments;
+    }
+
+    public GameObject getTargetToAimAt () {
+        return targetToAimAt;
+    }
+
+    public void setTargetToAimAt (GameObject targetToAimAt) {
+        this.targetToAimAt = targetToAimAt;
+    }
+
+    public Point getAimingPoint () {
+        return aimingPoint;
+    }
+
+    public void setAimingPoint (Point aimingPoint) {
+        this.aimingPoint = aimingPoint;
+    }
+
+    public double getAngleDegrees () {
+        return angleDegrees;
+    }
+
+    public void setAngleDegrees (double angleDegrees) {
+        this.angleDegrees = angleDegrees;
     }
 }

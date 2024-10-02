@@ -24,6 +24,8 @@ public class Flamer extends Enemy {
         this.destructionAnimation = new SpriteAnimation(destroyedExplosionfiguration);
         this.damage = 50;
         this.attackSpeed = 5;
+        this.detonateOnCollision = false;
+        this.knockbackStrength = 8;
     }
 
     public void fireAction () {

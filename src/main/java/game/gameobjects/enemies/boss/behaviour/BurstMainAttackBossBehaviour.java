@@ -28,6 +28,7 @@ public class BurstMainAttackBossBehaviour implements BossActionable {
     private int amountOfShotsPerBurst = 8;
     private double attackCooldown = 3;
 
+    private int priority = 1;
     private SpriteAnimation chargingAttackAnimation = null;
 
 
@@ -176,5 +177,14 @@ public class BurstMainAttackBossBehaviour implements BossActionable {
 
     public void setIntermittenAttackCooldown (double intermittenAttackCooldown) {
         this.intermittenAttackCooldown = intermittenAttackCooldown;
+    }
+
+    @Override
+    public int getPriority () {
+        return priority;
+    }
+
+    public void setPriority (int priority) {
+        this.priority = priority;
     }
 }

@@ -12,6 +12,8 @@ import game.gameobjects.enemies.enums.EnemyEnums;
 import visualobjects.SpriteConfigurations.SpriteAnimationConfiguration;
 import visualobjects.SpriteConfigurations.SpriteConfiguration;
 
+import java.util.ArrayList;
+
 public class EnemyCreator {
 
     public static Enemy createEnemy (EnemyEnums type, int xCoordinate, int yCoordinate, Direction movementDirection, float scale,
@@ -63,7 +65,7 @@ public class EnemyCreator {
     }
 
 
-    private static EnemyConfiguration createEnemyConfiguration (EnemyEnums enemyType,boolean boxCollision) {
+    private static EnemyConfiguration createEnemyConfiguration (EnemyEnums enemyType, boolean boxCollision) {
         int maxHitpoints = enemyType.getBaseHitPoints();
         int maxShields = enemyType.getBaseShieldPoints();
         boolean hasAttack = enemyType.isHasAttack();
@@ -131,5 +133,51 @@ public class EnemyCreator {
 
     private static SpriteAnimationConfiguration upgradeConfig (SpriteConfiguration spriteConfiguration, int frameDelay, boolean infiniteLoop) {
         return new SpriteAnimationConfiguration(spriteConfiguration, frameDelay, infiniteLoop);
+    }
+
+    public static ArrayList<LaserOriginDrone> createLaserOriginDrones(int startingXCoordinate, int startingYCoordinate, int laserBodySegments){
+        ArrayList<LaserOriginDrone> droneList = new ArrayList<>();
+        EnemyConfiguration droneEnemyConfig = createEnemyConfiguration(EnemyEnums.LaserOriginDrone, false);
+
+
+        SpriteConfiguration firstDroneConfig = createLaserDroneSpriteConfig();
+        MovementConfiguration firstDroneMoveConfig = createMovementConfiguration(startingXCoordinate, startingYCoordinate,
+                Direction.LEFT, 1f,1f, MovementPatternSize.SMALL, new DestinationPathFinder());
+        firstDroneMoveConfig.setDestination(new Point(600,400));
+
+        LaserOriginDrone firstDrone = new LaserOriginDrone(firstDroneConfig, droneEnemyConfig, firstDroneMoveConfig);
+        firstDrone.setCenterCoordinates(startingXCoordinate, startingYCoordinate);
+        firstDrone.initLaserbeam(laserBodySegments, Direction.LEFT);
+        firstDrone.setAllowedVisualsToRotate(false);
+        firstDrone.setAllowedToMove(false);
+//        firstDrone.getLaserbeam().update();
+
+//
+//        SpriteAnimation finalBodyPart = firstDrone.getLaserbeam().getLaserBodies().get(firstDrone.getLaserbeam().getLaserBodies().size() - 1);
+//        int secondDroneXCoordinate = finalBodyPart.getXCoordinate() + finalBodyPart.getWidth();
+//        int secondDroneYCoordinate = firstDrone.getYCoordinate();
+//
+//
+//        SpriteConfiguration secondDroneConfig = createLaserDroneSpriteConfig();
+//        MovementConfiguration secondDroneMoveConfig = createMovementConfiguration(secondDroneXCoordinate, secondDroneYCoordinate,
+//                Direction.LEFT, 1f,1f, MovementPatternSize.SMALL, new RegularPathFinder());
+//        LaserOriginDrone secondDrone = new LaserOriginDrone(secondDroneConfig, droneEnemyConfig, secondDroneMoveConfig);
+//        secondDrone.setXCoordinate(secondDroneXCoordinate);
+//        secondDrone.setYCoordinate(secondDroneYCoordinate);
+//
+//        firstDrone.setConnectedDrone(secondDrone);
+
+        droneList.add(firstDrone);
+//        droneList.add(secondDrone);
+
+        return droneList;
+    }
+
+    private static SpriteConfiguration createLaserDroneSpriteConfig (){
+        SpriteConfiguration spriteConfiguration = new SpriteConfiguration();
+        spriteConfiguration.setScale(EnemyEnums.LaserOriginDrone.getDefaultScale());
+        spriteConfiguration.setImageType(EnemyEnums.LaserOriginDrone.getImageType());
+
+        return spriteConfiguration;
     }
 }

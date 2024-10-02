@@ -35,6 +35,8 @@ public class Bomba extends Enemy {
 		this.initDirectionFromRotation();
 		this.damage = 40;
 		this.attackSpeed = 7;
+		this.detonateOnCollision = false;
+		this.knockbackStrength = 8;
 	}
 
 	public void fireAction() {

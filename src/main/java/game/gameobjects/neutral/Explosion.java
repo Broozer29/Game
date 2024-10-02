@@ -14,7 +14,7 @@ public class Explosion extends GameObject {
     private int maxAnimationFramesForDamage;
 
     public Explosion (SpriteAnimationConfiguration spriteAnimationConfiguration, ExplosionConfiguration explosionConfiguration) {
-        super(spriteAnimationConfiguration, null);
+        super(spriteAnimationConfiguration);
         this.friendly = explosionConfiguration.isFriendly();
         this.damage = explosionConfiguration.getDamage();
         this.allowedToDealDamage = explosionConfiguration.isAllowedToDealDamage();

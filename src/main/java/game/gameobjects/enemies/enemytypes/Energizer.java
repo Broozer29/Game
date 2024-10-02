@@ -28,6 +28,8 @@ public class Energizer extends Enemy {
 		this.damage = 15;
 		this.attackSpeed = 7f;
 //		allowedToFire = true;
+		this.detonateOnCollision = false;
+		this.knockbackStrength = 8;
 	}
 
 	@Override

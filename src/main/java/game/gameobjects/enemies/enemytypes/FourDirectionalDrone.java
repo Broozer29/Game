@@ -39,6 +39,8 @@ public class FourDirectionalDrone extends Enemy {
         this.allowedVisualsToRotate = false;
         this.attackSpeed = 0.25f;
         initChargingUpAnimations();
+        this.detonateOnCollision = false;
+        this.knockbackStrength = 5;
     }
 
 

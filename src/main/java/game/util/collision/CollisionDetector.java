@@ -4,9 +4,8 @@ import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 
 import game.gameobjects.GameObject;
-import game.gameobjects.missiles.specialAttacks.Laserbeam;
+import game.gameobjects.missiles.laserbeams.Laserbeam;
 import game.movement.Point;
-import game.util.BoardBlockUpdater;
 import game.util.BoundsCalculator;
 import visualobjects.SpriteAnimation;
 
@@ -52,17 +51,6 @@ public class CollisionDetector {
     public CollisionInfo detectCollision (GameObject gameObject, Laserbeam laserbeam) {
         if (laserbeam.getOwner() != null && laserbeam.getOwner().equals(gameObject)) {
             return new CollisionInfo(false, null);
-        }
-
-        // Optionally, check collision with laser origin animation
-        SpriteAnimation laserOrigin = laserbeam.getLaserOriginAnimation();
-        if (laserOrigin != null) {
-            if (isNearby(gameObject, laserOrigin, 50)) {
-                CollisionInfo collisionInfo = detectCollision(gameObject, laserOrigin);
-                if (collisionInfo.isCollided()) {
-                    return collisionInfo;
-                }
-            }
         }
 
         // Check collision with laser bodies
@@ -182,7 +170,7 @@ public class CollisionDetector {
     private Rectangle getSpriteBounds (SpriteAnimation spriteAnimation) {
         int x = spriteAnimation.getXCoordinate();
         int y = spriteAnimation.getYCoordinate();
-        BufferedImage image = spriteAnimation.getCurrentFrameImage(true); // Get rotated image
+        BufferedImage image = spriteAnimation.getCurrentFrameImage(false); // Get rotated image
         int width = image.getWidth();
         int height = image.getHeight();
         return new Rectangle(x, y, width, height);

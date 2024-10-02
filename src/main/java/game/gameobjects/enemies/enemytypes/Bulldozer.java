@@ -30,6 +30,8 @@ public class Bulldozer extends Enemy {
         SpriteAnimationConfiguration destroyedExplosionfiguration = new SpriteAnimationConfiguration(spriteConfiguration.getSpriteConfiguration(), 3, false);
         destroyedExplosionfiguration.getSpriteConfiguration().setImageType(this.enemyType.getDestructionType());
         this.destructionAnimation = new SpriteAnimation(destroyedExplosionfiguration);
+        this.detonateOnCollision = false;
+        this.knockbackStrength = 8;
 
     }
 
