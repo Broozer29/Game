@@ -29,9 +29,9 @@
 		</dependency>
 
 		<dependency>
-			<groupId>org.lwjgl</groupId>
-			<artifactId>lwjgl-openal</artifactId>
-			<version>3.3.4</version>
+			<groupId>org.openjfx</groupId>
+			<artifactId>javafx-media</artifactId>
+			<version>21.0.2</version>
 		</dependency>
 
 		<dependency>

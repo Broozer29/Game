@@ -59,7 +59,7 @@ public class LevelManager {
         // Check if the song has ended, then create the moving out portal
         if (gameState.getGameState() == GameStatusEnums.Playing) {
             if (levelType == LevelTypes.Regular || levelType == LevelTypes.Special) {
-                if (audioManager.getBackgroundMusic().getFramePosition() >= audioManager.getBackgroundMusic().getFrameLength()) {
+                if (audioManager.getBackgroundMusic().getCurrentTimeInSeconds() >= audioManager.getBackgroundMusic().getCurrentTimeInSeconds()) {
                     gameState.setGameState(GameStatusEnums.Level_Finished);
                 }
             } else if (levelType == LevelTypes.Boss) {
@@ -116,11 +116,11 @@ public class LevelManager {
         gameState.setGameState(GameStatusEnums.Playing);
 
         AudioManager audioManager = AudioManager.getInstance();
-        audioManager.testMode = true;
-        audioManager.muteMode = true;
+//        audioManager.testMode = true;
+//        audioManager.muteMode = true;
 
-//        this.levelType = LevelTypes.Boss;
-//        activateDirectors(this.levelType);
+        this.levelType = LevelTypes.Boss;
+        activateDirectors(this.levelType);
         try {
             activateMusic(this.levelType);
         } catch (UnsupportedAudioFileException | IOException e) {
@@ -150,17 +150,17 @@ public class LevelManager {
 //            drone.setAllowedToMove(false);
 //        }
 
-        EnemyEnums enemyType = EnemyEnums.RedBoss;
-        Enemy enemy = EnemyCreator.createEnemy(enemyType, 400, 200, Direction.LEFT, enemyType.getDefaultScale()
-                , enemyType.getMovementSpeed(), enemyType.getMovementSpeed(), MovementPatternSize.SMALL, false);
-//        enemy.getMovementConfiguration().setBoardBlockToHoverIn(4);
-//        enemy.getMovementConfiguration().setPathFinder(new DestinationPathFinder());
-//        enemy.getMovementConfiguration().setDestination(new Point(100, 99));
-//        enemy.setAllowedVisualsToRotate(false);
-//        enemy.getMovementConfiguration().setXMovementSpeed(1f);
-//        enemy.getMovementConfiguration().setYMovementSpeed(1f);
-//        enemy.getAnimation().changeImagetype(ImageEnums.Scout);
-        EnemyManager.getInstance().addEnemy(enemy);
+//        EnemyEnums enemyType = EnemyEnums.RedBoss;
+//        Enemy enemy = EnemyCreator.createEnemy(enemyType, 400, 200, Direction.LEFT, enemyType.getDefaultScale()
+//                , enemyType.getMovementSpeed(), enemyType.getMovementSpeed(), MovementPatternSize.SMALL, false);
+////        enemy.getMovementConfiguration().setBoardBlockToHoverIn(4);
+////        enemy.getMovementConfiguration().setPathFinder(new DestinationPathFinder());
+////        enemy.getMovementConfiguration().setDestination(new Point(100, 99));
+////        enemy.setAllowedVisualsToRotate(false);
+////        enemy.getMovementConfiguration().setXMovementSpeed(1f);
+////        enemy.getMovementConfiguration().setYMovementSpeed(1f);
+////        enemy.getAnimation().changeImagetype(ImageEnums.Scout);
+//        EnemyManager.getInstance().addEnemy(enemy);
 //
 
     }

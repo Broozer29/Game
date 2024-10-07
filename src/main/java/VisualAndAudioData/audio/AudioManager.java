@@ -37,8 +37,8 @@ public class AudioManager {
         if(backGroundMusic != null){
             backGroundMusic.stopClip();
             backGroundMusic.setLoop(false);
-            backGroundMusic.setFramePosition(0);
-            backGroundMusic.stopClip();
+//            backGroundMusic.setPlaybackPosition(0);
+//            backGroundMusic.stopClip();
         }
         backGroundMusic = null;
         audioDatabase.resetSongs();
@@ -153,8 +153,8 @@ public class AudioManager {
         if (backGroundMusic != null) {
             backGroundMusic.stopClip();
             backGroundMusic.setLoop(false);
-            backGroundMusic.setFramePosition(0);
-            backGroundMusic.stopClip();
+//            backGroundMusic.setPlaybackPosition(0);
+//            backGroundMusic.stopClip();
 //            backGroundMusic = null;
         }
     }

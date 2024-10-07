@@ -2,14 +2,9 @@ package VisualAndAudioData.audio;
 
 import VisualAndAudioData.audio.enums.AudioEnums;
 
-import java.io.IOException;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import java.net.URL;
-
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.Clip;
-import javax.sound.sampled.LineUnavailableException;
-import javax.sound.sampled.UnsupportedAudioFileException;
 
 public class AudioLoader {
 
@@ -23,19 +18,18 @@ public class AudioLoader {
         return instance;
     }
 
-    public Clip getSoundfile (AudioEnums audioFile) throws LineUnavailableException {
-//		System.out.println("Working Directory = " + System.getProperty("user.dir"));
+    // Load the audio file into memory using MediaPlayer for small audio files
+    public MediaPlayer getSoundfile(AudioEnums audioFile) {
         try {
-            Clip clip = AudioSystem.getClip();
             URL url = getClass().getResource(convertAudioToFileString(audioFile));
-//			System.out.println("URL for " + audioFile + ": " + url);
-            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(url);
-            clip.open(audioInputStream);
-            clip.setFramePosition(0);
-            System.out.println("Loading audio file: " + audioFile);
-            return clip;
-
-        } catch (UnsupportedAudioFileException | IOException e) {
+            if (url != null) {
+                Media media = new Media(url.toString());
+                MediaPlayer mediaPlayer = new MediaPlayer(media);
+                mediaPlayer.setAutoPlay(false); // Prevent auto-playing the sound
+                System.out.println("Loading audio file: " + audioFile);
+                return mediaPlayer;
+            }
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return null;

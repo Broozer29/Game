@@ -651,12 +651,12 @@ public class GameBoard extends JPanel implements ActionListener {
     }
 
     private void drawSongProgressBar (Graphics2D g) {
-        long currentMusicFramePosition = 0;
-        long maximumMusicFrames = 1;
+        double currentMusicSeconds = 0;
+        double maximumMusicSeconds = 1;
         // Get the current and maximum frame positions of the background music
         if (AudioManager.getInstance().getBackgroundMusic() != null) {
-            currentMusicFramePosition = AudioManager.getInstance().getBackgroundMusic().getFramePosition();
-            maximumMusicFrames = AudioManager.getInstance().getBackgroundMusic().getFrameLength();
+            currentMusicSeconds = AudioManager.getInstance().getBackgroundMusic().getCurrentTimeInSeconds();
+            maximumMusicSeconds = AudioManager.getInstance().getBackgroundMusic().getClipLengthInSeconds();
         }
 
 
@@ -665,7 +665,7 @@ public class GameBoard extends JPanel implements ActionListener {
         UIObject spaceShipIndicator = uiManager.getProgressBarSpaceShipIndicator();
 
         // Calculate the width of the progress bar filling based on the current position of the song
-        int progressBarWidth = GameUICreator.getInstance().calculateProgressBarFillingWidth(currentMusicFramePosition, maximumMusicFrames);
+        int progressBarWidth = GameUICreator.getInstance().calculateProgressBarFillingWidth(currentMusicSeconds, maximumMusicSeconds);
 
         // Resize the progress bar filling
         progressBarFilling.resizeToDimensions(progressBarWidth, progressBarFilling.getHeight());

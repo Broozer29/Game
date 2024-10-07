@@ -237,8 +237,8 @@ public class GameUICreator {
         return gameOverPeepos.get(gameOverPeepoRandomNumber);
     }
 
-    public int calculateProgressBarFillingWidth(long currentFrame, long maxFrames) {
-        return (int) ((double) currentFrame / maxFrames * (progressBar.getWidth() - 10));
+    public int calculateProgressBarFillingWidth(double currentFrame, double maxFrames) {
+        return (int) (currentFrame / maxFrames * (progressBar.getWidth() - 10));
     }
 
     public int getHealthBarWidth () {

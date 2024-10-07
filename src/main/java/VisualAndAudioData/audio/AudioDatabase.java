@@ -96,62 +96,62 @@ public class AudioDatabase {
     //A reset of background songs that should be called by the AudioManager
     //This should reset all background songs!
     public void resetSongs () {
-        FuriWisdomOfRage.setFramePosition(0);
-        FuriMakeThisRight.setFramePosition(0);
-        FuriMyOnlyChance.setFramePosition(0);
-        DefaultMusic.setFramePosition(0);
-        ayasaTheReasonWhy.setFramePosition(0);
-        NewArcadesSolace.setFramePosition(0);
-        mainmenu.setFramePosition(0);
-        leYouthChills.setFramePosition(0);
-        paintingTheSkies.setFramePosition(0);
+        FuriWisdomOfRage.setPlaybackPosition(0);
+        FuriMakeThisRight.setPlaybackPosition(0);
+        FuriMyOnlyChance.setPlaybackPosition(0);
+        DefaultMusic.setPlaybackPosition(0);
+        ayasaTheReasonWhy.setPlaybackPosition(0);
+        NewArcadesSolace.setPlaybackPosition(0);
+        mainmenu.setPlaybackPosition(0);
+        leYouthChills.setPlaybackPosition(0);
+        paintingTheSkies.setPlaybackPosition(0);
 
-        diqRose.setFramePosition(0);
-        fiveSecondsBeforeSunrise.setFramePosition(0);
-        downtownBinaryAstral.setFramePosition(0);
-        carpenterBrutEnraged.setFramePosition(6048000);
-        carpenterBrutYoureMine.setFramePosition(0);
-        alphaRoomComeBack.setFramePosition(0);
-        carpenterBrutDanger.setFramePosition(0);
-        downtownBinaryFantasia.setFramePosition(0);
-        downtownBinaryLightCycles.setFramePosition(0);
-        marvelGoldenDawn.setFramePosition(0);
-        toneboxMemoryUpload.setFramePosition(0);
-        forhillIris.setFramePosition(0);
-        toneboxRadiumCloudHighway.setFramePosition(0);
-        knightSomethingMemorable.setFramePosition(0);
-        rainFormerlyKnownAsPurple.setFramePosition(0);
-        bloodOnTheDanceFloor.setFramePosition(0);
-        mydnyte.setFramePosition(0);
-        lemminoFireCracker.setFramePosition(0);
-        cannonsFireForYou.setFramePosition(0);
-        embrzRainOnMyWindow.setFramePosition(0);
-        deadmau5Monophobia.setFramePosition(0);
-        embrzLightFalls.setFramePosition(0);
-        johnyTheme.setFramePosition(0);
-        viqGirlFromNowhere.setFramePosition(0);
-        spaceSailorsCosmos.setFramePosition(0);
-        newArcadesSevered.setFramePosition(0);
-        arksunArisen.setFramePosition(0);
-        ghostDataGodsOfTheArtificial.setFramePosition(0);
-        ghostDataDarkHarvest.setFramePosition(0);
-        blackGummySuperHuman.setFramePosition(0);
-        madukAlone.setFramePosition(0);
+        diqRose.setPlaybackPosition(0);
+        fiveSecondsBeforeSunrise.setPlaybackPosition(0);
+        downtownBinaryAstral.setPlaybackPosition(0);
+        carpenterBrutEnraged.setPlaybackPosition(6048000);
+        carpenterBrutYoureMine.setPlaybackPosition(0);
+        alphaRoomComeBack.setPlaybackPosition(0);
+        carpenterBrutDanger.setPlaybackPosition(0);
+        downtownBinaryFantasia.setPlaybackPosition(0);
+        downtownBinaryLightCycles.setPlaybackPosition(0);
+        marvelGoldenDawn.setPlaybackPosition(0);
+        toneboxMemoryUpload.setPlaybackPosition(0);
+        forhillIris.setPlaybackPosition(0);
+        toneboxRadiumCloudHighway.setPlaybackPosition(0);
+        knightSomethingMemorable.setPlaybackPosition(0);
+        rainFormerlyKnownAsPurple.setPlaybackPosition(0);
+        bloodOnTheDanceFloor.setPlaybackPosition(0);
+        mydnyte.setPlaybackPosition(0);
+        lemminoFireCracker.setPlaybackPosition(0);
+        cannonsFireForYou.setPlaybackPosition(0);
+        embrzRainOnMyWindow.setPlaybackPosition(0);
+        deadmau5Monophobia.setPlaybackPosition(0);
+        embrzLightFalls.setPlaybackPosition(0);
+        johnyTheme.setPlaybackPosition(0);
+        viqGirlFromNowhere.setPlaybackPosition(0);
+        spaceSailorsCosmos.setPlaybackPosition(0);
+        newArcadesSevered.setPlaybackPosition(0);
+        arksunArisen.setPlaybackPosition(0);
+        ghostDataGodsOfTheArtificial.setPlaybackPosition(0);
+        ghostDataDarkHarvest.setPlaybackPosition(0);
+        blackGummySuperHuman.setPlaybackPosition(0);
+        madukAlone.setPlaybackPosition(0);
 
 
         for (int i = 0; i < clipListSize; i++) {
-            defaultEMPClipList.get(i).setFramePosition(0);
-            alienBombImpactList.get(i).setFramePosition(0);
-            laserBeamClipList.get(i).setFramePosition(0);
-            destroyedExplosionClipList.get(i).setFramePosition(0);
-            alienSpaceshipDestroyedClipList.get(i).setFramePosition(0);
-            largeShipDestroyedClipList.get(i).setFramePosition(0);
-            powerUpAcquiredClipList.get(i).setFramePosition(0);
-            rocketLauncherClipList.get(i).setFramePosition(0);
-            flamethrowerClipList.get(i).setFramePosition(0);
-            firewallClipList.get(i).setFramePosition(0);
-            notEnoughMineralsClipList.get(i).setFramePosition(0);
-            chargingLaserbeamClipList.get(i).setFramePosition(0);
+            defaultEMPClipList.get(i).setPlaybackPosition(0);
+            alienBombImpactList.get(i).setPlaybackPosition(0);
+            laserBeamClipList.get(i).setPlaybackPosition(0);
+            destroyedExplosionClipList.get(i).setPlaybackPosition(0);
+            alienSpaceshipDestroyedClipList.get(i).setPlaybackPosition(0);
+            largeShipDestroyedClipList.get(i).setPlaybackPosition(0);
+            powerUpAcquiredClipList.get(i).setPlaybackPosition(0);
+            rocketLauncherClipList.get(i).setPlaybackPosition(0);
+            flamethrowerClipList.get(i).setPlaybackPosition(0);
+            firewallClipList.get(i).setPlaybackPosition(0);
+            notEnoughMineralsClipList.get(i).setPlaybackPosition(0);
+            chargingLaserbeamClipList.get(i).setPlaybackPosition(0);
         }
     }
 
@@ -173,19 +173,25 @@ public class AudioDatabase {
 
     private void resetClips () {
         for (int i = 0; i < allActiveClips.size(); i++) {
+            if(allActiveClips.get(i).getAudioType().equals(AudioEnums.Player_Laserbeam)){
+                if(allActiveClips.get(i).getClipLengthInSeconds() == allActiveClips.get(i).getCurrentTimeInSeconds()){
+                    System.out.println("break");
+                }
+            }
+
             if (clipsWithThresholds.contains(allActiveClips.get(i).getAudioType())
-                    && !allActiveClips.get(i).isActive()) {
+                    && allActiveClips.get(i).isFinished()) {
                 if (allActiveClips.get(i).aboveThreshold()) {
-                    allActiveClips.get(i).setFramePosition(0);
+                    allActiveClips.get(i).setPlaybackPosition(0);
                     allActiveClips.get(i).stopClip();
                     allActiveClips.remove(allActiveClips.get(i));
                 }
-            } else if (!allActiveClips.get(i).isActive()) {
+            }
+            else if (allActiveClips.get(i).isFinished()) {
+                allActiveClips.get(i).setPlaybackPosition(0);
                 allActiveClips.get(i).stopClip();
-                allActiveClips.get(i).setFramePosition(0);
                 allActiveClips.remove(allActiveClips.get(i));
             }
-
         }
     }
 
