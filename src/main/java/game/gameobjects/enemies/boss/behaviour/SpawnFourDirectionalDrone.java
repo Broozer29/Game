@@ -24,7 +24,7 @@ public class SpawnFourDirectionalDrone implements BossActionable {
     private double lastSpawnedTime = 0;
     private double spawnCooldown = 15;
     private Random random;
-    private int priority = 2;
+    private int priority = 3;
 
     private SpriteAnimation spawnAnimation;
 
@@ -82,7 +82,7 @@ public class SpawnFourDirectionalDrone implements BossActionable {
             random = new Random();
         }
 
-        return random.nextInt(2, 6);
+        return random.nextInt(2, 5);
     }
 
     private Enemy createFourDirectionalDrone(Enemy enemy){
@@ -103,5 +103,12 @@ public class SpawnFourDirectionalDrone implements BossActionable {
 
     public void setPriority (int priority) {
         this.priority = priority;
+    }
+
+    @Override
+    public boolean isAvailable (Enemy enemy) {
+        return enemy.isAllowedToFire()
+                && GameStateInfo.getInstance().getGameSeconds() >= lastSpawnedTime + spawnCooldown
+                && WithinVisualBoundariesCalculator.isWithinBoundaries(enemy);
     }
 }

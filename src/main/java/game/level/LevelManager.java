@@ -119,7 +119,7 @@ public class LevelManager {
         audioManager.testMode = true;
         audioManager.muteMode = true;
 
-
+//        this.levelType = LevelTypes.Boss;
 //        activateDirectors(this.levelType);
         try {
             activateMusic(this.levelType);
@@ -151,7 +151,7 @@ public class LevelManager {
 //        }
 
         EnemyEnums enemyType = EnemyEnums.RedBoss;
-        Enemy enemy = EnemyCreator.createEnemy(enemyType, 100, 100, Direction.LEFT, enemyType.getDefaultScale()
+        Enemy enemy = EnemyCreator.createEnemy(enemyType, 400, 200, Direction.LEFT, enemyType.getDefaultScale()
                 , enemyType.getMovementSpeed(), enemyType.getMovementSpeed(), MovementPatternSize.SMALL, false);
 //        enemy.getMovementConfiguration().setBoardBlockToHoverIn(4);
 //        enemy.getMovementConfiguration().setPathFinder(new DestinationPathFinder());

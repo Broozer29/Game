@@ -52,7 +52,7 @@ public class ItemDescriptionRetriever {
                 return "Every 5th attack applies an instantaneous explosion for 150% (+150%) damage";
             }
             case PlasmaLauncher -> {
-                return "10% Chance on hitting an enemy to fire a homing plasma shot dealing 300% (+300%) damage";
+                return "10% Chance on hitting an enemy to fire a plasma shot towards the closest enemy dealing 300% (+300%) damage";
             }
             case GuardianDrone -> {
                 return "Gain 1 (+1) invincible drone at the start of the round. The drone deals 100% damage";

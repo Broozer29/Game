@@ -79,7 +79,7 @@ public class EnemyManager {
                     detonateEnemy(enemy);
                     enemy.dealDamageToGameObject(spaceship);
                 } else {
-                    spaceship.takeDamage(5f);
+                    spaceship.takeDamage(2.5f);
                     spaceship.resetToPreviousPosition();
                     spaceship.applyKnockback(collisionInfo, enemy.getKnockbackStrength());
                 }

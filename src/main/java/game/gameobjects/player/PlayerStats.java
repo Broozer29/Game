@@ -105,9 +105,9 @@ public class PlayerStats {
         dronePathFinder = PathFinderEnums.Regular;
 
         // Health
-        setMaxHitPoints(100);
+        setMaxHitPoints(50);
         setMaxShieldMultiplier(1.0f);
-        setMaxShieldHitPoints(100);
+        setMaxShieldHitPoints(50);
         setShieldRegenDelay(300);
         setOverloadedShieldDiminishAmount(0.5f);
 

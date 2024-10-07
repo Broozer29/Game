@@ -179,7 +179,10 @@ public class Director {
         float yMovementSpeed = enemyType.getMovementSpeed();
 
         // Call LevelManager's spawnEnemy method
-        LevelManager.getInstance().spawnEnemy(0, 0, enemyType, direction, scale, true, xMovementSpeed, yMovementSpeed, false);
+        LevelManager.getInstance().spawnEnemy(
+                DataClass.getInstance().getWindowWidth() + Math.round(enemyType.getBaseWidth() * scale),
+                DataClass.getInstance().getWindowHeight() / 2 - Math.round((enemyType.getBaseHeight() * scale) / 2),
+                enemyType, direction, scale, false, xMovementSpeed, yMovementSpeed, false);
     }
 
     public void spawnRegularFormation(SpawnFormationEnums formationType, EnemyEnums enemyType) {

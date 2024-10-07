@@ -23,7 +23,7 @@ public class CustomAudioClip {
     private long totalBytesRead = 0;
     private long totalFramesInStream = 0;
 
-    public CustomAudioClip(AudioEnums clipType, boolean loop) {
+    public CustomAudioClip (AudioEnums clipType, boolean loop) {
         this.clipType = clipType;
         this.loop = loop;
         this.isStream = clipType.shouldBeStreamed(); // Check if this should be a stream
@@ -33,8 +33,8 @@ public class CustomAudioClip {
         }
     }
 
-    private void initClip() {
-        if(!isStream) {
+    private void initClip () {
+        if (!isStream) {
             try {
                 clip = audioLoader.getSoundfile(clipType);
             } catch (LineUnavailableException e) {
@@ -44,7 +44,7 @@ public class CustomAudioClip {
     }
 
 
-    public int getFrameLength() {
+    public int getFrameLength () {
         if (isStream) {
             if (audioStream == null) {
                 // If the stream is not ready, return -1 or another default value
@@ -56,7 +56,7 @@ public class CustomAudioClip {
         return clip.getFrameLength();
     }
 
-    public long getFramePosition() {
+    public long getFramePosition () {
         if (isStream) {
             if (audioStream == null || audioLine == null) {
                 // If the stream is not ready yet, return 0 or another default value
@@ -70,7 +70,7 @@ public class CustomAudioClip {
     }
 
 
-    public boolean aboveThreshold() {
+    public boolean aboveThreshold () {
         if (isStream) {
             return false; // Streams might not use this functionality
         }
@@ -84,18 +84,21 @@ public class CustomAudioClip {
         }
     }
 
-    public void stopClip() {
+    public void stopClip () {
         if (isStream) {
-            if (audioLine != null && audioLine.isRunning()) {
+            if (audioLine != null) {
                 audioLine.stop();
                 audioLine.close();
             }
-        } else {
+        }
+
+        else {
+            this.clip.loop(0);
             this.clip.stop();
         }
     }
 
-    public void startClip() {
+    public void startClip () {
         if (isStream) {
             playAudioStream(clipType); // Handle streaming
         } else {
@@ -107,7 +110,7 @@ public class CustomAudioClip {
         }
     }
 
-    public void muteAudioClip() {
+    public void muteAudioClip () {
         if (isStream) {
             // Mute logic for streaming, if necessary
             if (audioLine != null && audioLine.isControlSupported(FloatControl.Type.MASTER_GAIN)) {
@@ -120,7 +123,7 @@ public class CustomAudioClip {
         }
     }
 
-    private void adjustVolume() {
+    private void adjustVolume () {
         if (isStream) {
             if (audioLine != null && audioLine.isControlSupported(FloatControl.Type.MASTER_GAIN)) {
                 FloatControl volume = (FloatControl) audioLine.getControl(FloatControl.Type.MASTER_GAIN);
@@ -130,7 +133,7 @@ public class CustomAudioClip {
             FloatControl volume = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
             switch (clipType) {
                 case Player_Laserbeam:
-                    volume.setValue(-9);
+                    volume.setValue(-12);
                     break;
                 case Large_Ship_Destroyed:
                     volume.setValue(-4);
@@ -154,7 +157,7 @@ public class CustomAudioClip {
         }
     }
 
-    public void playAudioStream(AudioEnums clipType) {
+    public void playAudioStream (AudioEnums clipType) {
         executor.submit(() -> {
             try {
                 // Use getResourceAsStream to load the file from the classpath
@@ -194,22 +197,21 @@ public class CustomAudioClip {
     }
 
 
-
-    public boolean isRunning() {
+    public boolean isRunning () {
         if (isStream) {
             return audioLine != null && audioLine.isRunning();
         }
         return this.clip.isRunning();
     }
 
-    public boolean isActive() {
+    public boolean isActive () {
         if (isStream) {
             return audioLine != null && audioLine.isActive();
         }
         return this.clip.isActive();
     }
 
-    public void closeclip() {
+    public void closeclip () {
         if (isStream) {
             if (audioLine != null) {
                 audioLine.close();
@@ -227,21 +229,21 @@ public class CustomAudioClip {
         }
     }
 
-    public boolean isLoop() {
+    public boolean isLoop () {
         return loop;
     }
 
-    public void setLoop(boolean loop) {
+    public void setLoop (boolean loop) {
         this.loop = loop;
     }
 
-    public void setFramePosition(int framePosition) {
+    public void setFramePosition (int framePosition) {
         if (!isStream) {
             this.clip.setFramePosition(framePosition);
         }
     }
 
-    public AudioEnums getAudioType() {
+    public AudioEnums getAudioType () {
         return this.clipType;
     }
 }

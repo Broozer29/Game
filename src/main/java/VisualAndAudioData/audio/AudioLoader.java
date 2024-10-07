@@ -153,6 +153,10 @@ public class AudioLoader {
                 return "/audio/Not Enough Minerals.wav";
             case KingPalmRunway:
                 return "/audio/music/KING PALM - Runway.wav";
+            case ChargingLaserbeam:
+                return "/audio/Laserbeam Charging.wav";
+            case SilentAudio:
+                return "/audio/silence.wav";
             case VendlaSonrisa:return "/audio/music/Vendla - Sonrisa (Royalty Free Music).wav";
             case ApproachingNirvanaNoStringsAttached: return "/audio/music/Approaching Nirvana - No Strings Attached (Edit).wav";
             case ApproachingNirvanaThousandPictures: return "/audio/music/Approaching Nirvana - Worth a Thousand Pictures.wav";

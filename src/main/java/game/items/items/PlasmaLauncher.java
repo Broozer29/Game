@@ -2,17 +2,21 @@ package game.items.items;
 
 import VisualAndAudioData.audio.enums.AudioEnums;
 import VisualAndAudioData.image.ImageEnums;
+import game.gameobjects.enemies.Enemy;
+import game.gameobjects.enemies.EnemyManager;
 import game.items.Item;
 import game.items.enums.ItemApplicationEnum;
 import game.items.enums.ItemEnums;
 import game.movement.Direction;
 import game.movement.MovementConfiguration;
 import game.movement.MovementPatternSize;
+import game.movement.Point;
 import game.movement.pathfinders.HomingPathFinder;
 import game.gameobjects.GameObject;
 import game.gameobjects.missiles.*;
 import game.gameobjects.player.PlayerManager;
 import game.gameobjects.player.PlayerStats;
+import game.movement.pathfinders.StraightLinePathFinder;
 import visualobjects.SpriteConfigurations.SpriteConfiguration;
 
 import java.util.Random;
@@ -57,23 +61,36 @@ public class PlasmaLauncher extends Item {
         spriteConfiguration.setImageType(ImageEnums.PlasmaLauncherMissile);
         spriteConfiguration.setScale(0.6f);
 
-        int xMovementSpeed = 3;
-        int yMovementSpeed = 3;
+        int xMovementSpeed = 6;
+        int yMovementSpeed = 6;
         Direction rotation = Direction.RIGHT;
         MovementPatternSize movementPatternSize = MovementPatternSize.SMALL;
-        HomingPathFinder pathFinder = new HomingPathFinder();
+        StraightLinePathFinder pathFinder = new StraightLinePathFinder();
         MovementConfiguration movementConfiguration = MissileCreator.getInstance().createMissileMovementConfig(
                 xMovementSpeed, yMovementSpeed, pathFinder, movementPatternSize, rotation
         );
         movementConfiguration.initDefaultSettingsForSpecializedPathFinders();
 
         boolean isFriendly = true;
-        movementConfiguration.setTargetToChase(pathFinder.getTarget(isFriendly, spriteConfiguration.getxCoordinate(), spriteConfiguration.getyCoordinate()));
+        Enemy target = EnemyManager.getInstance().getClosestEnemy(player.getCenterXCoordinate(), player.getCenterYCoordinate());
+
+        movementConfiguration.setDestination(
+                new Point(
+                        target.getCenterXCoordinate(),
+                        target.getCenterYCoordinate()
+                ));
 
 
         MissileConfiguration missileConfiguration = getMissileConfiguration(isFriendly);
 
         Missile missile = MissileCreator.getInstance().createMissile(spriteConfiguration, missileConfiguration, movementConfiguration);
+        missile.resetMovementPath();
+        missile.getMovementConfiguration().setDestination(
+                new Point(
+                        target.getCenterXCoordinate() - (missile.getWidth() / 2),
+                        target.getCenterYCoordinate() - (missile.getHeight() / 2)
+                ));
+
         missile.setOwnerOrCreator(player);
         missile.setAllowedVisualsToRotate(false);
         missile.getAnimation().setAnimationScale(0.6f);

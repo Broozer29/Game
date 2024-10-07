@@ -94,7 +94,12 @@ public class MissileManager {
                 }
                 spaceship.takeDamage(laserbeam.getDamage());
             }
+
+            if(!laserbeam.isVisible()){
+                laserbeams.remove(laserbeam);
+            }
         }
+
     }
 
     private void removeInvisibleProjectiles () {

@@ -19,6 +19,7 @@ public abstract class Laserbeam {
 
     protected ArrayList<SpriteAnimation> laserBodies = new ArrayList<>(); // List of laser body animations
 
+    protected float knockbackStrength;
     protected Point originPoint;
     protected GameObject originObject;
 
@@ -30,7 +31,7 @@ public abstract class Laserbeam {
     protected static int screenHeight = DataClass.getInstance().getWindowHeight();
     protected static int padding = 50; // Used to ensure that the laserbeam goes beyond the screen window
     public static int bodyWidth = 64;
-
+    protected boolean visible;
     protected int xOffset;
     protected int yOffset;
     protected GameObject owner;
@@ -42,9 +43,12 @@ public abstract class Laserbeam {
     protected boolean needsUpdate = true; // Flag to control when to update
 
     public Laserbeam(LaserbeamConfiguration laserbeamConfiguration) {
+        this.knockbackStrength = 10;
+        this.visible = true;
         this.xOffset = laserbeamConfiguration.getxOffset();
         this.yOffset = laserbeamConfiguration.getyOffset();
         this.damage = laserbeamConfiguration.getDamage();
+        this.blocksMovement = laserbeamConfiguration.isBlocksMovement();
 
         if (laserbeamConfiguration.getOriginObject() != null) {
             this.originObject = laserbeamConfiguration.getOriginObject();
@@ -145,6 +149,7 @@ public abstract class Laserbeam {
     }
 
     public void setVisible(boolean visible) {
+        this.visible = visible;
         if (!visible) {
             for (SpriteAnimation animation : laserBodies) {
                 animation.setVisible(false);
@@ -184,7 +189,11 @@ public abstract class Laserbeam {
     }
 
     public float getKnockBackStrength() {
-        return 10;
+        return this.knockbackStrength;
+    }
+
+    public void setKnockbackStrength (float knockbackStrength) {
+        this.knockbackStrength = knockbackStrength;
     }
 
     public boolean isBlocksMovement() {
@@ -209,6 +218,7 @@ public abstract class Laserbeam {
 
     public void setAngleDegrees (double angleDegrees) {
         this.angleDegrees = angleDegrees;
+        angleRadians = Math.toRadians(angleDegrees);
     }
 
     public double getAngleRadians () {
@@ -217,5 +227,9 @@ public abstract class Laserbeam {
 
     public void setAngleRadians (double angleRadians) {
         this.angleRadians = angleRadians;
+    }
+
+    public boolean isVisible () {
+        return visible;
     }
 }

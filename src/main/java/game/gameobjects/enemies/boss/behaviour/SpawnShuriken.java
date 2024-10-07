@@ -21,7 +21,7 @@ import java.util.Random;
 
 public class SpawnShuriken implements BossActionable{
     private double lastSpawnedTime = 0;
-    private double spawnCooldown = 10;
+    private double spawnCooldown = 14;
     private Random random;
     private int priority = 2;
 
@@ -69,9 +69,9 @@ public class SpawnShuriken implements BossActionable{
 
         SpriteAnimationConfiguration spriteAnimationConfiguration = new SpriteAnimationConfiguration(spriteConfiguration, 1, false);
         spawnAnimation = new SpriteAnimation(spriteAnimationConfiguration);
-        spawnAnimation.setAnimationScale(0.4f);
+        spawnAnimation.setAnimationScale(0.5f);
         spawnAnimation.setCenterCoordinates(enemy.getXCoordinate(), enemy.getCenterYCoordinate());
-        spawnAnimation.addXOffset(-10);
+        spawnAnimation.addXOffset(Math.round(spawnAnimation.getWidth() * 0.1f));
     }
 
     private void updateSpawnAnimationLocation (Enemy enemy) {
@@ -111,5 +111,12 @@ public class SpawnShuriken implements BossActionable{
 
     public void setPriority (int priority) {
         this.priority = priority;
+    }
+
+    @Override
+    public boolean isAvailable (Enemy enemy) {
+        return enemy.isAllowedToFire()
+                && GameStateInfo.getInstance().getGameSeconds() >= lastSpawnedTime + spawnCooldown
+                && WithinVisualBoundariesCalculator.isWithinBoundaries(enemy);
     }
 }

@@ -50,7 +50,7 @@ public class BoardManager extends JFrame {
 	}
 
 	private void playShopMenuMusic(){
-		if (audioManager.getBackgroundMusic() == null || audioManager.getBackgroundMusic().getAudioType() != AudioEnums.Lemmino_Firecracker) {
+		if (audioManager.getBackgroundMusic() == null || audioManager.getBackgroundMusic().getAudioType().equals(AudioEnums.Lemmino_Firecracker)) {
 			audioManager.stopMusicAudio();
 //			System.out.println("Muted background music");
 			try {

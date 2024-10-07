@@ -26,7 +26,7 @@ public class BurstMainAttackBossBehaviour implements BossActionable {
     private double intermittenAttackCooldown = 0.25f;
     private int burstShotsFired = 0; // Track the number of shots fired in the burst
     private int amountOfShotsPerBurst = 8;
-    private double attackCooldown = 3;
+    private double attackCooldown = 2.5;
 
     private int priority = 1;
     private SpriteAnimation chargingAttackAnimation = null;
@@ -135,7 +135,7 @@ public class BurstMainAttackBossBehaviour implements BossActionable {
         SpaceShip spaceship = PlayerManager.getInstance().getSpaceship();
         Point rotationCoordinates = new Point(
                 spaceship.getCenterXCoordinate() - missile.getWidth() / 2,
-                spaceship.getCenterYCoordinate() - missile.getHeight() / 2
+                spaceship.getCenterYCoordinate() - missile.getHeight() / 2 + 4
         );
 
         // Any visual resizing BEFORE replacing starting coordinates and rotation
@@ -186,5 +186,12 @@ public class BurstMainAttackBossBehaviour implements BossActionable {
 
     public void setPriority (int priority) {
         this.priority = priority;
+    }
+
+    @Override
+    public boolean isAvailable (Enemy enemy) {
+        return enemy.isAllowedToFire()
+                && GameStateInfo.getInstance().getGameSeconds() >= lastAttackTime + attackCooldown
+                && WithinVisualBoundariesCalculator.isWithinBoundaries(enemy);
     }
 }

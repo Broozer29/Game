@@ -98,38 +98,48 @@ public class DamageOverTime implements EffectInterface {
         }
     }
 
-    private void applyRandomOffset (GameObject target) {
+    private void applyRandomOffset(GameObject target) {
+        // Reset any previous offsets
         animation.resetOffset();
 
         Random random = new Random();
-        // Get the animation dimensions and enemy dimensions
+
+        // Get animation dimensions and target (enemy) dimensions
         int animationWidth = this.animation.getWidth();
         int animationHeight = this.animation.getHeight();
         int enemyWidth = target.getWidth();
         int enemyHeight = target.getHeight();
 
-        // Center animation on the enemy first
+        // Center the animation on the enemy first
         int animationCenterX = target.getCenterXCoordinate();
         int animationCenterY = target.getCenterYCoordinate();
-
         animation.setCenterCoordinates(animationCenterX, animationCenterY);
 
-        // Calculate max X offset to ensure animation stays within the enemy's width
-        int maxXOffset = (int) Math.round((enemyWidth * 0.8) - animationWidth / 2);
-        int xOffset = (maxXOffset > 0) ? random.nextInt(maxXOffset * 2 + 1) - maxXOffset : 0;
+        // Determine the 50/50 chance for offset direction (increase or decrease)
+        boolean increaseXOffset = random.nextBoolean();
+        boolean increaseYOffset = random.nextBoolean();
 
-        // For Y, allow animation's origin to potentially start from below the enemy's base
-        int minYOffset = (int) (enemyHeight * 0.65);  // Start from 45% of the enemy's height for the base of the animation
+        // Calculate the maximum possible offsets based on 25% of the enemy's dimensions
+        int maxXOffset = (int) (enemyWidth * 0.25); // 25% of the enemy's width
+        int maxYOffset = (int) (enemyHeight * 0.25); // 25% of the enemy's height
 
-        // Adjust the range above this base point where the animation can extend, slightly reducing it
-        int maxYOffset = minYOffset + (int) (animationHeight * 0.25);  // Extend the bottom of the animation slightly less beyond the base
+        // Determine the actual offsets (random amount within the allowed range)
+        int xOffset = random.nextInt(maxXOffset + 1); // Random value between 0 and maxXOffset
+        int yOffset = random.nextInt(maxYOffset + 1); // Random value between 0 and maxYOffset
 
-        int yOffset = minYOffset + random.nextInt(maxYOffset + 1) - animationHeight;
+        // Adjust offsets based on the increase/decrease direction
+        if (!increaseXOffset) {
+            xOffset = -xOffset; // Decrease the X offset if false
+        }
+        if (!increaseYOffset) {
+            yOffset = -yOffset; // Decrease the Y offset if false
+        }
 
-        // Apply the calculated offsets to the animation's coordinates
+        // Apply the calculated offsets to the animation's position
         animation.addXOffset(xOffset);
         animation.addYOffset(yOffset);
     }
+
 
 
     @Override

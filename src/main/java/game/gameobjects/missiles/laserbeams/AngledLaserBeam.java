@@ -15,6 +15,9 @@ public class AngledLaserBeam extends Laserbeam {
 
     @Override
     public void update() {
+        if(this.laserBodies.isEmpty()){
+            return;
+        }
         int frameAmount = this.laserBodies.get(0).getCurrentFrame();
         for(SpriteAnimation animation : this.laserBodies){
             animation.setCurrentFrame(frameAmount);
@@ -53,7 +56,7 @@ public class AngledLaserBeam extends Laserbeam {
             segment.setYCoordinate((int) y);
 
             // Only need to rotate once since angle doesn't change
-            if (needsUpdate && i == 0) {
+            if (needsUpdate) {
                 segment.rotateAnimation(angleDegrees, false);
             }
 

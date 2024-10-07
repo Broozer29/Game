@@ -30,8 +30,7 @@ public enum LevelSongs {
     Space_Sailors_Cosmos(AudioEnums.Space_Sailors_Cosmos, LevelDifficulty.Easy, LevelLength.Medium, true),
 
     //--------------Long
-    Ghost_Data_Dark_Harvest(AudioEnums.Ghost_Data_Dark_Harvest, LevelDifficulty.Easy,  LevelLength.Long, true),
-
+    Ghost_Data_Dark_Harvest(AudioEnums.Ghost_Data_Dark_Harvest, LevelDifficulty.Easy, LevelLength.Long, true),
 
 
     //Difficulty: Medium
@@ -42,15 +41,13 @@ public enum LevelSongs {
     Five_Seconds_Before_Sunrise(AudioEnums.Five_Seconds_Before_Sunrise, LevelDifficulty.Medium, LevelLength.Medium, true),
     New_Arcades_Solace(AudioEnums.New_Arcades_Solace, LevelDifficulty.Medium, LevelLength.Medium, true),
     EMBRZ_Light_Falls(AudioEnums.EMBRZ_Light_Falls, LevelDifficulty.Medium, LevelLength.Medium, true),
-    New_Arcades_Severed(AudioEnums.New_Arcades_Severed, LevelDifficulty.Medium, LevelLength.Medium,true),
+    New_Arcades_Severed(AudioEnums.New_Arcades_Severed, LevelDifficulty.Medium, LevelLength.Medium, true),
 
     //--------------Long
     The_Rain_Formerly_Known_As_Purple(AudioEnums.The_Rain_Formerly_Known_As_Purple, LevelDifficulty.Medium, LevelLength.Long, true),
     Le_Youth_Chills(AudioEnums.Le_Youth_Chills, LevelDifficulty.Medium, LevelLength.Long, true),
     ApproachingNirvanaWorthAThousandPictures(AudioEnums.ApproachingNirvanaThousandPictures, LevelDifficulty.Medium, LevelLength.Long, true),
     ApproachingNirvanaNoStringsAttached(AudioEnums.ApproachingNirvanaNoStringsAttached, LevelDifficulty.Medium, LevelLength.Long, true),
-
-
 
 
     //Difficulty: Hard
@@ -169,7 +166,7 @@ public enum LevelSongs {
         return 5; // Image 5
     }
 
-    public static int getDifficultyScore(LevelDifficulty difficulty, LevelLength length){
+    public static int getDifficultyScore (LevelDifficulty difficulty, LevelLength length) {
         int difficultyWeight = difficulty.ordinal() + 1; // Assuming Enum order is EASY, MEDIUM, HARD
         int lengthWeight = length.ordinal() + 1; // Assuming Enum order is SHORT, MEDIUM, LONG
         return difficultyWeight + lengthWeight;
@@ -183,10 +180,11 @@ public enum LevelSongs {
         return ImageEnums.PurpleWings5; // Image 5
     }
 
-    public static AudioEnums getRandomBossSong(){
+    public static AudioEnums getRandomBossSong () {
         List<AudioEnums> bossSongList = new ArrayList<>();
-        bossSongList.add(AudioEnums.BossBattle);
-        bossSongList.add(AudioEnums.WaveshaperMonster);
+//        bossSongList.add(AudioEnums.BossBattle);
+        bossSongList.add(AudioEnums.Blood_On_The_Dancefloor);
+//        bossSongList.add(AudioEnums.WaveshaperMonster);
 
         return bossSongList.get(new Random().nextInt(bossSongList.size()));
     }

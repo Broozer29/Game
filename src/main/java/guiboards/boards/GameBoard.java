@@ -422,6 +422,13 @@ public class GameBoard extends JPanel implements ActionListener {
         }
 
 
+        for (Laserbeam laserbeam : missileManager.getLaserbeams()) {
+            if (laserbeam.getLaserBodies() != null) {
+                for (SpriteAnimation laserbeamBodyAnim : laserbeam.getLaserBodies()) {
+                    drawAnimation(g, laserbeamBodyAnim);
+                }
+            }
+        }
 
         // Draws lower level animations
         for (SpriteAnimation animation : animationManager.getLowerAnimations()) {
@@ -482,15 +489,6 @@ public class GameBoard extends JPanel implements ActionListener {
                     drawImage(g, specialAttack);
                 }
             }
-        }
-
-        for (Laserbeam laserbeam : missileManager.getLaserbeams()) {
-            if (laserbeam.getLaserBodies() != null) {
-                for (SpriteAnimation laserbeamBodyAnim : laserbeam.getLaserBodies()) {
-                    drawAnimation(g, laserbeamBodyAnim);
-                }
-            }
-
         }
 
         for (UIObject obj : uiManager.getInformationCards()) {

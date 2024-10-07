@@ -15,7 +15,11 @@ public class PlayerInventory {
     private Map<ItemEnums, Item> items = new HashMap<>();
     private float cashMoney = 100;
     private PlayerInventory () {
-//        addItem(ItemEnums.GuardianDrone);
+//        addItem(ItemEnums.PlasmaCoatedBullets);
+//        addItem(ItemEnums.PlasmaLauncher);
+
+
+
 //        addItem(ItemEnums.GuardianDrone);
 //        addItem(ItemEnums.GuardianDrone);
 //        addItem(ItemEnums.GuardianDrone);

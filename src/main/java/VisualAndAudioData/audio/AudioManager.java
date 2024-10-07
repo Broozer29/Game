@@ -2,14 +2,13 @@ package VisualAndAudioData.audio;
 
 import VisualAndAudioData.audio.enums.AudioEnums;
 import VisualAndAudioData.audio.enums.LevelSongs;
-import com.badlogic.gdx.Audio;
 import game.level.enums.LevelDifficulty;
 import game.level.enums.LevelLength;
 
 import java.io.IOException;
 import java.util.*;
 
-import javax.sound.sampled.UnsupportedAudioFileException;
+import javax.sound.sampled.*;
 
 public class AudioManager {
 
@@ -19,19 +18,28 @@ public class AudioManager {
     private AudioEnums currentSong;
     private Queue<AudioEnums> backgroundMusicTracksThatHavePlayed = new LinkedList<>();
     private Map<AudioEnums, Long> lastPlayTimeMap = new HashMap<>();
-    private static final long COOLDOWN_DURATION = 1000; // Cooldown in milliseconds, adjust as needed
+    private static final long COOLDOWN_DURATION = 500; // Cooldown in milliseconds, adjust as needed
 
     public boolean testMode = false;
     public boolean muteMode = false;
 
     private AudioManager () {
-
+        CustomAudioClip silenceClip = AudioDatabase.getInstance().getAudioClip(AudioEnums.SilentAudio);
+        silenceClip.setLoop(true);
+        silenceClip.startClip();
     }
 
     //Resets the manager
     public void resetManager () {
         // Removing or placing the line below somewhere else completely bricks level
         // transitioning, idfk why tho
+
+        if(backGroundMusic != null){
+            backGroundMusic.stopClip();
+            backGroundMusic.setLoop(false);
+            backGroundMusic.setFramePosition(0);
+            backGroundMusic.stopClip();
+        }
         backGroundMusic = null;
         audioDatabase.resetSongs();
         lastPlayTimeMap.clear();
@@ -75,6 +83,7 @@ public class AudioManager {
     // Plays the background music directly, overwriting existing music
     public void playBackgroundMusic (AudioEnums audioType, boolean loop) throws UnsupportedAudioFileException, IOException {
         if(backGroundMusic != null){
+            backGroundMusic.setLoop(false);
             backGroundMusic.stopClip();
         }
 
@@ -143,7 +152,9 @@ public class AudioManager {
     public void stopMusicAudio () {
         if (backGroundMusic != null) {
             backGroundMusic.stopClip();
+            backGroundMusic.setLoop(false);
             backGroundMusic.setFramePosition(0);
+            backGroundMusic.stopClip();
 //            backGroundMusic = null;
         }
     }

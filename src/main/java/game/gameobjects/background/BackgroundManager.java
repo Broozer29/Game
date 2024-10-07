@@ -91,9 +91,9 @@ public class BackgroundManager {
         // Background objects initialization logic...
         ImageEnums nebula = getNebulaImage(this.nebulaTheme);
         fillBGOList(BGOEnums.Nebula, nebula, 1, 25, 4, 25);
-        fillBGOList(BGOEnums.Star, ImageEnums.Star, (float) 1, 60, 3, 100);
-        fillBGOList(BGOEnums.Star, ImageEnums.Star, (float) 0.75, 60, 2, 100);
-        fillBGOList(BGOEnums.Star, ImageEnums.Star, 0.5f, 60, 1, 100);
+        fillBGOList(BGOEnums.Star, ImageEnums.Star, (float) 1, 40, 3, 100);
+        fillBGOList(BGOEnums.Star, ImageEnums.Star, (float) 0.75, 40, 2, 100);
+        fillBGOList(BGOEnums.Star, ImageEnums.Star, 0.5f, 40, 1, 100);
 
         fillBGOList(BGOEnums.Planet, getRandomPlanetEnum(), (float) 0.4, 1, 3, 5);
         fillBGOList(BGOEnums.Planet, getRandomPlanetEnum(), (float) 0.6, 1, 2, 5);

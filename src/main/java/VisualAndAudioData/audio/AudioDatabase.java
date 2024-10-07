@@ -1,7 +1,6 @@
 package VisualAndAudioData.audio;
 
 import VisualAndAudioData.audio.enums.AudioEnums;
-import com.badlogic.gdx.Audio;
 
 import javax.sound.sampled.LineUnavailableException;
 import java.util.*;
@@ -60,11 +59,8 @@ public class AudioDatabase {
     private CustomAudioClip gustyGardenGalaxyRemix;
     private CustomAudioClip wePlantsTimeRemix;
     private CustomAudioClip bossBattle;
+    private CustomAudioClip silentAudio;
 
-    // Van alle clips een lijst met clips maken, dan vervolgens een clip teruggeven
-    // die niet gebruikt wordt.
-    // Zo kun je een maximum aantal clips afdwingen per soort zonder dat clips niet
-    // kunnen afspelen.
 
     private int clipListSize = 10;
     private List<AudioEnums> clipsWithThresholds = new ArrayList<AudioEnums>();
@@ -83,6 +79,7 @@ public class AudioDatabase {
     private List<CustomAudioClip> flamethrowerClipList = new ArrayList<CustomAudioClip>();
     private List<CustomAudioClip> firewallClipList = new ArrayList<CustomAudioClip>();
     private List<CustomAudioClip> notEnoughMineralsClipList = new ArrayList<CustomAudioClip>();
+    private List<CustomAudioClip> chargingLaserbeamClipList = new ArrayList<CustomAudioClip>();
 
 
     private Map<AudioEnums, List<CustomAudioClip>> audioClipsMap = new HashMap<>();
@@ -154,6 +151,7 @@ public class AudioDatabase {
             flamethrowerClipList.get(i).setFramePosition(0);
             firewallClipList.get(i).setFramePosition(0);
             notEnoughMineralsClipList.get(i).setFramePosition(0);
+            chargingLaserbeamClipList.get(i).setFramePosition(0);
         }
     }
 
@@ -242,11 +240,15 @@ public class AudioDatabase {
         gustyGardenGalaxyRemix = new CustomAudioClip(AudioEnums.GustyGardenGalaxyRemix, false);
         wePlantsTimeRemix = new CustomAudioClip(AudioEnums.WePlantsAreHappyPlantsTimeRemix, false);
         bossBattle = new CustomAudioClip(AudioEnums.BossBattle, false);
+        silentAudio = new CustomAudioClip(AudioEnums.SilentAudio, true);
 
     }
 
     private void initSoundEffects () throws LineUnavailableException {
         for (int i = 0; i < clipListSize; i++) {
+            CustomAudioClip chargingLaserbeam = new CustomAudioClip(AudioEnums.ChargingLaserbeam, false);
+            chargingLaserbeamClipList.add(chargingLaserbeam);
+
             CustomAudioClip laserBeamClip = new CustomAudioClip(AudioEnums.Player_Laserbeam, false);
             laserBeamClipList.add(laserBeamClip);
 
@@ -284,6 +286,7 @@ public class AudioDatabase {
             notEnoughMineralsClipList.add(notEnoughMinerals);
         }
 
+        audioClipsMap.put(AudioEnums.ChargingLaserbeam, chargingLaserbeamClipList);
         audioClipsMap.put(AudioEnums.Player_Laserbeam, laserBeamClipList);
         audioClipsMap.put(AudioEnums.Destroyed_Explosion, destroyedExplosionClipList);
         audioClipsMap.put(AudioEnums.Alien_Spaceship_Destroyed, alienSpaceshipDestroyedClipList);
@@ -315,6 +318,7 @@ public class AudioDatabase {
 
     public CustomAudioClip getAudioClip (AudioEnums audioType) {
         switch (audioType) {
+            case SilentAudio: return silentAudio;
             case BossBattle: return bossBattle;
             case WaveshaperMonster: return waveshaperMonster;
             case TonyLeysSnowdinRemix: return tonyleysSnowdingRemix;
@@ -412,6 +416,7 @@ public class AudioDatabase {
             case Flamethrower:
             case Firewall:
             case NotEnoughMinerals:
+            case ChargingLaserbeam:
                 return getAvailableClip(audioType);
             case Ayasa_The_Reason_Why:
                 return ayasaTheReasonWhy;

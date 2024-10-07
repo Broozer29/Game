@@ -182,6 +182,15 @@ public class CollisionDetector {
             return false;
         }
 
+
+        if(gameObject1.getWidth() > rangeThreshold || gameObject1.getHeight() > rangeThreshold){
+            rangeThreshold = Math.max(gameObject1.getWidth(), gameObject1.getHeight());
+        }
+
+        if(gameObject2.getWidth() > rangeThreshold || gameObject2.getHeight() > rangeThreshold){
+            rangeThreshold = Math.max(gameObject2.getWidth(), gameObject2.getHeight());
+        }
+
         int x1 = getGameObjectXCoordinate(gameObject1);
         int y1 = getGameObjectYCoordinate(gameObject1);
 

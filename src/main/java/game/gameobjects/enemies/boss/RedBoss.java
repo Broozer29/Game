@@ -3,10 +3,7 @@ package game.gameobjects.enemies.boss;
 import VisualAndAudioData.image.ImageEnums;
 import game.gameobjects.enemies.Enemy;
 import game.gameobjects.enemies.EnemyConfiguration;
-import game.gameobjects.enemies.boss.behaviour.BossActionable;
-import game.gameobjects.enemies.boss.behaviour.BurstMainAttackBossBehaviour;
-import game.gameobjects.enemies.boss.behaviour.SpawnFourDirectionalDrone;
-import game.gameobjects.enemies.boss.behaviour.SpawnShuriken;
+import game.gameobjects.enemies.boss.behaviour.*;
 import game.movement.MovementConfiguration;
 import game.util.WithinVisualBoundariesCalculator;
 import visualobjects.SpriteAnimation;
@@ -30,15 +27,19 @@ public class RedBoss extends Enemy {
         this.destructionAnimation = new SpriteAnimation(destroyedExplosionfiguration);
         this.damage = 10;
         this.allowedVisualsToRotate = false;
+        this.knockbackStrength = 9;
 
-        BossActionable bossBehaviour1 = new SpawnShuriken();
-        bossBehaviourList.add(bossBehaviour1);
+//        BossActionable bossBehaviour1 = new SpawnShuriken();
+//        bossBehaviourList.add(bossBehaviour1);
+//
+//        BossActionable bossBehaviour2 = new BurstMainAttackBossBehaviour();
+//        bossBehaviourList.add(bossBehaviour2);
+//
+//        BossActionable bossBehaviour3 = new SpawnFourDirectionalDrone();
+//        bossBehaviourList.add(bossBehaviour3);
 
-        BossActionable bossBehaviour2 = new BurstMainAttackBossBehaviour();
-        bossBehaviourList.add(bossBehaviour2);
-
-        BossActionable bossBehaviour3 = new SpawnFourDirectionalDrone();
-        bossBehaviourList.add(bossBehaviour3);
+        BossActionable bossBehaviour4 = new CrossingLaserbeamsAttack(true);
+        bossBehaviourList.add(bossBehaviour4);
 
         bossBehaviourList = bossBehaviourList.stream()
                 .sorted(Comparator.comparingInt(BossActionable::getPriority).reversed())
@@ -75,11 +76,13 @@ public class RedBoss extends Enemy {
 
         // If no current behavior is active, find the next behavior to execute
         for (BossActionable bossActionable : bossBehaviourList) {
-            // Attempt to execute the behavior
-            boolean isCompleted = bossActionable.activateBehaviour(this);
-            if (!isCompleted) {
-                currentActiveBehavior = bossActionable; // Set this as the current active behavior
-                break; // Stop looking at other behaviors, only execute one at a time
+            // Attempt to execute the behavior, if available
+            if (bossActionable.isAvailable(this)) {
+                boolean isCompleted = bossActionable.activateBehaviour(this);
+                if (!isCompleted) {
+                    currentActiveBehavior = bossActionable; // Set this as the current active behavior
+                    break; // Stop looking at other behaviors, only execute one at a time
+                }
             }
         }
     }

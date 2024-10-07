@@ -31,7 +31,7 @@ public class FourDirectionalDrone extends Enemy {
     public FourDirectionalDrone (SpriteConfiguration spriteConfig, EnemyConfiguration enemyConfiguration, MovementConfiguration movementConfiguration) {
         super(spriteConfig, enemyConfiguration, movementConfiguration);
 
-        SpriteAnimationConfiguration destroyedExplosionfiguration = new SpriteAnimationConfiguration(spriteConfig, 2, false);
+        SpriteAnimationConfiguration destroyedExplosionfiguration = new SpriteAnimationConfiguration(spriteConfig, 0, false);
         destroyedExplosionfiguration.getSpriteConfiguration().setImageType(this.enemyType.getDestructionType());
         this.destructionAnimation = new SpriteAnimation(destroyedExplosionfiguration);
         this.damage = 10;
@@ -40,7 +40,7 @@ public class FourDirectionalDrone extends Enemy {
         this.attackSpeed = 0.25f;
         initChargingUpAnimations();
         this.detonateOnCollision = false;
-        this.knockbackStrength = 5;
+        this.knockbackStrength = 9;
     }
 
 
@@ -101,7 +101,7 @@ public class FourDirectionalDrone extends Enemy {
         // The charging up attack animation has finished, create and fire the missile
         //Create the sprite configuration which gets upgraded to spriteanimation if needed by the MissileCreator
         SpriteConfiguration spriteConfiguration = MissileCreator.getInstance().createMissileSpriteConfig(xCoordinate, yCoordinate,
-                ImageEnums.LaserBullet, 0.5f);
+                ImageEnums.LaserBullet, 0.6f);
 
 
         int movementSpeed = 3;
