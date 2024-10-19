@@ -106,7 +106,7 @@ public class EnemyCreator {
                 return new Shuriken(upgradeConfig(spriteConfiguration, 0, true), enemyConfiguration, movementConfiguration);
             }
             case SpaceStationBoss -> {
-                return new SpaceStationBoss(upgradeConfig(spriteConfiguration, 5, true), enemyConfiguration, movementConfiguration);
+                return new SpaceStationBoss(upgradeConfig(spriteConfiguration, 2, true), enemyConfiguration, movementConfiguration);
             }
             case RedBoss -> {
                 return new RedBoss(upgradeConfig(spriteConfiguration, 1, true), enemyConfiguration, movementConfiguration);

@@ -5,34 +5,20 @@ import com.badlogic.gdx.Game;
 import game.gameobjects.enemies.Enemy;
 import game.gameobjects.enemies.EnemyConfiguration;
 import game.gamestate.GameStateInfo;
+import game.managers.OnScreenTextManager;
 import game.movement.MovementConfiguration;
+import game.util.OnScreenText;
 import visualobjects.SpriteConfigurations.SpriteAnimationConfiguration;
 import visualobjects.SpriteConfigurations.SpriteConfiguration;
 
-import java.awt.*;
-import java.awt.geom.AffineTransform;
-import java.awt.image.BufferedImage;
-import java.awt.image.RasterFormatException;
 
 public class SpaceStationBoss extends Enemy {
-
-
-    private double lastTimeSinceRotated;
-    private double secondsDelayForRotation = 0.05;
-    private GameStateInfo gameStateInfo = null;
 
     public SpaceStationBoss (SpriteAnimationConfiguration spriteAnimationConfigurationion, EnemyConfiguration enemyConfiguration, MovementConfiguration movementConfiguration) {
         super(spriteAnimationConfigurationion, enemyConfiguration, movementConfiguration);
         this.setAllowedVisualsToRotate(false);
-        gameStateInfo = GameStateInfo.getInstance();
-        lastTimeSinceRotated = gameStateInfo.getGameSeconds();
     }
 
-    public SpaceStationBoss (SpriteConfiguration spriteConfiguration, EnemyConfiguration enemyConfiguration, MovementConfiguration movementConfiguration) {
-        super(spriteConfiguration, enemyConfiguration, movementConfiguration);
-        gameStateInfo = GameStateInfo.getInstance();
-        lastTimeSinceRotated = gameStateInfo.getGameSeconds();
-    }
 
     @Override
     public void fireAction () {
@@ -40,16 +26,8 @@ public class SpaceStationBoss extends Enemy {
             this.allowedToMove = false;
         }
 
-        if (lastTimeSinceRotated + secondsDelayForRotation <= gameStateInfo.getGameSeconds()) {
-//            int currentCenterXCoordinate = super.getCenterXCoordinate();
-//            int currentCenterYCoordinate = super.getCenterYCoordinate();
-//
-//            this.rotationAngle = increaseRotationAngle(rotationAngle);
-//            this.image = ImageRotator.getInstance().rotate(this.originalImage, rotationAngle, false);
-//            lastTimeSinceRotated = gameStateInfo.getGameSeconds();
-//
-//            setCenterCoordinates(currentCenterXCoordinate, currentCenterYCoordinate);
-        }
+//        OnScreenTextManager.getInstance().addText("" + this.animation.getCurrentFrame(), this.getCenterXCoordinate(), this.getCenterYCoordinate());
+
     }
 
     private double increaseRotationAngle (double rotationAngle) {

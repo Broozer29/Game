@@ -119,7 +119,7 @@ public class LevelManager {
         }
 
         boolean nextLevelABossLevel = isNextLevelABossLevel();
-//        nextLevelABossLevel = true;
+        nextLevelABossLevel = true;
         if(nextLevelABossLevel){
             this.levelType = LevelTypes.Boss;
             currentLevelDifficulty = LevelDifficulty.Hard;
@@ -137,9 +137,9 @@ public class LevelManager {
 
         PlayerManager.getInstance().getSpaceship().allowMovementBeyondBoundaries = false;
 //        audioManager.testMode = true;
-        audioManager.muteMode = true;
+//        audioManager.muteMode = true;
 
-//        activateDirectors(this.levelType);
+        activateDirectors(this.levelType);
         try {
             activateMusic(this.levelType);
         } catch (UnsupportedAudioFileException | IOException e) {
@@ -167,7 +167,7 @@ public class LevelManager {
 //        enemy.setAllowedToDealDamage(false);
 //        enemy.setAllowedToMove(false);
 //        enemy.setAllowedToFire(false);
-        EnemyManager.getInstance().addEnemy(enemy);
+//        EnemyManager.getInstance().addEnemy(enemy);
 
 //        Enemy enemy2 = EnemyCreator.createEnemy(enemyType, 300, 200, Direction.LEFT, enemyType.getDefaultScale()
 //                , enemyType.getMovementSpeed(), enemyType.getMovementSpeed(), MovementPatternSize.SMALL, false);

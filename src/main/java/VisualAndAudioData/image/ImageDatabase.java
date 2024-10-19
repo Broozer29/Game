@@ -1494,7 +1494,7 @@ public class ImageDatabase {
             laserbeamChargingFrames.add(image);
         }
 
-        for (int i = 0; i < 60; i++) {
+        for (int i = 0; i < 120; i++) {
             String sourceString = String.format("/images/Ships/Enemy Ships/SpaceStation/%d.png", i);
             BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
             spaceStationBossFrames.add(image);

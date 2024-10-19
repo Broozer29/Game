@@ -257,7 +257,11 @@ public class CustomAudioClip {
                 audioStream.close();
 
             } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
-                e.printStackTrace();
+                if(e.getMessage().contains("Stream closed")){
+                    System.out.println("Stream was attempted to be read but it was closed, it appears that this can be safely ignored");
+                } else {
+                    e.printStackTrace();
+                }
             }
         });
     }

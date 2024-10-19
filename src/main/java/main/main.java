@@ -34,12 +34,12 @@ public class main {
 		});
 	}
 	private static void preloadThings(){
-		// Load a LARGE animation so it doesn't lag
+		// Load LARGE animations so it doesn't lag upon creation of them
 		Enemy shuriken = EnemyCreator.createEnemy(EnemyEnums.Shuriken, 0, 0, Direction.LEFT,
 				EnemyEnums.Shuriken.getDefaultScale(), EnemyEnums.Shuriken.getMovementSpeed(), EnemyEnums.Shuriken.getMovementSpeed(), MovementPatternSize.SMALL, false);
 
-//		Enemy spaceStation = EnemyCreator.createEnemy(EnemyEnums.SpaceStationBoss, 0, 0, Direction.LEFT,
-//				EnemyEnums.SpaceStationBoss.getDefaultScale(), EnemyEnums.SpaceStationBoss.getMovementSpeed(), EnemyEnums.SpaceStationBoss.getMovementSpeed(), MovementPatternSize.SMALL, false);
+		Enemy spaceStation = EnemyCreator.createEnemy(EnemyEnums.SpaceStationBoss, 0, 0, Direction.LEFT,
+				EnemyEnums.SpaceStationBoss.getDefaultScale(), EnemyEnums.SpaceStationBoss.getMovementSpeed(), EnemyEnums.SpaceStationBoss.getMovementSpeed(), MovementPatternSize.SMALL, false);
 
 	}
 }
