@@ -1,9 +1,12 @@
 package guiboards.guicomponents;
 
+import VisualAndAudioData.DataClass;
 import VisualAndAudioData.audio.AudioDatabase;
 import VisualAndAudioData.audio.AudioManager;
 import VisualAndAudioData.audio.enums.AudioEnums;
+import VisualAndAudioData.audio.enums.MusicMediaPlayer;
 import game.items.PlayerInventory;
+import game.managers.OnScreenTextManager;
 import game.managers.ShopManager;
 import game.level.LevelManager;
 import game.level.enums.LevelDifficulty;
@@ -52,6 +55,18 @@ public class MenuButton extends GUIComponent {
                 break;
             case SelectSongLength:
                 changeLevelLength();
+                break;
+            case SelectMacOSMediaPlayer:
+                AudioManager.getInstance().setMusicMediaPlayer(MusicMediaPlayer.MacOS);
+                OnScreenTextManager.getInstance().addText("Changed to using APPLE MUSIC for gameplay",
+                        DataClass.getInstance().getWindowWidth() / 2,
+                        DataClass.getInstance().getWindowHeight() / 2);
+                break;
+            case SelectDefaultMediaPlayer:
+                AudioManager.getInstance().setMusicMediaPlayer(MusicMediaPlayer.Default);
+                OnScreenTextManager.getInstance().addText("Changed to using LOCALLY DOWNLOADED MUSIC for gameplay",
+                        DataClass.getInstance().getWindowWidth() / 2,
+                        DataClass.getInstance().getWindowHeight() / 2);
                 break;
             case RerollShop:
                 PlayerInventory inventory = PlayerInventory.getInstance();

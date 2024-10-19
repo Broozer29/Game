@@ -24,6 +24,7 @@ public class GameStateInfo {
     private int monsterLevel;
 
     private float initialOffset;
+
     private GameStateInfo () {
         resetGameState();
     }
@@ -45,10 +46,9 @@ public class GameStateInfo {
     }
 
 
-
-
     private int testingVariableBonus = 0;
-    public void updateDifficultyCoefficient() {
+
+    public void updateDifficultyCoefficient () {
         float playerFactor = 1;
         float baseTimeFactor = 0.0606f; // Base factor for time, at LevelManager difficulty 2
         float maxTimeFactor = 0.125f; // Define the maximum time factor for LevelManager difficulty 6
@@ -62,7 +62,7 @@ public class GameStateInfo {
 
         double timeInMinutes = gameSeconds / 60.0f; // Convert seconds to minutes
 
-        if(testingVariableBonus > 0){
+        if (testingVariableBonus > 0) {
             System.out.println("Adding additional difficulty coefficient in GameStateInfo 66");
         }
 
@@ -71,15 +71,13 @@ public class GameStateInfo {
     }
 
 
-    private void updateMonsterLevel() {
+    private void updateMonsterLevel () {
         // Apply the formula and subtract the offset to ensure starting level is 1
         monsterLevel = (int) Math.round(1 + ((difficultyCoefficient / 0.27) - initialOffset));
 
         // Ensure monsterLevel never goes below 1
         monsterLevel = Math.max(1, monsterLevel);
     }
-
-
 
 
     public GameStatusEnums getGameState () {
@@ -126,13 +124,13 @@ public class GameStateInfo {
         this.maxMusicSeconds = maxMusicSeconds;
     }
 
-    public void addGameTicks(long gameTick){
+    public void addGameTicks (long gameTick) {
         this.gameTicksExecuted += gameTick;
         updateGameTimeByExecutedGameTicks();
     }
 
-    private void updateGameTimeByExecutedGameTicks() {
-        this.gameSeconds = (double)(gameTicksExecuted * getDELAY()) / 1000.0;
+    private void updateGameTimeByExecutedGameTicks () {
+        this.gameSeconds = (double) (gameTicksExecuted * getDELAY()) / 1000.0;
     }
 
     public SpawningMechanic getSpawningMechanic () {

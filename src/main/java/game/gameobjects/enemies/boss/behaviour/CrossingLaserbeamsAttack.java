@@ -21,13 +21,13 @@ import java.io.IOException;
 
 public class CrossingLaserbeamsAttack implements BossActionable {
     private double lastAttackedTime = 0;
-    private double attackCooldown = 2;
+    private double attackCooldown = 20;
     private int priority = 3;
 
-    private int lowerLaserbeamMinAngle = 135;
-    private int lowerLaserbeamMaxAngle = 225;
-    private int upperLaserbeamMinAngle = 135;
-    private int upperLaserbeamMaxAngle = 225;
+    private int lowerLaserbeamLowestAngle = 135;
+    private int lowerLaserbeamHighestAngle = 225;
+    private int upperLaserbeamLowestAngle = 135;
+    private int upperLaserbeamHighestAngle = 225;
 
     private Point upperLaserbeamOriginPoint;
     private Point lowerLaserbeamOriginPoint;
@@ -37,7 +37,7 @@ public class CrossingLaserbeamsAttack implements BossActionable {
     private Laserbeam lowerLaserbeam;
     private boolean isFiringLaserbeams;
     private boolean inwards;
-    private float angleStepSize = 0.15f;
+    private float angleStepSize = 0.4f;
 
     public CrossingLaserbeamsAttack (boolean inwards) {
         //Determines wether the laserbeams go from outside to the center if true, if false the laserbeams should go inwards to outwards
@@ -47,10 +47,17 @@ public class CrossingLaserbeamsAttack implements BossActionable {
 
     private void setAngles () {
         if (inwards) {
-            lowerLaserbeamMaxAngle = 185;
-            upperLaserbeamMinAngle = 175;
-        } else {
-            // to do
+            lowerLaserbeamHighestAngle = 185;
+            upperLaserbeamLowestAngle = 175;
+        }
+
+        else {
+            lowerLaserbeamLowestAngle = 160;  // Start closer to the center
+            lowerLaserbeamHighestAngle = 190; // Diverging outward
+
+            upperLaserbeamLowestAngle = 170;  // Start closer to the center
+            upperLaserbeamHighestAngle = 200; // Diverging outward
+            angleStepSize = 0.25f;
         }
     }
 
@@ -80,9 +87,13 @@ public class CrossingLaserbeamsAttack implements BossActionable {
                 }
             }
 
-            if (lowerChargingUpAnimation.isPlaying() && lowerChargingUpAnimation.getCurrentFrame() == lowerChargingUpAnimation.getTotalFrames() - 1 && !isFiringLaserbeams) {
+            if (lowerChargingUpAnimation.isPlaying() &&
+                    lowerChargingUpAnimation.getCurrentFrame() == lowerChargingUpAnimation.getTotalFrames() - 1 &&
+                    !isFiringLaserbeams) {
                 updateLaserbeamOriginPoints();
                 createLaserbeams(enemy);
+                lowerChargingUpAnimation.setVisible(false);
+                upperChargingUpAnimation.setVisible(false);
                 MissileManager.getInstance().addLaserBeam(upperLaserbeam);
                 MissileManager.getInstance().addLaserBeam(lowerLaserbeam);
                 isFiringLaserbeams = true;
@@ -111,22 +122,22 @@ public class CrossingLaserbeamsAttack implements BossActionable {
     private void changeLaserbeamAngle () {
         if (inwards) {
             upperLaserbeam.setAngleDegrees(upperLaserbeam.getAngleDegrees() - angleStepSize);
-            if (upperLaserbeam.getAngleDegrees() <= upperLaserbeamMinAngle) {
+            if (upperLaserbeam.getAngleDegrees() <= upperLaserbeamLowestAngle) {
                 upperLaserbeam.setVisible(false);
             }
 
             lowerLaserbeam.setAngleDegrees(lowerLaserbeam.getAngleDegrees() + angleStepSize);
-            if (lowerLaserbeam.getAngleDegrees() >= lowerLaserbeamMaxAngle) {
+            if (lowerLaserbeam.getAngleDegrees() >= lowerLaserbeamHighestAngle) {
                 lowerLaserbeam.setVisible(false);
             }
         } else {
             upperLaserbeam.setAngleDegrees(upperLaserbeam.getAngleDegrees() + angleStepSize);
-            if (upperLaserbeam.getAngleDegrees() >= upperLaserbeamMaxAngle) {
+            if (upperLaserbeam.getAngleDegrees() >= upperLaserbeamHighestAngle) {
                 upperLaserbeam.setVisible(false);
             }
 
             lowerLaserbeam.setAngleDegrees(lowerLaserbeam.getAngleDegrees() - angleStepSize);
-            if (lowerLaserbeam.getAngleDegrees() <= lowerLaserbeamMinAngle) {
+            if (lowerLaserbeam.getAngleDegrees() <= lowerLaserbeamLowestAngle) {
                 lowerLaserbeam.setVisible(false);
             }
         }
@@ -146,11 +157,11 @@ public class CrossingLaserbeamsAttack implements BossActionable {
         lowerLaserbeamConfiguration.setOriginPoint(lowerLaserbeamOriginPoint);
 
         if (inwards) {
-            upperLaserbeamConfiguration.setAngleDegrees(upperLaserbeamMaxAngle);
-            lowerLaserbeamConfiguration.setAngleDegrees(lowerLaserbeamMinAngle);
+            upperLaserbeamConfiguration.setAngleDegrees(upperLaserbeamHighestAngle);
+            lowerLaserbeamConfiguration.setAngleDegrees(lowerLaserbeamLowestAngle);
         } else {
-            upperLaserbeamConfiguration.setAngleDegrees(lowerLaserbeamMinAngle);
-            lowerLaserbeamConfiguration.setAngleDegrees(upperLaserbeamMaxAngle);
+            upperLaserbeamConfiguration.setAngleDegrees(upperLaserbeamLowestAngle);
+            lowerLaserbeamConfiguration.setAngleDegrees(lowerLaserbeamHighestAngle);
         }
 
         if (upperLaserbeam != null) {
@@ -171,15 +182,15 @@ public class CrossingLaserbeamsAttack implements BossActionable {
         if (upperLaserbeamOriginPoint == null) {
             upperLaserbeamOriginPoint = new Point(upperChargingUpAnimation.getCenterXCoordinate(), upperChargingUpAnimation.getCenterYCoordinate());
         } else {
-            upperLaserbeamOriginPoint.setX(upperChargingUpAnimation.getCenterXCoordinate() - Laserbeam.bodyWidth / 2);
-            upperLaserbeamOriginPoint.setY(upperChargingUpAnimation.getCenterYCoordinate() - Laserbeam.bodyWidth / 2 + 10);
+            upperLaserbeamOriginPoint.setX(upperChargingUpAnimation.getCenterXCoordinate() - Laserbeam.bodyWidth / 2 + 4);
+            upperLaserbeamOriginPoint.setY(upperChargingUpAnimation.getCenterYCoordinate() - Laserbeam.bodyWidth / 2 + 12);
         }
 
         if (lowerLaserbeamOriginPoint == null) {
             lowerLaserbeamOriginPoint = new Point(lowerChargingUpAnimation.getCenterXCoordinate(), lowerChargingUpAnimation.getCenterYCoordinate());
         } else {
-            lowerLaserbeamOriginPoint.setX(lowerChargingUpAnimation.getCenterXCoordinate() - Laserbeam.bodyWidth / 2); //-10 due to offset added in the charging animations
-            lowerLaserbeamOriginPoint.setY(lowerChargingUpAnimation.getCenterYCoordinate() - Laserbeam.bodyWidth / 2 + 10);
+            lowerLaserbeamOriginPoint.setX(lowerChargingUpAnimation.getCenterXCoordinate() - Laserbeam.bodyWidth / 2 + 4);
+            lowerLaserbeamOriginPoint.setY(lowerChargingUpAnimation.getCenterYCoordinate() - Laserbeam.bodyWidth / 2 + 12);
         }
 
 
@@ -220,7 +231,7 @@ public class CrossingLaserbeamsAttack implements BossActionable {
         spriteConfiguration.setxCoordinate(enemy.getXCoordinate());
         spriteConfiguration.setyCoordinate(enemy.getCenterYCoordinate());
         spriteConfiguration.setScale(1);
-        spriteConfiguration.setImageType(ImageEnums.Charging);
+        spriteConfiguration.setImageType(ImageEnums.LaserbeamCharging);
 
         return new SpriteAnimationConfiguration(spriteConfiguration, 1, false);
     }

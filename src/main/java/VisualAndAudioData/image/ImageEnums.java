@@ -1,89 +1,138 @@
 package VisualAndAudioData.image;
 
-import game.gameobjects.enemies.enemytypes.Needler;
-import game.gameobjects.enemies.enemytypes.Seeker;
+import game.gameobjects.enemies.boss.RedBoss;
+import game.gameobjects.enemies.enemytypes.*;
+import game.items.items.VIPTicket;
 
 public enum ImageEnums {
 
     //// Menu Buttons
-    Start_Game, User_One, User_Two, User_Three, Select_User_Menu, Test_Image, User_Menu_To_Main_Menu, Title_Image, ProgressBar, ProgressBarFilling,
+    Test_Image,
+    Title_Image,
+    ProgressBar,
+    ProgressBarFilling,
 
     //// Animations
-    Impact_Explosion_One, Player_Engine, Destroyed_Explosion, Destroyed_Explosion_Right, Destroyed_Explosion_Left,
-    Destroyed_Explosion_Down, Alien_Bomb_Explosion, Seeker_Normal_Exhaust, Seeker_Large_Exhaust, Tazer_Normal_Exhaust,
-    Tazer_Large_Exhaust, Energizer_Normal_Exhaust, Energizer_Large_Exhaust, Bulldozer_Normal_Exhaust,
-    Bulldozer_Large_Exhaust, Flamer_Normal_Exhaust, Flamer_Large_Exhaust, Bomba_Normal_Exhaust, Bomba_Large_Exhaust,
-    Seeker_Destroyed_Explosion, Tazer_Destroyed_Explosion, Energizer_Destroyed_Explosion, Bomba_Destroyed_Explosion,
-    Flamer_Destroyed_Explosion, Bulldozer_Destroyed_Explosion, Default_Player_Engine, Default_Player_Engine_Boosted,
-    Default_Player_Shield_Damage, Player_Fireswirl, Player_EMP, Player_EMP_Plus, Drone, FirewallParticle, Portal5,
-    WarpIn, Shield4, Shield3, Shield2, Charging, EnergyCircle, Flamewarp, Frontshield, FrontshieldB, PulsatingShield, PulsatingStar, Radar,
-    RotatingBoxes, RotatingCones, GreenEnergyOrb, PurpleEnergyBlocks, Fireshield, EnergyFlower, PurpleEnergyBarrier, RedHole, CrossingEnergyBeams,
-    PlasmaCoatedDebuff, GasolineExplosion, GasolineBurning, Healing, StickyDynamiteExplosion, MoneyPrinter, StickyDynamite,
-    BarrierProjectile, BarrierProjectileDestruction, LightningProjectile, SuperChargedBuff, LightningOrb, Explosion2, LaserBulletDestruction,
-    LightningOrbDestruction, LevelUpAnimation, CirclingRings, SpiralingGreenEnergy,GreenEnergyOrb2Looping,GreenEnergyOrb2, ElectroShredImproved, ThornsDamage,
-    FreezeEffect, ShurikenEnemy,
+    Impact_Explosion_One,
+    Destroyed_Explosion,
+    Alien_Bomb_Explosion,
+    Default_Player_Engine,
+    Default_Player_Shield_Damage,
+    Player_EMP,
+    Drone,
+    Portal5,
+    WarpIn,
+    Charging,
+    EnergyCircle,
+    PlasmaCoatedDebuff,
+    GasolineExplosion,
+    GasolineBurning,
+    Healing,
+    StickyDynamiteExplosion,
+    MoneyPrinter,
+    StickyDynamite,
+    BarrierProjectile,
+    BarrierProjectileDestruction,
+    SuperChargedBuff,
+    LightningOrb,
+    Explosion2,
+    LaserBulletDestruction,
+    LightningOrbDestruction,
+    LevelUpAnimation,
+    GreenEnergyOrb2Looping,
+    ElectroShredImproved,
+    ThornsDamage,
+    FreezeEffect,
+    ShurikenEnemy,
 
     //// Background Objects
-    Moon, Lava_Planet, Planet_One, Planet_Two, Planet_Three, Mars_Planet, Star, Parallex_1, Parallex_2, Parallex_3,
-    Parallex_4, Parallex_5, Warm_Nebula, Cold_Nebula, Regular_Nebula, Blue_Nebula_1, Blue_Nebula_2, Blue_Nebula_3,
+    Moon, Lava_Planet, Planet_One, Planet_Two, Planet_Three, Mars_Planet, Star,
+    Blue_Nebula_1, Blue_Nebula_2, Blue_Nebula_3,
     Blue_Nebula_4, Blue_Nebula_5, Blue_Nebula_6, Green_Nebula_1, Green_Nebula_2, Green_Nebula_3, Green_Nebula_4,
     Green_Nebula_5, Green_Nebula_6, Green_Nebula_7, Purple_Nebula_1, Purple_Nebula_2, Purple_Nebula_3, Purple_Nebula_4,
     Purple_Nebula_5, Purple_Nebula_6, Purple_Nebula_7, Star_Blue1, Star_Blue2, Star_Blue3, Star_Blue4, Star_Red1, Star_Red2,
     Star_Red3, Star_Red4, Star_Yellow1, Star_Yellow2, Star_Yellow3, Star_Yellow4, Star_Orange1, Star_Orange2, Star_Orange3, Star_Orange4,
     Star_White1, Star_White2, Star_White3, Star_White4, Moon2, Moon3, Moon4, Moon5, GreenPlanet1, GreenPlanet2, BluePlanet1,
-    BluePlanet2, BluePlanet3, BluePlanet4, BluePlanet5, BluePlanet6, CashCarrier, CashExplosion, GradeBronze, GradeSilver, GradeGold, GradePlatinum, GradeDiamond
-    , GradeMaster, GradeGrandMaster, UIScoreTextCard, UIYouDied, UILevelComplete, Starcraft2Keystone, Starcraft2BouncingLaser, VIPTicket, PiercingLaser,
+    BluePlanet2, BluePlanet3, BluePlanet4, BluePlanet5, BluePlanet6, CashCarrier, CashExplosion, GradeBronze, GradeSilver, GradeGold, GradePlatinum, GradeDiamond,
+    GradeMaster, GradeGrandMaster, UIScoreTextCard, UIYouDied, UILevelComplete, Starcraft2Keystone, Starcraft2BouncingLaser, VIPTicket, PiercingLaser,
     Starcraft2LockOn, ThornWeaver, BarbedMissiles, BarbedAegis, Thornedplates,
     // Missile Animations
-    Seeker_Missile, Tazer_Missile, Energizer_Missile, Bulldozer_Missile, Flamer_Missile, Bomba_Missile,
-    Seeker_Missile_Explosion, Tazer_Missile_Explosion, Energizer_Missile_Explosion, Bulldozer_Missile_Explosion,
-    Flamer_Missile_Explosion, Bomba_Missile_Explosion, Flamethrower_Animation, Rocket_1, Rocket_1_Explosion, Firespout_Animation,
-    PlasmaLauncherMissile, DestructableOrbitCenterMissile, LaserbeamBody, LaserbeamHead, LaserbeamStart, LaserbeamEnd,
+    Seeker_Missile,
+    Bomba_Missile,
+    Bomba_Missile_Explosion,
+    Rocket_1,
+    Rocket_1_Explosion,
+    PlasmaLauncherMissile,
+    DestructableOrbitCenterMissile,
+    LaserbeamBody,
+    LaserbeamStart,
+    LaserbeamEnd,
+    LaserbeamCharging,
+    UIDamageOverlay,
 
     // Missile Images
-    Player_Laserbeam, Alien_Laserbeam, AlienLaserBeamAnimated, LaserBullet,
+    AlienLaserBeamAnimated,
+    LaserBullet,
 
     // Friendly images
-    Player_Spaceship, Player_Spaceship_Model_3,
+    Player_Spaceship_Model_3,
 
     // Enemy images
-    Alien_Bomb, Seeker, Tazer, Energizer, Bulldozer, Flamer, Bomba, Alien, Alien_Bomb_Animation, Needler, Scout, FourDirectionalDrone,
+    Alien_Bomb,
+    Seeker,
+    Tazer,
+    Energizer,
+    Bulldozer,
+    Flamer,
+    Bomba,
+    Alien,
+    Needler,
+    Scout,
+    FourDirectionalDrone,
     RedBoss,
 
     // Unused?
-    Implosion, Invisible, Invisible_Animation,
-
+    Invisible,
     // GUI
-    Health_Bar, Shield_Bar, Icon_Border, Health_Shield_Frames, Frame, Red_Filling, Gold_Filling, Blue_Filling, Highlight, Long_Card, Wide_Card, Square_Card,
+    Frame,
+    Red_Filling,
+    Gold_Filling,
+    Blue_Filling,
+    Highlight, Long_Card, Wide_Card, Square_Card,
     InformationCard,
     YellowWings1, YellowWings2, YellowWings3, YellowWings4, YellowWings5, BlueWings1, BlueWings2, BlueWings3, BlueWings4, BlueWings5,
-    PurpleWings1,PurpleWings2,PurpleWings3,PurpleWings4,PurpleWings5, RedWings1, RedWings2, RedWings3, RedWings4, RedWings5,
+    PurpleWings1, PurpleWings2, PurpleWings3, PurpleWings4, PurpleWings5, RedWings1, RedWings2, RedWings3, RedWings4, RedWings5,
     // Icons
-    TripleShotIcon, DoubleShotIcon, Starcraft2_Point_Defense_Drone, Starcraft2_Protoss_Cloak, LockedIcon, TopazGem7,
-    Starcraft2_Protoss_Shield_Disintegrate, Starcraft2_Protoss_Shields_1, Starcraft2_Protoss_Shields_2,
-    Starcraft2_Protoss_Shields_3, Starcraft2_Psi_Storm1, Starcraft2_Psi_Storm2, Starcraft2_Psi_Storm3,
-    Starcraft2_Pulse_Grenade, Starcraft2_Pulse_Laser, Starcraft2_Repair_Blink, Starcraft2_Rocket_Cluster,
-    Starcraft2_Dual_Rockets, Starcraft2_Artanis_Shield, Starcraft2_Auto_Tracking, Starcraft2_Blink,
-    Starcraft2_Blue_Flame, Starcraft2_Concussive_Shells, Starcraft2_Corsair_Cloak, Starcraft2_Drone_Cloak,
-    Starcraft2_DT_Blink, Starcraft2_Energizer_Speed, Starcraft2_Energizer_Speed2, Starcraft2_Fire_Cloak,
-    Starcraft2_Energy_Siphon, Starcraft2_Fire_Hardened_Shields, Starcraft2_Flame_Turret, Starcraft2_Force_Field,
-    Starcraft2_Guardian_Shield, Starcraft2_Hardened_Shields, Starcraft2_Health_Upgrade_1, Starcraft2_Health_Upgrade_2,
-    Starcraft2_Ignite_Afterburners, Starcraft2_Immortal_Barrier, Starcraft2_Immortal_Original_Barrier,
-    Starcraft2_LaserBeam, Starcraft2_LaserDrill, Starcraft2_MovementSpeed, Starcraft2_Seeker_Missile,
-    Starcraft2_Shield_Barrier, Starcraft2_Shield_Piercing, Starcraft2_Stim1, Starcraft2_Stim2, Starcraft2_Stim3,
-    Starcraft2_Terran_Plating1, Starcraft2_Terran_Plating2, Starcraft2_Terran_Plating3, Starcraft2_Terran_Speed1,
-    Starcraft2_Terran_Speed2, Starcraft2_Terran_Speed3, Starcraft2_Terran_Weapons1, Starcraft2_Terran_Weapons2,
-    Starcraft2_Terran_Weapons3, Starcraft2_Third_Blink, Starcraft2_Time_Warp, Starcraft2_Vespene_Gas,
-    Starcraft2_Vespene_Siphon, Starcraft2_Vespene_Drone, Starcraft2_Wraith_Cloak, Starcraft2_Yellow_Blink,
-    Starcraft2_Heal, Starcraft2_Electric_Field, Starcraft2_Firebat_Weapon, Starcraft2_Advanced_Optics, CannisterOfGasoline,
-    Starcraft2_Battery, Starcraft2_Focused_Crystal, Starcraft2_Platinum_Sponge, Starcraft2_Overclock, Starcraft2_Armor_Piercing,
+    LockedIcon,
+    TopazGem7,
+    Starcraft2_Protoss_Shield_Disintegrate,
+    Starcraft2_Psi_Storm2,
+    Starcraft2_Dual_Rockets,
+    Starcraft2_Auto_Tracking,
+    Starcraft2_Blue_Flame,
+    Starcraft2_Concussive_Shells,
+    Starcraft2_Energy_Siphon,
+    Starcraft2_Fire_Hardened_Shields,
+    Starcraft2_Health_Upgrade_2,
+    Starcraft2_Seeker_Missile,
+    Starcraft2_Vespene_Drone,
+    Starcraft2_Heal,
+    Starcraft2_Electric_Field,
+    Starcraft2_Advanced_Optics,
+    CannisterOfGasoline,
+    Starcraft2_Battery,
+    Starcraft2_Focused_Crystal,
+    Starcraft2_Platinum_Sponge,
+    Starcraft2_Overclock,
+    Starcraft2_Armor_Piercing,
 
 
     //Peepo's
     peepoDeepFriedSadge, peepoFeelsCringeMan, peepoFeelsRetardedMan, peepoHmmm, peepoLookingDown, peepoMonkaHmmm, peepoMonkaLaugh,
     peepoPauseChamp, peepoClown, peepoCringe, peepoLaugh, peepoLyingSadge, peepoOkay, peepoSad, peepoSad2, peepoShrug,
     peepoSmadge, peepoSmokedge, peepoSmug, peepoStare, peepoUhm, peepoAngy, peepoBruh, peepoCoffee, peepoConfused, peepoGottem,
-    peepoHands, peepoLaugh2, peepoPointLaugh, peepoW, peepoSadClown, peepoSadge, peepoSadgeCry, peepoShruge, peepoSkillIssue, GUIRefresh,
+    peepoHands, peepoLaugh2, peepoPointLaugh, peepoW, peepoSadClown, peepoSadge, peepoSadgeCry, peepoShruge, peepoSkillIssue,
+    GUIRefresh,
 
 
     // Letters
@@ -94,7 +143,7 @@ public enum ImageEnums {
     Letter_C, Letter_D, Letter_E, Letter_F, Letter_G, Letter_H, Letter_I, Letter_J, Letter_K, Letter_L, Letter_M,
     Letter_N, Letter_O, Letter_P, Letter_Q, Letter_R, Letter_S, Letter_T, Letter_U, Letter_V, Letter_W, Letter_X,
     Letter_Y, Letter_Z, Letter_Percentage, Letter_Komma, Letter_One, Letter_Two, Letter_Three, Letter_Four, Letter_Five,
-    Letter_Six, Letter_Seven, Letter_Eight, Letter_Nine, Letter_Zero;
+    Letter_Six, Letter_Seven, Letter_Eight, Letter_Nine, Letter_Zero, SpaceStationBoss;
 
     public static ImageEnums fromChar (char c) {
         switch (c) {

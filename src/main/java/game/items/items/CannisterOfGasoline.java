@@ -1,5 +1,6 @@
 package game.items.items;
 
+import VisualAndAudioData.audio.enums.AudioEnums;
 import VisualAndAudioData.image.ImageEnums;
 import game.gameobjects.player.PlayerStats;
 import game.items.Item;
@@ -56,6 +57,7 @@ public class CannisterOfGasoline extends Item {
                 0, EffectActivationTypes.OnObjectDeath, true);
         dormentExplosion.setBurningDamage(burningDamage);
         dormentExplosion.setBurningDuration(duration);
+        dormentExplosion.setAudioEnums(AudioEnums.Firewall);
         gameObject.addEffect(dormentExplosion);
     }
 

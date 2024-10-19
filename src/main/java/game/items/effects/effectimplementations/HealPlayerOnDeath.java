@@ -27,9 +27,9 @@ public class HealPlayerOnDeath implements EffectInterface {
     public void activateEffect (GameObject gameObject) {
         if (gameObject.getCurrentHitpoints() <= 0) {
             if (healShield) {
-                PlayerManager.getInstance().getSpaceship().changeShieldHitpoints(healAmount);
+                PlayerManager.getInstance().getSpaceship().repairShields(healAmount);
             } else {
-                PlayerManager.getInstance().getSpaceship().changeHitPoints(healAmount);
+                PlayerManager.getInstance().getSpaceship().repairHealth(healAmount);
             }
         }
     }

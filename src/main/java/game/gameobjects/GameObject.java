@@ -1,5 +1,6 @@
 package game.gameobjects;
 
+import VisualAndAudioData.image.ImageEnums;
 import game.gamestate.GameStateInfo;
 import game.gamestate.GameStatsTracker;
 import game.items.Item;
@@ -95,7 +96,7 @@ public class GameObject extends Sprite {
 
     private int movementCounter = 0;
     protected float cashMoneyWorth;
-    protected double rotationAngle;
+    protected double rotationAngle = Direction.RIGHT.toAngle();
     protected boolean allowedVisualsToRotate;
 
     protected CopyOnWriteArrayList<EffectInterface> effects = new CopyOnWriteArrayList<>();
@@ -107,10 +108,10 @@ public class GameObject extends Sprite {
 
     public GameObject (SpriteConfiguration spriteConfiguration) {
         super(spriteConfiguration);
-        initGameObject();
         if (spriteConfiguration.getImageType() != null) {
             this.loadImage(spriteConfiguration.getImageType());
         }
+        initGameObject();
     }
 
     public GameObject (SpriteAnimationConfiguration spriteAnimationConfiguration) {
@@ -118,6 +119,10 @@ public class GameObject extends Sprite {
         this.animation = new SpriteAnimation(spriteAnimationConfiguration);
 //        this.animation.setAnimationScale(spriteAnimationConfiguration.getSpriteConfiguration().getScale());
         initGameObject();
+
+        if(this.imageType.equals(ImageEnums.SpaceStationBoss)){
+            this.allowedVisualsToRotate = false;
+        }
     }
 
     protected void initGameObject () {
@@ -134,13 +139,14 @@ public class GameObject extends Sprite {
         this.currentBoardBlock = BoardBlockUpdater.getBoardBlock(xCoordinate);
         this.allowedToMove = true;
         this.allowedVisualsToRotate = true;
+
     }
 
     protected void initMovementConfiguration (MovementConfiguration movementConfiguration) {
         this.movementRotation = movementConfiguration.getRotation();
         movementConfiguration.setCurrentLocation(currentLocation);
 
-        if(movementConfiguration.getDestination() == null){
+        if (movementConfiguration.getDestination() == null) {
             movementConfiguration.setDestination(movementConfiguration.getPathFinder().calculateInitialEndpoint(currentLocation, movementRotation, this.friendly));
         }
         if (movementConfiguration.getPathFinder() instanceof HomingPathFinder) {
@@ -378,7 +384,7 @@ public class GameObject extends Sprite {
         //Supposed to be overriden. Used for "Enemy kill counter" for example
     }
 
-    public void applyAfterCollisionEffects (GameObject target) {
+    public void applyAfterCollisionItemEffectsToObject (GameObject target) {
         if (this.appliesOnHitEffects) {
             List<Item> onHitItems = PlayerInventory.getInstance().getItemsByApplicationMethod(ItemApplicationEnum.AfterCollision);
             for (Item item : onHitItems) {
@@ -422,7 +428,7 @@ public class GameObject extends Sprite {
     //*****************MOVEMENT*******************************
     public void move () {
         toggleHealthBar();
-        if(this.isAllowedToMove()) {
+        if (this.isAllowedToMove()) {
             SpriteMover.getInstance().moveGameObject(this, movementConfiguration);
             moveAnimations();
             this.bounds.setBounds(xCoordinate + xOffset, yCoordinate + yOffset, width, height);
@@ -490,13 +496,6 @@ public class GameObject extends Sprite {
         if (this.animation != null) {
             rotateGameObjectSpriteAnimations(animation, direction, crop);
         }
-//        if (this.exhaustAnimation != null) {
-//            rotateGameObjectSpriteAnimations(exhaustAnimation, direction, crop);
-//        }
-
-//        if (this.destructionAnimation != null) {
-//            rotateGameObjectSpriteAnimations(destructionAnimation, direction, crop);
-//        }
 
         if (this.image != null) {
             this.image = ImageRotator.getInstance().rotate(originalImage, direction, crop);
@@ -507,9 +506,19 @@ public class GameObject extends Sprite {
     protected void updateChargingAttackAnimationCoordination () {
         if (this.chargingUpAttackAnimation != null) {
             double baseDistance = (this.getWidth() + this.getHeight()) / 2.0;
-            Point chargingUpLocation = ImageRotator.getInstance().calculateFrontPosition(this.getCenterXCoordinate(), this.getCenterYCoordinate(), rotationAngle, baseDistance);
+            Point chargingUpLocation = calculateFrontPosition(this.getCenterXCoordinate(), this.getCenterYCoordinate(), rotationAngle, baseDistance);
             this.chargingUpAttackAnimation.setCenterCoordinates(chargingUpLocation.getX(), chargingUpLocation.getY());
         }
+    }
+
+    private Point calculateFrontPosition(int centerX, int centerY, double angleDegrees, double distanceToFront) {
+        double angleRadians = Math.toRadians(angleDegrees);
+
+        // Calculate the new position using trigonometry
+        int newX = centerX + (int) (Math.cos(angleRadians) * distanceToFront);
+        int newY = centerY + (int) (Math.sin(angleRadians) * distanceToFront);
+
+        return new Point(newX, newY);
     }
 
     public void rotateGameObjectTowards (int targetXCoordinate, int targetYCoordinate, boolean crop) {
@@ -529,7 +538,7 @@ public class GameObject extends Sprite {
             } else if (this.image != null) {
                 this.image = ImageRotator.getInstance().rotateOrFlip(this.originalImage, calculatedAngle, crop);
 
-                if(this.scale != 1){
+                if (this.scale != 1) {
                     this.setScale(this.scale);
                 }
 
@@ -680,6 +689,9 @@ public class GameObject extends Sprite {
     }
 
     public float getCurrentHitpoints () {
+        if (currentHitpoints < 0) {
+            currentHitpoints = 0;
+        }
         return currentHitpoints;
     }
 
@@ -796,6 +808,11 @@ public class GameObject extends Sprite {
     }
 
     public void setScale (float newScale) {
+        if (newScale == this.scale) {
+            return;
+        }
+
+
         this.scale = newScale;
         if (this.animation != null) {
             this.animation.setAnimationScale(scale);
@@ -1007,7 +1024,7 @@ public class GameObject extends Sprite {
         }
     }
 
-    public float getTransparancyAlpha(){
+    public float getTransparancyAlpha () {
         if (this.animation != null) {
             return animation.getTransparancyAlpha();
         } else {

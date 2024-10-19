@@ -30,7 +30,10 @@ public class AudioLoader {
                 return mediaPlayer;
             }
         } catch (Exception e) {
+            System.out.println(audioFile);
             e.printStackTrace();
+            System.out.println("");
+
         }
         return null;
     }
@@ -44,6 +47,12 @@ public class AudioLoader {
                 return "/audio/music/Painting The Skies.wav";
             case Player_Laserbeam:
                 return "/audio/laserbeam1.wav";
+            case StickyGrenadeExplosion:
+                return "/audio/StickyGrenadeExplosion.wav";
+            case NewPlayerLaserbeam:
+                return  "/audio/NewPlayerLaserbeam.wav";
+            case PlayerTakesDamage:
+                return "/audio/PlayerTakesDamage.wav";
             case Destroyed_Explosion:
                 return "/audio/Destroyed Explosion.wav";
             case Alien_Spaceship_Destroyed:
@@ -148,7 +157,7 @@ public class AudioLoader {
             case KingPalmRunway:
                 return "/audio/music/KING PALM - Runway.wav";
             case ChargingLaserbeam:
-                return "/audio/Laserbeam Charging.wav";
+                return "/audio/Laserbeam Charging1.wav";
             case SilentAudio:
                 return "/audio/silence.wav";
             case VendlaSonrisa:return "/audio/music/Vendla - Sonrisa (Royalty Free Music).wav";

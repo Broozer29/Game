@@ -40,8 +40,10 @@ public class BackgroundManager {
 
     private void initManager () {
         this.spaceTheme = SpaceThemeEnums.selectRandomSpaceTheme();
+//        this.spaceTheme = SpaceThemeEnums.HDNebula;
         initSpaceTheme();
         this.nebulaTheme = NebulaThemeEnums.selectRandomNebulaScene();
+//        this.nebulaTheme = NebulaThemeEnums.HDNebula4;
         initBackgroundObjects();
     }
 
@@ -70,7 +72,18 @@ public class BackgroundManager {
                 planetBGOEnumsList.add(ImageEnums.Planet_One);
                 planetBGOEnumsList.add(ImageEnums.Planet_Two);
                 break;
+//            case HDNebula:
+//                planetBGOEnumsList.add(ImageEnums.Star_Yellow1);
+//                planetBGOEnumsList.add(ImageEnums.Star_Yellow2);
+//                planetBGOEnumsList.add(ImageEnums.Moon2);
+//                planetBGOEnumsList.add(ImageEnums.Moon3);
+//                planetBGOEnumsList.add(ImageEnums.Moon4);
+//                break;
         }
+
+        planetBGOEnumsList.add(ImageEnums.Moon2);
+        planetBGOEnumsList.add(ImageEnums.Moon3);
+        planetBGOEnumsList.add(ImageEnums.Moon4);
 
         planetBGOEnumsList.add(ImageEnums.Star_Orange1);
         planetBGOEnumsList.add(ImageEnums.Star_Orange2);
@@ -199,7 +212,7 @@ public class BackgroundManager {
                         moveInterval = intervalLevel4;
                         break;
                     default:
-                        moveInterval = 2; // Default interval, you can adjust this
+                        moveInterval = 2; // Default interval
                         break;
                 }
 
@@ -298,6 +311,11 @@ public class BackgroundManager {
                 return ImageEnums.Purple_Nebula_6;
             case Purple_Nebula_7:
                 return ImageEnums.Purple_Nebula_7;
+//            case HDNebula1: return ImageEnums.HDBackground1;
+//            case HDNebula2: return ImageEnums.HDBackground2;
+//            case HDNebula3: return ImageEnums.HDBackground3;
+//            case HDNebula4: return ImageEnums.HDBackground4;
+//            case HDNebula5: return ImageEnums.HDBackground5;
         }
         return null;
     }

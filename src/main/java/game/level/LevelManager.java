@@ -1,13 +1,14 @@
 package game.level;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import VisualAndAudioData.audio.enums.AudioEnums;
 import VisualAndAudioData.audio.enums.LevelSongs;
+import VisualAndAudioData.audio.enums.MusicMediaPlayer;
 import game.UI.GameUICreator;
-import game.gameobjects.enemies.enemytypes.LaserOriginDrone;
+import game.gameobjects.enemies.enums.EnemyCategory;
+import game.gameobjects.player.PlayerManager;
 import game.level.enums.LevelTypes;
 import game.managers.ShopManager;
 import game.movement.Direction;
@@ -20,7 +21,6 @@ import VisualAndAudioData.audio.AudioManager;
 import game.level.directors.DirectorManager;
 import game.level.enums.LevelDifficulty;
 import game.level.enums.LevelLength;
-import game.movement.pathfinders.DestinationPathFinder;
 
 import javax.sound.sampled.UnsupportedAudioFileException;
 
@@ -31,6 +31,8 @@ public class LevelManager {
     private EnemyManager enemyManager = EnemyManager.getInstance();
     private SpawningCoordinator spawningCoordinator = SpawningCoordinator.getInstance();
     private GameStateInfo gameState = GameStateInfo.getInstance();
+
+
 
     private AudioEnums currentLevelSong;
     private LevelDifficulty currentLevelDifficulty;
@@ -58,43 +60,58 @@ public class LevelManager {
     public void updateGameTick () {
         // Check if the song has ended, then create the moving out portal
         if (gameState.getGameState() == GameStatusEnums.Playing) {
+            if(AudioManager.getInstance().getMusicMediaPlayer().equals(MusicMediaPlayer.MacOS)){
+                currentLevelLength = LevelLength.getLevelLengthByDuration(audioManager.getTotalPlaybackLengthInSeconds());
+            }
+
             if (levelType == LevelTypes.Regular || levelType == LevelTypes.Special) {
-                if (audioManager.getBackgroundMusic().getCurrentTimeInSeconds() >= audioManager.getBackgroundMusic().getCurrentTimeInSeconds()) {
+                if(audioManager.isBackgroundMusicInitializing()){
+                    //We are still initializing the audio it seems
+                    return;
+                }
+                if (audioManager.isBackgroundMusicFinished()) {
                     gameState.setGameState(GameStatusEnums.Level_Finished);
+                    DirectorManager.getInstance().setEnabled(false);
+                    enemyManager.removeOutOfBoundsEnemies();
                 }
             } else if (levelType == LevelTypes.Boss) {
                 if (!EnemyManager.getInstance().isBossAlive()) {
                     gameState.setGameState(GameStatusEnums.Level_Finished);
+                    enemyManager.detonateAllEnemies();
                 }
             }
         }
 
-        //NextLevelPortal spawns in friendlymanager, now we wait for the player to enter the portal to set it to Level_Completed
+
+
+        //NextLevelPortal spawns in friendlymanager, now we wait for the player to enter the portal to set it to Level_Completed to show the score card
         if (gameState.getGameState() == GameStatusEnums.Level_Completed) {
             ShopManager shopManager = ShopManager.getInstance();
             shopManager.setLastLevelDifficulty(this.currentLevelDifficulty);
             shopManager.setLastLevelLength(this.currentLevelLength);
             shopManager.setLastLevelDifficultyCoeff(this.currentLevelDifficultyScore);
             shopManager.setRowsUnlockedByDifficulty(this.currentLevelDifficultyScore);
-            DirectorManager.getInstance().setEnabled(false);
             shopManager.calculateRerollCost();
 
+            PlayerManager.getInstance().getSpaceship().setImmune(true);
             gameState.setGameState(GameStatusEnums.Show_Level_Score_Card);
             this.currentLevelLength = null;
             this.currentLevelDifficulty = null;
             this.currentLevelDifficultyScore = 2;
             //Now the GameBoard handles the following transition into "going to shop" or "back to main menu"
         }
-//        if (gameState.getMusicSeconds() >= gameState.getMaxMusicSeconds() && gameState.getGameState() == GameStatusEnums.Playing) {
-//            gameState.setGameState(GameStatusEnums.Level_Finished);
-//        }
     }
 
 
     // Called when a level starts, to saturate enemy list
     public void startLevel () {
         if (currentLevelDifficulty == null) {
-            currentLevelDifficulty = LevelDifficulty.getRandomDifficulty();
+
+            if(AudioManager.getInstance().getMusicMediaPlayer().equals(MusicMediaPlayer.MacOS)){
+                currentLevelDifficulty = LevelDifficulty.Medium;
+            } else {
+                currentLevelDifficulty = LevelDifficulty.getRandomDifficulty();
+            }
         }
 
         if (currentLevelLength == null) {
@@ -102,6 +119,7 @@ public class LevelManager {
         }
 
         boolean nextLevelABossLevel = isNextLevelABossLevel();
+//        nextLevelABossLevel = true;
         if(nextLevelABossLevel){
             this.levelType = LevelTypes.Boss;
             currentLevelDifficulty = LevelDifficulty.Hard;
@@ -113,55 +131,57 @@ public class LevelManager {
 
         currentLevelDifficultyScore = LevelSongs.getDifficultyScore(currentLevelDifficulty, currentLevelLength);
         GameUICreator.getInstance().createDifficultyWings(nextLevelABossLevel, currentLevelDifficultyScore);
-        gameState.setGameState(GameStatusEnums.Playing);
+
 
         AudioManager audioManager = AudioManager.getInstance();
-//        audioManager.testMode = true;
-//        audioManager.muteMode = true;
 
-        this.levelType = LevelTypes.Boss;
-        activateDirectors(this.levelType);
+        PlayerManager.getInstance().getSpaceship().allowMovementBeyondBoundaries = false;
+//        audioManager.testMode = true;
+        audioManager.muteMode = true;
+
+//        activateDirectors(this.levelType);
         try {
             activateMusic(this.levelType);
         } catch (UnsupportedAudioFileException | IOException e) {
             throw new RuntimeException(e);
         }
-//        PlayerStats.getInstance().setShopRerollDiscount(99);
-//        PlayerInventory.getInstance().addMinerals(1000000);
 
+        gameState.setGameState(GameStatusEnums.Playing);
 
-//        for(int i = 0; i < 150; i++){
-//            PlayerInventory.getInstance().addItem(ItemEnums.getRandomItemByRarity(ItemRarityEnums.Common));
-//        }
-//        directorManager.testingRichMode = true;
-
-
-//        PlayerStats.getInstance().setBaseDamage(1);
-
-//        Director testDirector = DirectorManager.getInstance().getTestDirector();
-//        testDirector.spawnRegularFormation(SpawnFormationEnums.V, EnemyEnums.Scout);
-
-
-//        ArrayList<LaserOriginDrone> drones = EnemyCreator.createLaserOriginDrones(700,
-//                200, 4);
-//
-//        for(LaserOriginDrone drone : drones){
-//            EnemyManager.getInstance().addEnemy(drone);
-//            drone.setAllowedToMove(false);
-//        }
 
 //        EnemyEnums enemyType = EnemyEnums.RedBoss;
-//        Enemy enemy = EnemyCreator.createEnemy(enemyType, 400, 200, Direction.LEFT, enemyType.getDefaultScale()
+//        Enemy enemy = EnemyCreator.createEnemy(enemyType, 800, 400, Direction.LEFT, enemyType.getDefaultScale()
 //                , enemyType.getMovementSpeed(), enemyType.getMovementSpeed(), MovementPatternSize.SMALL, false);
-////        enemy.getMovementConfiguration().setBoardBlockToHoverIn(4);
-////        enemy.getMovementConfiguration().setPathFinder(new DestinationPathFinder());
-////        enemy.getMovementConfiguration().setDestination(new Point(100, 99));
-////        enemy.setAllowedVisualsToRotate(false);
-////        enemy.getMovementConfiguration().setXMovementSpeed(1f);
-////        enemy.getMovementConfiguration().setYMovementSpeed(1f);
-////        enemy.getAnimation().changeImagetype(ImageEnums.Scout);
+//        enemy.getMovementConfiguration().setBoardBlockToHoverIn(4);
+//        enemy.getMovementConfiguration().setPathFinder(new DestinationPathFinder());
+//        enemy.getMovementConfiguration().setDestination(new Point(100, 99));
+//        enemy.setAllowedVisualsToRotate(false);
+//        enemy.getMovementConfiguration().setXMovementSpeed(1f);
+//        enemy.getMovementConfiguration().setYMovementSpeed(1f);
+//        enemy.getAnimation().changeImagetype(ImageEnums.Scout);
 //        EnemyManager.getInstance().addEnemy(enemy);
+
+        EnemyEnums enemyType = EnemyEnums.SpaceStationBoss;
+        Enemy enemy = EnemyCreator.createEnemy(enemyType, 500, 200, Direction.RIGHT, enemyType.getDefaultScale()
+                , enemyType.getMovementSpeed(), enemyType.getMovementSpeed(), MovementPatternSize.SMALL, false);
+//        enemy.setAllowedToDealDamage(false);
+//        enemy.setAllowedToMove(false);
+//        enemy.setAllowedToFire(false);
+        EnemyManager.getInstance().addEnemy(enemy);
+
+//        Enemy enemy2 = EnemyCreator.createEnemy(enemyType, 300, 200, Direction.LEFT, enemyType.getDefaultScale()
+//                , enemyType.getMovementSpeed(), enemyType.getMovementSpeed(), MovementPatternSize.SMALL, false);
+//        enemy2.setAllowedToDealDamage(false);
+//        enemy2.setAllowedToMove(false);
+//        enemy2.setAllowedToFire(false);
+//        EnemyManager.getInstance().addEnemy(enemy2);
 //
+//        Enemy enemy3 = EnemyCreator.createEnemy(enemyType, 200, 230, Direction.LEFT, enemyType.getDefaultScale()
+//                , enemyType.getMovementSpeed(), enemyType.getMovementSpeed(), MovementPatternSize.SMALL, false);
+//        enemy3.setAllowedToDealDamage(false);
+//        enemy3.setAllowedToMove(false);
+//        enemy3.setAllowedToFire(false);
+//        EnemyManager.getInstance().addEnemy(enemy3);
 
     }
 
@@ -175,20 +195,16 @@ public class LevelManager {
     private void activateMusic (LevelTypes levelType) throws UnsupportedAudioFileException, IOException {
         switch (levelType) {
             case Regular -> {
-                audioManager.playRandomBackgroundMusic(currentLevelDifficulty, currentLevelLength, false);
+                audioManager.playDefaultBackgroundMusic(currentLevelDifficulty, currentLevelLength, false);
                 this.currentLevelSong = audioManager.getCurrentSong();
             }
             case Boss -> {
-                audioManager.playBackgroundMusic(LevelSongs.getRandomBossSong(),true);
+                audioManager.playDefaultBackgroundMusic(LevelSongs.getRandomBossSong(),true);
                 this.currentLevelSong = audioManager.getCurrentSong();
                 //to implement
             }
             case Special -> {
                 //to implement
-            }
-            default -> {
-                audioManager.playRandomBackgroundMusic(currentLevelDifficulty, currentLevelLength, false);
-                this.currentLevelSong = audioManager.getCurrentSong();
             }
         }
     }
@@ -217,7 +233,9 @@ public class LevelManager {
     }
 
     private boolean validCoordinates (int xCoordinate, int yCoordinate, EnemyEnums enemyType, float scale) {
-        if (enemyType.equals(EnemyEnums.CashCarrier) || enemyType.equals(EnemyEnums.RedBoss)) {
+        if (enemyType.getEnemyCategory().equals(EnemyCategory.Boss) ||
+                enemyType.getEnemyCategory().equals(EnemyCategory.Special) ||
+                enemyType.getEnemyCategory().equals(EnemyCategory.Summon)) {
             return true;
         }
 
@@ -282,4 +300,6 @@ public class LevelManager {
     public void setCurrentLevelDifficultyScore (int currentLevelDifficultyScore) {
         this.currentLevelDifficultyScore = currentLevelDifficultyScore;
     }
+
+
 }

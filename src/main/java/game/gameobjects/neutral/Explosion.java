@@ -48,7 +48,7 @@ public class Explosion extends GameObject {
     }
 
     public void updateAllowedToDealDamage () {
-        if (this.animation.getCurrentFrame() > this.maxAnimationFramesForDamage || this.damage == 0) {
+        if (this.animation.getCurrentFrame() > this.maxAnimationFramesForDamage) {
             setAllowedToDealDamage(false);
         }
     }
@@ -71,7 +71,7 @@ public class Explosion extends GameObject {
         return false;
     }
 
-    public void applyExplosionEffects (GameObject target) {
+    public void applyExplosionOnHitEffects (GameObject target) {
         for (EffectInterface effect : effectsToApply) {
             EffectInterface effectCopy = effect.copy();
             if (effectCopy != null) {

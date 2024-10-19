@@ -39,6 +39,7 @@ public class Enemy extends GameObject {
             initMovementConfiguration(movementConfiguration);
         }
         configureEnemy(enemyConfiguration);
+        modifyStatsBasedOnLevel();
         initChargingUpAnimation(spriteConfiguration);
     }
 
@@ -47,7 +48,9 @@ public class Enemy extends GameObject {
         if (movementConfiguration != null) {
             initMovementConfiguration(movementConfiguration);
         }
+
         configureEnemy(enemyConfiguration);
+        modifyStatsBasedOnLevel();
         initChargingUpAnimation(spriteAnimationConfigurationion.getSpriteConfiguration());
 
     }
@@ -68,7 +71,6 @@ public class Enemy extends GameObject {
         this.cashMoneyWorth = enemyConfiguration.getCashMoneyWorth();
         this.xpOnDeath = enemyConfiguration.getXpOnDeath();
         this.isAttacking = false;
-        modifyStatsBasedOnLevel();
         this.setVisible(true);
         this.setFriendly(false);
         this.rotateGameObjectTowards(movementRotation, true);
@@ -153,7 +155,7 @@ public class Enemy extends GameObject {
             rotateObjectTowardsDestination(true);
             setAllowedVisualsToRotate(false);
         } else if (!(movementConfiguration.getPathFinder() instanceof DestinationPathFinder)) {
-                System.out.println("I've encountered an empty waypoints, this shouldnt happen outside explicit testing -> Enemy.java, line 145");
+                System.out.println("I've encountered an empty waypoints, this shouldnt happen outside explicit testing -> Enemy.java, line 156 " + this.enemyType + " / " + this.xCoordinate + " / " + this.yCoordinate);
                 setAllowedVisualsToRotate(false);
 
         }

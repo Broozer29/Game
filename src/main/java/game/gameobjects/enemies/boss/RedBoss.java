@@ -29,17 +29,20 @@ public class RedBoss extends Enemy {
         this.allowedVisualsToRotate = false;
         this.knockbackStrength = 9;
 
-//        BossActionable bossBehaviour1 = new SpawnShuriken();
-//        bossBehaviourList.add(bossBehaviour1);
-//
-//        BossActionable bossBehaviour2 = new BurstMainAttackBossBehaviour();
-//        bossBehaviourList.add(bossBehaviour2);
-//
-//        BossActionable bossBehaviour3 = new SpawnFourDirectionalDrone();
-//        bossBehaviourList.add(bossBehaviour3);
+        BossActionable bossBehaviour1 = new SpawnShuriken();
+        bossBehaviourList.add(bossBehaviour1);
+
+        BossActionable bossBehaviour2 = new BurstMainAttackBossBehaviour();
+        bossBehaviourList.add(bossBehaviour2);
+
+        BossActionable bossBehaviour3 = new SpawnFourDirectionalDrone();
+        bossBehaviourList.add(bossBehaviour3);
 
         BossActionable bossBehaviour4 = new CrossingLaserbeamsAttack(true);
         bossBehaviourList.add(bossBehaviour4);
+
+        BossActionable bossBehaviour5 = new CrossingLaserbeamsAttack(false);
+        bossBehaviourList.add(bossBehaviour5);
 
         bossBehaviourList = bossBehaviourList.stream()
                 .sorted(Comparator.comparingInt(BossActionable::getPriority).reversed())

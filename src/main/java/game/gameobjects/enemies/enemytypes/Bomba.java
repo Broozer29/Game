@@ -27,7 +27,7 @@ public class Bomba extends Enemy {
 	public Bomba(SpriteAnimationConfiguration spriteConfiguration, EnemyConfiguration enemyConfiguration, MovementConfiguration movementConfiguration) {
 		super(spriteConfiguration, enemyConfiguration, movementConfiguration);
 
-		SpriteAnimationConfiguration destroyedExplosionfiguration = new SpriteAnimationConfiguration(spriteConfiguration.getSpriteConfiguration(), 3, false);
+		SpriteAnimationConfiguration destroyedExplosionfiguration = new SpriteAnimationConfiguration(spriteConfiguration.getSpriteConfiguration(), 0, false);
 		destroyedExplosionfiguration.getSpriteConfiguration().setImageType(this.enemyType.getDestructionType());
 		this.destructionAnimation = new SpriteAnimation(destroyedExplosionfiguration);
 

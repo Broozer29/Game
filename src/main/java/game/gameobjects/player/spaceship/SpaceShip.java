@@ -8,6 +8,9 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.sound.sampled.UnsupportedAudioFileException;
 
+import VisualAndAudioData.DataClass;
+import VisualAndAudioData.audio.AudioManager;
+import VisualAndAudioData.audio.enums.AudioEnums;
 import controllerInput.ControllerInputEnums;
 import controllerInput.ControllerInputReader;
 import game.gamestate.GameStateInfo;
@@ -16,6 +19,7 @@ import game.items.Item;
 import game.items.PlayerInventory;
 import game.items.enums.ItemApplicationEnum;
 import game.items.enums.ItemEnums;
+import game.level.LevelManager;
 import game.managers.AnimationManager;
 import game.movement.Point;
 import game.gameobjects.friendlies.FriendlyManager;
@@ -43,6 +47,7 @@ public class SpaceShip extends GameObject {
     private float currentShieldRegenDelayFrame;
     private boolean controlledByKeyboard = true;
     private Set<Integer> pressedKeys = new HashSet<>();
+    private boolean isImmune;
 
     private SpriteAnimation exhaustAnimation = null;  //inherit from gameobject
 
@@ -52,6 +57,7 @@ public class SpaceShip extends GameObject {
     private SpaceShipRegularGun spaceShipRegularGun = null;
     private SpaceShipSpecialGun spaceShipSpecialGun = null;
     private List<SpecialAttack> playerFollowingSpecialAttacks = new ArrayList<SpecialAttack>();
+    public boolean allowMovementBeyondBoundaries = false;
 
     public SpaceShip (SpriteConfiguration spriteConfiguration) {
         super(spriteConfiguration);
@@ -65,6 +71,7 @@ public class SpaceShip extends GameObject {
     }
 
     private void initShip () {
+        this.isImmune = false;
         directionx = 0;
         directiony = 0;
         this.currentShieldPoints = playerStats.getMaxShieldHitPoints();
@@ -161,18 +168,27 @@ public class SpaceShip extends GameObject {
     }
 
     public void takeDamage (float damageTaken) {
-        // Armor calculation should only apply if damage is being dealt, not for healing
+        if(this.isImmune){
+            return; //The player is immune, we don't want to do anything here
+        }
+
         if (damageTaken > 0) {
             lastGameSecondDamageTaken = GameStateInfo.getInstance().getGameSeconds();
             this.currentShieldRegenDelayFrame = 0;
 
             GameStatsTracker.getInstance().addDamageTaken(damageTaken);
 
+            try {
+                AudioManager.getInstance().addAudio(AudioEnums.PlayerTakesDamage);
+            } catch (UnsupportedAudioFileException | IOException e) {
+                throw new RuntimeException(e);
+            }
+
             // Check if the damage pierces the shield
             float shieldPiercingDamage = currentShieldPoints - damageTaken;
             if (shieldPiercingDamage < 0) {
                 // Apply the damage that pierced through the shield to hit points
-                changeHitPoints(shieldPiercingDamage);
+                changeHitPoints(-shieldPiercingDamage);
                 //If there were any shields left, show the animation
                 if (currentShieldPoints > 0) {
                     addShieldDamageAnimation();
@@ -190,7 +206,7 @@ public class SpaceShip extends GameObject {
         }
     }
 
-    public void changeHitPoints (float change) {
+    private void changeHitPoints (float change) {
         this.currentHitpoints += change;
         float maxHitPoints = playerStats.getMaxHitPoints();
         if (this.currentHitpoints > maxHitPoints) {
@@ -239,7 +255,6 @@ public class SpaceShip extends GameObject {
     private void movePlayerAnimations () {
         for (SpriteAnimation anim : playerFollowingAnimations) {
             anim.setOriginCoordinates(getCenterXCoordinate(), getCenterYCoordinate());
-//            anim.setCenterCoordinates(gsetCenterXCoordinate(), getCenterYCoordinate());
         }
     }
 
@@ -325,6 +340,33 @@ public class SpaceShip extends GameObject {
         accumulatedYCoordinate += totalMovementY;
         xCoordinate = Math.round(accumulatedXCoordinate);
         yCoordinate = Math.round(accumulatedYCoordinate);
+
+
+
+        if(!allowMovementBeyondBoundaries) {
+            // Get boundary limits
+            int windowWidth = DataClass.getInstance().getWindowWidth();
+            int playableWindowMaxHeight = DataClass.getInstance().getPlayableWindowMaxHeight();
+
+            // Ensure X coordinate is within bounds
+            if (xCoordinate < 0) {
+                xCoordinate = 0;
+                accumulatedXCoordinate = 0;  // Also reset accumulated to avoid future inconsistencies
+            } else if (xCoordinate > windowWidth - this.getWidth()) {
+                xCoordinate = windowWidth - this.getWidth();
+                accumulatedXCoordinate = xCoordinate;  // Ensure accumulated matches new clamped position
+            }
+
+            // Ensure Y coordinate is within bounds
+            if (yCoordinate < 0) {
+                yCoordinate = 0;
+                accumulatedYCoordinate = 0;  // Also reset accumulated to avoid future inconsistencies
+            } else if (yCoordinate > playableWindowMaxHeight - this.getHeight()) {
+                yCoordinate = playableWindowMaxHeight - this.getHeight();
+                accumulatedYCoordinate = yCoordinate;  // Ensure accumulated matches new clamped position
+            }
+        }
+
 
         // Update bounds and other properties
         bounds.setBounds(xCoordinate + xOffset, yCoordinate + yOffset, width, height);
@@ -609,4 +651,11 @@ public class SpaceShip extends GameObject {
         }
     }
 
+    public boolean isImmune () {
+        return isImmune;
+    }
+
+    public void setImmune (boolean immune) {
+        isImmune = immune;
+    }
 }

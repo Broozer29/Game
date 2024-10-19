@@ -6,10 +6,12 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.sound.sampled.UnsupportedAudioFileException;
 
+import VisualAndAudioData.audio.enums.AudioEnums;
 import game.gameobjects.enemies.enums.EnemyCategory;
 import game.gamestate.GameStatsTracker;
 import game.managers.AnimationManager;
 import game.gameobjects.GameObject;
+import game.util.WithinVisualBoundariesCalculator;
 import game.util.collision.CollisionDetector;
 import game.gameobjects.player.PlayerManager;
 import game.gameobjects.player.spaceship.SpaceShip;
@@ -24,6 +26,7 @@ public class EnemyManager {
     private AnimationManager animationManager = AnimationManager.getInstance();
     private CopyOnWriteArrayList<Enemy> enemyList = new CopyOnWriteArrayList<Enemy>();
     private boolean hasSpawnedABoss = false;
+
     private EnemyManager () {
     }
 
@@ -59,10 +62,10 @@ public class EnemyManager {
     }
 
 
-    public boolean isBossAlive(){
-        if(!hasSpawnedABoss){
+    public boolean isBossAlive () {
+        if (!hasSpawnedABoss) {
             return true;
-        } else if(hasSpawnedABoss) {
+        } else if (hasSpawnedABoss) {
             return enemyList.stream().anyMatch(enemy -> enemy.getEnemyType().getEnemyCategory().equals(EnemyCategory.Boss));
         }
 
@@ -88,11 +91,16 @@ public class EnemyManager {
     }
 
     private void detonateEnemy (Enemy enemy) throws UnsupportedAudioFileException, IOException {
-        if(enemy.getDestructionAnimation() != null){
+        if (enemy.getDestructionAnimation() != null) {
             enemy.getDestructionAnimation().setCenterCoordinates(enemy.getCenterXCoordinate(), enemy.getCenterYCoordinate());
             animationManager.addLowerAnimation(enemy.getDestructionAnimation());
         }
-        audioManager.addAudio(enemy.getDeathSound());
+
+        AudioEnums impactSound = enemy.getDeathSound();
+        switch (enemy.getEnemyType()) {
+            case Needler, Alien_Bomb -> impactSound = AudioEnums.Alien_Bomb_Impact;
+        }
+        audioManager.addAudio(impactSound);
         enemy.setVisible(false);
     }
 
@@ -102,7 +110,7 @@ public class EnemyManager {
         }
     }
 
-    private void updateEnemies() throws UnsupportedAudioFileException, IOException {
+    private void updateEnemies () throws UnsupportedAudioFileException, IOException {
         for (Enemy en : enemyList) {
             if (en.isVisible()) {
                 en.move();
@@ -119,7 +127,7 @@ public class EnemyManager {
             enemy.onCreationEffects();
             enemyList.add(enemy);
 
-            if(enemy.getEnemyType().getEnemyCategory() != EnemyCategory.Summon) {
+            if (enemy.getEnemyType().getEnemyCategory() != EnemyCategory.Summon) {
                 GameStatsTracker.getInstance().addEnemySpawned(1);
             }
         }
@@ -195,5 +203,23 @@ public class EnemyManager {
 
     public void setHasSpawnedABoss (boolean hasSpawnedABoss) {
         this.hasSpawnedABoss = hasSpawnedABoss;
+    }
+
+    public void removeOutOfBoundsEnemies () {
+        for (Enemy enemy : enemyList) {
+            if (enemy.getEnemyType().getEnemyCategory().equals(EnemyCategory.Basic) ||
+                    enemy.getEnemyType().getEnemyCategory().equals(EnemyCategory.Mercenary) ||
+                    enemy.getEnemyType().getEnemyCategory().equals(EnemyCategory.Special)) {
+                if (!WithinVisualBoundariesCalculator.isWithinBoundaries(enemy)) {
+                    enemy.deleteObject();
+                }
+            }
+        }
+    }
+
+    public void detonateAllEnemies(){
+        for (Enemy enemy : enemyList){
+            enemy.deleteObject();
+        }
     }
 }

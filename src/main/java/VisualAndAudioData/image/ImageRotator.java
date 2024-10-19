@@ -121,7 +121,6 @@ public class ImageRotator {
         // Crop the image to remove any unnecessary transparent space
         if(crop) {
             bufferedImage = cropTransparentPixels(bufferedImage);
-//            bufferedImage = ImageCropper.getInstance().cropToContent(bufferedImage); Not needed as it's already cropped
         }
 
         rotatedImageCache.put(cacheKey, bufferedImage);
@@ -217,6 +216,7 @@ public class ImageRotator {
         // Determine if the image is facing the left half of the circle and needs to be flipped vertically.
         boolean isLeftHalf = angleDegrees > 90 && angleDegrees < 270;
 
+
         // If the image is on the left half of the circle, mirror the angle for rotation.
         if (isLeftHalf) {
             angleDegrees = 360 - angleDegrees;
@@ -248,13 +248,4 @@ public class ImageRotator {
         return op.filter(image, null);
     }
 
-    public Point calculateFrontPosition(int centerX, int centerY, double angleDegrees, double distanceToFront) {
-        double angleRadians = Math.toRadians(angleDegrees);
-
-        // Calculate the new position using trigonometry
-        int newX = centerX + (int) (Math.cos(angleRadians) * distanceToFront);
-        int newY = centerY + (int) (Math.sin(angleRadians) * distanceToFront);
-
-        return new Point(newX, newY);
-    }
 }

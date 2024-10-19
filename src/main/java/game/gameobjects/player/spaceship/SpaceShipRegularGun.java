@@ -48,7 +48,7 @@ public class SpaceShipRegularGun {
             fireMissile(xCoordinate, yCoordinate, visualImage, scale, pathFinder, playerAttackType);
 
             switch (playerAttackType) {
-                case PlayerLaserbeam -> playMissileAudio(AudioEnums.Player_Laserbeam);
+                case PlayerLaserbeam -> playMissileAudio(AudioEnums.NewPlayerLaserbeam);
                 case DefaultRocket -> playMissileAudio(AudioEnums.Rocket_Launcher);
             }
         }

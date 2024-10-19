@@ -1,20 +1,20 @@
 package guiboards.boards;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Toolkit;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
+import VisualAndAudioData.audio.AudioManager;
+import VisualAndAudioData.audio.CustomAudioClip;
 import controllerInput.ConnectedControllers;
 import controllerInput.ControllerInputEnums;
 import controllerInput.ControllerInputReader;
@@ -22,6 +22,8 @@ import game.managers.AnimationManager;
 import game.gameobjects.background.BackgroundManager;
 import game.gameobjects.background.BackgroundObject;
 import VisualAndAudioData.DataClass;
+import game.managers.OnScreenTextManager;
+import game.util.OnScreenText;
 import guiboards.boardEnums.MenuFunctionEnums;
 import guiboards.boardcreators.MenuBoardCreator;
 import guiboards.guicomponents.GUIComponent;
@@ -37,6 +39,7 @@ public class MenuBoard extends JPanel implements ActionListener {
     private ConnectedControllers controllers = ConnectedControllers.getInstance();
     private final int boardWidth = data.getWindowWidth();
     private final int boardHeight = data.getWindowHeight();
+    private AudioManager audioManager = AudioManager.getInstance();
 
     private List<GUIComponent> firstColumn = new ArrayList<>();
     private List<GUIComponent> secondColumn = new ArrayList<>();
@@ -48,6 +51,8 @@ public class MenuBoard extends JPanel implements ActionListener {
     private List<GUITextCollection> controlExplanations;
     private GUIComponent startGameBackgroundCard;
     private GUITextCollection openShopButton;
+    private GUITextCollection selectMacOSMediaPlayerButton;
+    private GUITextCollection selectDefaultMusicButton;
     private GUIComponent titleImage;
     private GUITextCollection foundController;
     private Timer timer;
@@ -57,6 +62,7 @@ public class MenuBoard extends JPanel implements ActionListener {
 
     private int selectedRow = 0;
     private int selectedColumn = 0;
+    private boolean recreateList = false;
 
     public MenuBoard () {
         addKeyListener(new TAdapter());
@@ -85,7 +91,8 @@ public class MenuBoard extends JPanel implements ActionListener {
         menuCursor = MenuBoardCreator.createMenuCursor(startGameButton.getComponents().get(0));
         openShopButton = MenuBoardCreator.openShopButton(startGameButton);
         foundController = MenuBoardCreator.foundControllerText(foundControllerBool, titleImage);
-
+        selectMacOSMediaPlayerButton = MenuBoardCreator.selectMacOSMediaPlayer(openShopButton);
+        selectDefaultMusicButton = MenuBoardCreator.selectDefaultPlayer(selectMacOSMediaPlayerButton);
 
         initializedMenuObjects = true;
     }
@@ -118,6 +125,7 @@ public class MenuBoard extends JPanel implements ActionListener {
             grid.add(firstColumn);
             grid.add(secondColumn);
             grid.add(thirdColumn);
+            recreateList();
         }
     }
 
@@ -142,6 +150,12 @@ public class MenuBoard extends JPanel implements ActionListener {
         addAllButFirstComponent(startGameButton);
         firstColumn.add(openShopButton.getComponents().get(0));
         addAllButFirstComponent(openShopButton);
+
+        firstColumn.add(selectMacOSMediaPlayerButton.getComponents().get(0));
+        addAllButFirstComponent(selectMacOSMediaPlayerButton);
+
+        firstColumn.add(selectDefaultMusicButton.getComponents().get(0));
+        addAllButFirstComponent(selectDefaultMusicButton);
 
     }
 
@@ -248,22 +262,32 @@ public class MenuBoard extends JPanel implements ActionListener {
         @Override
         public void keyReleased (KeyEvent e) {
             int key = e.getKeyCode();
+            boolean needsUpdate = false;
             switch (key) {
                 case (KeyEvent.VK_ENTER):
                     selectMenuTile();
+                    needsUpdate = true;
                     break;
                 case (KeyEvent.VK_A):
                     previousMenuTile();
+                    needsUpdate = true;
                     break;
                 case (KeyEvent.VK_D):
                     nextMenuTile();
+                    needsUpdate = true;
                     break;
                 case (KeyEvent.VK_W):
                     previousMenuColumn();
+                    needsUpdate = true;
                     break;
                 case (KeyEvent.VK_S):
                     nextMenuColumn();
+                    needsUpdate = true;
                     break;
+            }
+
+            if(needsUpdate){
+                recreateList();
             }
         }
 
@@ -285,25 +309,29 @@ public class MenuBoard extends JPanel implements ActionListener {
         }
     }
 
-    private int inputDelay;
-    private static final long MOVE_COOLDOWN = 50; // 50 milliseconds
+    private long lastMoveTime = 0;
+    private static final long MOVE_COOLDOWN = 350; // milliseconds
 
     public void executeControllerInput () {
         if (controllers.getFirstController() != null) {
+            boolean needsUpdate = false;
             controllerInputReader.pollController();
+            long currentTime = System.currentTimeMillis();
 
             // Left and right navigation
-            if (inputDelay >= MOVE_COOLDOWN) {
+            if (currentTime - lastMoveTime > MOVE_COOLDOWN) {
                 if (controllerInputReader.isInputActive(ControllerInputEnums.MOVE_LEFT_SLOW)
                         || controllerInputReader.isInputActive(ControllerInputEnums.MOVE_LEFT_QUICK)) {
                     // Menu option to the left
                     previousMenuTile();
-                    inputDelay = 0;
+                    needsUpdate = true;
+                    lastMoveTime = currentTime;
                 } else if (controllerInputReader.isInputActive(ControllerInputEnums.MOVE_RIGHT_SLOW)
                         || controllerInputReader.isInputActive(ControllerInputEnums.MOVE_RIGHT_QUICK)) {
                     // Menu option to the right
                     nextMenuTile();
-                    inputDelay = 0;
+                    needsUpdate = true;
+                    lastMoveTime = currentTime;
                 }
 
                 // Up and down navigation
@@ -311,27 +339,31 @@ public class MenuBoard extends JPanel implements ActionListener {
                         || controllerInputReader.isInputActive(ControllerInputEnums.MOVE_UP_QUICK)) {
                     // Menu option upwards
                     previousMenuColumn();
-                    inputDelay = 0;
+                    needsUpdate = true;
+                    lastMoveTime = currentTime;
                 } else if (controllerInputReader.isInputActive(ControllerInputEnums.MOVE_DOWN_SLOW)
                         || controllerInputReader.isInputActive(ControllerInputEnums.MOVE_DOWN_QUICK)) {
                     // Menu option downwards
                     nextMenuColumn();
-                    inputDelay = 0;
+                    needsUpdate = true;
+                    lastMoveTime = currentTime;
                 }
 
                 if (controllerInputReader.isInputActive(ControllerInputEnums.FIRE)) {
                     // Select menu option
                     selectMenuTile();
-                    inputDelay = 0;
+                    needsUpdate = true;
+                    lastMoveTime = currentTime;
                 }
+            }
+
+            if (needsUpdate) {
+                recreateList(); // Update the GUI only if there was an action that requires it
             }
         }
     }
 
 
-    public void resetLastMoveTime () {
-        inputDelay = 0;
-    }
 
     /*-----------------------------End of navigation methods--------------------------*/
 
@@ -356,6 +388,10 @@ public class MenuBoard extends JPanel implements ActionListener {
             for (SpriteAnimation animation : animationManager.getUpperAnimations()) {
                 drawAnimation(g2d, animation);
             }
+
+            for (OnScreenText text : OnScreenTextManager.getInstance().getOnScreenTexts()) {
+                drawText(g2d, text);
+            }
         } finally {
             g2d.dispose(); // Ensure resources are released
         }
@@ -366,11 +402,30 @@ public class MenuBoard extends JPanel implements ActionListener {
 
         // readControllerState();
         executeControllerInput();
-        inputDelay++;
+
+        try {
+            restreamLoopingMusicIfFinished();
+        } catch (UnsupportedAudioFileException | IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void restreamLoopingMusicIfFinished() throws UnsupportedAudioFileException, IOException {
+        if(audioManager == null){
+            audioManager = AudioManager.getInstance();
+        }
+        CustomAudioClip backGroundMusicCustomAudioclip = audioManager.getBackGroundMusicCustomAudioclip();
+        if(backGroundMusicCustomAudioclip == null){
+            return;
+        }
+        if (backGroundMusicCustomAudioclip.getCurrentSecondsInPlayback() >= backGroundMusicCustomAudioclip.getTotalSecondsInPlayback() &&
+                audioManager.getCurrentSong().shouldBeStreamed() &&
+                backGroundMusicCustomAudioclip.isLoop()) {
+            audioManager.playDefaultBackgroundMusic(audioManager.getCurrentSong(), true);
+        }
     }
 
     private void drawObjects (Graphics2D g) {
-        recreateList(); //Shouldn't be called every loop, is simply waste of resources but negligable for now
         for (GUIComponent component : offTheGridObjects) {
             if (component != null) {
                 drawGUIComponent(g, component);
@@ -400,6 +455,36 @@ public class MenuBoard extends JPanel implements ActionListener {
         if (animation.getCurrentFrameImage(false) != null) {
             g.drawImage(animation.getCurrentFrameImage(true), animation.getXCoordinate(), animation.getYCoordinate(), this);
         }
+    }
+
+    private void drawText (Graphics2D g, OnScreenText text) {
+        // Ensure that transparency value is within the appropriate bounds.
+        float transparency = Math.max(0, Math.min(1, text.getTransparencyValue()));
+        Color originalColor = g.getColor(); // store the original color
+        Font originalFont = g.getFont();
+
+        // Set the color with the specified transparency.
+        Color colorWithTransparency = new Color(
+                text.getColor().getRed(),
+                text.getColor().getGreen(),
+                text.getColor().getBlue(),
+                (int) (transparency * 255) // alpha value must be between 0 and 255
+        );
+
+//        g.setColor(new Color(1.0f, 1.0f, 1.0f, transparency)); // White with transparency
+        g.setColor(colorWithTransparency);
+        g.setFont(new Font("Helvetica", Font.PLAIN, text.getFontSize()));
+        // Draw the text at the current coordinates.
+        g.drawString(text.getText(), text.getXCoordinate(), text.getYCoordinate());
+
+        // Update the Y coordinate of the text to make it scroll upwards.
+        text.setYCoordinate(text.getYCoordinate() - 1);
+
+        // Decrease the transparency for the next draw
+        text.setTransparency(transparency - text.getTransparancyStepSize()); // decrease transparency
+
+        g.setColor(originalColor); // restore the original color
+        g.setFont(originalFont);
     }
 
     /*------------------------------End of Drawing methods-------------------------------*/

@@ -55,10 +55,6 @@ public class SpecialAttack extends GameObject {
         return this.animation;
     }
 
-    public void setScale (float newScale) {
-        this.animation.setAnimationScale(newScale);
-    }
-
     public boolean centeredAroundPlayer () {
         return centeredAroundObject;
     }

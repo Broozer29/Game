@@ -3,6 +3,7 @@ package game.level.directors;
 import game.gameobjects.enemies.enums.EnemyCategory;
 import game.gamestate.GameStateInfo;
 import game.gameobjects.enemies.enums.EnemyEnums;
+import game.level.LevelManager;
 import game.level.enums.LevelTypes;
 
 import java.util.ArrayList;
@@ -57,7 +58,7 @@ public class DirectorManager {
         directorList.add(fastDirector);
 
         Director instantDirector = new Director(DirectorType.Instant, baseMonsterCards);
-        instantDirector.receiveCredits(Math.min(75 * GameStateInfo.getInstance().getDifficultyCoefficient(), 750));
+        instantDirector.receiveCredits(Math.min(75 * GameStateInfo.getInstance().getDifficultyCoefficient(), 500));
         directorList.add(instantDirector);
     }
 
@@ -75,7 +76,7 @@ public class DirectorManager {
         }
 
         List<EnemyEnums> availableMonsters = Arrays.stream(EnemyEnums.values())
-                .filter(enemyEnums -> enemyEnums.getMinimumStageLevelRequired() <= GameStateInfo.getInstance().getStagesCompleted())
+                .filter(enemyEnums -> GameStateInfo.getInstance().getStagesCompleted() >= enemyEnums.getMinimumStageLevelRequired())
                 .filter(enemyEnums -> enemyEnums.getEnemyCategory() != EnemyCategory.Special
                         && enemyEnums.getEnemyCategory() != EnemyCategory.Summon
                         && enemyEnums.getEnemyCategory() != EnemyCategory.Boss)
@@ -108,7 +109,7 @@ public class DirectorManager {
 
     public void distributeCredits () {
         GameStateInfo gameStateInfo = GameStateInfo.getInstance();
-        float creditAmount = (float) ((1 + 0.05 * gameStateInfo.getDifficultyCoefficient()) * 0.5) + gameStateInfo.getStagesCompleted(); // Determine the amount of credits to distribute
+        float creditAmount = (float) ((1 + 0.05 * gameStateInfo.getDifficultyCoefficient()) * 0.5); // Determine the amount of credits to distribute
 
         if (testingRichMode) {
             creditAmount = creditAmount * this.testingCreditsBonus;
@@ -127,6 +128,7 @@ public class DirectorManager {
         return instance;
     }
 
+
     public List<Director> getDirectorList () {
         return directorList;
     }
@@ -141,6 +143,11 @@ public class DirectorManager {
 
     public void setEnabled (boolean enabled) {
         this.enabled = enabled;
+        if(!this.enabled){ //Disable all active directors if the directorManager is disabled
+            for(Director director : directorList){
+                director.setIsActive(false);
+            }
+        }
     }
 
 

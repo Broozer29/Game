@@ -41,7 +41,7 @@ public class PlasmaLauncher extends Item {
     }
 
     private void calculateDamage () {
-        damageMultiplier = quantity * 3f;
+        damageMultiplier = quantity * 1.5f;
     }
 
     @Override
@@ -105,7 +105,7 @@ public class PlasmaLauncher extends Item {
 
         boolean allowedToDealDamage = true;
         String objectType = "Plasma Launcher Missile";
-        float damage = PlayerStats.getInstance().getNormalAttackDamage() * damageMultiplier;
+        float damage = PlayerStats.getInstance().getBaseDamage() * damageMultiplier;
 
         MissileConfiguration missileConfiguration = MissileCreator.getInstance().createMissileConfiguration(MissileEnums.PlasmaLauncherMissile,
                 maxHitPoints, maxShields, deathSound, damage, impactType, isFriendly, allowedToDealDamage,

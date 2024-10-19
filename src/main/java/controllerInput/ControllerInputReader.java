@@ -27,17 +27,17 @@ public class ControllerInputReader {
             // Example for mapping left stick horizontal axis
             xAxisValue = currController.getAxisState(ControllerAxis.LEFTX);
 //            inputState.put(ControllerInputEnums.MOVE_LEFT_SLOW, xAxisValue > -0.5 && xAxisValue <= -0.2);
-            inputState.put(ControllerInputEnums.MOVE_LEFT_QUICK, xAxisValue <= -0.2);
+            inputState.put(ControllerInputEnums.MOVE_LEFT_QUICK, xAxisValue <= -0.1);
 //            inputState.put(ControllerInputEnums.MOVE_RIGHT_SLOW, xAxisValue >= 0.2 && xAxisValue < 0.5);
-            inputState.put(ControllerInputEnums.MOVE_RIGHT_QUICK, xAxisValue >= 0.2);
+            inputState.put(ControllerInputEnums.MOVE_RIGHT_QUICK, xAxisValue >= 0.1);
 
 
 
             yAxisValue = currController.getAxisState(ControllerAxis.LEFTY);
 //            inputState.put(ControllerInputEnums.MOVE_DOWN_SLOW, yAxisValue > -0.5 && yAxisValue <= -0.2);
-            inputState.put(ControllerInputEnums.MOVE_DOWN_QUICK, yAxisValue <= -0.2);
+            inputState.put(ControllerInputEnums.MOVE_DOWN_QUICK, yAxisValue <= -0.1);
 //            inputState.put(ControllerInputEnums.MOVE_UP_SLOW, yAxisValue >= 0.2 && yAxisValue < 0.5);
-            inputState.put(ControllerInputEnums.MOVE_UP_QUICK, yAxisValue >= 0.2);
+            inputState.put(ControllerInputEnums.MOVE_UP_QUICK, yAxisValue >= 0.1);
 
             // Similar mappings for other inputs based on the enum
             // Example for buttons

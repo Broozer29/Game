@@ -136,4 +136,24 @@ public class MenuBoardCreator {
         return textCollection;
     }
 
+    public static GUITextCollection selectMacOSMediaPlayer (GUITextCollection openShopButton){
+        GUIComponent component = openShopButton.getComponents().get(0);
+        int xCoordinate = component.getXCoordinate();
+        int yCoordinate = component.getYCoordinate() + 50;
+
+        GUITextCollection textCollection = new GUITextCollection(xCoordinate,yCoordinate, "USE MACOS MUSIC");
+        textCollection.setMenuFunctionality(MenuFunctionEnums.SelectMacOSMediaPlayer);
+        return textCollection;
+    }
+
+    public static GUITextCollection selectDefaultPlayer (GUITextCollection macOsMediaPlayer){
+        GUIComponent component = macOsMediaPlayer.getComponents().get(0);
+        int xCoordinate = component.getXCoordinate();
+        int yCoordinate = component.getYCoordinate() + 50;
+
+        GUITextCollection textCollection = new GUITextCollection(xCoordinate,yCoordinate, "USE DEFAULT MUSIC");
+        textCollection.setMenuFunctionality(MenuFunctionEnums.SelectDefaultMediaPlayer);
+        return textCollection;
+    }
+
 }

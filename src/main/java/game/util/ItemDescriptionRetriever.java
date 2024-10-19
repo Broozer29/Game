@@ -22,7 +22,7 @@ public class ItemDescriptionRetriever {
                 return "Your special attack gains 1 (+1) additional charge.";
             }
             case FocusCrystal -> {
-                return "Attacks that hit enemies in close range deal 20% (+20%) additional damage";
+                return "Attacks that hit enemies in close range deal 15% (+15%) additional damage";
             }
             case PrecisionAmplifier -> {
                 return "Gain 10% critical strike chance.";
@@ -49,10 +49,10 @@ public class ItemDescriptionRetriever {
                 return "Chance on enemy kill to gain additional minerals";
             }
             case StickyDynamite -> {
-                return "Every 5th attack applies an instantaneous explosion for 150% (+150%) damage";
+                return "Every 10th attack applies an instantaneous explosion for 200% (+200%) damage";
             }
             case PlasmaLauncher -> {
-                return "10% Chance on hitting an enemy to fire a plasma shot towards the closest enemy dealing 300% (+300%) damage";
+                return "10% Chance on hitting an enemy to fire a plasma shot towards the closest enemy dealing 150% (+150%) damage";
             }
             case GuardianDrone -> {
                 return "Gain 1 (+1) invincible drone at the start of the round. The drone deals 100% damage";

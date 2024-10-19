@@ -188,7 +188,7 @@ public class MissileManager {
                 if (specialAttack.isAllowOnHitEffects()
                         && specialAttack.canApplyEffectAgain()
                 ) {
-                    specialAttack.applyAfterCollisionEffects(enemy);
+                    specialAttack.applyAfterCollisionItemEffectsToObject(enemy);
                     hasAppliedEffects = true;
                 }
 
@@ -226,7 +226,7 @@ public class MissileManager {
                 } else { //It's a player missile
                     missile.applyBeforeCollisionEffects(enemy);
                     missile.handleCollision(enemy);
-                    missile.applyAfterCollisionEffects(enemy);
+                    missile.applyAfterCollisionItemEffectsToObject(enemy);
 
                 }
 

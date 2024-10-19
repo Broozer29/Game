@@ -75,36 +75,20 @@ public class ImageLoader {
 
     private String convertImageStringToURL (ImageEnums image) {
         switch (image) {
-            case Player_Spaceship:
-                return "/images/spaceship.png";
+            case UIDamageOverlay:
+                return "/images/UI/Damage Overlay.png";
             case InformationCard:
                 return "/images/UI/Cards/InformationCard.png";
             case ProgressBar:
                 return "/images/UI/progressbar.png";
             case ProgressBarFilling:
                 return "/images/UI/progressbarfilling.png";
-            case Player_Laserbeam:
-                return "/images/laserbeam.png";
             case Test_Image:
                 return "/images/testimage.jpg";
             case Alien:
                 return "/images/Alien spaceship.png";
             case Alien_Bomb:
                 return "/images/Alien bomb.png";
-            case Alien_Laserbeam:
-                return "/images/alienlaserbeam.png";
-            case Start_Game:
-                return "/images/Start game.png";
-            case User_One:
-                return "/images/testimage.jpg";
-            case User_Two:
-                return "/images/testimage.jpg";
-            case User_Three:
-                return "/images/testimage.jpg";
-            case Select_User_Menu:
-                return "/images/Select user.png";
-            case User_Menu_To_Main_Menu:
-                return "/images/testimage.jpg";
             case Moon:
                 return "/images/background/moon1.png";
             case Lava_Planet:
@@ -133,14 +117,6 @@ public class ImageLoader {
 //                return "/images/Ships/Ship 6/Ship6.png";
             case Player_Spaceship_Model_3:
                 return "/images/Ships/Player Ships/TM_3_Better_Model_Upgrade.png";
-            case Health_Bar:
-                return "/images/UI/HealthBar.png";
-            case Shield_Bar:
-                return "/images/UI/ShieldBar.png";
-            case Health_Shield_Frames:
-                return "/images/UI/HealthShieldFrames.png";
-            case Icon_Border:
-                return "/images/UI/IconFrame.png";
             case Frame:
                 return "/images/UI/Frame.png";
             case Gold_Filling:
@@ -149,12 +125,6 @@ public class ImageLoader {
                 return "/images/UI/BlueFilling.png";
             case Red_Filling:
                 return "/images/UI/RedFilling.png";
-            case Warm_Nebula:
-                return "/images/background/WarmNebula.png";
-            case Cold_Nebula:
-                return "/images/background/ColdNebula.png";
-            case Regular_Nebula:
-                return "/images/background/RegularNebula.png";
             case Blue_Nebula_1:
                 return "/images/background/Blue Nebula 1 - 1024x1024.png";
             case Blue_Nebula_2:
@@ -195,152 +165,34 @@ public class ImageLoader {
                 return "/images/background/Purple Nebula 6 - 1024x1024.png";
             case Purple_Nebula_7:
                 return "/images/background/Purple Nebula 7 - 1024x1024.png";
-            case Parallex_1:
-                return "/images/background/Parallex_1.png";
-            case Parallex_2:
-                return "/images/background/Parallex_2.png";
-            case Parallex_3:
-                return "/images/background/Parallex_3.png";
-            case Parallex_4:
-                return "/images/background/Parallex_4.png";
-            case Parallex_5:
-                return "/images/background/Parallex_5.png";
-            case Player_EMP_Plus:
-                return "/images/gif/SpriteSheets/Player_Default_EMP.png";
-            case TripleShotIcon:
-                return "/images/Icons/MultiShotIcon.png";
-            case DoubleShotIcon:
-                return "/images/Icons/Double_Shot.png";
-            case Starcraft2_Artanis_Shield:
-                return "/images/Icons/Starcraft2 Artanis Shield.png";
             case Starcraft2_Auto_Tracking:
                 return "/images/Icons/Starcraft2 Auto Tracking.png";
-            case Starcraft2_Blink:
-                return "/images/Icons/Starcraft2 Blink.png";
             case Starcraft2_Blue_Flame:
                 return "/images/Icons/Starcraft2 Blue Flame.png";
             case Starcraft2_Concussive_Shells:
                 return "/images/Icons/Starcraft2 Concussive Shells.png";
-            case Starcraft2_Corsair_Cloak:
-                return "/images/Icons/Starcraft2 Corsair Cloak.png";
-            case Starcraft2_Drone_Cloak:
-                return "/images/Icons/Starcraft2 Drone Cloak.png";
-            case Starcraft2_DT_Blink:
-                return "/images/Icons/Starcraft2 DT Blink.png";
             case Starcraft2_Dual_Rockets:
                 return "/images/Icons/Starcraft2 Dual Rockets.png";
-            case Starcraft2_Energizer_Speed:
-                return "/images/Icons/Starcraft2 Energizer Speed.png";
-            case Starcraft2_Energizer_Speed2:
-                return "/images/Icons/Starcraft2 Energizer Speed2.png";
             case Starcraft2_Energy_Siphon:
                 return "/images/Icons/Starcraft2 Energy Siphon.png";
             case Starcraft2BouncingLaser:
                 return "/images/Icons/Starcraft2 Bouncing Laser.png";
-            case Starcraft2_Fire_Cloak:
-                return "/images/Icons/Starcraft2 Fire Cloak.png";
             case Starcraft2_Fire_Hardened_Shields:
                 return "/images/Icons/Starcraft2 Fire Hardened Shields.png";
-            case Starcraft2_Flame_Turret:
-                return "/images/Icons/Starcraft2 Flame Turret.png";
-            case Starcraft2_Force_Field:
-                return "/images/Icons/Starcraft2 Force Field.png";
-            case Starcraft2_Guardian_Shield:
-                return "/images/Icons/Starcraft2 Guardian Shield.png";
-            case Starcraft2_Hardened_Shields:
-                return "/images/Icons/Starcraft2 Hardened Shields.png";
-            case Starcraft2_Health_Upgrade_1:
-                return "/images/Icons/Starcraft2 Health Upgrade.png";
             case Starcraft2_Health_Upgrade_2:
                 return "/images/Icons/Starcraft2 Health Upgrade 2.png";
-            case Starcraft2_Ignite_Afterburners:
-                return "/images/Icons/Starcraft2 Ignite Afterburners.png";
-            case Starcraft2_Immortal_Barrier:
-                return "/images/Icons/Starcraft2 Immortal Barrier.png";
-            case Starcraft2_Immortal_Original_Barrier:
-                return "/images/Icons/Starcraft2 Immortal Original Barrier.png";
-            case Starcraft2_LaserBeam:
-                return "/images/Icons/Starcraft2 LaserBeam.png";
-            case Starcraft2_LaserDrill:
-                return "/images/Icons/Starcraft2 LaserDrill.png";
-            case Starcraft2_MovementSpeed:
-                return "/images/Icons/Starcraft2 Movement Speed.png";
-            case Starcraft2_Point_Defense_Drone:
-                return "/images/Icons/Starcraft2 Point Defense Drone.png";
-            case Starcraft2_Protoss_Cloak:
-                return "/images/Icons/Starcraft2 Protoss Cloak.png";
             case Starcraft2_Protoss_Shield_Disintegrate:
                 return "/images/Icons/Starcraft2 Protoss Shield Disintegration.png";
-            case Starcraft2_Protoss_Shields_1:
-                return "/images/Icons/Starcraft2 Protoss Shields1.png";
-            case Starcraft2_Protoss_Shields_2:
-                return "/images/Icons/Starcraft2 Protoss Shields2.png";
-            case Starcraft2_Protoss_Shields_3:
-                return "/images/Icons/Starcraft2 Protoss Shields3.png";
-            case Starcraft2_Psi_Storm1:
-                return "/images/Icons/Starcraft2 Psi Storm1.png";
             case Starcraft2_Psi_Storm2:
                 return "/images/Icons/Starcraft2 Psi Storm2.png";
-            case Starcraft2_Psi_Storm3:
-                return "/images/Icons/Starcraft2 Psi Storm3.png";
-            case Starcraft2_Pulse_Grenade:
-                return "/images/Icons/Starcraft2 Pulse Grenade.png";
-            case Starcraft2_Pulse_Laser:
-                return "/images/Icons/Starcraft2 Pulse Laser.png";
-            case Starcraft2_Repair_Blink:
-                return "/images/Icons/Starcraft2 Repair Blink.png";
-            case Starcraft2_Rocket_Cluster:
-                return "/images/Icons/Starcraft2 Rocket Cluster.png";
             case Starcraft2_Seeker_Missile:
                 return "/images/Icons/Starcraft2 Seeker Missile.png";
-            case Starcraft2_Shield_Barrier:
-                return "/images/Icons/Starcraft2 Shield Barrier.png";
-            case Starcraft2_Shield_Piercing:
-                return "/images/Icons/Starcraft2 Shield Piercing.png";
-            case Starcraft2_Stim1:
-                return "/images/Icons/Starcraft2 Stim1.png";
-            case Starcraft2_Stim2:
-                return "/images/Icons/Starcraft2 Stim2.png";
-            case Starcraft2_Stim3:
-                return "/images/Icons/Starcraft2 Stim3.png";
-            case Starcraft2_Terran_Plating1:
-                return "/images/Icons/Starcraft2 Terran Plating 1.png";
-            case Starcraft2_Terran_Plating2:
-                return "/images/Icons/Starcraft2 Terran Plating 2.png";
-            case Starcraft2_Terran_Plating3:
-                return "/images/Icons/Starcraft2 Terran Plating 3.png";
-            case Starcraft2_Terran_Speed1:
-                return "/images/Icons/Starcraft2 Terran Speed1.png";
-            case Starcraft2_Terran_Speed2:
-                return "/images/Icons/Starcraft2 Terran Speed2.png";
-            case Starcraft2_Terran_Speed3:
-                return "/images/Icons/Starcraft2 Terran Speed3.png";
-            case Starcraft2_Terran_Weapons1:
-                return "/images/Icons/Starcraft2 Terran Weapons1.png";
-            case Starcraft2_Terran_Weapons2:
-                return "/images/Icons/Starcraft2 Terran Weapons2.png";
-            case Starcraft2_Terran_Weapons3:
-                return "/images/Icons/Starcraft2 Terran Weapons3.png";
-            case Starcraft2_Third_Blink:
-                return "/images/Icons/Starcraft2 Third Blink.png";
-            case Starcraft2_Time_Warp:
-                return "/images/Icons/Starcraft2 Time Warp.png";
             case Starcraft2_Vespene_Drone:
                 return "/images/Icons/Starcraft2 Drone Vespene Siphon.png";
-            case Starcraft2_Vespene_Gas:
-                return "/images/Icons/Starcraft2 Vespene Gas.png";
-            case Starcraft2_Vespene_Siphon:
-                return "/images/Icons/Starcraft2 Vespene Siphon.png";
-            case Starcraft2_Wraith_Cloak:
-                return "/images/Icons/Starcraft2 Wraith Cloak.png";
-            case Starcraft2_Yellow_Blink:
-                return "/images/Icons/Starcraft2 Yellow Blink.png";
             case Starcraft2_Heal:
                 return "/images/Icons/Starcraft2 Heal.png";
             case Starcraft2_Electric_Field:
                 return "/images/Icons/Starcraft2 Electric Field.png";
-            case Starcraft2_Firebat_Weapon:
-                return "/images/Icons/Starcraft2 Firebat Weapon.png";
             case Starcraft2Keystone:
                 return "/images/Icons/Starcraft2 Keystone.png";
             case Letter_A:
@@ -700,6 +552,7 @@ public class ImageLoader {
             case BarbedAegis: return "/images/Icons/BarbedAegis.png";
             case BarbedMissiles:return "/images/Icons/Barbed Missiles.png";
             case FourDirectionalDrone: return "/images/Ships/Enemy Ships/FourDirectionDrone.png";
+            case SpaceStationBoss: return "/images/Ships/Enemy Ships/SpaceStation/spriteimage.png";
             default:
                 return "";
         }

@@ -88,9 +88,7 @@ public class PlayerManager {
 				animationManager.getUpperAnimations().add(spaceship.getDestructionAnimation());
 				animationManager.getLowerAnimations().remove(spaceship.getExhaustAnimation());
 
-				if (AudioManager.getInstance().getBackgroundMusic() != null) {
-					AudioManager.getInstance().getBackgroundMusic().stopClip();
-				}
+				AudioManager.getInstance().stopMusicAudio();
 				
 				try {
 					AudioManager.getInstance().addAudio(AudioEnums.Destroyed_Explosion);
@@ -101,6 +99,7 @@ public class PlayerManager {
 
 			if (spaceship.getDestructionAnimation().getCurrentFrame() >= spaceship.getDestructionAnimation().getTotalFrames()) {
 				gameState.setGameState(GameStatusEnums.Dead);
+				spaceship.setImmune(true); //Ignore enemies and missiles whilst exploding
 				PlayerInventory.getInstance().resetInventory();
 			}
 		}

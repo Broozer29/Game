@@ -16,7 +16,7 @@ public class PlayerInventory {
     private float cashMoney = 100;
     private PlayerInventory () {
 //        addItem(ItemEnums.PlasmaCoatedBullets);
-//        addItem(ItemEnums.PlasmaLauncher);
+        addItem(ItemEnums.CannisterOfGasoline);
 
 
 

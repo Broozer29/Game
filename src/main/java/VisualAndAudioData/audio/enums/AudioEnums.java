@@ -2,6 +2,9 @@ package VisualAndAudioData.audio.enums;
 
 public enum AudioEnums {
 	Player_Laserbeam(false),
+	PlayerTakesDamage(false),
+	NewPlayerLaserbeam(false),
+	StickyGrenadeExplosion(false),
 	SilentAudio(false),
 	ChargingLaserbeam(false),
 	Alien_Bomb_Destroyed(false),

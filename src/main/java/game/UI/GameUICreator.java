@@ -38,6 +38,7 @@ public class GameUICreator {
     private UIObject gradeSC2iconObject;
     private UIObject gradeTextObject;
     private UIObject gameOverCardTitle;
+    private UIObject damageOverlay;
 
     private List<UIObject> informationCards = new ArrayList<UIObject>();
 
@@ -48,6 +49,7 @@ public class GameUICreator {
 
     private GameUICreator () {
         initGameOverPeepos();
+        createDamageOverlay();
     }
 
     public static GameUICreator getInstance () {
@@ -145,6 +147,18 @@ public class GameUICreator {
 
     }
 
+    private void createDamageOverlay(){
+        int xCoordinate = 0;
+        int yCoordinate = 0;
+
+        int width = DataClass.getInstance().getWindowWidth();
+        int height = DataClass.getInstance().getPlayableWindowMaxHeight();
+        damageOverlay = new UIObject(createUIConfiguration(xCoordinate, yCoordinate, 1, ImageEnums.UIDamageOverlay));
+        damageOverlay.resizeToDimensions(width, height);
+
+    }
+
+
     private void createHealthBar () {
         int xCoordinate = 10;
         int yCoordinate = DataClass.getInstance().getPlayableWindowMaxHeight() + 15;
@@ -238,6 +252,9 @@ public class GameUICreator {
     }
 
     public int calculateProgressBarFillingWidth(double currentFrame, double maxFrames) {
+        if(currentFrame < 0){
+            return 1;
+        }
         return (int) (currentFrame / maxFrames * (progressBar.getWidth() - 10));
     }
 
@@ -321,5 +338,9 @@ public class GameUICreator {
 
     public UIObject getGameOverCardTitle () {
         return gameOverCardTitle;
+    }
+
+    public UIObject getDamageOverlay () {
+        return damageOverlay;
     }
 }

@@ -1,6 +1,8 @@
 package game.gameobjects.enemies;
 
+import VisualAndAudioData.DataClass;
 import game.gameobjects.enemies.boss.RedBoss;
+import game.gameobjects.enemies.boss.SpaceStationBoss;
 import game.movement.Direction;
 import game.movement.MovementConfiguration;
 import game.movement.Point;
@@ -34,7 +36,7 @@ public class EnemyCreator {
     private static PathFinder getPathFinderByEnemy(EnemyEnums enemyType){
         switch (enemyType){
             case Seeker, Energizer, Tazer, Scout, RedBoss -> {return new HoverPathFinder();}
-            case FourDirectionalDrone, PulsingDrone -> {return new DestinationPathFinder();}
+            case FourDirectionalDrone, PulsingDrone, SpaceStationBoss -> {return new DestinationPathFinder();}
             default -> {return new RegularPathFinder();}
         }
     }
@@ -46,7 +48,19 @@ public class EnemyCreator {
             case Energizer -> {movementConfiguration.setBoardBlockToHoverIn(5);}
             case Tazer -> {movementConfiguration.setBoardBlockToHoverIn(7);}
             case RedBoss -> {movementConfiguration.setBoardBlockToHoverIn(4);}
+            case SpaceStationBoss -> movementConfiguration.setDestination(calculateSpaceStationBossDestination());
         }
+    }
+
+    private static Point calculateSpaceStationBossDestination(){
+        int windowHalfWidth = DataClass.getInstance().getWindowWidth() / 2;
+        int windowHalfHeight = DataClass.getInstance().getPlayableWindowMaxHeight() / 2;
+
+        int enemyHalfWidth = EnemyEnums.SpaceStationBoss.getBaseWidth()/ 2;
+        int enemyHalfHeight = EnemyEnums.SpaceStationBoss.getBaseHeight() / 2;
+
+        return new Point(windowHalfWidth - enemyHalfWidth, windowHalfHeight - enemyHalfHeight);
+
     }
 
     private static MovementConfiguration createMovementConfiguration (int xCoordinate, int yCoordinate, Direction movementDirection, float xMovementSpeed, float yMovementSpeed,
@@ -90,6 +104,9 @@ public class EnemyCreator {
             }
             case Shuriken -> {
                 return new Shuriken(upgradeConfig(spriteConfiguration, 0, true), enemyConfiguration, movementConfiguration);
+            }
+            case SpaceStationBoss -> {
+                return new SpaceStationBoss(upgradeConfig(spriteConfiguration, 5, true), enemyConfiguration, movementConfiguration);
             }
             case RedBoss -> {
                 return new RedBoss(upgradeConfig(spriteConfiguration, 1, true), enemyConfiguration, movementConfiguration);

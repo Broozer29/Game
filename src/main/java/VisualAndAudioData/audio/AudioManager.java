@@ -2,6 +2,8 @@ package VisualAndAudioData.audio;
 
 import VisualAndAudioData.audio.enums.AudioEnums;
 import VisualAndAudioData.audio.enums.LevelSongs;
+import VisualAndAudioData.audio.enums.MusicMediaPlayer;
+import VisualAndAudioData.audio.osmediaplayers.MacOSMediaPlayer;
 import game.level.enums.LevelDifficulty;
 import game.level.enums.LevelLength;
 
@@ -18,6 +20,8 @@ public class AudioManager {
     private AudioEnums currentSong;
     private Queue<AudioEnums> backgroundMusicTracksThatHavePlayed = new LinkedList<>();
     private Map<AudioEnums, Long> lastPlayTimeMap = new HashMap<>();
+    private MusicMediaPlayer musicMediaPlayer = MusicMediaPlayer.Default;
+    private MacOSMediaPlayer macOSMediaPlayer = MacOSMediaPlayer.getInstance();
     private static final long COOLDOWN_DURATION = 500; // Cooldown in milliseconds, adjust as needed
 
     public boolean testMode = false;
@@ -34,7 +38,7 @@ public class AudioManager {
         // Removing or placing the line below somewhere else completely bricks level
         // transitioning, idfk why tho
 
-        if(backGroundMusic != null){
+        if (backGroundMusic != null) {
             backGroundMusic.stopClip();
             backGroundMusic.setLoop(false);
 //            backGroundMusic.setPlaybackPosition(0);
@@ -59,37 +63,46 @@ public class AudioManager {
             CustomAudioClip clip = audioDatabase.getAudioClip(audioType);
             if (clip != null && canPlayAudio(audioType)) {
                 clip.startClip();
-                lastPlayTimeMap.put(audioType, System.currentTimeMillis()); // Update last played time
+
+                if(soundCooldownMap.containsKey(audioType)) {
+                    lastPlayTimeMap.put(audioType, System.currentTimeMillis()); // Update last played time
+                }
             }
         }
     }
 
-    private static final Set<AudioEnums> soundsWithCooldown = Set.of(
-            AudioEnums.NotEnoughMinerals
+    private static final Map<AudioEnums, Long> soundCooldownMap = Map.of(
+            AudioEnums.NotEnoughMinerals, 500L, // Cooldown for NotEnoughMinerals is 2000 ms (2 seconds)
+            AudioEnums.PlayerTakesDamage, 100L     // Cooldown for SomeOtherSound is 5000 ms (5 seconds)
     );
 
     private boolean canPlayAudio (AudioEnums audioType) {
-        if (!soundsWithCooldown.contains(audioType)) {
-            return true; // No cooldown needed for this sound
+        Long cooldownDuration = soundCooldownMap.get(audioType);
+
+        if (cooldownDuration == null) {
+            return true; // No cooldown specified for this sound, so it can play
         }
+
         Long lastPlayTime = lastPlayTimeMap.get(audioType);
+
         if (lastPlayTime == null) {
             return true; // No record found, can play
         }
+
         long currentTime = System.currentTimeMillis();
-        return (currentTime - lastPlayTime >= COOLDOWN_DURATION);
+        return (currentTime - lastPlayTime >= cooldownDuration); // Compare with specific cooldown duration
     }
 
     // Plays the background music directly, overwriting existing music
-    public void playBackgroundMusic (AudioEnums audioType, boolean loop) throws UnsupportedAudioFileException, IOException {
-        if(backGroundMusic != null){
+    public void playDefaultBackgroundMusic (AudioEnums audioType, boolean loop) throws UnsupportedAudioFileException, IOException {
+        if (backGroundMusic != null) {
             backGroundMusic.setLoop(false);
             backGroundMusic.stopClip();
         }
 
         backGroundMusic = audioDatabase.getAudioClip(audioType);
         if (!(backGroundMusic == null)) {
-            if(muteMode){
+            if (muteMode) {
                 backGroundMusic.muteAudioClip();
             }
             backGroundMusic.setLoop(loop);
@@ -100,7 +113,7 @@ public class AudioManager {
     }
 
 
-    public void playRandomBackgroundMusic (LevelDifficulty difficulty, LevelLength length, boolean loop) throws UnsupportedAudioFileException, IOException {
+    private void playRandomBackgroundMusic (LevelDifficulty difficulty, LevelLength length, boolean loop) throws UnsupportedAudioFileException, IOException {
         AudioEnums backgroundMusic = null;
         int attempts = 0; // Initialize a counter for the number of attempts
         boolean allowDuplicates = false; // Flag to allow duplicates after 10 attempts
@@ -130,9 +143,9 @@ public class AudioManager {
         while (backgroundMusicTracksThatHavePlayed.contains(backgroundMusic) && !allowDuplicates && backgroundMusic != null);
         if (backgroundMusic != null) {
             if (testMode) {
-                playBackgroundMusic(AudioEnums.Large_Ship_Destroyed, false);
+                playDefaultBackgroundMusic(AudioEnums.Large_Ship_Destroyed, false);
             } else {
-                playBackgroundMusic(backgroundMusic, loop);
+                playDefaultBackgroundMusic(backgroundMusic, loop);
             }
 
             addTrackToHistory(backgroundMusic);
@@ -157,6 +170,11 @@ public class AudioManager {
 //            backGroundMusic.stopClip();
 //            backGroundMusic = null;
         }
+
+        if (this.musicMediaPlayer == MusicMediaPlayer.MacOS) {
+            macOSMediaPlayer.stopPlayback();
+            macOSMediaPlayer.stopPolling();
+        }
     }
 
     public AudioEnums getCurrentSong () {
@@ -167,9 +185,78 @@ public class AudioManager {
         this.currentSong = currentSong;
     }
 
-    public CustomAudioClip getBackgroundMusic () {
-        return this.backGroundMusic;
+    public MusicMediaPlayer getMusicMediaPlayer () {
+        return musicMediaPlayer;
     }
 
+    public void setMusicMediaPlayer (MusicMediaPlayer musicMediaPlayer) {
+        this.musicMediaPlayer = musicMediaPlayer;
+    }
+
+    public boolean isBackgroundMusicFinished () {
+        if (this.musicMediaPlayer == MusicMediaPlayer.Default) {
+            return backGroundMusic.isFinished();
+        }
+
+        if (this.musicMediaPlayer == MusicMediaPlayer.MacOS) {
+            // Check if the music has started
+            if (!macOSMediaPlayer.hasStartedMusic()) {
+                return false;  // Song hasn't started yet
+            }
+            // Check if the track has finished playing
+            if (macOSMediaPlayer.hasStartedMusic() && !macOSMediaPlayer.isPlaying() && macOSMediaPlayer.getCurrentSeconds() > 0) {
+                return true;  // The track has finished
+            }
+        }
+
+        return false;  // If none of the conditions are met, the track hasn't finished
+    }
+
+    public boolean isBackgroundMusicInitializing () {
+        if (this.musicMediaPlayer == MusicMediaPlayer.Default) {
+            return backGroundMusic.getTotalSecondsInPlayback() < 0;
+        }
+        return false;
+    }
+
+    public void playDefaultBackgroundMusic (LevelDifficulty difficulty, LevelLength length, boolean loop) throws UnsupportedAudioFileException, IOException {
+        if (this.musicMediaPlayer == MusicMediaPlayer.Default) {
+            this.playRandomBackgroundMusic(difficulty, length, loop);
+        }
+
+        if (this.musicMediaPlayer == MusicMediaPlayer.MacOS) {
+            macOSMediaPlayer.setPlaybackPosition(0);
+            macOSMediaPlayer.startPlayback();
+            macOSMediaPlayer.startPolling();
+        }
+    }
+
+    public double getCurrentSecondsInPlayback () {
+        if (this.musicMediaPlayer == MusicMediaPlayer.Default) {
+            return backGroundMusic.getCurrentSecondsInPlayback();
+        }
+
+        if (this.musicMediaPlayer == MusicMediaPlayer.MacOS) {
+            return macOSMediaPlayer.getCurrentSeconds();
+        }
+
+        return -1;
+    }
+
+    public double getTotalPlaybackLengthInSeconds () {
+        if (this.musicMediaPlayer == MusicMediaPlayer.Default) {
+            return backGroundMusic.getTotalSecondsInPlayback();
+        }
+
+        if (this.musicMediaPlayer == MusicMediaPlayer.MacOS) {
+            return macOSMediaPlayer.getTotalSeconds();
+        }
+
+        return -1;
+    }
+
+    public CustomAudioClip getBackGroundMusicCustomAudioclip () {
+        return backGroundMusic;
+    }
 
 }

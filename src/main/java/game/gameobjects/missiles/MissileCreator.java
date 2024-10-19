@@ -59,23 +59,8 @@ public class MissileCreator {
             case BombaProjectile -> {
                 return new BombaProjectile(upgradeConfig(spriteConfiguration, 2), missileConfiguration, movementConfiguration);
             }
-            case BulldozerProjectile -> {
-                return new BulldozerProjectile(upgradeConfig(spriteConfiguration, 2), missileConfiguration, movementConfiguration);
-            }
-            case EnergizerProjectile -> {
-                return new EnergizerProjectile(upgradeConfig(spriteConfiguration, 2), missileConfiguration, movementConfiguration);
-            }
-            case FlamerProjectile -> {
-                return new FlamerProjectile(upgradeConfig(spriteConfiguration, 2), missileConfiguration, movementConfiguration);
-            }
-            case SeekerProjectile -> {
-                return new SeekerProjectile(upgradeConfig(spriteConfiguration, 2), missileConfiguration, movementConfiguration);
-            }
             case TazerProjectile -> {
                 return new TazerProjectile(upgradeConfig(spriteConfiguration, 2), missileConfiguration, movementConfiguration);
-            }
-            case FlameThrowerProjectile -> {
-                return new FlamethrowerProjectile(upgradeConfig(spriteConfiguration, 2), missileConfiguration, movementConfiguration);
             }
             case PlasmaLauncherMissile, Orbitter, PlayerLaserbeam -> {
                 return new GenericMissile(upgradeConfig(spriteConfiguration, 2), missileConfiguration, movementConfiguration);

@@ -3,7 +3,10 @@ package game.items.enums;
 import java.util.Random;
 
 public enum ItemRarityEnums {
-    Common(100), Rare(150), Legendary(200), Locked(0);
+    Common(150),
+    Rare(225),
+    Legendary(300),
+    Locked(0);
 
 
     ItemRarityEnums (float itemCost) {

@@ -38,11 +38,9 @@ public class BoardManager extends JFrame {
     }
 
     private void playMenuMusic () {
-        if (audioManager.getBackgroundMusic() != null) {
-            audioManager.stopMusicAudio();
-        }
+        audioManager.stopMusicAudio();
         try {
-            audioManager.playBackgroundMusic(AudioEnums.mainmenu, true);
+            audioManager.playDefaultBackgroundMusic(AudioEnums.mainmenu, true);
         } catch (UnsupportedAudioFileException | IOException e) {
             e.printStackTrace();
         }
@@ -50,11 +48,9 @@ public class BoardManager extends JFrame {
     }
 
     private void playShopMenuMusic () {
-        if (audioManager.getBackgroundMusic() != null) {
-            audioManager.stopMusicAudio();
-        }
+        audioManager.stopMusicAudio();
         try {
-            audioManager.playBackgroundMusic(AudioEnums.Lemmino_Firecracker, true);
+            audioManager.playDefaultBackgroundMusic(AudioEnums.Lemmino_Firecracker, true);
         } catch (UnsupportedAudioFileException | IOException e) {
             e.printStackTrace();
         }
@@ -83,7 +79,6 @@ public class BoardManager extends JFrame {
         changeMenuScreen(menuBoard);
         menuBoard.recreateWindow();
         menuBoard.getTimer().restart();
-        menuBoard.resetLastMoveTime();
         playMenuMusic();
     }
 

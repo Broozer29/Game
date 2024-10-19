@@ -21,8 +21,19 @@ public class ConnectedControllers {
     }
 
     public void initController() {
+//        controllers.quitSDLGamepad();
+//        controllers.initSDLGamepad();
+        try {
+            Thread.sleep(500); // Sleep for half a second to let SDL initialize properly
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
         controllers.update();
         int numControllers = controllers.getNumControllers();
+        System.out.println("Controllers found: " + numControllers);
+
+        controllers.update();
 
         for (int i = 0; i < numControllers; i++) {
             ControllerState state = controllers.getState(i);

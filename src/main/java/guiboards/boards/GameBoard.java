@@ -14,13 +14,11 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
 
 import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.*;
 
+import VisualAndAudioData.audio.CustomAudioClip;
 import VisualAndAudioData.audio.enums.AudioEnums;
 import VisualAndAudioData.image.ImageEnums;
 import controllerInput.ConnectedControllers;
@@ -31,7 +29,6 @@ import game.gameobjects.missiles.laserbeams.Laserbeam;
 import game.gamestate.GameStatsTracker;
 import game.movement.Direction;
 import game.level.directors.DirectorManager;
-import game.gamestate.SpawningMechanic;
 import game.level.LevelManager;
 import game.managers.AnimationManager;
 import game.UI.GameUICreator;
@@ -80,12 +77,6 @@ public class GameBoard extends JPanel implements ActionListener {
     private static final long MOVE_COOLDOWN = 100;
 
     private boolean hasResetManagersForNextLevel = false;
-
-    private List<String> strings = Arrays.asList("U died lol", "'Get good.' - Sun Tzu", "Veni vidi vici'd",
-            "Overconfidence is a slow and insidious killer");
-    private int rnd = new Random().nextInt(strings.size());
-    private String msg = strings.get(rnd);
-
     private BoardManager boardManager = BoardManager.getInstance();
     private AnimationManager animationManager = AnimationManager.getInstance();
     private EnemyManager enemyManager = EnemyManager.getInstance();
@@ -157,9 +148,7 @@ public class GameBoard extends JPanel implements ActionListener {
         zoningInAlpha = 1.0f;
         zoningOutAlpha = 0.0f;
         inputDelay = 0;
-
-        rnd = new Random().nextInt(strings.size());
-        msg = strings.get(rnd);
+        this.isPlayingDeathMusic = false;
     }
 
     private void resetManagersForNextLevel () {
@@ -201,11 +190,27 @@ public class GameBoard extends JPanel implements ActionListener {
         } else if (gameState.getGameState() == GameStatusEnums.Zoning_Out) {
             drawZoningOut(g2d);
         }
-//        else if (gameState.getGameState() == GameStatusEnums.Album_Completed) {
-//            drawVictoryScreen(g2d);
-//        }
-
+        try {
+            restreamLoopingMusicIfFinished();
+        } catch (UnsupportedAudioFileException | IOException e) {
+            throw new RuntimeException(e);
+        }
         Toolkit.getDefaultToolkit().sync();
+    }
+
+    private void restreamLoopingMusicIfFinished() throws UnsupportedAudioFileException, IOException {
+        if(audioManager == null){
+            audioManager = AudioManager.getInstance();
+        }
+        CustomAudioClip backGroundMusicCustomAudioclip = audioManager.getBackGroundMusicCustomAudioclip();
+        if(backGroundMusicCustomAudioclip == null){
+            return;
+        }
+        if (backGroundMusicCustomAudioclip.getCurrentSecondsInPlayback() >= backGroundMusicCustomAudioclip.getTotalSecondsInPlayback() &&
+                audioManager.getCurrentSong().shouldBeStreamed() &&
+                backGroundMusicCustomAudioclip.isLoop()) {
+            audioManager.playDefaultBackgroundMusic(audioManager.getCurrentSong(), true);
+        }
     }
 
     private void goToNextLevel () {
@@ -227,21 +232,21 @@ public class GameBoard extends JPanel implements ActionListener {
     }
 
     private void playDeathMusic () {
-        if (!audioManager.getBackgroundMusic().getAudioType().equals(AudioEnums.VendlaSonrisa)) {
-            audioManager.stopMusicAudio();
-            try {
-                audioManager.playBackgroundMusic(AudioEnums.VendlaSonrisa, false);
-            } catch (UnsupportedAudioFileException | IOException e) {
-                throw new RuntimeException(e);
-            }
+        audioManager.stopMusicAudio();
+        try {
+            audioManager.playDefaultBackgroundMusic(AudioEnums.VendlaSonrisa, false);
+        } catch (UnsupportedAudioFileException | IOException e) {
+            throw new RuntimeException(e);
         }
     }
 
     // Draw the game over screen
-    private void drawEndOfLevelScreen (Graphics2D g, boolean hasSurvived) {
-        if (!hasSurvived) {
-            playDeathMusic();
+    private boolean isPlayingDeathMusic = false;
 
+    private void drawEndOfLevelScreen (Graphics2D g, boolean hasSurvived) {
+        if (!hasSurvived && !isPlayingDeathMusic) {
+            playDeathMusic();
+            isPlayingDeathMusic = true;
         }
 
 
@@ -647,18 +652,36 @@ public class GameBoard extends JPanel implements ActionListener {
             drawImage(g, overloadingShieldBar);
         }
 
+        float maxTotalHitpoints = playerMaxHealth + playerMaxShields;
+        float currentTotalHitpoints = playerHealth + playerShields;
+
+        if (currentTotalHitpoints <= maxTotalHitpoints * 0.35f) {
+
+            float minHealthThreshold = maxTotalHitpoints * 0.01f;
+            float maxHealthThreshold = maxTotalHitpoints * 0.35f;
+
+            float clampedHitpoints = Math.max(minHealthThreshold, Math.min(currentTotalHitpoints, maxHealthThreshold));
+
+            float transparencyRange = 0.75f;
+            float newTransparancyAlpha = transparencyRange * (1 - (clampedHitpoints - minHealthThreshold) / (maxHealthThreshold - minHealthThreshold));
+
+            UIObject damageOverlay = uiManager.getDamageOverlay();
+            damageOverlay.setTransparancyAlpha(false, newTransparancyAlpha, 0);
+            drawImage(g, damageOverlay);
+        }
+
+
         drawImage(g, shieldFrame);
     }
 
     private void drawSongProgressBar (Graphics2D g) {
-        double currentMusicSeconds = 0;
-        double maximumMusicSeconds = 1;
-        // Get the current and maximum frame positions of the background music
-        if (AudioManager.getInstance().getBackgroundMusic() != null) {
-            currentMusicSeconds = AudioManager.getInstance().getBackgroundMusic().getCurrentTimeInSeconds();
-            maximumMusicSeconds = AudioManager.getInstance().getBackgroundMusic().getClipLengthInSeconds();
-        }
+        double currentMusicSeconds = AudioManager.getInstance().getCurrentSecondsInPlayback();
+        double maximumMusicSeconds = AudioManager.getInstance().getTotalPlaybackLengthInSeconds();
 
+        if (currentMusicSeconds < 0 && maximumMusicSeconds < 0) {
+            //If these values don't make sense, don't attempt to draw the bar
+            return;
+        }
 
         UIObject progressBar = uiManager.getProgressBar();
         UIObject progressBarFilling = uiManager.getProgressBarFilling();
@@ -729,12 +752,6 @@ public class GameBoard extends JPanel implements ActionListener {
         }
 
         if (gameState.getGameState() != GameStatusEnums.Dead) {
-            if (gameState.getSpawningMechanic() == SpawningMechanic.PreGeneratedLevels && AudioManager.getInstance().getBackgroundMusic() != null) {
-//                gameState.setMusicSeconds(
-//                        audioPosCalc.getPlaybackTimeInSeconds(
-//                                audioManager.getBackgroundMusic().getClip(),
-//                                audioManager.getBackgroundMusic().getFramePosition()));
-            }
             playerManager.updateGameTick();
             missileManager.updateGameTick();
             enemyManager.updateGameTick();

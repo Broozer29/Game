@@ -4,12 +4,7 @@ import VisualAndAudioData.image.ImageEnums;
 
 public enum MissileEnums {
     BombaProjectile(false, "BombaProjctile", ImageEnums.Bomba_Missile_Explosion, ImageEnums.Bomba_Missile),
-    BulldozerProjectile(false, "BulldozerProjectile", ImageEnums.Bulldozer_Missile_Explosion, ImageEnums.Bulldozer_Missile),
-    EnergizerProjectile(false, "EnergizeProjectile", ImageEnums.Energizer_Missile_Explosion, ImageEnums.Energizer_Missile),
-    FlamerProjectile(false, "FlamerProjectile", ImageEnums.Flamer_Missile_Explosion, ImageEnums.Flamer_Missile),
-    SeekerProjectile(false, "SeekerProjectile", ImageEnums.Seeker_Missile_Explosion, ImageEnums.Seeker_Missile),
     TazerProjectile(false, "TazerProjectile", ImageEnums.LightningOrbDestruction, ImageEnums.LightningOrb),
-    FlameThrowerProjectile(false, "FlameThrowerProjectile", ImageEnums.Flamer_Missile_Explosion, ImageEnums.Flamer_Missile),
     PlayerLaserbeam(false, "DefaultPlayerLaserbeam", ImageEnums.Impact_Explosion_One, ImageEnums.AlienLaserBeamAnimated),
     PlasmaLauncherMissile(false, "PlasmaLauncherMissile", ImageEnums.Impact_Explosion_One, ImageEnums.PlasmaLauncherMissile),
     DefaultRocket(false, "DefaultRocket", ImageEnums.Rocket_1_Explosion, ImageEnums.Rocket_1),

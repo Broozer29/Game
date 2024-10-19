@@ -73,21 +73,21 @@ public class Director {
         currentTime = secondsPassed;
 
         // Check if we should spawn enemies
-        if (shouldAttemptSpawn(secondsPassed)) {
+        if (shouldAttemptSpawn(currentTime)) {
             attemptSpawn(); // Spawn enemies
+        }
 
-            // Only update lastSpawnTime after the entire window has passed
-            if (!shouldAttemptSpawn(secondsPassed)) {
-                lastSpawnTime = secondsPassed; // Move to cooldown period
-            }
+        // Only update lastSpawnTime after the entire window has passed
+        if (currentTime > lastSpawnTime + spawnInterval + spawnWindowDuration) {
+            lastSpawnTime = currentTime; // Move to cooldown period after the window ends
+        }
 
-            // Check for conditions to deactivate the Director
-            if (directorType == DirectorType.Instant && credits < 50) {
-                this.active = false;
-            }
-            if (directorType == DirectorType.Boss) {
-                this.active = false;
-            }
+        // Check for conditions to deactivate the Director
+        if (directorType == DirectorType.Instant && credits < 50) {
+            this.active = false;
+        }
+        if (directorType == DirectorType.Boss) {
+            this.active = false;
         }
     }
 
@@ -101,9 +101,9 @@ public class Director {
         double timeSinceLastCashCarrier = currentTime - lastCashCarrierSpawnTime;
 
         // Check for cash carrier spawn conditions
-        if (randomNumber <= spawnCashCarrierChance && timeSinceLastCashCarrier >= 20) {
-            SpawnFormationEnums formationType = SpawnFormationEnums.getRandomFormation();
-            spawnCashCarrier(formationType);  // Always a scout as of now
+        if (randomNumber <= spawnCashCarrierChance && timeSinceLastCashCarrier >= 45) {
+            spawnCashCarrier();  // Always a scout as of now
+            lastCashCarrierSpawnTime = currentTime;
         }
 
         if (credits > minimumMonsterCost()) {
@@ -118,7 +118,7 @@ public class Director {
                     spawnRegularFormation(formationType, enemyType);
                     credits -= totalFormationCost;
                 } else if (credits >= selectedCard.getCreditCost()) {
-                    spawnEnemy(enemyType);
+                    spawnEnemy(enemyType,true);
                     credits -= selectedCard.getCreditCost();
                 }
             }
@@ -126,7 +126,7 @@ public class Director {
     }
 
     private void spawnBoss(){
-        spawnEnemy(EnemyEnums.RedBoss);
+        spawnEnemy(EnemyEnums.RedBoss, false);
         EnemyManager.getInstance().setHasSpawnedABoss(true);
     }
 
@@ -171,7 +171,7 @@ public class Director {
         }
     }
 
-    private void spawnEnemy(EnemyEnums enemyType) {
+    private void spawnEnemy(EnemyEnums enemyType, boolean randomLocation) {
         // Set parameters for spawning
         Direction direction = Direction.LEFT;
         float scale = enemyType.getDefaultScale();
@@ -182,16 +182,17 @@ public class Director {
         LevelManager.getInstance().spawnEnemy(
                 DataClass.getInstance().getWindowWidth() + Math.round(enemyType.getBaseWidth() * scale),
                 DataClass.getInstance().getWindowHeight() / 2 - Math.round((enemyType.getBaseHeight() * scale) / 2),
-                enemyType, direction, scale, false, xMovementSpeed, yMovementSpeed, false);
+                enemyType, direction, scale, randomLocation, xMovementSpeed, yMovementSpeed, false);
     }
 
     public void spawnRegularFormation(SpawnFormationEnums formationType, EnemyEnums enemyType) {
         spawnFormationWithParameters(formationType, enemyType, null, false);
     }
 
-    private void spawnCashCarrier(SpawnFormationEnums formationType) {
-        spawnEntourageFormation(formationType, EnemyEnums.getRandomEnemy(EnemyCategory.Mercenary), EnemyEnums.CashCarrier);
-        this.lastCashCarrierSpawnTime = currentTime;
+    private void spawnCashCarrier() {
+//        spawnEntourageFormation(formationType, EnemyEnums.getRandomEnemy(EnemyCategory.Mercenary), EnemyEnums.CashCarrier);
+//        this.lastCashCarrierSpawnTime = currentTime;
+        spawnEnemy(EnemyEnums.CashCarrier, true);
     }
 
     private void spawnEntourageFormation(SpawnFormationEnums formationType, EnemyEnums primaryEnemy, EnemyEnums secondaryEnemy) {
@@ -363,5 +364,9 @@ public class Director {
 
     public boolean isActive() {
         return this.active;
+    }
+
+    public void setIsActive(boolean active){
+        this.active = active;
     }
 }

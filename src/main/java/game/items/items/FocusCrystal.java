@@ -22,7 +22,7 @@ public class FocusCrystal extends Item {
     }
 
     private void calculateDamageAmplificationModifier(){
-        damageAmplificationModifier = (quantity * 0.20f);
+        damageAmplificationModifier = (quantity * 0.15f);
     }
 
     //Not used

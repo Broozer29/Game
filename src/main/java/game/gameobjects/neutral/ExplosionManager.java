@@ -94,10 +94,10 @@ public class ExplosionManager {
 
 
                     if (explosion.isApplyOnHitEffects()) {
-                        explosion.applyAfterCollisionEffects(enemy);
+                        explosion.applyAfterCollisionItemEffectsToObject(enemy);
                     }
 
-                    explosion.applyExplosionEffects(enemy);
+                    explosion.applyExplosionOnHitEffects(enemy);
                     explosion.addCollidedSprite(enemy);
                     explosion.dealDamageToGameObject(enemy);
                 }

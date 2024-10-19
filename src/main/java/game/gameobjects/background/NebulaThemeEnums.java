@@ -26,6 +26,11 @@ public enum NebulaThemeEnums {
 	Purple_Nebula_5,
 	Purple_Nebula_6,
 	Purple_Nebula_7;
+//	HDNebula1,
+//	HDNebula2,
+//	HDNebula3,
+//	HDNebula4,
+//	HDNebula5;
 
 	private static final Random random = new Random();
 

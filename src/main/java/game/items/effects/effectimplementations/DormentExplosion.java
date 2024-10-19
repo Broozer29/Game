@@ -1,5 +1,7 @@
 package game.items.effects.effectimplementations;
 
+import VisualAndAudioData.audio.AudioManager;
+import VisualAndAudioData.audio.enums.AudioEnums;
 import VisualAndAudioData.image.ImageEnums;
 import game.gamestate.GameStateInfo;
 import game.items.effects.DormentExplosionActivationMethods;
@@ -15,6 +17,8 @@ import visualobjects.SpriteAnimation;
 import visualobjects.SpriteConfigurations.SpriteAnimationConfiguration;
 import visualobjects.SpriteConfigurations.SpriteConfiguration;
 
+import javax.sound.sampled.UnsupportedAudioFileException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -35,6 +39,7 @@ public class DormentExplosion implements EffectInterface {
     private boolean allowedToApplyOnHitEffects = false;
     private float delayBeforeExplosion;
     private EffectIdentifiers effectIdentifier;
+    private AudioEnums audioEnums;
 
     private List<EffectInterface> additionalEffects = new ArrayList<>();
 
@@ -49,7 +54,6 @@ public class DormentExplosion implements EffectInterface {
         this.delayBeforeExplosion = delayBeforeExplosion;
         this.activationTime = GameStateInfo.getInstance().getGameSeconds() + delayBeforeExplosion;
         this.effectIdentifier = effectIdentifier;
-
         this.allowedToApplyOnHitEffects = allowedToApplyOnHitEffects;
 
     }
@@ -82,7 +86,7 @@ public class DormentExplosion implements EffectInterface {
         SpriteConfiguration spriteConfiguration = new SpriteConfiguration();
         spriteConfiguration.setxCoordinate(gameObject.getXCoordinate());
         spriteConfiguration.setyCoordinate(gameObject.getYCoordinate());
-        spriteConfiguration.setScale(getScaleByExplosionType());
+         spriteConfiguration.setScale(getScaleByExplosionType());
         spriteConfiguration.setImageType(explosionType);
         SpriteAnimationConfiguration spriteAnimationConfiguration = new SpriteAnimationConfiguration(spriteConfiguration, getFrameDelayByExplosionType(), false);
         ExplosionConfiguration explosionConfiguration = new ExplosionConfiguration(true, damage, true, allowedToApplyOnHitEffects);
@@ -91,10 +95,8 @@ public class DormentExplosion implements EffectInterface {
         explosion.setScale(getScaleByExplosionType());
         explosion.getAnimation().setAnimationScale(getScaleByExplosionType());
 
-        replaceAnimationCoordinates(gameObject, explosion);
-
-//        explosion.setCenterCoordinates(gameObject.getCenterXCoordinate(), gameObject.getCenterYCoordinate());
-//        explosion.getAnimation().setCenterCoordinates(gameObject.getCenterXCoordinate(), gameObject.getCenterYCoordinate());
+        explosion.setCenterCoordinates(gameObject.getCenterXCoordinate(), gameObject.getCenterYCoordinate());
+        explosion.getAnimation().setCenterCoordinates(gameObject.getCenterXCoordinate(), gameObject.getCenterYCoordinate());
         explosion.setBoxCollision(boxCollision);
         explosion.setOwnerOrCreator(PlayerManager.getInstance().getSpaceship()); //Assume it's the player who has items, never the enemies. Could hinder later design
 
@@ -108,6 +110,13 @@ public class DormentExplosion implements EffectInterface {
             explosion.addEffectToApply(burning);
         }
 
+        if(audioEnums != null){
+            try {
+                AudioManager.getInstance().addAudio(audioEnums);
+            } catch (UnsupportedAudioFileException | IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
 
         ExplosionManager.getInstance().addExplosion(explosion);
         activated = true;
@@ -121,18 +130,8 @@ public class DormentExplosion implements EffectInterface {
 
     private float getScaleByExplosionType () {
         if (explosionType.equals(ImageEnums.GasolineExplosion)) {
-            return 0.5f;
+            return 1.15f;
         } else return 1;
-    }
-
-    private void replaceAnimationCoordinates (GameObject gameObject, Explosion explosion) {
-        if (explosionType.equals(ImageEnums.GasolineExplosion)) {
-            explosion.setCenterCoordinates(gameObject.getCenterXCoordinate(), gameObject.getCenterYCoordinate());
-            explosion.getAnimation().setCenterCoordinates(gameObject.getCenterXCoordinate() + (gameObject.getWidth() / 3), gameObject.getCenterYCoordinate());
-        } else {
-            explosion.setCenterCoordinates(gameObject.getCenterXCoordinate(), gameObject.getCenterYCoordinate());
-            explosion.getAnimation().setCenterCoordinates(gameObject.getCenterXCoordinate(), gameObject.getCenterYCoordinate());
-        }
     }
 
     @Override
@@ -268,5 +267,13 @@ public class DormentExplosion implements EffectInterface {
     @Override
     public int hashCode () {
         return Objects.hash(activationTypes);
+    }
+
+    public AudioEnums getAudioEnums () {
+        return audioEnums;
+    }
+
+    public void setAudioEnums (AudioEnums audioEnums) {
+        this.audioEnums = audioEnums;
     }
 }

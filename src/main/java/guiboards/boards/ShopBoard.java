@@ -1,8 +1,12 @@
 package guiboards.boards;
 
+import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
+import VisualAndAudioData.audio.AudioManager;
+import VisualAndAudioData.audio.CustomAudioClip;
+import com.badlogic.gdx.Audio;
 import controllerInput.ConnectedControllers;
 import controllerInput.ControllerInputEnums;
 import controllerInput.ControllerInputReader;
@@ -27,6 +31,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -40,6 +45,7 @@ public class ShopBoard extends JPanel implements ActionListener {
     private ShopManager shopManager = ShopManager.getInstance();
     private final int boardWidth = data.getWindowWidth();
     private final int boardHeight = data.getWindowHeight();
+    private AudioManager audioManager = AudioManager.getInstance();
 
     private List<GUIComponent> firstRow = new ArrayList<>();
     private List<GUIComponent> secondRow = new ArrayList<>();
@@ -618,6 +624,26 @@ public class ShopBoard extends JPanel implements ActionListener {
 
         // Reading controller input
         executeControllerInput();
+        try {
+            restreamLoopingMusicIfFinished();
+        } catch (UnsupportedAudioFileException | IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void restreamLoopingMusicIfFinished() throws UnsupportedAudioFileException, IOException {
+        if(audioManager == null){
+            audioManager = AudioManager.getInstance();
+        }
+        CustomAudioClip backGroundMusicCustomAudioclip = audioManager.getBackGroundMusicCustomAudioclip();
+        if(backGroundMusicCustomAudioclip == null){
+            return;
+        }
+        if (backGroundMusicCustomAudioclip.getCurrentSecondsInPlayback() >= backGroundMusicCustomAudioclip.getTotalSecondsInPlayback() &&
+                audioManager.getCurrentSong().shouldBeStreamed() &&
+                backGroundMusicCustomAudioclip.isLoop()) {
+            audioManager.playDefaultBackgroundMusic(audioManager.getCurrentSong(), true);
+        }
     }
 
     private void drawObjects (Graphics2D g) {
