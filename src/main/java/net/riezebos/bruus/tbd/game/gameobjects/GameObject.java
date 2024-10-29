@@ -9,24 +9,26 @@ import net.riezebos.bruus.tbd.game.items.PlayerInventory;
 import net.riezebos.bruus.tbd.game.items.effects.EffectActivationTypes;
 import net.riezebos.bruus.tbd.game.items.effects.EffectInterface;
 import net.riezebos.bruus.tbd.game.items.enums.ItemApplicationEnum;
-import net.riezebos.bruus.tbd.game.managers.AnimationManager;
-import net.riezebos.bruus.tbd.game.managers.OnScreenTextManager;
+import net.riezebos.bruus.tbd.visuals.objects.AnimationManager;
+import net.riezebos.bruus.tbd.game.util.OnScreenTextManager;
 import net.riezebos.bruus.tbd.game.movement.*;
+import net.riezebos.bruus.tbd.game.movement.Point;
 import net.riezebos.bruus.tbd.game.movement.pathfinders.HomingPathFinder;
 import net.riezebos.bruus.tbd.game.movement.pathfinders.PathFinder;
 import net.riezebos.bruus.tbd.game.util.ArmorCalculator;
-import net.riezebos.bruus.tbd.game.util.BoardBlockUpdater;
-import net.riezebos.bruus.tbd.visuals.audiodata.audio.AudioManager;
-import net.riezebos.bruus.tbd.visuals.audiodata.audio.enums.AudioEnums;
-import net.riezebos.bruus.tbd.visuals.audiodata.image.ImageEnums;
-import net.riezebos.bruus.tbd.visuals.audiodata.image.ImageResizer;
-import net.riezebos.bruus.tbd.visuals.audiodata.image.ImageRotator;
+import net.riezebos.bruus.tbd.game.movement.BoardBlockUpdater;
+import net.riezebos.bruus.tbd.visuals.data.audio.AudioManager;
+import net.riezebos.bruus.tbd.visuals.data.audio.enums.AudioEnums;
+import net.riezebos.bruus.tbd.visuals.data.image.ImageEnums;
+import net.riezebos.bruus.tbd.visuals.data.image.ImageResizer;
+import net.riezebos.bruus.tbd.visuals.data.image.ImageRotator;
 import net.riezebos.bruus.tbd.visuals.objects.Sprite;
 import net.riezebos.bruus.tbd.visuals.objects.SpriteAnimation;
 import net.riezebos.bruus.tbd.visuals.objects.SpriteConfigurations.SpriteAnimationConfiguration;
 import net.riezebos.bruus.tbd.visuals.objects.SpriteConfigurations.SpriteConfiguration;
 
 import javax.sound.sampled.UnsupportedAudioFileException;
+import java.awt.*;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -66,6 +68,7 @@ public class GameObject extends Sprite {
     protected float attackSpeed;
     protected float attackSpeedBonusModifier;
     protected boolean appliesOnHitEffects;
+    private List<EffectInterface> effectsToApply = new ArrayList<>();
 
     //Game logic variables
     protected boolean friendly;
@@ -120,7 +123,7 @@ public class GameObject extends Sprite {
 //        this.animation.setAnimationScale(spriteAnimationConfiguration.getSpriteConfiguration().getScale());
         initGameObject();
 
-        if(this.imageType.equals(ImageEnums.SpaceStationBoss)){
+        if (this.imageEnum.equals(ImageEnums.SpaceStationBoss)) {
             this.allowedVisualsToRotate = false;
         }
     }
@@ -204,7 +207,7 @@ public class GameObject extends Sprite {
             if (effect.getAnimation() != null) {
                 boolean effectAnimationExists = false;
                 for (SpriteAnimation effectAnim : effectAnimations) {
-                    if (effectAnim.getImageType().equals(effect.getAnimation().getImageType())) {
+                    if (effectAnim.getImageEnum().equals(effect.getAnimation().getImageEnum())) {
                         effectAnimationExists = true;
                     }
                 }
@@ -417,6 +420,10 @@ public class GameObject extends Sprite {
         float damage = ArmorCalculator.calculateDamage(getDamage(), target);
         target.takeDamage(damage);
 
+        for (EffectInterface effectInterface : effectsToApply) {
+            target.addEffect(effectInterface);
+        }
+
         if (showDamage) {
             OnScreenTextManager.getInstance().addDamageNumberText(Math.round(damage), target.getCenterXCoordinate(),
                     target.getCenterYCoordinate(), isACrit);
@@ -511,7 +518,7 @@ public class GameObject extends Sprite {
         }
     }
 
-    private Point calculateFrontPosition(int centerX, int centerY, double angleDegrees, double distanceToFront) {
+    private Point calculateFrontPosition (int centerX, int centerY, double angleDegrees, double distanceToFront) {
         double angleRadians = Math.toRadians(angleDegrees);
 
         // Calculate the new position using trigonometry
@@ -537,7 +544,6 @@ public class GameObject extends Sprite {
                 this.animation.rotateAnimation(calculatedAngle, crop);
             } else if (this.image != null) {
                 this.image = ImageRotator.getInstance().rotateOrFlip(this.originalImage, calculatedAngle, crop);
-
                 if (this.scale != 1) {
                     this.setScale(this.scale);
                 }
@@ -808,9 +814,9 @@ public class GameObject extends Sprite {
     }
 
     public void setScale (float newScale) {
-        if (newScale == this.scale) {
-            return;
-        }
+//        if (newScale == this.scale) {
+//            return;
+//        }
 
 
         this.scale = newScale;
@@ -977,6 +983,10 @@ public class GameObject extends Sprite {
         this.attackSpeedBonusModifier += bonusPercentage;
     }
 
+    public void modifyMovementSpeedModifier(float bonusSpeed){
+        this.movementConfiguration.modifyMovementSpeedModifier(bonusSpeed); ;
+    }
+
 //    public int getXCoordinate () {
 //        if (this.animation != null) {
 //            return this.animation.getXCoordinate();
@@ -1040,6 +1050,12 @@ public class GameObject extends Sprite {
         isACrit = ACrit;
     }
 
+    public void addEffectToApply (EffectInterface effectInterface) {
+        if (!effectsToApply.contains(effectInterface)) {
+            this.effectsToApply.add(effectInterface);
+        }
+    }
+
     @Override
     public boolean equals (Object o) {
         if (this == o) return true;
@@ -1051,5 +1067,19 @@ public class GameObject extends Sprite {
     @Override
     public int hashCode () {
         return Objects.hash(animation, destructionAnimation, shieldDamagedAnimation, exhaustAnimation, chargingUpAttackAnimation, showHealthBar, allowedToMove, originalScale, deathSound, currentHitpoints, maxHitPoints, currentShieldPoints, maxShieldPoints, baseArmor, armorBonus, hasAttack, damage, bonusDamageMultiplier, allowedToDealDamage, attackSpeed, attackSpeedBonusModifier, friendly, objectToCenterAround, objectToFollow, movementConfiguration, lastBoardBlock, currentLocation, currentBoardBlock, objectsFollowingThis, objectOrbitingThis, objectType, movementRotation, boxCollision, lastGameSecondDamageTaken, ownerOrCreator, centeredAroundObject, movementCounter, cashMoneyWorth, rotationAngle, allowedVisualsToRotate, effects, effectAnimations, xpOnDeath);
+    }
+
+    public ImageEnums getImageEnum (){
+        if(this.animation != null){
+            return this.animation.getImageEnum();
+        }
+        return this.imageEnum;
+    }
+
+    public Rectangle getBounds(){
+        if(this.animation != null){
+            return animation.getBounds();
+        }
+        return super.getBounds();
     }
 }

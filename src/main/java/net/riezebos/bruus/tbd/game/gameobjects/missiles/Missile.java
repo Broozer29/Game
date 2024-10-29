@@ -7,7 +7,7 @@ import net.riezebos.bruus.tbd.game.gamestate.GameStatsTracker;
 import net.riezebos.bruus.tbd.game.items.Item;
 import net.riezebos.bruus.tbd.game.items.PlayerInventory;
 import net.riezebos.bruus.tbd.game.items.enums.ItemEnums;
-import net.riezebos.bruus.tbd.game.managers.AnimationManager;
+import net.riezebos.bruus.tbd.visuals.objects.AnimationManager;
 import net.riezebos.bruus.tbd.game.movement.MovementConfiguration;
 import net.riezebos.bruus.tbd.game.movement.Point;
 import net.riezebos.bruus.tbd.game.movement.pathfinders.StraightLinePathFinder;
@@ -26,7 +26,6 @@ public class Missile extends GameObject {
     protected boolean destroysMissiles;
     protected boolean piercesThroughObjects;
     protected int amountOfPiercesLeft;
-
     protected boolean isDestructable;
     protected boolean speedsUp;
 

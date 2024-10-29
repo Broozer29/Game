@@ -5,7 +5,7 @@ import net.riezebos.bruus.tbd.game.gameobjects.enemies.Enemy;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyCategory;
 import net.riezebos.bruus.tbd.game.gamestate.GameStateInfo;
 import net.riezebos.bruus.tbd.game.movement.*;
-import net.riezebos.bruus.tbd.game.util.BoardBlockUpdater;
+import net.riezebos.bruus.tbd.game.movement.BoardBlockUpdater;
 
 import java.util.ArrayList;
 import java.util.List;

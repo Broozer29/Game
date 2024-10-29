@@ -5,6 +5,7 @@ import net.riezebos.bruus.tbd.game.gamestate.GameStateInfo;
 import net.riezebos.bruus.tbd.game.items.effects.EffectActivationTypes;
 import net.riezebos.bruus.tbd.game.items.effects.EffectIdentifiers;
 import net.riezebos.bruus.tbd.game.items.effects.EffectInterface;
+import net.riezebos.bruus.tbd.visuals.data.image.ImageEnums;
 import net.riezebos.bruus.tbd.visuals.objects.SpriteAnimation;
 
 import java.util.Objects;
@@ -105,8 +106,6 @@ public class DamageOverTime implements EffectInterface {
         Random random = new Random();
 
         // Get animation dimensions and target (enemy) dimensions
-        int animationWidth = this.animation.getWidth();
-        int animationHeight = this.animation.getHeight();
         int enemyWidth = target.getWidth();
         int enemyHeight = target.getHeight();
 
@@ -122,6 +121,12 @@ public class DamageOverTime implements EffectInterface {
         // Calculate the maximum possible offsets based on 25% of the enemy's dimensions
         int maxXOffset = (int) (enemyWidth * 0.25); // 25% of the enemy's width
         int maxYOffset = (int) (enemyHeight * 0.25); // 25% of the enemy's height
+
+        if(target.getSpriteConfiguration().getImageType().equals(ImageEnums.SpaceStationBoss) ||
+                target.getSpriteConfiguration().getImageType().equals(ImageEnums.RedBoss)){
+            maxXOffset = (int) (enemyWidth * 0.1);
+            maxYOffset = (int) (enemyHeight * 0.1);
+        }
 
         // Determine the actual offsets (random amount within the allowed range)
         int xOffset = random.nextInt(maxXOffset + 1); // Random value between 0 and maxXOffset

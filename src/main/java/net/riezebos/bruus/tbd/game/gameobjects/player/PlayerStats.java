@@ -5,10 +5,10 @@ import net.riezebos.bruus.tbd.game.gameobjects.missiles.MissileEnums;
 import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SpaceShip;
 import net.riezebos.bruus.tbd.game.movement.PathFinderEnums;
 import net.riezebos.bruus.tbd.game.util.ExperienceCalculator;
-import net.riezebos.bruus.tbd.game.util.LevelAnimationPlayer;
-import net.riezebos.bruus.tbd.visuals.audiodata.audio.AudioManager;
-import net.riezebos.bruus.tbd.visuals.audiodata.audio.enums.AudioEnums;
-import net.riezebos.bruus.tbd.visuals.audiodata.image.ImageEnums;
+import net.riezebos.bruus.tbd.visuals.data.audio.AudioManager;
+import net.riezebos.bruus.tbd.visuals.data.audio.enums.AudioEnums;
+import net.riezebos.bruus.tbd.visuals.data.image.ImageEnums;
+import net.riezebos.bruus.tbd.visuals.objects.AnimationManager;
 
 import javax.sound.sampled.UnsupportedAudioFileException;
 import java.io.IOException;
@@ -48,7 +48,8 @@ public class PlayerStats {
     private float shieldRegenDelay;
 
     // Movement
-    private int MovementSpeed;
+    private float movementSpeed;
+    private float movementSpeedModifier;
 
     // Visual aspects of player
     private ImageEnums currentExhaust;
@@ -113,6 +114,7 @@ public class PlayerStats {
 
         // Movement speed
         setMovementSpeed(4);
+        movementSpeedModifier = 1.0f;
 
         // Special attack
         setSpecialAttackSpeed(3f);
@@ -202,7 +204,7 @@ public class PlayerStats {
         player.setCurrentHitpoints(maxHitPoints);
         player.setCurrentShieldPoints(maxShieldHitPoints);
 
-        LevelAnimationPlayer.playLevelUpAnimation(player);
+        AnimationManager.getInstance().playLevelUpAnimation(player);
         try {
             AudioManager.getInstance().addAudio(AudioEnums.Power_Up_Acquired);
         } catch (UnsupportedAudioFileException | IOException e) {
@@ -284,14 +286,15 @@ public class PlayerStats {
         this.maxShieldHitPoints = maxShieldHitPoints * maxShieldMultiplier;
     }
 
-    public int getMovementSpeed () {
-        return MovementSpeed;
+
+    public void setMovementSpeed (float movementSpeed) {
+        if (movementSpeed > 0) {
+            this.movementSpeed = movementSpeed;
+        }
     }
 
-    public void setMovementSpeed (int movementSpeed) {
-        if (movementSpeed > 0) {
-            this.MovementSpeed = movementSpeed;
-        }
+    public void modifyMovementSpeedModifier(float modifier){
+        this.movementSpeedModifier += modifier;
     }
 
     public ImageEnums getCurrentExhaust () {
@@ -360,8 +363,13 @@ public class PlayerStats {
         this.missileScale = missileScale;
     }
 
-    public int getCurrentMovementSpeed () {
-        return MovementSpeed;
+    public float getMovementSpeed () {
+        float moveSpeed = this.movementSpeed * this.movementSpeedModifier;
+        if (moveSpeed < 0.25f) {
+            return 0.25f;
+        } else {
+            return moveSpeed;
+        }
     }
 
 

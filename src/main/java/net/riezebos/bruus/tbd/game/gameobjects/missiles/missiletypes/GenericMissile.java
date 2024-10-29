@@ -3,7 +3,7 @@ package net.riezebos.bruus.tbd.game.gameobjects.missiles.missiletypes;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.Missile;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.MissileConfiguration;
 import net.riezebos.bruus.tbd.game.movement.MovementConfiguration;
-import net.riezebos.bruus.tbd.visuals.audiodata.image.ImageEnums;
+import net.riezebos.bruus.tbd.visuals.data.image.ImageEnums;
 import net.riezebos.bruus.tbd.visuals.objects.SpriteAnimation;
 import net.riezebos.bruus.tbd.visuals.objects.SpriteConfigurations.SpriteAnimationConfiguration;
 import net.riezebos.bruus.tbd.visuals.objects.SpriteConfigurations.SpriteConfiguration;
@@ -30,7 +30,7 @@ public class GenericMissile extends Missile {
 			destructionAnimation.getSpriteConfiguration().setImageType(missileConfiguration.getDestructionType());
 			this.destructionAnimation = new SpriteAnimation(destructionAnimation);
 
-			if(this.destructionAnimation.getImageType().equals(ImageEnums.LaserBulletDestruction)){
+			if(this.destructionAnimation.getImageEnum().equals(ImageEnums.LaserBulletDestruction)){
 				this.destructionAnimation.rotateAnimation(movementConfiguration.getRotation(), false);
 				this.destructionAnimation.setFrameDelay(1);
 			}

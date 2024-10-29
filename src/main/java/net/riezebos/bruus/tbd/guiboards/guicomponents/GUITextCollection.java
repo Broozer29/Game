@@ -1,7 +1,7 @@
 package net.riezebos.bruus.tbd.guiboards.guicomponents;
 
 import net.riezebos.bruus.tbd.guiboards.boardEnums.MenuFunctionEnums;
-import net.riezebos.bruus.tbd.visuals.audiodata.image.ImageEnums;
+import net.riezebos.bruus.tbd.visuals.data.image.ImageEnums;
 import net.riezebos.bruus.tbd.visuals.objects.SpriteConfigurations.SpriteConfiguration;
 
 import java.util.ArrayList;

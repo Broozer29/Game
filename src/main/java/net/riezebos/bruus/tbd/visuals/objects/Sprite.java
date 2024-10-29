@@ -2,7 +2,7 @@ package net.riezebos.bruus.tbd.visuals.objects;
 
 import net.riezebos.bruus.tbd.game.movement.Direction;
 import net.riezebos.bruus.tbd.visuals.objects.SpriteConfigurations.SpriteConfiguration;
-import net.riezebos.bruus.tbd.visuals.audiodata.image.*;
+import net.riezebos.bruus.tbd.visuals.data.image.*;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -29,7 +29,7 @@ public class Sprite {
     protected int xOffset;
     protected int yOffset;
     protected Rectangle bounds;
-    protected ImageEnums imageType;
+    protected ImageEnums imageEnum;
 
     protected SpriteConfiguration spriteConfiguration;
 
@@ -44,7 +44,7 @@ public class Sprite {
         this.transparancyAlpha = spriteConfiguration.getTransparancyAlpha();
         this.transparancyStepSize = spriteConfiguration.getTransparancyStepSize();
         this.increaseTransparancy = spriteConfiguration.isIncreaseTransparancy();
-        this.imageType = spriteConfiguration.getImageType();
+        this.imageEnum = spriteConfiguration.getImageType();
         loadImage(spriteConfiguration.getImageType());
         this.spriteConfiguration = spriteConfiguration;
 
@@ -151,6 +151,9 @@ public class Sprite {
     }
 
     public void setVisible (boolean visible) {
+        if(this.imageEnum.equals(ImageEnums.SpaceStationBoss) && visible == false){
+            System.out.println("break");
+        }
         this.visible = visible;
     }
 

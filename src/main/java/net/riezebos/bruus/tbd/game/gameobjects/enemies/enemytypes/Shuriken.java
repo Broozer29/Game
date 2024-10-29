@@ -3,7 +3,7 @@ package net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.Enemy;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyConfiguration;
 import net.riezebos.bruus.tbd.game.movement.MovementConfiguration;
-import net.riezebos.bruus.tbd.visuals.audiodata.audio.enums.AudioEnums;
+import net.riezebos.bruus.tbd.visuals.data.audio.enums.AudioEnums;
 import net.riezebos.bruus.tbd.visuals.objects.SpriteAnimation;
 import net.riezebos.bruus.tbd.visuals.objects.SpriteConfigurations.SpriteAnimationConfiguration;
 import net.riezebos.bruus.tbd.visuals.objects.SpriteConfigurations.SpriteConfiguration;

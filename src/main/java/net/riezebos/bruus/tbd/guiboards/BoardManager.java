@@ -3,9 +3,9 @@ package net.riezebos.bruus.tbd.guiboards;
 import net.riezebos.bruus.tbd.guiboards.boards.GameBoard;
 import net.riezebos.bruus.tbd.guiboards.boards.MenuBoard;
 import net.riezebos.bruus.tbd.guiboards.boards.ShopBoard;
-import net.riezebos.bruus.tbd.visuals.audiodata.DataClass;
-import net.riezebos.bruus.tbd.visuals.audiodata.audio.AudioManager;
-import net.riezebos.bruus.tbd.visuals.audiodata.audio.enums.AudioEnums;
+import net.riezebos.bruus.tbd.visuals.data.DataClass;
+import net.riezebos.bruus.tbd.visuals.data.audio.AudioManager;
+import net.riezebos.bruus.tbd.visuals.data.audio.enums.AudioEnums;
 
 import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.*;

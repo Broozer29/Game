@@ -5,13 +5,15 @@ import net.riezebos.bruus.tbd.game.movement.Direction;
 import net.riezebos.bruus.tbd.game.movement.MovementConfiguration;
 import net.riezebos.bruus.tbd.game.movement.Path;
 import net.riezebos.bruus.tbd.game.movement.Point;
-import net.riezebos.bruus.tbd.visuals.audiodata.DataClass;
+import net.riezebos.bruus.tbd.visuals.data.DataClass;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class BouncingPathFinder implements PathFinder {
 
+
+    private boolean useCenteredCoordinatesInstead = false; //Use this for the SPACESTATIONBOSS ONLY!
     private final int windowWidth;
     private final int playableWindowMinHeight;
     private final int playableWindowMaxHeight;
@@ -118,28 +120,39 @@ public class BouncingPathFinder implements PathFinder {
     }
 
     public Direction getNewDirection (GameObject gameObject, Direction spriteDirection) {
-
-        int xCoordinate = 0;
-        int yCoordinate = 0;
-        int spriteWidth = 0;
-        int spriteHeight = 0;
-
-        if (gameObject.getAnimation() != null) {
-            xCoordinate = gameObject.getAnimation().getXCoordinate();
-            yCoordinate = gameObject.getAnimation().getYCoordinate();
-            spriteWidth = gameObject.getAnimation().getWidth();
-            spriteHeight = gameObject.getAnimation().getHeight();
-        } else {
-            xCoordinate = gameObject.getXCoordinate();
-            yCoordinate = gameObject.getYCoordinate();
-            spriteWidth = gameObject.getWidth();
-            spriteHeight = gameObject.getHeight();
+        if(this.useCenteredCoordinatesInstead){
+            return getNewDirectionUsingCentered(gameObject, spriteDirection);
         }
+
+        int xCoordinate = gameObject.getXCoordinate();
+        int yCoordinate = gameObject.getYCoordinate();
+        int spriteWidth = gameObject.getWidth();
+        int spriteHeight = gameObject.getHeight();
 
         boolean changeX = (isLeft(spriteDirection) && xCoordinate <= 0)
                 || (isRight(spriteDirection) && (xCoordinate + spriteWidth) >= windowWidth);
         boolean changeY = (isUp(spriteDirection) && yCoordinate <= 0)
                 || (isDown(spriteDirection) && (yCoordinate + spriteHeight) >= playableWindowMaxHeight);
+        if (changeX && changeY)
+            return flipDirection(spriteDirection);
+        else if (changeX)
+            return flipXDirection(spriteDirection);
+        else if (changeY)
+            return flipYDirection(spriteDirection);
+
+        return spriteDirection;
+    }
+
+    private Direction getNewDirectionUsingCentered(GameObject gameObject, Direction spriteDirection){
+        int xCoordinate = gameObject.getCenterXCoordinate();
+        int yCoordinate = gameObject.getCenterYCoordinate();
+        int spriteWidth = gameObject.getWidth();
+        int spriteHeight = gameObject.getHeight();
+
+        boolean changeX = (isLeft(spriteDirection) && xCoordinate <= 0)
+                || (isRight(spriteDirection) && (xCoordinate) >= windowWidth);
+        boolean changeY = (isUp(spriteDirection) && yCoordinate <= 0)
+                || (isDown(spriteDirection) && (yCoordinate) >= playableWindowMaxHeight);
         if (changeX && changeY)
             return flipDirection(spriteDirection);
         else if (changeX)
@@ -283,5 +296,17 @@ public class BouncingPathFinder implements PathFinder {
 
     public void setMaxBounces (int maxBounces) {
         this.maxBounces = maxBounces;
+    }
+
+    public boolean isUseCenteredCoordinatesInstead () {
+        return useCenteredCoordinatesInstead;
+    }
+
+    public void setUseCenteredCoordinatesInstead (boolean useCenteredCoordinatesInstead) {
+        this.useCenteredCoordinatesInstead = useCenteredCoordinatesInstead;
+    }
+
+    public int getCurrentBounces(){
+        return currentBounces;
     }
 }

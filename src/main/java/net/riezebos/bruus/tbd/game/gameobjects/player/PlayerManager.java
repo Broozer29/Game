@@ -5,11 +5,11 @@ import net.riezebos.bruus.tbd.game.gamestate.GameStateInfo;
 import net.riezebos.bruus.tbd.game.gamestate.GameStatusEnums;
 import net.riezebos.bruus.tbd.game.items.PlayerInventory;
 import net.riezebos.bruus.tbd.game.items.enums.ItemEnums;
-import net.riezebos.bruus.tbd.game.managers.AnimationManager;
-import net.riezebos.bruus.tbd.visuals.audiodata.DataClass;
-import net.riezebos.bruus.tbd.visuals.audiodata.audio.AudioManager;
-import net.riezebos.bruus.tbd.visuals.audiodata.audio.enums.AudioEnums;
-import net.riezebos.bruus.tbd.visuals.audiodata.image.ImageEnums;
+import net.riezebos.bruus.tbd.visuals.objects.AnimationManager;
+import net.riezebos.bruus.tbd.visuals.data.DataClass;
+import net.riezebos.bruus.tbd.visuals.data.audio.AudioManager;
+import net.riezebos.bruus.tbd.visuals.data.audio.enums.AudioEnums;
+import net.riezebos.bruus.tbd.visuals.data.image.ImageEnums;
 import net.riezebos.bruus.tbd.visuals.objects.SpriteConfigurations.SpriteConfiguration;
 
 import javax.sound.sampled.UnsupportedAudioFileException;
@@ -83,6 +83,7 @@ public class PlayerManager {
 
 	public void startDyingScene() {
 		if (spaceship.getCurrentHitpoints() <= 0 && gameState.getGameState() == GameStatusEnums.Dying) {
+			spaceship.setImmune(true); //Ignore enemies and missiles whilst exploding
 			if (!animationManager.getUpperAnimations().contains(spaceship.getDestructionAnimation())) {
 				animationManager.getUpperAnimations().add(spaceship.getDestructionAnimation());
 				animationManager.getLowerAnimations().remove(spaceship.getExhaustAnimation());
@@ -98,7 +99,7 @@ public class PlayerManager {
 
 			if (spaceship.getDestructionAnimation().getCurrentFrame() >= spaceship.getDestructionAnimation().getTotalFrames()) {
 				gameState.setGameState(GameStatusEnums.Dead);
-				spaceship.setImmune(true); //Ignore enemies and missiles whilst exploding
+
 				PlayerInventory.getInstance().resetInventory();
 			}
 		}

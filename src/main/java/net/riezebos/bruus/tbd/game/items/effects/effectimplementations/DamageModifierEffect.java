@@ -38,14 +38,14 @@ public class DamageModifierEffect implements EffectInterface {
             this.modifiedObject = gameObject;
             if (gameObject instanceof SpaceShip) {
 //                float oldValue = PlayerStats.getInstance().getNormalAttackDamage();
-                PlayerStats.getInstance().modifyBonusDamageMultiplier(-0.5f);
+                PlayerStats.getInstance().modifyBonusDamageMultiplier(-damageModifierAmount);
 //                OnScreenTextManager.getInstance().addText(PlayerStats.getInstance().getNormalAttackDamage() + " / " + oldValue,
 //                        PlayerManager.getInstance().getSpaceship().getXCoordinate(), PlayerManager.getInstance().getSpaceship().getYCoordinate());
             } else if (gameObject.isFriendly()) {
-                gameObject.modifyBonusDamageMultiplier(-0.5f);
+                gameObject.modifyBonusDamageMultiplier(-damageModifierAmount);
             } else {
 //                float oldValue = gameObject.getDamage();
-                gameObject.modifyBonusDamageMultiplier(0.5f);
+                gameObject.modifyBonusDamageMultiplier(damageModifierAmount);
 //                OnScreenTextManager.getInstance().addText(modifiedObject.getDamage() + " / " + oldValue,
 //                        modifiedObject.getXCoordinate(), modifiedObject.getYCoordinate());
             }
@@ -61,15 +61,15 @@ public class DamageModifierEffect implements EffectInterface {
     private void removeEffectsBeforeRemovingEffect () {
         if (modifiedObject instanceof SpaceShip) {
 //            float oldValue = PlayerStats.getInstance().getNormalAttackDamage();
-            PlayerStats.getInstance().modifyBonusDamageMultiplier(0.5f);
+            PlayerStats.getInstance().modifyBonusDamageMultiplier(damageModifierAmount);
 //            OnScreenTextManager.getInstance().addText(PlayerStats.getInstance().getNormalAttackDamage() + " / " + oldValue,
 //                    PlayerManager.getInstance().getSpaceship().getXCoordinate(), PlayerManager.getInstance().getSpaceship().getYCoordinate());
 
         } else if (modifiedObject.isFriendly()) {
-            modifiedObject.modifyBonusDamageMultiplier(0.5f);
+            modifiedObject.modifyBonusDamageMultiplier(damageModifierAmount);
         } else {
 //            float oldValue = modifiedObject.getDamage();
-            modifiedObject.modifyBonusDamageMultiplier(-0.5f);
+            modifiedObject.modifyBonusDamageMultiplier(-damageModifierAmount);
 //            OnScreenTextManager.getInstance().addText(modifiedObject.getDamage() + " / " + oldValue,
 //                    modifiedObject.getXCoordinate(), modifiedObject.getYCoordinate());
         }

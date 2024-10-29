@@ -2,7 +2,7 @@ package net.riezebos.bruus.tbd.guiboards.guicomponents;
 
 import net.riezebos.bruus.tbd.guiboards.boardEnums.MenuFunctionEnums;
 import net.riezebos.bruus.tbd.guiboards.boardEnums.MenuObjectEnums;
-import net.riezebos.bruus.tbd.visuals.audiodata.image.ImageEnums;
+import net.riezebos.bruus.tbd.visuals.data.image.ImageEnums;
 import net.riezebos.bruus.tbd.visuals.objects.Sprite;
 import net.riezebos.bruus.tbd.visuals.objects.SpriteAnimation;
 import net.riezebos.bruus.tbd.visuals.objects.SpriteConfigurations.SpriteAnimationConfiguration;
@@ -42,9 +42,9 @@ public class GUIComponent extends Sprite implements Actionable{
     }
 
     public void setNewImage(ImageEnums newImage){
-        this.imageType = newImage;
+        this.imageEnum = newImage;
         this.spriteConfiguration.setImageType(newImage);
-        super.loadImage(imageType);
+        super.loadImage(imageEnum);
     }
 
     public MenuFunctionEnums getMenuFunctionality () {

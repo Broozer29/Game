@@ -3,7 +3,8 @@ package net.riezebos.bruus.tbd.game.util;
 import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
 import net.riezebos.bruus.tbd.game.movement.Direction;
 import net.riezebos.bruus.tbd.game.movement.pathfinders.OrbitPathFinder;
-import net.riezebos.bruus.tbd.visuals.audiodata.DataClass;
+import net.riezebos.bruus.tbd.visuals.data.DataClass;
+import net.riezebos.bruus.tbd.visuals.data.image.ImageEnums;
 
 public class OutOfBoundsCalculator {
     public static boolean isOutOfBounds (GameObject gameObject) {
@@ -27,28 +28,16 @@ public class OutOfBoundsCalculator {
     }
 
     private static boolean calculateOutOfBounds (GameObject gameObject) {
-        int xCoordinate = 0;
-        int yCoordinate = 0;
-        int width = 0;
-        int height = 0;
+        int xCoordinate = gameObject.getXCoordinate();
+        int yCoordinate = gameObject.getYCoordinate();
+        int width = gameObject.getWidth();
+        int height = gameObject.getHeight();
 
 
-        if (gameObject.getAnimation() != null) {
-            xCoordinate = gameObject.getAnimation().getXCoordinate();
-            yCoordinate = gameObject.getAnimation().getYCoordinate();
-            width = gameObject.getAnimation().getWidth();
-            height = gameObject.getAnimation().getHeight();
-        } else {
-            xCoordinate = gameObject.getXCoordinate();
-            yCoordinate = gameObject.getYCoordinate();
-            width = gameObject.getWidth();
-            height = gameObject.getHeight();
+        if(gameObject.getImageEnum().equals(ImageEnums.SpaceStationBoss)){
+            width = gameObject.getWidth() * 3;
+            height = gameObject.getHeight() * 3;
         }
-//        if(gameObject instanceof SeekerProjectile){
-//            if(xCoordinate < 0 || xCoordinate > 1400 || yCoordinate < 0 || yCoordinate > 800){
-//                System.out.println("break");
-//            }
-//        }
 
         Direction direction = null;
         if (gameObject.getMovementConfiguration().getCurrentPath() != null) {
@@ -100,8 +89,6 @@ public class OutOfBoundsCalculator {
                     return true;
                 }
                 break;
-            case NONE:
-                return true;
             case RIGHT_DOWN:
                 if (xCoordinate >= windowMaxWidth + width
                         || yCoordinate >= (playableWindowMaxHeight + height)) {

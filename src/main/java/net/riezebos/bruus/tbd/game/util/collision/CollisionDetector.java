@@ -3,7 +3,6 @@ package net.riezebos.bruus.tbd.game.util.collision;
 import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.laserbeams.Laserbeam;
 import net.riezebos.bruus.tbd.game.movement.Point;
-import net.riezebos.bruus.tbd.game.util.BoundsCalculator;
 import net.riezebos.bruus.tbd.visuals.objects.SpriteAnimation;
 
 import java.awt.*;
@@ -31,8 +30,8 @@ public class CollisionDetector {
         }
 
         if (isNearby(gameObject1, gameObject2, threshold)) {
-            Rectangle r1 = BoundsCalculator.getGameObjectBounds(gameObject1);
-            Rectangle r2 = BoundsCalculator.getGameObjectBounds(gameObject2);
+            Rectangle r1 = gameObject1.getBounds();
+            Rectangle r2 = gameObject2.getBounds();
 
             if (r1.intersects(r2)) {
                 Point collisionPoint = checkPixelCollision(gameObject1, gameObject2);
@@ -72,7 +71,7 @@ public class CollisionDetector {
     // Helper method to detect collision between a GameObject and a SpriteAnimation
     private CollisionInfo detectCollision (GameObject gameObject, SpriteAnimation spriteAnimation) {
         // First, check bounding boxes
-        Rectangle gameObjectBounds = BoundsCalculator.getGameObjectBounds(gameObject);
+        Rectangle gameObjectBounds = gameObject.getBounds();
         Rectangle spriteBounds = getSpriteBounds(spriteAnimation);
 
         if (gameObjectBounds.intersects(spriteBounds)) {

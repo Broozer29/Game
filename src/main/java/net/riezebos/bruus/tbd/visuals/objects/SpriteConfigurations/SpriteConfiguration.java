@@ -1,6 +1,6 @@
 package net.riezebos.bruus.tbd.visuals.objects.SpriteConfigurations;
 
-import net.riezebos.bruus.tbd.visuals.audiodata.image.ImageEnums;
+import net.riezebos.bruus.tbd.visuals.data.image.ImageEnums;
 
 public class SpriteConfiguration {
 

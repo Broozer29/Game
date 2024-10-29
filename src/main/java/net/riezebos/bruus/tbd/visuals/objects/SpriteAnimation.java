@@ -1,9 +1,8 @@
 package net.riezebos.bruus.tbd.visuals.objects;
 
-import net.riezebos.bruus.tbd.game.managers.AnimationManager;
 import net.riezebos.bruus.tbd.game.movement.Direction;
 import net.riezebos.bruus.tbd.visuals.objects.SpriteConfigurations.SpriteAnimationConfiguration;
-import net.riezebos.bruus.tbd.visuals.audiodata.image.*;
+import net.riezebos.bruus.tbd.visuals.data.image.*;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -48,7 +47,7 @@ public class SpriteAnimation extends Sprite implements Cloneable{
 	// Sets frames, Animation shouldn't call the ImageDatabase, it should get it
 	// from a manager when created.
 	private void loadGifFrames(ImageEnums imageType) {
-		this.imageType = imageType;
+		this.imageEnum = imageType;
 		this.frames = ImageDatabase.getInstance().getAnimation(imageType);
 
 
@@ -57,7 +56,7 @@ public class SpriteAnimation extends Sprite implements Cloneable{
 	}
 
 	public void changeImagetype(ImageEnums imageType) {
-		this.imageType = imageType;
+		this.imageEnum = imageType;
 		this.frames = ImageDatabase.getInstance().getAnimation(imageType);
 		this.increasedSizeFrames = frames;
 		this.originalFrames = frames;
@@ -178,8 +177,8 @@ public class SpriteAnimation extends Sprite implements Cloneable{
 		this.frameDelay = frameDelay;
 	}
 
-	public ImageEnums getImageType() {
-		return this.imageType;
+	public ImageEnums getImageEnum () {
+		return this.imageEnum;
 	}
 
 	public Rectangle getBounds() {
@@ -265,7 +264,7 @@ public class SpriteAnimation extends Sprite implements Cloneable{
 				", height=" + height +
 				", visible=" + visible +
 				", image=" + image +
-				", imageType=" + imageType +
+				", imageType=" + imageEnum +
 				'}';
 	}
 
@@ -275,7 +274,7 @@ public class SpriteAnimation extends Sprite implements Cloneable{
 			SpriteAnimation cloned = (SpriteAnimation) super.clone();
 
 			// Load frames from the ImageDatabase
-			cloned.loadGifFrames(this.imageType);
+			cloned.loadGifFrames(this.imageEnum);
 
 			// Copy other properties
 			cloned.currentFrame = this.currentFrame;
@@ -324,4 +323,8 @@ public class SpriteAnimation extends Sprite implements Cloneable{
 		this.frames = copiedFrames;
 		this.originalFrames = new ArrayList<>(copiedFrames);
 	}
+
+    public int getFrameDelay () {
+		return frameDelay;
+    }
 }

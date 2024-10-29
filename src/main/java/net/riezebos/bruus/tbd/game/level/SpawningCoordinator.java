@@ -4,7 +4,7 @@ import net.riezebos.bruus.tbd.game.gameobjects.background.BackgroundObject;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.Enemy;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyEnums;
 import net.riezebos.bruus.tbd.game.movement.Direction;
-import net.riezebos.bruus.tbd.visuals.audiodata.DataClass;
+import net.riezebos.bruus.tbd.visuals.data.DataClass;
 
 import java.util.ArrayList;
 import java.util.List;

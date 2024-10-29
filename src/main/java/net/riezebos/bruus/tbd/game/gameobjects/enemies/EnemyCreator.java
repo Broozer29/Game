@@ -1,19 +1,16 @@
 package net.riezebos.bruus.tbd.game.gameobjects.enemies;
 
-import net.riezebos.bruus.tbd.game.gameobjects.enemies.boss.RedBoss;
-import net.riezebos.bruus.tbd.game.gameobjects.enemies.boss.SpaceStationBoss;
+import net.riezebos.bruus.tbd.game.gameobjects.enemies.bosses.redboss.RedBoss;
+import net.riezebos.bruus.tbd.game.gameobjects.enemies.bosses.spacestation.SpaceStationBoss;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.*;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyEnums;
 import net.riezebos.bruus.tbd.game.movement.Direction;
 import net.riezebos.bruus.tbd.game.movement.MovementConfiguration;
 import net.riezebos.bruus.tbd.game.movement.MovementPatternSize;
 import net.riezebos.bruus.tbd.game.movement.Point;
-import net.riezebos.bruus.tbd.game.movement.pathfinders.DestinationPathFinder;
-import net.riezebos.bruus.tbd.game.movement.pathfinders.HoverPathFinder;
-import net.riezebos.bruus.tbd.game.movement.pathfinders.PathFinder;
-import net.riezebos.bruus.tbd.game.movement.pathfinders.RegularPathFinder;
-import net.riezebos.bruus.tbd.visuals.audiodata.DataClass;
-import net.riezebos.bruus.tbd.visuals.audiodata.audio.enums.AudioEnums;
+import net.riezebos.bruus.tbd.game.movement.pathfinders.*;
+import net.riezebos.bruus.tbd.visuals.data.DataClass;
+import net.riezebos.bruus.tbd.visuals.data.audio.enums.AudioEnums;
 import net.riezebos.bruus.tbd.visuals.objects.SpriteConfigurations.SpriteAnimationConfiguration;
 import net.riezebos.bruus.tbd.visuals.objects.SpriteConfigurations.SpriteConfiguration;
 
@@ -40,6 +37,7 @@ public class EnemyCreator {
         switch (enemyType){
             case Seeker, Energizer, Tazer, Scout, RedBoss -> {return new HoverPathFinder();}
             case FourDirectionalDrone, PulsingDrone, SpaceStationBoss -> {return new DestinationPathFinder();}
+            case Shuriken -> {return new BouncingPathFinder();}
             default -> {return new RegularPathFinder();}
         }
     }
@@ -55,7 +53,7 @@ public class EnemyCreator {
         }
     }
 
-    private static Point calculateSpaceStationBossDestination(){
+    public static Point calculateSpaceStationBossDestination(){
         int windowHalfWidth = DataClass.getInstance().getWindowWidth() / 2;
         int windowHalfHeight = DataClass.getInstance().getPlayableWindowMaxHeight() / 2;
 
@@ -63,7 +61,6 @@ public class EnemyCreator {
         int enemyHalfHeight = EnemyEnums.SpaceStationBoss.getBaseHeight() / 2;
 
         return new Point(windowHalfWidth - enemyHalfWidth, windowHalfHeight - enemyHalfHeight);
-
     }
 
     private static MovementConfiguration createMovementConfiguration (int xCoordinate, int yCoordinate, Direction movementDirection, float xMovementSpeed, float yMovementSpeed,
@@ -103,7 +100,7 @@ public class EnemyCreator {
     private static Enemy createSpecificEnemy (SpriteConfiguration spriteConfiguration, EnemyConfiguration enemyConfiguration, MovementConfiguration movementConfiguration) {
         switch (enemyConfiguration.getEnemyType()) {
             case PulsingDrone -> {
-                return new PulsingDrone(upgradeConfig(spriteConfiguration, 5, true), enemyConfiguration, movementConfiguration);
+                return new PulsingDrone(upgradeConfig(spriteConfiguration, 10, true), enemyConfiguration, movementConfiguration);
             }
             case Shuriken -> {
                 return new Shuriken(upgradeConfig(spriteConfiguration, 0, true), enemyConfiguration, movementConfiguration);

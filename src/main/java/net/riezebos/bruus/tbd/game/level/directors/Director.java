@@ -12,7 +12,7 @@ import net.riezebos.bruus.tbd.game.level.LevelManager;
 import net.riezebos.bruus.tbd.game.level.enums.SpawnFormationEnums;
 import net.riezebos.bruus.tbd.game.movement.Direction;
 import net.riezebos.bruus.tbd.game.movement.MovementPatternSize;
-import net.riezebos.bruus.tbd.visuals.audiodata.DataClass;
+import net.riezebos.bruus.tbd.visuals.data.DataClass;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -123,10 +123,38 @@ public class Director {
         }
     }
 
-    private void spawnBoss(){
-        spawnEnemy(EnemyEnums.RedBoss, false);
+    private void spawnBoss() {
+        EnemyEnums bossEnum = null;
+        int bossesDefeated = GameStateInfo.getInstance().getBossesDefeated();
+
+        // Use modulo to cycle through the bosses
+        switch (bossesDefeated % EnemyEnums.getAmountOfBossEnemies()) {
+            case 0:
+                bossEnum = EnemyEnums.RedBoss;
+                break;
+            case 1:
+                bossEnum = EnemyEnums.SpaceStationBoss;
+                break;
+        }
+
+        spawnBoss(bossEnum);
         EnemyManager.getInstance().setHasSpawnedABoss(true);
     }
+
+    private void spawnBoss(EnemyEnums enemyEnums){
+        // Set parameters for spawning
+        Direction direction = Direction.LEFT;
+        float scale = enemyEnums.getDefaultScale();
+        float xMovementSpeed = enemyEnums.getMovementSpeed();
+        float yMovementSpeed = enemyEnums.getMovementSpeed();
+
+        // Call LevelManager's spawnEnemy method
+        LevelManager.getInstance().spawnEnemy(
+                DataClass.getInstance().getWindowWidth() + enemyEnums.getBaseWidth(),
+                DataClass.getInstance().getPlayableWindowMaxHeight() / 2,
+                enemyEnums, direction, scale, false, xMovementSpeed, yMovementSpeed, false);
+    }
+
 
     private boolean shouldSpawnFormation(EnemyEnums enemyType) {
         double time = currentTime - lastFormationSpawnTime;
@@ -179,7 +207,7 @@ public class Director {
         // Call LevelManager's spawnEnemy method
         LevelManager.getInstance().spawnEnemy(
                 DataClass.getInstance().getWindowWidth() + Math.round(enemyType.getBaseWidth() * scale),
-                DataClass.getInstance().getWindowHeight() / 2 - Math.round((enemyType.getBaseHeight() * scale) / 2),
+                DataClass.getInstance().getPlayableWindowMaxHeight() / 2 - Math.round((enemyType.getBaseHeight() * scale) / 2),
                 enemyType, direction, scale, randomLocation, xMovementSpeed, yMovementSpeed, false);
     }
 

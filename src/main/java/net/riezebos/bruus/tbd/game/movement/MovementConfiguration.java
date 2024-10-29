@@ -56,6 +56,7 @@ public class MovementConfiguration {
 
 	private MovementPatternSize patternSize;
 	private int orbitSpeed;
+	private float movementSpeedModifier = 1.0f;
 
 
 	public MovementConfiguration() {
@@ -142,7 +143,7 @@ public class MovementConfiguration {
 
 
 	public float getXMovementSpeed() {
-		return XMovementSpeed;
+		return XMovementSpeed * movementSpeedModifier;
 	}
 
 
@@ -152,7 +153,7 @@ public class MovementConfiguration {
 
 
 	public float getYMovementSpeed() {
-		return YMovementSpeed;
+		return YMovementSpeed * movementSpeedModifier;
 	}
 
 
@@ -390,5 +391,13 @@ public class MovementConfiguration {
 
 	public void setPatternSize (MovementPatternSize patternSize) {
 		this.patternSize = patternSize;
+	}
+
+	public float getMovementSpeedModifier () {
+		return movementSpeedModifier;
+	}
+
+	public void modifyMovementSpeedModifier (float movementSpeedModifier) {
+		this.movementSpeedModifier += movementSpeedModifier;
 	}
 }

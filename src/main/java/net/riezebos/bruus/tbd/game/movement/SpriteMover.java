@@ -146,7 +146,7 @@ public class SpriteMover {
         // Bouncing specific logic
 
         if (!((BouncingPathFinder) moveConfig.getPathFinder()).isAllowedToBounce()) {
-            gameObject.setVisible(false);
+            return; //Should maybe be "setVisible(false);
         }
 
         Direction newDirection = ((BouncingPathFinder) moveConfig.getPathFinder())

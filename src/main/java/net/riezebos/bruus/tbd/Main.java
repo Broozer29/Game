@@ -8,8 +8,8 @@ import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyEnums;
 import net.riezebos.bruus.tbd.game.movement.Direction;
 import net.riezebos.bruus.tbd.game.movement.MovementPatternSize;
 import net.riezebos.bruus.tbd.guiboards.BoardManager;
-import net.riezebos.bruus.tbd.visuals.audiodata.audio.AudioDatabase;
-import net.riezebos.bruus.tbd.visuals.audiodata.image.ImageDatabase;
+import net.riezebos.bruus.tbd.visuals.data.audio.AudioDatabase;
+import net.riezebos.bruus.tbd.visuals.data.image.ImageDatabase;
 
 import java.awt.*;
 

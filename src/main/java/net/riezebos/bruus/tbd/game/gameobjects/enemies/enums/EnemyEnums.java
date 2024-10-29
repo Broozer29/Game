@@ -1,7 +1,7 @@
 package net.riezebos.bruus.tbd.game.gameobjects.enemies.enums;
 
-import net.riezebos.bruus.tbd.visuals.audiodata.audio.enums.AudioEnums;
-import net.riezebos.bruus.tbd.visuals.audiodata.image.ImageEnums;
+import net.riezebos.bruus.tbd.visuals.data.audio.enums.AudioEnums;
+import net.riezebos.bruus.tbd.visuals.data.image.ImageEnums;
 
 import java.util.Arrays;
 import java.util.List;
@@ -55,7 +55,7 @@ public enum EnemyEnums {
     FourDirectionalDrone(200, 0, true,
             AudioEnums.Alien_Spaceship_Destroyed, "Four Directional Drone",
             ImageEnums.FourDirectionalDrone, ImageEnums.Explosion2, 0, EnemyCategory.Summon,  0, 0,
-            0, 0, 0f, 0.6f, 170, 170, 0),
+            0, 0, 2f, 0.4f, 170, 170, 0),
     RedBoss(2500, 0, true,
             AudioEnums.Alien_Spaceship_Destroyed, "Red Boss",
             ImageEnums.RedBoss, ImageEnums.Explosion2, 0, EnemyCategory.Boss,  20, 600,
@@ -64,7 +64,7 @@ public enum EnemyEnums {
     SpaceStationBoss(2500, 0, true,
             AudioEnums.Alien_Spaceship_Destroyed, "Space Station Boss",
             ImageEnums.SpaceStationBoss, ImageEnums.Explosion2, 0, EnemyCategory.Boss, 20, 600,
-            500, 0, 1.25f, 1, 513, 473, 0),
+            500, 0, 1.75f, 1, 850, 850, 0),
 
 
     Shuriken(75, 0, false,
@@ -75,7 +75,7 @@ public enum EnemyEnums {
     PulsingDrone(200, 0, true,
                          AudioEnums.Alien_Spaceship_Destroyed, "Pulsing Drone",
                          ImageEnums.DestructableOrbitCenterMissile, ImageEnums.Explosion2, 0, EnemyCategory.Summon,  0, 0,
-                                 0, 0, 0f, 0.3f, 160, 119, 0),
+                                 0, 0, 2f, 0.3f, 160, 119, 0),
 
     LaserOriginDrone(125, 0, false,
             AudioEnums.Alien_Spaceship_Destroyed, "LaserOriginDrone",
@@ -237,5 +237,11 @@ public enum EnemyEnums {
 
     public int getMinimumStageLevelRequired () {
         return minimumStageLevelRequired;
+    }
+
+    public static int getAmountOfBossEnemies (){
+        return  Arrays.stream(EnemyEnums.values())
+                .filter(enemy -> enemy.getEnemyCategory().equals(EnemyCategory.Boss))
+                .toList().size();
     }
 }

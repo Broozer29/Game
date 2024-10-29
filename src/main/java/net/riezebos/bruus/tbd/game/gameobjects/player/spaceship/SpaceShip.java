@@ -12,14 +12,14 @@ import net.riezebos.bruus.tbd.game.items.Item;
 import net.riezebos.bruus.tbd.game.items.PlayerInventory;
 import net.riezebos.bruus.tbd.game.items.enums.ItemApplicationEnum;
 import net.riezebos.bruus.tbd.game.items.enums.ItemEnums;
-import net.riezebos.bruus.tbd.game.managers.AnimationManager;
+import net.riezebos.bruus.tbd.visuals.objects.AnimationManager;
 import net.riezebos.bruus.tbd.game.movement.Point;
 import net.riezebos.bruus.tbd.game.util.OrbitingObjectsFormatter;
 import net.riezebos.bruus.tbd.game.util.collision.CollisionInfo;
-import net.riezebos.bruus.tbd.visuals.audiodata.DataClass;
-import net.riezebos.bruus.tbd.visuals.audiodata.audio.AudioManager;
-import net.riezebos.bruus.tbd.visuals.audiodata.audio.enums.AudioEnums;
-import net.riezebos.bruus.tbd.visuals.audiodata.image.ImageEnums;
+import net.riezebos.bruus.tbd.visuals.data.DataClass;
+import net.riezebos.bruus.tbd.visuals.data.audio.AudioManager;
+import net.riezebos.bruus.tbd.visuals.data.audio.enums.AudioEnums;
+import net.riezebos.bruus.tbd.visuals.data.image.ImageEnums;
 import net.riezebos.bruus.tbd.visuals.objects.SpriteAnimation;
 import net.riezebos.bruus.tbd.visuals.objects.SpriteConfigurations.SpriteAnimationConfiguration;
 import net.riezebos.bruus.tbd.visuals.objects.SpriteConfigurations.SpriteConfiguration;
@@ -149,7 +149,7 @@ public class SpaceShip extends GameObject {
 
     public void addShieldDamageAnimation () {
         long shieldAnimationCount = playerFollowingAnimations.stream()
-                .filter(spriteAnimation -> spriteAnimation.getImageType().equals(ImageEnums.Default_Player_Shield_Damage)
+                .filter(spriteAnimation -> spriteAnimation.getImageEnum().equals(ImageEnums.Default_Player_Shield_Damage)
                 ).count();
 
         if (shieldAnimationCount < 10) {
@@ -185,7 +185,7 @@ public class SpaceShip extends GameObject {
             float shieldPiercingDamage = currentShieldPoints - damageTaken;
             if (shieldPiercingDamage < 0) {
                 // Apply the damage that pierced through the shield to hit points
-                changeHitPoints(-shieldPiercingDamage);
+                changeHitPoints(shieldPiercingDamage); //Remove the "-" because shieldPiercingDamage is already a negative value
                 //If there were any shields left, show the animation
                 if (currentShieldPoints > 0) {
                     addShieldDamageAnimation();
@@ -608,7 +608,7 @@ public class SpaceShip extends GameObject {
     }
 
     private void moveLeftQuick (float multiplier) {
-        directionx = -(Math.abs(multiplier) * playerStats.getCurrentMovementSpeed());
+        directionx = -(Math.abs(multiplier) * playerStats.getMovementSpeed());
     }
 
     private void haltMoveLeft () {
@@ -617,7 +617,7 @@ public class SpaceShip extends GameObject {
 
 
     private void moveRightQuick (float multiplier) {
-        directionx = Math.abs(multiplier) * playerStats.getCurrentMovementSpeed();
+        directionx = Math.abs(multiplier) * playerStats.getMovementSpeed();
     }
 
     private void haltMoveRight () {
@@ -626,7 +626,7 @@ public class SpaceShip extends GameObject {
 
 
     private void moveUpQuick (float multiplier) {
-        directiony = -(Math.abs(multiplier) * playerStats.getCurrentMovementSpeed());
+        directiony = -(Math.abs(multiplier) * playerStats.getMovementSpeed());
     }
 
     private void haltMoveUp () {
@@ -635,7 +635,7 @@ public class SpaceShip extends GameObject {
 
 
     private void moveDownQuick (float multiplier) {
-        directiony = Math.abs(multiplier) * playerStats.getCurrentMovementSpeed();
+        directiony = Math.abs(multiplier) * playerStats.getMovementSpeed();
     }
 
     private void haltMoveDown () {

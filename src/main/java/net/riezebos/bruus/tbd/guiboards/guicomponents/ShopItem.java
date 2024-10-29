@@ -6,10 +6,10 @@ import net.riezebos.bruus.tbd.game.items.enums.ItemRarityEnums;
 import net.riezebos.bruus.tbd.game.util.ItemDescriptionRetriever;
 import net.riezebos.bruus.tbd.guiboards.MenuItemInformation;
 import net.riezebos.bruus.tbd.guiboards.boardEnums.MenuFunctionEnums;
-import net.riezebos.bruus.tbd.visuals.audiodata.audio.AudioDatabase;
-import net.riezebos.bruus.tbd.visuals.audiodata.audio.AudioManager;
-import net.riezebos.bruus.tbd.visuals.audiodata.audio.enums.AudioEnums;
-import net.riezebos.bruus.tbd.visuals.audiodata.image.ImageEnums;
+import net.riezebos.bruus.tbd.visuals.data.audio.AudioDatabase;
+import net.riezebos.bruus.tbd.visuals.data.audio.AudioManager;
+import net.riezebos.bruus.tbd.visuals.data.audio.enums.AudioEnums;
+import net.riezebos.bruus.tbd.visuals.data.image.ImageEnums;
 import net.riezebos.bruus.tbd.visuals.objects.SpriteAnimation;
 import net.riezebos.bruus.tbd.visuals.objects.SpriteConfigurations.SpriteAnimationConfiguration;
 import net.riezebos.bruus.tbd.visuals.objects.SpriteConfigurations.SpriteConfiguration;
@@ -47,22 +47,22 @@ public class ShopItem extends GUIComponent {
 
 
         ItemEnums item = ItemEnums.getRandomItemByRarity(actualItemRarity);
-        this.imageType = item.getItemIcon();
-        spriteConfiguration.setImageType(imageType);
+        this.imageEnum = item.getItemIcon();
+        spriteConfiguration.setImageType(imageEnum);
         String itemDesc = ItemDescriptionRetriever.getDescriptionOfItem(item);
         this.menuItemInformation = new MenuItemInformation(item, actualItemRarity, itemDesc, true, actualItemRarity.getItemCost());
-        super.loadImage(imageType);
+        super.loadImage(imageEnum);
     }
 
     public void lockItemInShop () {
         spriteConfiguration.setImageType(ImageEnums.LockedIcon);
-        this.imageType = ImageEnums.LockedIcon;
+        this.imageEnum = ImageEnums.LockedIcon;
         menuItemInformation.setItemDescription("Locked");
         menuItemInformation.setCost(0);
         menuItemInformation.setAvailable(false);
         menuItemInformation.setItemRarity(ItemRarityEnums.Locked);
         menuItemInformation.setItem(ItemEnums.Locked);
-        super.loadImage(imageType);
+        super.loadImage(imageEnum);
     }
 
     public void purchaseItemInShop () throws UnsupportedAudioFileException, IOException {

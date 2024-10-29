@@ -1,6 +1,6 @@
 package net.riezebos.bruus.tbd.game.gameobjects.missiles;
 
-import net.riezebos.bruus.tbd.visuals.audiodata.image.ImageEnums;
+import net.riezebos.bruus.tbd.visuals.data.image.ImageEnums;
 
 public enum MissileEnums {
     BombaProjectile(false, "BombaProjctile", ImageEnums.Bomba_Missile_Explosion, ImageEnums.Bomba_Missile),

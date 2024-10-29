@@ -9,7 +9,7 @@ import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
 import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SpaceShip;
 import net.riezebos.bruus.tbd.game.gamestate.GameStateInfo;
 import net.riezebos.bruus.tbd.game.gamestate.GameStatsTracker;
-import net.riezebos.bruus.tbd.game.managers.AnimationManager;
+import net.riezebos.bruus.tbd.visuals.objects.AnimationManager;
 import net.riezebos.bruus.tbd.game.util.ThornsDamageDealer;
 import net.riezebos.bruus.tbd.game.util.collision.CollisionDetector;
 import net.riezebos.bruus.tbd.game.util.collision.CollisionInfo;
@@ -84,6 +84,13 @@ public class MissileManager {
 
     private void updateLaserBeams () {
         for (Laserbeam laserbeam : laserbeams) {
+            if(!laserbeam.getOwner().isVisible()){
+                laserbeam.setVisible(false);
+            }
+            if(!laserbeam.isVisible()){
+                laserbeams.remove(laserbeam);
+            }
+
             laserbeam.update();
             SpaceShip spaceship = PlayerManager.getInstance().getSpaceship();
             CollisionInfo collisionInfo = CollisionDetector.getInstance().detectCollision(spaceship, laserbeam);
@@ -95,9 +102,6 @@ public class MissileManager {
                 spaceship.takeDamage(laserbeam.getDamage());
             }
 
-            if(!laserbeam.isVisible()){
-                laserbeams.remove(laserbeam);
-            }
         }
 
     }

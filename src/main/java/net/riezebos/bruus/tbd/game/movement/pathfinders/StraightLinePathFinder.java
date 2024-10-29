@@ -6,7 +6,7 @@ import net.riezebos.bruus.tbd.game.movement.MovementConfiguration;
 import net.riezebos.bruus.tbd.game.movement.Path;
 import net.riezebos.bruus.tbd.game.movement.Point;
 import net.riezebos.bruus.tbd.game.util.OutOfBoundsCalculator;
-import net.riezebos.bruus.tbd.visuals.audiodata.DataClass;
+import net.riezebos.bruus.tbd.visuals.data.DataClass;
 
 import java.util.ArrayList;
 import java.util.List;

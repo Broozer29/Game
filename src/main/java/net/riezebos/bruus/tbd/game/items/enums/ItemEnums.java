@@ -1,6 +1,6 @@
 package net.riezebos.bruus.tbd.game.items.enums;
 
-import net.riezebos.bruus.tbd.visuals.audiodata.image.ImageEnums;
+import net.riezebos.bruus.tbd.visuals.data.image.ImageEnums;
 
 import java.util.ArrayList;
 import java.util.List;

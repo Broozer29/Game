@@ -2,8 +2,8 @@ package net.riezebos.bruus.tbd.game.gameobjects.missiles.laserbeams;
 
 import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
 import net.riezebos.bruus.tbd.game.movement.Point;
-import net.riezebos.bruus.tbd.visuals.audiodata.DataClass;
-import net.riezebos.bruus.tbd.visuals.audiodata.image.ImageEnums;
+import net.riezebos.bruus.tbd.visuals.data.DataClass;
+import net.riezebos.bruus.tbd.visuals.data.image.ImageEnums;
 import net.riezebos.bruus.tbd.visuals.objects.SpriteAnimation;
 import net.riezebos.bruus.tbd.visuals.objects.SpriteConfigurations.SpriteAnimationConfiguration;
 import net.riezebos.bruus.tbd.visuals.objects.SpriteConfigurations.SpriteConfiguration;
@@ -213,6 +213,9 @@ public abstract class Laserbeam {
 
     public void setAngleDegrees (double angleDegrees) {
         this.angleDegrees = angleDegrees;
+        if(this.angleDegrees > 360){
+            angleDegrees = 0;
+        }
         angleRadians = Math.toRadians(angleDegrees);
     }
 

@@ -6,7 +6,7 @@ import net.riezebos.bruus.tbd.game.movement.MovementConfiguration;
 import net.riezebos.bruus.tbd.game.movement.MovementPatternSize;
 import net.riezebos.bruus.tbd.game.movement.pathfinders.OrbitPathFinder;
 import net.riezebos.bruus.tbd.game.util.OrbitingObjectsFormatter;
-import net.riezebos.bruus.tbd.visuals.audiodata.image.ImageEnums;
+import net.riezebos.bruus.tbd.visuals.data.image.ImageEnums;
 import net.riezebos.bruus.tbd.visuals.objects.SpriteAnimation;
 import net.riezebos.bruus.tbd.visuals.objects.SpriteConfigurations.SpriteAnimationConfiguration;
 import net.riezebos.bruus.tbd.visuals.objects.SpriteConfigurations.SpriteConfiguration;
@@ -97,7 +97,7 @@ public class OrbitterWithOrbits extends Missile {
             destructionAnimation.getSpriteConfiguration().setImageType(missileConfiguration.getDestructionType());
             this.destructionAnimation = new SpriteAnimation(destructionAnimation);
 
-            if (this.destructionAnimation.getImageType().equals(ImageEnums.LaserBulletDestruction)) {
+            if (this.destructionAnimation.getImageEnum().equals(ImageEnums.LaserBulletDestruction)) {
                 this.destructionAnimation.rotateAnimation(movementConfiguration.getRotation(), false);
                 this.destructionAnimation.setFrameDelay(1);
             }

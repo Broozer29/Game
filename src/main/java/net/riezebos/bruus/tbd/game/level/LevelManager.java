@@ -13,13 +13,15 @@ import net.riezebos.bruus.tbd.game.level.directors.DirectorManager;
 import net.riezebos.bruus.tbd.game.level.enums.LevelDifficulty;
 import net.riezebos.bruus.tbd.game.level.enums.LevelLength;
 import net.riezebos.bruus.tbd.game.level.enums.LevelTypes;
-import net.riezebos.bruus.tbd.game.managers.ShopManager;
+import net.riezebos.bruus.tbd.game.gamestate.ShopManager;
 import net.riezebos.bruus.tbd.game.movement.Direction;
 import net.riezebos.bruus.tbd.game.movement.MovementPatternSize;
-import net.riezebos.bruus.tbd.visuals.audiodata.audio.AudioManager;
-import net.riezebos.bruus.tbd.visuals.audiodata.audio.enums.AudioEnums;
-import net.riezebos.bruus.tbd.visuals.audiodata.audio.enums.LevelSongs;
-import net.riezebos.bruus.tbd.visuals.audiodata.audio.enums.MusicMediaPlayer;
+import net.riezebos.bruus.tbd.game.movement.Point;
+import net.riezebos.bruus.tbd.visuals.data.DataClass;
+import net.riezebos.bruus.tbd.visuals.data.audio.AudioManager;
+import net.riezebos.bruus.tbd.visuals.data.audio.enums.AudioEnums;
+import net.riezebos.bruus.tbd.visuals.data.audio.enums.LevelSongs;
+import net.riezebos.bruus.tbd.visuals.data.audio.enums.MusicMediaPlayer;
 
 import javax.sound.sampled.UnsupportedAudioFileException;
 import java.io.IOException;
@@ -78,6 +80,7 @@ public class LevelManager {
             } else if (levelType == LevelTypes.Boss) {
                 if (!EnemyManager.getInstance().isBossAlive()) {
                     gameState.setGameState(GameStatusEnums.Level_Finished);
+                    gameState.setBossesDefeated(gameState.getBossesDefeated() + 1);
                     enemyManager.detonateAllEnemies();
                 }
             }
@@ -107,7 +110,6 @@ public class LevelManager {
     // Called when a level starts, to saturate enemy list
     public void startLevel () {
         if (currentLevelDifficulty == null) {
-
             if(AudioManager.getInstance().getMusicMediaPlayer().equals(MusicMediaPlayer.MacOS)){
                 currentLevelDifficulty = LevelDifficulty.Medium;
             } else {
@@ -136,11 +138,11 @@ public class LevelManager {
 
         AudioManager audioManager = AudioManager.getInstance();
 
-        PlayerManager.getInstance().getSpaceship().allowMovementBeyondBoundaries = false;
-//        audioManager.testMode = true;
-//        audioManager.muteMode = true;
+        PlayerManager.getInstance().getSpaceship().allowMovementBeyondBoundaries = true;
+        audioManager.testMode = true;
+        audioManager.muteMode = true;
 
-        activateDirectors(this.levelType);
+//        activateDirectors(this.levelType);
         try {
             activateMusic(this.levelType);
         } catch (UnsupportedAudioFileException | IOException e) {
@@ -150,21 +152,22 @@ public class LevelManager {
         gameState.setGameState(GameStatusEnums.Playing);
 
 
-//        EnemyEnums enemyType = EnemyEnums.RedBoss;
-//        Enemy enemy = EnemyCreator.createEnemy(enemyType, 800, 400, Direction.LEFT, enemyType.getDefaultScale()
-//                , enemyType.getMovementSpeed(), enemyType.getMovementSpeed(), MovementPatternSize.SMALL, false);
+        EnemyEnums enemyType = EnemyEnums.SpaceStationBoss;
+        Enemy enemy = EnemyCreator.createEnemy(enemyType, 1600, 0, Direction.LEFT_UP, enemyType.getDefaultScale()
+                , enemyType.getMovementSpeed(), enemyType.getMovementSpeed(), MovementPatternSize.SMALL, false);
 //        enemy.getMovementConfiguration().setBoardBlockToHoverIn(4);
 //        enemy.getMovementConfiguration().setPathFinder(new DestinationPathFinder());
 //        enemy.getMovementConfiguration().setDestination(new Point(100, 99));
 //        enemy.setAllowedVisualsToRotate(false);
-//        enemy.getMovementConfiguration().setXMovementSpeed(1f);
-//        enemy.getMovementConfiguration().setYMovementSpeed(1f);
+//        enemy.getMovementConfiguration().setXMovementSpeed(3f);
+//        enemy.getMovementConfiguration().setYMovementSpeed(3f);
+//        enemy.setCenterCoordinates(DataClass.getInstance().getWindowWidth() / 2 , DataClass.getInstance().getPlayableWindowMaxHeight() / 2);
 //        enemy.getAnimation().changeImagetype(ImageEnums.Scout);
-//        EnemyManager.getInstance().addEnemy(enemy);
+        EnemyManager.getInstance().addEnemy(enemy);
 
-        EnemyEnums enemyType = EnemyEnums.SpaceStationBoss;
-        Enemy enemy = EnemyCreator.createEnemy(enemyType, 500, 200, Direction.RIGHT, enemyType.getDefaultScale()
-                , enemyType.getMovementSpeed(), enemyType.getMovementSpeed(), MovementPatternSize.SMALL, false);
+//        EnemyEnums enemyType = EnemyEnums.FourDirectionalDrone;
+//        Enemy enemy = EnemyCreator.createEnemy(enemyType, 500, 200, Direction.RIGHT, enemyType.getDefaultScale()
+//                , enemyType.getMovementSpeed(), enemyType.getMovementSpeed(), MovementPatternSize.SMALL, false);
 //        enemy.setAllowedToDealDamage(false);
 //        enemy.setAllowedToMove(false);
 //        enemy.setAllowedToFire(false);
@@ -226,8 +229,14 @@ public class LevelManager {
         } else {
             if (validCoordinates(xCoordinate, yCoordinate, enemyType, scale)) {
                 Enemy enemy = EnemyCreator.createEnemy(enemyType, xCoordinate, yCoordinate, direction, scale, xMovementSpeed, yMovementSpeed, MovementPatternSize.SMALL, boxCollision);
+
+                Point originalDestination = enemy.getMovementConfiguration().getDestination();
                 enemy.setCenterCoordinates(xCoordinate, yCoordinate);
                 enemy.resetMovementPath();
+
+                if(originalDestination != null){
+                    enemy.getMovementConfiguration().setDestination(originalDestination);
+                }
                 enemyManager.addEnemy(enemy);
             }
         }

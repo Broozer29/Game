@@ -7,7 +7,6 @@ public class GameStateInfo {
     private static GameStateInfo instance = new GameStateInfo();
     private GameStatusEnums gameState;
 
-    private SpawningMechanic spawningMechanic;
 
     private int DELAY = 0;
 
@@ -20,8 +19,8 @@ public class GameStateInfo {
 
     private float difficultyCoefficient;
     private int monsterLevel;
-
     private float initialOffset;
+    private int bossesDefeated;
 
     private GameStateInfo () {
         resetGameState();
@@ -37,10 +36,10 @@ public class GameStateInfo {
         setMusicSeconds(0);
         this.gameTicksExecuted = 0;
         this.gameSeconds = 0;
-        this.spawningMechanic = SpawningMechanic.Director;
         this.stagesCompleted = 0;
         this.monsterLevel = 1;
         this.initialOffset = (1 / 0.33f);
+        this.bossesDefeated = 0;
     }
 
 
@@ -131,14 +130,6 @@ public class GameStateInfo {
         this.gameSeconds = (double) (gameTicksExecuted * getDELAY()) / 1000.0;
     }
 
-    public SpawningMechanic getSpawningMechanic () {
-        return spawningMechanic;
-    }
-
-    public void setSpawningMechanic (SpawningMechanic spawningMechanic) {
-        this.spawningMechanic = spawningMechanic;
-    }
-
     public int getStagesCompleted () {
         return stagesCompleted;
     }
@@ -159,5 +150,11 @@ public class GameStateInfo {
         this.monsterLevel = monsterLevel;
     }
 
+    public int getBossesDefeated () {
+        return bossesDefeated;
+    }
 
+    public void setBossesDefeated (int bossesDefeated) {
+        this.bossesDefeated = bossesDefeated;
+    }
 }

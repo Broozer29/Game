@@ -13,4 +13,5 @@ public enum EffectIdentifiers {
     MoneyPrinterGoldOnDeath,
     CashCarrierGoldGain,
     ElectricDestabilizerFreeze,
+    MovementSpeedModification;
 }
