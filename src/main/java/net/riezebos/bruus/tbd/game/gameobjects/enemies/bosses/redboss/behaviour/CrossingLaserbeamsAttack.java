@@ -7,18 +7,15 @@ import net.riezebos.bruus.tbd.game.gameobjects.missiles.laserbeams.AngledLaserBe
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.laserbeams.Laserbeam;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.laserbeams.LaserbeamConfiguration;
 import net.riezebos.bruus.tbd.game.gamestate.GameStateInfo;
-import net.riezebos.bruus.tbd.visuals.objects.AnimationManager;
+import net.riezebos.bruus.tbd.visualsandaudio.objects.AnimationManager;
 import net.riezebos.bruus.tbd.game.movement.Point;
 import net.riezebos.bruus.tbd.game.util.WithinVisualBoundariesCalculator;
-import net.riezebos.bruus.tbd.visuals.data.audio.AudioManager;
-import net.riezebos.bruus.tbd.visuals.data.audio.enums.AudioEnums;
-import net.riezebos.bruus.tbd.visuals.data.image.ImageEnums;
-import net.riezebos.bruus.tbd.visuals.objects.SpriteAnimation;
-import net.riezebos.bruus.tbd.visuals.objects.SpriteConfigurations.SpriteAnimationConfiguration;
-import net.riezebos.bruus.tbd.visuals.objects.SpriteConfigurations.SpriteConfiguration;
-
-import javax.sound.sampled.UnsupportedAudioFileException;
-import java.io.IOException;
+import net.riezebos.bruus.tbd.visualsandaudio.data.audio.AudioManager;
+import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.AudioEnums;
+import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
+import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteAnimation;
+import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteAnimationConfiguration;
+import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteConfiguration;
 
 public class CrossingLaserbeamsAttack implements BossActionable {
     private double lastAttackedTime = 0;
@@ -50,9 +47,7 @@ public class CrossingLaserbeamsAttack implements BossActionable {
         if (inwards) {
             lowerLaserbeamHighestAngle = 185;
             upperLaserbeamLowestAngle = 175;
-        }
-
-        else {
+        } else {
             lowerLaserbeamLowestAngle = 160;  // Start closer to the center
             lowerLaserbeamHighestAngle = 190; // Diverging outward
 
@@ -81,11 +76,7 @@ public class CrossingLaserbeamsAttack implements BossActionable {
                 enemy.setAttacking(true);
                 AnimationManager.getInstance().addUpperAnimation(upperChargingUpAnimation);
                 AnimationManager.getInstance().addUpperAnimation(lowerChargingUpAnimation);
-                try {
-                    AudioManager.getInstance().addAudio(AudioEnums.ChargingLaserbeam);
-                } catch (UnsupportedAudioFileException | IOException e) {
-                    throw new RuntimeException(e);
-                }
+                AudioManager.getInstance().addAudio(AudioEnums.ChargingLaserbeam);
             }
 
             if (lowerChargingUpAnimation.isPlaying() &&
@@ -167,16 +158,16 @@ public class CrossingLaserbeamsAttack implements BossActionable {
 
         if (upperLaserbeam != null) {
             upperLaserbeam.setVisible(false);
-            upperLaserbeam.setOwner(enemy);
         }
 
         if (lowerLaserbeam != null) {
             lowerLaserbeam.setVisible(false);
-            lowerLaserbeam.setOwner(enemy);
         }
 
         upperLaserbeam = new AngledLaserBeam(upperLaserbeamConfiguration);
         lowerLaserbeam = new AngledLaserBeam(lowerLaserbeamConfiguration);
+        upperLaserbeam.setOwner(enemy);
+        lowerLaserbeam.setOwner(enemy);
         upperLaserbeam.setKnockbackStrength(13);
         lowerLaserbeam.setKnockbackStrength(13);
     }

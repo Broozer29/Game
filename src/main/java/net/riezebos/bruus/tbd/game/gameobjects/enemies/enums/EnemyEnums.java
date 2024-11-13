@@ -1,7 +1,7 @@
 package net.riezebos.bruus.tbd.game.gameobjects.enemies.enums;
 
-import net.riezebos.bruus.tbd.visuals.data.audio.enums.AudioEnums;
-import net.riezebos.bruus.tbd.visuals.data.image.ImageEnums;
+import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.AudioEnums;
+import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
 
 import java.util.Arrays;
 import java.util.List;
@@ -16,40 +16,40 @@ public enum EnemyEnums {
             2, 0, 1, 1, 25, 15, 0),
     Seeker(150, 0, true,
             AudioEnums.Large_Ship_Destroyed, "Enemy Seeker",
-            ImageEnums.Seeker, ImageEnums.Explosion2, 25, EnemyCategory.Mercenary,  10, 4,
-            4, 0.6f, 1.3f, 1, 75, 29, 0),
+            ImageEnums.Seeker, ImageEnums.Explosion2, 40, EnemyCategory.Mercenary,  10, 20,
+            4, 0.5f, 1.3f, 1, 75, 29, 0),
     Tazer(150, 0, true,
             AudioEnums.Large_Ship_Destroyed, "Enemy Tazer",
-            ImageEnums.Tazer, ImageEnums.Explosion2, 25, EnemyCategory.Mercenary,  10, 3,
-            4, 0.5f, 1, 1, 94, 34, 1),
+            ImageEnums.Tazer, ImageEnums.Explosion2, 40, EnemyCategory.Mercenary,  10, 15,
+            4, 0.4f, 1, 1, 94, 34, 1),
     Energizer(150, 0, true,
             AudioEnums.Large_Ship_Destroyed, "Enemy Energizer",
-            ImageEnums.Energizer, ImageEnums.Explosion2, 25, EnemyCategory.Mercenary,  10, 3,
-            4, 0.7f, 1, 1, 106, 39, 1),
+            ImageEnums.Energizer, ImageEnums.Explosion2, 40, EnemyCategory.Mercenary,  10, 15,
+            4, 0.6f, 1, 1, 106, 39, 1),
     Bulldozer(200, 0, false,
             AudioEnums.Large_Ship_Destroyed, "Enemy Bulldozer",
-            ImageEnums.Bulldozer, ImageEnums.Explosion2, 25, EnemyCategory.Mercenary,  20, 4,
-            6, 0.7f, 1.3f, 1, 119, 46, 0),
+            ImageEnums.Bulldozer, ImageEnums.Explosion2, 40, EnemyCategory.Mercenary,  20, 20,
+            6, 0.6f, 1.3f, 1, 119, 46, 0),
     Flamer(150, 0, true,
             AudioEnums.Large_Ship_Destroyed, "Enemy Flamer",
-            ImageEnums.Flamer, ImageEnums.Explosion2, 25, EnemyCategory.Mercenary,  10, 4,
-            6, 0.7f, 1, 1, 137, 61, 0),
+            ImageEnums.Flamer, ImageEnums.Explosion2, 40, EnemyCategory.Mercenary,  10, 20,
+            6, 0.6f, 1, 1, 137, 61, 0),
     Bomba(200, 0, true,
             AudioEnums.Large_Ship_Destroyed, "Enemy Bomba",
-            ImageEnums.Bomba, ImageEnums.Explosion2, 40, EnemyCategory.Mercenary,  20, 4,
-            8, 0.5f, 1, 1, 140, 75, 1),
+            ImageEnums.Bomba, ImageEnums.Explosion2, 50, EnemyCategory.Mercenary,  20, 20,
+            8, 0.4f, 1, 1, 140, 75, 1),
     Needler(50, 0, false,
             AudioEnums.Alien_Spaceship_Destroyed, "Enemy Needler",
-            ImageEnums.Needler, ImageEnums.Explosion2, 25, EnemyCategory.Basic, 10, 2,
+            ImageEnums.Needler, ImageEnums.Explosion2, 30, EnemyCategory.Basic, 10, 5,
             3, 0.75f, 2, 0.7f, 76, 40, 0),
 
     CashCarrier(200, 0, false,
             AudioEnums.Alien_Spaceship_Destroyed, "Cash Carrier",
-            ImageEnums.CashCarrier, ImageEnums.Explosion2, 0, EnemyCategory.Special, 40, 25,
-            35, 0, 1.3f, 0.5f, 171, 98, 0),
+            ImageEnums.CashCarrier, ImageEnums.Explosion2, 0, EnemyCategory.Special, 30, 25,
+            35, 0, 1.3f, 0.75f, 171, 98, 0),
     Scout(50, 0, true,
             AudioEnums.Alien_Spaceship_Destroyed, "Enemy Scout",
-            ImageEnums.Scout, ImageEnums.Explosion2, 25, EnemyCategory.Basic,  10, 3,
+            ImageEnums.Scout, ImageEnums.Explosion2, 30, EnemyCategory.Basic,  10, 6,
             3, 1, 1.7f, 0.8f, 65, 38, 0),
 
     FourDirectionalDrone(200, 0, true,
@@ -61,11 +61,10 @@ public enum EnemyEnums {
             ImageEnums.RedBoss, ImageEnums.Explosion2, 0, EnemyCategory.Boss,  20, 600,
             500, 0, 1.25f, 0.65f, 861, 641, 0),
 
-    SpaceStationBoss(2500, 0, true,
+    SpaceStationBoss(3500, 0, true,
             AudioEnums.Alien_Spaceship_Destroyed, "Space Station Boss",
             ImageEnums.SpaceStationBoss, ImageEnums.Explosion2, 0, EnemyCategory.Boss, 20, 600,
             500, 0, 1.75f, 1, 850, 850, 0),
-
 
     Shuriken(75, 0, false,
             AudioEnums.Alien_Spaceship_Destroyed, "Shuriken",

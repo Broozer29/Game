@@ -12,17 +12,17 @@ import net.riezebos.bruus.tbd.game.items.Item;
 import net.riezebos.bruus.tbd.game.items.PlayerInventory;
 import net.riezebos.bruus.tbd.game.items.enums.ItemApplicationEnum;
 import net.riezebos.bruus.tbd.game.items.enums.ItemEnums;
-import net.riezebos.bruus.tbd.visuals.objects.AnimationManager;
+import net.riezebos.bruus.tbd.visualsandaudio.objects.AnimationManager;
 import net.riezebos.bruus.tbd.game.movement.Point;
 import net.riezebos.bruus.tbd.game.util.OrbitingObjectsFormatter;
 import net.riezebos.bruus.tbd.game.util.collision.CollisionInfo;
-import net.riezebos.bruus.tbd.visuals.data.DataClass;
-import net.riezebos.bruus.tbd.visuals.data.audio.AudioManager;
-import net.riezebos.bruus.tbd.visuals.data.audio.enums.AudioEnums;
-import net.riezebos.bruus.tbd.visuals.data.image.ImageEnums;
-import net.riezebos.bruus.tbd.visuals.objects.SpriteAnimation;
-import net.riezebos.bruus.tbd.visuals.objects.SpriteConfigurations.SpriteAnimationConfiguration;
-import net.riezebos.bruus.tbd.visuals.objects.SpriteConfigurations.SpriteConfiguration;
+import net.riezebos.bruus.tbd.visualsandaudio.data.DataClass;
+import net.riezebos.bruus.tbd.visualsandaudio.data.audio.AudioManager;
+import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.AudioEnums;
+import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
+import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteAnimation;
+import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteAnimationConfiguration;
+import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteConfiguration;
 
 import javax.sound.sampled.UnsupportedAudioFileException;
 import java.awt.event.KeyEvent;
@@ -165,7 +165,7 @@ public class SpaceShip extends GameObject {
     }
 
     public void takeDamage (float damageTaken) {
-        if(this.isImmune){
+        if (this.isImmune) {
             return; //The player is immune, we don't want to do anything here
         }
 
@@ -174,12 +174,7 @@ public class SpaceShip extends GameObject {
             this.currentShieldRegenDelayFrame = 0;
 
             GameStatsTracker.getInstance().addDamageTaken(damageTaken);
-
-            try {
-                AudioManager.getInstance().addAudio(AudioEnums.PlayerTakesDamage);
-            } catch (UnsupportedAudioFileException | IOException e) {
-                throw new RuntimeException(e);
-            }
+            AudioManager.getInstance().addAudio(AudioEnums.PlayerTakesDamage);
 
             // Check if the damage pierces the shield
             float shieldPiercingDamage = currentShieldPoints - damageTaken;
@@ -287,7 +282,8 @@ public class SpaceShip extends GameObject {
     private float previousAccumulatedY;
     private int previousXCoordinate;
     private int previousYCoordinate;
-    public void move() {
+
+    public void move () {
         if (overridePlayerControls) {
             return;  // Ignore movement if controls are overridden
         }
@@ -339,8 +335,7 @@ public class SpaceShip extends GameObject {
         yCoordinate = Math.round(accumulatedYCoordinate);
 
 
-
-        if(!allowMovementBeyondBoundaries) {
+        if (!allowMovementBeyondBoundaries) {
             // Get boundary limits
             int windowWidth = DataClass.getInstance().getWindowWidth();
             int playableWindowMaxHeight = DataClass.getInstance().getPlayableWindowMaxHeight();
@@ -389,7 +384,7 @@ public class SpaceShip extends GameObject {
         updateBoardBlock();
     }
 
-    public void applyKnockback(CollisionInfo collisionInfo, float knockbackStrength) {
+    public void applyKnockback (CollisionInfo collisionInfo, float knockbackStrength) {
         Point collisionPoint = collisionInfo.getCollisionPoint();
 
         // Determine the knockback direction based on collision point
@@ -416,7 +411,8 @@ public class SpaceShip extends GameObject {
 
 
     private LinkedList<Point> resetPositions = new LinkedList<>();
-    public void resetToPreviousPosition() {
+
+    public void resetToPreviousPosition () {
         // Reset to previous position
         accumulatedXCoordinate = previousAccumulatedX;
         accumulatedYCoordinate = previousAccumulatedY;
@@ -447,10 +443,10 @@ public class SpaceShip extends GameObject {
                 // Move the player to a safe position
                 float addedDirectionX = 6;
                 float addedDirectionY = -3;
-                if(directionx != 0){
+                if (directionx != 0) {
                     addedDirectionX = directionx;
                 }
-                if (directiony != 0){
+                if (directiony != 0) {
                     addedDirectionY = directiony;
                 }
 
@@ -468,8 +464,6 @@ public class SpaceShip extends GameObject {
             }
         }
     }
-
-
 
 
     // Launch a missile from the center point of the spaceship
@@ -575,19 +569,19 @@ public class SpaceShip extends GameObject {
     public void update (ControllerInputReader controllerInputReader) {
         controlledByKeyboard = false;
         controllerInputReader.pollController();
-        if (controllerInputReader.isInputActive(ControllerInputEnums.MOVE_LEFT_QUICK)) {
+        if (controllerInputReader.isInputActive(ControllerInputEnums.MOVE_LEFT)) {
             moveLeftQuick(controllerInputReader.getxAxisValue());
         }
 
-        if (controllerInputReader.isInputActive(ControllerInputEnums.MOVE_RIGHT_QUICK)) {
+        if (controllerInputReader.isInputActive(ControllerInputEnums.MOVE_RIGHT)) {
             moveRightQuick(controllerInputReader.getxAxisValue());
         }
 
-        if (controllerInputReader.isInputActive(ControllerInputEnums.MOVE_UP_QUICK)) {
+        if (controllerInputReader.isInputActive(ControllerInputEnums.MOVE_UP)) {
             moveUpQuick(controllerInputReader.getyAxisValue());
         }
 
-        if (controllerInputReader.isInputActive(ControllerInputEnums.MOVE_DOWN_QUICK)) {
+        if (controllerInputReader.isInputActive(ControllerInputEnums.MOVE_DOWN)) {
             moveDownQuick(controllerInputReader.getyAxisValue());
         }
 

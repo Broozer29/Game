@@ -3,7 +3,7 @@ package net.riezebos.bruus.tbd.game.util.collision;
 import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.laserbeams.Laserbeam;
 import net.riezebos.bruus.tbd.game.movement.Point;
-import net.riezebos.bruus.tbd.visuals.objects.SpriteAnimation;
+import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteAnimation;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;

@@ -1,6 +1,6 @@
 package net.riezebos.bruus.tbd.game.gamestate;
 
-import net.riezebos.bruus.tbd.visuals.data.image.ImageEnums;
+import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
 
 public class GameStatsTracker {
     private static GameStatsTracker instance = new GameStatsTracker();

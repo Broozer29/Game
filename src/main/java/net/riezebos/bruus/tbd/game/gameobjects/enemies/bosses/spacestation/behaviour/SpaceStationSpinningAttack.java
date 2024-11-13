@@ -9,10 +9,9 @@ import net.riezebos.bruus.tbd.game.movement.Point;
 import net.riezebos.bruus.tbd.game.movement.pathfinders.BouncingPathFinder;
 import net.riezebos.bruus.tbd.game.movement.pathfinders.DestinationPathFinder;
 import net.riezebos.bruus.tbd.game.util.WithinVisualBoundariesCalculator;
-import net.riezebos.bruus.tbd.visuals.data.DataClass;
-import net.riezebos.bruus.tbd.visuals.data.audio.AudioDatabase;
-import net.riezebos.bruus.tbd.visuals.data.audio.CustomAudioClip;
-import net.riezebos.bruus.tbd.visuals.data.audio.enums.AudioEnums;
+import net.riezebos.bruus.tbd.visualsandaudio.data.audio.AudioDatabase;
+import net.riezebos.bruus.tbd.visualsandaudio.data.audio.CustomAudioClip;
+import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.AudioEnums;
 
 import java.util.Random;
 

@@ -1,7 +1,7 @@
 package net.riezebos.bruus.tbd.game.gameobjects.enemies;
 
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyEnums;
-import net.riezebos.bruus.tbd.visuals.data.audio.enums.AudioEnums;
+import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.AudioEnums;
 
 public class EnemyConfiguration {
     private EnemyEnums enemyType;

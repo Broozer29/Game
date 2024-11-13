@@ -9,7 +9,7 @@ import net.riezebos.bruus.tbd.game.items.PlayerInventory;
 import net.riezebos.bruus.tbd.game.items.effects.EffectActivationTypes;
 import net.riezebos.bruus.tbd.game.items.effects.EffectInterface;
 import net.riezebos.bruus.tbd.game.items.enums.ItemApplicationEnum;
-import net.riezebos.bruus.tbd.visuals.objects.AnimationManager;
+import net.riezebos.bruus.tbd.visualsandaudio.objects.AnimationManager;
 import net.riezebos.bruus.tbd.game.util.OnScreenTextManager;
 import net.riezebos.bruus.tbd.game.movement.*;
 import net.riezebos.bruus.tbd.game.movement.Point;
@@ -17,19 +17,17 @@ import net.riezebos.bruus.tbd.game.movement.pathfinders.HomingPathFinder;
 import net.riezebos.bruus.tbd.game.movement.pathfinders.PathFinder;
 import net.riezebos.bruus.tbd.game.util.ArmorCalculator;
 import net.riezebos.bruus.tbd.game.movement.BoardBlockUpdater;
-import net.riezebos.bruus.tbd.visuals.data.audio.AudioManager;
-import net.riezebos.bruus.tbd.visuals.data.audio.enums.AudioEnums;
-import net.riezebos.bruus.tbd.visuals.data.image.ImageEnums;
-import net.riezebos.bruus.tbd.visuals.data.image.ImageResizer;
-import net.riezebos.bruus.tbd.visuals.data.image.ImageRotator;
-import net.riezebos.bruus.tbd.visuals.objects.Sprite;
-import net.riezebos.bruus.tbd.visuals.objects.SpriteAnimation;
-import net.riezebos.bruus.tbd.visuals.objects.SpriteConfigurations.SpriteAnimationConfiguration;
-import net.riezebos.bruus.tbd.visuals.objects.SpriteConfigurations.SpriteConfiguration;
+import net.riezebos.bruus.tbd.visualsandaudio.data.audio.AudioManager;
+import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.AudioEnums;
+import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
+import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageResizer;
+import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageRotator;
+import net.riezebos.bruus.tbd.visualsandaudio.objects.Sprite;
+import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteAnimation;
+import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteAnimationConfiguration;
+import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteConfiguration;
 
-import javax.sound.sampled.UnsupportedAudioFileException;
 import java.awt.*;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -104,8 +102,6 @@ public class GameObject extends Sprite {
 
     protected CopyOnWriteArrayList<EffectInterface> effects = new CopyOnWriteArrayList<>();
     protected List<SpriteAnimation> effectAnimations = new ArrayList<>();
-
-
     protected float xpOnDeath = 0;
     protected boolean isACrit = false;
 
@@ -120,12 +116,7 @@ public class GameObject extends Sprite {
     public GameObject (SpriteAnimationConfiguration spriteAnimationConfiguration) {
         super(spriteAnimationConfiguration.getSpriteConfiguration());
         this.animation = new SpriteAnimation(spriteAnimationConfiguration);
-//        this.animation.setAnimationScale(spriteAnimationConfiguration.getSpriteConfiguration().getScale());
         initGameObject();
-
-        if (this.imageEnum.equals(ImageEnums.SpaceStationBoss)) {
-            this.allowedVisualsToRotate = false;
-        }
     }
 
     protected void initGameObject () {
@@ -367,11 +358,7 @@ public class GameObject extends Sprite {
                 }
             }
 
-            try {
-                AudioManager.getInstance().addAudio(deathSound);
-            } catch (UnsupportedAudioFileException | IOException e) {
-                e.printStackTrace();
-            }
+            AudioManager.getInstance().addAudio(deathSound);
 
 
             triggerClassSpecificOnDeathTriggers();
@@ -387,7 +374,7 @@ public class GameObject extends Sprite {
         //Supposed to be overriden. Used for "Enemy kill counter" for example
     }
 
-    public void applyAfterCollisionItemEffectsToObject (GameObject target) {
+    public void applyAfterCollisionItemEffects (GameObject target) {
         if (this.appliesOnHitEffects) {
             List<Item> onHitItems = PlayerInventory.getInstance().getItemsByApplicationMethod(ItemApplicationEnum.AfterCollision);
             for (Item item : onHitItems) {
@@ -397,8 +384,10 @@ public class GameObject extends Sprite {
         }
     }
 
-    public void applyBeforeCollisionEffects (GameObject target) {
+    public void applyBeforeCollisionItemEffects (GameObject target) {
         for (Item item : PlayerInventory.getInstance().getItemsByApplicationMethod(ItemApplicationEnum.BeforeCollision)) {
+            item.modifyAttackingObject(this, target);
+            item.applyEffectToObject(target);
             item.applyEffectToObject(this, target);
         }
     }
@@ -417,14 +406,15 @@ public class GameObject extends Sprite {
             showDamage = false;
         }
 
-        float damage = ArmorCalculator.calculateDamage(getDamage(), target);
-        target.takeDamage(damage);
 
         for (EffectInterface effectInterface : effectsToApply) {
             target.addEffect(effectInterface);
         }
 
-        if (showDamage) {
+        float damage = ArmorCalculator.calculateDamage(getDamage(), target);
+        target.takeDamage(damage);
+
+        if (showDamage && damage >= 1) {
             OnScreenTextManager.getInstance().addDamageNumberText(Math.round(damage), target.getCenterXCoordinate(),
                     target.getCenterYCoordinate(), isACrit);
         }
@@ -494,6 +484,10 @@ public class GameObject extends Sprite {
 
     //*****************VISUAL ALTERATION*******************************
     public void rotateGameObjectTowards (Direction direction, boolean crop) {
+        if(ImageRotator.getInstance().isBlockedFromRotating(this.getImageEnum())){
+            return;
+        }
+
         if (!isAllowedVisualsToRotate() || this.rotationAngle == direction.toAngle()) {
             return;
         }
@@ -529,8 +523,7 @@ public class GameObject extends Sprite {
     }
 
     public void rotateGameObjectTowards (int targetXCoordinate, int targetYCoordinate, boolean crop) {
-        //Not cropping caused the bug
-        if (!allowedVisualsToRotate) {
+        if(ImageRotator.getInstance().isBlockedFromRotating(this.getImageEnum()) || !allowedVisualsToRotate){
             return;
         }
 
@@ -539,6 +532,10 @@ public class GameObject extends Sprite {
     }
 
     protected void rotateObjectTowardsAngle (double calculatedAngle, boolean crop) {
+        if(ImageRotator.getInstance().isBlockedFromRotating(this.getImageEnum())){
+            return;
+        }
+
         if (this.rotationAngle != calculatedAngle) {
             if (this.animation != null) {
                 this.animation.rotateAnimation(calculatedAngle, crop);
@@ -814,9 +811,9 @@ public class GameObject extends Sprite {
     }
 
     public void setScale (float newScale) {
-//        if (newScale == this.scale) {
-//            return;
-//        }
+        if (newScale == this.scale) {
+            return;
+        }
 
 
         this.scale = newScale;
@@ -983,8 +980,9 @@ public class GameObject extends Sprite {
         this.attackSpeedBonusModifier += bonusPercentage;
     }
 
-    public void modifyMovementSpeedModifier(float bonusSpeed){
-        this.movementConfiguration.modifyMovementSpeedModifier(bonusSpeed); ;
+    public void modifyMovementSpeedModifier (float bonusSpeed) {
+        this.movementConfiguration.modifyMovementSpeedModifier(bonusSpeed);
+        ;
     }
 
 //    public int getXCoordinate () {
@@ -1069,15 +1067,15 @@ public class GameObject extends Sprite {
         return Objects.hash(animation, destructionAnimation, shieldDamagedAnimation, exhaustAnimation, chargingUpAttackAnimation, showHealthBar, allowedToMove, originalScale, deathSound, currentHitpoints, maxHitPoints, currentShieldPoints, maxShieldPoints, baseArmor, armorBonus, hasAttack, damage, bonusDamageMultiplier, allowedToDealDamage, attackSpeed, attackSpeedBonusModifier, friendly, objectToCenterAround, objectToFollow, movementConfiguration, lastBoardBlock, currentLocation, currentBoardBlock, objectsFollowingThis, objectOrbitingThis, objectType, movementRotation, boxCollision, lastGameSecondDamageTaken, ownerOrCreator, centeredAroundObject, movementCounter, cashMoneyWorth, rotationAngle, allowedVisualsToRotate, effects, effectAnimations, xpOnDeath);
     }
 
-    public ImageEnums getImageEnum (){
-        if(this.animation != null){
+    public ImageEnums getImageEnum () {
+        if (this.animation != null) {
             return this.animation.getImageEnum();
         }
         return this.imageEnum;
     }
 
-    public Rectangle getBounds(){
-        if(this.animation != null){
+    public Rectangle getBounds () {
+        if (this.animation != null) {
             return animation.getBounds();
         }
         return super.getBounds();

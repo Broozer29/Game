@@ -3,9 +3,9 @@ package net.riezebos.bruus.tbd.game.level.enums;
 import java.util.Random;
 
 public enum LevelLength {
-    Short, // <3 minutes
-    Medium, // 3-5 minutes
-    Long; // >5 minutes
+    Short, // <2 minutes
+    Medium, // 2-4 minutes
+    Long; // >4 minutes
 
     public static LevelLength getRandomLength () {
         LevelLength[] lengths = LevelLength.values();
@@ -13,9 +13,9 @@ public enum LevelLength {
     }
 
     public static LevelLength getLevelLengthByDuration(double durationInSeconds){
-        if(durationInSeconds <= 180){
+        if(durationInSeconds <= 120){
             return LevelLength.Short;
-        } else if(durationInSeconds <=300){
+        } else if(durationInSeconds <=240){
             return LevelLength.Medium;
         }
         return LevelLength.Long;

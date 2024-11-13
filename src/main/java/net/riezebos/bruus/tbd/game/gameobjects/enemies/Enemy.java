@@ -12,10 +12,10 @@ import net.riezebos.bruus.tbd.game.movement.PathFinderEnums;
 import net.riezebos.bruus.tbd.game.movement.Point;
 import net.riezebos.bruus.tbd.game.movement.pathfinders.DestinationPathFinder;
 import net.riezebos.bruus.tbd.game.movement.BoardBlockUpdater;
-import net.riezebos.bruus.tbd.visuals.data.image.ImageEnums;
-import net.riezebos.bruus.tbd.visuals.objects.SpriteAnimation;
-import net.riezebos.bruus.tbd.visuals.objects.SpriteConfigurations.SpriteAnimationConfiguration;
-import net.riezebos.bruus.tbd.visuals.objects.SpriteConfigurations.SpriteConfiguration;
+import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
+import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteAnimation;
+import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteAnimationConfiguration;
+import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteConfiguration;
 
 import java.util.Random;
 
@@ -73,7 +73,9 @@ public class Enemy extends GameObject {
         this.isAttacking = false;
         this.setVisible(true);
         this.setFriendly(false);
+
         this.rotateGameObjectTowards(movementRotation, true);
+
         this.objectType = enemyConfiguration.getObjectType();
         this.allowedToFire = true;
     }

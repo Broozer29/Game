@@ -1,6 +1,6 @@
 package net.riezebos.bruus.tbd.guiboards.boards;
 
-import net.riezebos.bruus.tbd.controllerInput.ConnectedControllers;
+import net.riezebos.bruus.tbd.controllerInput.ConnectedControllersManager;
 import net.riezebos.bruus.tbd.controllerInput.ControllerInputEnums;
 import net.riezebos.bruus.tbd.controllerInput.ControllerInputReader;
 import net.riezebos.bruus.tbd.game.gameobjects.background.BackgroundManager;
@@ -9,26 +9,24 @@ import net.riezebos.bruus.tbd.game.gamestate.GameStateInfo;
 import net.riezebos.bruus.tbd.game.items.Item;
 import net.riezebos.bruus.tbd.game.items.PlayerInventory;
 import net.riezebos.bruus.tbd.game.items.enums.ItemEnums;
-import net.riezebos.bruus.tbd.visuals.objects.AnimationManager;
+import net.riezebos.bruus.tbd.game.level.LevelManager;
+import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.MusicMediaPlayer;
+import net.riezebos.bruus.tbd.visualsandaudio.objects.AnimationManager;
 import net.riezebos.bruus.tbd.game.gamestate.ShopManager;
 import net.riezebos.bruus.tbd.guiboards.boardEnums.MenuFunctionEnums;
 import net.riezebos.bruus.tbd.guiboards.boardcreators.ShopBoardCreator;
 import net.riezebos.bruus.tbd.guiboards.guicomponents.*;
-import net.riezebos.bruus.tbd.visuals.data.DataClass;
-import net.riezebos.bruus.tbd.visuals.data.audio.AudioManager;
-import net.riezebos.bruus.tbd.visuals.data.audio.CustomAudioClip;
-import net.riezebos.bruus.tbd.visuals.objects.Sprite;
-import net.riezebos.bruus.tbd.visuals.objects.SpriteAnimation;
-import net.riezebos.bruus.tbd.visuals.objects.SpriteConfigurations.SpriteConfiguration;
-
-import javax.sound.sampled.UnsupportedAudioFileException;
+import net.riezebos.bruus.tbd.visualsandaudio.data.DataClass;
+import net.riezebos.bruus.tbd.visualsandaudio.data.audio.AudioManager;
+import net.riezebos.bruus.tbd.visualsandaudio.objects.Sprite;
+import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteAnimation;
+import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteConfiguration;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -38,7 +36,7 @@ public class ShopBoard extends JPanel implements ActionListener {
     private DataClass data = DataClass.getInstance();
     private BackgroundManager backgroundManager = BackgroundManager.getInstance();
     private AnimationManager animationManager = AnimationManager.getInstance();
-    private ConnectedControllers controllers = ConnectedControllers.getInstance();
+    private ConnectedControllersManager controllers = ConnectedControllersManager.getInstance();
     private ShopManager shopManager = ShopManager.getInstance();
     private final int boardWidth = data.getWindowWidth();
     private final int boardHeight = data.getWindowHeight();
@@ -96,8 +94,6 @@ public class ShopBoard extends JPanel implements ActionListener {
         showInventory = false;
         shopBoardCreator = new ShopBoardCreator(boardWidth, boardHeight, 100, 100, 35,
                 60, 75, 20, 1, 1, shopManager);
-        createWindow();
-
         if (controllers.getFirstController() != null) {
             controllerInputReader = controllers.getFirstController();
         }
@@ -107,6 +103,20 @@ public class ShopBoard extends JPanel implements ActionListener {
     }
 
     public void createWindow () {
+        for(List<GUIComponent> row: grid){
+            for(GUIComponent component: row){
+                component.setVisible(false);
+            }
+            row.clear();
+        }
+        grid.clear();
+        for(GUIComponent component : offTheGridObjects){
+            component.setVisible(false);
+        }
+        offTheGridObjects.clear();
+        playerInventoryMenuObjects.clear();
+
+
         // Initialize background cards first since they are dependencies
         itemRowsBackgroundCard = shopBoardCreator.createItemRowsBackgroundCard();
         songDifficultyBackgroundCard = shopBoardCreator.createSongDifficultyBackgroundCard();
@@ -133,18 +143,25 @@ public class ShopBoard extends JPanel implements ActionListener {
         fourthRow.add(selectMediumDifficulty);
         fourthRow.add(selectHardDifficulty);
         offTheGridObjects.addAll(difficultySelectionText.getComponents());
-        //
 
         shortSong = shopBoardCreator.createShortSongSelection(songLengthBackgroundCard);
         mediumSong = shopBoardCreator.createMediumSongSelection(songLengthBackgroundCard);
         longSong = shopBoardCreator.createLongSelection(songLengthBackgroundCard);
         lengthSelectionText = shopBoardCreator.createSongSelectionText(songLengthBackgroundCard, longSong);
-        nextLevelDifficultyIcon = shopBoardCreator.createNextLevelDifficultyIcon(nextLevelDifficultyBackground);
-        fourthRow.add(shortSong);
-        fourthRow.add(mediumSong);
-        fourthRow.add(longSong);
+
+        if(AudioManager.getInstance().getMusicMediaPlayer().equals(MusicMediaPlayer.Default)) {
+            fourthRow.add(shortSong);
+            fourthRow.add(mediumSong);
+            fourthRow.add(longSong);
+        } else {
+            lengthSelectionText.setStartingXCoordinate(songLengthBackgroundCard.getXCoordinate() + Math.round(songLengthBackgroundCard.getWidth() * 0.05f));
+            lengthSelectionText.setText("MUSIC DETERMINED BY ITUNES OR SPOTIFY");
+        }
+
         offTheGridObjects.addAll(lengthSelectionText.getComponents());
         offTheGridObjects.add(rerollBackgroundCard);
+
+        nextLevelDifficultyIcon = shopBoardCreator.createNextLevelDifficultyIcon(nextLevelDifficultyBackground);
 
         // Setup buttons and cursor
         returnToMainMenu = shopBoardCreator.createReturnToMainMenu();
@@ -170,13 +187,11 @@ public class ShopBoard extends JPanel implements ActionListener {
         moneyIcon = shopBoardCreator.createMoneyObject(nextLevelDifficultyBackground);
         offTheGridObjects.addAll(moneyIcon.getComponents());
 
-        // Add all the created items to respective rows or lists
-
         // Rebuild the UI elements list
         recreateList();
     }
 
-    public void remakeShopRerollText(){
+    public void remakeShopRerollText () {
         rerollCostText = shopBoardCreator.createRerollCostText(rerollBackgroundCard);
     }
 
@@ -186,18 +201,22 @@ public class ShopBoard extends JPanel implements ActionListener {
         }
     }
 
+    private void updateSelectedDifficultyIcons(){
+        shopBoardCreator.updateDifficultyIconsToDifficulty(LevelManager.getInstance().getCurrentLevelDifficulty(),
+                selectEasyDifficulty, selectMediumDifficulty, selectHardDifficulty);
+        shopBoardCreator.updateLengthIconsToLength(LevelManager.getInstance().getCurrentLevelLength(),
+                shortSong, mediumSong, longSong);
+    }
+
 
     private void recreateList () {
         grid.clear();
         offTheGridObjects.clear();
         playerInventoryMenuObjects.clear();
 
-
-//        fifthRow.add(returnToMainMenu.getComponents().get(0));
+        updateSelectedDifficultyIcons();
         addAllButFirstComponent(returnToMainMenu);
-//        fifthRow.add(nextLevelButton.getComponents().get(0));
         addAllButFirstComponent(nextLevelButton);
-//        fifthRow.add(playerInventoryButton.getComponents().get(0));
         addAllButFirstComponent(playerInventoryButton);
 
         if (!thirdRow.contains(rerollButton)) {
@@ -312,38 +331,65 @@ public class ShopBoard extends JPanel implements ActionListener {
         }
     }
 
-    private void updateDescriptionBox (Graphics2D g2d) {
+    private void updateDescriptionBox(Graphics2D g2d) {
         GUIComponent selectedTile = menuCursor.getSelectedMenuTile();
         int boxWidth = descriptionRowsBackgroundCard.getWidth();
-        g2d.setFont(new Font("Lucida Grande", Font.PLAIN, 20));
-        g2d.setColor(Color.white);
+        int boxHeight = descriptionRowsBackgroundCard.getHeight();
 
         int horizontalPadding = 40;
         int verticalPadding = 40;
         int maxTextWidth = boxWidth - (horizontalPadding * 2);
-
+        String textFont = DataClass.getInstance().getTextFont();
         if (selectedTile != null) {
             String text = null;
+            String itemTitle = null;
+            String itemCost = null;
+            Color itemRarityColor = null;
+
             int descriptionX = itemDescription.getXCoordinate() + horizontalPadding;
             int descriptionY = itemDescription.getYCoordinate() + verticalPadding;
 
-            if (selectedTile instanceof ShopItem) {
-                text = ((ShopItem) selectedTile).getMenuItemInformation().getItemDescription();
+            if (selectedTile instanceof ShopItem shopItem) {
+                itemTitle = shopItem.getShopItemInformation().getItem().getItemName();
+                itemCost = "Costs: " + Math.round(shopItem.getShopItemInformation().getCost()) + " minerals. You have: " + Math.round(PlayerInventory.getInstance().getCashMoney());
+                text = shopItem.getShopItemInformation().getItemDescription();
+                itemRarityColor = shopItem.getShopItemInformation().getItemRarity().getColor();
             } else {
                 text = selectedTile.getDescriptionOfComponent();
             }
 
+            // Draw the item title with a larger font size
+            if (itemTitle != null) {
+                g2d.setFont(new Font(textFont, Font.BOLD, 24));  // Larger font for the title
+                drawDescriptionText(g2d, itemTitle, descriptionX, descriptionY, maxTextWidth, itemRarityColor);
+                FontMetrics titleMetrics = g2d.getFontMetrics();
+                descriptionY += titleMetrics.getHeight() + 10;  // Spacing after the title
+            }
+
+            // Draw the description with the default font size
             if (text != null) {
-                drawText(g2d, text, descriptionX, descriptionY, maxTextWidth);
+                g2d.setFont(new Font(textFont, Font.PLAIN, 20));  // Default font for description
+                drawDescriptionText(g2d, text, descriptionX, descriptionY, maxTextWidth, Color.WHITE);
+                FontMetrics descriptionMetrics = g2d.getFontMetrics();
+                descriptionY += descriptionMetrics.getHeight() * ((text.length() / maxTextWidth) + 1); // Estimate line height
+            }
+
+            // Draw the cost at the bottom of the description box
+            if (itemCost != null) {
+                g2d.setFont(new Font(textFont, Font.ITALIC, 18));  // Slightly smaller italic font for the cost
+                FontMetrics costMetrics = g2d.getFontMetrics();
+                int costY = itemDescription.getYCoordinate() + boxHeight - verticalPadding - costMetrics.getHeight();
+                drawDescriptionText(g2d, itemCost, descriptionX, costY, maxTextWidth, Color.WHITE);
             }
         }
     }
 
-    private void drawText (Graphics2D g2d, String text, int x, int y, int maxWidth) {
+    private void drawDescriptionText (Graphics2D g2d, String text, int x, int y, int maxWidth, Color color) {
         FontMetrics metrics = g2d.getFontMetrics();
         int lineHeight = metrics.getHeight();
         String[] words = text.split(" ");
         StringBuilder line = new StringBuilder();
+        g2d.setColor(color);
 
         for (String word : words) {
             // If adding the new word exceeds the maximum line width, draw the line and start a new one
@@ -364,28 +410,20 @@ public class ShopBoard extends JPanel implements ActionListener {
     }
 
 
+
     public Timer getTimer () {
         return timer;
     }
 
     @Override
     public void actionPerformed (ActionEvent e) {
-        // TODO Auto-generated method stub
-
+        //The timer is responsible for redrawing and polling input from a controller
     }
 
     /*------------------------Navigation methods--------------------------------*/
 
     // Activate the functionality of the specific menutile
     private void selectMenuTile () {
-//        if(selectedRow >= grid.size()){
-//            selectedRow = grid.size() - 1;
-//            return;
-//        }
-//        if(selectedColumn >= grid.get(selectedRow).size()){
-//            selectedColumn = grid.get(selectedRow).size() - 1;
-//            return;
-//        }
         grid.get(selectedRow).get(selectedColumn).activateComponent();
         if (grid.get(selectedRow).get(selectedColumn).getMenuFunctionality() == MenuFunctionEnums.Start_Game) {
             timer.stop();
@@ -514,19 +552,7 @@ public class ShopBoard extends JPanel implements ActionListener {
 
         @Override
         public void keyPressed (KeyEvent e) {
-            int key = e.getKeyCode();
-            switch (key) {
-                case (KeyEvent.VK_ENTER):
-                    break;
-                case (KeyEvent.VK_A):
-                    break;
-                case (KeyEvent.VK_D):
-                    break;
-                case (KeyEvent.VK_W):
-                    break;
-                case (KeyEvent.VK_S):
-                    break;
-            }
+            //Shouldnt do anything, keyrelease activates input
         }
     }
 
@@ -541,15 +567,13 @@ public class ShopBoard extends JPanel implements ActionListener {
 
             // Left and right navigation
             if (currentTime - lastMoveTime > MOVE_COOLDOWN) {
-                if (controllerInputReader.isInputActive(ControllerInputEnums.MOVE_UP_QUICK)
-                        || controllerInputReader.isInputActive(ControllerInputEnums.MOVE_UP_SLOW)) {
+                if (controllerInputReader.isInputActive(ControllerInputEnums.MOVE_UP)) {
                     //Gaat naar boven
                     // Menu option to the left
                     previousMenuTile();
                     needsUpdate = true;
                     lastMoveTime = currentTime;
-                } else if (controllerInputReader.isInputActive(ControllerInputEnums.MOVE_DOWN_QUICK)
-                        || controllerInputReader.isInputActive(ControllerInputEnums.MOVE_DOWN_SLOW)) {
+                } else if (controllerInputReader.isInputActive(ControllerInputEnums.MOVE_DOWN)) {
                     //Gaat nar beneden
                     // Menu option to the right
                     nextMenuTile();
@@ -560,15 +584,13 @@ public class ShopBoard extends JPanel implements ActionListener {
 
             // Up and down navigation
             if (currentTime - lastMoveTime > MOVE_COOLDOWN) {
-                if (controllerInputReader.isInputActive(ControllerInputEnums.MOVE_LEFT_QUICK)
-                        || controllerInputReader.isInputActive(ControllerInputEnums.MOVE_LEFT_SLOW)) {
+                if (controllerInputReader.isInputActive(ControllerInputEnums.MOVE_LEFT)) {
                     //Gaat naar links
                     // Menu option upwards
                     previousMenuColumn();
                     needsUpdate = true;
                     lastMoveTime = currentTime;
-                } else if (controllerInputReader.isInputActive(ControllerInputEnums.MOVE_RIGHT_SLOW)
-                        || controllerInputReader.isInputActive(ControllerInputEnums.MOVE_RIGHT_QUICK)) {
+                } else if (controllerInputReader.isInputActive(ControllerInputEnums.MOVE_RIGHT)) {
                     // Menu option downwards
                     //Gaat naar rechts
                     nextMenuColumn();
@@ -577,15 +599,14 @@ public class ShopBoard extends JPanel implements ActionListener {
                 }
             }
 
-            if (currentTime - lastMoveTime > MOVE_COOLDOWN) {
-                // Fire action
-                if (controllerInputReader.isInputActive(ControllerInputEnums.FIRE)) {
+            if (currentTime - lastMoveTime > MOVE_COOLDOWN &&
+                    controllerInputReader.isInputActive(ControllerInputEnums.FIRE)) {
                     // Select menu option
                     selectMenuTile();
                     needsUpdate = true;
                     lastMoveTime = currentTime;
                 }
-            }
+
 
             if (needsUpdate) {
                 recreateList(); // Update the GUI only if there was an action that requires it
@@ -621,27 +642,8 @@ public class ShopBoard extends JPanel implements ActionListener {
 
         // Reading controller input
         executeControllerInput();
-        try {
-            restreamLoopingMusicIfFinished();
-        } catch (UnsupportedAudioFileException | IOException e) {
-            throw new RuntimeException(e);
-        }
     }
 
-    private void restreamLoopingMusicIfFinished() throws UnsupportedAudioFileException, IOException {
-        if(audioManager == null){
-            audioManager = AudioManager.getInstance();
-        }
-        CustomAudioClip backGroundMusicCustomAudioclip = audioManager.getBackGroundMusicCustomAudioclip();
-        if(backGroundMusicCustomAudioclip == null){
-            return;
-        }
-        if (backGroundMusicCustomAudioclip.getCurrentSecondsInPlayback() >= backGroundMusicCustomAudioclip.getTotalSecondsInPlayback() &&
-                audioManager.getCurrentSong().shouldBeStreamed() &&
-                backGroundMusicCustomAudioclip.isLoop()) {
-            audioManager.playDefaultBackgroundMusic(audioManager.getCurrentSong(), true);
-        }
-    }
 
     private void drawObjects (Graphics2D g) {
         for (GUIComponent component : offTheGridObjects) {
@@ -653,8 +655,8 @@ public class ShopBoard extends JPanel implements ActionListener {
 
         for (List<GUIComponent> list : grid) {
             for (GUIComponent component : list) {
-                if (component instanceof ShopItem) {
-                    drawItemsInShop(g, (ShopItem) component);
+                if (component instanceof ShopItem shopItem) {
+                    drawItemsInShop(g, shopItem);
                 }
                 drawGUIComponent(g, component);
             }
@@ -680,40 +682,26 @@ public class ShopBoard extends JPanel implements ActionListener {
 
         int xCoordinate = object.getXCoordinate();
         int yCoordinate = object.getYCoordinate();
-
+        String textFont = DataClass.getInstance().getTextFont();
         g.drawImage(object.getImage(), xCoordinate, yCoordinate, this);
+        g.setColor(object.getShopItemInformation().getItemRarity().getColor());
 
-        switch (object.getMenuItemInformation().getItem().getItemRarity()) {
-            case Common -> {
-                g.setColor(Color.white);
-            }
-            case Rare -> {
-                g.setColor(Color.green);
-            }
-            case Legendary -> {
-                g.setColor(Color.red);
-            }
-            case Locked -> {
-                g.setColor(Color.GRAY);
-            }
-        }
-
-        if (object.getMenuItemInformation().isAvailable()) {
-            g.setFont(new Font("Lucida Grande", Font.BOLD, 10));
-            g.drawString(object.getMenuItemInformation().getItem().getItemName(),
+        if (object.getShopItemInformation().isAvailable()) {
+            g.setFont(new Font(textFont, Font.BOLD, 10));
+            g.drawString(object.getShopItemInformation().getItem().getItemName(),
                     xCoordinate,
                     yCoordinate + object.getHeight() + 10);
 
-            g.setFont(new Font("Lucida Grande", Font.PLAIN, 10));
-            g.drawString(object.getMenuItemInformation().getItemRarity().toString()
+            g.setFont(new Font(textFont, Font.PLAIN, 10));
+            g.drawString(object.getShopItemInformation().getItemRarity().toString()
                     , xCoordinate
                     , yCoordinate + object.getHeight() + 22);
 
-            g.drawString("$" + object.getMenuItemInformation().getCost()
+            g.drawString("$" + object.getShopItemInformation().getCost()
                     , xCoordinate
                     , yCoordinate + object.getHeight() + 34);
         } else {
-            g.setFont(new Font("Lucida Grande", Font.PLAIN, 10));
+            g.setFont(new Font(textFont, Font.PLAIN, 10));
             g.drawString("Unavailable!",
                     xCoordinate,
                     yCoordinate + object.getHeight() + 10);

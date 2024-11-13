@@ -5,13 +5,10 @@ import net.riezebos.bruus.tbd.game.gameobjects.missiles.MissileEnums;
 import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SpaceShip;
 import net.riezebos.bruus.tbd.game.movement.PathFinderEnums;
 import net.riezebos.bruus.tbd.game.util.ExperienceCalculator;
-import net.riezebos.bruus.tbd.visuals.data.audio.AudioManager;
-import net.riezebos.bruus.tbd.visuals.data.audio.enums.AudioEnums;
-import net.riezebos.bruus.tbd.visuals.data.image.ImageEnums;
-import net.riezebos.bruus.tbd.visuals.objects.AnimationManager;
-
-import javax.sound.sampled.UnsupportedAudioFileException;
-import java.io.IOException;
+import net.riezebos.bruus.tbd.visualsandaudio.data.audio.AudioManager;
+import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.AudioEnums;
+import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
+import net.riezebos.bruus.tbd.visualsandaudio.objects.AnimationManager;
 
 public class PlayerStats {
 
@@ -129,7 +126,7 @@ public class PlayerStats {
         //Level
         setCurrentLevel(1);
         setCurrentXP(0);
-        setXpToNextLevel(100);
+        setXpToNextLevel(125);
 
         // Visuals
         setSpaceShipImage(ImageEnums.Player_Spaceship_Model_3);
@@ -169,8 +166,8 @@ public class PlayerStats {
 
 
     private void initLaserbeamPreset () {
-        setAttackSpeed(0.3125f);
-        setBaseDamage(15);
+        setAttackSpeed(0.28f);
+        setBaseDamage(20);
         setPlayerMissileImage(this.attackType.getImageType());
         setPlayerMissileImpactImage(ImageEnums.Impact_Explosion_One);
         setMissileScale(1);
@@ -205,11 +202,7 @@ public class PlayerStats {
         player.setCurrentShieldPoints(maxShieldHitPoints);
 
         AnimationManager.getInstance().playLevelUpAnimation(player);
-        try {
-            AudioManager.getInstance().addAudio(AudioEnums.Power_Up_Acquired);
-        } catch (UnsupportedAudioFileException | IOException e) {
-            throw new RuntimeException(e);
-        }
+        AudioManager.getInstance().addAudio(AudioEnums.Power_Up_Acquired);
     }
 
     public float getNormalAttackDamage () {
@@ -293,7 +286,7 @@ public class PlayerStats {
         }
     }
 
-    public void modifyMovementSpeedModifier(float modifier){
+    public void modifyMovementSpeedModifier (float modifier) {
         this.movementSpeedModifier += modifier;
     }
 
@@ -610,7 +603,7 @@ public class PlayerStats {
         if (thornsDamageRatio > 0) {
             thornsDamage = baseDamage * thornsDamageRatio;
         }
-        if(thornsArmorDamageBonusRatio > 0){
+        if (thornsArmorDamageBonusRatio > 0) {
             GameObject spaceShip = PlayerManager.getInstance().getSpaceship();
             thornsDamage += thornsArmorDamageBonusRatio * (spaceShip.getBaseArmor() + spaceShip.getArmorBonus());
         }

@@ -4,11 +4,8 @@ import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
 import net.riezebos.bruus.tbd.game.items.Item;
 import net.riezebos.bruus.tbd.game.items.enums.ItemApplicationEnum;
 import net.riezebos.bruus.tbd.game.items.enums.ItemEnums;
-import net.riezebos.bruus.tbd.visuals.data.audio.AudioManager;
-import net.riezebos.bruus.tbd.visuals.data.audio.enums.AudioEnums;
-
-import javax.sound.sampled.UnsupportedAudioFileException;
-import java.io.IOException;
+import net.riezebos.bruus.tbd.visualsandaudio.data.audio.AudioManager;
+import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.AudioEnums;
 
 public class EmergencyRepairBot extends Item {
 
@@ -21,7 +18,7 @@ public class EmergencyRepairBot extends Item {
     }
 
     @Override
-    public void applyEffectToObject(GameObject gameObject) {
+    public void applyEffectToObject (GameObject gameObject) {
         float currentHp = gameObject.getCurrentHitpoints();
         float maxHp = gameObject.getMaxHitPoints();
 
@@ -31,19 +28,15 @@ public class EmergencyRepairBot extends Item {
             gameObject.takeDamage(-healingAmount); // Apply healing
             // Reduce the quantity of the item by 1
             this.decreaseQuantityOfItem(1);
-            try {
-                AudioManager.getInstance().addAudio(AudioEnums.Power_Up_Acquired);
-            } catch (UnsupportedAudioFileException | IOException e) {
-                throw new RuntimeException(e);
-            }
+            AudioManager.getInstance().addAudio(AudioEnums.Power_Up_Acquired);
         }
     }
 
-    public void increaseQuantityOfItem(int amount) {
+    public void increaseQuantityOfItem (int amount) {
         this.quantity += amount;
     }
 
-    public void decreaseQuantityOfItem(int amount) {
+    public void decreaseQuantityOfItem (int amount) {
         this.quantity = Math.max(0, this.quantity - amount); // Ensure quantity doesn't go below 0
     }
 

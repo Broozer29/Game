@@ -1,18 +1,19 @@
 package net.riezebos.bruus.tbd.game.UI;
 
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
-import net.riezebos.bruus.tbd.visuals.objects.AnimationManager;
-import net.riezebos.bruus.tbd.visuals.data.DataClass;
-import net.riezebos.bruus.tbd.visuals.data.audio.enums.LevelSongs;
-import net.riezebos.bruus.tbd.visuals.data.image.ImageEnums;
-import net.riezebos.bruus.tbd.visuals.objects.SpriteAnimation;
-import net.riezebos.bruus.tbd.visuals.objects.SpriteConfigurations.SpriteConfiguration;
+import net.riezebos.bruus.tbd.visualsandaudio.objects.AnimationManager;
+import net.riezebos.bruus.tbd.visualsandaudio.data.DataClass;
+import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.LevelSongs;
+import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
+import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteAnimation;
+import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteConfiguration;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 public class GameUICreator {
+    Random random = new Random();
 
     private int healthBarWidth = 200;
     private int healthBarHeight = 15;
@@ -40,9 +41,9 @@ public class GameUICreator {
     private UIObject gameOverCardTitle;
     private UIObject damageOverlay;
 
-    private List<UIObject> informationCards = new ArrayList<UIObject>();
+    private List<UIObject> informationCards = new ArrayList<>();
 
-    private List<ImageEnums> gameOverPeepos = new ArrayList();
+    private List<ImageEnums> gameOverPeepos = new ArrayList<>();
 
 
     private static GameUICreator instance = new GameUICreator();
@@ -109,14 +110,10 @@ public class GameUICreator {
         }
         difficultyWings = new UIObject(createUIConfiguration(800, DataClass.getInstance().getPlayableWindowMaxHeight() + 20, 1f, wingsImageEnum));
         difficultyWings.setCenterCoordinates(800, (DataClass.getInstance().getPlayableWindowMaxHeight() + (difficultyWings.getHeight() / 2) + 10));
-
     }
 
     private void createInformationCards () {
         this.informationCards.clear();
-//        UIObject topInfoCard = new UIObject(createUIConfiguration(0, 0, 1, ImageEnums.InformationCard));
-//        topInfoCard.setImageDimensions(DataClass.getInstance().getInformationCardWidth(), DataClass.getInstance().getInformationCardHeight());
-//        this.informationCards.add(topInfoCard);
 
         UIObject botInfoCard = new UIObject(createUIConfiguration(0, DataClass.getInstance().getPlayableWindowMaxHeight(), 1, ImageEnums.InformationCard));
         botInfoCard.setImageDimensions(DataClass.getInstance().getInformationCardWidth(), DataClass.getInstance().getInformationCardHeight());
@@ -139,7 +136,6 @@ public class GameUICreator {
 
         specialAttackFrame = new UIObject(createUIConfiguration(healthBarWidth + 10 + 50, DataClass.getInstance().getPlayableWindowMaxHeight() + 10, 1, frameType));
         specialAttackHighlight = AnimationManager.getInstance().createAnimation(150, specialAttackFrame.getYCoordinate(), ImageEnums.Highlight, true,1);
-//        specialAttackHighlight.setImageDimensions(specialAttackFrame.getWidth(), specialAttackFrame.getHeight());
         specialAttackHighlight.setAnimationScale(0.9142f);
 
         specialAttackHighlight.setXCoordinate(specialAttackFrame.getXCoordinate() - 2);
@@ -223,7 +219,7 @@ public class GameUICreator {
 
 
         int gradeObjectX = Math.round(gameOverCard.getCenterXCoordinate() + (gameOverCard.getWidth() * 0.3f));
-        int gradeObjectY = Math.round(gameOverCard.getCenterYCoordinate());
+        int gradeObjectY = gameOverCard.getCenterYCoordinate();
         gradeSC2iconObject = new UIObject((createUIConfiguration(gradeObjectX, gradeObjectY, 1, ImageEnums.GradeBronze)));
         gradeSC2iconObject.setCenterCoordinates(gradeObjectX, gradeObjectY);
 
@@ -245,7 +241,6 @@ public class GameUICreator {
     private int gameOverPeepoRandomNumber = -100;
     public ImageEnums getRandomGameOverPeepo(){
         if(gameOverPeepoRandomNumber < 0) {
-            Random random = new Random();
             gameOverPeepoRandomNumber = random.nextInt(0, gameOverPeepos.size() - 1);
         }
         return gameOverPeepos.get(gameOverPeepoRandomNumber);

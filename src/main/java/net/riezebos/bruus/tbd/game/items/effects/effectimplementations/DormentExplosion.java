@@ -10,15 +10,13 @@ import net.riezebos.bruus.tbd.game.items.effects.DormentExplosionActivationMetho
 import net.riezebos.bruus.tbd.game.items.effects.EffectActivationTypes;
 import net.riezebos.bruus.tbd.game.items.effects.EffectIdentifiers;
 import net.riezebos.bruus.tbd.game.items.effects.EffectInterface;
-import net.riezebos.bruus.tbd.visuals.data.audio.AudioManager;
-import net.riezebos.bruus.tbd.visuals.data.audio.enums.AudioEnums;
-import net.riezebos.bruus.tbd.visuals.data.image.ImageEnums;
-import net.riezebos.bruus.tbd.visuals.objects.SpriteAnimation;
-import net.riezebos.bruus.tbd.visuals.objects.SpriteConfigurations.SpriteAnimationConfiguration;
-import net.riezebos.bruus.tbd.visuals.objects.SpriteConfigurations.SpriteConfiguration;
+import net.riezebos.bruus.tbd.visualsandaudio.data.audio.AudioManager;
+import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.AudioEnums;
+import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
+import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteAnimation;
+import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteAnimationConfiguration;
+import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteConfiguration;
 
-import javax.sound.sampled.UnsupportedAudioFileException;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -66,7 +64,7 @@ public class DormentExplosion implements EffectInterface {
 
     @Override
     public void activateEffect (GameObject gameObject) {
-        if(!activated) {
+        if (!activated) {
             switch (activationMethod) {
                 case OnDeath -> {
                     if (gameObject.getCurrentHitpoints() <= 0) {
@@ -86,7 +84,7 @@ public class DormentExplosion implements EffectInterface {
         SpriteConfiguration spriteConfiguration = new SpriteConfiguration();
         spriteConfiguration.setxCoordinate(gameObject.getXCoordinate());
         spriteConfiguration.setyCoordinate(gameObject.getYCoordinate());
-         spriteConfiguration.setScale(getScaleByExplosionType());
+        spriteConfiguration.setScale(getScaleByExplosionType());
         spriteConfiguration.setImageType(explosionType);
         SpriteAnimationConfiguration spriteAnimationConfiguration = new SpriteAnimationConfiguration(spriteConfiguration, getFrameDelayByExplosionType(), false);
         ExplosionConfiguration explosionConfiguration = new ExplosionConfiguration(true, damage, true, allowedToApplyOnHitEffects);
@@ -110,12 +108,8 @@ public class DormentExplosion implements EffectInterface {
             explosion.addEffectToApply(burning);
         }
 
-        if(audioEnums != null){
-            try {
-                AudioManager.getInstance().addAudio(audioEnums);
-            } catch (UnsupportedAudioFileException | IOException e) {
-                throw new RuntimeException(e);
-            }
+        if (audioEnums != null) {
+            AudioManager.getInstance().addAudio(audioEnums);
         }
 
         ExplosionManager.getInstance().addExplosion(explosion);

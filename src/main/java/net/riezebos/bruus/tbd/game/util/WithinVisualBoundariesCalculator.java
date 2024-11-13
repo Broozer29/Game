@@ -1,9 +1,14 @@
 package net.riezebos.bruus.tbd.game.util;
 
 import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
-import net.riezebos.bruus.tbd.visuals.data.DataClass;
+import net.riezebos.bruus.tbd.visualsandaudio.data.DataClass;
 
 public class WithinVisualBoundariesCalculator {
+
+    private WithinVisualBoundariesCalculator(){
+        
+    }
+
 
     public static boolean isWithinBoundaries(GameObject object) {
         int windowWidth = DataClass.getInstance().getWindowWidth();

@@ -8,15 +8,12 @@ import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerSpecialAttackTypes;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
 import net.riezebos.bruus.tbd.game.gamestate.GameStateInfo;
-import net.riezebos.bruus.tbd.visuals.data.audio.AudioManager;
-import net.riezebos.bruus.tbd.visuals.data.audio.enums.AudioEnums;
-import net.riezebos.bruus.tbd.visuals.data.image.ImageEnums;
-import net.riezebos.bruus.tbd.visuals.objects.SpriteAnimation;
-import net.riezebos.bruus.tbd.visuals.objects.SpriteConfigurations.SpriteAnimationConfiguration;
-import net.riezebos.bruus.tbd.visuals.objects.SpriteConfigurations.SpriteConfiguration;
-
-import javax.sound.sampled.UnsupportedAudioFileException;
-import java.io.IOException;
+import net.riezebos.bruus.tbd.visualsandaudio.data.audio.AudioManager;
+import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.AudioEnums;
+import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
+import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteAnimation;
+import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteAnimationConfiguration;
+import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteConfiguration;
 
 public class SpaceShipSpecialGun {
     private PlayerStats playerStats = PlayerStats.getInstance();
@@ -32,7 +29,7 @@ public class SpaceShipSpecialGun {
         specialAttackCharges = 0;
     }
 
-    public void fire(int xCoordinate, int yCoordinate,PlayerSpecialAttackTypes attackType) {
+    public void fire (int xCoordinate, int yCoordinate, PlayerSpecialAttackTypes attackType) {
         double currentTime = GameStateInfo.getInstance().getGameSeconds();
         if (specialAttackCharges > 0 && currentTime >= (lastSecondsSpecialAttackUsed + 0.15) && allowedToFire) {
             switch (attackType) {
@@ -66,7 +63,7 @@ public class SpaceShipSpecialGun {
 
         float damage = playerStats.getSpecialDamage();
 
-        if(playerStats.isHasImprovedElectroShred()){
+        if (playerStats.isHasImprovedElectroShred()) {
             spriteConfiguration.setImageType(ImageEnums.ElectroShredImproved);
         }
 
@@ -83,17 +80,13 @@ public class SpaceShipSpecialGun {
 //			specialAttackAnimation.setCenterCoordinates(spaceShip.getCenterXCoordinate(), spaceShip.getCenterYCoordinate());
 //			specialAttack.setCenterCoordinates(spaceShip.getCenterXCoordinate(), spaceShip.getCenterYCoordinate());
 
-        try {
-            AudioManager.getInstance().addAudio(AudioEnums.Default_EMP);
-            spaceShip.addFollowingSpecialAttack(specialAttack);
-            MissileManager.getInstance().addSpecialAttack(specialAttack);
+        AudioManager.getInstance().addAudio(AudioEnums.Default_EMP);
+        spaceShip.addFollowingSpecialAttack(specialAttack);
+        MissileManager.getInstance().addSpecialAttack(specialAttack);
 
-        } catch (UnsupportedAudioFileException | IOException e) {
-            e.printStackTrace();
-        }
     }
 
-    public void updateFrameCount() {
+    public void updateFrameCount () {
         double currentTime = GameStateInfo.getInstance().getGameSeconds();
 
         // Allow firing if enough time has passed since the last shot
@@ -106,6 +99,7 @@ public class SpaceShipSpecialGun {
             if (currentTime >= lastSecondsSpecialAttackChargeGained + playerStats.getSpecialAttackCooldown()) {
                 lastSecondsSpecialAttackChargeGained = currentTime;
                 specialAttackCharges++;
+                AudioManager.getInstance().addAudio(AudioEnums.ElectroShredFinishedCharging);
             }
         }
 
@@ -121,7 +115,7 @@ public class SpaceShipSpecialGun {
         return this.specialAttackCharges;
     }
 
-    public double getCurrentSpecialAttackFrame() {
+    public double getCurrentSpecialAttackFrame () {
         return secondsUntilNextSpecialAttackCharge;
     }
 }

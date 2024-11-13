@@ -1,11 +1,11 @@
 package net.riezebos.bruus.tbd.guiboards.boards;
 
-import net.riezebos.bruus.tbd.controllerInput.ConnectedControllers;
+import net.riezebos.bruus.tbd.controllerInput.ConnectedControllersManager;
 import net.riezebos.bruus.tbd.controllerInput.ControllerInputEnums;
 import net.riezebos.bruus.tbd.controllerInput.ControllerInputReader;
 import net.riezebos.bruus.tbd.game.gameobjects.background.BackgroundManager;
 import net.riezebos.bruus.tbd.game.gameobjects.background.BackgroundObject;
-import net.riezebos.bruus.tbd.visuals.objects.AnimationManager;
+import net.riezebos.bruus.tbd.visualsandaudio.objects.AnimationManager;
 import net.riezebos.bruus.tbd.game.util.OnScreenTextManager;
 import net.riezebos.bruus.tbd.game.util.OnScreenText;
 import net.riezebos.bruus.tbd.guiboards.boardEnums.MenuFunctionEnums;
@@ -13,11 +13,11 @@ import net.riezebos.bruus.tbd.guiboards.boardcreators.MenuBoardCreator;
 import net.riezebos.bruus.tbd.guiboards.guicomponents.GUIComponent;
 import net.riezebos.bruus.tbd.guiboards.guicomponents.GUITextCollection;
 import net.riezebos.bruus.tbd.guiboards.guicomponents.MenuCursor;
-import net.riezebos.bruus.tbd.visuals.data.DataClass;
-import net.riezebos.bruus.tbd.visuals.data.audio.AudioManager;
-import net.riezebos.bruus.tbd.visuals.data.audio.CustomAudioClip;
-import net.riezebos.bruus.tbd.visuals.objects.Sprite;
-import net.riezebos.bruus.tbd.visuals.objects.SpriteAnimation;
+import net.riezebos.bruus.tbd.visualsandaudio.data.DataClass;
+import net.riezebos.bruus.tbd.visualsandaudio.data.audio.AudioManager;
+import net.riezebos.bruus.tbd.visualsandaudio.data.audio.CustomAudioClip;
+import net.riezebos.bruus.tbd.visualsandaudio.objects.Sprite;
+import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteAnimation;
 
 import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.*;
@@ -34,7 +34,7 @@ public class MenuBoard extends JPanel implements ActionListener {
     private DataClass data = DataClass.getInstance();
     private BackgroundManager backgroundManager = BackgroundManager.getInstance();
     private AnimationManager animationManager = AnimationManager.getInstance();
-    private ConnectedControllers controllers = ConnectedControllers.getInstance();
+    private ConnectedControllersManager controllers = ConnectedControllersManager.getInstance();
     private final int boardWidth = data.getWindowWidth();
     private final int boardHeight = data.getWindowHeight();
     private AudioManager audioManager = AudioManager.getInstance();
@@ -318,14 +318,12 @@ public class MenuBoard extends JPanel implements ActionListener {
 
             // Left and right navigation
             if (currentTime - lastMoveTime > MOVE_COOLDOWN) {
-                if (controllerInputReader.isInputActive(ControllerInputEnums.MOVE_LEFT_SLOW)
-                        || controllerInputReader.isInputActive(ControllerInputEnums.MOVE_LEFT_QUICK)) {
+                if (controllerInputReader.isInputActive(ControllerInputEnums.MOVE_LEFT)) {
                     // Menu option to the left
                     previousMenuTile();
                     needsUpdate = true;
                     lastMoveTime = currentTime;
-                } else if (controllerInputReader.isInputActive(ControllerInputEnums.MOVE_RIGHT_SLOW)
-                        || controllerInputReader.isInputActive(ControllerInputEnums.MOVE_RIGHT_QUICK)) {
+                } else if (controllerInputReader.isInputActive(ControllerInputEnums.MOVE_RIGHT)) {
                     // Menu option to the right
                     nextMenuTile();
                     needsUpdate = true;
@@ -333,14 +331,12 @@ public class MenuBoard extends JPanel implements ActionListener {
                 }
 
                 // Up and down navigation
-                if (controllerInputReader.isInputActive(ControllerInputEnums.MOVE_UP_SLOW)
-                        || controllerInputReader.isInputActive(ControllerInputEnums.MOVE_UP_QUICK)) {
+                if (controllerInputReader.isInputActive(ControllerInputEnums.MOVE_UP)) {
                     // Menu option upwards
                     previousMenuColumn();
                     needsUpdate = true;
                     lastMoveTime = currentTime;
-                } else if (controllerInputReader.isInputActive(ControllerInputEnums.MOVE_DOWN_SLOW)
-                        || controllerInputReader.isInputActive(ControllerInputEnums.MOVE_DOWN_QUICK)) {
+                } else if (controllerInputReader.isInputActive(ControllerInputEnums.MOVE_DOWN)) {
                     // Menu option downwards
                     nextMenuColumn();
                     needsUpdate = true;

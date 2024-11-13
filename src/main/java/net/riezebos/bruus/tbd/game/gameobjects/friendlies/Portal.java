@@ -1,7 +1,7 @@
 package net.riezebos.bruus.tbd.game.gameobjects.friendlies;
 
 import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
-import net.riezebos.bruus.tbd.visuals.objects.SpriteConfigurations.SpriteAnimationConfiguration;
+import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteAnimationConfiguration;
 
 //Used to end the game
 public class Portal extends GameObject {

@@ -10,14 +10,15 @@ import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
 import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SpaceShip;
 import net.riezebos.bruus.tbd.game.gamestate.GameStateInfo;
+import net.riezebos.bruus.tbd.game.items.PlayerInventory;
+import net.riezebos.bruus.tbd.game.items.enums.ItemEnums;
 import net.riezebos.bruus.tbd.game.movement.*;
-import net.riezebos.bruus.tbd.game.movement.pathfinders.HomingPathFinder;
 import net.riezebos.bruus.tbd.game.movement.pathfinders.PathFinder;
 import net.riezebos.bruus.tbd.game.movement.pathfinders.RegularPathFinder;
 import net.riezebos.bruus.tbd.game.movement.pathfinders.StraightLinePathFinder;
-import net.riezebos.bruus.tbd.visuals.data.image.ImageEnums;
-import net.riezebos.bruus.tbd.visuals.objects.SpriteConfigurations.SpriteAnimationConfiguration;
-import net.riezebos.bruus.tbd.visuals.objects.SpriteConfigurations.SpriteConfiguration;
+import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
+import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteAnimationConfiguration;
+import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteConfiguration;
 
 public class Drone extends FriendlyObject {
 
@@ -49,15 +50,14 @@ public class Drone extends FriendlyObject {
     private void fireMissile () {
         MissileEnums missileType = MissileEnums.PlayerLaserbeam;
         SpriteConfiguration missileSpriteConfiguration = new SpriteConfiguration();
-        missileSpriteConfiguration.setxCoordinate(this.animation.getCenterXCoordinate());
-        missileSpriteConfiguration.setyCoordinate(this.animation.getCenterYCoordinate());
+        missileSpriteConfiguration.setxCoordinate(this.getCenterXCoordinate());
+        missileSpriteConfiguration.setyCoordinate(this.getCenterYCoordinate());
         missileSpriteConfiguration.setImageType(missileType.getImageType());
         missileSpriteConfiguration.setScale(1f);
 
 
         float xMovementSpeed = 7.5f;
         float yMovementSpeed = 7.5f;
-//        float damage = PlayerStats.getInstance().getBaseDamage() * PlayerStats.getInstance().getDroneDamageRatio();
         float damage = PlayerStats.getInstance().getBaseDamage() * PlayerStats.getInstance().getDroneDamageRatio();
         Direction rotation = Direction.RIGHT;
         MovementPatternSize movementPatternSize = MovementPatternSize.SMALL;
@@ -79,12 +79,12 @@ public class Drone extends FriendlyObject {
 
         missile.setOwnerOrCreator(this);
         missile.setObjectType("Drone Missile");
+
         missile.resetMovementPath();
-        adjustPathFinder(missile.getMovementConfiguration().getPathFinder(), missile.getMovementConfiguration(), missile);
+        adjustStraightLinePathFinder(missile.getMovementConfiguration(), missile);
         missile.setCenterCoordinates(this.getAnimation().getCenterXCoordinate(), this.getAnimation().getCenterYCoordinate());
 
         missile.rotateObjectTowardsDestination(true);
-        missile.setCenterCoordinates(animation.getCenterXCoordinate(), animation.getCenterYCoordinate());
         missile.setAllowedVisualsToRotate(false); //Prevent it from being rotated again by the SpriteMover
 
         missile.setOwnerOrCreator(this);
@@ -92,12 +92,8 @@ public class Drone extends FriendlyObject {
         MissileManager.getInstance().addExistingMissile(missile);
     }
 
-    private void adjustPathFinder (PathFinder pathFinder, MovementConfiguration movementConfiguration, GameObject missile) {
-        if (pathFinder instanceof HomingPathFinder) {
-            movementConfiguration.setTargetToChase(((HomingPathFinder) pathFinder).getTarget(true, this.xCoordinate, this.yCoordinate));
-        } else if (pathFinder instanceof StraightLinePathFinder) {
-
-
+    private void adjustStraightLinePathFinder (MovementConfiguration movementConfiguration, GameObject missile) {
+        if (allowedToAimAtTarget()) {
             SpaceShip spaceship = PlayerManager.getInstance().getSpaceship();
             Enemy closestEnemy = EnemyManager.getInstance().getClosestEnemy(spaceship.getCenterXCoordinate(), spaceship.getCenterYCoordinate());
             if (closestEnemy != null) {
@@ -105,20 +101,19 @@ public class Drone extends FriendlyObject {
                 point.setX(point.getX() - missile.getWidth() / 2);
                 point.setY(point.getY() - missile.getHeight() / 2);
                 movementConfiguration.setDestination(point);
-            } else {
-                movementConfiguration.setDestination(pathFinder.calculateInitialEndpoint(movementConfiguration.getCurrentLocation(), movementConfiguration.getRotation(), this.isFriendly()));
             }
         }
     }
 
-    private PathFinder selectPathFinder () {
-        if (PlayerStats.getInstance().getDronePathFinder().equals(PathFinderEnums.StraightLine)) {
-            return new StraightLinePathFinder();
-        } else if (PlayerStats.getInstance().getDronePathFinder().equals(PathFinderEnums.Homing)) {
-            return new HomingPathFinder();
-        }
+    private boolean allowedToAimAtTarget () {
+        return PlayerInventory.getInstance().getItems().containsKey(ItemEnums.ModuleAccuracy);
+    }
 
-        return new RegularPathFinder();
+    private PathFinder selectPathFinder () {
+//        if (PlayerStats.getInstance().getDronePathFinder().equals(PathFinderEnums.StraightLine)) {
+//            return new StraightLinePathFinder();
+//        }
+        return new StraightLinePathFinder();
     }
 
 

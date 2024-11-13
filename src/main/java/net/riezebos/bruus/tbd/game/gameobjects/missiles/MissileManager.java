@@ -9,7 +9,7 @@ import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
 import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SpaceShip;
 import net.riezebos.bruus.tbd.game.gamestate.GameStateInfo;
 import net.riezebos.bruus.tbd.game.gamestate.GameStatsTracker;
-import net.riezebos.bruus.tbd.visuals.objects.AnimationManager;
+import net.riezebos.bruus.tbd.visualsandaudio.objects.AnimationManager;
 import net.riezebos.bruus.tbd.game.util.ThornsDamageDealer;
 import net.riezebos.bruus.tbd.game.util.collision.CollisionDetector;
 import net.riezebos.bruus.tbd.game.util.collision.CollisionInfo;
@@ -187,12 +187,12 @@ public class MissileManager {
         for (Enemy enemy : enemyManager.getEnemies()) {
             CollisionInfo collisionInfo = collisionDetector.detectCollision(enemy, specialAttack);
             if (collisionInfo != null) {
-                specialAttack.applyBeforeCollisionEffects(enemy);
+                specialAttack.applyBeforeCollisionItemEffects(enemy);
 
                 if (specialAttack.isAllowOnHitEffects()
                         && specialAttack.canApplyEffectAgain()
                 ) {
-                    specialAttack.applyAfterCollisionItemEffectsToObject(enemy);
+                    specialAttack.applyAfterCollisionItemEffects(enemy);
                     hasAppliedEffects = true;
                 }
 
@@ -226,12 +226,12 @@ public class MissileManager {
             CollisionInfo collisionInfo = collisionDetector.detectCollision(missile, enemy);
             if (collisionInfo != null) {
                 if (missile.getMissileEnum().equals(MissileEnums.TazerProjectile)) {
-                    ((TazerProjectile) missile).handleTazerMissile(missile, enemy);
-                } else { //It's a player missile
-                    missile.applyBeforeCollisionEffects(enemy);
+                    ((TazerProjectile) missile).handleTazerMissile(enemy);
                     missile.handleCollision(enemy);
-                    missile.applyAfterCollisionItemEffectsToObject(enemy);
-
+                } else { //It's a player missile
+                    missile.applyBeforeCollisionItemEffects(enemy);
+                    missile.handleCollision(enemy);
+                    missile.applyAfterCollisionItemEffects(enemy);
                 }
 
             }
@@ -244,7 +244,7 @@ public class MissileManager {
         CollisionInfo collisionInfo = collisionDetector.detectCollision(missile, spaceship);
         if (collisionInfo != null) {
             if (missile.getMissileEnum().equals(MissileEnums.TazerProjectile)) {
-                ((TazerProjectile) missile).handleTazerMissile(missile, spaceship);
+                ((TazerProjectile) missile).handleTazerMissile(spaceship);
             }
             //if deflect: deflect missile, else:
             missile.handleCollision(spaceship);

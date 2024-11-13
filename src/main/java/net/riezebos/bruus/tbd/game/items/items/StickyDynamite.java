@@ -8,27 +8,36 @@ import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
 import net.riezebos.bruus.tbd.game.items.Item;
 import net.riezebos.bruus.tbd.game.items.enums.ItemApplicationEnum;
 import net.riezebos.bruus.tbd.game.items.enums.ItemEnums;
-import net.riezebos.bruus.tbd.visuals.data.audio.AudioManager;
-import net.riezebos.bruus.tbd.visuals.data.audio.enums.AudioEnums;
-import net.riezebos.bruus.tbd.visuals.data.image.ImageEnums;
-import net.riezebos.bruus.tbd.visuals.objects.SpriteConfigurations.SpriteAnimationConfiguration;
-import net.riezebos.bruus.tbd.visuals.objects.SpriteConfigurations.SpriteConfiguration;
+import net.riezebos.bruus.tbd.visualsandaudio.data.audio.AudioManager;
+import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.AudioEnums;
+import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
+import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteAnimationConfiguration;
+import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteConfiguration;
 
-import javax.sound.sampled.UnsupportedAudioFileException;
-import java.io.IOException;
+import java.util.Random;
 
 public class StickyDynamite extends Item {
 
     private float explosionDamage;
+    private float scaleFactor;
+    private float chanceToProc;
+    private Random random = new Random();
 
     public StickyDynamite () {
         super(ItemEnums.StickyDynamite, 1, ItemApplicationEnum.AfterCollision);
+        this.chanceToProc = 0.1f;
         this.explosionDamage = calculateExplosionDamage(quantity);
+        calculateScaleFactor();
     }
 
     public void increaseQuantityOfItem (int amount) {
         this.quantity += amount;
         this.explosionDamage = calculateExplosionDamage(quantity);
+        calculateScaleFactor();
+    }
+
+    private void calculateScaleFactor(){
+        scaleFactor = 0.9f + (quantity * 0.1f);
     }
 
     private float calculateExplosionDamage (int quantity) {
@@ -36,32 +45,25 @@ public class StickyDynamite extends Item {
     }
 
 
-    private int stackCounter = 0;
 
     @Override
     public void applyEffectToObject (GameObject gameObject) {
-        stackCounter += 1;
-
-        if (stackCounter >= 10) {
+        if (random.nextFloat() <= chanceToProc) {
             ExplosionConfiguration explosionConfiguration = new ExplosionConfiguration(true, explosionDamage, true, false);
             SpriteConfiguration spriteConfiguration = new SpriteConfiguration();
             spriteConfiguration.setImageType(ImageEnums.StickyDynamiteExplosion);
             spriteConfiguration.setxCoordinate(gameObject.getCenterXCoordinate());
             spriteConfiguration.setyCoordinate(gameObject.getCenterYCoordinate());
-            spriteConfiguration.setScale(0.5f);
+            spriteConfiguration.setScale(0.5f * scaleFactor);
 
             SpriteAnimationConfiguration spriteAnimationConfiguration = new SpriteAnimationConfiguration(spriteConfiguration, 1, false);
             Explosion explosion = new Explosion(spriteAnimationConfiguration, explosionConfiguration);
-            explosion.setCenterCoordinates(gameObject.getXCoordinate() + gameObject.getWidth(), gameObject.getCenterYCoordinate());
+            explosion.setCenterYCoordinate(gameObject.getCenterYCoordinate());
+            explosion.setXCoordinate(gameObject.getXCoordinate());
 
-            try {
-                AudioManager.getInstance().addAudio(AudioEnums.StickyGrenadeExplosion);
-            } catch (UnsupportedAudioFileException | IOException e) {
-                throw new RuntimeException(e);
-            }
+            AudioManager.getInstance().addAudio(AudioEnums.StickyGrenadeExplosion);
 
             ExplosionManager.getInstance().addExplosion(explosion);
-            stackCounter = 0;
         }
 
     }

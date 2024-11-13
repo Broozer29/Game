@@ -1,8 +1,8 @@
 
 package net.riezebos.bruus.tbd.game.gameobjects.background;
 
-import net.riezebos.bruus.tbd.visuals.objects.Sprite;
-import net.riezebos.bruus.tbd.visuals.objects.SpriteConfigurations.SpriteConfiguration;
+import net.riezebos.bruus.tbd.visualsandaudio.objects.Sprite;
+import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteConfiguration;
 
 import java.awt.image.BufferedImage;
 import java.util.Random;

@@ -1,5 +1,6 @@
 package net.riezebos.bruus.tbd.game.gamestate;
 
+import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyEnums;
 import net.riezebos.bruus.tbd.game.level.LevelManager;
 
 public class GameStateInfo {
@@ -21,6 +22,7 @@ public class GameStateInfo {
     private int monsterLevel;
     private float initialOffset;
     private int bossesDefeated;
+
 
     private GameStateInfo () {
         resetGameState();
@@ -156,5 +158,18 @@ public class GameStateInfo {
 
     public void setBossesDefeated (int bossesDefeated) {
         this.bossesDefeated = bossesDefeated;
+    }
+
+    public EnemyEnums getNextBoss(){
+        int bossesDefeated = this.bossesDefeated;
+        // Use modulo to cycle through the bosses
+        switch (bossesDefeated % EnemyEnums.getAmountOfBossEnemies()) {
+            case 0:
+                return EnemyEnums.RedBoss;
+            case 1:
+                return EnemyEnums.SpaceStationBoss;
+            default:
+                return EnemyEnums.RedBoss;
+        }
     }
 }

@@ -1,11 +1,11 @@
 package net.riezebos.bruus.tbd.game.UI;
 
 import net.riezebos.bruus.tbd.game.movement.Direction;
-import net.riezebos.bruus.tbd.visuals.data.image.ImageEnums;
-import net.riezebos.bruus.tbd.visuals.data.image.ImageResizer;
-import net.riezebos.bruus.tbd.visuals.data.image.ImageRotator;
-import net.riezebos.bruus.tbd.visuals.objects.Sprite;
-import net.riezebos.bruus.tbd.visuals.objects.SpriteConfigurations.SpriteConfiguration;
+import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
+import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageResizer;
+import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageRotator;
+import net.riezebos.bruus.tbd.visualsandaudio.objects.Sprite;
+import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteConfiguration;
 
 public class UIObject extends Sprite {
 	
@@ -30,6 +30,7 @@ public class UIObject extends Sprite {
 		this.loadImage(newImage);
 	}
 
+	@Override
 	public void rotateImage(Direction direction){
 		if(this.imageEnum == ImageEnums.peepoSkillIssue){
 			return;

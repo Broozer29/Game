@@ -17,6 +17,7 @@ public class DirectorManager {
     private boolean enabled;
     public boolean testingRichMode; //used for testing only
 
+    private double lastCashCarrierSpawnTime;
     private int testingCreditsBonus = 3;
 
 
@@ -56,8 +57,9 @@ public class DirectorManager {
         directorList.add(fastDirector);
 
         Director instantDirector = new Director(DirectorType.Instant, baseMonsterCards);
-        instantDirector.receiveCredits(Math.min(75 * GameStateInfo.getInstance().getDifficultyCoefficient(), 500));
+        instantDirector.receiveCredits(Math.min(75 * GameStateInfo.getInstance().getDifficultyCoefficient(), 650));
         directorList.add(instantDirector);
+        lastCashCarrierSpawnTime = 0;
     }
 
     public Director getTestDirector () {
@@ -148,5 +150,11 @@ public class DirectorManager {
         }
     }
 
+    public double getLastCashCarrierSpawnTime () {
+        return lastCashCarrierSpawnTime;
+    }
 
+    public void setLastCashCarrierSpawnTime (double lastCashCarrierSpawnTime) {
+        this.lastCashCarrierSpawnTime = lastCashCarrierSpawnTime;
+    }
 }

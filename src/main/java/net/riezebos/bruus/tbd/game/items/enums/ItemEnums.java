@@ -1,6 +1,6 @@
 package net.riezebos.bruus.tbd.game.items.enums;
 
-import net.riezebos.bruus.tbd.visuals.data.image.ImageEnums;
+import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,9 +21,9 @@ public enum ItemEnums {
     RepulsionArmorPlate(ItemRarityEnums.Common, ItemCategory.Defense, ImageEnums.Starcraft2_Health_Upgrade_2, "Armor Plate"),
     EnergySiphon(ItemRarityEnums.Common, ItemCategory.Defense, ImageEnums.Starcraft2_Energy_Siphon, "Energy Siphon"),
     ArmorPiercingRounds(ItemRarityEnums.Common, ItemCategory.Offense, ImageEnums.Starcraft2_Armor_Piercing, "Armor Piercing Rounds"),
-    MoneyPrinter(ItemRarityEnums.Rare, ItemCategory.Utility, ImageEnums.MoneyPrinter, "Loot Tracker"),
+    MoneyPrinter(ItemRarityEnums.Rare, ItemCategory.Utility, ImageEnums.MoneyPrinter, "Loot Box"),
     PlasmaLauncher(ItemRarityEnums.Rare, ItemCategory.Offense, ImageEnums.Starcraft2_Focused_Crystal, "Plasma Launcher"),
-    GuardianDrone(ItemRarityEnums.Legendary, ItemCategory.Offense, ImageEnums.Starcraft2_Seeker_Missile, "Guardian Drone"),
+    GuardianDrone(ItemRarityEnums.Rare, ItemCategory.Offense, ImageEnums.Starcraft2_Seeker_Missile, "Guardian Drone"),
     CriticalOverloadCapacitor(ItemRarityEnums.Legendary, ItemCategory.Offense, ImageEnums.Starcraft2_Auto_Tracking, "Critical Overload Capacitor"),
     BarrierSuperSizer(ItemRarityEnums.Common, ItemCategory.Defense, ImageEnums.Starcraft2_Fire_Hardened_Shields, "Barrier Super Sizer"),
     DrillerModule(ItemRarityEnums.Legendary, ItemCategory.Offense, ImageEnums.PiercingLaser, "Laser Addon: Piercing"),

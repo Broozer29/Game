@@ -8,9 +8,11 @@ import net.riezebos.bruus.tbd.game.level.enums.LevelLength;
 import net.riezebos.bruus.tbd.game.gamestate.ShopManager;
 import net.riezebos.bruus.tbd.guiboards.boardEnums.MenuFunctionEnums;
 import net.riezebos.bruus.tbd.guiboards.guicomponents.*;
-import net.riezebos.bruus.tbd.visuals.data.audio.enums.LevelSongs;
-import net.riezebos.bruus.tbd.visuals.data.image.ImageEnums;
-import net.riezebos.bruus.tbd.visuals.objects.SpriteConfigurations.SpriteConfiguration;
+import net.riezebos.bruus.tbd.visualsandaudio.data.audio.AudioManager;
+import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.LevelSongs;
+import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.MusicMediaPlayer;
+import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
+import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteConfiguration;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,17 +49,17 @@ public class ShopBoardCreator {
     }
 
 
-    public MenuCursor createCursor (GUITextCollection textC){
+    public MenuCursor createCursor (GUITextCollection textC) {
         int initCursorX = textC.getComponents().get(0).getXCoordinate();
         int initCursorY = textC.getComponents().get(0).getYCoordinate();
         float scale = textScale;
-        SpriteConfiguration spriteConfiguration = createSpriteConfiguration(initCursorX,initCursorY,scale, ImageEnums.Player_Spaceship_Model_3);
+        SpriteConfiguration spriteConfiguration = createSpriteConfiguration(initCursorX, initCursorY, scale, ImageEnums.Player_Spaceship_Model_3);
         MenuCursor button = new MenuCursor(spriteConfiguration);
         return button;
     }
 
 
-    public GUITextCollection createReturnToMainMenu (){
+    public GUITextCollection createReturnToMainMenu () {
         int xCoordinate = 100;
         int yCoordinate = boardHeight - 80;
         String text = "RETURN TO MAIN MENU";
@@ -74,7 +76,7 @@ public class ShopBoardCreator {
         return textCollection;
     }
 
-    public GUITextCollection createStartNextLevelButton (){
+    public GUITextCollection createStartNextLevelButton () {
         int xCoordinate = 500;
         int yCoordinate = boardHeight - 80;
 //        float scale = textScale;
@@ -89,7 +91,7 @@ public class ShopBoardCreator {
         return textCollection;
     }
 
-    public GUITextCollection createPlayerInventoryButton (){
+    public GUITextCollection createPlayerInventoryButton () {
         int xCoordinate = 800;
         int yCoordinate = boardHeight - 80;
 //        float scale = textScale;
@@ -106,7 +108,7 @@ public class ShopBoardCreator {
     }
 
 
-    public GUITextCollection createMoneyObject (GUIComponent backgroundCard){
+    public GUITextCollection createMoneyObject (GUIComponent backgroundCard) {
         int moneyX = backgroundCard.getXCoordinate() + backgroundCard.getWidth() / 8;
         int moneyY = backgroundCard.getYCoordinate() + backgroundCard.getHeight() / 7;
 
@@ -125,14 +127,14 @@ public class ShopBoardCreator {
     }
 
 
-    public GUITextCollection createNextLevelDifficultyIcon (GUIComponent backgroundCard){
+    public GUITextCollection createNextLevelDifficultyIcon (GUIComponent backgroundCard) {
         int xCoordinate = backgroundCard.getCenterXCoordinate();
         int YCoordinate = backgroundCard.getCenterYCoordinate();
         int difficulty = 0;
         ImageEnums iconEnum = null;
         String string = "";
 
-        if(LevelManager.getInstance().isNextLevelABossLevel()) {
+        if (LevelManager.getInstance().isNextLevelABossLevel()) {
             iconEnum = ImageEnums.RedWings5;
             difficulty = 6;
             string = "NEXT: BOSS LEVEL";
@@ -147,7 +149,7 @@ public class ShopBoardCreator {
         }
 
         //The difficulty icon
-        SpriteConfiguration spriteConfiguration = createSpriteConfiguration(xCoordinate,YCoordinate, textScale, iconEnum);
+        SpriteConfiguration spriteConfiguration = createSpriteConfiguration(xCoordinate, YCoordinate, textScale, iconEnum);
         DisplayOnly icon = new DisplayOnly(spriteConfiguration);
         icon.setCenterCoordinates(xCoordinate, YCoordinate);
 
@@ -164,7 +166,7 @@ public class ShopBoardCreator {
         return textCollection;
     }
 
-    public GUIComponent createRerollBackgroundCard(GUIComponent nextDifficultyCard){
+    public GUIComponent createRerollBackgroundCard (GUIComponent nextDifficultyCard) {
         int xCoordinate = nextDifficultyCard.getXCoordinate();
         int yCoordinate = nextDifficultyCard.getYCoordinate() + nextDifficultyCard.getHeight() + 20;
 
@@ -178,7 +180,7 @@ public class ShopBoardCreator {
         return card;
     }
 
-    public GUIComponent createRerollButton(GUIComponent backgroundCard){
+    public GUIComponent createRerollButton (GUIComponent backgroundCard) {
         int xCoordinate = backgroundCard.getCenterXCoordinate();
         int yCoordinate = backgroundCard.getCenterYCoordinate();
 
@@ -188,17 +190,17 @@ public class ShopBoardCreator {
 
         int backgroundCardDimension = backgroundCard.getWidth() / 4;
         refreshButton.setImageDimensions(backgroundCardDimension, backgroundCardDimension);
-        refreshButton.setCenterCoordinates(xCoordinate,yCoordinate);
+        refreshButton.setCenterCoordinates(xCoordinate, yCoordinate);
         refreshButton.setDescriptionOfComponent("Refreshes all items in the shop.");
         return refreshButton;
 
     }
 
-    public GUITextCollection createRerollCostText(GUIComponent backgroundCard){
+    public GUITextCollection createRerollCostText (GUIComponent backgroundCard) {
         int xCoordinate = backgroundCard.getXCoordinate();
         int yCoordinate = backgroundCard.getYCoordinate();
         String string = "REROLL COST: " + ShopManager.getInstance().getRerollCost();
-        GUITextCollection textCollection = new GUITextCollection(xCoordinate,yCoordinate, string);
+        GUITextCollection textCollection = new GUITextCollection(xCoordinate, yCoordinate, string);
         GUIComponent lastComponent = textCollection.getComponents().get(textCollection.getComponents().size() - 1);
         GUIComponent firstComponent = textCollection.getComponents().get(0);
 
@@ -212,13 +214,12 @@ public class ShopBoardCreator {
         lastComponent = textCollection.getComponents().get(textCollection.getComponents().size() - 1);
         int iconXCoordinate = lastComponent.getXCoordinate() + lastComponent.getWidth();
         int iconYCoordinate = lastComponent.getYCoordinate();
-        SpriteConfiguration spriteConfiguration = createSpriteConfiguration(iconXCoordinate,iconYCoordinate, 0.4f, ImageEnums.TopazGem7);
+        SpriteConfiguration spriteConfiguration = createSpriteConfiguration(iconXCoordinate, iconYCoordinate, 0.4f, ImageEnums.TopazGem7);
         DisplayOnly icon = new DisplayOnly(spriteConfiguration);
         icon.setYCoordinate(icon.getYCoordinate() - (icon.getHeight() / 4));
         textCollection.addComponentToCollection(icon);
         return textCollection;
     }
-
 
 
     private SpriteConfiguration createSpriteConfiguration (int xCoordinate, int yCoordinate, float scale, ImageEnums imageType) {
@@ -230,73 +231,71 @@ public class ShopBoardCreator {
         return config;
     }
 
-    public List<GUIComponent> createNewFirstRowOfItems() {
+    public List<GUIComponent> createNewFirstRowOfItems () {
         List<GUIComponent> firstRow = new ArrayList<>();
         for (int i = 0; i < 8; i++) {
             int x = (i * (itemWidth + horizontalSpacing)) + horizontalScreenDistance;
             int y = verticalScreenDistance;
-            SpriteConfiguration spriteConfiguration = createSpriteConfiguration(x,y,1, ImageEnums.Invisible);
+            SpriteConfiguration spriteConfiguration = createSpriteConfiguration(x, y, 1, ImageEnums.Invisible);
             ShopItem shopItem = new ShopItem(spriteConfiguration, ItemRarityEnums.Common);
 
             if (shopManager.getRowsUnlocked() < 1) {
                 shopItem.lockItemInShop();
-                shopItem.getMenuItemInformation().setItemDescription("Play a level of atleast difficulty 2 to unlock this row");
+                shopItem.getShopItemInformation().setItemDescription("Play a level of atleast difficulty 2 to unlock this row");
             }
-            shopItem.setImageDimensions(80,80);
+            shopItem.setImageDimensions(80, 80);
             firstRow.add(shopItem);
         }
         return firstRow;
     }
 
-    public List<GUIComponent> createNewSecondRowOfItems() {
+    public List<GUIComponent> createNewSecondRowOfItems () {
         List<GUIComponent> secondRow = new ArrayList<>();
         for (int i = 0; i < 8; i++) {
             int x = (i * (itemWidth + horizontalSpacing)) + horizontalScreenDistance;
             int y = (1 * (itemHeight + verticalSpacing)) + verticalScreenDistance;
             ItemRarityEnums type = (i == 6 || i == 7) ? ItemRarityEnums.Rare : ItemRarityEnums.Common; // If index is 6 or 7, it's a rare item
 
-            SpriteConfiguration spriteConfiguration = createSpriteConfiguration(x,y,1, ImageEnums.Invisible);
+            SpriteConfiguration spriteConfiguration = createSpriteConfiguration(x, y, 1, ImageEnums.Invisible);
             ShopItem shopItem = new ShopItem(spriteConfiguration, type);
 //            shopItem.getMenuItemInformation().setCost(shopItem.getMenuItemInformation().getCost() * 1.25f);
 
 
             if (shopManager.getRowsUnlocked() < 2) {
                 shopItem.lockItemInShop();
-                shopItem.getMenuItemInformation().setItemDescription("Play a level of atleast difficulty 4 to unlock this row");
+                shopItem.getShopItemInformation().setItemDescription("Play a level of atleast difficulty 4 to unlock this row");
             }
-            shopItem.setImageDimensions(80,80);
+            shopItem.setImageDimensions(80, 80);
             secondRow.add(shopItem);
         }
         return secondRow;
     }
 
 
-
-    public List<GUIComponent> createNewThirdRowOfItems() {
+    public List<GUIComponent> createNewThirdRowOfItems () {
         List<GUIComponent> thirdRow = new ArrayList<>();
         for (int i = 0; i < 8; i++) {
             int x = (i * (itemWidth + horizontalSpacing)) + horizontalScreenDistance;
             int y = (2 * (itemHeight + verticalSpacing)) + verticalScreenDistance;
             ItemRarityEnums type = (i == 6 || i == 7) ? ItemRarityEnums.Rare : ItemRarityEnums.Common; // If index is 6 or 7, it's a rare item
 
-            SpriteConfiguration spriteConfiguration = createSpriteConfiguration(x,y,1, ImageEnums.Invisible);
+            SpriteConfiguration spriteConfiguration = createSpriteConfiguration(x, y, 1, ImageEnums.Invisible);
             ShopItem shopItem = new ShopItem(spriteConfiguration, type);
 //            shopItem.getMenuItemInformation().setCost(shopItem.getMenuItemInformation().getCost() * 1.5f);
 
 
             if (shopManager.getRowsUnlocked() < 3) {
                 shopItem.lockItemInShop();
-                shopItem.getMenuItemInformation().setItemDescription("Play a level of atleast difficulty 6 to unlock this row");
+                shopItem.getShopItemInformation().setItemDescription("Play a level of atleast difficulty 6 to unlock this row");
             }
-            shopItem.setImageDimensions(80,80);
+            shopItem.setImageDimensions(80, 80);
             thirdRow.add(shopItem);
         }
         return thirdRow;
     }
 
 
-
-    public DisplayOnly createItemRowsBackgroundCard (){
+    public DisplayOnly createItemRowsBackgroundCard () {
         float widthRatio = 1200 / 1440f;
         float heightRatio = 550f / 875f;
         int cardWidth = (int) (boardWidth * widthRatio);
@@ -308,7 +307,7 @@ public class ShopBoardCreator {
     }
 
 
-    public DisplayOnly createSongDifficultyBackgroundCard (){
+    public DisplayOnly createSongDifficultyBackgroundCard () {
         float widthRatio = 450 / 1440f;
         float heightRatio = 200f / 875f;
         int cardWidth = (int) (boardWidth * widthRatio);
@@ -376,7 +375,7 @@ public class ShopBoardCreator {
     }
 
 
-    public DisplayOnly createNextLevelDifficultyBackground (){
+    public DisplayOnly createNextLevelDifficultyBackground () {
         int xCoordinate = Math.round(boardWidth - (boardWidth * 0.2f));
         int yCoordinate = 20;
 
@@ -389,7 +388,7 @@ public class ShopBoardCreator {
         return backgroundCard;
     }
 
-    public MenuButton createSelectEasyDifficulty (GUIComponent backgroundCard){
+    public MenuButton createSelectEasyDifficulty (GUIComponent backgroundCard) {
         int y = fourthRowY + 40;
         int x0 = backgroundCard.getXCoordinate() + backgroundCard.getWidth() / 6;
         SpriteConfiguration spriteConfiguration = createSpriteConfiguration(
@@ -404,7 +403,7 @@ public class ShopBoardCreator {
         return selectEasyDifficulty;
     }
 
-    public MenuButton createSelectMediumDifficulty (GUIComponent backgroundCard){
+    public MenuButton createSelectMediumDifficulty (GUIComponent backgroundCard) {
         int y = fourthRowY + 40;
         int x1 = itemWidth + horizontalSpacing + backgroundCard.getXCoordinate() + backgroundCard.getWidth() / 6;
         SpriteConfiguration spriteConfiguration = createSpriteConfiguration(
@@ -419,7 +418,7 @@ public class ShopBoardCreator {
         return selectEasyDifficulty;
     }
 
-    public MenuButton createSelectHardDifficulty (GUIComponent backgroundCard){
+    public MenuButton createSelectHardDifficulty (GUIComponent backgroundCard) {
         int y = fourthRowY + 40;
         int x2 = 2 * (itemWidth + horizontalSpacing) + backgroundCard.getXCoordinate() + backgroundCard.getWidth() / 6;
         SpriteConfiguration spriteConfiguration = createSpriteConfiguration(
@@ -435,7 +434,7 @@ public class ShopBoardCreator {
     }
 
 
-    public GUITextCollection createSelectDifficultyText (GUIComponent songDifficultyBackgroundCard, GUIComponent difficultyHard){
+    public GUITextCollection createSelectDifficultyText (GUIComponent songDifficultyBackgroundCard, GUIComponent difficultyHard) {
         int textX = songDifficultyBackgroundCard.getXCoordinate() + (songDifficultyBackgroundCard.getWidth() / 3);
         int textY = difficultyHard.getYCoordinate() + difficultyHard.getHeight();
         GUITextCollection textCollection = new GUITextCollection(textX, textY, "SELECT DIFFICULTY");
@@ -443,13 +442,13 @@ public class ShopBoardCreator {
     }
 
 
-    public GUIComponent createShortSongSelection (GUIComponent backgroundCard){
+    public GUIComponent createShortSongSelection (GUIComponent backgroundCard) {
         int y = fourthRowY + 40;
         int x0 = backgroundCard.getXCoordinate() + backgroundCard.getWidth() / 6;
         SpriteConfiguration spriteConfiguration = createSpriteConfiguration(
                 x0,
                 y,
-                1, ImageEnums.YellowWings1);
+                1, ImageEnums.BlueWings1);
         MenuButton button = new MenuButton(spriteConfiguration);
         button.setLevelLength(LevelLength.Short);
         button.setMenuFunctionality(MenuFunctionEnums.SelectSongLength);
@@ -459,13 +458,13 @@ public class ShopBoardCreator {
     }
 
 
-    public GUIComponent createMediumSongSelection (GUIComponent backgroundCard){
+    public GUIComponent createMediumSongSelection (GUIComponent backgroundCard) {
         int y = fourthRowY + 40;
         int x1 = backgroundCard.getXCoordinate() + backgroundCard.getWidth() / 6 + (itemWidth + horizontalSpacing);
         SpriteConfiguration spriteConfiguration = createSpriteConfiguration(
                 x1,
                 y,
-                1, ImageEnums.YellowWings3);
+                1, ImageEnums.BlueWings3);
         MenuButton button = new MenuButton(spriteConfiguration);
         button.setLevelLength(LevelLength.Medium);
         button.setMenuFunctionality(MenuFunctionEnums.SelectSongLength);
@@ -475,13 +474,13 @@ public class ShopBoardCreator {
     }
 
 
-    public GUIComponent createLongSelection (GUIComponent backgroundCard){
+    public GUIComponent createLongSelection (GUIComponent backgroundCard) {
         int y = fourthRowY + 40;
         int x2 = backgroundCard.getXCoordinate() + backgroundCard.getWidth() / 6 + 2 * (itemWidth + horizontalSpacing);
         SpriteConfiguration spriteConfiguration = createSpriteConfiguration(
                 x2,
                 y,
-                1, ImageEnums.YellowWings5);
+                1, ImageEnums.BlueWings5);
         MenuButton button = new MenuButton(spriteConfiguration);
         button.setLevelLength(LevelLength.Long);
         button.setMenuFunctionality(MenuFunctionEnums.SelectSongLength);
@@ -491,14 +490,13 @@ public class ShopBoardCreator {
     }
 
 
-    public GUITextCollection createSongSelectionText (GUIComponent backgroundCard, GUIComponent selectLongMenuButton){
+    public GUITextCollection createSongSelectionText (GUIComponent backgroundCard, GUIComponent selectLongMenuButton) {
         int textX = backgroundCard.getXCoordinate() + (backgroundCard.getWidth() / 3);
         int textY = selectLongMenuButton.getYCoordinate() + selectLongMenuButton.getHeight();
         return new GUITextCollection(textX, textY, "SELECT LENGTH");
-
     }
 
-    public GUIComponent createDescriptionBox (){
+    public GUIComponent createDescriptionBox () {
         int y = fourthRowY;
         int x = boardWidth / 2 + (boardWidth / 5);
         SpriteConfiguration spriteConfiguration = createSpriteConfiguration(
@@ -507,6 +505,43 @@ public class ShopBoardCreator {
                 1, ImageEnums.Square_Card);
         return new DisplayOnly(spriteConfiguration);
     }
+
+    public void updateDifficultyIconsToDifficulty (LevelDifficulty currentLevelDifficulty, GUIComponent easy,
+                                                   GUIComponent medium, GUIComponent hard) {
+        if (currentLevelDifficulty.equals(LevelDifficulty.Easy)) {
+            easy.setNewImage(ImageEnums.YellowWings1);
+            medium.setNewImage(ImageEnums.BlueWings3);
+            hard.setNewImage(ImageEnums.BlueWings5);
+        } else if (currentLevelDifficulty.equals(LevelDifficulty.Medium)) {
+            easy.setNewImage(ImageEnums.BlueWings1);
+            medium.setNewImage(ImageEnums.YellowWings3);
+            hard.setNewImage(ImageEnums.BlueWings5);
+        } else if (currentLevelDifficulty.equals(LevelDifficulty.Hard)) {
+            easy.setNewImage(ImageEnums.BlueWings1);
+            medium.setNewImage(ImageEnums.BlueWings3);
+            hard.setNewImage(ImageEnums.YellowWings5);
+        }
+    }
+
+    public void updateLengthIconsToLength (LevelLength currentLevelLength, GUIComponent shortLength,
+                                           GUIComponent mediumMediumLength, GUIComponent longLength) {
+        if (AudioManager.getInstance().getMusicMediaPlayer().equals(MusicMediaPlayer.Default)) {
+            if (currentLevelLength.equals(LevelLength.Short)) {
+                shortLength.setNewImage(ImageEnums.YellowWings1);
+                mediumMediumLength.setNewImage(ImageEnums.BlueWings3);
+                longLength.setNewImage(ImageEnums.BlueWings5);
+            } else if (currentLevelLength.equals(LevelLength.Medium)) {
+                shortLength.setNewImage(ImageEnums.BlueWings1);
+                mediumMediumLength.setNewImage(ImageEnums.YellowWings3);
+                longLength.setNewImage(ImageEnums.BlueWings5);
+            } else if (currentLevelLength.equals(LevelLength.Long)) {
+                shortLength.setNewImage(ImageEnums.BlueWings1);
+                mediumMediumLength.setNewImage(ImageEnums.BlueWings3);
+                longLength.setNewImage(ImageEnums.YellowWings5);
+            }
+        }
+    }
+
 
 
 }

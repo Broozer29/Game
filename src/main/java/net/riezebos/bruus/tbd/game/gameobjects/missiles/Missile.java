@@ -7,13 +7,13 @@ import net.riezebos.bruus.tbd.game.gamestate.GameStatsTracker;
 import net.riezebos.bruus.tbd.game.items.Item;
 import net.riezebos.bruus.tbd.game.items.PlayerInventory;
 import net.riezebos.bruus.tbd.game.items.enums.ItemEnums;
-import net.riezebos.bruus.tbd.visuals.objects.AnimationManager;
+import net.riezebos.bruus.tbd.visualsandaudio.objects.AnimationManager;
 import net.riezebos.bruus.tbd.game.movement.MovementConfiguration;
 import net.riezebos.bruus.tbd.game.movement.Point;
 import net.riezebos.bruus.tbd.game.movement.pathfinders.StraightLinePathFinder;
-import net.riezebos.bruus.tbd.visuals.objects.SpriteAnimation;
-import net.riezebos.bruus.tbd.visuals.objects.SpriteConfigurations.SpriteAnimationConfiguration;
-import net.riezebos.bruus.tbd.visuals.objects.SpriteConfigurations.SpriteConfiguration;
+import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteAnimation;
+import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteAnimationConfiguration;
+import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteConfiguration;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +26,7 @@ public class Missile extends GameObject {
     protected boolean destroysMissiles;
     protected boolean piercesThroughObjects;
     protected int amountOfPiercesLeft;
+    protected int maximumAmountOfPierces;
     protected boolean isDestructable;
     protected boolean speedsUp;
 
@@ -59,7 +60,8 @@ public class Missile extends GameObject {
         this.missileEnum = missileConfiguration.getMissileType();
         this.boxCollision = missileConfiguration.isBoxCollision();
         this.piercesThroughObjects = missileConfiguration.isPiercesMissiles();
-        this.amountOfPiercesLeft = missileConfiguration.getAmountOfPierces();
+        this.maximumAmountOfPierces = missileConfiguration.getAmountOfPierces();
+        this.amountOfPiercesLeft = maximumAmountOfPierces;
         this.isExplosive = missileConfiguration.isExplosive();
         this.collidedObjects = new ArrayList<>();
         this.appliesOnHitEffects = missileConfiguration.isAppliesOnHitEffects();
@@ -165,7 +167,7 @@ public class Missile extends GameObject {
 
     private void pierceAndBounce (GameObject collidedObject) {
         //We only want to fire this once per enemy, thus the collidedobjects check
-        if (piercesThroughObjects && amountOfPiercesLeft > 0 && !collidedObjects.contains(collidedObject)) {
+        if (piercesThroughObjects && amountOfPiercesLeft > 0 && !hasCollidedBeforeWith(collidedObject)) {
             dealDamageToGameObject(collidedObject);
             addCollidedObject(collidedObject);
             amountOfPiercesLeft--;
@@ -186,6 +188,10 @@ public class Missile extends GameObject {
             destroyMissile();
 
         }
+    }
+
+    public boolean hasCollidedBeforeWith(GameObject object){
+        return collidedObjects.contains(object);
     }
 
     private void bounceToNewTarget (GameObject newTarget) {
@@ -230,5 +236,13 @@ public class Missile extends GameObject {
 
     public void setSpeedsUp (boolean speedsUp) {
         this.speedsUp = speedsUp;
+    }
+
+    public int getMaximumAmountOfPierces () {
+        return maximumAmountOfPierces;
+    }
+
+    public void setMaximumAmountOfPierces (int maximumAmountOfPierces) {
+        this.maximumAmountOfPierces = maximumAmountOfPierces;
     }
 }

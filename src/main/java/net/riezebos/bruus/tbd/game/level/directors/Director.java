@@ -12,7 +12,7 @@ import net.riezebos.bruus.tbd.game.level.LevelManager;
 import net.riezebos.bruus.tbd.game.level.enums.SpawnFormationEnums;
 import net.riezebos.bruus.tbd.game.movement.Direction;
 import net.riezebos.bruus.tbd.game.movement.MovementPatternSize;
-import net.riezebos.bruus.tbd.visuals.data.DataClass;
+import net.riezebos.bruus.tbd.visualsandaudio.data.DataClass;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +23,7 @@ public class Director {
     private float credits;
     private double lastSpawnTime = 0;
     private long spawnInterval; // Interval for Slow and Fast directors
-    private double lastCashCarrierSpawnTime;
+
     private double spawnCashCarrierChance;
     private double lastFormationSpawnTime;
     private List<MonsterCard> availableCards;
@@ -96,12 +96,12 @@ public class Director {
         }
 
         double randomNumber = random.nextDouble();  // Generate a random number between 0 and 1
-        double timeSinceLastCashCarrier = currentTime - lastCashCarrierSpawnTime;
+        double timeSinceLastCashCarrier = currentTime - DirectorManager.getInstance().getLastCashCarrierSpawnTime();
 
         // Check for cash carrier spawn conditions
         if (randomNumber <= spawnCashCarrierChance && timeSinceLastCashCarrier >= 45) {
             spawnCashCarrier();  // Always a scout as of now
-            lastCashCarrierSpawnTime = currentTime;
+            DirectorManager.getInstance().setLastCashCarrierSpawnTime(currentTime);
         }
 
         if (credits > minimumMonsterCost()) {
@@ -124,20 +124,7 @@ public class Director {
     }
 
     private void spawnBoss() {
-        EnemyEnums bossEnum = null;
-        int bossesDefeated = GameStateInfo.getInstance().getBossesDefeated();
-
-        // Use modulo to cycle through the bosses
-        switch (bossesDefeated % EnemyEnums.getAmountOfBossEnemies()) {
-            case 0:
-                bossEnum = EnemyEnums.RedBoss;
-                break;
-            case 1:
-                bossEnum = EnemyEnums.SpaceStationBoss;
-                break;
-        }
-
-        spawnBoss(bossEnum);
+        spawnBoss(GameStateInfo.getInstance().getNextBoss());
         EnemyManager.getInstance().setHasSpawnedABoss(true);
     }
 

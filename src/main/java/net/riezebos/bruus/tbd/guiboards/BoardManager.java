@@ -1,15 +1,14 @@
 package net.riezebos.bruus.tbd.guiboards;
 
+import net.riezebos.bruus.tbd.controllerInput.ConnectedControllersManager;
 import net.riezebos.bruus.tbd.guiboards.boards.GameBoard;
 import net.riezebos.bruus.tbd.guiboards.boards.MenuBoard;
 import net.riezebos.bruus.tbd.guiboards.boards.ShopBoard;
-import net.riezebos.bruus.tbd.visuals.data.DataClass;
-import net.riezebos.bruus.tbd.visuals.data.audio.AudioManager;
-import net.riezebos.bruus.tbd.visuals.data.audio.enums.AudioEnums;
+import net.riezebos.bruus.tbd.visualsandaudio.data.DataClass;
+import net.riezebos.bruus.tbd.visualsandaudio.data.audio.AudioManager;
+import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.AudioEnums;
 
-import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.*;
-import java.io.IOException;
 
 public class BoardManager extends JFrame {
 
@@ -39,21 +38,13 @@ public class BoardManager extends JFrame {
 
     private void playMenuMusic () {
         audioManager.stopMusicAudio();
-        try {
-            audioManager.playDefaultBackgroundMusic(AudioEnums.mainmenu, true);
-        } catch (UnsupportedAudioFileException | IOException e) {
-            e.printStackTrace();
-        }
+        audioManager.playDefaultBackgroundMusic(AudioEnums.mainmenu, true);
 
     }
 
     private void playShopMenuMusic () {
         audioManager.stopMusicAudio();
-        try {
-            audioManager.playDefaultBackgroundMusic(AudioEnums.Lemmino_Firecracker, true);
-        } catch (UnsupportedAudioFileException | IOException e) {
-            e.printStackTrace();
-        }
+        audioManager.playDefaultBackgroundMusic(AudioEnums.Lemmino_Firecracker, true);
     }
 
     public void initMainMenu () {
@@ -62,6 +53,7 @@ public class BoardManager extends JFrame {
         changeMenuScreen(menuBoard);
         menuBoard.recreateWindow();
         menuBoard.getTimer().restart();
+        ConnectedControllersManager.getInstance().setControllerSensitifties(false);
     }
 
     public void initGame () {
@@ -69,6 +61,7 @@ public class BoardManager extends JFrame {
         changeMenuScreen(gameBoard);
         menuBoard.getTimer().stop();
         gameBoard.startGame();
+        ConnectedControllersManager.getInstance().setControllerSensitifties(true);
     }
 
 
@@ -80,6 +73,7 @@ public class BoardManager extends JFrame {
         menuBoard.recreateWindow();
         menuBoard.getTimer().restart();
         playMenuMusic();
+        ConnectedControllersManager.getInstance().setControllerSensitifties(false);
     }
 
     public void openShopWindow () {
@@ -90,6 +84,7 @@ public class BoardManager extends JFrame {
         menuBoard.getTimer().stop();
         shopBoard.createWindow();
         shopBoard.getTimer().restart();
+        ConnectedControllersManager.getInstance().setControllerSensitifties(false);
     }
 
     private void changeMenuScreen (JPanel newBoard) {

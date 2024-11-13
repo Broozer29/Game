@@ -21,13 +21,12 @@ public class ArmorPiercingRounds extends Item {
     }
 
     @Override
-    public void applyEffectToObject (GameObject applier, GameObject target){
-        if(target instanceof Enemy){
-            if(((Enemy) target).getEnemyType().getEnemyCategory() == EnemyCategory.Mercenary){
+    public void modifyAttackingObject (GameObject applier, GameObject target){
+        if(target instanceof Enemy enemy && enemy.getEnemyType().getEnemyCategory() == EnemyCategory.Mercenary){
                 applier.modifyBonusDamageMultiplier(damageModifier);
             }
-        }
-    };
+    }
+
     public void increaseQuantityOfItem(int amount) {
         this.quantity += amount;
         calculateDamageModifier();

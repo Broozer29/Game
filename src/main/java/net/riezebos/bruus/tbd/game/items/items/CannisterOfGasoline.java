@@ -10,8 +10,8 @@ import net.riezebos.bruus.tbd.game.items.effects.EffectIdentifiers;
 import net.riezebos.bruus.tbd.game.items.effects.effectimplementations.DormentExplosion;
 import net.riezebos.bruus.tbd.game.items.enums.ItemApplicationEnum;
 import net.riezebos.bruus.tbd.game.items.enums.ItemEnums;
-import net.riezebos.bruus.tbd.visuals.data.audio.enums.AudioEnums;
-import net.riezebos.bruus.tbd.visuals.data.image.ImageEnums;
+import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.AudioEnums;
+import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
 
 public class CannisterOfGasoline extends Item {
 
@@ -20,7 +20,7 @@ public class CannisterOfGasoline extends Item {
     private int duration;
 
     public CannisterOfGasoline () {
-        super(ItemEnums.CannisterOfGasoline, 1, ItemApplicationEnum.AfterCollision);
+        super(ItemEnums.CannisterOfGasoline, 1, ItemApplicationEnum.BeforeCollision); //Before collision to ensure the explosion goes off even if the target already has 0 HP
         this.explosionDamage = calculateExplosionDamage(quantity);
         this.burningDamage = calculateBurningDamage(quantity);
         this.duration = calculateDuration(quantity);

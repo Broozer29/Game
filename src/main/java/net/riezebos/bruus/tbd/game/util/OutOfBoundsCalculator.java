@@ -3,22 +3,22 @@ package net.riezebos.bruus.tbd.game.util;
 import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
 import net.riezebos.bruus.tbd.game.movement.Direction;
 import net.riezebos.bruus.tbd.game.movement.pathfinders.OrbitPathFinder;
-import net.riezebos.bruus.tbd.visuals.data.DataClass;
-import net.riezebos.bruus.tbd.visuals.data.image.ImageEnums;
+import net.riezebos.bruus.tbd.visualsandaudio.data.DataClass;
+import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
 
 public class OutOfBoundsCalculator {
-    public static boolean isOutOfBounds (GameObject gameObject) {
-        if (gameObject.getMovementConfiguration().getRotation() == null) {
-            System.out.println("Iets is null: " + gameObject.getClass());
-        }
 
-        if(gameObject.getMovementConfiguration() != null){
-            if(gameObject.getMovementConfiguration().getPathFinder() != null){
-                if(gameObject.getMovementConfiguration().getPathFinder() instanceof OrbitPathFinder){
+    private OutOfBoundsCalculator(){
+
+    }
+
+    public static boolean isOutOfBounds (GameObject gameObject) {
+        if(gameObject.getMovementConfiguration() != null &&
+                gameObject.getMovementConfiguration().getPathFinder() != null &&
+                gameObject.getMovementConfiguration().getPathFinder() instanceof OrbitPathFinder){
                     return false; //These should be deleted when their owner is deleted, not by themselves for going out of bounds
                 }
-            }
-        }
+
 
         return calculateOutOfBounds(gameObject);
     }
@@ -100,6 +100,8 @@ public class OutOfBoundsCalculator {
                     return true;
                 }
                 break;
+            case NONE:
+                return false;
         }
 
         return false;

@@ -32,8 +32,15 @@ public class FocusCrystal extends Item {
 
 
 
-    public void applyEffectToObject(GameObject attack, GameObject target) {
+    public void modifyAttackingObject (GameObject attack, GameObject target) {
+
+        //Check if object has an owner fisrt otherwise it crashes
+
         GameObject ownerOrCreator = attack.getOwnerOrCreator();
+        if(ownerOrCreator == null){
+            System.out.println("Owner was null for attack: " + attack.getObjectType());
+            return;
+        }
         int shooterXCoordinate = ownerOrCreator.getCenterXCoordinate();
         int shooterYCoordinate = ownerOrCreator.getCenterYCoordinate();
 

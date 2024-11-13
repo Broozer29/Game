@@ -11,13 +11,10 @@ import net.riezebos.bruus.tbd.game.movement.MovementPatternSize;
 import net.riezebos.bruus.tbd.game.movement.pathfinders.HomingPathFinder;
 import net.riezebos.bruus.tbd.game.movement.pathfinders.PathFinder;
 import net.riezebos.bruus.tbd.game.movement.pathfinders.RegularPathFinder;
-import net.riezebos.bruus.tbd.visuals.data.audio.AudioManager;
-import net.riezebos.bruus.tbd.visuals.data.audio.enums.AudioEnums;
-import net.riezebos.bruus.tbd.visuals.data.image.ImageEnums;
-import net.riezebos.bruus.tbd.visuals.objects.SpriteConfigurations.SpriteConfiguration;
-
-import javax.sound.sampled.UnsupportedAudioFileException;
-import java.io.IOException;
+import net.riezebos.bruus.tbd.visualsandaudio.data.audio.AudioManager;
+import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.AudioEnums;
+import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
+import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteConfiguration;
 
 public class SpaceShipRegularGun {
 
@@ -68,10 +65,9 @@ public class SpaceShipRegularGun {
                 playerMissileType, missileScale);
 
 
-
         MovementPatternSize movementPatternSize = MovementPatternSize.SMALL; //Hardcoded, should be dynamic somewhere? Idk not decided how i want to use this behaviour yet
         MovementConfiguration movementConfiguration = missileCreator1.createMissileMovementConfig(
-                movementSpeed,movementSpeed, missilePathFinder, movementPatternSize, Direction.RIGHT
+                movementSpeed, movementSpeed, missilePathFinder, movementPatternSize, Direction.RIGHT
         );
 
 
@@ -93,13 +89,12 @@ public class SpaceShipRegularGun {
         }
 
 
-
         MissileConfiguration missileConfiguration = missileCreator1.createMissileConfiguration(attackType, maxHitPoints, maxShields,
                 deathSound, damage, attackType.getDeathOrExplosionImageEnum(), isFriendly, allowedToDealDamage, objectType, attackType.isUsesBoxCollision(),
                 isExplosive, true, false);
 
         PlayerStats instance = PlayerStats.getInstance();
-        if(!isExplosive) {
+        if (!isExplosive) {
             missileConfiguration.setPiercesMissiles(instance.getPiercingMissilesAmount() > 0);
             missileConfiguration.setAmountOfPierces(instance.getPiercingMissilesAmount());
         }
@@ -115,11 +110,7 @@ public class SpaceShipRegularGun {
     }
 
     private void playMissileAudio (AudioEnums audioEnum) {
-        try {
-            this.audioManager.addAudio(audioEnum);
-        } catch (UnsupportedAudioFileException | IOException e) {
-            e.printStackTrace();
-        }
+        this.audioManager.addAudio(audioEnum);
     }
 
 //    public void updateFrameCount () {

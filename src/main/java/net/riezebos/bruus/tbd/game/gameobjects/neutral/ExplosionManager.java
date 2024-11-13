@@ -4,7 +4,7 @@ import net.riezebos.bruus.tbd.game.gameobjects.enemies.Enemy;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyManager;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
 import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SpaceShip;
-import net.riezebos.bruus.tbd.visuals.objects.AnimationManager;
+import net.riezebos.bruus.tbd.visualsandaudio.objects.AnimationManager;
 import net.riezebos.bruus.tbd.game.util.ThornsDamageDealer;
 import net.riezebos.bruus.tbd.game.util.collision.CollisionDetector;
 import net.riezebos.bruus.tbd.game.util.collision.CollisionInfo;
@@ -90,11 +90,11 @@ public class ExplosionManager {
             if (!explosion.dealtDamageToTarget(enemy)) {
                 CollisionInfo collisionInfo = CollisionDetector.getInstance().detectCollision(explosion, enemy);
                 if (collisionInfo != null) {
-                    explosion.applyBeforeCollisionEffects(enemy);
+                    explosion.applyBeforeCollisionItemEffects(enemy);
 
 
                     if (explosion.isApplyOnHitEffects()) {
-                        explosion.applyAfterCollisionItemEffectsToObject(enemy);
+                        explosion.applyAfterCollisionItemEffects(enemy);
                     }
 
                     explosion.applyExplosionOnHitEffects(enemy);

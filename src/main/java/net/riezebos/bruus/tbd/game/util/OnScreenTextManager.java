@@ -8,10 +8,8 @@ import java.util.Random;
 public class OnScreenTextManager {
 
 	private static OnScreenTextManager instance = new OnScreenTextManager();
-	private List<OnScreenText> onScreenTexts = new ArrayList<OnScreenText>();
-	private Random random;
+	private List<OnScreenText> onScreenTexts = new ArrayList<>();
 	private OnScreenTextManager() {
-		random = new Random();
 	}
 
 	public static OnScreenTextManager getInstance() {
@@ -43,8 +41,6 @@ public class OnScreenTextManager {
 	}
 
 	public void addDamageNumberText(float damageNumber, int xCoordinate, int yCoordinate, boolean isCrit){
-
-//		int randomXOffset = random.nextInt(0, 10);
 		OnScreenText onScreenText = new OnScreenText(xCoordinate, yCoordinate, String.valueOf(Math.round(damageNumber)));
 		onScreenText.setTransparancyStepSize(0.0175f);
 
@@ -71,7 +67,7 @@ public class OnScreenTextManager {
 
 		removeInvisibleText();
 
-		onScreenTexts = new ArrayList<OnScreenText>();
+		onScreenTexts = new ArrayList<>();
 	}
 
 }

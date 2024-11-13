@@ -6,7 +6,7 @@ import net.riezebos.bruus.tbd.game.movement.Direction;
 import net.riezebos.bruus.tbd.game.movement.MovementConfiguration;
 import net.riezebos.bruus.tbd.game.movement.Path;
 import net.riezebos.bruus.tbd.game.movement.Point;
-import net.riezebos.bruus.tbd.visuals.objects.Sprite;
+import net.riezebos.bruus.tbd.visualsandaudio.objects.Sprite;
 
 import java.util.ArrayList;
 import java.util.List;

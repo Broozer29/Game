@@ -7,17 +7,15 @@ import net.riezebos.bruus.tbd.game.level.enums.LevelLength;
 import net.riezebos.bruus.tbd.game.util.OnScreenTextManager;
 import net.riezebos.bruus.tbd.game.gamestate.ShopManager;
 import net.riezebos.bruus.tbd.guiboards.BoardManager;
-import net.riezebos.bruus.tbd.visuals.data.DataClass;
-import net.riezebos.bruus.tbd.visuals.data.audio.AudioDatabase;
-import net.riezebos.bruus.tbd.visuals.data.audio.AudioManager;
-import net.riezebos.bruus.tbd.visuals.data.audio.enums.AudioEnums;
-import net.riezebos.bruus.tbd.visuals.data.audio.enums.MusicMediaPlayer;
-import net.riezebos.bruus.tbd.visuals.objects.SpriteAnimation;
-import net.riezebos.bruus.tbd.visuals.objects.SpriteConfigurations.SpriteAnimationConfiguration;
-import net.riezebos.bruus.tbd.visuals.objects.SpriteConfigurations.SpriteConfiguration;
+import net.riezebos.bruus.tbd.visualsandaudio.data.DataClass;
+import net.riezebos.bruus.tbd.visualsandaudio.data.audio.AudioDatabase;
+import net.riezebos.bruus.tbd.visualsandaudio.data.audio.AudioManager;
+import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.AudioEnums;
+import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.MusicMediaPlayer;
+import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteAnimation;
+import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteAnimationConfiguration;
+import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteConfiguration;
 
-import javax.sound.sampled.UnsupportedAudioFileException;
-import java.io.IOException;
 
 public class MenuButton extends GUIComponent {
 
@@ -34,6 +32,7 @@ public class MenuButton extends GUIComponent {
         this.animation = new SpriteAnimation(spriteAnimationConfiguration);
     }
 
+    @Override
     public void activateComponent () {
         AudioDatabase.getInstance().updateGameTick();
         BoardManager boardManager = BoardManager.getInstance();
@@ -71,16 +70,15 @@ public class MenuButton extends GUIComponent {
             case RerollShop:
                 PlayerInventory inventory = PlayerInventory.getInstance();
                 int rerollCost = ShopManager.getInstance().getRerollCost();
-                if(inventory.getCashMoney() >= rerollCost) {
+                if (inventory.getCashMoney() >= rerollCost) {
                     boardManager.getShopBoard().rerollShop();
                     inventory.spendCashMoney(rerollCost);
                 } else {
-                    try {
-                        AudioManager.getInstance().addAudio(AudioEnums.NotEnoughMinerals);
-                    } catch (UnsupportedAudioFileException | IOException e) {
-                        throw new RuntimeException(e);
-                    }
+                    AudioManager.getInstance().addAudio(AudioEnums.NotEnoughMinerals);
                 }
+                break;
+            default:
+                System.out.println("Unimplemented functionality");
                 break;
         }
 

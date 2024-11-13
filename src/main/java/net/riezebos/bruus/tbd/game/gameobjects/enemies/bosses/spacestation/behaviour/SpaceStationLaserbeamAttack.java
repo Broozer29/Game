@@ -8,18 +8,16 @@ import net.riezebos.bruus.tbd.game.gameobjects.missiles.laserbeams.AngledLaserBe
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.laserbeams.Laserbeam;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.laserbeams.LaserbeamConfiguration;
 import net.riezebos.bruus.tbd.game.gamestate.GameStateInfo;
-import net.riezebos.bruus.tbd.visuals.objects.AnimationManager;
+import net.riezebos.bruus.tbd.visualsandaudio.objects.AnimationManager;
 import net.riezebos.bruus.tbd.game.movement.Point;
 import net.riezebos.bruus.tbd.game.util.WithinVisualBoundariesCalculator;
-import net.riezebos.bruus.tbd.visuals.data.audio.AudioManager;
-import net.riezebos.bruus.tbd.visuals.data.audio.enums.AudioEnums;
-import net.riezebos.bruus.tbd.visuals.data.image.ImageEnums;
-import net.riezebos.bruus.tbd.visuals.objects.SpriteAnimation;
-import net.riezebos.bruus.tbd.visuals.objects.SpriteConfigurations.SpriteAnimationConfiguration;
-import net.riezebos.bruus.tbd.visuals.objects.SpriteConfigurations.SpriteConfiguration;
+import net.riezebos.bruus.tbd.visualsandaudio.data.audio.AudioManager;
+import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.AudioEnums;
+import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
+import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteAnimation;
+import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteAnimationConfiguration;
+import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteConfiguration;
 
-import javax.sound.sampled.UnsupportedAudioFileException;
-import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -73,11 +71,7 @@ public class SpaceStationLaserbeamAttack implements BossActionable {
                 oldFrameDelay = enemy.getAnimation().getFrameDelay();
                 enemy.getAnimation().setFrameDelay(newFrameDelay);
                 enemy.setAttacking(true);
-                try {
-                    AudioManager.getInstance().addAudio(AudioEnums.ChargingLaserbeam);
-                } catch (UnsupportedAudioFileException | IOException e) {
-                    throw new RuntimeException(e);
-                }
+                AudioManager.getInstance().addAudio(AudioEnums.ChargingLaserbeam);
             }
 
 
@@ -135,14 +129,13 @@ public class SpaceStationLaserbeamAttack implements BossActionable {
             laserBeamAimingPoints.get(i).setX(actualXCoordinate);
             laserBeamAimingPoints.get(i).setY(actualYCoordinate);
 
-            LaserbeamConfiguration laserbeamConfiguration = new LaserbeamConfiguration(true, enemy.getDamage());
-            laserbeamConfiguration.setAmountOfLaserbeamSegments(30);
+            LaserbeamConfiguration laserbeamConfiguration = new LaserbeamConfiguration(true, enemy.getDamage() / 2);
+            laserbeamConfiguration.setAmountOfLaserbeamSegments(25);
             laserbeamConfiguration.setOriginPoint(laserBeamAimingPoints.get(i));
             laserbeamConfiguration.setAngleDegrees(calculateAngleFromCenter(laserBeamAimingPoints.get(i), enemy));
 
             Laserbeam laserbeam = new AngledLaserBeam(laserbeamConfiguration);
             laserbeamList.add(laserbeam);
-            laserbeam.setKnockbackStrength(15);
             laserbeam.setOwner(enemy);
             MissileManager.getInstance().addLaserBeam(laserbeam);
         }
@@ -183,7 +176,7 @@ public class SpaceStationLaserbeamAttack implements BossActionable {
         }
     }
 
-    private Point getCoordinatesBasedOnTheAngle(Point basePoint, Enemy enemy, int angleDegrees){
+    private Point getCoordinatesBasedOnTheAngle (Point basePoint, Enemy enemy, int angleDegrees) {
         double angleRadians = Math.toRadians(angleDegrees);
         int scaledX = (int) (basePoint.getX() * enemy.getScale());
         int scaledY = (int) (basePoint.getY() * enemy.getScale());
@@ -217,7 +210,6 @@ public class SpaceStationLaserbeamAttack implements BossActionable {
                 && enemy.getXCoordinate() == centerPoint.getX()
                 && enemy.getYCoordinate() == centerPoint.getY();
     }
-
 
 
     private int counterForRotationAngle = 0;

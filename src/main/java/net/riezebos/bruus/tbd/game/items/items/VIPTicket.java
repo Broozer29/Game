@@ -18,7 +18,7 @@ public class VIPTicket extends Item {
     }
 
     private void calculateDiscount () {
-        this.discount = 20 * this.quantity;
+        this.discount = 25 * this.quantity;
     }
 
     public void increaseQuantityOfItem (int amount) {

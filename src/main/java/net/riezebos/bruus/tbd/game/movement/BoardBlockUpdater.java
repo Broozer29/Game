@@ -1,7 +1,6 @@
 package net.riezebos.bruus.tbd.game.movement;
 
-import net.riezebos.bruus.tbd.game.movement.Point;
-import net.riezebos.bruus.tbd.visuals.data.DataClass;
+import net.riezebos.bruus.tbd.visualsandaudio.data.DataClass;
 
 import java.util.Random;
 

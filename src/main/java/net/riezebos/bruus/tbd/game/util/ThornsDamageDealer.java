@@ -7,11 +7,11 @@ import net.riezebos.bruus.tbd.game.gamestate.GameStateInfo;
 import net.riezebos.bruus.tbd.game.items.Item;
 import net.riezebos.bruus.tbd.game.items.PlayerInventory;
 import net.riezebos.bruus.tbd.game.items.enums.ItemApplicationEnum;
-import net.riezebos.bruus.tbd.visuals.objects.AnimationManager;
-import net.riezebos.bruus.tbd.visuals.data.image.ImageEnums;
-import net.riezebos.bruus.tbd.visuals.objects.SpriteAnimation;
-import net.riezebos.bruus.tbd.visuals.objects.SpriteConfigurations.SpriteAnimationConfiguration;
-import net.riezebos.bruus.tbd.visuals.objects.SpriteConfigurations.SpriteConfiguration;
+import net.riezebos.bruus.tbd.visualsandaudio.objects.AnimationManager;
+import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
+import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteAnimation;
+import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteAnimationConfiguration;
+import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteConfiguration;
 
 import java.util.*;
 
@@ -21,9 +21,11 @@ public class ThornsDamageDealer {
     private PlayerStats playerStats = PlayerStats.getInstance();
     private Map<GameObject, Integer> thornsApplyMap = new HashMap<>();
     private double lastThornsActivationTime = 0;
+    private Random random;
 
     private ThornsDamageDealer () {
         playerStats = PlayerStats.getInstance();
+        this.random = new Random();
     }
 
     public static ThornsDamageDealer getInstance () {
@@ -111,7 +113,7 @@ public class ThornsDamageDealer {
     }
 
     private void applyOnHitEffects (GameObject target) {
-        float roll = new Random().nextFloat(); // Roll a number between 0.0 and 1.0
+        float roll = random.nextFloat(); // Roll a number between 0.0 and 1.0
         if (roll < playerStats.getChanceForThornsToApplyOnHitEffects()) {
             List<Item> onHitItems = PlayerInventory.getInstance().getItemsByApplicationMethod(ItemApplicationEnum.AfterCollision);
             for (Item item : onHitItems) {

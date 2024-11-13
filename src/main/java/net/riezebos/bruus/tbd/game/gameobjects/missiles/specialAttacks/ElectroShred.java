@@ -1,6 +1,6 @@
 package net.riezebos.bruus.tbd.game.gameobjects.missiles.specialAttacks;
 
-import net.riezebos.bruus.tbd.visuals.objects.SpriteConfigurations.SpriteAnimationConfiguration;
+import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteAnimationConfiguration;
 
 public class ElectroShred extends SpecialAttack {
     public ElectroShred (SpriteAnimationConfiguration spriteAnimationConfiguration, SpecialAttackConfiguration missileConfiguration) {

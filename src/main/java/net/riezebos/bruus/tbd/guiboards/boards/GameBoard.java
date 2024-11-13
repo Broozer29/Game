@@ -1,6 +1,6 @@
 package net.riezebos.bruus.tbd.guiboards.boards;
 
-import net.riezebos.bruus.tbd.controllerInput.ConnectedControllers;
+import net.riezebos.bruus.tbd.controllerInput.ConnectedControllersManager;
 import net.riezebos.bruus.tbd.controllerInput.ControllerInputEnums;
 import net.riezebos.bruus.tbd.game.UI.GameUICreator;
 import net.riezebos.bruus.tbd.game.UI.UIObject;
@@ -24,30 +24,27 @@ import net.riezebos.bruus.tbd.game.gamestate.GameStatsTracker;
 import net.riezebos.bruus.tbd.game.gamestate.GameStatusEnums;
 import net.riezebos.bruus.tbd.game.level.LevelManager;
 import net.riezebos.bruus.tbd.game.level.directors.DirectorManager;
-import net.riezebos.bruus.tbd.visuals.objects.AnimationManager;
+import net.riezebos.bruus.tbd.visualsandaudio.objects.AnimationManager;
 import net.riezebos.bruus.tbd.game.util.OnScreenTextManager;
 import net.riezebos.bruus.tbd.game.movement.Direction;
 import net.riezebos.bruus.tbd.game.util.OnScreenText;
 import net.riezebos.bruus.tbd.game.util.ThornsDamageDealer;
 import net.riezebos.bruus.tbd.guiboards.BoardManager;
-import net.riezebos.bruus.tbd.visuals.data.DataClass;
-import net.riezebos.bruus.tbd.visuals.data.audio.AudioDatabase;
-import net.riezebos.bruus.tbd.visuals.data.audio.AudioManager;
-import net.riezebos.bruus.tbd.visuals.data.audio.AudioPositionCalculator;
-import net.riezebos.bruus.tbd.visuals.data.audio.CustomAudioClip;
-import net.riezebos.bruus.tbd.visuals.data.audio.enums.AudioEnums;
-import net.riezebos.bruus.tbd.visuals.data.image.ImageEnums;
-import net.riezebos.bruus.tbd.visuals.objects.Sprite;
-import net.riezebos.bruus.tbd.visuals.objects.SpriteAnimation;
+import net.riezebos.bruus.tbd.visualsandaudio.data.DataClass;
+import net.riezebos.bruus.tbd.visualsandaudio.data.audio.AudioDatabase;
+import net.riezebos.bruus.tbd.visualsandaudio.data.audio.AudioManager;
+import net.riezebos.bruus.tbd.visualsandaudio.data.audio.CustomAudioClip;
+import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.AudioEnums;
+import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
+import net.riezebos.bruus.tbd.visualsandaudio.objects.Sprite;
+import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteAnimation;
 
-import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.io.IOException;
 
 public class GameBoard extends JPanel implements ActionListener {
 
@@ -81,8 +78,7 @@ public class GameBoard extends JPanel implements ActionListener {
     private PlayerStats playerStats = PlayerStats.getInstance();
     private GameUICreator uiManager = GameUICreator.getInstance();
     private OnScreenTextManager textManager = OnScreenTextManager.getInstance();
-    private AudioPositionCalculator audioPosCalc = AudioPositionCalculator.getInstance();
-    private ConnectedControllers controllers = ConnectedControllers.getInstance();
+    private ConnectedControllersManager controllers = ConnectedControllersManager.getInstance();
 
 
     public GameBoard () {
@@ -98,7 +94,6 @@ public class GameBoard extends JPanel implements ActionListener {
         playerStats = PlayerStats.getInstance();
         uiManager = GameUICreator.getInstance();
         textManager = OnScreenTextManager.getInstance();
-        audioPosCalc = AudioPositionCalculator.getInstance();
         initBoard();
     }
 
@@ -181,20 +176,16 @@ public class GameBoard extends JPanel implements ActionListener {
         } else if (gameState.getGameState() == GameStatusEnums.Zoning_Out) {
             drawZoningOut(g2d);
         }
-        try {
-            restreamLoopingMusicIfFinished();
-        } catch (UnsupportedAudioFileException | IOException e) {
-            throw new RuntimeException(e);
-        }
+        restreamLoopingMusicIfFinished();
         Toolkit.getDefaultToolkit().sync();
     }
 
-    private void restreamLoopingMusicIfFinished() throws UnsupportedAudioFileException, IOException {
-        if(audioManager == null){
+    private void restreamLoopingMusicIfFinished () {
+        if (audioManager == null) {
             audioManager = AudioManager.getInstance();
         }
         CustomAudioClip backGroundMusicCustomAudioclip = audioManager.getBackGroundMusicCustomAudioclip();
-        if(backGroundMusicCustomAudioclip == null){
+        if (backGroundMusicCustomAudioclip == null) {
             return;
         }
         if (backGroundMusicCustomAudioclip.getCurrentSecondsInPlayback() >= backGroundMusicCustomAudioclip.getTotalSecondsInPlayback() &&
@@ -224,11 +215,7 @@ public class GameBoard extends JPanel implements ActionListener {
 
     private void playDeathMusic () {
         audioManager.stopMusicAudio();
-        try {
-            audioManager.playDefaultBackgroundMusic(AudioEnums.VendlaSonrisa, false);
-        } catch (UnsupportedAudioFileException | IOException e) {
-            throw new RuntimeException(e);
-        }
+        audioManager.playDefaultBackgroundMusic(AudioEnums.VendlaSonrisa, false);
     }
 
     // Draw the game over screen
@@ -459,7 +446,6 @@ public class GameBoard extends JPanel implements ActionListener {
             }
         }
 
-        //Should be handled by the animation manager to allow recentering
 //        for (Explosion explosion : explosionManager.getExplosions()) {
 //            if (explosion.isVisible()) {
 //                drawAnimation(g, explosion.getAnimation());
@@ -498,9 +484,6 @@ public class GameBoard extends JPanel implements ActionListener {
 
         if (uiManager.getDifficultyWings() != null) {
             UIObject wings = uiManager.getDifficultyWings();
-//            Font font = new Font("Helvetica", Font.PLAIN, 10);
-//            g.setFont(font);
-            g.setColor(Color.WHITE);
             g.drawString("Level difficulty: " + levelManager.getCurrentLevelDifficultyScore(), wings.getXCoordinate() + (wings.getWidth()), wings.getYCoordinate() + Math.round(wings.getHeight() * 0.25));
             drawImage(g, uiManager.getDifficultyWings());
         }
@@ -609,7 +592,8 @@ public class GameBoard extends JPanel implements ActionListener {
         UIObject healthFrame = uiManager.getHealthFrame();
         UIObject healthBar = uiManager.getHealthBar();
 
-        int healthBarWidth = GameUICreator.getInstance().calculateHealthbarWidth(playerHealth, playerMaxHealth);
+        GameUICreator gameUICreator = GameUICreator.getInstance();
+        int healthBarWidth = gameUICreator.calculateHealthbarWidth(playerHealth, playerMaxHealth);
         if (healthBarWidth > healthFrame.getWidth()) {
             healthBarWidth = healthFrame.getWidth();
         }
@@ -617,25 +601,33 @@ public class GameBoard extends JPanel implements ActionListener {
         healthBar.resizeToDimensions(healthBarWidth, healthBar.getHeight());
         drawImage(g, healthBar);
         drawImage(g, healthFrame);
+        g.setColor(Color.white);
+        g.drawString("" + Math.round(playerHealth) + " / " + Math.round(playerMaxHealth),
+                healthBar.getXCoordinate() + gameUICreator.getHealthBarWidth() * 0.35f,
+                healthBar.getYCoordinate() + gameUICreator.getHealthBarHeight() * 0.8f);
+
 
         float playerShields = playerManager.getSpaceship().getCurrentShieldPoints();
         float playerMaxShields = playerStats.getMaxShieldHitPoints();
         UIObject shieldFrame = uiManager.getShieldFrame();
         UIObject shieldBar = uiManager.getShieldBar();
 
-        int shieldBarWidth = GameUICreator.getInstance().calculateHealthbarWidth(playerShields, playerMaxShields);
+        int shieldBarWidth = gameUICreator.calculateHealthbarWidth(playerShields, playerMaxShields);
         if (shieldBarWidth > shieldFrame.getWidth()) {
             shieldBarWidth = shieldFrame.getWidth();
         }
 
         shieldBar.resizeToDimensions(shieldBarWidth, shieldBar.getHeight());
         drawImage(g, shieldBar);
+        g.drawString("" + Math.round(playerShields) + " / " + Math.round(playerMaxShields),
+                shieldBar.getXCoordinate() + gameUICreator.getHealthBarWidth() * 0.35f,
+                shieldBar.getYCoordinate() + gameUICreator.getHealthBarHeight() * 0.8f);
 
-        // Check if currentShieldPoints exceed maximumShieldPoints
+
+
         if (playerShields > playerMaxShields) {
             UIObject overloadingShieldBar = uiManager.getOverloadingShieldBar();
-            // Calculate the width for the overloading shield bar: playerMaxShields * 2 as the maximum theoretical width
-            int overloadingShieldBarWidth = GameUICreator.getInstance().calculateHealthbarWidth(playerShields - playerMaxShields, playerMaxShields * PlayerStats.getInstance().getMaxOverloadingShieldMultiplier());
+            int overloadingShieldBarWidth = gameUICreator.calculateHealthbarWidth(playerShields - playerMaxShields, playerMaxShields * PlayerStats.getInstance().getMaxOverloadingShieldMultiplier());
             if (overloadingShieldBarWidth > shieldFrame.getWidth()) {
                 overloadingShieldBarWidth = shieldFrame.getWidth();
             }

@@ -1,19 +1,22 @@
 package net.riezebos.bruus.tbd.game.items.enums;
 
+import java.awt.*;
 import java.util.Random;
 
 public enum ItemRarityEnums {
-    Common(150),
-    Rare(225),
-    Legendary(300),
-    Locked(0);
+    Common(150, Color.WHITE),
+    Rare(225, Color.GREEN),
+    Legendary(300, Color.ORANGE),
+    Locked(0, Color.GRAY);
 
 
-    ItemRarityEnums (float itemCost) {
+    ItemRarityEnums (float itemCost, Color color) {
         this.itemCost = itemCost;
+        this.color = color;
     }
 
     private float itemCost;
+    private Color color;
 
     public float getItemCost () {
         return itemCost;
@@ -27,9 +30,9 @@ public enum ItemRarityEnums {
         Random rand = new Random();
         int chance = rand.nextInt(100);
 
-        if (chance < 79) {
+        if (chance < 75) {
             return ItemRarityEnums.Common;
-        } else if (chance < 99) {
+        } else if (chance < 95) {
             return ItemRarityEnums.Rare;
         } else {
             return ItemRarityEnums.Legendary;
@@ -48,5 +51,7 @@ public enum ItemRarityEnums {
         }
     }
 
-
+    public Color getColor () {
+        return color;
+    }
 }

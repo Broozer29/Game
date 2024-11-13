@@ -1,6 +1,6 @@
 package net.riezebos.bruus.tbd.game.gameobjects.missiles;
 
-import net.riezebos.bruus.tbd.visuals.data.image.ImageEnums;
+import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
 
 public enum MissileEnums {
     BombaProjectile(false, "BombaProjctile", ImageEnums.Bomba_Missile_Explosion, ImageEnums.Bomba_Missile),
@@ -10,7 +10,7 @@ public enum MissileEnums {
     DefaultRocket(false, "DefaultRocket", ImageEnums.Rocket_1_Explosion, ImageEnums.Rocket_1),
     ScoutLaserBullet(false, "LaserBullet", ImageEnums.LaserBulletDestruction, ImageEnums.LaserBullet),
     OrbitCenter(false, "OrbitCenter", ImageEnums.Destroyed_Explosion, ImageEnums.DestructableOrbitCenterMissile),
-    Orbitter(false, "Orbitter", ImageEnums.BarrierProjectileDestruction, ImageEnums.GreenEnergyOrb2Looping),
+    Orbitter(false, "Orbitter", ImageEnums.BarrierProjectileDestruction, ImageEnums.BarrierProjectile),
     BarrierProjectile(false, "BarrierProjectile", ImageEnums.BarrierProjectileDestruction, ImageEnums.BarrierProjectile);
 
     private final boolean usesBoxCollision;

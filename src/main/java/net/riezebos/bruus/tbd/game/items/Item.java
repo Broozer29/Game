@@ -22,9 +22,13 @@ public abstract class Item implements ItemInterface{
     }
 
     @Override
-    public void applyEffectToObject (GameObject applier, GameObject target){
-        //Modifies the ATTACK damage done to TARGET
+    public void modifyAttackingObject (GameObject applier, GameObject target){
+        //Should be used to modify the applier, depending on certain conditions
     };
+
+    public void applyEffectToObject (GameObject applier, GameObject target) {
+        //Applies an effect to an object, with the applier provided for certain conditions
+    }
 
     public ItemEnums getItemName () {
         return itemName;

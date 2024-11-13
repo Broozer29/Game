@@ -4,36 +4,24 @@ import net.riezebos.bruus.tbd.game.items.PlayerInventory;
 import net.riezebos.bruus.tbd.game.items.enums.ItemEnums;
 import net.riezebos.bruus.tbd.game.items.enums.ItemRarityEnums;
 import net.riezebos.bruus.tbd.game.util.ItemDescriptionRetriever;
-import net.riezebos.bruus.tbd.guiboards.MenuItemInformation;
+import net.riezebos.bruus.tbd.guiboards.ShopItemInformation;
 import net.riezebos.bruus.tbd.guiboards.boardEnums.MenuFunctionEnums;
-import net.riezebos.bruus.tbd.visuals.data.audio.AudioDatabase;
-import net.riezebos.bruus.tbd.visuals.data.audio.AudioManager;
-import net.riezebos.bruus.tbd.visuals.data.audio.enums.AudioEnums;
-import net.riezebos.bruus.tbd.visuals.data.image.ImageEnums;
-import net.riezebos.bruus.tbd.visuals.objects.SpriteAnimation;
-import net.riezebos.bruus.tbd.visuals.objects.SpriteConfigurations.SpriteAnimationConfiguration;
-import net.riezebos.bruus.tbd.visuals.objects.SpriteConfigurations.SpriteConfiguration;
-
-import javax.sound.sampled.UnsupportedAudioFileException;
-import java.io.IOException;
+import net.riezebos.bruus.tbd.visualsandaudio.data.audio.AudioDatabase;
+import net.riezebos.bruus.tbd.visualsandaudio.data.audio.AudioManager;
+import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.AudioEnums;
+import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
+import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteConfiguration;
 
 public class ShopItem extends GUIComponent {
 
     private ItemRarityEnums itemRarity;
-    private MenuItemInformation menuItemInformation;
+    private ShopItemInformation shopItemInformation;
 
     public ShopItem (SpriteConfiguration spriteConfiguration, ItemRarityEnums itemRarity) {
         super(spriteConfiguration);
         this.itemRarity = itemRarity;
         this.menuFunctionality = MenuFunctionEnums.PurchaseItem;
         initShopItem(spriteConfiguration);
-    }
-
-    public ShopItem (SpriteAnimationConfiguration spriteAnimationConfiguration, ItemRarityEnums itemRarity) {
-        super(spriteAnimationConfiguration.getSpriteConfiguration());
-        this.animation = new SpriteAnimation(spriteAnimationConfiguration);
-        this.itemRarity = itemRarity;
-        initShopItem(spriteAnimationConfiguration.getSpriteConfiguration());
     }
 
     private void initShopItem (SpriteConfiguration spriteConfiguration) {
@@ -50,42 +38,39 @@ public class ShopItem extends GUIComponent {
         this.imageEnum = item.getItemIcon();
         spriteConfiguration.setImageType(imageEnum);
         String itemDesc = ItemDescriptionRetriever.getDescriptionOfItem(item);
-        this.menuItemInformation = new MenuItemInformation(item, actualItemRarity, itemDesc, true, actualItemRarity.getItemCost());
+        this.shopItemInformation = new ShopItemInformation(item, actualItemRarity, itemDesc, true, actualItemRarity.getItemCost());
         super.loadImage(imageEnum);
     }
 
     public void lockItemInShop () {
         spriteConfiguration.setImageType(ImageEnums.LockedIcon);
         this.imageEnum = ImageEnums.LockedIcon;
-        menuItemInformation.setItemDescription("Locked");
-        menuItemInformation.setCost(0);
-        menuItemInformation.setAvailable(false);
-        menuItemInformation.setItemRarity(ItemRarityEnums.Locked);
-        menuItemInformation.setItem(ItemEnums.Locked);
+        shopItemInformation.setItemDescription("Locked");
+        shopItemInformation.setCost(0);
+        shopItemInformation.setAvailable(false);
+        shopItemInformation.setItemRarity(ItemRarityEnums.Locked);
+        shopItemInformation.setItem(ItemEnums.Locked);
         super.loadImage(imageEnum);
     }
 
-    public void purchaseItemInShop () throws UnsupportedAudioFileException, IOException {
-        if (menuItemInformation.isAvailable() && menuItemInformation.canAfford()) {
+    public void purchaseItemInShop () {
+        if (shopItemInformation.isAvailable() && shopItemInformation.canAfford()) {
             AudioManager.getInstance().addAudio(AudioEnums.Power_Up_Acquired);
-            PlayerInventory.getInstance().addItem(menuItemInformation.getItem());
-            PlayerInventory.getInstance().spendCashMoney(menuItemInformation.getCost());
+            PlayerInventory.getInstance().addItem(shopItemInformation.getItem());
+            PlayerInventory.getInstance().spendCashMoney(shopItemInformation.getCost());
             lockItemInShop();
-        } else if (menuItemInformation.isAvailable() && !menuItemInformation.canAfford()) {
+        } else if (shopItemInformation.isAvailable() && !shopItemInformation.canAfford()) {
             AudioManager.getInstance().addAudio(AudioEnums.NotEnoughMinerals);
         }
     }
 
-    public MenuItemInformation getMenuItemInformation () {
-        return menuItemInformation;
+    public ShopItemInformation getShopItemInformation () {
+        return shopItemInformation;
     }
 
+    @Override
     public void activateComponent () {
         AudioDatabase.getInstance().updateGameTick();
-        try {
-            purchaseItemInShop();
-        } catch (UnsupportedAudioFileException | IOException e) {
-            throw new RuntimeException(e);
-        }
+        purchaseItemInShop();
     }
 }

@@ -4,6 +4,10 @@ import net.riezebos.bruus.tbd.game.items.enums.ItemEnums;
 
 public class ItemDescriptionRetriever {
 
+    private ItemDescriptionRetriever(){
+
+    }
+
     public static String getDescriptionOfItem(ItemEnums itemEnums){
         switch (itemEnums){
             case PlasmaCoatedBullets -> {
@@ -49,7 +53,7 @@ public class ItemDescriptionRetriever {
                 return "Chance on enemy kill to gain additional minerals";
             }
             case StickyDynamite -> {
-                return "Every 10th attack applies an instantaneous explosion for 200% (+200%) damage";
+                return "Every attack has 10% chance to explode for 200% (+200%) additional damage, increases the size of the explosion by 10% (+10%)";
             }
             case PlasmaLauncher -> {
                 return "10% Chance on hitting an enemy to fire a plasma shot towards the closest enemy dealing 150% (+150%) damage";
@@ -67,10 +71,10 @@ public class ItemDescriptionRetriever {
                 return "Allows missiles to pierce 1 (+1) additional time";
             }
             case BouncingModuleAddon -> {
-                return "Piercing missiles bounce towards enemies instead. Bouncing missiles gain +10% damage (+10%) per bounce";
+                return "Piercing missiles bounce towards enemies instead. Bouncing missiles deal +25% damage (+25%) after each bounce";
             }
             case VIPTicket -> {
-                return "Reduces the cost of refreshing the shop by 20% (+20%)";
+                return "Reduces the cost of refreshing the shop by 25% (+25%)";
             }
             case ElectricDestabilizer -> {
                 return "Your Electro Shred now freezes enemies, preventing them from moving and shooting for 2 (+2) seconds";
@@ -82,7 +86,7 @@ public class ItemDescriptionRetriever {
                 return "Your Electro Shred ability is now improved. Electro Shred gains an additional +20% (+20%) damage.";
             }
             case ThornedPlates -> {
-                return "Gain 10% (+10%) thorns damage. When taking damage, you deal thorns damage to the opponent that damaged you.";
+                return "Gain 20% (+20%) thorns damage. When taking damage, you deal thorns damage to the opponent that damaged you.";
             }
             case Thornweaver -> {
                 return "Your thorns damage now has 10% (+10%) chance of applying your on-hit effects.";
@@ -93,7 +97,9 @@ public class ItemDescriptionRetriever {
             case BarbedMissiles -> {
                 return "Your attacks now additionally apply your thorns damage 1 (+1) time.";
             }
+            default -> {
+                return "This item has no description yet";
+            }
         }
-        return "This item has no description yet";
     }
 }

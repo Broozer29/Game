@@ -5,8 +5,8 @@ import net.riezebos.bruus.tbd.game.gamestate.GameStateInfo;
 import net.riezebos.bruus.tbd.game.items.effects.EffectActivationTypes;
 import net.riezebos.bruus.tbd.game.items.effects.EffectIdentifiers;
 import net.riezebos.bruus.tbd.game.items.effects.EffectInterface;
-import net.riezebos.bruus.tbd.visuals.data.image.ImageEnums;
-import net.riezebos.bruus.tbd.visuals.objects.SpriteAnimation;
+import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
+import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteAnimation;
 
 import java.util.Objects;
 import java.util.Random;
@@ -78,8 +78,8 @@ public class DamageOverTime implements EffectInterface {
         int enemyHeight = target.getHeight();
 
         // Calculate the maximum allowed dimensions
-        int maxAllowedWidth = (int) (enemyWidth * 0.4);
-        int maxAllowedHeight = (int) (enemyHeight * 0.4);
+        int maxAllowedWidth = (int) (enemyWidth * 0.3);
+        int maxAllowedHeight = (int) (enemyHeight * 0.3);
 
         // Calculate the current scale of the animation
         float currentScale = this.animation.getScale();

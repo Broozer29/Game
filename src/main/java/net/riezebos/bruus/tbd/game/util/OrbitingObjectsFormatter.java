@@ -4,18 +4,14 @@ import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
 import net.riezebos.bruus.tbd.game.movement.pathfinders.OrbitPathFinder;
 
 public class OrbitingObjectsFormatter {
+
+    private OrbitingObjectsFormatter(){
+
+    }
+
     public static void reformatOrbitingObjects(GameObject gameObject, int radius) {
         double meanX = gameObject.getCenterXCoordinate();
         double meanY = gameObject.getCenterYCoordinate();
-
-        // Adjust the center if the object is a SpaceShip
-//        if (gameObject instanceof SpaceShip) {
-//            meanX -= 10;
-//            meanY -= 20;
-//        }
-
-        // Adjust for the dimensions of the gameObject
-
 
         // Counting only the GuardianDrones
         int numberOfDrones = gameObject.getObjectOrbitingThis().size();
@@ -41,14 +37,10 @@ public class OrbitingObjectsFormatter {
             object.resetMovementPath();
             object.setPathFinder(newOrbit);
 
-//            System.out.println("Object placed at: calculated X: " + x + " Calculated Y: " + y + " object dimensions: " +
-//                    object.getWidth() + " / " + object.getHeight());
 
             iterator++;
         }
 
-//        System.out.println("Reformatted: " + gameObject.getObjectOrbitingThis().size() + " objects, calculated angleIncrement: " + angleIncrement
-//        + " central target is at: " + gameObject.getCenterXCoordinate() + " / " + gameObject.getCenterYCoordinate());
     }
 }
 

@@ -5,12 +5,12 @@ import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyCategory;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
 import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SpaceShip;
 import net.riezebos.bruus.tbd.game.gamestate.GameStatsTracker;
-import net.riezebos.bruus.tbd.visuals.objects.AnimationManager;
+import net.riezebos.bruus.tbd.visualsandaudio.objects.AnimationManager;
 import net.riezebos.bruus.tbd.game.util.WithinVisualBoundariesCalculator;
 import net.riezebos.bruus.tbd.game.util.collision.CollisionDetector;
 import net.riezebos.bruus.tbd.game.util.collision.CollisionInfo;
-import net.riezebos.bruus.tbd.visuals.data.audio.AudioManager;
-import net.riezebos.bruus.tbd.visuals.data.audio.enums.AudioEnums;
+import net.riezebos.bruus.tbd.visualsandaudio.data.audio.AudioManager;
+import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.AudioEnums;
 
 import javax.sound.sampled.UnsupportedAudioFileException;
 import java.io.IOException;
@@ -83,13 +83,13 @@ public class EnemyManager {
                 } else {
                     spaceship.takeDamage(2.5f);
                     spaceship.resetToPreviousPosition();
-                    spaceship.applyKnockback(collisionInfo, enemy.getKnockbackStrength());
                 }
+                spaceship.applyKnockback(collisionInfo, enemy.getKnockbackStrength());
             }
         }
     }
 
-    private void detonateEnemy (Enemy enemy) throws UnsupportedAudioFileException, IOException {
+    private void detonateEnemy (Enemy enemy) {
         if (enemy.getDestructionAnimation() != null) {
             enemy.getDestructionAnimation().setCenterCoordinates(enemy.getCenterXCoordinate(), enemy.getCenterYCoordinate());
             animationManager.addLowerAnimation(enemy.getDestructionAnimation());

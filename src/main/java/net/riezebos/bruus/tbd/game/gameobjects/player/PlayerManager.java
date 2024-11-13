@@ -5,111 +5,105 @@ import net.riezebos.bruus.tbd.game.gamestate.GameStateInfo;
 import net.riezebos.bruus.tbd.game.gamestate.GameStatusEnums;
 import net.riezebos.bruus.tbd.game.items.PlayerInventory;
 import net.riezebos.bruus.tbd.game.items.enums.ItemEnums;
-import net.riezebos.bruus.tbd.visuals.objects.AnimationManager;
-import net.riezebos.bruus.tbd.visuals.data.DataClass;
-import net.riezebos.bruus.tbd.visuals.data.audio.AudioManager;
-import net.riezebos.bruus.tbd.visuals.data.audio.enums.AudioEnums;
-import net.riezebos.bruus.tbd.visuals.data.image.ImageEnums;
-import net.riezebos.bruus.tbd.visuals.objects.SpriteConfigurations.SpriteConfiguration;
+import net.riezebos.bruus.tbd.visualsandaudio.objects.AnimationManager;
+import net.riezebos.bruus.tbd.visualsandaudio.data.DataClass;
+import net.riezebos.bruus.tbd.visualsandaudio.data.audio.AudioManager;
+import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.AudioEnums;
+import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
+import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteConfiguration;
 
-import javax.sound.sampled.UnsupportedAudioFileException;
-import java.io.IOException;
 import java.util.LinkedList;
 
 public class PlayerManager {
 
-	private static PlayerManager instance = new PlayerManager();
-	private AnimationManager animationManager = AnimationManager.getInstance();
-	private GameStateInfo gameState = GameStateInfo.getInstance();
-	private SpaceShip spaceship;
+    private static PlayerManager instance = new PlayerManager();
+    private AnimationManager animationManager = AnimationManager.getInstance();
+    private GameStateInfo gameState = GameStateInfo.getInstance();
+    private SpaceShip spaceship;
 
-	private PlayerManager() {
+    private PlayerManager () {
 //		initSpaceShip();
-	}
+    }
 
-	public static PlayerManager getInstance() {
-		return instance;
-	}
+    public static PlayerManager getInstance () {
+        return instance;
+    }
 
-	// Called when a game instance needs to be deleted and the manager needs to be
-	// reset.
-	public void resetManager() {
-		if(spaceship != null){
-			spaceship.deleteObject();
-			spaceship = null;
-		}
-	}
+    // Called when a game instance needs to be deleted and the manager needs to be
+    // reset.
+    public void resetManager () {
+        if (spaceship != null) {
+            spaceship.deleteObject();
+            spaceship = null;
+        }
+    }
 
-	public void createSpaceShip(){
-		initSpaceShip();
-	}
+    public void createSpaceShip () {
+        initSpaceShip();
+    }
 
-	public void updateGameTick() {
-		updateSpaceShipMovement();
-		checkPlayerHealth();
-		spaceship.updateGameTick();
-	}
-	public SpaceShip getSpaceship() {
-		if(this.spaceship == null){
-			initSpaceShip();
-		}
-		return this.spaceship;
-	}
+    public void updateGameTick () {
+        updateSpaceShipMovement();
+        checkPlayerHealth();
+        spaceship.updateGameTick();
+    }
 
-	private void checkPlayerHealth() {
-		if(PlayerInventory.getInstance().getItemByName(ItemEnums.EmergencyRepairBot) != null){
-			PlayerInventory.getInstance().getItemByName(ItemEnums.EmergencyRepairBot).applyEffectToObject(spaceship);
-		}
-		if (spaceship.getCurrentHitpoints() <= 0 && gameState.getGameState() == GameStatusEnums.Playing) {
-			gameState.setGameState(GameStatusEnums.Dying);
-			spaceship.setVisible(false);
-		}
-	}
+    public SpaceShip getSpaceship () {
+        if (this.spaceship == null) {
+            initSpaceShip();
+        }
+        return this.spaceship;
+    }
 
-	private void updateSpaceShipMovement() {
-		if (spaceship.isVisible()) {
-			spaceship.move();
-		}
-	}
+    private void checkPlayerHealth () {
+        if (PlayerInventory.getInstance().getItemByName(ItemEnums.EmergencyRepairBot) != null) {
+            PlayerInventory.getInstance().getItemByName(ItemEnums.EmergencyRepairBot).applyEffectToObject(spaceship);
+        }
+        if (spaceship.getCurrentHitpoints() <= 0 && gameState.getGameState() == GameStatusEnums.Playing) {
+            gameState.setGameState(GameStatusEnums.Dying);
+            spaceship.setVisible(false);
+        }
+    }
 
-	private void initSpaceShip() {
-		SpriteConfiguration spriteConfiguration = new SpriteConfiguration();
-		spriteConfiguration.setxCoordinate(DataClass.getInstance().getWindowWidth() / 10);
-		spriteConfiguration.setyCoordinate(DataClass.getInstance().getWindowHeight() /2);
-		spriteConfiguration.setScale(0.6f);
-		spriteConfiguration.setImageType(ImageEnums.Player_Spaceship_Model_3);
-		this.spaceship = new SpaceShip(spriteConfiguration);
-	}
+    private void updateSpaceShipMovement () {
+        if (spaceship.isVisible()) {
+            spaceship.move();
+        }
+    }
 
-	public void startDyingScene() {
-		if (spaceship.getCurrentHitpoints() <= 0 && gameState.getGameState() == GameStatusEnums.Dying) {
-			spaceship.setImmune(true); //Ignore enemies and missiles whilst exploding
-			if (!animationManager.getUpperAnimations().contains(spaceship.getDestructionAnimation())) {
-				animationManager.getUpperAnimations().add(spaceship.getDestructionAnimation());
-				animationManager.getLowerAnimations().remove(spaceship.getExhaustAnimation());
+    private void initSpaceShip () {
+        SpriteConfiguration spriteConfiguration = new SpriteConfiguration();
+        spriteConfiguration.setxCoordinate(DataClass.getInstance().getWindowWidth() / 10);
+        spriteConfiguration.setyCoordinate(DataClass.getInstance().getWindowHeight() / 2);
+        spriteConfiguration.setScale(0.6f);
+        spriteConfiguration.setImageType(ImageEnums.Player_Spaceship_Model_3);
+        this.spaceship = new SpaceShip(spriteConfiguration);
+    }
 
-				AudioManager.getInstance().stopMusicAudio();
-				
-				try {
-					AudioManager.getInstance().addAudio(AudioEnums.Destroyed_Explosion);
-				} catch (UnsupportedAudioFileException | IOException e) {
-					e.printStackTrace();
-				}
-			}
+    public void startDyingScene () {
+        if (spaceship.getCurrentHitpoints() <= 0 && gameState.getGameState() == GameStatusEnums.Dying) {
+            spaceship.setImmune(true); //Ignore enemies and missiles whilst exploding
+            if (!animationManager.getUpperAnimations().contains(spaceship.getDestructionAnimation())) {
+                animationManager.getUpperAnimations().add(spaceship.getDestructionAnimation());
+                animationManager.getLowerAnimations().remove(spaceship.getExhaustAnimation());
 
-			if (spaceship.getDestructionAnimation().getCurrentFrame() >= spaceship.getDestructionAnimation().getTotalFrames()) {
-				gameState.setGameState(GameStatusEnums.Dead);
+                AudioManager.getInstance().stopMusicAudio();
+                AudioManager.getInstance().addAudio(AudioEnums.Destroyed_Explosion);
+            }
 
-				PlayerInventory.getInstance().resetInventory();
-			}
-		}
-	}
+            if (spaceship.getDestructionAnimation().getCurrentFrame() >= spaceship.getDestructionAnimation().getTotalFrames()) {
+                gameState.setGameState(GameStatusEnums.Dead);
 
-	public LinkedList<Integer> getNearestFriendlyHomingCoordinates() {
-		LinkedList<Integer> playerCoordinatesList = new LinkedList<>();
-		playerCoordinatesList.add(0, spaceship.getCenterXCoordinate());
-		playerCoordinatesList.add(1, spaceship.getCenterYCoordinate());
-		return playerCoordinatesList;
-	}
+                PlayerInventory.getInstance().resetInventory();
+            }
+        }
+    }
+
+    public LinkedList<Integer> getNearestFriendlyHomingCoordinates () {
+        LinkedList<Integer> playerCoordinatesList = new LinkedList<>();
+        playerCoordinatesList.add(0, spaceship.getCenterXCoordinate());
+        playerCoordinatesList.add(1, spaceship.getCenterYCoordinate());
+        return playerCoordinatesList;
+    }
 
 }

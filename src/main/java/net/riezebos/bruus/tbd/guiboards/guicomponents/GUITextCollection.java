@@ -1,8 +1,8 @@
 package net.riezebos.bruus.tbd.guiboards.guicomponents;
 
 import net.riezebos.bruus.tbd.guiboards.boardEnums.MenuFunctionEnums;
-import net.riezebos.bruus.tbd.visuals.data.image.ImageEnums;
-import net.riezebos.bruus.tbd.visuals.objects.SpriteConfigurations.SpriteConfiguration;
+import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
+import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteConfiguration;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +26,7 @@ public class GUITextCollection implements Actionable {
     }
 
     private void initMenuText() {
-        int kernelDistance = (int) Math.ceil(10);
+        int kernelDistance = 10;
         for (int i = 0; i < textToDisplayAsGUIComponents.length(); i++) {
             char stringChar = textToDisplayAsGUIComponents.charAt(i);
             if (stringChar != ' ') {
@@ -44,6 +44,7 @@ public class GUITextCollection implements Actionable {
     }
 
     public void setText (String text) {
+        this.componentsBelongingToCollection.clear();
         this.textToDisplayAsGUIComponents = text;
         initMenuText();
     }
@@ -100,6 +101,14 @@ public class GUITextCollection implements Actionable {
             this.scale = scale;
             initMenuText();
         }
+    }
+
+    public int getStartingXCoordinate () {
+        return startingXCoordinate;
+    }
+
+    public void setStartingXCoordinate (int startingXCoordinate) {
+        this.startingXCoordinate = startingXCoordinate;
     }
 
     public MenuFunctionEnums getMenuFunctionEnums () {

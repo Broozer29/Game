@@ -10,7 +10,7 @@ public class ThornedPlates extends Item {
 
 
     private float currentlyAppliedAmount = 0.0f;
-    private float buffAmount = 0.10f;
+    private float buffAmount = 0.20f;
 
     public ThornedPlates(){
         super(ItemEnums.ThornedPlates, 1, ItemApplicationEnum.ApplyOnCreation);

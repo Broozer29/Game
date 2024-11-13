@@ -6,7 +6,7 @@ import net.riezebos.bruus.tbd.game.movement.pathfinders.DiamondShapePathFinder;
 import net.riezebos.bruus.tbd.game.movement.pathfinders.HomingPathFinder;
 import net.riezebos.bruus.tbd.game.movement.pathfinders.OrbitPathFinder;
 import net.riezebos.bruus.tbd.game.util.OutOfBoundsCalculator;
-import net.riezebos.bruus.tbd.visuals.objects.Sprite;
+import net.riezebos.bruus.tbd.visualsandaudio.objects.Sprite;
 
 public class SpriteMover {
 

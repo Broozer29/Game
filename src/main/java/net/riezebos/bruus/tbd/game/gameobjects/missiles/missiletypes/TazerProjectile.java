@@ -9,12 +9,15 @@ import net.riezebos.bruus.tbd.game.items.effects.EffectIdentifiers;
 import net.riezebos.bruus.tbd.game.items.effects.effectimplementations.AttackSpeedModifierEffect;
 import net.riezebos.bruus.tbd.game.items.effects.effectimplementations.DamageModifierEffect;
 import net.riezebos.bruus.tbd.game.movement.MovementConfiguration;
-import net.riezebos.bruus.tbd.visuals.data.image.ImageEnums;
-import net.riezebos.bruus.tbd.visuals.objects.SpriteAnimation;
-import net.riezebos.bruus.tbd.visuals.objects.SpriteConfigurations.SpriteAnimationConfiguration;
-import net.riezebos.bruus.tbd.visuals.objects.SpriteConfigurations.SpriteConfiguration;
+import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
+import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteAnimation;
+import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteAnimationConfiguration;
+import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteConfiguration;
 
 public class TazerProjectile extends Missile {
+
+	private int amountOfCollisions = 0;
+	private int maximumAmountOfCollisions = 2;
 
 	public TazerProjectile(SpriteAnimationConfiguration spriteConfiguration, MissileConfiguration missileConfiguration, MovementConfiguration movementConfiguration) {
 		super(spriteConfiguration, missileConfiguration, movementConfiguration);
@@ -34,7 +37,7 @@ public class TazerProjectile extends Missile {
 		//Should refactor so it's behaviour from this class though, doesn't really belong in the manager
 	}
 
-	public void handleTazerMissile(GameObject missile, GameObject target){
+	public void handleTazerMissile(GameObject target){
 		if(target instanceof AlienBomb){
 			return; //AlienBombs should be immune to this and be ignored
 		}
@@ -46,11 +49,11 @@ public class TazerProjectile extends Missile {
 		DamageModifierEffect damageModifierEffect = null;
 		AttackSpeedModifierEffect attackSpeedModifierEffect = null;
 
-		if(target.isFriendly() || target instanceof SpaceShip){
+		if(target.isFriendly()){
 			//Debuff the player or player friendly objects
 			attackSpeedModifierEffect = new AttackSpeedModifierEffect(0.75f, 3, null, EffectIdentifiers.TazerAttackSpeedModifier);
 			damageModifierEffect = new DamageModifierEffect(0.75f, 3, superChargedAnimation, EffectIdentifiers.TazerDamageModifier);
-			missile.setVisible(false);
+			this.setVisible(false);
 		} else {
 			//Buff the fellow enemies
 			attackSpeedModifierEffect = new AttackSpeedModifierEffect(3.0f, 6, null, EffectIdentifiers.TazerAttackSpeedModifier);
@@ -58,6 +61,10 @@ public class TazerProjectile extends Missile {
 		}
 		target.addEffect(attackSpeedModifierEffect);
 		target.addEffect(damageModifierEffect);
+		amountOfCollisions++;
+		if(amountOfCollisions >= maximumAmountOfCollisions){
+			this.setVisible(false);
+		}
 	}
 
 }
