@@ -20,8 +20,8 @@ public class MoneyPrinter extends Item {
     public MoneyPrinter(){
         super(ItemEnums.MoneyPrinter, 1, ItemApplicationEnum.AfterCollision);
         calculateMoneyGainAmount();
-//        procChance = 0.1f;
-        procChance = 1f;
+        procChance = 0.1f;
+//        procChance = 1f;
         rand = new Random();
     }
 
@@ -37,7 +37,7 @@ public class MoneyPrinter extends Item {
     }
 
     private void calculateMoneyGainAmount(){
-        this.moneyGainAmount = quantity * 5;
+        this.moneyGainAmount = quantity * 5f;
     }
 
     public void increaseQuantityOfItem(int amount) {

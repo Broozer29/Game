@@ -102,7 +102,7 @@ public class BurstMainAttackBossBehaviour implements BossActionable {
     }
 
     private Missile createMissile (Enemy enemy) {
-        MissileEnums missileType = MissileEnums.ScoutLaserBullet;
+        MissileEnums missileType = MissileEnums.DefaultLaserBullet;
         SpriteConfiguration spriteConfiguration = MissileCreator.getInstance().createMissileSpriteConfig(
                 enemy.getXCoordinate(), enemy.getCenterYCoordinate(),
                 missileType.getImageType(), enemy.getScale());

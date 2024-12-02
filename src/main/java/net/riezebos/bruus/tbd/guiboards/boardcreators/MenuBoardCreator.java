@@ -18,7 +18,6 @@ public class MenuBoardCreator {
     private static int textScale = 1;
 
     public static GUITextCollection createStartGameButton(GUIComponent backgroundCard){
-
         int xCoordinate = backgroundCard.getXCoordinate() + 120;
         int yCoordinate = backgroundCard.getYCoordinate() + 50;
         GUITextCollection textCollection = new GUITextCollection(xCoordinate, yCoordinate, "START GAME");
@@ -26,6 +25,7 @@ public class MenuBoardCreator {
 
         return textCollection;
     }
+
 
     public static MenuCursor createMenuCursor(GUIComponent initialSelectedButton){
         int xCoordinate = initialSelectedButton.getXCoordinate();
@@ -59,6 +59,23 @@ public class MenuBoardCreator {
         titleImage.setDescriptionOfComponent("Title Image");
         titleImage.setCenterCoordinates(xCoordinate,yCoordinate);
         return titleImage;
+    }
+
+    public static GUIComponent createInputMapping(){
+        int xCoordinate = DataClass.getInstance().getWindowWidth();
+        int yCoordinate = DataClass.getInstance().getWindowHeight();
+
+        SpriteConfiguration spriteConfiguration = new SpriteConfiguration();
+        spriteConfiguration.setxCoordinate(xCoordinate);
+        spriteConfiguration.setyCoordinate(yCoordinate);
+        spriteConfiguration.setScale(imageScale);
+        spriteConfiguration.setImageType(ImageEnums.InputMapping);
+
+        GUIComponent inputMapping = new DisplayOnly(spriteConfiguration);
+        inputMapping.setDescriptionOfComponent("Input mapping image");
+        inputMapping.setXCoordinate(Math.round(xCoordinate - (inputMapping.getWidth() * 1.1f)));
+        inputMapping.setYCoordinate(Math.round(yCoordinate - (inputMapping.getHeight() * 1.3f)));
+        return inputMapping;
     }
 
     public static List<GUITextCollection> createControlsExplanations(){
@@ -95,6 +112,21 @@ public class MenuBoardCreator {
         return backgroundCard;
     }
 
+    public static GUIComponent selectMusicPlayerBackgroundCard(GUIComponent startgameBackgroundCard){
+        int xCoordinate = startgameBackgroundCard.getXCoordinate() + Math.round(startgameBackgroundCard.getWidth() * 1.2f);
+        int yCoordinate = startgameBackgroundCard.getYCoordinate();
+
+        SpriteConfiguration spriteConfiguration = new SpriteConfiguration();
+        spriteConfiguration.setxCoordinate(xCoordinate);
+        spriteConfiguration.setyCoordinate(yCoordinate);
+        spriteConfiguration.setScale(imageScale);
+        spriteConfiguration.setImageType(ImageEnums.Square_Card);
+
+        GUIComponent backgroundCard = new DisplayOnly(spriteConfiguration);
+        backgroundCard.setImageDimensions(400,250);
+        return backgroundCard;
+    }
+
     public static GUITextCollection openShopButton(GUITextCollection startGameButton){
         GUIComponent component = startGameButton.getComponents().get(0);
         int xCoordinate = component.getXCoordinate();
@@ -107,7 +139,7 @@ public class MenuBoardCreator {
 
     public static GUITextCollection foundControllerText(boolean foundController, GUIComponent titleImage){
         GUITextCollection textCollection = null;
-        float scale = 1.5f;
+        float scale = 1f;
         String text = null;
         int yCoordinate = 0;
         if(foundController){
@@ -136,23 +168,31 @@ public class MenuBoardCreator {
         return textCollection;
     }
 
-    public static GUITextCollection selectMacOSMediaPlayer (GUITextCollection openShopButton){
-        GUIComponent component = openShopButton.getComponents().get(0);
-        int xCoordinate = component.getXCoordinate();
-        int yCoordinate = component.getYCoordinate() + 50;
+    public static GUITextCollection selectDefaultLocalMusicPlayer (GUIComponent backgroundCard){
+        int xCoordinate = backgroundCard.getXCoordinate() + 80;
+        int yCoordinate = backgroundCard.getYCoordinate() + 30;
 
-        GUITextCollection textCollection = new GUITextCollection(xCoordinate,yCoordinate, "USE MACOS MUSIC");
-        textCollection.setMenuFunctionality(MenuFunctionEnums.SelectMacOSMediaPlayer);
+        GUITextCollection textCollection = new GUITextCollection(xCoordinate,yCoordinate, "USE LOCAL FILES");
+        textCollection.setMenuFunctionality(MenuFunctionEnums.SelectDefaultMediaPlayer);
         return textCollection;
     }
 
-    public static GUITextCollection selectDefaultPlayer (GUITextCollection macOsMediaPlayer){
+    public static GUITextCollection selectMacOSItunesMediaPlayer (GUITextCollection macOsMediaPlayer){
         GUIComponent component = macOsMediaPlayer.getComponents().get(0);
         int xCoordinate = component.getXCoordinate();
         int yCoordinate = component.getYCoordinate() + 50;
 
-        GUITextCollection textCollection = new GUITextCollection(xCoordinate,yCoordinate, "USE DEFAULT MUSIC");
-        textCollection.setMenuFunctionality(MenuFunctionEnums.SelectDefaultMediaPlayer);
+        GUITextCollection textCollection = new GUITextCollection(xCoordinate,yCoordinate, "USE ITUNES");
+        textCollection.setMenuFunctionality(MenuFunctionEnums.SelectMacOSMediaPlayer);
+        return textCollection;
+    }
+
+    public static GUITextCollection selectMusicText(GUIComponent backgroundCard){
+        int xCoordinate = backgroundCard.getXCoordinate() + 30;
+        int yCoordinate = backgroundCard.getYCoordinate() - 30;
+
+        GUITextCollection textCollection = new GUITextCollection(xCoordinate,yCoordinate, "GAME SETTINGS");
+        textCollection.setScale(2);
         return textCollection;
     }
 

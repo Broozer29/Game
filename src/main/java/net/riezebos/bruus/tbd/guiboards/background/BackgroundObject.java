@@ -1,5 +1,5 @@
 
-package net.riezebos.bruus.tbd.game.gameobjects.background;
+package net.riezebos.bruus.tbd.guiboards.background;
 
 import net.riezebos.bruus.tbd.visualsandaudio.objects.Sprite;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteConfiguration;

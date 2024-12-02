@@ -9,6 +9,8 @@ public class GameStateInfo {
     private GameStatusEnums gameState;
 
 
+    private double lastPause;
+
     private int DELAY = 0;
 
     private double gameSeconds;
@@ -39,7 +41,7 @@ public class GameStateInfo {
         this.gameTicksExecuted = 0;
         this.gameSeconds = 0;
         this.stagesCompleted = 0;
-        this.monsterLevel = 1;
+        this.monsterLevel = 0;
         this.initialOffset = (1 / 0.33f);
         this.bossesDefeated = 0;
     }
@@ -83,8 +85,20 @@ public class GameStateInfo {
         return gameState;
     }
 
+    public boolean isAllowedToPause(){
+        return (this.gameSeconds -1) > lastPause;
+    }
+
+    private void setLastPause(){
+        this.lastPause = gameSeconds;
+    }
+
     public void setGameState (GameStatusEnums ingame) {
         this.gameState = ingame;
+
+        if(ingame == GameStatusEnums.Paused) {
+            this.setLastPause();
+        }
     }
 
     public int getDELAY () {

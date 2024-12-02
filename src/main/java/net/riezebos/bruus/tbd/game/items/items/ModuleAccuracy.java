@@ -8,11 +8,13 @@ import net.riezebos.bruus.tbd.game.items.enums.ItemEnums;
 import net.riezebos.bruus.tbd.game.movement.PathFinderEnums;
 
 public class ModuleAccuracy extends Item {
-    float damageBonus;
+    private float damageBonus;
+    private boolean shouldApply;
 
     public ModuleAccuracy () {
         super(ItemEnums.ModuleAccuracy, 1, ItemApplicationEnum.ApplyOnCreation);
         calculateDamageBonus();
+        shouldApply = true;
     }
 
     private void calculateDamageBonus(){
@@ -21,13 +23,25 @@ public class ModuleAccuracy extends Item {
 
     @Override
     public void increaseQuantityOfItem (int amount) {
+        shouldApply = true;
+        removeEffect();
         this.quantity += amount;
         calculateDamageBonus();
+        applyEffectToObject(null);
     }
 
     @Override
     public void applyEffectToObject (GameObject gameObject) {
-        PlayerStats.getInstance().addDroneBonusDamage(this.damageBonus);
-        PlayerStats.getInstance().setDroneStraightLinePathFinder(PathFinderEnums.StraightLine);
+        if(shouldApply) {
+            PlayerStats.getInstance().addDroneBonusDamage(this.damageBonus);
+            PlayerStats.getInstance().setDroneStraightLinePathFinder(PathFinderEnums.StraightLine);
+            shouldApply = false;
+        }
+    }
+
+    private void removeEffect(){
+        if(quantity > 0){
+            PlayerStats.getInstance().addDroneBonusDamage(-this.damageBonus);
+        }
     }
 }

@@ -173,6 +173,7 @@ public class AudioLoader {
             case TonyLeysSnowdinRemix: return "/audio/music/Tony Leys - Snowdin Shopkeep.wav";
             case GustyGardenGalaxyRemix: return "/audio/music/Gusty Garden Galaxy Remix.wav";
             case WePlantsAreHappyPlantsTimeRemix: return "/audio/music/We Plants Are Happy Plants - Time.wav";
+            case RiskOfDanger: return "/audio/music/Risk of Danger.wav";
             case BossBattle: return "/audio/music/boss battle.wav";
         }
         return null;

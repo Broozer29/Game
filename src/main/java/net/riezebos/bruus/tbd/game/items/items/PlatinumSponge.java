@@ -30,4 +30,5 @@ public class PlatinumSponge extends Item {
         OutOfCombatArmorBonus effect = new OutOfCombatArmorBonus(armorBonus, EffectIdentifiers.PlatinumSpongeArmorBonus);
         gameObject.addEffect(effect);
     }
+
 }

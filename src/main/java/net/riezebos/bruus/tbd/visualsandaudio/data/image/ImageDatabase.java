@@ -15,6 +15,7 @@ public class ImageDatabase {
     // Friendly images
     private BufferedImage model3BetterUpgrade;
     private BufferedImage uidamageoverlay;
+    private BufferedImage inputMapping;
 
     // Enemy images
     private BufferedImage alienBombImage;
@@ -617,6 +618,7 @@ public class ImageDatabase {
         this.peepoShruge = imgLoader.getImage(ImageEnums.peepoShruge);
         this.peepoSkillIssue = imgLoader.getImage(ImageEnums.peepoSkillIssue);
         this.uidamageoverlay = imgLoader.getImage(ImageEnums.UIDamageOverlay);
+        this.inputMapping = imgLoader.getImage(ImageEnums.InputMapping);
     }
 
     private void initBackgroundObjects () {
@@ -701,6 +703,7 @@ public class ImageDatabase {
 
     public BufferedImage getImage (ImageEnums imageType) {
         switch (imageType) {
+            case InputMapping: return inputMapping;
             case SpaceStationBoss: return spaceStationBoss;
             case UIDamageOverlay: return uidamageoverlay;
             case RedWings1: return redWings1;
@@ -1188,17 +1191,6 @@ public class ImageDatabase {
         reader.setInput(ImageIO.createImageInputStream(
                 getClass().getResourceAsStream("/images/Ships/Ship 1/Ship 1 - Projectile.gif")));
         seekerProjectileFrames = gifToImageIcons(reader);
-
-
-        reader.setInput(ImageIO.createImageInputStream(
-                getClass().getResourceAsStream("/images/Ships/Ship 6/Ship 6 - Projectile.gif")));
-        bombaProjectileFrames = gifToImageIcons(reader);
-
-        reader.setInput(ImageIO.createImageInputStream(
-                getClass().getResourceAsStream("/images/Ships/Ship 6/Ship 6 - Projectile Explosion.gif")));
-        bombaProjectileExplosion = gifToImageIcons(reader);
-
-
     }
 
     private void initPNGtoGIFAnimation () {
@@ -1478,6 +1470,18 @@ public class ImageDatabase {
             String sourceString = String.format("/images/Ships/Enemy Ships/SpaceStation/%d.png", i);
             BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
             spaceStationBossFrames.add(image);
+        }
+
+        for (int i = 1; i < 13; i++) {
+            String sourceString = String.format("/images/gif/PNGtoGIF/BombaProjectile/Missile/%d.png", i);
+            BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+            bombaProjectileFrames.add(image);
+        }
+
+        for (int i = 0; i < 24; i++) {
+            String sourceString = String.format("/images/gif/PNGtoGIF/BombaProjectile/Explosion/%d.png", i);
+            BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+            bombaProjectileExplosion.add(image);
         }
 
 

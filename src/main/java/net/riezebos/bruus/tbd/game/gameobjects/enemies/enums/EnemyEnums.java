@@ -21,11 +21,11 @@ public enum EnemyEnums {
     Tazer(150, 0, true,
             AudioEnums.Large_Ship_Destroyed, "Enemy Tazer",
             ImageEnums.Tazer, ImageEnums.Explosion2, 40, EnemyCategory.Mercenary,  10, 15,
-            4, 0.4f, 1, 1, 94, 34, 1),
+            4, 0.4f, 1, 1, 94, 34, 2),
     Energizer(150, 0, true,
             AudioEnums.Large_Ship_Destroyed, "Enemy Energizer",
             ImageEnums.Energizer, ImageEnums.Explosion2, 40, EnemyCategory.Mercenary,  10, 15,
-            4, 0.6f, 1, 1, 106, 39, 1),
+            4, 0.6f, 1, 1, 106, 39, 3),
     Bulldozer(200, 0, false,
             AudioEnums.Large_Ship_Destroyed, "Enemy Bulldozer",
             ImageEnums.Bulldozer, ImageEnums.Explosion2, 40, EnemyCategory.Mercenary,  20, 20,
@@ -33,11 +33,11 @@ public enum EnemyEnums {
     Flamer(150, 0, true,
             AudioEnums.Large_Ship_Destroyed, "Enemy Flamer",
             ImageEnums.Flamer, ImageEnums.Explosion2, 40, EnemyCategory.Mercenary,  10, 20,
-            6, 0.6f, 1, 1, 137, 61, 0),
+            6, 0.6f, 1, 1, 137, 61, 1),
     Bomba(200, 0, true,
             AudioEnums.Large_Ship_Destroyed, "Enemy Bomba",
             ImageEnums.Bomba, ImageEnums.Explosion2, 50, EnemyCategory.Mercenary,  20, 20,
-            8, 0.4f, 1, 1, 140, 75, 1),
+            8, 0.4f, 1, 1, 140, 75, 3),
     Needler(50, 0, false,
             AudioEnums.Alien_Spaceship_Destroyed, "Enemy Needler",
             ImageEnums.Needler, ImageEnums.Explosion2, 30, EnemyCategory.Basic, 10, 5,
@@ -154,7 +154,7 @@ public enum EnemyEnums {
         return baseShieldPoints;
     }
 
-    public boolean isHasAttack () {
+    public boolean hasAttack () {
         return hasAttack;
     }
 

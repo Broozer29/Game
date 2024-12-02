@@ -491,6 +491,7 @@ public class ImageLoader {
                 return "/images/UI/levelcompletelight.png";
             case UIScoreTextCard:
                 return "/images/UI/gradelight.png";
+            case InputMapping:  return "/images/UI/inputmapping.png";
             case peepoDeepFriedSadge: return "/images/Icons/Pepeicons/deepFriedSadge.png";
             case peepoFeelsCringeMan: return "/images/Icons/Pepeicons/feelsCringeMan.png";
             case peepoFeelsRetardedMan: return "/images/Icons/Pepeicons/feelsretardedman.png";

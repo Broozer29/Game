@@ -98,21 +98,18 @@ public class Enemy extends GameObject {
     }
 
     private void initChargingUpAnimation (SpriteConfiguration spriteConfiguration) {
-
         SpriteConfiguration newSpriteConfig = spriteConfiguration;
-
-        if(spriteConfiguration.getScale() < 0.85f){
+        if (spriteConfiguration.getScale() < 0.85f) {
             newSpriteConfig.setScale(0.85f);
         }
-
-
         SpriteAnimationConfiguration spriteAnimationConfiguration = new SpriteAnimationConfiguration(newSpriteConfig, 2, false);
         spriteAnimationConfiguration.getSpriteConfiguration().setImageType(ImageEnums.Charging);
         this.chargingUpAttackAnimation = new SpriteAnimation(spriteAnimationConfiguration);
     }
 
-    public void triggerClassSpecificOnDeathTriggers () {
-        if(!this.enemyType.getEnemyCategory().equals(EnemyCategory.Summon)) {
+    @Override
+    public void triggerCategorySpecificOnDeathTriggers () {
+        if (!this.enemyType.getEnemyCategory().equals(EnemyCategory.Summon)) {
             GameStatsTracker.getInstance().addEnemyKilled(1);
         }
     }
@@ -157,9 +154,7 @@ public class Enemy extends GameObject {
             rotateObjectTowardsDestination(true);
             setAllowedVisualsToRotate(false);
         } else if (!(movementConfiguration.getPathFinder() instanceof DestinationPathFinder)) {
-                System.out.println("I've encountered an empty waypoints, this shouldnt happen outside explicit testing -> Enemy.java, line 156 " + this.enemyType + " / " + this.xCoordinate + " / " + this.yCoordinate);
-                setAllowedVisualsToRotate(false);
-
+            setAllowedVisualsToRotate(false);
         }
     }
 

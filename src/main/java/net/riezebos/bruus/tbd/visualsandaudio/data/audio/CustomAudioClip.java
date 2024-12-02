@@ -23,6 +23,12 @@ public class CustomAudioClip {
     private long totalBytesRead = 0;
     private long totalFramesInStream = 0;
     private AudioFormat streamFormat; // Store the audio format for streams
+    private double pausedPosition = 0; // Position to remember on pause
+    private InputStream inputStream; //InputStream required to start playback from a specific point
+
+    private boolean isMediaPlayerPlaying = false; // Flag to track if MediaPlayer is playing
+    private boolean isMediaPlayerFinished = false; // Flag to track if MediaPlayer has finished
+    private boolean isPaused = false; // Flag to track paused state
 
     public CustomAudioClip (AudioEnums clipType) {
         this.clipType = clipType;
@@ -33,9 +39,6 @@ public class CustomAudioClip {
             initMediaPlayer();
         }
     }
-
-    private boolean isMediaPlayerPlaying = false; // Flag to track if MediaPlayer is playing
-    private boolean isMediaPlayerFinished = false; // Flag to track if MediaPlayer has finished
 
     private void initMediaPlayer () {
         if (!isStream) {
@@ -69,6 +72,7 @@ public class CustomAudioClip {
                 double frameRate = streamFormat.getFrameRate();
                 return totalFramesInStream / frameRate;
             }
+
             return -1; // Return -1 if we cannot determine the length
         } else if (mediaPlayer != null && mediaPlayer.getTotalDuration() != null) {
             return mediaPlayer.getTotalDuration().toSeconds();
@@ -108,7 +112,7 @@ public class CustomAudioClip {
 //                    audioLine.start();
                     }
                 } catch (IOException e) {
-                    System.out.println("Error: Tried to reset an Audio Stream that was already closed/reset");
+                    System.out.println("Error: Tried to reset an Audio Stream that was already closed/reset: " + this.getAudioType());
                 }
             }
         } else if (mediaPlayer != null) {
@@ -185,6 +189,46 @@ public class CustomAudioClip {
         }
     }
 
+    // Pause the playback and let the current thread finish
+    public synchronized void pauseClip() {
+        if (isPaused) return; // Avoid double pause
+        isPaused = true;
+
+        if (isStream) {
+            if (audioLine != null && audioLine.isRunning()) {
+                pausedPosition = getCurrentSecondsInPlayback(); // Save current position
+                audioLine.stop(); // Stop audio line
+                audioLine.flush();
+                audioLine.close();
+            }
+
+            // Close the stream to allow the current thread to finish
+            try {
+                if (audioStream != null) {
+                    audioStream.close();
+                }
+            } catch (IOException e) {
+                System.out.println("Audio stream could not be closed, it probably already was");
+            }
+        } else if (mediaPlayer != null && isMediaPlayerPlaying) {
+            pausedPosition = mediaPlayer.getCurrentTime().toSeconds();
+            mediaPlayer.pause(); // Pause the MediaPlayer
+        }
+    }
+
+    // Resume playback for both MediaPlayer and streamed audio
+    public synchronized void resumeClip() {
+        if (!isPaused) return; // Only resume if paused
+        isPaused = false;
+
+        if (isStream) {
+            startStreamFromPosition(pausedPosition); // Restart from paused position
+        } else if (mediaPlayer != null && isMediaPlayerPlaying) { //Only resume if the clip was actually playing
+            mediaPlayer.seek(javafx.util.Duration.seconds(pausedPosition));
+            mediaPlayer.play(); // Resume MediaPlayer playback
+        }
+    }
+
 
     public void muteAudioClip () {
         if (isStream) {
@@ -221,52 +265,68 @@ public class CustomAudioClip {
         }
     }
 
-    public void playAudioStream (AudioEnums clipType) {
+    // Method to start the stream from a specific position
+    // Method to start the stream from a specific position
+    private void startStreamFromPosition(double startPosition) {
         executor.submit(() -> {
             try {
-                InputStream inputStream = getClass().getResourceAsStream(AudioLoader.getInstance().convertAudioToFileString(clipType));
+                // Open a new input stream from the audio file
+                inputStream = getClass().getResourceAsStream(AudioLoader.getInstance().convertAudioToFileString(clipType));
+                if (inputStream == null) throw new FileNotFoundException("Audio file not found: " + clipType);
 
-                if (inputStream == null) {
-                    throw new FileNotFoundException("Audio file not found: " + clipType);
-                }
-
+                // Get a fresh AudioInputStream for the audio file
                 audioStream = AudioSystem.getAudioInputStream(inputStream);
-                streamFormat = audioStream.getFormat(); // Store the format for later use
-                totalFramesInStream = audioStream.getFrameLength(); // Set the total frames
+                streamFormat = audioStream.getFormat();
+                totalFramesInStream = audioStream.getFrameLength();
+                totalBytesRead = 0;
 
+                // Prepare the audio line
                 DataLine.Info info = new DataLine.Info(SourceDataLine.class, streamFormat);
                 audioLine = (SourceDataLine) AudioSystem.getLine(info);
                 audioLine.open(streamFormat);
                 audioLine.start();
 
-                if (audioLine != null && audioLine.isControlSupported(FloatControl.Type.MASTER_GAIN)) {
-                    if (AudioManager.getInstance().devTestmuteMode) {
-                        System.out.println("Played audio but MuteMode was ON");
-                        FloatControl volume = (FloatControl) audioLine.getControl(FloatControl.Type.MASTER_GAIN);
-                        volume.setValue(-70);
-                    }
+                // Set the volume
+                if (audioLine.isControlSupported(FloatControl.Type.MASTER_GAIN)) {
+                    FloatControl volume = (FloatControl) audioLine.getControl(FloatControl.Type.MASTER_GAIN);
+                    volume.setValue(AudioManager.getInstance().devTestmuteMode ? -70 : -10);
                 }
 
+                // Skip to the start position
+                long bytesToSkip = (long) (startPosition * streamFormat.getFrameRate() * streamFormat.getFrameSize());
+                byte[] skipBuffer = new byte[4096];
+                while (bytesToSkip > 0) {
+                    int toRead = (int) Math.min(skipBuffer.length, bytesToSkip);
+                    int bytesRead = audioStream.read(skipBuffer, 0, toRead);
+                    if (bytesRead == -1) break;
+                    bytesToSkip -= bytesRead;
+                    totalBytesRead += bytesRead;
+                }
+
+                // Play audio from the target position
                 byte[] buffer = new byte[4096];
                 int bytesRead;
-
                 while ((bytesRead = audioStream.read(buffer, 0, buffer.length)) != -1) {
                     audioLine.write(buffer, 0, bytesRead);
-                    totalBytesRead += bytesRead; // Track the total bytes read
+                    totalBytesRead += bytesRead;
                 }
 
                 audioLine.drain();
-//                audioLine.close();
                 audioStream.close();
 
-            } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
-                if(e.getMessage().contains("Stream closed")){
-                    System.out.println("Stream was attempted to be read but it was closed, it appears that this can be safely ignored");
-                } else {
-                    e.printStackTrace();
-                }
+            } catch (UnsupportedAudioFileException | LineUnavailableException e) {
+                e.printStackTrace();
+            } catch (IOException e){
+                System.out.println("Could not close or read the stream because: " + e.getMessage());
             }
         });
+    }
+
+
+    // Main method to start streaming from the beginning
+    public void playAudioStream(AudioEnums clipType) {
+        pausedPosition = 0; // Start from the beginning
+        startStreamFromPosition(pausedPosition);
     }
 
     public boolean isRunning () {
@@ -277,6 +337,10 @@ public class CustomAudioClip {
     }
 
     public boolean isFinished () {
+        if(isPaused){
+            return false;
+        }
+
         if (isStream) {
             return getCurrentSecondsInPlayback() >= getTotalSecondsInPlayback();
         }

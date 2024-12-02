@@ -40,6 +40,7 @@ public class GameUICreator {
     private UIObject gradeTextObject;
     private UIObject gameOverCardTitle;
     private UIObject damageOverlay;
+    private UIObject mineralIcon;
 
     private List<UIObject> informationCards = new ArrayList<>();
 
@@ -108,8 +109,14 @@ public class GameUICreator {
         } else {
             wingsImageEnum = LevelSongs.getImageEnumByDifficultyScore(currentLevelDifficultyScore);
         }
-        difficultyWings = new UIObject(createUIConfiguration(800, DataClass.getInstance().getPlayableWindowMaxHeight() + 20, 1f, wingsImageEnum));
-        difficultyWings.setCenterCoordinates(800, (DataClass.getInstance().getPlayableWindowMaxHeight() + (difficultyWings.getHeight() / 2) + 10));
+
+        int xCoordinate = Math.round(DataClass.getInstance().getWindowWidth() * 0.60305f);
+//        int yCoordinate = DataClass.getInstance().getPlayableWindowMaxHeight() + 20;
+
+        difficultyWings = new UIObject(createUIConfiguration(0, DataClass.getInstance().getPlayableWindowMaxHeight() + 20, 1f, wingsImageEnum));
+        difficultyWings.setCenterCoordinates(xCoordinate,
+                (DataClass.getInstance().getPlayableWindowMaxHeight() + (difficultyWings.getHeight() / 2))
+        );
     }
 
     private void createInformationCards () {
@@ -134,7 +141,7 @@ public class GameUICreator {
 
         }
 
-        specialAttackFrame = new UIObject(createUIConfiguration(healthBarWidth + 10 + 50, DataClass.getInstance().getPlayableWindowMaxHeight() + 10, 1, frameType));
+        specialAttackFrame = new UIObject(createUIConfiguration(healthBarWidth + 60, DataClass.getInstance().getPlayableWindowMaxHeight() + 10, 1, frameType));
         specialAttackHighlight = AnimationManager.getInstance().createAnimation(150, specialAttackFrame.getYCoordinate(), ImageEnums.Highlight, true,1);
         specialAttackHighlight.setAnimationScale(0.9142f);
 
@@ -176,7 +183,7 @@ public class GameUICreator {
     }
 
     private void createProgressBar(){
-        int xCoordinate = 1100;
+        int xCoordinate = Math.round(DataClass.getInstance().getWindowWidth() * 0.35305f);
         int yCoordinate = DataClass.getInstance().getPlayableWindowMaxHeight() + 20;
 
         progressBar = new UIObject((createUIConfiguration(xCoordinate, yCoordinate, 1, ImageEnums.ProgressBar)));
@@ -237,6 +244,14 @@ public class GameUICreator {
         gameOverCardTitle.setCenterCoordinates(titleCardX, titleCardY);
     }
 
+    private void createMineralIcon(){
+        int xCoordinate = Math.round(DataClass.getInstance().getWindowWidth() * 0.265f);
+        int yCoordinate = Math.round(DataClass.getInstance().getPlayableWindowMaxHeight() + ((DataClass.getInstance().getInformationCardHeight() / 2) * 0.9f));
+
+        mineralIcon = new UIObject(createUIConfiguration(xCoordinate, yCoordinate, 0.5f, ImageEnums.TopazGem7));
+        mineralIcon.setCenterCoordinates(xCoordinate, yCoordinate);
+    }
+
 
     private int gameOverPeepoRandomNumber = -100;
     public ImageEnums getRandomGameOverPeepo(){
@@ -288,6 +303,7 @@ public class GameUICreator {
         createInformationCards();
         createProgressBar();
         createGameOverCard();
+        createMineralIcon();
         gameOverPeepoRandomNumber = -100;
     }
 
@@ -337,5 +353,9 @@ public class GameUICreator {
 
     public UIObject getDamageOverlay () {
         return damageOverlay;
+    }
+
+    public UIObject getMineralIcon () {
+        return mineralIcon;
     }
 }

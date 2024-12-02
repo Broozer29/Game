@@ -1,6 +1,8 @@
 package net.riezebos.bruus.tbd.game.items.items;
 
 import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
+import net.riezebos.bruus.tbd.game.gameobjects.enemies.Enemy;
+import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyCategory;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.specialAttacks.ElectroShred;
 import net.riezebos.bruus.tbd.game.items.Item;
 import net.riezebos.bruus.tbd.game.items.effects.effectimplementations.FreezeEffect;
@@ -11,17 +13,22 @@ import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteAnimation;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteAnimationConfiguration;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteConfiguration;
 
-public class ElectricStabilizer extends Item {
+public class ElectricDestabilizer extends Item {
     private float duration;
 
-    public ElectricStabilizer(){
+    public ElectricDestabilizer () {
         super(ItemEnums.ElectricDestabilizer, 1, ItemApplicationEnum.AfterCollision);
         calculateDuration();
     }
 
     @Override
     public void applyEffectToObject (GameObject applier, GameObject target) {
-        if(applier instanceof ElectroShred) {
+        if (target instanceof Enemy enemy && enemy.getEnemyType().getEnemyCategory().equals(EnemyCategory.Boss)) {
+            return;
+        }
+
+
+        if (applier instanceof ElectroShred) {
             SpriteConfiguration spriteConfiguration = new SpriteConfiguration();
             spriteConfiguration.setxCoordinate(target.getXCoordinate());
             spriteConfiguration.setyCoordinate(target.getYCoordinate());

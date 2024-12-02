@@ -141,6 +141,7 @@ public class Missile extends GameObject {
         this.setVisible(false);
         if (this.getDestructionAnimation() != null) {
             centerDestructionAnimation();
+            this.destructionAnimation.rotateAnimation(this.rotationAngle, false);
             AnimationManager.getInstance().addUpperAnimation(this.getDestructionAnimation());
         }
     }

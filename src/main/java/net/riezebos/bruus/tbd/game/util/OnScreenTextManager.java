@@ -1,5 +1,8 @@
 package net.riezebos.bruus.tbd.game.util;
 
+import net.riezebos.bruus.tbd.game.UI.GameUICreator;
+import net.riezebos.bruus.tbd.game.UI.UIObject;
+
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -37,6 +40,15 @@ public class OnScreenTextManager {
 
 	public void addText(String text, int xCoordinate, int yCoordinate){
 		OnScreenText onScreenText = new OnScreenText(xCoordinate, yCoordinate, text);
+		this.onScreenTexts.add(onScreenText);
+	}
+
+	public void addMineralsGainedText(float amount){
+		UIObject mineralIcon = GameUICreator.getInstance().getMineralIcon();
+		int xCoordinate = mineralIcon.getXCoordinate() - Math.round(mineralIcon.getWidth() * 0.5f);
+		int yCoordinate = mineralIcon.getYCoordinate() + Math.round(mineralIcon.getHeight() * 1.5f);
+
+		OnScreenText onScreenText = new OnScreenText(xCoordinate, yCoordinate, "+" + Math.round(amount));
 		this.onScreenTexts.add(onScreenText);
 	}
 

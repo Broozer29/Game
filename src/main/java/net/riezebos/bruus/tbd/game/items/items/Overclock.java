@@ -8,15 +8,34 @@ import net.riezebos.bruus.tbd.game.items.enums.ItemEnums;
 
 public class Overclock extends Item {
 
-    //Applies 10% attack speed increase
+    private boolean shouldApply;
+    private float attackSpeedBonus = 15;
 
     public Overclock(){
         super(ItemEnums.Overclock, 1,  ItemApplicationEnum.ApplyOnCreation);
+        shouldApply = false;
     }
 
     @Override
     public void applyEffectToObject(GameObject gameObject){
-        PlayerStats.getInstance().setAttackSpeedBonus(this.quantity * 10);
+        if(shouldApply) {
+            PlayerStats.getInstance().modifyAttackSpeedBonus(this.quantity * attackSpeedBonus);
+            shouldApply = false;
+        }
+    }
+
+    private void removeEffect(){
+        if(quantity > 0) {
+            PlayerStats.getInstance().modifyAttackSpeedBonus(-(this.quantity * attackSpeedBonus));
+        }
+    }
+
+    @Override
+    public void increaseQuantityOfItem (int amount) {
+        shouldApply = true;
+        removeEffect();
+        this.quantity += amount;
+        applyEffectToObject(null);
     }
 
 }

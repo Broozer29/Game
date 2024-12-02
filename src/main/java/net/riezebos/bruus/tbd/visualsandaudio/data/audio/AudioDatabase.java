@@ -39,6 +39,7 @@ public class AudioDatabase {
     private CustomAudioClip mydnyte;
     private CustomAudioClip leYouthChills;
     private CustomAudioClip paintingTheSkies;
+    private CustomAudioClip riskOfDanger;
 
     private CustomAudioClip cannonsFireForYou;
     private CustomAudioClip embrzRainOnMyWindow;
@@ -125,6 +126,7 @@ public class AudioDatabase {
         for (List<CustomAudioClip> clipList : audioClipsMap.values()) {
             for (CustomAudioClip clip : clipList) {
                 clip.setPlaybackPosition(0);
+                clip.stopClip();;
             }
         }
     }
@@ -202,6 +204,7 @@ public class AudioDatabase {
         gustyGardenGalaxyRemix = new CustomAudioClip(AudioEnums.GustyGardenGalaxyRemix);
         wePlantsTimeRemix = new CustomAudioClip(AudioEnums.WePlantsAreHappyPlantsTimeRemix);
         bossBattle = new CustomAudioClip(AudioEnums.BossBattle);
+        riskOfDanger = new CustomAudioClip(AudioEnums.RiskOfDanger);
         silentAudio = new CustomAudioClip(AudioEnums.SilentAudio);
 
     }
@@ -356,6 +359,8 @@ public class AudioDatabase {
                 return getAvailableClip(audioType);
             case Ayasa_The_Reason_Why:
                 return ayasaTheReasonWhy;
+            case RiskOfDanger:
+                return riskOfDanger;
             case mainmenu:
                 return this.mainmenu;
             case NONE:
@@ -364,4 +369,8 @@ public class AudioDatabase {
         return null;
     }
 
+
+    public List<CustomAudioClip> getAllActiveClips () {
+        return allActiveClips;
+    }
 }

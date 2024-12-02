@@ -226,8 +226,7 @@ public class MissileManager {
             CollisionInfo collisionInfo = collisionDetector.detectCollision(missile, enemy);
             if (collisionInfo != null) {
                 if (missile.getMissileEnum().equals(MissileEnums.TazerProjectile)) {
-                    ((TazerProjectile) missile).handleTazerMissile(enemy);
-                    missile.handleCollision(enemy);
+                    ((TazerProjectile) missile).applyTazerMissileEffect(enemy);
                 } else { //It's a player missile
                     missile.applyBeforeCollisionItemEffects(enemy);
                     missile.handleCollision(enemy);
@@ -244,7 +243,7 @@ public class MissileManager {
         CollisionInfo collisionInfo = collisionDetector.detectCollision(missile, spaceship);
         if (collisionInfo != null) {
             if (missile.getMissileEnum().equals(MissileEnums.TazerProjectile)) {
-                ((TazerProjectile) missile).handleTazerMissile(spaceship);
+                ((TazerProjectile) missile).applyTazerMissileEffect(spaceship);
             }
             //if deflect: deflect missile, else:
             missile.handleCollision(spaceship);

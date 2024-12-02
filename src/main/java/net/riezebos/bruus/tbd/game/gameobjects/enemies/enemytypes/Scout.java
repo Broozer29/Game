@@ -64,7 +64,7 @@ public class Scout extends Enemy {
     }
 
     private void shootMissile () {
-        MissileEnums missileType = MissileEnums.ScoutLaserBullet;
+        MissileEnums missileType = MissileEnums.DefaultLaserBullet;
         SpriteConfiguration spriteConfiguration = MissileCreator.getInstance().createMissileSpriteConfig(xCoordinate, yCoordinate, missileType.getImageType()
                 , this.scale / 2);
 

@@ -1,12 +1,14 @@
 package net.riezebos.bruus.tbd.game.items.effects.effectimplementations;
 
 import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
+import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
 import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SpaceShip;
 import net.riezebos.bruus.tbd.game.gamestate.GameStateInfo;
 import net.riezebos.bruus.tbd.game.items.effects.EffectActivationTypes;
 import net.riezebos.bruus.tbd.game.items.effects.EffectIdentifiers;
 import net.riezebos.bruus.tbd.game.items.effects.EffectInterface;
+import net.riezebos.bruus.tbd.game.util.OnScreenTextManager;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteAnimation;
 
 public class DamageModifierEffect implements EffectInterface {
@@ -38,11 +40,11 @@ public class DamageModifierEffect implements EffectInterface {
             this.modifiedObject = gameObject;
             if (gameObject instanceof SpaceShip) {
 //                float oldValue = PlayerStats.getInstance().getNormalAttackDamage();
-                PlayerStats.getInstance().modifyBonusDamageMultiplier(-damageModifierAmount);
+                PlayerStats.getInstance().modifyBonusDamageMultiplier(damageModifierAmount);
 //                OnScreenTextManager.getInstance().addText(PlayerStats.getInstance().getNormalAttackDamage() + " / " + oldValue,
 //                        PlayerManager.getInstance().getSpaceship().getXCoordinate(), PlayerManager.getInstance().getSpaceship().getYCoordinate());
             } else if (gameObject.isFriendly()) {
-                gameObject.modifyBonusDamageMultiplier(-damageModifierAmount);
+                gameObject.modifyBonusDamageMultiplier(damageModifierAmount);
             } else {
 //                float oldValue = gameObject.getDamage();
                 gameObject.modifyBonusDamageMultiplier(damageModifierAmount);
@@ -61,12 +63,12 @@ public class DamageModifierEffect implements EffectInterface {
     private void removeEffectsBeforeRemovingEffect () {
         if (modifiedObject instanceof SpaceShip) {
 //            float oldValue = PlayerStats.getInstance().getNormalAttackDamage();
-            PlayerStats.getInstance().modifyBonusDamageMultiplier(damageModifierAmount);
+            PlayerStats.getInstance().modifyBonusDamageMultiplier(-damageModifierAmount);
 //            OnScreenTextManager.getInstance().addText(PlayerStats.getInstance().getNormalAttackDamage() + " / " + oldValue,
 //                    PlayerManager.getInstance().getSpaceship().getXCoordinate(), PlayerManager.getInstance().getSpaceship().getYCoordinate());
 
         } else if (modifiedObject.isFriendly()) {
-            modifiedObject.modifyBonusDamageMultiplier(damageModifierAmount);
+            modifiedObject.modifyBonusDamageMultiplier(-damageModifierAmount);
         } else {
 //            float oldValue = modifiedObject.getDamage();
             modifiedObject.modifyBonusDamageMultiplier(-damageModifierAmount);

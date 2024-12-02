@@ -1,5 +1,8 @@
 package net.riezebos.bruus.tbd.visualsandaudio.data.image;
 
+import net.riezebos.bruus.tbd.game.gameobjects.friendlies.Drones.Drone;
+import net.riezebos.bruus.tbd.game.items.items.MoneyPrinter;
+
 public enum ImageEnums {
 
     //// Menu Buttons
@@ -7,6 +10,7 @@ public enum ImageEnums {
     Title_Image,
     ProgressBar,
     ProgressBarFilling,
+    InputMapping,
 
     //// Animations
     Impact_Explosion_One,

@@ -1,7 +1,9 @@
 package net.riezebos.bruus.tbd.visualsandaudio.data.audio;
 
+import net.riezebos.bruus.tbd.game.level.LevelManager;
 import net.riezebos.bruus.tbd.game.level.enums.LevelDifficulty;
 import net.riezebos.bruus.tbd.game.level.enums.LevelLength;
+import net.riezebos.bruus.tbd.game.level.enums.LevelTypes;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.AudioEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.LevelSongs;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.MusicMediaPlayer;
@@ -189,13 +191,12 @@ public class AudioManager {
         this.musicMediaPlayer = musicMediaPlayer;
     }
 
-    public boolean isBackgroundMusicFinished () {
-        if (this.musicMediaPlayer == MusicMediaPlayer.Default) {
+    public boolean isLevelMusicFinished () {
+        if(LevelManager.getInstance().getLevelType().equals(LevelTypes.Boss) || this.musicMediaPlayer == MusicMediaPlayer.Default){
             return backGroundMusic.isFinished();
         }
 
         if (this.musicMediaPlayer == MusicMediaPlayer.MacOS) {
-            // Check if the music has started
             if (!macOSMediaPlayer.hasStartedMusic()) {
                 return false;  // Song hasn't started yet
             }
@@ -255,6 +256,31 @@ public class AudioManager {
         }
 
         return -1;
+    }
+
+    public void pauseAllAudio(){
+        for(CustomAudioClip audioClip : audioDatabase.getAllActiveClips()){
+            audioClip.pauseClip();
+        }
+
+        if(LevelManager.getInstance().getLevelType().equals(LevelTypes.Boss) || backGroundMusic != null){
+            backGroundMusic.pauseClip();
+        } else if(this.musicMediaPlayer.equals(MusicMediaPlayer.MacOS)){
+            macOSMediaPlayer.stopPlayback();
+        }
+    }
+
+    public void resumeAllAudio(){
+        for(CustomAudioClip audioClip : audioDatabase.getAllActiveClips()){
+            audioClip.resumeClip();
+        }
+
+        if(LevelManager.getInstance().getLevelType().equals(LevelTypes.Boss) || backGroundMusic != null){
+            backGroundMusic.resumeClip();
+        } else if(this.musicMediaPlayer.equals(MusicMediaPlayer.MacOS)){
+            macOSMediaPlayer.resumePlayback();
+        }
+
     }
 
     public CustomAudioClip getBackGroundMusicCustomAudioclip () {

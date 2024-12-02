@@ -9,32 +9,33 @@ import net.riezebos.bruus.tbd.game.items.enums.ItemEnums;
 public class ThornedPlates extends Item {
 
 
-    private float currentlyAppliedAmount = 0.0f;
     private float buffAmount = 0.20f;
+    private boolean shouldApply;
 
-    public ThornedPlates(){
+    public ThornedPlates () {
         super(ItemEnums.ThornedPlates, 1, ItemApplicationEnum.ApplyOnCreation);
+        shouldApply = true;
     }
 
-    private void setCurrentlyAppliedAmount(float amount){
-        this.currentlyAppliedAmount = amount;
+
+    private void removeEffect () {
+        PlayerStats.getInstance().modifyThornsDamageRatio(-(quantity * buffAmount));
     }
 
-    private void removeCurrentlyAppliedAmount(){
-        PlayerStats.getInstance().modifyThornsDamageRatio(-this.currentlyAppliedAmount);
-    }
-
-    private void addAppliedAmount(float amount){
-        PlayerStats.getInstance().modifyThornsDamageRatio(amount);
-        setCurrentlyAppliedAmount(amount);
+    @Override
+    public void increaseQuantityOfItem (int amount) {
+        shouldApply = true;
+        removeEffect();
+        this.quantity += amount;
+        applyEffectToObject(null);
     }
 
     @Override
     public void applyEffectToObject (GameObject gameObject) {
-        removeCurrentlyAppliedAmount();
-        float ratio = quantity * buffAmount;
-        addAppliedAmount(ratio);
-        setCurrentlyAppliedAmount(ratio);
+        if (shouldApply) {
+            shouldApply = false;
+            PlayerStats.getInstance().modifyThornsDamageRatio(quantity * buffAmount);
+        }
     }
 
 }

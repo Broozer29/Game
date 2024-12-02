@@ -39,6 +39,9 @@ public class HoverPathFinder implements PathFinder {
     private List<Point> calculatePath(Point start, Point end, float maxStepSizeX, float maxStepSizeY) {
         List<Point> pathList = new ArrayList<>();
         pathList.add(start);
+        if(maxStepSizeX == 0 && maxStepSizeY == 0){
+            return pathList;
+        }
 
         int totalDistanceX = end.getX() - start.getX();
         int totalDistanceY = end.getY() - start.getY();

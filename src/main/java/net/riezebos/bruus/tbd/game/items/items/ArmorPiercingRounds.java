@@ -11,23 +11,23 @@ public class ArmorPiercingRounds extends Item {
 
     private float damageModifier;
 
-    public ArmorPiercingRounds(){
+    public ArmorPiercingRounds () {
         super(ItemEnums.ArmorPiercingRounds, 1, ItemApplicationEnum.BeforeCollision);
         calculateDamageModifier();
     }
 
-    private void calculateDamageModifier(){
+    private void calculateDamageModifier () {
         damageModifier = (quantity * 0.2f);
     }
 
     @Override
-    public void modifyAttackingObject (GameObject applier, GameObject target){
-        if(target instanceof Enemy enemy && enemy.getEnemyType().getEnemyCategory() == EnemyCategory.Mercenary){
-                applier.modifyBonusDamageMultiplier(damageModifier);
-            }
+    public void modifyAttackingObject (GameObject applier, GameObject target) {
+        if (target instanceof Enemy enemy && enemy.getEnemyType().getEnemyCategory() == EnemyCategory.Mercenary) {
+            applier.modifyBonusDamageMultiplier(damageModifier);
+        }
     }
 
-    public void increaseQuantityOfItem(int amount) {
+    public void increaseQuantityOfItem (int amount) {
         this.quantity += amount;
         calculateDamageModifier();
     }

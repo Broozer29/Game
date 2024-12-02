@@ -43,6 +43,7 @@ public class ControllerInputReader {
             // Example for buttons
             inputState.put(ControllerInputEnums.FIRE, currController.isButtonPressed(ControllerButton.A)); // Assuming 'A' button maps to FIRE
             inputState.put(ControllerInputEnums.SPECIAL_ATTACK, currController.isButtonPressed(ControllerButton.B)); // Assuming 'B' button maps to SPECIAL_ATTACK
+            inputState.put(ControllerInputEnums.PAUSE, currController.isButtonPressed(ControllerButton.DPAD_UP));
 
             // Additional mappings as per your ControllerInput enum
         } catch (ControllerUnpluggedException e) {
@@ -68,12 +69,12 @@ public class ControllerInputReader {
             }
 
             // Check all axes for their current state
-            for (ControllerAxis axis : ControllerAxis.values()) {
-                float axisValue = currController.getAxisState(axis);
-                if (axisValue != 0) { // You might want to check a deadzone instead of zero
-                    System.out.println(axis + " axis: " + axisValue);
-                }
-            }
+//            for (ControllerAxis axis : ControllerAxis.values()) {
+//                float axisValue = currController.getAxisState(axis);
+//                if (axisValue != 0) { // You might want to check a deadzone instead of zero
+//                    System.out.println(axis + " axis: " + axisValue);
+//                }
+//            }
 
             System.out.println("");
         } catch (ControllerUnpluggedException e) {

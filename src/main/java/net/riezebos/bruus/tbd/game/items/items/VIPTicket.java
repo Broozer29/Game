@@ -13,7 +13,7 @@ public class VIPTicket extends Item {
     private int discount;
 
     public VIPTicket () {
-        super(ItemEnums.VIPTicket, 1, ItemApplicationEnum.ApplyOnCreation);
+        super(ItemEnums.VIPTicket, 1, ItemApplicationEnum.UponPurchase);
         calculateDiscount();
     }
 

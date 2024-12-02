@@ -18,14 +18,15 @@ public class GUITextCollection implements Actionable {
 
     private float scale;
 
-    public GUITextCollection (int startingXCoordinate, int startingYCoordinate, String textToDisplayAsGUIComponents){
+    public GUITextCollection (int startingXCoordinate, int startingYCoordinate, String textToDisplayAsGUIComponents) {
         this.startingXCoordinate = startingXCoordinate;
         this.startingYCoordinate = startingYCoordinate;
         this.textToDisplayAsGUIComponents = textToDisplayAsGUIComponents;
+        this.scale = 1;
         initMenuText();
     }
 
-    private void initMenuText() {
+    private void initMenuText () {
         int kernelDistance = 10;
         for (int i = 0; i < textToDisplayAsGUIComponents.length(); i++) {
             char stringChar = textToDisplayAsGUIComponents.charAt(i);
@@ -33,9 +34,9 @@ public class GUITextCollection implements Actionable {
                 ImageEnums imageType = ImageEnums.fromChar(stringChar); // convert char to Letter enum
                 SpriteConfiguration spriteConfiguration = new SpriteConfiguration();
                 spriteConfiguration.setImageType(imageType);
-                spriteConfiguration.setxCoordinate(startingXCoordinate + (kernelDistance * i));
+                spriteConfiguration.setxCoordinate(startingXCoordinate + Math.round(((kernelDistance * i) * scale)));
                 spriteConfiguration.setyCoordinate(startingYCoordinate);
-                spriteConfiguration.setScale(1);
+                spriteConfiguration.setScale(scale);
 
                 DisplayOnly letter = new DisplayOnly(spriteConfiguration);
                 componentsBelongingToCollection.add(letter);
@@ -50,14 +51,14 @@ public class GUITextCollection implements Actionable {
     }
 
 
-    public void addComponentToCollection(GUIComponent component){
-        if(!this.componentsBelongingToCollection.contains(component)){
+    public void addComponentToCollection (GUIComponent component) {
+        if (!this.componentsBelongingToCollection.contains(component)) {
             componentsBelongingToCollection.add(component);
         }
     }
 
-    public void removeComponentFromCollection(GUIComponent component){
-        if(this.componentsBelongingToCollection.contains(component)){
+    public void removeComponentFromCollection (GUIComponent component) {
+        if (this.componentsBelongingToCollection.contains(component)) {
             this.componentsBelongingToCollection.remove(component);
         }
     }
@@ -68,12 +69,12 @@ public class GUITextCollection implements Actionable {
 
     @Override
     public void activateComponent () {
-        for(GUIComponent component : componentsBelongingToCollection){
+        for (GUIComponent component : componentsBelongingToCollection) {
             component.activateComponent();
         }
     }
 
-    public void setMenuFunctionality (MenuFunctionEnums menuFunctionalityToImplement){
+    public void setMenuFunctionality (MenuFunctionEnums menuFunctionalityToImplement) {
         this.menuFunctionEnums = menuFunctionalityToImplement;
         int lastComponentIndex = 0;
 
@@ -97,10 +98,9 @@ public class GUITextCollection implements Actionable {
     }
 
     public void setScale (float scale) {
-        if(scale != this.scale) {
-            this.scale = scale;
-            initMenuText();
-        }
+        this.componentsBelongingToCollection.clear();
+        this.scale = scale;
+        initMenuText();
     }
 
     public int getStartingXCoordinate () {

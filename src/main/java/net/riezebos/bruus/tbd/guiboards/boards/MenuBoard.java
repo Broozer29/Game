@@ -3,8 +3,8 @@ package net.riezebos.bruus.tbd.guiboards.boards;
 import net.riezebos.bruus.tbd.controllerInput.ConnectedControllersManager;
 import net.riezebos.bruus.tbd.controllerInput.ControllerInputEnums;
 import net.riezebos.bruus.tbd.controllerInput.ControllerInputReader;
-import net.riezebos.bruus.tbd.game.gameobjects.background.BackgroundManager;
-import net.riezebos.bruus.tbd.game.gameobjects.background.BackgroundObject;
+import net.riezebos.bruus.tbd.guiboards.background.BackgroundManager;
+import net.riezebos.bruus.tbd.guiboards.background.BackgroundObject;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.AnimationManager;
 import net.riezebos.bruus.tbd.game.util.OnScreenTextManager;
 import net.riezebos.bruus.tbd.game.util.OnScreenText;
@@ -48,11 +48,15 @@ public class MenuBoard extends JPanel implements ActionListener {
     private GUITextCollection startGameButton;
     private List<GUITextCollection> controlExplanations;
     private GUIComponent startGameBackgroundCard;
+    private GUITextCollection selectMusicOptionText;
+    private GUIComponent selectMusicOptionBackgroundCard;
     private GUITextCollection openShopButton;
     private GUITextCollection selectMacOSMediaPlayerButton;
     private GUITextCollection selectDefaultMusicButton;
     private GUIComponent titleImage;
+    private GUIComponent inputMapping;
     private GUITextCollection foundController;
+
     private Timer timer;
     private boolean foundControllerBool = false;
     private boolean initializedMenuObjects = false;
@@ -81,17 +85,20 @@ public class MenuBoard extends JPanel implements ActionListener {
 
     // Initialize all starter pointers
     private void initMenuTiles () {
-        // With functionality:
         titleImage = MenuBoardCreator.createTitleImage();
         controlExplanations = MenuBoardCreator.createControlsExplanations();
         startGameBackgroundCard = MenuBoardCreator.startGameBackgroundCard();
+
         startGameButton = MenuBoardCreator.createStartGameButton(startGameBackgroundCard);
         menuCursor = MenuBoardCreator.createMenuCursor(startGameButton.getComponents().get(0));
         openShopButton = MenuBoardCreator.openShopButton(startGameButton);
         foundController = MenuBoardCreator.foundControllerText(foundControllerBool, titleImage);
-        selectMacOSMediaPlayerButton = MenuBoardCreator.selectMacOSMediaPlayer(openShopButton);
-        selectDefaultMusicButton = MenuBoardCreator.selectDefaultPlayer(selectMacOSMediaPlayerButton);
 
+        selectMusicOptionBackgroundCard = MenuBoardCreator.selectMusicPlayerBackgroundCard(startGameBackgroundCard);
+        selectMusicOptionText = MenuBoardCreator.selectMusicText(selectMusicOptionBackgroundCard);
+        selectDefaultMusicButton = MenuBoardCreator.selectDefaultLocalMusicPlayer(selectMusicOptionBackgroundCard);
+        selectMacOSMediaPlayerButton = MenuBoardCreator.selectMacOSItunesMediaPlayer(selectDefaultMusicButton);
+        inputMapping = MenuBoardCreator.createInputMapping();
         initializedMenuObjects = true;
     }
 
@@ -113,8 +120,14 @@ public class MenuBoard extends JPanel implements ActionListener {
             }
 
             offTheGridObjects.add(startGameBackgroundCard);
+            offTheGridObjects.add(selectMusicOptionBackgroundCard);
             offTheGridObjects.add(titleImage);
             offTheGridObjects.add(menuCursor);
+            offTheGridObjects.addAll(selectMusicOptionText.getComponents());
+
+            if(foundControllerBool) {
+                offTheGridObjects.add(inputMapping);
+            }
 
 
             offTheGridObjects.addAll(foundController.getComponents());
@@ -143,18 +156,16 @@ public class MenuBoard extends JPanel implements ActionListener {
     }
 
     private void addTilesToColumns () {
-        //Move start game tile to selectLevelBoard
         firstColumn.add(startGameButton.getComponents().get(0));
         addAllButFirstComponent(startGameButton);
         firstColumn.add(openShopButton.getComponents().get(0));
         addAllButFirstComponent(openShopButton);
 
-        firstColumn.add(selectMacOSMediaPlayerButton.getComponents().get(0));
-        addAllButFirstComponent(selectMacOSMediaPlayerButton);
-
-        firstColumn.add(selectDefaultMusicButton.getComponents().get(0));
+        secondColumn.add(selectDefaultMusicButton.getComponents().get(0));
         addAllButFirstComponent(selectDefaultMusicButton);
 
+        secondColumn.add(selectMacOSMediaPlayerButton.getComponents().get(0));
+        addAllButFirstComponent(selectMacOSMediaPlayerButton);
     }
 
 

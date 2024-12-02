@@ -1,6 +1,6 @@
 package net.riezebos.bruus.tbd.game.level;
 
-import net.riezebos.bruus.tbd.game.gameobjects.background.BackgroundObject;
+import net.riezebos.bruus.tbd.guiboards.background.BackgroundObject;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.Enemy;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyEnums;
 import net.riezebos.bruus.tbd.game.movement.Direction;

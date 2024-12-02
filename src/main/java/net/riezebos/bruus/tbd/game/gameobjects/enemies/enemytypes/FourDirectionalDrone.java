@@ -106,7 +106,7 @@ public class FourDirectionalDrone extends Enemy {
 
         int movementSpeed = 3;
         //Create missile movement attributes and create a movement configuration
-        MissileEnums missileType = MissileEnums.ScoutLaserBullet;
+        MissileEnums missileType = MissileEnums.DefaultLaserBullet;
         PathFinder missilePathFinder = new StraightLinePathFinder();
         MovementPatternSize movementPatternSize = MovementPatternSize.SMALL;
         MovementConfiguration movementConfiguration = MissileCreator.getInstance().createMissileMovementConfig(

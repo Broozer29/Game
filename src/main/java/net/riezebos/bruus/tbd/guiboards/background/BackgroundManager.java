@@ -1,4 +1,4 @@
-package net.riezebos.bruus.tbd.game.gameobjects.background;
+package net.riezebos.bruus.tbd.guiboards.background;
 
 import net.riezebos.bruus.tbd.game.level.SpawningCoordinator;
 import net.riezebos.bruus.tbd.visualsandaudio.data.DataClass;
@@ -104,13 +104,13 @@ public class BackgroundManager {
         // Background objects initialization logic...
         ImageEnums nebula = getNebulaImage(this.nebulaTheme);
         fillBGOList(BGOEnums.Nebula, nebula, 1, 25, 4, 25);
-        fillBGOList(BGOEnums.Star, ImageEnums.Star, (float) 1, 40, 3, 100);
-        fillBGOList(BGOEnums.Star, ImageEnums.Star, (float) 0.75, 40, 2, 100);
-        fillBGOList(BGOEnums.Star, ImageEnums.Star, 0.5f, 40, 1, 100);
+        fillBGOList(BGOEnums.Star, ImageEnums.Star, 1f, 35, 3, 90);
+        fillBGOList(BGOEnums.Star, ImageEnums.Star, 0.75f, 35, 2, 90);
+        fillBGOList(BGOEnums.Star, ImageEnums.Star, 0.5f, 35, 1, 90);
 
-        fillBGOList(BGOEnums.Planet, getRandomPlanetEnum(), (float) 0.4, 1, 3, 5);
-        fillBGOList(BGOEnums.Planet, getRandomPlanetEnum(), (float) 0.6, 1, 2, 5);
-        fillBGOList(BGOEnums.Planet, getRandomPlanetEnum(), (float) 0.8, 1, 1, 5);
+        fillBGOList(BGOEnums.Planet, getRandomPlanetEnum(), 0.4f, 2, 3, 5);
+        fillBGOList(BGOEnums.Planet, getRandomPlanetEnum(), 0.6f, 1, 2, 5);
+        fillBGOList(BGOEnums.Planet, getRandomPlanetEnum(), 0.8f, 1, 1, 5);
 
     }
 
@@ -229,7 +229,7 @@ public class BackgroundManager {
         }
     }
 
-    private void updateRightmostNebulaEdge() {
+    private void updateRightmostNebulaEdge () {
         int maxEdge = 0;
         for (BackgroundObject obj : backgroundObjectsMap.get(BGOEnums.Nebula)) {
             int edge = obj.getXCoordinate() + obj.getWidth();

@@ -9,13 +9,18 @@ import net.riezebos.bruus.tbd.game.items.enums.ItemEnums;
 public class ElectricSupercharger extends Item {
     private float buffAmount = 0.2f;
     private float currentlyAppliedAmount = 0;
+    private boolean shouldApply;
     public ElectricSupercharger () {
         super(ItemEnums.ElectricSupercharger, 1, ItemApplicationEnum.ApplyOnCreation);
+        shouldApply = true;
     }
 
     @Override
     public void increaseQuantityOfItem (int amount) {
-        this.quantity += 1;
+        removeCurrentlyAppliedAmount();
+        this.quantity += amount;
+        shouldApply = true;
+        applyEffectToObject(null);
     }
 
     private void setCurrentlyAppliedAmount(float amount){
@@ -23,23 +28,26 @@ public class ElectricSupercharger extends Item {
     }
 
     private void removeCurrentlyAppliedAmount(){
-        PlayerStats.getInstance().modifySpecialBonusDamageMultiplier(-this.currentlyAppliedAmount);
+        if(quantity > 0) {
+            PlayerStats.getInstance().modifySpecialBonusDamageMultiplier(-this.currentlyAppliedAmount);
+        }
     }
 
     private void addAppliedAmount(float amount){
-        PlayerStats.getInstance().modifySpecialBonusDamageMultiplier(amount);
-        setCurrentlyAppliedAmount(amount);
+            PlayerStats.getInstance().modifySpecialBonusDamageMultiplier(amount);
+            setCurrentlyAppliedAmount(amount);
     }
 
     @Override
     public void applyEffectToObject (GameObject gameObject) {
-        if(quantity >= 1){
-            PlayerStats.getInstance().setHasImprovedElectroShred(true);
+        if(shouldApply) {
+            if (quantity >= 1) {
+                PlayerStats.getInstance().setHasImprovedElectroShred(true);
+            }
+            float ratio = quantity * buffAmount;
+            addAppliedAmount(ratio);
+            setCurrentlyAppliedAmount(ratio);
+            shouldApply = false;
         }
-
-        removeCurrentlyAppliedAmount();
-        float ratio = quantity * buffAmount;
-        addAppliedAmount(ratio);
-        setCurrentlyAppliedAmount(ratio);
     }
 }

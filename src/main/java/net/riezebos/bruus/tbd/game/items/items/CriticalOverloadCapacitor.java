@@ -7,16 +7,30 @@ import net.riezebos.bruus.tbd.game.items.enums.ItemApplicationEnum;
 import net.riezebos.bruus.tbd.game.items.enums.ItemEnums;
 
 public class CriticalOverloadCapacitor extends Item {
+    private boolean shouldApply;
+
     public CriticalOverloadCapacitor () {
         super(ItemEnums.CriticalOverloadCapacitor, 1, ItemApplicationEnum.ApplyOnCreation);
+        shouldApply = true;
     }
 
     @Override
     public void applyEffectToObject (GameObject gameObject) {
-        PlayerStats.getInstance().addCriticalStrikeDamageMultiplier(this.quantity);
+        if (shouldApply) {
+            PlayerStats.getInstance().addCriticalStrikeDamageMultiplier(this.quantity);
+            shouldApply = false;
+        }
     }
 
-    public void increaseQuantityOfItem(int amount) {
+    private void removeEffect () {
+        if (this.quantity > 0) {
+            PlayerStats.getInstance().addCriticalStrikeDamageMultiplier(-this.quantity);
+        }
+    }
+
+    public void increaseQuantityOfItem (int amount) {
+        shouldApply = true;
+        removeEffect();
         this.quantity += amount;
         applyEffectToObject(null);
     }

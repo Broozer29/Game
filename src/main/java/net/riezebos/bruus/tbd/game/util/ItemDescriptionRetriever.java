@@ -44,13 +44,13 @@ public class ItemDescriptionRetriever {
                 return "Gain 10 armor. Armor increases damage reduction.";
             }
             case ArmorPiercingRounds -> {
-                return "Increases damage dealt to Mercenaries by 25%";
+                return "Increases damage dealt to Medium sized enemies by 20% (+20%)";
             }
             case EnergySiphon -> {
                 return "Killing an enemy grants 25 (+25) temporary barrier";
             }
             case MoneyPrinter -> {
-                return "Chance on enemy kill to gain additional minerals";
+                return "Killing an enemy has a 10% chance to grant 5 (+5) additional minerals";
             }
             case StickyDynamite -> {
                 return "Every attack has 10% chance to explode for 200% (+200%) additional damage, increases the size of the explosion by 10% (+10%)";

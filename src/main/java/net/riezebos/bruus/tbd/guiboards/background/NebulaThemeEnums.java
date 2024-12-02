@@ -1,4 +1,4 @@
-package net.riezebos.bruus.tbd.game.gameobjects.background;
+package net.riezebos.bruus.tbd.guiboards.background;
 
 import java.util.List;
 import java.util.Random;

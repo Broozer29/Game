@@ -2,6 +2,7 @@ package net.riezebos.bruus.tbd.game.gameobjects.neutral;
 
 import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
 import net.riezebos.bruus.tbd.game.items.effects.EffectInterface;
+import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteAnimationConfiguration;
 
 import java.util.ArrayList;
@@ -58,7 +59,13 @@ public class Explosion extends GameObject {
         if (this.isFriendly()) { //Should probably be different per animation, this is a bit of a shoddy fix
             this.maxAnimationFramesForDamage = this.animation.getTotalFrames();
         } else {
-            this.maxAnimationFramesForDamage = 10;
+            switch (this.animation.getImageEnum()) {
+                case Bomba_Missile_Explosion:
+                    this.maxAnimationFramesForDamage = 14;
+                    break;
+                default:
+                    this.maxAnimationFramesForDamage = 10;
+            }
         }
     }
 

@@ -82,7 +82,7 @@ public class EnemyCreator {
     private static EnemyConfiguration createEnemyConfiguration (EnemyEnums enemyType, boolean boxCollision) {
         int maxHitpoints = enemyType.getBaseHitPoints();
         int maxShields = enemyType.getBaseShieldPoints();
-        boolean hasAttack = enemyType.isHasAttack();
+        boolean hasAttack = enemyType.hasAttack();
         boolean showHealthBar = false;
         AudioEnums deathSound = enemyType.getDeathSound();
         boolean allowedToDealDamage = true;

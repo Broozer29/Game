@@ -361,7 +361,7 @@ public class GameObject extends Sprite {
             AudioManager.getInstance().addAudio(deathSound);
 
 
-            triggerClassSpecificOnDeathTriggers();
+            triggerCategorySpecificOnDeathTriggers();
 
             this.setVisible(false);
             activateOnDeathEffects();
@@ -370,7 +370,7 @@ public class GameObject extends Sprite {
         }
     }
 
-    public void triggerClassSpecificOnDeathTriggers () {
+    public void triggerCategorySpecificOnDeathTriggers () {
         //Supposed to be overriden. Used for "Enemy kill counter" for example
     }
 
@@ -982,17 +982,7 @@ public class GameObject extends Sprite {
 
     public void modifyMovementSpeedModifier (float bonusSpeed) {
         this.movementConfiguration.modifyMovementSpeedModifier(bonusSpeed);
-        ;
     }
-
-//    public int getXCoordinate () {
-//        if (this.animation != null) {
-//            return this.animation.getXCoordinate();
-//        } else {
-//            return this.xCoordinate;
-//        }
-//    }
-
 
     public int getCenterXCoordinate () {
         if (this.animation != null) {

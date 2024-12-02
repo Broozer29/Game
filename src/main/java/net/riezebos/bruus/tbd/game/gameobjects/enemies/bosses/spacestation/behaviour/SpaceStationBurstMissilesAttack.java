@@ -157,7 +157,7 @@ public class SpaceStationBurstMissilesAttack implements BossActionable {
     }
 
     private Missile createMissile (Enemy enemy, int xCoordinate, int yCoordinate) {
-        MissileEnums missileType = MissileEnums.ScoutLaserBullet;
+        MissileEnums missileType = MissileEnums.DefaultLaserBullet;
         SpriteConfiguration spriteConfiguration = MissileCreator.getInstance().createMissileSpriteConfig(
                 enemy.getXCoordinate(), enemy.getCenterYCoordinate(),
                 missileType.getImageType(), enemy.getScale() * 0.75f);

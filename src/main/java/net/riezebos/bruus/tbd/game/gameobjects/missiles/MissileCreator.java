@@ -53,7 +53,7 @@ public class MissileCreator {
 
     public Missile createMissile (SpriteConfiguration spriteConfiguration, MissileConfiguration missileConfiguration, MovementConfiguration movementConfiguration) {
         switch (missileConfiguration.getMissileType()) {
-            case ScoutLaserBullet -> {
+            case DefaultLaserBullet -> {
                 return new GenericMissile(spriteConfiguration, missileConfiguration, movementConfiguration);
             }
             case BombaProjectile -> {

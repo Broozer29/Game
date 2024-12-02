@@ -24,7 +24,6 @@ public class PlayerStats {
 
     public void resetPlayerStats () {
         initDefaultSettings();
-
     }
 
     // Preset type
@@ -94,7 +93,16 @@ public class PlayerStats {
         specialAttackType = PlayerSpecialAttackTypes.EMP;
         attacksApplyThorns = false;
         chanceForThornsToApplyOnHitEffects = 0;
+        hasImprovedElectroShred = false;
+
+        thornsDamageRatio = 0;
         thornsArmorDamageBonusRatio = 0;
+        droneDamageRatio = 1;
+        shopRerollDiscount = 0;
+        dronePathFinder = PathFinderEnums.Regular;
+        amountOfDrones = 0;
+
+
         setKnockBackDamping(0.85f);
         setThornsDamageRatio(0);
         setDroneDamageRatio(1);
@@ -199,7 +207,10 @@ public class PlayerStats {
         player.setMaxHitPoints(maxHitPoints);
         player.setMaxShieldPoints(maxShieldHitPoints);
         player.setCurrentHitpoints(maxHitPoints);
-        player.setCurrentShieldPoints(maxShieldHitPoints);
+
+        if(player.getCurrentShieldPoints() < player.getMaxShieldPoints()) { //We don't want to overwrite any overloaded shields present
+            player.setCurrentShieldPoints(maxShieldHitPoints);
+        }
 
         AnimationManager.getInstance().playLevelUpAnimation(player);
         AudioManager.getInstance().addAudio(AudioEnums.Power_Up_Acquired);

@@ -37,7 +37,7 @@ public class EmergencyRepairBot extends Item {
     }
 
     public void decreaseQuantityOfItem (int amount) {
-        this.quantity = Math.max(0, this.quantity - amount); // Ensure quantity doesn't go below 0
+        this.quantity = Math.max(0, this.quantity - amount);
     }
 
 }

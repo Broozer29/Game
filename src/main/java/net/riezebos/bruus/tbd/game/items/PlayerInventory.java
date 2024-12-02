@@ -14,7 +14,8 @@ public class PlayerInventory {
     private Map<ItemEnums, Item> items = new HashMap<>();
     private float cashMoney = 100;
     private PlayerInventory () {
-        addItem(ItemEnums.StickyDynamite);
+//        addItem(ItemEnums.DrillerModule);
+//        addItem(ItemEnums.BouncingModuleAddon);
 
 //        addItem(ItemEnums.GuardianDrone);
 //        addItem(ItemEnums.GuardianDrone);
@@ -41,18 +42,18 @@ public class PlayerInventory {
             if (existingItem == null) {
                 Item newItem = createItemFromEnum(itemEnum);
                 if (newItem != null) {
-                    activateItem(newItem);
+                    activateUponPurchaseItemEffects(newItem);
                     return newItem;
                 }
             } else {
                 existingItem.increaseQuantityOfItem(1);
-                activateItem(existingItem);
+                activateUponPurchaseItemEffects(existingItem);
             }
             return existingItem;
         });
     }
 
-    private void activateItem(Item item){
+    private void activateUponPurchaseItemEffects (Item item){
         if(item.getApplicationMethod().equals(ItemApplicationEnum.UponPurchase)){
             item.applyEffectToObject(null);
         }
@@ -105,7 +106,7 @@ public class PlayerInventory {
             case VIPTicket:
                 return new VIPTicket();
             case ElectricDestabilizer:
-                return new ElectricStabilizer();
+                return new ElectricDestabilizer();
             case ModuleAccuracy:
                 return new ModuleAccuracy();
             case ElectricSupercharger:
@@ -148,6 +149,9 @@ public class PlayerInventory {
     }
 
     public void addMinerals (float amount){
+//        if(amount > 0){
+//            OnScreenTextManager.getInstance().addMineralsGainedText(amount);
+//        }
         this.cashMoney += amount;
     }
 

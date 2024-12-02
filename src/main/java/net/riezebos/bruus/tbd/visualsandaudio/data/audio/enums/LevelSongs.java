@@ -187,6 +187,7 @@ public enum LevelSongs {
         bossSongList.add(AudioEnums.BossBattle);
         bossSongList.add(AudioEnums.Blood_On_The_Dancefloor);
         bossSongList.add(AudioEnums.WaveshaperMonster);
+        bossSongList.add(AudioEnums.RiskOfDanger);
 
         return bossSongList.get(new Random().nextInt(bossSongList.size()));
     }
@@ -194,7 +195,7 @@ public enum LevelSongs {
     public static AudioEnums getBossTheme (EnemyEnums enemyEnums) {
         switch (enemyEnums) {
             case SpaceStationBoss:
-                return AudioEnums.WaveshaperMonster;
+                return AudioEnums.RiskOfDanger;
             case RedBoss:
                 return AudioEnums.Blood_On_The_Dancefloor;
             default:

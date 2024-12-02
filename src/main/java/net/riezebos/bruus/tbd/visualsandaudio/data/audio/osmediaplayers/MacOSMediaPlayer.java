@@ -59,6 +59,10 @@ public class MacOSMediaPlayer {
         executeAppleScriptAsync("tell application \"Music\" to pause");
     }
 
+    public void resumePlayback () {
+        executeAppleScriptAsync("tell application \"Music\" to play");
+    }
+
     // Method to get the current playback position (in seconds)
     public double getCurrentSecondsInPlayback() {
         String script = "tell application \"Music\"\n"
@@ -203,5 +207,6 @@ public class MacOSMediaPlayer {
     public void setTotalSeconds (double totalSeconds) {
         this.totalSeconds = totalSeconds;
     }
+
 }
 

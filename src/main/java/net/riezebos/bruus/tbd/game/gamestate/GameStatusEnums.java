@@ -12,4 +12,5 @@ public enum GameStatusEnums {
 	Show_Level_Score_Card,
 	Transition_To_Next_Stage,
 	Shopping,
+	Paused,
 }

@@ -8,6 +8,7 @@ import net.riezebos.bruus.tbd.game.gameobjects.missiles.specialAttacks.SpecialAt
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
 import net.riezebos.bruus.tbd.game.gamestate.GameStateInfo;
 import net.riezebos.bruus.tbd.game.gamestate.GameStatsTracker;
+import net.riezebos.bruus.tbd.game.gamestate.GameStatusEnums;
 import net.riezebos.bruus.tbd.game.items.Item;
 import net.riezebos.bruus.tbd.game.items.PlayerInventory;
 import net.riezebos.bruus.tbd.game.items.enums.ItemApplicationEnum;
@@ -71,6 +72,7 @@ public class SpaceShip extends GameObject {
         this.isImmune = false;
         directionx = 0;
         directiony = 0;
+        this.friendly = true;
         this.currentShieldPoints = playerStats.getMaxShieldHitPoints();
         this.currentHitpoints = playerStats.getMaxHitPoints();
         this.playerFollowingAnimations.clear();
@@ -88,6 +90,7 @@ public class SpaceShip extends GameObject {
         this.exhaustAnimation.setAnimationScale(0.3f);
         this.setObjectType("Player spaceship");
         this.effects = new CopyOnWriteArrayList<>();
+        this.hasAttack = true;
         applyOnCreationEffects();
     }
 
@@ -194,7 +197,7 @@ public class SpaceShip extends GameObject {
             }
         } else if (damageTaken < 0) {
             // Apply healing
-            changeHitPoints(-damageTaken);
+            changeHitPoints(-damageTaken); //Negative to change the negative back to a positive
         }
     }
 
@@ -569,34 +572,37 @@ public class SpaceShip extends GameObject {
     public void update (ControllerInputReader controllerInputReader) {
         controlledByKeyboard = false;
         controllerInputReader.pollController();
-        if (controllerInputReader.isInputActive(ControllerInputEnums.MOVE_LEFT)) {
-            moveLeftQuick(controllerInputReader.getxAxisValue());
-        }
 
-        if (controllerInputReader.isInputActive(ControllerInputEnums.MOVE_RIGHT)) {
-            moveRightQuick(controllerInputReader.getxAxisValue());
-        }
-
-        if (controllerInputReader.isInputActive(ControllerInputEnums.MOVE_UP)) {
-            moveUpQuick(controllerInputReader.getyAxisValue());
-        }
-
-        if (controllerInputReader.isInputActive(ControllerInputEnums.MOVE_DOWN)) {
-            moveDownQuick(controllerInputReader.getyAxisValue());
-        }
-
-        if (controllerInputReader.isInputActive(ControllerInputEnums.FIRE)) {
-            try {
-                fire();
-            } catch (UnsupportedAudioFileException | IOException e) {
-                e.printStackTrace();
+        if(GameStateInfo.getInstance().getGameState() != GameStatusEnums.Paused && GameStateInfo.getInstance().getGameState() != GameStatusEnums.Dying) {
+            if (controllerInputReader.isInputActive(ControllerInputEnums.MOVE_LEFT)) {
+                moveLeftQuick(controllerInputReader.getxAxisValue());
             }
-        }
-        if (controllerInputReader.isInputActive(ControllerInputEnums.SPECIAL_ATTACK)) {
-            try {
-                fireSpecialAttack();
-            } catch (UnsupportedAudioFileException | IOException e) {
-                e.printStackTrace();
+
+            if (controllerInputReader.isInputActive(ControllerInputEnums.MOVE_RIGHT)) {
+                moveRightQuick(controllerInputReader.getxAxisValue());
+            }
+
+            if (controllerInputReader.isInputActive(ControllerInputEnums.MOVE_UP)) {
+                moveUpQuick(controllerInputReader.getyAxisValue());
+            }
+
+            if (controllerInputReader.isInputActive(ControllerInputEnums.MOVE_DOWN)) {
+                moveDownQuick(controllerInputReader.getyAxisValue());
+            }
+
+            if (controllerInputReader.isInputActive(ControllerInputEnums.FIRE)) {
+                try {
+                    fire();
+                } catch (UnsupportedAudioFileException | IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (controllerInputReader.isInputActive(ControllerInputEnums.SPECIAL_ATTACK)) {
+                try {
+                    fireSpecialAttack();
+                } catch (UnsupportedAudioFileException | IOException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }

@@ -70,6 +70,7 @@ public enum AudioEnums {
 	TonyLeysSnowdinRemix(true),
 	GustyGardenGalaxyRemix(true),
 	WePlantsAreHappyPlantsTimeRemix(true),
+	RiskOfDanger(true),
 	BossBattle(true);
 
 	// Boolean attribute to indicate if this should be streamed

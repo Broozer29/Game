@@ -2,6 +2,7 @@ package net.riezebos.bruus.tbd.game.items.effects.effectimplementations;
 
 import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.Enemy;
+import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyCategory;
 import net.riezebos.bruus.tbd.game.gamestate.GameStateInfo;
 import net.riezebos.bruus.tbd.game.items.effects.EffectActivationTypes;
 import net.riezebos.bruus.tbd.game.items.effects.EffectIdentifiers;
@@ -30,6 +31,14 @@ public class FreezeEffect implements EffectInterface {
     }
     @Override
     public void activateEffect (GameObject target) {
+        if(target instanceof Enemy enemy){
+            if(enemy.getEnemyType().getEnemyCategory().equals(EnemyCategory.Boss)){
+                //Bosses should be immune to this
+                return;
+            }
+        }
+
+
         this.target = target;
         double currentTime = GameStateInfo.getInstance().getGameSeconds();
         if (animation != null) {
@@ -42,8 +51,8 @@ public class FreezeEffect implements EffectInterface {
 //
         if (currentTime - startTimeInSeconds < durationInSeconds) {
             target.setAllowedToMove(false);
-            if(target instanceof Enemy){
-                ((Enemy) target).setAllowedToFire(false);
+            if(target instanceof Enemy enemy){
+                enemy.setAllowedToFire(false);
             }
         }
     }

@@ -66,10 +66,4 @@ public class FocusCrystal extends Item {
         }
     }
 
-
-
-    public int getDistance () {
-        return distance;
-    }
-
 }

@@ -7,5 +7,6 @@ public enum ControllerInputEnums {
     MOVE_DOWN,
     FIRE,
     SPECIAL_ATTACK,
+    PAUSE,
     TELEPORT
 }

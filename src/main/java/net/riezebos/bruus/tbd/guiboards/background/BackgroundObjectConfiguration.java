@@ -1,4 +1,4 @@
-package net.riezebos.bruus.tbd.game.gameobjects.background;
+package net.riezebos.bruus.tbd.guiboards.background;
 
 public class BackgroundObjectConfiguration {
 
