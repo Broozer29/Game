@@ -4,7 +4,7 @@ import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
 import net.riezebos.bruus.tbd.game.items.Item;
 import net.riezebos.bruus.tbd.game.items.enums.ItemApplicationEnum;
-import net.riezebos.bruus.tbd.game.items.enums.ItemEnums;
+import net.riezebos.bruus.tbd.game.items.ItemEnums;
 
 public class Overclock extends Item {
 
@@ -13,7 +13,7 @@ public class Overclock extends Item {
 
     public Overclock(){
         super(ItemEnums.Overclock, 1,  ItemApplicationEnum.ApplyOnCreation);
-        shouldApply = false;
+        shouldApply = true;
     }
 
     @Override
@@ -36,6 +36,14 @@ public class Overclock extends Item {
         removeEffect();
         this.quantity += amount;
         applyEffectToObject(null);
+    }
+
+    @Override
+    public boolean isAvailable(){
+        if(!this.itemEnum.isEnabled()){
+            return false;
+        }
+        return true;
     }
 
 }

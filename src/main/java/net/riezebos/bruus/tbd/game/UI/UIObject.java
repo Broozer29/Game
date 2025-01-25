@@ -27,7 +27,7 @@ public class UIObject extends Sprite {
 
 	public void changeImage(ImageEnums newImage){
 		this.imageEnum = newImage;
-		this.loadImage(newImage);
+		this.setImage(newImage);
 	}
 
 	@Override

@@ -1,6 +1,10 @@
 package net.riezebos.bruus.tbd.game.items.effects.effectimplementations;
 
 import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
+import net.riezebos.bruus.tbd.game.gameobjects.missiles.MissileManager;
+import net.riezebos.bruus.tbd.game.gameobjects.missiles.specialAttacks.LingeringFlame;
+import net.riezebos.bruus.tbd.game.gameobjects.missiles.specialAttacks.SpecialAttack;
+import net.riezebos.bruus.tbd.game.gameobjects.missiles.specialAttacks.SpecialAttackConfiguration;
 import net.riezebos.bruus.tbd.game.gameobjects.neutral.Explosion;
 import net.riezebos.bruus.tbd.game.gameobjects.neutral.ExplosionConfiguration;
 import net.riezebos.bruus.tbd.game.gameobjects.neutral.ExplosionManager;
@@ -19,19 +23,18 @@ import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.Sprit
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 public class DormentExplosion implements EffectInterface {
 
     private float damage;
 
-    private ImageEnums explosionType;
+    private ImageEnums imageType;
     private EffectActivationTypes activationTypes;
     private boolean activated;
     private boolean boxCollision;
 
     private float burningDamage;
-    private int burningDuration;
+    private float burningDuration;
     private DormentExplosionActivationMethods activationMethod;
     private double activationTime;
     private boolean allowedToApplyOnHitEffects = false;
@@ -45,7 +48,7 @@ public class DormentExplosion implements EffectInterface {
             , EffectIdentifiers effectIdentifier, float delayBeforeExplosion, EffectActivationTypes activationType, boolean allowedToApplyOnHitEffects) {
         this.damage = damage;
         this.boxCollision = boxCollision;
-        this.explosionType = explosionType;
+        this.imageType = explosionType;
         this.activationMethod = activationMethod;
         this.activationTypes = activationType;
         this.activated = false;
@@ -68,44 +71,52 @@ public class DormentExplosion implements EffectInterface {
             switch (activationMethod) {
                 case OnDeath -> {
                     if (gameObject.getCurrentHitpoints() <= 0) {
-                        createExplosion(gameObject);
+                        activateDormantExplosion(gameObject);
+                        activated = true;
                     }
                 }
                 case Timed -> {
                     if (GameStateInfo.getInstance().getGameSeconds() > activationTime) {
-                        createExplosion(gameObject);
+                        activateDormantExplosion(gameObject);
+                        activated = true;
                     }
                 }
             }
         }
     }
 
-    private void createExplosion (GameObject gameObject) {
+    private void activateDormantExplosion (GameObject gameObject) {
+        if(this.isSpecialAttack()){
+            createSpecialAttack(gameObject);
+            return; //We dont want an explosion but a special attack
+        }
+
+
         SpriteConfiguration spriteConfiguration = new SpriteConfiguration();
         spriteConfiguration.setxCoordinate(gameObject.getXCoordinate());
         spriteConfiguration.setyCoordinate(gameObject.getYCoordinate());
-        spriteConfiguration.setScale(getScaleByExplosionType());
-        spriteConfiguration.setImageType(explosionType);
+        spriteConfiguration.setScale(1);
+        spriteConfiguration.setImageType(imageType);
         SpriteAnimationConfiguration spriteAnimationConfiguration = new SpriteAnimationConfiguration(spriteConfiguration, getFrameDelayByExplosionType(), false);
         ExplosionConfiguration explosionConfiguration = new ExplosionConfiguration(true, damage, true, allowedToApplyOnHitEffects);
 
         Explosion explosion = new Explosion(spriteAnimationConfiguration, explosionConfiguration);
-        explosion.setScale(getScaleByExplosionType());
-        explosion.getAnimation().setAnimationScale(getScaleByExplosionType());
+        handleSpecialAttack(explosion);
 
         explosion.setCenterCoordinates(gameObject.getCenterXCoordinate(), gameObject.getCenterYCoordinate());
         explosion.getAnimation().setCenterCoordinates(gameObject.getCenterXCoordinate(), gameObject.getCenterYCoordinate());
         explosion.setBoxCollision(boxCollision);
         explosion.setOwnerOrCreator(PlayerManager.getInstance().getSpaceship()); //Assume it's the player who has items, never the enemies. Could hinder later design
 
-
-        if (burningDuration != 0 && burningDamage != 0) { //Assuming it's always gasoline at this point cause nothing else exists atm
-            SpriteAnimationConfiguration burningConfig = new SpriteAnimationConfiguration(spriteConfiguration, 2, true);
-            burningConfig.getSpriteConfiguration().setImageType(ImageEnums.GasolineBurning);
-            burningConfig.getSpriteConfiguration().setScale(1);
-            SpriteAnimation burningAnimation = new SpriteAnimation(burningConfig);
-            DamageOverTime burning = new DamageOverTime(burningDamage, burningDuration, burningAnimation, EffectIdentifiers.GasolineBurning);
-            explosion.addEffectToApply(burning);
+        if (this.effectIdentifier.equals(EffectIdentifiers.GasolineDormantExplosion)) {
+            if (burningDuration != 0 && burningDamage != 0) {
+                SpriteAnimationConfiguration burningConfig = new SpriteAnimationConfiguration(spriteConfiguration, 2, true);
+                burningConfig.getSpriteConfiguration().setImageType(ImageEnums.IgniteBurning);
+                burningConfig.getSpriteConfiguration().setScale(1);
+                SpriteAnimation burningAnimation = new SpriteAnimation(burningConfig);
+                DamageOverTime burning = new DamageOverTime(burningDamage, burningDuration, burningAnimation, EffectIdentifiers.Ignite);
+                explosion.addEffectToApply(burning);
+            }
         }
 
         if (audioEnums != null) {
@@ -113,23 +124,50 @@ public class DormentExplosion implements EffectInterface {
         }
 
         ExplosionManager.getInstance().addExplosion(explosion);
-        activated = true;
+
+    }
+
+    private boolean isSpecialAttack(){
+        return this.effectIdentifier.equals(EffectIdentifiers.FlameDetonationDormentExplosion);
+    }
+
+    private void createSpecialAttack(GameObject gameObject){
+        SpriteConfiguration spriteConfiguration = new SpriteConfiguration();
+        spriteConfiguration.setxCoordinate(gameObject.getXCoordinate());
+        spriteConfiguration.setyCoordinate(gameObject.getYCoordinate());
+        spriteConfiguration.setScale(1);
+        spriteConfiguration.setImageType(imageType);
+        SpriteAnimationConfiguration spriteAnimationConfiguration = new SpriteAnimationConfiguration(spriteConfiguration, 2, false);
+
+        SpecialAttackConfiguration specialAttackConfiguration = new SpecialAttackConfiguration(0, true,
+                true, false, true, false, false);
+        SpecialAttack lingeringFlame = new LingeringFlame(spriteAnimationConfiguration, specialAttackConfiguration);
+        lingeringFlame.setCenterCoordinates(gameObject.getCenterXCoordinate(), gameObject.getCenterYCoordinate());
+        handleSpecialAttack(lingeringFlame);
+        MissileManager.getInstance().addSpecialAttack(lingeringFlame);
     }
 
     private int getFrameDelayByExplosionType () {
-        if (explosionType.equals(ImageEnums.GasolineExplosion)) {
+        if (imageType.equals(ImageEnums.GasolineExplosion)) {
             return 0;
         } else return 2;
     }
 
-    private float getScaleByExplosionType () {
-        if (explosionType.equals(ImageEnums.GasolineExplosion)) {
-            return 1.15f;
-        } else return 1;
+    private void handleSpecialAttack (GameObject specialAttackOrExplosion) {
+        switch(specialAttackOrExplosion.getImageEnum()){
+            case GasolineExplosion:
+                specialAttackOrExplosion.setScale(1.15f);
+                break;
+            case LingeringFlameLooping:
+                specialAttackOrExplosion.setTransparancyAlpha(true, 0.0f, 0.03f);
+                break;
+            default:
+                break;
+        }
     }
 
     @Override
-    public boolean shouldBeRemoved () {
+    public boolean shouldBeRemoved (GameObject gameObject) {
         return activated;
     }
 
@@ -149,14 +187,13 @@ public class DormentExplosion implements EffectInterface {
     }
 
     @Override
-    public void increaseEffectStrength () {
-        //Does nothing for dorment explosion
+    public void increaseEffectStrength (GameObject gameObject) {
+        //Does nothing for dorment explosion (but can be implemented later? Poggers)
     }
 
     @Override
     public EffectInterface copy () {
-        DormentExplosion copy = new DormentExplosion(burningDamage, explosionType, activationMethod, boxCollision, effectIdentifier, delayBeforeExplosion, activationTypes, allowedToApplyOnHitEffects);
-        return copy;
+        return new DormentExplosion(burningDamage, imageType, activationMethod, boxCollision, effectIdentifier, delayBeforeExplosion, activationTypes, allowedToApplyOnHitEffects);
     }
 
     public float getDamage () {
@@ -168,41 +205,8 @@ public class DormentExplosion implements EffectInterface {
     }
 
 
-    public ImageEnums getExplosionType () {
-        return explosionType;
-    }
-
-    public void setExplosionType (ImageEnums explosionType) {
-        this.explosionType = explosionType;
-    }
-
-    public void setEffectTypesEnums (EffectActivationTypes effectTypesEnums) {
-        this.activationTypes = effectTypesEnums;
-    }
-
-    public boolean isActivated () {
-        return activated;
-    }
-
-    public void setActivated (boolean activated) {
-        this.activated = activated;
-    }
-
-    public float getBurningDamage () {
-        return burningDamage;
-    }
-
     public void setBurningDamage (float burningDamage) {
         this.burningDamage = burningDamage;
-    }
-
-
-    public boolean isAllowedToApplyOnHitEffects () {
-        return allowedToApplyOnHitEffects;
-    }
-
-    public void setAllowedToApplyOnHitEffects (boolean allowedToApplyOnHitEffects) {
-        this.allowedToApplyOnHitEffects = allowedToApplyOnHitEffects;
     }
 
     public boolean isBoxCollision () {
@@ -213,44 +217,9 @@ public class DormentExplosion implements EffectInterface {
         this.boxCollision = boxCollision;
     }
 
-    public int getBurningDuration () {
-        return burningDuration;
-    }
 
-    public void setBurningDuration (int burningDuration) {
+    public void setBurningDuration (float burningDuration) {
         this.burningDuration = burningDuration;
-    }
-
-    public List<EffectInterface> getAdditionalEffects () {
-        return additionalEffects;
-    }
-
-    public void setAdditionalEffects (List<EffectInterface> additionalEffects) {
-        this.additionalEffects = additionalEffects;
-    }
-
-    public DormentExplosionActivationMethods getActivationMethod () {
-        return activationMethod;
-    }
-
-    public void setActivationMethod (DormentExplosionActivationMethods activationMethod) {
-        this.activationMethod = activationMethod;
-    }
-
-    public double getActivationTime () {
-        return activationTime;
-    }
-
-    public void setActivationTime (double activationTime) {
-        this.activationTime = activationTime;
-    }
-
-    @Override
-    public boolean equals (Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        DormentExplosion that = (DormentExplosion) o;
-        return activationTypes == that.activationTypes;
     }
 
     @Override
@@ -258,16 +227,12 @@ public class DormentExplosion implements EffectInterface {
         return effectIdentifier;
     }
 
-    @Override
-    public int hashCode () {
-        return Objects.hash(activationTypes);
-    }
-
-    public AudioEnums getAudioEnums () {
-        return audioEnums;
-    }
-
     public void setAudioEnums (AudioEnums audioEnums) {
         this.audioEnums = audioEnums;
+    }
+
+    @Override
+    public void removeEffect (GameObject gameObject) {
+
     }
 }

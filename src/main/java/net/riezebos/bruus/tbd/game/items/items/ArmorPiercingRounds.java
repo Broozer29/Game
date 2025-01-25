@@ -5,7 +5,7 @@ import net.riezebos.bruus.tbd.game.gameobjects.enemies.Enemy;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyCategory;
 import net.riezebos.bruus.tbd.game.items.Item;
 import net.riezebos.bruus.tbd.game.items.enums.ItemApplicationEnum;
-import net.riezebos.bruus.tbd.game.items.enums.ItemEnums;
+import net.riezebos.bruus.tbd.game.items.ItemEnums;
 
 public class ArmorPiercingRounds extends Item {
 
@@ -22,7 +22,7 @@ public class ArmorPiercingRounds extends Item {
 
     @Override
     public void modifyAttackingObject (GameObject applier, GameObject target) {
-        if (target instanceof Enemy enemy && enemy.getEnemyType().getEnemyCategory() == EnemyCategory.Mercenary) {
+        if (target instanceof Enemy enemy && enemy.getEnemyType().getEnemyCategory() == EnemyCategory.Medium) {
             applier.modifyBonusDamageMultiplier(damageModifier);
         }
     }
@@ -30,5 +30,13 @@ public class ArmorPiercingRounds extends Item {
     public void increaseQuantityOfItem (int amount) {
         this.quantity += amount;
         calculateDamageModifier();
+    }
+
+    @Override
+    public boolean isAvailable(){
+        if(!this.itemEnum.isEnabled()){
+            return false;
+        }
+        return true;
     }
 }

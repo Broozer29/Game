@@ -3,6 +3,7 @@ package net.riezebos.bruus.tbd.game.gameobjects.enemies;
 import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyCategory;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyEnums;
+import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyTribes;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.MissileManager;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
 import net.riezebos.bruus.tbd.game.gamestate.GameStateInfo;
@@ -31,7 +32,7 @@ public class Enemy extends GameObject {
     protected double lastAttackTime = 0.0;
 
     protected boolean detonateOnCollision;
-    protected int knockbackStrength;
+
 
     public Enemy (SpriteConfiguration spriteConfiguration, EnemyConfiguration enemyConfiguration, MovementConfiguration movementConfiguration) {
         super(spriteConfiguration);
@@ -85,16 +86,23 @@ public class Enemy extends GameObject {
         float difficultyCoeff = GameStateInfo.getInstance().getDifficultyCoefficient();
 
         if (enemyLevel > 1) {
-            this.maxHitPoints *= (float) Math.pow(1.15, enemyLevel);
+            this.maxHitPoints *= (float) Math.pow(getScalingFactor(), enemyLevel);
             this.currentHitpoints = maxHitPoints;
-            this.maxShieldPoints *= (float) Math.pow(1.15, enemyLevel);
+            this.maxShieldPoints *= (float) Math.pow(getScalingFactor(), enemyLevel);
             this.currentShieldPoints = maxShieldPoints;
-            this.damage *= (float) Math.pow(1.15, enemyLevel);
+            this.damage *= (float) Math.pow(getScalingFactor(), enemyLevel);
             // XP on death is multiplied by 50% of difficultyCoeff
             this.xpOnDeath *= (float) (1 + (0.5 * difficultyCoeff));
             // Cash money worth is multiplied by 50% of difficultyCoeff
-            this.cashMoneyWorth *= (float) (1 + (0.5 * difficultyCoeff));
+//            this.cashMoneyWorth *= (float) (1 + (0.5 * difficultyCoeff));
         }
+    }
+
+    private float getScalingFactor(){
+        if(this.enemyType.getEnemyTribe().equals(EnemyTribes.Zerg)){
+            return 1.2f;
+        }
+        return 1.15f;
     }
 
     private void initChargingUpAnimation (SpriteConfiguration spriteConfiguration) {
@@ -251,11 +259,5 @@ public class Enemy extends GameObject {
         this.detonateOnCollision = detonateOnCollision;
     }
 
-    public int getKnockbackStrength () {
-        return knockbackStrength;
-    }
 
-    public void setKnockbackStrength (int knockbackStrength) {
-        this.knockbackStrength = knockbackStrength;
-    }
 }

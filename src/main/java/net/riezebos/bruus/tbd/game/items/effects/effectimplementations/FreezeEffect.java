@@ -7,6 +7,7 @@ import net.riezebos.bruus.tbd.game.gamestate.GameStateInfo;
 import net.riezebos.bruus.tbd.game.items.effects.EffectActivationTypes;
 import net.riezebos.bruus.tbd.game.items.effects.EffectIdentifiers;
 import net.riezebos.bruus.tbd.game.items.effects.EffectInterface;
+import net.riezebos.bruus.tbd.game.items.effects.util.EffectAnimationHelper;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteAnimation;
 
 public class FreezeEffect implements EffectInterface {
@@ -20,7 +21,6 @@ public class FreezeEffect implements EffectInterface {
     private SpriteAnimation animation;
     private EffectIdentifiers effectIdentifier;
     private EffectActivationTypes effectTypesEnums;
-    private GameObject target;
 
     public FreezeEffect(double durationInSeconds, SpriteAnimation spriteAnimation){
         this.effectIdentifier = EffectIdentifiers.ElectricDestabilizerFreeze;
@@ -39,16 +39,15 @@ public class FreezeEffect implements EffectInterface {
         }
 
 
-        this.target = target;
         double currentTime = GameStateInfo.getInstance().getGameSeconds();
         if (animation != null) {
             if (!scaledToTarget) {
-                scaleAnimation(target);
+                EffectAnimationHelper.scaleAnimation(target, animation);
                 scaledToTarget = true;
                 animation.setCenterCoordinates(target.getCenterXCoordinate(), target.getCenterYCoordinate());
             }
         }
-//
+
         if (currentTime - startTimeInSeconds < durationInSeconds) {
             target.setAllowedToMove(false);
             if(target instanceof Enemy enemy){
@@ -57,60 +56,23 @@ public class FreezeEffect implements EffectInterface {
         }
     }
 
-    private void scaleAnimation (GameObject target) {
-        animation.cropAnimation();
-        // Retrieve animation dimensions
-        int animationWidth = this.animation.getWidth();
-        int animationHeight = this.animation.getHeight();
-
-        // Retrieve target dimensions
-        int enemyWidth = target.getWidth();
-        int enemyHeight = target.getHeight();
-
-        // If target has its own animation, use those dimensions instead
-        if (target.getAnimation() != null) {
-            enemyWidth = target.getAnimation().getWidth();
-            enemyHeight = target.getAnimation().getHeight();
-        }
-
-        // Calculate the maximum allowed dimensions
-        int maxAllowedWidth = (int) (enemyWidth * 0.6);
-        int maxAllowedHeight = (int) (enemyHeight * 0.6);
-
-        // Calculate the current scale of the animation
-        float currentScale = this.animation.getScale();
-
-
-        // Determine if scaling adjustment is needed
-        if (animationWidth > maxAllowedWidth || animationHeight > maxAllowedHeight) {
-            // Calculate the necessary scale factors to fit within the target dimensions
-            float widthScaleFactor = maxAllowedWidth / (float) animationWidth;
-            float heightScaleFactor = maxAllowedHeight / (float) animationHeight;
-
-            // Choose the larger scale factor to ensure the animation fits within both dimensions
-            float newScaleFactor = Math.max(widthScaleFactor, heightScaleFactor);
-
-            // Apply the new scale, adjusting based on the current scale
-            this.animation.setAnimationScale(currentScale * newScaleFactor);
-        }
-    }
-
 
 
     @Override
-    public boolean shouldBeRemoved () {
+    public boolean shouldBeRemoved (GameObject gameObject) {
         if (GameStateInfo.getInstance().getGameSeconds() - startTimeInSeconds >= durationInSeconds) {
-            if (animation != null) {
-                animation.setVisible(false);
-            }
-            target.setAllowedToMove(true);
-
-            if(target instanceof Enemy){
-                ((Enemy) target).setAllowedToFire(true);
-            }
             return true;
         } else return false;
 
+    }
+
+    private void deleteEffect(GameObject gameObject){
+        if(gameObject != null) {
+            gameObject.setAllowedToMove(true);
+            if (gameObject instanceof Enemy) {
+                ((Enemy) gameObject).setAllowedToFire(true);
+            }
+        }
     }
 
     @Override
@@ -130,7 +92,7 @@ public class FreezeEffect implements EffectInterface {
     }
 
     @Override
-    public void increaseEffectStrength () {
+    public void increaseEffectStrength (GameObject gameObject) {
 //does nothing
     }
 
@@ -149,13 +111,15 @@ public class FreezeEffect implements EffectInterface {
         return copiedEffect;
     }
 
-    public void setEffectIdentifier (EffectIdentifiers effectIdentifier) {
-        this.effectIdentifier = effectIdentifier;
-    }
+    @Override
+    public void removeEffect (GameObject gameObject){
+        if(animation != null){
+            animation.setInfiniteLoop(false);
+            animation.setVisible(false);
+        }
 
-    public void setEffectTypesEnums (EffectActivationTypes effectTypesEnums) {
-        this.effectTypesEnums = effectTypesEnums;
+        deleteEffect(gameObject);
+        animation = null;
     }
-
 
 }

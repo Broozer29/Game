@@ -6,7 +6,7 @@ import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteAnimation;
 public interface EffectInterface {
     void activateEffect (GameObject gameObject);
 
-    boolean shouldBeRemoved ();
+    boolean shouldBeRemoved (GameObject gameObject);
 
     SpriteAnimation getAnimation ();
 
@@ -14,8 +14,9 @@ public interface EffectInterface {
 
     void resetDuration ();
 
-    void increaseEffectStrength();
+    void increaseEffectStrength(GameObject gameObject);
     EffectIdentifiers getEffectIdentifier();
+    void removeEffect (GameObject gameObject);
 
     EffectInterface copy();
 }

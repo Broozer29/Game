@@ -3,12 +3,16 @@ package net.riezebos.bruus.tbd.guiboards.boards;
 import net.riezebos.bruus.tbd.controllerInput.ConnectedControllersManager;
 import net.riezebos.bruus.tbd.controllerInput.ControllerInputEnums;
 import net.riezebos.bruus.tbd.controllerInput.ControllerInputReader;
+import net.riezebos.bruus.tbd.game.items.ItemDescriptionRetriever;
+import net.riezebos.bruus.tbd.game.util.OnScreenTextManager;
+import net.riezebos.bruus.tbd.guiboards.GUIComponentItemInformation;
+import net.riezebos.bruus.tbd.guiboards.TimerHolder;
 import net.riezebos.bruus.tbd.guiboards.background.BackgroundManager;
 import net.riezebos.bruus.tbd.guiboards.background.BackgroundObject;
 import net.riezebos.bruus.tbd.game.gamestate.GameStateInfo;
 import net.riezebos.bruus.tbd.game.items.Item;
 import net.riezebos.bruus.tbd.game.items.PlayerInventory;
-import net.riezebos.bruus.tbd.game.items.enums.ItemEnums;
+import net.riezebos.bruus.tbd.game.items.ItemEnums;
 import net.riezebos.bruus.tbd.game.level.LevelManager;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.MusicMediaPlayer;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.AnimationManager;
@@ -21,17 +25,16 @@ import net.riezebos.bruus.tbd.visualsandaudio.data.audio.AudioManager;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.Sprite;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteAnimation;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteConfiguration;
+
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class ShopBoard extends JPanel implements ActionListener {
+public class ShopBoard extends JPanel implements TimerHolder {
 
     private DataClass data = DataClass.getInstance();
     private BackgroundManager backgroundManager = BackgroundManager.getInstance();
@@ -42,13 +45,25 @@ public class ShopBoard extends JPanel implements ActionListener {
     private final int boardHeight = data.getWindowHeight();
     private AudioManager audioManager = AudioManager.getInstance();
 
-    private List<GUIComponent> firstRow = new ArrayList<>();
-    private List<GUIComponent> secondRow = new ArrayList<>();
-    private List<GUIComponent> thirdRow = new ArrayList<>();
-    private List<GUIComponent> fourthRow = new ArrayList<>();
-    private List<GUIComponent> fifthRow = new ArrayList<>();
-    private List<List<GUIComponent>> grid = new ArrayList<>();
+    private List<GUIComponent> regularGridFirstRow = new ArrayList<>();
+    private List<GUIComponent> regularGridSecondRow = new ArrayList<>();
+    private List<GUIComponent> regularGridThirdRow = new ArrayList<>();
+    private List<GUIComponent> regularGridFourthRow = new ArrayList<>();
+    private List<GUIComponent> regularGridFifthRow = new ArrayList<>();
+    private List<List<GUIComponent>> regularGrid = new ArrayList<>();
     private List<GUIComponent> offTheGridObjects = new ArrayList<>();
+
+
+    private List<GUIComponent> inventoryGridFirstRow = new ArrayList<>();
+    private List<GUIComponent> inventoryGridSecondRow = new ArrayList<>();
+    private List<GUIComponent> inventoryGridThirdRow = new ArrayList<>();
+    private List<GUIComponent> inventoryGridFourthRow = new ArrayList<>();
+    private List<GUIComponent> inventoryGridFifthRow = new ArrayList<>();
+    private List<GUIComponent> inventoryGridSixthRow = new ArrayList<>();
+    private List<List<GUIComponent>> inventoryGrid = new ArrayList<>();
+
+    private List<GUIComponent> allInventoryGUIComponents = new ArrayList<>();
+    private List<List<GUIComponent>> selectedGrid = regularGrid;
 
     private DisplayOnly itemRowsBackgroundCard;
     private DisplayOnly songLengthBackgroundCard;
@@ -79,13 +94,21 @@ public class ShopBoard extends JPanel implements ActionListener {
 
 
     private GUITextCollection moneyIcon;
-    private List<GUIComponent> playerInventoryMenuObjects = new ArrayList<>();
     private Timer timer;
     private int selectedRow = 0;
     private int selectedColumn = 0;
     private ControllerInputReader controllerInputReader;
     private boolean showInventory;
     private ShopBoardCreator shopBoardCreator;
+
+    private class DescriptionInfo {
+        String title = null;
+        String cost = null;
+        String descriptionText = null;
+        Color rarityColor = null;
+    }
+
+    private DescriptionInfo currentDescriptionInfo = null;
 
 
     public ShopBoard () {
@@ -102,19 +125,21 @@ public class ShopBoard extends JPanel implements ActionListener {
         timer.start();
     }
 
-    public void createWindow () {
-        for(List<GUIComponent> row: grid){
-            for(GUIComponent component: row){
+    public void initShopBoardGUIComponents () {
+        for (List<GUIComponent> row : regularGrid) {
+            for (GUIComponent component : row) {
                 component.setVisible(false);
             }
             row.clear();
         }
-        grid.clear();
-        for(GUIComponent component : offTheGridObjects){
+
+        allInventoryGUIComponents.clear();
+        regularGrid.clear();
+        for (GUIComponent component : offTheGridObjects) {
             component.setVisible(false);
         }
         offTheGridObjects.clear();
-        playerInventoryMenuObjects.clear();
+        lastMoveTime = System.currentTimeMillis(); //To prevent the user from immediatly pressing another button after going to this screen
 
 
         // Initialize background cards first since they are dependencies
@@ -126,11 +151,13 @@ public class ShopBoard extends JPanel implements ActionListener {
         nextLevelDifficultyBackground = shopBoardCreator.createNextLevelDifficultyBackground();
         rerollBackgroundCard = shopBoardCreator.createRerollBackgroundCard(nextLevelDifficultyBackground);
 
-        // Create other UI components
-        firstRow = shopBoardCreator.createNewFirstRowOfItems();
-        secondRow = shopBoardCreator.createNewSecondRowOfItems();
-        thirdRow = shopBoardCreator.createNewThirdRowOfItems();
+        // Create items
+        regularGridFirstRow = shopBoardCreator.createNewFirstRowOfItems();
+        regularGridSecondRow = shopBoardCreator.createNewSecondRowOfItems();
+        regularGridThirdRow = shopBoardCreator.createNewThirdRowOfItems();
 
+        //Activate any contracts if there are any:
+        shopManager.activateFinishedContracts();
 
         // Create difficulty and song length settings using the respective background cards
         selectEasyDifficulty = shopBoardCreator.createSelectEasyDifficulty(songDifficultyBackgroundCard);
@@ -139,9 +166,9 @@ public class ShopBoard extends JPanel implements ActionListener {
         difficultySelectionText = shopBoardCreator.createSelectDifficultyText(songDifficultyBackgroundCard, selectHardDifficulty);
 
 
-        fourthRow.add(selectEasyDifficulty);
-        fourthRow.add(selectMediumDifficulty);
-        fourthRow.add(selectHardDifficulty);
+        regularGridFourthRow.add(selectEasyDifficulty);
+        regularGridFourthRow.add(selectMediumDifficulty);
+        regularGridFourthRow.add(selectHardDifficulty);
         offTheGridObjects.addAll(difficultySelectionText.getComponents());
 
         shortSong = shopBoardCreator.createShortSongSelection(songLengthBackgroundCard);
@@ -149,16 +176,12 @@ public class ShopBoard extends JPanel implements ActionListener {
         longSong = shopBoardCreator.createLongSelection(songLengthBackgroundCard);
         lengthSelectionText = shopBoardCreator.createSongSelectionText(songLengthBackgroundCard, longSong);
 
-        if(AudioManager.getInstance().getMusicMediaPlayer().equals(MusicMediaPlayer.Default)) {
-            fourthRow.add(shortSong);
-            fourthRow.add(mediumSong);
-            fourthRow.add(longSong);
-        } else {
-            lengthSelectionText.setStartingXCoordinate(songLengthBackgroundCard.getXCoordinate() + Math.round(songLengthBackgroundCard.getWidth() * 0.05f));
-            lengthSelectionText.setText("MUSIC DETERMINED BY ITUNES OR SPOTIFY");
+        if (!AudioManager.getInstance().isMusicControlledByThirdPartyApp()) {
+            regularGridFourthRow.add(shortSong);
+            regularGridFourthRow.add(mediumSong);
+            regularGridFourthRow.add(longSong);
+            offTheGridObjects.addAll(lengthSelectionText.getComponents());
         }
-
-        offTheGridObjects.addAll(lengthSelectionText.getComponents());
         offTheGridObjects.add(rerollBackgroundCard);
 
         nextLevelDifficultyIcon = shopBoardCreator.createNextLevelDifficultyIcon(nextLevelDifficultyBackground);
@@ -167,77 +190,91 @@ public class ShopBoard extends JPanel implements ActionListener {
         returnToMainMenu = shopBoardCreator.createReturnToMainMenu();
         nextLevelButton = shopBoardCreator.createStartNextLevelButton();
         playerInventoryButton = shopBoardCreator.createPlayerInventoryButton();
-        fifthRow.add(returnToMainMenu.getComponents().get(0));
+        regularGridFifthRow.add(returnToMainMenu.getComponents().get(0));
         addAllButFirstComponent(returnToMainMenu);
-        fifthRow.add(nextLevelButton.getComponents().get(0));
+        regularGridFifthRow.add(nextLevelButton.getComponents().get(0));
         addAllButFirstComponent(nextLevelButton);
-        fifthRow.add(playerInventoryButton.getComponents().get(0));
+        regularGridFifthRow.add(playerInventoryButton.getComponents().get(0));
         addAllButFirstComponent(playerInventoryButton);
         rerollButton = shopBoardCreator.createRerollButton(rerollBackgroundCard);
-        thirdRow.add(rerollButton);
+        regularGridThirdRow.add(rerollButton);
+
+        shopManager.resetFreeRerolls();
         rerollCostText = shopBoardCreator.createRerollCostText(rerollBackgroundCard);
         offTheGridObjects.addAll(rerollCostText.getComponents());
 
         itemDescription = shopBoardCreator.createDescriptionBox();
-
-
         menuCursor = shopBoardCreator.createCursor(returnToMainMenu);
+
 
         // Money and Difficulty indicators
         moneyIcon = shopBoardCreator.createMoneyObject(nextLevelDifficultyBackground);
         offTheGridObjects.addAll(moneyIcon.getComponents());
 
+        createInventoryGrid();
         // Rebuild the UI elements list
         recreateList();
     }
 
+    //Required by VIP tickets to change the "FREE" to an actual price
     public void remakeShopRerollText () {
+        if (rerollBackgroundCard == null) {
+            return; //We aren't in the shop nor has the shop been visisted
+        }
+
         rerollCostText = shopBoardCreator.createRerollCostText(rerollBackgroundCard);
     }
 
+    //Helper method to add all text collection components that are intended to be displayonly
     private void addAllButFirstComponent (GUITextCollection textCollection) {
         for (int i = 1; i < textCollection.getComponents().size(); i++) {
             offTheGridObjects.add(textCollection.getComponents().get(i));
         }
     }
 
-    private void updateSelectedDifficultyIcons(){
+    private void updateSelectedDifficultyIcons () {
         shopBoardCreator.updateDifficultyIconsToDifficulty(LevelManager.getInstance().getCurrentLevelDifficulty(),
                 selectEasyDifficulty, selectMediumDifficulty, selectHardDifficulty);
-        shopBoardCreator.updateLengthIconsToLength(LevelManager.getInstance().getCurrentLevelLength(),
-                shortSong, mediumSong, longSong);
+        if(!AudioManager.getInstance().isMusicControlledByThirdPartyApp()) {
+            shopBoardCreator.updateLengthIconsToLength(LevelManager.getInstance().getCurrentLevelLength(),
+                    shortSong, mediumSong, longSong);
+        }
     }
 
 
     private void recreateList () {
-        grid.clear();
+        regularGrid.clear();
         offTheGridObjects.clear();
-        playerInventoryMenuObjects.clear();
 
         updateSelectedDifficultyIcons();
         addAllButFirstComponent(returnToMainMenu);
         addAllButFirstComponent(nextLevelButton);
         addAllButFirstComponent(playerInventoryButton);
 
-        if (!thirdRow.contains(rerollButton)) {
-            thirdRow.add(rerollButton);
+        if (!regularGridThirdRow.contains(rerollButton)) {
+            regularGridThirdRow.add(rerollButton);
         }
 
 
-        grid.add(firstRow);
-        grid.add(secondRow);
-        grid.add(thirdRow);
-        grid.add(fourthRow);
-        grid.add(fifthRow);
+        regularGrid.add(regularGridFirstRow);
+        regularGrid.add(regularGridSecondRow);
+        regularGrid.add(regularGridThirdRow);
+        regularGrid.add(regularGridFourthRow);
+        regularGrid.add(regularGridFifthRow);
 
 
-        updateNextLevelDifficultyIcon();
-        updateMoneyIcon();
+        nextLevelDifficultyIcon = shopBoardCreator.createNextLevelDifficultyIcon(nextLevelDifficultyBackground);
+        moneyIcon = shopBoardCreator.createMoneyObject(nextLevelDifficultyBackground);
 
         offTheGridObjects.add(nextLevelDifficultyBackground);
         offTheGridObjects.add(itemRowsBackgroundCard);
         offTheGridObjects.add(descriptionRowsBackgroundCard);
-        offTheGridObjects.add(songLengthBackgroundCard);
+
+        if(!AudioManager.getInstance().isMusicControlledByThirdPartyApp()) {
+            offTheGridObjects.add(songLengthBackgroundCard);
+        }
+
+
         offTheGridObjects.add(songDifficultyBackgroundCard);
         offTheGridObjects.addAll(moneyIcon.getComponents());
         offTheGridObjects.addAll(nextLevelDifficultyIcon.getComponents());
@@ -246,33 +283,41 @@ public class ShopBoard extends JPanel implements ActionListener {
         offTheGridObjects.add(rerollBackgroundCard);
         offTheGridObjects.addAll(rerollCostText.getComponents());
 
-
         if (this.showInventory) {
-            playerInventoryMenuObjects.add(inventoryBackgroundCard);
-            createPlayerInventory();
+            createInventoryGrid();
+            populateInventoryGridWithItems();
         }
-
 
         updateCursor();
     }
 
+    private void createInventoryGrid () {
+        allInventoryGUIComponents.clear();
+
+        for(List<GUIComponent> listInGrid: inventoryGrid){
+            listInGrid.clear(); //Clear all existing rows before repopulating them in createPlayerInventory()
+        }
+
+        inventoryGrid.clear();
+        inventoryGridSixthRow.clear();
+        inventoryGridSixthRow.add(playerInventoryButton.getComponents().get(0));
+        inventoryGrid.add(inventoryGridFirstRow);
+        inventoryGrid.add(inventoryGridSecondRow);
+        inventoryGrid.add(inventoryGridThirdRow);
+        inventoryGrid.add(inventoryGridFourthRow);
+        inventoryGrid.add(inventoryGridFifthRow);
+        inventoryGrid.add(inventoryGridSixthRow);
+
+        allInventoryGUIComponents.add(inventoryBackgroundCard);
+    }
+
     public void rerollShop () {
-        firstRow = shopBoardCreator.createNewFirstRowOfItems();
-        secondRow = shopBoardCreator.createNewSecondRowOfItems();
-        thirdRow = shopBoardCreator.createNewThirdRowOfItems();
+        regularGridFirstRow = shopBoardCreator.createNewFirstRowOfItems();
+        regularGridSecondRow = shopBoardCreator.createNewSecondRowOfItems();
+        regularGridThirdRow = shopBoardCreator.createNewThirdRowOfItems();
     }
 
-
-    private void updateNextLevelDifficultyIcon () {
-        nextLevelDifficultyIcon = shopBoardCreator.createNextLevelDifficultyIcon(nextLevelDifficultyBackground);
-    }
-
-    private void updateMoneyIcon () {
-        moneyIcon = shopBoardCreator.createMoneyObject(nextLevelDifficultyBackground);
-    }
-
-
-    private void createPlayerInventory () {
+    private void populateInventoryGridWithItems () {
         Map<ItemEnums, Item> itemMap = PlayerInventory.getInstance().getItems();
         int xCoordinateStart = inventoryBackgroundCard.getXCoordinate();
         int yCoordinateStart = inventoryBackgroundCard.getYCoordinate();
@@ -291,6 +336,7 @@ public class ShopBoard extends JPanel implements ActionListener {
         int itemsPerRow = maxWidth / (itemSize + padding);
         int xCoordinate = xCoordinateStart + padding + backgroundXPadding;
         int yCoordinate = yCoordinateStart + padding + backgroundYPadding;
+        int currentRow = 1;
 
         // Loop over each item in the inventory
         for (ItemEnums itemEnum : itemMap.keySet()) {
@@ -299,11 +345,17 @@ public class ShopBoard extends JPanel implements ActionListener {
             spriteConfiguration.setxCoordinate(xCoordinate);
             spriteConfiguration.setyCoordinate(yCoordinate);
             spriteConfiguration.setScale(scale);
-            spriteConfiguration.setImageType(itemMap.get(itemEnum).getItemName().getItemIcon());
+            spriteConfiguration.setImageType(itemMap.get(itemEnum).getItemEnum().getItemIcon());
 
             GUIComponent itemComponent = new DisplayOnly(spriteConfiguration);
             itemComponent.setImageDimensions(itemSize, itemSize);
-            playerInventoryMenuObjects.add(itemComponent);
+            String itemDesc = ItemDescriptionRetriever.getDescriptionOfItem(itemEnum);
+
+            GUIComponentItemInformation guiComponentItemInformation = new GUIComponentItemInformation(
+                    itemEnum, itemEnum.getItemRarity(), itemDesc, true, itemEnum.getItemRarity().getItemCost()
+            );
+            itemComponent.setShopItemInformation(guiComponentItemInformation);
+
 
             int quantity = itemMap.get(itemEnum).getQuantity();
 
@@ -313,11 +365,13 @@ public class ShopBoard extends JPanel implements ActionListener {
 
             GUITextCollection itemAmount = new GUITextCollection(quantityX, quantityY, String.valueOf(quantity));
             itemAmount.setScale(1.5f);
-            playerInventoryMenuObjects.addAll(itemAmount.getComponents());
+            addInventoryItemComponentToCorrespondingRow(currentRow, itemComponent);
+            allInventoryGUIComponents.addAll(itemAmount.getComponents());
 
             // Update xCoordinate, wrapping and resetting yCoordinate as needed
             if ((xCoordinate - xCoordinateStart) / (itemSize + padding) >= itemsPerRow - 1) {
                 // Move down to the next row and reset xCoordinate
+                currentRow++;
                 yCoordinate += itemSize + padding;
                 xCoordinate = xCoordinateStart + padding + backgroundXPadding;
                 // If yCoordinate goes outside of the maxHeight, break out of the loop
@@ -331,101 +385,70 @@ public class ShopBoard extends JPanel implements ActionListener {
         }
     }
 
-    private void updateDescriptionBox(Graphics2D g2d) {
-        GUIComponent selectedTile = menuCursor.getSelectedMenuTile();
-        int boxWidth = descriptionRowsBackgroundCard.getWidth();
-        int boxHeight = descriptionRowsBackgroundCard.getHeight();
-
-        int horizontalPadding = 40;
-        int verticalPadding = 40;
-        int maxTextWidth = boxWidth - (horizontalPadding * 2);
-        String textFont = DataClass.getInstance().getTextFont();
-        if (selectedTile != null) {
-            String text = null;
-            String itemTitle = null;
-            String itemCost = null;
-            Color itemRarityColor = null;
-
-            int descriptionX = itemDescription.getXCoordinate() + horizontalPadding;
-            int descriptionY = itemDescription.getYCoordinate() + verticalPadding;
-
-            if (selectedTile instanceof ShopItem shopItem) {
-                itemTitle = shopItem.getShopItemInformation().getItem().getItemName();
-                itemCost = "Costs: " + Math.round(shopItem.getShopItemInformation().getCost()) + " minerals. You have: " + Math.round(PlayerInventory.getInstance().getCashMoney());
-                text = shopItem.getShopItemInformation().getItemDescription();
-                itemRarityColor = shopItem.getShopItemInformation().getItemRarity().getColor();
-            } else {
-                text = selectedTile.getDescriptionOfComponent();
-            }
-
-            // Draw the item title with a larger font size
-            if (itemTitle != null) {
-                g2d.setFont(new Font(textFont, Font.BOLD, 24));  // Larger font for the title
-                drawDescriptionText(g2d, itemTitle, descriptionX, descriptionY, maxTextWidth, itemRarityColor);
-                FontMetrics titleMetrics = g2d.getFontMetrics();
-                descriptionY += titleMetrics.getHeight() + 10;  // Spacing after the title
-            }
-
-            // Draw the description with the default font size
-            if (text != null) {
-                g2d.setFont(new Font(textFont, Font.PLAIN, 20));  // Default font for description
-                drawDescriptionText(g2d, text, descriptionX, descriptionY, maxTextWidth, Color.WHITE);
-                FontMetrics descriptionMetrics = g2d.getFontMetrics();
-                descriptionY += descriptionMetrics.getHeight() * ((text.length() / maxTextWidth) + 1); // Estimate line height
-            }
-
-            // Draw the cost at the bottom of the description box
-            if (itemCost != null) {
-                g2d.setFont(new Font(textFont, Font.ITALIC, 18));  // Slightly smaller italic font for the cost
-                FontMetrics costMetrics = g2d.getFontMetrics();
-                int costY = itemDescription.getYCoordinate() + boxHeight - verticalPadding - costMetrics.getHeight();
-                drawDescriptionText(g2d, itemCost, descriptionX, costY, maxTextWidth, Color.WHITE);
-            }
+    //Helper method for adding inventory gui components to the correct row on the inventorygrid
+    private void addInventoryItemComponentToCorrespondingRow (int row, GUIComponent itemComponent) {
+        if(itemComponent != null){
+            allInventoryGUIComponents.add(itemComponent);
+        }
+        switch (row) {
+            case 1:
+                inventoryGridFirstRow.add(itemComponent);
+                break;
+            case 2:
+                inventoryGridSecondRow.add(itemComponent);
+                break;
+            case 3:
+                inventoryGridThirdRow.add(itemComponent);
+                break;
+            case 4:
+                inventoryGridFourthRow.add(itemComponent);
+                break;
+            case 5:
+                inventoryGridFifthRow.add(itemComponent);
+                break;
+            default:
+                OnScreenTextManager.getInstance().addText("Too many items to display in inventory",
+                        DataClass.getInstance().getWindowWidth() / 2,
+                        DataClass.getInstance().getWindowHeight() / 2);
+                break;
         }
     }
 
-    private void drawDescriptionText (Graphics2D g2d, String text, int x, int y, int maxWidth, Color color) {
-        FontMetrics metrics = g2d.getFontMetrics();
-        int lineHeight = metrics.getHeight();
-        String[] words = text.split(" ");
-        StringBuilder line = new StringBuilder();
-        g2d.setColor(color);
+    //Helper method for creating DescriptionInfo objects to centralize the creation of description box text
+    private DescriptionInfo prepareDescriptionText (GUIComponent selectedTileHelper) {
+        DescriptionInfo descriptionInfo = new DescriptionInfo();
+        if (selectedTileHelper.getShopItemInformation() != null) {
+            // If the item is a ShopItem, gather its information
+            descriptionInfo.title = selectedTileHelper.getShopItemInformation().getItem().getItemName();
+            descriptionInfo.descriptionText = selectedTileHelper.getShopItemInformation().getItemDescription();
+            descriptionInfo.rarityColor = selectedTileHelper.getShopItemInformation().getItemRarity().getColor();
 
-        for (String word : words) {
-            // If adding the new word exceeds the maximum line width, draw the line and start a new one
-            if (metrics.stringWidth(line.toString() + word) > maxWidth) {
-                g2d.drawString(line.toString(), x, y);
-                line = new StringBuilder(word).append(" ");
-                y += lineHeight;
+            if(!showInventory){
+                descriptionInfo.cost = "Costs: " + Math.round(selectedTileHelper.getShopItemInformation().getCost()) + " minerals. You have: " + Math.round(PlayerInventory.getInstance().getCashMoney());
             } else {
-                // Append the word to the current line
-                line.append(word).append(" ");
+                //Replacing the itemcost with the amount the player has
+                descriptionInfo.cost = "You have: " + PlayerInventory.getInstance().getItemByName(selectedTileHelper.getShopItemInformation().getItem()).getQuantity() + " of this item.";
             }
+
+        } else {
+            // For other GUI components, use the description directly
+            descriptionInfo.descriptionText = selectedTileHelper.getDescriptionOfComponent();
         }
 
-        // Draw the remaining text
-        if (line.length() > 0) {
-            g2d.drawString(line.toString(), x, y);
-        }
+        return descriptionInfo;
     }
-
 
 
     public Timer getTimer () {
         return timer;
     }
 
-    @Override
-    public void actionPerformed (ActionEvent e) {
-        //The timer is responsible for redrawing and polling input from a controller
-    }
-
     /*------------------------Navigation methods--------------------------------*/
 
     // Activate the functionality of the specific menutile
     private void selectMenuTile () {
-        grid.get(selectedRow).get(selectedColumn).activateComponent();
-        if (grid.get(selectedRow).get(selectedColumn).getMenuFunctionality() == MenuFunctionEnums.Start_Game) {
+        selectedGrid.get(selectedRow).get(selectedColumn).activateComponent();
+        if (selectedGrid.get(selectedRow).get(selectedColumn).getMenuFunctionality() == MenuFunctionEnums.Start_Game) {
             timer.stop();
         }
     }
@@ -440,14 +463,14 @@ public class ShopBoard extends JPanel implements ActionListener {
         do {
             selectedRow--;
             if (selectedRow < 0) {
-                selectedRow = grid.size() - 1; // Wrap around to the bottom row
+                selectedRow = selectedGrid.size() - 1; // Wrap around to the bottom row
             }
-        } while (grid.get(selectedRow).isEmpty() && selectedRow != originalRow); // Repeat until a non-empty row is
+        } while (selectedGrid.get(selectedRow).isEmpty() && selectedRow != originalRow); // Repeat until a non-empty row is
         // found or we've checked all rows
 
         // Adjust column to be within the new row
-        if (!grid.get(selectedRow).isEmpty() && selectedColumn >= grid.get(selectedRow).size()) {
-            selectedColumn = grid.get(selectedRow).size() - 1;
+        if (!selectedGrid.get(selectedRow).isEmpty() && selectedColumn >= selectedGrid.get(selectedRow).size()) {
+            selectedColumn = selectedGrid.get(selectedRow).size() - 1;
         }
         updateCursor();
     }
@@ -462,22 +485,22 @@ public class ShopBoard extends JPanel implements ActionListener {
 
         do {
             selectedRow++;
-            if (selectedRow >= grid.size()) {
+            if (selectedRow >= selectedGrid.size()) {
                 selectedRow = 0; // Wrap around to the top row
             }
-        } while (grid.get(selectedRow).isEmpty() && selectedRow != originalRow); // Repeat until a non-empty row is
+        } while (selectedGrid.get(selectedRow).isEmpty() && selectedRow != originalRow); // Repeat until a non-empty row is
         // found or we've checked all rows
 
         // Adjust column to be within the new row
-        if (!grid.get(selectedRow).isEmpty() && selectedColumn >= grid.get(selectedRow).size()) {
-            selectedColumn = grid.get(selectedRow).size() - 1;
+        if (!selectedGrid.get(selectedRow).isEmpty() && selectedColumn >= selectedGrid.get(selectedRow).size()) {
+            selectedColumn = selectedGrid.get(selectedRow).size() - 1;
         }
         updateCursor();
     }
 
     // Check if the grid is empty
     private boolean isGridEmpty () {
-        for (List<GUIComponent> row : grid) {
+        for (List<GUIComponent> row : selectedGrid) {
             if (!row.isEmpty()) {
                 return false; // Return false as soon as a non-empty row is found
             }
@@ -489,7 +512,7 @@ public class ShopBoard extends JPanel implements ActionListener {
     private void previousMenuColumn () {
         selectedColumn--;
         if (selectedColumn < 0) {
-            selectedColumn = grid.get(selectedRow).size() - 1; // Wrap around to the rightmost column
+            selectedColumn = selectedGrid.get(selectedRow).size() - 1; // Wrap around to the rightmost column
         }
         updateCursor();
     }
@@ -497,7 +520,7 @@ public class ShopBoard extends JPanel implements ActionListener {
     // Go one menu tile to the right
     private void nextMenuColumn () {
         selectedColumn++;
-        if (selectedColumn >= grid.get(selectedRow).size()) {
+        if (selectedColumn >= selectedGrid.get(selectedRow).size()) {
             selectedColumn = 0; // Wrap around to the leftmost column
         }
         updateCursor();
@@ -505,13 +528,14 @@ public class ShopBoard extends JPanel implements ActionListener {
 
     // Update the cursor's position and selected menu tile
     private void updateCursor () {
-        if (grid.get(selectedRow).isEmpty()) {
+        if (selectedGrid.get(selectedRow).isEmpty()) {
             menuCursor.setSelectedMenuTile(null);
         } else {
-            GUIComponent selectedComponent = grid.get(selectedRow).get(selectedColumn);
+            GUIComponent selectedComponent = selectedGrid.get(selectedRow).get(selectedColumn);
             menuCursor.setSelectedMenuTile(selectedComponent);
             menuCursor.setYCoordinate(selectedComponent.getYCoordinate());
             menuCursor.setXCoordinate(selectedComponent.getXCoordinate() - (menuCursor.getxDistanceToKeep()));
+            currentDescriptionInfo = prepareDescriptionText(selectedComponent);
         }
     }
 
@@ -528,20 +552,24 @@ public class ShopBoard extends JPanel implements ActionListener {
                     needsUpdate = true;
                     break;
                 case (KeyEvent.VK_A):
+                    updateCursor();
                     previousMenuColumn();
-                    needsUpdate = true;
+                    needsUpdate = false;
                     break;
                 case (KeyEvent.VK_D):
+                    updateCursor();
                     nextMenuColumn();
-                    needsUpdate = true;
+                    needsUpdate = false;
                     break;
                 case (KeyEvent.VK_W):
+                    updateCursor();
                     previousMenuTile();
-                    needsUpdate = true;
+                    needsUpdate = false;
                     break;
                 case (KeyEvent.VK_S):
                     nextMenuTile();
-                    needsUpdate = true;
+                    updateCursor();
+                    needsUpdate = false;
                     break;
             }
 
@@ -557,7 +585,7 @@ public class ShopBoard extends JPanel implements ActionListener {
     }
 
     private long lastMoveTime = 0;
-    private static final long MOVE_COOLDOWN = 350; // milliseconds
+    private static final long MOVE_COOLDOWN = 300; // milliseconds
 
     public void executeControllerInput () {
         if (controllers.getFirstController() != null) {
@@ -601,11 +629,11 @@ public class ShopBoard extends JPanel implements ActionListener {
 
             if (currentTime - lastMoveTime > MOVE_COOLDOWN &&
                     controllerInputReader.isInputActive(ControllerInputEnums.FIRE)) {
-                    // Select menu option
-                    selectMenuTile();
-                    needsUpdate = true;
-                    lastMoveTime = currentTime;
-                }
+                // Select menu option
+                selectMenuTile();
+                needsUpdate = true;
+                lastMoveTime = currentTime;
+            }
 
 
             if (needsUpdate) {
@@ -631,8 +659,7 @@ public class ShopBoard extends JPanel implements ActionListener {
         }
 
         drawObjects(g2d);
-        updateDescriptionBox(g2d);
-
+        drawDescriptionInfo(g2d, currentDescriptionInfo);
         for (SpriteAnimation animation : animationManager.getUpperAnimations()) {
             drawAnimation(g2d, animation);
         }
@@ -645,6 +672,73 @@ public class ShopBoard extends JPanel implements ActionListener {
     }
 
 
+
+    //Draws the description of the currently hovered option, called every game tick and has room for performance optimization
+    private static int horizontalPadding = 40;
+    private static int verticalPadding = 40;
+    private void drawDescriptionInfo (Graphics2D g2d, DescriptionInfo descriptionInfo) {
+        int boxWidth = descriptionRowsBackgroundCard.getWidth();
+        int boxHeight = descriptionRowsBackgroundCard.getHeight();
+        String textFont = DataClass.getInstance().getTextFont();
+//        int horizontalPadding = 40;
+//        int verticalPadding = 40;
+        int maxTextWidth = boxWidth - (horizontalPadding * 2);
+
+        int descriptionX = itemDescription.getXCoordinate() + horizontalPadding;
+        int descriptionY = itemDescription.getYCoordinate() + verticalPadding;
+
+
+        if (descriptionInfo.title != null) {
+            g2d.setFont(new Font(textFont, Font.BOLD, 24));  // Larger font for the title
+            drawDescriptionText(g2d, descriptionInfo.title, descriptionX, descriptionY, maxTextWidth, descriptionInfo.rarityColor);
+            FontMetrics titleMetrics = g2d.getFontMetrics();
+            descriptionY += titleMetrics.getHeight() + 10;  // Spacing after the title
+        }
+
+        // Set font and draw the description if available
+        if (descriptionInfo.descriptionText != null) {
+            g2d.setFont(new Font(textFont, Font.PLAIN, 20));  // Default font for description
+            drawDescriptionText(g2d, descriptionInfo.descriptionText, descriptionX, descriptionY, maxTextWidth, Color.WHITE);
+            FontMetrics descriptionMetrics = g2d.getFontMetrics();
+            descriptionY += descriptionMetrics.getHeight() * ((descriptionInfo.descriptionText.length() / maxTextWidth) + 1); // Estimate line height
+        }
+
+        // Set font and draw the cost if available
+        if (descriptionInfo.cost != null) {
+            g2d.setFont(new Font(textFont, Font.ITALIC, 18));  // Slightly smaller italic font for the cost
+            FontMetrics costMetrics = g2d.getFontMetrics();
+            int costY = itemDescription.getYCoordinate() + boxHeight - verticalPadding - costMetrics.getHeight();
+            drawDescriptionText(g2d, descriptionInfo.cost, descriptionX, costY, maxTextWidth, Color.WHITE);
+        }
+    }
+
+    //Helper method to centralize the actual drawing on the screen
+    private void drawDescriptionText (Graphics2D g2d, String text, int x, int y, int maxWidth, Color color) {
+        FontMetrics metrics = g2d.getFontMetrics();
+        int lineHeight = metrics.getHeight();
+        String[] words = text.split(" ");
+        StringBuilder line = new StringBuilder();
+        g2d.setColor(color);
+
+        for (String word : words) {
+            // If adding the new word exceeds the maximum line width, draw the line and start a new one
+            if (metrics.stringWidth(line.toString() + word) > maxWidth) {
+                g2d.drawString(line.toString(), x, y);
+                line = new StringBuilder(word).append(" ");
+                y += lineHeight;
+            } else {
+                // Append the word to the current line
+                line.append(word).append(" ");
+            }
+        }
+
+        // Draw the remaining text
+        if (line.length() > 0) {
+            g2d.drawString(line.toString(), x, y);
+        }
+    }
+
+
     private void drawObjects (Graphics2D g) {
         for (GUIComponent component : offTheGridObjects) {
             if (component != null) {
@@ -653,7 +747,8 @@ public class ShopBoard extends JPanel implements ActionListener {
         }
 
 
-        for (List<GUIComponent> list : grid) {
+        //Always show the regular grid
+        for (List<GUIComponent> list : regularGrid) {
             for (GUIComponent component : list) {
                 if (component instanceof ShopItem shopItem) {
                     drawItemsInShop(g, shopItem);
@@ -662,12 +757,19 @@ public class ShopBoard extends JPanel implements ActionListener {
             }
         }
 
+
+        //Show the inventory grid if it's open
         if (showInventory) {
-            for (GUIComponent component : playerInventoryMenuObjects) {
-                if (component != null) {
-                    drawGUIComponent(g, component);
-                }
+            for(GUIComponent component : allInventoryGUIComponents){
+                drawGUIComponent(g, component);
             }
+
+//            drawGUIComponent(g, inventoryBackgroundCard);
+//            for (List<GUIComponent> list : inventoryGrid) {
+//                for (GUIComponent component : list) {
+//                    drawGUIComponent(g, component);
+//                }
+//            }
         }
 
         drawGUIComponent(g, menuCursor);
@@ -729,5 +831,18 @@ public class ShopBoard extends JPanel implements ActionListener {
     public void setShowInventory (boolean showInventory) {
         this.showInventory = showInventory;
 
+        if (this.showInventory) {
+            selectedGrid = inventoryGrid;
+            selectedColumn = 0;
+            selectedRow = 5;
+            updateCursor(); //update the cursor because we move it
+        } else {
+            selectedGrid = regularGrid;
+            selectedColumn = 2;
+            selectedRow = 4;
+            updateCursor();  //update the cursor because we move it
+        }
+
     }
+
 }

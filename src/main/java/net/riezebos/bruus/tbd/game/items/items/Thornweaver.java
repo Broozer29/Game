@@ -3,19 +3,48 @@ package net.riezebos.bruus.tbd.game.items.items;
 import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
 import net.riezebos.bruus.tbd.game.items.Item;
+import net.riezebos.bruus.tbd.game.items.PlayerInventory;
 import net.riezebos.bruus.tbd.game.items.enums.ItemApplicationEnum;
-import net.riezebos.bruus.tbd.game.items.enums.ItemEnums;
+import net.riezebos.bruus.tbd.game.items.ItemEnums;
 
 public class Thornweaver extends Item {
-    private float buffAmount = 0.1f; //Chance to apply on-hit effects
+    private boolean shouldApply;
     public Thornweaver(){
         super(ItemEnums.Thornweaver, 1, ItemApplicationEnum.ApplyOnCreation);
+        shouldApply = true;
     }
 
     @Override
     public void applyEffectToObject (GameObject gameObject) {
-        PlayerStats.getInstance().setAttacksApplyThorns(true);
-        PlayerStats.getInstance().setChanceForThornsToApplyOnHitEffects(quantity * buffAmount);
+        if(shouldApply) {
+            PlayerStats.getInstance().modifyCollisionDamageReduction(0.5f);
+            shouldApply = false;
+        }
     }
 
+    private void removeEffect(){
+        if(quantity > 0) {
+            PlayerStats.getInstance().modifyAttackSpeedBonus(-0.5f);
+        }
+    }
+
+    @Override
+    public void increaseQuantityOfItem (int amount) {
+        shouldApply = true;
+        removeEffect();
+        this.quantity += amount;
+        applyEffectToObject(null);
+    }
+
+    @Override
+    public boolean isAvailable(){
+        if(!this.itemEnum.isEnabled()){
+            return false;
+        }
+        boolean available = false;
+        if(PlayerInventory.getInstance().getItemByName(ItemEnums.Thornweaver) == null){
+            available = true;
+        }
+        return available;
+    }
 }

@@ -93,7 +93,7 @@ public class AnimationManager {
 
 	public void updateGameTick() {
 		removeInvisibleAnimations();
-		recenterAnimations();
+		recenterAnimations(); //Required for cropped animations that have different sizes, this might lead to weird interactions ir origin coords are used when the shouldnt
 	}
 
 	// Use for animations that have different sizes

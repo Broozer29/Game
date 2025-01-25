@@ -41,6 +41,19 @@ public class AudioLoader {
 
     public String convertAudioToFileString (AudioEnums audioFile) {
         switch (audioFile) {
+            case QueenDeath: return "/audio/Zerg/QueenDeath.wav";
+            case MutaliskBirth: return "/audio/Zerg/MutaliskBirth.wav";
+            case MutaliskDeath: return "/audio/Zerg/MutaliskDeath.wav";
+            case DevourerBirth: return "/audio/Zerg/DevourerBirth.wav";
+            case DevourerDeath: return "/audio/Zerg/DevourerDeath.wav";
+            case DevourerHit: return "/audio/Zerg/DevourerHit.wav";
+            case ScourgeCollision: return "/audio/Zerg/ScourgeCollision.wav";
+            case ScourgeDeath: return "/audio/Zerg/ScourgeDeath.wav";
+            case ScourgeNoticed: return "/audio/Zerg/ScourgeNoticed.wav";
+            case GuardianBirth: return "/audio/Zerg/GuardianBirth.wav";
+            case GuardianDeath: return "/audio/Zerg/GuardianDeath.wav";
+            case BroodlingAttached: return "/audio/Zerg/BroodlingAttached.wav";
+            case OverlordDeath: return "/audio/Zerg/OverlordDeath.wav";
             case Le_Youth_Chills:
                 return "/audio/music/Le Youth - Chills.wav";
             case Robert_Nickson_Painting_The_Skies:
@@ -76,7 +89,7 @@ public class AudioLoader {
             case Alien_Bomb_Destroyed:
                 // DUPLICATE
                 return "/audio/Destroyed Explosion.wav";
-            case Power_Up_Acquired:
+            case ItemAcquired:
                 return "/audio/PowerUpAcquired.wav";
             case Rocket_Launcher:
                 return "/audio/Rocket Launcher.wav";
@@ -162,7 +175,7 @@ public class AudioLoader {
                 return "/audio/SpaceStationBlastingOff.wav";
             case SpaceStationChargingUpMovement:
                 return "/audio/SpaceStationChargingUpMovement.wav";
-            case ElectroShredFinishedCharging:
+            case SpecialAttackFinishedCharging:
                 return "/audio/ElectroShredFinishedCharging.wav";
             case SilentAudio:
                 return "/audio/silence.wav";

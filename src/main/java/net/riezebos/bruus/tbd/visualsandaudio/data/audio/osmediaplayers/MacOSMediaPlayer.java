@@ -39,7 +39,6 @@ public class MacOSMediaPlayer {
     public void startPlayback () {
         resetPlaybackInfo();  // Reset before starting new playback
 
-        // AppleScript to play the current song and stop after the song finishes
         String script = "tell application \"Music\"\n"
                 + "play\n"
                 + "set trackDuration to duration of current track\n"
@@ -49,9 +48,10 @@ public class MacOSMediaPlayer {
                 + "pause\n"  // Ensure playback is paused immediately after the song ends
                 + "end tell";
 
-        executeAppleScriptAsync(script);  // Execute the AppleScript
+        executeAppleScriptAsync(script);
         hasStartedMusic = true;
         isPlaying = true;  // Mark as playing
+        totalSeconds = getTotalSecondsInPlayback();
     }
 
     // Method to stop playback in Apple Music (asynchronous)
@@ -64,7 +64,7 @@ public class MacOSMediaPlayer {
     }
 
     // Method to get the current playback position (in seconds)
-    public double getCurrentSecondsInPlayback() {
+    public double getCurrentSecondsInPlayback () {
         String script = "tell application \"Music\"\n"
                 + "return player position\n"
                 + "end tell";
@@ -73,11 +73,8 @@ public class MacOSMediaPlayer {
 
     // Method to get the total duration of the currently playing track (in seconds)
     public double getTotalSecondsInPlayback() {
-        String script = "tell application \"Music\"\n"
-                + "set myTrack to current track\n"
-                + "return duration of myTrack\n"
-                + "end tell";
-        return executeAppleScriptWithDoubleResult(script);
+        return executeAppleScriptWithDoubleResult(
+                "tell application \"Music\" to return duration of current track");
     }
 
 
@@ -87,110 +84,95 @@ public class MacOSMediaPlayer {
         executeAppleScriptAsync(script);
     }
 
-
-    // Method to start polling for playback info
-    public void startPolling () {
-        if (pollingTask == null || pollingTask.isCancelled() || pollingTask.isDone()) {
-            // Schedule polling task to run every second
-            pollingTask = scheduler.scheduleAtFixedRate(() -> {
-                updatePlaybackInfo();
-            }, 0, 1000, TimeUnit.MILLISECONDS);
-            System.out.println("Started polling Apple Music for playback info.");
+    public void synchronizePlaybackInfo() {
+        if (!hasStartedMusic) {
+            return;
         }
-    }
 
-    // Method to stop polling for playback info
-    public void stopPolling () {
-        if (pollingTask != null && !pollingTask.isCancelled()) {
-            pollingTask.cancel(true);  // Interrupts the current polling task
-            System.out.println("Stopped polling Apple Music for playback info.");
-            this.isPolling = false;
-        }
-    }
-
-
-// Polling method to check playback status and update the state
-    private void updatePlaybackInfo() {
+        // Fetch and update playback info
         currentSeconds = getCurrentSecondsInPlayback();
-        totalSeconds = getTotalSecondsInPlayback();
-
-        // If the song has started playing, mark it as started
-        if (!hasStartedMusic && currentSeconds > 0) {
-            hasStartedMusic = true;
+        if (currentSeconds >= 0 && currentSeconds < totalSeconds - 2) {
             isPlaying = true;
-            System.out.println("Music playback has started.");
-        }
-
-        // If the song is close to finishing or has finished, stop playback and update state
-        if (currentSeconds >= totalSeconds - 3) {
+        } else {
+            isPlaying = false;
             stopPlayback();
-            stopPolling();
             goToNextSong();
-            isPlaying = false;  // Music has finished
-            System.out.println("Music playback has finished.");
+            setPlaybackPosition(0);
         }
     }
+
+
+
+
 
     // Method to skip to the next song in Apple Music
-    public void goToNextSong() {
+    public void goToNextSong () {
         executeAppleScriptAsync("tell application \"Music\" to next track");
     }
 
     // Method to reset playback state
-    public void resetPlaybackInfo() {
-        stopPolling();  // Stop any existing polling task
+    public void resetPlaybackInfo () {
         hasStartedMusic = false;  // Reset to indicate no song has started yet
         isPlaying = false;        // Reset playing status
         System.out.println("Playback info reset.");
     }
 
     // Method to check if the music has started
-    public boolean hasStartedMusic() {
+    public boolean hasStartedMusic () {
         return hasStartedMusic;
     }
 
     // Method to check if music is currently playing
-    public boolean isPlaying() {
+    public boolean isPlaying () {
         return isPlaying;
     }
 
-    // Helper method to execute AppleScript asynchronously
     private void executeAppleScriptAsync(String script) {
         executor.submit(() -> {
+            Process process = null;
             try {
                 ProcessBuilder pb = new ProcessBuilder("osascript", "-e", script);
-                pb.start();  // Fire & forget, no need for waitFor
-            } catch (IOException e) {
+                process = pb.start();
+
+                // Wait for the process to complete
+                process.waitFor();
+            } catch (IOException | InterruptedException e) {
                 e.printStackTrace();
+            } finally {
+                if (process != null) {
+                    process.destroy();
+                }
             }
         });
     }
 
+
+
     // Helper method to execute AppleScript and get a double result (synchronous)
-    private double executeAppleScriptWithDoubleResult(String script) {
+    private double executeAppleScriptWithDoubleResult (String script) {
         double result = -1;
+        Process process = null;
         try {
             ProcessBuilder pb = new ProcessBuilder("osascript", "-e", script);
-            Process process = pb.start();
-            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-            String line;
-            if ((line = reader.readLine()) != null) {
-                result = Double.parseDouble(line.trim());
+            process = pb.start();
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
+                String line;
+                if ((line = reader.readLine()) != null) {
+                    result = Double.parseDouble(line.trim());
+                }
             }
-        } catch (IOException e) {
+            process.waitFor();  // Ensure the process finishes before returning the result
+        } catch (IOException | InterruptedException e) {
             e.printStackTrace();
+        } finally {
+            if (process != null) {
+                process.destroy();  // Clean up the process
+            }
         }
         return result;
     }
 
 
-    public boolean isPolling () {
-        return isPolling;
-    }
-
-    public void setPlaying (boolean playing) {
-        isPlaying = playing;
-    }
 
     public double getCurrentSeconds () {
         return currentSeconds;

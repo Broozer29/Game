@@ -1,10 +1,11 @@
 package net.riezebos.bruus.tbd.guiboards.guicomponents;
 
+import net.riezebos.bruus.tbd.game.items.Item;
 import net.riezebos.bruus.tbd.game.items.PlayerInventory;
-import net.riezebos.bruus.tbd.game.items.enums.ItemEnums;
+import net.riezebos.bruus.tbd.game.items.ItemEnums;
 import net.riezebos.bruus.tbd.game.items.enums.ItemRarityEnums;
-import net.riezebos.bruus.tbd.game.util.ItemDescriptionRetriever;
-import net.riezebos.bruus.tbd.guiboards.ShopItemInformation;
+import net.riezebos.bruus.tbd.game.items.ItemDescriptionRetriever;
+import net.riezebos.bruus.tbd.guiboards.GUIComponentItemInformation;
 import net.riezebos.bruus.tbd.guiboards.boardEnums.MenuFunctionEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.AudioDatabase;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.AudioManager;
@@ -15,7 +16,7 @@ import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.Sprit
 public class ShopItem extends GUIComponent {
 
     private ItemRarityEnums itemRarity;
-    private ShopItemInformation shopItemInformation;
+
 
     public ShopItem (SpriteConfiguration spriteConfiguration, ItemRarityEnums itemRarity) {
         super(spriteConfiguration);
@@ -24,22 +25,47 @@ public class ShopItem extends GUIComponent {
         initShopItem(spriteConfiguration);
     }
 
-    private void initShopItem (SpriteConfiguration spriteConfiguration) {
-        ItemRarityEnums actualItemRarity = null;
-        switch (this.itemRarity) {
-            case Common -> actualItemRarity = ItemRarityEnums.getRandomCommonItemSlot();
-            case Rare -> actualItemRarity = ItemRarityEnums.getRandomRareItemSlot();
-            case Legendary -> actualItemRarity = ItemRarityEnums.Legendary;
-            default -> actualItemRarity = ItemRarityEnums.getRandomCommonItemSlot();
-        }
+    private void initShopItem(SpriteConfiguration spriteConfiguration) {
+        ItemRarityEnums actualItemRarity = switch (this.itemRarity) {
+            case Common -> ItemRarityEnums.getRandomCommonItemSlot();
+            case Rare -> ItemRarityEnums.getRandomRareItemSlot();
+            case Legendary -> ItemRarityEnums.Legendary;
+            case Relic -> ItemRarityEnums.Relic;
+            default -> ItemRarityEnums.getRandomCommonItemSlot();
+        };
 
+        ItemEnums item = getRandomAvailableItemByRarity(actualItemRarity);
 
-        ItemEnums item = ItemEnums.getRandomItemByRarity(actualItemRarity);
         this.imageEnum = item.getItemIcon();
         spriteConfiguration.setImageType(imageEnum);
+
         String itemDesc = ItemDescriptionRetriever.getDescriptionOfItem(item);
-        this.shopItemInformation = new ShopItemInformation(item, actualItemRarity, itemDesc, true, actualItemRarity.getItemCost());
-        super.loadImage(imageEnum);
+        this.shopItemInformation = new GUIComponentItemInformation(
+                item, item.getItemRarity(), itemDesc, true, item.getItemRarity().getItemCost()
+        );
+
+        super.setImage(imageEnum);
+    }
+
+
+    private ItemEnums getRandomAvailableItemByRarity(ItemRarityEnums category) {
+        int MAX_ATTEMPTS = 20;
+        int attempts = 0;
+
+        while (attempts < MAX_ATTEMPTS) {
+            ItemEnums randomItem = ItemEnums.getRandomItemByRarity(category);
+
+            Item tempItem = PlayerInventory.getInstance().createItemFromEnum(randomItem);
+
+            if (tempItem != null && tempItem.isAvailable()) {
+                return randomItem;
+            }
+
+            attempts++;
+        }
+
+        // If no item was found after MAX_ATTEMPTS, return an overclock
+        return ItemEnums.Overclock;
     }
 
     public void lockItemInShop () {
@@ -50,12 +76,12 @@ public class ShopItem extends GUIComponent {
         shopItemInformation.setAvailable(false);
         shopItemInformation.setItemRarity(ItemRarityEnums.Locked);
         shopItemInformation.setItem(ItemEnums.Locked);
-        super.loadImage(imageEnum);
+        super.setImage(imageEnum);
     }
 
     public void purchaseItemInShop () {
         if (shopItemInformation.isAvailable() && shopItemInformation.canAfford()) {
-            AudioManager.getInstance().addAudio(AudioEnums.Power_Up_Acquired);
+            AudioManager.getInstance().addAudio(AudioEnums.ItemAcquired);
             PlayerInventory.getInstance().addItem(shopItemInformation.getItem());
             PlayerInventory.getInstance().spendCashMoney(shopItemInformation.getCost());
             lockItemInShop();
@@ -64,7 +90,7 @@ public class ShopItem extends GUIComponent {
         }
     }
 
-    public ShopItemInformation getShopItemInformation () {
+    public GUIComponentItemInformation getShopItemInformation () {
         return shopItemInformation;
     }
 

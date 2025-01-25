@@ -136,7 +136,11 @@ public class GameUICreator {
             case Rocket_Cluster:
                 frameType = ImageEnums.Starcraft2_Dual_Rockets;
                 break;
+            case FlameShield:
+                frameType = ImageEnums.Starcraft2_Fire_Hardened_Shields;
+                break;
             default:
+                frameType = ImageEnums.Starcraft2_Electric_Field;
                 break;
 
         }

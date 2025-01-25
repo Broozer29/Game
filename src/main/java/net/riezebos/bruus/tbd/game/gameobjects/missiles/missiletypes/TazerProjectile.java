@@ -1,7 +1,6 @@
 package net.riezebos.bruus.tbd.game.gameobjects.missiles.missiletypes;
 
 import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
-import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.AlienBomb;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.Missile;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.MissileConfiguration;
 import net.riezebos.bruus.tbd.game.items.effects.EffectIdentifiers;
@@ -48,7 +47,7 @@ public class TazerProjectile extends Missile {
 
         if (target.isFriendly()) {
             //Debuff the player or player friendly objects
-            attackSpeedModifierEffect = new AttackSpeedModifierEffect(-0.5f, 3, null, EffectIdentifiers.TazerAttackSpeedModifier);
+            attackSpeedModifierEffect = new AttackSpeedModifierEffect(-0.35f, 3, null, EffectIdentifiers.TazerAttackSpeedModifier);
             damageModifierEffect = new DamageModifierEffect(-0.25f, 3, superChargedAnimation, EffectIdentifiers.TazerDamageModifier);
             this.setVisible(false);
         } else {

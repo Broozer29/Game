@@ -1,13 +1,15 @@
 package net.riezebos.bruus.tbd.visualsandaudio.data.image;
 
-import net.riezebos.bruus.tbd.game.gameobjects.friendlies.Drones.Drone;
-import net.riezebos.bruus.tbd.game.items.items.MoneyPrinter;
-
 public enum ImageEnums {
 
     //// Menu Buttons
     Test_Image,
+    ModuleScorchIcon,
+    CorrosiveOil,
+    FireShieldIcon,
+    BargainBucket,
     Title_Image,
+    SelectClass,
     ProgressBar,
     ProgressBarFilling,
     InputMapping,
@@ -18,7 +20,43 @@ public enum ImageEnums {
     Alien_Bomb_Explosion,
     Default_Player_Engine,
     Default_Player_Shield_Damage,
-    Player_EMP,
+    DevourerIdle,
+    DevourerDeath,
+    DevourerAttacking,
+    DevourerMissile,
+    DevourerMissileExplosion,
+    DevourerDebuffStage1,
+    DevourerDebuffStage2,
+    DevourerDebuffStage3,
+    DevourerDebuffStage4,
+    DevourerBirth,
+    MutaliskIdle,
+    MutaliskDeath,
+    MutaliskMissile,
+    MutaliskMissileImpact,
+    MutaliskBirth,
+    DevourerCocoon,
+    GuardianMutaliskCocoon,
+    ScourgeIdle,
+    ScourgeExplosion,
+    ScourgeDeath,
+    GuardianIdle,
+    GuardianChargingAnimation,
+    GuardianMissile,
+    GuardianMissileImpact,
+    GuardianDeath,
+    GuardianBirth,
+    QueenIdle,
+    QueenAttacking,
+    QueenDeath,
+    BroodlingIdle,
+    BroodlingAttacking,
+    BroodlingDeath,
+    Overlord,
+    Electroshred,
+    Contract,
+    ModuleCommand,
+    ModuleElectrify,
     Drone,
     Portal5,
     WarpIn,
@@ -26,7 +64,15 @@ public enum ImageEnums {
     EnergyCircle,
     PlasmaCoatedDebuff,
     GasolineExplosion,
-    GasolineBurning,
+    IgniteBurning,
+    LingeringFlameLooping,
+    ModuleScorchFlames,
+    FireFighterFireShield,
+    FireFighterFireShieldAppearing,
+    FireFighterFlameThrowerLooping,
+    FireFighterFlameThrowerAppearing,
+    FireFighterFlameThrowerDissipating,
+    LingeringFlameLoopingDissipating,
     Healing,
     StickyDynamiteExplosion,
     MoneyPrinter,
@@ -55,6 +101,7 @@ public enum ImageEnums {
     BluePlanet2, BluePlanet3, BluePlanet4, BluePlanet5, BluePlanet6, CashCarrier, CashExplosion, GradeBronze, GradeSilver, GradeGold, GradePlatinum, GradeDiamond,
     GradeMaster, GradeGrandMaster, UIScoreTextCard, UIYouDied, UILevelComplete, Starcraft2Keystone, Starcraft2BouncingLaser, VIPTicket, PiercingLaser,
     Starcraft2LockOn, ThornWeaver, BarbedMissiles, BarbedAegis, Thornedplates,
+    Starcraft2FireBatWeapon,
     // Missile Animations
     Seeker_Missile,
     Bomba_Missile,
@@ -141,7 +188,7 @@ public enum ImageEnums {
     Letter_C, Letter_D, Letter_E, Letter_F, Letter_G, Letter_H, Letter_I, Letter_J, Letter_K, Letter_L, Letter_M,
     Letter_N, Letter_O, Letter_P, Letter_Q, Letter_R, Letter_S, Letter_T, Letter_U, Letter_V, Letter_W, Letter_X,
     Letter_Y, Letter_Z, Letter_Percentage, Letter_Komma, Letter_One, Letter_Two, Letter_Three, Letter_Four, Letter_Five,
-    Letter_Six, Letter_Seven, Letter_Eight, Letter_Nine, Letter_Zero, SpaceStationBoss;
+    Letter_Six, Letter_Seven, Letter_Eight, Letter_Nine, Letter_Zero, SpaceStationBoss, FireFighter, Starcraft2ConcentratedLaser, Starcraft2RepairBeam, Starcraft2_BatteryUpgrade, Starcraft2_MineExplosion, StickyOilIcon, SelectNewClassAnimation, EscalatingFlames, EntanglingFlames;
 
     public static ImageEnums fromChar (char c) {
         switch (c) {

@@ -35,7 +35,7 @@ public class HealPlayerOnDeath implements EffectInterface {
     }
 
     @Override
-    public boolean shouldBeRemoved () {
+    public boolean shouldBeRemoved (GameObject gameObject) {
         return false;
     }
 
@@ -55,7 +55,7 @@ public class HealPlayerOnDeath implements EffectInterface {
     }
 
     @Override
-    public void increaseEffectStrength () {
+    public void increaseEffectStrength (GameObject gameObject) {
         //Maybe do something later?
     }
 
@@ -68,5 +68,9 @@ public class HealPlayerOnDeath implements EffectInterface {
     @Override
     public EffectIdentifiers getEffectIdentifier () {
         return effectIdentifier;
+    }
+
+    @Override
+    public void removeEffect (GameObject gameObject){
     }
 }

@@ -39,7 +39,7 @@ public class Director {
     private double currentTime;
     private boolean active;
 
-    public Director(DirectorType directorType, List<MonsterCard> availableCards) {
+    public Director (DirectorType directorType, List<MonsterCard> availableCards) {
         this.directorType = directorType;
         this.credits = 0;
         this.lastSpawnTime = 0;
@@ -51,7 +51,7 @@ public class Director {
         this.formationCreator = new FormationCreator();
     }
 
-    private long calculateInitialSpawnInterval(DirectorType directorType) {
+    private long calculateInitialSpawnInterval (DirectorType directorType) {
         return switch (directorType) {
             case Slow -> 10 + (long) (Math.random() * 5); // 10-15 seconds
             case Fast -> 5 + (long) (Math.random() * 5); // 5-10 seconds
@@ -59,7 +59,7 @@ public class Director {
         };
     }
 
-    private double calculateCashCarrierChance(DirectorType directorType) {
+    private double calculateCashCarrierChance (DirectorType directorType) {
         return switch (directorType) {
             case Slow -> 0.1f;
             case Fast -> 0.05f;
@@ -67,7 +67,7 @@ public class Director {
         };
     }
 
-    public void update(double secondsPassed) {
+    public void update (double secondsPassed) {
         currentTime = secondsPassed;
 
         // Check if we should spawn enemies
@@ -81,7 +81,7 @@ public class Director {
         }
 
         // Check for conditions to deactivate the Director
-        if (directorType == DirectorType.Instant && credits < 50) {
+        if (directorType == DirectorType.Instant && credits < 15) {
             this.active = false;
         }
         if (directorType == DirectorType.Boss) {
@@ -89,8 +89,8 @@ public class Director {
         }
     }
 
-    private void attemptSpawn() {
-        if(directorType == DirectorType.Boss){
+    private void attemptSpawn () {
+        if (directorType == DirectorType.Boss) {
             spawnBoss();
             return; //We dont want to do anything else but spawning the boss at this time, subject to change
         }
@@ -108,27 +108,50 @@ public class Director {
             SpawnFormationEnums formationType = SpawnFormationEnums.getRandomFormation();
             MonsterCard selectedCard = selectMonsterCard();
 
-            if (selectedCard != null) {
+            if (selectedCard != null && canSpawnMoreOfThisEnemy(selectedCard.getEnemyType())) {
                 EnemyEnums enemyType = selectedCard.getEnemyType();
                 float totalFormationCost = calculateFormationCost(formationType, enemyType);
 
-                if (credits >= totalFormationCost && shouldSpawnFormation(enemyType)) {
+                if (credits >= totalFormationCost && canSpawnInFormation(enemyType) && shouldSpawnFormation(enemyType)) {
                     spawnRegularFormation(formationType, enemyType);
                     credits -= totalFormationCost;
                 } else if (credits >= selectedCard.getCreditCost()) {
-                    spawnEnemy(enemyType,true);
+                    spawnEnemy(enemyType, true);
                     credits -= selectedCard.getCreditCost();
                 }
             }
         }
     }
 
-    private void spawnBoss() {
+    private boolean canSpawnMoreOfThisEnemy(EnemyEnums enemyEnums){
+        if(enemyEnums.equals(EnemyEnums.ZergQueen)){
+            return EnemyManager.getInstance().getAmountOfEnemyTypesAlive(EnemyEnums.ZergQueen) < 1;
+        }
+
+        if(enemyEnums.equals(EnemyEnums.Tazer)){
+            return EnemyManager.getInstance().getAmountOfEnemyTypesAlive(EnemyEnums.Tazer) < 4;
+        }
+
+        if(enemyEnums.equals(EnemyEnums.Bulldozer)){
+            return EnemyManager.getInstance().getAmountOfEnemyTypesAlive(EnemyEnums.Bulldozer) < 5;
+        }
+
+        return true;
+    }
+
+    private boolean canSpawnInFormation (EnemyEnums enemyEnums) {
+        if (enemyEnums.equals(EnemyEnums.ZergQueen)) {
+            return false;
+        }
+        return true;
+    }
+
+    private void spawnBoss () {
         spawnBoss(GameStateInfo.getInstance().getNextBoss());
         EnemyManager.getInstance().setHasSpawnedABoss(true);
     }
 
-    private void spawnBoss(EnemyEnums enemyEnums){
+    private void spawnBoss (EnemyEnums enemyEnums) {
         // Set parameters for spawning
         Direction direction = Direction.LEFT;
         float scale = enemyEnums.getDefaultScale();
@@ -143,7 +166,7 @@ public class Director {
     }
 
 
-    private boolean shouldSpawnFormation(EnemyEnums enemyType) {
+    private boolean shouldSpawnFormation (EnemyEnums enemyType) {
         double time = currentTime - lastFormationSpawnTime;
         if (time < 3) {
             return false;
@@ -152,26 +175,26 @@ public class Director {
         double randomDouble = random.nextDouble();
         double chanceThreshold = switch (enemyType.getEnemyCategory()) {
             case Summon, Special, Boss -> -1f;
-            case Basic -> 0.2f; //20% chance of spawning a formation
-            case Mercenary -> 0.1f; //10% chance of spawning formation
+            case Small -> 0.2f; //20% chance of spawning a formation
+            case Medium -> 0.1f; //10% chance of spawning formation
         };
 
         return randomDouble < chanceThreshold;
     }
 
-    private float minimumMonsterCost() {
+    private float minimumMonsterCost () {
         return availableCards.stream()
                 .map(MonsterCard::getCreditCost)
                 .min(Float::compare)
                 .orElse(Float.MAX_VALUE);
     }
 
-    private float calculateFormationCost(SpawnFormationEnums formationType, EnemyEnums enemyType) {
+    private float calculateFormationCost (SpawnFormationEnums formationType, EnemyEnums enemyType) {
         float enemyCount = formationType.getEnemyCountInFormation();
         return enemyCount * enemyType.getCreditCost();
     }
 
-    private boolean shouldAttemptSpawn(double currentTime) {
+    private boolean shouldAttemptSpawn (double currentTime) {
         if (directorType == DirectorType.Instant || directorType == DirectorType.Boss) {
             return true; // Always spawn for Instant or Boss types
         } else {
@@ -184,7 +207,7 @@ public class Director {
         }
     }
 
-    private void spawnEnemy(EnemyEnums enemyType, boolean randomLocation) {
+    private void spawnEnemy (EnemyEnums enemyType, boolean randomLocation) {
         // Set parameters for spawning
         Direction direction = Direction.LEFT;
         float scale = enemyType.getDefaultScale();
@@ -198,21 +221,21 @@ public class Director {
                 enemyType, direction, scale, randomLocation, xMovementSpeed, yMovementSpeed, false);
     }
 
-    public void spawnRegularFormation(SpawnFormationEnums formationType, EnemyEnums enemyType) {
+    public void spawnRegularFormation (SpawnFormationEnums formationType, EnemyEnums enemyType) {
         spawnFormationWithParameters(formationType, enemyType, null, false);
     }
 
-    private void spawnCashCarrier() {
+    private void spawnCashCarrier () {
 //        spawnEntourageFormation(formationType, EnemyEnums.getRandomEnemy(EnemyCategory.Mercenary), EnemyEnums.CashCarrier);
 //        this.lastCashCarrierSpawnTime = currentTime;
         spawnEnemy(EnemyEnums.CashCarrier, true);
     }
 
-    private void spawnEntourageFormation(SpawnFormationEnums formationType, EnemyEnums primaryEnemy, EnemyEnums secondaryEnemy) {
+    private void spawnEntourageFormation (SpawnFormationEnums formationType, EnemyEnums primaryEnemy, EnemyEnums secondaryEnemy) {
         spawnFormationWithParameters(formationType, primaryEnemy, secondaryEnemy, true);
     }
 
-    private void spawnFormationWithParameters(SpawnFormationEnums formationType, EnemyEnums primaryEnemyType, EnemyEnums secondaryEnemyType, boolean isEntourage) {
+    private void spawnFormationWithParameters (SpawnFormationEnums formationType, EnemyEnums primaryEnemyType, EnemyEnums secondaryEnemyType, boolean isEntourage) {
         Direction direction = Direction.LEFT;
         float xMovementSpeed = isEntourage ? secondaryEnemyType.getMovementSpeed() : primaryEnemyType.getMovementSpeed();
         float yMovementSpeed = xMovementSpeed;
@@ -242,7 +265,7 @@ public class Director {
         lastFormationSpawnTime = currentTime;
     }
 
-    private int calculateBaseX(int totalFormationWidth, Direction direction) {
+    private int calculateBaseX (int totalFormationWidth, Direction direction) {
         DataClass instance = DataClass.getInstance();
         if (direction == Direction.LEFT) {
             // For LEFT direction, spawn at or beyond the right edge of the board
@@ -285,7 +308,7 @@ public class Director {
         return 0;
     }
 
-    private int calculateBaseY(int totalFormationHeight, Direction direction) {
+    private int calculateBaseY (int totalFormationHeight, Direction direction) {
         DataClass instance = DataClass.getInstance();
         if (direction == Direction.LEFT || direction == Direction.RIGHT) {
             if (totalFormationHeight > instance.getPlayableWindowMaxHeight()) {
@@ -317,11 +340,11 @@ public class Director {
     }
 
 
-    public void receiveCredits(float amount) {
+    public void receiveCredits (float amount) {
         this.credits += amount;
     }
 
-    private MonsterCard selectMonsterCard() {
+    private MonsterCard selectMonsterCard () {
         List<MonsterCard> adjustedCards = adjustWeights(availableCards, GameStateInfo.getInstance().getDifficultyCoefficient());
         if (!adjustedCards.isEmpty()) {
             return weightedRandomSelection(adjustedCards);
@@ -329,7 +352,7 @@ public class Director {
         return null; // Return null if no adjusted monsters are available
     }
 
-    private List<MonsterCard> adjustWeights(List<MonsterCard> baseMonsterCards, float difficultyCoefficient) {
+    private List<MonsterCard> adjustWeights (List<MonsterCard> baseMonsterCards, float difficultyCoefficient) {
         // Adjust the weights based on difficulty coefficient
         return baseMonsterCards.stream().map(card -> {
             float adjustedWeight = calculateAdjustedWeight(card, difficultyCoefficient);
@@ -337,7 +360,7 @@ public class Director {
         }).collect(Collectors.toList());
     }
 
-    private float calculateAdjustedWeight(MonsterCard card, float difficultyCoefficient) {
+    private float calculateAdjustedWeight (MonsterCard card, float difficultyCoefficient) {
         EnemyCategory category = card.getEnemyType().getEnemyCategory();
         float baseWeight = card.getWeight();
         // Adjust these values to finely control spawn behavior
@@ -346,10 +369,10 @@ public class Director {
         float growthRateForStrongEnemies = 0.15f; // Slower growth for stronger enemies
 
         switch (category) {
-            case Basic:
+            case Small:
                 // Increase weight significantly for Basic enemies initially and reduce slowly
                 return baseWeight * (basicIncreaseRate - difficultyCoefficient * decayRateForBasicEnemies);
-            case Mercenary:
+            case Medium:
             case Boss:
                 // Gradually increase weight for stronger enemies as difficulty increases
                 return baseWeight * (1 + difficultyCoefficient * growthRateForStrongEnemies);
@@ -360,7 +383,7 @@ public class Director {
         }
     }
 
-    private MonsterCard weightedRandomSelection(List<MonsterCard> adjustedCards) {
+    private MonsterCard weightedRandomSelection (List<MonsterCard> adjustedCards) {
         double totalWeight = adjustedCards.stream().mapToDouble(MonsterCard::getWeight).sum();
         double randomValue = totalWeight * random.nextDouble();
 
@@ -375,11 +398,11 @@ public class Director {
         return null; // Implement a fallback in case no card is selected
     }
 
-    public boolean isActive() {
+    public boolean isActive () {
         return this.active;
     }
 
-    public void setIsActive(boolean active){
+    public void setIsActive (boolean active) {
         this.active = active;
     }
 }

@@ -2,16 +2,15 @@ package net.riezebos.bruus.tbd.game.items;
 
 import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
 import net.riezebos.bruus.tbd.game.items.enums.ItemApplicationEnum;
-import net.riezebos.bruus.tbd.game.items.enums.ItemEnums;
 
 public abstract class Item implements ItemInterface{
 
-    protected ItemEnums itemName;
+    protected ItemEnums itemEnum;
     protected int quantity;
     protected ItemApplicationEnum applicationMethod;
 
     public Item(ItemEnums itemEnum, int quantity, ItemApplicationEnum applicationMethod){
-        this.itemName = itemEnum;
+        this.itemEnum = itemEnum;
         this.quantity = quantity;
         this.applicationMethod = applicationMethod;
     }
@@ -30,12 +29,12 @@ public abstract class Item implements ItemInterface{
         //Applies an effect to an object, with the applier provided for certain conditions
     }
 
-    public ItemEnums getItemName () {
-        return itemName;
+    public ItemEnums getItemEnum () {
+        return itemEnum;
     }
 
-    public void setItemName (ItemEnums itemName) {
-        this.itemName = itemName;
+    public void setItemEnum (ItemEnums itemEnum) {
+        this.itemEnum = itemEnum;
     }
 
     public int getQuantity () {

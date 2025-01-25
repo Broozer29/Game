@@ -1,7 +1,9 @@
 package net.riezebos.bruus.tbd.game.gameobjects.friendlies;
 
+import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.Enemy;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyManager;
+import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.Drone;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
 import net.riezebos.bruus.tbd.game.gamestate.GameStateInfo;
 import net.riezebos.bruus.tbd.game.gamestate.GameStatusEnums;
@@ -22,6 +24,7 @@ public class FriendlyManager {
     private static FriendlyManager instance = new FriendlyManager();
     private EnemyManager enemyManager = EnemyManager.getInstance();
     private List<FriendlyObject> friendlyObjects = new ArrayList<FriendlyObject>();
+    private List<Drone> allPlayerDrones = new ArrayList<>();
     private Portal finishedLevelPortal;
     private GameStateInfo gameState = GameStateInfo.getInstance();
 
@@ -30,9 +33,10 @@ public class FriendlyManager {
     }
 
     public void addDrone (){
-        FriendlyObject Drone = FriendlyCreator.createDrone();
-        PlayerManager.getInstance().getSpaceship().getObjectOrbitingThis().add(Drone);
-        this.friendlyObjects.add(Drone);
+        Drone drone = FriendlyCreator.createDrone();
+        PlayerManager.getInstance().getSpaceship().getObjectOrbitingThis().add(drone);
+        this.friendlyObjects.add(drone);
+        this.allPlayerDrones.add(drone);
 
         OrbitingObjectsFormatter.reformatOrbitingObjects(PlayerManager.getInstance().getSpaceship(), 85);
     }
@@ -52,30 +56,19 @@ public class FriendlyManager {
 
 
     public void resetManager () {
-        for (FriendlyObject friendlyObject : friendlyObjects) {
-            if (!friendlyObject.isPermanentFriendlyObject()) {
-                friendlyObject.setVisible(false);
-            }
+        for(GameObject object: friendlyObjects){
+            object.setVisible(false);
         }
 
         removeInvisibleObjects();
-        friendlyObjects = new ArrayList<FriendlyObject>();
-
+        friendlyObjects = new ArrayList<>();
+        allPlayerDrones = new ArrayList<>();
         initPortal();
     }
 
-    //Unused but can be used to remove permanent objects that resetManager does not clear.
-    public void clearPermanentAndOtherObjects(){
-        for (FriendlyObject friendlyObject : friendlyObjects) {
-                friendlyObject.setVisible(false);
-        }
-
-        removeInvisibleObjects();
-        friendlyObjects = new ArrayList<FriendlyObject>();
-    }
 
     private void spawnFinishedLevelPortal () {
-        if (gameState.getGameState() == GameStatusEnums.Level_Finished && !finishedLevelPortal.getSpawned()) {
+        if (gameState.getGameState() == GameStatusEnums.Level_Finished && !finishedLevelPortal.isSpawned()) {
             if (finishedLevelPortal == null) {
                 initPortal();
             }
@@ -87,17 +80,17 @@ public class FriendlyManager {
     }
 
     private void moveFriendlyObjects () {
-        for (FriendlyObject drone : friendlyObjects) {
-            if (drone.getAnimation().isVisible()) {
-                drone.move();
-                drone.updateGameObjectEffects();
+        for (FriendlyObject friendlyObject : friendlyObjects) {
+            if (friendlyObject.getAnimation().isVisible()) {
+                friendlyObject.move();
+                friendlyObject.updateGameObjectEffects();
             }
         }
     }
 
     private void activateFriendlyObjects () {
         for (FriendlyObject object : friendlyObjects) {
-            object.activateObjectAction();
+            object.activateObject();
         }
     }
 
@@ -171,5 +164,9 @@ public class FriendlyManager {
 
         finishedLevelPortal = new Portal(spriteAnimationConfiguration);
         finishedLevelPortal.setCenterCoordinates(portalXCoordinate, portalYCoordinate);
+    }
+
+    public List<Drone> getAllPlayerDrones () {
+        return allPlayerDrones;
     }
 }

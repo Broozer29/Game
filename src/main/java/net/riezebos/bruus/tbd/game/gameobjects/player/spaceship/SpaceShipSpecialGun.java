@@ -2,6 +2,7 @@ package net.riezebos.bruus.tbd.game.gameobjects.player.spaceship;
 
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.MissileManager;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.specialAttacks.ElectroShred;
+import net.riezebos.bruus.tbd.game.gameobjects.missiles.specialAttacks.FireShield;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.specialAttacks.SpecialAttack;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.specialAttacks.SpecialAttackConfiguration;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
@@ -11,7 +12,6 @@ import net.riezebos.bruus.tbd.game.gamestate.GameStateInfo;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.AudioManager;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.AudioEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
-import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteAnimation;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteAnimationConfiguration;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteConfiguration;
 
@@ -22,21 +22,22 @@ public class SpaceShipSpecialGun {
     private double lastSecondsSpecialAttackUsed = 0.0;
     private double lastSecondsSpecialAttackChargeGained = 0.0;
     private double secondsUntilNextSpecialAttackCharge = 0.0;
-    private boolean allowedToFire = false;
-
 
     public SpaceShipSpecialGun () {
-        specialAttackCharges = 0;
+        specialAttackCharges = 1;
     }
 
     public void fire (int xCoordinate, int yCoordinate, PlayerSpecialAttackTypes attackType) {
         double currentTime = GameStateInfo.getInstance().getGameSeconds();
-        if (specialAttackCharges > 0 && currentTime >= (lastSecondsSpecialAttackUsed + 0.15) && allowedToFire) {
+        if (specialAttackCharges > 0 && currentTime >= (lastSecondsSpecialAttackUsed + 0.15)) {
             switch (attackType) {
                 case EMP:
                     fireElectroShred(xCoordinate, yCoordinate);
                     break;
                 case Rocket_Cluster:
+                    break;
+                case FlameShield:
+                    fireFlameShield(xCoordinate, yCoordinate);
                     break;
             }
             if (specialAttackCharges > 0) {
@@ -47,59 +48,64 @@ public class SpaceShipSpecialGun {
                     lastSecondsSpecialAttackChargeGained = currentTime; // Start new charge cooldown
                 }
             }
-            allowedToFire = false;
+//            allowedToFire = false;
         }
+    }
+
+    private SpriteAnimationConfiguration createConfig (int xCoordinate, int yCoordinate, ImageEnums imageEnums, float scale, boolean loop) {
+        SpriteConfiguration spriteConfiguration = new SpriteConfiguration();
+        spriteConfiguration.setxCoordinate(xCoordinate);
+        spriteConfiguration.setyCoordinate(yCoordinate);
+        spriteConfiguration.setImageType(imageEnums);
+        spriteConfiguration.setScale(scale);
+
+        return new SpriteAnimationConfiguration(spriteConfiguration, 2, loop);
+
+    }
+
+    private void fireFlameShield (int xCoordinate, int yCoordinate) {
+        float damage = PlayerStats.getInstance().getSpecialDamage();
+        SpriteAnimationConfiguration spriteAnimationConfiguration = createConfig(xCoordinate, yCoordinate, ImageEnums.FireFighterFireShieldAppearing, 1, true);
+        SpecialAttackConfiguration missileConfiguration = new SpecialAttackConfiguration(damage, true, true, false, true, true, true);
+        SpecialAttack specialAttack = new FireShield(spriteAnimationConfiguration, missileConfiguration);
+        specialAttack.setCenteredAroundObject(true);
+        specialAttack.setScale(1f);
+        specialAttack.setOwnerOrCreator(PlayerManager.getInstance().getSpaceship());
+        AudioManager.getInstance().addAudio(AudioEnums.Firewall);
+        PlayerManager.getInstance().getSpaceship().addFollowingSpecialAttack(specialAttack);
+        MissileManager.getInstance().addSpecialAttack(specialAttack);
+
     }
 
     //Creates a special attack with an animation that follows the player
     private void fireElectroShred (int xCoordinate, int yCoordinate) {
-        PlayerManager playerManager = PlayerManager.getInstance();
-        SpaceShip spaceShip = playerManager.getSpaceship();
-
-        SpriteConfiguration spriteConfiguration = new SpriteConfiguration();
-        spriteConfiguration.setxCoordinate(xCoordinate);
-        spriteConfiguration.setyCoordinate(yCoordinate);
-        spriteConfiguration.setImageType(ImageEnums.Player_EMP);
-
         float damage = playerStats.getSpecialDamage();
+        SpriteAnimationConfiguration spriteAnimationConfiguration = createConfig(xCoordinate, yCoordinate, ImageEnums.Electroshred, 1, false);
+        spriteAnimationConfiguration.setFrameDelay(3);
 
         if (playerStats.isHasImprovedElectroShred()) {
-            spriteConfiguration.setImageType(ImageEnums.ElectroShredImproved);
+            spriteAnimationConfiguration.getSpriteConfiguration().setImageType(ImageEnums.ElectroShredImproved);
         }
 
-        SpriteAnimationConfiguration spriteAnimationConfiguration = new SpriteAnimationConfiguration(spriteConfiguration, 6, false);
-        SpecialAttackConfiguration missileConfiguration = new SpecialAttackConfiguration(damage, true, true, false, true, true);
-
-        SpriteAnimation specialAttackAnimation = new SpriteAnimation(spriteAnimationConfiguration);
-        specialAttackAnimation.setAnimationScale(1.5f);
-
+        SpecialAttackConfiguration missileConfiguration = new SpecialAttackConfiguration(damage, true, true, false, true, true, true);
         SpecialAttack specialAttack = new ElectroShred(spriteAnimationConfiguration, missileConfiguration);
         specialAttack.setCenteredAroundObject(true);
         specialAttack.setScale(1.5f);
         specialAttack.setOwnerOrCreator(PlayerManager.getInstance().getSpaceship());
-//			specialAttackAnimation.setCenterCoordinates(spaceShip.getCenterXCoordinate(), spaceShip.getCenterYCoordinate());
-//			specialAttack.setCenterCoordinates(spaceShip.getCenterXCoordinate(), spaceShip.getCenterYCoordinate());
-
         AudioManager.getInstance().addAudio(AudioEnums.Default_EMP);
-        spaceShip.addFollowingSpecialAttack(specialAttack);
+        PlayerManager.getInstance().getSpaceship().addFollowingSpecialAttack(specialAttack);
         MissileManager.getInstance().addSpecialAttack(specialAttack);
 
     }
 
     public void updateFrameCount () {
         double currentTime = GameStateInfo.getInstance().getGameSeconds();
-
-        // Allow firing if enough time has passed since the last shot
-        if (currentTime >= lastSecondsSpecialAttackUsed + playerStats.getSpecialAttackCooldown()) {
-            allowedToFire = true;
-        }
-
         // Gain a new charge if enough time has passed since the last charge was gained and there is a slot available
         if (specialAttackCharges < playerStats.getMaxSpecialAttackCharges()) {
             if (currentTime >= lastSecondsSpecialAttackChargeGained + playerStats.getSpecialAttackCooldown()) {
                 lastSecondsSpecialAttackChargeGained = currentTime;
                 specialAttackCharges++;
-                AudioManager.getInstance().addAudio(AudioEnums.ElectroShredFinishedCharging);
+                AudioManager.getInstance().addAudio(AudioEnums.SpecialAttackFinishedCharging);
             }
         }
 
@@ -109,6 +115,8 @@ public class SpaceShipSpecialGun {
         } else {
             secondsUntilNextSpecialAttackCharge = 0; // No charging if full
         }
+
+
     }
 
     public int getSpecialAttackCharges () {

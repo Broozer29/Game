@@ -1,40 +1,43 @@
 package net.riezebos.bruus.tbd.game.items.effects.effectimplementations;
 
 import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
+import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
 import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SpaceShip;
 import net.riezebos.bruus.tbd.game.gamestate.GameStateInfo;
 import net.riezebos.bruus.tbd.game.items.effects.EffectActivationTypes;
 import net.riezebos.bruus.tbd.game.items.effects.EffectIdentifiers;
 import net.riezebos.bruus.tbd.game.items.effects.EffectInterface;
+import net.riezebos.bruus.tbd.game.util.OnScreenTextManager;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteAnimation;
 
 public class AttackSpeedModifierEffect implements EffectInterface {
     private float attackSpeedModifierAmount;
+    private float attackSpeedModifierAmountPerStack;
     private EffectActivationTypes effectTypesEnums;
     private double durationInSeconds;
     private double startTimeInSeconds;
 
     private SpriteAnimation animation;
-    private GameObject modifiedObject;
     private boolean appliedToObject;
     private EffectIdentifiers effectIdentifier;
+    private int amountOfStacks;
 
-    public AttackSpeedModifierEffect (float attackSpeedModifierAmount, double durationInSeconds, SpriteAnimation animation, EffectIdentifiers effectIdentifier) {
-        this.attackSpeedModifierAmount = attackSpeedModifierAmount;
+    public AttackSpeedModifierEffect (float attackSpeedModifierAmountPerStack, double durationInSeconds, SpriteAnimation animation, EffectIdentifiers effectIdentifier) {
+        this.attackSpeedModifierAmountPerStack = attackSpeedModifierAmountPerStack;
+        this.attackSpeedModifierAmount = attackSpeedModifierAmountPerStack;
         this.durationInSeconds = durationInSeconds;
         this.animation = animation;
         this.startTimeInSeconds = GameStateInfo.getInstance().getGameSeconds();
         this.effectTypesEnums = EffectActivationTypes.CheckEveryGameTick;
         this.appliedToObject = false;
         this.effectIdentifier = effectIdentifier;
+        this.amountOfStacks = 1;
     }
 
     @Override
     public void activateEffect (GameObject gameObject) {
         if (!appliedToObject) {
-            this.modifiedObject = gameObject;
-
             float percentageChange = attackSpeedModifierAmount * 100;
 
             if (gameObject.isFriendly() || gameObject instanceof SpaceShip) {
@@ -52,18 +55,19 @@ public class AttackSpeedModifierEffect implements EffectInterface {
         }
     }
 
-    private void removeEffectsBeforeRemovingEffect () {
-        float percentageChange = -(attackSpeedModifierAmount * 100);
+    private void removeEffectsBeforeRemovingEffect (GameObject gameObject) {
+        if (gameObject == null) {
+            return;
+        }
 
-        if (modifiedObject instanceof SpaceShip) {
+        float percentageChange = -(attackSpeedModifierAmount * 100);
+        if (gameObject instanceof SpaceShip) {
             PlayerStats.getInstance().modifyAttackSpeedBonus(percentageChange);
         } else {
-            modifiedObject.modifyAttackSpeedBonus(percentageChange);
+            gameObject.modifyAttackSpeedBonus(percentageChange);
         }
 
-        if (animation != null) {
-            animation.setVisible(false);
-        }
+        appliedToObject = false;
     }
 
     private void centerAnimation (GameObject object) {
@@ -76,12 +80,10 @@ public class AttackSpeedModifierEffect implements EffectInterface {
     }
 
     @Override
-    public boolean shouldBeRemoved () {
+    public boolean shouldBeRemoved (GameObject gameObject) {
         if (GameStateInfo.getInstance().getGameSeconds() - startTimeInSeconds >= durationInSeconds) {
-            removeEffectsBeforeRemovingEffect();
             return true;
-        }
-        return false;
+        } else return false;
     }
 
     @Override
@@ -100,17 +102,35 @@ public class AttackSpeedModifierEffect implements EffectInterface {
     }
 
     @Override
-    public void increaseEffectStrength () {
-        // To be implemented later, if ever
+    public void increaseEffectStrength (GameObject gameObject) {
+        if (this.effectIdentifier.equals(EffectIdentifiers.DevourerAttackSpeedDebuff)) {
+            int maxStacks = 4;
+            if (amountOfStacks < maxStacks) {
+                amountOfStacks += 1;
+            }
+            removeEffectsBeforeRemovingEffect(gameObject);
+            attackSpeedModifierAmount = attackSpeedModifierAmountPerStack * amountOfStacks;
+            activateEffect(gameObject);
+        }
     }
 
     @Override
     public EffectInterface copy () {
-        return new AttackSpeedModifierEffect(attackSpeedModifierAmount, durationInSeconds, animation.clone(), effectIdentifier);
+        return new AttackSpeedModifierEffect(attackSpeedModifierAmountPerStack, durationInSeconds, animation.clone(), effectIdentifier);
     }
 
     @Override
     public EffectIdentifiers getEffectIdentifier () {
         return effectIdentifier;
+    }
+
+    @Override
+    public void removeEffect (GameObject gameObject) {
+        if (animation != null) {
+            animation.setInfiniteLoop(false);
+            animation.setVisible(false);
+        }
+        removeEffectsBeforeRemovingEffect(gameObject);
+        animation = null;
     }
 }

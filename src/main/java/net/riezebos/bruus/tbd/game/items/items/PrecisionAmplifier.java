@@ -2,8 +2,9 @@ package net.riezebos.bruus.tbd.game.items.items;
 
 import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
 import net.riezebos.bruus.tbd.game.items.Item;
+import net.riezebos.bruus.tbd.game.items.PlayerInventory;
 import net.riezebos.bruus.tbd.game.items.enums.ItemApplicationEnum;
-import net.riezebos.bruus.tbd.game.items.enums.ItemEnums;
+import net.riezebos.bruus.tbd.game.items.ItemEnums;
 
 import java.util.Random;
 
@@ -35,14 +36,23 @@ public class PrecisionAmplifier extends Item {
     public void modifyAttackingObject (GameObject attack, GameObject target) {
         float roll = random.nextFloat() * 100; // Roll a number between 0 and 100
 
-        // Check if the roll is within the crit chance
         if (roll < critChance) {
-            // Successful critical strike, double the attack's damage
             attack.setACrit(true);
-//            OnScreenText text = new OnScreenText(target.getXCoordinate(), target.getYCoordinate(), "CRITICAL HIT");
-//            OnScreenTextManager.getInstance().addTextObject(text);
+        }
+    }
+
+    @Override
+    public boolean isAvailable(){
+        boolean isAvailable = false;
+
+        if(!this.itemEnum.isEnabled()){
+            return isAvailable;
         }
 
-
+        if(PlayerInventory.getInstance().getItemByName(this.itemEnum) != null){
+            return PlayerInventory.getInstance().getItemByName(this.itemEnum).getQuantity() < 10; //Check if player already has 10 of them
+        } else {
+            return true; //Player has 0 stacks, so we return true
+        }
     }
 }

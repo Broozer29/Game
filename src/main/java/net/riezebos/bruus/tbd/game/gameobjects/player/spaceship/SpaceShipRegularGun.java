@@ -1,10 +1,18 @@
 package net.riezebos.bruus.tbd.game.gameobjects.player.spaceship;
 
+import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.Drone;
+import net.riezebos.bruus.tbd.game.gameobjects.friendlies.FriendlyManager;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.*;
+import net.riezebos.bruus.tbd.game.gameobjects.missiles.specialAttacks.FlameThrower;
+import net.riezebos.bruus.tbd.game.gameobjects.missiles.specialAttacks.SpecialAttack;
+import net.riezebos.bruus.tbd.game.gameobjects.missiles.specialAttacks.SpecialAttackConfiguration;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
+import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerPrimaryAttackTypes;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
 import net.riezebos.bruus.tbd.game.gamestate.GameStateInfo;
 import net.riezebos.bruus.tbd.game.gamestate.GameStatsTracker;
+import net.riezebos.bruus.tbd.game.items.PlayerInventory;
+import net.riezebos.bruus.tbd.game.items.ItemEnums;
 import net.riezebos.bruus.tbd.game.movement.Direction;
 import net.riezebos.bruus.tbd.game.movement.MovementConfiguration;
 import net.riezebos.bruus.tbd.game.movement.MovementPatternSize;
@@ -14,52 +22,100 @@ import net.riezebos.bruus.tbd.game.movement.pathfinders.RegularPathFinder;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.AudioManager;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.AudioEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
+import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteAnimationConfiguration;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteConfiguration;
 
 public class SpaceShipRegularGun {
 
     private MissileManager missileManager = MissileManager.getInstance();
     private AudioManager audioManager = AudioManager.getInstance();
-    private PlayerManager friendlyManager = PlayerManager.getInstance();
+    private PlayerManager playerManager = PlayerManager.getInstance();
     private PlayerStats playerStats = PlayerStats.getInstance();
     private MissileCreator missileCreator = MissileCreator.getInstance();
+    private SpecialAttack channeledAttack = null;
 
-    private float currentAttackFrame;
     private double lastAttackTime = 0.0;
+    private double timeChannelAttackGetsCleared = 0.0;
 
     public SpaceShipRegularGun () {
 
     }
 
-    public void fire (int xCoordinate, int yCoordinate, MissileEnums playerAttackType) {
+    public void fire (int xCoordinate, int yCoordinate, PlayerPrimaryAttackTypes playerAttackType) {
         double currentTime = GameStateInfo.getInstance().getGameSeconds();
-
         if (currentTime >= lastAttackTime + playerStats.getAttackSpeed()) {
             lastAttackTime = currentTime;  // Update the last attack time
 
-            ImageEnums visualImage = playerStats.getPlayerMissileImage();
-            float scale = playerStats.getMissileScale();
-            PathFinder pathFinder = new RegularPathFinder();
-
-            fireMissile(xCoordinate, yCoordinate, visualImage, scale, pathFinder, playerAttackType);
-
-            switch (playerAttackType) {
-                case PlayerLaserbeam -> playMissileAudio(AudioEnums.NewPlayerLaserbeam);
-                case DefaultRocket -> playMissileAudio(AudioEnums.Rocket_Launcher);
+            if (PlayerInventory.getInstance().getItemByName(ItemEnums.ModuleCommand) != null) {
+                for (Drone drone : FriendlyManager.getInstance().getAllPlayerDrones()) {
+                    drone.fireAction();
+                }
+                playMissileAudio(AudioEnums.NewPlayerLaserbeam);
+                return; //Don't fire the actual player missile
             }
+
+            if (playerAttackType.equals(PlayerPrimaryAttackTypes.Laserbeam)) {
+                handleRegularMissile(xCoordinate, yCoordinate, playerAttackType);
+            } else if (playerAttackType.equals(PlayerPrimaryAttackTypes.Flamethrower)) {
+                startFiringFlameThrower(xCoordinate, yCoordinate);
+            }
+
+        }
+    }
+
+    private void handleRegularMissile (int xCoordinate, int yCoordinate, PlayerPrimaryAttackTypes playerAttackType) {
+        ImageEnums visualImage = playerStats.getPlayerMissileImage();
+        float scale = playerStats.getMissileScale();
+        PathFinder pathFinder = new RegularPathFinder();
+        fireMissile(xCoordinate, yCoordinate, visualImage, scale, pathFinder, playerAttackType.getCorrespondingMissileEnum());
+        playFiringAudio(playerAttackType);
+    }
+
+
+    private void startFiringFlameThrower (int xCoordinate, int yCoordinate) {
+        if (this.channeledAttack == null) {
+            PlayerManager playerManager = PlayerManager.getInstance();
+            SpaceShip spaceShip = playerManager.getSpaceship();
+
+            SpriteConfiguration spriteConfiguration = new SpriteConfiguration();
+            spriteConfiguration.setxCoordinate(xCoordinate);
+            spriteConfiguration.setyCoordinate(yCoordinate);
+            spriteConfiguration.setImageType(ImageEnums.FireFighterFlameThrowerAppearing);
+
+            float damage = playerStats.getBaseDamage();
+            SpriteAnimationConfiguration spriteAnimationConfiguration = new SpriteAnimationConfiguration(spriteConfiguration, 3, true);
+            SpecialAttackConfiguration missileConfiguration = new SpecialAttackConfiguration(damage, true, true, false, true, false, true);
+            SpecialAttack specialAttack = new FlameThrower(spriteAnimationConfiguration, missileConfiguration);
+            specialAttack.setCenteredAroundObject(true);
+            specialAttack.setScale(0.7f);
+            specialAttack.addXOffset((specialAttack.getAnimation().getWidth() / 2) - Math.round((specialAttack.getAnimation().getWidth() * 0.005f)));
+            specialAttack.setOwnerOrCreator(PlayerManager.getInstance().getSpaceship());
+            spaceShip.addFollowingSpecialAttack(specialAttack);
+            this.channeledAttack = specialAttack;
+            MissileManager.getInstance().addSpecialAttack(specialAttack);
+            AudioManager.getInstance().addAudio(AudioEnums.Firewall);
+        }
+    }
+
+
+    public void stopFiring () {
+        if (this.channeledAttack != null && !this.channeledAttack.isDissipating()) {
+            this.channeledAttack.startDissipating();
+            timeChannelAttackGetsCleared = GameStateInfo.getInstance().getGameSeconds();
+        }
+    }
+
+    private void playFiringAudio (PlayerPrimaryAttackTypes playerAttackType) {
+        switch (playerAttackType) {
+            case Laserbeam -> playMissileAudio(AudioEnums.NewPlayerLaserbeam);
+            case Flamethrower -> playMissileAudio(AudioEnums.Firewall);
         }
     }
 
 
     private void fireMissile (int xCoordinate, int yCoordinate, ImageEnums playerMissileType,
                               float missileScale, PathFinder missilePathFinder, MissileEnums attackType) {
-
-//        attackType = MissileEnums.OrbitCenter;
-//        playerMissileType = ImageEnums.ThornsDamage;
-//        missileScale = 0.4f;
-
         int movementSpeed = 5;
-
         MissileCreator missileCreator1 = MissileCreator.getInstance();
         SpriteConfiguration spriteConfiguration = missileCreator1.createMissileSpriteConfig(xCoordinate, yCoordinate,
                 playerMissileType, missileScale);
@@ -113,8 +169,12 @@ public class SpaceShipRegularGun {
         this.audioManager.addAudio(audioEnum);
     }
 
-//    public void updateFrameCount () {
-//        this.currentAttackFrame++;
-//    }
+    public void updateFrameCount () {
+        if (channeledAttack != null && channeledAttack.isDissipating()) {
+            if ((timeChannelAttackGetsCleared + 0.5d) < GameStateInfo.getInstance().getGameSeconds()) {
+                channeledAttack = null;
+            }
+        }
+    }
 
 }

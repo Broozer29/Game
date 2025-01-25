@@ -1,5 +1,6 @@
 package net.riezebos.bruus.tbd.guiboards.boardcreators;
 
+import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
 import net.riezebos.bruus.tbd.game.items.PlayerInventory;
 import net.riezebos.bruus.tbd.game.items.enums.ItemRarityEnums;
 import net.riezebos.bruus.tbd.game.level.LevelManager;
@@ -53,7 +54,7 @@ public class ShopBoardCreator {
         int initCursorX = textC.getComponents().get(0).getXCoordinate();
         int initCursorY = textC.getComponents().get(0).getYCoordinate();
         float scale = textScale;
-        SpriteConfiguration spriteConfiguration = createSpriteConfiguration(initCursorX, initCursorY, scale, ImageEnums.Player_Spaceship_Model_3);
+        SpriteConfiguration spriteConfiguration = createSpriteConfiguration(initCursorX, initCursorY, scale, PlayerStats.getInstance().getSpaceShipImage());
         MenuCursor button = new MenuCursor(spriteConfiguration);
         return button;
     }
@@ -79,31 +80,21 @@ public class ShopBoardCreator {
     public GUITextCollection createStartNextLevelButton () {
         int xCoordinate = 500;
         int yCoordinate = boardHeight - 80;
-//        float scale = textScale;
         String text = "START NEXT LEVEL";
         GUITextCollection textCollection = new GUITextCollection(xCoordinate, yCoordinate, text);
         textCollection.setMenuFunctionality(MenuFunctionEnums.Start_Game);
         textCollection.getComponents().get(0).setDescriptionOfComponent("Start the next level");
-//        SpriteConfiguration spriteConfiguration = createSpriteConfiguration(xCoordinate,yCoordinate,scale, ImageEnums.Test_Image);
-//        MenuButton button = new MenuButton(spriteConfiguration);
-//        button.setDescriptionOfComponent(text);
-//        button.setMenuFunctionality(MenuFunctionEnums.Start_Game);
         return textCollection;
     }
 
     public GUITextCollection createPlayerInventoryButton () {
-        int xCoordinate = 800;
+        int xCoordinate = 780;
         int yCoordinate = boardHeight - 80;
-//        float scale = textScale;
-        String text = "OPEN INVENTORY";
+        String text = "VIEW OR HIDE INVENTORY";
 
         GUITextCollection textCollection = new GUITextCollection(xCoordinate, yCoordinate, text);
         textCollection.setMenuFunctionality(MenuFunctionEnums.Open_Inventory);
-        textCollection.getComponents().get(0).setDescriptionOfComponent("Opens your inventory, allows you to see your items");
-//        SpriteConfiguration spriteConfiguration = createSpriteConfiguration(xCoordinate,yCoordinate,scale, ImageEnums.Test_Image);
-//        MenuButton button = new MenuButton(spriteConfiguration);
-//        button.setDescriptionOfComponent(text);
-//        button.setMenuFunctionality(MenuFunctionEnums.Open_Inventory);
+        textCollection.getComponents().get(0).setDescriptionOfComponent("Opens or hides your inventory, allows you to see your current items.");
         return textCollection;
     }
 
@@ -139,10 +130,14 @@ public class ShopBoardCreator {
             difficulty = 6;
             string = "NEXT: BOSS LEVEL";
         } else {
-            difficulty = LevelSongs.getDifficultyScore(
-                    LevelManager.getInstance().getCurrentLevelDifficulty(),
-                    LevelManager.getInstance().getCurrentLevelLength()
-            );
+            if(AudioManager.getInstance().isMusicControlledByThirdPartyApp()){
+                difficulty = LevelSongs.getDifficultyScoreByDifficultyOnly(LevelManager.getInstance().getCurrentLevelDifficulty());
+            } else {
+                difficulty = LevelSongs.getDifficultyScore(
+                        LevelManager.getInstance().getCurrentLevelDifficulty(),
+                        LevelManager.getInstance().getCurrentLevelLength()
+                );
+            }
 
             iconEnum = LevelSongs.getImageEnumByDifficultyScore(difficulty);
             string = "NEXT DIFFICULTY: " + difficulty;
@@ -199,7 +194,13 @@ public class ShopBoardCreator {
     public GUITextCollection createRerollCostText (GUIComponent backgroundCard) {
         int xCoordinate = backgroundCard.getXCoordinate();
         int yCoordinate = backgroundCard.getYCoordinate();
-        String string = "REROLL COST: " + ShopManager.getInstance().getRerollCost();
+        String rerollCost = String.valueOf(ShopManager.getInstance().getRerollCost());
+
+        if(ShopManager.getInstance().getFreeRefreshessLeft() > 0){
+            rerollCost = "FREE";
+        }
+
+        String string = "REROLL COST: " + rerollCost;
         GUITextCollection textCollection = new GUITextCollection(xCoordinate, yCoordinate, string);
         GUIComponent lastComponent = textCollection.getComponents().get(textCollection.getComponents().size() - 1);
         GUIComponent firstComponent = textCollection.getComponents().get(0);

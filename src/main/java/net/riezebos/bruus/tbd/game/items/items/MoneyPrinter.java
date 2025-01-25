@@ -6,7 +6,7 @@ import net.riezebos.bruus.tbd.game.items.effects.EffectActivationTypes;
 import net.riezebos.bruus.tbd.game.items.effects.EffectIdentifiers;
 import net.riezebos.bruus.tbd.game.items.effects.effectimplementations.GainGoldOnDeath;
 import net.riezebos.bruus.tbd.game.items.enums.ItemApplicationEnum;
-import net.riezebos.bruus.tbd.game.items.enums.ItemEnums;
+import net.riezebos.bruus.tbd.game.items.ItemEnums;
 
 import java.util.Random;
 
@@ -37,7 +37,7 @@ public class MoneyPrinter extends Item {
     }
 
     private void calculateMoneyGainAmount(){
-        this.moneyGainAmount = quantity * 5f;
+        this.moneyGainAmount = quantity * 4f;
     }
 
     public void increaseQuantityOfItem(int amount) {
@@ -45,4 +45,11 @@ public class MoneyPrinter extends Item {
         calculateMoneyGainAmount();
     }
 
+    @Override
+    public boolean isAvailable(){
+        if(!this.itemEnum.isEnabled()){
+            return false;
+        }
+        return true;
+    }
 }

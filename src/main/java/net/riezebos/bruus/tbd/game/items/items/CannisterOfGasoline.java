@@ -1,7 +1,8 @@
 package net.riezebos.bruus.tbd.game.items.items;
 
 import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
-import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.AlienBomb;
+import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.spaceships.AlienBomb;
+import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerClass;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
 import net.riezebos.bruus.tbd.game.items.Item;
 import net.riezebos.bruus.tbd.game.items.effects.DormentExplosionActivationMethods;
@@ -9,7 +10,7 @@ import net.riezebos.bruus.tbd.game.items.effects.EffectActivationTypes;
 import net.riezebos.bruus.tbd.game.items.effects.EffectIdentifiers;
 import net.riezebos.bruus.tbd.game.items.effects.effectimplementations.DormentExplosion;
 import net.riezebos.bruus.tbd.game.items.enums.ItemApplicationEnum;
-import net.riezebos.bruus.tbd.game.items.enums.ItemEnums;
+import net.riezebos.bruus.tbd.game.items.ItemEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.AudioEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
 
@@ -34,7 +35,14 @@ public class CannisterOfGasoline extends Item {
     }
 
     private float calculateBurningDamage (int quantity) {
-        return PlayerStats.getInstance().getBaseDamage() * 0.15f * quantity;
+        PlayerClass currentPlayerClass = PlayerStats.getInstance().getPlayerClass();
+        switch (currentPlayerClass){
+            case FireFighter:
+                return PlayerStats.getInstance().getFireFighterIgniteDamage();
+            case Captain:
+            default:
+               return PlayerStats.getInstance().getBaseDamage() * 0.15f * quantity;
+        }
     }
 
     private float calculateExplosionDamage (int quantity) {
@@ -61,6 +69,12 @@ public class CannisterOfGasoline extends Item {
         gameObject.addEffect(dormentExplosion);
     }
 
-
+    @Override
+    public boolean isAvailable(){
+        if(!this.itemEnum.isEnabled()){
+            return false;
+        }
+        return true;
+    }
 
 }

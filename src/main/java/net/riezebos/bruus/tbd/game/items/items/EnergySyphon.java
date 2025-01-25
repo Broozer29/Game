@@ -6,7 +6,7 @@ import net.riezebos.bruus.tbd.game.items.effects.EffectActivationTypes;
 import net.riezebos.bruus.tbd.game.items.effects.EffectIdentifiers;
 import net.riezebos.bruus.tbd.game.items.effects.effectimplementations.HealPlayerOnDeath;
 import net.riezebos.bruus.tbd.game.items.enums.ItemApplicationEnum;
-import net.riezebos.bruus.tbd.game.items.enums.ItemEnums;
+import net.riezebos.bruus.tbd.game.items.ItemEnums;
 
 public class EnergySyphon extends Item {
 
@@ -32,6 +32,14 @@ public class EnergySyphon extends Item {
         //Heals the player on the death of the object
         HealPlayerOnDeath healPlayerOnDeath = new HealPlayerOnDeath(true, barrierAmount, EffectActivationTypes.OnObjectDeath, EffectIdentifiers.EnergySyphonHealPlayerOnDeath);
         gameObject.addEffect(healPlayerOnDeath);
+    }
+
+    @Override
+    public boolean isAvailable(){
+        if(!this.itemEnum.isEnabled()){
+            return false;
+        }
+        return true;
     }
 
 }

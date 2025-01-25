@@ -1,6 +1,6 @@
 package net.riezebos.bruus.tbd.game.gameobjects;
 
-import net.riezebos.bruus.tbd.game.gameobjects.missiles.specialAttacks.ElectroShred;
+import net.riezebos.bruus.tbd.game.gameobjects.missiles.Missile;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
 import net.riezebos.bruus.tbd.game.gamestate.GameStateInfo;
 import net.riezebos.bruus.tbd.game.gamestate.GameStatsTracker;
@@ -9,6 +9,7 @@ import net.riezebos.bruus.tbd.game.items.PlayerInventory;
 import net.riezebos.bruus.tbd.game.items.effects.EffectActivationTypes;
 import net.riezebos.bruus.tbd.game.items.effects.EffectInterface;
 import net.riezebos.bruus.tbd.game.items.enums.ItemApplicationEnum;
+import net.riezebos.bruus.tbd.game.util.VisualLayer;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.AnimationManager;
 import net.riezebos.bruus.tbd.game.util.OnScreenTextManager;
 import net.riezebos.bruus.tbd.game.movement.*;
@@ -32,8 +33,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class GameObject extends Sprite {
+
+    private static final AtomicInteger idGenerator = new AtomicInteger(0);
+    private final int id;
 
     protected SpriteAnimation animation; //This is a code smell, because spriteanimation is already extension of sprite, need to untangle this
     protected SpriteAnimation destructionAnimation;
@@ -48,6 +53,7 @@ public class GameObject extends Sprite {
 
     //Audio variables
     protected AudioEnums deathSound;
+    protected VisualLayer visualLayer = VisualLayer.Upper; //Default this to false, should only be overridden when explicitly intended to
 
     //Hitpoint variables
     protected float currentHitpoints;
@@ -66,7 +72,8 @@ public class GameObject extends Sprite {
     protected float attackSpeed;
     protected float attackSpeedBonusModifier;
     protected boolean appliesOnHitEffects;
-    private List<EffectInterface> effectsToApply = new ArrayList<>();
+    protected List<EffectInterface> effectsToApply = new ArrayList<>();
+    protected boolean showDamage = true;
 
     //Game logic variables
     protected boolean friendly;
@@ -80,6 +87,7 @@ public class GameObject extends Sprite {
     protected int lastBoardBlock;
     protected Point currentLocation;
     protected int currentBoardBlock;
+    protected int knockbackStrength;
 
 
     //Objects following this object
@@ -108,8 +116,9 @@ public class GameObject extends Sprite {
     public GameObject (SpriteConfiguration spriteConfiguration) {
         super(spriteConfiguration);
         if (spriteConfiguration.getImageType() != null) {
-            this.loadImage(spriteConfiguration.getImageType());
+            this.setImage(spriteConfiguration.getImageType());
         }
+        this.id = idGenerator.incrementAndGet(); // Generate a unique ID
         initGameObject();
     }
 
@@ -117,6 +126,7 @@ public class GameObject extends Sprite {
         super(spriteAnimationConfiguration.getSpriteConfiguration());
         this.animation = new SpriteAnimation(spriteAnimationConfiguration);
         initGameObject();
+        this.id = idGenerator.incrementAndGet(); // Generate a unique ID
     }
 
     protected void initGameObject () {
@@ -193,6 +203,7 @@ public class GameObject extends Sprite {
                 effects.add(effect);
             } else {
                 refreshEffect(existingEffect);
+                return; //Already have it, so we don't need to add the animation of the new effect
             }
 
             if (effect.getAnimation() != null) {
@@ -204,6 +215,7 @@ public class GameObject extends Sprite {
                 }
 
                 if (!effectAnimationExists) {
+                    effect.getAnimation().refreshAnimation(); //To handle ignite, idk why it does this as of now
                     effectAnimations.add(effect.getAnimation());
                     AnimationManager.getInstance().addUpperAnimation(effect.getAnimation());
                 }
@@ -233,7 +245,7 @@ public class GameObject extends Sprite {
         for (EffectInterface effect : effects) {
             if (effect.getEffectTypesEnums() == providedActivationType) {
                 effect.activateEffect(this);
-                if (effect.shouldBeRemoved()) {
+                if (effect.shouldBeRemoved(this)) {
                     if (effect.getAnimation() != null) {
                         effect.getAnimation().setVisible(false);
                         if (effectAnimations.contains(effect.getAnimation())) {
@@ -245,6 +257,7 @@ public class GameObject extends Sprite {
                         }
                     }
                     toRemove.add(effect);
+                    effect.removeEffect(this);
                 }
             }
         }
@@ -255,7 +268,7 @@ public class GameObject extends Sprite {
     private void refreshEffect (EffectInterface effect) {
         //Effects themselves should determine what to do in this scenario
         effect.resetDuration();
-        effect.increaseEffectStrength();
+        effect.increaseEffectStrength(this);
     }
 
     private void cleanseAllEffects () {
@@ -314,8 +327,13 @@ public class GameObject extends Sprite {
             return; //The target is already dead, no need to go through here again
         }
 
+
         if (damageTaken > 0) {
             damageTaken = ArmorCalculator.calculateDamage(damageTaken, this);
+        }
+
+        if (damageTaken > 0) {
+            lastGameSecondDamageTaken = GameStateInfo.getInstance().getGameSeconds();
         }
 
         if (!this.isFriendly()) {
@@ -325,10 +343,6 @@ public class GameObject extends Sprite {
         }
 
         this.currentHitpoints -= damageTaken;
-        if (damageTaken > 0) {
-            lastGameSecondDamageTaken = GameStateInfo.getInstance().getGameSeconds();
-        }
-
         if (currentHitpoints > maxHitPoints) {
             currentHitpoints = maxHitPoints;
         }
@@ -384,7 +398,7 @@ public class GameObject extends Sprite {
         }
     }
 
-    public void applyBeforeCollisionItemEffects (GameObject target) {
+    public void applyBeforeCollisionAttackModifyingItemEffects (GameObject target) {
         for (Item item : PlayerInventory.getInstance().getItemsByApplicationMethod(ItemApplicationEnum.BeforeCollision)) {
             item.modifyAttackingObject(this, target);
             item.applyEffectToObject(target);
@@ -401,12 +415,6 @@ public class GameObject extends Sprite {
     }
 
     public void dealDamageToGameObject (GameObject target) {
-        boolean showDamage = true;
-        if (this instanceof ElectroShred) {
-            showDamage = false;
-        }
-
-
         for (EffectInterface effectInterface : effectsToApply) {
             target.addEffect(effectInterface);
         }
@@ -439,6 +447,10 @@ public class GameObject extends Sprite {
     }
 
     private void toggleHealthBar () {
+        if (this instanceof Missile) {
+            return;
+        }
+
         if (this.currentHitpoints < this.maxHitPoints) {
             showHealthBar = true;
         }
@@ -479,16 +491,20 @@ public class GameObject extends Sprite {
         if (!this.visible && this.animation != null) {
             this.animation.setVisible(false);
         }
+
+        if(this.animation != null && !this.animation.isVisible()){
+            this.setVisible(false);
+        }
     }
 
 
     //*****************VISUAL ALTERATION*******************************
     public void rotateGameObjectTowards (Direction direction, boolean crop) {
-        if(ImageRotator.getInstance().isBlockedFromRotating(this.getImageEnum())){
+        if (ImageRotator.getInstance().isBlockedFromRotating(this.getImageEnum())) {
             return;
         }
 
-        if (!isAllowedVisualsToRotate() || this.rotationAngle == direction.toAngle()) {
+        if (!isAllowedVisualsToRotate()) {
             return;
         }
 
@@ -502,6 +518,14 @@ public class GameObject extends Sprite {
             this.image = ImageRotator.getInstance().rotate(originalImage, direction, crop);
             super.recalculateBoundsAndSize();
         }
+    }
+
+    @Override
+    public boolean isVisible () {
+        if(this.animation != null){
+            return this.animation.isVisible();
+        }
+        return visible;
     }
 
     protected void updateChargingAttackAnimationCoordination () {
@@ -523,7 +547,7 @@ public class GameObject extends Sprite {
     }
 
     public void rotateGameObjectTowards (int targetXCoordinate, int targetYCoordinate, boolean crop) {
-        if(ImageRotator.getInstance().isBlockedFromRotating(this.getImageEnum()) || !allowedVisualsToRotate){
+        if (ImageRotator.getInstance().isBlockedFromRotating(this.getImageEnum()) || !allowedVisualsToRotate) {
             return;
         }
 
@@ -532,7 +556,7 @@ public class GameObject extends Sprite {
     }
 
     protected void rotateObjectTowardsAngle (double calculatedAngle, boolean crop) {
-        if(ImageRotator.getInstance().isBlockedFromRotating(this.getImageEnum())){
+        if (ImageRotator.getInstance().isBlockedFromRotating(this.getImageEnum())) {
             return;
         }
 
@@ -939,21 +963,44 @@ public class GameObject extends Sprite {
         }
     }
 
+    @Override
+    public void addYOffset (int yoffset) {
+        if(this.animation != null){
+            this.animation.addYOffset(yoffset);
+        }
+        this.yOffset = yoffset;
+    }
+
+    @Override
+    public void addXOffset (int xOffset) {
+        if(this.animation != null){
+            this.animation.addXOffset(xOffset);
+        }
+        this.xOffset = xOffset;
+    }
+
+
 
     public float getAttackSpeed () {
-        float baseAttackSpeed = this.attackSpeed;
+        float baseAttackSpeed = this.attackSpeed; // The default cooldown in milliseconds
         float attackSpeedIncrease = this.attackSpeedBonusModifier;
 
-        // Calculate the new attack speed
-        float newAttackSpeed = baseAttackSpeed / (1 + attackSpeedIncrease / 100);
+        // Calculate the new attack cooldown in a linear manner
+        float newAttackSpeed = baseAttackSpeed * (1 - attackSpeedIncrease / 100);
 
-        //Maximum attack speed
-        if (newAttackSpeed < 0.1) {
+        // Minimum threshold to prevent the attack speed from becoming too fast
+        if (newAttackSpeed < 0.1f) {
             newAttackSpeed = 0.1f;
         }
-        // Ensure the attack speed does not fall below a minimum threshold
+
+        // Maximum threshold to prevent attack speed from being too slow
+        if (newAttackSpeed > baseAttackSpeed * 2.0f) {
+            newAttackSpeed = baseAttackSpeed * 2.0f; // Example: Cap slowdown to 2x base cooldown
+        }
+
         return newAttackSpeed;
     }
+
 
     public float getDamage () {
         float attackDamage = this.damage * this.bonusDamageMultiplier;
@@ -968,8 +1015,8 @@ public class GameObject extends Sprite {
     }
 
 
-    public void modifyBonusDamageMultiplier (float bonusPercentage) {
-        this.bonusDamageMultiplier += bonusPercentage;
+    public void modifyBonusDamageMultiplier (float bonusMultiplier) {
+        this.bonusDamageMultiplier += bonusMultiplier;
     }
 
     public void setAttackSpeed (int attackSpeed) {
@@ -1017,6 +1064,7 @@ public class GameObject extends Sprite {
     public void setTransparancyAlpha (boolean shouldIncrease, float newAlphaTransparancy, float transparacyStepSize) {
         if (this.animation != null) {
             this.animation.setTransparancyAlpha(shouldIncrease, newAlphaTransparancy, transparacyStepSize);
+            super.setTransparancyAlpha(shouldIncrease, newAlphaTransparancy, transparacyStepSize);
         } else {
             super.setTransparancyAlpha(shouldIncrease, newAlphaTransparancy, transparacyStepSize);
         }
@@ -1049,12 +1097,12 @@ public class GameObject extends Sprite {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         GameObject that = (GameObject) o;
-        return showHealthBar == that.showHealthBar && allowedToMove == that.allowedToMove && Float.compare(originalScale, that.originalScale) == 0 && Float.compare(currentHitpoints, that.currentHitpoints) == 0 && Float.compare(maxHitPoints, that.maxHitPoints) == 0 && Float.compare(currentShieldPoints, that.currentShieldPoints) == 0 && Float.compare(maxShieldPoints, that.maxShieldPoints) == 0 && Float.compare(baseArmor, that.baseArmor) == 0 && Float.compare(armorBonus, that.armorBonus) == 0 && hasAttack == that.hasAttack && Float.compare(damage, that.damage) == 0 && Float.compare(bonusDamageMultiplier, that.bonusDamageMultiplier) == 0 && allowedToDealDamage == that.allowedToDealDamage && Float.compare(attackSpeed, that.attackSpeed) == 0 && Float.compare(attackSpeedBonusModifier, that.attackSpeedBonusModifier) == 0 && friendly == that.friendly && lastBoardBlock == that.lastBoardBlock && currentBoardBlock == that.currentBoardBlock && boxCollision == that.boxCollision && Double.compare(lastGameSecondDamageTaken, that.lastGameSecondDamageTaken) == 0 && centeredAroundObject == that.centeredAroundObject && movementCounter == that.movementCounter && Float.compare(cashMoneyWorth, that.cashMoneyWorth) == 0 && Double.compare(rotationAngle, that.rotationAngle) == 0 && allowedVisualsToRotate == that.allowedVisualsToRotate && Float.compare(xpOnDeath, that.xpOnDeath) == 0 && Objects.equals(animation, that.animation) && Objects.equals(destructionAnimation, that.destructionAnimation) && Objects.equals(shieldDamagedAnimation, that.shieldDamagedAnimation) && Objects.equals(exhaustAnimation, that.exhaustAnimation) && Objects.equals(chargingUpAttackAnimation, that.chargingUpAttackAnimation) && deathSound == that.deathSound && Objects.equals(objectToCenterAround, that.objectToCenterAround) && Objects.equals(objectToFollow, that.objectToFollow) && Objects.equals(movementConfiguration, that.movementConfiguration) && Objects.equals(currentLocation, that.currentLocation) && Objects.equals(objectsFollowingThis, that.objectsFollowingThis) && Objects.equals(objectOrbitingThis, that.objectOrbitingThis) && Objects.equals(objectType, that.objectType) && movementRotation == that.movementRotation && Objects.equals(ownerOrCreator, that.ownerOrCreator) && Objects.equals(effects, that.effects) && Objects.equals(effectAnimations, that.effectAnimations);
+        return id == that.id;
     }
 
     @Override
     public int hashCode () {
-        return Objects.hash(animation, destructionAnimation, shieldDamagedAnimation, exhaustAnimation, chargingUpAttackAnimation, showHealthBar, allowedToMove, originalScale, deathSound, currentHitpoints, maxHitPoints, currentShieldPoints, maxShieldPoints, baseArmor, armorBonus, hasAttack, damage, bonusDamageMultiplier, allowedToDealDamage, attackSpeed, attackSpeedBonusModifier, friendly, objectToCenterAround, objectToFollow, movementConfiguration, lastBoardBlock, currentLocation, currentBoardBlock, objectsFollowingThis, objectOrbitingThis, objectType, movementRotation, boxCollision, lastGameSecondDamageTaken, ownerOrCreator, centeredAroundObject, movementCounter, cashMoneyWorth, rotationAngle, allowedVisualsToRotate, effects, effectAnimations, xpOnDeath);
+        return Objects.hash(id);
     }
 
     public ImageEnums getImageEnum () {
@@ -1069,5 +1117,25 @@ public class GameObject extends Sprite {
             return animation.getBounds();
         }
         return super.getBounds();
+    }
+
+    public List<EffectInterface> getEffects () {
+        return effects;
+    }
+
+    public int getKnockbackStrength () {
+        return knockbackStrength;
+    }
+
+    public void setKnockbackStrength (int knockbackStrength) {
+        this.knockbackStrength = knockbackStrength;
+    }
+
+    public void setDamage (float damage) {
+        this.damage = damage;
+    }
+
+    public VisualLayer getVisualLayer () {
+        return visualLayer;
     }
 }

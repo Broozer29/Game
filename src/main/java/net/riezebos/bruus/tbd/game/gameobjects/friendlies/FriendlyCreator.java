@@ -1,7 +1,11 @@
 package net.riezebos.bruus.tbd.game.gameobjects.friendlies;
 
-import net.riezebos.bruus.tbd.game.gameobjects.friendlies.Drones.Drone;
+import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.Drone;
+import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.droneTypes.DroneTypes;
+import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.droneTypes.MissileDrone;
+import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.droneTypes.SpecialAttackDrone;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
+import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
 import net.riezebos.bruus.tbd.game.movement.Direction;
 import net.riezebos.bruus.tbd.game.movement.MovementConfiguration;
 import net.riezebos.bruus.tbd.game.movement.MovementPatternSize;
@@ -13,7 +17,7 @@ import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.Sprit
 
 public class FriendlyCreator {
 
-    public static FriendlyObject createDrone () {
+    public static Drone createDrone () {
         float scale = (float) 0.5;
         FriendlyObjectEnums friendlyType = FriendlyObjectEnums.Missile_Drone;
 
@@ -26,8 +30,8 @@ public class FriendlyCreator {
         PathFinder pathFinder = new OrbitPathFinder(PlayerManager.getInstance().getSpaceship(), 85, 300, 0);
         FriendlyObjectConfiguration friendlyObjectConfiguration = new FriendlyObjectConfiguration(friendlyType,
                 0.5f, pathFinder,
-                Direction.RIGHT, 1, 1, MovementPatternSize.SMALL, friendlyType.isBoxCollision(), friendlyType.isPermanentObject());
-        FriendlyObject object = FriendlyCreator.createDrone(spriteConfiguration, friendlyObjectConfiguration);
+                Direction.RIGHT, 1, 1, MovementPatternSize.SMALL, false);
+        Drone object = FriendlyCreator.createDrone(spriteConfiguration, friendlyObjectConfiguration);
         object.getMovementConfiguration().setLastKnownTargetX(PlayerManager.getInstance().getSpaceship().getCenterXCoordinate());
         object.getMovementConfiguration().setLastKnownTargetY(PlayerManager.getInstance().getSpaceship().getCenterYCoordinate());
         object.getMovementConfiguration().setOrbitRadius(85);
@@ -40,7 +44,7 @@ public class FriendlyCreator {
     }
 
 
-    private static FriendlyObject createDrone (SpriteConfiguration spriteConfiguration, FriendlyObjectConfiguration friendlyObjectConfiguration) {
+    private static Drone createDrone (SpriteConfiguration spriteConfiguration, FriendlyObjectConfiguration friendlyObjectConfiguration) {
         SpriteAnimationConfiguration spriteAnimationConfiguration = new SpriteAnimationConfiguration(spriteConfiguration, 2, true);
         MovementConfiguration movementConfiguration = new MovementConfiguration();
         movementConfiguration.setPathFinder(new OrbitPathFinder(
@@ -53,7 +57,14 @@ public class FriendlyCreator {
         movementConfiguration.setRotation(Direction.RIGHT);
         movementConfiguration.setOrbitRadius(50);
 
-        return new Drone(spriteAnimationConfiguration, friendlyObjectConfiguration, movementConfiguration);
+//        DroneTypes droneTypes = DroneTypes.FireBall;
+        DroneTypes droneTypes = PlayerStats.getInstance().getDroneType();
+        switch(droneTypes){
+            case Missile -> {return new MissileDrone(spriteAnimationConfiguration, friendlyObjectConfiguration, movementConfiguration);}
+            case ElectroShred -> {return new SpecialAttackDrone(spriteAnimationConfiguration, friendlyObjectConfiguration, movementConfiguration, droneTypes);}
+            case FireBall -> {return new SpecialAttackDrone(spriteAnimationConfiguration, friendlyObjectConfiguration, movementConfiguration, droneTypes);}
+            default -> {return new MissileDrone(spriteAnimationConfiguration, friendlyObjectConfiguration, movementConfiguration);}
+        }
     }
 
 }

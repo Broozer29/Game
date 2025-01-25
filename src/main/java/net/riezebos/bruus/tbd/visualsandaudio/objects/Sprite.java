@@ -21,7 +21,7 @@ public class Sprite {
     protected float scale;
 
     protected float transparancyAlpha;
-    protected boolean increaseTransparancy;
+    protected boolean shouldChangeTransparancy;
     protected float transparancyStepSize;
 
 
@@ -43,14 +43,14 @@ public class Sprite {
 
         this.transparancyAlpha = spriteConfiguration.getTransparancyAlpha();
         this.transparancyStepSize = spriteConfiguration.getTransparancyStepSize();
-        this.increaseTransparancy = spriteConfiguration.isIncreaseTransparancy();
+        this.shouldChangeTransparancy = spriteConfiguration.isIncreaseTransparancy();
         this.imageEnum = spriteConfiguration.getImageType();
-        loadImage(spriteConfiguration.getImageType());
+        setImage(spriteConfiguration.getImageType());
         this.spriteConfiguration = spriteConfiguration;
 
     }
 
-    protected void loadImage (ImageEnums imageName) {
+    protected void setImage (ImageEnums imageName) {
         this.image = imgDatabase.getImage(imageName);
         if (this.image == null) {
             System.out.println("Crashed because getting " + imageName + " returned an empty/null image");
@@ -198,7 +198,7 @@ public class Sprite {
     // Sets the new transparancy values, also tells the managers to increase the
     // transparancy or not
     public void setTransparancyAlpha (boolean shouldIncrease, float newAlphaTransparancy, float transparacyStepSize) {
-        this.increaseTransparancy = shouldIncrease;
+        this.shouldChangeTransparancy = shouldIncrease;
         this.transparancyAlpha = newAlphaTransparancy;
         this.transparancyStepSize = transparacyStepSize;
     }

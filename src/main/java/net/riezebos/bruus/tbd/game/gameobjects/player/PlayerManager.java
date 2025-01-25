@@ -4,7 +4,8 @@ import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SpaceShip;
 import net.riezebos.bruus.tbd.game.gamestate.GameStateInfo;
 import net.riezebos.bruus.tbd.game.gamestate.GameStatusEnums;
 import net.riezebos.bruus.tbd.game.items.PlayerInventory;
-import net.riezebos.bruus.tbd.game.items.enums.ItemEnums;
+import net.riezebos.bruus.tbd.game.items.effects.EffectInterface;
+import net.riezebos.bruus.tbd.game.items.ItemEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.AnimationManager;
 import net.riezebos.bruus.tbd.visualsandaudio.data.DataClass;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.AudioManager;
@@ -33,6 +34,9 @@ public class PlayerManager {
     // reset.
     public void resetManager () {
         if (spaceship != null) {
+            for(EffectInterface effectInterface : spaceship.getEffects()){
+                effectInterface.removeEffect(spaceship);
+            }
             spaceship.deleteObject();
             spaceship = null;
         }

@@ -1,9 +1,10 @@
 package net.riezebos.bruus.tbd.game.items.items;
 
 import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
+import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
 import net.riezebos.bruus.tbd.game.items.Item;
 import net.riezebos.bruus.tbd.game.items.enums.ItemApplicationEnum;
-import net.riezebos.bruus.tbd.game.items.enums.ItemEnums;
+import net.riezebos.bruus.tbd.game.items.ItemEnums;
 
 public class FocusCrystal extends Item {
 
@@ -33,14 +34,12 @@ public class FocusCrystal extends Item {
 
 
     public void modifyAttackingObject (GameObject attack, GameObject target) {
-
         //Check if object has an owner fisrt otherwise it crashes
-
         GameObject ownerOrCreator = attack.getOwnerOrCreator();
-        if(ownerOrCreator == null){
-            System.out.println("Owner was null for attack: " + attack.getObjectType());
+        if(ownerOrCreator == null || !ownerOrCreator.equals(PlayerManager.getInstance().getSpaceship())){
             return;
         }
+
         int shooterXCoordinate = ownerOrCreator.getCenterXCoordinate();
         int shooterYCoordinate = ownerOrCreator.getCenterYCoordinate();
 
@@ -64,6 +63,14 @@ public class FocusCrystal extends Item {
             // Amplify the attack damage
             attack.modifyBonusDamageMultiplier(damageAmplificationModifier);
         }
+    }
+
+    @Override
+    public boolean isAvailable(){
+        if(!this.itemEnum.isEnabled()){
+            return false;
+        }
+        return true;
     }
 
 }

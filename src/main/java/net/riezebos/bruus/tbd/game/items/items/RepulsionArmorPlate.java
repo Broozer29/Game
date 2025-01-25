@@ -3,7 +3,7 @@ package net.riezebos.bruus.tbd.game.items.items;
 import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
 import net.riezebos.bruus.tbd.game.items.Item;
 import net.riezebos.bruus.tbd.game.items.enums.ItemApplicationEnum;
-import net.riezebos.bruus.tbd.game.items.enums.ItemEnums;
+import net.riezebos.bruus.tbd.game.items.ItemEnums;
 
 public class RepulsionArmorPlate extends Item {
 
@@ -17,5 +17,13 @@ public class RepulsionArmorPlate extends Item {
     @Override
     public void applyEffectToObject (GameObject gameObject) {
         gameObject.adjustArmorBonus(this.quantity  * armorAmount);
+    }
+
+    @Override
+    public boolean isAvailable(){
+        if(!this.itemEnum.isEnabled()){
+            return false;
+        }
+        return true;
     }
 }

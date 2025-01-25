@@ -6,7 +6,7 @@ public enum MissileEnums {
     BombaProjectile(false, "BombaProjctile", ImageEnums.Bomba_Missile_Explosion, ImageEnums.Bomba_Missile),
     TazerProjectile(false, "TazerProjectile", ImageEnums.LightningOrbDestruction, ImageEnums.LightningOrb),
     PlayerLaserbeam(false, "DefaultPlayerLaserbeam", ImageEnums.Impact_Explosion_One, ImageEnums.AlienLaserBeamAnimated),
-    PlasmaLauncherMissile(false, "PlasmaLauncherMissile", ImageEnums.Impact_Explosion_One, ImageEnums.PlasmaLauncherMissile),
+    DefaultAnimatedBullet(false, "PlasmaLauncherMissile", ImageEnums.Impact_Explosion_One, ImageEnums.AlienLaserBeamAnimated),
     DefaultRocket(false, "DefaultRocket", ImageEnums.Rocket_1_Explosion, ImageEnums.Rocket_1),
     DefaultLaserBullet(false, "LaserBullet", ImageEnums.LaserBulletDestruction, ImageEnums.LaserBullet),
     OrbitCenter(false, "OrbitCenter", ImageEnums.Destroyed_Explosion, ImageEnums.DestructableOrbitCenterMissile),

@@ -12,7 +12,7 @@ import net.riezebos.bruus.tbd.game.gamestate.GameStatusEnums;
 import net.riezebos.bruus.tbd.game.items.Item;
 import net.riezebos.bruus.tbd.game.items.PlayerInventory;
 import net.riezebos.bruus.tbd.game.items.enums.ItemApplicationEnum;
-import net.riezebos.bruus.tbd.game.items.enums.ItemEnums;
+import net.riezebos.bruus.tbd.game.items.ItemEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.AnimationManager;
 import net.riezebos.bruus.tbd.game.movement.Point;
 import net.riezebos.bruus.tbd.game.util.OrbitingObjectsFormatter;
@@ -25,9 +25,7 @@ import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteAnimation;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteAnimationConfiguration;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteConfiguration;
 
-import javax.sound.sampled.UnsupportedAudioFileException;
 import java.awt.event.KeyEvent;
-import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -81,11 +79,11 @@ public class SpaceShip extends GameObject {
         this.accumulatedXCoordinate = this.xCoordinate;
         this.knockbackDamping = playerStats.getKnockBackDamping();
         pressedKeys = new HashSet<>();
-        loadImage(playerStats.getSpaceShipImage());
+        setImage(playerStats.getSpaceShipImage());
         currentShieldRegenDelayFrame = 0;
         this.spaceShipRegularGun = new SpaceShipRegularGun();
         this.spaceShipSpecialGun = new SpaceShipSpecialGun();
-        initExhaustAnimation(playerStats.getExhaustImage());
+        initExhaustAnimation(ImageEnums.Default_Player_Engine);
         initDeathAnimation(ImageEnums.Destroyed_Explosion);
         this.exhaustAnimation.setAnimationScale(0.3f);
         this.setObjectType("Player spaceship");
@@ -129,7 +127,7 @@ public class SpaceShip extends GameObject {
             for (int i = 0; i < playerStats.getAmountOfDrones(); i++) {
                 FriendlyManager.getInstance().addDrone();
             }
-            OrbitingObjectsFormatter.reformatOrbitingObjects(this, 85);
+            OrbitingObjectsFormatter.reformatOrbitingObjects(this, PlayerStats.getInstance().getDroneOrbitRadius());
             firedPostCreationEffects = true;
         }
     }
@@ -139,7 +137,6 @@ public class SpaceShip extends GameObject {
         SpriteAnimationConfiguration spriteAnimationConfiguration = new SpriteAnimationConfiguration(this.spriteConfiguration, 2, true);
         spriteAnimationConfiguration.getSpriteConfiguration().setImageType(imageType);
         exhaustAnimation = new SpriteAnimation(spriteAnimationConfiguration);
-        playerStats.setCurrentExhaust(imageType);
         AnimationManager.getInstance().addLowerAnimation(exhaustAnimation);
     }
 
@@ -230,6 +227,7 @@ public class SpaceShip extends GameObject {
     public void updateGameTick () {
         this.currentShieldRegenDelayFrame++;
         postCreationActivities();
+        spaceShipRegularGun.updateFrameCount();
         spaceShipSpecialGun.updateFrameCount();
 
         movePlayerAnimations();
@@ -240,7 +238,7 @@ public class SpaceShip extends GameObject {
 
         if (currentShieldRegenDelayFrame >= playerStats.getShieldRegenDelay()) {
             if (currentShieldPoints < playerStats.getMaxShieldHitPoints()) {
-                repairShields((float) 0.4);
+                repairShields(PlayerStats.getInstance().getShieldRegenPerTick());
 //                repairHealth((float) 0.4);
             }
         }
@@ -266,15 +264,21 @@ public class SpaceShip extends GameObject {
 
 
     private void moveSpecialAttacks () {
-        for (SpecialAttack specialAttack : playerFollowingSpecialAttacks) {
-            if (specialAttack.centeredAroundPlayer()) {
-                specialAttack.setCenterCoordinates(this.getCenterXCoordinate(), this.getCenterYCoordinate());
-//                specialAttack.getAnimation().setCenterCoordinates(this.getCenterXCoordinate(), this.getCenterYCoordinate());
+        Iterator<SpecialAttack> iterator = playerFollowingSpecialAttacks.iterator();
+        while (iterator.hasNext()) {
+            SpecialAttack specialAttack = iterator.next();
+            if (!specialAttack.isVisible()) {
+                iterator.remove();
+            } else {
+                if (specialAttack.centeredAroundPlayer()) {
+                    specialAttack.setCenterCoordinates(this.getCenterXCoordinate(), this.getCenterYCoordinate());
+                }
+                specialAttack.updateBoardBlock();
+                specialAttack.getAnimation().setAnimationBounds(specialAttack.getAnimation().getXCoordinate(), specialAttack.getAnimation().getYCoordinate());
             }
-            specialAttack.updateBoardBlock();
-            specialAttack.getAnimation().setAnimationBounds(specialAttack.getAnimation().getXCoordinate(), specialAttack.getAnimation().getYCoordinate());
         }
     }
+
 
     // Moves the spaceship, constantly called
     private float knockbackVelocityX = 0;
@@ -470,12 +474,16 @@ public class SpaceShip extends GameObject {
 
 
     // Launch a missile from the center point of the spaceship
-    private void fire () throws UnsupportedAudioFileException, IOException {
+    private void startPrimaryFiring () {
         spaceShipRegularGun.fire(this.xCoordinate + this.width, this.getCenterYCoordinate(),
                 playerStats.getAttackType());
     }
 
-    private void fireSpecialAttack () throws UnsupportedAudioFileException, IOException {
+    private void haltPrimaryFiring () {
+        spaceShipRegularGun.stopFiring();
+    }
+
+    private void fireSpecialAttack () {
         spaceShipSpecialGun.fire(this.getCenterXCoordinate(), this.getCenterYCoordinate(),
                 playerStats.getPlayerSpecialAttackType());
     }
@@ -494,7 +502,6 @@ public class SpaceShip extends GameObject {
 
     public void addFollowingSpecialAttack (SpecialAttack specialAttack) {
         this.playerFollowingSpecialAttacks.add(specialAttack);
-        AnimationManager.getInstance().addUpperAnimation(specialAttack.getAnimation());
     }
 
     public SpriteAnimation getExhaustAnimation () {
@@ -508,11 +515,7 @@ public class SpaceShip extends GameObject {
             for (Iterator<Integer> it = pressedKeys.iterator(); it.hasNext(); ) {
                 switch (it.next()) {
                     case (KeyEvent.VK_SPACE):
-                        try {
-                            fire();
-                        } catch (UnsupportedAudioFileException | IOException e1) {
-                            e1.printStackTrace();
-                        }
+                        startPrimaryFiring();
                         break;
                     case (KeyEvent.VK_A):
                     case (KeyEvent.VK_LEFT):
@@ -532,11 +535,7 @@ public class SpaceShip extends GameObject {
                         break;
                     case (KeyEvent.VK_Q):
                     case (KeyEvent.VK_ENTER):
-                        try {
-                            fireSpecialAttack();
-                        } catch (UnsupportedAudioFileException | IOException e1) {
-                            e1.printStackTrace();
-                        }
+                        fireSpecialAttack();
                         break;
 //                    case (KeyEvent.VK_SHIFT):
                     case (KeyEvent.VK_E):
@@ -551,6 +550,7 @@ public class SpaceShip extends GameObject {
         int key = e.getKeyCode();
 
         if (key == KeyEvent.VK_SPACE || key == KeyEvent.VK_Q) {
+            haltPrimaryFiring();
         }
         if (key == KeyEvent.VK_A || key == KeyEvent.VK_LEFT) {
             haltMoveLeft();
@@ -569,11 +569,12 @@ public class SpaceShip extends GameObject {
     }
 
     // Called by GameBoard every loop if a controller is connected
+    private boolean isFiringPrimary = false;
     public void update (ControllerInputReader controllerInputReader) {
         controlledByKeyboard = false;
         controllerInputReader.pollController();
 
-        if(GameStateInfo.getInstance().getGameState() != GameStatusEnums.Paused && GameStateInfo.getInstance().getGameState() != GameStatusEnums.Dying) {
+        if (GameStateInfo.getInstance().getGameState() != GameStatusEnums.Paused && GameStateInfo.getInstance().getGameState() != GameStatusEnums.Dying) {
             if (controllerInputReader.isInputActive(ControllerInputEnums.MOVE_LEFT)) {
                 moveLeftQuick(controllerInputReader.getxAxisValue());
             }
@@ -591,19 +592,19 @@ public class SpaceShip extends GameObject {
             }
 
             if (controllerInputReader.isInputActive(ControllerInputEnums.FIRE)) {
-                try {
-                    fire();
-                } catch (UnsupportedAudioFileException | IOException e) {
-                    e.printStackTrace();
-                }
+                startPrimaryFiring();
+                isFiringPrimary = true;
             }
             if (controllerInputReader.isInputActive(ControllerInputEnums.SPECIAL_ATTACK)) {
-                try {
-                    fireSpecialAttack();
-                } catch (UnsupportedAudioFileException | IOException e) {
-                    e.printStackTrace();
-                }
+                fireSpecialAttack();
             }
+        }
+
+
+
+        if(isFiringPrimary && !controllerInputReader.isInputActive(ControllerInputEnums.FIRE)){
+            haltPrimaryFiring();
+            isFiringPrimary = false;
         }
     }
 
@@ -655,4 +656,15 @@ public class SpaceShip extends GameObject {
     public void setImmune (boolean immune) {
         isImmune = immune;
     }
+
+    @Override
+    public float getCurrentHitpoints () {
+        return currentHitpoints;
+    }
+
+    @Override
+    public float getMaxHitPoints () {
+        return PlayerStats.getInstance().getMaxHitPoints();
+    }
+
 }

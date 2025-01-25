@@ -213,7 +213,7 @@ public class CollisionDetector {
     }
 
     // Helper method to check if two GameObjects are within board block threshold
-    private boolean isWithinBoardBlockThreshold (GameObject gameObject1, GameObject gameObject2) {
+    public boolean isWithinBoardBlockThreshold (GameObject gameObject1, GameObject gameObject2) {
         gameObject1.updateBoardBlock();
         gameObject2.updateBoardBlock();
 

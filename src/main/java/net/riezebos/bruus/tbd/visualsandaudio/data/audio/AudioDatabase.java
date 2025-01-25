@@ -68,30 +68,22 @@ public class AudioDatabase {
     private List<AudioEnums> clipsWithThresholds = new ArrayList<>();
 
     private List<CustomAudioClip> allActiveClips = new ArrayList<>();
-    private List<CustomAudioClip> defaultEMPClipList = new ArrayList<>();
-    private List<CustomAudioClip> alienBombImpactList = new ArrayList<>();
-    private List<CustomAudioClip> alienBombDestroyedList = new ArrayList<>();
-
-    private List<CustomAudioClip> laserBeamClipList = new ArrayList<>();
-    private List<CustomAudioClip> destroyedExplosionClipList = new ArrayList<>();
-    private List<CustomAudioClip> alienSpaceshipDestroyedClipList = new ArrayList<>();
-    private List<CustomAudioClip> largeShipDestroyedClipList = new ArrayList<>();
-    private List<CustomAudioClip> powerUpAcquiredClipList = new ArrayList<>();
-    private List<CustomAudioClip> rocketLauncherClipList = new ArrayList<>();
-    private List<CustomAudioClip> flamethrowerClipList = new ArrayList<>();
-    private List<CustomAudioClip> firewallClipList = new ArrayList<>();
-    private List<CustomAudioClip> notEnoughMineralsClipList = new ArrayList<>();
-    private List<CustomAudioClip> chargingLaserbeamClipList = new ArrayList<>();
-    private List<CustomAudioClip> newPlayerLaserbeamClipList = new ArrayList<>();
-    private List<CustomAudioClip> stickyGrenadeExplosionClipList = new ArrayList<>();
-    private List<CustomAudioClip> playerTakesDamageClipList = new ArrayList<>();
-    private List<CustomAudioClip> spaceStationChargingUpMovement = new ArrayList<>();
-    private List<CustomAudioClip> spaceStationBlastingOff = new ArrayList<>();
-    private List<CustomAudioClip> electroShredFinishedCharging = new ArrayList<>();
 
     private Map<AudioEnums, List<CustomAudioClip>> audioClipsMap = new HashMap<>();
 
     private Map<AudioEnums, Integer> clipSizeConfig = new HashMap<>() {{
+        put(AudioEnums.QueenDeath, 2);
+        put(AudioEnums.OverlordDeath, 2);
+        put(AudioEnums.MutaliskBirth, 2);
+        put(AudioEnums.MutaliskDeath, 3);
+        put(AudioEnums.DevourerBirth, 3);
+        put(AudioEnums.DevourerHit, 3);
+        put(AudioEnums.DevourerDeath, 3);
+        put(AudioEnums.ScourgeCollision, 3);
+        put(AudioEnums.ScourgeDeath, 3);
+        put(AudioEnums.ScourgeNoticed, 3);
+        put(AudioEnums.GuardianBirth, 3);
+        put(AudioEnums.GuardianDeath, 3);
         put(AudioEnums.ChargingLaserbeam, 2);
         put(AudioEnums.Player_Laserbeam, 1);
         put(AudioEnums.Destroyed_Explosion, 5);
@@ -100,7 +92,7 @@ public class AudioDatabase {
         put(AudioEnums.Alien_Spaceship_Destroyed, 5);
         put(AudioEnums.Large_Ship_Destroyed, 5);
         put(AudioEnums.Default_EMP, 2);
-        put(AudioEnums.Power_Up_Acquired, 3);
+        put(AudioEnums.ItemAcquired, 3);
         put(AudioEnums.Firewall, 2);
         put(AudioEnums.Rocket_Launcher, 3);
         put(AudioEnums.Flamethrower, 1);
@@ -108,7 +100,7 @@ public class AudioDatabase {
         put(AudioEnums.StickyGrenadeExplosion, 3);
         put(AudioEnums.NewPlayerLaserbeam, 5);
         put(AudioEnums.PlayerTakesDamage, 5);
-        put(AudioEnums.ElectroShredFinishedCharging, 2);
+        put(AudioEnums.SpecialAttackFinishedCharging, 2);
         put(AudioEnums.SpaceStationBlastingOff, 1);
         put(AudioEnums.SpaceStationChargingUpMovement, 1);
     }};
@@ -337,6 +329,12 @@ public class AudioDatabase {
                 return blackGummySuperHuman;
             case Maduk_Alone:
                 return madukAlone;
+            case Ayasa_The_Reason_Why:
+                return ayasaTheReasonWhy;
+            case RiskOfDanger:
+                return riskOfDanger;
+            case mainmenu:
+                return this.mainmenu;
             case Player_Laserbeam:
             case Destroyed_Explosion:
             case Alien_Spaceship_Destroyed:
@@ -344,7 +342,7 @@ public class AudioDatabase {
             case Large_Ship_Destroyed:
             case Default_EMP:
             case Alien_Bomb_Destroyed:
-            case Power_Up_Acquired:
+            case ItemAcquired:
             case Rocket_Launcher:
             case Flamethrower:
             case Firewall:
@@ -355,14 +353,13 @@ public class AudioDatabase {
             case PlayerTakesDamage:
             case SpaceStationBlastingOff:
             case SpaceStationChargingUpMovement:
-            case ElectroShredFinishedCharging:
+            case SpecialAttackFinishedCharging:
+            case GuardianDeath:
+            case GuardianBirth:
+            case QueenDeath:
+            case OverlordDeath:
+            default:
                 return getAvailableClip(audioType);
-            case Ayasa_The_Reason_Why:
-                return ayasaTheReasonWhy;
-            case RiskOfDanger:
-                return riskOfDanger;
-            case mainmenu:
-                return this.mainmenu;
             case NONE:
                 break;
         }

@@ -1,9 +1,9 @@
 package net.riezebos.bruus.tbd.game.gameobjects.enemies.enums;
 
 public enum EnemyCategory {
-    Basic, //Smaller enemies
-    Mercenary, //Bigger enemies
-    Boss, //Unused as of now
+    Small, //Smaller enemies
+    Medium, //Medium enemies
+    Boss,
     Summon, //Enemies spawned by other enemies
     Special, //CashCarriers and others
 }

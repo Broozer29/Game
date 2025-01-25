@@ -5,7 +5,7 @@ public enum EffectIdentifiers {
     TazerDamageModifier,
     PlasmaCoatedBulletsBurning,
     GasolineDormantExplosion,
-    GasolineBurning,
+    Ignite,
     StickyDynamiteDormantExplosion,
     EnergySyphonHealPlayerOnDeath,
     PlatinumSpongeArmorBonus,
@@ -13,5 +13,10 @@ public enum EffectIdentifiers {
     MoneyPrinterGoldOnDeath,
     CashCarrierGoldGain,
     ElectricDestabilizerFreeze,
-    MovementSpeedModification;
+    DevourerMoveSpeedDebuff,
+    DevourerAttackSpeedDebuff,
+    MutaliskDeathMissiles,
+    ContractOnDeathCounter,
+    FlameDetonationDormentExplosion,
+    PulsingDroneSlow;
 }

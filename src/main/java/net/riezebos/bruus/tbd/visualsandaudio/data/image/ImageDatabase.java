@@ -19,6 +19,8 @@ public class ImageDatabase {
 
     // Enemy images
     private BufferedImage alienBombImage;
+    private List<BufferedImage> overlordIdle = new ArrayList<>();
+    private List<BufferedImage> fireWall = new ArrayList<>();
     private List<BufferedImage> laserbeamBody = new ArrayList<>();
     private List<BufferedImage> laserbeamStart = new ArrayList<>();
     private List<BufferedImage> laserbeamEnd = new ArrayList<>();
@@ -32,6 +34,7 @@ public class ImageDatabase {
     private List<BufferedImage> needler = new ArrayList<>();
     private List<BufferedImage> destructableOrbitCenterMissile = new ArrayList<>();
     private List<BufferedImage> shurikenEnemy = new ArrayList<>();
+    private List<BufferedImage> moduleScorchFlames = new ArrayList<>();
 
 
     // Ship numbers to names:
@@ -45,6 +48,7 @@ public class ImageDatabase {
 
     // Menu images
     private BufferedImage titleImage;
+    private BufferedImage entanglingFlames;
     private BufferedImage longCard;
     private BufferedImage wideCard;
     private BufferedImage squareCard;
@@ -56,6 +60,9 @@ public class ImageDatabase {
     private BufferedImage sc2GradeDiamond;
     private BufferedImage sc2GradeMaster;
     private BufferedImage sc2GradeGrandMaster;
+    private BufferedImage stickyOil;
+    private BufferedImage escalatingFlames;
+
 
     private BufferedImage UIScoreTextImage;
     private BufferedImage UIYouDied;
@@ -70,7 +77,6 @@ public class ImageDatabase {
     private BufferedImage goldFilling;
     private BufferedImage blueFilling;
 
-    private BufferedImage cashCarrier;
 
     // Icons
     private BufferedImage starcraft2_Protoss_Shield_Disintegrate;
@@ -80,18 +86,22 @@ public class ImageDatabase {
     private BufferedImage starcraft2_Concussive_Shells;
     private BufferedImage starcraft2_Energy_Siphon;
     private BufferedImage starcraft2_Fire_Hardened_Shields;
+    private BufferedImage sc2BatteryUpgrade;
     private BufferedImage starcraft2_Health_Upgrade_2;
     private BufferedImage starcraft2_Seeker_Missile;
     private BufferedImage starcraft2_Vespene_Drone;
     private BufferedImage starcraft2_Heal;
     private BufferedImage starcraft2_Electric_Field;
+    private BufferedImage starcraft2Contract;
+    private BufferedImage starcraft2ModuleElectrify;
+    private BufferedImage starcraft2ModuleCommand;
     private BufferedImage starcraft2_Advanced_Optics;
     private BufferedImage cannisterOfGasoline;
     private BufferedImage starcraft2_PlatinumSponge;
 
     private BufferedImage starcraft2_Battery;
     private BufferedImage starcraft2_FocusedCrystal;
-
+    private BufferedImage starcraft2_FireBatWeapon;
     private BufferedImage starcraft2_Overclock;
     private BufferedImage starcraft2_ArmorPiercing;
     private BufferedImage moneyPrinter;
@@ -222,13 +232,17 @@ public class ImageDatabase {
     private BufferedImage barbedaegis;
     private BufferedImage fourDirectionalDrone;
     private BufferedImage spaceStationBoss;
+    private BufferedImage classSelectionUI;
+    private BufferedImage fireFighter;
+    private BufferedImage sc2MineExplosion;
 
-    // Lists
 
+    private List<BufferedImage> cashCarrierFrames = new ArrayList<>();
     private List<BufferedImage> spaceStationBossFrames = new ArrayList<>();
     private List<BufferedImage> impactExplosionOneFrames = new ArrayList<>();
     private List<BufferedImage> destroyedExplosionUpFrames = new ArrayList<>();
     private List<BufferedImage> alienBombExplosionFrames = new ArrayList<>();
+    private List<BufferedImage> selectNewClassAnimation = new ArrayList<>();
 
     // Animations
     private List<BufferedImage> playerEMPFrames = new ArrayList<>();
@@ -333,6 +347,10 @@ public class ImageDatabase {
     private BufferedImage starBlue2;
     private BufferedImage starBlue3;
     private BufferedImage starBlue4;
+    private BufferedImage bargainBucket;
+    private BufferedImage corrosiveOil;
+    private BufferedImage fireShieldIcon;
+    private BufferedImage moduleScorchIcon;
 
 
     private BufferedImage starOrange1;
@@ -364,12 +382,50 @@ public class ImageDatabase {
     private BufferedImage purpleWings5;
     private BufferedImage informationCard;
     private BufferedImage lockedIcon;
+    private BufferedImage sc2ConcentratedLaser;
+    private BufferedImage sc2RepairBeam;
     private List<BufferedImage> scout = new ArrayList<>();
 
 
+    private List<BufferedImage> fireFighterFlameThrowerAppearing = new ArrayList<>();
+    private List<BufferedImage> fireFighterFlameThrowerLooping = new ArrayList<>();
+    private List<BufferedImage> fireFighterFlameThrowerDissipating = new ArrayList<>();
+    private List<BufferedImage> fireFighterFireShield = new ArrayList<>();
+    private List<BufferedImage> fireFighterFireShieldAppearing = new ArrayList<>();
     private List<BufferedImage> HighlightImages = new ArrayList<>();
     private List<BufferedImage> thornsDamage = new ArrayList<>();
-
+    private List<BufferedImage> devourerIdle = new ArrayList<>();
+    private List<BufferedImage> devourerAttacking = new ArrayList<>();
+    private List<BufferedImage> devourerDeath = new ArrayList<>();
+    private List<BufferedImage> devourerMissile = new ArrayList<>();
+    private List<BufferedImage> devourerMissileExplosion = new ArrayList<>();
+    private List<BufferedImage> devourerDebuffStage1 = new ArrayList<>();
+    private List<BufferedImage> devourerDebuffStage2 = new ArrayList<>();
+    private List<BufferedImage> devourerDebuffStage3 = new ArrayList<>();
+    private List<BufferedImage> devourerDebuffStage4 = new ArrayList<>();
+    private List<BufferedImage> devourerBirth = new ArrayList<>();
+    private List<BufferedImage> mutaliskIdle = new ArrayList<>();
+    private List<BufferedImage> mutaliskDeath = new ArrayList<>();
+    private List<BufferedImage> mutaliskMissile = new ArrayList<>();
+    private List<BufferedImage> mutaliskMissileImpact = new ArrayList<>();
+    private List<BufferedImage> mutaliskBirth = new ArrayList<>();
+    private List<BufferedImage> devourerCocoon = new ArrayList<>();
+    private List<BufferedImage> guardianMutaliskCocoon = new ArrayList<>();
+    private List<BufferedImage> scourgeIdle = new ArrayList<>();
+    private List<BufferedImage> scourgeExplosion = new ArrayList<>();
+    private List<BufferedImage> scourgeDeath = new ArrayList<>();
+    private List<BufferedImage> guardianIdle = new ArrayList<>();
+    private List<BufferedImage> guardianChargingAnimation = new ArrayList<>();
+    private List<BufferedImage> guardianMissile = new ArrayList<>();
+    private List<BufferedImage> guardianMissileImpact = new ArrayList<>();
+    private List<BufferedImage> guardianDeath = new ArrayList<>();
+    private List<BufferedImage> guardianBirth = new ArrayList<>();
+    private List<BufferedImage> queenIdle = new ArrayList<>();
+    private List<BufferedImage> queenAttacking = new ArrayList<>();
+    private List<BufferedImage> queenDeath = new ArrayList<>();
+    private List<BufferedImage> broodlingIdle = new ArrayList<>();
+    private List<BufferedImage> broodlingAttacking = new ArrayList<>();
+    private List<BufferedImage> broodlingDeath = new ArrayList<>();
     // testimages
     private BufferedImage invisible;
 
@@ -411,9 +467,9 @@ public class ImageDatabase {
 
     private void initEnemies () {
         this.alienBombImage = imgLoader.getImage(ImageEnums.Alien_Bomb);
-        this.cashCarrier = imgLoader.getImage(ImageEnums.CashCarrier);
         this.fourDirectionalDrone = imgLoader.getImage(ImageEnums.FourDirectionalDrone);
         this.spaceStationBoss = imgLoader.getImage(ImageEnums.SpaceStationBoss);
+
     }
 
     private void initProjectiles () {
@@ -459,12 +515,16 @@ public class ImageDatabase {
         this.topazGem7 = imgLoader.getImage(ImageEnums.TopazGem7);
         this.VIPTicket = imgLoader.getImage(ImageEnums.VIPTicket);
         this.piercingLaser = imgLoader.getImage(ImageEnums.PiercingLaser);
+        this.sc2ConcentratedLaser = imgLoader.getImage(ImageEnums.Starcraft2ConcentratedLaser);
 
         this.redWings1 = imgLoader.getImage(ImageEnums.RedWings1);
         this.redWings2 = imgLoader.getImage(ImageEnums.RedWings2);
         this.redWings3 = imgLoader.getImage(ImageEnums.RedWings3);
         this.redWings4 = imgLoader.getImage(ImageEnums.RedWings4);
         this.redWings5 = imgLoader.getImage(ImageEnums.RedWings5);
+        this.classSelectionUI = imgLoader.getImage(ImageEnums.SelectClass);
+        this.starcraft2_FireBatWeapon = imgLoader.getImage(ImageEnums.Starcraft2FireBatWeapon);
+        this.sc2RepairBeam = imgLoader.getImage(ImageEnums.Starcraft2RepairBeam);
     }
 
 
@@ -560,6 +620,7 @@ public class ImageDatabase {
         this.blueWings3 = imgLoader.getImage(ImageEnums.BlueWings3);
         this.blueWings4 = imgLoader.getImage(ImageEnums.BlueWings4);
         this.blueWings5 = imgLoader.getImage(ImageEnums.BlueWings5);
+        this.escalatingFlames = imgLoader.getImage(ImageEnums.EscalatingFlames);
 
         this.yellowWings1 = imgLoader.getImage(ImageEnums.YellowWings1);
         this.yellowWings2 = imgLoader.getImage(ImageEnums.YellowWings2);
@@ -619,6 +680,7 @@ public class ImageDatabase {
         this.peepoSkillIssue = imgLoader.getImage(ImageEnums.peepoSkillIssue);
         this.uidamageoverlay = imgLoader.getImage(ImageEnums.UIDamageOverlay);
         this.inputMapping = imgLoader.getImage(ImageEnums.InputMapping);
+        this.fireFighter = imgLoader.getImage(ImageEnums.FireFighter);
     }
 
     private void initBackgroundObjects () {
@@ -681,12 +743,12 @@ public class ImageDatabase {
         this.moon5 = imgLoader.getImage(ImageEnums.Moon5);
         this.greenPlanet1 = imgLoader.getImage(ImageEnums.GreenPlanet1);
         this.greenPlanet2 = imgLoader.getImage(ImageEnums.GreenPlanet2);
-        this.bluePlanet1  = imgLoader.getImage(ImageEnums.BluePlanet1);
-        this.bluePlanet2  = imgLoader.getImage(ImageEnums.BluePlanet2);
-        this.bluePlanet3  = imgLoader.getImage(ImageEnums.BluePlanet3);
-        this.bluePlanet4  = imgLoader.getImage(ImageEnums.BluePlanet4);
-        this.bluePlanet5  = imgLoader.getImage(ImageEnums.BluePlanet5);
-        this.bluePlanet6  = imgLoader.getImage(ImageEnums.BluePlanet6);
+        this.bluePlanet1 = imgLoader.getImage(ImageEnums.BluePlanet1);
+        this.bluePlanet2 = imgLoader.getImage(ImageEnums.BluePlanet2);
+        this.bluePlanet3 = imgLoader.getImage(ImageEnums.BluePlanet3);
+        this.bluePlanet4 = imgLoader.getImage(ImageEnums.BluePlanet4);
+        this.bluePlanet5 = imgLoader.getImage(ImageEnums.BluePlanet5);
+        this.bluePlanet6 = imgLoader.getImage(ImageEnums.BluePlanet6);
 
         this.lockedIcon = imgLoader.getImage(ImageEnums.LockedIcon);
         this.laserBullet = imgLoader.getImage(ImageEnums.LaserBullet);
@@ -699,134 +761,281 @@ public class ImageDatabase {
         this.barbedmissiles = imgLoader.getImage(ImageEnums.BarbedMissiles);
         this.barbedaegis = imgLoader.getImage(ImageEnums.BarbedAegis);
 
+        this.starcraft2Contract = imgLoader.getImage(ImageEnums.Contract);
+        this.starcraft2ModuleCommand = imgLoader.getImage(ImageEnums.ModuleCommand);
+        this.starcraft2ModuleElectrify = imgLoader.getImage(ImageEnums.ModuleElectrify);
+        this.sc2BatteryUpgrade = imgLoader.getImage(ImageEnums.Starcraft2_BatteryUpgrade);
+        this.sc2MineExplosion = imgLoader.getImage(ImageEnums.Starcraft2_MineExplosion);
+        this.stickyOil = imgLoader.getImage(ImageEnums.StickyOilIcon);
+        this.entanglingFlames = imgLoader.getImage(ImageEnums.EntanglingFlames);
+        this.bargainBucket = imgLoader.getImage(ImageEnums.BargainBucket);
+        this.corrosiveOil = imgLoader.getImage(ImageEnums.CorrosiveOil);
+        this.moduleScorchIcon = imgLoader.getImage(ImageEnums.ModuleScorchIcon);
+        this.fireShieldIcon = imgLoader.getImage(ImageEnums.FireShieldIcon);
     }
 
     public BufferedImage getImage (ImageEnums imageType) {
         switch (imageType) {
-            case InputMapping: return inputMapping;
-            case SpaceStationBoss: return spaceStationBoss;
-            case UIDamageOverlay: return uidamageoverlay;
-            case RedWings1: return redWings1;
-            case RedWings2: return redWings2;
-            case RedWings3: return redWings3;
-            case RedWings4: return redWings4;
-            case RedWings5: return redWings5;
-            case FourDirectionalDrone: return fourDirectionalDrone;
-            case ThornWeaver: return thornweaver;
-            case BarbedMissiles: return barbedmissiles;
-            case BarbedAegis: return barbedaegis;
-            case Thornedplates: return thornedplates;
-            case Starcraft2LockOn: return starcraft2LockOn;
-            case VIPTicket: return VIPTicket;
-            case PiercingLaser: return piercingLaser;
-            case Starcraft2BouncingLaser: return warcraft3HealingWave;
-            case Starcraft2Keystone: return starcraft2Keystone;
-            case GUIRefresh: return guirefresh;
-            case peepoDeepFriedSadge: return peepoDeepFriedSadge;
-            case peepoFeelsCringeMan: return peepoFeelsCringeMan;
-            case peepoFeelsRetardedMan: return peepoFeelsRetardedMan;
-            case peepoHmmm: return peepoHmmm;
-            case peepoLookingDown: return peepoLookingDown;
-            case peepoMonkaHmmm: return peepoMonkaHmmm;
-            case peepoMonkaLaugh: return peepoMonkaLaugh;
-            case peepoPauseChamp: return peepoPauseChamp;
-            case peepoClown: return peepoClown;
-            case peepoCringe: return peepoCringe;
-            case peepoLaugh: return peepoLaugh;
-            case peepoLyingSadge: return peepoLyingSadge;
-            case peepoOkay: return peepoOkay;
-            case peepoSad: return peepoSad;
-            case peepoSad2: return peepoSad2;
-            case peepoShrug: return peepoShrug;
-            case peepoSmadge: return peepoSmadge;
-            case peepoSmokedge: return peepoSmokedge;
-            case peepoSmug: return peepoSmug;
-            case peepoStare: return peepoStare;
-            case peepoUhm: return peepoUhm;
-            case peepoAngy: return peepoAngy;
-            case peepoBruh: return peepoBruh;
-            case peepoCoffee: return peepoCoffee;
-            case peepoConfused: return peepoConfused;
-            case peepoGottem: return peepoGottem;
-            case peepoHands: return peepoHands;
-            case peepoLaugh2: return peepoLaugh2;
-            case peepoPointLaugh: return peepoPointLaugh;
-            case peepoW: return peepoW;
-            case peepoSadClown: return peepoSadClown;
-            case peepoSadge: return peepoSadge;
-            case peepoSadgeCry: return peepoSadgeCry;
-            case peepoShruge: return peepoShruge;
-            case peepoSkillIssue: return peepoSkillIssue;
-            case UIScoreTextCard: return UIScoreTextImage;
-            case UIYouDied: return UIYouDied;
-            case UILevelComplete: return UILevelCompleted;
-            case GradeBronze: return sc2GradeBronze;
-            case GradeSilver: return sc2GradeSilver;
-            case GradeGold: return sc2GradeGold;
-            case GradePlatinum: return sc2GradePlatinum;
-            case GradeDiamond: return sc2GradeDiamond;
-            case GradeMaster: return sc2GradeMaster;
-            case GradeGrandMaster: return sc2GradeGrandMaster;
-            case ProgressBar: return progressBar;
-            case ProgressBarFilling: return progressBarFilling;
-            case CashCarrier: return cashCarrier;
-            case LaserBullet: return laserBullet;
-            case TopazGem7: return topazGem7;
-            case LockedIcon: return lockedIcon;
-            case InformationCard: return informationCard;
-            case Moon2: return moon2;
-            case Moon3: return moon3;
-            case Moon4: return moon4;
-            case Moon5: return moon5;
-            case GreenPlanet1: return greenPlanet1;
-            case GreenPlanet2: return greenPlanet2;
-            case BluePlanet1: return bluePlanet1;
-            case BluePlanet2: return bluePlanet2;
-            case BluePlanet3: return bluePlanet3;
-            case BluePlanet4: return bluePlanet4;
-            case BluePlanet5: return bluePlanet5;
-            case BluePlanet6: return bluePlanet6;
-            case Star_White1: return starWhite1;
-            case Star_White2: return starWhite2;
-            case Star_White3: return starWhite3;
-            case Star_White4: return starWhite4;
-            case Star_Red1: return starRed1;
-            case Star_Red2: return starRed2;
-            case Star_Red3: return starRed3;
-            case Star_Red4: return starRed4;
-            case Star_Orange1: return starOrange1;
-            case Star_Orange2: return starOrange2;
-            case Star_Orange3: return starOrange3;
-            case Star_Orange4: return starOrange4;
-            case Star_Yellow1: return starYellow1;
-            case Star_Yellow2: return starYellow2;
-            case Star_Yellow3: return starYellow3;
-            case Star_Yellow4: return starYellow4;
-            case Star_Blue1: return starBlue1;
-            case Star_Blue2: return starBlue2;
-            case Star_Blue3: return starBlue3;
-            case Star_Blue4: return starBlue4;
-            case PurpleWings1: return purpleWings1;
-            case PurpleWings2: return purpleWings2;
-            case PurpleWings3: return purpleWings3;
-            case PurpleWings4: return purpleWings4;
-            case PurpleWings5: return purpleWings5;
-            case YellowWings1: return yellowWings1;
-            case YellowWings2: return yellowWings2;
-            case YellowWings3: return yellowWings3;
-            case YellowWings4: return yellowWings4;
-            case YellowWings5: return yellowWings5;
-            case BlueWings1: return blueWings1;
-            case BlueWings2: return blueWings2;
-            case BlueWings3: return blueWings3;
-            case BlueWings4: return blueWings4;
-            case BlueWings5: return blueWings5;
-            case Starcraft2_Focused_Crystal:return starcraft2_FocusedCrystal;
-            case Starcraft2_Platinum_Sponge:return starcraft2_PlatinumSponge;
-            case Starcraft2_Overclock: return starcraft2_Overclock;
-            case Starcraft2_Armor_Piercing: return starcraft2_ArmorPiercing;
-            case MoneyPrinter: return moneyPrinter;
-            case StickyDynamite: return stickyDynamite;
+            case CorrosiveOil: return corrosiveOil;
+            case ModuleScorchIcon: return moduleScorchIcon;
+            case FireShieldIcon: return fireShieldIcon;
+            case BargainBucket: return bargainBucket;
+            case EntanglingFlames: return entanglingFlames;
+            case EscalatingFlames: return escalatingFlames;
+            case StickyOilIcon: return stickyOil;
+            case Starcraft2FireBatWeapon: return this.starcraft2_FireBatWeapon;
+            case Contract: return starcraft2Contract;
+            case ModuleElectrify: return starcraft2ModuleElectrify;
+            case ModuleCommand: return starcraft2ModuleCommand;
+            case Starcraft2RepairBeam: return sc2RepairBeam;
+            case Starcraft2_BatteryUpgrade: return sc2BatteryUpgrade;
+            case Starcraft2_MineExplosion: return sc2MineExplosion;
+            case InputMapping:
+                return inputMapping;
+            case SpaceStationBoss:
+                return spaceStationBoss;
+            case UIDamageOverlay:
+                return uidamageoverlay;
+            case RedWings1:
+                return redWings1;
+            case RedWings2:
+                return redWings2;
+            case RedWings3:
+                return redWings3;
+            case RedWings4:
+                return redWings4;
+            case RedWings5:
+                return redWings5;
+            case FourDirectionalDrone:
+                return fourDirectionalDrone;
+            case ThornWeaver:
+                return thornweaver;
+            case BarbedMissiles:
+                return barbedmissiles;
+            case BarbedAegis:
+                return barbedaegis;
+            case Thornedplates:
+                return thornedplates;
+            case Starcraft2LockOn:
+                return starcraft2LockOn;
+            case VIPTicket:
+                return VIPTicket;
+            case PiercingLaser:
+                return piercingLaser;
+            case Starcraft2BouncingLaser:
+                return warcraft3HealingWave;
+            case Starcraft2Keystone:
+                return starcraft2Keystone;
+            case GUIRefresh:
+                return guirefresh;
+            case peepoDeepFriedSadge:
+                return peepoDeepFriedSadge;
+            case peepoFeelsCringeMan:
+                return peepoFeelsCringeMan;
+            case peepoFeelsRetardedMan:
+                return peepoFeelsRetardedMan;
+            case peepoHmmm:
+                return peepoHmmm;
+            case peepoLookingDown:
+                return peepoLookingDown;
+            case peepoMonkaHmmm:
+                return peepoMonkaHmmm;
+            case peepoMonkaLaugh:
+                return peepoMonkaLaugh;
+            case peepoPauseChamp:
+                return peepoPauseChamp;
+            case peepoClown:
+                return peepoClown;
+            case peepoCringe:
+                return peepoCringe;
+            case peepoLaugh:
+                return peepoLaugh;
+            case peepoLyingSadge:
+                return peepoLyingSadge;
+            case peepoOkay:
+                return peepoOkay;
+            case peepoSad:
+                return peepoSad;
+            case peepoSad2:
+                return peepoSad2;
+            case peepoShrug:
+                return peepoShrug;
+            case peepoSmadge:
+                return peepoSmadge;
+            case peepoSmokedge:
+                return peepoSmokedge;
+            case peepoSmug:
+                return peepoSmug;
+            case peepoStare:
+                return peepoStare;
+            case peepoUhm:
+                return peepoUhm;
+            case peepoAngy:
+                return peepoAngy;
+            case peepoBruh:
+                return peepoBruh;
+            case peepoCoffee:
+                return peepoCoffee;
+            case peepoConfused:
+                return peepoConfused;
+            case peepoGottem:
+                return peepoGottem;
+            case peepoHands:
+                return peepoHands;
+            case peepoLaugh2:
+                return peepoLaugh2;
+            case peepoPointLaugh:
+                return peepoPointLaugh;
+            case peepoW:
+                return peepoW;
+            case peepoSadClown:
+                return peepoSadClown;
+            case peepoSadge:
+                return peepoSadge;
+            case peepoSadgeCry:
+                return peepoSadgeCry;
+            case peepoShruge:
+                return peepoShruge;
+            case peepoSkillIssue:
+                return peepoSkillIssue;
+            case UIScoreTextCard:
+                return UIScoreTextImage;
+            case UIYouDied:
+                return UIYouDied;
+            case UILevelComplete:
+                return UILevelCompleted;
+            case GradeBronze:
+                return sc2GradeBronze;
+            case GradeSilver:
+                return sc2GradeSilver;
+            case GradeGold:
+                return sc2GradeGold;
+            case GradePlatinum:
+                return sc2GradePlatinum;
+            case GradeDiamond:
+                return sc2GradeDiamond;
+            case GradeMaster:
+                return sc2GradeMaster;
+            case GradeGrandMaster:
+                return sc2GradeGrandMaster;
+            case ProgressBar:
+                return progressBar;
+            case ProgressBarFilling:
+                return progressBarFilling;
+            case LaserBullet:
+                return laserBullet;
+            case TopazGem7:
+                return topazGem7;
+            case LockedIcon:
+                return lockedIcon;
+            case InformationCard:
+                return informationCard;
+            case Moon2:
+                return moon2;
+            case Moon3:
+                return moon3;
+            case Moon4:
+                return moon4;
+            case Moon5:
+                return moon5;
+            case GreenPlanet1:
+                return greenPlanet1;
+            case GreenPlanet2:
+                return greenPlanet2;
+            case BluePlanet1:
+                return bluePlanet1;
+            case BluePlanet2:
+                return bluePlanet2;
+            case BluePlanet3:
+                return bluePlanet3;
+            case BluePlanet4:
+                return bluePlanet4;
+            case BluePlanet5:
+                return bluePlanet5;
+            case BluePlanet6:
+                return bluePlanet6;
+            case Star_White1:
+                return starWhite1;
+            case Star_White2:
+                return starWhite2;
+            case Star_White3:
+                return starWhite3;
+            case Star_White4:
+                return starWhite4;
+            case Star_Red1:
+                return starRed1;
+            case Star_Red2:
+                return starRed2;
+            case Star_Red3:
+                return starRed3;
+            case Star_Red4:
+                return starRed4;
+            case Star_Orange1:
+                return starOrange1;
+            case Star_Orange2:
+                return starOrange2;
+            case Star_Orange3:
+                return starOrange3;
+            case Star_Orange4:
+                return starOrange4;
+            case Star_Yellow1:
+                return starYellow1;
+            case Star_Yellow2:
+                return starYellow2;
+            case Star_Yellow3:
+                return starYellow3;
+            case Star_Yellow4:
+                return starYellow4;
+            case Star_Blue1:
+                return starBlue1;
+            case Star_Blue2:
+                return starBlue2;
+            case Star_Blue3:
+                return starBlue3;
+            case Star_Blue4:
+                return starBlue4;
+            case PurpleWings1:
+                return purpleWings1;
+            case PurpleWings2:
+                return purpleWings2;
+            case PurpleWings3:
+                return purpleWings3;
+            case PurpleWings4:
+                return purpleWings4;
+            case PurpleWings5:
+                return purpleWings5;
+            case YellowWings1:
+                return yellowWings1;
+            case YellowWings2:
+                return yellowWings2;
+            case YellowWings3:
+                return yellowWings3;
+            case YellowWings4:
+                return yellowWings4;
+            case YellowWings5:
+                return yellowWings5;
+            case BlueWings1:
+                return blueWings1;
+            case BlueWings2:
+                return blueWings2;
+            case BlueWings3:
+                return blueWings3;
+            case BlueWings4:
+                return blueWings4;
+            case BlueWings5:
+                return blueWings5;
+            case Starcraft2_Focused_Crystal:
+                return starcraft2_FocusedCrystal;
+            case Starcraft2_Platinum_Sponge:
+                return starcraft2_PlatinumSponge;
+            case Starcraft2_Overclock:
+                return starcraft2_Overclock;
+            case Starcraft2_Armor_Piercing:
+                return starcraft2_ArmorPiercing;
+            case MoneyPrinter:
+                return moneyPrinter;
+            case StickyDynamite:
+                return stickyDynamite;
             case Alien_Bomb:
                 return this.alienBombImage;
             case Moon:
@@ -1037,6 +1246,9 @@ public class ImageDatabase {
                 return letter_LowercaseY;
             case Title_Image:
                 return titleImage;
+            case SelectClass: return classSelectionUI;
+            case FireFighter: return fireFighter;
+            case Starcraft2ConcentratedLaser: return sc2ConcentratedLaser;
             case Invisible:
                 return invisible;
             case Starcraft2_Electric_Field:
@@ -1086,26 +1298,119 @@ public class ImageDatabase {
 
     public List<BufferedImage> getAnimation (ImageEnums imageType) {
         switch (imageType) {
-            case SpaceStationBoss: return spaceStationBossFrames;
-            case LaserbeamCharging: return laserbeamChargingFrames;
-            case LaserbeamEnd: return laserbeamEnd;
-            case LaserbeamStart: return laserbeamStart;
-            case LaserbeamBody: return laserbeamBody;
-            case ShurikenEnemy: return shurikenEnemy;
-            case FreezeEffect: return freezeEffect;
-            case ThornsDamage: return thornsDamage;
-            case ElectroShredImproved: return electroShredImproved;
-            case Tazer: return tazer;
-            case Seeker: return seekerFrames;
-            case CashExplosion: return cashExplosion;
-            case LaserBulletDestruction: return laserBulletDeathFrames;
-            case LightningOrbDestruction: return lightningOrbDestruction;
-            case Explosion2: return explosion2;
-            case Flamer: return flamer;
-            case Bomba: return bomba;
-            case DestructableOrbitCenterMissile: return destructableOrbitCenterMissile;
-            case AlienLaserBeamAnimated: return alienLaserBeamAnimated;
-            case RedBoss: return redBossFrames;
+            case ModuleScorchFlames: return moduleScorchFlames;
+            case LingeringFlameLooping: return fireWall;
+            case FireFighterFlameThrowerLooping: return fireFighterFlameThrowerLooping;
+            case FireFighterFlameThrowerAppearing: return fireFighterFlameThrowerAppearing;
+            case FireFighterFlameThrowerDissipating: return fireFighterFlameThrowerDissipating;
+            case FireFighterFireShieldAppearing: return fireFighterFireShieldAppearing;
+            case FireFighterFireShield: return fireFighterFireShield;
+            case CashCarrier: return cashCarrierFrames;
+            case Overlord: return overlordIdle;
+            case DevourerBirth:
+                return devourerBirth;
+            case DevourerCocoon:
+                return devourerCocoon;
+            case MutaliskIdle:
+                return mutaliskIdle;
+            case MutaliskBirth:
+                return mutaliskBirth;
+            case MutaliskDeath:
+                return mutaliskDeath;
+            case MutaliskMissile:
+                return mutaliskMissile;
+            case MutaliskMissileImpact:
+                return mutaliskMissileImpact;
+            case GuardianMutaliskCocoon:
+                return guardianMutaliskCocoon;
+            case ScourgeDeath:
+                return scourgeDeath;
+            case ScourgeIdle:
+                return scourgeIdle;
+            case ScourgeExplosion:
+                return scourgeExplosion;
+            case GuardianChargingAnimation:
+                return guardianChargingAnimation;
+            case GuardianBirth:
+                return guardianBirth;
+            case GuardianDeath:
+                return guardianDeath;
+            case GuardianIdle:
+                return guardianIdle;
+            case GuardianMissile:
+                return guardianMissile;
+            case GuardianMissileImpact:
+                return guardianMissileImpact;
+            case QueenAttacking:
+                return queenAttacking;
+            case QueenIdle:
+                return queenIdle;
+            case QueenDeath:
+                return queenDeath;
+            case BroodlingIdle:
+                return broodlingIdle;
+            case BroodlingAttacking:
+                return broodlingAttacking;
+            case BroodlingDeath:
+                return broodlingDeath;
+            case DevourerDebuffStage1:
+                return devourerDebuffStage1;
+            case DevourerDebuffStage2:
+                return devourerDebuffStage2;
+            case DevourerDebuffStage3:
+                return devourerDebuffStage3;
+            case DevourerDebuffStage4:
+                return devourerDebuffStage4;
+            case DevourerIdle:
+                return devourerIdle;
+            case DevourerAttacking:
+                return devourerAttacking;
+            case DevourerDeath:
+                return devourerDeath;
+            case DevourerMissile:
+                return devourerMissile;
+            case DevourerMissileExplosion:
+                return devourerMissileExplosion;
+            case SpaceStationBoss:
+                return spaceStationBossFrames;
+            case LaserbeamCharging:
+                return laserbeamChargingFrames;
+            case LaserbeamEnd:
+                return laserbeamEnd;
+            case LaserbeamStart:
+                return laserbeamStart;
+            case LaserbeamBody:
+                return laserbeamBody;
+            case ShurikenEnemy:
+                return shurikenEnemy;
+            case FreezeEffect:
+                return freezeEffect;
+            case ThornsDamage:
+                return thornsDamage;
+            case ElectroShredImproved:
+                return electroShredImproved;
+            case Tazer:
+                return tazer;
+            case Seeker:
+                return seekerFrames;
+            case CashExplosion:
+                return cashExplosion;
+            case LaserBulletDestruction:
+                return laserBulletDeathFrames;
+            case LightningOrbDestruction:
+                return lightningOrbDestruction;
+            case Explosion2:
+                return explosion2;
+            case Flamer:
+                return flamer;
+            case Bomba:
+                return bomba;
+            case DestructableOrbitCenterMissile:
+                return destructableOrbitCenterMissile;
+            case AlienLaserBeamAnimated:
+                return alienLaserBeamAnimated;
+            case RedBoss:
+                return redBossFrames;
             case LightningOrb:
                 return lightningOrb;
             case SuperChargedBuff:
@@ -1114,6 +1419,7 @@ public class ImageDatabase {
                 return barrierProjectile;
             case BarrierProjectileDestruction:
                 return barrierProjectileDestruction;
+            case SelectNewClassAnimation: return selectNewClassAnimation;
             case PlasmaLauncherMissile:
                 return plasmaLauncherMissileFrames;
             case StickyDynamiteExplosion:
@@ -1132,10 +1438,11 @@ public class ImageDatabase {
                 return this.bombaProjectileExplosion;
             case Default_Player_Engine:
                 return this.defaultPlayerEngine;
-            case LevelUpAnimation: return levelUpAnimation;
+            case LevelUpAnimation:
+                return levelUpAnimation;
             case Default_Player_Shield_Damage:
                 return this.defaultPlayerShieldDamage;
-            case Player_EMP:
+            case Electroshred:
                 return this.playerEMPFrames;
             case Drone:
                 return this.guardianBotFrames;
@@ -1157,7 +1464,7 @@ public class ImageDatabase {
                 return plasmaCoatedDebuff;
             case GasolineExplosion:
                 return gasolineExplosion;
-            case GasolineBurning:
+            case IgniteBurning:
                 return gasolineBurning;
             case Healing:
                 return healingAnimation;
@@ -1194,6 +1501,151 @@ public class ImageDatabase {
     }
 
     private void initPNGtoGIFAnimation () {
+
+        for (int i = 0; i < 7; i++) {
+            String sourceString = String.format("/images/Ships/Enemy Ships/Devourer/birth/%d.png", i);
+            BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+            devourerBirth.add(image);
+        }
+
+        for (int i = 0; i < 32; i++) {
+            String sourceString = String.format("/images/gif/PNGtoGIF/ModuleScorch/%d.png", i);
+            BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+            moduleScorchFlames.add(image);
+        }
+
+        for (int i = 0; i < 5; i++) {
+            String sourceString = String.format("/images/Ships/Enemy Ships/Zerg Cocoon/Devourer/%d.png", i);
+            BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+            devourerCocoon.add(image);
+        }
+
+        for (int i = 0; i < 5; i++) {
+            String sourceString = String.format("/images/Ships/Enemy Ships/Mutalisk/idle/%d.png", i);
+            BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+            mutaliskIdle.add(image);
+        }
+
+        for (int i = 0; i < 9; i++) {
+            String sourceString = String.format("/images/Ships/Enemy Ships/Mutalisk/death/%d.png", i);
+            BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+            mutaliskDeath.add(image);
+        }
+
+        for (int i = 0; i < 10; i++) {
+            String sourceString = String.format("/images/Ships/Enemy Ships/Mutalisk/missile/%d.png", i);
+            BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+            mutaliskMissile.add(image);
+        }
+
+        for (int i = 0; i < 10; i++) {
+            String sourceString = String.format("/images/Ships/Enemy Ships/Mutalisk/missileimpact/%d.png", i);
+            BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+            mutaliskMissileImpact.add(image);
+        }
+
+        for (int i = 0; i < 6; i++) {
+            String sourceString = String.format("/images/Ships/Enemy Ships/Mutalisk/birth/%d.png", i);
+            BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+            mutaliskBirth.add(image);
+        }
+
+        for (int i = 0; i < 9; i++) {
+            String sourceString = String.format("/images/Ships/Enemy Ships/Zerg Cocoon/MutaGuardian/%d.png", i);
+            BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+            guardianMutaliskCocoon.add(image);
+        }
+
+        for (int i = 0; i < 5; i++) {
+            String sourceString = String.format("/images/Ships/Enemy Ships/Scourge/idle/%d.png", i);
+            BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+            scourgeIdle.add(image);
+        }
+
+        for (int i = 0; i < 9; i++) {
+            String sourceString = String.format("/images/Ships/Enemy Ships/Scourge/death/%d.png", i);
+            BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+            scourgeDeath.add(image);
+        }
+
+        for (int i = 0; i < 8; i++) {
+            String sourceString = String.format("/images/Ships/Enemy Ships/Scourge/explosion/%d.png", i);
+            BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+            scourgeExplosion.add(image);
+        }
+
+        for (int i = 0; i < 6; i++) {
+            String sourceString = String.format("/images/Ships/Enemy Ships/Guardian/attacking/%d.png", i);
+            BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+            guardianChargingAnimation.add(image);
+        }
+
+        for (int i = 0; i < 7; i++) {
+            String sourceString = String.format("/images/Ships/Enemy Ships/Guardian/idle/%d.png", i);
+            BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+            guardianIdle.add(image);
+        }
+
+        for (int i = 0; i < 9; i++) {
+            String sourceString = String.format("/images/Ships/Enemy Ships/Guardian/death/%d.png", i);
+            BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+            guardianDeath.add(image);
+        }
+
+        for (int i = 0; i < 7; i++) {
+            String sourceString = String.format("/images/Ships/Enemy Ships/Guardian/birth/%d.png", i);
+            BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+            guardianBirth.add(image);
+        }
+
+        for (int i = 0; i < 32; i++) {
+            String sourceString = String.format("/images/Ships/Enemy Ships/Guardian/missile/%d.png", i);
+            BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+            guardianMissile.add(image);
+        }
+
+        for (int i = 0; i < 10; i++) {
+            String sourceString = String.format("/images/Ships/Enemy Ships/Guardian/missile impact/%d.png", i);
+            BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+            guardianMissileImpact.add(image);
+        }
+
+        for (int i = 0; i < 5; i++) {
+            String sourceString = String.format("/images/Ships/Enemy Ships/Queen/idle/%d.png", i);
+            BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+            queenIdle.add(image);
+        }
+
+        for (int i = 0; i < 7; i++) {
+            String sourceString = String.format("/images/Ships/Enemy Ships/Queen/attacking/%d.png", i);
+            BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+            queenAttacking.add(image);
+        }
+
+        for (int i = 0; i < 9; i++) {
+            String sourceString = String.format("/images/Ships/Enemy Ships/Queen/death/%d.png", i);
+            BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+            queenDeath.add(image);
+        }
+
+        for (int i = 0; i < 8; i++) {
+            String sourceString = String.format("/images/Ships/Enemy Ships/Queen/broodling/idle/%d.png", i);
+            BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+            broodlingIdle.add(image);
+        }
+        for (int i = 0; i < 4; i++) {
+            String sourceString = String.format("/images/Ships/Enemy Ships/Queen/broodling/attacking/%d.png", i);
+            BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+            broodlingAttacking.add(image);
+        }
+
+        for (int i = 0; i < 5; i++) {
+            String sourceString = String.format("/images/Ships/Enemy Ships/Queen/broodling/death/%d.png", i);
+            BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+            broodlingDeath.add(image);
+        }
+
+
         for (int i = 1; i < 6; i++) {
             String sourceString = String.format("/images/gif/PNGtoGIF/Default Player Engine/%d.png", i);
             BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
@@ -1207,10 +1659,22 @@ public class ImageDatabase {
             defaultPlayerShieldDamage.add(image);
         }
 
+        for (int i = 1; i < 41; i++) {
+            String sourceString = String.format("/images/gif/PNGtoGIF/FireWall/fire_1f_40_%d.png", i);
+            BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+            fireWall.add(image);
+        }
+
         for (int i = 1; i < 10; i++) {
             String sourceString = String.format("/images/gif/PNGtoGIF/Player EMP/%d.png", i);
             BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
             playerEMPFrames.add(image);
+        }
+
+        for (int i = 0; i < 32; i++) {
+            String sourceString = String.format("/images/gif/PNGtoGIF/SelectNewClass/%d.png", i);
+            BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+            selectNewClassAnimation.add(image);
         }
 
         for (int i = 1; i < 16; i++) {
@@ -1430,6 +1894,36 @@ public class ImageDatabase {
             thornsDamage.add(image);
         }
 
+        for (int i = 0; i < 20; i++) {
+            String sourceString = String.format("/images/gif/PNGtoGIF/Fireshield/looping/fireshield%d.png", i);
+            BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+            fireFighterFireShield.add(image);
+        }
+
+        for (int i = 0; i < 16; i++) {
+            String sourceString = String.format("/images/gif/PNGtoGIF/Fireshield/appearing/fireshield%d.png", i);
+            BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+            fireFighterFireShieldAppearing.add(image);
+        }
+
+        for (int i = 0; i < 19; i++) {
+            String sourceString = String.format("/images/gif/PNGtoGIF/FireFighterPrimary/looping/%d.png", i);
+            BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+            fireFighterFlameThrowerLooping.add(image);
+        }
+
+        for (int i = 0; i < 10; i++) {
+            String sourceString = String.format("/images/gif/PNGtoGIF/FireFighterPrimary/init/%d.png", i);
+            BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+            fireFighterFlameThrowerAppearing.add(image);
+        }
+
+        for (int i = 0; i < 12; i++) {
+            String sourceString = String.format("/images/gif/PNGtoGIF/FireFighterPrimary/dissipating/%d.png", i);
+            BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+            fireFighterFlameThrowerDissipating.add(image);
+        }
+
         for (int i = 0; i < 36; i++) {
             String sourceString = String.format("/images/gif/PNGtoGIF/FreezeEffect/%d.png", i);
             BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
@@ -1484,8 +1978,71 @@ public class ImageDatabase {
             bombaProjectileExplosion.add(image);
         }
 
+        for (int i = 0; i < 7; i++) {
+            String sourceString = String.format("/images/Ships/Enemy Ships/Devourer/idle/%d.png", i);
+            BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+            devourerIdle.add(image);
+        }
 
+        for (int i = 0; i < 5; i++) {
+            String sourceString = String.format("/images/Ships/Enemy Ships/Devourer/attacking/%d.png", i);
+            BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+            devourerAttacking.add(image);
+        }
 
+        for (int i = 1; i < 9; i++) {
+            String sourceString = String.format("/images/Ships/Enemy Ships/Devourer/death/%d.png", i);
+            BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+            devourerDeath.add(image);
+        }
+
+        for (int i = 0; i < 4; i++) {
+            String sourceString = String.format("/images/Ships/Enemy Ships/Devourer/projectile/%d.png", i);
+            BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+            devourerMissile.add(image);
+        }
+
+        for (int i = 0; i < 10; i++) {
+            String sourceString = String.format("/images/Ships/Enemy Ships/Devourer/projectile/explosion/%d.png", i);
+            BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+            devourerMissileExplosion.add(image);
+        }
+
+        for (int i = 0; i < 4; i++) {
+            String sourceString = String.format("/images/Ships/Enemy Ships/Devourer/projectile/debuff/stage1/%d.png", i);
+            BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+            devourerDebuffStage1.add(image);
+        }
+
+        for (int i = 0; i < 4; i++) {
+            String sourceString = String.format("/images/Ships/Enemy Ships/Devourer/projectile/debuff/stage2/%d.png", i);
+            BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+            devourerDebuffStage2.add(image);
+        }
+
+        for (int i = 0; i < 4; i++) {
+            String sourceString = String.format("/images/Ships/Enemy Ships/Devourer/projectile/debuff/stage3/%d.png", i);
+            BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+            devourerDebuffStage3.add(image);
+        }
+
+        for (int i = 0; i < 4; i++) {
+            String sourceString = String.format("/images/Ships/Enemy Ships/Devourer/projectile/debuff/stage4/%d.png", i);
+            BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+            devourerDebuffStage4.add(image);
+        }
+
+        for (int i = 0; i < 3; i++) {
+            String sourceString = String.format("/images/Ships/Enemy Ships/Overlord/%d.png", i);
+            BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+            overlordIdle.add(image);
+        }
+
+        for (int i = 0; i < 4; i++) {
+            String sourceString = String.format("/images/Ships/Enemy Ships/CashCarrier/%d.png", i);
+            BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+            cashCarrierFrames.add(image);
+        }
 
     }
 

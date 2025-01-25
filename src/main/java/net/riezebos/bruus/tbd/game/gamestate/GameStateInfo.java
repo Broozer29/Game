@@ -17,8 +17,6 @@ public class GameStateInfo {
     private int stagesCompleted;
     private long gameTicksExecuted;
 
-    private float musicSeconds = 0;
-    private float maxMusicSeconds = 0;
 
     private float difficultyCoefficient;
     private int monsterLevel;
@@ -37,7 +35,6 @@ public class GameStateInfo {
     public void resetGameState () {
         setGameState(GameStatusEnums.Waiting);
         setDELAY(15);
-        setMusicSeconds(0);
         this.gameTicksExecuted = 0;
         this.gameSeconds = 0;
         this.stagesCompleted = 0;
@@ -109,32 +106,8 @@ public class GameStateInfo {
         DELAY = dELAY;
     }
 
-    public float getMusicSeconds () {
-        return musicSeconds;
-    }
-
-    public void setMusicSeconds (float musicSeconds) {
-        this.musicSeconds = musicSeconds;
-    }
-
-    public float getMaxMusicSeconds () {
-        //No song loaded or found, so testing purposes
-        if (this.maxMusicSeconds == 0) {
-            return 50000000;
-        }
-        return this.maxMusicSeconds;
-    }
-
     public double getGameSeconds () {
         return gameSeconds;
-    }
-
-    public long getGameTicksExecuted () {
-        return gameTicksExecuted;
-    }
-
-    public void setMaxMusicSeconds (float maxMusicSeconds) {
-        this.maxMusicSeconds = maxMusicSeconds;
     }
 
     public void addGameTicks (long gameTick) {
@@ -155,6 +128,9 @@ public class GameStateInfo {
     }
 
     public float getDifficultyCoefficient () {
+        if(difficultyCoefficient <= 0){
+            updateDifficultyCoefficient();
+        }
         return difficultyCoefficient;
     }
 

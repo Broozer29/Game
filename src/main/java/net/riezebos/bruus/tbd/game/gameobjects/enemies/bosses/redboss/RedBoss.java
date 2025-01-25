@@ -29,7 +29,7 @@ public class RedBoss extends Enemy {
         SpriteAnimationConfiguration destroyedExplosionfiguration = new SpriteAnimationConfiguration(spriteConfiguration.getSpriteConfiguration(), 0, false);
         destroyedExplosionfiguration.getSpriteConfiguration().setImageType(ImageEnums.Explosion2);
         this.destructionAnimation = new SpriteAnimation(destroyedExplosionfiguration);
-        this.damage = 10;
+        this.damage = 12;
         this.allowedVisualsToRotate = false;
         this.destructionAnimation.setAnimationScale(3);
         this.knockbackStrength = 9;
@@ -56,9 +56,8 @@ public class RedBoss extends Enemy {
     }
 
 
+    @Override
     protected void updateChargingAttackAnimationCoordination () {
-        //Overwritten because bosses should only have 1!!! orientation, "LEFT" so we can do this manually and better.
-        // The dynamic distance calculation does not work with this bosses artwork
         if (this.chargingUpAttackAnimation != null) {
             this.chargingUpAttackAnimation.setCenterCoordinates(this.getXCoordinate() - (chargingUpAttackAnimation.getWidth() / 2), this.getCenterYCoordinate());
         }

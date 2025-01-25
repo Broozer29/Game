@@ -13,9 +13,10 @@ import java.util.List;
 public class HoverPathFinder implements PathFinder {
 
     private double gameSecondsSinceEmptyList;
-    private static double secondsToHoverStill = 5;
+    private double secondsToHoverStill = 5;
     private boolean shouldDecreaseBoardBlock;
     private int decreaseBoardBlockAmountBy;
+    private boolean isHovering;
 
 
     public Path findPath (GameObject gameObject) {
@@ -60,7 +61,6 @@ public class HoverPathFinder implements PathFinder {
 
 
     private Point getRandomCoordinateInBlock (int blockIndex, int objectWidth, int objectHeight) {
-        // Assuming BoardBlockUpdater.getRandomCoordinateInBlock is implemented as discussed
         return BoardBlockUpdater.getRandomCoordinateInBlock(blockIndex, objectWidth, objectHeight);
     }
 
@@ -78,7 +78,7 @@ public class HoverPathFinder implements PathFinder {
             if (gameSecondsSinceEmptyList == 0) {
                 // Only set the timestamp if it hasn't been set yet. If true, stay still on the current location and rotate it
                 gameSecondsSinceEmptyList = GameStateInfo.getInstance().getGameSeconds();
-
+                isHovering = true;
                 if (allowRotation(gameObject)) {
                     gameObject.setAllowedVisualsToRotate(true);
                     gameObject.rotateObjectTowardsRotation(true);
@@ -101,6 +101,7 @@ public class HoverPathFinder implements PathFinder {
             // Check if 3 seconds have passed since the path became empty. If true, move
             if (GameStateInfo.getInstance().getGameSeconds() > gameSecondsSinceEmptyList + secondsToHoverStill) {
                 // After 3 seconds, allow recalculation.
+                isHovering = false;
                 gameSecondsSinceEmptyList = 0; // Reset the timer for the next use.
 
                 if (allowRotation(gameObject)) {
@@ -110,6 +111,7 @@ public class HoverPathFinder implements PathFinder {
             }
 
             // If not enough time has passed, do not recalculate yet.
+
             return false;
         }
 
@@ -163,5 +165,21 @@ public class HoverPathFinder implements PathFinder {
 
     public void setDecreaseBoardBlockAmountBy (int decreaseBoardBlockAmountBy) {
         this.decreaseBoardBlockAmountBy = decreaseBoardBlockAmountBy;
+    }
+
+    public double getSecondsToHoverStill () {
+        return secondsToHoverStill;
+    }
+
+    public void setSecondsToHoverStill (double secondsToHoverStill) {
+        this.secondsToHoverStill = secondsToHoverStill;
+    }
+
+    public boolean isHovering () {
+        return isHovering;
+    }
+
+    public double getGameSecondsSinceEmptyList () {
+        return gameSecondsSinceEmptyList;
     }
 }

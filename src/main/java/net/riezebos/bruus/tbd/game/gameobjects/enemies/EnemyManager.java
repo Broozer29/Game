@@ -2,9 +2,18 @@ package net.riezebos.bruus.tbd.game.gameobjects.enemies;
 
 import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyCategory;
+import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyEnums;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
+import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
 import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SpaceShip;
 import net.riezebos.bruus.tbd.game.gamestate.GameStatsTracker;
+import net.riezebos.bruus.tbd.game.items.PlayerInventory;
+import net.riezebos.bruus.tbd.game.items.ItemEnums;
+import net.riezebos.bruus.tbd.game.level.LevelManager;
+import net.riezebos.bruus.tbd.game.level.enums.LevelTypes;
+import net.riezebos.bruus.tbd.game.movement.BoardBlockUpdater;
+import net.riezebos.bruus.tbd.game.util.ThornsDamageDealer;
+import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.AnimationManager;
 import net.riezebos.bruus.tbd.game.util.WithinVisualBoundariesCalculator;
 import net.riezebos.bruus.tbd.game.util.collision.CollisionDetector;
@@ -12,10 +21,9 @@ import net.riezebos.bruus.tbd.game.util.collision.CollisionInfo;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.AudioManager;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.AudioEnums;
 
-import javax.sound.sampled.UnsupportedAudioFileException;
-import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.stream.Collectors;
 
 public class EnemyManager {
 
@@ -37,13 +45,7 @@ public class EnemyManager {
         for (Enemy enemy : enemyList) {
             enemy.setVisible(false);
         }
-
-        try {
-            updateEnemies();
-        } catch (UnsupportedAudioFileException | IOException e) {
-            throw new RuntimeException(e);
-        }
-
+        updateEnemies();
         enemyList = new CopyOnWriteArrayList<Enemy>();
         friendlyManager = PlayerManager.getInstance();
         audioManager = AudioManager.getInstance();
@@ -51,13 +53,9 @@ public class EnemyManager {
     }
 
     public void updateGameTick () {
-        try {
-            updateEnemies();
-            checkSpaceshipCollisions();
-            triggerEnemyActions();
-        } catch (UnsupportedAudioFileException | IOException e) {
-            e.printStackTrace();
-        }
+        updateEnemies();
+        checkSpaceshipCollisions();
+        triggerEnemyActions();
     }
 
 
@@ -71,7 +69,7 @@ public class EnemyManager {
         return true;
     }
 
-    private void checkSpaceshipCollisions () throws UnsupportedAudioFileException, IOException {
+    private void checkSpaceshipCollisions () {
         SpaceShip spaceship = friendlyManager.getSpaceship();
         for (Enemy enemy : enemyList) {
 
@@ -81,23 +79,34 @@ public class EnemyManager {
                     detonateEnemy(enemy);
                     enemy.dealDamageToGameObject(spaceship);
                 } else {
-                    spaceship.takeDamage(2.5f);
+                    spaceship.takeDamage(2.5f * (1 - PlayerStats.getInstance().getCollisionDamageReduction()));
                     spaceship.resetToPreviousPosition();
+                    handleAdditionalKnockbackBehaviour(enemy);
                 }
                 spaceship.applyKnockback(collisionInfo, enemy.getKnockbackStrength());
             }
         }
     }
 
+    private void handleAdditionalKnockbackBehaviour (Enemy enemy) {
+        if (PlayerInventory.getInstance().getItemByName(ItemEnums.Thornweaver) != null) {
+            ThornsDamageDealer.getInstance().addDelayedThornsDamageToObject(enemy, 1);
+        }
+    }
+
     private void detonateEnemy (Enemy enemy) {
         if (enemy.getDestructionAnimation() != null) {
-            enemy.getDestructionAnimation().setCenterCoordinates(enemy.getCenterXCoordinate(), enemy.getCenterYCoordinate());
+            enemy.getDestructionAnimation().setOriginCoordinates(enemy.getCenterXCoordinate(), enemy.getCenterYCoordinate());
+            if (enemy.getEnemyType().equals(EnemyEnums.ZergScourge)) {
+                enemy.getDestructionAnimation().changeImagetype(ImageEnums.ScourgeExplosion);
+            }
             animationManager.addLowerAnimation(enemy.getDestructionAnimation());
         }
 
         AudioEnums impactSound = enemy.getDeathSound();
         switch (enemy.getEnemyType()) {
             case Needler, Alien_Bomb -> impactSound = AudioEnums.Alien_Bomb_Impact;
+            case ZergScourge -> impactSound = AudioEnums.ScourgeCollision;
         }
         audioManager.addAudio(impactSound);
         enemy.setVisible(false);
@@ -109,7 +118,7 @@ public class EnemyManager {
         }
     }
 
-    private void updateEnemies () throws UnsupportedAudioFileException, IOException {
+    private void updateEnemies () {
         for (Enemy en : enemyList) {
             if (en.isVisible()) {
                 en.move();
@@ -126,9 +135,16 @@ public class EnemyManager {
             enemy.onCreationEffects();
             enemyList.add(enemy);
 
-            if (enemy.getEnemyType().getEnemyCategory() != EnemyCategory.Summon) {
-                GameStatsTracker.getInstance().addEnemySpawned(1);
-            }
+            increaseEnemySpawnedCount(enemy);
+        }
+    }
+
+    private void increaseEnemySpawnedCount (Enemy enemy) {
+        if (LevelManager.getInstance().getLevelType().equals(LevelTypes.Boss) &&
+                enemy.getEnemyType().getEnemyCategory().equals(EnemyCategory.Boss)) {
+            GameStatsTracker.getInstance().addEnemySpawned(1);
+        } else if (enemy.getEnemyType().getEnemyCategory() != EnemyCategory.Summon) {
+            GameStatsTracker.getInstance().addEnemySpawned(1);
         }
     }
 
@@ -147,29 +163,52 @@ public class EnemyManager {
             return false;
     }
 
-    public Enemy getClosestEnemy (int xCoordinate, int yCoordinate) {
+    public Enemy getClosestEnemy(int xCoordinate, int yCoordinate) {
+        int boardBlockThreshold = 3;
+
+        // Filter out enemies that are too far away based on board block
+        List<Enemy> nearbyEnemies = enemyList.stream()
+                .filter(enemy -> this.isWithinBoardBlockThreshold(enemy, xCoordinate, boardBlockThreshold))
+                .collect(Collectors.toList());
+
+        // Initialize variables to track the closest enemy
         Enemy closestEnemy = null;
-        double minDistance = Double.MAX_VALUE;
+        double minDistanceSquared = 320000; //400 X AND Y coordinates away
 
-        for (Enemy enemy : enemyList) {
+        // Iterate over the filtered list of enemies to find the closest one
+        for (Enemy enemy : nearbyEnemies) {
             int enemyXCoordinate = enemy.getCenterXCoordinate();
-            int enemyYcoordinate = enemy.getCenterYCoordinate();
+            int enemyYCoordinate = enemy.getCenterYCoordinate();
 
-            // Compute the distance between player and enemy using Euclidean distance formula
-            double distance = Math.sqrt(Math.pow((xCoordinate - enemyXCoordinate), 2)
-                    + Math.pow((yCoordinate - enemyYcoordinate), 2));
+            // Compute the squared distance between the player and enemy
+            double deltaX = xCoordinate - enemyXCoordinate;
+            double deltaY = yCoordinate - enemyYCoordinate;
+            double distanceSquared = deltaX * deltaX + deltaY * deltaY;  // No need for sqrt()
 
-            // If this enemy is closer than the previous closest enemy, update closestEnemy and
-            // minDistance
-            if (distance < minDistance) {
-                minDistance = distance;
+            // If this enemy is closer, update closestEnemy and minDistanceSquared
+            if (distanceSquared < minDistanceSquared) {
+                minDistanceSquared = distanceSquared;
                 closestEnemy = enemy;
             }
         }
         return closestEnemy;
     }
 
-    public GameObject getEnemyClosestToGameObject (GameObject gameObject, List<GameObject> objectsToIgnore) {
+    //Helper method
+    private boolean isWithinBoardBlockThreshold(Enemy enemy, int xCoordinate, int boardBlockThreshold) {
+        enemy.updateBoardBlock();  // Ensure the enemy's board block is updated
+        int enemyBoardBlock = enemy.getCurrentBoardBlock();
+
+        // Get the board block of the provided xCoordinate
+        int playerBoardBlock = BoardBlockUpdater.getBoardBlock(xCoordinate);
+
+        // Check if the enemy's board block is within the threshold of the player
+        int blockDifference = Math.abs(playerBoardBlock - enemyBoardBlock);
+        return blockDifference <= boardBlockThreshold;
+    }
+
+
+    public GameObject findEnemyForMissileToBounceTo (GameObject gameObject, List<GameObject> objectsToIgnore) {
         GameObject closestEnemy = null;
         double minDistance = Double.MAX_VALUE;
 
@@ -206,8 +245,8 @@ public class EnemyManager {
 
     public void removeOutOfBoundsEnemies () {
         for (Enemy enemy : enemyList) {
-            if (enemy.getEnemyType().getEnemyCategory().equals(EnemyCategory.Basic) ||
-                    enemy.getEnemyType().getEnemyCategory().equals(EnemyCategory.Mercenary) ||
+            if (enemy.getEnemyType().getEnemyCategory().equals(EnemyCategory.Small) ||
+                    enemy.getEnemyType().getEnemyCategory().equals(EnemyCategory.Medium) ||
                     enemy.getEnemyType().getEnemyCategory().equals(EnemyCategory.Special)) {
                 if (!WithinVisualBoundariesCalculator.isWithinBoundaries(enemy)) {
                     enemy.deleteObject();
@@ -216,9 +255,13 @@ public class EnemyManager {
         }
     }
 
-    public void detonateAllEnemies(){
-        for (Enemy enemy : enemyList){
+    public void detonateAllEnemies () {
+        for (Enemy enemy : enemyList) {
             enemy.deleteObject();
         }
+    }
+
+    public int getAmountOfEnemyTypesAlive(EnemyEnums enemyToCheck){
+        return enemyList.stream().filter(enemy -> enemy.getEnemyType().equals(enemyToCheck)).collect(Collectors.toList()).size();
     }
 }

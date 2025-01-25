@@ -10,15 +10,18 @@ public class SpecialAttackConfiguration {
     private boolean allowRepeatedDamage;
     private boolean destroysMissiles;
     private Point destination;
+    private boolean isAllowedToApplyItemEffects;
 
 
-    public SpecialAttackConfiguration (float damage, boolean friendly, boolean allowedToDealDamage, boolean boxCollision, boolean allowRepeatedDamage, boolean destorysMissiles) {
+    public SpecialAttackConfiguration (float damage, boolean friendly, boolean allowedToDealDamage, boolean boxCollision, boolean allowRepeatedDamage, boolean destorysMissiles,
+                                       boolean isAllowedToApplyItemEffects) {
         this.damage = damage;
         this.friendly = friendly;
         this.allowedToDealDamage = allowedToDealDamage;
         this.boxCollision = boxCollision;
         this.allowRepeatedDamage = allowRepeatedDamage;
         this.destroysMissiles = destorysMissiles;
+        this.isAllowedToApplyItemEffects = isAllowedToApplyItemEffects;
     }
 
     public boolean isDestroysMissiles () {
@@ -79,5 +82,13 @@ public class SpecialAttackConfiguration {
 
     public void setDestination (Point destination) {
         this.destination = destination;
+    }
+
+    public boolean isAllowedToApplyItemEffects () {
+        return isAllowedToApplyItemEffects;
+    }
+
+    public void setAllowedToApplyItemEffects (boolean allowedToApplyItemEffects) {
+        isAllowedToApplyItemEffects = allowedToApplyItemEffects;
     }
 }

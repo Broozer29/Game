@@ -43,6 +43,12 @@ public class OnScreenTextManager {
 		this.onScreenTexts.add(onScreenText);
 	}
 
+	public void addText(String text, int xCoordinate, int yCoordinate, int fontSize){
+		OnScreenText onScreenText = new OnScreenText(xCoordinate, yCoordinate, text);
+		onScreenText.setFontSize(fontSize);
+		this.onScreenTexts.add(onScreenText);
+	}
+
 	public void addMineralsGainedText(float amount){
 		UIObject mineralIcon = GameUICreator.getInstance().getMineralIcon();
 		int xCoordinate = mineralIcon.getXCoordinate() - Math.round(mineralIcon.getWidth() * 0.5f);

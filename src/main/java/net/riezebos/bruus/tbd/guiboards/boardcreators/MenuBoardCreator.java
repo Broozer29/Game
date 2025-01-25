@@ -1,5 +1,6 @@
 package net.riezebos.bruus.tbd.guiboards.boardcreators;
 
+import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
 import net.riezebos.bruus.tbd.guiboards.boardEnums.MenuFunctionEnums;
 import net.riezebos.bruus.tbd.guiboards.guicomponents.DisplayOnly;
 import net.riezebos.bruus.tbd.guiboards.guicomponents.GUIComponent;
@@ -20,8 +21,8 @@ public class MenuBoardCreator {
     public static GUITextCollection createStartGameButton(GUIComponent backgroundCard){
         int xCoordinate = backgroundCard.getXCoordinate() + 120;
         int yCoordinate = backgroundCard.getYCoordinate() + 50;
-        GUITextCollection textCollection = new GUITextCollection(xCoordinate, yCoordinate, "START GAME");
-        textCollection.setMenuFunctionality(MenuFunctionEnums.Start_Game);
+        GUITextCollection textCollection = new GUITextCollection(xCoordinate, yCoordinate, "SELECT CLASS");
+        textCollection.setMenuFunctionality(MenuFunctionEnums.OpenClassSelectWindow);
 
         return textCollection;
     }
@@ -35,7 +36,7 @@ public class MenuBoardCreator {
         spriteConfiguration.setxCoordinate(xCoordinate);
         spriteConfiguration.setyCoordinate(yCoordinate);
         spriteConfiguration.setScale(imageScale);
-        spriteConfiguration.setImageType(ImageEnums.Player_Spaceship_Model_3);
+        spriteConfiguration.setImageType(PlayerStats.getInstance().getSpaceShipImage());
 
         MenuCursor menuCursor = new MenuCursor(spriteConfiguration);
         menuCursor.setSelectedMenuTile(initialSelectedButton);

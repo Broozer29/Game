@@ -3,6 +3,8 @@ package net.riezebos.bruus.tbd.guiboards.boards;
 import net.riezebos.bruus.tbd.controllerInput.ConnectedControllersManager;
 import net.riezebos.bruus.tbd.controllerInput.ControllerInputEnums;
 import net.riezebos.bruus.tbd.controllerInput.ControllerInputReader;
+import net.riezebos.bruus.tbd.game.gamestate.GameStateInfo;
+import net.riezebos.bruus.tbd.guiboards.TimerHolder;
 import net.riezebos.bruus.tbd.guiboards.background.BackgroundManager;
 import net.riezebos.bruus.tbd.guiboards.background.BackgroundObject;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.AnimationManager;
@@ -22,15 +24,13 @@ import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteAnimation;
 import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MenuBoard extends JPanel implements ActionListener {
+public class MenuBoard extends JPanel implements TimerHolder {
     private DataClass data = DataClass.getInstance();
     private BackgroundManager backgroundManager = BackgroundManager.getInstance();
     private AnimationManager animationManager = AnimationManager.getInstance();
@@ -45,7 +45,7 @@ public class MenuBoard extends JPanel implements ActionListener {
     private List<List<GUIComponent>> grid = new ArrayList<>();
     private List<GUIComponent> offTheGridObjects = new ArrayList<>();
     private MenuCursor menuCursor;
-    private GUITextCollection startGameButton;
+    private GUITextCollection selectClassBoard;
     private List<GUITextCollection> controlExplanations;
     private GUIComponent startGameBackgroundCard;
     private GUITextCollection selectMusicOptionText;
@@ -64,10 +64,9 @@ public class MenuBoard extends JPanel implements ActionListener {
 
     private int selectedRow = 0;
     private int selectedColumn = 0;
-    private boolean recreateList = false;
 
     public MenuBoard () {
-        addKeyListener(new TAdapter());
+        addKeyListener(new KeyInputReader());
         setFocusable(true);
         setBackground(Color.BLACK);
         setPreferredSize(new Dimension(boardWidth, boardHeight));
@@ -79,7 +78,7 @@ public class MenuBoard extends JPanel implements ActionListener {
         }
 
         initMenuTiles();
-        timer = new Timer(16, e -> repaint(0, 0, DataClass.getInstance().getWindowWidth(), DataClass.getInstance().getWindowHeight()));
+        timer = new Timer(GameStateInfo.getInstance().getDELAY(), e -> repaint(0, 0, DataClass.getInstance().getWindowWidth(), DataClass.getInstance().getWindowHeight()));
         timer.start();
     }
 
@@ -89,9 +88,9 @@ public class MenuBoard extends JPanel implements ActionListener {
         controlExplanations = MenuBoardCreator.createControlsExplanations();
         startGameBackgroundCard = MenuBoardCreator.startGameBackgroundCard();
 
-        startGameButton = MenuBoardCreator.createStartGameButton(startGameBackgroundCard);
-        menuCursor = MenuBoardCreator.createMenuCursor(startGameButton.getComponents().get(0));
-        openShopButton = MenuBoardCreator.openShopButton(startGameButton);
+        selectClassBoard = MenuBoardCreator.createStartGameButton(startGameBackgroundCard);
+        menuCursor = MenuBoardCreator.createMenuCursor(selectClassBoard.getComponents().get(0));
+        openShopButton = MenuBoardCreator.openShopButton(selectClassBoard);
         foundController = MenuBoardCreator.foundControllerText(foundControllerBool, titleImage);
 
         selectMusicOptionBackgroundCard = MenuBoardCreator.selectMusicPlayerBackgroundCard(startGameBackgroundCard);
@@ -109,14 +108,16 @@ public class MenuBoard extends JPanel implements ActionListener {
             secondColumn.clear();
             thirdColumn.clear();
             offTheGridObjects.clear();
+            lastMoveTime = System.currentTimeMillis(); //To prevent the user from immediatly pressing another button after going to this screen
 
 
+            menuCursor = MenuBoardCreator.createMenuCursor(selectClassBoard.getComponents().get(0));
+            selectedColumn = 0;
+            selectedRow = 0;
             addTilesToColumns();
 
             for (GUITextCollection explanation : controlExplanations) {
-                for (GUIComponent component : explanation.getComponents()) {
-                    offTheGridObjects.add(component);
-                }
+                offTheGridObjects.addAll(explanation.getComponents());
             }
 
             offTheGridObjects.add(startGameBackgroundCard);
@@ -131,12 +132,13 @@ public class MenuBoard extends JPanel implements ActionListener {
 
 
             offTheGridObjects.addAll(foundController.getComponents());
-            this.menuCursor.setSelectedMenuTile(startGameButton.getComponents().get(0));
+            this.menuCursor.setSelectedMenuTile(selectClassBoard.getComponents().get(0));
 
             grid.add(firstColumn);
             grid.add(secondColumn);
             grid.add(thirdColumn);
-            recreateList();
+            recreateList(); // Fill the columns
+            updateCursor();
         }
     }
 
@@ -146,7 +148,6 @@ public class MenuBoard extends JPanel implements ActionListener {
         secondColumn.clear();
         thirdColumn.clear();
         addTilesToColumns();
-
     }
 
     private void addAllButFirstComponent (GUITextCollection textCollection) {
@@ -156,8 +157,8 @@ public class MenuBoard extends JPanel implements ActionListener {
     }
 
     private void addTilesToColumns () {
-        firstColumn.add(startGameButton.getComponents().get(0));
-        addAllButFirstComponent(startGameButton);
+        firstColumn.add(selectClassBoard.getComponents().get(0));
+        addAllButFirstComponent(selectClassBoard);
         firstColumn.add(openShopButton.getComponents().get(0));
         addAllButFirstComponent(openShopButton);
 
@@ -266,7 +267,7 @@ public class MenuBoard extends JPanel implements ActionListener {
         }
     }
 
-    private class TAdapter extends KeyAdapter {
+    private class KeyInputReader extends KeyAdapter {
 
         @Override
         public void keyReleased (KeyEvent e) {
@@ -494,11 +495,6 @@ public class MenuBoard extends JPanel implements ActionListener {
 
     /*------------------------------End of Drawing methods-------------------------------*/
 
-    @Override
-    public void actionPerformed (ActionEvent e) {
-        // TODO Auto-generated method stub
-
-    }
 
     public Timer getTimer () {
         return this.timer;

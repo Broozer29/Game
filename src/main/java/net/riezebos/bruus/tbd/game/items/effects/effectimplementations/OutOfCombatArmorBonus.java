@@ -10,25 +10,25 @@ import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteAnimation;
 public class OutOfCombatArmorBonus implements EffectInterface {
 
     private EffectActivationTypes effectActivationTypes;
-    float armorBonus;
-    private double lastTimeDamageTaken;
+    private float armorBonus;
     private boolean bonusApplied;
     private EffectIdentifiers effectIdentifier;
+    private float cooldown;
 
     private SpriteAnimation animation;
 
-    public OutOfCombatArmorBonus(float armorBonus, EffectIdentifiers effectIdentifier){
+    public OutOfCombatArmorBonus(float armorBonus, EffectIdentifiers effectIdentifier, float cooldown){
         this.armorBonus = armorBonus;
-        this.lastTimeDamageTaken = GameStateInfo.getInstance().getGameSeconds();
         this.effectActivationTypes = EffectActivationTypes.CheckEveryGameTick;
         this.bonusApplied = false;
         this.effectIdentifier = effectIdentifier;
+        this.cooldown = cooldown;
     }
 
     @Override
     public void activateEffect(GameObject gameObject) {
         double currentTime = GameStateInfo.getInstance().getGameSeconds();
-        if (currentTime - gameObject.getLastGameSecondDamageTaken() >= 3) {
+        if (currentTime - gameObject.getLastGameSecondDamageTaken() >= cooldown) {
             // Apply the armor bonus only once when out of combat
             if (!bonusApplied) {
                 gameObject.adjustArmorBonus(armorBonus); // Increase armor by armorBonus amount
@@ -44,7 +44,7 @@ public class OutOfCombatArmorBonus implements EffectInterface {
     }
 
     @Override
-    public boolean shouldBeRemoved () {
+    public boolean shouldBeRemoved (GameObject gameObject) {
         return false;
     }
 
@@ -64,7 +64,7 @@ public class OutOfCombatArmorBonus implements EffectInterface {
     }
 
     @Override
-    public void increaseEffectStrength () {
+    public void increaseEffectStrength (GameObject gameObject) {
         //Not needed
     }
 
@@ -74,20 +74,17 @@ public class OutOfCombatArmorBonus implements EffectInterface {
         return null;
     }
 
-    public EffectActivationTypes getEffectActivationTypes () {
-        return effectActivationTypes;
-    }
-
-    public float getArmorBonus () {
-        return armorBonus;
-    }
-
-    public double getLastTimeDamageTaken () {
-        return lastTimeDamageTaken;
-    }
-
     @Override
     public EffectIdentifiers getEffectIdentifier () {
         return effectIdentifier;
+    }
+
+    @Override
+    public void removeEffect (GameObject gameObject){
+        if(animation != null){
+            animation.setInfiniteLoop(false);
+            animation.setVisible(false);
+        }
+        animation = null;
     }
 }

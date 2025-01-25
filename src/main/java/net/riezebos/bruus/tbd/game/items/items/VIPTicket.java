@@ -4,21 +4,19 @@ import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
 import net.riezebos.bruus.tbd.game.items.Item;
 import net.riezebos.bruus.tbd.game.items.enums.ItemApplicationEnum;
-import net.riezebos.bruus.tbd.game.items.enums.ItemEnums;
-import net.riezebos.bruus.tbd.game.gamestate.ShopManager;
-import net.riezebos.bruus.tbd.guiboards.BoardManager;
+import net.riezebos.bruus.tbd.game.items.ItemEnums;
 
 public class VIPTicket extends Item {
 
     private int discount;
 
     public VIPTicket () {
-        super(ItemEnums.VIPTicket, 1, ItemApplicationEnum.UponPurchase);
+        super(ItemEnums.VIPTicket, 1, ItemApplicationEnum.UponAcquiring);
         calculateDiscount();
     }
 
     private void calculateDiscount () {
-        this.discount = 25 * this.quantity;
+        this.discount = 20 * this.quantity;
     }
 
     public void increaseQuantityOfItem (int amount) {
@@ -28,8 +26,17 @@ public class VIPTicket extends Item {
 
     @Override
     public void applyEffectToObject (GameObject gameObject) {
-        PlayerStats.getInstance().setShopRerollDiscount(discount);
-        ShopManager.getInstance().calculateRerollCost();
-        BoardManager.getInstance().getShopBoard().remakeShopRerollText();
+        PlayerStats.getInstance().setAmountOfFreeRerolls(this.quantity);
+//        PlayerStats.getInstance().setShopRerollDiscount(discount);
+//        ShopManager.getInstance().calculateRerollCost();
+//        BoardManager.getInstance().getShopBoard().remakeShopRerollText();
+    }
+
+    @Override
+    public boolean isAvailable(){
+        if(!this.itemEnum.isEnabled()){
+            return false;
+        }
+        return true;
     }
 }

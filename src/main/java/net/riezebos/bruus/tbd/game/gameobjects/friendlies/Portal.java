@@ -20,7 +20,7 @@ public class Portal extends GameObject {
 		this.spawned = spawned;
 	}
 	
-	public boolean getSpawned() {
+	public boolean isSpawned () {
 		return this.spawned;
 	}
 

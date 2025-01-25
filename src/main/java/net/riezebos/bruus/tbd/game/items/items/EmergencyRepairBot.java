@@ -3,7 +3,7 @@ package net.riezebos.bruus.tbd.game.items.items;
 import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
 import net.riezebos.bruus.tbd.game.items.Item;
 import net.riezebos.bruus.tbd.game.items.enums.ItemApplicationEnum;
-import net.riezebos.bruus.tbd.game.items.enums.ItemEnums;
+import net.riezebos.bruus.tbd.game.items.ItemEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.AudioManager;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.AudioEnums;
 
@@ -28,7 +28,7 @@ public class EmergencyRepairBot extends Item {
             gameObject.takeDamage(-healingAmount); // Apply healing
             // Reduce the quantity of the item by 1
             this.decreaseQuantityOfItem(1);
-            AudioManager.getInstance().addAudio(AudioEnums.Power_Up_Acquired);
+            AudioManager.getInstance().addAudio(AudioEnums.ItemAcquired);
         }
     }
 
@@ -39,5 +39,11 @@ public class EmergencyRepairBot extends Item {
     public void decreaseQuantityOfItem (int amount) {
         this.quantity = Math.max(0, this.quantity - amount);
     }
-
+    @Override
+    public boolean isAvailable(){
+        if(!this.itemEnum.isEnabled()){
+            return false;
+        }
+        return true;
+    }
 }

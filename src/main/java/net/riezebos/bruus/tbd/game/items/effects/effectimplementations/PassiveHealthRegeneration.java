@@ -1,5 +1,6 @@
 package net.riezebos.bruus.tbd.game.items.effects.effectimplementations;
 
+import com.badlogic.gdx.Game;
 import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
 import net.riezebos.bruus.tbd.game.gamestate.GameStateInfo;
 import net.riezebos.bruus.tbd.game.items.effects.EffectActivationTypes;
@@ -61,7 +62,7 @@ public class PassiveHealthRegeneration implements EffectInterface {
     }
 
     @Override
-    public boolean shouldBeRemoved () {
+    public boolean shouldBeRemoved (GameObject gameObject) {
         return false;
     }
 
@@ -82,7 +83,7 @@ public class PassiveHealthRegeneration implements EffectInterface {
     }
 
     @Override
-    public void increaseEffectStrength () {
+    public void increaseEffectStrength (GameObject gameObject) {
         //Not needed, the "healingAmount" already factors this in
     }
 
@@ -97,6 +98,15 @@ public class PassiveHealthRegeneration implements EffectInterface {
     @Override
     public EffectIdentifiers getEffectIdentifier () {
         return effectIdentifier;
+    }
+
+    @Override
+    public void removeEffect (GameObject gameObject){
+        if(animation != null){
+            animation.setInfiniteLoop(false);
+            animation.setVisible(false);
+        }
+        animation = null;
     }
 
 }

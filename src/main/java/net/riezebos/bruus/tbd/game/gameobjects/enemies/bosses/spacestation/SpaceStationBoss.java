@@ -29,7 +29,7 @@ public class SpaceStationBoss extends Enemy {
         this.destructionAnimation.setAnimationScale(3);
 
         this.knockbackStrength = 10;
-        this.damage = 12;
+        this.damage = 14;
 
 
         SpaceStationLaserbeamAttack spaceStationLaserbeamAttack = new SpaceStationLaserbeamAttack();

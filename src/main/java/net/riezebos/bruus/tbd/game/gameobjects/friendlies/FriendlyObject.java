@@ -7,51 +7,21 @@ import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.Sprit
 
 public class FriendlyObject extends GameObject {
     protected FriendlyObjectEnums friendlyObjectType;
-    protected boolean permanentFriendlyObject;
 
-
-    public FriendlyObject (SpriteConfiguration spriteConfiguration, FriendlyObjectConfiguration friendlyConfiguration, MovementConfiguration movementConfiguration) {
-        super(spriteConfiguration);
-        this.friendlyObjectType = friendlyConfiguration.getFriendlyType();
-        this.attackSpeed = friendlyConfiguration.getAttackSpeedCooldown();
-        this.setFriendly(true);
-        this.boxCollision = friendlyConfiguration.isBoxCollision();
-        this.permanentFriendlyObject = friendlyConfiguration.isPermanentObject();
-        if (movementConfiguration != null) {
-            initMovementConfiguration(movementConfiguration);
-        }
-    }
-
+    //This class is obsolete at this point but may be required later on
     public FriendlyObject (SpriteAnimationConfiguration spriteAnimationConfiguration, FriendlyObjectConfiguration friendlyConfiguration, MovementConfiguration movementConfiguration) {
         super(spriteAnimationConfiguration);
         this.friendlyObjectType = friendlyConfiguration.getFriendlyType();
         this.attackSpeed = friendlyConfiguration.getAttackSpeedCooldown();
         this.setFriendly(true);
         this.boxCollision = friendlyConfiguration.isBoxCollision();
-        this.permanentFriendlyObject = friendlyConfiguration.isPermanentObject();
         if (movementConfiguration != null) {
             initMovementConfiguration(movementConfiguration);
         }
     }
 
 
-    public void activateObjectAction () {
+    public void activateObject () {
         //Exists to be overriden
-    }
-
-    public FriendlyObjectEnums getFriendlyObjectType () {
-        return friendlyObjectType;
-    }
-
-    public void setFriendlyObjectType (FriendlyObjectEnums friendlyObjectType) {
-        this.friendlyObjectType = friendlyObjectType;
-    }
-
-    public boolean isPermanentFriendlyObject () {
-        return permanentFriendlyObject;
-    }
-
-    public void setPermanentFriendlyObject (boolean permanentFriendlyObject) {
-        this.permanentFriendlyObject = permanentFriendlyObject;
     }
 }

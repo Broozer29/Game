@@ -2,7 +2,9 @@ package net.riezebos.bruus.tbd.game.level.directors;
 
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyCategory;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyEnums;
+import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyTribes;
 import net.riezebos.bruus.tbd.game.gamestate.GameStateInfo;
+import net.riezebos.bruus.tbd.game.level.LevelManager;
 import net.riezebos.bruus.tbd.game.level.enums.LevelTypes;
 
 import java.util.ArrayList;
@@ -57,7 +59,7 @@ public class DirectorManager {
         directorList.add(fastDirector);
 
         Director instantDirector = new Director(DirectorType.Instant, baseMonsterCards);
-        instantDirector.receiveCredits(Math.min(75 * GameStateInfo.getInstance().getDifficultyCoefficient(), 650));
+        instantDirector.receiveCredits(Math.min(150 * GameStateInfo.getInstance().getDifficultyCoefficient(), 650));
         directorList.add(instantDirector);
         lastCashCarrierSpawnTime = 0;
     }
@@ -75,25 +77,22 @@ public class DirectorManager {
             baseMonsterCards = new ArrayList<>();
         }
 
+        EnemyTribes enemyTribes = LevelManager.getInstance().getCurrentEnemyTribe();
+
         List<EnemyEnums> availableMonsters = Arrays.stream(EnemyEnums.values())
                 .filter(enemyEnums -> GameStateInfo.getInstance().getStagesCompleted() >= enemyEnums.getMinimumStageLevelRequired())
                 .filter(enemyEnums -> enemyEnums.getEnemyCategory() != EnemyCategory.Special
                         && enemyEnums.getEnemyCategory() != EnemyCategory.Summon
-                        && enemyEnums.getEnemyCategory() != EnemyCategory.Boss)
+                        && enemyEnums.getEnemyCategory() != EnemyCategory.Boss
+                        && enemyEnums.getEnemyTribe().equals(enemyTribes))
                 .toList();
 
         for (EnemyEnums enemy : availableMonsters) {
-            float creditCost = determineCreditCostBasedOnEnemy(enemy);
-            MonsterCard card = new MonsterCard(enemy, creditCost, enemy.getWeight());
+            MonsterCard card = new MonsterCard(enemy, enemy.getCreditCost(), enemy.getWeight());
             baseMonsterCards.add(card);
         }
     }
 
-    private float determineCreditCostBasedOnEnemy (EnemyEnums enemy) {
-        // Implement logic to determine the credit cost of each enemy
-        //Needs to be multiplied by the stats of the enemy to some degree as the stats grow
-        return enemy.getCreditCost();
-    }
 
     public void updateGameTick () {
         if (enabled) {
@@ -109,7 +108,7 @@ public class DirectorManager {
 
     public void distributeCredits () {
         GameStateInfo gameStateInfo = GameStateInfo.getInstance();
-        float creditAmount = (float) ((1 + 0.05 * gameStateInfo.getDifficultyCoefficient()) * 0.5); // Determine the amount of credits to distribute
+        float creditAmount = (float) ((1 + 0.05 * gameStateInfo.getDifficultyCoefficient()) * 0.5) + (LevelManager.getInstance().getCurrentLevelDifficultyScore() * 0.1f); // Determine the amount of credits to distribute
 
         if (testingRichMode) {
             creditAmount = creditAmount * this.testingCreditsBonus;

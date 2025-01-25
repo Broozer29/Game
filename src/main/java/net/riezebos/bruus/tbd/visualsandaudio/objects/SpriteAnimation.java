@@ -47,9 +47,8 @@ public class SpriteAnimation extends Sprite implements Cloneable{
 	private void loadGifFrames(ImageEnums imageType) {
 		this.imageEnum = imageType;
 		this.frames = ImageDatabase.getInstance().getAnimation(imageType);
-
-
 		this.originalFrames = frames;
+		totalFrames = frames.size();
 		recalculateBoundsAndSize();
 	}
 
@@ -58,6 +57,7 @@ public class SpriteAnimation extends Sprite implements Cloneable{
 		this.frames = ImageDatabase.getInstance().getAnimation(imageType);
 		this.increasedSizeFrames = frames;
 		this.originalFrames = frames;
+		totalFrames = frames.size();
 		recalculateBoundsAndSize();
 	}
 
@@ -144,13 +144,16 @@ public class SpriteAnimation extends Sprite implements Cloneable{
 					frameDelayCounter++;
 				animationBounds.setBounds(xCoordinate + xOffset, yCoordinate + yOffset, width, height);
 				this.bounds = animationBounds;
-				if (this.increaseTransparancy && this.transparancyAlpha + this.transparancyStepSize < 1.0f &&
+
+
+				if (this.shouldChangeTransparancy &&
+						this.transparancyAlpha + this.transparancyStepSize < 1.0f &&
 							this.transparancyAlpha + this.transparancyStepSize > 0.0f) {
 						this.transparancyAlpha += this.transparancyStepSize;
 					}
 
-
-				if(this.transparancyAlpha < 0.05f && this.transparancyStepSize < 0.0f) {
+				if(this.transparancyAlpha <= 0.05f && this.transparancyStepSize < 0.0f) {
+					super.visible = false;
 					this.setVisible(false);
 					this.removeAnimation();
 				}
@@ -326,4 +329,12 @@ public class SpriteAnimation extends Sprite implements Cloneable{
     public int getFrameDelay () {
 		return frameDelay;
     }
+
+	public void setInfiniteLoop (boolean infiniteLoop) {
+		this.infiniteLoop = infiniteLoop;
+	}
+
+	public boolean isInfiniteLoop () {
+		return infiniteLoop;
+	}
 }

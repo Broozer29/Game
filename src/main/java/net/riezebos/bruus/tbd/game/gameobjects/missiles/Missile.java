@@ -6,7 +6,7 @@ import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
 import net.riezebos.bruus.tbd.game.gamestate.GameStatsTracker;
 import net.riezebos.bruus.tbd.game.items.Item;
 import net.riezebos.bruus.tbd.game.items.PlayerInventory;
-import net.riezebos.bruus.tbd.game.items.enums.ItemEnums;
+import net.riezebos.bruus.tbd.game.items.ItemEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.AnimationManager;
 import net.riezebos.bruus.tbd.game.movement.MovementConfiguration;
 import net.riezebos.bruus.tbd.game.movement.Point;
@@ -167,8 +167,8 @@ public class Missile extends GameObject {
     }
 
     private void pierceAndBounce (GameObject collidedObject) {
-        //We only want to fire this once per enemy, thus the collidedobjects check
-        if (piercesThroughObjects && amountOfPiercesLeft > 0 && !hasCollidedBeforeWith(collidedObject)) {
+        //Removed the "hasColliddedWithObjects" check since we already do this chcek in MissileManager
+        if (piercesThroughObjects && amountOfPiercesLeft > 0) {
             dealDamageToGameObject(collidedObject);
             addCollidedObject(collidedObject);
             amountOfPiercesLeft--;
@@ -177,7 +177,7 @@ public class Missile extends GameObject {
             //Rework in a nicer way, just testing
             Item bouncingModuleAddon = PlayerInventory.getInstance().getItemByName(ItemEnums.BouncingModuleAddon);
             if (bouncingModuleAddon != null) {
-                GameObject newTarget = EnemyManager.getInstance().getEnemyClosestToGameObject(collidedObject, this.collidedObjects);
+                GameObject newTarget = EnemyManager.getInstance().findEnemyForMissileToBounceTo(collidedObject, this.collidedObjects);
                 if (newTarget != null) {
                     bouncingModuleAddon.applyEffectToObject(this);
                     bounceToNewTarget(newTarget);

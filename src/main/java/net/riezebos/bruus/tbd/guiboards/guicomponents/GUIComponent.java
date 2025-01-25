@@ -1,5 +1,6 @@
 package net.riezebos.bruus.tbd.guiboards.guicomponents;
 
+import net.riezebos.bruus.tbd.guiboards.GUIComponentItemInformation;
 import net.riezebos.bruus.tbd.guiboards.boardEnums.MenuFunctionEnums;
 import net.riezebos.bruus.tbd.guiboards.boardEnums.MenuObjectEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
@@ -14,6 +15,7 @@ public class GUIComponent extends Sprite implements Actionable{
     protected MenuFunctionEnums menuFunctionality;
     private MenuObjectEnums menuObjectType;
     protected String descriptionOfComponent; //The description that gets shown in the description box
+    protected GUIComponentItemInformation shopItemInformation;
 
 
     public GUIComponent (SpriteConfiguration spriteConfiguration) {
@@ -44,7 +46,7 @@ public class GUIComponent extends Sprite implements Actionable{
     public void setNewImage(ImageEnums newImage){
         this.imageEnum = newImage;
         this.spriteConfiguration.setImageType(newImage);
-        super.loadImage(imageEnum);
+        super.setImage(imageEnum);
     }
 
     public MenuFunctionEnums getMenuFunctionality () {
@@ -63,4 +65,11 @@ public class GUIComponent extends Sprite implements Actionable{
         this.menuObjectType = menuObjectType;
     }
 
+    public GUIComponentItemInformation getShopItemInformation () {
+        return shopItemInformation;
+    }
+
+    public void setShopItemInformation (GUIComponentItemInformation shopItemInformation) {
+        this.shopItemInformation = shopItemInformation;
+    }
 }

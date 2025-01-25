@@ -62,7 +62,7 @@ public class MissileCreator {
             case TazerProjectile -> {
                 return new TazerProjectile(upgradeConfig(spriteConfiguration, 2), missileConfiguration, movementConfiguration);
             }
-            case PlasmaLauncherMissile, Orbitter, PlayerLaserbeam -> {
+            case DefaultAnimatedBullet, Orbitter, PlayerLaserbeam -> {
                 return new GenericMissile(upgradeConfig(spriteConfiguration, 2), missileConfiguration, movementConfiguration);
             }
             case DefaultRocket -> {

@@ -250,7 +250,7 @@ public class CustomAudioClip {
         } else if (mediaPlayer != null) {
             double volume = switch (clipType) {
                 case Player_Laserbeam -> 0.65;
-                case ElectroShredFinishedCharging -> 2.2f;
+                case SpecialAttackFinishedCharging -> 2.2f;
                 case Large_Ship_Destroyed -> 0.8;
                 case Alien_Spaceship_Destroyed -> 0.8;
                 case Alien_Bomb_Impact -> 0.5;

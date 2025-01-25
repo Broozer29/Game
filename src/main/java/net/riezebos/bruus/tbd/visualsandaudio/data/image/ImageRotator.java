@@ -82,7 +82,7 @@ public class ImageRotator {
     }
 
 
-    public BufferedImage rotate (BufferedImage image, double angle, boolean crop) {
+    private BufferedImage rotate (BufferedImage image, double angle, boolean crop) {
         String cacheKey = image.hashCode() + "_" + angle;
         if (rotatedImageCache.containsKey(cacheKey)) {
             return rotatedImageCache.get(cacheKey);

@@ -1,9 +1,8 @@
 package net.riezebos.bruus.tbd.game.gameobjects.player;
 
 import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
-import net.riezebos.bruus.tbd.game.gameobjects.missiles.MissileEnums;
+import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.droneTypes.DroneTypes;
 import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SpaceShip;
-import net.riezebos.bruus.tbd.game.movement.PathFinderEnums;
 import net.riezebos.bruus.tbd.game.util.ExperienceCalculator;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.AudioManager;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.AudioEnums;
@@ -26,16 +25,25 @@ public class PlayerStats {
         initDefaultSettings();
     }
 
+    public static float fireFighterBaseDamage = 8f;
+    public static float fireFighterAttackSpeed = 0.32f;
+    private float fireFighterIgniteDamageMultiplier = 0.05f;
+    public static float captainBaseDamage = 20f;
+    public static float captainAttackSpeed = 0.28f;
+    public static float droneBaseDamage = 20f;
+
     // Preset type
-    private MissileEnums attackType;
+    private PlayerClass playerClass;
+    private PlayerPrimaryAttackTypes attackType;
     private PlayerSpecialAttackTypes specialAttackType;
+    private DroneTypes droneType;
     private float baseDamage;
     private float bonusDamageMultiplier;
 
     private float specialBaseDamage;
     private float specialBonusDamageMultiplier;
     private float attackSpeed;
-    private float specialAttackSpeed;
+    private float specialAttackRechargeCooldown;
     private float attackSpeedBonus;
 
     // Player Health
@@ -48,15 +56,12 @@ public class PlayerStats {
     private float movementSpeedModifier;
 
     // Visual aspects of player
-    private ImageEnums currentExhaust;
     private ImageEnums spaceShipImage;
-    private ImageEnums exhaustImage;
 
 
     // Player missile type & visuals
     private ImageEnums playerMissileImage;
     private ImageEnums playerMissileImpactImage;
-    private float missileImpactScale;
     private float missileScale;
     private int maxSpecialAttackCharges;
     private float criticalStrikeDamageMultiplier = 2.0f;
@@ -72,43 +77,73 @@ public class PlayerStats {
     private float currentXP;
     private float xpToNextLevel;
     private int amountOfDrones = 0;
-    private int maximumAmountOfDrones = 10;
+    private int maximumAmountOfDrones = 8;
+    private int droneOrbitRadius = 85;
 
     //Willekeurig:
     private int shopRerollDiscount = 0;
-    private PathFinderEnums dronePathFinder = PathFinderEnums.Regular;
     private float droneDamageBonusRatio = 0;
     private float droneDamageRatio = 1;
     private boolean hasImprovedElectroShred = false;
-    private boolean attacksApplyThorns = false;
     private float chanceForThornsToApplyOnHitEffects = 0;
     private float thornsArmorDamageBonusRatio = 0;
     private float knockBackDamping;
+    private int amountOfFreeRerolls = 0;
+    private float collisionDamageReduction = 0;
+    private float shieldRegenPerTick = 0.2f;
+
+    private float fireFighterIgniteDuration = 1.5f;
+    private float fireFighterIgniteDurationMultiplier = 1;
+
+    private float fireFighterItemIgniteDamageMultiplier = 1f;
+
+    private int fireFighterIgniteMaxStacks = 1;
+
+    public void setPlayerClass (PlayerClass playerClass) {
+        this.playerClass = playerClass;
+        if (playerClass.equals(PlayerClass.Captain)) {
+            attackType = PlayerPrimaryAttackTypes.Laserbeam;
+            specialAttackType = PlayerSpecialAttackTypes.EMP;
+            spaceShipImage = ImageEnums.Player_Spaceship_Model_3;
+        } else if (playerClass.equals(PlayerClass.FireFighter)) {
+            //to-do
+            attackType = PlayerPrimaryAttackTypes.Flamethrower;
+            specialAttackType = PlayerSpecialAttackTypes.FlameShield;
+            spaceShipImage = ImageEnums.FireFighter;
+        }
+
+
+        loadNormalGunPreset();
+        loadSpecialGunPreset();
+    }
 
     public void initDefaultSettings () {
+        if (playerClass == null) { //the class is remembered between runs because of this check, meaning it should only fire on startup
+            setPlayerClass(PlayerClass.Captain);
+        }
+        amountOfFreeRerolls = 0;
         piercingMissilesAmount = 0;
         bonusDamageMultiplier = 1f; //Otherwhise it's damage * 0 = 0
 
-        attackType = MissileEnums.PlayerLaserbeam;
-        specialAttackType = PlayerSpecialAttackTypes.EMP;
-        attacksApplyThorns = false;
         chanceForThornsToApplyOnHitEffects = 0;
         hasImprovedElectroShred = false;
-
         thornsDamageRatio = 0;
         thornsArmorDamageBonusRatio = 0;
-        droneDamageRatio = 1;
-        shopRerollDiscount = 0;
-        dronePathFinder = PathFinderEnums.Regular;
-        amountOfDrones = 0;
-
+        shopRerollDiscount = 99;
+        collisionDamageReduction = 0;
+        shieldRegenPerTick = 0.2f;
+        droneType = DroneTypes.Missile;
+        droneBaseDamage = 20f;
 
         setKnockBackDamping(0.85f);
         setThornsDamageRatio(0);
+
+        amountOfDrones = 0;
+        maximumAmountOfDrones = 8;
+        droneOrbitRadius = 85;
         setDroneDamageRatio(1);
         setDroneDamageBonusRatio(0);
         setShopRerollDiscount(0);
-        dronePathFinder = PathFinderEnums.Regular;
 
         // Health
         setMaxHitPoints(50);
@@ -121,8 +156,10 @@ public class PlayerStats {
         setMovementSpeed(4);
         movementSpeedModifier = 1.0f;
 
+        //normal attack
+        this.attackSpeedBonus = 0;
+
         // Special attack
-        setSpecialAttackSpeed(3f);
         setSpecialBonusDamageMultiplier(1); //Otherwhise it's damage * 0 = 0
         setMaxSpecialAttackCharges(1);
 
@@ -137,49 +174,66 @@ public class PlayerStats {
         setXpToNextLevel(125);
 
         // Visuals
-        setSpaceShipImage(ImageEnums.Player_Spaceship_Model_3);
-        setExhaustImage(ImageEnums.Default_Player_Engine);
-
         loadNormalGunPreset();
         loadSpecialGunPreset();
     }
 
     private void loadSpecialGunPreset () {
-        setPlayerSpecialAttackType(PlayerSpecialAttackTypes.EMP);
-        setSpecialBaseDamage(baseDamage * 0.1f);
-        setHasImprovedElectroShred(false);
-    }
-
-    private void loadNormalGunPreset () {
-        switch (attackType) {
-            case PlayerLaserbeam:
-                initLaserbeamPreset();
+        switch (specialAttackType) {
+            case EMP:
+                loadEMPPreset();
                 break;
-            case DefaultRocket:
-                initRocketPreset();
-                break;
-            default:
+            case FlameShield:
+                loadFlameShieldPreset();
                 break;
         }
     }
 
-    private void initRocketPreset () {
-        setAttackSpeed(0.5f);
-        setBaseDamage(40);
-        setPlayerMissileImage(ImageEnums.Rocket_1);
-        setPlayerMissileImpactImage(ImageEnums.Rocket_1_Explosion);
+    private void loadFlameShieldPreset(){
+        setPlayerSpecialAttackType(PlayerSpecialAttackTypes.FlameShield);
+        setSpecialBaseDamage(baseDamage);
+        setSpecialAttackRechargeCooldown(10f);
+        fireFighterItemIgniteDamageMultiplier = 1f;
+        fireFighterItemIgniteDamageMultiplier = 1f;
+
+    }
+
+    private void loadEMPPreset () {
+        setPlayerSpecialAttackType(PlayerSpecialAttackTypes.EMP);
+        setSpecialBaseDamage(baseDamage * 0.5f);
+        setHasImprovedElectroShred(false);
+        setSpecialAttackRechargeCooldown(3f);
+    }
+
+    private void loadNormalGunPreset () {
+        switch (attackType) {
+            case Laserbeam:
+                initLaserbeamPreset();
+                break;
+            case Flamethrower:
+                initFireFighterPreset();
+                break;
+        }
+    }
+
+    private void initFireFighterPreset () {
+        setAttackSpeed(fireFighterAttackSpeed);
+        setBaseDamage(fireFighterBaseDamage);
+        this.attackType = PlayerPrimaryAttackTypes.Flamethrower;
+        setPlayerMissileImage(ImageEnums.FireFighterFlameThrowerLooping);
+        setPlayerMissileImpactImage(null);
         setMissileScale(1);
-        setMissileImpactScale(1);
+        fireFighterIgniteDuration = 1.5f;
+        fireFighterIgniteMaxStacks = 1;
     }
 
 
     private void initLaserbeamPreset () {
-        setAttackSpeed(0.28f);
-        setBaseDamage(20);
-        setPlayerMissileImage(this.attackType.getImageType());
+        setAttackSpeed(captainAttackSpeed);
+        setBaseDamage(captainBaseDamage);
+        this.attackType = PlayerPrimaryAttackTypes.Laserbeam;
+        setPlayerMissileImage(this.attackType.getCorrespondingMissileEnum().getImageType());
         setPlayerMissileImpactImage(ImageEnums.Impact_Explosion_One);
-        setMissileScale(1);
-        setMissileImpactScale(1);
     }
 
     public void addXP (float xp) {
@@ -201,6 +255,7 @@ public class PlayerStats {
         baseDamage = ExperienceCalculator.getNextLevelBaseDamage(baseDamage);
         maxHitPoints = ExperienceCalculator.getNextLevelHitPoints(maxHitPoints);
         maxShieldHitPoints = ExperienceCalculator.getNextLevelShieldPoints(maxShieldHitPoints);
+        droneBaseDamage = ExperienceCalculator.getNextLevelBaseDamage(droneBaseDamage);
 
 
         SpaceShip player = PlayerManager.getInstance().getSpaceship();
@@ -208,12 +263,12 @@ public class PlayerStats {
         player.setMaxShieldPoints(maxShieldHitPoints);
         player.setCurrentHitpoints(maxHitPoints);
 
-        if(player.getCurrentShieldPoints() < player.getMaxShieldPoints()) { //We don't want to overwrite any overloaded shields present
+        if (player.getCurrentShieldPoints() < player.getMaxShieldPoints()) { //We don't want to overwrite any overloaded shields present
             player.setCurrentShieldPoints(maxShieldHitPoints);
         }
 
         AnimationManager.getInstance().playLevelUpAnimation(player);
-        AudioManager.getInstance().addAudio(AudioEnums.Power_Up_Acquired);
+        AudioManager.getInstance().addAudio(AudioEnums.ItemAcquired);
     }
 
     public float getNormalAttackDamage () {
@@ -226,24 +281,36 @@ public class PlayerStats {
     }
 
 
-    public void setPlayerDamage (float playerDamage) {
-        this.baseDamage = playerDamage;
-    }
-
     public float getAttackSpeed () {
-        float baseAttackSpeed = this.attackSpeed;
+        float baseAttackSpeed = this.attackSpeed; // The default cooldown in milliseconds
         float attackSpeedIncrease = this.attackSpeedBonus;
 
-        // Calculate the new attack speed
-        float newAttackSpeed = baseAttackSpeed / (1 + attackSpeedIncrease / 100);
+        // Calculate the new attack cooldown in a linear manner
+        float newAttackSpeed = baseAttackSpeed * (1 - attackSpeedIncrease / 100);
 
-        // Ensure the attack speed does not fall below 1
-        if (newAttackSpeed < 0.05) {
-            return 0.05f;
-        } else {
-            return newAttackSpeed;
+        // Minimum threshold to prevent the attack speed from becoming too fast
+        if (newAttackSpeed < 0.03f) {
+            newAttackSpeed = 0.03f;
         }
+
+        // Maximum threshold to prevent attack speed from being too slow
+        if (newAttackSpeed > baseAttackSpeed * 3.0f) {
+            newAttackSpeed = baseAttackSpeed * 3.0f;
+        }
+
+        return newAttackSpeed;
     }
+
+    public float getIgniteTickRate(){
+        float newAttackSpeed = this.getAttackSpeed() / 2;
+
+        if (newAttackSpeed < 0.03f) {
+            newAttackSpeed = 0.03f;
+        }
+
+        return newAttackSpeed;
+    }
+
 
     public void setBaseDamage (float baseDamage) {
         this.baseDamage = baseDamage;
@@ -262,7 +329,7 @@ public class PlayerStats {
     }
 
     public float getSpecialAttackCooldown () {
-        float currentSpecialAttackSpeed = this.specialAttackSpeed;
+        float currentSpecialAttackSpeed = this.specialAttackRechargeCooldown;
         if (currentSpecialAttackSpeed < 0.05) {
             return 0.05f;
         } else {
@@ -270,8 +337,8 @@ public class PlayerStats {
         }
     }
 
-    public void setSpecialAttackSpeed (float specialAttackSpeed) {
-        this.specialAttackSpeed = specialAttackSpeed;
+    public void setSpecialAttackRechargeCooldown (float specialAttackRechargeCooldown) {
+        this.specialAttackRechargeCooldown = specialAttackRechargeCooldown;
     }
 
     public float getMaxHitPoints () {
@@ -301,14 +368,6 @@ public class PlayerStats {
         this.movementSpeedModifier += modifier;
     }
 
-    public ImageEnums getCurrentExhaust () {
-        return currentExhaust;
-    }
-
-    public void setCurrentExhaust (ImageEnums currentExhaust) {
-        this.currentExhaust = currentExhaust;
-    }
-
 
     public ImageEnums getSpaceShipImage () {
         return spaceShipImage;
@@ -316,14 +375,6 @@ public class PlayerStats {
 
     public void setSpaceShipImage (ImageEnums spaceShipImage) {
         this.spaceShipImage = spaceShipImage;
-    }
-
-    public ImageEnums getExhaustImage () {
-        return exhaustImage;
-    }
-
-    public void setExhaustImage (ImageEnums exhaustImage) {
-        this.exhaustImage = exhaustImage;
     }
 
 
@@ -343,13 +394,6 @@ public class PlayerStats {
         this.playerMissileImpactImage = playerMissileImpactImage;
     }
 
-    public float getMissileImpactScale () {
-        return missileImpactScale;
-    }
-
-    public void setMissileImpactScale (float missileImpactScale) {
-        this.missileImpactScale = missileImpactScale;
-    }
 
     public PlayerSpecialAttackTypes getPlayerSpecialAttackType () {
         return specialAttackType;
@@ -386,12 +430,8 @@ public class PlayerStats {
         this.bonusDamageMultiplier += bonusDamageMultiplier;
     }
 
-    public MissileEnums getAttackType () {
+    public PlayerPrimaryAttackTypes getAttackType () {
         return attackType;
-    }
-
-    public void setAttackType (MissileEnums attackType) {
-        this.attackType = attackType;
     }
 
     public PlayerSpecialAttackTypes getSpecialAttackType () {
@@ -424,10 +464,6 @@ public class PlayerStats {
 
     public float getAttackSpeedBonus () {
         return attackSpeedBonus;
-    }
-
-    public void setAttackSpeedBonus (float attackSpeedBonus) {
-        this.attackSpeedBonus = attackSpeedBonus;
     }
 
     public void modifyAttackSpeedBonus (float attackSpeedBonus) {
@@ -486,12 +522,6 @@ public class PlayerStats {
         this.amountOfDrones = amountOfDrones;
     }
 
-    public void addDrone (int amountOfDrones) {
-        if (this.amountOfDrones + amountOfDrones < this.maximumAmountOfDrones) {
-            this.amountOfDrones += amountOfDrones;
-        }
-    }
-
     public float getOverloadedShieldDiminishAmount () {
         return overloadedShieldDiminishAmount;
     }
@@ -534,18 +564,6 @@ public class PlayerStats {
 
     public void addDroneBonusDamage (float damageBonus) {
         this.droneDamageBonusRatio += damageBonus;
-    }
-
-    public void setDroneStraightLinePathFinder (PathFinderEnums pathFinderEnums) {
-        this.dronePathFinder = pathFinderEnums;
-    }
-
-    public PathFinderEnums getDronePathFinder () {
-        return dronePathFinder;
-    }
-
-    public void setDronePathFinder (PathFinderEnums dronePathFinder) {
-        this.dronePathFinder = dronePathFinder;
     }
 
     public float getDroneDamageBonusRatio () {
@@ -612,7 +630,7 @@ public class PlayerStats {
     public float getThornsDamage () {
         float thornsDamage = 0;
         if (thornsDamageRatio > 0) {
-            thornsDamage = baseDamage * thornsDamageRatio;
+            thornsDamage = baseDamage * (thornsDamageRatio);
         }
         if (thornsArmorDamageBonusRatio > 0) {
             GameObject spaceShip = PlayerManager.getInstance().getSpaceship();
@@ -620,14 +638,6 @@ public class PlayerStats {
         }
 
         return thornsDamage;
-    }
-
-    public boolean isAttacksApplyThorns () {
-        return attacksApplyThorns;
-    }
-
-    public void setAttacksApplyThorns (boolean attacksApplyThorns) {
-        this.attacksApplyThorns = attacksApplyThorns;
     }
 
     public float getChanceForThornsToApplyOnHitEffects () {
@@ -652,5 +662,89 @@ public class PlayerStats {
 
     public void setKnockBackDamping (float knockBackDamping) {
         this.knockBackDamping = knockBackDamping;
+    }
+
+    public int getDroneOrbitRadius () {
+        return droneOrbitRadius;
+    }
+
+    public void setDroneOrbitRadius (int droneOrbitRadius) {
+        this.droneOrbitRadius = droneOrbitRadius;
+    }
+
+    public void addDroneBonusOrbitRange (float orbitrangeBonus) {
+        this.droneOrbitRadius += orbitrangeBonus;
+    }
+
+    public PlayerClass getPlayerClass () {
+        return playerClass;
+    }
+
+    public int getAmountOfFreeRerolls () {
+        return amountOfFreeRerolls;
+    }
+
+    public void setAmountOfFreeRerolls (int amountOfFreeRerolls) {
+        this.amountOfFreeRerolls = amountOfFreeRerolls;
+    }
+
+    public float getCollisionDamageReduction () {
+        return collisionDamageReduction;
+    }
+
+    public void modifyCollisionDamageReduction (float amount) {
+        this.collisionDamageReduction += amount;
+    }
+
+    public float getShieldRegenPerTick () {
+        return shieldRegenPerTick;
+    }
+
+    public void modifyShieldRegenPerTick (float amount) {
+        this.shieldRegenPerTick += amount;
+    }
+
+    public float getFireFighterIgniteDuration () {
+        return fireFighterIgniteDuration * fireFighterIgniteDurationMultiplier;
+    }
+
+    public void modifyDefaultIgniteDuration(float amount){
+        this.fireFighterIgniteDuration += amount;
+    }
+
+    public void modifyIgniteDurationModifier(float amount){
+        this.fireFighterIgniteDurationMultiplier += amount;
+    }
+
+    public void modifyIgniteItemDamageMultiplier(float amount){
+        this.fireFighterItemIgniteDamageMultiplier += amount;
+    }
+
+    public float getFireFighterIgniteDamage(){
+        return baseDamage * (fireFighterIgniteDamageMultiplier * fireFighterItemIgniteDamageMultiplier);
+    }
+
+    public void modifyFireFighterIgniteDamageMultiplier(float amount){
+        fireFighterIgniteDamageMultiplier += amount;
+    }
+
+    public void setFireFighterIgniteMaxStacks (int fireFighterIgniteMaxStacks) {
+        this.fireFighterIgniteMaxStacks = fireFighterIgniteMaxStacks;
+    }
+
+    public int getFireFighterIgniteMaxStacks () {
+        return fireFighterIgniteMaxStacks;
+    }
+
+    public float getDroneDamage () {
+        return droneBaseDamage * droneDamageRatio;
+    }
+
+    public DroneTypes getDroneType () {
+        return droneType;
+    }
+
+    public void setDroneType (DroneTypes droneType) {
+        this.droneType = droneType;
     }
 }

@@ -6,6 +6,8 @@ import net.riezebos.bruus.tbd.game.UI.GameUICreator;
 import net.riezebos.bruus.tbd.game.UI.UIObject;
 import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
 import net.riezebos.bruus.tbd.game.items.PlayerInventory;
+import net.riezebos.bruus.tbd.game.util.VisualLayer;
+import net.riezebos.bruus.tbd.guiboards.TimerHolder;
 import net.riezebos.bruus.tbd.guiboards.background.BackgroundManager;
 import net.riezebos.bruus.tbd.guiboards.background.BackgroundObject;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.Enemy;
@@ -48,7 +50,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
-public class GameBoard extends JPanel implements ActionListener {
+public class GameBoard extends JPanel implements ActionListener, TimerHolder {
 
     private Timer drawTimer;
 
@@ -123,7 +125,7 @@ public class GameBoard extends JPanel implements ActionListener {
         drawTimer.start();
     }
 
-    // Resets the game
+    // Resets the game after dying
     public void resetGame () {
         animationManager.resetManager();
         enemyManager.resetManager();
@@ -410,6 +412,8 @@ public class GameBoard extends JPanel implements ActionListener {
             drawAnimation(g, animation);
         }
 
+        drawSpecialAttacks(VisualLayer.Lower, g);
+
         for (Missile missile : missileManager.getMissiles()) {
             if (missile.isVisible()) {
                 if (missile.getAnimation() != null) {
@@ -438,12 +442,6 @@ public class GameBoard extends JPanel implements ActionListener {
             }
         }
 
-//        for (Explosion explosion : explosionManager.getExplosions()) {
-//            if (explosion.isVisible()) {
-//                drawAnimation(g, explosion.getAnimation());
-//            }
-//        }
-
         for (FriendlyObject friendly : friendlyManager.getFriendlyObjects()) {
             if (friendly.isVisible()) {
                 drawAnimation(g, friendly.getAnimation());
@@ -455,15 +453,7 @@ public class GameBoard extends JPanel implements ActionListener {
             drawImage(g, playerManager.getSpaceship());
         }
 
-        for (SpecialAttack specialAttack : missileManager.getSpecialAttacks()) {
-            if (specialAttack.isVisible()) {
-                if (specialAttack.getAnimation() != null) {
-                    drawAnimation(g, specialAttack.getAnimation());
-                } else {
-                    drawImage(g, specialAttack);
-                }
-            }
-        }
+        drawSpecialAttacks(VisualLayer.Upper, g);
 
         for (UIObject obj : uiManager.getInformationCards()) {
             drawImage(g, obj);
@@ -506,6 +496,19 @@ public class GameBoard extends JPanel implements ActionListener {
             g.drawString("PAUSED, press 'P' to resume",
                     DataClass.getInstance().getWindowWidth() * 0.4f,
                     DataClass.getInstance().getWindowHeight() / 2);
+        }
+    }
+
+    //Helper method to centralize drawing of special attacks
+    private void drawSpecialAttacks(VisualLayer visualLayer, Graphics2D g2d){
+        for (SpecialAttack specialAttack : missileManager.getSpecialAttacksByAnimationLayer(visualLayer)) {
+            if (specialAttack.isVisible()) {
+                if (specialAttack.getAnimation() != null) {
+                    drawAnimation(g2d, specialAttack.getAnimation());
+                } else {
+                    drawImage(g2d, specialAttack);
+                }
+            }
         }
 
     }
@@ -665,9 +668,16 @@ public class GameBoard extends JPanel implements ActionListener {
         drawImage(g, shieldFrame);
     }
 
+
+    private double currentMusicSeconds = 0;
+    private double maximumMusicSeconds = 0;
+
     private void drawSongProgressBar (Graphics2D g) {
-        double currentMusicSeconds = AudioManager.getInstance().getCurrentSecondsInPlayback();
-        double maximumMusicSeconds = AudioManager.getInstance().getTotalPlaybackLengthInSeconds();
+        //Only update these when playing, as gameseconds continues to grow after the song is finished
+        if(gameState.getGameState().equals(GameStatusEnums.Playing)) {
+            currentMusicSeconds = GameStateInfo.getInstance().getGameSeconds();
+            maximumMusicSeconds = AudioManager.getInstance().getPredictedEndGameSeconds();
+        }
 
         if (currentMusicSeconds < 0 && maximumMusicSeconds < 0) {
             //If these values don't make sense, don't attempt to draw the bar
@@ -814,7 +824,7 @@ public class GameBoard extends JPanel implements ActionListener {
 
             if (gameState.getGameState() == GameStatusEnums.Dead) {
                 if (inputDelay >= MOVE_COOLDOWN) {
-                    boardManager.gameToMainMenu();
+                    boardManager.initMainMenu();
                     drawTimer.stop();
                     inputDelay = 0;
                     GameStatsTracker.getInstance().resetGameStatsTracker();
@@ -856,7 +866,7 @@ public class GameBoard extends JPanel implements ActionListener {
             if (gameState.getGameState() == GameStatusEnums.Dead) {
                 controllers.getFirstController().pollController();
                 if (controllers.getFirstController().isInputActive(ControllerInputEnums.FIRE) && inputDelay >= MOVE_COOLDOWN) {
-                    boardManager.gameToMainMenu();
+                    boardManager.initMainMenu();
                     inputDelay = 0;
                     GameStatsTracker.getInstance().resetGameStatsTracker();
                     drawTimer.stop();

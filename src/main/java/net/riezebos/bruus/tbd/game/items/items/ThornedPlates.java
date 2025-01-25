@@ -4,12 +4,13 @@ import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
 import net.riezebos.bruus.tbd.game.items.Item;
 import net.riezebos.bruus.tbd.game.items.enums.ItemApplicationEnum;
-import net.riezebos.bruus.tbd.game.items.enums.ItemEnums;
+import net.riezebos.bruus.tbd.game.items.ItemEnums;
 
 public class ThornedPlates extends Item {
 
 
     private float buffAmount = 0.20f;
+    private int armorAmount = 5;
     private boolean shouldApply;
 
     public ThornedPlates () {
@@ -36,6 +37,18 @@ public class ThornedPlates extends Item {
             shouldApply = false;
             PlayerStats.getInstance().modifyThornsDamageRatio(quantity * buffAmount);
         }
+
+        //Armor bonus applied to the spaceship that gets re-created at the start of the round, thus outside of the if-statement
+        if(gameObject != null) {
+            gameObject.adjustArmorBonus(this.quantity * armorAmount);
+        }
     }
 
+    @Override
+    public boolean isAvailable(){
+        if(!this.itemEnum.isEnabled()){
+            return false;
+        }
+        return true;
+    }
 }

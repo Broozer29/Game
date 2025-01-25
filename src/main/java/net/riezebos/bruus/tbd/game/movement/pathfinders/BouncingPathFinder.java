@@ -39,7 +39,6 @@ public class BouncingPathFinder implements PathFinder {
             Direction newDirection = getNewDirection(gameObject, spriteRotation);
             List<Integer> endCoordinates = getNewEndpointCoordinates(xCoordinate, yCoordinate, spriteWidth, spriteHeight, newDirection);
 
-
             Point newEndpoint = new Point(endCoordinates.get(0), endCoordinates.get(1));
             gameObject.getMovementConfiguration().setDestination(newEndpoint);
 
@@ -287,7 +286,7 @@ public class BouncingPathFinder implements PathFinder {
     }
 
     public boolean isAllowedToBounce(){
-        return this.currentBounces <= maxBounces;
+        return this.currentBounces < maxBounces;
     }
 
     public int getMaxBounces () {

@@ -105,11 +105,6 @@ public class ThornsDamageDealer {
         OnScreenTextManager.getInstance().addDamageNumberText(damage, target.getCenterXCoordinate(),
                 target.getCenterYCoordinate(), false);
         AnimationManager.getInstance().addUpperAnimation(animation);
-
-
-        if (playerStats.getChanceForThornsToApplyOnHitEffects() > 0.0) {
-            applyOnHitEffects(target);
-        }
     }
 
     private void applyOnHitEffects (GameObject target) {

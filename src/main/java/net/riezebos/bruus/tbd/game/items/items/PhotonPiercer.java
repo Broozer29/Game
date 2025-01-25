@@ -3,7 +3,7 @@ package net.riezebos.bruus.tbd.game.items.items;
 import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
 import net.riezebos.bruus.tbd.game.items.Item;
 import net.riezebos.bruus.tbd.game.items.enums.ItemApplicationEnum;
-import net.riezebos.bruus.tbd.game.items.enums.ItemEnums;
+import net.riezebos.bruus.tbd.game.items.ItemEnums;
 
 public class PhotonPiercer extends Item {
 
@@ -20,7 +20,7 @@ public class PhotonPiercer extends Item {
     }
 
     private void calculateDamageAmplificationModifier(){
-        damageAmplificationModifier = (quantity * 0.75f);
+        damageAmplificationModifier = (quantity * 1f);
     }
 
     //Not used
@@ -36,4 +36,11 @@ public class PhotonPiercer extends Item {
         }
     }
 
+    @Override
+    public boolean isAvailable(){
+        if(!this.itemEnum.isEnabled()){
+            return false;
+        }
+        return true;
+    }
 }

@@ -174,6 +174,11 @@ public enum LevelSongs {
         return difficultyWeight + lengthWeight;
     }
 
+    public static int getDifficultyScoreByDifficultyOnly(LevelDifficulty difficulty){
+        return (difficulty.ordinal() + 1) * 2; // Assuming Enum order is EASY, MEDIUM, HARD
+    }
+
+
     public static ImageEnums getImageEnumByDifficultyScore (int difficultyScore) {
         if (difficultyScore <= 2) return ImageEnums.PurpleWings1; // Image 1
         if (difficultyScore == 3) return ImageEnums.PurpleWings2; // Image 2

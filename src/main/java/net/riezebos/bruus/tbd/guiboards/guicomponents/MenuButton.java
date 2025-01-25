@@ -1,5 +1,7 @@
 package net.riezebos.bruus.tbd.guiboards.guicomponents;
 
+import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerClass;
+import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
 import net.riezebos.bruus.tbd.game.items.PlayerInventory;
 import net.riezebos.bruus.tbd.game.level.LevelManager;
 import net.riezebos.bruus.tbd.game.level.enums.LevelDifficulty;
@@ -7,6 +9,7 @@ import net.riezebos.bruus.tbd.game.level.enums.LevelLength;
 import net.riezebos.bruus.tbd.game.util.OnScreenTextManager;
 import net.riezebos.bruus.tbd.game.gamestate.ShopManager;
 import net.riezebos.bruus.tbd.guiboards.BoardManager;
+import net.riezebos.bruus.tbd.guiboards.boards.ShopBoard;
 import net.riezebos.bruus.tbd.visualsandaudio.data.DataClass;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.AudioDatabase;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.AudioManager;
@@ -43,6 +46,9 @@ public class MenuButton extends GUIComponent {
             case Return_To_Main_Menu:
                 boardManager.initMainMenu();
                 break;
+            case OpenClassSelectWindow:
+                boardManager.menuToClassSelection();
+                break;
             case Open_Inventory:
                 boardManager.getShopBoard().setShowInventory(!boardManager.getShopBoard().isShowInventory());
                 break;
@@ -56,7 +62,7 @@ public class MenuButton extends GUIComponent {
                 changeLevelLength();
                 break;
             case SelectMacOSMediaPlayer:
-                AudioManager.getInstance().setMusicMediaPlayer(MusicMediaPlayer.MacOS);
+                AudioManager.getInstance().setMusicMediaPlayer(MusicMediaPlayer.iTunesMacOS);
                 OnScreenTextManager.getInstance().addText("Changed to using APPLE MUSIC for gameplay",
                         DataClass.getInstance().getWindowWidth() / 2,
                         DataClass.getInstance().getWindowHeight() / 2);
@@ -68,20 +74,46 @@ public class MenuButton extends GUIComponent {
                         DataClass.getInstance().getWindowHeight() / 2);
                 break;
             case RerollShop:
-                PlayerInventory inventory = PlayerInventory.getInstance();
-                int rerollCost = ShopManager.getInstance().getRerollCost();
-                if (inventory.getCashMoney() >= rerollCost) {
-                    boardManager.getShopBoard().rerollShop();
-                    inventory.spendCashMoney(rerollCost);
-                } else {
-                    AudioManager.getInstance().addAudio(AudioEnums.NotEnoughMinerals);
-                }
+                handleShopRefresh();
+                break;
+            case SelectCaptainClass:
+                PlayerStats.getInstance().setPlayerClass(PlayerClass.Captain);
+                BoardManager.getInstance().getClassSelectionBoard().recreateCursor();
+                BoardManager.getInstance().getClassSelectionBoard().addCursorAnimation();
+                break;
+            case SelectFireFighterClass:
+                PlayerStats.getInstance().setPlayerClass(PlayerClass.FireFighter);
+                BoardManager.getInstance().getClassSelectionBoard().recreateCursor();
+                BoardManager.getInstance().getClassSelectionBoard().addCursorAnimation();
                 break;
             default:
                 System.out.println("Unimplemented functionality");
+                OnScreenTextManager.getInstance().addText("Unimplemented menu functionality in menubutton",400,400);
                 break;
         }
 
+    }
+
+    private void handleShopRefresh () {
+        PlayerInventory inventory = PlayerInventory.getInstance();
+        ShopManager shopManager = ShopManager.getInstance();
+        ShopBoard shopBoard = BoardManager.getInstance().getShopBoard();
+
+        if (shopManager.getFreeRefreshessLeft() > 0) {
+            shopBoard.rerollShop();
+            shopManager.spendFreeReroll();
+            if (shopManager.getFreeRefreshessLeft() < 1) {
+                shopBoard.remakeShopRerollText(); //Only refresh the "FREE" text with the actual cost once we run out of free refreshes
+            }
+        } else {
+            int rerollCost = shopManager.getRerollCost();
+            if (inventory.getCashMoney() >= rerollCost) {
+                shopBoard.rerollShop();
+                inventory.spendCashMoney(rerollCost);
+            } else {
+                AudioManager.getInstance().addAudio(AudioEnums.NotEnoughMinerals);
+            }
+        }
     }
 
     private void changeLevelDifficulty () {

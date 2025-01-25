@@ -1,8 +1,10 @@
 package net.riezebos.bruus.tbd.game.items;
 
+import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
 import net.riezebos.bruus.tbd.game.items.enums.ItemApplicationEnum;
-import net.riezebos.bruus.tbd.game.items.enums.ItemEnums;
 import net.riezebos.bruus.tbd.game.items.items.*;
+import net.riezebos.bruus.tbd.game.items.items.captain.*;
+import net.riezebos.bruus.tbd.game.items.items.firefighter.*;
 
 import java.util.HashMap;
 import java.util.List;
@@ -12,20 +14,22 @@ import java.util.stream.Collectors;
 public class PlayerInventory {
     private static PlayerInventory instance = new PlayerInventory();
     private Map<ItemEnums, Item> items = new HashMap<>();
-    private float cashMoney = 100;
+    private float cashMoney = 999999999;
     private PlayerInventory () {
-//        addItem(ItemEnums.DrillerModule);
-//        addItem(ItemEnums.BouncingModuleAddon);
+//        addItem(ItemEnums.ThornedPlates);
+//        addItem(ItemEnums.EntanglingFlames);
 
-//        addItem(ItemEnums.GuardianDrone);
-//        addItem(ItemEnums.GuardianDrone);
-//        addItem(ItemEnums.GuardianDrone);
-//        addItem(ItemEnums.GuardianDrone);
-//        addItem(ItemEnums.ModuleAccuracy);
-//        addItem(ItemEnums.GuardianDrone);
-//        addItem(ItemEnums.GuardianDrone);
-//        addItem(ItemEnums.ModuleAccuracy);
+//        addItem(ItemEnums.ModuleElectrify);
+//        addItem(ItemEnums.ModuleCommand);
+
+//        for(int i = 0; i < 4; i++){
+//            addItem(ItemEnums.GuardianDrone);
+//        }
+        PlayerStats.getInstance().setShopRerollDiscount(99);
+//        addItem(ItemEnums.PlatinumSponge);
     }
+
+
 
     public void resetInventory(){
         items.clear();
@@ -38,29 +42,28 @@ public class PlayerInventory {
 
 
     public void addItem (ItemEnums itemEnum) {
-        items.compute(itemEnum, (key, existingItem) -> {
+        Item item = items.compute(itemEnum, (key, existingItem) -> {
             if (existingItem == null) {
                 Item newItem = createItemFromEnum(itemEnum);
                 if (newItem != null) {
-                    activateUponPurchaseItemEffects(newItem);
                     return newItem;
                 }
             } else {
                 existingItem.increaseQuantityOfItem(1);
-                activateUponPurchaseItemEffects(existingItem);
             }
             return existingItem;
         });
-    }
-
-    private void activateUponPurchaseItemEffects (Item item){
-        if(item.getApplicationMethod().equals(ItemApplicationEnum.UponPurchase)){
-            item.applyEffectToObject(null);
+        if(item != null) {
+            activateUponPurchaseItemEffects(item);
         }
     }
 
-    private Item createItemFromEnum (ItemEnums itemEnum) {
+
+
+    public Item createItemFromEnum (ItemEnums itemEnum) {
         switch (itemEnum) {
+            case ModuleScorch:
+                return new ModuleScorch();
             case PlasmaLauncher:
                 return new PlasmaLauncher();
             case MoneyPrinter:
@@ -119,9 +122,35 @@ public class PlayerInventory {
                 return new BarbedAegis();
             case BarbedMissiles:
                 return new BarbedMissiles();
+            case ModuleElectrify:
+                return new ModuleElectrify();
+            case ModuleCommand:
+                return new ModuleCommand();
+            case Contract:
+                return new Contract();
+            case StickyOil:
+                return new StickyOil();
+            case CorrosiveOil:
+                return new CorrosiveOil();
+            case ScorchingFury:
+                return new ScorchingFury();
+            case FlameDetonation:
+                return new FlameDetonation();
+            case EscalatingFlames:
+                return new EscalatingFlames();
+            case EntanglingFlames:
+                return new EntanglingFlames();
+            case BargainBucket:
+                return new BargainBucket();
             default:
                 System.out.println("I tried to create: " + itemEnum + " but fell in default, did you forget to add it to the inventory creation?");
                 return null;
+        }
+    }
+
+    private void activateUponPurchaseItemEffects (Item item){
+        if(item.getApplicationMethod().equals(ItemApplicationEnum.UponAcquiring)){
+            item.applyEffectToObject(null);
         }
     }
 
@@ -159,4 +188,9 @@ public class PlayerInventory {
         this.cashMoney -= amount;
     }
 
+    public void removeItemFromInventory (ItemEnums item) {
+        if(this.items.containsKey(item)){
+            items.remove(item);
+        }
+    }
 }

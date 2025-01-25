@@ -1,5 +1,6 @@
 package net.riezebos.bruus.tbd.game.items.effects.effectimplementations;
 
+import com.badlogic.gdx.Game;
 import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
@@ -20,7 +21,6 @@ public class DamageModifierEffect implements EffectInterface {
     private double startTimeInSeconds;
 
     private SpriteAnimation animation;
-    private GameObject modifiedObject;
     private boolean appliedToObject;
     private EffectIdentifiers effectIdentifier;
 
@@ -37,19 +37,12 @@ public class DamageModifierEffect implements EffectInterface {
     @Override
     public void activateEffect (GameObject gameObject) {
         if (!appliedToObject) {
-            this.modifiedObject = gameObject;
             if (gameObject instanceof SpaceShip) {
-//                float oldValue = PlayerStats.getInstance().getNormalAttackDamage();
                 PlayerStats.getInstance().modifyBonusDamageMultiplier(damageModifierAmount);
-//                OnScreenTextManager.getInstance().addText(PlayerStats.getInstance().getNormalAttackDamage() + " / " + oldValue,
-//                        PlayerManager.getInstance().getSpaceship().getXCoordinate(), PlayerManager.getInstance().getSpaceship().getYCoordinate());
             } else if (gameObject.isFriendly()) {
                 gameObject.modifyBonusDamageMultiplier(damageModifierAmount);
             } else {
-//                float oldValue = gameObject.getDamage();
                 gameObject.modifyBonusDamageMultiplier(damageModifierAmount);
-//                OnScreenTextManager.getInstance().addText(modifiedObject.getDamage() + " / " + oldValue,
-//                        modifiedObject.getXCoordinate(), modifiedObject.getYCoordinate());
             }
             appliedToObject = true;
         }
@@ -60,24 +53,17 @@ public class DamageModifierEffect implements EffectInterface {
 
     }
 
-    private void removeEffectsBeforeRemovingEffect () {
-        if (modifiedObject instanceof SpaceShip) {
-//            float oldValue = PlayerStats.getInstance().getNormalAttackDamage();
-            PlayerStats.getInstance().modifyBonusDamageMultiplier(-damageModifierAmount);
-//            OnScreenTextManager.getInstance().addText(PlayerStats.getInstance().getNormalAttackDamage() + " / " + oldValue,
-//                    PlayerManager.getInstance().getSpaceship().getXCoordinate(), PlayerManager.getInstance().getSpaceship().getYCoordinate());
-
-        } else if (modifiedObject.isFriendly()) {
-            modifiedObject.modifyBonusDamageMultiplier(-damageModifierAmount);
-        } else {
-//            float oldValue = modifiedObject.getDamage();
-            modifiedObject.modifyBonusDamageMultiplier(-damageModifierAmount);
-//            OnScreenTextManager.getInstance().addText(modifiedObject.getDamage() + " / " + oldValue,
-//                    modifiedObject.getXCoordinate(), modifiedObject.getYCoordinate());
+    private void removeEffectsBeforeRemovingEffect (GameObject gameObject) {
+        if (gameObject == null) {
+            return;
         }
 
-        if(animation != null){
-            animation.setVisible(false);
+        if (gameObject instanceof SpaceShip) {
+            PlayerStats.getInstance().modifyBonusDamageMultiplier(-damageModifierAmount);
+        } else if (gameObject.isFriendly()) {
+            gameObject.modifyBonusDamageMultiplier(-damageModifierAmount);
+        } else {
+            gameObject.modifyBonusDamageMultiplier(-damageModifierAmount);
         }
 
     }
@@ -95,9 +81,8 @@ public class DamageModifierEffect implements EffectInterface {
     }
 
     @Override
-    public boolean shouldBeRemoved () {
+    public boolean shouldBeRemoved (GameObject gameObject) {
         if (GameStateInfo.getInstance().getGameSeconds() - startTimeInSeconds >= durationInSeconds) {
-            removeEffectsBeforeRemovingEffect(); //Assumes the effect is immediatly removed if this is true (currently is)
             return true;
         } else return false;
     }
@@ -118,18 +103,27 @@ public class DamageModifierEffect implements EffectInterface {
     }
 
     @Override
-    public void increaseEffectStrength () {
+    public void increaseEffectStrength (GameObject gameObject) {
         //To be implemented later, if ever
     }
 
     @Override
     public EffectInterface copy () {
-        DamageModifierEffect copiedEffect = new DamageModifierEffect(damageModifierAmount, durationInSeconds, animation.clone(), effectIdentifier);
-        return copiedEffect;
+        return new DamageModifierEffect(damageModifierAmount, durationInSeconds, animation.clone(), effectIdentifier);
     }
 
     @Override
     public EffectIdentifiers getEffectIdentifier () {
         return effectIdentifier;
+    }
+
+    @Override
+    public void removeEffect (GameObject gameObject) {
+        if (animation != null) {
+            animation.setInfiniteLoop(false);
+            animation.setVisible(false);
+        }
+        removeEffectsBeforeRemovingEffect(gameObject);
+        animation = null;
     }
 }
