@@ -7,7 +7,7 @@ public class ExperienceCalculator {
     }
 
     public static float getNextLevelXPRequired (float currentXpToNextLevel) {
-        return currentXpToNextLevel * 1.55f;
+        return currentXpToNextLevel * 2.15f;
     }
 
     public static float getNextLevelHitPoints (float currentHP) {

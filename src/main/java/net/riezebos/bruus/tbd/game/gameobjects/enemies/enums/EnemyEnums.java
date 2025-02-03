@@ -70,13 +70,13 @@ public enum EnemyEnums {
     RedBoss(3500, 0, true,
             AudioEnums.Alien_Spaceship_Destroyed, "Red Boss",
             ImageEnums.RedBoss, ImageEnums.Explosion2, 0, EnemyCategory.Boss, EnemyTribes.Pirates, 20,
-            600, 500, 0, 1.25f, 0.65f, 861, 641,
+            1000, 500, 0, 1.25f, 0.65f, 861, 641,
             0),
 
     SpaceStationBoss(4500, 0, true,
             AudioEnums.Alien_Spaceship_Destroyed, "Space Station Boss",
             ImageEnums.SpaceStationBoss, ImageEnums.Explosion2, 0, EnemyCategory.Boss, EnemyTribes.Pirates, 20,
-            600, 500, 0, 1.75f, 1, 850, 850,
+            2000, 500, 0, 1.75f, 1, 850, 850,
             0),
 
     Shuriken(75, 0, false,

@@ -123,6 +123,15 @@ public class Sprite {
     }
 
     public BufferedImage getImage () {
+        if (this.shouldChangeTransparancy &&
+                this.transparancyAlpha + this.transparancyStepSize < 1.0f &&
+                this.transparancyAlpha + this.transparancyStepSize > 0.0f) {
+            this.transparancyAlpha += this.transparancyStepSize;
+        }
+
+        if(this.transparancyAlpha <= 0.05f && this.transparancyStepSize < 0.0f) {
+            this.setVisible(false);
+        }
         return image;
     }
 

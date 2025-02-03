@@ -125,15 +125,15 @@ public class DamageOverTime implements EffectInterface {
     private double lastTimeThornsApplied = 0;
 
     private void handleIgniteSpecialCases (GameObject target) {
-        if (PlayerInventory.getInstance().getItemByName(ItemEnums.EntanglingFlames) != null &&
-                (lastTimeThornsApplied + 1.5f) < GameStateInfo.getInstance().getGameSeconds()) {
-            ThornsDamageDealer.getInstance().addDelayedThornsDamageToObject(target, PlayerInventory.getInstance().getItemByName(ItemEnums.EntanglingFlames).getQuantity());
+        if (PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.EntanglingFlames) != null &&
+                (lastTimeThornsApplied + 0.75f) < GameStateInfo.getInstance().getGameSeconds()) {
+            ThornsDamageDealer.getInstance().addDelayedThornsDamageToObject(target, PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.EntanglingFlames).getQuantity());
             lastTimeThornsApplied = GameStateInfo.getInstance().getGameSeconds();
         }
     }
 
     private void applyCorrosiveOil (GameObject gameObject){
-        CorrosiveOil item = (CorrosiveOil) PlayerInventory.getInstance().getItemByName(ItemEnums.CorrosiveOil);
+        CorrosiveOil item = (CorrosiveOil) PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.CorrosiveOil);
         if(item != null){
             gameObject.adjustArmorBonus(-item.getArmorReductionPerStack());
         }

@@ -266,11 +266,12 @@ public class GameUICreator {
     }
 
     public int calculateProgressBarFillingWidth(double currentFrame, double maxFrames) {
-        if(currentFrame < 0){
+        if (currentFrame < 0) {
             return 1;
         }
-        return (int) (currentFrame / maxFrames * (progressBar.getWidth() - 10));
+        return Math.min(progressBar.getWidth(), (int) (currentFrame / maxFrames * progressBar.getWidth()));
     }
+
 
     public int getHealthBarWidth () {
         return healthBarWidth;

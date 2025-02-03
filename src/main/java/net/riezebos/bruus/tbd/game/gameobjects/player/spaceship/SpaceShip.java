@@ -98,7 +98,7 @@ public class SpaceShip extends GameObject {
         }
 
 
-        if (PlayerInventory.getInstance().getItemByName(ItemEnums.FocusCrystal) != null) {
+        if (PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.FocusCrystal) != null) {
             SpriteConfiguration focusCrystalConfig = new SpriteConfiguration();
             focusCrystalConfig.setxCoordinate(getXCoordinate());
             focusCrystalConfig.setyCoordinate(getYCoordinate());
@@ -209,17 +209,16 @@ public class SpaceShip extends GameObject {
     public void changeShieldHitpoints (float change) {
         this.currentShieldPoints += change;
         float maxShieldPoints = playerStats.getMaxShieldHitPoints();
-        float maxOverloadingShieldMultiplier = playerStats.getMaxOverloadingShieldMultiplier();
-        if (currentShieldPoints > (maxShieldPoints * maxOverloadingShieldMultiplier)) {
-            currentShieldPoints = maxShieldPoints * maxOverloadingShieldMultiplier;
+        if (currentShieldPoints > (maxShieldPoints)) {
+            currentShieldPoints = maxShieldPoints;
         }
     }
 
     private void reduceOverloadedShieldPoints () {
         float maxShieldPoints = playerStats.getMaxShieldHitPoints();
-        float maxShieldMultiplier = playerStats.getMaxShieldMultiplier();
+        float maxOverloadingShieldMultiplier = playerStats.getMaxOverloadingShieldMultiplier();
 
-        if (currentShieldPoints > maxShieldPoints * maxShieldMultiplier) {
+        if (currentShieldPoints > maxShieldPoints * maxOverloadingShieldMultiplier) {
             currentShieldPoints -= playerStats.getOverloadedShieldDiminishAmount();
         }
     }
@@ -236,12 +235,20 @@ public class SpaceShip extends GameObject {
         updateGameObjectEffects();
         reduceOverloadedShieldPoints();
 
-        if (currentShieldRegenDelayFrame >= playerStats.getShieldRegenDelay()) {
-            if (currentShieldPoints < playerStats.getMaxShieldHitPoints()) {
-                repairShields(PlayerStats.getInstance().getShieldRegenPerTick());
-//                repairHealth((float) 0.4);
-            }
+        boolean shouldRegenShields = false;
+
+        if (PlayerStats.getInstance().isContinueShieldRegenThroughDamage() && currentShieldPoints < playerStats.getMaxShieldHitPoints()) {
+            shouldRegenShields = true;
+        } else if (currentShieldRegenDelayFrame >= playerStats.getShieldRegenDelay() && currentShieldPoints < playerStats.getMaxShieldHitPoints()) {
+            shouldRegenShields = true;
         }
+
+        if (shouldRegenShields) {
+            repairShields(PlayerStats.getInstance().getShieldRegenPerTick());
+//            repairHealth(0.4f);
+        }
+
+
     }
 
 
@@ -570,6 +577,7 @@ public class SpaceShip extends GameObject {
 
     // Called by GameBoard every loop if a controller is connected
     private boolean isFiringPrimary = false;
+
     public void update (ControllerInputReader controllerInputReader) {
         controlledByKeyboard = false;
         controllerInputReader.pollController();
@@ -601,8 +609,7 @@ public class SpaceShip extends GameObject {
         }
 
 
-
-        if(isFiringPrimary && !controllerInputReader.isInputActive(ControllerInputEnums.FIRE)){
+        if (isFiringPrimary && !controllerInputReader.isInputActive(ControllerInputEnums.FIRE)) {
             haltPrimaryFiring();
             isFiringPrimary = false;
         }

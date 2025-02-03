@@ -1,6 +1,8 @@
 package net.riezebos.bruus.tbd.guiboards.background;
 
 import net.riezebos.bruus.tbd.game.level.SpawningCoordinator;
+import net.riezebos.bruus.tbd.game.util.performancelogger.PerformanceLogger;
+import net.riezebos.bruus.tbd.game.util.performancelogger.PerformanceLoggerManager;
 import net.riezebos.bruus.tbd.visualsandaudio.data.DataClass;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageDatabase;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
@@ -24,9 +26,11 @@ public class BackgroundManager {
     private int rightmostNebulaEdge = 0;
     private SpaceThemeEnums spaceTheme;
     private NebulaThemeEnums nebulaTheme;
+    private PerformanceLogger performanceLogger = null;
 
     private BackgroundManager () {
         initManager();
+        this.performanceLogger = new PerformanceLogger("Background Manager");
     }
 
     public static BackgroundManager getInstance () {
@@ -36,6 +40,7 @@ public class BackgroundManager {
     public void resetManager () {
         backgroundObjectsMap.clear();
         initManager();
+        performanceLogger.reset();
     }
 
     private void initManager () {
@@ -327,7 +332,9 @@ public class BackgroundManager {
     }
 
     public void updateGameTick () {
-        updateObjects();
+//        PerformanceLoggerManager.timeAndLog(performanceLogger, "Total", () -> {
+            PerformanceLoggerManager.timeAndLog(performanceLogger, "Update Objects", this::updateObjects);
+//        });
     }
 
     public List<BackgroundObject> getAllBGO () {
@@ -354,5 +361,9 @@ public class BackgroundManager {
 
     private BackgroundObjectConfiguration createBGOConfiguration (int depthLevel, BGOEnums bgoType) {
         return new BackgroundObjectConfiguration(depthLevel, bgoType);
+    }
+
+    public PerformanceLogger getPerformanceLogger () {
+        return this.performanceLogger;
     }
 }

@@ -29,8 +29,8 @@ public class LingeringFlame extends SpecialAttack{
             this.addYOffset(-Math.round(this.getScale() * 35)); //To offset the large empty space in the spritesheet
         }
 
-        if(PlayerInventory.getInstance().getItemByName(ItemEnums.FlameDetonation) != null){
-            FlameDetonation flameDetonation = (FlameDetonation) PlayerInventory.getInstance().getItemByName(ItemEnums.FlameDetonation);
+        if(PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.FlameDetonation) != null){
+            FlameDetonation flameDetonation = (FlameDetonation) PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.FlameDetonation);
             this.duration = flameDetonation.getDuration();
         }
 

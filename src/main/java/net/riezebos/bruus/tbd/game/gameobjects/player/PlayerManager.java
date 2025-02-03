@@ -6,6 +6,8 @@ import net.riezebos.bruus.tbd.game.gamestate.GameStatusEnums;
 import net.riezebos.bruus.tbd.game.items.PlayerInventory;
 import net.riezebos.bruus.tbd.game.items.effects.EffectInterface;
 import net.riezebos.bruus.tbd.game.items.ItemEnums;
+import net.riezebos.bruus.tbd.game.util.performancelogger.PerformanceLogger;
+import net.riezebos.bruus.tbd.game.util.performancelogger.PerformanceLoggerManager;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.AnimationManager;
 import net.riezebos.bruus.tbd.visualsandaudio.data.DataClass;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.AudioManager;
@@ -21,8 +23,10 @@ public class PlayerManager {
     private AnimationManager animationManager = AnimationManager.getInstance();
     private GameStateInfo gameState = GameStateInfo.getInstance();
     private SpaceShip spaceship;
+    private PerformanceLogger performanceLogger;
 
     private PlayerManager () {
+        this.performanceLogger = new PerformanceLogger("Player Manager");
 //		initSpaceShip();
     }
 
@@ -40,6 +44,7 @@ public class PlayerManager {
             spaceship.deleteObject();
             spaceship = null;
         }
+        performanceLogger.reset();
     }
 
     public void createSpaceShip () {
@@ -47,10 +52,16 @@ public class PlayerManager {
     }
 
     public void updateGameTick () {
-        updateSpaceShipMovement();
-        checkPlayerHealth();
-        spaceship.updateGameTick();
+//        PerformanceLoggerManager.timeAndLog(performanceLogger, "Total", () -> {
+            PerformanceLoggerManager.timeAndLog(performanceLogger, "Update Ship Movement", this::updateSpaceShipMovement);
+//        updateSpaceShipMovement();
+            PerformanceLoggerManager.timeAndLog(performanceLogger, "Check Player Health", this::checkPlayerHealth);
+//        checkPlayerHealth();
+            PerformanceLoggerManager.timeAndLog(performanceLogger, "Update SpaceShip", spaceship::updateGameTick);
+//        });
     }
+
+
 
     public SpaceShip getSpaceship () {
         if (this.spaceship == null) {
@@ -60,8 +71,8 @@ public class PlayerManager {
     }
 
     private void checkPlayerHealth () {
-        if (PlayerInventory.getInstance().getItemByName(ItemEnums.EmergencyRepairBot) != null) {
-            PlayerInventory.getInstance().getItemByName(ItemEnums.EmergencyRepairBot).applyEffectToObject(spaceship);
+        if (PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.EmergencyRepairBot) != null) {
+            PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.EmergencyRepairBot).applyEffectToObject(spaceship);
         }
         if (spaceship.getCurrentHitpoints() <= 0 && gameState.getGameState() == GameStatusEnums.Playing) {
             gameState.setGameState(GameStatusEnums.Dying);
@@ -110,4 +121,7 @@ public class PlayerManager {
         return playerCoordinatesList;
     }
 
+    public PerformanceLogger getPerformanceLogger () {
+        return this.performanceLogger;
+    }
 }

@@ -65,13 +65,15 @@ public class RedBoss extends Enemy {
 
     @Override
     public void fireAction () {
-        if (WithinVisualBoundariesCalculator.isWithinBoundaries(this)) {
-            this.allowedToFire = true; // Boss is allowed to fire
-        }
+        if(!allowedToFire && WithinVisualBoundariesCalculator.isWithinBoundaries(this)) {
+                this.allowedToFire = true; // Boss is allowed to fire
+            }
 
+        updateChargingAttackAnimationCoordination();
 
         // If there's an active behavior, try to execute it
         if (currentActiveBehavior != null) {
+
             boolean isCompleted = currentActiveBehavior.activateBehaviour(this);
             if (isCompleted) {
                 currentActiveBehavior = null; // Behavior finished, reset for next one

@@ -175,7 +175,7 @@ public class Missile extends GameObject {
             hasPiercedForStatsTracker = true;
 
             //Rework in a nicer way, just testing
-            Item bouncingModuleAddon = PlayerInventory.getInstance().getItemByName(ItemEnums.BouncingModuleAddon);
+            Item bouncingModuleAddon = PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.BouncingModuleAddon);
             if (bouncingModuleAddon != null) {
                 GameObject newTarget = EnemyManager.getInstance().findEnemyForMissileToBounceTo(collidedObject, this.collidedObjects);
                 if (newTarget != null) {

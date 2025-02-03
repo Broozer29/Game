@@ -1,5 +1,7 @@
 package net.riezebos.bruus.tbd.visualsandaudio.data.audio;
 
+import net.riezebos.bruus.tbd.game.util.performancelogger.PerformanceLogger;
+import net.riezebos.bruus.tbd.game.util.performancelogger.PerformanceLoggerManager;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.AudioEnums;
 
 import java.util.ArrayList;
@@ -10,6 +12,7 @@ import java.util.Map;
 public class AudioDatabase {
 
     private static AudioDatabase instance = new AudioDatabase();
+    private PerformanceLogger performanceLogger = null;
     private CustomAudioClip FuriWisdomOfRage;
     private CustomAudioClip FuriMyOnlyChance;
     private CustomAudioClip FuriMakeThisRight;
@@ -98,7 +101,7 @@ public class AudioDatabase {
         put(AudioEnums.Flamethrower, 1);
         put(AudioEnums.NotEnoughMinerals, 3);
         put(AudioEnums.StickyGrenadeExplosion, 3);
-        put(AudioEnums.NewPlayerLaserbeam, 5);
+        put(AudioEnums.NewPlayerLaserbeam, 9);
         put(AudioEnums.PlayerTakesDamage, 5);
         put(AudioEnums.SpecialAttackFinishedCharging, 2);
         put(AudioEnums.SpaceStationBlastingOff, 1);
@@ -106,6 +109,7 @@ public class AudioDatabase {
     }};
 
     private AudioDatabase () {
+        this.performanceLogger = new PerformanceLogger("Audio Manager");
         initializeAudiofiles();
         resetAudio();
     }
@@ -121,6 +125,7 @@ public class AudioDatabase {
                 clip.stopClip();;
             }
         }
+        performanceLogger.reset();
     }
 
     private void initializeAudiofiles () {
@@ -131,18 +136,23 @@ public class AudioDatabase {
         initSoundEffects();
     }
 
-    public void updateGameTick () {
-        resetClips(); //Might not be needed anymore now that JavaFX handles audio, instead of the Clip interface
+    private int tickCounter = 0;
+
+    public void updateGameTick() {
+        if (tickCounter++ % 3 == 0) {  // Run every 3rd tick to save performance, theoretically should not be noticeable
+            PerformanceLoggerManager.timeAndLog(performanceLogger, "Reset Clips", this::resetClips);
+        }
     }
 
-    private void resetClips () {
-        for (int i = 0; i < allActiveClips.size(); i++) {
-            if (allActiveClips.get(i).isFinished()) {
-                allActiveClips.get(i).setPlaybackPosition(0);
-                allActiveClips.get(i).stopClip();
-                allActiveClips.remove(allActiveClips.get(i));
+    private void resetClips() {
+        allActiveClips.removeIf(clip -> {
+            if (clip.isFinished()) {
+                clip.setPlaybackPosition(0);
+                clip.stopClip();
+                return true; // Remove from list
             }
-        }
+            return false; // Keep in list
+        });
     }
 
     private void initMusic () {
@@ -369,5 +379,9 @@ public class AudioDatabase {
 
     public List<CustomAudioClip> getAllActiveClips () {
         return allActiveClips;
+    }
+
+    public PerformanceLogger getPerformanceLogger () {
+        return this.performanceLogger;
     }
 }

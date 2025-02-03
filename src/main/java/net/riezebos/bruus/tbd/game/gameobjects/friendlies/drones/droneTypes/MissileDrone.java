@@ -31,7 +31,7 @@ public class MissileDrone extends Drone {
     @Override
     public void activateObject () {
         PlayerInventory playerInventory = PlayerInventory.getInstance();
-        if (playerInventory.getItemByName(ItemEnums.ModuleCommand) != null) {
+        if (playerInventory.getItemFromInventoryIfExists(ItemEnums.ModuleCommand) != null) {
             return;
         }
 

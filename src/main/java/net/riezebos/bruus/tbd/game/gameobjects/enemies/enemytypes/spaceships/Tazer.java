@@ -51,6 +51,7 @@ public class Tazer extends Enemy {
         double currentTime = GameStateInfo.getInstance().getGameSeconds();
         if (currentTime >= lastAttackTime + this.getAttackSpeed() && WithinVisualBoundariesCalculator.isWithinBoundaries(this)
         && allowedToFire) {
+            updateChargingAttackAnimationCoordination();
             if(randomDirection == null) {
                 randomDirection = selectRandomMissileDirection();
             }

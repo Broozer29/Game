@@ -137,7 +137,7 @@ public class ClassSelectionBoardCreator {
             case Captain:
                 return "Shoot a laserbeam dealing 100% damage.";
             case FireFighter:
-                return "Hold fire to unleash a flamethrower which deals damage and destroys missiles. Deals 100% damage and applies a damage over time effect.";
+                return "Hold fire to unleash a flamethrower which deals damage and destroys missiles. Deals 100% damage and applies Ignite.";
         }
         return "Not implemented yet";
     }
@@ -177,7 +177,7 @@ public class ClassSelectionBoardCreator {
             case Captain:
                 return "Fires an EMP that constantly deals 10% damage and destroys enemy missiles. Recharges every 3 seconds.";
             case FireFighter:
-                return "Creates a ring of fire around you that lasts 4 seconds. Dealing 50% damage and destroys enemy missiles. Recharges every 10 seconds.";
+                return "Creates a ring of fire around you that lasts 4 seconds. Dealing 50% damage, applies Ignite and destroys enemy missiles. Recharges every 10 seconds.";
         }
         return "Fires an EMP that constantly deals 10% damage and destroys enemy missiles. Recharges every 3 seconds.";
     }

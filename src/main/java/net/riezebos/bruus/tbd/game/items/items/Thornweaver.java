@@ -42,7 +42,7 @@ public class Thornweaver extends Item {
             return false;
         }
         boolean available = false;
-        if(PlayerInventory.getInstance().getItemByName(ItemEnums.Thornweaver) == null){
+        if(PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.Thornweaver) == null){
             available = true;
         }
         return available;

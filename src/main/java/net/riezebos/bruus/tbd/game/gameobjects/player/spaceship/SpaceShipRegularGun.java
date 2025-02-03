@@ -46,7 +46,7 @@ public class SpaceShipRegularGun {
         if (currentTime >= lastAttackTime + playerStats.getAttackSpeed()) {
             lastAttackTime = currentTime;  // Update the last attack time
 
-            if (PlayerInventory.getInstance().getItemByName(ItemEnums.ModuleCommand) != null) {
+            if (PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.ModuleCommand) != null) {
                 for (Drone drone : FriendlyManager.getInstance().getAllPlayerDrones()) {
                     drone.fireAction();
                 }
@@ -87,7 +87,7 @@ public class SpaceShipRegularGun {
             SpecialAttackConfiguration missileConfiguration = new SpecialAttackConfiguration(damage, true, true, false, true, false, true);
             SpecialAttack specialAttack = new FlameThrower(spriteAnimationConfiguration, missileConfiguration);
             specialAttack.setCenteredAroundObject(true);
-            specialAttack.setScale(0.7f);
+            specialAttack.setScale(0.8f);
             specialAttack.addXOffset((specialAttack.getAnimation().getWidth() / 2) - Math.round((specialAttack.getAnimation().getWidth() * 0.005f)));
             specialAttack.setOwnerOrCreator(PlayerManager.getInstance().getSpaceship());
             spaceShip.addFollowingSpecialAttack(specialAttack);

@@ -29,7 +29,7 @@ public class SpecialAttackDrone extends Drone {
     @Override
     public void activateObject () {
         PlayerInventory playerInventory = PlayerInventory.getInstance();
-        if (playerInventory.getItemByName(ItemEnums.ModuleCommand) != null) {
+        if (playerInventory.getItemFromInventoryIfExists(ItemEnums.ModuleCommand) != null) {
             return;
         }
 
@@ -54,15 +54,15 @@ public class SpecialAttackDrone extends Drone {
     public void fireAction () {
         switch (droneType) {
             case ElectroShred -> fireElectroShred();
-            case FireBall -> fireFlameThrower();
+            case FireBall -> activateFlamingBalls();
             default -> fireElectroShred();
         }
     }
 
     private void fireElectroShred () {
         float bonusScale = 0.0f;
-        if (PlayerInventory.getInstance().getItemByName(ItemEnums.ModuleElectrify) != null) {
-            ModuleElectrify electrify = (ModuleElectrify) PlayerInventory.getInstance().getItemByName(ItemEnums.ModuleElectrify);
+        if (PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.ModuleElectrify) != null) {
+            ModuleElectrify electrify = (ModuleElectrify) PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.ModuleElectrify);
             bonusScale = electrify.getDroneSpecialScale();
         }
 
@@ -91,7 +91,7 @@ public class SpecialAttackDrone extends Drone {
     }
 
     private boolean initialized = false;
-    private void fireFlameThrower () {
+    private void activateFlamingBalls () {
         if(!initialized) {
             SpriteConfiguration orbitingLingeringFlame = new SpriteConfiguration();
             float scale = 0.4f;

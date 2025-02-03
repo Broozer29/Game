@@ -1,0 +1,151 @@
+{
+  "Enemy Manager": {
+    "Average Update GameTick Time": 0.3604633830651734,
+    "Min Update Game Tick time": 0.001387,
+    "Amount of game ticks executed": 6153,
+    "metrics": {
+      "Enemy Manager - Trigger Enemy Actions": 0.021159380302291492,
+      "Enemy Manager - Update Enemies": 0.31492648610433926,
+      "Enemy Manager - Move Enemy": 0.002425297884277769,
+      "Enemy Manager - Check Spaceship Collision": 0.02120846725174706,
+      "Enemy Manager - Update Enemy Effects": 4.259207844002385E-4,
+      "Enemy Manager - Update GameTick Total": 0.3604633830651734
+    },
+    "Slow game ticks (x3.5 average)": 159,
+    "Max Update GameTick time": 9.485374
+  },
+  "Background Manager": {
+    "Average Update GameTick Time": 0.011263910287664557,
+    "Min Update Game Tick time": 0.004201,
+    "Amount of game ticks executed": 6153,
+    "metrics": {
+      "Background Manager - Update Objects": 0.007024476167172334,
+      "Background Manager - Update GameTick Total": 0.011263910287664557
+    },
+    "Slow game ticks (x3.5 average)": 96,
+    "Max Update GameTick time": 0.141987
+  },
+  "Animation Manager": {
+    "Average Update GameTick Time": 0.004565403217942445,
+    "Min Update Game Tick time": 9.35E-4,
+    "Amount of game ticks executed": 6153,
+    "metrics": {
+      "Animation Manager - Remove Invisible Animations": 0.0010112104664391362,
+      "Animation Manager - Recenter Animations": 0.0013694093937916465,
+      "Animation Manager - Update GameTick Total": 0.004565403217942445
+    },
+    "Slow game ticks (x3.5 average)": 70,
+    "Max Update GameTick time": 0.111151
+  },
+  "Player Manager": {
+    "Average Update GameTick Time": 0.013206652852267187,
+    "Min Update Game Tick time": 0.003569,
+    "Amount of game ticks executed": 6153,
+    "metrics": {
+      "Player Manager - Check Player Health": 0.0010989879733463346,
+      "Player Manager - Update GameTick Total": 0.013206652852267187,
+      "Player Manager - Update Ship Movement": 0.0025711539086624414,
+      "Player Manager - Update SpaceShip": 0.002875552901023891
+    },
+    "Slow game ticks (x3.5 average)": 157,
+    "Max Update GameTick time": 0.670748
+  },
+  "Director Manager": {
+    "Average Update GameTick Time": 0.022787730253822983,
+    "Min Update Game Tick time": 5.26E-4,
+    "Amount of game ticks executed": 6343,
+    "metrics": {
+      "Director Manager - Update Difficulty Coefficient": 0.0014173180478218139,
+      "Director Manager - Update Director": 0.0070606915834287975,
+      "Director Manager - Update GameTick Total": 0.022787730253822983,
+      "Director Manager - Distribute Credits": 0.0011181965280052416
+    },
+    "Slow game ticks (x3.5 average)": 184,
+    "Max Update GameTick time": 8.484824
+  },
+  "Level Manager": {
+    "Average Update GameTick Time": 0.2994273474696513,
+    "Min Update Game Tick time": 1.39E-4,
+    "Amount of game ticks executed": 6343,
+    "metrics": {
+      "Level Manager - Handle End Of Song Behaviour": 0.31054341716269773,
+      "Level Manager - Update GameTick Total": 0.2994273474696513,
+      "Level Manager - Spawn Enemy": 0.09628485371702646
+    },
+    "Slow game ticks (x3.5 average)": 18,
+    "Max Update GameTick time": 217.304578
+  },
+  "GameBoard": {
+    "Average Update GameTick Time": 0.0,
+    "Min Update Game Tick time": 1.7976931348623157E308,
+    "Amount of game ticks executed": 0,
+    "metrics": {
+      "Draw Objects": 0.9109535066981875
+    },
+    "Slow game ticks (x3.5 average)": 0,
+    "Max Update GameTick time": 0.0
+  },
+  "Explosion Manager": {
+    "Average Update GameTick Time": 0.16250420786608175,
+    "Min Update Game Tick time": 6.84E-4,
+    "Amount of game ticks executed": 6153,
+    "metrics": {
+      "Explosion Manager - Update Explosions": 0.15902885941817083,
+      "Explosion Manager - Update GameTick Total": 0.16250420786608175
+    },
+    "Slow game ticks (x3.5 average)": 661,
+    "Max Update GameTick time": 2.554372
+  },
+  "Thorns Damage Dealer": {
+    "Average Update GameTick Time": 0.0017718574806873698,
+    "Min Update Game Tick time": 6.06E-4,
+    "Amount of game ticks executed": 6343,
+    "metrics": {
+      "Thorns Damage Dealer - Update GameTick Total": 0.0017718574806873698,
+      "Thorns Damage Dealer - Activate Delayed Thorn Attacks": 1.722385306637221E-4
+    },
+    "Slow game ticks (x3.5 average)": 34,
+    "Max Update GameTick time": 0.056747
+  },
+  "Missile Manager": {
+    "Average Update GameTick Time": 0.16402301982772632,
+    "Min Update Game Tick time": 0.00241,
+    "Amount of game ticks executed": 6153,
+    "metrics": {
+      "Missile Manager - Update Laserbeams": 3.2265935316105903E-4,
+      "Missile Manager - Update GameTick Total": 0.16402301982772632,
+      "Missile Manager - Trigger Missile Actions": 0.001058337721436696,
+      "Missile Manager - Remove Invisible Projects": 0.0013225439622948155,
+      "Missile Manager - Check Missile Collision": 0.12856652234682306,
+      "Missile Manager - Move Missiles": 0.025833241833252155
+    },
+    "Slow game ticks (x3.5 average)": 148,
+    "Max Update GameTick time": 162.508134
+  },
+  "Audio Manager": {
+    "Average Update GameTick Time": 0.20906420542824655,
+    "Min Update Game Tick time": 2.54E-4,
+    "Amount of game ticks executed": 6153,
+    "metrics": {
+      "Audio Manager - Reset Clips": 0.6203822832847414,
+      "Audio Manager - Update GameTick Total": 0.20906420542824655
+    },
+    "Slow game ticks (x3.5 average)": 557,
+    "Max Update GameTick time": 6.01082
+  },
+  "Friendly Manager": {
+    "Average Update GameTick Time": 0.00994726442385828,
+    "Min Update Game Tick time": 0.001996,
+    "Amount of game ticks executed": 6153,
+    "metrics": {
+      "Friendly Manager - Activate Friendly Objects": 5.926374126442384E-4,
+      "Friendly Manager - Check Friendly Object Collision": 0.0013308274012676744,
+      "Friendly Manager - Update GameTick Total": 0.00994726442385828,
+      "Friendly Manager - Remove Invisible Objects": 3.985290102389144E-4,
+      "Friendly Manager - Spawn Finished Level Portal": 4.1669900861369177E-4,
+      "Friendly Manager - Move Friendly Objects": 4.1643816024704414E-4
+    },
+    "Slow game ticks (x3.5 average)": 71,
+    "Max Update GameTick time": 0.136906
+  }
+}

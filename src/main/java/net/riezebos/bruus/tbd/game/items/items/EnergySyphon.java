@@ -19,7 +19,7 @@ public class EnergySyphon extends Item {
 
 
     private void calculateBarrierAmount(){
-        this.barrierAmount = 25 * quantity;
+        this.barrierAmount = 15 * quantity;
     }
 
     public void increaseQuantityOfItem(int amount){

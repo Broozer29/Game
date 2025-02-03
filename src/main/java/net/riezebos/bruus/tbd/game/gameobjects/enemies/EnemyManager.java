@@ -13,6 +13,8 @@ import net.riezebos.bruus.tbd.game.level.LevelManager;
 import net.riezebos.bruus.tbd.game.level.enums.LevelTypes;
 import net.riezebos.bruus.tbd.game.movement.BoardBlockUpdater;
 import net.riezebos.bruus.tbd.game.util.ThornsDamageDealer;
+import net.riezebos.bruus.tbd.game.util.performancelogger.PerformanceLogger;
+import net.riezebos.bruus.tbd.game.util.performancelogger.PerformanceLoggerManager;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.AnimationManager;
 import net.riezebos.bruus.tbd.game.util.WithinVisualBoundariesCalculator;
@@ -33,8 +35,11 @@ public class EnemyManager {
     private AnimationManager animationManager = AnimationManager.getInstance();
     private CopyOnWriteArrayList<Enemy> enemyList = new CopyOnWriteArrayList<Enemy>();
     private boolean hasSpawnedABoss = false;
+    private PerformanceLogger performanceLogger = null;
+
 
     private EnemyManager () {
+        this.performanceLogger = new PerformanceLogger("Enemy Manager");
     }
 
     public static EnemyManager getInstance () {
@@ -50,12 +55,18 @@ public class EnemyManager {
         friendlyManager = PlayerManager.getInstance();
         audioManager = AudioManager.getInstance();
         hasSpawnedABoss = false;
+        performanceLogger.reset();
     }
 
     public void updateGameTick () {
-        updateEnemies();
-        checkSpaceshipCollisions();
-        triggerEnemyActions();
+//        PerformanceLoggerManager.timeAndLog(performanceLogger, "Total", () -> {
+                    PerformanceLoggerManager.timeAndLog(performanceLogger, "Update Enemies", this::updateEnemies);
+                    PerformanceLoggerManager.timeAndLog(performanceLogger, "Check Spaceship Collision", this::checkSpaceshipCollisions);
+                    PerformanceLoggerManager.timeAndLog(performanceLogger, "Trigger Enemy Actions", this::triggerEnemyActions);
+//                });
+//        updateEnemies();
+//        checkSpaceshipCollisions();
+//        triggerEnemyActions();
     }
 
 
@@ -72,24 +83,25 @@ public class EnemyManager {
     private void checkSpaceshipCollisions () {
         SpaceShip spaceship = friendlyManager.getSpaceship();
         for (Enemy enemy : enemyList) {
-
-            CollisionInfo collisionInfo = CollisionDetector.getInstance().detectCollision(enemy, spaceship);
-            if (collisionInfo != null) {
-                if (enemy.isDetonateOnCollision()) {
-                    detonateEnemy(enemy);
-                    enemy.dealDamageToGameObject(spaceship);
-                } else {
-                    spaceship.takeDamage(2.5f * (1 - PlayerStats.getInstance().getCollisionDamageReduction()));
-                    spaceship.resetToPreviousPosition();
-                    handleAdditionalKnockbackBehaviour(enemy);
+            if (enemy.isVisible()) {
+                CollisionInfo collisionInfo = CollisionDetector.getInstance().detectCollision(enemy, spaceship);
+                if (collisionInfo != null) {
+                    if (enemy.isDetonateOnCollision()) {
+                        detonateEnemy(enemy);
+                        enemy.dealDamageToGameObject(spaceship);
+                    } else {
+                        spaceship.takeDamage(2.5f * (1 - PlayerStats.getInstance().getCollisionDamageReduction()));
+                        spaceship.resetToPreviousPosition();
+                        handleAdditionalKnockbackBehaviour(enemy);
+                    }
+                    spaceship.applyKnockback(collisionInfo, enemy.getKnockbackStrength());
                 }
-                spaceship.applyKnockback(collisionInfo, enemy.getKnockbackStrength());
             }
         }
     }
 
     private void handleAdditionalKnockbackBehaviour (Enemy enemy) {
-        if (PlayerInventory.getInstance().getItemByName(ItemEnums.Thornweaver) != null) {
+        if (PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.Thornweaver) != null) {
             ThornsDamageDealer.getInstance().addDelayedThornsDamageToObject(enemy, 1);
         }
     }
@@ -121,8 +133,10 @@ public class EnemyManager {
     private void updateEnemies () {
         for (Enemy en : enemyList) {
             if (en.isVisible()) {
-                en.move();
-                en.updateGameObjectEffects();
+                PerformanceLoggerManager.timeAndLog(performanceLogger, "Move Enemy", en::move);
+                PerformanceLoggerManager.timeAndLog(performanceLogger, "Update Enemy Effects", en::updateGameObjectEffects);
+//                en.move();
+//                en.updateGameObjectEffects();
             } else {
                 en.deleteObject();
                 enemyList.remove(en); // Remove directly from CopyOnWriteArrayList
@@ -263,5 +277,9 @@ public class EnemyManager {
 
     public int getAmountOfEnemyTypesAlive(EnemyEnums enemyToCheck){
         return enemyList.stream().filter(enemy -> enemy.getEnemyType().equals(enemyToCheck)).collect(Collectors.toList()).size();
+    }
+
+    public PerformanceLogger getPerformanceLogger () {
+        return this.performanceLogger;
     }
 }

@@ -19,6 +19,7 @@ public class CannisterOfGasoline extends Item {
     private float explosionDamage;
     private float burningDamage;
     private int duration;
+    private boolean shouldApply = false;
 
     public CannisterOfGasoline () {
         super(ItemEnums.CannisterOfGasoline, 1, ItemApplicationEnum.BeforeCollision); //Before collision to ensure the explosion goes off even if the target already has 0 HP
@@ -27,21 +28,38 @@ public class CannisterOfGasoline extends Item {
         this.duration = calculateDuration(quantity);
     }
 
+    @Override
     public void increaseQuantityOfItem (int amount) {
+        removeEffect();
         this.quantity += amount;
         this.explosionDamage = calculateExplosionDamage(quantity);
         this.burningDamage = calculateBurningDamage(quantity);
         this.duration = calculateDuration(quantity);
+        upgradeIgnite();
     }
+
+
+    private void upgradeIgnite () {
+        PlayerStats.getInstance().modifyIgniteItemDamageMultiplier(this.quantity * 0.20f);
+        PlayerStats.getInstance().modifyIgniteDurationModifier(this.quantity * 0.20f);
+    }
+
+    private void removeEffect () {
+        if (quantity > 0) {
+            PlayerStats.getInstance().modifyIgniteItemDamageMultiplier(-(this.quantity * 0.20f));
+            PlayerStats.getInstance().modifyIgniteDurationModifier(-(this.quantity * 0.20f));
+        }
+    }
+
 
     private float calculateBurningDamage (int quantity) {
         PlayerClass currentPlayerClass = PlayerStats.getInstance().getPlayerClass();
-        switch (currentPlayerClass){
+        switch (currentPlayerClass) {
             case FireFighter:
                 return PlayerStats.getInstance().getFireFighterIgniteDamage();
             case Captain:
             default:
-               return PlayerStats.getInstance().getBaseDamage() * 0.15f * quantity;
+                return PlayerStats.getInstance().getBaseDamage() * 0.015f * quantity;
         }
     }
 
@@ -56,7 +74,7 @@ public class CannisterOfGasoline extends Item {
 
     @Override
     public void applyEffectToObject (GameObject gameObject) {
-        if(gameObject instanceof AlienBomb){ //AlienBombs should be immune to this
+        if (gameObject instanceof AlienBomb) { //AlienBombs should be immune to this
             return;
         }
 
@@ -70,8 +88,8 @@ public class CannisterOfGasoline extends Item {
     }
 
     @Override
-    public boolean isAvailable(){
-        if(!this.itemEnum.isEnabled()){
+    public boolean isAvailable () {
+        if (!this.itemEnum.isEnabled()) {
             return false;
         }
         return true;

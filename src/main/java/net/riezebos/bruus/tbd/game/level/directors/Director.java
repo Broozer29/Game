@@ -67,8 +67,8 @@ public class Director {
         };
     }
 
-    public void update (double secondsPassed) {
-        currentTime = secondsPassed;
+    public void update () {
+        currentTime = GameStateInfo.getInstance().getGameSeconds();
 
         // Check if we should spawn enemies
         if (shouldAttemptSpawn(currentTime)) {
@@ -240,15 +240,16 @@ public class Director {
         float xMovementSpeed = isEntourage ? secondaryEnemyType.getMovementSpeed() : primaryEnemyType.getMovementSpeed();
         float yMovementSpeed = xMovementSpeed;
 
-        Enemy enemy = null;
-        if (isEntourage) {
-            enemy = EnemyCreator.createEnemy(secondaryEnemyType, 0, 0, direction, secondaryEnemyType.getDefaultScale(), 0, 0, MovementPatternSize.SMALL, false);
-        } else {
-            enemy = EnemyCreator.createEnemy(primaryEnemyType, 0, 0, direction, primaryEnemyType.getDefaultScale(), 0, 0, MovementPatternSize.SMALL, false);
-        }
+        int formationWDistance;
+        int formationHDistance;
 
-        int formationWDistance = Math.round(enemy.getWidth() * 1.1f);
-        int formationHDistance = Math.round(enemy.getHeight() * 1.1f);
+        if (isEntourage) {
+            formationWDistance = Math.round(secondaryEnemyType.getBaseWidth() * 1.1f);
+            formationHDistance = Math.round(secondaryEnemyType.getBaseHeight() * 1.1f);
+        } else {
+            formationWDistance = Math.round(primaryEnemyType.getBaseWidth() * 1.1f);
+            formationHDistance = Math.round(primaryEnemyType.getBaseHeight() * 1.1f);
+        }
 
         EnemyFormation formation = formationCreator.createFormation(formationType, formationWDistance, formationHDistance);
         int totalFormationWidth = formation.getFormationWidth() * formation.getWidthDistance();

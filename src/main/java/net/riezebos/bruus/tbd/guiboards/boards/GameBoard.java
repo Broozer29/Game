@@ -6,7 +6,10 @@ import net.riezebos.bruus.tbd.game.UI.GameUICreator;
 import net.riezebos.bruus.tbd.game.UI.UIObject;
 import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
 import net.riezebos.bruus.tbd.game.items.PlayerInventory;
+import net.riezebos.bruus.tbd.game.level.enums.LevelTypes;
 import net.riezebos.bruus.tbd.game.util.VisualLayer;
+import net.riezebos.bruus.tbd.game.util.performancelogger.PerformanceLogger;
+import net.riezebos.bruus.tbd.game.util.performancelogger.PerformanceLoggerManager;
 import net.riezebos.bruus.tbd.guiboards.TimerHolder;
 import net.riezebos.bruus.tbd.guiboards.background.BackgroundManager;
 import net.riezebos.bruus.tbd.guiboards.background.BackgroundObject;
@@ -85,6 +88,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
     private ConnectedControllersManager controllers = ConnectedControllersManager.getInstance();
     private int firstTextColumnXCoordinate = 0;
     private int secondTextColumnXCoordinate = 0;
+    private PerformanceLogger performanceLogger;
 
 
     public GameBoard () {
@@ -103,7 +107,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
 
         firstTextColumnXCoordinate = Math.round(DataClass.getInstance().getWindowWidth() * 0.7f);
         secondTextColumnXCoordinate = Math.round(DataClass.getInstance().getWindowWidth() * 0.85f);
-
+        this.performanceLogger = new PerformanceLogger("GameBoard");
         initBoard();
     }
 
@@ -140,11 +144,13 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
         textManager.resetManager();
         playerStats.resetPlayerStats();
         gameState.resetGameState();
+        ThornsDamageDealer.getInstance().resetThornsDamageDealer();
         this.drawTimer.setDelay(gameState.getDELAY());
         zoningInAlpha = 1.0f;
         zoningOutAlpha = 0.0f;
         inputDelay = 0;
         this.isPlayingDeathMusic = false;
+        this.hasExportedLogs = false;
     }
 
     private void resetManagersForNextLevel () {
@@ -160,6 +166,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
             friendlyManager.resetPortal();
             uiManager.resetManager();
             textManager.resetManager();
+            this.hasExportedLogs = false;
 
             //These should probably to be refactored into osmething new
             hasResetManagersForNextLevel = true;
@@ -199,6 +206,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
             zoningInAlpha = 1;
             zoningOutAlpha = 0;
             hasResetManagersForNextLevel = false;
+
             resetManagersForNextLevel();
 
             drawTimer.stop();
@@ -214,11 +222,19 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
 
     // Draw the game over screen
     private boolean isPlayingDeathMusic = false;
+    private boolean hasExportedLogs = false;
 
     private void drawEndOfLevelScreen (Graphics2D g, boolean hasSurvived) {
         if (!hasSurvived && !isPlayingDeathMusic) {
             playDeathMusic();
             isPlayingDeathMusic = true;
+        }
+
+        if (!hasExportedLogs) {
+            String stageNumber = String.valueOf(GameStateInfo.getInstance().getStagesCompleted());
+            PerformanceLoggerManager.getInstance().exportToJson("Stage_" + stageNumber);
+            PerformanceLoggerManager.getInstance().reset();
+            hasExportedLogs = true;
         }
 
 
@@ -393,6 +409,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
     }
 
     private void drawObjects (Graphics2D g) {
+        double start = System.currentTimeMillis();
         // Draws all background objects
         for (BackgroundObject bgObject : backgroundManager.getAllBGO()) {
             drawImage(g, bgObject);
@@ -497,10 +514,13 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
                     DataClass.getInstance().getWindowWidth() * 0.4f,
                     DataClass.getInstance().getWindowHeight() / 2);
         }
+
+        double end = System.currentTimeMillis();
+        this.performanceLogger.logMetric("Draw Objects", end - start);
     }
 
     //Helper method to centralize drawing of special attacks
-    private void drawSpecialAttacks(VisualLayer visualLayer, Graphics2D g2d){
+    private void drawSpecialAttacks (VisualLayer visualLayer, Graphics2D g2d) {
         for (SpecialAttack specialAttack : missileManager.getSpecialAttacksByAnimationLayer(visualLayer)) {
             if (specialAttack.isVisible()) {
                 if (specialAttack.getAnimation() != null) {
@@ -674,7 +694,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
 
     private void drawSongProgressBar (Graphics2D g) {
         //Only update these when playing, as gameseconds continues to grow after the song is finished
-        if(gameState.getGameState().equals(GameStatusEnums.Playing)) {
+        if (gameState.getGameState().equals(GameStatusEnums.Playing)) {
             currentMusicSeconds = GameStateInfo.getInstance().getGameSeconds();
             maximumMusicSeconds = AudioManager.getInstance().getPredictedEndGameSeconds();
         }
@@ -683,25 +703,26 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
             //If these values don't make sense, don't attempt to draw the bar
             return;
         }
-
         UIObject progressBar = uiManager.getProgressBar();
         UIObject progressBarFilling = uiManager.getProgressBarFilling();
         UIObject spaceShipIndicator = uiManager.getProgressBarSpaceShipIndicator();
 
-        // Calculate the width of the progress bar filling based on the current position of the song
-        int progressBarWidth = GameUICreator.getInstance().calculateProgressBarFillingWidth(currentMusicSeconds, maximumMusicSeconds);
+        if (!LevelManager.getInstance().getLevelType().equals(LevelTypes.Boss)) {
+            // Calculate the width of the progress bar filling based on the current position of the song
+            int progressBarWidth = GameUICreator.getInstance().calculateProgressBarFillingWidth(currentMusicSeconds, maximumMusicSeconds);
 
-        // Resize the progress bar filling
-        progressBarFilling.resizeToDimensions(progressBarWidth, progressBarFilling.getHeight());
+            // Resize the progress bar filling
+            progressBarFilling.resizeToDimensions(progressBarWidth, progressBarFilling.getHeight());
 
-        // Place the spaceship indicator at the edge of the filling
-        spaceShipIndicator.setXCoordinate((progressBarFilling.getXCoordinate() + progressBarFilling.getWidth()) - spaceShipIndicator.getWidth());
+            // Place the spaceship indicator at the edge of the filling
+            spaceShipIndicator.setXCoordinate((progressBarFilling.getXCoordinate() + progressBarFilling.getWidth()) - spaceShipIndicator.getWidth());
 
-        // Draw the progress bar components
-        drawImage(g, progressBar);
-        drawImage(g, progressBarFilling);
-        drawImage(g, spaceShipIndicator);
 
+            // Draw the progress bar components
+            drawImage(g, progressBar);
+            drawImage(g, progressBarFilling);
+            drawImage(g, spaceShipIndicator);
+        }
         if (levelManager.getCurrentLevelSong() != null && !levelManager.isNextLevelABossLevel() && audioManager.getMusicMediaPlayer().equals(MusicMediaPlayer.Default)) {
             g.setColor(Color.white);
             g.drawString("Song: " + levelManager.getCurrentLevelSong().toString(), progressBar.getXCoordinate(), progressBar.getYCoordinate() + progressBar.getHeight() + 10);
@@ -753,22 +774,71 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
         }
 
         if (gameState.getGameState() != GameStatusEnums.Dead && gameState.getGameState() != GameStatusEnums.Paused) {
-            playerManager.updateGameTick();
-            missileManager.updateGameTick();
-            enemyManager.updateGameTick();
-            levelManager.updateGameTick();
-            animationManager.updateGameTick();
-            backgroundManager.updateGameTick();
-            audioDatabase.updateGameTick();
-            explosionManager.updateGametick();
-            friendlyManager.updateGameTick();
-            ThornsDamageDealer.getInstance().updateGameTick();
+            // Player Manager
+            PerformanceLoggerManager.logUpdateGameTick(playerManager.getPerformanceLogger(), playerManager::updateGameTick);
 
-//            if(gameState.getGameState().equals(GameStatusEnums.Playing)) {
+            // Missile Manager
+            PerformanceLoggerManager.logUpdateGameTick(missileManager.getPerformanceLogger(), missileManager::updateGameTick);
+
+            // Enemy Manager
+            PerformanceLoggerManager.logUpdateGameTick(enemyManager.getPerformanceLogger(), enemyManager::updateGameTick);
+
+            // Level Manager
+            PerformanceLoggerManager.logUpdateGameTick(levelManager.getPerformanceLogger(), levelManager::updateGameTick);
+
+            // Animation Manager
+            PerformanceLoggerManager.logUpdateGameTick(animationManager.getPerformanceLogger(), animationManager::updateGameTick);
+
+            // Background Manager
+            PerformanceLoggerManager.logUpdateGameTick(backgroundManager.getPerformanceLogger(), backgroundManager::updateGameTick);
+
+            // Audio Database
+            PerformanceLoggerManager.logUpdateGameTick(audioDatabase.getPerformanceLogger(), audioDatabase::updateGameTick);
+
+            // Explosion Manager
+            PerformanceLoggerManager.logUpdateGameTick(explosionManager.getPerformanceLogger(), explosionManager::updateGametick);
+
+            // Friendly Manager
+            PerformanceLoggerManager.logUpdateGameTick(friendlyManager.getPerformanceLogger(), friendlyManager::updateGameTick);
+
+            // Thorns Damage Dealer
+            PerformanceLoggerManager.logUpdateGameTick(ThornsDamageDealer.getInstance().getPerformanceLogger(), ThornsDamageDealer.getInstance()::updateGameTick);
+
+            // Director Manager
+            PerformanceLoggerManager.logUpdateGameTick(DirectorManager.getInstance().getPerformanceLogger(), DirectorManager.getInstance()::updateGameTick);
+
+            // Increment game ticks
             gameState.addGameTicks(1);
-            DirectorManager.getInstance().updateGameTick();
-//            }
         }
+
+
+//        if (gameState.getGameState() != GameStatusEnums.Dead && gameState.getGameState() != GameStatusEnums.Paused) {
+////            playerManager.updateGameTick();
+//            PerformanceLoggerManager.timeAndLog(playerManager.getPerformanceLogger(), "Player Manager Total", playerManager::updateGameTick);
+////            missileManager.updateGameTick();
+//            PerformanceLoggerManager.timeAndLog(missileManager.getPerformanceLogger(), "Missile Manager Total", missileManager::updateGameTick);
+////            enemyManager.updateGameTick();
+//            PerformanceLoggerManager.timeAndLog(enemyManager.getPerformanceLogger(), "Enemy Manager Total", enemyManager::updateGameTick);
+////            levelManager.updateGameTick();
+//            PerformanceLoggerManager.timeAndLog(levelManager.getPerformanceLogger(), "Level Manager Total", levelManager::updateGameTick);
+////            animationManager.updateGameTick();
+//            PerformanceLoggerManager.timeAndLog(animationManager.getPerformanceLogger(), "Animation Manager Total", animationManager::updateGameTick);
+////            backgroundManager.updateGameTick();
+//            PerformanceLoggerManager.timeAndLog(backgroundManager.getPerformanceLogger(), "Background Manager Total", backgroundManager::updateGameTick);
+////            audioDatabase.updateGameTick();
+//            PerformanceLoggerManager.timeAndLog(audioDatabase.getPerformanceLogger(), "Audio Database Total", audioDatabase::updateGameTick);
+////            explosionManager.updateGametick();
+//            PerformanceLoggerManager.timeAndLog(explosionManager.getPerformanceLogger(), "Explosion Manager Total", explosionManager::updateGametick);
+////            friendlyManager.updateGameTick();
+//            PerformanceLoggerManager.timeAndLog(friendlyManager.getPerformanceLogger(), "Friendly Manager Total", friendlyManager::updateGameTick);
+//            PerformanceLoggerManager.timeAndLog(ThornsDamageDealer.getInstance().getPerformanceLogger(), "Thorns Damage Dealer Total", ThornsDamageDealer.getInstance()::updateGameTick);
+////            ThornsDamageDealer.getInstance().updateGameTick();
+//
+//            gameState.addGameTicks(1);
+//            PerformanceLoggerManager.timeAndLog(DirectorManager.getInstance().getPerformanceLogger(), "Director Manager Total", DirectorManager.getInstance()::updateGameTick);
+////            DirectorManager.getInstance().updateGameTick();
+//        }
+
         executeControllerInput();
 
         if (shouldIncreaseInputDelay()) {
@@ -779,12 +849,10 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
             lastKnownState = gameState.getGameState();
             System.out.println("Last known gamestate: " + lastKnownState);
         }
-
-
         repaint(0, 0, DataClass.getInstance().getWindowWidth(), DataClass.getInstance().getWindowHeight());
     }
 
-    private boolean shouldIncreaseInputDelay(){
+    private boolean shouldIncreaseInputDelay () {
         GameStatusEnums gameStatus = gameState.getGameState();
         return gameStatus == GameStatusEnums.Show_Level_Score_Card || gameStatus == GameStatusEnums.Paused || gameStatus == GameStatusEnums.Dead;
     }
@@ -818,7 +886,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
                 boardManager = BoardManager.getInstance();
             }
 
-            if(gameState.getGameState() == GameStatusEnums.Paused){
+            if (gameState.getGameState() == GameStatusEnums.Paused) {
                 return; //We only want to listen to unpause commands in keyrelease
             }
 
@@ -855,7 +923,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
                     gameState.setGameState(GameStatusEnums.Paused);
                     audioManager.pauseAllAudio();
                     inputDelay = 0;
-                } else if (gameState.getGameState().equals(GameStatusEnums.Paused)  && inputDelay >= (MOVE_COOLDOWN / 2)) {
+                } else if (gameState.getGameState().equals(GameStatusEnums.Paused) && inputDelay >= (MOVE_COOLDOWN / 2)) {
                     gameState.setGameState(GameStatusEnums.Playing);
                     audioManager.resumeAllAudio();
                     inputDelay = 0;

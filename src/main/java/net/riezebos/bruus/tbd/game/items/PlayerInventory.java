@@ -1,6 +1,5 @@
 package net.riezebos.bruus.tbd.game.items;
 
-import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
 import net.riezebos.bruus.tbd.game.items.enums.ItemApplicationEnum;
 import net.riezebos.bruus.tbd.game.items.items.*;
 import net.riezebos.bruus.tbd.game.items.items.captain.*;
@@ -14,19 +13,12 @@ import java.util.stream.Collectors;
 public class PlayerInventory {
     private static PlayerInventory instance = new PlayerInventory();
     private Map<ItemEnums, Item> items = new HashMap<>();
-    private float cashMoney = 999999999;
+    private float cashMoney = 100;
     private PlayerInventory () {
-//        addItem(ItemEnums.ThornedPlates);
-//        addItem(ItemEnums.EntanglingFlames);
-
-//        addItem(ItemEnums.ModuleElectrify);
-//        addItem(ItemEnums.ModuleCommand);
-
 //        for(int i = 0; i < 4; i++){
 //            addItem(ItemEnums.GuardianDrone);
 //        }
-        PlayerStats.getInstance().setShopRerollDiscount(99);
-//        addItem(ItemEnums.PlatinumSponge);
+//        PlayerStats.getInstance().setShopRerollDiscount(99);
     }
 
 
@@ -142,6 +134,10 @@ public class PlayerInventory {
                 return new EntanglingFlames();
             case BargainBucket:
                 return new BargainBucket();
+            case ShieldStabilizer:
+                return new ShieldStabilizer();
+            case Locked:
+                return null;
             default:
                 System.out.println("I tried to create: " + itemEnum + " but fell in default, did you forget to add it to the inventory creation?");
                 return null;
@@ -161,7 +157,7 @@ public class PlayerInventory {
     }
 
 
-    public Item getItemByName (ItemEnums itemName) {
+    public Item getItemFromInventoryIfExists (ItemEnums itemName) {
         return items.get(itemName);
     }
 

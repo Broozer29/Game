@@ -7,6 +7,8 @@ import net.riezebos.bruus.tbd.game.gamestate.GameStateInfo;
 import net.riezebos.bruus.tbd.game.items.Item;
 import net.riezebos.bruus.tbd.game.items.PlayerInventory;
 import net.riezebos.bruus.tbd.game.items.enums.ItemApplicationEnum;
+import net.riezebos.bruus.tbd.game.util.performancelogger.PerformanceLogger;
+import net.riezebos.bruus.tbd.game.util.performancelogger.PerformanceLoggerManager;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.AnimationManager;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteAnimation;
@@ -22,10 +24,12 @@ public class ThornsDamageDealer {
     private Map<GameObject, Integer> thornsApplyMap = new HashMap<>();
     private double lastThornsActivationTime = 0;
     private Random random;
+    private PerformanceLogger performanceLogger = null;
 
     private ThornsDamageDealer () {
         playerStats = PlayerStats.getInstance();
         this.random = new Random();
+        this.performanceLogger = new PerformanceLogger("Thorns Damage Dealer");
     }
 
     public static ThornsDamageDealer getInstance () {
@@ -36,12 +40,16 @@ public class ThornsDamageDealer {
     public void resetThornsDamageDealer () {
         lastThornsActivationTime = 0;
         thornsApplyMap.clear();
+        performanceLogger.reset();
     }
 
 
     public void updateGameTick () {
         //This method will be acticated every gametick, hence the "activateDelayedThornsAttacks()"
-        activateDelayedThornsAttacks();
+//        PerformanceLoggerManager.timeAndLog(performanceLogger, "Total", () -> {
+            PerformanceLoggerManager.timeAndLog(performanceLogger, "Activate Delayed Thorn Attacks", this::activateDelayedThornsAttacks);
+//            activateDelayedThornsAttacks();
+//        });
     }
 
 
@@ -55,7 +63,7 @@ public class ThornsDamageDealer {
         double currentTime = GameStateInfo.getInstance().getGameSeconds();
 
         // Ensure 0.1 second has passed since the last activation
-        if (currentTime - lastThornsActivationTime < 0.15) {
+        if (thornsApplyMap.isEmpty() || currentTime - lastThornsActivationTime < 0.15) {
             return;
         }
 
@@ -149,5 +157,9 @@ public class ThornsDamageDealer {
             // Apply the new scale, adjusting based on the current scale
             animation.setAnimationScale(currentScale * newScaleFactor);
         }
+    }
+
+    public PerformanceLogger getPerformanceLogger () {
+        return this.performanceLogger;
     }
 }

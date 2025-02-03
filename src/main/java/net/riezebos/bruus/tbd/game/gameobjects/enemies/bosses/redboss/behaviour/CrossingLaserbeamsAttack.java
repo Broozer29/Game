@@ -22,10 +22,11 @@ public class CrossingLaserbeamsAttack implements BossActionable {
     private double attackCooldown = 20;
     private int priority = 3;
 
-    private int lowerLaserbeamLowestAngle = 135;
-    private int lowerLaserbeamHighestAngle = 225;
-    private int upperLaserbeamLowestAngle = 135;
-    private int upperLaserbeamHighestAngle = 225;
+    public static int lowerLaserbeamLowestAngle = 135;
+    public static int lowerLaserbeamHighestAngle = 225;
+    public static int upperLaserbeamLowestAngle = 135;
+    public static int upperLaserbeamHighestAngle = 225;
+    public static float angleStepSize = 0.4f;
 
     private Point upperLaserbeamOriginPoint;
     private Point lowerLaserbeamOriginPoint;
@@ -35,7 +36,7 @@ public class CrossingLaserbeamsAttack implements BossActionable {
     private Laserbeam lowerLaserbeam;
     private boolean isFiringLaserbeams;
     private boolean inwards;
-    private float angleStepSize = 0.4f;
+
 
     public CrossingLaserbeamsAttack (boolean inwards) {
         //Determines wether the laserbeams go from outside to the center if true, if false the laserbeams should go inwards to outwards
@@ -43,6 +44,7 @@ public class CrossingLaserbeamsAttack implements BossActionable {
         setAngles();
     }
 
+    //These variables are static now, meaning that this method will NOT play nice if there are 2 or more enemies with this behaviour at the same time
     private void setAngles () {
         if (inwards) {
             lowerLaserbeamHighestAngle = 185;

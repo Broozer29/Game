@@ -53,7 +53,7 @@ public class ModuleElectrify extends Item {
         if(!this.itemEnum.isEnabled()){
             return false;
         }
-        if(PlayerStats.getInstance().getPlayerClass().equals(PlayerClass.Captain) && PlayerInventory.getInstance().getItemByName(this.itemEnum) == null){
+        if(PlayerStats.getInstance().getPlayerClass().equals(PlayerClass.Captain) && PlayerInventory.getInstance().getItemFromInventoryIfExists(this.itemEnum) == null){
             isAvailable = true;
         }
 

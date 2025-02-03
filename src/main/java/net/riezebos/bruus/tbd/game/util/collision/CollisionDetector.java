@@ -11,8 +11,8 @@ import java.awt.image.BufferedImage;
 public class CollisionDetector {
 
     private static CollisionDetector instance = new CollisionDetector();
-    private int threshold = 400;
-    private int boardBlockThreshold = 3;
+    private int threshold = 200;
+    private int boardBlockThreshold = 2;
 
     private CollisionDetector () {
 
@@ -180,14 +180,17 @@ public class CollisionDetector {
         if (!isWithinBoardBlockThreshold(gameObject1, gameObject2)) {
             return false;
         }
-
-
-        if(gameObject1.getWidth() > rangeThreshold || gameObject1.getHeight() > rangeThreshold){
-            rangeThreshold = Math.max(gameObject1.getWidth(), gameObject1.getHeight());
+        int actualRangeUsed = rangeThreshold;
+        if(isLargeObject(gameObject1) || isLargeObject(gameObject2)){
+            actualRangeUsed *= 2;
         }
 
-        if(gameObject2.getWidth() > rangeThreshold || gameObject2.getHeight() > rangeThreshold){
-            rangeThreshold = Math.max(gameObject2.getWidth(), gameObject2.getHeight());
+        if(gameObject1.getWidth() > actualRangeUsed || gameObject1.getHeight() > actualRangeUsed){
+            actualRangeUsed = Math.max(gameObject1.getWidth(), gameObject1.getHeight());
+        }
+
+        if(gameObject2.getWidth() > actualRangeUsed || gameObject2.getHeight() > actualRangeUsed){
+            actualRangeUsed = Math.max(gameObject2.getWidth(), gameObject2.getHeight());
         }
 
         int x1 = getGameObjectXCoordinate(gameObject1);
@@ -197,7 +200,7 @@ public class CollisionDetector {
         int y2 = getGameObjectYCoordinate(gameObject2);
 
         double distance = Math.hypot(x1 - x2, y1 - y2);
-        return distance < rangeThreshold;
+        return distance < actualRangeUsed;
     }
 
     // Helper method to check if a GameObject and SpriteAnimation are nearby
@@ -218,6 +221,17 @@ public class CollisionDetector {
         gameObject2.updateBoardBlock();
 
         int blockDifference = Math.abs(gameObject1.getCurrentBoardBlock() - gameObject2.getCurrentBoardBlock());
+        if(isLargeObject(gameObject1) || isLargeObject(gameObject2)){
+            return blockDifference <= boardBlockThreshold * 2;
+        }
         return blockDifference <= boardBlockThreshold;
     }
+
+    private boolean isLargeObject(GameObject gameObject){
+        if(gameObject.getWidth() >= 300 || gameObject.getHeight() >= 300){
+            return true;
+        }
+        return false;
+    }
+
 }

@@ -6,9 +6,9 @@ import java.util.Random;
 
 public class BoardBlockUpdater {
     public static int getBoardBlock(int xCoordinate){
-        if (xCoordinate >= 0 && xCoordinate <= (DataClass.getInstance().getBoardBlockWidth() * 1)) {
+        if (xCoordinate >= 0 && xCoordinate <= (DataClass.getInstance().getBoardBlockWidth())) {
             return 0;
-        } else if (xCoordinate >= (DataClass.getInstance().getBoardBlockWidth() * 1)
+        } else if (xCoordinate >= (DataClass.getInstance().getBoardBlockWidth())
                 && xCoordinate <= (DataClass.getInstance().getBoardBlockWidth() * 2)) {
             return 1;
         } else if (xCoordinate >= (DataClass.getInstance().getBoardBlockWidth() * 2)

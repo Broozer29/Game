@@ -30,8 +30,8 @@ public class GuardianDrones extends Item {
         if(!this.itemEnum.isEnabled()){
             return false;
         }
-        if(PlayerInventory.getInstance().getItemByName(this.itemEnum) != null){
-            return PlayerInventory.getInstance().getItemByName(this.itemEnum).getQuantity() < PlayerStats.getInstance().getMaximumAmountOfDrones();
+        if(PlayerInventory.getInstance().getItemFromInventoryIfExists(this.itemEnum) != null){
+            return PlayerInventory.getInstance().getItemFromInventoryIfExists(this.itemEnum).getQuantity() < PlayerStats.getInstance().getMaximumAmountOfDrones();
         }
 
         return true;

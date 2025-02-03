@@ -356,7 +356,7 @@ public class CustomAudioClip {
         }
 
         // Tolerance buffer to avoid premature termination
-        double tolerance = 0.05;
+        double tolerance = 0.05; //magic number, decreasing this value causes problems for some reason
         double currentTime = getCurrentSecondsInPlayback();
         double clipLength = getTotalSecondsInPlayback();
 

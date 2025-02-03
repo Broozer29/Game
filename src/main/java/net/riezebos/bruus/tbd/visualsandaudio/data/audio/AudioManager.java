@@ -173,11 +173,13 @@ public class AudioManager {
             backGroundMusic.stopClip();
             backGroundMusic.setLoop(false);
             backGroundMusic = null;
+            currentSong = null;
         }
 
         if (this.musicMediaPlayer == MusicMediaPlayer.iTunesMacOS) {
             macOSMediaPlayer.stopPlayback();
             backGroundMusic = null;
+            currentSong = null;
         }
     }
 
@@ -230,7 +232,6 @@ public class AudioManager {
                     } else {
                         // Synchronize if the song is still playing but we hit the predicted end time
                         synchronizePrediction(currentGameSeconds);
-                        System.out.println("Kom ik hier vaak?");
                         lastSyncGameSeconds = currentGameSeconds; // Update the last sync time after re-sync
                     }
                 }
@@ -247,7 +248,7 @@ public class AudioManager {
 
         // If close to the predicted end time, shorten the interval to 1 second
         if (predictedEndGameSeconds - currentGameSeconds <= 3) {
-            resyncInterval = 1;
+            resyncInterval = 1.5;
         }
 
         // Determine if it's time to resync

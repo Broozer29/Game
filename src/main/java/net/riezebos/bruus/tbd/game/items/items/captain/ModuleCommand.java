@@ -25,6 +25,6 @@ public class ModuleCommand extends Item {
             return false;
         }
 
-        return PlayerStats.getInstance().getPlayerClass().equals(PlayerClass.Captain) && PlayerInventory.getInstance().getItemByName(this.itemEnum) == null;
+        return PlayerStats.getInstance().getPlayerClass().equals(PlayerClass.Captain) && PlayerInventory.getInstance().getItemFromInventoryIfExists(this.itemEnum) == null;
     }
 }

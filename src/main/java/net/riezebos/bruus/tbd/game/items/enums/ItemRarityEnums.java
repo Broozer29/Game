@@ -7,7 +7,7 @@ public enum ItemRarityEnums {
     Common(150, Color.WHITE),
     Rare(225, Color.GREEN),
     Legendary(300, Color.ORANGE),
-    Relic(450, Color.RED),
+    Relic(450, Color.PINK),
     Locked(0, Color.GRAY);
 
 
@@ -29,7 +29,7 @@ public enum ItemRarityEnums {
 
     public static ItemRarityEnums getRandomCommonItemSlot () {
         Random rand = new Random();
-        int chance = rand.nextInt(100);
+        int chance = rand.nextInt(0,101);
 
         if (chance < 75) {
             return ItemRarityEnums.Common;
@@ -43,11 +43,11 @@ public enum ItemRarityEnums {
 
     public static ItemRarityEnums getRandomRareItemSlot () {
         Random rand = new Random();
-        int chance = rand.nextInt(100);
+        int chance = rand.nextInt(0,101);
 
-        if (chance < 75) {
+        if (chance < 70) {
             return ItemRarityEnums.Rare;
-        } else if(chance < 99) {
+        } else if(chance < 95) {
             return ItemRarityEnums.Legendary;
         } else {
             return ItemRarityEnums.Relic;

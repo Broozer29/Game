@@ -447,7 +447,7 @@ public class GameObject extends Sprite {
     }
 
     private void toggleHealthBar () {
-        if (this instanceof Missile) {
+        if (this instanceof Missile || showHealthBar) {
             return;
         }
 
@@ -461,15 +461,17 @@ public class GameObject extends Sprite {
             moveAnimations(animation);
         }
 
-        if (this.destructionAnimation != null) {
-            moveAnimations(destructionAnimation);
-        }
+
+        //Not needed
+//        if (this.destructionAnimation != null) {
+//            moveAnimations(destructionAnimation);
+//        }
 
         for (SpriteAnimation spriteAnimation : effectAnimations) {
             moveAnimationsToCenter(spriteAnimation);
         }
 
-        updateChargingAttackAnimationCoordination();
+//        updateChargingAttackAnimationCoordination();
     }
 
     private void moveAnimations (SpriteAnimation animation) {
@@ -573,7 +575,6 @@ public class GameObject extends Sprite {
             }
 
             this.rotationAngle = calculatedAngle;
-            updateChargingAttackAnimationCoordination();
         }
     }
 
@@ -584,7 +585,6 @@ public class GameObject extends Sprite {
     }
 
     public void rotateAfterMovement () {
-        updateChargingAttackAnimationCoordination();
         if (!this.allowedVisualsToRotate) {
             return;
         }

@@ -48,7 +48,7 @@ public class BarbedMissiles extends Item {
         }
 
         if(PlayerStats.getInstance().getPlayerClass().equals(PlayerClass.Captain)){
-            Item item = PlayerInventory.getInstance().getItemByName(this.itemEnum);
+            Item item = PlayerInventory.getInstance().getItemFromInventoryIfExists(this.itemEnum);
             if(item != null){
                 return item.getQuantity() < 10; //we cap at 10 * 10% = 100% chance
             } else return true; //we don't have any amount yet, return true

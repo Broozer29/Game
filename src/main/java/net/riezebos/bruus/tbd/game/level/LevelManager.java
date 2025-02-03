@@ -1,6 +1,5 @@
 package net.riezebos.bruus.tbd.game.level;
 
-import com.badlogic.gdx.Audio;
 import net.riezebos.bruus.tbd.game.UI.GameUICreator;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.Enemy;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyCreator;
@@ -11,6 +10,9 @@ import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyTribes;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
 import net.riezebos.bruus.tbd.game.gamestate.GameStateInfo;
 import net.riezebos.bruus.tbd.game.gamestate.GameStatusEnums;
+import net.riezebos.bruus.tbd.game.items.Item;
+import net.riezebos.bruus.tbd.game.items.ItemEnums;
+import net.riezebos.bruus.tbd.game.items.PlayerInventory;
 import net.riezebos.bruus.tbd.game.level.directors.DirectorManager;
 import net.riezebos.bruus.tbd.game.level.enums.LevelDifficulty;
 import net.riezebos.bruus.tbd.game.level.enums.LevelLength;
@@ -19,10 +21,11 @@ import net.riezebos.bruus.tbd.game.gamestate.ShopManager;
 import net.riezebos.bruus.tbd.game.movement.Direction;
 import net.riezebos.bruus.tbd.game.movement.MovementPatternSize;
 import net.riezebos.bruus.tbd.game.movement.Point;
+import net.riezebos.bruus.tbd.game.util.performancelogger.PerformanceLogger;
+import net.riezebos.bruus.tbd.game.util.performancelogger.PerformanceLoggerManager;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.AudioManager;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.AudioEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.LevelSongs;
-import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.MusicMediaPlayer;
 
 import java.util.List;
 
@@ -42,8 +45,10 @@ public class LevelManager {
     private LevelTypes levelType;
     private EnemyTribes currentEnemyTribe;
     private int stagesBeforeBoss = 3;
+    private PerformanceLogger performanceLogger = null;
 
     private LevelManager () {
+        this.performanceLogger = new PerformanceLogger("Level Manager");
         resetManager();
     }
 
@@ -57,18 +62,24 @@ public class LevelManager {
         currentLevelDifficulty = LevelDifficulty.Medium;
         currentLevelLength = LevelLength.Medium;
         currentEnemyTribe = EnemyTribes.Pirates;
+        performanceLogger.reset();
     }
 
 
+    private int tickerCount = 0;
     public void updateGameTick () {
         // Check if the song has ended, then create the moving out portal
         if (gameState.getGameState() == GameStatusEnums.Playing) {
-            handleEndOfSongBehaviour();
+//            if (tickerCount % 5 == 0) {
+                PerformanceLoggerManager.timeAndLog(performanceLogger, "Handle End Of Song Behaviour", this::handleEndOfSongBehaviour);
+//                tickerCount = 0;
+//            }
+//            tickerCount++; // Increment the counter
         }
 
         //NextLevelPortal spawns in friendlymanager, now we wait for the player to enter the portal to set it to Level_Completed to show the score card
         if (gameState.getGameState() == GameStatusEnums.Level_Completed) {
-            finishLevel();
+            PerformanceLoggerManager.timeAndLog(performanceLogger, "Finish Level", this::finishLevel);
             //Now the GameBoard handles the following transition into "going to shop" or "back to main menu"
         }
     }
@@ -103,7 +114,7 @@ public class LevelManager {
         ShopManager shopManager = ShopManager.getInstance();
         shopManager.setLastLevelDifficulty(this.currentLevelDifficulty);
         shopManager.setLastLevelLength(this.currentLevelLength);
-        shopManager.setLastLevelDifficultyCoeff(this.currentLevelDifficultyScore);
+        shopManager.setLastLevelDifficultyScore(this.currentLevelDifficultyScore);
         shopManager.setRowsUnlockedByDifficulty(this.currentLevelDifficultyScore);
         shopManager.calculateRerollCost();
 
@@ -124,33 +135,32 @@ public class LevelManager {
         GameUICreator.getInstance().createDifficultyWings(this.levelType.equals(LevelTypes.Boss), currentLevelDifficultyScore);
 
 
-        PlayerManager.getInstance().getSpaceship().allowMovementBeyondBoundaries = false;
-        audioManager.devTestShortLevelMode = true;
-        audioManager.devTestmuteMode = true;
-
+//        PlayerManager.getInstance().getSpaceship().allowMovementBeyondBoundaries = true;
+//        audioManager.devTestShortLevelMode = true;
+//        audioManager.devTestmuteMode = true;
 
         activateDirectors(this.levelType);
         activateMusic(this.levelType);
         gameState.setGameState(GameStatusEnums.Playing);
 
-        EnemyEnums enemyType = EnemyEnums.Scout;
-        Enemy enemy = EnemyCreator.createEnemy(enemyType, 1200, 300, Direction.LEFT, enemyType.getDefaultScale()
-                , enemyType.getMovementSpeed(), enemyType.getMovementSpeed(), MovementPatternSize.SMALL, false);
+//        EnemyEnums enemyType = EnemyEnums.Scout;
+//        Enemy enemy = EnemyCreator.createEnemy(enemyType, 1200, 300, Direction.LEFT, enemyType.getDefaultScale()
+//                , enemyType.getMovementSpeed(), enemyType.getMovementSpeed(), MovementPatternSize.SMALL, false);
 //        EnemyManager.getInstance().addEnemy(enemy);
     }
 
     private void initDifficulty () {
         boolean controlledByThirdPartyApp = AudioManager.getInstance().isMusicControlledByThirdPartyApp();
-        if(controlledByThirdPartyApp){
+        if (controlledByThirdPartyApp) {
             currentLevelLength = LevelLength.Short;
-            if(currentLevelDifficulty == null){
+            if (currentLevelDifficulty == null) {
                 currentLevelDifficulty = LevelDifficulty.getRandomDifficulty();
             }
         } else {
-            if(currentLevelDifficulty == null){
+            if (currentLevelDifficulty == null) {
                 currentLevelDifficulty = LevelDifficulty.getRandomDifficulty();
             }
-            if(currentLevelLength == null){
+            if (currentLevelLength == null) {
                 currentLevelLength = LevelLength.getRandomLength();
             }
         }
@@ -165,7 +175,7 @@ public class LevelManager {
             this.levelType = LevelTypes.Regular;
         }
 
-        if(controlledByThirdPartyApp && !nextLevelABossLevel){
+        if (controlledByThirdPartyApp && !nextLevelABossLevel) {
             currentLevelDifficultyScore = LevelSongs.getDifficultyScoreByDifficultyOnly(currentLevelDifficulty);
         } else {
             currentLevelDifficultyScore = LevelSongs.getDifficultyScore(currentLevelDifficulty, currentLevelLength);
@@ -175,7 +185,7 @@ public class LevelManager {
     }
 
     private void selectEnemyTribe () {
-        if (GameStateInfo.getInstance().getBossesDefeated() > 2) {
+        if (GameStateInfo.getInstance().getBossesDefeated() >= 2) {
             this.currentEnemyTribe = EnemyTribes.Zerg;
         } else {
             this.currentEnemyTribe = EnemyTribes.Pirates;
@@ -210,32 +220,34 @@ public class LevelManager {
 
     public void spawnEnemy (int xCoordinate, int yCoordinate, EnemyEnums enemyType,
                             Direction direction, float scale, boolean random, float xMovementSpeed, float yMovementSpeed, boolean boxCollision) {
-        // Spawn random if there are no given X/Y coords
-        if (random) {
-            List<Integer> coordinatesList = spawningCoordinator.getSpawnCoordinatesByDirection(direction);
+        Point coordinates = new Point(xCoordinate, yCoordinate);
 
-            xCoordinate = coordinatesList.get(0);
-            yCoordinate = coordinatesList.get(1);
-
-            if (validSpawnCoordinates(xCoordinate, yCoordinate, enemyType, scale)) {
-                Enemy enemy = EnemyCreator.createEnemy(enemyType, xCoordinate, yCoordinate, direction, scale, xMovementSpeed, yMovementSpeed, MovementPatternSize.SMALL, boxCollision);
-                enemyManager.addEnemy(enemy);
+        //Placed in a wrapper for logging
+        PerformanceLoggerManager.timeAndLog(performanceLogger, "Spawn Enemy", () -> {
+            if (random) {
+                List<Integer> coordinatesList = spawningCoordinator.getSpawnCoordinatesByDirection(direction);
+                coordinates.setX(coordinatesList.get(0));
+                coordinates.setY(coordinatesList.get(1));
             }
-        } else {
-            if (validSpawnCoordinates(xCoordinate, yCoordinate, enemyType, scale)) {
-                Enemy enemy = EnemyCreator.createEnemy(enemyType, xCoordinate, yCoordinate, direction, scale, xMovementSpeed, yMovementSpeed, MovementPatternSize.SMALL, boxCollision);
 
-                Point originalDestination = enemy.getMovementConfiguration().getDestination();
-                enemy.setCenterCoordinates(xCoordinate, yCoordinate);
-                enemy.resetMovementPath();
+            if (validSpawnCoordinates(coordinates.getX(), coordinates.getY(), enemyType, scale)) {
+                Enemy enemy = EnemyCreator.createEnemy(enemyType, coordinates.getX(), coordinates.getY(), direction, scale, xMovementSpeed, yMovementSpeed, MovementPatternSize.SMALL, boxCollision);
 
-                if (originalDestination != null) {
-                    enemy.getMovementConfiguration().setDestination(originalDestination);
+                if (!random) {
+                    Point originalDestination = enemy.getMovementConfiguration().getDestination();
+                    enemy.setCenterCoordinates(coordinates.getX(), coordinates.getY());
+                    enemy.resetMovementPath();
+
+                    if (originalDestination != null) {
+                        enemy.getMovementConfiguration().setDestination(originalDestination);
+                    }
                 }
+
                 enemyManager.addEnemy(enemy);
             }
-        }
+        });
     }
+
 
     private boolean validSpawnCoordinates (int xCoordinate, int yCoordinate, EnemyEnums enemyType, float scale) {
         if (enemyType.getEnemyCategory().equals(EnemyCategory.Boss) ||
@@ -312,5 +324,9 @@ public class LevelManager {
 
     public EnemyTribes getCurrentEnemyTribe () {
         return currentEnemyTribe;
+    }
+
+    public PerformanceLogger getPerformanceLogger () {
+        return this.performanceLogger;
     }
 }

@@ -94,15 +94,18 @@ public class Enemy extends GameObject {
             // XP on death is multiplied by 50% of difficultyCoeff
             this.xpOnDeath *= (float) (1 + (0.5 * difficultyCoeff));
             // Cash money worth is multiplied by 50% of difficultyCoeff
-//            this.cashMoneyWorth *= (float) (1 + (0.5 * difficultyCoeff));
+
+            if (this.enemyType.getEnemyCategory().equals(EnemyCategory.Boss)) {
+                this.cashMoneyWorth *= (float) Math.pow(getScalingFactor(), enemyLevel);
+            }
         }
     }
 
-    private float getScalingFactor(){
-        if(this.enemyType.getEnemyTribe().equals(EnemyTribes.Zerg)){
-            return 1.2f;
+    private float getScalingFactor () {
+        if (this.enemyType.getEnemyTribe().equals(EnemyTribes.Zerg)) {
+            return 1.075f;
         }
-        return 1.15f;
+        return 1.05f;
     }
 
     private void initChargingUpAnimation (SpriteConfiguration spriteConfiguration) {
@@ -132,7 +135,7 @@ public class Enemy extends GameObject {
     }
 
     public void rotateAfterMovement () {
-        updateChargingAttackAnimationCoordination();
+//        updateChargingAttackAnimationCoordination();
         if (!this.allowedVisualsToRotate) {
             return;
         }
@@ -145,7 +148,7 @@ public class Enemy extends GameObject {
                     PlayerManager.getInstance().getSpaceship().getCenterXCoordinate(),
                     PlayerManager.getInstance().getSpaceship().getCenterYCoordinate());
             rotateObjectTowardsPoint(point, true);
-            updateChargingAttackAnimationCoordination();
+//            updateChargingAttackAnimationCoordination();
             return;
         }
 

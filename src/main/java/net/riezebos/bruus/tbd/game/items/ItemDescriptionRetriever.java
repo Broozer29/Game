@@ -9,16 +9,16 @@ public class ItemDescriptionRetriever {
     public static String getDescriptionOfItem(ItemEnums itemEnums){
         switch (itemEnums){
             case PlasmaCoatedBullets -> {
-                return "Attacks now apply damage over time. Enemies continuously take 10% (+10%) damage for 1.5 (+1.5) seconds";
+                return "Attacks now apply damage over time. Enemies rapidly and continously take 1% (+1%) damage for 1.5 (+1.5) seconds";
             }
             case PhotonPiercer -> {
                 return "Attacks against enemies with 90% or more health deal 100% (+100%) additional damage.";
             }
             case CannisterOfGasoline -> {
-                return "Enemies explode on death, creating an explosion that ignites enemies for 15% (+15%) damage that lasts for 2 (+2) seconds.";
+                return "Enemies explode on death, creating an explosion that applies Ignite to enemies. Increases Ignite duration & damage by 20% (+20%)";
             }
             case SelfRepairingSteel -> {
-                return "After not taking damage for 3 seconds, rapidly regenerate 0.5 (+0.5) hitpoints every 15 milliseconds. Additionally, increases shield regeneration rate by 100% (+100%)";
+                return "After not taking damage for 3 seconds, rapidly regenerate 0.5 (+0.5) hitpoints every 15 milliseconds. Additionally, increases shield regeneration rate by 20% (+20%)";
             }
             case Battery -> {
                 return "Your special attack gains 1 (+1) additional charge.";
@@ -45,7 +45,7 @@ public class ItemDescriptionRetriever {
                 return "Increases damage dealt to Medium sized enemies by 20% (+20%)";
             }
             case EnergySiphon -> {
-                return "Killing an enemy grants a 25 (+25) hitpoints barrier that decays";
+                return "Killing an enemy grants a 15 (+15) hitpoints barrier. When you are at maximum shields gain it as a temporary Barrier instead.";
             }
             case MoneyPrinter -> {
                 return "Killing an enemy has a 10% chance to grant 4 (+4) additional minerals";
@@ -120,10 +120,16 @@ public class ItemDescriptionRetriever {
                 return "Your Ignite can now stack 1 (+1) additional time.";
             }
             case EntanglingFlames -> {
-                return "Your Ignite effect applies your thorns damage 1 (+1) times every 1,5 seconds";
+                return "Your Ignite effect applies your thorns damage 1 (+1) times every 0.75 seconds";
             }
             case ModuleScorch -> {
                 return "Your drones no longer attack. Your drones orbit 30 yards further. Your drones are transformed into fireballs that damage and apply Ignite when colliding with enemies.";
+            }
+            case BargainBucket -> {
+                return "Gain 1 Scorching Fury, 1 Sticky Oil and 1 Escalating Flames.";
+            }
+            case ShieldStabilizer -> {
+                return "Taking damage no longer halts shield regeneration. Reduces shield regeneration rate by 50%.";
             }
 
 

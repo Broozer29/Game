@@ -25,11 +25,20 @@ public class PlayerStats {
         initDefaultSettings();
     }
 
+    //firefighter
     public static float fireFighterBaseDamage = 8f;
-    public static float fireFighterAttackSpeed = 0.32f;
-    private float fireFighterIgniteDamageMultiplier = 0.05f;
+    public static float fireFighterAttackSpeed = 0.28f;
+    private float fireFighterIgniteDamageMultiplier = 0.045f;
+    private float fireFighterIgniteDuration = 1.5f;
+    private float fireFighterIgniteDurationMultiplier = 1;
+    private float fireFighterItemIgniteDamageMultiplier = 1f;
+    private int fireFighterIgniteMaxStacks = 1;
+
+    //captain
     public static float captainBaseDamage = 20f;
     public static float captainAttackSpeed = 0.28f;
+
+    //all classes
     public static float droneBaseDamage = 20f;
 
     // Preset type
@@ -50,6 +59,8 @@ public class PlayerStats {
     private float maxHitPoints;
     private float maxShieldHitPoints;
     private float shieldRegenDelay;
+    private float shieldRegenMultiplier;
+    private boolean continueShieldRegenThroughDamage;
 
     // Movement
     private float movementSpeed;
@@ -92,13 +103,6 @@ public class PlayerStats {
     private float collisionDamageReduction = 0;
     private float shieldRegenPerTick = 0.2f;
 
-    private float fireFighterIgniteDuration = 1.5f;
-    private float fireFighterIgniteDurationMultiplier = 1;
-
-    private float fireFighterItemIgniteDamageMultiplier = 1f;
-
-    private int fireFighterIgniteMaxStacks = 1;
-
     public void setPlayerClass (PlayerClass playerClass) {
         this.playerClass = playerClass;
         if (playerClass.equals(PlayerClass.Captain)) {
@@ -125,8 +129,10 @@ public class PlayerStats {
         piercingMissilesAmount = 0;
         bonusDamageMultiplier = 1f; //Otherwhise it's damage * 0 = 0
 
+        shieldRegenMultiplier = 1;
         chanceForThornsToApplyOnHitEffects = 0;
         hasImprovedElectroShred = false;
+        continueShieldRegenThroughDamage = false;
         thornsDamageRatio = 0;
         thornsArmorDamageBonusRatio = 0;
         shopRerollDiscount = 99;
@@ -171,7 +177,7 @@ public class PlayerStats {
         //Level
         setCurrentLevel(1);
         setCurrentXP(0);
-        setXpToNextLevel(125);
+        setXpToNextLevel(100);
 
         // Visuals
         loadNormalGunPreset();
@@ -350,6 +356,10 @@ public class PlayerStats {
     }
 
     public float getMaxShieldHitPoints () {
+        return maxShieldHitPoints * maxShieldMultiplier;
+    }
+
+    public float getBaseMaxShieldPoints () {
         return maxShieldHitPoints * maxShieldMultiplier;
     }
 
@@ -697,11 +707,11 @@ public class PlayerStats {
     }
 
     public float getShieldRegenPerTick () {
-        return shieldRegenPerTick;
+        return shieldRegenPerTick * shieldRegenMultiplier;
     }
 
-    public void modifyShieldRegenPerTick (float amount) {
-        this.shieldRegenPerTick += amount;
+    public void modifyShieldRegenMultiplier (float amount) {
+        this.shieldRegenMultiplier += amount;
     }
 
     public float getFireFighterIgniteDuration () {
@@ -746,5 +756,13 @@ public class PlayerStats {
 
     public void setDroneType (DroneTypes droneType) {
         this.droneType = droneType;
+    }
+
+    public boolean isContinueShieldRegenThroughDamage () {
+        return continueShieldRegenThroughDamage;
+    }
+
+    public void setContinueShieldRegenThroughDamage (boolean continueShieldRegenThroughDamage) {
+        this.continueShieldRegenThroughDamage = continueShieldRegenThroughDamage;
     }
 }

@@ -3,6 +3,8 @@ package net.riezebos.bruus.tbd.visualsandaudio.objects;
 import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
 import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SpaceShip;
+import net.riezebos.bruus.tbd.game.util.performancelogger.PerformanceLogger;
+import net.riezebos.bruus.tbd.game.util.performancelogger.PerformanceLoggerManager;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteAnimationConfiguration;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteConfiguration;
@@ -15,6 +17,7 @@ public class AnimationManager {
 	private static AnimationManager instance = new AnimationManager();
 	private List<SpriteAnimation> upperAnimationList = new ArrayList<>();
 	private List<SpriteAnimation> lowerAnimationList = new ArrayList<>();
+	private PerformanceLogger performanceLogger = null;
 
 	public static AnimationManager getInstance() {
 		return instance;
@@ -31,10 +34,12 @@ public class AnimationManager {
 			animation.setVisible(false);
 		}
 
+		performanceLogger.reset();
 		removeInvisibleAnimations();
 	}
 
 	private AnimationManager() {
+		performanceLogger = new PerformanceLogger("Animation Manager");
 	}
 
 	public void addExhaustAnimation(SpriteAnimation animation) {
@@ -92,8 +97,12 @@ public class AnimationManager {
 	}
 
 	public void updateGameTick() {
-		removeInvisibleAnimations();
-		recenterAnimations(); //Required for cropped animations that have different sizes, this might lead to weird interactions ir origin coords are used when the shouldnt
+//		PerformanceLoggerManager.timeAndLog(performanceLogger, "Total", () -> {
+			PerformanceLoggerManager.timeAndLog(performanceLogger, "Remove Invisible Animations", this::removeInvisibleAnimations);
+//		removeInvisibleAnimations();
+			PerformanceLoggerManager.timeAndLog(performanceLogger, "Recenter Animations", this::recenterAnimations);
+//		recenterAnimations(); //Required for cropped animations that have different sizes, this might lead to weird interactions ir origin coords are used when the shouldnt
+//		});
 	}
 
 	// Use for animations that have different sizes
@@ -128,4 +137,7 @@ public class AnimationManager {
 		}
 	}
 
+	public PerformanceLogger getPerformanceLogger () {
+		return this.performanceLogger;
+	}
 }

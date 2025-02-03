@@ -6,6 +6,8 @@ import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyTribes;
 import net.riezebos.bruus.tbd.game.gamestate.GameStateInfo;
 import net.riezebos.bruus.tbd.game.level.LevelManager;
 import net.riezebos.bruus.tbd.game.level.enums.LevelTypes;
+import net.riezebos.bruus.tbd.game.util.performancelogger.PerformanceLogger;
+import net.riezebos.bruus.tbd.game.util.performancelogger.PerformanceLoggerManager;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -21,10 +23,12 @@ public class DirectorManager {
 
     private double lastCashCarrierSpawnTime;
     private int testingCreditsBonus = 3;
+    private PerformanceLogger performanceLogger = null;
 
 
     private DirectorManager () {
         createMonsterCards();
+        this.performanceLogger = new PerformanceLogger("Director Manager");
     }
 
 
@@ -70,6 +74,7 @@ public class DirectorManager {
 
     public void resetManager () {
         directorList = new ArrayList<>();
+        performanceLogger.reset();
     }
 
     public void createMonsterCards () {
@@ -95,15 +100,17 @@ public class DirectorManager {
 
 
     public void updateGameTick () {
-        if (enabled) {
-            distributeCredits();
-            updateDifficultyCoefficient();
-            for (Director director : directorList) {
-                if (director.isActive()) {
-                    director.update(GameStateInfo.getInstance().getGameSeconds()); // Update each director per game tick
+//        PerformanceLoggerManager.timeAndLog(performanceLogger, "Total", () -> {
+            if (enabled) {
+                PerformanceLoggerManager.timeAndLog(performanceLogger, "Distribute Credits", this::distributeCredits);
+                PerformanceLoggerManager.timeAndLog(performanceLogger, "Update Difficulty Coefficient", this::updateDifficultyCoefficient);
+                for (Director director : directorList) {
+                    if (director.isActive()) {
+                        PerformanceLoggerManager.timeAndLog(performanceLogger, "Update Director", director::update);
+                    }
                 }
             }
-        }
+//        });
     }
 
     public void distributeCredits () {
@@ -155,5 +162,9 @@ public class DirectorManager {
 
     public void setLastCashCarrierSpawnTime (double lastCashCarrierSpawnTime) {
         this.lastCashCarrierSpawnTime = lastCashCarrierSpawnTime;
+    }
+
+    public PerformanceLogger getPerformanceLogger () {
+        return this.performanceLogger;
     }
 }

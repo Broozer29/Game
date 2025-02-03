@@ -32,6 +32,7 @@ public class ShopBoardCreator {
 
     private int fourthRowY;
     private ShopManager shopManager;
+    public static int shopItemIconDimensions = 80;
 
     public ShopBoardCreator (int boardWidth, int boardHeight, int itemWidth, int itemHeight, int horizontalSpacing, int verticalSpacing
             , int horizontalScreenDistance, int verticalScreenDistance, int imageScale, int textScale, ShopManager shopManager) {
@@ -242,9 +243,9 @@ public class ShopBoardCreator {
 
             if (shopManager.getRowsUnlocked() < 1) {
                 shopItem.lockItemInShop();
-                shopItem.getShopItemInformation().setItemDescription("Play a level of atleast difficulty 2 to unlock this row");
+                shopItem.getShopItemInformation().setItemDescription("Previously completed level must be a difficulty of 2 or higher.");
             }
-            shopItem.setImageDimensions(80, 80);
+            shopItem.setImageDimensions(shopItemIconDimensions, shopItemIconDimensions);
             firstRow.add(shopItem);
         }
         return firstRow;
@@ -264,9 +265,9 @@ public class ShopBoardCreator {
 
             if (shopManager.getRowsUnlocked() < 2) {
                 shopItem.lockItemInShop();
-                shopItem.getShopItemInformation().setItemDescription("Play a level of atleast difficulty 4 to unlock this row");
+                shopItem.getShopItemInformation().setItemDescription("Previously completed level must be a difficulty of 4 or higher.");
             }
-            shopItem.setImageDimensions(80, 80);
+            shopItem.setImageDimensions(shopItemIconDimensions, shopItemIconDimensions);
             secondRow.add(shopItem);
         }
         return secondRow;
@@ -287,9 +288,9 @@ public class ShopBoardCreator {
 
             if (shopManager.getRowsUnlocked() < 3) {
                 shopItem.lockItemInShop();
-                shopItem.getShopItemInformation().setItemDescription("Play a level of atleast difficulty 6 to unlock this row");
+                shopItem.getShopItemInformation().setItemDescription("Previously completed level must be a difficulty of 6.");
             }
-            shopItem.setImageDimensions(80, 80);
+            shopItem.setImageDimensions(shopItemIconDimensions, shopItemIconDimensions);
             thirdRow.add(shopItem);
         }
         return thirdRow;
@@ -400,7 +401,12 @@ public class ShopBoardCreator {
         selectEasyDifficulty.setLevelDifficulty(LevelDifficulty.Easy);
         selectEasyDifficulty.setMenuFunctionality(MenuFunctionEnums.SelectSongDifficulty);
         selectEasyDifficulty.setCenterCoordinates(x0, y);
-        selectEasyDifficulty.setDescriptionOfComponent("Sets the difficulty of the next level to EASY. Increases the difficulty by 1");
+        int amount = 1;
+        if(AudioManager.getInstance().isMusicControlledByThirdPartyApp()){
+            amount = 2;
+        }
+
+        selectEasyDifficulty.setDescriptionOfComponent("Sets the difficulty of the next level to EASY. Increases the difficulty by " + amount);
         return selectEasyDifficulty;
     }
 
@@ -415,7 +421,13 @@ public class ShopBoardCreator {
         selectEasyDifficulty.setLevelDifficulty(LevelDifficulty.Medium);
         selectEasyDifficulty.setMenuFunctionality(MenuFunctionEnums.SelectSongDifficulty);
         selectEasyDifficulty.setCenterCoordinates(x1, y);
-        selectEasyDifficulty.setDescriptionOfComponent("Sets the difficulty of the next level to MEDIUM. Increases the difficulty by 2");
+
+        int amount = 2;
+        if(AudioManager.getInstance().isMusicControlledByThirdPartyApp()){
+            amount *= 2;
+        }
+
+        selectEasyDifficulty.setDescriptionOfComponent("Sets the difficulty of the next level to MEDIUM. Increases the difficulty by " + amount);
         return selectEasyDifficulty;
     }
 
@@ -430,7 +442,13 @@ public class ShopBoardCreator {
         selectEasyDifficulty.setLevelDifficulty(LevelDifficulty.Hard);
         selectEasyDifficulty.setMenuFunctionality(MenuFunctionEnums.SelectSongDifficulty);
         selectEasyDifficulty.setCenterCoordinates(x2, y);
-        selectEasyDifficulty.setDescriptionOfComponent("Sets the difficulty of the next level to HARD. Increases the difficulty by 3");
+
+        int amount = 3;
+        if(AudioManager.getInstance().isMusicControlledByThirdPartyApp()){
+            amount *= 2;
+        }
+
+        selectEasyDifficulty.setDescriptionOfComponent("Sets the difficulty of the next level to HARD. Increases the difficulty by " + amount);
         return selectEasyDifficulty;
     }
 

@@ -7,6 +7,8 @@ import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.Drone;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
 import net.riezebos.bruus.tbd.game.gamestate.GameStateInfo;
 import net.riezebos.bruus.tbd.game.gamestate.GameStatusEnums;
+import net.riezebos.bruus.tbd.game.util.performancelogger.PerformanceLogger;
+import net.riezebos.bruus.tbd.game.util.performancelogger.PerformanceLoggerManager;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.AnimationManager;
 import net.riezebos.bruus.tbd.game.util.OrbitingObjectsFormatter;
 import net.riezebos.bruus.tbd.game.util.collision.CollisionDetector;
@@ -27,12 +29,14 @@ public class FriendlyManager {
     private List<Drone> allPlayerDrones = new ArrayList<>();
     private Portal finishedLevelPortal;
     private GameStateInfo gameState = GameStateInfo.getInstance();
+    private PerformanceLogger performanceLogger = null;
 
     private FriendlyManager () {
         initPortal();
+        this.performanceLogger = new PerformanceLogger("Friendly Manager");
     }
 
-    public void addDrone (){
+    public void addDrone () {
         Drone drone = FriendlyCreator.createDrone();
         PlayerManager.getInstance().getSpaceship().getObjectOrbitingThis().add(drone);
         this.friendlyObjects.add(drone);
@@ -47,16 +51,22 @@ public class FriendlyManager {
 
 
     public void updateGameTick () {
-        activateFriendlyObjects();
-        checkFriendlyObjectCollision();
-        moveFriendlyObjects();
-        removeInvisibleObjects();
-        spawnFinishedLevelPortal();
+        PerformanceLoggerManager.timeAndLog(performanceLogger, "Activate Friendly Objects", this::activateFriendlyObjects);
+        PerformanceLoggerManager.timeAndLog(performanceLogger, "Check Friendly Object Collision", this::checkFriendlyObjectCollision);
+        PerformanceLoggerManager.timeAndLog(performanceLogger, "Move Friendly Objects", this::moveFriendlyObjects);
+        PerformanceLoggerManager.timeAndLog(performanceLogger, "Remove Invisible Objects", this::removeInvisibleObjects);
+        PerformanceLoggerManager.timeAndLog(performanceLogger, "Spawn Finished Level Portal", this::spawnFinishedLevelPortal);
+
+//        activateFriendlyObjects();
+//        checkFriendlyObjectCollision();
+//        moveFriendlyObjects();
+//        removeInvisibleObjects();
+//        spawnFinishedLevelPortal();
     }
 
 
     public void resetManager () {
-        for(GameObject object: friendlyObjects){
+        for (GameObject object : friendlyObjects) {
             object.setVisible(false);
         }
 
@@ -64,6 +74,7 @@ public class FriendlyManager {
         friendlyObjects = new ArrayList<>();
         allPlayerDrones = new ArrayList<>();
         initPortal();
+        performanceLogger.reset();
     }
 
 
@@ -123,9 +134,9 @@ public class FriendlyManager {
 
         // Checks collision between the finished level portal and player
         if (gameState.getGameState() == GameStatusEnums.Level_Finished && finishedLevelPortal.isVisible()) {
-            CollisionInfo collisionInfo =CollisionDetector.getInstance().detectCollision(PlayerManager.getInstance().getSpaceship(), finishedLevelPortal);
+            CollisionInfo collisionInfo = CollisionDetector.getInstance().detectCollision(PlayerManager.getInstance().getSpaceship(), finishedLevelPortal);
             if (collisionInfo != null) {
-                if(finishedLevelPortal.getTransparancyAlpha() >= 0.5f) {
+                if (finishedLevelPortal.getTransparancyAlpha() >= 0.5f) {
                     gameState.setGameState(GameStatusEnums.Level_Completed);
                     finishedLevelPortal.setTransparancyAlpha(true, 1.0f, -0.02f);
                     finishedLevelPortal.setSpawned(false);
@@ -168,5 +179,9 @@ public class FriendlyManager {
 
     public List<Drone> getAllPlayerDrones () {
         return allPlayerDrones;
+    }
+
+    public PerformanceLogger getPerformanceLogger () {
+        return performanceLogger;
     }
 }

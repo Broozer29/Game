@@ -71,7 +71,7 @@ public class GameStateInfo {
 
     private void updateMonsterLevel () {
         // Apply the formula and subtract the offset to ensure starting level is 1
-        monsterLevel = (int) Math.round(1 + ((difficultyCoefficient / 0.27) - initialOffset));
+        monsterLevel = (int) Math.round(1 + ((difficultyCoefficient / 0.43) - initialOffset));
 
         // Ensure monsterLevel never goes below 1
         monsterLevel = Math.max(1, monsterLevel);

@@ -11,9 +11,17 @@ import net.riezebos.bruus.tbd.game.items.items.util.ContractHelper;
 import net.riezebos.bruus.tbd.game.level.enums.LevelDifficulty;
 import net.riezebos.bruus.tbd.game.level.enums.LevelLength;
 import net.riezebos.bruus.tbd.game.util.OnScreenTextManager;
+import net.riezebos.bruus.tbd.guiboards.BoardManager;
+import net.riezebos.bruus.tbd.guiboards.boardcreators.ShopBoardCreator;
+import net.riezebos.bruus.tbd.guiboards.guicomponents.GUIComponent;
 import net.riezebos.bruus.tbd.visualsandaudio.data.DataClass;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.AudioManager;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.AudioEnums;
+import net.riezebos.bruus.tbd.visualsandaudio.objects.AnimationManager;
+import net.riezebos.bruus.tbd.visualsandaudio.objects.Sprite;
+import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteConfiguration;
+
+import javax.xml.crypto.Data;
 
 public class ShopManager {
 
@@ -22,7 +30,7 @@ public class ShopManager {
     private int rerollCost;
     private int freeRerollsLeft = 0;
 
-    private int lastLevelDifficultyCoeff;
+    private int lastLevelDifficultyScore;
     private LevelLength lastLevelLength;
     private LevelDifficulty lastLevelDifficulty;
 
@@ -48,16 +56,13 @@ public class ShopManager {
         return rowsUnlocked;
     }
 
-    public void setRowsUnlocked (int rowsUnlocked) {
-        this.rowsUnlocked = rowsUnlocked;
+
+    public int getLastLevelDifficultyScore () {
+        return lastLevelDifficultyScore;
     }
 
-    public int getLastLevelDifficultyCoeff () {
-        return lastLevelDifficultyCoeff;
-    }
-
-    public void setLastLevelDifficultyCoeff (int lastLevelDifficultyCoeff) {
-        this.lastLevelDifficultyCoeff = lastLevelDifficultyCoeff;
+    public void setLastLevelDifficultyScore (int lastLevelDifficultyScore) {
+        this.lastLevelDifficultyScore = lastLevelDifficultyScore;
     }
 
     public LevelLength getLastLevelLength () {
@@ -81,7 +86,7 @@ public class ShopManager {
             rowsUnlocked = 1;
         } else if (difficulty == 4 || difficulty == 5) {
             rowsUnlocked = 2;
-        } else if (difficulty == 5 || difficulty == 6) {
+        } else if (difficulty == 6) {
             rowsUnlocked = 3;
         }
     }
@@ -125,20 +130,38 @@ public class ShopManager {
     }
 
     public void activateFinishedContracts(){
+        int yOffset = 0;
         for(ContractCounter contractCounter : ContractHelper.getInstance().getFinishedContracts()){
             ItemRarityEnums itemRarity = ItemRarityEnums.getRandomRareItemSlot();
             ItemEnums itemToAdd = getRandomAvailableItemByRarity(itemRarity);
             PlayerInventory.getInstance().addItem(itemToAdd);
             AudioManager.getInstance().addAudio(AudioEnums.ItemAcquired);
             ContractHelper.getInstance().removeContract(contractCounter);
+            BoardManager.getInstance().getShopBoard().addContractAnimation(getContractAnimation(itemToAdd, yOffset));
+            yOffset += ShopBoardCreator.shopItemIconDimensions + 5;
 
-
-            if(PlayerInventory.getInstance().getItemByName(ItemEnums.Contract) != null){
-                Contract contract = (Contract) PlayerInventory.getInstance().getItemByName(ItemEnums.Contract);
+            if(PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.Contract) != null){
+                Contract contract = (Contract) PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.Contract);
                 contract.subtractItem(1);
             }
 
         }
+    }
+
+    //helper method for creating an animation for the contract completing
+    private GUIComponent getContractAnimation(ItemEnums itemEnums, int yOffset){
+        SpriteConfiguration spriteConfiguration = new SpriteConfiguration();
+        spriteConfiguration.setxCoordinate(DataClass.getInstance().getWindowWidth() / 2);
+        spriteConfiguration.setyCoordinate(DataClass.getInstance().getWindowHeight() / 2);
+        spriteConfiguration.setScale(1);
+        spriteConfiguration.setImageType(itemEnums.getItemIcon());
+
+        GUIComponent itemSprite = new GUIComponent(spriteConfiguration);
+        itemSprite.setImageDimensions(ShopBoardCreator.shopItemIconDimensions, ShopBoardCreator.shopItemIconDimensions);
+        itemSprite.setTransparancyAlpha(true, 1, -0.005f);
+        itemSprite.setCenterCoordinates(DataClass.getInstance().getWindowWidth() / 2,
+                (DataClass.getInstance().getWindowHeight() / 2) - yOffset);
+        return itemSprite;
     }
 
     private ItemEnums getRandomAvailableItemByRarity(ItemRarityEnums category) {

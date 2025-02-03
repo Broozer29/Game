@@ -49,6 +49,7 @@ public class Scout extends Enemy {
 
         double currentTime = GameStateInfo.getInstance().getGameSeconds();
         if (allowedToFire && currentTime >= lastAttackTime + this.getAttackSpeed() && WithinVisualBoundariesCalculator.isWithinBoundaries(this)) {
+            updateChargingAttackAnimationCoordination();
             if (!chargingUpAttackAnimation.isPlaying()) {
                 this.isAttacking = true;
                 chargingUpAttackAnimation.refreshAnimation();

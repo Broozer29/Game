@@ -52,8 +52,8 @@ public class TazerProjectile extends Missile {
             this.setVisible(false);
         } else {
             //Buff the fellow enemies
-            attackSpeedModifierEffect = new AttackSpeedModifierEffect(2f, 6, null, EffectIdentifiers.TazerAttackSpeedModifier);
-            damageModifierEffect = new DamageModifierEffect(0.35f, 6, superChargedAnimation, EffectIdentifiers.TazerDamageModifier);
+            attackSpeedModifierEffect = new AttackSpeedModifierEffect(0.25f, 5, null, EffectIdentifiers.TazerAttackSpeedModifier);
+            damageModifierEffect = new DamageModifierEffect(0.25f, 6, superChargedAnimation, EffectIdentifiers.TazerDamageModifier);
         }
 
 

@@ -9,6 +9,8 @@ import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
 import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SpaceShip;
 import net.riezebos.bruus.tbd.game.gamestate.GameStatsTracker;
 import net.riezebos.bruus.tbd.game.util.VisualLayer;
+import net.riezebos.bruus.tbd.game.util.performancelogger.PerformanceLogger;
+import net.riezebos.bruus.tbd.game.util.performancelogger.PerformanceLoggerManager;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.AnimationManager;
 import net.riezebos.bruus.tbd.game.util.ThornsDamageDealer;
 import net.riezebos.bruus.tbd.game.util.collision.CollisionDetector;
@@ -29,9 +31,11 @@ public class MissileManager {
     private CopyOnWriteArrayList<Missile> missiles = new CopyOnWriteArrayList<Missile>();
     private CopyOnWriteArrayList<SpecialAttack> specialAttacks = new CopyOnWriteArrayList<SpecialAttack>();
     private CopyOnWriteArrayList<Laserbeam> laserbeams = new CopyOnWriteArrayList<>();
+    private PerformanceLogger performanceLogger = null;
 
 
     private MissileManager () {
+        this.performanceLogger = new PerformanceLogger("Missile Manager");
     }
 
     public static MissileManager getInstance () {
@@ -56,6 +60,7 @@ public class MissileManager {
         missiles.clear();
         specialAttacks.clear();
         laserbeams.clear();
+        performanceLogger.reset();
     }
 
 
@@ -74,13 +79,21 @@ public class MissileManager {
     }
 
     public void updateGameTick () {
+//        PerformanceLoggerManager.timeAndLog(performanceLogger, "Total", () -> {
         initManagersIfNull();
-        moveMissiles();
-        removeInvisibleProjectiles();
-        checkMissileCollisions();
-        triggerMissileActions();
-        updateLaserBeams();
+        PerformanceLoggerManager.timeAndLog(performanceLogger, "Move Missiles", this::moveMissiles);
+        PerformanceLoggerManager.timeAndLog(performanceLogger, "Remove Invisible Projects", this::removeInvisibleProjectiles);
+        PerformanceLoggerManager.timeAndLog(performanceLogger, "Check Missile Collision", this::checkMissileCollisions);
+        PerformanceLoggerManager.timeAndLog(performanceLogger, "Trigger Missile Actions", this::triggerMissileActions);
+        PerformanceLoggerManager.timeAndLog(performanceLogger, "Update Laserbeams", this::updateLaserBeams);
+//                });
+//        moveMissiles();
+//        removeInvisibleProjectiles();
+//        checkMissileCollisions();
+//        triggerMissileActions();
+//        updateLaserBeams();
     }
+
 
     private void updateLaserBeams () {
         for (Laserbeam laserbeam : laserbeams) {
@@ -198,12 +211,12 @@ public class MissileManager {
                 (specialAttack.isDestroysMissiles() || specialAttack.isDamagesMissiles())) {
             for (Missile missile : missiles) {
                 if (!missile.isFriendly() && collisionDetector.detectCollision(missile, specialAttack) != null) {
-                        if(specialAttack.isDestroysMissiles()){
-                            missile.destroyMissile();
-                        } else if(specialAttack.isDamagesMissiles()){
-                            missile.takeDamage(missile.getMaxHitPoints() * specialAttack.getMaxHPDamagePercentage());
-                        }
+                    if (specialAttack.isDestroysMissiles()) {
+                        missile.destroyMissile();
+                    } else if (specialAttack.isDamagesMissiles()) {
+                        missile.takeDamage(missile.getMaxHitPoints() * specialAttack.getMaxHPDamagePercentage());
                     }
+                }
 
             }
         }
@@ -319,7 +332,7 @@ public class MissileManager {
         return specialAttacks;
     }
 
-    public List<SpecialAttack> getSpecialAttacksByAnimationLayer(VisualLayer layer){
+    public List<SpecialAttack> getSpecialAttacksByAnimationLayer (VisualLayer layer) {
         return specialAttacks.stream().filter(specialAttack -> specialAttack.getVisualLayer().equals(layer)).collect(Collectors.toList());
     }
 
@@ -335,5 +348,9 @@ public class MissileManager {
         if (!this.laserbeams.contains(laserbeam)) {
             laserbeams.add(laserbeam);
         }
+    }
+
+    public PerformanceLogger getPerformanceLogger () {
+        return this.performanceLogger;
     }
 }

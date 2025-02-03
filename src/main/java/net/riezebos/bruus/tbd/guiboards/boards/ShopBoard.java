@@ -14,7 +14,6 @@ import net.riezebos.bruus.tbd.game.items.Item;
 import net.riezebos.bruus.tbd.game.items.PlayerInventory;
 import net.riezebos.bruus.tbd.game.items.ItemEnums;
 import net.riezebos.bruus.tbd.game.level.LevelManager;
-import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.MusicMediaPlayer;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.AnimationManager;
 import net.riezebos.bruus.tbd.game.gamestate.ShopManager;
 import net.riezebos.bruus.tbd.guiboards.boardEnums.MenuFunctionEnums;
@@ -64,6 +63,8 @@ public class ShopBoard extends JPanel implements TimerHolder {
 
     private List<GUIComponent> allInventoryGUIComponents = new ArrayList<>();
     private List<List<GUIComponent>> selectedGrid = regularGrid;
+
+    private List<GUIComponent> contractHelperList = new ArrayList<>();
 
     private DisplayOnly itemRowsBackgroundCard;
     private DisplayOnly songLengthBackgroundCard;
@@ -211,6 +212,9 @@ public class ShopBoard extends JPanel implements TimerHolder {
         moneyIcon = shopBoardCreator.createMoneyObject(nextLevelDifficultyBackground);
         offTheGridObjects.addAll(moneyIcon.getComponents());
 
+        contractHelperList.removeIf(component -> !component.isVisible());
+
+
         createInventoryGrid();
         // Rebuild the UI elements list
         recreateList();
@@ -235,7 +239,7 @@ public class ShopBoard extends JPanel implements TimerHolder {
     private void updateSelectedDifficultyIcons () {
         shopBoardCreator.updateDifficultyIconsToDifficulty(LevelManager.getInstance().getCurrentLevelDifficulty(),
                 selectEasyDifficulty, selectMediumDifficulty, selectHardDifficulty);
-        if(!AudioManager.getInstance().isMusicControlledByThirdPartyApp()) {
+        if (!AudioManager.getInstance().isMusicControlledByThirdPartyApp()) {
             shopBoardCreator.updateLengthIconsToLength(LevelManager.getInstance().getCurrentLevelLength(),
                     shortSong, mediumSong, longSong);
         }
@@ -270,15 +274,16 @@ public class ShopBoard extends JPanel implements TimerHolder {
         offTheGridObjects.add(itemRowsBackgroundCard);
         offTheGridObjects.add(descriptionRowsBackgroundCard);
 
-        if(!AudioManager.getInstance().isMusicControlledByThirdPartyApp()) {
+        if (!AudioManager.getInstance().isMusicControlledByThirdPartyApp()) {
             offTheGridObjects.add(songLengthBackgroundCard);
+            offTheGridObjects.addAll(lengthSelectionText.getComponents());
         }
 
 
         offTheGridObjects.add(songDifficultyBackgroundCard);
         offTheGridObjects.addAll(moneyIcon.getComponents());
         offTheGridObjects.addAll(nextLevelDifficultyIcon.getComponents());
-        offTheGridObjects.addAll(lengthSelectionText.getComponents());
+
         offTheGridObjects.addAll(difficultySelectionText.getComponents());
         offTheGridObjects.add(rerollBackgroundCard);
         offTheGridObjects.addAll(rerollCostText.getComponents());
@@ -294,7 +299,7 @@ public class ShopBoard extends JPanel implements TimerHolder {
     private void createInventoryGrid () {
         allInventoryGUIComponents.clear();
 
-        for(List<GUIComponent> listInGrid: inventoryGrid){
+        for (List<GUIComponent> listInGrid : inventoryGrid) {
             listInGrid.clear(); //Clear all existing rows before repopulating them in createPlayerInventory()
         }
 
@@ -387,7 +392,7 @@ public class ShopBoard extends JPanel implements TimerHolder {
 
     //Helper method for adding inventory gui components to the correct row on the inventorygrid
     private void addInventoryItemComponentToCorrespondingRow (int row, GUIComponent itemComponent) {
-        if(itemComponent != null){
+        if (itemComponent != null) {
             allInventoryGUIComponents.add(itemComponent);
         }
         switch (row) {
@@ -423,11 +428,11 @@ public class ShopBoard extends JPanel implements TimerHolder {
             descriptionInfo.descriptionText = selectedTileHelper.getShopItemInformation().getItemDescription();
             descriptionInfo.rarityColor = selectedTileHelper.getShopItemInformation().getItemRarity().getColor();
 
-            if(!showInventory){
+            if (!showInventory) {
                 descriptionInfo.cost = "Costs: " + Math.round(selectedTileHelper.getShopItemInformation().getCost()) + " minerals. You have: " + Math.round(PlayerInventory.getInstance().getCashMoney());
             } else {
                 //Replacing the itemcost with the amount the player has
-                descriptionInfo.cost = "You have: " + PlayerInventory.getInstance().getItemByName(selectedTileHelper.getShopItemInformation().getItem()).getQuantity() + " of this item.";
+                descriptionInfo.cost = "You have: " + PlayerInventory.getInstance().getItemFromInventoryIfExists(selectedTileHelper.getShopItemInformation().getItem()).getQuantity() + " of this item.";
             }
 
         } else {
@@ -660,6 +665,7 @@ public class ShopBoard extends JPanel implements TimerHolder {
 
         drawObjects(g2d);
         drawDescriptionInfo(g2d, currentDescriptionInfo);
+
         for (SpriteAnimation animation : animationManager.getUpperAnimations()) {
             drawAnimation(g2d, animation);
         }
@@ -672,10 +678,10 @@ public class ShopBoard extends JPanel implements TimerHolder {
     }
 
 
-
     //Draws the description of the currently hovered option, called every game tick and has room for performance optimization
     private static int horizontalPadding = 40;
     private static int verticalPadding = 40;
+
     private void drawDescriptionInfo (Graphics2D g2d, DescriptionInfo descriptionInfo) {
         int boxWidth = descriptionRowsBackgroundCard.getWidth();
         int boxHeight = descriptionRowsBackgroundCard.getHeight();
@@ -760,7 +766,7 @@ public class ShopBoard extends JPanel implements TimerHolder {
 
         //Show the inventory grid if it's open
         if (showInventory) {
-            for(GUIComponent component : allInventoryGUIComponents){
+            for (GUIComponent component : allInventoryGUIComponents) {
                 drawGUIComponent(g, component);
             }
 
@@ -772,12 +778,31 @@ public class ShopBoard extends JPanel implements TimerHolder {
 //            }
         }
 
+        for (GUIComponent component : contractHelperList) {
+            if (component != null && component.isVisible()) {
+                drawGUIComponent(g, component);
+                component.setYCoordinate(component.getYCoordinate() - 1);
+            }
+        }
+
         drawGUIComponent(g, menuCursor);
     }
 
 
     private void drawGUIComponent (Graphics2D g, GUIComponent component) {
-        g.drawImage(component.getImage(), component.getXCoordinate(), component.getYCoordinate(), this);
+        if (component.getImage() != null) {
+            // Save the original composite
+            Composite originalComposite = g.getComposite();
+
+            // Set the alpha composite
+            g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, component.getTransparancyAlpha()));
+
+            // Draw the image
+            g.drawImage(component.getImage(), component.getXCoordinate(), component.getYCoordinate(), this);
+
+            // Reset to the original composite
+            g.setComposite(originalComposite);
+        }
     }
 
     private void drawItemsInShop (Graphics g, ShopItem object) {
@@ -845,4 +870,7 @@ public class ShopBoard extends JPanel implements TimerHolder {
 
     }
 
+    public void addContractAnimation (GUIComponent component) {
+        contractHelperList.add(component);
+    }
 }

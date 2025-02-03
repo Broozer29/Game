@@ -56,14 +56,14 @@ public class SelfRepairingSteel extends Item {
 
         //Apply the effect to the playerstats instance
         if (shouldApply) {
-            PlayerStats.getInstance().modifyShieldRegenPerTick(this.quantity * increasedShieldRegenPerTick);
+            PlayerStats.getInstance().modifyShieldRegenMultiplier(this.quantity * increasedShieldRegenPerTick);
             shouldApply = false;
         }
     }
 
     private void removeEffect () {
         if (quantity > 0) {
-            PlayerStats.getInstance().modifyAttackSpeedBonus(-(this.quantity * increasedShieldRegenPerTick));
+            PlayerStats.getInstance().modifyShieldRegenMultiplier(-(this.quantity * increasedShieldRegenPerTick));
         }
     }
 

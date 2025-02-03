@@ -45,6 +45,7 @@ public class Energizer extends Enemy {
 		double currentTime = GameStateInfo.getInstance().getGameSeconds();
 		if (currentTime >= lastAttackTime + this.getAttackSpeed() && WithinVisualBoundariesCalculator.isWithinBoundaries(this)
 		&& allowedToFire) {
+			updateChargingAttackAnimationCoordination();
 			if (!chargingUpAttackAnimation.isPlaying()) {
 				this.isAttacking = true;
 				chargingUpAttackAnimation.refreshAnimation();

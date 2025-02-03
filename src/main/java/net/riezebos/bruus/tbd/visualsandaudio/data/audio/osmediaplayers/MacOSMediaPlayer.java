@@ -36,7 +36,7 @@ public class MacOSMediaPlayer {
         return instance;
     }
 
-    public void startPlayback () {
+    public void startPlayback() {
         resetPlaybackInfo();  // Reset before starting new playback
 
         String script = "tell application \"Music\"\n"
@@ -45,14 +45,15 @@ public class MacOSMediaPlayer {
                 + "repeat while player position < trackDuration\n"
                 + "delay 1\n"
                 + "end repeat\n"
-                + "pause\n"  // Ensure playback is paused immediately after the song ends
+                + "stop\n"  // Ensures playback stops instead of pausing
                 + "end tell";
 
         executeAppleScriptAsync(script);
         hasStartedMusic = true;
-        isPlaying = true;  // Mark as playing
+        isPlaying = true;
         totalSeconds = getTotalSecondsInPlayback();
     }
+
 
     // Method to stop playback in Apple Music (asynchronous)
     public void stopPlayback () {
@@ -90,16 +91,27 @@ public class MacOSMediaPlayer {
         }
 
         // Fetch and update playback info
-        currentSeconds = getCurrentSecondsInPlayback();
-        if (currentSeconds >= 0 && currentSeconds < totalSeconds - 2) {
+        double newCurrentSeconds = getCurrentSecondsInPlayback();
+
+        // Ignore invalid results (-1 indicates an error)
+        if (newCurrentSeconds < 0) {
+            System.err.println("Failed to get playback position. Keeping previous value.");
+            return; // Skip this update and keep the last known valid position
+        }
+
+        currentSeconds = newCurrentSeconds;
+
+        // Only stop and skip if we are certain playback has finished
+        if (currentSeconds >= 0 && currentSeconds < totalSeconds - 2) {  // Increased buffer to avoid premature stopping
             isPlaying = true;
-        } else {
+        } else if (currentSeconds >= totalSeconds - 2) {  // Song has ended
             isPlaying = false;
             stopPlayback();
             goToNextSong();
             setPlaybackPosition(0);
         }
     }
+
 
 
 
@@ -135,7 +147,10 @@ public class MacOSMediaPlayer {
                 process = pb.start();
 
                 // Wait for the process to complete
-                process.waitFor();
+                boolean finished = process.waitFor(2000, TimeUnit.MILLISECONDS);
+                if (!finished) {
+                    process.destroyForcibly();
+                }
             } catch (IOException | InterruptedException e) {
                 e.printStackTrace();
             } finally {
@@ -161,7 +176,10 @@ public class MacOSMediaPlayer {
                     result = Double.parseDouble(line.trim());
                 }
             }
-            process.waitFor();  // Ensure the process finishes before returning the result
+            boolean finished = process.waitFor(2000, TimeUnit.MILLISECONDS);
+            if (!finished) {
+                process.destroyForcibly();
+            }
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         } finally {

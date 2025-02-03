@@ -4,6 +4,8 @@ import net.riezebos.bruus.tbd.game.gameobjects.enemies.Enemy;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyManager;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
 import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SpaceShip;
+import net.riezebos.bruus.tbd.game.util.performancelogger.PerformanceLogger;
+import net.riezebos.bruus.tbd.game.util.performancelogger.PerformanceLoggerManager;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.AnimationManager;
 import net.riezebos.bruus.tbd.game.util.ThornsDamageDealer;
 import net.riezebos.bruus.tbd.game.util.collision.CollisionDetector;
@@ -20,13 +22,15 @@ public class ExplosionManager {
     private EnemyManager enemyManager = EnemyManager.getInstance();
     //    private List<Explosion> explosionList = new ArrayList<Explosion>();
     private CopyOnWriteArrayList<Explosion> explosionList = new CopyOnWriteArrayList<>();
-
+    private PerformanceLogger performanceLogger = null;
     private ExplosionManager () {
-
+        this.performanceLogger = new PerformanceLogger("Explosion Manager");
     }
 
     public void updateGametick () {
-        updateExplosions();
+//        PerformanceLoggerManager.timeAndLog(performanceLogger, "Total", () -> {
+            PerformanceLoggerManager.timeAndLog(performanceLogger, "Update Explosions", this::updateExplosions);
+//        });
     }
 
     private void updateExplosions () {
@@ -56,6 +60,7 @@ public class ExplosionManager {
         }
 
         explosionList = new CopyOnWriteArrayList<>();
+        performanceLogger.reset();
     }
 
     public static ExplosionManager getInstance () {
@@ -115,4 +120,7 @@ public class ExplosionManager {
         }
     }
 
+    public PerformanceLogger getPerformanceLogger () {
+        return performanceLogger;
+    }
 }

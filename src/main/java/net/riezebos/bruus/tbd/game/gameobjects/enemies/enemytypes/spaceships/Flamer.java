@@ -31,6 +31,7 @@ public class Flamer extends Enemy {
     public void fireAction () {
         double currentTime = GameStateInfo.getInstance().getGameSeconds();
         if (currentTime >= lastAttackTime + this.getAttackSpeed() && WithinVisualBoundariesCalculator.isWithinBoundaries(this)) {
+            updateChargingAttackAnimationCoordination();
             if (!chargingUpAttackAnimation.isPlaying()) {
                 this.isAttacking = true;
                 chargingUpAttackAnimation.refreshAnimation();

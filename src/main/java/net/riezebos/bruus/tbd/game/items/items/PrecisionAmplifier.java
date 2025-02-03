@@ -49,8 +49,8 @@ public class PrecisionAmplifier extends Item {
             return isAvailable;
         }
 
-        if(PlayerInventory.getInstance().getItemByName(this.itemEnum) != null){
-            return PlayerInventory.getInstance().getItemByName(this.itemEnum).getQuantity() < 10; //Check if player already has 10 of them
+        if(PlayerInventory.getInstance().getItemFromInventoryIfExists(this.itemEnum) != null){
+            return PlayerInventory.getInstance().getItemFromInventoryIfExists(this.itemEnum).getQuantity() < 10; //Check if player already has 10 of them
         } else {
             return true; //Player has 0 stacks, so we return true
         }
