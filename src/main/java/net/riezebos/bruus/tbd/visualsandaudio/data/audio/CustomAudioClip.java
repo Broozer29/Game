@@ -60,6 +60,8 @@ public class CustomAudioClip {
                     });
                 }
             } catch (Exception e) {
+                System.out.println("Missing song file: " + this.getAudioType());
+
                 e.printStackTrace();
             }
         }

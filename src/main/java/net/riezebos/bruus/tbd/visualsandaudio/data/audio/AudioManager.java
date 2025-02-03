@@ -23,7 +23,7 @@ public class AudioManager {
     private AudioEnums currentSong;
     private Queue<AudioEnums> backgroundMusicTracksThatHavePlayed = new LinkedList<>();
     private Map<AudioEnums, Long> lastPlayTimeMap = new HashMap<>();
-    private MusicMediaPlayer musicMediaPlayer = MusicMediaPlayer.Default;
+    private MusicMediaPlayer musicMediaPlayer = MusicMediaPlayer.iTunesMacOS;
     private MacOSMediaPlayer macOSMediaPlayer = MacOSMediaPlayer.getInstance();
     private double predictedEndGameSeconds = -1; // Predicted game seconds when the song will end
     private double lastSyncGameSeconds = -1; // Initialize to a value ensuring immediate sync on the first check
