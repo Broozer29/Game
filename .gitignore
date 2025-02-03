@@ -1,5 +1,4 @@
 target/
-*.wav
 *.jar
 *.class
 *.log
