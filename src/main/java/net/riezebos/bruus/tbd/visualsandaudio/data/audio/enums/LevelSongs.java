@@ -1,6 +1,5 @@
 package net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums;
 
-import com.badlogic.gdx.Audio;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyEnums;
 import net.riezebos.bruus.tbd.game.level.enums.LevelDifficulty;
 import net.riezebos.bruus.tbd.game.level.enums.LevelLength;

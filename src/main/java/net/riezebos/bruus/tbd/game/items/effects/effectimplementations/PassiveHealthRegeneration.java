@@ -1,6 +1,5 @@
 package net.riezebos.bruus.tbd.game.items.effects.effectimplementations;
 
-import com.badlogic.gdx.Game;
 import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
 import net.riezebos.bruus.tbd.game.gamestate.GameStateInfo;
 import net.riezebos.bruus.tbd.game.items.effects.EffectActivationTypes;

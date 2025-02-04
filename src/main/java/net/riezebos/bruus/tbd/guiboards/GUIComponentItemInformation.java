@@ -1,7 +1,7 @@
 package net.riezebos.bruus.tbd.guiboards;
 
-import net.riezebos.bruus.tbd.game.items.PlayerInventory;
 import net.riezebos.bruus.tbd.game.items.ItemEnums;
+import net.riezebos.bruus.tbd.game.items.PlayerInventory;
 import net.riezebos.bruus.tbd.game.items.enums.ItemRarityEnums;
 
 public class GUIComponentItemInformation {

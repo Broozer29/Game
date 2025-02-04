@@ -1,9 +1,6 @@
 package net.riezebos.bruus.tbd.guiboards;
 
 import net.riezebos.bruus.tbd.controllerInput.ConnectedControllersManager;
-import net.riezebos.bruus.tbd.game.items.Item;
-import net.riezebos.bruus.tbd.game.items.ItemEnums;
-import net.riezebos.bruus.tbd.game.items.PlayerInventory;
 import net.riezebos.bruus.tbd.guiboards.boards.ClassSelectionBoard;
 import net.riezebos.bruus.tbd.guiboards.boards.GameBoard;
 import net.riezebos.bruus.tbd.guiboards.boards.MenuBoard;

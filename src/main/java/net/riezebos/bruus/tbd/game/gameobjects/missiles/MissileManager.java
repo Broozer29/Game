@@ -8,13 +8,13 @@ import net.riezebos.bruus.tbd.game.gameobjects.missiles.specialAttacks.SpecialAt
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
 import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SpaceShip;
 import net.riezebos.bruus.tbd.game.gamestate.GameStatsTracker;
+import net.riezebos.bruus.tbd.game.util.ThornsDamageDealer;
 import net.riezebos.bruus.tbd.game.util.VisualLayer;
+import net.riezebos.bruus.tbd.game.util.collision.CollisionDetector;
+import net.riezebos.bruus.tbd.game.util.collision.CollisionInfo;
 import net.riezebos.bruus.tbd.game.util.performancelogger.PerformanceLogger;
 import net.riezebos.bruus.tbd.game.util.performancelogger.PerformanceLoggerManager;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.AnimationManager;
-import net.riezebos.bruus.tbd.game.util.ThornsDamageDealer;
-import net.riezebos.bruus.tbd.game.util.collision.CollisionDetector;
-import net.riezebos.bruus.tbd.game.util.collision.CollisionInfo;
 
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;

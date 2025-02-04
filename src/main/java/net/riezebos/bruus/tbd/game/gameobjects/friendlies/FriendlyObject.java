@@ -3,7 +3,6 @@ package net.riezebos.bruus.tbd.game.gameobjects.friendlies;
 import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
 import net.riezebos.bruus.tbd.game.movement.MovementConfiguration;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteAnimationConfiguration;
-import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteConfiguration;
 
 public class FriendlyObject extends GameObject {
     protected FriendlyObjectEnums friendlyObjectType;

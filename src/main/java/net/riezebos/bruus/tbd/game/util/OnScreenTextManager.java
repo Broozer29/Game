@@ -6,7 +6,6 @@ import net.riezebos.bruus.tbd.game.UI.UIObject;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 public class OnScreenTextManager {
 

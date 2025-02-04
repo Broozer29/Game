@@ -1,7 +1,5 @@
 package net.riezebos.bruus.tbd.game.level.directors;
 
-import net.riezebos.bruus.tbd.game.gameobjects.enemies.Enemy;
-import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyCreator;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyManager;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyCategory;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyEnums;
@@ -11,7 +9,6 @@ import net.riezebos.bruus.tbd.game.level.FormationCreator;
 import net.riezebos.bruus.tbd.game.level.LevelManager;
 import net.riezebos.bruus.tbd.game.level.enums.SpawnFormationEnums;
 import net.riezebos.bruus.tbd.game.movement.Direction;
-import net.riezebos.bruus.tbd.game.movement.MovementPatternSize;
 import net.riezebos.bruus.tbd.visualsandaudio.data.DataClass;
 
 import java.util.ArrayList;

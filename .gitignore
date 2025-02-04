@@ -3,3 +3,4 @@ target/
 *.class
 *.log
 .idea/workspace.xml
+dependency-reduced-pom.xml

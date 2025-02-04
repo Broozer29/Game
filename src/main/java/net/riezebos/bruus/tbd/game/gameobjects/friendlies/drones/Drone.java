@@ -3,7 +3,7 @@ package net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones;
 import net.riezebos.bruus.tbd.game.gameobjects.friendlies.FriendlyObject;
 import net.riezebos.bruus.tbd.game.gameobjects.friendlies.FriendlyObjectConfiguration;
 import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.droneTypes.DroneTypes;
-import net.riezebos.bruus.tbd.game.movement.*;
+import net.riezebos.bruus.tbd.game.movement.MovementConfiguration;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteAnimationConfiguration;
 
 import java.util.Random;

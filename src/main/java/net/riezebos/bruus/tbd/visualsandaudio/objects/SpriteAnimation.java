@@ -1,8 +1,8 @@
 package net.riezebos.bruus.tbd.visualsandaudio.objects;
 
 import net.riezebos.bruus.tbd.game.movement.Direction;
-import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteAnimationConfiguration;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.*;
+import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteAnimationConfiguration;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;

@@ -5,14 +5,6 @@ import net.riezebos.bruus.tbd.controllerInput.ControllerInputEnums;
 import net.riezebos.bruus.tbd.game.UI.GameUICreator;
 import net.riezebos.bruus.tbd.game.UI.UIObject;
 import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
-import net.riezebos.bruus.tbd.game.items.PlayerInventory;
-import net.riezebos.bruus.tbd.game.level.enums.LevelTypes;
-import net.riezebos.bruus.tbd.game.util.VisualLayer;
-import net.riezebos.bruus.tbd.game.util.performancelogger.PerformanceLogger;
-import net.riezebos.bruus.tbd.game.util.performancelogger.PerformanceLoggerManager;
-import net.riezebos.bruus.tbd.guiboards.TimerHolder;
-import net.riezebos.bruus.tbd.guiboards.background.BackgroundManager;
-import net.riezebos.bruus.tbd.guiboards.background.BackgroundObject;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.Enemy;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyManager;
 import net.riezebos.bruus.tbd.game.gameobjects.friendlies.FriendlyManager;
@@ -28,21 +20,28 @@ import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SpaceShipSpecial
 import net.riezebos.bruus.tbd.game.gamestate.GameStateInfo;
 import net.riezebos.bruus.tbd.game.gamestate.GameStatsTracker;
 import net.riezebos.bruus.tbd.game.gamestate.GameStatusEnums;
+import net.riezebos.bruus.tbd.game.items.PlayerInventory;
 import net.riezebos.bruus.tbd.game.level.LevelManager;
 import net.riezebos.bruus.tbd.game.level.directors.DirectorManager;
-import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.MusicMediaPlayer;
-import net.riezebos.bruus.tbd.visualsandaudio.objects.AnimationManager;
-import net.riezebos.bruus.tbd.game.util.OnScreenTextManager;
+import net.riezebos.bruus.tbd.game.level.enums.LevelTypes;
 import net.riezebos.bruus.tbd.game.movement.Direction;
 import net.riezebos.bruus.tbd.game.util.OnScreenText;
+import net.riezebos.bruus.tbd.game.util.OnScreenTextManager;
 import net.riezebos.bruus.tbd.game.util.ThornsDamageDealer;
+import net.riezebos.bruus.tbd.game.util.VisualLayer;
+import net.riezebos.bruus.tbd.game.util.performancelogger.PerformanceLogger;
+import net.riezebos.bruus.tbd.game.util.performancelogger.PerformanceLoggerManager;
 import net.riezebos.bruus.tbd.guiboards.BoardManager;
+import net.riezebos.bruus.tbd.guiboards.TimerHolder;
+import net.riezebos.bruus.tbd.guiboards.background.BackgroundManager;
+import net.riezebos.bruus.tbd.guiboards.background.BackgroundObject;
 import net.riezebos.bruus.tbd.visualsandaudio.data.DataClass;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.AudioDatabase;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.AudioManager;
-import net.riezebos.bruus.tbd.visualsandaudio.data.audio.CustomAudioClip;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.AudioEnums;
+import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.MusicMediaPlayer;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
+import net.riezebos.bruus.tbd.visualsandaudio.objects.AnimationManager;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.Sprite;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteAnimation;
 
@@ -491,7 +490,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
 
 
         if (uiManager.getDifficultyWings() != null) {
-            UIObject wings = uiManager.getDifficultyWings();
+//            UIObject wings = uiManager.getDifficultyWings();
 //            g.drawString("Level difficulty: " + levelManager.getCurrentLevelDifficultyScore(), wings.getXCoordinate() + (wings.getWidth()), wings.getCenterYCoordinate());
             drawImage(g, uiManager.getDifficultyWings());
         }
@@ -547,7 +546,6 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
                 (int) (transparency * 255) // alpha value must be between 0 and 255
         );
 
-//        g.setColor(new Color(1.0f, 1.0f, 1.0f, transparency)); // White with transparency
         g.setColor(colorWithTransparency);
         g.setFont(new Font("Helvetica", Font.PLAIN, text.getFontSize()));
         // Draw the text at the current coordinates.
