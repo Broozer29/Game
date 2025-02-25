@@ -7,6 +7,7 @@ import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
 import net.riezebos.bruus.tbd.game.items.Item;
 import net.riezebos.bruus.tbd.game.items.ItemEnums;
 import net.riezebos.bruus.tbd.game.items.enums.ItemApplicationEnum;
+import net.riezebos.bruus.tbd.visualsandaudio.data.DataClass;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +15,7 @@ import java.util.List;
 public class FocusCrystal extends Item {
 
     private float damageAmplificationModifier;
-    private int distance = 180;
+    private int distance = Math.round(180);
 
     private List<GameObject> objectsModified = new ArrayList<>();
 

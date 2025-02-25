@@ -90,6 +90,9 @@ public class SpaceShip extends GameObject {
         this.effects = new CopyOnWriteArrayList<>();
         this.hasAttack = true;
         applyOnCreationEffects();
+
+        this.currentHitpoints = playerStats.getMaxHitPoints();
+        this.currentShieldPoints = playerStats.getMaxShieldHitPoints();
     }
 
     private void applyOnCreationEffects () {
@@ -103,16 +106,13 @@ public class SpaceShip extends GameObject {
             focusCrystalConfig.setxCoordinate(getXCoordinate());
             focusCrystalConfig.setyCoordinate(getYCoordinate());
             focusCrystalConfig.setScale(1);
-            focusCrystalConfig.setTransparancyAlpha(0.1f);
+            focusCrystalConfig.setTransparancyAlpha(0.15f);
             focusCrystalConfig.setImageType(ImageEnums.Highlight);
 
             SpriteAnimationConfiguration focusCrystalAnimConfig = new SpriteAnimationConfiguration(focusCrystalConfig, 10, true);
             SpriteAnimation focusCrystalAnimation = new SpriteAnimation(focusCrystalAnimConfig);
 
-//            FocusCrystal focusCrystal = (FocusCrystal) PlayerInventory.getInstance().getItemByName(ItemEnums.FocusCrystal);
-//            focusCrystalAnimation.setImageDimensions(focusCrystal.getDistance() * 2, focusCrystal.getDistance() * 2);
             focusCrystalAnimation.setAnimationScale(5.714f);
-
 
             addPlayerFollowingAnimation(focusCrystalAnimation);
             AnimationManager.getInstance().addUpperAnimation(focusCrystalAnimation);
@@ -208,7 +208,7 @@ public class SpaceShip extends GameObject {
 
     public void changeShieldHitpoints (float change) {
         this.currentShieldPoints += change;
-        float maxShieldPoints = playerStats.getMaxShieldHitPoints();
+        float maxShieldPoints = playerStats.getMaxShieldHitPoints() * playerStats.getMaxOverloadingShieldMultiplier();
         if (currentShieldPoints > (maxShieldPoints)) {
             currentShieldPoints = maxShieldPoints;
         }

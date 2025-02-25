@@ -9,10 +9,14 @@ public enum ImageEnums {
     FireShieldIcon,
     BargainBucket,
     Title_Image,
+    SelectBoons,
     SelectClass,
     ProgressBar,
     ProgressBarFilling,
     InputMapping,
+    UpWhite,
+    UpOrange,
+    UpgradeSelectedCheck,
 
     //// Animations
     Impact_Explosion_One,

@@ -16,6 +16,9 @@ public class ImageDatabase {
     private BufferedImage model3BetterUpgrade;
     private BufferedImage uidamageoverlay;
     private BufferedImage inputMapping;
+    private BufferedImage upWhite;
+    private BufferedImage upOrange;
+    private BufferedImage upgradeSelectedCheck;
 
     // Enemy images
     private BufferedImage alienBombImage;
@@ -76,6 +79,7 @@ public class ImageDatabase {
     private BufferedImage redFilling;
     private BufferedImage goldFilling;
     private BufferedImage blueFilling;
+    private BufferedImage selectBoonsUI;
 
 
     // Icons
@@ -469,6 +473,7 @@ public class ImageDatabase {
         this.alienBombImage = imgLoader.getImage(ImageEnums.Alien_Bomb);
         this.fourDirectionalDrone = imgLoader.getImage(ImageEnums.FourDirectionalDrone);
         this.spaceStationBoss = imgLoader.getImage(ImageEnums.SpaceStationBoss);
+        selectBoonsUI = imgLoader.getImage(ImageEnums.SelectBoons);
 
     }
 
@@ -628,6 +633,10 @@ public class ImageDatabase {
         this.yellowWings4 = imgLoader.getImage(ImageEnums.YellowWings4);
         this.yellowWings5 = imgLoader.getImage(ImageEnums.YellowWings5);
 
+        this.upWhite = imgLoader.getImage(ImageEnums.UpWhite);
+        this.upOrange = imgLoader.getImage(ImageEnums.UpOrange);
+        this.upgradeSelectedCheck = imgLoader.getImage(ImageEnums.UpgradeSelectedCheck);
+
         this.progressBar = imgLoader.getImage(ImageEnums.ProgressBar);
         this.progressBarFilling = imgLoader.getImage(ImageEnums.ProgressBarFilling);
 
@@ -776,6 +785,9 @@ public class ImageDatabase {
 
     public BufferedImage getImage (ImageEnums imageType) {
         switch (imageType) {
+            case UpgradeSelectedCheck: return this.upgradeSelectedCheck;
+            case UpOrange: return upOrange;
+            case UpWhite: return upWhite;
             case CorrosiveOil: return corrosiveOil;
             case ModuleScorchIcon: return moduleScorchIcon;
             case FireShieldIcon: return fireShieldIcon;
@@ -1247,6 +1259,7 @@ public class ImageDatabase {
             case Title_Image:
                 return titleImage;
             case SelectClass: return classSelectionUI;
+            case SelectBoons: return selectBoonsUI;
             case FireFighter: return fireFighter;
             case Starcraft2ConcentratedLaser: return sc2ConcentratedLaser;
             case Invisible:

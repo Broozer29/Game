@@ -1,10 +1,7 @@
 package net.riezebos.bruus.tbd.guiboards;
 
 import net.riezebos.bruus.tbd.controllerInput.ConnectedControllersManager;
-import net.riezebos.bruus.tbd.guiboards.boards.ClassSelectionBoard;
-import net.riezebos.bruus.tbd.guiboards.boards.GameBoard;
-import net.riezebos.bruus.tbd.guiboards.boards.MenuBoard;
-import net.riezebos.bruus.tbd.guiboards.boards.ShopBoard;
+import net.riezebos.bruus.tbd.guiboards.boards.*;
 import net.riezebos.bruus.tbd.visualsandaudio.data.DataClass;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.AudioManager;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.AudioEnums;
@@ -16,17 +13,18 @@ import java.util.Map;
 public class BoardManager extends JFrame {
 
     private DataClass data = DataClass.getInstance();
-    private MenuBoard menuBoard;
+    private MainMenuBoard mainMenuBoard;
     private GameBoard gameBoard;
     private ShopBoard shopBoard;
     private ClassSelectionBoard classSelectionBoard;
+    private UpgradeSelectionBoard upgradeSelectionBoard;
     private static BoardManager instance = new BoardManager();
     private AudioManager audioManager = AudioManager.getInstance();
 
     private JPanel currentBoard = null;
 
     public enum ScreenType {
-        MAIN_MENU, GAME, SHOP, CLASS_SELECTION
+        MAIN_MENU, GAME, SHOP, UPGRADE_SELECTION, CLASS_SELECTION
     }
 
     private Map<ScreenType, JPanel> screens = new EnumMap<>(ScreenType.class);
@@ -41,47 +39,55 @@ public class BoardManager extends JFrame {
         setSize(data.getWindowWidth(), data.getWindowHeight());
 
         // Initialize screens
-        menuBoard = new MenuBoard();
+        mainMenuBoard = new MainMenuBoard();
         gameBoard = new GameBoard();
         shopBoard = new ShopBoard();
         classSelectionBoard = new ClassSelectionBoard();
+        upgradeSelectionBoard = new UpgradeSelectionBoard();
 
-        screens.put(ScreenType.MAIN_MENU, menuBoard);
+        screens.put(ScreenType.MAIN_MENU, mainMenuBoard);
         screens.put(ScreenType.GAME, gameBoard);
         screens.put(ScreenType.SHOP, shopBoard);
         screens.put(ScreenType.CLASS_SELECTION, classSelectionBoard);
+        screens.put(ScreenType.UPGRADE_SELECTION, upgradeSelectionBoard);
 
         // Define actions for each screen
         screenActions.put(ScreenType.MAIN_MENU, () -> {
             playMenuMusic();
-            menuBoard.recreateWindow();
-            menuBoard.getTimer().restart();
-            ConnectedControllersManager.getInstance().setControllerSensitifties(false);
+            mainMenuBoard.recreateWindow();
+            mainMenuBoard.getTimer().restart();
+            ConnectedControllersManager.getInstance().setControllerSensitive(false);
         });
 
+        screenActions.put(ScreenType.UPGRADE_SELECTION, () -> {
+            upgradeSelectionBoard.recreateWindow();
+            upgradeSelectionBoard.getTimer().restart();
+            ConnectedControllersManager.getInstance().setControllerSensitive(false);
+        });
         screenActions.put(ScreenType.GAME, () -> {
             stopMusic();
             gameBoard.startGame();
-            ConnectedControllersManager.getInstance().setControllerSensitifties(true);
+            ConnectedControllersManager.getInstance().setControllerSensitive(true);
         });
 
         screenActions.put(ScreenType.SHOP, () -> {
             playShopMenuMusic();
             shopBoard.initShopBoardGUIComponents();
             shopBoard.getTimer().restart();
-            ConnectedControllersManager.getInstance().setControllerSensitifties(false);
+            ConnectedControllersManager.getInstance().setControllerSensitive(false);
         });
 
         screenActions.put(ScreenType.CLASS_SELECTION, () -> {
             classSelectionBoard.recreateWindow();
             classSelectionBoard.getTimer().restart();
-            ConnectedControllersManager.getInstance().setControllerSensitifties(false);
+            ConnectedControllersManager.getInstance().setControllerSensitive(false);
         });
     }
 
     public static BoardManager getInstance () {
         return instance;
     }
+
 
     private void playMenuMusic () {
 //        if(audioManager.getBackGroundMusicCustomAudioclip() != null && !audioManager.getBackGroundMusicCustomAudioclip().getAudioType().equals(AudioEnums.mainmenu)) {
@@ -140,6 +146,10 @@ public class BoardManager extends JFrame {
         switchScreen(ScreenType.SHOP);
     }
 
+    public void openUpgradeSelectionScreen() {
+        switchScreen(ScreenType.UPGRADE_SELECTION);
+    }
+
     public void menuToClassSelection() {
         switchScreen(ScreenType.CLASS_SELECTION);
     }
@@ -152,5 +162,7 @@ public class BoardManager extends JFrame {
         return shopBoard;
     }
 
-
+    public UpgradeSelectionBoard getUpgradeSelectionBoard() {
+        return upgradeSelectionBoard;
+    }
 }

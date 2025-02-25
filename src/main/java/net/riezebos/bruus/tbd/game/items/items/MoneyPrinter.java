@@ -37,7 +37,7 @@ public class MoneyPrinter extends Item {
     }
 
     private void calculateMoneyGainAmount(){
-        this.moneyGainAmount = quantity * 4f;
+        this.moneyGainAmount = quantity * 2f;
     }
 
     public void increaseQuantityOfItem(int amount) {

@@ -46,7 +46,7 @@ public class ConnectedControllersManager {
         }
     }
 
-    public void setControllerSensitifties(boolean sensitive) {
+    public void setControllerSensitive(boolean sensitive) {
         for (ControllerInputReader inputReader : controllerInputReaders.values()) {
             inputReader.setSensitiveInput(sensitive);
         }

@@ -56,7 +56,9 @@ public class ClassSelectionBoard extends JPanel implements TimerHolder {
     private GUITextCollection selectCaptainTextButton;
     private GUITextCollection selectFireFighterTextButton;
 
+    private GUIComponent startGameButtonBackgroundCard;
     private GUITextCollection startGameButton;
+    private GUIComponent returnToMenuBackgroundCard;
     private GUITextCollection returnToMenuButton;
     /*Board Components*/
 
@@ -71,7 +73,6 @@ public class ClassSelectionBoard extends JPanel implements TimerHolder {
     private int selectedRow = 0;
     private int selectedColumn = 0;
     private boolean initializedMenuObjects = false;
-    private boolean foundControllerBool;
 
 
     public ClassSelectionBoard () {
@@ -89,7 +90,6 @@ public class ClassSelectionBoard extends JPanel implements TimerHolder {
         });
 
         if (controllers.getFirstController() != null) {
-            foundControllerBool = true;
             controllerInputReader = controllers.getFirstController();
         }
 
@@ -108,7 +108,9 @@ public class ClassSelectionBoard extends JPanel implements TimerHolder {
         secondaryWeaponIcon = ClassSelectionBoardCreator.createSecondaryWeaponDescriptionIcon(secondarySkillWeaponExplanationBackgroundCard, lastHoveredOtion);
 
         classSelectionTitleImage = ClassSelectionBoardCreator.createSelectClassImage();
-        returnToMenuButton = ClassSelectionBoardCreator.createReturnToMainMenu();
+
+        returnToMenuBackgroundCard = ClassSelectionBoardCreator.createReturnToMainMenuBackgroundCard();
+        returnToMenuButton = ClassSelectionBoardCreator.createReturnToMainMenu(returnToMenuBackgroundCard);
 
 
         classSelectionBackgroundCard = ClassSelectionBoardCreator.createSelectShipBackgroundCard();
@@ -116,7 +118,8 @@ public class ClassSelectionBoard extends JPanel implements TimerHolder {
         selectCaptainTextButton = ClassSelectionBoardCreator.createSelectCaptain(classSelectionBackgroundCard);
         selectFireFighterTextButton = ClassSelectionBoardCreator.createSelectFireFighter(classSelectionBackgroundCard);
 
-        startGameButton = ClassSelectionBoardCreator.createStartGameButton();
+        startGameButtonBackgroundCard = ClassSelectionBoardCreator.createStartGameButtonBackgroundCard();
+        startGameButton = ClassSelectionBoardCreator.createStartGameButton(startGameButtonBackgroundCard);
         menuCursor = ClassSelectionBoardCreator.createCursor(returnToMenuButton);
         initializedMenuObjects = true;
     }
@@ -138,6 +141,8 @@ public class ClassSelectionBoard extends JPanel implements TimerHolder {
         grid.clear();
         offTheGridObjects.clear();
 
+        offTheGridObjects.add(startGameButtonBackgroundCard);
+        offTheGridObjects.add(returnToMenuBackgroundCard);
         offTheGridObjects.add(classSelectionTitleImage);
         offTheGridObjects.add(classSelectionBackgroundCard);
         offTheGridObjects.add(classDescriptionBackgroundCard);
@@ -147,16 +152,18 @@ public class ClassSelectionBoard extends JPanel implements TimerHolder {
         offTheGridObjects.add(secondaryWeaponIcon);
         offTheGridObjects.addAll(classSelectionSelectText.getComponents());
 
-        firstColumn.add(selectCaptainTextButton.getComponents().get(0));
+
+        addToGrid(firstColumn, selectCaptainTextButton.getComponents().get(0), 0,0);
         addAllButFirstComponent(selectCaptainTextButton);
 
-        firstColumn.add(selectFireFighterTextButton.getComponents().get(0));
+        addToGrid(firstColumn, selectFireFighterTextButton.getComponents().get(0), 0,1);
         addAllButFirstComponent(selectFireFighterTextButton);
 
-        firstColumn.add(returnToMenuButton.getComponents().get(0));
+        addToGrid(firstColumn, returnToMenuButton.getComponents().get(0), 0,2);
         addAllButFirstComponent(returnToMenuButton);
 
-        secondColumn.add(startGameButton.getComponents().get(0));
+
+        addToGrid(secondColumn, startGameButton.getComponents().get(0), 1,0);
         addAllButFirstComponent(startGameButton);
 
         offTheGridObjects.add(menuCursor);
@@ -165,6 +172,14 @@ public class ClassSelectionBoard extends JPanel implements TimerHolder {
         grid.add(secondColumn);
 
         updateDescriptionBoxes();
+        updateCursor();
+    }
+
+    private void addToGrid(List<GUIComponent> gridList, GUIComponent component, int column, int row) {
+        //Crosswired for this board, temporary fix of a bigger problem also present in ShopBoard
+        component.setColumn(row);
+        component.setRow(column);
+        gridList.add(component);
     }
 
     private void addAllButFirstComponent (GUITextCollection textCollection) {
@@ -221,8 +236,8 @@ public class ClassSelectionBoard extends JPanel implements TimerHolder {
         int boxWidth = backgroundCard.getWidth();
         int boxHeight = backgroundCard.getHeight();
 
-        int horizontalPadding = 40;
-        int verticalPadding = 40;
+        int horizontalPadding = Math.round(40 * DataClass.getInstance().getResolutionFactor());
+        int verticalPadding = Math.round(40 * DataClass.getInstance().getResolutionFactor());
         int maxTextWidth = boxWidth - (horizontalPadding * 2);
         String textFont = DataClass.getInstance().getTextFont();
         ClassDescription classDescription = ClassDescription.getInstance(lastHoveredOtion);
@@ -238,14 +253,14 @@ public class ClassSelectionBoard extends JPanel implements TimerHolder {
 
 
             if (title != null) {
-                g.setFont(new Font(textFont, Font.BOLD, 20));  // Larger font for the title
+                g.setFont(new Font(textFont, Font.BOLD, Math.round(20 * DataClass.getInstance().getResolutionFactor())));  // Larger font for the title
                 drawDescriptionText(g, title, descriptionX, descriptionY, maxTextWidth, Color.GREEN);
                 FontMetrics titleMetrics = g.getFontMetrics();
                 descriptionY += titleMetrics.getHeight() + 10;
             }
 
             if (desciption != null) {
-                g.setFont(new Font(textFont, Font.PLAIN, 14));
+                g.setFont(new Font(textFont, Font.PLAIN, Math.round(14 * DataClass.getInstance().getResolutionFactor())));
                 drawDescriptionText(g, desciption, descriptionX, descriptionY, maxTextWidth, Color.WHITE);
                 FontMetrics descriptionMetrics = g.getFontMetrics();
                 descriptionY += descriptionMetrics.getHeight() * ((desciption.length() / maxTextWidth) + 1); //Doesn't properly increase the Y coordinates for subsequent texts, for some reason
@@ -253,7 +268,7 @@ public class ClassSelectionBoard extends JPanel implements TimerHolder {
 
             int tempHeight = 0;
             if (attackSpeed != null) {
-                g.setFont(new Font(textFont, Font.PLAIN, 18));
+                g.setFont(new Font(textFont, Font.PLAIN, Math.round(18 * DataClass.getInstance().getResolutionFactor())));
                 FontMetrics descriptionMetrics = g.getFontMetrics();
                 int attackSpeedY = backgroundCard.getYCoordinate() + boxHeight - verticalPadding - descriptionMetrics.getHeight();
                 tempHeight = descriptionMetrics.getHeight();
@@ -261,7 +276,7 @@ public class ClassSelectionBoard extends JPanel implements TimerHolder {
             }
 
             if (attackDamage != null) {
-                g.setFont(new Font(textFont, Font.PLAIN, 18));
+                g.setFont(new Font(textFont, Font.PLAIN, Math.round(18 * DataClass.getInstance().getResolutionFactor())));
                 FontMetrics descriptionMetrics = g.getFontMetrics();
                 int attackDamageY = backgroundCard.getYCoordinate() + boxHeight - verticalPadding - descriptionMetrics.getHeight() - Math.round(tempHeight * 1.5f);
                 drawDescriptionText(g, attackDamage, descriptionX, attackDamageY, maxTextWidth, Color.ORANGE);
@@ -280,8 +295,8 @@ public class ClassSelectionBoard extends JPanel implements TimerHolder {
         int boxWidth = backgroundCard.getWidth();
         int boxHeight = backgroundCard.getHeight();
 
-        int horizontalPadding = 40;
-        int verticalPadding = 40;
+        int horizontalPadding = Math.round(40 * DataClass.getInstance().getResolutionFactor());
+        int verticalPadding = Math.round(40 * DataClass.getInstance().getResolutionFactor());
         int maxTextWidth = boxWidth - (horizontalPadding * 3);
         String textFont = DataClass.getInstance().getTextFont();
 
@@ -293,14 +308,14 @@ public class ClassSelectionBoard extends JPanel implements TimerHolder {
             int descriptionY = weaponIcon.getYCoordinate();
 
             if (abilityName != null) {
-                g.setFont(new Font(textFont, Font.BOLD, 18));  // Larger font for the title
+                g.setFont(new Font(textFont, Font.BOLD, Math.round(18 * DataClass.getInstance().getResolutionFactor())));  // Larger font for the title
                 drawDescriptionText(g, abilityName, descriptionX, descriptionY, maxTextWidth, Color.GREEN);
                 FontMetrics titleMetrics = g.getFontMetrics();
-                descriptionY += titleMetrics.getHeight() + 10;  // Spacing after the title
+                descriptionY += titleMetrics.getHeight() + Math.round(10 * DataClass.getInstance().getResolutionFactor());  // Spacing after the title
             }
 
             if (abilityDescription != null) {
-                g.setFont(new Font(textFont, Font.PLAIN, 14));  // Default font for description
+                g.setFont(new Font(textFont, Font.PLAIN, Math.round(14 * DataClass.getInstance().getResolutionFactor())));  // Default font for description
                 drawDescriptionText(g, abilityDescription, descriptionX, descriptionY, maxTextWidth, Color.WHITE);
                 FontMetrics descriptionMetrics = g.getFontMetrics();
                 descriptionY += descriptionMetrics.getHeight() * ((abilityDescription.length() / maxTextWidth) + 1); // Estimate line height
@@ -345,9 +360,12 @@ public class ClassSelectionBoard extends JPanel implements TimerHolder {
         }
     }
 
-    private void previousMenuTile () {
+    private void navigateLeft() {
         if (isGridEmpty()) {
             return; // Do nothing if the grid is empty
+        }
+        if (handleLeftOrRightNavigationOverwrites()) {
+            return; //We overwrote the navigation
         }
 
         int originalRow = selectedRow; // Keep track of the starting row to avoid infinite loop
@@ -364,13 +382,17 @@ public class ClassSelectionBoard extends JPanel implements TimerHolder {
         if (!grid.get(selectedRow).isEmpty() && selectedColumn >= grid.get(selectedRow).size()) {
             selectedColumn = grid.get(selectedRow).size() - 1;
         }
-        updateCursor();
+
     }
 
-    // Go one menu tile downwards
-    private void nextMenuTile () {
+    // Go one menu tile right
+    private void navigateRight() {
         if (isGridEmpty()) {
             return; // Do nothing if the grid is empty
+        }
+
+        if (handleLeftOrRightNavigationOverwrites()) {
+            return; //We overwrote the navigation
         }
 
         int originalRow = selectedRow; // Keep track of the starting row to avoid infinite loop
@@ -387,9 +409,25 @@ public class ClassSelectionBoard extends JPanel implements TimerHolder {
         if (!grid.get(selectedRow).isEmpty() && selectedColumn >= grid.get(selectedRow).size()) {
             selectedColumn = grid.get(selectedRow).size() - 1;
         }
-        updateCursor();
     }
 
+
+    private boolean handleLeftOrRightNavigationOverwrites() {
+        //If overwritten a navigation, return true, if not return false
+        if (menuCursor.getSelectedMenuTile().equals(this.returnToMenuButton.getComponents().get(0))) {
+            selectedColumn = startGameButton.getComponents().get(0).getColumn();
+            selectedRow = startGameButton.getComponents().get(0).getRow();
+            return true;
+        }
+
+        if (menuCursor.getSelectedMenuTile().equals(this.startGameButton.getComponents().get(0))) {
+            selectedColumn = returnToMenuButton.getComponents().get(0).getColumn();
+            selectedRow = returnToMenuButton.getComponents().get(0).getRow();
+            return true;
+        }
+
+        return false;
+    }
     // Check if the grid is empty
     private boolean isGridEmpty () {
         for (List<GUIComponent> row : grid) {
@@ -401,21 +439,19 @@ public class ClassSelectionBoard extends JPanel implements TimerHolder {
     }
 
     // Go one menu tile to the left
-    private void previousMenuColumn () {
+    private void navigateUp() {
         selectedColumn--;
         if (selectedColumn < 0) {
             selectedColumn = grid.get(selectedRow).size() - 1; // Wrap around to the rightmost column
         }
-        updateCursor();
     }
 
     // Go one menu tile to the right
-    private void nextMenuColumn () {
+    private void navigateDown() {
         selectedColumn++;
         if (selectedColumn >= grid.get(selectedRow).size()) {
             selectedColumn = 0; // Wrap around to the leftmost column
         }
-        updateCursor();
     }
 
     // Update the cursor's position and selected menu tile
@@ -442,19 +478,19 @@ public class ClassSelectionBoard extends JPanel implements TimerHolder {
                     needsUpdate = true;
                     break;
                 case (KeyEvent.VK_A):
-                    previousMenuTile();
+                    navigateLeft();
                     needsUpdate = true;
                     break;
                 case (KeyEvent.VK_D):
-                    nextMenuTile();
+                    navigateRight();
                     needsUpdate = true;
                     break;
                 case (KeyEvent.VK_W):
-                    previousMenuColumn();
+                    navigateUp();
                     needsUpdate = true;
                     break;
                 case (KeyEvent.VK_S):
-                    nextMenuColumn();
+                    navigateDown();
                     needsUpdate = true;
                     break;
             }
@@ -495,12 +531,12 @@ public class ClassSelectionBoard extends JPanel implements TimerHolder {
             if (currentTime - lastMoveTime > MOVE_COOLDOWN) {
                 if (controllerInputReader.isInputActive(ControllerInputEnums.MOVE_LEFT)) {
                     // Menu option to the left
-                    previousMenuTile();
+                    navigateLeft();
                     needsUpdate = true;
                     lastMoveTime = currentTime;
                 } else if (controllerInputReader.isInputActive(ControllerInputEnums.MOVE_RIGHT)) {
                     // Menu option to the right
-                    nextMenuTile();
+                    navigateRight();
                     needsUpdate = true;
                     lastMoveTime = currentTime;
                 }
@@ -508,12 +544,12 @@ public class ClassSelectionBoard extends JPanel implements TimerHolder {
                 // Up and down navigation
                 if (controllerInputReader.isInputActive(ControllerInputEnums.MOVE_UP)) {
                     // Menu option upwards
-                    previousMenuColumn();
+                    navigateUp();
                     needsUpdate = true;
                     lastMoveTime = currentTime;
                 } else if (controllerInputReader.isInputActive(ControllerInputEnums.MOVE_DOWN)) {
                     // Menu option downwards
-                    nextMenuColumn();
+                    navigateDown();
                     needsUpdate = true;
                     lastMoveTime = currentTime;
                 }

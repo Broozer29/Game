@@ -115,7 +115,7 @@ public class DirectorManager {
 
     public void distributeCredits () {
         GameStateInfo gameStateInfo = GameStateInfo.getInstance();
-        float creditAmount = (float) ((1 + 0.05 * gameStateInfo.getDifficultyCoefficient()) * 0.5) + (LevelManager.getInstance().getCurrentLevelDifficultyScore() * 0.1f); // Determine the amount of credits to distribute
+        float creditAmount = (float) ((1 + 0.025 * gameStateInfo.getDifficultyCoefficient())) + (LevelManager.getInstance().getCurrentLevelDifficultyScore() * 0.35f); // Determine the amount of credits to distribute
 
         if (testingRichMode) {
             creditAmount = creditAmount * this.testingCreditsBonus;

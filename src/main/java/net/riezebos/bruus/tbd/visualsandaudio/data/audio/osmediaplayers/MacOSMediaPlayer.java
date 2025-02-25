@@ -25,11 +25,11 @@ public class MacOSMediaPlayer {
     private ScheduledFuture<?> pollingTask;
 
     // Private constructor for Singleton pattern
-    private MacOSMediaPlayer () {
+    private MacOSMediaPlayer() {
     }
 
     // Static method to get the Singleton instance
-    public static MacOSMediaPlayer getInstance () {
+    public static MacOSMediaPlayer getInstance() {
         if (instance == null) {
             instance = new MacOSMediaPlayer();
         }
@@ -41,12 +41,8 @@ public class MacOSMediaPlayer {
 
         String script = "tell application \"Music\"\n"
                 + "play\n"
-                + "set trackDuration to duration of current track\n"
-                + "repeat while player position < trackDuration\n"
-                + "delay 1\n"
-                + "end repeat\n"
-                + "stop\n"  // Ensures playback stops instead of pausing
                 + "end tell";
+
 
         executeAppleScriptAsync(script);
         hasStartedMusic = true;
@@ -56,16 +52,16 @@ public class MacOSMediaPlayer {
 
 
     // Method to stop playback in Apple Music (asynchronous)
-    public void stopPlayback () {
+    public void stopPlayback() {
         executeAppleScriptAsync("tell application \"Music\" to pause");
     }
 
-    public void resumePlayback () {
+    public void resumePlayback() {
         executeAppleScriptAsync("tell application \"Music\" to play");
     }
 
     // Method to get the current playback position (in seconds)
-    public double getCurrentSecondsInPlayback () {
+    public double getCurrentSecondsInPlayback() {
         String script = "tell application \"Music\"\n"
                 + "return player position\n"
                 + "end tell";
@@ -80,7 +76,7 @@ public class MacOSMediaPlayer {
 
 
     // Set the current playback position in seconds (asynchronous)
-    public void setPlaybackPosition (double seconds) {
+    public void setPlaybackPosition(double seconds) {
         String script = String.format("tell application \"Music\" to set player position to 0");
         executeAppleScriptAsync(script);
     }
@@ -106,36 +102,32 @@ public class MacOSMediaPlayer {
             isPlaying = true;
         } else if (currentSeconds >= totalSeconds - 2) {  // Song has ended
             isPlaying = false;
-            stopPlayback();
-            goToNextSong();
-            setPlaybackPosition(0);
+//            stopPlayback();
+//            goToNextSong();
+//            setPlaybackPosition(0);
         }
     }
 
 
-
-
-
-
     // Method to skip to the next song in Apple Music
-    public void goToNextSong () {
+    public void goToNextSong() {
         executeAppleScriptAsync("tell application \"Music\" to next track");
     }
 
     // Method to reset playback state
-    public void resetPlaybackInfo () {
+    public void resetPlaybackInfo() {
         hasStartedMusic = false;  // Reset to indicate no song has started yet
         isPlaying = false;        // Reset playing status
         System.out.println("Playback info reset.");
     }
 
     // Method to check if the music has started
-    public boolean hasStartedMusic () {
+    public boolean hasStartedMusic() {
         return hasStartedMusic;
     }
 
     // Method to check if music is currently playing
-    public boolean isPlaying () {
+    public boolean isPlaying() {
         return isPlaying;
     }
 
@@ -162,9 +154,8 @@ public class MacOSMediaPlayer {
     }
 
 
-
     // Helper method to execute AppleScript and get a double result (synchronous)
-    private double executeAppleScriptWithDoubleResult (String script) {
+    private double executeAppleScriptWithDoubleResult(String script) {
         double result = -1;
         Process process = null;
         try {
@@ -175,6 +166,8 @@ public class MacOSMediaPlayer {
                 if ((line = reader.readLine()) != null) {
                     result = Double.parseDouble(line.trim());
                 }
+            } catch (IOException e) {
+                return -1;
             }
             boolean finished = process.waitFor(2000, TimeUnit.MILLISECONDS);
             if (!finished) {
@@ -191,20 +184,19 @@ public class MacOSMediaPlayer {
     }
 
 
-
-    public double getCurrentSeconds () {
+    public double getCurrentSeconds() {
         return currentSeconds;
     }
 
-    public void setCurrentSeconds (double currentSeconds) {
+    public void setCurrentSeconds(double currentSeconds) {
         this.currentSeconds = currentSeconds;
     }
 
-    public double getTotalSeconds () {
+    public double getTotalSeconds() {
         return totalSeconds;
     }
 
-    public void setTotalSeconds (double totalSeconds) {
+    public void setTotalSeconds(double totalSeconds) {
         this.totalSeconds = totalSeconds;
     }
 

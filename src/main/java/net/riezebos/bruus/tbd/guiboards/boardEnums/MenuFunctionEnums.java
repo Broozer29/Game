@@ -14,5 +14,10 @@ public enum MenuFunctionEnums {
 	SelectWindowsOSMediaPlayer,
 	SelectCaptainClass,
 	SelectFireFighterClass,
+	ContinueSaveFile,
+	OpenUpgradeSelectionBoard,
+	SelectNepotism,
+	UpgradeNepotism,
+	UpgradeUnlockableUpgrade,
 	Open_Inventory;
 }

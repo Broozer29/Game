@@ -53,6 +53,11 @@ public class PlasmaLauncher extends Item {
 
     private void createPlasmaMissile () {
         GameObject player = PlayerManager.getInstance().getSpaceship();
+        Enemy target = EnemyManager.getInstance().getClosestEnemy(player.getCenterXCoordinate(), player.getCenterYCoordinate());
+
+        if (target == null) {
+            return; //There is no target to fire at
+        }
 
         SpriteConfiguration spriteConfiguration = new SpriteConfiguration();
         spriteConfiguration.setxCoordinate(player.getXCoordinate());
@@ -68,7 +73,6 @@ public class PlasmaLauncher extends Item {
         movementConfiguration.initDefaultSettingsForSpecializedPathFinders();
 
         boolean isFriendly = true;
-        Enemy target = EnemyManager.getInstance().getClosestEnemy(player.getCenterXCoordinate(), player.getCenterYCoordinate());
 
         movementConfiguration.setDestination(
                 new Point(

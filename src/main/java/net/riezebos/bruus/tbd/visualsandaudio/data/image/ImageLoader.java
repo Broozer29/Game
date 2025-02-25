@@ -327,6 +327,8 @@ public class ImageLoader {
                 return "/images/TitleImage.png";
             case SelectClass:
                 return "/images/selectclass.png";
+            case SelectBoons:
+                return "/images/selectboons.png";
             case Long_Card:
                 return "/images/UI/Cards/Long Card.png";
             case Square_Card:
@@ -526,6 +528,9 @@ public class ImageLoader {
             case UIScoreTextCard:
                 return "/images/UI/gradelight.png";
             case InputMapping:  return "/images/UI/inputmapping.png";
+            case UpWhite: return "/images/Icons/upwhite.png";
+            case UpOrange: return "/images/Icons/uporange.png";
+            case UpgradeSelectedCheck: return "/images/Icons/upgradeSelected.png";
             case peepoDeepFriedSadge: return "/images/Icons/Pepeicons/deepFriedSadge.png";
             case peepoFeelsCringeMan: return "/images/Icons/Pepeicons/feelsCringeMan.png";
             case peepoFeelsRetardedMan: return "/images/Icons/Pepeicons/feelsretardedman.png";

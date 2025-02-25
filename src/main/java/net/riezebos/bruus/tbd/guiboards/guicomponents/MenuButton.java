@@ -7,9 +7,13 @@ import net.riezebos.bruus.tbd.game.items.PlayerInventory;
 import net.riezebos.bruus.tbd.game.level.LevelManager;
 import net.riezebos.bruus.tbd.game.level.enums.LevelDifficulty;
 import net.riezebos.bruus.tbd.game.level.enums.LevelLength;
+import net.riezebos.bruus.tbd.game.playerprofile.boons.StartOfGameBoonsManager;
+import net.riezebos.bruus.tbd.game.playerprofile.boons.boonimplementations.Nepotism;
 import net.riezebos.bruus.tbd.game.util.OnScreenTextManager;
+import net.riezebos.bruus.tbd.game.util.save.SaveManager;
 import net.riezebos.bruus.tbd.guiboards.BoardManager;
 import net.riezebos.bruus.tbd.guiboards.boards.ShopBoard;
+import net.riezebos.bruus.tbd.guiboards.boards.UpgradeSelectionBoard;
 import net.riezebos.bruus.tbd.visualsandaudio.data.DataClass;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.AudioDatabase;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.AudioManager;
@@ -26,17 +30,17 @@ public class MenuButton extends GUIComponent {
 
     private LevelLength levelLength;
 
-    public MenuButton (SpriteConfiguration spriteConfiguration) {
+    public MenuButton(SpriteConfiguration spriteConfiguration) {
         super(spriteConfiguration);
     }
 
-    public MenuButton (SpriteAnimationConfiguration spriteAnimationConfiguration) {
+    public MenuButton(SpriteAnimationConfiguration spriteAnimationConfiguration) {
         super(spriteAnimationConfiguration.getSpriteConfiguration());
         this.animation = new SpriteAnimation(spriteAnimationConfiguration);
     }
 
     @Override
-    public void activateComponent () {
+    public void activateComponent() {
         AudioDatabase.getInstance().updateGameTick();
         BoardManager boardManager = BoardManager.getInstance();
         switch (this.menuFunctionality) {
@@ -54,6 +58,9 @@ public class MenuButton extends GUIComponent {
                 break;
             case Open_Shop_Window:
                 boardManager.openShopWindow();
+                break;
+            case OpenUpgradeSelectionBoard:
+                boardManager.openUpgradeSelectionScreen();
                 break;
             case SelectSongDifficulty:
                 changeLevelDifficulty();
@@ -75,6 +82,7 @@ public class MenuButton extends GUIComponent {
                 break;
             case RerollShop:
                 handleShopRefresh();
+                SaveManager.getInstance().exportCurrentSave();
                 break;
             case SelectCaptainClass:
                 PlayerStats.getInstance().setPlayerClass(PlayerClass.Captain);
@@ -86,15 +94,26 @@ public class MenuButton extends GUIComponent {
                 BoardManager.getInstance().getClassSelectionBoard().recreateCursor();
                 BoardManager.getInstance().getClassSelectionBoard().addCursorAnimation();
                 break;
+            case ContinueSaveFile:
+                SaveManager.getInstance().loadSaveFile();
+                boardManager.openShopWindow();
+                break;
+            case SelectNepotism:
+                StartOfGameBoonsManager.getInstance().setUtilityUpgrade(Nepotism.getInstance());
+                break;
+            case UpgradeNepotism:
+                Nepotism.getInstance().upgrade();
+                BoardManager.getInstance().getUpgradeSelectionBoard().recreateList();
+                break;
             default:
                 System.out.println("Unimplemented functionality");
-                OnScreenTextManager.getInstance().addText("Unimplemented menu functionality in menubutton",400,400);
+                OnScreenTextManager.getInstance().addText("Unimplemented menu functionality in menubutton", 400, 400);
                 break;
         }
-
     }
 
-    private void handleShopRefresh () {
+
+    private void handleShopRefresh() {
         PlayerInventory inventory = PlayerInventory.getInstance();
         ShopManager shopManager = ShopManager.getInstance();
         ShopBoard shopBoard = BoardManager.getInstance().getShopBoard();
@@ -116,31 +135,31 @@ public class MenuButton extends GUIComponent {
         }
     }
 
-    private void changeLevelDifficulty () {
+    private void changeLevelDifficulty() {
         if (this.levelDifficulty != null) {
             LevelManager.getInstance().setCurrentLevelDifficulty(this.levelDifficulty);
         }
     }
 
-    private void changeLevelLength () {
+    private void changeLevelLength() {
         if (this.levelLength != null) {
             LevelManager.getInstance().setCurrentLevelLength(this.levelLength);
         }
     }
 
-    public LevelDifficulty getLevelDifficulty () {
+    public LevelDifficulty getLevelDifficulty() {
         return levelDifficulty;
     }
 
-    public void setLevelDifficulty (LevelDifficulty levelDifficulty) {
+    public void setLevelDifficulty(LevelDifficulty levelDifficulty) {
         this.levelDifficulty = levelDifficulty;
     }
 
-    public LevelLength getLevelLength () {
+    public LevelLength getLevelLength() {
         return levelLength;
     }
 
-    public void setLevelLength (LevelLength levelLength) {
+    public void setLevelLength(LevelLength levelLength) {
         this.levelLength = levelLength;
     }
 }

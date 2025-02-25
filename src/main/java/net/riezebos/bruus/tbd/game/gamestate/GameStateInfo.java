@@ -2,6 +2,7 @@ package net.riezebos.bruus.tbd.game.gamestate;
 
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyEnums;
 import net.riezebos.bruus.tbd.game.level.LevelManager;
+import net.riezebos.bruus.tbd.game.util.save.SaveFile;
 
 public class GameStateInfo {
 
@@ -50,7 +51,7 @@ public class GameStateInfo {
         float playerFactor = 1;
         float baseTimeFactor = 0.0606f; // Base factor for time, at LevelManager difficulty 2
         float maxTimeFactor = 0.125f; // Define the maximum time factor for LevelManager difficulty 6
-        float stageFactor = (float) Math.pow(1.15, stagesCompleted); // Exponential growth for each stage completed
+        float stageFactor = (float) Math.pow(1.10, stagesCompleted); // Exponential growth for each stage completed
 
 
         float songDifficultyModifier = LevelManager.getInstance().getCurrentLevelDifficultyScore(); // This should be obtained from the LevelManager and ranges between 2 and 6 (inclusive)
@@ -71,7 +72,7 @@ public class GameStateInfo {
 
     private void updateMonsterLevel () {
         // Apply the formula and subtract the offset to ensure starting level is 1
-        monsterLevel = (int) Math.round(1 + ((difficultyCoefficient / 0.43) - initialOffset));
+        monsterLevel = (int) Math.round(1 + ((difficultyCoefficient / 0.33) - initialOffset));
 
         // Ensure monsterLevel never goes below 1
         monsterLevel = Math.max(1, monsterLevel);
@@ -162,4 +163,29 @@ public class GameStateInfo {
                 return EnemyEnums.RedBoss;
         }
     }
+
+    public void setGameSeconds(double gameSeconds) {
+        this.gameSeconds = gameSeconds;
+    }
+
+    public void setDifficultyCoefficient(float difficultyCoefficient) {
+        this.difficultyCoefficient = difficultyCoefficient;
+    }
+
+    public long getGameTicksExecuted() {
+        return gameTicksExecuted;
+    }
+
+    public void setGameTicksExecuted(long gameTicksExecuted) {
+        this.gameTicksExecuted = gameTicksExecuted;
+    }
+
+    public void loadInSaveFile(SaveFile saveFile){
+        resetGameState();
+        this.stagesCompleted = saveFile.getStagesCompleted();
+        this.bossesDefeated = saveFile.getBossesDefeated();
+        this.difficultyCoefficient = saveFile.getDifficultyCoefficient();
+        this.gameTicksExecuted = saveFile.getGameTicksExecuted();
+    }
 }
+

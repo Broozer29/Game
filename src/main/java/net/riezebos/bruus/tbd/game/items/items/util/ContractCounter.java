@@ -6,7 +6,7 @@ import java.util.Objects;
 
 public class ContractCounter {
     private int startCount;
-    private static int requiredKills = 1;
+    private static int requiredKills = 100;
 
     public ContractCounter () {
         startCount = GameStatsTracker.getInstance().getEnemiesKilled();

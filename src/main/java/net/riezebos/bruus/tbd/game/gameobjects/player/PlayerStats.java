@@ -3,11 +3,16 @@ package net.riezebos.bruus.tbd.game.gameobjects.player;
 import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
 import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.droneTypes.DroneTypes;
 import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SpaceShip;
+import net.riezebos.bruus.tbd.game.items.ItemEnums;
+import net.riezebos.bruus.tbd.game.items.PlayerInventory;
 import net.riezebos.bruus.tbd.game.util.ExperienceCalculator;
+import net.riezebos.bruus.tbd.game.util.save.SaveFile;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.AudioManager;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.AudioEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.AnimationManager;
+
+import java.util.Map;
 
 public class PlayerStats {
 
@@ -27,12 +32,13 @@ public class PlayerStats {
 
     //firefighter
     public static float fireFighterBaseDamage = 8f;
-    public static float fireFighterAttackSpeed = 0.28f;
-    private float fireFighterIgniteDamageMultiplier = 0.045f;
-    private float fireFighterIgniteDuration = 1.5f;
+    public static float fireFighterAttackSpeed = 0.32f;
+    private float fireFighterIgniteDamageMultiplier = 0.04f;
+    private float fireFighterIgniteDuration = 1.25f;
     private float fireFighterIgniteDurationMultiplier = 1;
     private float fireFighterItemIgniteDamageMultiplier = 1f;
     private int fireFighterIgniteMaxStacks = 1;
+    private float thornsBaseDamage = 10f;
 
     //captain
     public static float captainBaseDamage = 20f;
@@ -80,7 +86,7 @@ public class PlayerStats {
     private float overloadedShieldDiminishAmount;
     private float maxShieldMultiplier = 1.0f;
     private int piercingMissilesAmount = 0;
-    private float thornsDamageRatio = 0.0f;
+    private float thornsDamageRatio = 1.0f;
 
 
     //Leveling system
@@ -128,12 +134,13 @@ public class PlayerStats {
         amountOfFreeRerolls = 0;
         piercingMissilesAmount = 0;
         bonusDamageMultiplier = 1f; //Otherwhise it's damage * 0 = 0
+        thornsBaseDamage = 10f;
 
         shieldRegenMultiplier = 1;
         chanceForThornsToApplyOnHitEffects = 0;
         hasImprovedElectroShred = false;
         continueShieldRegenThroughDamage = false;
-        thornsDamageRatio = 0;
+        thornsDamageRatio = 1;
         thornsArmorDamageBonusRatio = 0;
         shopRerollDiscount = 99;
         collisionDamageReduction = 0;
@@ -177,7 +184,7 @@ public class PlayerStats {
         //Level
         setCurrentLevel(1);
         setCurrentXP(0);
-        setXpToNextLevel(100);
+        setXpToNextLevel(175);
 
         // Visuals
         loadNormalGunPreset();
@@ -640,7 +647,7 @@ public class PlayerStats {
     public float getThornsDamage () {
         float thornsDamage = 0;
         if (thornsDamageRatio > 0) {
-            thornsDamage = baseDamage * (thornsDamageRatio);
+            thornsDamage = this.thornsBaseDamage * (thornsDamageRatio);
         }
         if (thornsArmorDamageBonusRatio > 0) {
             GameObject spaceShip = PlayerManager.getInstance().getSpaceship();
@@ -764,5 +771,25 @@ public class PlayerStats {
 
     public void setContinueShieldRegenThroughDamage (boolean continueShieldRegenThroughDamage) {
         this.continueShieldRegenThroughDamage = continueShieldRegenThroughDamage;
+    }
+
+    public void loadInSaveFile(SaveFile saveFile) {
+        PlayerInventory.getInstance().resetInventory();
+        setPlayerClass(saveFile.getPlayerclass());
+        PlayerStats.getInstance().resetPlayerStats();
+        for(int i = 1; i < saveFile.getPlayerLevel(); i++){
+            increasePlayerLevel();
+        }
+
+        currentXP = saveFile.getPlayerXP();
+
+        for (Map.Entry<ItemEnums, Integer> entry : saveFile.getItems().entrySet()) {
+            ItemEnums itemType = entry.getKey();
+            int quantity = entry.getValue();
+            for (int i = 0; i < quantity; i++) {
+                PlayerInventory.getInstance().addItem(itemType);
+            }
+        }
+        PlayerInventory.getInstance().setCashMoney(saveFile.getMoney());
     }
 }

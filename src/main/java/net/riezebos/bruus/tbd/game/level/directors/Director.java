@@ -172,8 +172,8 @@ public class Director {
         double randomDouble = random.nextDouble();
         double chanceThreshold = switch (enemyType.getEnemyCategory()) {
             case Summon, Special, Boss -> -1f;
-            case Small -> 0.2f; //20% chance of spawning a formation
-            case Medium -> 0.1f; //10% chance of spawning formation
+            case Small -> 0.3f; //20% chance of spawning a formation
+            case Medium -> 0.2f; //10% chance of spawning formation
         };
 
         return randomDouble < chanceThreshold;

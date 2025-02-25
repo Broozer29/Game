@@ -48,7 +48,7 @@ public class ItemDescriptionRetriever {
                 return "Killing an enemy grants a 15 (+15) hitpoints barrier. When you are at maximum shields gain it as a temporary Barrier instead.";
             }
             case MoneyPrinter -> {
-                return "Killing an enemy has a 10% chance to grant 4 (+4) additional minerals";
+                return "Killing an enemy has a 10% chance to grant 2 (+2) additional minerals";
             }
             case StickyDynamite -> {
                 return "Every attack has 10% chance to explode for 100% (+100%) additional damage";

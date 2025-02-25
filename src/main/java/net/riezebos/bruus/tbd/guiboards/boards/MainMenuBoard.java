@@ -6,6 +6,7 @@ import net.riezebos.bruus.tbd.controllerInput.ControllerInputReader;
 import net.riezebos.bruus.tbd.game.gamestate.GameStateInfo;
 import net.riezebos.bruus.tbd.game.util.OnScreenText;
 import net.riezebos.bruus.tbd.game.util.OnScreenTextManager;
+import net.riezebos.bruus.tbd.game.util.save.SaveManager;
 import net.riezebos.bruus.tbd.guiboards.TimerHolder;
 import net.riezebos.bruus.tbd.guiboards.background.BackgroundManager;
 import net.riezebos.bruus.tbd.guiboards.background.BackgroundObject;
@@ -30,7 +31,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MenuBoard extends JPanel implements TimerHolder {
+public class MainMenuBoard extends JPanel implements TimerHolder {
     private DataClass data = DataClass.getInstance();
     private BackgroundManager backgroundManager = BackgroundManager.getInstance();
     private AnimationManager animationManager = AnimationManager.getInstance();
@@ -51,11 +52,14 @@ public class MenuBoard extends JPanel implements TimerHolder {
     private GUITextCollection selectMusicOptionText;
     private GUIComponent selectMusicOptionBackgroundCard;
     private GUITextCollection openShopButton;
+    private GUITextCollection continueSaveFile;
     private GUITextCollection selectMacOSMediaPlayerButton;
     private GUITextCollection selectDefaultMusicButton;
     private GUIComponent titleImage;
     private GUIComponent inputMapping;
     private GUITextCollection foundController;
+
+    private GUITextCollection testingButton;
 
     private Timer timer;
     private boolean foundControllerBool = false;
@@ -65,7 +69,7 @@ public class MenuBoard extends JPanel implements TimerHolder {
     private int selectedRow = 0;
     private int selectedColumn = 0;
 
-    public MenuBoard () {
+    public MainMenuBoard() {
         addKeyListener(new KeyInputReader());
         setFocusable(true);
         setBackground(Color.BLACK);
@@ -83,7 +87,7 @@ public class MenuBoard extends JPanel implements TimerHolder {
     }
 
     // Initialize all starter pointers
-    private void initMenuTiles () {
+    private void initMenuTiles() {
         titleImage = MenuBoardCreator.createTitleImage();
         controlExplanations = MenuBoardCreator.createControlsExplanations();
         startGameBackgroundCard = MenuBoardCreator.startGameBackgroundCard();
@@ -91,6 +95,7 @@ public class MenuBoard extends JPanel implements TimerHolder {
         selectClassBoard = MenuBoardCreator.createStartGameButton(startGameBackgroundCard);
         menuCursor = MenuBoardCreator.createMenuCursor(selectClassBoard.getComponents().get(0));
         openShopButton = MenuBoardCreator.openShopButton(selectClassBoard);
+        continueSaveFile = MenuBoardCreator.continueSaveFileButton(openShopButton);
         foundController = MenuBoardCreator.foundControllerText(foundControllerBool, titleImage);
 
         selectMusicOptionBackgroundCard = MenuBoardCreator.selectMusicPlayerBackgroundCard(startGameBackgroundCard);
@@ -98,10 +103,11 @@ public class MenuBoard extends JPanel implements TimerHolder {
         selectDefaultMusicButton = MenuBoardCreator.selectDefaultLocalMusicPlayer(selectMusicOptionBackgroundCard);
         selectMacOSMediaPlayerButton = MenuBoardCreator.selectMacOSItunesMediaPlayer(selectDefaultMusicButton);
         inputMapping = MenuBoardCreator.createInputMapping();
+        testingButton = MenuBoardCreator.createTestingButton(continueSaveFile);
         initializedMenuObjects = true;
     }
 
-    public void recreateWindow () {
+    public void recreateWindow() {
         if (initializedMenuObjects) {
             animationManager.resetManager();
             firstColumn.clear();
@@ -121,12 +127,12 @@ public class MenuBoard extends JPanel implements TimerHolder {
             }
 
             offTheGridObjects.add(startGameBackgroundCard);
-            offTheGridObjects.add(selectMusicOptionBackgroundCard);
+//            offTheGridObjects.add(selectMusicOptionBackgroundCard);
             offTheGridObjects.add(titleImage);
             offTheGridObjects.add(menuCursor);
-            offTheGridObjects.addAll(selectMusicOptionText.getComponents());
+//            offTheGridObjects.addAll(selectMusicOptionText.getComponents());
 
-            if(foundControllerBool) {
+            if (foundControllerBool) {
                 offTheGridObjects.add(inputMapping);
             }
 
@@ -143,37 +149,52 @@ public class MenuBoard extends JPanel implements TimerHolder {
     }
 
     // Recreate the tilesList that gets drawn by drawComponents
-    private void recreateList () {
+    private void recreateList() {
         firstColumn.clear();
         secondColumn.clear();
         thirdColumn.clear();
         addTilesToColumns();
     }
 
-    private void addAllButFirstComponent (GUITextCollection textCollection) {
+    private void addAllButFirstComponent(GUITextCollection textCollection) {
         for (int i = 1; i < textCollection.getComponents().size(); i++) {
             offTheGridObjects.add(textCollection.getComponents().get(i));
         }
     }
 
-    private void addTilesToColumns () {
-        firstColumn.add(selectClassBoard.getComponents().get(0));
+    private void addTilesToColumns() {
+        addToGrid(firstColumn, selectClassBoard.getComponents().get(0), 0, 0);
         addAllButFirstComponent(selectClassBoard);
-        firstColumn.add(openShopButton.getComponents().get(0));
+
+        addToGrid(firstColumn, openShopButton.getComponents().get(0), 0, 1);
         addAllButFirstComponent(openShopButton);
 
-        secondColumn.add(selectDefaultMusicButton.getComponents().get(0));
-        addAllButFirstComponent(selectDefaultMusicButton);
+        if (SaveManager.getInstance().doesSaveFileExist()) {
+            addToGrid(firstColumn, continueSaveFile.getComponents().get(0), 0, 2);
+            addAllButFirstComponent(continueSaveFile);
+        }
 
-        secondColumn.add(selectMacOSMediaPlayerButton.getComponents().get(0));
-        addAllButFirstComponent(selectMacOSMediaPlayerButton);
+        addToGrid(firstColumn, testingButton.getComponents().get(0), 0, 3);
+        addAllButFirstComponent(testingButton);
+
+//        secondColumn.add(selectDefaultMusicButton.getComponents().get(0));
+//        addAllButFirstComponent(selectDefaultMusicButton);
+
+//        secondColumn.add(selectMacOSMediaPlayerButton.getComponents().get(0));
+//        addAllButFirstComponent(selectMacOSMediaPlayerButton);
+    }
+
+    private void addToGrid(List<GUIComponent> gridList, GUIComponent component, int column, int row) {
+        component.setColumn(column);
+        component.setRow(row);
+        gridList.add(component);
     }
 
 
     /*------------------------Navigation methods--------------------------------*/
 
     // Activate the functionality of the specific menutile
-    private void selectMenuTile () {
+    private void selectMenuTile() {
         grid.get(selectedRow).get(selectedColumn).activateComponent();
         if (grid.get(selectedRow).get(selectedColumn).getMenuFunctionality() == MenuFunctionEnums.Start_Game) {
             timer.stop();
@@ -181,7 +202,7 @@ public class MenuBoard extends JPanel implements TimerHolder {
 
     }
 
-    private void previousMenuTile () {
+    private void previousMenuTile() {
         if (isGridEmpty()) {
             return; // Do nothing if the grid is empty
         }
@@ -204,7 +225,7 @@ public class MenuBoard extends JPanel implements TimerHolder {
     }
 
     // Go one menu tile downwards
-    private void nextMenuTile () {
+    private void nextMenuTile() {
         if (isGridEmpty()) {
             return; // Do nothing if the grid is empty
         }
@@ -227,7 +248,7 @@ public class MenuBoard extends JPanel implements TimerHolder {
     }
 
     // Check if the grid is empty
-    private boolean isGridEmpty () {
+    private boolean isGridEmpty() {
         for (List<GUIComponent> row : grid) {
             if (!row.isEmpty()) {
                 return false; // Return false as soon as a non-empty row is found
@@ -237,7 +258,7 @@ public class MenuBoard extends JPanel implements TimerHolder {
     }
 
     // Go one menu tile to the left
-    private void previousMenuColumn () {
+    private void previousMenuColumn() {
         selectedColumn--;
         if (selectedColumn < 0) {
             selectedColumn = grid.get(selectedRow).size() - 1; // Wrap around to the rightmost column
@@ -246,7 +267,7 @@ public class MenuBoard extends JPanel implements TimerHolder {
     }
 
     // Go one menu tile to the right
-    private void nextMenuColumn () {
+    private void nextMenuColumn() {
         selectedColumn++;
         if (selectedColumn >= grid.get(selectedRow).size()) {
             selectedColumn = 0; // Wrap around to the leftmost column
@@ -255,7 +276,7 @@ public class MenuBoard extends JPanel implements TimerHolder {
     }
 
     // Update the cursor's position and selected menu tile
-    private void updateCursor () {
+    private void updateCursor() {
         if (grid.get(selectedRow).isEmpty()) { // Check if the selected row is empty
             menuCursor.setSelectedMenuTile(null); // You might need to decide how you want to handle this situation in
             // your application
@@ -270,7 +291,7 @@ public class MenuBoard extends JPanel implements TimerHolder {
     private class KeyInputReader extends KeyAdapter {
 
         @Override
-        public void keyReleased (KeyEvent e) {
+        public void keyReleased(KeyEvent e) {
             int key = e.getKeyCode();
             boolean needsUpdate = false;
             switch (key) {
@@ -296,13 +317,13 @@ public class MenuBoard extends JPanel implements TimerHolder {
                     break;
             }
 
-            if(needsUpdate){
+            if (needsUpdate) {
                 recreateList();
             }
         }
 
         @Override
-        public void keyPressed (KeyEvent e) {
+        public void keyPressed(KeyEvent e) {
             int key = e.getKeyCode();
             switch (key) {
                 case (KeyEvent.VK_ENTER):
@@ -322,7 +343,7 @@ public class MenuBoard extends JPanel implements TimerHolder {
     private long lastMoveTime = 0;
     private static final long MOVE_COOLDOWN = 350; // milliseconds
 
-    public void executeControllerInput () {
+    public void executeControllerInput() {
         if (controllers.getFirstController() != null) {
             boolean needsUpdate = false;
             controllerInputReader.pollController();
@@ -375,7 +396,7 @@ public class MenuBoard extends JPanel implements TimerHolder {
 
     /*---------------------------Drawing methods-------------------------------*/
     @Override
-    public void paintComponent (Graphics g) {
+    public void paintComponent(Graphics g) {
         super.paintComponent(g);
         Graphics2D g2d = (Graphics2D) g.create(); // Create a copy to avoid modifying the original graphics context
 
@@ -417,11 +438,11 @@ public class MenuBoard extends JPanel implements TimerHolder {
     }
 
     private void restreamLoopingMusicIfFinished() throws UnsupportedAudioFileException, IOException {
-        if(audioManager == null){
+        if (audioManager == null) {
             audioManager = AudioManager.getInstance();
         }
         CustomAudioClip backGroundMusicCustomAudioclip = audioManager.getBackGroundMusicCustomAudioclip();
-        if(backGroundMusicCustomAudioclip == null){
+        if (backGroundMusicCustomAudioclip == null) {
             return;
         }
         if (backGroundMusicCustomAudioclip.getCurrentSecondsInPlayback() >= backGroundMusicCustomAudioclip.getTotalSecondsInPlayback() &&
@@ -431,7 +452,7 @@ public class MenuBoard extends JPanel implements TimerHolder {
         }
     }
 
-    private void drawObjects (Graphics2D g) {
+    private void drawObjects(Graphics2D g) {
         for (GUIComponent component : offTheGridObjects) {
             if (component != null) {
                 drawGUIComponent(g, component);
@@ -447,23 +468,23 @@ public class MenuBoard extends JPanel implements TimerHolder {
 
     }
 
-    private void drawGUIComponent (Graphics2D g, GUIComponent component) {
+    private void drawGUIComponent(Graphics2D g, GUIComponent component) {
         g.drawImage(component.getImage(), component.getXCoordinate(), component.getYCoordinate(), this);
     }
 
-    private void drawImage (Graphics g, Sprite sprite) {
+    private void drawImage(Graphics g, Sprite sprite) {
         if (sprite.getImage() != null) {
             g.drawImage(sprite.getImage(), sprite.getXCoordinate(), sprite.getYCoordinate(), this);
         }
     }
 
-    private void drawAnimation (Graphics2D g, SpriteAnimation animation) {
+    private void drawAnimation(Graphics2D g, SpriteAnimation animation) {
         if (animation.getCurrentFrameImage(false) != null) {
             g.drawImage(animation.getCurrentFrameImage(true), animation.getXCoordinate(), animation.getYCoordinate(), this);
         }
     }
 
-    private void drawText (Graphics2D g, OnScreenText text) {
+    private void drawText(Graphics2D g, OnScreenText text) {
         // Ensure that transparency value is within the appropriate bounds.
         float transparency = Math.max(0, Math.min(1, text.getTransparencyValue()));
         Color originalColor = g.getColor(); // store the original color
@@ -496,7 +517,7 @@ public class MenuBoard extends JPanel implements TimerHolder {
     /*------------------------------End of Drawing methods-------------------------------*/
 
 
-    public Timer getTimer () {
+    public Timer getTimer() {
         return this.timer;
     }
 

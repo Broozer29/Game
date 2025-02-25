@@ -1,6 +1,7 @@
 package net.riezebos.bruus.tbd.game.items;
 
 import net.riezebos.bruus.tbd.game.items.enums.ItemApplicationEnum;
+import net.riezebos.bruus.tbd.game.items.enums.ItemRarityEnums;
 import net.riezebos.bruus.tbd.game.items.items.*;
 import net.riezebos.bruus.tbd.game.items.items.captain.*;
 import net.riezebos.bruus.tbd.game.items.items.firefighter.*;
@@ -14,26 +15,28 @@ public class PlayerInventory {
     private static PlayerInventory instance = new PlayerInventory();
     private Map<ItemEnums, Item> items = new HashMap<>();
     private float cashMoney = 100;
-    private PlayerInventory () {
-//        for(int i = 0; i < 4; i++){
-//            addItem(ItemEnums.GuardianDrone);
+
+    private PlayerInventory() {
+
+//        addItem(ItemEnums.Contract);
+//        for(int i = 0; i < 25; i++){
+//            addItem(ItemEnums.getRandomItemByRarity(ItemRarityEnums.Common));
 //        }
 //        PlayerStats.getInstance().setShopRerollDiscount(99);
     }
 
 
-
-    public void resetInventory(){
+    public void resetInventory() {
         items.clear();
         cashMoney = 100f;
     }
 
-    public static PlayerInventory getInstance () {
+    public static PlayerInventory getInstance() {
         return instance;
     }
 
 
-    public void addItem (ItemEnums itemEnum) {
+    public void addItem(ItemEnums itemEnum) {
         Item item = items.compute(itemEnum, (key, existingItem) -> {
             if (existingItem == null) {
                 Item newItem = createItemFromEnum(itemEnum);
@@ -45,14 +48,13 @@ public class PlayerInventory {
             }
             return existingItem;
         });
-        if(item != null) {
+        if (item != null) {
             activateUponPurchaseItemEffects(item);
         }
     }
 
 
-
-    public Item createItemFromEnum (ItemEnums itemEnum) {
+    public Item createItemFromEnum(ItemEnums itemEnum) {
         switch (itemEnum) {
             case ModuleScorch:
                 return new ModuleScorch();
@@ -144,48 +146,48 @@ public class PlayerInventory {
         }
     }
 
-    private void activateUponPurchaseItemEffects (Item item){
-        if(item.getApplicationMethod().equals(ItemApplicationEnum.UponAcquiring)){
+    private void activateUponPurchaseItemEffects(Item item) {
+        if (item.getApplicationMethod().equals(ItemApplicationEnum.UponAcquiring)) {
             item.applyEffectToObject(null);
         }
     }
 
-    public List<Item> getItemsByApplicationMethod (ItemApplicationEnum applicationMethod) {
+    public List<Item> getItemsByApplicationMethod(ItemApplicationEnum applicationMethod) {
         return items.values().stream()
                 .filter(item -> item.getApplicationMethod() == applicationMethod)
                 .collect(Collectors.toList());
     }
 
 
-    public Item getItemFromInventoryIfExists (ItemEnums itemName) {
+    public Item getItemFromInventoryIfExists(ItemEnums itemName) {
         return items.get(itemName);
     }
 
-    public Map<ItemEnums, Item> getItems () {
+    public Map<ItemEnums, Item> getItems() {
         return items;
     }
 
-    public float getCashMoney () {
+    public float getCashMoney() {
         return cashMoney;
     }
 
-    public void setCashMoney (float cashMoney) {
+    public void setCashMoney(float cashMoney) {
         this.cashMoney = cashMoney;
     }
 
-    public void addMinerals (float amount){
+    public void addMinerals(float amount) {
 //        if(amount > 0){
 //            OnScreenTextManager.getInstance().addMineralsGainedText(amount);
 //        }
         this.cashMoney += amount;
     }
 
-    public void spendCashMoney(float amount){
+    public void spendCashMoney(float amount) {
         this.cashMoney -= amount;
     }
 
-    public void removeItemFromInventory (ItemEnums item) {
-        if(this.items.containsKey(item)){
+    public void removeItemFromInventory(ItemEnums item) {
+        if (this.items.containsKey(item)) {
             items.remove(item);
         }
     }

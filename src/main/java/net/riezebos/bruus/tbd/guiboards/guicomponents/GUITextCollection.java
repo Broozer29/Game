@@ -12,7 +12,7 @@ public class GUITextCollection implements Actionable {
     private String textToDisplayAsGUIComponents;
     private List<GUIComponent> componentsBelongingToCollection = new ArrayList<>();
 
-    private MenuFunctionEnums menuFunctionEnums;
+    protected MenuFunctionEnums menuFunctionEnums;
     private int startingXCoordinate;
     private int startingYCoordinate;
 
@@ -21,6 +21,14 @@ public class GUITextCollection implements Actionable {
     public GUITextCollection (int startingXCoordinate, int startingYCoordinate, String textToDisplayAsGUIComponents) {
         this.startingXCoordinate = startingXCoordinate;
         this.startingYCoordinate = startingYCoordinate;
+        this.textToDisplayAsGUIComponents = textToDisplayAsGUIComponents;
+        this.scale = 1;
+        initMenuText();
+    }
+
+    public GUITextCollection (float startingXCoordinate, float startingYCoordinate, String textToDisplayAsGUIComponents) {
+        this.startingXCoordinate = Math.round(startingXCoordinate);
+        this.startingYCoordinate = Math.round(startingYCoordinate);
         this.textToDisplayAsGUIComponents = textToDisplayAsGUIComponents;
         this.scale = 1;
         initMenuText();
@@ -69,6 +77,7 @@ public class GUITextCollection implements Actionable {
 
     @Override
     public void activateComponent () {
+        //add an animation here?
         for (GUIComponent component : componentsBelongingToCollection) {
             component.activateComponent();
         }
@@ -76,9 +85,9 @@ public class GUITextCollection implements Actionable {
 
     public void setMenuFunctionality (MenuFunctionEnums menuFunctionalityToImplement) {
         this.menuFunctionEnums = menuFunctionalityToImplement;
-        int lastComponentIndex = 0;
+        int firstComponentIndex = 0;
 
-        GUIComponent firstComponent = componentsBelongingToCollection.get(lastComponentIndex);
+        GUIComponent firstComponent = componentsBelongingToCollection.get(firstComponentIndex);
         SpriteConfiguration spriteConfiguration = new SpriteConfiguration();
         spriteConfiguration.setxCoordinate(firstComponent.getXCoordinate());
         spriteConfiguration.setyCoordinate(firstComponent.getYCoordinate());
@@ -90,7 +99,7 @@ public class GUITextCollection implements Actionable {
         newFirstcomponent.setDescriptionOfComponent(firstComponent.getDescriptionOfComponent());
         newFirstcomponent.setMenuFunctionality(menuFunctionalityToImplement);
 
-        componentsBelongingToCollection.set(lastComponentIndex, newFirstcomponent);
+        componentsBelongingToCollection.set(firstComponentIndex, newFirstcomponent);
     }
 
     public float getScale () {
@@ -109,9 +118,44 @@ public class GUITextCollection implements Actionable {
 
     public void setStartingXCoordinate (int startingXCoordinate) {
         this.startingXCoordinate = startingXCoordinate;
+        this.componentsBelongingToCollection.clear();
+        initMenuText();
     }
 
-    public MenuFunctionEnums getMenuFunctionEnums () {
-        return menuFunctionEnums;
+    public int getWidth(){
+        GUIComponent firstComponent = componentsBelongingToCollection.get(0);
+        GUIComponent lastComponent = componentsBelongingToCollection.get(componentsBelongingToCollection.size() - 1);
+        return (lastComponent.getXCoordinate() + lastComponent.getWidth()) - firstComponent.getXCoordinate();
     }
+
+    public int getHeight(){
+        return componentsBelongingToCollection.get(0).getHeight();
+    }
+
+    public void setCenterXCoordinate(int xCoordinate) {
+        if (componentsBelongingToCollection.isEmpty()) {
+            return; // No components to reposition
+        }
+
+        // Calculate the current width of the text collection
+        int collectionWidth = getWidth();
+
+        // Calculate the new starting X coordinate so that the collection is centered around xCoordinate
+        int newStartingX = xCoordinate - (collectionWidth / 2);
+
+        // Find the current left-most X position of the first component
+        int currentFirstX = componentsBelongingToCollection.get(0).getXCoordinate();
+
+        // Calculate the shift amount
+        int shiftAmount = newStartingX - currentFirstX;
+
+        // Apply the shift to all components
+        for (GUIComponent component : componentsBelongingToCollection) {
+            component.setXCoordinate(component.getXCoordinate() + shiftAmount);
+        }
+
+        // Update the starting X coordinate
+        this.startingXCoordinate = newStartingX;
+    }
+
 }

@@ -31,6 +31,7 @@ import net.riezebos.bruus.tbd.game.util.ThornsDamageDealer;
 import net.riezebos.bruus.tbd.game.util.VisualLayer;
 import net.riezebos.bruus.tbd.game.util.performancelogger.PerformanceLogger;
 import net.riezebos.bruus.tbd.game.util.performancelogger.PerformanceLoggerManager;
+import net.riezebos.bruus.tbd.game.util.save.SaveManager;
 import net.riezebos.bruus.tbd.guiboards.BoardManager;
 import net.riezebos.bruus.tbd.guiboards.TimerHolder;
 import net.riezebos.bruus.tbd.guiboards.background.BackgroundManager;
@@ -90,7 +91,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
     private PerformanceLogger performanceLogger;
 
 
-    public GameBoard () {
+    public GameBoard() {
         animationManager = AnimationManager.getInstance();
         enemyManager = EnemyManager.getInstance();
         missileManager = MissileManager.getInstance();
@@ -110,7 +111,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
         initBoard();
     }
 
-    private void initBoard () {
+    private void initBoard() {
         drawTimer = new Timer(gameState.getDELAY(), this);
         setDoubleBuffered(true);
         addKeyListener(new KeyboardListener());
@@ -119,7 +120,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
         setPreferredSize(new Dimension(boardWidth, boardHeight));
     }
 
-    public void startGame () {
+    public void startGame() {
         animationManager.resetManager();
         PlayerManager.getInstance().resetManager();
         PlayerManager.getInstance().createSpaceShip();
@@ -129,7 +130,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
     }
 
     // Resets the game after dying
-    public void resetGame () {
+    public void resetGame() {
         animationManager.resetManager();
         enemyManager.resetManager();
         missileManager.resetManager();
@@ -152,7 +153,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
         this.hasExportedLogs = false;
     }
 
-    private void resetManagersForNextLevel () {
+    private void resetManagersForNextLevel() {
         if (!hasResetManagersForNextLevel) {
             animationManager.resetManager();
             enemyManager.resetManager();
@@ -173,7 +174,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
     }
 
     @Override
-    public void paintComponent (Graphics g) {
+    public void paintComponent(Graphics g) {
         super.paintComponent(g);
         Graphics2D g2d = (Graphics2D) g;
         drawObjects(g2d);
@@ -195,7 +196,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
         Toolkit.getDefaultToolkit().sync();
     }
 
-    private void goToNextLevel () {
+    private void goToNextLevel() {
         if (zoningOutAlpha >= 1) {
             playerManager.getSpaceship().setXCoordinate(DataClass.getInstance().getWindowWidth() / 10);
             playerManager.getSpaceship().setYCoordinate(DataClass.getInstance().getWindowHeight() / 2);
@@ -211,10 +212,11 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
             drawTimer.stop();
             BoardManager.getInstance().openShopWindow();
             GameStatsTracker.getInstance().resetStatsForNextRound();
+            SaveManager.getInstance().exportCurrentSave();
         }
     }
 
-    private void playDeathMusic () {
+    private void playDeathMusic() {
         audioManager.stopMusicAudio();
         audioManager.playDefaultBackgroundMusic(AudioEnums.VendlaSonrisa, false);
     }
@@ -223,10 +225,11 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
     private boolean isPlayingDeathMusic = false;
     private boolean hasExportedLogs = false;
 
-    private void drawEndOfLevelScreen (Graphics2D g, boolean hasSurvived) {
+    private void drawEndOfLevelScreen(Graphics2D g, boolean hasSurvived) {
         if (!hasSurvived && !isPlayingDeathMusic) {
             playDeathMusic();
             isPlayingDeathMusic = true;
+            SaveManager.getInstance().deleteSaveFile();
         }
 
         if (!hasExportedLogs) {
@@ -238,7 +241,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
 
 
         //Create font
-        Font font = new Font("Monospaced", Font.PLAIN, 15);
+        Font font = new Font("Monospaced", Font.PLAIN, Math.round(15 * DataClass.getInstance().getResolutionFactor()));
         FontMetrics fm = getFontMetrics(font);
         g.setColor(Color.white);
         g.setFont(font);
@@ -377,7 +380,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
         drawTimer.setDelay(gameState.getDELAY());
     }
 
-    private void drawZoningIn (Graphics2D g2d) {
+    private void drawZoningIn(Graphics2D g2d) {
         if (zoningInAlpha <= 0) {
             return;
         }
@@ -391,7 +394,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
         zoningInAlpha -= 0.02f; // Adjust this value to control the speed of the fade
     }
 
-    private void drawZoningOut (Graphics2D g2d) {
+    private void drawZoningOut(Graphics2D g2d) {
         // If the black screen is already fully opaque, just return
         if (zoningOutAlpha >= 1) {
             return;
@@ -407,7 +410,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
         zoningOutAlpha += 0.02f; // Adjust this value to control the speed of the fade
     }
 
-    private void drawObjects (Graphics2D g) {
+    private void drawObjects(Graphics2D g) {
         double start = System.currentTimeMillis();
         // Draws all background objects
         for (BackgroundObject bgObject : backgroundManager.getAllBGO()) {
@@ -508,7 +511,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
 
 
         if (gameState.getGameState().equals(GameStatusEnums.Paused)) {
-            g.setFont(new Font(DataClass.getInstance().getTextFont(), Font.BOLD, 30));
+            g.setFont(new Font(DataClass.getInstance().getTextFont(), Font.BOLD, Math.round(30 * DataClass.getInstance().getResolutionFactor())));
             g.drawString("PAUSED, press 'P' to resume",
                     DataClass.getInstance().getWindowWidth() * 0.4f,
                     DataClass.getInstance().getWindowHeight() / 2);
@@ -519,7 +522,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
     }
 
     //Helper method to centralize drawing of special attacks
-    private void drawSpecialAttacks (VisualLayer visualLayer, Graphics2D g2d) {
+    private void drawSpecialAttacks(VisualLayer visualLayer, Graphics2D g2d) {
         for (SpecialAttack specialAttack : missileManager.getSpecialAttacksByAnimationLayer(visualLayer)) {
             if (specialAttack.isVisible()) {
                 if (specialAttack.getAnimation() != null) {
@@ -532,7 +535,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
 
     }
 
-    private void drawOnScreenText (Graphics2D g, OnScreenText text) {
+    private void drawOnScreenText(Graphics2D g, OnScreenText text) {
         // Ensure that transparency value is within the appropriate bounds.
         float transparency = Math.max(0, Math.min(1, text.getTransparencyValue()));
         Color originalColor = g.getColor(); // store the original color
@@ -561,7 +564,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
         g.setFont(originalFont);
     }
 
-    private void drawImage (Graphics2D g, Sprite sprite) {
+    private void drawImage(Graphics2D g, Sprite sprite) {
         if (sprite.getImage() != null) {
             // Save the original composite
             Composite originalComposite = g.getComposite();
@@ -578,7 +581,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
     }
 
 
-    private void drawAnimation (Graphics2D g, SpriteAnimation animation) {
+    private void drawAnimation(Graphics2D g, SpriteAnimation animation) {
         if (animation.getCurrentFrameImage(false) != null) {
             // Save the original composite
             Composite originalComposite = g.getComposite();
@@ -594,7 +597,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
     }
 
     // Primitive healthbar generator for enemies
-    private void drawHealthBars (Graphics2D g, GameObject gameobject) {
+    private void drawHealthBars(Graphics2D g, GameObject gameobject) {
         float factor = gameobject.getCurrentHitpoints() / gameobject.getMaxHitPoints();
         int actualAmount = (int) Math.round(gameobject.getHeight() * factor);
 
@@ -605,7 +608,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
         g.fillRect((gameobject.getXCoordinate() + gameobject.getWidth() + 10), gameobject.getYCoordinate(), 2, actualAmount);
     }
 
-    private void drawCurrentAmountOFMinerals (Graphics2D g) {
+    private void drawCurrentAmountOFMinerals(Graphics2D g) {
         UIObject mineralIcon = GameUICreator.getInstance().getMineralIcon();
         drawImage(g, mineralIcon);
         g.setColor(Color.WHITE);
@@ -616,7 +619,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
     }
 
 
-    private void drawPlayerHealthBars (Graphics2D g) {
+    private void drawPlayerHealthBars(Graphics2D g) {
         float playerHealth = playerManager.getSpaceship().getCurrentHitpoints();
         float playerMaxHealth = playerStats.getMaxHitPoints();
         UIObject healthFrame = uiManager.getHealthFrame();
@@ -670,7 +673,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
         if (currentTotalHitpoints <= maxTotalHitpoints * 0.35f) {
 
             float minHealthThreshold = maxTotalHitpoints * 0.01f;
-            float maxHealthThreshold = maxTotalHitpoints * 0.35f;
+            float maxHealthThreshold = maxTotalHitpoints * 0.5f;
 
             float clampedHitpoints = Math.max(minHealthThreshold, Math.min(currentTotalHitpoints, maxHealthThreshold));
 
@@ -690,7 +693,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
     private double currentMusicSeconds = 0;
     private double maximumMusicSeconds = 0;
 
-    private void drawSongProgressBar (Graphics2D g) {
+    private void drawSongProgressBar(Graphics2D g) {
         //Only update these when playing, as gameseconds continues to grow after the song is finished
         if (gameState.getGameState().equals(GameStatusEnums.Playing)) {
             currentMusicSeconds = GameStateInfo.getInstance().getGameSeconds();
@@ -730,7 +733,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
         }
     }
 
-    private void drawSpecialAttackFrame (Graphics2D g) {
+    private void drawSpecialAttackFrame(Graphics2D g) {
         drawImage(g, uiManager.getSpecialAttackFrame());
         SpaceShipSpecialGun gun = playerManager.getSpaceship().getSpecialGun();
         int charges = gun.getSpecialAttackCharges();
@@ -763,7 +766,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
 
 
     // Called on every action/input. Essentially the infinite loop that plays the game
-    public void actionPerformed (ActionEvent e) {
+    public void actionPerformed(ActionEvent e) {
         if (gameState.getGameState() == GameStatusEnums.Zoning_In) {
             if (this.zoningInAlpha <= 0.05) {
                 levelManager.startLevel();
@@ -850,12 +853,12 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
         repaint(0, 0, DataClass.getInstance().getWindowWidth(), DataClass.getInstance().getWindowHeight());
     }
 
-    private boolean shouldIncreaseInputDelay () {
+    private boolean shouldIncreaseInputDelay() {
         GameStatusEnums gameStatus = gameState.getGameState();
         return gameStatus == GameStatusEnums.Show_Level_Score_Card || gameStatus == GameStatusEnums.Paused || gameStatus == GameStatusEnums.Dead;
     }
 
-    public Timer getTimer () {
+    public Timer getTimer() {
         return drawTimer;
     }
 
@@ -863,7 +866,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
     // Required to read key presses
     private class KeyboardListener extends KeyAdapter {
         @Override
-        public void keyReleased (KeyEvent e) {
+        public void keyReleased(KeyEvent e) {
             playerManager.getSpaceship().keyReleased(e);
 
             if (e.getKeyCode() == (KeyEvent.VK_P)) {
@@ -879,7 +882,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
         }
 
         @Override
-        public void keyPressed (KeyEvent e) {
+        public void keyPressed(KeyEvent e) {
             if (boardManager == null) {
                 boardManager = BoardManager.getInstance();
             }
@@ -907,7 +910,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
         }
     }
 
-    public void executeControllerInput () {
+    public void executeControllerInput() {
         if (boardManager == null) {
             boardManager = BoardManager.getInstance();
         }

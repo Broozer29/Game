@@ -1,5 +1,6 @@
 package net.riezebos.bruus.tbd.guiboards.guicomponents;
 
+import net.riezebos.bruus.tbd.visualsandaudio.data.DataClass;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteAnimationConfiguration;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteConfiguration;
 
@@ -26,7 +27,7 @@ public class MenuCursor extends GUIComponent{
     }
 
     public int getxDistanceToKeep() {
-        return xDistanceToKeep;
+        return Math.round(xDistanceToKeep * DataClass.getInstance().getResolutionFactor());
     }
 
 }

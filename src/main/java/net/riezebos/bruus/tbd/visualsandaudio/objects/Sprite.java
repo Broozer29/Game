@@ -106,6 +106,11 @@ public class Sprite {
         this.yCoordinate = newYCoordinate - (this.height / 2);
     }
 
+    public void setCenterCoordinates (float newXCoordinate, float newYCoordinate) {
+        this.xCoordinate = Math.round(newXCoordinate - (this.width / 2));
+        this.yCoordinate = Math.round(newYCoordinate - (this.height / 2));
+    }
+
     public void setCenterYCoordinate(int newYCoordinate){
         this.yCoordinate = newYCoordinate - (this.height / 2);
     }

@@ -18,6 +18,7 @@ import net.riezebos.bruus.tbd.game.level.enums.LevelTypes;
 import net.riezebos.bruus.tbd.game.movement.Direction;
 import net.riezebos.bruus.tbd.game.movement.MovementPatternSize;
 import net.riezebos.bruus.tbd.game.movement.Point;
+import net.riezebos.bruus.tbd.game.playerprofile.boons.StartOfGameBoonsManager;
 import net.riezebos.bruus.tbd.game.util.performancelogger.PerformanceLogger;
 import net.riezebos.bruus.tbd.game.util.performancelogger.PerformanceLoggerManager;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.AudioManager;
@@ -67,11 +68,7 @@ public class LevelManager {
     public void updateGameTick () {
         // Check if the song has ended, then create the moving out portal
         if (gameState.getGameState() == GameStatusEnums.Playing) {
-//            if (tickerCount % 5 == 0) {
                 PerformanceLoggerManager.timeAndLog(performanceLogger, "Handle End Of Song Behaviour", this::handleEndOfSongBehaviour);
-//                tickerCount = 0;
-//            }
-//            tickerCount++; // Increment the counter
         }
 
         //NextLevelPortal spawns in friendlymanager, now we wait for the player to enter the portal to set it to Level_Completed to show the score card
@@ -126,6 +123,11 @@ public class LevelManager {
 
     // Called when a level starts, to saturate enemy list
     public void startLevel () {
+        if(GameStateInfo.getInstance().getStagesCompleted() == 0){
+            StartOfGameBoonsManager.getInstance().activateStartOfRunUpgrades();
+        }
+
+
         initDifficulty();
 //        this.levelType = LevelTypes.Boss;
 
@@ -140,9 +142,10 @@ public class LevelManager {
         activateMusic(this.levelType);
         gameState.setGameState(GameStatusEnums.Playing);
 
-//        EnemyEnums enemyType = EnemyEnums.Scout;
-//        Enemy enemy = EnemyCreator.createEnemy(enemyType, 1200, 300, Direction.LEFT, enemyType.getDefaultScale()
-//                , enemyType.getMovementSpeed(), enemyType.getMovementSpeed(), MovementPatternSize.SMALL, false);
+
+        EnemyEnums enemyType = EnemyEnums.Scout;
+        Enemy enemy = EnemyCreator.createEnemy(enemyType, 1200, 300, Direction.LEFT, enemyType.getDefaultScale()
+                , enemyType.getMovementSpeed(), enemyType.getMovementSpeed(), MovementPatternSize.SMALL, false);
 //        EnemyManager.getInstance().addEnemy(enemy);
     }
 

@@ -53,6 +53,9 @@ public class Guardian extends Enemy {
             Point chargingUpLocation = calculateFrontPosition(this.getCenterXCoordinate(), this.getCenterYCoordinate(), rotationAngle, baseDistance);
             this.chargingUpAttackAnimation.setCenterCoordinates(chargingUpLocation.getX(), chargingUpLocation.getY());
         }
+
+
+
     }
 
     private Point calculateFrontPosition (int centerX, int centerY, double angleDegrees, double distanceToFront) {
@@ -72,10 +75,13 @@ public class Guardian extends Enemy {
         }
 
 
+
+
         // Check if the attack cooldown has been reached
         double currentTime = GameStateInfo.getInstance().getGameSeconds();
         if (currentTime >= lastAttackTime + this.getAttackSpeed() && WithinVisualBoundariesCalculator.isWithinBoundaries(this)
                 && allowedToFire) {
+            updateChargingAttackAnimationCoordination();
 
             if (!chargingUpAttackAnimation.isPlaying()) {
                 chargingUpAttackAnimation.refreshAnimation();
