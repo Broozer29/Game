@@ -42,7 +42,7 @@ public class MenuBoardCreator {
         menuCursor.setSelectedMenuTile(initialSelectedButton);
         menuCursor.setDescriptionOfComponent("Menu Cursor");
         menuCursor.setXCoordinate(menuCursor.getXCoordinate() - menuCursor.getxDistanceToKeep());
-        menuCursor.setYCoordinate(menuCursor.getYCoordinate() - menuCursor.getHeight() / 2);
+        menuCursor.setCenterYCoordinate(menuCursor.getCenterYCoordinate());
         return menuCursor;
     }
 
@@ -227,7 +227,7 @@ public class MenuBoardCreator {
 
         GUITextCollection textCollection = new GUITextCollection(xCoordinate,yCoordinate, "TEST BUTTON");
         textCollection.setScale(imageScale);
-        textCollection.setMenuFunctionality(MenuFunctionEnums.OpenUpgradeSelectionBoard);
+        textCollection.setMenuFunctionality(MenuFunctionEnums.OpenBoonSelectionBoard);
         return textCollection;
     }
 }

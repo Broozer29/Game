@@ -52,6 +52,7 @@ public class Sprite {
 
     protected void setImage (ImageEnums imageName) {
         this.image = imgDatabase.getImage(imageName);
+        this.imageEnum = imageName;
         if (this.image == null) {
             System.out.println("Crashed because getting " + imageName + " returned an empty/null image");
         }

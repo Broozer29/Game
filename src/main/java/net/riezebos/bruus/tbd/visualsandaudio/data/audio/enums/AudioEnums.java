@@ -84,7 +84,10 @@ public enum AudioEnums {
     GustyGardenGalaxyRemix(true),
     WePlantsAreHappyPlantsTimeRemix(true),
     RiskOfDanger(true),
-    BossBattle(true);
+    BossBattle(true),
+    CarrierSpeedingUp(false),
+    CarrierSlowingDown(false),
+    ProtossShipDeath(false);
 
     // Boolean attribute to indicate if this should be streamed
     private final boolean shouldStream;

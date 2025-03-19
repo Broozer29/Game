@@ -1,7 +1,7 @@
 package net.riezebos.bruus.tbd.game.gameobjects.missiles.specialAttacks;
 
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
-import net.riezebos.bruus.tbd.game.gamestate.GameStateInfo;
+import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.items.ItemEnums;
 import net.riezebos.bruus.tbd.game.items.PlayerInventory;
 import net.riezebos.bruus.tbd.game.items.effects.EffectIdentifiers;
@@ -35,7 +35,7 @@ public class LingeringFlame extends SpecialAttack{
         }
 
         initIgniteEffect();
-        gamesecondsStarted = GameStateInfo.getInstance().getGameSeconds();
+        gamesecondsStarted = GameState.getInstance().getGameSeconds();
     }
 
     private void initIgniteEffect(){
@@ -59,7 +59,7 @@ public class LingeringFlame extends SpecialAttack{
 //            this.animation.setAnimationScale(this.scale);
 //        }
 
-        if(GameStateInfo.getInstance().getGameSeconds() > (gamesecondsStarted + duration) && !isDissipating){
+        if(GameState.getInstance().getGameSeconds() > (gamesecondsStarted + duration) && !isDissipating){
             this.setTransparancyAlpha(true, 1, -0.035f);
             super.isDissipating = true;
         }

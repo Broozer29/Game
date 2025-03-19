@@ -7,13 +7,13 @@ import net.riezebos.bruus.tbd.game.items.PlayerInventory;
 import net.riezebos.bruus.tbd.game.level.LevelManager;
 import net.riezebos.bruus.tbd.game.level.enums.LevelDifficulty;
 import net.riezebos.bruus.tbd.game.level.enums.LevelLength;
-import net.riezebos.bruus.tbd.game.playerprofile.boons.StartOfGameBoonsManager;
-import net.riezebos.bruus.tbd.game.playerprofile.boons.boonimplementations.Nepotism;
+import net.riezebos.bruus.tbd.game.gameobjects.player.boons.Boon;
+import net.riezebos.bruus.tbd.game.gameobjects.player.boons.BoonManager;
 import net.riezebos.bruus.tbd.game.util.OnScreenTextManager;
-import net.riezebos.bruus.tbd.game.util.save.SaveManager;
+import net.riezebos.bruus.tbd.game.gamestate.save.SaveManager;
 import net.riezebos.bruus.tbd.guiboards.BoardManager;
+import net.riezebos.bruus.tbd.guiboards.boardcreators.BoonSelectionBoardCreator;
 import net.riezebos.bruus.tbd.guiboards.boards.ShopBoard;
-import net.riezebos.bruus.tbd.guiboards.boards.UpgradeSelectionBoard;
 import net.riezebos.bruus.tbd.visualsandaudio.data.DataClass;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.AudioDatabase;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.AudioManager;
@@ -43,6 +43,10 @@ public class MenuButton extends GUIComponent {
     public void activateComponent() {
         AudioDatabase.getInstance().updateGameTick();
         BoardManager boardManager = BoardManager.getInstance();
+        if (this.menuFunctionality == null) {
+            OnScreenTextManager.getInstance().addText("No menu functionality found!", DataClass.getInstance().getWindowWidth() / 2, DataClass.getInstance().getWindowHeight() / 2);
+            return;
+        }
         switch (this.menuFunctionality) {
             case Start_Game:
                 boardManager.initGame();
@@ -59,7 +63,7 @@ public class MenuButton extends GUIComponent {
             case Open_Shop_Window:
                 boardManager.openShopWindow();
                 break;
-            case OpenUpgradeSelectionBoard:
+            case OpenBoonSelectionBoard:
                 boardManager.openUpgradeSelectionScreen();
                 break;
             case SelectSongDifficulty:
@@ -94,17 +98,36 @@ public class MenuButton extends GUIComponent {
                 BoardManager.getInstance().getClassSelectionBoard().recreateCursor();
                 BoardManager.getInstance().getClassSelectionBoard().addCursorAnimation();
                 break;
+            case SelectCarrierClass:
+                PlayerStats.getInstance().setPlayerClass(PlayerClass.Carrier);
+                BoardManager.getInstance().getClassSelectionBoard().recreateCursor();
+                BoardManager.getInstance().getClassSelectionBoard().addCursorAnimation();
+                break;
             case ContinueSaveFile:
                 SaveManager.getInstance().loadSaveFile();
                 boardManager.openShopWindow();
                 break;
             case SelectNepotism:
-                StartOfGameBoonsManager.getInstance().setUtilityUpgrade(Nepotism.getInstance());
+            case SelectClubAccess:
+            case SelectCompoundWealth:
+            case SelectTreasureHunter:
+            case SelectBountyHunter:
+                if(BoonSelectionBoardCreator.getBoonByMenuFunctionality(menuFunctionality).isUnlocked()) {
+                    BoonManager.getInstance().setUtilityBoon(BoonSelectionBoardCreator.getBoonByMenuFunctionality(menuFunctionality));
+                }
                 break;
             case UpgradeNepotism:
-                Nepotism.getInstance().upgrade();
+            case UpgradeClubAccess:
+            case UpgradeCompoundWealth:
+            case UpgradeTreasureHunter:
+            case UpgradeBountyHunter:
+                Boon boon = BoonSelectionBoardCreator.getBoonByMenuFunctionality(menuFunctionality);
+                boon.upgradeBoon();
                 BoardManager.getInstance().getUpgradeSelectionBoard().recreateList();
+                BoardManager.getInstance().getUpgradeSelectionBoard().recreateEmeraldText();
                 break;
+            case PurchaseItem:
+                break; //Handled in a different class
             default:
                 System.out.println("Unimplemented functionality");
                 OnScreenTextManager.getInstance().addText("Unimplemented menu functionality in menubutton", 400, 400);

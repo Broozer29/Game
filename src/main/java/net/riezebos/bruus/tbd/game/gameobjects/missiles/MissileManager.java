@@ -2,11 +2,14 @@ package net.riezebos.bruus.tbd.game.gameobjects.missiles;
 
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.Enemy;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyManager;
+import net.riezebos.bruus.tbd.game.gameobjects.friendlies.FriendlyManager;
+import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.Drone;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.laserbeams.Laserbeam;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.missiletypes.TazerProjectile;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.specialAttacks.SpecialAttack;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
 import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SpaceShip;
+import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.gamestate.GameStatsTracker;
 import net.riezebos.bruus.tbd.game.util.ThornsDamageDealer;
 import net.riezebos.bruus.tbd.game.util.VisualLayer;
@@ -32,6 +35,7 @@ public class MissileManager {
     private CopyOnWriteArrayList<SpecialAttack> specialAttacks = new CopyOnWriteArrayList<SpecialAttack>();
     private CopyOnWriteArrayList<Laserbeam> laserbeams = new CopyOnWriteArrayList<>();
     private PerformanceLogger performanceLogger = null;
+    private static float laserBeamCooldown = 0.035f; //100 milliseconds/8 ticks
 
 
     private MissileManager () {
@@ -112,12 +116,35 @@ public class MissileManager {
                     spaceship.resetToPreviousPosition();
                     spaceship.applyKnockback(collisionInfo, laserbeam.getKnockBackStrength());
                 }
-                spaceship.takeDamage(laserbeam.getDamage());
+
+
+                if(GameState.getInstance().getGameSeconds() - spaceship.getLastTimeDamageTakenFromLaserbeams() >= laserBeamCooldown) {
+                    spaceship.takeDamage(laserbeam.getDamage());
+                    spaceship.setLastTimeDamageTakenFromLaserbeams(GameState.getInstance().getGameSeconds());
+                }
             }
+
+
+            for (Drone drone : FriendlyManager.getInstance().getAllProtossDrones()) {
+                double currentTime = GameState.getInstance().getGameSeconds();
+                double timeSinceLastDamage = currentTime - drone.getLastTimeDamageTakenFromLaserbeams();
+                // Only check for collisions if enough time has passed since the last damage
+                if (timeSinceLastDamage >= laserBeamCooldown) {
+                    collisionInfo = CollisionDetector.getInstance().detectCollision(drone, laserbeam);
+
+                    if (collisionInfo.isCollided()) {
+                        drone.takeDamage(laserbeam.getDamage());
+                        drone.setLastTimeDamageTakenFromLaserbeams(currentTime);
+                    }
+                }
+            }
+
 
         }
 
     }
+
+
 
     private void removeInvisibleProjectiles () {
         for (int i = 0; i < missiles.size(); i++) {
@@ -158,6 +185,7 @@ public class MissileManager {
                     checkMissileCollisionWithEnemies(missile);
                 } else { // Then generic enemy missiles on friendlies
                     checkMissileCollisionWithPlayer(missile);
+                    checkMissileCollisionWithDrones(missile);
                 }
 
                 if (missile.interactsWithMissiles()) {
@@ -261,6 +289,21 @@ public class MissileManager {
         }
     }
 
+    private void checkMissileCollisionWithDrones (Missile missile) {
+        for(Drone drone : FriendlyManager.getInstance().getAllProtossDrones()){
+            CollisionInfo collisionInfo = collisionDetector.detectCollision(missile, drone);
+            if (collisionInfo != null) {
+                missile.setShowDamage(false);
+                missile.handleCollision(drone);
+                drone.setShowHealthBar(true);
+            }
+        }
+
+
+
+    }
+
+
     private void checkMissileCollisionWithMissiles (Missile missile) {
         if (missile.interactsWithMissiles()) {
             if (missile.isFriendly()) {
@@ -326,6 +369,10 @@ public class MissileManager {
 
     public List<Missile> getMissiles () {
         return missiles;
+    }
+
+    public List<Missile> getMissilesByAllegiance (boolean friendly) {
+        return missiles.stream().filter(missile -> missile.isFriendly() == friendly).toList();
     }
 
     public List<SpecialAttack> getSpecialAttacks () {

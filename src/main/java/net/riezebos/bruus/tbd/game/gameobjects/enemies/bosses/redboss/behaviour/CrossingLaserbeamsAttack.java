@@ -6,7 +6,7 @@ import net.riezebos.bruus.tbd.game.gameobjects.missiles.MissileManager;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.laserbeams.AngledLaserBeam;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.laserbeams.Laserbeam;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.laserbeams.LaserbeamConfiguration;
-import net.riezebos.bruus.tbd.game.gamestate.GameStateInfo;
+import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.movement.Point;
 import net.riezebos.bruus.tbd.game.util.WithinVisualBoundariesCalculator;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.AudioManager;
@@ -64,7 +64,7 @@ public class CrossingLaserbeamsAttack implements BossActionable {
     // if returns true; this behaviour is removed and another is selected
     // if false, this behaviour remains and this method keeps getting called
     public boolean activateBehaviour (Enemy enemy) {
-        double currentTime = GameStateInfo.getInstance().getGameSeconds();
+        double currentTime = GameState.getInstance().getGameSeconds();
         if (upperChargingUpAnimation == null || lowerChargingUpAnimation == null) {
             initSpawnAnimations(enemy);
         }
@@ -253,7 +253,7 @@ public class CrossingLaserbeamsAttack implements BossActionable {
     @Override
     public boolean isAvailable (Enemy enemy) {
         return enemy.isAllowedToFire()
-                && GameStateInfo.getInstance().getGameSeconds() >= lastAttackedTime + attackCooldown
+                && GameState.getInstance().getGameSeconds() >= lastAttackedTime + attackCooldown
                 && WithinVisualBoundariesCalculator.isWithinBoundaries(enemy);
     }
 }

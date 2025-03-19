@@ -79,6 +79,9 @@ public class AudioDatabase {
         put(AudioEnums.OverlordDeath, 2);
         put(AudioEnums.MutaliskBirth, 2);
         put(AudioEnums.MutaliskDeath, 3);
+        put(AudioEnums.ProtossShipDeath, 5);
+        put(AudioEnums.CarrierSlowingDown, 1);
+        put(AudioEnums.CarrierSpeedingUp, 1);
         put(AudioEnums.DevourerBirth, 3);
         put(AudioEnums.DevourerHit, 3);
         put(AudioEnums.DevourerDeath, 3);
@@ -133,7 +136,7 @@ public class AudioDatabase {
         clipsWithThresholds.add(AudioEnums.Destroyed_Explosion);
         clipsWithThresholds.add(AudioEnums.Alien_Bomb_Impact);
         initMusic();
-        initSoundEffects();
+        loadSoundEffects();
     }
 
     private int tickCounter = 0;
@@ -211,7 +214,7 @@ public class AudioDatabase {
 
     }
 
-    private void initSoundEffects () {
+    private void loadSoundEffects() {
         for (Map.Entry<AudioEnums, Integer> entry : clipSizeConfig.entrySet()) {
             AudioEnums audioType = entry.getKey();
             int listSize = entry.getValue();
@@ -368,6 +371,9 @@ public class AudioDatabase {
             case GuardianBirth:
             case QueenDeath:
             case OverlordDeath:
+            case ProtossShipDeath:
+            case CarrierSlowingDown:
+            case CarrierSpeedingUp:
             default:
                 return getAvailableClip(audioType);
             case NONE:

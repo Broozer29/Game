@@ -1,5 +1,7 @@
 package net.riezebos.bruus.tbd.game.items.enums;
 
+import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
+
 import java.awt.*;
 import java.util.Random;
 
@@ -11,7 +13,7 @@ public enum ItemRarityEnums {
     Locked(0, Color.GRAY);
 
 
-    ItemRarityEnums (float itemCost, Color color) {
+    ItemRarityEnums(float itemCost, Color color) {
         this.itemCost = itemCost;
         this.color = color;
     }
@@ -19,21 +21,21 @@ public enum ItemRarityEnums {
     private float itemCost;
     private Color color;
 
-    public float getItemCost () {
+    public float getItemCost() {
         return itemCost;
     }
 
-    public void setItemCost (float itemCost) {
+    public void setItemCost(float itemCost) {
         this.itemCost = itemCost;
     }
 
-    public static ItemRarityEnums getRandomCommonItemSlot () {
+    public static ItemRarityEnums getRandomCommonItemSlot() {
         Random rand = new Random();
-        int chance = rand.nextInt(0,101);
+        int chance = rand.nextInt(0, 101);
 
-        if (chance < 75) {
+        if (chance < (75 - PlayerStats.getInstance().getRelicChanceModifier())) {
             return ItemRarityEnums.Common;
-        } else if (chance < 97) {
+        } else if (chance < (97 - PlayerStats.getInstance().getRelicChanceModifier())) {
             return ItemRarityEnums.Rare;
         } else {
             return ItemRarityEnums.Legendary;
@@ -41,20 +43,20 @@ public enum ItemRarityEnums {
     }
 
 
-    public static ItemRarityEnums getRandomRareItemSlot () {
+    public static ItemRarityEnums getRandomRareItemSlot() {
         Random rand = new Random();
-        int chance = rand.nextInt(0,101);
+        int chance = rand.nextInt(0, 101);
 
         if (chance < 70) {
             return ItemRarityEnums.Rare;
-        } else if(chance < 95) {
+        } else if (chance < 95) {
             return ItemRarityEnums.Legendary;
         } else {
             return ItemRarityEnums.Relic;
         }
     }
 
-    public Color getColor () {
+    public Color getColor() {
         return color;
     }
 }

@@ -3,7 +3,7 @@ package net.riezebos.bruus.tbd.game.movement.pathfinders;
 import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.Enemy;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyCategory;
-import net.riezebos.bruus.tbd.game.gamestate.GameStateInfo;
+import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.movement.*;
 
 import java.util.ArrayList;
@@ -76,7 +76,7 @@ public class HoverPathFinder implements PathFinder {
         if (path.getWaypoints().isEmpty()) {
             if (gameSecondsSinceEmptyList == 0) {
                 // Only set the timestamp if it hasn't been set yet. If true, stay still on the current location and rotate it
-                gameSecondsSinceEmptyList = GameStateInfo.getInstance().getGameSeconds();
+                gameSecondsSinceEmptyList = GameState.getInstance().getGameSeconds();
                 isHovering = true;
                 if (allowRotation(gameObject)) {
                     gameObject.setAllowedVisualsToRotate(true);
@@ -98,7 +98,7 @@ public class HoverPathFinder implements PathFinder {
             }
 
             // Check if 3 seconds have passed since the path became empty. If true, move
-            if (GameStateInfo.getInstance().getGameSeconds() > gameSecondsSinceEmptyList + secondsToHoverStill) {
+            if (GameState.getInstance().getGameSeconds() > gameSecondsSinceEmptyList + secondsToHoverStill) {
                 // After 3 seconds, allow recalculation.
                 isHovering = false;
                 gameSecondsSinceEmptyList = 0; // Reset the timer for the next use.

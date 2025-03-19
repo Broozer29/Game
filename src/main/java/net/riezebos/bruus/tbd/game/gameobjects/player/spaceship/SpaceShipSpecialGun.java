@@ -8,7 +8,9 @@ import net.riezebos.bruus.tbd.game.gameobjects.missiles.specialAttacks.SpecialAt
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerSpecialAttackTypes;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
-import net.riezebos.bruus.tbd.game.gamestate.GameStateInfo;
+import net.riezebos.bruus.tbd.game.gamestate.GameState;
+import net.riezebos.bruus.tbd.game.util.OnScreenTextManager;
+import net.riezebos.bruus.tbd.visualsandaudio.data.DataClass;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.AudioManager;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.AudioEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
@@ -28,7 +30,7 @@ public class SpaceShipSpecialGun {
     }
 
     public void fire (int xCoordinate, int yCoordinate, PlayerSpecialAttackTypes attackType) {
-        double currentTime = GameStateInfo.getInstance().getGameSeconds();
+        double currentTime = GameState.getInstance().getGameSeconds();
         if (specialAttackCharges > 0 && currentTime >= (lastSecondsSpecialAttackUsed + 0.15)) {
             switch (attackType) {
                 case EMP:
@@ -38,6 +40,9 @@ public class SpaceShipSpecialGun {
                     break;
                 case FlameShield:
                     fireFlameShield(xCoordinate, yCoordinate);
+                    break;
+                case Carrier:
+                    handleCarrierAttack();
                     break;
             }
             if (specialAttackCharges > 0) {
@@ -50,6 +55,12 @@ public class SpaceShipSpecialGun {
             }
 //            allowedToFire = false;
         }
+    }
+
+    private void handleCarrierAttack(){
+        OnScreenTextManager.getInstance().addText("Unimplemented secondary attack lol",
+                DataClass.getInstance().getWindowWidth() / 2,
+                DataClass.getInstance().getWindowHeight() / 2);
     }
 
     private SpriteAnimationConfiguration createConfig (int xCoordinate, int yCoordinate, ImageEnums imageEnums, float scale, boolean loop) {
@@ -99,7 +110,7 @@ public class SpaceShipSpecialGun {
     }
 
     public void updateFrameCount () {
-        double currentTime = GameStateInfo.getInstance().getGameSeconds();
+        double currentTime = GameState.getInstance().getGameSeconds();
         // Gain a new charge if enough time has passed since the last charge was gained and there is a slot available
         if (specialAttackCharges < playerStats.getMaxSpecialAttackCharges()) {
             if (currentTime >= lastSecondsSpecialAttackChargeGained + playerStats.getSpecialAttackCooldown()) {

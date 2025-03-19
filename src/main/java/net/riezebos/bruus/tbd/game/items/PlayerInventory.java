@@ -1,10 +1,17 @@
 package net.riezebos.bruus.tbd.game.items;
 
+import net.riezebos.bruus.tbd.game.gameobjects.player.boons.BoonEnums;
 import net.riezebos.bruus.tbd.game.items.enums.ItemApplicationEnum;
 import net.riezebos.bruus.tbd.game.items.enums.ItemRarityEnums;
 import net.riezebos.bruus.tbd.game.items.items.*;
 import net.riezebos.bruus.tbd.game.items.items.captain.*;
+import net.riezebos.bruus.tbd.game.items.items.carrier.ProtossArbiter;
+import net.riezebos.bruus.tbd.game.items.items.carrier.ProtossScout;
+import net.riezebos.bruus.tbd.game.items.items.carrier.ProtossShuttle;
 import net.riezebos.bruus.tbd.game.items.items.firefighter.*;
+import net.riezebos.bruus.tbd.game.playerprofile.PlayerProfileManager;
+import net.riezebos.bruus.tbd.guiboards.BoardManager;
+import net.riezebos.bruus.tbd.guiboards.boardcreators.BoonSelectionBoardCreator;
 
 import java.util.HashMap;
 import java.util.List;
@@ -19,8 +26,8 @@ public class PlayerInventory {
     private PlayerInventory() {
 
 //        addItem(ItemEnums.Contract);
-//        for(int i = 0; i < 25; i++){
-//            addItem(ItemEnums.getRandomItemByRarity(ItemRarityEnums.Common));
+//        for(int i = 0; i < 5; i++){
+//            addItem(ItemEnums.GuardianDrone);
 //        }
 //        PlayerStats.getInstance().setShopRerollDiscount(99);
     }
@@ -50,6 +57,30 @@ public class PlayerInventory {
         });
         if (item != null) {
             activateUponPurchaseItemEffects(item);
+        }
+
+        checkClubAccessUnlockCondition();
+        checkTreasureHunterUnlockCondition();
+    }
+
+    private void checkClubAccessUnlockCondition(){
+        Item ticket = getItemFromInventoryIfExists(ItemEnums.VIPTicket);
+        if(ticket != null && ticket.getQuantity() >= 5 && PlayerProfileManager.getInstance().getLoadedProfile().getClubAccessLevel() <= 0){
+            PlayerProfileManager.getInstance().getLoadedProfile().setClubAccessLevel(1);
+            PlayerProfileManager.getInstance().exportCurrentProfile();
+            BoardManager.getInstance().getShopBoard().addContractAnimation(BoonSelectionBoardCreator.createBoonUnlockComponent(BoonEnums.CLUB_ACCESS));
+        }
+    }
+
+    private void checkTreasureHunterUnlockCondition(){
+        int amount = items.values().stream()
+                .filter(item -> item.getItemEnum().getItemRarity().equals(ItemRarityEnums.Relic))
+                .toList()
+                .size();
+        if(amount >= 3 && PlayerProfileManager.getInstance().getLoadedProfile().getTreasureHunterLevel() <= 0){
+            PlayerProfileManager.getInstance().getLoadedProfile().setTreasureHunterLevel(1);
+            PlayerProfileManager.getInstance().exportCurrentProfile();
+            BoardManager.getInstance().getShopBoard().addContractAnimation(BoonSelectionBoardCreator.createBoonUnlockComponent(BoonEnums.TREASURE_HUNTER));
         }
     }
 
@@ -138,6 +169,12 @@ public class PlayerInventory {
                 return new BargainBucket();
             case ShieldStabilizer:
                 return new ShieldStabilizer();
+            case ProtossScout:
+                return new ProtossScout();
+            case ProtossArbiter:
+                return new ProtossArbiter();
+            case ProtossShuttle:
+                return new ProtossShuttle();
             case Locked:
                 return null;
             default:

@@ -3,7 +3,7 @@ package net.riezebos.bruus.tbd.game.level.directors;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyManager;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyCategory;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyEnums;
-import net.riezebos.bruus.tbd.game.gamestate.GameStateInfo;
+import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.level.EnemyFormation;
 import net.riezebos.bruus.tbd.game.level.FormationCreator;
 import net.riezebos.bruus.tbd.game.level.LevelManager;
@@ -65,7 +65,7 @@ public class Director {
     }
 
     public void update () {
-        currentTime = GameStateInfo.getInstance().getGameSeconds();
+        currentTime = GameState.getInstance().getGameSeconds();
 
         // Check if we should spawn enemies
         if (shouldAttemptSpawn(currentTime)) {
@@ -144,7 +144,7 @@ public class Director {
     }
 
     private void spawnBoss () {
-        spawnBoss(GameStateInfo.getInstance().getNextBoss());
+        spawnBoss(GameState.getInstance().getNextBoss());
         EnemyManager.getInstance().setHasSpawnedABoss(true);
     }
 
@@ -343,7 +343,7 @@ public class Director {
     }
 
     private MonsterCard selectMonsterCard () {
-        List<MonsterCard> adjustedCards = adjustWeights(availableCards, GameStateInfo.getInstance().getDifficultyCoefficient());
+        List<MonsterCard> adjustedCards = adjustWeights(availableCards, GameState.getInstance().getDifficultyCoefficient());
         if (!adjustedCards.isEmpty()) {
             return weightedRandomSelection(adjustedCards);
         }

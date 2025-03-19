@@ -1,6 +1,7 @@
 package net.riezebos.bruus.tbd.game.util;
 
 import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
+import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.Drone;
 import net.riezebos.bruus.tbd.game.movement.Direction;
 import net.riezebos.bruus.tbd.game.movement.pathfinders.OrbitPathFinder;
 import net.riezebos.bruus.tbd.visualsandaudio.data.DataClass;
@@ -8,33 +9,43 @@ import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
 
 public class OutOfBoundsCalculator {
 
-    private OutOfBoundsCalculator(){
+    private OutOfBoundsCalculator() {
 
     }
 
-    public static boolean isOutOfBounds (GameObject gameObject) {
-        if(gameObject.getMovementConfiguration() != null &&
-                gameObject.getMovementConfiguration().getPathFinder() != null &&
-                gameObject.getMovementConfiguration().getPathFinder() instanceof OrbitPathFinder){
-                    return false; //These should be deleted when their owner is deleted, not by themselves for going out of bounds
-                }
-
-
+    public static boolean isOutOfBounds(GameObject gameObject) {
+        if (isExempt(gameObject)){
+            return false;
+        }
         return calculateOutOfBounds(gameObject);
     }
 
-    public static boolean isOutOfBounds (int xCoordinate, int yCoordinate, Direction rotation) {
+    private static boolean isExempt(GameObject gameObject) {
+        if (gameObject instanceof Drone) {
+            return true;
+        }
+
+        if (gameObject.getMovementConfiguration() != null &&
+                gameObject.getMovementConfiguration().getPathFinder() != null &&
+                gameObject.getMovementConfiguration().getPathFinder() instanceof OrbitPathFinder) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public static boolean isOutOfBounds(int xCoordinate, int yCoordinate, Direction rotation) {
         return calculateOutOfBounds(xCoordinate, yCoordinate, rotation);
     }
 
-    private static boolean calculateOutOfBounds (GameObject gameObject) {
+    private static boolean calculateOutOfBounds(GameObject gameObject) {
         int xCoordinate = gameObject.getXCoordinate();
         int yCoordinate = gameObject.getYCoordinate();
         int width = gameObject.getWidth();
         int height = gameObject.getHeight();
 
 
-        if(gameObject.getImageEnum().equals(ImageEnums.SpaceStationBoss)){
+        if (gameObject.getImageEnum().equals(ImageEnums.SpaceStationBoss)) {
             width = gameObject.getWidth() * 3;
             height = gameObject.getHeight() * 3;
         }
@@ -108,7 +119,7 @@ public class OutOfBoundsCalculator {
     }
 
 
-    private static boolean calculateOutOfBounds (int xCoordinate, int yCoordinate, Direction direction) {
+    private static boolean calculateOutOfBounds(int xCoordinate, int yCoordinate, Direction direction) {
         switch (direction) {
             case UP:
                 if (yCoordinate <= (DataClass.getInstance().getPlayableWindowMinHeight() - 350)) {

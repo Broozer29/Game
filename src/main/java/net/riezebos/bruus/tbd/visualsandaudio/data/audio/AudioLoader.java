@@ -41,6 +41,9 @@ public class AudioLoader {
 
     public String convertAudioToFileString (AudioEnums audioFile) {
         switch (audioFile) {
+            case CarrierSlowingDown: return "/audio/carrierslow.wav";
+            case CarrierSpeedingUp: return "/audio/carrierfast.wav";
+            case ProtossShipDeath: return "/audio/ProtossShipDeath.wav";
             case QueenDeath: return "/audio/Zerg/QueenDeath.wav";
             case MutaliskBirth: return "/audio/Zerg/MutaliskBirth.wav";
             case MutaliskDeath: return "/audio/Zerg/MutaliskDeath.wav";

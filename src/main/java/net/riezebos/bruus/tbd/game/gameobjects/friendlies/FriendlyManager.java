@@ -4,8 +4,10 @@ import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.Enemy;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyManager;
 import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.Drone;
+import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.droneTypes.DroneTypes;
+import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.droneTypes.protoss.ProtossShuttle;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
-import net.riezebos.bruus.tbd.game.gamestate.GameStateInfo;
+import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.gamestate.GameStatusEnums;
 import net.riezebos.bruus.tbd.game.util.OrbitingObjectsFormatter;
 import net.riezebos.bruus.tbd.game.util.collision.CollisionDetector;
@@ -19,41 +21,47 @@ import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.Sprit
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteConfiguration;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class FriendlyManager {
 
     private static FriendlyManager instance = new FriendlyManager();
     private EnemyManager enemyManager = EnemyManager.getInstance();
-    private List<FriendlyObject> friendlyObjects = new ArrayList<FriendlyObject>();
-    private List<Drone> allPlayerDrones = new ArrayList<>();
+    private List<Drone> drones = new ArrayList<Drone>();
     private Portal finishedLevelPortal;
-    private GameStateInfo gameState = GameStateInfo.getInstance();
+    private GameState gameState = GameState.getInstance();
     private PerformanceLogger performanceLogger = null;
 
-    private FriendlyManager () {
+    private FriendlyManager() {
         initPortal();
         this.performanceLogger = new PerformanceLogger("Friendly Manager");
     }
 
-    public void addDrone () {
+    public void addDrone() {
         Drone drone = FriendlyCreator.createDrone();
         PlayerManager.getInstance().getSpaceship().getObjectOrbitingThis().add(drone);
-        this.friendlyObjects.add(drone);
-        this.allPlayerDrones.add(drone);
+        this.drones.add(drone);
 
         OrbitingObjectsFormatter.reformatOrbitingObjects(PlayerManager.getInstance().getSpaceship(), 85);
     }
 
-    public static FriendlyManager getInstance () {
+    public void addProtossShip(DroneTypes droneTypes) {
+        Drone protosShip = FriendlyCreator.createProtossShip(droneTypes);
+        if (protosShip != null) {
+            this.drones.add(protosShip);
+        }
+    }
+
+    public static FriendlyManager getInstance() {
         return instance;
     }
 
 
-    public void updateGameTick () {
+    public void updateGameTick() {
         PerformanceLoggerManager.timeAndLog(performanceLogger, "Activate Friendly Objects", this::activateFriendlyObjects);
         PerformanceLoggerManager.timeAndLog(performanceLogger, "Check Friendly Object Collision", this::checkFriendlyObjectCollision);
-        PerformanceLoggerManager.timeAndLog(performanceLogger, "Move Friendly Objects", this::moveFriendlyObjects);
+        PerformanceLoggerManager.timeAndLog(performanceLogger, "Move Friendly Objects", this::updateFriendlyObjects);
         PerformanceLoggerManager.timeAndLog(performanceLogger, "Remove Invisible Objects", this::removeInvisibleObjects);
         PerformanceLoggerManager.timeAndLog(performanceLogger, "Spawn Finished Level Portal", this::spawnFinishedLevelPortal);
 
@@ -65,20 +73,19 @@ public class FriendlyManager {
     }
 
 
-    public void resetManager () {
-        for (GameObject object : friendlyObjects) {
+    public void resetManager() {
+        for (GameObject object : drones) {
             object.setVisible(false);
         }
 
         removeInvisibleObjects();
-        friendlyObjects = new ArrayList<>();
-        allPlayerDrones = new ArrayList<>();
+        drones = new ArrayList<>();
         initPortal();
         performanceLogger.reset();
     }
 
 
-    private void spawnFinishedLevelPortal () {
+    private void spawnFinishedLevelPortal() {
         if (gameState.getGameState() == GameStatusEnums.Level_Finished && !finishedLevelPortal.isSpawned()) {
             if (finishedLevelPortal == null) {
                 initPortal();
@@ -90,43 +97,63 @@ public class FriendlyManager {
         }
     }
 
-    private void moveFriendlyObjects () {
-        for (FriendlyObject friendlyObject : friendlyObjects) {
-            if (friendlyObject.getAnimation().isVisible()) {
+    private void updateFriendlyObjects() {
+        Iterator<Drone> iterator = drones.iterator();
+        while (iterator.hasNext()) {
+            Drone friendlyObject =  iterator.next();
+
+            if(friendlyObject.getCurrentHitpoints() <= 0){
+                friendlyObject.setVisible(false);
+            }
+
+            if (friendlyObject.isVisible()) {
                 friendlyObject.move();
                 friendlyObject.updateGameObjectEffects();
+                friendlyObject.setShowHealthBar(friendlyObject.getCurrentHitpoints() < friendlyObject.getMaxHitPoints());
+            } else {
+                iterator.remove();
             }
         }
+
     }
 
-    private void activateFriendlyObjects () {
-        for (FriendlyObject object : friendlyObjects) {
-            object.activateObject();
+
+    private void activateFriendlyObjects() {
+        for (Drone drone : drones) {
+            drone.activateObject();
         }
     }
 
-    private void removeInvisibleObjects () {
-        for (int i = 0; i < friendlyObjects.size(); i++) {
-            if (!friendlyObjects.get(i).isVisible()) {
-                friendlyObjects.get(i).deleteObject();
-                friendlyObjects.remove(i);
+    private void removeInvisibleObjects() {
+        for (int i = 0; i < drones.size(); i++) {
+            if (!drones.get(i).isVisible()) {
+                drones.get(i).deleteObject();
+                drones.remove(i);
                 i--;
             }
         }
     }
 
     // Checks collision between friendly objects and enemies
-    private void checkFriendlyObjectCollision () {
+    private void checkFriendlyObjectCollision() {
         if (enemyManager == null) {
             enemyManager = EnemyManager.getInstance();
         }
 
-        for (FriendlyObject drone : friendlyObjects) {
-            if (drone.isVisible()) {
+        for (Drone drones : drones) {
+            if (drones.isVisible()) {
                 for (Enemy enemy : enemyManager.getEnemies()) {
-                    CollisionInfo collisionInfo = CollisionDetector.getInstance().detectCollision(drone, enemy);
-                    if (collisionInfo != null) { //old way of handling collision, check other managers
-                        // Collision logic here
+                    CollisionInfo collisionInfo = CollisionDetector.getInstance().detectCollision(drones, enemy);
+                    if (collisionInfo != null) {
+                        if(drones instanceof ProtossShuttle shuttle){
+                            shuttle.detonate();
+                            if(enemy.isDetonateOnCollision()){
+                                EnemyManager.getInstance().detonateEnemy(enemy);
+                            }
+                        } else if(enemy.isDetonateOnCollision()) {
+                            EnemyManager.getInstance().detonateEnemy(enemy);
+                            enemy.dealDamageToGameObject(drones);
+                        }
                     }
                 }
             }
@@ -146,22 +173,17 @@ public class FriendlyManager {
     }
 
 
-    public void addFriendlyObject (FriendlyObject friendlyObject) {
-        if (!this.friendlyObjects.contains(friendlyObject)) {
-            this.friendlyObjects.add(friendlyObject);
-        }
-    }
 
-    public List<FriendlyObject> getFriendlyObjects () {
-        return this.friendlyObjects;
+    public List<Drone> getDrones() {
+        return this.drones;
     }
 
 
-    public void resetPortal () {
+    public void resetPortal() {
         initPortal();
     }
 
-    private void initPortal () {
+    private void initPortal() {
         int portalXCoordinate = (int) Math.floor(DataClass.getInstance().getWindowWidth() * 0.55);
         int portalYCoordinate = (DataClass.getInstance().getWindowHeight() / 2);
 
@@ -177,11 +199,19 @@ public class FriendlyManager {
         finishedLevelPortal.setCenterCoordinates(portalXCoordinate, portalYCoordinate);
     }
 
-    public List<Drone> getAllPlayerDrones () {
-        return allPlayerDrones;
+    public List<Drone> getAllPlayerDrones() {
+        return drones.stream().filter(drone -> !drone.isProtoss()).toList();
     }
 
-    public PerformanceLogger getPerformanceLogger () {
+    public List<Drone> getAllProtossDrones() {
+        return drones.stream().filter(Drone::isProtoss).toList();
+    }
+
+    public List<Drone> getDronesByDroneType(DroneTypes droneType) {
+        return drones.stream().filter(drone -> drone.getDroneType().equals(droneType)).toList();
+    }
+
+    public PerformanceLogger getPerformanceLogger() {
         return performanceLogger;
     }
 }

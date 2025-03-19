@@ -121,6 +121,19 @@ public class GameUICreator {
         );
     }
 
+    public UIObject createEmeraldObtainedIcon(int xCoordinate, int yCoordinate){
+        SpriteConfiguration spriteConfiguration = new SpriteConfiguration();
+        spriteConfiguration.setxCoordinate(xCoordinate);
+        spriteConfiguration.setyCoordinate(yCoordinate);
+        spriteConfiguration.setScale(1 * DataClass.getInstance().getResolutionFactor());
+        spriteConfiguration.setImageType(ImageEnums.EmeraldGem5);
+
+        UIObject emeraldObtainedIcon = new UIObject(spriteConfiguration);
+        emeraldObtainedIcon.setCenterCoordinates(xCoordinate, yCoordinate);
+        emeraldObtainedIcon.setTransparancyAlpha(true, 1, -0.005f);
+        return emeraldObtainedIcon;
+    }
+
     private void createInformationCards () {
         this.informationCards.clear();
         UIObject botInfoCard = new UIObject(createUIConfiguration(0, DataClass.getInstance().getPlayableWindowMaxHeight(), 1, ImageEnums.InformationCard));

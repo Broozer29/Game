@@ -6,7 +6,8 @@ import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyEnums;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyTribes;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.MissileManager;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
-import net.riezebos.bruus.tbd.game.gamestate.GameStateInfo;
+import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
+import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.gamestate.GameStatsTracker;
 import net.riezebos.bruus.tbd.game.level.LevelManager;
 import net.riezebos.bruus.tbd.game.movement.BoardBlockUpdater;
@@ -83,8 +84,8 @@ public class Enemy extends GameObject {
     }
 
     private void modifyStatsBasedOnLevelAndDifficulty() {
-        int enemyLevel = GameStateInfo.getInstance().getMonsterLevel();
-        float difficultyCoeff = GameStateInfo.getInstance().getDifficultyCoefficient();
+        int enemyLevel = GameState.getInstance().getMonsterLevel();
+        float difficultyCoeff = GameState.getInstance().getDifficultyCoefficient();
         int difficultyScore = LevelManager.getInstance().getCurrentLevelDifficultyScore(); // Ranges between 2 and 6 (inclusive)
 
         // Calculate scaling factor (1.0 at Easy, up to 1.25 at Hard)
@@ -107,6 +108,8 @@ public class Enemy extends GameObject {
             if (this.enemyType.getEnemyCategory().equals(EnemyCategory.Boss)) {
                 this.cashMoneyWorth *= Math.pow(getScalingFactor(), enemyLevel);
             }
+
+            this.cashMoneyWorth *= PlayerStats.getInstance().getMineralModifier();
         }
     }
 

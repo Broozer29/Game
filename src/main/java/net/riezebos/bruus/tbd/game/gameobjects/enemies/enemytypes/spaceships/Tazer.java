@@ -6,7 +6,7 @@ import net.riezebos.bruus.tbd.game.gameobjects.missiles.Missile;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.MissileConfiguration;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.MissileCreator;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.MissileEnums;
-import net.riezebos.bruus.tbd.game.gamestate.GameStateInfo;
+import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.movement.Direction;
 import net.riezebos.bruus.tbd.game.movement.MovementConfiguration;
 import net.riezebos.bruus.tbd.game.movement.MovementPatternSize;
@@ -48,7 +48,7 @@ public class Tazer extends Enemy {
 
         boolean fired = false;
         // Check if the attack cooldown has been reached
-        double currentTime = GameStateInfo.getInstance().getGameSeconds();
+        double currentTime = GameState.getInstance().getGameSeconds();
         if (currentTime >= lastAttackTime + this.getAttackSpeed() && WithinVisualBoundariesCalculator.isWithinBoundaries(this)
         && allowedToFire) {
             updateChargingAttackAnimationCoordination();

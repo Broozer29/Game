@@ -15,7 +15,6 @@ import java.util.Random;
 
 public class BarbedMissiles extends Item {
 
-
     private Random random = new Random();
     public BarbedMissiles () {
         super(ItemEnums.BarbedMissiles, 1, ItemApplicationEnum.AfterCollision);

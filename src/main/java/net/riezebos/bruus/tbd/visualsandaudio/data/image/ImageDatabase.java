@@ -12,16 +12,20 @@ public class ImageDatabase {
     private static ImageDatabase instance = new ImageDatabase();
     private ImageLoader imgLoader = ImageLoader.getInstance();
 
-    // Friendly images
     private BufferedImage model3BetterUpgrade;
     private BufferedImage uidamageoverlay;
     private BufferedImage inputMapping;
     private BufferedImage upWhite;
     private BufferedImage upOrange;
+    private BufferedImage upGrey;
     private BufferedImage upgradeSelectedCheck;
+    private BufferedImage bountyHunterUnlock;
+    private BufferedImage compoundWealthUnlock;
+    private BufferedImage clubAccessUnlock;
+    private BufferedImage treasureHunterUnlock;
 
-    // Enemy images
     private BufferedImage alienBombImage;
+    private List<BufferedImage> protossDestroyedExplosion = new ArrayList<>();
     private List<BufferedImage> overlordIdle = new ArrayList<>();
     private List<BufferedImage> fireWall = new ArrayList<>();
     private List<BufferedImage> laserbeamBody = new ArrayList<>();
@@ -189,6 +193,7 @@ public class ImageDatabase {
     private BufferedImage letter_Eight;
     private BufferedImage letter_Nine;
 
+    private BufferedImage emeraldGem5;
     private BufferedImage topazGem7;
     private BufferedImage laserBullet;
 
@@ -388,9 +393,15 @@ public class ImageDatabase {
     private BufferedImage lockedIcon;
     private BufferedImage sc2ConcentratedLaser;
     private BufferedImage sc2RepairBeam;
+    private BufferedImage protossCarrierNoEngine;
+    private List<BufferedImage> protossScout = new ArrayList<>();
+    private List<BufferedImage> protossShuttle = new ArrayList<>();
+    private List<BufferedImage> protossArbiter = new ArrayList<>();
+    private List<BufferedImage> protossCarrier = new ArrayList<>();
     private List<BufferedImage> scout = new ArrayList<>();
 
-
+    private List<BufferedImage> carrierSwitchFast = new ArrayList<>();
+    private List<BufferedImage> carrierSwitchSlow = new ArrayList<>();
     private List<BufferedImage> fireFighterFlameThrowerAppearing = new ArrayList<>();
     private List<BufferedImage> fireFighterFlameThrowerLooping = new ArrayList<>();
     private List<BufferedImage> fireFighterFlameThrowerDissipating = new ArrayList<>();
@@ -518,6 +529,7 @@ public class ImageDatabase {
         this.moneyPrinter = imgLoader.getImage(ImageEnums.MoneyPrinter);
         this.stickyDynamite = imgLoader.getImage(ImageEnums.StickyDynamite);
         this.topazGem7 = imgLoader.getImage(ImageEnums.TopazGem7);
+        this.emeraldGem5 = imgLoader.getImage(ImageEnums.EmeraldGem5);
         this.VIPTicket = imgLoader.getImage(ImageEnums.VIPTicket);
         this.piercingLaser = imgLoader.getImage(ImageEnums.PiercingLaser);
         this.sc2ConcentratedLaser = imgLoader.getImage(ImageEnums.Starcraft2ConcentratedLaser);
@@ -635,7 +647,12 @@ public class ImageDatabase {
 
         this.upWhite = imgLoader.getImage(ImageEnums.UpWhite);
         this.upOrange = imgLoader.getImage(ImageEnums.UpOrange);
+        this.upGrey = imgLoader.getImage(ImageEnums.UpGrey);
         this.upgradeSelectedCheck = imgLoader.getImage(ImageEnums.UpgradeSelectedCheck);
+        this.bountyHunterUnlock = imgLoader.getImage(ImageEnums.BountyHunterUnlock);
+        this.compoundWealthUnlock = imgLoader.getImage(ImageEnums.CompoundWealthUnlock);
+        this.treasureHunterUnlock = imgLoader.getImage(ImageEnums.TreasureHunterUnlock);
+        this.clubAccessUnlock = imgLoader.getImage(ImageEnums.ClubAcessUnlock);
 
         this.progressBar = imgLoader.getImage(ImageEnums.ProgressBar);
         this.progressBarFilling = imgLoader.getImage(ImageEnums.ProgressBarFilling);
@@ -690,6 +707,7 @@ public class ImageDatabase {
         this.uidamageoverlay = imgLoader.getImage(ImageEnums.UIDamageOverlay);
         this.inputMapping = imgLoader.getImage(ImageEnums.InputMapping);
         this.fireFighter = imgLoader.getImage(ImageEnums.FireFighter);
+        this.protossCarrierNoEngine = imgLoader.getImage(ImageEnums.ProtossCarrierWithoutEngine);
     }
 
     private void initBackgroundObjects () {
@@ -785,8 +803,14 @@ public class ImageDatabase {
 
     public BufferedImage getImage (ImageEnums imageType) {
         switch (imageType) {
+            case ClubAcessUnlock: return this.clubAccessUnlock;
+            case CompoundWealthUnlock: return this.compoundWealthUnlock;
+            case TreasureHunterUnlock: return this.treasureHunterUnlock;
+            case ProtossCarrierWithoutEngine: return this.protossCarrierNoEngine;
+            case BountyHunterUnlock: return this.bountyHunterUnlock;
             case UpgradeSelectedCheck: return this.upgradeSelectedCheck;
             case UpOrange: return upOrange;
+            case UpGrey: return upGrey;
             case UpWhite: return upWhite;
             case CorrosiveOil: return corrosiveOil;
             case ModuleScorchIcon: return moduleScorchIcon;
@@ -938,6 +962,8 @@ public class ImageDatabase {
                 return laserBullet;
             case TopazGem7:
                 return topazGem7;
+            case EmeraldGem5:
+                return emeraldGem5;
             case LockedIcon:
                 return lockedIcon;
             case InformationCard:
@@ -1311,6 +1337,13 @@ public class ImageDatabase {
 
     public List<BufferedImage> getAnimation (ImageEnums imageType) {
         switch (imageType) {
+            case ProtossCarrierSwitchFast: return this.carrierSwitchFast;
+            case ProtossCarrierSwitchSlow: return this.carrierSwitchSlow;
+            case ProtossDestroyedExplosion: return this.protossDestroyedExplosion;
+            case ProtossArbiter: return this.protossArbiter;
+            case ProtossCarrier: return this.protossCarrier;
+            case ProtossScout: return this.protossScout;
+            case ProtossShuttle: return this.protossShuttle;
             case ModuleScorchFlames: return moduleScorchFlames;
             case LingeringFlameLooping: return fireWall;
             case FireFighterFlameThrowerLooping: return fireFighterFlameThrowerLooping;
@@ -2055,6 +2088,48 @@ public class ImageDatabase {
             String sourceString = String.format("/images/Ships/Enemy Ships/CashCarrier/%d.png", i);
             BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
             cashCarrierFrames.add(image);
+        }
+
+        for (int i = 0; i < 4; i++) {
+            String sourceString = String.format("/images/Ships/Player Ships/protoss/arbiter/%d.png", i);
+            BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+            protossArbiter.add(image);
+        }
+
+        for (int i = 0; i < 4; i++) {
+            String sourceString = String.format("/images/Ships/Player Ships/protoss/scout/%d.png", i);
+            BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+            protossScout.add(image);
+        }
+
+        for (int i = 0; i < 4; i++) {
+            String sourceString = String.format("/images/Ships/Player Ships/protoss/shuttle/%d.png", i);
+            BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+            protossShuttle.add(image);
+        }
+
+        for (int i = 0; i < 4; i++) {
+            String sourceString = String.format("/images/Ships/Player Ships/protoss/carrier/%d.png", i);
+            BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+            protossCarrier.add(image);
+        }
+
+        for (int i = 2; i < 35; i++) {
+            String sourceString = String.format("/images/gif/PNGtoGIF/ProtossExplosion/%d.png", i);
+            BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+            protossDestroyedExplosion.add(image);
+        }
+
+        for (int i = 0; i < 10; i++) {
+            String sourceString = String.format("/images/gif/PNGtoGIF/CarrierSwitchingGears/%d.png", i);
+            BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+            carrierSwitchFast.add(image);
+        }
+
+        for (int i = 10; i > 0; i--) {
+            String sourceString = String.format("/images/gif/PNGtoGIF/CarrierSwitchingGears/%d.png", i);
+            BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+            carrierSwitchSlow.add(image);
         }
 
     }

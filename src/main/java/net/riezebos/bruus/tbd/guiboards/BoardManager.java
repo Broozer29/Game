@@ -17,7 +17,7 @@ public class BoardManager extends JFrame {
     private GameBoard gameBoard;
     private ShopBoard shopBoard;
     private ClassSelectionBoard classSelectionBoard;
-    private UpgradeSelectionBoard upgradeSelectionBoard;
+    private BoonSelectionBoard boonSelectionBoard;
     private static BoardManager instance = new BoardManager();
     private AudioManager audioManager = AudioManager.getInstance();
 
@@ -43,25 +43,25 @@ public class BoardManager extends JFrame {
         gameBoard = new GameBoard();
         shopBoard = new ShopBoard();
         classSelectionBoard = new ClassSelectionBoard();
-        upgradeSelectionBoard = new UpgradeSelectionBoard();
+        boonSelectionBoard = new BoonSelectionBoard();
 
         screens.put(ScreenType.MAIN_MENU, mainMenuBoard);
         screens.put(ScreenType.GAME, gameBoard);
         screens.put(ScreenType.SHOP, shopBoard);
         screens.put(ScreenType.CLASS_SELECTION, classSelectionBoard);
-        screens.put(ScreenType.UPGRADE_SELECTION, upgradeSelectionBoard);
+        screens.put(ScreenType.UPGRADE_SELECTION, boonSelectionBoard);
 
         // Define actions for each screen
         screenActions.put(ScreenType.MAIN_MENU, () -> {
-            playMenuMusic();
+//            playMenuMusic();
             mainMenuBoard.recreateWindow();
             mainMenuBoard.getTimer().restart();
             ConnectedControllersManager.getInstance().setControllerSensitive(false);
         });
 
         screenActions.put(ScreenType.UPGRADE_SELECTION, () -> {
-            upgradeSelectionBoard.recreateWindow();
-            upgradeSelectionBoard.getTimer().restart();
+            boonSelectionBoard.recreateWindow();
+            boonSelectionBoard.getTimer().restart();
             ConnectedControllersManager.getInstance().setControllerSensitive(false);
         });
         screenActions.put(ScreenType.GAME, () -> {
@@ -162,7 +162,11 @@ public class BoardManager extends JFrame {
         return shopBoard;
     }
 
-    public UpgradeSelectionBoard getUpgradeSelectionBoard() {
-        return upgradeSelectionBoard;
+    public BoonSelectionBoard getUpgradeSelectionBoard() {
+        return boonSelectionBoard;
+    }
+
+    public GameBoard getGameBoard() {
+        return gameBoard;
     }
 }

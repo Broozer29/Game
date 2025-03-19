@@ -3,7 +3,7 @@ package net.riezebos.bruus.tbd.game.items.effects.effectimplementations;
 import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
 import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SpaceShip;
-import net.riezebos.bruus.tbd.game.gamestate.GameStateInfo;
+import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.items.effects.EffectActivationTypes;
 import net.riezebos.bruus.tbd.game.items.effects.EffectIdentifiers;
 import net.riezebos.bruus.tbd.game.items.effects.EffectInterface;
@@ -27,7 +27,7 @@ public class ModifyMovementSpeedEffect implements EffectInterface {
         this.movementSpeedMofifierAmountPerStack = movementSpeedModifierAmountPerStack;
         this.durationInSeconds = durationInSeconds;
         this.animation = animation;
-        this.startTimeInSeconds = GameStateInfo.getInstance().getGameSeconds();
+        this.startTimeInSeconds = GameState.getInstance().getGameSeconds();
         this.effectTypesEnums = EffectActivationTypes.CheckEveryGameTick;
         this.appliedToObject = false;
         this.effectIdentifier = effectIdentifier;
@@ -49,7 +49,7 @@ public class ModifyMovementSpeedEffect implements EffectInterface {
                 gameObject.modifyMovementSpeedModifier(movementSpeedModifieramount);
             }
             appliedToObject = true;
-            this.startTimeInSeconds = GameStateInfo.getInstance().getGameSeconds();
+            this.startTimeInSeconds = GameState.getInstance().getGameSeconds();
         }
 
         if (animation != null) {
@@ -86,7 +86,7 @@ public class ModifyMovementSpeedEffect implements EffectInterface {
 
     @Override
     public boolean shouldBeRemoved (GameObject gameObject) {
-        if (GameStateInfo.getInstance().getGameSeconds() - startTimeInSeconds >= durationInSeconds) {
+        if (GameState.getInstance().getGameSeconds() - startTimeInSeconds >= durationInSeconds) {
             return true;
         } else return false;
     }
@@ -103,7 +103,7 @@ public class ModifyMovementSpeedEffect implements EffectInterface {
 
     @Override
     public void resetDuration () {
-        this.startTimeInSeconds = GameStateInfo.getInstance().getGameSeconds();
+        this.startTimeInSeconds = GameState.getInstance().getGameSeconds();
     }
 
     @Override

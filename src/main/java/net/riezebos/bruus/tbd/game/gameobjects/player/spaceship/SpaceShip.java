@@ -4,9 +4,12 @@ import net.riezebos.bruus.tbd.controllerInput.ControllerInputEnums;
 import net.riezebos.bruus.tbd.controllerInput.ControllerInputReader;
 import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
 import net.riezebos.bruus.tbd.game.gameobjects.friendlies.FriendlyManager;
+import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.droneTypes.DroneTypes;
+import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.droneTypes.protoss.ProtossUtils;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.specialAttacks.SpecialAttack;
+import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerClass;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
-import net.riezebos.bruus.tbd.game.gamestate.GameStateInfo;
+import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.gamestate.GameStatsTracker;
 import net.riezebos.bruus.tbd.game.gamestate.GameStatusEnums;
 import net.riezebos.bruus.tbd.game.items.Item;
@@ -55,18 +58,13 @@ public class SpaceShip extends GameObject {
     private List<SpecialAttack> playerFollowingSpecialAttacks = new ArrayList<SpecialAttack>();
     public boolean allowMovementBeyondBoundaries = false;
 
-    public SpaceShip (SpriteConfiguration spriteConfiguration) {
+    public SpaceShip(SpriteConfiguration spriteConfiguration) {
         super(spriteConfiguration);
         playerStats = PlayerStats.getInstance();
         initShip();
     }
 
-    // Called when managers need to be reset.
-    public void resetSpaceship () {
-        initShip();
-    }
-
-    private void initShip () {
+    private void initShip() {
         this.isImmune = false;
         directionx = 0;
         directiony = 0;
@@ -79,13 +77,33 @@ public class SpaceShip extends GameObject {
         this.accumulatedXCoordinate = this.xCoordinate;
         this.knockbackDamping = playerStats.getKnockBackDamping();
         pressedKeys = new HashSet<>();
-        setImage(playerStats.getSpaceShipImage());
+
+        boolean shouldLoadEngineAnim = true;
+        if (PlayerStats.getInstance().getPlayerClass().equals(PlayerClass.Carrier)) {
+            this.baseArmor += PlayerStats.getInstance().getCarrierBaseArmor();
+            SpriteConfiguration spriteConfiguration = new SpriteConfiguration();
+            spriteConfiguration.setImageType(ImageEnums.ProtossCarrier);
+            spriteConfiguration.setxCoordinate(this.xCoordinate);
+            spriteConfiguration.setyCoordinate(this.yCoordinate);
+            spriteConfiguration.setScale(1);
+
+            SpriteAnimationConfiguration spriteAnimationConfiguration = new SpriteAnimationConfiguration(spriteConfiguration, 2, true);
+            setAnimation(new SpriteAnimation(spriteAnimationConfiguration));
+            shouldLoadEngineAnim = false;
+        } else {
+            setImage(playerStats.getSpaceShipImage());
+        }
+
+
         currentShieldRegenDelayFrame = 0;
         this.spaceShipRegularGun = new SpaceShipRegularGun();
         this.spaceShipSpecialGun = new SpaceShipSpecialGun();
-        initExhaustAnimation(ImageEnums.Default_Player_Engine);
+        if (shouldLoadEngineAnim) {
+            initExhaustAnimation(ImageEnums.Default_Player_Engine);
+            this.exhaustAnimation.setAnimationScale(0.3f);
+        }
+
         initDeathAnimation(ImageEnums.Destroyed_Explosion);
-        this.exhaustAnimation.setAnimationScale(0.3f);
         this.setObjectType("Player spaceship");
         this.effects = new CopyOnWriteArrayList<>();
         this.hasAttack = true;
@@ -95,7 +113,7 @@ public class SpaceShip extends GameObject {
         this.currentShieldPoints = playerStats.getMaxShieldHitPoints();
     }
 
-    private void applyOnCreationEffects () {
+    private void applyOnCreationEffects() {
         for (Item item : PlayerInventory.getInstance().getItemsByApplicationMethod(ItemApplicationEnum.ApplyOnCreation)) {
             item.applyEffectToObject(this);
         }
@@ -121,33 +139,48 @@ public class SpaceShip extends GameObject {
 
     private boolean firedPostCreationEffects = false;
 
-    private void postCreationActivities () {
+    private void postCreationActivities() {
         //This method exists because some managers or methods REQUIRE the spaceship to have finished initializing
         if (!firedPostCreationEffects) {
             for (int i = 0; i < playerStats.getAmountOfDrones(); i++) {
                 FriendlyManager.getInstance().addDrone();
             }
+
+            if (PlayerStats.getInstance().getPlayerClass().equals(PlayerClass.Carrier)) {
+                for (int i = 0; i < playerStats.getAmountOfProtossScouts(); i++) {
+                    FriendlyManager.getInstance().addProtossShip(DroneTypes.ProtossScout);
+                }
+
+                for (int i = 0; i < playerStats.getAmountOfProtossArbiters(); i++) {
+                    FriendlyManager.getInstance().addProtossShip(DroneTypes.ProtossArbiter);
+                }
+
+                for (int i = 0; i < playerStats.getAmountOfProtossShuttles(); i++) {
+                    FriendlyManager.getInstance().addProtossShip(DroneTypes.ProtossShuttle);
+                }
+            }
+
             OrbitingObjectsFormatter.reformatOrbitingObjects(this, PlayerStats.getInstance().getDroneOrbitRadius());
             firedPostCreationEffects = true;
         }
     }
 
 
-    private void initExhaustAnimation (ImageEnums imageType) {
+    private void initExhaustAnimation(ImageEnums imageType) {
         SpriteAnimationConfiguration spriteAnimationConfiguration = new SpriteAnimationConfiguration(this.spriteConfiguration, 2, true);
         spriteAnimationConfiguration.getSpriteConfiguration().setImageType(imageType);
         exhaustAnimation = new SpriteAnimation(spriteAnimationConfiguration);
         AnimationManager.getInstance().addLowerAnimation(exhaustAnimation);
     }
 
-    private void initDeathAnimation (ImageEnums imageType) {
+    private void initDeathAnimation(ImageEnums imageType) {
         SpriteAnimationConfiguration spriteAnimationConfiguration = new SpriteAnimationConfiguration(this.spriteConfiguration, 2, false);
         spriteAnimationConfiguration.getSpriteConfiguration().setImageType(imageType);
         destructionAnimation = new SpriteAnimation(spriteAnimationConfiguration);
         destructionAnimation.setAnimationScale(2f);
     }
 
-    public void addShieldDamageAnimation () {
+    public void addShieldDamageAnimation() {
         long shieldAnimationCount = playerFollowingAnimations.stream()
                 .filter(spriteAnimation -> spriteAnimation.getImageEnum().equals(ImageEnums.Default_Player_Shield_Damage)
                 ).count();
@@ -164,13 +197,13 @@ public class SpaceShip extends GameObject {
         }
     }
 
-    public void takeDamage (float damageTaken) {
+    public void takeDamage(float damageTaken) {
         if (this.isImmune) {
             return; //The player is immune, we don't want to do anything here
         }
 
         if (damageTaken > 0) {
-            lastGameSecondDamageTaken = GameStateInfo.getInstance().getGameSeconds();
+            lastGameSecondDamageTaken = GameState.getInstance().getGameSeconds();
             this.currentShieldRegenDelayFrame = 0;
 
             GameStatsTracker.getInstance().addDamageTaken(damageTaken);
@@ -198,7 +231,7 @@ public class SpaceShip extends GameObject {
         }
     }
 
-    private void changeHitPoints (float change) {
+    private void changeHitPoints(float change) {
         this.currentHitpoints += change;
         float maxHitPoints = playerStats.getMaxHitPoints();
         if (this.currentHitpoints > maxHitPoints) {
@@ -206,7 +239,7 @@ public class SpaceShip extends GameObject {
         }
     }
 
-    public void changeShieldHitpoints (float change) {
+    public void changeShieldHitpoints(float change) {
         this.currentShieldPoints += change;
         float maxShieldPoints = playerStats.getMaxShieldHitPoints() * playerStats.getMaxOverloadingShieldMultiplier();
         if (currentShieldPoints > (maxShieldPoints)) {
@@ -214,7 +247,7 @@ public class SpaceShip extends GameObject {
         }
     }
 
-    private void reduceOverloadedShieldPoints () {
+    private void reduceOverloadedShieldPoints() {
         float maxShieldPoints = playerStats.getMaxShieldHitPoints();
         float maxOverloadingShieldMultiplier = playerStats.getMaxOverloadingShieldMultiplier();
 
@@ -223,7 +256,7 @@ public class SpaceShip extends GameObject {
         }
     }
 
-    public void updateGameTick () {
+    public void updateGameTick() {
         this.currentShieldRegenDelayFrame++;
         postCreationActivities();
         spaceShipRegularGun.updateFrameCount();
@@ -234,6 +267,10 @@ public class SpaceShip extends GameObject {
         removeInvisibleAnimations();
         updateGameObjectEffects();
         reduceOverloadedShieldPoints();
+
+        if (PlayerStats.getInstance().getPlayerClass().equals(PlayerClass.Carrier)) {
+            ProtossUtils.getInstance().buildProtossShips();
+        }
 
         boolean shouldRegenShields = false;
 
@@ -252,13 +289,13 @@ public class SpaceShip extends GameObject {
     }
 
 
-    private void movePlayerAnimations () {
+    private void movePlayerAnimations() {
         for (SpriteAnimation anim : playerFollowingAnimations) {
             anim.setOriginCoordinates(getCenterXCoordinate(), getCenterYCoordinate());
         }
     }
 
-    private void removeInvisibleAnimations () {
+    private void removeInvisibleAnimations() {
         Iterator<SpriteAnimation> iterator = playerFollowingAnimations.iterator();
         while (iterator.hasNext()) {
             SpriteAnimation animation = iterator.next();
@@ -270,7 +307,7 @@ public class SpaceShip extends GameObject {
     }
 
 
-    private void moveSpecialAttacks () {
+    private void moveSpecialAttacks() {
         Iterator<SpecialAttack> iterator = playerFollowingSpecialAttacks.iterator();
         while (iterator.hasNext()) {
             SpecialAttack specialAttack = iterator.next();
@@ -297,7 +334,7 @@ public class SpaceShip extends GameObject {
     private int previousXCoordinate;
     private int previousYCoordinate;
 
-    public void move () {
+    public void move() {
         if (overridePlayerControls) {
             return;  // Ignore movement if controls are overridden
         }
@@ -395,10 +432,15 @@ public class SpaceShip extends GameObject {
             destructionAnimation.setCenterCoordinates(this.xCoordinate, this.yCoordinate);
         }
 
+        if (this.animation != null) {
+            this.animation.setXCoordinate(this.xCoordinate);
+            this.animation.setYCoordinate(this.yCoordinate);
+        }
+
         updateBoardBlock();
     }
 
-    public void applyKnockback (CollisionInfo collisionInfo, float knockbackStrength) {
+    public void applyKnockback(CollisionInfo collisionInfo, float knockbackStrength) {
         Point collisionPoint = collisionInfo.getCollisionPoint();
 
         // Determine the knockback direction based on collision point
@@ -426,7 +468,7 @@ public class SpaceShip extends GameObject {
 
     private LinkedList<Point> resetPositions = new LinkedList<>();
 
-    public void resetToPreviousPosition () {
+    public void resetToPreviousPosition() {
         // Reset to previous position
         accumulatedXCoordinate = previousAccumulatedX;
         accumulatedYCoordinate = previousAccumulatedY;
@@ -481,42 +523,42 @@ public class SpaceShip extends GameObject {
 
 
     // Launch a missile from the center point of the spaceship
-    private void startPrimaryFiring () {
+    private void startPrimaryFiring() {
         spaceShipRegularGun.fire(this.xCoordinate + this.width, this.getCenterYCoordinate(),
                 playerStats.getAttackType());
     }
 
-    private void haltPrimaryFiring () {
+    private void haltPrimaryFiring() {
         spaceShipRegularGun.stopFiring();
     }
 
-    private void fireSpecialAttack () {
+    private void fireSpecialAttack() {
         spaceShipSpecialGun.fire(this.getCenterXCoordinate(), this.getCenterYCoordinate(),
                 playerStats.getPlayerSpecialAttackType());
     }
 
-    public void repairHealth (float healAmount) {
+    public void repairHealth(float healAmount) {
         changeHitPoints(healAmount);
     }
 
-    public void repairShields (float healAmount) {
+    public void repairShields(float healAmount) {
         changeShieldHitpoints(healAmount);
     }
 
-    public SpaceShipSpecialGun getSpecialGun () {
+    public SpaceShipSpecialGun getSpecialGun() {
         return this.spaceShipSpecialGun;
     }
 
-    public void addFollowingSpecialAttack (SpecialAttack specialAttack) {
+    public void addFollowingSpecialAttack(SpecialAttack specialAttack) {
         this.playerFollowingSpecialAttacks.add(specialAttack);
     }
 
-    public SpriteAnimation getExhaustAnimation () {
+    public SpriteAnimation getExhaustAnimation() {
         return this.exhaustAnimation;
     }
 
 
-    public synchronized void keyPressed (KeyEvent e) {
+    public synchronized void keyPressed(KeyEvent e) {
         pressedKeys.add(e.getKeyCode());
         if (!pressedKeys.isEmpty()) {
             for (Iterator<Integer> it = pressedKeys.iterator(); it.hasNext(); ) {
@@ -552,7 +594,7 @@ public class SpaceShip extends GameObject {
         }
     }
 
-    public synchronized void keyReleased (KeyEvent e) {
+    public synchronized void keyReleased(KeyEvent e) {
         pressedKeys.remove(e.getKeyCode());
         int key = e.getKeyCode();
 
@@ -578,11 +620,11 @@ public class SpaceShip extends GameObject {
     // Called by GameBoard every loop if a controller is connected
     private boolean isFiringPrimary = false;
 
-    public void update (ControllerInputReader controllerInputReader) {
+    public void update(ControllerInputReader controllerInputReader) {
         controlledByKeyboard = false;
         controllerInputReader.pollController();
 
-        if (GameStateInfo.getInstance().getGameState() != GameStatusEnums.Paused && GameStateInfo.getInstance().getGameState() != GameStatusEnums.Dying) {
+        if (GameState.getInstance().getGameState() != GameStatusEnums.Paused && GameState.getInstance().getGameState() != GameStatusEnums.Dying) {
             if (controllerInputReader.isInputActive(ControllerInputEnums.MOVE_LEFT)) {
                 moveLeftQuick(controllerInputReader.getxAxisValue());
             }
@@ -615,62 +657,62 @@ public class SpaceShip extends GameObject {
         }
     }
 
-    private void moveLeftQuick (float multiplier) {
+    private void moveLeftQuick(float multiplier) {
         directionx = -(Math.abs(multiplier) * playerStats.getMovementSpeed());
     }
 
-    private void haltMoveLeft () {
+    private void haltMoveLeft() {
         directionx = 0;
     }
 
 
-    private void moveRightQuick (float multiplier) {
+    private void moveRightQuick(float multiplier) {
         directionx = Math.abs(multiplier) * playerStats.getMovementSpeed();
     }
 
-    private void haltMoveRight () {
+    private void haltMoveRight() {
         directionx = 0;
     }
 
 
-    private void moveUpQuick (float multiplier) {
+    private void moveUpQuick(float multiplier) {
         directiony = -(Math.abs(multiplier) * playerStats.getMovementSpeed());
     }
 
-    private void haltMoveUp () {
+    private void haltMoveUp() {
         directiony = 0;
     }
 
 
-    private void moveDownQuick (float multiplier) {
+    private void moveDownQuick(float multiplier) {
         directiony = Math.abs(multiplier) * playerStats.getMovementSpeed();
     }
 
-    private void haltMoveDown () {
+    private void haltMoveDown() {
         directiony = 0;
     }
 
-    public void addPlayerFollowingAnimation (SpriteAnimation spriteAnimation) {
+    public void addPlayerFollowingAnimation(SpriteAnimation spriteAnimation) {
         if (!this.playerFollowingAnimations.contains(spriteAnimation)) {
             playerFollowingAnimations.add(spriteAnimation);
         }
     }
 
-    public boolean isImmune () {
+    public boolean isImmune() {
         return isImmune;
     }
 
-    public void setImmune (boolean immune) {
+    public void setImmune(boolean immune) {
         isImmune = immune;
     }
 
     @Override
-    public float getCurrentHitpoints () {
+    public float getCurrentHitpoints() {
         return currentHitpoints;
     }
 
     @Override
-    public float getMaxHitPoints () {
+    public float getMaxHitPoints() {
         return PlayerStats.getInstance().getMaxHitPoints();
     }
 

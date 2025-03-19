@@ -5,7 +5,7 @@ import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyCreator;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyManager;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.bosses.BossActionable;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyEnums;
-import net.riezebos.bruus.tbd.game.gamestate.GameStateInfo;
+import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.movement.Direction;
 import net.riezebos.bruus.tbd.game.movement.MovementPatternSize;
 import net.riezebos.bruus.tbd.game.movement.Point;
@@ -66,7 +66,7 @@ public class SpaceStationSpawnNeedlers implements BossActionable {
     @Override
     public boolean activateBehaviour (Enemy enemy) {
         //Some info for use, you don't have to put everything in this method
-        double currentTime = GameStateInfo.getInstance().getGameSeconds();
+        double currentTime = GameState.getInstance().getGameSeconds();
 
         if (enemy.isAllowedToFire() && currentTime >= lastAttackedTime + attackCooldown && WithinVisualBoundariesCalculator.isWithinBoundaries(enemy)) {
             updateChargingAnimationCoordinates(enemy);
@@ -145,7 +145,7 @@ public class SpaceStationSpawnNeedlers implements BossActionable {
     @Override
     public boolean isAvailable (Enemy enemy) {
         return enemy.isAllowedToFire()
-                && GameStateInfo.getInstance().getGameSeconds() >= lastAttackedTime + attackCooldown
+                && GameState.getInstance().getGameSeconds() >= lastAttackedTime + attackCooldown
                 && WithinVisualBoundariesCalculator.isWithinBoundaries(enemy)
                 && enemy.getXCoordinate() == centerPoint.getX()
                 && enemy.getYCoordinate() == centerPoint.getY();

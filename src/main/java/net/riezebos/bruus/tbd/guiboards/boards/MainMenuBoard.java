@@ -3,10 +3,10 @@ package net.riezebos.bruus.tbd.guiboards.boards;
 import net.riezebos.bruus.tbd.controllerInput.ConnectedControllersManager;
 import net.riezebos.bruus.tbd.controllerInput.ControllerInputEnums;
 import net.riezebos.bruus.tbd.controllerInput.ControllerInputReader;
-import net.riezebos.bruus.tbd.game.gamestate.GameStateInfo;
+import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.util.OnScreenText;
 import net.riezebos.bruus.tbd.game.util.OnScreenTextManager;
-import net.riezebos.bruus.tbd.game.util.save.SaveManager;
+import net.riezebos.bruus.tbd.game.gamestate.save.SaveManager;
 import net.riezebos.bruus.tbd.guiboards.TimerHolder;
 import net.riezebos.bruus.tbd.guiboards.background.BackgroundManager;
 import net.riezebos.bruus.tbd.guiboards.background.BackgroundObject;
@@ -82,7 +82,7 @@ public class MainMenuBoard extends JPanel implements TimerHolder {
         }
 
         initMenuTiles();
-        timer = new Timer(GameStateInfo.getInstance().getDELAY(), e -> repaint(0, 0, DataClass.getInstance().getWindowWidth(), DataClass.getInstance().getWindowHeight()));
+        timer = new Timer(GameState.getInstance().getDELAY(), e -> repaint(0, 0, DataClass.getInstance().getWindowWidth(), DataClass.getInstance().getWindowHeight()));
         timer.start();
     }
 
@@ -283,7 +283,7 @@ public class MainMenuBoard extends JPanel implements TimerHolder {
         } else {
             GUIComponent selectedTile = grid.get(selectedRow).get(selectedColumn);
             menuCursor.setSelectedMenuTile(selectedTile);
-            menuCursor.setYCoordinate(selectedTile.getYCoordinate() - menuCursor.getHeight() / 2);
+            menuCursor.setCenterYCoordinate(selectedTile.getCenterYCoordinate() + menuCursor.getYDistanceModification());
             menuCursor.setXCoordinate(selectedTile.getXCoordinate() - (menuCursor.getxDistanceToKeep()));
         }
     }

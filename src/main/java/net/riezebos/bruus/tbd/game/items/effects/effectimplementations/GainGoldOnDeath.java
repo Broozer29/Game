@@ -1,7 +1,7 @@
 package net.riezebos.bruus.tbd.game.items.effects.effectimplementations;
 
 import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
-import net.riezebos.bruus.tbd.game.gamestate.GameStateInfo;
+import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.items.PlayerInventory;
 import net.riezebos.bruus.tbd.game.items.effects.EffectActivationTypes;
 import net.riezebos.bruus.tbd.game.items.effects.EffectIdentifiers;
@@ -47,7 +47,7 @@ public class GainGoldOnDeath implements EffectInterface {
     @Override
     public void activateEffect (GameObject gameObject) {
         if (gameObject.getCurrentHitpoints() <= 0 && !activated) {
-            PlayerInventory.getInstance().addMinerals(goldAmount * GameStateInfo.getInstance().getDifficultyCoefficient());
+            PlayerInventory.getInstance().addMinerals(goldAmount * GameState.getInstance().getDifficultyCoefficient());
             activated = true;
 
             if(additionalAnimation != null){

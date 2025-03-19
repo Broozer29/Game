@@ -3,6 +3,7 @@ package net.riezebos.bruus.tbd.game.gameobjects.enemies;
 import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyCategory;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyEnums;
+import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.droneTypes.protoss.ProtossUtils;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
 import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SpaceShip;
@@ -23,6 +24,7 @@ import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.AudioEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.AnimationManager;
 
+import java.awt.*;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
@@ -106,7 +108,7 @@ public class EnemyManager {
         }
     }
 
-    private void detonateEnemy (Enemy enemy) {
+    public void detonateEnemy (Enemy enemy) {
         if (enemy.getDestructionAnimation() != null) {
             enemy.getDestructionAnimation().setOriginCoordinates(enemy.getCenterXCoordinate(), enemy.getCenterYCoordinate());
             if (enemy.getEnemyType().equals(EnemyEnums.ZergScourge)) {
@@ -207,6 +209,26 @@ public class EnemyManager {
         }
         return closestEnemy;
     }
+
+
+    public Enemy getClosestEnemyWithinDistance(int xCoordinate, int yCoordinate, double attackRange) {
+        double minDistance = attackRange; // Directly use attackRange without √2 adjustment
+        Enemy closestEnemy = null;
+
+        for (Enemy enemy : EnemyManager.getInstance().getEnemies()) {
+            Rectangle enemyBounds = enemy.getBounds(); // Get enemy's bounding box
+            double distance = ProtossUtils.getDistanceToRectangle(xCoordinate, yCoordinate, enemyBounds);
+
+            // If the enemy is within attackRange and closer than the previous closest enemy, update
+            if (distance < minDistance) {
+                minDistance = distance;
+                closestEnemy = enemy;
+            }
+        }
+        return closestEnemy;
+    }
+
+
 
     //Helper method
     private boolean isWithinBoardBlockThreshold(Enemy enemy, int xCoordinate, int boardBlockThreshold) {

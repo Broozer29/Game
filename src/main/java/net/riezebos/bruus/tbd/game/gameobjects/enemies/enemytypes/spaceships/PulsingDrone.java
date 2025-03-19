@@ -5,7 +5,7 @@ import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyConfiguration;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.MissileManager;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.specialAttacks.SpecialAttack;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.specialAttacks.SpecialAttackConfiguration;
-import net.riezebos.bruus.tbd.game.gamestate.GameStateInfo;
+import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.items.effects.EffectIdentifiers;
 import net.riezebos.bruus.tbd.game.items.effects.EffectInterface;
 import net.riezebos.bruus.tbd.game.items.effects.effectimplementations.ModifyMovementSpeedEffect;
@@ -40,7 +40,7 @@ public class PulsingDrone extends Enemy {
             allowedToFire = this.movementConfiguration.getCurrentPath().getWaypoints().isEmpty();
         }
 
-        double currentTime = GameStateInfo.getInstance().getGameSeconds();
+        double currentTime = GameState.getInstance().getGameSeconds();
         if (allowedToFire && currentTime >= lastAttackTime + this.getAttackSpeed() && WithinVisualBoundariesCalculator.isWithinBoundaries(this)) {
             updateChargingAnimation();
             if (!chargingUpAttackAnimation.isPlaying()) {

@@ -50,6 +50,9 @@ public enum ItemEnums {
     BargainBucket(ItemRarityEnums.Legendary, ItemCategory.Offense, ImageEnums.BargainBucket, "Bargain Bucket", true),
     ModuleScorch(ItemRarityEnums.Relic, ItemCategory.Offense, ImageEnums.ModuleScorchIcon, "Module: Scorch", true),
     ShieldStabilizer(ItemRarityEnums.Relic, ItemCategory.Defense, ImageEnums.Test_Image, "Energy Stabilizer", true),
+    ProtossScout(ItemRarityEnums.Common, ItemCategory.Offense, ImageEnums.Test_Image, "Hangar Bay: Scout", true),
+    ProtossArbiter(ItemRarityEnums.Rare, ItemCategory.Offense, ImageEnums.Test_Image, "Hangar Bay: Arbiter", true),
+    ProtossShuttle(ItemRarityEnums.Rare, ItemCategory.Offense, ImageEnums.Test_Image, "Hangar Bay: Shuttle", true),
     StickyDynamite(ItemRarityEnums.Common, ItemCategory.Offense, ImageEnums.StickyDynamite, "Sticky Dynamite",true);
 
     private ItemRarityEnums itemRarity;

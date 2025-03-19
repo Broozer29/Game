@@ -46,6 +46,12 @@ public class ClassDescription {
                 baseDamage = PlayerStats.captainBaseDamage;
                 baseAttackSpeed = PlayerStats.captainAttackSpeed;
                 break;
+            case Carrier:
+                title = "Carrier";
+                description = "Placeholder";
+                baseDamage = PlayerStats.carrierBaseDamage;
+                baseAttackSpeed = PlayerStats.carrierAttackSpeed;
+                break;
             default:
                 break;
         }

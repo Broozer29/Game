@@ -8,7 +8,7 @@ import net.riezebos.bruus.tbd.game.items.ItemEnums;
 import net.riezebos.bruus.tbd.game.items.enums.ItemApplicationEnum;
 
 public class ElectricSupercharger extends Item {
-    private float buffAmount = 0.2f;
+    private float buffAmount = 0.5f;
     private float currentlyAppliedAmount = 0;
     private boolean shouldApply;
     public ElectricSupercharger () {

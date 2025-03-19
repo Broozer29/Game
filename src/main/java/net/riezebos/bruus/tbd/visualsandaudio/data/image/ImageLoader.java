@@ -497,6 +497,8 @@ public class ImageLoader {
                 return "/images/Icons/Locked.png";
             case TopazGem7:
                 return "/images/Icons/Money/Topaz Gem07.png";
+            case EmeraldGem5:
+                return "/images/Icons/Money/Emerald Gem05.png";
             case VIPTicket:
                 return "/images/Icons/VIPTicket.png";
             case PiercingLaser:
@@ -523,13 +525,24 @@ public class ImageLoader {
                 return "/images/Icons/grade grandmaster copy.png";
             case UIYouDied:
                 return "/images/UI/youdiedlight.png";
+            case BountyHunterUnlock:
+                return "/images/UI/BountyHunterUnlock.png";
+            case ClubAcessUnlock:
+                return "/images/UI/ClubAccessUnlock.png";
+            case TreasureHunterUnlock:
+                return "/images/UI/TreasureHunterUnlock.png";
+            case CompoundWealthUnlock:
+                return "/images/UI/CompoundWealthUnlock.png";
             case UILevelComplete:
                 return "/images/UI/levelcompletelight.png";
             case UIScoreTextCard:
                 return "/images/UI/gradelight.png";
+            case ProtossCarrierWithoutEngine:
+                return "/images/Ships/Player Ships/noenginecarrier.png";
             case InputMapping:  return "/images/UI/inputmapping.png";
             case UpWhite: return "/images/Icons/upwhite.png";
             case UpOrange: return "/images/Icons/uporange.png";
+            case UpGrey: return "/images/Icons/upgrey.png";
             case UpgradeSelectedCheck: return "/images/Icons/upgradeSelected.png";
             case peepoDeepFriedSadge: return "/images/Icons/Pepeicons/deepFriedSadge.png";
             case peepoFeelsCringeMan: return "/images/Icons/Pepeicons/feelsCringeMan.png";

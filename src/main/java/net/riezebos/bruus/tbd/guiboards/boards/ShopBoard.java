@@ -3,7 +3,7 @@ package net.riezebos.bruus.tbd.guiboards.boards;
 import net.riezebos.bruus.tbd.controllerInput.ConnectedControllersManager;
 import net.riezebos.bruus.tbd.controllerInput.ControllerInputEnums;
 import net.riezebos.bruus.tbd.controllerInput.ControllerInputReader;
-import net.riezebos.bruus.tbd.game.gamestate.GameStateInfo;
+import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.gamestate.ShopManager;
 import net.riezebos.bruus.tbd.game.items.Item;
 import net.riezebos.bruus.tbd.game.items.ItemDescriptionRetriever;
@@ -64,7 +64,7 @@ public class ShopBoard extends JPanel implements TimerHolder {
     private List<GUIComponent> allInventoryGUIComponents = new ArrayList<>();
     private List<List<GUIComponent>> selectedGrid = regularGrid;
 
-    private List<GUIComponent> contractHelperList = new ArrayList<>();
+    private List<GUIComponent> popGUIComponentList = new ArrayList<>();
 
     private DisplayOnly itemRowsBackgroundCard;
     private DisplayOnly songLengthBackgroundCard;
@@ -126,7 +126,7 @@ public class ShopBoard extends JPanel implements TimerHolder {
             controllerInputReader = controllers.getFirstController();
         }
 
-        timer = new Timer(GameStateInfo.getInstance().getDELAY(), e -> repaint(0, 0, DataClass.getInstance().getWindowWidth(), DataClass.getInstance().getWindowHeight()));
+        timer = new Timer(GameState.getInstance().getDELAY(), e -> repaint(0, 0, DataClass.getInstance().getWindowWidth(), DataClass.getInstance().getWindowHeight()));
         timer.start();
     }
 
@@ -215,7 +215,7 @@ public class ShopBoard extends JPanel implements TimerHolder {
         moneyIcon = shopBoardCreator.createMoneyObject(itemRowsBackgroundCard);
 //        offTheGridObjects.addAll(moneyIcon.getComponents());
 
-        contractHelperList.removeIf(component -> !component.isVisible());
+        popGUIComponentList.removeIf(component -> !component.isVisible());
 
 
         createInventoryGrid();
@@ -596,7 +596,7 @@ public class ShopBoard extends JPanel implements TimerHolder {
         } else {
             GUIComponent selectedComponent = selectedGrid.get(selectedRow).get(selectedColumn);
             menuCursor.setSelectedMenuTile(selectedComponent);
-            menuCursor.setYCoordinate(selectedComponent.getYCoordinate());
+            menuCursor.setCenterYCoordinate(selectedComponent.getCenterYCoordinate() + menuCursor.getYDistanceModification());
             menuCursor.setXCoordinate(selectedComponent.getXCoordinate() - (menuCursor.getxDistanceToKeep()));
             currentDescriptionInfo = prepareDescriptionText(selectedComponent);
         }
@@ -830,7 +830,7 @@ public class ShopBoard extends JPanel implements TimerHolder {
 //            }
         }
 
-        for (GUIComponent component : contractHelperList) {
+        for (GUIComponent component : popGUIComponentList) {
             if (component != null && component.isVisible()) {
                 drawGUIComponent(g, component);
                 component.setYCoordinate(component.getYCoordinate() - 1);
@@ -922,6 +922,6 @@ public class ShopBoard extends JPanel implements TimerHolder {
     }
 
     public void addContractAnimation(GUIComponent component) {
-        contractHelperList.add(component);
+        popGUIComponentList.add(component);
     }
 }

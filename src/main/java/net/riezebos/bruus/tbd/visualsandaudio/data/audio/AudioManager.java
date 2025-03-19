@@ -1,6 +1,6 @@
 package net.riezebos.bruus.tbd.visualsandaudio.data.audio;
 
-import net.riezebos.bruus.tbd.game.gamestate.GameStateInfo;
+import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.gamestate.GameStatusEnums;
 import net.riezebos.bruus.tbd.game.level.LevelManager;
 import net.riezebos.bruus.tbd.game.level.enums.LevelDifficulty;
@@ -178,8 +178,8 @@ public class AudioManager {
         }
 
         if (this.musicMediaPlayer == MusicMediaPlayer.iTunesMacOS &&
-                (GameStateInfo.getInstance().getGameState().equals(GameStatusEnums.Dead)
-                        || GameStateInfo.getInstance().getGameState().equals(GameStatusEnums.Show_Level_Score_Card))) {
+                (GameState.getInstance().getGameState().equals(GameStatusEnums.Dead)
+                        || GameState.getInstance().getGameState().equals(GameStatusEnums.Show_Level_Score_Card))) {
             macOSMediaPlayer.stopPlayback();
             backGroundMusic = null;
             currentSong = null;
@@ -216,7 +216,7 @@ public class AudioManager {
             if (!macOSMediaPlayer.hasStartedMusic()) {
                 return false;  // Song hasn't started yet
             }
-            double currentGameSeconds = GameStateInfo.getInstance().getGameSeconds();
+            double currentGameSeconds = GameState.getInstance().getGameSeconds();
             if (predictedEndGameSeconds > 0) {
                 if (shouldResync(currentGameSeconds)) {
                     synchronizePrediction(currentGameSeconds);
@@ -274,8 +274,8 @@ public class AudioManager {
 
             // Calculate and store the predicted end time
             double trackDuration = macOSMediaPlayer.getTotalSeconds();
-            predictedEndGameSeconds = GameStateInfo.getInstance().getGameSeconds() + trackDuration;
-            lastSyncGameSeconds = GameStateInfo.getInstance().getGameSeconds();
+            predictedEndGameSeconds = GameState.getInstance().getGameSeconds() + trackDuration;
+            lastSyncGameSeconds = GameState.getInstance().getGameSeconds();
         }
     }
 

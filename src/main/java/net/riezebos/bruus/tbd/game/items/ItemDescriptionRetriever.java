@@ -45,7 +45,7 @@ public class ItemDescriptionRetriever {
                 return "Increases damage dealt to Medium sized enemies by 20% (+20%)";
             }
             case EnergySiphon -> {
-                return "Killing an enemy grants a 15 (+15) hitpoints barrier. When you are at maximum shields gain it as a temporary Barrier instead.";
+                return "Killing an enemy regenerates a 5 (+5) shield hitpoints. When you are at maximum shields gain it as a temporary Barrier instead.";
             }
             case MoneyPrinter -> {
                 return "Killing an enemy has a 10% chance to grant 2 (+2) additional minerals";
@@ -81,7 +81,7 @@ public class ItemDescriptionRetriever {
                 return "Drones now fire towards the enemy closest to you. Drones deal 25% (+25%) increased damage.";
             }
             case ElectricSupercharger -> {
-                return "Your Electro Shred ability is now improved. Electro Shred gains an additional +20% (+20%) damage.";
+                return "Your Electro Shred ability is now improved. Electro Shred gains an additional +50% (+50%) damage.";
             }
             case ThornedPlates -> {
                 return "Gain 5 (+5) armor. Additionally, grants Thorns and 20% (+20%) increased damage to Thorns damage.";

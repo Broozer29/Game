@@ -1,7 +1,7 @@
 package net.riezebos.bruus.tbd.game.items.effects.effectimplementations;
 
 import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
-import net.riezebos.bruus.tbd.game.gamestate.GameStateInfo;
+import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.items.effects.EffectActivationTypes;
 import net.riezebos.bruus.tbd.game.items.effects.EffectIdentifiers;
 import net.riezebos.bruus.tbd.game.items.effects.EffectInterface;
@@ -29,7 +29,7 @@ public class CombatArmorBonus implements EffectInterface {
 
     @Override
     public void activateEffect(GameObject gameObject) {
-        double currentTime = GameStateInfo.getInstance().getGameSeconds();
+        double currentTime = GameState.getInstance().getGameSeconds();
 
         // If more than 2 seconds have passed without damage, reset applied armor and remove the bonus
         if (currentTime - lastDamageTime >= cooldown) {

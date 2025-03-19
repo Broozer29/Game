@@ -69,6 +69,19 @@ public class ClassSelectionBoardCreator {
         return textCollection;
     }
 
+    public static GUITextCollection createSelectCarrier(GUIComponent backgroundCard) {
+        int xCoordinate = Math.round(backgroundCard.getXCoordinate() + backgroundCard.getWidth() * 0.2f);
+        int yCoordinate = Math.round(backgroundCard.getYCoordinate() + backgroundCard.getHeight() * 0.4f);
+
+        String text = "CARRIER";
+        GUITextCollection textCollection = new GUITextCollection(xCoordinate, yCoordinate, text);
+        textCollection.setScale(1 * DataClass.getInstance().getResolutionFactor());
+        textCollection.getComponents().get(0).setDescriptionOfComponent("Select Carrier class");
+        textCollection.setMenuFunctionality(MenuFunctionEnums.SelectCarrierClass);
+
+        return textCollection;
+    }
+
     public static GUIComponent createClassDescriptionBackgroundCard() {
         int xCoordinate = Math.round(DataClass.getInstance().getWindowWidth() * 0.302f);
         int yCoordinate = Math.round(DataClass.getInstance().getWindowHeight() * 0.3394f);
@@ -138,8 +151,10 @@ public class ClassSelectionBoardCreator {
                 return "Primary: Laserbeam";
             case FireFighter:
                 return "Primary: Flamethrower";
+            case Carrier:
+                return "Primary: Carrier";
         }
-        return "Not implemented yet";
+        return "Placeholder";
     }
 
     private static String getPrimaryWeaponDescription(PlayerClass playerClass) {
@@ -148,8 +163,10 @@ public class ClassSelectionBoardCreator {
                 return "Shoot a laserbeam dealing 100% damage.";
             case FireFighter:
                 return "Hold fire to unleash a flamethrower which deals damage and destroys missiles. Deals 100% damage and applies Ignite.";
+            case Carrier:
+                return "placeholder";
         }
-        return "Not implemented yet";
+        return "Placeholder";
     }
 
     public static GUIComponent createSecondarySkillDescriptionBackgroundCard() {
@@ -181,8 +198,10 @@ public class ClassSelectionBoardCreator {
                 return "Secondary: Electroshred";
             case FireFighter:
                 return "Secondary: Fire Shield";
+            case Carrier:
+                return "Secondary: Carrier";
         }
-        return "Fires an EMP that constantly deals 10% damage and destroys enemy missiles. Recharges every 3 seconds.";
+        return "Placeholder";
     }
 
     private static String getSecondarySkillDescription(PlayerClass playerClass) {
@@ -191,8 +210,10 @@ public class ClassSelectionBoardCreator {
                 return "Fires an EMP that constantly deals 10% damage and destroys enemy missiles. Recharges every 3 seconds.";
             case FireFighter:
                 return "Creates a ring of fire around you that lasts 4 seconds. Dealing 50% damage, applies Ignite and destroys enemy missiles. Recharges every 10 seconds.";
+            case Carrier:
+                return "description";
         }
-        return "Fires an EMP that constantly deals 10% damage and destroys enemy missiles. Recharges every 3 seconds.";
+        return "Placeholder";
     }
 
     public static GUIComponent createSecondaryWeaponDescriptionIcon(GUIComponent backgroundCard, PlayerClass playerClass) {
@@ -221,7 +242,7 @@ public class ClassSelectionBoardCreator {
         return weaponIcon;
     }
 
-    public static GUIComponent createReturnToMainMenuBackgroundCard(){
+    public static GUIComponent createReturnToMainMenuBackgroundCard() {
         int xCoordinate = Math.round(DataClass.getInstance().getWindowWidth() * 0.0694f);
         int yCoordinate = Math.round(DataClass.getInstance().getWindowHeight() * 0.84f);
 
@@ -247,7 +268,7 @@ public class ClassSelectionBoardCreator {
         return textCollection;
     }
 
-    public static GUIComponent createStartGameButtonBackgroundCard() {
+    public static GUIComponent createBoonButtonBackgroundCard() {
         int xCoordinate = Math.round(DataClass.getInstance().getWindowWidth() * 0.785f);
         int yCoordinate = Math.round(DataClass.getInstance().getWindowHeight() * 0.84f);
 
@@ -261,14 +282,14 @@ public class ClassSelectionBoardCreator {
         return backgroundCard;
     }
 
-    public static GUITextCollection createStartGameButton(GUIComponent backgroundCard) {
+    public static GUITextCollection createBoonSelectionButton(GUIComponent backgroundCard) {
         int xCoordinate = backgroundCard.getCenterXCoordinate();
         int yCoordinate = backgroundCard.getCenterYCoordinate() - Math.round(DataClass.getInstance().getResolutionFactor() * 10);
 
-        GUITextCollection textCollection = new GUITextCollection(xCoordinate, yCoordinate, "START NEW GAME");
+        GUITextCollection textCollection = new GUITextCollection(xCoordinate, yCoordinate, "SELECT BOONS");
         textCollection.setScale(1.5f * DataClass.getInstance().getResolutionFactor());
         textCollection.setStartingXCoordinate(xCoordinate - (textCollection.getWidth() / 2));
-        textCollection.setMenuFunctionality(MenuFunctionEnums.Start_Game);
+        textCollection.setMenuFunctionality(MenuFunctionEnums.OpenBoonSelectionBoard);
 
         return textCollection;
     }
@@ -277,7 +298,8 @@ public class ClassSelectionBoardCreator {
         int initCursorX = textC.getComponents().get(0).getXCoordinate();
         int initCursorY = textC.getComponents().get(0).getYCoordinate();
         float scale = 1 * DataClass.getInstance().getResolutionFactor();
-        SpriteConfiguration spriteConfiguration = createSpriteConfiguration(initCursorX, initCursorY, scale, PlayerStats.getInstance().getSpaceShipImage());
+        ImageEnums imageEnums = PlayerStats.getInstance().getSpaceShipImage();
+        SpriteConfiguration spriteConfiguration = createSpriteConfiguration(initCursorX, initCursorY, scale, imageEnums);
         MenuCursor button = new MenuCursor(spriteConfiguration);
         return button;
     }

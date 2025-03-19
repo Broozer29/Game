@@ -3,7 +3,7 @@ package net.riezebos.bruus.tbd.game.util;
 import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
-import net.riezebos.bruus.tbd.game.gamestate.GameStateInfo;
+import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.items.Item;
 import net.riezebos.bruus.tbd.game.items.PlayerInventory;
 import net.riezebos.bruus.tbd.game.items.enums.ItemApplicationEnum;
@@ -60,7 +60,7 @@ public class ThornsDamageDealer {
     }
 
     private void activateDelayedThornsAttacks () {
-        double currentTime = GameStateInfo.getInstance().getGameSeconds();
+        double currentTime = GameState.getInstance().getGameSeconds();
 
         // Ensure 0.1 second has passed since the last activation
         if (thornsApplyMap.isEmpty() || currentTime - lastThornsActivationTime < 0.15) {

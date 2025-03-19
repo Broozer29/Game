@@ -5,7 +5,7 @@ import net.riezebos.bruus.tbd.game.items.ItemDescriptionRetriever;
 import net.riezebos.bruus.tbd.game.items.ItemEnums;
 import net.riezebos.bruus.tbd.game.items.PlayerInventory;
 import net.riezebos.bruus.tbd.game.items.enums.ItemRarityEnums;
-import net.riezebos.bruus.tbd.game.util.save.SaveManager;
+import net.riezebos.bruus.tbd.game.gamestate.save.SaveManager;
 import net.riezebos.bruus.tbd.guiboards.GUIComponentItemInformation;
 import net.riezebos.bruus.tbd.guiboards.boardEnums.MenuFunctionEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.AudioDatabase;

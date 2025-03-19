@@ -1,8 +1,12 @@
 package net.riezebos.bruus.tbd.game.gameobjects;
 
+import net.riezebos.bruus.tbd.game.UI.GameUICreator;
+import net.riezebos.bruus.tbd.game.UI.UIObject;
+import net.riezebos.bruus.tbd.game.gameobjects.enemies.Enemy;
+import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyCategory;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.Missile;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
-import net.riezebos.bruus.tbd.game.gamestate.GameStateInfo;
+import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.gamestate.GameStatsTracker;
 import net.riezebos.bruus.tbd.game.items.Item;
 import net.riezebos.bruus.tbd.game.items.PlayerInventory;
@@ -13,9 +17,11 @@ import net.riezebos.bruus.tbd.game.movement.Point;
 import net.riezebos.bruus.tbd.game.movement.*;
 import net.riezebos.bruus.tbd.game.movement.pathfinders.HomingPathFinder;
 import net.riezebos.bruus.tbd.game.movement.pathfinders.PathFinder;
+import net.riezebos.bruus.tbd.game.playerprofile.PlayerProfileManager;
 import net.riezebos.bruus.tbd.game.util.ArmorCalculator;
 import net.riezebos.bruus.tbd.game.util.OnScreenTextManager;
 import net.riezebos.bruus.tbd.game.util.VisualLayer;
+import net.riezebos.bruus.tbd.guiboards.BoardManager;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.AudioManager;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.AudioEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
@@ -61,6 +67,7 @@ public class GameObject extends Sprite {
     protected float maxShieldPoints;
     protected float baseArmor;
     protected float armorBonus;
+    protected float damageReductionMultiplier = 1;
 
 
     //Damage variables
@@ -91,7 +98,6 @@ public class GameObject extends Sprite {
 
     //Objects following this object
     protected List<GameObject> objectsFollowingThis = new ArrayList<GameObject>();
-
     protected List<GameObject> objectOrbitingThis = new ArrayList<GameObject>();
 
     //Other
@@ -111,8 +117,9 @@ public class GameObject extends Sprite {
     protected List<SpriteAnimation> effectAnimations = new ArrayList<>();
     protected float xpOnDeath = 0;
     protected boolean isACrit = false;
+    protected double lastTimeDamageTakenFromLaserbeams = 0;
 
-    public GameObject (SpriteConfiguration spriteConfiguration) {
+    public GameObject(SpriteConfiguration spriteConfiguration) {
         super(spriteConfiguration);
         if (spriteConfiguration.getImageType() != null) {
             this.setImage(spriteConfiguration.getImageType());
@@ -121,14 +128,14 @@ public class GameObject extends Sprite {
         initGameObject();
     }
 
-    public GameObject (SpriteAnimationConfiguration spriteAnimationConfiguration) {
+    public GameObject(SpriteAnimationConfiguration spriteAnimationConfiguration) {
         super(spriteAnimationConfiguration.getSpriteConfiguration());
         this.animation = new SpriteAnimation(spriteAnimationConfiguration);
         initGameObject();
         this.id = idGenerator.incrementAndGet(); // Generate a unique ID
     }
 
-    protected void initGameObject () {
+    protected void initGameObject() {
         if (this.animation != null) {
             this.currentLocation = new Point(this.animation.getXCoordinate(), this.animation.getYCoordinate());
             //Align the object with it's animation
@@ -145,7 +152,7 @@ public class GameObject extends Sprite {
 
     }
 
-    protected void initMovementConfiguration (MovementConfiguration movementConfiguration) {
+    protected void initMovementConfiguration(MovementConfiguration movementConfiguration) {
         this.movementRotation = movementConfiguration.getRotation();
         movementConfiguration.setCurrentLocation(currentLocation);
 
@@ -163,7 +170,7 @@ public class GameObject extends Sprite {
         this.movementConfiguration = movementConfiguration;
     }
 
-    public void resetMovementPath () {
+    public void resetMovementPath() {
         if (movementConfiguration == null) {
             return;
         }
@@ -194,7 +201,7 @@ public class GameObject extends Sprite {
     //*****************EFFECTS*******************************
 
     //Effect animations are NOT moved in this class
-    public void addEffect (EffectInterface effect) {
+    public void addEffect(EffectInterface effect) {
         if (visible && currentHitpoints > 0) {
             EffectInterface existingEffect = getExistingEffect(effect);
 
@@ -222,24 +229,24 @@ public class GameObject extends Sprite {
         }
     }
 
-    private EffectInterface getExistingEffect (EffectInterface effect) {
+    private EffectInterface getExistingEffect(EffectInterface effect) {
         return effects.stream()
                 .filter(e -> e.getEffectIdentifier().equals(effect.getEffectIdentifier()))
                 .findFirst()
                 .orElse(null);
     }
 
-    private void activateOnDeathEffects () {
+    private void activateOnDeathEffects() {
         activateEffects(EffectActivationTypes.OnObjectDeath);
         cleanseAllEffects();
     }
 
-    public void updateGameObjectEffects () {
+    public void updateGameObjectEffects() {
         activateEffects(EffectActivationTypes.CheckEveryGameTick);
     }
 
 
-    private void activateEffects (EffectActivationTypes providedActivationType) {
+    private void activateEffects(EffectActivationTypes providedActivationType) {
         List<EffectInterface> toRemove = new ArrayList<>();
         for (EffectInterface effect : effects) {
             if (effect.getEffectTypesEnums() == providedActivationType) {
@@ -264,13 +271,13 @@ public class GameObject extends Sprite {
         effects.removeAll(toRemove);
     }
 
-    private void refreshEffect (EffectInterface effect) {
+    private void refreshEffect(EffectInterface effect) {
         //Effects themselves should determine what to do in this scenario
         effect.resetDuration();
         effect.increaseEffectStrength(this);
     }
 
-    private void cleanseAllEffects () {
+    private void cleanseAllEffects() {
         //Does NOT set all effects to invisible, so might lead to problems later on
         //For example, effects that trigger after or during the objects deletion
         effects.clear();
@@ -278,7 +285,7 @@ public class GameObject extends Sprite {
 
     //*****************DELETION/DAMAGE*******************************
 
-    public void deleteObject () {
+    public void deleteObject() {
         if (this.animation != null) {
             this.animation.setVisible(false);
         }
@@ -321,18 +328,18 @@ public class GameObject extends Sprite {
         this.visible = false;
     }
 
-    public void takeDamage (float damageTaken) {
+    public void takeDamage(float damageTaken) {
         if (currentHitpoints <= 0) {
             return; //The target is already dead, no need to go through here again
         }
 
 
         if (damageTaken > 0) {
-            damageTaken = ArmorCalculator.calculateDamage(damageTaken, this);
+            damageTaken = (ArmorCalculator.calculateDamage(damageTaken, this) * damageReductionMultiplier) ;
         }
 
         if (damageTaken > 0) {
-            lastGameSecondDamageTaken = GameStateInfo.getInstance().getGameSeconds();
+            lastGameSecondDamageTaken = GameState.getInstance().getGameSeconds();
         }
 
         if (!this.isFriendly()) {
@@ -345,7 +352,6 @@ public class GameObject extends Sprite {
         if (currentHitpoints > maxHitPoints) {
             currentHitpoints = maxHitPoints;
         }
-
 
         if (this.currentHitpoints <= 0) {
             if (this.xpOnDeath > 0) {
@@ -373,21 +379,27 @@ public class GameObject extends Sprite {
 
             AudioManager.getInstance().addAudio(deathSound);
 
-
             triggerCategorySpecificOnDeathTriggers();
 
             this.setVisible(false);
             activateOnDeathEffects();
             PlayerInventory.getInstance().addMinerals(this.cashMoneyWorth);
             GameStatsTracker.getInstance().addMoneyAcquired(this.cashMoneyWorth);
+
+            if (this instanceof Enemy && ((Enemy) this).getEnemyType().getEnemyCategory().equals(EnemyCategory.Boss)) {
+                PlayerProfileManager.getInstance().getLoadedProfile().addEmeralds(1);
+                PlayerProfileManager.getInstance().exportCurrentProfile();
+                UIObject emeraldIcon = GameUICreator.getInstance().createEmeraldObtainedIcon(this.getCenterXCoordinate(), this.getCenterYCoordinate());
+                BoardManager.getInstance().getGameBoard().addEmeraldIcon(emeraldIcon);
+            }
         }
     }
 
-    public void triggerCategorySpecificOnDeathTriggers () {
+    public void triggerCategorySpecificOnDeathTriggers() {
         //Supposed to be overriden. Used for "Enemy kill counter" for example
     }
 
-    public void applyAfterCollisionItemEffects (GameObject target) {
+    public void applyAfterCollisionItemEffects(GameObject target) {
         if (this.appliesOnHitEffects) {
             List<Item> onHitItems = PlayerInventory.getInstance().getItemsByApplicationMethod(ItemApplicationEnum.AfterCollision);
             for (Item item : onHitItems) {
@@ -397,7 +409,7 @@ public class GameObject extends Sprite {
         }
     }
 
-    public void applyBeforeCollisionAttackModifyingItemEffects (GameObject target) {
+    public void applyBeforeCollisionAttackModifyingItemEffects(GameObject target) {
         for (Item item : PlayerInventory.getInstance().getItemsByApplicationMethod(ItemApplicationEnum.BeforeCollision)) {
             item.modifyAttackingObject(this, target);
             item.applyEffectToObject(target);
@@ -405,7 +417,7 @@ public class GameObject extends Sprite {
         }
     }
 
-    public void centerDestructionAnimation () {
+    public void centerDestructionAnimation() {
         if (this.getAnimation() != null) {
             this.getDestructionAnimation().setOriginCoordinates(this.getAnimation().getCenterXCoordinate(), this.getAnimation().getCenterYCoordinate());
         } else {
@@ -413,7 +425,7 @@ public class GameObject extends Sprite {
         }
     }
 
-    public void dealDamageToGameObject (GameObject target) {
+    public void dealDamageToGameObject(GameObject target) {
         for (EffectInterface effectInterface : effectsToApply) {
             target.addEffect(effectInterface);
         }
@@ -430,7 +442,7 @@ public class GameObject extends Sprite {
 
 
     //*****************MOVEMENT*******************************
-    public void move () {
+    public void move() {
         toggleHealthBar();
         if (this.isAllowedToMove()) {
             SpriteMover.getInstance().moveGameObject(this, movementConfiguration);
@@ -445,7 +457,7 @@ public class GameObject extends Sprite {
         updateVisibility();
     }
 
-    private void toggleHealthBar () {
+    private void toggleHealthBar() {
         if (this instanceof Missile || showHealthBar) {
             return;
         }
@@ -455,7 +467,7 @@ public class GameObject extends Sprite {
         }
     }
 
-    private void moveAnimations () {
+    private void moveAnimations() {
         if (this.animation != null) {
             moveAnimations(animation);
         }
@@ -473,18 +485,18 @@ public class GameObject extends Sprite {
 //        updateChargingAttackAnimationCoordination();
     }
 
-    private void moveAnimations (SpriteAnimation animation) {
+    private void moveAnimations(SpriteAnimation animation) {
         animation.setXCoordinate(this.getXCoordinate());
         animation.setYCoordinate(this.getYCoordinate());
         animation.setAnimationBounds(animation.getXCoordinate(), animation.getYCoordinate());
     }
 
-    private void moveAnimationsToCenter (SpriteAnimation animation) {
+    private void moveAnimationsToCenter(SpriteAnimation animation) {
         animation.setCenterCoordinates(this.getCenterXCoordinate(), this.getCenterYCoordinate());
     }
 
 
-    private void updateVisibility () {
+    private void updateVisibility() {
         if (SpriteRemover.getInstance().shouldRemoveVisibility(this)) {
             this.visible = false;
         }
@@ -493,14 +505,14 @@ public class GameObject extends Sprite {
             this.animation.setVisible(false);
         }
 
-        if(this.animation != null && !this.animation.isVisible()){
+        if (this.animation != null && !this.animation.isVisible()) {
             this.setVisible(false);
         }
     }
 
 
     //*****************VISUAL ALTERATION*******************************
-    public void rotateGameObjectTowards (Direction direction, boolean crop) {
+    public void rotateGameObjectTowards(Direction direction, boolean crop) {
         if (ImageRotator.getInstance().isBlockedFromRotating(this.getImageEnum())) {
             return;
         }
@@ -522,14 +534,14 @@ public class GameObject extends Sprite {
     }
 
     @Override
-    public boolean isVisible () {
-        if(this.animation != null){
+    public boolean isVisible() {
+        if (this.animation != null) {
             return this.animation.isVisible();
         }
         return visible;
     }
 
-    protected void updateChargingAttackAnimationCoordination () {
+    protected void updateChargingAttackAnimationCoordination() {
         if (this.chargingUpAttackAnimation != null) {
             double baseDistance = (this.getWidth() + this.getHeight()) / 2.0;
             Point chargingUpLocation = calculateFrontPosition(this.getCenterXCoordinate(), this.getCenterYCoordinate(), rotationAngle, baseDistance);
@@ -537,7 +549,7 @@ public class GameObject extends Sprite {
         }
     }
 
-    private Point calculateFrontPosition (int centerX, int centerY, double angleDegrees, double distanceToFront) {
+    private Point calculateFrontPosition(int centerX, int centerY, double angleDegrees, double distanceToFront) {
         double angleRadians = Math.toRadians(angleDegrees);
 
         // Calculate the new position using trigonometry
@@ -547,7 +559,7 @@ public class GameObject extends Sprite {
         return new Point(newX, newY);
     }
 
-    public void rotateGameObjectTowards (int targetXCoordinate, int targetYCoordinate, boolean crop) {
+    public void rotateGameObjectTowards(int targetXCoordinate, int targetYCoordinate, boolean crop) {
         if (ImageRotator.getInstance().isBlockedFromRotating(this.getImageEnum()) || !allowedVisualsToRotate) {
             return;
         }
@@ -556,7 +568,7 @@ public class GameObject extends Sprite {
         rotateObjectTowardsAngle(calculatedAngle, crop);
     }
 
-    protected void rotateObjectTowardsAngle (double calculatedAngle, boolean crop) {
+    protected void rotateObjectTowardsAngle(double calculatedAngle, boolean crop) {
         if (ImageRotator.getInstance().isBlockedFromRotating(this.getImageEnum())) {
             return;
         }
@@ -577,13 +589,13 @@ public class GameObject extends Sprite {
         }
     }
 
-    private void rotateGameObjectSpriteAnimations (SpriteAnimation sprite, Direction direction, boolean crop) {
+    private void rotateGameObjectSpriteAnimations(SpriteAnimation sprite, Direction direction, boolean crop) {
         if (sprite != null) {
             sprite.rotateAnimation(direction, crop);
         }
     }
 
-    public void rotateAfterMovement () {
+    public void rotateAfterMovement() {
         if (!this.allowedVisualsToRotate) {
             return;
         }
@@ -597,7 +609,7 @@ public class GameObject extends Sprite {
         }
     }
 
-    public void rotateObjectTowardsDestination (boolean crop) {
+    public void rotateObjectTowardsDestination(boolean crop) {
         if (!this.isAllowedVisualsToRotate()) {
             return;
         }
@@ -614,19 +626,19 @@ public class GameObject extends Sprite {
         this.rotateGameObjectTowards(destination.getX(), destination.getY(), crop);
     }
 
-    public void rotateObjectTowardsRotation (boolean crop) {
+    public void rotateObjectTowardsRotation(boolean crop) {
         if (this.isAllowedVisualsToRotate() && this.getMovementConfiguration().getRotation() != null) {
             this.rotateGameObjectTowards(this.getMovementConfiguration().getRotation(), crop);
         }
     }
 
-    protected void rotateObjectTowardsPoint (Point point, boolean crop) {
+    protected void rotateObjectTowardsPoint(Point point, boolean crop) {
         if (this.isAllowedVisualsToRotate()) {
             this.rotateGameObjectTowards(point.getX(), point.getY(), crop);
         }
     }
 
-    private Point adjustDestinationForRotationUsingDimensions (GameObject gameObject, Point destination) {
+    private Point adjustDestinationForRotationUsingDimensions(GameObject gameObject, Point destination) {
         int height = 0;
         int width = 0;
         if (gameObject.getAnimation() != null) {
@@ -652,188 +664,188 @@ public class GameObject extends Sprite {
     }
 
     //*****************SPECIFIC ENEMY BEHAVIOURS*******************************
-    public void onCreationEffects () {
+    public void onCreationEffects() {
         //Exist to be overriden
     }
 
 
     //-------------------------------------getters and setters below------------
 
-    public SpriteAnimation getDestructionAnimation () {
+    public SpriteAnimation getDestructionAnimation() {
         return destructionAnimation;
     }
 
-    public void setDestructionAnimation (SpriteAnimation destructionAnimation) {
+    public void setDestructionAnimation(SpriteAnimation destructionAnimation) {
         this.destructionAnimation = destructionAnimation;
     }
 
-    public Point getCurrentLocation () {
+    public Point getCurrentLocation() {
         if (this.movementConfiguration == null) {
             return new Point(this.xCoordinate, this.yCoordinate);
         }
         return this.movementConfiguration.getCurrentLocation();
     }
 
-    public int getCurrentBoardBlock () {
+    public int getCurrentBoardBlock() {
         return this.currentBoardBlock;
     }
 
-    public void updateCurrentLocation (Point newLocation) {
+    public void updateCurrentLocation(Point newLocation) {
         this.movementConfiguration.setCurrentLocation(newLocation);
     }
 
-    public SpriteAnimation getShieldDamagedAnimation () {
+    public SpriteAnimation getShieldDamagedAnimation() {
         return shieldDamagedAnimation;
     }
 
-    public void setShieldDamagedAnimation (SpriteAnimation shieldDamagedAnimation) {
+    public void setShieldDamagedAnimation(SpriteAnimation shieldDamagedAnimation) {
         this.shieldDamagedAnimation = shieldDamagedAnimation;
     }
 
-    public SpriteAnimation getExhaustAnimation () {
+    public SpriteAnimation getExhaustAnimation() {
         return exhaustAnimation;
     }
 
-    public void setExhaustAnimation (SpriteAnimation exhaustAnimation) {
+    public void setExhaustAnimation(SpriteAnimation exhaustAnimation) {
         this.exhaustAnimation = exhaustAnimation;
     }
 
-    public boolean isShowHealthBar () {
+    public boolean isShowHealthBar() {
         return showHealthBar;
     }
 
-    public void setShowHealthBar (boolean showHealthBar) {
+    public void setShowHealthBar(boolean showHealthBar) {
         this.showHealthBar = showHealthBar;
     }
 
-    public AudioEnums getDeathSound () {
+    public AudioEnums getDeathSound() {
         return deathSound;
     }
 
-    public void setDeathSound (AudioEnums deathSound) {
+    public void setDeathSound(AudioEnums deathSound) {
         this.deathSound = deathSound;
     }
 
-    public float getCurrentHitpoints () {
+    public float getCurrentHitpoints() {
         if (currentHitpoints < 0) {
             currentHitpoints = 0;
         }
         return currentHitpoints;
     }
 
-    public void setCurrentHitpoints (float currentHitpoints) {
+    public void setCurrentHitpoints(float currentHitpoints) {
         this.currentHitpoints = currentHitpoints;
     }
 
-    public float getMaxHitPoints () {
+    public float getMaxHitPoints() {
         return maxHitPoints;
     }
 
-    public void setMaxHitPoints (float maxHitPoints) {
+    public void setMaxHitPoints(float maxHitPoints) {
         this.maxHitPoints = maxHitPoints;
     }
 
-    public float getCurrentShieldPoints () {
+    public float getCurrentShieldPoints() {
         return currentShieldPoints;
     }
 
-    public void setCurrentShieldPoints (float currentShieldPoints) {
+    public void setCurrentShieldPoints(float currentShieldPoints) {
         this.currentShieldPoints = currentShieldPoints;
     }
 
-    public float getMaxShieldPoints () {
+    public float getMaxShieldPoints() {
         return maxShieldPoints;
     }
 
-    public void setMaxShieldPoints (float maxShieldPoints) {
+    public void setMaxShieldPoints(float maxShieldPoints) {
         this.maxShieldPoints = maxShieldPoints;
     }
 
-    public boolean isHasAttack () {
+    public boolean isHasAttack() {
         return hasAttack;
     }
 
-    public void setHasAttack (boolean hasAttack) {
+    public void setHasAttack(boolean hasAttack) {
         this.hasAttack = hasAttack;
     }
 
-    public boolean isAllowedToDealDamage () {
+    public boolean isAllowedToDealDamage() {
         return allowedToDealDamage;
     }
 
-    public void setAllowedToDealDamage (boolean allowedToDealDamage) {
+    public void setAllowedToDealDamage(boolean allowedToDealDamage) {
         this.allowedToDealDamage = allowedToDealDamage;
     }
 
-    public boolean isFriendly () {
+    public boolean isFriendly() {
         return friendly;
     }
 
-    public void setFriendly (boolean friendly) {
+    public void setFriendly(boolean friendly) {
         this.friendly = friendly;
     }
 
-    public GameObject getObjectToCenterAround () {
+    public GameObject getObjectToCenterAround() {
         return objectToCenterAround;
     }
 
-    public void setObjectToCenterAround (GameObject objectToCenterAround) {
+    public void setObjectToCenterAround(GameObject objectToCenterAround) {
         this.objectToCenterAround = objectToCenterAround;
     }
 
-    public GameObject getObjectToFollow () {
+    public GameObject getObjectToFollow() {
         return objectToFollow;
     }
 
-    public void setObjectToFollow (GameObject objectToFollow) {
+    public void setObjectToFollow(GameObject objectToFollow) {
         this.objectToFollow = objectToFollow;
         this.movementConfiguration.setTargetToChase(objectToFollow);
     }
 
-    public MovementConfiguration getMovementConfiguration () {
+    public MovementConfiguration getMovementConfiguration() {
         return movementConfiguration;
     }
 
-    public void setMovementConfiguration (MovementConfiguration movementConfiguration) {
+    public void setMovementConfiguration(MovementConfiguration movementConfiguration) {
         this.movementConfiguration = movementConfiguration;
     }
 
-    public List<GameObject> getObjectsFollowingThis () {
+    public List<GameObject> getObjectsFollowingThis() {
         return objectsFollowingThis;
     }
 
-    public void addFollowingGameObject (GameObject followingObject) {
+    public void addFollowingGameObject(GameObject followingObject) {
         this.objectsFollowingThis.add(followingObject);
     }
 
-    public SpriteAnimation getAnimation () {
+    public SpriteAnimation getAnimation() {
         return this.animation;
     }
 
-    public void setAnimation (SpriteAnimation spriteAnimation) {
+    public void setAnimation(SpriteAnimation spriteAnimation) {
         this.animation = spriteAnimation;
     }
 
-    public float getScale () {
+    public float getScale() {
         if (this.animation != null) {
             return animation.getScale();
         }
         return scale;
     }
 
-    public float getOriginalScale () {
+    public float getOriginalScale() {
         return originalScale;
     }
 
-    public String getObjectType () {
+    public String getObjectType() {
         return this.objectType;
     }
 
-    public void setObjectType (String objectType) {
+    public void setObjectType(String objectType) {
         this.objectType = objectType;
     }
 
-    public void setScale (float newScale) {
+    public void setScale(float newScale) {
         if (newScale == this.scale) {
             return;
         }
@@ -849,7 +861,7 @@ public class GameObject extends Sprite {
         }
     }
 
-    public void setPathFinder (PathFinder newPathFinder) {
+    public void setPathFinder(PathFinder newPathFinder) {
         if (this.movementConfiguration != null) {
             this.movementConfiguration.setPathFinder(newPathFinder);
         } else {
@@ -857,7 +869,7 @@ public class GameObject extends Sprite {
         }
     }
 
-    public void updateBoardBlock () {
+    public void updateBoardBlock() {
         if (this.animation != null) {
             this.currentBoardBlock = BoardBlockUpdater.getBoardBlock(animation.getXCoordinate());
         } else {
@@ -865,89 +877,89 @@ public class GameObject extends Sprite {
         }
     }
 
-    public List<GameObject> getObjectOrbitingThis () {
+    public List<GameObject> getObjectOrbitingThis() {
         return objectOrbitingThis;
     }
 
 
-    public boolean isBoxCollision () {
+    public boolean isBoxCollision() {
         return boxCollision;
     }
 
-    public void setBoxCollision (boolean boxCollision) {
+    public void setBoxCollision(boolean boxCollision) {
         this.boxCollision = boxCollision;
     }
 
-    public double getLastGameSecondDamageTaken () {
+    public double getLastGameSecondDamageTaken() {
         return lastGameSecondDamageTaken;
     }
 
-    public void setLastGameSecondDamageTaken (long lastGameSecondDamageTaken) {
+    public void setLastGameSecondDamageTaken(long lastGameSecondDamageTaken) {
         this.lastGameSecondDamageTaken = lastGameSecondDamageTaken;
     }
 
-    public GameObject getOwnerOrCreator () {
+    public GameObject getOwnerOrCreator() {
         return ownerOrCreator;
     }
 
-    public void setOwnerOrCreator (GameObject ownerOrCreator) {
+    public void setOwnerOrCreator(GameObject ownerOrCreator) {
         this.ownerOrCreator = ownerOrCreator;
     }
 
-    public float getBaseArmor () {
+    public float getBaseArmor() {
         return baseArmor;
     }
 
-    public void setBaseArmor (float baseArmor) {
+    public void setBaseArmor(float baseArmor) {
         this.baseArmor = baseArmor;
     }
 
-    public float getArmorBonus () {
+    public float getArmorBonus() {
         return armorBonus;
     }
 
-    public void adjustArmorBonus (float amount) {
+    public void adjustArmorBonus(float amount) {
         this.armorBonus += amount; // Modify the armor bonus by the given amount
     }
 
-    public float getCashMoneyWorth () {
+    public float getCashMoneyWorth() {
         return cashMoneyWorth;
     }
 
-    public void setCashMoneyWorth (float cashMoneyWorth) {
+    public void setCashMoneyWorth(float cashMoneyWorth) {
         this.cashMoneyWorth = cashMoneyWorth;
     }
 
-    public boolean isAllowedToMove () {
+    public boolean isAllowedToMove() {
         return allowedToMove;
     }
 
-    public void setAllowedToMove (boolean allowedToMove) {
+    public void setAllowedToMove(boolean allowedToMove) {
         this.allowedToMove = allowedToMove;
     }
 
-    public double getRotationAngle () {
+    public double getRotationAngle() {
         return rotationAngle;
     }
 
-    public boolean isAllowedVisualsToRotate () {
+    public boolean isAllowedVisualsToRotate() {
         return allowedVisualsToRotate;
     }
 
-    public void setAllowedVisualsToRotate (boolean allowedVisualsToRotate) {
+    public void setAllowedVisualsToRotate(boolean allowedVisualsToRotate) {
         this.allowedVisualsToRotate = allowedVisualsToRotate;
     }
 
-    public boolean isCenteredAroundObject () {
+    public boolean isCenteredAroundObject() {
         return centeredAroundObject;
     }
 
-    public void setCenteredAroundObject (boolean centeredAroundObject) {
+    public void setCenteredAroundObject(boolean centeredAroundObject) {
         this.centeredAroundObject = centeredAroundObject;
     }
 
     @Override
-    public void setCenterCoordinates (int newXCoordinate, int newYCoordinate) {
+    public void setCenterCoordinates(int newXCoordinate, int newYCoordinate) {
         if (this.image != null && this.animation == null) {
             this.xCoordinate = newXCoordinate - (this.width / 2) + xOffset;
             this.yCoordinate = newYCoordinate - (this.height / 2) + yOffset;
@@ -963,24 +975,23 @@ public class GameObject extends Sprite {
     }
 
     @Override
-    public void addYOffset (int yoffset) {
-        if(this.animation != null){
+    public void addYOffset(int yoffset) {
+        if (this.animation != null) {
             this.animation.addYOffset(yoffset);
         }
         this.yOffset = yoffset;
     }
 
     @Override
-    public void addXOffset (int xOffset) {
-        if(this.animation != null){
+    public void addXOffset(int xOffset) {
+        if (this.animation != null) {
             this.animation.addXOffset(xOffset);
         }
         this.xOffset = xOffset;
     }
 
 
-
-    public float getAttackSpeed () {
+    public float getAttackSpeed() {
         float baseAttackSpeed = this.attackSpeed; // The default cooldown in milliseconds
         float attackSpeedIncrease = this.attackSpeedBonusModifier;
 
@@ -1001,7 +1012,7 @@ public class GameObject extends Sprite {
     }
 
 
-    public float getDamage () {
+    public float getDamage() {
         float attackDamage = this.damage * this.bonusDamageMultiplier;
         if (isACrit) {
             attackDamage *= PlayerStats.getInstance().getCriticalStrikeDamageMultiplier();
@@ -1014,30 +1025,30 @@ public class GameObject extends Sprite {
     }
 
 
-    public void modifyBonusDamageMultiplier (float bonusMultiplier) {
+    public void modifyBonusDamageMultiplier(float bonusMultiplier) {
         this.bonusDamageMultiplier += bonusMultiplier;
     }
 
-    public void setAttackSpeed (int attackSpeed) {
+    public void setAttackSpeed(int attackSpeed) {
         this.attackSpeed = attackSpeed;
     }
 
-    public void modifyAttackSpeedBonus (float bonusPercentage) {
+    public void modifyAttackSpeedBonus(float bonusPercentage) {
         this.attackSpeedBonusModifier += bonusPercentage;
     }
 
-    public void modifyMovementSpeedModifier (float bonusSpeed) {
+    public void modifyMovementSpeedModifier(float bonusSpeed) {
         this.movementConfiguration.modifyMovementSpeedModifier(bonusSpeed);
     }
 
-    public int getCenterXCoordinate () {
+    public int getCenterXCoordinate() {
         if (this.animation != null) {
             return animation.getXCoordinate() + xOffset + (animation.getWidth() / 2);
         } else
             return xCoordinate + xOffset + (width / 2);
     }
 
-    public int getCenterYCoordinate () {
+    public int getCenterYCoordinate() {
         if (this.animation != null) {
             return animation.getYCoordinate() + yOffset + (animation.getHeight() / 2);
         } else
@@ -1045,7 +1056,7 @@ public class GameObject extends Sprite {
     }
 
 
-    public int getWidth () {
+    public int getWidth() {
         if (this.animation != null) {
             return animation.getWidth();
         } else
@@ -1053,14 +1064,14 @@ public class GameObject extends Sprite {
 
     }
 
-    public int getHeight () {
+    public int getHeight() {
         if (this.animation != null) {
             return animation.getHeight();
         } else
             return this.height;
     }
 
-    public void setTransparancyAlpha (boolean shouldIncrease, float newAlphaTransparancy, float transparacyStepSize) {
+    public void setTransparancyAlpha(boolean shouldIncrease, float newAlphaTransparancy, float transparacyStepSize) {
         if (this.animation != null) {
             this.animation.setTransparancyAlpha(shouldIncrease, newAlphaTransparancy, transparacyStepSize);
             super.setTransparancyAlpha(shouldIncrease, newAlphaTransparancy, transparacyStepSize);
@@ -1069,7 +1080,7 @@ public class GameObject extends Sprite {
         }
     }
 
-    public float getTransparancyAlpha () {
+    public float getTransparancyAlpha() {
         if (this.animation != null) {
             return animation.getTransparancyAlpha();
         } else {
@@ -1077,22 +1088,22 @@ public class GameObject extends Sprite {
         }
     }
 
-    public boolean isACrit () {
+    public boolean isACrit() {
         return isACrit;
     }
 
-    public void setACrit (boolean ACrit) {
+    public void setACrit(boolean ACrit) {
         isACrit = ACrit;
     }
 
-    public void addEffectToApply (EffectInterface effectInterface) {
+    public void addEffectToApply(EffectInterface effectInterface) {
         if (!effectsToApply.contains(effectInterface)) {
             this.effectsToApply.add(effectInterface);
         }
     }
 
     @Override
-    public boolean equals (Object o) {
+    public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         GameObject that = (GameObject) o;
@@ -1100,41 +1111,65 @@ public class GameObject extends Sprite {
     }
 
     @Override
-    public int hashCode () {
+    public int hashCode() {
         return Objects.hash(id);
     }
 
-    public ImageEnums getImageEnum () {
+    public ImageEnums getImageEnum() {
         if (this.animation != null) {
             return this.animation.getImageEnum();
         }
         return this.imageEnum;
     }
 
-    public Rectangle getBounds () {
+    public Rectangle getBounds() {
         if (this.animation != null) {
             return animation.getBounds();
         }
         return super.getBounds();
     }
 
-    public List<EffectInterface> getEffects () {
+    public List<EffectInterface> getEffects() {
         return effects;
     }
 
-    public int getKnockbackStrength () {
+    public int getKnockbackStrength() {
         return knockbackStrength;
     }
 
-    public void setKnockbackStrength (int knockbackStrength) {
+    public void setKnockbackStrength(int knockbackStrength) {
         this.knockbackStrength = knockbackStrength;
     }
 
-    public void setDamage (float damage) {
+    public void setDamage(float damage) {
         this.damage = damage;
     }
 
-    public VisualLayer getVisualLayer () {
+    public VisualLayer getVisualLayer() {
         return visualLayer;
+    }
+
+    public boolean isShowDamage() {
+        return showDamage;
+    }
+
+    public void setShowDamage(boolean showDamage) {
+        this.showDamage = showDamage;
+    }
+
+    public double getLastTimeDamageTakenFromLaserbeams() {
+        return lastTimeDamageTakenFromLaserbeams;
+    }
+
+    public void setLastTimeDamageTakenFromLaserbeams(double lastTimeDamageTakenFromLaserbeams) {
+        this.lastTimeDamageTakenFromLaserbeams = lastTimeDamageTakenFromLaserbeams;
+    }
+
+    public float getDamageReductionMultiplier() {
+        return damageReductionMultiplier;
+    }
+
+    public void modifyDamageReductionMultiplier(float damageReductionMultiplier) {
+        this.damageReductionMultiplier += damageReductionMultiplier;
     }
 }

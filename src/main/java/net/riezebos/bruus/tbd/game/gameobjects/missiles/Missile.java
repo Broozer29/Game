@@ -184,10 +184,9 @@ public class Missile extends GameObject {
                 }
             }
 
-        } else if (!piercesThroughObjects || amountOfPiercesLeft <= 0) {
+        } else {
             dealDamageToGameObject(collidedObject);
             destroyMissile();
-
         }
     }
 

@@ -1,7 +1,7 @@
 package net.riezebos.bruus.tbd.game.items.effects.effectimplementations;
 
 import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
-import net.riezebos.bruus.tbd.game.gamestate.GameStateInfo;
+import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.items.effects.EffectActivationTypes;
 import net.riezebos.bruus.tbd.game.items.effects.EffectIdentifiers;
 import net.riezebos.bruus.tbd.game.items.effects.EffectInterface;
@@ -19,14 +19,14 @@ public class PassiveHealthRegeneration implements EffectInterface {
 
     public PassiveHealthRegeneration (float healingAmount, EffectIdentifiers effectIdentifier) {
         this.healingAmount = healingAmount;
-        this.lastTimeDamageTaken = GameStateInfo.getInstance().getGameSeconds();
+        this.lastTimeDamageTaken = GameState.getInstance().getGameSeconds();
         this.effectActivationTypes = EffectActivationTypes.CheckEveryGameTick;
         this.effectIdentifier = effectIdentifier;
     }
 
     @Override
     public void activateEffect (GameObject gameObject) {
-        double currentTime = GameStateInfo.getInstance().getGameSeconds();
+        double currentTime = GameState.getInstance().getGameSeconds();
         if (currentTime - gameObject.getLastGameSecondDamageTaken() > 3 && // More than 3 seconds have passed
                 gameObject.getCurrentHitpoints() < gameObject.getMaxHitPoints()) {
 

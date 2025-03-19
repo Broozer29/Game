@@ -1,7 +1,7 @@
 package net.riezebos.bruus.tbd.game.gameobjects.missiles.specialAttacks;
 
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
-import net.riezebos.bruus.tbd.game.gamestate.GameStateInfo;
+import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.items.effects.EffectIdentifiers;
 import net.riezebos.bruus.tbd.game.items.effects.EffectInterface;
 import net.riezebos.bruus.tbd.game.items.effects.effectimplementations.DamageOverTime;
@@ -20,7 +20,7 @@ public class FireShield extends SpecialAttack {
         super.internalTickCooldown = PlayerStats.getInstance().getAttackSpeed();
         this.duration = 4;
         initIgniteEffect();
-        gamesecondsStarted = GameStateInfo.getInstance().getGameSeconds();
+        gamesecondsStarted = GameState.getInstance().getGameSeconds();
     }
 
     private void initIgniteEffect(){
@@ -44,7 +44,7 @@ public class FireShield extends SpecialAttack {
             this.animation.setAnimationScale(this.scale);
         }
 
-        if(GameStateInfo.getInstance().getGameSeconds() > (gamesecondsStarted + duration) && !isDissipating){
+        if(GameState.getInstance().getGameSeconds() > (gamesecondsStarted + duration) && !isDissipating){
             this.setTransparancyAlpha(true, 1, -0.035f);
             super.isDissipating = true;
         }

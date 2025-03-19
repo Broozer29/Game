@@ -18,5 +18,6 @@ public enum EffectIdentifiers {
     MutaliskDeathMissiles,
     ContractOnDeathCounter,
     FlameDetonationDormentExplosion,
+    DamageReduction,
     PulsingDroneSlow;
 }

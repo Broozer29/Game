@@ -16,7 +16,20 @@ public enum ImageEnums {
     InputMapping,
     UpWhite,
     UpOrange,
+    UpGrey,
     UpgradeSelectedCheck,
+    BountyHunterUnlock,
+    CompoundWealthUnlock,
+    TreasureHunterUnlock,
+    ClubAcessUnlock,
+    ProtossCarrier,
+    ProtossCarrierWithoutEngine,
+    ProtossArbiter,
+    ProtossShuttle,
+    ProtossScout,
+    ProtossDestroyedExplosion,
+    ProtossCarrierSwitchFast,
+    ProtossCarrierSwitchSlow,
 
     //// Animations
     Impact_Explosion_One,
@@ -154,6 +167,7 @@ public enum ImageEnums {
     // Icons
     LockedIcon,
     TopazGem7,
+    EmeraldGem5,
     Starcraft2_Protoss_Shield_Disintegrate,
     Starcraft2_Psi_Storm2,
     Starcraft2_Dual_Rockets,

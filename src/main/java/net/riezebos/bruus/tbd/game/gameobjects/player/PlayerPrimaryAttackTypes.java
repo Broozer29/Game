@@ -4,7 +4,8 @@ import net.riezebos.bruus.tbd.game.gameobjects.missiles.MissileEnums;
 
 public enum PlayerPrimaryAttackTypes {
     Laserbeam(MissileEnums.PlayerLaserbeam),
-    Flamethrower(null);
+    Flamethrower(null),
+    Carrier(null);
 
     private MissileEnums correspondingMissileEnum;
 

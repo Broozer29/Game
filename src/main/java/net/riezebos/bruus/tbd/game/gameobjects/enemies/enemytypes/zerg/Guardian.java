@@ -5,7 +5,7 @@ import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyConfiguration;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.*;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
 import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SpaceShip;
-import net.riezebos.bruus.tbd.game.gamestate.GameStateInfo;
+import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.movement.MovementConfiguration;
 import net.riezebos.bruus.tbd.game.movement.MovementPatternSize;
 import net.riezebos.bruus.tbd.game.movement.PathFinderEnums;
@@ -78,7 +78,7 @@ public class Guardian extends Enemy {
 
 
         // Check if the attack cooldown has been reached
-        double currentTime = GameStateInfo.getInstance().getGameSeconds();
+        double currentTime = GameState.getInstance().getGameSeconds();
         if (currentTime >= lastAttackTime + this.getAttackSpeed() && WithinVisualBoundariesCalculator.isWithinBoundaries(this)
                 && allowedToFire) {
             updateChargingAttackAnimationCoordination();

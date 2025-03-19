@@ -8,7 +8,7 @@ import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyEnums;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.*;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
 import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SpaceShip;
-import net.riezebos.bruus.tbd.game.gamestate.GameStateInfo;
+import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.movement.*;
 import net.riezebos.bruus.tbd.game.movement.pathfinders.HoverPathFinder;
 import net.riezebos.bruus.tbd.game.movement.pathfinders.PathFinder;
@@ -67,7 +67,7 @@ public class Queen extends Enemy {
         }
 
         // Check if the attack cooldown has been reached for shooting a missile.
-        double currentTime = GameStateInfo.getInstance().getGameSeconds();
+        double currentTime = GameState.getInstance().getGameSeconds();
         if (currentTime >= lastAttackTime + this.getAttackSpeed() && WithinVisualBoundariesCalculator.isWithinBoundaries(this)
                 && allowedToFire) {
             isAttackingRightNow = true;
@@ -106,7 +106,7 @@ public class Queen extends Enemy {
     private boolean determineAction () {
         if (this.movementConfiguration.getPathFinder() instanceof HoverPathFinder hoverPathFinder &&
                 !laidEggDuringCurrentHover && hoverPathFinder.isHovering() &&
-                    (GameStateInfo.getInstance().getGameSeconds() > hoverPathFinder.getGameSecondsSinceEmptyList() + (hoverPathFinder.getSecondsToHoverStill() - 1))
+                    (GameState.getInstance().getGameSeconds() > hoverPathFinder.getGameSecondsSinceEmptyList() + (hoverPathFinder.getSecondsToHoverStill() - 1))
 //                &&
 //                    GameStateInfo.getInstance().getGameSeconds() > lastTimeEggLaid + eggCooldown
         ) {

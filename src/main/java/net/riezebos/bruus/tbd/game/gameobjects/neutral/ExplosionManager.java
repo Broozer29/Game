@@ -2,6 +2,8 @@ package net.riezebos.bruus.tbd.game.gameobjects.neutral;
 
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.Enemy;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyManager;
+import net.riezebos.bruus.tbd.game.gameobjects.friendlies.FriendlyManager;
+import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.Drone;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
 import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SpaceShip;
 import net.riezebos.bruus.tbd.game.util.ThornsDamageDealer;
@@ -116,6 +118,14 @@ public class ExplosionManager {
                 ThornsDamageDealer.getInstance().dealThornsDamageTo(explosion.getOwnerOrCreator());
                 explosion.dealDamageToGameObject(spaceship);
                 explosion.addCollidedSprite(spaceship);
+            }
+        }
+
+        for(Drone drone : FriendlyManager.getInstance().getAllProtossDrones()){
+            CollisionInfo collisionInfo = CollisionDetector.getInstance().detectCollision(explosion, drone);
+            if (collisionInfo != null) {
+                explosion.dealDamageToGameObject(drone);
+                explosion.addCollidedSprite(drone);
             }
         }
     }

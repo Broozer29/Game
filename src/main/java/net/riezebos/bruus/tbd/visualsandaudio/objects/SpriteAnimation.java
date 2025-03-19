@@ -120,13 +120,18 @@ public class SpriteAnimation extends Sprite implements Cloneable{
 		this.setVisible(true);
 	}
 
+	private void resetAnimationFrames(){
+		this.currentFrame = 0;
+		this.frameDelayCounter = 0;
+	}
+
 	// returns current frame of the gif
 
 	public BufferedImage getCurrentFrameImage(boolean increaseAnimationFrame) {
 		if (increaseAnimationFrame) {
 			if (currentFrame >= frames.size()) {
 				if (infiniteLoop) {
-					refreshAnimation();
+					resetAnimationFrames();
 				} else {
 					removeAnimation();
 				}
