@@ -7,8 +7,6 @@ import net.riezebos.bruus.tbd.game.items.ItemEnums;
 import net.riezebos.bruus.tbd.game.items.PlayerInventory;
 import net.riezebos.bruus.tbd.game.util.ExperienceCalculator;
 import net.riezebos.bruus.tbd.game.gamestate.save.SaveFile;
-import net.riezebos.bruus.tbd.game.util.OnScreenTextManager;
-import net.riezebos.bruus.tbd.visualsandaudio.data.DataClass;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.AudioManager;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.AudioEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
@@ -138,7 +136,7 @@ public class PlayerStats {
             spaceShipImage = ImageEnums.FireFighter;
         } else if (playerClass.equals(PlayerClass.Carrier)) {
             attackType = PlayerPrimaryAttackTypes.Carrier;
-            specialAttackType = PlayerSpecialAttackTypes.Carrier;
+            specialAttackType = PlayerSpecialAttackTypes.PlaceCarrierDrone;
             spaceShipImage = ImageEnums.ProtossCarrier;
         }
 
@@ -224,26 +222,24 @@ public class PlayerStats {
             case FlameShield:
                 loadFlameShieldPreset();
                 break;
-            case Carrier:
+            case PlaceCarrierDrone:
                 initCarrierSpecial();
                 break;
         }
     }
 
     private void initCarrierSpecial() {
-        OnScreenTextManager.getInstance().addText("Unimplemented initCarrierSpecial", DataClass.getInstance().getWindowWidth() / 2, DataClass.getInstance().getWindowHeight() / 2);
+        setSpecialBaseDamage(0);
+        setSpecialAttackRechargeCooldown(1f);
     }
 
     private void loadFlameShieldPreset() {
-        setPlayerSpecialAttackType(PlayerSpecialAttackTypes.FlameShield);
         setSpecialBaseDamage(baseDamage);
         setSpecialAttackRechargeCooldown(10f);
         fireFighterItemIgniteDamageMultiplier = 1f;
-
     }
 
     private void loadEMPPreset() {
-        setPlayerSpecialAttackType(PlayerSpecialAttackTypes.EMP);
         setSpecialBaseDamage(baseDamage * 0.5f);
         setHasImprovedElectroShred(false);
         setSpecialAttackRechargeCooldown(3f);
@@ -264,7 +260,6 @@ public class PlayerStats {
     }
 
     private void initCarrierPreset() {
-        OnScreenTextManager.getInstance().addText("Unimplemented initCarrierPreset", DataClass.getInstance().getWindowWidth() / 2, DataClass.getInstance().getWindowHeight() / 2);
         this.maxHitPoints += carrierBonusHealth;
         this.maxShieldHitPoints += carrierBonusHealth;
         this.amountOfProtossScouts = carrierStartingScouts;

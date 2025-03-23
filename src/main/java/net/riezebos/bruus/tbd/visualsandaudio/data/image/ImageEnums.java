@@ -30,6 +30,9 @@ public enum ImageEnums {
     ProtossDestroyedExplosion,
     ProtossCarrierSwitchFast,
     ProtossCarrierSwitchSlow,
+    ProtossCarrierDrone,
+    CarrierSwitchGearsIcon,
+    CarrierPlaceDroneIcon,
 
     //// Animations
     Impact_Explosion_One,

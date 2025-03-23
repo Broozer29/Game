@@ -541,6 +541,8 @@ public class ImageLoader {
                 return "/images/Ships/Player Ships/noenginecarrier.png";
             case InputMapping:  return "/images/UI/inputmapping.png";
             case UpWhite: return "/images/Icons/upwhite.png";
+            case CarrierPlaceDroneIcon: return "/images/Icons/CarrierDroneIcon.png";
+            case CarrierSwitchGearsIcon: return "/images/Icons/CarrierSwitchGearsIcon.png";
             case UpOrange: return "/images/Icons/uporange.png";
             case UpGrey: return "/images/Icons/upgrey.png";
             case UpgradeSelectedCheck: return "/images/Icons/upgradeSelected.png";

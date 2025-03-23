@@ -1,5 +1,9 @@
 package net.riezebos.bruus.tbd.game.gameobjects.player.spaceship;
 
+import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
+import net.riezebos.bruus.tbd.game.gameobjects.friendlies.FriendlyCreator;
+import net.riezebos.bruus.tbd.game.gameobjects.friendlies.FriendlyManager;
+import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.Drone;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.MissileManager;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.specialAttacks.ElectroShred;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.specialAttacks.FireShield;
@@ -9,13 +13,15 @@ import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerSpecialAttackTypes;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
-import net.riezebos.bruus.tbd.game.util.OnScreenTextManager;
-import net.riezebos.bruus.tbd.visualsandaudio.data.DataClass;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.AudioManager;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.AudioEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
+import net.riezebos.bruus.tbd.visualsandaudio.objects.AnimationManager;
+import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteAnimation;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteAnimationConfiguration;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteConfiguration;
+
+import java.util.List;
 
 public class SpaceShipSpecialGun {
     private PlayerStats playerStats = PlayerStats.getInstance();
@@ -25,11 +31,11 @@ public class SpaceShipSpecialGun {
     private double lastSecondsSpecialAttackChargeGained = 0.0;
     private double secondsUntilNextSpecialAttackCharge = 0.0;
 
-    public SpaceShipSpecialGun () {
+    public SpaceShipSpecialGun() {
         specialAttackCharges = 1;
     }
 
-    public void fire (int xCoordinate, int yCoordinate, PlayerSpecialAttackTypes attackType) {
+    public void fire(int xCoordinate, int yCoordinate, PlayerSpecialAttackTypes attackType) {
         double currentTime = GameState.getInstance().getGameSeconds();
         if (specialAttackCharges > 0 && currentTime >= (lastSecondsSpecialAttackUsed + 0.15)) {
             switch (attackType) {
@@ -41,7 +47,7 @@ public class SpaceShipSpecialGun {
                 case FlameShield:
                     fireFlameShield(xCoordinate, yCoordinate);
                     break;
-                case Carrier:
+                case PlaceCarrierDrone:
                     handleCarrierAttack();
                     break;
             }
@@ -53,17 +59,37 @@ public class SpaceShipSpecialGun {
                     lastSecondsSpecialAttackChargeGained = currentTime; // Start new charge cooldown
                 }
             }
-//            allowedToFire = false;
         }
     }
 
-    private void handleCarrierAttack(){
-        OnScreenTextManager.getInstance().addText("Unimplemented secondary attack lol",
-                DataClass.getInstance().getWindowWidth() / 2,
-                DataClass.getInstance().getWindowHeight() / 2);
+    private void handleCarrierAttack() {
+        Drone carrierDrone = FriendlyCreator.getCarrierDrone();
+
+        if (carrierDrone != null) {
+            carrierDrone.setVisible(false);
+            placeAnimationAtCarrierDrone(carrierDrone);
+            //send signal to protoss ships to come to player
+        } else {
+            GameObject player = PlayerManager.getInstance().getSpaceship();
+            carrierDrone = FriendlyCreator.createCarrierDrone();
+            int xCoordinate = Math.round(player.getXCoordinate() + player.getWidth() + (carrierDrone.getWidth() * 0.6f));
+            carrierDrone.setCenterCoordinates(xCoordinate,
+                    player.getCenterYCoordinate());
+            placeAnimationAtCarrierDrone(carrierDrone);
+            FriendlyManager.getInstance().addDrone(carrierDrone);
+        }
     }
 
-    private SpriteAnimationConfiguration createConfig (int xCoordinate, int yCoordinate, ImageEnums imageEnums, float scale, boolean loop) {
+    private void placeAnimationAtCarrierDrone(GameObject carrierDrone) {
+        SpriteAnimation spriteAnimation = new SpriteAnimation(createConfig(carrierDrone.getCenterXCoordinate(), carrierDrone.getCenterYCoordinate(),
+                ImageEnums.SelectNewClassAnimation, 1, false));
+        spriteAnimation.setFrameDelay(1);
+        spriteAnimation.setCenterCoordinates(carrierDrone.getCenterXCoordinate(), carrierDrone.getCenterYCoordinate());
+        AnimationManager.getInstance().addUpperAnimation(spriteAnimation);
+    }
+
+
+    private SpriteAnimationConfiguration createConfig(int xCoordinate, int yCoordinate, ImageEnums imageEnums, float scale, boolean loop) {
         SpriteConfiguration spriteConfiguration = new SpriteConfiguration();
         spriteConfiguration.setxCoordinate(xCoordinate);
         spriteConfiguration.setyCoordinate(yCoordinate);
@@ -74,7 +100,7 @@ public class SpaceShipSpecialGun {
 
     }
 
-    private void fireFlameShield (int xCoordinate, int yCoordinate) {
+    private void fireFlameShield(int xCoordinate, int yCoordinate) {
         float damage = PlayerStats.getInstance().getSpecialDamage();
         SpriteAnimationConfiguration spriteAnimationConfiguration = createConfig(xCoordinate, yCoordinate, ImageEnums.FireFighterFireShieldAppearing, 1, true);
         SpecialAttackConfiguration missileConfiguration = new SpecialAttackConfiguration(damage, true, true, false, true, true, true);
@@ -89,7 +115,7 @@ public class SpaceShipSpecialGun {
     }
 
     //Creates a special attack with an animation that follows the player
-    private void fireElectroShred (int xCoordinate, int yCoordinate) {
+    private void fireElectroShred(int xCoordinate, int yCoordinate) {
         float damage = playerStats.getSpecialDamage();
         SpriteAnimationConfiguration spriteAnimationConfiguration = createConfig(xCoordinate, yCoordinate, ImageEnums.Electroshred, 1, false);
         spriteAnimationConfiguration.setFrameDelay(3);
@@ -109,7 +135,7 @@ public class SpaceShipSpecialGun {
 
     }
 
-    public void updateFrameCount () {
+    public void updateFrameCount() {
         double currentTime = GameState.getInstance().getGameSeconds();
         // Gain a new charge if enough time has passed since the last charge was gained and there is a slot available
         if (specialAttackCharges < playerStats.getMaxSpecialAttackCharges()) {
@@ -130,11 +156,11 @@ public class SpaceShipSpecialGun {
 
     }
 
-    public int getSpecialAttackCharges () {
+    public int getSpecialAttackCharges() {
         return this.specialAttackCharges;
     }
 
-    public double getCurrentSpecialAttackFrame () {
+    public double getCurrentSpecialAttackFrame() {
         return secondsUntilNextSpecialAttackCharge;
     }
 }

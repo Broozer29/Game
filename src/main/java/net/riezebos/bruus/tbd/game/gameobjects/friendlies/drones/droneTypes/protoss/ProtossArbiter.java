@@ -27,6 +27,8 @@ public class ProtossArbiter extends Drone {
     private Map<GameObject, SpriteAnimation> animationsBelongingToTargets = new HashMap<>();
     private int maxTargetsAllowedToHealSimultaneously = 1;
     private float healingRate = 0.15f;
+    private boolean isMovingAroundCarrierDrone = false;
+
 
     public ProtossArbiter(SpriteAnimationConfiguration spriteAnimationConfiguration, FriendlyObjectConfiguration droneConfiguration, MovementConfiguration movementConfiguration) {
         super(spriteAnimationConfiguration, droneConfiguration, movementConfiguration);
@@ -37,6 +39,8 @@ public class ProtossArbiter extends Drone {
         super.initProtossDeathExplosion();
         this.movementConfiguration.setXMovementSpeed(2.5f);
         this.movementConfiguration.setYMovementSpeed(2.5f);
+        super.droneType = DroneTypes.ProtossArbiter;
+        super.deathSound = AudioEnums.ProtossShipDeath;
     }
 
     public void activateObject() {
@@ -45,10 +49,22 @@ public class ProtossArbiter extends Drone {
             this.movementConfiguration.setCurrentLocation(new Point(this.getXCoordinate(), this.getYCoordinate()));
             this.setAllowedVisualsToRotate(true);
             this.movementConfiguration.setDestination(ProtossUtils.getRandomPoint());
+            this.isMovingAroundCarrierDrone = ProtossUtils.carrierDroneIsPresent();
         }
-        super.droneType = DroneTypes.ProtossArbiter;
-        super.deathSound = AudioEnums.ProtossShipDeath;
+
+        if(!ProtossUtils.carrierDroneIsPresent() && this.isMovingAroundCarrierDrone){
+            immediatlyReturnToCarrier();
+        }
+
         fireAction();
+    }
+
+    private void immediatlyReturnToCarrier(){
+        this.movementConfiguration.resetMovementPath();
+        this.movementConfiguration.setCurrentLocation(new Point(this.getXCoordinate(), this.getYCoordinate()));
+        this.setAllowedVisualsToRotate(true);
+        this.movementConfiguration.setDestination(ProtossUtils.getRandomPoint());
+        this.isMovingAroundCarrierDrone = ProtossUtils.carrierDroneIsPresent();
     }
 
 

@@ -34,21 +34,23 @@ public class ClassDescription {
         switch (playerClass) {
             case FireFighter:
                 title = "Fire Fighter";
-                description = "The Fire Fighter utilizes a flamethrower to burn enemies. The attacks of the Fire Fighter apply Ignite which damages enemies over time. " +
+                description = "The Fire Fighter utilizes a flamethrower to burn enemies nearby. The attacks of the Fire Fighter apply Ignite which damages enemies over time. " +
                         "The Fire Fighter specializes in applying damage over time effects but has a very short attack range.";
                 baseDamage = PlayerStats.fireFighterBaseDamage;
                 baseAttackSpeed = PlayerStats.fireFighterAttackSpeed;
                 break;
             case Captain:
                 title = "Captain";
-                description = "The Captain resembles traditional values. Shooting laserbeams from a long distance and using a rapidly recharging EMP to destroy any enemies or missiles near him. " +
+                description = "The Captain resembles the traditional playstyle. Shooting laserbeams from a long distance and using a rapidly recharging EMP to destroy any enemies or missiles near him. " +
                         "The Captain specializes in upgrading his laserbeams and Guardian Drones whilst staying away from enemies with a long attack range.";
                 baseDamage = PlayerStats.captainBaseDamage;
                 baseAttackSpeed = PlayerStats.captainAttackSpeed;
                 break;
             case Carrier:
                 title = "Carrier";
-                description = "Placeholder";
+                description = "The Carrier has no attacks of his own. Instead, he creates an armada of Protoss ships to fight for him and he is slower than other ships but boasts stronger defenses. " +
+                        "The Carrier can direct where his Protoss ships should fight by placing a destructable beacon, otherwise the ships fly around the carrier. Switching gears allows the Carrier to replenish destroyed Protoss ships or " +
+                        "move away from danger.";
                 baseDamage = PlayerStats.carrierBaseDamage;
                 baseAttackSpeed = PlayerStats.carrierAttackSpeed;
                 break;

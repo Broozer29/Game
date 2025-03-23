@@ -5,6 +5,7 @@ import net.riezebos.bruus.tbd.game.gameobjects.enemies.Enemy;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyManager;
 import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.Drone;
 import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.droneTypes.DroneTypes;
+import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.droneTypes.protoss.CarrierDrone;
 import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.droneTypes.protoss.ProtossShuttle;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
@@ -44,6 +45,16 @@ public class FriendlyManager {
         this.drones.add(drone);
 
         OrbitingObjectsFormatter.reformatOrbitingObjects(PlayerManager.getInstance().getSpaceship(), 85);
+    }
+
+    public void addDrone(Drone drone){
+        if(!this.drones.contains(drone)) {
+            this.drones.add(drone);
+            if (!(drone instanceof CarrierDrone)) {
+                PlayerManager.getInstance().getSpaceship().getObjectOrbitingThis().add(drone);
+                OrbitingObjectsFormatter.reformatOrbitingObjects(PlayerManager.getInstance().getSpaceship(), 85);
+            }
+        }
     }
 
     public void addProtossShip(DroneTypes droneTypes) {

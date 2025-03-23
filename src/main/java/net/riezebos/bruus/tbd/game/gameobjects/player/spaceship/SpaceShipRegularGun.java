@@ -8,6 +8,7 @@ import net.riezebos.bruus.tbd.game.gameobjects.missiles.*;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.specialAttacks.FlameThrower;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.specialAttacks.SpecialAttack;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.specialAttacks.SpecialAttackConfiguration;
+import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerClass;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerPrimaryAttackTypes;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
@@ -43,11 +44,14 @@ public class SpaceShipRegularGun {
     private double lastAttackTime = 0.0;
     private double timeChannelAttackGetsCleared = 0.0;
 
-    public SpaceShipRegularGun () {
+    private float orangeBarMaxValue = -1;
+    private float orangeBarCurrentValue = -1;
+
+    public SpaceShipRegularGun() {
 
     }
 
-    public void fire (int xCoordinate, int yCoordinate, PlayerPrimaryAttackTypes playerAttackType) {
+    public void fire(int xCoordinate, int yCoordinate, PlayerPrimaryAttackTypes playerAttackType) {
         double currentTime = GameState.getInstance().getGameSeconds();
         if (currentTime >= lastAttackTime + playerStats.getAttackSpeed()) {
             lastAttackTime = currentTime;  // Update the last attack time
@@ -64,7 +68,7 @@ public class SpaceShipRegularGun {
                 handleRegularMissile(xCoordinate, yCoordinate, playerAttackType);
             } else if (playerAttackType.equals(PlayerPrimaryAttackTypes.Flamethrower)) {
                 startFiringFlameThrower(xCoordinate, yCoordinate);
-            } else if(playerAttackType.equals(PlayerPrimaryAttackTypes.Carrier)){
+            } else if (playerAttackType.equals(PlayerPrimaryAttackTypes.Carrier)) {
                 handleCarrierAttack();
             }
 
@@ -72,14 +76,15 @@ public class SpaceShipRegularGun {
     }
 
     private boolean carrierFastSwitch = false;
-    private void handleCarrierAttack(){
-        if(!carrierFastSwitch){
+
+    private void handleCarrierAttack() {
+        if (!carrierFastSwitch) {
             ProtossUtils.getInstance().setAllowedToBuildProtoss(false);
             carrierFastSwitch = true;
             PlayerStats.getInstance().setMovementSpeed(4);
             AudioManager.getInstance().addAudio(AudioEnums.CarrierSpeedingUp);
             addSwitchingGearAnimation(ImageEnums.ProtossCarrierSwitchFast);
-        } else if(carrierFastSwitch){
+        } else if (carrierFastSwitch) {
             ProtossUtils.getInstance().setAllowedToBuildProtoss(true);
             carrierFastSwitch = false;
             PlayerStats.getInstance().setMovementSpeed(2.5f);
@@ -96,23 +101,26 @@ public class SpaceShipRegularGun {
         spriteConfiguration.setScale(1);
         spriteConfiguration.setImageType(imageType);
 
-        SpriteAnimationConfiguration spriteAnimationConfiguration = new SpriteAnimationConfiguration(spriteConfiguration, 1, false);
+        SpriteAnimationConfiguration spriteAnimationConfiguration = new SpriteAnimationConfiguration(spriteConfiguration, 2, false);
         SpriteAnimation spriteAnimation = new SpriteAnimation(spriteAnimationConfiguration);
         spriteAnimation.setCenterCoordinates(spaceShip.getCenterXCoordinate(), spaceShip.getCenterYCoordinate());
         spaceShip.addPlayerFollowingAnimation(spriteAnimation);
         AnimationManager.getInstance().addUpperAnimation(spriteAnimation);
     }
 
-    private void handleRegularMissile (int xCoordinate, int yCoordinate, PlayerPrimaryAttackTypes playerAttackType) {
+    private void handleRegularMissile(int xCoordinate, int yCoordinate, PlayerPrimaryAttackTypes playerAttackType) {
         ImageEnums visualImage = playerStats.getPlayerMissileImage();
         float scale = playerStats.getMissileScale();
         PathFinder pathFinder = new RegularPathFinder();
         fireMissile(xCoordinate, yCoordinate, visualImage, scale, pathFinder, playerAttackType.getCorrespondingMissileEnum());
         playFiringAudio(playerAttackType);
+
+        orangeBarCurrentValue = -1;
+        orangeBarMaxValue = -1;
     }
 
 
-    private void startFiringFlameThrower (int xCoordinate, int yCoordinate) {
+    private void startFiringFlameThrower(int xCoordinate, int yCoordinate) {
         if (this.channeledAttack == null) {
             PlayerManager playerManager = PlayerManager.getInstance();
             SpaceShip spaceShip = playerManager.getSpaceship();
@@ -135,17 +143,20 @@ public class SpaceShipRegularGun {
             MissileManager.getInstance().addSpecialAttack(specialAttack);
             AudioManager.getInstance().addAudio(AudioEnums.Firewall);
         }
+
+        orangeBarCurrentValue = -1;
+        orangeBarMaxValue = -1;
     }
 
 
-    public void stopFiring () {
+    public void stopFiring() {
         if (this.channeledAttack != null && !this.channeledAttack.isDissipating()) {
             this.channeledAttack.startDissipating();
             timeChannelAttackGetsCleared = GameState.getInstance().getGameSeconds();
         }
     }
 
-    private void playFiringAudio (PlayerPrimaryAttackTypes playerAttackType) {
+    private void playFiringAudio(PlayerPrimaryAttackTypes playerAttackType) {
         switch (playerAttackType) {
             case Laserbeam -> playMissileAudio(AudioEnums.NewPlayerLaserbeam);
             case Flamethrower -> playMissileAudio(AudioEnums.Firewall);
@@ -153,8 +164,8 @@ public class SpaceShipRegularGun {
     }
 
 
-    private void fireMissile (int xCoordinate, int yCoordinate, ImageEnums playerMissileType,
-                              float missileScale, PathFinder missilePathFinder, MissileEnums attackType) {
+    private void fireMissile(int xCoordinate, int yCoordinate, ImageEnums playerMissileType,
+                             float missileScale, PathFinder missilePathFinder, MissileEnums attackType) {
         int movementSpeed = 5;
         MissileCreator missileCreator1 = MissileCreator.getInstance();
         SpriteConfiguration spriteConfiguration = missileCreator1.createMissileSpriteConfig(xCoordinate, yCoordinate,
@@ -205,11 +216,11 @@ public class SpaceShipRegularGun {
 
     }
 
-    private void playMissileAudio (AudioEnums audioEnum) {
+    private void playMissileAudio(AudioEnums audioEnum) {
         this.audioManager.addAudio(audioEnum);
     }
 
-    public void updateFrameCount () {
+    public void updateFrameCount() {
         if (channeledAttack != null && channeledAttack.isDissipating()) {
             if ((timeChannelAttackGetsCleared + 0.5d) < GameState.getInstance().getGameSeconds()) {
                 channeledAttack = null;
@@ -217,4 +228,17 @@ public class SpaceShipRegularGun {
         }
     }
 
+    public float getOrangeBarMaxValue() {
+        if (playerStats.getPlayerClass().equals(PlayerClass.Carrier)) {
+            return ProtossUtils.getProtossShipBuildTime();
+        }
+        return orangeBarMaxValue;
+    }
+
+    public float getOrangeBarCurrentValue() {
+        if (playerStats.getPlayerClass().equals(PlayerClass.Carrier)) {
+            return ProtossUtils.getProtossShipBuilderTimer();
+        }
+        return orangeBarCurrentValue;
+    }
 }

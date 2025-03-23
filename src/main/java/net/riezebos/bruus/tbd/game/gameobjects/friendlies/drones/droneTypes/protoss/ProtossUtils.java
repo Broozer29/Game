@@ -1,6 +1,8 @@
 package net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.droneTypes.protoss;
 
+import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
 import net.riezebos.bruus.tbd.game.gameobjects.friendlies.FriendlyManager;
+import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.Drone;
 import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.droneTypes.DroneTypes;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.MissileManager;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
@@ -9,6 +11,7 @@ import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SpaceShip;
 import net.riezebos.bruus.tbd.game.movement.Point;
 
 import java.awt.*;
+import java.util.List;
 import java.util.Random;
 
 public class ProtossUtils {
@@ -18,6 +21,7 @@ public class ProtossUtils {
     private static float protossShipBuilderTimer = 0.0f;
     private static float protossShipBuildTime = 5.0f;
     private boolean isAllowedToBuildProtoss = true;
+
     private ProtossUtils() {
 
     }
@@ -26,11 +30,22 @@ public class ProtossUtils {
         return instance;
     }
 
-    public static Point getRandomPoint() {
-        SpaceShip spaceShip = PlayerManager.getInstance().getSpaceship();
+    public static boolean carrierDroneIsPresent(){
+        return !FriendlyManager.getInstance().getDronesByDroneType(DroneTypes.CarrierDrone).isEmpty();
+    }
 
-        int xCoordinate = spaceShip.getCenterXCoordinate();
-        int yCoordinate = spaceShip.getCenterYCoordinate();
+    public static Point getRandomPoint() {
+        GameObject selectedObject = PlayerManager.getInstance().getSpaceship();
+        List<Drone> carrierDrones = FriendlyManager.getInstance().getDrones().stream()
+                .filter(drone -> drone instanceof CarrierDrone)
+                .toList();
+
+        if(!carrierDrones.isEmpty()){
+            selectedObject = carrierDrones.get(0);
+        }
+
+        int xCoordinate = selectedObject.getCenterXCoordinate();
+        int yCoordinate = selectedObject.getCenterYCoordinate();
 
         int minDistance = 20; //To be adjusted
         int maxDistance = 200; //To be adjusted
@@ -71,6 +86,11 @@ public class ProtossUtils {
         }
 
         protossShipBuilderTimer += 0.015f;
+
+        if(protossShipBuilderTimer >= 5.0f){
+            protossShipBuilderTimer = 5.0f;
+        }
+
         if (protossShipBuilderTimer >= protossShipBuildTime) {
             boolean hasBuildShips = false;
 
@@ -132,5 +152,13 @@ public class ProtossUtils {
 
     public void setAllowedToBuildProtoss(boolean allowedToBuildProtoss) {
         isAllowedToBuildProtoss = allowedToBuildProtoss;
+    }
+
+    public static float getProtossShipBuilderTimer() {
+        return protossShipBuilderTimer;
+    }
+
+    public static float getProtossShipBuildTime() {
+        return protossShipBuildTime;
     }
 }

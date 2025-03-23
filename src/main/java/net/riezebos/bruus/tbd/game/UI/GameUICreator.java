@@ -153,8 +153,11 @@ public class GameUICreator {
             case FlameShield:
                 frameType = ImageEnums.Starcraft2_Fire_Hardened_Shields;
                 break;
+            case PlaceCarrierDrone:
+                frameType = ImageEnums.CarrierPlaceDroneIcon;
+                break;
             default:
-                frameType = ImageEnums.Starcraft2_Electric_Field;
+                frameType = ImageEnums.Test_Image;
                 break;
 
         }

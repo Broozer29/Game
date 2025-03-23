@@ -394,6 +394,8 @@ public class ImageDatabase {
     private BufferedImage sc2ConcentratedLaser;
     private BufferedImage sc2RepairBeam;
     private BufferedImage protossCarrierNoEngine;
+    private BufferedImage carrierSwitchGearsIcon;
+    private BufferedImage carrierPlaceDroneIcon;
     private List<BufferedImage> protossScout = new ArrayList<>();
     private List<BufferedImage> protossShuttle = new ArrayList<>();
     private List<BufferedImage> protossArbiter = new ArrayList<>();
@@ -402,6 +404,7 @@ public class ImageDatabase {
 
     private List<BufferedImage> carrierSwitchFast = new ArrayList<>();
     private List<BufferedImage> carrierSwitchSlow = new ArrayList<>();
+    private List<BufferedImage> carrierDrone = new ArrayList<>();
     private List<BufferedImage> fireFighterFlameThrowerAppearing = new ArrayList<>();
     private List<BufferedImage> fireFighterFlameThrowerLooping = new ArrayList<>();
     private List<BufferedImage> fireFighterFlameThrowerDissipating = new ArrayList<>();
@@ -542,6 +545,8 @@ public class ImageDatabase {
         this.classSelectionUI = imgLoader.getImage(ImageEnums.SelectClass);
         this.starcraft2_FireBatWeapon = imgLoader.getImage(ImageEnums.Starcraft2FireBatWeapon);
         this.sc2RepairBeam = imgLoader.getImage(ImageEnums.Starcraft2RepairBeam);
+        this.carrierSwitchGearsIcon = imgLoader.getImage(ImageEnums.CarrierSwitchGearsIcon);
+        this.carrierPlaceDroneIcon = imgLoader.getImage(ImageEnums.CarrierPlaceDroneIcon);
     }
 
 
@@ -803,6 +808,8 @@ public class ImageDatabase {
 
     public BufferedImage getImage (ImageEnums imageType) {
         switch (imageType) {
+            case CarrierPlaceDroneIcon: return this.carrierPlaceDroneIcon;
+            case CarrierSwitchGearsIcon: return this.carrierSwitchGearsIcon;
             case ClubAcessUnlock: return this.clubAccessUnlock;
             case CompoundWealthUnlock: return this.compoundWealthUnlock;
             case TreasureHunterUnlock: return this.treasureHunterUnlock;
@@ -1339,6 +1346,7 @@ public class ImageDatabase {
         switch (imageType) {
             case ProtossCarrierSwitchFast: return this.carrierSwitchFast;
             case ProtossCarrierSwitchSlow: return this.carrierSwitchSlow;
+            case ProtossCarrierDrone: return this.carrierDrone;
             case ProtossDestroyedExplosion: return this.protossDestroyedExplosion;
             case ProtossArbiter: return this.protossArbiter;
             case ProtossCarrier: return this.protossCarrier;
@@ -1636,6 +1644,12 @@ public class ImageDatabase {
             String sourceString = String.format("/images/Ships/Enemy Ships/Guardian/death/%d.png", i);
             BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
             guardianDeath.add(image);
+        }
+
+        for (int i = 0; i < 4; i++) {
+            String sourceString = String.format("/images/Ships/CarrierDrone/%d.png", i);
+            BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+            carrierDrone.add(image);
         }
 
         for (int i = 0; i < 7; i++) {

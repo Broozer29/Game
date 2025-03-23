@@ -26,6 +26,8 @@ public class ProtossScout extends Drone {
     private int attackRange = 200;
     private float defaultMoveSpeed = 3;
     private boolean isMovingSlow = false;
+    public static float scoutDamageFactor = 0.5f;
+    private boolean isMovingAroundCarrierDrone = false;
 
     public ProtossScout(SpriteAnimationConfiguration spriteAnimationConfiguration, FriendlyObjectConfiguration droneConfiguration, MovementConfiguration movementConfiguration) {
         super(spriteAnimationConfiguration, droneConfiguration, movementConfiguration);
@@ -44,9 +46,23 @@ public class ProtossScout extends Drone {
             this.movementConfiguration.setCurrentLocation(new Point(this.getXCoordinate(), this.getYCoordinate()));
             this.setAllowedVisualsToRotate(true);
             this.movementConfiguration.setDestination(ProtossUtils.getRandomPoint());
+            this.isMovingAroundCarrierDrone = ProtossUtils.carrierDroneIsPresent();
         }
 
+        if(!ProtossUtils.carrierDroneIsPresent() && this.isMovingAroundCarrierDrone){
+            immediatlyReturnToCarrier();
+        }
+
+
         fireAction();
+    }
+
+    private void immediatlyReturnToCarrier(){
+        this.movementConfiguration.resetMovementPath();
+        this.movementConfiguration.setCurrentLocation(new Point(this.getXCoordinate(), this.getYCoordinate()));
+        this.setAllowedVisualsToRotate(true);
+        this.movementConfiguration.setDestination(ProtossUtils.getRandomPoint());
+        this.isMovingAroundCarrierDrone = ProtossUtils.carrierDroneIsPresent();
     }
 
 
@@ -108,7 +124,7 @@ public class ProtossScout extends Drone {
 
         float xMovementSpeed = 10f;
         float yMovementSpeed = 10f;
-        float damage = PlayerStats.getInstance().getNormalAttackDamage() * 0.5f;
+        float damage = PlayerStats.getInstance().getNormalAttackDamage() * scoutDamageFactor;
         Direction rotation = Direction.RIGHT;
         MovementPatternSize movementPatternSize = MovementPatternSize.SMALL;
         PathFinder pathFinder = new StraightLinePathFinder();

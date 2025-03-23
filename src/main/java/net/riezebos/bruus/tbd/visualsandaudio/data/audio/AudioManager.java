@@ -78,8 +78,10 @@ public class AudioManager {
     }
 
     private static final Map<AudioEnums, Long> soundCooldownMap = Map.of(
-            AudioEnums.NotEnoughMinerals, 500L, // Cooldown for NotEnoughMinerals is 2000 ms (2 seconds)
-            AudioEnums.PlayerTakesDamage, 100L     // Cooldown for SomeOtherSound is 5000 ms (5 seconds)
+            AudioEnums.NotEnoughMinerals, 500L, //in ms
+            AudioEnums.PlayerTakesDamage, 100L ,
+            AudioEnums.CarrierSlowingDown, 200L,
+            AudioEnums.CarrierSpeedingUp, 200L
     );
 
     private boolean canPlayAudio (AudioEnums audioType) {

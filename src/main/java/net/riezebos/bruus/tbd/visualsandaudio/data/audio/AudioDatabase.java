@@ -80,8 +80,8 @@ public class AudioDatabase {
         put(AudioEnums.MutaliskBirth, 2);
         put(AudioEnums.MutaliskDeath, 3);
         put(AudioEnums.ProtossShipDeath, 5);
-        put(AudioEnums.CarrierSlowingDown, 1);
-        put(AudioEnums.CarrierSpeedingUp, 1);
+        put(AudioEnums.CarrierSlowingDown, 4);
+        put(AudioEnums.CarrierSpeedingUp, 2);
         put(AudioEnums.DevourerBirth, 3);
         put(AudioEnums.DevourerHit, 3);
         put(AudioEnums.DevourerDeath, 3);

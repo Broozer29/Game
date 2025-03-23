@@ -23,6 +23,7 @@ public class ProtossShuttle extends Drone {
     private float shuttleDamage = PlayerStats.getInstance().getNormalAttackDamage() * 300;
     private boolean hasAccelerated = false;
     private static float shuttleSpeed = 2;
+    private boolean isMovingAroundCarrierDrone = false;
 
     public ProtossShuttle(SpriteAnimationConfiguration spriteAnimationConfiguration, FriendlyObjectConfiguration droneConfiguration, MovementConfiguration movementConfiguration) {
         super(spriteAnimationConfiguration, droneConfiguration, movementConfiguration);
@@ -36,16 +37,28 @@ public class ProtossShuttle extends Drone {
     }
 
 
-
     public void activateObject() {
         if (this.getCurrentLocation().equals(this.movementConfiguration.getDestination())) {
             this.movementConfiguration.resetMovementPath();
             this.movementConfiguration.setCurrentLocation(new Point(this.getXCoordinate(), this.getYCoordinate()));
             this.setAllowedVisualsToRotate(true);
             this.movementConfiguration.setDestination(ProtossUtils.getRandomPoint());
+            this.isMovingAroundCarrierDrone = ProtossUtils.carrierDroneIsPresent();
+        }
+
+        if(!ProtossUtils.carrierDroneIsPresent() && this.isMovingAroundCarrierDrone){
+            immediatlyReturnToCarrier();
         }
 
         fireAction();
+    }
+
+    private void immediatlyReturnToCarrier(){
+        this.movementConfiguration.resetMovementPath();
+        this.movementConfiguration.setCurrentLocation(new Point(this.getXCoordinate(), this.getYCoordinate()));
+        this.setAllowedVisualsToRotate(true);
+        this.movementConfiguration.setDestination(ProtossUtils.getRandomPoint());
+        this.isMovingAroundCarrierDrone = ProtossUtils.carrierDroneIsPresent();
     }
 
 
@@ -56,7 +69,7 @@ public class ProtossShuttle extends Drone {
 
         if (target != null && target.isVisible() && target.getCurrentHitpoints() >= 0) {
             this.movementConfiguration.resetMovementPath();
-            if(!this.hasAccelerated) {
+            if (!this.hasAccelerated) {
                 this.movementConfiguration.setXMovementSpeed(shuttleSpeed * 2f);
                 this.movementConfiguration.setYMovementSpeed(shuttleSpeed * 2f);
                 this.hasAccelerated = true;
@@ -66,7 +79,7 @@ public class ProtossShuttle extends Drone {
             this.movementConfiguration.setDestination(new Point(target.getCenterXCoordinate(), target.getCenterYCoordinate()));
         } else {
             target = null;
-            if(this.hasAccelerated) {
+            if (this.hasAccelerated) {
                 this.movementConfiguration.setXMovementSpeed(shuttleSpeed);
                 this.movementConfiguration.setYMovementSpeed(shuttleSpeed);
                 this.hasAccelerated = false;

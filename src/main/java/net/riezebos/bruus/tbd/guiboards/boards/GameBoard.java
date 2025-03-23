@@ -17,6 +17,7 @@ import net.riezebos.bruus.tbd.game.gameobjects.neutral.ExplosionManager;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
 import net.riezebos.bruus.tbd.game.gameobjects.player.boons.BoonEnums;
+import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SpaceShip;
 import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SpaceShipSpecialGun;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.gamestate.GameStatsTracker;
@@ -225,7 +226,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
             SaveManager.getInstance().exportCurrentSave();
             BoardManager.getInstance().openShopWindow();
 
-            if(PlayerInventory.getInstance().getCashMoney() >= CompoundWealth.mineralUnlockRequirement && PlayerProfileManager.getInstance().getLoadedProfile().getCompoundWealthLevel() < 1){
+            if (PlayerInventory.getInstance().getCashMoney() >= CompoundWealth.mineralUnlockRequirement && PlayerProfileManager.getInstance().getLoadedProfile().getCompoundWealthLevel() < 1) {
                 PlayerProfileManager.getInstance().getLoadedProfile().setCompoundWealthLevel(1);
                 PlayerProfileManager.getInstance().exportCurrentProfile();
                 BoardManager.getInstance().getShopBoard().addContractAnimation(BoonSelectionBoardCreator.createBoonUnlockComponent(BoonEnums.COMPOUND_WEALTH));
@@ -244,7 +245,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
     }
 
     public void addEmeraldIcon(UIObject icon) {
-        if(!this.floatingIcons.contains(icon)) {
+        if (!this.floatingIcons.contains(icon)) {
             this.floatingIcons.add(icon);
         }
     }
@@ -493,7 +494,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
             if (drone.isVisible()) {
                 drawAnimation(g, drone.getAnimation());
 
-                if(drone.isShowHealthBar()){
+                if (drone.isShowHealthBar()) {
                     drawHealthBars(g, drone);
                 }
             }
@@ -501,11 +502,13 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
 
         // Draw friendly spaceship
         if (playerManager.getSpaceship().isVisible()) {
-            if(playerManager.getSpaceship().getAnimation() != null) {
+            if (playerManager.getSpaceship().getAnimation() != null) {
                 drawAnimation(g, playerManager.getSpaceship().getAnimation());
             } else {
                 drawImage(g, playerManager.getSpaceship());
             }
+
+            drawPlayerSpecialBar(g, playerManager.getSpaceship());
         }
 
         drawSpecialAttacks(VisualLayer.Upper, g);
@@ -519,7 +522,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
             drawAnimation(g, animation);
         }
 
-        for(UIObject obj: this.floatingIcons){
+        for (UIObject obj : this.floatingIcons) {
             drawImage(g, obj);
             obj.setYCoordinate(obj.getYCoordinate() - 1);
         }
@@ -624,7 +627,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
 
 
     private void drawAnimation(Graphics2D g, SpriteAnimation animation) {
-        if (animation.getCurrentFrameImage(false) != null && animation.isVisible())  {
+        if (animation.getCurrentFrameImage(false) != null && animation.isVisible()) {
             // Save the original composite
             Composite originalComposite = g.getComposite();
             // Set the alpha composite
@@ -648,6 +651,22 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
         g.fillRect((gameobject.getXCoordinate() + gameobject.getWidth() + 10), gameobject.getYCoordinate(), 2, gameobject.getHeight());
         g.setColor(Color.GREEN);
         g.fillRect((gameobject.getXCoordinate() + gameobject.getWidth() + 10), gameobject.getYCoordinate(), 2, actualAmount);
+    }
+
+
+    private void drawPlayerSpecialBar(Graphics2D g, SpaceShip player) {
+        float currentValue = player.getSpaceShipRegularGun().getOrangeBarCurrentValue();
+        float maxValue = player.getSpaceShipRegularGun().getOrangeBarMaxValue();
+
+        if (currentValue < 0 || maxValue < 0) {
+            return; //Don't draw
+        }
+        int actualAmount = Math.round(player.getHeight() * currentValue / maxValue);
+
+        g.setColor(new Color(110, 69, 1));
+        g.fillRect((player.getXCoordinate() - 10), player.getYCoordinate(), 3, player.getHeight());
+        g.setColor(Color.ORANGE);
+        g.fillRect((player.getXCoordinate() - 10), player.getYCoordinate(), 3, actualAmount);
     }
 
     private void drawCurrentAmountOFMinerals(Graphics2D g) {

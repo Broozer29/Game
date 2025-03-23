@@ -716,4 +716,11 @@ public class SpaceShip extends GameObject {
         return PlayerStats.getInstance().getMaxHitPoints();
     }
 
+    public SpaceShipRegularGun getSpaceShipRegularGun() {
+        return spaceShipRegularGun;
+    }
+
+    public SpaceShipSpecialGun getSpaceShipSpecialGun() {
+        return spaceShipSpecialGun;
+    }
 }

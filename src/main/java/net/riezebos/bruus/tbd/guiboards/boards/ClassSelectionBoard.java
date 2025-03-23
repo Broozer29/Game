@@ -217,7 +217,6 @@ public class ClassSelectionBoard extends JPanel implements TimerHolder {
         primaryWeaponDescription = ClassSelectionBoardCreator.createPrimaryWeaponDescription(lastHoveredOtion);
     }
 
-    // Method to set the appropriate weapon icons based on the PlayerClass
     private void setWeaponIcons(PlayerClass playerClass) {
         switch (playerClass) {
             case Captain:
@@ -229,11 +228,10 @@ public class ClassSelectionBoard extends JPanel implements TimerHolder {
                 secondaryWeaponIcon.setNewImage(ImageEnums.Starcraft2_Fire_Hardened_Shields);
                 break;
             case Carrier:
-                primaryWeaponIcon.setNewImage(ImageEnums.Test_Image);
-                secondaryWeaponIcon.setNewImage(ImageEnums.Test_Image);
+                primaryWeaponIcon.setNewImage(ImageEnums.CarrierSwitchGearsIcon);
+                secondaryWeaponIcon.setNewImage(ImageEnums.CarrierPlaceDroneIcon);
                 break;
             default:
-                // Handle default case, if needed (e.g., if PlayerClass is unexpected)
                 break;
         }
     }

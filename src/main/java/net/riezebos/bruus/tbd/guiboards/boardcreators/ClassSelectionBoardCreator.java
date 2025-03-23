@@ -1,5 +1,6 @@
 package net.riezebos.bruus.tbd.guiboards.boardcreators;
 
+import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.droneTypes.protoss.ProtossScout;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerClass;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
 import net.riezebos.bruus.tbd.guiboards.boardEnums.MenuFunctionEnums;
@@ -152,7 +153,7 @@ public class ClassSelectionBoardCreator {
             case FireFighter:
                 return "Primary: Flamethrower";
             case Carrier:
-                return "Primary: Carrier";
+                return "Primary: Switch gears";
         }
         return "Placeholder";
     }
@@ -164,7 +165,7 @@ public class ClassSelectionBoardCreator {
             case FireFighter:
                 return "Hold fire to unleash a flamethrower which deals damage and destroys missiles. Deals 100% damage and applies Ignite.";
             case Carrier:
-                return "placeholder";
+                return "Switch between fast and slow movement. Start the game with 4 Protoss Scouts that deal " + ProtossScout.scoutDamageFactor * 100 +"% damage. While moving fast, you do not rebuild Protoss ships.";
         }
         return "Placeholder";
     }
@@ -211,7 +212,7 @@ public class ClassSelectionBoardCreator {
             case FireFighter:
                 return "Creates a ring of fire around you that lasts 4 seconds. Dealing 50% damage, applies Ignite and destroys enemy missiles. Recharges every 10 seconds.";
             case Carrier:
-                return "description";
+                return "Places a beacon in front of you. Protoss ships will prioritize hovering around the beacon over the Carrier.";
         }
         return "Placeholder";
     }
