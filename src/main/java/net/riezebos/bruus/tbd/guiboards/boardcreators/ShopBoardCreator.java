@@ -16,7 +16,6 @@ import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.MusicMediaPlayer;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteConfiguration;
 
-import javax.xml.crypto.Data;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -155,6 +154,32 @@ public class ShopBoardCreator {
 
 //        moneyImage.setYCoordinate(moneyY1 - moneyImage.getHeight() / 2);
         textCollection.addComponentToCollection(moneyImage);
+
+        return textCollection;
+    }
+
+    public GUITextCollection createProtossCapacityText(GUIComponent backgroundCard){
+        int startingXCoordinate = Math.round(backgroundCard.getXCoordinate() + backgroundCard.getWidth() * 0.2f);
+        int moneyY = Math.round(backgroundCard.getYCoordinate() + backgroundCard.getHeight() * 0.85f);
+
+        int amount = PlayerStats.getInstance().getAmountOfProtossArbiters() + PlayerStats.getInstance().getAmountOfProtossShuttles() + PlayerStats.getInstance().getAmountOfProtossScouts();
+        String text = "" + amount + ":" + PlayerStats.getInstance().getMaxAmountOfProtoss();
+
+        GUITextCollection textCollection = new GUITextCollection(startingXCoordinate, moneyY, text);
+        textCollection.setScale(1 * DataClass.getInstance().getResolutionFactor());
+
+        startingXCoordinate = startingXCoordinate - textCollection.getWidth() / 2;
+        textCollection.setStartingXCoordinate(startingXCoordinate);
+
+        int shipX = startingXCoordinate + textCollection.getWidth(); //Manually place it at the correct X coordinate
+        int shipY = textCollection.getComponents().get(0).getCenterYCoordinate();
+        float scale = 0.2f * DataClass.getInstance().getResolutionFactor();
+
+        SpriteConfiguration spriteConfiguration = createSpriteConfiguration(shipX, shipY, scale, ImageEnums.ProtossShipAmountIcon);
+        DisplayOnly scoutImage = new DisplayOnly(spriteConfiguration);
+
+        scoutImage.setCenterYCoordinate(shipY);
+        textCollection.addComponentToCollection(scoutImage);
 
         return textCollection;
     }
@@ -337,8 +362,6 @@ public class ShopBoardCreator {
 
             SpriteConfiguration spriteConfiguration = createSpriteConfiguration(x, y, 1, ImageEnums.Invisible);
             ShopItem shopItem = new ShopItem(spriteConfiguration, type);
-//            shopItem.getMenuItemInformation().setCost(shopItem.getMenuItemInformation().getCost() * 1.5f);
-
 
             if (shopManager.getRowsUnlocked() < 3) {
                 shopItem.lockItemInShop();

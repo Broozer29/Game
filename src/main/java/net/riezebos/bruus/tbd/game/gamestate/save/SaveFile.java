@@ -2,11 +2,12 @@ package net.riezebos.bruus.tbd.game.gamestate.save;
 
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerClass;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
+import net.riezebos.bruus.tbd.game.gameobjects.player.boons.BoonEnums;
+import net.riezebos.bruus.tbd.game.gamestate.GameMode;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.items.Item;
 import net.riezebos.bruus.tbd.game.items.ItemEnums;
 import net.riezebos.bruus.tbd.game.items.PlayerInventory;
-import net.riezebos.bruus.tbd.game.gameobjects.player.boons.Boon;
 import net.riezebos.bruus.tbd.game.gameobjects.player.boons.BoonManager;
 
 import java.util.HashMap;
@@ -14,9 +15,10 @@ import java.util.Map;
 
 public class SaveFile {
 
-    private PlayerClass playerclass = PlayerStats.getInstance().getPlayerClass();
-    private int playerLevel = PlayerStats.getInstance().getCurrentLevel();
-    private float playerXP = PlayerStats.getInstance().getCurrentXP();
+    private PlayerClass playerclass;
+    private int playerLevel;
+    private float playerXP;
+    private GameMode gameMode;
 
     private Map<ItemEnums, Integer> items;
 
@@ -26,12 +28,13 @@ public class SaveFile {
     private long gameTicksExecuted;
     private float money;
 
-    private Boon selectedUtilityBoon;
-    private Boon selectedOffenseBoon;
-    private Boon selectedDefenseBoon;
+    private BoonEnums selectedUtilityBoon;
+    private BoonEnums selectedOffenseBoon;
+    private BoonEnums selectedDefenseBoon;
 
 
     public SaveFile() {
+        gameMode = GameState.getInstance().getGameMode();
         playerclass = PlayerStats.getInstance().getPlayerClass();
         playerLevel = PlayerStats.getInstance().getCurrentLevel();
         playerXP = PlayerStats.getInstance().getCurrentXP();
@@ -40,9 +43,10 @@ public class SaveFile {
         gameTicksExecuted = GameState.getInstance().getGameTicksExecuted();
         money = PlayerInventory.getInstance().getCashMoney();
 
-        selectedUtilityBoon = BoonManager.getInstance().getUtilityBoon();
-        selectedDefenseBoon = BoonManager.getInstance().getDefensiveBoon();
-        selectedOffenseBoon = BoonManager.getInstance().getOffensiveBoon();
+
+        selectedUtilityBoon = BoonManager.getInstance().getUtilityBoon() != null ? BoonManager.getInstance().getUtilityBoon().getBoonEnum() : null;
+        selectedDefenseBoon = BoonManager.getInstance().getDefensiveBoon() != null ? BoonManager.getInstance().getDefensiveBoon().getBoonEnum() : null;
+        selectedOffenseBoon = BoonManager.getInstance().getOffensiveBoon() != null ? BoonManager.getInstance().getOffensiveBoon().getBoonEnum() : null;
 
         this.items = new HashMap<>();
         for (Map.Entry<ItemEnums, Item> entry : PlayerInventory.getInstance().getItems().entrySet()) {
@@ -124,27 +128,35 @@ public class SaveFile {
         this.money = money;
     }
 
-    public Boon getSelectedUtilityBoon() {
+    public BoonEnums getSelectedUtilityBoon() {
         return selectedUtilityBoon;
     }
 
-    public void setSelectedUtilityBoon(Boon selectedUtilityBoon) {
+    public void setSelectedUtilityBoon(BoonEnums selectedUtilityBoon) {
         this.selectedUtilityBoon = selectedUtilityBoon;
     }
 
-    public Boon getSelectedOffenseBoon() {
+    public BoonEnums getSelectedOffenseBoon() {
         return selectedOffenseBoon;
     }
 
-    public void setSelectedOffenseBoon(Boon selectedOffenseBoon) {
+    public void setSelectedOffenseBoon(BoonEnums selectedOffenseBoon) {
         this.selectedOffenseBoon = selectedOffenseBoon;
     }
 
-    public Boon getSelectedDefenseBoon() {
+    public BoonEnums getSelectedDefenseBoon() {
         return selectedDefenseBoon;
     }
 
-    public void setSelectedDefenseBoon(Boon selectedDefenseBoon) {
+    public void setSelectedDefenseBoon(BoonEnums selectedDefenseBoon) {
         this.selectedDefenseBoon = selectedDefenseBoon;
+    }
+
+    public GameMode getGameModes() {
+        return gameMode;
+    }
+
+    public void setGameModes(GameMode gameMode) {
+        this.gameMode = gameMode;
     }
 }

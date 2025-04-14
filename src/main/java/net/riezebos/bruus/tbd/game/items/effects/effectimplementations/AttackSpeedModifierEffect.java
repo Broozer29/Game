@@ -38,11 +38,9 @@ public class AttackSpeedModifierEffect implements EffectInterface {
         if (!appliedToObject) {
             float percentageChange = attackSpeedModifierAmount * 100;
 
-            if (gameObject.isFriendly() || gameObject instanceof SpaceShip) {
-                // Player
+            if (gameObject instanceof SpaceShip) {
                 PlayerStats.getInstance().modifyAttackSpeedBonus(percentageChange);
             } else {
-                // Enemy
                 gameObject.modifyAttackSpeedBonus(percentageChange);
             }
             appliedToObject = true;

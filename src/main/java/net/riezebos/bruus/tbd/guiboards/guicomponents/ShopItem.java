@@ -14,6 +14,8 @@ import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.AudioEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteConfiguration;
 
+import static net.riezebos.bruus.tbd.guiboards.boardcreators.ShopBoardCreator.shopItemIconDimensions;
+
 public class ShopItem extends GUIComponent {
 
     private ItemRarityEnums itemRarity;
@@ -77,6 +79,7 @@ public class ShopItem extends GUIComponent {
         shopItemInformation.setItemRarity(ItemRarityEnums.Locked);
         shopItemInformation.setItem(ItemEnums.Locked);
         super.setImage(imageEnum);
+        super.setImageDimensions(shopItemIconDimensions, shopItemIconDimensions);
     }
 
     public void purchaseItemInShop () {

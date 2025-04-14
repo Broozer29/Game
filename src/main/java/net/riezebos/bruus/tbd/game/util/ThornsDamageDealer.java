@@ -74,7 +74,7 @@ public class ThornsDamageDealer {
             int remainingAttacks = entry.getValue();
 
             if (gameObject.isVisible() && gameObject.getCurrentHitpoints() > 0) {
-                dealThornsDamageTo(gameObject);
+                dealThornsDamageTo(gameObject, PlayerStats.getInstance().getThornsDamage());
                 remainingAttacks--;
 
                 if (remainingAttacks > 0) {
@@ -91,8 +91,8 @@ public class ThornsDamageDealer {
         lastThornsActivationTime = currentTime;
     }
 
-    public void dealThornsDamageTo (GameObject target) {
-        if (this.playerStats.getThornsDamage() <= 0 || target == null) {
+    public void dealThornsDamageTo (GameObject target, float thornsDamage) {
+        if (this.playerStats.getThornsDamage() <= 0 || target == null || !this.playerStats.isHasThornsEnabled()) {
             return;
         }
 
@@ -107,7 +107,7 @@ public class ThornsDamageDealer {
         scaleAnimationToTarget(target, animation);
         animation.setCenterCoordinates(target.getCenterXCoordinate(), target.getCenterYCoordinate());
 
-        float damage = ArmorCalculator.calculateDamage(playerStats.getThornsDamage(), target);
+        float damage = ArmorCalculator.calculateDamage(thornsDamage, target);
         target.takeDamage(damage);
 
         OnScreenTextManager.getInstance().addDamageNumberText(damage, target.getCenterXCoordinate(),
@@ -115,6 +115,7 @@ public class ThornsDamageDealer {
         AnimationManager.getInstance().addUpperAnimation(animation);
     }
 
+    //Currently unused
     private void applyOnHitEffects (GameObject target) {
         float roll = random.nextFloat(); // Roll a number between 0.0 and 1.0
         if (roll < playerStats.getChanceForThornsToApplyOnHitEffects()) {

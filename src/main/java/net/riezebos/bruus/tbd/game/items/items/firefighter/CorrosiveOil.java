@@ -9,6 +9,7 @@ import net.riezebos.bruus.tbd.game.items.enums.ItemApplicationEnum;
 
 public class CorrosiveOil extends Item {
 
+    public static int amountPerStack = 3;
 
     public CorrosiveOil(){
         super(ItemEnums.CorrosiveOil, 1,  ItemApplicationEnum.UponAcquiring);
@@ -23,7 +24,7 @@ public class CorrosiveOil extends Item {
     }
 
     public int getArmorReductionPerStack (){
-        return quantity;
+        return quantity * amountPerStack;
     }
 
     @Override

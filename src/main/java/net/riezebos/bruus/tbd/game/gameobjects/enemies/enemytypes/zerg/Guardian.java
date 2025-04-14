@@ -74,9 +74,6 @@ public class Guardian extends Enemy {
             allowedToFire = this.movementConfiguration.getCurrentPath().getWaypoints().isEmpty();
         }
 
-
-
-
         // Check if the attack cooldown has been reached
         double currentTime = GameState.getInstance().getGameSeconds();
         if (currentTime >= lastAttackTime + this.getAttackSpeed() && WithinVisualBoundariesCalculator.isWithinBoundaries(this)

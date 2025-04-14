@@ -36,8 +36,6 @@ public class DamageModifierEffect implements EffectInterface {
         if (!appliedToObject) {
             if (gameObject instanceof SpaceShip) {
                 PlayerStats.getInstance().modifyBonusDamageMultiplier(damageModifierAmount);
-            } else if (gameObject.isFriendly()) {
-                gameObject.modifyBonusDamageMultiplier(damageModifierAmount);
             } else {
                 gameObject.modifyBonusDamageMultiplier(damageModifierAmount);
             }

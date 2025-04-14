@@ -34,7 +34,7 @@ public class SpaceStationLaserbeamAttack implements BossActionable {
     private List<SpriteAnimation> chargingAnimations = new LinkedList<>();
     private List<Point> laserBeamAimingPoints = new LinkedList<>();
 
-    private int newFrameDelay = 1;
+    private int newFrameDelay = 0;
     private int oldFrameDelay = 0;
 
     // Define the original, unscaled points once

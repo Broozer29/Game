@@ -1,6 +1,7 @@
 package net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.droneTypes.protoss;
 
 import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
+import net.riezebos.bruus.tbd.game.gameobjects.enemies.Enemy;
 import net.riezebos.bruus.tbd.game.gameobjects.friendlies.FriendlyManager;
 import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.Drone;
 import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.droneTypes.DroneTypes;
@@ -8,7 +9,11 @@ import net.riezebos.bruus.tbd.game.gameobjects.missiles.MissileManager;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
 import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SpaceShip;
+import net.riezebos.bruus.tbd.game.items.ItemEnums;
+import net.riezebos.bruus.tbd.game.items.PlayerInventory;
+import net.riezebos.bruus.tbd.game.items.items.carrier.ProtossThorns;
 import net.riezebos.bruus.tbd.game.movement.Point;
+import net.riezebos.bruus.tbd.game.util.ThornsDamageDealer;
 
 import java.awt.*;
 import java.util.List;
@@ -21,6 +26,8 @@ public class ProtossUtils {
     private static float protossShipBuilderTimer = 0.0f;
     private static float protossShipBuildTime = 5.0f;
     private boolean isAllowedToBuildProtoss = true;
+    public static int maxHoverDistance = 200;
+
 
     private ProtossUtils() {
 
@@ -48,7 +55,20 @@ public class ProtossUtils {
         int yCoordinate = selectedObject.getCenterYCoordinate();
 
         int minDistance = 20; //To be adjusted
-        int maxDistance = 200; //To be adjusted
+
+        double angle = random.nextDouble() * 2 * Math.PI; // Random angle in radians
+        int distance = minDistance + random.nextInt(maxHoverDistance - minDistance + 1); // Random distance within range
+
+        int newX = xCoordinate + (int) (Math.cos(angle) * distance);
+        int newY = yCoordinate + (int) (Math.sin(angle) * distance);
+
+        return new Point(newX, newY);
+    }
+
+    //This one is to be used by the enemy boss
+    public static Point getRandomPoint(GameObject selectedObject, int minDistance, int maxDistance) {
+        int xCoordinate = selectedObject.getCenterXCoordinate();
+        int yCoordinate = selectedObject.getCenterYCoordinate();
 
         double angle = random.nextDouble() * 2 * Math.PI; // Random angle in radians
         int distance = minDistance + random.nextInt(maxDistance - minDistance + 1); // Random distance within range
@@ -125,13 +145,23 @@ public class ProtossUtils {
             }
             case ProtossScout -> {
                 maxShipCount = PlayerStats.getInstance().getAmountOfProtossScouts();
-//                maxShipCount = 10;
             }
             default -> maxShipCount = 0; //always returns 0
         }
 
 
         return FriendlyManager.getInstance().getDronesByDroneType(droneType).size() < maxShipCount;
+    }
+
+    public void handleProtossThorns(GameObject enemy){
+        if(enemy == null){
+            return;
+        }
+
+        ProtossThorns protossThorns = (ProtossThorns) PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.ProtossThorns);
+        if(protossThorns != null){
+            ThornsDamageDealer.getInstance().dealThornsDamageTo(enemy, PlayerStats.getInstance().getThornsDamage() * PlayerStats.getInstance().getProtossShipThornsDamageRatio());
+        }
     }
 
     private void buildProtossScout() {

@@ -15,6 +15,7 @@ public class EntanglingFlames extends Item {
 
     @Override
     public void applyEffectToObject (GameObject gameObject) {
+        PlayerStats.getInstance().setHasThornsEnabled(true);
         //Doesn't do anything, the Damage over time effect should check if this exists and then handle it
     }
 

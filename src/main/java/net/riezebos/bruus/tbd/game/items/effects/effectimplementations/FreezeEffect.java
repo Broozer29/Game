@@ -103,7 +103,8 @@ public class FreezeEffect implements EffectInterface {
 
     @Override
     public EffectInterface copy () {
-        FreezeEffect copiedEffect = new FreezeEffect(this.durationInSeconds, this.animation);
+        SpriteAnimation animation = this.animation.clone();
+        FreezeEffect copiedEffect = new FreezeEffect(this.durationInSeconds, animation);
         // Copy other necessary fields
         copiedEffect.startTimeInSeconds = this.startTimeInSeconds;
         copiedEffect.effectIdentifier = this.effectIdentifier;

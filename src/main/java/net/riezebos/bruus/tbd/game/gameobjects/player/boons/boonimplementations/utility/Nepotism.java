@@ -91,7 +91,7 @@ public class Nepotism implements Boon {
     }
 
     @Override
-    public BoonEnums getBoonType() {
+    public BoonEnums getBoonEnum() {
         return BoonEnums.NEPOTISM;
     }
 

@@ -19,5 +19,7 @@ public enum EffectIdentifiers {
     ContractOnDeathCounter,
     FlameDetonationDormentExplosion,
     DamageReduction,
-    PulsingDroneSlow;
+    CarrierBeaconArmorBonus,
+    CarrierBeaconAttackSpeedBonus,
+    PulsingDroneSlow, MartyrdomAttackSpeed;
 }

@@ -3,6 +3,7 @@ package net.riezebos.bruus.tbd.game.gameobjects;
 import net.riezebos.bruus.tbd.game.UI.GameUICreator;
 import net.riezebos.bruus.tbd.game.UI.UIObject;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.Enemy;
+import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.protoss.EnemyProtossBeacon;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyCategory;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.Missile;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
@@ -53,9 +54,6 @@ public class GameObject extends Sprite {
     protected boolean showHealthBar;
     protected boolean allowedToMove;
 
-
-    protected float originalScale;
-
     //Audio variables
     protected AudioEnums deathSound;
     protected VisualLayer visualLayer = VisualLayer.Upper; //Default this to false, should only be overridden when explicitly intended to
@@ -76,7 +74,7 @@ public class GameObject extends Sprite {
     protected float bonusDamageMultiplier = 1.0f;
     protected boolean allowedToDealDamage; //Set to false for explosions that hit a target
     protected float attackSpeed;
-    protected float attackSpeedBonusModifier;
+    protected float attackSpeedBonusPercentage;
     protected boolean appliesOnHitEffects;
     protected List<EffectInterface> effectsToApply = new ArrayList<>();
     protected boolean showDamage = true;
@@ -90,7 +88,6 @@ public class GameObject extends Sprite {
     protected MovementConfiguration movementConfiguration;
 
 
-    protected int lastBoardBlock;
     protected Point currentLocation;
     protected int currentBoardBlock;
     protected int knockbackStrength;
@@ -108,7 +105,6 @@ public class GameObject extends Sprite {
     protected GameObject ownerOrCreator;
     protected boolean centeredAroundObject = false;
 
-    private int movementCounter = 0;
     protected float cashMoneyWorth;
     protected double rotationAngle = Direction.RIGHT.toAngle();
     protected boolean allowedVisualsToRotate;
@@ -333,16 +329,15 @@ public class GameObject extends Sprite {
             return; //The target is already dead, no need to go through here again
         }
 
-
         if (damageTaken > 0) {
-            damageTaken = (ArmorCalculator.calculateDamage(damageTaken, this) * damageReductionMultiplier) ;
+            damageTaken = (ArmorCalculator.calculateDamage(damageTaken, this) * damageReductionMultiplier);
         }
 
         if (damageTaken > 0) {
             lastGameSecondDamageTaken = GameState.getInstance().getGameSeconds();
         }
 
-        if (!this.isFriendly()) {
+        if (!this.isFriendly() && !(damageTaken >= 9998 && damageTaken <= 10000)) {
             //Assume that if this object is not friendly, the damage came from the player
             GameStatsTracker.getInstance().addDamageDealt(damageTaken);
             GameStatsTracker.getInstance().setHighestDamageDealt(damageTaken);
@@ -379,7 +374,7 @@ public class GameObject extends Sprite {
 
             AudioManager.getInstance().addAudio(deathSound);
 
-            triggerCategorySpecificOnDeathTriggers();
+            triggerOnDeathActions();
 
             this.setVisible(false);
             activateOnDeathEffects();
@@ -395,7 +390,7 @@ public class GameObject extends Sprite {
         }
     }
 
-    public void triggerCategorySpecificOnDeathTriggers() {
+    public void triggerOnDeathActions() {
         //Supposed to be overriden. Used for "Enemy kill counter" for example
     }
 
@@ -429,6 +424,8 @@ public class GameObject extends Sprite {
         for (EffectInterface effectInterface : effectsToApply) {
             target.addEffect(effectInterface);
         }
+
+
 
         float damage = ArmorCalculator.calculateDamage(getDamage(), target);
         target.takeDamage(damage);
@@ -833,10 +830,6 @@ public class GameObject extends Sprite {
         return scale;
     }
 
-    public float getOriginalScale() {
-        return originalScale;
-    }
-
     public String getObjectType() {
         return this.objectType;
     }
@@ -993,19 +986,22 @@ public class GameObject extends Sprite {
 
     public float getAttackSpeed() {
         float baseAttackSpeed = this.attackSpeed; // The default cooldown in milliseconds
-        float attackSpeedIncrease = this.attackSpeedBonusModifier;
+        float attackSpeedBonus = this.attackSpeedBonusPercentage; // Total attack speed modifier applied
 
-        // Calculate the new attack cooldown in a linear manner
-        float newAttackSpeed = baseAttackSpeed * (1 - attackSpeedIncrease / 100);
+        if (attackSpeedBonus <= -100) { // Prevent division by zero or negative scaling
+            return baseAttackSpeed * 3.0f; // Clamp to maximum slowdown
+        }
+
+        float newAttackSpeed = baseAttackSpeed / (1 + attackSpeedBonus / 100); // Adjusted calculation
 
         // Minimum threshold to prevent the attack speed from becoming too fast
-        if (newAttackSpeed < 0.1f) {
-            newAttackSpeed = 0.1f;
+        if (newAttackSpeed < 0.03f) {
+            newAttackSpeed = 0.03f;
         }
 
         // Maximum threshold to prevent attack speed from being too slow
-        if (newAttackSpeed > baseAttackSpeed * 2.0f) {
-            newAttackSpeed = baseAttackSpeed * 2.0f; // Example: Cap slowdown to 2x base cooldown
+        if (newAttackSpeed > baseAttackSpeed * 3.0f) {
+            newAttackSpeed = baseAttackSpeed * 3.0f;
         }
 
         return newAttackSpeed;
@@ -1029,12 +1025,12 @@ public class GameObject extends Sprite {
         this.bonusDamageMultiplier += bonusMultiplier;
     }
 
-    public void setAttackSpeed(int attackSpeed) {
+    public void setAttackSpeed(float attackSpeed) {
         this.attackSpeed = attackSpeed;
     }
 
     public void modifyAttackSpeedBonus(float bonusPercentage) {
-        this.attackSpeedBonusModifier += bonusPercentage;
+        this.attackSpeedBonusPercentage += bonusPercentage;
     }
 
     public void modifyMovementSpeedModifier(float bonusSpeed) {
@@ -1171,5 +1167,9 @@ public class GameObject extends Sprite {
 
     public void modifyDamageReductionMultiplier(float damageReductionMultiplier) {
         this.damageReductionMultiplier += damageReductionMultiplier;
+    }
+
+    public void modifyArmorBonus(float amount) {
+        this.armorBonus += amount;
     }
 }

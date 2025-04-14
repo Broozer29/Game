@@ -43,6 +43,8 @@ public class AudioDatabase {
     private CustomAudioClip leYouthChills;
     private CustomAudioClip paintingTheSkies;
     private CustomAudioClip riskOfDanger;
+    private CustomAudioClip nomad;
+    private CustomAudioClip keygen;
 
     private CustomAudioClip cannonsFireForYou;
     private CustomAudioClip embrzRainOnMyWindow;
@@ -80,8 +82,35 @@ public class AudioDatabase {
         put(AudioEnums.MutaliskBirth, 2);
         put(AudioEnums.MutaliskDeath, 3);
         put(AudioEnums.ProtossShipDeath, 5);
-        put(AudioEnums.CarrierSlowingDown, 4);
-        put(AudioEnums.CarrierSpeedingUp, 2);
+        put(AudioEnums.ClassCarrierSlowingDown, 4);
+        put(AudioEnums.ClassCarrierSpeedingUp, 2);
+
+        put(AudioEnums.CarrierRdy0, 1);
+        put(AudioEnums.CarrierWhat0, 1);
+        put(AudioEnums.CarrierWhat1, 1);
+        put(AudioEnums.CarrierYes0, 1);
+        put(AudioEnums.CarrierYes1, 1);
+        put(AudioEnums.CarrierYes2, 1);
+        put(AudioEnums.CarrierYes3, 1);
+
+        put(AudioEnums.CaptainMisc0, 1);
+        put(AudioEnums.CaptainMisc1, 1);
+        put(AudioEnums.CaptainRdy0, 1);
+        put(AudioEnums.CaptainWhat0, 1);
+        put(AudioEnums.CaptainWhat1, 1);
+        put(AudioEnums.CaptainWhat2, 1);
+        put(AudioEnums.CaptainWhat3, 1);
+        put(AudioEnums.CaptainYes0, 1);
+        put(AudioEnums.CaptainYes1, 1);
+        put(AudioEnums.CaptainYes2, 1);
+
+        put(AudioEnums.FireFighterMisc0, 1);
+        put(AudioEnums.FireFighterMisc1, 1);
+        put(AudioEnums.FireFighterYes0, 1);
+        put(AudioEnums.FireFighterYes1, 1);
+        put(AudioEnums.FireFighterYes2, 1);
+        put(AudioEnums.FireFighterYes3, 1);
+
         put(AudioEnums.DevourerBirth, 3);
         put(AudioEnums.DevourerHit, 3);
         put(AudioEnums.DevourerDeath, 3);
@@ -90,7 +119,7 @@ public class AudioDatabase {
         put(AudioEnums.ScourgeNoticed, 3);
         put(AudioEnums.GuardianBirth, 3);
         put(AudioEnums.GuardianDeath, 3);
-        put(AudioEnums.ChargingLaserbeam, 2);
+        put(AudioEnums.ChargingLaserbeam, 6);
         put(AudioEnums.Player_Laserbeam, 1);
         put(AudioEnums.Destroyed_Explosion, 5);
         put(AudioEnums.Alien_Bomb_Destroyed, 3);
@@ -111,13 +140,13 @@ public class AudioDatabase {
         put(AudioEnums.SpaceStationChargingUpMovement, 1);
     }};
 
-    private AudioDatabase () {
+    private AudioDatabase() {
         this.performanceLogger = new PerformanceLogger("Audio Manager");
         initializeAudiofiles();
         resetAudio();
     }
 
-    public static AudioDatabase getInstance () {
+    public static AudioDatabase getInstance() {
         return instance;
     }
 
@@ -125,13 +154,14 @@ public class AudioDatabase {
         for (List<CustomAudioClip> clipList : audioClipsMap.values()) {
             for (CustomAudioClip clip : clipList) {
                 clip.setPlaybackPosition(0);
-                clip.stopClip();;
+                clip.stopClip();
+                ;
             }
         }
         performanceLogger.reset();
     }
 
-    private void initializeAudiofiles () {
+    private void initializeAudiofiles() {
         clipsWithThresholds.add(AudioEnums.Large_Ship_Destroyed);
         clipsWithThresholds.add(AudioEnums.Destroyed_Explosion);
         clipsWithThresholds.add(AudioEnums.Alien_Bomb_Impact);
@@ -158,7 +188,7 @@ public class AudioDatabase {
         });
     }
 
-    private void initMusic () {
+    private void initMusic() {
         DefaultMusic = new CustomAudioClip(AudioEnums.Apple_Holder_Remix);
         FuriWisdomOfRage = new CustomAudioClip(AudioEnums.Furi_Wisdowm_Of_Rage);
         FuriMakeThisRight = new CustomAudioClip(AudioEnums.Furi_Make_This_Right);
@@ -211,7 +241,8 @@ public class AudioDatabase {
         bossBattle = new CustomAudioClip(AudioEnums.BossBattle);
         riskOfDanger = new CustomAudioClip(AudioEnums.RiskOfDanger);
         silentAudio = new CustomAudioClip(AudioEnums.SilentAudio);
-
+        keygen = new CustomAudioClip(AudioEnums.keygen);
+        nomad = new CustomAudioClip(AudioEnums.nomad);
     }
 
     private void loadSoundEffects() {
@@ -230,7 +261,7 @@ public class AudioDatabase {
     }
 
     //Return a Clip which is not running
-    private CustomAudioClip getAvailableClip (AudioEnums clipType) {
+    private CustomAudioClip getAvailableClip(AudioEnums clipType) {
         List<CustomAudioClip> clipList = audioClipsMap.get(clipType);
         if (clipList != null) {
             for (CustomAudioClip clip : clipList) {
@@ -240,11 +271,11 @@ public class AudioDatabase {
                 }
             }
         }
-        return null;
+        return null; //Soms spelen audio bestanden niet af, deze breakpoint staat hier omdat ik het een keer wil betrappen
     }
 
 
-    public CustomAudioClip getAudioClip (AudioEnums audioType) {
+    public CustomAudioClip getAudioClip(AudioEnums audioType) {
         switch (audioType) {
             case SilentAudio:
                 return silentAudio;
@@ -348,6 +379,10 @@ public class AudioDatabase {
                 return riskOfDanger;
             case mainmenu:
                 return this.mainmenu;
+            case nomad:
+                return this.nomad;
+            case keygen:
+                return this.keygen;
             case Player_Laserbeam:
             case Destroyed_Explosion:
             case Alien_Spaceship_Destroyed:
@@ -372,8 +407,8 @@ public class AudioDatabase {
             case QueenDeath:
             case OverlordDeath:
             case ProtossShipDeath:
-            case CarrierSlowingDown:
-            case CarrierSpeedingUp:
+            case ClassCarrierSlowingDown:
+            case ClassCarrierSpeedingUp:
             default:
                 return getAvailableClip(audioType);
             case NONE:
@@ -383,11 +418,11 @@ public class AudioDatabase {
     }
 
 
-    public List<CustomAudioClip> getAllActiveClips () {
+    public List<CustomAudioClip> getAllActiveClips() {
         return allActiveClips;
     }
 
-    public PerformanceLogger getPerformanceLogger () {
+    public PerformanceLogger getPerformanceLogger() {
         return this.performanceLogger;
     }
 }

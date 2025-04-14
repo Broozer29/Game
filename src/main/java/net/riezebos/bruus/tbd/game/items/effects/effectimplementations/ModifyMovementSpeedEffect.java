@@ -41,7 +41,7 @@ public class ModifyMovementSpeedEffect implements EffectInterface {
         }
 
         if (!appliedToObject) {
-            if (gameObject.isFriendly() || gameObject instanceof SpaceShip) {
+            if (gameObject instanceof SpaceShip) {
                 // Player
                 PlayerStats.getInstance().modifyMovementSpeedModifier(movementSpeedModifieramount);
             } else {

@@ -7,8 +7,6 @@ import net.riezebos.bruus.tbd.game.items.ItemEnums;
 import net.riezebos.bruus.tbd.game.items.enums.ItemApplicationEnum;
 
 public class ThornedPlates extends Item {
-
-
     private float buffAmount = 0.20f;
     private int armorAmount = 5;
     private boolean shouldApply;
@@ -20,6 +18,7 @@ public class ThornedPlates extends Item {
 
 
     private void removeEffect () {
+        PlayerStats.getInstance().setHasThornsEnabled(false);
         PlayerStats.getInstance().modifyThornsDamageRatio(-(quantity * buffAmount));
     }
 
@@ -35,6 +34,7 @@ public class ThornedPlates extends Item {
     public void applyEffectToObject (GameObject gameObject) {
         if (shouldApply) {
             shouldApply = false;
+            PlayerStats.getInstance().setHasThornsEnabled(true);
             PlayerStats.getInstance().modifyThornsDamageRatio(quantity * buffAmount);
         }
 

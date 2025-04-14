@@ -50,7 +50,7 @@ public class Sprite {
 
     }
 
-    protected void setImage (ImageEnums imageName) {
+    public void setImage (ImageEnums imageName) {
         this.image = imgDatabase.getImage(imageName);
         this.imageEnum = imageName;
         if (this.image == null) {
@@ -230,7 +230,7 @@ public class Sprite {
         return this.originalImage;
     }
 
-    protected void recalculateBoundsAndSize () {
+    public void recalculateBoundsAndSize () {
         this.width = image.getWidth();
         this.height = image.getHeight();
         this.bounds = new Rectangle(xCoordinate, yCoordinate, this.width, this.height);

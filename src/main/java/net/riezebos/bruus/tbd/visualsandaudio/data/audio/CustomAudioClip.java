@@ -268,7 +268,6 @@ public class CustomAudioClip {
     }
 
     // Method to start the stream from a specific position
-    // Method to start the stream from a specific position
     private void startStreamFromPosition(double startPosition) {
         executor.submit(() -> {
             try {
@@ -313,7 +312,7 @@ public class CustomAudioClip {
                     totalBytesRead += bytesRead;
                 }
 
-                audioLine.drain();
+//                audioLine.drain();
                 audioStream.close();
 
             } catch (UnsupportedAudioFileException | LineUnavailableException e) {

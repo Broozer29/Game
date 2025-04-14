@@ -4,6 +4,9 @@ import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
 import net.riezebos.bruus.tbd.game.gameobjects.friendlies.FriendlyObjectConfiguration;
 import net.riezebos.bruus.tbd.game.gameobjects.friendlies.FriendlyObjectEnums;
 import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.droneTypes.DroneTypes;
+import net.riezebos.bruus.tbd.game.items.ItemEnums;
+import net.riezebos.bruus.tbd.game.items.PlayerInventory;
+import net.riezebos.bruus.tbd.game.items.items.carrier.Martyrdom;
 import net.riezebos.bruus.tbd.game.movement.MovementConfiguration;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteAnimation;
@@ -41,6 +44,8 @@ public abstract class Drone extends GameObject {
 
     public void activateObject() {
         //Must be overriden
+
+
     }
 
     public void fireAction() {
@@ -58,4 +63,15 @@ public abstract class Drone extends GameObject {
     public double getLastAttackTime() {
         return lastAttackTime;
     }
+
+    public void triggerOnDeathActions() {
+        super.triggerOnDeathActions();
+
+        Martyrdom martyrdom = (Martyrdom) PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.Martyrdom);
+        if (this.isProtoss && martyrdom != null) {
+            martyrdom.applyEffectToObject(null);
+        }
+
+    }
+
 }

@@ -5,25 +5,32 @@ import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyManager;
 import net.riezebos.bruus.tbd.game.gameobjects.friendlies.FriendlyObjectConfiguration;
 import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.Drone;
 import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.droneTypes.DroneTypes;
-import net.riezebos.bruus.tbd.game.gameobjects.neutral.Explosion;
-import net.riezebos.bruus.tbd.game.gameobjects.neutral.ExplosionConfiguration;
-import net.riezebos.bruus.tbd.game.gameobjects.neutral.ExplosionManager;
+import net.riezebos.bruus.tbd.game.gameobjects.missiles.*;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
+import net.riezebos.bruus.tbd.game.gamestate.GameState;
+import net.riezebos.bruus.tbd.game.items.ItemEnums;
+import net.riezebos.bruus.tbd.game.items.PlayerInventory;
+import net.riezebos.bruus.tbd.game.items.items.carrier.SynergeticLink;
+import net.riezebos.bruus.tbd.game.movement.Direction;
 import net.riezebos.bruus.tbd.game.movement.MovementConfiguration;
+import net.riezebos.bruus.tbd.game.movement.MovementPatternSize;
 import net.riezebos.bruus.tbd.game.movement.Point;
+import net.riezebos.bruus.tbd.game.movement.pathfinders.PathFinder;
+import net.riezebos.bruus.tbd.game.movement.pathfinders.StraightLinePathFinder;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.AudioEnums;
-import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteAnimationConfiguration;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteConfiguration;
 
+import java.awt.*;
+
 public class ProtossShuttle extends Drone {
     private GameObject target;
-    private float detectionRange = 100;
-    private float explosionScale = 1;
-    private float shuttleDamage = PlayerStats.getInstance().getNormalAttackDamage() * 300;
-    private boolean hasAccelerated = false;
-    private static float shuttleSpeed = 2;
+    private int attackRange = 300;
+    private float defaultMoveSpeed = 2.25f;
     private boolean isMovingAroundCarrierDrone = false;
+    private boolean isMovingSlow = false;
+    public static float shuttleDamageRatio = 2.5f;
+    private float baseAttackSpeed = 0;
 
     public ProtossShuttle(SpriteAnimationConfiguration spriteAnimationConfiguration, FriendlyObjectConfiguration droneConfiguration, MovementConfiguration movementConfiguration) {
         super(spriteAnimationConfiguration, droneConfiguration, movementConfiguration);
@@ -34,6 +41,8 @@ public class ProtossShuttle extends Drone {
         super.initProtossDeathExplosion();
         super.droneType = DroneTypes.ProtossShuttle;
         super.deathSound = AudioEnums.ProtossShipDeath;
+        super.appliesOnHitEffects = true;
+        this.baseAttackSpeed = attackSpeed;
     }
 
 
@@ -50,6 +59,11 @@ public class ProtossShuttle extends Drone {
             immediatlyReturnToCarrier();
         }
 
+        SynergeticLink synergeticLink = (SynergeticLink) PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.SynergeticLink);
+        if(synergeticLink != null){
+            this.attackSpeed = baseAttackSpeed * (1 - synergeticLink.getCurrentShuttleAttackSpeedBonus());
+        }
+
         fireAction();
     }
 
@@ -64,45 +78,91 @@ public class ProtossShuttle extends Drone {
 
     public void fireAction() {
         if (target == null) {
-            target = EnemyManager.getInstance().getClosestEnemyWithinDistance(this.getCenterXCoordinate(), this.getCenterYCoordinate(), detectionRange);
+            target = EnemyManager.getInstance().getClosestEnemyWithinDistance(this.getCenterXCoordinate(), this.getCenterYCoordinate(), attackRange);
         }
 
-        if (target != null && target.isVisible() && target.getCurrentHitpoints() >= 0) {
-            this.movementConfiguration.resetMovementPath();
-            if (!this.hasAccelerated) {
-                this.movementConfiguration.setXMovementSpeed(shuttleSpeed * 2f);
-                this.movementConfiguration.setYMovementSpeed(shuttleSpeed * 2f);
-                this.hasAccelerated = true;
-            }
-            this.movementConfiguration.setCurrentLocation(new Point(this.getXCoordinate(), this.getYCoordinate()));
-            this.setAllowedVisualsToRotate(true);
-            this.movementConfiguration.setDestination(new Point(target.getCenterXCoordinate(), target.getCenterYCoordinate()));
-        } else {
-            target = null;
-            if (this.hasAccelerated) {
-                this.movementConfiguration.setXMovementSpeed(shuttleSpeed);
-                this.movementConfiguration.setYMovementSpeed(shuttleSpeed);
-                this.hasAccelerated = false;
+        if(target != null){
+            if(isTooFarAway() || isTargetDeadOrInvisible()){
+                updateMoveSpeed(false);
+                target = null;
+                this.setAllowedVisualsToRotate(true); //Allow for rotation towards destination again
+                this.rotateObjectTowardsDestination(true);
+                this.setAllowedVisualsToRotate(false);
+            } else {
+                updateMoveSpeed(true);
+                this.setAllowedVisualsToRotate(true);
+                double currentTime = GameState.getInstance().getGameSeconds();
+                this.rotateGameObjectTowards(target.getCenterXCoordinate(), target.getCenterYCoordinate(), true);
+                this.setAllowedVisualsToRotate(false);
+                if (currentTime >= lastAttackTime + this.getAttackSpeed()) {
+                    shootMissile();
+                    lastAttackTime = currentTime;
+                }
             }
         }
     }
 
+    private boolean isTargetDeadOrInvisible(){
+        return target != null && (!target.isVisible() || target.getCurrentHitpoints() <= 0);
+    }
 
-    public void detonate() {
-        SpriteConfiguration spriteConfiguration = new SpriteConfiguration();
-        spriteConfiguration.setxCoordinate(this.xCoordinate);
-        spriteConfiguration.setyCoordinate(this.yCoordinate);
-        spriteConfiguration.setScale(explosionScale);
-        spriteConfiguration.setImageType(ImageEnums.Explosion2); //placeholder
+    private void updateMoveSpeed(boolean slow) {
+        if (slow != isMovingSlow) { // Only update if there is a state change
+            isMovingSlow = slow;
+            float newSpeed = slow ? (defaultMoveSpeed * 0.7f) : defaultMoveSpeed;
+            this.getMovementConfiguration().setXMovementSpeed(newSpeed); // Only call when needed
+        }
+    }
 
-        SpriteAnimationConfiguration spriteAnimationConfiguration = new SpriteAnimationConfiguration(spriteConfiguration, 2, false);
+    private boolean isTooFarAway() {
+        Rectangle targetBounds = target.getBounds(); // Get target's bounding box
+        double distance = ProtossUtils.getDistanceToRectangle(this.getCenterXCoordinate(), this.getCenterYCoordinate(), targetBounds);
 
-        ExplosionConfiguration explosionConfiguration = new ExplosionConfiguration(true, shuttleDamage, true, true);
-        Explosion explosion = new Explosion(spriteAnimationConfiguration, explosionConfiguration);
-        explosion.setCenterCoordinates(this.getCenterXCoordinate(), this.getCenterYCoordinate());
+        return distance > attackRange; // Directly compare Euclidean distance
+    }
 
-        ExplosionManager.getInstance().addExplosion(explosion);
-        this.setVisible(false);
+
+
+    private void shootMissile(){
+        MissileEnums missileType = MissileEnums.ProtossShuttleMissile;
+        SpriteConfiguration missileSpriteConfiguration = new SpriteConfiguration();
+        missileSpriteConfiguration.setxCoordinate(this.getCenterXCoordinate());
+        missileSpriteConfiguration.setyCoordinate(this.getCenterYCoordinate());
+        missileSpriteConfiguration.setImageType(missileType.getImageType());
+        missileSpriteConfiguration.setScale(0.15f);
+
+        float xMovementSpeed = 3f;
+        float yMovementSpeed = 3f;
+        float damage = PlayerStats.getInstance().getNormalAttackDamage() * shuttleDamageRatio;
+        Direction rotation = Direction.RIGHT;
+        MovementPatternSize movementPatternSize = MovementPatternSize.SMALL;
+        PathFinder pathFinder = new StraightLinePathFinder();
+
+        MovementConfiguration movementConfiguration = MissileCreator.getInstance().createMissileMovementConfig(
+                xMovementSpeed, yMovementSpeed, pathFinder, movementPatternSize, rotation
+        );
+        movementConfiguration.initDefaultSettingsForSpecializedPathFinders();
+
+        boolean isFriendly = true;
+        MissileConfiguration missileConfiguration = MissileCreator.getInstance().createMissileConfiguration(missileType
+                , 100, 100, null, damage, missileType.getDeathOrExplosionImageEnum(), isFriendly, allowedToDealDamage, objectType,
+                missileType.isUsesBoxCollision(), true, false, false);
+
+        Missile missile = MissileCreator.getInstance().createMissile(missileSpriteConfiguration, missileConfiguration, movementConfiguration);
+        missile.setOwnerOrCreator(this);
+        missile.setObjectType("Protoss Shuttle Missile");
+
+        missile.resetMovementPath();
+
+        Point point = new Point(target.getCenterXCoordinate(), target.getCenterYCoordinate());
+        point.setX(point.getX() - missile.getWidth() / 2);
+        point.setY(point.getY() - missile.getHeight() / 2);
+        movementConfiguration.setDestination(point);
+        missile.setCenterCoordinates(this.getAnimation().getCenterXCoordinate(), this.getAnimation().getCenterYCoordinate());
+        missile.rotateObjectTowardsDestination(true);
+        missile.setAllowedVisualsToRotate(false); //Prevent it from being rotated again by the SpriteMover
+        missile.setOwnerOrCreator(this);
+        MissileManager.getInstance().addExistingMissile(missile);
     }
 
 }

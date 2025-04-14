@@ -31,34 +31,42 @@ public class PlayerStats {
     }
 
     //firefighter
-    public static float fireFighterBaseDamage = 8f;
+    public static float fireFighterBaseDamage = 10f;
     public static float fireFighterAttackSpeed = 0.32f;
     private float fireFighterIgniteDamageMultiplier = 0.04f;
-    private float fireFighterIgniteDuration = 1.25f;
+    private float fireFighterIgniteDuration = 1.35f;
     private float fireFighterIgniteDurationMultiplier = 1;
     private float fireFighterItemIgniteDamageMultiplier = 1f;
     private int fireFighterIgniteMaxStacks = 1;
-    private float thornsBaseDamage = 10f;
+    public static int fireFighterHitpoints = 75;
 
     //captain
     public static float captainBaseDamage = 20f;
     public static float captainAttackSpeed = 0.28f;
+    public static int captainBaseHitpoints = 50;
 
     //carrier
     public static float carrierBaseDamage = 10f;
-    public static float carrierAttackSpeed = 0.15f;
-    private float carrierBaseArmor = 10;
-    private float carrierBonusHealth = 25;
+    public static float carrierAttackSpeed = 1;
+    public static float carrierBaseArmor = 10;
+    private float arbiterHealingMultiplier = 1f;
     private int amountOfProtossScouts = 0;
     private int amountOfProtossArbiters = 0;
     private int amountOfProtossShuttles = 0;
     private int maxAmountOfProtoss = 12;
-    private int carrierStartingScouts = 4;
+    private int carrierStartingScouts = 5;
     private float protossShipBaseHealth = 45;
     private float protossShipBaseArmor = 10;
+    public static float carrierSlowSpeed = 2.5f;
+    public static float carrierFastSpeed = 4f;
+    private float protossShipThornsDamageRatio = 1.0f;
+    public static int carrierHitpoints = 100;
 
     //all classes
     public static float droneBaseDamage = 20f;
+    private boolean hasThornsEnabled = false;
+    private float thornsBaseDamage = 10f;
+    private float thornsDamageRatio = 1.0f;
 
     // Preset type
     private PlayerClass playerClass;
@@ -99,7 +107,6 @@ public class PlayerStats {
     private float overloadedShieldDiminishAmount;
     private float maxShieldMultiplier = 1.0f;
     private int piercingMissilesAmount = 0;
-    private float thornsDamageRatio = 1.0f;
 
 
     //Leveling system
@@ -170,6 +177,7 @@ public class PlayerStats {
         this.amountOfProtossScouts = carrierStartingScouts;
         this.amountOfProtossArbiters = 0;
         this.amountOfProtossShuttles = 0;
+        this.hasThornsEnabled = false;
 
         setKnockBackDamping(0.85f);
         setThornsDamageRatio(0);
@@ -182,9 +190,9 @@ public class PlayerStats {
         setShopRerollDiscount(0);
 
         // Health
-        setMaxHitPoints(50);
+        setMaxHitPoints(captainBaseHitpoints);
         setMaxShieldMultiplier(1.0f);
-        setMaxShieldHitPoints(50);
+        setMaxShieldHitPoints(captainBaseHitpoints);
         setShieldRegenDelay(300);
         setOverloadedShieldDiminishAmount(0.5f);
 
@@ -230,7 +238,7 @@ public class PlayerStats {
 
     private void initCarrierSpecial() {
         setSpecialBaseDamage(0);
-        setSpecialAttackRechargeCooldown(1f);
+        setSpecialAttackRechargeCooldown(1.35f);
     }
 
     private void loadFlameShieldPreset() {
@@ -260,8 +268,10 @@ public class PlayerStats {
     }
 
     private void initCarrierPreset() {
-        this.maxHitPoints += carrierBonusHealth;
-        this.maxShieldHitPoints += carrierBonusHealth;
+        setAttackSpeed(carrierAttackSpeed);
+        setBaseDamage(carrierBaseDamage);
+        this.maxHitPoints = carrierHitpoints;
+        this.maxShieldHitPoints = carrierHitpoints;
         this.amountOfProtossScouts = carrierStartingScouts;
         this.amountOfProtossArbiters = 0;
         this.amountOfProtossShuttles = 0;
@@ -269,7 +279,9 @@ public class PlayerStats {
         this.movementSpeed = 2.5f;
         this.protossShipBaseHealth = 45;
         this.protossShipBaseArmor = 10;
-        setKnockBackDamping(0.65f);
+        this.arbiterHealingMultiplier = 1f;
+        this.protossShipThornsDamageRatio = 1.0f;
+        setKnockBackDamping(0.775f);
     }
 
     private void initFireFighterPreset() {
@@ -281,6 +293,8 @@ public class PlayerStats {
         setMissileScale(1);
         fireFighterIgniteDuration = 1.5f;
         fireFighterIgniteMaxStacks = 1;
+        this.maxHitPoints = fireFighterHitpoints;
+        this.maxShieldHitPoints = fireFighterHitpoints;
     }
 
 
@@ -290,6 +304,8 @@ public class PlayerStats {
         this.attackType = PlayerPrimaryAttackTypes.Laserbeam;
         setPlayerMissileImage(this.attackType.getCorrespondingMissileEnum().getImageType());
         setPlayerMissileImpactImage(ImageEnums.Impact_Explosion_One);
+        this.maxHitPoints = captainBaseHitpoints;
+        this.maxShieldHitPoints = captainBaseHitpoints;
     }
 
     public void addXP(float xp) {
@@ -339,10 +355,13 @@ public class PlayerStats {
 
     public float getAttackSpeed() {
         float baseAttackSpeed = this.attackSpeed; // The default cooldown in milliseconds
-        float attackSpeedIncrease = this.attackSpeedBonus;
+        float attackSpeedBonus = this.attackSpeedBonus; // Total attack speed modifier applied
 
-        // Calculate the new attack cooldown in a linear manner
-        float newAttackSpeed = baseAttackSpeed * (1 - attackSpeedIncrease / 100);
+        if (attackSpeedBonus <= -100) { // Prevent division by zero or negative scaling
+            return baseAttackSpeed * 3.0f; // Clamp to maximum slowdown
+        }
+
+        float newAttackSpeed = baseAttackSpeed / (1 + attackSpeedBonus / 100); // Adjusted calculation
 
         // Minimum threshold to prevent the attack speed from becoming too fast
         if (newAttackSpeed < 0.03f) {
@@ -692,7 +711,7 @@ public class PlayerStats {
         if (thornsDamageRatio > 0) {
             thornsDamage = this.thornsBaseDamage * (thornsDamageRatio);
         }
-        if (thornsArmorDamageBonusRatio > 0) {
+        if (thornsArmorDamageBonusRatio > 1) {
             GameObject spaceShip = PlayerManager.getInstance().getSpaceship();
             thornsDamage += thornsArmorDamageBonusRatio * (spaceShip.getBaseArmor() + spaceShip.getArmorBonus());
         }
@@ -884,6 +903,10 @@ public class PlayerStats {
         return maxAmountOfProtoss;
     }
 
+    public void modifyMaxAmountOfProtoss(int amount){
+        this.maxAmountOfProtoss += amount;
+    }
+
     public int getCarrierStartingScouts() {
         return carrierStartingScouts;
     }
@@ -899,4 +922,29 @@ public class PlayerStats {
     public float getProtossShipBaseArmor() {
         return protossShipBaseArmor;
     }
+
+    public float getArbiterHealingMultiplier() {
+        return arbiterHealingMultiplier;
+    }
+
+    public void modifyArbiterHealingMultiplier(float amount){
+        this.arbiterHealingMultiplier += amount;
+    }
+
+    public boolean isHasThornsEnabled() {
+        return hasThornsEnabled;
+    }
+
+    public void setHasThornsEnabled(boolean hasThornsEnabled) {
+        this.hasThornsEnabled = hasThornsEnabled;
+    }
+
+    public float getProtossShipThornsDamageRatio() {
+        return protossShipThornsDamageRatio;
+    }
+
+    public void modifyProtossShipThornsDamageRatio(float amount){
+        this.protossShipThornsDamageRatio += amount;
+    }
+
 }

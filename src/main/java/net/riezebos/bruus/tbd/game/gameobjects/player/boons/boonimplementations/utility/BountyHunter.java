@@ -84,7 +84,7 @@ public class BountyHunter implements Boon {
     }
 
     @Override
-    public BoonEnums getBoonType() {
+    public BoonEnums getBoonEnum() {
         return BoonEnums.BOUNTY_HUNTER;
     }
 

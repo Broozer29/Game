@@ -2,6 +2,7 @@ package net.riezebos.bruus.tbd.guiboards.util;
 
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerClass;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
+import net.riezebos.bruus.tbd.game.playerprofile.PlayerProfileManager;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -14,6 +15,10 @@ public class ClassDescription {
     private String description;
     private float baseDamage;
     private float baseAttackSpeed;
+    private int maxHitpoints;
+    private int bonusArmor;
+    private String difficulty;
+    private String unlockCondition;
 
     // Private constructor to ensure instances are only created through the getInstance method
     private ClassDescription(PlayerClass playerClass) {
@@ -38,21 +43,31 @@ public class ClassDescription {
                         "The Fire Fighter specializes in applying damage over time effects but has a very short attack range.";
                 baseDamage = PlayerStats.fireFighterBaseDamage;
                 baseAttackSpeed = PlayerStats.fireFighterAttackSpeed;
+                maxHitpoints = PlayerStats.fireFighterHitpoints;
+                bonusArmor = 0;
+                difficulty = "Hard";
                 break;
             case Captain:
                 title = "Captain";
-                description = "The Captain resembles the traditional playstyle. Shooting laserbeams from a long distance and using a rapidly recharging EMP to destroy any enemies or missiles near him. " +
-                        "The Captain specializes in upgrading his laserbeams and Guardian Drones whilst staying away from enemies with a long attack range.";
+                description = "The Captain shoots laserbeams and uses a rapidly recharging EMP to destroy any enemies or missiles nearby. " +
+                        "The Captain specializes in upgrading his laserbeams and Guardian Drones whilst staying far away from enemies.";
                 baseDamage = PlayerStats.captainBaseDamage;
                 baseAttackSpeed = PlayerStats.captainAttackSpeed;
+                maxHitpoints = PlayerStats.captainBaseHitpoints;
+                bonusArmor = 0;
+                difficulty = "Medium";
                 break;
             case Carrier:
                 title = "Carrier";
-                description = "The Carrier has no attacks of his own. Instead, he creates an armada of Protoss ships to fight for him and he is slower than other ships but boasts stronger defenses. " +
-                        "The Carrier can direct where his Protoss ships should fight by placing a destructable beacon, otherwise the ships fly around the carrier. Switching gears allows the Carrier to replenish destroyed Protoss ships or " +
-                        "move away from danger.";
+                description = "The Carrier has no attacks of his own. Instead, he creates an armada of Protoss ships to fight for him. " +
+                        "The Carrier can deploy a destructable beacon, Protoss ships will prioritize flying around the beacon. Switching gears allows the Carrier to rebuild destroyed Protoss ships or " +
+                        "rapidly move away from danger.";
                 baseDamage = PlayerStats.carrierBaseDamage;
                 baseAttackSpeed = PlayerStats.carrierAttackSpeed;
+                maxHitpoints = PlayerStats.carrierHitpoints;
+                bonusArmor = Math.round(PlayerStats.carrierBaseArmor);
+                difficulty = "Easy";
+                unlockCondition = "Defeat the third boss to unlock this class.";
                 break;
             default:
                 break;
@@ -81,5 +96,21 @@ public class ClassDescription {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public int getMaxHitpoints() {
+        return maxHitpoints;
+    }
+
+    public int getBonusArmor() {
+        return bonusArmor;
+    }
+
+    public String getDifficulty() {
+        return difficulty;
+    }
+
+    public String getUnlockCondition() {
+        return unlockCondition;
     }
 }

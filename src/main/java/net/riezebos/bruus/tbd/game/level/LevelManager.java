@@ -10,6 +10,7 @@ import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyTribes;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerClass;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
+import net.riezebos.bruus.tbd.game.gamestate.GameMode;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.gamestate.GameStatusEnums;
 import net.riezebos.bruus.tbd.game.gamestate.ShopManager;
@@ -25,6 +26,7 @@ import net.riezebos.bruus.tbd.game.gameobjects.player.boons.boonimplementations.
 import net.riezebos.bruus.tbd.game.util.OnScreenTextManager;
 import net.riezebos.bruus.tbd.game.util.performancelogger.PerformanceLogger;
 import net.riezebos.bruus.tbd.game.util.performancelogger.PerformanceLoggerManager;
+import net.riezebos.bruus.tbd.visualsandaudio.data.DataClass;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.AudioManager;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.AudioEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.LevelSongs;
@@ -129,10 +131,9 @@ public class LevelManager {
     // Called when a level starts, to saturate enemy list
     public void startLevel() {
         BoonManager.getInstance().activateBoons(BoonActivationEnums.Start_of_Level);
-        handleStartOfGamePlayerClassBehaviour();
 
         initDifficulty();
-//        this.levelType = LevelTypes.Boss;
+        this.levelType = LevelTypes.Boss;
 
         GameUICreator.getInstance().createDifficultyWings(this.levelType.equals(LevelTypes.Boss), currentLevelDifficultyScore);
 
@@ -141,27 +142,18 @@ public class LevelManager {
 //        audioManager.devTestShortLevelMode = true;
 //        audioManager.devTestmuteMode = true;
 
-//        activateDirectors(this.levelType);
-//        activateMusic(this.levelType);
+        activateDirectors(this.levelType);
+        activateMusic(this.levelType);
         gameState.setGameState(GameStatusEnums.Playing);
 
 
-        EnemyEnums enemyType = EnemyEnums.RedBoss;
+        EnemyEnums enemyType = EnemyEnums.CarrierBoss;
         Enemy enemy = EnemyCreator.createEnemy(enemyType, 1200, 300, Direction.LEFT, enemyType.getDefaultScale()
                 , enemyType.getMovementSpeed(), enemyType.getMovementSpeed(), MovementPatternSize.SMALL, false);
 //        enemy.setCurrentHitpoints(10);
-        EnemyManager.getInstance().addEnemy(enemy);
+        enemy.setXCoordinate(DataClass.getInstance().getWindowWidth() + enemy.getWidth() / 2);
+//        EnemyManager.getInstance().addEnemy(enemy);
 
-    }
-
-    private void handleStartOfGamePlayerClassBehaviour() {
-        if(GameState.getInstance().getStagesCompleted() > 0){
-            return; //Already passed the first stage
-        }
-
-        if(PlayerStats.getInstance().getPlayerClass().equals(PlayerClass.Carrier)){
-            OnScreenTextManager.getInstance().addText("Add protoss ship items at the start of the level");
-        }
     }
 
     private void initDifficulty() {
@@ -292,6 +284,10 @@ public class LevelManager {
     }
 
     public boolean isNextLevelABossLevel() {
+        if (GameState.getInstance().getGameMode().equals(GameMode.ManMode)) {
+            return true;
+        }
+
         int stagesCompleted = GameState.getInstance().getStagesCompleted();
         if (stagesCompleted == 0) {
             return false;

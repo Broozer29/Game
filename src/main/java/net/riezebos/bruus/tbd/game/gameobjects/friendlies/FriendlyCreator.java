@@ -106,13 +106,13 @@ public class FriendlyCreator {
             }
         }
 
-        DamageReduction damageReduction = new DamageReduction(9999999, 0.5f, null);
+        DamageReduction damageReduction = new DamageReduction(9999999, 0.25f, null);
         drone.addEffect(damageReduction);
         return drone;
 
     }
 
-    public static Drone getCarrierDrone() {
+    public static Drone getCarrierBeacon() {
         List<Drone> carrierDrones = FriendlyManager.getInstance().getDrones().stream()
                 .filter(drone -> drone instanceof CarrierDrone)
                 .toList();
@@ -149,6 +149,10 @@ public class FriendlyCreator {
             case ProtossScout -> {
                 return 0.35f;
             }
+            case ProtossShuttle ->{
+                return 1.5f;
+            }
+
             default -> {
                 return 0.5f;
             }

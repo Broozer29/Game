@@ -47,7 +47,7 @@ public class SpaceStationSpawnNeedlers implements BossActionable {
             spriteConfiguration.setyCoordinate(coordinates.getY());
             spriteConfiguration.setImageType(ImageEnums.WarpIn);
 
-            SpriteAnimationConfiguration spriteAnimationConfiguration = new SpriteAnimationConfiguration(spriteConfiguration, 4, false);
+            SpriteAnimationConfiguration spriteAnimationConfiguration = new SpriteAnimationConfiguration(spriteConfiguration, 6, false);
             SpriteAnimation spriteAnimation = new SpriteAnimation(spriteAnimationConfiguration);
             chargingAnimations.add(spriteAnimation);
         }
@@ -65,7 +65,6 @@ public class SpaceStationSpawnNeedlers implements BossActionable {
 
     @Override
     public boolean activateBehaviour (Enemy enemy) {
-        //Some info for use, you don't have to put everything in this method
         double currentTime = GameState.getInstance().getGameSeconds();
 
         if (enemy.isAllowedToFire() && currentTime >= lastAttackedTime + attackCooldown && WithinVisualBoundariesCalculator.isWithinBoundaries(enemy)) {

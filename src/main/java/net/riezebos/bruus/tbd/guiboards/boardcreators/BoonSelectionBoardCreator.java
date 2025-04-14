@@ -40,7 +40,7 @@ public class BoonSelectionBoardCreator {
     public static GUITextCollection createEmeraldText(){
         int xCoordinate = DataClass.getInstance().getWindowWidth() / 2;
         int yCoordinate = Math.round(DataClass.getInstance().getWindowHeight() * 0.75f);
-        String rerollCost = "Emeralds available: " + PlayerProfileManager.getInstance().getLoadedProfile().getEmeralds();
+        String rerollCost = "EMERALDS AVAILABLE: " + PlayerProfileManager.getInstance().getLoadedProfile().getEmeralds();
 
         GUITextCollection textCollection = new GUITextCollection(xCoordinate, yCoordinate, rerollCost);
         textCollection.setScale(2f * DataClass.getInstance().getResolutionFactor());

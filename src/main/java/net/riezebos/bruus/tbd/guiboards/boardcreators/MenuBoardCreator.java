@@ -225,9 +225,9 @@ public class MenuBoardCreator {
         int xCoordinate = component.getXCoordinate();
         int yCoordinate = component.getYCoordinate() + 50;
 
-        GUITextCollection textCollection = new GUITextCollection(xCoordinate,yCoordinate, "TEST BUTTON");
+        GUITextCollection textCollection = new GUITextCollection(xCoordinate,yCoordinate, "SELECT MAN MODE");
         textCollection.setScale(imageScale);
-        textCollection.setMenuFunctionality(MenuFunctionEnums.OpenBoonSelectionBoard);
+        textCollection.setMenuFunctionality(MenuFunctionEnums.SelectManMode);
         return textCollection;
     }
 }

@@ -1,6 +1,8 @@
 package net.riezebos.bruus.tbd.game.util;
 
 import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
+import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.protoss.EnemyProtossScout;
+import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.protoss.EnemyProtossShuttle;
 import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.Drone;
 import net.riezebos.bruus.tbd.game.movement.Direction;
 import net.riezebos.bruus.tbd.game.movement.pathfinders.OrbitPathFinder;
@@ -21,9 +23,10 @@ public class OutOfBoundsCalculator {
     }
 
     private static boolean isExempt(GameObject gameObject) {
-        if (gameObject instanceof Drone) {
+        if (gameObject instanceof Drone || gameObject instanceof EnemyProtossScout || gameObject instanceof EnemyProtossShuttle) {
             return true;
         }
+
 
         if (gameObject.getMovementConfiguration() != null &&
                 gameObject.getMovementConfiguration().getPathFinder() != null &&

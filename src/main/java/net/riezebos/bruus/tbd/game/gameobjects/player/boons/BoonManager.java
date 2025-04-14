@@ -1,5 +1,6 @@
 package net.riezebos.bruus.tbd.game.gameobjects.player.boons;
 
+import net.riezebos.bruus.tbd.game.gameobjects.player.boons.boonimplementations.utility.*;
 import net.riezebos.bruus.tbd.game.gamestate.save.SaveFile;
 import net.riezebos.bruus.tbd.game.gameobjects.player.boons.boonimplementations.BoonActivationEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.AudioManager;
@@ -39,7 +40,7 @@ public class BoonManager {
     }
 
     public void setUtilityBoon(Boon upgrade) {
-        if (this.utilityBoon != null && this.utilityBoon.getBoonType().equals(upgrade.getBoonType())) {
+        if (this.utilityBoon != null && this.utilityBoon.getBoonEnum().equals(upgrade.getBoonEnum())) {
             this.utilityBoon = null; //Allow deselection
         } else {
             AudioManager.getInstance().addAudio(AudioEnums.ItemAcquired);
@@ -80,10 +81,36 @@ public class BoonManager {
     }
 
     public void loadInSaveFile(SaveFile saveFile) {
-        //Implicitly allows players to load in boons from a save they have not unlocked yet on their own profile, making the decision that this is fine
-        this.utilityBoon = saveFile.getSelectedUtilityBoon();
-        this.offensiveBoon = saveFile.getSelectedOffenseBoon();
-        this.defensiveBoon = saveFile.getSelectedDefenseBoon();
+        setUtilityBoon(saveFile.getSelectedUtilityBoon());
+        setDefensiveBoon(saveFile.getSelectedDefenseBoon());
+        setOffensiveBoon(saveFile.getSelectedOffenseBoon());
     }
 
+    private void setUtilityBoon(BoonEnums boonEnum) {
+        switch (boonEnum) {
+            case COMPOUND_WEALTH:
+                utilityBoon = CompoundWealth.getInstance();
+                break;
+            case BOUNTY_HUNTER:
+                utilityBoon = BountyHunter.getInstance();
+                break;
+            case CLUB_ACCESS:
+                utilityBoon = ClubAccess.getInstance();
+                break;
+            case NEPOTISM:
+                utilityBoon = Nepotism.getInstance();
+                break;
+            case TREASURE_HUNTER:
+                utilityBoon = TreasureHunter.getInstance();
+                break;
+        }
+    }
+
+    private void setDefensiveBoon(BoonEnums boonEnum) {
+
+    }
+
+    private void setOffensiveBoon(BoonEnums boonEnum) {
+
+    }
 }

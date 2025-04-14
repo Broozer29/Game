@@ -4,7 +4,7 @@ import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
 import net.riezebos.bruus.tbd.game.items.Item;
 import net.riezebos.bruus.tbd.game.items.ItemEnums;
 import net.riezebos.bruus.tbd.game.items.effects.EffectIdentifiers;
-import net.riezebos.bruus.tbd.game.items.effects.effectimplementations.CombatArmorBonus;
+import net.riezebos.bruus.tbd.game.items.effects.effectimplementations.StackingInCombatArmorBonus;
 import net.riezebos.bruus.tbd.game.items.enums.ItemApplicationEnum;
 
 public class PlatinumSponge extends Item {
@@ -28,7 +28,7 @@ public class PlatinumSponge extends Item {
     @Override
     public void applyEffectToObject (GameObject gameObject) {
 //        OutOfCombatArmorBonus effect = new OutOfCombatArmorBonus(armorBonus, EffectIdentifiers.PlatinumSpongeArmorBonus, 2);
-        CombatArmorBonus effect = new CombatArmorBonus(armorBonus, EffectIdentifiers.PlatinumSpongeArmorBonus, 2);
+        StackingInCombatArmorBonus effect = new StackingInCombatArmorBonus(armorBonus, EffectIdentifiers.PlatinumSpongeArmorBonus, 2);
         gameObject.addEffect(effect);
     }
 

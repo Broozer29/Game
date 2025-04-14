@@ -1,6 +1,5 @@
 package net.riezebos.bruus.tbd.game.gameobjects.player.spaceship;
 
-import javafx.animation.Animation;
 import net.riezebos.bruus.tbd.game.gameobjects.friendlies.FriendlyManager;
 import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.Drone;
 import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.droneTypes.protoss.ProtossUtils;
@@ -22,8 +21,6 @@ import net.riezebos.bruus.tbd.game.movement.MovementPatternSize;
 import net.riezebos.bruus.tbd.game.movement.pathfinders.HomingPathFinder;
 import net.riezebos.bruus.tbd.game.movement.pathfinders.PathFinder;
 import net.riezebos.bruus.tbd.game.movement.pathfinders.RegularPathFinder;
-import net.riezebos.bruus.tbd.game.util.OnScreenTextManager;
-import net.riezebos.bruus.tbd.visualsandaudio.data.DataClass;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.AudioManager;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.AudioEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
@@ -31,8 +28,6 @@ import net.riezebos.bruus.tbd.visualsandaudio.objects.AnimationManager;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteAnimation;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteAnimationConfiguration;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteConfiguration;
-
-import javax.xml.crypto.Data;
 
 public class SpaceShipRegularGun {
 
@@ -81,14 +76,14 @@ public class SpaceShipRegularGun {
         if (!carrierFastSwitch) {
             ProtossUtils.getInstance().setAllowedToBuildProtoss(false);
             carrierFastSwitch = true;
-            PlayerStats.getInstance().setMovementSpeed(4);
-            AudioManager.getInstance().addAudio(AudioEnums.CarrierSpeedingUp);
+            PlayerStats.getInstance().setMovementSpeed(PlayerStats.carrierFastSpeed);
+            AudioManager.getInstance().addAudio(AudioEnums.ClassCarrierSpeedingUp);
             addSwitchingGearAnimation(ImageEnums.ProtossCarrierSwitchFast);
         } else if (carrierFastSwitch) {
             ProtossUtils.getInstance().setAllowedToBuildProtoss(true);
             carrierFastSwitch = false;
-            PlayerStats.getInstance().setMovementSpeed(2.5f);
-            AudioManager.getInstance().addAudio(AudioEnums.CarrierSlowingDown);
+            PlayerStats.getInstance().setMovementSpeed(PlayerStats.carrierSlowSpeed);
+            AudioManager.getInstance().addAudio(AudioEnums.ClassCarrierSlowingDown);
             addSwitchingGearAnimation(ImageEnums.ProtossCarrierSwitchSlow);
         }
     }

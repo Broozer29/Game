@@ -4,6 +4,7 @@ public class PlayerProfile {
     private int enemyKilledCounter;
     private int highestStageCompleted;
     private int bossesKilledCounter;
+    private boolean carrierUnlocked = false;
     private int emeralds = 100;
     private int nepotismLevel = 1; //Start with level 1
     private int clubAccessLevel = 0; //Start disabled
@@ -99,5 +100,13 @@ public class PlayerProfile {
 
     public void setTreasureHunterLevel(int treasureHunterLevel) {
         this.treasureHunterLevel = treasureHunterLevel;
+    }
+
+    public boolean isCarrierUnlocked() {
+        return carrierUnlocked;
+    }
+
+    public void setCarrierUnlocked(boolean carrierUnlocked) {
+        this.carrierUnlocked = carrierUnlocked;
     }
 }

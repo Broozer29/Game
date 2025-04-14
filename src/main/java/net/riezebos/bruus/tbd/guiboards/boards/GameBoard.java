@@ -301,10 +301,6 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
             msgToDraw = "Enemies missed this level:             " + gameStatsTracker.getAmountOfEnemiesMissedThisRound();
             g.drawString(msgToDraw, firstRowXCoordinate, firstRowYCoordinate);
 
-//            firstRowYCoordinate += messageHeight;
-//            msgToDraw = "Enemy percentage killed: " + gameStatsTracker.getPercentageOfEnemiesKilledThisRound();
-//            g.drawString(msgToDraw, firstRowXCoordinate, firstRowYCoordinate);
-
             firstRowYCoordinate += messageHeight;
             msgToDraw = "Minerals acquired this level:          " + gameStatsTracker.getMineralsGainedThisRound();
             g.drawString(msgToDraw, firstRowXCoordinate, firstRowYCoordinate);
@@ -340,18 +336,6 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
 
             firstRowYCoordinate += messageHeight;
             msgToDraw = "Total damage taken:                    " + gameStatsTracker.getTotalDamageTaken();
-            g.drawString(msgToDraw, firstRowXCoordinate, firstRowYCoordinate);
-
-            firstRowYCoordinate += messageHeight;
-            msgToDraw = "Amount of missiles fired:              " + gameStatsTracker.getShotsFired();
-            g.drawString(msgToDraw, firstRowXCoordinate, firstRowYCoordinate);
-
-            firstRowYCoordinate += messageHeight;
-            msgToDraw = "Amount of missiles that hit a target:  " + gameStatsTracker.getShotsHit();
-            g.drawString(msgToDraw, firstRowXCoordinate, firstRowYCoordinate);
-
-            firstRowYCoordinate += messageHeight;
-            msgToDraw = "Accuracy:                              " + gameStatsTracker.getAccuracy() + "%";
             g.drawString(msgToDraw, firstRowXCoordinate, firstRowYCoordinate);
 
             firstRowYCoordinate += messageHeight;
@@ -646,7 +630,6 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
         float factor = gameobject.getCurrentHitpoints() / gameobject.getMaxHitPoints();
         int actualAmount = (int) Math.round(gameobject.getHeight() * factor);
 
-
         g.setColor(Color.RED);
         g.fillRect((gameobject.getXCoordinate() + gameobject.getWidth() + 10), gameobject.getYCoordinate(), 2, gameobject.getHeight());
         g.setColor(Color.GREEN);
@@ -713,10 +696,6 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
 
         shieldBar.resizeToDimensions(shieldBarWidth, shieldBar.getHeight());
         drawImage(g, shieldBar);
-        g.drawString("" + Math.round(playerShields) + " / " + Math.round(playerMaxShields),
-                shieldBar.getXCoordinate() + gameUICreator.getHealthBarWidth() * 0.35f,
-                shieldBar.getYCoordinate() + gameUICreator.getHealthBarHeight() * 0.85f);
-
 
         if (playerShields > playerMaxShields) {
             UIObject overloadingShieldBar = this.gameUICreator.getOverloadingShieldBar();
@@ -746,8 +725,33 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
             drawImage(g, damageOverlay);
         }
 
+        g.drawString("" + Math.round(playerShields) + " / " + Math.round(playerMaxShields),
+                shieldBar.getXCoordinate() + gameUICreator.getHealthBarWidth() * 0.35f,
+                shieldBar.getYCoordinate() + gameUICreator.getHealthBarHeight() * 0.85f);
 
         drawImage(g, shieldFrame);
+
+
+        //Lines at the player
+        GameObject player = PlayerManager.getInstance().getSpaceship();
+        float factor = playerHealth / playerMaxHealth;
+        int actualAmount = Math.round(player.getWidth() * factor);
+
+        g.setColor(Color.RED);
+        g.fillRect(player.getXCoordinate(), player.getYCoordinate() + (player.getHeight() + 3), player.getWidth(), 2);
+        g.setColor(Color.GREEN);
+        g.fillRect(player.getXCoordinate(), player.getYCoordinate() + (player.getHeight() + 3), actualAmount, 2);
+
+        factor = playerShields / playerMaxShields;
+        if(factor > 1){
+            factor = 1;
+        }
+        actualAmount = Math.round(player.getWidth() * factor);
+
+        g.setColor(Color.BLUE);
+        g.fillRect(player.getXCoordinate(), player.getYCoordinate() + (player.getHeight() + 6), player.getWidth(), 2);
+        g.setColor(Color.CYAN);
+        g.fillRect(player.getXCoordinate(), player.getYCoordinate() + (player.getHeight() + 6), actualAmount, 2);
     }
 
 

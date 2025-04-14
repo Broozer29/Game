@@ -1,8 +1,13 @@
 package net.riezebos.bruus.tbd.game.gameobjects.enemies;
 
+import net.riezebos.bruus.tbd.game.gameobjects.enemies.bosses.carrier.CarrierBoss;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.bosses.redboss.RedBoss;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.bosses.spacestation.SpaceStationBoss;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.CashCarrier;
+import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.protoss.EnemyProtossBeacon;
+import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.protoss.EnemyProtossPulsingDrone;
+import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.protoss.EnemyProtossScout;
+import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.protoss.EnemyProtossShuttle;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.spaceships.*;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.zerg.*;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyEnums;
@@ -37,10 +42,10 @@ public class EnemyCreator {
 
     private static PathFinder getPathFinderByEnemy (EnemyEnums enemyType) {
         switch (enemyType) {
-            case Seeker, Energizer, Tazer, Scout, RedBoss, ZergDevourer, ZergGuardian, ZergQueen -> {
+            case Seeker, Energizer, Tazer, Scout, RedBoss, CarrierBoss, ZergDevourer, ZergGuardian, ZergQueen -> {
                 return new HoverPathFinder();
             }
-            case FourDirectionalDrone, PulsingDrone, SpaceStationBoss -> {
+            case FourDirectionalDrone, PulsingDrone, SpaceStationBoss, CarrierPulsingDrone, EnemyCarrierBeacon -> {
                 return new DestinationPathFinder();
             }
             case Shuriken -> {
@@ -67,7 +72,7 @@ public class EnemyCreator {
             case Tazer -> {
                 movementConfiguration.setBoardBlockToHoverIn(7);
             }
-            case RedBoss -> {
+            case RedBoss, CarrierBoss -> {
                 movementConfiguration.setBoardBlockToHoverIn(4);
             }
             case SpaceStationBoss -> movementConfiguration.setDestination(calculateSpaceStationBossDestination());
@@ -132,8 +137,23 @@ public class EnemyCreator {
             case RedBoss -> {
                 return new RedBoss(upgradeConfig(spriteConfiguration, 1, true), enemyConfiguration, movementConfiguration);
             }
+            case CarrierBoss -> {
+                return new CarrierBoss(upgradeConfig(spriteConfiguration, 3 , true), enemyConfiguration, movementConfiguration);
+            }
             case FourDirectionalDrone -> {
                 return new FourDirectionalDrone(spriteConfiguration, enemyConfiguration, movementConfiguration);
+            }
+            case EnemyProtossScout -> {
+                return new EnemyProtossScout(upgradeConfig(spriteConfiguration, 2, true), enemyConfiguration, movementConfiguration);
+            }
+            case EnemyProtossShuttle -> {
+                return new EnemyProtossShuttle(upgradeConfig(spriteConfiguration, 2, true), enemyConfiguration, movementConfiguration);
+            }
+            case CarrierPulsingDrone -> {
+                return new EnemyProtossPulsingDrone(upgradeConfig(spriteConfiguration, 2, true), enemyConfiguration, movementConfiguration);
+            }
+            case EnemyCarrierBeacon -> {
+                return new EnemyProtossBeacon(upgradeConfig(spriteConfiguration, 2, true), enemyConfiguration, movementConfiguration);
             }
             case Alien_Bomb -> {
                 return new AlienBomb(spriteConfiguration, enemyConfiguration, movementConfiguration);

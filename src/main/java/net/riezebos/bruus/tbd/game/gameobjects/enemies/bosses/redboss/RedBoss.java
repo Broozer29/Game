@@ -7,6 +7,7 @@ import net.riezebos.bruus.tbd.game.gameobjects.enemies.bosses.redboss.behaviour.
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.bosses.redboss.behaviour.CrossingLaserbeamsAttack;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.bosses.redboss.behaviour.SpawnFourDirectionalDrone;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.bosses.redboss.behaviour.SpawnShuriken;
+import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.movement.MovementConfiguration;
 import net.riezebos.bruus.tbd.game.util.WithinVisualBoundariesCalculator;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
@@ -22,8 +23,9 @@ public class RedBoss extends Enemy {
 
     private List<BossActionable> bossBehaviourList = new ArrayList<>();
     private BossActionable currentActiveBehavior = null;
+    private double finishedAttackTime = 0;
 
-    public RedBoss (SpriteAnimationConfiguration spriteConfiguration, EnemyConfiguration enemyConfiguration, MovementConfiguration movementConfiguration) {
+    public RedBoss(SpriteAnimationConfiguration spriteConfiguration, EnemyConfiguration enemyConfiguration, MovementConfiguration movementConfiguration) {
         super(spriteConfiguration, enemyConfiguration, movementConfiguration);
 
         SpriteAnimationConfiguration destroyedExplosionfiguration = new SpriteAnimationConfiguration(spriteConfiguration.getSpriteConfiguration(), 0, false);
@@ -33,6 +35,8 @@ public class RedBoss extends Enemy {
         this.allowedVisualsToRotate = false;
         this.destructionAnimation.setAnimationScale(3);
         this.knockbackStrength = 9;
+
+        finishedAttackTime = GameState.getInstance().getGameSeconds();
 
         BossActionable bossBehaviour1 = new SpawnShuriken();
         bossBehaviourList.add(bossBehaviour1);
@@ -57,40 +61,43 @@ public class RedBoss extends Enemy {
 
 
     @Override
-    protected void updateChargingAttackAnimationCoordination () {
+    protected void updateChargingAttackAnimationCoordination() {
         if (this.chargingUpAttackAnimation != null) {
             this.chargingUpAttackAnimation.setCenterCoordinates(this.getXCoordinate() - (chargingUpAttackAnimation.getWidth() / 2), this.getCenterYCoordinate());
         }
     }
 
     @Override
-    public void fireAction () {
-        if(!allowedToFire && WithinVisualBoundariesCalculator.isWithinBoundaries(this)) {
-                this.allowedToFire = true; // Boss is allowed to fire
-            }
+    public void fireAction() {
+        if (!allowedToFire && WithinVisualBoundariesCalculator.isWithinBoundaries(this)) {
+            this.allowedToFire = true; // Boss is allowed to fire
+        }
 
         updateChargingAttackAnimationCoordination();
 
         // If there's an active behavior, try to execute it
         if (currentActiveBehavior != null) {
-
             boolean isCompleted = currentActiveBehavior.activateBehaviour(this);
             if (isCompleted) {
                 currentActiveBehavior = null; // Behavior finished, reset for next one
+                finishedAttackTime = GameState.getInstance().getGameSeconds();
             } else {
                 return; // If current behavior is still ongoing, stop further actions
             }
         }
 
 
-        // If no current behavior is active, find the next behavior to execute
-        for (BossActionable bossActionable : bossBehaviourList) {
-            // Attempt to execute the behavior, if available
-            if (bossActionable.isAvailable(this)) {
-                boolean isCompleted = bossActionable.activateBehaviour(this);
-                if (!isCompleted) {
-                    currentActiveBehavior = bossActionable; // Set this as the current active behavior
-                    break; // Stop looking at other behaviors, only execute one at a time
+        //Wait 0.5 seconds between attacks
+        if (finishedAttackTime + 0.5 <= GameState.getInstance().getGameSeconds()) {
+            // If no current behavior is active, find the next behavior to execute
+            for (BossActionable bossActionable : bossBehaviourList) {
+                // Attempt to execute the behavior, if available
+                if (bossActionable.isAvailable(this)) {
+                    boolean isCompleted = bossActionable.activateBehaviour(this);
+                    if (!isCompleted) {
+                        currentActiveBehavior = bossActionable; // Set this as the current active behavior
+                        break; // Stop looking at other behaviors, only execute one at a time
+                    }
                 }
             }
         }

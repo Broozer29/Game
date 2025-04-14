@@ -1,6 +1,7 @@
 package net.riezebos.bruus.tbd.guiboards;
 
 import net.riezebos.bruus.tbd.controllerInput.ConnectedControllersManager;
+import net.riezebos.bruus.tbd.game.items.PlayerInventory;
 import net.riezebos.bruus.tbd.guiboards.boards.*;
 import net.riezebos.bruus.tbd.visualsandaudio.data.DataClass;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.AudioManager;
@@ -53,7 +54,7 @@ public class BoardManager extends JFrame {
 
         // Define actions for each screen
         screenActions.put(ScreenType.MAIN_MENU, () -> {
-//            playMenuMusic();
+            playMenuMusic();
             mainMenuBoard.recreateWindow();
             mainMenuBoard.getTimer().restart();
             ConnectedControllersManager.getInstance().setControllerSensitive(false);
@@ -72,6 +73,7 @@ public class BoardManager extends JFrame {
 
         screenActions.put(ScreenType.SHOP, () -> {
             playShopMenuMusic();
+            PlayerInventory.getInstance().setCashMoney(Math.round(PlayerInventory.getInstance().getCashMoney()));
             shopBoard.initShopBoardGUIComponents();
             shopBoard.getTimer().restart();
             ConnectedControllersManager.getInstance().setControllerSensitive(false);

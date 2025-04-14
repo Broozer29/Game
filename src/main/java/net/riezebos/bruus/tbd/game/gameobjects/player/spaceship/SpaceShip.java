@@ -16,6 +16,7 @@ import net.riezebos.bruus.tbd.game.items.Item;
 import net.riezebos.bruus.tbd.game.items.ItemEnums;
 import net.riezebos.bruus.tbd.game.items.PlayerInventory;
 import net.riezebos.bruus.tbd.game.items.enums.ItemApplicationEnum;
+import net.riezebos.bruus.tbd.game.items.items.carrier.KineticDynamo;
 import net.riezebos.bruus.tbd.game.movement.Point;
 import net.riezebos.bruus.tbd.game.util.OrbitingObjectsFormatter;
 import net.riezebos.bruus.tbd.game.util.collision.CollisionInfo;
@@ -57,6 +58,7 @@ public class SpaceShip extends GameObject {
     private SpaceShipSpecialGun spaceShipSpecialGun = null;
     private List<SpecialAttack> playerFollowingSpecialAttacks = new ArrayList<SpecialAttack>();
     public boolean allowMovementBeyondBoundaries = false;
+    private double lastTimeCollisionDamageTaken = 0;
 
     public SpaceShip(SpriteConfiguration spriteConfiguration) {
         super(spriteConfiguration);
@@ -85,7 +87,7 @@ public class SpaceShip extends GameObject {
             spriteConfiguration.setImageType(ImageEnums.ProtossCarrier);
             spriteConfiguration.setxCoordinate(this.xCoordinate);
             spriteConfiguration.setyCoordinate(this.yCoordinate);
-            spriteConfiguration.setScale(1);
+            spriteConfiguration.setScale(0.9f);
 
             SpriteAnimationConfiguration spriteAnimationConfiguration = new SpriteAnimationConfiguration(spriteConfiguration, 2, true);
             setAnimation(new SpriteAnimation(spriteAnimationConfiguration));
@@ -147,17 +149,18 @@ public class SpaceShip extends GameObject {
             }
 
             if (PlayerStats.getInstance().getPlayerClass().equals(PlayerClass.Carrier)) {
-                for (int i = 0; i < playerStats.getAmountOfProtossScouts(); i++) {
+                for (int i = 0; i < 2; i++) {
                     FriendlyManager.getInstance().addProtossShip(DroneTypes.ProtossScout);
                 }
 
-                for (int i = 0; i < playerStats.getAmountOfProtossArbiters(); i++) {
-                    FriendlyManager.getInstance().addProtossShip(DroneTypes.ProtossArbiter);
-                }
-
-                for (int i = 0; i < playerStats.getAmountOfProtossShuttles(); i++) {
-                    FriendlyManager.getInstance().addProtossShip(DroneTypes.ProtossShuttle);
-                }
+                //Start the game with building the ships instead, instead of spawning with max ships
+//                for (int i = 0; i < playerStats.getAmountOfProtossArbiters(); i++) {
+//                    FriendlyManager.getInstance().addProtossShip(DroneTypes.ProtossArbiter);
+//                }
+//
+//                for (int i = 0; i < playerStats.getAmountOfProtossShuttles(); i++) {
+//                    FriendlyManager.getInstance().addProtossShip(DroneTypes.ProtossShuttle);
+//                }
             }
 
             OrbitingObjectsFormatter.reformatOrbitingObjects(this, PlayerStats.getInstance().getDroneOrbitRadius());
@@ -344,6 +347,12 @@ public class SpaceShip extends GameObject {
             movementDirectionsToExecute.add(new Point(directionx, directiony));
         }
 
+
+        KineticDynamo kineticDynamo = (KineticDynamo) PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.KineticDynamo);
+        if(kineticDynamo != null){
+            kineticDynamo.buildUpEnergy(directionx, directiony);
+        }
+
         // Process movement every frame
         Point playerInputMovement = new Point(0, 0); // Default to zero movement
 
@@ -438,6 +447,18 @@ public class SpaceShip extends GameObject {
         }
 
         updateBoardBlock();
+    }
+
+    @Override
+    public void setCenterCoordinates(int newXCoordinate, int newYCoordinate){
+        super.setCenterCoordinates(newXCoordinate, newYCoordinate);
+        this.previousAccumulatedY = this.yCoordinate;
+        this.previousAccumulatedX = this.xCoordinate;
+        this.previousXCoordinate = this.xCoordinate;
+        this.previousYCoordinate = this.yCoordinate;
+        this.accumulatedXCoordinate = this.xCoordinate;
+        this.accumulatedYCoordinate = this.yCoordinate;
+        this.movementDirectionsToExecute.clear();
     }
 
     public void applyKnockback(CollisionInfo collisionInfo, float knockbackStrength) {
@@ -722,5 +743,13 @@ public class SpaceShip extends GameObject {
 
     public SpaceShipSpecialGun getSpaceShipSpecialGun() {
         return spaceShipSpecialGun;
+    }
+
+    public double getLastTimeCollisionDamageTaken() {
+        return lastTimeCollisionDamageTaken;
+    }
+
+    public void setLastTimeCollisionDamageTaken(double lastTimeCollisionDamageTaken) {
+        this.lastTimeCollisionDamageTaken = lastTimeCollisionDamageTaken;
     }
 }

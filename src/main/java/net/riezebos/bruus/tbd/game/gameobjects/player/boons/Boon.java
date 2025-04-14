@@ -13,7 +13,7 @@ public interface Boon {
     public void upgradeBoon();
     public int getBoonUpgradeCost();
     public boolean canUpgradeFurther();
-    public BoonEnums getBoonType();
+    public BoonEnums getBoonEnum();
     public int getCurrentLevel();
     public void setHasAppliedDuringRun(boolean hasAppliedDuringRun);
     public MenuFunctionEnums getSelectBoonMenuFunctionEnum();

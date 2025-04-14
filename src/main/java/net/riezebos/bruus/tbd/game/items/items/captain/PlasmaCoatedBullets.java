@@ -62,6 +62,6 @@ public class PlasmaCoatedBullets extends Item {
             return false;
         }
 
-        return PlayerStats.getInstance().getPlayerClass().equals(PlayerClass.Captain);
+        return PlayerStats.getInstance().getPlayerClass().equals(PlayerClass.Captain) || PlayerStats.getInstance().getPlayerClass().equals(PlayerClass.Carrier);
     }
 }

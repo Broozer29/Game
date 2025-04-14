@@ -2,6 +2,8 @@ package net.riezebos.bruus.tbd.guiboards.guicomponents;
 
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerClass;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
+import net.riezebos.bruus.tbd.game.gamestate.GameMode;
+import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.gamestate.ShopManager;
 import net.riezebos.bruus.tbd.game.items.PlayerInventory;
 import net.riezebos.bruus.tbd.game.level.LevelManager;
@@ -92,16 +94,22 @@ public class MenuButton extends GUIComponent {
                 PlayerStats.getInstance().setPlayerClass(PlayerClass.Captain);
                 BoardManager.getInstance().getClassSelectionBoard().recreateCursor();
                 BoardManager.getInstance().getClassSelectionBoard().addCursorAnimation();
+                AudioManager.getInstance().addAudio(AudioEnums.ItemAcquired);
+                AudioManager.getInstance().addAudio(AudioEnums.getSelectClassAudioByClass(PlayerClass.Captain));
                 break;
             case SelectFireFighterClass:
                 PlayerStats.getInstance().setPlayerClass(PlayerClass.FireFighter);
                 BoardManager.getInstance().getClassSelectionBoard().recreateCursor();
                 BoardManager.getInstance().getClassSelectionBoard().addCursorAnimation();
+                AudioManager.getInstance().addAudio(AudioEnums.ItemAcquired);
+                AudioManager.getInstance().addAudio(AudioEnums.getSelectClassAudioByClass(PlayerClass.FireFighter));
                 break;
             case SelectCarrierClass:
                 PlayerStats.getInstance().setPlayerClass(PlayerClass.Carrier);
                 BoardManager.getInstance().getClassSelectionBoard().recreateCursor();
                 BoardManager.getInstance().getClassSelectionBoard().addCursorAnimation();
+                AudioManager.getInstance().addAudio(AudioEnums.ItemAcquired);
+                AudioManager.getInstance().addAudio(AudioEnums.getSelectClassAudioByClass(PlayerClass.Carrier));
                 break;
             case ContinueSaveFile:
                 SaveManager.getInstance().loadSaveFile();
@@ -112,7 +120,7 @@ public class MenuButton extends GUIComponent {
             case SelectCompoundWealth:
             case SelectTreasureHunter:
             case SelectBountyHunter:
-                if(BoonSelectionBoardCreator.getBoonByMenuFunctionality(menuFunctionality).isUnlocked()) {
+                if (BoonSelectionBoardCreator.getBoonByMenuFunctionality(menuFunctionality).isUnlocked()) {
                     BoonManager.getInstance().setUtilityBoon(BoonSelectionBoardCreator.getBoonByMenuFunctionality(menuFunctionality));
                 }
                 break;
@@ -128,6 +136,19 @@ public class MenuButton extends GUIComponent {
                 break;
             case PurchaseItem:
                 break; //Handled in a different class
+            case SelectManMode:
+                if(GameState.getInstance().getGameMode().equals(GameMode.ManMode)){
+                    GameState.getInstance().setGameMode(GameMode.Default);
+                    OnScreenTextManager.getInstance().addText("Changed to DEFAULT mode",
+                            DataClass.getInstance().getWindowWidth() / 2,
+                            DataClass.getInstance().getWindowHeight() / 2);
+                } else {
+                    GameState.getInstance().setGameMode(GameMode.ManMode);
+                    OnScreenTextManager.getInstance().addText("Changed to MAN MODE",
+                            DataClass.getInstance().getWindowWidth() / 2,
+                            DataClass.getInstance().getWindowHeight() / 2);
+                }
+                break;
             default:
                 System.out.println("Unimplemented functionality");
                 OnScreenTextManager.getInstance().addText("Unimplemented menu functionality in menubutton", 400, 400);

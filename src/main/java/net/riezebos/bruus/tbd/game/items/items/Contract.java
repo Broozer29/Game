@@ -25,7 +25,7 @@ public class Contract extends Item{
     @Override
     public void increaseQuantityOfItem(int amount) {
         this.quantity += amount;
-//        applyEffectToObject(null);
+        applyEffectToObject(null);
     }
 
     //Only needed for the Contract item so far

@@ -7,6 +7,7 @@ import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.droneTypes.prot
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
 import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SpaceShip;
+import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.gamestate.GameStatsTracker;
 import net.riezebos.bruus.tbd.game.items.ItemEnums;
 import net.riezebos.bruus.tbd.game.items.PlayerInventory;
@@ -92,7 +93,12 @@ public class EnemyManager {
                         detonateEnemy(enemy);
                         enemy.dealDamageToGameObject(spaceship);
                     } else {
-                        spaceship.takeDamage(2.5f * (1 - PlayerStats.getInstance().getCollisionDamageReduction()));
+
+                        //Should do damage once every 3 game ticks, to avoid instant death when glitching inside enemies
+                        if(GameState.getInstance().getGameSeconds() - spaceship.getLastTimeCollisionDamageTaken() >= 0.045) {
+                            spaceship.takeDamage(2.5f * (1 - PlayerStats.getInstance().getCollisionDamageReduction()));
+                            spaceship.setLastTimeCollisionDamageTaken(GameState.getInstance().getGameSeconds());
+                        }
                         spaceship.resetToPreviousPosition();
                         handleAdditionalKnockbackBehaviour(enemy);
                     }
@@ -166,6 +172,10 @@ public class EnemyManager {
 
     public List<Enemy> getEnemies () {
         return this.enemyList;
+    }
+
+    public List<Enemy> getEnemiesByType(EnemyEnums enemyType){
+        return enemyList.stream().filter(enemy -> enemy.getEnemyType().equals(enemyType)).toList();
     }
 
     public int getEnemyCount () {

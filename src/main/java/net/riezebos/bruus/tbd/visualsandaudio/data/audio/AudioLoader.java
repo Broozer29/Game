@@ -41,8 +41,35 @@ public class AudioLoader {
 
     public String convertAudioToFileString (AudioEnums audioFile) {
         switch (audioFile) {
-            case CarrierSlowingDown: return "/audio/carrierslow.wav";
-            case CarrierSpeedingUp: return "/audio/carrierfast.wav";
+            case CaptainMisc0: return "/audio/selectclass/captain/misc0.wav";
+            case CaptainMisc1: return "/audio/selectclass/captain/misc1.wav";
+            case CaptainRdy0: return "/audio/selectclass/captain/rdy0.wav";
+            case CaptainWhat0: return "/audio/selectclass/captain/what0.wav";
+            case CaptainWhat1: return "/audio/selectclass/captain/what1.wav";
+            case CaptainWhat2: return "/audio/selectclass/captain/what2.wav";
+            case CaptainWhat3: return "/audio/selectclass/captain/what3.wav";
+            case CaptainYes0: return "/audio/selectclass/captain/yes0.wav";
+            case CaptainYes1: return "/audio/selectclass/captain/yes1.wav";
+            case CaptainYes2: return "/audio/selectclass/captain/yes2.wav";
+
+            case CarrierRdy0: return "/audio/selectclass/carrier/rdy0.wav";
+            case CarrierWhat0: return "/audio/selectclass/carrier/what0.wav";
+            case CarrierWhat1: return "/audio/selectclass/carrier/what1.wav";
+            case CarrierYes0: return "/audio/selectclass/carrier/yes0.wav";
+            case CarrierYes1: return "/audio/selectclass/carrier/yes1.wav";
+            case CarrierYes2: return "/audio/selectclass/carrier/yes2.wav";
+            case CarrierYes3: return "/audio/selectclass/carrier/yes3.wav";
+
+            case FireFighterMisc0: return "/audio/selectclass/firefighter/misc0.wav";
+            case FireFighterMisc1: return "/audio/selectclass/firefighter/misc1.wav";
+            case FireFighterYes0: return "/audio/selectclass/firefighter/yes0.wav";
+            case FireFighterYes1: return "/audio/selectclass/firefighter/yes1.wav";
+            case FireFighterYes2: return "/audio/selectclass/firefighter/yes2.wav";
+            case FireFighterYes3: return "/audio/selectclass/firefighter/yes3.wav";
+
+
+            case ClassCarrierSlowingDown: return "/audio/carrierslow.wav";
+            case ClassCarrierSpeedingUp: return "/audio/carrierfast.wav";
             case ProtossShipDeath: return "/audio/ProtossShipDeath.wav";
             case QueenDeath: return "/audio/Zerg/QueenDeath.wav";
             case MutaliskBirth: return "/audio/Zerg/MutaliskBirth.wav";
@@ -183,6 +210,8 @@ public class AudioLoader {
             case SilentAudio:
                 return "/audio/silence.wav";
             case VendlaSonrisa:return "/audio/music/Vendla - Sonrisa (Royalty Free Music).wav";
+            case nomad:return "/audio/music/nomad.wav";
+            case keygen:return "/audio/music/keygen.wav";
             case ApproachingNirvanaNoStringsAttached: return "/audio/music/Approaching Nirvana - No Strings Attached (Edit).wav";
             case ApproachingNirvanaThousandPictures: return "/audio/music/Approaching Nirvana - Worth a Thousand Pictures.wav";
             case WaveshaperMonster: return "/audio/music/Waveshaper - Monster.wav";

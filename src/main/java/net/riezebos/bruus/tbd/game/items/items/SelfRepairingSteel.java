@@ -24,7 +24,7 @@ public class SelfRepairingSteel extends Item {
     }
 
     private void calculateHealingAmount () {
-        repairAmount = quantity / 2f;
+        repairAmount = quantity * 0.075f;
     }
 
     @Override

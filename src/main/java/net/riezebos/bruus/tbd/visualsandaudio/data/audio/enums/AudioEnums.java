@@ -1,5 +1,11 @@
 package net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums;
 
+import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerClass;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+
 public enum AudioEnums {
     Player_Laserbeam(false),
     SpecialAttackFinishedCharging(false),
@@ -65,6 +71,8 @@ public enum AudioEnums {
     ApproachingNirvanaThousandPictures(true),
     ApproachingNirvanaNoStringsAttached(true),
     VendlaSonrisa(true),
+    keygen(true),
+    nomad(true),
     NotEnoughMinerals(false),
     BroodlingAttached(false),
     OverlordDeath(false),
@@ -85,8 +93,31 @@ public enum AudioEnums {
     WePlantsAreHappyPlantsTimeRemix(true),
     RiskOfDanger(true),
     BossBattle(true),
-    CarrierSpeedingUp(false),
-    CarrierSlowingDown(false),
+    ClassCarrierSpeedingUp(false),
+    ClassCarrierSlowingDown(false),
+    CaptainMisc0(false),
+    CaptainMisc1(false),
+    CaptainRdy0(false),
+    CaptainWhat0(false),
+    CaptainWhat1(false),
+    CaptainWhat2(false),
+    CaptainWhat3(false),
+    CaptainYes0(false),
+    CaptainYes1(false),
+    CaptainYes2(false),
+    CarrierRdy0(false),
+    CarrierWhat0(false),
+    CarrierWhat1(false),
+    CarrierYes0(false),
+    CarrierYes1(false),
+    CarrierYes2(false),
+    CarrierYes3(false),
+    FireFighterMisc0(false),
+    FireFighterMisc1(false),
+    FireFighterYes0(false),
+    FireFighterYes1(false),
+    FireFighterYes2(false),
+    FireFighterYes3(false),
     ProtossShipDeath(false);
 
     // Boolean attribute to indicate if this should be streamed
@@ -100,5 +131,38 @@ public enum AudioEnums {
     // Method to check if the audio should be streamed
     public boolean shouldBeStreamed () {
         return shouldStream;
+    }
+
+    public static AudioEnums getSelectClassAudioByClass(PlayerClass playerClass) {
+        List<AudioEnums> availableSounds = new ArrayList<>();
+        Random random = new Random();
+
+        for (AudioEnums audioEnum : AudioEnums.values()) {
+            String enumName = audioEnum.name();
+            switch (playerClass) {
+                case Carrier:
+                    if (enumName.startsWith("Carrier")) {
+                        availableSounds.add(audioEnum);
+                    }
+                    break;
+                case Captain:
+                    if (enumName.startsWith("Captain")) {
+                        availableSounds.add(audioEnum);
+                    }
+                    break;
+                case FireFighter:
+                    if (enumName.startsWith("FireFighter")) {
+                        availableSounds.add(audioEnum);
+                    }
+                    break;
+            }
+        }
+
+        if (availableSounds.isEmpty()) {
+            return null; // Or throw an exception if no sounds are found
+        }
+
+        int randomIndex = random.nextInt(availableSounds.size());
+        return availableSounds.get(randomIndex);
     }
 }

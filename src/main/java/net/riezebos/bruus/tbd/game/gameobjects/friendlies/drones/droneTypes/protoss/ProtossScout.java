@@ -8,6 +8,9 @@ import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.droneTypes.Dron
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.*;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
+import net.riezebos.bruus.tbd.game.items.ItemEnums;
+import net.riezebos.bruus.tbd.game.items.PlayerInventory;
+import net.riezebos.bruus.tbd.game.items.items.carrier.SynergeticLink;
 import net.riezebos.bruus.tbd.game.movement.Direction;
 import net.riezebos.bruus.tbd.game.movement.MovementConfiguration;
 import net.riezebos.bruus.tbd.game.movement.MovementPatternSize;
@@ -24,10 +27,11 @@ import java.awt.*;
 public class ProtossScout extends Drone {
     private GameObject target;
     private int attackRange = 200;
-    private float defaultMoveSpeed = 3;
+    private float defaultMoveSpeed = 3.25f;
     private boolean isMovingSlow = false;
     public static float scoutDamageFactor = 0.5f;
     private boolean isMovingAroundCarrierDrone = false;
+    private float baseDamage = 0;
 
     public ProtossScout(SpriteAnimationConfiguration spriteAnimationConfiguration, FriendlyObjectConfiguration droneConfiguration, MovementConfiguration movementConfiguration) {
         super(spriteAnimationConfiguration, droneConfiguration, movementConfiguration);
@@ -38,6 +42,8 @@ public class ProtossScout extends Drone {
         super.initProtossDeathExplosion();
         super.droneType = DroneTypes.ProtossScout;
         super.deathSound = AudioEnums.ProtossShipDeath;
+        super.appliesOnHitEffects = true;
+        this.baseDamage = damage;
     }
 
     public void activateObject () {
@@ -53,6 +59,10 @@ public class ProtossScout extends Drone {
             immediatlyReturnToCarrier();
         }
 
+        SynergeticLink synergeticLink = (SynergeticLink) PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.SynergeticLink);
+        if(synergeticLink != null){
+            this.damage = baseDamage * (1 + synergeticLink.getCurrentScoutBonusDamage());
+        }
 
         fireAction();
     }
@@ -100,7 +110,7 @@ public class ProtossScout extends Drone {
     private void updateMoveSpeed(boolean slow) {
         if (slow != isMovingSlow) { // Only update if there is a state change
             isMovingSlow = slow;
-            float newSpeed = slow ? (defaultMoveSpeed * 0.75f) : defaultMoveSpeed;
+            float newSpeed = slow ? (defaultMoveSpeed * 0.7f) : defaultMoveSpeed;
             this.getMovementConfiguration().setXMovementSpeed(newSpeed); // Only call when needed
         }
     }
@@ -139,11 +149,16 @@ public class ProtossScout extends Drone {
                 , 100, 100, null, damage, ImageEnums.Impact_Explosion_One, isFriendly, allowedToDealDamage, objectType,
                 missileType.isUsesBoxCollision(), false, false, false);
 
+        missileConfiguration.setPiercesMissiles(PlayerStats.getInstance().getPiercingMissilesAmount() > 0);
+        missileConfiguration.setAmountOfPierces(PlayerStats.getInstance().getPiercingMissilesAmount());
+
         Missile missile = MissileCreator.getInstance().createMissile(missileSpriteConfiguration, missileConfiguration, movementConfiguration);
         missile.setOwnerOrCreator(this);
         missile.setObjectType("Protoss Scout Missile");
 
         missile.resetMovementPath();
+
+
 
         Point point = new Point(target.getCenterXCoordinate(), target.getCenterYCoordinate());
         point.setX(point.getX() - missile.getWidth() / 2);

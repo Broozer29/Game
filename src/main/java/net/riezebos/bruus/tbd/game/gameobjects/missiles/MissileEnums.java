@@ -11,6 +11,7 @@ public enum MissileEnums {
     DefaultLaserBullet(false, "LaserBullet", ImageEnums.LaserBulletDestruction, ImageEnums.LaserBullet),
     OrbitCenter(false, "OrbitCenter", ImageEnums.Destroyed_Explosion, ImageEnums.DestructableOrbitCenterMissile),
     Orbitter(false, "Orbitter", ImageEnums.BarrierProjectileDestruction, ImageEnums.BarrierProjectile),
+    ProtossShuttleMissile(false, "Shuttle Missile", ImageEnums.ProtossShuttleMissileExplosion, ImageEnums.ProtossShuttleMissile),
     BarrierProjectile(false, "BarrierProjectile", ImageEnums.BarrierProjectileDestruction, ImageEnums.BarrierProjectile);
 
     private final boolean usesBoxCollision;

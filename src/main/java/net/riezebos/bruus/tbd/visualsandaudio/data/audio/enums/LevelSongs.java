@@ -10,6 +10,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
+
+//DEPRECATED, the whole functionality for LevelSongs is to be rebuild into something else.
 public enum LevelSongs {
 
     //Difficulty: Easy
@@ -202,6 +204,8 @@ public enum LevelSongs {
                 return AudioEnums.RiskOfDanger;
             case RedBoss:
                 return AudioEnums.Blood_On_The_Dancefloor;
+            case CarrierBoss:
+                return AudioEnums.keygen;
             default:
                 return getRandomBossSong();
         }

@@ -4,6 +4,18 @@ public enum ImageEnums {
 
     //// Menu Buttons
     Test_Image,
+    KineticDynamoIcon,
+    InversionRetrieval,
+    HangarBayIcon,
+    RallyTheFleetIcon,
+    FrenzyIcon,
+    PyrrhicProtocolIcon,
+    ShieldStabilizer,
+    ProtossShipAmountIcon,
+    CarrierDroneExplosion,
+    ArbiterItem,
+    ScoutItem,
+    ShuttleItem,
     ModuleScorchIcon,
     CorrosiveOil,
     FireShieldIcon,
@@ -30,12 +42,14 @@ public enum ImageEnums {
     ProtossDestroyedExplosion,
     ProtossCarrierSwitchFast,
     ProtossCarrierSwitchSlow,
-    ProtossCarrierDrone,
+    ProtossCarrierBeacon,
     CarrierSwitchGearsIcon,
     CarrierPlaceDroneIcon,
+    MartyrdomAnimation,
 
     //// Animations
     Impact_Explosion_One,
+    CarrierDronePulse,
     Destroyed_Explosion,
     Alien_Bomb_Explosion,
     Default_Player_Engine,
@@ -109,6 +123,8 @@ public enum ImageEnums {
     ThornsDamage,
     FreezeEffect,
     ShurikenEnemy,
+    ProtossShuttleMissile,
+    CarrierWarpExplosion,
 
     //// Background Objects
     Moon, Lava_Planet, Planet_One, Planet_Two, Planet_Three, Mars_Planet, Star,
@@ -134,6 +150,10 @@ public enum ImageEnums {
     LaserbeamStart,
     LaserbeamEnd,
     LaserbeamCharging,
+    PinkLaserbeamBody,
+    PinkLaserbeamStart,
+    PinkLaserbeamEnd,
+    PinkLaserbeamCharging,
     UIDamageOverlay,
 
     // Missile Images
@@ -155,6 +175,8 @@ public enum ImageEnums {
     Scout,
     FourDirectionalDrone,
     RedBoss,
+    CarrierBoss,
+    CarrierPulsingDrone,
 
     // Unused?
     Invisible,
@@ -209,7 +231,7 @@ public enum ImageEnums {
     Letter_C, Letter_D, Letter_E, Letter_F, Letter_G, Letter_H, Letter_I, Letter_J, Letter_K, Letter_L, Letter_M,
     Letter_N, Letter_O, Letter_P, Letter_Q, Letter_R, Letter_S, Letter_T, Letter_U, Letter_V, Letter_W, Letter_X,
     Letter_Y, Letter_Z, Letter_Percentage, Letter_Komma, Letter_One, Letter_Two, Letter_Three, Letter_Four, Letter_Five,
-    Letter_Six, Letter_Seven, Letter_Eight, Letter_Nine, Letter_Zero, SpaceStationBoss, FireFighter, Starcraft2ConcentratedLaser, Starcraft2RepairBeam, Starcraft2_BatteryUpgrade, Starcraft2_MineExplosion, StickyOilIcon, SelectNewClassAnimation, EscalatingFlames, EntanglingFlames;
+    Letter_Six, Letter_Seven, Letter_Eight, Letter_Nine, Letter_Zero, SpaceStationBoss, FireFighter, Starcraft2ConcentratedLaser, Starcraft2RepairBeam, Starcraft2_BatteryUpgrade, Starcraft2_MineExplosion, StickyOilIcon, SelectNewClassAnimation, EscalatingFlames, EntanglingFlames, ProtossShuttleMissileExplosion, ArbiterMultiTargetIcon;
 
     public static ImageEnums fromChar (char c) {
         switch (c) {

@@ -9,10 +9,14 @@ import net.riezebos.bruus.tbd.game.gameobjects.missiles.specialAttacks.ElectroSh
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.specialAttacks.FireShield;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.specialAttacks.SpecialAttack;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.specialAttacks.SpecialAttackConfiguration;
+import net.riezebos.bruus.tbd.game.gameobjects.neutral.ExplosionManager;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerSpecialAttackTypes;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
+import net.riezebos.bruus.tbd.game.items.ItemEnums;
+import net.riezebos.bruus.tbd.game.items.PlayerInventory;
+import net.riezebos.bruus.tbd.game.items.items.carrier.InverseRetrieval;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.AudioManager;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.AudioEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
@@ -20,8 +24,6 @@ import net.riezebos.bruus.tbd.visualsandaudio.objects.AnimationManager;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteAnimation;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteAnimationConfiguration;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteConfiguration;
-
-import java.util.List;
 
 public class SpaceShipSpecialGun {
     private PlayerStats playerStats = PlayerStats.getInstance();
@@ -63,24 +65,30 @@ public class SpaceShipSpecialGun {
     }
 
     private void handleCarrierAttack() {
-        Drone carrierDrone = FriendlyCreator.getCarrierDrone();
-
-        if (carrierDrone != null) {
-            carrierDrone.setVisible(false);
-            placeAnimationAtCarrierDrone(carrierDrone);
-            //send signal to protoss ships to come to player
+        Drone carrierBeacon = FriendlyCreator.getCarrierBeacon();
+        if (carrierBeacon != null) {
+            carrierBeacon.setVisible(false);
+            placeAnimationAtCarrierBeacon(carrierBeacon);
+            handleInverseRetrieval(carrierBeacon);
         } else {
             GameObject player = PlayerManager.getInstance().getSpaceship();
-            carrierDrone = FriendlyCreator.createCarrierDrone();
-            int xCoordinate = Math.round(player.getXCoordinate() + player.getWidth() + (carrierDrone.getWidth() * 0.6f));
-            carrierDrone.setCenterCoordinates(xCoordinate,
+            carrierBeacon = FriendlyCreator.createCarrierDrone();
+            int xCoordinate = Math.round(player.getXCoordinate() + player.getWidth() + (carrierBeacon.getWidth() * 0.6f));
+            carrierBeacon.setCenterCoordinates(xCoordinate,
                     player.getCenterYCoordinate());
-            placeAnimationAtCarrierDrone(carrierDrone);
-            FriendlyManager.getInstance().addDrone(carrierDrone);
+            placeAnimationAtCarrierBeacon(carrierBeacon);
+            FriendlyManager.getInstance().addDrone(carrierBeacon);
         }
     }
 
-    private void placeAnimationAtCarrierDrone(GameObject carrierDrone) {
+    private void handleInverseRetrieval(GameObject carrierBeacon){
+        InverseRetrieval item = (InverseRetrieval) PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.InverseRetrieval);
+        if(item != null){
+            item.applyEffectToObject(carrierBeacon);
+        }
+    }
+
+    private void placeAnimationAtCarrierBeacon(GameObject carrierDrone) {
         SpriteAnimation spriteAnimation = new SpriteAnimation(createConfig(carrierDrone.getCenterXCoordinate(), carrierDrone.getCenterYCoordinate(),
                 ImageEnums.SelectNewClassAnimation, 1, false));
         spriteAnimation.setFrameDelay(1);

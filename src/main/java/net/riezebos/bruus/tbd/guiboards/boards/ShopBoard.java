@@ -3,6 +3,8 @@ package net.riezebos.bruus.tbd.guiboards.boards;
 import net.riezebos.bruus.tbd.controllerInput.ConnectedControllersManager;
 import net.riezebos.bruus.tbd.controllerInput.ControllerInputEnums;
 import net.riezebos.bruus.tbd.controllerInput.ControllerInputReader;
+import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerClass;
+import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.gamestate.ShopManager;
 import net.riezebos.bruus.tbd.game.items.Item;
@@ -85,6 +87,7 @@ public class ShopBoard extends JPanel implements TimerHolder {
     private GUITextCollection difficultySelectionText;
     private GUITextCollection lengthSelectionText;
     private GUITextCollection nextLevelDifficultyIcon;
+    private GUITextCollection additionalTextCollection;
 
 
     private MenuCursor menuCursor;
@@ -292,6 +295,8 @@ public class ShopBoard extends JPanel implements TimerHolder {
         nextLevelDifficultyIcon = shopBoardCreator.createNextLevelDifficultyIcon(nextLevelDifficultyBackground);
         moneyIcon = shopBoardCreator.createMoneyObject(itemRowsBackgroundCard);
 
+
+
         offTheGridObjects.add(nextLevelDifficultyBackground);
         offTheGridObjects.add(itemRowsBackgroundCard);
         offTheGridObjects.add(descriptionBackgroundCard);
@@ -311,6 +316,11 @@ public class ShopBoard extends JPanel implements TimerHolder {
         offTheGridObjects.add(rerollBackgroundCard);
         offTheGridObjects.addAll(rerollCostText.getComponents());
         offTheGridObjects.addAll(rerollCost.getComponents());
+
+        if(PlayerStats.getInstance().getPlayerClass().equals(PlayerClass.Carrier)){
+            additionalTextCollection = shopBoardCreator.createProtossCapacityText(itemRowsBackgroundCard);
+            offTheGridObjects.addAll(additionalTextCollection.getComponents());
+        }
 
         if (this.showInventory) {
             createInventoryGrid();

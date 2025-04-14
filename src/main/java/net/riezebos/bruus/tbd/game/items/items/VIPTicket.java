@@ -27,9 +27,6 @@ public class VIPTicket extends Item {
     @Override
     public void applyEffectToObject (GameObject gameObject) {
         PlayerStats.getInstance().setAmountOfFreeRerolls(this.quantity);
-//        PlayerStats.getInstance().setShopRerollDiscount(discount);
-//        ShopManager.getInstance().calculateRerollCost();
-//        BoardManager.getInstance().getShopBoard().remakeShopRerollText();
     }
 
     @Override

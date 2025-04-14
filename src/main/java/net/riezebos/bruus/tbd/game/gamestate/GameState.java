@@ -8,7 +8,7 @@ public class GameState {
 
     private static GameState instance = new GameState();
     private GameStatusEnums gameState;
-
+    private GameMode gameMode = GameMode.Default;
 
     private double lastPause;
 
@@ -51,7 +51,7 @@ public class GameState {
         float playerFactor = 1;
         float baseTimeFactor = 0.0606f; // Base factor for time, at LevelManager difficulty 2
         float maxTimeFactor = 0.125f; // Define the maximum time factor for LevelManager difficulty 6
-        float stageFactor = (float) Math.pow(1.10, stagesCompleted); // Exponential growth for each stage completed
+        float stageFactor = (float) Math.pow(1.05, stagesCompleted); // Exponential growth for each stage completed
 
 
         float songDifficultyModifier = LevelManager.getInstance().getCurrentLevelDifficultyScore(); // This should be obtained from the LevelManager and ranges between 2 and 6 (inclusive)
@@ -153,12 +153,15 @@ public class GameState {
 
     public EnemyEnums getNextBoss(){
         int bossesDefeated = this.bossesDefeated;
+
         // Use modulo to cycle through the bosses
         switch (bossesDefeated % EnemyEnums.getAmountOfBossEnemies()) {
             case 0:
                 return EnemyEnums.RedBoss;
             case 1:
                 return EnemyEnums.SpaceStationBoss;
+            case 2:
+                return EnemyEnums.CarrierBoss;
             default:
                 return EnemyEnums.RedBoss;
         }
@@ -186,6 +189,15 @@ public class GameState {
         this.bossesDefeated = saveFile.getBossesDefeated();
         this.difficultyCoefficient = saveFile.getDifficultyCoefficient();
         this.gameTicksExecuted = saveFile.getGameTicksExecuted();
+        this.gameMode = saveFile.getGameModes();
+    }
+
+    public GameMode getGameMode() {
+        return gameMode;
+    }
+
+    public void setGameMode(GameMode gameMode) {
+        this.gameMode = gameMode;
     }
 }
 

@@ -17,6 +17,7 @@ public class Thornweaver extends Item {
     @Override
     public void applyEffectToObject (GameObject gameObject) {
         if(shouldApply) {
+            PlayerStats.getInstance().setHasThornsEnabled(true);
             PlayerStats.getInstance().modifyCollisionDamageReduction(0.5f);
             shouldApply = false;
         }
@@ -24,6 +25,7 @@ public class Thornweaver extends Item {
 
     private void removeEffect(){
         if(quantity > 0) {
+            PlayerStats.getInstance().setHasThornsEnabled(false);
             PlayerStats.getInstance().modifyAttackSpeedBonus(-0.5f);
         }
     }
@@ -41,10 +43,6 @@ public class Thornweaver extends Item {
         if(!this.itemEnum.isEnabled()){
             return false;
         }
-        boolean available = false;
-        if(PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.Thornweaver) == null){
-            available = true;
-        }
-        return available;
+        return PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.Thornweaver) == null;
     }
 }

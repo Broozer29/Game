@@ -54,7 +54,7 @@ public enum EnemyEnums {
     CashCarrier(200, 0, false,
             AudioEnums.Alien_Spaceship_Destroyed, "Cash Carrier",
             ImageEnums.CashCarrier, ImageEnums.Explosion2, 0, EnemyCategory.Special, EnemyTribes.Pirates, 30,
-            50, 50, 0, 1.3f, 0.75f, 171, 98,
+            75, 50, 0, 1.2f, 0.75f, 171, 98,
             0),
     Scout(50, 0, true,
             AudioEnums.Alien_Spaceship_Destroyed, "Enemy Scout",
@@ -67,6 +67,28 @@ public enum EnemyEnums {
             ImageEnums.FourDirectionalDrone, ImageEnums.Explosion2, 0, EnemyCategory.Summon, EnemyTribes.Pirates, 0,
             0, 0, 0, 2f, 0.4f, 170, 170,
             0),
+    EnemyProtossScout(150, 0, true,
+            AudioEnums.ProtossShipDeath, "Enemy Protoss Scout",
+            ImageEnums.ProtossScout, ImageEnums.Explosion2, 0, EnemyCategory.Summon, EnemyTribes.Pirates, 0,
+            0, 0, 0, 2.5f, 0.25f, 207, 116,
+            0),
+
+    EnemyProtossShuttle(200, 0, true,
+            AudioEnums.ProtossShipDeath, "Enemy Protoss Shuttle",
+            ImageEnums.ProtossShuttle, ImageEnums.Explosion2, 0, EnemyCategory.Summon, EnemyTribes.Pirates, 0,
+            0, 0, 0, 1.5f, 0.25f, 231, 125,
+            0),
+    CarrierPulsingDrone(500, 0, true,
+            AudioEnums.Alien_Spaceship_Destroyed, "Enemy Protoss Pulsing Drone",
+            ImageEnums.CarrierPulsingDrone, ImageEnums.Explosion2, 0, EnemyCategory.Summon, EnemyTribes.Pirates, 0,
+            0, 0, 0, 1, 0.75f, 100, 100,
+            0),
+
+    EnemyCarrierBeacon(200, 0, true,
+            AudioEnums.Alien_Spaceship_Destroyed, "Enemy Protoss Beacon",
+            ImageEnums.ProtossCarrierBeacon, ImageEnums.Explosion2, 0, EnemyCategory.Summon, EnemyTribes.Pirates, 0,
+            0, 0, 0, 1, 0.6f, 100, 100,
+            0),
     RedBoss(3000, 0, true,
             AudioEnums.Alien_Spaceship_Destroyed, "Red Boss",
             ImageEnums.RedBoss, ImageEnums.Explosion2, 0, EnemyCategory.Boss, EnemyTribes.Pirates, 20,
@@ -76,7 +98,12 @@ public enum EnemyEnums {
     SpaceStationBoss(3750, 0, true,
             AudioEnums.Alien_Spaceship_Destroyed, "Space Station Boss",
             ImageEnums.SpaceStationBoss, ImageEnums.Explosion2, 0, EnemyCategory.Boss, EnemyTribes.Pirates, 20,
-            2000, 500, 0, 1.75f, 1, 850, 850,
+            1750, 500, 0, 1.75f, 1, 850, 850,
+            0),
+    CarrierBoss(4500, 0, true,
+            AudioEnums.Alien_Spaceship_Destroyed, "Carrier Boss",
+            ImageEnums.CarrierBoss, ImageEnums.Explosion2, 0, EnemyCategory.Boss, EnemyTribes.Pirates, 20,
+            2500, 500, 0, 1.25f, 0.75f, 465, 252,
             0),
 
     Shuriken(65, 0, false,
@@ -132,9 +159,8 @@ public enum EnemyEnums {
             AudioEnums.Alien_Spaceship_Destroyed, "LaserOriginDrone",
             ImageEnums.FourDirectionalDrone, ImageEnums.Explosion2, 0, EnemyCategory.Summon, EnemyTribes.Pirates, 0,
             0, 0, 0, 0f, 0.5f, 170, 170,
-            0),
+            0);
 
-    ;
 
     private final int baseHitPoints;
     private final int baseShieldPoints;
@@ -164,11 +190,11 @@ public enum EnemyEnums {
     private int minimumStageLevelRequired;
 
 
-    EnemyEnums (int baseHitPoints, int baseShieldPoints, boolean hasAttack, AudioEnums deathSound, String objectType,
-                ImageEnums imageType, ImageEnums destructionType, float creditCost,
-                EnemyCategory enemyCategory, EnemyTribes enemyTribe, float baseArmor, float cashMoneyWorth, float xpOnDeath,
-                float weight, float movementSpeed, float defaultScale, int baseWidth, int baseHeight,
-                int minimumStageLevelRequired) {
+    EnemyEnums(int baseHitPoints, int baseShieldPoints, boolean hasAttack, AudioEnums deathSound, String objectType,
+               ImageEnums imageType, ImageEnums destructionType, float creditCost,
+               EnemyCategory enemyCategory, EnemyTribes enemyTribe, float baseArmor, float cashMoneyWorth, float xpOnDeath,
+               float weight, float movementSpeed, float defaultScale, int baseWidth, int baseHeight,
+               int minimumStageLevelRequired) {
         this.enemyTribe = enemyTribe;
         this.baseHitPoints = baseHitPoints;
         this.baseShieldPoints = baseShieldPoints;
@@ -191,7 +217,7 @@ public enum EnemyEnums {
     }
 
 
-    public static EnemyEnums getRandomEnemy () {
+    public static EnemyEnums getRandomEnemy() {
         EnemyEnums[] enums = EnemyEnums.values();
         Random random = new Random();
         EnemyEnums randomValue = enums[random.nextInt(enums.length)];
@@ -202,84 +228,84 @@ public enum EnemyEnums {
         return randomValue;
     }
 
-    public int getBaseHitPoints () {
+    public int getBaseHitPoints() {
         return baseHitPoints;
     }
 
-    public int getBaseShieldPoints () {
+    public int getBaseShieldPoints() {
         return baseShieldPoints;
     }
 
-    public boolean hasAttack () {
+    public boolean hasAttack() {
         return hasAttack;
     }
 
-    public AudioEnums getDeathSound () {
+    public AudioEnums getDeathSound() {
         return deathSound;
     }
 
-    public String getObjectType () {
+    public String getObjectType() {
         return objectType;
     }
 
-    public ImageEnums getImageEnum () {
+    public ImageEnums getImageEnum() {
         return imageType;
     }
 
-    public ImageEnums getDestructionImageEnum () {
+    public ImageEnums getDestructionImageEnum() {
         return destructionType;
     }
 
-    public float getCreditCost () {
+    public float getCreditCost() {
         return creditCost;
     }
 
-    public EnemyCategory getEnemyCategory () {
+    public EnemyCategory getEnemyCategory() {
         return enemyCategory;
     }
 
-    public float getBaseArmor () {
+    public float getBaseArmor() {
         return baseArmor;
     }
 
 
-    public ImageEnums getImageType () {
+    public ImageEnums getImageType() {
         return imageType;
     }
 
-    public float getCashMoneyWorth () {
+    public float getCashMoneyWorth() {
         return cashMoneyWorth;
     }
 
-    public float getXpOnDeath () {
+    public float getXpOnDeath() {
         return xpOnDeath;
     }
 
-    public ImageEnums getDestructionType () {
+    public ImageEnums getDestructionType() {
         return destructionType;
     }
 
-    public float getWeight () {
+    public float getWeight() {
         return weight;
     }
 
-    public float getMovementSpeed () {
+    public float getMovementSpeed() {
         return movementSpeed;
     }
 
-    public float getDefaultScale () {
+    public float getDefaultScale() {
         return defaultScale;
     }
 
-    public int getBaseHeight () {
+    public int getBaseHeight() {
         return baseHeight;
     }
 
-    public int getBaseWidth () {
+    public int getBaseWidth() {
         return baseWidth;
     }
 
-    public static EnemyEnums getRandomEnemy (EnemyCategory category) {
+    public static EnemyEnums getRandomEnemy(EnemyCategory category) {
         List<EnemyEnums> filteredEnemies = Arrays.stream(EnemyEnums.values())
                 .filter(enemy -> enemy.getEnemyCategory().equals(category))
                 .collect(Collectors.toList());
@@ -290,21 +316,21 @@ public enum EnemyEnums {
         return filteredEnemies.get(new Random().nextInt(filteredEnemies.size()));
     }
 
-    public int getMinimumStageLevelRequired () {
+    public int getMinimumStageLevelRequired() {
         return minimumStageLevelRequired;
     }
 
-    public static int getAmountOfBossEnemies () {
+    public static int getAmountOfBossEnemies() {
         return Arrays.stream(EnemyEnums.values())
                 .filter(enemy -> enemy.getEnemyCategory().equals(EnemyCategory.Boss))
                 .toList().size();
     }
 
-    public boolean isHasAttack () {
+    public boolean isHasAttack() {
         return hasAttack;
     }
 
-    public EnemyTribes getEnemyTribe () {
+    public EnemyTribes getEnemyTribe() {
         return enemyTribe;
     }
 }

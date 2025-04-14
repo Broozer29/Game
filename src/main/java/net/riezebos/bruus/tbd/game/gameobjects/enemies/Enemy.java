@@ -114,9 +114,9 @@ public class Enemy extends GameObject {
     }
 
     private float getScalingFactor () {
-        if (this.enemyType.getEnemyTribe().equals(EnemyTribes.Zerg)) {
-            return 1.15f;
-        }
+//        if (this.enemyType.getEnemyTribe().equals(EnemyTribes.Zerg)) {
+//            return 1.15f;
+//        }
         return 1.1f;
     }
 
@@ -131,7 +131,7 @@ public class Enemy extends GameObject {
     }
 
     @Override
-    public void triggerCategorySpecificOnDeathTriggers () {
+    public void triggerOnDeathActions() {
         if (!this.enemyType.getEnemyCategory().equals(EnemyCategory.Summon)) {
             GameStatsTracker.getInstance().addEnemyKilled(1);
         }

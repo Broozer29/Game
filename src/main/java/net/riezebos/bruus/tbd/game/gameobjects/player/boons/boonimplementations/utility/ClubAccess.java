@@ -84,7 +84,7 @@ public class ClubAccess implements Boon {
     }
 
     @Override
-    public BoonEnums getBoonType() {
+    public BoonEnums getBoonEnum() {
         return BoonEnums.CLUB_ACCESS;
     }
 

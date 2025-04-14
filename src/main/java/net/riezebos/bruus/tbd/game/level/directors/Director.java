@@ -122,7 +122,7 @@ public class Director {
 
     private boolean canSpawnMoreOfThisEnemy(EnemyEnums enemyEnums){
         if(enemyEnums.equals(EnemyEnums.ZergQueen)){
-            return EnemyManager.getInstance().getAmountOfEnemyTypesAlive(EnemyEnums.ZergQueen) < 1;
+            return EnemyManager.getInstance().getAmountOfEnemyTypesAlive(EnemyEnums.ZergQueen) < 2;
         }
 
         if(enemyEnums.equals(EnemyEnums.Tazer)){

@@ -15,6 +15,7 @@ public class BarbedAegis extends Item {
     @Override
     public void applyEffectToObject (GameObject gameObject) {
         PlayerStats.getInstance().setThornsArmorDamageBonusRatio(this.quantity * 0.2f);
+        PlayerStats.getInstance().setHasThornsEnabled(true);
     }
 
     @Override

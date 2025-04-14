@@ -257,7 +257,7 @@ public class SpriteAnimation extends Sprite implements Cloneable{
 
 
 	@Override
-	protected void recalculateBoundsAndSize(){
+	public void recalculateBoundsAndSize(){
 		this.width = frames.get(0).getWidth();
 		this.height = frames.get(0).getHeight();
 		this.animationBounds = new Rectangle(xCoordinate, yCoordinate, this.width, this.height);

@@ -5,9 +5,10 @@ import net.riezebos.bruus.tbd.game.items.enums.ItemApplicationEnum;
 import net.riezebos.bruus.tbd.game.items.enums.ItemRarityEnums;
 import net.riezebos.bruus.tbd.game.items.items.*;
 import net.riezebos.bruus.tbd.game.items.items.captain.*;
-import net.riezebos.bruus.tbd.game.items.items.carrier.ProtossArbiter;
-import net.riezebos.bruus.tbd.game.items.items.carrier.ProtossScout;
-import net.riezebos.bruus.tbd.game.items.items.carrier.ProtossShuttle;
+import net.riezebos.bruus.tbd.game.items.items.carrier.*;
+import net.riezebos.bruus.tbd.game.items.items.disabled.ArmorPiercingRounds;
+import net.riezebos.bruus.tbd.game.items.items.disabled.MoneyPrinter;
+import net.riezebos.bruus.tbd.game.items.items.disabled.RepulsionArmorPlate;
 import net.riezebos.bruus.tbd.game.items.items.firefighter.*;
 import net.riezebos.bruus.tbd.game.playerprofile.PlayerProfileManager;
 import net.riezebos.bruus.tbd.guiboards.BoardManager;
@@ -21,11 +22,11 @@ import java.util.stream.Collectors;
 public class PlayerInventory {
     private static PlayerInventory instance = new PlayerInventory();
     private Map<ItemEnums, Item> items = new HashMap<>();
-    private float cashMoney = 100;
+    private float cashMoney = 0;
 
     private PlayerInventory() {
+//        addItem(ItemEnums.InverseRetrieval);
 
-//        addItem(ItemEnums.Contract);
 //        for(int i = 0; i < 5; i++){
 //            addItem(ItemEnums.GuardianDrone);
 //        }
@@ -63,21 +64,21 @@ public class PlayerInventory {
         checkTreasureHunterUnlockCondition();
     }
 
-    private void checkClubAccessUnlockCondition(){
+    private void checkClubAccessUnlockCondition() {
         Item ticket = getItemFromInventoryIfExists(ItemEnums.VIPTicket);
-        if(ticket != null && ticket.getQuantity() >= 5 && PlayerProfileManager.getInstance().getLoadedProfile().getClubAccessLevel() <= 0){
+        if (ticket != null && ticket.getQuantity() >= 5 && PlayerProfileManager.getInstance().getLoadedProfile().getClubAccessLevel() <= 0) {
             PlayerProfileManager.getInstance().getLoadedProfile().setClubAccessLevel(1);
             PlayerProfileManager.getInstance().exportCurrentProfile();
             BoardManager.getInstance().getShopBoard().addContractAnimation(BoonSelectionBoardCreator.createBoonUnlockComponent(BoonEnums.CLUB_ACCESS));
         }
     }
 
-    private void checkTreasureHunterUnlockCondition(){
+    private void checkTreasureHunterUnlockCondition() {
         int amount = items.values().stream()
                 .filter(item -> item.getItemEnum().getItemRarity().equals(ItemRarityEnums.Relic))
                 .toList()
                 .size();
-        if(amount >= 3 && PlayerProfileManager.getInstance().getLoadedProfile().getTreasureHunterLevel() <= 0){
+        if (amount >= 3 && PlayerProfileManager.getInstance().getLoadedProfile().getTreasureHunterLevel() <= 0) {
             PlayerProfileManager.getInstance().getLoadedProfile().setTreasureHunterLevel(1);
             PlayerProfileManager.getInstance().exportCurrentProfile();
             BoardManager.getInstance().getShopBoard().addContractAnimation(BoonSelectionBoardCreator.createBoonUnlockComponent(BoonEnums.TREASURE_HUNTER));
@@ -127,8 +128,8 @@ public class PlayerInventory {
                 return new CriticalOverloadCapacitor();
             case BarrierSuperSizer:
                 return new BarrierSupersizer();
-            case DrillerModule:
-                return new DrillerModule();
+            case PiercingMissiles:
+                return new PiercingMissiles();
             case BouncingModuleAddon:
                 return new BouncingModuleAddon();
             case VIPTicket:
@@ -170,11 +171,29 @@ public class PlayerInventory {
             case ShieldStabilizer:
                 return new ShieldStabilizer();
             case ProtossScout:
-                return new ProtossScout();
+                return new ProtossScoutItem();
             case ProtossArbiter:
-                return new ProtossArbiter();
+                return new ProtossArbiterItem();
             case ProtossShuttle:
-                return new ProtossShuttle();
+                return new ProtossShuttleItem();
+            case HangarBayUpgrade:
+                return new HangarBayUpgrade();
+            case PyrrhicProtocol:
+                return new PyrrhicProtocol();
+            case RallyTheFleet:
+                return new RallyTheFleet();
+            case InverseRetrieval:
+                return new InverseRetrieval();
+            case Martyrdom:
+                return new Martyrdom();
+            case KineticDynamo:
+                return new KineticDynamo();
+            case ProtossThorns:
+                return new ProtossThorns();
+            case ArbiterMultiTargeting:
+                return new ArbiterMultiTargeting();
+            case SynergeticLink:
+                return new SynergeticLink();
             case Locked:
                 return null;
             default:

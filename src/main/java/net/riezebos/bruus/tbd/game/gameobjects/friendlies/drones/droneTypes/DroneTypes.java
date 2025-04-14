@@ -9,7 +9,7 @@ public enum DroneTypes {
     ProtossScout(ImageEnums.ProtossScout, 4),
     ProtossArbiter(ImageEnums.ProtossArbiter , 3),
     ProtossShuttle(ImageEnums.ProtossShuttle , 3),
-    CarrierDrone(ImageEnums.ProtossCarrierDrone, 1); //movement speed shouldnt matter, its not supposed to move
+    CarrierDrone(ImageEnums.ProtossCarrierBeacon, 1); //movement speed shouldnt matter, its not supposed to move
 
     DroneTypes(ImageEnums image, int movementSpeed) {
         this.correspondingImageEnum = image;

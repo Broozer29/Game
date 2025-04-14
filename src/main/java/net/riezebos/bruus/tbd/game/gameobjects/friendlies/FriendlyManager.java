@@ -7,10 +7,17 @@ import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.Drone;
 import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.droneTypes.DroneTypes;
 import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.droneTypes.protoss.CarrierDrone;
 import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.droneTypes.protoss.ProtossShuttle;
+import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.droneTypes.protoss.ProtossUtils;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
+import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.gamestate.GameStatusEnums;
+import net.riezebos.bruus.tbd.game.items.ItemEnums;
+import net.riezebos.bruus.tbd.game.items.PlayerInventory;
+import net.riezebos.bruus.tbd.game.items.items.carrier.ProtossThorns;
+import net.riezebos.bruus.tbd.game.items.items.carrier.SynergeticLink;
 import net.riezebos.bruus.tbd.game.util.OrbitingObjectsFormatter;
+import net.riezebos.bruus.tbd.game.util.ThornsDamageDealer;
 import net.riezebos.bruus.tbd.game.util.collision.CollisionDetector;
 import net.riezebos.bruus.tbd.game.util.collision.CollisionInfo;
 import net.riezebos.bruus.tbd.game.util.performancelogger.PerformanceLogger;
@@ -126,6 +133,12 @@ public class FriendlyManager {
             }
         }
 
+
+        SynergeticLink synergeticLink = (SynergeticLink) PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.SynergeticLink);
+        if(synergeticLink != null){
+            synergeticLink.applyEffectToObject(null); //Update synergetic link values
+        }
+
     }
 
 
@@ -154,16 +167,12 @@ public class FriendlyManager {
         for (Drone drones : drones) {
             if (drones.isVisible()) {
                 for (Enemy enemy : enemyManager.getEnemies()) {
-                    CollisionInfo collisionInfo = CollisionDetector.getInstance().detectCollision(drones, enemy);
-                    if (collisionInfo != null) {
-                        if(drones instanceof ProtossShuttle shuttle){
-                            shuttle.detonate();
-                            if(enemy.isDetonateOnCollision()){
-                                EnemyManager.getInstance().detonateEnemy(enemy);
-                            }
-                        } else if(enemy.isDetonateOnCollision()) {
+                    if(enemy.isVisible() && enemy.isDetonateOnCollision()) {
+                        CollisionInfo collisionInfo = CollisionDetector.getInstance().detectCollision(drones, enemy);
+                        if (collisionInfo != null) {
                             EnemyManager.getInstance().detonateEnemy(enemy);
                             enemy.dealDamageToGameObject(drones);
+                            ProtossUtils.getInstance().handleProtossThorns(enemy);
                         }
                     }
                 }
@@ -173,13 +182,12 @@ public class FriendlyManager {
         // Checks collision between the finished level portal and player
         if (gameState.getGameState() == GameStatusEnums.Level_Finished && finishedLevelPortal.isVisible()) {
             CollisionInfo collisionInfo = CollisionDetector.getInstance().detectCollision(PlayerManager.getInstance().getSpaceship(), finishedLevelPortal);
-            if (collisionInfo != null) {
-                if (finishedLevelPortal.getTransparancyAlpha() >= 0.5f) {
+            if (collisionInfo != null && finishedLevelPortal.getTransparancyAlpha() >= 0.5f) {
                     gameState.setGameState(GameStatusEnums.Level_Completed);
                     finishedLevelPortal.setTransparancyAlpha(true, 1.0f, -0.02f);
                     finishedLevelPortal.setSpawned(false);
                 }
-            }
+
         }
     }
 

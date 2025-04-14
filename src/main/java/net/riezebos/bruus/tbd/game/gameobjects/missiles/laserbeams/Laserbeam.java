@@ -87,11 +87,11 @@ public abstract class Laserbeam {
         for (int i = 0; i < numSegments; i++) {
             ImageEnums imageType;
             if (i == 0) {
-                imageType = ImageEnums.LaserbeamStart; // Start of the laser beam
+                imageType = blocksMovement ? ImageEnums.LaserbeamStart : ImageEnums.PinkLaserbeamStart; // Start of the laser beam
             } else if (i == numSegments - 1) {
-                imageType = ImageEnums.LaserbeamEnd; // End of the laser beam
+                imageType = blocksMovement ? ImageEnums.LaserbeamEnd : ImageEnums.PinkLaserbeamEnd; // End of the laser beam
             } else {
-                imageType = ImageEnums.LaserbeamBody; // Middle segments
+                imageType = blocksMovement ? ImageEnums.LaserbeamBody : ImageEnums.PinkLaserbeamBody; // Middle segments
             }
 
             SpriteAnimation laserBodyPart = createLaserBodySegment(x, y, angleDegrees, imageType);

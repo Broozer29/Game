@@ -20,7 +20,6 @@ import net.riezebos.bruus.tbd.guiboards.util.ClassDescription;
 import net.riezebos.bruus.tbd.guiboards.util.WeaponDescription;
 import net.riezebos.bruus.tbd.visualsandaudio.data.DataClass;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.AudioManager;
-import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.AudioEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.AnimationManager;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.Sprite;
@@ -256,6 +255,20 @@ public class ClassSelectionBoard extends JPanel implements TimerHolder {
             String title = classDescription.getTitle();
             String attackSpeed = "Attacks every: " + classDescription.getBaseAttackSpeed() + " seconds";
             String attackDamage = "Base damage: " + Math.round(classDescription.getBaseDamage());
+            String hitpoints = "Hitpoints: " + classDescription.getMaxHitpoints();
+            String armor = "Armor: " + classDescription.getBonusArmor();
+            String difficulty = "Difficulty: " + classDescription.getDifficulty();
+
+
+            if(!ClassSelectionBoardCreator.hasUnlockedClass(lastHoveredOtion)){
+                title = "Locked";
+                desciption = classDescription.getUnlockCondition();
+                attackDamage = null;
+                attackSpeed = null;
+                hitpoints = null;
+                armor = null;
+                difficulty = null;
+            }
 
             int descriptionX = backgroundCard.getXCoordinate() + horizontalPadding;
             int descriptionY = backgroundCard.getYCoordinate() + verticalPadding;
@@ -270,27 +283,87 @@ public class ClassSelectionBoard extends JPanel implements TimerHolder {
 
             if (desciption != null) {
                 g.setFont(new Font(textFont, Font.PLAIN, Math.round(14 * DataClass.getInstance().getResolutionFactor())));
-                drawDescriptionText(g, desciption, descriptionX, descriptionY, maxTextWidth, Color.WHITE);
                 FontMetrics descriptionMetrics = g.getFontMetrics();
-                descriptionY += descriptionMetrics.getHeight() * ((desciption.length() / maxTextWidth) + 1); //Doesn't properly increase the Y coordinates for subsequent texts, for some reason
+
+                // Calculate the number of lines the description will take when word wrapping
+                int lines = getWrappedLineCount(desciption, maxTextWidth, descriptionMetrics);
+                drawDescriptionText(g, desciption, descriptionX, descriptionY, maxTextWidth, Color.WHITE);
+
+                // Update descriptionY based on the actual rendered height of the description block
+                descriptionY += lines * descriptionMetrics.getHeight();
             }
 
-            int tempHeight = 0;
+            if (hitpoints != null) {
+                g.setFont(new Font(textFont, Font.PLAIN, Math.round(16 * DataClass.getInstance().getResolutionFactor())));
+                FontMetrics metrics = g.getFontMetrics();
+                drawDescriptionText(g, hitpoints, descriptionX, descriptionY, maxTextWidth, Color.ORANGE);
+                descriptionY += metrics.getHeight();
+            }
+
+            if (armor != null) {
+                FontMetrics metrics = g.getFontMetrics();
+                drawDescriptionText(g, armor, descriptionX, descriptionY, maxTextWidth, Color.ORANGE);
+                descriptionY += metrics.getHeight();
+            }
+
             if (attackSpeed != null) {
-                g.setFont(new Font(textFont, Font.PLAIN, Math.round(18 * DataClass.getInstance().getResolutionFactor())));
-                FontMetrics descriptionMetrics = g.getFontMetrics();
-                int attackSpeedY = backgroundCard.getYCoordinate() + boxHeight - verticalPadding - descriptionMetrics.getHeight();
-                tempHeight = descriptionMetrics.getHeight();
-                drawDescriptionText(g, attackSpeed, descriptionX, attackSpeedY, maxTextWidth, Color.ORANGE);
+                FontMetrics metrics = g.getFontMetrics();
+                drawDescriptionText(g, attackSpeed, descriptionX, descriptionY, maxTextWidth, Color.ORANGE);
+                descriptionY += metrics.getHeight();
             }
 
             if (attackDamage != null) {
-                g.setFont(new Font(textFont, Font.PLAIN, Math.round(18 * DataClass.getInstance().getResolutionFactor())));
-                FontMetrics descriptionMetrics = g.getFontMetrics();
-                int attackDamageY = backgroundCard.getYCoordinate() + boxHeight - verticalPadding - descriptionMetrics.getHeight() - Math.round(tempHeight * 1.5f);
-                drawDescriptionText(g, attackDamage, descriptionX, attackDamageY, maxTextWidth, Color.ORANGE);
+                FontMetrics metrics = g.getFontMetrics();
+                drawDescriptionText(g, attackDamage, descriptionX, descriptionY, maxTextWidth, Color.ORANGE);
+                descriptionY += metrics.getHeight();
+            }
+
+            if (difficulty != null) {
+                FontMetrics metrics = g.getFontMetrics();
+                drawDescriptionText(g, difficulty, descriptionX, descriptionY, maxTextWidth, Color.ORANGE);
+                descriptionY += metrics.getHeight();
+            }
+
+//            int tempHeight = 0;
+//            if (attackSpeed != null) {
+//                g.setFont(new Font(textFont, Font.PLAIN, Math.round(16 * DataClass.getInstance().getResolutionFactor())));
+//                FontMetrics descriptionMetrics = g.getFontMetrics();
+//                int attackSpeedY = backgroundCard.getYCoordinate() + boxHeight - verticalPadding - descriptionMetrics.getHeight();
+//                tempHeight = descriptionMetrics.getHeight();
+//                drawDescriptionText(g, attackSpeed, descriptionX, attackSpeedY, maxTextWidth, Color.ORANGE);
+//            }
+//            if (attackDamage != null) {
+//                g.setFont(new Font(textFont, Font.PLAIN, Math.round(16 * DataClass.getInstance().getResolutionFactor())));
+//                FontMetrics descriptionMetrics = g.getFontMetrics();
+//                int attackDamageY = backgroundCard.getYCoordinate() + boxHeight - verticalPadding - descriptionMetrics.getHeight() - Math.round(tempHeight * 1.5f);
+//                drawDescriptionText(g, attackDamage, descriptionX, attackDamageY, maxTextWidth, Color.ORANGE);
+//            }
+        }
+    }
+
+    private int getWrappedLineCount(String text, int maxTextWidth, FontMetrics metrics) {
+        int lineCount = 0;
+        if (text != null && !text.isEmpty()) {
+            // Split the text into words
+            String[] words = text.split(" ");
+            StringBuilder line = new StringBuilder();
+
+            for (String word : words) {
+                // Check if adding the word would exceed the max width
+                if (metrics.stringWidth(line + word) > maxTextWidth) {
+                    lineCount++; // Move to a new line
+                    line = new StringBuilder(word + " "); // Start new line with the current word
+                } else {
+                    line.append(word).append(" ");
+                }
+            }
+
+            // Count the last line (if any text remains)
+            if (!line.isEmpty()) {
+                lineCount++;
             }
         }
+        return lineCount;
     }
 
 
@@ -696,6 +769,5 @@ public class ClassSelectionBoard extends JPanel implements TimerHolder {
 
     public void addCursorAnimation() {
         animationManager.addUpperAnimation(ClassSelectionBoardCreator.createCursorAnimation(menuCursor));
-        audioManager.addAudio(AudioEnums.ItemAcquired);
     }
 }

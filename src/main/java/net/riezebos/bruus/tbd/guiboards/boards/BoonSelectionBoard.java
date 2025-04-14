@@ -693,7 +693,7 @@ public class BoonSelectionBoard extends JPanel implements TimerHolder {
             return; //Nothing selected, so we dont set it
         }
 
-        BoonEnums boonEnums = utilityBoon.getBoonType();
+        BoonEnums boonEnums = utilityBoon.getBoonEnum();
         int checkMarkXCoordinate = 0;
         int checkMarkYCoordinate = 0;
         GUITextCollection selectedTextCollection = null;

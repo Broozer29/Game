@@ -80,8 +80,8 @@ public class AudioManager {
     private static final Map<AudioEnums, Long> soundCooldownMap = Map.of(
             AudioEnums.NotEnoughMinerals, 500L, //in ms
             AudioEnums.PlayerTakesDamage, 100L ,
-            AudioEnums.CarrierSlowingDown, 200L,
-            AudioEnums.CarrierSpeedingUp, 200L
+            AudioEnums.ClassCarrierSlowingDown, 200L,
+            AudioEnums.ClassCarrierSpeedingUp, 200L
     );
 
     private boolean canPlayAudio (AudioEnums audioType) {

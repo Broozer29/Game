@@ -88,6 +88,8 @@ public class CrossingLaserbeamsAttack implements BossActionable {
                 createLaserbeams(enemy);
                 lowerChargingUpAnimation.setVisible(false);
                 upperChargingUpAnimation.setVisible(false);
+                upperLaserbeam.update();
+                lowerLaserbeam.update();
                 MissileManager.getInstance().addLaserBeam(upperLaserbeam);
                 MissileManager.getInstance().addLaserBeam(lowerLaserbeam);
                 isFiringLaserbeams = true;
@@ -188,8 +190,6 @@ public class CrossingLaserbeamsAttack implements BossActionable {
             lowerLaserbeamOriginPoint.setX(lowerChargingUpAnimation.getCenterXCoordinate() - Laserbeam.bodyWidth / 2 + 4);
             lowerLaserbeamOriginPoint.setY(lowerChargingUpAnimation.getCenterYCoordinate() - Laserbeam.bodyWidth / 2 + 12);
         }
-
-
     }
 
     private void deleteLaserbeams () {
@@ -242,7 +242,6 @@ public class CrossingLaserbeamsAttack implements BossActionable {
                 enemy.getXCoordinate() + Math.round(enemy.getWidth() * 0.24f),
                 enemy.getYCoordinate() + Math.round(enemy.getHeight() * 0.6875f)
         );
-
     }
 
     @Override

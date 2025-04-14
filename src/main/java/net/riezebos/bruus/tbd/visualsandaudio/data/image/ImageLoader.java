@@ -495,6 +495,22 @@ public class ImageLoader {
                 return "/images/UI/Wings/Red/05.png";
             case LockedIcon:
                 return "/images/Icons/Locked.png";
+            case FrenzyIcon:
+                return "/images/Icons/frenzyicon.png";
+            case ShieldStabilizer:
+                return "/images/Icons/shieldstabilizer.png";
+            case PyrrhicProtocolIcon:
+                return "/images/Icons/pyrrhicprotocolicon.png";
+            case RallyTheFleetIcon:
+                return "/images/Icons/rallythefleeticon.png";
+            case HangarBayIcon:
+                return "/images/Icons/hangarbayicon.png";
+            case KineticDynamoIcon:
+                return "/images/Icons/kineticdynamo.png";
+            case InversionRetrieval:
+                return "/images/Icons/inversionretrieval.png";
+            case ArbiterMultiTargetIcon:
+                return "/images/Icons/arbitermultitarget.png";
             case TopazGem7:
                 return "/images/Icons/Money/Topaz Gem07.png";
             case EmeraldGem5:
@@ -546,6 +562,7 @@ public class ImageLoader {
             case UpOrange: return "/images/Icons/uporange.png";
             case UpGrey: return "/images/Icons/upgrey.png";
             case UpgradeSelectedCheck: return "/images/Icons/upgradeSelected.png";
+            case ProtossShipAmountIcon: return "/images/Icons/protossShipAmountIcon.png";
             case peepoDeepFriedSadge: return "/images/Icons/Pepeicons/deepFriedSadge.png";
             case peepoFeelsCringeMan: return "/images/Icons/Pepeicons/feelsCringeMan.png";
             case peepoFeelsRetardedMan: return "/images/Icons/Pepeicons/feelsretardedman.png";
@@ -586,6 +603,9 @@ public class ImageLoader {
             case Thornedplates: return "/images/Icons/ThornedPlates.png";
             case BarbedAegis: return "/images/Icons/BarbedAegis.png";
             case BarbedMissiles:return "/images/Icons/Barbed Missiles.png";
+            case ScoutItem: return "/images/Icons/scoutitem.png";
+            case ArbiterItem: return "/images/Icons/arbiteritem.png";
+            case ShuttleItem: return "/images/Icons/shuttleitem.png";
             case FourDirectionalDrone: return "/images/Ships/Enemy Ships/FourDirectionDrone.png";
             case SpaceStationBoss: return "/images/Ships/Enemy Ships/SpaceStation/spriteimage.png";
             default:

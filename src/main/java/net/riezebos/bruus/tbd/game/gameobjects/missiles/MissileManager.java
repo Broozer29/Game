@@ -4,10 +4,12 @@ import net.riezebos.bruus.tbd.game.gameobjects.enemies.Enemy;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyManager;
 import net.riezebos.bruus.tbd.game.gameobjects.friendlies.FriendlyManager;
 import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.Drone;
+import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.droneTypes.protoss.ProtossUtils;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.laserbeams.Laserbeam;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.missiletypes.TazerProjectile;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.specialAttacks.SpecialAttack;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
+import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
 import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SpaceShip;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.gamestate.GameStatsTracker;
@@ -106,6 +108,7 @@ public class MissileManager {
             }
             if (!laserbeam.isVisible()) {
                 laserbeams.remove(laserbeam);
+                continue; //It's gone so updating it will crash
             }
 
             laserbeam.update();
@@ -284,7 +287,7 @@ public class MissileManager {
             }
             //if thorns & not explosive (explosive reflection is in explosion manager): reflect damage
             if (!missile.isExplosive()) {
-                ThornsDamageDealer.getInstance().dealThornsDamageTo(missile.getOwnerOrCreator());
+                ThornsDamageDealer.getInstance().dealThornsDamageTo(missile.getOwnerOrCreator(), PlayerStats.getInstance().getThornsDamage());
             }
         }
     }
@@ -293,9 +296,14 @@ public class MissileManager {
         for(Drone drone : FriendlyManager.getInstance().getAllProtossDrones()){
             CollisionInfo collisionInfo = collisionDetector.detectCollision(missile, drone);
             if (collisionInfo != null) {
+                if (missile.getMissileEnum().equals(MissileEnums.TazerProjectile)) {
+                    ((TazerProjectile) missile).applyTazerMissileEffect(drone);
+                }
+
                 missile.setShowDamage(false);
                 missile.handleCollision(drone);
                 drone.setShowHealthBar(true);
+                ProtossUtils.getInstance().handleProtossThorns(missile.getOwnerOrCreator());
             }
         }
 
