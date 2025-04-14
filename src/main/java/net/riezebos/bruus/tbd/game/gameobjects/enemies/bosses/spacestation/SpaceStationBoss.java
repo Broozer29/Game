@@ -4,6 +4,7 @@ import net.riezebos.bruus.tbd.game.gameobjects.enemies.Enemy;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyConfiguration;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.bosses.BossActionable;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.bosses.spacestation.behaviour.*;
+import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.movement.MovementConfiguration;
 import net.riezebos.bruus.tbd.game.util.WithinVisualBoundariesCalculator;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
@@ -20,7 +21,9 @@ public class SpaceStationBoss extends Enemy {
 
     private List<BossActionable> bossBehaviourList = new ArrayList<>();
     private BossActionable currentActiveBehavior = null;
-    public SpaceStationBoss (SpriteAnimationConfiguration spriteAnimationConfigurationion, EnemyConfiguration enemyConfiguration, MovementConfiguration movementConfiguration) {
+    private double finishedAttackTime = 0;
+
+    public SpaceStationBoss(SpriteAnimationConfiguration spriteAnimationConfigurationion, EnemyConfiguration enemyConfiguration, MovementConfiguration movementConfiguration) {
         super(spriteAnimationConfigurationion, enemyConfiguration, movementConfiguration);
         this.setAllowedVisualsToRotate(false);
         SpriteAnimationConfiguration destroyedExplosionfiguration = new SpriteAnimationConfiguration(spriteAnimationConfigurationion.getSpriteConfiguration(), 0, false);
@@ -51,11 +54,13 @@ public class SpaceStationBoss extends Enemy {
         bossBehaviourList = bossBehaviourList.stream()
                 .sorted(Comparator.comparingInt(BossActionable::getPriority).reversed())
                 .collect(Collectors.toList());
+
+        finishedAttackTime = GameState.getInstance().getGameSeconds();
     }
 
 
     @Override
-    public void fireAction () {
+    public void fireAction() {
         if (WithinVisualBoundariesCalculator.isWithinBoundaries(this)) {
             this.allowedToFire = true; // Boss is allowed to fire
         }
@@ -66,20 +71,23 @@ public class SpaceStationBoss extends Enemy {
             boolean isCompleted = currentActiveBehavior.activateBehaviour(this);
             if (isCompleted) {
                 currentActiveBehavior = null; // Behavior finished, reset for next one
+                finishedAttackTime = GameState.getInstance().getGameSeconds();
             } else {
                 return; // If current behavior is still ongoing, stop further actions
             }
         }
 
-
-        // If no current behavior is active, find the next behavior to execute
-        for (BossActionable bossActionable : bossBehaviourList) {
-            // Attempt to execute the behavior, if available
-            if (bossActionable.isAvailable(this)) {
-                boolean isCompleted = bossActionable.activateBehaviour(this);
-                if (!isCompleted) {
-                    currentActiveBehavior = bossActionable; // Set this as the current active behavior
-                    break; // Stop looking at other behaviors, only execute one at a time
+        //Wait 0.5 seconds between attacks
+        if (finishedAttackTime + 0.5 <= GameState.getInstance().getGameSeconds()) {
+            // If no current behavior is active, find the next behavior to execute
+            for (BossActionable bossActionable : bossBehaviourList) {
+                // Attempt to execute the behavior, if available
+                if (bossActionable.isAvailable(this)) {
+                    boolean isCompleted = bossActionable.activateBehaviour(this);
+                    if (!isCompleted) {
+                        currentActiveBehavior = bossActionable; // Set this as the current active behavior
+                        break; // Stop looking at other behaviors, only execute one at a time
+                    }
                 }
             }
         }

@@ -3,26 +3,29 @@ package net.riezebos.bruus.tbd.game.gameobjects.enemies;
 import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyCategory;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyEnums;
+import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.droneTypes.protoss.ProtossUtils;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
 import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SpaceShip;
+import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.gamestate.GameStatsTracker;
-import net.riezebos.bruus.tbd.game.items.PlayerInventory;
 import net.riezebos.bruus.tbd.game.items.ItemEnums;
+import net.riezebos.bruus.tbd.game.items.PlayerInventory;
 import net.riezebos.bruus.tbd.game.level.LevelManager;
 import net.riezebos.bruus.tbd.game.level.enums.LevelTypes;
 import net.riezebos.bruus.tbd.game.movement.BoardBlockUpdater;
 import net.riezebos.bruus.tbd.game.util.ThornsDamageDealer;
-import net.riezebos.bruus.tbd.game.util.performancelogger.PerformanceLogger;
-import net.riezebos.bruus.tbd.game.util.performancelogger.PerformanceLoggerManager;
-import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
-import net.riezebos.bruus.tbd.visualsandaudio.objects.AnimationManager;
 import net.riezebos.bruus.tbd.game.util.WithinVisualBoundariesCalculator;
 import net.riezebos.bruus.tbd.game.util.collision.CollisionDetector;
 import net.riezebos.bruus.tbd.game.util.collision.CollisionInfo;
+import net.riezebos.bruus.tbd.game.util.performancelogger.PerformanceLogger;
+import net.riezebos.bruus.tbd.game.util.performancelogger.PerformanceLoggerManager;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.AudioManager;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.AudioEnums;
+import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
+import net.riezebos.bruus.tbd.visualsandaudio.objects.AnimationManager;
 
+import java.awt.*;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
@@ -90,7 +93,12 @@ public class EnemyManager {
                         detonateEnemy(enemy);
                         enemy.dealDamageToGameObject(spaceship);
                     } else {
-                        spaceship.takeDamage(2.5f * (1 - PlayerStats.getInstance().getCollisionDamageReduction()));
+
+                        //Should do damage once every 3 game ticks, to avoid instant death when glitching inside enemies
+                        if(GameState.getInstance().getGameSeconds() - spaceship.getLastTimeCollisionDamageTaken() >= 0.045) {
+                            spaceship.takeDamage(2.5f * (1 - PlayerStats.getInstance().getCollisionDamageReduction()));
+                            spaceship.setLastTimeCollisionDamageTaken(GameState.getInstance().getGameSeconds());
+                        }
                         spaceship.resetToPreviousPosition();
                         handleAdditionalKnockbackBehaviour(enemy);
                     }
@@ -106,7 +114,7 @@ public class EnemyManager {
         }
     }
 
-    private void detonateEnemy (Enemy enemy) {
+    public void detonateEnemy (Enemy enemy) {
         if (enemy.getDestructionAnimation() != null) {
             enemy.getDestructionAnimation().setOriginCoordinates(enemy.getCenterXCoordinate(), enemy.getCenterYCoordinate());
             if (enemy.getEnemyType().equals(EnemyEnums.ZergScourge)) {
@@ -166,6 +174,10 @@ public class EnemyManager {
         return this.enemyList;
     }
 
+    public List<Enemy> getEnemiesByType(EnemyEnums enemyType){
+        return enemyList.stream().filter(enemy -> enemy.getEnemyType().equals(enemyType)).toList();
+    }
+
     public int getEnemyCount () {
         return enemyList.size();
     }
@@ -207,6 +219,26 @@ public class EnemyManager {
         }
         return closestEnemy;
     }
+
+
+    public Enemy getClosestEnemyWithinDistance(int xCoordinate, int yCoordinate, double attackRange) {
+        double minDistance = attackRange; // Directly use attackRange without √2 adjustment
+        Enemy closestEnemy = null;
+
+        for (Enemy enemy : EnemyManager.getInstance().getEnemies()) {
+            Rectangle enemyBounds = enemy.getBounds(); // Get enemy's bounding box
+            double distance = ProtossUtils.getDistanceToRectangle(xCoordinate, yCoordinate, enemyBounds);
+
+            // If the enemy is within attackRange and closer than the previous closest enemy, update
+            if (distance < minDistance) {
+                minDistance = distance;
+                closestEnemy = enemy;
+            }
+        }
+        return closestEnemy;
+    }
+
+
 
     //Helper method
     private boolean isWithinBoardBlockThreshold(Enemy enemy, int xCoordinate, int boardBlockThreshold) {

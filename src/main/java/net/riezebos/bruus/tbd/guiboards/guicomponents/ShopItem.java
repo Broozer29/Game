@@ -1,10 +1,11 @@
 package net.riezebos.bruus.tbd.guiboards.guicomponents;
 
 import net.riezebos.bruus.tbd.game.items.Item;
-import net.riezebos.bruus.tbd.game.items.PlayerInventory;
-import net.riezebos.bruus.tbd.game.items.ItemEnums;
-import net.riezebos.bruus.tbd.game.items.enums.ItemRarityEnums;
 import net.riezebos.bruus.tbd.game.items.ItemDescriptionRetriever;
+import net.riezebos.bruus.tbd.game.items.ItemEnums;
+import net.riezebos.bruus.tbd.game.items.PlayerInventory;
+import net.riezebos.bruus.tbd.game.items.enums.ItemRarityEnums;
+import net.riezebos.bruus.tbd.game.gamestate.save.SaveManager;
 import net.riezebos.bruus.tbd.guiboards.GUIComponentItemInformation;
 import net.riezebos.bruus.tbd.guiboards.boardEnums.MenuFunctionEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.AudioDatabase;
@@ -13,10 +14,11 @@ import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.AudioEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteConfiguration;
 
+import static net.riezebos.bruus.tbd.guiboards.boardcreators.ShopBoardCreator.shopItemIconDimensions;
+
 public class ShopItem extends GUIComponent {
 
     private ItemRarityEnums itemRarity;
-
 
     public ShopItem (SpriteConfiguration spriteConfiguration, ItemRarityEnums itemRarity) {
         super(spriteConfiguration);
@@ -77,6 +79,7 @@ public class ShopItem extends GUIComponent {
         shopItemInformation.setItemRarity(ItemRarityEnums.Locked);
         shopItemInformation.setItem(ItemEnums.Locked);
         super.setImage(imageEnum);
+        super.setImageDimensions(shopItemIconDimensions, shopItemIconDimensions);
     }
 
     public void purchaseItemInShop () {
@@ -85,6 +88,7 @@ public class ShopItem extends GUIComponent {
             PlayerInventory.getInstance().addItem(shopItemInformation.getItem());
             PlayerInventory.getInstance().spendCashMoney(shopItemInformation.getCost());
             lockItemInShop();
+            SaveManager.getInstance().exportCurrentSave();
         } else if (shopItemInformation.isAvailable() && !shopItemInformation.canAfford()) {
             AudioManager.getInstance().addAudio(AudioEnums.NotEnoughMinerals);
         }

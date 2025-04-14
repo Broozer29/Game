@@ -1,7 +1,6 @@
 package net.riezebos.bruus.tbd.game.items.effects.util;
 
 import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
-import net.riezebos.bruus.tbd.game.items.effects.effectimplementations.FreezeEffect;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteAnimation;
 

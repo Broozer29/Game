@@ -2,14 +2,17 @@ package net.riezebos.bruus.tbd.game.gameobjects.neutral;
 
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.Enemy;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyManager;
+import net.riezebos.bruus.tbd.game.gameobjects.friendlies.FriendlyManager;
+import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.Drone;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
+import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
 import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SpaceShip;
-import net.riezebos.bruus.tbd.game.util.performancelogger.PerformanceLogger;
-import net.riezebos.bruus.tbd.game.util.performancelogger.PerformanceLoggerManager;
-import net.riezebos.bruus.tbd.visualsandaudio.objects.AnimationManager;
 import net.riezebos.bruus.tbd.game.util.ThornsDamageDealer;
 import net.riezebos.bruus.tbd.game.util.collision.CollisionDetector;
 import net.riezebos.bruus.tbd.game.util.collision.CollisionInfo;
+import net.riezebos.bruus.tbd.game.util.performancelogger.PerformanceLogger;
+import net.riezebos.bruus.tbd.game.util.performancelogger.PerformanceLoggerManager;
+import net.riezebos.bruus.tbd.visualsandaudio.objects.AnimationManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -112,10 +115,19 @@ public class ExplosionManager {
         if (!explosion.dealtDamageToTarget(spaceship)) {
             CollisionInfo collisionInfo = CollisionDetector.getInstance().detectCollision(explosion, spaceship);
             if (collisionInfo != null) {
-                //if thorns: reflect damage
-                ThornsDamageDealer.getInstance().dealThornsDamageTo(explosion.getOwnerOrCreator());
+                ThornsDamageDealer.getInstance().dealThornsDamageTo(explosion.getOwnerOrCreator(), PlayerStats.getInstance().getThornsDamage());
                 explosion.dealDamageToGameObject(spaceship);
                 explosion.addCollidedSprite(spaceship);
+            }
+        }
+
+        for(Drone drone : FriendlyManager.getInstance().getAllProtossDrones()){
+            if (!explosion.dealtDamageToTarget(drone)) {
+                CollisionInfo collisionInfo = CollisionDetector.getInstance().detectCollision(explosion, drone);
+                if (collisionInfo != null) {
+                    explosion.dealDamageToGameObject(drone);
+                    explosion.addCollidedSprite(drone);
+                }
             }
         }
     }

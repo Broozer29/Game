@@ -1,13 +1,15 @@
 package net.riezebos.bruus.tbd.controllerInput;
 
-import com.studiohartman.jamepad.*;
+import net.java.games.input.Component;
+import net.java.games.input.Controller;
+import net.java.games.input.Event;
+import net.java.games.input.EventQueue;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class ControllerInputReader {
-    private ControllerManager controllerManager;
-    private int controllerIndex;
+    private Controller controller;
     private Map<ControllerInputEnums, Boolean> inputState = new HashMap<>();
 
     private float xAxisValue;
@@ -15,91 +17,71 @@ public class ControllerInputReader {
     private float inputStrengthRequired;
     private boolean sensitiveInput;
 
-    public ControllerInputReader (ControllerManager controllerManager, int controllerIndex) {
-        this.controllerManager = controllerManager;
-        this.controllerIndex = controllerIndex;
+    public ControllerInputReader(Controller controller) {
+        this.controller = controller;
         this.setSensitiveInput(false);
-
     }
 
-    public void pollController () {
-        controllerManager.update(); // Make sure to update the state of the controllers
-        ControllerIndex currController = controllerManager.getControllerIndex(controllerIndex);
-//		testControllerInputs();
+    public void pollController() {
+        if (!controller.poll()) {
+            System.out.println("Controller disconnected.");
+            return;
+        }
 
-        try {
-            // Example for mapping left stick horizontal axis
-            xAxisValue = currController.getAxisState(ControllerAxis.LEFTX);
-            inputState.put(ControllerInputEnums.MOVE_LEFT, xAxisValue <= -inputStrengthRequired);
-            inputState.put(ControllerInputEnums.MOVE_RIGHT, xAxisValue >= inputStrengthRequired);
+        EventQueue queue = controller.getEventQueue();
+        Event event = new Event();
 
+        while (queue.getNextEvent(event)) {
+            Component comp = event.getComponent();
+            float value = event.getValue();
 
+            // Handle axis movement (Left Stick)
+            if (comp.getIdentifier() == Component.Identifier.Axis.X) {
+                xAxisValue = value;
+                inputState.put(ControllerInputEnums.MOVE_LEFT, xAxisValue <= -inputStrengthRequired);
+                inputState.put(ControllerInputEnums.MOVE_RIGHT, xAxisValue >= inputStrengthRequired);
+            }
+            if (comp.getIdentifier() == Component.Identifier.Axis.Y) {
+                yAxisValue = value;
+                inputState.put(ControllerInputEnums.MOVE_UP, yAxisValue <= -inputStrengthRequired);
+                inputState.put(ControllerInputEnums.MOVE_DOWN, yAxisValue >= inputStrengthRequired);
+            }
 
-            yAxisValue = currController.getAxisState(ControllerAxis.LEFTY);
-            inputState.put(ControllerInputEnums.MOVE_DOWN, yAxisValue <= -inputStrengthRequired);
-            inputState.put(ControllerInputEnums.MOVE_UP, yAxisValue >= inputStrengthRequired);
-
-            // Similar mappings for other inputs based on the enum
-            // Example for buttons
-            inputState.put(ControllerInputEnums.FIRE, currController.isButtonPressed(ControllerButton.A)); // Assuming 'A' button maps to FIRE
-            inputState.put(ControllerInputEnums.SPECIAL_ATTACK, currController.isButtonPressed(ControllerButton.B)); // Assuming 'B' button maps to SPECIAL_ATTACK
-            inputState.put(ControllerInputEnums.PAUSE, currController.isButtonPressed(ControllerButton.DPAD_UP));
-
-            // Additional mappings as per your ControllerInput enum
-        } catch (ControllerUnpluggedException e) {
-            // Handle disconnected controller
-            System.out.println("Controller disconnected");
+            // Handle button presses
+            if (comp.getIdentifier() == Component.Identifier.Button._0) {
+                inputState.put(ControllerInputEnums.FIRE, value == 1.0f); // Button A
+            }
+            if (comp.getIdentifier() == Component.Identifier.Button._1) {
+                inputState.put(ControllerInputEnums.SPECIAL_ATTACK, value == 1.0f); // Button B
+            }
+            if (comp.getIdentifier() == Component.Identifier.Button._10) {
+                inputState.put(ControllerInputEnums.PAUSE, value == 1.0f); // D-Pad Up
+            }
         }
     }
 
-    public boolean isInputActive (ControllerInputEnums input) {
+    public boolean isInputActive(ControllerInputEnums input) {
         return inputState.getOrDefault(input, false);
     }
 
-    private void testControllerInputs () {
-        controllerManager.update();
-        ControllerIndex currController = controllerManager.getControllerIndex(controllerIndex);
-
-        try {
-            // Check all buttons to see if they are pressed
-            for (ControllerButton button : ControllerButton.values()) {
-                if (currController.isButtonPressed(button)) {
-                    System.out.println(button + " pressed");
-                }
-            }
-
-            // Check all axes for their current state
-//            for (ControllerAxis axis : ControllerAxis.values()) {
-//                float axisValue = currController.getAxisState(axis);
-//                if (axisValue != 0) { // You might want to check a deadzone instead of zero
-//                    System.out.println(axis + " axis: " + axisValue);
-//                }
-//            }
-
-            System.out.println("");
-        } catch (ControllerUnpluggedException e) {
-            System.out.println("Controller disconnected");
-        }
-    }
-
-    public void setSensitiveInput (boolean sensitiveInput) {
+    public void setSensitiveInput(boolean sensitiveInput) {
         this.sensitiveInput = sensitiveInput;
-        adjustSensitifity();
+        adjustSensitivity();
     }
 
-    private void adjustSensitifity(){
-        if(this.sensitiveInput){
+    private void adjustSensitivity() {
+        if (this.sensitiveInput) {
             this.inputStrengthRequired = 0.1f;
         } else {
             this.inputStrengthRequired = 0.5f;
         }
     }
 
-    public float getxAxisValue () {
+    public float getxAxisValue() {
         return xAxisValue;
     }
 
-    public float getyAxisValue () {
+    public float getyAxisValue() {
         return yAxisValue;
     }
 }

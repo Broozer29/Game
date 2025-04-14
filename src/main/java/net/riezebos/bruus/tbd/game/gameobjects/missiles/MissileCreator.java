@@ -74,6 +74,9 @@ public class MissileCreator {
             case OrbitCenter -> {
                 return new OrbitterWithOrbits(upgradeConfig(spriteConfiguration, 4), missileConfiguration, movementConfiguration);
             }
+            case ProtossShuttleMissile -> {
+                return new ProtossShuttleMissile(upgradeConfig(spriteConfiguration, 2), missileConfiguration, movementConfiguration);
+            }
         }
         return null;
     }

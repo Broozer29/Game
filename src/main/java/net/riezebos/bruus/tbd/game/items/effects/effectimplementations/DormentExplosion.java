@@ -9,7 +9,7 @@ import net.riezebos.bruus.tbd.game.gameobjects.neutral.Explosion;
 import net.riezebos.bruus.tbd.game.gameobjects.neutral.ExplosionConfiguration;
 import net.riezebos.bruus.tbd.game.gameobjects.neutral.ExplosionManager;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
-import net.riezebos.bruus.tbd.game.gamestate.GameStateInfo;
+import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.items.effects.DormentExplosionActivationMethods;
 import net.riezebos.bruus.tbd.game.items.effects.EffectActivationTypes;
 import net.riezebos.bruus.tbd.game.items.effects.EffectIdentifiers;
@@ -53,7 +53,7 @@ public class DormentExplosion implements EffectInterface {
         this.activationTypes = activationType;
         this.activated = false;
         this.delayBeforeExplosion = delayBeforeExplosion;
-        this.activationTime = GameStateInfo.getInstance().getGameSeconds() + delayBeforeExplosion;
+        this.activationTime = GameState.getInstance().getGameSeconds() + delayBeforeExplosion;
         this.effectIdentifier = effectIdentifier;
         this.allowedToApplyOnHitEffects = allowedToApplyOnHitEffects;
 
@@ -76,7 +76,7 @@ public class DormentExplosion implements EffectInterface {
                     }
                 }
                 case Timed -> {
-                    if (GameStateInfo.getInstance().getGameSeconds() > activationTime) {
+                    if (GameState.getInstance().getGameSeconds() > activationTime) {
                         activateDormantExplosion(gameObject);
                         activated = true;
                     }

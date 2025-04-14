@@ -1,6 +1,5 @@
 package net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums;
 
-import com.badlogic.gdx.Audio;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyEnums;
 import net.riezebos.bruus.tbd.game.level.enums.LevelDifficulty;
 import net.riezebos.bruus.tbd.game.level.enums.LevelLength;
@@ -11,6 +10,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
+
+//DEPRECATED, the whole functionality for LevelSongs is to be rebuild into something else.
 public enum LevelSongs {
 
     //Difficulty: Easy
@@ -203,6 +204,8 @@ public enum LevelSongs {
                 return AudioEnums.RiskOfDanger;
             case RedBoss:
                 return AudioEnums.Blood_On_The_Dancefloor;
+            case CarrierBoss:
+                return AudioEnums.keygen;
             default:
                 return getRandomBossSong();
         }

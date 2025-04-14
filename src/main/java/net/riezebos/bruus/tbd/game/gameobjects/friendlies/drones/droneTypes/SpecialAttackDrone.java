@@ -3,11 +3,14 @@ package net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.droneTypes;
 import net.riezebos.bruus.tbd.game.gameobjects.friendlies.FriendlyObjectConfiguration;
 import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.Drone;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.MissileManager;
-import net.riezebos.bruus.tbd.game.gameobjects.missiles.specialAttacks.*;
+import net.riezebos.bruus.tbd.game.gameobjects.missiles.specialAttacks.ElectroShred;
+import net.riezebos.bruus.tbd.game.gameobjects.missiles.specialAttacks.LingeringFlame;
+import net.riezebos.bruus.tbd.game.gameobjects.missiles.specialAttacks.SpecialAttack;
+import net.riezebos.bruus.tbd.game.gameobjects.missiles.specialAttacks.SpecialAttackConfiguration;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
-import net.riezebos.bruus.tbd.game.gamestate.GameStateInfo;
-import net.riezebos.bruus.tbd.game.items.PlayerInventory;
+import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.items.ItemEnums;
+import net.riezebos.bruus.tbd.game.items.PlayerInventory;
 import net.riezebos.bruus.tbd.game.items.items.captain.ModuleElectrify;
 import net.riezebos.bruus.tbd.game.movement.MovementConfiguration;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
@@ -16,10 +19,6 @@ import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.Sprit
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteConfiguration;
 
 public class SpecialAttackDrone extends Drone {
-
-
-    private SpecialAttack channeledAttack = null;
-    private double timeChannelAttackGetsCleared = 0.0;
 
     public SpecialAttackDrone (SpriteAnimationConfiguration spriteAnimationConfiguration, FriendlyObjectConfiguration droneConfiguration, MovementConfiguration movementConfiguration, DroneTypes droneType) {
         super(spriteAnimationConfiguration, droneConfiguration, movementConfiguration);
@@ -33,7 +32,7 @@ public class SpecialAttackDrone extends Drone {
             return;
         }
 
-        double currentTime = GameStateInfo.getInstance().getGameSeconds();
+        double currentTime = GameState.getInstance().getGameSeconds();
 
         //No attack cooldown for channeled attacks
         if (this.droneType.equals(DroneTypes.Missile) || this.droneType.equals(DroneTypes.ElectroShred)) {

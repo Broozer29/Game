@@ -2,6 +2,7 @@ package net.riezebos.bruus.tbd.guiboards.boardEnums;
 
 public enum MenuFunctionEnums {
 	Start_Game,
+	SelectManMode,
 	OpenClassSelectWindow,
 	Return_To_Main_Menu,
 	Open_Shop_Window,
@@ -14,5 +15,18 @@ public enum MenuFunctionEnums {
 	SelectWindowsOSMediaPlayer,
 	SelectCaptainClass,
 	SelectFireFighterClass,
+	SelectCarrierClass,
+	ContinueSaveFile,
+    OpenBoonSelectionBoard,
+	SelectNepotism,
+	UpgradeNepotism,
+	SelectClubAccess,
+	UpgradeClubAccess,
+	SelectCompoundWealth,
+	UpgradeCompoundWealth,
+	SelectBountyHunter,
+	UpgradeBountyHunter,
+	SelectTreasureHunter,
+	UpgradeTreasureHunter,
 	Open_Inventory;
 }

@@ -1,19 +1,19 @@
 package net.riezebos.bruus.tbd.controllerInput;
 
-import com.studiohartman.jamepad.ControllerManager;
-import com.studiohartman.jamepad.ControllerState;
+import net.java.games.input.Controller;
+import net.java.games.input.ControllerEnvironment;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class ConnectedControllersManager {
     private static ConnectedControllersManager instance = new ConnectedControllersManager();
-    private ControllerManager controllers = new ControllerManager();
     private int firstControllerIndex = -1;
     private Map<Integer, ControllerInputReader> controllerInputReaders = new HashMap<>();
+    private Controller firstController;
 
-    private ConnectedControllersManager () {
-        controllers.initSDLGamepad();
+    private ConnectedControllersManager() {
+        initController();
     }
 
     public static ConnectedControllersManager getInstance() {
@@ -22,51 +22,37 @@ public class ConnectedControllersManager {
 
     public void initController() {
         try {
-            Thread.sleep(500); // Sleep for half a second to let SDL initialize properly
+            Thread.sleep(500); // Allow time for initialization
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
 
-        controllers.update();
-        int numControllers = controllers.getNumControllers();
-        System.out.println("Controllers found: " + numControllers);
+        Controller[] controllers = ControllerEnvironment.getDefaultEnvironment().getControllers();
+        int index = 0;
 
-        controllers.update();
-
-        for (int i = 0; i < numControllers; i++) {
-            ControllerState state = controllers.getState(i);
-            if (state.isConnected) {
-                firstControllerIndex = i;
-                controllerInputReaders.put(firstControllerIndex, new ControllerInputReader(controllers, firstControllerIndex));
-                break; // Assuming you only want the first controller
+        for (Controller controller : controllers) {
+            if (controller.getType() == Controller.Type.GAMEPAD || controller.getType() == Controller.Type.STICK) {
+                firstController = controller;
+                firstControllerIndex = index;
+                controllerInputReaders.put(firstControllerIndex, new ControllerInputReader(firstController));
+                System.out.println("First controller detected: " + controller.getName());
+                break;
             }
+            index++;
         }
 
         if (firstControllerIndex == -1) {
-            System.out.println("Found no controller");
-        } else {
-            // Get the name of the controller directly from its ControllerState
-            String controllerName = controllers.getState(firstControllerIndex).controllerType;
-            System.out.println("First controller is: " + controllerName);
+            System.out.println("No controllers found.");
         }
     }
 
-    public void setControllerSensitifties(boolean sensitive){
-        for(ControllerInputReader inputReader : controllerInputReaders.values()){
+    public void setControllerSensitive(boolean sensitive) {
+        for (ControllerInputReader inputReader : controllerInputReaders.values()) {
             inputReader.setSensitiveInput(sensitive);
         }
     }
 
     public ControllerInputReader getFirstController() {
         return controllerInputReaders.get(firstControllerIndex);
-    }
-
-    public void setFirstControllerIndex(int index) {
-        this.firstControllerIndex = index;
-    }
-
-    // Returns the ControllerInputReader associated with the given controller index
-    public ControllerInputReader getControllerInputReader(int controllerIndex) {
-        return controllerInputReaders.get(controllerIndex);
     }
 }

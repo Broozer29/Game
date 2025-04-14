@@ -1,9 +1,18 @@
 package net.riezebos.bruus.tbd.game.items;
 
+import net.riezebos.bruus.tbd.game.gameobjects.player.boons.BoonEnums;
 import net.riezebos.bruus.tbd.game.items.enums.ItemApplicationEnum;
+import net.riezebos.bruus.tbd.game.items.enums.ItemRarityEnums;
 import net.riezebos.bruus.tbd.game.items.items.*;
 import net.riezebos.bruus.tbd.game.items.items.captain.*;
+import net.riezebos.bruus.tbd.game.items.items.carrier.*;
+import net.riezebos.bruus.tbd.game.items.items.disabled.ArmorPiercingRounds;
+import net.riezebos.bruus.tbd.game.items.items.disabled.MoneyPrinter;
+import net.riezebos.bruus.tbd.game.items.items.disabled.RepulsionArmorPlate;
 import net.riezebos.bruus.tbd.game.items.items.firefighter.*;
+import net.riezebos.bruus.tbd.game.playerprofile.PlayerProfileManager;
+import net.riezebos.bruus.tbd.guiboards.BoardManager;
+import net.riezebos.bruus.tbd.guiboards.boardcreators.BoonSelectionBoardCreator;
 
 import java.util.HashMap;
 import java.util.List;
@@ -13,27 +22,29 @@ import java.util.stream.Collectors;
 public class PlayerInventory {
     private static PlayerInventory instance = new PlayerInventory();
     private Map<ItemEnums, Item> items = new HashMap<>();
-    private float cashMoney = 100;
-    private PlayerInventory () {
-//        for(int i = 0; i < 4; i++){
+    private float cashMoney = 0;
+
+    private PlayerInventory() {
+//        addItem(ItemEnums.InverseRetrieval);
+
+//        for(int i = 0; i < 5; i++){
 //            addItem(ItemEnums.GuardianDrone);
 //        }
 //        PlayerStats.getInstance().setShopRerollDiscount(99);
     }
 
 
-
-    public void resetInventory(){
+    public void resetInventory() {
         items.clear();
         cashMoney = 100f;
     }
 
-    public static PlayerInventory getInstance () {
+    public static PlayerInventory getInstance() {
         return instance;
     }
 
 
-    public void addItem (ItemEnums itemEnum) {
+    public void addItem(ItemEnums itemEnum) {
         Item item = items.compute(itemEnum, (key, existingItem) -> {
             if (existingItem == null) {
                 Item newItem = createItemFromEnum(itemEnum);
@@ -45,14 +56,37 @@ public class PlayerInventory {
             }
             return existingItem;
         });
-        if(item != null) {
+        if (item != null) {
             activateUponPurchaseItemEffects(item);
+        }
+
+        checkClubAccessUnlockCondition();
+        checkTreasureHunterUnlockCondition();
+    }
+
+    private void checkClubAccessUnlockCondition() {
+        Item ticket = getItemFromInventoryIfExists(ItemEnums.VIPTicket);
+        if (ticket != null && ticket.getQuantity() >= 5 && PlayerProfileManager.getInstance().getLoadedProfile().getClubAccessLevel() <= 0) {
+            PlayerProfileManager.getInstance().getLoadedProfile().setClubAccessLevel(1);
+            PlayerProfileManager.getInstance().exportCurrentProfile();
+            BoardManager.getInstance().getShopBoard().addContractAnimation(BoonSelectionBoardCreator.createBoonUnlockComponent(BoonEnums.CLUB_ACCESS));
+        }
+    }
+
+    private void checkTreasureHunterUnlockCondition() {
+        int amount = items.values().stream()
+                .filter(item -> item.getItemEnum().getItemRarity().equals(ItemRarityEnums.Relic))
+                .toList()
+                .size();
+        if (amount >= 3 && PlayerProfileManager.getInstance().getLoadedProfile().getTreasureHunterLevel() <= 0) {
+            PlayerProfileManager.getInstance().getLoadedProfile().setTreasureHunterLevel(1);
+            PlayerProfileManager.getInstance().exportCurrentProfile();
+            BoardManager.getInstance().getShopBoard().addContractAnimation(BoonSelectionBoardCreator.createBoonUnlockComponent(BoonEnums.TREASURE_HUNTER));
         }
     }
 
 
-
-    public Item createItemFromEnum (ItemEnums itemEnum) {
+    public Item createItemFromEnum(ItemEnums itemEnum) {
         switch (itemEnum) {
             case ModuleScorch:
                 return new ModuleScorch();
@@ -94,8 +128,8 @@ public class PlayerInventory {
                 return new CriticalOverloadCapacitor();
             case BarrierSuperSizer:
                 return new BarrierSupersizer();
-            case DrillerModule:
-                return new DrillerModule();
+            case PiercingMissiles:
+                return new PiercingMissiles();
             case BouncingModuleAddon:
                 return new BouncingModuleAddon();
             case VIPTicket:
@@ -136,6 +170,30 @@ public class PlayerInventory {
                 return new BargainBucket();
             case ShieldStabilizer:
                 return new ShieldStabilizer();
+            case ProtossScout:
+                return new ProtossScoutItem();
+            case ProtossArbiter:
+                return new ProtossArbiterItem();
+            case ProtossShuttle:
+                return new ProtossShuttleItem();
+            case HangarBayUpgrade:
+                return new HangarBayUpgrade();
+            case PyrrhicProtocol:
+                return new PyrrhicProtocol();
+            case RallyTheFleet:
+                return new RallyTheFleet();
+            case InverseRetrieval:
+                return new InverseRetrieval();
+            case Martyrdom:
+                return new Martyrdom();
+            case KineticDynamo:
+                return new KineticDynamo();
+            case ProtossThorns:
+                return new ProtossThorns();
+            case ArbiterMultiTargeting:
+                return new ArbiterMultiTargeting();
+            case SynergeticLink:
+                return new SynergeticLink();
             case Locked:
                 return null;
             default:
@@ -144,48 +202,48 @@ public class PlayerInventory {
         }
     }
 
-    private void activateUponPurchaseItemEffects (Item item){
-        if(item.getApplicationMethod().equals(ItemApplicationEnum.UponAcquiring)){
+    private void activateUponPurchaseItemEffects(Item item) {
+        if (item.getApplicationMethod().equals(ItemApplicationEnum.UponAcquiring)) {
             item.applyEffectToObject(null);
         }
     }
 
-    public List<Item> getItemsByApplicationMethod (ItemApplicationEnum applicationMethod) {
+    public List<Item> getItemsByApplicationMethod(ItemApplicationEnum applicationMethod) {
         return items.values().stream()
                 .filter(item -> item.getApplicationMethod() == applicationMethod)
                 .collect(Collectors.toList());
     }
 
 
-    public Item getItemFromInventoryIfExists (ItemEnums itemName) {
+    public Item getItemFromInventoryIfExists(ItemEnums itemName) {
         return items.get(itemName);
     }
 
-    public Map<ItemEnums, Item> getItems () {
+    public Map<ItemEnums, Item> getItems() {
         return items;
     }
 
-    public float getCashMoney () {
+    public float getCashMoney() {
         return cashMoney;
     }
 
-    public void setCashMoney (float cashMoney) {
+    public void setCashMoney(float cashMoney) {
         this.cashMoney = cashMoney;
     }
 
-    public void addMinerals (float amount){
+    public void addMinerals(float amount) {
 //        if(amount > 0){
 //            OnScreenTextManager.getInstance().addMineralsGainedText(amount);
 //        }
         this.cashMoney += amount;
     }
 
-    public void spendCashMoney(float amount){
+    public void spendCashMoney(float amount) {
         this.cashMoney -= amount;
     }
 
-    public void removeItemFromInventory (ItemEnums item) {
-        if(this.items.containsKey(item)){
+    public void removeItemFromInventory(ItemEnums item) {
+        if (this.items.containsKey(item)) {
             items.remove(item);
         }
     }

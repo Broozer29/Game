@@ -3,7 +3,7 @@ package net.riezebos.bruus.tbd.game.items.effects.effectimplementations;
 import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.Enemy;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyCategory;
-import net.riezebos.bruus.tbd.game.gamestate.GameStateInfo;
+import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.items.effects.EffectActivationTypes;
 import net.riezebos.bruus.tbd.game.items.effects.EffectIdentifiers;
 import net.riezebos.bruus.tbd.game.items.effects.EffectInterface;
@@ -27,7 +27,7 @@ public class FreezeEffect implements EffectInterface {
         this.durationInSeconds = durationInSeconds;
         this.effectTypesEnums = EffectActivationTypes.CheckEveryGameTick;
         this.animation = spriteAnimation;
-        this.startTimeInSeconds = GameStateInfo.getInstance().getGameSeconds();
+        this.startTimeInSeconds = GameState.getInstance().getGameSeconds();
     }
     @Override
     public void activateEffect (GameObject target) {
@@ -39,7 +39,7 @@ public class FreezeEffect implements EffectInterface {
         }
 
 
-        double currentTime = GameStateInfo.getInstance().getGameSeconds();
+        double currentTime = GameState.getInstance().getGameSeconds();
         if (animation != null) {
             if (!scaledToTarget) {
                 EffectAnimationHelper.scaleAnimation(target, animation);
@@ -60,7 +60,7 @@ public class FreezeEffect implements EffectInterface {
 
     @Override
     public boolean shouldBeRemoved (GameObject gameObject) {
-        if (GameStateInfo.getInstance().getGameSeconds() - startTimeInSeconds >= durationInSeconds) {
+        if (GameState.getInstance().getGameSeconds() - startTimeInSeconds >= durationInSeconds) {
             return true;
         } else return false;
 
@@ -88,7 +88,7 @@ public class FreezeEffect implements EffectInterface {
     @Override
     public void resetDuration () {
         // Reset the start time to the current game time
-        this.startTimeInSeconds = GameStateInfo.getInstance().getGameSeconds();
+        this.startTimeInSeconds = GameState.getInstance().getGameSeconds();
     }
 
     @Override
@@ -103,7 +103,8 @@ public class FreezeEffect implements EffectInterface {
 
     @Override
     public EffectInterface copy () {
-        FreezeEffect copiedEffect = new FreezeEffect(this.durationInSeconds, this.animation);
+        SpriteAnimation animation = this.animation.clone();
+        FreezeEffect copiedEffect = new FreezeEffect(this.durationInSeconds, animation);
         // Copy other necessary fields
         copiedEffect.startTimeInSeconds = this.startTimeInSeconds;
         copiedEffect.effectIdentifier = this.effectIdentifier;

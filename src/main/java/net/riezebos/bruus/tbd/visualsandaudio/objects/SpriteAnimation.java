@@ -1,8 +1,8 @@
 package net.riezebos.bruus.tbd.visualsandaudio.objects;
 
 import net.riezebos.bruus.tbd.game.movement.Direction;
-import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteAnimationConfiguration;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.*;
+import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteAnimationConfiguration;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -120,13 +120,18 @@ public class SpriteAnimation extends Sprite implements Cloneable{
 		this.setVisible(true);
 	}
 
+	private void resetAnimationFrames(){
+		this.currentFrame = 0;
+		this.frameDelayCounter = 0;
+	}
+
 	// returns current frame of the gif
 
 	public BufferedImage getCurrentFrameImage(boolean increaseAnimationFrame) {
 		if (increaseAnimationFrame) {
 			if (currentFrame >= frames.size()) {
 				if (infiniteLoop) {
-					refreshAnimation();
+					resetAnimationFrames();
 				} else {
 					removeAnimation();
 				}
@@ -252,7 +257,7 @@ public class SpriteAnimation extends Sprite implements Cloneable{
 
 
 	@Override
-	protected void recalculateBoundsAndSize(){
+	public void recalculateBoundsAndSize(){
 		this.width = frames.get(0).getWidth();
 		this.height = frames.get(0).getHeight();
 		this.animationBounds = new Rectangle(xCoordinate, yCoordinate, this.width, this.height);

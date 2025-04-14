@@ -5,14 +5,14 @@ import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyCreator;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyManager;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.bosses.BossActionable;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyEnums;
-import net.riezebos.bruus.tbd.game.gamestate.GameStateInfo;
-import net.riezebos.bruus.tbd.visualsandaudio.objects.AnimationManager;
+import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.movement.Direction;
 import net.riezebos.bruus.tbd.game.movement.MovementPatternSize;
 import net.riezebos.bruus.tbd.game.movement.Point;
 import net.riezebos.bruus.tbd.game.movement.pathfinders.StraightLinePathFinder;
 import net.riezebos.bruus.tbd.game.util.WithinVisualBoundariesCalculator;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
+import net.riezebos.bruus.tbd.visualsandaudio.objects.AnimationManager;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteAnimation;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteAnimationConfiguration;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteConfiguration;
@@ -47,7 +47,7 @@ public class SpaceStationSpawnNeedlers implements BossActionable {
             spriteConfiguration.setyCoordinate(coordinates.getY());
             spriteConfiguration.setImageType(ImageEnums.WarpIn);
 
-            SpriteAnimationConfiguration spriteAnimationConfiguration = new SpriteAnimationConfiguration(spriteConfiguration, 4, false);
+            SpriteAnimationConfiguration spriteAnimationConfiguration = new SpriteAnimationConfiguration(spriteConfiguration, 6, false);
             SpriteAnimation spriteAnimation = new SpriteAnimation(spriteAnimationConfiguration);
             chargingAnimations.add(spriteAnimation);
         }
@@ -65,8 +65,7 @@ public class SpaceStationSpawnNeedlers implements BossActionable {
 
     @Override
     public boolean activateBehaviour (Enemy enemy) {
-        //Some info for use, you don't have to put everything in this method
-        double currentTime = GameStateInfo.getInstance().getGameSeconds();
+        double currentTime = GameState.getInstance().getGameSeconds();
 
         if (enemy.isAllowedToFire() && currentTime >= lastAttackedTime + attackCooldown && WithinVisualBoundariesCalculator.isWithinBoundaries(enemy)) {
             updateChargingAnimationCoordinates(enemy);
@@ -145,7 +144,7 @@ public class SpaceStationSpawnNeedlers implements BossActionable {
     @Override
     public boolean isAvailable (Enemy enemy) {
         return enemy.isAllowedToFire()
-                && GameStateInfo.getInstance().getGameSeconds() >= lastAttackedTime + attackCooldown
+                && GameState.getInstance().getGameSeconds() >= lastAttackedTime + attackCooldown
                 && WithinVisualBoundariesCalculator.isWithinBoundaries(enemy)
                 && enemy.getXCoordinate() == centerPoint.getX()
                 && enemy.getYCoordinate() == centerPoint.getY();

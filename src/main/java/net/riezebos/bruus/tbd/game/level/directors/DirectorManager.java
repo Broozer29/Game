@@ -3,7 +3,7 @@ package net.riezebos.bruus.tbd.game.level.directors;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyCategory;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyEnums;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyTribes;
-import net.riezebos.bruus.tbd.game.gamestate.GameStateInfo;
+import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.level.LevelManager;
 import net.riezebos.bruus.tbd.game.level.enums.LevelTypes;
 import net.riezebos.bruus.tbd.game.util.performancelogger.PerformanceLogger;
@@ -63,7 +63,7 @@ public class DirectorManager {
         directorList.add(fastDirector);
 
         Director instantDirector = new Director(DirectorType.Instant, baseMonsterCards);
-        instantDirector.receiveCredits(Math.min(150 * GameStateInfo.getInstance().getDifficultyCoefficient(), 650));
+        instantDirector.receiveCredits(Math.min(150 * GameState.getInstance().getDifficultyCoefficient(), 650));
         directorList.add(instantDirector);
         lastCashCarrierSpawnTime = 0;
     }
@@ -85,7 +85,7 @@ public class DirectorManager {
         EnemyTribes enemyTribes = LevelManager.getInstance().getCurrentEnemyTribe();
 
         List<EnemyEnums> availableMonsters = Arrays.stream(EnemyEnums.values())
-                .filter(enemyEnums -> GameStateInfo.getInstance().getStagesCompleted() >= enemyEnums.getMinimumStageLevelRequired())
+                .filter(enemyEnums -> GameState.getInstance().getStagesCompleted() >= enemyEnums.getMinimumStageLevelRequired())
                 .filter(enemyEnums -> enemyEnums.getEnemyCategory() != EnemyCategory.Special
                         && enemyEnums.getEnemyCategory() != EnemyCategory.Summon
                         && enemyEnums.getEnemyCategory() != EnemyCategory.Boss
@@ -114,8 +114,8 @@ public class DirectorManager {
     }
 
     public void distributeCredits () {
-        GameStateInfo gameStateInfo = GameStateInfo.getInstance();
-        float creditAmount = (float) ((1 + 0.05 * gameStateInfo.getDifficultyCoefficient()) * 0.5) + (LevelManager.getInstance().getCurrentLevelDifficultyScore() * 0.1f); // Determine the amount of credits to distribute
+        GameState gameStateInfo = GameState.getInstance();
+        float creditAmount = (float) ((1 + 0.025 * gameStateInfo.getDifficultyCoefficient())) + (LevelManager.getInstance().getCurrentLevelDifficultyScore() * 0.35f); // Determine the amount of credits to distribute
 
         if (testingRichMode) {
             creditAmount = creditAmount * this.testingCreditsBonus;
@@ -127,7 +127,7 @@ public class DirectorManager {
     }
 
     private void updateDifficultyCoefficient () {
-        GameStateInfo.getInstance().updateDifficultyCoefficient();
+        GameState.getInstance().updateDifficultyCoefficient();
     }
 
     public static DirectorManager getInstance () {

@@ -6,13 +6,15 @@ import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyEnums;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyTribes;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.MissileManager;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
-import net.riezebos.bruus.tbd.game.gamestate.GameStateInfo;
+import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
+import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.gamestate.GameStatsTracker;
+import net.riezebos.bruus.tbd.game.level.LevelManager;
+import net.riezebos.bruus.tbd.game.movement.BoardBlockUpdater;
 import net.riezebos.bruus.tbd.game.movement.MovementConfiguration;
 import net.riezebos.bruus.tbd.game.movement.PathFinderEnums;
 import net.riezebos.bruus.tbd.game.movement.Point;
 import net.riezebos.bruus.tbd.game.movement.pathfinders.DestinationPathFinder;
-import net.riezebos.bruus.tbd.game.movement.BoardBlockUpdater;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteAnimation;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteAnimationConfiguration;
@@ -40,7 +42,7 @@ public class Enemy extends GameObject {
             initMovementConfiguration(movementConfiguration);
         }
         configureEnemy(enemyConfiguration);
-        modifyStatsBasedOnLevel();
+        modifyStatsBasedOnLevelAndDifficulty();
         initChargingUpAnimation(spriteConfiguration);
     }
 
@@ -51,7 +53,7 @@ public class Enemy extends GameObject {
         }
 
         configureEnemy(enemyConfiguration);
-        modifyStatsBasedOnLevel();
+        modifyStatsBasedOnLevelAndDifficulty();
         initChargingUpAnimation(spriteAnimationConfigurationion.getSpriteConfiguration());
 
     }
@@ -81,31 +83,41 @@ public class Enemy extends GameObject {
         this.allowedToFire = true;
     }
 
-    private void modifyStatsBasedOnLevel () {
-        int enemyLevel = GameStateInfo.getInstance().getMonsterLevel();
-        float difficultyCoeff = GameStateInfo.getInstance().getDifficultyCoefficient();
+    private void modifyStatsBasedOnLevelAndDifficulty() {
+        int enemyLevel = GameState.getInstance().getMonsterLevel();
+        float difficultyCoeff = GameState.getInstance().getDifficultyCoefficient();
+        int difficultyScore = LevelManager.getInstance().getCurrentLevelDifficultyScore(); // Ranges between 2 and 6 (inclusive)
+
+        // Calculate scaling factor (1.0 at Easy, up to 1.25 at Hard)
+        float difficultyScalingFactor = 1 + ((difficultyScore - 2) / 4.0f) * 0.25f;
 
         if (enemyLevel > 1) {
-            this.maxHitPoints *= (float) Math.pow(getScalingFactor(), enemyLevel);
+            // Apply both enemy level scaling and difficulty scaling
+            this.maxHitPoints *= Math.pow(getScalingFactor(), enemyLevel) * difficultyScalingFactor;
             this.currentHitpoints = maxHitPoints;
-            this.maxShieldPoints *= (float) Math.pow(getScalingFactor(), enemyLevel);
-            this.currentShieldPoints = maxShieldPoints;
-            this.damage *= (float) Math.pow(getScalingFactor(), enemyLevel);
-            // XP on death is multiplied by 50% of difficultyCoeff
-            this.xpOnDeath *= (float) (1 + (0.5 * difficultyCoeff));
-            // Cash money worth is multiplied by 50% of difficultyCoeff
 
+            this.maxShieldPoints *= Math.pow(getScalingFactor(), enemyLevel) * difficultyScalingFactor;
+            this.currentShieldPoints = maxShieldPoints;
+
+            this.damage *= Math.pow(getScalingFactor(), enemyLevel) * difficultyScalingFactor;
+
+            // XP on death is multiplied by 50% of difficulty coefficient
+            this.xpOnDeath *= (1 + (0.5 * difficultyCoeff));
+
+            // Cash money worth scaling for bosses
             if (this.enemyType.getEnemyCategory().equals(EnemyCategory.Boss)) {
-                this.cashMoneyWorth *= (float) Math.pow(getScalingFactor(), enemyLevel);
+                this.cashMoneyWorth *= Math.pow(getScalingFactor(), enemyLevel);
             }
+
+            this.cashMoneyWorth *= PlayerStats.getInstance().getMineralModifier();
         }
     }
 
     private float getScalingFactor () {
-        if (this.enemyType.getEnemyTribe().equals(EnemyTribes.Zerg)) {
-            return 1.075f;
-        }
-        return 1.05f;
+//        if (this.enemyType.getEnemyTribe().equals(EnemyTribes.Zerg)) {
+//            return 1.15f;
+//        }
+        return 1.1f;
     }
 
     private void initChargingUpAnimation (SpriteConfiguration spriteConfiguration) {
@@ -119,7 +131,7 @@ public class Enemy extends GameObject {
     }
 
     @Override
-    public void triggerCategorySpecificOnDeathTriggers () {
+    public void triggerOnDeathActions() {
         if (!this.enemyType.getEnemyCategory().equals(EnemyCategory.Summon)) {
             GameStatsTracker.getInstance().addEnemyKilled(1);
         }

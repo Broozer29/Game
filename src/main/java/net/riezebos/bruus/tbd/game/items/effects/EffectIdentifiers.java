@@ -18,5 +18,8 @@ public enum EffectIdentifiers {
     MutaliskDeathMissiles,
     ContractOnDeathCounter,
     FlameDetonationDormentExplosion,
-    PulsingDroneSlow;
+    DamageReduction,
+    CarrierBeaconArmorBonus,
+    CarrierBeaconAttackSpeedBonus,
+    PulsingDroneSlow, MartyrdomAttackSpeed;
 }

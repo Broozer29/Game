@@ -15,13 +15,13 @@ import java.util.List;
 
 public class MenuBoardCreator {
 
-    private static int imageScale = 1;
-    private static int textScale = 1;
+    private static float imageScale = 1 * DataClass.getInstance().getResolutionFactor() ;
 
     public static GUITextCollection createStartGameButton(GUIComponent backgroundCard){
         int xCoordinate = backgroundCard.getXCoordinate() + 120;
         int yCoordinate = backgroundCard.getYCoordinate() + 50;
         GUITextCollection textCollection = new GUITextCollection(xCoordinate, yCoordinate, "SELECT CLASS");
+        textCollection.setScale(imageScale);
         textCollection.setMenuFunctionality(MenuFunctionEnums.OpenClassSelectWindow);
 
         return textCollection;
@@ -42,7 +42,7 @@ public class MenuBoardCreator {
         menuCursor.setSelectedMenuTile(initialSelectedButton);
         menuCursor.setDescriptionOfComponent("Menu Cursor");
         menuCursor.setXCoordinate(menuCursor.getXCoordinate() - menuCursor.getxDistanceToKeep());
-        menuCursor.setYCoordinate(menuCursor.getYCoordinate() - menuCursor.getHeight() / 2);
+        menuCursor.setCenterYCoordinate(menuCursor.getCenterYCoordinate());
         return menuCursor;
     }
 
@@ -69,7 +69,7 @@ public class MenuBoardCreator {
         SpriteConfiguration spriteConfiguration = new SpriteConfiguration();
         spriteConfiguration.setxCoordinate(xCoordinate);
         spriteConfiguration.setyCoordinate(yCoordinate);
-        spriteConfiguration.setScale(imageScale);
+        spriteConfiguration.setScale(1.5f * imageScale);
         spriteConfiguration.setImageType(ImageEnums.InputMapping);
 
         GUIComponent inputMapping = new DisplayOnly(spriteConfiguration);
@@ -82,18 +82,20 @@ public class MenuBoardCreator {
     public static List<GUITextCollection> createControlsExplanations(){
         List<GUITextCollection> controlExplanations = new ArrayList<>();
         int xCoordinate = 15;
-        int yCoordinate = (DataClass.getInstance().getWindowHeight() / 2) + 300;
+        int yCoordinate = (DataClass.getInstance().getWindowHeight() / 2) + Math.round(300 * DataClass.getInstance().getResolutionFactor());
 
 
         GUITextCollection wasdExplanation = new GUITextCollection(xCoordinate, yCoordinate, "MOVEMENT = WASD OR ARROWS OR JOYSTICK");
+        wasdExplanation.setScale(imageScale);
         controlExplanations.add(wasdExplanation);
 
-        GUITextCollection attackExplanation = new GUITextCollection(xCoordinate, yCoordinate + 20, "SPACEBAR OR X = NORMAL ATTACK");
+        GUITextCollection attackExplanation = new GUITextCollection(xCoordinate, yCoordinate + Math.round(20 * DataClass.getInstance().getResolutionFactor()), "SPACEBAR OR X = NORMAL ATTACK");
+        attackExplanation.setScale(imageScale);
         controlExplanations.add(attackExplanation);
 
-        GUITextCollection specialExplanation = new GUITextCollection(xCoordinate, yCoordinate + 40, "ENTER OR Y = SPECIAL ATTACK");
+        GUITextCollection specialExplanation = new GUITextCollection(xCoordinate, yCoordinate + Math.round(40 * DataClass.getInstance().getResolutionFactor()), "ENTER OR Y = SPECIAL ATTACK");
+        specialExplanation.setScale(imageScale);
         controlExplanations.add(specialExplanation);
-
 
         return controlExplanations;
     }
@@ -109,7 +111,12 @@ public class MenuBoardCreator {
         spriteConfiguration.setImageType(ImageEnums.Square_Card);
 
         GUIComponent backgroundCard = new DisplayOnly(spriteConfiguration);
-        backgroundCard.setImageDimensions(400,250);
+
+        int newWidth = Math.round(400 * DataClass.getInstance().getResolutionFactor());
+        int newHeight = Math.round(250 * DataClass.getInstance().getResolutionFactor());
+
+        backgroundCard.setImageDimensions(newWidth,newHeight);
+
         return backgroundCard;
     }
 
@@ -124,7 +131,10 @@ public class MenuBoardCreator {
         spriteConfiguration.setImageType(ImageEnums.Square_Card);
 
         GUIComponent backgroundCard = new DisplayOnly(spriteConfiguration);
-        backgroundCard.setImageDimensions(400,250);
+        int newWidth = Math.round(400 * DataClass.getInstance().getResolutionFactor());
+        int newHeight = Math.round(250 * DataClass.getInstance().getResolutionFactor());
+
+        backgroundCard.setImageDimensions(newWidth,newHeight);
         return backgroundCard;
     }
 
@@ -134,13 +144,24 @@ public class MenuBoardCreator {
         int yCoordinate = component.getYCoordinate() + 50;
 
         GUITextCollection textCollection = new GUITextCollection(xCoordinate,yCoordinate, "OPEN SHOP");
+        textCollection.setScale(imageScale);
         textCollection.setMenuFunctionality(MenuFunctionEnums.Open_Shop_Window);
+        return textCollection;
+    }
+
+    public static GUITextCollection continueSaveFileButton(GUITextCollection openShopButton){
+        GUIComponent component = openShopButton.getComponents().get(0);
+        int xCoordinate = component.getXCoordinate();
+        int yCoordinate = component.getYCoordinate() + 50;
+
+        GUITextCollection textCollection = new GUITextCollection(xCoordinate,yCoordinate, "CONTINUE SAVE FILE");
+        textCollection.setScale(imageScale);
+        textCollection.setMenuFunctionality(MenuFunctionEnums.ContinueSaveFile);
         return textCollection;
     }
 
     public static GUITextCollection foundControllerText(boolean foundController, GUIComponent titleImage){
         GUITextCollection textCollection = null;
-        float scale = 1f;
         String text = null;
         int yCoordinate = 0;
         if(foundController){
@@ -158,14 +179,14 @@ public class MenuBoardCreator {
         }
 
         //Center it under the title image
-        textCollection.setScale(scale);
+        textCollection.setScale(imageScale);
         GUIComponent lastComponent = textCollection.getComponents().get(textCollection.getComponents().size() - 1);
         GUIComponent firstComponent = textCollection.getComponents().get(0);
 
         int textCollectionWidth = (lastComponent.getXCoordinate() + lastComponent.getWidth() - firstComponent.getXCoordinate());
         int newxCoordinate = titleImage.getCenterXCoordinate() - (textCollectionWidth / 2);
         textCollection = new GUITextCollection(newxCoordinate, yCoordinate, text);
-        textCollection.setScale(scale);
+        textCollection.setScale(imageScale);
         return textCollection;
     }
 
@@ -174,6 +195,7 @@ public class MenuBoardCreator {
         int yCoordinate = backgroundCard.getYCoordinate() + 30;
 
         GUITextCollection textCollection = new GUITextCollection(xCoordinate,yCoordinate, "USE LOCAL FILES");
+        textCollection.setScale(imageScale);
         textCollection.setMenuFunctionality(MenuFunctionEnums.SelectDefaultMediaPlayer);
         return textCollection;
     }
@@ -184,6 +206,7 @@ public class MenuBoardCreator {
         int yCoordinate = component.getYCoordinate() + 50;
 
         GUITextCollection textCollection = new GUITextCollection(xCoordinate,yCoordinate, "USE ITUNES");
+        textCollection.setScale(imageScale);
         textCollection.setMenuFunctionality(MenuFunctionEnums.SelectMacOSMediaPlayer);
         return textCollection;
     }
@@ -193,8 +216,18 @@ public class MenuBoardCreator {
         int yCoordinate = backgroundCard.getYCoordinate() - 30;
 
         GUITextCollection textCollection = new GUITextCollection(xCoordinate,yCoordinate, "GAME SETTINGS");
-        textCollection.setScale(2);
+        textCollection.setScale(imageScale * 2);
         return textCollection;
     }
 
+    public static GUITextCollection createTestingButton(GUITextCollection continueSaveFileButton) {
+        GUIComponent component = continueSaveFileButton.getComponents().get(0);
+        int xCoordinate = component.getXCoordinate();
+        int yCoordinate = component.getYCoordinate() + 50;
+
+        GUITextCollection textCollection = new GUITextCollection(xCoordinate,yCoordinate, "SELECT MAN MODE");
+        textCollection.setScale(imageScale);
+        textCollection.setMenuFunctionality(MenuFunctionEnums.SelectManMode);
+        return textCollection;
+    }
 }

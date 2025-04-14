@@ -6,13 +6,13 @@ import net.riezebos.bruus.tbd.game.gameobjects.missiles.MissileManager;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.laserbeams.AngledLaserBeam;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.laserbeams.Laserbeam;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.laserbeams.LaserbeamConfiguration;
-import net.riezebos.bruus.tbd.game.gamestate.GameStateInfo;
-import net.riezebos.bruus.tbd.visualsandaudio.objects.AnimationManager;
+import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.movement.Point;
 import net.riezebos.bruus.tbd.game.util.WithinVisualBoundariesCalculator;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.AudioManager;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.AudioEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
+import net.riezebos.bruus.tbd.visualsandaudio.objects.AnimationManager;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteAnimation;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteAnimationConfiguration;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteConfiguration;
@@ -64,7 +64,7 @@ public class CrossingLaserbeamsAttack implements BossActionable {
     // if returns true; this behaviour is removed and another is selected
     // if false, this behaviour remains and this method keeps getting called
     public boolean activateBehaviour (Enemy enemy) {
-        double currentTime = GameStateInfo.getInstance().getGameSeconds();
+        double currentTime = GameState.getInstance().getGameSeconds();
         if (upperChargingUpAnimation == null || lowerChargingUpAnimation == null) {
             initSpawnAnimations(enemy);
         }
@@ -88,6 +88,8 @@ public class CrossingLaserbeamsAttack implements BossActionable {
                 createLaserbeams(enemy);
                 lowerChargingUpAnimation.setVisible(false);
                 upperChargingUpAnimation.setVisible(false);
+                upperLaserbeam.update();
+                lowerLaserbeam.update();
                 MissileManager.getInstance().addLaserBeam(upperLaserbeam);
                 MissileManager.getInstance().addLaserBeam(lowerLaserbeam);
                 isFiringLaserbeams = true;
@@ -188,8 +190,6 @@ public class CrossingLaserbeamsAttack implements BossActionable {
             lowerLaserbeamOriginPoint.setX(lowerChargingUpAnimation.getCenterXCoordinate() - Laserbeam.bodyWidth / 2 + 4);
             lowerLaserbeamOriginPoint.setY(lowerChargingUpAnimation.getCenterYCoordinate() - Laserbeam.bodyWidth / 2 + 12);
         }
-
-
     }
 
     private void deleteLaserbeams () {
@@ -242,7 +242,6 @@ public class CrossingLaserbeamsAttack implements BossActionable {
                 enemy.getXCoordinate() + Math.round(enemy.getWidth() * 0.24f),
                 enemy.getYCoordinate() + Math.round(enemy.getHeight() * 0.6875f)
         );
-
     }
 
     @Override
@@ -253,7 +252,7 @@ public class CrossingLaserbeamsAttack implements BossActionable {
     @Override
     public boolean isAvailable (Enemy enemy) {
         return enemy.isAllowedToFire()
-                && GameStateInfo.getInstance().getGameSeconds() >= lastAttackedTime + attackCooldown
+                && GameState.getInstance().getGameSeconds() >= lastAttackedTime + attackCooldown
                 && WithinVisualBoundariesCalculator.isWithinBoundaries(enemy);
     }
 }

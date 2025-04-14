@@ -327,6 +327,8 @@ public class ImageLoader {
                 return "/images/TitleImage.png";
             case SelectClass:
                 return "/images/selectclass.png";
+            case SelectBoons:
+                return "/images/selectboons.png";
             case Long_Card:
                 return "/images/UI/Cards/Long Card.png";
             case Square_Card:
@@ -493,8 +495,26 @@ public class ImageLoader {
                 return "/images/UI/Wings/Red/05.png";
             case LockedIcon:
                 return "/images/Icons/Locked.png";
+            case FrenzyIcon:
+                return "/images/Icons/frenzyicon.png";
+            case ShieldStabilizer:
+                return "/images/Icons/shieldstabilizer.png";
+            case PyrrhicProtocolIcon:
+                return "/images/Icons/pyrrhicprotocolicon.png";
+            case RallyTheFleetIcon:
+                return "/images/Icons/rallythefleeticon.png";
+            case HangarBayIcon:
+                return "/images/Icons/hangarbayicon.png";
+            case KineticDynamoIcon:
+                return "/images/Icons/kineticdynamo.png";
+            case InversionRetrieval:
+                return "/images/Icons/inversionretrieval.png";
+            case ArbiterMultiTargetIcon:
+                return "/images/Icons/arbitermultitarget.png";
             case TopazGem7:
                 return "/images/Icons/Money/Topaz Gem07.png";
+            case EmeraldGem5:
+                return "/images/Icons/Money/Emerald Gem05.png";
             case VIPTicket:
                 return "/images/Icons/VIPTicket.png";
             case PiercingLaser:
@@ -521,11 +541,28 @@ public class ImageLoader {
                 return "/images/Icons/grade grandmaster copy.png";
             case UIYouDied:
                 return "/images/UI/youdiedlight.png";
+            case BountyHunterUnlock:
+                return "/images/UI/BountyHunterUnlock.png";
+            case ClubAcessUnlock:
+                return "/images/UI/ClubAccessUnlock.png";
+            case TreasureHunterUnlock:
+                return "/images/UI/TreasureHunterUnlock.png";
+            case CompoundWealthUnlock:
+                return "/images/UI/CompoundWealthUnlock.png";
             case UILevelComplete:
                 return "/images/UI/levelcompletelight.png";
             case UIScoreTextCard:
                 return "/images/UI/gradelight.png";
+            case ProtossCarrierWithoutEngine:
+                return "/images/Ships/Player Ships/noenginecarrier.png";
             case InputMapping:  return "/images/UI/inputmapping.png";
+            case UpWhite: return "/images/Icons/upwhite.png";
+            case CarrierPlaceDroneIcon: return "/images/Icons/CarrierDroneIcon.png";
+            case CarrierSwitchGearsIcon: return "/images/Icons/CarrierSwitchGearsIcon.png";
+            case UpOrange: return "/images/Icons/uporange.png";
+            case UpGrey: return "/images/Icons/upgrey.png";
+            case UpgradeSelectedCheck: return "/images/Icons/upgradeSelected.png";
+            case ProtossShipAmountIcon: return "/images/Icons/protossShipAmountIcon.png";
             case peepoDeepFriedSadge: return "/images/Icons/Pepeicons/deepFriedSadge.png";
             case peepoFeelsCringeMan: return "/images/Icons/Pepeicons/feelsCringeMan.png";
             case peepoFeelsRetardedMan: return "/images/Icons/Pepeicons/feelsretardedman.png";
@@ -566,6 +603,9 @@ public class ImageLoader {
             case Thornedplates: return "/images/Icons/ThornedPlates.png";
             case BarbedAegis: return "/images/Icons/BarbedAegis.png";
             case BarbedMissiles:return "/images/Icons/Barbed Missiles.png";
+            case ScoutItem: return "/images/Icons/scoutitem.png";
+            case ArbiterItem: return "/images/Icons/arbiteritem.png";
+            case ShuttleItem: return "/images/Icons/shuttleitem.png";
             case FourDirectionalDrone: return "/images/Ships/Enemy Ships/FourDirectionDrone.png";
             case SpaceStationBoss: return "/images/Ships/Enemy Ships/SpaceStation/spriteimage.png";
             default:

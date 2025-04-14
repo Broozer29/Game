@@ -1,6 +1,7 @@
 package net.riezebos.bruus.tbd.visualsandaudio.data.audio;
 
-import net.riezebos.bruus.tbd.game.gamestate.GameStateInfo;
+import net.riezebos.bruus.tbd.game.gamestate.GameState;
+import net.riezebos.bruus.tbd.game.gamestate.GameStatusEnums;
 import net.riezebos.bruus.tbd.game.level.LevelManager;
 import net.riezebos.bruus.tbd.game.level.enums.LevelDifficulty;
 import net.riezebos.bruus.tbd.game.level.enums.LevelLength;
@@ -28,7 +29,7 @@ public class AudioManager {
     private double predictedEndGameSeconds = -1; // Predicted game seconds when the song will end
     private double lastSyncGameSeconds = -1; // Initialize to a value ensuring immediate sync on the first check
 
-    private boolean isMusicControlledByThirdPartyApp = false;
+    private boolean isMusicControlledByThirdPartyApp = true;
 
     public boolean devTestShortLevelMode = false;
     public boolean devTestmuteMode = false;
@@ -77,8 +78,10 @@ public class AudioManager {
     }
 
     private static final Map<AudioEnums, Long> soundCooldownMap = Map.of(
-            AudioEnums.NotEnoughMinerals, 500L, // Cooldown for NotEnoughMinerals is 2000 ms (2 seconds)
-            AudioEnums.PlayerTakesDamage, 100L     // Cooldown for SomeOtherSound is 5000 ms (5 seconds)
+            AudioEnums.NotEnoughMinerals, 500L, //in ms
+            AudioEnums.PlayerTakesDamage, 100L ,
+            AudioEnums.ClassCarrierSlowingDown, 200L,
+            AudioEnums.ClassCarrierSpeedingUp, 200L
     );
 
     private boolean canPlayAudio (AudioEnums audioType) {
@@ -176,7 +179,9 @@ public class AudioManager {
             currentSong = null;
         }
 
-        if (this.musicMediaPlayer == MusicMediaPlayer.iTunesMacOS) {
+        if (this.musicMediaPlayer == MusicMediaPlayer.iTunesMacOS &&
+                (GameState.getInstance().getGameState().equals(GameStatusEnums.Dead)
+                        || GameState.getInstance().getGameState().equals(GameStatusEnums.Show_Level_Score_Card))) {
             macOSMediaPlayer.stopPlayback();
             backGroundMusic = null;
             currentSong = null;
@@ -213,27 +218,17 @@ public class AudioManager {
             if (!macOSMediaPlayer.hasStartedMusic()) {
                 return false;  // Song hasn't started yet
             }
-
-
-            double currentGameSeconds = GameStateInfo.getInstance().getGameSeconds();
-
+            double currentGameSeconds = GameState.getInstance().getGameSeconds();
             if (predictedEndGameSeconds > 0) {
-                // Synchronize periodically every 10 game seconds
                 if (shouldResync(currentGameSeconds)) {
                     synchronizePrediction(currentGameSeconds);
-                    lastSyncGameSeconds = currentGameSeconds; // Update the last sync time
+                    lastSyncGameSeconds = currentGameSeconds;
                 }
-
                 // Check if the current game seconds match or exceed the predicted end time
-                if (currentGameSeconds >= predictedEndGameSeconds - 2) {
-                    // Check if the music is finished
-                    if (!macOSMediaPlayer.isPlaying()) {
-                        return true; // Song is finished
-                    } else {
-                        // Synchronize if the song is still playing but we hit the predicted end time
-                        synchronizePrediction(currentGameSeconds);
-                        lastSyncGameSeconds = currentGameSeconds; // Update the last sync time after re-sync
-                    }
+                if (currentGameSeconds >= predictedEndGameSeconds - 2f) {
+                    macOSMediaPlayer.stopPlayback();
+                    macOSMediaPlayer.goToNextSong();
+                    return true;
                 }
             }
 
@@ -245,11 +240,6 @@ public class AudioManager {
     private boolean shouldResync(double currentGameSeconds) {
         // Default resync interval
         double resyncInterval = 10;
-
-        // If close to the predicted end time, shorten the interval to 1 second
-        if (predictedEndGameSeconds - currentGameSeconds <= 3) {
-            resyncInterval = 1.5;
-        }
 
         // Determine if it's time to resync
         return currentGameSeconds >= lastSyncGameSeconds + resyncInterval;
@@ -286,8 +276,8 @@ public class AudioManager {
 
             // Calculate and store the predicted end time
             double trackDuration = macOSMediaPlayer.getTotalSeconds();
-            predictedEndGameSeconds = GameStateInfo.getInstance().getGameSeconds() + trackDuration;
-            lastSyncGameSeconds = GameStateInfo.getInstance().getGameSeconds();
+            predictedEndGameSeconds = GameState.getInstance().getGameSeconds() + trackDuration;
+            lastSyncGameSeconds = GameState.getInstance().getGameSeconds();
         }
     }
 

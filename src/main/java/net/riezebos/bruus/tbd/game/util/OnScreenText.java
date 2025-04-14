@@ -1,5 +1,7 @@
 package net.riezebos.bruus.tbd.game.util;
 
+import net.riezebos.bruus.tbd.visualsandaudio.data.DataClass;
+
 import java.awt.*;
 
 public class OnScreenText {
@@ -20,7 +22,7 @@ public class OnScreenText {
 		this.transparencyValue = 1;
 		this.transparancyStepSize = (float) 0.01;
 		this.text = message;
-		this.fontSize = 10;
+		this.fontSize = Math.round(10 * DataClass.getInstance().getResolutionFactor());
 		this.color = Color.WHITE;
 	}
 

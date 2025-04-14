@@ -16,6 +16,8 @@ public class GUIComponent extends Sprite implements Actionable{
     private MenuObjectEnums menuObjectType;
     protected String descriptionOfComponent; //The description that gets shown in the description box
     protected GUIComponentItemInformation shopItemInformation;
+    private int row;
+    private int column;
 
 
     public GUIComponent (SpriteConfiguration spriteConfiguration) {
@@ -71,5 +73,25 @@ public class GUIComponent extends Sprite implements Actionable{
 
     public void setShopItemInformation (GUIComponentItemInformation shopItemInformation) {
         this.shopItemInformation = shopItemInformation;
+    }
+
+    public void setAnimation(SpriteAnimation animation) {
+        this.animation = animation;
+    }
+
+    public int getRow() {
+        return row;
+    }
+
+    public void setRow(int row) {
+        this.row = row;
+    }
+
+    public int getColumn() {
+        return column;
+    }
+
+    public void setColumn(int column) {
+        this.column = column;
     }
 }

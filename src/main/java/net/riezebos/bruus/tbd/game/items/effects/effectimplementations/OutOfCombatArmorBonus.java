@@ -1,7 +1,7 @@
 package net.riezebos.bruus.tbd.game.items.effects.effectimplementations;
 
 import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
-import net.riezebos.bruus.tbd.game.gamestate.GameStateInfo;
+import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.items.effects.EffectActivationTypes;
 import net.riezebos.bruus.tbd.game.items.effects.EffectIdentifiers;
 import net.riezebos.bruus.tbd.game.items.effects.EffectInterface;
@@ -27,7 +27,7 @@ public class OutOfCombatArmorBonus implements EffectInterface {
 
     @Override
     public void activateEffect(GameObject gameObject) {
-        double currentTime = GameStateInfo.getInstance().getGameSeconds();
+        double currentTime = GameState.getInstance().getGameSeconds();
         if (currentTime - gameObject.getLastGameSecondDamageTaken() >= cooldown) {
             // Apply the armor bonus only once when out of combat
             if (!bonusApplied) {

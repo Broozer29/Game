@@ -1,10 +1,10 @@
 package net.riezebos.bruus.tbd.game.UI;
 
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
-import net.riezebos.bruus.tbd.visualsandaudio.objects.AnimationManager;
 import net.riezebos.bruus.tbd.visualsandaudio.data.DataClass;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.LevelSongs;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
+import net.riezebos.bruus.tbd.visualsandaudio.objects.AnimationManager;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteAnimation;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteConfiguration;
 
@@ -15,10 +15,10 @@ import java.util.Random;
 public class GameUICreator {
     Random random = new Random();
 
-    private int healthBarWidth = 200;
-    private int healthBarHeight = 15;
-    private int healthFrameWidth = 200;
-    private int healthFrameHeight = 23;
+    private int healthBarWidth = Math.round(200 * DataClass.getInstance().getResolutionFactor());
+    private int healthBarHeight = Math.round(15 * DataClass.getInstance().getResolutionFactor());
+    private int healthFrameWidth = Math.round(200 * DataClass.getInstance().getResolutionFactor());
+    private int healthFrameHeight = Math.round(23 * DataClass.getInstance().getResolutionFactor());
     private UIObject healthFrame;
     private UIObject healthBar;
 
@@ -113,17 +113,31 @@ public class GameUICreator {
         int xCoordinate = Math.round(DataClass.getInstance().getWindowWidth() * 0.60305f);
 //        int yCoordinate = DataClass.getInstance().getPlayableWindowMaxHeight() + 20;
 
-        difficultyWings = new UIObject(createUIConfiguration(0, DataClass.getInstance().getPlayableWindowMaxHeight() + 20, 1f, wingsImageEnum));
+
+        float scale = 1 * DataClass.getInstance().getResolutionFactor();
+        difficultyWings = new UIObject(createUIConfiguration(0, DataClass.getInstance().getPlayableWindowMaxHeight() + 20, scale, wingsImageEnum));
         difficultyWings.setCenterCoordinates(xCoordinate,
                 (DataClass.getInstance().getPlayableWindowMaxHeight() + (difficultyWings.getHeight() / 2))
         );
     }
 
+    public UIObject createEmeraldObtainedIcon(int xCoordinate, int yCoordinate){
+        SpriteConfiguration spriteConfiguration = new SpriteConfiguration();
+        spriteConfiguration.setxCoordinate(xCoordinate);
+        spriteConfiguration.setyCoordinate(yCoordinate);
+        spriteConfiguration.setScale(1 * DataClass.getInstance().getResolutionFactor());
+        spriteConfiguration.setImageType(ImageEnums.EmeraldGem5);
+
+        UIObject emeraldObtainedIcon = new UIObject(spriteConfiguration);
+        emeraldObtainedIcon.setCenterCoordinates(xCoordinate, yCoordinate);
+        emeraldObtainedIcon.setTransparancyAlpha(true, 1, -0.005f);
+        return emeraldObtainedIcon;
+    }
+
     private void createInformationCards () {
         this.informationCards.clear();
-
         UIObject botInfoCard = new UIObject(createUIConfiguration(0, DataClass.getInstance().getPlayableWindowMaxHeight(), 1, ImageEnums.InformationCard));
-        botInfoCard.setImageDimensions(DataClass.getInstance().getInformationCardWidth(), DataClass.getInstance().getInformationCardHeight());
+        botInfoCard.setImageDimensions(DataClass.getInstance().getWindowWidth(), DataClass.getInstance().getInformationCardHeight());
         this.informationCards.add(botInfoCard);
     }
 
@@ -139,8 +153,11 @@ public class GameUICreator {
             case FlameShield:
                 frameType = ImageEnums.Starcraft2_Fire_Hardened_Shields;
                 break;
+            case PlaceCarrierDrone:
+                frameType = ImageEnums.CarrierPlaceDroneIcon;
+                break;
             default:
-                frameType = ImageEnums.Starcraft2_Electric_Field;
+                frameType = ImageEnums.Test_Image;
                 break;
 
         }
@@ -190,11 +207,15 @@ public class GameUICreator {
         int xCoordinate = Math.round(DataClass.getInstance().getWindowWidth() * 0.35305f);
         int yCoordinate = DataClass.getInstance().getPlayableWindowMaxHeight() + 20;
 
-        progressBar = new UIObject((createUIConfiguration(xCoordinate, yCoordinate, 1, ImageEnums.ProgressBar)));
-        progressBarFilling = new UIObject((createUIConfiguration(xCoordinate + 5, yCoordinate, 0.95f, ImageEnums.ProgressBarFilling)));
+        float progressBarScale = 1 * DataClass.getInstance().getResolutionFactor();
+        float progressBarFillingScale = 0.95f * DataClass.getInstance().getResolutionFactor();
+        float progressBarSpaceShipIndicatorScale = 0.3f * DataClass.getInstance().getResolutionFactor();
+
+        progressBar = new UIObject((createUIConfiguration(xCoordinate, yCoordinate, progressBarScale, ImageEnums.ProgressBar)));
+        progressBarFilling = new UIObject((createUIConfiguration(xCoordinate + 5, yCoordinate, progressBarFillingScale, ImageEnums.ProgressBarFilling)));
         progressBarFilling.setCenterYCoordinate(progressBar.getCenterYCoordinate());
 
-        progressBarSpaceShipIndicator = new UIObject(createUIConfiguration(xCoordinate,yCoordinate, 0.3f, ImageEnums.Player_Spaceship_Model_3));
+        progressBarSpaceShipIndicator = new UIObject(createUIConfiguration(xCoordinate,yCoordinate, progressBarSpaceShipIndicatorScale, ImageEnums.Player_Spaceship_Model_3));
         progressBarSpaceShipIndicator.setCenterYCoordinate(progressBarFilling.getCenterYCoordinate());
     }
 
@@ -225,26 +246,31 @@ public class GameUICreator {
     private void createGameOverCard(){
         int centerScreenX = DataClass.getInstance().getWindowWidth() / 2;
         int centerScreenY = DataClass.getInstance().getWindowHeight() / 2;
-        gameOverCard = new UIObject((createUIConfiguration(0, 0, 0.75f, ImageEnums.Wide_Card)));
+
+        float gameOverCardScale = 0.75f * DataClass.getInstance().getResolutionFactor();
+        gameOverCard = new UIObject((createUIConfiguration(0, 0, gameOverCardScale, ImageEnums.Wide_Card)));
         gameOverCard.setCenterCoordinates(centerScreenX, centerScreenY - (centerScreenY / 5));
 
 
+        float gradeScale = 1 * DataClass.getInstance().getResolutionFactor();
         int gradeObjectX = Math.round(gameOverCard.getCenterXCoordinate() + (gameOverCard.getWidth() * 0.3f));
         int gradeObjectY = gameOverCard.getCenterYCoordinate();
-        gradeSC2iconObject = new UIObject((createUIConfiguration(gradeObjectX, gradeObjectY, 1, ImageEnums.GradeBronze)));
+        gradeSC2iconObject = new UIObject((createUIConfiguration(gradeObjectX, gradeObjectY, gradeScale, ImageEnums.GradeBronze)));
         gradeSC2iconObject.setCenterCoordinates(gradeObjectX, gradeObjectY);
 
 
         int gradeTitleCardX = gradeSC2iconObject.getCenterXCoordinate();
         int gradeTitleCardY = gradeSC2iconObject.getCenterYCoordinate();
-        gradeTextObject = new UIObject((createUIConfiguration(gradeTitleCardX, gradeTitleCardY, 0.3f, ImageEnums.UIScoreTextCard)));
+        float gradeTextScale = 0.3f * DataClass.getInstance().getResolutionFactor();
+        gradeTextObject = new UIObject((createUIConfiguration(gradeTitleCardX, gradeTitleCardY, gradeTextScale, ImageEnums.UIScoreTextCard)));
         gradeTitleCardY = gradeSC2iconObject.getYCoordinate() - gradeTextObject.getHeight();
         gradeTextObject.setCenterCoordinates(gradeTitleCardX, gradeTitleCardY);
 
 
         int titleCardX = gameOverCard.getCenterXCoordinate();
         int titleCardY = gameOverCard.getYCoordinate() + Math.round(gameOverCard.getHeight() * 0.15f);
-        gameOverCardTitle = new UIObject(createUIConfiguration(titleCardX, titleCardY, 0.25f, ImageEnums.UILevelComplete));
+        float gameOverCardTitleScale = 0.35f * DataClass.getInstance().getResolutionFactor();
+        gameOverCardTitle = new UIObject(createUIConfiguration(titleCardX, titleCardY, gameOverCardTitleScale, ImageEnums.UILevelComplete));
         gameOverCardTitle.setCenterCoordinates(titleCardX, titleCardY);
     }
 
@@ -252,7 +278,9 @@ public class GameUICreator {
         int xCoordinate = Math.round(DataClass.getInstance().getWindowWidth() * 0.265f);
         int yCoordinate = Math.round(DataClass.getInstance().getPlayableWindowMaxHeight() + ((DataClass.getInstance().getInformationCardHeight() / 2) * 0.9f));
 
-        mineralIcon = new UIObject(createUIConfiguration(xCoordinate, yCoordinate, 0.5f, ImageEnums.TopazGem7));
+
+        float scale = 0.5f * DataClass.getInstance().getResolutionFactor();
+        mineralIcon = new UIObject(createUIConfiguration(xCoordinate, yCoordinate, scale, ImageEnums.TopazGem7));
         mineralIcon.setCenterCoordinates(xCoordinate, yCoordinate);
     }
 

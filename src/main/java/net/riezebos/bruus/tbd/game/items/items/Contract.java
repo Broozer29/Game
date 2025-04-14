@@ -2,9 +2,9 @@ package net.riezebos.bruus.tbd.game.items.items;
 
 import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
 import net.riezebos.bruus.tbd.game.items.Item;
+import net.riezebos.bruus.tbd.game.items.ItemEnums;
 import net.riezebos.bruus.tbd.game.items.PlayerInventory;
 import net.riezebos.bruus.tbd.game.items.enums.ItemApplicationEnum;
-import net.riezebos.bruus.tbd.game.items.ItemEnums;
 import net.riezebos.bruus.tbd.game.items.items.util.ContractCounter;
 import net.riezebos.bruus.tbd.game.items.items.util.ContractHelper;
 
@@ -25,7 +25,7 @@ public class Contract extends Item{
     @Override
     public void increaseQuantityOfItem(int amount) {
         this.quantity += amount;
-//        applyEffectToObject(null);
+        applyEffectToObject(null);
     }
 
     //Only needed for the Contract item so far

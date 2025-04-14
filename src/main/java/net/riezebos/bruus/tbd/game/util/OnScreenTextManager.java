@@ -2,11 +2,11 @@ package net.riezebos.bruus.tbd.game.util;
 
 import net.riezebos.bruus.tbd.game.UI.GameUICreator;
 import net.riezebos.bruus.tbd.game.UI.UIObject;
+import net.riezebos.bruus.tbd.visualsandaudio.data.DataClass;
 
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 public class OnScreenTextManager {
 
@@ -36,6 +36,13 @@ public class OnScreenTextManager {
 		if (!onScreenTexts.contains(text)) {
 			onScreenTexts.add(text);
 		}
+	}
+
+	public void addText(String text){
+		OnScreenText onScreenText = new OnScreenText(DataClass.getInstance().getWindowWidth() / 2,
+				DataClass.getInstance().getWindowHeight() / 2,
+				text);
+		this.onScreenTexts.add(onScreenText);
 	}
 
 	public void addText(String text, int xCoordinate, int yCoordinate){

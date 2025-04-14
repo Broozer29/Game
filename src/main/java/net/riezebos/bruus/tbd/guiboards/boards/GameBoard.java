@@ -5,18 +5,10 @@ import net.riezebos.bruus.tbd.controllerInput.ControllerInputEnums;
 import net.riezebos.bruus.tbd.game.UI.GameUICreator;
 import net.riezebos.bruus.tbd.game.UI.UIObject;
 import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
-import net.riezebos.bruus.tbd.game.items.PlayerInventory;
-import net.riezebos.bruus.tbd.game.level.enums.LevelTypes;
-import net.riezebos.bruus.tbd.game.util.VisualLayer;
-import net.riezebos.bruus.tbd.game.util.performancelogger.PerformanceLogger;
-import net.riezebos.bruus.tbd.game.util.performancelogger.PerformanceLoggerManager;
-import net.riezebos.bruus.tbd.guiboards.TimerHolder;
-import net.riezebos.bruus.tbd.guiboards.background.BackgroundManager;
-import net.riezebos.bruus.tbd.guiboards.background.BackgroundObject;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.Enemy;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyManager;
 import net.riezebos.bruus.tbd.game.gameobjects.friendlies.FriendlyManager;
-import net.riezebos.bruus.tbd.game.gameobjects.friendlies.FriendlyObject;
+import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.Drone;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.Missile;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.MissileManager;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.laserbeams.Laserbeam;
@@ -24,25 +16,40 @@ import net.riezebos.bruus.tbd.game.gameobjects.missiles.specialAttacks.SpecialAt
 import net.riezebos.bruus.tbd.game.gameobjects.neutral.ExplosionManager;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
+import net.riezebos.bruus.tbd.game.gameobjects.player.boons.BoonEnums;
+import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SpaceShip;
 import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SpaceShipSpecialGun;
-import net.riezebos.bruus.tbd.game.gamestate.GameStateInfo;
+import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.gamestate.GameStatsTracker;
 import net.riezebos.bruus.tbd.game.gamestate.GameStatusEnums;
+import net.riezebos.bruus.tbd.game.items.PlayerInventory;
 import net.riezebos.bruus.tbd.game.level.LevelManager;
 import net.riezebos.bruus.tbd.game.level.directors.DirectorManager;
-import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.MusicMediaPlayer;
-import net.riezebos.bruus.tbd.visualsandaudio.objects.AnimationManager;
-import net.riezebos.bruus.tbd.game.util.OnScreenTextManager;
+import net.riezebos.bruus.tbd.game.level.enums.LevelTypes;
 import net.riezebos.bruus.tbd.game.movement.Direction;
+import net.riezebos.bruus.tbd.game.gameobjects.player.boons.BoonManager;
+import net.riezebos.bruus.tbd.game.gameobjects.player.boons.boonimplementations.BoonActivationEnums;
+import net.riezebos.bruus.tbd.game.gameobjects.player.boons.boonimplementations.utility.CompoundWealth;
+import net.riezebos.bruus.tbd.game.playerprofile.PlayerProfileManager;
 import net.riezebos.bruus.tbd.game.util.OnScreenText;
+import net.riezebos.bruus.tbd.game.util.OnScreenTextManager;
 import net.riezebos.bruus.tbd.game.util.ThornsDamageDealer;
+import net.riezebos.bruus.tbd.game.util.VisualLayer;
+import net.riezebos.bruus.tbd.game.util.performancelogger.PerformanceLogger;
+import net.riezebos.bruus.tbd.game.util.performancelogger.PerformanceLoggerManager;
+import net.riezebos.bruus.tbd.game.gamestate.save.SaveManager;
 import net.riezebos.bruus.tbd.guiboards.BoardManager;
+import net.riezebos.bruus.tbd.guiboards.TimerHolder;
+import net.riezebos.bruus.tbd.guiboards.background.BackgroundManager;
+import net.riezebos.bruus.tbd.guiboards.background.BackgroundObject;
+import net.riezebos.bruus.tbd.guiboards.boardcreators.BoonSelectionBoardCreator;
 import net.riezebos.bruus.tbd.visualsandaudio.data.DataClass;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.AudioDatabase;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.AudioManager;
-import net.riezebos.bruus.tbd.visualsandaudio.data.audio.CustomAudioClip;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.AudioEnums;
+import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.MusicMediaPlayer;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
+import net.riezebos.bruus.tbd.visualsandaudio.objects.AnimationManager;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.Sprite;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteAnimation;
 
@@ -52,6 +59,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.util.List;
+import java.util.ArrayList;
 
 public class GameBoard extends JPanel implements ActionListener, TimerHolder {
 
@@ -61,7 +70,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
 
     private DataClass data = DataClass.getInstance();
     private AudioDatabase audioDatabase = AudioDatabase.getInstance();
-    private GameStateInfo gameState = GameStateInfo.getInstance();
+    private GameState gameState = GameState.getInstance();
     private final int boardWidth = data.getWindowWidth();
     private final int boardHeight = data.getWindowHeight();
 
@@ -83,15 +92,17 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
     private ExplosionManager explosionManager = ExplosionManager.getInstance();
     private FriendlyManager friendlyManager = FriendlyManager.getInstance();
     private PlayerStats playerStats = PlayerStats.getInstance();
-    private GameUICreator uiManager = GameUICreator.getInstance();
+    private GameUICreator gameUICreator = GameUICreator.getInstance();
     private OnScreenTextManager textManager = OnScreenTextManager.getInstance();
     private ConnectedControllersManager controllers = ConnectedControllersManager.getInstance();
     private int firstTextColumnXCoordinate = 0;
     private int secondTextColumnXCoordinate = 0;
     private PerformanceLogger performanceLogger;
 
+    private List<UIObject> floatingIcons = new ArrayList<>();
 
-    public GameBoard () {
+
+    public GameBoard() {
         animationManager = AnimationManager.getInstance();
         enemyManager = EnemyManager.getInstance();
         missileManager = MissileManager.getInstance();
@@ -102,7 +113,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
         explosionManager = ExplosionManager.getInstance();
         friendlyManager = FriendlyManager.getInstance();
         playerStats = PlayerStats.getInstance();
-        uiManager = GameUICreator.getInstance();
+        gameUICreator = GameUICreator.getInstance();
         textManager = OnScreenTextManager.getInstance();
 
         firstTextColumnXCoordinate = Math.round(DataClass.getInstance().getWindowWidth() * 0.7f);
@@ -111,7 +122,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
         initBoard();
     }
 
-    private void initBoard () {
+    private void initBoard() {
         drawTimer = new Timer(gameState.getDELAY(), this);
         setDoubleBuffered(true);
         addKeyListener(new KeyboardListener());
@@ -120,17 +131,18 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
         setPreferredSize(new Dimension(boardWidth, boardHeight));
     }
 
-    public void startGame () {
+    public void startGame() {
         animationManager.resetManager();
         PlayerManager.getInstance().resetManager();
         PlayerManager.getInstance().createSpaceShip();
-        uiManager.createGameBoardGUI();
+        gameUICreator.createGameBoardGUI();
         gameState.setGameState(GameStatusEnums.Zoning_In);
         drawTimer.start();
+        floatingIcons.clear();
     }
 
     // Resets the game after dying
-    public void resetGame () {
+    public void resetGame() {
         animationManager.resetManager();
         enemyManager.resetManager();
         missileManager.resetManager();
@@ -140,10 +152,11 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
         backgroundManager.resetManager();
         explosionManager.resetManager();
         friendlyManager.resetManager();
-        uiManager.resetManager();
+        gameUICreator.resetManager();
         textManager.resetManager();
         playerStats.resetPlayerStats();
         gameState.resetGameState();
+        BoonManager.getInstance().resetManager();
         ThornsDamageDealer.getInstance().resetThornsDamageDealer();
         this.drawTimer.setDelay(gameState.getDELAY());
         zoningInAlpha = 1.0f;
@@ -153,7 +166,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
         this.hasExportedLogs = false;
     }
 
-    private void resetManagersForNextLevel () {
+    private void resetManagersForNextLevel() {
         if (!hasResetManagersForNextLevel) {
             animationManager.resetManager();
             enemyManager.resetManager();
@@ -164,7 +177,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
             explosionManager.resetManager();
             friendlyManager.resetManager();
             friendlyManager.resetPortal();
-            uiManager.resetManager();
+            gameUICreator.resetManager();
             textManager.resetManager();
             this.hasExportedLogs = false;
 
@@ -174,7 +187,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
     }
 
     @Override
-    public void paintComponent (Graphics g) {
+    public void paintComponent(Graphics g) {
         super.paintComponent(g);
         Graphics2D g2d = (Graphics2D) g;
         drawObjects(g2d);
@@ -196,7 +209,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
         Toolkit.getDefaultToolkit().sync();
     }
 
-    private void goToNextLevel () {
+    private void goToNextLevel() {
         if (zoningOutAlpha >= 1) {
             playerManager.getSpaceship().setXCoordinate(DataClass.getInstance().getWindowWidth() / 10);
             playerManager.getSpaceship().setYCoordinate(DataClass.getInstance().getWindowHeight() / 2);
@@ -210,28 +223,46 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
             resetManagersForNextLevel();
 
             drawTimer.stop();
+            SaveManager.getInstance().exportCurrentSave();
             BoardManager.getInstance().openShopWindow();
+
+            if (PlayerInventory.getInstance().getCashMoney() >= CompoundWealth.mineralUnlockRequirement && PlayerProfileManager.getInstance().getLoadedProfile().getCompoundWealthLevel() < 1) {
+                PlayerProfileManager.getInstance().getLoadedProfile().setCompoundWealthLevel(1);
+                PlayerProfileManager.getInstance().exportCurrentProfile();
+                BoardManager.getInstance().getShopBoard().addContractAnimation(BoonSelectionBoardCreator.createBoonUnlockComponent(BoonEnums.COMPOUND_WEALTH));
+            }
+            BoonManager.getInstance().activateBoons(BoonActivationEnums.Whenever_Entering_Shop);
+
+
             GameStatsTracker.getInstance().resetStatsForNextRound();
+
         }
     }
 
-    private void playDeathMusic () {
+    private void playDeathMusic() {
         audioManager.stopMusicAudio();
         audioManager.playDefaultBackgroundMusic(AudioEnums.VendlaSonrisa, false);
+    }
+
+    public void addEmeraldIcon(UIObject icon) {
+        if (!this.floatingIcons.contains(icon)) {
+            this.floatingIcons.add(icon);
+        }
     }
 
     // Draw the game over screen
     private boolean isPlayingDeathMusic = false;
     private boolean hasExportedLogs = false;
 
-    private void drawEndOfLevelScreen (Graphics2D g, boolean hasSurvived) {
+    private void drawEndOfLevelScreen(Graphics2D g, boolean hasSurvived) {
         if (!hasSurvived && !isPlayingDeathMusic) {
             playDeathMusic();
             isPlayingDeathMusic = true;
+            SaveManager.getInstance().deleteSaveFile();
         }
 
         if (!hasExportedLogs) {
-            String stageNumber = String.valueOf(GameStateInfo.getInstance().getStagesCompleted());
+            String stageNumber = String.valueOf(GameState.getInstance().getStagesCompleted());
             PerformanceLoggerManager.getInstance().exportToJson("Stage_" + stageNumber);
             PerformanceLoggerManager.getInstance().reset();
             hasExportedLogs = true;
@@ -239,7 +270,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
 
 
         //Create font
-        Font font = new Font("Monospaced", Font.PLAIN, 15);
+        Font font = new Font("Monospaced", Font.PLAIN, Math.round(15 * DataClass.getInstance().getResolutionFactor()));
         FontMetrics fm = getFontMetrics(font);
         g.setColor(Color.white);
         g.setFont(font);
@@ -269,10 +300,6 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
             firstRowYCoordinate += messageHeight;
             msgToDraw = "Enemies missed this level:             " + gameStatsTracker.getAmountOfEnemiesMissedThisRound();
             g.drawString(msgToDraw, firstRowXCoordinate, firstRowYCoordinate);
-
-//            firstRowYCoordinate += messageHeight;
-//            msgToDraw = "Enemy percentage killed: " + gameStatsTracker.getPercentageOfEnemiesKilledThisRound();
-//            g.drawString(msgToDraw, firstRowXCoordinate, firstRowYCoordinate);
 
             firstRowYCoordinate += messageHeight;
             msgToDraw = "Minerals acquired this level:          " + gameStatsTracker.getMineralsGainedThisRound();
@@ -309,18 +336,6 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
 
             firstRowYCoordinate += messageHeight;
             msgToDraw = "Total damage taken:                    " + gameStatsTracker.getTotalDamageTaken();
-            g.drawString(msgToDraw, firstRowXCoordinate, firstRowYCoordinate);
-
-            firstRowYCoordinate += messageHeight;
-            msgToDraw = "Amount of missiles fired:              " + gameStatsTracker.getShotsFired();
-            g.drawString(msgToDraw, firstRowXCoordinate, firstRowYCoordinate);
-
-            firstRowYCoordinate += messageHeight;
-            msgToDraw = "Amount of missiles that hit a target:  " + gameStatsTracker.getShotsHit();
-            g.drawString(msgToDraw, firstRowXCoordinate, firstRowYCoordinate);
-
-            firstRowYCoordinate += messageHeight;
-            msgToDraw = "Accuracy:                              " + gameStatsTracker.getAccuracy() + "%";
             g.drawString(msgToDraw, firstRowXCoordinate, firstRowYCoordinate);
 
             firstRowYCoordinate += messageHeight;
@@ -378,7 +393,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
         drawTimer.setDelay(gameState.getDELAY());
     }
 
-    private void drawZoningIn (Graphics2D g2d) {
+    private void drawZoningIn(Graphics2D g2d) {
         if (zoningInAlpha <= 0) {
             return;
         }
@@ -392,7 +407,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
         zoningInAlpha -= 0.02f; // Adjust this value to control the speed of the fade
     }
 
-    private void drawZoningOut (Graphics2D g2d) {
+    private void drawZoningOut(Graphics2D g2d) {
         // If the black screen is already fully opaque, just return
         if (zoningOutAlpha >= 1) {
             return;
@@ -408,7 +423,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
         zoningOutAlpha += 0.02f; // Adjust this value to control the speed of the fade
     }
 
-    private void drawObjects (Graphics2D g) {
+    private void drawObjects(Graphics2D g) {
         double start = System.currentTimeMillis();
         // Draws all background objects
         for (BackgroundObject bgObject : backgroundManager.getAllBGO()) {
@@ -459,20 +474,30 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
             }
         }
 
-        for (FriendlyObject friendly : friendlyManager.getFriendlyObjects()) {
-            if (friendly.isVisible()) {
-                drawAnimation(g, friendly.getAnimation());
+        for (Drone drone : friendlyManager.getDrones()) {
+            if (drone.isVisible()) {
+                drawAnimation(g, drone.getAnimation());
+
+                if (drone.isShowHealthBar()) {
+                    drawHealthBars(g, drone);
+                }
             }
         }
 
         // Draw friendly spaceship
         if (playerManager.getSpaceship().isVisible()) {
-            drawImage(g, playerManager.getSpaceship());
+            if (playerManager.getSpaceship().getAnimation() != null) {
+                drawAnimation(g, playerManager.getSpaceship().getAnimation());
+            } else {
+                drawImage(g, playerManager.getSpaceship());
+            }
+
+            drawPlayerSpecialBar(g, playerManager.getSpaceship());
         }
 
         drawSpecialAttacks(VisualLayer.Upper, g);
 
-        for (UIObject obj : uiManager.getInformationCards()) {
+        for (UIObject obj : gameUICreator.getInformationCards()) {
             drawImage(g, obj);
         }
 
@@ -481,19 +506,25 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
             drawAnimation(g, animation);
         }
 
+        for (UIObject obj : this.floatingIcons) {
+            drawImage(g, obj);
+            obj.setYCoordinate(obj.getYCoordinate() - 1);
+        }
+
         for (OnScreenText text : textManager.getOnScreenTexts()) {
             drawOnScreenText(g, text);
         }
+
 
         drawPlayerHealthBars(g);
         drawSpecialAttackFrame(g);
         drawSongProgressBar(g);
 
 
-        if (uiManager.getDifficultyWings() != null) {
-            UIObject wings = uiManager.getDifficultyWings();
+        if (gameUICreator.getDifficultyWings() != null) {
+//            UIObject wings = uiManager.getDifficultyWings();
 //            g.drawString("Level difficulty: " + levelManager.getCurrentLevelDifficultyScore(), wings.getXCoordinate() + (wings.getWidth()), wings.getCenterYCoordinate());
-            drawImage(g, uiManager.getDifficultyWings());
+            drawImage(g, gameUICreator.getDifficultyWings());
         }
 
         drawCurrentAmountOFMinerals(g);
@@ -509,7 +540,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
 
 
         if (gameState.getGameState().equals(GameStatusEnums.Paused)) {
-            g.setFont(new Font(DataClass.getInstance().getTextFont(), Font.BOLD, 30));
+            g.setFont(new Font(DataClass.getInstance().getTextFont(), Font.BOLD, Math.round(30 * DataClass.getInstance().getResolutionFactor())));
             g.drawString("PAUSED, press 'P' to resume",
                     DataClass.getInstance().getWindowWidth() * 0.4f,
                     DataClass.getInstance().getWindowHeight() / 2);
@@ -520,7 +551,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
     }
 
     //Helper method to centralize drawing of special attacks
-    private void drawSpecialAttacks (VisualLayer visualLayer, Graphics2D g2d) {
+    private void drawSpecialAttacks(VisualLayer visualLayer, Graphics2D g2d) {
         for (SpecialAttack specialAttack : missileManager.getSpecialAttacksByAnimationLayer(visualLayer)) {
             if (specialAttack.isVisible()) {
                 if (specialAttack.getAnimation() != null) {
@@ -533,7 +564,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
 
     }
 
-    private void drawOnScreenText (Graphics2D g, OnScreenText text) {
+    private void drawOnScreenText(Graphics2D g, OnScreenText text) {
         // Ensure that transparency value is within the appropriate bounds.
         float transparency = Math.max(0, Math.min(1, text.getTransparencyValue()));
         Color originalColor = g.getColor(); // store the original color
@@ -547,7 +578,6 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
                 (int) (transparency * 255) // alpha value must be between 0 and 255
         );
 
-//        g.setColor(new Color(1.0f, 1.0f, 1.0f, transparency)); // White with transparency
         g.setColor(colorWithTransparency);
         g.setFont(new Font("Helvetica", Font.PLAIN, text.getFontSize()));
         // Draw the text at the current coordinates.
@@ -563,8 +593,8 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
         g.setFont(originalFont);
     }
 
-    private void drawImage (Graphics2D g, Sprite sprite) {
-        if (sprite.getImage() != null) {
+    private void drawImage(Graphics2D g, Sprite sprite) {
+        if (sprite.getImage() != null && sprite.isVisible()) {
             // Save the original composite
             Composite originalComposite = g.getComposite();
 
@@ -580,8 +610,8 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
     }
 
 
-    private void drawAnimation (Graphics2D g, SpriteAnimation animation) {
-        if (animation.getCurrentFrameImage(false) != null) {
+    private void drawAnimation(Graphics2D g, SpriteAnimation animation) {
+        if (animation.getCurrentFrameImage(false) != null && animation.isVisible()) {
             // Save the original composite
             Composite originalComposite = g.getComposite();
             // Set the alpha composite
@@ -596,10 +626,9 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
     }
 
     // Primitive healthbar generator for enemies
-    private void drawHealthBars (Graphics2D g, GameObject gameobject) {
+    private void drawHealthBars(Graphics2D g, GameObject gameobject) {
         float factor = gameobject.getCurrentHitpoints() / gameobject.getMaxHitPoints();
         int actualAmount = (int) Math.round(gameobject.getHeight() * factor);
-
 
         g.setColor(Color.RED);
         g.fillRect((gameobject.getXCoordinate() + gameobject.getWidth() + 10), gameobject.getYCoordinate(), 2, gameobject.getHeight());
@@ -607,7 +636,23 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
         g.fillRect((gameobject.getXCoordinate() + gameobject.getWidth() + 10), gameobject.getYCoordinate(), 2, actualAmount);
     }
 
-    private void drawCurrentAmountOFMinerals (Graphics2D g) {
+
+    private void drawPlayerSpecialBar(Graphics2D g, SpaceShip player) {
+        float currentValue = player.getSpaceShipRegularGun().getOrangeBarCurrentValue();
+        float maxValue = player.getSpaceShipRegularGun().getOrangeBarMaxValue();
+
+        if (currentValue < 0 || maxValue < 0) {
+            return; //Don't draw
+        }
+        int actualAmount = Math.round(player.getHeight() * currentValue / maxValue);
+
+        g.setColor(new Color(110, 69, 1));
+        g.fillRect((player.getXCoordinate() - 10), player.getYCoordinate(), 3, player.getHeight());
+        g.setColor(Color.ORANGE);
+        g.fillRect((player.getXCoordinate() - 10), player.getYCoordinate(), 3, actualAmount);
+    }
+
+    private void drawCurrentAmountOFMinerals(Graphics2D g) {
         UIObject mineralIcon = GameUICreator.getInstance().getMineralIcon();
         drawImage(g, mineralIcon);
         g.setColor(Color.WHITE);
@@ -618,11 +663,11 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
     }
 
 
-    private void drawPlayerHealthBars (Graphics2D g) {
+    private void drawPlayerHealthBars(Graphics2D g) {
         float playerHealth = playerManager.getSpaceship().getCurrentHitpoints();
         float playerMaxHealth = playerStats.getMaxHitPoints();
-        UIObject healthFrame = uiManager.getHealthFrame();
-        UIObject healthBar = uiManager.getHealthBar();
+        UIObject healthFrame = gameUICreator.getHealthFrame();
+        UIObject healthBar = gameUICreator.getHealthBar();
 
         GameUICreator gameUICreator = GameUICreator.getInstance();
         int healthBarWidth = gameUICreator.calculateHealthbarWidth(playerHealth, playerMaxHealth);
@@ -641,8 +686,8 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
 
         float playerShields = playerManager.getSpaceship().getCurrentShieldPoints();
         float playerMaxShields = playerStats.getMaxShieldHitPoints();
-        UIObject shieldFrame = uiManager.getShieldFrame();
-        UIObject shieldBar = uiManager.getShieldBar();
+        UIObject shieldFrame = this.gameUICreator.getShieldFrame();
+        UIObject shieldBar = this.gameUICreator.getShieldBar();
 
         int shieldBarWidth = gameUICreator.calculateHealthbarWidth(playerShields, playerMaxShields);
         if (shieldBarWidth > shieldFrame.getWidth()) {
@@ -651,13 +696,9 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
 
         shieldBar.resizeToDimensions(shieldBarWidth, shieldBar.getHeight());
         drawImage(g, shieldBar);
-        g.drawString("" + Math.round(playerShields) + " / " + Math.round(playerMaxShields),
-                shieldBar.getXCoordinate() + gameUICreator.getHealthBarWidth() * 0.35f,
-                shieldBar.getYCoordinate() + gameUICreator.getHealthBarHeight() * 0.85f);
-
 
         if (playerShields > playerMaxShields) {
-            UIObject overloadingShieldBar = uiManager.getOverloadingShieldBar();
+            UIObject overloadingShieldBar = this.gameUICreator.getOverloadingShieldBar();
             int overloadingShieldBarWidth = gameUICreator.calculateHealthbarWidth(playerShields - playerMaxShields, playerMaxShields * PlayerStats.getInstance().getMaxOverloadingShieldMultiplier());
             if (overloadingShieldBarWidth > shieldFrame.getWidth()) {
                 overloadingShieldBarWidth = shieldFrame.getWidth();
@@ -672,30 +713,55 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
         if (currentTotalHitpoints <= maxTotalHitpoints * 0.35f) {
 
             float minHealthThreshold = maxTotalHitpoints * 0.01f;
-            float maxHealthThreshold = maxTotalHitpoints * 0.35f;
+            float maxHealthThreshold = maxTotalHitpoints * 0.5f;
 
             float clampedHitpoints = Math.max(minHealthThreshold, Math.min(currentTotalHitpoints, maxHealthThreshold));
 
             float transparencyRange = 0.75f;
             float newTransparancyAlpha = transparencyRange * (1 - (clampedHitpoints - minHealthThreshold) / (maxHealthThreshold - minHealthThreshold));
 
-            UIObject damageOverlay = uiManager.getDamageOverlay();
+            UIObject damageOverlay = this.gameUICreator.getDamageOverlay();
             damageOverlay.setTransparancyAlpha(false, newTransparancyAlpha, 0);
             drawImage(g, damageOverlay);
         }
 
+        g.drawString("" + Math.round(playerShields) + " / " + Math.round(playerMaxShields),
+                shieldBar.getXCoordinate() + gameUICreator.getHealthBarWidth() * 0.35f,
+                shieldBar.getYCoordinate() + gameUICreator.getHealthBarHeight() * 0.85f);
 
         drawImage(g, shieldFrame);
+
+
+        //Lines at the player
+        GameObject player = PlayerManager.getInstance().getSpaceship();
+        float factor = playerHealth / playerMaxHealth;
+        int actualAmount = Math.round(player.getWidth() * factor);
+
+        g.setColor(Color.RED);
+        g.fillRect(player.getXCoordinate(), player.getYCoordinate() + (player.getHeight() + 3), player.getWidth(), 2);
+        g.setColor(Color.GREEN);
+        g.fillRect(player.getXCoordinate(), player.getYCoordinate() + (player.getHeight() + 3), actualAmount, 2);
+
+        factor = playerShields / playerMaxShields;
+        if(factor > 1){
+            factor = 1;
+        }
+        actualAmount = Math.round(player.getWidth() * factor);
+
+        g.setColor(Color.BLUE);
+        g.fillRect(player.getXCoordinate(), player.getYCoordinate() + (player.getHeight() + 6), player.getWidth(), 2);
+        g.setColor(Color.CYAN);
+        g.fillRect(player.getXCoordinate(), player.getYCoordinate() + (player.getHeight() + 6), actualAmount, 2);
     }
 
 
     private double currentMusicSeconds = 0;
     private double maximumMusicSeconds = 0;
 
-    private void drawSongProgressBar (Graphics2D g) {
+    private void drawSongProgressBar(Graphics2D g) {
         //Only update these when playing, as gameseconds continues to grow after the song is finished
         if (gameState.getGameState().equals(GameStatusEnums.Playing)) {
-            currentMusicSeconds = GameStateInfo.getInstance().getGameSeconds();
+            currentMusicSeconds = GameState.getInstance().getGameSeconds();
             maximumMusicSeconds = AudioManager.getInstance().getPredictedEndGameSeconds();
         }
 
@@ -703,9 +769,9 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
             //If these values don't make sense, don't attempt to draw the bar
             return;
         }
-        UIObject progressBar = uiManager.getProgressBar();
-        UIObject progressBarFilling = uiManager.getProgressBarFilling();
-        UIObject spaceShipIndicator = uiManager.getProgressBarSpaceShipIndicator();
+        UIObject progressBar = gameUICreator.getProgressBar();
+        UIObject progressBarFilling = gameUICreator.getProgressBarFilling();
+        UIObject spaceShipIndicator = gameUICreator.getProgressBarSpaceShipIndicator();
 
         if (!LevelManager.getInstance().getLevelType().equals(LevelTypes.Boss)) {
             // Calculate the width of the progress bar filling based on the current position of the song
@@ -732,32 +798,32 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
         }
     }
 
-    private void drawSpecialAttackFrame (Graphics2D g) {
-        drawImage(g, uiManager.getSpecialAttackFrame());
+    private void drawSpecialAttackFrame(Graphics2D g) {
+        drawImage(g, gameUICreator.getSpecialAttackFrame());
         SpaceShipSpecialGun gun = playerManager.getSpaceship().getSpecialGun();
         int charges = gun.getSpecialAttackCharges();
 
         if (charges > 0) {
-            drawAnimation(g, uiManager.getSpecialAttackHighlight());
+            drawAnimation(g, gameUICreator.getSpecialAttackHighlight());
         } else {
             // Draw the cooldown progress bar only if there are no charges
             double remainingSeconds = gun.getCurrentSpecialAttackFrame();
             double totalCooldown = playerStats.getSpecialAttackCooldown();
             float percentage = (float) (1.0 - remainingSeconds / totalCooldown); // Properly compute the fill percentage
-            int barWidth = (int) (uiManager.getSpecialAttackFrame().getWidth() * percentage);
+            int barWidth = (int) (gameUICreator.getSpecialAttackFrame().getWidth() * percentage);
 
             // Draw the cooldown progress bar
             g.setColor(new Color(160, 160, 160, 160)); // Semi-transparent gray
-            g.fillRect(uiManager.getSpecialAttackFrame().getXCoordinate(),
-                    uiManager.getSpecialAttackFrame().getYCoordinate(), barWidth,
-                    uiManager.getSpecialAttackFrame().getHeight());
+            g.fillRect(gameUICreator.getSpecialAttackFrame().getXCoordinate(),
+                    gameUICreator.getSpecialAttackFrame().getYCoordinate(), barWidth,
+                    gameUICreator.getSpecialAttackFrame().getHeight());
         }
 
         if (charges > 1) {
             g.setColor(Color.green);
             g.drawString(String.valueOf(charges),
-                    uiManager.getSpecialAttackFrame().getXCoordinate() + uiManager.getSpecialAttackFrame().getWidth() - 20,
-                    uiManager.getSpecialAttackFrame().getYCoordinate() + uiManager.getSpecialAttackFrame().getHeight() - 10
+                    gameUICreator.getSpecialAttackFrame().getXCoordinate() + gameUICreator.getSpecialAttackFrame().getWidth() - 20,
+                    gameUICreator.getSpecialAttackFrame().getYCoordinate() + gameUICreator.getSpecialAttackFrame().getHeight() - 10
             );
 
         }
@@ -765,7 +831,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
 
 
     // Called on every action/input. Essentially the infinite loop that plays the game
-    public void actionPerformed (ActionEvent e) {
+    public void actionPerformed(ActionEvent e) {
         if (gameState.getGameState() == GameStatusEnums.Zoning_In) {
             if (this.zoningInAlpha <= 0.05) {
                 levelManager.startLevel();
@@ -852,12 +918,12 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
         repaint(0, 0, DataClass.getInstance().getWindowWidth(), DataClass.getInstance().getWindowHeight());
     }
 
-    private boolean shouldIncreaseInputDelay () {
+    private boolean shouldIncreaseInputDelay() {
         GameStatusEnums gameStatus = gameState.getGameState();
         return gameStatus == GameStatusEnums.Show_Level_Score_Card || gameStatus == GameStatusEnums.Paused || gameStatus == GameStatusEnums.Dead;
     }
 
-    public Timer getTimer () {
+    public Timer getTimer() {
         return drawTimer;
     }
 
@@ -865,7 +931,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
     // Required to read key presses
     private class KeyboardListener extends KeyAdapter {
         @Override
-        public void keyReleased (KeyEvent e) {
+        public void keyReleased(KeyEvent e) {
             playerManager.getSpaceship().keyReleased(e);
 
             if (e.getKeyCode() == (KeyEvent.VK_P)) {
@@ -881,7 +947,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
         }
 
         @Override
-        public void keyPressed (KeyEvent e) {
+        public void keyPressed(KeyEvent e) {
             if (boardManager == null) {
                 boardManager = BoardManager.getInstance();
             }
@@ -909,7 +975,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
         }
     }
 
-    public void executeControllerInput () {
+    public void executeControllerInput() {
         if (boardManager == null) {
             boardManager = BoardManager.getInstance();
         }

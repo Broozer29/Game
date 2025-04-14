@@ -13,12 +13,8 @@ public class EnemyConfiguration {
     private AudioEnums deathSound;
 
     private boolean allowedToDealDamage;
-
     private String objectType;
-
-
     private boolean isBoxCollision;
-
     private float baseArmor;
     private float xpOnDeath;
 

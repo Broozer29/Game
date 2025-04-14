@@ -1,14 +1,12 @@
 package net.riezebos.bruus.tbd.game.items.effects.effectimplementations;
 
 import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
-import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
 import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SpaceShip;
-import net.riezebos.bruus.tbd.game.gamestate.GameStateInfo;
+import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.items.effects.EffectActivationTypes;
 import net.riezebos.bruus.tbd.game.items.effects.EffectIdentifiers;
 import net.riezebos.bruus.tbd.game.items.effects.EffectInterface;
-import net.riezebos.bruus.tbd.game.util.OnScreenTextManager;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteAnimation;
 
 public class AttackSpeedModifierEffect implements EffectInterface {
@@ -28,7 +26,7 @@ public class AttackSpeedModifierEffect implements EffectInterface {
         this.attackSpeedModifierAmount = attackSpeedModifierAmountPerStack;
         this.durationInSeconds = durationInSeconds;
         this.animation = animation;
-        this.startTimeInSeconds = GameStateInfo.getInstance().getGameSeconds();
+        this.startTimeInSeconds = GameState.getInstance().getGameSeconds();
         this.effectTypesEnums = EffectActivationTypes.CheckEveryGameTick;
         this.appliedToObject = false;
         this.effectIdentifier = effectIdentifier;
@@ -40,11 +38,9 @@ public class AttackSpeedModifierEffect implements EffectInterface {
         if (!appliedToObject) {
             float percentageChange = attackSpeedModifierAmount * 100;
 
-            if (gameObject.isFriendly() || gameObject instanceof SpaceShip) {
-                // Player
+            if (gameObject instanceof SpaceShip) {
                 PlayerStats.getInstance().modifyAttackSpeedBonus(percentageChange);
             } else {
-                // Enemy
                 gameObject.modifyAttackSpeedBonus(percentageChange);
             }
             appliedToObject = true;
@@ -81,7 +77,7 @@ public class AttackSpeedModifierEffect implements EffectInterface {
 
     @Override
     public boolean shouldBeRemoved (GameObject gameObject) {
-        if (GameStateInfo.getInstance().getGameSeconds() - startTimeInSeconds >= durationInSeconds) {
+        if (GameState.getInstance().getGameSeconds() - startTimeInSeconds >= durationInSeconds) {
             return true;
         } else return false;
     }
@@ -98,7 +94,7 @@ public class AttackSpeedModifierEffect implements EffectInterface {
 
     @Override
     public void resetDuration () {
-        this.startTimeInSeconds = GameStateInfo.getInstance().getGameSeconds();
+        this.startTimeInSeconds = GameState.getInstance().getGameSeconds();
     }
 
     @Override

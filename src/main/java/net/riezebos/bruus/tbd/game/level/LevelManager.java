@@ -7,22 +7,26 @@ import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyManager;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyCategory;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyEnums;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyTribes;
+import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerClass;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
-import net.riezebos.bruus.tbd.game.gamestate.GameStateInfo;
+import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
+import net.riezebos.bruus.tbd.game.gamestate.GameMode;
+import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.gamestate.GameStatusEnums;
-import net.riezebos.bruus.tbd.game.items.Item;
-import net.riezebos.bruus.tbd.game.items.ItemEnums;
-import net.riezebos.bruus.tbd.game.items.PlayerInventory;
+import net.riezebos.bruus.tbd.game.gamestate.ShopManager;
 import net.riezebos.bruus.tbd.game.level.directors.DirectorManager;
 import net.riezebos.bruus.tbd.game.level.enums.LevelDifficulty;
 import net.riezebos.bruus.tbd.game.level.enums.LevelLength;
 import net.riezebos.bruus.tbd.game.level.enums.LevelTypes;
-import net.riezebos.bruus.tbd.game.gamestate.ShopManager;
 import net.riezebos.bruus.tbd.game.movement.Direction;
 import net.riezebos.bruus.tbd.game.movement.MovementPatternSize;
 import net.riezebos.bruus.tbd.game.movement.Point;
+import net.riezebos.bruus.tbd.game.gameobjects.player.boons.BoonManager;
+import net.riezebos.bruus.tbd.game.gameobjects.player.boons.boonimplementations.BoonActivationEnums;
+import net.riezebos.bruus.tbd.game.util.OnScreenTextManager;
 import net.riezebos.bruus.tbd.game.util.performancelogger.PerformanceLogger;
 import net.riezebos.bruus.tbd.game.util.performancelogger.PerformanceLoggerManager;
+import net.riezebos.bruus.tbd.visualsandaudio.data.DataClass;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.AudioManager;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.AudioEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.LevelSongs;
@@ -35,7 +39,7 @@ public class LevelManager {
     private AudioManager audioManager = AudioManager.getInstance();
     private EnemyManager enemyManager = EnemyManager.getInstance();
     private SpawningCoordinator spawningCoordinator = SpawningCoordinator.getInstance();
-    private GameStateInfo gameState = GameStateInfo.getInstance();
+    private GameState gameState = GameState.getInstance();
 
 
     private AudioEnums currentLevelSong;
@@ -47,16 +51,16 @@ public class LevelManager {
     private int stagesBeforeBoss = 3;
     private PerformanceLogger performanceLogger = null;
 
-    private LevelManager () {
+    private LevelManager() {
         this.performanceLogger = new PerformanceLogger("Level Manager");
         resetManager();
     }
 
-    public static LevelManager getInstance () {
+    public static LevelManager getInstance() {
         return instance;
     }
 
-    public void resetManager () {
+    public void resetManager() {
         currentLevelSong = null;
         levelType = LevelTypes.Regular;
         currentLevelDifficulty = LevelDifficulty.Medium;
@@ -67,14 +71,11 @@ public class LevelManager {
 
 
     private int tickerCount = 0;
-    public void updateGameTick () {
+
+    public void updateGameTick() {
         // Check if the song has ended, then create the moving out portal
         if (gameState.getGameState() == GameStatusEnums.Playing) {
-//            if (tickerCount % 5 == 0) {
-                PerformanceLoggerManager.timeAndLog(performanceLogger, "Handle End Of Song Behaviour", this::handleEndOfSongBehaviour);
-//                tickerCount = 0;
-//            }
-//            tickerCount++; // Increment the counter
+            PerformanceLoggerManager.timeAndLog(performanceLogger, "Handle End Of Song Behaviour", this::handleEndOfSongBehaviour);
         }
 
         //NextLevelPortal spawns in friendlymanager, now we wait for the player to enter the portal to set it to Level_Completed to show the score card
@@ -84,7 +85,7 @@ public class LevelManager {
         }
     }
 
-    private void handleEndOfSongBehaviour () {
+    private void handleEndOfSongBehaviour() {
         if (levelType == LevelTypes.Regular || levelType == LevelTypes.Special) {
             if (audioManager.isBackgroundMusicInitializing()) {
                 //We are still initializing the audio it seems
@@ -98,7 +99,7 @@ public class LevelManager {
         } else if (levelType == LevelTypes.Boss) {
             boolean bossAlive = EnemyManager.getInstance().isBossAlive();
             if (audioManager.isLevelMusicFinished() && bossAlive) {
-                audioManager.playDefaultBackgroundMusic(LevelSongs.getBossTheme(GameStateInfo.getInstance().getNextBoss()), false);
+                audioManager.playDefaultBackgroundMusic(LevelSongs.getBossTheme(GameState.getInstance().getNextBoss()), false);
             }
 
             if (!bossAlive) {
@@ -110,7 +111,7 @@ public class LevelManager {
         }
     }
 
-    private void finishLevel () {
+    private void finishLevel() {
         ShopManager shopManager = ShopManager.getInstance();
         shopManager.setLastLevelDifficulty(this.currentLevelDifficulty);
         shopManager.setLastLevelLength(this.currentLevelLength);
@@ -128,9 +129,11 @@ public class LevelManager {
 
 
     // Called when a level starts, to saturate enemy list
-    public void startLevel () {
+    public void startLevel() {
+        BoonManager.getInstance().activateBoons(BoonActivationEnums.Start_of_Level);
+
         initDifficulty();
-//        this.levelType = LevelTypes.Boss;
+        this.levelType = LevelTypes.Boss;
 
         GameUICreator.getInstance().createDifficultyWings(this.levelType.equals(LevelTypes.Boss), currentLevelDifficultyScore);
 
@@ -143,13 +146,17 @@ public class LevelManager {
         activateMusic(this.levelType);
         gameState.setGameState(GameStatusEnums.Playing);
 
-//        EnemyEnums enemyType = EnemyEnums.Scout;
-//        Enemy enemy = EnemyCreator.createEnemy(enemyType, 1200, 300, Direction.LEFT, enemyType.getDefaultScale()
-//                , enemyType.getMovementSpeed(), enemyType.getMovementSpeed(), MovementPatternSize.SMALL, false);
+
+        EnemyEnums enemyType = EnemyEnums.CarrierBoss;
+        Enemy enemy = EnemyCreator.createEnemy(enemyType, 1200, 300, Direction.LEFT, enemyType.getDefaultScale()
+                , enemyType.getMovementSpeed(), enemyType.getMovementSpeed(), MovementPatternSize.SMALL, false);
+//        enemy.setCurrentHitpoints(10);
+        enemy.setXCoordinate(DataClass.getInstance().getWindowWidth() + enemy.getWidth() / 2);
 //        EnemyManager.getInstance().addEnemy(enemy);
+
     }
 
-    private void initDifficulty () {
+    private void initDifficulty() {
         boolean controlledByThirdPartyApp = AudioManager.getInstance().isMusicControlledByThirdPartyApp();
         if (controlledByThirdPartyApp) {
             currentLevelLength = LevelLength.Short;
@@ -184,8 +191,8 @@ public class LevelManager {
 
     }
 
-    private void selectEnemyTribe () {
-        if (GameStateInfo.getInstance().getBossesDefeated() >= 2) {
+    private void selectEnemyTribe() {
+        if (GameState.getInstance().getBossesDefeated() >= 2) {
             this.currentEnemyTribe = EnemyTribes.Zerg;
         } else {
             this.currentEnemyTribe = EnemyTribes.Pirates;
@@ -194,21 +201,21 @@ public class LevelManager {
     }
 
 
-    private void activateDirectors (LevelTypes levelType) {
+    private void activateDirectors(LevelTypes levelType) {
         DirectorManager directorManager = DirectorManager.getInstance();
         directorManager.setEnabled(true);
         directorManager.createMonsterCards();
         directorManager.createDirectors(levelType);
     }
 
-    private void activateMusic (LevelTypes levelType) {
+    private void activateMusic(LevelTypes levelType) {
         switch (levelType) {
             case Regular -> {
                 audioManager.playDefaultBackgroundMusic(currentLevelDifficulty, currentLevelLength, false);
                 this.currentLevelSong = audioManager.getCurrentSong();
             }
             case Boss -> {
-                audioManager.playDefaultBackgroundMusic(LevelSongs.getBossTheme(GameStateInfo.getInstance().getNextBoss()), false); //False because looping streams is not a thing, we need to recreate one instead
+                audioManager.playDefaultBackgroundMusic(LevelSongs.getBossTheme(GameState.getInstance().getNextBoss()), false); //False because looping streams is not a thing, we need to recreate one instead
                 this.currentLevelSong = audioManager.getCurrentSong();
                 //to implement
             }
@@ -218,8 +225,8 @@ public class LevelManager {
         }
     }
 
-    public void spawnEnemy (int xCoordinate, int yCoordinate, EnemyEnums enemyType,
-                            Direction direction, float scale, boolean random, float xMovementSpeed, float yMovementSpeed, boolean boxCollision) {
+    public void spawnEnemy(int xCoordinate, int yCoordinate, EnemyEnums enemyType,
+                           Direction direction, float scale, boolean random, float xMovementSpeed, float yMovementSpeed, boolean boxCollision) {
         Point coordinates = new Point(xCoordinate, yCoordinate);
 
         //Placed in a wrapper for logging
@@ -249,7 +256,7 @@ public class LevelManager {
     }
 
 
-    private boolean validSpawnCoordinates (int xCoordinate, int yCoordinate, EnemyEnums enemyType, float scale) {
+    private boolean validSpawnCoordinates(int xCoordinate, int yCoordinate, EnemyEnums enemyType, float scale) {
         if (enemyType.getEnemyCategory().equals(EnemyCategory.Boss) ||
                 enemyType.getEnemyCategory().equals(EnemyCategory.Special) ||
                 enemyType.getEnemyCategory().equals(EnemyCategory.Summon)) {
@@ -268,65 +275,69 @@ public class LevelManager {
         return false;
     }
 
-    public AudioEnums getCurrentLevelSong () {
+    public AudioEnums getCurrentLevelSong() {
         return currentLevelSong;
     }
 
-    public void setCurrentLevelSong (AudioEnums currentLevelSong) {
+    public void setCurrentLevelSong(AudioEnums currentLevelSong) {
         this.currentLevelSong = currentLevelSong;
     }
 
-    public boolean isNextLevelABossLevel () {
-        int stagesCompleted = GameStateInfo.getInstance().getStagesCompleted();
+    public boolean isNextLevelABossLevel() {
+        if (GameState.getInstance().getGameMode().equals(GameMode.ManMode)) {
+            return true;
+        }
+
+        int stagesCompleted = GameState.getInstance().getStagesCompleted();
         if (stagesCompleted == 0) {
             return false;
         }
         return stagesCompleted % stagesBeforeBoss == 0;
     }
 
-    public LevelDifficulty getCurrentLevelDifficulty () {
+    public LevelDifficulty getCurrentLevelDifficulty() {
         if (currentLevelDifficulty == null) {
             currentLevelDifficulty = LevelDifficulty.getRandomDifficulty();
         }
         return currentLevelDifficulty;
     }
 
-    public void setCurrentLevelDifficulty (LevelDifficulty currentLevelDifficulty) {
+    public void setCurrentLevelDifficulty(LevelDifficulty currentLevelDifficulty) {
         if (!isNextLevelABossLevel()) {
             this.currentLevelDifficulty = currentLevelDifficulty;
         }
     }
 
-    public LevelLength getCurrentLevelLength () {
+    public LevelLength getCurrentLevelLength() {
         if (currentLevelLength == null) {
             currentLevelLength = LevelLength.getRandomLength();
         }
         return currentLevelLength;
     }
 
-    public void setCurrentLevelLength (LevelLength currentLevelLength) {
+    public void setCurrentLevelLength(LevelLength currentLevelLength) {
         if (!isNextLevelABossLevel()) {
             this.currentLevelLength = currentLevelLength;
         }
     }
 
-    public int getCurrentLevelDifficultyScore () {
+    public int getCurrentLevelDifficultyScore() {
         return currentLevelDifficultyScore;
     }
 
-    public void setCurrentLevelDifficultyScore (int currentLevelDifficultyScore) {
+    public void setCurrentLevelDifficultyScore(int currentLevelDifficultyScore) {
         this.currentLevelDifficultyScore = currentLevelDifficultyScore;
     }
 
-    public LevelTypes getLevelType () {
+    public LevelTypes getLevelType() {
         return levelType;
     }
 
-    public EnemyTribes getCurrentEnemyTribe () {
+    public EnemyTribes getCurrentEnemyTribe() {
         return currentEnemyTribe;
     }
 
-    public PerformanceLogger getPerformanceLogger () {
+    public PerformanceLogger getPerformanceLogger() {
         return this.performanceLogger;
     }
 }

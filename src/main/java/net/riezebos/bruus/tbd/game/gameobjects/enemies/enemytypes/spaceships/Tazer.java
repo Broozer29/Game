@@ -6,8 +6,7 @@ import net.riezebos.bruus.tbd.game.gameobjects.missiles.Missile;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.MissileConfiguration;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.MissileCreator;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.MissileEnums;
-import net.riezebos.bruus.tbd.game.gamestate.GameStateInfo;
-import net.riezebos.bruus.tbd.visualsandaudio.objects.AnimationManager;
+import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.movement.Direction;
 import net.riezebos.bruus.tbd.game.movement.MovementConfiguration;
 import net.riezebos.bruus.tbd.game.movement.MovementPatternSize;
@@ -15,6 +14,7 @@ import net.riezebos.bruus.tbd.game.movement.pathfinders.BouncingPathFinder;
 import net.riezebos.bruus.tbd.game.movement.pathfinders.HoverPathFinder;
 import net.riezebos.bruus.tbd.game.util.WithinVisualBoundariesCalculator;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.AudioEnums;
+import net.riezebos.bruus.tbd.visualsandaudio.objects.AnimationManager;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteAnimation;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteAnimationConfiguration;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteConfiguration;
@@ -48,7 +48,7 @@ public class Tazer extends Enemy {
 
         boolean fired = false;
         // Check if the attack cooldown has been reached
-        double currentTime = GameStateInfo.getInstance().getGameSeconds();
+        double currentTime = GameState.getInstance().getGameSeconds();
         if (currentTime >= lastAttackTime + this.getAttackSpeed() && WithinVisualBoundariesCalculator.isWithinBoundaries(this)
         && allowedToFire) {
             updateChargingAttackAnimationCoordination();
@@ -88,7 +88,7 @@ public class Tazer extends Enemy {
         //Create missile movement attributes and create a movement configuration
         MissileEnums missileType = MissileEnums.TazerProjectile;
         BouncingPathFinder missilePathFinder = new BouncingPathFinder();
-        missilePathFinder.setMaxBounces(3);
+        missilePathFinder.setMaxBounces(2);
         MovementPatternSize movementPatternSize = MovementPatternSize.SMALL;
         MovementConfiguration movementConfiguration = MissileCreator.getInstance().createMissileMovementConfig(
                 2,2, missilePathFinder, movementPatternSize, randomDirection
@@ -112,8 +112,6 @@ public class Tazer extends Enemy {
 
         //Create the missile and finalize the creation process, then add it to the manager and consequently the game
         Missile missile = MissileCreator.getInstance().createMissile(spriteConfiguration, missileConfiguration, movementConfiguration);
-//        missile.getDestructionAnimation().setFrameDelay(1);
-//        missile.getDestructionAnimation().setAnimationScale(2f);
         missile.setOwnerOrCreator(this);
         missile.getAnimation().setAnimationScale(1f);
         missile.setAllowedVisualsToRotate(false);

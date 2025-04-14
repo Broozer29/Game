@@ -1,8 +1,8 @@
 package net.riezebos.bruus.tbd.visualsandaudio.objects;
 
 import net.riezebos.bruus.tbd.game.movement.Direction;
-import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteConfiguration;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.*;
+import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteConfiguration;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -50,8 +50,9 @@ public class Sprite {
 
     }
 
-    protected void setImage (ImageEnums imageName) {
+    public void setImage (ImageEnums imageName) {
         this.image = imgDatabase.getImage(imageName);
+        this.imageEnum = imageName;
         if (this.image == null) {
             System.out.println("Crashed because getting " + imageName + " returned an empty/null image");
         }
@@ -104,6 +105,11 @@ public class Sprite {
     public void setCenterCoordinates (int newXCoordinate, int newYCoordinate) {
         this.xCoordinate = newXCoordinate - (this.width / 2);
         this.yCoordinate = newYCoordinate - (this.height / 2);
+    }
+
+    public void setCenterCoordinates (float newXCoordinate, float newYCoordinate) {
+        this.xCoordinate = Math.round(newXCoordinate - (this.width / 2));
+        this.yCoordinate = Math.round(newYCoordinate - (this.height / 2));
     }
 
     public void setCenterYCoordinate(int newYCoordinate){
@@ -224,7 +230,7 @@ public class Sprite {
         return this.originalImage;
     }
 
-    protected void recalculateBoundsAndSize () {
+    public void recalculateBoundsAndSize () {
         this.width = image.getWidth();
         this.height = image.getHeight();
         this.bounds = new Rectangle(xCoordinate, yCoordinate, this.width, this.height);

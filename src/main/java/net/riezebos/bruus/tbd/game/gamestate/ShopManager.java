@@ -1,27 +1,26 @@
 package net.riezebos.bruus.tbd.game.gamestate;
 
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
+import net.riezebos.bruus.tbd.game.gameobjects.player.boons.BoonEnums;
 import net.riezebos.bruus.tbd.game.items.Item;
-import net.riezebos.bruus.tbd.game.items.PlayerInventory;
 import net.riezebos.bruus.tbd.game.items.ItemEnums;
+import net.riezebos.bruus.tbd.game.items.PlayerInventory;
 import net.riezebos.bruus.tbd.game.items.enums.ItemRarityEnums;
 import net.riezebos.bruus.tbd.game.items.items.Contract;
 import net.riezebos.bruus.tbd.game.items.items.util.ContractCounter;
 import net.riezebos.bruus.tbd.game.items.items.util.ContractHelper;
 import net.riezebos.bruus.tbd.game.level.enums.LevelDifficulty;
 import net.riezebos.bruus.tbd.game.level.enums.LevelLength;
+import net.riezebos.bruus.tbd.game.playerprofile.PlayerProfileManager;
 import net.riezebos.bruus.tbd.game.util.OnScreenTextManager;
 import net.riezebos.bruus.tbd.guiboards.BoardManager;
+import net.riezebos.bruus.tbd.guiboards.boardcreators.BoonSelectionBoardCreator;
 import net.riezebos.bruus.tbd.guiboards.boardcreators.ShopBoardCreator;
 import net.riezebos.bruus.tbd.guiboards.guicomponents.GUIComponent;
 import net.riezebos.bruus.tbd.visualsandaudio.data.DataClass;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.AudioManager;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.AudioEnums;
-import net.riezebos.bruus.tbd.visualsandaudio.objects.AnimationManager;
-import net.riezebos.bruus.tbd.visualsandaudio.objects.Sprite;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteConfiguration;
-
-import javax.xml.crypto.Data;
 
 public class ShopManager {
 
@@ -131,6 +130,7 @@ public class ShopManager {
 
     public void activateFinishedContracts(){
         int yOffset = 0;
+        int bountyHunterCounter = 0;
         for(ContractCounter contractCounter : ContractHelper.getInstance().getFinishedContracts()){
             ItemRarityEnums itemRarity = ItemRarityEnums.getRandomRareItemSlot();
             ItemEnums itemToAdd = getRandomAvailableItemByRarity(itemRarity);
@@ -144,9 +144,16 @@ public class ShopManager {
                 Contract contract = (Contract) PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.Contract);
                 contract.subtractItem(1);
             }
+            bountyHunterCounter += 1;
 
+            if(bountyHunterCounter >= 3 && PlayerProfileManager.getInstance().getLoadedProfile().getBountyHunterLevel() <= 0){
+                PlayerProfileManager.getInstance().getLoadedProfile().setBountyHunterLevel(1);
+                PlayerProfileManager.getInstance().exportCurrentProfile();
+                BoardManager.getInstance().getShopBoard().addContractAnimation(BoonSelectionBoardCreator.createBoonUnlockComponent(BoonEnums.BOUNTY_HUNTER));
+            }
         }
     }
+
 
     //helper method for creating an animation for the contract completing
     private GUIComponent getContractAnimation(ItemEnums itemEnums, int yOffset){

@@ -24,11 +24,6 @@ public class ShieldStabilizer extends Item {
             return false;
         }
 
-        boolean available = false;
-        if (PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.ShieldStabilizer) == null) {
-            available = true;
-        }
-
-        return available;
+        return PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.ShieldStabilizer) == null;
     }
 }

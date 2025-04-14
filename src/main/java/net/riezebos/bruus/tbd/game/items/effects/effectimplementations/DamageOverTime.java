@@ -3,13 +3,13 @@ package net.riezebos.bruus.tbd.game.items.effects.effectimplementations;
 import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerClass;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
-import net.riezebos.bruus.tbd.game.gamestate.GameStateInfo;
+import net.riezebos.bruus.tbd.game.gamestate.GameState;
+import net.riezebos.bruus.tbd.game.items.ItemEnums;
 import net.riezebos.bruus.tbd.game.items.PlayerInventory;
 import net.riezebos.bruus.tbd.game.items.effects.EffectActivationTypes;
 import net.riezebos.bruus.tbd.game.items.effects.EffectIdentifiers;
 import net.riezebos.bruus.tbd.game.items.effects.EffectInterface;
 import net.riezebos.bruus.tbd.game.items.effects.util.EffectAnimationHelper;
-import net.riezebos.bruus.tbd.game.items.ItemEnums;
 import net.riezebos.bruus.tbd.game.items.items.firefighter.CorrosiveOil;
 import net.riezebos.bruus.tbd.game.util.ThornsDamageDealer;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
@@ -42,7 +42,7 @@ public class DamageOverTime implements EffectInterface {
         this.durationInSeconds = durationInSeconds;
         this.effectTypesEnums = EffectActivationTypes.CheckEveryGameTick;
         this.dotStacks = 1;
-        this.startTimeInSeconds = GameStateInfo.getInstance().getGameSeconds();
+        this.startTimeInSeconds = GameState.getInstance().getGameSeconds();
         this.animation = spriteAnimation;
         this.effectIdentifier = effectIdentifier;
     }
@@ -52,7 +52,7 @@ public class DamageOverTime implements EffectInterface {
         this.durationInSeconds = durationInSeconds;
         this.effectTypesEnums = EffectActivationTypes.CheckEveryGameTick;
         this.dotStacks = 1;
-        this.startTimeInSeconds = GameStateInfo.getInstance().getGameSeconds();
+        this.startTimeInSeconds = GameState.getInstance().getGameSeconds();
         initDefaultAnimation();
         this.effectIdentifier = effectIdentifier;
     }
@@ -71,7 +71,7 @@ public class DamageOverTime implements EffectInterface {
 
     @Override
     public void activateEffect (GameObject target) {
-        double currentTime = GameStateInfo.getInstance().getGameSeconds();
+        double currentTime = GameState.getInstance().getGameSeconds();
         if (animation != null) {
             if (!scaledToTarget) {
                 EffectAnimationHelper.scaleAnimation(target, animation);
@@ -99,7 +99,7 @@ public class DamageOverTime implements EffectInterface {
 
     @Override
     public boolean shouldBeRemoved (GameObject gameObject) {
-        if (GameStateInfo.getInstance().getGameSeconds() - startTimeInSeconds >= durationInSeconds) {
+        if (GameState.getInstance().getGameSeconds() - startTimeInSeconds >= durationInSeconds) {
             return true;
         } else return false;
 
@@ -107,7 +107,7 @@ public class DamageOverTime implements EffectInterface {
 
     @Override
     public void resetDuration () {
-        this.startTimeInSeconds = GameStateInfo.getInstance().getGameSeconds();
+        this.startTimeInSeconds = GameState.getInstance().getGameSeconds();
     }
 
     @Override
@@ -126,9 +126,9 @@ public class DamageOverTime implements EffectInterface {
 
     private void handleIgniteSpecialCases (GameObject target) {
         if (PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.EntanglingFlames) != null &&
-                (lastTimeThornsApplied + 0.75f) < GameStateInfo.getInstance().getGameSeconds()) {
+                (lastTimeThornsApplied + 0.75f) < GameState.getInstance().getGameSeconds()) {
             ThornsDamageDealer.getInstance().addDelayedThornsDamageToObject(target, PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.EntanglingFlames).getQuantity());
-            lastTimeThornsApplied = GameStateInfo.getInstance().getGameSeconds();
+            lastTimeThornsApplied = GameState.getInstance().getGameSeconds();
         }
     }
 

@@ -1,17 +1,14 @@
 package net.riezebos.bruus.tbd.game.level.directors;
 
-import net.riezebos.bruus.tbd.game.gameobjects.enemies.Enemy;
-import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyCreator;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyManager;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyCategory;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyEnums;
-import net.riezebos.bruus.tbd.game.gamestate.GameStateInfo;
+import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.level.EnemyFormation;
 import net.riezebos.bruus.tbd.game.level.FormationCreator;
 import net.riezebos.bruus.tbd.game.level.LevelManager;
 import net.riezebos.bruus.tbd.game.level.enums.SpawnFormationEnums;
 import net.riezebos.bruus.tbd.game.movement.Direction;
-import net.riezebos.bruus.tbd.game.movement.MovementPatternSize;
 import net.riezebos.bruus.tbd.visualsandaudio.data.DataClass;
 
 import java.util.ArrayList;
@@ -68,7 +65,7 @@ public class Director {
     }
 
     public void update () {
-        currentTime = GameStateInfo.getInstance().getGameSeconds();
+        currentTime = GameState.getInstance().getGameSeconds();
 
         // Check if we should spawn enemies
         if (shouldAttemptSpawn(currentTime)) {
@@ -125,7 +122,7 @@ public class Director {
 
     private boolean canSpawnMoreOfThisEnemy(EnemyEnums enemyEnums){
         if(enemyEnums.equals(EnemyEnums.ZergQueen)){
-            return EnemyManager.getInstance().getAmountOfEnemyTypesAlive(EnemyEnums.ZergQueen) < 1;
+            return EnemyManager.getInstance().getAmountOfEnemyTypesAlive(EnemyEnums.ZergQueen) < 2;
         }
 
         if(enemyEnums.equals(EnemyEnums.Tazer)){
@@ -147,7 +144,7 @@ public class Director {
     }
 
     private void spawnBoss () {
-        spawnBoss(GameStateInfo.getInstance().getNextBoss());
+        spawnBoss(GameState.getInstance().getNextBoss());
         EnemyManager.getInstance().setHasSpawnedABoss(true);
     }
 
@@ -175,8 +172,8 @@ public class Director {
         double randomDouble = random.nextDouble();
         double chanceThreshold = switch (enemyType.getEnemyCategory()) {
             case Summon, Special, Boss -> -1f;
-            case Small -> 0.2f; //20% chance of spawning a formation
-            case Medium -> 0.1f; //10% chance of spawning formation
+            case Small -> 0.3f; //20% chance of spawning a formation
+            case Medium -> 0.2f; //10% chance of spawning formation
         };
 
         return randomDouble < chanceThreshold;
@@ -346,7 +343,7 @@ public class Director {
     }
 
     private MonsterCard selectMonsterCard () {
-        List<MonsterCard> adjustedCards = adjustWeights(availableCards, GameStateInfo.getInstance().getDifficultyCoefficient());
+        List<MonsterCard> adjustedCards = adjustWeights(availableCards, GameState.getInstance().getDifficultyCoefficient());
         if (!adjustedCards.isEmpty()) {
             return weightedRandomSelection(adjustedCards);
         }

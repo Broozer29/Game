@@ -2,11 +2,11 @@ package net.riezebos.bruus.tbd.game.items.items;
 
 import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
 import net.riezebos.bruus.tbd.game.items.Item;
+import net.riezebos.bruus.tbd.game.items.ItemEnums;
 import net.riezebos.bruus.tbd.game.items.effects.EffectActivationTypes;
 import net.riezebos.bruus.tbd.game.items.effects.EffectIdentifiers;
 import net.riezebos.bruus.tbd.game.items.effects.effectimplementations.HealPlayerOnDeath;
 import net.riezebos.bruus.tbd.game.items.enums.ItemApplicationEnum;
-import net.riezebos.bruus.tbd.game.items.ItemEnums;
 
 public class EnergySyphon extends Item {
 
@@ -19,7 +19,7 @@ public class EnergySyphon extends Item {
 
 
     private void calculateBarrierAmount(){
-        this.barrierAmount = 15 * quantity;
+        this.barrierAmount = 5 * quantity;
     }
 
     public void increaseQuantityOfItem(int amount){

@@ -2,7 +2,7 @@ package net.riezebos.bruus.tbd.game.gameobjects.missiles.specialAttacks;
 
 import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.Missile;
-import net.riezebos.bruus.tbd.game.gamestate.GameStateInfo;
+import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.items.effects.EffectInterface;
 import net.riezebos.bruus.tbd.game.movement.BoardBlockUpdater;
 import net.riezebos.bruus.tbd.game.util.ArmorCalculator;
@@ -63,7 +63,7 @@ public class SpecialAttack extends GameObject {
 
 
     public void tryDealDamageAndApplyEffects (GameObject target) {
-        double currentTime = GameStateInfo.getInstance().getGameSeconds();
+        double currentTime = GameState.getInstance().getGameSeconds();
         double lastAffectedTime = affectedObjects.getOrDefault(target, 0.0);
 
         if (currentTime >= lastAffectedTime + internalTickCooldown) {

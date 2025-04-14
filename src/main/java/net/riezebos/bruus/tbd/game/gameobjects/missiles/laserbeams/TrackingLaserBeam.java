@@ -1,7 +1,10 @@
 package net.riezebos.bruus.tbd.game.gameobjects.missiles.laserbeams;
 
 import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
+import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SpaceShip;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteAnimation;
+
+import java.util.Random;
 
 public class TrackingLaserBeam extends Laserbeam {
 
@@ -14,11 +17,14 @@ public class TrackingLaserBeam extends Laserbeam {
     private float maxRotationPerUpdate;
     private double desiredDegrees;
 
-    public TrackingLaserBeam (LaserbeamConfiguration laserbeamConfiguration) {
+    private boolean firstAngleCalculationCompleted = false;
+
+    public TrackingLaserBeam(LaserbeamConfiguration laserbeamConfiguration) {
         super(laserbeamConfiguration);
         this.targetObject = laserbeamConfiguration.getTargetToAimAt();
         // Initial angle calculation
         calculateAngle();
+
         initAnimations();
     }
 
@@ -95,6 +101,7 @@ public class TrackingLaserBeam extends Laserbeam {
     }
 
     private void calculateAngle() {
+
         // Store the current angle degrees
         double currentAngleDegrees = angleDegrees;
 
@@ -132,14 +139,15 @@ public class TrackingLaserBeam extends Laserbeam {
 
         // Update angleRadians (if needed in other parts of the code)
         angleRadians = Math.toRadians(angleDegrees);
+        firstAngleCalculationCompleted = true;
     }
 
 
-    public float getMaxRotationPerUpdate () {
+    public float getMaxRotationPerUpdate() {
         return maxRotationPerUpdate;
     }
 
-    public void setMaxRotationPerUpdate (float maxRotationPerUpdate) {
+    public void setMaxRotationPerUpdate(float maxRotationPerUpdate) {
         this.maxRotationPerUpdate = maxRotationPerUpdate;
     }
 }

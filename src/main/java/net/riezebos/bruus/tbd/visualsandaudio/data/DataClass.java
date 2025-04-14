@@ -5,8 +5,10 @@ public class DataClass {
 	// classes spread throughout the program
 	private static DataClass instance = new DataClass();
 
-	private int windowWidth = 1440;
-	private int windowHeight = 875;
+
+	//Original dimensions: 1440, 875
+	private int windowWidth = 1728;
+	private int windowHeight = 1077;
 	private String textFont = "Lucida Grande";
 
 	private int informationCardWidth = 0;
@@ -14,8 +16,13 @@ public class DataClass {
 	
 	private DataClass() {
 		informationCardWidth = windowWidth;
-		informationCardHeight = 100;
+		informationCardHeight = Math.round(100 * getResolutionFactor());
 	}
+
+	public float getResolutionFactor(){
+		return (float) windowWidth / 1440;
+	}
+
 
 	public static DataClass getInstance() {
 		return instance;
