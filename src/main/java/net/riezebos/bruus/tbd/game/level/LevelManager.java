@@ -7,9 +7,7 @@ import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyManager;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyCategory;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyEnums;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyTribes;
-import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerClass;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
-import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
 import net.riezebos.bruus.tbd.game.gamestate.GameMode;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.gamestate.GameStatusEnums;
@@ -23,7 +21,6 @@ import net.riezebos.bruus.tbd.game.movement.MovementPatternSize;
 import net.riezebos.bruus.tbd.game.movement.Point;
 import net.riezebos.bruus.tbd.game.gameobjects.player.boons.BoonManager;
 import net.riezebos.bruus.tbd.game.gameobjects.player.boons.boonimplementations.BoonActivationEnums;
-import net.riezebos.bruus.tbd.game.util.OnScreenTextManager;
 import net.riezebos.bruus.tbd.game.util.performancelogger.PerformanceLogger;
 import net.riezebos.bruus.tbd.game.util.performancelogger.PerformanceLoggerManager;
 import net.riezebos.bruus.tbd.visualsandaudio.data.DataClass;
@@ -95,11 +92,12 @@ public class LevelManager {
                 gameState.setGameState(GameStatusEnums.Level_Finished);
                 DirectorManager.getInstance().setEnabled(false);
                 enemyManager.removeOutOfBoundsEnemies();
+                enemyManager.startBurningEnemies();
             }
         } else if (levelType == LevelTypes.Boss) {
             boolean bossAlive = EnemyManager.getInstance().isBossAlive();
             if (audioManager.isLevelMusicFinished() && bossAlive) {
-                audioManager.playDefaultBackgroundMusic(LevelSongs.getBossTheme(GameState.getInstance().getNextBoss()), false);
+                audioManager.playDefaultBackgroundMusic(LevelSongs.getBossTheme(getNextBoss()), false);
             }
 
             if (!bossAlive) {
@@ -121,9 +119,10 @@ public class LevelManager {
 
         PlayerManager.getInstance().getSpaceship().setImmune(true);
         gameState.setGameState(GameStatusEnums.Show_Level_Score_Card);
-        this.currentLevelLength = null;
-        this.currentLevelDifficulty = null;
-        this.currentLevelDifficultyScore = 2;
+        //disabling this causes the game to remember the players last selected option
+//        this.currentLevelLength = null;
+//        this.currentLevelDifficulty = null;
+//        this.currentLevelDifficultyScore = 2;
 
     }
 
@@ -131,9 +130,10 @@ public class LevelManager {
     // Called when a level starts, to saturate enemy list
     public void startLevel() {
         BoonManager.getInstance().activateBoons(BoonActivationEnums.Start_of_Level);
+        GameState.getInstance().setLevelStartTime(GameState.getInstance().getGameSeconds());
 
         initDifficulty();
-        this.levelType = LevelTypes.Boss;
+//        this.levelType = LevelTypes.Boss;
 
         GameUICreator.getInstance().createDifficultyWings(this.levelType.equals(LevelTypes.Boss), currentLevelDifficultyScore);
 
@@ -142,16 +142,16 @@ public class LevelManager {
 //        audioManager.devTestShortLevelMode = true;
 //        audioManager.devTestmuteMode = true;
 
-        activateDirectors(this.levelType);
+//        activateDirectors(this.levelType);
         activateMusic(this.levelType);
         gameState.setGameState(GameStatusEnums.Playing);
 
 
         EnemyEnums enemyType = EnemyEnums.CarrierBoss;
-        Enemy enemy = EnemyCreator.createEnemy(enemyType, 1200, 300, Direction.LEFT, enemyType.getDefaultScale()
+        Enemy enemy = EnemyCreator.createEnemy(enemyType, DataClass.getInstance().getWindowWidth(), 300, Direction.LEFT, enemyType.getDefaultScale()
                 , enemyType.getMovementSpeed(), enemyType.getMovementSpeed(), MovementPatternSize.SMALL, false);
 //        enemy.setCurrentHitpoints(10);
-        enemy.setXCoordinate(DataClass.getInstance().getWindowWidth() + enemy.getWidth() / 2);
+//        enemy.setXCoordinate(DataClass.getInstance().getWindowWidth() + enemy.getWidth() / 2);
 //        EnemyManager.getInstance().addEnemy(enemy);
 
     }
@@ -200,6 +200,25 @@ public class LevelManager {
 //        this.currentEnemyTribe = EnemyTribes.Zerg;
     }
 
+    public EnemyEnums getNextBoss(){
+        int bossesDefeated = GameState.getInstance().getBossesDefeated();
+
+        // Use modulo to cycle through the bosses
+        switch (bossesDefeated % EnemyEnums.getAmountOfBossEnemies()) {
+            case 0:
+                return EnemyEnums.RedBoss;
+            case 1:
+                return EnemyEnums.SpaceStationBoss;
+            case 2:
+                return EnemyEnums.CarrierBoss;
+            case 3:
+                return EnemyEnums.YellowBoss;
+            default:
+                return EnemyEnums.RedBoss;
+        }
+    }
+
+
 
     private void activateDirectors(LevelTypes levelType) {
         DirectorManager directorManager = DirectorManager.getInstance();
@@ -215,7 +234,7 @@ public class LevelManager {
                 this.currentLevelSong = audioManager.getCurrentSong();
             }
             case Boss -> {
-                audioManager.playDefaultBackgroundMusic(LevelSongs.getBossTheme(GameState.getInstance().getNextBoss()), false); //False because looping streams is not a thing, we need to recreate one instead
+                audioManager.playDefaultBackgroundMusic(LevelSongs.getBossTheme(getNextBoss()), false); //False because looping streams is not a thing, we need to recreate one instead
                 this.currentLevelSong = audioManager.getCurrentSong();
                 //to implement
             }

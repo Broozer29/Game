@@ -2,6 +2,7 @@ package net.riezebos.bruus.tbd.game.gamestate;
 
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
 import net.riezebos.bruus.tbd.game.gameobjects.player.boons.BoonEnums;
+import net.riezebos.bruus.tbd.game.gamestate.save.SaveManager;
 import net.riezebos.bruus.tbd.game.items.Item;
 import net.riezebos.bruus.tbd.game.items.ItemEnums;
 import net.riezebos.bruus.tbd.game.items.PlayerInventory;
@@ -14,6 +15,7 @@ import net.riezebos.bruus.tbd.game.level.enums.LevelLength;
 import net.riezebos.bruus.tbd.game.playerprofile.PlayerProfileManager;
 import net.riezebos.bruus.tbd.game.util.OnScreenTextManager;
 import net.riezebos.bruus.tbd.guiboards.BoardManager;
+import net.riezebos.bruus.tbd.guiboards.boardcreators.AchievementUnlockHelper;
 import net.riezebos.bruus.tbd.guiboards.boardcreators.BoonSelectionBoardCreator;
 import net.riezebos.bruus.tbd.guiboards.boardcreators.ShopBoardCreator;
 import net.riezebos.bruus.tbd.guiboards.guicomponents.GUIComponent;
@@ -131,13 +133,14 @@ public class ShopManager {
     public void activateFinishedContracts(){
         int yOffset = 0;
         int bountyHunterCounter = 0;
+        boolean shouldExport = false;
         for(ContractCounter contractCounter : ContractHelper.getInstance().getFinishedContracts()){
             ItemRarityEnums itemRarity = ItemRarityEnums.getRandomRareItemSlot();
             ItemEnums itemToAdd = getRandomAvailableItemByRarity(itemRarity);
             PlayerInventory.getInstance().addItem(itemToAdd);
             AudioManager.getInstance().addAudio(AudioEnums.ItemAcquired);
             ContractHelper.getInstance().removeContract(contractCounter);
-            BoardManager.getInstance().getShopBoard().addContractAnimation(getContractAnimation(itemToAdd, yOffset));
+            BoardManager.getInstance().getShopBoard().addGUIAnimation(getContractAnimation(itemToAdd, yOffset));
             yOffset += ShopBoardCreator.shopItemIconDimensions + 5;
 
             if(PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.Contract) != null){
@@ -149,8 +152,13 @@ public class ShopManager {
             if(bountyHunterCounter >= 3 && PlayerProfileManager.getInstance().getLoadedProfile().getBountyHunterLevel() <= 0){
                 PlayerProfileManager.getInstance().getLoadedProfile().setBountyHunterLevel(1);
                 PlayerProfileManager.getInstance().exportCurrentProfile();
-                BoardManager.getInstance().getShopBoard().addContractAnimation(BoonSelectionBoardCreator.createBoonUnlockComponent(BoonEnums.BOUNTY_HUNTER));
+                BoardManager.getInstance().getShopBoard().addGUIAnimation(AchievementUnlockHelper.createUnlockGUIComponent(BoonEnums.BOUNTY_HUNTER.getUnlockImage()));
+                AudioManager.getInstance().addAudio(AudioEnums.AchievementUnlocked);
             }
+            shouldExport = true;
+        }
+        if(shouldExport){
+            SaveManager.getInstance().exportCurrentSave();
         }
     }
 
@@ -165,7 +173,7 @@ public class ShopManager {
 
         GUIComponent itemSprite = new GUIComponent(spriteConfiguration);
         itemSprite.setImageDimensions(ShopBoardCreator.shopItemIconDimensions, ShopBoardCreator.shopItemIconDimensions);
-        itemSprite.setTransparancyAlpha(true, 1, -0.005f);
+        itemSprite.setTransparancyAlpha(true, 1, -0.002f);
         itemSprite.setCenterCoordinates(DataClass.getInstance().getWindowWidth() / 2,
                 (DataClass.getInstance().getWindowHeight() / 2) - yOffset);
         return itemSprite;

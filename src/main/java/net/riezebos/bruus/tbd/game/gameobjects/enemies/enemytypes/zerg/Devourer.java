@@ -38,7 +38,6 @@ public class Devourer extends Enemy {
         this.attackSpeed = 4;
         this.detonateOnCollision = false;
         this.knockbackStrength = 8;
-//        this.attackSpeed = 1;
     }
 
     @Override
@@ -56,6 +55,7 @@ public class Devourer extends Enemy {
         double currentTime = GameState.getInstance().getGameSeconds();
         if (currentTime >= lastAttackTime + this.getAttackSpeed() && WithinVisualBoundariesCalculator.isWithinBoundaries(this)
                 && allowedToFire) {
+            updateChargingAttackAnimationCoordination();
             if (!isAttackingRightNow) {
                 isAttackingRightNow = true;
                 this.animation.changeImagetype(ImageEnums.DevourerAttacking);

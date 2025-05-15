@@ -140,14 +140,18 @@ public class ProtossArbiter extends Drone {
     }
 
 
+    @Override
     public void triggerOnDeathActions() {
         super.triggerOnDeathActions();
-        targetsToHeal.clear();
 
         for (SpriteAnimation animation : animationsBelongingToTargets.values()) {
             animation.setVisible(false);
+            animation.setInfiniteLoop(false);
+            animation.setCenterCoordinates(-500, -500);
+            AnimationManager.getInstance().getUpperAnimations().remove(animation);
         }
 
+        targetsToHeal.clear();
         animationsBelongingToTargets.clear();
     }
 

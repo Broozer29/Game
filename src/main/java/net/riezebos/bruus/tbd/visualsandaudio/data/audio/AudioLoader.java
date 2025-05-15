@@ -84,6 +84,9 @@ public class AudioLoader {
             case GuardianDeath: return "/audio/Zerg/GuardianDeath.wav";
             case BroodlingAttached: return "/audio/Zerg/BroodlingAttached.wav";
             case OverlordDeath: return "/audio/Zerg/OverlordDeath.wav";
+            case AchievementUnlocked: return "/audio/achievement.wav";
+            case CoinCollected: return "/audio/coin.wav";
+            case GenericError: return "/audio/genericerror.wav";
             case Le_Youth_Chills:
                 return "/audio/music/Le Youth - Chills.wav";
             case Robert_Nickson_Painting_The_Skies:
@@ -103,7 +106,7 @@ public class AudioLoader {
             case Furi_Make_This_Right:
                 return "/audio/music/Furi - Make this right.wav";
             case Furi_Wisdowm_Of_Rage:
-                return "/audio/music/Furi - Wisdom of rage.wav";
+                return "/audio/music/Waveshaper wisdom of rage.wav";
             case Furi_My_Only_Chance:
                 return "/audio/music/Furi - My only chance.wav";
             case Ayasa_The_Reason_Why:
@@ -164,7 +167,7 @@ public class AudioLoader {
             case The_Rain_Formerly_Known_As_Purple:
                 return "/audio/music/The Rain Formerly Known As Purple.wav";
             case Blood_On_The_Dancefloor:
-                return "/audio/music/Blood On The Dancefloor.wav";
+                return "/audio/music/Blood_On_The_Dancefloor.wav";
             case Lemmino_Firecracker:
                 return "/audio/music/lemmino Firecracker.wav";
             case Cannons_Fire_For_You:
@@ -207,6 +210,8 @@ public class AudioLoader {
                 return "/audio/SpaceStationChargingUpMovement.wav";
             case SpecialAttackFinishedCharging:
                 return "/audio/ElectroShredFinishedCharging.wav";
+            case ScarabExplosion:
+                return "/audio/scarabexplosion.wav";
             case SilentAudio:
                 return "/audio/silence.wav";
             case VendlaSonrisa:return "/audio/music/Vendla - Sonrisa (Royalty Free Music).wav";

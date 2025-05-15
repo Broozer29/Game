@@ -19,39 +19,23 @@ import java.util.Random;
 
 public class StickyDynamite extends Item {
 
-    private float explosionDamage;
-    private float scaleFactor;
-    private float chanceToProc;
+    public static float explosionDamage = 1;
+    private float scaleFactor = 1;
+    public static float chanceToProc = 0.1f;
     private Random random = new Random();
 
     public StickyDynamite () {
         super(ItemEnums.StickyDynamite, 1, ItemApplicationEnum.AfterCollision);
-        this.chanceToProc = 0.1f;
-        this.explosionDamage = calculateExplosionDamage(quantity);
-        calculateScaleFactor();
     }
 
     public void increaseQuantityOfItem (int amount) {
         this.quantity += amount;
-        this.explosionDamage = calculateExplosionDamage(quantity);
-        calculateScaleFactor();
     }
-
-    private void calculateScaleFactor(){
-//        scaleFactor = 0.9f + (quantity * 0.1f);
-        scaleFactor = 1;
-    }
-
-    private float calculateExplosionDamage (int quantity) {
-        return quantity * (PlayerStats.getInstance().getBaseDamage() * 1);
-    }
-
-
 
     @Override
     public void applyEffectToObject (GameObject gameObject) {
         if (random.nextFloat() <= chanceToProc) {
-            ExplosionConfiguration explosionConfiguration = new ExplosionConfiguration(true, explosionDamage, true, false);
+            ExplosionConfiguration explosionConfiguration = new ExplosionConfiguration(true, explosionDamage * quantity, true, false);
             SpriteConfiguration spriteConfiguration = new SpriteConfiguration();
             spriteConfiguration.setImageType(ImageEnums.StickyDynamiteExplosion);
             spriteConfiguration.setxCoordinate(gameObject.getCenterXCoordinate());

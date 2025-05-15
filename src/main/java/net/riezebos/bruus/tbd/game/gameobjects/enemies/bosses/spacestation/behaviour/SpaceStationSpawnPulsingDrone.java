@@ -68,32 +68,36 @@ public class SpaceStationSpawnPulsingDrone implements BossActionable {
         SpriteAnimationConfiguration spriteAnimationConfiguration = new SpriteAnimationConfiguration(spriteConfiguration, 1, false);
         spawnAnimation = new SpriteAnimation(spriteAnimationConfiguration);
         spawnAnimation.setAnimationScale(0.4f);
-        spawnAnimation.setCenterCoordinates(enemy.getXCoordinate(), enemy.getCenterYCoordinate());
-        spawnAnimation.addXOffset(-10);
+        spawnAnimation.setCenterCoordinates(enemy.getCenterXCoordinate(), enemy.getCenterYCoordinate());
     }
 
     private void updateSpawnAnimationLocation (Enemy enemy) {
         spawnAnimation.setCenterCoordinates(enemy.getCenterXCoordinate(), enemy.getCenterYCoordinate());
     }
 
-    private int getRandomBoardBlock () {
+    private int getRandomBoardBlock() {
         if (random == null) {
             random = new Random();
         }
 
-        return random.nextInt(1, 7);
+        int value = random.nextInt(1, 8);
+
+        if (value >= 4 && value <= 5) {
+            return getRandomBoardBlock();
+        }
+
+        return value;
     }
 
     private Enemy createPulsingDrone (Enemy enemy){
-        EnemyEnums enemyType = EnemyEnums.PulsingDrone;
-        Enemy pulsingDrone = EnemyCreator.createEnemy(enemyType, enemy.getXCoordinate(), enemy.getYCoordinate(), Direction.LEFT,
-                enemyType.getDefaultScale(), enemyType.getMovementSpeed(),enemyType.getMovementSpeed(), MovementPatternSize.SMALL, false);
+        EnemyEnums enemyEnums = EnemyEnums.FourDirectionalDrone;
+        Enemy fourDirectionalDrone = EnemyCreator.createEnemy(enemyEnums, enemy.getXCoordinate(), enemy.getYCoordinate(), Direction.LEFT,
+                enemyEnums.getDefaultScale(), enemyEnums.getMovementSpeed(),enemyEnums.getMovementSpeed(), MovementPatternSize.SMALL, false);
 
-        Point point = BoardBlockUpdater.getRandomCoordinateInBlock(getRandomBoardBlock(), pulsingDrone.getWidth(), pulsingDrone.getHeight());
-        pulsingDrone.getMovementConfiguration().setDestination(point);
-        pulsingDrone.setOwnerOrCreator(enemy);
-        pulsingDrone.setAllowedVisualsToRotate(false);
-        return pulsingDrone;
+        Point point = BoardBlockUpdater.getRandomCoordinateInBlock(getRandomBoardBlock(), fourDirectionalDrone.getWidth(), fourDirectionalDrone.getHeight());
+        fourDirectionalDrone.getMovementConfiguration().setDestination(point);
+        fourDirectionalDrone.setOwnerOrCreator(enemy);
+        return fourDirectionalDrone;
     }
 
     @Override

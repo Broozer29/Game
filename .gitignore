@@ -4,3 +4,4 @@ target/
 *.log
 .idea/workspace.xml
 dependency-reduced-pom.xml
+*.DS_Store

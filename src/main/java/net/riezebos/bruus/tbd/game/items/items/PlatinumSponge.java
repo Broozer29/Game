@@ -9,26 +9,22 @@ import net.riezebos.bruus.tbd.game.items.enums.ItemApplicationEnum;
 
 public class PlatinumSponge extends Item {
 
-    private float armorBonus;
+    public static float armorBonus = 3;
+    public static float maxArmorBonus = 10;
 
     public PlatinumSponge () {
         super(ItemEnums.PlatinumSponge, 1,  ItemApplicationEnum.ApplyOnCreation);
-        calculateArmorBonus();
     }
 
-    private void calculateArmorBonus () {
-        armorBonus = quantity * 3;
-    }
 
     public void increaseQuantityOfItem (int amount) {
         this.quantity += amount;
-        calculateArmorBonus();
     }
 
     @Override
     public void applyEffectToObject (GameObject gameObject) {
-//        OutOfCombatArmorBonus effect = new OutOfCombatArmorBonus(armorBonus, EffectIdentifiers.PlatinumSpongeArmorBonus, 2);
-        StackingInCombatArmorBonus effect = new StackingInCombatArmorBonus(armorBonus, EffectIdentifiers.PlatinumSpongeArmorBonus, 2);
+        float actualArmorBonus = Math.min(armorBonus * quantity, maxArmorBonus * quantity);
+        StackingInCombatArmorBonus effect = new StackingInCombatArmorBonus(actualArmorBonus, EffectIdentifiers.PlatinumSpongeArmorBonus, 2);
         gameObject.addEffect(effect);
     }
 

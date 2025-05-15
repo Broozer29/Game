@@ -8,13 +8,14 @@ import net.riezebos.bruus.tbd.game.items.enums.ItemApplicationEnum;
 
 public class BarbedAegis extends Item {
 
+    public static float ratio = 0.2f;
     public BarbedAegis(){
         super(ItemEnums.BarbedAegis, 1, ItemApplicationEnum.ApplyOnCreation);
     }
 
     @Override
     public void applyEffectToObject (GameObject gameObject) {
-        PlayerStats.getInstance().setThornsArmorDamageBonusRatio(this.quantity * 0.2f);
+        PlayerStats.getInstance().setThornsArmorDamageBonusRatio(this.quantity * ratio);
         PlayerStats.getInstance().setHasThornsEnabled(true);
     }
 

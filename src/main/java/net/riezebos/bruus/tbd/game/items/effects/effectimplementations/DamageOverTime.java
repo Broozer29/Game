@@ -34,7 +34,7 @@ public class DamageOverTime implements EffectInterface {
     private EffectIdentifiers effectIdentifier;
 
     private double lastDamageTime = 0;
-    private final double damageInterval = 0.01;
+    public static final double damageInterval = 0.01;
     private boolean appliedArmorDebuff = false;
 
     public DamageOverTime (float damage, double durationInSeconds, SpriteAnimation spriteAnimation, EffectIdentifiers effectIdentifier) {
@@ -81,6 +81,7 @@ public class DamageOverTime implements EffectInterface {
                 EffectAnimationHelper.applyRandomOffset(target, animation);
                 offsetApplied = true;
             }
+
             applyCorrosiveOil(target); //Apply it once upon creation
         }
         if (currentTime - startTimeInSeconds < durationInSeconds) {
@@ -133,6 +134,10 @@ public class DamageOverTime implements EffectInterface {
     }
 
     private void applyCorrosiveOil (GameObject gameObject){
+        if(!this.effectIdentifier.equals(EffectIdentifiers.Ignite)){
+            return;
+        }
+
         CorrosiveOil item = (CorrosiveOil) PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.CorrosiveOil);
         if(item != null){
             gameObject.adjustArmorBonus(-item.getArmorReductionPerStack());
@@ -154,6 +159,7 @@ public class DamageOverTime implements EffectInterface {
         return copiedEffect;
     }
 
+    @Override
     public SpriteAnimation getAnimation () {
         return animation;
     }

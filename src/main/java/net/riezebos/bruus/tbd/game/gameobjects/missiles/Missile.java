@@ -29,6 +29,7 @@ public class Missile extends GameObject {
     protected int maximumAmountOfPierces;
     protected boolean isDestructable;
     protected boolean speedsUp;
+    protected boolean isDamageable;
 
 
     public Missile (SpriteConfiguration spriteConfiguration, MissileConfiguration missileConfiguration, MovementConfiguration movementConfiguration) {
@@ -92,7 +93,7 @@ public class Missile extends GameObject {
     }
 
     public boolean interactsWithMissiles () {
-        return destroysMissiles || isDestructable;
+        return destroysMissiles || isDestructable || isDamageable;
     }
 
     public void setDestroysMissiles (boolean destroysMissiles) {
@@ -244,5 +245,13 @@ public class Missile extends GameObject {
 
     public void setMaximumAmountOfPierces (int maximumAmountOfPierces) {
         this.maximumAmountOfPierces = maximumAmountOfPierces;
+    }
+
+    public boolean isDamageable() {
+        return isDamageable;
+    }
+
+    public void setDamageable(boolean damageable) {
+        isDamageable = damageable;
     }
 }

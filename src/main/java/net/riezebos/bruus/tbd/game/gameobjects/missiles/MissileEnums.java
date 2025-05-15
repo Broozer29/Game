@@ -6,12 +6,13 @@ public enum MissileEnums {
     BombaProjectile(false, "BombaProjctile", ImageEnums.Bomba_Missile_Explosion, ImageEnums.Bomba_Missile),
     TazerProjectile(false, "TazerProjectile", ImageEnums.LightningOrbDestruction, ImageEnums.LightningOrb),
     PlayerLaserbeam(false, "DefaultPlayerLaserbeam", ImageEnums.Impact_Explosion_One, ImageEnums.AlienLaserBeamAnimated),
-    DefaultAnimatedBullet(false, "PlasmaLauncherMissile", ImageEnums.Impact_Explosion_One, ImageEnums.AlienLaserBeamAnimated),
+    DefaultAnimatedBullet(false, "Default Animated Bullet", ImageEnums.Impact_Explosion_One, ImageEnums.AlienLaserBeamAnimated),
     DefaultRocket(false, "DefaultRocket", ImageEnums.Rocket_1_Explosion, ImageEnums.Rocket_1),
     DefaultLaserBullet(false, "LaserBullet", ImageEnums.LaserBulletDestruction, ImageEnums.LaserBullet),
     OrbitCenter(false, "OrbitCenter", ImageEnums.Destroyed_Explosion, ImageEnums.DestructableOrbitCenterMissile),
     Orbitter(false, "Orbitter", ImageEnums.BarrierProjectileDestruction, ImageEnums.BarrierProjectile),
     ProtossShuttleMissile(false, "Shuttle Missile", ImageEnums.ProtossShuttleMissileExplosion, ImageEnums.ProtossShuttleMissile),
+    ReflectiveBlocks(false, "Reflective Blocks", ImageEnums.ProtossShuttleMissileExplosion, ImageEnums.RotatingBoxes),
     BarrierProjectile(false, "BarrierProjectile", ImageEnums.BarrierProjectileDestruction, ImageEnums.BarrierProjectile);
 
     private final boolean usesBoxCollision;

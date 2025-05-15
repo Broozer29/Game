@@ -12,6 +12,7 @@ import net.riezebos.bruus.tbd.game.gamestate.GameStatsTracker;
 import net.riezebos.bruus.tbd.game.items.Item;
 import net.riezebos.bruus.tbd.game.items.PlayerInventory;
 import net.riezebos.bruus.tbd.game.items.effects.EffectActivationTypes;
+import net.riezebos.bruus.tbd.game.items.effects.EffectIdentifiers;
 import net.riezebos.bruus.tbd.game.items.effects.EffectInterface;
 import net.riezebos.bruus.tbd.game.items.enums.ItemApplicationEnum;
 import net.riezebos.bruus.tbd.game.movement.Point;
@@ -381,12 +382,6 @@ public class GameObject extends Sprite {
             PlayerInventory.getInstance().addMinerals(this.cashMoneyWorth);
             GameStatsTracker.getInstance().addMoneyAcquired(this.cashMoneyWorth);
 
-            if (this instanceof Enemy && ((Enemy) this).getEnemyType().getEnemyCategory().equals(EnemyCategory.Boss)) {
-                PlayerProfileManager.getInstance().getLoadedProfile().addEmeralds(1);
-                PlayerProfileManager.getInstance().exportCurrentProfile();
-                UIObject emeraldIcon = GameUICreator.getInstance().createEmeraldObtainedIcon(this.getCenterXCoordinate(), this.getCenterYCoordinate());
-                BoardManager.getInstance().getGameBoard().addEmeraldIcon(emeraldIcon);
-            }
         }
     }
 
@@ -923,6 +918,14 @@ public class GameObject extends Sprite {
         this.cashMoneyWorth = cashMoneyWorth;
     }
 
+    public float getXpOnDeath() {
+        return xpOnDeath;
+    }
+
+    public void setXpOnDeath(float xpOnDeath) {
+        this.xpOnDeath = xpOnDeath;
+    }
+
     public boolean isAllowedToMove() {
         return allowedToMove;
     }
@@ -1171,5 +1174,9 @@ public class GameObject extends Sprite {
 
     public void modifyArmorBonus(float amount) {
         this.armorBonus += amount;
+    }
+
+    public boolean hasEffect(EffectIdentifiers effectIdentifiers){
+        return this.effects.stream().anyMatch(effect -> effect.getEffectIdentifier().equals(effectIdentifiers));
     }
 }

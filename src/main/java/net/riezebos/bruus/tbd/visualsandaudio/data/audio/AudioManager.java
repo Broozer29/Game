@@ -81,7 +81,8 @@ public class AudioManager {
             AudioEnums.NotEnoughMinerals, 500L, //in ms
             AudioEnums.PlayerTakesDamage, 100L ,
             AudioEnums.ClassCarrierSlowingDown, 200L,
-            AudioEnums.ClassCarrierSpeedingUp, 200L
+            AudioEnums.ClassCarrierSpeedingUp, 200L,
+            AudioEnums.AchievementUnlocked, 200L
     );
 
     private boolean canPlayAudio (AudioEnums audioType) {
@@ -257,6 +258,16 @@ public class AudioManager {
         }
     }
 
+    public double getBackgroundSongTotalLength(){
+        if(this.musicMediaPlayer == MusicMediaPlayer.Default){
+            return backGroundMusic.getTotalSecondsInPlayback();
+        }
+        if(this.musicMediaPlayer == MusicMediaPlayer.iTunesMacOS){
+            return macOSMediaPlayer.getTotalSeconds();
+        }
+        return -1;
+    }
+
 
     public boolean isBackgroundMusicInitializing () {
         if (this.musicMediaPlayer == MusicMediaPlayer.Default) {
@@ -271,7 +282,7 @@ public class AudioManager {
         }
 
         if (this.musicMediaPlayer == MusicMediaPlayer.iTunesMacOS) {
-            macOSMediaPlayer.setPlaybackPosition(0);
+            macOSMediaPlayer.setPlaybackPositionTo0();
             macOSMediaPlayer.startPlayback();
 
             // Calculate and store the predicted end time

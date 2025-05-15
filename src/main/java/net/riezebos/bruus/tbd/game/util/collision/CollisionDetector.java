@@ -92,7 +92,7 @@ public class CollisionDetector {
 
     // Reusable method for pixel-perfect collision detection
     private Point checkPixelCollision (BufferedImage img1, int x1, int y1, BufferedImage img2, int x2, int y2) {
-        int alphaThreshold = 100;
+        int alphaThreshold = 50;
 
         if (img1 != null && img2 != null) {
             // Calculate overlap rectangle

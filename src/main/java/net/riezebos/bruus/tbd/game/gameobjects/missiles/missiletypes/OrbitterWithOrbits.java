@@ -21,6 +21,8 @@ public class OrbitterWithOrbits extends Missile {
         super(spriteConfiguration, missileConfiguration, movementConfiguration);
         this.animation.rotateAnimation(movementConfiguration.getRotation(), true);
         initDestructionAnimation(missileConfiguration, movementConfiguration);
+        this.isDamageable = true;
+        this.isDestructable = false;
     }
 
     private void initOrbits () {

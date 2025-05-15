@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Random;
 
 public enum AudioEnums {
+    GenericError(false),
     Player_Laserbeam(false),
     SpecialAttackFinishedCharging(false),
     PlayerTakesDamage(false),
@@ -75,6 +76,7 @@ public enum AudioEnums {
     nomad(true),
     NotEnoughMinerals(false),
     BroodlingAttached(false),
+    AchievementUnlocked(false),
     OverlordDeath(false),
     DevourerBirth(false),
     DevourerDeath(false),
@@ -118,18 +120,20 @@ public enum AudioEnums {
     FireFighterYes1(false),
     FireFighterYes2(false),
     FireFighterYes3(false),
-    ProtossShipDeath(false);
+    ProtossShipDeath(false),
+    CoinCollected(false),
+    ScarabExplosion(false);
 
     // Boolean attribute to indicate if this should be streamed
     private final boolean shouldStream;
 
     // Constructor to set the streaming flag
-    AudioEnums (boolean shouldStream) {
+    AudioEnums(boolean shouldStream) {
         this.shouldStream = shouldStream;
     }
 
     // Method to check if the audio should be streamed
-    public boolean shouldBeStreamed () {
+    public boolean shouldBeStreamed() {
         return shouldStream;
     }
 

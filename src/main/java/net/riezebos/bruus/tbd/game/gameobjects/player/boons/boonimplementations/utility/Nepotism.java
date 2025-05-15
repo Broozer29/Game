@@ -14,11 +14,9 @@ import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.AudioEnums;
 public class Nepotism implements Boon {
 
     private int upgradeLevel;
-    private static final int unlockRequirement = 0;
     private static Nepotism instance = new Nepotism();
     private BoonCategories category = BoonCategories.Utility;
     private int mineralQuantity = 75;
-    private boolean isUnlocked = true;
 
     private Nepotism() {
     }
@@ -31,17 +29,16 @@ public class Nepotism implements Boon {
     @Override
     public void applyUpgrade(BoonActivationEnums activation) {
         if (activation.equals(BoonActivationEnums.Start_of_Level) && GameState.getInstance().getStagesCompleted() == 0) {
-                upgradeLevel = Math.max(1, PlayerProfileManager.getInstance().getLoadedProfile().getNepotismLevel()); //Reupdate it to make sure we are synced
-                PlayerInventory.getInstance().addMinerals(upgradeLevel * mineralQuantity);
-            }
+            upgradeLevel = Math.max(1, PlayerProfileManager.getInstance().getLoadedProfile().getNepotismLevel()); //Reupdate it to make sure we are synced
+            PlayerInventory.getInstance().addMinerals(upgradeLevel * mineralQuantity);
+        }
 
     }
 
 
     @Override
     public boolean isUnlocked() {
-        upgradeLevel = Math.max(1, PlayerProfileManager.getInstance().getLoadedProfile().getNepotismLevel());
-        return true;
+        return PlayerProfileManager.getInstance().getLoadedProfile().getNepotismLevel() > 0;
     }
 
     @Override
@@ -61,11 +58,7 @@ public class Nepotism implements Boon {
 
     @Override
     public String getBoonUnlockCondition() {
-        if (isUnlocked) {
-            return "";
-        }
-
-        return "Always unlocked, this message should be invisible";
+        return "Defeat the first boss to unlock this boon.";
     }
 
 
@@ -77,6 +70,8 @@ public class Nepotism implements Boon {
             PlayerProfileManager.getInstance().getLoadedProfile().addEmeralds(-getBoonUpgradeCost());
             PlayerProfileManager.getInstance().exportCurrentProfile();
             AudioManager.getInstance().addAudio(AudioEnums.ItemAcquired);
+        }else if(canUpgradeFurther() && PlayerProfileManager.getInstance().getLoadedProfile().getEmeralds() < getBoonUpgradeCost()){
+            AudioManager.getInstance().addAudio(AudioEnums.GenericError);
         }
     }
 

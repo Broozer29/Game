@@ -80,6 +80,7 @@ public class BoardManager extends JFrame {
         });
 
         screenActions.put(ScreenType.CLASS_SELECTION, () -> {
+            classSelectionBoard.initMenuTiles(); //Kinda sloppy, recreates ALL components when only a set amount need to be remade but its a quick fix
             classSelectionBoard.recreateWindow();
             classSelectionBoard.getTimer().restart();
             ConnectedControllersManager.getInstance().setControllerSensitive(false);

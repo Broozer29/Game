@@ -4,12 +4,15 @@ import net.riezebos.bruus.tbd.game.gameobjects.enemies.Enemy;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyConfiguration;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.bosses.BossActionable;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.bosses.carrier.behaviour.*;
-import net.riezebos.bruus.tbd.game.gameobjects.missiles.laserbeams.TrackingLaserBeam;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.movement.MovementConfiguration;
-import net.riezebos.bruus.tbd.game.playerprofile.PlayerProfile;
 import net.riezebos.bruus.tbd.game.playerprofile.PlayerProfileManager;
 import net.riezebos.bruus.tbd.game.util.WithinVisualBoundariesCalculator;
+import net.riezebos.bruus.tbd.guiboards.BoardManager;
+import net.riezebos.bruus.tbd.guiboards.boardcreators.AchievementUnlockHelper;
+import net.riezebos.bruus.tbd.guiboards.boardcreators.BoonSelectionBoardCreator;
+import net.riezebos.bruus.tbd.visualsandaudio.data.audio.AudioManager;
+import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.AudioEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteAnimation;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteAnimationConfiguration;
@@ -29,11 +32,11 @@ public class CarrierBoss extends Enemy {
         super(spriteConfiguration, enemyConfiguration, movementConfiguration);
 
         SpriteAnimationConfiguration destroyedExplosionfiguration = new SpriteAnimationConfiguration(spriteConfiguration.getSpriteConfiguration(), 0, false);
-        destroyedExplosionfiguration.getSpriteConfiguration().setImageType(ImageEnums.Explosion2);
+        destroyedExplosionfiguration.getSpriteConfiguration().setImageType(ImageEnums.ProtossDestroyedExplosion);
         this.destructionAnimation = new SpriteAnimation(destroyedExplosionfiguration);
         this.damage = 12;
         this.allowedVisualsToRotate = false;
-        this.destructionAnimation.setAnimationScale(3);
+        this.destructionAnimation.setAnimationScale(4);
         this.knockbackStrength = 9;
 
         BossActionable bossBehaviour1 = new SpawnProtossScout();
@@ -71,8 +74,13 @@ public class CarrierBoss extends Enemy {
     @Override
     public void triggerOnDeathActions() {
         super.triggerOnDeathActions();
-        PlayerProfileManager.getInstance().getLoadedProfile().setCarrierUnlocked(true);
-        PlayerProfileManager.getInstance().exportCurrentProfile();
+
+        if(!PlayerProfileManager.getInstance().getLoadedProfile().isCarrierUnlocked()) {
+            BoardManager.getInstance().getShopBoard().addGUIAnimation(AchievementUnlockHelper.createUnlockGUIComponent(ImageEnums.CarrierUnlock));
+            PlayerProfileManager.getInstance().getLoadedProfile().setCarrierUnlocked(true);
+            PlayerProfileManager.getInstance().exportCurrentProfile();
+            AudioManager.getInstance().addAudio(AudioEnums.AchievementUnlocked);
+        }
     }
 
     @Override

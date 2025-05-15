@@ -4,6 +4,8 @@ public enum ImageEnums {
 
     //// Menu Buttons
     Test_Image,
+    InfernalPreIgniter,
+    FuelCannister,
     KineticDynamoIcon,
     InversionRetrieval,
     HangarBayIcon,
@@ -91,6 +93,8 @@ public enum ImageEnums {
     Contract,
     ModuleCommand,
     ModuleElectrify,
+    FireFighterUnlock,
+    NepotismUnlock,
     Drone,
     Portal5,
     WarpIn,
@@ -143,6 +147,8 @@ public enum ImageEnums {
     Bomba_Missile,
     Bomba_Missile_Explosion,
     Rocket_1,
+    RotatingBoxes,
+    RotatingCoins,
     Rocket_1_Explosion,
     PlasmaLauncherMissile,
     DestructableOrbitCenterMissile,
@@ -177,6 +183,7 @@ public enum ImageEnums {
     RedBoss,
     CarrierBoss,
     CarrierPulsingDrone,
+    YellowBoss,
 
     // Unused?
     Invisible,
@@ -231,7 +238,8 @@ public enum ImageEnums {
     Letter_C, Letter_D, Letter_E, Letter_F, Letter_G, Letter_H, Letter_I, Letter_J, Letter_K, Letter_L, Letter_M,
     Letter_N, Letter_O, Letter_P, Letter_Q, Letter_R, Letter_S, Letter_T, Letter_U, Letter_V, Letter_W, Letter_X,
     Letter_Y, Letter_Z, Letter_Percentage, Letter_Komma, Letter_One, Letter_Two, Letter_Three, Letter_Four, Letter_Five,
-    Letter_Six, Letter_Seven, Letter_Eight, Letter_Nine, Letter_Zero, SpaceStationBoss, FireFighter, Starcraft2ConcentratedLaser, Starcraft2RepairBeam, Starcraft2_BatteryUpgrade, Starcraft2_MineExplosion, StickyOilIcon, SelectNewClassAnimation, EscalatingFlames, EntanglingFlames, ProtossShuttleMissileExplosion, ArbiterMultiTargetIcon;
+    Letter_Six, Letter_Seven, Letter_Eight, Letter_Nine, Letter_Zero, SpaceStationBoss, FireFighter, Starcraft2ConcentratedLaser, Starcraft2RepairBeam, Starcraft2_BatteryUpgrade, Starcraft2_MineExplosion, StickyOilIcon, SelectNewClassAnimation, EscalatingFlames, EntanglingFlames, ProtossShuttleMissileExplosion, ArbiterMultiTargetIcon,
+    CarrierUnlock;
 
     public static ImageEnums fromChar (char c) {
         switch (c) {

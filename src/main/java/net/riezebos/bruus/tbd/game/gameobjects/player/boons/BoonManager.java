@@ -1,5 +1,6 @@
 package net.riezebos.bruus.tbd.game.gameobjects.player.boons;
 
+import net.riezebos.bruus.tbd.game.gameobjects.player.boons.boonimplementations.defensive.ThickHide;
 import net.riezebos.bruus.tbd.game.gameobjects.player.boons.boonimplementations.utility.*;
 import net.riezebos.bruus.tbd.game.gamestate.save.SaveFile;
 import net.riezebos.bruus.tbd.game.gameobjects.player.boons.boonimplementations.BoonActivationEnums;
@@ -26,17 +27,17 @@ public class BoonManager {
         if (utilityBoon != null) {
             utilityBoon.setHasAppliedDuringRun(false);
         }
-        utilityBoon = null;
+//        utilityBoon = null;
 
         if (defensiveBoon != null) {
             defensiveBoon.setHasAppliedDuringRun(false);
         }
-        defensiveBoon = null;
+//        defensiveBoon = null;
 
         if (offensiveBoon != null) {
             offensiveBoon.setHasAppliedDuringRun(false);
         }
-        offensiveBoon = null;
+//        offensiveBoon = null;
     }
 
     public void setUtilityBoon(Boon upgrade) {
@@ -87,6 +88,10 @@ public class BoonManager {
     }
 
     private void setUtilityBoon(BoonEnums boonEnum) {
+        if (boonEnum == null) {
+            return;
+        }
+
         switch (boonEnum) {
             case COMPOUND_WEALTH:
                 utilityBoon = CompoundWealth.getInstance();
@@ -107,10 +112,17 @@ public class BoonManager {
     }
 
     private void setDefensiveBoon(BoonEnums boonEnum) {
+        if (boonEnum == null) {
+            return;
+        }
 
+        switch (boonEnum){
+            case THICK_HIDE:
+                defensiveBoon = ThickHide.getInstance();
+                break;
+        }
     }
 
     private void setOffensiveBoon(BoonEnums boonEnum) {
-
     }
 }

@@ -1,6 +1,5 @@
 package net.riezebos.bruus.tbd.game.gamestate;
 
-import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyEnums;
 import net.riezebos.bruus.tbd.game.level.LevelManager;
 import net.riezebos.bruus.tbd.game.gamestate.save.SaveFile;
 
@@ -15,6 +14,7 @@ public class GameState {
     private int DELAY = 0;
 
     private double gameSeconds;
+    private double levelStartTime;
     private int stagesCompleted;
     private long gameTicksExecuted;
 
@@ -111,6 +111,14 @@ public class GameState {
         return gameSeconds;
     }
 
+    public double getLevelStartTime() {
+        return levelStartTime;
+    }
+
+    public void setLevelStartTime(double levelStartTime) {
+        this.levelStartTime = levelStartTime;
+    }
+
     public void addGameTicks (long gameTick) {
         this.gameTicksExecuted += gameTick;
         updateGameTimeByExecutedGameTicks();
@@ -151,21 +159,6 @@ public class GameState {
         this.bossesDefeated = bossesDefeated;
     }
 
-    public EnemyEnums getNextBoss(){
-        int bossesDefeated = this.bossesDefeated;
-
-        // Use modulo to cycle through the bosses
-        switch (bossesDefeated % EnemyEnums.getAmountOfBossEnemies()) {
-            case 0:
-                return EnemyEnums.RedBoss;
-            case 1:
-                return EnemyEnums.SpaceStationBoss;
-            case 2:
-                return EnemyEnums.CarrierBoss;
-            default:
-                return EnemyEnums.RedBoss;
-        }
-    }
 
     public void setGameSeconds(double gameSeconds) {
         this.gameSeconds = gameSeconds;

@@ -20,6 +20,8 @@ public class BombaProjectile extends Missile {
 	public BombaProjectile(SpriteAnimationConfiguration spriteConfiguration, MissileConfiguration missileConfiguration, MovementConfiguration movementConfiguration) {
 		super(spriteConfiguration, missileConfiguration, movementConfiguration);
 		this.animation.setFrameDelay(5);
+		this.isDamageable = false;
+		this.isDestructable = true;
 
 		if(missileConfiguration.getDestructionType() != null){
 			SpriteAnimationConfiguration destructionAnimation = new SpriteAnimationConfiguration(this.spriteConfiguration, 1, false);

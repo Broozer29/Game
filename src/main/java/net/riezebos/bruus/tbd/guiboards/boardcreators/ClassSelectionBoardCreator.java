@@ -2,6 +2,7 @@ package net.riezebos.bruus.tbd.guiboards.boardcreators;
 
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerClass;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
+import net.riezebos.bruus.tbd.game.playerprofile.PlayerProfile;
 import net.riezebos.bruus.tbd.game.playerprofile.PlayerProfileManager;
 import net.riezebos.bruus.tbd.guiboards.boardEnums.MenuFunctionEnums;
 import net.riezebos.bruus.tbd.guiboards.guicomponents.DisplayOnly;
@@ -63,10 +64,17 @@ public class ClassSelectionBoardCreator {
         int yCoordinate = Math.round(backgroundCard.getYCoordinate() + backgroundCard.getHeight() * 0.315f);
 
         String text = "FIREFIGHTER";
+        if (!PlayerProfileManager.getInstance().getLoadedProfile().isFireFighterUnlocked()) {
+            text = "LOCKED";
+        }
+
         GUITextCollection textCollection = new GUITextCollection(xCoordinate, yCoordinate, text);
         textCollection.setScale(1 * DataClass.getInstance().getResolutionFactor());
         textCollection.getComponents().get(0).setDescriptionOfComponent("Select FireFighter class");
-        textCollection.setMenuFunctionality(MenuFunctionEnums.SelectFireFighterClass);
+
+        if (PlayerProfileManager.getInstance().getLoadedProfile().isFireFighterUnlocked()) {
+            textCollection.setMenuFunctionality(MenuFunctionEnums.SelectFireFighterClass);
+        }
 
         return textCollection;
     }
@@ -160,7 +168,11 @@ public class ClassSelectionBoardCreator {
             case Captain:
                 return "Primary: Laserbeam";
             case FireFighter:
-                return "Primary: Flamethrower";
+                if (PlayerProfileManager.getInstance().getLoadedProfile().isFireFighterUnlocked()) {
+                    return "Primary: Flamethrower";
+                }
+
+                return "Locked";
             case Carrier:
                 if (PlayerProfileManager.getInstance().getLoadedProfile().isCarrierUnlocked()) {
                     return "Primary: Switch gears";
@@ -174,9 +186,13 @@ public class ClassSelectionBoardCreator {
     private static String getPrimaryWeaponDescription(PlayerClass playerClass) {
         switch (playerClass) {
             case Captain:
-                return "Shoot a laserbeam dealing 100% damage.";
+                return "Shoot a laserbeam dealing 200% damage.";
             case FireFighter:
-                return "Hold fire to unleash a flamethrower which deals damage and destroys missiles. Deals 100% damage and applies Ignite.";
+                if (PlayerProfileManager.getInstance().getLoadedProfile().isFireFighterUnlocked()) {
+                    return "Hold fire to unleash a flamethrower which deals damage and destroys missiles. Deals 100% damage and applies Ignite.";
+                }
+
+                return ClassDescription.getInstance(PlayerClass.FireFighter).getUnlockCondition();
             case Carrier:
                 if (PlayerProfileManager.getInstance().getLoadedProfile().isCarrierUnlocked()) {
                     return "Switch between fast and slow movement. While moving fast, you do not build Protoss ships.";
@@ -215,7 +231,11 @@ public class ClassSelectionBoardCreator {
             case Captain:
                 return "Secondary: Electroshred";
             case FireFighter:
-                return "Secondary: Fire Shield";
+                if (PlayerProfileManager.getInstance().getLoadedProfile().isFireFighterUnlocked()) {
+                    return "Secondary: Fire Shield";
+                }
+
+                return "Locked";
             case Carrier:
                 if (PlayerProfileManager.getInstance().getLoadedProfile().isCarrierUnlocked()) {
                     return "Secondary: Protoss Beacon";
@@ -230,6 +250,9 @@ public class ClassSelectionBoardCreator {
             case Carrier -> {
                 return PlayerProfileManager.getInstance().getLoadedProfile().isCarrierUnlocked();
             }
+            case FireFighter -> {
+                return PlayerProfileManager.getInstance().getLoadedProfile().isFireFighterUnlocked();
+            }
             default -> {
                 return true;
             }
@@ -239,12 +262,16 @@ public class ClassSelectionBoardCreator {
     private static String getSecondarySkillDescription(PlayerClass playerClass) {
         switch (playerClass) {
             case Captain:
-                return "Fires an EMP that constantly deals 10% damage and destroys enemy missiles. Recharges every 3 seconds.";
+                return "Fires an EMP that deals 200% damage and destroys enemy missiles. Recharges every 3 seconds.";
             case FireFighter:
-                return "Creates a ring of fire around you that lasts 4 seconds. Dealing 50% damage, applies Ignite and destroys enemy missiles. Recharges every 10 seconds.";
+                if (PlayerProfileManager.getInstance().getLoadedProfile().isFireFighterUnlocked()) {
+                    return "Creates a ring of fire around you that lasts 4 seconds. Dealing 50% damage, applies Ignite and destroys enemy missiles. Recharges every 10 seconds.";
+                }
+
+                return ClassDescription.getInstance(PlayerClass.FireFighter).getUnlockCondition();
             case Carrier:
                 if (PlayerProfileManager.getInstance().getLoadedProfile().isCarrierUnlocked()) {
-                    return "Places a beacon in front of you. Protoss ships will prioritize hovering around the beacon over the Carrier.";
+                    return "Places a beacon in front of you. Protoss ships will prioritize hovering around the beacon instead of the Carrier.";
                 }
                 return ClassDescription.getInstance(PlayerClass.Carrier).getUnlockCondition();
         }

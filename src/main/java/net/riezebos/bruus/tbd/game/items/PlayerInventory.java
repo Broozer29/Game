@@ -12,7 +12,10 @@ import net.riezebos.bruus.tbd.game.items.items.disabled.RepulsionArmorPlate;
 import net.riezebos.bruus.tbd.game.items.items.firefighter.*;
 import net.riezebos.bruus.tbd.game.playerprofile.PlayerProfileManager;
 import net.riezebos.bruus.tbd.guiboards.BoardManager;
+import net.riezebos.bruus.tbd.guiboards.boardcreators.AchievementUnlockHelper;
 import net.riezebos.bruus.tbd.guiboards.boardcreators.BoonSelectionBoardCreator;
+import net.riezebos.bruus.tbd.visualsandaudio.data.audio.AudioManager;
+import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.AudioEnums;
 
 import java.util.HashMap;
 import java.util.List;
@@ -22,13 +25,13 @@ import java.util.stream.Collectors;
 public class PlayerInventory {
     private static PlayerInventory instance = new PlayerInventory();
     private Map<ItemEnums, Item> items = new HashMap<>();
-    private float cashMoney = 0;
+    private float cashMoney = 10000;
 
     private PlayerInventory() {
-//        addItem(ItemEnums.InverseRetrieval);
+        addItem(ItemEnums.KineticDynamo);
 
 //        for(int i = 0; i < 5; i++){
-//            addItem(ItemEnums.GuardianDrone);
+//            addItem(ItemEnums.EnergySiphon);
 //        }
 //        PlayerStats.getInstance().setShopRerollDiscount(99);
     }
@@ -36,7 +39,6 @@ public class PlayerInventory {
 
     public void resetInventory() {
         items.clear();
-        cashMoney = 100f;
     }
 
     public static PlayerInventory getInstance() {
@@ -69,7 +71,8 @@ public class PlayerInventory {
         if (ticket != null && ticket.getQuantity() >= 5 && PlayerProfileManager.getInstance().getLoadedProfile().getClubAccessLevel() <= 0) {
             PlayerProfileManager.getInstance().getLoadedProfile().setClubAccessLevel(1);
             PlayerProfileManager.getInstance().exportCurrentProfile();
-            BoardManager.getInstance().getShopBoard().addContractAnimation(BoonSelectionBoardCreator.createBoonUnlockComponent(BoonEnums.CLUB_ACCESS));
+            BoardManager.getInstance().getShopBoard().addGUIAnimation(AchievementUnlockHelper.createUnlockGUIComponent(BoonEnums.CLUB_ACCESS.getUnlockImage()));
+            AudioManager.getInstance().addAudio(AudioEnums.AchievementUnlocked);
         }
     }
 
@@ -81,7 +84,8 @@ public class PlayerInventory {
         if (amount >= 3 && PlayerProfileManager.getInstance().getLoadedProfile().getTreasureHunterLevel() <= 0) {
             PlayerProfileManager.getInstance().getLoadedProfile().setTreasureHunterLevel(1);
             PlayerProfileManager.getInstance().exportCurrentProfile();
-            BoardManager.getInstance().getShopBoard().addContractAnimation(BoonSelectionBoardCreator.createBoonUnlockComponent(BoonEnums.TREASURE_HUNTER));
+            BoardManager.getInstance().getShopBoard().addGUIAnimation(AchievementUnlockHelper.createUnlockGUIComponent(BoonEnums.TREASURE_HUNTER.getUnlockImage()));
+            AudioManager.getInstance().addAudio(AudioEnums.AchievementUnlocked);
         }
     }
 
@@ -194,6 +198,10 @@ public class PlayerInventory {
                 return new ArbiterMultiTargeting();
             case SynergeticLink:
                 return new SynergeticLink();
+            case FuelCannister:
+                return new FuelCannister();
+            case InfernalPreIgniter:
+                return new InfernalPreIgniter();
             case Locked:
                 return null;
             default:

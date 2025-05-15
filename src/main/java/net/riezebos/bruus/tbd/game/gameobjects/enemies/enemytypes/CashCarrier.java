@@ -3,9 +3,7 @@ package net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.Enemy;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyConfiguration;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyTribes;
-import net.riezebos.bruus.tbd.game.items.effects.EffectActivationTypes;
-import net.riezebos.bruus.tbd.game.items.effects.EffectIdentifiers;
-import net.riezebos.bruus.tbd.game.items.effects.effectimplementations.GainGoldOnDeath;
+import net.riezebos.bruus.tbd.game.items.effects.effectimplementations.SpawnCoinsOnDeath;
 import net.riezebos.bruus.tbd.game.level.LevelManager;
 import net.riezebos.bruus.tbd.game.movement.MovementConfiguration;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.AudioEnums;
@@ -22,7 +20,7 @@ public class CashCarrier extends Enemy {
         this.destructionAnimation.setAnimationScale(this.scale * 1.5f);
 
         //Gold gain should be 0, as this effect is cosmetic ONLY!
-        GainGoldOnDeath goldOnDeathEffect = new GainGoldOnDeath(EffectActivationTypes.OnObjectDeath, EffectIdentifiers.CashCarrierGoldGain, 0);
+        SpawnCoinsOnDeath goldOnDeathEffect = new SpawnCoinsOnDeath(25, 3);
         this.addEffect(goldOnDeathEffect);
         this.detonateOnCollision = false;
         this.knockbackStrength = 8;

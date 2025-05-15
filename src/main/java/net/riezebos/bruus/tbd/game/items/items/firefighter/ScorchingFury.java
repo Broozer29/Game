@@ -10,7 +10,7 @@ import net.riezebos.bruus.tbd.game.items.enums.ItemApplicationEnum;
 public class ScorchingFury extends Item {
 
     private boolean shouldApply;
-    private float bonusDamageMultiplier = 0.2f;
+    public static float bonusDamageMultiplier = 0.2f;
 
     public ScorchingFury(){
         super(ItemEnums.ScorchingFury, 1,  ItemApplicationEnum.ApplyOnCreation);

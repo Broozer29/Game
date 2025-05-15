@@ -2,7 +2,7 @@ package net.riezebos.bruus.tbd.guiboards.boardcreators;
 
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
 import net.riezebos.bruus.tbd.game.gameobjects.player.boons.Boon;
-import net.riezebos.bruus.tbd.game.gameobjects.player.boons.BoonEnums;
+import net.riezebos.bruus.tbd.game.gameobjects.player.boons.boonimplementations.defensive.ThickHide;
 import net.riezebos.bruus.tbd.game.gameobjects.player.boons.boonimplementations.utility.*;
 import net.riezebos.bruus.tbd.game.playerprofile.PlayerProfileManager;
 import net.riezebos.bruus.tbd.guiboards.boardEnums.MenuFunctionEnums;
@@ -244,9 +244,9 @@ public class BoonSelectionBoardCreator {
 
         ImageEnums imageType = ImageEnums.UpGrey;
         Boon boon = getBoonByMenuFunctionality(menuFunction);
-        if (boon.getBoonUpgradeCost() < PlayerProfileManager.getInstance().getLoadedProfile().getEmeralds() &&
+        if (boon.getBoonUpgradeCost() <= PlayerProfileManager.getInstance().getLoadedProfile().getEmeralds() &&
                 boon.canUpgradeFurther() && boon.isUnlocked()) {
-            imageType = ImageEnums.UpWhite;
+            imageType = ImageEnums.UpOrange;
         }
         float scale = 0.8f * DataClass.getInstance().getResolutionFactor();
 
@@ -275,6 +275,18 @@ public class BoonSelectionBoardCreator {
         return selectBoonButton;
     }
 
+    public static GUITextCollection createWorkInProgressText(GUIComponent backgroundCard) {
+        int xCoordinate = backgroundCard.getXCoordinate() + Math.round(backgroundCard.getWidth() * 0.15f);
+        int yCoordinate = backgroundCard.getYCoordinate() + Math.round(backgroundCard.getHeight() * 0.1f);
+
+        String text = "WORK IN PROGRESS";
+
+        GUITextCollection nepotismSelectionButton = new GUITextCollection(xCoordinate, yCoordinate, text);
+        nepotismSelectionButton.setScale(boonTextScale * DataClass.getInstance().getResolutionFactor());
+        return nepotismSelectionButton;
+    }
+
+
 
     public static GUIComponent createUpgradeSelectedCheckmark() {
         int xCoordinate = 0;
@@ -302,23 +314,14 @@ public class BoonSelectionBoardCreator {
             case SelectTreasureHunter, UpgradeTreasureHunter -> {
                 return TreasureHunter.getInstance();
             }
+            case SelectThickHide, UpgradeThickHide -> {
+                return ThickHide.getInstance();
+            }
 
         }
         return null;
     }
 
-    public static GUIComponent createBoonUnlockComponent(BoonEnums boon) {
-        SpriteConfiguration spriteConfiguration = new SpriteConfiguration();
-        spriteConfiguration.setxCoordinate(DataClass.getInstance().getWindowWidth() / 2);
-        spriteConfiguration.setyCoordinate(DataClass.getInstance().getWindowHeight() * 0.8f);
-        spriteConfiguration.setScale(1.3f * DataClass.getInstance().getResolutionFactor());
-        spriteConfiguration.setImageType(boon.getUnlockImage());
 
-        GUIComponent boonComponent = new GUIComponent(spriteConfiguration);
-        boonComponent.setTransparancyAlpha(true, 1, -0.0025f);
-        boonComponent.setCenterCoordinates(DataClass.getInstance().getWindowWidth() / 2,
-                (DataClass.getInstance().getWindowHeight() * 0.8f));
-        return boonComponent;
-    }
 
 }

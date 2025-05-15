@@ -51,7 +51,7 @@ public class FriendlyManager {
         PlayerManager.getInstance().getSpaceship().getObjectOrbitingThis().add(drone);
         this.drones.add(drone);
 
-        OrbitingObjectsFormatter.reformatOrbitingObjects(PlayerManager.getInstance().getSpaceship(), 85);
+        OrbitingObjectsFormatter.reformatOrbitingObjects(PlayerManager.getInstance().getSpaceship(), PlayerStats.getInstance().getDroneOrbitRadius());
     }
 
     public void addDrone(Drone drone){
@@ -120,7 +120,7 @@ public class FriendlyManager {
         while (iterator.hasNext()) {
             Drone friendlyObject =  iterator.next();
 
-            if(friendlyObject.getCurrentHitpoints() <= 0){
+            if(friendlyObject.isProtoss() && friendlyObject.getCurrentHitpoints() <= 0){
                 friendlyObject.setVisible(false);
             }
 

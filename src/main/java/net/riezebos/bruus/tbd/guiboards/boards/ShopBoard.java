@@ -32,6 +32,7 @@ import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
@@ -175,9 +176,14 @@ public class ShopBoard extends JPanel implements TimerHolder {
         difficultySelectionText = shopBoardCreator.createSelectDifficultyText(songDifficultyBackgroundCard, selectHardDifficulty);
 
 
-        regularGridFourthRow.add(selectEasyDifficulty);
-        regularGridFourthRow.add(selectMediumDifficulty);
-        regularGridFourthRow.add(selectHardDifficulty);
+        if (!LevelManager.getInstance().isNextLevelABossLevel()) {
+            regularGridFourthRow.add(selectEasyDifficulty);
+        }
+        regularGridFourthRow.add(selectMediumDifficulty); //This gets set to red wings if its a boss level so always add it
+        if (!LevelManager.getInstance().isNextLevelABossLevel()) {
+            regularGridFourthRow.add(selectHardDifficulty);
+        }
+
         offTheGridObjects.addAll(difficultySelectionText.getComponents());
         offTheGridObjects.addAll(nextLevelModifiersTextCollection.getComponents());
 
@@ -296,7 +302,6 @@ public class ShopBoard extends JPanel implements TimerHolder {
         moneyIcon = shopBoardCreator.createMoneyObject(itemRowsBackgroundCard);
 
 
-
         offTheGridObjects.add(nextLevelDifficultyBackground);
         offTheGridObjects.add(itemRowsBackgroundCard);
         offTheGridObjects.add(descriptionBackgroundCard);
@@ -317,7 +322,7 @@ public class ShopBoard extends JPanel implements TimerHolder {
         offTheGridObjects.addAll(rerollCostText.getComponents());
         offTheGridObjects.addAll(rerollCost.getComponents());
 
-        if(PlayerStats.getInstance().getPlayerClass().equals(PlayerClass.Carrier)){
+        if (PlayerStats.getInstance().getPlayerClass().equals(PlayerClass.Carrier)) {
             additionalTextCollection = shopBoardCreator.createProtossCapacityText(itemRowsBackgroundCard);
             offTheGridObjects.addAll(additionalTextCollection.getComponents());
         }
@@ -831,14 +836,9 @@ public class ShopBoard extends JPanel implements TimerHolder {
             for (GUIComponent component : allInventoryGUIComponents) {
                 drawGUIComponent(g, component);
             }
-
-//            drawGUIComponent(g, inventoryBackgroundCard);
-//            for (List<GUIComponent> list : inventoryGrid) {
-//                for (GUIComponent component : list) {
-//                    drawGUIComponent(g, component);
-//                }
-//            }
         }
+
+        drawGUIComponent(g, menuCursor);
 
         for (GUIComponent component : popGUIComponentList) {
             if (component != null && component.isVisible()) {
@@ -846,8 +846,6 @@ public class ShopBoard extends JPanel implements TimerHolder {
                 component.setYCoordinate(component.getYCoordinate() - 1);
             }
         }
-
-        drawGUIComponent(g, menuCursor);
     }
 
 
@@ -931,7 +929,17 @@ public class ShopBoard extends JPanel implements TimerHolder {
         updateCursor();  //update the cursor because we move it
     }
 
-    public void addContractAnimation(GUIComponent component) {
-        popGUIComponentList.add(component);
+    public void addGUIAnimation(GUIComponent incomingComponent) {
+        if (!popGUIComponentList.isEmpty()) {
+            GUIComponent lowestComponent = popGUIComponentList.stream()
+                    .filter(Sprite::isVisible)
+                    .min(Comparator.comparingInt(GUIComponent::getYCoordinate))
+                    .orElse(null);
+
+            if (lowestComponent != null) {
+                incomingComponent.setYCoordinate(lowestComponent.getYCoordinate() - incomingComponent.getHeight());
+            }
+        }
+        popGUIComponentList.add(incomingComponent);
     }
 }

@@ -81,6 +81,9 @@ public class BoonSelectionBoard extends JPanel implements TimerHolder {
     private GUIComponent offensiveColumnSelectionIndicator;
     private GUITextCollection offenseColumnTitleText;
 
+    private GUITextCollection offenseWIPText;
+    private GUITextCollection defenseWIPText;
+
 
     private Timer timer;
     private ControllerInputReader controllerInputReader;
@@ -128,14 +131,17 @@ public class BoonSelectionBoard extends JPanel implements TimerHolder {
         selectClassButton = BoonSelectionBoardCreator.createReturnToClassSelectionButton(returnToSelectionBackgroundCard);
         startGameButton = BoonSelectionBoardCreator.createStartGameButton(startGameBackgroundCard);
 
+
         recreateBoonsComponents();
 
         utilityColumnSelectionIndicator = BoonSelectionBoardCreator.createUpgradeSelectedCheckmark();
         utilityColumnTitleText = BoonSelectionBoardCreator.createFirstColumnTitle(firstColumnBackgroundCard);
         defensiveColumnSelectionIndicator = BoonSelectionBoardCreator.createUpgradeSelectedCheckmark();
         defenseColumnTitleText = BoonSelectionBoardCreator.createThirdColumnTitle(thirdColumnBackgroundCard);
+        defenseWIPText = BoonSelectionBoardCreator.createWorkInProgressText(thirdColumnBackgroundCard);
         offensiveColumnSelectionIndicator = BoonSelectionBoardCreator.createUpgradeSelectedCheckmark();
         offenseColumnTitleText = BoonSelectionBoardCreator.createFifthColumnTitle(fifthColumnBackgroundCard);
+        offenseWIPText = BoonSelectionBoardCreator.createWorkInProgressText(fifthColumnBackgroundCard);
 
         menuCursor = BoonSelectionBoardCreator.createCursor(selectNepotism.getComponents().get(0));
         initializedMenuObjects = true;
@@ -187,6 +193,8 @@ public class BoonSelectionBoard extends JPanel implements TimerHolder {
         offTheGridObjects.addAll(utilityColumnTitleText.getComponents());
         offTheGridObjects.addAll(defenseColumnTitleText.getComponents());
         offTheGridObjects.addAll(offenseColumnTitleText.getComponents());
+        offTheGridObjects.addAll(offenseWIPText.getComponents());
+        offTheGridObjects.addAll(defenseWIPText.getComponents());
 
         recreateBoonsComponents();
         addToGrid(firstColumn, selectNepotism.getComponents().get(0), 0, 0);

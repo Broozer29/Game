@@ -1,12 +1,12 @@
 package net.riezebos.bruus.tbd.game.items.items.util;
 
 import net.riezebos.bruus.tbd.game.gamestate.GameStatsTracker;
+import net.riezebos.bruus.tbd.game.items.items.Contract;
 
 import java.util.Objects;
 
 public class ContractCounter {
     private int startCount;
-    private static int requiredKills = 100;
 
     public ContractCounter () {
         startCount = GameStatsTracker.getInstance().getEnemiesKilled();
@@ -17,8 +17,8 @@ public class ContractCounter {
     }
 
     public boolean isFinished(){
-        System.out.println("Contract status: " + GameStatsTracker.getInstance().getEnemiesKilled() + " out of: " + (this.startCount + requiredKills));
-        return (this.startCount + requiredKills) <= GameStatsTracker.getInstance().getEnemiesKilled();
+        System.out.println("Contract status: " + GameStatsTracker.getInstance().getEnemiesKilled() + " out of: " + (this.startCount + Contract.killCountRequired));
+        return (this.startCount + Contract.killCountRequired) <= GameStatsTracker.getInstance().getEnemiesKilled();
     }
 
     @Override

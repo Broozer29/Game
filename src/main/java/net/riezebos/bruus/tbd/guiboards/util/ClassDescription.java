@@ -46,6 +46,7 @@ public class ClassDescription {
                 maxHitpoints = PlayerStats.fireFighterHitpoints;
                 bonusArmor = 0;
                 difficulty = "Hard";
+                unlockCondition = "Defeat the first boss to unlock this class.";
                 break;
             case Captain:
                 title = "Captain";

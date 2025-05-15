@@ -14,6 +14,7 @@ import net.riezebos.bruus.tbd.game.gameobjects.missiles.MissileManager;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.laserbeams.Laserbeam;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.specialAttacks.SpecialAttack;
 import net.riezebos.bruus.tbd.game.gameobjects.neutral.ExplosionManager;
+import net.riezebos.bruus.tbd.game.gameobjects.neutral.interactable.InteractableManager;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
 import net.riezebos.bruus.tbd.game.gameobjects.player.boons.BoonEnums;
@@ -42,7 +43,8 @@ import net.riezebos.bruus.tbd.guiboards.BoardManager;
 import net.riezebos.bruus.tbd.guiboards.TimerHolder;
 import net.riezebos.bruus.tbd.guiboards.background.BackgroundManager;
 import net.riezebos.bruus.tbd.guiboards.background.BackgroundObject;
-import net.riezebos.bruus.tbd.guiboards.boardcreators.BoonSelectionBoardCreator;
+import net.riezebos.bruus.tbd.guiboards.boardcreators.AchievementUnlockHelper;
+import net.riezebos.bruus.tbd.guiboards.guicomponents.GUIComponent;
 import net.riezebos.bruus.tbd.visualsandaudio.data.DataClass;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.AudioDatabase;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.AudioManager;
@@ -59,6 +61,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.util.Comparator;
 import java.util.List;
 import java.util.ArrayList;
 
@@ -99,7 +102,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
     private int secondTextColumnXCoordinate = 0;
     private PerformanceLogger performanceLogger;
 
-    private List<UIObject> floatingIcons = new ArrayList<>();
+    private List<GUIComponent> floatingIcons = new ArrayList<>();
 
 
     public GameBoard() {
@@ -206,6 +209,14 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
         } else if (gameState.getGameState() == GameStatusEnums.Zoning_Out) {
             drawZoningOut(g2d);
         }
+
+        //Achievement UI moet boven alles getekent worden, dit is een beetje een uitzonderlijke fix
+        for (GUIComponent obj : this.floatingIcons) {
+            drawImage(g2d, obj);
+            obj.setYCoordinate(obj.getYCoordinate() - 1);
+        }
+
+
         Toolkit.getDefaultToolkit().sync();
     }
 
@@ -229,7 +240,8 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
             if (PlayerInventory.getInstance().getCashMoney() >= CompoundWealth.mineralUnlockRequirement && PlayerProfileManager.getInstance().getLoadedProfile().getCompoundWealthLevel() < 1) {
                 PlayerProfileManager.getInstance().getLoadedProfile().setCompoundWealthLevel(1);
                 PlayerProfileManager.getInstance().exportCurrentProfile();
-                BoardManager.getInstance().getShopBoard().addContractAnimation(BoonSelectionBoardCreator.createBoonUnlockComponent(BoonEnums.COMPOUND_WEALTH));
+                BoardManager.getInstance().getShopBoard().addGUIAnimation(AchievementUnlockHelper.createUnlockGUIComponent(BoonEnums.COMPOUND_WEALTH.getUnlockImage()));
+                AudioManager.getInstance().addAudio(AudioEnums.AchievementUnlocked);
             }
             BoonManager.getInstance().activateBoons(BoonActivationEnums.Whenever_Entering_Shop);
 
@@ -242,12 +254,6 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
     private void playDeathMusic() {
         audioManager.stopMusicAudio();
         audioManager.playDefaultBackgroundMusic(AudioEnums.VendlaSonrisa, false);
-    }
-
-    public void addEmeraldIcon(UIObject icon) {
-        if (!this.floatingIcons.contains(icon)) {
-            this.floatingIcons.add(icon);
-        }
     }
 
     // Draw the game over screen
@@ -506,17 +512,12 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
             drawAnimation(g, animation);
         }
 
-        for (UIObject obj : this.floatingIcons) {
-            drawImage(g, obj);
-            obj.setYCoordinate(obj.getYCoordinate() - 1);
-        }
-
         for (OnScreenText text : textManager.getOnScreenTexts()) {
             drawOnScreenText(g, text);
         }
 
-
         drawPlayerHealthBars(g);
+        drawHealthbarsAtTheSpaceship(g);
         drawSpecialAttackFrame(g);
         drawSongProgressBar(g);
 
@@ -545,6 +546,8 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
                     DataClass.getInstance().getWindowWidth() * 0.4f,
                     DataClass.getInstance().getWindowHeight() / 2);
         }
+
+
 
         double end = System.currentTimeMillis();
         this.performanceLogger.logMetric("Draw Objects", end - start);
@@ -642,14 +645,40 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
         float maxValue = player.getSpaceShipRegularGun().getOrangeBarMaxValue();
 
         if (currentValue < 0 || maxValue < 0) {
-            return; //Don't draw
+            return; // Don't draw
         }
-        int actualAmount = Math.round(player.getHeight() * currentValue / maxValue);
 
+        int playerHeight = player.getHeight();
+        if (playerHeight <= 40) {
+            playerHeight = 40; // Minimum height for the bar
+        }
+        int actualAmount = Math.round(playerHeight * currentValue / maxValue);
+
+        // Save the original composite to restore after drawing
+        Composite originalComposite = g.getComposite();
+
+        // Draw the background bar with some transparency
+        g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.5f)); // 50% transparent
         g.setColor(new Color(110, 69, 1));
-        g.fillRect((player.getXCoordinate() - 10), player.getYCoordinate(), 3, player.getHeight());
+        g.fillRect(
+                (player.getXCoordinate() - Math.max(15, Math.round(player.getWidth() * 0.15f))),
+                player.getYCoordinate(),
+                3,
+                playerHeight
+        );
+
+        // Draw the filled portion of the bar with slightly less transparency
+        g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.8f)); // 80% opaque
         g.setColor(Color.ORANGE);
-        g.fillRect((player.getXCoordinate() - 10), player.getYCoordinate(), 3, actualAmount);
+        g.fillRect(
+                (player.getXCoordinate() - Math.max(15, Math.round(player.getWidth() * 0.15f))),
+                player.getYCoordinate(),
+                3,
+                actualAmount
+        );
+
+        // Restore the original composite
+        g.setComposite(originalComposite);
     }
 
     private void drawCurrentAmountOFMinerals(Graphics2D g) {
@@ -699,7 +728,8 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
 
         if (playerShields > playerMaxShields) {
             UIObject overloadingShieldBar = this.gameUICreator.getOverloadingShieldBar();
-            int overloadingShieldBarWidth = gameUICreator.calculateHealthbarWidth(playerShields - playerMaxShields, playerMaxShields * PlayerStats.getInstance().getMaxOverloadingShieldMultiplier());
+
+            int overloadingShieldBarWidth = gameUICreator.calculateHealthbarWidth(playerShields - playerMaxShields, playerMaxShields);
             if (overloadingShieldBarWidth > shieldFrame.getWidth()) {
                 overloadingShieldBarWidth = shieldFrame.getWidth();
             }
@@ -731,51 +761,85 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
 
         drawImage(g, shieldFrame);
 
+    }
 
-        //Lines at the player
+    private void drawHealthbarsAtTheSpaceship(Graphics2D g){
+        float playerShields = playerManager.getSpaceship().getCurrentShieldPoints();
+        float playerMaxShields = playerStats.getMaxShieldHitPoints();
+        float playerHealth = playerManager.getSpaceship().getCurrentHitpoints();
+        float playerMaxHealth = playerStats.getMaxHitPoints();
+
+        //Lines at the player (Health and Shields)
         GameObject player = PlayerManager.getInstance().getSpaceship();
         float factor = playerHealth / playerMaxHealth;
         int actualAmount = Math.round(player.getWidth() * factor);
 
-        g.setColor(Color.RED);
-        g.fillRect(player.getXCoordinate(), player.getYCoordinate() + (player.getHeight() + 3), player.getWidth(), 2);
-        g.setColor(Color.GREEN);
-        g.fillRect(player.getXCoordinate(), player.getYCoordinate() + (player.getHeight() + 3), actualAmount, 2);
+        // Save the original composite
+        Composite originalComposite = g.getComposite();
 
+        // Draw the red background for health with transparency
+        g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.5f)); // 50% opacity
+        g.setColor(Color.RED);
+        g.fillRect(player.getXCoordinate(), player.getYCoordinate() + (player.getHeight() + 3), player.getWidth(), 3);
+
+        // Draw the green filled part of the health bar with transparency
+        g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.8f)); // 80% opacity
+        g.setColor(Color.GREEN);
+        g.fillRect(player.getXCoordinate(), player.getYCoordinate() + (player.getHeight() + 3), actualAmount, 3);
+
+        // Reset for shield bars
         factor = playerShields / playerMaxShields;
-        if(factor > 1){
+        if (factor > 1) {
             factor = 1;
         }
         actualAmount = Math.round(player.getWidth() * factor);
 
+        // Draw the blue background for shields with transparency
+        g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.5f)); // 50% opacity
         g.setColor(Color.BLUE);
-        g.fillRect(player.getXCoordinate(), player.getYCoordinate() + (player.getHeight() + 6), player.getWidth(), 2);
+        g.fillRect(player.getXCoordinate(), player.getYCoordinate() + (player.getHeight() + 7), player.getWidth(), 3);
+
+        // Draw the cyan filled part of the shield bar with transparency
+        g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.8f)); // 80% opacity
         g.setColor(Color.CYAN);
-        g.fillRect(player.getXCoordinate(), player.getYCoordinate() + (player.getHeight() + 6), actualAmount, 2);
+        g.fillRect(player.getXCoordinate(), player.getYCoordinate() + (player.getHeight() + 7), actualAmount, 3);
+
+        if (playerShields > playerMaxShields) {
+            float overloadingFactor = (playerShields - playerMaxShields) / playerMaxShields;
+            int overloadingAmount = Math.round(player.getWidth() * overloadingFactor);
+
+            // Set the color to orange and draw the overload bar
+            g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.6f));
+            g.setColor(Color.ORANGE);
+            g.fillRect(player.getXCoordinate(), player.getYCoordinate() + (player.getHeight() + 7), overloadingAmount, 3);
+        }
+
+
+        // Restore the original composite
+        g.setComposite(originalComposite);
     }
 
 
-    private double currentMusicSeconds = 0;
-    private double maximumMusicSeconds = 0;
+    private double currentGameSeconds = 0;
+    private double predictedFinishSeconds = 0;
 
     private void drawSongProgressBar(Graphics2D g) {
-        //Only update these when playing, as gameseconds continues to grow after the song is finished
         if (gameState.getGameState().equals(GameStatusEnums.Playing)) {
-            currentMusicSeconds = GameState.getInstance().getGameSeconds();
-            maximumMusicSeconds = AudioManager.getInstance().getPredictedEndGameSeconds();
+            currentGameSeconds = GameState.getInstance().getGameSeconds();
+            predictedFinishSeconds = AudioManager.getInstance().getPredictedEndGameSeconds();
         }
 
-        if (currentMusicSeconds < 0 && maximumMusicSeconds < 0) {
+        if (currentGameSeconds < 0 && predictedFinishSeconds < 0) {
             //If these values don't make sense, don't attempt to draw the bar
             return;
         }
-        UIObject progressBar = gameUICreator.getProgressBar();
+        UIObject progressBar = gameUICreator.getProgressBarFrame();
         UIObject progressBarFilling = gameUICreator.getProgressBarFilling();
         UIObject spaceShipIndicator = gameUICreator.getProgressBarSpaceShipIndicator();
 
         if (!LevelManager.getInstance().getLevelType().equals(LevelTypes.Boss)) {
             // Calculate the width of the progress bar filling based on the current position of the song
-            int progressBarWidth = GameUICreator.getInstance().calculateProgressBarFillingWidth(currentMusicSeconds, maximumMusicSeconds);
+            int progressBarWidth = GameUICreator.getInstance().calculateProgressBarFillingWidth(currentGameSeconds, predictedFinishSeconds);
 
             // Resize the progress bar filling
             progressBarFilling.resizeToDimensions(progressBarWidth, progressBarFilling.getHeight());
@@ -840,71 +904,20 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
         }
 
         if (gameState.getGameState() != GameStatusEnums.Dead && gameState.getGameState() != GameStatusEnums.Paused) {
-            // Player Manager
             PerformanceLoggerManager.logUpdateGameTick(playerManager.getPerformanceLogger(), playerManager::updateGameTick);
-
-            // Missile Manager
+            PerformanceLoggerManager.logUpdateGameTick(InteractableManager.getInstance().getPerformanceLogger(), InteractableManager.getInstance()::updateGameTick);
             PerformanceLoggerManager.logUpdateGameTick(missileManager.getPerformanceLogger(), missileManager::updateGameTick);
-
-            // Enemy Manager
             PerformanceLoggerManager.logUpdateGameTick(enemyManager.getPerformanceLogger(), enemyManager::updateGameTick);
-
-            // Level Manager
             PerformanceLoggerManager.logUpdateGameTick(levelManager.getPerformanceLogger(), levelManager::updateGameTick);
-
-            // Animation Manager
             PerformanceLoggerManager.logUpdateGameTick(animationManager.getPerformanceLogger(), animationManager::updateGameTick);
-
-            // Background Manager
             PerformanceLoggerManager.logUpdateGameTick(backgroundManager.getPerformanceLogger(), backgroundManager::updateGameTick);
-
-            // Audio Database
             PerformanceLoggerManager.logUpdateGameTick(audioDatabase.getPerformanceLogger(), audioDatabase::updateGameTick);
-
-            // Explosion Manager
             PerformanceLoggerManager.logUpdateGameTick(explosionManager.getPerformanceLogger(), explosionManager::updateGametick);
-
-            // Friendly Manager
             PerformanceLoggerManager.logUpdateGameTick(friendlyManager.getPerformanceLogger(), friendlyManager::updateGameTick);
-
-            // Thorns Damage Dealer
             PerformanceLoggerManager.logUpdateGameTick(ThornsDamageDealer.getInstance().getPerformanceLogger(), ThornsDamageDealer.getInstance()::updateGameTick);
-
-            // Director Manager
             PerformanceLoggerManager.logUpdateGameTick(DirectorManager.getInstance().getPerformanceLogger(), DirectorManager.getInstance()::updateGameTick);
-
-            // Increment game ticks
             gameState.addGameTicks(1);
         }
-
-
-//        if (gameState.getGameState() != GameStatusEnums.Dead && gameState.getGameState() != GameStatusEnums.Paused) {
-////            playerManager.updateGameTick();
-//            PerformanceLoggerManager.timeAndLog(playerManager.getPerformanceLogger(), "Player Manager Total", playerManager::updateGameTick);
-////            missileManager.updateGameTick();
-//            PerformanceLoggerManager.timeAndLog(missileManager.getPerformanceLogger(), "Missile Manager Total", missileManager::updateGameTick);
-////            enemyManager.updateGameTick();
-//            PerformanceLoggerManager.timeAndLog(enemyManager.getPerformanceLogger(), "Enemy Manager Total", enemyManager::updateGameTick);
-////            levelManager.updateGameTick();
-//            PerformanceLoggerManager.timeAndLog(levelManager.getPerformanceLogger(), "Level Manager Total", levelManager::updateGameTick);
-////            animationManager.updateGameTick();
-//            PerformanceLoggerManager.timeAndLog(animationManager.getPerformanceLogger(), "Animation Manager Total", animationManager::updateGameTick);
-////            backgroundManager.updateGameTick();
-//            PerformanceLoggerManager.timeAndLog(backgroundManager.getPerformanceLogger(), "Background Manager Total", backgroundManager::updateGameTick);
-////            audioDatabase.updateGameTick();
-//            PerformanceLoggerManager.timeAndLog(audioDatabase.getPerformanceLogger(), "Audio Database Total", audioDatabase::updateGameTick);
-////            explosionManager.updateGametick();
-//            PerformanceLoggerManager.timeAndLog(explosionManager.getPerformanceLogger(), "Explosion Manager Total", explosionManager::updateGametick);
-////            friendlyManager.updateGameTick();
-//            PerformanceLoggerManager.timeAndLog(friendlyManager.getPerformanceLogger(), "Friendly Manager Total", friendlyManager::updateGameTick);
-//            PerformanceLoggerManager.timeAndLog(ThornsDamageDealer.getInstance().getPerformanceLogger(), "Thorns Damage Dealer Total", ThornsDamageDealer.getInstance()::updateGameTick);
-////            ThornsDamageDealer.getInstance().updateGameTick();
-//
-//            gameState.addGameTicks(1);
-//            PerformanceLoggerManager.timeAndLog(DirectorManager.getInstance().getPerformanceLogger(), "Director Manager Total", DirectorManager.getInstance()::updateGameTick);
-////            DirectorManager.getInstance().updateGameTick();
-//        }
-
         executeControllerInput();
 
         if (shouldIncreaseInputDelay()) {
@@ -1019,5 +1032,19 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
             }
         }
 
+    }
+
+    public void addGUIAnimation(GUIComponent incomingComponent) {
+        if (floatingIcons != null && !floatingIcons.isEmpty()) {
+            GUIComponent lowestComponent = floatingIcons.stream()
+                    .filter(floatinIcon -> !floatinIcon.getSpriteConfiguration().getImageType().equals(ImageEnums.EmeraldGem5))
+                    .min(Comparator.comparingInt(GUIComponent::getYCoordinate))
+                    .orElse(null);
+
+            if (lowestComponent != null) {
+                incomingComponent.setYCoordinate(lowestComponent.getYCoordinate() - incomingComponent.getHeight());
+            }
+        }
+        floatingIcons.add(incomingComponent);
     }
 }

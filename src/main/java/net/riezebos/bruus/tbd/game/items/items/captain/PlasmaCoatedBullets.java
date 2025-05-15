@@ -15,31 +15,19 @@ import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.Sprit
 
 public class PlasmaCoatedBullets extends Item {
 
-    private float burningDamage;
-    private double duration;
+    public static float burningDamage = 0.01f;
+    public static double duration = 1.5f;
 
-    public PlasmaCoatedBullets () {
+    public PlasmaCoatedBullets() {
         super(ItemEnums.PlasmaCoatedBullets, 1, ItemApplicationEnum.AfterCollision);
-        calculateDuration();
-        calculateBurningDamage();
     }
 
-    public void increaseQuantityOfItem (int amount) {
+    public void increaseQuantityOfItem(int amount) {
         this.quantity += amount;
-        calculateDuration();
-        calculateBurningDamage();
-    }
-
-    private void calculateBurningDamage () {
-        burningDamage =  PlayerStats.getInstance().getBaseDamage() * 0.01f * this.quantity;
-    }
-
-    private void calculateDuration () {
-        this.duration = 1.5f * quantity;
     }
 
     @Override
-    public void applyEffectToObject (GameObject gameObject) {
+    public void applyEffectToObject(GameObject gameObject) {
 
         SpriteConfiguration spriteConfiguration = new SpriteConfiguration();
         spriteConfiguration.setxCoordinate(gameObject.getXCoordinate());
@@ -50,15 +38,15 @@ public class PlasmaCoatedBullets extends Item {
         SpriteAnimationConfiguration spriteAnimationConfiguration = new SpriteAnimationConfiguration(spriteConfiguration, 3, true);
         SpriteAnimation spriteAnimation = new SpriteAnimation(spriteAnimationConfiguration);
 
-        DamageOverTime burningEffect = new DamageOverTime(burningDamage, duration, spriteAnimation, EffectIdentifiers.PlasmaCoatedBulletsBurning);
+        DamageOverTime burningEffect = new DamageOverTime(burningDamage * quantity, duration * quantity, spriteAnimation, EffectIdentifiers.PlasmaCoatedBulletsBurning);
 //        burningEffect.getAnimation().setCenterCoordinates(gameObject.getCenterXCoordinate(), gameObject.getCenterYCoordinate());
         gameObject.addEffect(burningEffect);
     }
 
 
     @Override
-    public boolean isAvailable(){
-        if(!this.itemEnum.isEnabled()){
+    public boolean isAvailable() {
+        if (!this.itemEnum.isEnabled()) {
             return false;
         }
 

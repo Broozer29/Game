@@ -7,7 +7,8 @@ public enum BoonEnums {
     CLUB_ACCESS(ImageEnums.ClubAcessUnlock),
     COMPOUND_WEALTH(ImageEnums.CompoundWealthUnlock),
     BOUNTY_HUNTER(ImageEnums.BountyHunterUnlock),
-    TREASURE_HUNTER(ImageEnums.TreasureHunterUnlock);
+    TREASURE_HUNTER(ImageEnums.TreasureHunterUnlock),
+    THICK_HIDE(ImageEnums.Test_Image);
 
     private ImageEnums unlockImage;
 

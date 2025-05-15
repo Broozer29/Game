@@ -167,6 +167,10 @@ public class ImageLoader {
                 return "/images/Icons/Starcraft2 Bouncing Laser.png";
             case Starcraft2_Fire_Hardened_Shields:
                 return "/images/Icons/Starcraft2 Fire Hardened Shields.png";
+            case InfernalPreIgniter:
+                return "/images/Icons/InfernalPreIgniter.png";
+            case FuelCannister:
+                return "/images/Icons/FuelCannister.png";
             case ModuleCommand:
                 return "/images/Icons/ModuleCommand.png";
             case ModuleElectrify:
@@ -543,6 +547,12 @@ public class ImageLoader {
                 return "/images/UI/youdiedlight.png";
             case BountyHunterUnlock:
                 return "/images/UI/BountyHunterUnlock.png";
+            case FireFighterUnlock:
+                return "/images/UI/firefighterunlock.png";
+            case NepotismUnlock:
+                return "/images/UI/nepotismunlock.png";
+            case CarrierUnlock:
+                return "/images/UI/unlockCarrier.png";
             case ClubAcessUnlock:
                 return "/images/UI/ClubAccessUnlock.png";
             case TreasureHunterUnlock:

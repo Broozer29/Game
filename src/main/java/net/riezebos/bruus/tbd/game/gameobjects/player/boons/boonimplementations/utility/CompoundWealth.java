@@ -62,6 +62,8 @@ public class CompoundWealth implements Boon {
             PlayerProfileManager.getInstance().getLoadedProfile().addEmeralds(-getBoonUpgradeCost());
             PlayerProfileManager.getInstance().exportCurrentProfile();
             AudioManager.getInstance().addAudio(AudioEnums.ItemAcquired);
+        }else if(canUpgradeFurther() && PlayerProfileManager.getInstance().getLoadedProfile().getEmeralds() < getBoonUpgradeCost()){
+            AudioManager.getInstance().addAudio(AudioEnums.GenericError);
         }
     }
 

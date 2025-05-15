@@ -12,6 +12,8 @@ public class SeekerProjectile extends Missile {
 	public SeekerProjectile(SpriteAnimationConfiguration spriteConfiguration, MissileConfiguration missileConfiguration, MovementConfiguration movementConfiguration) {
 		super(spriteConfiguration, missileConfiguration, movementConfiguration);
 		this.animation.setFrameDelay(3);
+		this.isDamageable = false;
+		this.isDestructable = true;
 
 		if(missileConfiguration.getDestructionType() != null){
 			SpriteAnimationConfiguration destructionAnimation = new SpriteAnimationConfiguration(this.spriteConfiguration, 2, false);

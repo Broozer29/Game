@@ -19,24 +19,6 @@ public class WeaponDescription {
         this.description = description;
     }
 
-    public ImageEnums getImageByDescription(){
-        if(attackType != null){
-            switch (PlayerStats.getInstance().getPlayerClass()) {
-                case Captain: return ImageEnums.Starcraft2ConcentratedLaser;
-                case FireFighter: return ImageEnums.Starcraft2_Fire_Hardened_Shields;
-            }
-        }
-
-        if(specialAttackType != null){
-            switch (PlayerStats.getInstance().getPlayerClass()) {
-                case Captain: return ImageEnums.Starcraft2_Electric_Field;
-                case FireFighter: return ImageEnums.Starcraft2_Fire_Hardened_Shields;
-            }
-        }
-
-        return ImageEnums.Test_Image;
-    }
-
     public void setAttackType (PlayerPrimaryAttackTypes attackType) {
         this.attackType = attackType;
     }

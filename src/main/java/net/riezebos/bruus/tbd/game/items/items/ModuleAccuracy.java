@@ -9,39 +9,34 @@ import net.riezebos.bruus.tbd.game.items.PlayerInventory;
 import net.riezebos.bruus.tbd.game.items.enums.ItemApplicationEnum;
 
 public class ModuleAccuracy extends Item {
-    private float damageBonus;
+    public static float damageBonus = 0.25f;
     private boolean shouldApply;
 
     public ModuleAccuracy () {
         super(ItemEnums.ModuleAccuracy, 1, ItemApplicationEnum.ApplyOnCreation);
-        calculateDamageBonus();
         shouldApply = true;
     }
 
-    private void calculateDamageBonus(){
-        damageBonus = this.quantity * 0.2f;
-    }
 
     @Override
     public void increaseQuantityOfItem (int amount) {
         shouldApply = true;
         removeEffect();
         this.quantity += amount;
-        calculateDamageBonus();
         applyEffectToObject(null);
     }
 
     @Override
     public void applyEffectToObject (GameObject gameObject) {
         if(shouldApply) {
-            PlayerStats.getInstance().addDroneBonusDamage(this.damageBonus);
+            PlayerStats.getInstance().addDroneBonusDamage(this.damageBonus * quantity);
             shouldApply = false;
         }
     }
 
     private void removeEffect(){
         if(quantity > 0){
-            PlayerStats.getInstance().addDroneBonusDamage(-this.damageBonus);
+            PlayerStats.getInstance().addDroneBonusDamage(-this.damageBonus * quantity);
         }
     }
 

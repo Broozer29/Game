@@ -30,7 +30,7 @@ public class ProtossShuttle extends Drone {
     private boolean isMovingAroundCarrierDrone = false;
     private boolean isMovingSlow = false;
     public static float shuttleDamageRatio = 2.5f;
-    private float baseAttackSpeed = 0;
+    private float baseAttackSpeed = 1.5f; //duplicate from friendlycreator, code smell because its hardcoded seperately
 
     public ProtossShuttle(SpriteAnimationConfiguration spriteAnimationConfiguration, FriendlyObjectConfiguration droneConfiguration, MovementConfiguration movementConfiguration) {
         super(spriteAnimationConfiguration, droneConfiguration, movementConfiguration);
@@ -42,7 +42,6 @@ public class ProtossShuttle extends Drone {
         super.droneType = DroneTypes.ProtossShuttle;
         super.deathSound = AudioEnums.ProtossShipDeath;
         super.appliesOnHitEffects = true;
-        this.baseAttackSpeed = attackSpeed;
     }
 
 

@@ -14,7 +14,8 @@ public class GenericMissile extends Missile {
 		super(spriteConfiguration, missileConfiguration, movementConfiguration);
 		this.rotateGameObjectTowards(movementConfiguration.getRotation(), true);
 		initDestructionAnimation(missileConfiguration, movementConfiguration);
-
+		this.isDamageable = false;
+		this.isDestructable = true;
 //		this.animation.rotateAnimation(movementConfiguration.getRotation(), true);
 	}
 
@@ -22,6 +23,8 @@ public class GenericMissile extends Missile {
 		super(spriteConfiguration, missileConfiguration, movementConfiguration);
 		this.animation.rotateAnimation(movementConfiguration.getRotation(), true);
 		initDestructionAnimation(missileConfiguration, movementConfiguration);
+		this.isDamageable = false;
+		this.isDestructable = true;
 	}
 
 	private void initDestructionAnimation(MissileConfiguration missileConfiguration, MovementConfiguration movementConfiguration){

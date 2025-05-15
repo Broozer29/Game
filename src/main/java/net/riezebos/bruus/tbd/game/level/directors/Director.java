@@ -126,25 +126,28 @@ public class Director {
         }
 
         if(enemyEnums.equals(EnemyEnums.Tazer)){
-            return EnemyManager.getInstance().getAmountOfEnemyTypesAlive(EnemyEnums.Tazer) < 4;
+            return EnemyManager.getInstance().getAmountOfEnemyTypesAlive(EnemyEnums.Tazer) < 3;
         }
 
         if(enemyEnums.equals(EnemyEnums.Bulldozer)){
             return EnemyManager.getInstance().getAmountOfEnemyTypesAlive(EnemyEnums.Bulldozer) < 5;
+        }
+        if(enemyEnums.equals(EnemyEnums.Energizer)){
+            return EnemyManager.getInstance().getAmountOfEnemyTypesAlive(EnemyEnums.Energizer) < 8;
         }
 
         return true;
     }
 
     private boolean canSpawnInFormation (EnemyEnums enemyEnums) {
-        if (enemyEnums.equals(EnemyEnums.ZergQueen)) {
+        if (enemyEnums.equals(EnemyEnums.ZergQueen) || enemyEnums.equals(EnemyEnums.Tazer)) {
             return false;
         }
         return true;
     }
 
     private void spawnBoss () {
-        spawnBoss(GameState.getInstance().getNextBoss());
+        spawnBoss(LevelManager.getInstance().getNextBoss());
         EnemyManager.getInstance().setHasSpawnedABoss(true);
     }
 
@@ -157,7 +160,7 @@ public class Director {
 
         // Call LevelManager's spawnEnemy method
         LevelManager.getInstance().spawnEnemy(
-                DataClass.getInstance().getWindowWidth() + enemyEnums.getBaseWidth(),
+                DataClass.getInstance().getWindowWidth() + Math.round(enemyEnums.getBaseWidth() * 0.88f),
                 DataClass.getInstance().getPlayableWindowMaxHeight() / 2,
                 enemyEnums, direction, scale, false, xMovementSpeed, yMovementSpeed, false);
     }

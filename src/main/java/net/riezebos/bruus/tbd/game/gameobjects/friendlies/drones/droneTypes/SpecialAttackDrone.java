@@ -72,7 +72,7 @@ public class SpecialAttackDrone extends Drone {
         electroShredSpriteConfig.setImageType(ImageEnums.ElectroShredImproved);
         electroShredSpriteConfig.setScale(scale);
 
-        float damage = PlayerStats.getInstance().getDroneDamage() * 0.1f; //10% of drone base damage
+        float damage = PlayerStats.getInstance().getDroneDamage() * 0.25f; //25% of drone base damage
 
         SpriteAnimationConfiguration spriteAnimationConfiguration = new SpriteAnimationConfiguration(electroShredSpriteConfig, 2, false);
         SpecialAttackConfiguration missileConfiguration = new SpecialAttackConfiguration(damage, true, true, false, true, false, false);
@@ -84,6 +84,7 @@ public class SpecialAttackDrone extends Drone {
         specialAttack.setCenteredAroundObject(true);
         specialAttack.setScale(scale);
         specialAttack.setOwnerOrCreator(this);
+        specialAttack.setCenterCoordinates(this.getAnimation().getCenterXCoordinate(), this.getAnimation().getCenterYCoordinate());
 
         this.addFollowingGameObject(specialAttack);
         MissileManager.getInstance().addSpecialAttack(specialAttack);

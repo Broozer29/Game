@@ -6,15 +6,15 @@ import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerClass;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
 import net.riezebos.bruus.tbd.game.items.Item;
 import net.riezebos.bruus.tbd.game.items.ItemEnums;
+import net.riezebos.bruus.tbd.game.items.PlayerInventory;
 import net.riezebos.bruus.tbd.game.items.enums.ItemApplicationEnum;
 
 public class BouncingModuleAddon extends Item {
 
-    private float bonusDamagePercentage = 0;
+    public static float bonusDamagePercentage = 0.25f;
 
     public BouncingModuleAddon () {
         super(ItemEnums.BouncingModuleAddon, 1, ItemApplicationEnum.BeforeCollision);
-        recalculateBonus();
     }
 
     @Override
@@ -25,7 +25,7 @@ public class BouncingModuleAddon extends Item {
     public void modifyAttackingObject (GameObject applier, GameObject target) {
         if (applier instanceof Missile missile) {
             if (missile.isPiercesThroughObjects() && !missile.hasCollidedBeforeWith(target) && missile.getAmountOfPiercesLeft() < missile.getMaximumAmountOfPierces()) {
-                applier.modifyBonusDamageMultiplier(bonusDamagePercentage);
+                applier.modifyBonusDamageMultiplier(quantity * bonusDamagePercentage);
             }
         }
     }
@@ -33,19 +33,18 @@ public class BouncingModuleAddon extends Item {
     @Override
     public void increaseQuantityOfItem (int amount) {
         this.quantity += amount;
-        recalculateBonus();
-    }
-
-    private void recalculateBonus () {
-        bonusDamagePercentage = quantity * 0.25f;
     }
 
     @Override
     public boolean isAvailable(){
+        boolean isAvailable = false;
         if(!this.itemEnum.isEnabled()){
             return false;
         }
+        if(PlayerStats.getInstance().getPlayerClass().equals(PlayerClass.Captain) && PlayerInventory.getInstance().getItemFromInventoryIfExists(this.itemEnum) == null){
+            isAvailable = true;
+        }
 
-        return PlayerStats.getInstance().getPlayerClass().equals(PlayerClass.Captain);
+        return isAvailable;
     }
 }

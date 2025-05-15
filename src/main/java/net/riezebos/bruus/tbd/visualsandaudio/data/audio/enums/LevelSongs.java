@@ -201,10 +201,12 @@ public enum LevelSongs {
     public static AudioEnums getBossTheme (EnemyEnums enemyEnums) {
         switch (enemyEnums) {
             case SpaceStationBoss:
-                return AudioEnums.RiskOfDanger;
+                return AudioEnums.Furi_Wisdowm_Of_Rage;
             case RedBoss:
                 return AudioEnums.Blood_On_The_Dancefloor;
             case CarrierBoss:
+                return AudioEnums.nomad;
+            case YellowBoss:
                 return AudioEnums.keygen;
             default:
                 return getRandomBossSong();

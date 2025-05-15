@@ -16,6 +16,7 @@ import java.util.Random;
 public class BarbedMissiles extends Item {
 
     private Random random = new Random();
+    public static float procChance = 0.2f;
 
     public BarbedMissiles() {
         super(ItemEnums.BarbedMissiles, 1, ItemApplicationEnum.AfterCollision);
@@ -30,7 +31,7 @@ public class BarbedMissiles extends Item {
         }
 
         float randomNumer = random.nextFloat(0, 1.01f);
-        if (randomNumer > (this.quantity * 0.10)) {
+        if (randomNumer > (this.quantity * procChance)) {
             return; //We missed, dont do anyhting
         }
 
@@ -52,7 +53,7 @@ public class BarbedMissiles extends Item {
         if (PlayerStats.getInstance().getPlayerClass().equals(PlayerClass.Captain)) {
             Item item = PlayerInventory.getInstance().getItemFromInventoryIfExists(this.itemEnum);
             if (item != null) {
-                return item.getQuantity() < 10; //we cap at 10 * 10% = 100% chance
+                return this.quantity * 0.2f < 1;
             } else return true; //we don't have any amount yet, return true
         } else return false; //we aren't the captain class, return false
     }

@@ -23,7 +23,7 @@ public class FireTrackingLaserbeam implements BossActionable {
     //Vuurt een tracking laserbeam vanaf de neus die de speler volgt
     private int priority = 15;
     private int cooldown = 20;
-    private double lastFiredTime = 0;
+    private double lastFiredTime = GameState.getInstance().getGameSeconds() + 5; //Immediatly set it to prevent carrier from immediatly sniping the player
     private boolean isFiringLaserbeams;
     private double startedFiringTime = 0;
     private double duration = 3;
@@ -137,6 +137,7 @@ public class FireTrackingLaserbeam implements BossActionable {
             ));
         }
     }
+
 
 
     @Override

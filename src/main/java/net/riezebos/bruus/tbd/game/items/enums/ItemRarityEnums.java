@@ -9,7 +9,7 @@ public enum ItemRarityEnums {
     Common(150, Color.WHITE),
     Rare(225, Color.GREEN),
     Legendary(300, Color.ORANGE),
-    Relic(450, Color.PINK),
+    Relic(400, Color.PINK),
     Locked(0, Color.GRAY);
 
 
@@ -33,11 +33,15 @@ public enum ItemRarityEnums {
         Random rand = new Random();
         int chance = rand.nextInt(0, 101);
 
-        if (chance < (75 - PlayerStats.getInstance().getRelicChanceModifier())) {
+        if (chance < (80 - PlayerStats.getInstance().getRelicChanceModifier())) {
             return ItemRarityEnums.Common;
         } else if (chance < (97 - PlayerStats.getInstance().getRelicChanceModifier())) {
             return ItemRarityEnums.Rare;
         } else {
+            //5% kans op om hier een relic te rollen als je een legendary rolled
+            if(rand.nextInt(0, 101) < 5 - PlayerStats.getInstance().getRelicChanceModifier()){
+                return ItemRarityEnums.Relic;
+            }
             return ItemRarityEnums.Legendary;
         }
     }
@@ -47,9 +51,9 @@ public enum ItemRarityEnums {
         Random rand = new Random();
         int chance = rand.nextInt(0, 101);
 
-        if (chance < 70) {
+        if (chance < 85 - PlayerStats.getInstance().getRelicChanceModifier()) {
             return ItemRarityEnums.Rare;
-        } else if (chance < 95) {
+        } else if (chance < 97 - PlayerStats.getInstance().getRelicChanceModifier()) {
             return ItemRarityEnums.Legendary;
         } else {
             return ItemRarityEnums.Relic;

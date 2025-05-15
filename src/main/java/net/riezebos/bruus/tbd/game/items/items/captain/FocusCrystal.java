@@ -13,23 +13,15 @@ import java.util.List;
 
 public class FocusCrystal extends Item {
 
-    private float damageAmplificationModifier;
+    public static float damageAmplificationModifier = 0.15f;
     private int distance = Math.round(180);
-
-    private List<GameObject> objectsModified = new ArrayList<>();
 
     public FocusCrystal () {
         super(ItemEnums.FocusCrystal, 1, ItemApplicationEnum.BeforeCollision);
-        calculateDamageAmplificationModifier();
     }
 
     public void increaseQuantityOfItem(int amount) {
         this.quantity += amount;
-        calculateDamageAmplificationModifier();
-    }
-
-    private void calculateDamageAmplificationModifier(){
-        damageAmplificationModifier = (quantity * 0.15f);
     }
 
     //Not used
@@ -68,7 +60,7 @@ public class FocusCrystal extends Item {
 
         if (isWithinRange) {
             // Amplify the attack damage
-            attack.modifyBonusDamageMultiplier(damageAmplificationModifier);
+            attack.modifyBonusDamageMultiplier(damageAmplificationModifier * quantity);
         }
     }
 
@@ -78,7 +70,7 @@ public class FocusCrystal extends Item {
             return false;
         }
 
-        if(PlayerStats.getInstance().getPlayerClass().equals(PlayerClass.Captain)){
+        if(PlayerStats.getInstance().getPlayerClass().equals(PlayerClass.Captain) || PlayerStats.getInstance().getPlayerClass().equals(PlayerClass.Carrier)){
             return true;
         }
         return false;

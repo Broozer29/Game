@@ -12,6 +12,8 @@ public class BarrierProjectile extends Missile {
 //        this.animation.setFrameDelay(2);
 //        this.animation.rotateAnimation(movementConfiguration.getRotation());
         this.destroysMissiles = true;
+        this.isDamageable = false;
+        this.isDestructable = true;
 
         if(missileConfiguration.getDestructionType() != null){
             SpriteAnimationConfiguration destructionAnimation = new SpriteAnimationConfiguration(spriteConfiguration, 2, false);

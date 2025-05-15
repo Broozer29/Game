@@ -11,6 +11,8 @@ import net.riezebos.bruus.tbd.game.items.Item;
 import net.riezebos.bruus.tbd.game.items.ItemEnums;
 import net.riezebos.bruus.tbd.game.items.effects.effectimplementations.FreezeEffect;
 import net.riezebos.bruus.tbd.game.items.enums.ItemApplicationEnum;
+import net.riezebos.bruus.tbd.visualsandaudio.data.audio.AudioManager;
+import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.AudioEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteAnimation;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteAnimationConfiguration;
@@ -22,6 +24,8 @@ public class KineticDynamo extends Item {
     private float maxEneryCap = 1f;
     private int cooldown = 1;
     private double lastSecondsFired = 0;
+    public boolean isMovingFast = false;
+    public static float damageRatio = 2;
 
     public KineticDynamo() {
         super(ItemEnums.KineticDynamo, 1, ItemApplicationEnum.CustomActivation);
@@ -40,7 +44,7 @@ public class KineticDynamo extends Item {
 
     public void buildUpEnergy(float directionX, float directionY) {
         // -0.1f to deal with floating point precision as float equals isn't reliable (4 - 0.1) = 3.9 > 2.5 = true. 2.4 > 2.5 = false
-        if(PlayerStats.getInstance().getMovementSpeed() - 0.1f > PlayerStats.carrierSlowSpeed) {
+        if(isMovingFast) {
             float currentSpeed = (float) Math.sqrt(directionX * directionX + directionY * directionY);
             float speedRatio = currentSpeed / PlayerStats.getInstance().getMovementSpeed();
 
@@ -48,7 +52,7 @@ public class KineticDynamo extends Item {
             speedRatio = Math.min(speedRatio, 1.0f);
 
             // Calculate how much energy to build up
-            float energyValue = speedRatio * 0.025f;
+            float energyValue = speedRatio * 0.0125f;
             energyRaised += energyValue;
             // Check if the player has the Kinetic Dynamo equipped
 
@@ -69,7 +73,7 @@ public class KineticDynamo extends Item {
         spriteConfiguration.setImageType(ImageEnums.CarrierWarpExplosion); //placeholder
         spriteConfiguration.setScale(2);
 
-        float damage = (PlayerStats.getInstance().getBaseDamage() * 2) * energyRaised;
+        float damage = (PlayerStats.getInstance().getBaseDamage() * damageRatio) * energyRaised;
 
         SpriteAnimationConfiguration spriteAnimationConfiguration = new SpriteAnimationConfiguration(spriteConfiguration, 2, false);
         ExplosionConfiguration explosionConfiguration = new ExplosionConfiguration(true, damage,
@@ -77,6 +81,7 @@ public class KineticDynamo extends Item {
 
         Explosion explosion = new Explosion(spriteAnimationConfiguration, explosionConfiguration);
         explosion.setCenterCoordinates(gameObject.getCenterXCoordinate(), gameObject.getCenterYCoordinate());
+        AudioManager.getInstance().addAudio(AudioEnums.ScarabExplosion);
         return explosion;
     }
 

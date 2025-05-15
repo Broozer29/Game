@@ -8,6 +8,7 @@ import net.riezebos.bruus.tbd.game.items.PlayerInventory;
 import net.riezebos.bruus.tbd.game.items.enums.ItemApplicationEnum;
 
 public class ShieldStabilizer extends Item {
+    public static float shieldRegenMultiplier = 0.5f;
     public ShieldStabilizer () {
         super(ItemEnums.ShieldStabilizer, 1, ItemApplicationEnum.UponAcquiring);
     }
@@ -15,7 +16,7 @@ public class ShieldStabilizer extends Item {
     @Override
     public void applyEffectToObject (GameObject gameObject) {
         PlayerStats.getInstance().setContinueShieldRegenThroughDamage(true);
-        PlayerStats.getInstance().modifyShieldRegenMultiplier(-0.5f);
+        PlayerStats.getInstance().modifyShieldRegenMultiplier(-shieldRegenMultiplier);
     }
 
     @Override

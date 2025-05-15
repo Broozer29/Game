@@ -8,18 +8,22 @@ import net.riezebos.bruus.tbd.game.items.effects.EffectInterface;
 import net.riezebos.bruus.tbd.game.movement.Direction;
 import net.riezebos.bruus.tbd.game.movement.MovementConfiguration;
 import net.riezebos.bruus.tbd.game.movement.MovementPatternSize;
+import net.riezebos.bruus.tbd.game.movement.Point;
 import net.riezebos.bruus.tbd.game.movement.pathfinders.BouncingPathFinder;
+import net.riezebos.bruus.tbd.game.movement.pathfinders.StraightLinePathFinder;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteAnimation;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteConfiguration;
 
 import java.util.HashSet;
+import java.util.Random;
 import java.util.Set;
 
 public class SpawnProjectileOnDeath implements EffectInterface {
 
+    private static Random random = new Random();
     private EffectIdentifiers effectIdentifier;
-
+    private EffectActivationTypes effectActivationType;
     private int amountOfMissiles;
     private ImageEnums missileImage;
     private MissileEnums missileType;
@@ -28,6 +32,7 @@ public class SpawnProjectileOnDeath implements EffectInterface {
 
     public SpawnProjectileOnDeath (EffectActivationTypes effectActivationType, EffectIdentifiers effectIdentifier,
                                    int amountOfProjectiles, MissileEnums missileType, ImageEnums missileImage, ImageEnums missileImpactImage) {
+        this.effectActivationType = effectActivationType;
         this.effectIdentifier = effectIdentifier;
         this.amountOfMissiles = amountOfProjectiles;
         this.missileType = missileType;
@@ -38,25 +43,19 @@ public class SpawnProjectileOnDeath implements EffectInterface {
     @Override
     public void activateEffect(GameObject gameObject) {
         if (gameObject.getCurrentHitpoints() <= 0 && !hasActivated) {
-            Set<Direction> usedDirections = new HashSet<>();
 
             for (int i = 0; i < amountOfMissiles; i++) {
-                Direction direction;
-                int attempts = 0;
-                do {
-                    direction = Direction.getRandomDiagonalDirection();
-                    attempts++;
-                } while (usedDirections.contains(direction) && attempts < 8);
-
-                usedDirections.add(direction);
-
-                Missile missile = createMissile(gameObject, direction);
+                Missile missile = createMissile(gameObject);
                 missile.setOwnerOrCreator(gameObject);
                 missile.setDestructable(true);
+                missile.setDamageable(true);
+                missile.setMaxHitPoints(50);
+                missile.setCurrentHitpoints(50);
 
                 if (missileImage.equals(ImageEnums.MutaliskMissile)) {
                     missile.getAnimation().setFrameDelay(6);
-                    missile.setScale(1.2f);
+                    missile.setScale(1.4f);
+                    missile.setKnockbackStrength(6);
                 }
                 MissileManager.getInstance().addExistingMissile(missile);
             }
@@ -66,7 +65,7 @@ public class SpawnProjectileOnDeath implements EffectInterface {
 
 
 
-    private Missile createMissile (GameObject gameObject, Direction direction) {
+    private Missile createMissile (GameObject gameObject) {
         SpriteConfiguration spriteConfiguration = new SpriteConfiguration();
         spriteConfiguration.setxCoordinate(gameObject.getXCoordinate());
         spriteConfiguration.setyCoordinate(gameObject.getYCoordinate());
@@ -79,14 +78,26 @@ public class SpawnProjectileOnDeath implements EffectInterface {
                 , true, false
         );
 
-        BouncingPathFinder bouncingPathFinder = new BouncingPathFinder();
-        bouncingPathFinder.setMaxBounces(1);
-
+        StraightLinePathFinder straightLinePathFinder = new StraightLinePathFinder();
         MovementConfiguration movementConfiguration = MissileCreator.getInstance().createMissileMovementConfig(
-                2, 2, bouncingPathFinder, MovementPatternSize.SMALL, direction
+                2, 2, straightLinePathFinder, MovementPatternSize.SMALL, Direction.LEFT
         );
+        movementConfiguration.setDestination(getRandomPoint(gameObject, 200, 200));
 
         return MissileCreator.getInstance().createMissile(spriteConfiguration, missileConfiguration, movementConfiguration);
+    }
+
+    private Point getRandomPoint(GameObject selectedObject, int minDistance, int maxDistance) {
+        int xCoordinate = selectedObject.getCenterXCoordinate();
+        int yCoordinate = selectedObject.getCenterYCoordinate();
+
+        double angle = random.nextDouble() * 2 * Math.PI; // Random angle in radians
+        int distance = minDistance + random.nextInt(maxDistance - minDistance + 1); // Random distance within range
+
+        int newX = xCoordinate + (int) (Math.cos(angle) * distance);
+        int newY = yCoordinate + (int) (Math.sin(angle) * distance);
+
+        return new Point(newX, newY);
     }
 
     @Override
@@ -101,7 +112,7 @@ public class SpawnProjectileOnDeath implements EffectInterface {
 
     @Override
     public EffectActivationTypes getEffectTypesEnums () {
-        return EffectActivationTypes.OnObjectDeath;
+        return this.effectActivationType;
     }
 
     @Override

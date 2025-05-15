@@ -10,13 +10,13 @@ import net.riezebos.bruus.tbd.game.items.PlayerInventory;
 import net.riezebos.bruus.tbd.game.items.enums.ItemApplicationEnum;
 
 public class ModuleElectrify extends Item {
-    private float orbitrangeBonus;
+    public static float orbitrangeBonus;
     private boolean shouldApply;
 
     public ModuleElectrify () {
         super(ItemEnums.ModuleElectrify, 1, ItemApplicationEnum.ApplyOnCreation);
         shouldApply = true;
-        orbitrangeBonus = 20;
+        orbitrangeBonus = 40;
     }
 
     @Override

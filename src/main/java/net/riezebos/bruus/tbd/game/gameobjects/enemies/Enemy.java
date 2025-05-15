@@ -1,5 +1,7 @@
 package net.riezebos.bruus.tbd.game.gameobjects.enemies;
 
+import net.riezebos.bruus.tbd.game.UI.GameUICreator;
+import net.riezebos.bruus.tbd.game.UI.UIObject;
 import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyCategory;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyEnums;
@@ -15,6 +17,9 @@ import net.riezebos.bruus.tbd.game.movement.MovementConfiguration;
 import net.riezebos.bruus.tbd.game.movement.PathFinderEnums;
 import net.riezebos.bruus.tbd.game.movement.Point;
 import net.riezebos.bruus.tbd.game.movement.pathfinders.DestinationPathFinder;
+import net.riezebos.bruus.tbd.game.playerprofile.PlayerProfileManager;
+import net.riezebos.bruus.tbd.guiboards.BoardManager;
+import net.riezebos.bruus.tbd.guiboards.guicomponents.GUIComponent;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteAnimation;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteAnimationConfiguration;
@@ -88,8 +93,8 @@ public class Enemy extends GameObject {
         float difficultyCoeff = GameState.getInstance().getDifficultyCoefficient();
         int difficultyScore = LevelManager.getInstance().getCurrentLevelDifficultyScore(); // Ranges between 2 and 6 (inclusive)
 
-        // Calculate scaling factor (1.0 at Easy, up to 1.25 at Hard)
-        float difficultyScalingFactor = 1 + ((difficultyScore - 2) / 4.0f) * 0.25f;
+        // Calculate scaling factor (1.0 at Easy, up to 1.5 at Hard)
+        float difficultyScalingFactor = 1 + ((difficultyScore - 2) / 4.0f) * 0.5f;
 
         if (enemyLevel > 1) {
             // Apply both enemy level scaling and difficulty scaling
@@ -102,7 +107,7 @@ public class Enemy extends GameObject {
             this.damage *= Math.pow(getScalingFactor(), enemyLevel) * difficultyScalingFactor;
 
             // XP on death is multiplied by 50% of difficulty coefficient
-            this.xpOnDeath *= (1 + (0.5 * difficultyCoeff));
+//            this.xpOnDeath *= (1 + (0.5 * difficultyCoeff));
 
             // Cash money worth scaling for bosses
             if (this.enemyType.getEnemyCategory().equals(EnemyCategory.Boss)) {
@@ -134,6 +139,13 @@ public class Enemy extends GameObject {
     public void triggerOnDeathActions() {
         if (!this.enemyType.getEnemyCategory().equals(EnemyCategory.Summon)) {
             GameStatsTracker.getInstance().addEnemyKilled(1);
+        }
+
+        if (this.enemyType.getEnemyCategory().equals(EnemyCategory.Boss)) {
+            PlayerProfileManager.getInstance().getLoadedProfile().addEmeralds(1);
+            PlayerProfileManager.getInstance().exportCurrentProfile();
+            GUIComponent emeraldIcon = GameUICreator.getInstance().createEmeraldObtainedIcon(this.getCenterXCoordinate(), this.getCenterYCoordinate());
+            BoardManager.getInstance().getGameBoard().addGUIAnimation(emeraldIcon);
         }
     }
 

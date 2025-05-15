@@ -6,6 +6,7 @@ import net.riezebos.bruus.tbd.controllerInput.ControllerInputReader;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerClass;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
+import net.riezebos.bruus.tbd.game.playerprofile.PlayerProfileManager;
 import net.riezebos.bruus.tbd.game.util.OnScreenText;
 import net.riezebos.bruus.tbd.game.util.OnScreenTextManager;
 import net.riezebos.bruus.tbd.guiboards.TimerHolder;
@@ -97,7 +98,7 @@ public class ClassSelectionBoard extends JPanel implements TimerHolder {
         timer.start();
     }
 
-    private void initMenuTiles() {
+    public void initMenuTiles() {
         classDescriptionBackgroundCard = ClassSelectionBoardCreator.createClassDescriptionBackgroundCard();
 
         primaryWeaponExplanationBackgroundCard = ClassSelectionBoardCreator.createPrimaryWeaponDescriptionBackgroundCard();
@@ -223,12 +224,22 @@ public class ClassSelectionBoard extends JPanel implements TimerHolder {
                 secondaryWeaponIcon.setNewImage(ImageEnums.Starcraft2_Electric_Field);
                 break;
             case FireFighter:
-                primaryWeaponIcon.setNewImage(ImageEnums.Starcraft2FireBatWeapon);
-                secondaryWeaponIcon.setNewImage(ImageEnums.Starcraft2_Fire_Hardened_Shields);
+                if (PlayerProfileManager.getInstance().getLoadedProfile().isFireFighterUnlocked()) {
+                    primaryWeaponIcon.setNewImage(ImageEnums.Starcraft2FireBatWeapon);
+                    secondaryWeaponIcon.setNewImage(ImageEnums.Starcraft2_Fire_Hardened_Shields);
+                } else {
+                    primaryWeaponIcon.setNewImage(ImageEnums.LockedIcon);
+                    secondaryWeaponIcon.setNewImage(ImageEnums.LockedIcon);
+                }
                 break;
             case Carrier:
-                primaryWeaponIcon.setNewImage(ImageEnums.CarrierSwitchGearsIcon);
-                secondaryWeaponIcon.setNewImage(ImageEnums.CarrierPlaceDroneIcon);
+                if (PlayerProfileManager.getInstance().getLoadedProfile().isCarrierUnlocked()) {
+                    primaryWeaponIcon.setNewImage(ImageEnums.CarrierSwitchGearsIcon);
+                    secondaryWeaponIcon.setNewImage(ImageEnums.CarrierPlaceDroneIcon);
+                } else {
+                    primaryWeaponIcon.setNewImage(ImageEnums.LockedIcon);
+                    secondaryWeaponIcon.setNewImage(ImageEnums.LockedIcon);
+                }
                 break;
             default:
                 break;
@@ -260,7 +271,7 @@ public class ClassSelectionBoard extends JPanel implements TimerHolder {
             String difficulty = "Difficulty: " + classDescription.getDifficulty();
 
 
-            if(!ClassSelectionBoardCreator.hasUnlockedClass(lastHoveredOtion)){
+            if (!ClassSelectionBoardCreator.hasUnlockedClass(lastHoveredOtion)) {
                 title = "Locked";
                 desciption = classDescription.getUnlockCondition();
                 attackDamage = null;
@@ -292,6 +303,8 @@ public class ClassSelectionBoard extends JPanel implements TimerHolder {
                 // Update descriptionY based on the actual rendered height of the description block
                 descriptionY += lines * descriptionMetrics.getHeight();
             }
+
+            descriptionY += 40; //placeholder
 
             if (hitpoints != null) {
                 g.setFont(new Font(textFont, Font.PLAIN, Math.round(16 * DataClass.getInstance().getResolutionFactor())));

@@ -29,7 +29,7 @@ public class Mutalisk extends Enemy {
     private void initOnDeathEffect(){
         SpawnProjectileOnDeath spawnProjectileOnDeath = new SpawnProjectileOnDeath(EffectActivationTypes.OnObjectDeath,
                 EffectIdentifiers.MutaliskDeathMissiles,
-                3, MissileEnums.DefaultAnimatedBullet, ImageEnums.MutaliskMissile, ImageEnums.MutaliskMissileImpact);
+                5, MissileEnums.DefaultAnimatedBullet, ImageEnums.MutaliskMissile, ImageEnums.MutaliskMissileImpact);
 
         this.effects.add(spawnProjectileOnDeath);
     }

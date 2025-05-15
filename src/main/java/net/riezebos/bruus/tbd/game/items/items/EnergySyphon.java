@@ -10,33 +10,27 @@ import net.riezebos.bruus.tbd.game.items.enums.ItemApplicationEnum;
 
 public class EnergySyphon extends Item {
 
-    private float barrierAmount;
+    public static float barrierAmount = 5;
 
-    public EnergySyphon(){
+    public EnergySyphon() {
         super(ItemEnums.EnergySiphon, 1, ItemApplicationEnum.AfterCollision);
-        calculateBarrierAmount();
     }
 
 
-    private void calculateBarrierAmount(){
-        this.barrierAmount = 5 * quantity;
-    }
-
-    public void increaseQuantityOfItem(int amount){
+    public void increaseQuantityOfItem(int amount) {
         this.quantity += amount;
-        calculateBarrierAmount();
     }
 
     @Override
-    public void applyEffectToObject (GameObject gameObject) {
+    public void applyEffectToObject(GameObject gameObject) {
         //Heals the player on the death of the object
-        HealPlayerOnDeath healPlayerOnDeath = new HealPlayerOnDeath(true, barrierAmount, EffectActivationTypes.OnObjectDeath, EffectIdentifiers.EnergySyphonHealPlayerOnDeath);
+        HealPlayerOnDeath healPlayerOnDeath = new HealPlayerOnDeath(true, barrierAmount * quantity, EffectActivationTypes.OnObjectDeath, EffectIdentifiers.EnergySyphonHealPlayerOnDeath);
         gameObject.addEffect(healPlayerOnDeath);
     }
 
     @Override
-    public boolean isAvailable(){
-        if(!this.itemEnum.isEnabled()){
+    public boolean isAvailable() {
+        if (!this.itemEnum.isEnabled()) {
             return false;
         }
         return true;

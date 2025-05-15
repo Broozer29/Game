@@ -17,11 +17,10 @@ import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.Sprit
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteConfiguration;
 
 public class ElectricDestabilizer extends Item {
-    private float duration;
+    public static float duration = 2;
 
     public ElectricDestabilizer () {
         super(ItemEnums.ElectricDestabilizer, 1, ItemApplicationEnum.AfterCollision);
-        calculateDuration();
     }
 
     @Override
@@ -45,7 +44,7 @@ public class ElectricDestabilizer extends Item {
             SpriteAnimationConfiguration spriteAnimationConfiguration = new SpriteAnimationConfiguration(spriteConfiguration, 0, true);
             SpriteAnimation spriteAnimation = new SpriteAnimation(spriteAnimationConfiguration);
 
-            FreezeEffect freezeEffect = new FreezeEffect(duration, spriteAnimation);
+            FreezeEffect freezeEffect = new FreezeEffect(duration * quantity, spriteAnimation);
 
             target.addEffect(freezeEffect);
         }
@@ -54,12 +53,8 @@ public class ElectricDestabilizer extends Item {
 
     public void increaseQuantityOfItem (int amount) {
         this.quantity += amount;
-        calculateDuration();
     }
 
-    private void calculateDuration () {
-        this.duration = 2f * quantity;
-    }
 
     @Override
     public boolean isAvailable(){

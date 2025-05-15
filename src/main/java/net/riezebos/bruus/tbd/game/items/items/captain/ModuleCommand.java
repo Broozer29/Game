@@ -10,13 +10,14 @@ import net.riezebos.bruus.tbd.game.items.enums.ItemApplicationEnum;
 
 public class ModuleCommand extends Item {
 
+    public static int maxDronesCapacity = 12;
     public ModuleCommand () {
         super(ItemEnums.ModuleCommand, 1, ItemApplicationEnum.UponAcquiring);
     }
 
     @Override
     public void applyEffectToObject (GameObject gameObject) {
-        PlayerStats.getInstance().setMaximumAmountOfDrones(12);
+        PlayerStats.getInstance().setMaximumAmountOfDrones(maxDronesCapacity);
     }
 
     @Override

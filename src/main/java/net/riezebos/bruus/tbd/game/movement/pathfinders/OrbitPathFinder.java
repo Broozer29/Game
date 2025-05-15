@@ -15,11 +15,11 @@ public class OrbitPathFinder implements PathFinder {
 
     private GameObject target;
 
-    private int radius;
-    private int totalFrames;
+    private float radius;
+    private float totalFrames;
     private double offsetAngle; // NEW: Angle offset for this drone
 
-    public OrbitPathFinder (GameObject target, int radius, int totalFrames, double offsetAngle) {
+    public OrbitPathFinder (GameObject target, float radius, float totalFrames, double offsetAngle) {
         this.target = target;
         this.radius = radius;
         this.totalFrames = totalFrames;
@@ -45,14 +45,12 @@ public class OrbitPathFinder implements PathFinder {
 
         // Determine the angle for the starting point relative to the target
         double startAngle = Math.atan2(
-                (gameObject.getYCoordinate() + gameObject.getHeight() / 2.0) - (target.getYCoordinate() + target.getHeight() / 2.0),
-                (gameObject.getXCoordinate() + gameObject.getWidth() / 2.0) - (target.getXCoordinate() + target.getWidth() / 2.0)
+                gameObject.getCenterYCoordinate() - target.getCenterYCoordinate(),
+                gameObject.getCenterXCoordinate() - target.getCenterXCoordinate()
         );
 
         // Generate waypoints that include a smooth transition from start to orbit
         // Precompute constant values
-        double centerX = target.getXCoordinate() + target.getWidth() / 2.0;
-        double centerY = target.getYCoordinate() + target.getHeight() / 2.0;
         double gameObjectHalfWidth = gameObject.getWidth() / 2.0;
         double gameObjectHalfHeight = gameObject.getHeight() / 2.0;
 
@@ -63,8 +61,8 @@ public class OrbitPathFinder implements PathFinder {
             double angle = angleStep * i + startAngle; // Start angle relative to the initial position
 
             // Efficiently calculate x and y
-            int x = (int) (centerX + Math.cos(angle) * radius - gameObjectHalfWidth);
-            int y = (int) (centerY + Math.sin(angle) * radius - gameObjectHalfHeight);
+            double x = (target.getCenterXCoordinate() + Math.cos(angle) * radius - gameObjectHalfWidth);
+            double y = (target.getCenterYCoordinate() + Math.sin(angle) * radius - gameObjectHalfHeight);
 
             waypoints.add(new Point(x, y));
         }
@@ -103,8 +101,8 @@ public class OrbitPathFinder implements PathFinder {
     }
 
     public Direction calculateDirection (Point start, Point end) {
-        int dx = end.getX() - start.getX();
-        int dy = end.getY() - start.getY();
+        float dx = end.getX() - start.getX();
+        float dy = end.getY() - start.getY();
 
         // Fuck it, om een of andere reden is dy de tegenovergestelde richting.
         // Waarom dit is I dont fucking know maar het werkt op deze manier
@@ -149,7 +147,7 @@ public class OrbitPathFinder implements PathFinder {
         return start;
     }
 
-    public void adjustPathForTargetMovement (Path path, int targetDeltaX, int targetDeltaY) {
+    public void adjustPathForTargetMovement (Path path, float targetDeltaX, float targetDeltaY) {
         List<Point> waypoints = path.getWaypoints();
         for (Point waypoint : waypoints) {
             waypoint.setX(waypoint.getX() + targetDeltaX);
@@ -166,9 +164,5 @@ public class OrbitPathFinder implements PathFinder {
                                            int yMovementspeed) {
         // Should not be used for OrbitPathFinders
         return start;
-    }
-
-    public int getFrames () {
-        return this.totalFrames;
     }
 }

@@ -27,7 +27,7 @@ public class Scout extends Enemy {
         this.destructionAnimation = new SpriteAnimation(destroyedExplosionfiguration);
         this.destructionAnimation.setAnimationScale(this.scale / 1.5f);
         this.attackSpeed = 5;
-        this.damage = 10;
+        this.damage = 12;
         this.detonateOnCollision = false;
         this.knockbackStrength = 5;
 

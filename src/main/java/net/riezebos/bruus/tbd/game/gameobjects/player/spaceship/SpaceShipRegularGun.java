@@ -15,6 +15,8 @@ import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.gamestate.GameStatsTracker;
 import net.riezebos.bruus.tbd.game.items.ItemEnums;
 import net.riezebos.bruus.tbd.game.items.PlayerInventory;
+import net.riezebos.bruus.tbd.game.items.items.carrier.KineticDynamo;
+import net.riezebos.bruus.tbd.game.items.items.firefighter.InfernalPreIgniter;
 import net.riezebos.bruus.tbd.game.movement.Direction;
 import net.riezebos.bruus.tbd.game.movement.MovementConfiguration;
 import net.riezebos.bruus.tbd.game.movement.MovementPatternSize;
@@ -55,8 +57,6 @@ public class SpaceShipRegularGun {
                 for (Drone drone : FriendlyManager.getInstance().getAllPlayerDrones()) {
                     drone.fireAction();
                 }
-                playMissileAudio(AudioEnums.NewPlayerLaserbeam);
-                return; //Don't fire the actual player missile
             }
 
             if (playerAttackType.equals(PlayerPrimaryAttackTypes.Laserbeam)) {
@@ -79,14 +79,28 @@ public class SpaceShipRegularGun {
             PlayerStats.getInstance().setMovementSpeed(PlayerStats.carrierFastSpeed);
             AudioManager.getInstance().addAudio(AudioEnums.ClassCarrierSpeedingUp);
             addSwitchingGearAnimation(ImageEnums.ProtossCarrierSwitchFast);
+            updateKineticDynamo(true);
         } else if (carrierFastSwitch) {
             ProtossUtils.getInstance().setAllowedToBuildProtoss(true);
             carrierFastSwitch = false;
             PlayerStats.getInstance().setMovementSpeed(PlayerStats.carrierSlowSpeed);
             AudioManager.getInstance().addAudio(AudioEnums.ClassCarrierSlowingDown);
             addSwitchingGearAnimation(ImageEnums.ProtossCarrierSwitchSlow);
+            updateKineticDynamo(false);
         }
     }
+
+    private void updateKineticDynamo(boolean newValue){
+        KineticDynamo kineticDynamo = (KineticDynamo) PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.KineticDynamo);
+        if(kineticDynamo != null){
+            if(!newValue){
+                kineticDynamo.applyEffectToObject(PlayerManager.getInstance().getSpaceship());
+            }
+            kineticDynamo.isMovingFast = newValue;
+        }
+
+    }
+
 
     private void addSwitchingGearAnimation(ImageEnums imageType) {
         SpriteConfiguration spriteConfiguration = new SpriteConfiguration();
@@ -115,8 +129,15 @@ public class SpaceShipRegularGun {
     }
 
 
+    // Fuel tank mechanics
+    private final float FUEL_DEPLETION_RATE = 0.3f;
+    private final float FUEL_REGENERATION_RATE = 0.4f;
+    private final float FUEL_MINIMUM_REQUIRED = 0.3f;
+
     private void startFiringFlameThrower(int xCoordinate, int yCoordinate) {
-        if (this.channeledAttack == null) {
+        if (this.channeledAttack == null && orangeBarCurrentValue >= FUEL_MINIMUM_REQUIRED) {
+
+
             PlayerManager playerManager = PlayerManager.getInstance();
             SpaceShip spaceShip = playerManager.getSpaceship();
 
@@ -126,6 +147,8 @@ public class SpaceShipRegularGun {
             spriteConfiguration.setImageType(ImageEnums.FireFighterFlameThrowerAppearing);
 
             float damage = playerStats.getNormalAttackDamage();
+
+
             SpriteAnimationConfiguration spriteAnimationConfiguration = new SpriteAnimationConfiguration(spriteConfiguration, 3, true);
             SpecialAttackConfiguration missileConfiguration = new SpecialAttackConfiguration(damage, true, true, false, true, false, true);
             SpecialAttack specialAttack = new FlameThrower(spriteAnimationConfiguration, missileConfiguration);
@@ -135,12 +158,16 @@ public class SpaceShipRegularGun {
             specialAttack.setOwnerOrCreator(PlayerManager.getInstance().getSpaceship());
             spaceShip.addFollowingSpecialAttack(specialAttack);
             this.channeledAttack = specialAttack;
+            updateFlameThrowerDamageFromInfernalPreIgniter(this.channeledAttack);
             MissileManager.getInstance().addSpecialAttack(specialAttack);
             AudioManager.getInstance().addAudio(AudioEnums.Firewall);
         }
+    }
 
-        orangeBarCurrentValue = -1;
-        orangeBarMaxValue = -1;
+    private void updateFlameThrowerDamageFromInfernalPreIgniter(SpecialAttack specialAttack){
+        if(PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.InfernalPreIgniter) != null){
+            specialAttack.setDamage(playerStats.getNormalAttackDamage() * ((this.orangeBarCurrentValue / this.orangeBarMaxValue) * InfernalPreIgniter.maxDamageBonnus));
+        }
     }
 
 
@@ -183,7 +210,7 @@ public class SpaceShipRegularGun {
         AudioEnums deathSound = null;
         boolean allowedToDealDamage = true;
         String objectType = "Player Missile";
-        float damage = playerStats.getNormalAttackDamage();
+        float damage = playerStats.getNormalAttackDamage() * 2;
         boolean isExplosive = false;
 
         switch (attackType) {
@@ -221,6 +248,38 @@ public class SpaceShipRegularGun {
                 channeledAttack = null;
             }
         }
+
+        if (PlayerStats.getInstance().getPlayerClass().equals(PlayerClass.FireFighter)) {
+            if(orangeBarMaxValue < 0) {
+                orangeBarMaxValue = 100 * PlayerStats.getInstance().getFuelCannisterMultiplier(); //placeholder
+            }
+
+            if(orangeBarCurrentValue < 0){
+                orangeBarCurrentValue = orangeBarMaxValue;
+            }
+
+            if(this.channeledAttack == null && orangeBarCurrentValue < orangeBarMaxValue) {
+                orangeBarCurrentValue += FUEL_REGENERATION_RATE * PlayerStats.getInstance().getFuelCannisterRegenMultiplier();
+                if (orangeBarCurrentValue > orangeBarMaxValue * PlayerStats.getInstance().getFuelCannisterMultiplier()) {
+                    orangeBarCurrentValue = orangeBarMaxValue * PlayerStats.getInstance().getFuelCannisterMultiplier(); // Clamp at max value
+                }
+            }
+
+            if(channeledAttack != null) {
+                if (orangeBarCurrentValue <= 0) {
+                    // If no fuel is available, prevent firing
+                    stopFiring();
+                    return;
+                }
+
+                // Deplete fuel while firing
+                updateFlameThrowerDamageFromInfernalPreIgniter(this.channeledAttack);
+                orangeBarCurrentValue -= FUEL_DEPLETION_RATE;
+                if (orangeBarCurrentValue < 0) {
+                    orangeBarCurrentValue = 0; // Clamp at 0
+                }
+            }
+        }
     }
 
     public float getOrangeBarMaxValue() {
@@ -236,4 +295,5 @@ public class SpaceShipRegularGun {
         }
         return orangeBarCurrentValue;
     }
+
 }

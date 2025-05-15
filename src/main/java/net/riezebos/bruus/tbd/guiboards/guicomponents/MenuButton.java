@@ -29,7 +29,6 @@ import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.Sprit
 public class MenuButton extends GUIComponent {
 
     private LevelDifficulty levelDifficulty;
-
     private LevelLength levelLength;
 
     public MenuButton(SpriteConfiguration spriteConfiguration) {
@@ -120,6 +119,7 @@ public class MenuButton extends GUIComponent {
             case SelectCompoundWealth:
             case SelectTreasureHunter:
             case SelectBountyHunter:
+            case SelectThickHide:
                 if (BoonSelectionBoardCreator.getBoonByMenuFunctionality(menuFunctionality).isUnlocked()) {
                     BoonManager.getInstance().setUtilityBoon(BoonSelectionBoardCreator.getBoonByMenuFunctionality(menuFunctionality));
                 }
@@ -129,6 +129,7 @@ public class MenuButton extends GUIComponent {
             case UpgradeCompoundWealth:
             case UpgradeTreasureHunter:
             case UpgradeBountyHunter:
+            case UpgradeThickHide:
                 Boon boon = BoonSelectionBoardCreator.getBoonByMenuFunctionality(menuFunctionality);
                 boon.upgradeBoon();
                 BoardManager.getInstance().getUpgradeSelectionBoard().recreateList();
@@ -136,8 +137,8 @@ public class MenuButton extends GUIComponent {
                 break;
             case PurchaseItem:
                 break; //Handled in a different class
-            case SelectManMode:
-                if(GameState.getInstance().getGameMode().equals(GameMode.ManMode)){
+            case SelectBossMode:
+                if (GameState.getInstance().getGameMode().equals(GameMode.ManMode)) {
                     GameState.getInstance().setGameMode(GameMode.Default);
                     OnScreenTextManager.getInstance().addText("Changed to DEFAULT mode",
                             DataClass.getInstance().getWindowWidth() / 2,

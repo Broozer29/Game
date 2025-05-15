@@ -13,6 +13,8 @@ public class ImageDatabase {
     private ImageLoader imgLoader = ImageLoader.getInstance();
 
     private BufferedImage model3BetterUpgrade;
+    private BufferedImage fuelCannister;
+    private BufferedImage infernalPreIgniter;
     private BufferedImage uidamageoverlay;
     private BufferedImage inputMapping;
     private BufferedImage upWhite;
@@ -28,12 +30,16 @@ public class ImageDatabase {
     private BufferedImage protossShipAmountIcon;
 
     private BufferedImage alienBombImage;
+    private List<BufferedImage> rotatingBoxes = new ArrayList<>();
     private List<BufferedImage> protossDestroyedExplosion = new ArrayList<>();
     private List<BufferedImage> overlordIdle = new ArrayList<>();
     private List<BufferedImage> fireWall = new ArrayList<>();
     private List<BufferedImage> laserbeamBody = new ArrayList<>();
     private List<BufferedImage> laserbeamStart = new ArrayList<>();
     private List<BufferedImage> laserbeamEnd = new ArrayList<>();
+    private List<BufferedImage> pinklaserbeamBody = new ArrayList<>();
+    private List<BufferedImage> pinklaserbeamStart = new ArrayList<>();
+    private List<BufferedImage> pinklaserbeamEnd = new ArrayList<>();
     private List<BufferedImage> seekerFrames = new ArrayList<>();
     private List<BufferedImage> tazer = new ArrayList<>();
     private List<BufferedImage> energizer = new ArrayList<>();
@@ -45,6 +51,7 @@ public class ImageDatabase {
     private List<BufferedImage> destructableOrbitCenterMissile = new ArrayList<>();
     private List<BufferedImage> shurikenEnemy = new ArrayList<>();
     private List<BufferedImage> moduleScorchFlames = new ArrayList<>();
+    private List<BufferedImage> yellowBoss = new ArrayList<>();
 
 
     // Ship numbers to names:
@@ -247,6 +254,7 @@ public class ImageDatabase {
     private BufferedImage classSelectionUI;
     private BufferedImage fireFighter;
     private BufferedImage sc2MineExplosion;
+    private BufferedImage nepotismUnlock;
 
 
     private List<BufferedImage> cashCarrierFrames = new ArrayList<>();
@@ -285,6 +293,7 @@ public class ImageDatabase {
     private List<BufferedImage> Rocket1ExplosionFrames = new ArrayList<>();
     private List<BufferedImage> barrierProjectileDestruction = new ArrayList<>();
     private List<BufferedImage> laserbeamChargingFrames = new ArrayList<>();
+    private List<BufferedImage> pinklaserbeamChargingFrames = new ArrayList<>();
 
     // Enemy Exhaust Animations
     private List<BufferedImage> explosion2 = new ArrayList<>();
@@ -474,6 +483,9 @@ public class ImageDatabase {
     private BufferedImage kineticDynamoIcon;
     private BufferedImage inversionRetrieval;
     private BufferedImage arbiterMultiTargetIcon;
+    private List<BufferedImage> rotatingCoins = new ArrayList<>();
+    private BufferedImage carrierUnlock;
+    private BufferedImage firefighterUnlock;
 
     private ImageDatabase() {
         initializeImages();
@@ -569,6 +581,9 @@ public class ImageDatabase {
         this.carrierSwitchGearsIcon = imgLoader.getImage(ImageEnums.CarrierSwitchGearsIcon);
         this.carrierPlaceDroneIcon = imgLoader.getImage(ImageEnums.CarrierPlaceDroneIcon);
         this.protossShipAmountIcon = imgLoader.getImage(ImageEnums.ProtossShipAmountIcon);
+        this.carrierUnlock = imgLoader.getImage(ImageEnums.CarrierUnlock);
+        this.infernalPreIgniter = imgLoader.getImage(ImageEnums.InfernalPreIgniter);
+        this.fuelCannister = imgLoader.getImage(ImageEnums.FuelCannister);
     }
 
 
@@ -837,10 +852,18 @@ public class ImageDatabase {
         this.kineticDynamoIcon = imgLoader.getImage(ImageEnums.KineticDynamoIcon);
         this.inversionRetrieval = imgLoader.getImage(ImageEnums.InversionRetrieval);
         this.arbiterMultiTargetIcon = imgLoader.getImage(ImageEnums.ArbiterMultiTargetIcon);
+        this.firefighterUnlock = imgLoader.getImage(ImageEnums.FireFighterUnlock);
+        this.nepotismUnlock = imgLoader.getImage(ImageEnums.NepotismUnlock);
+
     }
 
     public BufferedImage getImage(ImageEnums imageType) {
         switch (imageType) {
+            case FireFighterUnlock: return this.firefighterUnlock;
+            case NepotismUnlock: return this.nepotismUnlock;
+            case CarrierUnlock: return this.carrierUnlock;
+            case InfernalPreIgniter: return this.infernalPreIgniter;
+            case FuelCannister: return this.fuelCannister;
             case ArbiterMultiTargetIcon:
                 return this.arbiterMultiTargetIcon;
             case InversionRetrieval:
@@ -1430,6 +1453,11 @@ public class ImageDatabase {
 
     public List<BufferedImage> getAnimation(ImageEnums imageType) {
         switch (imageType) {
+            case RotatingCoins: return this.rotatingCoins;
+            case RotatingBoxes:
+                return this.rotatingBoxes;
+            case YellowBoss:
+                return this.yellowBoss;
             case CarrierPulsingDrone:
                 return this.carrierPulsingDrone;
             case MartyrdomAnimation:
@@ -1545,15 +1573,19 @@ public class ImageDatabase {
             case SpaceStationBoss:
                 return spaceStationBossFrames;
             case LaserbeamCharging:
-            case PinkLaserbeamCharging:
                 return laserbeamChargingFrames;
+            case PinkLaserbeamCharging:
+                return pinklaserbeamChargingFrames;
             case LaserbeamEnd:
-            case PinkLaserbeamEnd:
                 return laserbeamEnd;
+            case PinkLaserbeamEnd:
+                return pinklaserbeamEnd;
             case PinkLaserbeamStart:
+                return pinklaserbeamStart;
             case LaserbeamStart:
                 return laserbeamStart;
             case PinkLaserbeamBody:
+                return pinklaserbeamBody;
             case LaserbeamBody:
                 return laserbeamBody;
             case ShurikenEnemy:
@@ -1864,6 +1896,12 @@ public class ImageDatabase {
             defaultPlayerEngine.add(image);
         }
 
+        for (int i = 0; i < 8; i++) {
+            String sourceString = String.format("/images/gif/PNGtoGIF/RotatingCoins/%d.png", i);
+            BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+            rotatingCoins.add(image);
+        }
+
 
         for (int i = 1; i < 10; i++) {
             String sourceString = String.format("/images/gif/PNGtoGIF/Player Shield Damage/%d.png", i);
@@ -2088,6 +2126,13 @@ public class ImageDatabase {
         }
 
         for (int i = 0; i < 4; i++) {
+            String sourceString = String.format("/images/Ships/Enemy Ships/YellowBoss/%d.png", i);
+            BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+            yellowBoss.add(image);
+        }
+
+
+        for (int i = 0; i < 4; i++) {
             String sourceString = String.format("/images/Ships/Enemy Ships/carrierpulsingdrone/%d.png", i);
             BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
             carrierPulsingDrone.add(image);
@@ -2172,9 +2217,21 @@ public class ImageDatabase {
         }
 
         for (int i = 0; i < 4; i++) {
+            String sourceString = String.format("/images/gif/PNGtoGIF/LaserbeamPink/Body/%d.png", i);
+            BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+            pinklaserbeamBody.add(image);
+        }
+
+        for (int i = 0; i < 4; i++) {
             String sourceString = String.format("/images/gif/PNGtoGIF/Laserbeam/Start/%d.png", i);
             BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
             laserbeamStart.add(image);
+        }
+
+        for (int i = 0; i < 4; i++) {
+            String sourceString = String.format("/images/gif/PNGtoGIF/LaserbeamPink/Start/%d.png", i);
+            BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+            pinklaserbeamStart.add(image);
         }
 
         for (int i = 0; i < 4; i++) {
@@ -2183,10 +2240,22 @@ public class ImageDatabase {
             laserbeamEnd.add(image);
         }
 
+        for (int i = 0; i < 4; i++) {
+            String sourceString = String.format("/images/gif/PNGtoGIF/LaserbeamPink/End/%d.png", i);
+            BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+            pinklaserbeamEnd.add(image);
+        }
+
         for (int i = 0; i < 16; i++) {
             String sourceString = String.format("/images/gif/PNGtoGIF/Laserbeam/ChargingUp/%d.png", i);
             BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
             laserbeamChargingFrames.add(image);
+        }
+
+        for (int i = 0; i < 16; i++) {
+            String sourceString = String.format("/images/gif/PNGtoGIF/LaserbeamPink/ChargingUp/%d.png", i);
+            BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+            pinklaserbeamChargingFrames.add(image);
         }
 
         for (int i = 0; i < 120; i++) {
@@ -2301,6 +2370,12 @@ public class ImageDatabase {
             String sourceString = String.format("/images/gif/PNGtoGIF/ProtossExplosion/%d.png", i);
             BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
             protossDestroyedExplosion.add(image);
+        }
+
+        for (int i = 0; i < 13; i++) {
+            String sourceString = String.format("/images/gif/PNGtoGIF/Rotatingboxes/%d.png", i);
+            BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+            rotatingBoxes.add(image);
         }
 
         for (int i = 0; i < 10; i++) {

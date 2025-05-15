@@ -15,11 +15,12 @@ import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.Sprit
 public class TazerProjectile extends Missile {
 
     private int amountOfCollisions = 0;
-    private int maximumAmountOfCollisions = 2;
+    private static int maximumAmountOfCollisions = 2;
 
     public TazerProjectile (SpriteAnimationConfiguration spriteConfiguration, MissileConfiguration missileConfiguration, MovementConfiguration movementConfiguration) {
         super(spriteConfiguration, missileConfiguration, movementConfiguration);
-
+        this.isDamageable = false;
+        this.isDestructable = true;
         if (missileConfiguration.getDestructionType() != null) {
             SpriteAnimationConfiguration destructionAnimation = new SpriteAnimationConfiguration(this.spriteConfiguration, 2, false);
             destructionAnimation.getSpriteConfiguration().setImageType(missileConfiguration.getDestructionType());
@@ -45,11 +46,11 @@ public class TazerProjectile extends Missile {
         if (target.isFriendly()) {
             //Debuff the player or player friendly objects
             attackSpeedModifierEffect = new AttackSpeedModifierEffect(-0.35f, 3, null, EffectIdentifiers.TazerAttackSpeedModifier);
-            damageModifierEffect = new DamageModifierEffect(-0.25f, 3, superChargedAnimation, EffectIdentifiers.TazerDamageModifier);
+//            damageModifierEffect = new DamageModifierEffect(-0.25f, 3, superChargedAnimation, EffectIdentifiers.TazerDamageModifier);
             this.setVisible(false);
         } else {
             //Buff the fellow enemies
-            attackSpeedModifierEffect = new AttackSpeedModifierEffect(0.25f, 5, null, EffectIdentifiers.TazerAttackSpeedModifier);
+            attackSpeedModifierEffect = new AttackSpeedModifierEffect(0.25f, 6, null, EffectIdentifiers.TazerAttackSpeedModifier);
             damageModifierEffect = new DamageModifierEffect(0.25f, 6, superChargedAnimation, EffectIdentifiers.TazerDamageModifier);
         }
 

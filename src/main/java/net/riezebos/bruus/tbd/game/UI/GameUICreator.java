@@ -1,6 +1,7 @@
 package net.riezebos.bruus.tbd.game.UI;
 
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
+import net.riezebos.bruus.tbd.guiboards.guicomponents.GUIComponent;
 import net.riezebos.bruus.tbd.visualsandaudio.data.DataClass;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.LevelSongs;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
@@ -32,7 +33,7 @@ public class GameUICreator {
 
     private UIObject difficultyWings;
 
-    private UIObject progressBar;
+    private UIObject progressBarFrame;
     private UIObject progressBarFilling;
     private UIObject progressBarSpaceShipIndicator;
     private UIObject gameOverCard;
@@ -121,14 +122,14 @@ public class GameUICreator {
         );
     }
 
-    public UIObject createEmeraldObtainedIcon(int xCoordinate, int yCoordinate){
+    public GUIComponent createEmeraldObtainedIcon(int xCoordinate, int yCoordinate){
         SpriteConfiguration spriteConfiguration = new SpriteConfiguration();
         spriteConfiguration.setxCoordinate(xCoordinate);
         spriteConfiguration.setyCoordinate(yCoordinate);
         spriteConfiguration.setScale(1 * DataClass.getInstance().getResolutionFactor());
         spriteConfiguration.setImageType(ImageEnums.EmeraldGem5);
 
-        UIObject emeraldObtainedIcon = new UIObject(spriteConfiguration);
+        GUIComponent emeraldObtainedIcon = new GUIComponent(spriteConfiguration);
         emeraldObtainedIcon.setCenterCoordinates(xCoordinate, yCoordinate);
         emeraldObtainedIcon.setTransparancyAlpha(true, 1, -0.005f);
         return emeraldObtainedIcon;
@@ -211,9 +212,9 @@ public class GameUICreator {
         float progressBarFillingScale = 0.95f * DataClass.getInstance().getResolutionFactor();
         float progressBarSpaceShipIndicatorScale = 0.3f * DataClass.getInstance().getResolutionFactor();
 
-        progressBar = new UIObject((createUIConfiguration(xCoordinate, yCoordinate, progressBarScale, ImageEnums.ProgressBar)));
+        progressBarFrame = new UIObject((createUIConfiguration(xCoordinate, yCoordinate, progressBarScale, ImageEnums.ProgressBar)));
         progressBarFilling = new UIObject((createUIConfiguration(xCoordinate + 5, yCoordinate, progressBarFillingScale, ImageEnums.ProgressBarFilling)));
-        progressBarFilling.setCenterYCoordinate(progressBar.getCenterYCoordinate());
+        progressBarFilling.setCenterYCoordinate(progressBarFrame.getCenterYCoordinate());
 
         progressBarSpaceShipIndicator = new UIObject(createUIConfiguration(xCoordinate,yCoordinate, progressBarSpaceShipIndicatorScale, ImageEnums.Player_Spaceship_Model_3));
         progressBarSpaceShipIndicator.setCenterYCoordinate(progressBarFilling.getCenterYCoordinate());
@@ -297,7 +298,7 @@ public class GameUICreator {
         if (currentFrame < 0) {
             return 1;
         }
-        return Math.min(progressBar.getWidth(), (int) (currentFrame / maxFrames * progressBar.getWidth()));
+        return Math.min(progressBarFrame.getWidth(), (int) (currentFrame / maxFrames * progressBarFrame.getWidth()));
     }
 
 
@@ -356,8 +357,8 @@ public class GameUICreator {
         return difficultyWings;
     }
 
-    public UIObject getProgressBar () {
-        return progressBar;
+    public UIObject getProgressBarFrame() {
+        return progressBarFrame;
     }
 
     public UIObject getProgressBarFilling () {

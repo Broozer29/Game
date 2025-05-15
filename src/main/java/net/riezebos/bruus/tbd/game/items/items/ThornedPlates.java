@@ -7,8 +7,8 @@ import net.riezebos.bruus.tbd.game.items.ItemEnums;
 import net.riezebos.bruus.tbd.game.items.enums.ItemApplicationEnum;
 
 public class ThornedPlates extends Item {
-    private float buffAmount = 0.20f;
-    private int armorAmount = 5;
+    public static float buffAmount = 0.20f;
+    public static int armorAmount = 5;
     private boolean shouldApply;
 
     public ThornedPlates () {

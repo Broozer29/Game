@@ -11,6 +11,8 @@ import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.gamestate.GameStatsTracker;
 import net.riezebos.bruus.tbd.game.items.ItemEnums;
 import net.riezebos.bruus.tbd.game.items.PlayerInventory;
+import net.riezebos.bruus.tbd.game.items.effects.EffectIdentifiers;
+import net.riezebos.bruus.tbd.game.items.effects.effectimplementations.DamageOverTime;
 import net.riezebos.bruus.tbd.game.level.LevelManager;
 import net.riezebos.bruus.tbd.game.level.enums.LevelTypes;
 import net.riezebos.bruus.tbd.game.movement.BoardBlockUpdater;
@@ -24,6 +26,9 @@ import net.riezebos.bruus.tbd.visualsandaudio.data.audio.AudioManager;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.AudioEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.AnimationManager;
+import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteAnimation;
+import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteAnimationConfiguration;
+import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteConfiguration;
 
 import java.awt.*;
 import java.util.List;
@@ -162,9 +167,10 @@ public class EnemyManager {
     }
 
     private void increaseEnemySpawnedCount (Enemy enemy) {
-        if (LevelManager.getInstance().getLevelType().equals(LevelTypes.Boss) &&
-                enemy.getEnemyType().getEnemyCategory().equals(EnemyCategory.Boss)) {
-            GameStatsTracker.getInstance().addEnemySpawned(1);
+        if (LevelManager.getInstance().getLevelType().equals(LevelTypes.Boss)){
+            if( enemy.getEnemyType().getEnemyCategory().equals(EnemyCategory.Boss)){
+                GameStatsTracker.getInstance().addEnemySpawned(1);
+            }
         } else if (enemy.getEnemyType().getEnemyCategory() != EnemyCategory.Summon) {
             GameStatsTracker.getInstance().addEnemySpawned(1);
         }
@@ -289,15 +295,13 @@ public class EnemyManager {
         this.hasSpawnedABoss = hasSpawnedABoss;
     }
 
-    public void removeOutOfBoundsEnemies () {
+    public void     removeOutOfBoundsEnemies () {
         for (Enemy enemy : enemyList) {
-            if (enemy.getEnemyType().getEnemyCategory().equals(EnemyCategory.Small) ||
-                    enemy.getEnemyType().getEnemyCategory().equals(EnemyCategory.Medium) ||
-                    enemy.getEnemyType().getEnemyCategory().equals(EnemyCategory.Special)) {
-                if (!WithinVisualBoundariesCalculator.isWithinBoundaries(enemy)) {
+            if (!enemy.getEnemyType().getEnemyCategory().equals(EnemyCategory.Boss)
+                    && !WithinVisualBoundariesCalculator.isWithinBoundaries(enemy)) {
                     enemy.deleteObject();
                 }
-            }
+
         }
     }
 
@@ -314,4 +318,29 @@ public class EnemyManager {
     public PerformanceLogger getPerformanceLogger () {
         return this.performanceLogger;
     }
+
+    public void startBurningEnemies() {
+        for(Enemy enemy : this.enemyList){
+            if(enemy.getCurrentHitpoints() > 0 && !enemy.hasEffect(EffectIdentifiers.EndOfLevelBurn)){
+                enemy.addEffect(getEndOfGameEnemyBurnEffect(enemy));
+                enemy.setCashMoneyWorth(enemy.getCashMoneyWorth() * 0.1f);
+                enemy.setXpOnDeath(enemy.getXpOnDeath() * 0.1f);
+            }
+        }
+    }
+
+    private DamageOverTime getEndOfGameEnemyBurnEffect(Enemy enemy){
+        SpriteConfiguration spriteConfiguration = new SpriteConfiguration();
+        spriteConfiguration.setxCoordinate(enemy.getCenterXCoordinate());
+        spriteConfiguration.setyCoordinate(enemy.getCenterYCoordinate());
+        spriteConfiguration.setScale(1);
+        spriteConfiguration.setImageType(ImageEnums.IgniteBurning);
+
+        SpriteAnimationConfiguration spriteAnimationConfiguration = new SpriteAnimationConfiguration(spriteConfiguration, 2, true);
+        SpriteAnimation spriteAnimation = new SpriteAnimation(spriteAnimationConfiguration);
+
+        return new DamageOverTime(2, 9999, spriteAnimation, EffectIdentifiers.EndOfLevelBurn);
+    }
+
+
 }

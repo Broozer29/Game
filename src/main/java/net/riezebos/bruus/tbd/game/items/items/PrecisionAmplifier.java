@@ -1,6 +1,7 @@
 package net.riezebos.bruus.tbd.game.items.items;
 
 import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
+import net.riezebos.bruus.tbd.game.gameobjects.missiles.specialAttacks.SpecialAttack;
 import net.riezebos.bruus.tbd.game.items.Item;
 import net.riezebos.bruus.tbd.game.items.ItemEnums;
 import net.riezebos.bruus.tbd.game.items.PlayerInventory;
@@ -10,22 +11,17 @@ import java.util.Random;
 
 public class PrecisionAmplifier extends Item {
 
-    private float critChance;
+    public static float critChance = 0.1f;
     private Random random = new Random();
 
     public PrecisionAmplifier () {
         super(ItemEnums.PrecisionAmplifier, 1,  ItemApplicationEnum.BeforeCollision);
-        calculateCritChance();
     }
 
     public void increaseQuantityOfItem(int amount) {
         this.quantity += amount;
-        calculateCritChance();
     }
 
-    private void calculateCritChance(){
-        this.critChance = this.quantity * 10;
-    }
 
     @Override
     public void applyEffectToObject (GameObject gameObject) {
@@ -34,12 +30,26 @@ public class PrecisionAmplifier extends Item {
 
     @Override
     public void modifyAttackingObject (GameObject attack, GameObject target) {
+        if(attack instanceof SpecialAttack){
+            return; //We don't want to handle special attacks here as special attacks hit multiple times, they should check crits per hit
+        }
+
         float roll = random.nextFloat() * 100; // Roll a number between 0 and 100
 
-        if (roll < critChance) {
+        if (roll < (critChance * quantity)) {
             attack.setACrit(true);
         }
     }
+
+    public boolean rollCritDice(){
+        float roll = random.nextFloat() * 100; // Roll a number between 0 and 100
+
+        if (roll < (critChance * quantity)) {
+            return true;
+        }
+        return false;
+    }
+
 
     @Override
     public boolean isAvailable(){

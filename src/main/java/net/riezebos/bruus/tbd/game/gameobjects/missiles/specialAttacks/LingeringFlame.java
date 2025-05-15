@@ -39,8 +39,8 @@ public class LingeringFlame extends SpecialAttack{
     }
 
     private void initIgniteEffect(){
-        float duration = PlayerStats.getInstance().getFireFighterIgniteDuration();
-        float damage = PlayerStats.getInstance().getFireFighterIgniteDamage();
+        float duration = PlayerStats.getInstance().getIgniteDuration();
+        float damage = PlayerStats.getInstance().getIgniteDamage();
         EffectInterface ignite = new DamageOverTime(damage, duration, EffectIdentifiers.Ignite);
         this.effectsToApply.add(ignite);
     }

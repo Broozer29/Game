@@ -11,42 +11,43 @@ import java.util.Random;
 public enum ItemEnums {
     Locked(ItemRarityEnums.Locked, ItemCategory.Utility, ImageEnums.Test_Image, "Locked", false),
     PlasmaCoatedBullets(ItemRarityEnums.Common, ItemCategory.Offense, ImageEnums.Starcraft2_Blue_Flame, "Plasma Bullets", true),
-    PhotonPiercer(ItemRarityEnums.Common, ItemCategory.Offense, ImageEnums.Starcraft2_Concussive_Shells, "Photon Piercer",true),
-    CannisterOfGasoline(ItemRarityEnums.Rare, ItemCategory.Offense, ImageEnums.CannisterOfGasoline, "Gasoline",true),
-    SelfRepairingSteel(ItemRarityEnums.Common, ItemCategory.Defense, ImageEnums.Starcraft2_Heal, "Regenerative Steel",true),
-    Battery(ItemRarityEnums.Common, ItemCategory.Utility, ImageEnums.Starcraft2_Battery, "Battery",true),
-    FocusCrystal(ItemRarityEnums.Common, ItemCategory.Offense, ImageEnums.Starcraft2Keystone, "Focus Crystal",true),
-    PrecisionAmplifier(ItemRarityEnums.Common, ItemCategory.Offense, ImageEnums.Starcraft2_Advanced_Optics, "Advanced Optics",true),
-    PlatinumSponge(ItemRarityEnums.Common, ItemCategory.Defense, ImageEnums.Starcraft2_Platinum_Sponge, "Platinum Sponge",true),
-    EmergencyRepairBot(ItemRarityEnums.Common, ItemCategory.Defense, ImageEnums.Starcraft2_Vespene_Drone, "Repair Bot",true),
-    Overclock(ItemRarityEnums.Common, ItemCategory.Offense, ImageEnums.Starcraft2_Overclock, "Overclock",true),
-    RepulsionArmorPlate(ItemRarityEnums.Common, ItemCategory.Defense, ImageEnums.Starcraft2_Health_Upgrade_2, "Armor Plate",false),
-    EnergySiphon(ItemRarityEnums.Common, ItemCategory.Defense, ImageEnums.Starcraft2_Energy_Siphon, "Energy Siphon",true),
-    ArmorPiercingRounds(ItemRarityEnums.Common, ItemCategory.Offense, ImageEnums.Starcraft2_Armor_Piercing, "Piercing Rounds",false),
-    MoneyPrinter(ItemRarityEnums.Rare, ItemCategory.Utility, ImageEnums.MoneyPrinter, "Loot Box",false),
-    PlasmaLauncher(ItemRarityEnums.Rare, ItemCategory.Offense, ImageEnums.Starcraft2_Focused_Crystal, "Plasma Launcher",true),
-    GuardianDrone(ItemRarityEnums.Rare, ItemCategory.Offense, ImageEnums.Starcraft2_Seeker_Missile, "Guardian Drone",true),
-    CriticalOverloadCapacitor(ItemRarityEnums.Legendary, ItemCategory.Offense, ImageEnums.Starcraft2_Auto_Tracking, "Precision Overloader",true),
-    PiercingMissiles(ItemRarityEnums.Legendary, ItemCategory.Offense, ImageEnums.PiercingLaser, "Piercing Lasers",true),
-    BouncingModuleAddon(ItemRarityEnums.Legendary, ItemCategory.Offense, ImageEnums.Starcraft2BouncingLaser, "Bouncing Lasers",true),
-    VIPTicket(ItemRarityEnums.Legendary, ItemCategory.Utility, ImageEnums.VIPTicket, "VIP Ticket",true),
-    ElectricDestabilizer(ItemRarityEnums.Legendary, ItemCategory.Offense, ImageEnums.Starcraft2_Protoss_Shield_Disintegrate, "Electric Destabilizer",true),
-    ModuleAccuracy(ItemRarityEnums.Legendary, ItemCategory.Offense, ImageEnums.Starcraft2LockOn, "Module: Accuracy",true),
-    ElectricSupercharger(ItemRarityEnums.Legendary, ItemCategory.Offense, ImageEnums.Starcraft2_Psi_Storm2, "Electric Supercharger",true),
-    ThornedPlates(ItemRarityEnums.Common, ItemCategory.Offense, ImageEnums.Thornedplates, "Thorned Armor",true),
-    Thornweaver(ItemRarityEnums.Relic, ItemCategory.Offense, ImageEnums.ThornWeaver, "Thornweaver",true),
-    BarbedAegis(ItemRarityEnums.Rare, ItemCategory.Offense, ImageEnums.BarbedAegis, "Barbed Aegis",true),
-    BarbedMissiles(ItemRarityEnums.Rare, ItemCategory.Offense, ImageEnums.BarbedMissiles, "Barbed Missiles",true),
-    ModuleElectrify(ItemRarityEnums.Relic, ItemCategory.Offense, ImageEnums.ModuleElectrify, "Module: Electrify",true),
+    PhotonPiercer(ItemRarityEnums.Common, ItemCategory.Offense, ImageEnums.Starcraft2_Concussive_Shells, "Photon Piercer", true),
+    CannisterOfGasoline(ItemRarityEnums.Rare, ItemCategory.Offense, ImageEnums.CannisterOfGasoline, "Gasoline", true),
+    SelfRepairingSteel(ItemRarityEnums.Common, ItemCategory.Defense, ImageEnums.Starcraft2_Heal, "Regenerative Steel", true),
+    Battery(ItemRarityEnums.Common, ItemCategory.Utility, ImageEnums.Starcraft2_Battery, "Battery", true),
+    FocusCrystal(ItemRarityEnums.Common, ItemCategory.Offense, ImageEnums.Starcraft2Keystone, "Focus Crystal", true),
+    PrecisionAmplifier(ItemRarityEnums.Common, ItemCategory.Offense, ImageEnums.Starcraft2_Advanced_Optics, "Advanced Optics", true),
+    PlatinumSponge(ItemRarityEnums.Common, ItemCategory.Defense, ImageEnums.Starcraft2_Platinum_Sponge, "Platinum Sponge", true),
+    EmergencyRepairBot(ItemRarityEnums.Common, ItemCategory.Defense, ImageEnums.Starcraft2_Vespene_Drone, "Repair Bot", true),
+    Overclock(ItemRarityEnums.Common, ItemCategory.Offense, ImageEnums.Starcraft2_Overclock, "Overclock", true),
+    RepulsionArmorPlate(ItemRarityEnums.Common, ItemCategory.Defense, ImageEnums.Starcraft2_Health_Upgrade_2, "Armor Plate", false), //It's boring and never used
+    EnergySiphon(ItemRarityEnums.Common, ItemCategory.Defense, ImageEnums.Starcraft2_Energy_Siphon, "Energy Siphon", true),
+    ArmorPiercingRounds(ItemRarityEnums.Common, ItemCategory.Offense, ImageEnums.Starcraft2_Armor_Piercing, "Piercing Rounds", false), //It's boring and deprecated
+    MoneyPrinter(ItemRarityEnums.Rare, ItemCategory.Utility, ImageEnums.MoneyPrinter, "Loot Box", false), //Completely fucks up the pacing & has broken implementation
+    PlasmaLauncher(ItemRarityEnums.Rare, ItemCategory.Offense, ImageEnums.Starcraft2_Focused_Crystal, "Plasma Launcher", true),
+    GuardianDrone(ItemRarityEnums.Rare, ItemCategory.Offense, ImageEnums.Starcraft2_Seeker_Missile, "Guardian Drone", true),
+    CriticalOverloadCapacitor(ItemRarityEnums.Legendary, ItemCategory.Offense, ImageEnums.Starcraft2_Auto_Tracking, "Precision Overloader", true),
+    PiercingMissiles(ItemRarityEnums.Legendary, ItemCategory.Offense, ImageEnums.PiercingLaser, "Piercing Lasers", true),
+    BouncingModuleAddon(ItemRarityEnums.Relic, ItemCategory.Offense, ImageEnums.Starcraft2BouncingLaser, "Bouncing Lasers", true),
+    VIPTicket(ItemRarityEnums.Legendary, ItemCategory.Utility, ImageEnums.VIPTicket, "VIP Ticket", true),
+    ElectricDestabilizer(ItemRarityEnums.Legendary, ItemCategory.Offense, ImageEnums.Starcraft2_Protoss_Shield_Disintegrate, "Electric Destabilizer", true),
+    ModuleAccuracy(ItemRarityEnums.Legendary, ItemCategory.Offense, ImageEnums.Starcraft2LockOn, "Module: Accuracy", true),
+    ElectricSupercharger(ItemRarityEnums.Legendary, ItemCategory.Offense, ImageEnums.Starcraft2_Psi_Storm2, "Electric Supercharger", true),
+    ThornedPlates(ItemRarityEnums.Common, ItemCategory.Offense, ImageEnums.Thornedplates, "Thorned Armor", true),
+    Thornweaver(ItemRarityEnums.Relic, ItemCategory.Offense, ImageEnums.ThornWeaver, "Thornweaver", true),
+    BarbedAegis(ItemRarityEnums.Rare, ItemCategory.Offense, ImageEnums.BarbedAegis, "Barbed Aegis", true),
+    BarbedMissiles(ItemRarityEnums.Rare, ItemCategory.Offense, ImageEnums.BarbedMissiles, "Barbed Missiles", true),
+    ModuleElectrify(ItemRarityEnums.Relic, ItemCategory.Offense, ImageEnums.ModuleElectrify, "Module: Electrify", true),
     ModuleCommand(ItemRarityEnums.Relic, ItemCategory.Offense, ImageEnums.ModuleCommand, "Module: Synergize", true),
     Contract(ItemRarityEnums.Common, ItemCategory.Utility, ImageEnums.Contract, "Contract", true),
-    BarrierSuperSizer(ItemRarityEnums.Common, ItemCategory.Defense, ImageEnums.Starcraft2_BatteryUpgrade, "Barrier Booster",true),
-    StickyOil(ItemRarityEnums.Rare, ItemCategory.Offense, ImageEnums.StickyOilIcon, "Sticky Oil",true),
-    CorrosiveOil(ItemRarityEnums.Legendary, ItemCategory.Offense, ImageEnums.CorrosiveOil, "Corrosive Oil",true),
-    ScorchingFury(ItemRarityEnums.Rare, ItemCategory.Offense, ImageEnums.Starcraft2RepairBeam, "Scorching Fury",true),
-    FlameDetonation(ItemRarityEnums.Legendary, ItemCategory.Offense, ImageEnums.Starcraft2_MineExplosion, "Flame Detonation",true),
-    EscalatingFlames(ItemRarityEnums.Rare, ItemCategory.Offense, ImageEnums.EscalatingFlames, "Escalating Flames",true),
+    BarrierSuperSizer(ItemRarityEnums.Common, ItemCategory.Defense, ImageEnums.Starcraft2_BatteryUpgrade, "Barrier Booster", false), //It's a boring item
+    StickyOil(ItemRarityEnums.Rare, ItemCategory.Offense, ImageEnums.StickyOilIcon, "Sticky Oil", true),
+    CorrosiveOil(ItemRarityEnums.Legendary, ItemCategory.Offense, ImageEnums.CorrosiveOil, "Corrosive Oil", true),
+    ScorchingFury(ItemRarityEnums.Rare, ItemCategory.Offense, ImageEnums.Starcraft2RepairBeam, "Scorching Fury", true),
+    FlameDetonation(ItemRarityEnums.Legendary, ItemCategory.Offense, ImageEnums.Starcraft2_MineExplosion, "Flame Detonation", true),
+    EscalatingFlames(ItemRarityEnums.Rare, ItemCategory.Offense, ImageEnums.EscalatingFlames, "Escalating Flames", true),
     EntanglingFlames(ItemRarityEnums.Legendary, ItemCategory.Offense, ImageEnums.EntanglingFlames, "Entangling Flames", true),
+    FuelCannister(ItemRarityEnums.Legendary, ItemCategory.Offense, ImageEnums.FuelCannister, "Fuel Cannister", true),
     BargainBucket(ItemRarityEnums.Legendary, ItemCategory.Offense, ImageEnums.BargainBucket, "Bargain Bucket", true),
     ModuleScorch(ItemRarityEnums.Relic, ItemCategory.Offense, ImageEnums.ModuleScorchIcon, "Module: Scorch", true),
     ShieldStabilizer(ItemRarityEnums.Relic, ItemCategory.Defense, ImageEnums.ShieldStabilizer, "Energy Stabilizer", true),
@@ -56,13 +57,14 @@ public enum ItemEnums {
     HangarBayUpgrade(ItemRarityEnums.Legendary, ItemCategory.Utility, ImageEnums.HangarBayIcon, "Hangar Bay Upgrade", true),
     PyrrhicProtocol(ItemRarityEnums.Legendary, ItemCategory.Offense, ImageEnums.PyrrhicProtocolIcon, "Pyrrhic Protocol", true),
     RallyTheFleet(ItemRarityEnums.Rare, ItemCategory.Utility, ImageEnums.RallyTheFleetIcon, "Rally the Fleet", true),
-    InverseRetrieval(ItemRarityEnums.Legendary, ItemCategory.Utility, ImageEnums.Test_Image, "Inverse Retrieval", true),
+    InverseRetrieval(ItemRarityEnums.Legendary, ItemCategory.Utility, ImageEnums.InversionRetrieval, "Inverse Retrieval", true),
     Martyrdom(ItemRarityEnums.Legendary, ItemCategory.Offense, ImageEnums.FrenzyIcon, "Martyrdom", true),
     KineticDynamo(ItemRarityEnums.Legendary, ItemCategory.Offense, ImageEnums.KineticDynamoIcon, "Kinetic Dynamo", true),
-    ProtossThorns(ItemRarityEnums.Rare, ItemCategory.Defense, ImageEnums.InversionRetrieval, "Protoss Thorns name", true),
+    ProtossThorns(ItemRarityEnums.Rare, ItemCategory.Defense, ImageEnums.Test_Image, "Thorned Ships", true),
     ArbiterMultiTargeting(ItemRarityEnums.Rare, ItemCategory.Utility, ImageEnums.ArbiterMultiTargetIcon, "Arbiter Multi Targeting", true),
     SynergeticLink(ItemRarityEnums.Legendary, ItemCategory.Utility, ImageEnums.Test_Image, "Synergetic Link", true),
-    StickyDynamite(ItemRarityEnums.Common, ItemCategory.Offense, ImageEnums.StickyDynamite, "Sticky Dynamite",true);
+    StickyDynamite(ItemRarityEnums.Common, ItemCategory.Offense, ImageEnums.StickyDynamite, "Sticky Dynamite", true),
+    InfernalPreIgniter(ItemRarityEnums.Relic, ItemCategory.Offense, ImageEnums.InfernalPreIgniter, "Infernal Pre-igniter", true);
 
     private ItemRarityEnums itemRarity;
     private ItemCategory itemCategory;
@@ -70,7 +72,7 @@ public enum ItemEnums {
     private String itemName;
     private boolean enabled;
 
-    ItemEnums(ItemRarityEnums itemRarity, ItemCategory itemCategory, ImageEnums imageEnums, String itemName, boolean enabled){
+    ItemEnums(ItemRarityEnums itemRarity, ItemCategory itemCategory, ImageEnums imageEnums, String itemName, boolean enabled) {
         this.itemRarity = itemRarity;
         this.itemCategory = itemCategory;
         this.itemIcon = imageEnums;
@@ -78,7 +80,7 @@ public enum ItemEnums {
         this.enabled = enabled;
     }
 
-    public static ItemEnums getRandomItemByRarity (ItemRarityEnums category) {
+    public static ItemEnums getRandomItemByRarity(ItemRarityEnums category) {
         List<ItemEnums> matchingItems = new ArrayList<>();
 
         // Loop through all ItemEnums and add those that match the given category
@@ -98,23 +100,23 @@ public enum ItemEnums {
         return matchingItems.get(rand.nextInt(matchingItems.size()));
     }
 
-    public ItemRarityEnums getItemRarity () {
+    public ItemRarityEnums getItemRarity() {
         return this.itemRarity;
     }
 
-    public ItemCategory getItemCategory () {
+    public ItemCategory getItemCategory() {
         return itemCategory;
     }
 
-    public ImageEnums getItemIcon () {
+    public ImageEnums getItemIcon() {
         return itemIcon;
     }
 
-    public String getItemName () {
+    public String getItemName() {
         return itemName;
     }
 
-    public boolean isEnabled () {
+    public boolean isEnabled() {
         return enabled;
     }
 }

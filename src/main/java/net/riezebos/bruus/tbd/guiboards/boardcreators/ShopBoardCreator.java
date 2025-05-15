@@ -166,14 +166,14 @@ public class ShopBoardCreator {
         String text = "" + amount + ":" + PlayerStats.getInstance().getMaxAmountOfProtoss();
 
         GUITextCollection textCollection = new GUITextCollection(startingXCoordinate, moneyY, text);
-        textCollection.setScale(1 * DataClass.getInstance().getResolutionFactor());
+        textCollection.setScale(1.25f * DataClass.getInstance().getResolutionFactor());
 
         startingXCoordinate = startingXCoordinate - textCollection.getWidth() / 2;
         textCollection.setStartingXCoordinate(startingXCoordinate);
 
         int shipX = startingXCoordinate + textCollection.getWidth(); //Manually place it at the correct X coordinate
         int shipY = textCollection.getComponents().get(0).getCenterYCoordinate();
-        float scale = 0.2f * DataClass.getInstance().getResolutionFactor();
+        float scale = 0.275f * DataClass.getInstance().getResolutionFactor();
 
         SpriteConfiguration spriteConfiguration = createSpriteConfiguration(shipX, shipY, scale, ImageEnums.ProtossShipAmountIcon);
         DisplayOnly scoutImage = new DisplayOnly(spriteConfiguration);
@@ -333,7 +333,7 @@ public class ShopBoardCreator {
         for (int i = 0; i < 8; i++) {
             float x = (i * (shopItemIconDimensions + horizontalSpacing)) + horizontalScreenDistance;
             float y = (1 * (shopItemIconDimensions + verticalSpacing)) + verticalScreenDistance;
-            ItemRarityEnums type = (i == 6 || i == 7) ? ItemRarityEnums.Rare : ItemRarityEnums.Common; // If index is 6 or 7, it's a rare item
+            ItemRarityEnums type = (i == 7) ? ItemRarityEnums.Rare : ItemRarityEnums.Common; // If index is 7, it's a rare item
 
             SpriteConfiguration spriteConfiguration = createSpriteConfiguration(x, y, 1, ImageEnums.Invisible);
             ShopItem shopItem = new ShopItem(spriteConfiguration, type);
@@ -358,7 +358,7 @@ public class ShopBoardCreator {
         for (int i = 0; i < 8; i++) {
             float x = (i * (shopItemIconDimensions + horizontalSpacing)) + horizontalScreenDistance;
             float y = (2 * (shopItemIconDimensions + verticalSpacing)) + verticalScreenDistance;
-            ItemRarityEnums type = (i == 6 || i == 7) ? ItemRarityEnums.Rare : ItemRarityEnums.Common; // If index is 6 or 7, it's a rare item
+            ItemRarityEnums type = (i == 7) ? ItemRarityEnums.Rare : ItemRarityEnums.Common; // If index is 7, it's a rare item
 
             SpriteConfiguration spriteConfiguration = createSpriteConfiguration(x, y, 1, ImageEnums.Invisible);
             ShopItem shopItem = new ShopItem(spriteConfiguration, type);
@@ -513,10 +513,15 @@ public class ShopBoardCreator {
     public MenuButton createSelectMediumDifficulty(GUIComponent backgroundCard) {
         float y = fourthRowYCoordinate + 40;
         float x1 = shopItemIconDimensions + horizontalSpacing + backgroundCard.getXCoordinate() + backgroundCard.getWidth() / 6;
+        ImageEnums iconEnum = ImageEnums.BlueWings3;
+        if (LevelManager.getInstance().isNextLevelABossLevel()) {
+            iconEnum = ImageEnums.RedWings5;
+        }
+
         SpriteConfiguration spriteConfiguration = createSpriteConfiguration(
                 x1,
                 y,
-                1, ImageEnums.BlueWings3);
+                1, iconEnum);
         MenuButton selectEasyDifficulty = new MenuButton(spriteConfiguration);
         selectEasyDifficulty.setLevelDifficulty(LevelDifficulty.Medium);
         selectEasyDifficulty.setMenuFunctionality(MenuFunctionEnums.SelectSongDifficulty);
@@ -528,7 +533,7 @@ public class ShopBoardCreator {
         }
 
         selectEasyDifficulty.setDescriptionOfComponent("Sets the difficulty to " + amount +
-                ". Enemies gain strength quicker, are 12% stronger and spawn in larger quantities");
+                ". Enemies gain strength quicker and are 25% stronger");
         return selectEasyDifficulty;
     }
 
@@ -550,7 +555,7 @@ public class ShopBoardCreator {
         }
 
         selectEasyDifficulty.setDescriptionOfComponent("Sets the difficulty to " + amount
-                + ". Enemies gain strength considerably quicker, are 25% stronger and spawn in much larger quantities");
+                + ". Enemies gain strength considerably quicker and are 50% stronger.");
         return selectEasyDifficulty;
     }
 

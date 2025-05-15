@@ -23,24 +23,17 @@ import java.util.Random;
 
 public class PlasmaLauncher extends Item {
 
-    private float procChance;
-    private float damageMultiplier;
+    public static float procChance = 0.1f;
+    public static float damageMultiplier = 2;
     private Random rand;
 
     public PlasmaLauncher () {
         super(ItemEnums.PlasmaLauncher, 1, ItemApplicationEnum.AfterCollision);
-        procChance = 0.1f;
-        calculateDamage();
         rand = new Random();
     }
 
     public void increaseQuantityOfItem (int amount) {
         this.quantity += amount;
-        calculateDamage();
-    }
-
-    private void calculateDamage () {
-        damageMultiplier = quantity * 2;
     }
 
     @Override
@@ -93,6 +86,8 @@ public class PlasmaLauncher extends Item {
                         target.getCenterYCoordinate() - (missile.getHeight() / 2)
                 ));
 
+        missile.setPiercesThroughObjects(true);
+        missile.setAmountOfPiercesLeft(99999);
         missile.setOwnerOrCreator(player);
         missile.setAllowedVisualsToRotate(false);
         missile.getAnimation().setAnimationScale(0.6f);
@@ -107,7 +102,7 @@ public class PlasmaLauncher extends Item {
 
         boolean allowedToDealDamage = true;
         String objectType = "Plasma Launcher Missile";
-        float damage = PlayerStats.getInstance().getBaseDamage() * damageMultiplier;
+        float damage = PlayerStats.getInstance().getBaseDamage() * (damageMultiplier * quantity);
 
         return MissileCreator.getInstance().createMissileConfiguration(MissileEnums.DefaultAnimatedBullet,
                 maxHitPoints, maxShields, deathSound, damage, impactType, isFriendly, allowedToDealDamage,

@@ -67,6 +67,8 @@ public class TreasureHunter implements Boon {
             PlayerProfileManager.getInstance().getLoadedProfile().addEmeralds(-upgradeCost);
             PlayerProfileManager.getInstance().exportCurrentProfile();
             AudioManager.getInstance().addAudio(AudioEnums.ItemAcquired);
+        }else if(canUpgradeFurther() && PlayerProfileManager.getInstance().getLoadedProfile().getEmeralds() < upgradeCost){
+            AudioManager.getInstance().addAudio(AudioEnums.GenericError);
         }
     }
 

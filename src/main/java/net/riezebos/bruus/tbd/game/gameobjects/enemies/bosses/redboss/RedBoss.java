@@ -9,7 +9,13 @@ import net.riezebos.bruus.tbd.game.gameobjects.enemies.bosses.redboss.behaviour.
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.bosses.redboss.behaviour.SpawnShuriken;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.movement.MovementConfiguration;
+import net.riezebos.bruus.tbd.game.playerprofile.PlayerProfileManager;
 import net.riezebos.bruus.tbd.game.util.WithinVisualBoundariesCalculator;
+import net.riezebos.bruus.tbd.guiboards.BoardManager;
+import net.riezebos.bruus.tbd.guiboards.boardcreators.AchievementUnlockHelper;
+import net.riezebos.bruus.tbd.guiboards.boardcreators.BoonSelectionBoardCreator;
+import net.riezebos.bruus.tbd.visualsandaudio.data.audio.AudioManager;
+import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.AudioEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteAnimation;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteAnimationConfiguration;
@@ -33,7 +39,7 @@ public class RedBoss extends Enemy {
         this.destructionAnimation = new SpriteAnimation(destroyedExplosionfiguration);
         this.damage = 12;
         this.allowedVisualsToRotate = false;
-        this.destructionAnimation.setAnimationScale(3);
+        this.destructionAnimation.setAnimationScale(4);
         this.knockbackStrength = 9;
 
         finishedAttackTime = GameState.getInstance().getGameSeconds();
@@ -57,6 +63,25 @@ public class RedBoss extends Enemy {
                 .sorted(Comparator.comparingInt(BossActionable::getPriority).reversed())
                 .collect(Collectors.toList());
 
+    }
+
+    @Override
+    public void triggerOnDeathActions() {
+        super.triggerOnDeathActions();
+
+        if(PlayerProfileManager.getInstance().getLoadedProfile().getNepotismLevel() <= 0) {
+            BoardManager.getInstance().getGameBoard().addGUIAnimation(AchievementUnlockHelper.createUnlockGUIComponent(ImageEnums.NepotismUnlock));
+            PlayerProfileManager.getInstance().getLoadedProfile().setNepotismLevel(1);
+            PlayerProfileManager.getInstance().exportCurrentProfile();
+            AudioManager.getInstance().addAudio(AudioEnums.AchievementUnlocked);
+        }
+
+        if(!PlayerProfileManager.getInstance().getLoadedProfile().isFireFighterUnlocked()) {
+            BoardManager.getInstance().getGameBoard().addGUIAnimation(AchievementUnlockHelper.createUnlockGUIComponent(ImageEnums.FireFighterUnlock));
+            PlayerProfileManager.getInstance().getLoadedProfile().setFireFighterUnlocked(true);
+            PlayerProfileManager.getInstance().exportCurrentProfile();
+            AudioManager.getInstance().addAudio(AudioEnums.AchievementUnlocked);
+        }
     }
 
 

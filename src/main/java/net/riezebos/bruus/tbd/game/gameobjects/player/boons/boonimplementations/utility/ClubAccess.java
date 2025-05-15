@@ -1,5 +1,6 @@
 package net.riezebos.bruus.tbd.game.gameobjects.player.boons.boonimplementations.utility;
 
+import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
 import net.riezebos.bruus.tbd.game.items.ItemEnums;
 import net.riezebos.bruus.tbd.game.items.PlayerInventory;
 import net.riezebos.bruus.tbd.game.gameobjects.player.boons.Boon;
@@ -13,10 +14,11 @@ import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.AudioEnums;
 
 public class ClubAccess implements Boon {
 
-    private int upgradeCost = 5;
+    private int upgradeCost = 3;
     private static ClubAccess instance = new ClubAccess();
     private boolean hasAppliedDuringRun = false;
-    private int maxLevel = 3;
+    private int maxLevel = 5;
+    private float discountPerStack = 5;
 
     private ClubAccess() {
 
@@ -29,10 +31,11 @@ public class ClubAccess implements Boon {
 
     @Override
     public void applyUpgrade(BoonActivationEnums activation) {
-        if(!hasAppliedDuringRun && activation.equals(BoonActivationEnums.Start_of_Level)) {
-            for(int i = 0; i < getCurrentLevel(); i++){
-                PlayerInventory.getInstance().addItem(ItemEnums.VIPTicket);
-            }
+        if (!hasAppliedDuringRun && activation.equals(BoonActivationEnums.Start_of_Level)) {
+            PlayerStats.getInstance().setShopRerollDiscount(
+                    Math.round(PlayerProfileManager.getInstance().getLoadedProfile().getClubAccessLevel() * this.discountPerStack)
+            );
+            hasAppliedDuringRun = true;
         }
     }
 
@@ -53,22 +56,24 @@ public class ClubAccess implements Boon {
 
     @Override
     public String getBoonDescription() {
-        return "Grants " + PlayerProfileManager.getInstance().getLoadedProfile().getClubAccessLevel() + " VIP Tickets upon starting the game.";
+        return "Grants " + Math.round(PlayerProfileManager.getInstance().getLoadedProfile().getClubAccessLevel() * this.discountPerStack) + "% discount on refreshing the shop.";
     }
 
     @Override
     public String getBoonUnlockCondition() {
-        return "Obtain 5 VIP Tickets in a single run to unlock this boon.";
+        return "Obtain 3 VIP Tickets in a single run to unlock this boon.";
     }
 
     @Override
     public void upgradeBoon() {
-        if(canUpgradeFurther() && PlayerProfileManager.getInstance().getLoadedProfile().getEmeralds() >= upgradeCost) {
+        if (canUpgradeFurther() && PlayerProfileManager.getInstance().getLoadedProfile().getEmeralds() >= upgradeCost) {
             int currentLevel = PlayerProfileManager.getInstance().getLoadedProfile().getClubAccessLevel();
             PlayerProfileManager.getInstance().getLoadedProfile().setClubAccessLevel(currentLevel + 1);
             PlayerProfileManager.getInstance().getLoadedProfile().addEmeralds(-upgradeCost);
             PlayerProfileManager.getInstance().exportCurrentProfile();
             AudioManager.getInstance().addAudio(AudioEnums.ItemAcquired);
+        } else if (canUpgradeFurther() && PlayerProfileManager.getInstance().getLoadedProfile().getEmeralds() < upgradeCost) {
+            AudioManager.getInstance().addAudio(AudioEnums.GenericError);
         }
     }
 

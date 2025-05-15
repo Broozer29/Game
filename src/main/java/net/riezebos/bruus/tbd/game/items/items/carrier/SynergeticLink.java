@@ -11,7 +11,7 @@ import net.riezebos.bruus.tbd.game.items.enums.ItemApplicationEnum;
 
 public class SynergeticLink extends Item {
 
-    public static float shuttleAttackSpeedBonusPerShip = 0.075f;
+    public static float shuttleAttackSpeedBonusPerShip = 0.05f;
     public static float scoutBonusDamagePerShip = 0.1f;
     private float currentShuttleAttackSpeedBonus;
     private float currentScoutBonusDamage;

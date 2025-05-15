@@ -11,7 +11,7 @@ public enum EffectIdentifiers {
     PlatinumSpongeArmorBonus,
     SelfRepairingSteelHealthRegeneration,
     MoneyPrinterGoldOnDeath,
-    CashCarrierGoldGain,
+    SpawnCoinsOnDeath,
     ElectricDestabilizerFreeze,
     DevourerMoveSpeedDebuff,
     DevourerAttackSpeedDebuff,
@@ -21,5 +21,6 @@ public enum EffectIdentifiers {
     DamageReduction,
     CarrierBeaconArmorBonus,
     CarrierBeaconAttackSpeedBonus,
+    EndOfLevelBurn,
     PulsingDroneSlow, MartyrdomAttackSpeed;
 }

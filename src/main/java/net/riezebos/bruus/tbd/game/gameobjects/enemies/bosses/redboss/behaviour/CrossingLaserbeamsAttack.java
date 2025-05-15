@@ -20,7 +20,7 @@ import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.Sprit
 public class CrossingLaserbeamsAttack implements BossActionable {
     private double lastAttackedTime = 0;
     private double attackCooldown = 20;
-    private int priority = 3;
+    private int priority = 10;
 
     public static int lowerLaserbeamLowestAngle = 135;
     public static int lowerLaserbeamHighestAngle = 225;

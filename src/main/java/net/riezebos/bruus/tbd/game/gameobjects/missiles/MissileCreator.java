@@ -77,6 +77,9 @@ public class MissileCreator {
             case ProtossShuttleMissile -> {
                 return new ProtossShuttleMissile(upgradeConfig(spriteConfiguration, 2), missileConfiguration, movementConfiguration);
             }
+            case ReflectiveBlocks -> {
+                return new ReflectiveBlocks(upgradeConfig(spriteConfiguration, 2), missileConfiguration, movementConfiguration);
+            }
         }
         return null;
     }

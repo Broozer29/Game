@@ -2,6 +2,10 @@ package net.riezebos.bruus.tbd.game.gameobjects.player;
 
 import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
 import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.droneTypes.DroneTypes;
+import net.riezebos.bruus.tbd.game.gameobjects.player.boons.BoonEnums;
+import net.riezebos.bruus.tbd.game.gameobjects.player.boons.BoonManager;
+import net.riezebos.bruus.tbd.game.gameobjects.player.boons.boonimplementations.BoonActivationEnums;
+import net.riezebos.bruus.tbd.game.gameobjects.player.boons.boonimplementations.defensive.ThickHide;
 import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SpaceShip;
 import net.riezebos.bruus.tbd.game.items.ItemEnums;
 import net.riezebos.bruus.tbd.game.items.PlayerInventory;
@@ -33,15 +37,17 @@ public class PlayerStats {
     //firefighter
     public static float fireFighterBaseDamage = 10f;
     public static float fireFighterAttackSpeed = 0.32f;
-    private float fireFighterIgniteDamageMultiplier = 0.04f;
-    private float fireFighterIgniteDuration = 1.35f;
-    private float fireFighterIgniteDurationMultiplier = 1;
-    private float fireFighterItemIgniteDamageMultiplier = 1f;
+    public static float igniteDamageMultiplier = 0.024f;
+    public static float igniteDuration = 1.35f;
+    private float igniteDurationMultiplier = 1;
+    private float bonusIgniteDamageMultiplier = 1f;
+    private float fuelCannisterMultiplier = 1;
+    private float fuelCannisterRegenMultiplier = 1;
     private int fireFighterIgniteMaxStacks = 1;
     public static int fireFighterHitpoints = 75;
 
     //captain
-    public static float captainBaseDamage = 20f;
+    public static float captainBaseDamage = 10f;
     public static float captainAttackSpeed = 0.28f;
     public static int captainBaseHitpoints = 50;
 
@@ -65,8 +71,8 @@ public class PlayerStats {
     //all classes
     public static float droneBaseDamage = 20f;
     private boolean hasThornsEnabled = false;
-    private float thornsBaseDamage = 10f;
     private float thornsDamageRatio = 1.0f;
+    private float baseArmor = 0;
 
     // Preset type
     private PlayerClass playerClass;
@@ -123,7 +129,7 @@ public class PlayerStats {
     private float droneDamageRatio = 1;
     private boolean hasImprovedElectroShred = false;
     private float chanceForThornsToApplyOnHitEffects = 0;
-    private float thornsArmorDamageBonusRatio = 0;
+    private float thornsArmorDamageBonusRatio = 1;
     private float knockBackDamping;
     private int amountOfFreeRerolls = 0;
     private float collisionDamageReduction = 0;
@@ -158,7 +164,6 @@ public class PlayerStats {
         amountOfFreeRerolls = 0;
         piercingMissilesAmount = 0;
         bonusDamageMultiplier = 1f; //Otherwhise it's damage * 0 = 0
-        thornsBaseDamage = 10f;
 
         shieldRegenMultiplier = 1;
         chanceForThornsToApplyOnHitEffects = 0;
@@ -166,7 +171,6 @@ public class PlayerStats {
         continueShieldRegenThroughDamage = false;
         thornsDamageRatio = 1;
         thornsArmorDamageBonusRatio = 0;
-        shopRerollDiscount = 99;
         collisionDamageReduction = 0;
         shieldRegenPerTick = 0.2f;
         droneType = DroneTypes.Missile;
@@ -179,22 +183,27 @@ public class PlayerStats {
         this.amountOfProtossShuttles = 0;
         this.hasThornsEnabled = false;
 
+
         setKnockBackDamping(0.85f);
         setThornsDamageRatio(0);
 
+        mineralModifier = 1;
         amountOfDrones = 0;
         maximumAmountOfDrones = 8;
         droneOrbitRadius = 85;
         setDroneDamageRatio(1);
         setDroneDamageBonusRatio(0);
-        setShopRerollDiscount(0);
+
+        //Hack for free rerolls
+//        setShopRerollDiscount(0);
+        setShopRerollDiscount(99);
 
         // Health
         setMaxHitPoints(captainBaseHitpoints);
         setMaxShieldMultiplier(1.0f);
         setMaxShieldHitPoints(captainBaseHitpoints);
         setShieldRegenDelay(300);
-        setOverloadedShieldDiminishAmount(0.5f);
+        setOverloadedShieldDiminishAmount(0.1f);
 
         // Movement speed
         movementSpeed = 4;
@@ -215,7 +224,7 @@ public class PlayerStats {
         //Level
         setCurrentLevel(1);
         setCurrentXP(0);
-        setXpToNextLevel(175);
+        setXpToNextLevel(200);
 
         // Visuals
         loadNormalGunPreset();
@@ -244,11 +253,11 @@ public class PlayerStats {
     private void loadFlameShieldPreset() {
         setSpecialBaseDamage(baseDamage);
         setSpecialAttackRechargeCooldown(10f);
-        fireFighterItemIgniteDamageMultiplier = 1f;
+        bonusIgniteDamageMultiplier = 1f;
     }
 
     private void loadEMPPreset() {
-        setSpecialBaseDamage(baseDamage * 0.5f);
+        setSpecialBaseDamage(baseDamage * 1.5f);
         setHasImprovedElectroShred(false);
         setSpecialAttackRechargeCooldown(3f);
     }
@@ -291,7 +300,9 @@ public class PlayerStats {
         setPlayerMissileImage(ImageEnums.FireFighterFlameThrowerLooping);
         setPlayerMissileImpactImage(null);
         setMissileScale(1);
-        fireFighterIgniteDuration = 1.5f;
+        setFuelCannisterMultiplier(1);
+        setFuelCannisterRegenMultiplier(1);
+        igniteDuration = 1.5f;
         fireFighterIgniteMaxStacks = 1;
         this.maxHitPoints = fireFighterHitpoints;
         this.maxShieldHitPoints = fireFighterHitpoints;
@@ -324,7 +335,19 @@ public class PlayerStats {
         xpToNextLevel = ExperienceCalculator.getNextLevelXPRequired(xpToNextLevel);
         currentLevel++;
 
-        baseDamage = ExperienceCalculator.getNextLevelBaseDamage(baseDamage);
+
+        BoonManager.getInstance().activateBoons(BoonActivationEnums.LevelingUp);
+
+        //Ik ben dizzy terwijl ik dit maak, ik kom er ff niet uit of dit juist is of niet ik doe het nu omslachtig om het zeker te weten plz help me nog anderhalf uur op de werkvloer
+        boolean shouldIncreaseBaseDamage = true;
+        if(BoonManager.getInstance().getDefensiveBoon() != null && BoonManager.getInstance().getDefensiveBoon().equals(BoonEnums.THICK_HIDE)) {
+            shouldIncreaseBaseDamage = false;
+        }
+
+        if(shouldIncreaseBaseDamage) {
+            baseDamage = ExperienceCalculator.getNextLevelBaseDamage(baseDamage);
+        }
+
         maxHitPoints = ExperienceCalculator.getNextLevelHitPoints(maxHitPoints);
         maxShieldHitPoints = ExperienceCalculator.getNextLevelShieldPoints(maxShieldHitPoints);
         droneBaseDamage = ExperienceCalculator.getNextLevelBaseDamage(droneBaseDamage);
@@ -335,12 +358,18 @@ public class PlayerStats {
         player.setMaxShieldPoints(maxShieldHitPoints);
         player.setCurrentHitpoints(maxHitPoints);
 
-        if (player.getCurrentShieldPoints() < player.getMaxShieldPoints()) { //We don't want to overwrite any overloaded shields present
+        if (player.getCurrentShieldPoints() < player.
+
+                getMaxShieldPoints()) { //We don't want to overwrite any overloaded shields present
             player.setCurrentShieldPoints(maxShieldHitPoints);
         }
 
-        AnimationManager.getInstance().playLevelUpAnimation(player);
-        AudioManager.getInstance().addAudio(AudioEnums.ItemAcquired);
+        AnimationManager.getInstance().
+
+                playLevelUpAnimation(player);
+        AudioManager.getInstance().
+
+                addAudio(AudioEnums.ItemAcquired);
     }
 
     public float getNormalAttackDamage() {
@@ -709,9 +738,9 @@ public class PlayerStats {
     public float getThornsDamage() {
         float thornsDamage = 0;
         if (thornsDamageRatio > 0) {
-            thornsDamage = this.thornsBaseDamage * (thornsDamageRatio);
+            thornsDamage = this.baseDamage * (thornsDamageRatio);
         }
-        if (thornsArmorDamageBonusRatio > 1) {
+        if (thornsArmorDamageBonusRatio > 1.01) {
             GameObject spaceShip = PlayerManager.getInstance().getSpaceship();
             thornsDamage += thornsArmorDamageBonusRatio * (spaceShip.getBaseArmor() + spaceShip.getArmorBonus());
         }
@@ -783,28 +812,28 @@ public class PlayerStats {
         this.shieldRegenMultiplier += amount;
     }
 
-    public float getFireFighterIgniteDuration() {
-        return fireFighterIgniteDuration * fireFighterIgniteDurationMultiplier;
+    public float getIgniteDuration() {
+        return igniteDuration * igniteDurationMultiplier;
     }
 
     public void modifyDefaultIgniteDuration(float amount) {
-        this.fireFighterIgniteDuration += amount;
+        this.igniteDuration += amount;
     }
 
     public void modifyIgniteDurationModifier(float amount) {
-        this.fireFighterIgniteDurationMultiplier += amount;
+        this.igniteDurationMultiplier += amount;
     }
 
     public void modifyIgniteItemDamageMultiplier(float amount) {
-        this.fireFighterItemIgniteDamageMultiplier += amount;
+        this.bonusIgniteDamageMultiplier += amount;
     }
 
-    public float getFireFighterIgniteDamage() {
-        return baseDamage * (fireFighterIgniteDamageMultiplier * fireFighterItemIgniteDamageMultiplier);
+    public float getIgniteDamage() {
+        return baseDamage * (igniteDamageMultiplier * bonusIgniteDamageMultiplier);
     }
 
     public void modifyFireFighterIgniteDamageMultiplier(float amount) {
-        fireFighterIgniteDamageMultiplier += amount;
+        igniteDamageMultiplier += amount;
     }
 
     public void setFireFighterIgniteMaxStacks(int fireFighterIgniteMaxStacks) {
@@ -903,7 +932,7 @@ public class PlayerStats {
         return maxAmountOfProtoss;
     }
 
-    public void modifyMaxAmountOfProtoss(int amount){
+    public void modifyMaxAmountOfProtoss(int amount) {
         this.maxAmountOfProtoss += amount;
     }
 
@@ -927,7 +956,7 @@ public class PlayerStats {
         return arbiterHealingMultiplier;
     }
 
-    public void modifyArbiterHealingMultiplier(float amount){
+    public void modifyArbiterHealingMultiplier(float amount) {
         this.arbiterHealingMultiplier += amount;
     }
 
@@ -943,8 +972,43 @@ public class PlayerStats {
         return protossShipThornsDamageRatio;
     }
 
-    public void modifyProtossShipThornsDamageRatio(float amount){
+    public void modifyProtossShipThornsDamageRatio(float amount) {
         this.protossShipThornsDamageRatio += amount;
     }
 
+    public float getFuelCannisterMultiplier() {
+        return fuelCannisterMultiplier;
+    }
+
+    public void setFuelCannisterMultiplier(float fuelCannisterMultiplier) {
+        this.fuelCannisterMultiplier = fuelCannisterMultiplier;
+    }
+
+    public void modifyFuelCannisterMultiplier(float amount) {
+        this.fuelCannisterMultiplier += amount;
+    }
+
+    public float getFuelCannisterRegenMultiplier() {
+        return fuelCannisterRegenMultiplier;
+    }
+
+    public void modifyFuelCannisterRegenMultiplier(float amount) {
+        this.fuelCannisterRegenMultiplier += amount;
+    }
+
+    public void setFuelCannisterRegenMultiplier(float fuelCannisterRegenMultiplier) {
+        this.fuelCannisterRegenMultiplier = fuelCannisterRegenMultiplier;
+    }
+
+    public float getBaseArmor() {
+        return baseArmor;
+    }
+
+    public void setBaseArmor(float baseArmor) {
+        this.baseArmor = baseArmor;
+    }
+
+    public void addBaseArmor(float amount) {
+        this.baseArmor += amount;
+    }
 }

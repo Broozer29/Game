@@ -3,6 +3,7 @@ package net.riezebos.bruus.tbd.game.gameobjects.enemies;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.bosses.carrier.CarrierBoss;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.bosses.redboss.RedBoss;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.bosses.spacestation.SpaceStationBoss;
+import net.riezebos.bruus.tbd.game.gameobjects.enemies.bosses.yellowboss.YellowBoss;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.CashCarrier;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.protoss.EnemyProtossBeacon;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.protoss.EnemyProtossPulsingDrone;
@@ -42,7 +43,7 @@ public class EnemyCreator {
 
     private static PathFinder getPathFinderByEnemy (EnemyEnums enemyType) {
         switch (enemyType) {
-            case Seeker, Energizer, Tazer, Scout, RedBoss, CarrierBoss, ZergDevourer, ZergGuardian, ZergQueen -> {
+            case Seeker, Energizer, Tazer, Scout, RedBoss, CarrierBoss, ZergDevourer, ZergGuardian, ZergQueen, YellowBoss -> {
                 return new HoverPathFinder();
             }
             case FourDirectionalDrone, PulsingDrone, SpaceStationBoss, CarrierPulsingDrone, EnemyCarrierBeacon -> {
@@ -66,7 +67,7 @@ public class EnemyCreator {
             case Seeker -> {
                 movementConfiguration.setBoardBlockToHoverIn(6);
             }
-            case Energizer -> {
+            case Energizer, YellowBoss -> {
                 movementConfiguration.setBoardBlockToHoverIn(5);
             }
             case Tazer -> {
@@ -89,7 +90,7 @@ public class EnemyCreator {
         return new Point(windowHalfWidth - enemyHalfWidth, windowHalfHeight - enemyHalfHeight);
     }
 
-    private static MovementConfiguration createMovementConfiguration (int xCoordinate, int yCoordinate, Direction movementDirection, float xMovementSpeed, float yMovementSpeed,
+    public static MovementConfiguration createMovementConfiguration (int xCoordinate, int yCoordinate, Direction movementDirection, float xMovementSpeed, float yMovementSpeed,
                                                                       MovementPatternSize patternSize, PathFinder pathFinder) {
         MovementConfiguration moveConfig = new MovementConfiguration();
         moveConfig.setCurrentLocation(new Point(xCoordinate, yCoordinate));
@@ -139,6 +140,9 @@ public class EnemyCreator {
             }
             case CarrierBoss -> {
                 return new CarrierBoss(upgradeConfig(spriteConfiguration, 3 , true), enemyConfiguration, movementConfiguration);
+            }
+            case YellowBoss -> {
+                return new YellowBoss(upgradeConfig(spriteConfiguration, 3, true), enemyConfiguration, movementConfiguration);
             }
             case FourDirectionalDrone -> {
                 return new FourDirectionalDrone(spriteConfiguration, enemyConfiguration, movementConfiguration);
@@ -210,51 +214,5 @@ public class EnemyCreator {
 
     private static SpriteAnimationConfiguration upgradeConfig (SpriteConfiguration spriteConfiguration, int frameDelay, boolean infiniteLoop) {
         return new SpriteAnimationConfiguration(spriteConfiguration, frameDelay, infiniteLoop);
-    }
-
-    public static ArrayList<LaserOriginDrone> createLaserOriginDrones (int startingXCoordinate, int startingYCoordinate, int laserBodySegments) {
-        ArrayList<LaserOriginDrone> droneList = new ArrayList<>();
-        EnemyConfiguration droneEnemyConfig = createEnemyConfiguration(EnemyEnums.LaserOriginDrone, false);
-
-
-        SpriteConfiguration firstDroneConfig = createLaserDroneSpriteConfig();
-        MovementConfiguration firstDroneMoveConfig = createMovementConfiguration(startingXCoordinate, startingYCoordinate,
-                Direction.LEFT, 1f, 1f, MovementPatternSize.SMALL, new DestinationPathFinder());
-        firstDroneMoveConfig.setDestination(new Point(600, 400));
-
-        LaserOriginDrone firstDrone = new LaserOriginDrone(firstDroneConfig, droneEnemyConfig, firstDroneMoveConfig);
-        firstDrone.setCenterCoordinates(startingXCoordinate, startingYCoordinate);
-        firstDrone.initLaserbeam(laserBodySegments, Direction.LEFT);
-        firstDrone.setAllowedVisualsToRotate(false);
-        firstDrone.setAllowedToMove(false);
-//        firstDrone.getLaserbeam().update();
-
-//
-//        SpriteAnimation finalBodyPart = firstDrone.getLaserbeam().getLaserBodies().get(firstDrone.getLaserbeam().getLaserBodies().size() - 1);
-//        int secondDroneXCoordinate = finalBodyPart.getXCoordinate() + finalBodyPart.getWidth();
-//        int secondDroneYCoordinate = firstDrone.getYCoordinate();
-//
-//
-//        SpriteConfiguration secondDroneConfig = createLaserDroneSpriteConfig();
-//        MovementConfiguration secondDroneMoveConfig = createMovementConfiguration(secondDroneXCoordinate, secondDroneYCoordinate,
-//                Direction.LEFT, 1f,1f, MovementPatternSize.SMALL, new RegularPathFinder());
-//        LaserOriginDrone secondDrone = new LaserOriginDrone(secondDroneConfig, droneEnemyConfig, secondDroneMoveConfig);
-//        secondDrone.setXCoordinate(secondDroneXCoordinate);
-//        secondDrone.setYCoordinate(secondDroneYCoordinate);
-//
-//        firstDrone.setConnectedDrone(secondDrone);
-
-        droneList.add(firstDrone);
-//        droneList.add(secondDrone);
-
-        return droneList;
-    }
-
-    private static SpriteConfiguration createLaserDroneSpriteConfig () {
-        SpriteConfiguration spriteConfiguration = new SpriteConfiguration();
-        spriteConfiguration.setScale(EnemyEnums.LaserOriginDrone.getDefaultScale());
-        spriteConfiguration.setImageType(EnemyEnums.LaserOriginDrone.getImageType());
-
-        return spriteConfiguration;
     }
 }

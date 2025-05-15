@@ -10,7 +10,7 @@ import net.riezebos.bruus.tbd.game.items.enums.ItemApplicationEnum;
 public class Overclock extends Item {
 
     private boolean shouldApply;
-    private float attackSpeedBonus = 15;
+    public static float attackSpeedBonus = 15;
 
     public Overclock(){
         super(ItemEnums.Overclock, 1,  ItemApplicationEnum.ApplyOnCreation);

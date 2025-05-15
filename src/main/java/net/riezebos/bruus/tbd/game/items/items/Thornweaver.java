@@ -9,6 +9,7 @@ import net.riezebos.bruus.tbd.game.items.enums.ItemApplicationEnum;
 
 public class Thornweaver extends Item {
     private boolean shouldApply;
+    public static float collisionDamageReduction = 0.9f;
     public Thornweaver(){
         super(ItemEnums.Thornweaver, 1, ItemApplicationEnum.ApplyOnCreation);
         shouldApply = true;
@@ -18,7 +19,7 @@ public class Thornweaver extends Item {
     public void applyEffectToObject (GameObject gameObject) {
         if(shouldApply) {
             PlayerStats.getInstance().setHasThornsEnabled(true);
-            PlayerStats.getInstance().modifyCollisionDamageReduction(0.5f);
+            PlayerStats.getInstance().modifyCollisionDamageReduction(collisionDamageReduction);
             shouldApply = false;
         }
     }
@@ -26,7 +27,7 @@ public class Thornweaver extends Item {
     private void removeEffect(){
         if(quantity > 0) {
             PlayerStats.getInstance().setHasThornsEnabled(false);
-            PlayerStats.getInstance().modifyAttackSpeedBonus(-0.5f);
+            PlayerStats.getInstance().modifyCollisionDamageReduction(-collisionDamageReduction);
         }
     }
 

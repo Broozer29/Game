@@ -90,7 +90,7 @@ public class PlayerManager {
         SpriteConfiguration spriteConfiguration = new SpriteConfiguration();
         spriteConfiguration.setxCoordinate(DataClass.getInstance().getWindowWidth() / 10);
         spriteConfiguration.setyCoordinate(DataClass.getInstance().getWindowHeight() / 2);
-        spriteConfiguration.setScale(0.6f * DataClass.getInstance().getResolutionFactor());
+        spriteConfiguration.setScale(0.7f * DataClass.getInstance().getResolutionFactor());
         spriteConfiguration.setImageType(ImageEnums.Player_Spaceship_Model_3); //placeholder, gets overwritten anyway
         this.spaceship = new SpaceShip(spriteConfiguration);
     }
@@ -99,6 +99,7 @@ public class PlayerManager {
         if (spaceship.getCurrentHitpoints() <= 0 && gameState.getGameState() == GameStatusEnums.Dying) {
             spaceship.setImmune(true); //Ignore enemies and missiles whilst exploding
             if (!animationManager.getUpperAnimations().contains(spaceship.getDestructionAnimation())) {
+                spaceship.getDestructionAnimation().setCenterCoordinates(spaceship.getCenterXCoordinate(), spaceship.getCenterYCoordinate());
                 animationManager.getUpperAnimations().add(spaceship.getDestructionAnimation());
 
                 if(spaceship.getExhaustAnimation() != null){

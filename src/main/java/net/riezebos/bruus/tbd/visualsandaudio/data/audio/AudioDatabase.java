@@ -77,6 +77,10 @@ public class AudioDatabase {
     private Map<AudioEnums, List<CustomAudioClip>> audioClipsMap = new HashMap<>();
 
     private Map<AudioEnums, Integer> clipSizeConfig = new HashMap<>() {{
+        put(AudioEnums.GenericError, 3);
+        put(AudioEnums.ScarabExplosion, 2);
+        put(AudioEnums.CoinCollected, 2);
+        put(AudioEnums.AchievementUnlocked, 2);
         put(AudioEnums.QueenDeath, 2);
         put(AudioEnums.OverlordDeath, 2);
         put(AudioEnums.MutaliskBirth, 2);

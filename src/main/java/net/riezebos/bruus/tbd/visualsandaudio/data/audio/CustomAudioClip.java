@@ -185,6 +185,11 @@ public class CustomAudioClip {
         } else if (mediaPlayer != null) {
             adjustVolume();
             mediaPlayer.play();
+
+            //Wordt al gehandeld in een runnable op de mediaPlayer zelf, maar misschien voorkomt dit de audio bug?
+            isMediaPlayerPlaying = true;
+            isMediaPlayerFinished = false;
+
             if (loop) {
                 mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE);
             }
@@ -252,14 +257,13 @@ public class CustomAudioClip {
         } else if (mediaPlayer != null) {
             double volume = switch (clipType) {
                 case Player_Laserbeam -> 0.65;
-                case SpecialAttackFinishedCharging -> 2.2f;
-                case Large_Ship_Destroyed -> 0.8;
-                case Alien_Spaceship_Destroyed -> 0.8;
-                case Alien_Bomb_Impact -> 0.5;
+                case Large_Ship_Destroyed -> 0.6;
+                case Alien_Spaceship_Destroyed -> 0.4;
+                case Alien_Bomb_Impact -> 0.2;
                 case Apple_Holder_Remix -> 0.5;
-                case Furi_Wisdowm_Of_Rage -> 0.4;
-                case Default_EMP -> 0.1;
+                case Default_EMP -> 0.075;
                 case NotEnoughMinerals -> 0.6;
+                case GenericError -> 0.6;
                 default -> 1.0;
             };
 
@@ -356,12 +360,14 @@ public class CustomAudioClip {
             return true;
         }
 
-        // Tolerance buffer to avoid premature termination
-        double tolerance = 0.05; //magic number, decreasing this value causes problems for some reason
-        double currentTime = getCurrentSecondsInPlayback();
-        double clipLength = getTotalSecondsInPlayback();
+        return false;
 
-        return (currentTime >= (clipLength - tolerance));
+        // Tolerance buffer to avoid premature termination
+//        double tolerance = 0.05; //magic number, decreasing this value causes problems for some reason
+//        double currentTime = getCurrentSecondsInPlayback();
+//        double clipLength = getTotalSecondsInPlayback();
+//
+//        return (currentTime >= (clipLength - tolerance));
     }
 
 

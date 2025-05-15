@@ -10,7 +10,7 @@ import net.riezebos.bruus.tbd.game.items.enums.ItemApplicationEnum;
 public class StickyOil extends Item {
 
     private boolean shouldApply;
-    private float bonusDurationMultiplier = 0.33f;
+    public static float bonusDurationMultiplier = 0.4f;
 
     public StickyOil(){
         super(ItemEnums.StickyOil, 1,  ItemApplicationEnum.ApplyOnCreation);

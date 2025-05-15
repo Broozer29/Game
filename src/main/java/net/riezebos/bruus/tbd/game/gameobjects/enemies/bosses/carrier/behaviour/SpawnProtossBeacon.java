@@ -56,6 +56,7 @@ public class SpawnProtossBeacon implements BossActionable {
 
         if (beacon == null && enemy.isAllowedToFire() && currentTime >= lastSpawnedTime + spawnCooldown && WithinVisualBoundariesCalculator.isWithinBoundaries(enemy)) {
             if (!spawnAnimation.isPlaying()) {
+                spawnAnimation.setCenterCoordinates(enemy.getXCoordinate() - (spawnAnimation.getWidth() / 2), enemy.getCenterYCoordinate());
                 enemy.setAttacking(true);
                 spawnAnimation.refreshAnimation();
                 AnimationManager.getInstance().addUpperAnimation(spawnAnimation);

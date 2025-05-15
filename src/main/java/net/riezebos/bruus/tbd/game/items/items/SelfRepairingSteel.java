@@ -13,26 +13,17 @@ import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.Sprit
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteConfiguration;
 
 public class SelfRepairingSteel extends Item {
-    private float repairAmount;
-    private boolean shouldApply;
-    private float increasedShieldRegenPerTick = 0.2f;
+    public static float repairAmount = 0.0075f;
 
     public SelfRepairingSteel () {
         super(ItemEnums.SelfRepairingSteel, 1, ItemApplicationEnum.ApplyOnCreation);
-        calculateHealingAmount();
-        shouldApply = true;
     }
 
-    private void calculateHealingAmount () {
-        repairAmount = quantity * 0.075f;
-    }
 
     @Override
     public void increaseQuantityOfItem (int amount) {
-        shouldApply = true;
         removeEffect();
         this.quantity += amount;
-
         applyEffectToObject(null);
     }
 
@@ -40,31 +31,24 @@ public class SelfRepairingSteel extends Item {
     public void applyEffectToObject (GameObject gameObject) {
         //Apply the effect to the player gameobject
         if (gameObject != null) {
-            PassiveHealthRegeneration healthRegeneration = new PassiveHealthRegeneration(repairAmount, EffectIdentifiers.SelfRepairingSteelHealthRegeneration);
+            PassiveHealthRegeneration healthRegeneration = new PassiveHealthRegeneration(repairAmount * quantity, EffectIdentifiers.SelfRepairingSteelHealthRegeneration);
             gameObject.addEffect(healthRegeneration);
 
-            SpriteConfiguration spriteConfiguration = new SpriteConfiguration();
-            spriteConfiguration.setxCoordinate(gameObject.getXCoordinate());
-            spriteConfiguration.setyCoordinate(gameObject.getYCoordinate());
-            spriteConfiguration.setScale(gameObject.getScale());
-            spriteConfiguration.setImageType(ImageEnums.Healing);
-
-            SpriteAnimationConfiguration spriteAnimationConfiguration = new SpriteAnimationConfiguration(spriteConfiguration, 2, true);
-            SpriteAnimation healingAnimation = new SpriteAnimation(spriteAnimationConfiguration);
-            healthRegeneration.setAnimation(healingAnimation);
+            //Animatie verwijderd omdat het nu permanent applied is
+//            SpriteConfiguration spriteConfiguration = new SpriteConfiguration();
+//            spriteConfiguration.setxCoordinate(gameObject.getXCoordinate());
+//            spriteConfiguration.setyCoordinate(gameObject.getYCoordinate());
+//            spriteConfiguration.setScale(gameObject.getScale());
+//            spriteConfiguration.setImageType(ImageEnums.Healing);
+//            SpriteAnimationConfiguration spriteAnimationConfiguration = new SpriteAnimationConfiguration(spriteConfiguration, 2, true);
+//            SpriteAnimation healingAnimation = new SpriteAnimation(spriteAnimationConfiguration);
+//            healthRegeneration.setAnimation(healingAnimation);
         }
 
         //Apply the effect to the playerstats instance
-        if (shouldApply) {
-            PlayerStats.getInstance().modifyShieldRegenMultiplier(this.quantity * increasedShieldRegenPerTick);
-            shouldApply = false;
-        }
     }
 
     private void removeEffect () {
-        if (quantity > 0) {
-            PlayerStats.getInstance().modifyShieldRegenMultiplier(-(this.quantity * increasedShieldRegenPerTick));
-        }
     }
 
 

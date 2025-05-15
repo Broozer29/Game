@@ -17,35 +17,30 @@ public class FlameDetonation extends Item {
 
     private float explosionDamage;
     private float burningDamage;
-    private float duration;
+    public static float duration = 2;
 
     public FlameDetonation () {
         super(ItemEnums.FlameDetonation, 1, ItemApplicationEnum.BeforeCollision); //Before collision to ensure the explosion goes off even if the target already has 0 HP
         this.explosionDamage = 0;
         this.burningDamage = calculateBurningDamage(quantity);
-        this.duration = calculateDuration();
     }
 
     public void increaseQuantityOfItem (int amount) {
         this.quantity += amount;
         this.burningDamage = calculateBurningDamage(quantity);
-        this.duration = calculateDuration();
     }
 
     private float calculateBurningDamage (int quantity) {
         PlayerClass currentPlayerClass = PlayerStats.getInstance().getPlayerClass();
         switch (currentPlayerClass) {
             case FireFighter:
-                return PlayerStats.getInstance().getFireFighterIgniteDamage();
+                return PlayerStats.getInstance().getIgniteDamage();
             default:
                 return PlayerStats.getInstance().getBaseDamage() * 0.01f * quantity;
         }
     }
 
 
-    private float calculateDuration () {
-        return quantity * 2;
-    }
 
 
     @Override
@@ -58,7 +53,7 @@ public class FlameDetonation extends Item {
                 DormentExplosionActivationMethods.OnDeath, false, EffectIdentifiers.FlameDetonationDormentExplosion,
                 0, EffectActivationTypes.OnObjectDeath, true);
         dormentExplosion.setBurningDamage(burningDamage);
-        dormentExplosion.setBurningDuration(duration);
+        dormentExplosion.setBurningDuration(duration * quantity);
         gameObject.addEffect(dormentExplosion);
     }
 

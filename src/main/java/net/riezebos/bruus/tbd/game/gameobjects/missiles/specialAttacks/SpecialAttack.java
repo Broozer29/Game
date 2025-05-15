@@ -2,8 +2,12 @@ package net.riezebos.bruus.tbd.game.gameobjects.missiles.specialAttacks;
 
 import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.Missile;
+import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
+import net.riezebos.bruus.tbd.game.items.ItemEnums;
+import net.riezebos.bruus.tbd.game.items.PlayerInventory;
 import net.riezebos.bruus.tbd.game.items.effects.EffectInterface;
+import net.riezebos.bruus.tbd.game.items.items.PrecisionAmplifier;
 import net.riezebos.bruus.tbd.game.movement.BoardBlockUpdater;
 import net.riezebos.bruus.tbd.game.util.ArmorCalculator;
 import net.riezebos.bruus.tbd.game.util.OnScreenTextManager;
@@ -25,7 +29,7 @@ public class SpecialAttack extends GameObject {
     protected boolean isDissipating = false;
     protected boolean appliesItemEffects = true;
 
-    public SpecialAttack (SpriteAnimationConfiguration spriteAnimationConfiguration, SpecialAttackConfiguration specialAttackConfiguration) {
+    public SpecialAttack(SpriteAnimationConfiguration spriteAnimationConfiguration, SpecialAttackConfiguration specialAttackConfiguration) {
         super(spriteAnimationConfiguration);
         this.damage = specialAttackConfiguration.getDamage();
         this.friendly = specialAttackConfiguration.isFriendly();
@@ -34,7 +38,7 @@ public class SpecialAttack extends GameObject {
         this.boxCollision = specialAttackConfiguration.isBoxCollision();
         this.destroysMissiles = specialAttackConfiguration.isDestroysMissiles();
 
-        if(this.destroysMissiles){
+        if (this.destroysMissiles) {
             this.damagesMissiles = false; //If it cant destroy them, dont damage them by default either.
         }
     }
@@ -43,7 +47,7 @@ public class SpecialAttack extends GameObject {
     @Override
     //Overridden because SpecialAttacks behave like explosions. Missiles apply 1 on-hit effect and get removed, SpecialAttacks can apply
     //its effect to multiple, thus copies are required
-    public void dealDamageToGameObject (GameObject target) {
+    public void dealDamageToGameObject(GameObject target) {
         for (EffectInterface effect : effectsToApply) {
             EffectInterface effectCopy = effect.copy();
             if (effectCopy != null) {
@@ -52,6 +56,15 @@ public class SpecialAttack extends GameObject {
         }
 
         float damage = ArmorCalculator.calculateDamage(getDamage(), target);
+        boolean isACrit = false;
+        if (PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.PrecisionAmplifier) != null) {
+            PrecisionAmplifier precisionAmplifier = (PrecisionAmplifier) PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.PrecisionAmplifier);
+            isACrit = precisionAmplifier.rollCritDice();
+            if (isACrit) {
+                damage *= PlayerStats.getInstance().getCriticalStrikeDamageMultiplier();
+            }
+        }
+
         target.takeDamage(damage);
 
         if (showDamage && damage >= 1) {
@@ -62,7 +75,7 @@ public class SpecialAttack extends GameObject {
     }
 
 
-    public void tryDealDamageAndApplyEffects (GameObject target) {
+    public void tryDealDamageAndApplyEffects(GameObject target) {
         double currentTime = GameState.getInstance().getGameSeconds();
         double lastAffectedTime = affectedObjects.getOrDefault(target, 0.0);
 
@@ -78,7 +91,7 @@ public class SpecialAttack extends GameObject {
         }
     }
 
-    public void updateSpecialAttackEnemyCollisionList () {
+    public void updateSpecialAttackEnemyCollisionList() {
         Iterator<Map.Entry<GameObject, Double>> iterator = affectedObjects.entrySet().iterator();
         while (iterator.hasNext()) {
             Map.Entry<GameObject, Double> entry = iterator.next();
@@ -90,49 +103,49 @@ public class SpecialAttack extends GameObject {
         }
     }
 
-    public void updateSpecialAttack () {
+    public void updateSpecialAttack() {
         //Exists to be overriden
     }
 
 
-    public void startDissipating () {
+    public void startDissipating() {
         //Exists to be overriden
     }
 
-    public boolean isDissipating () {
+    public boolean isDissipating() {
         return isDissipating;
     }
 
-    public SpriteAnimation getAnimation () {
+    public SpriteAnimation getAnimation() {
         return this.animation;
     }
 
-    public boolean centeredAroundPlayer () {
+    public boolean centeredAroundPlayer() {
         return centeredAroundObject;
     }
 
-    public void setCenteredAroundObject (Boolean bool) {
+    public void setCenteredAroundObject(Boolean bool) {
         this.centeredAroundObject = bool;
     }
 
-    public List<Missile> getSpecialAttackMissiles () {
+    public List<Missile> getSpecialAttackMissiles() {
         return this.specialAttackMissiles;
     }
 
-    public void setSpecialAttackMissiles (List<Missile> specialAttackMissiles) {
+    public void setSpecialAttackMissiles(List<Missile> specialAttackMissiles) {
         this.specialAttackMissiles = specialAttackMissiles;
     }
 
-    public boolean isAllowRepeatedDamage () {
+    public boolean isAllowRepeatedDamage() {
         return allowRepeatedDamage;
     }
 
-    public void setAllowRepeatedDamage (boolean allowRepeatedDamage) {
+    public void setAllowRepeatedDamage(boolean allowRepeatedDamage) {
         this.allowRepeatedDamage = allowRepeatedDamage;
     }
 
 
-    public void checkEnemySpecialAttackCollision (GameObject gameObject) {
+    public void checkEnemySpecialAttackCollision(GameObject gameObject) {
         if (this.getSpecialAttackMissiles().isEmpty()) {
             CollisionInfo collisionInfo = CollisionDetector.getInstance().detectCollision(gameObject, this);
             if (collisionInfo != null) {
@@ -147,31 +160,31 @@ public class SpecialAttack extends GameObject {
         }
     }
 
-    public boolean isAllowOnHitEffects () {
+    public boolean isAllowOnHitEffects() {
         return this.appliesOnHitEffects;
     }
 
-    public boolean isDestroysMissiles () {
+    public boolean isDestroysMissiles() {
         return destroysMissiles;
     }
 
-    public void setDestroysMissiles (boolean destroysMissiles) {
+    public void setDestroysMissiles(boolean destroysMissiles) {
         this.destroysMissiles = destroysMissiles;
     }
 
-    public boolean isDamagesMissiles () {
+    public boolean isDamagesMissiles() {
         return damagesMissiles;
     }
 
-    public void setDamagesMissiles (boolean damagesMissiles) {
+    public void setDamagesMissiles(boolean damagesMissiles) {
         this.damagesMissiles = damagesMissiles;
     }
 
-    public float getMaxHPDamagePercentage () {
+    public float getMaxHPDamagePercentage() {
         return maxHPDamagePercentage;
     }
 
-    public void setMaxHPDamagePercentage (float maxHPDamagePercentage) {
+    public void setMaxHPDamagePercentage(float maxHPDamagePercentage) {
         this.maxHPDamagePercentage = maxHPDamagePercentage;
     }
 }

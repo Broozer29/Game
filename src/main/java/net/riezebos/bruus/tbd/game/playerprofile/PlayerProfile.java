@@ -5,12 +5,14 @@ public class PlayerProfile {
     private int highestStageCompleted;
     private int bossesKilledCounter;
     private boolean carrierUnlocked = false;
-    private int emeralds = 100;
-    private int nepotismLevel = 1; //Start with level 1
-    private int clubAccessLevel = 0; //Start disabled
+    private boolean fireFighterUnlocked = false;
+    private int emeralds = 0;
+    private int nepotismLevel = 0;
+    private int clubAccessLevel = 0;
     private int compoundWealthLevel = 0;
     private int BountyHunterLevel = 0;
     private int treasureHunterLevel = 0;
+    private int ThickHideLevel = 0;
 
 
     public PlayerProfile() {
@@ -108,5 +110,21 @@ public class PlayerProfile {
 
     public void setCarrierUnlocked(boolean carrierUnlocked) {
         this.carrierUnlocked = carrierUnlocked;
+    }
+
+    public boolean isFireFighterUnlocked() {
+        return fireFighterUnlocked;
+    }
+
+    public void setFireFighterUnlocked(boolean fireFighterUnlocked) {
+        this.fireFighterUnlocked = fireFighterUnlocked;
+    }
+
+    public int getThickHideLevel() {
+        return ThickHideLevel;
+    }
+
+    public void setThickHideLevel(int thickHideLevel) {
+        ThickHideLevel = thickHideLevel;
     }
 }

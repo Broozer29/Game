@@ -79,6 +79,7 @@ public class SpaceShip extends GameObject {
         this.accumulatedXCoordinate = this.xCoordinate;
         this.knockbackDamping = playerStats.getKnockBackDamping();
         pressedKeys = new HashSet<>();
+        this.baseArmor += PlayerStats.getInstance().getBaseArmor();
 
         boolean shouldLoadEngineAnim = true;
         if (PlayerStats.getInstance().getPlayerClass().equals(PlayerClass.Carrier)) {
@@ -180,7 +181,7 @@ public class SpaceShip extends GameObject {
         SpriteAnimationConfiguration spriteAnimationConfiguration = new SpriteAnimationConfiguration(this.spriteConfiguration, 2, false);
         spriteAnimationConfiguration.getSpriteConfiguration().setImageType(imageType);
         destructionAnimation = new SpriteAnimation(spriteAnimationConfiguration);
-        destructionAnimation.setAnimationScale(2f);
+        destructionAnimation.setAnimationScale(2.5f);
     }
 
     public void addShieldDamageAnimation() {
@@ -251,10 +252,7 @@ public class SpaceShip extends GameObject {
     }
 
     private void reduceOverloadedShieldPoints() {
-        float maxShieldPoints = playerStats.getMaxShieldHitPoints();
-        float maxOverloadingShieldMultiplier = playerStats.getMaxOverloadingShieldMultiplier();
-
-        if (currentShieldPoints > maxShieldPoints * maxOverloadingShieldMultiplier) {
+        if (currentShieldPoints > playerStats.getMaxShieldHitPoints()) {
             currentShieldPoints -= playerStats.getOverloadedShieldDiminishAmount();
         }
     }
