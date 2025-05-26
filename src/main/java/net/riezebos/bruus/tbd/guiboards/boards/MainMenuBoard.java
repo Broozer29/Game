@@ -166,16 +166,16 @@ public class MainMenuBoard extends JPanel implements TimerHolder {
         addToGrid(firstColumn, selectClassBoard.getComponents().get(0), 0, 0);
         addAllButFirstComponent(selectClassBoard);
 
-        addToGrid(firstColumn, openShopButton.getComponents().get(0), 0, 1);
-        addAllButFirstComponent(openShopButton);
+//        addToGrid(firstColumn, openShopButton.getComponents().get(0), 0, 1);
+//        addAllButFirstComponent(openShopButton);
 
         if (SaveManager.getInstance().doesSaveFileExist()) {
-            addToGrid(firstColumn, continueSaveFile.getComponents().get(0), 0, 2);
+            addToGrid(firstColumn, continueSaveFile.getComponents().get(0), 0, 1);
             addAllButFirstComponent(continueSaveFile);
         }
 
-        addToGrid(firstColumn, testingButton.getComponents().get(0), 0, 3);
-        addAllButFirstComponent(testingButton);
+//        addToGrid(firstColumn, testingButton.getComponents().get(0), 0, 3);
+//        addAllButFirstComponent(testingButton);
 
 //        secondColumn.add(selectDefaultMusicButton.getComponents().get(0));
 //        addAllButFirstComponent(selectDefaultMusicButton);
@@ -350,6 +350,7 @@ public class MainMenuBoard extends JPanel implements TimerHolder {
             long currentTime = System.currentTimeMillis();
 
             // Left and right navigation
+
             if (currentTime - lastMoveTime > MOVE_COOLDOWN) {
                 if (controllerInputReader.isInputActive(ControllerInputEnums.MOVE_LEFT)) {
                     // Menu option to the left

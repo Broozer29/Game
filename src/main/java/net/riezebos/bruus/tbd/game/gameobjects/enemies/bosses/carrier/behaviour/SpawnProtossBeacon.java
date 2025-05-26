@@ -23,7 +23,7 @@ public class SpawnProtossBeacon implements BossActionable {
     //Stuurt alle levende protoss naar de speler (zet gewoon de target in ProtossUtils op de speler met lage min/max distance
     //Alleen uitvoeren als er >= 5 protoss leven?
     private double lastSpawnedTime = 0;
-    private double spawnCooldown = 20;
+    private double spawnCooldown = 16;
     private int priority = 16;
     private double lastCheckedTime;
 

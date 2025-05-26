@@ -95,7 +95,14 @@ public class MacOSMediaPlayer {
             return; // Skip this update and keep the last known valid position
         }
 
+//        double total = getTotalSecondsInPlayback();
+//        if(total < 0) {
+//            System.err.println("Failed to get total track length. Keeping previous value.");
+//            return; // Skip this update and keep the last known valid position
+//        }
+
         currentSeconds = newCurrentSeconds;
+//        totalSeconds = getTotalSecondsInPlayback();
 
         // Only stop and skip if we are certain playback has finished
         if (currentSeconds >= 0 && currentSeconds < totalSeconds - 2) {  // Increased buffer to avoid premature stopping

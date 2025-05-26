@@ -21,7 +21,7 @@ public class ItemDescriptionRetriever {
             case PlasmaCoatedBullets -> {
                 return "Your missiles apply damage over time. Enemies take " +
                         Math.round(Math.round(PlasmaCoatedBullets.burningDamage * 100) * (PlasmaCoatedBullets.duration / DamageOverTime.damageInterval)) +
-                        "(+" +
+                        "% (+" +
                         Math.round(Math.round(PlasmaCoatedBullets.burningDamage * 100) * (PlasmaCoatedBullets.duration / DamageOverTime.damageInterval)) + "%) damage over " +
                         PlasmaCoatedBullets.duration + " seconds (+" + PlasmaCoatedBullets.duration + ")";
             }
@@ -123,7 +123,7 @@ public class ItemDescriptionRetriever {
                         "% (+%" + Math.round(ElectricSupercharger.buffAmount * 100) + "%) damage.";
             }
             case ThornedPlates -> {
-                return "Gain" + ThornedPlates.armorAmount + " (+" + ThornedPlates.armorAmount + ") armor. Upon taking damage, you return 100% Thorns damage to the attacker. Increases all Thorns damage by " + Math.round(ThornedPlates.buffAmount * 100) + "% (+ " + Math.round(ThornedPlates.buffAmount * 100) + "%)";
+                return "Gain " + ThornedPlates.armorAmount + " (+" + ThornedPlates.armorAmount + ") armor. Upon taking damage, you return 100% Thorns damage to the attacker. Increases all Thorns damage by " + Math.round(ThornedPlates.buffAmount * 100) + "% (+ " + Math.round(ThornedPlates.buffAmount * 100) + "%)";
             }
             case Thornweaver -> {
                 return "Colliding with enemies now applies 100% Thorns damage to them. You take " + Math.round(Thornweaver.collisionDamageReduction * 100) +
@@ -147,17 +147,15 @@ public class ItemDescriptionRetriever {
                 return "After killing " + Contract.killCountRequired + " enemies, transform into a random rare or legendary item upon entering the shop.";
             }
             case StickyOil -> {
-                return "Your Ignite effects last" +
+                return "Ignite duration increased by " +
                         Math.round(StickyOil.bonusDurationMultiplier * 100) +
-                        "% (+ " +
-                        Math.round(StickyOil.bonusDurationMultiplier * 100) +
-                        "%) longer. ";
+                        "%. ";
             }
             case CorrosiveOil -> {
                 return "Ignite reduces armor by " + CorrosiveOil.amountPerStack + " (+" + CorrosiveOil.amountPerStack + ") per stack of Ignite.";
             }
             case ScorchingFury -> {
-                return "Ignite deals " + Math.round(ScorchingFury.bonusDamageMultiplier * 100) + "% (+" + Math.round(ScorchingFury.bonusDamageMultiplier * 100) + "%) more damage.";
+                return "Ignite deals " + Math.round(ScorchingFury.bonusDamageMultiplier * 100) + "% more damage.";
             }
             case FlameDetonation -> {
                 return "Ignite now causes enemies to explode leaving behind a flame for " + Math.round(FlameDetonation.duration) + " (+" + Math.round(FlameDetonation.duration) + ") seconds that applies Ignite.";
@@ -225,6 +223,9 @@ public class ItemDescriptionRetriever {
             }
             case InfernalPreIgniter -> {
                 return "Flamethrowers damage scales with remaining fuel. Dealing up to " + Math.round(InfernalPreIgniter.maxDamageBonnus * 100) +"% damage when full and 0% damage when empty.";
+            }
+            case FuelCannister -> {
+                return "Increases maximum fuel capacity and fuel regeneration by " + Math.round(FuelCannister.bonusFuelMultiplier * 100) + "%.";
             }
 
             default -> {

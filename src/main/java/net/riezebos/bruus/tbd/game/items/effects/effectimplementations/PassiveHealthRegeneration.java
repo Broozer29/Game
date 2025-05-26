@@ -27,7 +27,7 @@ public class PassiveHealthRegeneration implements EffectInterface {
     @Override
     public void activateEffect (GameObject gameObject) {
         double currentTime = GameState.getInstance().getGameSeconds();
-        if (currentTime - gameObject.getLastGameSecondDamageTaken() > 3 && // More than 3 seconds have passed
+        if (currentTime - gameObject.getLastGameSecondDamageTaken() > 0.001 && // More than 10ms have passed
                 gameObject.getCurrentHitpoints() < gameObject.getMaxHitPoints()) {
 
             if (animation != null) {

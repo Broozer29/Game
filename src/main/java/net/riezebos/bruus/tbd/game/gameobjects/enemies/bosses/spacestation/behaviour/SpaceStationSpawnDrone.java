@@ -19,9 +19,9 @@ import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.Sprit
 
 import java.util.Random;
 
-public class SpaceStationSpawnPulsingDrone implements BossActionable {
-    private double lastSpawnedTime = 0;
-    private double spawnCooldown = 15;
+public class SpaceStationSpawnDrone implements BossActionable {
+    private double lastSpawnedTime = GameState.getInstance().getGameSeconds();
+    private double spawnCooldown = 20;
     private Random random;
     private int priority = 3;
 
@@ -45,9 +45,11 @@ public class SpaceStationSpawnPulsingDrone implements BossActionable {
 
 
             if(spawnAnimation.isPlaying() && spawnAnimation.getCurrentFrame() == 4) {
-                Enemy pulsingDrone = createPulsingDrone(enemy);
-                pulsingDrone.setCenterCoordinates(spawnAnimation.getCenterXCoordinate(), spawnAnimation.getCenterYCoordinate());
-                EnemyManager.getInstance().addEnemy(pulsingDrone);
+                for(int i = 0; i < 2; i++) {
+                    Enemy pulsingDrone = createPulsingDrone(enemy);
+                    pulsingDrone.setCenterCoordinates(spawnAnimation.getCenterXCoordinate(), spawnAnimation.getCenterYCoordinate());
+                    EnemyManager.getInstance().addEnemy(pulsingDrone);
+                }
                 lastSpawnedTime = currentTime;
                 enemy.setAttacking(false);
                 return true; //We finished

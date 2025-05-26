@@ -252,6 +252,7 @@ public class ShopBoard extends JPanel implements TimerHolder {
     private void updateSelectedDifficultyIcons() {
         shopBoardCreator.updateDifficultyIconsToDifficulty(LevelManager.getInstance().getCurrentLevelDifficulty(),
                 selectEasyDifficulty, selectMediumDifficulty, selectHardDifficulty);
+
         if (!AudioManager.getInstance().isMusicControlledByThirdPartyApp()) {
             shopBoardCreator.updateLengthIconsToLength(LevelManager.getInstance().getCurrentLevelLength(),
                     shortSong, mediumSong, longSong);

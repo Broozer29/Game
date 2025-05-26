@@ -24,9 +24,9 @@ public class BurstMainAttackBossBehaviour implements BossActionable {
     private double lastAttackTime = 0;
     private double lastSingleShotAttackTime = 0;
     private boolean allowedToFireBurst = false;
-    private double intermittenAttackCooldown = 0.25f;
+    private double intermittenAttackCooldown = 0.2f;
     private int burstShotsFired = 0; // Track the number of shots fired in the burst
-    private int amountOfShotsPerBurst = 8;
+    private int amountOfShotsPerBurst = 10;
     private double attackCooldown = 2.5;
 
     private int priority = 1;
@@ -108,7 +108,7 @@ public class BurstMainAttackBossBehaviour implements BossActionable {
                 missileType.getImageType(), enemy.getScale());
 
 
-        int movementSpeed = 5;
+        float movementSpeed = 5.5f;
         //Create missile movement attributes and create a movement configuration
         PathFinder missilePathFinder = new StraightLinePathFinder();
         MovementPatternSize movementPatternSize = MovementPatternSize.SMALL;

@@ -29,7 +29,7 @@ public class SpaceStationSpinningAttack implements BossActionable {
     private boolean isGoingBackToCenter = false;
 
     private float oldMoveSpeed = 0.0f;
-    private float newMoveSpeedModifier = 2.5f;
+    private float newMoveSpeedModifier = 2.75f;
 
     public SpaceStationSpinningAttack () {
         chargingUpMovement = AudioDatabase.getInstance().getAudioClip(AudioEnums.SpaceStationChargingUpMovement);

@@ -634,6 +634,12 @@ public class ShopBoardCreator {
 
     public void updateDifficultyIconsToDifficulty(LevelDifficulty currentLevelDifficulty, GUIComponent easy,
                                                   GUIComponent medium, GUIComponent hard) {
+        if(LevelManager.getInstance().isNextLevelABossLevel()){
+            medium.setImage(ImageEnums.RedWings5);
+            return;
+        }
+
+
         if (currentLevelDifficulty.equals(LevelDifficulty.Easy)) {
             easy.setNewImage(ImageEnums.YellowWings1);
             medium.setNewImage(ImageEnums.BlueWings3);

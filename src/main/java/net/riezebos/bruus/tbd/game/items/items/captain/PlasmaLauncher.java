@@ -27,26 +27,27 @@ public class PlasmaLauncher extends Item {
     public static float damageMultiplier = 2;
     private Random rand;
 
-    public PlasmaLauncher () {
+    public PlasmaLauncher() {
         super(ItemEnums.PlasmaLauncher, 1, ItemApplicationEnum.AfterCollision);
         rand = new Random();
     }
 
-    public void increaseQuantityOfItem (int amount) {
+    public void increaseQuantityOfItem(int amount) {
         this.quantity += amount;
     }
 
     @Override
-    public void applyEffectToObject (GameObject gameObject) {
+    public void applyEffectToObject(GameObject gameObject) {
         float chance = rand.nextFloat(0.0f, 1.01f); // Generates a float between 0.0 (inclusive) and 1.0 (exclusive)
         if (chance <= procChance) {
-            createPlasmaMissile();
+            createPlasmaMissile(gameObject);
         }
     }
 
-    private void createPlasmaMissile () {
+
+
+    private void createPlasmaMissile(GameObject target) {
         GameObject player = PlayerManager.getInstance().getSpaceship();
-        Enemy target = EnemyManager.getInstance().getClosestEnemy(player.getCenterXCoordinate(), player.getCenterYCoordinate());
 
         if (target == null) {
             return; //There is no target to fire at
@@ -79,22 +80,23 @@ public class PlasmaLauncher extends Item {
         Missile missile = MissileCreator.getInstance().createMissile(spriteConfiguration, missileConfiguration, movementConfiguration);
         missile.resetMovementPath();
         missile.getAnimation().changeImagetype(ImageEnums.PlasmaLauncherMissile);
-
+        missile.getAnimation().setAnimationScale(0.6f);
+        missile.setCenterCoordinates(PlayerManager.getInstance().getSpaceship().getXCoordinate() + PlayerManager.getInstance().getSpaceship().getWidth(),
+                PlayerManager.getInstance().getSpaceship().getCenterYCoordinate());
         missile.getMovementConfiguration().setDestination(
                 new Point(
                         target.getCenterXCoordinate() - (missile.getWidth() / 2),
                         target.getCenterYCoordinate() - (missile.getHeight() / 2)
                 ));
-
         missile.setPiercesThroughObjects(true);
         missile.setAmountOfPiercesLeft(99999);
         missile.setOwnerOrCreator(player);
+        missile.rotateObjectTowardsDestination(false);
         missile.setAllowedVisualsToRotate(false);
-        missile.getAnimation().setAnimationScale(0.6f);
         MissileManager.getInstance().addExistingMissile(missile);
     }
 
-    private MissileConfiguration getMissileConfiguration (boolean isFriendly) {
+    private MissileConfiguration getMissileConfiguration(boolean isFriendly) {
         ImageEnums impactType = PlayerStats.getInstance().getPlayerMissileImpactImage();
         int maxHitPoints = 1000;
         int maxShields = 0;
@@ -110,8 +112,8 @@ public class PlasmaLauncher extends Item {
     }
 
     @Override
-    public boolean isAvailable(){
-        if(!this.itemEnum.isEnabled()){
+    public boolean isAvailable() {
+        if (!this.itemEnum.isEnabled()) {
             return false;
         }
         return PlayerStats.getInstance().getPlayerClass().equals(PlayerClass.Captain);

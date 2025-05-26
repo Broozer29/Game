@@ -45,13 +45,13 @@ public class TazerProjectile extends Missile {
 
         if (target.isFriendly()) {
             //Debuff the player or player friendly objects
-            attackSpeedModifierEffect = new AttackSpeedModifierEffect(-0.35f, 3, null, EffectIdentifiers.TazerAttackSpeedModifier);
+            attackSpeedModifierEffect = new AttackSpeedModifierEffect(-0.35f, 3, superChargedAnimation, EffectIdentifiers.TazerAttackSpeedModifier);
 //            damageModifierEffect = new DamageModifierEffect(-0.25f, 3, superChargedAnimation, EffectIdentifiers.TazerDamageModifier);
             this.setVisible(false);
         } else {
             //Buff the fellow enemies
-            attackSpeedModifierEffect = new AttackSpeedModifierEffect(0.25f, 6, null, EffectIdentifiers.TazerAttackSpeedModifier);
-            damageModifierEffect = new DamageModifierEffect(0.25f, 6, superChargedAnimation, EffectIdentifiers.TazerDamageModifier);
+            attackSpeedModifierEffect = new AttackSpeedModifierEffect(0.25f, 6, superChargedAnimation, EffectIdentifiers.TazerAttackSpeedModifier);
+            damageModifierEffect = new DamageModifierEffect(0.25f, 6, null, EffectIdentifiers.TazerDamageModifier);
         }
 
 

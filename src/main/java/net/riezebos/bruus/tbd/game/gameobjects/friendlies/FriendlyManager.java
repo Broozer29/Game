@@ -165,7 +165,7 @@ public class FriendlyManager {
         }
 
         for (Drone drones : drones) {
-            if (drones.isVisible()) {
+            if (drones.isVisible() && drones.isProtoss()) { //Only check collision for protoss ships, as this checks enemy collision rules
                 for (Enemy enemy : enemyManager.getEnemies()) {
                     if(enemy.isVisible() && enemy.isDetonateOnCollision()) {
                         CollisionInfo collisionInfo = CollisionDetector.getInstance().detectCollision(drones, enemy);

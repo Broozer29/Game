@@ -1,5 +1,6 @@
 package net.riezebos.bruus.tbd.game.level;
 
+import net.riezebos.bruus.tbd.DevTestSettings;
 import net.riezebos.bruus.tbd.game.UI.GameUICreator;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.Enemy;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyCreator;
@@ -133,25 +134,41 @@ public class LevelManager {
         GameState.getInstance().setLevelStartTime(GameState.getInstance().getGameSeconds());
 
         initDifficulty();
-//        this.levelType = LevelTypes.Boss;
+
+        if(DevTestSettings.onlyBossLevels) {
+            this.levelType = LevelTypes.Boss;
+        }
 
         GameUICreator.getInstance().createDifficultyWings(this.levelType.equals(LevelTypes.Boss), currentLevelDifficultyScore);
 
+        if(DevTestSettings.enablePlayerMovingPastBoundaries) {
+            PlayerManager.getInstance().getSpaceship().allowMovementBeyondBoundaries = true;
+        }
 
-//        PlayerManager.getInstance().getSpaceship().allowMovementBeyondBoundaries = true;
-//        audioManager.devTestShortLevelMode = true;
-//        audioManager.devTestmuteMode = true;
+        if(DevTestSettings.devTestShortLevelMode) {
+            audioManager.devTestShortLevelMode = true;
+        }
+        if(DevTestSettings.devTestMuteMode) {
+            audioManager.devTestmuteMode = true;
+        }
 
-//        activateDirectors(this.levelType);
-        activateMusic(this.levelType);
+        if (!DevTestSettings.blockDirectors) {
+            activateDirectors(this.levelType);
+        }
+        if (!DevTestSettings.blockMusic) {
+            activateMusic(this.levelType);
+        }
         gameState.setGameState(GameStatusEnums.Playing);
 
 
-        EnemyEnums enemyType = EnemyEnums.CarrierBoss;
-        Enemy enemy = EnemyCreator.createEnemy(enemyType, DataClass.getInstance().getWindowWidth(), 300, Direction.LEFT, enemyType.getDefaultScale()
+        EnemyEnums enemyType = EnemyEnums.Flamer;
+        Enemy enemy = EnemyCreator.createEnemy(enemyType, 400, 500, Direction.LEFT, enemyType.getDefaultScale()
                 , enemyType.getMovementSpeed(), enemyType.getMovementSpeed(), MovementPatternSize.SMALL, false);
-//        enemy.setCurrentHitpoints(10);
-//        enemy.setXCoordinate(DataClass.getInstance().getWindowWidth() + enemy.getWidth() / 2);
+        enemy.setXCoordinate(500);
+        enemy.setMaxHitPoints(100000);
+        enemy.setCurrentHitpoints(100000);
+        enemy.setAllowedToFire(false);
+        enemy.setAllowedToMove(false);
 //        EnemyManager.getInstance().addEnemy(enemy);
 
     }
@@ -173,7 +190,6 @@ public class LevelManager {
         }
 
         boolean nextLevelABossLevel = isNextLevelABossLevel();
-//        nextLevelABossLevel = true;
         if (nextLevelABossLevel) {
             this.levelType = LevelTypes.Boss;
             currentLevelDifficulty = LevelDifficulty.Hard;
@@ -200,7 +216,7 @@ public class LevelManager {
 //        this.currentEnemyTribe = EnemyTribes.Zerg;
     }
 
-    public EnemyEnums getNextBoss(){
+    public EnemyEnums getNextBoss() {
         int bossesDefeated = GameState.getInstance().getBossesDefeated();
 
         // Use modulo to cycle through the bosses
@@ -217,7 +233,6 @@ public class LevelManager {
                 return EnemyEnums.RedBoss;
         }
     }
-
 
 
     private void activateDirectors(LevelTypes levelType) {

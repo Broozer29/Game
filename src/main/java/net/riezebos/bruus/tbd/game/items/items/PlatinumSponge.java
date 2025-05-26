@@ -10,7 +10,7 @@ import net.riezebos.bruus.tbd.game.items.enums.ItemApplicationEnum;
 public class PlatinumSponge extends Item {
 
     public static float armorBonus = 3;
-    public static float maxArmorBonus = 10;
+    public static float maxArmorBonus = 20;
 
     public PlatinumSponge () {
         super(ItemEnums.PlatinumSponge, 1,  ItemApplicationEnum.ApplyOnCreation);

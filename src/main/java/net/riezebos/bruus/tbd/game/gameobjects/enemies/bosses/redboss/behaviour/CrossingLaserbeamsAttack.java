@@ -18,15 +18,15 @@ import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.Sprit
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteConfiguration;
 
 public class CrossingLaserbeamsAttack implements BossActionable {
-    private double lastAttackedTime = 0;
-    private double attackCooldown = 20;
+    private double lastAttackedTime = GameState.getInstance().getGameSeconds() + 5; //Start with a cooldown
+    private double attackCooldown = 30;
     private int priority = 10;
 
     public static int lowerLaserbeamLowestAngle = 135;
     public static int lowerLaserbeamHighestAngle = 225;
     public static int upperLaserbeamLowestAngle = 135;
     public static int upperLaserbeamHighestAngle = 225;
-    public static float angleStepSize = 0.4f;
+    public static float angleStepSize = 0.3f;
 
     private Point upperLaserbeamOriginPoint;
     private Point lowerLaserbeamOriginPoint;
@@ -49,13 +49,14 @@ public class CrossingLaserbeamsAttack implements BossActionable {
         if (inwards) {
             lowerLaserbeamHighestAngle = 185;
             upperLaserbeamLowestAngle = 175;
+            angleStepSize = 0.2f;
         } else {
             lowerLaserbeamLowestAngle = 160;  // Start closer to the center
             lowerLaserbeamHighestAngle = 190; // Diverging outward
 
             upperLaserbeamLowestAngle = 170;  // Start closer to the center
             upperLaserbeamHighestAngle = 200; // Diverging outward
-            angleStepSize = 0.25f;
+            angleStepSize = 0.2f;
         }
     }
 
@@ -79,6 +80,7 @@ public class CrossingLaserbeamsAttack implements BossActionable {
                 AnimationManager.getInstance().addUpperAnimation(upperChargingUpAnimation);
                 AnimationManager.getInstance().addUpperAnimation(lowerChargingUpAnimation);
                 AudioManager.getInstance().addAudio(AudioEnums.ChargingLaserbeam);
+                setAngles();
             }
 
             if (lowerChargingUpAnimation.isPlaying() &&
@@ -143,7 +145,7 @@ public class CrossingLaserbeamsAttack implements BossActionable {
     private void createLaserbeams (Enemy enemy) {
         //Create upper laserbeam
 
-        float damage = enemy.getDamage() / 2;
+        float damage = enemy.getDamage() * 0.4f;
         LaserbeamConfiguration upperLaserbeamConfiguration = new LaserbeamConfiguration(true, damage);
         upperLaserbeamConfiguration.setAmountOfLaserbeamSegments(20);
         upperLaserbeamConfiguration.setOriginPoint(upperLaserbeamOriginPoint);
@@ -172,8 +174,8 @@ public class CrossingLaserbeamsAttack implements BossActionable {
         lowerLaserbeam = new AngledLaserBeam(lowerLaserbeamConfiguration);
         upperLaserbeam.setOwner(enemy);
         lowerLaserbeam.setOwner(enemy);
-        upperLaserbeam.setKnockbackStrength(13);
-        lowerLaserbeam.setKnockbackStrength(13);
+        upperLaserbeam.setKnockbackStrength(10);
+        lowerLaserbeam.setKnockbackStrength(10);
     }
 
     private void updateLaserbeamOriginPoints () {

@@ -16,7 +16,7 @@ import java.util.Random;
 public class BarbedMissiles extends Item {
 
     private Random random = new Random();
-    public static float procChance = 0.2f;
+    public static float procChance = 0.25f;
 
     public BarbedMissiles() {
         super(ItemEnums.BarbedMissiles, 1, ItemApplicationEnum.AfterCollision);
@@ -24,8 +24,6 @@ public class BarbedMissiles extends Item {
 
     @Override
     public void applyEffectToObject(GameObject gameObject) {
-        //instanceof is sloppy, but some gameobjects should be straight up ignored by thorns such as laser missiles or special attacks
-        //can be fixed by keeping track of object types but this is just way easier without any drawbacks
         if (!PlayerStats.getInstance().isHasThornsEnabled()) {
             PlayerStats.getInstance().setHasThornsEnabled(true);
         }

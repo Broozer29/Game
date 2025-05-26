@@ -2006,7 +2006,7 @@ public class ImageDatabase {
             healingAnimation.add(image);
         }
 
-        for (int i = 0; i < 61; i++) {
+        for (int i = 0; i < 24; i++) {
             String sourceString = String.format("/images/gif/PNGtoGIF/PlasmaLauncherMissile/%d.png", i);
             BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
             plasmaLauncherMissileFrames.add(image);

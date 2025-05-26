@@ -259,11 +259,10 @@ public class CustomAudioClip {
                 case Player_Laserbeam -> 0.65;
                 case Large_Ship_Destroyed -> 0.6;
                 case Alien_Spaceship_Destroyed -> 0.4;
-                case Alien_Bomb_Impact -> 0.2;
-                case Apple_Holder_Remix -> 0.5;
-                case Default_EMP -> 0.075;
-                case NotEnoughMinerals -> 0.6;
-                case GenericError -> 0.6;
+                case Alien_Bomb_Impact -> 0.15;
+                case Default_EMP -> 0.07f;
+                case NotEnoughMinerals -> 0.6f;
+                case GenericError -> 0.6f;
                 default -> 1.0;
             };
 

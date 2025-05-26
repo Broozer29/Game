@@ -38,7 +38,7 @@ public class MissileManager {
     private CopyOnWriteArrayList<SpecialAttack> specialAttacks = new CopyOnWriteArrayList<SpecialAttack>();
     private CopyOnWriteArrayList<Laserbeam> laserbeams = new CopyOnWriteArrayList<>();
     private PerformanceLogger performanceLogger = null;
-    private static float laserBeamCooldown = 0.035f; //100 milliseconds/8 ticks
+    private static float laserBeamCooldown = 0.045f;
 
 
     private MissileManager() {

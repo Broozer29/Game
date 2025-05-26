@@ -13,6 +13,7 @@ import net.riezebos.bruus.tbd.game.items.ItemEnums;
 import net.riezebos.bruus.tbd.game.items.PlayerInventory;
 import net.riezebos.bruus.tbd.game.items.effects.EffectIdentifiers;
 import net.riezebos.bruus.tbd.game.items.effects.effectimplementations.DamageOverTime;
+import net.riezebos.bruus.tbd.game.items.effects.effectimplementations.SpawnCoinsOnDeath;
 import net.riezebos.bruus.tbd.game.level.LevelManager;
 import net.riezebos.bruus.tbd.game.level.enums.LevelTypes;
 import net.riezebos.bruus.tbd.game.movement.BoardBlockUpdater;
@@ -323,8 +324,12 @@ public class EnemyManager {
         for(Enemy enemy : this.enemyList){
             if(enemy.getCurrentHitpoints() > 0 && !enemy.hasEffect(EffectIdentifiers.EndOfLevelBurn)){
                 enemy.addEffect(getEndOfGameEnemyBurnEffect(enemy));
-                enemy.setCashMoneyWorth(enemy.getCashMoneyWorth() * 0.1f);
-                enemy.setXpOnDeath(enemy.getXpOnDeath() * 0.1f);
+                enemy.setCashMoneyWorth(enemy.getCashMoneyWorth() * 0.01f);
+                enemy.setXpOnDeath(enemy.getXpOnDeath() * 0.01f);
+            }
+
+            if (enemy.getEnemyType().equals(EnemyEnums.CashCarrier)) {
+                enemy.getEffects().removeIf(effect -> effect instanceof SpawnCoinsOnDeath);
             }
         }
     }

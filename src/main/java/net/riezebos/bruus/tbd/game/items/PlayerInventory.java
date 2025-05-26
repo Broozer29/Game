@@ -1,5 +1,6 @@
 package net.riezebos.bruus.tbd.game.items;
 
+import net.riezebos.bruus.tbd.DevTestSettings;
 import net.riezebos.bruus.tbd.game.gameobjects.player.boons.BoonEnums;
 import net.riezebos.bruus.tbd.game.items.enums.ItemApplicationEnum;
 import net.riezebos.bruus.tbd.game.items.enums.ItemRarityEnums;
@@ -25,10 +26,10 @@ import java.util.stream.Collectors;
 public class PlayerInventory {
     private static PlayerInventory instance = new PlayerInventory();
     private Map<ItemEnums, Item> items = new HashMap<>();
-    private float cashMoney = 10000;
+    private float cashMoney = 0;
 
     private PlayerInventory() {
-        addItem(ItemEnums.KineticDynamo);
+        resetInventory();
 
 //        for(int i = 0; i < 5; i++){
 //            addItem(ItemEnums.EnergySiphon);
@@ -39,6 +40,12 @@ public class PlayerInventory {
 
     public void resetInventory() {
         items.clear();
+
+        if(DevTestSettings.infiniteMoney){
+            cashMoney = 999999999;
+        } else {
+            cashMoney = 0;
+        }
     }
 
     public static PlayerInventory getInstance() {

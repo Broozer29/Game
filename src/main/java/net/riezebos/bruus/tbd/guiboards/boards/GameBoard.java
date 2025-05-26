@@ -503,10 +503,6 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
 
         drawSpecialAttacks(VisualLayer.Upper, g);
 
-        for (UIObject obj : gameUICreator.getInformationCards()) {
-            drawImage(g, obj);
-        }
-
         // Draws higher level animations
         for (SpriteAnimation animation : animationManager.getUpperAnimations()) {
             drawAnimation(g, animation);
@@ -514,6 +510,10 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
 
         for (OnScreenText text : textManager.getOnScreenTexts()) {
             drawOnScreenText(g, text);
+        }
+
+        for (UIObject obj : gameUICreator.getInformationCards()) {
+            drawImage(g, obj);
         }
 
         drawPlayerHealthBars(g);
@@ -546,7 +546,6 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
                     DataClass.getInstance().getWindowWidth() * 0.4f,
                     DataClass.getInstance().getWindowHeight() / 2);
         }
-
 
 
         double end = System.currentTimeMillis();
@@ -743,7 +742,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
         if (currentTotalHitpoints <= maxTotalHitpoints * 0.35f) {
 
             float minHealthThreshold = maxTotalHitpoints * 0.01f;
-            float maxHealthThreshold = maxTotalHitpoints * 0.5f;
+            float maxHealthThreshold = maxTotalHitpoints * 0.8f;
 
             float clampedHitpoints = Math.max(minHealthThreshold, Math.min(currentTotalHitpoints, maxHealthThreshold));
 
@@ -763,7 +762,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
 
     }
 
-    private void drawHealthbarsAtTheSpaceship(Graphics2D g){
+    private void drawHealthbarsAtTheSpaceship(Graphics2D g) {
         float playerShields = playerManager.getSpaceship().getCurrentShieldPoints();
         float playerMaxShields = playerStats.getMaxShieldHitPoints();
         float playerHealth = playerManager.getSpaceship().getCurrentHitpoints();

@@ -189,6 +189,8 @@ public class BoonSelectionBoard extends JPanel implements TimerHolder {
         offTheGridObjects.add(startGameBackgroundCard);
         offTheGridObjects.add(descriptionBackgroundCard);
 
+        recreateBoonsComponents();
+
         offTheGridObjects.addAll(emeraldsAvailableText.getComponents());
         offTheGridObjects.addAll(utilityColumnTitleText.getComponents());
         offTheGridObjects.addAll(defenseColumnTitleText.getComponents());
@@ -196,7 +198,7 @@ public class BoonSelectionBoard extends JPanel implements TimerHolder {
         offTheGridObjects.addAll(offenseWIPText.getComponents());
         offTheGridObjects.addAll(defenseWIPText.getComponents());
 
-        recreateBoonsComponents();
+
         addToGrid(firstColumn, selectNepotism.getComponents().get(0), 0, 0);
 //        firstColumn.add(selectNepotism.getComponents().get(0));
         addAllButFirstComponent(selectNepotism);
@@ -252,6 +254,7 @@ public class BoonSelectionBoard extends JPanel implements TimerHolder {
         selectTreasureHunter = BoonSelectionBoardCreator.createOtherBoonButtons(selectBountyHunter.getComponents().get(0), TreasureHunter.getInstance());
         upgradeTreasureHunter = BoonSelectionBoardCreator.createUpgradeBoonButton(firstColumnBackgroundCard, selectTreasureHunter, MenuFunctionEnums.UpgradeTreasureHunter);
 
+        emeraldsAvailableText = BoonSelectionBoardCreator.createEmeraldText();
     }
 
     //Helper method to add all text collection components that are intended to be displayonly

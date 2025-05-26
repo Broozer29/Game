@@ -23,16 +23,16 @@ public class SpawnFourDirectionalDrone implements BossActionable {
 
 
     private double lastSpawnedTime = 0;
-    private double spawnCooldown = 12;
+    private double spawnCooldown = 16;
     private Random random;
     private int priority = 3;
 
     private SpriteAnimation spawnAnimation;
 
     @Override
-    public boolean activateBehaviour (Enemy enemy) {
+    public boolean activateBehaviour(Enemy enemy) {
         double currentTime = GameState.getInstance().getGameSeconds();
-        if(spawnAnimation == null) {
+        if (spawnAnimation == null) {
             initSpawnAnimation(enemy);
         }
 
@@ -46,10 +46,12 @@ public class SpawnFourDirectionalDrone implements BossActionable {
             }
 
 
-            if(spawnAnimation.isPlaying() && spawnAnimation.getCurrentFrame() == 4) {
-                Enemy fourDirectionalDrone = createFourDirectionalDrone(enemy);
-                fourDirectionalDrone.setCenterCoordinates(spawnAnimation.getCenterXCoordinate(), spawnAnimation.getCenterYCoordinate());
-                EnemyManager.getInstance().addEnemy(fourDirectionalDrone);
+            if (spawnAnimation.isPlaying() && spawnAnimation.getCurrentFrame() == 4) {
+                for (int i = 0; i < 2; i++) {
+                    Enemy fourDirectionalDrone = createFourDirectionalDrone(enemy);
+                    fourDirectionalDrone.setCenterCoordinates(spawnAnimation.getCenterXCoordinate(), spawnAnimation.getCenterYCoordinate());
+                    EnemyManager.getInstance().addEnemy(fourDirectionalDrone);
+                }
                 lastSpawnedTime = currentTime;
                 enemy.setAttacking(false);
                 return true; //We finished
@@ -60,7 +62,7 @@ public class SpawnFourDirectionalDrone implements BossActionable {
         return true; //We dont have anything to do at this point
     }
 
-    private void initSpawnAnimation (Enemy enemy) {
+    private void initSpawnAnimation(Enemy enemy) {
         SpriteConfiguration spriteConfiguration = new SpriteConfiguration();
         spriteConfiguration.setxCoordinate(enemy.getXCoordinate());
         spriteConfiguration.setyCoordinate(enemy.getCenterYCoordinate());
@@ -74,11 +76,11 @@ public class SpawnFourDirectionalDrone implements BossActionable {
         spawnAnimation.addXOffset(-10);
     }
 
-    private void updateSpawnAnimationLocation (Enemy enemy) {
+    private void updateSpawnAnimationLocation(Enemy enemy) {
         spawnAnimation.setCenterCoordinates(enemy.getXCoordinate(), enemy.getCenterYCoordinate());
     }
 
-    private int getRandomBoardBlock () {
+    private int getRandomBoardBlock() {
         if (random == null) {
             random = new Random();
         }
@@ -86,10 +88,10 @@ public class SpawnFourDirectionalDrone implements BossActionable {
         return random.nextInt(1, 3);
     }
 
-    private Enemy createFourDirectionalDrone(Enemy enemy){
+    private Enemy createFourDirectionalDrone(Enemy enemy) {
         EnemyEnums enemyEnums = EnemyEnums.FourDirectionalDrone;
         Enemy fourDirectionalDrone = EnemyCreator.createEnemy(enemyEnums, enemy.getXCoordinate(), enemy.getYCoordinate(), Direction.LEFT,
-                enemyEnums.getDefaultScale(), enemyEnums.getMovementSpeed(),enemyEnums.getMovementSpeed(), MovementPatternSize.SMALL, false);
+                enemyEnums.getDefaultScale(), enemyEnums.getMovementSpeed(), enemyEnums.getMovementSpeed(), MovementPatternSize.SMALL, false);
 
         Point point = BoardBlockUpdater.getRandomCoordinateInBlock(getRandomBoardBlock(), fourDirectionalDrone.getWidth(), fourDirectionalDrone.getHeight());
         fourDirectionalDrone.getMovementConfiguration().setDestination(point);
@@ -98,16 +100,16 @@ public class SpawnFourDirectionalDrone implements BossActionable {
     }
 
     @Override
-    public int getPriority () {
+    public int getPriority() {
         return priority;
     }
 
-    public void setPriority (int priority) {
+    public void setPriority(int priority) {
         this.priority = priority;
     }
 
     @Override
-    public boolean isAvailable (Enemy enemy) {
+    public boolean isAvailable(Enemy enemy) {
         return enemy.isAllowedToFire()
                 && GameState.getInstance().getGameSeconds() >= lastSpawnedTime + spawnCooldown
                 && WithinVisualBoundariesCalculator.isWithinBoundaries(enemy);

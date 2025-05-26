@@ -1,5 +1,6 @@
 package net.riezebos.bruus.tbd.game.gameobjects.player;
 
+import net.riezebos.bruus.tbd.DevTestSettings;
 import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
 import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.droneTypes.DroneTypes;
 import net.riezebos.bruus.tbd.game.gameobjects.player.boons.BoonEnums;
@@ -185,8 +186,6 @@ public class PlayerStats {
 
 
         setKnockBackDamping(0.85f);
-        setThornsDamageRatio(0);
-
         mineralModifier = 1;
         amountOfDrones = 0;
         maximumAmountOfDrones = 8;
@@ -195,8 +194,11 @@ public class PlayerStats {
         setDroneDamageBonusRatio(0);
 
         //Hack for free rerolls
-//        setShopRerollDiscount(0);
-        setShopRerollDiscount(99);
+        setShopRerollDiscount(0);
+        if (DevTestSettings.freeReroll) {
+            setShopRerollDiscount(99);
+        }
+
 
         // Health
         setMaxHitPoints(captainBaseHitpoints);
@@ -340,11 +342,11 @@ public class PlayerStats {
 
         //Ik ben dizzy terwijl ik dit maak, ik kom er ff niet uit of dit juist is of niet ik doe het nu omslachtig om het zeker te weten plz help me nog anderhalf uur op de werkvloer
         boolean shouldIncreaseBaseDamage = true;
-        if(BoonManager.getInstance().getDefensiveBoon() != null && BoonManager.getInstance().getDefensiveBoon().equals(BoonEnums.THICK_HIDE)) {
+        if (BoonManager.getInstance().getDefensiveBoon() != null && BoonManager.getInstance().getDefensiveBoon().equals(BoonEnums.THICK_HIDE)) {
             shouldIncreaseBaseDamage = false;
         }
 
-        if(shouldIncreaseBaseDamage) {
+        if (shouldIncreaseBaseDamage) {
             baseDamage = ExperienceCalculator.getNextLevelBaseDamage(baseDamage);
         }
 

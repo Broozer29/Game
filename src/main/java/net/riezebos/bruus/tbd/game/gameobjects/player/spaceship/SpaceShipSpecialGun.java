@@ -114,12 +114,11 @@ public class SpaceShipSpecialGun {
         SpecialAttackConfiguration missileConfiguration = new SpecialAttackConfiguration(damage, true, true, false, true, true, true);
         SpecialAttack specialAttack = new FireShield(spriteAnimationConfiguration, missileConfiguration);
         specialAttack.setCenteredAroundObject(true);
-        specialAttack.setScale(1f);
+        specialAttack.setScale(1.1f);
         specialAttack.setOwnerOrCreator(PlayerManager.getInstance().getSpaceship());
         AudioManager.getInstance().addAudio(AudioEnums.Firewall);
         PlayerManager.getInstance().getSpaceship().addFollowingSpecialAttack(specialAttack);
         MissileManager.getInstance().addSpecialAttack(specialAttack);
-
     }
 
     //Creates a special attack with an animation that follows the player

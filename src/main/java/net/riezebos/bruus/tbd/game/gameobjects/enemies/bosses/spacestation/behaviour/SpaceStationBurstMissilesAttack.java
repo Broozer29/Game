@@ -31,8 +31,8 @@ public class SpaceStationBurstMissilesAttack implements BossActionable {
     private boolean allowedToFireBurst = false;
     private int burstShotsFired = 0;
     private double lastSingleShotAttackTime = 0;
-    private double intermittenAttackCooldown = 0.3;
-    private int amountOfShotsPerBurst = 8;
+    private double intermittenAttackCooldown = 0.2;
+    private int amountOfShotsPerBurst = 12;
 
 
 
@@ -163,7 +163,7 @@ public class SpaceStationBurstMissilesAttack implements BossActionable {
                 missileType.getImageType(), enemy.getScale() * 0.75f);
 
 
-        int movementSpeed = 5;
+        int movementSpeed = 6;
         //Create missile movement attributes and create a movement configuration
         PathFinder missilePathFinder = new StraightLinePathFinder();
         MovementConfiguration movementConfiguration = MissileCreator.getInstance().createMissileMovementConfig(

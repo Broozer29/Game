@@ -12,7 +12,7 @@ import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.AudioEnums;
 
 public class CompoundWealth implements Boon {
     boolean hasApplied = false;
-    public static int mineralUnlockRequirement = 5000;
+    public static int mineralUnlockRequirement = 3000;
     private static CompoundWealth instance = new CompoundWealth();
 
     private CompoundWealth() {
@@ -47,7 +47,7 @@ public class CompoundWealth implements Boon {
 
     @Override
     public String getBoonDescription() {
-        return "Whenever you enter the shop, gain minerals equal to " + (PlayerProfileManager.getInstance().getLoadedProfile().getCompoundWealthLevel() * 10f) + "% of your current minerals.";
+        return "Whenever you enter the shop, gain minerals equal to " + (PlayerProfileManager.getInstance().getLoadedProfile().getCompoundWealthLevel() * 100f) + "% of your minerals.";
     }
 
     @Override

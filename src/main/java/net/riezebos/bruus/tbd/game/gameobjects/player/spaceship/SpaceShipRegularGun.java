@@ -41,8 +41,8 @@ public class SpaceShipRegularGun {
     private double lastAttackTime = 0.0;
     private double timeChannelAttackGetsCleared = 0.0;
 
-    private float orangeBarMaxValue = -1;
-    private float orangeBarCurrentValue = -1;
+    private float orangeBarMaxValue = -10;
+    private float orangeBarCurrentValue = -10;
 
     public SpaceShipRegularGun() {
 
@@ -130,7 +130,7 @@ public class SpaceShipRegularGun {
 
 
     // Fuel tank mechanics
-    private final float FUEL_DEPLETION_RATE = 0.3f;
+    private final float FUEL_DEPLETION_RATE = 0.4f;
     private final float FUEL_REGENERATION_RATE = 0.4f;
     private final float FUEL_MINIMUM_REQUIRED = 0.3f;
 
@@ -251,7 +251,7 @@ public class SpaceShipRegularGun {
 
         if (PlayerStats.getInstance().getPlayerClass().equals(PlayerClass.FireFighter)) {
             if(orangeBarMaxValue < 0) {
-                orangeBarMaxValue = 100 * PlayerStats.getInstance().getFuelCannisterMultiplier(); //placeholder
+                orangeBarMaxValue = 125 * PlayerStats.getInstance().getFuelCannisterMultiplier();
             }
 
             if(orangeBarCurrentValue < 0){
@@ -260,8 +260,8 @@ public class SpaceShipRegularGun {
 
             if(this.channeledAttack == null && orangeBarCurrentValue < orangeBarMaxValue) {
                 orangeBarCurrentValue += FUEL_REGENERATION_RATE * PlayerStats.getInstance().getFuelCannisterRegenMultiplier();
-                if (orangeBarCurrentValue > orangeBarMaxValue * PlayerStats.getInstance().getFuelCannisterMultiplier()) {
-                    orangeBarCurrentValue = orangeBarMaxValue * PlayerStats.getInstance().getFuelCannisterMultiplier(); // Clamp at max value
+                if (orangeBarCurrentValue > orangeBarMaxValue) {
+                    orangeBarCurrentValue = orangeBarMaxValue; // Clamp at max value
                 }
             }
 

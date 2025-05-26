@@ -11,6 +11,7 @@ import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.gamestate.GameStatsTracker;
+import net.riezebos.bruus.tbd.game.items.effects.EffectIdentifiers;
 import net.riezebos.bruus.tbd.game.level.LevelManager;
 import net.riezebos.bruus.tbd.game.movement.BoardBlockUpdater;
 import net.riezebos.bruus.tbd.game.movement.MovementConfiguration;
@@ -41,7 +42,7 @@ public class Enemy extends GameObject {
     protected boolean detonateOnCollision;
 
 
-    public Enemy (SpriteConfiguration spriteConfiguration, EnemyConfiguration enemyConfiguration, MovementConfiguration movementConfiguration) {
+    public Enemy(SpriteConfiguration spriteConfiguration, EnemyConfiguration enemyConfiguration, MovementConfiguration movementConfiguration) {
         super(spriteConfiguration);
         if (movementConfiguration != null) {
             initMovementConfiguration(movementConfiguration);
@@ -51,7 +52,7 @@ public class Enemy extends GameObject {
         initChargingUpAnimation(spriteConfiguration);
     }
 
-    public Enemy (SpriteAnimationConfiguration spriteAnimationConfigurationion, EnemyConfiguration enemyConfiguration, MovementConfiguration movementConfiguration) {
+    public Enemy(SpriteAnimationConfiguration spriteAnimationConfigurationion, EnemyConfiguration enemyConfiguration, MovementConfiguration movementConfiguration) {
         super(spriteAnimationConfigurationion);
         if (movementConfiguration != null) {
             initMovementConfiguration(movementConfiguration);
@@ -63,7 +64,7 @@ public class Enemy extends GameObject {
 
     }
 
-    private void configureEnemy (EnemyConfiguration enemyConfiguration) {
+    private void configureEnemy(EnemyConfiguration enemyConfiguration) {
         this.enemyType = enemyConfiguration.getEnemyType();
         this.maxHitPoints = enemyConfiguration.getMaxHitPoints();
         this.currentHitpoints = maxHitPoints;
@@ -118,14 +119,14 @@ public class Enemy extends GameObject {
         }
     }
 
-    private float getScalingFactor () {
+    private float getScalingFactor() {
 //        if (this.enemyType.getEnemyTribe().equals(EnemyTribes.Zerg)) {
 //            return 1.15f;
 //        }
-        return 1.1f;
+        return 1.125f;
     }
 
-    private void initChargingUpAnimation (SpriteConfiguration spriteConfiguration) {
+    private void initChargingUpAnimation(SpriteConfiguration spriteConfiguration) {
         SpriteConfiguration newSpriteConfig = spriteConfiguration;
         if (spriteConfiguration.getScale() < 0.85f) {
             newSpriteConfig.setScale(0.85f);
@@ -137,28 +138,31 @@ public class Enemy extends GameObject {
 
     @Override
     public void triggerOnDeathActions() {
-        if (!this.enemyType.getEnemyCategory().equals(EnemyCategory.Summon)) {
+        if (LevelManager.getInstance().isNextLevelABossLevel() && this.enemyType.getEnemyCategory().equals(EnemyCategory.Boss)) {
             GameStatsTracker.getInstance().addEnemyKilled(1);
-        }
-
-        if (this.enemyType.getEnemyCategory().equals(EnemyCategory.Boss)) {
             PlayerProfileManager.getInstance().getLoadedProfile().addEmeralds(1);
             PlayerProfileManager.getInstance().exportCurrentProfile();
             GUIComponent emeraldIcon = GameUICreator.getInstance().createEmeraldObtainedIcon(this.getCenterXCoordinate(), this.getCenterYCoordinate());
             BoardManager.getInstance().getGameBoard().addGUIAnimation(emeraldIcon);
+        } else if (!LevelManager.getInstance().isNextLevelABossLevel() && !this.enemyType.getEnemyCategory().equals(EnemyCategory.Summon)) {
+            //seperate if statement because i might want to handle something else here
+            if (!this.hasEffect(EffectIdentifiers.EndOfLevelBurn)) {
+                GameStatsTracker.getInstance().addEnemyKilled(1);
+            }
         }
+
     }
 
-    public EnemyEnums getEnemyType () {
+    public EnemyEnums getEnemyType() {
         return this.enemyType;
     }
 
-    public void fireAction () {
+    public void fireAction() {
         // This could contain default behaviour but SHOULD be overriden by specific enemytype
         // classes.
     }
 
-    public void rotateAfterMovement () {
+    public void rotateAfterMovement() {
 //        updateChargingAttackAnimationCoordination();
         if (!this.allowedVisualsToRotate) {
             return;
@@ -193,7 +197,7 @@ public class Enemy extends GameObject {
         }
     }
 
-    public void deleteObject () {
+    public void deleteObject() {
         if (this.animation != null) {
             this.animation.setVisible(false);
         }
@@ -238,51 +242,51 @@ public class Enemy extends GameObject {
         this.visible = false;
     }
 
-    public SpriteAnimation getChargingUpAttackAnimation () {
+    public SpriteAnimation getChargingUpAttackAnimation() {
         return chargingUpAttackAnimation;
     }
 
-    public void setChargingUpAttackAnimation (SpriteAnimation chargingUpAttackAnimation) {
+    public void setChargingUpAttackAnimation(SpriteAnimation chargingUpAttackAnimation) {
         this.chargingUpAttackAnimation = chargingUpAttackAnimation;
     }
 
-    public PathFinderEnums getMissileTypePathFinders () {
+    public PathFinderEnums getMissileTypePathFinders() {
         return missileTypePathFinders;
     }
 
-    public void setMissileTypePathFinders (PathFinderEnums missileTypePathFinders) {
+    public void setMissileTypePathFinders(PathFinderEnums missileTypePathFinders) {
         this.missileTypePathFinders = missileTypePathFinders;
     }
 
-    public boolean isAllowedToFire () {
+    public boolean isAllowedToFire() {
         return allowedToFire;
     }
 
-    public void setAllowedToFire (boolean allowedToFire) {
+    public void setAllowedToFire(boolean allowedToFire) {
         this.allowedToFire = allowedToFire;
     }
 
-    public double getLastAttackTime () {
+    public double getLastAttackTime() {
         return lastAttackTime;
     }
 
-    public void setLastAttackTime (double lastAttackTime) {
+    public void setLastAttackTime(double lastAttackTime) {
         this.lastAttackTime = lastAttackTime;
     }
 
-    public boolean isAttacking () {
+    public boolean isAttacking() {
         return isAttacking;
     }
 
-    public void setAttacking (boolean attacking) {
+    public void setAttacking(boolean attacking) {
         isAttacking = attacking;
     }
 
-    public boolean isDetonateOnCollision () {
+    public boolean isDetonateOnCollision() {
         return detonateOnCollision;
     }
 
-    public void setDetonateOnCollision (boolean detonateOnCollision) {
+    public void setDetonateOnCollision(boolean detonateOnCollision) {
         this.detonateOnCollision = detonateOnCollision;
     }
 

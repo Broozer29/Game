@@ -32,7 +32,7 @@ public class SpaceStationBoss extends Enemy {
         this.destructionAnimation.setAnimationScale(5);
 
         this.knockbackStrength = 10;
-        this.damage = 14;
+        this.damage = 16;
 
 
         SpaceStationLaserbeamAttack spaceStationLaserbeamAttack = new SpaceStationLaserbeamAttack();
@@ -47,8 +47,8 @@ public class SpaceStationBoss extends Enemy {
         SpaceStationSpinningAttack spaceStationSpinningAttack = new SpaceStationSpinningAttack();
         bossBehaviourList.add(spaceStationSpinningAttack);
 
-        SpaceStationSpawnPulsingDrone spaceStationSpawnPulsingDrone = new SpaceStationSpawnPulsingDrone();
-        bossBehaviourList.add(spaceStationSpawnPulsingDrone);
+        SpaceStationSpawnDrone spaceStationSpawnDrone = new SpaceStationSpawnDrone();
+        bossBehaviourList.add(spaceStationSpawnDrone);
 
 
         bossBehaviourList = bossBehaviourList.stream()

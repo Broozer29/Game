@@ -18,7 +18,7 @@ import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.Sprit
 public class SpawnProtossShuttle implements BossActionable {
 
     private double lastSpawnedTime = 0;
-    private double spawnCooldown = 12;
+    private double spawnCooldown = 10;
     private int priority = 3;
 
     private SpriteAnimation spawnAnimation;

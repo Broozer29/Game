@@ -37,7 +37,7 @@ public class RedBoss extends Enemy {
         SpriteAnimationConfiguration destroyedExplosionfiguration = new SpriteAnimationConfiguration(spriteConfiguration.getSpriteConfiguration(), 0, false);
         destroyedExplosionfiguration.getSpriteConfiguration().setImageType(ImageEnums.Explosion2);
         this.destructionAnimation = new SpriteAnimation(destroyedExplosionfiguration);
-        this.damage = 12;
+        this.damage = 13;
         this.allowedVisualsToRotate = false;
         this.destructionAnimation.setAnimationScale(4);
         this.knockbackStrength = 9;

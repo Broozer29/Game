@@ -28,7 +28,7 @@ public class Seeker extends Enemy {
         destroyedExplosionfiguration.getSpriteConfiguration().setImageType(this.enemyType.getDestructionType());
         this.destructionAnimation = new SpriteAnimation(destroyedExplosionfiguration);
         this.missileTypePathFinders = PathFinderEnums.StraightLine;
-        this.damage = 17;
+        this.damage = 15;
         this.attackSpeed = 5;
         this.detonateOnCollision = false;
         this.knockbackStrength = 8;
@@ -68,7 +68,7 @@ public class Seeker extends Enemy {
                 missileType.getImageType(), 0.55f);
 
 
-        int movementSpeed = 4;
+        int movementSpeed = 3;
         //Create missile movement attributes and create a movement configuration
 
         PathFinder missilePathFinder = new StraightLinePathFinder();

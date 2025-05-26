@@ -34,7 +34,7 @@ public class FourDirectionalDrone extends Enemy {
         SpriteAnimationConfiguration destroyedExplosionfiguration = new SpriteAnimationConfiguration(spriteConfig, 0, false);
         destroyedExplosionfiguration.getSpriteConfiguration().setImageType(this.enemyType.getDestructionType());
         this.destructionAnimation = new SpriteAnimation(destroyedExplosionfiguration);
-        this.damage = 8;
+        this.damage = 7;
         this.allowedToMove = true;
         this.allowedVisualsToRotate = false;
         this.attackSpeed = 0.25f;

@@ -27,6 +27,7 @@ public class ControllerInputReader {
             System.out.println("Controller disconnected.");
             return;
         }
+//        printPressedButton();
 
         EventQueue queue = controller.getEventQueue();
         Event event = new Event();
@@ -51,10 +52,10 @@ public class ControllerInputReader {
             if (comp.getIdentifier() == Component.Identifier.Button._0) {
                 inputState.put(ControllerInputEnums.FIRE, value == 1.0f); // Button A
             }
-            if (comp.getIdentifier() == Component.Identifier.Button._1) {
+            if (comp.getIdentifier() == Component.Identifier.Button._1 || comp.getIdentifier() == Component.Identifier.Button._6 || comp.getIdentifier() == Component.Identifier.Button._7) {
                 inputState.put(ControllerInputEnums.SPECIAL_ATTACK, value == 1.0f); // Button B
             }
-            if (comp.getIdentifier() == Component.Identifier.Button._10) {
+            if (comp.getIdentifier() == Component.Identifier.Button._11) {
                 inputState.put(ControllerInputEnums.PAUSE, value == 1.0f); // D-Pad Up
             }
         }
@@ -74,6 +75,26 @@ public class ControllerInputReader {
             this.inputStrengthRequired = 0.1f;
         } else {
             this.inputStrengthRequired = 0.5f;
+        }
+    }
+
+    public void printPressedButton() {
+        if (!controller.poll()) {
+            System.out.println("Controller disconnected.");
+            return;
+        }
+
+        EventQueue queue = controller.getEventQueue();
+        Event event = new Event();
+
+        while (queue.getNextEvent(event)) {
+            Component component = event.getComponent();
+            float value = event.getValue();
+
+            // Check if the component's value corresponds to a fully pressed state
+            if (value == 1.0f) {
+                System.out.println("Pressed: " + component.getIdentifier());
+            }
         }
     }
 
