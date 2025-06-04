@@ -31,7 +31,7 @@ public class ProtossArbiter extends Drone {
     private int maxTargetsAllowedToHealSimultaneously = 1;
     public static float healingRate = 0.075f;
     private boolean isMovingAroundCarrierDrone = false;
-
+    private boolean canAcquireTarget = true;
 
     public ProtossArbiter(SpriteAnimationConfiguration spriteAnimationConfiguration, FriendlyObjectConfiguration droneConfiguration, MovementConfiguration movementConfiguration) {
         super(spriteAnimationConfiguration, droneConfiguration, movementConfiguration);
@@ -75,6 +75,9 @@ public class ProtossArbiter extends Drone {
 
     public void fireAction() {
         // Acquire player and targetable drones
+        if(!canAcquireTarget){
+            return;
+        }
         GameObject player = PlayerManager.getInstance().getSpaceship();
         List<GameObject> targetableDrones = FriendlyManager.getInstance().getAllProtossDrones().stream()
                 .filter(ship -> ship.getCurrentHitpoints() < ship.getMaxHitPoints())
@@ -143,6 +146,7 @@ public class ProtossArbiter extends Drone {
     @Override
     public void triggerOnDeathActions() {
         super.triggerOnDeathActions();
+        this.canAcquireTarget = false;
 
         for (SpriteAnimation animation : animationsBelongingToTargets.values()) {
             animation.setVisible(false);

@@ -47,7 +47,7 @@ public class CompoundWealth implements Boon {
 
     @Override
     public String getBoonDescription() {
-        return "Whenever you enter the shop, gain minerals equal to " + (PlayerProfileManager.getInstance().getLoadedProfile().getCompoundWealthLevel() * 100f) + "% of your minerals.";
+        return "Whenever you enter the shop, gain minerals equal to " + Math.round(PlayerProfileManager.getInstance().getLoadedProfile().getCompoundWealthLevel() * 10f) + "% of your minerals.";
     }
 
     @Override

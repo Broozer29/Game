@@ -44,10 +44,10 @@ public class Queen extends Enemy {
             if (!this.movementConfiguration.getCurrentPath().getWaypoints().isEmpty()) {
                 laidEggDuringCurrentHover = false;
             }
-
             allowedToFire = this.movementConfiguration.getCurrentPath().getWaypoints().isEmpty();
         }
 
+        super.updateChargingAttackAnimationCoordination();
         // If the enemy is attacking, check if the animation has finished.
         if (isAttackingRightNow) {
             if (this.animation.getCurrentFrame() == this.animation.getTotalFrames() - 1) {

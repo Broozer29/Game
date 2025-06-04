@@ -1,14 +1,24 @@
 package net.riezebos.bruus.tbd.game.util;
 
 import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
+import net.riezebos.bruus.tbd.game.gameobjects.missiles.*;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
+import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SpaceShip;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
+import net.riezebos.bruus.tbd.game.gamestate.GameStatsTracker;
 import net.riezebos.bruus.tbd.game.items.Item;
 import net.riezebos.bruus.tbd.game.items.PlayerInventory;
 import net.riezebos.bruus.tbd.game.items.enums.ItemApplicationEnum;
+import net.riezebos.bruus.tbd.game.movement.Direction;
+import net.riezebos.bruus.tbd.game.movement.MovementConfiguration;
+import net.riezebos.bruus.tbd.game.movement.MovementPatternSize;
+import net.riezebos.bruus.tbd.game.movement.Point;
+import net.riezebos.bruus.tbd.game.movement.pathfinders.HomingPathFinder;
+import net.riezebos.bruus.tbd.game.movement.pathfinders.StraightLinePathFinder;
 import net.riezebos.bruus.tbd.game.util.performancelogger.PerformanceLogger;
 import net.riezebos.bruus.tbd.game.util.performancelogger.PerformanceLoggerManager;
+import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.AudioEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.AnimationManager;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteAnimation;
@@ -22,6 +32,8 @@ public class ThornsDamageDealer {
     private static ThornsDamageDealer instance = new ThornsDamageDealer();
     private PlayerStats playerStats = PlayerStats.getInstance();
     private Map<GameObject, Integer> thornsApplyMap = new HashMap<>();
+    private Map<Point, GameObject> thornsMissileMap = new HashMap<>();
+
     private double lastThornsActivationTime = 0;
     private Random random;
     private PerformanceLogger performanceLogger = null;
@@ -57,6 +69,58 @@ public class ThornsDamageDealer {
         //Adds the gameObject and corresponding amountOfTimes if an object is NOT found
         //If the object IS found, combine the existing and new value by using Integers "sum" which adds 2 integers and returns the result
         thornsApplyMap.merge(gameObject, amountOftimes, Integer::sum);
+    }
+
+    public void addThornsMissile(Point origin, GameObject target) {
+        if(target == null || origin == null){
+            return; //if this doesnt make sense, simply don't do it
+        }
+        Missile newMissile = createMissile(origin, target);
+        MissileManager.getInstance().addExistingMissile(newMissile);
+    }
+
+    private Missile createMissile(Point origin, GameObject target) {
+        int movementSpeed = 5;
+        MissileCreator missileCreator1 = MissileCreator.getInstance();
+        SpriteConfiguration spriteConfiguration = missileCreator1.createMissileSpriteConfig(origin.getX(), origin.getY(),
+                ImageEnums.AlienLaserBeamAnimated, 1);
+
+
+        MovementPatternSize movementPatternSize = MovementPatternSize.SMALL; //Hardcoded, should be dynamic somewhere? Idk not decided how i want to use this behaviour yet
+        MovementConfiguration movementConfiguration = missileCreator1.createMissileMovementConfig(
+                movementSpeed, movementSpeed, new StraightLinePathFinder(), movementPatternSize, Direction.RIGHT
+        );
+
+
+        boolean isFriendly = true;
+
+        int maxHitPoints = 100;
+        int maxShields = 0;
+        AudioEnums deathSound = null;
+        boolean allowedToDealDamage = true;
+        String objectType = "Player Missile";
+        float damage = playerStats.getNormalAttackDamage() * 2;
+        boolean isExplosive = false;
+
+        MissileConfiguration missileConfiguration = missileCreator1.createMissileConfiguration(MissileEnums.DefaultAnimatedBullet, maxHitPoints, maxShields,
+                deathSound, damage, MissileEnums.DefaultAnimatedBullet.getDeathOrExplosionImageEnum(), isFriendly, allowedToDealDamage, objectType, MissileEnums.DefaultAnimatedBullet.isUsesBoxCollision(),
+                isExplosive, true, false);
+
+        PlayerStats instance = PlayerStats.getInstance();
+
+        //piercing???
+//        if (!isExplosive) {
+//            missileConfiguration.setPiercesMissiles(instance.getPiercingMissilesAmount() > 0);
+//            missileConfiguration.setAmountOfPierces(instance.getPiercingMissilesAmount());
+//        }
+
+        Missile missile = missileCreator1.createMissile(spriteConfiguration, missileConfiguration, movementConfiguration);
+        SpaceShip spaceship = PlayerManager.getInstance().getSpaceship();
+        missile.setOwnerOrCreator(spaceship);
+        missile.setCenterCoordinates(origin.getX(), origin.getY());
+        missile.resetMovementPath();
+        missile.getMovementConfiguration().setDestination(new Point(target.getCenterXCoordinate(), target.getCenterYCoordinate()));
+        return missile;
     }
 
     private void activateDelayedThornsAttacks () {

@@ -123,7 +123,7 @@ public class FriendlyCreator {
         return null;
     }
 
-    public static Drone createCarrierDrone(){
+    public static Drone createCarrierBeacon(){
         SpriteConfiguration spriteConfiguration = new SpriteConfiguration();
         spriteConfiguration.setxCoordinate(PlayerManager.getInstance().getSpaceship().getXCoordinate());
         spriteConfiguration.setyCoordinate(PlayerManager.getInstance().getSpaceship().getYCoordinate());

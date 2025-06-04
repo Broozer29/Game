@@ -9,19 +9,29 @@ import net.riezebos.bruus.tbd.game.items.enums.ItemApplicationEnum;
 
 public class EscalatingFlames extends Item {
     public EscalatingFlames() {
-        super(ItemEnums.EscalatingFlames, 1, ItemApplicationEnum.ApplyOnCreation);
+        super(ItemEnums.EscalatingFlames, 1, ItemApplicationEnum.UponAcquiring);
     }
 
     @Override
     public void applyEffectToObject (GameObject gameObject) {
-        PlayerStats.getInstance().setFireFighterIgniteMaxStacks(this.quantity + 1);
+        if(this.quantity > 0) {
+            PlayerStats.getInstance().modifyMaxIgniteStacks(this.quantity);
+        }
     }
 
     @Override
     public void increaseQuantityOfItem (int amount) {
+        removeEffect();
         this.quantity += amount;
         applyEffectToObject(null);
     }
+
+    private void removeEffect () {
+        if(this.quantity > 0) {
+            PlayerStats.getInstance().modifyMaxIgniteStacks(-this.quantity);
+        }
+    }
+
 
     @Override
     public boolean isAvailable () {

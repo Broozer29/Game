@@ -135,20 +135,20 @@ public class LevelManager {
 
         initDifficulty();
 
-        if(DevTestSettings.onlyBossLevels) {
+        if (DevTestSettings.onlyBossLevels) {
             this.levelType = LevelTypes.Boss;
         }
 
         GameUICreator.getInstance().createDifficultyWings(this.levelType.equals(LevelTypes.Boss), currentLevelDifficultyScore);
 
-        if(DevTestSettings.enablePlayerMovingPastBoundaries) {
+        if (DevTestSettings.enablePlayerMovingPastBoundaries) {
             PlayerManager.getInstance().getSpaceship().allowMovementBeyondBoundaries = true;
         }
 
-        if(DevTestSettings.devTestShortLevelMode) {
+        if (DevTestSettings.devTestShortLevelMode) {
             audioManager.devTestShortLevelMode = true;
         }
-        if(DevTestSettings.devTestMuteMode) {
+        if (DevTestSettings.devTestMuteMode) {
             audioManager.devTestmuteMode = true;
         }
 
@@ -161,15 +161,19 @@ public class LevelManager {
         gameState.setGameState(GameStatusEnums.Playing);
 
 
-        EnemyEnums enemyType = EnemyEnums.Flamer;
-        Enemy enemy = EnemyCreator.createEnemy(enemyType, 400, 500, Direction.LEFT, enemyType.getDefaultScale()
-                , enemyType.getMovementSpeed(), enemyType.getMovementSpeed(), MovementPatternSize.SMALL, false);
-        enemy.setXCoordinate(500);
-        enemy.setMaxHitPoints(100000);
-        enemy.setCurrentHitpoints(100000);
-        enemy.setAllowedToFire(false);
-        enemy.setAllowedToMove(false);
-//        EnemyManager.getInstance().addEnemy(enemy);
+
+        if(!DevTestSettings.blockTargetDummy) {
+
+            EnemyEnums enemyType = EnemyEnums.Bomba;
+            Enemy enemy = EnemyCreator.createEnemy(enemyType, 400, 500, Direction.LEFT, enemyType.getDefaultScale()
+                    , enemyType.getMovementSpeed(), enemyType.getMovementSpeed(), MovementPatternSize.SMALL, false);
+            enemy.setXCoordinate(500);
+            enemy.setMaxHitPoints(100000);
+            enemy.setCurrentHitpoints(100000);
+            enemy.setAllowedToFire(true);
+            enemy.setAllowedToMove(false);
+            EnemyManager.getInstance().addEnemy(enemy);
+        }
 
     }
 
@@ -249,7 +253,7 @@ public class LevelManager {
                 this.currentLevelSong = audioManager.getCurrentSong();
             }
             case Boss -> {
-                audioManager.playDefaultBackgroundMusic(LevelSongs.getBossTheme(getNextBoss()), false); //False because looping streams is not a thing, we need to recreate one instead
+                audioManager.playDefaultBackgroundMusic(LevelSongs.getBossTheme(getNextBoss()), true);
                 this.currentLevelSong = audioManager.getCurrentSong();
                 //to implement
             }

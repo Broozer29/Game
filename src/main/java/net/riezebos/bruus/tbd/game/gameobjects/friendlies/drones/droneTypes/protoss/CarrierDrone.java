@@ -40,7 +40,6 @@ public class CarrierDrone extends Drone {
         this.maxHitPoints = 100;
         this.currentHitpoints = maxHitPoints;
         this.isProtoss = true;
-
     }
 
     public void activateObject () {

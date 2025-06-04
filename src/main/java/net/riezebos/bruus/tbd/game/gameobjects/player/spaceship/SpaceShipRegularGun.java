@@ -133,6 +133,7 @@ public class SpaceShipRegularGun {
     private final float FUEL_DEPLETION_RATE = 0.4f;
     private final float FUEL_REGENERATION_RATE = 0.4f;
     private final float FUEL_MINIMUM_REQUIRED = 0.3f;
+    public static float fireFighterBonusDamageRatio = 1.3f;
 
     private void startFiringFlameThrower(int xCoordinate, int yCoordinate) {
         if (this.channeledAttack == null && orangeBarCurrentValue >= FUEL_MINIMUM_REQUIRED) {
@@ -146,14 +147,14 @@ public class SpaceShipRegularGun {
             spriteConfiguration.setyCoordinate(yCoordinate);
             spriteConfiguration.setImageType(ImageEnums.FireFighterFlameThrowerAppearing);
 
-            float damage = playerStats.getNormalAttackDamage();
+            float damage = playerStats.getNormalAttackDamage() * 1.3f;
 
 
             SpriteAnimationConfiguration spriteAnimationConfiguration = new SpriteAnimationConfiguration(spriteConfiguration, 3, true);
             SpecialAttackConfiguration missileConfiguration = new SpecialAttackConfiguration(damage, true, true, false, true, false, true);
             SpecialAttack specialAttack = new FlameThrower(spriteAnimationConfiguration, missileConfiguration);
             specialAttack.setCenteredAroundObject(true);
-            specialAttack.setScale(0.8f);
+            specialAttack.setScale(0.9f);
             specialAttack.addXOffset((specialAttack.getAnimation().getWidth() / 2) - Math.round((specialAttack.getAnimation().getWidth() * 0.005f)));
             specialAttack.setOwnerOrCreator(PlayerManager.getInstance().getSpaceship());
             spaceShip.addFollowingSpecialAttack(specialAttack);

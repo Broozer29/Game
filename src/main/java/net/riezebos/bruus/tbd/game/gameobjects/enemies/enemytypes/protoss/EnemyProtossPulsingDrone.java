@@ -37,9 +37,7 @@ public class EnemyProtossPulsingDrone extends Enemy {
 
     @Override
     public void fireAction() {
-//        if (this.movementConfiguration.getPathFinder() instanceof DestinationPathFinder) {
-//            allowedToFire = this.movementConfiguration.getCurrentPath().getWaypoints().isEmpty();
-//        }
+        this.allowedToMove = false; //Manually overwrite this cause I don't want these to move
 
         if(this.ownerOrCreator != null && this.ownerOrCreator.getCurrentHitpoints() <= 0){
             this.takeDamage(99999);
@@ -58,14 +56,11 @@ public class EnemyProtossPulsingDrone extends Enemy {
 
 
     private void shootMissiles(double angleDegrees) {
-        // The charging up attack animation has finished, create and fire the missile
-        //Create the sprite configuration which gets upgraded to spriteanimation if needed by the MissileCreator
         SpriteConfiguration spriteConfiguration = MissileCreator.getInstance().createMissileSpriteConfig(xCoordinate, yCoordinate,
                 ImageEnums.LaserBullet, 0.75f);
 
 
         int movementSpeed = 3;
-        //Create missile movement attributes and create a movement configuration
         MissileEnums missileType = MissileEnums.DefaultLaserBullet;
         PathFinder missilePathFinder = new StraightLinePathFinder();
         MovementPatternSize movementPatternSize = MovementPatternSize.SMALL;

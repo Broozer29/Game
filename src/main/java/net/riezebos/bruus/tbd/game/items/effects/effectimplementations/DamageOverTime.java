@@ -115,7 +115,7 @@ public class DamageOverTime implements EffectInterface {
     public void increaseEffectStrength (GameObject gameObject) {
         if (this.effectIdentifier.equals(EffectIdentifiers.Ignite)) {
             if (PlayerStats.getInstance().getPlayerClass().equals(PlayerClass.FireFighter)) {
-                if (this.dotStacks < PlayerStats.getInstance().getFireFighterIgniteMaxStacks()) {
+                if (this.dotStacks < PlayerStats.getInstance().getMaxIgniteStacks()) {
                     this.dotStacks += 1;
                     applyCorrosiveOil(gameObject);
                 }

@@ -243,7 +243,7 @@ public class MissileManager {
                     if (specialAttack.isDestroysMissiles() && missile.isDestructable()) {
                         missile.destroyMissile();
                     } else if (specialAttack.isDamagesMissiles() && missile.isDamageable()) {
-                        missile.takeDamage(Math.min(1, missile.getMaxHitPoints() * specialAttack.getMaxHPDamagePercentage())); //min 1 for flamethrower/mutalisk interaction
+                        missile.takeDamage(Math.min(1, missile.getMaxHitPoints() * specialAttack.getMaxHPDamagePercentageForMissiles())); //min 1 for flamethrower/mutalisk interaction
                     }
                 }
 

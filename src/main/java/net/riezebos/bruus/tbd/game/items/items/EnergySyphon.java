@@ -10,7 +10,7 @@ import net.riezebos.bruus.tbd.game.items.enums.ItemApplicationEnum;
 
 public class EnergySyphon extends Item {
 
-    public static float barrierAmount = 5;
+    public static float barrierAmount = 4;
 
     public EnergySyphon() {
         super(ItemEnums.EnergySiphon, 1, ItemApplicationEnum.AfterCollision);

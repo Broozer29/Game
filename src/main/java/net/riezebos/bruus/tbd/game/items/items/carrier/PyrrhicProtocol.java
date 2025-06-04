@@ -17,7 +17,7 @@ import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.Sprit
 
 public class PyrrhicProtocol extends Item {
 
-    public static float explosionDamageRatio = 8;
+    public static float explosionDamageRatio = 15;
 
     public PyrrhicProtocol() {
         super(ItemEnums.PyrrhicProtocol, 1, ItemApplicationEnum.CustomActivation);

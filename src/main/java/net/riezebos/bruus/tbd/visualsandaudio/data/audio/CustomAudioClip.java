@@ -30,7 +30,7 @@ public class CustomAudioClip {
     private boolean isMediaPlayerFinished = false; // Flag to track if MediaPlayer has finished
     private boolean isPaused = false; // Flag to track paused state
 
-    public CustomAudioClip (AudioEnums clipType) {
+    public CustomAudioClip(AudioEnums clipType) {
         this.clipType = clipType;
         this.loop = false;
         this.isStream = clipType.shouldBeStreamed();
@@ -40,7 +40,7 @@ public class CustomAudioClip {
         }
     }
 
-    private void initMediaPlayer () {
+    private void initMediaPlayer() {
         if (!isStream) {
             try {
                 mediaPlayer = audioLoader.getSoundfile(clipType);
@@ -67,7 +67,7 @@ public class CustomAudioClip {
         }
     }
 
-    public double getTotalSecondsInPlayback () {
+    public double getTotalSecondsInPlayback() {
         if (isStream) {
             // For streams, approximate length based on frames and sample rate
             if (streamFormat != null && totalFramesInStream > 0) {
@@ -83,7 +83,7 @@ public class CustomAudioClip {
     }
 
     // Get the current playback position in seconds (for MediaPlayer and streams)
-    public double getCurrentSecondsInPlayback () {
+    public double getCurrentSecondsInPlayback() {
         if (isStream) {
             if (audioStream == null || audioLine == null) {
                 return 0; // Stream not ready
@@ -100,7 +100,7 @@ public class CustomAudioClip {
 
 
     // Set playback position using seconds (for both MediaPlayer and streams)
-    public void setPlaybackPosition (double seconds) {
+    public void setPlaybackPosition(double seconds) {
         if (isStream) {
             if (audioLine != null && audioStream != null) {
                 try {
@@ -123,7 +123,7 @@ public class CustomAudioClip {
         }
     }
 
-    private boolean aboveThreshold () {
+    private boolean aboveThreshold() {
         if (isStream) {
             return false;
         }
@@ -141,7 +141,7 @@ public class CustomAudioClip {
         }
     }
 
-    public void stopClip () {
+    public void stopClip() {
         if (isStream) {
             if (audioLine != null) {
                 audioLine.stop(); // Immediately stop playback
@@ -162,7 +162,7 @@ public class CustomAudioClip {
     }
 
 
-    public void startClip () {
+    public void startClip() {
         if (isStream) {
             // Stop any current playback if the audio line is active
             if (audioLine != null && audioLine.isRunning()) {
@@ -237,7 +237,7 @@ public class CustomAudioClip {
     }
 
 
-    public void muteAudioClip () {
+    public void muteAudioClip() {
         if (isStream) {
             if (audioLine != null && audioLine.isControlSupported(FloatControl.Type.MASTER_GAIN)) {
                 FloatControl volume = (FloatControl) audioLine.getControl(FloatControl.Type.MASTER_GAIN);
@@ -248,7 +248,7 @@ public class CustomAudioClip {
         }
     }
 
-    private void adjustVolume () {
+    private void adjustVolume() {
         if (isStream) {
             if (audioLine != null && audioLine.isControlSupported(FloatControl.Type.MASTER_GAIN)) {
                 FloatControl volume = (FloatControl) audioLine.getControl(FloatControl.Type.MASTER_GAIN);
@@ -256,14 +256,14 @@ public class CustomAudioClip {
             }
         } else if (mediaPlayer != null) {
             double volume = switch (clipType) {
-                case Player_Laserbeam -> 0.65;
-                case Large_Ship_Destroyed -> 0.6;
-                case Alien_Spaceship_Destroyed -> 0.4;
-                case Alien_Bomb_Impact -> 0.15;
-                case Default_EMP -> 0.07f;
-                case NotEnoughMinerals -> 0.6f;
-                case GenericError -> 0.6f;
-                default -> 1.0;
+                case Player_Laserbeam -> 0.65 * 0.7f;
+                case Large_Ship_Destroyed -> 0.6 * 0.7f;
+                case Alien_Spaceship_Destroyed -> 0.4 * 0.7f;
+                case Alien_Bomb_Impact -> 0.15 * 0.7f;
+                case Default_EMP -> 0.07f * 0.7f;
+                case NotEnoughMinerals -> 0.6f * 0.7f;
+                case GenericError -> 0.6f * 0.7f;
+                default -> 0.7f;
             };
 
             mediaPlayer.setVolume(volume);
@@ -320,7 +320,7 @@ public class CustomAudioClip {
 
             } catch (UnsupportedAudioFileException | LineUnavailableException e) {
                 e.printStackTrace();
-            } catch (IOException e){
+            } catch (IOException e) {
                 System.out.println("Could not close or read the stream because: " + e.getMessage());
             }
         });
@@ -333,15 +333,15 @@ public class CustomAudioClip {
         startStreamFromPosition(pausedPosition);
     }
 
-    public boolean isRunning () {
+    public boolean isRunning() {
         if (isStream) {
             return audioLine != null && audioLine.isRunning();
         }
         return mediaPlayer != null && mediaPlayer.getStatus() == MediaPlayer.Status.PLAYING;
     }
 
-    public boolean isFinished () {
-        if(isPaused){
+    public boolean isFinished() {
+        if (isPaused) {
             return false;
         }
 
@@ -370,19 +370,18 @@ public class CustomAudioClip {
     }
 
 
-
-    public boolean isLoop () {
+    public boolean isLoop() {
         return loop;
     }
 
-    public void setLoop (boolean loop) {
+    public void setLoop(boolean loop) {
         this.loop = loop;
         if (mediaPlayer != null) {
             mediaPlayer.setCycleCount(loop ? MediaPlayer.INDEFINITE : 1);
         }
     }
 
-    public AudioEnums getAudioType () {
+    public AudioEnums getAudioType() {
         return this.clipType;
     }
 }

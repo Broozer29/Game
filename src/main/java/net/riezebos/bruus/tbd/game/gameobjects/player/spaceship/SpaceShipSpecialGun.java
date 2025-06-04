@@ -9,7 +9,6 @@ import net.riezebos.bruus.tbd.game.gameobjects.missiles.specialAttacks.ElectroSh
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.specialAttacks.FireShield;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.specialAttacks.SpecialAttack;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.specialAttacks.SpecialAttackConfiguration;
-import net.riezebos.bruus.tbd.game.gameobjects.neutral.ExplosionManager;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerSpecialAttackTypes;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
@@ -50,7 +49,7 @@ public class SpaceShipSpecialGun {
                     fireFlameShield(xCoordinate, yCoordinate);
                     break;
                 case PlaceCarrierDrone:
-                    handleCarrierAttack();
+                    handleCarrierSpecialAttack();
                     break;
             }
             if (specialAttackCharges > 0) {
@@ -64,7 +63,7 @@ public class SpaceShipSpecialGun {
         }
     }
 
-    private void handleCarrierAttack() {
+    private void handleCarrierSpecialAttack() {
         Drone carrierBeacon = FriendlyCreator.getCarrierBeacon();
         if (carrierBeacon != null) {
             carrierBeacon.setVisible(false);
@@ -72,7 +71,7 @@ public class SpaceShipSpecialGun {
             handleInverseRetrieval(carrierBeacon);
         } else {
             GameObject player = PlayerManager.getInstance().getSpaceship();
-            carrierBeacon = FriendlyCreator.createCarrierDrone();
+            carrierBeacon = FriendlyCreator.createCarrierBeacon();
             int xCoordinate = Math.round(player.getXCoordinate() + player.getWidth() + (carrierBeacon.getWidth() * 0.6f));
             carrierBeacon.setCenterCoordinates(xCoordinate,
                     player.getCenterYCoordinate());

@@ -164,14 +164,14 @@ public class FriendlyManager {
             enemyManager = EnemyManager.getInstance();
         }
 
-        for (Drone drones : drones) {
-            if (drones.isVisible() && drones.isProtoss()) { //Only check collision for protoss ships, as this checks enemy collision rules
+        for (Drone drone : drones) {
+            if (drone.isVisible() && drone.isProtoss()) { //Only check collision for protoss ships, as this checks enemy collision rules
                 for (Enemy enemy : enemyManager.getEnemies()) {
                     if(enemy.isVisible() && enemy.isDetonateOnCollision()) {
-                        CollisionInfo collisionInfo = CollisionDetector.getInstance().detectCollision(drones, enemy);
+                        CollisionInfo collisionInfo = CollisionDetector.getInstance().detectCollision(drone, enemy);
                         if (collisionInfo != null) {
                             EnemyManager.getInstance().detonateEnemy(enemy);
-                            enemy.dealDamageToGameObject(drones);
+                            enemy.dealDamageToGameObject(drone);
                             ProtossUtils.getInstance().handleProtossThorns(enemy);
                         }
                     }

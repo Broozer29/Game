@@ -13,7 +13,7 @@ import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.Sprit
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteConfiguration;
 
 public class SelfRepairingSteel extends Item {
-    public static float repairAmount = 0.0075f;
+    public static float repairAmount = 0.0085f;
 
     public SelfRepairingSteel () {
         super(ItemEnums.SelfRepairingSteel, 1, ItemApplicationEnum.ApplyOnCreation);

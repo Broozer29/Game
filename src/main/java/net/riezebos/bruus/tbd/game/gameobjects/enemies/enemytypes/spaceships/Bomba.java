@@ -64,7 +64,7 @@ public class Bomba extends Enemy {
         for (Direction direction : missileDirections) {
             //Create the sprite configuration which gets upgraded to spriteanimation if needed by the MissileCreator
             SpriteConfiguration spriteConfiguration = MissileCreator.getInstance().createMissileSpriteConfig(xCoordinate, yCoordinate,
-                    ImageEnums.Bomba_Missile, 0.25f);
+                    ImageEnums.Bomba_Missile, 0.5f);
 
             float movementSpeed = 2f;
 

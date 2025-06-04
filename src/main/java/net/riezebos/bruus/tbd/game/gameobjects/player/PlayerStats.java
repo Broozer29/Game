@@ -6,7 +6,6 @@ import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.droneTypes.Dron
 import net.riezebos.bruus.tbd.game.gameobjects.player.boons.BoonEnums;
 import net.riezebos.bruus.tbd.game.gameobjects.player.boons.BoonManager;
 import net.riezebos.bruus.tbd.game.gameobjects.player.boons.boonimplementations.BoonActivationEnums;
-import net.riezebos.bruus.tbd.game.gameobjects.player.boons.boonimplementations.defensive.ThickHide;
 import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SpaceShip;
 import net.riezebos.bruus.tbd.game.items.ItemEnums;
 import net.riezebos.bruus.tbd.game.items.PlayerInventory;
@@ -44,7 +43,7 @@ public class PlayerStats {
     private float bonusIgniteDamageMultiplier = 1f;
     private float fuelCannisterMultiplier = 1;
     private float fuelCannisterRegenMultiplier = 1;
-    private int fireFighterIgniteMaxStacks = 1;
+    private int maxIgniteStacks = 1;
     public static int fireFighterHitpoints = 75;
 
     //captain
@@ -154,8 +153,7 @@ public class PlayerStats {
             spaceShipImage = ImageEnums.ProtossCarrier;
         }
 
-        loadNormalGunPreset();
-        loadSpecialGunPreset();
+        loadClassPreset();
     }
 
     public void initDefaultSettings() {
@@ -176,6 +174,7 @@ public class PlayerStats {
         shieldRegenPerTick = 0.2f;
         droneType = DroneTypes.Missile;
         droneBaseDamage = 20f;
+        igniteDuration = 1.35f;
         mineralModifier = 1.0f;
         relicChanceModifier = 0;
         this.maxAmountOfProtoss = 12;
@@ -190,6 +189,7 @@ public class PlayerStats {
         amountOfDrones = 0;
         maximumAmountOfDrones = 8;
         droneOrbitRadius = 85;
+        maxIgniteStacks = 1;
         setDroneDamageRatio(1);
         setDroneDamageBonusRatio(0);
 
@@ -228,46 +228,14 @@ public class PlayerStats {
         setCurrentXP(0);
         setXpToNextLevel(200);
 
-        // Visuals
-        loadNormalGunPreset();
-        loadSpecialGunPreset();
+        loadClassPreset();
     }
 
-    private void loadSpecialGunPreset() {
-        switch (specialAttackType) {
-            case EMP:
-                loadEMPPreset();
-                break;
-            case FlameShield:
-                loadFlameShieldPreset();
-                break;
-            case PlaceCarrierDrone:
-                initCarrierSpecial();
-                break;
-        }
-    }
 
-    private void initCarrierSpecial() {
-        setSpecialBaseDamage(0);
-        setSpecialAttackRechargeCooldown(1.35f);
-    }
-
-    private void loadFlameShieldPreset() {
-        setSpecialBaseDamage(baseDamage);
-        setSpecialAttackRechargeCooldown(10f);
-        bonusIgniteDamageMultiplier = 1f;
-    }
-
-    private void loadEMPPreset() {
-        setSpecialBaseDamage(baseDamage * 1.5f);
-        setHasImprovedElectroShred(false);
-        setSpecialAttackRechargeCooldown(3f);
-    }
-
-    private void loadNormalGunPreset() {
+    private void loadClassPreset() {
         switch (attackType) {
             case Laserbeam:
-                initLaserbeamPreset();
+                initCaptainPreset();
                 break;
             case Flamethrower:
                 initFireFighterPreset();
@@ -293,6 +261,10 @@ public class PlayerStats {
         this.arbiterHealingMultiplier = 1f;
         this.protossShipThornsDamageRatio = 1.0f;
         setKnockBackDamping(0.775f);
+
+        //special
+        setSpecialBaseDamage(0);
+        setSpecialAttackRechargeCooldown(1.35f);
     }
 
     private void initFireFighterPreset() {
@@ -304,14 +276,19 @@ public class PlayerStats {
         setMissileScale(1);
         setFuelCannisterMultiplier(1);
         setFuelCannisterRegenMultiplier(1);
-        igniteDuration = 1.5f;
-        fireFighterIgniteMaxStacks = 1;
+        igniteDuration = 1.75f;
+        maxIgniteStacks = 3;
         this.maxHitPoints = fireFighterHitpoints;
         this.maxShieldHitPoints = fireFighterHitpoints;
+
+        //special
+        setSpecialBaseDamage(baseDamage);
+        setSpecialAttackRechargeCooldown(10f);
+        bonusIgniteDamageMultiplier = 1f;
     }
 
 
-    private void initLaserbeamPreset() {
+    private void initCaptainPreset() {
         setAttackSpeed(captainAttackSpeed);
         setBaseDamage(captainBaseDamage);
         this.attackType = PlayerPrimaryAttackTypes.Laserbeam;
@@ -319,6 +296,11 @@ public class PlayerStats {
         setPlayerMissileImpactImage(ImageEnums.Impact_Explosion_One);
         this.maxHitPoints = captainBaseHitpoints;
         this.maxShieldHitPoints = captainBaseHitpoints;
+
+        //special
+        setSpecialBaseDamage(baseDamage * 1.5f);
+        setHasImprovedElectroShred(false);
+        setSpecialAttackRechargeCooldown(3f);
     }
 
     public void addXP(float xp) {
@@ -838,12 +820,12 @@ public class PlayerStats {
         igniteDamageMultiplier += amount;
     }
 
-    public void setFireFighterIgniteMaxStacks(int fireFighterIgniteMaxStacks) {
-        this.fireFighterIgniteMaxStacks = fireFighterIgniteMaxStacks;
+    public void modifyMaxIgniteStacks(int igniteStacks) {
+        this.maxIgniteStacks += igniteStacks;
     }
 
-    public int getFireFighterIgniteMaxStacks() {
-        return fireFighterIgniteMaxStacks;
+    public int getMaxIgniteStacks() {
+        return maxIgniteStacks;
     }
 
     public float getDroneDamage() {

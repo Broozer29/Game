@@ -27,9 +27,9 @@ import java.awt.*;
 public class ProtossScout extends Drone {
     private GameObject target;
     private int attackRange = 200;
-    private float defaultMoveSpeed = 3.25f;
+    private float defaultMoveSpeed = 3.45f;
     private boolean isMovingSlow = false;
-    public static float scoutDamageFactor = 0.5f;
+    public static float scoutDamageFactor = 0.75f;
     private boolean isMovingAroundCarrierDrone = false;
     private float baseDamage = 0;
 

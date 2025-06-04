@@ -23,7 +23,7 @@ public class SpecialAttack extends GameObject {
     protected boolean allowRepeatedDamage;
     protected boolean destroysMissiles;
     protected boolean damagesMissiles;
-    protected float maxHPDamagePercentage;
+    protected float maxHPDamagePercentageForMissiles;
     private Map<GameObject, Double> affectedObjects = new HashMap<>();
     protected double internalTickCooldown = 0.25f;
     protected boolean isDissipating = false;
@@ -180,11 +180,11 @@ public class SpecialAttack extends GameObject {
         this.damagesMissiles = damagesMissiles;
     }
 
-    public float getMaxHPDamagePercentage() {
-        return maxHPDamagePercentage;
+    public float getMaxHPDamagePercentageForMissiles() {
+        return maxHPDamagePercentageForMissiles;
     }
 
-    public void setMaxHPDamagePercentage(float maxHPDamagePercentage) {
-        this.maxHPDamagePercentage = maxHPDamagePercentage;
+    public void setMaxHPDamagePercentageForMissiles(float maxHPDamagePercentageForMissiles) {
+        this.maxHPDamagePercentageForMissiles = maxHPDamagePercentageForMissiles;
     }
 }

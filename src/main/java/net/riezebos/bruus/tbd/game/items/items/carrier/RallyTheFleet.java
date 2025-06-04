@@ -22,8 +22,8 @@ import java.util.List;
 
 public class RallyTheFleet extends Item {
 
-    public static float attackSpeedModifier = 0.25f;
-    public static int armorBonus = 10;
+    public static float attackSpeedModifier = 0.35f;
+    public static int armorBonus = 15;
 
     public RallyTheFleet() {
         super(ItemEnums.RallyTheFleet, 1, ItemApplicationEnum.CustomActivation);

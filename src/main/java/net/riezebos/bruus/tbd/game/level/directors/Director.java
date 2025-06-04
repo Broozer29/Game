@@ -147,12 +147,15 @@ public class Director {
         if (enemyEnums.equals(EnemyEnums.Seeker)) {
             return EnemyManager.getInstance().getAmountOfEnemyTypesAlive(EnemyEnums.Seeker) < 12;
         }
+        if (enemyEnums.equals(EnemyEnums.Bomba)) {
+            return EnemyManager.getInstance().getAmountOfEnemyTypesAlive(EnemyEnums.Bomba) < 6;
+        }
 
         return true;
     }
 
     private boolean canSpawnInFormation(EnemyEnums enemyEnums) {
-        if (enemyEnums.equals(EnemyEnums.ZergQueen) || enemyEnums.equals(EnemyEnums.Tazer)) {
+        if (enemyEnums.equals(EnemyEnums.ZergQueen) || enemyEnums.equals(EnemyEnums.Tazer) || enemyEnums.equals(EnemyEnums.Bomba)) {
             return false;
         }
         return true;

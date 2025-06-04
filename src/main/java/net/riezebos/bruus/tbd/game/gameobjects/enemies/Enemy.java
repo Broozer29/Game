@@ -91,7 +91,6 @@ public class Enemy extends GameObject {
 
     private void modifyStatsBasedOnLevelAndDifficulty() {
         int enemyLevel = GameState.getInstance().getMonsterLevel();
-        float difficultyCoeff = GameState.getInstance().getDifficultyCoefficient();
         int difficultyScore = LevelManager.getInstance().getCurrentLevelDifficultyScore(); // Ranges between 2 and 6 (inclusive)
 
         // Calculate scaling factor (1.0 at Easy, up to 1.5 at Hard)

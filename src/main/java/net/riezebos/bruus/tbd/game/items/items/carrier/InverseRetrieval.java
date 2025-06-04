@@ -18,7 +18,7 @@ import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.Sprit
 
 public class InverseRetrieval extends Item {
 
-    public static float explosionDamageRatio = 3;
+    public static float explosionDamageRatio = 15;
     public static int disableDuration = 2;
 
     public InverseRetrieval() {

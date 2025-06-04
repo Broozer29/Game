@@ -26,10 +26,10 @@ import java.awt.*;
 public class ProtossShuttle extends Drone {
     private GameObject target;
     private int attackRange = 300;
-    private float defaultMoveSpeed = 2.25f;
+    private float defaultMoveSpeed = 2.55f;
     private boolean isMovingAroundCarrierDrone = false;
     private boolean isMovingSlow = false;
-    public static float shuttleDamageRatio = 2.5f;
+    public static float shuttleDamageRatio = 3f;
     private float baseAttackSpeed = 1.5f; //duplicate from friendlycreator, code smell because its hardcoded seperately
 
     public ProtossShuttle(SpriteAnimationConfiguration spriteAnimationConfiguration, FriendlyObjectConfiguration droneConfiguration, MovementConfiguration movementConfiguration) {

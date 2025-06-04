@@ -4,6 +4,7 @@ import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.protoss.EnemyProtossScout;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.protoss.EnemyProtossShuttle;
 import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.Drone;
+import net.riezebos.bruus.tbd.game.gameobjects.missiles.Missile;
 import net.riezebos.bruus.tbd.game.movement.Direction;
 import net.riezebos.bruus.tbd.game.movement.pathfinders.OrbitPathFinder;
 import net.riezebos.bruus.tbd.visualsandaudio.data.DataClass;
@@ -47,7 +48,23 @@ public class OutOfBoundsCalculator {
         int width = gameObject.getWidth();
         int height = gameObject.getHeight();
 
+        // Handle case for Missiles
+        if (gameObject instanceof Missile) {
+            int playableWindowMaxHeight = DataClass.getInstance().getPlayableWindowMaxHeight();
+            int playableWindowMinHeight = DataClass.getInstance().getPlayableWindowMinHeight();
+            int windowMaxWidth = DataClass.getInstance().getWindowWidth();
+            int windowMinWidth = 0;
 
+            // Check if the missile is out of bounds in any direction
+            if (yCoordinate <= (playableWindowMinHeight - height) // Out at the top
+                    || yCoordinate >= (playableWindowMaxHeight + height) // Out at the bottom
+                    || xCoordinate <= (windowMinWidth - width) // Out on the left
+                    || xCoordinate >= (windowMaxWidth + width)) { // Out on the right
+                return true;
+            }
+        }
+
+        // Handle other cases (example: SpaceStationBoss)
         if (gameObject.getImageEnum().equals(ImageEnums.SpaceStationBoss)) {
             width = gameObject.getWidth() * 3;
             height = gameObject.getHeight() * 3;

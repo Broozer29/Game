@@ -20,12 +20,10 @@ public class ClassDescription {
     private String difficulty;
     private String unlockCondition;
 
-    // Private constructor to ensure instances are only created through the getInstance method
     private ClassDescription(PlayerClass playerClass) {
         updateClassDescriptionBox(playerClass);
     }
 
-    // Static method to return an existing instance or create a new one if needed
     public static ClassDescription getInstance(PlayerClass playerClass) {
         if (!cache.containsKey(playerClass)) {
             cache.put(playerClass, new ClassDescription(playerClass));
@@ -39,7 +37,7 @@ public class ClassDescription {
         switch (playerClass) {
             case FireFighter:
                 title = "Fire Fighter";
-                description = "The Fire Fighter utilizes a flamethrower to burn enemies nearby. The attacks of the Fire Fighter apply Ignite which damages enemies over time. " +
+                description = "The Fire Fighter utilizes a flamethrower to burn enemies nearby. The attacks of the Fire Fighter apply Ignite up to 3 times which damages enemies over time. " +
                         "The Fire Fighter specializes in applying damage over time effects but has a very short attack range.";
                 baseDamage = PlayerStats.fireFighterBaseDamage;
                 baseAttackSpeed = PlayerStats.fireFighterAttackSpeed;

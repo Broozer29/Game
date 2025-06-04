@@ -10,4 +10,5 @@ public class DevTestSettings {
     public static boolean onlyBossLevels = false;
     public static boolean infiniteMoney = false;
     public static boolean freeReroll = false;
+    public static boolean blockTargetDummy = true;
 }
