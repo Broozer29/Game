@@ -7,6 +7,9 @@ import net.riezebos.bruus.tbd.game.items.effects.EffectIdentifiers;
 import net.riezebos.bruus.tbd.game.items.effects.EffectInterface;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteAnimation;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class StackingInCombatArmorBonus implements EffectInterface {
 
     private EffectActivationTypes effectActivationTypes;
@@ -15,7 +18,7 @@ public class StackingInCombatArmorBonus implements EffectInterface {
     private EffectIdentifiers effectIdentifier;
     private double duration;
     private float armorApplied;
-    private SpriteAnimation animation;
+    private List<SpriteAnimation> animationList = new ArrayList<>();
     private double lastDamageTime; // Time when the object last took damage
 
     public StackingInCombatArmorBonus(float armorBonus, EffectIdentifiers effectIdentifier, float duration){
@@ -63,7 +66,7 @@ public class StackingInCombatArmorBonus implements EffectInterface {
     }
 
     @Override
-    public SpriteAnimation getAnimation () {
+    public List<SpriteAnimation> getAnimations() {
         return null; //no animation yet
     }
 
@@ -98,13 +101,11 @@ public class StackingInCombatArmorBonus implements EffectInterface {
             gameObject.adjustArmorBonus(-armorBonus); // Decrease armor by armorBonus amount
             bonusApplied = false;
         }
-
-
-        if(animation != null){
-            animation.setInfiniteLoop(false);
-            animation.setVisible(false);
+        if(animationList.get(0) != null){
+            animationList.get(0).setInfiniteLoop(false);
+            animationList.get(0).setVisible(false);
         }
-        animation = null;
+        animationList.clear();
     }
 
 }

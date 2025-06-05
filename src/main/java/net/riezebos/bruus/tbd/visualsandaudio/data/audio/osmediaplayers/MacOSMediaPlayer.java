@@ -12,17 +12,12 @@ public class MacOSMediaPlayer {
 
     // ExecutorService for running tasks asynchronously
     private final ExecutorService executor = Executors.newCachedThreadPool();
-    private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
     // Cached values for playback information
-    private boolean isPolling = false;
     private boolean hasStartedMusic = false;
     private boolean isPlaying = false;
     private double currentSeconds = 0;
     private double totalSeconds = 0;
-
-    // Scheduled polling task handle
-    private ScheduledFuture<?> pollingTask;
 
     // Private constructor for Singleton pattern
     private MacOSMediaPlayer() {

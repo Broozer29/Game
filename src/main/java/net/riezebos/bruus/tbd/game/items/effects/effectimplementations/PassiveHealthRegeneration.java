@@ -6,7 +6,11 @@ import net.riezebos.bruus.tbd.game.items.effects.EffectActivationTypes;
 import net.riezebos.bruus.tbd.game.items.effects.EffectIdentifiers;
 import net.riezebos.bruus.tbd.game.items.effects.EffectInterface;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.AnimationManager;
+import net.riezebos.bruus.tbd.visualsandaudio.objects.Sprite;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteAnimation;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class PassiveHealthRegeneration implements EffectInterface {
 
@@ -15,7 +19,7 @@ public class PassiveHealthRegeneration implements EffectInterface {
     private double lastTimeDamageTaken;
     private EffectIdentifiers effectIdentifier;
 
-    private SpriteAnimation animation;
+    private List<SpriteAnimation> animationList = new ArrayList<>();
 
     public PassiveHealthRegeneration (float healingAmount, EffectIdentifiers effectIdentifier) {
         this.healingAmount = healingAmount;
@@ -30,33 +34,33 @@ public class PassiveHealthRegeneration implements EffectInterface {
         if (currentTime - gameObject.getLastGameSecondDamageTaken() > 0.001 && // More than 10ms have passed
                 gameObject.getCurrentHitpoints() < gameObject.getMaxHitPoints()) {
 
-            if (animation != null) {
+            if (animationList.get(0) != null) {
                 showHealingAnimation();
                 centerHealingAnimation(gameObject);
             }
 
             gameObject.takeDamage(-healingAmount); // Apply healing
         } else {
-            if (animation != null) {
+            if (animationList.get(0) != null) {
                 hideHealingAnimation();
             }
         }
     }
 
     private void centerHealingAnimation (GameObject gameObject) {
-        animation.setCenterCoordinates(gameObject.getCenterXCoordinate(), gameObject.getCenterYCoordinate());
+        animationList.get(0).setCenterCoordinates(gameObject.getCenterXCoordinate(), gameObject.getCenterYCoordinate());
     }
 
     private void showHealingAnimation () {
-        if (!AnimationManager.getInstance().getUpperAnimations().contains(animation)) {
-            AnimationManager.getInstance().addUpperAnimation(animation);
+        if (!AnimationManager.getInstance().getUpperAnimations().contains(animationList.get(0))) {
+            AnimationManager.getInstance().addUpperAnimation(animationList.get(0));
         }
     }
 
     private void hideHealingAnimation () {
-        if (AnimationManager.getInstance().getUpperAnimations().contains(animation)) {
-            AnimationManager.getInstance().getUpperAnimations().remove(animation);
-            animation.refreshAnimation();
+        if (AnimationManager.getInstance().getUpperAnimations().contains(animationList.get(0))) {
+            AnimationManager.getInstance().getUpperAnimations().remove(animationList.get(0));
+            animationList.get(0).refreshAnimation();
         }
     }
 
@@ -66,8 +70,8 @@ public class PassiveHealthRegeneration implements EffectInterface {
     }
 
     @Override
-    public SpriteAnimation getAnimation () {
-        //Maybe implemented later, possibly not
+    public List<SpriteAnimation> getAnimations() {
+        //the show/hide healing animation methods handle the visual side of the animation
         return null;
     }
 
@@ -91,9 +95,6 @@ public class PassiveHealthRegeneration implements EffectInterface {
         return null;
     }
 
-    public void setAnimation (SpriteAnimation spriteAnimation) {
-        this.animation = spriteAnimation;
-    }
     @Override
     public EffectIdentifiers getEffectIdentifier () {
         return effectIdentifier;
@@ -101,11 +102,11 @@ public class PassiveHealthRegeneration implements EffectInterface {
 
     @Override
     public void removeEffect (GameObject gameObject){
-        if(animation != null){
-            animation.setInfiniteLoop(false);
-            animation.setVisible(false);
+        if(animationList.get(0) != null){
+            animationList.get(0).setInfiniteLoop(false);
+            animationList.get(0).setVisible(false);
         }
-        animation = null;
+        animationList.clear();
     }
 
 }

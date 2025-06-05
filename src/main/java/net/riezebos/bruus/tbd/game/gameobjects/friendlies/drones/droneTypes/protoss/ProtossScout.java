@@ -157,8 +157,7 @@ public class ProtossScout extends Drone {
         missile.setObjectType("Protoss Scout Missile");
 
         missile.resetMovementPath();
-
-
+        missile.setCanBounce(true);
 
         Point point = new Point(target.getCenterXCoordinate(), target.getCenterYCoordinate());
         point.setX(point.getX() - missile.getWidth() / 2);

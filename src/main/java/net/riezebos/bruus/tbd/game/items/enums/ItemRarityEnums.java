@@ -9,7 +9,7 @@ public enum ItemRarityEnums {
     Common(150, Color.WHITE),
     Rare(225, Color.GREEN),
     Legendary(300, Color.ORANGE),
-    Relic(400, Color.PINK),
+    Relic(400, Color.YELLOW),
     Locked(0, Color.GRAY);
 
 

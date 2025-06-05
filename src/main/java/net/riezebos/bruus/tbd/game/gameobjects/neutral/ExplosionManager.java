@@ -7,6 +7,8 @@ import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.Drone;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
 import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SpaceShip;
+import net.riezebos.bruus.tbd.game.items.ItemEnums;
+import net.riezebos.bruus.tbd.game.items.PlayerInventory;
 import net.riezebos.bruus.tbd.game.util.ThornsDamageDealer;
 import net.riezebos.bruus.tbd.game.util.collision.CollisionDetector;
 import net.riezebos.bruus.tbd.game.util.collision.CollisionInfo;
@@ -26,17 +28,18 @@ public class ExplosionManager {
     //    private List<Explosion> explosionList = new ArrayList<Explosion>();
     private CopyOnWriteArrayList<Explosion> explosionList = new CopyOnWriteArrayList<>();
     private PerformanceLogger performanceLogger = null;
-    private ExplosionManager () {
+
+    private ExplosionManager() {
         this.performanceLogger = new PerformanceLogger("Explosion Manager");
     }
 
-    public void updateGametick () {
+    public void updateGametick() {
 //        PerformanceLoggerManager.timeAndLog(performanceLogger, "Total", () -> {
-            PerformanceLoggerManager.timeAndLog(performanceLogger, "Update Explosions", this::updateExplosions);
+        PerformanceLoggerManager.timeAndLog(performanceLogger, "Update Explosions", this::updateExplosions);
 //        });
     }
 
-    private void updateExplosions () {
+    private void updateExplosions() {
         List<Explosion> toRemove = new ArrayList<>();
         for (Explosion explosion : explosionList) {
             if (explosion.isVisible()) {
@@ -56,7 +59,7 @@ public class ExplosionManager {
     }
 
 
-    public void resetManager () {
+    public void resetManager() {
         for (Explosion explosion : explosionList) {
             explosion.setVisible(false);
             explosion.deleteObject();
@@ -66,24 +69,24 @@ public class ExplosionManager {
         performanceLogger.reset();
     }
 
-    public static ExplosionManager getInstance () {
+    public static ExplosionManager getInstance() {
         return instance;
     }
 
 
-    public void addExplosion (Explosion explosion) {
+    public void addExplosion(Explosion explosion) {
         if (!this.explosionList.contains(explosion)) {
             this.explosionList.add(explosion);
             AnimationManager.getInstance().addUpperAnimation(explosion.getAnimation());
         }
     }
 
-    public List<Explosion> getExplosions () {
+    public List<Explosion> getExplosions() {
         return this.explosionList;
     }
 
 
-    private void checkExplosionCollisions (Explosion explosion) {
+    private void checkExplosionCollisions(Explosion explosion) {
         if (explosion.isAllowedToDealDamage() && explosion.isVisible()) {
             if (explosion.isFriendly()) {
                 checkFriendlyExplosionCollision(explosion);
@@ -93,7 +96,7 @@ public class ExplosionManager {
         }
     }
 
-    private void checkFriendlyExplosionCollision (Explosion explosion) {
+    private void checkFriendlyExplosionCollision(Explosion explosion) {
         for (Enemy enemy : enemyManager.getEnemies()) {
             if (!explosion.dealtDamageToTarget(enemy)) {
                 CollisionInfo collisionInfo = CollisionDetector.getInstance().detectCollision(explosion, enemy);
@@ -110,18 +113,17 @@ public class ExplosionManager {
         }
     }
 
-    private void checkHostileExplosionCollision (Explosion explosion) {
+    private void checkHostileExplosionCollision(Explosion explosion) {
         SpaceShip spaceship = friendlyManager.getSpaceship();
         if (!explosion.dealtDamageToTarget(spaceship)) {
             CollisionInfo collisionInfo = CollisionDetector.getInstance().detectCollision(explosion, spaceship);
             if (collisionInfo != null) {
-                ThornsDamageDealer.getInstance().dealThornsDamageTo(explosion.getOwnerOrCreator(), PlayerStats.getInstance().getThornsDamage());
                 explosion.dealDamageToGameObject(spaceship);
                 explosion.addCollidedSprite(spaceship);
             }
         }
 
-        for(Drone drone : FriendlyManager.getInstance().getAllProtossDrones()){
+        for (Drone drone : FriendlyManager.getInstance().getAllProtossDrones()) {
             if (!explosion.dealtDamageToTarget(drone)) {
                 CollisionInfo collisionInfo = CollisionDetector.getInstance().detectCollision(explosion, drone);
                 if (collisionInfo != null) {
@@ -132,7 +134,7 @@ public class ExplosionManager {
         }
     }
 
-    public PerformanceLogger getPerformanceLogger () {
+    public PerformanceLogger getPerformanceLogger() {
         return performanceLogger;
     }
 }

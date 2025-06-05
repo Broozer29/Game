@@ -234,6 +234,8 @@ public class SpaceShipRegularGun {
         missile.setCenterCoordinates(missile.getCenterXCoordinate(), spaceship.getCenterYCoordinate());
         missile.resetMovementPath();
 
+        missile.setCanBounce(true);
+
         GameStatsTracker.getInstance().addShotFired(1);
         this.missileManager.addExistingMissile(missile);
 

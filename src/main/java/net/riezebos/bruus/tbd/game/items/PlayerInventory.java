@@ -1,6 +1,7 @@
 package net.riezebos.bruus.tbd.game.items;
 
 import net.riezebos.bruus.tbd.DevTestSettings;
+import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
 import net.riezebos.bruus.tbd.game.gameobjects.player.boons.BoonEnums;
 import net.riezebos.bruus.tbd.game.items.enums.ItemApplicationEnum;
 import net.riezebos.bruus.tbd.game.items.enums.ItemRarityEnums;
@@ -14,7 +15,6 @@ import net.riezebos.bruus.tbd.game.items.items.firefighter.*;
 import net.riezebos.bruus.tbd.game.playerprofile.PlayerProfileManager;
 import net.riezebos.bruus.tbd.guiboards.BoardManager;
 import net.riezebos.bruus.tbd.guiboards.boardcreators.AchievementUnlockHelper;
-import net.riezebos.bruus.tbd.guiboards.boardcreators.BoonSelectionBoardCreator;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.AudioManager;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.AudioEnums;
 
@@ -30,6 +30,18 @@ public class PlayerInventory {
 
     private PlayerInventory() {
         resetInventory();
+
+        addItem(ItemEnums.ReflectiveShielding);
+        addItem(ItemEnums.ReflectiveShielding);
+        addItem(ItemEnums.ReflectiveShielding);
+        addItem(ItemEnums.ReflectiveShielding);
+
+        addItem(ItemEnums.BarrierSuperSizer);
+        addItem(ItemEnums.BarrierSuperSizer);
+        addItem(ItemEnums.BarrierSuperSizer);
+        addItem(ItemEnums.BarrierSuperSizer);
+        addItem(ItemEnums.BarrierSuperSizer);
+        addItem(ItemEnums.ShieldStabilizer);
 
 //        for(int i = 0; i < 5; i++){
 //            addItem(ItemEnums.EnergySiphon);
@@ -151,8 +163,8 @@ public class PlayerInventory {
                 return new ModuleAccuracy();
             case ElectricSupercharger:
                 return new ElectricSupercharger();
-            case ThornedPlates:
-                return new ThornedPlates();
+            case ReflectiveShielding:
+                return new ReflectiveShielding();
             case Thornweaver:
                 return new Thornweaver();
             case BarbedAegis:

@@ -598,7 +598,7 @@ public class BoonSelectionBoard extends JPanel implements TimerHolder {
 
     private void drawDescriptionText(Graphics2D g2d, String text, int x, int y, int maxWidth, Color color) {
         FontMetrics metrics = g2d.getFontMetrics();
-        int lineHeight = metrics.getHeight();
+        int lineHeight = metrics.getHeight() + 2; //small increase
         String[] words = text.split(" ");
         StringBuilder line = new StringBuilder();
         g2d.setColor(color);

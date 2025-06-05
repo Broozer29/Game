@@ -172,8 +172,8 @@ public class DormentExplosion implements EffectInterface {
     }
 
     @Override
-    public SpriteAnimation getAnimation () {
-        return null;
+    public List<SpriteAnimation> getAnimations() {
+        return null; //shouldnt have an animation as its dorment
     }
 
     @Override

@@ -10,10 +10,12 @@ import net.riezebos.bruus.tbd.game.gameobjects.missiles.missiletypes.ReflectiveB
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.missiletypes.TazerProjectile;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.specialAttacks.SpecialAttack;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
-import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
 import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SpaceShip;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.gamestate.GameStatsTracker;
+import net.riezebos.bruus.tbd.game.items.ItemEnums;
+import net.riezebos.bruus.tbd.game.items.PlayerInventory;
+import net.riezebos.bruus.tbd.game.items.items.ReflectiveShielding;
 import net.riezebos.bruus.tbd.game.util.ThornsDamageDealer;
 import net.riezebos.bruus.tbd.game.util.VisualLayer;
 import net.riezebos.bruus.tbd.game.util.collision.CollisionDetector;
@@ -274,18 +276,24 @@ public class MissileManager {
         SpaceShip spaceship = playerManager.getSpaceship();
         CollisionInfo collisionInfo = collisionDetector.detectCollision(missile, spaceship);
         if (collisionInfo != null) {
+            ReflectiveShielding reflectiveShielding = (ReflectiveShielding) PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.ReflectiveShielding);
+
+            if (reflectiveShielding != null && reflectiveShielding.attemptToReflectMissile(missile)
+                    && PlayerManager.getInstance().getSpaceship().getCurrentShieldPoints() > 0) {
+                ThornsDamageDealer.getInstance().reflectMissile(collisionInfo.getCollisionPoint(), missile);
+                missile.setVisible(false);
+                missile.deleteObject();
+                return; //don't want to continue since we reflected/blocked the missile
+            }
+
             if (missile.getMissileEnum().equals(MissileEnums.TazerProjectile)) {
                 ((TazerProjectile) missile).applyTazerMissileEffect(spaceship);
             }
-            //if deflect: deflect missile, else:
+
             missile.handleCollision(spaceship);
 
             if (missile.getKnockbackStrength() > 0) {
                 spaceship.applyKnockback(collisionInfo, missile.getKnockbackStrength());
-            }
-            //if thorns & not explosive (explosive reflection is in explosion manager): reflect damage
-            if (!missile.isExplosive()) {
-                ThornsDamageDealer.getInstance().dealThornsDamageTo(missile.getOwnerOrCreator(), PlayerStats.getInstance().getThornsDamage());
             }
         }
     }

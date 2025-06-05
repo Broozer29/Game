@@ -7,6 +7,8 @@ import net.riezebos.bruus.tbd.game.items.effects.EffectIdentifiers;
 import net.riezebos.bruus.tbd.game.items.effects.EffectInterface;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteAnimation;
 
+import java.util.List;
+
 public class HealPlayerOnDeath implements EffectInterface {
 
     private boolean healShield;
@@ -40,7 +42,7 @@ public class HealPlayerOnDeath implements EffectInterface {
     }
 
     @Override
-    public SpriteAnimation getAnimation () {
+    public List<SpriteAnimation> getAnimations() {
         return null;
     }
 

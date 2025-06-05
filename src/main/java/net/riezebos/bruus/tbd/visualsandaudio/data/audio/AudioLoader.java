@@ -26,14 +26,11 @@ public class AudioLoader {
                 Media media = new Media(url.toString());
                 MediaPlayer mediaPlayer = new MediaPlayer(media);
                 mediaPlayer.setAutoPlay(false); // Prevent auto-playing the sound
-                System.out.println("Loading audio file: " + audioFile);
                 return mediaPlayer;
             }
+            System.out.println("Failed to load audio file: " + audioFile);
         } catch (Exception e) {
-            System.out.println(audioFile);
             e.printStackTrace();
-            System.out.println("");
-
         }
         return null;
     }

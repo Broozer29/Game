@@ -33,7 +33,7 @@ public enum AudioEnums {
     Viq_Rose(true),
     Blood_On_The_Dancefloor(false),
     Lemmino_Firecracker(false),
-    VendlaSonrisa(true),
+    VendlaSonrisa(false),
     keygen(false),
     nomad(false),
     NotEnoughMinerals(false),

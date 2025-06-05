@@ -29,7 +29,7 @@ public class SpawnCoinsOnDeath implements EffectInterface {
     private EffectActivationTypes effectActivationType;
     private boolean activated;
 
-    private SpriteAnimation additionalAnimation;
+    private List<SpriteAnimation> animationList = new ArrayList<>();
     private List<Direction> usedRotations = new ArrayList<>();
 
     public SpawnCoinsOnDeath(float goldAmount, int coinAmount) {
@@ -97,8 +97,8 @@ public class SpawnCoinsOnDeath implements EffectInterface {
     }
 
     @Override
-    public SpriteAnimation getAnimation() {
-        return null;
+    public List<SpriteAnimation> getAnimations() {
+        return animationList;
     }
 
     @Override
@@ -129,10 +129,10 @@ public class SpawnCoinsOnDeath implements EffectInterface {
 
     @Override
     public void removeEffect(GameObject gameObject) {
-        if (additionalAnimation != null) {
-            additionalAnimation.setInfiniteLoop(false);
-            additionalAnimation.setVisible(false);
+        if (animationList.get(0) != null) {
+            animationList.get(0).setInfiniteLoop(false);
+            animationList.get(0).setVisible(false);
         }
-        additionalAnimation = null;
+        animationList.clear();
     }
 }

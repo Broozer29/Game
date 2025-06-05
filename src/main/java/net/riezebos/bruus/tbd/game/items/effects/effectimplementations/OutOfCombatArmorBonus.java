@@ -7,6 +7,9 @@ import net.riezebos.bruus.tbd.game.items.effects.EffectIdentifiers;
 import net.riezebos.bruus.tbd.game.items.effects.EffectInterface;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteAnimation;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class OutOfCombatArmorBonus implements EffectInterface {
 
     private EffectActivationTypes effectActivationTypes;
@@ -15,7 +18,7 @@ public class OutOfCombatArmorBonus implements EffectInterface {
     private EffectIdentifiers effectIdentifier;
     private float cooldown;
 
-    private SpriteAnimation animation;
+    private List<SpriteAnimation> animationList = new ArrayList<>();
 
     public OutOfCombatArmorBonus(float armorBonus, EffectIdentifiers effectIdentifier, float cooldown){
         this.armorBonus = armorBonus;
@@ -49,7 +52,7 @@ public class OutOfCombatArmorBonus implements EffectInterface {
     }
 
     @Override
-    public SpriteAnimation getAnimation () {
+    public List<SpriteAnimation> getAnimations() {
         return null;
     }
 
@@ -81,10 +84,10 @@ public class OutOfCombatArmorBonus implements EffectInterface {
 
     @Override
     public void removeEffect (GameObject gameObject){
-        if(animation != null){
-            animation.setInfiniteLoop(false);
-            animation.setVisible(false);
+        if(animationList.get(0) != null){
+            animationList.get(0).setInfiniteLoop(false);
+            animationList.get(0).setVisible(false);
         }
-        animation = null;
+        animationList.clear();
     }
 }

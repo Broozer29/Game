@@ -16,6 +16,7 @@ import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteAnimation;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteConfiguration;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
@@ -106,7 +107,7 @@ public class SpawnProjectileOnDeath implements EffectInterface {
     }
 
     @Override
-    public SpriteAnimation getAnimation () {
+    public List<SpriteAnimation> getAnimations() {
         return null;
     }
 

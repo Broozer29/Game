@@ -884,9 +884,10 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
 
         if (charges > 1) {
             g.setColor(Color.green);
+            g.setFont(new Font("Helvetica", Font.PLAIN, 24));
             g.drawString(String.valueOf(charges),
-                    gameUICreator.getSpecialAttackFrame().getXCoordinate() + gameUICreator.getSpecialAttackFrame().getWidth() - 20,
-                    gameUICreator.getSpecialAttackFrame().getYCoordinate() + gameUICreator.getSpecialAttackFrame().getHeight() - 10
+                    gameUICreator.getSpecialAttackFrame().getCenterXCoordinate(),
+                    gameUICreator.getSpecialAttackFrame().getCenterYCoordinate()
             );
 
         }

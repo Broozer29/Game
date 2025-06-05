@@ -789,7 +789,7 @@ public class ShopBoard extends JPanel implements TimerHolder {
     //Helper method to centralize the actual drawing on the screen
     private void drawDescriptionText(Graphics2D g2d, String text, int x, int y, int maxWidth, Color color) {
         FontMetrics metrics = g2d.getFontMetrics();
-        int lineHeight = metrics.getHeight();
+        int lineHeight = metrics.getHeight() + 2;
         String[] words = text.split(" ");
         StringBuilder line = new StringBuilder();
         g2d.setColor(color);

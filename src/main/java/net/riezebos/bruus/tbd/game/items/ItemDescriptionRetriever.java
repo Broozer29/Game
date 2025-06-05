@@ -98,7 +98,7 @@ public class ItemDescriptionRetriever {
                 return "Critical strikes deal an additional " + Math.round(CriticalOverloadCapacitor.damageMultiplier * 100) + "% (+" + Math.round(CriticalOverloadCapacitor.damageMultiplier * 100) + "%) damage.";
             }
             case BarrierSuperSizer -> {
-                return "Inceases maximum shield by 20% (+20%)"; //disabled
+                return "Inceases maximum shield by " + Math.round(BarrierSupersizer.modifierBonus * 100) + "%";
             }
             case PiercingMissiles -> {
                 return "Missiles pierce 1 additional time";
@@ -122,15 +122,16 @@ public class ItemDescriptionRetriever {
                         Math.round(ElectricSupercharger.buffAmount * 100) +
                         "% (+%" + Math.round(ElectricSupercharger.buffAmount * 100) + "%) damage.";
             }
-            case ThornedPlates -> {
-                return "Gain " + ThornedPlates.armorAmount + " (+" + ThornedPlates.armorAmount + ") armor. Upon taking damage, you return 100% Thorns damage to the attacker. Increases all Thorns damage by " + Math.round(ThornedPlates.buffAmount * 100) + "% (+ " + Math.round(ThornedPlates.buffAmount * 100) + "%)";
+            case ReflectiveShielding -> {
+                return "Whilst having more than 0 shields, incoming non-explosive missiles have a " + Math.round(ReflectiveShielding.procChance * 100) + "% " + Math.round(ReflectiveShielding.procChanceIncrease * 100) + "chance to reflect back towards their owner dealing" +
+                        + Math.round(ReflectiveShielding.buffAmount * 100) + "% (+ " + Math.round(ReflectiveShielding.buffAmount * 100) + "%) bonus damage";
             }
             case Thornweaver -> {
                 return "Colliding with enemies now applies 100% Thorns damage to them. You take " + Math.round(Thornweaver.collisionDamageReduction * 100) +
                         "% reduced damage from colliding with enemies.";
             }
             case BarbedAegis -> {
-                return "All Thorns damage is increased by " + Math.round(BarbedAegis.ratio * 100) + "% (+" + Math.round(BarbedAegis.ratio * 100) + "%) of your armor."; //disabled
+                return "Attacks that are Reflected have a " + Math.round(BarbedAegis.procChance * 100) + " % +(" + Math.round(BarbedAegis.procChanceIncrease) + "%) chance to deal " + Math.round(BarbedAegis.damageReduction * 100) + "% reduced damage."; //disabled
             }
             case BarbedMissiles -> {
                 return "Your missiles have a " + Math.round(BarbedMissiles.procChance * 100) + "% (+" + Math.round(BarbedMissiles.procChance * 100) + "%) chance to deal an additional 100% Thorns damage.";

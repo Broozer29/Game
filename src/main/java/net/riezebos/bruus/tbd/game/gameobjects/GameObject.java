@@ -1,10 +1,5 @@
 package net.riezebos.bruus.tbd.game.gameobjects;
 
-import net.riezebos.bruus.tbd.game.UI.GameUICreator;
-import net.riezebos.bruus.tbd.game.UI.UIObject;
-import net.riezebos.bruus.tbd.game.gameobjects.enemies.Enemy;
-import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.protoss.EnemyProtossBeacon;
-import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyCategory;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.Missile;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
@@ -19,11 +14,9 @@ import net.riezebos.bruus.tbd.game.movement.Point;
 import net.riezebos.bruus.tbd.game.movement.*;
 import net.riezebos.bruus.tbd.game.movement.pathfinders.HomingPathFinder;
 import net.riezebos.bruus.tbd.game.movement.pathfinders.PathFinder;
-import net.riezebos.bruus.tbd.game.playerprofile.PlayerProfileManager;
 import net.riezebos.bruus.tbd.game.util.ArmorCalculator;
 import net.riezebos.bruus.tbd.game.util.OnScreenTextManager;
 import net.riezebos.bruus.tbd.game.util.VisualLayer;
-import net.riezebos.bruus.tbd.guiboards.BoardManager;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.AudioManager;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.AudioEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
@@ -209,18 +202,21 @@ public class GameObject extends Sprite {
                 return; //Already have it, so we don't need to add the animation of the new effect
             }
 
-            if (effect.getAnimation() != null) {
-                boolean effectAnimationExists = false;
-                for (SpriteAnimation effectAnim : effectAnimations) {
-                    if (effectAnim.getImageEnum().equals(effect.getAnimation().getImageEnum())) {
-                        effectAnimationExists = true;
+            if (effect.getAnimations() != null && !effect.getAnimations().isEmpty()) {
+                for (SpriteAnimation effectAnimation : effect.getAnimations()) {
+                    boolean effectAnimationExists = false;
+                    for (SpriteAnimation effectAnim : effectAnimations) {
+                        if (effectAnim.getImageEnum().equals(effectAnimation.getImageEnum())) {
+                            effectAnimationExists = true;
+                            break;
+                        }
                     }
-                }
 
-                if (!effectAnimationExists) {
-                    effect.getAnimation().refreshAnimation(); //To handle ignite, idk why it does this as of now
-                    effectAnimations.add(effect.getAnimation());
-                    AnimationManager.getInstance().addUpperAnimation(effect.getAnimation());
+                    if (!effectAnimationExists) {
+                        effectAnimation.refreshAnimation(); //To handle ignite, idk why it does this as of now might be deprecated/unneeded
+                        effectAnimations.add(effectAnimation);
+                        AnimationManager.getInstance().addUpperAnimation(effectAnimation);
+                    }
                 }
             }
         }
@@ -249,14 +245,14 @@ public class GameObject extends Sprite {
             if (effect.getEffectTypesEnums() == providedActivationType) {
                 effect.activateEffect(this);
                 if (effect.shouldBeRemoved(this)) {
-                    if (effect.getAnimation() != null) {
-                        effect.getAnimation().setVisible(false);
-                        if (effectAnimations.contains(effect.getAnimation())) {
-                            effectAnimations.remove(effect.getAnimation());
-                        }
-                        //This is here to possibly remove the bug of persistent effect animations
-                        if (AnimationManager.getInstance().getUpperAnimations().contains(effect.getAnimation())) {
-                            AnimationManager.getInstance().getUpperAnimations().remove(effect.getAnimation());
+                    if (effect.getAnimations() != null && !effect.getAnimations().isEmpty()) {
+                        for (SpriteAnimation effectAnimation : effect.getAnimations()) {
+                            effectAnimation.setVisible(false);
+                            if (effectAnimations.contains(effectAnimation)) {
+                                effectAnimations.remove(effectAnimation);
+                            }
+                            //Redundant, but added to catch possible persisting animations that should have been removed
+                            AnimationManager.getInstance().getUpperAnimations().remove(effectAnimation);
                         }
                     }
                     toRemove.add(effect);
@@ -419,7 +415,6 @@ public class GameObject extends Sprite {
         for (EffectInterface effectInterface : effectsToApply) {
             target.addEffect(effectInterface);
         }
-
 
 
         float damage = ArmorCalculator.calculateDamage(getDamage(), target);
@@ -1176,7 +1171,7 @@ public class GameObject extends Sprite {
         this.armorBonus += amount;
     }
 
-    public boolean hasEffect(EffectIdentifiers effectIdentifiers){
+    public boolean hasEffect(EffectIdentifiers effectIdentifiers) {
         return this.effects.stream().anyMatch(effect -> effect.getEffectIdentifier().equals(effectIdentifiers));
     }
 }

@@ -25,8 +25,6 @@ public class ImageLoader {
             if (stream == null) {
                 System.out.println("InputStream is null for path: " + path);
                 return null;
-            } else {
-                System.out.println("Loading image: " + path);
             }
             bufferedImage = ImageIO.read(stream);
             if (bufferedImage == null) {

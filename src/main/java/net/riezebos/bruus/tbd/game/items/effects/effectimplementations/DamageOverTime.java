@@ -17,6 +17,8 @@ import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteAnimation;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteAnimationConfiguration;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteConfiguration;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 
@@ -30,24 +32,24 @@ public class DamageOverTime implements EffectInterface {
     private boolean offsetApplied = false;
     private boolean scaledToTarget = false;
 
-    private SpriteAnimation animation;
+    private List<SpriteAnimation> animationList = new ArrayList<>();
     private EffectIdentifiers effectIdentifier;
 
     private double lastDamageTime = 0;
     public static final double damageInterval = 0.01;
     private boolean appliedArmorDebuff = false;
 
-    public DamageOverTime (float damage, double durationInSeconds, SpriteAnimation spriteAnimation, EffectIdentifiers effectIdentifier) {
+    public DamageOverTime(float damage, double durationInSeconds, SpriteAnimation spriteAnimation, EffectIdentifiers effectIdentifier) {
         this.damage = damage;
         this.durationInSeconds = durationInSeconds;
         this.effectTypesEnums = EffectActivationTypes.CheckEveryGameTick;
         this.dotStacks = 1;
         this.startTimeInSeconds = GameState.getInstance().getGameSeconds();
-        this.animation = spriteAnimation;
+        this.animationList.add(spriteAnimation);
         this.effectIdentifier = effectIdentifier;
     }
 
-    public DamageOverTime (float damage, double durationInSeconds, EffectIdentifiers effectIdentifier) {
+    public DamageOverTime(float damage, double durationInSeconds, EffectIdentifiers effectIdentifier) {
         this.damage = damage;
         this.durationInSeconds = durationInSeconds;
         this.effectTypesEnums = EffectActivationTypes.CheckEveryGameTick;
@@ -57,7 +59,7 @@ public class DamageOverTime implements EffectInterface {
         this.effectIdentifier = effectIdentifier;
     }
 
-    private void initDefaultAnimation () {
+    private void initDefaultAnimation() {
         SpriteConfiguration spriteConfiguration = new SpriteConfiguration();
         spriteConfiguration.setxCoordinate(-40);
         spriteConfiguration.setyCoordinate(-40);
@@ -65,20 +67,20 @@ public class DamageOverTime implements EffectInterface {
         spriteConfiguration.setImageType(ImageEnums.IgniteBurning);
 
         SpriteAnimationConfiguration spriteAnimationConfiguration = new SpriteAnimationConfiguration(spriteConfiguration, 2, true);
-        this.animation = new SpriteAnimation(spriteAnimationConfiguration);
+        this.animationList.add(new SpriteAnimation(spriteAnimationConfiguration));
     }
 
 
     @Override
-    public void activateEffect (GameObject target) {
+    public void activateEffect(GameObject target) {
         double currentTime = GameState.getInstance().getGameSeconds();
-        if (animation != null) {
+        if (this.animationList.get(0) != null) {
             if (!scaledToTarget) {
-                EffectAnimationHelper.scaleAnimation(target, animation);
+                EffectAnimationHelper.scaleAnimation(target, this.animationList.get(0));
                 scaledToTarget = true;
             }
             if (!offsetApplied) {
-                EffectAnimationHelper.applyRandomOffset(target, animation);
+                EffectAnimationHelper.applyRandomOffset(target, this.animationList.get(0));
                 offsetApplied = true;
             }
 
@@ -99,7 +101,7 @@ public class DamageOverTime implements EffectInterface {
     }
 
     @Override
-    public boolean shouldBeRemoved (GameObject gameObject) {
+    public boolean shouldBeRemoved(GameObject gameObject) {
         if (GameState.getInstance().getGameSeconds() - startTimeInSeconds >= durationInSeconds) {
             return true;
         } else return false;
@@ -107,25 +109,24 @@ public class DamageOverTime implements EffectInterface {
     }
 
     @Override
-    public void resetDuration () {
+    public void resetDuration() {
         this.startTimeInSeconds = GameState.getInstance().getGameSeconds();
     }
 
     @Override
-    public void increaseEffectStrength (GameObject gameObject) {
-        if (this.effectIdentifier.equals(EffectIdentifiers.Ignite)) {
-            if (PlayerStats.getInstance().getPlayerClass().equals(PlayerClass.FireFighter)) {
-                if (this.dotStacks < PlayerStats.getInstance().getMaxIgniteStacks()) {
-                    this.dotStacks += 1;
-                    applyCorrosiveOil(gameObject);
-                }
-            }
+    public void increaseEffectStrength(GameObject gameObject) {
+        if (this.effectIdentifier.equals(EffectIdentifiers.Ignite) &&
+                this.dotStacks < PlayerStats.getInstance().getMaxIgniteStacks()) {
+            this.dotStacks += 1;
+            applyCorrosiveOil(gameObject);
         }
+
+
     }
 
     private double lastTimeThornsApplied = 0;
 
-    private void handleIgniteSpecialCases (GameObject target) {
+    private void handleIgniteSpecialCases(GameObject target) {
         if (PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.EntanglingFlames) != null &&
                 (lastTimeThornsApplied + 0.75f) < GameState.getInstance().getGameSeconds()) {
             ThornsDamageDealer.getInstance().addDelayedThornsDamageToObject(target, PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.EntanglingFlames).getQuantity());
@@ -133,26 +134,26 @@ public class DamageOverTime implements EffectInterface {
         }
     }
 
-    private void applyCorrosiveOil (GameObject gameObject){
-        if(!this.effectIdentifier.equals(EffectIdentifiers.Ignite)){
+    private void applyCorrosiveOil(GameObject gameObject) {
+        if (!this.effectIdentifier.equals(EffectIdentifiers.Ignite)) {
             return;
         }
 
         CorrosiveOil item = (CorrosiveOil) PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.CorrosiveOil);
-        if(item != null){
+        if (item != null) {
             gameObject.adjustArmorBonus(-item.getArmorReductionPerStack());
         }
     }
 
     @Override
-    public EffectInterface copy () {
+    public EffectInterface copy() {
         SpriteConfiguration spriteConfiguration = new SpriteConfiguration();
         spriteConfiguration.setxCoordinate(-40);
         spriteConfiguration.setyCoordinate(-40);
-        spriteConfiguration.setScale(this.animation.getScale());
-        spriteConfiguration.setImageType(this.animation.getImageEnum());
+        spriteConfiguration.setScale(this.animationList.get(0).getScale());
+        spriteConfiguration.setImageType(this.animationList.get(0).getImageEnum());
 
-        SpriteAnimationConfiguration spriteAnimationConfiguration = new SpriteAnimationConfiguration(spriteConfiguration, this.animation.getFrameDelay(), this.animation.isInfiniteLoop());
+        SpriteAnimationConfiguration spriteAnimationConfiguration = new SpriteAnimationConfiguration(spriteConfiguration, this.animationList.get(0).getFrameDelay(), this.animationList.get(0).isInfiniteLoop());
         DamageOverTime copiedEffect = new DamageOverTime(this.damage, this.durationInSeconds, new SpriteAnimation(spriteAnimationConfiguration), effectIdentifier);
         // Copy other necessary fields
         copiedEffect.dotStacks = this.dotStacks;
@@ -160,42 +161,38 @@ public class DamageOverTime implements EffectInterface {
     }
 
     @Override
-    public SpriteAnimation getAnimation () {
-        return animation;
+    public List<SpriteAnimation> getAnimations() {
+        return animationList;
     }
 
-    public void setAnimation (SpriteAnimation animation) {
-        this.animation = animation;
-    }
-
-    public EffectActivationTypes getEffectTypesEnums () {
+    public EffectActivationTypes getEffectTypesEnums() {
         return effectTypesEnums;
     }
 
     @Override
-    public boolean equals (Object o) {
+    public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         DamageOverTime that = (DamageOverTime) o;
-        return Float.compare(damage, that.damage) == 0 && Double.compare(durationInSeconds, that.durationInSeconds) == 0 && Double.compare(startTimeInSeconds, that.startTimeInSeconds) == 0 && dotStacks == that.dotStacks && offsetApplied == that.offsetApplied && effectTypesEnums == that.effectTypesEnums && Objects.equals(animation, that.animation);
+        return Float.compare(damage, that.damage) == 0 && Double.compare(durationInSeconds, that.durationInSeconds) == 0 && Double.compare(startTimeInSeconds, that.startTimeInSeconds) == 0 && dotStacks == that.dotStacks && offsetApplied == that.offsetApplied && effectTypesEnums == that.effectTypesEnums;
     }
 
     @Override
-    public int hashCode () {
+    public int hashCode() {
         return Objects.hash(effectTypesEnums);
     }
 
     @Override
-    public EffectIdentifiers getEffectIdentifier () {
+    public EffectIdentifiers getEffectIdentifier() {
         return effectIdentifier;
     }
 
     @Override
-    public void removeEffect (GameObject gameObject) {
-        if (animation != null) {
-            animation.setInfiniteLoop(false);
-            animation.setVisible(false);
+    public void removeEffect(GameObject gameObject) {
+        if (this.animationList.get(0) != null) {
+            this.animationList.get(0).setInfiniteLoop(false);
+            this.animationList.get(0).setVisible(false);
         }
-        animation = null;
+        this.animationList.clear();
     }
 }

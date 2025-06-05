@@ -25,6 +25,7 @@ public class Missile extends GameObject {
     protected boolean isExplosive;
     protected boolean destroysMissiles;
     protected boolean piercesThroughObjects;
+    protected boolean canBounce;
     protected int amountOfPiercesLeft;
     protected int maximumAmountOfPierces;
     protected boolean isDestructable;
@@ -175,9 +176,8 @@ public class Missile extends GameObject {
             amountOfPiercesLeft--;
             hasPiercedForStatsTracker = true;
 
-            //Rework in a nicer way, just testing
             Item bouncingModuleAddon = PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.BouncingModuleAddon);
-            if (bouncingModuleAddon != null) {
+            if (bouncingModuleAddon != null && canBounce) {
                 GameObject newTarget = EnemyManager.getInstance().findEnemyForMissileToBounceTo(collidedObject, this.collidedObjects);
                 if (newTarget != null) {
                     bouncingModuleAddon.applyEffectToObject(this);
@@ -253,5 +253,13 @@ public class Missile extends GameObject {
 
     public void setDamageable(boolean damageable) {
         isDamageable = damageable;
+    }
+
+    public boolean isCanBounce() {
+        return canBounce;
+    }
+
+    public void setCanBounce(boolean canBounce) {
+        this.canBounce = canBounce;
     }
 }
