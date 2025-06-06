@@ -166,8 +166,8 @@ public class MainMenuBoard extends JPanel implements TimerHolder {
         addToGrid(firstColumn, selectClassBoard.getComponents().get(0), 0, 0);
         addAllButFirstComponent(selectClassBoard);
 
-//        addToGrid(firstColumn, openShopButton.getComponents().get(0), 0, 1);
-//        addAllButFirstComponent(openShopButton);
+        addToGrid(firstColumn, openShopButton.getComponents().get(0), 0, 1);
+        addAllButFirstComponent(openShopButton);
 
         if (SaveManager.getInstance().doesSaveFileExist()) {
             addToGrid(firstColumn, continueSaveFile.getComponents().get(0), 0, 1);

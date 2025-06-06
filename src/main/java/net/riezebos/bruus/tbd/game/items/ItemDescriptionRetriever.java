@@ -123,8 +123,8 @@ public class ItemDescriptionRetriever {
                         "% (+%" + Math.round(ElectricSupercharger.buffAmount * 100) + "%) damage.";
             }
             case ReflectiveShielding -> {
-                return "Whilst having more than 0 shields, incoming non-explosive missiles have a " + Math.round(ReflectiveShielding.procChance * 100) + "% " + Math.round(ReflectiveShielding.procChanceIncrease * 100) + "chance to reflect back towards their owner dealing" +
-                        + Math.round(ReflectiveShielding.buffAmount * 100) + "% (+ " + Math.round(ReflectiveShielding.buffAmount * 100) + "%) bonus damage";
+                return "Whilst your shield is up, enemy missiles have a " + Math.round(ReflectiveShielding.procChance * 100) + "% (+" + Math.round(ReflectiveShielding.procChanceIncrease * 100) + "%) chance to reflect back dealing " +
+                        + Math.round(ReflectiveShielding.buffAmount * 100) + "% (+" + Math.round(ReflectiveShielding.buffAmount * 100) + "%) bonus damage";
             }
             case Thornweaver -> {
                 return "Colliding with enemies now applies 100% Thorns damage to them. You take " + Math.round(Thornweaver.collisionDamageReduction * 100) +
