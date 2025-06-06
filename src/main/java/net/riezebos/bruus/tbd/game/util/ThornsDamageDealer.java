@@ -69,6 +69,7 @@ public class ThornsDamageDealer {
         thornsApplyMap.merge(gameObject, amountOftimes, Integer::sum);
     }
 
+    //bugged
     public void reflectMissile(Point origin, GameObject missile) {
         if (missile == null || origin == null || missile.getOwnerOrCreator() == null) {
             return; //We need a missile and an owner for this operation

@@ -24,7 +24,6 @@ import net.riezebos.bruus.tbd.game.gameobjects.player.boons.BoonManager;
 import net.riezebos.bruus.tbd.game.gameobjects.player.boons.boonimplementations.BoonActivationEnums;
 import net.riezebos.bruus.tbd.game.util.performancelogger.PerformanceLogger;
 import net.riezebos.bruus.tbd.game.util.performancelogger.PerformanceLoggerManager;
-import net.riezebos.bruus.tbd.visualsandaudio.data.DataClass;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.AudioManager;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.AudioEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.LevelSongs;
@@ -162,15 +161,15 @@ public class LevelManager {
 
 
 
-        if(!DevTestSettings.blockTargetDummy) {
+        if(DevTestSettings.spawnTargetDummy) {
 
             EnemyEnums enemyType = EnemyEnums.Bomba;
             Enemy enemy = EnemyCreator.createEnemy(enemyType, 400, 500, Direction.LEFT, enemyType.getDefaultScale()
                     , enemyType.getMovementSpeed(), enemyType.getMovementSpeed(), MovementPatternSize.SMALL, false);
-            enemy.setXCoordinate(500);
+            enemy.setXCoordinate(800);
             enemy.setMaxHitPoints(100000);
             enemy.setCurrentHitpoints(100000);
-            enemy.setAllowedToFire(true);
+            enemy.setAllowedToFire(false);
             enemy.setAllowedToMove(false);
             EnemyManager.getInstance().addEnemy(enemy);
         }
