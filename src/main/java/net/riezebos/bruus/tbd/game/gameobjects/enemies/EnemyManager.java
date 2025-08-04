@@ -4,6 +4,9 @@ import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyCategory;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyEnums;
 import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.droneTypes.protoss.ProtossUtils;
+import net.riezebos.bruus.tbd.game.gameobjects.missiles.Missile;
+import net.riezebos.bruus.tbd.game.gameobjects.missiles.MissileManager;
+import net.riezebos.bruus.tbd.game.gameobjects.missiles.missiletypes.ReflectiveBlocks;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
 import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SpaceShip;
@@ -228,21 +231,40 @@ public class EnemyManager {
     }
 
 
-    public Enemy getClosestEnemyWithinDistance(int xCoordinate, int yCoordinate, double attackRange) {
-        double minDistance = attackRange; // Directly use attackRange without √2 adjustment
-        Enemy closestEnemy = null;
+    public GameObject getClosestEnemyTargetWithinDistance(int xCoordinate, int yCoordinate, double attackRange) {
+        double minDistance = attackRange; // Directly use attackRange as the maximum initial distance
+        GameObject closestTarget = null;
 
+        // Check for missiles
+        for (Missile missile : MissileManager.getInstance()
+                .getMissiles()
+                .stream()
+                .filter(missile -> missile instanceof ReflectiveBlocks) //We need this otherwise protoss ships ignore an attack from YellowBoss
+                .collect(Collectors.toList())) {
+
+            Rectangle missileBounds = missile.getBounds(); // Get missile's bounding box
+            double distance = ProtossUtils.getDistanceToRectangle(xCoordinate, yCoordinate, missileBounds);
+
+            // If the missile is within attackRange and closer than the previously found closest target, update
+            if (distance < minDistance) {
+                minDistance = distance;
+                closestTarget = missile;
+            }
+        }
+
+        // Check for enemies
         for (Enemy enemy : EnemyManager.getInstance().getEnemies()) {
             Rectangle enemyBounds = enemy.getBounds(); // Get enemy's bounding box
             double distance = ProtossUtils.getDistanceToRectangle(xCoordinate, yCoordinate, enemyBounds);
 
-            // If the enemy is within attackRange and closer than the previous closest enemy, update
+            // If the enemy is within attackRange and closer than the previously found closest target, update
             if (distance < minDistance) {
                 minDistance = distance;
-                closestEnemy = enemy;
+                closestTarget = enemy;
             }
         }
-        return closestEnemy;
+
+        return closestTarget;
     }
 
 

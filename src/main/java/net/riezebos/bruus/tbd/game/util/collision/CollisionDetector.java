@@ -182,7 +182,7 @@ public class CollisionDetector {
         }
         int actualRangeUsed = rangeThreshold;
         if(isLargeObject(gameObject1) || isLargeObject(gameObject2)){
-            actualRangeUsed *= 2;
+            actualRangeUsed *= 4;
         }
 
         if(gameObject1.getWidth() > actualRangeUsed || gameObject1.getHeight() > actualRangeUsed){
@@ -198,6 +198,7 @@ public class CollisionDetector {
 
         int x2 = getGameObjectXCoordinate(gameObject2);
         int y2 = getGameObjectYCoordinate(gameObject2);
+
 
         double distance = Math.hypot(x1 - x2, y1 - y2);
         return distance < actualRangeUsed;

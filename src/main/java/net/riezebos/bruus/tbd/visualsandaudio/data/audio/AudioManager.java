@@ -1,10 +1,11 @@
 package net.riezebos.bruus.tbd.visualsandaudio.data.audio;
 
+import net.riezebos.bruus.tbd.DevTestSettings;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.gamestate.GameStatusEnums;
 import net.riezebos.bruus.tbd.game.level.LevelManager;
 import net.riezebos.bruus.tbd.game.level.enums.LevelDifficulty;
-import net.riezebos.bruus.tbd.game.level.enums.LevelLength;
+import net.riezebos.bruus.tbd.game.level.enums.MiniBossConfig;
 import net.riezebos.bruus.tbd.game.level.enums.LevelTypes;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.AudioEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.LevelSongs;
@@ -25,7 +26,7 @@ public class AudioManager {
     private AudioEnums currentSong;
     private Queue<AudioEnums> backgroundMusicTracksThatHavePlayed = new LinkedList<>();
     private Map<AudioEnums, Long> lastPlayTimeMap = new HashMap<>();
-    private MusicMediaPlayer musicMediaPlayer = MusicMediaPlayer.Spotify;
+    private MusicMediaPlayer musicMediaPlayer = MusicMediaPlayer.iTunesMacOS;
     private MacOSMediaPlayer macOSMediaPlayer = MacOSMediaPlayer.getInstance();
     private SpotifyMediaPlayer spotifyMediaPlayer = SpotifyMediaPlayer.getInstance();
     private double predictedEndGameSeconds = -1; // Predicted game seconds when the song will end
@@ -34,7 +35,6 @@ public class AudioManager {
     private boolean isMusicControlledByThirdPartyApp = true;
 
     public boolean devTestShortLevelMode = false;
-    public boolean devTestmuteMode = false;
 
 
     private AudioManager() {
@@ -114,7 +114,7 @@ public class AudioManager {
 
         backGroundMusic = audioDatabase.getAudioClip(audioType);
         if (backGroundMusic != null) {
-            if (devTestmuteMode) {
+            if (DevTestSettings.devTestMuteMode) {
                 System.out.println("Played audio through AudioManager but MuteMode was ON");
                 backGroundMusic.muteAudioClip();
             }
@@ -125,7 +125,7 @@ public class AudioManager {
     }
 
 
-    private void playRandomBackgroundMusic(LevelDifficulty difficulty, LevelLength length, boolean loop) {
+    private void playRandomBackgroundMusic(LevelDifficulty difficulty, MiniBossConfig length, boolean loop) {
         AudioEnums backgroundMusic = null;
         int attempts = 0; // Initialize a counter for the number of attempts
         boolean allowDuplicates = false; // Flag to allow duplicates after 10 attempts
@@ -136,9 +136,12 @@ public class AudioManager {
                 backgroundMusic = LevelSongs.getRandomSong(difficulty, length);
             } else if (difficulty != null) {
                 backgroundMusic = LevelSongs.getRandomSongByDifficulty(difficulty);
-            } else if (length != null) {
-                backgroundMusic = LevelSongs.getRandomSongByLength(length);
-            } else {
+            }
+            //DEPRECATED DO NOT USE
+//            else if (length != null) {
+//                backgroundMusic = LevelSongs.getRandomSongByLength(length);
+//            }
+            else {
                 backgroundMusic = LevelSongs.getRandomSong();
             }
             System.out.println("I'm in a do-while loop trying to select: " + difficulty + " / " + length + " and selected " + backgroundMusic);
@@ -318,9 +321,9 @@ public class AudioManager {
         return false;
     }
 
-    public void playDefaultBackgroundMusic(LevelDifficulty difficulty, LevelLength length, boolean loop) {
+    public void playDefaultBackgroundMusic(LevelDifficulty difficulty, MiniBossConfig miniBossConfig, boolean loop) {
         if (this.musicMediaPlayer == MusicMediaPlayer.Default) {
-            this.playRandomBackgroundMusic(difficulty, length, loop);
+            this.playRandomBackgroundMusic(difficulty, miniBossConfig, loop);
         }
 
         if (this.musicMediaPlayer == MusicMediaPlayer.iTunesMacOS) {
@@ -331,8 +334,7 @@ public class AudioManager {
             double trackDuration = macOSMediaPlayer.getTotalSeconds();
             predictedEndGameSeconds = GameState.getInstance().getGameSeconds() + trackDuration;
             lastSyncGameSeconds = GameState.getInstance().getGameSeconds();
-        }
-        if (this.musicMediaPlayer == MusicMediaPlayer.Spotify) {
+        } else if (this.musicMediaPlayer == MusicMediaPlayer.Spotify) {
             spotifyMediaPlayer.setPlaybackPositionTo0();
             spotifyMediaPlayer.startPlayback();
 
@@ -379,6 +381,18 @@ public class AudioManager {
 
         return -1;
     }
+
+    public double getCurrentSongProgression() {
+        double currentSeconds = getCurrentSecondsInPlayback();
+        double totalSeconds = getTotalPlaybackLengthInSeconds();
+
+        if (totalSeconds <= 0 || currentSeconds < 0) {
+            return 0.0;
+        }
+
+        return currentSeconds / totalSeconds;
+    }
+
 
     public void pauseAllAudio() {
         for (CustomAudioClip audioClip : audioDatabase.getAllActiveClips()) {

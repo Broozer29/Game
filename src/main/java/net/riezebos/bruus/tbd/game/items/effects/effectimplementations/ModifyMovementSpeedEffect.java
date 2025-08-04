@@ -30,7 +30,9 @@ public class ModifyMovementSpeedEffect implements EffectInterface {
         this.movementSpeedModifieramount = movementSpeedModifierAmountPerStack;
         this.movementSpeedMofifierAmountPerStack = movementSpeedModifierAmountPerStack;
         this.durationInSeconds = durationInSeconds;
-        this.animationList.add(animation);
+        if(animation != null) {
+            this.animationList.add(animation);
+        }
         this.startTimeInSeconds = GameState.getInstance().getGameSeconds();
         this.effectTypesEnums = EffectActivationTypes.CheckEveryGameTick;
         this.appliedToObject = false;
@@ -56,7 +58,7 @@ public class ModifyMovementSpeedEffect implements EffectInterface {
             this.startTimeInSeconds = GameState.getInstance().getGameSeconds();
         }
 
-        if (animationList.get(0) != null) {
+        if (!this.animationList.isEmpty() && this.animationList.get(0) != null) {
             centerAnimation(gameObject);
         }
     }
@@ -121,6 +123,7 @@ public class ModifyMovementSpeedEffect implements EffectInterface {
             movementSpeedModifieramount = movementSpeedMofifierAmountPerStack * amountOfStacks;
             activateEffect(gameObject);
 
+            if(!this.animationList.isEmpty() && this.animationList.get(0) != null){
             switch (amountOfStacks) {
                 case 1:
                     animationList.get(0).changeImagetype(ImageEnums.DevourerDebuffStage1);
@@ -135,13 +138,21 @@ public class ModifyMovementSpeedEffect implements EffectInterface {
                     animationList.get(0).changeImagetype(ImageEnums.DevourerDebuffStage4);
                     break;
             }
+            }
+
 
         }
     }
 
     @Override
     public EffectInterface copy () {
-        return new ModifyMovementSpeedEffect(movementSpeedMofifierAmountPerStack, durationInSeconds, animationList.get(0).clone(), effectIdentifier);
+        SpriteAnimation animation = null;
+        if (!this.animationList.isEmpty() && this.animationList.get(0) != null) {
+            animation = this.animationList.get(0);
+        }
+        SpriteAnimation clonedAnimation = (animation != null) ? animation.clone() : null;
+
+        return new ModifyMovementSpeedEffect(movementSpeedMofifierAmountPerStack, durationInSeconds, clonedAnimation, effectIdentifier);
     }
 
     @Override
@@ -151,7 +162,7 @@ public class ModifyMovementSpeedEffect implements EffectInterface {
 
     @Override
     public void removeEffect (GameObject gameObject) {
-        if(animationList.get(0) != null){
+        if(!this.animationList.isEmpty() && this.animationList.get(0) != null){
             animationList.get(0).setInfiniteLoop(false);
             animationList.get(0).setVisible(false);
         }

@@ -67,6 +67,7 @@ public class PlayerStats {
     public static float carrierFastSpeed = 4f;
     private float protossShipThornsDamageRatio = 1.0f;
     public static int carrierHitpoints = 100;
+    private float protossShipConstructionBonusSpeedModifier = 1f;
 
     //all classes
     public static float droneBaseDamage = 20f;
@@ -261,6 +262,7 @@ public class PlayerStats {
         this.arbiterHealingMultiplier = 1f;
         this.protossShipThornsDamageRatio = 1.0f;
         setKnockBackDamping(0.775f);
+        this.protossShipConstructionBonusSpeedModifier = 1f;
 
         //special
         setSpecialBaseDamage(0);
@@ -277,7 +279,7 @@ public class PlayerStats {
         setFuelCannisterMultiplier(1);
         setFuelCannisterRegenMultiplier(1);
         igniteDuration = 1.75f;
-        maxIgniteStacks = 3;
+        maxIgniteStacks = 2;
         this.maxHitPoints = fireFighterHitpoints;
         this.maxShieldHitPoints = fireFighterHitpoints;
 
@@ -994,5 +996,13 @@ public class PlayerStats {
 
     public void addBaseArmor(float amount) {
         this.baseArmor += amount;
+    }
+
+    public float getProtossShipConstructionBonusSpeedModifier() {
+        return protossShipConstructionBonusSpeedModifier;
+    }
+
+    public void modifyConstructionBonusSpeedModifier(float constructionBonusSpeedModifier) {
+        this.protossShipConstructionBonusSpeedModifier += constructionBonusSpeedModifier;
     }
 }

@@ -28,7 +28,9 @@ public class DamageReduction implements EffectInterface {
         this.effectIdentifier = EffectIdentifiers.DamageReduction;
         this.durationInSeconds = durationInSeconds;
         this.effectTypesEnums = EffectActivationTypes.CheckEveryGameTick;
-        this.animationList.add(spriteAnimation);
+        if(spriteAnimation != null) {
+            this.animationList.add(spriteAnimation);
+        }
         this.startTimeInSeconds = GameState.getInstance().getGameSeconds();
         this.damageReductionRatio = damageReductionRatio;
     }
@@ -36,7 +38,7 @@ public class DamageReduction implements EffectInterface {
     @Override
     public void activateEffect(GameObject target) {
         double currentTime = GameState.getInstance().getGameSeconds();
-        if (this.animationList.get(0) != null) {
+        if (this.animationList.size() > 0 && this.animationList.get(0) != null) {
             if (!scaledToTarget) {
                 EffectAnimationHelper.scaleAnimation(target, this.animationList.get(0));
                 scaledToTarget = true;
@@ -93,7 +95,13 @@ public class DamageReduction implements EffectInterface {
 
     @Override
     public EffectInterface copy() {
-        DamageReduction copiedEffect = new DamageReduction(this.durationInSeconds, this.damageReductionRatio, this.animationList.get(0));
+        SpriteAnimation animation = null;
+        if (!this.animationList.isEmpty() && this.animationList.get(0) != null) {
+            animation = this.animationList.get(0);
+        }
+        SpriteAnimation clonedAnimation = (animation != null) ? animation.clone() : null;
+
+        DamageReduction copiedEffect = new DamageReduction(this.durationInSeconds, this.damageReductionRatio, clonedAnimation);
         // Copy other necessary fields
         copiedEffect.startTimeInSeconds = this.startTimeInSeconds;
         copiedEffect.effectIdentifier = this.effectIdentifier;
@@ -103,7 +111,7 @@ public class DamageReduction implements EffectInterface {
 
     @Override
     public void removeEffect(GameObject gameObject) {
-        if (this.animationList.get(0) != null) {
+        if (this.animationList.size() > 0 && this.animationList.get(0) != null) {
             this.animationList.get(0).setInfiniteLoop(false);
             this.animationList.get(0).setVisible(false);
         }

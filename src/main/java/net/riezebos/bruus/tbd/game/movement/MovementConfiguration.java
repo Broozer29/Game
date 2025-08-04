@@ -217,7 +217,7 @@ public class MovementConfiguration {
 	}
 
 
-	public void setRotation(Direction rotation) {
+	public void setDirection(Direction rotation) {
 		this.rotation = rotation;
 	}
 

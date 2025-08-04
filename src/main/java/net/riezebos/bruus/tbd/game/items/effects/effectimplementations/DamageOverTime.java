@@ -1,7 +1,6 @@
 package net.riezebos.bruus.tbd.game.items.effects.effectimplementations;
 
 import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
-import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerClass;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.items.ItemEnums;
@@ -13,6 +12,7 @@ import net.riezebos.bruus.tbd.game.items.effects.util.EffectAnimationHelper;
 import net.riezebos.bruus.tbd.game.items.items.firefighter.CorrosiveOil;
 import net.riezebos.bruus.tbd.game.util.ThornsDamageDealer;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
+import net.riezebos.bruus.tbd.visualsandaudio.objects.AnimationManager;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteAnimation;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteAnimationConfiguration;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteConfiguration;
@@ -39,13 +39,15 @@ public class DamageOverTime implements EffectInterface {
     public static final double damageInterval = 0.01;
     private boolean appliedArmorDebuff = false;
 
-    public DamageOverTime(float damage, double durationInSeconds, SpriteAnimation spriteAnimation, EffectIdentifiers effectIdentifier) {
+    public DamageOverTime(float damage, double durationInSeconds, SpriteAnimation animation, EffectIdentifiers effectIdentifier) {
         this.damage = damage;
         this.durationInSeconds = durationInSeconds;
         this.effectTypesEnums = EffectActivationTypes.CheckEveryGameTick;
         this.dotStacks = 1;
         this.startTimeInSeconds = GameState.getInstance().getGameSeconds();
-        this.animationList.add(spriteAnimation);
+        if (animation != null) {
+            this.animationList.add(animation);
+        }
         this.effectIdentifier = effectIdentifier;
     }
 
@@ -55,11 +57,11 @@ public class DamageOverTime implements EffectInterface {
         this.effectTypesEnums = EffectActivationTypes.CheckEveryGameTick;
         this.dotStacks = 1;
         this.startTimeInSeconds = GameState.getInstance().getGameSeconds();
-        initDefaultAnimation();
+        this.animationList.add(initDefaultIgniteAnimation());
         this.effectIdentifier = effectIdentifier;
     }
 
-    private void initDefaultAnimation() {
+    private SpriteAnimation initDefaultIgniteAnimation() {
         SpriteConfiguration spriteConfiguration = new SpriteConfiguration();
         spriteConfiguration.setxCoordinate(-40);
         spriteConfiguration.setyCoordinate(-40);
@@ -67,14 +69,15 @@ public class DamageOverTime implements EffectInterface {
         spriteConfiguration.setImageType(ImageEnums.IgniteBurning);
 
         SpriteAnimationConfiguration spriteAnimationConfiguration = new SpriteAnimationConfiguration(spriteConfiguration, 2, true);
-        this.animationList.add(new SpriteAnimation(spriteAnimationConfiguration));
+        return new SpriteAnimation(spriteAnimationConfiguration);
     }
 
 
     @Override
     public void activateEffect(GameObject target) {
         double currentTime = GameState.getInstance().getGameSeconds();
-        if (this.animationList.get(0) != null) {
+        //Initial animation can't be scaled/offset at init since the target isnt provided yet, so we do it here
+        if (!this.animationList.isEmpty() && this.animationList.get(0) != null) {
             if (!scaledToTarget) {
                 EffectAnimationHelper.scaleAnimation(target, this.animationList.get(0));
                 scaledToTarget = true;
@@ -86,7 +89,9 @@ public class DamageOverTime implements EffectInterface {
 
             applyCorrosiveOil(target); //Apply it once upon creation
         }
-        if (currentTime - startTimeInSeconds < durationInSeconds) {
+
+        //Deal actual damage
+        if (currentTime - startTimeInSeconds < durationInSeconds && dotStacks > 0) {
             if (currentTime - lastDamageTime >= damageInterval) {
                 target.takeDamage(this.damage * dotStacks);
                 lastDamageTime = currentTime; // Update the last damage time
@@ -96,16 +101,22 @@ public class DamageOverTime implements EffectInterface {
                 }
             }
         } else {
-            this.dotStacks = 0;
+            if (this.dotStacks > 0) {
+                this.dotStacks -= 1;
+                startTimeInSeconds = currentTime;
+
+                if (dotStacks < animationList.size()) {
+                    animationList.get(animationList.size() - 1).setVisible(false);
+                    animationList.remove(animationList.size() - 1);
+                }
+
+            }
         }
     }
 
     @Override
     public boolean shouldBeRemoved(GameObject gameObject) {
-        if (GameState.getInstance().getGameSeconds() - startTimeInSeconds >= durationInSeconds) {
-            return true;
-        } else return false;
-
+        return this.dotStacks == 0;
     }
 
     @Override
@@ -119,9 +130,17 @@ public class DamageOverTime implements EffectInterface {
                 this.dotStacks < PlayerStats.getInstance().getMaxIgniteStacks()) {
             this.dotStacks += 1;
             applyCorrosiveOil(gameObject);
+
+            if (animationList.size() < 5) {
+                SpriteAnimation animation = initDefaultIgniteAnimation();
+                EffectAnimationHelper.scaleAnimation(gameObject, animation);
+                EffectAnimationHelper.applyRandomOffset(gameObject, animation);
+                this.animationList.add(animation);
+                gameObject.addEffectAnimation(animation);
+                AnimationManager.getInstance().addUpperAnimation(animation);
+            }
+
         }
-
-
     }
 
     private double lastTimeThornsApplied = 0;
@@ -147,16 +166,15 @@ public class DamageOverTime implements EffectInterface {
 
     @Override
     public EffectInterface copy() {
-        SpriteConfiguration spriteConfiguration = new SpriteConfiguration();
-        spriteConfiguration.setxCoordinate(-40);
-        spriteConfiguration.setyCoordinate(-40);
-        spriteConfiguration.setScale(this.animationList.get(0).getScale());
-        spriteConfiguration.setImageType(this.animationList.get(0).getImageEnum());
+        SpriteAnimation animation = null;
+        if (!this.animationList.isEmpty() && this.animationList.get(0) != null) {
+            animation = this.animationList.get(0);
+        }
+        SpriteAnimation clonedAnimation = (animation != null) ? animation.clone() : null;
 
-        SpriteAnimationConfiguration spriteAnimationConfiguration = new SpriteAnimationConfiguration(spriteConfiguration, this.animationList.get(0).getFrameDelay(), this.animationList.get(0).isInfiniteLoop());
-        DamageOverTime copiedEffect = new DamageOverTime(this.damage, this.durationInSeconds, new SpriteAnimation(spriteAnimationConfiguration), effectIdentifier);
+        DamageOverTime copiedEffect = new DamageOverTime(this.damage, this.durationInSeconds, clonedAnimation, effectIdentifier);
         // Copy other necessary fields
-        copiedEffect.dotStacks = this.dotStacks;
+//        copiedEffect.dotStacks = this.dotStacks;  Not copying stacks, cause its probably a bit too OP and doesnt worth with multiple animations
         return copiedEffect;
     }
 
@@ -189,9 +207,9 @@ public class DamageOverTime implements EffectInterface {
 
     @Override
     public void removeEffect(GameObject gameObject) {
-        if (this.animationList.get(0) != null) {
-            this.animationList.get(0).setInfiniteLoop(false);
-            this.animationList.get(0).setVisible(false);
+        for (SpriteAnimation animation : animationList) {
+            animation.setInfiniteLoop(false);
+            animation.setVisible(false);
         }
         this.animationList.clear();
     }

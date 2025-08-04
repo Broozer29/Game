@@ -183,6 +183,7 @@ public class GameState {
         this.difficultyCoefficient = saveFile.getDifficultyCoefficient();
         this.gameTicksExecuted = saveFile.getGameTicksExecuted();
         this.gameMode = saveFile.getGameModes();
+        this.lastPause = 0;
     }
 
     public GameMode getGameMode() {

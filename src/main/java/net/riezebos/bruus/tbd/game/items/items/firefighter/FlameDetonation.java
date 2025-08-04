@@ -17,7 +17,7 @@ public class FlameDetonation extends Item {
 
     private float explosionDamage;
     private float burningDamage;
-    public static float duration = 2;
+    public static float duration = 3;
 
     public FlameDetonation () {
         super(ItemEnums.FlameDetonation, 1, ItemApplicationEnum.BeforeCollision); //Before collision to ensure the explosion goes off even if the target already has 0 HP

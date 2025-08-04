@@ -228,6 +228,9 @@ public class ItemDescriptionRetriever {
             case FuelCannister -> {
                 return "Increases maximum fuel capacity and fuel regeneration by " + Math.round(FuelCannister.bonusFuelMultiplier * 100) + "%.";
             }
+            case ConstructionKit -> {
+                return "Increases Protoss Ship construction speed by " + Math.round(ConstructionKit.additionalConstructionSpeed * 100) + "%.";
+            }
 
             default -> {
                 return "This item has no description yet";

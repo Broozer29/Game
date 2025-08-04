@@ -83,7 +83,9 @@ public class Enemy extends GameObject {
         this.setVisible(true);
         this.setFriendly(false);
 
-        this.rotateGameObjectTowards(movementRotation, true);
+        if(!enemyType.equals(EnemyEnums.ShurikenMiniBoss)) {
+            this.rotateGameObjectTowards(movementRotation, true);
+        }
 
         this.objectType = enemyConfiguration.getObjectType();
         this.allowedToFire = true;
@@ -196,6 +198,7 @@ public class Enemy extends GameObject {
         }
     }
 
+    @Override
     public void deleteObject() {
         if (this.animation != null) {
             this.animation.setVisible(false);

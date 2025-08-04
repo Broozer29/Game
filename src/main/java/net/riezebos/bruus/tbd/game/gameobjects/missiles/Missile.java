@@ -165,7 +165,6 @@ public class Missile extends GameObject {
                 GameStatsTracker.getInstance().addShotHit(1);
             }
         }
-
     }
 
     private void pierceAndBounce (GameObject collidedObject) {
@@ -199,7 +198,7 @@ public class Missile extends GameObject {
         this.resetMovementPath();
         this.allowedVisualsToRotate = true;
         this.movementConfiguration.initDefaultSettingsForSpecializedPathFinders();
-        this.movementConfiguration.setRotation(this.movementRotation);
+        this.movementConfiguration.setDirection(this.movementRotation);
         this.movementConfiguration.setCurrentLocation(this.currentLocation);
         this.movementConfiguration.setPathFinder(new StraightLinePathFinder());
 

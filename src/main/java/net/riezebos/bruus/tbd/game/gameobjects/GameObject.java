@@ -1,6 +1,7 @@
 package net.riezebos.bruus.tbd.game.gameobjects;
 
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.Missile;
+import net.riezebos.bruus.tbd.game.gameobjects.missiles.missiletypes.ReflectiveBlocks;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.gamestate.GameStatsTracker;
@@ -270,10 +271,18 @@ public class GameObject extends Sprite {
         effect.increaseEffectStrength(this);
     }
 
-    private void cleanseAllEffects() {
-        //Does NOT set all effects to invisible, so might lead to problems later on
-        //For example, effects that trigger after or during the objects deletion
+    protected void cleanseAllEffects() {
+        //Removes all effects then clears the list, directly before this it activates "on-death" effects
+        for (EffectInterface effect : effects) {
+            effect.removeEffect(this);
+        }
+
+        for (SpriteAnimation effectAnimation : effectAnimations) {
+            effectAnimation.setVisible(false);
+        }
+
         effects.clear();
+        effectAnimations.clear();
     }
 
     //*****************DELETION/DAMAGE*******************************
@@ -321,6 +330,7 @@ public class GameObject extends Sprite {
         this.visible = false;
     }
 
+
     public void takeDamage(float damageTaken) {
         if (currentHitpoints <= 0) {
             return; //The target is already dead, no need to go through here again
@@ -336,6 +346,7 @@ public class GameObject extends Sprite {
 
         if (!this.isFriendly() && !(damageTaken >= 9998 && damageTaken <= 10000)) {
             //Assume that if this object is not friendly, the damage came from the player
+            //This implementation is buggy and problematic and I might not even want to keep track of this anymore
             GameStatsTracker.getInstance().addDamageDealt(damageTaken);
             GameStatsTracker.getInstance().setHighestDamageDealt(damageTaken);
         }
@@ -433,22 +444,29 @@ public class GameObject extends Sprite {
         toggleHealthBar();
         if (this.isAllowedToMove()) {
             SpriteMover.getInstance().moveGameObject(this, movementConfiguration);
-            moveAnimations();
             this.bounds.setBounds(xCoordinate + xOffset, yCoordinate + yOffset, width, height);
 
             for (GameObject object : objectsFollowingThis) {
                 object.setCenterCoordinates(this.getCenterXCoordinate(), this.getCenterYCoordinate());
             }
         }
+        moveAnimations();
         updateBoardBlock();
         updateVisibility();
     }
 
     private void toggleHealthBar() {
-        if (this instanceof Missile || showHealthBar) {
+        // Skip if the health bar is already being shown
+        if (showHealthBar) {
             return;
         }
 
+        // Skip for all Missiles except ReflectiveBlocks
+        if (this instanceof Missile && !(this instanceof ReflectiveBlocks)) {
+            return;
+        }
+
+        // Show the health bar if the object has taken damage
         if (this.currentHitpoints < this.maxHitPoints) {
             showHealthBar = true;
         }
@@ -456,32 +474,20 @@ public class GameObject extends Sprite {
 
     private void moveAnimations() {
         if (this.animation != null) {
-            moveAnimations(animation);
+            animation.setXCoordinate(this.getXCoordinate());
+            animation.setYCoordinate(this.getYCoordinate());
+            animation.setAnimationBounds(animation.getXCoordinate(), animation.getYCoordinate());
         }
-
-
-        //Not needed
-//        if (this.destructionAnimation != null) {
-//            moveAnimations(destructionAnimation);
-//        }
 
         for (SpriteAnimation spriteAnimation : effectAnimations) {
-            moveAnimationsToCenter(spriteAnimation);
+            spriteAnimation.setCenterCoordinates(this.getCenterXCoordinate(), this.getCenterYCoordinate());
         }
 
-//        updateChargingAttackAnimationCoordination();
     }
 
-    private void moveAnimations(SpriteAnimation animation) {
-        animation.setXCoordinate(this.getXCoordinate());
-        animation.setYCoordinate(this.getYCoordinate());
-        animation.setAnimationBounds(animation.getXCoordinate(), animation.getYCoordinate());
+    public void addEffectAnimation(SpriteAnimation effectAnimation) {
+        effectAnimations.add(effectAnimation);
     }
-
-    private void moveAnimationsToCenter(SpriteAnimation animation) {
-        animation.setCenterCoordinates(this.getCenterXCoordinate(), this.getCenterYCoordinate());
-    }
-
 
     private void updateVisibility() {
         if (SpriteRemover.getInstance().shouldRemoveVisibility(this)) {
@@ -671,6 +677,10 @@ public class GameObject extends Sprite {
             return new Point(this.xCoordinate, this.yCoordinate);
         }
         return this.movementConfiguration.getCurrentLocation();
+    }
+
+    public Point getCurrentCenterLocation() {
+        return new Point(this.getCenterXCoordinate(), this.getCenterXCoordinate());
     }
 
     public int getCurrentBoardBlock() {
@@ -1011,8 +1021,8 @@ public class GameObject extends Sprite {
         if (isACrit) {
             attackDamage *= PlayerStats.getInstance().getCriticalStrikeDamageMultiplier();
         }
-        if (attackDamage < 0.1) {
-            return 0.1f;
+        if (attackDamage < 0.05) {
+            return 0.05f;
         } else {
             return attackDamage;
         }

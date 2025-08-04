@@ -53,7 +53,7 @@ public class OutOfCombatArmorBonus implements EffectInterface {
 
     @Override
     public List<SpriteAnimation> getAnimations() {
-        return null;
+        return animationList;
     }
 
     @Override
@@ -73,7 +73,7 @@ public class OutOfCombatArmorBonus implements EffectInterface {
 
     @Override
     public EffectInterface copy () {
-        System.out.println("Not needed");
+        //should theoretically never be needed to be copied
         return null;
     }
 
@@ -84,7 +84,7 @@ public class OutOfCombatArmorBonus implements EffectInterface {
 
     @Override
     public void removeEffect (GameObject gameObject){
-        if(animationList.get(0) != null){
+        if(!this.animationList.isEmpty() && this.animationList.get(0) != null){
             animationList.get(0).setInfiniteLoop(false);
             animationList.get(0).setVisible(false);
         }

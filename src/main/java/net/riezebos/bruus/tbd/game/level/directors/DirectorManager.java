@@ -1,5 +1,6 @@
 package net.riezebos.bruus.tbd.game.level.directors;
 
+import net.riezebos.bruus.tbd.DevTestSettings;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyCategory;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyEnums;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyTribes;
@@ -18,6 +19,7 @@ public class DirectorManager {
     private static DirectorManager instance = new DirectorManager();
     private List<Director> directorList = new ArrayList<>();
     private List<MonsterCard> baseMonsterCards = new ArrayList<>();
+    private List<MonsterCard> miniBossMonsterCards = new ArrayList<>();
     private boolean enabled;
     public boolean testingRichMode; //used for testing only
 
@@ -26,13 +28,13 @@ public class DirectorManager {
     private PerformanceLogger performanceLogger = null;
 
 
-    private DirectorManager () {
+    private DirectorManager() {
         createMonsterCards();
         this.performanceLogger = new PerformanceLogger("Director Manager");
     }
 
 
-    public void createDirectors (LevelTypes levelType) {
+    public void createDirectors(LevelTypes levelType) {
         switch (levelType) {
             case Regular -> {
                 createDirectorsForRegularLevel();
@@ -46,16 +48,17 @@ public class DirectorManager {
         }
     }
 
-    private void createBossDirectors () {
+    private void createBossDirectors() {
         directorList = new ArrayList<>();
         Director bossDirector = new Director(DirectorType.Boss, baseMonsterCards);
         directorList.add(bossDirector);
     }
 
-    private void createDirectorsForRegularLevel () {
+    private void createDirectorsForRegularLevel() {
         directorList = new ArrayList<>();
 
 //        Create fast & slow director(s)
+
         Director slowDirector = new Director(DirectorType.Slow, baseMonsterCards);
         directorList.add(slowDirector);
 
@@ -63,21 +66,24 @@ public class DirectorManager {
         directorList.add(fastDirector);
 
         Director instantDirector = new Director(DirectorType.Instant, baseMonsterCards);
-        instantDirector.receiveCredits(Math.min(150 * GameState.getInstance().getDifficultyCoefficient(), 650));
+        instantDirector.receiveCredits(Math.min(200 * GameState.getInstance().getDifficultyCoefficient(), 650));
         directorList.add(instantDirector);
+
         lastCashCarrierSpawnTime = 0;
+        Director miniBossDirector = new Director(DirectorType.MiniBoss, miniBossMonsterCards);
+        directorList.add(miniBossDirector);
     }
 
-    public Director getTestDirector () {
+    public Director getTestDirector() {
         return new Director(DirectorType.Fast, baseMonsterCards);
     }
 
-    public void resetManager () {
+    public void resetManager() {
         directorList = new ArrayList<>();
         performanceLogger.reset();
     }
 
-    public void createMonsterCards () {
+    public void createMonsterCards() {
         if (!baseMonsterCards.isEmpty()) {
             baseMonsterCards = new ArrayList<>();
         }
@@ -96,24 +102,34 @@ public class DirectorManager {
             MonsterCard card = new MonsterCard(enemy, enemy.getCreditCost(), enemy.getWeight());
             baseMonsterCards.add(card);
         }
+
+        List<EnemyEnums> miniBosses = Arrays.stream(EnemyEnums.values())
+                .filter(enemyEnums -> GameState.getInstance().getStagesCompleted() >= enemyEnums.getMinimumStageLevelRequired())
+                .filter(enemyEnums -> enemyEnums.getEnemyCategory().equals(EnemyCategory.MiniBoss))
+                .toList();
+
+        for (EnemyEnums enemy : miniBosses) {
+            MonsterCard card = new MonsterCard(enemy, enemy.getCreditCost(), enemy.getWeight());
+            miniBossMonsterCards.add(card);
+        }
     }
 
 
-    public void updateGameTick () {
+    public void updateGameTick() {
 //        PerformanceLoggerManager.timeAndLog(performanceLogger, "Total", () -> {
-            if (enabled) {
-                PerformanceLoggerManager.timeAndLog(performanceLogger, "Distribute Credits", this::distributeCredits);
-                PerformanceLoggerManager.timeAndLog(performanceLogger, "Update Difficulty Coefficient", this::updateDifficultyCoefficient);
-                for (Director director : directorList) {
-                    if (director.isActive()) {
-                        PerformanceLoggerManager.timeAndLog(performanceLogger, "Update Director", director::update);
-                    }
+        if (enabled) {
+            PerformanceLoggerManager.timeAndLog(performanceLogger, "Distribute Credits", this::distributeCredits);
+            PerformanceLoggerManager.timeAndLog(performanceLogger, "Update Difficulty Coefficient", this::updateDifficultyCoefficient);
+            for (Director director : directorList) {
+                if (director.isActive()) {
+                    PerformanceLoggerManager.timeAndLog(performanceLogger, "Update Director", director::update);
                 }
             }
+        }
 //        });
     }
 
-    public void distributeCredits () {
+    public void distributeCredits() {
         GameState gameStateInfo = GameState.getInstance();
         float creditAmount = (float) ((1 + 0.025 * gameStateInfo.getDifficultyCoefficient())) + (LevelManager.getInstance().getCurrentLevelDifficultyScore() * 0.35f); // Determine the amount of credits to distribute
 
@@ -126,45 +142,45 @@ public class DirectorManager {
         }
     }
 
-    private void updateDifficultyCoefficient () {
+    private void updateDifficultyCoefficient() {
         GameState.getInstance().updateDifficultyCoefficient();
     }
 
-    public static DirectorManager getInstance () {
+    public static DirectorManager getInstance() {
         return instance;
     }
 
 
-    public List<Director> getDirectorList () {
+    public List<Director> getDirectorList() {
         return directorList;
     }
 
-    public List<MonsterCard> getBaseMonsterCards () {
+    public List<MonsterCard> getBaseMonsterCards() {
         return baseMonsterCards;
     }
 
-    public boolean isEnabled () {
+    public boolean isEnabled() {
         return enabled;
     }
 
-    public void setEnabled (boolean enabled) {
+    public void setEnabled(boolean enabled) {
         this.enabled = enabled;
-        if(!this.enabled){ //Disable all active directors if the directorManager is disabled
-            for(Director director : directorList){
+        if (!this.enabled) { //Disable all active directors if the directorManager is disabled
+            for (Director director : directorList) {
                 director.setIsActive(false);
             }
         }
     }
 
-    public double getLastCashCarrierSpawnTime () {
+    public double getLastCashCarrierSpawnTime() {
         return lastCashCarrierSpawnTime;
     }
 
-    public void setLastCashCarrierSpawnTime (double lastCashCarrierSpawnTime) {
+    public void setLastCashCarrierSpawnTime(double lastCashCarrierSpawnTime) {
         this.lastCashCarrierSpawnTime = lastCashCarrierSpawnTime;
     }
 
-    public PerformanceLogger getPerformanceLogger () {
+    public PerformanceLogger getPerformanceLogger() {
         return this.performanceLogger;
     }
 }

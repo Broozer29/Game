@@ -10,6 +10,7 @@ import net.riezebos.bruus.tbd.game.level.LevelManager;
 import net.riezebos.bruus.tbd.game.level.enums.SpawnFormationEnums;
 import net.riezebos.bruus.tbd.game.movement.Direction;
 import net.riezebos.bruus.tbd.visualsandaudio.data.DataClass;
+import net.riezebos.bruus.tbd.visualsandaudio.data.audio.AudioManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,6 +36,9 @@ public class Director {
     private Random random = new Random();
     private double currentTime;
     private boolean active;
+
+    private int miniBossSpawns = 0;
+    private int miniBossessSpawned = 0;
 
     public Director(DirectorType directorType, List<MonsterCard> availableCards) {
         this.directorType = directorType;
@@ -92,6 +96,60 @@ public class Director {
             return; //We dont want to do anything else but spawning the boss at this time, subject to change
         }
 
+        if (directorType == DirectorType.Fast || directorType == DirectorType.Slow) {
+            handleRegularDirectorSpawn();
+        } else if (directorType == DirectorType.MiniBoss) {
+            handleMiniBossDirectorSpawn();
+        }
+    }
+
+    private void handleMiniBossDirectorSpawn() {
+        if(miniBossessSpawned < LevelManager.getInstance().getCurrentMiniBossConfig().getMiniBossesPerLevel()){
+            spawnMiniBoss();
+            this.miniBossessSpawned++;
+        }
+    }
+
+    private void spawnMiniBoss() {
+        // Set parameters for spawning
+        MonsterCard selectedCard = selectMonsterCard();
+        if(selectedCard == null){
+            //failed to select a boss
+            return;
+        }
+
+        EnemyEnums miniBossType = selectedCard.getEnemyType();
+        Direction direction = getMiniBossDirection(miniBossType);
+        float scale = miniBossType.getDefaultScale();
+        float xMovementSpeed = miniBossType.getMovementSpeed();
+        float yMovementSpeed = miniBossType.getMovementSpeed();
+
+        // Call LevelManager's spawnEnemy method
+        LevelManager.getInstance().spawnEnemy(
+                DataClass.getInstance().getWindowWidth() + Math.round(miniBossType.getBaseWidth() * 0.88f),
+                DataClass.getInstance().getPlayableWindowMaxHeight() / 2,
+                miniBossType, direction, scale, false, xMovementSpeed, yMovementSpeed, false);
+    }
+
+    private Direction getMiniBossDirection(EnemyEnums enemyEnums) {
+        Direction direction = Direction.LEFT;
+        if(enemyEnums.equals(EnemyEnums.ShurikenMiniBoss) || enemyEnums.equals(EnemyEnums.MirageMiniBoss)){
+            switch (random.nextInt(2)){
+                case 0:
+                    direction = Direction.LEFT_UP;
+                    break;
+                case 1:
+                    direction = Direction.LEFT_DOWN;
+                    break;
+                default:
+                    direction = Direction.LEFT_UP;
+            }
+        }
+        return direction;
+    }
+
+
+    private void handleRegularDirectorSpawn() {
         double randomNumber = random.nextDouble();  // Generate a random number between 0 and 1
         double timeSinceLastCashCarrier = currentTime - DirectorManager.getInstance().getLastCashCarrierSpawnTime();
 
@@ -189,7 +247,7 @@ public class Director {
 
         double randomDouble = random.nextDouble();
         double chanceThreshold = switch (enemyType.getEnemyCategory()) {
-            case Summon, Special, Boss -> -1f;
+            case Summon, Special, Boss, MiniBoss -> -1f;
             case Small -> 0.3f; //20% chance of spawning a formation
             case Medium -> 0.2f; //10% chance of spawning formation
         };
@@ -212,14 +270,30 @@ public class Director {
     private boolean shouldAttemptSpawn(double currentTime) {
         if (directorType == DirectorType.Instant || directorType == DirectorType.Boss) {
             return true; // Always spawn for Instant or Boss types
-        } else {
-            double spawnWindowStart = lastSpawnTime + spawnInterval;
-            double spawnWindowEnd = spawnWindowStart + spawnWindowDuration;
-
-            // Determine if we're in the spawn window
-            isInSpawnWindow = currentTime >= spawnWindowStart && currentTime <= spawnWindowEnd;
-            return isInSpawnWindow;
+        } else if (directorType == DirectorType.MiniBoss) {
+            switch (LevelManager.getInstance().getCurrentMiniBossConfig()) {
+                case Easy:
+                    return false;
+                case Medium:
+                    return (AudioManager.getInstance().getCurrentSongProgression() >= 0.5f);
+                case Hard:
+                    boolean returnValue = false;
+                    if (AudioManager.getInstance().getCurrentSongProgression() >= 0.25f && AudioManager.getInstance().getCurrentSongProgression() < 0.74f && miniBossessSpawned < 1) {
+                        returnValue = true;
+                    } else if (AudioManager.getInstance().getCurrentSongProgression() >= 0.25f && AudioManager.getInstance().getCurrentSongProgression() >= 0.75f && miniBossessSpawned < 2) {
+                        returnValue = true;
+                    }
+                    return returnValue;
+            }
         }
+
+        //regular directors
+        double spawnWindowStart = lastSpawnTime + spawnInterval;
+        double spawnWindowEnd = spawnWindowStart + spawnWindowDuration;
+
+        // Determine if we're in the spawn window
+        isInSpawnWindow = currentTime >= spawnWindowStart && currentTime <= spawnWindowEnd;
+        return isInSpawnWindow;
     }
 
     private void spawnEnemy(EnemyEnums enemyType, boolean randomLocation) {

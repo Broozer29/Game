@@ -25,7 +25,7 @@ public class KineticDynamo extends Item {
     private int cooldown = 1;
     private double lastSecondsFired = 0;
     public boolean isMovingFast = false;
-    public static float damageRatio = 2;
+    public static float damageRatio = 15;
 
     public KineticDynamo() {
         super(ItemEnums.KineticDynamo, 1, ItemApplicationEnum.CustomActivation);

@@ -145,7 +145,7 @@ public enum EnemyEnums {
             ImageEnums.ScourgeIdle, ImageEnums.ScourgeDeath, 15, EnemyCategory.Small, EnemyTribes.Zerg, 0,
             4, 3, 0.75f, 1.75f, 1.4f, 31, 27,
             0),
-    ZergMutalisk(200, 0, true,
+    ZergMutalisk(200, 0, false,
             AudioEnums.MutaliskDeath, "Zerg Guardian",
             ImageEnums.MutaliskIdle, ImageEnums.MutaliskDeath, 10, EnemyCategory.Small, EnemyTribes.Zerg, 10,
             7.5f, 15, 0.7f, 1.75f, 1.2f, 64, 72,
@@ -159,6 +159,41 @@ public enum EnemyEnums {
             AudioEnums.ScourgeDeath, "Zerg Cocoon",
             ImageEnums.GuardianMutaliskCocoon, ImageEnums.GuardianDeath, 0, EnemyCategory.Summon, EnemyTribes.Zerg, 0,
             3, 3, 1, 1f, 1, 60, 42,
+            0),
+
+    ShurikenMiniBoss(850, 0, false,
+            AudioEnums.Alien_Spaceship_Destroyed, "Shuriken Mini Boss",
+            ImageEnums.ShurikenMiniBoss, ImageEnums.Explosion2, 0, EnemyCategory.MiniBoss, EnemyTribes.Pirates, 25,
+            75, 75, 0, 2f, 0.75f, 600, 600,
+            0),
+
+    MotherShipMiniBoss(750, 0, false,
+            AudioEnums.Alien_Spaceship_Destroyed, "Mothership Mini Boss",
+            ImageEnums.MothershipMiniboss, ImageEnums.Explosion2, 0, EnemyCategory.MiniBoss, EnemyTribes.Pirates, 10,
+            75, 75, 0, 0.8f, 0.9f, 238, 125,
+            0),
+    MotherShipDrone(125, 0, true,
+            AudioEnums.Alien_Spaceship_Destroyed, "Mothership drone",
+            ImageEnums.MotherShipDrone, ImageEnums.Explosion2, 0, EnemyCategory.Summon, EnemyTribes.Pirates, 0,
+            0, 0, 0, 1.5f, 0.35f, 269, 125,
+            0),
+
+    MirageMiniBoss(550, 0, true,
+            AudioEnums.Alien_Spaceship_Destroyed, "Mirage Mini Boss",
+            ImageEnums.MirageMiniBoss, ImageEnums.Explosion2, 0, EnemyCategory.MiniBoss, EnemyTribes.Pirates, 0,
+                0, 0, 0, 1.75f, 0.8f, 154, 99,
+            0),
+
+    DefenderMiniBoss(750, 0, true,
+            AudioEnums.Alien_Spaceship_Destroyed, "Defender Mini Boss",
+            ImageEnums.DefenderMiniBoss, ImageEnums.Explosion2, 0, EnemyCategory.MiniBoss, EnemyTribes.Pirates, 25,
+            0, 0, 0, 1, 1, 250, 250,
+            0),
+
+    LaserbeamMiniBoss(750, 0, true,
+            AudioEnums.Alien_Spaceship_Destroyed, "Laserbeam Mini Boss",
+            ImageEnums.LaserMiniBoss, ImageEnums.Explosion2, 0, EnemyCategory.MiniBoss, EnemyTribes.Pirates, 25,
+            0, 0, 0, 1, 1, 250, 250,
             0),
 
     LaserOriginDrone(125, 0, false,
@@ -220,18 +255,6 @@ public enum EnemyEnums {
         this.baseWidth = baseWidth;
         this.baseHeight = baseHeight;
         this.minimumStageLevelRequired = minimumStageLevelRequired;
-    }
-
-
-    public static EnemyEnums getRandomEnemy() {
-        EnemyEnums[] enums = EnemyEnums.values();
-        Random random = new Random();
-        EnemyEnums randomValue = enums[random.nextInt(enums.length)];
-
-        if (randomValue == EnemyEnums.Alien_Bomb) {
-            return getRandomEnemy();
-        }
-        return randomValue;
     }
 
     public int getBaseHitPoints() {
@@ -311,7 +334,7 @@ public enum EnemyEnums {
         return baseWidth;
     }
 
-    public static EnemyEnums getRandomEnemy(EnemyCategory category) {
+    public static EnemyEnums getRandomEnemyByCategory(EnemyCategory category) {
         List<EnemyEnums> filteredEnemies = Arrays.stream(EnemyEnums.values())
                 .filter(enemy -> enemy.getEnemyCategory().equals(category))
                 .collect(Collectors.toList());

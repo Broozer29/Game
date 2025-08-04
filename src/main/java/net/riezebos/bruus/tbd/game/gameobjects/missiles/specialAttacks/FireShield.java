@@ -18,6 +18,7 @@ public class FireShield extends SpecialAttack {
         this.allowRepeatedDamage = true;
         this.appliesOnHitEffects = true;
         this.destroysMissiles = true;
+        this.damagesMissiles = true;
         super.internalTickCooldown = PlayerStats.getInstance().getAttackSpeed();
         this.duration = 4;
         initIgniteEffect();

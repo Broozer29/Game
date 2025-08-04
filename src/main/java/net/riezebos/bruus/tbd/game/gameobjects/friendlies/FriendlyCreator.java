@@ -52,7 +52,7 @@ public class FriendlyCreator {
         movementConfiguration.setYMovementSpeed(droneTypes.getMovementSpeed());
         movementConfiguration.setLastUsedXMovementSpeed(droneTypes.getMovementSpeed());
         movementConfiguration.setLastUsedYMovementSpeed(droneTypes.getMovementSpeed());
-        movementConfiguration.setRotation(Direction.RIGHT);
+        movementConfiguration.setDirection(Direction.RIGHT);
         movementConfiguration.setOrbitRadius(50);
 
 
@@ -90,7 +90,7 @@ public class FriendlyCreator {
         movementConfiguration.setYMovementSpeed(droneType.getMovementSpeed());
         movementConfiguration.setLastUsedXMovementSpeed(droneType.getMovementSpeed());
         movementConfiguration.setLastUsedYMovementSpeed(droneType.getMovementSpeed());
-        movementConfiguration.setRotation(Direction.RIGHT);
+        movementConfiguration.setDirection(Direction.RIGHT);
         movementConfiguration.setDestination(ProtossUtils.getRandomPoint());
 
         Drone drone = null;
@@ -139,7 +139,7 @@ public class FriendlyCreator {
         movementConfiguration.initDefaultSettingsForSpecializedPathFinders();
         movementConfiguration.setXMovementSpeed(DroneTypes.CarrierDrone.getMovementSpeed());
         movementConfiguration.setYMovementSpeed(DroneTypes.CarrierDrone.getMovementSpeed());
-        movementConfiguration.setRotation(Direction.RIGHT);
+        movementConfiguration.setDirection(Direction.RIGHT);
 
         return new CarrierDrone(spriteAnimationConfiguration, friendlyObjectConfiguration, movementConfiguration);
     }

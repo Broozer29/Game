@@ -4,7 +4,7 @@ import javafx.application.Platform;
 import net.riezebos.bruus.tbd.controllerInput.ConnectedControllersManager;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.Enemy;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyCreator;
-import net.riezebos.bruus.tbd.game.gameobjects.enemies.bosses.redboss.behaviour.CrossingLaserbeamsAttack;
+import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.redboss.behaviour.CrossingLaserbeamsAttack;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyEnums;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.laserbeams.AngledLaserBeam;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.laserbeams.Laserbeam;
@@ -35,6 +35,7 @@ public class Main {
 				preloadThings();
 				ex.initMainMenu();
 				ex.setVisible(true);
+				ex.getMainMenuBoard().requestFocus();
 			}
 		});
 	}
@@ -50,6 +51,11 @@ public class Main {
 				enemyEnum.getDefaultScale(), enemyEnum.getMovementSpeed(), enemyEnum.getMovementSpeed(), MovementPatternSize.SMALL, false);
 		spaceStation.deleteObject();
 
+		enemyEnum = EnemyEnums.ShurikenMiniBoss;
+		Enemy shurikenMiniBoss = EnemyCreator.createEnemy(enemyEnum, 0, 0, Direction.LEFT,
+				enemyEnum.getDefaultScale(), enemyEnum.getMovementSpeed(), enemyEnum.getMovementSpeed(), MovementPatternSize.SMALL, false);
+		shurikenMiniBoss.deleteObject();
+
 		enemyEnum = EnemyEnums.CashCarrier;
 		Enemy cashCarrier = EnemyCreator.createEnemy(enemyEnum, 0, 0, Direction.LEFT,
 				enemyEnum.getDefaultScale(), enemyEnum.getMovementSpeed(), enemyEnum.getMovementSpeed(), MovementPatternSize.SMALL, false);
@@ -64,6 +70,11 @@ public class Main {
 		Enemy fDrone = EnemyCreator.createEnemy(enemyEnum, 0, 0, Direction.LEFT,
 				enemyEnum.getDefaultScale(), enemyEnum.getMovementSpeed(), enemyEnum.getMovementSpeed(), MovementPatternSize.SMALL, false);
 		fDrone.deleteObject();
+
+		enemyEnum = EnemyEnums.YellowBoss;
+		Enemy yellowBoss = EnemyCreator.createEnemy(enemyEnum, 0, 0, Direction.LEFT,
+				enemyEnum.getDefaultScale(), enemyEnum.getMovementSpeed(), enemyEnum.getMovementSpeed(), MovementPatternSize.SMALL, false);
+		yellowBoss.deleteObject();
 
 
 

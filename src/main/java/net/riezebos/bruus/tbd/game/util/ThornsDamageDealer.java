@@ -89,9 +89,12 @@ public class ThornsDamageDealer {
                         missile.getOwnerOrCreator().getCenterXCoordinate() - missile.getWidth() / 2,
                         missile.getOwnerOrCreator().getCenterYCoordinate() - missile.getHeight() / 2
                 ));
+        missile.getMovementConfiguration().setXMovementSpeed(Math.min(missile.getMovementConfiguration().getXMovementSpeed(), 4));
+        missile.setPathFinder(new StraightLinePathFinder());
         missile.rotateObjectTowardsDestination(true);
         missile.setAllowedVisualsToRotate(false);
         missile.setDamage(missile.getDamage() * PlayerStats.getInstance().getThornsDamageRatio());
+        missile.setOwnerOrCreator(PlayerManager.getInstance().getSpaceship());
     }
 
     private Missile createMissile(Point origin, GameObject target) {

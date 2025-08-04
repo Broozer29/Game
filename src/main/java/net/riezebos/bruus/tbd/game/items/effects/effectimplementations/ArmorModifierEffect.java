@@ -26,7 +26,9 @@ public class ArmorModifierEffect implements EffectInterface {
     public ArmorModifierEffect(float armorBonus, double durationInSeconds, SpriteAnimation animation, EffectIdentifiers effectIdentifier) {
         this.armorBonus = armorBonus;
         this.durationInSeconds = durationInSeconds;
-        this.animationList.add(animation);
+        if(animation != null) {
+            this.animationList.add(animation);
+        }
         this.startTimeInSeconds = GameState.getInstance().getGameSeconds();
         this.effectTypesEnums = EffectActivationTypes.CheckEveryGameTick;
         this.appliedToObject = false;
@@ -40,7 +42,7 @@ public class ArmorModifierEffect implements EffectInterface {
             appliedToObject = true;
         }
 
-        if (this.animationList.get(0) != null) {
+        if (!this.animationList.isEmpty() && this.animationList.get(0) != null) {
             centerAnimation(gameObject);
         }
 
@@ -57,6 +59,11 @@ public class ArmorModifierEffect implements EffectInterface {
 
 
     private void centerAnimation(GameObject object) {
+        if(this.animationList.isEmpty() || this.animationList.get(0) == null){
+            return; //no animation exists
+        }
+
+
         if (object.getAnimation() != null) {
             SpriteAnimation objectVisuals = object.getAnimation();
             this.animationList.get(0).setCenterCoordinates(objectVisuals.getCenterXCoordinate(), objectVisuals.getCenterYCoordinate());
@@ -96,7 +103,13 @@ public class ArmorModifierEffect implements EffectInterface {
 
     @Override
     public EffectInterface copy() {
-        return new DamageModifierEffect(armorBonus, durationInSeconds, this.animationList.get(0).clone(), effectIdentifier);
+        SpriteAnimation animation = null;
+        if (!this.animationList.isEmpty() && this.animationList.get(0) != null) {
+            animation = this.animationList.get(0);
+        }
+        SpriteAnimation clonedAnimation = (animation != null) ? animation.clone() : null;
+
+        return new DamageModifierEffect(armorBonus, durationInSeconds, clonedAnimation, effectIdentifier);
     }
 
     @Override
@@ -106,7 +119,7 @@ public class ArmorModifierEffect implements EffectInterface {
 
     @Override
     public void removeEffect(GameObject gameObject) {
-        if (this.animationList.get(0) != null) {
+        if (!this.animationList.isEmpty() && this.animationList.get(0) != null) {
             this.animationList.get(0).setInfiniteLoop(false);
             this.animationList.get(0).setVisible(false);
         }

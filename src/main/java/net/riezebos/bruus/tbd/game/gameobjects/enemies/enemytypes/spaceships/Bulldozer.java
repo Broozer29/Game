@@ -92,7 +92,7 @@ public class Bulldozer extends Enemy {
         movementConfiguration.setPathFinder(pathFinder);
 
         movementConfiguration.initDefaultSettingsForSpecializedPathFinders();
-        movementConfiguration.setRotation(Direction.LEFT);
+        movementConfiguration.setDirection(Direction.LEFT);
         movementConfiguration.setPatternSize(MovementPatternSize.SMALL);
 
         Enemy alienBomb = new AlienBomb(spriteConfiguration, enemyConfiguration, movementConfiguration);

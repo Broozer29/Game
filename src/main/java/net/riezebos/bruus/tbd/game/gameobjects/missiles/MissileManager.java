@@ -8,6 +8,8 @@ import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.droneTypes.prot
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.laserbeams.Laserbeam;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.missiletypes.ReflectiveBlocks;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.missiletypes.TazerProjectile;
+import net.riezebos.bruus.tbd.game.gameobjects.missiles.specialAttacks.FireShield;
+import net.riezebos.bruus.tbd.game.gameobjects.missiles.specialAttacks.FlameThrower;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.specialAttacks.SpecialAttack;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
 import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SpaceShip;
@@ -245,12 +247,20 @@ public class MissileManager {
                     if (specialAttack.isDestroysMissiles() && missile.isDestructable()) {
                         missile.destroyMissile();
                     } else if (specialAttack.isDamagesMissiles() && missile.isDamageable()) {
-                        missile.takeDamage(Math.min(1, missile.getMaxHitPoints() * specialAttack.getMaxHPDamagePercentageForMissiles())); //min 1 for flamethrower/mutalisk interaction
+                        missile.takeDamage(getSpecialAttackMissileDamage(specialAttack, missile)); //min 1 for flamethrower/mutalisk interaction
                     }
                 }
 
             }
         }
+    }
+
+    private float getSpecialAttackMissileDamage(SpecialAttack specialAttack, Missile missile) {
+        if((specialAttack instanceof FlameThrower || specialAttack instanceof FireShield) && missile.getMissileEnum().equals(MissileEnums.ReflectiveBlocks)) {
+            return Math.max(1, missile.getMaxHitPoints() * (specialAttack.getMaxHPDamagePercentageForMissiles() * 0.2f));
+        }
+
+        return Math.max(1, missile.getMaxHitPoints() * specialAttack.getMaxHPDamagePercentageForMissiles());
     }
 
     private void checkMissileCollisionWithEnemies(Missile missile) {
@@ -281,8 +291,6 @@ public class MissileManager {
             if (reflectiveShielding != null && reflectiveShielding.attemptToReflectMissile(missile)
                     && PlayerManager.getInstance().getSpaceship().getCurrentShieldPoints() > 0) {
                 ThornsDamageDealer.getInstance().reflectMissile(collisionInfo.getCollisionPoint(), missile);
-                missile.setVisible(false);
-                missile.deleteObject();
                 return; //don't want to continue since we reflected/blocked the missile
             }
 

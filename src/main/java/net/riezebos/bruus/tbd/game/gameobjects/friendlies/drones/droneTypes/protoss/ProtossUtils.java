@@ -1,14 +1,11 @@
 package net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.droneTypes.protoss;
 
 import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
-import net.riezebos.bruus.tbd.game.gameobjects.enemies.Enemy;
 import net.riezebos.bruus.tbd.game.gameobjects.friendlies.FriendlyManager;
 import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.Drone;
 import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.droneTypes.DroneTypes;
-import net.riezebos.bruus.tbd.game.gameobjects.missiles.MissileManager;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
-import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SpaceShip;
 import net.riezebos.bruus.tbd.game.items.ItemEnums;
 import net.riezebos.bruus.tbd.game.items.PlayerInventory;
 import net.riezebos.bruus.tbd.game.items.items.carrier.ProtossThorns;
@@ -105,7 +102,7 @@ public class ProtossUtils {
             return;
         }
 
-        protossShipBuilderTimer += 0.015f;
+        protossShipBuilderTimer += (0.015f * PlayerStats.getInstance().getProtossShipConstructionBonusSpeedModifier());
 
         if(protossShipBuilderTimer >= 5.0f){
             protossShipBuilderTimer = 5.0f;

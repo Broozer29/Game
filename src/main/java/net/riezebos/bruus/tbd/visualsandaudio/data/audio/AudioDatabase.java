@@ -29,6 +29,7 @@ public class AudioDatabase {
 
     private Map<AudioEnums, Integer> clipSizeConfig = new HashMap<>() {{
         put(AudioEnums.Lemmino_Firecracker, 1);
+        put(AudioEnums.VendlaSonrisa, 1);
         put(AudioEnums.mainmenu, 1);
         put(AudioEnums.GenericError, 3);
         put(AudioEnums.ScarabExplosion, 2);
@@ -112,9 +113,9 @@ public class AudioDatabase {
             for (CustomAudioClip clip : clipList) {
                 clip.setPlaybackPosition(0);
                 clip.stopClip();
-                ;
             }
         }
+        allActiveClips.clear();
         performanceLogger.reset();
     }
 

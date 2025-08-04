@@ -2,7 +2,7 @@ package net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums;
 
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyEnums;
 import net.riezebos.bruus.tbd.game.level.enums.LevelDifficulty;
-import net.riezebos.bruus.tbd.game.level.enums.LevelLength;
+import net.riezebos.bruus.tbd.game.level.enums.MiniBossConfig;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
 
 import java.util.ArrayList;
@@ -17,13 +17,13 @@ public enum LevelSongs {
 
     private AudioEnums audioEnum;
     private LevelDifficulty levelDifficulty;
-    private LevelLength levelLength;
+    private MiniBossConfig miniBossConfig;
     private boolean enabled;
 
-    LevelSongs (AudioEnums audioEnum, LevelDifficulty levelDifficulty, LevelLength levelLength, boolean enabled) {
+    LevelSongs (AudioEnums audioEnum, LevelDifficulty levelDifficulty, MiniBossConfig miniBossConfig, boolean enabled) {
         this.audioEnum = audioEnum;
         this.levelDifficulty = levelDifficulty;
-        this.levelLength = levelLength;
+        this.miniBossConfig = miniBossConfig;
         this.enabled = enabled;
     }
 
@@ -31,17 +31,9 @@ public enum LevelSongs {
         return audioEnum;
     }
 
-    public LevelDifficulty getLevelDifficulty () {
-        return levelDifficulty;
-    }
-
-    public LevelLength getLevelLength () {
-        return levelLength;
-    }
-
-    public static AudioEnums getRandomSong (LevelDifficulty difficulty, LevelLength length) {
+    public static AudioEnums getRandomSong (LevelDifficulty difficulty, MiniBossConfig length) {
         List<LevelSongs> filteredSongs = Arrays.stream(LevelSongs.values())
-                .filter(song -> song.levelDifficulty == difficulty && song.levelLength == length && song.enabled)
+                .filter(song -> song.levelDifficulty == difficulty && song.miniBossConfig == length && song.enabled)
                 .toList();
 
         if (filteredSongs.isEmpty()) {
@@ -52,9 +44,10 @@ public enum LevelSongs {
         return filteredSongs.get(new Random().nextInt(filteredSongs.size())).getAudioEnum();
     }
 
-    public static AudioEnums getRandomSongByLength (LevelLength length) {
+    //DEPRECATED, DO NOT USE
+    public static AudioEnums getRandomSongByLength (MiniBossConfig length) {
         List<LevelSongs> filteredSongs = Arrays.stream(LevelSongs.values())
-                .filter(song -> song.levelLength == length && song.enabled)
+                .filter(song -> song.miniBossConfig == length && song.enabled)
                 .toList();
 
         if (filteredSongs.isEmpty()) {
@@ -93,9 +86,9 @@ public enum LevelSongs {
         return filteredSongs.get(new Random().nextInt(filteredSongs.size())).getAudioEnum();
     }
 
-    public static int getDifficultyImageIndex (LevelDifficulty difficulty, LevelLength length) {
+    public static int getDifficultyImageIndex (LevelDifficulty difficulty, MiniBossConfig miniBossConfig) {
         int difficultyWeight = difficulty.ordinal() + 1; // Assuming Enum order is EASY, MEDIUM, HARD
-        int lengthWeight = length.ordinal() + 1; // Assuming Enum order is SHORT, MEDIUM, LONG
+        int lengthWeight = miniBossConfig.ordinal() + 1; // Assuming Enum order is SHORT, MEDIUM, LONG
         int combinedScore = difficultyWeight + lengthWeight;
 
         // Adjusted mapping based on combined score
@@ -106,9 +99,9 @@ public enum LevelSongs {
         return 5; // Image 5
     }
 
-    public static int getDifficultyScore (LevelDifficulty difficulty, LevelLength length) {
+    public static int getDifficultyScore (LevelDifficulty difficulty, MiniBossConfig miniBossConfig) {
         int difficultyWeight = difficulty.ordinal() + 1; // Assuming Enum order is EASY, MEDIUM, HARD
-        int lengthWeight = length.ordinal() + 1; // Assuming Enum order is SHORT, MEDIUM, LONG
+        int lengthWeight = miniBossConfig.ordinal() + 1; // Assuming Enum order is SHORT, MEDIUM, LONG
         return difficultyWeight + lengthWeight;
     }
 

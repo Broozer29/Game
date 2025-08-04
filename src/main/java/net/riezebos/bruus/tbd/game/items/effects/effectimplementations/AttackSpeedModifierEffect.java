@@ -28,7 +28,9 @@ public class AttackSpeedModifierEffect implements EffectInterface {
         this.attackSpeedModifierAmountPerStack = attackSpeedModifierAmountPerStack;
         this.attackSpeedModifierAmount = attackSpeedModifierAmountPerStack;
         this.durationInSeconds = durationInSeconds;
-        this.animationList.add(animation);
+        if(animation != null) {
+            this.animationList.add(animation);
+        }
         this.startTimeInSeconds = GameState.getInstance().getGameSeconds();
         this.effectTypesEnums = EffectActivationTypes.CheckEveryGameTick;
         this.appliedToObject = false;
@@ -49,7 +51,7 @@ public class AttackSpeedModifierEffect implements EffectInterface {
             appliedToObject = true;
         }
 
-        if (this.animationList.get(0) != null) {
+        if (!this.animationList.isEmpty() && this.animationList.get(0) != null) {
             centerAnimation(gameObject);
         }
     }
@@ -115,7 +117,13 @@ public class AttackSpeedModifierEffect implements EffectInterface {
 
     @Override
     public EffectInterface copy() {
-        return new AttackSpeedModifierEffect(attackSpeedModifierAmountPerStack, durationInSeconds, this.animationList.get(0).clone(), effectIdentifier);
+        SpriteAnimation animation = null;
+        if (!this.animationList.isEmpty() && this.animationList.get(0) != null) {
+            animation = this.animationList.get(0);
+        }
+        SpriteAnimation clonedAnimation = (animation != null) ? animation.clone() : null;
+
+        return new AttackSpeedModifierEffect(attackSpeedModifierAmountPerStack, durationInSeconds, clonedAnimation, effectIdentifier);
     }
 
     @Override
@@ -125,7 +133,7 @@ public class AttackSpeedModifierEffect implements EffectInterface {
 
     @Override
     public void removeEffect(GameObject gameObject) {
-        if (this.animationList.get(0) != null) {
+        if (!this.animationList.isEmpty() && this.animationList.get(0) != null) {
             this.animationList.get(0).setInfiniteLoop(false);
             this.animationList.get(0).setVisible(false);
         }

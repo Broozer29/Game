@@ -82,9 +82,9 @@ public class ShopBoard extends JPanel implements TimerHolder {
     private GUIComponent selectEasyDifficulty;
     private GUIComponent selectMediumDifficulty;
     private GUIComponent selectHardDifficulty;
-    private GUIComponent shortSong;
-    private GUIComponent mediumSong;
-    private GUIComponent longSong;
+    private GUIComponent easyMiniBossConfig;
+    private GUIComponent mediumMiniBossConfig;
+    private GUIComponent hardMiniBossConfig;
     private GUITextCollection difficultySelectionText;
     private GUITextCollection lengthSelectionText;
     private GUITextCollection nextLevelDifficultyIcon;
@@ -187,17 +187,22 @@ public class ShopBoard extends JPanel implements TimerHolder {
         offTheGridObjects.addAll(difficultySelectionText.getComponents());
         offTheGridObjects.addAll(nextLevelModifiersTextCollection.getComponents());
 
-        shortSong = shopBoardCreator.createShortSongSelection(songLengthBackgroundCard);
-        mediumSong = shopBoardCreator.createMediumSongSelection(songLengthBackgroundCard);
-        longSong = shopBoardCreator.createLongSelection(songLengthBackgroundCard);
-        lengthSelectionText = shopBoardCreator.createSongSelectionText(songLengthBackgroundCard, longSong);
-
-        if (!AudioManager.getInstance().isMusicControlledByThirdPartyApp()) {
-            regularGridFourthRow.add(shortSong);
-            regularGridFourthRow.add(mediumSong);
-            regularGridFourthRow.add(longSong);
-            offTheGridObjects.addAll(lengthSelectionText.getComponents());
+        if (!LevelManager.getInstance().isNextLevelABossLevel()) {
+            easyMiniBossConfig = shopBoardCreator.createShortSongSelection(songLengthBackgroundCard);
         }
+        mediumMiniBossConfig = shopBoardCreator.createMediumSongSelection(songLengthBackgroundCard); //This gets set to red wings if its a boss level so always add it
+        if (!LevelManager.getInstance().isNextLevelABossLevel()) {
+            hardMiniBossConfig = shopBoardCreator.createLongSelection(songLengthBackgroundCard);
+        }
+
+        lengthSelectionText = shopBoardCreator.createSongSelectionText(songLengthBackgroundCard, hardMiniBossConfig);
+
+        regularGridFourthRow.add(easyMiniBossConfig);
+        regularGridFourthRow.add(mediumMiniBossConfig);
+        regularGridFourthRow.add(hardMiniBossConfig);
+        offTheGridObjects.addAll(lengthSelectionText.getComponents());
+
+
         offTheGridObjects.add(rerollBackgroundCard);
         rerollButton = shopBoardCreator.createRerollButton(rerollBackgroundCard);
         nextLevelDifficultyIcon = shopBoardCreator.createNextLevelDifficultyIcon(nextLevelDifficultyBackground);
@@ -253,10 +258,8 @@ public class ShopBoard extends JPanel implements TimerHolder {
         shopBoardCreator.updateDifficultyIconsToDifficulty(LevelManager.getInstance().getCurrentLevelDifficulty(),
                 selectEasyDifficulty, selectMediumDifficulty, selectHardDifficulty);
 
-        if (!AudioManager.getInstance().isMusicControlledByThirdPartyApp()) {
-            shopBoardCreator.updateLengthIconsToLength(LevelManager.getInstance().getCurrentLevelLength(),
-                    shortSong, mediumSong, longSong);
-        }
+        shopBoardCreator.updateMiniBossIconsToSelection(LevelManager.getInstance().getCurrentMiniBossConfig(),
+                easyMiniBossConfig, mediumMiniBossConfig, hardMiniBossConfig);
     }
 
 

@@ -65,6 +65,7 @@ public enum ItemEnums {
     Martyrdom(ItemRarityEnums.Legendary, ItemCategory.Offense, ImageEnums.FrenzyIcon, "Martyrdom", true),
     KineticDynamo(ItemRarityEnums.Legendary, ItemCategory.Offense, ImageEnums.KineticDynamoIcon, "Kinetic Dynamo", true),
     ArbiterMultiTargeting(ItemRarityEnums.Rare, ItemCategory.Utility, ImageEnums.ArbiterMultiTargetIcon, "Arbiter Multi Targeting", true),
+    ConstructionKit(ItemRarityEnums.Legendary, ItemCategory.Utility, ImageEnums.Test_Image, "Construction Kit", true),
     SynergeticLink(ItemRarityEnums.Legendary, ItemCategory.Utility, ImageEnums.Test_Image, "Synergetic Link", true),
     StickyDynamite(ItemRarityEnums.Common, ItemCategory.Offense, ImageEnums.StickyDynamite, "Sticky Dynamite", true),
     InfernalPreIgniter(ItemRarityEnums.Relic, ItemCategory.Offense, ImageEnums.InfernalPreIgniter, "Infernal Pre-igniter", true);

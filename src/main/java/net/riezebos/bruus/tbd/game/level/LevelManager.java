@@ -15,7 +15,7 @@ import net.riezebos.bruus.tbd.game.gamestate.GameStatusEnums;
 import net.riezebos.bruus.tbd.game.gamestate.ShopManager;
 import net.riezebos.bruus.tbd.game.level.directors.DirectorManager;
 import net.riezebos.bruus.tbd.game.level.enums.LevelDifficulty;
-import net.riezebos.bruus.tbd.game.level.enums.LevelLength;
+import net.riezebos.bruus.tbd.game.level.enums.MiniBossConfig;
 import net.riezebos.bruus.tbd.game.level.enums.LevelTypes;
 import net.riezebos.bruus.tbd.game.movement.Direction;
 import net.riezebos.bruus.tbd.game.movement.MovementPatternSize;
@@ -41,7 +41,7 @@ public class LevelManager {
 
     private AudioEnums currentLevelSong;
     private LevelDifficulty currentLevelDifficulty;
-    private LevelLength currentLevelLength;
+    private MiniBossConfig currentMiniBossConfig;
     private int currentLevelDifficultyScore;
     private LevelTypes levelType;
     private EnemyTribes currentEnemyTribe;
@@ -61,7 +61,7 @@ public class LevelManager {
         currentLevelSong = null;
         levelType = LevelTypes.Regular;
         currentLevelDifficulty = LevelDifficulty.Medium;
-        currentLevelLength = LevelLength.Medium;
+        currentMiniBossConfig = MiniBossConfig.Medium;
         currentEnemyTribe = EnemyTribes.Pirates;
         performanceLogger.reset();
     }
@@ -112,7 +112,7 @@ public class LevelManager {
     private void finishLevel() {
         ShopManager shopManager = ShopManager.getInstance();
         shopManager.setLastLevelDifficulty(this.currentLevelDifficulty);
-        shopManager.setLastLevelLength(this.currentLevelLength);
+        shopManager.setLastMiniBossConfig(this.currentMiniBossConfig);
         shopManager.setLastLevelDifficultyScore(this.currentLevelDifficultyScore);
         shopManager.setRowsUnlockedByDifficulty(this.currentLevelDifficultyScore);
         shopManager.calculateRerollCost();
@@ -147,9 +147,6 @@ public class LevelManager {
         if (DevTestSettings.devTestShortLevelMode) {
             audioManager.devTestShortLevelMode = true;
         }
-        if (DevTestSettings.devTestMuteMode) {
-            audioManager.devTestmuteMode = true;
-        }
 
         if (!DevTestSettings.blockDirectors) {
             activateDirectors(this.levelType);
@@ -160,51 +157,40 @@ public class LevelManager {
         gameState.setGameState(GameStatusEnums.Playing);
 
 
+        if (DevTestSettings.spawnTargetDummy) {
 
-        if(DevTestSettings.spawnTargetDummy) {
-
-            EnemyEnums enemyType = EnemyEnums.Bomba;
-            Enemy enemy = EnemyCreator.createEnemy(enemyType, 400, 500, Direction.LEFT, enemyType.getDefaultScale()
+            EnemyEnums enemyType = EnemyEnums.LaserbeamMiniBoss;
+            Enemy dummy = EnemyCreator.createEnemy(enemyType, 1600, 500, Direction.LEFT_UP, enemyType.getDefaultScale()
                     , enemyType.getMovementSpeed(), enemyType.getMovementSpeed(), MovementPatternSize.SMALL, false);
-            enemy.setXCoordinate(800);
-            enemy.setMaxHitPoints(100000);
-            enemy.setCurrentHitpoints(100000);
-            enemy.setAllowedToFire(false);
-            enemy.setAllowedToMove(false);
-            EnemyManager.getInstance().addEnemy(enemy);
+//            enemy.setXCoordinate(1000);
+//            enemy.setMaxHitPoints(300);
+//            enemy.setCurrentHitpoints(300);
+//            enemy.setAllowedToFire(false);
+//            enemy.setAllowedToMove(false);
+            EnemyManager.getInstance().addEnemy(dummy);
         }
 
     }
 
     private void initDifficulty() {
-        boolean controlledByThirdPartyApp = AudioManager.getInstance().isMusicControlledByThirdPartyApp();
-        if (controlledByThirdPartyApp) {
-            currentLevelLength = LevelLength.Short;
-            if (currentLevelDifficulty == null) {
-                currentLevelDifficulty = LevelDifficulty.getRandomDifficulty();
-            }
-        } else {
-            if (currentLevelDifficulty == null) {
-                currentLevelDifficulty = LevelDifficulty.getRandomDifficulty();
-            }
-            if (currentLevelLength == null) {
-                currentLevelLength = LevelLength.getRandomLength();
-            }
+        if (currentLevelDifficulty == null) {
+            currentLevelDifficulty = LevelDifficulty.getRandomDifficulty();
+        }
+        if (currentMiniBossConfig == null) {
+            currentMiniBossConfig = MiniBossConfig.getRandomMiniBossConfig();
         }
 
         boolean nextLevelABossLevel = isNextLevelABossLevel();
         if (nextLevelABossLevel) {
             this.levelType = LevelTypes.Boss;
             currentLevelDifficulty = LevelDifficulty.Hard;
-            currentLevelLength = LevelLength.Long;
+            currentMiniBossConfig = MiniBossConfig.Hard;
         } else {
             this.levelType = LevelTypes.Regular;
         }
 
-        if (controlledByThirdPartyApp && !nextLevelABossLevel) {
-            currentLevelDifficultyScore = LevelSongs.getDifficultyScoreByDifficultyOnly(currentLevelDifficulty);
-        } else {
-            currentLevelDifficultyScore = LevelSongs.getDifficultyScore(currentLevelDifficulty, currentLevelLength);
+        if (!nextLevelABossLevel) {
+            currentLevelDifficultyScore = LevelSongs.getDifficultyScore(currentLevelDifficulty, currentMiniBossConfig);
         }
         selectEnemyTribe();
 
@@ -220,6 +206,7 @@ public class LevelManager {
     }
 
     public EnemyEnums getNextBoss() {
+//        return EnemyEnums.YellowBoss;
         int bossesDefeated = GameState.getInstance().getBossesDefeated();
 
         // Use modulo to cycle through the bosses
@@ -241,14 +228,13 @@ public class LevelManager {
     private void activateDirectors(LevelTypes levelType) {
         DirectorManager directorManager = DirectorManager.getInstance();
         directorManager.setEnabled(true);
-        directorManager.createMonsterCards();
         directorManager.createDirectors(levelType);
     }
 
     private void activateMusic(LevelTypes levelType) {
         switch (levelType) {
             case Regular -> {
-                audioManager.playDefaultBackgroundMusic(currentLevelDifficulty, currentLevelLength, false);
+                audioManager.playDefaultBackgroundMusic(currentLevelDifficulty, currentMiniBossConfig, false);
                 this.currentLevelSong = audioManager.getCurrentSong();
             }
             case Boss -> {
@@ -345,16 +331,16 @@ public class LevelManager {
         }
     }
 
-    public LevelLength getCurrentLevelLength() {
-        if (currentLevelLength == null) {
-            currentLevelLength = LevelLength.getRandomLength();
+    public MiniBossConfig getCurrentMiniBossConfig() {
+        if (currentMiniBossConfig == null) {
+            currentMiniBossConfig = MiniBossConfig.getRandomMiniBossConfig();
         }
-        return currentLevelLength;
+        return currentMiniBossConfig;
     }
 
-    public void setCurrentLevelLength(LevelLength currentLevelLength) {
+    public void setCurrentMiniBossConfig(MiniBossConfig currentMiniBossConfig) {
         if (!isNextLevelABossLevel()) {
-            this.currentLevelLength = currentLevelLength;
+            this.currentMiniBossConfig = currentMiniBossConfig;
         }
     }
 

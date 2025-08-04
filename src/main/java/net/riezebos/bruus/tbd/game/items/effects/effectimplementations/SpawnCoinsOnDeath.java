@@ -129,7 +129,7 @@ public class SpawnCoinsOnDeath implements EffectInterface {
 
     @Override
     public void removeEffect(GameObject gameObject) {
-        if (animationList.get(0) != null) {
+        if (!this.animationList.isEmpty() && this.animationList.get(0) != null) {
             animationList.get(0).setInfiniteLoop(false);
             animationList.get(0).setVisible(false);
         }

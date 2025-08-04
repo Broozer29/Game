@@ -34,14 +34,15 @@ public class PassiveHealthRegeneration implements EffectInterface {
         if (currentTime - gameObject.getLastGameSecondDamageTaken() > 0.001 && // More than 10ms have passed
                 gameObject.getCurrentHitpoints() < gameObject.getMaxHitPoints()) {
 
-            if (animationList.get(0) != null) {
+            //Animation is removed but the logic can be re-used later on
+            if (!this.animationList.isEmpty() && this.animationList.get(0) != null) {
                 showHealingAnimation();
                 centerHealingAnimation(gameObject);
             }
 
             gameObject.takeDamage(-healingAmount); // Apply healing
         } else {
-            if (animationList.get(0) != null) {
+            if (!this.animationList.isEmpty() && this.animationList.get(0) != null) {
                 hideHealingAnimation();
             }
         }
@@ -92,7 +93,7 @@ public class PassiveHealthRegeneration implements EffectInterface {
 
     @Override
     public EffectInterface copy () {
-        return null;
+        return new PassiveHealthRegeneration(healingAmount, effectIdentifier);
     }
 
     @Override
@@ -102,7 +103,7 @@ public class PassiveHealthRegeneration implements EffectInterface {
 
     @Override
     public void removeEffect (GameObject gameObject){
-        if(animationList.get(0) != null){
+        if(!this.animationList.isEmpty() && this.animationList.get(0) != null){
             animationList.get(0).setInfiniteLoop(false);
             animationList.get(0).setVisible(false);
         }

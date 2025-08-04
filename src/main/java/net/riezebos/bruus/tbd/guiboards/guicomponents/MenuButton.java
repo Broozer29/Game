@@ -8,7 +8,7 @@ import net.riezebos.bruus.tbd.game.gamestate.ShopManager;
 import net.riezebos.bruus.tbd.game.items.PlayerInventory;
 import net.riezebos.bruus.tbd.game.level.LevelManager;
 import net.riezebos.bruus.tbd.game.level.enums.LevelDifficulty;
-import net.riezebos.bruus.tbd.game.level.enums.LevelLength;
+import net.riezebos.bruus.tbd.game.level.enums.MiniBossConfig;
 import net.riezebos.bruus.tbd.game.gameobjects.player.boons.Boon;
 import net.riezebos.bruus.tbd.game.gameobjects.player.boons.BoonManager;
 import net.riezebos.bruus.tbd.game.util.OnScreenTextManager;
@@ -29,7 +29,7 @@ import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.Sprit
 public class MenuButton extends GUIComponent {
 
     private LevelDifficulty levelDifficulty;
-    private LevelLength levelLength;
+    private MiniBossConfig miniBossConfig;
 
     public MenuButton(SpriteConfiguration spriteConfiguration) {
         super(spriteConfiguration);
@@ -187,8 +187,8 @@ public class MenuButton extends GUIComponent {
     }
 
     private void changeLevelLength() {
-        if (this.levelLength != null) {
-            LevelManager.getInstance().setCurrentLevelLength(this.levelLength);
+        if (this.miniBossConfig != null) {
+            LevelManager.getInstance().setCurrentMiniBossConfig(this.miniBossConfig);
         }
     }
 
@@ -200,11 +200,11 @@ public class MenuButton extends GUIComponent {
         this.levelDifficulty = levelDifficulty;
     }
 
-    public LevelLength getLevelLength() {
-        return levelLength;
+    public MiniBossConfig getMiniBossConfig() {
+        return miniBossConfig;
     }
 
-    public void setLevelLength(LevelLength levelLength) {
-        this.levelLength = levelLength;
+    public void setMiniBossConfig(MiniBossConfig miniBossConfig) {
+        this.miniBossConfig = miniBossConfig;
     }
 }

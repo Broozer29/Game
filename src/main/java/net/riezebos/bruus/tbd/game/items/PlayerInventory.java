@@ -31,18 +31,6 @@ public class PlayerInventory {
     private PlayerInventory() {
         resetInventory();
 
-        addItem(ItemEnums.ReflectiveShielding);
-        addItem(ItemEnums.ReflectiveShielding);
-        addItem(ItemEnums.ReflectiveShielding);
-        addItem(ItemEnums.ReflectiveShielding);
-
-        addItem(ItemEnums.BarrierSuperSizer);
-        addItem(ItemEnums.BarrierSuperSizer);
-        addItem(ItemEnums.BarrierSuperSizer);
-        addItem(ItemEnums.BarrierSuperSizer);
-        addItem(ItemEnums.BarrierSuperSizer);
-        addItem(ItemEnums.ShieldStabilizer);
-
 //        for(int i = 0; i < 5; i++){
 //            addItem(ItemEnums.EnergySiphon);
 //        }
@@ -221,6 +209,8 @@ public class PlayerInventory {
                 return new FuelCannister();
             case InfernalPreIgniter:
                 return new InfernalPreIgniter();
+            case ConstructionKit:
+                return new ConstructionKit();
             case Locked:
                 return null;
             default:

@@ -67,7 +67,7 @@ public class StackingInCombatArmorBonus implements EffectInterface {
 
     @Override
     public List<SpriteAnimation> getAnimations() {
-        return null; //no animation yet
+        return animationList; //no animation yet
     }
 
     @Override
@@ -101,7 +101,7 @@ public class StackingInCombatArmorBonus implements EffectInterface {
             gameObject.adjustArmorBonus(-armorBonus); // Decrease armor by armorBonus amount
             bonusApplied = false;
         }
-        if(animationList.get(0) != null){
+        if(!this.animationList.isEmpty() && this.animationList.get(0) != null){
             animationList.get(0).setInfiniteLoop(false);
             animationList.get(0).setVisible(false);
         }

@@ -32,8 +32,7 @@ public class Scout extends Enemy {
         this.knockbackStrength = 5;
 
 
-        if(this.movementConfiguration.getPathFinder() instanceof HoverPathFinder){
-            HoverPathFinder pathFinder = (HoverPathFinder) this.movementConfiguration.getPathFinder();
+        if(this.movementConfiguration.getPathFinder() instanceof HoverPathFinder pathFinder){
 //            movementConfiguration.setBoardBlockToHoverIn(7);
             pathFinder.setShouldDecreaseBoardBlock(true);
             pathFinder.setDecreaseBoardBlockAmountBy(2);

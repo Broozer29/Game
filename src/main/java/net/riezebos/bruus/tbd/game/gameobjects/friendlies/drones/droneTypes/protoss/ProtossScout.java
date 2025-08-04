@@ -79,7 +79,7 @@ public class ProtossScout extends Drone {
 
     public void fireAction () {
         if(target == null){
-            target = EnemyManager.getInstance().getClosestEnemyWithinDistance(this.getCenterXCoordinate(), this.getCenterYCoordinate(), attackRange);
+            target = EnemyManager.getInstance().getClosestEnemyTargetWithinDistance(this.getCenterXCoordinate(), this.getCenterYCoordinate(), attackRange);
         }
 
         if(target != null){

@@ -24,11 +24,13 @@ public class FreezeEffect implements EffectInterface {
     private EffectIdentifiers effectIdentifier;
     private EffectActivationTypes effectTypesEnums;
 
-    public FreezeEffect(double durationInSeconds, SpriteAnimation spriteAnimation){
+    public FreezeEffect(double durationInSeconds, SpriteAnimation animation){
         this.effectIdentifier = EffectIdentifiers.ElectricDestabilizerFreeze;
         this.durationInSeconds = durationInSeconds;
         this.effectTypesEnums = EffectActivationTypes.CheckEveryGameTick;
-        this.animationList.add(spriteAnimation);
+        if(animation != null) {
+            this.animationList.add(animation);
+        }
         this.startTimeInSeconds = GameState.getInstance().getGameSeconds();
     }
     @Override
@@ -42,7 +44,7 @@ public class FreezeEffect implements EffectInterface {
 
 
         double currentTime = GameState.getInstance().getGameSeconds();
-        if (this.animationList.get(0) != null) {
+        if (!this.animationList.isEmpty() && this.animationList.get(0) != null) {
             if (!scaledToTarget) {
                 EffectAnimationHelper.scaleAnimation(target, this.animationList.get(0));
                 scaledToTarget = true;
@@ -105,8 +107,13 @@ public class FreezeEffect implements EffectInterface {
 
     @Override
     public EffectInterface copy () {
-        SpriteAnimation animation = this.animationList.get(0).clone();
-        FreezeEffect copiedEffect = new FreezeEffect(this.durationInSeconds, animation);
+        SpriteAnimation animation = null;
+        if (!this.animationList.isEmpty() && this.animationList.get(0) != null) {
+            animation = this.animationList.get(0);
+        }
+        SpriteAnimation clonedAnimation = (animation != null) ? animation.clone() : null;
+
+        FreezeEffect copiedEffect = new FreezeEffect(this.durationInSeconds, clonedAnimation);
         // Copy other necessary fields
         copiedEffect.startTimeInSeconds = this.startTimeInSeconds;
         copiedEffect.effectIdentifier = this.effectIdentifier;
@@ -116,7 +123,7 @@ public class FreezeEffect implements EffectInterface {
 
     @Override
     public void removeEffect (GameObject gameObject){
-        if(this.animationList.get(0) != null){
+        if(!this.animationList.isEmpty() && this.animationList.get(0) != null){
             this.animationList.get(0).setInfiniteLoop(false);
             this.animationList.get(0).setVisible(false);
         }

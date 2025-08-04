@@ -46,7 +46,7 @@ public class MissileCreator {
         movementConfiguration.setYMovementSpeed(ySpeed);
         movementConfiguration.setPathFinder(pathFinder);
         movementConfiguration.setPatternSize(movementPatternSize);
-        movementConfiguration.setRotation(rotation);
+        movementConfiguration.setDirection(rotation);
         movementConfiguration.initDefaultSettingsForSpecializedPathFinders();
         return movementConfiguration;
     }
