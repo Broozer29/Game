@@ -13,7 +13,6 @@ public class ConnectedControllersManager {
     private Controller firstController;
 
     private ConnectedControllersManager() {
-        initController();
     }
 
     public static ConnectedControllersManager getInstance() {

@@ -9,6 +9,7 @@ import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyTribes;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.MissileManager;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
+import net.riezebos.bruus.tbd.game.gamestate.GameMode;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.gamestate.GameStatsTracker;
 import net.riezebos.bruus.tbd.game.items.effects.EffectIdentifiers;
@@ -38,6 +39,7 @@ public class Enemy extends GameObject {
     protected EnemyEnums enemyType;
     protected PathFinderEnums missileTypePathFinders;
     protected double lastAttackTime = 0.0;
+    protected float level = 0;
 
     protected boolean detonateOnCollision;
 
@@ -77,7 +79,7 @@ public class Enemy extends GameObject {
         this.currentBoardBlock = BoardBlockUpdater.getBoardBlock(xCoordinate);
         this.boxCollision = enemyConfiguration.isBoxCollision();
         this.baseArmor = enemyConfiguration.getBaseArmor();
-        this.cashMoneyWorth = enemyConfiguration.getCashMoneyWorth();
+        this.cashMoneyWorth = this.enemyType.getCashMoneyWorth();
         this.xpOnDeath = enemyConfiguration.getXpOnDeath();
         this.isAttacking = false;
         this.setVisible(true);
@@ -92,31 +94,41 @@ public class Enemy extends GameObject {
     }
 
     private void modifyStatsBasedOnLevelAndDifficulty() {
-        int enemyLevel = GameState.getInstance().getMonsterLevel();
+        level = GameState.getInstance().getMonsterLevel();
+
+        if(this.ownerOrCreator instanceof Enemy enemy && enemy.getEnemyType().getEnemyCategory().equals(EnemyCategory.Boss)){
+                level = enemy.getLevel(); //Prevents summons from bosses to outscale, only noticeable on man mode
+            }
+
+
         int difficultyScore = LevelManager.getInstance().getCurrentLevelDifficultyScore(); // Ranges between 2 and 6 (inclusive)
 
         // Calculate scaling factor (1.0 at Easy, up to 1.5 at Hard)
         float difficultyScalingFactor = 1 + ((difficultyScore - 2) / 4.0f) * 0.5f;
 
-        if (enemyLevel > 1) {
+        if (level > 1) {
             // Apply both enemy level scaling and difficulty scaling
-            this.maxHitPoints *= Math.pow(getScalingFactor(), enemyLevel) * difficultyScalingFactor;
+            this.maxHitPoints *= Math.pow(getScalingFactor(), level) * difficultyScalingFactor;
             this.currentHitpoints = maxHitPoints;
 
-            this.maxShieldPoints *= Math.pow(getScalingFactor(), enemyLevel) * difficultyScalingFactor;
+            this.maxShieldPoints *= Math.pow(getScalingFactor(), level) * difficultyScalingFactor;
             this.currentShieldPoints = maxShieldPoints;
 
-            this.damage *= Math.pow(getScalingFactor(), enemyLevel) * difficultyScalingFactor;
+//            this.damage *= Math.pow(getScalingFactor(), enemyLevel) * difficultyScalingFactor;
 
             // XP on death is multiplied by 50% of difficulty coefficient
 //            this.xpOnDeath *= (1 + (0.5 * difficultyCoeff));
-
-            // Cash money worth scaling for bosses
-            if (this.enemyType.getEnemyCategory().equals(EnemyCategory.Boss)) {
-                this.cashMoneyWorth *= Math.pow(getScalingFactor(), enemyLevel);
-            }
-
             this.cashMoneyWorth *= PlayerStats.getInstance().getMineralModifier();
+        }
+
+
+        if(GameState.getInstance().getGameMode().equals(GameMode.DoubleTrouble) && !(this.enemyType.getEnemyCategory().equals(EnemyCategory.Boss) || this.enemyType.getEnemyCategory().equals(EnemyCategory.MiniBoss))){
+            this.maxHitPoints *= 0.5f;
+            this.currentHitpoints = maxHitPoints;
+            this.maxShieldPoints *= 0.5f;
+            this.currentShieldPoints = maxShieldPoints;
+            this.xpOnDeath *= 0.5f;
+            this.cashMoneyWorth *= 0.5f;
         }
     }
 
@@ -124,7 +136,7 @@ public class Enemy extends GameObject {
 //        if (this.enemyType.getEnemyTribe().equals(EnemyTribes.Zerg)) {
 //            return 1.15f;
 //        }
-        return 1.125f;
+        return 1.25f;
     }
 
     private void initChargingUpAnimation(SpriteConfiguration spriteConfiguration) {
@@ -292,5 +304,7 @@ public class Enemy extends GameObject {
         this.detonateOnCollision = detonateOnCollision;
     }
 
-
+    public float getLevel() {
+        return level;
+    }
 }

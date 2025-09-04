@@ -27,27 +27,28 @@ public class ImageResizer {
     }
 
     public BufferedImage getScaledImage(BufferedImage image, float scale) {
-        if (scale != 0) {
-            String cacheKey = image.hashCode() + "_" + scale;
-
-            if (bufferedImageCache.containsKey(cacheKey)) {
-                return bufferedImageCache.get(cacheKey);
-            }
-
-            transform.setToIdentity();
-            transform.scale(scale, scale);
-            transformop = new AffineTransformOp(transform, AffineTransformOp.TYPE_BICUBIC);
-
-            bufferedImage = transformop.filter(image, null);
-            bufferedImageCache.put(cacheKey, bufferedImage);
-
-            return bufferedImage;
+        if (Math.abs(scale - 1) <= 0.01) {
+            return image;
         }
-        return image;
+
+        String cacheKey = image.hashCode() + "_" + scale;
+
+        if (bufferedImageCache.containsKey(cacheKey)) {
+            return bufferedImageCache.get(cacheKey);
+        }
+
+        transform.setToIdentity();
+        transform.scale(scale, scale);
+        transformop = new AffineTransformOp(transform, AffineTransformOp.TYPE_BICUBIC);
+
+        bufferedImage = transformop.filter(image, null);
+        bufferedImageCache.put(cacheKey, bufferedImage);
+
+        return bufferedImage;
     }
 
     public List<BufferedImage> getScaledFrames(List<BufferedImage> frames, float scale) {
-        if(scale == 1){
+        if (Math.abs(scale - 1) <= 0.01) {
             return frames;
         }
 
@@ -71,7 +72,7 @@ public class ImageResizer {
     }
 
     public BufferedImage resizeImageToDimensions(BufferedImage image, int width, int height) {
-        if(width >= 2147483647){
+        if (width >= 2147483647) {
             System.out.println("Width dimension too large, probably tried to divide or multiply by 0");
             return bufferedImage;
         }

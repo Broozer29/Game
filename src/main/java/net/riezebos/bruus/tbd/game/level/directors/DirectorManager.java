@@ -4,6 +4,7 @@ import net.riezebos.bruus.tbd.DevTestSettings;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyCategory;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyEnums;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyTribes;
+import net.riezebos.bruus.tbd.game.gamestate.GameMode;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.level.LevelManager;
 import net.riezebos.bruus.tbd.game.level.enums.LevelTypes;
@@ -13,6 +14,7 @@ import net.riezebos.bruus.tbd.game.util.performancelogger.PerformanceLoggerManag
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 
 public class DirectorManager {
 
@@ -29,7 +31,6 @@ public class DirectorManager {
 
 
     private DirectorManager() {
-        createMonsterCards();
         this.performanceLogger = new PerformanceLogger("Director Manager");
     }
 
@@ -58,20 +59,30 @@ public class DirectorManager {
         directorList = new ArrayList<>();
 
 //        Create fast & slow director(s)
+        int loopCount = GameState.getInstance().getGameMode().equals(GameMode.DoubleTrouble) ? 2 : 1;
 
-        Director slowDirector = new Director(DirectorType.Slow, baseMonsterCards);
-        directorList.add(slowDirector);
+        for(int i = 0; i < loopCount; i++) {
+            Director slowDirector = new Director(DirectorType.Slow, baseMonsterCards);
+            directorList.add(slowDirector);
 
-        Director fastDirector = new Director(DirectorType.Fast, baseMonsterCards);
-        directorList.add(fastDirector);
+            Director fastDirector = new Director(DirectorType.Fast, baseMonsterCards);
+            directorList.add(fastDirector);
 
-        Director instantDirector = new Director(DirectorType.Instant, baseMonsterCards);
-        instantDirector.receiveCredits(Math.min(200 * GameState.getInstance().getDifficultyCoefficient(), 650));
-        directorList.add(instantDirector);
+            Director instantDirector = new Director(DirectorType.Instant, baseMonsterCards);
 
-        lastCashCarrierSpawnTime = 0;
+            int minMultiplier = GameState.getInstance().getGameMode().equals(GameMode.Formatted) ? 400 : 200;
+            int maxAmount = GameState.getInstance().getGameMode().equals(GameMode.Formatted) ? 1200 : 650;
+
+            instantDirector.receiveCredits(Math.min(minMultiplier * GameState.getInstance().getDifficultyCoefficient(), maxAmount));
+            directorList.add(instantDirector);
+        }
+
+
         Director miniBossDirector = new Director(DirectorType.MiniBoss, miniBossMonsterCards);
         directorList.add(miniBossDirector);
+
+        lastCashCarrierSpawnTime = 0;
+
     }
 
     public Director getTestDirector() {
@@ -90,13 +101,24 @@ public class DirectorManager {
 
         EnemyTribes enemyTribes = LevelManager.getInstance().getCurrentEnemyTribe();
 
-        List<EnemyEnums> availableMonsters = Arrays.stream(EnemyEnums.values())
+        List<EnemyEnums> availableMonsters = new ArrayList<>();
+        List<EnemyEnums> filteredEnemies = Arrays.stream(EnemyEnums.values())
                 .filter(enemyEnums -> GameState.getInstance().getStagesCompleted() >= enemyEnums.getMinimumStageLevelRequired())
                 .filter(enemyEnums -> enemyEnums.getEnemyCategory() != EnemyCategory.Special
                         && enemyEnums.getEnemyCategory() != EnemyCategory.Summon
                         && enemyEnums.getEnemyCategory() != EnemyCategory.Boss
+                        && enemyEnums.getEnemyCategory() != EnemyCategory.MiniBoss
                         && enemyEnums.getEnemyTribe().equals(enemyTribes))
                 .toList();
+
+        if (GameState.getInstance().getGameMode().equals(GameMode.MonoCultural)) {
+            Random random = new Random();
+            if (!filteredEnemies.isEmpty()) {
+                availableMonsters.add(filteredEnemies.get(random.nextInt(filteredEnemies.size())));
+            }
+        } else {
+            availableMonsters = filteredEnemies;
+        }
 
         for (EnemyEnums enemy : availableMonsters) {
             MonsterCard card = new MonsterCard(enemy, enemy.getCreditCost(), enemy.getWeight());
@@ -131,7 +153,7 @@ public class DirectorManager {
 
     public void distributeCredits() {
         GameState gameStateInfo = GameState.getInstance();
-        float creditAmount = (float) ((1 + 0.025 * gameStateInfo.getDifficultyCoefficient())) + (LevelManager.getInstance().getCurrentLevelDifficultyScore() * 0.35f); // Determine the amount of credits to distribute
+        float creditAmount = (float) ((0.5f + 0.025 * gameStateInfo.getDifficultyCoefficient())) + (LevelManager.getInstance().getCurrentLevelDifficultyScore() * 0.35f); // Determine the amount of credits to distribute
 
         if (testingRichMode) {
             creditAmount = creditAmount * this.testingCreditsBonus;

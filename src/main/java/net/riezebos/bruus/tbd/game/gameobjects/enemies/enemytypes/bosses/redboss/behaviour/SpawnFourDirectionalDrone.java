@@ -22,8 +22,8 @@ import java.util.Random;
 public class SpawnFourDirectionalDrone implements BossActionable {
 
 
-    private double lastSpawnedTime = 0;
-    private double spawnCooldown = 16;
+    private double lastSpawnedTime = GameState.getInstance().getGameSeconds();
+    private double spawnCooldown = 18;
     private Random random;
     private int priority = 3;
 
@@ -35,6 +35,8 @@ public class SpawnFourDirectionalDrone implements BossActionable {
         if (spawnAnimation == null) {
             initSpawnAnimation(enemy);
         }
+
+//        updateSpawnCooldown(enemy);
 
         if (enemy.isAllowedToFire() && currentTime >= lastSpawnedTime + spawnCooldown && WithinVisualBoundariesCalculator.isWithinBoundaries(enemy)) {
             updateSpawnAnimationLocation(enemy);
@@ -60,6 +62,12 @@ public class SpawnFourDirectionalDrone implements BossActionable {
             return false; //we not finished yet
         }
         return true; //We dont have anything to do at this point
+    }
+
+    private void updateSpawnCooldown(Enemy enemy) {
+        if(enemy.getCurrentHitpoints() <= (enemy.getMaxHitPoints() * 0.5f)){
+            spawnCooldown = 14;
+        }
     }
 
     private void initSpawnAnimation(Enemy enemy) {
@@ -112,6 +120,7 @@ public class SpawnFourDirectionalDrone implements BossActionable {
     public boolean isAvailable(Enemy enemy) {
         return enemy.isAllowedToFire()
                 && GameState.getInstance().getGameSeconds() >= lastSpawnedTime + spawnCooldown
-                && WithinVisualBoundariesCalculator.isWithinBoundaries(enemy);
+                && WithinVisualBoundariesCalculator.isWithinBoundaries(enemy)
+                && EnemyManager.getInstance().getEnemiesByType(EnemyEnums.FourDirectionalDrone).size() < 5;
     }
 }

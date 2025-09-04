@@ -31,6 +31,7 @@ public class ImageDatabase {
 
     private BufferedImage alienBombImage;
     private List<BufferedImage> rotatingBoxes = new ArrayList<>();
+    private List<BufferedImage> explosion3 = new ArrayList<>();
     private List<BufferedImage> mothershipdroneMissile = new ArrayList<>();
     private List<BufferedImage> shurikenMiniBoss = new ArrayList<>();
     private List<BufferedImage> mothershipMiniBoss = new ArrayList<>();
@@ -259,7 +260,10 @@ public class ImageDatabase {
     private BufferedImage fireFighter;
     private BufferedImage sc2MineExplosion;
     private BufferedImage nepotismUnlock;
-
+    private BufferedImage synergeticLinkIcon;
+    private BufferedImage constructionKitIcon;
+    private BufferedImage vengeancerProtocolIcon;
+    private BufferedImage emergencyRepairsIcon;
 
     private List<BufferedImage> cashCarrierFrames = new ArrayList<>();
     private List<BufferedImage> spaceStationBossFrames = new ArrayList<>();
@@ -312,6 +316,7 @@ public class ImageDatabase {
     private List<BufferedImage> levelUpAnimation = new ArrayList<>();
     private List<BufferedImage> cashExplosion = new ArrayList<>();
     private List<BufferedImage> redBossFrames = new ArrayList<>();
+    private List<BufferedImage> reverseHealing = new ArrayList<>();
 
     // Background images
     private BufferedImage moon;
@@ -550,6 +555,10 @@ public class ImageDatabase {
     }
 
     private void initIcons() {
+        this.synergeticLinkIcon = imgLoader.getImage(ImageEnums.SynergeticLinkIcon);
+        this.vengeancerProtocolIcon = imgLoader.getImage(ImageEnums.VengeanceProtocolIcon);
+        this.constructionKitIcon = imgLoader.getImage(ImageEnums.ConstructionKitIcon);
+        this.emergencyRepairsIcon = imgLoader.getImage(ImageEnums.EmergencyRepairsIcon);
         this.starcraft2_Protoss_Shield_Disintegrate = imgLoader
                 .getImage(ImageEnums.Starcraft2_Protoss_Shield_Disintegrate);
         this.starcraft2_Psi_Storm2 = imgLoader.getImage(ImageEnums.Starcraft2_Psi_Storm2);
@@ -868,6 +877,14 @@ public class ImageDatabase {
 
     public BufferedImage getImage(ImageEnums imageType) {
         switch (imageType) {
+            case SynergeticLinkIcon:
+                return this.synergeticLinkIcon;
+            case EmergencyRepairsIcon:
+                return this.emergencyRepairsIcon;
+            case ConstructionKitIcon:
+                return this.constructionKitIcon;
+            case VengeanceProtocolIcon:
+                return this.vengeancerProtocolIcon;
             case FireFighterUnlock:
                 return this.firefighterUnlock;
             case NepotismUnlock:
@@ -1467,6 +1484,10 @@ public class ImageDatabase {
 
     public List<BufferedImage> getAnimation(ImageEnums imageType) {
         switch (imageType) {
+            case ReverseHealing:
+                return reverseHealing;
+            case Explosion3:
+                return this.explosion3;
             case MotherShipDroneMissile:
                 return mothershipdroneMissile;
             case RotatingCoins:
@@ -2072,6 +2093,12 @@ public class ImageDatabase {
             healingAnimation.add(image);
         }
 
+        for (int i = 0; i < 5; i++) {
+            String sourceString = String.format("/images/gif/PNGtoGIF/Reverse Healing/%d.png", i);
+            BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+            reverseHealing.add(image);
+        }
+
         for (int i = 0; i < 24; i++) {
             String sourceString = String.format("/images/gif/PNGtoGIF/PlasmaLauncherMissile/%d.png", i);
             BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
@@ -2105,6 +2132,12 @@ public class ImageDatabase {
             String sourceString = String.format("/images/gif/PNGtoGIF/Explosion 2/tile%d.png", i);
             BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
             explosion2.add(image);
+        }
+
+        for (int i = 0; i < 62; i++) {
+            String sourceString = String.format("/images/gif/PNGtoGIF/Explosion 3/%d.png", i);
+            BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+            explosion3.add(image);
         }
 
         for (int i = 0; i < 4; i++) {

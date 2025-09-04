@@ -98,7 +98,7 @@ public class LaserbeamMiniBoss extends Enemy {
         LaserbeamConfiguration laserbeamConfiguration = new LaserbeamConfiguration(false, this.damage);
         laserbeamConfiguration.setOriginObject(this);
         laserbeamConfiguration.setOwner(this);
-        laserbeamConfiguration.setAmountOfLaserbeamSegments(7);
+        laserbeamConfiguration.setAmountOfLaserbeamSegments(6);
         laserbeamConfiguration.setAngleDegrees(angleDegrees);
 
         AngledLaserBeam laserbeam = new AngledLaserBeam(laserbeamConfiguration);

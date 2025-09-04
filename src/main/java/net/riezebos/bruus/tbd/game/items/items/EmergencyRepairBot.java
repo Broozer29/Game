@@ -27,7 +27,7 @@ public class EmergencyRepairBot extends Item {
             gameObject.takeDamage(-healingAmount); // Apply healing
             // Reduce the quantity of the item by 1
             this.decreaseQuantityOfItem(1);
-            AudioManager.getInstance().addAudio(AudioEnums.ItemAcquired);
+            AudioManager.getInstance().addAudio(AudioEnums.GenericSelect);
         }
     }
 

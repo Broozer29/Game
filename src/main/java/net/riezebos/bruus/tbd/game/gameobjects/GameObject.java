@@ -140,7 +140,6 @@ public class GameObject extends Sprite {
         this.currentBoardBlock = BoardBlockUpdater.getBoardBlock(xCoordinate);
         this.allowedToMove = true;
         this.allowedVisualsToRotate = true;
-
     }
 
     protected void initMovementConfiguration(MovementConfiguration movementConfiguration) {

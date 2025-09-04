@@ -54,7 +54,7 @@ public class SpaceShip extends GameObject {
     private PlayerStats playerStats = PlayerStats.getInstance();
 
     private List<SpriteAnimation> playerFollowingAnimations = new ArrayList<SpriteAnimation>();  //inherit from gameobject?
-    private SpaceShipRegularGun spaceShipRegularGun = null;
+    private PrimaryPlayerGun primaryPlayerGun = null;
     private SpaceShipSpecialGun spaceShipSpecialGun = null;
     private List<SpecialAttack> playerFollowingSpecialAttacks = new ArrayList<SpecialAttack>();
     public boolean allowMovementBeyondBoundaries = false;
@@ -99,7 +99,7 @@ public class SpaceShip extends GameObject {
 
 
         currentShieldRegenDelayFrame = 0;
-        this.spaceShipRegularGun = new SpaceShipRegularGun();
+        this.primaryPlayerGun = new PrimaryPlayerGun();
         this.spaceShipSpecialGun = new SpaceShipSpecialGun();
         if (shouldLoadEngineAnim) {
             initExhaustAnimation(ImageEnums.Default_Player_Engine);
@@ -260,7 +260,7 @@ public class SpaceShip extends GameObject {
     public void updateGameTick() {
         this.currentShieldRegenDelayFrame++;
         postCreationActivities();
-        spaceShipRegularGun.updateFrameCount();
+        primaryPlayerGun.updateFrameCount();
         spaceShipSpecialGun.updateFrameCount();
 
         movePlayerAnimations();
@@ -543,12 +543,12 @@ public class SpaceShip extends GameObject {
 
     // Launch a missile from the center point of the spaceship
     private void startPrimaryFiring() {
-        spaceShipRegularGun.fire(this.xCoordinate + this.width, this.getCenterYCoordinate(),
+        primaryPlayerGun.fire(this.xCoordinate + this.width, this.getCenterYCoordinate(),
                 playerStats.getAttackType());
     }
 
     private void haltPrimaryFiring() {
-        spaceShipRegularGun.stopFiring();
+        primaryPlayerGun.stopFiring();
     }
 
     private void fireSpecialAttack() {
@@ -735,8 +735,8 @@ public class SpaceShip extends GameObject {
         return PlayerStats.getInstance().getMaxHitPoints();
     }
 
-    public SpaceShipRegularGun getSpaceShipRegularGun() {
-        return spaceShipRegularGun;
+    public PrimaryPlayerGun getSpaceShipRegularGun() {
+        return primaryPlayerGun;
     }
 
     public SpaceShipSpecialGun getSpaceShipSpecialGun() {

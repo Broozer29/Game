@@ -123,8 +123,8 @@ public class ItemDescriptionRetriever {
                         "% (+%" + Math.round(ElectricSupercharger.buffAmount * 100) + "%) damage.";
             }
             case ReflectiveShielding -> {
-                return "Whilst your shield is up, enemy missiles have a " + Math.round(ReflectiveShielding.procChance * 100) + "% (+" + Math.round(ReflectiveShielding.procChanceIncrease * 100) + "%) chance to reflect back dealing " +
-                        + Math.round(ReflectiveShielding.buffAmount * 100) + "% (+" + Math.round(ReflectiveShielding.buffAmount * 100) + "%) bonus damage";
+                return "Whilst your shield is up, colliding with enemy missiles returns a missile dealing " +
+                        Math.round(ReflectiveShielding.buffAmount * 100) + "% (+" + Math.round(ReflectiveShielding.buffAmount * 100) + "%) damage";
             }
             case Thornweaver -> {
                 return "Colliding with enemies now applies 100% Thorns damage to them. You take " + Math.round(Thornweaver.collisionDamageReduction * 100) +
@@ -223,13 +223,22 @@ public class ItemDescriptionRetriever {
                         "Your Protoss Shuttles gain 5% (+5%) base attack speed per Protoss Scout that is alive."; //This is WILDLY oversimplified, as it changes the base attack speed
             }
             case InfernalPreIgniter -> {
-                return "Flamethrowers damage scales with remaining fuel. Dealing up to " + Math.round(InfernalPreIgniter.maxDamageBonnus * 100) +"% damage when full and 0% damage when empty.";
+                return "Flamethrowers damage scales with remaining fuel. Dealing up to " + Math.round(InfernalPreIgniter.maxDamageBonnus * 100) + "% damage when full and 0% damage when empty.";
             }
             case FuelCannister -> {
                 return "Increases maximum fuel capacity and fuel regeneration by " + Math.round(FuelCannister.bonusFuelMultiplier * 100) + "%.";
             }
             case ConstructionKit -> {
                 return "Increases Protoss Ship construction speed by " + Math.round(ConstructionKit.additionalConstructionSpeed * 100) + "%.";
+            }
+            case EmergencyRepairs -> {
+                return "Increases Protoss Ship construction speed by " + Math.round(EmergencyRepairs.constructionSpeedBonusMultiplier * 100) + "% (+" + Math.round(EmergencyRepairs.constructionSpeedBonusMultiplier * 100) + "%). For " + Math.round(EmergencyRepairs.duration) + " seconds after a Protoss Ship dies.";
+            }
+            case VengeanceProtocol -> {
+                return "Protoss Ships explode upon death, dealing " + Math.round(VengeanceProtocol.explosionDamageMultiplier * 100) + "% (+" + Math.round(VengeanceProtocol.explosionDamageMultiplier * 100) + "%). damage";
+            }
+            case ArbiterDamage -> {
+                return "Protoss Arbiters no longer heal allies. Protoss Arbiters gain " + Math.round(ArbiterDamage.damageIncreaseMultiplier * 100)  + "% increased effectiveness and damage random enemies.";
             }
 
             default -> {

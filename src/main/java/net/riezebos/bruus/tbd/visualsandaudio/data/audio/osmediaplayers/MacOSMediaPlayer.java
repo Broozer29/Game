@@ -74,6 +74,9 @@ public class MacOSMediaPlayer {
     public void setPlaybackPositionTo0() {
         String script = String.format("tell application \"Music\" to set player position to 0");
         executeAppleScriptAsync(script);
+        currentSeconds = 0;
+        totalSeconds = 0;
+        synchronizePlaybackInfo();
     }
 
     public void synchronizePlaybackInfo() {
@@ -185,6 +188,10 @@ public class MacOSMediaPlayer {
 
     public double getCurrentSeconds() {
         return currentSeconds;
+    }
+
+    public void resetCurrentSeconds() {
+        currentSeconds = 0;
     }
 
     public double getTotalSeconds() {

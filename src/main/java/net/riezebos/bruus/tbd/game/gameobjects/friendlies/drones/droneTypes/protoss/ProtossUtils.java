@@ -77,7 +77,7 @@ public class ProtossUtils {
     }
 
     public static boolean canHostMoreProtoss() {
-        int currentAmount = PlayerStats.getInstance().getAmountOfProtossArbiters() + PlayerStats.getInstance().getAmountOfProtossShuttles() + PlayerStats.getInstance().getAmountOfProtossScouts();
+        int currentAmount = PlayerStats.getInstance().getAmountOfProtossShuttles() + PlayerStats.getInstance().getAmountOfProtossScouts();
         return currentAmount < PlayerStats.getInstance().getMaxAmountOfProtoss();
     }
 

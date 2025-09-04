@@ -367,6 +367,14 @@ public class ImageLoader {
                 return "/images/Letters/Letter_Zero.png";
             case Starcraft2FireBatWeapon:
                 return "/images/Icons/Starcraft2 Firebat Weapon.png";
+            case VengeanceProtocolIcon:
+                return "/images/Icons/VengeanceProtocol.png";
+            case EmergencyRepairsIcon:
+                return "/images/Icons/EmergencyRepairs.png";
+            case ConstructionKitIcon:
+                return "/images/Icons/ConstructionKit.png";
+            case SynergeticLinkIcon:
+                return "/images/Icons/SynergeticLink.png";
             case Starcraft2_Advanced_Optics:
                 return "/images/Icons/Starcraft2 AdvancedOptics.png";
             case CannisterOfGasoline:

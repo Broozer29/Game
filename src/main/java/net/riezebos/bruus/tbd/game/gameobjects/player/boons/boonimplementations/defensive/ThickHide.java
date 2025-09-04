@@ -5,7 +5,6 @@ import net.riezebos.bruus.tbd.game.gameobjects.player.boons.Boon;
 import net.riezebos.bruus.tbd.game.gameobjects.player.boons.BoonCategories;
 import net.riezebos.bruus.tbd.game.gameobjects.player.boons.BoonEnums;
 import net.riezebos.bruus.tbd.game.gameobjects.player.boons.boonimplementations.BoonActivationEnums;
-import net.riezebos.bruus.tbd.game.gameobjects.player.boons.boonimplementations.utility.BountyHunter;
 import net.riezebos.bruus.tbd.game.playerprofile.PlayerProfileManager;
 import net.riezebos.bruus.tbd.guiboards.boardEnums.MenuFunctionEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.AudioManager;
@@ -67,7 +66,7 @@ public class ThickHide implements Boon {
             PlayerProfileManager.getInstance().getLoadedProfile().setThickHideLevel(currentLevel + 1);
             PlayerProfileManager.getInstance().getLoadedProfile().addEmeralds(-upgradeCost);
             PlayerProfileManager.getInstance().exportCurrentProfile();
-            AudioManager.getInstance().addAudio(AudioEnums.ItemAcquired);
+            AudioManager.getInstance().addAudio(AudioEnums.GenericSelect);
         }else if(canUpgradeFurther() && PlayerProfileManager.getInstance().getLoadedProfile().getEmeralds() < upgradeCost){
             AudioManager.getInstance().addAudio(AudioEnums.GenericError);
         }

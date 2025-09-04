@@ -100,13 +100,13 @@ public class SpecialAttackDrone extends Drone {
             orbitingLingeringFlame.setImageType(ImageEnums.ModuleScorchFlames);
             orbitingLingeringFlame.setScale(scale);
 
-            float damage = PlayerStats.getInstance().getDroneDamage() * 0.2f; //20% of drone base damage
+            float damage = PlayerStats.getInstance().getDroneDamage() * 0.5f * PlayerStats.getInstance().getSpecialBonusDamageMultiplier();
 
             SpriteAnimationConfiguration spriteAnimationConfiguration = new SpriteAnimationConfiguration(orbitingLingeringFlame, 0, true);
             SpecialAttackConfiguration missileConfiguration = new SpecialAttackConfiguration(damage, true, true, false, true, false, false);
 
             LingeringFlame lingeringFlame = new LingeringFlame(spriteAnimationConfiguration, missileConfiguration);
-            lingeringFlame.setCenteredAroundObject(true);
+            lingeringFlame.setAllowedVisualsToRotate(false);
             lingeringFlame.setOwnerOrCreator(this);
             lingeringFlame.setDuration(999999999); //practically infinite
 

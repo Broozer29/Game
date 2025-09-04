@@ -181,6 +181,7 @@ public class AudioManager {
         if (backGroundMusic != null) {
             backGroundMusic.stopClip();
             backGroundMusic.setLoop(false);
+            AudioDatabase.getInstance().removeClipFromActiveClips(backGroundMusic);
             backGroundMusic = null;
             currentSong = null;
         }
@@ -188,6 +189,7 @@ public class AudioManager {
         if (GameState.getInstance().getGameState().equals(GameStatusEnums.Dead) || GameState.getInstance().getGameState().equals(GameStatusEnums.Show_Level_Score_Card)) {
             if (this.musicMediaPlayer == MusicMediaPlayer.iTunesMacOS) {
                 macOSMediaPlayer.stopPlayback();
+                macOSMediaPlayer.resetCurrentSeconds();
             }
             if (this.musicMediaPlayer == MusicMediaPlayer.Spotify) {
                 spotifyMediaPlayer.stopPlayback();
@@ -231,7 +233,7 @@ public class AudioManager {
             double currentGameSeconds = GameState.getInstance().getGameSeconds();
             if (predictedEndGameSeconds > 0) {
                 if (shouldResync(currentGameSeconds)) {
-                    synchronizePrediction(currentGameSeconds);
+                    synchronizePrediction();
                     lastSyncGameSeconds = currentGameSeconds;
                 }
                 // Check if the current game seconds match or exceed the predicted end time
@@ -281,7 +283,7 @@ public class AudioManager {
     }
 
 
-    private void synchronizePrediction(double currentGameSeconds) {
+    private void synchronizePrediction() {
         double actualCurrentSeconds = -1;
         double totalSeconds = -1;
 
@@ -296,7 +298,7 @@ public class AudioManager {
         }
 
         if (actualCurrentSeconds >= 0 && totalSeconds > 0) {
-            predictedEndGameSeconds = currentGameSeconds + (totalSeconds - actualCurrentSeconds);
+            predictedEndGameSeconds = GameState.getInstance().getGameSeconds() + (totalSeconds - actualCurrentSeconds);
         }
     }
 
@@ -337,6 +339,7 @@ public class AudioManager {
         } else if (this.musicMediaPlayer == MusicMediaPlayer.Spotify) {
             spotifyMediaPlayer.setPlaybackPositionTo0();
             spotifyMediaPlayer.startPlayback();
+            synchronizePrediction();
 
             double trackDuration = spotifyMediaPlayer.getTotalSeconds();
             predictedEndGameSeconds = GameState.getInstance().getGameSeconds() + trackDuration;

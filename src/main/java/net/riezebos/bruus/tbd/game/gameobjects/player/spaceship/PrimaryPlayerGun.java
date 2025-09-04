@@ -31,7 +31,7 @@ import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteAnimation;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteAnimationConfiguration;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteConfiguration;
 
-public class SpaceShipRegularGun {
+public class PrimaryPlayerGun {
 
     private MissileManager missileManager = MissileManager.getInstance();
     private AudioManager audioManager = AudioManager.getInstance();
@@ -44,7 +44,7 @@ public class SpaceShipRegularGun {
     private float orangeBarMaxValue = -10;
     private float orangeBarCurrentValue = -10;
 
-    public SpaceShipRegularGun() {
+    public PrimaryPlayerGun() {
 
     }
 
@@ -130,10 +130,10 @@ public class SpaceShipRegularGun {
 
 
     // Fuel tank mechanics
-    private final float FUEL_DEPLETION_RATE = 0.4f;
+    private final float FUEL_DEPLETION_RATE = 0.5f;
     private final float FUEL_REGENERATION_RATE = 0.4f;
-    private final float FUEL_MINIMUM_REQUIRED = 0.3f;
-    public static float fireFighterBonusDamageRatio = 1.3f;
+    private final float FUEL_MINIMUM_REQUIRED = 1f;
+    public static float fireFighterBonusDamageRatio = 1f;
 
     private void startFiringFlameThrower(int xCoordinate, int yCoordinate) {
         if (this.channeledAttack == null && orangeBarCurrentValue >= FUEL_MINIMUM_REQUIRED) {
@@ -147,7 +147,7 @@ public class SpaceShipRegularGun {
             spriteConfiguration.setyCoordinate(yCoordinate);
             spriteConfiguration.setImageType(ImageEnums.FireFighterFlameThrowerAppearing);
 
-            float damage = playerStats.getNormalAttackDamage() * 1.3f;
+            float damage = playerStats.getNormalAttackDamage() * fireFighterBonusDamageRatio;
 
 
             SpriteAnimationConfiguration spriteAnimationConfiguration = new SpriteAnimationConfiguration(spriteConfiguration, 3, true);

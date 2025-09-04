@@ -93,21 +93,21 @@ public class MenuButton extends GUIComponent {
                 PlayerStats.getInstance().setPlayerClass(PlayerClass.Captain);
                 BoardManager.getInstance().getClassSelectionBoard().recreateCursor();
                 BoardManager.getInstance().getClassSelectionBoard().addCursorAnimation();
-                AudioManager.getInstance().addAudio(AudioEnums.ItemAcquired);
+                AudioManager.getInstance().addAudio(AudioEnums.GenericSelect);
                 AudioManager.getInstance().addAudio(AudioEnums.getSelectClassAudioByClass(PlayerClass.Captain));
                 break;
             case SelectFireFighterClass:
                 PlayerStats.getInstance().setPlayerClass(PlayerClass.FireFighter);
                 BoardManager.getInstance().getClassSelectionBoard().recreateCursor();
                 BoardManager.getInstance().getClassSelectionBoard().addCursorAnimation();
-                AudioManager.getInstance().addAudio(AudioEnums.ItemAcquired);
+                AudioManager.getInstance().addAudio(AudioEnums.GenericSelect);
                 AudioManager.getInstance().addAudio(AudioEnums.getSelectClassAudioByClass(PlayerClass.FireFighter));
                 break;
             case SelectCarrierClass:
                 PlayerStats.getInstance().setPlayerClass(PlayerClass.Carrier);
                 BoardManager.getInstance().getClassSelectionBoard().recreateCursor();
                 BoardManager.getInstance().getClassSelectionBoard().addCursorAnimation();
-                AudioManager.getInstance().addAudio(AudioEnums.ItemAcquired);
+                AudioManager.getInstance().addAudio(AudioEnums.GenericSelect);
                 AudioManager.getInstance().addAudio(AudioEnums.getSelectClassAudioByClass(PlayerClass.Carrier));
                 break;
             case ContinueSaveFile:
@@ -149,6 +149,26 @@ public class MenuButton extends GUIComponent {
                             DataClass.getInstance().getWindowWidth() / 2,
                             DataClass.getInstance().getWindowHeight() / 2);
                 }
+                break;
+            case SelectDefaultGameMode:
+                GameState.getInstance().setGameMode(GameMode.Default);
+                AudioManager.getInstance().addAudio(AudioEnums.GenericSelect);
+                break;
+            case SelectManModeGameMode:
+                GameState.getInstance().setGameMode(GameMode.ManMode);
+                AudioManager.getInstance().addAudio(AudioEnums.GenericSelect);
+                break;
+            case SelectMonoCulturalGameMode:
+                GameState.getInstance().setGameMode(GameMode.MonoCultural);
+                AudioManager.getInstance().addAudio(AudioEnums.GenericSelect);
+                break;
+            case SelectDoubleTroubleGameMode:
+                GameState.getInstance().setGameMode(GameMode.DoubleTrouble);
+                AudioManager.getInstance().addAudio(AudioEnums.GenericSelect);
+                break;
+            case SelectFormattedGameMode:
+                GameState.getInstance().setGameMode(GameMode.Formatted);
+                AudioManager.getInstance().addAudio(AudioEnums.GenericSelect);
                 break;
             default:
                 System.out.println("Unimplemented functionality");

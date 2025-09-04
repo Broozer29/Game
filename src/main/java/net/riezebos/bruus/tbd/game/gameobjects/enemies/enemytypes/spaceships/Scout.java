@@ -37,6 +37,7 @@ public class Scout extends Enemy {
             pathFinder.setShouldDecreaseBoardBlock(true);
             pathFinder.setDecreaseBoardBlockAmountBy(2);
         }
+        this.allowedToFire = true; //in case its not hoverpathfinder
     }
 
     @Override

@@ -34,7 +34,7 @@ public class PrecisionAmplifier extends Item {
             return; //We don't want to handle special attacks here as special attacks hit multiple times, they should check crits per hit
         }
 
-        float roll = random.nextFloat() * 100; // Roll a number between 0 and 100
+        float roll = random.nextFloat(); // Roll a number between 0 and 100
 
         if (roll < (critChance * quantity)) {
             attack.setACrit(true);

@@ -107,7 +107,7 @@ public class AudioLoader {
             case Alien_Bomb_Destroyed:
                 // DUPLICATE
                 return "/audio/Destroyed Explosion.wav";
-            case ItemAcquired:
+            case GenericSelect:
                 return "/audio/PowerUpAcquired.wav";
             case Rocket_Launcher:
                 return "/audio/Rocket Launcher.wav";

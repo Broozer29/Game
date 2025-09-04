@@ -137,7 +137,7 @@ public class ShopManager {
             ItemRarityEnums itemRarity = ItemRarityEnums.getRandomRareItemSlot();
             ItemEnums itemToAdd = getRandomAvailableItemByRarity(itemRarity);
             PlayerInventory.getInstance().addItem(itemToAdd);
-            AudioManager.getInstance().addAudio(AudioEnums.ItemAcquired);
+            AudioManager.getInstance().addAudio(AudioEnums.GenericSelect);
             ContractHelper.getInstance().removeContract(contractCounter);
             BoardManager.getInstance().getShopBoard().addGUIAnimation(getContractAnimation(itemToAdd, yOffset));
             yOffset += ShopBoardCreator.shopItemIconDimensions + 5;

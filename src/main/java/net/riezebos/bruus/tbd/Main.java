@@ -41,6 +41,8 @@ public class Main {
 	}
 	private static void preloadThings(){
 		// Load LARGE animations so it doesn't lag upon creation of them
+
+
 		EnemyEnums enemyEnum = EnemyEnums.Shuriken;
 		Enemy shuriken = EnemyCreator.createEnemy(enemyEnum, 0, 0, Direction.LEFT,
 				enemyEnum.getDefaultScale(), enemyEnum.getMovementSpeed(), enemyEnum.getMovementSpeed(), MovementPatternSize.SMALL, false);
@@ -65,7 +67,6 @@ public class Main {
 		Enemy redBoss = EnemyCreator.createEnemy(enemyEnum, 0, 0, Direction.LEFT,
 				enemyEnum.getDefaultScale(), enemyEnum.getMovementSpeed(), enemyEnum.getMovementSpeed(), MovementPatternSize.SMALL, false);
 		redBoss.deleteObject();
-
 		enemyEnum = EnemyEnums.FourDirectionalDrone;
 		Enemy fDrone = EnemyCreator.createEnemy(enemyEnum, 0, 0, Direction.LEFT,
 				enemyEnum.getDefaultScale(), enemyEnum.getMovementSpeed(), enemyEnum.getMovementSpeed(), MovementPatternSize.SMALL, false);
@@ -75,8 +76,6 @@ public class Main {
 		Enemy yellowBoss = EnemyCreator.createEnemy(enemyEnum, 0, 0, Direction.LEFT,
 				enemyEnum.getDefaultScale(), enemyEnum.getMovementSpeed(), enemyEnum.getMovementSpeed(), MovementPatternSize.SMALL, false);
 		yellowBoss.deleteObject();
-
-
 
 		simulateAttackAngles(true);
 		simulateAttackAngles(false);

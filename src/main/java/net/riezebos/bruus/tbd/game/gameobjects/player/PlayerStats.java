@@ -37,8 +37,8 @@ public class PlayerStats {
     //firefighter
     public static float fireFighterBaseDamage = 10f;
     public static float fireFighterAttackSpeed = 0.32f;
-    public static float igniteDamageMultiplier = 0.024f;
-    public static float igniteDuration = 1.35f;
+    public static float igniteDamageMultiplier = 0.022f;
+    public static float igniteDuration = 1.15f;
     private float igniteDurationMultiplier = 1;
     private float bonusIgniteDamageMultiplier = 1f;
     private float fuelCannisterMultiplier = 1;
@@ -264,6 +264,7 @@ public class PlayerStats {
         setKnockBackDamping(0.775f);
         this.protossShipConstructionBonusSpeedModifier = 1f;
 
+
         //special
         setSpecialBaseDamage(0);
         setSpecialAttackRechargeCooldown(1.35f);
@@ -326,7 +327,7 @@ public class PlayerStats {
 
         //Ik ben dizzy terwijl ik dit maak, ik kom er ff niet uit of dit juist is of niet ik doe het nu omslachtig om het zeker te weten plz help me nog anderhalf uur op de werkvloer
         boolean shouldIncreaseBaseDamage = true;
-        if (BoonManager.getInstance().getDefensiveBoon() != null && BoonManager.getInstance().getDefensiveBoon().equals(BoonEnums.THICK_HIDE)) {
+        if (BoonManager.getInstance().getActiveBoon() != null && BoonManager.getInstance().getActiveBoon().equals(BoonEnums.THICK_HIDE)) {
             shouldIncreaseBaseDamage = false;
         }
 
@@ -355,7 +356,7 @@ public class PlayerStats {
                 playLevelUpAnimation(player);
         AudioManager.getInstance().
 
-                addAudio(AudioEnums.ItemAcquired);
+                addAudio(AudioEnums.GenericSelect);
     }
 
     public float getNormalAttackDamage() {

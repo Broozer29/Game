@@ -75,7 +75,6 @@ public class MainMenuBoard extends JPanel implements TimerHolder {
         setBackground(Color.BLACK);
         setPreferredSize(new Dimension(boardWidth, boardHeight));
 
-        controllers.initController();
         if (controllers.getFirstController() != null) {
             foundControllerBool = true;
             controllerInputReader = controllers.getFirstController();
@@ -103,7 +102,6 @@ public class MainMenuBoard extends JPanel implements TimerHolder {
         selectDefaultMusicButton = MenuBoardCreator.selectDefaultLocalMusicPlayer(selectMusicOptionBackgroundCard);
         selectMacOSMediaPlayerButton = MenuBoardCreator.selectMacOSItunesMediaPlayer(selectDefaultMusicButton);
         inputMapping = MenuBoardCreator.createInputMapping();
-        testingButton = MenuBoardCreator.selectBossMode(continueSaveFile);
         initializedMenuObjects = true;
     }
 

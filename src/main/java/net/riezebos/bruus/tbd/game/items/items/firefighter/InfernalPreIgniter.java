@@ -11,7 +11,7 @@ import net.riezebos.bruus.tbd.game.items.enums.ItemApplicationEnum;
 
 public class InfernalPreIgniter extends Item {
 
-    public static float maxDamageBonnus = 2;
+    public static float maxDamageBonnus = 4;
     public InfernalPreIgniter () {
         super(ItemEnums.InfernalPreIgniter, 1, ItemApplicationEnum.UponAcquiring);
     }

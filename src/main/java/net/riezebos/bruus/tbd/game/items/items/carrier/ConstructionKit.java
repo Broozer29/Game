@@ -10,7 +10,7 @@ import net.riezebos.bruus.tbd.game.items.enums.ItemApplicationEnum;
 public class ConstructionKit extends Item {
 
     private boolean shouldApply;
-    public static float additionalConstructionSpeed = 0.4f;
+    public static float additionalConstructionSpeed = 1f;
 
     public ConstructionKit() {
         super(ItemEnums.ConstructionKit, 1, ItemApplicationEnum.UponAcquiring);

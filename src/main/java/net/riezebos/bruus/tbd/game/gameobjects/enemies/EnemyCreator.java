@@ -13,6 +13,8 @@ import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.spaceships.*;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.zerg.*;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyEnums;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.minibosses.*;
+import net.riezebos.bruus.tbd.game.gamestate.GameMode;
+import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.movement.Direction;
 import net.riezebos.bruus.tbd.game.movement.MovementConfiguration;
 import net.riezebos.bruus.tbd.game.movement.MovementPatternSize;
@@ -41,8 +43,15 @@ public class EnemyCreator {
     }
 
     private static PathFinder getPathFinderByEnemy (EnemyEnums enemyType) {
+        boolean isFormatted = GameState.getInstance().getGameMode().equals(GameMode.Formatted);
+
         switch (enemyType) {
             case Seeker, Energizer, Tazer, Scout, RedBoss, CarrierBoss, ZergDevourer, ZergGuardian, ZergQueen, YellowBoss, MotherShipMiniBoss -> {
+                if(isFormatted && (
+                        enemyType.equals(EnemyEnums.Scout) || enemyType.equals(EnemyEnums.Energizer) || enemyType.equals(EnemyEnums.Seeker)
+                                || enemyType.equals(EnemyEnums.Tazer) || enemyType.equals(EnemyEnums.ZergDevourer) || enemyType.equals(EnemyEnums.ZergGuardian))){
+                    return new StraightLinePathFinder();
+                }
                 return new HoverPathFinder();
             }
             case FourDirectionalDrone, PulsingDrone, SpaceStationBoss, CarrierPulsingDrone, EnemyCarrierBeacon, DefenderMiniBoss, LaserbeamMiniBoss -> {
@@ -63,10 +72,10 @@ public class EnemyCreator {
             case ZergGuardian -> movementConfiguration.setBoardBlockToHoverIn(6);
             case ZergQueen -> movementConfiguration.setBoardBlockToHoverIn(7);
             case Scout -> movementConfiguration.setBoardBlockToHoverIn(7);
-            case Seeker -> {
+            case Seeker, YellowBoss -> {
                 movementConfiguration.setBoardBlockToHoverIn(6);
             }
-            case Energizer, YellowBoss -> {
+            case Energizer -> {
                 movementConfiguration.setBoardBlockToHoverIn(5);
             }
             case Tazer, MotherShipMiniBoss -> {

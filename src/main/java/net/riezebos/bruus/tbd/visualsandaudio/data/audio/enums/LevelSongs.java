@@ -137,7 +137,7 @@ public enum LevelSongs {
             case CarrierBoss:
                 return AudioEnums.nomad;
             case YellowBoss:
-                return AudioEnums.keygen;
+                return AudioEnums.WaveshaperMonster;
             default:
                 return getRandomBossSong();
         }

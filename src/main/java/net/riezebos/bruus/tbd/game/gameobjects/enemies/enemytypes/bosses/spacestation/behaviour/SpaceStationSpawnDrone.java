@@ -23,7 +23,7 @@ public class SpaceStationSpawnDrone implements BossActionable {
     private double lastSpawnedTime = GameState.getInstance().getGameSeconds();
     private double spawnCooldown = 20;
     private Random random;
-    private int priority = 3;
+    private int priority = 4;
 
     private SpriteAnimation spawnAnimation;
 
@@ -45,7 +45,7 @@ public class SpaceStationSpawnDrone implements BossActionable {
 
 
             if(spawnAnimation.isPlaying() && spawnAnimation.getCurrentFrame() == 4) {
-                for(int i = 0; i < 2; i++) {
+                for(int i = 0; i < 1; i++) {
                     Enemy pulsingDrone = createPulsingDrone(enemy);
                     pulsingDrone.setCenterCoordinates(spawnAnimation.getCenterXCoordinate(), spawnAnimation.getCenterYCoordinate());
                     EnemyManager.getInstance().addEnemy(pulsingDrone);

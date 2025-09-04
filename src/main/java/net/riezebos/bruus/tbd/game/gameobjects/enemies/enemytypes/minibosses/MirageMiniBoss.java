@@ -44,7 +44,7 @@ public class MirageMiniBoss extends Enemy {
         this.detonateOnCollision = false;
         this.knockbackStrength = 8;
         this.damage = 10;
-        this.attackSpeed = 5;
+        this.attackSpeed = 3;
 
         initializeDirections();
 
@@ -89,7 +89,7 @@ public class MirageMiniBoss extends Enemy {
             spawnCloneAnimation();
             super.cleanseAllEffects();
 
-            for (int i = 0; i < 3; i++) {
+            for (int i = 0; i < 1; i++) {
                 createClone();
             }
 

@@ -2,8 +2,7 @@ package net.riezebos.bruus.tbd.guiboards.boardcreators;
 
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerClass;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
-import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SpaceShipRegularGun;
-import net.riezebos.bruus.tbd.game.playerprofile.PlayerProfile;
+import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.PrimaryPlayerGun;
 import net.riezebos.bruus.tbd.game.playerprofile.PlayerProfileManager;
 import net.riezebos.bruus.tbd.guiboards.boardEnums.MenuFunctionEnums;
 import net.riezebos.bruus.tbd.guiboards.guicomponents.DisplayOnly;
@@ -190,7 +189,7 @@ public class ClassSelectionBoardCreator {
                 return "Shoot a laserbeam dealing 200% damage.";
             case FireFighter:
                 if (PlayerProfileManager.getInstance().getLoadedProfile().isFireFighterUnlocked()) {
-                    return "Hold fire to unleash a flamethrower which deals damage and destroys missiles. Deals " + Math.round(SpaceShipRegularGun.fireFighterBonusDamageRatio * 100) +"% damage and applies Ignite.";
+                    return "Hold fire to unleash a flamethrower which deals damage and destroys missiles. Deals " + Math.round(PrimaryPlayerGun.fireFighterBonusDamageRatio * 100) +"% damage and applies Ignite.";
                 }
 
                 return ClassDescription.getInstance(PlayerClass.FireFighter).getUnlockCondition();

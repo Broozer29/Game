@@ -24,7 +24,7 @@ public enum AudioEnums {
     Default_EMP(false),
     Furi_Wisdowm_Of_Rage(false),
     Destroyed_Explosion(false),
-    ItemAcquired(false),
+    GenericSelect(false),
     Flamethrower(false),
     Rocket_Launcher(false),
     NONE(false),

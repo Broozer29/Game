@@ -531,6 +531,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
         drawCurrentAmountOFMinerals(g);
 
         g.setColor(Color.WHITE);
+        g.setFont(new Font(DataClass.getInstance().getTextFont(), Font.BOLD, Math.round(12 * DataClass.getInstance().getResolutionFactor())));
         g.drawString("Difficulty coeff: " + gameState.getDifficultyCoefficient(), firstTextColumnXCoordinate, DataClass.getInstance().getPlayableWindowMaxHeight() + 25);
         g.drawString("Current stage: " + gameState.getStagesCompleted(), firstTextColumnXCoordinate, DataClass.getInstance().getPlayableWindowMaxHeight() + 45);
         g.drawString("Enemy level: " + gameState.getMonsterLevel(), firstTextColumnXCoordinate, DataClass.getInstance().getPlayableWindowMaxHeight() + 65);
@@ -819,26 +820,21 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
     }
 
 
-    private double currentGameSeconds = 0;
-    private double predictedFinishSeconds = 0;
+
 
     private void drawSongProgressBar(Graphics2D g) {
-        if (gameState.getGameState().equals(GameStatusEnums.Playing)) {
-            currentGameSeconds = GameState.getInstance().getGameSeconds();
-            predictedFinishSeconds = AudioManager.getInstance().getPredictedEndGameSeconds();
-        }
-
-        if (currentGameSeconds < 0 && predictedFinishSeconds < 0) {
+        if (GameState.getInstance().getCurrentLevelProgression() < 0 && AudioManager.getInstance().getPredictedEndGameSeconds() - GameState.getInstance().getLevelStartTime() < 0) {
             //If these values don't make sense, don't attempt to draw the bar
             return;
         }
+
         UIObject progressBar = gameUICreator.getProgressBarFrame();
         UIObject progressBarFilling = gameUICreator.getProgressBarFilling();
         UIObject spaceShipIndicator = gameUICreator.getProgressBarSpaceShipIndicator();
 
         if (!LevelManager.getInstance().getLevelType().equals(LevelTypes.Boss)) {
             // Calculate the width of the progress bar filling based on the current position of the song
-            int progressBarWidth = GameUICreator.getInstance().calculateProgressBarFillingWidth(currentGameSeconds, predictedFinishSeconds);
+            int progressBarWidth = GameUICreator.getInstance().calculateProgressBarFillingWidth(GameState.getInstance().getCurrentLevelProgression(), AudioManager.getInstance().getPredictedEndGameSeconds() - GameState.getInstance().getLevelStartTime());
 
             // Resize the progress bar filling
             progressBarFilling.resizeToDimensions(progressBarWidth, progressBarFilling.getHeight());

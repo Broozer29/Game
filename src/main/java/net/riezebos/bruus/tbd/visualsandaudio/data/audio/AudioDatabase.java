@@ -17,6 +17,7 @@ public class AudioDatabase {
     private CustomAudioClip nomad;
     private CustomAudioClip keygen;
     private CustomAudioClip bloodOnTheDanceFloor;
+    private CustomAudioClip waveshaperMonster;
 
     private CustomAudioClip silentAudio;
 
@@ -85,7 +86,7 @@ public class AudioDatabase {
         put(AudioEnums.Alien_Spaceship_Destroyed, 5);
         put(AudioEnums.Large_Ship_Destroyed, 5);
         put(AudioEnums.Default_EMP, 2);
-        put(AudioEnums.ItemAcquired, 5);
+        put(AudioEnums.GenericSelect, 5);
         put(AudioEnums.Firewall, 2);
         put(AudioEnums.Rocket_Launcher, 3);
         put(AudioEnums.Flamethrower, 1);
@@ -94,8 +95,8 @@ public class AudioDatabase {
         put(AudioEnums.NewPlayerLaserbeam, 9);
         put(AudioEnums.PlayerTakesDamage, 5);
         put(AudioEnums.SpecialAttackFinishedCharging, 2);
-        put(AudioEnums.SpaceStationBlastingOff, 1);
-        put(AudioEnums.SpaceStationChargingUpMovement, 1);
+        put(AudioEnums.SpaceStationBlastingOff, 2);
+        put(AudioEnums.SpaceStationChargingUpMovement, 2);
     }};
 
     private AudioDatabase() {
@@ -152,6 +153,7 @@ public class AudioDatabase {
         silentAudio = new CustomAudioClip(AudioEnums.SilentAudio);
         keygen = new CustomAudioClip(AudioEnums.keygen);
         nomad = new CustomAudioClip(AudioEnums.nomad);
+        waveshaperMonster = new CustomAudioClip(AudioEnums.WaveshaperMonster);
     }
 
     private void loadSoundEffects() {
@@ -196,6 +198,8 @@ public class AudioDatabase {
                 return this.nomad;
             case keygen:
                 return this.keygen;
+            case WaveshaperMonster:
+                return this.waveshaperMonster;
             case Player_Laserbeam:
             case Destroyed_Explosion:
             case Alien_Spaceship_Destroyed:
@@ -203,7 +207,7 @@ public class AudioDatabase {
             case Large_Ship_Destroyed:
             case Default_EMP:
             case Alien_Bomb_Destroyed:
-            case ItemAcquired:
+            case GenericSelect:
             case Rocket_Launcher:
             case Flamethrower:
             case Firewall:
@@ -233,6 +237,14 @@ public class AudioDatabase {
 
     public List<CustomAudioClip> getAllActiveClips() {
         return allActiveClips;
+    }
+
+    public void removeClipFromActiveClips(CustomAudioClip clip){
+        if(allActiveClips.contains(clip)){
+            clip.setPlaybackPosition(0);
+            clip.stopClip();
+            allActiveClips.remove(clip);
+        }
     }
 
     public PerformanceLogger getPerformanceLogger() {

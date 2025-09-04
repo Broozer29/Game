@@ -208,8 +208,8 @@ public class SpaceStationLaserbeamAttack implements BossActionable {
         return enemy.isAllowedToFire()
                 && GameState.getInstance().getGameSeconds() >= lastAttackedTime + attackCooldown
                 && WithinVisualBoundariesCalculator.isWithinBoundaries(enemy)
-                && enemy.getXCoordinate() == centerPoint.getX()
-                && enemy.getYCoordinate() == centerPoint.getY();
+                && Math.abs(enemy.getXCoordinate() - centerPoint.getX()) <= 1
+                && Math.abs(enemy.getYCoordinate() - centerPoint.getY()) <= 1;
     }
 
 

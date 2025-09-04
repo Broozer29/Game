@@ -195,11 +195,18 @@ public class ShopBoard extends JPanel implements TimerHolder {
             hardMiniBossConfig = shopBoardCreator.createLongSelection(songLengthBackgroundCard);
         }
 
-        lengthSelectionText = shopBoardCreator.createSongSelectionText(songLengthBackgroundCard, hardMiniBossConfig);
 
-        regularGridFourthRow.add(easyMiniBossConfig);
+        songLengthBackgroundCard = shopBoardCreator.createSongLengthBackgroundCard(); //why is this needed broken???
+        lengthSelectionText = shopBoardCreator.createSongSelectionText(songLengthBackgroundCard, mediumMiniBossConfig);
+
+        if (!LevelManager.getInstance().isNextLevelABossLevel()) {
+            regularGridFourthRow.add(easyMiniBossConfig);
+        }
+
         regularGridFourthRow.add(mediumMiniBossConfig);
-        regularGridFourthRow.add(hardMiniBossConfig);
+        if (!LevelManager.getInstance().isNextLevelABossLevel()) {
+            regularGridFourthRow.add(hardMiniBossConfig);
+        }
         offTheGridObjects.addAll(lengthSelectionText.getComponents());
 
 

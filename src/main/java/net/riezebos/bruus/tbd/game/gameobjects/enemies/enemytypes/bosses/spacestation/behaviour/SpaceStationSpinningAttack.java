@@ -33,8 +33,8 @@ public class SpaceStationSpinningAttack implements BossActionable {
     private float newMoveSpeedModifier = 2.75f;
 
     public SpaceStationSpinningAttack () {
-        chargingUpMovement = AudioDatabase.getInstance().getAudioClip(AudioEnums.SpaceStationChargingUpMovement);
-        boostingAway = AudioDatabase.getInstance().getAudioClip(AudioEnums.SpaceStationBlastingOff);
+//        chargingUpMovement = AudioDatabase.getInstance().getAudioClip(AudioEnums.SpaceStationChargingUpMovement);
+//        boostingAway = AudioDatabase.getInstance().getAudioClip(AudioEnums.SpaceStationBlastingOff);
         centerPoint = EnemyCreator.calculateSpaceStationBossDestination(EnemyEnums.SpaceStationBoss);
     }
 
@@ -44,6 +44,8 @@ public class SpaceStationSpinningAttack implements BossActionable {
         double currentTime = GameState.getInstance().getGameSeconds();
         if (enemy.isAllowedToFire() && currentTime >= lastAttackedTime + attackCooldown && WithinVisualBoundariesCalculator.isWithinBoundaries(enemy)) {
             if (!chargingUp) {
+                chargingUpMovement = AudioDatabase.getInstance().getAudioClip(AudioEnums.SpaceStationChargingUpMovement);
+                boostingAway = AudioDatabase.getInstance().getAudioClip(AudioEnums.SpaceStationBlastingOff);
                 chargingUpMovement.startClip();
                 enemy.getAnimation().setFrameDelay(0);
                 chargingUp = true;
@@ -63,7 +65,9 @@ public class SpaceStationSpinningAttack implements BossActionable {
             enemy.getMovementConfiguration().setYMovementSpeed(oldMoveSpeed * newMoveSpeedModifier);
             isMoving = true;
             isBouncing = true;
-            boostingAway.startClip();
+            if(boostingAway != null) {
+                boostingAway.startClip();
+            }
         }
 
         if (isMoving) {
@@ -116,7 +120,7 @@ public class SpaceStationSpinningAttack implements BossActionable {
         return enemy.isAllowedToFire()
                 && GameState.getInstance().getGameSeconds() >= lastAttackedTime + attackCooldown
                 && WithinVisualBoundariesCalculator.isWithinBoundaries(enemy)
-                && enemy.getXCoordinate() == centerPoint.getX()
-                && enemy.getYCoordinate() == centerPoint.getY();
+                && Math.abs(enemy.getXCoordinate() - centerPoint.getX()) <= 1
+                && Math.abs(enemy.getYCoordinate() - centerPoint.getY()) <= 1;
     }
 }

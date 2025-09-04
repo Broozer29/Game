@@ -6,11 +6,14 @@ import net.riezebos.bruus.tbd.game.gameobjects.friendlies.FriendlyObjectConfigur
 import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.Drone;
 import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.droneTypes.DroneTypes;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.*;
+import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.items.ItemEnums;
 import net.riezebos.bruus.tbd.game.items.PlayerInventory;
+import net.riezebos.bruus.tbd.game.items.items.carrier.EmergencyRepairs;
 import net.riezebos.bruus.tbd.game.items.items.carrier.SynergeticLink;
+import net.riezebos.bruus.tbd.game.items.items.carrier.VengeanceProtocol;
 import net.riezebos.bruus.tbd.game.movement.Direction;
 import net.riezebos.bruus.tbd.game.movement.MovementConfiguration;
 import net.riezebos.bruus.tbd.game.movement.MovementPatternSize;
@@ -29,7 +32,7 @@ public class ProtossScout extends Drone {
     private int attackRange = 200;
     private float defaultMoveSpeed = 3.45f;
     private boolean isMovingSlow = false;
-    public static float scoutDamageFactor = 0.75f;
+    public static float scoutDamageFactor = 0.85f;
     private boolean isMovingAroundCarrierDrone = false;
     private float baseDamage = 0;
 
@@ -168,5 +171,19 @@ public class ProtossScout extends Drone {
         missile.setAllowedVisualsToRotate(false); //Prevent it from being rotated again by the SpriteMover
         missile.setOwnerOrCreator(this);
         MissileManager.getInstance().addExistingMissile(missile);
+    }
+
+    @Override
+    public void triggerOnDeathActions() {
+        super.triggerOnDeathActions();
+        if(PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.EmergencyRepairs) != null){
+            EmergencyRepairs emergencyRepairs = (EmergencyRepairs) PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.EmergencyRepairs);
+            emergencyRepairs.applyEffectToObject(PlayerManager.getInstance().getSpaceship());
+        }
+
+        if(PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.VengeanceProtocol) != null){
+            VengeanceProtocol vengeanceProtocol = (VengeanceProtocol) PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.VengeanceProtocol);
+            vengeanceProtocol.applyEffectToObject(this);
+        }
     }
 }

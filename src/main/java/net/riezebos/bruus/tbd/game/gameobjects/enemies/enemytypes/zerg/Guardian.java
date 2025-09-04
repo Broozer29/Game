@@ -30,7 +30,7 @@ public class Guardian extends Enemy {
         destroyedExplosionfiguration.getSpriteConfiguration().setImageType(this.enemyType.getDestructionType());
         this.destructionAnimation = new SpriteAnimation(destroyedExplosionfiguration);
         this.missileTypePathFinders = PathFinderEnums.StraightLine;
-        this.damage = 15;
+        this.damage = 10;
         this.attackSpeed = 3;
         this.detonateOnCollision = false;
         this.knockbackStrength = 8;

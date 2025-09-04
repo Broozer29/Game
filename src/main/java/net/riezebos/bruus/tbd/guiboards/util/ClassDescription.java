@@ -48,8 +48,8 @@ public class ClassDescription {
                 break;
             case Captain:
                 title = "Captain";
-                description = "The Captain shoots laserbeams and uses a rapidly recharging EMP to destroy any enemies or missiles nearby. " +
-                        "The Captain specializes in upgrading his laserbeams and Guardian Drones whilst staying far away from enemies.";
+                description = "The Captain shoots laserbeams and uses a rapidly recharging EMP to destroy any nearby missiles or enemies. " +
+                        "";
                 baseDamage = PlayerStats.captainBaseDamage;
                 baseAttackSpeed = PlayerStats.captainAttackSpeed;
                 maxHitpoints = PlayerStats.captainBaseHitpoints;
@@ -58,7 +58,7 @@ public class ClassDescription {
                 break;
             case Carrier:
                 title = "Carrier";
-                description = "The Carrier has no attacks of his own. Instead, he creates an armada of Protoss ships to fight for him. " +
+                description = "The Carrier cannot attack. The Carrier creates an armada of Protoss ships to fight around him. " +
                         "The Carrier can deploy a destructable beacon, Protoss ships will prioritize flying around the beacon. Switching gears allows the Carrier to rebuild destroyed Protoss ships or " +
                         "rapidly move away from danger.";
                 baseDamage = PlayerStats.carrierBaseDamage;

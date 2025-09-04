@@ -1,4 +1,4 @@
-package net.riezebos.bruus.tbd.game.items.items.disabled;
+package net.riezebos.bruus.tbd.game.items.items.deprecated;
 
 import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.Enemy;

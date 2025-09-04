@@ -291,7 +291,7 @@ public class MissileManager {
             if (reflectiveShielding != null && reflectiveShielding.attemptToReflectMissile(missile)
                     && PlayerManager.getInstance().getSpaceship().getCurrentShieldPoints() > 0) {
                 ThornsDamageDealer.getInstance().reflectMissile(collisionInfo.getCollisionPoint(), missile);
-                return; //don't want to continue since we reflected/blocked the missile
+//                return; //don't want to continue since we reflected/blocked the missile
             }
 
             if (missile.getMissileEnum().equals(MissileEnums.TazerProjectile)) {

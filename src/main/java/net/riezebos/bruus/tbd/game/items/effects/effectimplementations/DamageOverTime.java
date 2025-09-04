@@ -102,14 +102,7 @@ public class DamageOverTime implements EffectInterface {
             }
         } else {
             if (this.dotStacks > 0) {
-                this.dotStacks -= 1;
-                startTimeInSeconds = currentTime;
-
-                if (dotStacks < animationList.size()) {
-                    animationList.get(animationList.size() - 1).setVisible(false);
-                    animationList.remove(animationList.size() - 1);
-                }
-
+                this.dotStacks = 0;
             }
         }
     }

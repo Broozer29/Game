@@ -22,5 +22,7 @@ public enum EffectIdentifiers {
     CarrierBeaconArmorBonus,
     CarrierBeaconAttackSpeedBonus,
     EndOfLevelBurn,
-    PulsingDroneSlow, MartyrdomAttackSpeed;
+    PulsingDroneSlow,
+    EmergencyRepairsConstructionIncrease,
+    MartyrdomAttackSpeed;
 }

@@ -27,6 +27,7 @@ public class ImageRotator {
         blockedFromRotating.add(ImageEnums.SpaceStationBoss);
         blockedFromRotating.add(ImageEnums.ShurikenMiniBoss);
         blockedFromRotating.add(ImageEnums.DefenderMiniBoss);
+        blockedFromRotating.add(ImageEnums.MotherShipDroneMissile);
     }
 
     public static ImageRotator getInstance () {
