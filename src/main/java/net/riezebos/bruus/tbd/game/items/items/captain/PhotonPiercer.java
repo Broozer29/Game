@@ -1,6 +1,7 @@
 package net.riezebos.bruus.tbd.game.items.items.captain;
 
 import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
+import net.riezebos.bruus.tbd.game.gameobjects.missiles.Missile;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerClass;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
 import net.riezebos.bruus.tbd.game.items.Item;
@@ -28,7 +29,7 @@ public class PhotonPiercer extends Item {
     @Override
     public void modifyAttackingObject (GameObject attack, GameObject target) {
         // Check if the current hit points are 90% or more of the maximum hit points
-        if (target.getCurrentHitpoints() >= hpRequirement * target.getMaxHitPoints()) {
+        if (attack instanceof Missile && target.getCurrentHitpoints() >= hpRequirement * target.getMaxHitPoints()) {
             attack.modifyBonusDamageMultiplier(damageAmplificationModifier * quantity);
         }
     }

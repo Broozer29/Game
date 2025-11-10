@@ -10,15 +10,15 @@ public class ImageLoader {
     private static ImageLoader instance = new ImageLoader();
     private BufferedImage bufferedImage = null;
 
-    private ImageLoader () {
+    private ImageLoader() {
     }
 
-    public static ImageLoader getInstance () {
+    public static ImageLoader getInstance() {
         return instance;
     }
 
 
-    public BufferedImage getImage (ImageEnums image) {
+    public BufferedImage getImage(ImageEnums image) {
         try {
             String path = convertImageStringToURL(image);
             InputStream stream = this.getClass().getResourceAsStream(path);
@@ -39,7 +39,7 @@ public class ImageLoader {
         }
     }
 
-    public BufferedImage getSpritesheetImage (String spritesheetImageString) {
+    public BufferedImage getSpritesheetImage(String spritesheetImageString) {
         try {
             InputStream stream = this.getClass().getResourceAsStream(spritesheetImageString);
             if (stream == null) {
@@ -59,7 +59,7 @@ public class ImageLoader {
         }
     }
 
-    public BufferedImage getSpritesheetImageFromStream (InputStream stream) {
+    public BufferedImage getSpritesheetImageFromStream(InputStream stream) {
         try {
             return ImageIO.read(stream);
         } catch (IOException e) {
@@ -69,7 +69,7 @@ public class ImageLoader {
         }
     }
 
-    private String convertImageStringToURL (ImageEnums image) {
+    private String convertImageStringToURL(ImageEnums image) {
         switch (image) {
             case UIDamageOverlay:
                 return "/images/UI/Damage Overlay.png";
@@ -85,6 +85,16 @@ public class ImageLoader {
                 return "/images/Alien bomb.png";
             case Moon:
                 return "/images/background/moon1.png";
+            case RedNebula:
+                return "/images/background/RedNebula.png";
+            case RedNebula2:
+                return "/images/background/RedNebula2.png";
+            case RedNebula3:
+                return "/images/background/RedNebula3.png";
+            case RedNebula4:
+                return "/images/background/RedNebula4.png";
+            case RedNebula5:
+                return "/images/background/RedNebula5.png";
             case Lava_Planet:
                 return "/images/background/lavaplanet1.png";
             case Mars_Planet:
@@ -121,6 +131,14 @@ public class ImageLoader {
                 return "/images/background/Blue Nebula 5 - 1024x1024.png";
             case Blue_Nebula_6:
                 return "/images/background/Blue Nebula 6 - 1024x1024.png";
+            case Blue_Nebula_7:
+                return "/images/background/Blue Nebula 7 - 1024x1024.png";
+            case Blue_Nebula_8:
+                return "/images/background/Blue Nebula 8 - 1024x1024.png";
+            case Blue_Nebula_9:
+                return "/images/background/BlueNebula9.png";
+            case DiverseNebula:
+                return "/images/background/DiverseNebula.png";
             case Green_Nebula_1:
                 return "/images/background/Green Nebula 1 - 1024x1024.png";
             case Green_Nebula_2:
@@ -149,6 +167,16 @@ public class ImageLoader {
                 return "/images/background/Purple Nebula 6 - 1024x1024.png";
             case Purple_Nebula_7:
                 return "/images/background/Purple Nebula 7 - 1024x1024.png";
+            case Purple_Nebula_8:
+                return "/images/background/Purple Nebula 8 - 1024x1024.png";
+            case Star_Field_1:
+                return "/images/background/Starfield1.png";
+            case Star_Field_2:
+                return "/images/background/Starfield2.png";
+            case Star_Field_3:
+                return "/images/background/Starfield3.png";
+            case Star_Field_4:
+                return "/images/background/Starfield4.png";
             case Starcraft2_Auto_Tracking:
                 return "/images/Icons/Starcraft2 Auto Tracking.png";
             case Starcraft2_Blue_Flame:
@@ -386,19 +414,29 @@ public class ImageLoader {
             case Starcraft2_Focused_Crystal:
                 return "/images/Icons/Starcraft2 FocusedCrystal.png";
             case Starcraft2_Platinum_Sponge:
-                return  "/images/Icons/Starcraft2 Platinum Sponge.png";
+                return "/images/Icons/Starcraft2 Platinum Sponge.png";
             case Starcraft2_MineExplosion:
-                return  "/images/Icons/Starcraft2 Mine Explosion.png";
+                return "/images/Icons/Starcraft2 Mine Explosion.png";
             case StickyOilIcon:
-                return  "/images/Icons/stickyoil.png";
+                return "/images/Icons/stickyoil.png";
+            case StuiversBestFriend:
+                return "/images/Icons/stuiversbestfriend.png";
+            case ArbiterDamage:
+                return "/images/Icons/arbiterdamage.png";
+            case EphemeralBlaze:
+                return "/images/Icons/ephemeralblaze.png";
+            case Eternaflame:
+                return "/images/Icons/eternaflame.png";
+            case GlassCannon:
+                return "/images/Icons/glasscannon.png";
             case Starcraft2_Overclock:
-                return  "/images/Icons/Starcraft2 Overclock.png";
+                return "/images/Icons/Starcraft2 Overclock.png";
             case Starcraft2_Armor_Piercing:
-                return  "/images/Icons/Starcraft2 Armor Piercing.png";
+                return "/images/Icons/Starcraft2 Armor Piercing.png";
             case MoneyPrinter:
-                return  "/images/Icons/moneyprinter.png";
+                return "/images/Icons/moneyprinter.png";
             case StickyDynamite:
-                return  "/images/Icons/stickydynamite.png";
+                return "/images/Icons/stickydynamite.png";
             case Star_Blue1:
                 return "/images/background/LargeStars/star_blue01.png";
             case Star_Blue2:
@@ -447,6 +485,14 @@ public class ImageLoader {
                 return "/images/background/Moon 4.png";
             case Moon5:
                 return "/images/background/Moon 5.png";
+            case SpaceClouds1:
+                return "/images/background/Clouds1.png";
+            case SpaceClouds2:
+                return "/images/background/Clouds2.png";
+            case SpaceClouds3:
+                return "/images/background/Clouds3.png";
+            case SpaceClouds4:
+                return "/images/background/Clouds4.png";
             case GreenPlanet1:
                 return "/images/background/Green planet 1.png";
             case GreenPlanet2:
@@ -463,6 +509,34 @@ public class ImageLoader {
                 return "/images/background/Blue planet 5.png";
             case BluePlanet6:
                 return "/images/background/Blue planet 6.png";
+            case BluePlanet7:
+                return "/images/background/Blue planet 7.png";
+            case BluePlanet8:
+                return "/images/background/Blue planet 8.png";
+            case BluePlanet9:
+                return "/images/background/Blue planet 9.png";
+            case RedPlanet1:
+                return "/images/background/Red planet 1.png";
+            case RedPlanet2:
+                return "/images/background/Red planet 2.png";
+            case RedPlanet3:
+                return "/images/background/Red planet 3.png";
+            case RedPlanet4:
+                return "/images/background/Red planet 4.png";
+            case RedPlanet5:
+                return "/images/background/Red planet 5.png";
+            case RedPlanet6:
+                return "/images/background/Red planet 6.png";
+            case RedPlanet7:
+                return "/images/background/Red planet 7.png";
+            case RedPlanet8:
+                return "/images/background/Red planet 8.png";
+            case GreenPlanet3:
+                return "/images/background/Green planet 3.png";
+            case GreenPlanet4:
+                return "/images/background/Green planet 4.png";
+            case GreenPlanet5:
+                return "/images/background/Green planet 5.png";
             case BlueWings1:
                 return "/images/UI/Wings/Blue/01.png";
             case BlueWings2:
@@ -571,61 +645,118 @@ public class ImageLoader {
                 return "/images/UI/gradelight.png";
             case ProtossCarrierWithoutEngine:
                 return "/images/Ships/Player Ships/noenginecarrier.png";
-            case InputMapping:  return "/images/UI/inputmapping.png";
-            case UpWhite: return "/images/Icons/upwhite.png";
-            case CarrierPlaceDroneIcon: return "/images/Icons/CarrierDroneIcon.png";
-            case CarrierSwitchGearsIcon: return "/images/Icons/CarrierSwitchGearsIcon.png";
-            case UpOrange: return "/images/Icons/uporange.png";
-            case UpGrey: return "/images/Icons/upgrey.png";
-            case UpgradeSelectedCheck: return "/images/Icons/upgradeSelected.png";
-            case ProtossShipAmountIcon: return "/images/Icons/protossShipAmountIcon.png";
-            case peepoDeepFriedSadge: return "/images/Icons/Pepeicons/deepFriedSadge.png";
-            case peepoFeelsCringeMan: return "/images/Icons/Pepeicons/feelsCringeMan.png";
-            case peepoFeelsRetardedMan: return "/images/Icons/Pepeicons/feelsretardedman.png";
-            case peepoHmmm: return "/images/Icons/Pepeicons/Hmmm.png";
-            case peepoLookingDown: return "/images/Icons/Pepeicons/lookingDown.png";
-            case peepoMonkaHmmm: return "/images/Icons/Pepeicons/monkaHmmm.png";
-            case peepoMonkaLaugh: return "/images/Icons/Pepeicons/MonkaLaugh.png";
-            case peepoPauseChamp: return "/images/Icons/Pepeicons/PauseChamp.png";
-            case peepoClown: return "/images/Icons/Pepeicons/peepoClown.png";
-            case peepoCringe: return "/images/Icons/Pepeicons/peepoCringe.png";
-            case peepoLaugh: return "/images/Icons/Pepeicons/peepoLaugh.png";
-            case peepoLyingSadge: return "/images/Icons/Pepeicons/peepoLyingSadge.png";
-            case peepoOkay: return "/images/Icons/Pepeicons/peepoOkay.png";
-            case peepoSad: return "/images/Icons/Pepeicons/peeposad.png";
-            case peepoSad2: return "/images/Icons/Pepeicons/peeposad2.png";
-            case peepoShrug: return "/images/Icons/Pepeicons/peeposhrug.png";
-            case peepoSmadge: return "/images/Icons/Pepeicons/peepoSmadge.png";
-            case peepoSmokedge: return "/images/Icons/Pepeicons/peepoSmokedge.png";
-            case peepoSmug: return "/images/Icons/Pepeicons/peepoSmug.png";
-            case peepoStare: return "/images/Icons/Pepeicons/peepostare.png";
-            case peepoUhm: return "/images/Icons/Pepeicons/peepoUhm.png";
-            case peepoAngy: return "/images/Icons/Pepeicons/pepeAngy.png";
-            case peepoBruh: return "/images/Icons/Pepeicons/pepebruh.png";
-            case peepoCoffee: return "/images/Icons/Pepeicons/pepeCoffee.png";
-            case peepoConfused: return "/images/Icons/Pepeicons/pepeConfused.png";
-            case peepoGottem: return "/images/Icons/Pepeicons/pepeGottem.png";
-            case peepoHands: return "/images/Icons/Pepeicons/pepehands.png";
-            case peepoLaugh2: return "/images/Icons/Pepeicons/PepeLaugh.png";
-            case peepoPointLaugh: return "/images/Icons/Pepeicons/pepePointLaugh.png";
-            case peepoW: return "/images/Icons/Pepeicons/pepeW.png";
-            case peepoSadClown: return "/images/Icons/Pepeicons/sadClown.png";
-            case peepoSadge: return "/images/Icons/Pepeicons/sadge.png";
-            case peepoSadgeCry: return "/images/Icons/Pepeicons/sadgeCry.png";
-            case peepoShruge: return "/images/Icons/Pepeicons/shruge.png";
-            case peepoSkillIssue: return "/images/Icons/Pepeicons/skillissue.png";
-            case GUIRefresh: return "/images/Icons/refresh.png";
-            case ThornWeaver: return "/images/Icons/Thornweaver.png";
-            case Thornedplates: return "/images/Icons/ThornedPlates.png";
-            case BarbedAegis: return "/images/Icons/BarbedAegis.png";
-            case BarbedMissiles:return "/images/Icons/Barbed Missiles.png";
-            case ScoutItem: return "/images/Icons/scoutitem.png";
-            case ArbiterItem: return "/images/Icons/arbiteritem.png";
-            case ShuttleItem: return "/images/Icons/shuttleitem.png";
-            case FourDirectionalDrone: return "/images/Ships/Enemy Ships/FourDirectionDrone.png";
-            case SpaceStationBoss: return "/images/Ships/Enemy Ships/SpaceStation/spriteimage.png";
+            case InputMapping:
+                return "/images/UI/inputmapping.png";
+            case UpWhite:
+                return "/images/Icons/upwhite.png";
+            case CarrierPlaceDroneIcon:
+                return "/images/Icons/CarrierDroneIcon.png";
+            case CarrierSwitchGearsIcon:
+                return "/images/Icons/CarrierSwitchGearsIcon.png";
+            case UpOrange:
+                return "/images/Icons/uporange.png";
+            case UpGrey:
+                return "/images/Icons/upgrey.png";
+            case UpgradeSelectedCheck:
+                return "/images/Icons/upgradeSelected.png";
+            case ProtossShipAmountIcon:
+                return "/images/Icons/protossShipAmountIcon.png";
+            case peepoDeepFriedSadge:
+                return "/images/Icons/Pepeicons/deepFriedSadge.png";
+            case peepoFeelsCringeMan:
+                return "/images/Icons/Pepeicons/feelsCringeMan.png";
+            case peepoFeelsRetardedMan:
+                return "/images/Icons/Pepeicons/feelsretardedman.png";
+            case peepoHmmm:
+                return "/images/Icons/Pepeicons/Hmmm.png";
+            case peepoLookingDown:
+                return "/images/Icons/Pepeicons/lookingDown.png";
+            case peepoMonkaHmmm:
+                return "/images/Icons/Pepeicons/monkaHmmm.png";
+            case peepoMonkaLaugh:
+                return "/images/Icons/Pepeicons/MonkaLaugh.png";
+            case peepoPauseChamp:
+                return "/images/Icons/Pepeicons/PauseChamp.png";
+            case peepoClown:
+                return "/images/Icons/Pepeicons/peepoClown.png";
+            case peepoCringe:
+                return "/images/Icons/Pepeicons/peepoCringe.png";
+            case peepoLaugh:
+                return "/images/Icons/Pepeicons/peepoLaugh.png";
+            case peepoLyingSadge:
+                return "/images/Icons/Pepeicons/peepoLyingSadge.png";
+            case peepoOkay:
+                return "/images/Icons/Pepeicons/peepoOkay.png";
+            case peepoSad:
+                return "/images/Icons/Pepeicons/peeposad.png";
+            case peepoSad2:
+                return "/images/Icons/Pepeicons/peeposad2.png";
+            case peepoShrug:
+                return "/images/Icons/Pepeicons/peeposhrug.png";
+            case peepoSmadge:
+                return "/images/Icons/Pepeicons/peepoSmadge.png";
+            case peepoSmokedge:
+                return "/images/Icons/Pepeicons/peepoSmokedge.png";
+            case peepoSmug:
+                return "/images/Icons/Pepeicons/peepoSmug.png";
+            case peepoStare:
+                return "/images/Icons/Pepeicons/peepostare.png";
+            case peepoUhm:
+                return "/images/Icons/Pepeicons/peepoUhm.png";
+            case peepoAngy:
+                return "/images/Icons/Pepeicons/pepeAngy.png";
+            case peepoBruh:
+                return "/images/Icons/Pepeicons/pepebruh.png";
+            case peepoCoffee:
+                return "/images/Icons/Pepeicons/pepeCoffee.png";
+            case peepoConfused:
+                return "/images/Icons/Pepeicons/pepeConfused.png";
+            case peepoGottem:
+                return "/images/Icons/Pepeicons/pepeGottem.png";
+            case peepoHands:
+                return "/images/Icons/Pepeicons/pepehands.png";
+            case peepoLaugh2:
+                return "/images/Icons/Pepeicons/PepeLaugh.png";
+            case peepoPointLaugh:
+                return "/images/Icons/Pepeicons/pepePointLaugh.png";
+            case peepoW:
+                return "/images/Icons/Pepeicons/pepeW.png";
+            case peepoSadClown:
+                return "/images/Icons/Pepeicons/sadClown.png";
+            case peepoSadge:
+                return "/images/Icons/Pepeicons/sadge.png";
+            case peepoSadgeCry:
+                return "/images/Icons/Pepeicons/sadgeCry.png";
+            case peepoShruge:
+                return "/images/Icons/Pepeicons/shruge.png";
+            case peepoSkillIssue:
+                return "/images/Icons/Pepeicons/skillissue.png";
+            case GUIRefresh:
+                return "/images/Icons/refresh.png";
+            case ThornWeaver:
+                return "/images/Icons/Thornweaver.png";
+            case Thornedplates:
+                return "/images/Icons/ThornedPlates.png";
+            case BarbedAegis:
+                return "/images/Icons/BarbedAegis.png";
+            case BarbedMissiles:
+                return "/images/Icons/Barbed Missiles.png";
+            case ScoutItem:
+                return "/images/Icons/scoutitem.png";
+            case ArbiterItem:
+                return "/images/Icons/arbiteritem.png";
+            case ShuttleItem:
+                return "/images/Icons/shuttleitem.png";
+            case CorsairItemIcon:
+                return "/images/Icons/corsairItem.png";
+            case AimAssist:
+                return "/images/Icons/aimassist.png";
+            case FourDirectionalDrone:
+                return "/images/Ships/Enemy Ships/FourDirectionDrone.png";
+            case SpaceStationBoss:
+                return "/images/Ships/Enemy Ships/SpaceStation/spriteimage.png";
             default:
-                return "";
+                return "No path was given!";
         }
     }
 

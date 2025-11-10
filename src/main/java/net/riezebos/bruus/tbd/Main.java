@@ -38,10 +38,16 @@ public class Main {
 				ex.getMainMenuBoard().requestFocus();
 			}
 		});
+		BoardManager ex = BoardManager.getInstance();
+		ex.getMainMenuBoard().requestFocusInWindow();
 	}
 	private static void preloadThings(){
 		// Load LARGE animations so it doesn't lag upon creation of them
 
+
+		Runtime runtime = Runtime.getRuntime();
+		long usedMemory = runtime.totalMemory() - runtime.freeMemory();
+		System.out.printf("Before preload memory usage: %.3f GB%n", usedMemory / (1024.0 * 1024.0 * 1024.0));
 
 		EnemyEnums enemyEnum = EnemyEnums.Shuriken;
 		Enemy shuriken = EnemyCreator.createEnemy(enemyEnum, 0, 0, Direction.LEFT,
@@ -63,10 +69,12 @@ public class Main {
 				enemyEnum.getDefaultScale(), enemyEnum.getMovementSpeed(), enemyEnum.getMovementSpeed(), MovementPatternSize.SMALL, false);
 		cashCarrier.deleteObject();
 
+
 		enemyEnum = EnemyEnums.RedBoss;
 		Enemy redBoss = EnemyCreator.createEnemy(enemyEnum, 0, 0, Direction.LEFT,
 				enemyEnum.getDefaultScale(), enemyEnum.getMovementSpeed(), enemyEnum.getMovementSpeed(), MovementPatternSize.SMALL, false);
 		redBoss.deleteObject();
+
 		enemyEnum = EnemyEnums.FourDirectionalDrone;
 		Enemy fDrone = EnemyCreator.createEnemy(enemyEnum, 0, 0, Direction.LEFT,
 				enemyEnum.getDefaultScale(), enemyEnum.getMovementSpeed(), enemyEnum.getMovementSpeed(), MovementPatternSize.SMALL, false);
@@ -79,6 +87,10 @@ public class Main {
 
 		simulateAttackAngles(true);
 		simulateAttackAngles(false);
+
+		runtime = Runtime.getRuntime();
+		usedMemory = runtime.totalMemory() - runtime.freeMemory();
+		System.out.printf("After preload memory usage: %.3f GB%n", usedMemory / (1024.0 * 1024.0 * 1024.0));
 
 	}
 

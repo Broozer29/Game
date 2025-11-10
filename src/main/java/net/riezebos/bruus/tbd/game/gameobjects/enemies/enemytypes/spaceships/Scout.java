@@ -7,6 +7,7 @@ import net.riezebos.bruus.tbd.game.gameobjects.missiles.MissileConfiguration;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.MissileCreator;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.MissileEnums;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
+import net.riezebos.bruus.tbd.game.movement.Direction;
 import net.riezebos.bruus.tbd.game.movement.MovementConfiguration;
 import net.riezebos.bruus.tbd.game.movement.MovementPatternSize;
 import net.riezebos.bruus.tbd.game.movement.pathfinders.HoverPathFinder;
@@ -35,7 +36,12 @@ public class Scout extends Enemy {
         if(this.movementConfiguration.getPathFinder() instanceof HoverPathFinder pathFinder){
 //            movementConfiguration.setBoardBlockToHoverIn(7);
             pathFinder.setShouldDecreaseBoardBlock(true);
-            pathFinder.setDecreaseBoardBlockAmountBy(2);
+
+            if(this.movementConfiguration.getRotation().equals(Direction.RIGHT)) {
+                pathFinder.setDecreaseBoardBlockAmountBy(-2);
+            } else {
+                pathFinder.setDecreaseBoardBlockAmountBy(2);
+            }
         }
         this.allowedToFire = true; //in case its not hoverpathfinder
     }

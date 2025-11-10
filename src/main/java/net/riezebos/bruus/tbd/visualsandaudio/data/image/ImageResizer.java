@@ -27,7 +27,7 @@ public class ImageResizer {
     }
 
     public BufferedImage getScaledImage(BufferedImage image, float scale) {
-        if (Math.abs(scale - 1) <= 0.01) {
+        if (Math.abs(scale - 1) <= 0.01 || scale == 0) {
             return image;
         }
 

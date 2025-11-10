@@ -6,6 +6,7 @@ import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyManager;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.BossActionable;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyEnums;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
+import net.riezebos.bruus.tbd.game.level.LevelManager;
 import net.riezebos.bruus.tbd.game.movement.BoardBlockUpdater;
 import net.riezebos.bruus.tbd.game.movement.Direction;
 import net.riezebos.bruus.tbd.game.movement.MovementPatternSize;
@@ -36,7 +37,7 @@ public class SpawnFourDirectionalDrone implements BossActionable {
             initSpawnAnimation(enemy);
         }
 
-//        updateSpawnCooldown(enemy);
+        updateSpawnCooldown(enemy);
 
         if (enemy.isAllowedToFire() && currentTime >= lastSpawnedTime + spawnCooldown && WithinVisualBoundariesCalculator.isWithinBoundaries(enemy)) {
             updateSpawnAnimationLocation(enemy);
@@ -65,7 +66,7 @@ public class SpawnFourDirectionalDrone implements BossActionable {
     }
 
     private void updateSpawnCooldown(Enemy enemy) {
-        if(enemy.getCurrentHitpoints() <= (enemy.getMaxHitPoints() * 0.5f)){
+        if (enemy.getCurrentHitpoints() <= (enemy.getMaxHitPoints() * 0.5f)) {
             spawnCooldown = 14;
         }
     }
@@ -98,8 +99,14 @@ public class SpawnFourDirectionalDrone implements BossActionable {
 
     private Enemy createFourDirectionalDrone(Enemy enemy) {
         EnemyEnums enemyEnums = EnemyEnums.FourDirectionalDrone;
+
+        float bonusSpeed = LevelManager.getInstance().getBossDifficultyLevel() > 0.1f ? LevelManager.getInstance().getBossDifficultyLevel() / 2 : 0;
+
         Enemy fourDirectionalDrone = EnemyCreator.createEnemy(enemyEnums, enemy.getXCoordinate(), enemy.getYCoordinate(), Direction.LEFT,
-                enemyEnums.getDefaultScale(), enemyEnums.getMovementSpeed(), enemyEnums.getMovementSpeed(), MovementPatternSize.SMALL, false);
+                enemyEnums.getDefaultScale(),
+                enemyEnums.getMovementSpeed() + bonusSpeed,
+                enemyEnums.getMovementSpeed() + bonusSpeed,
+                MovementPatternSize.SMALL, false);
 
         Point point = BoardBlockUpdater.getRandomCoordinateInBlock(getRandomBoardBlock(), fourDirectionalDrone.getWidth(), fourDirectionalDrone.getHeight());
         fourDirectionalDrone.getMovementConfiguration().setDestination(point);

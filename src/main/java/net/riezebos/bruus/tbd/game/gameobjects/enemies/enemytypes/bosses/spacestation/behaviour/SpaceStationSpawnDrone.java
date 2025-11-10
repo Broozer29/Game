@@ -6,6 +6,7 @@ import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyManager;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.BossActionable;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyEnums;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
+import net.riezebos.bruus.tbd.game.level.LevelManager;
 import net.riezebos.bruus.tbd.game.movement.BoardBlockUpdater;
 import net.riezebos.bruus.tbd.game.movement.Direction;
 import net.riezebos.bruus.tbd.game.movement.MovementPatternSize;
@@ -34,6 +35,8 @@ public class SpaceStationSpawnDrone implements BossActionable {
             initSpawnAnimation(enemy);
         }
 
+        updateSpawnCooldown(enemy);
+
         if (enemy.isAllowedToFire() && currentTime >= lastSpawnedTime + spawnCooldown && WithinVisualBoundariesCalculator.isWithinBoundaries(enemy)) {
             updateSpawnAnimationLocation(enemy);
 
@@ -45,7 +48,7 @@ public class SpaceStationSpawnDrone implements BossActionable {
 
 
             if(spawnAnimation.isPlaying() && spawnAnimation.getCurrentFrame() == 4) {
-                for(int i = 0; i < 1; i++) {
+                for(int i = 0; i < LevelManager.getInstance().getBossDifficultyLevel() + 1; i++) {
                     Enemy pulsingDrone = createPulsingDrone(enemy);
                     pulsingDrone.setCenterCoordinates(spawnAnimation.getCenterXCoordinate(), spawnAnimation.getCenterYCoordinate());
                     EnemyManager.getInstance().addEnemy(pulsingDrone);
@@ -58,6 +61,13 @@ public class SpaceStationSpawnDrone implements BossActionable {
             return false; //we not finished yet
         }
         return true; //We dont have anything to do at this point
+    }
+
+
+    private void updateSpawnCooldown(Enemy enemy) {
+        if(enemy.getCurrentHitpoints() <= (enemy.getMaxHitPoints() * 0.5f)){
+            spawnCooldown = 14;
+        }
     }
 
     private void initSpawnAnimation (Enemy enemy) {

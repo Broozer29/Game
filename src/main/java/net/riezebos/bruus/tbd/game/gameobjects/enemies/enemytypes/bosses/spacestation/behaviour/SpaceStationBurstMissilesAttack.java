@@ -6,6 +6,7 @@ import net.riezebos.bruus.tbd.game.gameobjects.missiles.*;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
 import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SpaceShip;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
+import net.riezebos.bruus.tbd.game.level.LevelManager;
 import net.riezebos.bruus.tbd.game.movement.MovementConfiguration;
 import net.riezebos.bruus.tbd.game.movement.MovementPatternSize;
 import net.riezebos.bruus.tbd.game.movement.Point;
@@ -32,8 +33,7 @@ public class SpaceStationBurstMissilesAttack implements BossActionable {
     private int burstShotsFired = 0;
     private double lastSingleShotAttackTime = 0;
     private double intermittenAttackCooldown = 0.2;
-    private int amountOfShotsPerBurst = 12;
-
+    private int amountOfShotsPerBurst = 12 + (LevelManager.getInstance().getBossDifficultyLevel() * 2);
 
 
     private static final Point[] BASE_ORIGIN_POINTS = {
@@ -42,11 +42,11 @@ public class SpaceStationBurstMissilesAttack implements BossActionable {
             new Point(367, 708)
     };
 
-    public SpaceStationBurstMissilesAttack (){
+    public SpaceStationBurstMissilesAttack() {
         createChargingAnimations();
     }
 
-    private void createChargingAnimations () {
+    private void createChargingAnimations() {
         for (int i = 0; i < BASE_ORIGIN_POINTS.length; i++) {
             SpriteConfiguration spriteConfiguration = new SpriteConfiguration();
             spriteConfiguration.setScale(1.5f);
@@ -60,14 +60,14 @@ public class SpaceStationBurstMissilesAttack implements BossActionable {
         }
     }
 
-    private void updateChargingAnimationLocations (Enemy enemy, int angleDegrees) {
+    private void updateChargingAnimationLocations(Enemy enemy, int angleDegrees) {
         for (int i = 0; i < BASE_ORIGIN_POINTS.length; i++) {
             Point newPoint = getCoordinatesBasedOnTheAngle(BASE_ORIGIN_POINTS[i], enemy, angleDegrees);
             chargingAnimations.get(i).setCenterCoordinates(newPoint.getX(), newPoint.getY());
         }
     }
 
-    private Point getCoordinatesBasedOnTheAngle(Point basePoint, Enemy enemy, int angleDegrees){
+    private Point getCoordinatesBasedOnTheAngle(Point basePoint, Enemy enemy, int angleDegrees) {
         double angleRadians = Math.toRadians(angleDegrees);
         int scaledX = (int) (basePoint.getX() * enemy.getScale());
         int scaledY = (int) (basePoint.getY() * enemy.getScale());
@@ -89,7 +89,8 @@ public class SpaceStationBurstMissilesAttack implements BossActionable {
     }
 
     private int counterForRotationAngle = 0;
-    private int getCurrentRotationAngle (Enemy enemy) {
+
+    private int getCurrentRotationAngle(Enemy enemy) {
         if (enemy.getAnimation().getCurrentFrame() == 120) {
             counterForRotationAngle += 1;
         }
@@ -102,9 +103,8 @@ public class SpaceStationBurstMissilesAttack implements BossActionable {
     }
 
 
-
     @Override
-    public boolean activateBehaviour (Enemy enemy) {
+    public boolean activateBehaviour(Enemy enemy) {
         double currentTime = GameState.getInstance().getGameSeconds();
         int currentRotationAngle = getCurrentRotationAngle(enemy);
 
@@ -132,7 +132,7 @@ public class SpaceStationBurstMissilesAttack implements BossActionable {
             boolean canFireAgain = currentTime >= lastSingleShotAttackTime + intermittenAttackCooldown;
             if (burstShotsFired < amountOfShotsPerBurst && canFireAgain) {
                 // Fire a missile and update lastAttackTime
-                for(SpriteAnimation spriteAnimation : chargingAnimations){
+                for (SpriteAnimation spriteAnimation : chargingAnimations) {
                     fireMissile(enemy, spriteAnimation.getCenterXCoordinate(), spriteAnimation.getCenterYCoordinate());
                 }
 
@@ -151,19 +151,19 @@ public class SpaceStationBurstMissilesAttack implements BossActionable {
         return true; //We dont have anything to do at this point
     }
 
-    private void fireMissile (Enemy enemy, int xCoordinate, int yCoordinate) {
+    private void fireMissile(Enemy enemy, int xCoordinate, int yCoordinate) {
         Missile missile = createMissile(enemy, xCoordinate, yCoordinate);
         MissileManager.getInstance().addExistingMissile(missile);
     }
 
-    private Missile createMissile (Enemy enemy, int xCoordinate, int yCoordinate) {
+    private Missile createMissile(Enemy enemy, int xCoordinate, int yCoordinate) {
         MissileEnums missileType = MissileEnums.DefaultLaserBullet;
         SpriteConfiguration spriteConfiguration = MissileCreator.getInstance().createMissileSpriteConfig(
                 enemy.getXCoordinate(), enemy.getCenterYCoordinate(),
                 missileType.getImageType(), enemy.getScale() * 0.75f);
 
 
-        int movementSpeed = 6;
+        float movementSpeed = 6 + (LevelManager.getInstance().getBossDifficultyLevel() * 0.5f);;
         //Create missile movement attributes and create a movement configuration
         PathFinder missilePathFinder = new StraightLinePathFinder();
         MovementConfiguration movementConfiguration = MissileCreator.getInstance().createMissileMovementConfig(
@@ -211,12 +211,12 @@ public class SpaceStationBurstMissilesAttack implements BossActionable {
 
 
     @Override
-    public int getPriority () {
+    public int getPriority() {
         return priority;
     }
 
     @Override
-    public boolean isAvailable (Enemy enemy) {
+    public boolean isAvailable(Enemy enemy) {
         return enemy.isAllowedToFire()
                 && GameState.getInstance().getGameSeconds() >= lastAttackedTime + attackCooldown
                 && WithinVisualBoundariesCalculator.isWithinBoundaries(enemy);

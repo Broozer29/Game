@@ -3,6 +3,8 @@ package net.riezebos.bruus.tbd.game.level;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.Enemy;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyEnums;
 import net.riezebos.bruus.tbd.game.movement.Direction;
+import net.riezebos.bruus.tbd.game.util.collision.CollisionDetector;
+import net.riezebos.bruus.tbd.guiboards.background.BGOEnums;
 import net.riezebos.bruus.tbd.guiboards.background.BackgroundObject;
 import net.riezebos.bruus.tbd.visualsandaudio.data.DataClass;
 
@@ -32,7 +34,7 @@ public class SpawningCoordinator {
     private int leftEnemyMaxHeightRange = DataClass.getInstance().getPlayableWindowMaxHeight() - 100;
     private int leftEnemyMinHeightRange = DataClass.getInstance().getPlayableWindowMinHeight();
     private int leftEnemyMaxWidthRange = 500;
-    private int leftEnemyMinWidthRange = 100;
+    private int leftEnemyMinWidthRange = 250;
 
     private int bottomLeftEnemyMinHeightRange = DataClass.getInstance().getPlayableWindowMaxHeight() - 100;
     private int bottomLeftEnemyMaxHeightRange = DataClass.getInstance().getPlayableWindowMaxHeight() + 50;
@@ -113,11 +115,11 @@ public class SpawningCoordinator {
     }
 
     public int getTopRightBlockYCoordinate () {
-        return 0 - random.nextInt((topRightEnemyMaxHeightRange - topRightEnemyMinHeightRange) + 1) + topRightEnemyMinHeightRange;
+        return -random.nextInt((topRightEnemyMaxHeightRange - topRightEnemyMinHeightRange) + 1) + topRightEnemyMinHeightRange;
     }
 
     public int getLeftBlockXCoordinate () {
-        return 0 - random.nextInt((leftEnemyMaxWidthRange - leftEnemyMinWidthRange) + 1) + leftEnemyMinWidthRange;
+        return -(random.nextInt((leftEnemyMaxWidthRange - leftEnemyMinWidthRange) + 1) + leftEnemyMinWidthRange);
     }
 
     public int getLeftBlockYCoordinate () {
@@ -160,31 +162,37 @@ public class SpawningCoordinator {
         return Direction.UP;
     }
 
-    // Random functions used for Background objects //
-    public boolean checkValidBGOXCoordinate (List<BackgroundObject> listToCheck, int xCoordinate, int size) {
-        for (BackgroundObject bgObject : listToCheck) {
-            if (Math.abs(bgObject.getXCoordinate() - xCoordinate) < size) {
+    //Unbelievably computationally expensive this shit, need to rework it to save performance
+    public boolean checkValidBGOCoordinates(List<BackgroundObject> listToCheck, BackgroundObject bgObjectToCheck){
+        for(BackgroundObject bgObject : listToCheck){
+            if(CollisionDetector.getInstance().detectCollision(bgObject, bgObjectToCheck) != null){
                 return false;
             }
         }
         return true;
     }
 
-    public boolean checkValidBGOYCoordinate (List<BackgroundObject> listToCheck, int yCoordinate, int size) {
-        for (BackgroundObject bgObject : listToCheck) {
-            if (Math.abs(bgObject.getYCoordinate() - yCoordinate) < size) {
-                return false;
-            }
+    public int getRandomXBGOCoordinate (BGOEnums bgoType) {
+        int randomNumber = 0;
+        if(bgoType == BGOEnums.Clouds){
+            randomNumber = random.nextInt(((maximumBGOWidthRange * 3) - minimumBGOWidthRange) + 1) + minimumBGOWidthRange;
+        } else {
+            randomNumber =random.nextInt((maximumBGOWidthRange - minimumBGOWidthRange) + 1) + minimumBGOWidthRange;
         }
-        return true;
+
+        return randomNumber;
     }
 
-    public int getRandomXBGOCoordinate () {
-        return random.nextInt((maximumBGOWidthRange - minimumBGOWidthRange) + 1) + minimumBGOWidthRange;
-    }
-
-    public int getRandomYBGOCoordinate () {
-        return random.nextInt((maximumBGOHeightRange - minimumBGOHeightRange) + 1) + minimumBGOHeightRange;
+    public int getRandomYBGOCoordinate (BGOEnums bgoType) {
+        int randomNumber = 0;
+        if(bgoType == BGOEnums.Clouds){
+            int modifiedMin = - (int) (maximumBGOHeightRange * 0.5); // 25% of the max height shifted negatively
+            int modifiedMax = (int) (maximumBGOHeightRange * 0.5);    // 50% of the max height
+            randomNumber = random.nextInt((modifiedMax - modifiedMin) + 1) + modifiedMin;
+        } else {
+            randomNumber = random.nextInt((maximumBGOHeightRange - minimumBGOHeightRange) + 1) + minimumBGOHeightRange;
+        }
+        return randomNumber;
     }
 
     public List<Integer> getSpawnCoordinatesByDirection (Direction direction) {

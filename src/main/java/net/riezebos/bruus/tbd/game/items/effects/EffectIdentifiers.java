@@ -12,6 +12,7 @@ public enum EffectIdentifiers {
     SelfRepairingSteelHealthRegeneration,
     MoneyPrinterGoldOnDeath,
     SpawnCoinsOnDeath,
+    SpawnScrapMetalOnDeath,
     ElectricDestabilizerFreeze,
     DevourerMoveSpeedDebuff,
     DevourerAttackSpeedDebuff,
@@ -24,5 +25,6 @@ public enum EffectIdentifiers {
     EndOfLevelBurn,
     PulsingDroneSlow,
     EmergencyRepairsConstructionIncrease,
+    StuivieArmorBonus,
     MartyrdomAttackSpeed;
 }

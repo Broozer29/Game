@@ -1,6 +1,8 @@
 package net.riezebos.bruus.tbd.game.items.effects.effectimplementations;
 
 import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
+import net.riezebos.bruus.tbd.game.gameobjects.missiles.MissileManager;
+import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.items.ItemEnums;
@@ -10,6 +12,7 @@ import net.riezebos.bruus.tbd.game.items.effects.EffectIdentifiers;
 import net.riezebos.bruus.tbd.game.items.effects.EffectInterface;
 import net.riezebos.bruus.tbd.game.items.effects.util.EffectAnimationHelper;
 import net.riezebos.bruus.tbd.game.items.items.firefighter.CorrosiveOil;
+import net.riezebos.bruus.tbd.game.movement.Point;
 import net.riezebos.bruus.tbd.game.util.ThornsDamageDealer;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.AnimationManager;
@@ -139,9 +142,12 @@ public class DamageOverTime implements EffectInterface {
     private double lastTimeThornsApplied = 0;
 
     private void handleIgniteSpecialCases(GameObject target) {
-        if (PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.EntanglingFlames) != null &&
+        if (PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.BeckoningFlames) != null &&
                 (lastTimeThornsApplied + 0.75f) < GameState.getInstance().getGameSeconds()) {
-            ThornsDamageDealer.getInstance().addDelayedThornsDamageToObject(target, PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.EntanglingFlames).getQuantity());
+            MissileManager.getInstance().addExistingMissile(ThornsDamageDealer.getInstance().createMissile(
+                    new Point(PlayerManager.getInstance().getSpaceship().getCenterXCoordinate(), PlayerManager.getInstance().getSpaceship().getCenterYCoordinate()),
+                    target));
+//            ThornsDamageDealer.getInstance().addDelayedThornsDamageToObject(target, PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.EntanglingFlames).getQuantity());
             lastTimeThornsApplied = GameState.getInstance().getGameSeconds();
         }
     }
@@ -205,5 +211,9 @@ public class DamageOverTime implements EffectInterface {
             animation.setVisible(false);
         }
         this.animationList.clear();
+    }
+
+    public int getDotStacks() {
+        return dotStacks;
     }
 }

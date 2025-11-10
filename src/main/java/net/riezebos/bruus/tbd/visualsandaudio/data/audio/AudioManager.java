@@ -230,14 +230,13 @@ public class AudioManager {
                 return false; // Song hasn't started yet
             }
 
-            double currentGameSeconds = GameState.getInstance().getGameSeconds();
             if (predictedEndGameSeconds > 0) {
-                if (shouldResync(currentGameSeconds)) {
+                if (shouldResync(GameState.getInstance().getGameSeconds())) {
                     synchronizePrediction();
-                    lastSyncGameSeconds = currentGameSeconds;
+                    lastSyncGameSeconds = GameState.getInstance().getGameSeconds();
                 }
                 // Check if the current game seconds match or exceed the predicted end time
-                if (currentGameSeconds >= predictedEndGameSeconds - 2f) {
+                if (GameState.getInstance().getGameSeconds() >= predictedEndGameSeconds - 2f) {
                     stopPlayback();
                     goToNextSong();
                     return true;
@@ -277,6 +276,10 @@ public class AudioManager {
     private boolean shouldResync(double currentGameSeconds) {
         // Default resync interval
         double resyncInterval = 10;
+
+        if(predictedEndGameSeconds - currentGameSeconds < 10 ){
+            return false; //Never resync if we are almost finished to prevent incorrect portal spawning?
+        }
 
         // Determine if it's time to resync
         return currentGameSeconds >= lastSyncGameSeconds + resyncInterval;

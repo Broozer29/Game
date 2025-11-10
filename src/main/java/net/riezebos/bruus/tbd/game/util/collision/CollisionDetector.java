@@ -3,6 +3,7 @@ package net.riezebos.bruus.tbd.game.util.collision;
 import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.laserbeams.Laserbeam;
 import net.riezebos.bruus.tbd.game.movement.Point;
+import net.riezebos.bruus.tbd.guiboards.background.BackgroundObject;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteAnimation;
 
 import java.awt.*;
@@ -14,16 +15,16 @@ public class CollisionDetector {
     private int threshold = 200;
     private int boardBlockThreshold = 2;
 
-    private CollisionDetector () {
+    private CollisionDetector() {
 
     }
 
-    public static CollisionDetector getInstance () {
+    public static CollisionDetector getInstance() {
         return instance;
     }
 
     // Public method for GameObject vs. GameObject collision
-    public CollisionInfo detectCollision (GameObject gameObject1, GameObject gameObject2) {
+    public CollisionInfo detectCollision(GameObject gameObject1, GameObject gameObject2) {
         // Objects should not collide with their owners
         if (isOwnerOrCreator(gameObject1, gameObject2) || isOwnerOrCreator(gameObject2, gameObject1)) {
             return null;
@@ -40,14 +41,26 @@ public class CollisionDetector {
                 }
             }
         }
+        return null;
+    }
 
+    public CollisionInfo detectCollision(BackgroundObject bgo1, BackgroundObject bgo2) {
+        // Objects should not collide with their owners
+        Rectangle r1 = bgo1.getBounds();
+        Rectangle r2 = bgo2.getBounds();
 
+        if (r1.intersects(r2)) {
+            Point collisionPoint = checkPixelCollision(bgo1, bgo2);
+            if (collisionPoint != null) {
+                return new CollisionInfo(true, collisionPoint);
+            }
+        }
         return null;
     }
 
 
     // Public method for GameObject vs. Laserbeam collision
-    public CollisionInfo detectCollision (GameObject gameObject, Laserbeam laserbeam) {
+    public CollisionInfo detectCollision(GameObject gameObject, Laserbeam laserbeam) {
         if (laserbeam.getOwner() != null && laserbeam.getOwner().equals(gameObject)) {
             return new CollisionInfo(false, null);
         }
@@ -69,7 +82,7 @@ public class CollisionDetector {
 
 
     // Helper method to detect collision between a GameObject and a SpriteAnimation
-    private CollisionInfo detectCollision (GameObject gameObject, SpriteAnimation spriteAnimation) {
+    private CollisionInfo detectCollision(GameObject gameObject, SpriteAnimation spriteAnimation) {
         // First, check bounding boxes
         Rectangle gameObjectBounds = gameObject.getBounds();
         Rectangle spriteBounds = getSpriteBounds(spriteAnimation);
@@ -86,12 +99,12 @@ public class CollisionDetector {
     }
 
     // Private method to check if one GameObject is the owner or creator of another
-    private boolean isOwnerOrCreator (GameObject gameObject1, GameObject gameObject2) {
+    private boolean isOwnerOrCreator(GameObject gameObject1, GameObject gameObject2) {
         return gameObject1.getOwnerOrCreator() != null && gameObject1.getOwnerOrCreator().equals(gameObject2);
     }
 
     // Reusable method for pixel-perfect collision detection
-    private Point checkPixelCollision (BufferedImage img1, int x1, int y1, BufferedImage img2, int x2, int y2) {
+    private Point checkPixelCollision(BufferedImage img1, int x1, int y1, BufferedImage img2, int x2, int y2) {
         int alphaThreshold = 50;
 
         if (img1 != null && img2 != null) {
@@ -121,7 +134,7 @@ public class CollisionDetector {
     }
 
     // Refactored pixel-perfect collision between two GameObjects
-    private Point checkPixelCollision (GameObject gameObject1, GameObject gameObject2) {
+    private Point checkPixelCollision(GameObject gameObject1, GameObject gameObject2) {
         BufferedImage img1 = getGameObjectImage(gameObject1);
         BufferedImage img2 = getGameObjectImage(gameObject2);
 
@@ -134,8 +147,21 @@ public class CollisionDetector {
         return checkPixelCollision(img1, x1, y1, img2, x2, y2);
     }
 
+    private Point checkPixelCollision(BackgroundObject bgo1, BackgroundObject bgo2) {
+        BufferedImage img1 = bgo1.getImage();
+        BufferedImage img2 = bgo2.getImage();
+
+        int x1 = bgo1.getXCoordinate();
+        int y1 = bgo1.getYCoordinate();
+
+        int x2 = bgo2.getXCoordinate();
+        int y2 = bgo2.getYCoordinate();
+
+        return checkPixelCollision(img1, x1, y1, img2, x2, y2);
+    }
+
     // Refactored pixel-perfect collision between a GameObject and a SpriteAnimation
-    private Point checkPixelCollision (GameObject gameObject, SpriteAnimation spriteAnimation) {
+    private Point checkPixelCollision(GameObject gameObject, SpriteAnimation spriteAnimation) {
         BufferedImage gameObjectImage = getGameObjectImage(gameObject);
         BufferedImage spriteImage = spriteAnimation.getCurrentFrameImage(false); // Get rotated image
 
@@ -149,7 +175,7 @@ public class CollisionDetector {
     }
 
     // Helper methods to get GameObject image and coordinates
-    private BufferedImage getGameObjectImage (GameObject gameObject) {
+    private BufferedImage getGameObjectImage(GameObject gameObject) {
         if (gameObject.getAnimation() != null) {
             return gameObject.getAnimation().getCurrentFrameImage(false);
         } else {
@@ -157,16 +183,16 @@ public class CollisionDetector {
         }
     }
 
-    private int getGameObjectXCoordinate (GameObject gameObject) {
+    private int getGameObjectXCoordinate(GameObject gameObject) {
         return gameObject.getAnimation() != null ? gameObject.getAnimation().getXCoordinate() : gameObject.getXCoordinate();
     }
 
-    private int getGameObjectYCoordinate (GameObject gameObject) {
+    private int getGameObjectYCoordinate(GameObject gameObject) {
         return gameObject.getAnimation() != null ? gameObject.getAnimation().getYCoordinate() : gameObject.getYCoordinate();
     }
 
     // Helper method to get the bounds of a SpriteAnimation
-    private Rectangle getSpriteBounds (SpriteAnimation spriteAnimation) {
+    private Rectangle getSpriteBounds(SpriteAnimation spriteAnimation) {
         int x = spriteAnimation.getXCoordinate();
         int y = spriteAnimation.getYCoordinate();
         BufferedImage image = spriteAnimation.getCurrentFrameImage(false); // Get rotated image
@@ -176,20 +202,20 @@ public class CollisionDetector {
     }
 
     // Helper method to check if two GameObjects are nearby
-    public boolean isNearby (GameObject gameObject1, GameObject gameObject2, int rangeThreshold) {
+    public boolean isNearby(GameObject gameObject1, GameObject gameObject2, int rangeThreshold) {
         if (!isWithinBoardBlockThreshold(gameObject1, gameObject2)) {
             return false;
         }
         int actualRangeUsed = rangeThreshold;
-        if(isLargeObject(gameObject1) || isLargeObject(gameObject2)){
+        if (isLargeObject(gameObject1) || isLargeObject(gameObject2)) {
             actualRangeUsed *= 4;
         }
 
-        if(gameObject1.getWidth() > actualRangeUsed || gameObject1.getHeight() > actualRangeUsed){
+        if (gameObject1.getWidth() > actualRangeUsed || gameObject1.getHeight() > actualRangeUsed) {
             actualRangeUsed = Math.max(gameObject1.getWidth(), gameObject1.getHeight());
         }
 
-        if(gameObject2.getWidth() > actualRangeUsed || gameObject2.getHeight() > actualRangeUsed){
+        if (gameObject2.getWidth() > actualRangeUsed || gameObject2.getHeight() > actualRangeUsed) {
             actualRangeUsed = Math.max(gameObject2.getWidth(), gameObject2.getHeight());
         }
 
@@ -205,7 +231,7 @@ public class CollisionDetector {
     }
 
     // Helper method to check if a GameObject and SpriteAnimation are nearby
-    private boolean isNearby (GameObject gameObject, SpriteAnimation spriteAnimation, int rangeThreshold) {
+    private boolean isNearby(GameObject gameObject, SpriteAnimation spriteAnimation, int rangeThreshold) {
         int x1 = getGameObjectXCoordinate(gameObject);
         int y1 = getGameObjectYCoordinate(gameObject);
 
@@ -217,19 +243,19 @@ public class CollisionDetector {
     }
 
     // Helper method to check if two GameObjects are within board block threshold
-    public boolean isWithinBoardBlockThreshold (GameObject gameObject1, GameObject gameObject2) {
+    public boolean isWithinBoardBlockThreshold(GameObject gameObject1, GameObject gameObject2) {
         gameObject1.updateBoardBlock();
         gameObject2.updateBoardBlock();
 
         int blockDifference = Math.abs(gameObject1.getCurrentBoardBlock() - gameObject2.getCurrentBoardBlock());
-        if(isLargeObject(gameObject1) || isLargeObject(gameObject2)){
+        if (isLargeObject(gameObject1) || isLargeObject(gameObject2)) {
             return blockDifference <= boardBlockThreshold * 2;
         }
         return blockDifference <= boardBlockThreshold;
     }
 
-    private boolean isLargeObject(GameObject gameObject){
-        if(gameObject.getWidth() >= 300 || gameObject.getHeight() >= 300){
+    private boolean isLargeObject(GameObject gameObject) {
+        if (gameObject.getWidth() >= 300 || gameObject.getHeight() >= 300) {
             return true;
         }
         return false;

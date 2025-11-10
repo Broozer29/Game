@@ -170,6 +170,10 @@ public class MenuButton extends GUIComponent {
                 GameState.getInstance().setGameMode(GameMode.Formatted);
                 AudioManager.getInstance().addAudio(AudioEnums.GenericSelect);
                 break;
+            case SelectNightmareGameMode:
+                GameState.getInstance().setGameMode(GameMode.Nightmare);
+                AudioManager.getInstance().addAudio(AudioEnums.GenericSelect);
+                break;
             default:
                 System.out.println("Unimplemented functionality");
                 OnScreenTextManager.getInstance().addText("Unimplemented menu functionality in menubutton", 400, 400);

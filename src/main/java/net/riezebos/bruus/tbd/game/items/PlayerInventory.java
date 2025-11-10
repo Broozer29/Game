@@ -29,22 +29,11 @@ public class PlayerInventory {
 
     private PlayerInventory() {
         resetInventory();
-
-//        for(int i = 0; i < 5; i++){
-//            addItem(ItemEnums.PlasmaCoatedBullets);
-//        }
-//        PlayerStats.getInstance().setShopRerollDiscount(99);
     }
 
 
     public void resetInventory() {
         items.clear();
-
-        addItem(ItemEnums.ModuleScorch);
-        addItem(ItemEnums.GuardianDrone);
-        addItem(ItemEnums.GuardianDrone);
-        addItem(ItemEnums.GuardianDrone);
-        addItem(ItemEnums.GuardianDrone);
 
         if(DevTestSettings.infiniteMoney){
             cashMoney = 999999999;
@@ -180,7 +169,7 @@ public class PlayerInventory {
                 return new FlameDetonation();
             case EscalatingFlames:
                 return new EscalatingFlames();
-            case EntanglingFlames:
+            case BeckoningFlames:
                 return new EntanglingFlames();
             case BargainBucket:
                 return new BargainBucket();
@@ -222,6 +211,20 @@ public class PlayerInventory {
                 return new VengeanceProtocol();
             case ArbiterDamage:
                 return new ArbiterDamage();
+            case EternaFlame:
+                return new EternaBurn();
+            case EphemeralBlaze:
+                return new EphemeralBlaze();
+            case Stuivie:
+                return new StuiversBestFriend();
+            case GlassCannon:
+                return new GlassCannon();
+            case AimAssist:
+                return new AimAssist();
+            case ProtossCorsair:
+                return new ProtossCorsairItem();
+            case HighVelocityLasers:
+                return new HighVelocityLasers();
             case Locked:
                 return null;
             default:

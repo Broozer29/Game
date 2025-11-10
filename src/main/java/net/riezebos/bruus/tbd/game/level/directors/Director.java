@@ -8,12 +8,10 @@ import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.level.EnemyFormation;
 import net.riezebos.bruus.tbd.game.level.FormationCreator;
 import net.riezebos.bruus.tbd.game.level.LevelManager;
-import net.riezebos.bruus.tbd.game.level.enums.LevelDifficulty;
 import net.riezebos.bruus.tbd.game.level.enums.MiniBossConfig;
 import net.riezebos.bruus.tbd.game.level.enums.SpawnFormationEnums;
 import net.riezebos.bruus.tbd.game.movement.Direction;
 import net.riezebos.bruus.tbd.visualsandaudio.data.DataClass;
-import net.riezebos.bruus.tbd.visualsandaudio.data.audio.AudioManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,7 +38,6 @@ public class Director {
     private double currentTime;
     private boolean active;
 
-    private int miniBossSpawns = 0;
     private int miniBossessSpawned = 0;
 
     public Director(DirectorType directorType, List<MonsterCard> availableCards) {
@@ -48,19 +45,33 @@ public class Director {
         this.credits = 0;
         this.lastSpawnTime = 0;
         this.currentTime = 0;
-        this.spawnInterval = calculateInitialSpawnInterval(directorType);
+        this.spawnInterval = updateSpawnInterval(directorType);
         this.spawnCashCarrierChance = calculateCashCarrierChance(directorType);
         this.availableCards = new ArrayList<>(availableCards);
         this.active = true;
         this.formationCreator = new FormationCreator();
     }
 
-    private long calculateInitialSpawnInterval(DirectorType directorType) {
-        return switch (directorType) {
-            case Slow -> 10 + (long) (Math.random() * 5); // 10-15 seconds
-            case Fast -> 5 + (long) (Math.random() * 5); // 5-10 seconds
-            default -> 0; // Instant directors don't use intervals
-        };
+    private long updateSpawnInterval(DirectorType directorType) {
+        int defaultTime = 0;
+        switch (directorType) {
+            case Slow -> {
+                defaultTime = 7 + random.nextInt(3);
+            }
+            case Fast -> {
+                defaultTime = 3 + random.nextInt(2);
+            }
+            default -> {
+                defaultTime = 0;
+            } // Instant directors don't use intervals
+        }
+
+        //If godrun detected, spawn more often
+        if(GodRunDetector.getInstance().getGodRunScore() >= 1){
+            defaultTime = Math.round(defaultTime * 0.65f);
+        }
+
+        return defaultTime; // 10-15 seconds
     }
 
     private double calculateCashCarrierChance(DirectorType directorType) {
@@ -186,7 +197,7 @@ public class Director {
 
     private boolean canSpawnMoreOfThisEnemy(EnemyEnums enemyEnums) {
         if (enemyEnums.equals(EnemyEnums.ZergQueen)) {
-            return EnemyManager.getInstance().getAmountOfEnemyTypesAlive(EnemyEnums.ZergQueen) < 2;
+            return EnemyManager.getInstance().getAmountOfEnemyTypesAlive(EnemyEnums.ZergQueen) < 3;
         }
 
         if (enemyEnums.equals(EnemyEnums.ZergDevourer)) {
@@ -274,7 +285,7 @@ public class Director {
     private float calculateFormationCost(SpawnFormationEnums formationType, EnemyEnums enemyType) {
         float enemyCreditCost = enemyType.getCreditCost();
 
-        if(GameState.getInstance().getGameMode().equals(GameMode.Formatted)){
+        if (GameState.getInstance().getGameMode().equals(GameMode.Formatted)) {
             enemyCreditCost *= 1.5f;
         } else {
             enemyCreditCost *= 3f;
@@ -304,7 +315,7 @@ public class Director {
     private boolean isWindowForMiniBossSpawn(MiniBossConfig miniBossConfig) {
         double levelProgression = calculateLevelProgression(GameState.getInstance().getCurrentLevelProgression(), GameState.getInstance().getPredictedFinishSeconds() - GameState.getInstance().getLevelStartTime());
 
-        switch (miniBossConfig){
+        switch (miniBossConfig) {
             case Medium:
                 return (levelProgression >= 0.5f && miniBossessSpawned < 1);
             case Hard:
@@ -328,7 +339,7 @@ public class Director {
 
     private void spawnEnemy(EnemyEnums enemyType, boolean randomLocation) {
         // Set parameters for spawning
-        Direction direction = Direction.LEFT;
+        Direction direction = getSpawnDirection();
         float scale = enemyType.getDefaultScale();
         float xMovementSpeed = enemyType.getMovementSpeed();
         float yMovementSpeed = enemyType.getMovementSpeed();
@@ -354,8 +365,18 @@ public class Director {
         spawnFormationWithParameters(formationType, primaryEnemy, secondaryEnemy, true);
     }
 
-    private void spawnFormationWithParameters(SpawnFormationEnums formationType, EnemyEnums primaryEnemyType, EnemyEnums secondaryEnemyType, boolean isEntourage) {
+    private Direction getSpawnDirection() {
         Direction direction = Direction.LEFT;
+
+        if (GodRunDetector.getInstance().getGodRunScore() >= 2) {
+            Random random = new Random();
+            direction = random.nextInt(0, 2) == 0 ? Direction.RIGHT : Direction.LEFT;
+        }
+        return direction;
+    }
+
+    private void spawnFormationWithParameters(SpawnFormationEnums formationType, EnemyEnums primaryEnemyType, EnemyEnums secondaryEnemyType, boolean isEntourage) {
+        Direction direction = getSpawnDirection();
         float xMovementSpeed = isEntourage ? secondaryEnemyType.getMovementSpeed() : primaryEnemyType.getMovementSpeed();
         float yMovementSpeed = xMovementSpeed;
 
@@ -393,7 +414,7 @@ public class Director {
             return instance.getWindowWidth() + Math.max(0, bound);
         } else if (direction == Direction.RIGHT) {
             // For RIGHT direction, spawn at or before the left edge of the board
-            int bound = -(random.nextInt(totalFormationWidth));
+            int bound = -(totalFormationWidth + random.nextInt(totalFormationWidth));
             return Math.min(0, bound);
         } else if (direction == Direction.DOWN || direction == Direction.UP) {
             int min = 0;
@@ -465,7 +486,7 @@ public class Director {
     }
 
     private MonsterCard selectMonsterCard() {
-        if(this.directorType == DirectorType.MiniBoss){
+        if (this.directorType == DirectorType.MiniBoss) {
             return availableCards.get(random.nextInt(availableCards.size()));
         }
 
@@ -490,7 +511,7 @@ public class Director {
         // Adjust these values to finely control spawn behavior
         float basicIncreaseRate = 2f; // Increase basic enemy weight by a significant factor early on
         float decayRateForBasicEnemies = 0.2f; // Slower decay for Basic enemies (less aggressive than before)
-        float growthRateForStrongEnemies = 0.15f; // Slower growth for stronger enemies
+        float growthRateForStrongEnemies = 0.175f; // Slower growth for stronger enemies
 
         switch (category) {
             case Small:

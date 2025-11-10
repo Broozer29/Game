@@ -14,7 +14,7 @@ public class ProtossArbiterItem extends Item {
     private boolean shouldApply;
 
     public ProtossArbiterItem(){
-        super(ItemEnums.ProtossArbiter, 1,  ItemApplicationEnum.ApplyOnCreation);
+        super(ItemEnums.ProtossArbiter, 1,  ItemApplicationEnum.UponAcquiring);
     }
 
     @Override

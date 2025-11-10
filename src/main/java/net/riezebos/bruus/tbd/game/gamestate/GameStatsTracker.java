@@ -1,5 +1,6 @@
 package net.riezebos.bruus.tbd.game.gamestate;
 
+import net.riezebos.bruus.tbd.game.level.directors.GodRunDetector;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
 
 public class GameStatsTracker {
@@ -101,6 +102,7 @@ public class GameStatsTracker {
     public void addEnemyKilled (int amount) {
         enemiesKilled += amount;
         enemiesKilledThisRound += amount;
+        GodRunDetector.getInstance().addEnemyKilled();
     }
 
     public void addDamageTaken (double damage) {

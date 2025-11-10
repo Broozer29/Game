@@ -7,8 +7,10 @@ import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
 import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SpaceShip;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.items.Item;
+import net.riezebos.bruus.tbd.game.items.ItemEnums;
 import net.riezebos.bruus.tbd.game.items.PlayerInventory;
 import net.riezebos.bruus.tbd.game.items.enums.ItemApplicationEnum;
+import net.riezebos.bruus.tbd.game.items.items.firefighter.EntanglingFlames;
 import net.riezebos.bruus.tbd.game.movement.Direction;
 import net.riezebos.bruus.tbd.game.movement.MovementConfiguration;
 import net.riezebos.bruus.tbd.game.movement.MovementPatternSize;
@@ -69,7 +71,6 @@ public class ThornsDamageDealer {
         thornsApplyMap.merge(gameObject, amountOftimes, Integer::sum);
     }
 
-    //bugged
     public void reflectMissile(Point origin, GameObject missile) {
         if (missile == null || origin == null || missile.getOwnerOrCreator() == null) {
             return; //We need a missile and an owner for this operation
@@ -97,7 +98,7 @@ public class ThornsDamageDealer {
         missile.setOwnerOrCreator(PlayerManager.getInstance().getSpaceship());
     }
 
-    private Missile createMissile(Point origin, GameObject target) {
+    public Missile createMissile(Point origin, GameObject target) {
         int movementSpeed = 5;
         MissileCreator missileCreator1 = MissileCreator.getInstance();
         SpriteConfiguration spriteConfiguration = missileCreator1.createMissileSpriteConfig(origin.getX(), origin.getY(),
@@ -118,6 +119,12 @@ public class ThornsDamageDealer {
         boolean allowedToDealDamage = true;
         String objectType = "Player Missile";
         float damage = playerStats.getNormalAttackDamage() * PlayerStats.getInstance().getThornsDamageRatio();
+
+        if(PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.BeckoningFlames) != null){
+            EntanglingFlames item = (EntanglingFlames) PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.BeckoningFlames);
+            damage = damage * (item.getQuantity() * EntanglingFlames.damageBonus);
+        }
+
         boolean isExplosive = false;
 
         MissileConfiguration missileConfiguration = missileCreator1.createMissileConfiguration(MissileEnums.DefaultAnimatedBullet, maxHitPoints, maxShields,
@@ -134,7 +141,7 @@ public class ThornsDamageDealer {
         Missile missile = missileCreator1.createMissile(spriteConfiguration, missileConfiguration, movementConfiguration);
         SpaceShip spaceship = PlayerManager.getInstance().getSpaceship();
         missile.setOwnerOrCreator(spaceship);
-        missile.setCenterCoordinates(origin.getX(), origin.getY());
+        missile.setCenterCoordinates(spaceship.getCenterXCoordinate(), spaceship.getCenterYCoordinate());
         missile.resetMovementPath();
         missile.getMovementConfiguration().setDestination(
                 new Point(target.getCenterXCoordinate() - missile.getWidth() / 2

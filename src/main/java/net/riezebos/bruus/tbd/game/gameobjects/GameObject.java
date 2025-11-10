@@ -3,6 +3,7 @@ package net.riezebos.bruus.tbd.game.gameobjects;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.Missile;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.missiletypes.ReflectiveBlocks;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
+import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SpaceShip;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.gamestate.GameStatsTracker;
 import net.riezebos.bruus.tbd.game.items.Item;
@@ -229,7 +230,7 @@ public class GameObject extends Sprite {
                 .orElse(null);
     }
 
-    private void activateOnDeathEffects() {
+    protected void activateOnDeathEffects() {
         activateEffects(EffectActivationTypes.OnObjectDeath);
         cleanseAllEffects();
     }
@@ -239,7 +240,7 @@ public class GameObject extends Sprite {
     }
 
 
-    private void activateEffects(EffectActivationTypes providedActivationType) {
+    protected void activateEffects(EffectActivationTypes providedActivationType) {
         List<EffectInterface> toRemove = new ArrayList<>();
         for (EffectInterface effect : effects) {
             if (effect.getEffectTypesEnums() == providedActivationType) {
@@ -422,6 +423,9 @@ public class GameObject extends Sprite {
     }
 
     public void dealDamageToGameObject(GameObject target) {
+        if(target.getCurrentHitpoints() <= 0.000f || !target.isVisible()){
+            return; //if it's dead, skip this operation
+        }
         for (EffectInterface effectInterface : effectsToApply) {
             target.addEffect(effectInterface);
         }
@@ -442,7 +446,7 @@ public class GameObject extends Sprite {
     public void move() {
         toggleHealthBar();
         if (this.isAllowedToMove()) {
-            SpriteMover.getInstance().moveGameObject(this, movementConfiguration);
+            GameObjectMover.getInstance().moveGameObject(this, movementConfiguration);
             this.bounds.setBounds(xCoordinate + xOffset, yCoordinate + yOffset, width, height);
 
             for (GameObject object : objectsFollowingThis) {
@@ -1182,5 +1186,12 @@ public class GameObject extends Sprite {
 
     public boolean hasEffect(EffectIdentifiers effectIdentifiers) {
         return this.effects.stream().anyMatch(effect -> effect.getEffectIdentifier().equals(effectIdentifiers));
+    }
+
+    public EffectInterface getEffectIfExists(EffectIdentifiers effectIdentifiers) {
+        return this.effects.stream()
+                .filter(effect -> effect.getEffectIdentifier().equals(effectIdentifiers))
+                .findFirst()
+                .orElse(null);
     }
 }

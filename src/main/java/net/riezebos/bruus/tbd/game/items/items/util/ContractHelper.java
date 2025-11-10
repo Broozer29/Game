@@ -31,4 +31,8 @@ public class ContractHelper {
             activeContracts.remove(contractCounter);
         }
     }
+
+    public void resetManager() {
+        this.activeContracts.clear();
+    }
 }

@@ -6,6 +6,7 @@ import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyManager;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.BossActionable;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyEnums;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
+import net.riezebos.bruus.tbd.game.level.LevelManager;
 import net.riezebos.bruus.tbd.game.movement.Direction;
 import net.riezebos.bruus.tbd.game.movement.MovementPatternSize;
 import net.riezebos.bruus.tbd.game.util.WithinVisualBoundariesCalculator;
@@ -18,7 +19,7 @@ import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.Sprit
 public class SpawnProtossScout implements BossActionable {
 
     private double lastSpawnedTime = 0;
-    private double spawnCooldown = 6;
+    private double spawnCooldown = Math.max(6 - LevelManager.getInstance().getBossDifficultyLevel(), 3);
     private int priority = 10;
 
     private SpriteAnimation spawnAnimation;

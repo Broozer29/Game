@@ -9,6 +9,7 @@ public enum DroneTypes {
     ProtossScout(ImageEnums.ProtossScout, 4),
     ProtossArbiter(ImageEnums.ProtossArbiter , 3),
     ProtossShuttle(ImageEnums.ProtossShuttle , 3),
+    ProtossCorsair(ImageEnums.ProtossCorsair, 5),
     CarrierDrone(ImageEnums.ProtossCarrierBeacon, 1); //movement speed shouldnt matter, its not supposed to move
 
     DroneTypes(ImageEnums image, int movementSpeed) {

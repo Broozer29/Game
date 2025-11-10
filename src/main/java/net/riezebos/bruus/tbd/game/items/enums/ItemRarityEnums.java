@@ -33,7 +33,7 @@ public enum ItemRarityEnums {
         Random rand = new Random();
         int chance = rand.nextInt(0, 101);
 
-        if (chance < (79 - PlayerStats.getInstance().getRelicChanceModifier())) {
+        if (chance < (76 - PlayerStats.getInstance().getRelicChanceModifier())) {
             return ItemRarityEnums.Common;
         } else if (chance < (96 - PlayerStats.getInstance().getRelicChanceModifier())) {
             return ItemRarityEnums.Rare;
@@ -62,5 +62,15 @@ public enum ItemRarityEnums {
 
     public Color getColor() {
         return color;
+    }
+
+    public static ItemRarityEnums getCommonOrRareEnum(){
+        Random rand = new Random();
+        int chance = rand.nextInt(0, 2);
+
+        if (chance == 0)
+            return ItemRarityEnums.Common;
+        else
+            return ItemRarityEnums.Rare;
     }
 }

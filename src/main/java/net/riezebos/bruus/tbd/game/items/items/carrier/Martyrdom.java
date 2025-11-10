@@ -17,8 +17,8 @@ import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.Sprit
 
 public class Martyrdom extends Item {
 
-    public static float attackSpeedIncrease = 1.25f;
-    public static float duration = 4.5f;
+    public static float attackSpeedIncrease = 1f;
+    public static float duration = 3f;
 
     public Martyrdom() {
         super(ItemEnums.Martyrdom, 1, ItemApplicationEnum.CustomActivation);

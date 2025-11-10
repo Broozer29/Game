@@ -4,6 +4,7 @@ import net.riezebos.bruus.tbd.game.gameobjects.enemies.Enemy;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.BossActionable;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.*;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
+import net.riezebos.bruus.tbd.game.level.LevelManager;
 import net.riezebos.bruus.tbd.game.movement.MovementConfiguration;
 import net.riezebos.bruus.tbd.game.movement.MovementPatternSize;
 import net.riezebos.bruus.tbd.game.movement.Point;
@@ -27,7 +28,7 @@ public class MissileWaveAttack implements BossActionable {
     private boolean allowedToFireBurst = false;
     private double intermittenAttackCooldown = 0.25f;
     private int burstShotsFired = 0; // Track the number of shots fired in the burst
-    private int amountOfShotsPerAttack = 6;
+    private int amountOfShotsPerAttack = 6 + (LevelManager.getInstance().getBossDifficultyLevel() * 2);
     private double attackCooldown = 5;
 
     private int priority = 1;

@@ -70,6 +70,7 @@ public class BoonSelectionBoard extends JPanel implements TimerHolder {
     private GUITextCollection selectManMode;
     private GUITextCollection selectMonoCultural;
     private GUITextCollection selectDoubleTrouble;
+    private GUITextCollection selectNightmare;
     private GUITextCollection selectFormatted;
 
     private GUITextCollection selectClubAccess;
@@ -237,7 +238,10 @@ public class BoonSelectionBoard extends JPanel implements TimerHolder {
         addToGrid(thirdColumn, selectDoubleTrouble.getComponents().get(0), 2, 3);
         addAllButFirstComponent(selectDoubleTrouble);
 
-        addToGrid(thirdColumn, selectFormatted.getComponents().get(0), 2, 4);
+        addToGrid(thirdColumn, selectNightmare.getComponents().get(0), 2, 4);
+        addAllButFirstComponent(selectNightmare);
+
+        addToGrid(thirdColumn, selectFormatted.getComponents().get(0), 2, 5);
         addAllButFirstComponent(selectFormatted);
 
         addToGrid(sixthColumn, startGameButton.getComponents().get(0), 5, 0);
@@ -278,7 +282,8 @@ public class BoonSelectionBoard extends JPanel implements TimerHolder {
         selectManMode = BoonSelectionBoardCreator.createOtherGameModeButton(selectDefault.getComponents().get(0), GameMode.ManMode);
         selectMonoCultural = BoonSelectionBoardCreator.createOtherGameModeButton(selectManMode.getComponents().get(0), GameMode.MonoCultural);
         selectDoubleTrouble = BoonSelectionBoardCreator.createOtherGameModeButton(selectMonoCultural.getComponents().get(0), GameMode.DoubleTrouble);
-        selectFormatted = BoonSelectionBoardCreator.createOtherGameModeButton(selectDoubleTrouble.getComponents().get(0), GameMode.Formatted);
+        selectNightmare = BoonSelectionBoardCreator.createOtherGameModeButton(selectDoubleTrouble.getComponents().get(0), GameMode.Nightmare);
+        selectFormatted = BoonSelectionBoardCreator.createOtherGameModeButton(selectNightmare.getComponents().get(0), GameMode.Formatted);
         emeraldsAvailableText = BoonSelectionBoardCreator.createEmeraldText();
     }
 
@@ -387,7 +392,7 @@ public class BoonSelectionBoard extends JPanel implements TimerHolder {
 
     // Go one menu tile down
     private void previousRow() {
-        if (handleUpOrDownNavigationOverwrites()) {
+        if (handleUpNavigationOverwrites()) {
             return; //We overwrote the navigation
         }
 
@@ -399,7 +404,7 @@ public class BoonSelectionBoard extends JPanel implements TimerHolder {
 
     // Go one menu tile up
     private void nextRow() {
-        if (handleUpOrDownNavigationOverwrites()) {
+        if (handleDownNavigationOverwrites()) {
             return; //We overwrote the navigation
         }
         selectedRow++;
@@ -409,15 +414,31 @@ public class BoonSelectionBoard extends JPanel implements TimerHolder {
 
     }
 
-    private boolean handleUpOrDownNavigationOverwrites() {
+    private boolean handleDownNavigationOverwrites() {
         if (menuCursor.getSelectedMenuTile().equals(this.upgradeTreasureHunter)) {
             selectedColumn = selectClassButton.getComponents().get(0).getColumn();
             selectedRow = selectClassButton.getComponents().get(0).getRow();
             return true;
         }
+
         if (menuCursor.getSelectedMenuTile().equals(this.selectFormatted.getComponents().get(0))) {
             selectedColumn = startGameButton.getComponents().get(0).getColumn();
             selectedRow = startGameButton.getComponents().get(0).getRow();
+            return true;
+        }
+        return false;
+    }
+
+    private boolean handleUpNavigationOverwrites() {
+        if (menuCursor.getSelectedMenuTile().equals(this.upgradeNepotism)) {
+            selectedColumn = selectClassButton.getComponents().get(0).getColumn();
+            selectedRow = selectClassButton.getComponents().get(0).getRow();
+            return true;
+        }
+
+        if (menuCursor.getSelectedMenuTile().equals(this.startGameButton)) {
+            selectedColumn = selectFormatted.getComponents().get(0).getColumn();
+            selectedRow = selectFormatted.getComponents().get(0).getRow();
             return true;
         }
 
@@ -823,6 +844,10 @@ public class BoonSelectionBoard extends JPanel implements TimerHolder {
             }
             case DoubleTrouble -> {
                 selectedTextCollection = selectDoubleTrouble;
+                break;
+            }
+            case Nightmare -> {
+                selectedTextCollection = selectNightmare;
                 break;
             }
             case Formatted -> {

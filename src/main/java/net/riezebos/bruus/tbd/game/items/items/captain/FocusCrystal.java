@@ -1,6 +1,7 @@
 package net.riezebos.bruus.tbd.game.items.items.captain;
 
 import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
+import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.Drone;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerClass;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
@@ -30,15 +31,23 @@ public class FocusCrystal extends Item {
         //Not needed
     }
 
-
+    private boolean isValidOwner(GameObject attack, GameObject target) {
+        GameObject ownerOrCreator = attack.getOwnerOrCreator();
+        if (ownerOrCreator == null) {
+            return false;
+        }
+        if (ownerOrCreator.equals(PlayerManager.getInstance().getSpaceship())) {
+            return true;
+        }
+        return (ownerOrCreator instanceof Drone drone && drone.isProtoss());
+    }
 
     public void modifyAttackingObject (GameObject attack, GameObject target) {
-        //Check if object has an owner fisrt otherwise it crashes
-        GameObject ownerOrCreator = attack.getOwnerOrCreator();
-        if(ownerOrCreator == null || !ownerOrCreator.equals(PlayerManager.getInstance().getSpaceship())){
+        if(!isValidOwner(attack, target)){
             return;
         }
 
+        GameObject ownerOrCreator = attack.getOwnerOrCreator();
         int shooterXCoordinate = ownerOrCreator.getCenterXCoordinate();
         int shooterYCoordinate = ownerOrCreator.getCenterYCoordinate();
 

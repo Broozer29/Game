@@ -11,5 +11,6 @@ public class DevTestSettings {
     public static boolean infiniteMoney = false; //if true: add 9999999 money to the inventory
     public static boolean freeReroll = false; //if true; set reroll discount to 99
     public static boolean spawnTargetDummy = false; //if true, spawns a target dummy at the start of a level
-    public static boolean instantlySpawnPortal = false;
+    public static boolean instantlySpawnPortal = false; //spawns a portla at the start of the level
+    public static boolean instaKill = false; //multiplies basedamage by 100
 }

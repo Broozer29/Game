@@ -1,6 +1,5 @@
 package net.riezebos.bruus.tbd.game.level.directors;
 
-import net.riezebos.bruus.tbd.DevTestSettings;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyCategory;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyEnums;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyTribes;
@@ -19,6 +18,7 @@ import java.util.Random;
 public class DirectorManager {
 
     private static DirectorManager instance = new DirectorManager();
+    private GodRunDetector godRunDetector = GodRunDetector.getInstance();
     private List<Director> directorList = new ArrayList<>();
     private List<MonsterCard> baseMonsterCards = new ArrayList<>();
     private List<MonsterCard> miniBossMonsterCards = new ArrayList<>();
@@ -26,7 +26,7 @@ public class DirectorManager {
     public boolean testingRichMode; //used for testing only
 
     private double lastCashCarrierSpawnTime;
-    private int testingCreditsBonus = 3;
+    private double godRunCreditsBonus = 0.35;
     private PerformanceLogger performanceLogger = null;
 
 
@@ -138,7 +138,6 @@ public class DirectorManager {
 
 
     public void updateGameTick() {
-//        PerformanceLoggerManager.timeAndLog(performanceLogger, "Total", () -> {
         if (enabled) {
             PerformanceLoggerManager.timeAndLog(performanceLogger, "Distribute Credits", this::distributeCredits);
             PerformanceLoggerManager.timeAndLog(performanceLogger, "Update Difficulty Coefficient", this::updateDifficultyCoefficient);
@@ -147,16 +146,16 @@ public class DirectorManager {
                     PerformanceLoggerManager.timeAndLog(performanceLogger, "Update Director", director::update);
                 }
             }
+            godRunDetector.updateGodRunStatus();
         }
-//        });
     }
 
     public void distributeCredits() {
         GameState gameStateInfo = GameState.getInstance();
         float creditAmount = (float) ((0.5f + 0.025 * gameStateInfo.getDifficultyCoefficient())) + (LevelManager.getInstance().getCurrentLevelDifficultyScore() * 0.35f); // Determine the amount of credits to distribute
 
-        if (testingRichMode) {
-            creditAmount = creditAmount * this.testingCreditsBonus;
+        if (godRunDetector.getGodRunScore() >= 1) {
+            creditAmount *= (1 + this.godRunCreditsBonus);
         }
 
         for (Director director : directorList) {

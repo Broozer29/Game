@@ -6,8 +6,10 @@ import net.riezebos.bruus.tbd.game.gamestate.GameStatusEnums;
 import net.riezebos.bruus.tbd.game.items.ItemEnums;
 import net.riezebos.bruus.tbd.game.items.PlayerInventory;
 import net.riezebos.bruus.tbd.game.items.effects.EffectInterface;
+import net.riezebos.bruus.tbd.game.items.items.StuiversBestFriend;
 import net.riezebos.bruus.tbd.game.util.performancelogger.PerformanceLogger;
 import net.riezebos.bruus.tbd.game.util.performancelogger.PerformanceLoggerManager;
+import net.riezebos.bruus.tbd.guiboards.BoardManager;
 import net.riezebos.bruus.tbd.visualsandaudio.data.DataClass;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.AudioManager;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.AudioEnums;
@@ -27,7 +29,6 @@ public class PlayerManager {
 
     private PlayerManager () {
         this.performanceLogger = new PerformanceLogger("Player Manager");
-//		initSpaceShip();
     }
 
     public static PlayerManager getInstance () {
@@ -52,13 +53,9 @@ public class PlayerManager {
     }
 
     public void updateGameTick () {
-//        PerformanceLoggerManager.timeAndLog(performanceLogger, "Total", () -> {
             PerformanceLoggerManager.timeAndLog(performanceLogger, "Update Ship Movement", this::updateSpaceShipMovement);
-//        updateSpaceShipMovement();
             PerformanceLoggerManager.timeAndLog(performanceLogger, "Check Player Health", this::checkPlayerHealth);
-//        checkPlayerHealth();
             PerformanceLoggerManager.timeAndLog(performanceLogger, "Update SpaceShip", spaceship::updateGameTick);
-//        });
     }
 
 
@@ -99,6 +96,7 @@ public class PlayerManager {
         if (spaceship.getCurrentHitpoints() <= 0 && gameState.getGameState() == GameStatusEnums.Dying) {
             spaceship.setImmune(true); //Ignore enemies and missiles whilst exploding
             if (!animationManager.getUpperAnimations().contains(spaceship.getDestructionAnimation())) {
+                BoardManager.getInstance().getGameBoard().setDrawnTimerDelay(75);
                 spaceship.getDestructionAnimation().setCenterCoordinates(spaceship.getCenterXCoordinate(), spaceship.getCenterYCoordinate());
                 animationManager.getUpperAnimations().add(spaceship.getDestructionAnimation());
 
@@ -115,9 +113,21 @@ public class PlayerManager {
             }
 
             if (spaceship.getDestructionAnimation().getCurrentFrame() >= spaceship.getDestructionAnimation().getTotalFrames()) {
-                gameState.setGameState(GameStatusEnums.Dead);
-
-                PlayerInventory.getInstance().resetInventory();
+                if (PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.Stuivie) != null ) {
+                    StuiversBestFriend stuiversBestFriend = (StuiversBestFriend) PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.Stuivie);
+                    if (stuiversBestFriend != null && !stuiversBestFriend.isHasActivatedThisRound()) {
+                        spaceship.reviveSpaceShip();
+                        stuiversBestFriend.applyEffectToObject(spaceship);
+                        BoardManager.getInstance().getGameBoard().setDrawnTimerDelay(gameState.getDELAY());
+                        gameState.setGameState(GameStatusEnums.Playing);
+                    } else { //we already have been revived, we die this time fr fr
+                        gameState.setGameState(GameStatusEnums.Dead);
+                        PlayerInventory.getInstance().resetInventory();
+                    }
+                } else { //actually die
+                    gameState.setGameState(GameStatusEnums.Dead);
+                    PlayerInventory.getInstance().resetInventory();
+                }
             }
         }
     }

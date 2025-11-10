@@ -11,7 +11,7 @@ import net.riezebos.bruus.tbd.game.items.enums.ItemApplicationEnum;
 public class ProtossShuttleItem extends Item {
 
     public ProtossShuttleItem(){
-        super(ItemEnums.ProtossShuttle, 1,  ItemApplicationEnum.ApplyOnCreation);
+        super(ItemEnums.ProtossShuttle, 1,  ItemApplicationEnum.UponAcquiring);
     }
 
 

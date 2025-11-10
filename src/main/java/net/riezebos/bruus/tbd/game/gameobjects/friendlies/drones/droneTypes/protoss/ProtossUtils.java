@@ -97,15 +97,24 @@ public class ProtossUtils {
         return Math.sqrt(deltaX * deltaX + deltaY * deltaY);
     }
 
+
+    private float overBuildResidu = 0;
     public void buildProtossShips() {
         if(!isAllowedToBuildProtoss) {
             return;
         }
 
-        protossShipBuilderTimer += (0.015f * PlayerStats.getInstance().getProtossShipConstructionBonusSpeedModifier());
+        if(protossShipBuilderTimer < protossShipBuildTime) {
+            protossShipBuilderTimer += (0.015f * PlayerStats.getInstance().getProtossShipConstructionBonusSpeedModifier());
+        }
 
-        if(protossShipBuilderTimer >= 5.0f){
-            protossShipBuilderTimer = 5.0f;
+        if(protossShipBuilderTimer >= protossShipBuildTime){
+            overBuildResidu = protossShipBuilderTimer - protossShipBuildTime;
+            protossShipBuilderTimer = protossShipBuildTime;
+
+            if(overBuildResidu < 0.2){ //shouldnt be possible but safeguards against negative values
+                overBuildResidu = 0;
+            }
         }
 
         if (protossShipBuilderTimer >= protossShipBuildTime) {
@@ -123,9 +132,17 @@ public class ProtossUtils {
                 buildProtossArbiter();
                 hasBuildShips = true;
             }
+            if(canFitMoreShips(DroneTypes.ProtossCorsair)){
+                buildProtossCorsair();
+                hasBuildShips = true;
+            }
 
             if (hasBuildShips) {
                 protossShipBuilderTimer = 0.0f;
+                if(overBuildResidu >= 0.01){
+                    protossShipBuilderTimer += overBuildResidu;
+                    overBuildResidu = 0;
+                }
             }
         }
     }
@@ -142,6 +159,9 @@ public class ProtossUtils {
             }
             case ProtossScout -> {
                 maxShipCount = PlayerStats.getInstance().getAmountOfProtossScouts();
+            }
+            case ProtossCorsair -> {
+                maxShipCount = PlayerStats.getInstance().getAmountOfProtossCorsairs();
             }
             default -> maxShipCount = 0; //always returns 0
         }
@@ -173,6 +193,9 @@ public class ProtossUtils {
         FriendlyManager.getInstance().addProtossShip(DroneTypes.ProtossArbiter);
     }
 
+    private void buildProtossCorsair() {
+        FriendlyManager.getInstance().addProtossShip(DroneTypes.ProtossCorsair);
+    }
     public boolean isAllowedToBuildProtoss() {
         return isAllowedToBuildProtoss;
     }
@@ -187,5 +210,9 @@ public class ProtossUtils {
 
     public static float getProtossShipBuildTime() {
         return protossShipBuildTime;
+    }
+
+    public static void handleScrapMetalPickUp(float repairAmountMultiplier){
+        protossShipBuilderTimer += (repairAmountMultiplier * protossShipBuildTime);
     }
 }

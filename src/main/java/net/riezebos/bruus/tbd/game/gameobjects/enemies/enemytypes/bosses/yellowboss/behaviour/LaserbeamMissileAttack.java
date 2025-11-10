@@ -7,6 +7,7 @@ import net.riezebos.bruus.tbd.game.gameobjects.missiles.laserbeams.AngledLaserBe
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.laserbeams.Laserbeam;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.laserbeams.LaserbeamConfiguration;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
+import net.riezebos.bruus.tbd.game.level.LevelManager;
 import net.riezebos.bruus.tbd.game.movement.MovementConfiguration;
 import net.riezebos.bruus.tbd.game.movement.MovementPatternSize;
 import net.riezebos.bruus.tbd.game.movement.Point;
@@ -46,7 +47,7 @@ public class LaserbeamMissileAttack implements BossActionable {
 
     private SpriteAnimation missileChargingAnimation;
     private double lastFireMissileTie = 0;
-    private double fireMissileCooldown = 0.65f;
+    private double fireMissileCooldown = 0.65f - (LevelManager.getInstance().getBossDifficultyLevel() * 0.15f);
     private boolean isFiringMissiles = false;
 
     private List<Integer> missileAnglesList = new ArrayList<>();

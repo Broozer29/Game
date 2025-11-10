@@ -30,7 +30,7 @@ public class MissileCreator {
         return spriteConfiguration;
     }
 
-    public MissileConfiguration createMissileConfiguration (MissileEnums attackType, int maxHitPoints, int maxShields,
+    public MissileConfiguration createMissileConfiguration (MissileEnums attackType, float maxHitPoints, float maxShields,
                                                             AudioEnums deathSound, float damage, ImageEnums missileDestructionImage,
                                                             boolean isFriendly, boolean allowedToDealDamage, String objectType, boolean isBoxCollision,
                                                             boolean isExplosive, boolean appliesOnHitEffects, boolean isDestructable) {

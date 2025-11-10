@@ -42,7 +42,6 @@ public class RedBoss extends Enemy {
         this.destructionAnimation = new SpriteAnimation(destroyedExplosionfiguration);
         this.damage = 12;
         this.allowedVisualsToRotate = false;
-//        this.destructionAnimation.setAnimationScale(4);
         this.knockbackStrength = 9;
 
         finishedAttackTime = GameState.getInstance().getGameSeconds();

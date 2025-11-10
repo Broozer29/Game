@@ -14,10 +14,8 @@ import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.gamestate.GameStatsTracker;
 import net.riezebos.bruus.tbd.game.items.effects.EffectIdentifiers;
 import net.riezebos.bruus.tbd.game.level.LevelManager;
-import net.riezebos.bruus.tbd.game.movement.BoardBlockUpdater;
-import net.riezebos.bruus.tbd.game.movement.MovementConfiguration;
-import net.riezebos.bruus.tbd.game.movement.PathFinderEnums;
-import net.riezebos.bruus.tbd.game.movement.Point;
+import net.riezebos.bruus.tbd.game.level.directors.GodRunDetector;
+import net.riezebos.bruus.tbd.game.movement.*;
 import net.riezebos.bruus.tbd.game.movement.pathfinders.DestinationPathFinder;
 import net.riezebos.bruus.tbd.game.playerprofile.PlayerProfileManager;
 import net.riezebos.bruus.tbd.guiboards.BoardManager;
@@ -136,7 +134,7 @@ public class Enemy extends GameObject {
 //        if (this.enemyType.getEnemyTribe().equals(EnemyTribes.Zerg)) {
 //            return 1.15f;
 //        }
-        return 1.25f;
+        return 1.2f;
     }
 
     private void initChargingUpAnimation(SpriteConfiguration spriteConfiguration) {
@@ -153,6 +151,7 @@ public class Enemy extends GameObject {
     public void triggerOnDeathActions() {
         if (LevelManager.getInstance().isNextLevelABossLevel() && this.enemyType.getEnemyCategory().equals(EnemyCategory.Boss)) {
             GameStatsTracker.getInstance().addEnemyKilled(1);
+            GodRunDetector.getInstance().addBoardBlock(this.movementConfiguration.getRotation().equals(Direction.RIGHT) ? Math.min(this.currentBoardBlock + 5, 8): this.currentBoardBlock); //5 is roughly the bonus required to offset coming from the right
             PlayerProfileManager.getInstance().getLoadedProfile().addEmeralds(1);
             PlayerProfileManager.getInstance().exportCurrentProfile();
             GUIComponent emeraldIcon = GameUICreator.getInstance().createEmeraldObtainedIcon(this.getCenterXCoordinate(), this.getCenterYCoordinate());

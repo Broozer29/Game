@@ -250,6 +250,7 @@ public class BoonSelectionBoardCreator {
             case MonoCultural -> selectBoonButton.setMenuFunctionality(MenuFunctionEnums.SelectMonoCulturalGameMode);
             case DoubleTrouble -> selectBoonButton.setMenuFunctionality(MenuFunctionEnums.SelectDoubleTroubleGameMode);
             case Formatted -> selectBoonButton.setMenuFunctionality(MenuFunctionEnums.SelectFormattedGameMode);
+            case Nightmare -> selectBoonButton.setMenuFunctionality(MenuFunctionEnums.SelectNightmareGameMode);
         }
         return selectBoonButton;
     }
@@ -364,6 +365,7 @@ public class BoonSelectionBoardCreator {
             case SelectMonoCulturalGameMode -> {return GameMode.MonoCultural;}
             case SelectDoubleTroubleGameMode -> {return GameMode.DoubleTrouble;}
             case SelectFormattedGameMode -> {return GameMode.Formatted;}
+            case SelectNightmareGameMode -> {return GameMode.Nightmare;}
             default -> {return null;}
         }
     }

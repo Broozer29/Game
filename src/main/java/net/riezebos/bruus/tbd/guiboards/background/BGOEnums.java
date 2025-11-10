@@ -4,5 +4,5 @@ public enum BGOEnums {
 	Star,
 	Planet,
 	Nebula,
-	Parallex
+	Clouds, Parallex
 }

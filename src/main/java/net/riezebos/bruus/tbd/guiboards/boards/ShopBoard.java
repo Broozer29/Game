@@ -38,14 +38,10 @@ import java.util.Map;
 
 public class ShopBoard extends JPanel implements TimerHolder {
 
-    private DataClass data = DataClass.getInstance();
     private BackgroundManager backgroundManager = BackgroundManager.getInstance();
     private AnimationManager animationManager = AnimationManager.getInstance();
     private ConnectedControllersManager controllers = ConnectedControllersManager.getInstance();
     private ShopManager shopManager = ShopManager.getInstance();
-    private final int boardWidth = data.getWindowWidth();
-    private final int boardHeight = data.getWindowHeight();
-    private AudioManager audioManager = AudioManager.getInstance();
 
     private List<GUIComponent> regularGridFirstRow = new ArrayList<>();
     private List<GUIComponent> regularGridSecondRow = new ArrayList<>();

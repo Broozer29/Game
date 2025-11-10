@@ -11,6 +11,7 @@ import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.items.ItemEnums;
 import net.riezebos.bruus.tbd.game.items.PlayerInventory;
+import net.riezebos.bruus.tbd.game.items.items.carrier.AimAssist;
 import net.riezebos.bruus.tbd.game.items.items.carrier.EmergencyRepairs;
 import net.riezebos.bruus.tbd.game.items.items.carrier.SynergeticLink;
 import net.riezebos.bruus.tbd.game.items.items.carrier.VengeanceProtocol;
@@ -47,6 +48,12 @@ public class ProtossShuttle extends Drone {
         super.droneType = DroneTypes.ProtossShuttle;
         super.deathSound = AudioEnums.ProtossShipDeath;
         super.appliesOnHitEffects = true;
+
+        if(PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.AimAssist) != null){
+            AimAssist aimAssist = (AimAssist) PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.AimAssist);
+            this.attackRange *= (1+ aimAssist.getAttackRangeBonus());
+        }
+
     }
 
 
@@ -61,11 +68,6 @@ public class ProtossShuttle extends Drone {
 
         if(!ProtossUtils.carrierDroneIsPresent() && this.isMovingAroundCarrierDrone){
             immediatlyReturnToCarrier();
-        }
-
-        SynergeticLink synergeticLink = (SynergeticLink) PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.SynergeticLink);
-        if(synergeticLink != null){
-            this.attackSpeed = baseAttackSpeed * (1 - synergeticLink.getCurrentShuttleAttackSpeedBonus());
         }
 
         fireAction();
@@ -137,6 +139,13 @@ public class ProtossShuttle extends Drone {
 
         float xMovementSpeed = 3f;
         float yMovementSpeed = 3f;
+
+        SynergeticLink synergeticLink = (SynergeticLink) PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.SynergeticLink);
+        if(synergeticLink != null){
+            xMovementSpeed *=  (1 + synergeticLink.getCurrentShuttleMissileSpeedBonus());
+            yMovementSpeed *=  (1 + synergeticLink.getCurrentShuttleMissileSpeedBonus());
+        }
+
         float damage = PlayerStats.getInstance().getNormalAttackDamage() * shuttleDamageRatio;
         Direction rotation = Direction.RIGHT;
         MovementPatternSize movementPatternSize = MovementPatternSize.SMALL;

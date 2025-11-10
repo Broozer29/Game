@@ -7,6 +7,7 @@ import net.riezebos.bruus.tbd.game.gameobjects.missiles.laserbeams.AngledLaserBe
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.laserbeams.Laserbeam;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.laserbeams.LaserbeamConfiguration;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
+import net.riezebos.bruus.tbd.game.level.LevelManager;
 import net.riezebos.bruus.tbd.game.movement.Point;
 import net.riezebos.bruus.tbd.game.util.WithinVisualBoundariesCalculator;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.AudioManager;
@@ -49,14 +50,14 @@ public class CrossingLaserbeamsAttack implements BossActionable {
         if (inwards) {
             lowerLaserbeamHighestAngle = 185;
             upperLaserbeamLowestAngle = 175;
-            angleStepSize = 0.2f;
+            angleStepSize = 0.2f + (LevelManager.getInstance().getBossDifficultyLevel() * 0.05f);
         } else {
             lowerLaserbeamLowestAngle = 160;  // Start closer to the center
             lowerLaserbeamHighestAngle = 190; // Diverging outward
 
             upperLaserbeamLowestAngle = 170;  // Start closer to the center
             upperLaserbeamHighestAngle = 200; // Diverging outward
-            angleStepSize = 0.2f;
+            angleStepSize = 0.2f + (LevelManager.getInstance().getBossDifficultyLevel() * 0.05f);
         }
     }
 

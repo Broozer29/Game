@@ -2,6 +2,7 @@ package net.riezebos.bruus.tbd.game.gamestate;
 
 import net.riezebos.bruus.tbd.game.level.LevelManager;
 import net.riezebos.bruus.tbd.game.gamestate.save.SaveFile;
+import net.riezebos.bruus.tbd.visualsandaudio.data.DataClass;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.AudioManager;
 
 public class GameState {
@@ -42,31 +43,37 @@ public class GameState {
         this.monsterLevel = 0;
         this.initialOffset = (1 / 0.33f);
         this.bossesDefeated = 0;
+        difficultyCoefficient = 1;
     }
 
 
     private int testingVariableBonus = 0;
 
-    public void updateDifficultyCoefficient () {
+    public void updateDifficultyCoefficient() {
         float playerFactor = 1;
-        float baseTimeFactor = 0.0656f; // Base factor for time, at LevelManager difficulty 2
-        float maxTimeFactor = 0.135f; // Define the maximum time factor for LevelManager difficulty 6
-//        float stageFactor = (float) Math.pow(1.05, stagesCompleted); // Exponential growth for each stage completed
-        float stageFactor = 1; // Exponential growth for each stage completed
+        float baseTimeFactor = 0.0696f; // Base factor for time, at LevelManager difficulty 2
+        float maxTimeFactor = 0.1175f;   // Maximum time factor for LevelManager difficulty 6
+        float stageFactor = 1;          // Exponential growth for each stage completed, currently disabled (1 for now)
 
-
-        float songDifficultyModifier = LevelManager.getInstance().getCurrentLevelDifficultyScore(); // This should be obtained from the LevelManager and ranges between 2 and 6 (inclusive)
+        float songDifficultyModifier = LevelManager.getInstance().getCurrentLevelDifficultyScore();
+        // This should range between 2 and 6 per your comments.
 
         // Scale the time factor based on the level difficulty
         float timeFactor = baseTimeFactor + (maxTimeFactor - baseTimeFactor) * ((songDifficultyModifier - 2) / (6 - 2));
 
-        double timeInMinutes = gameSeconds / 60.0f; // Convert seconds to minutes
+        double timeInMinutes = 0.015f / 60.0f; // Convert seconds to minutes
+
+        // Calculate the additional difficulty increment
+        float increment = (float)((timeInMinutes * timeFactor) * stageFactor) + testingVariableBonus;
 
         if (testingVariableBonus > 0) {
-            System.out.println("Adding additional difficulty coefficient in GameStateInfo 66");
+            System.out.println("Adding additional difficulty coefficient in GameStateInfo.");
         }
 
-        difficultyCoefficient = (float) ((playerFactor + timeInMinutes * timeFactor) * stageFactor) + testingVariableBonus;
+        // Add to the existing difficultyCoefficient instead of overwriting it
+        difficultyCoefficient += increment;
+
+        // Update monster level
         updateMonsterLevel();
     }
 

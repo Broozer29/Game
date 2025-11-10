@@ -18,6 +18,7 @@ import net.riezebos.bruus.tbd.game.items.effects.EffectIdentifiers;
 import net.riezebos.bruus.tbd.game.items.effects.effectimplementations.DamageOverTime;
 import net.riezebos.bruus.tbd.game.items.effects.effectimplementations.SpawnCoinsOnDeath;
 import net.riezebos.bruus.tbd.game.level.LevelManager;
+import net.riezebos.bruus.tbd.game.level.directors.GodRunDetector;
 import net.riezebos.bruus.tbd.game.level.enums.LevelTypes;
 import net.riezebos.bruus.tbd.game.movement.BoardBlockUpdater;
 import net.riezebos.bruus.tbd.game.util.ThornsDamageDealer;
@@ -177,6 +178,7 @@ public class EnemyManager {
             }
         } else if (enemy.getEnemyType().getEnemyCategory() != EnemyCategory.Summon) {
             GameStatsTracker.getInstance().addEnemySpawned(1);
+            GodRunDetector.getInstance().addEnemySpawned();
         }
     }
 
