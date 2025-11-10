@@ -81,7 +81,7 @@ public enum AudioEnums {
     FireFighterYes3(false),
     ProtossShipDeath(false),
     CoinCollected(false),
-    ScarabExplosion(false);
+    ScarabExplosion(false), GodRunDetected(false);
 
     // Boolean attribute to indicate if this should be streamed
     private final boolean shouldStream;

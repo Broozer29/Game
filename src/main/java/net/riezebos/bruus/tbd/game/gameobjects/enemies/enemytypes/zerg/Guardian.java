@@ -6,10 +6,7 @@ import net.riezebos.bruus.tbd.game.gameobjects.missiles.*;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
 import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SpaceShip;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
-import net.riezebos.bruus.tbd.game.movement.MovementConfiguration;
-import net.riezebos.bruus.tbd.game.movement.MovementPatternSize;
-import net.riezebos.bruus.tbd.game.movement.PathFinderEnums;
-import net.riezebos.bruus.tbd.game.movement.Point;
+import net.riezebos.bruus.tbd.game.movement.*;
 import net.riezebos.bruus.tbd.game.movement.pathfinders.HoverPathFinder;
 import net.riezebos.bruus.tbd.game.movement.pathfinders.PathFinder;
 import net.riezebos.bruus.tbd.game.movement.pathfinders.StraightLinePathFinder;
@@ -40,9 +37,13 @@ public class Guardian extends Enemy {
 
         if(this.movementConfiguration.getPathFinder() instanceof HoverPathFinder){
             HoverPathFinder pathFinder = (HoverPathFinder) this.movementConfiguration.getPathFinder();
-//            movementConfiguration.setBoardBlockToHoverIn(7);
+
             pathFinder.setShouldDecreaseBoardBlock(true);
-            pathFinder.setDecreaseBoardBlockAmountBy(1);
+            if(this.movementConfiguration.getRotation().equals(Direction.RIGHT)) {
+                pathFinder.setDecreaseBoardBlockAmountBy(-1);
+            } else {
+                pathFinder.setDecreaseBoardBlockAmountBy(1);
+            }
         }
     }
 

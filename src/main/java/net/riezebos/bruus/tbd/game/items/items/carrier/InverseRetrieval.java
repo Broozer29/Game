@@ -11,6 +11,8 @@ import net.riezebos.bruus.tbd.game.items.Item;
 import net.riezebos.bruus.tbd.game.items.ItemEnums;
 import net.riezebos.bruus.tbd.game.items.effects.effectimplementations.FreezeEffect;
 import net.riezebos.bruus.tbd.game.items.enums.ItemApplicationEnum;
+import net.riezebos.bruus.tbd.visualsandaudio.data.audio.AudioManager;
+import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.AudioEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteAnimation;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteAnimationConfiguration;
@@ -32,6 +34,7 @@ public class InverseRetrieval extends Item {
         }
         PlayerManager.getInstance().getSpaceship().setCenterCoordinates(gameObject.getCenterXCoordinate(), gameObject.getCenterYCoordinate());
         ExplosionManager.getInstance().addExplosion(this.createExplosion(gameObject.getCenterXCoordinate(), gameObject.getCenterYCoordinate()));
+        AudioManager.getInstance().addAudio(AudioEnums.ScarabExplosion);
     }
 
     @Override

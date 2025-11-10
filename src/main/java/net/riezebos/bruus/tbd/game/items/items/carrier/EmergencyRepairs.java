@@ -14,7 +14,7 @@ import net.riezebos.bruus.tbd.game.items.enums.ItemApplicationEnum;
 public class EmergencyRepairs extends Item {
 
     public static float constructionSpeedBonusMultiplier = 0.5f;
-    public static float duration = 1.0f;
+    public static float duration = 1.75f;
 
     public EmergencyRepairs(){
         super(ItemEnums.EmergencyRepairs, 1,  ItemApplicationEnum.CustomActivation);

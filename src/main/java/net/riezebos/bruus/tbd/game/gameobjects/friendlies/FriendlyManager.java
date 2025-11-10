@@ -6,6 +6,7 @@ import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyManager;
 import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.Drone;
 import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.droneTypes.DroneTypes;
 import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.droneTypes.protoss.CarrierDrone;
+import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.droneTypes.protoss.ProtossCorsair;
 import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.droneTypes.protoss.ProtossShuttle;
 import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.droneTypes.protoss.ProtossUtils;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
@@ -167,10 +168,18 @@ public class FriendlyManager {
         for (Drone drone : drones) {
             if (drone.isVisible() && drone.isProtoss()) { //Only check collision for protoss ships, as this checks enemy collision rules
                 for (Enemy enemy : enemyManager.getEnemies()) {
-                    if(enemy.isVisible() && enemy.isDetonateOnCollision()) {
+                    if(enemy.isVisible() && (enemy.isDetonateOnCollision() || drone.getDroneType().equals(DroneTypes.ProtossCorsair))) {
                         CollisionInfo collisionInfo = CollisionDetector.getInstance().detectCollision(drone, enemy);
                         if (collisionInfo != null) {
-                            EnemyManager.getInstance().detonateEnemy(enemy);
+                            //If its a corsair, let the corsair do its thing
+                            if(drone.getDroneType().equals(DroneTypes.ProtossCorsair)){
+                                ProtossCorsair corsair = (ProtossCorsair) drone;
+                                corsair.dealDamageToGameObject(enemy);
+                            }
+                            //If the enemy still lives but should detonate on contact, handle it's detonation like normally
+                            if(enemy.getCurrentHitpoints() > 0.0f && enemy.isDetonateOnCollision()) {
+                                EnemyManager.getInstance().detonateEnemy(enemy);
+                            }
                             enemy.dealDamageToGameObject(drone);
                             ProtossUtils.getInstance().handleProtossThorns(enemy);
                         }

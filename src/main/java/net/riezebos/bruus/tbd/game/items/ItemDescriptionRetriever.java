@@ -1,6 +1,7 @@
 package net.riezebos.bruus.tbd.game.items;
 
 import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.droneTypes.protoss.ProtossArbiter;
+import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.droneTypes.protoss.ProtossCorsair;
 import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.droneTypes.protoss.ProtossScout;
 import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.droneTypes.protoss.ProtossShuttle;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
@@ -26,7 +27,7 @@ public class ItemDescriptionRetriever {
                         PlasmaCoatedBullets.duration + " seconds (+" + PlasmaCoatedBullets.duration + ")";
             }
             case PhotonPiercer -> {
-                return "Attacks against enemies with " + Math.round(PhotonPiercer.hpRequirement * 100) + "% or more health deal " +
+                return "Your missiles that hit enemies with " + Math.round(PhotonPiercer.hpRequirement * 100) + "% or more health deal " +
                         Math.round(PhotonPiercer.damageAmplificationModifier * 100) + "% (+" + Math.round(PhotonPiercer.damageAmplificationModifier * 100) +
                         " %) additional damage.";
             }
@@ -138,7 +139,7 @@ public class ItemDescriptionRetriever {
             }
             case ModuleElectrify -> {
                 return "Drones fire Electro Shred instead of missiles. Drones now orbit " +
-                        ModuleElectrify.orbitrangeBonus +
+                        Math.round(ModuleElectrify.orbitrangeBonus) +
                         " yards further away";
             }
             case ModuleCommand -> {
@@ -164,8 +165,8 @@ public class ItemDescriptionRetriever {
             case EscalatingFlames -> {
                 return "Ignite can stack 1 additional time.";
             }
-            case EntanglingFlames -> {
-                return "Ignite applies 100% Thorns damage 1 (+1) times every 0.75 seconds";
+            case BeckoningFlames -> {
+                return "Automatically fire a missile dealing " + Math.round(EntanglingFlames.damageBonus * 100) + "% damage to Ignited targets every 0.75 seconds they are affected by Ignite.";
             }
             case ModuleScorch -> {
                 return "Drones are transformed into fireballs that damage and apply Ignite.";
@@ -220,10 +221,14 @@ public class ItemDescriptionRetriever {
             }
             case SynergeticLink -> {
                 return "Your Protoss Scouts gain " + Math.round(100 * SynergeticLink.scoutBonusDamagePerShip) + "% (+" + Math.round(100 * SynergeticLink.scoutBonusDamagePerShip) + "%) damage per Protoss Shuttle that is alive." +
-                        "Your Protoss Shuttles gain 5% (+5%) base attack speed per Protoss Scout that is alive."; //This is WILDLY oversimplified, as it changes the base attack speed
+                        "Your Protoss Shuttles gain " + Math.round(100 * SynergeticLink.shuttleMissileSpeedPerStack) + "% (+" + Math.round(100 * SynergeticLink.shuttleMissileSpeedPerStack) + "%) missile speed per Protoss Scout that is alive."; //This is WILDLY oversimplified, as it changes the base attack speed
             }
             case InfernalPreIgniter -> {
-                return "Flamethrowers damage scales with remaining fuel. Dealing up to " + Math.round(InfernalPreIgniter.maxDamageBonnus * 100) + "% damage when full and 0% damage when empty.";
+                double value = InfernalPreIgniter.scalingFactor * (1000f / 15f);
+                return "Every second your primary is firing it's damage exponentially increases with  " + String.format("%.1f", value) +
+                        "% (+" +
+                        String.format("%.1f", value) +
+                        "%).";
             }
             case FuelCannister -> {
                 return "Increases maximum fuel capacity and fuel regeneration by " + Math.round(FuelCannister.bonusFuelMultiplier * 100) + "%.";
@@ -235,10 +240,32 @@ public class ItemDescriptionRetriever {
                 return "Increases Protoss Ship construction speed by " + Math.round(EmergencyRepairs.constructionSpeedBonusMultiplier * 100) + "% (+" + Math.round(EmergencyRepairs.constructionSpeedBonusMultiplier * 100) + "%). For " + Math.round(EmergencyRepairs.duration) + " seconds after a Protoss Ship dies.";
             }
             case VengeanceProtocol -> {
-                return "Protoss Ships explode upon death, dealing " + Math.round(VengeanceProtocol.explosionDamageMultiplier * 100) + "% (+" + Math.round(VengeanceProtocol.explosionDamageMultiplier * 100) + "%). damage";
+                return "Protoss Ships explode upon death, dealing " + Math.round(VengeanceProtocol.explosionDamageMultiplier * 100) + "% (+" + Math.round(VengeanceProtocol.explosionDamageMultiplier * 100) + "%) damage";
             }
             case ArbiterDamage -> {
-                return "Protoss Arbiters no longer heal allies. Protoss Arbiters gain " + Math.round(ArbiterDamage.damageIncreaseMultiplier * 100)  + "% increased effectiveness and damage random enemies.";
+                return "Protoss Arbiters no longer heal allies. Protoss Arbiters gain " + Math.round(ArbiterDamage.damageIncreaseMultiplier * 100) + "% increased effectiveness and damage random enemies.";
+            }
+            case EternaFlame -> {
+                return "Your ignite deals " + Math.round(EternaBurn.igniteDamageReduction * 100) + "% reduced damage. Flamethrower requires " + Math.round(EternaBurn.fuelUsagereduction * 100) + "% less fuel.";
+            }
+            case EphemeralBlaze -> {
+                return "Your ignite deals " + Math.round(EphemeralBlaze.igniteDamageReduction * 100) + "% (+" + Math.round(EphemeralBlaze.igniteDamageReduction * 100) + "%) reduced damage. " +
+                        "Your flamethrower deals " + Math.round(EphemeralBlaze.primaryDamagePerIgniteStack * 100) + "% (+" + Math.round(EphemeralBlaze.primaryDamagePerIgniteStack * 100) + "%) increased damage per stack of ignite on the target. ";
+            }
+            case Stuivie -> {
+                return "Once per round you get revived after dying. Upon reviving unleash an explosion dealing " + Math.round(StuiversBestFriend.explosionDamageAmount * 100) + "% damage.";
+            }
+            case GlassCannon -> {
+                return "You deal double damage. Your health and shields are halved.";
+            }
+            case AimAssist -> {
+                return "Protoss ships gain " + Math.round(AimAssist.protossAttackRangeBonus * 100) + "% attack range.";
+            }
+            case ProtossCorsair -> {
+                return "Gain 1 Protoss Corsair. Corsairs are suicide bombers that deal " + Math.round(ProtossCorsair.explosionDamageFactor * 100) + "% damage. Corsairs drop metal scrap that boosts ship construction.";
+            }
+            case HighVelocityLasers -> {
+                return "Your missiles gain " + (Math.round(HighVelocityLasers.moveSpeedModifier * 100) + "% movement speed.");
             }
 
             default -> {

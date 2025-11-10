@@ -87,7 +87,7 @@ public class HoverPathFinder implements PathFinder {
                 if (shouldDecreaseBoardBlock) {
                     int newBoardBlock = gameObject.getMovementConfiguration().getBoardBlockToHoverIn();
                     newBoardBlock -= decreaseBoardBlockAmountBy;
-                    if (newBoardBlock < 1) {
+                    if (newBoardBlock < 1 || newBoardBlock > 8) {
                         gameObject.getMovementConfiguration().setPathFinder(new RegularPathFinder());
                     } else {
                         gameObject.getMovementConfiguration().setBoardBlockToHoverIn(newBoardBlock);

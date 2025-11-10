@@ -7,6 +7,7 @@ import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.BossAct
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyEnums;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
+import net.riezebos.bruus.tbd.game.level.LevelManager;
 import net.riezebos.bruus.tbd.game.movement.Direction;
 import net.riezebos.bruus.tbd.game.movement.MovementPatternSize;
 import net.riezebos.bruus.tbd.game.movement.Point;
@@ -28,8 +29,6 @@ public class SpawnProtossBeacon implements BossActionable {
 
     private SpriteAnimation spawnAnimation;
     private Enemy beacon = null;
-//    private double lastBeaconMovedTime = 0;
-//    private double beaconMoveCooldown = 4;
 
     @Override
     public boolean activateBehaviour(Enemy enemy) {
@@ -42,6 +41,8 @@ public class SpawnProtossBeacon implements BossActionable {
             this.beacon = null;
             lastSpawnedTime = currentTime; //put it on cooldown after the beacon is killed
         }
+
+        updateSpawnCooldown(enemy);
 
 
 
@@ -75,6 +76,13 @@ public class SpawnProtossBeacon implements BossActionable {
         return true; //We dont have anything to do at this point
     }
 
+
+    private void updateSpawnCooldown(Enemy enemy) {
+        if(enemy.getCurrentHitpoints() <= (enemy.getMaxHitPoints() * 0.35f)){
+            spawnCooldown = 10;
+        }
+    }
+
     private void initSpawnAnimation(Enemy enemy) {
         SpriteConfiguration spriteConfiguration = new SpriteConfiguration();
         spriteConfiguration.setxCoordinate(enemy.getXCoordinate());
@@ -94,7 +102,10 @@ public class SpawnProtossBeacon implements BossActionable {
     private Enemy createProtossBeacon(Enemy enemy) {
         EnemyEnums enemyEnums = EnemyEnums.EnemyCarrierBeacon;
         Enemy enemyProtossBeacon = EnemyCreator.createEnemy(enemyEnums, enemy.getXCoordinate(), enemy.getYCoordinate(), Direction.LEFT,
-                enemyEnums.getDefaultScale(), enemyEnums.getMovementSpeed(), enemyEnums.getMovementSpeed(), MovementPatternSize.SMALL, false);
+                enemyEnums.getDefaultScale(),
+                enemyEnums.getMovementSpeed() + LevelManager.getInstance().getBossDifficultyLevel() * 0.5f,
+                enemyEnums.getMovementSpeed() + LevelManager.getInstance().getBossDifficultyLevel() * 0.5f,
+                MovementPatternSize.SMALL, false);
 
         enemyProtossBeacon.setOwnerOrCreator(enemy);
         enemyProtossBeacon.setCenterCoordinates(spawnAnimation.getCenterXCoordinate(), spawnAnimation.getCenterYCoordinate());

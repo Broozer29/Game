@@ -1,7 +1,6 @@
 package net.riezebos.bruus.tbd.game.gameobjects.neutral.interactable;
 
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
-import net.riezebos.bruus.tbd.game.movement.SpriteMover;
 import net.riezebos.bruus.tbd.game.util.collision.CollisionDetector;
 import net.riezebos.bruus.tbd.game.util.collision.CollisionInfo;
 import net.riezebos.bruus.tbd.game.util.performancelogger.PerformanceLogger;

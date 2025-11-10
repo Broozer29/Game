@@ -27,8 +27,8 @@ import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.Sprit
 
 public class EnemyCreator {
 
-    public static Enemy createEnemy (EnemyEnums type, int xCoordinate, int yCoordinate, Direction movementDirection, float scale,
-                                     float xMovementSpeed, float yMovementSpeed, MovementPatternSize movementPatternSize, boolean boxCollision) {
+    public static Enemy createEnemy(EnemyEnums type, int xCoordinate, int yCoordinate, Direction movementDirection, float scale,
+                                    float xMovementSpeed, float yMovementSpeed, MovementPatternSize movementPatternSize, boolean boxCollision) {
         SpriteConfiguration spriteConfiguration = new SpriteConfiguration(
                 xCoordinate, yCoordinate, scale, type.getImageEnum(),
                 0, 0, 1.0f, false, 0
@@ -42,19 +42,21 @@ public class EnemyCreator {
         return createSpecificEnemy(spriteConfiguration, enemyConfiguration, movementConfiguration);
     }
 
-    private static PathFinder getPathFinderByEnemy (EnemyEnums enemyType) {
+    private static PathFinder getPathFinderByEnemy(EnemyEnums enemyType) {
         boolean isFormatted = GameState.getInstance().getGameMode().equals(GameMode.Formatted);
 
         switch (enemyType) {
-            case Seeker, Energizer, Tazer, Scout, RedBoss, CarrierBoss, ZergDevourer, ZergGuardian, ZergQueen, YellowBoss, MotherShipMiniBoss -> {
-                if(isFormatted && (
+            case Seeker, Energizer, Tazer, Scout, RedBoss, CarrierBoss, ZergDevourer, ZergGuardian, ZergQueen,
+                 YellowBoss, MotherShipMiniBoss -> {
+                if (isFormatted && (
                         enemyType.equals(EnemyEnums.Scout) || enemyType.equals(EnemyEnums.Energizer) || enemyType.equals(EnemyEnums.Seeker)
-                                || enemyType.equals(EnemyEnums.Tazer) || enemyType.equals(EnemyEnums.ZergDevourer) || enemyType.equals(EnemyEnums.ZergGuardian))){
+                                || enemyType.equals(EnemyEnums.Tazer) || enemyType.equals(EnemyEnums.ZergDevourer) || enemyType.equals(EnemyEnums.ZergGuardian))) {
                     return new StraightLinePathFinder();
                 }
                 return new HoverPathFinder();
             }
-            case FourDirectionalDrone, PulsingDrone, SpaceStationBoss, CarrierPulsingDrone, EnemyCarrierBeacon, DefenderMiniBoss, LaserbeamMiniBoss -> {
+            case FourDirectionalDrone, PulsingDrone, SpaceStationBoss, CarrierPulsingDrone, EnemyCarrierBeacon,
+                 DefenderMiniBoss, LaserbeamMiniBoss -> {
                 return new DestinationPathFinder();
             }
             case Shuriken, ShurikenMiniBoss, MirageMiniBoss -> {
@@ -66,29 +68,33 @@ public class EnemyCreator {
         }
     }
 
-    private static void adjustMovementConfigurationPerEnemy (EnemyEnums enemyType, MovementConfiguration movementConfiguration) {
+    private static void adjustMovementConfigurationPerEnemy(EnemyEnums enemyType, MovementConfiguration movementConfiguration) {
         switch (enemyType) {
-            case ZergDevourer -> movementConfiguration.setBoardBlockToHoverIn(5);
-            case ZergGuardian -> movementConfiguration.setBoardBlockToHoverIn(6);
-            case ZergQueen -> movementConfiguration.setBoardBlockToHoverIn(7);
-            case Scout -> movementConfiguration.setBoardBlockToHoverIn(7);
+            case ZergDevourer, Energizer -> setBoardBlockToHoverIn(movementConfiguration, 5);
+            case ZergGuardian -> setBoardBlockToHoverIn(movementConfiguration, 6);
             case Seeker, YellowBoss -> {
-                movementConfiguration.setBoardBlockToHoverIn(6);
+                setBoardBlockToHoverIn(movementConfiguration, 6);
             }
-            case Energizer -> {
-                movementConfiguration.setBoardBlockToHoverIn(5);
-            }
-            case Tazer, MotherShipMiniBoss -> {
-                movementConfiguration.setBoardBlockToHoverIn(7);
+            case Tazer, MotherShipMiniBoss, Scout, ZergQueen -> {
+                setBoardBlockToHoverIn(movementConfiguration, 7);
             }
             case RedBoss, CarrierBoss -> {
-                movementConfiguration.setBoardBlockToHoverIn(4);
+                setBoardBlockToHoverIn(movementConfiguration, 4);
             }
-            case SpaceStationBoss, DefenderMiniBoss, LaserbeamMiniBoss -> movementConfiguration.setDestination(calculateSpaceStationBossDestination(enemyType));
+            case SpaceStationBoss, DefenderMiniBoss, LaserbeamMiniBoss ->
+                    movementConfiguration.setDestination(calculateSpaceStationBossDestination(enemyType));
         }
     }
 
-    public static Point calculateSpaceStationBossDestination (EnemyEnums enemyEnums) {
+    private static void setBoardBlockToHoverIn(MovementConfiguration movementConfiguration, int boardBlockToHoverIn) {
+        if (movementConfiguration.getRotation().equals(Direction.RIGHT)) {
+            movementConfiguration.setBoardBlockToHoverIn(8 - boardBlockToHoverIn);
+        } else {
+            movementConfiguration.setBoardBlockToHoverIn(boardBlockToHoverIn);
+        }
+    }
+
+    public static Point calculateSpaceStationBossDestination(EnemyEnums enemyEnums) {
         int windowHalfWidth = DataClass.getInstance().getWindowWidth() / 2;
         int windowHalfHeight = DataClass.getInstance().getPlayableWindowMaxHeight() / 2;
 
@@ -98,8 +104,8 @@ public class EnemyCreator {
         return new Point(windowHalfWidth - enemyHalfWidth, windowHalfHeight - enemyHalfHeight);
     }
 
-    public static MovementConfiguration createMovementConfiguration (int xCoordinate, int yCoordinate, Direction movementDirection, float xMovementSpeed, float yMovementSpeed,
-                                                                      MovementPatternSize patternSize, PathFinder pathFinder) {
+    public static MovementConfiguration createMovementConfiguration(int xCoordinate, int yCoordinate, Direction movementDirection, float xMovementSpeed, float yMovementSpeed,
+                                                                    MovementPatternSize patternSize, PathFinder pathFinder) {
         MovementConfiguration moveConfig = new MovementConfiguration();
         moveConfig.setCurrentLocation(new Point(xCoordinate, yCoordinate));
         moveConfig.setXMovementSpeed(xMovementSpeed);
@@ -114,7 +120,7 @@ public class EnemyCreator {
     }
 
 
-    private static EnemyConfiguration createEnemyConfiguration (EnemyEnums enemyType, boolean boxCollision) {
+    private static EnemyConfiguration createEnemyConfiguration(EnemyEnums enemyType, boolean boxCollision) {
         int maxHitpoints = enemyType.getBaseHitPoints();
         int maxShields = enemyType.getBaseShieldPoints();
         boolean hasAttack = enemyType.hasAttack();
@@ -132,7 +138,7 @@ public class EnemyCreator {
                 objectType, boxCollision, baseArmor, cashMoneyWorth, xpOnDeath);
     }
 
-    private static Enemy createSpecificEnemy (SpriteConfiguration spriteConfiguration, EnemyConfiguration enemyConfiguration, MovementConfiguration movementConfiguration) {
+    private static Enemy createSpecificEnemy(SpriteConfiguration spriteConfiguration, EnemyConfiguration enemyConfiguration, MovementConfiguration movementConfiguration) {
         switch (enemyConfiguration.getEnemyType()) {
             case PulsingDrone -> {
                 return new PulsingDrone(upgradeConfig(spriteConfiguration, 10, true), enemyConfiguration, movementConfiguration);
@@ -153,7 +159,7 @@ public class EnemyCreator {
                 return new RedBoss(upgradeConfig(spriteConfiguration, 1, true), enemyConfiguration, movementConfiguration);
             }
             case CarrierBoss -> {
-                return new CarrierBoss(upgradeConfig(spriteConfiguration, 3 , true), enemyConfiguration, movementConfiguration);
+                return new CarrierBoss(upgradeConfig(spriteConfiguration, 3, true), enemyConfiguration, movementConfiguration);
             }
             case YellowBoss -> {
                 return new YellowBoss(upgradeConfig(spriteConfiguration, 3, true), enemyConfiguration, movementConfiguration);
@@ -238,7 +244,7 @@ public class EnemyCreator {
         return new Seeker(upgradeConfig(spriteConfiguration, 1, true), enemyConfiguration, movementConfiguration);
     }
 
-    private static SpriteAnimationConfiguration upgradeConfig (SpriteConfiguration spriteConfiguration, int frameDelay, boolean infiniteLoop) {
+    private static SpriteAnimationConfiguration upgradeConfig(SpriteConfiguration spriteConfiguration, int frameDelay, boolean infiniteLoop) {
         return new SpriteAnimationConfiguration(spriteConfiguration, frameDelay, infiniteLoop);
     }
 }

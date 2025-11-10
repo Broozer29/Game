@@ -2,8 +2,13 @@ package net.riezebos.bruus.tbd.visualsandaudio.data.image;
 
 public enum ImageEnums {
 
-    //// Menu Buttons
+    /// / Menu Buttons
     Test_Image,
+    EphemeralBlaze,
+    Eternaflame,
+    ArbiterDamage,
+    StuiversBestFriend,
+    GlassCannon,
     SynergeticLinkIcon,
     EmergencyRepairsIcon,
     ConstructionKitIcon,
@@ -52,6 +57,7 @@ public enum ImageEnums {
     ProtossCarrierWithoutEngine,
     ProtossArbiter,
     ProtossShuttle,
+    ProtossCorsair,
     ProtossScout,
     ProtossDestroyedExplosion,
     ProtossCarrierSwitchFast,
@@ -61,7 +67,7 @@ public enum ImageEnums {
     CarrierPlaceDroneIcon,
     MartyrdomAnimation,
 
-    //// Animations
+    /// / Animations
     Impact_Explosion_One,
     CarrierDronePulse,
     Destroyed_Explosion,
@@ -142,10 +148,39 @@ public enum ImageEnums {
     ProtossShuttleMissile,
     CarrierWarpExplosion,
 
-    //// Background Objects
-    Moon, Lava_Planet, Planet_One, Planet_Two, Planet_Three, Mars_Planet, Star,
+    /// / Background Objects
+    Moon,
+    DiverseNebula,
+    Blue_Nebula_9,
+    RedNebula,
+    RedNebula2,
+    RedNebula3,
+    RedNebula4,
+    RedNebula5,
+    RedPlanet1,
+    RedPlanet2,
+    RedPlanet3,
+    RedPlanet4,
+    RedPlanet5,
+    RedPlanet6,
+    RedPlanet7,
+    RedPlanet8,
+    SpaceClouds1,
+    SpaceClouds2,
+    SpaceClouds3,
+    SpaceClouds4,
+    BluePlanet7,
+    BluePlanet8,
+    BluePlanet9,
+    GreenPlanet3,
+    GreenPlanet4,
+    GreenPlanet5,
+    AimAssist,
+    Lava_Planet, Planet_One, Planet_Two, Planet_Three, Mars_Planet, Star,
     Blue_Nebula_1, Blue_Nebula_2, Blue_Nebula_3,
-    Blue_Nebula_4, Blue_Nebula_5, Blue_Nebula_6, Green_Nebula_1, Green_Nebula_2, Green_Nebula_3, Green_Nebula_4,
+    Blue_Nebula_4, Blue_Nebula_5, Blue_Nebula_6,
+    Blue_Nebula_7, Blue_Nebula_8, Purple_Nebula_8, Star_Field_1, Star_Field_2, Star_Field_3, Star_Field_4,
+    Green_Nebula_1, Green_Nebula_2, Green_Nebula_3, Green_Nebula_4,
     Green_Nebula_5, Green_Nebula_6, Green_Nebula_7, Purple_Nebula_1, Purple_Nebula_2, Purple_Nebula_3, Purple_Nebula_4,
     Purple_Nebula_5, Purple_Nebula_6, Purple_Nebula_7, Star_Blue1, Star_Blue2, Star_Blue3, Star_Blue4, Star_Red1, Star_Red2,
     Star_Red3, Star_Red4, Star_Yellow1, Star_Yellow2, Star_Yellow3, Star_Yellow4, Star_Orange1, Star_Orange2, Star_Orange3, Star_Orange4,
@@ -159,6 +194,8 @@ public enum ImageEnums {
     Bomba_Missile,
     Bomba_Missile_Explosion,
     Rocket_1,
+    CorsairItemIcon,
+    ScrapMetalAnim,
     RotatingBoxes,
     RotatingCoins,
     Rocket_1_Explosion,
@@ -251,9 +288,9 @@ public enum ImageEnums {
     Letter_N, Letter_O, Letter_P, Letter_Q, Letter_R, Letter_S, Letter_T, Letter_U, Letter_V, Letter_W, Letter_X,
     Letter_Y, Letter_Z, Letter_Percentage, Letter_Komma, Letter_One, Letter_Two, Letter_Three, Letter_Four, Letter_Five,
     Letter_Six, Letter_Seven, Letter_Eight, Letter_Nine, Letter_Zero, SpaceStationBoss, FireFighter, Starcraft2ConcentratedLaser, Starcraft2RepairBeam, Starcraft2_BatteryUpgrade, Starcraft2_MineExplosion, StickyOilIcon, SelectNewClassAnimation, EscalatingFlames, EntanglingFlames, ProtossShuttleMissileExplosion, ArbiterMultiTargetIcon,
-    CarrierUnlock, DefenderMiniBoss, ReverseHealing;
+    CarrierUnlock, DefenderMiniBoss, ReverseHealing, ProtossCorsairExplosion;
 
-    public static ImageEnums fromChar (char c) {
+    public static ImageEnums fromChar(char c) {
         switch (c) {
             case 'a':
                 return ImageEnums.Letter_a;
@@ -405,7 +442,7 @@ public enum ImageEnums {
 
     }
 
-    public static ImageEnums getImageEnumForDigit (char digit) {
+    public static ImageEnums getImageEnumForDigit(char digit) {
         switch (digit) {
             case '0':
                 return ImageEnums.Letter_Zero;

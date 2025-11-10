@@ -17,6 +17,7 @@ import net.riezebos.bruus.tbd.game.items.ItemEnums;
 import net.riezebos.bruus.tbd.game.items.PlayerInventory;
 import net.riezebos.bruus.tbd.game.items.enums.ItemApplicationEnum;
 import net.riezebos.bruus.tbd.game.items.items.carrier.KineticDynamo;
+import net.riezebos.bruus.tbd.game.level.directors.DirectorManager;
 import net.riezebos.bruus.tbd.game.movement.Point;
 import net.riezebos.bruus.tbd.game.util.OrbitingObjectsFormatter;
 import net.riezebos.bruus.tbd.game.util.collision.CollisionInfo;
@@ -66,13 +67,41 @@ public class SpaceShip extends GameObject {
         initShip();
     }
 
+    //This method should only be used to bring the player back after dying, not as a general "reset"
+    public void reviveSpaceShip(){
+        boolean shouldLoadEngineAnim = (this.exhaustAnimation != null && this.exhaustAnimation.isVisible()) ? false : true;
+        if (PlayerStats.getInstance().getPlayerClass().equals(PlayerClass.Carrier)) {
+            this.baseArmor += PlayerStats.getInstance().getCarrierBaseArmor();
+            SpriteConfiguration spriteConfiguration = new SpriteConfiguration();
+            spriteConfiguration.setImageType(ImageEnums.ProtossCarrier);
+            spriteConfiguration.setxCoordinate(this.xCoordinate);
+            spriteConfiguration.setyCoordinate(this.yCoordinate);
+            spriteConfiguration.setScale(0.9f);
+
+            SpriteAnimationConfiguration spriteAnimationConfiguration = new SpriteAnimationConfiguration(spriteConfiguration, 2, true);
+            setAnimation(new SpriteAnimation(spriteAnimationConfiguration));
+            shouldLoadEngineAnim = false;
+        } else {
+            setImage(playerStats.getSpaceShipImage());
+        }
+        this.setVisible(true);
+        initDeathAnimation(ImageEnums.Destroyed_Explosion);
+
+        currentShieldRegenDelayFrame = 0;
+        if (shouldLoadEngineAnim) {
+            initExhaustAnimation(ImageEnums.Default_Player_Engine);
+            this.exhaustAnimation.setAnimationScale(0.3f);
+        }
+        this.currentShieldPoints = playerStats.getMaxShieldHitPoints();
+        this.currentHitpoints = playerStats.getMaxHitPoints();
+        this.setImmune(false);
+    }
+
     private void initShip() {
         this.isImmune = false;
         directionx = 0;
         directiony = 0;
         this.friendly = true;
-        this.currentShieldPoints = playerStats.getMaxShieldHitPoints();
-        this.currentHitpoints = playerStats.getMaxHitPoints();
         this.playerFollowingAnimations.clear();
         this.playerFollowingSpecialAttacks.clear();
         this.accumulatedYCoordinate = this.yCoordinate;
@@ -110,8 +139,12 @@ public class SpaceShip extends GameObject {
         this.setObjectType("Player spaceship");
         this.effects = new CopyOnWriteArrayList<>();
         this.hasAttack = true;
+
+        this.currentHitpoints = playerStats.getMaxHitPoints();
+        this.currentShieldPoints = playerStats.getMaxShieldHitPoints();
         applyOnCreationEffects();
 
+        //Again cause Glass Cannon modifies this, so we need to recalculate it if this item exists. Obvious code smell
         this.currentHitpoints = playerStats.getMaxHitPoints();
         this.currentShieldPoints = playerStats.getMaxShieldHitPoints();
     }
@@ -606,11 +639,18 @@ public class SpaceShip extends GameObject {
                         fireSpecialAttack();
                         break;
 //                    case (KeyEvent.VK_SHIFT):
-                    case (KeyEvent.VK_E):
+                    case (KeyEvent.VK_Y):
+                        spawnPortal();
                         break;
                 }
             }
         }
+    }
+
+    //Cheat code method
+    private void spawnPortal(){
+        DirectorManager.getInstance().setEnabled(false);
+        GameState.getInstance().setGameState(GameStatusEnums.Level_Finished);
     }
 
     public synchronized void keyReleased(KeyEvent e) {

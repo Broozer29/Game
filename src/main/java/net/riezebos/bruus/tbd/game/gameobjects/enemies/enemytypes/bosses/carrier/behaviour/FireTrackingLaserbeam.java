@@ -8,6 +8,7 @@ import net.riezebos.bruus.tbd.game.gameobjects.missiles.laserbeams.LaserbeamConf
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.laserbeams.TrackingLaserBeam;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
+import net.riezebos.bruus.tbd.game.level.LevelManager;
 import net.riezebos.bruus.tbd.game.movement.Point;
 import net.riezebos.bruus.tbd.game.util.WithinVisualBoundariesCalculator;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.AudioManager;
@@ -22,10 +23,10 @@ public class FireTrackingLaserbeam implements BossActionable {
     //Vuurt een tracking laserbeam vanaf de neus die de speler volgt
     private int priority = 15;
     private int cooldown = 20;
-    private double lastFiredTime = GameState.getInstance().getGameSeconds() + 5; //Immediatly set it to prevent carrier from immediatly sniping the player
+    private double lastFiredTime = GameState.getInstance().getGameSeconds() + 10; //Immediatly set it to prevent carrier from immediatly sniping the player
     private boolean isFiringLaserbeams;
     private double startedFiringTime = 0;
-    private double duration = 3;
+    private double duration = 3 + LevelManager.getInstance().getBossDifficultyLevel();
 
     private SpriteAnimation chargingAnimation;
     private TrackingLaserBeam trackingLaserbeam;
@@ -37,6 +38,7 @@ public class FireTrackingLaserbeam implements BossActionable {
             initSpawnAnimations(enemy);
         }
 
+        updateLength(enemy);
 
         if (enemy.isAllowedToFire() && currentTime >= lastFiredTime + cooldown && WithinVisualBoundariesCalculator.isWithinBoundaries(enemy)) {
             setLaserbeamOriginAnimation(enemy);
@@ -74,6 +76,12 @@ public class FireTrackingLaserbeam implements BossActionable {
         }
 
         return isFiringLaserbeams; //Laserbeams should removed and this attack is finished
+    }
+
+    private void updateLength(Enemy enemy){
+        if(enemy.getCurrentHitpoints() <= enemy.getMaxHitPoints() * 0.35f){
+            this.duration = 4.5f + LevelManager.getInstance().getBossDifficultyLevel();
+        }
     }
 
     private void updateLaserbeamVisibility() {

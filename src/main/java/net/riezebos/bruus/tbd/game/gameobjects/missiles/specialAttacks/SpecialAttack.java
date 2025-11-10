@@ -6,8 +6,11 @@ import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.items.ItemEnums;
 import net.riezebos.bruus.tbd.game.items.PlayerInventory;
+import net.riezebos.bruus.tbd.game.items.effects.EffectIdentifiers;
 import net.riezebos.bruus.tbd.game.items.effects.EffectInterface;
+import net.riezebos.bruus.tbd.game.items.effects.effectimplementations.DamageOverTime;
 import net.riezebos.bruus.tbd.game.items.items.PrecisionAmplifier;
+import net.riezebos.bruus.tbd.game.items.items.firefighter.EphemeralBlaze;
 import net.riezebos.bruus.tbd.game.movement.BoardBlockUpdater;
 import net.riezebos.bruus.tbd.game.util.ArmorCalculator;
 import net.riezebos.bruus.tbd.game.util.OnScreenTextManager;
@@ -55,7 +58,9 @@ public class SpecialAttack extends GameObject {
             } else target.addEffect(effect);
         }
 
-        float damage = ArmorCalculator.calculateDamage(getDamage(), target);
+
+
+        float damage = calculateDamage(target);
         boolean isACrit = false;
         if (PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.PrecisionAmplifier) != null) {
             PrecisionAmplifier precisionAmplifier = (PrecisionAmplifier) PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.PrecisionAmplifier);
@@ -71,7 +76,20 @@ public class SpecialAttack extends GameObject {
             OnScreenTextManager.getInstance().addDamageNumberText(Math.round(damage), target.getCenterXCoordinate(),
                     target.getCenterYCoordinate(), isACrit);
         }
+    }
 
+    private float calculateDamage(GameObject target){
+        float damage = getDamage();
+
+        if(PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.EphemeralBlaze) != null){
+            DamageOverTime ignite = (DamageOverTime) target.getEffectIfExists(EffectIdentifiers.Ignite);
+            if(ignite != null && ignite.getDotStacks() > 0){
+                EphemeralBlaze ephemeralBlaze = (EphemeralBlaze) PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.EphemeralBlaze);
+                damage = ephemeralBlaze.modifyDamage(damage, ignite.getDotStacks());
+            }
+        }
+
+        return damage;
     }
 
 

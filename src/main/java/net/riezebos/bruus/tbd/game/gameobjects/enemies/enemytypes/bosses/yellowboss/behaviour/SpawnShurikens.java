@@ -6,6 +6,7 @@ import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyManager;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.BossActionable;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyEnums;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
+import net.riezebos.bruus.tbd.game.level.LevelManager;
 import net.riezebos.bruus.tbd.game.movement.Direction;
 import net.riezebos.bruus.tbd.game.movement.MovementPatternSize;
 import net.riezebos.bruus.tbd.game.movement.Point;
@@ -28,7 +29,7 @@ public class SpawnShurikens implements BossActionable {
     private int spawnCooldown = 30;
     private Random random;
     private double lastSpawnedTime;
-    private int maxShurikens = 9; // spawns in groups of 4
+    private int maxShurikens = 9 + (LevelManager.getInstance().getBossDifficultyLevel() * 4); // spawns in groups of 4
     private float moveSpeedModifier = 0.75f;
     private List<Point> spawnPoints = new ArrayList<>();
     private List<SpriteAnimation> spawnAnimations = new ArrayList<>();

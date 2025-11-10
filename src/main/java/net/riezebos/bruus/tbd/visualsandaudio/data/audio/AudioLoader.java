@@ -86,6 +86,8 @@ public class AudioLoader {
             case GenericError: return "/audio/genericerror.wav";
             case Player_Laserbeam:
                 return "/audio/laserbeam1.wav";
+            case GodRunDetected:
+                return "/audio/godrundetected.wav";
             case StickyGrenadeExplosion:
                 return "/audio/StickyGrenadeExplosion.wav";
             case NewPlayerLaserbeam:

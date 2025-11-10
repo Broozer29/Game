@@ -13,6 +13,9 @@ import net.riezebos.bruus.tbd.game.gamestate.GameMode;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.gamestate.GameStatusEnums;
 import net.riezebos.bruus.tbd.game.gamestate.ShopManager;
+import net.riezebos.bruus.tbd.game.items.ItemEnums;
+import net.riezebos.bruus.tbd.game.items.PlayerInventory;
+import net.riezebos.bruus.tbd.game.items.items.StuiversBestFriend;
 import net.riezebos.bruus.tbd.game.level.directors.DirectorManager;
 import net.riezebos.bruus.tbd.game.level.enums.LevelDifficulty;
 import net.riezebos.bruus.tbd.game.level.enums.MiniBossConfig;
@@ -160,13 +163,12 @@ public class LevelManager {
             Enemy dummy = EnemyCreator.createEnemy(enemyType, 1600, 500, Direction.LEFT, enemyType.getDefaultScale()
                     , enemyType.getMovementSpeed(), enemyType.getMovementSpeed(), MovementPatternSize.SMALL, false);
             dummy.setXCoordinate(600);
-            dummy.setMaxHitPoints(300);
-            dummy.setCurrentHitpoints(300);
-//            dummy.setAllowedToFire(false);
+            dummy.setMaxHitPoints(1000);
+            dummy.setCurrentHitpoints(1000);
+            dummy.setAllowedToFire(false);
             dummy.setAllowedToMove(false);
             EnemyManager.getInstance().addEnemy(dummy);
         }
-
 
         if(DevTestSettings.instantlySpawnPortal) {
             gameState.setGameState(GameStatusEnums.Level_Finished);
@@ -228,6 +230,15 @@ public class LevelManager {
     }
 
 
+    //This needs to be reworked if infinite boss scaling abilities is to be achieved
+    public int getBossDifficultyLevel(){
+        if(GameState.getInstance().getBossesDefeated() > 4 || GameState.getInstance().getGameMode().equals(GameMode.Nightmare)){ //cycled through all bosses, keep this number updated manually for now
+            return 1;
+        }
+        return 0;
+    }
+
+
     private void activateDirectors(LevelTypes levelType) {
         DirectorManager directorManager = DirectorManager.getInstance();
         directorManager.setEnabled(true);
@@ -274,10 +285,9 @@ public class LevelManager {
 
                     if (originalDestination != null) {
 
-                        if(direction.equals(Direction.LEFT) && originalDestination.getY() != enemy.getYCoordinate()){
-                            originalDestination.setY(enemy.getYCoordinate());
+                        if((direction.equals(Direction.LEFT) || direction.equals(Direction.RIGHT)) && originalDestination.getY() != enemy.getYCoordinate()){
+                            originalDestination.setY(enemy.getYCoordinate()); //er is een verschil van minder dan 1, corrigeer het anders gaan visuals trillen
                         }
-                        //Vieze (mogelijke) bug fix, als direction.left/right == true, originalDestination.yCoordinate = enemy.yCoordinate
                         enemy.getMovementConfiguration().setDestination(originalDestination);
                     }
                 }

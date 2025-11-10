@@ -15,6 +15,7 @@ import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.gamestate.GameStatsTracker;
 import net.riezebos.bruus.tbd.game.items.ItemEnums;
 import net.riezebos.bruus.tbd.game.items.PlayerInventory;
+import net.riezebos.bruus.tbd.game.items.items.captain.HighVelocityLasers;
 import net.riezebos.bruus.tbd.game.items.items.carrier.KineticDynamo;
 import net.riezebos.bruus.tbd.game.items.items.firefighter.InfernalPreIgniter;
 import net.riezebos.bruus.tbd.game.movement.Direction;
@@ -130,10 +131,10 @@ public class PrimaryPlayerGun {
 
 
     // Fuel tank mechanics
-    private final float FUEL_DEPLETION_RATE = 0.5f;
-    private final float FUEL_REGENERATION_RATE = 0.4f;
-    private final float FUEL_MINIMUM_REQUIRED = 1f;
-    public static float fireFighterBonusDamageRatio = 1f;
+    private final float FUEL_DEPLETION_RATE = 0.475f;
+    private final float FUEL_REGENERATION_RATE = 0.35f;
+    private final float FUEL_MINIMUM_REQUIRED = 10f;
+    public static float fireFighterBonusDamageRatio = 1.15f;
 
     private void startFiringFlameThrower(int xCoordinate, int yCoordinate) {
         if (this.channeledAttack == null && orangeBarCurrentValue >= FUEL_MINIMUM_REQUIRED) {
@@ -166,9 +167,10 @@ public class PrimaryPlayerGun {
     }
 
     private void updateFlameThrowerDamageFromInfernalPreIgniter(SpecialAttack specialAttack){
-        if(PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.InfernalPreIgniter) != null){
-            specialAttack.setDamage(playerStats.getNormalAttackDamage() * ((this.orangeBarCurrentValue / this.orangeBarMaxValue) * InfernalPreIgniter.maxDamageBonnus));
-        }
+        //deprecated item effect but still functional, can be reused for a different item now that infernal preigniter has been reworked
+//        if(PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.InfernalPreIgniter) != null){
+//            specialAttack.setDamage(playerStats.getNormalAttackDamage() * ((this.orangeBarCurrentValue / this.orangeBarMaxValue) * InfernalPreIgniter.maxDamageBonnus));
+//        }
     }
 
 
@@ -189,7 +191,7 @@ public class PrimaryPlayerGun {
 
     private void fireMissile(int xCoordinate, int yCoordinate, ImageEnums playerMissileType,
                              float missileScale, PathFinder missilePathFinder, MissileEnums attackType) {
-        int movementSpeed = 5;
+        int movementSpeed = 6;
         MissileCreator missileCreator1 = MissileCreator.getInstance();
         SpriteConfiguration spriteConfiguration = missileCreator1.createMissileSpriteConfig(xCoordinate, yCoordinate,
                 playerMissileType, missileScale);
@@ -229,6 +231,12 @@ public class PrimaryPlayerGun {
             missileConfiguration.setAmountOfPierces(instance.getPiercingMissilesAmount());
         }
         Missile missile = missileCreator1.createMissile(spriteConfiguration, missileConfiguration, movementConfiguration);
+
+        if(PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.HighVelocityLasers) != null){
+            HighVelocityLasers lasers = (HighVelocityLasers) PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.HighVelocityLasers);
+            lasers.applyEffectToObject(missile);
+        }
+
         SpaceShip spaceship = PlayerManager.getInstance().getSpaceship();
         missile.setOwnerOrCreator(spaceship);
         missile.setCenterCoordinates(missile.getCenterXCoordinate(), spaceship.getCenterYCoordinate());
@@ -277,7 +285,7 @@ public class PrimaryPlayerGun {
 
                 // Deplete fuel while firing
                 updateFlameThrowerDamageFromInfernalPreIgniter(this.channeledAttack);
-                orangeBarCurrentValue -= FUEL_DEPLETION_RATE;
+                orangeBarCurrentValue -= Math.max(FUEL_DEPLETION_RATE * PlayerStats.getInstance().getFuelCannisterUsageMultiplier() , 0.01f);
                 if (orangeBarCurrentValue < 0) {
                     orangeBarCurrentValue = 0; // Clamp at 0
                 }
@@ -298,5 +306,4 @@ public class PrimaryPlayerGun {
         }
         return orangeBarCurrentValue;
     }
-
 }

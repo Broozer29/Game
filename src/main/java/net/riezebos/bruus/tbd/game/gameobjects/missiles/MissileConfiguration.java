@@ -7,8 +7,8 @@ public class MissileConfiguration {
 
     private MissileEnums missileType;
     private boolean isDestructable;
-    private int maxHitPoints;
-    private int maxShields;
+    private float maxHitPoints;
+    private float maxShields;
 
     private AudioEnums deathSound;
     private float damage;
@@ -27,7 +27,7 @@ public class MissileConfiguration {
     private boolean isExplosive;
     private boolean appliesOnHitEffects;
 
-    public MissileConfiguration (MissileEnums missileType, int maxHitPoints, int maxShields, AudioEnums deathSound,
+    public MissileConfiguration (MissileEnums missileType, float maxHitPoints, float maxShields, AudioEnums deathSound,
                                  float damage, ImageEnums destructionType, boolean isFriendly, boolean allowedToDealDamage,
                                  String objectType, boolean boxCollision, boolean isExplosive, boolean appliesOnHitEffects,
                                  boolean isDestructable) {
@@ -53,7 +53,7 @@ public class MissileConfiguration {
 
     }
 
-    public int getMaxHitPoints () {
+    public float getMaxHitPoints () {
         return maxHitPoints;
     }
 
@@ -61,7 +61,7 @@ public class MissileConfiguration {
         this.maxHitPoints = maxHitPoints;
     }
 
-    public int getMaxShields () {
+    public float getMaxShields () {
         return maxShields;
     }
 

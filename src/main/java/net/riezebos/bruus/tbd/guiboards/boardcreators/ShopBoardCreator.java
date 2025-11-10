@@ -161,7 +161,7 @@ public class ShopBoardCreator {
         int startingXCoordinate = Math.round(backgroundCard.getXCoordinate() + backgroundCard.getWidth() * 0.2f);
         int moneyY = Math.round(backgroundCard.getYCoordinate() + backgroundCard.getHeight() * 0.85f);
 
-        int amount = PlayerStats.getInstance().getAmountOfProtossArbiters() + PlayerStats.getInstance().getAmountOfProtossShuttles() + PlayerStats.getInstance().getAmountOfProtossScouts();
+        int amount = PlayerStats.getInstance().getAmountOfProtossArbiters() + PlayerStats.getInstance().getAmountOfProtossShuttles() + PlayerStats.getInstance().getAmountOfProtossScouts() + PlayerStats.getInstance().getAmountOfProtossCorsairs();
         String text = "" + amount + ":" + PlayerStats.getInstance().getMaxAmountOfProtoss();
 
         GUITextCollection textCollection = new GUITextCollection(startingXCoordinate, moneyY, text);
@@ -305,11 +305,14 @@ public class ShopBoardCreator {
 
     public List<GUIComponent> createNewFirstRowOfItems() {
         List<GUIComponent> firstRow = new ArrayList<>();
+        boolean rolledRare = false;
         for (int i = 0; i < 8; i++) {
             float x = (i * (shopItemIconDimensions + horizontalSpacing)) + horizontalScreenDistance;
             float y = verticalScreenDistance;
             SpriteConfiguration spriteConfiguration = createSpriteConfiguration(x, y, 1, ImageEnums.Invisible);
-            ShopItem shopItem = new ShopItem(spriteConfiguration, ItemRarityEnums.Common);
+
+
+            ShopItem shopItem = new ShopItem(spriteConfiguration, !rolledRare ? ItemRarityEnums.getCommonOrRareEnum() : ItemRarityEnums.Common);
 
             if (shopManager.getRowsUnlocked() < 1) {
                 shopItem.lockItemInShop();
@@ -319,16 +322,21 @@ public class ShopBoardCreator {
             shopItem.setColumn(0);
             shopItem.setRow(i);
             firstRow.add(shopItem);
+
+            if(shopItem.getShopItemInformation().getItemRarity() == ItemRarityEnums.Rare) {
+                rolledRare = true;
+            }
         }
         return firstRow;
     }
 
     public List<GUIComponent> createNewSecondRowOfItems() {
         List<GUIComponent> secondRow = new ArrayList<>();
+        boolean rolledRare = false;
         for (int i = 0; i < 8; i++) {
             float x = (i * (shopItemIconDimensions + horizontalSpacing)) + horizontalScreenDistance;
             float y = (1 * (shopItemIconDimensions + verticalSpacing)) + verticalScreenDistance;
-            ItemRarityEnums type = (i == 7) ? ItemRarityEnums.Rare : ItemRarityEnums.Common; // If index is 7, it's a rare item
+            ItemRarityEnums type = !rolledRare ? ItemRarityEnums.getCommonOrRareEnum() : ItemRarityEnums.Common;
 
             SpriteConfiguration spriteConfiguration = createSpriteConfiguration(x, y, 1, ImageEnums.Invisible);
             ShopItem shopItem = new ShopItem(spriteConfiguration, type);
@@ -343,6 +351,10 @@ public class ShopBoardCreator {
             shopItem.setColumn(1);
             shopItem.setRow(i);
             secondRow.add(shopItem);
+
+            if(shopItem.getShopItemInformation().getItemRarity() == ItemRarityEnums.Rare) {
+                rolledRare = true;
+            }
         }
         return secondRow;
     }
@@ -350,10 +362,11 @@ public class ShopBoardCreator {
 
     public List<GUIComponent> createNewThirdRowOfItems() {
         List<GUIComponent> thirdRow = new ArrayList<>();
+        boolean rolledRare = false;
         for (int i = 0; i < 8; i++) {
             float x = (i * (shopItemIconDimensions + horizontalSpacing)) + horizontalScreenDistance;
             float y = (2 * (shopItemIconDimensions + verticalSpacing)) + verticalScreenDistance;
-            ItemRarityEnums type = (i == 7) ? ItemRarityEnums.Rare : ItemRarityEnums.Common; // If index is 7, it's a rare item
+            ItemRarityEnums type =  !rolledRare ? ItemRarityEnums.getCommonOrRareEnum() : ItemRarityEnums.Common;
 
             SpriteConfiguration spriteConfiguration = createSpriteConfiguration(x, y, 1, ImageEnums.Invisible);
             ShopItem shopItem = new ShopItem(spriteConfiguration, type);
@@ -366,6 +379,10 @@ public class ShopBoardCreator {
             shopItem.setColumn(2);
             shopItem.setRow(i);
             thirdRow.add(shopItem);
+
+            if(shopItem.getShopItemInformation().getItemRarity() == ItemRarityEnums.Rare) {
+                rolledRare = true;
+            }
         }
         return thirdRow;
     }

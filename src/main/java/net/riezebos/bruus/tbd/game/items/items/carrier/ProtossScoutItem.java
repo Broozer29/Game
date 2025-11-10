@@ -11,7 +11,7 @@ import net.riezebos.bruus.tbd.game.items.enums.ItemApplicationEnum;
 public class ProtossScoutItem extends Item {
 
     public ProtossScoutItem(){
-        super(ItemEnums.ProtossScout, 1,  ItemApplicationEnum.ApplyOnCreation);
+        super(ItemEnums.ProtossScout, 1,  ItemApplicationEnum.UponAcquiring);
     }
 
 

@@ -5,6 +5,7 @@ import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyCreator;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.BossActionable;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyEnums;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
+import net.riezebos.bruus.tbd.game.level.LevelManager;
 import net.riezebos.bruus.tbd.game.movement.Direction;
 import net.riezebos.bruus.tbd.game.movement.Point;
 import net.riezebos.bruus.tbd.game.movement.pathfinders.BouncingPathFinder;
@@ -30,7 +31,7 @@ public class SpaceStationSpinningAttack implements BossActionable {
     private boolean isGoingBackToCenter = false;
 
     private float oldMoveSpeed = 0.0f;
-    private float newMoveSpeedModifier = 2.75f;
+    private float newMoveSpeedModifier = 2.75f + (LevelManager.getInstance().getBossDifficultyLevel() * 0.25f);
 
     public SpaceStationSpinningAttack () {
 //        chargingUpMovement = AudioDatabase.getInstance().getAudioClip(AudioEnums.SpaceStationChargingUpMovement);

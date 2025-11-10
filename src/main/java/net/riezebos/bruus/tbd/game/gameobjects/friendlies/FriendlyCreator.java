@@ -92,24 +92,27 @@ public class FriendlyCreator {
         movementConfiguration.setLastUsedYMovementSpeed(droneType.getMovementSpeed());
         movementConfiguration.setDirection(Direction.RIGHT);
         movementConfiguration.setDestination(ProtossUtils.getRandomPoint());
-
+        DamageReduction damageReduction = new DamageReduction(9999999, 0.25f, null);
         Drone drone = null;
         switch (droneType) {
             case ProtossScout -> {
                 drone = new ProtossScout(spriteAnimationConfiguration, friendlyObjectConfiguration, movementConfiguration);
+                drone.addEffect(damageReduction);
             }
             case ProtossShuttle -> {
                 drone = new ProtossShuttle(spriteAnimationConfiguration, friendlyObjectConfiguration, movementConfiguration);
+                drone.addEffect(damageReduction);
             }
             case ProtossArbiter -> {
                 drone = new ProtossArbiter(spriteAnimationConfiguration, friendlyObjectConfiguration, movementConfiguration);
+                drone.addEffect(damageReduction);
+            }
+            case ProtossCorsair -> {
+                drone = new ProtossCorsair(spriteAnimationConfiguration, friendlyObjectConfiguration, movementConfiguration);
+                //no damage reduction since its a suicide bomber but requires playtesting to see if it actually needs it
             }
         }
-
-        DamageReduction damageReduction = new DamageReduction(9999999, 0.25f, null);
-        drone.addEffect(damageReduction);
         return drone;
-
     }
 
     public static Drone getCarrierBeacon() {
@@ -169,6 +172,9 @@ public class FriendlyCreator {
             }
             case CarrierDrone -> {
                 return 0.5f;
+            }
+            case ProtossCorsair -> {
+                return 0.3f;
             }
             default -> {
                 return 0.2f;

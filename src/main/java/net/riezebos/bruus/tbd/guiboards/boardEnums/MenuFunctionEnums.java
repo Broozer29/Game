@@ -35,5 +35,6 @@ public enum MenuFunctionEnums {
 	SelectMonoCulturalGameMode,
 	SelectDoubleTroubleGameMode,
 	SelectFormattedGameMode,
-	Open_Inventory;
+	Open_Inventory,
+	SelectNightmareGameMode;
 }

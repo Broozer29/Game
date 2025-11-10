@@ -6,6 +6,7 @@ import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyManager;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.BossActionable;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyEnums;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
+import net.riezebos.bruus.tbd.game.level.LevelManager;
 import net.riezebos.bruus.tbd.game.movement.Direction;
 import net.riezebos.bruus.tbd.game.movement.MovementPatternSize;
 import net.riezebos.bruus.tbd.game.movement.pathfinders.BouncingPathFinder;
@@ -27,9 +28,9 @@ public class SpawnShuriken implements BossActionable {
     private SpriteAnimation spawnAnimation;
 
     @Override
-    public boolean activateBehaviour(Enemy enemy){
+    public boolean activateBehaviour(Enemy enemy) {
         double currentTime = GameState.getInstance().getGameSeconds();
-        if(spawnAnimation == null) {
+        if (spawnAnimation == null) {
             initSpawnAnimation(enemy);
         }
 
@@ -43,10 +44,13 @@ public class SpawnShuriken implements BossActionable {
             }
 
 
-            if(spawnAnimation.isPlaying() && spawnAnimation.getCurrentFrame() == 4) {
-                Enemy fourDirectionalDrone = createShuriken(enemy);
-                fourDirectionalDrone.setCenterCoordinates(spawnAnimation.getCenterXCoordinate(), spawnAnimation.getCenterYCoordinate());
-                EnemyManager.getInstance().addEnemy(fourDirectionalDrone);
+            if (spawnAnimation.isPlaying() && spawnAnimation.getCurrentFrame() == 4) {
+                //spawn a shuriken for each boss level
+                for (int i = 0; i < LevelManager.getInstance().getBossDifficultyLevel() + 1; i++) {
+                    Enemy fourDirectionalDrone = createShuriken(enemy);
+                    fourDirectionalDrone.setCenterCoordinates(spawnAnimation.getCenterXCoordinate(), spawnAnimation.getCenterYCoordinate());
+                    EnemyManager.getInstance().addEnemy(fourDirectionalDrone);
+                }
                 lastSpawnedTime = currentTime;
                 enemy.setAttacking(false);
                 return true; //We finished
@@ -58,8 +62,7 @@ public class SpawnShuriken implements BossActionable {
     }
 
 
-
-    private void initSpawnAnimation (Enemy enemy) {
+    private void initSpawnAnimation(Enemy enemy) {
         SpriteConfiguration spriteConfiguration = new SpriteConfiguration();
         spriteConfiguration.setxCoordinate(enemy.getXCoordinate());
         spriteConfiguration.setyCoordinate(enemy.getCenterYCoordinate());
@@ -73,15 +76,15 @@ public class SpawnShuriken implements BossActionable {
         spawnAnimation.addXOffset(Math.round(spawnAnimation.getWidth() * 0.1f));
     }
 
-    private void updateSpawnAnimationLocation (Enemy enemy) {
+    private void updateSpawnAnimationLocation(Enemy enemy) {
         spawnAnimation.setCenterCoordinates(enemy.getXCoordinate(), enemy.getCenterYCoordinate());
     }
 
-    private Enemy createShuriken (Enemy enemy){
+    private Enemy createShuriken(Enemy enemy) {
         EnemyEnums enemyType = EnemyEnums.Shuriken;
         Direction direction = getRandomDirection();
         Enemy shuriken = EnemyCreator.createEnemy(enemyType, enemy.getXCoordinate(), enemy.getYCoordinate(), direction,
-                enemyType.getDefaultScale(), enemyType.getMovementSpeed(),enemyType.getMovementSpeed(), MovementPatternSize.SMALL, false);
+                enemyType.getDefaultScale(), enemyType.getMovementSpeed(), enemyType.getMovementSpeed(), MovementPatternSize.SMALL, false);
 
         BouncingPathFinder pathFinder = new BouncingPathFinder();
         pathFinder.setMaxBounces(15);
@@ -90,8 +93,8 @@ public class SpawnShuriken implements BossActionable {
         return shuriken;
     }
 
-    private Direction getRandomDirection(){
-        if(random == null){
+    private Direction getRandomDirection() {
+        if (random == null) {
             random = new Random();
         }
 
@@ -104,16 +107,16 @@ public class SpawnShuriken implements BossActionable {
     }
 
     @Override
-    public int getPriority () {
+    public int getPriority() {
         return priority;
     }
 
-    public void setPriority (int priority) {
+    public void setPriority(int priority) {
         this.priority = priority;
     }
 
     @Override
-    public boolean isAvailable (Enemy enemy) {
+    public boolean isAvailable(Enemy enemy) {
         return enemy.isAllowedToFire()
                 && GameState.getInstance().getGameSeconds() >= lastSpawnedTime + spawnCooldown
                 && WithinVisualBoundariesCalculator.isWithinBoundaries(enemy);

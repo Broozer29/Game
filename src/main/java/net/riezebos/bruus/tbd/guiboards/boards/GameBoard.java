@@ -23,9 +23,13 @@ import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SpaceShipSpecial
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.gamestate.GameStatsTracker;
 import net.riezebos.bruus.tbd.game.gamestate.GameStatusEnums;
+import net.riezebos.bruus.tbd.game.items.ItemEnums;
 import net.riezebos.bruus.tbd.game.items.PlayerInventory;
+import net.riezebos.bruus.tbd.game.items.items.StuiversBestFriend;
+import net.riezebos.bruus.tbd.game.items.items.util.ContractHelper;
 import net.riezebos.bruus.tbd.game.level.LevelManager;
 import net.riezebos.bruus.tbd.game.level.directors.DirectorManager;
+import net.riezebos.bruus.tbd.game.level.directors.GodRunDetector;
 import net.riezebos.bruus.tbd.game.level.enums.LevelTypes;
 import net.riezebos.bruus.tbd.game.movement.Direction;
 import net.riezebos.bruus.tbd.game.gameobjects.player.boons.BoonManager;
@@ -152,7 +156,9 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
         levelManager.resetManager();
         playerManager.resetManager();
         audioManager.resetManager();
+        GodRunDetector.getInstance().resetGodRunDetector();
         backgroundManager.resetManager();
+        ContractHelper.getInstance().resetManager();
         explosionManager.resetManager();
         friendlyManager.resetManager();
         gameUICreator.resetManager();
@@ -182,11 +188,24 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
             friendlyManager.resetPortal();
             gameUICreator.resetManager();
             textManager.resetManager();
+            GodRunDetector.getInstance().resetGodRunDetector();
             this.hasExportedLogs = false;
+
+
+            //reset stuivers best friend if it exists
+            if(PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.Stuivie) != null) {
+                StuiversBestFriend stuiversBestFriend = (StuiversBestFriend) PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.Stuivie);
+                stuiversBestFriend.setHasActivatedThisRound(false);
+            }
 
             //These should probably to be refactored into osmething new
             hasResetManagersForNextLevel = true;
         }
+    }
+
+
+    public void setDrawnTimerDelay(int amount){
+        this.drawTimer.setDelay(amount);
     }
 
     @Override
@@ -196,7 +215,6 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
         drawObjects(g2d);
         if (gameState.getGameState() == GameStatusEnums.Dying) {
             playerManager.startDyingScene();
-            this.drawTimer.setDelay(75);
         } else if (gameState.getGameState() == GameStatusEnums.Dead) {
             drawEndOfLevelScreen(g2d, false);
         } else if (gameState.getGameState() == GameStatusEnums.Show_Level_Score_Card) {
@@ -311,15 +329,6 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
             msgToDraw = "Minerals acquired this level:          " + gameStatsTracker.getMineralsGainedThisRound();
             g.drawString(msgToDraw, firstRowXCoordinate, firstRowYCoordinate);
 
-            firstRowYCoordinate += messageHeight;
-            msgToDraw = "Damage taken this round:               " + gameStatsTracker.getDamageTakenThisRound();
-            g.drawString(msgToDraw, firstRowXCoordinate, firstRowYCoordinate);
-
-            firstRowYCoordinate += messageHeight;
-            msgToDraw = "Highest hit so far:                    " + gameStatsTracker.getHighestDamageDealt();
-            g.drawString(msgToDraw, firstRowXCoordinate, firstRowYCoordinate);
-
-
         } else {
             msgToDraw = "Total enemies killed:                  " + gameStatsTracker.getEnemiesKilled();
             g.drawString(msgToDraw, firstRowXCoordinate, firstRowYCoordinate);
@@ -329,19 +338,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
             g.drawString(msgToDraw, firstRowXCoordinate, firstRowYCoordinate);
 
             firstRowYCoordinate += messageHeight;
-            msgToDraw = "Total spawned enemies killed:          " + gameStatsTracker.getPercentageOfTotalSpawnedEnemiesKilled() + "%";
-            g.drawString(msgToDraw, firstRowXCoordinate, firstRowYCoordinate);
-
-            firstRowYCoordinate += messageHeight;
-            msgToDraw = "Highest damage dealt:                  " + gameStatsTracker.getHighestDamageDealt();
-            g.drawString(msgToDraw, firstRowXCoordinate, firstRowYCoordinate);
-
-            firstRowYCoordinate += messageHeight;
             msgToDraw = "Total damage done:                     " + gameStatsTracker.getTotalDamageDealt();
-            g.drawString(msgToDraw, firstRowXCoordinate, firstRowYCoordinate);
-
-            firstRowYCoordinate += messageHeight;
-            msgToDraw = "Total damage taken:                    " + gameStatsTracker.getTotalDamageTaken();
             g.drawString(msgToDraw, firstRowXCoordinate, firstRowYCoordinate);
 
             firstRowYCoordinate += messageHeight;
@@ -528,6 +525,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
             drawImage(g, gameUICreator.getDifficultyWings());
         }
 
+        g.setFont(new Font(DataClass.getInstance().getTextFont(), Font.PLAIN, Math.round(14 * DataClass.getInstance().getResolutionFactor())));
         drawCurrentAmountOFMinerals(g);
 
         g.setColor(Color.WHITE);
@@ -612,11 +610,11 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
         }
     }
 
-
     private void drawAnimation(Graphics2D g, SpriteAnimation animation) {
         if (animation.getCurrentFrameImage(false) != null && animation.isVisible()) {
             // Save the original composite
             Composite originalComposite = g.getComposite();
+
             // Set the alpha composite
             g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, animation.getTransparancyAlpha()));
 
@@ -820,8 +818,6 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
     }
 
 
-
-
     private void drawSongProgressBar(Graphics2D g) {
         if (GameState.getInstance().getCurrentLevelProgression() < 0 && AudioManager.getInstance().getPredictedEndGameSeconds() - GameState.getInstance().getLevelStartTime() < 0) {
             //If these values don't make sense, don't attempt to draw the bar
@@ -864,11 +860,14 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
 
         if (charges > 0) {
             drawAnimation(g, gameUICreator.getSpecialAttackHighlight());
-        } else {
-            // Draw the cooldown progress bar only if there are no charges
-            double remainingSeconds = gun.getCurrentSpecialAttackFrame();
-            double totalCooldown = playerStats.getSpecialAttackCooldown();
-            float percentage = (float) (1.0 - remainingSeconds / totalCooldown); // Properly compute the fill percentage
+        }
+
+        // Draw the cooldown progress bar only if there are no charges
+        double remainingSeconds = gun.getCurrentSpecialAttackFrame();
+        double totalCooldown = playerStats.getSpecialAttackCooldown();
+        float percentage = (float) (1.0 - remainingSeconds / totalCooldown); // Properly compute the fill percentage
+
+        if (percentage <= 0.99) {
             int barWidth = (int) (gameUICreator.getSpecialAttackFrame().getWidth() * percentage);
 
             // Draw the cooldown progress bar

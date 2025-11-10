@@ -22,10 +22,13 @@ public class Flamer extends Enemy {
         SpriteAnimationConfiguration destroyedExplosionfiguration = new SpriteAnimationConfiguration(spriteConfiguration.getSpriteConfiguration(), 0, false);
         destroyedExplosionfiguration.getSpriteConfiguration().setImageType(this.enemyType.getDestructionType());
         this.destructionAnimation = new SpriteAnimation(destroyedExplosionfiguration);
-        this.damage = 50;
+        this.damage = 35;
         this.attackSpeed = 5;
         this.detonateOnCollision = false;
         this.knockbackStrength = 8;
+        if(this.chargingUpAttackAnimation != null){
+            this.chargingUpAttackAnimation.setFrameDelay(this.chargingUpAttackAnimation.getFrameDelay() + 1); //idk what the default value is so this
+        }
     }
 
     public void fireAction () {
@@ -51,7 +54,7 @@ public class Flamer extends Enemy {
         SpriteConfiguration missileSpriteConfiguration = new SpriteConfiguration();
         missileSpriteConfiguration.setxCoordinate(this.getCenterXCoordinate());
         missileSpriteConfiguration.setyCoordinate(this.getCenterYCoordinate());
-        missileSpriteConfiguration.setScale(1.5f);
+        missileSpriteConfiguration.setScale(1.65f);
         missileSpriteConfiguration.setImageType(ImageEnums.Electroshred);
 
         SpriteAnimationConfiguration spriteAnimationConfiguration = new SpriteAnimationConfiguration(missileSpriteConfiguration, 2, false);

@@ -4,6 +4,7 @@ import net.riezebos.bruus.tbd.game.gameobjects.enemies.Enemy;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyConfiguration;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.*;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
+import net.riezebos.bruus.tbd.game.level.LevelManager;
 import net.riezebos.bruus.tbd.game.movement.MovementConfiguration;
 import net.riezebos.bruus.tbd.game.movement.MovementPatternSize;
 import net.riezebos.bruus.tbd.game.movement.Point;
@@ -60,7 +61,7 @@ public class EnemyProtossPulsingDrone extends Enemy {
                 ImageEnums.LaserBullet, 0.75f);
 
 
-        int movementSpeed = 3;
+        float movementSpeed = 3 + (LevelManager.getInstance().getBossDifficultyLevel() * 0.25f);
         MissileEnums missileType = MissileEnums.DefaultLaserBullet;
         PathFinder missilePathFinder = new StraightLinePathFinder();
         MovementPatternSize movementPatternSize = MovementPatternSize.SMALL;

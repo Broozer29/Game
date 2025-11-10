@@ -11,6 +11,7 @@ import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.items.ItemEnums;
 import net.riezebos.bruus.tbd.game.items.PlayerInventory;
+import net.riezebos.bruus.tbd.game.items.items.carrier.AimAssist;
 import net.riezebos.bruus.tbd.game.items.items.carrier.EmergencyRepairs;
 import net.riezebos.bruus.tbd.game.items.items.carrier.SynergeticLink;
 import net.riezebos.bruus.tbd.game.items.items.carrier.VengeanceProtocol;
@@ -32,7 +33,7 @@ public class ProtossScout extends Drone {
     private int attackRange = 200;
     private float defaultMoveSpeed = 3.45f;
     private boolean isMovingSlow = false;
-    public static float scoutDamageFactor = 0.85f;
+    public static float scoutDamageFactor = 0.75f;
     private boolean isMovingAroundCarrierDrone = false;
     private float baseDamage = 0;
 
@@ -47,6 +48,12 @@ public class ProtossScout extends Drone {
         super.deathSound = AudioEnums.ProtossShipDeath;
         super.appliesOnHitEffects = true;
         this.baseDamage = damage;
+
+        if(PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.AimAssist) != null){
+            AimAssist aimAssist = (AimAssist) PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.AimAssist);
+            this.attackRange *= (1+ aimAssist.getAttackRangeBonus());
+        }
+
     }
 
     public void activateObject () {

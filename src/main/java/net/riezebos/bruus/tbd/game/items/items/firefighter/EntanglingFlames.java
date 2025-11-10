@@ -5,12 +5,16 @@ import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerClass;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
 import net.riezebos.bruus.tbd.game.items.Item;
 import net.riezebos.bruus.tbd.game.items.ItemEnums;
+import net.riezebos.bruus.tbd.game.items.PlayerInventory;
 import net.riezebos.bruus.tbd.game.items.enums.ItemApplicationEnum;
 
 public class EntanglingFlames extends Item {
 
+    public static float damageBonus = 4f;
+
+
     public EntanglingFlames() {
-        super(ItemEnums.EntanglingFlames, 1, ItemApplicationEnum.ApplyOnCreation);
+        super(ItemEnums.BeckoningFlames, 1, ItemApplicationEnum.UponAcquiring);
     }
 
     @Override
@@ -30,6 +34,6 @@ public class EntanglingFlames extends Item {
         if (!this.itemEnum.isEnabled()) {
             return false;
         }
-        return PlayerStats.getInstance().getPlayerClass().equals(PlayerClass.FireFighter);
+        return (PlayerStats.getInstance().getPlayerClass().equals(PlayerClass.FireFighter) && PlayerInventory.getInstance().getItemFromInventoryIfExists(this.getItemEnum()) == null);
     }
 }

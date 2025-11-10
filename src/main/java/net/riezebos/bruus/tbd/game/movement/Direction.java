@@ -6,7 +6,9 @@ import java.util.Random;
 import java.util.stream.Collectors;
 
 public enum Direction {
-	LEFT, RIGHT, UP, DOWN, RIGHT_UP, RIGHT_DOWN, LEFT_UP, LEFT_DOWN, NONE;
+	LEFT,
+	RIGHT,
+	UP, DOWN, RIGHT_UP, RIGHT_DOWN, LEFT_UP, LEFT_DOWN, NONE;
 	public static Direction getRandomDiagonalDirection(){
 		List<Direction> filteredDirections = Arrays.stream(Direction.values())
 				.filter(direction -> !direction.equals(Direction.NONE) && !direction.equals(Direction.LEFT)

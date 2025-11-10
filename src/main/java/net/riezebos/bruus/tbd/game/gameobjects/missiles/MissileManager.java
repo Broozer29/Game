@@ -257,7 +257,7 @@ public class MissileManager {
 
     private float getSpecialAttackMissileDamage(SpecialAttack specialAttack, Missile missile) {
         if((specialAttack instanceof FlameThrower || specialAttack instanceof FireShield) && missile.getMissileEnum().equals(MissileEnums.ReflectiveBlocks)) {
-            return Math.max(1, missile.getMaxHitPoints() * (specialAttack.getMaxHPDamagePercentageForMissiles() * 0.2f));
+            return Math.max(1, missile.getMaxHitPoints() * (specialAttack.getMaxHPDamagePercentageForMissiles() * 0.25f));
         }
 
         return Math.max(1, missile.getMaxHitPoints() * specialAttack.getMaxHPDamagePercentageForMissiles());

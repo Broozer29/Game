@@ -36,12 +36,13 @@ public class PlayerStats {
 
     //firefighter
     public static float fireFighterBaseDamage = 10f;
-    public static float fireFighterAttackSpeed = 0.32f;
+    public static float fireFighterAttackSpeed = 0.28f;
     public static float igniteDamageMultiplier = 0.022f;
     public static float igniteDuration = 1.15f;
     private float igniteDurationMultiplier = 1;
     private float bonusIgniteDamageMultiplier = 1f;
     private float fuelCannisterMultiplier = 1;
+    private float fuelCannisterUsageMultiplier = 1;
     private float fuelCannisterRegenMultiplier = 1;
     private int maxIgniteStacks = 1;
     public static int fireFighterHitpoints = 75;
@@ -54,19 +55,20 @@ public class PlayerStats {
     //carrier
     public static float carrierBaseDamage = 10f;
     public static float carrierAttackSpeed = 1;
-    public static float carrierBaseArmor = 10;
+    public static float carrierBaseArmor = 0;
     private float arbiterHealingMultiplier = 1f;
     private int amountOfProtossScouts = 0;
     private int amountOfProtossArbiters = 0;
     private int amountOfProtossShuttles = 0;
-    private int maxAmountOfProtoss = 12;
+    private int amountOfProtossCorsairs = 0;
+    private int maxAmountOfProtoss = 14;
     private int carrierStartingScouts = 5;
-    private float protossShipBaseHealth = 45;
-    private float protossShipBaseArmor = 10;
+    private float protossShipBaseHealth = 55;
+    private float protossShipBaseArmor = 0;
     public static float carrierSlowSpeed = 2.5f;
     public static float carrierFastSpeed = 4f;
     private float protossShipThornsDamageRatio = 1.0f;
-    public static int carrierHitpoints = 100;
+    public static int carrierHitpoints = 85;
     private float protossShipConstructionBonusSpeedModifier = 1f;
 
     //all classes
@@ -81,6 +83,7 @@ public class PlayerStats {
     private PlayerSpecialAttackTypes specialAttackType;
     private DroneTypes droneType;
     private float baseDamage;
+    private float baseDamageMultiplier = 1f;
     private float bonusDamageMultiplier;
 
     private float specialBaseDamage;
@@ -113,6 +116,7 @@ public class PlayerStats {
     private float maxOverloadingShieldMultiplier = 2.0f;
     private float overloadedShieldDiminishAmount;
     private float maxShieldMultiplier = 1.0f;
+    private float maxHitPointsMultiplier = 1.0f;
     private int piercingMissilesAmount = 0;
 
 
@@ -175,13 +179,16 @@ public class PlayerStats {
         shieldRegenPerTick = 0.2f;
         droneType = DroneTypes.Missile;
         droneBaseDamage = 20f;
+        baseDamageMultiplier = 1f;
         igniteDuration = 1.35f;
         mineralModifier = 1.0f;
         relicChanceModifier = 0;
+        maxHitPointsMultiplier = 1.0f;
         this.maxAmountOfProtoss = 12;
         this.amountOfProtossScouts = carrierStartingScouts;
         this.amountOfProtossArbiters = 0;
         this.amountOfProtossShuttles = 0;
+        this.amountOfProtossCorsairs = 0;
         this.hasThornsEnabled = false;
 
 
@@ -249,12 +256,13 @@ public class PlayerStats {
 
     private void initCarrierPreset() {
         setAttackSpeed(carrierAttackSpeed);
-        setBaseDamage(carrierBaseDamage);
+        setBaseDamage(DevTestSettings.instaKill ? carrierBaseDamage * 100 : carrierBaseDamage);
         this.maxHitPoints = carrierHitpoints;
         this.maxShieldHitPoints = carrierHitpoints;
         this.amountOfProtossScouts = carrierStartingScouts;
         this.amountOfProtossArbiters = 0;
         this.amountOfProtossShuttles = 0;
+        this.amountOfProtossCorsairs = 0;
         this.maxAmountOfProtoss = 12;
         this.movementSpeed = 2.5f;
         this.protossShipBaseHealth = 45;
@@ -272,7 +280,7 @@ public class PlayerStats {
 
     private void initFireFighterPreset() {
         setAttackSpeed(fireFighterAttackSpeed);
-        setBaseDamage(fireFighterBaseDamage);
+        setBaseDamage(DevTestSettings.instaKill ? fireFighterBaseDamage * 100 : fireFighterBaseDamage);
         this.attackType = PlayerPrimaryAttackTypes.Flamethrower;
         setPlayerMissileImage(ImageEnums.FireFighterFlameThrowerLooping);
         setPlayerMissileImpactImage(null);
@@ -284,6 +292,10 @@ public class PlayerStats {
         this.maxHitPoints = fireFighterHitpoints;
         this.maxShieldHitPoints = fireFighterHitpoints;
 
+        fuelCannisterRegenMultiplier = 1;
+        fuelCannisterUsageMultiplier = 1;
+        fuelCannisterMultiplier = 1;
+
         //special
         setSpecialBaseDamage(baseDamage);
         setSpecialAttackRechargeCooldown(10f);
@@ -293,7 +305,7 @@ public class PlayerStats {
 
     private void initCaptainPreset() {
         setAttackSpeed(captainAttackSpeed);
-        setBaseDamage(captainBaseDamage);
+        setBaseDamage(DevTestSettings.instaKill ? captainBaseDamage * 100 : captainBaseDamage);
         this.attackType = PlayerPrimaryAttackTypes.Laserbeam;
         setPlayerMissileImage(this.attackType.getCorrespondingMissileEnum().getImageType());
         setPlayerMissileImpactImage(ImageEnums.Impact_Explosion_One);
@@ -360,7 +372,7 @@ public class PlayerStats {
     }
 
     public float getNormalAttackDamage() {
-        float attackDamage = this.baseDamage * this.bonusDamageMultiplier;
+        float attackDamage = (this.baseDamage * baseDamageMultiplier) * this.bonusDamageMultiplier;
         if (attackDamage < 1) {
             return 1;
         } else {
@@ -433,7 +445,11 @@ public class PlayerStats {
     }
 
     public float getMaxHitPoints() {
-        return maxHitPoints;
+        return maxHitPoints * maxHitPointsMultiplier;
+    }
+
+    public void modifyMaxHitPointsMultiplier(float modifier) {
+        maxHitPointsMultiplier += modifier;
     }
 
     public void setMaxHitPoints(float maxHitPoints) {
@@ -525,6 +541,10 @@ public class PlayerStats {
         this.bonusDamageMultiplier += bonusDamageMultiplier;
     }
 
+    public void modifyBaseDamageMultiplier(float baseDamageMultiplier) {
+        this.baseDamageMultiplier += baseDamageMultiplier;
+    }
+
     public PlayerPrimaryAttackTypes getAttackType() {
         return attackType;
     }
@@ -534,7 +554,7 @@ public class PlayerStats {
     }
 
     public float getBaseDamage() {
-        return baseDamage;
+        return baseDamage * baseDamageMultiplier;
     }
 
     public int getMaxSpecialAttackCharges() {
@@ -694,7 +714,7 @@ public class PlayerStats {
     }
 
     public float getSpecialDamage() {
-        return this.specialBaseDamage * this.specialBonusDamageMultiplier;
+        return (this.specialBaseDamage * baseDamageMultiplier) * this.specialBonusDamageMultiplier;
     }
 
 
@@ -725,7 +745,7 @@ public class PlayerStats {
     public float getThornsDamage() {
         float thornsDamage = 0;
         if (thornsDamageRatio > 0) {
-            thornsDamage = this.baseDamage * (thornsDamageRatio);
+            thornsDamage = (this.baseDamage * baseDamageMultiplier) * (thornsDamageRatio);
         }
         if (thornsArmorDamageBonusRatio > 1.01) {
             GameObject spaceShip = PlayerManager.getInstance().getSpaceship();
@@ -816,7 +836,7 @@ public class PlayerStats {
     }
 
     public float getIgniteDamage() {
-        return baseDamage * (igniteDamageMultiplier * bonusIgniteDamageMultiplier);
+        return Math.max((baseDamage * baseDamageMultiplier) * (igniteDamageMultiplier * bonusIgniteDamageMultiplier), 0.01f); //prevent negative damage
     }
 
     public void modifyFireFighterIgniteDamageMultiplier(float amount) {
@@ -832,7 +852,7 @@ public class PlayerStats {
     }
 
     public float getDroneDamage() {
-        return droneBaseDamage * droneDamageRatio;
+        return (droneBaseDamage * baseDamageMultiplier) * droneDamageRatio;
     }
 
     public DroneTypes getDroneType() {
@@ -975,6 +995,14 @@ public class PlayerStats {
         this.fuelCannisterMultiplier += amount;
     }
 
+    public void modifyFuelCannisterUsageMultiplier(float amount) {
+        this.fuelCannisterUsageMultiplier += amount;
+    }
+
+    public float getFuelCannisterUsageMultiplier() {
+        return fuelCannisterUsageMultiplier;
+    }
+
     public float getFuelCannisterRegenMultiplier() {
         return fuelCannisterRegenMultiplier;
     }
@@ -1005,5 +1033,13 @@ public class PlayerStats {
 
     public void modifyConstructionBonusSpeedModifier(float constructionBonusSpeedModifier) {
         this.protossShipConstructionBonusSpeedModifier += constructionBonusSpeedModifier;
+    }
+
+    public int getAmountOfProtossCorsairs() {
+        return this.amountOfProtossCorsairs;
+    }
+
+    public void setAmountOfProtossCorsairs(int amountOfProtossCorsairs) {
+        this.amountOfProtossCorsairs = amountOfProtossCorsairs;
     }
 }

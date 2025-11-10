@@ -4,6 +4,7 @@ import net.riezebos.bruus.tbd.game.gameobjects.enemies.Enemy;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.BossActionable;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.*;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
+import net.riezebos.bruus.tbd.game.level.LevelManager;
 import net.riezebos.bruus.tbd.game.movement.Direction;
 import net.riezebos.bruus.tbd.game.movement.MovementConfiguration;
 import net.riezebos.bruus.tbd.game.movement.MovementPatternSize;
@@ -138,7 +139,7 @@ public class SpawnReflectingBarrier implements BossActionable {
                 missileType.getImageType(), enemy.getScale());
 
 
-        int movementSpeed = 5;
+        int movementSpeed = 5 + LevelManager.getInstance().getBossDifficultyLevel();
         //Create missile movement attributes and create a movement configuration
         PathFinder missilePathFinder = new StraightLinePathFinder();
         MovementPatternSize movementPatternSize = MovementPatternSize.SMALL;
@@ -148,7 +149,7 @@ public class SpawnReflectingBarrier implements BossActionable {
 
 
         boolean isFriendly = false;
-        int maxHitPoints = 100;
+        float maxHitPoints = 200 * (1 + (LevelManager.getInstance().getBossDifficultyLevel() * 0.5f));
         int maxShields = 100;
         AudioEnums deathSound = null;
         boolean allowedToDealDamage = true;

@@ -44,7 +44,7 @@ public class ModuleElectrify extends Item {
     }
 
     public float getDroneSpecialScale () {
-        return Math.max(0, quantity * 0.1f);
+        return Math.max(0, quantity * 0.25f);
     }
 
     @Override

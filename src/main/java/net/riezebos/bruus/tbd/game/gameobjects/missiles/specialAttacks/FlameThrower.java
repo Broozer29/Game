@@ -1,14 +1,19 @@
 package net.riezebos.bruus.tbd.game.gameobjects.missiles.specialAttacks;
 
+import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
+import net.riezebos.bruus.tbd.game.items.ItemEnums;
+import net.riezebos.bruus.tbd.game.items.PlayerInventory;
 import net.riezebos.bruus.tbd.game.items.effects.EffectIdentifiers;
 import net.riezebos.bruus.tbd.game.items.effects.EffectInterface;
 import net.riezebos.bruus.tbd.game.items.effects.effectimplementations.DamageOverTime;
+import net.riezebos.bruus.tbd.game.items.items.firefighter.InfernalPreIgniter;
 import net.riezebos.bruus.tbd.game.util.VisualLayer;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteAnimationConfiguration;
 
 public class FlameThrower extends SpecialAttack {
+
 
     public FlameThrower (SpriteAnimationConfiguration spriteAnimationConfiguration, SpecialAttackConfiguration missileConfiguration) {
         super(spriteAnimationConfiguration, missileConfiguration);
@@ -41,6 +46,12 @@ public class FlameThrower extends SpecialAttack {
 
     @Override
     public void updateSpecialAttack() {
+        if(this.ownerOrCreator.equals(PlayerManager.getInstance().getSpaceship()) && PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.InfernalPreIgniter) != null){
+            PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.InfernalPreIgniter).applyEffectToObject(this);
+        }
+
+
+
         if (this.animation.getImageEnum().equals(ImageEnums.FireFighterFlameThrowerAppearing) &&
                 this.animation.getCurrentFrame() >= this.animation.getTotalFrames()) {
             this.animation.changeImagetype(ImageEnums.FireFighterFlameThrowerLooping);
@@ -53,4 +64,5 @@ public class FlameThrower extends SpecialAttack {
             this.visible = false;
         }
     }
+
 }

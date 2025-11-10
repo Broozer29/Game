@@ -11,9 +11,9 @@ import net.riezebos.bruus.tbd.game.items.enums.ItemApplicationEnum;
 
 public class SynergeticLink extends Item {
 
-    public static float shuttleAttackSpeedBonusPerShip = 0.05f;
+    public static float shuttleMissileSpeedPerStack = 0.25f;
     public static float scoutBonusDamagePerShip = 0.1f;
-    private float currentShuttleAttackSpeedBonus;
+    private float currentShuttleMissileSpeedBonus;
     private float currentScoutBonusDamage;
 
     public SynergeticLink() {
@@ -34,15 +34,15 @@ public class SynergeticLink extends Item {
     }
 
     private void recalculateShuttleAttackSpeed(){
-        this.currentShuttleAttackSpeedBonus = (this.quantity * shuttleAttackSpeedBonusPerShip) * FriendlyManager.getInstance().getDronesByDroneType(DroneTypes.ProtossScout).size();
+        this.currentShuttleMissileSpeedBonus = (this.quantity * shuttleMissileSpeedPerStack) * FriendlyManager.getInstance().getDronesByDroneType(DroneTypes.ProtossScout).size();
     }
 
     private void recalculateScoutAttackDamage(){
         this.currentScoutBonusDamage = (this.quantity * scoutBonusDamagePerShip) * FriendlyManager.getInstance().getDronesByDroneType(DroneTypes.ProtossShuttle).size();
     }
 
-    public float getCurrentShuttleAttackSpeedBonus() {
-        return currentShuttleAttackSpeedBonus;
+    public float getCurrentShuttleMissileSpeedBonus() {
+        return currentShuttleMissileSpeedBonus;
     }
 
     public float getCurrentScoutBonusDamage() {

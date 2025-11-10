@@ -56,7 +56,8 @@ public class SpaceShipSpecialGun {
                 specialAttackCharges--;
                 lastSecondsSpecialAttackUsed = currentTime;
                 // Reset the charge gain timer only if there's room for more charges
-                if (specialAttackCharges < playerStats.getMaxSpecialAttackCharges()) {
+                if ((specialAttackCharges <= 0 && playerStats.getMaxSpecialAttackCharges() == 1) ||
+                        (specialAttackCharges + 1 == playerStats.getMaxSpecialAttackCharges())) {
                     lastSecondsSpecialAttackChargeGained = currentTime; // Start new charge cooldown
                 }
             }

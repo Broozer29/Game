@@ -33,7 +33,6 @@ public class YellowBoss extends Enemy {
         this.destructionAnimation = new SpriteAnimation(destroyedExplosionfiguration);
         this.damage = 15;
         this.allowedVisualsToRotate = false;
-        this.destructionAnimation.setAnimationScale(3);
         this.knockbackStrength = 9;
 
 

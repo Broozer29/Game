@@ -29,7 +29,6 @@ public class SpaceStationBoss extends Enemy {
         SpriteAnimationConfiguration destroyedExplosionfiguration = new SpriteAnimationConfiguration(spriteAnimationConfigurationion.getSpriteConfiguration(), 0, false);
         destroyedExplosionfiguration.getSpriteConfiguration().setImageType(ImageEnums.Explosion2);
         this.destructionAnimation = new SpriteAnimation(destroyedExplosionfiguration);
-//        this.destructionAnimation.setAnimationScale(5);
 
         this.knockbackStrength = 10;
         this.damage = 15;

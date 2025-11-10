@@ -2,6 +2,7 @@ package net.riezebos.bruus.tbd.visualsandaudio.data.image;
 
 import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -25,6 +26,7 @@ public class ImageDatabase {
     private BufferedImage compoundWealthUnlock;
     private BufferedImage clubAccessUnlock;
     private BufferedImage treasureHunterUnlock;
+    private BufferedImage stuiversBestFriend;
 
     private BufferedImage frenzyIcon;
     private BufferedImage protossShipAmountIcon;
@@ -260,10 +262,20 @@ public class ImageDatabase {
     private BufferedImage fireFighter;
     private BufferedImage sc2MineExplosion;
     private BufferedImage nepotismUnlock;
+    private BufferedImage arbiterDamage;
     private BufferedImage synergeticLinkIcon;
     private BufferedImage constructionKitIcon;
     private BufferedImage vengeancerProtocolIcon;
     private BufferedImage emergencyRepairsIcon;
+    private BufferedImage ephemeralBlaze;
+    private BufferedImage eternaFlame;
+    private BufferedImage glassCannon;
+    private BufferedImage redplanet1;
+    private BufferedImage redplanet2;
+    private BufferedImage spaceclouds1;
+    private BufferedImage spaceclouds2;
+    private BufferedImage spaceclouds3;
+    private BufferedImage spaceclouds4;
 
     private List<BufferedImage> cashCarrierFrames = new ArrayList<>();
     private List<BufferedImage> spaceStationBossFrames = new ArrayList<>();
@@ -324,6 +336,11 @@ public class ImageDatabase {
     private BufferedImage moon3;
     private BufferedImage moon4;
     private BufferedImage moon5;
+    private BufferedImage redNebula;
+    private BufferedImage redNebula2;
+    private BufferedImage redNebula3;
+    private BufferedImage redNebula4;
+    private BufferedImage redNebula5;
     private BufferedImage greenPlanet1;
     private BufferedImage greenPlanet2;
     private BufferedImage bluePlanet1;
@@ -332,6 +349,18 @@ public class ImageDatabase {
     private BufferedImage bluePlanet4;
     private BufferedImage bluePlanet5;
     private BufferedImage bluePlanet6;
+    private BufferedImage bluePlanet7;
+    private BufferedImage bluePlanet8;
+    private BufferedImage bluePlanet9;
+    private BufferedImage greenPlanet3;
+    private BufferedImage greenPlanet4;
+    private BufferedImage greenPlanet5;
+    private BufferedImage redPlanet3;
+    private BufferedImage redPlanet4;
+    private BufferedImage redPlanet5;
+    private BufferedImage redPlanet6;
+    private BufferedImage redPlanet7;
+    private BufferedImage redPlanet8;
     private BufferedImage lavaPlanet;
     private BufferedImage marsPlanet;
     private BufferedImage planetOne;
@@ -344,6 +373,10 @@ public class ImageDatabase {
     private BufferedImage blueNebula4;
     private BufferedImage blueNebula5;
     private BufferedImage blueNebula6;
+    private BufferedImage blueNebula7;
+    private BufferedImage blueNebula8;
+    private BufferedImage blueNebula9;
+    private BufferedImage diverseNebula1;
     private BufferedImage greenNebula1;
     private BufferedImage greenNebula2;
     private BufferedImage greenNebula3;
@@ -358,6 +391,11 @@ public class ImageDatabase {
     private BufferedImage purpleNebula5;
     private BufferedImage purpleNebula6;
     private BufferedImage purpleNebula7;
+    private BufferedImage purpleNebula8;
+    private BufferedImage starfield1;
+    private BufferedImage starfield2;
+    private BufferedImage starfield3;
+    private BufferedImage starfield4;
 
     private BufferedImage starRed1;
     private BufferedImage starRed2;
@@ -421,13 +459,18 @@ public class ImageDatabase {
     private BufferedImage arbiterItem;
     private BufferedImage scoutItem;
     private BufferedImage shuttleItem;
+    private BufferedImage corsairItem;
 
+
+    private List<BufferedImage> scrapMetalAnim = new ArrayList<>();
     private List<BufferedImage> smokeExplosion = new ArrayList<>();
     private List<BufferedImage> mirageMiniBoss = new ArrayList<>();
     private List<BufferedImage> carrierDronePulse = new ArrayList<>();
     private List<BufferedImage> protossScout = new ArrayList<>();
     private List<BufferedImage> protossShuttle = new ArrayList<>();
     private List<BufferedImage> protossArbiter = new ArrayList<>();
+    private List<BufferedImage> protossCorsair = new ArrayList<>();
+    private List<BufferedImage> protossCorsairExplosion = new ArrayList<>();
     private List<BufferedImage> protossCarrier = new ArrayList<>();
     private List<BufferedImage> scout = new ArrayList<>();
 
@@ -500,6 +543,7 @@ public class ImageDatabase {
     private List<BufferedImage> rotatingCoins = new ArrayList<>();
     private BufferedImage carrierUnlock;
     private BufferedImage firefighterUnlock;
+    private BufferedImage aimAssist;
 
     private ImageDatabase() {
         initializeImages();
@@ -528,6 +572,11 @@ public class ImageDatabase {
 
     private void initFriendlies() {
         this.model3BetterUpgrade = imgLoader.getImage(ImageEnums.Player_Spaceship_Model_3);
+        this.stuiversBestFriend = imgLoader.getImage(ImageEnums.StuiversBestFriend);
+        this.spaceclouds1 = imgLoader.getImage(ImageEnums.SpaceClouds1);
+        this.spaceclouds2 = imgLoader.getImage(ImageEnums.SpaceClouds2);
+        this.spaceclouds3 = imgLoader.getImage(ImageEnums.SpaceClouds3);
+        this.spaceclouds4 = imgLoader.getImage(ImageEnums.SpaceClouds4);
     }
 
     private void initEnemies() {
@@ -552,6 +601,13 @@ public class ImageDatabase {
         this.redFilling = imgLoader.getImage(ImageEnums.Red_Filling);
         this.goldFilling = imgLoader.getImage(ImageEnums.Gold_Filling);
         this.blueFilling = imgLoader.getImage(ImageEnums.Blue_Filling);
+        this.blueNebula7 = imgLoader.getImage(ImageEnums.Blue_Nebula_7);
+        this.blueNebula8 = imgLoader.getImage(ImageEnums.Blue_Nebula_8);
+        this.blueNebula9 = imgLoader.getImage(ImageEnums.Blue_Nebula_9);
+        this.starfield1 = imgLoader.getImage(ImageEnums.Star_Field_1);
+        this.starfield2 = imgLoader.getImage(ImageEnums.Star_Field_2);
+        this.starfield3 = imgLoader.getImage(ImageEnums.Star_Field_3);
+        this.starfield4 = imgLoader.getImage(ImageEnums.Star_Field_4);
     }
 
     private void initIcons() {
@@ -602,6 +658,7 @@ public class ImageDatabase {
         this.carrierUnlock = imgLoader.getImage(ImageEnums.CarrierUnlock);
         this.infernalPreIgniter = imgLoader.getImage(ImageEnums.InfernalPreIgniter);
         this.fuelCannister = imgLoader.getImage(ImageEnums.FuelCannister);
+        this.glassCannon = imgLoader.getImage(ImageEnums.GlassCannon);
     }
 
 
@@ -771,6 +828,7 @@ public class ImageDatabase {
         this.scoutItem = imgLoader.getImage(ImageEnums.ScoutItem);
         this.arbiterItem = imgLoader.getImage(ImageEnums.ArbiterItem);
         this.shuttleItem = imgLoader.getImage(ImageEnums.ShuttleItem);
+        this.corsairItem = imgLoader.getImage(ImageEnums.CorsairItemIcon);
         this.frenzyIcon = imgLoader.getImage(ImageEnums.FrenzyIcon);
     }
 
@@ -803,6 +861,9 @@ public class ImageDatabase {
         this.purpleNebula6 = imgLoader.getImage(ImageEnums.Purple_Nebula_6);
         this.purpleNebula7 = imgLoader.getImage(ImageEnums.Purple_Nebula_7);
 
+        this.purpleNebula8 = imgLoader.getImage(ImageEnums.Purple_Nebula_8);
+        this.diverseNebula1 = imgLoader.getImage(ImageEnums.DiverseNebula);
+
         this.starBlue1 = imgLoader.getImage(ImageEnums.Star_Blue1);
         this.starBlue2 = imgLoader.getImage(ImageEnums.Star_Blue2);
         this.starBlue3 = imgLoader.getImage(ImageEnums.Star_Blue3);
@@ -832,6 +893,11 @@ public class ImageDatabase {
         this.moon3 = imgLoader.getImage(ImageEnums.Moon3);
         this.moon4 = imgLoader.getImage(ImageEnums.Moon4);
         this.moon5 = imgLoader.getImage(ImageEnums.Moon5);
+        this.redNebula = imgLoader.getImage(ImageEnums.RedNebula);
+        this.redNebula2 = imgLoader.getImage(ImageEnums.RedNebula2);
+        this.redNebula3 = imgLoader.getImage(ImageEnums.RedNebula3);
+        this.redNebula4 = imgLoader.getImage(ImageEnums.RedNebula4);
+        this.redNebula5 = imgLoader.getImage(ImageEnums.RedNebula5);
         this.greenPlanet1 = imgLoader.getImage(ImageEnums.GreenPlanet1);
         this.greenPlanet2 = imgLoader.getImage(ImageEnums.GreenPlanet2);
         this.bluePlanet1 = imgLoader.getImage(ImageEnums.BluePlanet1);
@@ -840,6 +906,20 @@ public class ImageDatabase {
         this.bluePlanet4 = imgLoader.getImage(ImageEnums.BluePlanet4);
         this.bluePlanet5 = imgLoader.getImage(ImageEnums.BluePlanet5);
         this.bluePlanet6 = imgLoader.getImage(ImageEnums.BluePlanet6);
+        this.bluePlanet7 = imgLoader.getImage(ImageEnums.BluePlanet7);
+        this.bluePlanet8 = imgLoader.getImage(ImageEnums.BluePlanet8);
+        this.bluePlanet9 = imgLoader.getImage(ImageEnums.BluePlanet9);
+
+        this.greenPlanet3 = imgLoader.getImage(ImageEnums.GreenPlanet3);
+        this.greenPlanet4 = imgLoader.getImage(ImageEnums.GreenPlanet4);
+        this.greenPlanet5 = imgLoader.getImage(ImageEnums.GreenPlanet5);
+
+        this.redPlanet3 = imgLoader.getImage(ImageEnums.RedPlanet3);
+        this.redPlanet4 = imgLoader.getImage(ImageEnums.RedPlanet4);
+        this.redPlanet5 = imgLoader.getImage(ImageEnums.RedPlanet5);
+        this.redPlanet6 = imgLoader.getImage(ImageEnums.RedPlanet6);
+        this.redPlanet7 = imgLoader.getImage(ImageEnums.RedPlanet7);
+        this.redPlanet8 = imgLoader.getImage(ImageEnums.RedPlanet8);
 
         this.lockedIcon = imgLoader.getImage(ImageEnums.LockedIcon);
         this.laserBullet = imgLoader.getImage(ImageEnums.LaserBullet);
@@ -872,15 +952,97 @@ public class ImageDatabase {
         this.arbiterMultiTargetIcon = imgLoader.getImage(ImageEnums.ArbiterMultiTargetIcon);
         this.firefighterUnlock = imgLoader.getImage(ImageEnums.FireFighterUnlock);
         this.nepotismUnlock = imgLoader.getImage(ImageEnums.NepotismUnlock);
-
+        this.arbiterDamage = imgLoader.getImage(ImageEnums.ArbiterDamage);
+        this.ephemeralBlaze = imgLoader.getImage(ImageEnums.EphemeralBlaze);
+        this.eternaFlame = imgLoader.getImage(ImageEnums.Eternaflame);
+        this.redplanet1 = imgLoader.getImage(ImageEnums.RedPlanet1);
+        this.redplanet2 = imgLoader.getImage(ImageEnums.RedPlanet1);
+        this.aimAssist = imgLoader.getImage(ImageEnums.AimAssist);
     }
 
     public BufferedImage getImage(ImageEnums imageType) {
         switch (imageType) {
+            case RedPlanet3:
+                return this.redPlanet3;
+            case AimAssist:
+                return this.aimAssist;
+            case RedPlanet4:
+                return this.redPlanet4;
+            case RedPlanet5:
+                return this.redPlanet5;
+            case RedPlanet6:
+                return this.redPlanet6;
+            case RedPlanet7:
+                return this.redPlanet7;
+            case RedPlanet8:
+                return this.redPlanet8;
+            case GreenPlanet3:
+                return this.greenPlanet3;
+            case GreenPlanet4:
+                return this.greenPlanet4;
+            case GreenPlanet5:
+                return this.greenPlanet5;
+            case BluePlanet7:
+                return this.bluePlanet7;
+            case BluePlanet8:
+                return this.bluePlanet8;
+            case BluePlanet9:
+                return this.bluePlanet9;
+            case SpaceClouds1:
+                return this.spaceclouds1;
+            case SpaceClouds2:
+                return this.spaceclouds2;
+            case SpaceClouds3:
+                return this.spaceclouds3;
+            case SpaceClouds4:
+                return this.spaceclouds4;
+            case RedPlanet1:
+                return this.redplanet1;
+            case RedPlanet2:
+                return this.redplanet2;
+            case RedNebula:
+                return this.redNebula;
+            case RedNebula2:
+                return this.redNebula2;
+            case RedNebula3:
+                return this.redNebula3;
+            case RedNebula4:
+                return this.redNebula4;
+            case RedNebula5:
+                return this.redNebula5;
+            case Purple_Nebula_8:
+                return purpleNebula8;
+            case Star_Field_1:
+                return this.starfield1;
+            case Star_Field_2:
+                return this.starfield2;
+            case Star_Field_3:
+                return this.starfield3;
+            case Star_Field_4:
+                return this.starfield4;
+            case Blue_Nebula_7:
+                return this.blueNebula7;
+            case Blue_Nebula_8:
+                return this.blueNebula8;
+            case Blue_Nebula_9:
+                return this.blueNebula9;
+            case DiverseNebula:
+                return this.diverseNebula1;
+
+            case GlassCannon:
+                return this.glassCannon;
+            case Eternaflame:
+                return this.eternaFlame;
+            case ArbiterDamage:
+                return this.arbiterDamage;
+            case StuiversBestFriend:
+                return stuiversBestFriend;
             case SynergeticLinkIcon:
                 return this.synergeticLinkIcon;
             case EmergencyRepairsIcon:
                 return this.emergencyRepairsIcon;
+            case EphemeralBlaze:
+                return this.ephemeralBlaze;
             case ConstructionKitIcon:
                 return this.constructionKitIcon;
             case VengeanceProtocolIcon:
@@ -919,6 +1081,8 @@ public class ImageDatabase {
                 return this.scoutItem;
             case ShuttleItem:
                 return this.shuttleItem;
+            case CorsairItemIcon:
+                return this.corsairItem;
             case CarrierPlaceDroneIcon:
                 return this.carrierPlaceDroneIcon;
             case CarrierSwitchGearsIcon:
@@ -1526,6 +1690,10 @@ public class ImageDatabase {
                 return this.protossArbiter;
             case ProtossCarrier:
                 return this.protossCarrier;
+            case ProtossCorsair:
+                return this.protossCorsair;
+            case ProtossCorsairExplosion:
+                return this.protossCorsairExplosion;
             case ProtossScout:
                 return this.protossScout;
             case ProtossShuttle:
@@ -1688,6 +1856,8 @@ public class ImageDatabase {
                 return this.mirageMiniBoss;
             case SmokeExplosion:
                 return this.smokeExplosion;
+            case ScrapMetalAnim:
+                return this.scrapMetalAnim;
             case Bomba_Missile:
                 return this.bombaProjectileFrames;
             case Bomba_Missile_Explosion:
@@ -2063,6 +2233,12 @@ public class ImageDatabase {
             smokeExplosion.add(image);
         }
 
+        for (int i = 1; i < 91; i++) {
+            String sourceString = String.format("/images/gif/PNGtoGIF/ScrapMetal/%d.png", i);
+            BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+            scrapMetalAnim.add(image);
+        }
+
         for (int i = 0; i < 63; i++) {
             String sourceString = String.format("/images/gif/PNGtoGIF/Explosion 1/tile0%d.png", i);
             BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
@@ -2267,6 +2443,12 @@ public class ImageDatabase {
             thornsDamage.add(image);
         }
 
+        for (int i = 0; i < 15; i++) {
+            String sourceString = String.format("/images/gif/PNGtoGIF/CorsairExplosion/%d.png", i);
+            BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+            protossCorsairExplosion.add(image);
+        }
+
         for (int i = 0; i < 20; i++) {
             String sourceString = String.format("/images/gif/PNGtoGIF/Fireshield/looping/fireshield%d.png", i);
             BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
@@ -2466,6 +2648,12 @@ public class ImageDatabase {
         }
 
         for (int i = 0; i < 4; i++) {
+            String sourceString = String.format("/images/Ships/Player Ships/protoss/corsair/%d.png", i);
+            BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+            protossCorsair.add(image);
+        }
+
+        for (int i = 0; i < 4; i++) {
             String sourceString = String.format("/images/Ships/Player Ships/protoss/scout/%d.png", i);
             BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
             protossScout.add(image);
@@ -2482,6 +2670,8 @@ public class ImageDatabase {
             BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
             protossCarrier.add(image);
         }
+
+
 
         for (int i = 2; i < 35; i++) {
             String sourceString = String.format("/images/gif/PNGtoGIF/ProtossExplosion/%d.png", i);
