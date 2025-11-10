@@ -4,7 +4,7 @@ A horizontal shoot-em-up roguelike made in Java.
 # How to install
 - Clone the repository to your intellij IDE
 - Edit the runtime configuration to use the following arguments
--Djava.library.path=src/main/resources/libraries  -Xms4g -Xmx8g -XX:+UseG1GC
+- -Djava.library.path=src/main/resources/libraries  -Xms4g -Xmx8g -XX:+UseG1GC
 
 Currently, only integration with apple music on MacOS is implemented. Windows users are out of luck as of now.
 
