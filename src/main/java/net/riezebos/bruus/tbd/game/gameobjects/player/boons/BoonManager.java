@@ -1,6 +1,5 @@
 package net.riezebos.bruus.tbd.game.gameobjects.player.boons;
 
-import net.riezebos.bruus.tbd.game.gameobjects.player.boons.boonimplementations.defensive.ThickHide;
 import net.riezebos.bruus.tbd.game.gameobjects.player.boons.boonimplementations.utility.*;
 import net.riezebos.bruus.tbd.game.gamestate.save.SaveFile;
 import net.riezebos.bruus.tbd.game.gameobjects.player.boons.boonimplementations.BoonActivationEnums;
@@ -11,12 +10,9 @@ public class BoonManager {
 
 
     private Boon utilityBoon;
-    private Boon defensiveBoon;
-    private Boon offensiveBoon;
     private static BoonManager instance = new BoonManager();
 
     private BoonManager() {
-        //Reset manager shouldnt be needed, as now it remembers your last selected upgrades
     }
 
     public static BoonManager getInstance() {
@@ -27,64 +23,30 @@ public class BoonManager {
         if (utilityBoon != null) {
             utilityBoon.setHasAppliedDuringRun(false);
         }
-//        utilityBoon = null;
-
-        if (defensiveBoon != null) {
-            defensiveBoon.setHasAppliedDuringRun(false);
-        }
-//        defensiveBoon = null;
-
-        if (offensiveBoon != null) {
-            offensiveBoon.setHasAppliedDuringRun(false);
-        }
-//        offensiveBoon = null;
+        this.utilityBoon = null;
     }
 
     public void setUtilityBoon(Boon upgrade) {
         if (this.utilityBoon != null && this.utilityBoon.getBoonEnum().equals(upgrade.getBoonEnum())) {
             this.utilityBoon = null; //Allow deselection
         } else {
-            AudioManager.getInstance().addAudio(AudioEnums.ItemAcquired);
+            AudioManager.getInstance().addAudio(AudioEnums.GenericSelect);
             this.utilityBoon = upgrade;
         }
     }
 
-    public void setDefensiveBoon(Boon defensiveBoon) {
-        this.defensiveBoon = defensiveBoon;
-    }
 
-    public void setOffensiveBoon(Boon offensiveBoon) {
-        this.offensiveBoon = offensiveBoon;
-    }
-
-    public Boon getUtilityBoon() {
+    public Boon getActiveBoon() {
         return utilityBoon;
     }
-
-    public Boon getDefensiveBoon() {
-        return defensiveBoon;
-    }
-
-    public Boon getOffensiveBoon() {
-        return offensiveBoon;
-    }
-
     public void activateBoons(BoonActivationEnums boonActivationEnums) {
         if (utilityBoon != null) {
             utilityBoon.applyUpgrade(boonActivationEnums);
         }
-        if (defensiveBoon != null) {
-            defensiveBoon.applyUpgrade(boonActivationEnums);
-        }
-        if (offensiveBoon != null) {
-            offensiveBoon.applyUpgrade(boonActivationEnums);
-        }
     }
 
     public void loadInSaveFile(SaveFile saveFile) {
-        setUtilityBoon(saveFile.getSelectedUtilityBoon());
-        setDefensiveBoon(saveFile.getSelectedDefenseBoon());
-        setOffensiveBoon(saveFile.getSelectedOffenseBoon());
+        setUtilityBoon(saveFile.getSelectedBoon());
     }
 
     private void setUtilityBoon(BoonEnums boonEnum) {
@@ -111,18 +73,4 @@ public class BoonManager {
         }
     }
 
-    private void setDefensiveBoon(BoonEnums boonEnum) {
-        if (boonEnum == null) {
-            return;
-        }
-
-        switch (boonEnum){
-            case THICK_HIDE:
-                defensiveBoon = ThickHide.getInstance();
-                break;
-        }
-    }
-
-    private void setOffensiveBoon(BoonEnums boonEnum) {
-    }
 }

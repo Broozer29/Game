@@ -8,12 +8,16 @@ import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.droneTypes.prot
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.laserbeams.Laserbeam;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.missiletypes.ReflectiveBlocks;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.missiletypes.TazerProjectile;
+import net.riezebos.bruus.tbd.game.gameobjects.missiles.specialAttacks.FireShield;
+import net.riezebos.bruus.tbd.game.gameobjects.missiles.specialAttacks.FlameThrower;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.specialAttacks.SpecialAttack;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
-import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
 import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SpaceShip;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.gamestate.GameStatsTracker;
+import net.riezebos.bruus.tbd.game.items.ItemEnums;
+import net.riezebos.bruus.tbd.game.items.PlayerInventory;
+import net.riezebos.bruus.tbd.game.items.items.ReflectiveShielding;
 import net.riezebos.bruus.tbd.game.util.ThornsDamageDealer;
 import net.riezebos.bruus.tbd.game.util.VisualLayer;
 import net.riezebos.bruus.tbd.game.util.collision.CollisionDetector;
@@ -243,12 +247,20 @@ public class MissileManager {
                     if (specialAttack.isDestroysMissiles() && missile.isDestructable()) {
                         missile.destroyMissile();
                     } else if (specialAttack.isDamagesMissiles() && missile.isDamageable()) {
-                        missile.takeDamage(Math.min(1, missile.getMaxHitPoints() * specialAttack.getMaxHPDamagePercentageForMissiles())); //min 1 for flamethrower/mutalisk interaction
+                        missile.takeDamage(getSpecialAttackMissileDamage(specialAttack, missile)); //min 1 for flamethrower/mutalisk interaction
                     }
                 }
 
             }
         }
+    }
+
+    private float getSpecialAttackMissileDamage(SpecialAttack specialAttack, Missile missile) {
+        if((specialAttack instanceof FlameThrower || specialAttack instanceof FireShield) && missile.getMissileEnum().equals(MissileEnums.ReflectiveBlocks)) {
+            return Math.max(1, missile.getMaxHitPoints() * (specialAttack.getMaxHPDamagePercentageForMissiles() * 0.2f));
+        }
+
+        return Math.max(1, missile.getMaxHitPoints() * specialAttack.getMaxHPDamagePercentageForMissiles());
     }
 
     private void checkMissileCollisionWithEnemies(Missile missile) {
@@ -274,18 +286,22 @@ public class MissileManager {
         SpaceShip spaceship = playerManager.getSpaceship();
         CollisionInfo collisionInfo = collisionDetector.detectCollision(missile, spaceship);
         if (collisionInfo != null) {
+            ReflectiveShielding reflectiveShielding = (ReflectiveShielding) PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.ReflectiveShielding);
+
+            if (reflectiveShielding != null && reflectiveShielding.attemptToReflectMissile(missile)
+                    && PlayerManager.getInstance().getSpaceship().getCurrentShieldPoints() > 0) {
+                ThornsDamageDealer.getInstance().reflectMissile(collisionInfo.getCollisionPoint(), missile);
+//                return; //don't want to continue since we reflected/blocked the missile
+            }
+
             if (missile.getMissileEnum().equals(MissileEnums.TazerProjectile)) {
                 ((TazerProjectile) missile).applyTazerMissileEffect(spaceship);
             }
-            //if deflect: deflect missile, else:
+
             missile.handleCollision(spaceship);
 
             if (missile.getKnockbackStrength() > 0) {
                 spaceship.applyKnockback(collisionInfo, missile.getKnockbackStrength());
-            }
-            //if thorns & not explosive (explosive reflection is in explosion manager): reflect damage
-            if (!missile.isExplosive()) {
-                ThornsDamageDealer.getInstance().dealThornsDamageTo(missile.getOwnerOrCreator(), PlayerStats.getInstance().getThornsDamage());
             }
         }
     }

@@ -18,7 +18,7 @@ public class FlameThrower extends SpecialAttack {
         super.internalTickCooldown = PlayerStats.getInstance().getAttackSpeed();
         initIgniteEffect();
         super.damagesMissiles = true;
-        super.maxHPDamagePercentageForMissiles = 0.18f;
+        super.maxHPDamagePercentageForMissiles = 0.018f;
         super.visualLayer = VisualLayer.Lower;
     }
 

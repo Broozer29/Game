@@ -109,6 +109,8 @@ public class DormentExplosion implements EffectInterface {
         explosion.setOwnerOrCreator(PlayerManager.getInstance().getSpaceship()); //Assume it's the player who has items, never the enemies. Could hinder later design
 
         if (this.effectIdentifier.equals(EffectIdentifiers.GasolineDormantExplosion)) {
+            explosion.setScale(1.25f);
+
             if (burningDuration != 0 && burningDamage != 0) {
                 SpriteAnimationConfiguration burningConfig = new SpriteAnimationConfiguration(spriteConfiguration, 2, true);
                 burningConfig.getSpriteConfiguration().setImageType(ImageEnums.IgniteBurning);
@@ -172,8 +174,8 @@ public class DormentExplosion implements EffectInterface {
     }
 
     @Override
-    public SpriteAnimation getAnimation () {
-        return null;
+    public List<SpriteAnimation> getAnimations() {
+        return null; //shouldnt have an animation as its dorment
     }
 
     @Override

@@ -1,11 +1,7 @@
 package net.riezebos.bruus.tbd.game.gameobjects;
 
-import net.riezebos.bruus.tbd.game.UI.GameUICreator;
-import net.riezebos.bruus.tbd.game.UI.UIObject;
-import net.riezebos.bruus.tbd.game.gameobjects.enemies.Enemy;
-import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.protoss.EnemyProtossBeacon;
-import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyCategory;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.Missile;
+import net.riezebos.bruus.tbd.game.gameobjects.missiles.missiletypes.ReflectiveBlocks;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.gamestate.GameStatsTracker;
@@ -19,11 +15,9 @@ import net.riezebos.bruus.tbd.game.movement.Point;
 import net.riezebos.bruus.tbd.game.movement.*;
 import net.riezebos.bruus.tbd.game.movement.pathfinders.HomingPathFinder;
 import net.riezebos.bruus.tbd.game.movement.pathfinders.PathFinder;
-import net.riezebos.bruus.tbd.game.playerprofile.PlayerProfileManager;
 import net.riezebos.bruus.tbd.game.util.ArmorCalculator;
 import net.riezebos.bruus.tbd.game.util.OnScreenTextManager;
 import net.riezebos.bruus.tbd.game.util.VisualLayer;
-import net.riezebos.bruus.tbd.guiboards.BoardManager;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.AudioManager;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.AudioEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
@@ -146,7 +140,6 @@ public class GameObject extends Sprite {
         this.currentBoardBlock = BoardBlockUpdater.getBoardBlock(xCoordinate);
         this.allowedToMove = true;
         this.allowedVisualsToRotate = true;
-
     }
 
     protected void initMovementConfiguration(MovementConfiguration movementConfiguration) {
@@ -209,18 +202,21 @@ public class GameObject extends Sprite {
                 return; //Already have it, so we don't need to add the animation of the new effect
             }
 
-            if (effect.getAnimation() != null) {
-                boolean effectAnimationExists = false;
-                for (SpriteAnimation effectAnim : effectAnimations) {
-                    if (effectAnim.getImageEnum().equals(effect.getAnimation().getImageEnum())) {
-                        effectAnimationExists = true;
+            if (effect.getAnimations() != null && !effect.getAnimations().isEmpty()) {
+                for (SpriteAnimation effectAnimation : effect.getAnimations()) {
+                    boolean effectAnimationExists = false;
+                    for (SpriteAnimation effectAnim : effectAnimations) {
+                        if (effectAnim.getImageEnum().equals(effectAnimation.getImageEnum())) {
+                            effectAnimationExists = true;
+                            break;
+                        }
                     }
-                }
 
-                if (!effectAnimationExists) {
-                    effect.getAnimation().refreshAnimation(); //To handle ignite, idk why it does this as of now
-                    effectAnimations.add(effect.getAnimation());
-                    AnimationManager.getInstance().addUpperAnimation(effect.getAnimation());
+                    if (!effectAnimationExists) {
+                        effectAnimation.refreshAnimation(); //To handle ignite, idk why it does this as of now might be deprecated/unneeded
+                        effectAnimations.add(effectAnimation);
+                        AnimationManager.getInstance().addUpperAnimation(effectAnimation);
+                    }
                 }
             }
         }
@@ -249,14 +245,14 @@ public class GameObject extends Sprite {
             if (effect.getEffectTypesEnums() == providedActivationType) {
                 effect.activateEffect(this);
                 if (effect.shouldBeRemoved(this)) {
-                    if (effect.getAnimation() != null) {
-                        effect.getAnimation().setVisible(false);
-                        if (effectAnimations.contains(effect.getAnimation())) {
-                            effectAnimations.remove(effect.getAnimation());
-                        }
-                        //This is here to possibly remove the bug of persistent effect animations
-                        if (AnimationManager.getInstance().getUpperAnimations().contains(effect.getAnimation())) {
-                            AnimationManager.getInstance().getUpperAnimations().remove(effect.getAnimation());
+                    if (effect.getAnimations() != null && !effect.getAnimations().isEmpty()) {
+                        for (SpriteAnimation effectAnimation : effect.getAnimations()) {
+                            effectAnimation.setVisible(false);
+                            if (effectAnimations.contains(effectAnimation)) {
+                                effectAnimations.remove(effectAnimation);
+                            }
+                            //Redundant, but added to catch possible persisting animations that should have been removed
+                            AnimationManager.getInstance().getUpperAnimations().remove(effectAnimation);
                         }
                     }
                     toRemove.add(effect);
@@ -274,10 +270,18 @@ public class GameObject extends Sprite {
         effect.increaseEffectStrength(this);
     }
 
-    private void cleanseAllEffects() {
-        //Does NOT set all effects to invisible, so might lead to problems later on
-        //For example, effects that trigger after or during the objects deletion
+    protected void cleanseAllEffects() {
+        //Removes all effects then clears the list, directly before this it activates "on-death" effects
+        for (EffectInterface effect : effects) {
+            effect.removeEffect(this);
+        }
+
+        for (SpriteAnimation effectAnimation : effectAnimations) {
+            effectAnimation.setVisible(false);
+        }
+
         effects.clear();
+        effectAnimations.clear();
     }
 
     //*****************DELETION/DAMAGE*******************************
@@ -325,6 +329,7 @@ public class GameObject extends Sprite {
         this.visible = false;
     }
 
+
     public void takeDamage(float damageTaken) {
         if (currentHitpoints <= 0) {
             return; //The target is already dead, no need to go through here again
@@ -340,6 +345,7 @@ public class GameObject extends Sprite {
 
         if (!this.isFriendly() && !(damageTaken >= 9998 && damageTaken <= 10000)) {
             //Assume that if this object is not friendly, the damage came from the player
+            //This implementation is buggy and problematic and I might not even want to keep track of this anymore
             GameStatsTracker.getInstance().addDamageDealt(damageTaken);
             GameStatsTracker.getInstance().setHighestDamageDealt(damageTaken);
         }
@@ -421,7 +427,6 @@ public class GameObject extends Sprite {
         }
 
 
-
         float damage = ArmorCalculator.calculateDamage(getDamage(), target);
         target.takeDamage(damage);
 
@@ -438,22 +443,29 @@ public class GameObject extends Sprite {
         toggleHealthBar();
         if (this.isAllowedToMove()) {
             SpriteMover.getInstance().moveGameObject(this, movementConfiguration);
-            moveAnimations();
             this.bounds.setBounds(xCoordinate + xOffset, yCoordinate + yOffset, width, height);
 
             for (GameObject object : objectsFollowingThis) {
                 object.setCenterCoordinates(this.getCenterXCoordinate(), this.getCenterYCoordinate());
             }
         }
+        moveAnimations();
         updateBoardBlock();
         updateVisibility();
     }
 
     private void toggleHealthBar() {
-        if (this instanceof Missile || showHealthBar) {
+        // Skip if the health bar is already being shown
+        if (showHealthBar) {
             return;
         }
 
+        // Skip for all Missiles except ReflectiveBlocks
+        if (this instanceof Missile && !(this instanceof ReflectiveBlocks)) {
+            return;
+        }
+
+        // Show the health bar if the object has taken damage
         if (this.currentHitpoints < this.maxHitPoints) {
             showHealthBar = true;
         }
@@ -461,32 +473,20 @@ public class GameObject extends Sprite {
 
     private void moveAnimations() {
         if (this.animation != null) {
-            moveAnimations(animation);
+            animation.setXCoordinate(this.getXCoordinate());
+            animation.setYCoordinate(this.getYCoordinate());
+            animation.setAnimationBounds(animation.getXCoordinate(), animation.getYCoordinate());
         }
-
-
-        //Not needed
-//        if (this.destructionAnimation != null) {
-//            moveAnimations(destructionAnimation);
-//        }
 
         for (SpriteAnimation spriteAnimation : effectAnimations) {
-            moveAnimationsToCenter(spriteAnimation);
+            spriteAnimation.setCenterCoordinates(this.getCenterXCoordinate(), this.getCenterYCoordinate());
         }
 
-//        updateChargingAttackAnimationCoordination();
     }
 
-    private void moveAnimations(SpriteAnimation animation) {
-        animation.setXCoordinate(this.getXCoordinate());
-        animation.setYCoordinate(this.getYCoordinate());
-        animation.setAnimationBounds(animation.getXCoordinate(), animation.getYCoordinate());
+    public void addEffectAnimation(SpriteAnimation effectAnimation) {
+        effectAnimations.add(effectAnimation);
     }
-
-    private void moveAnimationsToCenter(SpriteAnimation animation) {
-        animation.setCenterCoordinates(this.getCenterXCoordinate(), this.getCenterYCoordinate());
-    }
-
 
     private void updateVisibility() {
         if (SpriteRemover.getInstance().shouldRemoveVisibility(this)) {
@@ -676,6 +676,10 @@ public class GameObject extends Sprite {
             return new Point(this.xCoordinate, this.yCoordinate);
         }
         return this.movementConfiguration.getCurrentLocation();
+    }
+
+    public Point getCurrentCenterLocation() {
+        return new Point(this.getCenterXCoordinate(), this.getCenterXCoordinate());
     }
 
     public int getCurrentBoardBlock() {
@@ -1016,8 +1020,8 @@ public class GameObject extends Sprite {
         if (isACrit) {
             attackDamage *= PlayerStats.getInstance().getCriticalStrikeDamageMultiplier();
         }
-        if (attackDamage < 0.1) {
-            return 0.1f;
+        if (attackDamage < 0.05) {
+            return 0.05f;
         } else {
             return attackDamage;
         }
@@ -1176,7 +1180,7 @@ public class GameObject extends Sprite {
         this.armorBonus += amount;
     }
 
-    public boolean hasEffect(EffectIdentifiers effectIdentifiers){
+    public boolean hasEffect(EffectIdentifiers effectIdentifiers) {
         return this.effects.stream().anyMatch(effect -> effect.getEffectIdentifier().equals(effectIdentifiers));
     }
 }

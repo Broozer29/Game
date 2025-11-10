@@ -219,15 +219,4 @@ public class MenuBoardCreator {
         textCollection.setScale(imageScale * 2);
         return textCollection;
     }
-
-    public static GUITextCollection selectBossMode(GUITextCollection continueSaveFileButton) {
-        GUIComponent component = continueSaveFileButton.getComponents().get(0);
-        int xCoordinate = component.getXCoordinate();
-        int yCoordinate = component.getYCoordinate() + 50;
-
-        GUITextCollection textCollection = new GUITextCollection(xCoordinate,yCoordinate, "TOGGLE BOSS MODE");
-        textCollection.setScale(imageScale);
-        textCollection.setMenuFunctionality(MenuFunctionEnums.SelectBossMode);
-        return textCollection;
-    }
 }

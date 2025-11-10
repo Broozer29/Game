@@ -41,6 +41,7 @@ public class PlayerProfileManager {
         try {
             if (!doesSaveFileExist()) {
                 loadedProfile = new PlayerProfile();
+                exportCurrentProfile();
                 return;
             }
 

@@ -68,7 +68,7 @@ public class BountyHunter implements Boon {
             PlayerProfileManager.getInstance().getLoadedProfile().setBountyHunterLevel(currentLevel + 1);
             PlayerProfileManager.getInstance().getLoadedProfile().addEmeralds(-upgradeCost);
             PlayerProfileManager.getInstance().exportCurrentProfile();
-            AudioManager.getInstance().addAudio(AudioEnums.ItemAcquired);
+            AudioManager.getInstance().addAudio(AudioEnums.GenericSelect);
         }else if(canUpgradeFurther() && PlayerProfileManager.getInstance().getLoadedProfile().getEmeralds() < upgradeCost){
             AudioManager.getInstance().addAudio(AudioEnums.GenericError);
         }

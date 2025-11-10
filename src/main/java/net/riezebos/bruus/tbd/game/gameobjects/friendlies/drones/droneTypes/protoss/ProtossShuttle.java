@@ -6,11 +6,14 @@ import net.riezebos.bruus.tbd.game.gameobjects.friendlies.FriendlyObjectConfigur
 import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.Drone;
 import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.droneTypes.DroneTypes;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.*;
+import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.items.ItemEnums;
 import net.riezebos.bruus.tbd.game.items.PlayerInventory;
+import net.riezebos.bruus.tbd.game.items.items.carrier.EmergencyRepairs;
 import net.riezebos.bruus.tbd.game.items.items.carrier.SynergeticLink;
+import net.riezebos.bruus.tbd.game.items.items.carrier.VengeanceProtocol;
 import net.riezebos.bruus.tbd.game.movement.Direction;
 import net.riezebos.bruus.tbd.game.movement.MovementConfiguration;
 import net.riezebos.bruus.tbd.game.movement.MovementPatternSize;
@@ -18,6 +21,8 @@ import net.riezebos.bruus.tbd.game.movement.Point;
 import net.riezebos.bruus.tbd.game.movement.pathfinders.PathFinder;
 import net.riezebos.bruus.tbd.game.movement.pathfinders.StraightLinePathFinder;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.AudioEnums;
+import net.riezebos.bruus.tbd.visualsandaudio.objects.AnimationManager;
+import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteAnimation;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteAnimationConfiguration;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteConfiguration;
 
@@ -29,8 +34,8 @@ public class ProtossShuttle extends Drone {
     private float defaultMoveSpeed = 2.55f;
     private boolean isMovingAroundCarrierDrone = false;
     private boolean isMovingSlow = false;
-    public static float shuttleDamageRatio = 3f;
-    private float baseAttackSpeed = 1.5f; //duplicate from friendlycreator, code smell because its hardcoded seperately
+    public static float shuttleDamageRatio = 5f;
+    private float baseAttackSpeed = 1.25f; //duplicate from friendlycreator, code smell because its hardcoded seperately
 
     public ProtossShuttle(SpriteAnimationConfiguration spriteAnimationConfiguration, FriendlyObjectConfiguration droneConfiguration, MovementConfiguration movementConfiguration) {
         super(spriteAnimationConfiguration, droneConfiguration, movementConfiguration);
@@ -77,7 +82,7 @@ public class ProtossShuttle extends Drone {
 
     public void fireAction() {
         if (target == null) {
-            target = EnemyManager.getInstance().getClosestEnemyWithinDistance(this.getCenterXCoordinate(), this.getCenterYCoordinate(), attackRange);
+            target = EnemyManager.getInstance().getClosestEnemyTargetWithinDistance(this.getCenterXCoordinate(), this.getCenterYCoordinate(), attackRange);
         }
 
         if(target != null){
@@ -158,10 +163,22 @@ public class ProtossShuttle extends Drone {
         point.setY(point.getY() - missile.getHeight() / 2);
         movementConfiguration.setDestination(point);
         missile.setCenterCoordinates(this.getAnimation().getCenterXCoordinate(), this.getAnimation().getCenterYCoordinate());
-        missile.rotateObjectTowardsDestination(true);
         missile.setAllowedVisualsToRotate(false); //Prevent it from being rotated again by the SpriteMover
         missile.setOwnerOrCreator(this);
         MissileManager.getInstance().addExistingMissile(missile);
+    }
+
+    @Override
+    public void triggerOnDeathActions() {
+        super.triggerOnDeathActions();
+        if(PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.EmergencyRepairs) != null){
+            EmergencyRepairs emergencyRepairs = (EmergencyRepairs) PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.EmergencyRepairs);
+            emergencyRepairs.applyEffectToObject(PlayerManager.getInstance().getSpaceship());
+        }
+        if(PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.VengeanceProtocol) != null){
+            VengeanceProtocol vengeanceProtocol = (VengeanceProtocol) PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.VengeanceProtocol);
+            vengeanceProtocol.applyEffectToObject(this);
+        }
     }
 
 }

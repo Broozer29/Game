@@ -9,6 +9,9 @@ import net.riezebos.bruus.tbd.game.items.effects.EffectIdentifiers;
 import net.riezebos.bruus.tbd.game.items.effects.EffectInterface;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteAnimation;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ArmorModifierEffect implements EffectInterface {
 
     private float armorBonus = 1.0f;
@@ -16,14 +19,16 @@ public class ArmorModifierEffect implements EffectInterface {
     private double durationInSeconds;
     private double startTimeInSeconds;
 
-    private SpriteAnimation animation;
+    private List<SpriteAnimation> animationList = new ArrayList<>();
     private boolean appliedToObject;
     private EffectIdentifiers effectIdentifier;
 
     public ArmorModifierEffect(float armorBonus, double durationInSeconds, SpriteAnimation animation, EffectIdentifiers effectIdentifier) {
         this.armorBonus = armorBonus;
         this.durationInSeconds = durationInSeconds;
-        this.animation = animation;
+        if(animation != null) {
+            this.animationList.add(animation);
+        }
         this.startTimeInSeconds = GameState.getInstance().getGameSeconds();
         this.effectTypesEnums = EffectActivationTypes.CheckEveryGameTick;
         this.appliedToObject = false;
@@ -37,7 +42,7 @@ public class ArmorModifierEffect implements EffectInterface {
             appliedToObject = true;
         }
 
-        if (animation != null) {
+        if (!this.animationList.isEmpty() && this.animationList.get(0) != null) {
             centerAnimation(gameObject);
         }
 
@@ -54,11 +59,16 @@ public class ArmorModifierEffect implements EffectInterface {
 
 
     private void centerAnimation(GameObject object) {
+        if(this.animationList.isEmpty() || this.animationList.get(0) == null){
+            return; //no animation exists
+        }
+
+
         if (object.getAnimation() != null) {
             SpriteAnimation objectVisuals = object.getAnimation();
-            animation.setCenterCoordinates(objectVisuals.getCenterXCoordinate(), objectVisuals.getCenterYCoordinate());
+            this.animationList.get(0).setCenterCoordinates(objectVisuals.getCenterXCoordinate(), objectVisuals.getCenterYCoordinate());
         } else {
-            animation.setCenterCoordinates(object.getCenterXCoordinate(), object.getCenterYCoordinate());
+            this.animationList.get(0).setCenterCoordinates(object.getCenterXCoordinate(), object.getCenterYCoordinate());
         }
 
 
@@ -72,8 +82,8 @@ public class ArmorModifierEffect implements EffectInterface {
     }
 
     @Override
-    public SpriteAnimation getAnimation() {
-        return animation;
+    public List<SpriteAnimation> getAnimations() {
+        return animationList;
     }
 
     @Override
@@ -93,7 +103,13 @@ public class ArmorModifierEffect implements EffectInterface {
 
     @Override
     public EffectInterface copy() {
-        return new DamageModifierEffect(armorBonus, durationInSeconds, animation.clone(), effectIdentifier);
+        SpriteAnimation animation = null;
+        if (!this.animationList.isEmpty() && this.animationList.get(0) != null) {
+            animation = this.animationList.get(0);
+        }
+        SpriteAnimation clonedAnimation = (animation != null) ? animation.clone() : null;
+
+        return new DamageModifierEffect(armorBonus, durationInSeconds, clonedAnimation, effectIdentifier);
     }
 
     @Override
@@ -103,11 +119,11 @@ public class ArmorModifierEffect implements EffectInterface {
 
     @Override
     public void removeEffect(GameObject gameObject) {
-        if (animation != null) {
-            animation.setInfiniteLoop(false);
-            animation.setVisible(false);
+        if (!this.animationList.isEmpty() && this.animationList.get(0) != null) {
+            this.animationList.get(0).setInfiniteLoop(false);
+            this.animationList.get(0).setVisible(false);
         }
         removeEffectsBeforeRemovingEffect(gameObject);
-        animation = null;
+        this.animationList.clear();
     }
 }

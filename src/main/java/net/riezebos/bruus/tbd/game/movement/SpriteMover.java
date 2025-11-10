@@ -105,7 +105,7 @@ public class SpriteMover {
             moveConfig.getCurrentPath().setFallbackDirection(nextStep);
         } else {
             // if missile lost lock, it should keep moving in the last direction
-            moveConfig.setRotation(moveConfig.getCurrentPath().getFallbackDirection());
+            moveConfig.setDirection(moveConfig.getCurrentPath().getFallbackDirection());
             moveConfig.setNextPoint(calculateNextPointForHomingPathFinder(moveConfig.getCurrentLocation(),
                     moveConfig.getCurrentPath().getFallbackDirection(), moveConfig.getXMovementSpeed(),
                     moveConfig.getYMovementSpeed()));
@@ -152,7 +152,7 @@ public class SpriteMover {
         Direction newDirection = ((BouncingPathFinder) moveConfig.getPathFinder())
                 .getNewDirection(gameObject, moveConfig.getRotation());
         if (newDirection != moveConfig.getRotation()) {
-            moveConfig.setRotation(newDirection);
+            moveConfig.setDirection(newDirection);
             updatePath(gameObject, moveConfig);
             ((BouncingPathFinder) moveConfig.getPathFinder()).increaseBounce();
         }

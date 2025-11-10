@@ -5,5 +5,6 @@ public enum EnemyCategory {
     Medium, //Medium enemies
     Boss,
     Summon, //Enemies spawned by other enemies
-    Special, //CashCarriers and others
+    Special,  //CashCarriers
+    MiniBoss,
 }

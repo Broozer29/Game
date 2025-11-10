@@ -15,7 +15,7 @@ import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.Sprit
 
 public class PlasmaCoatedBullets extends Item {
 
-    public static float burningDamage = 0.01f;
+    public static float burningDamage = 0.02f;
     public static double duration = 1.5f;
 
     public PlasmaCoatedBullets() {
@@ -38,8 +38,11 @@ public class PlasmaCoatedBullets extends Item {
         SpriteAnimationConfiguration spriteAnimationConfiguration = new SpriteAnimationConfiguration(spriteConfiguration, 3, true);
         SpriteAnimation spriteAnimation = new SpriteAnimation(spriteAnimationConfiguration);
 
-        DamageOverTime burningEffect = new DamageOverTime(burningDamage * quantity, duration * quantity, spriteAnimation, EffectIdentifiers.PlasmaCoatedBulletsBurning);
-//        burningEffect.getAnimation().setCenterCoordinates(gameObject.getCenterXCoordinate(), gameObject.getCenterYCoordinate());
+        DamageOverTime burningEffect = new DamageOverTime((burningDamage * PlayerStats.getInstance().getBaseDamage()) * quantity, duration * quantity, spriteAnimation, EffectIdentifiers.PlasmaCoatedBulletsBurning);
+        if(burningEffect.getAnimations().get(0) != null){
+            burningEffect.getAnimations().get(0).setCenterCoordinates(gameObject.getCenterXCoordinate(), gameObject.getCenterYCoordinate());
+        }
+
         gameObject.addEffect(burningEffect);
     }
 

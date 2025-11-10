@@ -13,7 +13,7 @@ import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.Sprit
 
 public class ProtossShuttleMissile extends Missile {
 
-    private static float explosionSize = 3f;
+    private static float explosionSize = 2.25f;
 
     public ProtossShuttleMissile(SpriteAnimationConfiguration spriteConfiguration, MissileConfiguration missileConfiguration, MovementConfiguration movementConfiguration) {
         super(spriteConfiguration, missileConfiguration, movementConfiguration);

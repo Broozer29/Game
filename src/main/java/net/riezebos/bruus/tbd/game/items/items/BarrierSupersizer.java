@@ -7,33 +7,28 @@ import net.riezebos.bruus.tbd.game.items.ItemEnums;
 import net.riezebos.bruus.tbd.game.items.enums.ItemApplicationEnum;
 
 public class BarrierSupersizer extends Item {
-    private float modifierBonus;
+    public static float modifierBonus = 0.2f;
     private boolean shouldApply;
 
     public BarrierSupersizer(){
         super(ItemEnums.BarrierSuperSizer, 1, ItemApplicationEnum.ApplyOnCreation);
-        calculateModifierBonusAmount();
         shouldApply = true;
-    }
-
-    private void calculateModifierBonusAmount(){
-        this.modifierBonus = quantity * 0.2f;
     }
 
     //Increases the maximum shield and overloaded shield by 10% and 20% per item
     @Override
     public void applyEffectToObject (GameObject gameObject) {
         if(shouldApply) {
-            PlayerStats.getInstance().addMaxShieldMultiplier(modifierBonus);
-            PlayerStats.getInstance().addMaxOverloadingShieldMultiplier(modifierBonus * 2);
+            PlayerStats.getInstance().addMaxShieldMultiplier(modifierBonus * quantity);
+            PlayerStats.getInstance().addMaxOverloadingShieldMultiplier(modifierBonus * quantity * 2);
             shouldApply = false;
         }
     }
 
     private void removeEffect(){
         if(quantity > 0) {
-            PlayerStats.getInstance().addMaxShieldMultiplier(-modifierBonus);
-            PlayerStats.getInstance().addMaxOverloadingShieldMultiplier(-modifierBonus * 2);
+            PlayerStats.getInstance().addMaxShieldMultiplier(-modifierBonus * quantity);
+            PlayerStats.getInstance().addMaxOverloadingShieldMultiplier(-modifierBonus * quantity * 2);
         }
     }
 
@@ -41,7 +36,6 @@ public class BarrierSupersizer extends Item {
         shouldApply = true;
         removeEffect();
         this.quantity += amount;
-        calculateModifierBonusAmount();
         applyEffectToObject(null);
     }
 

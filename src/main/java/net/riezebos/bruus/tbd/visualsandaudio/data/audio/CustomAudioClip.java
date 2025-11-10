@@ -1,6 +1,7 @@
 package net.riezebos.bruus.tbd.visualsandaudio.data.audio;
 
 import javafx.scene.media.MediaPlayer;
+import net.riezebos.bruus.tbd.DevTestSettings;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.AudioEnums;
 
 import javax.sound.sampled.*;
@@ -293,7 +294,7 @@ public class CustomAudioClip {
                 // Set the volume
                 if (audioLine.isControlSupported(FloatControl.Type.MASTER_GAIN)) {
                     FloatControl volume = (FloatControl) audioLine.getControl(FloatControl.Type.MASTER_GAIN);
-                    volume.setValue(AudioManager.getInstance().devTestmuteMode ? -70 : -10);
+                    volume.setValue(DevTestSettings.devTestMuteMode ? -70 : -10);
                 }
 
                 // Skip to the start position

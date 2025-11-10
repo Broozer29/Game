@@ -1,7 +1,11 @@
 package net.riezebos.bruus.tbd.game.gameobjects.missiles.missiletypes;
 
+import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.Missile;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.MissileConfiguration;
+import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
+import net.riezebos.bruus.tbd.game.gamestate.GameState;
+import net.riezebos.bruus.tbd.game.gamestate.GameStatsTracker;
 import net.riezebos.bruus.tbd.game.movement.MovementConfiguration;
 import net.riezebos.bruus.tbd.game.movement.Point;
 import net.riezebos.bruus.tbd.game.movement.pathfinders.StraightLinePathFinder;
@@ -12,8 +16,6 @@ import java.util.List;
 
 public class ReflectiveBlocks extends Missile {
 
-
-
     public ReflectiveBlocks(SpriteAnimationConfiguration spriteAnimationConfiguration, MissileConfiguration missileConfiguration, MovementConfiguration movementConfiguration) {
         super(spriteAnimationConfiguration, missileConfiguration, movementConfiguration);
         this.isDestructable = false;
@@ -22,9 +24,21 @@ public class ReflectiveBlocks extends Missile {
     }
 
 
+    private double lastCheckedTime = GameState.getInstance().getGameSeconds();
     @Override
     public void missileAction() {
-        //not needed i think
+        if(GameState.getInstance().getGameSeconds() > lastCheckedTime + 0.25f){ //Can deal damage on a 0,5 second interval
+            super.collidedObjects.clear();
+            lastCheckedTime = GameState.getInstance().getGameSeconds();
+        }
+    }
+
+    @Override
+    public void handleCollision (GameObject collidedObject) {
+        if(!collidedObjects.contains(collidedObject)) {
+            collidedObjects.add(collidedObject);
+            super.dealDamageToGameObject(collidedObject);
+        }
     }
 
     public void reflectMissile(Missile missile){
@@ -35,6 +49,11 @@ public class ReflectiveBlocks extends Missile {
         missile.dealDamageToGameObject(this);
         if(this.getCurrentHitpoints() < this.getMaxHitPoints()){
             this.setShowHealthBar(true);
+        }
+
+        if(missile.isExplosive()){
+            missile.detonateMissile();
+            return;
         }
 
 
@@ -59,6 +78,7 @@ public class ReflectiveBlocks extends Missile {
         missile.setDamage(this.damage);
         missile.setFriendly(this.isFriendly()); //change teams
         missile.setOwnerOrCreator(this.ownerOrCreator);
+        missile.setDamage(missile.getDamage() * 0.5f);
     }
 
     private double calculateMovementAngle(List<Point> waypoints) {

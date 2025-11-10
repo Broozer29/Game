@@ -8,7 +8,11 @@ import net.riezebos.bruus.tbd.game.items.effects.EffectActivationTypes;
 import net.riezebos.bruus.tbd.game.items.effects.EffectIdentifiers;
 import net.riezebos.bruus.tbd.game.items.effects.EffectInterface;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
+import net.riezebos.bruus.tbd.visualsandaudio.objects.Sprite;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteAnimation;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ModifyMovementSpeedEffect implements EffectInterface {
     private float movementSpeedModifieramount = 1.0f;
@@ -17,7 +21,7 @@ public class ModifyMovementSpeedEffect implements EffectInterface {
     private double durationInSeconds;
     private double startTimeInSeconds;
 
-    private SpriteAnimation animation;
+    private List<SpriteAnimation> animationList = new ArrayList<>();
     private boolean appliedToObject;
     private EffectIdentifiers effectIdentifier;
     private int amountOfStacks;
@@ -26,7 +30,9 @@ public class ModifyMovementSpeedEffect implements EffectInterface {
         this.movementSpeedModifieramount = movementSpeedModifierAmountPerStack;
         this.movementSpeedMofifierAmountPerStack = movementSpeedModifierAmountPerStack;
         this.durationInSeconds = durationInSeconds;
-        this.animation = animation;
+        if(animation != null) {
+            this.animationList.add(animation);
+        }
         this.startTimeInSeconds = GameState.getInstance().getGameSeconds();
         this.effectTypesEnums = EffectActivationTypes.CheckEveryGameTick;
         this.appliedToObject = false;
@@ -52,7 +58,7 @@ public class ModifyMovementSpeedEffect implements EffectInterface {
             this.startTimeInSeconds = GameState.getInstance().getGameSeconds();
         }
 
-        if (animation != null) {
+        if (!this.animationList.isEmpty() && this.animationList.get(0) != null) {
             centerAnimation(gameObject);
         }
     }
@@ -76,9 +82,9 @@ public class ModifyMovementSpeedEffect implements EffectInterface {
     private void centerAnimation (GameObject object) {
         if (object.getAnimation() != null) {
             SpriteAnimation objectVisuals = object.getAnimation();
-            animation.setCenterCoordinates(objectVisuals.getCenterXCoordinate(), objectVisuals.getCenterYCoordinate());
+            animationList.get(0).setCenterCoordinates(objectVisuals.getCenterXCoordinate(), objectVisuals.getCenterYCoordinate());
         } else {
-            animation.setCenterCoordinates(object.getCenterXCoordinate(), object.getCenterYCoordinate());
+            animationList.get(0).setCenterCoordinates(object.getCenterXCoordinate(), object.getCenterYCoordinate());
         }
 
 
@@ -92,8 +98,8 @@ public class ModifyMovementSpeedEffect implements EffectInterface {
     }
 
     @Override
-    public SpriteAnimation getAnimation () {
-        return animation;
+    public List<SpriteAnimation> getAnimations() {
+        return animationList;
     }
 
     @Override
@@ -117,27 +123,36 @@ public class ModifyMovementSpeedEffect implements EffectInterface {
             movementSpeedModifieramount = movementSpeedMofifierAmountPerStack * amountOfStacks;
             activateEffect(gameObject);
 
+            if(!this.animationList.isEmpty() && this.animationList.get(0) != null){
             switch (amountOfStacks) {
                 case 1:
-                    animation.changeImagetype(ImageEnums.DevourerDebuffStage1);
+                    animationList.get(0).changeImagetype(ImageEnums.DevourerDebuffStage1);
                     break;
                 case 2:
-                    animation.changeImagetype(ImageEnums.DevourerDebuffStage2);
+                    animationList.get(0).changeImagetype(ImageEnums.DevourerDebuffStage2);
                     break;
                 case 3:
-                    animation.changeImagetype(ImageEnums.DevourerDebuffStage3);
+                    animationList.get(0).changeImagetype(ImageEnums.DevourerDebuffStage3);
                     break;
                 case 4:
-                    animation.changeImagetype(ImageEnums.DevourerDebuffStage4);
+                    animationList.get(0).changeImagetype(ImageEnums.DevourerDebuffStage4);
                     break;
             }
+            }
+
 
         }
     }
 
     @Override
     public EffectInterface copy () {
-        return new ModifyMovementSpeedEffect(movementSpeedMofifierAmountPerStack, durationInSeconds, animation.clone(), effectIdentifier);
+        SpriteAnimation animation = null;
+        if (!this.animationList.isEmpty() && this.animationList.get(0) != null) {
+            animation = this.animationList.get(0);
+        }
+        SpriteAnimation clonedAnimation = (animation != null) ? animation.clone() : null;
+
+        return new ModifyMovementSpeedEffect(movementSpeedMofifierAmountPerStack, durationInSeconds, clonedAnimation, effectIdentifier);
     }
 
     @Override
@@ -147,12 +162,12 @@ public class ModifyMovementSpeedEffect implements EffectInterface {
 
     @Override
     public void removeEffect (GameObject gameObject) {
-        if(animation != null){
-            animation.setInfiniteLoop(false);
-            animation.setVisible(false);
+        if(!this.animationList.isEmpty() && this.animationList.get(0) != null){
+            animationList.get(0).setInfiniteLoop(false);
+            animationList.get(0).setVisible(false);
         }
         removeEffectsBeforeRemovingEffect(gameObject);
-        animation = null;
+        animationList.clear();
     }
 
 }

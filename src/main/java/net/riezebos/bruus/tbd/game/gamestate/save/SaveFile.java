@@ -28,9 +28,7 @@ public class SaveFile {
     private long gameTicksExecuted;
     private float money;
 
-    private BoonEnums selectedUtilityBoon;
-    private BoonEnums selectedOffenseBoon;
-    private BoonEnums selectedDefenseBoon;
+    private BoonEnums selectedBoon;
 
 
     public SaveFile() {
@@ -44,9 +42,7 @@ public class SaveFile {
         money = PlayerInventory.getInstance().getCashMoney();
 
 
-        selectedUtilityBoon = BoonManager.getInstance().getUtilityBoon() != null ? BoonManager.getInstance().getUtilityBoon().getBoonEnum() : null;
-        selectedDefenseBoon = BoonManager.getInstance().getDefensiveBoon() != null ? BoonManager.getInstance().getDefensiveBoon().getBoonEnum() : null;
-        selectedOffenseBoon = BoonManager.getInstance().getOffensiveBoon() != null ? BoonManager.getInstance().getOffensiveBoon().getBoonEnum() : null;
+        selectedBoon = BoonManager.getInstance().getActiveBoon() != null ? BoonManager.getInstance().getActiveBoon().getBoonEnum() : null;
 
         this.items = new HashMap<>();
         for (Map.Entry<ItemEnums, Item> entry : PlayerInventory.getInstance().getItems().entrySet()) {
@@ -128,28 +124,12 @@ public class SaveFile {
         this.money = money;
     }
 
-    public BoonEnums getSelectedUtilityBoon() {
-        return selectedUtilityBoon;
+    public BoonEnums getSelectedBoon() {
+        return selectedBoon;
     }
 
-    public void setSelectedUtilityBoon(BoonEnums selectedUtilityBoon) {
-        this.selectedUtilityBoon = selectedUtilityBoon;
-    }
-
-    public BoonEnums getSelectedOffenseBoon() {
-        return selectedOffenseBoon;
-    }
-
-    public void setSelectedOffenseBoon(BoonEnums selectedOffenseBoon) {
-        this.selectedOffenseBoon = selectedOffenseBoon;
-    }
-
-    public BoonEnums getSelectedDefenseBoon() {
-        return selectedDefenseBoon;
-    }
-
-    public void setSelectedDefenseBoon(BoonEnums selectedDefenseBoon) {
-        this.selectedDefenseBoon = selectedDefenseBoon;
+    public void setSelectedBoon(BoonEnums selectedBoon) {
+        this.selectedBoon = selectedBoon;
     }
 
     public GameMode getGameModes() {

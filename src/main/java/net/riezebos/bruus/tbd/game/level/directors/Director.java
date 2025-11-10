@@ -3,13 +3,17 @@ package net.riezebos.bruus.tbd.game.level.directors;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyManager;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyCategory;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyEnums;
+import net.riezebos.bruus.tbd.game.gamestate.GameMode;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.level.EnemyFormation;
 import net.riezebos.bruus.tbd.game.level.FormationCreator;
 import net.riezebos.bruus.tbd.game.level.LevelManager;
+import net.riezebos.bruus.tbd.game.level.enums.LevelDifficulty;
+import net.riezebos.bruus.tbd.game.level.enums.MiniBossConfig;
 import net.riezebos.bruus.tbd.game.level.enums.SpawnFormationEnums;
 import net.riezebos.bruus.tbd.game.movement.Direction;
 import net.riezebos.bruus.tbd.visualsandaudio.data.DataClass;
+import net.riezebos.bruus.tbd.visualsandaudio.data.audio.AudioManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,6 +39,9 @@ public class Director {
     private Random random = new Random();
     private double currentTime;
     private boolean active;
+
+    private int miniBossSpawns = 0;
+    private int miniBossessSpawned = 0;
 
     public Director(DirectorType directorType, List<MonsterCard> availableCards) {
         this.directorType = directorType;
@@ -92,12 +99,69 @@ public class Director {
             return; //We dont want to do anything else but spawning the boss at this time, subject to change
         }
 
+        if (directorType == DirectorType.Fast || directorType == DirectorType.Slow) {
+            handleRegularDirectorSpawn();
+        } else if (directorType == DirectorType.MiniBoss) {
+            handleMiniBossDirectorSpawn();
+        }
+    }
+
+    private void handleMiniBossDirectorSpawn() {
+        if (miniBossessSpawned < LevelManager.getInstance().getCurrentMiniBossConfig().getMiniBossesPerLevel()) {
+            spawnMiniBoss();
+            this.miniBossessSpawned++;
+        }
+    }
+
+    private void spawnMiniBoss() {
+        // Set parameters for spawning
+        MonsterCard selectedCard = selectMonsterCard();
+        if (selectedCard == null) {
+            //failed to select a boss
+            return;
+        }
+
+        EnemyEnums miniBossType = selectedCard.getEnemyType();
+        Direction direction = getMiniBossDirection(miniBossType);
+        float scale = miniBossType.getDefaultScale();
+        float xMovementSpeed = miniBossType.getMovementSpeed();
+        float yMovementSpeed = miniBossType.getMovementSpeed();
+
+        // Call LevelManager's spawnEnemy method
+        LevelManager.getInstance().spawnEnemy(
+                DataClass.getInstance().getWindowWidth() + Math.round(miniBossType.getBaseWidth() * 0.88f),
+                DataClass.getInstance().getPlayableWindowMaxHeight() / 2,
+                miniBossType, direction, scale, false, xMovementSpeed, yMovementSpeed, false);
+    }
+
+    private Direction getMiniBossDirection(EnemyEnums enemyEnums) {
+        Direction direction = Direction.LEFT;
+        if (enemyEnums.equals(EnemyEnums.ShurikenMiniBoss) || enemyEnums.equals(EnemyEnums.MirageMiniBoss)) {
+            switch (random.nextInt(2)) {
+                case 0:
+                    direction = Direction.LEFT_UP;
+                    break;
+                case 1:
+                    direction = Direction.LEFT_DOWN;
+                    break;
+                default:
+                    direction = Direction.LEFT_UP;
+            }
+        }
+        return direction;
+    }
+
+
+    private void handleRegularDirectorSpawn() {
         double randomNumber = random.nextDouble();  // Generate a random number between 0 and 1
         double timeSinceLastCashCarrier = currentTime - DirectorManager.getInstance().getLastCashCarrierSpawnTime();
 
         // Check for cash carrier spawn conditions
         if (randomNumber <= spawnCashCarrierChance && timeSinceLastCashCarrier >= 45) {
-            spawnCashCarrier();  // Always a scout as of now
+            int amount = GameState.getInstance().getGameMode().equals(GameMode.DoubleTrouble) ? 2 : 1;
+            for (int i = 0; i < amount; i++) {
+                spawnCashCarrier();
+            }
             DirectorManager.getInstance().setLastCashCarrierSpawnTime(currentTime);
         }
 
@@ -112,7 +176,7 @@ public class Director {
                 if (credits >= totalFormationCost && canSpawnInFormation(enemyType) && shouldSpawnFormation(enemyType)) {
                     spawnRegularFormation(formationType, enemyType);
                     credits -= totalFormationCost;
-                } else if (credits >= selectedCard.getCreditCost()) {
+                } else if (credits >= selectedCard.getCreditCost() && !GameState.getInstance().getGameMode().equals(GameMode.Formatted)) {
                     spawnEnemy(enemyType, true);
                     credits -= selectedCard.getCreditCost();
                 }
@@ -141,11 +205,11 @@ public class Director {
             return EnemyManager.getInstance().getAmountOfEnemyTypesAlive(EnemyEnums.Bulldozer) < 5;
         }
         if (enemyEnums.equals(EnemyEnums.Energizer)) {
-            return EnemyManager.getInstance().getAmountOfEnemyTypesAlive(EnemyEnums.Energizer) < 8;
+            return EnemyManager.getInstance().getAmountOfEnemyTypesAlive(EnemyEnums.Energizer) < 5;
         }
 
         if (enemyEnums.equals(EnemyEnums.Seeker)) {
-            return EnemyManager.getInstance().getAmountOfEnemyTypesAlive(EnemyEnums.Seeker) < 12;
+            return EnemyManager.getInstance().getAmountOfEnemyTypesAlive(EnemyEnums.Seeker) < 6;
         }
         if (enemyEnums.equals(EnemyEnums.Bomba)) {
             return EnemyManager.getInstance().getAmountOfEnemyTypesAlive(EnemyEnums.Bomba) < 6;
@@ -155,7 +219,7 @@ public class Director {
     }
 
     private boolean canSpawnInFormation(EnemyEnums enemyEnums) {
-        if (enemyEnums.equals(EnemyEnums.ZergQueen) || enemyEnums.equals(EnemyEnums.Tazer) || enemyEnums.equals(EnemyEnums.Bomba)) {
+        if (enemyEnums.equals(EnemyEnums.ZergQueen) || enemyEnums.equals(EnemyEnums.Tazer)) {
             return false;
         }
         return true;
@@ -182,16 +246,19 @@ public class Director {
 
 
     private boolean shouldSpawnFormation(EnemyEnums enemyType) {
+        float smallFormationChance = GameState.getInstance().getGameMode().equals(GameMode.Formatted) ? 1 : 0.3f;
+        float mediumFormationChance = GameState.getInstance().getGameMode().equals(GameMode.Formatted) ? 1 : 0.2f;
+
         double time = currentTime - lastFormationSpawnTime;
-        if (time < 3) {
+        if (time < 3 && !GameState.getInstance().getGameMode().equals(GameMode.Formatted)) {
             return false;
         }
 
         double randomDouble = random.nextDouble();
         double chanceThreshold = switch (enemyType.getEnemyCategory()) {
-            case Summon, Special, Boss -> -1f;
-            case Small -> 0.3f; //20% chance of spawning a formation
-            case Medium -> 0.2f; //10% chance of spawning formation
+            case Summon, Special, Boss, MiniBoss -> -1f;
+            case Small -> smallFormationChance;
+            case Medium -> mediumFormationChance;
         };
 
         return randomDouble < chanceThreshold;
@@ -205,21 +272,58 @@ public class Director {
     }
 
     private float calculateFormationCost(SpawnFormationEnums formationType, EnemyEnums enemyType) {
+        float enemyCreditCost = enemyType.getCreditCost();
+
+        if(GameState.getInstance().getGameMode().equals(GameMode.Formatted)){
+            enemyCreditCost *= 1.5f;
+        } else {
+            enemyCreditCost *= 3f;
+        }
+
         float enemyCount = formationType.getEnemyCountInFormation();
-        return enemyCount * enemyType.getCreditCost();
+        return enemyCount * enemyCreditCost;
     }
 
     private boolean shouldAttemptSpawn(double currentTime) {
         if (directorType == DirectorType.Instant || directorType == DirectorType.Boss) {
             return true; // Always spawn for Instant or Boss types
-        } else {
-            double spawnWindowStart = lastSpawnTime + spawnInterval;
-            double spawnWindowEnd = spawnWindowStart + spawnWindowDuration;
-
-            // Determine if we're in the spawn window
-            isInSpawnWindow = currentTime >= spawnWindowStart && currentTime <= spawnWindowEnd;
-            return isInSpawnWindow;
+        } else if (directorType == DirectorType.MiniBoss) {
+            return isWindowForMiniBossSpawn(LevelManager.getInstance().getCurrentMiniBossConfig());
         }
+
+        //regular directors
+        double spawnWindowStart = lastSpawnTime + spawnInterval;
+        double spawnWindowEnd = spawnWindowStart + spawnWindowDuration;
+
+        // Determine if we're in the spawn window
+        isInSpawnWindow = currentTime >= spawnWindowStart && currentTime <= spawnWindowEnd;
+        return isInSpawnWindow;
+    }
+
+
+    private boolean isWindowForMiniBossSpawn(MiniBossConfig miniBossConfig) {
+        double levelProgression = calculateLevelProgression(GameState.getInstance().getCurrentLevelProgression(), GameState.getInstance().getPredictedFinishSeconds() - GameState.getInstance().getLevelStartTime());
+
+        switch (miniBossConfig){
+            case Medium:
+                return (levelProgression >= 0.5f && miniBossessSpawned < 1);
+            case Hard:
+                boolean returnValue = false;
+                if (levelProgression >= 0.25f && miniBossessSpawned < 1) {
+                    returnValue = true;
+                } else if (levelProgression >= 0.75f && miniBossessSpawned < 2) {
+                    returnValue = true;
+                }
+                return returnValue;
+        }
+        return false;
+    }
+
+    public double calculateLevelProgression(double currentSeconds, double maxSeconds) {
+        if (currentSeconds < 0 || maxSeconds < 0) {
+            return -1;
+        }
+        return (currentSeconds / maxSeconds);
     }
 
     private void spawnEnemy(EnemyEnums enemyType, boolean randomLocation) {
@@ -259,11 +363,11 @@ public class Director {
         int formationHDistance;
 
         if (isEntourage) {
-            formationWDistance = Math.round(secondaryEnemyType.getBaseWidth() * 1.1f);
-            formationHDistance = Math.round(secondaryEnemyType.getBaseHeight() * 1.1f);
+            formationWDistance = Math.round((secondaryEnemyType.getBaseWidth() * secondaryEnemyType.getDefaultScale()));
+            formationHDistance = Math.round((secondaryEnemyType.getBaseWidth() * secondaryEnemyType.getDefaultScale()));
         } else {
-            formationWDistance = Math.round(primaryEnemyType.getBaseWidth() * 1.1f);
-            formationHDistance = Math.round(primaryEnemyType.getBaseHeight() * 1.1f);
+            formationWDistance = Math.round((primaryEnemyType.getBaseWidth() * primaryEnemyType.getDefaultScale()));
+            formationHDistance = Math.round((primaryEnemyType.getBaseWidth() * primaryEnemyType.getDefaultScale()));
         }
 
         EnemyFormation formation = formationCreator.createFormation(formationType, formationWDistance, formationHDistance);
@@ -285,11 +389,11 @@ public class Director {
         DataClass instance = DataClass.getInstance();
         if (direction == Direction.LEFT) {
             // For LEFT direction, spawn at or beyond the right edge of the board
-            int bound = instance.getWindowWidth() + (random.nextInt(totalFormationWidth) * 3);
+            int bound = instance.getWindowWidth() + (random.nextInt((int) Math.round(totalFormationWidth * 0.5)));
             return instance.getWindowWidth() + Math.max(0, bound);
         } else if (direction == Direction.RIGHT) {
             // For RIGHT direction, spawn at or before the left edge of the board
-            int bound = -(random.nextInt(totalFormationWidth) * 3);
+            int bound = -(random.nextInt(totalFormationWidth));
             return Math.min(0, bound);
         } else if (direction == Direction.DOWN || direction == Direction.UP) {
             int min = 0;
@@ -361,6 +465,10 @@ public class Director {
     }
 
     private MonsterCard selectMonsterCard() {
+        if(this.directorType == DirectorType.MiniBoss){
+            return availableCards.get(random.nextInt(availableCards.size()));
+        }
+
         List<MonsterCard> adjustedCards = adjustWeights(availableCards, GameState.getInstance().getDifficultyCoefficient());
         if (!adjustedCards.isEmpty()) {
             return weightedRandomSelection(adjustedCards);

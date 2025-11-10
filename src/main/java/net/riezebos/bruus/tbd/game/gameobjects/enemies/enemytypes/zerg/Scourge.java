@@ -24,7 +24,7 @@ public class Scourge extends Enemy {
         destroyedExplosionfiguration.getSpriteConfiguration().setImageType(this.enemyType.getDestructionType());
         this.destructionAnimation = new SpriteAnimation(destroyedExplosionfiguration);
         this.destructionAnimation.setAnimationScale(this.scale);
-        this.damage = 25;
+        this.damage = 15;
         this.detonateOnCollision = true;
         this.knockbackStrength = 10;
     }

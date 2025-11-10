@@ -6,7 +6,6 @@ import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
 import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SpaceShip;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
-import net.riezebos.bruus.tbd.game.gamestate.GameStatsTracker;
 import net.riezebos.bruus.tbd.game.items.Item;
 import net.riezebos.bruus.tbd.game.items.PlayerInventory;
 import net.riezebos.bruus.tbd.game.items.enums.ItemApplicationEnum;
@@ -14,7 +13,6 @@ import net.riezebos.bruus.tbd.game.movement.Direction;
 import net.riezebos.bruus.tbd.game.movement.MovementConfiguration;
 import net.riezebos.bruus.tbd.game.movement.MovementPatternSize;
 import net.riezebos.bruus.tbd.game.movement.Point;
-import net.riezebos.bruus.tbd.game.movement.pathfinders.HomingPathFinder;
 import net.riezebos.bruus.tbd.game.movement.pathfinders.StraightLinePathFinder;
 import net.riezebos.bruus.tbd.game.util.performancelogger.PerformanceLogger;
 import net.riezebos.bruus.tbd.game.util.performancelogger.PerformanceLoggerManager;
@@ -38,45 +36,65 @@ public class ThornsDamageDealer {
     private Random random;
     private PerformanceLogger performanceLogger = null;
 
-    private ThornsDamageDealer () {
+    private ThornsDamageDealer() {
         playerStats = PlayerStats.getInstance();
         this.random = new Random();
         this.performanceLogger = new PerformanceLogger("Thorns Damage Dealer");
     }
 
-    public static ThornsDamageDealer getInstance () {
+    public static ThornsDamageDealer getInstance() {
         return instance;
     }
 
 
-    public void resetThornsDamageDealer () {
+    public void resetThornsDamageDealer() {
         lastThornsActivationTime = 0;
         thornsApplyMap.clear();
         performanceLogger.reset();
     }
 
 
-    public void updateGameTick () {
+    public void updateGameTick() {
         //This method will be acticated every gametick, hence the "activateDelayedThornsAttacks()"
 //        PerformanceLoggerManager.timeAndLog(performanceLogger, "Total", () -> {
-            PerformanceLoggerManager.timeAndLog(performanceLogger, "Activate Delayed Thorn Attacks", this::activateDelayedThornsAttacks);
+        PerformanceLoggerManager.timeAndLog(performanceLogger, "Activate Delayed Thorn Attacks", this::activateDelayedThornsAttacks);
 //            activateDelayedThornsAttacks();
 //        });
     }
 
 
-    public void addDelayedThornsDamageToObject (GameObject gameObject, int amountOftimes) {
+    public void addDelayedThornsDamageToObject(GameObject gameObject, int amountOftimes) {
         //Adds the gameObject and corresponding amountOfTimes if an object is NOT found
         //If the object IS found, combine the existing and new value by using Integers "sum" which adds 2 integers and returns the result
         thornsApplyMap.merge(gameObject, amountOftimes, Integer::sum);
     }
 
-    public void addThornsMissile(Point origin, GameObject target) {
-        if(target == null || origin == null){
-            return; //if this doesnt make sense, simply don't do it
+    //bugged
+    public void reflectMissile(Point origin, GameObject missile) {
+        if (missile == null || origin == null || missile.getOwnerOrCreator() == null) {
+            return; //We need a missile and an owner for this operation
         }
-        Missile newMissile = createMissile(origin, target);
-        MissileManager.getInstance().addExistingMissile(newMissile);
+
+        reflectTheMissile(missile);
+//        Missile newMissile = createMissile(origin, missile);
+//        MissileManager.getInstance().addExistingMissile(newMissile);
+    }
+
+    private void reflectTheMissile(GameObject missile) {
+        missile.setFriendly(true);
+        missile.resetMovementPath();
+        missile.setAllowedVisualsToRotate(true);
+        missile.getMovementConfiguration().setDestination(
+                new Point(
+                        missile.getOwnerOrCreator().getCenterXCoordinate() - missile.getWidth() / 2,
+                        missile.getOwnerOrCreator().getCenterYCoordinate() - missile.getHeight() / 2
+                ));
+        missile.getMovementConfiguration().setXMovementSpeed(Math.min(missile.getMovementConfiguration().getXMovementSpeed(), 4));
+        missile.setPathFinder(new StraightLinePathFinder());
+        missile.rotateObjectTowardsDestination(true);
+        missile.setAllowedVisualsToRotate(false);
+        missile.setDamage(missile.getDamage() * PlayerStats.getInstance().getThornsDamageRatio());
+        missile.setOwnerOrCreator(PlayerManager.getInstance().getSpaceship());
     }
 
     private Missile createMissile(Point origin, GameObject target) {
@@ -99,7 +117,7 @@ public class ThornsDamageDealer {
         AudioEnums deathSound = null;
         boolean allowedToDealDamage = true;
         String objectType = "Player Missile";
-        float damage = playerStats.getNormalAttackDamage() * 2;
+        float damage = playerStats.getNormalAttackDamage() * PlayerStats.getInstance().getThornsDamageRatio();
         boolean isExplosive = false;
 
         MissileConfiguration missileConfiguration = missileCreator1.createMissileConfiguration(MissileEnums.DefaultAnimatedBullet, maxHitPoints, maxShields,
@@ -108,22 +126,24 @@ public class ThornsDamageDealer {
 
         PlayerStats instance = PlayerStats.getInstance();
 
-        //piercing???
-//        if (!isExplosive) {
-//            missileConfiguration.setPiercesMissiles(instance.getPiercingMissilesAmount() > 0);
-//            missileConfiguration.setAmountOfPierces(instance.getPiercingMissilesAmount());
-//        }
+        if (!isExplosive) {
+            missileConfiguration.setPiercesMissiles(instance.getPiercingMissilesAmount() > 0);
+            missileConfiguration.setAmountOfPierces(instance.getPiercingMissilesAmount());
+        }
 
         Missile missile = missileCreator1.createMissile(spriteConfiguration, missileConfiguration, movementConfiguration);
         SpaceShip spaceship = PlayerManager.getInstance().getSpaceship();
         missile.setOwnerOrCreator(spaceship);
         missile.setCenterCoordinates(origin.getX(), origin.getY());
         missile.resetMovementPath();
-        missile.getMovementConfiguration().setDestination(new Point(target.getCenterXCoordinate(), target.getCenterYCoordinate()));
+        missile.getMovementConfiguration().setDestination(
+                new Point(target.getCenterXCoordinate() - missile.getWidth() / 2
+                        , target.getCenterYCoordinate() - missile.getHeight() / 2
+                ));
         return missile;
     }
 
-    private void activateDelayedThornsAttacks () {
+    private void activateDelayedThornsAttacks() {
         double currentTime = GameState.getInstance().getGameSeconds();
 
         // Ensure 0.1 second has passed since the last activation
@@ -155,7 +175,7 @@ public class ThornsDamageDealer {
         lastThornsActivationTime = currentTime;
     }
 
-    public void dealThornsDamageTo (GameObject target, float thornsDamage) {
+    public void dealThornsDamageTo(GameObject target, float thornsDamage) {
         if (this.playerStats.getThornsDamage() <= 0 || target == null || !this.playerStats.isHasThornsEnabled()) {
             return;
         }
@@ -180,7 +200,7 @@ public class ThornsDamageDealer {
     }
 
     //Currently unused
-    private void applyOnHitEffects (GameObject target) {
+    private void applyOnHitEffects(GameObject target) {
         float roll = random.nextFloat(); // Roll a number between 0.0 and 1.0
         if (roll < playerStats.getChanceForThornsToApplyOnHitEffects()) {
             List<Item> onHitItems = PlayerInventory.getInstance().getItemsByApplicationMethod(ItemApplicationEnum.AfterCollision);
@@ -192,7 +212,7 @@ public class ThornsDamageDealer {
     }
 
 
-    private void scaleAnimationToTarget (GameObject target, SpriteAnimation animation) {
+    private void scaleAnimationToTarget(GameObject target, SpriteAnimation animation) {
         animation.cropAnimation();
         // Retrieve animation dimensions
         int animationWidth = animation.getWidth();
@@ -224,7 +244,7 @@ public class ThornsDamageDealer {
         }
     }
 
-    public PerformanceLogger getPerformanceLogger () {
+    public PerformanceLogger getPerformanceLogger() {
         return this.performanceLogger;
     }
 }

@@ -1,6 +1,8 @@
 package net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.droneTypes.protoss;
 
 import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
+import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyManager;
+import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.spaceships.AlienBomb;
 import net.riezebos.bruus.tbd.game.gameobjects.friendlies.FriendlyManager;
 import net.riezebos.bruus.tbd.game.gameobjects.friendlies.FriendlyObjectConfiguration;
 import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.Drone;
@@ -9,9 +11,13 @@ import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
 import net.riezebos.bruus.tbd.game.items.ItemEnums;
 import net.riezebos.bruus.tbd.game.items.PlayerInventory;
+import net.riezebos.bruus.tbd.game.items.items.carrier.ArbiterDamage;
 import net.riezebos.bruus.tbd.game.items.items.carrier.ArbiterMultiTargeting;
+import net.riezebos.bruus.tbd.game.items.items.carrier.EmergencyRepairs;
+import net.riezebos.bruus.tbd.game.items.items.carrier.VengeanceProtocol;
 import net.riezebos.bruus.tbd.game.movement.MovementConfiguration;
 import net.riezebos.bruus.tbd.game.movement.Point;
+import net.riezebos.bruus.tbd.game.util.WithinVisualBoundariesCalculator;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.AudioEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.AnimationManager;
@@ -19,17 +25,14 @@ import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteAnimation;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteAnimationConfiguration;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteConfiguration;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class ProtossArbiter extends Drone {
-    private ArrayList<GameObject> targetsToHeal = new ArrayList<>();
+    private ArrayList<GameObject> targets = new ArrayList<>();
     private Map<GameObject, SpriteAnimation> animationsBelongingToTargets = new HashMap<>();
-    private int maxTargetsAllowedToHealSimultaneously = 1;
-    public static float healingRate = 0.075f;
+    private int maxTargetsAllowedSimultaneously = 1;
+    public static float healingRate = 0.135f;
     private boolean isMovingAroundCarrierDrone = false;
     private boolean canAcquireTarget = true;
 
@@ -75,9 +78,34 @@ public class ProtossArbiter extends Drone {
 
     public void fireAction() {
         // Acquire player and targetable drones
-        if(!canAcquireTarget){
+        if (!canAcquireTarget) {
             return;
         }
+
+        if (PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.ArbiterDamage) != null) {
+            handleDamage();
+        } else {
+            handleHealing();
+        }
+
+        rotateTowardsFirstTargetOrDestination();
+    }
+
+    private void handleHealing() {
+        // Perform healing
+        for (GameObject target : new ArrayList<>(targets)) { // vermijd ConcurrentModificationException, al kan een iterator pattern ook
+            healTarget(target);
+            updateAnimationLocation(target);
+
+            if (shouldRemoveTargetFromHealingList(target)) {
+                removeTargetFromList(target);
+            }
+        }
+
+        if (targets.size() >= maxTargetsAllowedSimultaneously) {
+            return; // Stop adding if max limit is reached
+        }
+
         GameObject player = PlayerManager.getInstance().getSpaceship();
         List<GameObject> targetableDrones = FriendlyManager.getInstance().getAllProtossDrones().stream()
                 .filter(ship -> ship.getCurrentHitpoints() < ship.getMaxHitPoints())
@@ -87,42 +115,60 @@ public class ProtossArbiter extends Drone {
         boolean shouldHealPlayer = player.getCurrentHitpoints() < player.getMaxHitPoints();
 
         // Prioritize healing the player if needed
-        if (shouldHealPlayer && !targetsToHeal.contains(player)) {
-            if (targetsToHeal.size() < maxTargetsAllowedToHealSimultaneously) {
-                targetsToHeal.add(player);
-                addAnimationToNewTarget(player);
+        if (shouldHealPlayer && !targets.contains(player)) {
+            if (targets.size() < maxTargetsAllowedSimultaneously) {
+                targets.add(player);
+                addAnimationToNewTarget(player, true);
             }
         }
 
         // Add additional drones to heal if slots are available
         for (GameObject drone : targetableDrones) {
-            if (targetsToHeal.size() >= maxTargetsAllowedToHealSimultaneously) {
+            if (targets.size() >= maxTargetsAllowedSimultaneously) {
                 break; // Stop adding if max limit is reached
             }
-
-            if (!targetsToHeal.contains(drone)) {
-                targetsToHeal.add(drone);
-                addAnimationToNewTarget(drone);
+            if (!targets.contains(drone)) {
+                targets.add(drone);
+                addAnimationToNewTarget(drone, true);
             }
         }
+    }
 
-        // Perform healing
-        for (GameObject target : new ArrayList<>(targetsToHeal)) { // vermijd ConcurrentModificationException, al kan een iterator pattern ook
-            healTarget(target);
+    private void handleDamage() {
+        for (GameObject target : new ArrayList<>(targets)) { // vermijd ConcurrentModificationException, al kan een iterator pattern ook
+            damageTarget(target);
             updateAnimationLocation(target);
 
-            if (shouldRemoveTargetFromList(target)) {
+            if (shouldRemoveTargetFromDamageList(target)) {
                 removeTargetFromList(target);
             }
         }
-        rotateTowardsFirstTargetOrDestination();
+
+        if (targets.size() >= maxTargetsAllowedSimultaneously) {
+            return; // Stop adding if max limit is reached
+        }
+
+        List<GameObject> targetableEnemies = EnemyManager.getInstance().getEnemies().stream()
+                .filter(enemy -> !(enemy instanceof AlienBomb) && enemy.getCurrentHitpoints() > 0 && enemy.isVisible() && WithinVisualBoundariesCalculator.isWithinBoundaries(enemy))
+                .collect(Collectors.toList());
+        Collections.shuffle(targetableEnemies); //randomly select an enemy from the pool
+
+        for (GameObject enemy : targetableEnemies) {
+            if (targets.size() >= maxTargetsAllowedSimultaneously) {
+                break; // Stop adding if max limit is reached
+            }
+            if (!targets.contains(enemy)) {
+                targets.add(enemy);
+                addAnimationToNewTarget(enemy, false);
+            }
+        }
     }
 
     private void rotateTowardsFirstTargetOrDestination() {
         GameObject targetToRotateTowards = null;
 
         //  Arbiter ignores itself if there are other targets
-        for (GameObject target : targetsToHeal) {
+        for (GameObject target : targets) {
             if (target != this) { // Skip itself if there's another target
                 targetToRotateTowards = target;
                 break;
@@ -155,7 +201,18 @@ public class ProtossArbiter extends Drone {
             AnimationManager.getInstance().getUpperAnimations().remove(animation);
         }
 
-        targetsToHeal.clear();
+
+        if (PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.EmergencyRepairs) != null) {
+            EmergencyRepairs emergencyRepairs = (EmergencyRepairs) PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.EmergencyRepairs);
+            emergencyRepairs.applyEffectToObject(PlayerManager.getInstance().getSpaceship());
+        }
+
+        if (PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.VengeanceProtocol) != null) {
+            VengeanceProtocol vengeanceProtocol = (VengeanceProtocol) PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.VengeanceProtocol);
+            vengeanceProtocol.applyEffectToObject(this);
+        }
+
+        targets.clear();
         animationsBelongingToTargets.clear();
     }
 
@@ -163,14 +220,22 @@ public class ProtossArbiter extends Drone {
         target.takeDamage(-healingRate * PlayerStats.getInstance().getArbiterHealingMultiplier()); //Negative cause it gets reversed in takeDamage
     }
 
+    private void damageTarget(GameObject target) {
+        target.takeDamage((healingRate * PlayerStats.getInstance().getArbiterHealingMultiplier()) * ArbiterDamage.damageIncreaseMultiplier);
+    }
 
-    private void addAnimationToNewTarget(GameObject newTarget) {
+    private void addAnimationToNewTarget(GameObject newTarget, boolean isHealing) {
         if (!animationsBelongingToTargets.containsKey(newTarget)) {
             SpriteConfiguration spriteConfiguration = new SpriteConfiguration();
             spriteConfiguration.setxCoordinate(newTarget.getXCoordinate());
             spriteConfiguration.setyCoordinate(newTarget.getYCoordinate());
             spriteConfiguration.setScale(1);
-            spriteConfiguration.setImageType(ImageEnums.Healing);
+
+            if (isHealing) {
+                spriteConfiguration.setImageType(ImageEnums.Healing);
+            } else {
+                spriteConfiguration.setImageType(ImageEnums.ReverseHealing);
+            }
 
             SpriteAnimationConfiguration spriteAnimationConfiguration = new SpriteAnimationConfiguration(spriteConfiguration, 3, true);
             SpriteAnimation spriteAnimation = new SpriteAnimation(spriteAnimationConfiguration);
@@ -180,11 +245,19 @@ public class ProtossArbiter extends Drone {
     }
 
 
-    private boolean shouldRemoveTargetFromList(GameObject target) {
+    private boolean shouldRemoveTargetFromHealingList(GameObject target) {
         if (!target.isVisible()
                 || target.getCurrentHitpoints() <= 0
                 || target.getCurrentHitpoints() >= target.getMaxHitPoints()
                 || !FriendlyManager.getInstance().getAllProtossDrones().contains(target)) {  //The target died and cant be retrieved from FriendlyManager in the update loop, thus wont get checked for hitpoints/visibility
+            return true;
+        } else return false;
+    }
+
+    private boolean shouldRemoveTargetFromDamageList(GameObject target) {
+        if (!target.isVisible()
+                || target.getCurrentHitpoints() <= 0
+                || !EnemyManager.getInstance().getEnemies().contains(target)) {  //The target died and cant be retrieved from EnemyManager in the update loop, thus wont get checked for hitpoints/visibility
             return true;
         } else return false;
     }
@@ -195,15 +268,15 @@ public class ProtossArbiter extends Drone {
 
     private void removeTargetFromList(GameObject target) {
         this.animationsBelongingToTargets.get(target).setVisible(false);
-        this.targetsToHeal.remove(target);
+        this.targets.remove(target);
         this.animationsBelongingToTargets.remove(target);
         AnimationManager.getInstance().getUpperAnimations().remove(animationsBelongingToTargets.get(target)); //Probably be overkill and should do nothing
     }
 
-    private void updateMaxTargetsAvailable(){
+    private void updateMaxTargetsAvailable() {
         ArbiterMultiTargeting item = (ArbiterMultiTargeting) PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.ArbiterMultiTargeting);
-        if(item != null){
-            this.maxTargetsAllowedToHealSimultaneously = item.getQuantity() + 1;
+        if (item != null) {
+            this.maxTargetsAllowedSimultaneously = item.getQuantity() + 1;
         }
     }
 

@@ -4,5 +4,6 @@ public enum DirectorType {
     Instant,
     Slow,
     Fast,
-    Boss
+    Boss,
+    MiniBoss
 }

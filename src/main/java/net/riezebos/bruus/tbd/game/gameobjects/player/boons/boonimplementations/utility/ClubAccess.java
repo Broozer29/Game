@@ -1,8 +1,6 @@
 package net.riezebos.bruus.tbd.game.gameobjects.player.boons.boonimplementations.utility;
 
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
-import net.riezebos.bruus.tbd.game.items.ItemEnums;
-import net.riezebos.bruus.tbd.game.items.PlayerInventory;
 import net.riezebos.bruus.tbd.game.gameobjects.player.boons.Boon;
 import net.riezebos.bruus.tbd.game.gameobjects.player.boons.BoonEnums;
 import net.riezebos.bruus.tbd.game.gameobjects.player.boons.BoonCategories;
@@ -71,7 +69,7 @@ public class ClubAccess implements Boon {
             PlayerProfileManager.getInstance().getLoadedProfile().setClubAccessLevel(currentLevel + 1);
             PlayerProfileManager.getInstance().getLoadedProfile().addEmeralds(-upgradeCost);
             PlayerProfileManager.getInstance().exportCurrentProfile();
-            AudioManager.getInstance().addAudio(AudioEnums.ItemAcquired);
+            AudioManager.getInstance().addAudio(AudioEnums.GenericSelect);
         } else if (canUpgradeFurther() && PlayerProfileManager.getInstance().getLoadedProfile().getEmeralds() < upgradeCost) {
             AudioManager.getInstance().addAudio(AudioEnums.GenericError);
         }

@@ -7,14 +7,13 @@ import net.riezebos.bruus.tbd.game.items.enums.ItemRarityEnums;
 import net.riezebos.bruus.tbd.game.items.items.*;
 import net.riezebos.bruus.tbd.game.items.items.captain.*;
 import net.riezebos.bruus.tbd.game.items.items.carrier.*;
-import net.riezebos.bruus.tbd.game.items.items.disabled.ArmorPiercingRounds;
-import net.riezebos.bruus.tbd.game.items.items.disabled.MoneyPrinter;
-import net.riezebos.bruus.tbd.game.items.items.disabled.RepulsionArmorPlate;
+import net.riezebos.bruus.tbd.game.items.items.deprecated.ArmorPiercingRounds;
+import net.riezebos.bruus.tbd.game.items.items.deprecated.MoneyPrinter;
+import net.riezebos.bruus.tbd.game.items.items.deprecated.RepulsionArmorPlate;
 import net.riezebos.bruus.tbd.game.items.items.firefighter.*;
 import net.riezebos.bruus.tbd.game.playerprofile.PlayerProfileManager;
 import net.riezebos.bruus.tbd.guiboards.BoardManager;
 import net.riezebos.bruus.tbd.guiboards.boardcreators.AchievementUnlockHelper;
-import net.riezebos.bruus.tbd.guiboards.boardcreators.BoonSelectionBoardCreator;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.AudioManager;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.AudioEnums;
 
@@ -32,7 +31,7 @@ public class PlayerInventory {
         resetInventory();
 
 //        for(int i = 0; i < 5; i++){
-//            addItem(ItemEnums.EnergySiphon);
+//            addItem(ItemEnums.PlasmaCoatedBullets);
 //        }
 //        PlayerStats.getInstance().setShopRerollDiscount(99);
     }
@@ -40,6 +39,12 @@ public class PlayerInventory {
 
     public void resetInventory() {
         items.clear();
+
+        addItem(ItemEnums.ModuleScorch);
+        addItem(ItemEnums.GuardianDrone);
+        addItem(ItemEnums.GuardianDrone);
+        addItem(ItemEnums.GuardianDrone);
+        addItem(ItemEnums.GuardianDrone);
 
         if(DevTestSettings.infiniteMoney){
             cashMoney = 999999999;
@@ -151,8 +156,8 @@ public class PlayerInventory {
                 return new ModuleAccuracy();
             case ElectricSupercharger:
                 return new ElectricSupercharger();
-            case ThornedPlates:
-                return new ThornedPlates();
+            case ReflectiveShielding:
+                return new ReflectiveShielding();
             case Thornweaver:
                 return new Thornweaver();
             case BarbedAegis:
@@ -209,6 +214,14 @@ public class PlayerInventory {
                 return new FuelCannister();
             case InfernalPreIgniter:
                 return new InfernalPreIgniter();
+            case ConstructionKit:
+                return new ConstructionKit();
+            case EmergencyRepairs:
+                return new EmergencyRepairs();
+            case VengeanceProtocol:
+                return new VengeanceProtocol();
+            case ArbiterDamage:
+                return new ArbiterDamage();
             case Locked:
                 return null;
             default:

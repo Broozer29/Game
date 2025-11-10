@@ -12,17 +12,12 @@ public class MacOSMediaPlayer {
 
     // ExecutorService for running tasks asynchronously
     private final ExecutorService executor = Executors.newCachedThreadPool();
-    private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
     // Cached values for playback information
-    private boolean isPolling = false;
     private boolean hasStartedMusic = false;
     private boolean isPlaying = false;
     private double currentSeconds = 0;
     private double totalSeconds = 0;
-
-    // Scheduled polling task handle
-    private ScheduledFuture<?> pollingTask;
 
     // Private constructor for Singleton pattern
     private MacOSMediaPlayer() {
@@ -79,6 +74,9 @@ public class MacOSMediaPlayer {
     public void setPlaybackPositionTo0() {
         String script = String.format("tell application \"Music\" to set player position to 0");
         executeAppleScriptAsync(script);
+        currentSeconds = 0;
+        totalSeconds = 0;
+        synchronizePlaybackInfo();
     }
 
     public void synchronizePlaybackInfo() {
@@ -95,23 +93,20 @@ public class MacOSMediaPlayer {
             return; // Skip this update and keep the last known valid position
         }
 
-//        double total = getTotalSecondsInPlayback();
-//        if(total < 0) {
-//            System.err.println("Failed to get total track length. Keeping previous value.");
-//            return; // Skip this update and keep the last known valid position
-//        }
+        double total = getTotalSecondsInPlayback();
+        if(total < 0) {
+            System.err.println("Failed to get total track length. Keeping previous value.");
+            return; // Skip this update and keep the last known valid position
+        }
 
         currentSeconds = newCurrentSeconds;
-//        totalSeconds = getTotalSecondsInPlayback();
+        totalSeconds = total;
 
         // Only stop and skip if we are certain playback has finished
         if (currentSeconds >= 0 && currentSeconds < totalSeconds - 2) {  // Increased buffer to avoid premature stopping
             isPlaying = true;
         } else if (currentSeconds >= totalSeconds - 2) {  // Song has ended
             isPlaying = false;
-//            stopPlayback();
-//            goToNextSong();
-//            setPlaybackPosition(0);
         }
     }
 
@@ -193,6 +188,10 @@ public class MacOSMediaPlayer {
 
     public double getCurrentSeconds() {
         return currentSeconds;
+    }
+
+    public void resetCurrentSeconds() {
+        currentSeconds = 0;
     }
 
     public double getTotalSeconds() {

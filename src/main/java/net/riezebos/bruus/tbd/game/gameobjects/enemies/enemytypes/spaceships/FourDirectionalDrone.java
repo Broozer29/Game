@@ -104,7 +104,7 @@ public class FourDirectionalDrone extends Enemy {
                 ImageEnums.LaserBullet, 0.5f);
 
 
-        int movementSpeed = 3;
+        float movementSpeed = 2.75f;
         //Create missile movement attributes and create a movement configuration
         MissileEnums missileType = MissileEnums.DefaultLaserBullet;
         PathFinder missilePathFinder = new StraightLinePathFinder();

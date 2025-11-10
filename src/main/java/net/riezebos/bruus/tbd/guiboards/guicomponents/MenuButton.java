@@ -8,7 +8,7 @@ import net.riezebos.bruus.tbd.game.gamestate.ShopManager;
 import net.riezebos.bruus.tbd.game.items.PlayerInventory;
 import net.riezebos.bruus.tbd.game.level.LevelManager;
 import net.riezebos.bruus.tbd.game.level.enums.LevelDifficulty;
-import net.riezebos.bruus.tbd.game.level.enums.LevelLength;
+import net.riezebos.bruus.tbd.game.level.enums.MiniBossConfig;
 import net.riezebos.bruus.tbd.game.gameobjects.player.boons.Boon;
 import net.riezebos.bruus.tbd.game.gameobjects.player.boons.BoonManager;
 import net.riezebos.bruus.tbd.game.util.OnScreenTextManager;
@@ -29,7 +29,7 @@ import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.Sprit
 public class MenuButton extends GUIComponent {
 
     private LevelDifficulty levelDifficulty;
-    private LevelLength levelLength;
+    private MiniBossConfig miniBossConfig;
 
     public MenuButton(SpriteConfiguration spriteConfiguration) {
         super(spriteConfiguration);
@@ -93,21 +93,21 @@ public class MenuButton extends GUIComponent {
                 PlayerStats.getInstance().setPlayerClass(PlayerClass.Captain);
                 BoardManager.getInstance().getClassSelectionBoard().recreateCursor();
                 BoardManager.getInstance().getClassSelectionBoard().addCursorAnimation();
-                AudioManager.getInstance().addAudio(AudioEnums.ItemAcquired);
+                AudioManager.getInstance().addAudio(AudioEnums.GenericSelect);
                 AudioManager.getInstance().addAudio(AudioEnums.getSelectClassAudioByClass(PlayerClass.Captain));
                 break;
             case SelectFireFighterClass:
                 PlayerStats.getInstance().setPlayerClass(PlayerClass.FireFighter);
                 BoardManager.getInstance().getClassSelectionBoard().recreateCursor();
                 BoardManager.getInstance().getClassSelectionBoard().addCursorAnimation();
-                AudioManager.getInstance().addAudio(AudioEnums.ItemAcquired);
+                AudioManager.getInstance().addAudio(AudioEnums.GenericSelect);
                 AudioManager.getInstance().addAudio(AudioEnums.getSelectClassAudioByClass(PlayerClass.FireFighter));
                 break;
             case SelectCarrierClass:
                 PlayerStats.getInstance().setPlayerClass(PlayerClass.Carrier);
                 BoardManager.getInstance().getClassSelectionBoard().recreateCursor();
                 BoardManager.getInstance().getClassSelectionBoard().addCursorAnimation();
-                AudioManager.getInstance().addAudio(AudioEnums.ItemAcquired);
+                AudioManager.getInstance().addAudio(AudioEnums.GenericSelect);
                 AudioManager.getInstance().addAudio(AudioEnums.getSelectClassAudioByClass(PlayerClass.Carrier));
                 break;
             case ContinueSaveFile:
@@ -150,6 +150,26 @@ public class MenuButton extends GUIComponent {
                             DataClass.getInstance().getWindowHeight() / 2);
                 }
                 break;
+            case SelectDefaultGameMode:
+                GameState.getInstance().setGameMode(GameMode.Default);
+                AudioManager.getInstance().addAudio(AudioEnums.GenericSelect);
+                break;
+            case SelectManModeGameMode:
+                GameState.getInstance().setGameMode(GameMode.ManMode);
+                AudioManager.getInstance().addAudio(AudioEnums.GenericSelect);
+                break;
+            case SelectMonoCulturalGameMode:
+                GameState.getInstance().setGameMode(GameMode.MonoCultural);
+                AudioManager.getInstance().addAudio(AudioEnums.GenericSelect);
+                break;
+            case SelectDoubleTroubleGameMode:
+                GameState.getInstance().setGameMode(GameMode.DoubleTrouble);
+                AudioManager.getInstance().addAudio(AudioEnums.GenericSelect);
+                break;
+            case SelectFormattedGameMode:
+                GameState.getInstance().setGameMode(GameMode.Formatted);
+                AudioManager.getInstance().addAudio(AudioEnums.GenericSelect);
+                break;
             default:
                 System.out.println("Unimplemented functionality");
                 OnScreenTextManager.getInstance().addText("Unimplemented menu functionality in menubutton", 400, 400);
@@ -187,8 +207,8 @@ public class MenuButton extends GUIComponent {
     }
 
     private void changeLevelLength() {
-        if (this.levelLength != null) {
-            LevelManager.getInstance().setCurrentLevelLength(this.levelLength);
+        if (this.miniBossConfig != null) {
+            LevelManager.getInstance().setCurrentMiniBossConfig(this.miniBossConfig);
         }
     }
 
@@ -200,11 +220,11 @@ public class MenuButton extends GUIComponent {
         this.levelDifficulty = levelDifficulty;
     }
 
-    public LevelLength getLevelLength() {
-        return levelLength;
+    public MiniBossConfig getMiniBossConfig() {
+        return miniBossConfig;
     }
 
-    public void setLevelLength(LevelLength levelLength) {
-        this.levelLength = levelLength;
+    public void setMiniBossConfig(MiniBossConfig miniBossConfig) {
+        this.miniBossConfig = miniBossConfig;
     }
 }

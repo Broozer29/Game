@@ -4,6 +4,7 @@ import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
 import net.riezebos.bruus.tbd.game.gameobjects.player.boons.Boon;
 import net.riezebos.bruus.tbd.game.gameobjects.player.boons.boonimplementations.defensive.ThickHide;
 import net.riezebos.bruus.tbd.game.gameobjects.player.boons.boonimplementations.utility.*;
+import net.riezebos.bruus.tbd.game.gamestate.GameMode;
 import net.riezebos.bruus.tbd.game.playerprofile.PlayerProfileManager;
 import net.riezebos.bruus.tbd.guiboards.boardEnums.MenuFunctionEnums;
 import net.riezebos.bruus.tbd.guiboards.guicomponents.*;
@@ -72,7 +73,7 @@ public class BoonSelectionBoardCreator {
 
     public static GUITextCollection createFirstColumnTitle(GUIComponent backgroundCard) {
         int yCoordinate = Math.round(backgroundCard.getYCoordinate() - 20 * DataClass.getInstance().getResolutionFactor());
-        GUITextCollection guiTextCollection = new GUITextCollection(0, yCoordinate, "UTILITY");
+        GUITextCollection guiTextCollection = new GUITextCollection(0, yCoordinate, "BOONS");
         guiTextCollection.setScale(1.7f * DataClass.getInstance().getResolutionFactor());
         guiTextCollection.setCenterXCoordinate(backgroundCard.getCenterXCoordinate());
         return guiTextCollection;
@@ -81,11 +82,12 @@ public class BoonSelectionBoardCreator {
 
     public static GUITextCollection createThirdColumnTitle(GUIComponent backgroundCard) {
         int yCoordinate = Math.round(backgroundCard.getYCoordinate() - 20 * DataClass.getInstance().getResolutionFactor());
-        GUITextCollection guiTextCollection = new GUITextCollection(0, yCoordinate, "DEFENSE");
+        GUITextCollection guiTextCollection = new GUITextCollection(0, yCoordinate, "GAME MODIFIERS");
         guiTextCollection.setScale(1.7f * DataClass.getInstance().getResolutionFactor());
         guiTextCollection.setCenterXCoordinate(backgroundCard.getCenterXCoordinate());
         return guiTextCollection;
     }
+
 
 
     public static GUITextCollection createFifthColumnTitle(GUIComponent backgroundCard) {
@@ -221,6 +223,39 @@ public class BoonSelectionBoardCreator {
     }
 
 
+
+    public static GUITextCollection createSelectDefaultButton(GUIComponent backgroundCard) {
+        int xCoordinate = backgroundCard.getXCoordinate() + Math.round(backgroundCard.getWidth() * 0.1f);
+        int yCoordinate = backgroundCard.getYCoordinate() + Math.round(backgroundCard.getHeight() * 0.1f);
+
+        String text = "NORMAL";
+
+        GUITextCollection selectDefaultButton = new GUITextCollection(xCoordinate, yCoordinate, text);
+        selectDefaultButton.setScale(boonTextScale * DataClass.getInstance().getResolutionFactor());
+        selectDefaultButton.setMenuFunctionality(MenuFunctionEnums.SelectDefaultGameMode);
+        return selectDefaultButton;
+    }
+
+    public static GUITextCollection createOtherGameModeButton(GUIComponent button, GameMode gameMode) {
+        int xCoordinate = button.getXCoordinate();
+        int yCoordinate = button.getYCoordinate() + Math.round(button.getHeight() * yDistanceBetweenButtons);
+
+        String text = gameMode.getName().toUpperCase();
+
+        GUITextCollection selectBoonButton = new GUITextCollection(xCoordinate, yCoordinate, text);
+        selectBoonButton.setScale(boonTextScale * DataClass.getInstance().getResolutionFactor());
+        switch (gameMode){
+            case Default -> selectBoonButton.setMenuFunctionality(MenuFunctionEnums.SelectDefaultGameMode);
+            case ManMode -> selectBoonButton.setMenuFunctionality(MenuFunctionEnums.SelectManModeGameMode);
+            case MonoCultural -> selectBoonButton.setMenuFunctionality(MenuFunctionEnums.SelectMonoCulturalGameMode);
+            case DoubleTrouble -> selectBoonButton.setMenuFunctionality(MenuFunctionEnums.SelectDoubleTroubleGameMode);
+            case Formatted -> selectBoonButton.setMenuFunctionality(MenuFunctionEnums.SelectFormattedGameMode);
+        }
+        return selectBoonButton;
+    }
+
+
+
     public static GUITextCollection createNepotismSelectionButton(GUIComponent backgroundCard) {
         int xCoordinate = backgroundCard.getXCoordinate() + Math.round(backgroundCard.getWidth() * 0.1f);
         int yCoordinate = backgroundCard.getYCoordinate() + Math.round(backgroundCard.getHeight() * 0.1f);
@@ -279,7 +314,7 @@ public class BoonSelectionBoardCreator {
         int xCoordinate = backgroundCard.getXCoordinate() + Math.round(backgroundCard.getWidth() * 0.15f);
         int yCoordinate = backgroundCard.getYCoordinate() + Math.round(backgroundCard.getHeight() * 0.1f);
 
-        String text = "WORK IN PROGRESS";
+        String text = "GAME MODIFIERS";
 
         GUITextCollection nepotismSelectionButton = new GUITextCollection(xCoordinate, yCoordinate, text);
         nepotismSelectionButton.setScale(boonTextScale * DataClass.getInstance().getResolutionFactor());
@@ -320,6 +355,17 @@ public class BoonSelectionBoardCreator {
 
         }
         return null;
+    }
+
+    public static GameMode getGameModeByMenuFunctionality(MenuFunctionEnums menuFunctionality) {
+        switch (menuFunctionality){
+            case SelectDefaultGameMode -> {return GameMode.Default;}
+            case SelectManModeGameMode -> {return GameMode.ManMode;}
+            case SelectMonoCulturalGameMode -> {return GameMode.MonoCultural;}
+            case SelectDoubleTroubleGameMode -> {return GameMode.DoubleTrouble;}
+            case SelectFormattedGameMode -> {return GameMode.Formatted;}
+            default -> {return null;}
+        }
     }
 
 

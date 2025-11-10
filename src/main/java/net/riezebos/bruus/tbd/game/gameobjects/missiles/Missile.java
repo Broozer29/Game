@@ -25,6 +25,7 @@ public class Missile extends GameObject {
     protected boolean isExplosive;
     protected boolean destroysMissiles;
     protected boolean piercesThroughObjects;
+    protected boolean canBounce;
     protected int amountOfPiercesLeft;
     protected int maximumAmountOfPierces;
     protected boolean isDestructable;
@@ -164,7 +165,6 @@ public class Missile extends GameObject {
                 GameStatsTracker.getInstance().addShotHit(1);
             }
         }
-
     }
 
     private void pierceAndBounce (GameObject collidedObject) {
@@ -175,9 +175,8 @@ public class Missile extends GameObject {
             amountOfPiercesLeft--;
             hasPiercedForStatsTracker = true;
 
-            //Rework in a nicer way, just testing
             Item bouncingModuleAddon = PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.BouncingModuleAddon);
-            if (bouncingModuleAddon != null) {
+            if (bouncingModuleAddon != null && canBounce) {
                 GameObject newTarget = EnemyManager.getInstance().findEnemyForMissileToBounceTo(collidedObject, this.collidedObjects);
                 if (newTarget != null) {
                     bouncingModuleAddon.applyEffectToObject(this);
@@ -199,7 +198,7 @@ public class Missile extends GameObject {
         this.resetMovementPath();
         this.allowedVisualsToRotate = true;
         this.movementConfiguration.initDefaultSettingsForSpecializedPathFinders();
-        this.movementConfiguration.setRotation(this.movementRotation);
+        this.movementConfiguration.setDirection(this.movementRotation);
         this.movementConfiguration.setCurrentLocation(this.currentLocation);
         this.movementConfiguration.setPathFinder(new StraightLinePathFinder());
 
@@ -253,5 +252,13 @@ public class Missile extends GameObject {
 
     public void setDamageable(boolean damageable) {
         isDamageable = damageable;
+    }
+
+    public boolean isCanBounce() {
+        return canBounce;
+    }
+
+    public void setCanBounce(boolean canBounce) {
+        this.canBounce = canBounce;
     }
 }

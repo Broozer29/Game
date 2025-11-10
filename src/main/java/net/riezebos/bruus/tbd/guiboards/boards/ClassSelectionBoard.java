@@ -421,14 +421,14 @@ public class ClassSelectionBoard extends JPanel implements TimerHolder {
 
     private void drawDescriptionText(Graphics2D g2d, String text, int x, int y, int maxWidth, Color color) {
         FontMetrics metrics = g2d.getFontMetrics();
-        int lineHeight = metrics.getHeight();
+        int lineHeight = metrics.getHeight() + 2;
         String[] words = text.split(" ");
         StringBuilder line = new StringBuilder();
         g2d.setColor(color);
 
         for (String word : words) {
             // If adding the new word exceeds the maximum line width, draw the line and start a new one
-            if (metrics.stringWidth(line.toString() + word) > maxWidth) {
+            if (metrics.stringWidth(line + word) > maxWidth) {
                 g2d.drawString(line.toString(), x, y);
                 line = new StringBuilder(word).append(" ");
                 y += lineHeight;

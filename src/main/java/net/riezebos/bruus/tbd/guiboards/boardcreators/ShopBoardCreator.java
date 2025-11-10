@@ -6,13 +6,12 @@ import net.riezebos.bruus.tbd.game.items.PlayerInventory;
 import net.riezebos.bruus.tbd.game.items.enums.ItemRarityEnums;
 import net.riezebos.bruus.tbd.game.level.LevelManager;
 import net.riezebos.bruus.tbd.game.level.enums.LevelDifficulty;
-import net.riezebos.bruus.tbd.game.level.enums.LevelLength;
+import net.riezebos.bruus.tbd.game.level.enums.MiniBossConfig;
 import net.riezebos.bruus.tbd.guiboards.boardEnums.MenuFunctionEnums;
 import net.riezebos.bruus.tbd.guiboards.guicomponents.*;
 import net.riezebos.bruus.tbd.visualsandaudio.data.DataClass;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.AudioManager;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.LevelSongs;
-import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.MusicMediaPlayer;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteConfiguration;
 
@@ -158,7 +157,7 @@ public class ShopBoardCreator {
         return textCollection;
     }
 
-    public GUITextCollection createProtossCapacityText(GUIComponent backgroundCard){
+    public GUITextCollection createProtossCapacityText(GUIComponent backgroundCard) {
         int startingXCoordinate = Math.round(backgroundCard.getXCoordinate() + backgroundCard.getWidth() * 0.2f);
         int moneyY = Math.round(backgroundCard.getYCoordinate() + backgroundCard.getHeight() * 0.85f);
 
@@ -197,14 +196,10 @@ public class ShopBoardCreator {
             difficulty = 6;
             string = "NEXT: BOSS LEVEL";
         } else {
-            if (AudioManager.getInstance().isMusicControlledByThirdPartyApp()) {
-                difficulty = LevelSongs.getDifficultyScoreByDifficultyOnly(LevelManager.getInstance().getCurrentLevelDifficulty());
-            } else {
-                difficulty = LevelSongs.getDifficultyScore(
-                        LevelManager.getInstance().getCurrentLevelDifficulty(),
-                        LevelManager.getInstance().getCurrentLevelLength()
-                );
-            }
+            difficulty = LevelSongs.getDifficultyScore(
+                    LevelManager.getInstance().getCurrentLevelDifficulty(),
+                    LevelManager.getInstance().getCurrentMiniBossConfig()
+            );
 
             iconEnum = LevelSongs.getImageEnumByDifficultyScore(difficulty);
             string = "NEXT DIFFICULTY: " + difficulty;
@@ -502,11 +497,7 @@ public class ShopBoardCreator {
         selectEasyDifficulty.setMenuFunctionality(MenuFunctionEnums.SelectSongDifficulty);
         selectEasyDifficulty.setCenterCoordinates(x0, y);
         int amount = 1;
-        if (AudioManager.getInstance().isMusicControlledByThirdPartyApp()) {
-            amount = 2;
-        }
-
-        selectEasyDifficulty.setDescriptionOfComponent("Sets the difficulty to " + amount);
+        selectEasyDifficulty.setDescriptionOfComponent("Adds " + amount + " to the difficulty score.");
         return selectEasyDifficulty;
     }
 
@@ -528,12 +519,8 @@ public class ShopBoardCreator {
         selectEasyDifficulty.setCenterCoordinates(x1, y);
 
         int amount = 2;
-        if (AudioManager.getInstance().isMusicControlledByThirdPartyApp()) {
-            amount *= 2;
-        }
-
-        selectEasyDifficulty.setDescriptionOfComponent("Sets the difficulty to " + amount +
-                ". Enemies gain strength quicker and are 25% stronger");
+        selectEasyDifficulty.setDescriptionOfComponent("Adds " + amount + " to the difficulty score." +
+                ". Enemies gain strength quicker and gain 25% more hitpoints.");
         return selectEasyDifficulty;
     }
 
@@ -550,12 +537,9 @@ public class ShopBoardCreator {
         selectEasyDifficulty.setCenterCoordinates(x2, y);
 
         int amount = 3;
-        if (AudioManager.getInstance().isMusicControlledByThirdPartyApp()) {
-            amount *= 2;
-        }
 
-        selectEasyDifficulty.setDescriptionOfComponent("Sets the difficulty to " + amount
-                + ". Enemies gain strength considerably quicker and are 50% stronger.");
+        selectEasyDifficulty.setDescriptionOfComponent("Adds " + amount + " to the difficulty score." +
+                 ". Enemies gain strength considerably quicker and gain 50% more hitpoints.");
         return selectEasyDifficulty;
     }
 
@@ -576,10 +560,10 @@ public class ShopBoardCreator {
                 y,
                 1, ImageEnums.BlueWings1);
         MenuButton button = new MenuButton(spriteConfiguration);
-        button.setLevelLength(LevelLength.Short);
+        button.setMiniBossConfig(MiniBossConfig.Easy);
         button.setMenuFunctionality(MenuFunctionEnums.SelectSongLength);
         button.setCenterCoordinates(x0, y);
-        button.setDescriptionOfComponent("Sets the length of the next song between 0 and 3 minutes, increases the difficulty score by 1");
+        button.setDescriptionOfComponent("Spawns 0 minibosses during the next level. Increases the difficulty score by 1");
         return button;
     }
 
@@ -592,10 +576,10 @@ public class ShopBoardCreator {
                 y,
                 1, ImageEnums.BlueWings3);
         MenuButton button = new MenuButton(spriteConfiguration);
-        button.setLevelLength(LevelLength.Medium);
+        button.setMiniBossConfig(MiniBossConfig.Medium);
         button.setMenuFunctionality(MenuFunctionEnums.SelectSongLength);
         button.setCenterCoordinates(x1, y);
-        button.setDescriptionOfComponent("Sets the length of the next song between 3 and 5 minutes, increases the difficulty score by 2");
+        button.setDescriptionOfComponent("Spawns 1 miniboss during the next level. Increases the difficulty score by 2");
         return button;
     }
 
@@ -608,10 +592,10 @@ public class ShopBoardCreator {
                 y,
                 1, ImageEnums.BlueWings5);
         MenuButton button = new MenuButton(spriteConfiguration);
-        button.setLevelLength(LevelLength.Long);
+        button.setMiniBossConfig(MiniBossConfig.Hard);
         button.setMenuFunctionality(MenuFunctionEnums.SelectSongLength);
         button.setCenterCoordinates(x2, y);
-        button.setDescriptionOfComponent("Sets the length of the next song to 5 or more minutes, increases the difficulty score by 3");
+        button.setDescriptionOfComponent("Spawns 2 minibosses during the next level. increases the difficulty score by 3");
         return button;
     }
 
@@ -619,7 +603,7 @@ public class ShopBoardCreator {
     public GUITextCollection createSongSelectionText(GUIComponent backgroundCard, GUIComponent selectLongMenuButton) {
         float textX = backgroundCard.getXCoordinate() + (backgroundCard.getWidth() / 3);
         float textY = selectLongMenuButton.getYCoordinate() + selectLongMenuButton.getHeight();
-        return new GUITextCollection(textX, textY, "WORK IN PROGRESS");
+        return new GUITextCollection(textX, textY, "MINIBOSS SELECTION");
     }
 
     public GUIComponent createDescriptionBox(GUIComponent backgroundCard) {
@@ -634,7 +618,7 @@ public class ShopBoardCreator {
 
     public void updateDifficultyIconsToDifficulty(LevelDifficulty currentLevelDifficulty, GUIComponent easy,
                                                   GUIComponent medium, GUIComponent hard) {
-        if(LevelManager.getInstance().isNextLevelABossLevel()){
+        if (LevelManager.getInstance().isNextLevelABossLevel()) {
             medium.setImage(ImageEnums.RedWings5);
             return;
         }
@@ -655,22 +639,25 @@ public class ShopBoardCreator {
         }
     }
 
-    public void updateLengthIconsToLength(LevelLength currentLevelLength, GUIComponent shortLength,
-                                          GUIComponent mediumMediumLength, GUIComponent longLength) {
-        if (AudioManager.getInstance().getMusicMediaPlayer().equals(MusicMediaPlayer.Default)) {
-            if (currentLevelLength.equals(LevelLength.Short)) {
-                shortLength.setNewImage(ImageEnums.YellowWings1);
-                mediumMediumLength.setNewImage(ImageEnums.BlueWings3);
-                longLength.setNewImage(ImageEnums.BlueWings5);
-            } else if (currentLevelLength.equals(LevelLength.Medium)) {
-                shortLength.setNewImage(ImageEnums.BlueWings1);
-                mediumMediumLength.setNewImage(ImageEnums.YellowWings3);
-                longLength.setNewImage(ImageEnums.BlueWings5);
-            } else if (currentLevelLength.equals(LevelLength.Long)) {
-                shortLength.setNewImage(ImageEnums.BlueWings1);
-                mediumMediumLength.setNewImage(ImageEnums.BlueWings3);
-                longLength.setNewImage(ImageEnums.YellowWings5);
-            }
+    public void updateMiniBossIconsToSelection(MiniBossConfig currentMiniBossConfig, GUIComponent shortLength,
+                                               GUIComponent mediumMediumLength, GUIComponent longLength) {
+        if (LevelManager.getInstance().isNextLevelABossLevel()) {
+            mediumMediumLength.setNewImage(ImageEnums.RedWings5);
+            return;
+        }
+
+        if (currentMiniBossConfig.equals(MiniBossConfig.Easy)) {
+            shortLength.setNewImage(ImageEnums.YellowWings1);
+            mediumMediumLength.setNewImage(ImageEnums.BlueWings3);
+            longLength.setNewImage(ImageEnums.BlueWings5);
+        } else if (currentMiniBossConfig.equals(MiniBossConfig.Medium)) {
+            shortLength.setNewImage(ImageEnums.BlueWings1);
+            mediumMediumLength.setNewImage(ImageEnums.YellowWings3);
+            longLength.setNewImage(ImageEnums.BlueWings5);
+        } else if (currentMiniBossConfig.equals(MiniBossConfig.Hard)) {
+            shortLength.setNewImage(ImageEnums.BlueWings1);
+            mediumMediumLength.setNewImage(ImageEnums.BlueWings3);
+            longLength.setNewImage(ImageEnums.YellowWings5);
         }
     }
 

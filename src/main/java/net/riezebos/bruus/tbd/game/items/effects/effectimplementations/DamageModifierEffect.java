@@ -9,6 +9,9 @@ import net.riezebos.bruus.tbd.game.items.effects.EffectIdentifiers;
 import net.riezebos.bruus.tbd.game.items.effects.EffectInterface;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteAnimation;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class DamageModifierEffect implements EffectInterface {
 
 
@@ -17,14 +20,16 @@ public class DamageModifierEffect implements EffectInterface {
     private double durationInSeconds;
     private double startTimeInSeconds;
 
-    private SpriteAnimation animation;
+    private List<SpriteAnimation> animationList = new ArrayList<>();
     private boolean appliedToObject;
     private EffectIdentifiers effectIdentifier;
 
-    public DamageModifierEffect (float damageModifierAmount, double durationInSeconds, SpriteAnimation animation, EffectIdentifiers effectIdentifier) {
+    public DamageModifierEffect(float damageModifierAmount, double durationInSeconds, SpriteAnimation animation, EffectIdentifiers effectIdentifier) {
         this.damageModifierAmount = damageModifierAmount;
         this.durationInSeconds = durationInSeconds;
-        this.animation = animation;
+        if (animation != null) {
+            this.animationList.add(animation);
+        }
         this.startTimeInSeconds = GameState.getInstance().getGameSeconds();
         this.effectTypesEnums = EffectActivationTypes.CheckEveryGameTick;
         this.appliedToObject = false;
@@ -32,7 +37,7 @@ public class DamageModifierEffect implements EffectInterface {
     }
 
     @Override
-    public void activateEffect (GameObject gameObject) {
+    public void activateEffect(GameObject gameObject) {
         if (!appliedToObject) {
             if (gameObject instanceof SpaceShip) {
                 PlayerStats.getInstance().modifyBonusDamageMultiplier(damageModifierAmount);
@@ -42,13 +47,13 @@ public class DamageModifierEffect implements EffectInterface {
             appliedToObject = true;
         }
 
-        if (animation != null) {
+        if (!this.animationList.isEmpty() && this.animationList.get(0) != null) {
             centerAnimation(gameObject);
         }
 
     }
 
-    private void removeEffectsBeforeRemovingEffect (GameObject gameObject) {
+    private void removeEffectsBeforeRemovingEffect(GameObject gameObject) {
         if (gameObject == null) {
             return;
         }
@@ -64,61 +69,67 @@ public class DamageModifierEffect implements EffectInterface {
     }
 
 
-    private void centerAnimation (GameObject object) {
+    private void centerAnimation(GameObject object) {
         if (object.getAnimation() != null) {
             SpriteAnimation objectVisuals = object.getAnimation();
-            animation.setCenterCoordinates(objectVisuals.getCenterXCoordinate(), objectVisuals.getCenterYCoordinate());
+            this.animationList.get(0).setCenterCoordinates(objectVisuals.getCenterXCoordinate(), objectVisuals.getCenterYCoordinate());
         } else {
-            animation.setCenterCoordinates(object.getCenterXCoordinate(), object.getCenterYCoordinate());
+            this.animationList.get(0).setCenterCoordinates(object.getCenterXCoordinate(), object.getCenterYCoordinate());
         }
 
 
     }
 
     @Override
-    public boolean shouldBeRemoved (GameObject gameObject) {
+    public boolean shouldBeRemoved(GameObject gameObject) {
         if (GameState.getInstance().getGameSeconds() - startTimeInSeconds >= durationInSeconds) {
             return true;
         } else return false;
     }
 
     @Override
-    public SpriteAnimation getAnimation () {
-        return animation;
+    public List<SpriteAnimation> getAnimations() {
+        return this.animationList;
     }
 
     @Override
-    public EffectActivationTypes getEffectTypesEnums () {
+    public EffectActivationTypes getEffectTypesEnums() {
         return effectTypesEnums;
     }
 
     @Override
-    public void resetDuration () {
+    public void resetDuration() {
         this.startTimeInSeconds = GameState.getInstance().getGameSeconds();
     }
 
     @Override
-    public void increaseEffectStrength (GameObject gameObject) {
+    public void increaseEffectStrength(GameObject gameObject) {
         //To be implemented later, if ever
     }
 
     @Override
-    public EffectInterface copy () {
-        return new DamageModifierEffect(damageModifierAmount, durationInSeconds, animation.clone(), effectIdentifier);
+    public EffectInterface copy() {
+        SpriteAnimation animation = null;
+        if (!this.animationList.isEmpty() && this.animationList.get(0) != null) {
+            animation = this.animationList.get(0);
+        }
+        SpriteAnimation clonedAnimation = (animation != null) ? animation.clone() : null;
+        return new DamageModifierEffect(damageModifierAmount, durationInSeconds, clonedAnimation, effectIdentifier);
     }
 
     @Override
-    public EffectIdentifiers getEffectIdentifier () {
+    public EffectIdentifiers getEffectIdentifier() {
         return effectIdentifier;
     }
 
     @Override
-    public void removeEffect (GameObject gameObject) {
-        if (animation != null) {
-            animation.setInfiniteLoop(false);
-            animation.setVisible(false);
+    public void removeEffect(GameObject gameObject) {
+        if (!this.animationList.isEmpty() && this.animationList.get(0) != null) {
+            this.animationList.get(0).setInfiniteLoop(false);
+            this.animationList.get(0).setVisible(false);
         }
         removeEffectsBeforeRemovingEffect(gameObject);
-        animation = null;
+        this.animationList.clear();
+        ;
     }
 }

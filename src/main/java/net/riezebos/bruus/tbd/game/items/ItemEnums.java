@@ -9,6 +9,15 @@ import java.util.List;
 import java.util.Random;
 
 public enum ItemEnums {
+
+    //thorns stuff
+    ReflectiveShielding(ItemRarityEnums.Common, ItemCategory.Offense, ImageEnums.Thornedplates, "Reflective Shielding", false),
+    Thornweaver(ItemRarityEnums.Relic, ItemCategory.Offense, ImageEnums.ThornWeaver, "Thornweaver", false),
+    BarbedAegis(ItemRarityEnums.Rare, ItemCategory.Offense, ImageEnums.BarbedAegis, "Barbed Aegis", false),
+    BarbedMissiles(ItemRarityEnums.Rare, ItemCategory.Offense, ImageEnums.BarbedMissiles, "Barbed Missiles", false),
+    BarrierSuperSizer(ItemRarityEnums.Common, ItemCategory.Defense, ImageEnums.Starcraft2_BatteryUpgrade, "Barrier Booster", false), //It's a boring item
+    EntanglingFlames(ItemRarityEnums.Legendary, ItemCategory.Offense, ImageEnums.EntanglingFlames, "Entangling Flames", false),
+    ProtossThorns(ItemRarityEnums.Rare, ItemCategory.Defense, ImageEnums.Test_Image, "Thorned Ships", false),
     Locked(ItemRarityEnums.Locked, ItemCategory.Utility, ImageEnums.Test_Image, "Locked", false),
     PlasmaCoatedBullets(ItemRarityEnums.Common, ItemCategory.Offense, ImageEnums.Starcraft2_Blue_Flame, "Plasma Bullets", true),
     PhotonPiercer(ItemRarityEnums.Common, ItemCategory.Offense, ImageEnums.Starcraft2_Concussive_Shells, "Photon Piercer", true),
@@ -33,20 +42,14 @@ public enum ItemEnums {
     ElectricDestabilizer(ItemRarityEnums.Legendary, ItemCategory.Offense, ImageEnums.Starcraft2_Protoss_Shield_Disintegrate, "Electric Destabilizer", true),
     ModuleAccuracy(ItemRarityEnums.Legendary, ItemCategory.Offense, ImageEnums.Starcraft2LockOn, "Module: Accuracy", true),
     ElectricSupercharger(ItemRarityEnums.Legendary, ItemCategory.Offense, ImageEnums.Starcraft2_Psi_Storm2, "Electric Supercharger", true),
-    ThornedPlates(ItemRarityEnums.Common, ItemCategory.Offense, ImageEnums.Thornedplates, "Thorned Armor", false),
-    Thornweaver(ItemRarityEnums.Relic, ItemCategory.Offense, ImageEnums.ThornWeaver, "Thornweaver", true),
-    BarbedAegis(ItemRarityEnums.Rare, ItemCategory.Offense, ImageEnums.BarbedAegis, "Barbed Aegis", false),
-    BarbedMissiles(ItemRarityEnums.Rare, ItemCategory.Offense, ImageEnums.BarbedMissiles, "Barbed Missiles", false),
     ModuleElectrify(ItemRarityEnums.Relic, ItemCategory.Offense, ImageEnums.ModuleElectrify, "Module: Electrify", true),
     ModuleCommand(ItemRarityEnums.Relic, ItemCategory.Offense, ImageEnums.ModuleCommand, "Module: Synergize", true),
     Contract(ItemRarityEnums.Common, ItemCategory.Utility, ImageEnums.Contract, "Contract", true),
-    BarrierSuperSizer(ItemRarityEnums.Common, ItemCategory.Defense, ImageEnums.Starcraft2_BatteryUpgrade, "Barrier Booster", false), //It's a boring item
     StickyOil(ItemRarityEnums.Rare, ItemCategory.Offense, ImageEnums.StickyOilIcon, "Sticky Oil", true),
     CorrosiveOil(ItemRarityEnums.Legendary, ItemCategory.Offense, ImageEnums.CorrosiveOil, "Corrosive Oil", true),
     ScorchingFury(ItemRarityEnums.Rare, ItemCategory.Offense, ImageEnums.Starcraft2RepairBeam, "Scorching Fury", true),
     FlameDetonation(ItemRarityEnums.Legendary, ItemCategory.Offense, ImageEnums.Starcraft2_MineExplosion, "Flame Detonation", true),
     EscalatingFlames(ItemRarityEnums.Rare, ItemCategory.Offense, ImageEnums.EscalatingFlames, "Escalating Flames", true),
-    EntanglingFlames(ItemRarityEnums.Legendary, ItemCategory.Offense, ImageEnums.EntanglingFlames, "Entangling Flames", false),
     FuelCannister(ItemRarityEnums.Legendary, ItemCategory.Offense, ImageEnums.FuelCannister, "Fuel Cannister", true),
     BargainBucket(ItemRarityEnums.Legendary, ItemCategory.Offense, ImageEnums.BargainBucket, "Bargain Bucket", true),
     ModuleScorch(ItemRarityEnums.Relic, ItemCategory.Offense, ImageEnums.ModuleScorchIcon, "Module: Scorch", true),
@@ -60,9 +63,12 @@ public enum ItemEnums {
     InverseRetrieval(ItemRarityEnums.Legendary, ItemCategory.Utility, ImageEnums.InversionRetrieval, "Inverse Retrieval", true),
     Martyrdom(ItemRarityEnums.Legendary, ItemCategory.Offense, ImageEnums.FrenzyIcon, "Martyrdom", true),
     KineticDynamo(ItemRarityEnums.Legendary, ItemCategory.Offense, ImageEnums.KineticDynamoIcon, "Kinetic Dynamo", true),
-    ProtossThorns(ItemRarityEnums.Rare, ItemCategory.Defense, ImageEnums.Test_Image, "Thorned Ships", false),
     ArbiterMultiTargeting(ItemRarityEnums.Rare, ItemCategory.Utility, ImageEnums.ArbiterMultiTargetIcon, "Arbiter Multi Targeting", true),
-    SynergeticLink(ItemRarityEnums.Legendary, ItemCategory.Utility, ImageEnums.Test_Image, "Synergetic Link", true),
+    ConstructionKit(ItemRarityEnums.Legendary, ItemCategory.Utility, ImageEnums.ConstructionKitIcon, "Construction Kit", true),
+    SynergeticLink(ItemRarityEnums.Legendary, ItemCategory.Utility, ImageEnums.SynergeticLinkIcon, "Synergetic Link", true),
+    EmergencyRepairs(ItemRarityEnums.Rare, ItemCategory.Utility, ImageEnums.EmergencyRepairsIcon, "Emergency Repairs", true),
+    VengeanceProtocol(ItemRarityEnums.Rare, ItemCategory.Offense, ImageEnums.VengeanceProtocolIcon, "Vengeance Protocol", true),
+    ArbiterDamage(ItemRarityEnums.Relic, ItemCategory.Offense, ImageEnums.Test_Image, "Arbit Inversion", true),
     StickyDynamite(ItemRarityEnums.Common, ItemCategory.Offense, ImageEnums.StickyDynamite, "Sticky Dynamite", true),
     InfernalPreIgniter(ItemRarityEnums.Relic, ItemCategory.Offense, ImageEnums.InfernalPreIgniter, "Infernal Pre-igniter", true);
 

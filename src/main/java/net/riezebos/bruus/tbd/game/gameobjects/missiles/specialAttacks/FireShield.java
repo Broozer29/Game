@@ -5,6 +5,7 @@ import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.items.effects.EffectIdentifiers;
 import net.riezebos.bruus.tbd.game.items.effects.EffectInterface;
 import net.riezebos.bruus.tbd.game.items.effects.effectimplementations.DamageOverTime;
+import net.riezebos.bruus.tbd.game.util.VisualLayer;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteAnimationConfiguration;
 
@@ -17,10 +18,12 @@ public class FireShield extends SpecialAttack {
         this.allowRepeatedDamage = true;
         this.appliesOnHitEffects = true;
         this.destroysMissiles = true;
+        this.damagesMissiles = true;
         super.internalTickCooldown = PlayerStats.getInstance().getAttackSpeed();
         this.duration = 4;
         initIgniteEffect();
         gamesecondsStarted = GameState.getInstance().getGameSeconds();
+        this.visualLayer = VisualLayer.Lower;
     }
 
     private void initIgniteEffect(){

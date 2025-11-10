@@ -16,6 +16,9 @@ public class RegularPathFinder implements PathFinder {
     private final int playableWindowMinHeight;
     private final int playableWindowMaxHeight;
 
+    private int gameObjectWidth = 350;
+    private int gameObjectHeight = 350;
+
     public RegularPathFinder () {
         this.windowWidth = DataClass.getInstance().getWindowWidth();
         this.playableWindowMinHeight = DataClass.getInstance().getPlayableWindowMinHeight();
@@ -34,6 +37,8 @@ public class RegularPathFinder implements PathFinder {
         float YStepSize = config.getYMovementSpeed();
 
         if (end == null) {
+            gameObjectWidth = gameObject.getWidth();
+            gameObjectHeight = gameObject.getHeight();
             end = calculateInitialEndpoint(start, fallbackDirection, isFriendly);
         }
 
@@ -156,40 +161,40 @@ public class RegularPathFinder implements PathFinder {
         // friendly is not used for regular paths
         switch (rotation) {
             case UP:
-                endYCoordinate = this.playableWindowMinHeight - 350;
+                endYCoordinate = this.playableWindowMinHeight - gameObjectHeight * 2;
                 endXCoordinate = xCoordinate;
                 break;
             case DOWN:
-                endYCoordinate = this.playableWindowMaxHeight + 350;
+                endYCoordinate = this.playableWindowMaxHeight + gameObjectHeight * 2;
                 endXCoordinate = xCoordinate;
                 break;
             case LEFT:
                 endYCoordinate = yCoordinate;
-                endXCoordinate = 0 - 350;
+                endXCoordinate = 0 - gameObjectWidth * 2;
                 break;
             case RIGHT:
                 endYCoordinate = yCoordinate;
-                endXCoordinate = dataClass.getWindowWidth() + 350;
+                endXCoordinate = dataClass.getWindowWidth() + gameObjectWidth * 2;
                 break;
             case RIGHT_UP:
-                endYCoordinate = this.playableWindowMinHeight - 350;
-                endXCoordinate = dataClass.getWindowWidth() + 350;
+                endYCoordinate = this.playableWindowMinHeight - gameObjectHeight * 2;
+                endXCoordinate = dataClass.getWindowWidth() + gameObjectWidth * 2;
                 break;
             case RIGHT_DOWN:
-                endYCoordinate = this.playableWindowMaxHeight + 350;
-                endXCoordinate = dataClass.getWindowWidth() + 350;
+                endYCoordinate = this.playableWindowMaxHeight + gameObjectHeight * 2;
+                endXCoordinate = dataClass.getWindowWidth() + gameObjectWidth * 2;
                 break;
             case LEFT_UP:
-                endYCoordinate = this.playableWindowMinHeight - 350;
-                endXCoordinate = 0 - 350;
+                endYCoordinate = this.playableWindowMinHeight - gameObjectHeight * 2;
+                endXCoordinate = 0 - gameObjectWidth * 2;
                 break;
             case LEFT_DOWN:
-                endYCoordinate = this.playableWindowMaxHeight + 350;
-                endXCoordinate = 0 - 350;
+                endYCoordinate = this.playableWindowMaxHeight + gameObjectHeight * 2;
+                endXCoordinate = 0 - gameObjectWidth * 2;
                 break;
             default:
                 endYCoordinate = yCoordinate;
-                endXCoordinate = 0 + 350;
+                endXCoordinate = 0 + gameObjectWidth * 2;
                 break;
         }
 

@@ -9,6 +9,9 @@ import net.riezebos.bruus.tbd.game.items.effects.EffectIdentifiers;
 import net.riezebos.bruus.tbd.game.items.effects.EffectInterface;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteAnimation;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class AttackSpeedModifierEffect implements EffectInterface {
     private float attackSpeedModifierAmount;
     private float attackSpeedModifierAmountPerStack;
@@ -16,16 +19,18 @@ public class AttackSpeedModifierEffect implements EffectInterface {
     private double durationInSeconds;
     private double startTimeInSeconds;
 
-    private SpriteAnimation animation;
+    private List<SpriteAnimation> animationList = new ArrayList<>();
     private boolean appliedToObject;
     private EffectIdentifiers effectIdentifier;
     private int amountOfStacks;
 
-    public AttackSpeedModifierEffect (float attackSpeedModifierAmountPerStack, double durationInSeconds, SpriteAnimation animation, EffectIdentifiers effectIdentifier) {
+    public AttackSpeedModifierEffect(float attackSpeedModifierAmountPerStack, double durationInSeconds, SpriteAnimation animation, EffectIdentifiers effectIdentifier) {
         this.attackSpeedModifierAmountPerStack = attackSpeedModifierAmountPerStack;
         this.attackSpeedModifierAmount = attackSpeedModifierAmountPerStack;
         this.durationInSeconds = durationInSeconds;
-        this.animation = animation;
+        if(animation != null) {
+            this.animationList.add(animation);
+        }
         this.startTimeInSeconds = GameState.getInstance().getGameSeconds();
         this.effectTypesEnums = EffectActivationTypes.CheckEveryGameTick;
         this.appliedToObject = false;
@@ -34,7 +39,7 @@ public class AttackSpeedModifierEffect implements EffectInterface {
     }
 
     @Override
-    public void activateEffect (GameObject gameObject) {
+    public void activateEffect(GameObject gameObject) {
         if (!appliedToObject) {
             float percentageChange = attackSpeedModifierAmount * 100;
 
@@ -46,12 +51,12 @@ public class AttackSpeedModifierEffect implements EffectInterface {
             appliedToObject = true;
         }
 
-        if (animation != null) {
+        if (!this.animationList.isEmpty() && this.animationList.get(0) != null) {
             centerAnimation(gameObject);
         }
     }
 
-    private void removeEffectsBeforeRemovingEffect (GameObject gameObject) {
+    private void removeEffectsBeforeRemovingEffect(GameObject gameObject) {
         if (gameObject == null) {
             return;
         }
@@ -66,39 +71,39 @@ public class AttackSpeedModifierEffect implements EffectInterface {
         appliedToObject = false;
     }
 
-    private void centerAnimation (GameObject object) {
+    private void centerAnimation(GameObject object) {
         if (object.getAnimation() != null) {
             SpriteAnimation objectVisuals = object.getAnimation();
-            animation.setCenterCoordinates(objectVisuals.getCenterXCoordinate(), objectVisuals.getCenterYCoordinate());
+            this.animationList.get(0).setCenterCoordinates(objectVisuals.getCenterXCoordinate(), objectVisuals.getCenterYCoordinate());
         } else {
-            animation.setCenterCoordinates(object.getCenterXCoordinate(), object.getCenterYCoordinate());
+            this.animationList.get(0).setCenterCoordinates(object.getCenterXCoordinate(), object.getCenterYCoordinate());
         }
     }
 
     @Override
-    public boolean shouldBeRemoved (GameObject gameObject) {
+    public boolean shouldBeRemoved(GameObject gameObject) {
         if (GameState.getInstance().getGameSeconds() - startTimeInSeconds >= durationInSeconds) {
             return true;
         } else return false;
     }
 
     @Override
-    public SpriteAnimation getAnimation () {
-        return animation;
+    public List<SpriteAnimation> getAnimations() {
+        return this.animationList;
     }
 
     @Override
-    public EffectActivationTypes getEffectTypesEnums () {
+    public EffectActivationTypes getEffectTypesEnums() {
         return effectTypesEnums;
     }
 
     @Override
-    public void resetDuration () {
+    public void resetDuration() {
         this.startTimeInSeconds = GameState.getInstance().getGameSeconds();
     }
 
     @Override
-    public void increaseEffectStrength (GameObject gameObject) {
+    public void increaseEffectStrength(GameObject gameObject) {
         if (this.effectIdentifier.equals(EffectIdentifiers.DevourerAttackSpeedDebuff)) {
             int maxStacks = 4;
             if (amountOfStacks < maxStacks) {
@@ -111,22 +116,28 @@ public class AttackSpeedModifierEffect implements EffectInterface {
     }
 
     @Override
-    public EffectInterface copy () {
-        return new AttackSpeedModifierEffect(attackSpeedModifierAmountPerStack, durationInSeconds, animation.clone(), effectIdentifier);
+    public EffectInterface copy() {
+        SpriteAnimation animation = null;
+        if (!this.animationList.isEmpty() && this.animationList.get(0) != null) {
+            animation = this.animationList.get(0);
+        }
+        SpriteAnimation clonedAnimation = (animation != null) ? animation.clone() : null;
+
+        return new AttackSpeedModifierEffect(attackSpeedModifierAmountPerStack, durationInSeconds, clonedAnimation, effectIdentifier);
     }
 
     @Override
-    public EffectIdentifiers getEffectIdentifier () {
+    public EffectIdentifiers getEffectIdentifier() {
         return effectIdentifier;
     }
 
     @Override
-    public void removeEffect (GameObject gameObject) {
-        if (animation != null) {
-            animation.setInfiniteLoop(false);
-            animation.setVisible(false);
+    public void removeEffect(GameObject gameObject) {
+        if (!this.animationList.isEmpty() && this.animationList.get(0) != null) {
+            this.animationList.get(0).setInfiniteLoop(false);
+            this.animationList.get(0).setVisible(false);
         }
         removeEffectsBeforeRemovingEffect(gameObject);
-        animation = null;
+        this.animationList.clear();
     }
 }

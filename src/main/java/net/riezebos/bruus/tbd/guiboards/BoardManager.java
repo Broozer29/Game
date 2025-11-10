@@ -172,4 +172,8 @@ public class BoardManager extends JFrame {
     public GameBoard getGameBoard() {
         return gameBoard;
     }
+
+    public MainMenuBoard getMainMenuBoard() {
+        return mainMenuBoard;
+    }
 }

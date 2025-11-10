@@ -4,6 +4,9 @@ import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyCategory;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyEnums;
 import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.droneTypes.protoss.ProtossUtils;
+import net.riezebos.bruus.tbd.game.gameobjects.missiles.Missile;
+import net.riezebos.bruus.tbd.game.gameobjects.missiles.MissileManager;
+import net.riezebos.bruus.tbd.game.gameobjects.missiles.missiletypes.ReflectiveBlocks;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
 import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SpaceShip;
@@ -47,15 +50,15 @@ public class EnemyManager {
     private PerformanceLogger performanceLogger = null;
 
 
-    private EnemyManager () {
+    private EnemyManager() {
         this.performanceLogger = new PerformanceLogger("Enemy Manager");
     }
 
-    public static EnemyManager getInstance () {
+    public static EnemyManager getInstance() {
         return instance;
     }
 
-    public void resetManager () {
+    public void resetManager() {
         for (Enemy enemy : enemyList) {
             enemy.setVisible(false);
         }
@@ -67,11 +70,11 @@ public class EnemyManager {
         performanceLogger.reset();
     }
 
-    public void updateGameTick () {
+    public void updateGameTick() {
 //        PerformanceLoggerManager.timeAndLog(performanceLogger, "Total", () -> {
-                    PerformanceLoggerManager.timeAndLog(performanceLogger, "Update Enemies", this::updateEnemies);
-                    PerformanceLoggerManager.timeAndLog(performanceLogger, "Check Spaceship Collision", this::checkSpaceshipCollisions);
-                    PerformanceLoggerManager.timeAndLog(performanceLogger, "Trigger Enemy Actions", this::triggerEnemyActions);
+        PerformanceLoggerManager.timeAndLog(performanceLogger, "Update Enemies", this::updateEnemies);
+        PerformanceLoggerManager.timeAndLog(performanceLogger, "Check Spaceship Collision", this::checkSpaceshipCollisions);
+        PerformanceLoggerManager.timeAndLog(performanceLogger, "Trigger Enemy Actions", this::triggerEnemyActions);
 //                });
 //        updateEnemies();
 //        checkSpaceshipCollisions();
@@ -79,7 +82,7 @@ public class EnemyManager {
     }
 
 
-    public boolean isBossAlive () {
+    public boolean isBossAlive() {
         if (!hasSpawnedABoss) {
             return true;
         } else if (hasSpawnedABoss) {
@@ -89,7 +92,7 @@ public class EnemyManager {
         return true;
     }
 
-    private void checkSpaceshipCollisions () {
+    private void checkSpaceshipCollisions() {
         SpaceShip spaceship = friendlyManager.getSpaceship();
         for (Enemy enemy : enemyList) {
             if (enemy.isVisible()) {
@@ -101,7 +104,7 @@ public class EnemyManager {
                     } else {
 
                         //Should do damage once every 3 game ticks, to avoid instant death when glitching inside enemies
-                        if(GameState.getInstance().getGameSeconds() - spaceship.getLastTimeCollisionDamageTaken() >= 0.045) {
+                        if (GameState.getInstance().getGameSeconds() - spaceship.getLastTimeCollisionDamageTaken() >= 0.045) {
                             spaceship.takeDamage(2.5f * (1 - PlayerStats.getInstance().getCollisionDamageReduction()));
                             spaceship.setLastTimeCollisionDamageTaken(GameState.getInstance().getGameSeconds());
                         }
@@ -114,13 +117,13 @@ public class EnemyManager {
         }
     }
 
-    private void handleAdditionalKnockbackBehaviour (Enemy enemy) {
+    private void handleAdditionalKnockbackBehaviour(Enemy enemy) {
         if (PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.Thornweaver) != null) {
             ThornsDamageDealer.getInstance().addDelayedThornsDamageToObject(enemy, 1);
         }
     }
 
-    public void detonateEnemy (Enemy enemy) {
+    public void detonateEnemy(Enemy enemy) {
         if (enemy.getDestructionAnimation() != null) {
             enemy.getDestructionAnimation().setOriginCoordinates(enemy.getCenterXCoordinate(), enemy.getCenterYCoordinate());
             if (enemy.getEnemyType().equals(EnemyEnums.ZergScourge)) {
@@ -138,13 +141,13 @@ public class EnemyManager {
         enemy.setVisible(false);
     }
 
-    private void triggerEnemyActions () {
+    private void triggerEnemyActions() {
         for (Enemy enemy : enemyList) {
             enemy.fireAction();
         }
     }
 
-    private void updateEnemies () {
+    private void updateEnemies() {
         for (Enemy en : enemyList) {
             if (en.isVisible()) {
                 PerformanceLoggerManager.timeAndLog(performanceLogger, "Move Enemy", en::move);
@@ -158,7 +161,7 @@ public class EnemyManager {
         }
     }
 
-    public void addEnemy (Enemy enemy) {
+    public void addEnemy(Enemy enemy) {
         if (enemy != null && !enemyList.contains(enemy)) {
             enemy.onCreationEffects();
             enemyList.add(enemy);
@@ -167,9 +170,9 @@ public class EnemyManager {
         }
     }
 
-    private void increaseEnemySpawnedCount (Enemy enemy) {
-        if (LevelManager.getInstance().getLevelType().equals(LevelTypes.Boss)){
-            if( enemy.getEnemyType().getEnemyCategory().equals(EnemyCategory.Boss)){
+    private void increaseEnemySpawnedCount(Enemy enemy) {
+        if (LevelManager.getInstance().getLevelType().equals(LevelTypes.Boss)) {
+            if (enemy.getEnemyType().getEnemyCategory().equals(EnemyCategory.Boss)) {
                 GameStatsTracker.getInstance().addEnemySpawned(1);
             }
         } else if (enemy.getEnemyType().getEnemyCategory() != EnemyCategory.Summon) {
@@ -177,19 +180,19 @@ public class EnemyManager {
         }
     }
 
-    public List<Enemy> getEnemies () {
+    public List<Enemy> getEnemies() {
         return this.enemyList;
     }
 
-    public List<Enemy> getEnemiesByType(EnemyEnums enemyType){
+    public List<Enemy> getEnemiesByType(EnemyEnums enemyType) {
         return enemyList.stream().filter(enemy -> enemy.getEnemyType().equals(enemyType)).toList();
     }
 
-    public int getEnemyCount () {
+    public int getEnemyCount() {
         return enemyList.size();
     }
 
-    public boolean enemiesToHomeTo () {
+    public boolean enemiesToHomeTo() {
         if (enemyList.isEmpty()) {
             return true;
         } else
@@ -228,23 +231,41 @@ public class EnemyManager {
     }
 
 
-    public Enemy getClosestEnemyWithinDistance(int xCoordinate, int yCoordinate, double attackRange) {
-        double minDistance = attackRange; // Directly use attackRange without √2 adjustment
-        Enemy closestEnemy = null;
+    public GameObject getClosestEnemyTargetWithinDistance(int xCoordinate, int yCoordinate, double attackRange) {
+        double minDistance = attackRange; // Directly use attackRange as the maximum initial distance
+        GameObject closestTarget = null;
 
+        // Check for missiles
+        for (Missile missile : MissileManager.getInstance()
+                .getMissiles()
+                .stream()
+                .filter(missile -> missile instanceof ReflectiveBlocks) //We need this otherwise protoss ships ignore an attack from YellowBoss
+                .collect(Collectors.toList())) {
+
+            Rectangle missileBounds = missile.getBounds(); // Get missile's bounding box
+            double distance = ProtossUtils.getDistanceToRectangle(xCoordinate, yCoordinate, missileBounds);
+
+            // If the missile is within attackRange and closer than the previously found closest target, update
+            if (distance < minDistance) {
+                minDistance = distance;
+                closestTarget = missile;
+            }
+        }
+
+        // Check for enemies
         for (Enemy enemy : EnemyManager.getInstance().getEnemies()) {
             Rectangle enemyBounds = enemy.getBounds(); // Get enemy's bounding box
             double distance = ProtossUtils.getDistanceToRectangle(xCoordinate, yCoordinate, enemyBounds);
 
-            // If the enemy is within attackRange and closer than the previous closest enemy, update
+            // If the enemy is within attackRange and closer than the previously found closest target, update
             if (distance < minDistance) {
                 minDistance = distance;
-                closestEnemy = enemy;
+                closestTarget = enemy;
             }
         }
-        return closestEnemy;
-    }
 
+        return closestTarget;
+    }
 
 
     //Helper method
@@ -261,7 +282,7 @@ public class EnemyManager {
     }
 
 
-    public GameObject findEnemyForMissileToBounceTo (GameObject gameObject, List<GameObject> objectsToIgnore) {
+    public GameObject findEnemyForMissileToBounceTo(GameObject gameObject, List<GameObject> objectsToIgnore) {
         GameObject closestEnemy = null;
         double minDistance = Double.MAX_VALUE;
 
@@ -288,41 +309,40 @@ public class EnemyManager {
         return closestEnemy;
     }
 
-    public boolean isHasSpawnedABoss () {
+    public boolean isHasSpawnedABoss() {
         return hasSpawnedABoss;
     }
 
-    public void setHasSpawnedABoss (boolean hasSpawnedABoss) {
+    public void setHasSpawnedABoss(boolean hasSpawnedABoss) {
         this.hasSpawnedABoss = hasSpawnedABoss;
     }
 
-    public void     removeOutOfBoundsEnemies () {
+    public void removeOutOfBoundsEnemies() {
         for (Enemy enemy : enemyList) {
             if (!enemy.getEnemyType().getEnemyCategory().equals(EnemyCategory.Boss)
                     && !WithinVisualBoundariesCalculator.isWithinBoundaries(enemy)) {
-                    enemy.deleteObject();
-                }
-
+                enemy.deleteObject();
+            }
         }
     }
 
-    public void detonateAllEnemies () {
+    public void detonateAllEnemies() {
         for (Enemy enemy : enemyList) {
             enemy.deleteObject();
         }
     }
 
-    public int getAmountOfEnemyTypesAlive(EnemyEnums enemyToCheck){
+    public int getAmountOfEnemyTypesAlive(EnemyEnums enemyToCheck) {
         return enemyList.stream().filter(enemy -> enemy.getEnemyType().equals(enemyToCheck)).collect(Collectors.toList()).size();
     }
 
-    public PerformanceLogger getPerformanceLogger () {
+    public PerformanceLogger getPerformanceLogger() {
         return this.performanceLogger;
     }
 
     public void startBurningEnemies() {
-        for(Enemy enemy : this.enemyList){
-            if(enemy.getCurrentHitpoints() > 0 && !enemy.hasEffect(EffectIdentifiers.EndOfLevelBurn)){
+        for (Enemy enemy : this.enemyList) {
+            if (enemy.getCurrentHitpoints() > 0 && !enemy.hasEffect(EffectIdentifiers.EndOfLevelBurn)) {
                 enemy.addEffect(getEndOfGameEnemyBurnEffect(enemy));
                 enemy.setCashMoneyWorth(enemy.getCashMoneyWorth() * 0.01f);
                 enemy.setXpOnDeath(enemy.getXpOnDeath() * 0.01f);
@@ -334,7 +354,7 @@ public class EnemyManager {
         }
     }
 
-    private DamageOverTime getEndOfGameEnemyBurnEffect(Enemy enemy){
+    private DamageOverTime getEndOfGameEnemyBurnEffect(Enemy enemy) {
         SpriteConfiguration spriteConfiguration = new SpriteConfiguration();
         spriteConfiguration.setxCoordinate(enemy.getCenterXCoordinate());
         spriteConfiguration.setyCoordinate(enemy.getCenterYCoordinate());
@@ -344,7 +364,7 @@ public class EnemyManager {
         SpriteAnimationConfiguration spriteAnimationConfiguration = new SpriteAnimationConfiguration(spriteConfiguration, 2, true);
         SpriteAnimation spriteAnimation = new SpriteAnimation(spriteAnimationConfiguration);
 
-        return new DamageOverTime(2, 9999, spriteAnimation, EffectIdentifiers.EndOfLevelBurn);
+        return new DamageOverTime(enemy.getMaxHitPoints() * 0.075f, 9999, spriteAnimation, EffectIdentifiers.EndOfLevelBurn);
     }
 
 

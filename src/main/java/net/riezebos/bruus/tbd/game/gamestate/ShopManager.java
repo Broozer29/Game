@@ -11,12 +11,11 @@ import net.riezebos.bruus.tbd.game.items.items.Contract;
 import net.riezebos.bruus.tbd.game.items.items.util.ContractCounter;
 import net.riezebos.bruus.tbd.game.items.items.util.ContractHelper;
 import net.riezebos.bruus.tbd.game.level.enums.LevelDifficulty;
-import net.riezebos.bruus.tbd.game.level.enums.LevelLength;
+import net.riezebos.bruus.tbd.game.level.enums.MiniBossConfig;
 import net.riezebos.bruus.tbd.game.playerprofile.PlayerProfileManager;
 import net.riezebos.bruus.tbd.game.util.OnScreenTextManager;
 import net.riezebos.bruus.tbd.guiboards.BoardManager;
 import net.riezebos.bruus.tbd.guiboards.boardcreators.AchievementUnlockHelper;
-import net.riezebos.bruus.tbd.guiboards.boardcreators.BoonSelectionBoardCreator;
 import net.riezebos.bruus.tbd.guiboards.boardcreators.ShopBoardCreator;
 import net.riezebos.bruus.tbd.guiboards.guicomponents.GUIComponent;
 import net.riezebos.bruus.tbd.visualsandaudio.data.DataClass;
@@ -32,7 +31,7 @@ public class ShopManager {
     private int freeRerollsLeft = 0;
 
     private int lastLevelDifficultyScore;
-    private LevelLength lastLevelLength;
+    private MiniBossConfig lastMiniBossConfig;
     private LevelDifficulty lastLevelDifficulty;
 
     private static ShopManager instance = new ShopManager();
@@ -66,12 +65,12 @@ public class ShopManager {
         this.lastLevelDifficultyScore = lastLevelDifficultyScore;
     }
 
-    public LevelLength getLastLevelLength () {
-        return lastLevelLength;
+    public MiniBossConfig setLastMiniBossConfig () {
+        return lastMiniBossConfig;
     }
 
-    public void setLastLevelLength (LevelLength lastLevelLength) {
-        this.lastLevelLength = lastLevelLength;
+    public void setLastMiniBossConfig(MiniBossConfig lastMiniBossConfig) {
+        this.lastMiniBossConfig = lastMiniBossConfig;
     }
 
     public LevelDifficulty getLastLevelDifficulty () {
@@ -138,7 +137,7 @@ public class ShopManager {
             ItemRarityEnums itemRarity = ItemRarityEnums.getRandomRareItemSlot();
             ItemEnums itemToAdd = getRandomAvailableItemByRarity(itemRarity);
             PlayerInventory.getInstance().addItem(itemToAdd);
-            AudioManager.getInstance().addAudio(AudioEnums.ItemAcquired);
+            AudioManager.getInstance().addAudio(AudioEnums.GenericSelect);
             ContractHelper.getInstance().removeContract(contractCounter);
             BoardManager.getInstance().getShopBoard().addGUIAnimation(getContractAnimation(itemToAdd, yOffset));
             yOffset += ShopBoardCreator.shopItemIconDimensions + 5;

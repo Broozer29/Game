@@ -50,6 +50,6 @@ public class ProtossArbiterItem extends Item {
             return false;
         }
 
-        return ProtossUtils.canHostMoreProtoss();
+        return true;
     }
 }

@@ -84,7 +84,7 @@ public class ShopItem extends GUIComponent {
 
     public void purchaseItemInShop () {
         if (shopItemInformation.isAvailable() && shopItemInformation.canAfford()) {
-            AudioManager.getInstance().addAudio(AudioEnums.ItemAcquired);
+            AudioManager.getInstance().addAudio(AudioEnums.GenericSelect);
             PlayerInventory.getInstance().addItem(shopItemInformation.getItem());
             PlayerInventory.getInstance().spendCashMoney(shopItemInformation.getCost());
             lockItemInShop();

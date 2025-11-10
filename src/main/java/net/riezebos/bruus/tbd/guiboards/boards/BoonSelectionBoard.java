@@ -3,6 +3,7 @@ package net.riezebos.bruus.tbd.guiboards.boards;
 import net.riezebos.bruus.tbd.controllerInput.ConnectedControllersManager;
 import net.riezebos.bruus.tbd.controllerInput.ControllerInputEnums;
 import net.riezebos.bruus.tbd.controllerInput.ControllerInputReader;
+import net.riezebos.bruus.tbd.game.gamestate.GameMode;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.gameobjects.player.boons.BoonEnums;
 import net.riezebos.bruus.tbd.game.gameobjects.player.boons.Boon;
@@ -53,7 +54,7 @@ public class BoonSelectionBoard extends JPanel implements TimerHolder {
     private GUIComponent thirdColumnBackgroundCard;
     private GUIComponent fifthColumnBackgroundCard;
 
-    private GUIComponent returnToSelectionBackgroundCard;
+    private GUIComponent mainMenuButton;
     private GUIComponent startGameBackgroundCard;
     private GUITextCollection selectClassButton;
     private GUITextCollection startGameButton;
@@ -65,6 +66,12 @@ public class BoonSelectionBoard extends JPanel implements TimerHolder {
     private GUITextCollection selectNepotism;
     private GUIComponent upgradeNepotism;
 
+    private GUITextCollection selectDefault;
+    private GUITextCollection selectManMode;
+    private GUITextCollection selectMonoCultural;
+    private GUITextCollection selectDoubleTrouble;
+    private GUITextCollection selectFormatted;
+
     private GUITextCollection selectClubAccess;
     private GUIComponent upgradeClubAccess;
     private GUITextCollection selectCompoundInterest;
@@ -74,16 +81,10 @@ public class BoonSelectionBoard extends JPanel implements TimerHolder {
     private GUITextCollection selectTreasureHunter;
     private GUIComponent upgradeTreasureHunter;
 
-    private GUIComponent utilityColumnSelectionIndicator;
-    private GUITextCollection utilityColumnTitleText;
-    private GUIComponent defensiveColumnSelectionIndicator;
-    private GUITextCollection defenseColumnTitleText;
-    private GUIComponent offensiveColumnSelectionIndicator;
-    private GUITextCollection offenseColumnTitleText;
-
-    private GUITextCollection offenseWIPText;
-    private GUITextCollection defenseWIPText;
-
+    private GUIComponent boonColumnSelectionIndicator;
+    private GUIComponent gameModifierColumnSelectionIndicator;
+    private GUITextCollection boonColumnTitleText;
+    private GUITextCollection gameModifiersColumnTitleText;
 
     private Timer timer;
     private ControllerInputReader controllerInputReader;
@@ -121,27 +122,28 @@ public class BoonSelectionBoard extends JPanel implements TimerHolder {
         firstColumnBackgroundCard = BoonSelectionBoardCreator.createFirstColumnBackgroundCard();
         thirdColumnBackgroundCard = BoonSelectionBoardCreator.createThirdColumnBackgroundCard();
         fifthColumnBackgroundCard = BoonSelectionBoardCreator.createFifthColumnBackgroundCard();
-        returnToSelectionBackgroundCard = BoonSelectionBoardCreator.createReturnToSelectionBackgroundCard();
+        mainMenuButton = BoonSelectionBoardCreator.createReturnToSelectionBackgroundCard();
         startGameBackgroundCard = BoonSelectionBoardCreator.createStartGameBackgroundCard();
 
         emeraldsAvailableText = BoonSelectionBoardCreator.createEmeraldText();
         descriptionBackgroundCard = BoonSelectionBoardCreator.createDescriptionBackgroundCard();
         descriptionBox = BoonSelectionBoardCreator.createDescriptionComponent(descriptionBackgroundCard);
 
-        selectClassButton = BoonSelectionBoardCreator.createReturnToClassSelectionButton(returnToSelectionBackgroundCard);
+        selectClassButton = BoonSelectionBoardCreator.createReturnToClassSelectionButton(mainMenuButton);
         startGameButton = BoonSelectionBoardCreator.createStartGameButton(startGameBackgroundCard);
 
 
         recreateBoonsComponents();
 
-        utilityColumnSelectionIndicator = BoonSelectionBoardCreator.createUpgradeSelectedCheckmark();
-        utilityColumnTitleText = BoonSelectionBoardCreator.createFirstColumnTitle(firstColumnBackgroundCard);
-        defensiveColumnSelectionIndicator = BoonSelectionBoardCreator.createUpgradeSelectedCheckmark();
-        defenseColumnTitleText = BoonSelectionBoardCreator.createThirdColumnTitle(thirdColumnBackgroundCard);
-        defenseWIPText = BoonSelectionBoardCreator.createWorkInProgressText(thirdColumnBackgroundCard);
-        offensiveColumnSelectionIndicator = BoonSelectionBoardCreator.createUpgradeSelectedCheckmark();
-        offenseColumnTitleText = BoonSelectionBoardCreator.createFifthColumnTitle(fifthColumnBackgroundCard);
-        offenseWIPText = BoonSelectionBoardCreator.createWorkInProgressText(fifthColumnBackgroundCard);
+        boonColumnSelectionIndicator = BoonSelectionBoardCreator.createUpgradeSelectedCheckmark();
+        gameModifierColumnSelectionIndicator = BoonSelectionBoardCreator.createUpgradeSelectedCheckmark();
+        boonColumnTitleText = BoonSelectionBoardCreator.createFirstColumnTitle(firstColumnBackgroundCard);
+        gameModifiersColumnTitleText = BoonSelectionBoardCreator.createThirdColumnTitle(thirdColumnBackgroundCard);
+//        defenseWIPText = BoonSelectionBoardCreator.createWorkInProgressText(thirdColumnBackgroundCard);
+
+//        offensiveColumnSelectionIndicator = BoonSelectionBoardCreator.createUpgradeSelectedCheckmark();
+//        offenseColumnTitleText = BoonSelectionBoardCreator.createFifthColumnTitle(fifthColumnBackgroundCard);
+//        offenseWIPText = BoonSelectionBoardCreator.createWorkInProgressText(fifthColumnBackgroundCard);
 
         menuCursor = BoonSelectionBoardCreator.createCursor(selectNepotism.getComponents().get(0));
         initializedMenuObjects = true;
@@ -185,18 +187,17 @@ public class BoonSelectionBoard extends JPanel implements TimerHolder {
         offTheGridObjects.add(firstColumnBackgroundCard);
         offTheGridObjects.add(thirdColumnBackgroundCard);
         offTheGridObjects.add(fifthColumnBackgroundCard);
-        offTheGridObjects.add(returnToSelectionBackgroundCard);
+        offTheGridObjects.add(mainMenuButton);
         offTheGridObjects.add(startGameBackgroundCard);
         offTheGridObjects.add(descriptionBackgroundCard);
 
         recreateBoonsComponents();
 
         offTheGridObjects.addAll(emeraldsAvailableText.getComponents());
-        offTheGridObjects.addAll(utilityColumnTitleText.getComponents());
-        offTheGridObjects.addAll(defenseColumnTitleText.getComponents());
-        offTheGridObjects.addAll(offenseColumnTitleText.getComponents());
-        offTheGridObjects.addAll(offenseWIPText.getComponents());
-        offTheGridObjects.addAll(defenseWIPText.getComponents());
+        offTheGridObjects.addAll(boonColumnTitleText.getComponents());
+        offTheGridObjects.addAll(gameModifiersColumnTitleText.getComponents());
+//        offTheGridObjects.addAll(offenseColumnTitleText.getComponents());
+//        offTheGridObjects.addAll(defenseWIPText.getComponents());
 
 
         addToGrid(firstColumn, selectNepotism.getComponents().get(0), 0, 0);
@@ -224,15 +225,34 @@ public class BoonSelectionBoard extends JPanel implements TimerHolder {
         addToGrid(firstColumn, selectClassButton.getComponents().get(0), 0, 5);
         addAllButFirstComponent(selectClassButton);
 
+        addToGrid(thirdColumn, selectDefault.getComponents().get(0), 2, 0);
+        addAllButFirstComponent(selectDefault);
+
+        addToGrid(thirdColumn, selectManMode.getComponents().get(0), 2, 1);
+        addAllButFirstComponent(selectManMode);
+
+        addToGrid(thirdColumn, selectMonoCultural.getComponents().get(0), 2, 2);
+        addAllButFirstComponent(selectMonoCultural);
+
+        addToGrid(thirdColumn, selectDoubleTrouble.getComponents().get(0), 2, 3);
+        addAllButFirstComponent(selectDoubleTrouble);
+
+        addToGrid(thirdColumn, selectFormatted.getComponents().get(0), 2, 4);
+        addAllButFirstComponent(selectFormatted);
+
         addToGrid(sixthColumn, startGameButton.getComponents().get(0), 5, 0);
         addAllButFirstComponent(startGameButton);
 
         offTheGridObjects.add(menuCursor);
 
-        updateCheckmarkLocationsToSelectedBoons();
+        updateCheckmarkLocations();
 
         if (showUtilityCheckmark) {
-            offTheGridObjects.add(utilityColumnSelectionIndicator);
+            offTheGridObjects.add(boonColumnSelectionIndicator);
+        }
+
+        if (showGameModeCheckMark) {
+            offTheGridObjects.add(gameModifierColumnSelectionIndicator);
         }
 
         updateCursor();
@@ -254,6 +274,11 @@ public class BoonSelectionBoard extends JPanel implements TimerHolder {
         selectTreasureHunter = BoonSelectionBoardCreator.createOtherBoonButtons(selectBountyHunter.getComponents().get(0), TreasureHunter.getInstance());
         upgradeTreasureHunter = BoonSelectionBoardCreator.createUpgradeBoonButton(firstColumnBackgroundCard, selectTreasureHunter, MenuFunctionEnums.UpgradeTreasureHunter);
 
+        selectDefault = BoonSelectionBoardCreator.createSelectDefaultButton(thirdColumnBackgroundCard);
+        selectManMode = BoonSelectionBoardCreator.createOtherGameModeButton(selectDefault.getComponents().get(0), GameMode.ManMode);
+        selectMonoCultural = BoonSelectionBoardCreator.createOtherGameModeButton(selectManMode.getComponents().get(0), GameMode.MonoCultural);
+        selectDoubleTrouble = BoonSelectionBoardCreator.createOtherGameModeButton(selectMonoCultural.getComponents().get(0), GameMode.DoubleTrouble);
+        selectFormatted = BoonSelectionBoardCreator.createOtherGameModeButton(selectDoubleTrouble.getComponents().get(0), GameMode.Formatted);
         emeraldsAvailableText = BoonSelectionBoardCreator.createEmeraldText();
     }
 
@@ -285,10 +310,10 @@ public class BoonSelectionBoard extends JPanel implements TimerHolder {
         if (isGridEmpty()) {
             return; // Do nothing if the grid is empty
         }
-
         if (handleLeftOrRightNavigationOverwrites()) {
             return; //We overwrote the navigation
         }
+
 
         int originalRow = selectedColumn; // Keep track of the starting row to avoid infinite loop
 
@@ -362,6 +387,10 @@ public class BoonSelectionBoard extends JPanel implements TimerHolder {
 
     // Go one menu tile down
     private void previousRow() {
+        if (handleUpOrDownNavigationOverwrites()) {
+            return; //We overwrote the navigation
+        }
+
         selectedRow--;
         if (selectedRow < 0) {
             selectedRow = grid.get(selectedColumn).size() - 1;
@@ -370,10 +399,29 @@ public class BoonSelectionBoard extends JPanel implements TimerHolder {
 
     // Go one menu tile up
     private void nextRow() {
+        if (handleUpOrDownNavigationOverwrites()) {
+            return; //We overwrote the navigation
+        }
         selectedRow++;
         if (selectedRow >= grid.get(selectedColumn).size()) {
             selectedRow = 0;
         }
+
+    }
+
+    private boolean handleUpOrDownNavigationOverwrites() {
+        if (menuCursor.getSelectedMenuTile().equals(this.upgradeTreasureHunter)) {
+            selectedColumn = selectClassButton.getComponents().get(0).getColumn();
+            selectedRow = selectClassButton.getComponents().get(0).getRow();
+            return true;
+        }
+        if (menuCursor.getSelectedMenuTile().equals(this.selectFormatted.getComponents().get(0))) {
+            selectedColumn = startGameButton.getComponents().get(0).getColumn();
+            selectedRow = startGameButton.getComponents().get(0).getRow();
+            return true;
+        }
+
+        return false;
     }
 
     // Update the cursor's position and selected menu tile
@@ -392,8 +440,8 @@ public class BoonSelectionBoard extends JPanel implements TimerHolder {
     private DescriptionInfo prepareDescriptionText(GUIComponent selectedTileHelper) {
         DescriptionInfo descriptionInfo = new DescriptionInfo();
         if (selectedTileHelper.getMenuFunctionality() != null) {
-            Boon selectedBoon = BoonSelectionBoardCreator.getBoonByMenuFunctionality(selectedTileHelper.getMenuFunctionality());
-            if (selectedBoon != null) {
+            if (BoonSelectionBoardCreator.getBoonByMenuFunctionality(selectedTileHelper.getMenuFunctionality()) != null) {
+                Boon selectedBoon = BoonSelectionBoardCreator.getBoonByMenuFunctionality(selectedTileHelper.getMenuFunctionality());
                 if (selectedBoon.isUnlocked()) {
                     descriptionInfo.descriptionText = selectedBoon.getBoonDescription();
                     descriptionInfo.title = selectedBoon.getBoonName() + " rank: " + selectedBoon.getCurrentLevel();
@@ -409,6 +457,11 @@ public class BoonSelectionBoard extends JPanel implements TimerHolder {
                 } else {
                     descriptionInfo.cost = "Max rank reached";
                 }
+                shouldDrawBoonDescription = true;
+            } else if (BoonSelectionBoardCreator.getGameModeByMenuFunctionality(selectedTileHelper.getMenuFunctionality()) != null) {
+                GameMode gameMode = BoonSelectionBoardCreator.getGameModeByMenuFunctionality(selectedTileHelper.getMenuFunctionality());
+                descriptionInfo.descriptionText = gameMode.getDescription();
+                descriptionInfo.title = gameMode.getName();
                 shouldDrawBoonDescription = true;
             } else { //not a boon selected
                 descriptionInfo.descriptionText = selectedTileHelper.getDescriptionOfComponent();
@@ -598,7 +651,7 @@ public class BoonSelectionBoard extends JPanel implements TimerHolder {
 
     private void drawDescriptionText(Graphics2D g2d, String text, int x, int y, int maxWidth, Color color) {
         FontMetrics metrics = g2d.getFontMetrics();
-        int lineHeight = metrics.getHeight();
+        int lineHeight = metrics.getHeight() + 2; //small increase
         String[] words = text.split(" ");
         StringBuilder line = new StringBuilder();
         g2d.setColor(color);
@@ -690,14 +743,15 @@ public class BoonSelectionBoard extends JPanel implements TimerHolder {
         return this.timer;
     }
 
-    private void updateCheckmarkLocationsToSelectedBoons() {
-        placeUtilityColumnCheckmark();
+    private void updateCheckmarkLocations() {
+        placeBoonColumnCheckmark();
+        placeGameModeColumnCheckmark();
     }
 
     private boolean showUtilityCheckmark = false;
 
-    private void placeUtilityColumnCheckmark() {
-        Boon utilityBoon = BoonManager.getInstance().getUtilityBoon();
+    private void placeBoonColumnCheckmark() {
+        Boon utilityBoon = BoonManager.getInstance().getActiveBoon();
 
         if (utilityBoon == null) {
             showUtilityCheckmark = false;
@@ -735,8 +789,59 @@ public class BoonSelectionBoard extends JPanel implements TimerHolder {
         checkMarkXCoordinate = selectedTextCollection.getStartingXCoordinate() + Math.round((selectedTextCollection.getWidth() / 2));
         checkMarkYCoordinate = selectedTextCollection.getComponents().get(0).getCenterYCoordinate();
 
-        utilityColumnSelectionIndicator.setCenterCoordinates(checkMarkXCoordinate, checkMarkYCoordinate);
+        boonColumnSelectionIndicator.setCenterCoordinates(checkMarkXCoordinate, checkMarkYCoordinate);
         showUtilityCheckmark = true;
+    }
+
+
+    private boolean showGameModeCheckMark = false;
+
+    private void placeGameModeColumnCheckmark() {
+        GameMode selectedGameMode = GameState.getInstance().getGameMode();
+
+        if (selectedGameMode == null) {
+            showGameModeCheckMark = false;
+            return; //Nothing selected, so we dont set it
+        }
+
+        int checkMarkXCoordinate = 0;
+        int checkMarkYCoordinate = 0;
+        GUITextCollection selectedTextCollection = null;
+
+        switch (selectedGameMode) {
+            case Default -> {
+                selectedTextCollection = selectDefault;
+                break;
+            }
+            case MonoCultural -> {
+                selectedTextCollection = selectMonoCultural;
+                break;
+            }
+            case ManMode -> {
+                selectedTextCollection = selectManMode;
+                break;
+            }
+            case DoubleTrouble -> {
+                selectedTextCollection = selectDoubleTrouble;
+                break;
+            }
+            case Formatted -> {
+                selectedTextCollection = selectFormatted;
+                break;
+            }
+            default -> {
+                OnScreenTextManager.getInstance().addText("UnImplemented!");
+                showGameModeCheckMark = false;
+                return;
+            }
+        }
+
+
+        checkMarkXCoordinate = selectedTextCollection.getStartingXCoordinate() + Math.round((selectedTextCollection.getWidth() / 2));
+        checkMarkYCoordinate = selectedTextCollection.getComponents().get(0).getCenterYCoordinate();
+
+        gameModifierColumnSelectionIndicator.setCenterCoordinates(checkMarkXCoordinate, checkMarkYCoordinate);
+        showGameModeCheckMark = true;
     }
 
 }

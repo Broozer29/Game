@@ -10,6 +10,9 @@ import net.riezebos.bruus.tbd.game.items.effects.EffectInterface;
 import net.riezebos.bruus.tbd.game.items.effects.util.EffectAnimationHelper;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteAnimation;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class FreezeEffect implements EffectInterface {
 
     private double durationInSeconds;
@@ -17,16 +20,17 @@ public class FreezeEffect implements EffectInterface {
 
 
     private boolean scaledToTarget = false;
-
-    private SpriteAnimation animation;
+    private List<SpriteAnimation> animationList = new ArrayList<>();
     private EffectIdentifiers effectIdentifier;
     private EffectActivationTypes effectTypesEnums;
 
-    public FreezeEffect(double durationInSeconds, SpriteAnimation spriteAnimation){
+    public FreezeEffect(double durationInSeconds, SpriteAnimation animation){
         this.effectIdentifier = EffectIdentifiers.ElectricDestabilizerFreeze;
         this.durationInSeconds = durationInSeconds;
         this.effectTypesEnums = EffectActivationTypes.CheckEveryGameTick;
-        this.animation = spriteAnimation;
+        if(animation != null) {
+            this.animationList.add(animation);
+        }
         this.startTimeInSeconds = GameState.getInstance().getGameSeconds();
     }
     @Override
@@ -40,11 +44,11 @@ public class FreezeEffect implements EffectInterface {
 
 
         double currentTime = GameState.getInstance().getGameSeconds();
-        if (animation != null) {
+        if (!this.animationList.isEmpty() && this.animationList.get(0) != null) {
             if (!scaledToTarget) {
-                EffectAnimationHelper.scaleAnimation(target, animation);
+                EffectAnimationHelper.scaleAnimation(target, this.animationList.get(0));
                 scaledToTarget = true;
-                animation.setCenterCoordinates(target.getCenterXCoordinate(), target.getCenterYCoordinate());
+                this.animationList.get(0).setCenterCoordinates(target.getCenterXCoordinate(), target.getCenterYCoordinate());
             }
         }
 
@@ -76,8 +80,8 @@ public class FreezeEffect implements EffectInterface {
     }
 
     @Override
-    public SpriteAnimation getAnimation () {
-        return animation;
+    public List<SpriteAnimation> getAnimations() {
+        return animationList;
     }
 
     @Override
@@ -103,8 +107,13 @@ public class FreezeEffect implements EffectInterface {
 
     @Override
     public EffectInterface copy () {
-        SpriteAnimation animation = this.animation.clone();
-        FreezeEffect copiedEffect = new FreezeEffect(this.durationInSeconds, animation);
+        SpriteAnimation animation = null;
+        if (!this.animationList.isEmpty() && this.animationList.get(0) != null) {
+            animation = this.animationList.get(0);
+        }
+        SpriteAnimation clonedAnimation = (animation != null) ? animation.clone() : null;
+
+        FreezeEffect copiedEffect = new FreezeEffect(this.durationInSeconds, clonedAnimation);
         // Copy other necessary fields
         copiedEffect.startTimeInSeconds = this.startTimeInSeconds;
         copiedEffect.effectIdentifier = this.effectIdentifier;
@@ -114,13 +123,13 @@ public class FreezeEffect implements EffectInterface {
 
     @Override
     public void removeEffect (GameObject gameObject){
-        if(animation != null){
-            animation.setInfiniteLoop(false);
-            animation.setVisible(false);
+        if(!this.animationList.isEmpty() && this.animationList.get(0) != null){
+            this.animationList.get(0).setInfiniteLoop(false);
+            this.animationList.get(0).setVisible(false);
         }
 
         deleteEffect(gameObject);
-        animation = null;
+        this.animationList.clear();
     }
 
 }
