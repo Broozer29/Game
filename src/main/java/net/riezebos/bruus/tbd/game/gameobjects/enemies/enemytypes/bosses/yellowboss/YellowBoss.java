@@ -3,10 +3,10 @@ package net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.yellow
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.Enemy;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyConfiguration;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.BossActionable;
-import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.yellowboss.behaviour.LaserbeamMissileAttack;
-import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.yellowboss.behaviour.MissileWaveAttack;
-import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.yellowboss.behaviour.SpawnReflectingBarrier;
-import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.yellowboss.behaviour.SpawnShurikens;
+import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.yellowboss.behaviour.YellowBossLaserbeamMissileAttack;
+import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.yellowboss.behaviour.YellowBossMissileWaveAttack;
+import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.yellowboss.behaviour.YellowBossSpawnReflectingBarrier;
+import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.yellowboss.behaviour.YellowBossSpawnShurikens;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.movement.MovementConfiguration;
 import net.riezebos.bruus.tbd.game.util.WithinVisualBoundariesCalculator;
@@ -28,24 +28,25 @@ public class YellowBoss extends Enemy {
     public YellowBoss(SpriteAnimationConfiguration spriteConfiguration, EnemyConfiguration enemyConfiguration, MovementConfiguration movementConfiguration) {
         super(spriteConfiguration, enemyConfiguration, movementConfiguration);
 
-        SpriteAnimationConfiguration destroyedExplosionfiguration = new SpriteAnimationConfiguration(spriteConfiguration.getSpriteConfiguration(), 0, false);
-        destroyedExplosionfiguration.getSpriteConfiguration().setImageType(ImageEnums.Explosion2);
+        SpriteAnimationConfiguration destroyedExplosionfiguration = new SpriteAnimationConfiguration(spriteConfiguration.getSpriteConfiguration(), 2, false);
+        destroyedExplosionfiguration.getSpriteConfiguration().setImageType(ImageEnums.BossExplosion);
+        destroyedExplosionfiguration.getSpriteConfiguration().setScale(1);
         this.destructionAnimation = new SpriteAnimation(destroyedExplosionfiguration);
-        this.damage = 15;
+        this.damage = 12;
         this.allowedVisualsToRotate = false;
         this.knockbackStrength = 9;
 
 
-        LaserbeamMissileAttack laserbeamMissileAttack = new LaserbeamMissileAttack();
+        YellowBossLaserbeamMissileAttack laserbeamMissileAttack = new YellowBossLaserbeamMissileAttack();
         bossBehaviourList.add(laserbeamMissileAttack);
 
-        BossActionable missileWaveAttack = new MissileWaveAttack();
+        BossActionable missileWaveAttack = new YellowBossMissileWaveAttack();
         bossBehaviourList.add(missileWaveAttack);
 
-        BossActionable reflectingBarrier = new SpawnReflectingBarrier();
+        BossActionable reflectingBarrier = new YellowBossSpawnReflectingBarrier();
         bossBehaviourList.add(reflectingBarrier);
 
-        BossActionable spawnShurikens = new SpawnShurikens();
+        BossActionable spawnShurikens = new YellowBossSpawnShurikens();
         bossBehaviourList.add(spawnShurikens);
 
         bossBehaviourList = bossBehaviourList.stream()

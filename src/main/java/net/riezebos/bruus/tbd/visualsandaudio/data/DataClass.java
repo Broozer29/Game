@@ -53,7 +53,11 @@ public class DataClass {
 	}
 
 	public int getBoardBlockWidth() {
-		return this.windowWidth / 8;
+		return this.windowWidth / getBoardBlockAmount();
+	}
+
+	public int getBoardBlockAmount(){
+		return 8;
 	}
 
 	public String getTextFont () {

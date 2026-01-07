@@ -30,27 +30,30 @@ public class CarrierBoss extends Enemy {
     public CarrierBoss(SpriteAnimationConfiguration spriteConfiguration, EnemyConfiguration enemyConfiguration, MovementConfiguration movementConfiguration) {
         super(spriteConfiguration, enemyConfiguration, movementConfiguration);
 
-        SpriteAnimationConfiguration destroyedExplosionfiguration = new SpriteAnimationConfiguration(spriteConfiguration.getSpriteConfiguration(), 0, false);
-        destroyedExplosionfiguration.getSpriteConfiguration().setImageType(ImageEnums.ProtossDestroyedExplosion);
+        SpriteAnimationConfiguration destroyedExplosionfiguration = new SpriteAnimationConfiguration(spriteConfiguration.getSpriteConfiguration(), 2, false);
+        destroyedExplosionfiguration.getSpriteConfiguration().setImageType(ImageEnums.BossExplosion);
+        destroyedExplosionfiguration.getSpriteConfiguration().setScale(1);
+
+
         this.destructionAnimation = new SpriteAnimation(destroyedExplosionfiguration);
-        this.damage = 15;
+        this.damage = 12;
         this.allowedVisualsToRotate = false;
         this.destructionAnimation.setAnimationScale(4);
         this.knockbackStrength = 9;
 
-        BossActionable bossBehaviour1 = new SpawnProtossScout();
+        BossActionable bossBehaviour1 = new CarrierBossSpawnProtossScout();
         bossBehaviourList.add(bossBehaviour1);
 
-        BossActionable bossBehaviour2 = new SpawnProtossShuttle();
+        BossActionable bossBehaviour2 = new CarrierBossSpawnProtossShuttle();
         bossBehaviourList.add(bossBehaviour2);
 
-        BossActionable bossBehaviour3 = new SpawnPulsingDrones();
+        BossActionable bossBehaviour3 = new CarrierBossSpawnPulsingDrones();
         bossBehaviourList.add(bossBehaviour3);
 
-        BossActionable bossBehaviour4 = new SpawnProtossBeacon();
+        BossActionable bossBehaviour4 = new CarrierBossSpawnProtossBeacon();
         bossBehaviourList.add(bossBehaviour4);
 
-        BossActionable bossBehaviour5 = new FireTrackingLaserbeam();
+        BossActionable bossBehaviour5 = new CarrierBossFireTrackingLaserbeam();
         bossBehaviourList.add(bossBehaviour5);
 
         bossBehaviourList = bossBehaviourList.stream()

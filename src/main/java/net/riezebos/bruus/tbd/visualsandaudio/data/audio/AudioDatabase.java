@@ -18,6 +18,8 @@ public class AudioDatabase {
     private CustomAudioClip keygen;
     private CustomAudioClip bloodOnTheDanceFloor;
     private CustomAudioClip waveshaperMonster;
+    private CustomAudioClip mausoleumMash;
+    private CustomAudioClip arisen;
 
     private CustomAudioClip silentAudio;
 
@@ -44,6 +46,7 @@ public class AudioDatabase {
         put(AudioEnums.ProtossShipDeath, 5);
         put(AudioEnums.ClassCarrierSlowingDown, 4);
         put(AudioEnums.ClassCarrierSpeedingUp, 2);
+        put(AudioEnums.DistressCall, 1);
 
         put(AudioEnums.CarrierRdy0, 1);
         put(AudioEnums.CarrierWhat0, 1);
@@ -96,8 +99,8 @@ public class AudioDatabase {
         put(AudioEnums.NewPlayerLaserbeam, 9);
         put(AudioEnums.PlayerTakesDamage, 5);
         put(AudioEnums.SpecialAttackFinishedCharging, 2);
-        put(AudioEnums.SpaceStationBlastingOff, 2);
-        put(AudioEnums.SpaceStationChargingUpMovement, 2);
+        put(AudioEnums.SpaceStationBlastingOff, 1);
+        put(AudioEnums.SpaceStationChargingUpMovement, 1);
     }};
 
     private AudioDatabase() {
@@ -129,12 +132,9 @@ public class AudioDatabase {
         loadSoundEffects();
     }
 
-    private int tickCounter = 0;
 
     public void updateGameTick() {
-        if (tickCounter++ % 3 == 0) {  // Run every 3rd tick to save performance, theoretically should not be noticeable
-            PerformanceLoggerManager.timeAndLog(performanceLogger, "Reset Clips", this::resetClips);
-        }
+        PerformanceLoggerManager.timeAndLog(performanceLogger, "Reset Clips", this::resetClips);
     }
 
     private void resetClips() {
@@ -155,6 +155,8 @@ public class AudioDatabase {
         keygen = new CustomAudioClip(AudioEnums.keygen);
         nomad = new CustomAudioClip(AudioEnums.nomad);
         waveshaperMonster = new CustomAudioClip(AudioEnums.WaveshaperMonster);
+        mausoleumMash = new CustomAudioClip(AudioEnums.MausoleumMash);
+        arisen = new CustomAudioClip(AudioEnums.Arisen);
     }
 
     private void loadSoundEffects() {
@@ -183,7 +185,7 @@ public class AudioDatabase {
                 }
             }
         }
-        return null; //Soms spelen audio bestanden niet af, deze breakpoint staat hier omdat ik het een keer wil betrappen
+        return null;
     }
 
 
@@ -201,38 +203,13 @@ public class AudioDatabase {
                 return this.keygen;
             case WaveshaperMonster:
                 return this.waveshaperMonster;
-            case Player_Laserbeam:
-            case Destroyed_Explosion:
-            case Alien_Spaceship_Destroyed:
-            case Alien_Bomb_Impact:
-            case Large_Ship_Destroyed:
-            case Default_EMP:
-            case Alien_Bomb_Destroyed:
-            case GenericSelect:
-            case Rocket_Launcher:
-            case Flamethrower:
-            case Firewall:
-            case NotEnoughMinerals:
-            case ChargingLaserbeam:
-            case NewPlayerLaserbeam:
-            case StickyGrenadeExplosion:
-            case PlayerTakesDamage:
-            case SpaceStationBlastingOff:
-            case SpaceStationChargingUpMovement:
-            case SpecialAttackFinishedCharging:
-            case GuardianDeath:
-            case GuardianBirth:
-            case QueenDeath:
-            case OverlordDeath:
-            case ProtossShipDeath:
-            case ClassCarrierSlowingDown:
-            case ClassCarrierSpeedingUp:
+            case MausoleumMash:
+                return this.mausoleumMash;
+            case Arisen:
+                return this.arisen;
             default:
                 return getAvailableClip(audioType);
-            case NONE:
-                break;
         }
-        return null;
     }
 
 
@@ -240,8 +217,8 @@ public class AudioDatabase {
         return allActiveClips;
     }
 
-    public void removeClipFromActiveClips(CustomAudioClip clip){
-        if(allActiveClips.contains(clip)){
+    public void removeClipFromActiveClips(CustomAudioClip clip) {
+        if (allActiveClips.contains(clip)) {
             clip.setPlaybackPosition(0);
             clip.stopClip();
             allActiveClips.remove(clip);

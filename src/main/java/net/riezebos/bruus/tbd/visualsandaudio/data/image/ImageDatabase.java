@@ -2,7 +2,6 @@ package net.riezebos.bruus.tbd.visualsandaudio.data.image;
 
 import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
-import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -13,6 +12,11 @@ public class ImageDatabase {
     private static ImageDatabase instance = new ImageDatabase();
     private ImageLoader imgLoader = ImageLoader.getInstance();
 
+
+    private BufferedImage bossHealthBarBackground;
+    private BufferedImage bossHealthBarRed;
+    private BufferedImage bossHealthBarFront;
+
     private BufferedImage model3BetterUpgrade;
     private BufferedImage fuelCannister;
     private BufferedImage infernalPreIgniter;
@@ -22,6 +26,7 @@ public class ImageDatabase {
     private BufferedImage upOrange;
     private BufferedImage upGrey;
     private BufferedImage upgradeSelectedCheck;
+    private BufferedImage highVelocityLasers;
     private BufferedImage bountyHunterUnlock;
     private BufferedImage compoundWealthUnlock;
     private BufferedImage clubAccessUnlock;
@@ -32,6 +37,10 @@ public class ImageDatabase {
     private BufferedImage protossShipAmountIcon;
 
     private BufferedImage alienBombImage;
+    private List<BufferedImage> twinBoss = new ArrayList<>();
+    private List<BufferedImage> strikerBoss = new ArrayList<>();
+    private List<BufferedImage> strikerCornerDrone = new ArrayList<>();
+    private List<BufferedImage> callForHelp = new ArrayList<>();
     private List<BufferedImage> rotatingBoxes = new ArrayList<>();
     private List<BufferedImage> explosion3 = new ArrayList<>();
     private List<BufferedImage> mothershipdroneMissile = new ArrayList<>();
@@ -53,6 +62,9 @@ public class ImageDatabase {
     private List<BufferedImage> bulldozer = new ArrayList<>();
     private List<BufferedImage> flamer = new ArrayList<>();
     private List<BufferedImage> bomba = new ArrayList<>();
+    private List<BufferedImage> blueBoss = new ArrayList<>();
+    private List<BufferedImage> blueBossFactory = new ArrayList<>();
+    private List<BufferedImage> blueBossFactoryDefender = new ArrayList<>();
 
     private List<BufferedImage> needler = new ArrayList<>();
     private List<BufferedImage> destructableOrbitCenterMissile = new ArrayList<>();
@@ -318,6 +330,8 @@ public class ImageDatabase {
     // Enemy Exhaust Animations
     private List<BufferedImage> explosion2 = new ArrayList<>();
     private List<BufferedImage> electroShredImproved = new ArrayList<>();
+    private List<BufferedImage> droneElectroShred = new ArrayList<>();
+    private List<BufferedImage> bossExplosion = new ArrayList<>();
 
     // Enemy projectile explosions
     private List<BufferedImage> bombaProjectileExplosion = new ArrayList<>();
@@ -577,6 +591,9 @@ public class ImageDatabase {
         this.spaceclouds2 = imgLoader.getImage(ImageEnums.SpaceClouds2);
         this.spaceclouds3 = imgLoader.getImage(ImageEnums.SpaceClouds3);
         this.spaceclouds4 = imgLoader.getImage(ImageEnums.SpaceClouds4);
+        this.bossHealthBarBackground = imgLoader.getImage(ImageEnums.BossHealthBarBackground);
+        this.bossHealthBarFront = imgLoader.getImage(ImageEnums.BossHealthBarFront);
+        this.bossHealthBarRed = imgLoader.getImage(ImageEnums.BossHealthBarRed);
     }
 
     private void initEnemies() {
@@ -770,6 +787,7 @@ public class ImageDatabase {
         this.compoundWealthUnlock = imgLoader.getImage(ImageEnums.CompoundWealthUnlock);
         this.treasureHunterUnlock = imgLoader.getImage(ImageEnums.TreasureHunterUnlock);
         this.clubAccessUnlock = imgLoader.getImage(ImageEnums.ClubAcessUnlock);
+        this.highVelocityLasers = imgLoader.getImage(ImageEnums.HighVelocityLasers);
 
         this.progressBar = imgLoader.getImage(ImageEnums.ProgressBar);
         this.progressBarFilling = imgLoader.getImage(ImageEnums.ProgressBarFilling);
@@ -962,6 +980,12 @@ public class ImageDatabase {
 
     public BufferedImage getImage(ImageEnums imageType) {
         switch (imageType) {
+            case BossHealthBarBackground:
+                return bossHealthBarBackground;
+            case BossHealthBarFront:
+                return bossHealthBarFront;
+            case BossHealthBarRed:
+                return bossHealthBarRed;
             case RedPlanet3:
                 return this.redPlanet3;
             case AimAssist:
@@ -1099,6 +1123,8 @@ public class ImageDatabase {
                 return this.bountyHunterUnlock;
             case UpgradeSelectedCheck:
                 return this.upgradeSelectedCheck;
+            case HighVelocityLasers:
+                return this.highVelocityLasers;
             case UpOrange:
                 return upOrange;
             case UpGrey:
@@ -1660,6 +1686,14 @@ public class ImageDatabase {
                 return defenderMiniBoss;
             case RotatingBoxes:
                 return this.rotatingBoxes;
+            case StrikerBoss:
+                return this.strikerBoss;
+            case TwinBoss:
+                return this.twinBoss;
+            case StrikerCornerDrone:
+                return this.strikerCornerDrone;
+            case CallForHelp:
+                return this.callForHelp;
             case YellowBoss:
                 return this.yellowBoss;
             case CarrierPulsingDrone:
@@ -1806,6 +1840,8 @@ public class ImageDatabase {
                 return thornsDamage;
             case ElectroShredImproved:
                 return electroShredImproved;
+            case DroneElectroShred:
+                return droneElectroShred;
             case Tazer:
                 return tazer;
             case Seeker:
@@ -1818,10 +1854,18 @@ public class ImageDatabase {
                 return lightningOrbDestruction;
             case Explosion2:
                 return explosion2;
+            case BossExplosion:
+                return bossExplosion;
             case Flamer:
                 return flamer;
             case Bomba:
                 return bomba;
+            case BlueBoss:
+                return this.blueBoss;
+            case BlueBossFactory:
+                return this.blueBossFactory;
+            case BlueBossFactoryDefender:
+                return this.blueBossFactoryDefender;
             case DestructableOrbitCenterMissile:
                 return destructableOrbitCenterMissile;
             case AlienLaserBeamAnimated:
@@ -2251,6 +2295,12 @@ public class ImageDatabase {
             gasolineExplosion.add(image);
         }
 
+        for (int i = 0; i < 7; i++) {
+            String sourceString = String.format("/images/gif/PNGtoGIF/CallForHelp/%d.png", i);
+            BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+            callForHelp.add(image);
+        }
+
         for (int i = 0; i < 25; i++) {
             String sourceString = String.format("/images/gif/PNGtoGIF/GasolineBurning/%d.png", i);
             BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
@@ -2308,6 +2358,12 @@ public class ImageDatabase {
             String sourceString = String.format("/images/gif/PNGtoGIF/Explosion 2/tile%d.png", i);
             BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
             explosion2.add(image);
+        }
+
+        for (int i = 0; i < 15; i++) {
+            String sourceString = String.format("/images/gif/PNGtoGIF/BossExplosion/%d.png", i);
+            BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+            bossExplosion.add(image);
         }
 
         for (int i = 0; i < 62; i++) {
@@ -2401,6 +2457,24 @@ public class ImageDatabase {
         }
 
         for (int i = 0; i < 4; i++) {
+            String sourceString = String.format("/images/Ships/Enemy Ships/BlueBoss/%d.png", i);
+            BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+            blueBoss.add(image);
+        }
+
+        for (int i = 0; i < 4; i++) {
+            String sourceString = String.format("/images/Ships/Enemy Ships/BlueBossFactory/%d.png", i);
+            BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+            blueBossFactory.add(image);
+        }
+
+        for (int i = 0; i < 1; i++) {
+            String sourceString = String.format("/images/Ships/Enemy Ships/BlueBossFactoryDefender/%d.png", i);
+            BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+            blueBossFactoryDefender.add(image);
+        }
+
+        for (int i = 0; i < 4; i++) {
             String sourceString = String.format("/images/Ships/Enemy Ships/YellowBoss/%d.png", i);
             BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
             yellowBoss.add(image);
@@ -2435,6 +2509,12 @@ public class ImageDatabase {
             String sourceString = String.format("/images/gif/PNGtoGIF/Player EMP/doubled/%d.png", i);
             BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
             electroShredImproved.add(image);
+        }
+
+        for (int i = 1; i < 10; i++) {
+            String sourceString = String.format("/images/gif/PNGtoGIF/Player EMP negative/%d.png", i);
+            BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+            droneElectroShred.add(image);
         }
 
         for (int i = 0; i < 7; i++) {
@@ -2683,6 +2763,24 @@ public class ImageDatabase {
             String sourceString = String.format("/images/gif/PNGtoGIF/Rotatingboxes/%d.png", i);
             BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
             rotatingBoxes.add(image);
+        }
+
+        for (int i = 0; i < 4; i++) {
+            String sourceString = String.format("/images/Ships/Enemy Ships/Strikerboss/%d.png", i);
+            BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+            strikerBoss.add(image);
+        }
+
+        for (int i = 0; i < 4; i++) {
+            String sourceString = String.format("/images/Ships/Enemy Ships/Twinboss/%d.png", i);
+            BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+            twinBoss.add(image);
+        }
+
+        for (int i = 0; i < 4; i++) {
+            String sourceString = String.format("/images/Ships/Enemy Ships/StrikerCornerDrone/%d.png", i);
+            BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+            strikerCornerDrone.add(image);
         }
 
         for (int i = 0; i < 10; i++) {

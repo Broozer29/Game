@@ -4,6 +4,7 @@ import net.riezebos.bruus.tbd.game.gameobjects.enemies.Enemy;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyConfiguration;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.*;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
+import net.riezebos.bruus.tbd.game.items.effects.effectimplementations.SpawnCoinsOnDeath;
 import net.riezebos.bruus.tbd.game.movement.MovementConfiguration;
 import net.riezebos.bruus.tbd.game.movement.MovementPatternSize;
 import net.riezebos.bruus.tbd.game.movement.Point;
@@ -33,6 +34,9 @@ public class DefenderMiniBoss extends Enemy {
         this.damage = 10;
         this.detonateOnCollision = false;
         this.knockbackStrength = 10;
+
+        SpawnCoinsOnDeath goldOnDeathEffect = new SpawnCoinsOnDeath(25, 3);
+        this.addEffect(goldOnDeathEffect);
     }
 
 

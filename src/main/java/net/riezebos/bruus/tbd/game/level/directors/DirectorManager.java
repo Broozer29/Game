@@ -23,7 +23,6 @@ public class DirectorManager {
     private List<MonsterCard> baseMonsterCards = new ArrayList<>();
     private List<MonsterCard> miniBossMonsterCards = new ArrayList<>();
     private boolean enabled;
-    public boolean testingRichMode; //used for testing only
 
     private double lastCashCarrierSpawnTime;
     private double godRunCreditsBonus = 0.35;
@@ -155,7 +154,11 @@ public class DirectorManager {
         float creditAmount = (float) ((0.5f + 0.025 * gameStateInfo.getDifficultyCoefficient())) + (LevelManager.getInstance().getCurrentLevelDifficultyScore() * 0.35f); // Determine the amount of credits to distribute
 
         if (godRunDetector.getGodRunScore() >= 1) {
-            creditAmount *= (1 + this.godRunCreditsBonus);
+            if(godRunDetector.getGodRunScore() >= 3){
+                creditAmount *= (1 + (this.godRunCreditsBonus + 0.2f));
+            } else {
+                creditAmount *= (1 + this.godRunCreditsBonus);
+            }
         }
 
         for (Director director : directorList) {

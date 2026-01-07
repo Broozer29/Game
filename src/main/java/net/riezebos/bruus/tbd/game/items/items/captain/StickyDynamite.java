@@ -19,9 +19,9 @@ import java.util.Random;
 
 public class StickyDynamite extends Item {
 
-    public static float explosionDamage = 1;
+    public static float explosionDamage = 1.75f;
     private float scaleFactor = 1;
-    public static float chanceToProc = 0.1f;
+    public static float chanceToProc = 0.15f;
     private Random random = new Random();
 
     public StickyDynamite () {

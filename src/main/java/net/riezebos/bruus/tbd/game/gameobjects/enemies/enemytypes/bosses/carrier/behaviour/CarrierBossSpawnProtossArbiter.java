@@ -3,7 +3,7 @@ package net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.carrie
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.Enemy;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.BossActionable;
 
-public class SpawnProtossArbiter implements BossActionable {
+public class CarrierBossSpawnProtossArbiter implements BossActionable {
     //Arbiter die de baas healed
     //Hoge cooldown zodat de speler hem moet prioritizen
     //Synergy met andere protoss ships, moeilijk deze te raken als de andere leven

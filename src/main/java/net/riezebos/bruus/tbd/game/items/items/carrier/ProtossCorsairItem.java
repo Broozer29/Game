@@ -9,6 +9,9 @@ import net.riezebos.bruus.tbd.game.items.ItemEnums;
 import net.riezebos.bruus.tbd.game.items.enums.ItemApplicationEnum;
 
 public class ProtossCorsairItem extends Item {
+    public static int maxDamageBase = 100;
+    public static int maxDamageIncrease = 50;
+
     public ProtossCorsairItem(){
         super(ItemEnums.ProtossCorsair, 1,  ItemApplicationEnum.UponAcquiring);
     }
@@ -20,6 +23,10 @@ public class ProtossCorsairItem extends Item {
     public void increaseQuantityOfItem(int amount) {
         this.quantity += amount;
         applyEffectToObject(null);
+    }
+
+    public float getMaxDamage(GameObject target) {
+        return Math.min(target.getMaxHitPoints() * 0.5f, (maxDamageBase + this.quantity * maxDamageIncrease));
     }
 
     @Override

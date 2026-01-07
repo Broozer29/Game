@@ -136,7 +136,7 @@ public class Queen extends Enemy {
 
         float scale = 1;
         Enemy enemy2 = EnemyCreator.createEnemy(selectedEnemy, this.getCenterXCoordinate(), this.getCenterYCoordinate(), Direction.LEFT, scale
-                , selectedEnemy.getMovementSpeed(), selectedEnemy.getMovementSpeed(), MovementPatternSize.SMALL, false);
+                , selectedEnemy.getMovementSpeed());
 
         enemy2.setCenterCoordinates(this.getCenterXCoordinate() - enemy2.getWidth(), this.getCenterYCoordinate());
         enemy2.move();

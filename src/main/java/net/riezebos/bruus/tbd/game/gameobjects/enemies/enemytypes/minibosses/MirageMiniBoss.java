@@ -9,6 +9,7 @@ import net.riezebos.bruus.tbd.game.gameobjects.missiles.*;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
 import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SpaceShip;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
+import net.riezebos.bruus.tbd.game.items.effects.effectimplementations.SpawnCoinsOnDeath;
 import net.riezebos.bruus.tbd.game.movement.Direction;
 import net.riezebos.bruus.tbd.game.movement.MovementConfiguration;
 import net.riezebos.bruus.tbd.game.movement.MovementPatternSize;
@@ -44,7 +45,7 @@ public class MirageMiniBoss extends Enemy {
         this.detonateOnCollision = false;
         this.knockbackStrength = 8;
         this.damage = 10;
-        this.attackSpeed = 3;
+        this.attackSpeed = 2;
 
         initializeDirections();
 
@@ -52,7 +53,10 @@ public class MirageMiniBoss extends Enemy {
             pathFinder.setMaxBounces(1000);
             pathFinder.setUseCenteredCoordinatesInstead(true);
         }
-        lastTimeCloned = GameState.getInstance().getGameSeconds(); //spawn with clones on cooldown
+        lastTimeCloned = GameState.getInstance().getGameSeconds() - 12; //spawn with clones on cooldown
+
+        SpawnCoinsOnDeath goldOnDeathEffect = new SpawnCoinsOnDeath(25, 3);
+        this.addEffect(goldOnDeathEffect);
     }
 
     private void initializeDirections() {
@@ -89,7 +93,7 @@ public class MirageMiniBoss extends Enemy {
             spawnCloneAnimation();
             super.cleanseAllEffects();
 
-            for (int i = 0; i < 1; i++) {
+            for (int i = 0; i < 2; i++) {
                 createClone();
             }
 
@@ -179,7 +183,7 @@ public class MirageMiniBoss extends Enemy {
         SpriteConfiguration spriteConfiguration = new SpriteConfiguration();
         spriteConfiguration.setxCoordinate(this.getCenterXCoordinate());
         spriteConfiguration.setyCoordinate(this.getCenterYCoordinate());
-        spriteConfiguration.setImageType(ImageEnums.SmokeExplosion); //placeholder
+        spriteConfiguration.setImageType(ImageEnums.SmokeExplosion);
         spriteConfiguration.setScale(1);
 
         SpriteAnimationConfiguration cloneAnimationConfiguration = new SpriteAnimationConfiguration(spriteConfiguration, 1, false);
@@ -190,16 +194,15 @@ public class MirageMiniBoss extends Enemy {
 
     private void createClone() {
         Enemy clonedEnemy = EnemyCreator.createEnemy(EnemyEnums.MirageMiniBoss, this.xCoordinate, this.yCoordinate, Direction.LEFT,
-                this.scale, EnemyEnums.MirageMiniBoss.getMovementSpeed(), EnemyEnums.MirageMiniBoss.getMovementSpeed(), MovementPatternSize.SMALL, false);
+                this.scale, EnemyEnums.MirageMiniBoss.getMovementSpeed());
         clonedEnemy.setDamage(0); //overwrite the damage to 0
         clonedEnemy.setOwnerOrCreator(this);
         clonedEnemy.setMaxHitPoints(this.maxHitPoints);
         clonedEnemy.setCurrentHitpoints(this.currentHitpoints);
-        clonedEnemy.setBaseArmor(-75); // massively increased damage taken
-        clonedEnemy.getDestructionAnimation().changeImagetype(ImageEnums.SmokeExplosion); //placeholder
+        clonedEnemy.setBaseArmor(-100); // massively increased damage taken
+        clonedEnemy.getDestructionAnimation().changeImagetype(ImageEnums.SmokeExplosion);
         clonedEnemy.getDestructionAnimation().setAnimationScale(0.65f);
         clonedEnemy.getDestructionAnimation().setFrameDelay(2);
-        //this doesnt copy status effects, easy solution: cleanse status effects when it makes clones
 
         clonedEnemy.resetMovementPath();
         float newSpeed = getDifferentMovementSpeed(getDifferentMovementSpeed(this.getMovementConfiguration().getXMovementSpeed()));
@@ -215,7 +218,7 @@ public class MirageMiniBoss extends Enemy {
 
     private float getDifferentMovementSpeed(float currentMoveSpeed){
         float returnSpeed = currentMoveSpeed * 0.95f;
-        float bonusSpeed = random.nextFloat(0, (currentMoveSpeed * 0.1f));
+        float bonusSpeed = random.nextFloat(0, (currentMoveSpeed * 0.2f));
 
         return returnSpeed + bonusSpeed;
     }

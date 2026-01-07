@@ -13,6 +13,7 @@ public enum MissileEnums {
     Orbitter(false, "Orbitter", ImageEnums.BarrierProjectileDestruction, ImageEnums.BarrierProjectile),
     ProtossShuttleMissile(false, "Shuttle Missile", ImageEnums.ProtossShuttleMissileExplosion, ImageEnums.ProtossShuttleMissile),
     ReflectiveBlocks(false, "Reflective Blocks", ImageEnums.ProtossShuttleMissileExplosion, ImageEnums.RotatingBoxes),
+    StationaryExplodingBomb(false, "Stationary Exploding Bomb", ImageEnums.Bomba_Missile_Explosion, ImageEnums.Bomba_Missile),
     BarrierProjectile(false, "BarrierProjectile", ImageEnums.BarrierProjectileDestruction, ImageEnums.BarrierProjectile);
 
     private final boolean usesBoxCollision;

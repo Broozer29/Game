@@ -116,19 +116,6 @@ public class GameObjectMover {
             moveConfig.setCurrentLocation(moveConfig.getNextPoint());
             gameObject.setXCoordinate(moveConfig.getNextPoint().getX());
             gameObject.setYCoordinate(moveConfig.getNextPoint().getY());
-
-            //Homing movement rotation is hell, just use 360 degrees visual objects so you dont need to rotate
-            //Leave the code in this method but comment it out
-//            if (gameObject.isAllowedVisualsToRotate()) {
-//                if (hasPassedPlayerOrNeverHadLock) {
-//                    gameObject.rotateGameObjectTowards(moveConfig.getRotation());
-//                    gameObject.setAllowedVisualsToRotate(false);
-//                } else {
-//                    Point targetPoint = new Point(moveConfig.getTarget().getCenterXCoordinate(), moveConfig.getTarget().getCenterYCoordinate());
-//                    gameObject.rotateGameObjectTowards(targetPoint.getX(), targetPoint.getY());
-//                }
-//            }
-
         }
     }
 

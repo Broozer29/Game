@@ -1,7 +1,6 @@
 package net.riezebos.bruus.tbd.game.items.items;
 
 import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
-import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
 import net.riezebos.bruus.tbd.game.items.Item;
 import net.riezebos.bruus.tbd.game.items.ItemEnums;
 import net.riezebos.bruus.tbd.game.items.PlayerInventory;
@@ -22,10 +21,10 @@ public class GlassCannon extends Item {
     @Override
     public void applyEffectToObject (GameObject gameObject) {
         if(shouldApply) {
-            PlayerStats.getInstance().modifyMaxHitPointsMultiplier(-modifierBonus);
-            PlayerStats.getInstance().addMaxShieldMultiplier(-modifierBonus);
-            PlayerStats.getInstance().addMaxOverloadingShieldMultiplier(-modifierBonus);
-            PlayerStats.getInstance().modifyBaseDamageMultiplier(damageBonus);
+//            PlayerStats.getInstance().modifyMaxHitPointsMultiplier(-modifierBonus);
+//            PlayerStats.getInstance().addMaxShieldMultiplier(-modifierBonus);
+//            PlayerStats.getInstance().addMaxOverloadingShieldMultiplier(-modifierBonus);
+//            PlayerStats.getInstance().modifyBaseDamageMultiplier(damageBonus);
             shouldApply = false;
         }
     }

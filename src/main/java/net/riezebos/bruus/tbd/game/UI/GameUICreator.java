@@ -1,9 +1,9 @@
 package net.riezebos.bruus.tbd.game.UI;
 
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
+import net.riezebos.bruus.tbd.game.level.LevelManager;
 import net.riezebos.bruus.tbd.guiboards.guicomponents.GUIComponent;
 import net.riezebos.bruus.tbd.visualsandaudio.data.DataClass;
-import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.LevelSongs;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.AnimationManager;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteAnimation;
@@ -108,12 +108,10 @@ public class GameUICreator {
         if(isBossLevel){
             wingsImageEnum = ImageEnums.RedWings5;
         } else {
-            wingsImageEnum = LevelSongs.getImageEnumByDifficultyScore(currentLevelDifficultyScore);
+            wingsImageEnum = LevelManager.getInstance().getImageEnumByDifficultyScore(currentLevelDifficultyScore);
         }
 
         int xCoordinate = Math.round(DataClass.getInstance().getWindowWidth() * 0.60305f);
-//        int yCoordinate = DataClass.getInstance().getPlayableWindowMaxHeight() + 20;
-
 
         float scale = 1 * DataClass.getInstance().getResolutionFactor();
         difficultyWings = new UIObject(createUIConfiguration(0, DataClass.getInstance().getPlayableWindowMaxHeight() + 20, scale, wingsImageEnum));

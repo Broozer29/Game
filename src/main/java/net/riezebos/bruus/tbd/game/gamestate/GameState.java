@@ -1,8 +1,8 @@
 package net.riezebos.bruus.tbd.game.gamestate;
 
-import net.riezebos.bruus.tbd.game.level.LevelManager;
 import net.riezebos.bruus.tbd.game.gamestate.save.SaveFile;
-import net.riezebos.bruus.tbd.visualsandaudio.data.DataClass;
+import net.riezebos.bruus.tbd.game.level.LevelManager;
+import net.riezebos.bruus.tbd.game.level.directors.GodRunDetector;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.AudioManager;
 
 public class GameState {
@@ -44,6 +44,7 @@ public class GameState {
         this.initialOffset = (1 / 0.33f);
         this.bossesDefeated = 0;
         difficultyCoefficient = 1;
+        lastPause = 0;
     }
 
 
@@ -51,20 +52,19 @@ public class GameState {
 
     public void updateDifficultyCoefficient() {
         float playerFactor = 1;
-        float baseTimeFactor = 0.0696f; // Base factor for time, at LevelManager difficulty 2
-        float maxTimeFactor = 0.1175f;   // Maximum time factor for LevelManager difficulty 6
-        float stageFactor = 1;          // Exponential growth for each stage completed, currently disabled (1 for now)
+        float baseTimeFactor = 0.0736f; // Base factor for time, at LevelManager difficulty 2
+        float maxTimeFactor = 0.1275f;   // Maximum time factor for LevelManager difficulty 6
+        float stageFactor = 1.05f;          // Exponential growth for each stage completed
 
         float songDifficultyModifier = LevelManager.getInstance().getCurrentLevelDifficultyScore();
-        // This should range between 2 and 6 per your comments.
-
         // Scale the time factor based on the level difficulty
         float timeFactor = baseTimeFactor + (maxTimeFactor - baseTimeFactor) * ((songDifficultyModifier - 2) / (6 - 2));
 
         double timeInMinutes = 0.015f / 60.0f; // Convert seconds to minutes
 
+        float godRunBonus = GodRunDetector.getInstance().getGodRunScore() >= 3 ? 1.2f : 1;
         // Calculate the additional difficulty increment
-        float increment = (float)((timeInMinutes * timeFactor) * stageFactor) + testingVariableBonus;
+        float increment = (float)((timeInMinutes * timeFactor) * stageFactor) + testingVariableBonus * godRunBonus;
 
         if (testingVariableBonus > 0) {
             System.out.println("Adding additional difficulty coefficient in GameStateInfo.");

@@ -56,7 +56,7 @@ public class Guardian extends Enemy {
         }
     }
 
-    private Point calculateFrontPosition (int centerX, int centerY, double angleDegrees, double distanceToFront) {
+    protected Point calculateFrontPosition (int centerX, int centerY, double angleDegrees, double distanceToFront) {
         double angleRadians = Math.toRadians(angleDegrees);
 
         // Calculate the new position using trigonometry
@@ -95,7 +95,7 @@ public class Guardian extends Enemy {
                 missileType.getImageType(), scale);
 
 
-        float movementSpeed = 6.5f;
+        float movementSpeed = 5.75f;
         //Create missile movement attributes and create a movement configuration
         PathFinder missilePathFinder = new StraightLinePathFinder();
         MovementPatternSize movementPatternSize = MovementPatternSize.SMALL;
@@ -122,7 +122,7 @@ public class Guardian extends Enemy {
         missile.getAnimation().changeImagetype(ImageEnums.GuardianMissile);
         missile.getDestructionAnimation().changeImagetype(ImageEnums.GuardianMissileImpact);
         missile.getAnimation().setFrameDelay(1);
-        missile.setKnockbackStrength(5);
+        missile.setKnockbackStrength(6);
 
         //get the coordinates for rotation of the missile
         SpaceShip spaceship = PlayerManager.getInstance().getSpaceship();

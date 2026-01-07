@@ -8,7 +8,6 @@ import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyEnums;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.level.LevelManager;
 import net.riezebos.bruus.tbd.game.movement.Direction;
-import net.riezebos.bruus.tbd.game.movement.MovementPatternSize;
 import net.riezebos.bruus.tbd.game.movement.Point;
 import net.riezebos.bruus.tbd.game.movement.pathfinders.BouncingPathFinder;
 import net.riezebos.bruus.tbd.game.util.WithinVisualBoundariesCalculator;
@@ -23,7 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class SpawnShurikens implements BossActionable {
+public class YellowBossSpawnShurikens implements BossActionable {
 
     private int priority = 10;
     private int spawnCooldown = 30;
@@ -35,7 +34,7 @@ public class SpawnShurikens implements BossActionable {
     private List<SpriteAnimation> spawnAnimations = new ArrayList<>();
 
 
-    public SpawnShurikens() {
+    public YellowBossSpawnShurikens() {
         Point upperLeft = new Point(DataClass.getInstance().getWindowWidth() * 0.1f, DataClass.getInstance().getWindowHeight() * 0.1f);
         Point upperRight = new Point(DataClass.getInstance().getWindowWidth() * 0.9f, DataClass.getInstance().getWindowHeight() * 0.1f);
         Point lowerLeft = new Point(DataClass.getInstance().getWindowWidth() * 0.1f, DataClass.getInstance().getWindowHeight() * 0.9f);
@@ -104,7 +103,7 @@ public class SpawnShurikens implements BossActionable {
         EnemyEnums enemyType = EnemyEnums.Shuriken;
         Direction direction = getRandomDirection();
         Enemy shuriken = EnemyCreator.createEnemy(enemyType, enemy.getXCoordinate(), enemy.getYCoordinate(), direction,
-                enemyType.getDefaultScale(), enemyType.getMovementSpeed() * moveSpeedModifier,enemyType.getMovementSpeed(), MovementPatternSize.SMALL, false);
+                enemyType.getDefaultScale(), enemyType.getMovementSpeed() * moveSpeedModifier);
         shuriken.setCenterCoordinates(spriteAnimation.getCenterXCoordinate(), spriteAnimation.getCenterYCoordinate());
         BouncingPathFinder pathFinder = new BouncingPathFinder();
         pathFinder.setMaxBounces(15);

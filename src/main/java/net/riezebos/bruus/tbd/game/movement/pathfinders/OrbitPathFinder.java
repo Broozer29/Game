@@ -15,15 +15,8 @@ public class OrbitPathFinder implements PathFinder {
 
     private GameObject target;
 
-    private float radius;
-    private float totalFrames;
-    private double offsetAngle; // NEW: Angle offset for this drone
-
-    public OrbitPathFinder (GameObject target, float radius, float totalFrames, double offsetAngle) {
+    public OrbitPathFinder (GameObject target) {
         this.target = target;
-        this.radius = radius;
-        this.totalFrames = totalFrames;
-        this.offsetAngle = offsetAngle;
     }
 
     @Override

@@ -9,6 +9,7 @@ import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.playerprofile.PlayerProfileManager;
 import net.riezebos.bruus.tbd.game.util.OnScreenText;
 import net.riezebos.bruus.tbd.game.util.OnScreenTextManager;
+import net.riezebos.bruus.tbd.guiboards.BoardManager;
 import net.riezebos.bruus.tbd.guiboards.TimerHolder;
 import net.riezebos.bruus.tbd.guiboards.background.BackgroundManager;
 import net.riezebos.bruus.tbd.guiboards.background.BackgroundObject;
@@ -264,20 +265,14 @@ public class ClassSelectionBoard extends JPanel implements TimerHolder {
         if (classDescription != null) {
             String desciption = classDescription.getDescription();
             String title = classDescription.getTitle();
-            String attackSpeed = "Attacks every: " + classDescription.getBaseAttackSpeed() + " seconds";
-            String attackDamage = "Base damage: " + Math.round(classDescription.getBaseDamage());
             String hitpoints = "Hitpoints: " + classDescription.getMaxHitpoints();
-            String armor = "Armor: " + classDescription.getBonusArmor();
             String difficulty = "Difficulty: " + classDescription.getDifficulty();
 
 
             if (!ClassSelectionBoardCreator.hasUnlockedClass(lastHoveredOtion)) {
                 title = "Locked";
                 desciption = classDescription.getUnlockCondition();
-                attackDamage = null;
-                attackSpeed = null;
                 hitpoints = null;
-                armor = null;
                 difficulty = null;
             }
 
@@ -304,7 +299,7 @@ public class ClassSelectionBoard extends JPanel implements TimerHolder {
                 descriptionY += lines * descriptionMetrics.getHeight();
             }
 
-            descriptionY += 40; //placeholder
+            descriptionY += 40;
 
             if (hitpoints != null) {
                 g.setFont(new Font(textFont, Font.PLAIN, Math.round(16 * DataClass.getInstance().getResolutionFactor())));
@@ -313,44 +308,11 @@ public class ClassSelectionBoard extends JPanel implements TimerHolder {
                 descriptionY += metrics.getHeight();
             }
 
-            if (armor != null) {
-                FontMetrics metrics = g.getFontMetrics();
-                drawDescriptionText(g, armor, descriptionX, descriptionY, maxTextWidth, Color.ORANGE);
-                descriptionY += metrics.getHeight();
-            }
-
-            if (attackSpeed != null) {
-                FontMetrics metrics = g.getFontMetrics();
-                drawDescriptionText(g, attackSpeed, descriptionX, descriptionY, maxTextWidth, Color.ORANGE);
-                descriptionY += metrics.getHeight();
-            }
-
-            if (attackDamage != null) {
-                FontMetrics metrics = g.getFontMetrics();
-                drawDescriptionText(g, attackDamage, descriptionX, descriptionY, maxTextWidth, Color.ORANGE);
-                descriptionY += metrics.getHeight();
-            }
-
             if (difficulty != null) {
                 FontMetrics metrics = g.getFontMetrics();
                 drawDescriptionText(g, difficulty, descriptionX, descriptionY, maxTextWidth, Color.ORANGE);
                 descriptionY += metrics.getHeight();
             }
-
-//            int tempHeight = 0;
-//            if (attackSpeed != null) {
-//                g.setFont(new Font(textFont, Font.PLAIN, Math.round(16 * DataClass.getInstance().getResolutionFactor())));
-//                FontMetrics descriptionMetrics = g.getFontMetrics();
-//                int attackSpeedY = backgroundCard.getYCoordinate() + boxHeight - verticalPadding - descriptionMetrics.getHeight();
-//                tempHeight = descriptionMetrics.getHeight();
-//                drawDescriptionText(g, attackSpeed, descriptionX, attackSpeedY, maxTextWidth, Color.ORANGE);
-//            }
-//            if (attackDamage != null) {
-//                g.setFont(new Font(textFont, Font.PLAIN, Math.round(16 * DataClass.getInstance().getResolutionFactor())));
-//                FontMetrics descriptionMetrics = g.getFontMetrics();
-//                int attackDamageY = backgroundCard.getYCoordinate() + boxHeight - verticalPadding - descriptionMetrics.getHeight() - Math.round(tempHeight * 1.5f);
-//                drawDescriptionText(g, attackDamage, descriptionX, attackDamageY, maxTextWidth, Color.ORANGE);
-//            }
         }
     }
 
@@ -656,6 +618,14 @@ public class ClassSelectionBoard extends JPanel implements TimerHolder {
                     needsUpdate = true;
                     lastMoveTime = currentTime;
                 }
+            }
+
+            if (currentTime - lastMoveTime > MOVE_COOLDOWN &&
+                    controllerInputReader.isInputActive(ControllerInputEnums.SPECIAL_ATTACK)) {
+                // Select menu option
+                BoardManager.getInstance().switchScreen(BoardManager.ScreenType.MAIN_MENU);
+                needsUpdate = true;
+                lastMoveTime = currentTime;
             }
 
             if (needsUpdate) {

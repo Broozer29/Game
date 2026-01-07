@@ -3,6 +3,7 @@ package net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.spaceships;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.Enemy;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyConfiguration;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.MissileManager;
+import net.riezebos.bruus.tbd.game.gameobjects.missiles.specialAttacks.FlamerForceField;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.specialAttacks.SpecialAttack;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.specialAttacks.SpecialAttackConfiguration;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
@@ -22,7 +23,7 @@ public class Flamer extends Enemy {
         SpriteAnimationConfiguration destroyedExplosionfiguration = new SpriteAnimationConfiguration(spriteConfiguration.getSpriteConfiguration(), 0, false);
         destroyedExplosionfiguration.getSpriteConfiguration().setImageType(this.enemyType.getDestructionType());
         this.destructionAnimation = new SpriteAnimation(destroyedExplosionfiguration);
-        this.damage = 35;
+        this.damage = 5;
         this.attackSpeed = 5;
         this.detonateOnCollision = false;
         this.knockbackStrength = 8;
@@ -54,21 +55,15 @@ public class Flamer extends Enemy {
         SpriteConfiguration missileSpriteConfiguration = new SpriteConfiguration();
         missileSpriteConfiguration.setxCoordinate(this.getCenterXCoordinate());
         missileSpriteConfiguration.setyCoordinate(this.getCenterYCoordinate());
-        missileSpriteConfiguration.setScale(1.65f);
-        missileSpriteConfiguration.setImageType(ImageEnums.Electroshred);
+        missileSpriteConfiguration.setScale(1.25f);
+        missileSpriteConfiguration.setImageType(ImageEnums.EnergyCircle);
 
         SpriteAnimationConfiguration spriteAnimationConfiguration = new SpriteAnimationConfiguration(missileSpriteConfiguration, 2, false);
-//        SpriteAnimation anim = new SpriteAnimation(spriteAnimationConfiguration);
-//        anim.setX(-85);
-//        anim.setY(-85);
-//        AnimationManager.getInstance().addUpperAnimation(anim);
 
-
-        SpecialAttackConfiguration specialAttackConfiguration = new SpecialAttackConfiguration(this.getDamage(), false, true, false, false, true, false);
-        SpecialAttack specialAttack = new SpecialAttack(spriteAnimationConfiguration, specialAttackConfiguration);
+        SpecialAttackConfiguration specialAttackConfiguration = new SpecialAttackConfiguration(this.getDamage(), false, true, false, false, false, false);
+        SpecialAttack specialAttack = new FlamerForceField(spriteAnimationConfiguration, specialAttackConfiguration);
         specialAttack.setOwnerOrCreator(this);
         specialAttack.setObjectType("Flamer Special Attack");
-
 
         specialAttack.setObjectToCenterAround(this);
         specialAttack.setCenteredAroundObject(true);

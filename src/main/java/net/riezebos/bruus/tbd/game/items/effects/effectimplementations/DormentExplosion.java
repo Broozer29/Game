@@ -109,7 +109,7 @@ public class DormentExplosion implements EffectInterface {
         explosion.setOwnerOrCreator(PlayerManager.getInstance().getSpaceship()); //Assume it's the player who has items, never the enemies. Could hinder later design
 
         if (this.effectIdentifier.equals(EffectIdentifiers.GasolineDormantExplosion)) {
-            explosion.setScale(1.3f);
+            explosion.setScale(1.35f);
 
             if (burningDuration != 0 && burningDamage != 0) {
                 SpriteAnimationConfiguration burningConfig = new SpriteAnimationConfiguration(spriteConfiguration, 2, true);

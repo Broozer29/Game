@@ -19,7 +19,7 @@ import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteAnimation;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteAnimationConfiguration;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteConfiguration;
 
-public class FireTrackingLaserbeam implements BossActionable {
+public class CarrierBossFireTrackingLaserbeam implements BossActionable {
     //Vuurt een tracking laserbeam vanaf de neus die de speler volgt
     private int priority = 15;
     private int cooldown = 20;

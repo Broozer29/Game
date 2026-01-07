@@ -2,6 +2,7 @@ package net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.spaces
 
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.Enemy;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyCreator;
+import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyManager;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.BossActionable;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyEnums;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
@@ -14,13 +15,18 @@ import net.riezebos.bruus.tbd.game.util.WithinVisualBoundariesCalculator;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.AudioDatabase;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.CustomAudioClip;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.AudioEnums;
+import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
+import net.riezebos.bruus.tbd.visualsandaudio.objects.AnimationManager;
+import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteAnimation;
+import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteAnimationConfiguration;
+import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteConfiguration;
 
 import java.util.Random;
 
 public class SpaceStationSpinningAttack implements BossActionable {
 
     private double lastAttackedTime = 0;
-    private int attackCooldown = 50;
+    private int attackCooldown = 30;
     private Point centerPoint;
     private CustomAudioClip chargingUpMovement = null;
     private CustomAudioClip boostingAway = null;
@@ -32,6 +38,8 @@ public class SpaceStationSpinningAttack implements BossActionable {
 
     private float oldMoveSpeed = 0.0f;
     private float newMoveSpeedModifier = 2.75f + (LevelManager.getInstance().getBossDifficultyLevel() * 0.25f);
+
+    private int bounceCount = 0;
 
     public SpaceStationSpinningAttack () {
 //        chargingUpMovement = AudioDatabase.getInstance().getAudioClip(AudioEnums.SpaceStationChargingUpMovement);
@@ -74,6 +82,12 @@ public class SpaceStationSpinningAttack implements BossActionable {
         if (isMoving) {
             if (isBouncing) {
                 BouncingPathFinder pathFinder = (BouncingPathFinder) enemy.getMovementConfiguration().getPathFinder();
+                if(pathFinder.getCurrentBounces() > bounceCount) {
+                    bounceCount = pathFinder.getCurrentBounces();
+                    createShurikensAfterBouncing(enemy);
+                }
+
+
                 if (pathFinder.getCurrentBounces() > 5) {
                     DestinationPathFinder destinationPathFinder = new DestinationPathFinder();
                     enemy.getMovementConfiguration().setDestination(centerPoint);
@@ -91,6 +105,7 @@ public class SpaceStationSpinningAttack implements BossActionable {
                     allowedToBlastAway = false;
                     isBouncing = false;
                     lastAttackedTime = currentTime;
+                    bounceCount = 0;
                     enemy.getAnimation().setFrameDelay(2);
                     enemy.getMovementConfiguration().setXMovementSpeed(oldMoveSpeed);
                     enemy.getMovementConfiguration().setYMovementSpeed(oldMoveSpeed);
@@ -110,6 +125,38 @@ public class SpaceStationSpinningAttack implements BossActionable {
 
     }
 
+    private void createShurikensAfterBouncing(Enemy enemy){
+        SpriteConfiguration spriteConfiguration = new SpriteConfiguration();
+        spriteConfiguration.setImageType(ImageEnums.WarpIn);
+        spriteConfiguration.setScale(1);
+        spriteConfiguration.setxCoordinate(enemy.getCenterXCoordinate());
+        spriteConfiguration.setyCoordinate(enemy.getCenterYCoordinate());
+
+        SpriteAnimationConfiguration spriteAnimationConfiguration = new SpriteAnimationConfiguration(spriteConfiguration, 2, false);
+        SpriteAnimation spriteAnimation = new SpriteAnimation(spriteAnimationConfiguration);
+        spriteAnimation.setCenterCoordinates(enemy.getCenterXCoordinate(), enemy.getCenterYCoordinate());
+        AnimationManager.getInstance().addUpperAnimation(spriteAnimation);
+
+
+
+        Direction randomDirection = directions[random.nextInt(0, (directions.length - 1))];
+        EnemyManager.getInstance().addEnemy(createShuriken(enemy, randomDirection));
+    }
+
+    private Enemy createShuriken(Enemy enemy, Direction direction) {
+        EnemyEnums enemyType = EnemyEnums.Shuriken;
+        Enemy shuriken = EnemyCreator.createEnemy(enemyType, enemy.getCenterXCoordinate(), enemy.getCenterYCoordinate(), direction,
+                enemyType.getDefaultScale(), enemyType.getMovementSpeed());
+
+        shuriken.resetMovementPath();
+        shuriken.setCenterCoordinates(enemy.getCenterXCoordinate(), enemy.getCenterYCoordinate());
+        BouncingPathFinder pathFinder = new BouncingPathFinder();
+        pathFinder.setMaxBounces(25);
+        shuriken.getMovementConfiguration().setPathFinder(new BouncingPathFinder());
+        shuriken.setOwnerOrCreator(enemy);
+        shuriken.setDamage(enemy.getDamage() * 1.5f);
+        return shuriken;
+    }
 
     @Override
     public int getPriority () {

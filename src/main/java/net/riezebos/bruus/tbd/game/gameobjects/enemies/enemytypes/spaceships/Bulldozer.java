@@ -54,7 +54,7 @@ public class Bulldozer extends Enemy {
             int x = (int) (meanX + Math.cos(nextAngle) * radius);
             int y = (int) (meanY + Math.sin(nextAngle) * radius);
 
-            PathFinder pathFinder = new OrbitPathFinder(this, 85, 300, 0);
+            PathFinder pathFinder = new OrbitPathFinder(this);
             Enemy alienBomb = getEnemy(x, y, pathFinder);
             alienBomb.setOwnerOrCreator(this);
             alienBomb.getMovementConfiguration().setLastKnownTargetX(this.getCenterXCoordinate());

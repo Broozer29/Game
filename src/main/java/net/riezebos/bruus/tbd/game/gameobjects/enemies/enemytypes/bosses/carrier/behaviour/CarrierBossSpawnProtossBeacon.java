@@ -9,7 +9,6 @@ import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.level.LevelManager;
 import net.riezebos.bruus.tbd.game.movement.Direction;
-import net.riezebos.bruus.tbd.game.movement.MovementPatternSize;
 import net.riezebos.bruus.tbd.game.movement.Point;
 import net.riezebos.bruus.tbd.game.movement.pathfinders.DestinationPathFinder;
 import net.riezebos.bruus.tbd.game.util.WithinVisualBoundariesCalculator;
@@ -19,7 +18,7 @@ import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteAnimation;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteAnimationConfiguration;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteConfiguration;
 
-public class SpawnProtossBeacon implements BossActionable {
+public class CarrierBossSpawnProtossBeacon implements BossActionable {
     //Stuurt alle levende protoss naar de speler (zet gewoon de target in ProtossUtils op de speler met lage min/max distance
     //Alleen uitvoeren als er >= 5 protoss leven?
     private double lastSpawnedTime = 0;
@@ -103,9 +102,7 @@ public class SpawnProtossBeacon implements BossActionable {
         EnemyEnums enemyEnums = EnemyEnums.EnemyCarrierBeacon;
         Enemy enemyProtossBeacon = EnemyCreator.createEnemy(enemyEnums, enemy.getXCoordinate(), enemy.getYCoordinate(), Direction.LEFT,
                 enemyEnums.getDefaultScale(),
-                enemyEnums.getMovementSpeed() + LevelManager.getInstance().getBossDifficultyLevel() * 0.5f,
-                enemyEnums.getMovementSpeed() + LevelManager.getInstance().getBossDifficultyLevel() * 0.5f,
-                MovementPatternSize.SMALL, false);
+                enemyEnums.getMovementSpeed() + LevelManager.getInstance().getBossDifficultyLevel() * 0.5f);
 
         enemyProtossBeacon.setOwnerOrCreator(enemy);
         enemyProtossBeacon.setCenterCoordinates(spawnAnimation.getCenterXCoordinate(), spawnAnimation.getCenterYCoordinate());

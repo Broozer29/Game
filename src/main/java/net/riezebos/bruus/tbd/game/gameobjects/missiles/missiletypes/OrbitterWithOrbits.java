@@ -62,7 +62,7 @@ public class OrbitterWithOrbits extends Missile {
         MovementConfiguration movementConfiguration1 = target.getMovementConfiguration();
         MovementConfiguration moveConfig = MissileCreator.getInstance().createMissileMovementConfig(
                 movementConfiguration1.getXMovementSpeed(), movementConfiguration1.getYMovementSpeed(),
-                new OrbitPathFinder(target, 85, 300, 0), MovementPatternSize.SMALL,
+                new OrbitPathFinder(target), MovementPatternSize.SMALL,
                 movementConfiguration1.getRotation());
         moveConfig.initDefaultSettingsForSpecializedPathFinders();
         moveConfig.setLastKnownTargetX(target.getCenterXCoordinate());

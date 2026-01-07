@@ -10,7 +10,6 @@ import net.riezebos.bruus.tbd.game.gameobjects.missiles.specialAttacks.SpecialAt
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerClass;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
-import net.riezebos.bruus.tbd.game.gamestate.GameStatsTracker;
 import net.riezebos.bruus.tbd.game.gamestate.GameStatusEnums;
 import net.riezebos.bruus.tbd.game.items.Item;
 import net.riezebos.bruus.tbd.game.items.ItemEnums;
@@ -234,6 +233,7 @@ public class SpaceShip extends GameObject {
         }
     }
 
+    @Override
     public void takeDamage(float damageTaken) {
         if (this.isImmune) {
             return; //The player is immune, we don't want to do anything here
@@ -243,7 +243,12 @@ public class SpaceShip extends GameObject {
             lastGameSecondDamageTaken = GameState.getInstance().getGameSeconds();
             this.currentShieldRegenDelayFrame = 0;
 
-            GameStatsTracker.getInstance().addDamageTaken(damageTaken);
+            if(PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.GlassCannon) != null){
+                damageTaken *= 2f;
+            }
+
+            damageTaken = Math.max(damageTaken - PlayerStats.getInstance().getFlatDamageReduction(), Math.min(1, damageTaken));
+
             AudioManager.getInstance().addAudio(AudioEnums.PlayerTakesDamage);
 
             // Check if the damage pierces the shield
@@ -549,7 +554,7 @@ public class SpaceShip extends GameObject {
             if (isStuck) {
                 // Player is stuck
                 // Move the player to a safe position
-                float addedDirectionX = 6;
+                float addedDirectionX = -6;
                 float addedDirectionY = -3;
                 if (directionx != 0) {
                     addedDirectionX = directionx;
@@ -558,7 +563,7 @@ public class SpaceShip extends GameObject {
                     addedDirectionY = directiony;
                 }
 
-                accumulatedXCoordinate += (addedDirectionX * 3); // Adjust the offset as needed
+                accumulatedXCoordinate += (addedDirectionX * 3);
                 accumulatedYCoordinate += (addedDirectionY * 3);
                 xCoordinate = Math.round(accumulatedXCoordinate);
                 yCoordinate = Math.round(accumulatedYCoordinate);

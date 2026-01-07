@@ -24,7 +24,7 @@ import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.Sprit
 import java.util.ArrayList;
 import java.util.List;
 
-public class SpawnReflectingBarrier implements BossActionable {
+public class YellowBossSpawnReflectingBarrier implements BossActionable {
 
     private double lastAttackTime = 0;
     private double lastSingleShotAttackTime = 0;
@@ -40,7 +40,7 @@ public class SpawnReflectingBarrier implements BossActionable {
     private List<Point> reflectiveMissilesSpawnPoints = new ArrayList<>();
 
 
-    public SpawnReflectingBarrier() {
+    public YellowBossSpawnReflectingBarrier() {
         missileAnglesList.clear();
         for (int i = 120; i <= 240; i += 10) {
             missileAnglesList.add(i);

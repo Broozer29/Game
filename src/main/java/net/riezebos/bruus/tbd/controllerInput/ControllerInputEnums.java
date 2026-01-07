@@ -8,5 +8,5 @@ public enum ControllerInputEnums {
     FIRE,
     SPECIAL_ATTACK,
     PAUSE,
-    TELEPORT
+    TELEPORT,
 }

@@ -10,7 +10,7 @@ import net.riezebos.bruus.tbd.game.items.enums.ItemApplicationEnum;
 
 public class PhotonPiercer extends Item {
 
-    public static float damageAmplificationModifier = 1;
+    public static float damageAmplificationModifier = 1f;
     public static float hpRequirement = 0.9f;
 
     public PhotonPiercer () {

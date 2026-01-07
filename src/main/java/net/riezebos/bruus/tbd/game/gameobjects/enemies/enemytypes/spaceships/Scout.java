@@ -32,15 +32,17 @@ public class Scout extends Enemy {
         this.detonateOnCollision = false;
         this.knockbackStrength = 5;
 
+        this.movementConfiguration.setPathFinder(new HoverPathFinder());
+
 
         if(this.movementConfiguration.getPathFinder() instanceof HoverPathFinder pathFinder){
-//            movementConfiguration.setBoardBlockToHoverIn(7);
+            movementConfiguration.setBoardBlockToHoverIn(6);
             pathFinder.setShouldDecreaseBoardBlock(true);
 
             if(this.movementConfiguration.getRotation().equals(Direction.RIGHT)) {
-                pathFinder.setDecreaseBoardBlockAmountBy(-2);
+                pathFinder.setDecreaseBoardBlockAmountBy(-1);
             } else {
-                pathFinder.setDecreaseBoardBlockAmountBy(2);
+                pathFinder.setDecreaseBoardBlockAmountBy(1);
             }
         }
         this.allowedToFire = true; //in case its not hoverpathfinder

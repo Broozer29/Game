@@ -36,9 +36,10 @@ public class BoardBlockUpdater {
     }
 
     public static Point getRandomCoordinateInBlock(int blockIndex, int objectWidth, int objectHeight) {
-        // Validate blockIndex
-        if (blockIndex < 0 || blockIndex >= 8) {
-            throw new IllegalArgumentException("Block index must be between 0 and 7. Given index: " + blockIndex);
+        if(blockIndex < 0){
+            blockIndex = 0;
+        } else if(blockIndex > 8){
+            blockIndex = 8;
         }
 
         // Calculate X coordinate range for the block

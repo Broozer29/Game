@@ -187,7 +187,7 @@ public class Sprite {
     }
 
     public void setImageDimensions (int newWidth, int newHeight) {
-        if (this.image.getWidth() != newWidth && this.image.getHeight() != newHeight) {
+        if (this.image.getWidth() != newWidth || this.image.getHeight() != newHeight) {
             this.image = imageResizer.resizeImageToDimensions(this.originalImage, newWidth, newHeight);
             configureImageDimensions();
         }

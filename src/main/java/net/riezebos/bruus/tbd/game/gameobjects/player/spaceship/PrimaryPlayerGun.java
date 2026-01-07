@@ -12,12 +12,10 @@ import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerPrimaryAttackTypes;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
-import net.riezebos.bruus.tbd.game.gamestate.GameStatsTracker;
 import net.riezebos.bruus.tbd.game.items.ItemEnums;
 import net.riezebos.bruus.tbd.game.items.PlayerInventory;
 import net.riezebos.bruus.tbd.game.items.items.captain.HighVelocityLasers;
 import net.riezebos.bruus.tbd.game.items.items.carrier.KineticDynamo;
-import net.riezebos.bruus.tbd.game.items.items.firefighter.InfernalPreIgniter;
 import net.riezebos.bruus.tbd.game.movement.Direction;
 import net.riezebos.bruus.tbd.game.movement.MovementConfiguration;
 import net.riezebos.bruus.tbd.game.movement.MovementPatternSize;
@@ -244,7 +242,6 @@ public class PrimaryPlayerGun {
 
         missile.setCanBounce(true);
 
-        GameStatsTracker.getInstance().addShotFired(1);
         this.missileManager.addExistingMissile(missile);
 
     }

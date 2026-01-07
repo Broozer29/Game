@@ -7,9 +7,9 @@ import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.BossAct
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyEnums;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.level.LevelManager;
+import net.riezebos.bruus.tbd.game.movement.BoardBlockUpdater;
 import net.riezebos.bruus.tbd.game.movement.Direction;
-import net.riezebos.bruus.tbd.game.movement.MovementPatternSize;
-import net.riezebos.bruus.tbd.game.movement.pathfinders.BouncingPathFinder;
+import net.riezebos.bruus.tbd.game.movement.Point;
 import net.riezebos.bruus.tbd.game.util.WithinVisualBoundariesCalculator;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.AnimationManager;
@@ -19,11 +19,13 @@ import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.Sprit
 
 import java.util.Random;
 
-public class SpawnShuriken implements BossActionable {
-    private double lastSpawnedTime = 0;
-    private double spawnCooldown = 14;
+public class RedBossSpawnFourDirectionalDrone implements BossActionable {
+
+
+    private double lastSpawnedTime = GameState.getInstance().getGameSeconds();
+    private double spawnCooldown = 18;
     private Random random;
-    private int priority = 2;
+    private int priority = 3;
 
     private SpriteAnimation spawnAnimation;
 
@@ -34,20 +36,21 @@ public class SpawnShuriken implements BossActionable {
             initSpawnAnimation(enemy);
         }
 
+        updateSpawnCooldown(enemy);
+
         if (enemy.isAllowedToFire() && currentTime >= lastSpawnedTime + spawnCooldown && WithinVisualBoundariesCalculator.isWithinBoundaries(enemy)) {
             updateSpawnAnimationLocation(enemy);
 
             if (!spawnAnimation.isPlaying()) {
-                spawnAnimation.refreshAnimation();
                 enemy.setAttacking(true);
+                spawnAnimation.refreshAnimation();
                 AnimationManager.getInstance().addUpperAnimation(spawnAnimation);
             }
 
 
             if (spawnAnimation.isPlaying() && spawnAnimation.getCurrentFrame() == 4) {
-                //spawn a shuriken for each boss level
-                for (int i = 0; i < LevelManager.getInstance().getBossDifficultyLevel() + 1; i++) {
-                    Enemy fourDirectionalDrone = createShuriken(enemy);
+                for (int i = 0; i < 2; i++) {
+                    Enemy fourDirectionalDrone = createFourDirectionalDrone(enemy);
                     fourDirectionalDrone.setCenterCoordinates(spawnAnimation.getCenterXCoordinate(), spawnAnimation.getCenterYCoordinate());
                     EnemyManager.getInstance().addEnemy(fourDirectionalDrone);
                 }
@@ -55,12 +58,17 @@ public class SpawnShuriken implements BossActionable {
                 enemy.setAttacking(false);
                 return true; //We finished
             }
-            return false; //We still running this behaviour
-        }
-        return true; //We still running this behaviour
 
+            return false; //we not finished yet
+        }
+        return true; //We dont have anything to do at this point
     }
 
+    private void updateSpawnCooldown(Enemy enemy) {
+        if (enemy.getCurrentHitpoints() <= (enemy.getMaxHitPoints() * 0.25f)) {
+            spawnCooldown = 14;
+        }
+    }
 
     private void initSpawnAnimation(Enemy enemy) {
         SpriteConfiguration spriteConfiguration = new SpriteConfiguration();
@@ -71,39 +79,36 @@ public class SpawnShuriken implements BossActionable {
 
         SpriteAnimationConfiguration spriteAnimationConfiguration = new SpriteAnimationConfiguration(spriteConfiguration, 1, false);
         spawnAnimation = new SpriteAnimation(spriteAnimationConfiguration);
-        spawnAnimation.setAnimationScale(0.5f);
+        spawnAnimation.setAnimationScale(0.4f);
         spawnAnimation.setCenterCoordinates(enemy.getXCoordinate(), enemy.getCenterYCoordinate());
-        spawnAnimation.addXOffset(Math.round(spawnAnimation.getWidth() * 0.1f));
+        spawnAnimation.addXOffset(-10);
     }
 
     private void updateSpawnAnimationLocation(Enemy enemy) {
         spawnAnimation.setCenterCoordinates(enemy.getXCoordinate(), enemy.getCenterYCoordinate());
     }
 
-    private Enemy createShuriken(Enemy enemy) {
-        EnemyEnums enemyType = EnemyEnums.Shuriken;
-        Direction direction = getRandomDirection();
-        Enemy shuriken = EnemyCreator.createEnemy(enemyType, enemy.getXCoordinate(), enemy.getYCoordinate(), direction,
-                enemyType.getDefaultScale(), enemyType.getMovementSpeed(), enemyType.getMovementSpeed(), MovementPatternSize.SMALL, false);
-
-        BouncingPathFinder pathFinder = new BouncingPathFinder();
-        pathFinder.setMaxBounces(15);
-        shuriken.getMovementConfiguration().setPathFinder(new BouncingPathFinder());
-        shuriken.setOwnerOrCreator(enemy);
-        return shuriken;
-    }
-
-    private Direction getRandomDirection() {
+    private int getRandomBoardBlock() {
         if (random == null) {
             random = new Random();
         }
 
-        int number = random.nextInt(0, 2);
-        return switch (number) {
-            case 0 -> Direction.LEFT_UP;
-            case 1 -> Direction.LEFT_DOWN;
-            default -> Direction.LEFT;
-        };
+        return random.nextInt(1, 3);
+    }
+
+    private Enemy createFourDirectionalDrone(Enemy enemy) {
+        EnemyEnums enemyEnums = EnemyEnums.FourDirectionalDrone;
+
+        float bonusSpeed = LevelManager.getInstance().getBossDifficultyLevel() > 0.1f ? LevelManager.getInstance().getBossDifficultyLevel() / 2 : 0;
+
+        Enemy fourDirectionalDrone = EnemyCreator.createEnemy(enemyEnums, enemy.getXCoordinate(), enemy.getYCoordinate(), Direction.LEFT,
+                enemyEnums.getDefaultScale(),
+                enemyEnums.getMovementSpeed() + bonusSpeed);
+
+        Point point = BoardBlockUpdater.getRandomCoordinateInBlock(getRandomBoardBlock(), fourDirectionalDrone.getWidth(), fourDirectionalDrone.getHeight());
+        fourDirectionalDrone.getMovementConfiguration().setDestination(point);
+        fourDirectionalDrone.setOwnerOrCreator(enemy);
+        return fourDirectionalDrone;
     }
 
     @Override
@@ -119,6 +124,7 @@ public class SpawnShuriken implements BossActionable {
     public boolean isAvailable(Enemy enemy) {
         return enemy.isAllowedToFire()
                 && GameState.getInstance().getGameSeconds() >= lastSpawnedTime + spawnCooldown
-                && WithinVisualBoundariesCalculator.isWithinBoundaries(enemy);
+                && WithinVisualBoundariesCalculator.isWithinBoundaries(enemy)
+                && EnemyManager.getInstance().getEnemiesByType(EnemyEnums.FourDirectionalDrone).size() < 5;
     }
 }

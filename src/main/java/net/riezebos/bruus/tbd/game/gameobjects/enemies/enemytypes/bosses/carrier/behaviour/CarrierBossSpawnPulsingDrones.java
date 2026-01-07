@@ -7,7 +7,6 @@ import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.BossAct
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyEnums;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.movement.Direction;
-import net.riezebos.bruus.tbd.game.movement.MovementPatternSize;
 import net.riezebos.bruus.tbd.game.movement.Point;
 import net.riezebos.bruus.tbd.game.util.WithinVisualBoundariesCalculator;
 import net.riezebos.bruus.tbd.visualsandaudio.data.DataClass;
@@ -17,7 +16,7 @@ import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteAnimation;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteAnimationConfiguration;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteConfiguration;
 
-public class SpawnPulsingDrones implements BossActionable {
+public class CarrierBossSpawnPulsingDrones implements BossActionable {
     //Summon beacons achter de carrier die in 360 graden om zich heen missiles schiet
     //Weinig damage, hoge attack speed?
     //Standaard plek waar ze spawnen?
@@ -90,7 +89,7 @@ public class SpawnPulsingDrones implements BossActionable {
     private Enemy createProtossBeacon(Enemy enemy, Point point) {
         EnemyEnums enemyEnums = EnemyEnums.CarrierPulsingDrone;
         Enemy enemyProtossBeacon = EnemyCreator.createEnemy(enemyEnums, enemy.getXCoordinate(), enemy.getYCoordinate(), Direction.LEFT,
-                enemyEnums.getDefaultScale(), enemyEnums.getMovementSpeed(), enemyEnums.getMovementSpeed(), MovementPatternSize.SMALL, false);
+                enemyEnums.getDefaultScale(), enemyEnums.getMovementSpeed());
 
         //Scout should immediatly change its move config upon spawning, so its responsible itself for surrounding the carrier
         enemyProtossBeacon.setOwnerOrCreator(enemy);

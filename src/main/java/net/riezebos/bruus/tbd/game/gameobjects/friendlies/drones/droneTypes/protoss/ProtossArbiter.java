@@ -32,7 +32,7 @@ public class ProtossArbiter extends Drone {
     private ArrayList<GameObject> targets = new ArrayList<>();
     private Map<GameObject, SpriteAnimation> animationsBelongingToTargets = new HashMap<>();
     private int maxTargetsAllowedSimultaneously = 1;
-    public static float healingRate = 0.135f;
+    public static float healingRate = 0.095f;
     private boolean isMovingAroundCarrierDrone = false;
     private boolean canAcquireTarget = true;
 

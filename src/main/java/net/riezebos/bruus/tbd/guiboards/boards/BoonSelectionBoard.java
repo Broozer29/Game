@@ -3,24 +3,27 @@ package net.riezebos.bruus.tbd.guiboards.boards;
 import net.riezebos.bruus.tbd.controllerInput.ConnectedControllersManager;
 import net.riezebos.bruus.tbd.controllerInput.ControllerInputEnums;
 import net.riezebos.bruus.tbd.controllerInput.ControllerInputReader;
-import net.riezebos.bruus.tbd.game.gamestate.GameMode;
-import net.riezebos.bruus.tbd.game.gamestate.GameState;
-import net.riezebos.bruus.tbd.game.gameobjects.player.boons.BoonEnums;
 import net.riezebos.bruus.tbd.game.gameobjects.player.boons.Boon;
+import net.riezebos.bruus.tbd.game.gameobjects.player.boons.BoonEnums;
 import net.riezebos.bruus.tbd.game.gameobjects.player.boons.BoonManager;
 import net.riezebos.bruus.tbd.game.gameobjects.player.boons.boonimplementations.utility.BountyHunter;
 import net.riezebos.bruus.tbd.game.gameobjects.player.boons.boonimplementations.utility.ClubAccess;
 import net.riezebos.bruus.tbd.game.gameobjects.player.boons.boonimplementations.utility.CompoundWealth;
 import net.riezebos.bruus.tbd.game.gameobjects.player.boons.boonimplementations.utility.TreasureHunter;
+import net.riezebos.bruus.tbd.game.gamestate.GameMode;
+import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.playerprofile.PlayerProfileManager;
 import net.riezebos.bruus.tbd.game.util.OnScreenText;
 import net.riezebos.bruus.tbd.game.util.OnScreenTextManager;
+import net.riezebos.bruus.tbd.guiboards.BoardManager;
 import net.riezebos.bruus.tbd.guiboards.TimerHolder;
 import net.riezebos.bruus.tbd.guiboards.background.BackgroundManager;
 import net.riezebos.bruus.tbd.guiboards.background.BackgroundObject;
 import net.riezebos.bruus.tbd.guiboards.boardEnums.MenuFunctionEnums;
 import net.riezebos.bruus.tbd.guiboards.boardcreators.BoonSelectionBoardCreator;
-import net.riezebos.bruus.tbd.guiboards.guicomponents.*;
+import net.riezebos.bruus.tbd.guiboards.guicomponents.GUIComponent;
+import net.riezebos.bruus.tbd.guiboards.guicomponents.GUITextCollection;
+import net.riezebos.bruus.tbd.guiboards.guicomponents.MenuCursor;
 import net.riezebos.bruus.tbd.visualsandaudio.data.DataClass;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.AnimationManager;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.Sprite;
@@ -587,6 +590,14 @@ public class BoonSelectionBoard extends JPanel implements TimerHolder {
                     needsUpdate = true;
                     lastMoveTime = currentTime;
                 }
+            }
+
+            if (currentTime - lastMoveTime > MOVE_COOLDOWN &&
+                    controllerInputReader.isInputActive(ControllerInputEnums.SPECIAL_ATTACK)) {
+                // Select menu option
+                BoardManager.getInstance().switchScreen(BoardManager.ScreenType.CLASS_SELECTION);
+                needsUpdate = true;
+                lastMoveTime = currentTime;
             }
 
             if (needsUpdate) {

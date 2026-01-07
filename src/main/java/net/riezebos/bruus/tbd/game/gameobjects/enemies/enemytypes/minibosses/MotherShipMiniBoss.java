@@ -5,9 +5,9 @@ import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyConfiguration;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyCreator;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyManager;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyEnums;
+import net.riezebos.bruus.tbd.game.items.effects.effectimplementations.SpawnCoinsOnDeath;
 import net.riezebos.bruus.tbd.game.movement.Direction;
 import net.riezebos.bruus.tbd.game.movement.MovementConfiguration;
-import net.riezebos.bruus.tbd.game.movement.MovementPatternSize;
 import net.riezebos.bruus.tbd.game.movement.pathfinders.HoverPathFinder;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteAnimation;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteAnimationConfiguration;
@@ -38,14 +38,15 @@ public class MotherShipMiniBoss extends Enemy {
             hoverPathFinder.setShouldDecreaseBoardBlock(true);
         }
 
+        SpawnCoinsOnDeath goldOnDeathEffect = new SpawnCoinsOnDeath(25, 3);
+        this.addEffect(goldOnDeathEffect);
+
     }
 
 
     public void fireAction () {
-        //idk of deze gedrag moet hebben
         if(this.getCurrentBoardBlock() != lastRegisteredBoardBlock && droneList.size() < 4){
             addDrone();
-//            OnScreenTextManager.getInstance().addText("Adding a drone");
             lastRegisteredBoardBlock = this.getCurrentBoardBlock();
         }
 
@@ -63,8 +64,7 @@ public class MotherShipMiniBoss extends Enemy {
 
 
     private void addDrone(){
-        Enemy drone = EnemyCreator.createEnemy(EnemyEnums.MotherShipDrone, this.getCenterXCoordinate(), this.getCenterYCoordinate(), Direction.LEFT, 0.25f, EnemyEnums.MotherShipDrone.getMovementSpeed(), EnemyEnums.MotherShipDrone.getMovementSpeed(),
-        MovementPatternSize.SMALL, false);
+        Enemy drone = EnemyCreator.createEnemy(EnemyEnums.MotherShipDrone, this.getCenterXCoordinate(), this.getCenterYCoordinate(), Direction.LEFT, 0.25f, EnemyEnums.MotherShipDrone.getMovementSpeed());
         drone.setOwnerOrCreator(this);
         drone.setCenterCoordinates(this.getCenterXCoordinate(), this.getCenterYCoordinate());
         droneList.add(drone);

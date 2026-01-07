@@ -1,9 +1,8 @@
 package net.riezebos.bruus.tbd.game.gameobjects;
 
-import net.riezebos.bruus.tbd.game.gameobjects.missiles.Missile;
-import net.riezebos.bruus.tbd.game.gameobjects.missiles.missiletypes.ReflectiveBlocks;
+import net.riezebos.bruus.tbd.game.gameobjects.enemies.Enemy;
+import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyCategory;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
-import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SpaceShip;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.gamestate.GameStatsTracker;
 import net.riezebos.bruus.tbd.game.items.Item;
@@ -12,12 +11,13 @@ import net.riezebos.bruus.tbd.game.items.effects.EffectActivationTypes;
 import net.riezebos.bruus.tbd.game.items.effects.EffectIdentifiers;
 import net.riezebos.bruus.tbd.game.items.effects.EffectInterface;
 import net.riezebos.bruus.tbd.game.items.enums.ItemApplicationEnum;
-import net.riezebos.bruus.tbd.game.movement.Point;
 import net.riezebos.bruus.tbd.game.movement.*;
+import net.riezebos.bruus.tbd.game.movement.Point;
 import net.riezebos.bruus.tbd.game.movement.pathfinders.HomingPathFinder;
 import net.riezebos.bruus.tbd.game.movement.pathfinders.PathFinder;
 import net.riezebos.bruus.tbd.game.util.ArmorCalculator;
 import net.riezebos.bruus.tbd.game.util.OnScreenTextManager;
+import net.riezebos.bruus.tbd.game.util.OutOfBoundsCalculator;
 import net.riezebos.bruus.tbd.game.util.VisualLayer;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.AudioManager;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.AudioEnums;
@@ -178,7 +178,12 @@ public class GameObject extends Sprite {
 
 
         movementConfiguration.setCurrentLocation(this.currentLocation);
-        movementConfiguration.setDestination(movementConfiguration.getPathFinder().calculateInitialEndpoint(this.currentLocation, movementRotation, this.friendly));
+        this.movementConfiguration.setLastUsedXMovementSpeed(movementConfiguration.getXMovementSpeed());
+        if(movementConfiguration.getDestination() == null) {
+            movementConfiguration.setDestination(movementConfiguration.getPathFinder().calculateInitialEndpoint(this.currentLocation, movementRotation, this.friendly));
+        } else {
+            //keep the current destination
+        }
 
         if (movementConfiguration.getPathFinder() instanceof HomingPathFinder) {
             movementConfiguration.setTargetToChase(((HomingPathFinder) movementConfiguration.getPathFinder()).getTarget(this.friendly, this.xCoordinate, this.yCoordinate));
@@ -344,13 +349,6 @@ public class GameObject extends Sprite {
             lastGameSecondDamageTaken = GameState.getInstance().getGameSeconds();
         }
 
-        if (!this.isFriendly() && !(damageTaken >= 9998 && damageTaken <= 10000)) {
-            //Assume that if this object is not friendly, the damage came from the player
-            //This implementation is buggy and problematic and I might not even want to keep track of this anymore
-            GameStatsTracker.getInstance().addDamageDealt(damageTaken);
-            GameStatsTracker.getInstance().setHighestDamageDealt(damageTaken);
-        }
-
         this.currentHitpoints -= damageTaken;
         if (currentHitpoints > maxHitPoints) {
             currentHitpoints = maxHitPoints;
@@ -464,10 +462,12 @@ public class GameObject extends Sprite {
             return;
         }
 
-        // Skip for all Missiles except ReflectiveBlocks
-        if (this instanceof Missile && !(this instanceof ReflectiveBlocks)) {
-            return;
-        }
+        //Bosses have a special healthbar
+        if(this instanceof Enemy enemy && enemy.getEnemyType().getEnemyCategory().equals(EnemyCategory.Boss)){
+                showHealthBar = false;
+                return;
+            }
+
 
         // Show the health bar if the object has taken damage
         if (this.currentHitpoints < this.maxHitPoints) {
@@ -493,7 +493,7 @@ public class GameObject extends Sprite {
     }
 
     private void updateVisibility() {
-        if (SpriteRemover.getInstance().shouldRemoveVisibility(this)) {
+        if (OutOfBoundsCalculator.isOutOfBounds(this)) {
             this.visible = false;
         }
 
@@ -545,7 +545,7 @@ public class GameObject extends Sprite {
         }
     }
 
-    private Point calculateFrontPosition(int centerX, int centerY, double angleDegrees, double distanceToFront) {
+    protected Point calculateFrontPosition(int centerX, int centerY, double angleDegrees, double distanceToFront) {
         double angleRadians = Math.toRadians(angleDegrees);
 
         // Calculate the new position using trigonometry
@@ -683,7 +683,7 @@ public class GameObject extends Sprite {
     }
 
     public Point getCurrentCenterLocation() {
-        return new Point(this.getCenterXCoordinate(), this.getCenterXCoordinate());
+        return new Point(this.getCenterXCoordinate(), this.getCenterYCoordinate());
     }
 
     public int getCurrentBoardBlock() {

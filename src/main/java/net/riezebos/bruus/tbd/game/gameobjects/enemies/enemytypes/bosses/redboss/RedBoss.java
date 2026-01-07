@@ -3,10 +3,10 @@ package net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.redbos
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.Enemy;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyConfiguration;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.BossActionable;
-import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.redboss.behaviour.BurstMainAttackBossBehaviour;
-import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.redboss.behaviour.CrossingLaserbeamsAttack;
-import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.redboss.behaviour.SpawnFourDirectionalDrone;
-import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.redboss.behaviour.SpawnShuriken;
+import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.redboss.behaviour.RedBossBurstMainAttackBossBehaviour;
+import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.redboss.behaviour.RedBossCrossingLaserbeamsAttack;
+import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.redboss.behaviour.RedBossSpawnFourDirectionalDrone;
+import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.redboss.behaviour.RedBossSpawnShuriken;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.movement.MovementConfiguration;
 import net.riezebos.bruus.tbd.game.playerprofile.PlayerProfileManager;
@@ -37,28 +37,29 @@ public class RedBoss extends Enemy {
     public RedBoss(SpriteAnimationConfiguration spriteConfiguration, EnemyConfiguration enemyConfiguration, MovementConfiguration movementConfiguration) {
         super(spriteConfiguration, enemyConfiguration, movementConfiguration);
 
-        SpriteAnimationConfiguration destroyedExplosionfiguration = new SpriteAnimationConfiguration(spriteConfiguration.getSpriteConfiguration(), 0, false);
-        destroyedExplosionfiguration.getSpriteConfiguration().setImageType(ImageEnums.Explosion2);
+        SpriteAnimationConfiguration destroyedExplosionfiguration = new SpriteAnimationConfiguration(spriteConfiguration.getSpriteConfiguration(), 2, false);
+        destroyedExplosionfiguration.getSpriteConfiguration().setImageType(ImageEnums.BossExplosion);
+        destroyedExplosionfiguration.getSpriteConfiguration().setScale(1);
         this.destructionAnimation = new SpriteAnimation(destroyedExplosionfiguration);
-        this.damage = 12;
+        this.damage = 10;
         this.allowedVisualsToRotate = false;
         this.knockbackStrength = 9;
 
         finishedAttackTime = GameState.getInstance().getGameSeconds();
 
-        BossActionable bossBehaviour1 = new SpawnShuriken();
+        BossActionable bossBehaviour1 = new RedBossSpawnShuriken();
         bossBehaviourList.add(bossBehaviour1);
 
-        BossActionable bossBehaviour2 = new BurstMainAttackBossBehaviour();
+        BossActionable bossBehaviour2 = new RedBossBurstMainAttackBossBehaviour();
         bossBehaviourList.add(bossBehaviour2);
 
-        BossActionable bossBehaviour3 = new SpawnFourDirectionalDrone();
+        BossActionable bossBehaviour3 = new RedBossSpawnFourDirectionalDrone();
         bossBehaviourList.add(bossBehaviour3);
 
-        inwardsAttack = new CrossingLaserbeamsAttack(true);
+        inwardsAttack = new RedBossCrossingLaserbeamsAttack(true);
         bossBehaviourList.add(inwardsAttack);
 
-        outwardsAttack = new CrossingLaserbeamsAttack(false);
+        outwardsAttack = new RedBossCrossingLaserbeamsAttack(false);
         bossBehaviourList.add(outwardsAttack);
 
         bossBehaviourList = bossBehaviourList.stream()

@@ -84,6 +84,7 @@ public class AudioLoader {
             case AchievementUnlocked: return "/audio/achievement.wav";
             case CoinCollected: return "/audio/coin.wav";
             case GenericError: return "/audio/genericerror.wav";
+            case DistressCall: return "/audio/distressbeacon.wav";
             case Player_Laserbeam:
                 return "/audio/laserbeam1.wav";
             case GodRunDetected:
@@ -125,6 +126,10 @@ public class AudioLoader {
                 return "/audio/music/Diq - Rose.wav";
             case Blood_On_The_Dancefloor:
                 return "/audio/music/Blood_On_The_Dancefloor.wav";
+            case MausoleumMash:
+                return "/audio/music/Mausoleum mash.wav";
+            case Arisen:
+                return "/audio/music/Arisen.wav";
             case Lemmino_Firecracker:
                 return "/audio/music/lemmino Firecracker.wav";
             case NotEnoughMinerals:

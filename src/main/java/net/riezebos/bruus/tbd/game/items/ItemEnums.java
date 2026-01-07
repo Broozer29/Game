@@ -25,17 +25,15 @@ public enum ItemEnums {
     VengeanceProtocol(ItemRarityEnums.Rare, ItemCategory.Offense, ImageEnums.VengeanceProtocolIcon, "Vengeance Protocol", false),
     EnergySiphon(ItemRarityEnums.Common, ItemCategory.Defense, ImageEnums.Starcraft2_Energy_Siphon, "Energy Siphon", false),
     //-----------------------------
-
-
     BeckoningFlames(ItemRarityEnums.Relic, ItemCategory.Offense, ImageEnums.EntanglingFlames, "Beckoning Flames", true),
     PlasmaCoatedBullets(ItemRarityEnums.Common, ItemCategory.Offense, ImageEnums.Starcraft2_Blue_Flame, "Plasma Bullets", true),
     PhotonPiercer(ItemRarityEnums.Common, ItemCategory.Offense, ImageEnums.Starcraft2_Concussive_Shells, "Photon Piercer", true),
     CannisterOfGasoline(ItemRarityEnums.Rare, ItemCategory.Offense, ImageEnums.CannisterOfGasoline, "Gasoline", true),
     SelfRepairingSteel(ItemRarityEnums.Common, ItemCategory.Defense, ImageEnums.Starcraft2_Heal, "Regenerative Steel", true),
-    Battery(ItemRarityEnums.Common, ItemCategory.Utility, ImageEnums.Starcraft2_Battery, "Battery", true),
+    Battery(ItemRarityEnums.Rare, ItemCategory.Utility, ImageEnums.Starcraft2_Battery, "Battery", true),
     FocusCrystal(ItemRarityEnums.Common, ItemCategory.Offense, ImageEnums.Starcraft2Keystone, "Focus Crystal", true),
     PrecisionAmplifier(ItemRarityEnums.Common, ItemCategory.Offense, ImageEnums.Starcraft2_Advanced_Optics, "Advanced Optics", true),
-    PlatinumSponge(ItemRarityEnums.Common, ItemCategory.Defense, ImageEnums.Starcraft2_Platinum_Sponge, "Platinum Sponge", true),
+    PlatinumSponge(ItemRarityEnums.Rare, ItemCategory.Defense, ImageEnums.Starcraft2_Platinum_Sponge, "Platinum Sponge", true),
     EmergencyRepairBot(ItemRarityEnums.Common, ItemCategory.Defense, ImageEnums.Starcraft2_Vespene_Drone, "Repair Bot", true),
     Overclock(ItemRarityEnums.Common, ItemCategory.Offense, ImageEnums.Starcraft2_Overclock, "Overclock", true),
     PlasmaLauncher(ItemRarityEnums.Rare, ItemCategory.Offense, ImageEnums.Starcraft2_Focused_Crystal, "Plasma Launcher", true),
@@ -79,7 +77,7 @@ public enum ItemEnums {
     Stuivie(ItemRarityEnums.Relic, ItemCategory.Defense, ImageEnums.StuiversBestFriend, "Stuivie", true),
     GlassCannon(ItemRarityEnums.Relic, ItemCategory.Offense, ImageEnums.GlassCannon, "Glass Cannon", true),
     AimAssist(ItemRarityEnums.Legendary, ItemCategory.Offense, ImageEnums.AimAssist, "Aim Assist", true),
-    HighVelocityLasers(ItemRarityEnums.Common, ItemCategory.Offense, ImageEnums.Test_Image, "High Velocity Lasers", true),
+    HighVelocityLasers(ItemRarityEnums.Common, ItemCategory.Offense, ImageEnums.HighVelocityLasers, "High Velocity Lasers", true),
     InfernalPreIgniter(ItemRarityEnums.Legendary, ItemCategory.Offense, ImageEnums.InfernalPreIgniter, "Infernal Pre-igniter", true);
 
     private ItemRarityEnums itemRarity;

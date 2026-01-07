@@ -32,7 +32,7 @@ public class OrbitingObjectsFormatter {
             object.setCenterCoordinates(x, y);
 
             // Create a new OrbitPathFinder with the correct offset angle
-            OrbitPathFinder newOrbit = new OrbitPathFinder(gameObject, radius, 300, 0);
+            OrbitPathFinder newOrbit = new OrbitPathFinder(gameObject);
             // Update the GuardianDrone's path finder
 
             object.resetMovementPath();

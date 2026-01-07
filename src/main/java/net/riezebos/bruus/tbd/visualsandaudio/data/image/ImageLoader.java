@@ -425,6 +425,8 @@ public class ImageLoader {
                 return "/images/Icons/arbiterdamage.png";
             case EphemeralBlaze:
                 return "/images/Icons/ephemeralblaze.png";
+            case HighVelocityLasers:
+                return "/images/Icons/highvelocitylasers.png";
             case Eternaflame:
                 return "/images/Icons/eternaflame.png";
             case GlassCannon:
@@ -537,6 +539,12 @@ public class ImageLoader {
                 return "/images/background/Green planet 4.png";
             case GreenPlanet5:
                 return "/images/background/Green planet 5.png";
+            case BossHealthBarBackground:
+                return "/images/UI/boss healthbar background.png";
+            case BossHealthBarFront:
+                return "/images/UI/boss healthbar front.png";
+            case BossHealthBarRed:
+                return "/images/UI/boss healthbar red.png";
             case BlueWings1:
                 return "/images/UI/Wings/Blue/01.png";
             case BlueWings2:

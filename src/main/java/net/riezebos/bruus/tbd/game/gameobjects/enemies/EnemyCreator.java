@@ -1,18 +1,25 @@
 package net.riezebos.bruus.tbd.game.gameobjects.enemies;
 
+import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.CashCarrier;
+import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.blueboss.BlueBoss;
+import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.blueboss.BlueBossFactory;
+import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.blueboss.BlueBossFactoryDefender;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.carrier.CarrierBoss;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.redboss.RedBoss;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.spacestation.SpaceStationBoss;
+import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.striker.StrikerBoss;
+import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.striker.StrikerBossLaserbeamClone;
+import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.striker.StrikerCornerDrone;
+import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.twinboss.TwinBoss;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.yellowboss.YellowBoss;
-import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.CashCarrier;
+import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.minibosses.*;
+import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.protoss.CarrierPulsinDrone;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.protoss.EnemyProtossBeacon;
-import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.protoss.EnemyProtossPulsingDrone;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.protoss.EnemyProtossScout;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.protoss.EnemyProtossShuttle;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.spaceships.*;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.zerg.*;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyEnums;
-import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.minibosses.*;
 import net.riezebos.bruus.tbd.game.gamestate.GameMode;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.movement.Direction;
@@ -28,7 +35,7 @@ import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.Sprit
 public class EnemyCreator {
 
     public static Enemy createEnemy(EnemyEnums type, int xCoordinate, int yCoordinate, Direction movementDirection, float scale,
-                                    float xMovementSpeed, float yMovementSpeed, MovementPatternSize movementPatternSize, boolean boxCollision) {
+                                    float movementSpeed) {
         SpriteConfiguration spriteConfiguration = new SpriteConfiguration(
                 xCoordinate, yCoordinate, scale, type.getImageEnum(),
                 0, 0, 1.0f, false, 0
@@ -36,8 +43,8 @@ public class EnemyCreator {
 
         PathFinder pathFinder = getPathFinderByEnemy(type);
 
-        EnemyConfiguration enemyConfiguration = createEnemyConfiguration(type, boxCollision);
-        MovementConfiguration movementConfiguration = createMovementConfiguration(xCoordinate, yCoordinate, movementDirection, xMovementSpeed, yMovementSpeed, movementPatternSize, pathFinder);
+        EnemyConfiguration enemyConfiguration = createEnemyConfiguration(type);
+        MovementConfiguration movementConfiguration = createMovementConfiguration(xCoordinate, yCoordinate, movementDirection, movementSpeed, pathFinder);
         adjustMovementConfigurationPerEnemy(type, movementConfiguration);
         return createSpecificEnemy(spriteConfiguration, enemyConfiguration, movementConfiguration);
     }
@@ -47,7 +54,7 @@ public class EnemyCreator {
 
         switch (enemyType) {
             case Seeker, Energizer, Tazer, Scout, RedBoss, CarrierBoss, ZergDevourer, ZergGuardian, ZergQueen,
-                 YellowBoss, MotherShipMiniBoss -> {
+                 YellowBoss, MotherShipMiniBoss, StrikerBoss, TwinBoss -> {
                 if (isFormatted && (
                         enemyType.equals(EnemyEnums.Scout) || enemyType.equals(EnemyEnums.Energizer) || enemyType.equals(EnemyEnums.Seeker)
                                 || enemyType.equals(EnemyEnums.Tazer) || enemyType.equals(EnemyEnums.ZergDevourer) || enemyType.equals(EnemyEnums.ZergGuardian))) {
@@ -56,11 +63,14 @@ public class EnemyCreator {
                 return new HoverPathFinder();
             }
             case FourDirectionalDrone, PulsingDrone, SpaceStationBoss, CarrierPulsingDrone, EnemyCarrierBeacon,
-                 DefenderMiniBoss, LaserbeamMiniBoss -> {
+                 DefenderMiniBoss, LaserbeamMiniBoss, StrikerBossLaserbeamClone, StrikerBossCornerDrone -> {
                 return new DestinationPathFinder();
             }
             case Shuriken, ShurikenMiniBoss, MirageMiniBoss -> {
                 return new BouncingPathFinder();
+            }
+            case BlueBoss, BlueBossFactory -> {
+                return new FloatingPathFinder();
             }
             default -> {
                 return new RegularPathFinder();
@@ -75,7 +85,7 @@ public class EnemyCreator {
             case Seeker, YellowBoss -> {
                 setBoardBlockToHoverIn(movementConfiguration, 6);
             }
-            case Tazer, MotherShipMiniBoss, Scout, ZergQueen -> {
+            case Tazer, MotherShipMiniBoss, Scout, ZergQueen, StrikerBoss, TwinBoss -> {
                 setBoardBlockToHoverIn(movementConfiguration, 7);
             }
             case RedBoss, CarrierBoss -> {
@@ -88,7 +98,7 @@ public class EnemyCreator {
 
     private static void setBoardBlockToHoverIn(MovementConfiguration movementConfiguration, int boardBlockToHoverIn) {
         if (movementConfiguration.getRotation().equals(Direction.RIGHT)) {
-            movementConfiguration.setBoardBlockToHoverIn(8 - boardBlockToHoverIn);
+            movementConfiguration.setBoardBlockToHoverIn(Math.max(7 - boardBlockToHoverIn, 1));
         } else {
             movementConfiguration.setBoardBlockToHoverIn(boardBlockToHoverIn);
         }
@@ -104,15 +114,14 @@ public class EnemyCreator {
         return new Point(windowHalfWidth - enemyHalfWidth, windowHalfHeight - enemyHalfHeight);
     }
 
-    public static MovementConfiguration createMovementConfiguration(int xCoordinate, int yCoordinate, Direction movementDirection, float xMovementSpeed, float yMovementSpeed,
-                                                                    MovementPatternSize patternSize, PathFinder pathFinder) {
+    public static MovementConfiguration createMovementConfiguration(int xCoordinate, int yCoordinate, Direction movementDirection, float movementSpeed, PathFinder pathFinder) {
         MovementConfiguration moveConfig = new MovementConfiguration();
         moveConfig.setCurrentLocation(new Point(xCoordinate, yCoordinate));
-        moveConfig.setXMovementSpeed(xMovementSpeed);
-        moveConfig.setYMovementSpeed(yMovementSpeed);
+        moveConfig.setXMovementSpeed(movementSpeed);
+        moveConfig.setYMovementSpeed(movementSpeed);
         moveConfig.setPathFinder(pathFinder);
         moveConfig.setDirection(movementDirection);
-        moveConfig.setPatternSize(patternSize);
+        moveConfig.setPatternSize(MovementPatternSize.SMALL);
 
         moveConfig.initDefaultSettingsForSpecializedPathFinders();
         //Specialized specific settings here if non-default settings need to be overwritten
@@ -120,7 +129,7 @@ public class EnemyCreator {
     }
 
 
-    private static EnemyConfiguration createEnemyConfiguration(EnemyEnums enemyType, boolean boxCollision) {
+    private static EnemyConfiguration createEnemyConfiguration(EnemyEnums enemyType) {
         int maxHitpoints = enemyType.getBaseHitPoints();
         int maxShields = enemyType.getBaseShieldPoints();
         boolean hasAttack = enemyType.hasAttack();
@@ -135,7 +144,7 @@ public class EnemyCreator {
 
         return new EnemyConfiguration(enemyType, maxHitpoints, maxShields
                 , hasAttack, showHealthBar, deathSound, allowedToDealDamage,
-                objectType, boxCollision, baseArmor, cashMoneyWorth, xpOnDeath);
+                objectType, false, baseArmor, cashMoneyWorth, xpOnDeath);
     }
 
     private static Enemy createSpecificEnemy(SpriteConfiguration spriteConfiguration, EnemyConfiguration enemyConfiguration, MovementConfiguration movementConfiguration) {
@@ -174,7 +183,7 @@ public class EnemyCreator {
                 return new EnemyProtossShuttle(upgradeConfig(spriteConfiguration, 2, true), enemyConfiguration, movementConfiguration);
             }
             case CarrierPulsingDrone -> {
-                return new EnemyProtossPulsingDrone(upgradeConfig(spriteConfiguration, 2, true), enemyConfiguration, movementConfiguration);
+                return new CarrierPulsinDrone(upgradeConfig(spriteConfiguration, 2, true), enemyConfiguration, movementConfiguration);
             }
             case EnemyCarrierBeacon -> {
                 return new EnemyProtossBeacon(upgradeConfig(spriteConfiguration, 2, true), enemyConfiguration, movementConfiguration);
@@ -238,6 +247,27 @@ public class EnemyCreator {
             }
             case LaserbeamMiniBoss -> {
                 return new LaserbeamMiniBoss(upgradeConfig(spriteConfiguration, 2, true), enemyConfiguration, movementConfiguration);
+            }
+            case StrikerBoss -> {
+                return new StrikerBoss(upgradeConfig(spriteConfiguration, 2, true), enemyConfiguration, movementConfiguration);
+            }
+            case StrikerBossLaserbeamClone -> {
+                return new StrikerBossLaserbeamClone(upgradeConfig(spriteConfiguration, 2, true), enemyConfiguration, movementConfiguration);
+            }
+            case StrikerBossCornerDrone -> {
+                return new StrikerCornerDrone(upgradeConfig(spriteConfiguration, 2, true), enemyConfiguration, movementConfiguration);
+            }
+            case BlueBoss -> {
+                return new BlueBoss(upgradeConfig(spriteConfiguration, 2, true), enemyConfiguration, movementConfiguration);
+            }
+            case BlueBossFactory -> {
+                return new BlueBossFactory(upgradeConfig(spriteConfiguration, 2, true), enemyConfiguration, movementConfiguration);
+            }
+            case BlueBossFactoryDefender -> {
+                return new BlueBossFactoryDefender(upgradeConfig(spriteConfiguration, 2, true), enemyConfiguration, movementConfiguration);
+            }
+            case TwinBoss -> {
+                return new TwinBoss(upgradeConfig(spriteConfiguration, 2, true), enemyConfiguration, movementConfiguration);
             }
 
         }

@@ -9,27 +9,23 @@ import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyCategory;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyEnums;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyTribes;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
+import net.riezebos.bruus.tbd.game.gameobjects.player.boons.BoonManager;
+import net.riezebos.bruus.tbd.game.gameobjects.player.boons.boonimplementations.BoonActivationEnums;
 import net.riezebos.bruus.tbd.game.gamestate.GameMode;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.gamestate.GameStatusEnums;
 import net.riezebos.bruus.tbd.game.gamestate.ShopManager;
-import net.riezebos.bruus.tbd.game.items.ItemEnums;
-import net.riezebos.bruus.tbd.game.items.PlayerInventory;
-import net.riezebos.bruus.tbd.game.items.items.StuiversBestFriend;
 import net.riezebos.bruus.tbd.game.level.directors.DirectorManager;
 import net.riezebos.bruus.tbd.game.level.enums.LevelDifficulty;
-import net.riezebos.bruus.tbd.game.level.enums.MiniBossConfig;
 import net.riezebos.bruus.tbd.game.level.enums.LevelTypes;
+import net.riezebos.bruus.tbd.game.level.enums.MiniBossConfig;
 import net.riezebos.bruus.tbd.game.movement.Direction;
-import net.riezebos.bruus.tbd.game.movement.MovementPatternSize;
 import net.riezebos.bruus.tbd.game.movement.Point;
-import net.riezebos.bruus.tbd.game.gameobjects.player.boons.BoonManager;
-import net.riezebos.bruus.tbd.game.gameobjects.player.boons.boonimplementations.BoonActivationEnums;
 import net.riezebos.bruus.tbd.game.util.performancelogger.PerformanceLogger;
 import net.riezebos.bruus.tbd.game.util.performancelogger.PerformanceLoggerManager;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.AudioManager;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.AudioEnums;
-import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.LevelSongs;
+import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
 
 import java.util.List;
 
@@ -45,6 +41,9 @@ public class LevelManager {
     private AudioEnums currentLevelSong;
     private LevelDifficulty currentLevelDifficulty;
     private MiniBossConfig currentMiniBossConfig;
+    private LevelDifficulty lastSelectedDifficulty = null;
+    private MiniBossConfig lastSelectedMiniBossConfig = null;
+
     private int currentLevelDifficultyScore;
     private LevelTypes levelType;
     private EnemyTribes currentEnemyTribe;
@@ -68,7 +67,6 @@ public class LevelManager {
         currentEnemyTribe = EnemyTribes.Pirates;
         performanceLogger.reset();
     }
-
 
 
     public void updateGameTick() {
@@ -98,15 +96,17 @@ public class LevelManager {
             }
         } else if (levelType == LevelTypes.Boss) {
             boolean bossAlive = EnemyManager.getInstance().isBossAlive();
-            if (audioManager.isLevelMusicFinished() && bossAlive) {
-                audioManager.playDefaultBackgroundMusic(LevelSongs.getBossTheme(getNextBoss()), false);
-            }
+
+            //Theoretically this can be removed, but test it first with this disabled.
+//            if (audioManager.isLevelMusicFinished() && bossAlive) {
+//                audioManager.playDefaultBackgroundMusic(AudioEnums.getBossTheme(getNextBoss()), false);
+//            }
 
             if (!bossAlive) {
                 gameState.setGameState(GameStatusEnums.Level_Finished);
                 gameState.setBossesDefeated(gameState.getBossesDefeated() + 1);
                 DirectorManager.getInstance().setEnabled(false);
-                enemyManager.detonateAllEnemies();
+                enemyManager.deleteAllEnemies();
             }
         }
     }
@@ -146,10 +146,6 @@ public class LevelManager {
             PlayerManager.getInstance().getSpaceship().allowMovementBeyondBoundaries = true;
         }
 
-        if (DevTestSettings.devTestShortLevelMode) {
-            audioManager.devTestShortLevelMode = true;
-        }
-
         if (!DevTestSettings.blockDirectors) {
             activateDirectors(this.levelType);
         }
@@ -159,18 +155,18 @@ public class LevelManager {
         gameState.setGameState(GameStatusEnums.Playing);
 
         if (DevTestSettings.spawnTargetDummy) {
-            EnemyEnums enemyType = EnemyEnums.Bomba;
+            EnemyEnums enemyType = EnemyEnums.Flamer;
             Enemy dummy = EnemyCreator.createEnemy(enemyType, 1600, 500, Direction.LEFT, enemyType.getDefaultScale()
-                    , enemyType.getMovementSpeed(), enemyType.getMovementSpeed(), MovementPatternSize.SMALL, false);
+                    , enemyType.getMovementSpeed());
             dummy.setXCoordinate(600);
             dummy.setMaxHitPoints(1000);
             dummy.setCurrentHitpoints(1000);
-            dummy.setAllowedToFire(false);
+//            dummy.setAllowedToFire(false);
             dummy.setAllowedToMove(false);
             EnemyManager.getInstance().addEnemy(dummy);
         }
 
-        if(DevTestSettings.instantlySpawnPortal) {
+        if (DevTestSettings.instantlySpawnPortal) {
             gameState.setGameState(GameStatusEnums.Level_Finished);
         }
     }
@@ -193,7 +189,7 @@ public class LevelManager {
         }
 
         if (!nextLevelABossLevel) {
-            currentLevelDifficultyScore = LevelSongs.getDifficultyScore(currentLevelDifficulty, currentMiniBossConfig);
+            currentLevelDifficultyScore = getDifficultyScore();
         } else {
             currentLevelDifficultyScore = 6; //safety guard for boss levels
         }
@@ -211,10 +207,8 @@ public class LevelManager {
     }
 
     public EnemyEnums getNextBoss() {
-//        return EnemyEnums.YellowBoss;
+//        return EnemyEnums.StrikerBoss;
         int bossesDefeated = GameState.getInstance().getBossesDefeated();
-
-        // Use modulo to cycle through the bosses
         switch (bossesDefeated % EnemyEnums.getAmountOfBossEnemies()) {
             case 0:
                 return EnemyEnums.RedBoss;
@@ -223,7 +217,9 @@ public class LevelManager {
             case 2:
                 return EnemyEnums.CarrierBoss;
             case 3:
-                return EnemyEnums.YellowBoss;
+                return EnemyEnums.StrikerBoss;
+            case 4:
+                return EnemyEnums.BlueBoss;
             default:
                 return EnemyEnums.RedBoss;
         }
@@ -231,8 +227,8 @@ public class LevelManager {
 
 
     //This needs to be reworked if infinite boss scaling abilities is to be achieved
-    public int getBossDifficultyLevel(){
-        if(GameState.getInstance().getBossesDefeated() > 4 || GameState.getInstance().getGameMode().equals(GameMode.Nightmare)){ //cycled through all bosses, keep this number updated manually for now
+    public int getBossDifficultyLevel() {
+        if (GameState.getInstance().getBossesDefeated() > 4 || GameState.getInstance().getGameMode().equals(GameMode.Nightmare)) { //cycled through all bosses, keep this number updated manually for now
             return 1;
         }
         return 0;
@@ -253,7 +249,7 @@ public class LevelManager {
                 this.currentLevelSong = audioManager.getCurrentSong();
             }
             case Boss -> {
-                audioManager.playDefaultBackgroundMusic(LevelSongs.getBossTheme(getNextBoss()), true);
+                audioManager.playDefaultBackgroundMusic(AudioEnums.getBossTheme(getNextBoss()), true);
                 this.currentLevelSong = audioManager.getCurrentSong();
                 //to implement
             }
@@ -264,28 +260,24 @@ public class LevelManager {
     }
 
     public void spawnEnemy(int xCoordinate, int yCoordinate, EnemyEnums enemyType,
-                           Direction direction, float scale, boolean random, float xMovementSpeed, float yMovementSpeed, boolean boxCollision) {
+                           Direction direction, float scale, boolean random, float xMovementSpeed) {
         Point coordinates = new Point(xCoordinate, yCoordinate);
 
-        //Placed in a wrapper for logging
         PerformanceLoggerManager.timeAndLog(performanceLogger, "Spawn Enemy", () -> {
             if (random) {
                 List<Integer> coordinatesList = spawningCoordinator.getSpawnCoordinatesByDirection(direction);
                 coordinates.setX(coordinatesList.get(0));
                 coordinates.setY(coordinatesList.get(1));
             }
-
             if (validSpawnCoordinates(coordinates.getX(), coordinates.getY(), enemyType, scale) || !random) {
-                Enemy enemy = EnemyCreator.createEnemy(enemyType, coordinates.getX(), coordinates.getY(), direction, scale, xMovementSpeed, yMovementSpeed, MovementPatternSize.SMALL, boxCollision);
-
+                Enemy enemy = EnemyCreator.createEnemy(enemyType, coordinates.getX(), coordinates.getY(), direction, scale, xMovementSpeed);
                 if (!random) {
                     Point originalDestination = enemy.getMovementConfiguration().getDestination();
                     enemy.setCenterCoordinates(coordinates.getX(), coordinates.getY());
                     enemy.resetMovementPath();
 
                     if (originalDestination != null) {
-
-                        if((direction.equals(Direction.LEFT) || direction.equals(Direction.RIGHT)) && originalDestination.getY() != enemy.getYCoordinate()){
+                        if ((direction.equals(Direction.LEFT) || direction.equals(Direction.RIGHT)) && originalDestination.getY() != enemy.getYCoordinate()) {
                             originalDestination.setY(enemy.getYCoordinate()); //er is een verschil van minder dan 1, corrigeer het anders gaan visuals trillen
                         }
                         enemy.getMovementConfiguration().setDestination(originalDestination);
@@ -347,12 +339,14 @@ public class LevelManager {
     public void setCurrentLevelDifficulty(LevelDifficulty currentLevelDifficulty) {
         if (!isNextLevelABossLevel()) {
             this.currentLevelDifficulty = currentLevelDifficulty;
+            this.lastSelectedDifficulty = currentLevelDifficulty;
         }
     }
 
     public MiniBossConfig getCurrentMiniBossConfig() {
         if (currentMiniBossConfig == null) {
             currentMiniBossConfig = MiniBossConfig.getRandomMiniBossConfig();
+            this.lastSelectedMiniBossConfig = currentMiniBossConfig;
         }
         return currentMiniBossConfig;
     }
@@ -381,5 +375,42 @@ public class LevelManager {
 
     public PerformanceLogger getPerformanceLogger() {
         return this.performanceLogger;
+    }
+
+    public MiniBossConfig getLastSelectedMiniBossConfig() {
+        if (lastSelectedMiniBossConfig == null) {
+            return getCurrentMiniBossConfig();
+        }
+        return lastSelectedMiniBossConfig;
+    }
+
+    public void setLastSelectedMiniBossConfig(MiniBossConfig lastSelectedMiniBossConfig) {
+        this.lastSelectedMiniBossConfig = lastSelectedMiniBossConfig;
+    }
+
+    public LevelDifficulty getLastSelectedDifficulty() {
+        if (lastSelectedDifficulty == null) {
+            return getCurrentLevelDifficulty();
+        }
+
+        return lastSelectedDifficulty;
+    }
+
+    public void setLastSelectedDifficulty(LevelDifficulty lastSelectedDifficulty) {
+        this.lastSelectedDifficulty = lastSelectedDifficulty;
+    }
+
+    public int getDifficultyScore() {
+        int difficultyWeight = this.currentLevelDifficulty.ordinal() + 1; // Assuming Enum order is EASY, MEDIUM, HARD
+        int lengthWeight = this.currentMiniBossConfig.ordinal() + 1; // Assuming Enum order is SHORT, MEDIUM, LONG
+        return difficultyWeight + lengthWeight;
+    }
+
+    public ImageEnums getImageEnumByDifficultyScore(int difficultyScore) {
+        if (difficultyScore <= 2) return ImageEnums.PurpleWings1; // Image 1
+        if (difficultyScore == 3) return ImageEnums.PurpleWings2; // Image 2
+        if (difficultyScore == 4) return ImageEnums.PurpleWings3; // Image 3
+        if (difficultyScore == 5) return ImageEnums.PurpleWings4; // Image 4
+        return ImageEnums.PurpleWings5; // Image 5
     }
 }

@@ -3,8 +3,8 @@ package net.riezebos.bruus.tbd.game.gameobjects.friendlies;
 import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.Drone;
 import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.droneTypes.DroneTypes;
 import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.droneTypes.MissileDrone;
-import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.droneTypes.protoss.*;
 import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.droneTypes.SpecialAttackDrone;
+import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.droneTypes.protoss.*;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
 import net.riezebos.bruus.tbd.game.items.effects.effectimplementations.DamageReduction;
@@ -46,7 +46,7 @@ public class FriendlyCreator {
         SpriteAnimationConfiguration spriteAnimationConfiguration = new SpriteAnimationConfiguration(spriteConfiguration, 2, true);
         MovementConfiguration movementConfiguration = new MovementConfiguration();
         movementConfiguration.setPathFinder(new OrbitPathFinder(
-                PlayerManager.getInstance().getSpaceship(), 85, 300, 0));
+                PlayerManager.getInstance().getSpaceship()));
         movementConfiguration.initDefaultSettingsForSpecializedPathFinders();
         movementConfiguration.setXMovementSpeed(droneTypes.getMovementSpeed());
         movementConfiguration.setYMovementSpeed(droneTypes.getMovementSpeed());
@@ -126,7 +126,7 @@ public class FriendlyCreator {
         return null;
     }
 
-    public static Drone createCarrierBeacon(){
+    public static Drone createCarrierBeacon() {
         SpriteConfiguration spriteConfiguration = new SpriteConfiguration();
         spriteConfiguration.setxCoordinate(PlayerManager.getInstance().getSpaceship().getXCoordinate());
         spriteConfiguration.setyCoordinate(PlayerManager.getInstance().getSpaceship().getYCoordinate());
@@ -152,7 +152,7 @@ public class FriendlyCreator {
             case ProtossScout -> {
                 return 0.35f;
             }
-            case ProtossShuttle ->{
+            case ProtossShuttle -> {
                 return 1.5f;
             }
 

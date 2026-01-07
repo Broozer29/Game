@@ -118,10 +118,10 @@ public class ProtossScout extends Drone {
     }
 
     private void updateMoveSpeed(boolean slow) {
-        if (slow != isMovingSlow) { // Only update if there is a state change
+        if (slow != isMovingSlow) {
             isMovingSlow = slow;
             float newSpeed = slow ? (defaultMoveSpeed * 0.7f) : defaultMoveSpeed;
-            this.getMovementConfiguration().setXMovementSpeed(newSpeed); // Only call when needed
+            this.getMovementConfiguration().setXMovementSpeed(newSpeed);
         }
     }
 
@@ -129,7 +129,7 @@ public class ProtossScout extends Drone {
         Rectangle targetBounds = target.getBounds(); // Get target's bounding box
         double distance = ProtossUtils.getDistanceToRectangle(this.getCenterXCoordinate(), this.getCenterYCoordinate(), targetBounds);
 
-        return distance > attackRange; // Directly compare Euclidean distance
+        return distance > attackRange;
     }
 
 

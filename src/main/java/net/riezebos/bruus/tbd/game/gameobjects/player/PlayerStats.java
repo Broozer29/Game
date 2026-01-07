@@ -7,10 +7,10 @@ import net.riezebos.bruus.tbd.game.gameobjects.player.boons.BoonEnums;
 import net.riezebos.bruus.tbd.game.gameobjects.player.boons.BoonManager;
 import net.riezebos.bruus.tbd.game.gameobjects.player.boons.boonimplementations.BoonActivationEnums;
 import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SpaceShip;
+import net.riezebos.bruus.tbd.game.gamestate.save.SaveFile;
 import net.riezebos.bruus.tbd.game.items.ItemEnums;
 import net.riezebos.bruus.tbd.game.items.PlayerInventory;
 import net.riezebos.bruus.tbd.game.util.ExperienceCalculator;
-import net.riezebos.bruus.tbd.game.gamestate.save.SaveFile;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.AudioManager;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.AudioEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
@@ -37,7 +37,7 @@ public class PlayerStats {
     //firefighter
     public static float fireFighterBaseDamage = 10f;
     public static float fireFighterAttackSpeed = 0.28f;
-    public static float igniteDamageMultiplier = 0.022f;
+    public static float igniteDamageMultiplier = 0.025f;
     public static float igniteDuration = 1.15f;
     private float igniteDurationMultiplier = 1;
     private float bonusIgniteDamageMultiplier = 1f;
@@ -50,7 +50,7 @@ public class PlayerStats {
     //captain
     public static float captainBaseDamage = 10f;
     public static float captainAttackSpeed = 0.28f;
-    public static int captainBaseHitpoints = 50;
+    public static int captainBaseHitpoints = 60;
 
     //carrier
     public static float carrierBaseDamage = 10f;
@@ -68,7 +68,7 @@ public class PlayerStats {
     public static float carrierSlowSpeed = 2.5f;
     public static float carrierFastSpeed = 4f;
     private float protossShipThornsDamageRatio = 1.0f;
-    public static int carrierHitpoints = 85;
+    public static int carrierHitpoints = 75;
     private float protossShipConstructionBonusSpeedModifier = 1f;
 
     //all classes
@@ -90,6 +90,7 @@ public class PlayerStats {
     private float specialBonusDamageMultiplier;
     private float attackSpeed;
     private float specialAttackRechargeCooldown;
+    private float specialAttackRechargeCooldownBonusModifier;
     private float attackSpeedBonus;
 
     // Player Health
@@ -141,6 +142,7 @@ public class PlayerStats {
     private float shieldRegenPerTick = 0.2f;
     private float mineralModifier = 1.0f;
     private int relicChanceModifier = 0;
+    private float flatDamageReduction = 0;
 
     public void setPlayerClass(PlayerClass playerClass) {
         this.playerClass = playerClass;
@@ -180,10 +182,12 @@ public class PlayerStats {
         droneType = DroneTypes.Missile;
         droneBaseDamage = 20f;
         baseDamageMultiplier = 1f;
+        specialAttackRechargeCooldownBonusModifier = 0;
         igniteDuration = 1.35f;
         mineralModifier = 1.0f;
         relicChanceModifier = 0;
         maxHitPointsMultiplier = 1.0f;
+        flatDamageReduction = 0;
         this.maxAmountOfProtoss = 12;
         this.amountOfProtossScouts = carrierStartingScouts;
         this.amountOfProtossArbiters = 0;
@@ -344,12 +348,13 @@ public class PlayerStats {
         }
 
         if (shouldIncreaseBaseDamage) {
-            baseDamage = ExperienceCalculator.getNextLevelBaseDamage(baseDamage);
+            //Disabled om de mid-late game spannend te houden. Power moet van items komen.
+//            baseDamage = ExperienceCalculator.getNextLevelBaseDamage(baseDamage);
+//            droneBaseDamage = ExperienceCalculator.getNextLevelBaseDamage(droneBaseDamage);
         }
 
         maxHitPoints = ExperienceCalculator.getNextLevelHitPoints(maxHitPoints);
         maxShieldHitPoints = ExperienceCalculator.getNextLevelShieldPoints(maxShieldHitPoints);
-        droneBaseDamage = ExperienceCalculator.getNextLevelBaseDamage(droneBaseDamage);
 
 
         SpaceShip player = PlayerManager.getInstance().getSpaceship();
@@ -432,7 +437,7 @@ public class PlayerStats {
     }
 
     public float getSpecialAttackCooldown() {
-        float currentSpecialAttackSpeed = this.specialAttackRechargeCooldown;
+        float currentSpecialAttackSpeed = this.specialAttackRechargeCooldown * (1 + specialAttackRechargeCooldownBonusModifier);
         if (currentSpecialAttackSpeed < 0.05) {
             return 0.05f;
         } else {
@@ -442,6 +447,10 @@ public class PlayerStats {
 
     public void setSpecialAttackRechargeCooldown(float specialAttackRechargeCooldown) {
         this.specialAttackRechargeCooldown = specialAttackRechargeCooldown;
+    }
+
+    public void modifySpecialAttackRechargeCooldown(float specialAttackRechargeCooldownBonusModifier) {
+        this.specialAttackRechargeCooldownBonusModifier += specialAttackRechargeCooldownBonusModifier;
     }
 
     public float getMaxHitPoints() {
@@ -1041,5 +1050,13 @@ public class PlayerStats {
 
     public void setAmountOfProtossCorsairs(int amountOfProtossCorsairs) {
         this.amountOfProtossCorsairs = amountOfProtossCorsairs;
+    }
+
+    public float getFlatDamageReduction() {
+        return this.flatDamageReduction;
+    }
+
+    public void modifyFlatDamageReduction(float flatDamageReduction) {
+        this.flatDamageReduction += flatDamageReduction;
     }
 }

@@ -96,7 +96,7 @@ public class GodRunDetector {
 
     public void updateGodRunStatus() {
         if (GameState.getInstance().getGameMode().equals(GameMode.Nightmare)) {
-            this.godRunScore = GameState.getInstance().getStagesCompleted() > 0 ? 2 : 0; //maximum hardcoded for now
+            this.godRunScore = GameState.getInstance().getStagesCompleted() > 0 ? 3 : 0; //maximum hardcoded for now
             this.lastGodRunScore = this.godRunScore;
             return;
         }
@@ -120,10 +120,14 @@ public class GodRunDetector {
             godRunScore++;
         }
 
+        if(gameSecondsWithHighKillRatio >= 35){
+            godRunScore++;
+        }
+
         if (GameState.getInstance().getStagesCompleted() <= 3)
             godRunScore = 0; //if early game, never enable godrun modifications
 
-        if (lastGodRunScore != godRunScore && now - lastGameSecondsGodRunScoreUpdated >= 15) { //only update the godrunscore a maximum of once every X seconds
+        if (lastGodRunScore != godRunScore && now - lastGameSecondsGodRunScoreUpdated >= 10) { //only update the godrunscore a maximum of once every X seconds
             lastGodRunScore = godRunScore;
             lastGameSecondsGodRunScoreUpdated = now;
             AudioManager.getInstance().addAudio(AudioEnums.GodRunDetected);

@@ -6,7 +6,6 @@ import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyCreator;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyManager;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyEnums;
 import net.riezebos.bruus.tbd.game.movement.MovementConfiguration;
-import net.riezebos.bruus.tbd.game.movement.MovementPatternSize;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteAnimation;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteAnimationConfiguration;
@@ -71,8 +70,7 @@ public class ZergCocoon extends Enemy {
 
     private void spawnZerg () {
         Enemy zerg = EnemyCreator.createEnemy(this.zergToSpawn, this.xCoordinate, this.yCoordinate,
-                this.movementRotation, this.scale, this.zergToSpawn.getMovementSpeed(), this.zergToSpawn.getMovementSpeed(),
-                MovementPatternSize.SMALL, false);
+                this.movementRotation, this.scale, this.zergToSpawn.getMovementSpeed());
         zerg.setCenterCoordinates(this.getCenterXCoordinate(), this.getCenterYCoordinate());
         EnemyManager.getInstance().addEnemy(zerg);
     }

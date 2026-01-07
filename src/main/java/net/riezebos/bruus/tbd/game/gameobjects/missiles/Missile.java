@@ -2,8 +2,6 @@ package net.riezebos.bruus.tbd.game.gameobjects.missiles;
 
 import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyManager;
-import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
-import net.riezebos.bruus.tbd.game.gamestate.GameStatsTracker;
 import net.riezebos.bruus.tbd.game.items.Item;
 import net.riezebos.bruus.tbd.game.items.ItemEnums;
 import net.riezebos.bruus.tbd.game.items.PlayerInventory;
@@ -149,21 +147,14 @@ public class Missile extends GameObject {
     }
 
 
-    private boolean hasPiercedForStatsTracker = false;
 
     public void handleCollision (GameObject collidedObject) {
         // Handle different types of missiles
         if (isExplosive) {
             detonateMissile();
             destroyMissile();
-            if (ownerOrCreator.equals(PlayerManager.getInstance().getSpaceship())) {
-                GameStatsTracker.getInstance().addShotHit(1);
-            }
         } else {
             pierceAndBounce(collidedObject);
-            if (!hasPiercedForStatsTracker && ownerOrCreator.equals(PlayerManager.getInstance().getSpaceship())) {
-                GameStatsTracker.getInstance().addShotHit(1);
-            }
         }
     }
 
@@ -173,7 +164,6 @@ public class Missile extends GameObject {
             dealDamageToGameObject(collidedObject);
             addCollidedObject(collidedObject);
             amountOfPiercesLeft--;
-            hasPiercedForStatsTracker = true;
 
             Item bouncingModuleAddon = PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.BouncingModuleAddon);
             if (bouncingModuleAddon != null && canBounce) {

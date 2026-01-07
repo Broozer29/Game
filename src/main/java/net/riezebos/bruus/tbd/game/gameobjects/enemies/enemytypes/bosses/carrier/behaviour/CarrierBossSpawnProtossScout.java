@@ -1,4 +1,4 @@
-package net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.redboss.behaviour;
+package net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.carrier.behaviour;
 
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.Enemy;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyCreator;
@@ -7,10 +7,7 @@ import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.BossAct
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyEnums;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.level.LevelManager;
-import net.riezebos.bruus.tbd.game.movement.BoardBlockUpdater;
 import net.riezebos.bruus.tbd.game.movement.Direction;
-import net.riezebos.bruus.tbd.game.movement.MovementPatternSize;
-import net.riezebos.bruus.tbd.game.movement.Point;
 import net.riezebos.bruus.tbd.game.util.WithinVisualBoundariesCalculator;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.AnimationManager;
@@ -18,26 +15,20 @@ import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteAnimation;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteAnimationConfiguration;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteConfiguration;
 
-import java.util.Random;
+public class CarrierBossSpawnProtossScout implements BossActionable {
 
-public class SpawnFourDirectionalDrone implements BossActionable {
-
-
-    private double lastSpawnedTime = GameState.getInstance().getGameSeconds();
-    private double spawnCooldown = 18;
-    private Random random;
-    private int priority = 3;
+    private double lastSpawnedTime = 0;
+    private double spawnCooldown = Math.max(6 - LevelManager.getInstance().getBossDifficultyLevel(), 3);
+    private int priority = 10;
 
     private SpriteAnimation spawnAnimation;
 
     @Override
-    public boolean activateBehaviour(Enemy enemy) {
+    public boolean activateBehaviour (Enemy enemy) {
         double currentTime = GameState.getInstance().getGameSeconds();
-        if (spawnAnimation == null) {
+        if(spawnAnimation == null) {
             initSpawnAnimation(enemy);
         }
-
-        updateSpawnCooldown(enemy);
 
         if (enemy.isAllowedToFire() && currentTime >= lastSpawnedTime + spawnCooldown && WithinVisualBoundariesCalculator.isWithinBoundaries(enemy)) {
             updateSpawnAnimationLocation(enemy);
@@ -49,12 +40,10 @@ public class SpawnFourDirectionalDrone implements BossActionable {
             }
 
 
-            if (spawnAnimation.isPlaying() && spawnAnimation.getCurrentFrame() == 4) {
-                for (int i = 0; i < 2; i++) {
-                    Enemy fourDirectionalDrone = createFourDirectionalDrone(enemy);
-                    fourDirectionalDrone.setCenterCoordinates(spawnAnimation.getCenterXCoordinate(), spawnAnimation.getCenterYCoordinate());
-                    EnemyManager.getInstance().addEnemy(fourDirectionalDrone);
-                }
+            if(spawnAnimation.isPlaying() && spawnAnimation.getCurrentFrame() == 4) {
+                Enemy protossScout = createProtossScout(enemy);
+                protossScout.setCenterCoordinates(spawnAnimation.getCenterXCoordinate(), spawnAnimation.getCenterYCoordinate());
+                EnemyManager.getInstance().addEnemy(protossScout);
                 lastSpawnedTime = currentTime;
                 enemy.setAttacking(false);
                 return true; //We finished
@@ -65,13 +54,7 @@ public class SpawnFourDirectionalDrone implements BossActionable {
         return true; //We dont have anything to do at this point
     }
 
-    private void updateSpawnCooldown(Enemy enemy) {
-        if (enemy.getCurrentHitpoints() <= (enemy.getMaxHitPoints() * 0.5f)) {
-            spawnCooldown = 14;
-        }
-    }
-
-    private void initSpawnAnimation(Enemy enemy) {
+    private void initSpawnAnimation (Enemy enemy) {
         SpriteConfiguration spriteConfiguration = new SpriteConfiguration();
         spriteConfiguration.setxCoordinate(enemy.getXCoordinate());
         spriteConfiguration.setyCoordinate(enemy.getCenterYCoordinate());
@@ -85,49 +68,40 @@ public class SpawnFourDirectionalDrone implements BossActionable {
         spawnAnimation.addXOffset(-10);
     }
 
-    private void updateSpawnAnimationLocation(Enemy enemy) {
+    private void updateSpawnAnimationLocation (Enemy enemy) {
         spawnAnimation.setCenterCoordinates(enemy.getXCoordinate(), enemy.getCenterYCoordinate());
     }
 
-    private int getRandomBoardBlock() {
-        if (random == null) {
-            random = new Random();
-        }
+    private Enemy createProtossScout(Enemy enemy){
+        EnemyEnums enemyEnums = EnemyEnums.EnemyProtossScout;
+        Enemy enemyProtossScout = EnemyCreator.createEnemy(enemyEnums, enemy.getXCoordinate(), enemy.getYCoordinate(), Direction.LEFT,
+                enemyEnums.getDefaultScale(), enemyEnums.getMovementSpeed());
 
-        return random.nextInt(1, 3);
-    }
-
-    private Enemy createFourDirectionalDrone(Enemy enemy) {
-        EnemyEnums enemyEnums = EnemyEnums.FourDirectionalDrone;
-
-        float bonusSpeed = LevelManager.getInstance().getBossDifficultyLevel() > 0.1f ? LevelManager.getInstance().getBossDifficultyLevel() / 2 : 0;
-
-        Enemy fourDirectionalDrone = EnemyCreator.createEnemy(enemyEnums, enemy.getXCoordinate(), enemy.getYCoordinate(), Direction.LEFT,
-                enemyEnums.getDefaultScale(),
-                enemyEnums.getMovementSpeed() + bonusSpeed,
-                enemyEnums.getMovementSpeed() + bonusSpeed,
-                MovementPatternSize.SMALL, false);
-
-        Point point = BoardBlockUpdater.getRandomCoordinateInBlock(getRandomBoardBlock(), fourDirectionalDrone.getWidth(), fourDirectionalDrone.getHeight());
-        fourDirectionalDrone.getMovementConfiguration().setDestination(point);
-        fourDirectionalDrone.setOwnerOrCreator(enemy);
-        return fourDirectionalDrone;
+        //Scout should immediatly change its move config upon spawning, so its responsible itself for surrounding the carrier
+        enemyProtossScout.setOwnerOrCreator(enemy);
+        return enemyProtossScout;
     }
 
     @Override
-    public int getPriority() {
+    public int getPriority () {
         return priority;
     }
 
-    public void setPriority(int priority) {
+    public void setPriority (int priority) {
         this.priority = priority;
     }
 
     @Override
-    public boolean isAvailable(Enemy enemy) {
+    public boolean isAvailable (Enemy enemy) {
         return enemy.isAllowedToFire()
                 && GameState.getInstance().getGameSeconds() >= lastSpawnedTime + spawnCooldown
                 && WithinVisualBoundariesCalculator.isWithinBoundaries(enemy)
-                && EnemyManager.getInstance().getEnemiesByType(EnemyEnums.FourDirectionalDrone).size() < 5;
+                && canSpawnMoreScouts();
+    }
+
+
+    private static int maxScouts = 6;
+    private boolean canSpawnMoreScouts(){
+        return EnemyManager.getInstance().getEnemiesByType(EnemyEnums.EnemyProtossScout).size() < maxScouts;
     }
 }

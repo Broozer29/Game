@@ -4,16 +4,27 @@ public enum ImageEnums {
 
     /// / Menu Buttons
     Test_Image,
+    BossHealthBarBackground,
+    BossHealthBarRed,
+    BossHealthBarFront,
     EphemeralBlaze,
     Eternaflame,
     ArbiterDamage,
     StuiversBestFriend,
+    HighVelocityLasers,
     GlassCannon,
     SynergeticLinkIcon,
     EmergencyRepairsIcon,
     ConstructionKitIcon,
     VengeanceProtocolIcon,
     Explosion3,
+    StrikerBoss,
+    StrikerCornerDrone,
+    TwinBoss,
+    BlueBoss,
+    BlueBossFactory,
+    BlueBossFactoryDefender,
+    BossExplosion,
     ShurikenMiniBoss,
     MothershipMiniboss,
     MotherShipDrone,
@@ -142,6 +153,7 @@ public enum ImageEnums {
     LightningOrbDestruction,
     LevelUpAnimation,
     ElectroShredImproved,
+    DroneElectroShred,
     ThornsDamage,
     FreezeEffect,
     ShurikenEnemy,
@@ -288,7 +300,7 @@ public enum ImageEnums {
     Letter_N, Letter_O, Letter_P, Letter_Q, Letter_R, Letter_S, Letter_T, Letter_U, Letter_V, Letter_W, Letter_X,
     Letter_Y, Letter_Z, Letter_Percentage, Letter_Komma, Letter_One, Letter_Two, Letter_Three, Letter_Four, Letter_Five,
     Letter_Six, Letter_Seven, Letter_Eight, Letter_Nine, Letter_Zero, SpaceStationBoss, FireFighter, Starcraft2ConcentratedLaser, Starcraft2RepairBeam, Starcraft2_BatteryUpgrade, Starcraft2_MineExplosion, StickyOilIcon, SelectNewClassAnimation, EscalatingFlames, EntanglingFlames, ProtossShuttleMissileExplosion, ArbiterMultiTargetIcon,
-    CarrierUnlock, DefenderMiniBoss, ReverseHealing, ProtossCorsairExplosion;
+    CarrierUnlock, DefenderMiniBoss, ReverseHealing, ProtossCorsairExplosion, CallForHelp;
 
     public static ImageEnums fromChar(char c) {
         switch (c) {

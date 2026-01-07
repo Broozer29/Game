@@ -8,10 +8,16 @@ import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.level.EnemyFormation;
 import net.riezebos.bruus.tbd.game.level.FormationCreator;
 import net.riezebos.bruus.tbd.game.level.LevelManager;
+import net.riezebos.bruus.tbd.game.level.enums.LevelDifficulty;
 import net.riezebos.bruus.tbd.game.level.enums.MiniBossConfig;
 import net.riezebos.bruus.tbd.game.level.enums.SpawnFormationEnums;
 import net.riezebos.bruus.tbd.game.movement.Direction;
 import net.riezebos.bruus.tbd.visualsandaudio.data.DataClass;
+import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
+import net.riezebos.bruus.tbd.visualsandaudio.objects.AnimationManager;
+import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteAnimation;
+import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteAnimationConfiguration;
+import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteConfiguration;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -136,13 +142,12 @@ public class Director {
         Direction direction = getMiniBossDirection(miniBossType);
         float scale = miniBossType.getDefaultScale();
         float xMovementSpeed = miniBossType.getMovementSpeed();
-        float yMovementSpeed = miniBossType.getMovementSpeed();
 
         // Call LevelManager's spawnEnemy method
         LevelManager.getInstance().spawnEnemy(
                 DataClass.getInstance().getWindowWidth() + Math.round(miniBossType.getBaseWidth() * 0.88f),
                 DataClass.getInstance().getPlayableWindowMaxHeight() / 2,
-                miniBossType, direction, scale, false, xMovementSpeed, yMovementSpeed, false);
+                miniBossType, direction, scale, false, xMovementSpeed);
     }
 
     private Direction getMiniBossDirection(EnemyEnums enemyEnums) {
@@ -196,34 +201,37 @@ public class Director {
     }
 
     private boolean canSpawnMoreOfThisEnemy(EnemyEnums enemyEnums) {
+
+        int mediumEnemyDifficultyBonus = LevelManager.getInstance().getCurrentLevelDifficulty().equals(LevelDifficulty.Hard) ? 2 : 0;
+
         if (enemyEnums.equals(EnemyEnums.ZergQueen)) {
-            return EnemyManager.getInstance().getAmountOfEnemyTypesAlive(EnemyEnums.ZergQueen) < 3;
+            return EnemyManager.getInstance().getAmountOfEnemyTypesAlive(EnemyEnums.ZergQueen) < 3 + mediumEnemyDifficultyBonus;
         }
 
         if (enemyEnums.equals(EnemyEnums.ZergDevourer)) {
-            return EnemyManager.getInstance().getAmountOfEnemyTypesAlive(EnemyEnums.ZergDevourer) < 8;
+            return EnemyManager.getInstance().getAmountOfEnemyTypesAlive(EnemyEnums.ZergDevourer) < 8 + (mediumEnemyDifficultyBonus * 2);
         }
 
         if (enemyEnums.equals(EnemyEnums.ZergGuardian)) {
-            return EnemyManager.getInstance().getAmountOfEnemyTypesAlive(EnemyEnums.ZergGuardian) < 14;
+            return EnemyManager.getInstance().getAmountOfEnemyTypesAlive(EnemyEnums.ZergGuardian) < 14 + (mediumEnemyDifficultyBonus * 2);
         }
 
         if (enemyEnums.equals(EnemyEnums.Tazer)) {
-            return EnemyManager.getInstance().getAmountOfEnemyTypesAlive(EnemyEnums.Tazer) < 3;
+            return EnemyManager.getInstance().getAmountOfEnemyTypesAlive(EnemyEnums.Tazer) < 3 + mediumEnemyDifficultyBonus;
         }
 
         if (enemyEnums.equals(EnemyEnums.Bulldozer)) {
-            return EnemyManager.getInstance().getAmountOfEnemyTypesAlive(EnemyEnums.Bulldozer) < 5;
+            return EnemyManager.getInstance().getAmountOfEnemyTypesAlive(EnemyEnums.Bulldozer) < 5 + mediumEnemyDifficultyBonus;
         }
         if (enemyEnums.equals(EnemyEnums.Energizer)) {
-            return EnemyManager.getInstance().getAmountOfEnemyTypesAlive(EnemyEnums.Energizer) < 5;
+            return EnemyManager.getInstance().getAmountOfEnemyTypesAlive(EnemyEnums.Energizer) < 5 + mediumEnemyDifficultyBonus;
         }
 
         if (enemyEnums.equals(EnemyEnums.Seeker)) {
-            return EnemyManager.getInstance().getAmountOfEnemyTypesAlive(EnemyEnums.Seeker) < 6;
+            return EnemyManager.getInstance().getAmountOfEnemyTypesAlive(EnemyEnums.Seeker) < 6 + (mediumEnemyDifficultyBonus * 2);
         }
         if (enemyEnums.equals(EnemyEnums.Bomba)) {
-            return EnemyManager.getInstance().getAmountOfEnemyTypesAlive(EnemyEnums.Bomba) < 6;
+            return EnemyManager.getInstance().getAmountOfEnemyTypesAlive(EnemyEnums.Bomba) < 6 + (mediumEnemyDifficultyBonus * 2);
         }
 
         return true;
@@ -246,13 +254,34 @@ public class Director {
         Direction direction = Direction.LEFT;
         float scale = enemyEnums.getDefaultScale();
         float xMovementSpeed = enemyEnums.getMovementSpeed();
-        float yMovementSpeed = enemyEnums.getMovementSpeed();
+
+        int xCoordinate = DataClass.getInstance().getWindowWidth() + Math.round(enemyEnums.getBaseWidth() * 0.88f);
+        int yCoordinate = DataClass.getInstance().getPlayableWindowMaxHeight() / 2;
+
+        if(enemyEnums.equals(EnemyEnums.BlueBoss)){
+            xCoordinate = Math.round((DataClass.getInstance().getWindowWidth() / 2));
+            yCoordinate = Math.round((DataClass.getInstance().getPlayableWindowMaxHeight() / 2));
+            AnimationManager.getInstance().addUpperAnimation(createWarpInAnimation(xCoordinate, yCoordinate));
+        }
 
         // Call LevelManager's spawnEnemy method
         LevelManager.getInstance().spawnEnemy(
-                DataClass.getInstance().getWindowWidth() + Math.round(enemyEnums.getBaseWidth() * 0.88f),
-                DataClass.getInstance().getPlayableWindowMaxHeight() / 2,
-                enemyEnums, direction, scale, false, xMovementSpeed, yMovementSpeed, false);
+                xCoordinate,
+                yCoordinate,
+                enemyEnums, direction, scale, false, xMovementSpeed);
+    }
+
+    private SpriteAnimation createWarpInAnimation(int xCoordinate, int yCoordinate){
+        SpriteConfiguration spriteConfiguration = new SpriteConfiguration();
+        spriteConfiguration.setxCoordinate(xCoordinate);
+        spriteConfiguration.setyCoordinate(yCoordinate);
+        spriteConfiguration.setScale(1);
+        spriteConfiguration.setImageType(ImageEnums.WarpIn);
+
+        SpriteAnimationConfiguration spriteAnimationConfiguration = new SpriteAnimationConfiguration(spriteConfiguration, 2, false);
+        SpriteAnimation spriteAnimation = new SpriteAnimation(spriteAnimationConfiguration);
+        spriteAnimation.setCenterCoordinates(xCoordinate, yCoordinate);
+        return spriteAnimation;
     }
 
 
@@ -342,13 +371,12 @@ public class Director {
         Direction direction = getSpawnDirection();
         float scale = enemyType.getDefaultScale();
         float xMovementSpeed = enemyType.getMovementSpeed();
-        float yMovementSpeed = enemyType.getMovementSpeed();
 
         // Call LevelManager's spawnEnemy method
         LevelManager.getInstance().spawnEnemy(
                 DataClass.getInstance().getWindowWidth() + Math.round(enemyType.getBaseWidth() * scale),
                 DataClass.getInstance().getPlayableWindowMaxHeight() / 2 - Math.round((enemyType.getBaseHeight() * scale) / 2),
-                enemyType, direction, scale, randomLocation, xMovementSpeed, yMovementSpeed, false);
+                enemyType, direction, scale, randomLocation, xMovementSpeed);
     }
 
     public void spawnRegularFormation(SpawnFormationEnums formationType, EnemyEnums enemyType) {
@@ -512,6 +540,7 @@ public class Director {
         float basicIncreaseRate = 2f; // Increase basic enemy weight by a significant factor early on
         float decayRateForBasicEnemies = 0.2f; // Slower decay for Basic enemies (less aggressive than before)
         float growthRateForStrongEnemies = 0.175f; // Slower growth for stronger enemies
+        float mediumEnemyDifficultyBonus = LevelManager.getInstance().getCurrentLevelDifficulty().equals(LevelDifficulty.Hard) ? 0.15f : 0f;
 
         switch (category) {
             case Small:
@@ -520,13 +549,14 @@ public class Director {
             case Medium:
             case Boss:
                 // Gradually increase weight for stronger enemies as difficulty increases
-                return baseWeight * (1 + difficultyCoefficient * growthRateForStrongEnemies);
+                return baseWeight * (1 + difficultyCoefficient * growthRateForStrongEnemies) + mediumEnemyDifficultyBonus;
             case Summon:
                 return 0; // Should never be spawned
             default:
                 return baseWeight;  // Default case for any uncategorized types
         }
     }
+
 
     private MonsterCard weightedRandomSelection(List<MonsterCard> adjustedCards) {
         double totalWeight = adjustedCards.stream().mapToDouble(MonsterCard::getWeight).sum();

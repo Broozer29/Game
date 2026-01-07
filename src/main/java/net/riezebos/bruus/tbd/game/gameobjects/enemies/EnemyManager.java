@@ -17,6 +17,7 @@ import net.riezebos.bruus.tbd.game.items.PlayerInventory;
 import net.riezebos.bruus.tbd.game.items.effects.EffectIdentifiers;
 import net.riezebos.bruus.tbd.game.items.effects.effectimplementations.DamageOverTime;
 import net.riezebos.bruus.tbd.game.items.effects.effectimplementations.SpawnCoinsOnDeath;
+import net.riezebos.bruus.tbd.game.items.effects.effectimplementations.SpawnProjectileOnDeath;
 import net.riezebos.bruus.tbd.game.level.LevelManager;
 import net.riezebos.bruus.tbd.game.level.directors.GodRunDetector;
 import net.riezebos.bruus.tbd.game.level.enums.LevelTypes;
@@ -72,14 +73,9 @@ public class EnemyManager {
     }
 
     public void updateGameTick() {
-//        PerformanceLoggerManager.timeAndLog(performanceLogger, "Total", () -> {
         PerformanceLoggerManager.timeAndLog(performanceLogger, "Update Enemies", this::updateEnemies);
         PerformanceLoggerManager.timeAndLog(performanceLogger, "Check Spaceship Collision", this::checkSpaceshipCollisions);
         PerformanceLoggerManager.timeAndLog(performanceLogger, "Trigger Enemy Actions", this::triggerEnemyActions);
-//                });
-//        updateEnemies();
-//        checkSpaceshipCollisions();
-//        triggerEnemyActions();
     }
 
 
@@ -182,12 +178,16 @@ public class EnemyManager {
         }
     }
 
+    private void decreaseEnemySpawnedCount(int amount) {
+        GameStatsTracker.getInstance().addEnemySpawned(-amount);
+    }
+
     public List<Enemy> getEnemies() {
         return this.enemyList;
     }
 
     public List<Enemy> getEnemiesByType(EnemyEnums enemyType) {
-        return enemyList.stream().filter(enemy -> enemy.getEnemyType().equals(enemyType)).toList();
+        return enemyList.stream().filter(enemy -> enemy.getEnemyType().equals(enemyType)).collect(Collectors.toList());
     }
 
     public int getEnemyCount() {
@@ -195,10 +195,7 @@ public class EnemyManager {
     }
 
     public boolean enemiesToHomeTo() {
-        if (enemyList.isEmpty()) {
-            return true;
-        } else
-            return false;
+        return enemyList.isEmpty();
     }
 
     public Enemy getClosestEnemy(int xCoordinate, int yCoordinate) {
@@ -311,9 +308,6 @@ public class EnemyManager {
         return closestEnemy;
     }
 
-    public boolean isHasSpawnedABoss() {
-        return hasSpawnedABoss;
-    }
 
     public void setHasSpawnedABoss(boolean hasSpawnedABoss) {
         this.hasSpawnedABoss = hasSpawnedABoss;
@@ -328,7 +322,7 @@ public class EnemyManager {
         }
     }
 
-    public void detonateAllEnemies() {
+    public void deleteAllEnemies() {
         for (Enemy enemy : enemyList) {
             enemy.deleteObject();
         }
@@ -348,11 +342,13 @@ public class EnemyManager {
                 enemy.addEffect(getEndOfGameEnemyBurnEffect(enemy));
                 enemy.setCashMoneyWorth(enemy.getCashMoneyWorth() * 0.01f);
                 enemy.setXpOnDeath(enemy.getXpOnDeath() * 0.01f);
+                decreaseEnemySpawnedCount(-1);
             }
 
-            if (enemy.getEnemyType().equals(EnemyEnums.CashCarrier)) {
-                enemy.getEffects().removeIf(effect -> effect instanceof SpawnCoinsOnDeath);
-            }
+            //Clear all coin spawns if they have it (cash carriers and mini bosses)
+            enemy.getEffects().removeIf(effect -> effect instanceof SpawnCoinsOnDeath);
+            //Clear all effects that spawn enemy projectiles on death, since we want the end of the level to be "safe", mostly for mutalisks
+            enemy.getEffects().removeIf(effect -> effect instanceof SpawnProjectileOnDeath);
         }
     }
 
@@ -366,7 +362,7 @@ public class EnemyManager {
         SpriteAnimationConfiguration spriteAnimationConfiguration = new SpriteAnimationConfiguration(spriteConfiguration, 2, true);
         SpriteAnimation spriteAnimation = new SpriteAnimation(spriteAnimationConfiguration);
 
-        return new DamageOverTime(enemy.getMaxHitPoints() * 0.075f, 9999, spriteAnimation, EffectIdentifiers.EndOfLevelBurn);
+        return new DamageOverTime(enemy.getMaxHitPoints() * 0.035f, 9999, spriteAnimation, EffectIdentifiers.EndOfLevelBurn);
     }
 
 

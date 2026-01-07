@@ -9,16 +9,13 @@ import net.riezebos.bruus.tbd.game.movement.Direction;
 import net.riezebos.bruus.tbd.game.movement.MovementConfiguration;
 import net.riezebos.bruus.tbd.game.movement.MovementPatternSize;
 import net.riezebos.bruus.tbd.game.movement.Point;
-import net.riezebos.bruus.tbd.game.movement.pathfinders.BouncingPathFinder;
 import net.riezebos.bruus.tbd.game.movement.pathfinders.StraightLinePathFinder;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteAnimation;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteConfiguration;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
-import java.util.Set;
 
 public class SpawnProjectileOnDeath implements EffectInterface {
 
@@ -50,8 +47,8 @@ public class SpawnProjectileOnDeath implements EffectInterface {
                 missile.setOwnerOrCreator(gameObject);
                 missile.setDestructable(true);
                 missile.setDamageable(true);
-                missile.setMaxHitPoints(50);
-                missile.setCurrentHitpoints(50);
+                missile.setMaxHitPoints(1);
+                missile.setCurrentHitpoints(1);
 
                 if (missileImage.equals(ImageEnums.MutaliskMissile)) {
                     missile.getAnimation().setFrameDelay(6);

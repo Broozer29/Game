@@ -5,18 +5,15 @@ import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.gamestate.GameStatusEnums;
 import net.riezebos.bruus.tbd.game.level.LevelManager;
 import net.riezebos.bruus.tbd.game.level.enums.LevelDifficulty;
-import net.riezebos.bruus.tbd.game.level.enums.MiniBossConfig;
 import net.riezebos.bruus.tbd.game.level.enums.LevelTypes;
+import net.riezebos.bruus.tbd.game.level.enums.MiniBossConfig;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.AudioEnums;
-import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.LevelSongs;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.MusicMediaPlayer;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.osmediaplayers.MacOSMediaPlayer;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.osmediaplayers.SpotifyMediaPlayer;
 
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.Map;
-import java.util.Queue;
 
 public class AudioManager {
 
@@ -24,7 +21,6 @@ public class AudioManager {
     private CustomAudioClip backGroundMusic = null;
     private AudioDatabase audioDatabase = AudioDatabase.getInstance();
     private AudioEnums currentSong;
-    private Queue<AudioEnums> backgroundMusicTracksThatHavePlayed = new LinkedList<>();
     private Map<AudioEnums, Long> lastPlayTimeMap = new HashMap<>();
     private MusicMediaPlayer musicMediaPlayer = MusicMediaPlayer.iTunesMacOS;
     private MacOSMediaPlayer macOSMediaPlayer = MacOSMediaPlayer.getInstance();
@@ -33,8 +29,6 @@ public class AudioManager {
     private double lastSyncGameSeconds = -1; // Initialize to a value ensuring immediate sync on the first check
 
     private boolean isMusicControlledByThirdPartyApp = true;
-
-    public boolean devTestShortLevelMode = false;
 
 
     private AudioManager() {
@@ -124,59 +118,6 @@ public class AudioManager {
         }
     }
 
-
-    private void playRandomBackgroundMusic(LevelDifficulty difficulty, MiniBossConfig length, boolean loop) {
-        AudioEnums backgroundMusic = null;
-        int attempts = 0; // Initialize a counter for the number of attempts
-        boolean allowDuplicates = false; // Flag to allow duplicates after 10 attempts
-
-        do {
-            // Select a song based on provided criteria or randomly if none are provided
-            if (difficulty != null && length != null) {
-                backgroundMusic = LevelSongs.getRandomSong(difficulty, length);
-            } else if (difficulty != null) {
-                backgroundMusic = LevelSongs.getRandomSongByDifficulty(difficulty);
-            }
-            //DEPRECATED DO NOT USE
-//            else if (length != null) {
-//                backgroundMusic = LevelSongs.getRandomSongByLength(length);
-//            }
-            else {
-                backgroundMusic = LevelSongs.getRandomSong();
-            }
-            System.out.println("I'm in a do-while loop trying to select: " + difficulty + " / " + length + " and selected " + backgroundMusic);
-
-            attempts++; // Increment the attempt counter
-
-            if (attempts > 10) {
-                allowDuplicates = true; // Allow duplicates after 10 attempts, it might look like its needed, but it is because of the do-while condition
-                System.out.println("Exceeded 10 attempts. Allowing duplicate songs.");
-                break; // Exiting the loop, but since we're allowing duplicates now, we'll simply proceed.
-            }
-        }
-        // Continue if the track has not been played recently or if duplicates are allowed
-        while (backgroundMusicTracksThatHavePlayed.contains(backgroundMusic) && !allowDuplicates && backgroundMusic != null);
-        if (backgroundMusic != null) {
-            if (devTestShortLevelMode) {
-                playDefaultBackgroundMusic(AudioEnums.Large_Ship_Destroyed, false);
-            } else {
-                playDefaultBackgroundMusic(backgroundMusic, loop);
-            }
-
-            addTrackToHistory(backgroundMusic);
-            this.currentSong = backgroundMusic;
-        }
-    }
-
-
-    private void addTrackToHistory(AudioEnums track) {
-        backgroundMusicTracksThatHavePlayed.add(track);
-        // Remove the oldest entry if the list size exceeds 3
-        if (backgroundMusicTracksThatHavePlayed.size() > 3) {
-            backgroundMusicTracksThatHavePlayed.poll(); // This is more efficient for queues
-        }
-    }
-
     public void stopMusicAudio() {
         if (backGroundMusic != null) {
             backGroundMusic.stopClip();
@@ -221,8 +162,12 @@ public class AudioManager {
     }
 
     public boolean isLevelMusicFinished() {
-        if (LevelManager.getInstance().getLevelType().equals(LevelTypes.Boss) || this.musicMediaPlayer == MusicMediaPlayer.Default) {
-            return backGroundMusic.isFinished();
+        if (LevelManager.getInstance().getLevelType().equals(LevelTypes.Boss) || this.musicMediaPlayer == MusicMediaPlayer.LocalFiles) {
+            if(backGroundMusic != null) {
+                return backGroundMusic.isFinished();
+            } else {
+                return false;
+            }
         }
 
         if (this.musicMediaPlayer == MusicMediaPlayer.iTunesMacOS || this.musicMediaPlayer == MusicMediaPlayer.Spotify) {
@@ -306,7 +251,7 @@ public class AudioManager {
     }
 
     public double getBackgroundSongTotalLength() {
-        if (this.musicMediaPlayer == MusicMediaPlayer.Default) {
+        if (this.musicMediaPlayer == MusicMediaPlayer.LocalFiles) {
             return backGroundMusic.getTotalSecondsInPlayback();
         }
         if (this.musicMediaPlayer == MusicMediaPlayer.iTunesMacOS) {
@@ -320,15 +265,15 @@ public class AudioManager {
 
 
     public boolean isBackgroundMusicInitializing() {
-        if (this.musicMediaPlayer == MusicMediaPlayer.Default) {
+        if (this.musicMediaPlayer == MusicMediaPlayer.LocalFiles) {
             return backGroundMusic.getTotalSecondsInPlayback() < 0;
         }
         return false;
     }
 
     public void playDefaultBackgroundMusic(LevelDifficulty difficulty, MiniBossConfig miniBossConfig, boolean loop) {
-        if (this.musicMediaPlayer == MusicMediaPlayer.Default) {
-            this.playRandomBackgroundMusic(difficulty, miniBossConfig, loop);
+        if (this.musicMediaPlayer == MusicMediaPlayer.LocalFiles) {
+            //deprecated
         }
 
         if (this.musicMediaPlayer == MusicMediaPlayer.iTunesMacOS) {
@@ -351,7 +296,7 @@ public class AudioManager {
     }
 
     public double getCurrentSecondsInPlayback() {
-        if (this.musicMediaPlayer == MusicMediaPlayer.Default) {
+        if (this.musicMediaPlayer == MusicMediaPlayer.LocalFiles) {
             if (backGroundMusic == null) {
                 return -1;
             }
@@ -370,7 +315,7 @@ public class AudioManager {
     }
 
     public double getTotalPlaybackLengthInSeconds() {
-        if (this.musicMediaPlayer == MusicMediaPlayer.Default) {
+        if (this.musicMediaPlayer == MusicMediaPlayer.LocalFiles) {
             if (backGroundMusic == null) {
                 return 0;
             }
@@ -388,27 +333,20 @@ public class AudioManager {
         return -1;
     }
 
-    public double getCurrentSongProgression() {
-        double currentSeconds = getCurrentSecondsInPlayback();
-        double totalSeconds = getTotalPlaybackLengthInSeconds();
-
-        if (totalSeconds <= 0 || currentSeconds < 0) {
-            return 0.0;
-        }
-
-        return currentSeconds / totalSeconds;
-    }
-
 
     public void pauseAllAudio() {
+        if(DevTestSettings.devTestMuteMode){
+            return; //No audio should be playing at all
+        }
+
         for (CustomAudioClip audioClip : audioDatabase.getAllActiveClips()) {
             audioClip.pauseClip();
         }
 
-        if (this.musicMediaPlayer.equals(MusicMediaPlayer.Default)) {
+        if (this.musicMediaPlayer.equals(MusicMediaPlayer.LocalFiles)) {
             backGroundMusic.pauseClip();
         } else if (this.musicMediaPlayer.equals(MusicMediaPlayer.iTunesMacOS)) {
-            if (LevelManager.getInstance().getLevelType().equals(LevelTypes.Boss)) {
+            if (LevelManager.getInstance().getLevelType().equals(LevelTypes.Boss) && backGroundMusic != null) {
                 backGroundMusic.pauseClip();
             } else {
                 macOSMediaPlayer.stopPlayback();
@@ -423,14 +361,18 @@ public class AudioManager {
     }
 
     public void resumeAllAudio() {
+        if(DevTestSettings.devTestMuteMode){
+            return; //No audio should be playing at all
+        }
+
         for (CustomAudioClip audioClip : audioDatabase.getAllActiveClips()) {
             audioClip.resumeClip();
         }
 
-        if (this.musicMediaPlayer.equals(MusicMediaPlayer.Default)) {
+        if (this.musicMediaPlayer.equals(MusicMediaPlayer.LocalFiles)) {
             backGroundMusic.resumeClip();
         } else if (this.musicMediaPlayer.equals(MusicMediaPlayer.iTunesMacOS)) {
-            if (LevelManager.getInstance().getLevelType().equals(LevelTypes.Boss)) {
+            if (LevelManager.getInstance().getLevelType().equals(LevelTypes.Boss) && backGroundMusic != null) {
                 backGroundMusic.resumeClip();
             } else {
                 macOSMediaPlayer.resumePlayback();

@@ -34,7 +34,7 @@ public class HighVelocityLasers extends Item {
             return false;
         }
 
-        if(PlayerStats.getInstance().getPlayerClass().equals(PlayerClass.Captain)){
+        if(!PlayerStats.getInstance().getPlayerClass().equals(PlayerClass.Captain)){
             return false;
         }
         return true;

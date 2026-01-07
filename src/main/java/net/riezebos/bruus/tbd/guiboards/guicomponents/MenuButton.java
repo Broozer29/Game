@@ -2,17 +2,17 @@ package net.riezebos.bruus.tbd.guiboards.guicomponents;
 
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerClass;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
+import net.riezebos.bruus.tbd.game.gameobjects.player.boons.Boon;
+import net.riezebos.bruus.tbd.game.gameobjects.player.boons.BoonManager;
 import net.riezebos.bruus.tbd.game.gamestate.GameMode;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.gamestate.ShopManager;
+import net.riezebos.bruus.tbd.game.gamestate.save.SaveManager;
 import net.riezebos.bruus.tbd.game.items.PlayerInventory;
 import net.riezebos.bruus.tbd.game.level.LevelManager;
 import net.riezebos.bruus.tbd.game.level.enums.LevelDifficulty;
 import net.riezebos.bruus.tbd.game.level.enums.MiniBossConfig;
-import net.riezebos.bruus.tbd.game.gameobjects.player.boons.Boon;
-import net.riezebos.bruus.tbd.game.gameobjects.player.boons.BoonManager;
 import net.riezebos.bruus.tbd.game.util.OnScreenTextManager;
-import net.riezebos.bruus.tbd.game.gamestate.save.SaveManager;
 import net.riezebos.bruus.tbd.guiboards.BoardManager;
 import net.riezebos.bruus.tbd.guiboards.boardcreators.BoonSelectionBoardCreator;
 import net.riezebos.bruus.tbd.guiboards.boards.ShopBoard;
@@ -80,7 +80,7 @@ public class MenuButton extends GUIComponent {
                         DataClass.getInstance().getWindowHeight() / 2);
                 break;
             case SelectDefaultMediaPlayer:
-                AudioManager.getInstance().setMusicMediaPlayer(MusicMediaPlayer.Default);
+                AudioManager.getInstance().setMusicMediaPlayer(MusicMediaPlayer.LocalFiles);
                 OnScreenTextManager.getInstance().addText("Changed to using LOCALLY DOWNLOADED MUSIC for gameplay",
                         DataClass.getInstance().getWindowWidth() / 2,
                         DataClass.getInstance().getWindowHeight() / 2);

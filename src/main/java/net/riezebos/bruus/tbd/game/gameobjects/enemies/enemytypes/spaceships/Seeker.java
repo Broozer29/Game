@@ -117,8 +117,4 @@ public class Seeker extends Enemy {
         //Finalized and ready for addition to the game
         MissileManager.getInstance().addExistingMissile(missile);
     }
-
-
-
-
 }

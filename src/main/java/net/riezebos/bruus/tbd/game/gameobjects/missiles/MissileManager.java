@@ -14,7 +14,6 @@ import net.riezebos.bruus.tbd.game.gameobjects.missiles.specialAttacks.SpecialAt
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
 import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SpaceShip;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
-import net.riezebos.bruus.tbd.game.gamestate.GameStatsTracker;
 import net.riezebos.bruus.tbd.game.items.ItemEnums;
 import net.riezebos.bruus.tbd.game.items.PlayerInventory;
 import net.riezebos.bruus.tbd.game.items.items.ReflectiveShielding;
@@ -42,7 +41,7 @@ public class MissileManager {
     private CopyOnWriteArrayList<SpecialAttack> specialAttacks = new CopyOnWriteArrayList<SpecialAttack>();
     private CopyOnWriteArrayList<Laserbeam> laserbeams = new CopyOnWriteArrayList<>();
     private PerformanceLogger performanceLogger = null;
-    private static float laserBeamCooldown = 0.045f;
+    private static float laserBeamCooldownBetweenHits = 0.045f;
 
 
     private MissileManager() {
@@ -126,7 +125,7 @@ public class MissileManager {
                 }
 
 
-                if (GameState.getInstance().getGameSeconds() - spaceship.getLastTimeDamageTakenFromLaserbeams() >= laserBeamCooldown) {
+                if (GameState.getInstance().getGameSeconds() - spaceship.getLastTimeDamageTakenFromLaserbeams() >= laserBeamCooldownBetweenHits) {
                     spaceship.takeDamage(laserbeam.getDamage());
                     spaceship.setLastTimeDamageTakenFromLaserbeams(GameState.getInstance().getGameSeconds());
                 }
@@ -137,7 +136,7 @@ public class MissileManager {
                 double currentTime = GameState.getInstance().getGameSeconds();
                 double timeSinceLastDamage = currentTime - drone.getLastTimeDamageTakenFromLaserbeams();
                 // Only check for collisions if enough time has passed since the last damage
-                if (timeSinceLastDamage >= laserBeamCooldown) {
+                if (timeSinceLastDamage >= laserBeamCooldownBetweenHits) {
                     collisionInfo = CollisionDetector.getInstance().detectCollision(drone, laserbeam);
 
                     if (collisionInfo.isCollided()) {
@@ -215,7 +214,7 @@ public class MissileManager {
 
 
     private void checkEnemySpecialAttackMissileCollision(SpecialAttack specialAttack) {
-        if (specialAttack.getSpecialAttackMissiles().isEmpty()) {
+        if (specialAttack.getSpecialAttackMissiles().isEmpty() && specialAttack.isDestroysMissiles()) {
             for (Missile missile : missiles) {
                 if (missile.isFriendly()) {
                     CollisionInfo collisionInfo = collisionDetector.detectCollision(missile, specialAttack);
@@ -328,7 +327,7 @@ public class MissileManager {
     private void checkMissileCollisionWithMissiles(Missile missile) {
         if (missile.interactsWithMissiles()) {
             if (missile.isFriendly()) {
-                //Check for all non-friendly missiles in the missile list, this is used by the player
+                //Check for all non-friendly missiles in the missile list, this is used by friendly missiles
                 for (Missile enemyMissile : missiles) {
                     if (!enemyMissile.isFriendly()) {
                         CollisionInfo collisionInfo = collisionDetector.detectCollision(missile, enemyMissile);
@@ -340,18 +339,16 @@ public class MissileManager {
                                 handleReflection(enemyMissile, reflectiveBlocks);
                             } else if (missile.isDeletesMissiles() && enemyMissile.isDestructable()) {
                                 enemyMissile.destroyMissile();
-                                addHitToStatsTracker(missile);
                             } else if (missile.isDamageable()) {
                                 enemyMissile.dealDamageToGameObject(missile);
                                 enemyMissile.destroyMissile();
-                                addHitToStatsTracker(missile);
                             }
                         }
                     }
 
                 }
             } else {
-                //Check for all friendly missiles in the missile list, this is used by the enemies
+                //Check for all friendly missiles in the missile list, this is used by enemy missiles
                 for (Missile friendlyMissile : missiles) {
                     if (friendlyMissile.isFriendly()) {
                         CollisionInfo collisionInfo = collisionDetector.detectCollision(missile, friendlyMissile);
@@ -365,7 +362,6 @@ public class MissileManager {
                                 friendlyMissile.destroyMissile();
                             } else if (missile.isDamageable()) {
                                 friendlyMissile.dealDamageToGameObject(missile);
-//                                missile.setShowHealthBar(true);
                                 friendlyMissile.destroyMissile();
                             }
                         }
@@ -378,12 +374,6 @@ public class MissileManager {
     private void handleReflection(Missile nonReflectiveMissile, Missile reflectiveMissile) {
         if (reflectiveMissile instanceof ReflectiveBlocks reflectiveBlocks) {
             reflectiveBlocks.reflectMissile(nonReflectiveMissile);
-        }
-    }
-
-    private void addHitToStatsTracker(Missile missile) {
-        if (missile.getOwnerOrCreator().equals(PlayerManager.getInstance().getSpaceship())) {
-            GameStatsTracker.getInstance().addShotHit(1);
         }
     }
 

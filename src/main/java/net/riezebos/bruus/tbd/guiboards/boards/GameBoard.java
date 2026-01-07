@@ -18,11 +18,15 @@ import net.riezebos.bruus.tbd.game.gameobjects.neutral.interactable.Interactable
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
 import net.riezebos.bruus.tbd.game.gameobjects.player.boons.BoonEnums;
+import net.riezebos.bruus.tbd.game.gameobjects.player.boons.BoonManager;
+import net.riezebos.bruus.tbd.game.gameobjects.player.boons.boonimplementations.BoonActivationEnums;
+import net.riezebos.bruus.tbd.game.gameobjects.player.boons.boonimplementations.utility.CompoundWealth;
 import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SpaceShip;
 import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SpaceShipSpecialGun;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.gamestate.GameStatsTracker;
 import net.riezebos.bruus.tbd.game.gamestate.GameStatusEnums;
+import net.riezebos.bruus.tbd.game.gamestate.save.SaveManager;
 import net.riezebos.bruus.tbd.game.items.ItemEnums;
 import net.riezebos.bruus.tbd.game.items.PlayerInventory;
 import net.riezebos.bruus.tbd.game.items.items.StuiversBestFriend;
@@ -32,9 +36,6 @@ import net.riezebos.bruus.tbd.game.level.directors.DirectorManager;
 import net.riezebos.bruus.tbd.game.level.directors.GodRunDetector;
 import net.riezebos.bruus.tbd.game.level.enums.LevelTypes;
 import net.riezebos.bruus.tbd.game.movement.Direction;
-import net.riezebos.bruus.tbd.game.gameobjects.player.boons.BoonManager;
-import net.riezebos.bruus.tbd.game.gameobjects.player.boons.boonimplementations.BoonActivationEnums;
-import net.riezebos.bruus.tbd.game.gameobjects.player.boons.boonimplementations.utility.CompoundWealth;
 import net.riezebos.bruus.tbd.game.playerprofile.PlayerProfileManager;
 import net.riezebos.bruus.tbd.game.util.OnScreenText;
 import net.riezebos.bruus.tbd.game.util.OnScreenTextManager;
@@ -42,12 +43,12 @@ import net.riezebos.bruus.tbd.game.util.ThornsDamageDealer;
 import net.riezebos.bruus.tbd.game.util.VisualLayer;
 import net.riezebos.bruus.tbd.game.util.performancelogger.PerformanceLogger;
 import net.riezebos.bruus.tbd.game.util.performancelogger.PerformanceLoggerManager;
-import net.riezebos.bruus.tbd.game.gamestate.save.SaveManager;
 import net.riezebos.bruus.tbd.guiboards.BoardManager;
 import net.riezebos.bruus.tbd.guiboards.TimerHolder;
 import net.riezebos.bruus.tbd.guiboards.background.BackgroundManager;
 import net.riezebos.bruus.tbd.guiboards.background.BackgroundObject;
 import net.riezebos.bruus.tbd.guiboards.boardcreators.AchievementUnlockHelper;
+import net.riezebos.bruus.tbd.guiboards.guicomponents.BossHealthBar;
 import net.riezebos.bruus.tbd.guiboards.guicomponents.GUIComponent;
 import net.riezebos.bruus.tbd.visualsandaudio.data.DataClass;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.AudioDatabase;
@@ -65,9 +66,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.ArrayList;
 
 public class GameBoard extends JPanel implements ActionListener, TimerHolder {
 
@@ -107,6 +108,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
     private PerformanceLogger performanceLogger;
 
     private List<GUIComponent> floatingIcons = new ArrayList<>();
+    private List<BossHealthBar> bossHealthBars = new ArrayList<>();
 
 
     public GameBoard() {
@@ -140,6 +142,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
 
     public void startGame() {
         animationManager.resetManager();
+        this.bossHealthBars.clear();
         PlayerManager.getInstance().resetManager();
         PlayerManager.getInstance().createSpaceShip();
         gameUICreator.createGameBoardGUI();
@@ -165,6 +168,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
         textManager.resetManager();
         playerStats.resetPlayerStats();
         gameState.resetGameState();
+        this.bossHealthBars.clear();
         BoonManager.getInstance().resetManager();
         ThornsDamageDealer.getInstance().resetThornsDamageDealer();
         this.drawTimer.setDelay(gameState.getDELAY());
@@ -234,6 +238,12 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
             obj.setYCoordinate(obj.getYCoordinate() - 1);
         }
 
+        for (BossHealthBar obj : this.bossHealthBars) {
+            obj.updateHealthbarLength();
+            for(Sprite healthBarComponent : obj.getDrawableComponents()){
+                drawImage(g2d, healthBarComponent);
+            }
+        }
 
         Toolkit.getDefaultToolkit().sync();
     }
@@ -335,10 +345,6 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
 
             firstRowYCoordinate += messageHeight;
             msgToDraw = "Total enemies spawned:                 " + gameStatsTracker.getEnemiesSpawned();
-            g.drawString(msgToDraw, firstRowXCoordinate, firstRowYCoordinate);
-
-            firstRowYCoordinate += messageHeight;
-            msgToDraw = "Total damage done:                     " + gameStatsTracker.getTotalDamageDealt();
             g.drawString(msgToDraw, firstRowXCoordinate, firstRowYCoordinate);
 
             firstRowYCoordinate += messageHeight;
@@ -844,7 +850,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
             drawImage(g, progressBarFilling);
             drawImage(g, spaceShipIndicator);
         }
-        if (levelManager.getCurrentLevelSong() != null && !levelManager.isNextLevelABossLevel() && audioManager.getMusicMediaPlayer().equals(MusicMediaPlayer.Default)) {
+        if (levelManager.getCurrentLevelSong() != null && !levelManager.isNextLevelABossLevel() && audioManager.getMusicMediaPlayer().equals(MusicMediaPlayer.LocalFiles)) {
             g.setColor(Color.white);
             g.drawString("Song: " + levelManager.getCurrentLevelSong().toString(), progressBar.getXCoordinate(), progressBar.getYCoordinate() + progressBar.getHeight() + 10);
         } else if (levelManager.isNextLevelABossLevel()) {
@@ -1041,5 +1047,13 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
             }
         }
         floatingIcons.add(incomingComponent);
+    }
+
+    public void addBossHealthBar(BossHealthBar bossHealthBar) {
+        this.bossHealthBars.add(bossHealthBar);
+    }
+
+    public void resetBossHealthBars() {
+        this.bossHealthBars.clear();
     }
 }

@@ -6,26 +6,20 @@ import net.riezebos.bruus.tbd.game.gameobjects.friendlies.FriendlyManager;
 import net.riezebos.bruus.tbd.game.gameobjects.friendlies.FriendlyObjectConfiguration;
 import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.Drone;
 import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.droneTypes.DroneTypes;
-import net.riezebos.bruus.tbd.game.gameobjects.missiles.*;
 import net.riezebos.bruus.tbd.game.gameobjects.neutral.Explosion;
 import net.riezebos.bruus.tbd.game.gameobjects.neutral.ExplosionConfiguration;
 import net.riezebos.bruus.tbd.game.gameobjects.neutral.ExplosionManager;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
-import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.items.ItemEnums;
 import net.riezebos.bruus.tbd.game.items.PlayerInventory;
 import net.riezebos.bruus.tbd.game.items.effects.EffectActivationTypes;
-import net.riezebos.bruus.tbd.game.items.effects.effectimplementations.SpawnScrapMetalOnDeath;
 import net.riezebos.bruus.tbd.game.items.items.carrier.AimAssist;
 import net.riezebos.bruus.tbd.game.items.items.carrier.EmergencyRepairs;
+import net.riezebos.bruus.tbd.game.items.items.carrier.ProtossCorsairItem;
 import net.riezebos.bruus.tbd.game.items.items.carrier.VengeanceProtocol;
-import net.riezebos.bruus.tbd.game.movement.Direction;
 import net.riezebos.bruus.tbd.game.movement.MovementConfiguration;
-import net.riezebos.bruus.tbd.game.movement.MovementPatternSize;
 import net.riezebos.bruus.tbd.game.movement.Point;
-import net.riezebos.bruus.tbd.game.movement.pathfinders.PathFinder;
-import net.riezebos.bruus.tbd.game.movement.pathfinders.StraightLinePathFinder;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.AudioEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteAnimationConfiguration;
@@ -55,8 +49,8 @@ public class ProtossCorsair extends Drone {
         super.appliesOnHitEffects = true;
         this.ownerOrCreator = PlayerManager.getInstance().getSpaceship();
 
-        SpawnScrapMetalOnDeath spawnScrapMetalOnDeath = new SpawnScrapMetalOnDeath(0.25f);
-        this.effects.add(spawnScrapMetalOnDeath);
+//        SpawnScrapMetalOnDeath spawnScrapMetalOnDeath = new SpawnScrapMetalOnDeath(0.25f);
+//        this.effects.add(spawnScrapMetalOnDeath);
 
         if(PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.AimAssist) != null){
             AimAssist aimAssist = (AimAssist) PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.AimAssist);
@@ -127,7 +121,13 @@ public class ProtossCorsair extends Drone {
         spriteConfiguration1.setyCoordinate(this.yCoordinate);
         spriteConfiguration1.setScale(explosionSize);
 
-        float damage = PlayerStats.getInstance().getNormalAttackDamage() * explosionDamageFactor;
+        float damage = PlayerStats.getInstance().getNormalAttackDamage() * explosionDamageFactor; //failsafe but is expected to always be overwritten
+
+        ProtossCorsairItem item = (ProtossCorsairItem) PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.ProtossCorsair);
+        if(item != null){
+            damage = item.getMaxDamage(gameObject);
+        }
+
 
         SpriteAnimationConfiguration spriteAnimationConfiguration = new SpriteAnimationConfiguration(spriteConfiguration1, 2, false);
         spriteAnimationConfiguration.getSpriteConfiguration().setImageType(ImageEnums.ProtossCorsairExplosion);

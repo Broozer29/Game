@@ -1,7 +1,6 @@
 package net.riezebos.bruus.tbd.game.items;
 
 import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.droneTypes.protoss.ProtossArbiter;
-import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.droneTypes.protoss.ProtossCorsair;
 import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.droneTypes.protoss.ProtossScout;
 import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.droneTypes.protoss.ProtossShuttle;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
@@ -44,7 +43,7 @@ public class ItemDescriptionRetriever {
                         ") hitpoints per second.";
             }
             case Battery -> {
-                return "Your special attack gains 1 additional charge.";
+                return "Your special attack gains 1 (+1) additional charge. Your special attack recharges " + Math.round(Battery.cooldownReduction * 100) + "% (+ " + Math.round(Battery.cooldownReduction * 100) + "faster.";
             }
             case FocusCrystal -> {
                 return "Your missiles deal " + Math.round(FocusCrystal.damageAmplificationModifier * 100) +
@@ -56,15 +55,7 @@ public class ItemDescriptionRetriever {
                 return "Gain " + Math.round(PrecisionAmplifier.critChance * 100) + "% (+" + Math.round(PrecisionAmplifier.critChance * 100) + "%) critical strike chance. Critical strikes deal double damage.";
             }
             case PlatinumSponge -> {
-                return "After taking damage, gain " +
-                        Math.round(PlatinumSponge.armorBonus) +
-                        " (+" +
-                        Math.round(PlatinumSponge.armorBonus) +
-                        ") armor for 2 seconds up to a maximum of " +
-                        Math.round(PlatinumSponge.maxArmorBonus) +
-                        " (+" +
-                        Math.round(PlatinumSponge.maxArmorBonus) +
-                        ")";
+                return "Reduces all damage taken by " + PlatinumSponge.damageReduction + " (+" + PlatinumSponge.damageReduction + "). Damage taken cannot be reduced below 1";
             }
             case EmergencyRepairBot -> {
                 return "When dropping below " + Math.round(EmergencyRepairBot.healthActivationRatio * 100) + "% health, instantly heals you for " +
@@ -256,13 +247,13 @@ public class ItemDescriptionRetriever {
                 return "Once per round you get revived after dying. Upon reviving unleash an explosion dealing " + Math.round(StuiversBestFriend.explosionDamageAmount * 100) + "% damage.";
             }
             case GlassCannon -> {
-                return "You deal double damage. Your health and shields are halved.";
+                return "You deal double damage. You take double damage.";
             }
             case AimAssist -> {
                 return "Protoss ships gain " + Math.round(AimAssist.protossAttackRangeBonus * 100) + "% attack range.";
             }
             case ProtossCorsair -> {
-                return "Gain 1 Protoss Corsair. Corsairs are suicide bombers that deal " + Math.round(ProtossCorsair.explosionDamageFactor * 100) + "% damage. Corsairs drop metal scrap that boosts ship construction.";
+                return "Gain 1 Protoss Corsair. Corsairs are suicide bombers that deal 25% of the enemies maximum hitpoints as damage. Corsairs deal a maximum of " + Math.round(ProtossCorsairItem.maxDamageBase) + " (+" + Math.round(ProtossCorsairItem.maxDamageIncrease) + ") damage.";
             }
             case HighVelocityLasers -> {
                 return "Your missiles gain " + (Math.round(HighVelocityLasers.moveSpeedModifier * 100) + "% movement speed.");

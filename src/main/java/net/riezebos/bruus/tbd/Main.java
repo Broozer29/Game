@@ -4,13 +4,12 @@ import javafx.application.Platform;
 import net.riezebos.bruus.tbd.controllerInput.ConnectedControllersManager;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.Enemy;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyCreator;
-import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.redboss.behaviour.CrossingLaserbeamsAttack;
+import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.redboss.behaviour.RedBossCrossingLaserbeamsAttack;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyEnums;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.laserbeams.AngledLaserBeam;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.laserbeams.Laserbeam;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.laserbeams.LaserbeamConfiguration;
 import net.riezebos.bruus.tbd.game.movement.Direction;
-import net.riezebos.bruus.tbd.game.movement.MovementPatternSize;
 import net.riezebos.bruus.tbd.game.movement.Point;
 import net.riezebos.bruus.tbd.guiboards.BoardManager;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.AudioDatabase;
@@ -51,38 +50,38 @@ public class Main {
 
 		EnemyEnums enemyEnum = EnemyEnums.Shuriken;
 		Enemy shuriken = EnemyCreator.createEnemy(enemyEnum, 0, 0, Direction.LEFT,
-				enemyEnum.getDefaultScale(), enemyEnum.getMovementSpeed(), enemyEnum.getMovementSpeed(), MovementPatternSize.SMALL, false);
+				enemyEnum.getDefaultScale(), enemyEnum.getMovementSpeed());
 		shuriken.deleteObject();
 
 		enemyEnum = EnemyEnums.SpaceStationBoss;
 		Enemy spaceStation = EnemyCreator.createEnemy(enemyEnum, 0, 0, Direction.LEFT,
-				enemyEnum.getDefaultScale(), enemyEnum.getMovementSpeed(), enemyEnum.getMovementSpeed(), MovementPatternSize.SMALL, false);
+				enemyEnum.getDefaultScale(), enemyEnum.getMovementSpeed());
 		spaceStation.deleteObject();
 
 		enemyEnum = EnemyEnums.ShurikenMiniBoss;
 		Enemy shurikenMiniBoss = EnemyCreator.createEnemy(enemyEnum, 0, 0, Direction.LEFT,
-				enemyEnum.getDefaultScale(), enemyEnum.getMovementSpeed(), enemyEnum.getMovementSpeed(), MovementPatternSize.SMALL, false);
+				enemyEnum.getDefaultScale(), enemyEnum.getMovementSpeed());
 		shurikenMiniBoss.deleteObject();
 
 		enemyEnum = EnemyEnums.CashCarrier;
 		Enemy cashCarrier = EnemyCreator.createEnemy(enemyEnum, 0, 0, Direction.LEFT,
-				enemyEnum.getDefaultScale(), enemyEnum.getMovementSpeed(), enemyEnum.getMovementSpeed(), MovementPatternSize.SMALL, false);
+				enemyEnum.getDefaultScale(), enemyEnum.getMovementSpeed());
 		cashCarrier.deleteObject();
 
 
 		enemyEnum = EnemyEnums.RedBoss;
 		Enemy redBoss = EnemyCreator.createEnemy(enemyEnum, 0, 0, Direction.LEFT,
-				enemyEnum.getDefaultScale(), enemyEnum.getMovementSpeed(), enemyEnum.getMovementSpeed(), MovementPatternSize.SMALL, false);
+				enemyEnum.getDefaultScale(), enemyEnum.getMovementSpeed());
 		redBoss.deleteObject();
 
 		enemyEnum = EnemyEnums.FourDirectionalDrone;
 		Enemy fDrone = EnemyCreator.createEnemy(enemyEnum, 0, 0, Direction.LEFT,
-				enemyEnum.getDefaultScale(), enemyEnum.getMovementSpeed(), enemyEnum.getMovementSpeed(), MovementPatternSize.SMALL, false);
+				enemyEnum.getDefaultScale(), enemyEnum.getMovementSpeed());
 		fDrone.deleteObject();
 
 		enemyEnum = EnemyEnums.YellowBoss;
 		Enemy yellowBoss = EnemyCreator.createEnemy(enemyEnum, 0, 0, Direction.LEFT,
-				enemyEnum.getDefaultScale(), enemyEnum.getMovementSpeed(), enemyEnum.getMovementSpeed(), MovementPatternSize.SMALL, false);
+				enemyEnum.getDefaultScale(), enemyEnum.getMovementSpeed());
 		yellowBoss.deleteObject();
 
 		simulateAttackAngles(true);
@@ -96,11 +95,11 @@ public class Main {
 
 	private static void simulateAttackAngles(boolean inwards) {
 		// Use the centralized static values from CrossingLaserbeamsAttack
-		int lowerLaserbeamLowestAngle = CrossingLaserbeamsAttack.lowerLaserbeamLowestAngle;
-		int lowerLaserbeamHighestAngle = CrossingLaserbeamsAttack.lowerLaserbeamHighestAngle;
-		int upperLaserbeamLowestAngle = CrossingLaserbeamsAttack.upperLaserbeamLowestAngle;
-		int upperLaserbeamHighestAngle = CrossingLaserbeamsAttack.upperLaserbeamHighestAngle;
-		float angleStepSize = CrossingLaserbeamsAttack.angleStepSize;
+		int lowerLaserbeamLowestAngle = RedBossCrossingLaserbeamsAttack.lowerLaserbeamLowestAngle;
+		int lowerLaserbeamHighestAngle = RedBossCrossingLaserbeamsAttack.lowerLaserbeamHighestAngle;
+		int upperLaserbeamLowestAngle = RedBossCrossingLaserbeamsAttack.upperLaserbeamLowestAngle;
+		int upperLaserbeamHighestAngle = RedBossCrossingLaserbeamsAttack.upperLaserbeamHighestAngle;
+		float angleStepSize = RedBossCrossingLaserbeamsAttack.angleStepSize;
 
 		// Adjust angles like the CrossingLaserbeamsAttack settings
 		if (inwards) {

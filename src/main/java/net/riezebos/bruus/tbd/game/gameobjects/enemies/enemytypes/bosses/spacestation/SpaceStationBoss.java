@@ -26,12 +26,13 @@ public class SpaceStationBoss extends Enemy {
     public SpaceStationBoss(SpriteAnimationConfiguration spriteAnimationConfigurationion, EnemyConfiguration enemyConfiguration, MovementConfiguration movementConfiguration) {
         super(spriteAnimationConfigurationion, enemyConfiguration, movementConfiguration);
         this.setAllowedVisualsToRotate(false);
-        SpriteAnimationConfiguration destroyedExplosionfiguration = new SpriteAnimationConfiguration(spriteAnimationConfigurationion.getSpriteConfiguration(), 0, false);
-        destroyedExplosionfiguration.getSpriteConfiguration().setImageType(ImageEnums.Explosion2);
+        SpriteAnimationConfiguration destroyedExplosionfiguration = new SpriteAnimationConfiguration(spriteAnimationConfigurationion.getSpriteConfiguration(), 2, false);
+        destroyedExplosionfiguration.getSpriteConfiguration().setImageType(ImageEnums.BossExplosion);
+        destroyedExplosionfiguration.getSpriteConfiguration().setScale(1);
         this.destructionAnimation = new SpriteAnimation(destroyedExplosionfiguration);
 
         this.knockbackStrength = 10;
-        this.damage = 15;
+        this.damage = 12;
 
 
         SpaceStationLaserbeamAttack spaceStationLaserbeamAttack = new SpaceStationLaserbeamAttack();

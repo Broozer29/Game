@@ -9,18 +9,26 @@ import net.riezebos.bruus.tbd.game.items.enums.ItemApplicationEnum;
 
 public class Battery extends Item {
 
+    public static float cooldownReduction = 0.05f;
     public Battery () {
-        super(ItemEnums.Battery, 1, ItemApplicationEnum.ApplyOnCreation);
+        super(ItemEnums.Battery, 1, ItemApplicationEnum.UponAcquiring);
     }
 
     @Override
     public void applyEffectToObject (GameObject gameObject) {
         PlayerStats.getInstance().setMaxSpecialAttackCharges(1 + quantity);
+        PlayerStats.getInstance().modifySpecialAttackRechargeCooldown(-(this.quantity * cooldownReduction));
     }
 
     public void increaseQuantityOfItem(int amount) {
+        removeEffect();
         this.quantity += amount;
-        applyEffectToObject(null);
+    }
+
+    private void removeEffect(){
+        if(this.quantity > 0){
+            PlayerStats.getInstance().modifySpecialAttackRechargeCooldown(this.quantity * cooldownReduction);
+        }
     }
 
     @Override

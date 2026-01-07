@@ -7,7 +7,6 @@ import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.BossAct
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyEnums;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.movement.Direction;
-import net.riezebos.bruus.tbd.game.movement.MovementPatternSize;
 import net.riezebos.bruus.tbd.game.movement.Point;
 import net.riezebos.bruus.tbd.game.movement.pathfinders.StraightLinePathFinder;
 import net.riezebos.bruus.tbd.game.util.WithinVisualBoundariesCalculator;
@@ -109,7 +108,7 @@ public class SpaceStationSpawnNeedlers implements BossActionable {
         int centerXCoordinate = animation.getCenterXCoordinate();
         int centerYCoordinate = animation.getCenterYCoordinate();
         Enemy needler = EnemyCreator.createEnemy(enemyType, centerXCoordinate, centerYCoordinate, Direction.LEFT,
-                enemyType.getDefaultScale(), enemyType.getMovementSpeed(), enemyType.getMovementSpeed(), MovementPatternSize.SMALL, false);
+                enemyType.getDefaultScale(), enemyType.getMovementSpeed());
         needler.getMovementConfiguration().setPathFinder(new StraightLinePathFinder());
 
         needler.setCenterCoordinates(centerXCoordinate, centerYCoordinate);

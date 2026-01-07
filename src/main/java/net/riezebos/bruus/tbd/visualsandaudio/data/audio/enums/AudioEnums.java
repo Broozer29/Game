@@ -1,5 +1,6 @@
 package net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums;
 
+import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyEnums;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerClass;
 
 import java.util.ArrayList;
@@ -7,94 +8,85 @@ import java.util.List;
 import java.util.Random;
 
 public enum AudioEnums {
-    GenericError(false),
-    Player_Laserbeam(false),
-    SpecialAttackFinishedCharging(false),
-    PlayerTakesDamage(false),
-    NewPlayerLaserbeam(false),
-    StickyGrenadeExplosion(false),
-    SilentAudio(false),
-    ChargingLaserbeam(false),
-    SpaceStationChargingUpMovement(false),
-    SpaceStationBlastingOff(false),
-    Alien_Bomb_Destroyed(false),
-    Alien_Spaceship_Destroyed(false),
-    Alien_Bomb_Impact(false),
-    Large_Ship_Destroyed(false),
-    Default_EMP(false),
-    Furi_Wisdowm_Of_Rage(false),
-    Destroyed_Explosion(false),
-    GenericSelect(false),
-    Flamethrower(false),
-    Rocket_Launcher(false),
-    NONE(false),
-    Firewall(false),
-    mainmenu(false),
-    Viq_Rose(true),
-    Blood_On_The_Dancefloor(false),
-    Lemmino_Firecracker(false),
-    VendlaSonrisa(false),
-    keygen(false),
-    nomad(false),
-    NotEnoughMinerals(false),
-    BroodlingAttached(false),
-    AchievementUnlocked(false),
-    OverlordDeath(false),
-    DevourerBirth(false),
-    DevourerDeath(false),
-    DevourerHit(false),
-    GuardianBirth(false),
-    GuardianDeath(false),
-    MutaliskBirth(false),
-    MutaliskDeath(false),
-    QueenDeath(false),
-    ScourgeCollision(false),
-    ScourgeDeath(false),
-    ScourgeNoticed(false),
-    WaveshaperMonster(false),
-    RiskOfDanger(false),
-    BossBattle(false),
-    ClassCarrierSpeedingUp(false),
-    ClassCarrierSlowingDown(false),
-    CaptainMisc0(false),
-    CaptainMisc1(false),
-    CaptainRdy0(false),
-    CaptainWhat0(false),
-    CaptainWhat1(false),
-    CaptainWhat2(false),
-    CaptainWhat3(false),
-    CaptainYes0(false),
-    CaptainYes1(false),
-    CaptainYes2(false),
-    CarrierRdy0(false),
-    CarrierWhat0(false),
-    CarrierWhat1(false),
-    CarrierYes0(false),
-    CarrierYes1(false),
-    CarrierYes2(false),
-    CarrierYes3(false),
-    FireFighterMisc0(false),
-    FireFighterMisc1(false),
-    FireFighterYes0(false),
-    FireFighterYes1(false),
-    FireFighterYes2(false),
-    FireFighterYes3(false),
-    ProtossShipDeath(false),
-    CoinCollected(false),
-    ScarabExplosion(false), GodRunDetected(false);
-
-    // Boolean attribute to indicate if this should be streamed
-    private final boolean shouldStream;
-
-    // Constructor to set the streaming flag
-    AudioEnums(boolean shouldStream) {
-        this.shouldStream = shouldStream;
-    }
-
-    // Method to check if the audio should be streamed
-    public boolean shouldBeStreamed() {
-        return shouldStream;
-    }
+    GenericError,
+    Player_Laserbeam,
+    SpecialAttackFinishedCharging,
+    PlayerTakesDamage,
+    NewPlayerLaserbeam,
+    StickyGrenadeExplosion,
+    SilentAudio,
+    ChargingLaserbeam,
+    SpaceStationChargingUpMovement,
+    SpaceStationBlastingOff,
+    Alien_Bomb_Destroyed,
+    Alien_Spaceship_Destroyed,
+    Alien_Bomb_Impact,
+    Large_Ship_Destroyed,
+    Default_EMP,
+    Furi_Wisdowm_Of_Rage,
+    Destroyed_Explosion,
+    GenericSelect,
+    Flamethrower,
+    Rocket_Launcher,
+    NONE,
+    Firewall,
+    mainmenu,
+    Viq_Rose,
+    Blood_On_The_Dancefloor,
+    Lemmino_Firecracker,
+    VendlaSonrisa,
+    keygen,
+    nomad,
+    NotEnoughMinerals,
+    BroodlingAttached,
+    AchievementUnlocked,
+    OverlordDeath,
+    DevourerBirth,
+    DevourerDeath,
+    DevourerHit,
+    GuardianBirth,
+    GuardianDeath,
+    MutaliskBirth,
+    MutaliskDeath,
+    QueenDeath,
+    ScourgeCollision,
+    ScourgeDeath,
+    ScourgeNoticed,
+    WaveshaperMonster,
+    RiskOfDanger,
+    BossBattle,
+    ClassCarrierSpeedingUp,
+    ClassCarrierSlowingDown,
+    CaptainMisc0,
+    CaptainMisc1,
+    CaptainRdy0,
+    CaptainWhat0,
+    CaptainWhat1,
+    CaptainWhat2,
+    CaptainWhat3,
+    CaptainYes0,
+    CaptainYes1,
+    CaptainYes2,
+    CarrierRdy0,
+    CarrierWhat0,
+    CarrierWhat1,
+    CarrierYes0,
+    CarrierYes1,
+    CarrierYes2,
+    CarrierYes3,
+    FireFighterMisc0,
+    FireFighterMisc1,
+    FireFighterYes0,
+    FireFighterYes1,
+    FireFighterYes2,
+    FireFighterYes3,
+    ProtossShipDeath,
+    CoinCollected,
+    ScarabExplosion,
+    GodRunDetected,
+    MausoleumMash,
+    Arisen,
+    DistressCall;
 
     public static AudioEnums getSelectClassAudioByClass(PlayerClass playerClass) {
         List<AudioEnums> availableSounds = new ArrayList<>();
@@ -127,5 +119,34 @@ public enum AudioEnums {
 
         int randomIndex = random.nextInt(availableSounds.size());
         return availableSounds.get(randomIndex);
+    }
+
+    public static AudioEnums getBossTheme(EnemyEnums enemyEnums) {
+        switch (enemyEnums) {
+            case SpaceStationBoss:
+                return AudioEnums.Furi_Wisdowm_Of_Rage;
+            case RedBoss:
+                return AudioEnums.Blood_On_The_Dancefloor;
+            case CarrierBoss:
+                return AudioEnums.nomad;
+            case YellowBoss:
+                return AudioEnums.WaveshaperMonster;
+            case StrikerBoss:
+                return AudioEnums.Arisen;
+            case BlueBoss:
+                return AudioEnums.MausoleumMash;
+            default:
+                return getRandomBossSong();
+        }
+    }
+
+    public static AudioEnums getRandomBossSong() {
+        List<AudioEnums> bossSongList = new ArrayList<>();
+        bossSongList.add(AudioEnums.Furi_Wisdowm_Of_Rage);
+        bossSongList.add(AudioEnums.Blood_On_The_Dancefloor);
+        bossSongList.add(AudioEnums.nomad);
+        bossSongList.add(AudioEnums.WaveshaperMonster);
+
+        return bossSongList.get(new Random().nextInt(bossSongList.size()));
     }
 }

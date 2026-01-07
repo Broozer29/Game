@@ -10,8 +10,6 @@ import net.riezebos.bruus.tbd.game.level.enums.MiniBossConfig;
 import net.riezebos.bruus.tbd.guiboards.boardEnums.MenuFunctionEnums;
 import net.riezebos.bruus.tbd.guiboards.guicomponents.*;
 import net.riezebos.bruus.tbd.visualsandaudio.data.DataClass;
-import net.riezebos.bruus.tbd.visualsandaudio.data.audio.AudioManager;
-import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.LevelSongs;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteConfiguration;
 
@@ -196,12 +194,8 @@ public class ShopBoardCreator {
             difficulty = 6;
             string = "NEXT: BOSS LEVEL";
         } else {
-            difficulty = LevelSongs.getDifficultyScore(
-                    LevelManager.getInstance().getCurrentLevelDifficulty(),
-                    LevelManager.getInstance().getCurrentMiniBossConfig()
-            );
-
-            iconEnum = LevelSongs.getImageEnumByDifficultyScore(difficulty);
+            difficulty = LevelManager.getInstance().getDifficultyScore();
+            iconEnum = LevelManager.getInstance().getImageEnumByDifficultyScore(difficulty);
             string = "NEXT DIFFICULTY: " + difficulty;
         }
 
@@ -537,7 +531,7 @@ public class ShopBoardCreator {
 
         int amount = 2;
         selectEasyDifficulty.setDescriptionOfComponent("Adds " + amount + " to the difficulty score." +
-                ". Enemies gain strength quicker and gain 25% more hitpoints.");
+                ". Enemies have 12.5% more hitpoints.");
         return selectEasyDifficulty;
     }
 
@@ -556,7 +550,7 @@ public class ShopBoardCreator {
         int amount = 3;
 
         selectEasyDifficulty.setDescriptionOfComponent("Adds " + amount + " to the difficulty score." +
-                 ". Enemies gain strength considerably quicker and gain 50% more hitpoints.");
+                 ". Enemies have 25% more hitpoints. Stronger enemies spawn more frequently.");
         return selectEasyDifficulty;
     }
 

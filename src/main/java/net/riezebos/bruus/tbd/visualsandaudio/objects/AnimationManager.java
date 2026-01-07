@@ -23,8 +23,6 @@ public class AnimationManager {
 		return instance;
 	}
 
-	// Called when a game instance needs to be deleted and the manager needs to be
-	// reset.
 	public void resetManager() {
 		for(SpriteAnimation animation : upperAnimationList){
 			animation.setVisible(false);
@@ -42,23 +40,12 @@ public class AnimationManager {
 		performanceLogger = new PerformanceLogger("Animation Manager");
 	}
 
-	public void addExhaustAnimation(SpriteAnimation animation) {
-		if (animation != null) {
-			this.lowerAnimationList.add(animation);
-		}
-	}
-
 	public void addUpperAnimation(SpriteAnimation animation) {
 		this.upperAnimationList.add(animation);
 	}
 
 	public void addLowerAnimation(SpriteAnimation animation) {
 		this.lowerAnimationList.add(animation);
-	}
-
-	public void createAndAddUpperAnimation(int xCoordinate, int yCoordinate, ImageEnums animationType,
-			boolean infiniteLoop, float scale) {
-		this.upperAnimationList.add(createAnimation(xCoordinate, yCoordinate, animationType, infiniteLoop, scale));
 	}
 
 	public SpriteAnimation createAnimation(int xCoordinate, int yCoordinate, ImageEnums animationType,
@@ -97,15 +84,11 @@ public class AnimationManager {
 	}
 
 	public void updateGameTick() {
-//		PerformanceLoggerManager.timeAndLog(performanceLogger, "Total", () -> {
 			PerformanceLoggerManager.timeAndLog(performanceLogger, "Remove Invisible Animations", this::removeInvisibleAnimations);
-//		removeInvisibleAnimations();
 			PerformanceLoggerManager.timeAndLog(performanceLogger, "Recenter Animations", this::recenterAnimations);
-//		recenterAnimations(); //Required for cropped animations that have different sizes, this might lead to weird interactions ir origin coords are used when the shouldnt
-//		});
 	}
 
-	// Use for animations that have different sizes
+	// Origin coordinates are deprecated but not removed due to backwards compatability, but this should be refactored
 	private void recenterAnimations() {
 		for (SpriteAnimation anim : upperAnimationList) {
 			if (anim.isVisible() && anim.getOriginXCoordinate() != 0 && anim.getOriginYCoordinate() != 0) {

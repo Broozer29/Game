@@ -35,7 +35,11 @@ public class PlayerInventory {
     public void resetInventory() {
         items.clear();
 
-        if(DevTestSettings.infiniteMoney){
+        addItem(ItemEnums.Battery);
+        addItem(ItemEnums.Battery);
+        addItem(ItemEnums.Battery);
+
+        if (DevTestSettings.infiniteMoney) {
             cashMoney = 999999999;
         } else {
             cashMoney = 0;

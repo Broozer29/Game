@@ -1,4 +1,4 @@
-package net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.carrier.behaviour;
+package net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.redboss.behaviour;
 
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.Enemy;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyCreator;
@@ -8,7 +8,7 @@ import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyEnums;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.level.LevelManager;
 import net.riezebos.bruus.tbd.game.movement.Direction;
-import net.riezebos.bruus.tbd.game.movement.MovementPatternSize;
+import net.riezebos.bruus.tbd.game.movement.pathfinders.BouncingPathFinder;
 import net.riezebos.bruus.tbd.game.util.WithinVisualBoundariesCalculator;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.AnimationManager;
@@ -16,11 +16,13 @@ import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteAnimation;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteAnimationConfiguration;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteConfiguration;
 
-public class SpawnProtossShuttle implements BossActionable {
+import java.util.Random;
 
+public class RedBossSpawnShuriken implements BossActionable {
     private double lastSpawnedTime = 0;
-    private double spawnCooldown = Math.max(10 - LevelManager.getInstance().getBossDifficultyLevel(), 4);
-    private int priority = 3;
+    private double spawnCooldown = 14;
+    private Random random;
+    private int priority = 2;
 
     private SpriteAnimation spawnAnimation;
 
@@ -31,29 +33,33 @@ public class SpawnProtossShuttle implements BossActionable {
             initSpawnAnimation(enemy);
         }
 
-         if (enemy.isAllowedToFire() && currentTime >= lastSpawnedTime + spawnCooldown && WithinVisualBoundariesCalculator.isWithinBoundaries(enemy)) {
+        if (enemy.isAllowedToFire() && currentTime >= lastSpawnedTime + spawnCooldown && WithinVisualBoundariesCalculator.isWithinBoundaries(enemy)) {
             updateSpawnAnimationLocation(enemy);
 
             if (!spawnAnimation.isPlaying()) {
-                enemy.setAttacking(true);
                 spawnAnimation.refreshAnimation();
+                enemy.setAttacking(true);
                 AnimationManager.getInstance().addUpperAnimation(spawnAnimation);
             }
 
 
             if (spawnAnimation.isPlaying() && spawnAnimation.getCurrentFrame() == 4) {
-                Enemy protossScout = createProtossScout(enemy);
-                protossScout.setCenterCoordinates(spawnAnimation.getCenterXCoordinate(), spawnAnimation.getCenterYCoordinate());
-                EnemyManager.getInstance().addEnemy(protossScout);
+                //spawn a shuriken for each boss level
+                for (int i = 0; i < LevelManager.getInstance().getBossDifficultyLevel() + 1; i++) {
+                    Enemy fourDirectionalDrone = createShuriken(enemy);
+                    fourDirectionalDrone.setCenterCoordinates(spawnAnimation.getCenterXCoordinate(), spawnAnimation.getCenterYCoordinate());
+                    EnemyManager.getInstance().addEnemy(fourDirectionalDrone);
+                }
                 lastSpawnedTime = currentTime;
                 enemy.setAttacking(false);
                 return true; //We finished
             }
-
-            return false; //we not finished yet
+            return false; //We still running this behaviour
         }
-        return true; //We dont have anything to do at this point
+        return true; //We still running this behaviour
+
     }
+
 
     private void initSpawnAnimation(Enemy enemy) {
         SpriteConfiguration spriteConfiguration = new SpriteConfiguration();
@@ -64,23 +70,39 @@ public class SpawnProtossShuttle implements BossActionable {
 
         SpriteAnimationConfiguration spriteAnimationConfiguration = new SpriteAnimationConfiguration(spriteConfiguration, 1, false);
         spawnAnimation = new SpriteAnimation(spriteAnimationConfiguration);
-        spawnAnimation.setAnimationScale(0.4f);
+        spawnAnimation.setAnimationScale(0.5f);
         spawnAnimation.setCenterCoordinates(enemy.getXCoordinate(), enemy.getCenterYCoordinate());
-        spawnAnimation.addXOffset(-10);
+        spawnAnimation.addXOffset(Math.round(spawnAnimation.getWidth() * 0.1f));
     }
 
     private void updateSpawnAnimationLocation(Enemy enemy) {
         spawnAnimation.setCenterCoordinates(enemy.getXCoordinate(), enemy.getCenterYCoordinate());
     }
 
-    private Enemy createProtossScout(Enemy enemy) {
-        EnemyEnums enemyEnums = EnemyEnums.EnemyProtossShuttle;
-        Enemy enemyProtossScout = EnemyCreator.createEnemy(enemyEnums, enemy.getXCoordinate(), enemy.getYCoordinate(), Direction.LEFT,
-                enemyEnums.getDefaultScale(), enemyEnums.getMovementSpeed(), enemyEnums.getMovementSpeed(), MovementPatternSize.SMALL, false);
+    private Enemy createShuriken(Enemy enemy) {
+        EnemyEnums enemyType = EnemyEnums.Shuriken;
+        Direction direction = getRandomDirection();
+        Enemy shuriken = EnemyCreator.createEnemy(enemyType, enemy.getXCoordinate(), enemy.getYCoordinate(), direction,
+                enemyType.getDefaultScale(), enemyType.getMovementSpeed());
 
-        //Scout should immediatly change its move config upon spawning, so its responsible itself for surrounding the carrier
-        enemyProtossScout.setOwnerOrCreator(enemy);
-        return enemyProtossScout;
+        BouncingPathFinder pathFinder = new BouncingPathFinder();
+        pathFinder.setMaxBounces(15);
+        shuriken.getMovementConfiguration().setPathFinder(new BouncingPathFinder());
+        shuriken.setOwnerOrCreator(enemy);
+        return shuriken;
+    }
+
+    private Direction getRandomDirection() {
+        if (random == null) {
+            random = new Random();
+        }
+
+        int number = random.nextInt(0, 2);
+        return switch (number) {
+            case 0 -> Direction.LEFT_UP;
+            case 1 -> Direction.LEFT_DOWN;
+            default -> Direction.LEFT;
+        };
     }
 
     @Override
@@ -96,13 +118,6 @@ public class SpawnProtossShuttle implements BossActionable {
     public boolean isAvailable(Enemy enemy) {
         return enemy.isAllowedToFire()
                 && GameState.getInstance().getGameSeconds() >= lastSpawnedTime + spawnCooldown
-                && WithinVisualBoundariesCalculator.isWithinBoundaries(enemy)
-                && canSpawnMoreShuttles();
-    }
-
-
-    private static int maxShuttles = 2;
-    private boolean canSpawnMoreShuttles() {
-        return EnemyManager.getInstance().getEnemiesByType(EnemyEnums.EnemyProtossShuttle).size() < maxShuttles;
+                && WithinVisualBoundariesCalculator.isWithinBoundaries(enemy);
     }
 }

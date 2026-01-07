@@ -21,7 +21,6 @@ import net.riezebos.bruus.tbd.guiboards.boardEnums.MenuFunctionEnums;
 import net.riezebos.bruus.tbd.guiboards.boardcreators.ShopBoardCreator;
 import net.riezebos.bruus.tbd.guiboards.guicomponents.*;
 import net.riezebos.bruus.tbd.visualsandaudio.data.DataClass;
-import net.riezebos.bruus.tbd.visualsandaudio.data.audio.AudioManager;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.AnimationManager;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.Sprite;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteAnimation;
@@ -258,10 +257,10 @@ public class ShopBoard extends JPanel implements TimerHolder {
     }
 
     private void updateSelectedDifficultyIcons() {
-        shopBoardCreator.updateDifficultyIconsToDifficulty(LevelManager.getInstance().getCurrentLevelDifficulty(),
+        shopBoardCreator.updateDifficultyIconsToDifficulty(LevelManager.getInstance().getLastSelectedDifficulty(),
                 selectEasyDifficulty, selectMediumDifficulty, selectHardDifficulty);
 
-        shopBoardCreator.updateMiniBossIconsToSelection(LevelManager.getInstance().getCurrentMiniBossConfig(),
+        shopBoardCreator.updateMiniBossIconsToSelection(LevelManager.getInstance().getLastSelectedMiniBossConfig(),
                 easyMiniBossConfig, mediumMiniBossConfig, hardMiniBossConfig);
     }
 
@@ -712,6 +711,17 @@ public class ShopBoard extends JPanel implements TimerHolder {
                     controllerInputReader.isInputActive(ControllerInputEnums.FIRE)) {
                 // Select menu option
                 selectMenuTile();
+                needsUpdate = true;
+                lastMoveTime = currentTime;
+            }
+
+            //hier checken op specialattack en of de inventory open is, zo ja, close de inventory.
+
+            if (currentTime - lastMoveTime > MOVE_COOLDOWN &&
+                    controllerInputReader.isInputActive(ControllerInputEnums.SPECIAL_ATTACK) &&
+                showInventory) {
+                // Select menu option
+                showInventory = false;
                 needsUpdate = true;
                 lastMoveTime = currentTime;
             }

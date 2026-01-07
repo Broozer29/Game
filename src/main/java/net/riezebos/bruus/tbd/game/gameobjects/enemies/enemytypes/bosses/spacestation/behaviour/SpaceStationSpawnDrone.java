@@ -9,7 +9,6 @@ import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.level.LevelManager;
 import net.riezebos.bruus.tbd.game.movement.BoardBlockUpdater;
 import net.riezebos.bruus.tbd.game.movement.Direction;
-import net.riezebos.bruus.tbd.game.movement.MovementPatternSize;
 import net.riezebos.bruus.tbd.game.movement.Point;
 import net.riezebos.bruus.tbd.game.util.WithinVisualBoundariesCalculator;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
@@ -104,7 +103,7 @@ public class SpaceStationSpawnDrone implements BossActionable {
     private Enemy createPulsingDrone (Enemy enemy){
         EnemyEnums enemyEnums = EnemyEnums.FourDirectionalDrone;
         Enemy fourDirectionalDrone = EnemyCreator.createEnemy(enemyEnums, enemy.getXCoordinate(), enemy.getYCoordinate(), Direction.LEFT,
-                enemyEnums.getDefaultScale(), enemyEnums.getMovementSpeed(),enemyEnums.getMovementSpeed(), MovementPatternSize.SMALL, false);
+                enemyEnums.getDefaultScale(), enemyEnums.getMovementSpeed());
 
         Point point = BoardBlockUpdater.getRandomCoordinateInBlock(getRandomBoardBlock(), fourDirectionalDrone.getWidth(), fourDirectionalDrone.getHeight());
         fourDirectionalDrone.getMovementConfiguration().setDestination(point);

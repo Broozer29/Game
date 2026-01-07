@@ -10,7 +10,6 @@ import net.riezebos.bruus.tbd.game.items.effects.EffectIdentifiers;
 import net.riezebos.bruus.tbd.game.items.effects.EffectInterface;
 import net.riezebos.bruus.tbd.game.movement.Direction;
 import net.riezebos.bruus.tbd.game.movement.MovementConfiguration;
-import net.riezebos.bruus.tbd.game.movement.MovementPatternSize;
 import net.riezebos.bruus.tbd.game.movement.pathfinders.BouncingPathFinder;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteAnimation;
@@ -59,7 +58,7 @@ public class SpawnScrapMetalOnDeath implements EffectInterface {
         SpriteAnimationConfiguration spriteAnimationConfiguration = new SpriteAnimationConfiguration(spriteConfiguration, 1, true);
         MovementConfiguration movementConfiguration = EnemyCreator.createMovementConfiguration(
                 spriteConfiguration.getxCoordinate(), spriteAnimationConfiguration.getSpriteConfiguration().getyCoordinate(), Direction.getRandomDiagonalDirection(),
-                ScrapMetal.defaultMovementSpeed, ScrapMetal.defaultMovementSpeed, MovementPatternSize.SMALL, bouncingPathFinder
+                ScrapMetal.defaultMovementSpeed, bouncingPathFinder
         );
 
         Interactable scrapMetal = new ScrapMetal(spriteAnimationConfiguration, movementConfiguration, repairAmount);

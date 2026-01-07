@@ -1,11 +1,9 @@
 package net.riezebos.bruus.tbd.game.gameobjects.enemies;
 
 import net.riezebos.bruus.tbd.game.UI.GameUICreator;
-import net.riezebos.bruus.tbd.game.UI.UIObject;
 import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyCategory;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyEnums;
-import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyTribes;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.MissileManager;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
@@ -19,7 +17,9 @@ import net.riezebos.bruus.tbd.game.movement.*;
 import net.riezebos.bruus.tbd.game.movement.pathfinders.DestinationPathFinder;
 import net.riezebos.bruus.tbd.game.playerprofile.PlayerProfileManager;
 import net.riezebos.bruus.tbd.guiboards.BoardManager;
+import net.riezebos.bruus.tbd.guiboards.guicomponents.BossHealthBar;
 import net.riezebos.bruus.tbd.guiboards.guicomponents.GUIComponent;
+import net.riezebos.bruus.tbd.visualsandaudio.data.DataClass;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteAnimation;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteAnimationConfiguration;
@@ -50,6 +50,7 @@ public class Enemy extends GameObject {
         configureEnemy(enemyConfiguration);
         modifyStatsBasedOnLevelAndDifficulty();
         initChargingUpAnimation(spriteConfiguration);
+        initBossHealthBar();
     }
 
     public Enemy(SpriteAnimationConfiguration spriteAnimationConfigurationion, EnemyConfiguration enemyConfiguration, MovementConfiguration movementConfiguration) {
@@ -61,7 +62,22 @@ public class Enemy extends GameObject {
         configureEnemy(enemyConfiguration);
         modifyStatsBasedOnLevelAndDifficulty();
         initChargingUpAnimation(spriteAnimationConfigurationion.getSpriteConfiguration());
+        initBossHealthBar();
+    }
 
+    private void initBossHealthBar(){
+        if(this.enemyType.getEnemyCategory().equals(EnemyCategory.Boss)){
+            SpriteConfiguration healthBarConfig = new SpriteConfiguration();
+            healthBarConfig.setImageType(ImageEnums.BossHealthBarFront);
+            healthBarConfig.setyCoordinate(10);
+            healthBarConfig.setxCoordinate(Math.round(DataClass.getInstance().getWindowWidth() * 0.5));
+            healthBarConfig.setScale(0.25f);
+
+            BossHealthBar bossHealthBar = new BossHealthBar(healthBarConfig, this);
+            bossHealthBar.centerHealthBar();
+            bossHealthBar.setTransparancyAlpha(false, 0.8f, 0);
+            BoardManager.getInstance().getGameBoard().addBossHealthBar(bossHealthBar);
+        }
     }
 
     private void configureEnemy(EnemyConfiguration enemyConfiguration) {
@@ -101,18 +117,18 @@ public class Enemy extends GameObject {
 
         int difficultyScore = LevelManager.getInstance().getCurrentLevelDifficultyScore(); // Ranges between 2 and 6 (inclusive)
 
-        // Calculate scaling factor (1.0 at Easy, up to 1.5 at Hard)
-        float difficultyScalingFactor = 1 + ((difficultyScore - 2) / 4.0f) * 0.5f;
+        // Calculate scaling factor (1.0 at Easy, up to 1.25 at Hard)
+        float difficultyScalingFactor = 1 + ((difficultyScore - 2) / 4.0f) * 0.25f;
 
         if (level > 1) {
             // Apply both enemy level scaling and difficulty scaling
-            this.maxHitPoints *= Math.pow(getScalingFactor(), level) * difficultyScalingFactor;
+            this.maxHitPoints *= (Math.pow(getScalingFactor(), level) * difficultyScalingFactor);
             this.currentHitpoints = maxHitPoints;
 
             this.maxShieldPoints *= Math.pow(getScalingFactor(), level) * difficultyScalingFactor;
             this.currentShieldPoints = maxShieldPoints;
 
-//            this.damage *= Math.pow(getScalingFactor(), enemyLevel) * difficultyScalingFactor;
+            this.damage += level / 2;
 
             // XP on death is multiplied by 50% of difficulty coefficient
 //            this.xpOnDeath *= (1 + (0.5 * difficultyCoeff));
@@ -131,10 +147,15 @@ public class Enemy extends GameObject {
     }
 
     private float getScalingFactor() {
-//        if (this.enemyType.getEnemyTribe().equals(EnemyTribes.Zerg)) {
-//            return 1.15f;
-//        }
-        return 1.2f;
+        if(this.enemyType.getEnemyCategory().equals(EnemyCategory.Boss)){
+            return 1.2f;
+        }
+
+        if(GodRunDetector.getInstance().getGodRunScore() >= 3){
+            return 1.15f;
+        }
+
+        return 1.12f;
     }
 
     private void initChargingUpAnimation(SpriteConfiguration spriteConfiguration) {
@@ -174,8 +195,9 @@ public class Enemy extends GameObject {
         // classes.
     }
 
+
+
     public void rotateAfterMovement() {
-//        updateChargingAttackAnimationCoordination();
         if (!this.allowedVisualsToRotate) {
             return;
         }
@@ -188,7 +210,6 @@ public class Enemy extends GameObject {
                     PlayerManager.getInstance().getSpaceship().getCenterXCoordinate(),
                     PlayerManager.getInstance().getSpaceship().getCenterYCoordinate());
             rotateObjectTowardsPoint(point, true);
-//            updateChargingAttackAnimationCoordination();
             return;
         }
 

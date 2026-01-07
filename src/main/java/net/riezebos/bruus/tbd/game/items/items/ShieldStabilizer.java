@@ -8,7 +8,7 @@ import net.riezebos.bruus.tbd.game.items.PlayerInventory;
 import net.riezebos.bruus.tbd.game.items.enums.ItemApplicationEnum;
 
 public class ShieldStabilizer extends Item {
-    public static float shieldRegenMultiplier = 0.5f;
+    public static float shieldRegenMultiplier = 0.65f;
     public ShieldStabilizer () {
         super(ItemEnums.ShieldStabilizer, 1, ItemApplicationEnum.UponAcquiring);
     }

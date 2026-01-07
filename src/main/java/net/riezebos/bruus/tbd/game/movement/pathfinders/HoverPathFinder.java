@@ -16,6 +16,8 @@ public class HoverPathFinder implements PathFinder {
     private boolean shouldDecreaseBoardBlock;
     private int decreaseBoardBlockAmountBy;
     private boolean isHovering;
+    private int shouldChangeBoardBlockEverXHover = 1;
+    private int timesHoveredInThisBoardBlock = 0;
 
 
     public Path findPath (GameObject gameObject) {
@@ -77,6 +79,7 @@ public class HoverPathFinder implements PathFinder {
             if (gameSecondsSinceEmptyList == 0) {
                 // Only set the timestamp if it hasn't been set yet. If true, stay still on the current location and rotate it
                 gameSecondsSinceEmptyList = GameState.getInstance().getGameSeconds();
+                timesHoveredInThisBoardBlock++;
                 isHovering = true;
                 if (allowRotation(gameObject)) {
                     gameObject.setAllowedVisualsToRotate(true);
@@ -180,5 +183,21 @@ public class HoverPathFinder implements PathFinder {
 
     public double getGameSecondsSinceEmptyList () {
         return gameSecondsSinceEmptyList;
+    }
+
+    public int getShouldChangeBoardBlockEverXHover() {
+        return shouldChangeBoardBlockEverXHover;
+    }
+
+    public void setShouldChangeBoardBlockEverXHover(int shouldChangeBoardBlockEverXHover) {
+        this.shouldChangeBoardBlockEverXHover = shouldChangeBoardBlockEverXHover;
+    }
+
+    public int getTimesHoveredInThisBoardBlock() {
+        return timesHoveredInThisBoardBlock;
+    }
+
+    public void setTimesHoveredInThisBoardBlock(int timesHoveredInThisBoardBlock) {
+        this.timesHoveredInThisBoardBlock = timesHoveredInThisBoardBlock;
     }
 }

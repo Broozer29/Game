@@ -59,6 +59,9 @@ public class MissileCreator {
             case BombaProjectile -> {
                 return new BombaProjectile(upgradeConfig(spriteConfiguration, 2), missileConfiguration, movementConfiguration);
             }
+            case StationaryExplodingBomb -> {
+                return new StationaryExplodingBomb(upgradeConfig(spriteConfiguration, 2), missileConfiguration, movementConfiguration);
+            }
             case TazerProjectile -> {
                 return new TazerProjectile(upgradeConfig(spriteConfiguration, 2), missileConfiguration, movementConfiguration);
             }

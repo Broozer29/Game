@@ -8,7 +8,6 @@ import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyEnums;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.level.LevelManager;
 import net.riezebos.bruus.tbd.game.movement.Direction;
-import net.riezebos.bruus.tbd.game.movement.MovementPatternSize;
 import net.riezebos.bruus.tbd.game.util.WithinVisualBoundariesCalculator;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.AnimationManager;
@@ -16,22 +15,22 @@ import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteAnimation;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteAnimationConfiguration;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteConfiguration;
 
-public class SpawnProtossScout implements BossActionable {
+public class CarrierBossSpawnProtossShuttle implements BossActionable {
 
     private double lastSpawnedTime = 0;
-    private double spawnCooldown = Math.max(6 - LevelManager.getInstance().getBossDifficultyLevel(), 3);
-    private int priority = 10;
+    private double spawnCooldown = Math.max(10 - LevelManager.getInstance().getBossDifficultyLevel(), 4);
+    private int priority = 3;
 
     private SpriteAnimation spawnAnimation;
 
     @Override
-    public boolean activateBehaviour (Enemy enemy) {
+    public boolean activateBehaviour(Enemy enemy) {
         double currentTime = GameState.getInstance().getGameSeconds();
-        if(spawnAnimation == null) {
+        if (spawnAnimation == null) {
             initSpawnAnimation(enemy);
         }
 
-        if (enemy.isAllowedToFire() && currentTime >= lastSpawnedTime + spawnCooldown && WithinVisualBoundariesCalculator.isWithinBoundaries(enemy)) {
+         if (enemy.isAllowedToFire() && currentTime >= lastSpawnedTime + spawnCooldown && WithinVisualBoundariesCalculator.isWithinBoundaries(enemy)) {
             updateSpawnAnimationLocation(enemy);
 
             if (!spawnAnimation.isPlaying()) {
@@ -41,7 +40,7 @@ public class SpawnProtossScout implements BossActionable {
             }
 
 
-            if(spawnAnimation.isPlaying() && spawnAnimation.getCurrentFrame() == 4) {
+            if (spawnAnimation.isPlaying() && spawnAnimation.getCurrentFrame() == 4) {
                 Enemy protossScout = createProtossScout(enemy);
                 protossScout.setCenterCoordinates(spawnAnimation.getCenterXCoordinate(), spawnAnimation.getCenterYCoordinate());
                 EnemyManager.getInstance().addEnemy(protossScout);
@@ -55,7 +54,7 @@ public class SpawnProtossScout implements BossActionable {
         return true; //We dont have anything to do at this point
     }
 
-    private void initSpawnAnimation (Enemy enemy) {
+    private void initSpawnAnimation(Enemy enemy) {
         SpriteConfiguration spriteConfiguration = new SpriteConfiguration();
         spriteConfiguration.setxCoordinate(enemy.getXCoordinate());
         spriteConfiguration.setyCoordinate(enemy.getCenterYCoordinate());
@@ -69,14 +68,14 @@ public class SpawnProtossScout implements BossActionable {
         spawnAnimation.addXOffset(-10);
     }
 
-    private void updateSpawnAnimationLocation (Enemy enemy) {
+    private void updateSpawnAnimationLocation(Enemy enemy) {
         spawnAnimation.setCenterCoordinates(enemy.getXCoordinate(), enemy.getCenterYCoordinate());
     }
 
-    private Enemy createProtossScout(Enemy enemy){
-        EnemyEnums enemyEnums = EnemyEnums.EnemyProtossScout;
+    private Enemy createProtossScout(Enemy enemy) {
+        EnemyEnums enemyEnums = EnemyEnums.EnemyProtossShuttle;
         Enemy enemyProtossScout = EnemyCreator.createEnemy(enemyEnums, enemy.getXCoordinate(), enemy.getYCoordinate(), Direction.LEFT,
-                enemyEnums.getDefaultScale(), enemyEnums.getMovementSpeed(),enemyEnums.getMovementSpeed(), MovementPatternSize.SMALL, false);
+                enemyEnums.getDefaultScale(), enemyEnums.getMovementSpeed());
 
         //Scout should immediatly change its move config upon spawning, so its responsible itself for surrounding the carrier
         enemyProtossScout.setOwnerOrCreator(enemy);
@@ -84,25 +83,25 @@ public class SpawnProtossScout implements BossActionable {
     }
 
     @Override
-    public int getPriority () {
+    public int getPriority() {
         return priority;
     }
 
-    public void setPriority (int priority) {
+    public void setPriority(int priority) {
         this.priority = priority;
     }
 
     @Override
-    public boolean isAvailable (Enemy enemy) {
+    public boolean isAvailable(Enemy enemy) {
         return enemy.isAllowedToFire()
                 && GameState.getInstance().getGameSeconds() >= lastSpawnedTime + spawnCooldown
                 && WithinVisualBoundariesCalculator.isWithinBoundaries(enemy)
-                && canSpawnMoreScouts();
+                && canSpawnMoreShuttles();
     }
 
 
-    private static int maxScouts = 6;
-    private boolean canSpawnMoreScouts(){
-        return EnemyManager.getInstance().getEnemiesByType(EnemyEnums.EnemyProtossScout).size() < maxScouts;
+    private static int maxShuttles = 2;
+    private boolean canSpawnMoreShuttles() {
+        return EnemyManager.getInstance().getEnemiesByType(EnemyEnums.EnemyProtossShuttle).size() < maxShuttles;
     }
 }
