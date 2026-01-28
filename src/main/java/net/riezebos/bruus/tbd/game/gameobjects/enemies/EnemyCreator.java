@@ -85,11 +85,18 @@ public class EnemyCreator {
             case Seeker, YellowBoss -> {
                 setBoardBlockToHoverIn(movementConfiguration, 6);
             }
-            case Tazer, MotherShipMiniBoss, Scout, ZergQueen, StrikerBoss, TwinBoss -> {
+            case Tazer, MotherShipMiniBoss, Scout, ZergQueen, StrikerBoss -> {
                 setBoardBlockToHoverIn(movementConfiguration, 7);
             }
             case RedBoss, CarrierBoss -> {
                 setBoardBlockToHoverIn(movementConfiguration, 4);
+            }
+            case TwinBoss -> {
+                if(movementConfiguration.getCurrentLocation().getX() < DataClass.getInstance().getWindowWidth()/2){
+                    movementConfiguration.setBoardBlockToHoverIn(0);
+                } else {
+                    setBoardBlockToHoverIn(movementConfiguration, 6);
+                }
             }
             case SpaceStationBoss, DefenderMiniBoss, LaserbeamMiniBoss ->
                     movementConfiguration.setDestination(calculateSpaceStationBossDestination(enemyType));

@@ -12,7 +12,6 @@ import net.riezebos.bruus.tbd.game.items.effects.effectimplementations.DamageOve
 import net.riezebos.bruus.tbd.game.items.items.PrecisionAmplifier;
 import net.riezebos.bruus.tbd.game.items.items.firefighter.EphemeralBlaze;
 import net.riezebos.bruus.tbd.game.movement.BoardBlockUpdater;
-import net.riezebos.bruus.tbd.game.util.ArmorCalculator;
 import net.riezebos.bruus.tbd.game.util.OnScreenTextManager;
 import net.riezebos.bruus.tbd.game.util.collision.CollisionDetector;
 import net.riezebos.bruus.tbd.game.util.collision.CollisionInfo;

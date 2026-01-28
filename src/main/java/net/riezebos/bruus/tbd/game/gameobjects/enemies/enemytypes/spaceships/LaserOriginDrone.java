@@ -44,9 +44,6 @@ public class LaserOriginDrone extends Enemy {
         if (laserbeam == null) {
             laserbeamList = new ArrayList<>();
 
-//            LaserbeamConfiguration configLeft = createLaserbeamConfig(Direction.LEFT);
-//            TrackingLaserBeam beam = new TrackingLaserBeam(configLeft);
-//            beam.setMaxRotationPerUpdate(0.15f);
 //            beam.setBlocksMovement(true);
 //            beam.setAngleDegrees(Direction.LEFT_DOWN.toAngle());
 //            laserbeamList.add(beam);
@@ -74,8 +71,6 @@ public class LaserOriginDrone extends Enemy {
         laserbeamConfiguration.setOriginObject(this);
         laserbeamConfiguration.setOwner(this);
         laserbeamConfiguration.setAmountOfLaserbeamSegments(20);
-//        laserbeamConfiguration.setDirection(dir);
-//        laserbeamConfiguration.setAngleDegrees(dir.toAngle());
 
         laserbeamConfiguration.setTargetToAimAt(PlayerManager.getInstance().getSpaceship());
         Point offsetAmounts = getOffsetAmounts(dir);

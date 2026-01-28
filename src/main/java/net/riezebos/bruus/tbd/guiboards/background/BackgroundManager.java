@@ -113,9 +113,6 @@ public class BackgroundManager {
         planetBGOEnumsList.add(ImageEnums.Star_Red3);
         planetBGOEnumsList.add(ImageEnums.Star_Red4);
 
-//        if (this.spaceTheme.equals(SpaceThemeEnums.Full_Clear)) {
-//            planetBGOEnumsList.clear();
-//        }
 
     }
 
@@ -284,9 +281,6 @@ public class BackgroundManager {
                     //This is broken for some inexplicable reason
                     bgObject.setXCoordinate(rightmostNebulaEdge);  // Place right after the last nebula
                     updateRightmostNebulaEdge();  // Update after repositioning
-//                    System.out.println("X coordinate: " + bgObject.getXCoordinate() +
-//                            " Width: " + bgObject.getWidth() +
-//                            " Right most nebula: " + rightmostNebulaEdge +
 //                            " Gap: " + (bgObject.getXCoordinate() - rightmostNebulaEdge + bgObject.getWidth()));
                     break;
                 case Clouds:

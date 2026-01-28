@@ -181,8 +181,6 @@ public class GameObject extends Sprite {
         this.movementConfiguration.setLastUsedXMovementSpeed(movementConfiguration.getXMovementSpeed());
         if(movementConfiguration.getDestination() == null) {
             movementConfiguration.setDestination(movementConfiguration.getPathFinder().calculateInitialEndpoint(this.currentLocation, movementRotation, this.friendly));
-        } else {
-            //keep the current destination
         }
 
         if (movementConfiguration.getPathFinder() instanceof HomingPathFinder) {

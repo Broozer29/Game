@@ -34,6 +34,7 @@ public enum AudioEnums {
     Viq_Rose,
     Blood_On_The_Dancefloor,
     Lemmino_Firecracker,
+    LeanRockShred,
     VendlaSonrisa,
     keygen,
     nomad,
@@ -135,6 +136,8 @@ public enum AudioEnums {
                 return AudioEnums.Arisen;
             case BlueBoss:
                 return AudioEnums.MausoleumMash;
+            case TwinBoss:
+                return AudioEnums.WaveshaperMonster;
             default:
                 return getRandomBossSong();
         }

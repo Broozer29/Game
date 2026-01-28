@@ -30,8 +30,6 @@ public class CorrosiveOil extends Item {
     @Override
     public void increaseQuantityOfItem (int amount) {
         this.quantity += amount;
-//        removeEffect();
-//        applyEffectToObject(null);
     }
 
     @Override

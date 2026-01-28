@@ -10,8 +10,6 @@ import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteAnimation;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteAnimationConfiguration;
 
-import java.util.Random;
-
 public class ZergCocoon extends Enemy {
 
     private EnemyEnums zergToSpawn = null;
@@ -36,11 +34,6 @@ public class ZergCocoon extends Enemy {
     private EnemyEnums selectZergToSpawn () {
         if (this.animation.getImageEnum().equals(ImageEnums.DevourerCocoon)) {
             return EnemyEnums.ZergDevourer;
-        }
-        random = new Random();
-        int randomNumber = random.nextInt(0, 2);
-        if (randomNumber == 1) {
-            return EnemyEnums.ZergGuardian;
         }
         return EnemyEnums.ZergGuardian;
     }

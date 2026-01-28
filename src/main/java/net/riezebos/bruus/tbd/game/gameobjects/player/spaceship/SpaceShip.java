@@ -1,5 +1,6 @@
 package net.riezebos.bruus.tbd.game.gameobjects.player.spaceship;
 
+import net.riezebos.bruus.tbd.DevTestSettings;
 import net.riezebos.bruus.tbd.controllerInput.ControllerInputEnums;
 import net.riezebos.bruus.tbd.controllerInput.ControllerInputReader;
 import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
@@ -185,15 +186,6 @@ public class SpaceShip extends GameObject {
                 for (int i = 0; i < 2; i++) {
                     FriendlyManager.getInstance().addProtossShip(DroneTypes.ProtossScout);
                 }
-
-                //Start the game with building the ships instead, instead of spawning with max ships
-//                for (int i = 0; i < playerStats.getAmountOfProtossArbiters(); i++) {
-//                    FriendlyManager.getInstance().addProtossShip(DroneTypes.ProtossArbiter);
-//                }
-//
-//                for (int i = 0; i < playerStats.getAmountOfProtossShuttles(); i++) {
-//                    FriendlyManager.getInstance().addProtossShip(DroneTypes.ProtossShuttle);
-//                }
             }
 
             OrbitingObjectsFormatter.reformatOrbitingObjects(this, PlayerStats.getInstance().getDroneOrbitRadius());
@@ -235,7 +227,7 @@ public class SpaceShip extends GameObject {
 
     @Override
     public void takeDamage(float damageTaken) {
-        if (this.isImmune) {
+        if (this.isImmune || DevTestSettings.playerIsImmune) {
             return; //The player is immune, we don't want to do anything here
         }
 
@@ -676,8 +668,6 @@ public class SpaceShip extends GameObject {
         }
         if (key == KeyEvent.VK_S || key == KeyEvent.VK_DOWN) {
             haltMoveDown();
-        }
-        if (key == KeyEvent.VK_SHIFT || key == KeyEvent.VK_E) {
         }
     }
 

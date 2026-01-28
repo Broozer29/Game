@@ -7,7 +7,6 @@ import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.Drone;
 import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.droneTypes.DroneTypes;
 import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.droneTypes.protoss.CarrierDrone;
 import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.droneTypes.protoss.ProtossCorsair;
-import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.droneTypes.protoss.ProtossShuttle;
 import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.droneTypes.protoss.ProtossUtils;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
@@ -15,10 +14,8 @@ import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.gamestate.GameStatusEnums;
 import net.riezebos.bruus.tbd.game.items.ItemEnums;
 import net.riezebos.bruus.tbd.game.items.PlayerInventory;
-import net.riezebos.bruus.tbd.game.items.items.carrier.ProtossThorns;
 import net.riezebos.bruus.tbd.game.items.items.carrier.SynergeticLink;
 import net.riezebos.bruus.tbd.game.util.OrbitingObjectsFormatter;
-import net.riezebos.bruus.tbd.game.util.ThornsDamageDealer;
 import net.riezebos.bruus.tbd.game.util.collision.CollisionDetector;
 import net.riezebos.bruus.tbd.game.util.collision.CollisionInfo;
 import net.riezebos.bruus.tbd.game.util.performancelogger.PerformanceLogger;
@@ -84,11 +81,6 @@ public class FriendlyManager {
         PerformanceLoggerManager.timeAndLog(performanceLogger, "Remove Invisible Objects", this::removeInvisibleObjects);
         PerformanceLoggerManager.timeAndLog(performanceLogger, "Spawn Finished Level Portal", this::spawnFinishedLevelPortal);
 
-//        activateFriendlyObjects();
-//        checkFriendlyObjectCollision();
-//        moveFriendlyObjects();
-//        removeInvisibleObjects();
-//        spawnFinishedLevelPortal();
     }
 
 

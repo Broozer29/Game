@@ -1,31 +1,15 @@
 package net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.droneTypes.protoss;
 
-import net.riezebos.bruus.tbd.game.gameobjects.friendlies.FriendlyManager;
 import net.riezebos.bruus.tbd.game.gameobjects.friendlies.FriendlyObjectConfiguration;
 import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.Drone;
 import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.droneTypes.DroneTypes;
-import net.riezebos.bruus.tbd.game.gameobjects.neutral.Explosion;
-import net.riezebos.bruus.tbd.game.gameobjects.neutral.ExplosionConfiguration;
-import net.riezebos.bruus.tbd.game.gameobjects.neutral.ExplosionManager;
-import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.items.ItemEnums;
 import net.riezebos.bruus.tbd.game.items.PlayerInventory;
-import net.riezebos.bruus.tbd.game.items.effects.EffectIdentifiers;
-import net.riezebos.bruus.tbd.game.items.effects.effectimplementations.ArmorModifierEffect;
-import net.riezebos.bruus.tbd.game.items.effects.effectimplementations.AttackSpeedModifierEffect;
 import net.riezebos.bruus.tbd.game.items.items.carrier.PyrrhicProtocol;
 import net.riezebos.bruus.tbd.game.items.items.carrier.RallyTheFleet;
 import net.riezebos.bruus.tbd.game.movement.MovementConfiguration;
-import net.riezebos.bruus.tbd.visualsandaudio.data.audio.AudioManager;
-import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.AudioEnums;
-import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
-import net.riezebos.bruus.tbd.visualsandaudio.objects.AnimationManager;
-import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteAnimation;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteAnimationConfiguration;
-import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteConfiguration;
-
-import java.util.List;
 
 public class CarrierDrone extends Drone {
 

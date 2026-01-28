@@ -207,7 +207,7 @@ public class LevelManager {
     }
 
     public EnemyEnums getNextBoss() {
-//        return EnemyEnums.StrikerBoss;
+//        return EnemyEnums.YellowBoss;
         int bossesDefeated = GameState.getInstance().getBossesDefeated();
         switch (bossesDefeated % EnemyEnums.getAmountOfBossEnemies()) {
             case 0:

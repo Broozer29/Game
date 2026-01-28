@@ -34,11 +34,6 @@ public class FireShield extends SpecialAttack {
     }
 
     @Override
-    public void startDissipating(){
-    }
-
-
-    @Override
     public void updateSpecialAttack() {
         if (this.animation.getImageEnum().equals(ImageEnums.FireFighterFireShieldAppearing) &&
                 this.animation.getCurrentFrame() >= this.animation.getTotalFrames()) {

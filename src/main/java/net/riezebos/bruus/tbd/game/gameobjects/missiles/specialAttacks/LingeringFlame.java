@@ -52,13 +52,6 @@ public class LingeringFlame extends SpecialAttack{
 
     @Override
     public void updateSpecialAttack() {
-//        if (this.animation.getImageEnum().equals(ImageEnums.LingeringFlameLooping) &&
-//                this.animation.getCurrentFrame() >= this.animation.getTotalFrames()) {
-//            this.animation.changeImagetype(ImageEnums.LingeringFlameLoopingDissipating);
-//            this.animation.setCurrentFrame(0);
-//            this.animation.setAnimationScale(this.scale);
-//        }
-
         if(GameState.getInstance().getGameSeconds() > (gamesecondsStarted + duration) && !isDissipating){
             this.setTransparancyAlpha(true, 1, -0.035f);
             super.isDissipating = true;

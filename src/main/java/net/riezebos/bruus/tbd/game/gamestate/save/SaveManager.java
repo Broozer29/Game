@@ -2,8 +2,8 @@ package net.riezebos.bruus.tbd.game.gamestate.save;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
-import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.gameobjects.player.boons.BoonManager;
+import net.riezebos.bruus.tbd.game.gamestate.GameState;
 
 import java.io.File;
 import java.io.IOException;

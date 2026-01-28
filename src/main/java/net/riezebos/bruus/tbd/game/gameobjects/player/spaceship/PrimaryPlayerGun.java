@@ -214,10 +214,6 @@ public class PrimaryPlayerGun {
         float damage = playerStats.getNormalAttackDamage() * 2;
         boolean isExplosive = false;
 
-        switch (attackType) {
-            case DefaultRocket -> isExplosive = true;
-        }
-
 
         MissileConfiguration missileConfiguration = missileCreator1.createMissileConfiguration(attackType, maxHitPoints, maxShields,
                 deathSound, damage, attackType.getDeathOrExplosionImageEnum(), isFriendly, allowedToDealDamage, objectType, attackType.isUsesBoxCollision(),

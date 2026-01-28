@@ -37,9 +37,6 @@ public class BlueBossSpinningLaserbeamAttack implements BossActionable {
         for(int i = 0; i <= 360; i += 60){
             angleDegrees.add(i);
         }
-//        angleDegrees.add(0);
-//        angleDegrees.add(130);
-//        angleDegrees.add(260);
     }
 
     @Override

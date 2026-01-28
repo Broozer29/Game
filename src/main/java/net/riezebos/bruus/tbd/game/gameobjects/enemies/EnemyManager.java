@@ -80,9 +80,7 @@ public class EnemyManager {
 
 
     public boolean isBossAlive() {
-        if (!hasSpawnedABoss) {
-            return true;
-        } else if (hasSpawnedABoss) {
+        if (hasSpawnedABoss) {
             return enemyList.stream().anyMatch(enemy -> enemy.getEnemyType().getEnemyCategory().equals(EnemyCategory.Boss));
         }
 
@@ -149,8 +147,6 @@ public class EnemyManager {
             if (en.isVisible()) {
                 PerformanceLoggerManager.timeAndLog(performanceLogger, "Move Enemy", en::move);
                 PerformanceLoggerManager.timeAndLog(performanceLogger, "Update Enemy Effects", en::updateGameObjectEffects);
-//                en.move();
-//                en.updateGameObjectEffects();
             } else {
                 en.deleteObject();
                 enemyList.remove(en); // Remove directly from CopyOnWriteArrayList
@@ -329,7 +325,7 @@ public class EnemyManager {
     }
 
     public int getAmountOfEnemyTypesAlive(EnemyEnums enemyToCheck) {
-        return enemyList.stream().filter(enemy -> enemy.getEnemyType().equals(enemyToCheck)).collect(Collectors.toList()).size();
+        return (int) enemyList.stream().filter(enemy -> enemy.getEnemyType().equals(enemyToCheck)).count();
     }
 
     public PerformanceLogger getPerformanceLogger() {

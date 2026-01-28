@@ -45,14 +45,6 @@ public class StrikerCornerDrone extends Enemy {
         if (this.ownerOrCreator != null && this.ownerOrCreator.getCurrentHitpoints() <= 0) {
             this.takeDamage(99999);
         }
-
-
-
-//        double currentTime = GameState.getInstance().getGameSeconds();
-//        if (allowedToFire && currentTime >= lastAttackTime + this.getAttackSpeed() && WithinVisualBoundariesCalculator.isWithinBoundaries(this)) {
-//            shootMissiles();
-//            this.lastAttackTime = GameState.getInstance().getGameSeconds();
-//        }
     }
 
     private void rotateTowardsPlayer() {

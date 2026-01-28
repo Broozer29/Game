@@ -42,8 +42,6 @@ public class SpaceStationSpinningAttack implements BossActionable {
     private int bounceCount = 0;
 
     public SpaceStationSpinningAttack () {
-//        chargingUpMovement = AudioDatabase.getInstance().getAudioClip(AudioEnums.SpaceStationChargingUpMovement);
-//        boostingAway = AudioDatabase.getInstance().getAudioClip(AudioEnums.SpaceStationBlastingOff);
         centerPoint = EnemyCreator.calculateSpaceStationBossDestination(EnemyEnums.SpaceStationBoss);
     }
 

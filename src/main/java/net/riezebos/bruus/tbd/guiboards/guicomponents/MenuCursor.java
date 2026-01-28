@@ -1,7 +1,6 @@
 package net.riezebos.bruus.tbd.guiboards.guicomponents;
 
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
-import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteAnimationConfiguration;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteConfiguration;
 
 public class MenuCursor extends GUIComponent {

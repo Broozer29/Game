@@ -106,7 +106,7 @@ public class ShopBoard extends JPanel implements TimerHolder {
     private boolean showInventory;
     private ShopBoardCreator shopBoardCreator;
 
-    private class DescriptionInfo {
+    private static class DescriptionInfo {
         String title = null;
         String cost = null;
         String descriptionText = null;

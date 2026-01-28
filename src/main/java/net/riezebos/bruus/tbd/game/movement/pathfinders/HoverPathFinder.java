@@ -2,6 +2,7 @@ package net.riezebos.bruus.tbd.game.movement.pathfinders;
 
 import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.Enemy;
+import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.twinboss.TwinBoss;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyCategory;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.movement.*;
@@ -23,6 +24,7 @@ public class HoverPathFinder implements PathFinder {
     public Path findPath (GameObject gameObject) {
         MovementConfiguration config = gameObject.getMovementConfiguration();
         // Generate a random end point within the specified board block
+
         Point endPoint = getRandomCoordinateInBlock(config.getBoardBlockToHoverIn(), gameObject.getWidth(), gameObject.getHeight());
         Point start = new Point(gameObject.getXCoordinate(), gameObject.getYCoordinate());
 
@@ -47,7 +49,7 @@ public class HoverPathFinder implements PathFinder {
 
         int totalDistanceX = end.getX() - start.getX();
         int totalDistanceY = end.getY() - start.getY();
-        int stepsToEndpoint = (int) Math.max(Math.abs(totalDistanceX) / maxStepSizeX, Math.abs(totalDistanceY) / maxStepSizeY);
+        int stepsToEndpoint = Math.round(Math.max(Math.abs(totalDistanceX) / maxStepSizeX, Math.abs(totalDistanceY) / maxStepSizeY));
 
         float stepSizeX = totalDistanceX / (float) stepsToEndpoint;
         float stepSizeY = totalDistanceY / (float) stepsToEndpoint;
@@ -90,7 +92,7 @@ public class HoverPathFinder implements PathFinder {
                 if (shouldDecreaseBoardBlock) {
                     int newBoardBlock = gameObject.getMovementConfiguration().getBoardBlockToHoverIn();
                     newBoardBlock -= decreaseBoardBlockAmountBy;
-                    if (newBoardBlock < 1 || newBoardBlock > 8) {
+                    if ((newBoardBlock < 1 || newBoardBlock > 8) && !(gameObject instanceof TwinBoss)) { //Manual exception for the TwinBoss, dirty fix for now but if it's the only exception, its fine
                         gameObject.getMovementConfiguration().setPathFinder(new RegularPathFinder());
                     } else {
                         gameObject.getMovementConfiguration().setBoardBlockToHoverIn(newBoardBlock);

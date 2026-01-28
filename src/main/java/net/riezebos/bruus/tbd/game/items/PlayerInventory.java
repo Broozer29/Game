@@ -35,10 +35,6 @@ public class PlayerInventory {
     public void resetInventory() {
         items.clear();
 
-        addItem(ItemEnums.Battery);
-        addItem(ItemEnums.Battery);
-        addItem(ItemEnums.Battery);
-
         if (DevTestSettings.infiniteMoney) {
             cashMoney = 999999999;
         } else {
@@ -267,9 +263,6 @@ public class PlayerInventory {
     }
 
     public void addMinerals(float amount) {
-//        if(amount > 0){
-//            OnScreenTextManager.getInstance().addMineralsGainedText(amount);
-//        }
         this.cashMoney += amount;
     }
 

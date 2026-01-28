@@ -1,9 +1,5 @@
 package net.riezebos.bruus.tbd.game.gameobjects.friendlies;
 
-import net.riezebos.bruus.tbd.game.movement.Direction;
-import net.riezebos.bruus.tbd.game.movement.MovementPatternSize;
-import net.riezebos.bruus.tbd.game.movement.pathfinders.PathFinder;
-
 public class FriendlyObjectConfiguration {
 
     private FriendlyObjectEnums friendlyType;

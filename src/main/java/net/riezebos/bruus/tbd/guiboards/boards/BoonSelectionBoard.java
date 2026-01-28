@@ -100,7 +100,7 @@ public class BoonSelectionBoard extends JPanel implements TimerHolder {
     private DescriptionInfo currentDescription;
     private boolean shouldDrawBoonDescription;
 
-    private class DescriptionInfo {
+    private static class DescriptionInfo {
         String title = null;
         String cost = null;
         String descriptionText = null;
@@ -143,9 +143,7 @@ public class BoonSelectionBoard extends JPanel implements TimerHolder {
         gameModifierColumnSelectionIndicator = BoonSelectionBoardCreator.createUpgradeSelectedCheckmark();
         boonColumnTitleText = BoonSelectionBoardCreator.createFirstColumnTitle(firstColumnBackgroundCard);
         gameModifiersColumnTitleText = BoonSelectionBoardCreator.createThirdColumnTitle(thirdColumnBackgroundCard);
-//        defenseWIPText = BoonSelectionBoardCreator.createWorkInProgressText(thirdColumnBackgroundCard);
 
-//        offensiveColumnSelectionIndicator = BoonSelectionBoardCreator.createUpgradeSelectedCheckmark();
 //        offenseColumnTitleText = BoonSelectionBoardCreator.createFifthColumnTitle(fifthColumnBackgroundCard);
 //        offenseWIPText = BoonSelectionBoardCreator.createWorkInProgressText(fifthColumnBackgroundCard);
 
@@ -200,8 +198,6 @@ public class BoonSelectionBoard extends JPanel implements TimerHolder {
         offTheGridObjects.addAll(emeraldsAvailableText.getComponents());
         offTheGridObjects.addAll(boonColumnTitleText.getComponents());
         offTheGridObjects.addAll(gameModifiersColumnTitleText.getComponents());
-//        offTheGridObjects.addAll(offenseColumnTitleText.getComponents());
-//        offTheGridObjects.addAll(defenseWIPText.getComponents());
 
 
         addToGrid(firstColumn, selectNepotism.getComponents().get(0), 0, 0);

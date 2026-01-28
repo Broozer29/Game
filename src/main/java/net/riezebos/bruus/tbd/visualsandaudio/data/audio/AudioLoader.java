@@ -148,6 +148,7 @@ public class AudioLoader {
                 return "/audio/silence.wav";
             case VendlaSonrisa:return "/audio/music/Vendla - Sonrisa (Royalty Free Music).wav";
             case nomad:return "/audio/music/nomad.wav";
+            case LeanRockShred:return "/audio/music/Lean rock shred.wav";
             case keygen:return "/audio/music/keygen.wav";
             case WaveshaperMonster: return "/audio/music/Waveshaper - Monster.wav";
             case RiskOfDanger: return "/audio/music/Risk of Danger.wav";

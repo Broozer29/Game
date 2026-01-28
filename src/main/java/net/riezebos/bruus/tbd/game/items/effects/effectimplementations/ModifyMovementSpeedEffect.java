@@ -8,7 +8,6 @@ import net.riezebos.bruus.tbd.game.items.effects.EffectActivationTypes;
 import net.riezebos.bruus.tbd.game.items.effects.EffectIdentifiers;
 import net.riezebos.bruus.tbd.game.items.effects.EffectInterface;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
-import net.riezebos.bruus.tbd.visualsandaudio.objects.Sprite;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteAnimation;
 
 import java.util.ArrayList;

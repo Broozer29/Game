@@ -103,8 +103,6 @@ public class Scout extends Enemy {
         //Create the missile and finalize the creation process, then add it to the manager and consequently the game
         Missile missile = MissileCreator.getInstance().createMissile(spriteConfiguration, missileConfiguration, movementConfiguration);
         missile.setOwnerOrCreator(this);
-//        missile.setSpeedsUp(true);
-//        missile.setAllowedVisualsToRotate(true);
         missile.setCenterCoordinates(chargingUpAttackAnimation.getCenterXCoordinate(), chargingUpAttackAnimation.getCenterYCoordinate());
         missile.rotateGameObjectTowards(missile.getMovementConfiguration().getDestination().getX(), missile.getMovementConfiguration().getDestination().getY(), true);
         missile.setCenterXCoordinate(chargingUpAttackAnimation.getCenterXCoordinate());

@@ -131,11 +131,6 @@ public class FormationCreator {
 			        "X...........X"
 			);
 			break;
-//		case Dot:
-//			pattern = createPatternFromStrings(
-//			        "X"
-//					);
-//			break;
 		}
 		newFormation = new EnemyFormation(pattern, heightDistance, widthDistance);
 		return newFormation;

@@ -259,9 +259,36 @@ public class Director {
         int yCoordinate = DataClass.getInstance().getPlayableWindowMaxHeight() / 2;
 
         if(enemyEnums.equals(EnemyEnums.BlueBoss)){
-            xCoordinate = Math.round((DataClass.getInstance().getWindowWidth() / 2));
-            yCoordinate = Math.round((DataClass.getInstance().getPlayableWindowMaxHeight() / 2));
+            xCoordinate = Math.round((DataClass.getInstance().getWindowWidth() *0.5f));
             AnimationManager.getInstance().addUpperAnimation(createWarpInAnimation(xCoordinate, yCoordinate));
+        } else if(enemyEnums.equals(EnemyEnums.TwinBoss)){
+            //spawn right twins
+            xCoordinate = DataClass.getInstance().getWindowWidth() + Math.round(EnemyEnums.TwinBoss.getBaseWidth() * scale);
+            LevelManager.getInstance().spawnEnemy(
+                    xCoordinate,
+                    Math.round(DataClass.getInstance().getPlayableWindowMaxHeight() * 0.25f),
+                    enemyEnums, direction, scale, false, xMovementSpeed);
+
+            LevelManager.getInstance().spawnEnemy(
+                    xCoordinate,
+                    Math.round(DataClass.getInstance().getPlayableWindowMaxHeight() * 0.75f),
+                    enemyEnums, direction, scale, false, xMovementSpeed);
+
+
+            //spawn left twins
+            int leftXCoordinate = Math.round(-(EnemyEnums.TwinBoss.getBaseWidth() * scale));
+            Direction rightDirection = Direction.RIGHT;
+            LevelManager.getInstance().spawnEnemy(
+                    leftXCoordinate,
+                    Math.round(DataClass.getInstance().getPlayableWindowMaxHeight() * 0.25f),
+                    enemyEnums, rightDirection, scale, false, xMovementSpeed);
+
+
+            LevelManager.getInstance().spawnEnemy(
+                    leftXCoordinate,
+                    Math.round(DataClass.getInstance().getPlayableWindowMaxHeight() * 0.75f),
+                    enemyEnums, rightDirection, scale, false, xMovementSpeed);
+            return; //bypass the normal spawning;
         }
 
         // Call LevelManager's spawnEnemy method
@@ -384,8 +411,6 @@ public class Director {
     }
 
     private void spawnCashCarrier() {
-//        spawnEntourageFormation(formationType, EnemyEnums.getRandomEnemy(EnemyCategory.Mercenary), EnemyEnums.CashCarrier);
-//        this.lastCashCarrierSpawnTime = currentTime;
         spawnEnemy(EnemyEnums.CashCarrier, true);
     }
 

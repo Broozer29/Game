@@ -4,17 +4,29 @@ import net.riezebos.bruus.tbd.game.gameobjects.player.boons.boonimplementations.
 import net.riezebos.bruus.tbd.guiboards.boardEnums.MenuFunctionEnums;
 
 public interface Boon {
-    public void applyUpgrade(BoonActivationEnums boonActivationEnums);
-    public boolean isUnlocked();
-    public BoonCategories getBoonCategory();
-    public String getBoonName();
-    public String getBoonDescription();
-    public String getBoonUnlockCondition();
-    public void upgradeBoon();
-    public int getBoonUpgradeCost();
-    public boolean canUpgradeFurther();
-    public BoonEnums getBoonEnum();
-    public int getCurrentLevel();
-    public void setHasAppliedDuringRun(boolean hasAppliedDuringRun);
-    public MenuFunctionEnums getSelectBoonMenuFunctionEnum();
+    void applyUpgrade(BoonActivationEnums boonActivationEnums);
+
+    boolean isUnlocked();
+
+    BoonCategories getBoonCategory();
+
+    String getBoonName();
+
+    String getBoonDescription();
+
+    String getBoonUnlockCondition();
+
+    void upgradeBoon();
+
+    int getBoonUpgradeCost();
+
+    boolean canUpgradeFurther();
+
+    BoonEnums getBoonEnum();
+
+    int getCurrentLevel();
+
+    void setHasAppliedDuringRun(boolean hasAppliedDuringRun);
+
+    MenuFunctionEnums getSelectBoonMenuFunctionEnum();
 }

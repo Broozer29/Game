@@ -32,9 +32,6 @@ public class BlueBossFireLaserbeams implements BossActionable {
 
     @Override
     public boolean activateBehaviour(Enemy enemy) {
-//        duration = 6.5f;
-//        laserBeamAngleStepSize = 0.3f;
-//        laserbeamBodySegmentLength = 6;
         double currentTime = GameState.getInstance().getGameSeconds();
         if (enemy.isAllowedToFire() && currentTime >= lastFiredTime + cooldown && WithinVisualBoundariesCalculator.isWithinBoundaries(enemy)) {
             if (!isFiringLaserbeams) {

@@ -45,13 +45,6 @@ public class CarrierBossSpawnProtossBeacon implements BossActionable {
 
 
 
-//        if (enemy.isAllowedToFire() && currentTime >= lastBeaconMovedTime + beaconMoveCooldown && WithinVisualBoundariesCalculator.isWithinBoundaries(enemy)
-//                && beacon != null) {
-//            beacon.resetMovementPath();
-//            setBeaconDestination(beacon);
-//            lastBeaconMovedTime = currentTime;
-//            return true;
-//        }
 
         if (beacon == null && enemy.isAllowedToFire() && currentTime >= lastSpawnedTime + spawnCooldown && WithinVisualBoundariesCalculator.isWithinBoundaries(enemy)) {
             if (!spawnAnimation.isPlaying()) {

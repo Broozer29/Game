@@ -153,6 +153,9 @@ public class MovementConfiguration {
 
 
 	public float getYMovementSpeed() {
+		if(YMovementSpeed == 0){
+			YMovementSpeed = XMovementSpeed;
+		}
 		return YMovementSpeed * movementSpeedModifier;
 	}
 

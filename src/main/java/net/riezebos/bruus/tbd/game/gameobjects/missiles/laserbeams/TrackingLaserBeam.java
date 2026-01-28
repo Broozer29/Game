@@ -1,10 +1,7 @@
 package net.riezebos.bruus.tbd.game.gameobjects.missiles.laserbeams;
 
 import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
-import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SpaceShip;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteAnimation;
-
-import java.util.Random;
 
 public class TrackingLaserBeam extends Laserbeam {
 

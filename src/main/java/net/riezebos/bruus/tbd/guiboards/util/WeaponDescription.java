@@ -2,8 +2,6 @@ package net.riezebos.bruus.tbd.guiboards.util;
 
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerPrimaryAttackTypes;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerSpecialAttackTypes;
-import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
-import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
 
 public class WeaponDescription {
 

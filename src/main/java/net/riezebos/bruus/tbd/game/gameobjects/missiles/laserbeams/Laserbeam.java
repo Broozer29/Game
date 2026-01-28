@@ -230,4 +230,13 @@ public abstract class Laserbeam {
     public boolean isVisible () {
         return visible;
     }
+
+    //todo replace all laserbeam centering magic number logic with these methods
+    public static double getXOffsetForCentering(){
+        return Laserbeam.bodyWidth / 2 + 4;
+    }
+
+    public static double getYOffsetForCentering(){
+        return  Laserbeam.bodyWidth / 2 + 12;
+    }
 }

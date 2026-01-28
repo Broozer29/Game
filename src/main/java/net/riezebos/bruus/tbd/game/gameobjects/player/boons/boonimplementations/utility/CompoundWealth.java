@@ -1,10 +1,10 @@
 package net.riezebos.bruus.tbd.game.gameobjects.player.boons.boonimplementations.utility;
 
-import net.riezebos.bruus.tbd.game.items.PlayerInventory;
 import net.riezebos.bruus.tbd.game.gameobjects.player.boons.Boon;
 import net.riezebos.bruus.tbd.game.gameobjects.player.boons.BoonCategories;
 import net.riezebos.bruus.tbd.game.gameobjects.player.boons.BoonEnums;
 import net.riezebos.bruus.tbd.game.gameobjects.player.boons.boonimplementations.BoonActivationEnums;
+import net.riezebos.bruus.tbd.game.items.PlayerInventory;
 import net.riezebos.bruus.tbd.game.playerprofile.PlayerProfileManager;
 import net.riezebos.bruus.tbd.guiboards.boardEnums.MenuFunctionEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.AudioManager;

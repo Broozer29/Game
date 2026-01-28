@@ -21,10 +21,6 @@ public class GlassCannon extends Item {
     @Override
     public void applyEffectToObject (GameObject gameObject) {
         if(shouldApply) {
-//            PlayerStats.getInstance().modifyMaxHitPointsMultiplier(-modifierBonus);
-//            PlayerStats.getInstance().addMaxShieldMultiplier(-modifierBonus);
-//            PlayerStats.getInstance().addMaxOverloadingShieldMultiplier(-modifierBonus);
-//            PlayerStats.getInstance().modifyBaseDamageMultiplier(damageBonus);
             shouldApply = false;
         }
     }

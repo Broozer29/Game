@@ -13,6 +13,8 @@ import net.riezebos.bruus.tbd.game.items.effects.effectimplementations.DormentEx
 import net.riezebos.bruus.tbd.game.items.enums.ItemApplicationEnum;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
 
+import java.util.Objects;
+
 public class FlameDetonation extends Item {
 
     private float explosionDamage;
@@ -32,12 +34,10 @@ public class FlameDetonation extends Item {
 
     private float calculateBurningDamage (int quantity) {
         PlayerClass currentPlayerClass = PlayerStats.getInstance().getPlayerClass();
-        switch (currentPlayerClass) {
-            case FireFighter:
-                return PlayerStats.getInstance().getIgniteDamage();
-            default:
-                return PlayerStats.getInstance().getBaseDamage() * 0.01f * quantity;
+        if (Objects.requireNonNull(currentPlayerClass) == PlayerClass.FireFighter) {
+            return PlayerStats.getInstance().getIgniteDamage();
         }
+        return PlayerStats.getInstance().getBaseDamage() * 0.01f * quantity;
     }
 
 

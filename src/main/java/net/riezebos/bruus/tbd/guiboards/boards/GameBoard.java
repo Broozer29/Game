@@ -7,6 +7,7 @@ import net.riezebos.bruus.tbd.game.UI.UIObject;
 import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.Enemy;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyManager;
+import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.twinboss.TwinBossManager;
 import net.riezebos.bruus.tbd.game.gameobjects.friendlies.FriendlyManager;
 import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.Drone;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.Missile;
@@ -182,6 +183,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
     private void resetManagersForNextLevel() {
         if (!hasResetManagersForNextLevel) {
             animationManager.resetManager();
+            TwinBossManager.getInstance().resetTwinBossManager();
             enemyManager.resetManager();
             missileManager.resetManager();
             levelManager = LevelManager.getInstance();
@@ -526,8 +528,6 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
 
 
         if (gameUICreator.getDifficultyWings() != null) {
-//            UIObject wings = uiManager.getDifficultyWings();
-//            g.drawString("Level difficulty: " + levelManager.getCurrentLevelDifficultyScore(), wings.getXCoordinate() + (wings.getWidth()), wings.getCenterYCoordinate());
             drawImage(g, gameUICreator.getDifficultyWings());
         }
 
@@ -546,9 +546,9 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
 
 
         if (gameState.getGameState().equals(GameStatusEnums.Paused)) {
-            g.setFont(new Font(DataClass.getInstance().getTextFont(), Font.BOLD, Math.round(30 * DataClass.getInstance().getResolutionFactor())));
-            g.drawString("PAUSED, press 'P' to resume",
-                    DataClass.getInstance().getWindowWidth() * 0.4f,
+            g.setFont(new Font(DataClass.getInstance().getTextFont(), Font.BOLD, Math.round(50 * DataClass.getInstance().getResolutionFactor())));
+            g.drawString("PAUSED",
+                    DataClass.getInstance().getWindowWidth() * 0.43f, //todo hardcoded magic number that needs to be dynamically calculated based on text width
                     DataClass.getInstance().getWindowHeight() / 2);
         }
 

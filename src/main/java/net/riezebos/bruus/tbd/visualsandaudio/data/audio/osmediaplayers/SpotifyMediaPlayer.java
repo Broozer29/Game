@@ -1,6 +1,7 @@
 package net.riezebos.bruus.tbd.visualsandaudio.data.audio.osmediaplayers;
 
-import java.util.concurrent.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class SpotifyMediaPlayer {
 

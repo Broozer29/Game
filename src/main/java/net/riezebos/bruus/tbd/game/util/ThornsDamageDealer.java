@@ -1,7 +1,10 @@
 package net.riezebos.bruus.tbd.game.util;
 
 import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
-import net.riezebos.bruus.tbd.game.gameobjects.missiles.*;
+import net.riezebos.bruus.tbd.game.gameobjects.missiles.Missile;
+import net.riezebos.bruus.tbd.game.gameobjects.missiles.MissileConfiguration;
+import net.riezebos.bruus.tbd.game.gameobjects.missiles.MissileCreator;
+import net.riezebos.bruus.tbd.game.gameobjects.missiles.MissileEnums;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
 import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SpaceShip;
@@ -77,8 +80,6 @@ public class ThornsDamageDealer {
         }
 
         reflectTheMissile(missile);
-//        Missile newMissile = createMissile(origin, missile);
-//        MissileManager.getInstance().addExistingMissile(newMissile);
     }
 
     private void reflectTheMissile(GameObject missile) {

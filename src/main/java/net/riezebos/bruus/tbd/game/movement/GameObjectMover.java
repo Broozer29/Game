@@ -42,11 +42,7 @@ public class GameObjectMover {
         if (moveConfig.getPathFinder() instanceof HomingPathFinder) {
             moveHomingPathFinders(gameObject, moveConfig);
         } else {
-            if (!handleNextWaypointRemoval(moveConfig)) {
-                //Could brick leaving this uncommented but can be handled by the movetowards/handle methods
-//                return;
-            }
-
+            handleNextWaypointRemoval(moveConfig);
             if (moveConfig.getPathFinder() instanceof BouncingPathFinder) {
                 handleBouncingPathFinder(gameObject, moveConfig);
             }

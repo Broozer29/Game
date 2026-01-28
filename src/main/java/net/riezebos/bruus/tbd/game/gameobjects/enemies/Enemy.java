@@ -100,6 +100,7 @@ public class Enemy extends GameObject {
         this.setFriendly(false);
 
         if(!enemyType.equals(EnemyEnums.ShurikenMiniBoss)) {
+//            boolean shouldCrop = !this.enemyType.equals(EnemyEnums.TwinBoss); //Exception for the twinboss due to multitude of reasons, if cropped the sprite animation bounces left/right due to differing sizes of individual frames
             this.rotateGameObjectTowards(movementRotation, true);
         }
 

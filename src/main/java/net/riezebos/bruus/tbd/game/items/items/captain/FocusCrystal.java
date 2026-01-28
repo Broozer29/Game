@@ -9,9 +9,6 @@ import net.riezebos.bruus.tbd.game.items.Item;
 import net.riezebos.bruus.tbd.game.items.ItemEnums;
 import net.riezebos.bruus.tbd.game.items.enums.ItemApplicationEnum;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class FocusCrystal extends Item {
 
     public static float damageAmplificationModifier = 0.15f;

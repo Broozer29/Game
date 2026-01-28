@@ -9,8 +9,6 @@ import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.Sprit
 public class BarrierProjectile extends Missile {
     public BarrierProjectile (SpriteAnimationConfiguration spriteAnimationConfiguration, MissileConfiguration missileConfiguration, MovementConfiguration movementConfiguration) {
         super(spriteAnimationConfiguration, missileConfiguration, movementConfiguration);
-//        this.animation.setFrameDelay(2);
-//        this.animation.rotateAnimation(movementConfiguration.getRotation());
         this.destroysMissiles = true;
         this.isDamageable = false;
         this.isDestructable = true;

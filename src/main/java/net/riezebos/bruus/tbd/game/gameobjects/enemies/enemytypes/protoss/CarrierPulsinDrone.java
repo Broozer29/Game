@@ -95,7 +95,7 @@ public class CarrierPulsinDrone extends Enemy {
 
         //Calculate the angle based on the current chargingAnimation. Because we want to fire from 4 directions, we also need to keep
         //track of the angle that the given chargingAnimation has in this method
-        Point bulletOrigin = calculateBulletDestination(angleDegrees, 1, this.getCenterXCoordinate(), this.getCenterYCoordinate());
+        Point bulletOrigin = new Point(this.getCenterXCoordinate(), this.getCenterYCoordinate());
         Point bulletDestination = calculateBulletDestination(angleDegrees, 400, this.getCenterXCoordinate(), this.getCenterYCoordinate());
 
         missile.resetMovementPath();

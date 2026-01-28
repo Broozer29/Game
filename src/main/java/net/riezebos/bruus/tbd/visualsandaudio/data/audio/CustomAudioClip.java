@@ -80,8 +80,6 @@ public class CustomAudioClip {
                 return currentTimeInSeconds > 1.2;
             case Destroyed_Explosion:
                 return currentTimeInSeconds > 0.5;
-//            case ChargingLaserbeam:
-//                return currentTimeInSeconds > 3;
             default:
                 return false;
         }
@@ -147,6 +145,7 @@ public class CustomAudioClip {
                 case GenericError -> 0.6f * 0.7f;
                 case Furi_Wisdowm_Of_Rage -> 0.7f;
                 case Blood_On_The_Dancefloor -> 0.7f;
+                case LeanRockShred -> 0.7f;
                 case nomad -> 0.7f;
                 case keygen -> 0.7f;
                 case MausoleumMash -> 0.7f;

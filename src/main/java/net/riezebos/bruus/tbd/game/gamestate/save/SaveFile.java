@@ -3,12 +3,12 @@ package net.riezebos.bruus.tbd.game.gamestate.save;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerClass;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
 import net.riezebos.bruus.tbd.game.gameobjects.player.boons.BoonEnums;
+import net.riezebos.bruus.tbd.game.gameobjects.player.boons.BoonManager;
 import net.riezebos.bruus.tbd.game.gamestate.GameMode;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.items.Item;
 import net.riezebos.bruus.tbd.game.items.ItemEnums;
 import net.riezebos.bruus.tbd.game.items.PlayerInventory;
-import net.riezebos.bruus.tbd.game.gameobjects.player.boons.BoonManager;
 
 import java.util.HashMap;
 import java.util.Map;

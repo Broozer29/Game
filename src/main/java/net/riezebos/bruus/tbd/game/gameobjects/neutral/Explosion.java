@@ -2,10 +2,12 @@ package net.riezebos.bruus.tbd.game.gameobjects.neutral;
 
 import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
 import net.riezebos.bruus.tbd.game.items.effects.EffectInterface;
+import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteAnimationConfiguration;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class Explosion extends GameObject {
 
@@ -58,12 +60,10 @@ public class Explosion extends GameObject {
         if (this.isFriendly()) { //Should probably be different per animation, this is a bit of a shoddy fix
             this.maxAnimationFramesForDamage = this.animation.getTotalFrames();
         } else {
-            switch (this.animation.getImageEnum()) {
-                case Bomba_Missile_Explosion:
-                    this.maxAnimationFramesForDamage = 14;
-                    break;
-                default:
-                    this.maxAnimationFramesForDamage = 10;
+            if (Objects.requireNonNull(this.animation.getImageEnum()) == ImageEnums.Bomba_Missile_Explosion) {
+                this.maxAnimationFramesForDamage = 14;
+            } else {
+                this.maxAnimationFramesForDamage = 10;
             }
         }
     }
@@ -71,10 +71,7 @@ public class Explosion extends GameObject {
     private List<GameObject> skipCollision = new ArrayList<GameObject>();
 
     public boolean dealtDamageToTarget (GameObject objectToCheck) {
-        if (skipCollision.contains(objectToCheck)) {
-            return true;
-        }
-        return false;
+        return skipCollision.contains(objectToCheck);
     }
 
     public void applyExplosionOnHitEffects (GameObject target) {

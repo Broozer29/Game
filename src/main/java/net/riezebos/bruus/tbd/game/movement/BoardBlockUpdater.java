@@ -35,7 +35,7 @@ public class BoardBlockUpdater {
         return 0;
     }
 
-    public static Point getRandomCoordinateInBlock(int blockIndex, int objectWidth, int objectHeight) {
+    public static Point getRandomCoordinateInBlock(int blockIndex, float objectWidth, float objectHeight) {
         if(blockIndex < 0){
             blockIndex = 0;
         } else if(blockIndex > 8){
@@ -45,14 +45,14 @@ public class BoardBlockUpdater {
         // Calculate X coordinate range for the block
         int blockWidth = DataClass.getInstance().getBoardBlockWidth();
         int minX = blockWidth * blockIndex;
-        int maxX = minX + blockWidth - objectWidth; // Adjust maxX to prevent the object from extending beyond the block
+        int maxX = Math.round(minX + blockWidth - objectWidth); // Adjust maxX to prevent the object from extending beyond the block
 
         // Ensure maxX is greater than minX after adjustment for object width
         maxX = Math.max(minX, maxX);
 
         // Calculate Y coordinate range for the playable area
         int minY = 0;
-        int maxY = DataClass.getInstance().getPlayableWindowMaxHeight() - objectHeight; // Adjust maxY to prevent the object from extending beyond the bottom edge
+        int maxY = Math.round(DataClass.getInstance().getPlayableWindowMaxHeight() - objectHeight); // Adjust maxY to prevent the object from extending beyond the bottom edge
 
         // Ensure maxY is greater than minY after adjustment for object height
         maxY = Math.max(minY, maxY);
