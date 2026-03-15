@@ -3,8 +3,8 @@ package net.riezebos.bruus.tbd.game.items.items.firefighter;
 import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.specialAttacks.FlameThrower;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerClass;
-import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
+import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SpaceShip;
 import net.riezebos.bruus.tbd.game.items.Item;
 import net.riezebos.bruus.tbd.game.items.ItemEnums;
 import net.riezebos.bruus.tbd.game.items.enums.ItemApplicationEnum;
@@ -24,7 +24,7 @@ public class InfernalPreIgniter extends Item {
     @Override
     public void applyEffectToObject (GameObject gameObject) {
         if(gameObject instanceof FlameThrower flameThrower){
-            if(flameThrower.getOwnerOrCreator().equals(PlayerManager.getInstance().getSpaceship())){
+            if(flameThrower.getOwnerOrCreator() instanceof SpaceShip){ //checken op type ipv directe reference omdat er meerdere spaceships kunnen zijn vanwege multiplayer
                 flameThrower.setDamage(flameThrower.getDamage() * (1 + scalingFactor * quantity));
             }
         }

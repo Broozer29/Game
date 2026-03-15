@@ -4,6 +4,7 @@ import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.MissileManager;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
+import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SpaceShip;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.items.ItemEnums;
 import net.riezebos.bruus.tbd.game.items.PlayerInventory;
@@ -12,7 +13,6 @@ import net.riezebos.bruus.tbd.game.items.effects.EffectIdentifiers;
 import net.riezebos.bruus.tbd.game.items.effects.EffectInterface;
 import net.riezebos.bruus.tbd.game.items.effects.util.EffectAnimationHelper;
 import net.riezebos.bruus.tbd.game.items.items.firefighter.CorrosiveOil;
-import net.riezebos.bruus.tbd.game.movement.Point;
 import net.riezebos.bruus.tbd.game.util.ThornsDamageDealer;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.AnimationManager;
@@ -100,7 +100,7 @@ public class DamageOverTime implements EffectInterface {
                 lastDamageTime = currentTime; // Update the last damage time
 
                 if (this.effectIdentifier.equals(EffectIdentifiers.Ignite)) {
-                    handleIgniteSpecialCases(target);
+                    fireBeckoningFlames(target);
                 }
             }
         } else {
@@ -123,7 +123,7 @@ public class DamageOverTime implements EffectInterface {
     @Override
     public void increaseEffectStrength(GameObject gameObject) {
         if (this.effectIdentifier.equals(EffectIdentifiers.Ignite) &&
-                this.dotStacks < PlayerStats.getInstance().getMaxIgniteStacks()) {
+                this.dotStacks < PlayerStats.getInstance().getBaseMaxIgniteStacks()) {
             this.dotStacks += 1;
             applyCorrosiveOil(gameObject);
 
@@ -139,16 +139,16 @@ public class DamageOverTime implements EffectInterface {
         }
     }
 
-    private double lastTimeThornsApplied = 0;
+    private double lastTimeBeckoningFlamesFired = 0;
 
-    private void handleIgniteSpecialCases(GameObject target) {
-        if (PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.BeckoningFlames) != null &&
-                (lastTimeThornsApplied + 0.75f) < GameState.getInstance().getGameSeconds()) {
-            MissileManager.getInstance().addExistingMissile(ThornsDamageDealer.getInstance().createMissile(
-                    new Point(PlayerManager.getInstance().getSpaceship().getCenterXCoordinate(), PlayerManager.getInstance().getSpaceship().getCenterYCoordinate()),
-                    target));
+    private void fireBeckoningFlames(GameObject target) {
+        if (PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.BeckoningFlames) != null && (lastTimeBeckoningFlamesFired + 0.75f) < GameState.getInstance().getGameSeconds()) {
+            for (SpaceShip spaceShip : PlayerManager.getInstance().getAllSpaceShips()) {
+                MissileManager.getInstance().addExistingMissile(
+                        ThornsDamageDealer.getInstance().createMissile(spaceShip, target));
+            }
 //            ThornsDamageDealer.getInstance().addDelayedThornsDamageToObject(target, PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.EntanglingFlames).getQuantity());
-            lastTimeThornsApplied = GameState.getInstance().getGameSeconds();
+            lastTimeBeckoningFlamesFired = GameState.getInstance().getGameSeconds();
         }
     }
 
@@ -173,7 +173,7 @@ public class DamageOverTime implements EffectInterface {
 
         DamageOverTime copiedEffect = new DamageOverTime(this.damage, this.durationInSeconds, clonedAnimation, effectIdentifier);
         // Copy other necessary fields
-//        copiedEffect.dotStacks = this.dotStacks;  Not copying stacks, cause its probably a bit too OP and doesnt worth with multiple animations
+//        copiedEffect.dotStacks = this.dotStacks;  Not copying stacks, cause its probably a bit too OP and doesnt work with multiple animations
         return copiedEffect;
     }
 

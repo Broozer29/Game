@@ -4,8 +4,8 @@ import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
 import net.riezebos.bruus.tbd.game.gameobjects.friendlies.FriendlyManager;
 import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.Drone;
 import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.droneTypes.DroneTypes;
-import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
+import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SpaceShip;
 import net.riezebos.bruus.tbd.game.items.ItemEnums;
 import net.riezebos.bruus.tbd.game.items.PlayerInventory;
 import net.riezebos.bruus.tbd.game.items.items.carrier.ProtossThorns;
@@ -18,11 +18,12 @@ import java.util.Random;
 
 public class ProtossUtils {
 
+
+    //todo protossutils is niet multiplayer compatible:
+    // - Static attributen die gedeeld gebruikt worden (building timer, fast/slow movement, ships luisteren niet naar hun eigen beacon maar naar iedereens beacon)
+    // - Max aantal protoss ships logica gaat er nog vanuit dat er maar 1 speler is
     private static final Random random = new Random();
     private static ProtossUtils instance = new ProtossUtils();
-    private static float protossShipBuilderTimer = 0.0f;
-    private static float protossShipBuildTime = 5.0f;
-    private boolean isAllowedToBuildProtoss = true;
     public static int maxHoverDistance = 200;
 
 
@@ -34,17 +35,17 @@ public class ProtossUtils {
         return instance;
     }
 
-    public static boolean carrierDroneIsPresent(){
-        return !FriendlyManager.getInstance().getDronesByDroneType(DroneTypes.CarrierDrone).isEmpty();
+    public static boolean carrierDroneIsPresent(GameObject player) {
+        return !FriendlyManager.getInstance().getDronesByDroneType(DroneTypes.CarrierDrone, player).isEmpty();
     }
 
-    public static Point getRandomPoint() {
-        GameObject selectedObject = PlayerManager.getInstance().getSpaceship();
+    public static Point getRandomPoint(GameObject selectedObject) {
+        GameObject finalSelectedObject = selectedObject;
         List<Drone> carrierDrones = FriendlyManager.getInstance().getDrones().stream()
-                .filter(drone -> drone instanceof CarrierDrone)
+                .filter(drone -> drone instanceof CarrierBeacon && drone.getOwnerOrCreator().equals(finalSelectedObject))
                 .toList();
 
-        if(!carrierDrones.isEmpty()){
+        if (!carrierDrones.isEmpty()) {
             selectedObject = carrierDrones.get(0);
         }
 
@@ -76,8 +77,8 @@ public class ProtossUtils {
         return new Point(newX, newY);
     }
 
-    public static boolean canHostMoreProtoss() {
-        int currentAmount = PlayerStats.getInstance().getAmountOfProtossShuttles() + PlayerStats.getInstance().getAmountOfProtossScouts();
+    public static boolean canHostMoreProtossToRollItems() {
+        int currentAmount = Math.max(PlayerInventory.getInstance().getCountOfItem(ItemEnums.ProtossArbiter), 1) + Math.max(PlayerInventory.getInstance().getCountOfItem(ItemEnums.ProtossCorsair), 1) + PlayerInventory.getInstance().getCountOfItem(ItemEnums.ProtossScout) + PlayerInventory.getInstance().getCountOfItem(ItemEnums.ProtossShuttle) + PlayerStats.getInstance().getCarrierStartingScouts();
         return currentAmount < PlayerStats.getInstance().getMaxAmountOfProtoss();
     }
 
@@ -99,120 +100,106 @@ public class ProtossUtils {
 
 
     private float overBuildResidu = 0;
-    public void buildProtossShips() {
-        if(!isAllowedToBuildProtoss) {
+
+    public void buildProtossShips(SpaceShip spaceShip) {
+        if (!spaceShip.isAllowedToBuildProtoss) {
             return;
         }
 
-        if(protossShipBuilderTimer < protossShipBuildTime) {
-            protossShipBuilderTimer += (0.015f * PlayerStats.getInstance().getProtossShipConstructionBonusSpeedModifier());
+        if (spaceShip.protossShipBuilderTimer < spaceShip.protossShipBuildTime) {
+            spaceShip.protossShipBuilderTimer += (0.015f * spaceShip.getProtossConstructionSpeedModifier());
         }
 
-        if(protossShipBuilderTimer >= protossShipBuildTime){
-            overBuildResidu = protossShipBuilderTimer - protossShipBuildTime;
-            protossShipBuilderTimer = protossShipBuildTime;
+        if (spaceShip.protossShipBuilderTimer >= spaceShip.protossShipBuildTime) {
+            spaceShip.overBuildResidu = spaceShip.protossShipBuilderTimer - spaceShip.protossShipBuildTime;
+            spaceShip.protossShipBuilderTimer = spaceShip.protossShipBuildTime;
 
-            if(overBuildResidu < 0.2){ //shouldnt be possible but safeguards against negative values
-                overBuildResidu = 0;
+            if (spaceShip.overBuildResidu < 0.2) { //shouldnt be possible but safeguards against negative values
+                spaceShip.overBuildResidu = 0;
             }
         }
 
-        if (protossShipBuilderTimer >= protossShipBuildTime) {
+        if (spaceShip.protossShipBuilderTimer >= spaceShip.protossShipBuildTime) {
             boolean hasBuildShips = false;
 
-            if(canFitMoreShips(DroneTypes.ProtossScout)){
-                buildProtossScout();
+            if (canFitMoreShips(DroneTypes.ProtossScout, spaceShip)) {
+                buildProtossScout(spaceShip);
                 hasBuildShips = true;
             }
-            if(canFitMoreShips(DroneTypes.ProtossShuttle)){
-                buildProtossShuttle();
+            if (canFitMoreShips(DroneTypes.ProtossShuttle, spaceShip)) {
+                buildProtossShuttle(spaceShip);
                 hasBuildShips = true;
             }
-            if(canFitMoreShips(DroneTypes.ProtossArbiter)){
-                buildProtossArbiter();
+            if (canFitMoreShips(DroneTypes.ProtossArbiter, spaceShip)) {
+                buildProtossArbiter(spaceShip);
                 hasBuildShips = true;
             }
-            if(canFitMoreShips(DroneTypes.ProtossCorsair)){
-                buildProtossCorsair();
+            if (canFitMoreShips(DroneTypes.ProtossCorsair, spaceShip)) {
+                buildProtossCorsair(spaceShip);
                 hasBuildShips = true;
             }
 
             if (hasBuildShips) {
-                protossShipBuilderTimer = 0.0f;
-                if(overBuildResidu >= 0.01){
-                    protossShipBuilderTimer += overBuildResidu;
-                    overBuildResidu = 0;
+                spaceShip.protossShipBuilderTimer = 0.0f;
+                if (spaceShip.overBuildResidu >= 0.01) {
+                    spaceShip.protossShipBuilderTimer += spaceShip.overBuildResidu;
+                    spaceShip.overBuildResidu = 0;
                 }
             }
         }
     }
 
-    private boolean canFitMoreShips(DroneTypes droneType) {
+    private boolean canFitMoreShips(DroneTypes droneType, SpaceShip player) {
         int maxShipCount = 0;
 
         switch (droneType) {
             case ProtossArbiter -> {
-                maxShipCount = PlayerStats.getInstance().getAmountOfProtossArbiters();
+                maxShipCount = player.getArbiterCount();
             }
             case ProtossShuttle -> {
-                maxShipCount = PlayerStats.getInstance().getAmountOfProtossShuttles();
+                maxShipCount = player.getShuttleCount();
             }
             case ProtossScout -> {
-                maxShipCount = PlayerStats.getInstance().getAmountOfProtossScouts();
+                maxShipCount = player.getScoutCount();
             }
             case ProtossCorsair -> {
-                maxShipCount = PlayerStats.getInstance().getAmountOfProtossCorsairs();
+                maxShipCount = player.getCorsairCount();
             }
             default -> maxShipCount = 0; //always returns 0
         }
 
-
-        return FriendlyManager.getInstance().getDronesByDroneType(droneType).size() < maxShipCount;
+        int test = FriendlyManager.getInstance().getDronesByDroneType(droneType, player).size();
+        return test < maxShipCount;
     }
 
-    public void handleProtossThorns(GameObject enemy){
-        if(enemy == null){
+    public void handleProtossThorns(GameObject enemy) {
+        if (enemy == null) {
             return;
         }
 
         ProtossThorns protossThorns = (ProtossThorns) PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.ProtossThorns);
-        if(protossThorns != null){
-            ThornsDamageDealer.getInstance().dealThornsDamageTo(enemy, PlayerStats.getInstance().getThornsDamage() * PlayerStats.getInstance().getProtossShipThornsDamageRatio());
+        if (protossThorns != null) {
+            ThornsDamageDealer.getInstance().dealThornsDamageTo(enemy, PlayerStats.getInstance().getBaseDamage() * PlayerStats.getInstance().getProtossShipThornsDamageRatio()); //todo baseDamage zou thorns damage moeten zijn maar dit is deprecated
         }
     }
 
-    private void buildProtossScout() {
-        FriendlyManager.getInstance().addProtossShip(DroneTypes.ProtossScout);
+    private void buildProtossScout(GameObject player) {
+        FriendlyManager.getInstance().addProtossShip(DroneTypes.ProtossScout, player);
     }
 
-    private void buildProtossShuttle() {
-        FriendlyManager.getInstance().addProtossShip(DroneTypes.ProtossShuttle);
+    private void buildProtossShuttle(GameObject player) {
+        FriendlyManager.getInstance().addProtossShip(DroneTypes.ProtossShuttle, player);
     }
 
-    private void buildProtossArbiter() {
-        FriendlyManager.getInstance().addProtossShip(DroneTypes.ProtossArbiter);
+    private void buildProtossArbiter(GameObject player) {
+        FriendlyManager.getInstance().addProtossShip(DroneTypes.ProtossArbiter, player);
     }
 
-    private void buildProtossCorsair() {
-        FriendlyManager.getInstance().addProtossShip(DroneTypes.ProtossCorsair);
-    }
-    public boolean isAllowedToBuildProtoss() {
-        return isAllowedToBuildProtoss;
+    private void buildProtossCorsair(GameObject player) {
+        FriendlyManager.getInstance().addProtossShip(DroneTypes.ProtossCorsair, player);
     }
 
-    public void setAllowedToBuildProtoss(boolean allowedToBuildProtoss) {
-        isAllowedToBuildProtoss = allowedToBuildProtoss;
-    }
-
-    public static float getProtossShipBuilderTimer() {
-        return protossShipBuilderTimer;
-    }
-
-    public static float getProtossShipBuildTime() {
-        return protossShipBuildTime;
-    }
-
-    public static void handleScrapMetalPickUp(float repairAmountMultiplier){
-        protossShipBuilderTimer += (repairAmountMultiplier * protossShipBuildTime);
+    public static void handleScrapMetalPickUp(float repairAmountMultiplier, SpaceShip spaceShip) {
+        spaceShip.protossShipBuilderTimer += (repairAmountMultiplier * spaceShip.protossShipBuildTime);
     }
 }

@@ -3,6 +3,7 @@ package net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.protoss;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.Enemy;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyConfiguration;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
+import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SpaceShip;
 import net.riezebos.bruus.tbd.game.movement.MovementConfiguration;
 import net.riezebos.bruus.tbd.game.movement.Point;
 import net.riezebos.bruus.tbd.game.movement.pathfinders.DestinationPathFinder;
@@ -35,9 +36,11 @@ public class EnemyProtossBeacon extends Enemy {
             if (this.movementConfiguration.getCurrentPath() != null && this.movementConfiguration.getCurrentPath().getWaypoints().isEmpty()) {
                 this.setAllowedToMove(true);
                 this.getMovementConfiguration().setPathFinder(new DestinationPathFinder());
+
+                SpaceShip closestSpaceShip = PlayerManager.getInstance().getClosestSpaceShip(this.getCenterXCoordinate(), this.getCenterYCoordinate());
                 this.getMovementConfiguration().setDestination(new Point(
-                        PlayerManager.getInstance().getSpaceship().getCenterXCoordinate() - (this.getWidth() / 2),
-                        PlayerManager.getInstance().getSpaceship().getCenterYCoordinate() - (this.getHeight() / 2)
+                        closestSpaceShip.getCenterXCoordinate() - (this.getWidth() / 2),
+                        closestSpaceShip.getCenterYCoordinate() - (this.getHeight() / 2)
                 ));
             }
         }

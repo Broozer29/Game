@@ -330,7 +330,7 @@ public class ClassSelectionBoardCreator {
         return textCollection;
     }
 
-    public static GUIComponent createBoonButtonBackgroundCard() {
+    public static GUIComponent createStartGameButtonBackground() {
         int xCoordinate = Math.round(DataClass.getInstance().getWindowWidth() * 0.785f);
         int yCoordinate = Math.round(DataClass.getInstance().getWindowHeight() * 0.84f);
 
@@ -344,14 +344,14 @@ public class ClassSelectionBoardCreator {
         return backgroundCard;
     }
 
-    public static GUITextCollection createBoonSelectionButton(GUIComponent backgroundCard) {
+    public static GUITextCollection createStartGameButton(GUIComponent backgroundCard) {
         int xCoordinate = backgroundCard.getCenterXCoordinate();
         int yCoordinate = backgroundCard.getCenterYCoordinate() - Math.round(DataClass.getInstance().getResolutionFactor() * 10);
 
         GUITextCollection textCollection = new GUITextCollection(xCoordinate, yCoordinate, "SELECT BOONS");
         textCollection.setScale(1.5f * DataClass.getInstance().getResolutionFactor());
         textCollection.setStartingXCoordinate(xCoordinate - (textCollection.getWidth() / 2));
-        textCollection.setMenuFunctionality(MenuFunctionEnums.OpenBoonSelectionBoard);
+        textCollection.setMenuFunctionality(MenuFunctionEnums.Start_Game);
 
         return textCollection;
     }

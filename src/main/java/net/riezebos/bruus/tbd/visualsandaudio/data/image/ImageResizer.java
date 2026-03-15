@@ -16,8 +16,8 @@ public class ImageResizer {
     private AffineTransform transform = new AffineTransform();
     private AffineTransformOp transformop = null;
 
-    private Map<String, BufferedImage> bufferedImageCache = new HashMap<>();
-    private Map<String, ArrayList<BufferedImage>> bufferedImageListCache = new HashMap<>();
+    private Map<ImageCacheKey, BufferedImage> bufferedImageCache = new HashMap<>();
+    private Map<ImageCacheKey, ArrayList<BufferedImage>> bufferedImageListCache = new HashMap<>();
 
     private ImageResizer() {
     }
@@ -31,18 +31,21 @@ public class ImageResizer {
             return image;
         }
 
-        String cacheKey = image.hashCode() + "_" + scale;
+        String keyString = image.hashCode() + "_" + scale;
+        ImageCacheKey imageCacheKey = findOrCreateCacheKey(bufferedImageCache, keyString);
 
-        if (bufferedImageCache.containsKey(cacheKey)) {
-            return bufferedImageCache.get(cacheKey);
+        if (imageCacheKey != null && bufferedImageCache.containsKey(imageCacheKey)) {
+            imageCacheKey.updateAccessTime();
+            return bufferedImageCache.get(imageCacheKey);
         }
 
+        imageCacheKey = new ImageCacheKey(keyString);
         transform.setToIdentity();
         transform.scale(scale, scale);
         transformop = new AffineTransformOp(transform, AffineTransformOp.TYPE_BICUBIC);
 
         bufferedImage = transformop.filter(image, null);
-        bufferedImageCache.put(cacheKey, bufferedImage);
+        bufferedImageCache.put(imageCacheKey, bufferedImage);
 
         return bufferedImage;
     }
@@ -52,21 +55,24 @@ public class ImageResizer {
             return frames;
         }
 
-        String cacheKey = frames.stream()
+        String keyString = frames.stream()
                 .map(image -> Integer.toString(image.hashCode()))
                 .collect(Collectors.joining("_")) + "_" + scale;
 
-        if (bufferedImageListCache.containsKey(cacheKey)) {
-            return bufferedImageListCache.get(cacheKey);
+        ImageCacheKey imageCacheKey = findOrCreateCacheKey(bufferedImageListCache, keyString);
+        if (imageCacheKey != null && bufferedImageListCache.containsKey(imageCacheKey)) {
+            imageCacheKey.updateAccessTime();
+            return bufferedImageListCache.get(imageCacheKey);
         }
 
+        imageCacheKey = new ImageCacheKey(keyString);
         ArrayList<BufferedImage> newFrames = new ArrayList<>();
         for (int i = 0; i < frames.size(); i++) {
             bufferedImage = getScaledImage(frames.get(i), scale);
             newFrames.add(bufferedImage);
         }
 
-        bufferedImageListCache.put(cacheKey, newFrames);
+        bufferedImageListCache.put(imageCacheKey, newFrames);
 
         return newFrames;
     }
@@ -76,22 +82,49 @@ public class ImageResizer {
             System.out.println("Width dimension too large, probably tried to divide or multiply by 0");
             return bufferedImage;
         }
-        String cacheKey = image.hashCode() + "_" + width + "x" + height;
+        String keyString = image.hashCode() + "_" + width + "x" + height;
 
-        if (bufferedImageCache.containsKey(cacheKey)) {
-            return bufferedImageCache.get(cacheKey);
+        ImageCacheKey imageCacheKey = findOrCreateCacheKey(bufferedImageCache, keyString);
+        if (imageCacheKey != null && bufferedImageCache.containsKey(imageCacheKey)) {
+            imageCacheKey.updateAccessTime();
+            return bufferedImageCache.get(imageCacheKey);
         }
 
+        imageCacheKey = new ImageCacheKey(keyString);
         double scaleX = (double) width / image.getWidth();
         double scaleY = (double) height / image.getHeight();
         AffineTransform scaleTransform = AffineTransform.getScaleInstance(scaleX, scaleY);
         AffineTransformOp bilinearScaleOp = new AffineTransformOp(scaleTransform, AffineTransformOp.TYPE_BICUBIC);
 
         bufferedImage = bilinearScaleOp.filter(image, new BufferedImage(width, height, image.getType()));
-        bufferedImageCache.put(cacheKey, bufferedImage);
+        bufferedImageCache.put(imageCacheKey, bufferedImage);
 
         return bufferedImage;
     }
 
+    private <T> ImageCacheKey findOrCreateCacheKey(Map<ImageCacheKey, T> cache, String keyString) {
+        for (ImageCacheKey key : cache.keySet()) {
+            if (key.getKey().equals(keyString)) {
+                return key;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Removes all cache entries that have not been accessed in more than 5 minutes (300000 milliseconds).
+     * This method should be called periodically to prevent memory buildup.
+     */
+    public void cleanupOldCacheEntries() {
+        long maxAge = 300000; // 5 minutes in milliseconds
+
+        bufferedImageCache.entrySet().removeIf(entry ->
+            entry.getKey().getTimeSinceLastAccess() > maxAge
+        );
+
+        bufferedImageListCache.entrySet().removeIf(entry ->
+            entry.getKey().getTimeSinceLastAccess() > maxAge
+        );
+    }
 
 }

@@ -14,10 +14,6 @@ import net.riezebos.bruus.tbd.game.gameobjects.missiles.specialAttacks.SpecialAt
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
 import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SpaceShip;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
-import net.riezebos.bruus.tbd.game.items.ItemEnums;
-import net.riezebos.bruus.tbd.game.items.PlayerInventory;
-import net.riezebos.bruus.tbd.game.items.items.ReflectiveShielding;
-import net.riezebos.bruus.tbd.game.util.ThornsDamageDealer;
 import net.riezebos.bruus.tbd.game.util.VisualLayer;
 import net.riezebos.bruus.tbd.game.util.collision.CollisionDetector;
 import net.riezebos.bruus.tbd.game.util.collision.CollisionInfo;
@@ -109,32 +105,34 @@ public class MissileManager {
             }
 
             laserbeam.update();
-            SpaceShip spaceship = PlayerManager.getInstance().getSpaceship();
-            CollisionInfo collisionInfo = CollisionDetector.getInstance().detectCollision(spaceship, laserbeam);
-            if (collisionInfo.isCollided()) {
-                if (laserbeam.isBlocksMovement()) {
-                    spaceship.resetToPreviousPosition();
-                    spaceship.applyKnockback(collisionInfo, laserbeam.getKnockBackStrength());
+            for(SpaceShip spaceship : PlayerManager.getInstance().getAllSpaceShips()) {
+                CollisionInfo collisionInfo = CollisionDetector.getInstance().detectCollision(spaceship, laserbeam);
+                if (collisionInfo.isCollided()) {
+                    if (laserbeam.isBlocksMovement()) {
+                        spaceship.resetToPreviousPosition();
+                        spaceship.applyKnockback(collisionInfo, laserbeam.getKnockBackStrength());
+                    }
+
+
+                    if (GameState.getInstance().getGameSeconds() - spaceship.getLastTimeDamageTakenFromLaserbeams() >= laserBeamCooldownBetweenHits) {
+                        spaceship.takeDamage(laserbeam.getDamage());
+                        spaceship.setLastTimeDamageTakenFromLaserbeams(GameState.getInstance().getGameSeconds());
+                    }
                 }
 
 
-                if (GameState.getInstance().getGameSeconds() - spaceship.getLastTimeDamageTakenFromLaserbeams() >= laserBeamCooldownBetweenHits) {
-                    spaceship.takeDamage(laserbeam.getDamage());
-                    spaceship.setLastTimeDamageTakenFromLaserbeams(GameState.getInstance().getGameSeconds());
-                }
-            }
+                //check all protoss drones, list is only filled if the playerclass is carrier
+                for (Drone drone : FriendlyManager.getInstance().getAllProtossDrones(spaceship)) {
+                    double currentTime = GameState.getInstance().getGameSeconds();
+                    double timeSinceLastDamage = currentTime - drone.getLastTimeDamageTakenFromLaserbeams();
+                    // Only check for collisions if enough time has passed since the last damage
+                    if (timeSinceLastDamage >= laserBeamCooldownBetweenHits) {
+                        collisionInfo = CollisionDetector.getInstance().detectCollision(drone, laserbeam);
 
-
-            for (Drone drone : FriendlyManager.getInstance().getAllProtossDrones()) {
-                double currentTime = GameState.getInstance().getGameSeconds();
-                double timeSinceLastDamage = currentTime - drone.getLastTimeDamageTakenFromLaserbeams();
-                // Only check for collisions if enough time has passed since the last damage
-                if (timeSinceLastDamage >= laserBeamCooldownBetweenHits) {
-                    collisionInfo = CollisionDetector.getInstance().detectCollision(drone, laserbeam);
-
-                    if (collisionInfo.isCollided()) {
-                        drone.takeDamage(laserbeam.getDamage());
-                        drone.setLastTimeDamageTakenFromLaserbeams(currentTime);
+                        if (collisionInfo.isCollided()) {
+                            drone.takeDamage(laserbeam.getDamage());
+                            drone.setLastTimeDamageTakenFromLaserbeams(currentTime);
+                        }
                     }
                 }
             }
@@ -180,7 +178,6 @@ public class MissileManager {
                     checkMissileCollisionWithEnemies(missile);
                 } else { // Then generic enemy missiles on friendlies
                     checkMissileCollisionWithPlayer(missile);
-                    checkMissileCollisionWithDrones(missile);
                 }
 
                 if (missile.interactsWithMissiles()) {
@@ -196,7 +193,9 @@ public class MissileManager {
                     checkSpecialAttackWithEnemyCollision(specialAttack);
                     checkSpecialAttackWithEnemyMissileCollision(specialAttack);
                 } else {
-                    specialAttack.checkEnemySpecialAttackCollision(PlayerManager.getInstance().getSpaceship());
+                    for(SpaceShip spaceship : PlayerManager.getInstance().getAllSpaceShips()) {
+                        specialAttack.checkEnemySpecialAttackCollision(spaceship);
+                    }
                     checkEnemySpecialAttackMissileCollision(specialAttack);
                 }
             }
@@ -246,7 +245,7 @@ public class MissileManager {
     }
 
     private float getSpecialAttackMissileDamage(SpecialAttack specialAttack, Missile missile) {
-        if((specialAttack instanceof FlameThrower || specialAttack instanceof FireShield) && missile.getMissileEnum().equals(MissileEnums.ReflectiveBlocks)) {
+        if ((specialAttack instanceof FlameThrower || specialAttack instanceof FireShield) && missile.getMissileEnum().equals(MissileEnums.ReflectiveBlocks)) {
             return Math.max(1, missile.getMaxHitPoints() * (specialAttack.getMaxHPDamagePercentageForMissiles() * 0.25f));
         }
 
@@ -273,31 +272,35 @@ public class MissileManager {
 
 
     private void checkMissileCollisionWithPlayer(Missile missile) {
-        SpaceShip spaceship = playerManager.getSpaceship();
-        CollisionInfo collisionInfo = collisionDetector.detectCollision(missile, spaceship);
-        if (collisionInfo != null) {
-            ReflectiveShielding reflectiveShielding = (ReflectiveShielding) PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.ReflectiveShielding);
+        for (SpaceShip spaceship : playerManager.getAllSpaceShips()) {
+            CollisionInfo collisionInfo = collisionDetector.detectCollision(missile, spaceship);
+            if (collisionInfo != null) {
 
-            if (reflectiveShielding != null && reflectiveShielding.attemptToReflectMissile(missile)
-                    && PlayerManager.getInstance().getSpaceship().getCurrentShieldPoints() > 0) {
-                ThornsDamageDealer.getInstance().reflectMissile(collisionInfo.getCollisionPoint(), missile);
-//                return; //don't want to continue since we reflected/blocked the missile
+                //todo reflective shielding staat disabled, als ik deze nooit ga enablen, gewoon verwijderen nu multiplayer hem kapot maakt
+//                ReflectiveShielding reflectiveShielding = (ReflectiveShielding) PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.ReflectiveShielding);
+//                if (reflectiveShielding != null && reflectiveShielding.attemptToReflectMissile(missile)
+//                        && spaceship.getCurrentShieldPoints() > 0) {
+//                    ThornsDamageDealer.getInstance().reflectMissile(collisionInfo.getCollisionPoint(), missile);
+////                return; //don't want to continue since we reflected/blocked the missile
+//                }
+
+                if (missile.getMissileEnum().equals(MissileEnums.TazerProjectile)) {
+                    ((TazerProjectile) missile).applyTazerMissileEffect(spaceship);
+                }
+
+                missile.handleCollision(spaceship);
+
+                if (missile.getKnockbackStrength() > 0) {
+                    spaceship.applyKnockback(collisionInfo, missile.getKnockbackStrength());
+                }
             }
 
-            if (missile.getMissileEnum().equals(MissileEnums.TazerProjectile)) {
-                ((TazerProjectile) missile).applyTazerMissileEffect(spaceship);
-            }
-
-            missile.handleCollision(spaceship);
-
-            if (missile.getKnockbackStrength() > 0) {
-                spaceship.applyKnockback(collisionInfo, missile.getKnockbackStrength());
-            }
+            checkMissileCollisionWithDrones(missile, spaceship);
         }
     }
 
-    private void checkMissileCollisionWithDrones(Missile missile) {
-        for (Drone drone : FriendlyManager.getInstance().getAllProtossDrones()) {
+    private void checkMissileCollisionWithDrones(Missile missile, SpaceShip spaceship) {
+        for (Drone drone : FriendlyManager.getInstance().getAllProtossDrones(spaceship)) {
             CollisionInfo collisionInfo = collisionDetector.detectCollision(missile, drone);
             if (collisionInfo != null) {
                 if (missile.getMissileEnum().equals(MissileEnums.TazerProjectile)) {

@@ -1,6 +1,7 @@
 package net.riezebos.bruus.tbd.game.gameobjects.neutral.interactable;
 
 import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.droneTypes.protoss.ProtossUtils;
+import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SpaceShip;
 import net.riezebos.bruus.tbd.game.movement.MovementConfiguration;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteAnimationConfiguration;
 
@@ -17,11 +18,11 @@ public class ScrapMetal extends Interactable {
     }
 
     @Override
-    public void activateObject() {
+    public void activateObject(SpaceShip activator) {
         if (!activated) {
             activated = true;
             this.setVisible(false);
-            ProtossUtils.getInstance().handleScrapMetalPickUp(this.repairAmount);
+            ProtossUtils.getInstance().handleScrapMetalPickUp(this.repairAmount, activator);
         }
     }
 

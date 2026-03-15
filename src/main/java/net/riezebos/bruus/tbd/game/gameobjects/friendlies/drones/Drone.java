@@ -69,7 +69,7 @@ public abstract class Drone extends GameObject {
 
         Martyrdom martyrdom = (Martyrdom) PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.Martyrdom);
         if (this.isProtoss && martyrdom != null) {
-            martyrdom.applyEffectToObject(null);
+            martyrdom.applyEffectToObject(this.ownerOrCreator);
         }
 
     }

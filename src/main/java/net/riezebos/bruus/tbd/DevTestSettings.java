@@ -6,11 +6,12 @@ public class DevTestSettings {
     public static boolean blockMusic = false; //if true: does NOT activate music during levels, making it impossible to end the level too
     public static boolean enablePlayerMovingPastBoundaries = false; //if true: allow the player to move outside the screen
     public static boolean devTestMuteMode = false; //if true: mutes all audio after starting a level
-    public static boolean onlyBossLevels = false; //if true: all levels are boss levels
+    public static boolean onlyBossLevels = true; //if true: all levels are boss levels
     public static boolean infiniteMoney = false; //if true: add 9999999 money to the inventory
     public static boolean freeReroll = false; //if true; set reroll discount to 99
     public static boolean spawnTargetDummy = false; //if true, spawns a target dummy at the start of a level
     public static boolean instantlySpawnPortal = false; //spawns a portla at the start of the level
     public static boolean instaKill = false; //multiplies basedamage by 100
-    public static boolean playerIsImmune = false; //makes the player invincible by preventing takeDamage being executed
+    public static boolean playerIsImmune = true; //makes the player invincible by preventing takeDamage being executed
+    public static boolean alloweSuicidebutton = false; //Enables the suicide button, causing 9999999 damage to the player(s)
 }

@@ -82,9 +82,10 @@ public class Devourer extends Enemy {
 
     private void rotateTowardsPlayer(){
         this.rotationAngle = 0;
+        SpaceShip closestSpaceShip = PlayerManager.getInstance().getClosestSpaceShip(this);
         this.rotateGameObjectTowards(
-                PlayerManager.getInstance().getSpaceship().getCenterXCoordinate(),
-                PlayerManager.getInstance().getSpaceship().getCenterYCoordinate(),
+                closestSpaceShip.getCenterXCoordinate(),
+                closestSpaceShip.getCenterYCoordinate(),
                 true);
     }
 
@@ -125,7 +126,7 @@ public class Devourer extends Enemy {
         missile.getAnimation().setFrameDelay(1);
 
         //get the coordinates for rotation of the missile
-        SpaceShip spaceship = PlayerManager.getInstance().getSpaceship();
+        SpaceShip spaceship = PlayerManager.getInstance().getClosestSpaceShip(this);
         Point rotationCoordinates = new Point(
                 spaceship.getCenterXCoordinate() - (missile.getAnimation().getWidth() / 2),
                 spaceship.getCenterYCoordinate() - (missile.getAnimation().getHeight() / 2) + missile.getHeight() * 0.3f //Small offset because it aims too high, probably because of non-cropped

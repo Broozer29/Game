@@ -110,21 +110,22 @@ public class ExplosionManager {
     }
 
     private void checkHostileExplosionCollision(Explosion explosion) {
-        SpaceShip spaceship = friendlyManager.getSpaceship();
-        if (!explosion.dealtDamageToTarget(spaceship)) {
-            CollisionInfo collisionInfo = CollisionDetector.getInstance().detectCollision(explosion, spaceship);
-            if (collisionInfo != null) {
-                explosion.dealDamageToGameObject(spaceship);
-                explosion.addCollidedSprite(spaceship);
-            }
-        }
-
-        for (Drone drone : FriendlyManager.getInstance().getAllProtossDrones()) {
-            if (!explosion.dealtDamageToTarget(drone)) {
-                CollisionInfo collisionInfo = CollisionDetector.getInstance().detectCollision(explosion, drone);
+        for (SpaceShip spaceship : friendlyManager.getAllSpaceShips()) {
+            if (!explosion.dealtDamageToTarget(spaceship)) {
+                CollisionInfo collisionInfo = CollisionDetector.getInstance().detectCollision(explosion, spaceship);
                 if (collisionInfo != null) {
-                    explosion.dealDamageToGameObject(drone);
-                    explosion.addCollidedSprite(drone);
+                    explosion.dealDamageToGameObject(spaceship);
+                    explosion.addCollidedSprite(spaceship);
+                }
+            }
+
+            for (Drone drone : FriendlyManager.getInstance().getAllProtossDrones(spaceship)) {
+                if (!explosion.dealtDamageToTarget(drone)) {
+                    CollisionInfo collisionInfo = CollisionDetector.getInstance().detectCollision(explosion, drone);
+                    if (collisionInfo != null) {
+                        explosion.dealDamageToGameObject(drone);
+                        explosion.addCollidedSprite(drone);
+                    }
                 }
             }
         }

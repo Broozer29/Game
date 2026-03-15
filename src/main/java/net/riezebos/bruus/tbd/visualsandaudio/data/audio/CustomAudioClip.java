@@ -133,6 +133,7 @@ public class CustomAudioClip {
         }
     }
 
+    //Dit is allemaa; "* 0.7f" omdat de default audio levels zijn veranderd met het gebruik van MediaPlayer ipv Clip objecten
     private void adjustVolume() {
         if (mediaPlayer != null) {
             double volume = switch (clipType) {

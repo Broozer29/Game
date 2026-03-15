@@ -1,7 +1,7 @@
 package net.riezebos.bruus.tbd.game.gameobjects.missiles.specialAttacks;
 
 import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
-import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
+import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SpaceShip;
 import net.riezebos.bruus.tbd.game.items.effects.EffectInterface;
 import net.riezebos.bruus.tbd.game.movement.Point;
 import net.riezebos.bruus.tbd.game.util.ArmorCalculator;
@@ -33,10 +33,10 @@ public class FlamerForceField extends SpecialAttack {
             target.takeDamage(damage);
         }
 
-        if(target.equals(PlayerManager.getInstance().getSpaceship())){
+        if(target instanceof SpaceShip spaceShip){
             CollisionInfo collisionInfo = new CollisionInfo(true,
                     new Point(this.getCenterXCoordinate(), this.getCenterYCoordinate()));
-            PlayerManager.getInstance().getSpaceship().applyKnockback(collisionInfo, 15);
+            spaceShip.applyKnockback(collisionInfo, 15);
         }
     }
 }

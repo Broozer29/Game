@@ -23,35 +23,20 @@ public class CannisterOfGasoline extends Item {
 
     @Override
     public void increaseQuantityOfItem(int amount) {
-        removeEffect();
         this.quantity += amount;
-        upgradeIgnite();
-    }
-
-
-    private void upgradeIgnite() {
-//        PlayerStats.getInstance().modifyIgniteItemDamageMultiplier(this.quantity * 0.20f);
-        PlayerStats.getInstance().modifyIgniteDurationModifier(this.quantity * igniteDurationBonus);
-    }
-
-    private void removeEffect() {
-        if (quantity > 0) {
-//            PlayerStats.getInstance().modifyIgniteItemDamageMultiplier(-(this.quantity * 0.20f));
-            PlayerStats.getInstance().modifyIgniteDurationModifier(-(this.quantity * igniteDurationBonus));
-        }
     }
 
     @Override
-    public void applyEffectToObject(GameObject gameObject) {
+    public void applyEffectToObject(GameObject origin, GameObject gameObject) {
         if (gameObject instanceof AlienBomb) { //AlienBombs should be immune to this
             return;
         }
 
         DormentExplosion dormentExplosion = new DormentExplosion(0, ImageEnums.GasolineExplosion,
                 DormentExplosionActivationMethods.OnDeath, false, EffectIdentifiers.GasolineDormantExplosion,
-                0, EffectActivationTypes.OnObjectDeath, true);
-        dormentExplosion.setBurningDamage(PlayerStats.getInstance().getIgniteDamage());
-        dormentExplosion.setBurningDuration(PlayerStats.getInstance().getIgniteDuration());
+                0, EffectActivationTypes.OnObjectDeath, true, origin.getOwnerOrCreator());
+        dormentExplosion.setBurningDamage(PlayerStats.getInstance().getIgniteDamage()); //todo moeten deze waardes opgehaald worden van spaceship?
+        dormentExplosion.setBurningDuration(PlayerStats.getInstance().getIgniteDuration() * (1 + (this.quantity * igniteDurationBonus)));
         dormentExplosion.setAudioEnums(AudioEnums.Firewall);
         gameObject.addEffect(dormentExplosion);
     }

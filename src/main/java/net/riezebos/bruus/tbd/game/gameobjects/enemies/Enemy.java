@@ -7,6 +7,7 @@ import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyEnums;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.MissileManager;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
+import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SpaceShip;
 import net.riezebos.bruus.tbd.game.gamestate.GameMode;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.gamestate.GameStatsTracker;
@@ -124,9 +125,16 @@ public class Enemy extends GameObject {
         if (level > 1) {
             // Apply both enemy level scaling and difficulty scaling
             this.maxHitPoints *= (Math.pow(getScalingFactor(), level) * difficultyScalingFactor);
+            if(PlayerManager.getInstance().getPlayerCount() > 1) {
+                this.maxHitPoints *= 1 + ((PlayerManager.getInstance().getPlayerCount() - 1) * 0.75f); //voor elke extra speler, 75% max hp
+            }
             this.currentHitpoints = maxHitPoints;
 
+
             this.maxShieldPoints *= Math.pow(getScalingFactor(), level) * difficultyScalingFactor;
+            if(PlayerManager.getInstance().getPlayerCount() > 1) {
+                this.maxShieldPoints *= 1 + ((PlayerManager.getInstance().getPlayerCount() - 1) * 0.75f); //voor elke extra speler, 75% max hp
+            }
             this.currentShieldPoints = maxShieldPoints;
 
             this.damage += level / 2;
@@ -134,6 +142,10 @@ public class Enemy extends GameObject {
             // XP on death is multiplied by 50% of difficulty coefficient
 //            this.xpOnDeath *= (1 + (0.5 * difficultyCoeff));
             this.cashMoneyWorth *= PlayerStats.getInstance().getMineralModifier();
+
+            if(PlayerManager.getInstance().getPlayerCount() > 1 && !this.enemyType.getEnemyCategory().equals(EnemyCategory.Boss)) {
+                this.cashMoneyWorth *= 1 + (Math.pow(0.15, PlayerManager.getInstance().getPlayerCount() - 1)); //voor elke extra speler, 15% cash money
+            }
         }
 
 
@@ -207,9 +219,11 @@ public class Enemy extends GameObject {
         if (this.getMissileTypePathFinders() == PathFinderEnums.Homing
                 || this.getMissileTypePathFinders() == PathFinderEnums.StraightLine) {
             // Rotate towards the player, assuming these are only used for enemies that aim
+
+            SpaceShip closestSpaceShip = PlayerManager.getInstance().getClosestSpaceShip(this);
             Point point = new Point(
-                    PlayerManager.getInstance().getSpaceship().getCenterXCoordinate(),
-                    PlayerManager.getInstance().getSpaceship().getCenterYCoordinate());
+                    closestSpaceShip.getCenterXCoordinate(),
+                    closestSpaceShip.getCenterYCoordinate());
             rotateObjectTowardsPoint(point, true);
             return;
         }

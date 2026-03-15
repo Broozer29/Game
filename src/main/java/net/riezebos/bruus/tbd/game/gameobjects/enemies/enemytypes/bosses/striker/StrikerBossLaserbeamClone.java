@@ -1,5 +1,6 @@
 package net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.striker;
 
+import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.Enemy;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyConfiguration;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.striker.behaviour.StrikerBossCloneLaserbeamAttack;
@@ -48,12 +49,9 @@ public class StrikerBossLaserbeamClone extends Enemy {
         updateChargingAttackAnimationCoordination();
 
         if (WithinVisualBoundariesCalculator.isWithinBoundaries(this) && allowedToFire && !isFiringLaserbeams) {
+            GameObject closestPlayer = PlayerManager.getInstance().getClosestSpaceShip(this);
             setLaserbeamOriginAnimation();
-            this.rotateGameObjectTowards(
-                    PlayerManager.getInstance().getSpaceship().getCenterXCoordinate(),
-                    PlayerManager.getInstance().getSpaceship().getCenterYCoordinate(),
-                    false
-            );
+            this.rotateGameObjectTowards(closestPlayer.getCenterXCoordinate(), closestPlayer.getCenterYCoordinate(), false);
             if (!chargingAnimation.isPlaying() && !isFiringLaserbeams) {
                 this.isAttacking = true;
                 chargingAnimation.refreshAnimation();
@@ -64,7 +62,7 @@ public class StrikerBossLaserbeamClone extends Enemy {
             if (chargingAnimation.isPlaying() &&
                     chargingAnimation.getCurrentFrame() == chargingAnimation.getTotalFrames() - 1 &&
                     !isFiringLaserbeams) {
-                createLaserbeams();
+                createLaserbeams(closestPlayer);
                 trackingLaserbeam.update(); //Prevents the laserbeams from "jumping" to the right position by doing it before adding them to missilemanager
                 chargingAnimation.setVisible(false);
                 MissileManager.getInstance().addLaserBeam(trackingLaserbeam);
@@ -115,11 +113,11 @@ public class StrikerBossLaserbeamClone extends Enemy {
         }
     }
 
-    private void createLaserbeams () {
+    private void createLaserbeams (GameObject target) {
         float damage = this.getDamage() * StrikerBossCloneLaserbeamAttack.damageRatio;
         LaserbeamConfiguration upperLaserbeamConfiguration = new LaserbeamConfiguration(false, damage);
         upperLaserbeamConfiguration.setAmountOfLaserbeamSegments(StrikerBossCloneLaserbeamAttack.laserbeamBodySegmentLength);
-        upperLaserbeamConfiguration.setTargetToAimAt(PlayerManager.getInstance().getSpaceship());
+        upperLaserbeamConfiguration.setTargetToAimAt(target);
         upperLaserbeamConfiguration.setOriginPoint(new Point(
                 this.getCenterXCoordinate(),
                 this.getCenterYCoordinate()

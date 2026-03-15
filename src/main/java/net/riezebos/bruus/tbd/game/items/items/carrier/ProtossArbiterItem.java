@@ -2,6 +2,7 @@ package net.riezebos.bruus.tbd.game.items.items.carrier;
 
 import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerClass;
+import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
 import net.riezebos.bruus.tbd.game.items.Item;
 import net.riezebos.bruus.tbd.game.items.ItemEnums;
@@ -13,12 +14,12 @@ public class ProtossArbiterItem extends Item {
     private boolean shouldApply;
 
     public ProtossArbiterItem(){
-        super(ItemEnums.ProtossArbiter, 1,  ItemApplicationEnum.UponAcquiring);
+        super(ItemEnums.ProtossArbiter, 1,  ItemApplicationEnum.ApplyOnCreation);
     }
 
     @Override
     public void applyEffectToObject (GameObject gameObject) {
-        PlayerStats.getInstance().setAmountOfProtossArbiters(1);
+        PlayerManager.getInstance().getAllSpaceShips().forEach(spaceShip -> spaceShip.setArbiterCount(1));
 
         if(shouldApply) {
             PlayerStats.getInstance().modifyArbiterHealingMultiplier(this.quantity * healingBonusMultiplier);
@@ -36,7 +37,7 @@ public class ProtossArbiterItem extends Item {
     private void removeEffect(){
         if(quantity > 0) {
             PlayerStats.getInstance().modifyArbiterHealingMultiplier(-(this.quantity * healingBonusMultiplier));
-            PlayerStats.getInstance().setAmountOfProtossArbiters(0);
+            PlayerManager.getInstance().getAllSpaceShips().forEach(spaceShip -> spaceShip.setArbiterCount(0));
         }
     }
 

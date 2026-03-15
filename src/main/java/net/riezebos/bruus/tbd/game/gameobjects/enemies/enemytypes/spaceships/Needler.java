@@ -27,7 +27,7 @@ public class Needler extends Enemy {
 
     @Override
     public void fireAction(){
-        if(!activated && CollisionDetector.getInstance().isNearby(this, PlayerManager.getInstance().getSpaceship(), 125)){
+        if(!activated && CollisionDetector.getInstance().isNearby(this, PlayerManager.getInstance().getClosestSpaceShip(this), 125)){
             activateNeedler();
         }
 
@@ -51,7 +51,7 @@ public class Needler extends Enemy {
             }
 
 
-            SpaceShip spaceship = PlayerManager.getInstance().getSpaceship();
+            SpaceShip spaceship = PlayerManager.getInstance().getClosestSpaceShip(this);
             Point destination = new Point(
                     spaceship.getCenterXCoordinate() - this.getWidth() / 2,
                     spaceship.getCenterYCoordinate() - this.getHeight() / 2);

@@ -1,5 +1,6 @@
 package net.riezebos.bruus.tbd.guiboards.guicomponents;
 
+import net.riezebos.bruus.tbd.controllerInput.ControllerManager;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerClass;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
 import net.riezebos.bruus.tbd.game.gameobjects.player.boons.Boon;
@@ -113,6 +114,9 @@ public class MenuButton extends GUIComponent {
             case ContinueSaveFile:
                 SaveManager.getInstance().loadSaveFile();
                 boardManager.openShopWindow();
+                break;
+            case ReconnectAllControllers:
+                ControllerManager.getInstance().initControllers();
                 break;
             case SelectNepotism:
             case SelectClubAccess:

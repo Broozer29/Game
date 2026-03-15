@@ -45,7 +45,6 @@ public class EnemyManager {
 
     private static EnemyManager instance = new EnemyManager();
     private AudioManager audioManager = AudioManager.getInstance();
-    private PlayerManager friendlyManager = PlayerManager.getInstance();
     private AnimationManager animationManager = AnimationManager.getInstance();
     private CopyOnWriteArrayList<Enemy> enemyList = new CopyOnWriteArrayList<Enemy>();
     private boolean hasSpawnedABoss = false;
@@ -66,7 +65,6 @@ public class EnemyManager {
         }
         updateEnemies();
         enemyList = new CopyOnWriteArrayList<Enemy>();
-        friendlyManager = PlayerManager.getInstance();
         audioManager = AudioManager.getInstance();
         hasSpawnedABoss = false;
         performanceLogger.reset();
@@ -88,25 +86,26 @@ public class EnemyManager {
     }
 
     private void checkSpaceshipCollisions() {
-        SpaceShip spaceship = friendlyManager.getSpaceship();
-        for (Enemy enemy : enemyList) {
-            if (enemy.isVisible()) {
-                CollisionInfo collisionInfo = CollisionDetector.getInstance().detectCollision(enemy, spaceship);
-                if (collisionInfo != null) {
-                    if (enemy.isDetonateOnCollision()) {
-                        detonateEnemy(enemy);
-                        enemy.dealDamageToGameObject(spaceship);
-                    } else {
+        for(SpaceShip spaceship : PlayerManager.getInstance().getAllSpaceShips()) {
+            for (Enemy enemy : enemyList) {
+                if (enemy.isVisible()) {
+                    CollisionInfo collisionInfo = CollisionDetector.getInstance().detectCollision(enemy, spaceship);
+                    if (collisionInfo != null) {
+                        if (enemy.isDetonateOnCollision()) {
+                            detonateEnemy(enemy);
+                            enemy.dealDamageToGameObject(spaceship);
+                        } else {
 
-                        //Should do damage once every 3 game ticks, to avoid instant death when glitching inside enemies
-                        if (GameState.getInstance().getGameSeconds() - spaceship.getLastTimeCollisionDamageTaken() >= 0.045) {
-                            spaceship.takeDamage(2.5f * (1 - PlayerStats.getInstance().getCollisionDamageReduction()));
-                            spaceship.setLastTimeCollisionDamageTaken(GameState.getInstance().getGameSeconds());
+                            //Should do damage once every 3 game ticks, to avoid instant death when glitching inside enemies
+                            if (GameState.getInstance().getGameSeconds() - spaceship.getLastTimeCollisionDamageTaken() >= 0.045) {
+                                spaceship.takeDamage(2.5f * (1 - PlayerStats.getInstance().getCollisionDamageReduction()));
+                                spaceship.setLastTimeCollisionDamageTaken(GameState.getInstance().getGameSeconds());
+                            }
+                            spaceship.resetToPreviousPosition();
+                            handleAdditionalKnockbackBehaviour(enemy);
                         }
-                        spaceship.resetToPreviousPosition();
-                        handleAdditionalKnockbackBehaviour(enemy);
+                        spaceship.applyKnockback(collisionInfo, enemy.getKnockbackStrength());
                     }
-                    spaceship.applyKnockback(collisionInfo, enemy.getKnockbackStrength());
                 }
             }
         }

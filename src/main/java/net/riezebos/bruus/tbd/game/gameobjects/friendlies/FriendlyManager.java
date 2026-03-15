@@ -5,11 +5,10 @@ import net.riezebos.bruus.tbd.game.gameobjects.enemies.Enemy;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyManager;
 import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.Drone;
 import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.droneTypes.DroneTypes;
-import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.droneTypes.protoss.CarrierDrone;
 import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.droneTypes.protoss.ProtossCorsair;
 import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.droneTypes.protoss.ProtossUtils;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
-import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
+import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SpaceShip;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.gamestate.GameStatusEnums;
 import net.riezebos.bruus.tbd.game.items.ItemEnums;
@@ -44,29 +43,21 @@ public class FriendlyManager {
         this.performanceLogger = new PerformanceLogger("Friendly Manager");
     }
 
-    public void addDrone() {
-        Drone drone = FriendlyCreator.createDrone();
-        PlayerManager.getInstance().getSpaceship().getObjectOrbitingThis().add(drone);
-        this.drones.add(drone);
-
-        OrbitingObjectsFormatter.reformatOrbitingObjects(PlayerManager.getInstance().getSpaceship(), PlayerStats.getInstance().getDroneOrbitRadius());
+    public void addDrone(SpaceShip spaceShip) {
+        Drone drone = FriendlyCreator.createDrone(spaceShip);
+        spaceShip.getObjectOrbitingThis().add(drone);
+        OrbitingObjectsFormatter.reformatOrbitingObjects(spaceShip, spaceShip.getDroneOrbitRadius());
     }
 
-    public void addDrone(Drone drone){
+    public void placeCarrierBeacon(Drone drone){
         if(!this.drones.contains(drone)) {
-            this.drones.add(drone);
-            if (!(drone instanceof CarrierDrone)) {
-                PlayerManager.getInstance().getSpaceship().getObjectOrbitingThis().add(drone);
-                OrbitingObjectsFormatter.reformatOrbitingObjects(PlayerManager.getInstance().getSpaceship(), 85);
-            }
+            drones.add(drone);
         }
     }
 
-    public void addProtossShip(DroneTypes droneTypes) {
-        Drone protosShip = FriendlyCreator.createProtossShip(droneTypes);
-        if (protosShip != null) {
-            this.drones.add(protosShip);
-        }
+    public void addProtossShip(DroneTypes droneTypes, GameObject player) {
+        Drone protosShip = FriendlyCreator.createProtossShip(droneTypes, player);
+        this.drones.add(protosShip);
     }
 
     public static FriendlyManager getInstance() {
@@ -114,6 +105,10 @@ public class FriendlyManager {
             Drone friendlyObject =  iterator.next();
 
             if(friendlyObject.isProtoss() && friendlyObject.getCurrentHitpoints() <= 0){
+                friendlyObject.setVisible(false);
+            }
+
+            if(friendlyObject.getOwnerOrCreator() == null || friendlyObject.getOwnerOrCreator().getCurrentHitpoints() <= 0){
                 friendlyObject.setVisible(false);
             }
 
@@ -182,13 +177,14 @@ public class FriendlyManager {
 
         // Checks collision between the finished level portal and player
         if (gameState.getGameState() == GameStatusEnums.Level_Finished && finishedLevelPortal.isVisible()) {
-            CollisionInfo collisionInfo = CollisionDetector.getInstance().detectCollision(PlayerManager.getInstance().getSpaceship(), finishedLevelPortal);
-            if (collisionInfo != null && finishedLevelPortal.getTransparancyAlpha() >= 0.5f) {
+            for(SpaceShip spaceShip : PlayerManager.getInstance().getAllSpaceShips()){
+                CollisionInfo collisionInfo = CollisionDetector.getInstance().detectCollision(spaceShip, finishedLevelPortal);
+                if (collisionInfo != null && finishedLevelPortal.getTransparancyAlpha() >= 0.5f) {
                     gameState.setGameState(GameStatusEnums.Level_Completed);
                     finishedLevelPortal.setTransparancyAlpha(true, 1.0f, -0.02f);
                     finishedLevelPortal.setSpawned(false);
                 }
-
+            }
         }
     }
 
@@ -219,16 +215,16 @@ public class FriendlyManager {
         finishedLevelPortal.setCenterCoordinates(portalXCoordinate, portalYCoordinate);
     }
 
-    public List<Drone> getAllPlayerDrones() {
-        return drones.stream().filter(drone -> !drone.isProtoss()).toList();
+    public List<Drone> getAllPlayerDrones(SpaceShip spaceship) {
+        return drones.stream().filter(drone -> !drone.isProtoss() && drone.getOwnerOrCreator().equals(spaceship)).toList();
     }
 
-    public List<Drone> getAllProtossDrones() {
-        return drones.stream().filter(Drone::isProtoss).toList();
+    public List<Drone> getAllProtossDrones(GameObject owner) {
+        return drones.stream().filter(drone -> drone.isProtoss() && drone.getOwnerOrCreator().equals(owner)).toList();
     }
 
-    public List<Drone> getDronesByDroneType(DroneTypes droneType) {
-        return drones.stream().filter(drone -> drone.getDroneType().equals(droneType)).toList();
+    public List<Drone> getDronesByDroneType(DroneTypes droneType, GameObject owner) {
+        return drones.stream().filter(drone -> drone.getOwnerOrCreator().equals(owner) && drone.getDroneType().equals(droneType)).toList();
     }
 
     public PerformanceLogger getPerformanceLogger() {

@@ -16,6 +16,7 @@ public class SynergeticLink extends Item {
     private float currentShuttleMissileSpeedBonus;
     private float currentScoutBonusDamage;
 
+    //todo implementatie reworken met multiplayer, de recalculate methodes vereisen een spaceship owner
     public SynergeticLink() {
         super(ItemEnums.SynergeticLink, 1, ItemApplicationEnum.CustomActivation);
     }
@@ -34,11 +35,11 @@ public class SynergeticLink extends Item {
     }
 
     private void recalculateShuttleAttackSpeed(){
-        this.currentShuttleMissileSpeedBonus = (this.quantity * shuttleMissileSpeedPerStack) * FriendlyManager.getInstance().getDronesByDroneType(DroneTypes.ProtossScout).size();
+        this.currentShuttleMissileSpeedBonus = (this.quantity * shuttleMissileSpeedPerStack) * FriendlyManager.getInstance().getDronesByDroneType(DroneTypes.ProtossScout, null).size();
     }
 
     private void recalculateScoutAttackDamage(){
-        this.currentScoutBonusDamage = (this.quantity * scoutBonusDamagePerShip) * FriendlyManager.getInstance().getDronesByDroneType(DroneTypes.ProtossShuttle).size();
+        this.currentScoutBonusDamage = (this.quantity * scoutBonusDamagePerShip) * FriendlyManager.getInstance().getDronesByDroneType(DroneTypes.ProtossShuttle, null).size();
     }
 
     public float getCurrentShuttleMissileSpeedBonus() {

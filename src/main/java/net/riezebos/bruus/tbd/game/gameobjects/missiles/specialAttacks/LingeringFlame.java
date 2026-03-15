@@ -23,7 +23,6 @@ public class LingeringFlame extends SpecialAttack{
         this.appliesItemEffects = false;
         this.animation.setInfiniteLoop(true);
         super.showDamage = false;
-        super.internalTickCooldown = PlayerStats.getInstance().getAttackSpeed();
 
         if(this.imageEnum.equals(ImageEnums.LingeringFlameLooping)) {
             this.addYOffset(-Math.round(this.getScale() * 35)); //To offset the large empty space in the spritesheet
@@ -52,6 +51,7 @@ public class LingeringFlame extends SpecialAttack{
 
     @Override
     public void updateSpecialAttack() {
+        super.internalTickCooldown = this.ownerOrCreator.getAttackSpeed(); //todo dit is eigenlijk een initialize variabele maar owner word gezet na de constructor, code smell
         if(GameState.getInstance().getGameSeconds() > (gamesecondsStarted + duration) && !isDissipating){
             this.setTransparancyAlpha(true, 1, -0.035f);
             super.isDissipating = true;

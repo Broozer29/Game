@@ -11,6 +11,7 @@ import net.riezebos.bruus.tbd.game.gameobjects.missiles.laserbeams.AngledLaserBe
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.laserbeams.Laserbeam;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.laserbeams.LaserbeamConfiguration;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
+import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SpaceShip;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.movement.Direction;
 import net.riezebos.bruus.tbd.game.movement.MovementConfiguration;
@@ -140,8 +141,10 @@ public class BlueBossFactory extends Enemy {
         needler.getMovementConfiguration().setPathFinder(new StraightLinePathFinder());
         needler.setCenterCoordinates(this.getCenterXCoordinate(), this.getCenterYCoordinate());
 
+
+        SpaceShip closestSpaceShip = PlayerManager.getInstance().getClosestSpaceShip(this.getCenterXCoordinate(), this.getCenterYCoordinate());
         needler.getMovementConfiguration().setDestination(
-                PlayerManager.getInstance().getSpaceship().getCurrentCenterLocation()
+                closestSpaceShip.getCurrentCenterLocation()
         );
         needler.setOwnerOrCreator(this);
         EnemyManager.getInstance().addEnemy(needler);

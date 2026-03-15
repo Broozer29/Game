@@ -1,8 +1,6 @@
 package net.riezebos.bruus.tbd.game.gameobjects.player;
 
 import net.riezebos.bruus.tbd.DevTestSettings;
-import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
-import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.droneTypes.DroneTypes;
 import net.riezebos.bruus.tbd.game.gameobjects.player.boons.BoonEnums;
 import net.riezebos.bruus.tbd.game.gameobjects.player.boons.BoonManager;
 import net.riezebos.bruus.tbd.game.gameobjects.player.boons.boonimplementations.BoonActivationEnums;
@@ -39,85 +37,57 @@ public class PlayerStats {
     public static float fireFighterAttackSpeed = 0.28f;
     public static float igniteDamageMultiplier = 0.025f;
     public static float igniteDuration = 1.15f;
-    private float igniteDurationMultiplier = 1;
-    private float bonusIgniteDamageMultiplier = 1f;
-    private float fuelCannisterMultiplier = 1;
-    private float fuelCannisterUsageMultiplier = 1;
-    private float fuelCannisterRegenMultiplier = 1;
-    private int maxIgniteStacks = 1;
+    private int baseMaxIgniteStacks = 1;
     public static int fireFighterHitpoints = 75;
 
     //captain
     public static float captainBaseDamage = 10f;
-    public static float captainAttackSpeed = 0.28f;
+    public static float captainBaseAttackSpeed = 0.28f;
     public static int captainBaseHitpoints = 60;
 
     //carrier
     public static float carrierBaseDamage = 10f;
-    public static float carrierAttackSpeed = 1;
-    public static float carrierBaseArmor = 0;
-    private float arbiterHealingMultiplier = 1f;
-    private int amountOfProtossScouts = 0;
-    private int amountOfProtossArbiters = 0;
-    private int amountOfProtossShuttles = 0;
-    private int amountOfProtossCorsairs = 0;
-    private int maxAmountOfProtoss = 14;
-    private int carrierStartingScouts = 5;
-    private float protossShipBaseHealth = 55;
-    private float protossShipBaseArmor = 0;
+    public static float carrierBaseAttackSpeed = 1;
+    public static int carrierBaseHitpoints = 75;
     public static float carrierSlowSpeed = 2.5f;
     public static float carrierFastSpeed = 4f;
+
+    //todo deze attributen moeten eigenlijk naar spaceship, maar kunnen voor nu in playerstats blijven omdat ze (voor nu) altijd shared zijn bij alle spelers
+    private float arbiterHealingMultiplier = 1f;
+    private static int defaultMaxAmountOfProtoss = 14;
+    private static int defaultCarrierStartingScouts = 5;
+    private float protossShipBaseHealth = 55;
+    private float protossShipBaseArmor = 0;
     private float protossShipThornsDamageRatio = 1.0f;
-    public static int carrierHitpoints = 75;
-    private float protossShipConstructionBonusSpeedModifier = 1f;
+
 
     //all classes
     public static float droneBaseDamage = 20f;
     private boolean hasThornsEnabled = false;
     private float thornsDamageRatio = 1.0f;
-    private float baseArmor = 0;
+    public static float baseArmor = 0;
+    public static float baseMoveSpeed = 4;
 
     // Preset type
     private PlayerClass playerClass;
     private PlayerPrimaryAttackTypes attackType;
     private PlayerSpecialAttackTypes specialAttackType;
-    private DroneTypes droneType;
     private float baseDamage;
-    private float baseDamageMultiplier = 1f;
-    private float bonusDamageMultiplier;
-
-    private float specialBaseDamage;
-    private float specialBonusDamageMultiplier;
     private float attackSpeed;
     private float specialAttackRechargeCooldown;
-    private float specialAttackRechargeCooldownBonusModifier;
-    private float attackSpeedBonus;
 
     // Player Health
     private float maxHitPoints;
     private float maxShieldHitPoints;
     private float shieldRegenDelay;
-    private float shieldRegenMultiplier;
-    private boolean continueShieldRegenThroughDamage;
-
-    // Movement
-    private float movementSpeed;
-    private float movementSpeedModifier;
 
     // Visual aspects of player
     private ImageEnums spaceShipImage;
 
-
     // Player missile type & visuals
     private ImageEnums playerMissileImage;
     private ImageEnums playerMissileImpactImage;
-    private float missileScale;
-    private int maxSpecialAttackCharges;
-    private float criticalStrikeDamageMultiplier = 2.0f;
-    private float maxOverloadingShieldMultiplier = 2.0f;
     private float overloadedShieldDiminishAmount;
-    private float maxShieldMultiplier = 1.0f;
-    private float maxHitPointsMultiplier = 1.0f;
     private int piercingMissilesAmount = 0;
 
 
@@ -127,15 +97,10 @@ public class PlayerStats {
     private float xpToNextLevel;
     private int amountOfDrones = 0;
     private int maximumAmountOfDrones = 8;
-    private int droneOrbitRadius = 85;
 
     //Willekeurig:
     private int shopRerollDiscount = 0;
-    private float droneDamageBonusRatio = 0;
-    private float droneDamageRatio = 1;
     private boolean hasImprovedElectroShred = false;
-    private float chanceForThornsToApplyOnHitEffects = 0;
-    private float thornsArmorDamageBonusRatio = 1;
     private float knockBackDamping;
     private int amountOfFreeRerolls = 0;
     private float collisionDamageReduction = 0;
@@ -169,30 +134,17 @@ public class PlayerStats {
         }
         amountOfFreeRerolls = 0;
         piercingMissilesAmount = 0;
-        bonusDamageMultiplier = 1f; //Otherwhise it's damage * 0 = 0
 
-        shieldRegenMultiplier = 1;
-        chanceForThornsToApplyOnHitEffects = 0;
         hasImprovedElectroShred = false;
-        continueShieldRegenThroughDamage = false;
         thornsDamageRatio = 1;
-        thornsArmorDamageBonusRatio = 0;
         collisionDamageReduction = 0;
         shieldRegenPerTick = 0.2f;
-        droneType = DroneTypes.Missile;
         droneBaseDamage = 20f;
-        baseDamageMultiplier = 1f;
-        specialAttackRechargeCooldownBonusModifier = 0;
-        igniteDuration = 1.35f;
+        igniteDuration = 1.15f;
         mineralModifier = 1.0f;
         relicChanceModifier = 0;
-        maxHitPointsMultiplier = 1.0f;
         flatDamageReduction = 0;
-        this.maxAmountOfProtoss = 12;
-        this.amountOfProtossScouts = carrierStartingScouts;
-        this.amountOfProtossArbiters = 0;
-        this.amountOfProtossShuttles = 0;
-        this.amountOfProtossCorsairs = 0;
+        this.defaultMaxAmountOfProtoss = 12;
         this.hasThornsEnabled = false;
 
 
@@ -200,10 +152,7 @@ public class PlayerStats {
         mineralModifier = 1;
         amountOfDrones = 0;
         maximumAmountOfDrones = 8;
-        droneOrbitRadius = 85;
-        maxIgniteStacks = 1;
-        setDroneDamageRatio(1);
-        setDroneDamageBonusRatio(0);
+        baseMaxIgniteStacks = 1;
 
         //Hack for free rerolls
         setShopRerollDiscount(0);
@@ -211,29 +160,10 @@ public class PlayerStats {
             setShopRerollDiscount(99);
         }
 
-
         // Health
         setMaxHitPoints(captainBaseHitpoints);
-        setMaxShieldMultiplier(1.0f);
-        setMaxShieldHitPoints(captainBaseHitpoints);
         setShieldRegenDelay(300);
         setOverloadedShieldDiminishAmount(0.1f);
-
-        // Movement speed
-        movementSpeed = 4;
-        movementSpeedModifier = 1.0f;
-
-        //normal attack
-        this.attackSpeedBonus = 0;
-
-        // Special attack
-        setSpecialBonusDamageMultiplier(1); //Otherwhise it's damage * 0 = 0
-        setMaxSpecialAttackCharges(1);
-
-        //Modifiers/multipliers
-        setCriticalStrikeDamageMultiplier(2.0f);
-        setMaxOverloadingShieldMultiplier(2.0f);
-
 
         //Level
         setCurrentLevel(1);
@@ -259,26 +189,18 @@ public class PlayerStats {
     }
 
     private void initCarrierPreset() {
-        setAttackSpeed(carrierAttackSpeed);
+        setAttackSpeed(carrierBaseAttackSpeed);
         setBaseDamage(DevTestSettings.instaKill ? carrierBaseDamage * 100 : carrierBaseDamage);
-        this.maxHitPoints = carrierHitpoints;
-        this.maxShieldHitPoints = carrierHitpoints;
-        this.amountOfProtossScouts = carrierStartingScouts;
-        this.amountOfProtossArbiters = 0;
-        this.amountOfProtossShuttles = 0;
-        this.amountOfProtossCorsairs = 0;
-        this.maxAmountOfProtoss = 12;
-        this.movementSpeed = 2.5f;
+        this.maxHitPoints = carrierBaseHitpoints;
+        this.maxShieldHitPoints = carrierBaseHitpoints;
+        this.defaultMaxAmountOfProtoss = 12;
         this.protossShipBaseHealth = 45;
         this.protossShipBaseArmor = 10;
         this.arbiterHealingMultiplier = 1f;
         this.protossShipThornsDamageRatio = 1.0f;
         setKnockBackDamping(0.775f);
-        this.protossShipConstructionBonusSpeedModifier = 1f;
-
 
         //special
-        setSpecialBaseDamage(0);
         setSpecialAttackRechargeCooldown(1.35f);
     }
 
@@ -288,27 +210,18 @@ public class PlayerStats {
         this.attackType = PlayerPrimaryAttackTypes.Flamethrower;
         setPlayerMissileImage(ImageEnums.FireFighterFlameThrowerLooping);
         setPlayerMissileImpactImage(null);
-        setMissileScale(1);
-        setFuelCannisterMultiplier(1);
-        setFuelCannisterRegenMultiplier(1);
         igniteDuration = 1.75f;
-        maxIgniteStacks = 2;
+        baseMaxIgniteStacks = 2;
         this.maxHitPoints = fireFighterHitpoints;
         this.maxShieldHitPoints = fireFighterHitpoints;
 
-        fuelCannisterRegenMultiplier = 1;
-        fuelCannisterUsageMultiplier = 1;
-        fuelCannisterMultiplier = 1;
-
         //special
-        setSpecialBaseDamage(baseDamage);
         setSpecialAttackRechargeCooldown(10f);
-        bonusIgniteDamageMultiplier = 1f;
     }
 
 
     private void initCaptainPreset() {
-        setAttackSpeed(captainAttackSpeed);
+        setAttackSpeed(captainBaseAttackSpeed);
         setBaseDamage(DevTestSettings.instaKill ? captainBaseDamage * 100 : captainBaseDamage);
         this.attackType = PlayerPrimaryAttackTypes.Laserbeam;
         setPlayerMissileImage(this.attackType.getCorrespondingMissileEnum().getImageType());
@@ -317,7 +230,6 @@ public class PlayerStats {
         this.maxShieldHitPoints = captainBaseHitpoints;
 
         //special
-        setSpecialBaseDamage(baseDamage * 1.5f);
         setHasImprovedElectroShred(false);
         setSpecialAttackRechargeCooldown(3f);
     }
@@ -357,68 +269,23 @@ public class PlayerStats {
         maxShieldHitPoints = ExperienceCalculator.getNextLevelShieldPoints(maxShieldHitPoints);
 
 
-        SpaceShip player = PlayerManager.getInstance().getSpaceship();
-        player.setMaxHitPoints(maxHitPoints);
-        player.setMaxShieldPoints(maxShieldHitPoints);
-        player.setCurrentHitpoints(maxHitPoints);
+        for (SpaceShip player : PlayerManager.getInstance().getAllSpaceShips()) {
+            player.setMaxHitPoints(maxHitPoints);
+            player.setMaxShieldPoints(maxShieldHitPoints);
+            player.setCurrentHitpoints(maxHitPoints);
 
-        if (player.getCurrentShieldPoints() < player.
+            if (player.getCurrentShieldPoints() < player.getMaxShieldPoints()) { //We don't want to overwrite any overloaded shields present
+                player.setCurrentShieldPoints(maxShieldHitPoints);
+            }
+            AnimationManager.getInstance().playLevelUpAnimation(player);
 
-                getMaxShieldPoints()) { //We don't want to overwrite any overloaded shields present
-            player.setCurrentShieldPoints(maxShieldHitPoints);
         }
-
-        AnimationManager.getInstance().
-
-                playLevelUpAnimation(player);
-        AudioManager.getInstance().
-
-                addAudio(AudioEnums.GenericSelect);
+        AudioManager.getInstance().addAudio(AudioEnums.GenericSelect);
     }
 
-    public float getNormalAttackDamage() {
-        float attackDamage = (this.baseDamage * baseDamageMultiplier) * this.bonusDamageMultiplier;
-        if (attackDamage < 1) {
-            return 1;
-        } else {
-            return attackDamage;
-        }
+    public float getBaseAttackSpeed() {
+        return this.attackSpeed;
     }
-
-
-    public float getAttackSpeed() {
-        float baseAttackSpeed = this.attackSpeed; // The default cooldown in milliseconds
-        float attackSpeedBonus = this.attackSpeedBonus; // Total attack speed modifier applied
-
-        if (attackSpeedBonus <= -100) { // Prevent division by zero or negative scaling
-            return baseAttackSpeed * 3.0f; // Clamp to maximum slowdown
-        }
-
-        float newAttackSpeed = baseAttackSpeed / (1 + attackSpeedBonus / 100); // Adjusted calculation
-
-        // Minimum threshold to prevent the attack speed from becoming too fast
-        if (newAttackSpeed < 0.03f) {
-            newAttackSpeed = 0.03f;
-        }
-
-        // Maximum threshold to prevent attack speed from being too slow
-        if (newAttackSpeed > baseAttackSpeed * 3.0f) {
-            newAttackSpeed = baseAttackSpeed * 3.0f;
-        }
-
-        return newAttackSpeed;
-    }
-
-    public float getIgniteTickRate() {
-        float newAttackSpeed = this.getAttackSpeed() / 2;
-
-        if (newAttackSpeed < 0.03f) {
-            newAttackSpeed = 0.03f;
-        }
-
-        return newAttackSpeed;
-    }
-
 
     public void setBaseDamage(float baseDamage) {
         this.baseDamage = baseDamage;
@@ -437,28 +304,16 @@ public class PlayerStats {
     }
 
     public float getSpecialAttackCooldown() {
-        float currentSpecialAttackSpeed = this.specialAttackRechargeCooldown * (1 + specialAttackRechargeCooldownBonusModifier);
-        if (currentSpecialAttackSpeed < 0.05) {
-            return 0.05f;
-        } else {
-            return currentSpecialAttackSpeed;
-        }
+        return this.specialAttackRechargeCooldown;
     }
 
     public void setSpecialAttackRechargeCooldown(float specialAttackRechargeCooldown) {
         this.specialAttackRechargeCooldown = specialAttackRechargeCooldown;
     }
 
-    public void modifySpecialAttackRechargeCooldown(float specialAttackRechargeCooldownBonusModifier) {
-        this.specialAttackRechargeCooldownBonusModifier += specialAttackRechargeCooldownBonusModifier;
-    }
 
     public float getMaxHitPoints() {
-        return maxHitPoints * maxHitPointsMultiplier;
-    }
-
-    public void modifyMaxHitPointsMultiplier(float modifier) {
-        maxHitPointsMultiplier += modifier;
+        return maxHitPoints;
     }
 
     public void setMaxHitPoints(float maxHitPoints) {
@@ -466,28 +321,12 @@ public class PlayerStats {
     }
 
     public float getMaxShieldHitPoints() {
-        return maxShieldHitPoints * maxShieldMultiplier;
+        return maxShieldHitPoints;
     }
 
     public float getBaseMaxShieldPoints() {
-        return maxShieldHitPoints * maxShieldMultiplier;
+        return maxShieldHitPoints;
     }
-
-    public void setMaxShieldHitPoints(float maxShieldHitPoints) {
-        this.maxShieldHitPoints = maxShieldHitPoints * maxShieldMultiplier;
-    }
-
-
-    public void setMovementSpeed(float movementSpeed) {
-        if (movementSpeed > 0) {
-            this.movementSpeed = movementSpeed;
-        }
-    }
-
-    public void modifyMovementSpeedModifier(float modifier) {
-        this.movementSpeedModifier += modifier;
-    }
-
 
     public ImageEnums getSpaceShipImage() {
         return spaceShipImage;
@@ -523,37 +362,6 @@ public class PlayerStats {
         this.specialAttackType = playerEMPType;
     }
 
-    public float getMissileScale() {
-        return missileScale;
-    }
-
-    public void setMissileScale(float missileScale) {
-        this.missileScale = missileScale;
-    }
-
-    public float getMovementSpeed() {
-        float moveSpeed = this.movementSpeed * this.movementSpeedModifier;
-        if (moveSpeed < 0.25f) {
-            return 0.25f;
-        } else {
-            return moveSpeed;
-        }
-    }
-
-
-    public float getBonusDamageMultiplier() {
-        return bonusDamageMultiplier;
-    }
-
-    //This can be used for negative AND positive modifiers
-    public void modifyBonusDamageMultiplier(float bonusDamageMultiplier) {
-        this.bonusDamageMultiplier += bonusDamageMultiplier;
-    }
-
-    public void modifyBaseDamageMultiplier(float baseDamageMultiplier) {
-        this.baseDamageMultiplier += baseDamageMultiplier;
-    }
-
     public PlayerPrimaryAttackTypes getAttackType() {
         return attackType;
     }
@@ -563,47 +371,7 @@ public class PlayerStats {
     }
 
     public float getBaseDamage() {
-        return baseDamage * baseDamageMultiplier;
-    }
-
-    public int getMaxSpecialAttackCharges() {
-        return maxSpecialAttackCharges;
-    }
-
-    public void setMaxSpecialAttackCharges(int maxSpecialAttackCharges) {
-        this.maxSpecialAttackCharges = maxSpecialAttackCharges;
-    }
-
-    public float getCriticalStrikeDamageMultiplier() {
-        return criticalStrikeDamageMultiplier;
-    }
-
-    public void setCriticalStrikeDamageMultiplier(float criticalStrikeDamageMultiplier) {
-        this.criticalStrikeDamageMultiplier = criticalStrikeDamageMultiplier;
-    }
-
-    public void addCriticalStrikeDamageMultiplier(float criticalStrikeDamageMultiplier) {
-        this.criticalStrikeDamageMultiplier += criticalStrikeDamageMultiplier;
-    }
-
-    public float getAttackSpeedBonus() {
-        return attackSpeedBonus;
-    }
-
-    public void modifyAttackSpeedBonus(float attackSpeedBonus) {
-        this.attackSpeedBonus += attackSpeedBonus;
-    }
-
-    public float getMaxOverloadingShieldMultiplier() {
-        return maxOverloadingShieldMultiplier;
-    }
-
-    public void setMaxOverloadingShieldMultiplier(float maxOverloadingShieldMultiplier) {
-        this.maxOverloadingShieldMultiplier = maxOverloadingShieldMultiplier;
-    }
-
-    public void addMaxOverloadingShieldMultiplier(float maxOverloadingShieldMultiplier) {
-        this.maxOverloadingShieldMultiplier += maxOverloadingShieldMultiplier;
+        return baseDamage;
     }
 
     public int getCurrentLevel() {
@@ -654,18 +422,6 @@ public class PlayerStats {
         this.overloadedShieldDiminishAmount = overloadedShieldDiminishAmount;
     }
 
-    public float getMaxShieldMultiplier() {
-        return maxShieldMultiplier;
-    }
-
-    public void setMaxShieldMultiplier(float maxShieldMultiplier) {
-        this.maxShieldMultiplier = maxShieldMultiplier;
-    }
-
-    public void addMaxShieldMultiplier(float maxShieldMultiplier) {
-        this.maxShieldMultiplier += maxShieldMultiplier;
-    }
-
     public int getPiercingMissilesAmount() {
         return piercingMissilesAmount;
     }
@@ -686,57 +442,12 @@ public class PlayerStats {
         this.shopRerollDiscount = shopRerollDiscount;
     }
 
-    public void addDroneBonusDamage(float damageBonus) {
-        this.droneDamageBonusRatio += damageBonus;
-    }
-
-    public float getDroneDamageBonusRatio() {
-        return droneDamageBonusRatio;
-    }
-
-    public void setDroneDamageBonusRatio(float droneDamageBonusRatio) {
-        this.droneDamageBonusRatio = droneDamageBonusRatio;
-    }
-
-    public float getDroneDamageRatio() {
-        return droneDamageRatio + droneDamageBonusRatio;
-    }
-
-    public void setDroneDamageRatio(float droneDamageRatio) {
-        this.droneDamageRatio = droneDamageRatio;
-    }
-
     public boolean isHasImprovedElectroShred() {
         return hasImprovedElectroShred;
     }
 
     public void setHasImprovedElectroShred(boolean hasImprovedElectroShred) {
         this.hasImprovedElectroShred = hasImprovedElectroShred;
-    }
-
-    public float getSpecialBaseDamage() {
-        return specialBaseDamage;
-    }
-
-    public void setSpecialBaseDamage(float specialBaseDamage) {
-        this.specialBaseDamage = specialBaseDamage;
-    }
-
-    public float getSpecialDamage() {
-        return (this.specialBaseDamage * baseDamageMultiplier) * this.specialBonusDamageMultiplier;
-    }
-
-
-    public float getSpecialBonusDamageMultiplier() {
-        return specialBonusDamageMultiplier;
-    }
-
-    public void setSpecialBonusDamageMultiplier(float specialBonusDamageMultiplier) {
-        this.specialBonusDamageMultiplier = specialBonusDamageMultiplier;
-    }
-
-    public void modifySpecialBonusDamageMultiplier(float specialBonusDamageMultiplier) {
-        this.specialBonusDamageMultiplier += specialBonusDamageMultiplier;
     }
 
     public float getThornsDamageRatio() {
@@ -751,53 +462,12 @@ public class PlayerStats {
         this.thornsDamageRatio += thornsDamageRatio;
     }
 
-    public float getThornsDamage() {
-        float thornsDamage = 0;
-        if (thornsDamageRatio > 0) {
-            thornsDamage = (this.baseDamage * baseDamageMultiplier) * (thornsDamageRatio);
-        }
-        if (thornsArmorDamageBonusRatio > 1.01) {
-            GameObject spaceShip = PlayerManager.getInstance().getSpaceship();
-            thornsDamage += thornsArmorDamageBonusRatio * (spaceShip.getBaseArmor() + spaceShip.getArmorBonus());
-        }
-
-        return thornsDamage;
-    }
-
-    public float getChanceForThornsToApplyOnHitEffects() {
-        return chanceForThornsToApplyOnHitEffects;
-    }
-
-    public void setChanceForThornsToApplyOnHitEffects(float chanceForThornsToApplyOnHitEffects) {
-        this.chanceForThornsToApplyOnHitEffects = chanceForThornsToApplyOnHitEffects;
-    }
-
-    public float getThornsArmorDamageBonusRatio() {
-        return thornsArmorDamageBonusRatio;
-    }
-
-    public void setThornsArmorDamageBonusRatio(float thornsArmorDamageBonusRatio) {
-        this.thornsArmorDamageBonusRatio = thornsArmorDamageBonusRatio;
-    }
-
     public float getKnockBackDamping() {
         return knockBackDamping;
     }
 
     public void setKnockBackDamping(float knockBackDamping) {
         this.knockBackDamping = knockBackDamping;
-    }
-
-    public int getDroneOrbitRadius() {
-        return droneOrbitRadius;
-    }
-
-    public void setDroneOrbitRadius(int droneOrbitRadius) {
-        this.droneOrbitRadius = droneOrbitRadius;
-    }
-
-    public void addDroneBonusOrbitRange(float orbitrangeBonus) {
-        this.droneOrbitRadius += orbitrangeBonus;
     }
 
     public PlayerClass getPlayerClass() {
@@ -821,31 +491,16 @@ public class PlayerStats {
     }
 
     public float getShieldRegenPerTick() {
-        return shieldRegenPerTick * shieldRegenMultiplier;
+        return shieldRegenPerTick;
     }
 
-    public void modifyShieldRegenMultiplier(float amount) {
-        this.shieldRegenMultiplier += amount;
-    }
 
     public float getIgniteDuration() {
-        return igniteDuration * igniteDurationMultiplier;
-    }
-
-    public void modifyDefaultIgniteDuration(float amount) {
-        this.igniteDuration += amount;
-    }
-
-    public void modifyIgniteDurationModifier(float amount) {
-        this.igniteDurationMultiplier += amount;
-    }
-
-    public void modifyIgniteItemDamageMultiplier(float amount) {
-        this.bonusIgniteDamageMultiplier += amount;
+        return igniteDuration;
     }
 
     public float getIgniteDamage() {
-        return Math.max((baseDamage * baseDamageMultiplier) * (igniteDamageMultiplier * bonusIgniteDamageMultiplier), 0.01f); //prevent negative damage
+        return Math.max(baseDamage * igniteDamageMultiplier, 0.01f); //prevent negative damage
     }
 
     public void modifyFireFighterIgniteDamageMultiplier(float amount) {
@@ -853,31 +508,15 @@ public class PlayerStats {
     }
 
     public void modifyMaxIgniteStacks(int igniteStacks) {
-        this.maxIgniteStacks += igniteStacks;
+        this.baseMaxIgniteStacks += igniteStacks;
     }
 
-    public int getMaxIgniteStacks() {
-        return maxIgniteStacks;
+    public int getBaseMaxIgniteStacks() {
+        return baseMaxIgniteStacks;
     }
 
-    public float getDroneDamage() {
-        return (droneBaseDamage * baseDamageMultiplier) * droneDamageRatio;
-    }
-
-    public DroneTypes getDroneType() {
-        return droneType;
-    }
-
-    public void setDroneType(DroneTypes droneType) {
-        this.droneType = droneType;
-    }
-
-    public boolean isContinueShieldRegenThroughDamage() {
-        return continueShieldRegenThroughDamage;
-    }
-
-    public void setContinueShieldRegenThroughDamage(boolean continueShieldRegenThroughDamage) {
-        this.continueShieldRegenThroughDamage = continueShieldRegenThroughDamage;
+    public float getBaseDroneDamage() {
+        return droneBaseDamage;
     }
 
     public float getMineralModifier() {
@@ -916,48 +555,20 @@ public class PlayerStats {
         this.relicChanceModifier += amount;
     }
 
-    public float getCarrierBaseArmor() {
-        return carrierBaseArmor;
-    }
-
-    public int getAmountOfProtossScouts() {
-        return amountOfProtossScouts;
-    }
-
-    public void setAmountOfProtossScouts(int amountOfProtossScouts) {
-        this.amountOfProtossScouts = amountOfProtossScouts;
-    }
-
-    public int getAmountOfProtossArbiters() {
-        return amountOfProtossArbiters;
-    }
-
-    public void setAmountOfProtossArbiters(int amountOfProtossArbiters) {
-        this.amountOfProtossArbiters = amountOfProtossArbiters;
-    }
-
-    public int getAmountOfProtossShuttles() {
-        return amountOfProtossShuttles;
-    }
-
-    public void setAmountOfProtossShuttles(int amountOfProtossShuttles) {
-        this.amountOfProtossShuttles = amountOfProtossShuttles;
-    }
-
     public int getMaxAmountOfProtoss() {
-        return maxAmountOfProtoss;
+        return defaultMaxAmountOfProtoss;
     }
 
     public void modifyMaxAmountOfProtoss(int amount) {
-        this.maxAmountOfProtoss += amount;
+        this.defaultMaxAmountOfProtoss += amount;
     }
 
     public int getCarrierStartingScouts() {
-        return carrierStartingScouts;
+        return defaultCarrierStartingScouts;
     }
 
     public void setCarrierStartingScouts(int carrierStartingScouts) {
-        this.carrierStartingScouts = carrierStartingScouts;
+        this.defaultCarrierStartingScouts = carrierStartingScouts;
     }
 
     public float getProtossShipBaseHealth() {
@@ -992,42 +603,6 @@ public class PlayerStats {
         this.protossShipThornsDamageRatio += amount;
     }
 
-    public float getFuelCannisterMultiplier() {
-        return fuelCannisterMultiplier;
-    }
-
-    public void setFuelCannisterMultiplier(float fuelCannisterMultiplier) {
-        this.fuelCannisterMultiplier = fuelCannisterMultiplier;
-    }
-
-    public void modifyFuelCannisterMultiplier(float amount) {
-        this.fuelCannisterMultiplier += amount;
-    }
-
-    public void modifyFuelCannisterUsageMultiplier(float amount) {
-        this.fuelCannisterUsageMultiplier += amount;
-    }
-
-    public float getFuelCannisterUsageMultiplier() {
-        return fuelCannisterUsageMultiplier;
-    }
-
-    public float getFuelCannisterRegenMultiplier() {
-        return fuelCannisterRegenMultiplier;
-    }
-
-    public void modifyFuelCannisterRegenMultiplier(float amount) {
-        this.fuelCannisterRegenMultiplier += amount;
-    }
-
-    public void setFuelCannisterRegenMultiplier(float fuelCannisterRegenMultiplier) {
-        this.fuelCannisterRegenMultiplier = fuelCannisterRegenMultiplier;
-    }
-
-    public float getBaseArmor() {
-        return baseArmor;
-    }
-
     public void setBaseArmor(float baseArmor) {
         this.baseArmor = baseArmor;
     }
@@ -1036,27 +611,23 @@ public class PlayerStats {
         this.baseArmor += amount;
     }
 
-    public float getProtossShipConstructionBonusSpeedModifier() {
-        return protossShipConstructionBonusSpeedModifier;
-    }
-
-    public void modifyConstructionBonusSpeedModifier(float constructionBonusSpeedModifier) {
-        this.protossShipConstructionBonusSpeedModifier += constructionBonusSpeedModifier;
-    }
-
-    public int getAmountOfProtossCorsairs() {
-        return this.amountOfProtossCorsairs;
-    }
-
-    public void setAmountOfProtossCorsairs(int amountOfProtossCorsairs) {
-        this.amountOfProtossCorsairs = amountOfProtossCorsairs;
-    }
-
     public float getFlatDamageReduction() {
         return this.flatDamageReduction;
     }
 
     public void modifyFlatDamageReduction(float flatDamageReduction) {
         this.flatDamageReduction += flatDamageReduction;
+    }
+
+    public static void setDefaultMaxAmountOfProtoss(int defaultMaxAmountOfProtoss) {
+        PlayerStats.defaultMaxAmountOfProtoss = defaultMaxAmountOfProtoss;
+    }
+
+    public static int getDefaultMaxAmountOfProtoss() {
+        return defaultMaxAmountOfProtoss;
+    }
+
+    public static int getDefaultCarrierStartingScouts() {
+        return defaultCarrierStartingScouts;
     }
 }

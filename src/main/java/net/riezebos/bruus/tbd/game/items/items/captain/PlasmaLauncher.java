@@ -3,8 +3,8 @@ package net.riezebos.bruus.tbd.game.items.items.captain;
 import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.*;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerClass;
-import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
+import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SpaceShip;
 import net.riezebos.bruus.tbd.game.items.Item;
 import net.riezebos.bruus.tbd.game.items.ItemEnums;
 import net.riezebos.bruus.tbd.game.items.enums.ItemApplicationEnum;
@@ -35,25 +35,27 @@ public class PlasmaLauncher extends Item {
     }
 
     @Override
-    public void applyEffectToObject(GameObject gameObject) {
+    public void applyEffectToObject(GameObject origin, GameObject gameObject) {
+        if(origin == null || gameObject == null){
+            return; //we cant activate this if the origin or target does not exist
+        }
+
+        if(origin.getOwnerOrCreator() == null || !(gameObject.getOwnerOrCreator() instanceof SpaceShip)){
+            return; //if the owner is not explicitly the spaceship (player) do not activate, only direct attacks/effects should be able to proc this item
+        }
+
         float chance = rand.nextFloat(0.0f, 1.01f); // Generates a float between 0.0 (inclusive) and 1.0 (exclusive)
         if (chance <= procChance) {
-            createPlasmaMissile(gameObject);
+            createPlasmaMissile(origin, gameObject);
         }
     }
 
 
 
-    private void createPlasmaMissile(GameObject target) {
-        GameObject player = PlayerManager.getInstance().getSpaceship();
-
-        if (target == null) {
-            return; //There is no target to fire at
-        }
-
+    private void createPlasmaMissile(GameObject origin, GameObject target) {
         SpriteConfiguration spriteConfiguration = new SpriteConfiguration();
-        spriteConfiguration.setxCoordinate(player.getXCoordinate());
-        spriteConfiguration.setyCoordinate(player.getYCoordinate());
+        spriteConfiguration.setxCoordinate(origin.getXCoordinate());
+        spriteConfiguration.setyCoordinate(origin.getYCoordinate());
         spriteConfiguration.setImageType(ImageEnums.PlasmaLauncherMissile);
         spriteConfiguration.setScale(0.6f);
 
@@ -79,8 +81,7 @@ public class PlasmaLauncher extends Item {
         missile.resetMovementPath();
         missile.getAnimation().changeImagetype(ImageEnums.PlasmaLauncherMissile);
         missile.getAnimation().setAnimationScale(0.6f);
-        missile.setCenterCoordinates(PlayerManager.getInstance().getSpaceship().getXCoordinate() + PlayerManager.getInstance().getSpaceship().getWidth(),
-                PlayerManager.getInstance().getSpaceship().getCenterYCoordinate());
+        missile.setCenterCoordinates(origin.getXCoordinate() + origin.getWidth(), origin.getCenterYCoordinate());
         missile.getMovementConfiguration().setDestination(
                 new Point(
                         target.getCenterXCoordinate() - (missile.getWidth() / 2),
@@ -88,7 +89,7 @@ public class PlasmaLauncher extends Item {
                 ));
         missile.setPiercesThroughObjects(true);
         missile.setAmountOfPiercesLeft(99999);
-        missile.setOwnerOrCreator(player);
+        missile.setOwnerOrCreator(origin);
         missile.rotateObjectTowardsDestination(false);
         missile.setAllowedVisualsToRotate(false);
         MissileManager.getInstance().addExistingMissile(missile);

@@ -179,7 +179,7 @@ public class GameObject extends Sprite {
 
         movementConfiguration.setCurrentLocation(this.currentLocation);
         this.movementConfiguration.setLastUsedXMovementSpeed(movementConfiguration.getXMovementSpeed());
-        if(movementConfiguration.getDestination() == null) {
+        if (movementConfiguration.getDestination() == null) {
             movementConfiguration.setDestination(movementConfiguration.getPathFinder().calculateInitialEndpoint(this.currentLocation, movementRotation, this.friendly));
         }
 
@@ -419,7 +419,7 @@ public class GameObject extends Sprite {
     }
 
     public void dealDamageToGameObject(GameObject target) {
-        if(target.getCurrentHitpoints() <= 0.000f || !target.isVisible()){
+        if (target.getCurrentHitpoints() <= 0.000f || !target.isVisible()) {
             return; //if it's dead, skip this operation
         }
         for (EffectInterface effectInterface : effectsToApply) {
@@ -461,10 +461,10 @@ public class GameObject extends Sprite {
         }
 
         //Bosses have a special healthbar
-        if(this instanceof Enemy enemy && enemy.getEnemyType().getEnemyCategory().equals(EnemyCategory.Boss)){
-                showHealthBar = false;
-                return;
-            }
+        if (this instanceof Enemy enemy && enemy.getEnemyType().getEnemyCategory().equals(EnemyCategory.Boss)) {
+            showHealthBar = false;
+            return;
+        }
 
 
         // Show the health bar if the object has taken damage
@@ -1020,7 +1020,7 @@ public class GameObject extends Sprite {
     public float getDamage() {
         float attackDamage = this.damage * this.bonusDamageMultiplier;
         if (isACrit) {
-            attackDamage *= PlayerStats.getInstance().getCriticalStrikeDamageMultiplier();
+            attackDamage *= 2;
         }
         if (attackDamage < 0.05) {
             return 0.05f;

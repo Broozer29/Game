@@ -1,7 +1,7 @@
 package net.riezebos.bruus.tbd;
 
 import javafx.application.Platform;
-import net.riezebos.bruus.tbd.controllerInput.ConnectedControllersManager;
+import net.riezebos.bruus.tbd.controllerInput.ControllerManager;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.Enemy;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyCreator;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.redboss.behaviour.RedBossCrossingLaserbeamsAttack;
@@ -19,7 +19,7 @@ import java.awt.*;
 
 public class Main {
 	public static void main(String[] args) {
-		ConnectedControllersManager.getInstance().initController();
+		ControllerManager.getInstance().initControllers();
 
 		Platform.startup(() -> {
 			// This initializes the JavaFX application thread, which is needed for MediaPlayer

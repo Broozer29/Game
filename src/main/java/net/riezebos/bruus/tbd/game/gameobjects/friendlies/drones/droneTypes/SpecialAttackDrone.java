@@ -8,6 +8,7 @@ import net.riezebos.bruus.tbd.game.gameobjects.missiles.specialAttacks.Lingering
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.specialAttacks.SpecialAttack;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.specialAttacks.SpecialAttackConfiguration;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
+import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SpaceShip;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.items.ItemEnums;
 import net.riezebos.bruus.tbd.game.items.PlayerInventory;
@@ -72,7 +73,8 @@ public class SpecialAttackDrone extends Drone {
         electroShredSpriteConfig.setImageType(ImageEnums.DroneElectroShred);
         electroShredSpriteConfig.setScale(scale);
 
-        float damage = PlayerStats.getInstance().getDroneDamage();
+        SpaceShip spaceship = (SpaceShip) this.ownerOrCreator;
+        float damage = PlayerStats.getInstance().getBaseDroneDamage() + spaceship.getDroneDamageModifier();
 
         SpriteAnimationConfiguration spriteAnimationConfiguration = new SpriteAnimationConfiguration(electroShredSpriteConfig, 2, false);
         SpecialAttackConfiguration missileConfiguration = new SpecialAttackConfiguration(damage, true, true, false, true, false, false);
@@ -100,7 +102,8 @@ public class SpecialAttackDrone extends Drone {
             orbitingLingeringFlame.setImageType(ImageEnums.ModuleScorchFlames);
             orbitingLingeringFlame.setScale(scale);
 
-            float damage = PlayerStats.getInstance().getDroneDamage() * 0.5f * PlayerStats.getInstance().getSpecialBonusDamageMultiplier();
+            SpaceShip spaceship = (SpaceShip) this.ownerOrCreator;
+            float damage = (PlayerStats.getInstance().getBaseDroneDamage() * 0.5f) + spaceship.getDroneDamageModifier();
 
             SpriteAnimationConfiguration spriteAnimationConfiguration = new SpriteAnimationConfiguration(orbitingLingeringFlame, 0, true);
             SpecialAttackConfiguration missileConfiguration = new SpecialAttackConfiguration(damage, true, true, false, true, false, false);

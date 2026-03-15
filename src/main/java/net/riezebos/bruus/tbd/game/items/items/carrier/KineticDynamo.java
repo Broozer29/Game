@@ -21,6 +21,7 @@ public class KineticDynamo extends Item {
     private float energyRaised = 0f;
     private float maxEneryCap = 1f;
     private int cooldown = 1;
+    //todo MULTILPLAYER dit moet per player bijgehouden worden, niet per item
     private double lastSecondsFired = 0;
     public boolean isMovingFast = false;
     public static float damageRatio = 15;
@@ -44,7 +45,7 @@ public class KineticDynamo extends Item {
         // -0.1f to deal with floating point precision as float equals isn't reliable (4 - 0.1) = 3.9 > 2.5 = true. 2.4 > 2.5 = false
         if(isMovingFast) {
             float currentSpeed = (float) Math.sqrt(directionX * directionX + directionY * directionY);
-            float speedRatio = currentSpeed / PlayerStats.getInstance().getMovementSpeed();
+            float speedRatio = currentSpeed / PlayerStats.baseMoveSpeed; //dit kan nu op deze variabele gedaan worden omdat slow carrier movement speed komt van een debuff op movespeed
 
             // Ensure speedRatio is capped between 0 and 1 (if unexpected values appear)
             speedRatio = Math.min(speedRatio, 1.0f);

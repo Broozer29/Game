@@ -72,7 +72,7 @@ public class LaserOriginDrone extends Enemy {
         laserbeamConfiguration.setOwner(this);
         laserbeamConfiguration.setAmountOfLaserbeamSegments(20);
 
-        laserbeamConfiguration.setTargetToAimAt(PlayerManager.getInstance().getSpaceship());
+        laserbeamConfiguration.setTargetToAimAt(PlayerManager.getInstance().getClosestSpaceShip(this));
         Point offsetAmounts = getOffsetAmounts(dir);
 
         laserbeamConfiguration.setxOffset(offsetAmounts.getX());

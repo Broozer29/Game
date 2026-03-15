@@ -160,14 +160,14 @@ public class MenuBoardCreator {
         return textCollection;
     }
 
-    public static GUITextCollection foundControllerText(boolean foundController, GUIComponent titleImage){
+    public static GUITextCollection foundControllerText(int foundController, GUIComponent titleImage){
         GUITextCollection textCollection = null;
         String text = null;
         int yCoordinate = 0;
-        if(foundController){
+        if(foundController > 0){
             int xCoordinate = (DataClass.getInstance().getWindowWidth() / 2) - 100;
             yCoordinate = titleImage.getYCoordinate() + titleImage.getHeight() + 10;
-            text = "FOUND A CONTROLLER";
+            text = "FOUND " + foundController + " CONTROLLERS";
             textCollection = new GUITextCollection(xCoordinate,yCoordinate,text);
         }
         else {
@@ -187,6 +187,17 @@ public class MenuBoardCreator {
         int newxCoordinate = titleImage.getCenterXCoordinate() - (textCollectionWidth / 2);
         textCollection = new GUITextCollection(newxCoordinate, yCoordinate, text);
         textCollection.setScale(imageScale);
+        return textCollection;
+    }
+
+    public static GUITextCollection testingButton(GUITextCollection openShopButton){
+        GUIComponent component = openShopButton.getComponents().get(0);
+        int xCoordinate = component.getXCoordinate();
+        int yCoordinate = component.getYCoordinate() + 50;
+
+        GUITextCollection textCollection = new GUITextCollection(xCoordinate,yCoordinate, "TEST BUTTON");
+        textCollection.setScale(imageScale);
+        textCollection.setMenuFunctionality(MenuFunctionEnums.ReconnectAllControllers);
         return textCollection;
     }
 

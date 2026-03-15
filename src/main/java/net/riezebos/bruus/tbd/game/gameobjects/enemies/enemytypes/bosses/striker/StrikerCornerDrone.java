@@ -48,11 +48,14 @@ public class StrikerCornerDrone extends Enemy {
     }
 
     private void rotateTowardsPlayer() {
-        this.rotateGameObjectTowards(
-                PlayerManager.getInstance().getSpaceship().getCenterXCoordinate(),
-                PlayerManager.getInstance().getSpaceship().getCenterYCoordinate(),
-                false
-        );
+        SpaceShip closestSpaceShip = PlayerManager.getInstance().getClosestSpaceShip(this);
+        if(closestSpaceShip != null){
+            this.rotateGameObjectTowards(
+                    closestSpaceShip.getCenterXCoordinate(),
+                    closestSpaceShip.getCenterYCoordinate(),
+                    false
+            );
+        }
     }
 
     @Override
@@ -101,7 +104,12 @@ public class StrikerCornerDrone extends Enemy {
         Missile missile = MissileCreator.getInstance().createMissile(spriteConfiguration, missileConfiguration, movementConfiguration);
 
         //get the coordinates for rotation of the missile
-        SpaceShip spaceship = PlayerManager.getInstance().getSpaceship();
+        SpaceShip spaceship = PlayerManager.getInstance().getClosestSpaceShip(this);
+        if(spaceship == null){
+            return; //we couldnt find an eligible target
+        }
+
+
         Point rotationCoordinates = new Point(
                 spaceship.getCenterXCoordinate() - missile.getWidth() / 2,
                 spaceship.getCenterYCoordinate() - missile.getHeight() / 2

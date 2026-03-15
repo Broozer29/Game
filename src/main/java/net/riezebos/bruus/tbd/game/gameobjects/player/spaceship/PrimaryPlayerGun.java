@@ -1,14 +1,13 @@
 package net.riezebos.bruus.tbd.game.gameobjects.player.spaceship;
 
+import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
 import net.riezebos.bruus.tbd.game.gameobjects.friendlies.FriendlyManager;
 import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.Drone;
-import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.droneTypes.protoss.ProtossUtils;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.*;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.specialAttacks.FlameThrower;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.specialAttacks.SpecialAttack;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.specialAttacks.SpecialAttackConfiguration;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerClass;
-import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerPrimaryAttackTypes;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
@@ -19,7 +18,6 @@ import net.riezebos.bruus.tbd.game.items.items.carrier.KineticDynamo;
 import net.riezebos.bruus.tbd.game.movement.Direction;
 import net.riezebos.bruus.tbd.game.movement.MovementConfiguration;
 import net.riezebos.bruus.tbd.game.movement.MovementPatternSize;
-import net.riezebos.bruus.tbd.game.movement.pathfinders.HomingPathFinder;
 import net.riezebos.bruus.tbd.game.movement.pathfinders.PathFinder;
 import net.riezebos.bruus.tbd.game.movement.pathfinders.RegularPathFinder;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.AudioManager;
@@ -47,23 +45,23 @@ public class PrimaryPlayerGun {
 
     }
 
-    public void fire(int xCoordinate, int yCoordinate, PlayerPrimaryAttackTypes playerAttackType) {
+    public void fire(int xCoordinate, int yCoordinate, PlayerPrimaryAttackTypes playerAttackType, SpaceShip owner) {
         double currentTime = GameState.getInstance().getGameSeconds();
-        if (currentTime >= lastAttackTime + playerStats.getAttackSpeed()) {
+        if (currentTime >= lastAttackTime + owner.getAttackSpeed()) {
             lastAttackTime = currentTime;  // Update the last attack time
 
             if (PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.ModuleCommand) != null) {
-                for (Drone drone : FriendlyManager.getInstance().getAllPlayerDrones()) {
+                for (Drone drone : FriendlyManager.getInstance().getAllPlayerDrones(owner)) {
                     drone.fireAction();
                 }
             }
 
             if (playerAttackType.equals(PlayerPrimaryAttackTypes.Laserbeam)) {
-                handleRegularMissile(xCoordinate, yCoordinate, playerAttackType);
+                handleRegularMissile(xCoordinate, yCoordinate, playerAttackType, owner);
             } else if (playerAttackType.equals(PlayerPrimaryAttackTypes.Flamethrower)) {
-                startFiringFlameThrower(xCoordinate, yCoordinate);
+                startFiringFlameThrower(xCoordinate, yCoordinate, owner);
             } else if (playerAttackType.equals(PlayerPrimaryAttackTypes.Carrier)) {
-                handleCarrierAttack();
+                handleCarrierAttack(owner);
             }
 
         }
@@ -71,29 +69,29 @@ public class PrimaryPlayerGun {
 
     private boolean carrierFastSwitch = false;
 
-    private void handleCarrierAttack() {
+    private void handleCarrierAttack(SpaceShip owner) {
         if (!carrierFastSwitch) {
-            ProtossUtils.getInstance().setAllowedToBuildProtoss(false);
+            owner.isAllowedToBuildProtoss = false;
             carrierFastSwitch = true;
-            PlayerStats.getInstance().setMovementSpeed(PlayerStats.carrierFastSpeed);
+            owner.modifyMovementSpeedModifier(0.6f);
             AudioManager.getInstance().addAudio(AudioEnums.ClassCarrierSpeedingUp);
-            addSwitchingGearAnimation(ImageEnums.ProtossCarrierSwitchFast);
-            updateKineticDynamo(true);
+            addSwitchingGearAnimation(ImageEnums.ProtossCarrierSwitchFast, owner);
+            updateKineticDynamo(true, owner);
         } else if (carrierFastSwitch) {
-            ProtossUtils.getInstance().setAllowedToBuildProtoss(true);
+            owner.isAllowedToBuildProtoss = true;
             carrierFastSwitch = false;
-            PlayerStats.getInstance().setMovementSpeed(PlayerStats.carrierSlowSpeed);
+            owner.modifyMovementSpeedModifier(-0.6f);
             AudioManager.getInstance().addAudio(AudioEnums.ClassCarrierSlowingDown);
-            addSwitchingGearAnimation(ImageEnums.ProtossCarrierSwitchSlow);
-            updateKineticDynamo(false);
+            addSwitchingGearAnimation(ImageEnums.ProtossCarrierSwitchSlow, owner);
+            updateKineticDynamo(false, owner);
         }
     }
 
-    private void updateKineticDynamo(boolean newValue){
+    private void updateKineticDynamo(boolean newValue, GameObject owner){
         KineticDynamo kineticDynamo = (KineticDynamo) PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.KineticDynamo);
         if(kineticDynamo != null){
             if(!newValue){
-                kineticDynamo.applyEffectToObject(PlayerManager.getInstance().getSpaceship());
+                kineticDynamo.applyEffectToObject(owner);
             }
             kineticDynamo.isMovingFast = newValue;
         }
@@ -101,26 +99,25 @@ public class PrimaryPlayerGun {
     }
 
 
-    private void addSwitchingGearAnimation(ImageEnums imageType) {
+    private void addSwitchingGearAnimation(ImageEnums imageType, SpaceShip owner) {
         SpriteConfiguration spriteConfiguration = new SpriteConfiguration();
-        SpaceShip spaceShip = PlayerManager.getInstance().getSpaceship();
-        spriteConfiguration.setxCoordinate(spaceShip.getCenterXCoordinate());
-        spriteConfiguration.setyCoordinate(spaceShip.getCenterYCoordinate());
+        spriteConfiguration.setxCoordinate(owner.getCenterXCoordinate());
+        spriteConfiguration.setyCoordinate(owner.getCenterYCoordinate());
         spriteConfiguration.setScale(1);
         spriteConfiguration.setImageType(imageType);
 
         SpriteAnimationConfiguration spriteAnimationConfiguration = new SpriteAnimationConfiguration(spriteConfiguration, 2, false);
         SpriteAnimation spriteAnimation = new SpriteAnimation(spriteAnimationConfiguration);
-        spriteAnimation.setCenterCoordinates(spaceShip.getCenterXCoordinate(), spaceShip.getCenterYCoordinate());
-        spaceShip.addPlayerFollowingAnimation(spriteAnimation);
+        spriteAnimation.setCenterCoordinates(owner.getCenterXCoordinate(), owner.getCenterYCoordinate());
+        owner.addPlayerFollowingAnimation(spriteAnimation);
         AnimationManager.getInstance().addUpperAnimation(spriteAnimation);
     }
 
-    private void handleRegularMissile(int xCoordinate, int yCoordinate, PlayerPrimaryAttackTypes playerAttackType) {
+    private void handleRegularMissile(int xCoordinate, int yCoordinate, PlayerPrimaryAttackTypes playerAttackType, SpaceShip owner) {
         ImageEnums visualImage = playerStats.getPlayerMissileImage();
-        float scale = playerStats.getMissileScale();
+        float scale = 1;
         PathFinder pathFinder = new RegularPathFinder();
-        fireMissile(xCoordinate, yCoordinate, visualImage, scale, pathFinder, playerAttackType.getCorrespondingMissileEnum());
+        fireMissile(xCoordinate, yCoordinate, visualImage, scale, pathFinder, playerAttackType.getCorrespondingMissileEnum(), owner);
         playFiringAudio(playerAttackType);
 
         orangeBarCurrentValue = -1;
@@ -134,19 +131,14 @@ public class PrimaryPlayerGun {
     private final float FUEL_MINIMUM_REQUIRED = 10f;
     public static float fireFighterBonusDamageRatio = 1.15f;
 
-    private void startFiringFlameThrower(int xCoordinate, int yCoordinate) {
+    private void startFiringFlameThrower(int xCoordinate, int yCoordinate, SpaceShip owner) {
         if (this.channeledAttack == null && orangeBarCurrentValue >= FUEL_MINIMUM_REQUIRED) {
-
-
-            PlayerManager playerManager = PlayerManager.getInstance();
-            SpaceShip spaceShip = playerManager.getSpaceship();
-
             SpriteConfiguration spriteConfiguration = new SpriteConfiguration();
             spriteConfiguration.setxCoordinate(xCoordinate);
             spriteConfiguration.setyCoordinate(yCoordinate);
             spriteConfiguration.setImageType(ImageEnums.FireFighterFlameThrowerAppearing);
 
-            float damage = playerStats.getNormalAttackDamage() * fireFighterBonusDamageRatio;
+            float damage = owner.getDamage() * fireFighterBonusDamageRatio;
 
 
             SpriteAnimationConfiguration spriteAnimationConfiguration = new SpriteAnimationConfiguration(spriteConfiguration, 3, true);
@@ -155,8 +147,8 @@ public class PrimaryPlayerGun {
             specialAttack.setCenteredAroundObject(true);
             specialAttack.setScale(0.9f);
             specialAttack.addXOffset((specialAttack.getAnimation().getWidth() / 2) - Math.round((specialAttack.getAnimation().getWidth() * 0.005f)));
-            specialAttack.setOwnerOrCreator(PlayerManager.getInstance().getSpaceship());
-            spaceShip.addFollowingSpecialAttack(specialAttack);
+            specialAttack.setOwnerOrCreator(owner);
+            owner.addFollowingSpecialAttack(specialAttack);
             this.channeledAttack = specialAttack;
             updateFlameThrowerDamageFromInfernalPreIgniter(this.channeledAttack);
             MissileManager.getInstance().addSpecialAttack(specialAttack);
@@ -188,7 +180,7 @@ public class PrimaryPlayerGun {
 
 
     private void fireMissile(int xCoordinate, int yCoordinate, ImageEnums playerMissileType,
-                             float missileScale, PathFinder missilePathFinder, MissileEnums attackType) {
+                             float missileScale, PathFinder missilePathFinder, MissileEnums attackType, SpaceShip owner) {
         int movementSpeed = 6;
         MissileCreator missileCreator1 = MissileCreator.getInstance();
         SpriteConfiguration spriteConfiguration = missileCreator1.createMissileSpriteConfig(xCoordinate, yCoordinate,
@@ -202,16 +194,13 @@ public class PrimaryPlayerGun {
 
 
         boolean isFriendly = true;
-        if (missilePathFinder instanceof HomingPathFinder) {
-            movementConfiguration.setTargetToChase(((HomingPathFinder) missilePathFinder).getTarget(isFriendly, spriteConfiguration.getxCoordinate(), spriteConfiguration.getyCoordinate()));
-        }
 
         int maxHitPoints = 100;
         int maxShields = 0;
         AudioEnums deathSound = null;
         boolean allowedToDealDamage = true;
         String objectType = "Player Missile";
-        float damage = playerStats.getNormalAttackDamage() * 2;
+        float damage = owner.getDamage() * 2;
         boolean isExplosive = false;
 
 
@@ -231,9 +220,8 @@ public class PrimaryPlayerGun {
             lasers.applyEffectToObject(missile);
         }
 
-        SpaceShip spaceship = PlayerManager.getInstance().getSpaceship();
-        missile.setOwnerOrCreator(spaceship);
-        missile.setCenterCoordinates(missile.getCenterXCoordinate(), spaceship.getCenterYCoordinate());
+        missile.setOwnerOrCreator(owner);
+        missile.setCenterCoordinates(missile.getCenterXCoordinate(), owner.getCenterYCoordinate());
         missile.resetMovementPath();
 
         missile.setCanBounce(true);
@@ -246,7 +234,7 @@ public class PrimaryPlayerGun {
         this.audioManager.addAudio(audioEnum);
     }
 
-    public void updateFrameCount() {
+    public void updateFrameCount(SpaceShip owner) {
         if (channeledAttack != null && channeledAttack.isDissipating()) {
             if ((timeChannelAttackGetsCleared + 0.5d) < GameState.getInstance().getGameSeconds()) {
                 channeledAttack = null;
@@ -255,7 +243,7 @@ public class PrimaryPlayerGun {
 
         if (PlayerStats.getInstance().getPlayerClass().equals(PlayerClass.FireFighter)) {
             if(orangeBarMaxValue < 0) {
-                orangeBarMaxValue = 125 * PlayerStats.getInstance().getFuelCannisterMultiplier();
+                orangeBarMaxValue = 125 * owner.getFuelCannisterMaxCapacityModifier();
             }
 
             if(orangeBarCurrentValue < 0){
@@ -263,7 +251,7 @@ public class PrimaryPlayerGun {
             }
 
             if(this.channeledAttack == null && orangeBarCurrentValue < orangeBarMaxValue) {
-                orangeBarCurrentValue += FUEL_REGENERATION_RATE * PlayerStats.getInstance().getFuelCannisterRegenMultiplier();
+                orangeBarCurrentValue += FUEL_REGENERATION_RATE * owner.getFuelCannisterRegenModifier();
                 if (orangeBarCurrentValue > orangeBarMaxValue) {
                     orangeBarCurrentValue = orangeBarMaxValue; // Clamp at max value
                 }
@@ -278,7 +266,7 @@ public class PrimaryPlayerGun {
 
                 // Deplete fuel while firing
                 updateFlameThrowerDamageFromInfernalPreIgniter(this.channeledAttack);
-                orangeBarCurrentValue -= Math.max(FUEL_DEPLETION_RATE * PlayerStats.getInstance().getFuelCannisterUsageMultiplier() , 0.01f);
+                orangeBarCurrentValue -= Math.max(FUEL_DEPLETION_RATE * owner.getFuelCannisterUsageModifier() , 0.01f);
                 if (orangeBarCurrentValue < 0) {
                     orangeBarCurrentValue = 0; // Clamp at 0
                 }
@@ -286,16 +274,16 @@ public class PrimaryPlayerGun {
         }
     }
 
-    public float getOrangeBarMaxValue() {
+    public float getOrangeBarMaxValue(SpaceShip owner) {
         if (playerStats.getPlayerClass().equals(PlayerClass.Carrier)) {
-            return ProtossUtils.getProtossShipBuildTime();
+            return owner.getProtossShipBuildTime();
         }
         return orangeBarMaxValue;
     }
 
-    public float getOrangeBarCurrentValue() {
+    public float getOrangeBarCurrentValue(SpaceShip owner) {
         if (playerStats.getPlayerClass().equals(PlayerClass.Carrier)) {
-            return ProtossUtils.getProtossShipBuilderTimer();
+            return owner.getProtossShipBuilderTimer();
         }
         return orangeBarCurrentValue;
     }

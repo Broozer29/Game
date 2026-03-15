@@ -3,6 +3,7 @@ package net.riezebos.bruus.tbd.game.items.items.carrier;
 import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
 import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.droneTypes.protoss.ProtossUtils;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerClass;
+import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
 import net.riezebos.bruus.tbd.game.items.Item;
 import net.riezebos.bruus.tbd.game.items.ItemEnums;
@@ -13,11 +14,11 @@ public class ProtossCorsairItem extends Item {
     public static int maxDamageIncrease = 50;
 
     public ProtossCorsairItem(){
-        super(ItemEnums.ProtossCorsair, 1,  ItemApplicationEnum.UponAcquiring);
+        super(ItemEnums.ProtossCorsair, 1,  ItemApplicationEnum.ApplyOnCreation);
     }
     @Override
     public void applyEffectToObject (GameObject gameObject) {
-        PlayerStats.getInstance().setAmountOfProtossCorsairs(quantity);
+        PlayerManager.getInstance().getAllSpaceShips().forEach(spaceShip -> spaceShip.setCorsairCount(1));
     }
 
     public void increaseQuantityOfItem(int amount) {
@@ -38,6 +39,6 @@ public class ProtossCorsairItem extends Item {
             return false;
         }
 
-        return ProtossUtils.canHostMoreProtoss();
+        return ProtossUtils.canHostMoreProtossToRollItems();
     }
 }

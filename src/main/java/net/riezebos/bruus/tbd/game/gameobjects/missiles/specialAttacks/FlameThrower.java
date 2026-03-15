@@ -1,7 +1,7 @@
 package net.riezebos.bruus.tbd.game.gameobjects.missiles.specialAttacks;
 
-import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
+import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SpaceShip;
 import net.riezebos.bruus.tbd.game.items.ItemEnums;
 import net.riezebos.bruus.tbd.game.items.PlayerInventory;
 import net.riezebos.bruus.tbd.game.items.effects.EffectIdentifiers;
@@ -19,7 +19,6 @@ public class FlameThrower extends SpecialAttack {
         this.setObjectType("FlameThrower");
         this.allowRepeatedDamage = true;
         this.appliesOnHitEffects = true;
-        super.internalTickCooldown = PlayerStats.getInstance().getAttackSpeed();
         initIgniteEffect();
         super.damagesMissiles = true;
         super.maxHPDamagePercentageForMissiles = 0.018f;
@@ -45,10 +44,10 @@ public class FlameThrower extends SpecialAttack {
 
     @Override
     public void updateSpecialAttack() {
-        if(this.ownerOrCreator.equals(PlayerManager.getInstance().getSpaceship()) && PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.InfernalPreIgniter) != null){
+        if(this.ownerOrCreator instanceof SpaceShip && PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.InfernalPreIgniter) != null){
             PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.InfernalPreIgniter).applyEffectToObject(this);
         }
-
+        super.internalTickCooldown = this.ownerOrCreator.getAttackSpeed(); //todo dit is eigenlijk een initialize variabele maar owner word gezet na de constructor, code smell
 
 
         if (this.animation.getImageEnum().equals(ImageEnums.FireFighterFlameThrowerAppearing) &&

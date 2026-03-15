@@ -2,6 +2,7 @@ package net.riezebos.bruus.tbd.game.items.effects.effectimplementations;
 
 import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
+import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SpaceShip;
 import net.riezebos.bruus.tbd.game.items.effects.EffectActivationTypes;
 import net.riezebos.bruus.tbd.game.items.effects.EffectIdentifiers;
 import net.riezebos.bruus.tbd.game.items.effects.EffectInterface;
@@ -28,10 +29,12 @@ public class HealPlayerOnDeath implements EffectInterface {
     @Override
     public void activateEffect (GameObject gameObject) {
         if (gameObject.getCurrentHitpoints() <= 0) {
-            if (healShield) {
-                PlayerManager.getInstance().getSpaceship().repairShields(healAmount);
-            } else {
-                PlayerManager.getInstance().getSpaceship().repairHealth(healAmount);
+            for(SpaceShip spaceShip : PlayerManager.getInstance().getAllSpaceShips()){ //todo niet alle spaceships maar de owner van de aanval?
+                if(healShield) {
+                    spaceShip.repairShields(healAmount);
+                } else{
+                    spaceShip.repairHealth(healAmount);
+                }
             }
         }
     }

@@ -29,7 +29,7 @@ public class Energizer extends Enemy {
 		this.destructionAnimation = new SpriteAnimation(destroyedExplosionfiguration);
 
 		this.damage = 15;
-		this.attackSpeed = 7f;
+		this.attackSpeed = 4f;
 //		allowedToFire = true;
 		this.detonateOnCollision = false;
 		this.knockbackStrength = 8;

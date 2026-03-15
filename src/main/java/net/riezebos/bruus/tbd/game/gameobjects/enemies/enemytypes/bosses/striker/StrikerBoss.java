@@ -1,5 +1,6 @@
 package net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.striker;
 
+import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.Enemy;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyConfiguration;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.BossActionable;
@@ -72,11 +73,8 @@ public class StrikerBoss extends Enemy {
     @Override
     public void rotateAfterMovement(){
         //We overwrite the default behaviour because we want to move freely but also keep aiming at the player at all times, unique to this enemy
-        this.rotateGameObjectTowards(
-                PlayerManager.getInstance().getSpaceship().getCenterXCoordinate(),
-                PlayerManager.getInstance().getSpaceship().getCenterYCoordinate(),
-                false
-        );
+        GameObject closestPlayer = PlayerManager.getInstance().getClosestSpaceShip(this);
+        this.rotateGameObjectTowards(closestPlayer.getCenterXCoordinate(), closestPlayer.getCenterYCoordinate(), false);
     }
 
     @Override

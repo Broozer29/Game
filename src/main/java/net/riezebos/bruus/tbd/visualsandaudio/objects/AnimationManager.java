@@ -1,7 +1,6 @@
 package net.riezebos.bruus.tbd.visualsandaudio.objects;
 
 import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
-import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
 import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SpaceShip;
 import net.riezebos.bruus.tbd.game.util.performancelogger.PerformanceLogger;
 import net.riezebos.bruus.tbd.game.util.performancelogger.PerformanceLoggerManager;
@@ -114,8 +113,8 @@ public class AnimationManager {
 		SpriteAnimationConfiguration spriteAnimationConfiguration = new SpriteAnimationConfiguration(spriteConfiguration, 0, false);
 		SpriteAnimation spriteAnimation = new SpriteAnimation(spriteAnimationConfiguration);
 		spriteAnimation.setAnimationScale(0.3f);
-		if(gameObject instanceof SpaceShip) {
-			PlayerManager.getInstance().getSpaceship().addPlayerFollowingAnimation(spriteAnimation);
+		if(gameObject instanceof SpaceShip spaceShip) {
+			spaceShip.addPlayerFollowingAnimation(spriteAnimation);
 			addUpperAnimation(spriteAnimation);
 		}
 	}

@@ -1,12 +1,12 @@
 package net.riezebos.bruus.tbd.game.gameobjects.friendlies;
 
+import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
 import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.Drone;
 import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.droneTypes.DroneTypes;
 import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.droneTypes.MissileDrone;
 import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.droneTypes.SpecialAttackDrone;
 import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.droneTypes.protoss.*;
-import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
-import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
+import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SpaceShip;
 import net.riezebos.bruus.tbd.game.items.effects.effectimplementations.DamageReduction;
 import net.riezebos.bruus.tbd.game.movement.Direction;
 import net.riezebos.bruus.tbd.game.movement.MovementConfiguration;
@@ -20,33 +20,36 @@ import java.util.List;
 
 public class FriendlyCreator {
 
-    public static Drone createDrone() {
+    public static Drone createDrone(GameObject owner) {
+        SpaceShip spaceShip = (SpaceShip) owner;
+
         float scale = (float) 0.5;
         FriendlyObjectEnums friendlyType = FriendlyObjectEnums.Drone;
 
         SpriteConfiguration spriteConfiguration = new SpriteConfiguration();
-        spriteConfiguration.setxCoordinate(PlayerManager.getInstance().getSpaceship().getXCoordinate());
-        spriteConfiguration.setyCoordinate(PlayerManager.getInstance().getSpaceship().getYCoordinate());
+        spriteConfiguration.setxCoordinate(owner.getCenterXCoordinate());
+        spriteConfiguration.setyCoordinate(owner.getCenterYCoordinate());
         spriteConfiguration.setImageType(ImageEnums.Drone);
         spriteConfiguration.setScale(scale);
 
         FriendlyObjectConfiguration friendlyObjectConfiguration = new FriendlyObjectConfiguration(friendlyType,
-                getDroneAttackSpeed(PlayerStats.getInstance().getDroneType()), false);
-        Drone object = FriendlyCreator.createDrone(spriteConfiguration, friendlyObjectConfiguration);
-        object.getMovementConfiguration().setLastKnownTargetX(PlayerManager.getInstance().getSpaceship().getCenterXCoordinate());
-        object.getMovementConfiguration().setLastKnownTargetY(PlayerManager.getInstance().getSpaceship().getCenterYCoordinate());
+                getDroneAttackSpeed(spaceShip.getDroneType()), false);
+        Drone object = FriendlyCreator.createDrone(spriteConfiguration, friendlyObjectConfiguration, spaceShip);
+        object.getMovementConfiguration().setLastKnownTargetX(spaceShip.getCenterXCoordinate());
+        object.getMovementConfiguration().setLastKnownTargetY(spaceShip.getCenterYCoordinate());
         object.getMovementConfiguration().setOrbitRadius(85);
         object.setAllowedVisualsToRotate(false);
+        object.setOwnerOrCreator(spaceShip);
         return object;
     }
 
 
-    private static Drone createDrone(SpriteConfiguration spriteConfiguration, FriendlyObjectConfiguration friendlyObjectConfiguration) {
-        DroneTypes droneTypes = PlayerStats.getInstance().getDroneType();
+    private static Drone createDrone(SpriteConfiguration spriteConfiguration, FriendlyObjectConfiguration friendlyObjectConfiguration, GameObject owner) {
+        SpaceShip spaceShip = (SpaceShip) owner;
+        DroneTypes droneTypes = spaceShip.getDroneType();
         SpriteAnimationConfiguration spriteAnimationConfiguration = new SpriteAnimationConfiguration(spriteConfiguration, 2, true);
         MovementConfiguration movementConfiguration = new MovementConfiguration();
-        movementConfiguration.setPathFinder(new OrbitPathFinder(
-                PlayerManager.getInstance().getSpaceship()));
+        movementConfiguration.setPathFinder(new OrbitPathFinder(spaceShip));
         movementConfiguration.initDefaultSettingsForSpecializedPathFinders();
         movementConfiguration.setXMovementSpeed(droneTypes.getMovementSpeed());
         movementConfiguration.setYMovementSpeed(droneTypes.getMovementSpeed());
@@ -55,27 +58,29 @@ public class FriendlyCreator {
         movementConfiguration.setDirection(Direction.RIGHT);
         movementConfiguration.setOrbitRadius(50);
 
-
+        Drone drone = null;
         switch (droneTypes) {
             case Missile -> {
-                return new MissileDrone(spriteAnimationConfiguration, friendlyObjectConfiguration, movementConfiguration);
+                drone = new MissileDrone(spriteAnimationConfiguration, friendlyObjectConfiguration, movementConfiguration);
             }
             case ElectroShred -> {
-                return new SpecialAttackDrone(spriteAnimationConfiguration, friendlyObjectConfiguration, movementConfiguration, droneTypes);
+                drone = new SpecialAttackDrone(spriteAnimationConfiguration, friendlyObjectConfiguration, movementConfiguration, droneTypes);
             }
             case FireBall -> {
-                return new SpecialAttackDrone(spriteAnimationConfiguration, friendlyObjectConfiguration, movementConfiguration, droneTypes);
+                drone = new SpecialAttackDrone(spriteAnimationConfiguration, friendlyObjectConfiguration, movementConfiguration, droneTypes);
             }
             default -> {
-                return new MissileDrone(spriteAnimationConfiguration, friendlyObjectConfiguration, movementConfiguration);
+                drone = new MissileDrone(spriteAnimationConfiguration, friendlyObjectConfiguration, movementConfiguration);
             }
         }
+        drone.setOwnerOrCreator(owner);
+        return drone;
     }
 
-    public static Drone createProtossShip(DroneTypes droneType) {
+    public static Drone createProtossShip(DroneTypes droneType, GameObject owner) {
         SpriteConfiguration spriteConfiguration = new SpriteConfiguration();
-        spriteConfiguration.setxCoordinate(PlayerManager.getInstance().getSpaceship().getXCoordinate());
-        spriteConfiguration.setyCoordinate(PlayerManager.getInstance().getSpaceship().getYCoordinate());
+        spriteConfiguration.setxCoordinate(owner.getXCoordinate());
+        spriteConfiguration.setyCoordinate(owner.getYCoordinate());
         spriteConfiguration.setScale(getProtossScale(droneType));
         spriteConfiguration.setImageType(droneType.getCorrespondingImageEnum());
 
@@ -91,7 +96,7 @@ public class FriendlyCreator {
         movementConfiguration.setLastUsedXMovementSpeed(droneType.getMovementSpeed());
         movementConfiguration.setLastUsedYMovementSpeed(droneType.getMovementSpeed());
         movementConfiguration.setDirection(Direction.RIGHT);
-        movementConfiguration.setDestination(ProtossUtils.getRandomPoint());
+        movementConfiguration.setDestination(ProtossUtils.getRandomPoint(owner));
         DamageReduction damageReduction = new DamageReduction(9999999, 0.25f, null);
         Drone drone = null;
         switch (droneType) {
@@ -112,12 +117,13 @@ public class FriendlyCreator {
                 //no damage reduction since its a suicide bomber but requires playtesting to see if it actually needs it
             }
         }
+        drone.setOwnerOrCreator(owner);
         return drone;
     }
 
-    public static Drone getCarrierBeacon() {
+    public static Drone getCarrierBeacon(SpaceShip owner) {
         List<Drone> carrierDrones = FriendlyManager.getInstance().getDrones().stream()
-                .filter(drone -> drone instanceof CarrierDrone)
+                .filter(drone -> drone instanceof CarrierBeacon && drone.getOwnerOrCreator().equals(owner))
                 .toList();
 
         if (!carrierDrones.isEmpty()) {
@@ -126,10 +132,10 @@ public class FriendlyCreator {
         return null;
     }
 
-    public static Drone createCarrierBeacon() {
+    public static Drone createCarrierBeacon(GameObject owner) {
         SpriteConfiguration spriteConfiguration = new SpriteConfiguration();
-        spriteConfiguration.setxCoordinate(PlayerManager.getInstance().getSpaceship().getXCoordinate());
-        spriteConfiguration.setyCoordinate(PlayerManager.getInstance().getSpaceship().getYCoordinate());
+        spriteConfiguration.setxCoordinate(owner.getXCoordinate());
+        spriteConfiguration.setyCoordinate(owner.getYCoordinate());
         spriteConfiguration.setScale(getProtossScale(DroneTypes.CarrierDrone));
         spriteConfiguration.setImageType(DroneTypes.CarrierDrone.getCorrespondingImageEnum());
 
@@ -144,7 +150,9 @@ public class FriendlyCreator {
         movementConfiguration.setYMovementSpeed(DroneTypes.CarrierDrone.getMovementSpeed());
         movementConfiguration.setDirection(Direction.RIGHT);
 
-        return new CarrierDrone(spriteAnimationConfiguration, friendlyObjectConfiguration, movementConfiguration);
+        CarrierBeacon carrierBeacon = new CarrierBeacon(spriteAnimationConfiguration, friendlyObjectConfiguration, movementConfiguration);
+        carrierBeacon.setOwnerOrCreator(owner);
+        return carrierBeacon;
     }
 
     private static float getDroneAttackSpeed(DroneTypes droneType) {

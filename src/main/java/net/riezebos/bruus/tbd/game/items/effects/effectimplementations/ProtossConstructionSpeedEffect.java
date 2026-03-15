@@ -1,7 +1,7 @@
 package net.riezebos.bruus.tbd.game.items.effects.effectimplementations;
 
 import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
-import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
+import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SpaceShip;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.items.effects.EffectActivationTypes;
 import net.riezebos.bruus.tbd.game.items.effects.EffectIdentifiers;
@@ -36,8 +36,8 @@ public class ProtossConstructionSpeedEffect implements EffectInterface {
 
     @Override
     public void activateEffect(GameObject gameObject) {
-        if (!appliedToObject) {
-            PlayerStats.getInstance().modifyConstructionBonusSpeedModifier(constructionBonus);
+        if (!appliedToObject && gameObject instanceof SpaceShip spaceShip) {
+            spaceShip.modifyProtossConstructionSpeedModifier(constructionBonus);
             appliedToObject = true;
         }
 
@@ -48,7 +48,9 @@ public class ProtossConstructionSpeedEffect implements EffectInterface {
     }
 
     private void removeEffectsBeforeRemovingEffect(GameObject gameObject) {
-        PlayerStats.getInstance().modifyConstructionBonusSpeedModifier(-constructionBonus);
+        if(gameObject instanceof SpaceShip spaceShip) {
+            spaceShip.modifyProtossConstructionSpeedModifier(-constructionBonus);
+        }
     }
 
 

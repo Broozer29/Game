@@ -44,14 +44,14 @@ public class FlameDetonation extends Item {
 
 
     @Override
-    public void applyEffectToObject (GameObject gameObject) {
+    public void applyEffectToObject (GameObject origin, GameObject gameObject) {
         if (gameObject instanceof AlienBomb) { //AlienBombs should be immune to this
             return;
         }
 
         DormentExplosion dormentExplosion = new DormentExplosion(explosionDamage, ImageEnums.LingeringFlameLooping,
                 DormentExplosionActivationMethods.OnDeath, false, EffectIdentifiers.FlameDetonationDormentExplosion,
-                0, EffectActivationTypes.OnObjectDeath, true);
+                0, EffectActivationTypes.OnObjectDeath, true, origin.getOwnerOrCreator());
         dormentExplosion.setBurningDamage(burningDamage);
         dormentExplosion.setBurningDuration(duration * quantity);
         gameObject.addEffect(dormentExplosion);

@@ -19,7 +19,6 @@ public class FireShield extends SpecialAttack {
         this.appliesOnHitEffects = true;
         this.destroysMissiles = true;
         this.damagesMissiles = true;
-        super.internalTickCooldown = PlayerStats.getInstance().getAttackSpeed();
         this.duration = 4;
         initIgniteEffect();
         gamesecondsStarted = GameState.getInstance().getGameSeconds();
@@ -35,6 +34,8 @@ public class FireShield extends SpecialAttack {
 
     @Override
     public void updateSpecialAttack() {
+        super.internalTickCooldown = this.ownerOrCreator.getAttackSpeed(); //todo dit is eigenlijk een initialize variabele maar owner word gezet na de constructor, code smell
+
         if (this.animation.getImageEnum().equals(ImageEnums.FireFighterFireShieldAppearing) &&
                 this.animation.getCurrentFrame() >= this.animation.getTotalFrames()) {
             this.animation.changeImagetype(ImageEnums.FireFighterFireShield);

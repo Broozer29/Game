@@ -6,7 +6,6 @@ import net.riezebos.bruus.tbd.game.gameobjects.friendlies.FriendlyObjectConfigur
 import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.Drone;
 import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.droneTypes.DroneTypes;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.*;
-import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.items.ItemEnums;
@@ -61,11 +60,12 @@ public class ProtossScout extends Drone {
             this.movementConfiguration.resetMovementPath();
             this.movementConfiguration.setCurrentLocation(new Point(this.getXCoordinate(), this.getYCoordinate()));
             this.setAllowedVisualsToRotate(true);
-            this.movementConfiguration.setDestination(ProtossUtils.getRandomPoint());
-            this.isMovingAroundCarrierDrone = ProtossUtils.carrierDroneIsPresent();
+            this.movementConfiguration.setDestination(ProtossUtils.getRandomPoint(this.ownerOrCreator));
+            this.isMovingAroundCarrierDrone = ProtossUtils.carrierDroneIsPresent(this.ownerOrCreator);
         }
 
-        if(!ProtossUtils.carrierDroneIsPresent() && this.isMovingAroundCarrierDrone){
+
+        if(!ProtossUtils.carrierDroneIsPresent(this.ownerOrCreator) && this.isMovingAroundCarrierDrone){
             immediatlyReturnToCarrier();
         }
 
@@ -81,15 +81,24 @@ public class ProtossScout extends Drone {
         this.movementConfiguration.resetMovementPath();
         this.movementConfiguration.setCurrentLocation(new Point(this.getXCoordinate(), this.getYCoordinate()));
         this.setAllowedVisualsToRotate(true);
-        this.movementConfiguration.setDestination(ProtossUtils.getRandomPoint());
-        this.isMovingAroundCarrierDrone = ProtossUtils.carrierDroneIsPresent();
+        this.movementConfiguration.setDestination(ProtossUtils.getRandomPoint(this.ownerOrCreator));
+        this.isMovingAroundCarrierDrone = ProtossUtils.carrierDroneIsPresent(this.ownerOrCreator);
     }
 
 
+    private double lastGameSecondsCheckedForTarget = 0;
+    private double checkingTargetCooldown = (double) (GameState.getInstance().getDELAY() * 3) / 1000; //every 3 gameticks
 
     public void fireAction () {
-        if(target == null){
+        if(target == null && GameState.getInstance().getGameSeconds() >= lastGameSecondsCheckedForTarget + checkingTargetCooldown){
             target = EnemyManager.getInstance().getClosestEnemyTargetWithinDistance(this.getCenterXCoordinate(), this.getCenterYCoordinate(), attackRange);
+            lastGameSecondsCheckedForTarget = GameState.getInstance().getGameSeconds();
+        }
+
+
+        //Als de eigenaar null is of dood, self-destruct
+        if(this.ownerOrCreator == null || (!this.ownerOrCreator.isVisible() || this.ownerOrCreator.getCurrentHitpoints() <= 0)){
+            this.takeDamage(this.maxHitPoints * 200);
         }
 
         if(target != null){
@@ -144,7 +153,7 @@ public class ProtossScout extends Drone {
 
         float xMovementSpeed = 10f;
         float yMovementSpeed = 10f;
-        float damage = PlayerStats.getInstance().getNormalAttackDamage() * scoutDamageFactor;
+        float damage = PlayerStats.getInstance().getBaseDamage() * scoutDamageFactor;
         Direction rotation = Direction.RIGHT;
         MovementPatternSize movementPatternSize = MovementPatternSize.SMALL;
         PathFinder pathFinder = new StraightLinePathFinder();
@@ -185,7 +194,7 @@ public class ProtossScout extends Drone {
         super.triggerOnDeathActions();
         if(PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.EmergencyRepairs) != null){
             EmergencyRepairs emergencyRepairs = (EmergencyRepairs) PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.EmergencyRepairs);
-            emergencyRepairs.applyEffectToObject(PlayerManager.getInstance().getSpaceship());
+            emergencyRepairs.applyEffectToObject(this.ownerOrCreator);
         }
 
         if(PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.VengeanceProtocol) != null){

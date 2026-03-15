@@ -45,7 +45,7 @@ public class RallyTheFleet extends Item {
         SpriteAnimation spriteAnimation = new SpriteAnimation(spriteAnimationConfiguration);
         spriteAnimation.setCenterCoordinates(carrierDrone.getCenterXCoordinate(), carrierDrone.getCenterYCoordinate());
 
-        List<Drone> ships = FriendlyManager.getInstance().getAllProtossDrones();
+        List<Drone> ships = FriendlyManager.getInstance().getAllProtossDrones(carrierDrone.getOwnerOrCreator());
         carrierDrone.getAnimation().recalculateBoundsAndSize();
 
         for(Drone protoss : ships){

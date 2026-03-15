@@ -8,6 +8,7 @@ import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.BossAct
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.laserbeams.Laserbeam;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
+import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SpaceShip;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.gamestate.GameStatsTracker;
 import net.riezebos.bruus.tbd.game.items.PlayerInventory;
@@ -161,11 +162,14 @@ public class TwinBoss extends Enemy {
     @Override
     public void rotateAfterMovement() {
         if (this.isAllowedVisualsToRotate()) {
-            this.rotateGameObjectTowards(
-                    PlayerManager.getInstance().getSpaceship().getCenterXCoordinate(),
-                    PlayerManager.getInstance().getSpaceship().getCenterYCoordinate(),
-                    true
-            );
+            SpaceShip spaceShip = PlayerManager.getInstance().getClosestSpaceShip(this);
+            if(spaceShip != null){
+                this.rotateGameObjectTowards(
+                        spaceShip.getCenterXCoordinate(),
+                        spaceShip.getCenterYCoordinate(),
+                        true
+                );
+            }
         }
     }
 

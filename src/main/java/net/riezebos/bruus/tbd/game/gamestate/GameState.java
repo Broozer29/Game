@@ -1,5 +1,6 @@
 package net.riezebos.bruus.tbd.game.gamestate;
 
+import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
 import net.riezebos.bruus.tbd.game.gamestate.save.SaveFile;
 import net.riezebos.bruus.tbd.game.level.LevelManager;
 import net.riezebos.bruus.tbd.game.level.directors.GodRunDetector;
@@ -51,7 +52,7 @@ public class GameState {
     private int testingVariableBonus = 0;
 
     public void updateDifficultyCoefficient() {
-        float playerFactor = 1;
+        float playerFactor = 1 + (PlayerManager.getInstance().getPlayerCount() - 1) * 0.15f; //15% extra for each player
         float baseTimeFactor = 0.0736f; // Base factor for time, at LevelManager difficulty 2
         float maxTimeFactor = 0.1275f;   // Maximum time factor for LevelManager difficulty 6
         float stageFactor = 1.05f;          // Exponential growth for each stage completed
@@ -64,7 +65,7 @@ public class GameState {
 
         float godRunBonus = GodRunDetector.getInstance().getGodRunScore() >= 3 ? 1.2f : 1;
         // Calculate the additional difficulty increment
-        float increment = (float)((timeInMinutes * timeFactor) * stageFactor) + testingVariableBonus * godRunBonus;
+        float increment = (float)((timeInMinutes * timeFactor) * stageFactor) + testingVariableBonus * godRunBonus * playerFactor;
 
         if (testingVariableBonus > 0) {
             System.out.println("Adding additional difficulty coefficient in GameStateInfo.");

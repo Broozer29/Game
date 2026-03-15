@@ -62,7 +62,10 @@ public class RedBossBurstMainAttackBossBehaviour implements BossActionable {
             boolean canFireAgain = currentTime >= lastSingleShotAttackTime + intermittenAttackCooldown;
             if (burstShotsFired < amountOfShotsPerBurst && canFireAgain) {
                 // Fire a missile and update lastAttackTime
-                fireMissile(enemy);
+
+                for(SpaceShip spaceShip : PlayerManager.getInstance().getAllSpaceShips()){
+                    fireMissile(enemy, spaceShip);
+                }
                 burstShotsFired++;
                 lastSingleShotAttackTime = currentTime;
 
@@ -97,12 +100,12 @@ public class RedBossBurstMainAttackBossBehaviour implements BossActionable {
         chargingAttackAnimation.setCenterCoordinates(enemy.getXCoordinate(), enemy.getCenterYCoordinate());
     }
 
-    private void fireMissile (Enemy enemy) {
-        Missile missile = createMissile(enemy);
+    private void fireMissile (Enemy enemy, SpaceShip spaceShip) {
+        Missile missile = createMissile(enemy, spaceShip);
         MissileManager.getInstance().addExistingMissile(missile);
     }
 
-    private Missile createMissile (Enemy enemy) {
+    private Missile createMissile (Enemy enemy, SpaceShip spaceship) {
         MissileEnums missileType = MissileEnums.DefaultLaserBullet;
         SpriteConfiguration spriteConfiguration = MissileCreator.getInstance().createMissileSpriteConfig(
                 enemy.getXCoordinate(), enemy.getCenterYCoordinate(),
@@ -135,7 +138,6 @@ public class RedBossBurstMainAttackBossBehaviour implements BossActionable {
         Missile missile = MissileCreator.getInstance().createMissile(spriteConfiguration, missileConfiguration, movementConfiguration);
 
         //get the coordinates for rotation of the missile
-        SpaceShip spaceship = PlayerManager.getInstance().getSpaceship();
         Point rotationCoordinates = new Point(
                 spaceship.getCenterXCoordinate() - missile.getWidth() / 2,
                 spaceship.getCenterYCoordinate() - missile.getHeight() / 2 + 4
