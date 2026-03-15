@@ -11,6 +11,7 @@ public enum GameStatusEnums {
 	Zoning_Out, // Ending a level, fade away
 	Show_Level_Score_Card,
 	Transition_To_Next_Stage,
+	SelectingRelic,
 	Shopping,
 	Paused,
 }

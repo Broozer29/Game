@@ -1,8 +1,8 @@
 package net.riezebos.bruus.tbd.guiboards.boards;
 
-import net.riezebos.bruus.tbd.controllerInput.ConnectedControllersManager;
 import net.riezebos.bruus.tbd.controllerInput.ControllerInputEnums;
 import net.riezebos.bruus.tbd.controllerInput.ControllerInputReader;
+import net.riezebos.bruus.tbd.controllerInput.ControllerManager;
 import net.riezebos.bruus.tbd.game.gameobjects.player.boons.Boon;
 import net.riezebos.bruus.tbd.game.gameobjects.player.boons.BoonEnums;
 import net.riezebos.bruus.tbd.game.gameobjects.player.boons.BoonManager;
@@ -39,7 +39,7 @@ import java.util.List;
 public class BoonSelectionBoard extends JPanel implements TimerHolder {
     private BackgroundManager backgroundManager = BackgroundManager.getInstance();
     private AnimationManager animationManager = AnimationManager.getInstance();
-    private ConnectedControllersManager controllers = ConnectedControllersManager.getInstance();
+    private ControllerManager controllers = ControllerManager.getInstance();
     private MenuCursor menuCursor;
 
     private List<GUIComponent> firstColumn = new ArrayList<>();
@@ -117,7 +117,7 @@ public class BoonSelectionBoard extends JPanel implements TimerHolder {
         }
 
         initMenuTiles();
-        timer = new Timer(GameState.getInstance().getDELAY(), e -> repaint(0, 0, DataClass.getInstance().getWindowWidth(), DataClass.getInstance().getWindowHeight()));
+        timer = new Timer(GameState.getInstance().getDELAY(), e -> repaint(0, 0, DataClass.getInstance().getWindowWidth(), DataClass.getInstance().getWindowHeight() + 5));
         timer.start();
     }
 

@@ -1,8 +1,6 @@
 package net.riezebos.bruus.tbd.game.items.effects.effectimplementations;
 
 import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
-import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
-import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SpaceShip;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.items.effects.EffectActivationTypes;
 import net.riezebos.bruus.tbd.game.items.effects.EffectIdentifiers;
@@ -39,11 +37,7 @@ public class DamageModifierEffect implements EffectInterface {
     @Override
     public void activateEffect(GameObject gameObject) {
         if (!appliedToObject) {
-            if (gameObject instanceof SpaceShip) {
-                PlayerStats.getInstance().modifyBonusDamageMultiplier(damageModifierAmount);
-            } else {
-                gameObject.modifyBonusDamageMultiplier(damageModifierAmount);
-            }
+            gameObject.modifyBonusDamageMultiplier(damageModifierAmount);
             appliedToObject = true;
         }
 
@@ -57,14 +51,7 @@ public class DamageModifierEffect implements EffectInterface {
         if (gameObject == null) {
             return;
         }
-
-        if (gameObject instanceof SpaceShip) {
-            PlayerStats.getInstance().modifyBonusDamageMultiplier(-damageModifierAmount);
-        } else if (gameObject.isFriendly()) {
-            gameObject.modifyBonusDamageMultiplier(-damageModifierAmount);
-        } else {
-            gameObject.modifyBonusDamageMultiplier(-damageModifierAmount);
-        }
+        gameObject.modifyBonusDamageMultiplier(-damageModifierAmount);
 
     }
 

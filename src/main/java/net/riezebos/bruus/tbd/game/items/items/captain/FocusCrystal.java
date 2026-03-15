@@ -3,8 +3,8 @@ package net.riezebos.bruus.tbd.game.items.items.captain;
 import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
 import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.Drone;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerClass;
-import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
+import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SpaceShip;
 import net.riezebos.bruus.tbd.game.items.Item;
 import net.riezebos.bruus.tbd.game.items.ItemEnums;
 import net.riezebos.bruus.tbd.game.items.enums.ItemApplicationEnum;
@@ -33,7 +33,7 @@ public class FocusCrystal extends Item {
         if (ownerOrCreator == null) {
             return false;
         }
-        if (ownerOrCreator.equals(PlayerManager.getInstance().getSpaceship())) {
+        if (ownerOrCreator instanceof SpaceShip) {
             return true;
         }
         return (ownerOrCreator instanceof Drone drone && drone.isProtoss());
@@ -76,7 +76,7 @@ public class FocusCrystal extends Item {
             return false;
         }
 
-        if(PlayerStats.getInstance().getPlayerClass().equals(PlayerClass.Captain) || PlayerStats.getInstance().getPlayerClass().equals(PlayerClass.Carrier)){
+        if(PlayerStats.getInstance().getPlayerClass().equals(PlayerClass.Captain)){
             return true;
         }
         return false;

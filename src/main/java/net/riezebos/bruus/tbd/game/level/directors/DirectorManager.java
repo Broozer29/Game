@@ -3,6 +3,7 @@ package net.riezebos.bruus.tbd.game.level.directors;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyCategory;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyEnums;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyTribes;
+import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
 import net.riezebos.bruus.tbd.game.gamestate.GameMode;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.level.LevelManager;
@@ -149,9 +150,12 @@ public class DirectorManager {
         }
     }
 
+
     public void distributeCredits() {
         GameState gameStateInfo = GameState.getInstance();
-        float creditAmount = (float) ((0.5f + 0.025 * gameStateInfo.getDifficultyCoefficient())) + (LevelManager.getInstance().getCurrentLevelDifficultyScore() * 0.35f); // Determine the amount of credits to distribute
+        float creditAmount = (float) ((0.425f + 0.025 * gameStateInfo.getDifficultyCoefficient())) + (LevelManager.getInstance().getCurrentLevelDifficultyScore() * 0.35f); // Determine the amount of credits to distribute
+        creditAmount *= 1 + (PlayerManager.getInstance().getPlayerCount() * 0.15f);
+
 
         if (godRunDetector.getGodRunScore() >= 1) {
             if(godRunDetector.getGodRunScore() >= 3){

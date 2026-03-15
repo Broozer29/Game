@@ -61,17 +61,51 @@ public class SpaceShip extends GameObject {
     public boolean allowMovementBeyondBoundaries = false;
     private double lastTimeCollisionDamageTaken = 0;
 
+
+    private float attackSpeedModifier = 1f;
+    private float critDamageModifier = 2f;
+    private float movementSpeedModifier = 1f;
+    private float specialAttackRechargeCooldownBonusModifier = 0;
+    private float specialAttackDamageModifier = 1f;
+    private float protossConstructionSpeedModifier = 1f;
+    private float thornsDamageModifier = 0f; //starting at 0 causes thorns to be disabled by default
+    private float igniteDamageModifier = 1f;
+    private float droneDamageModifier = 1f;
+    private float maxShieldModifier = 1;
+    private float maxOverloadedShieldModifier = 2;
+    private int maxSpecialAttackCharges = 1;
+    private float specialAttackRechargeCooldownModifier = 1f;
+    private float shieldRegenModifier = 1;
+    private boolean continueShieldRegenThroughDamage = false;
+
+    private float igniteDurationModifier = 1;
+    private float fuelCannisterUsageModifier = 1;
+    private float fuelCannisterMaxCapacityModifier = 1;
+    private float fuelCannisterRegenModifier = 1;
+
+    private int droneOrbitRadius = 85;
+    private DroneTypes droneTypes = DroneTypes.Missile;
+
+    private ControllerInputReader controllerInputReader;
+
     public SpaceShip(SpriteConfiguration spriteConfiguration) {
         super(spriteConfiguration);
         playerStats = PlayerStats.getInstance();
         initShip();
     }
 
+    public SpaceShip(SpriteConfiguration spriteConfiguration, ControllerInputReader controllerInputReader) {
+        super(spriteConfiguration);
+        playerStats = PlayerStats.getInstance();
+        this.controllerInputReader = controllerInputReader;
+        initShip();
+    }
+
     //This method should only be used to bring the player back after dying, not as a general "reset"
-    public void reviveSpaceShip(){
+    // currently disabled because stuivie is disabled
+    public void reviveSpaceShip() {
         boolean shouldLoadEngineAnim = (this.exhaustAnimation != null && this.exhaustAnimation.isVisible()) ? false : true;
         if (PlayerStats.getInstance().getPlayerClass().equals(PlayerClass.Carrier)) {
-            this.baseArmor += PlayerStats.getInstance().getCarrierBaseArmor();
             SpriteConfiguration spriteConfiguration = new SpriteConfiguration();
             spriteConfiguration.setImageType(ImageEnums.ProtossCarrier);
             spriteConfiguration.setxCoordinate(this.xCoordinate);
@@ -108,11 +142,11 @@ public class SpaceShip extends GameObject {
         this.accumulatedXCoordinate = this.xCoordinate;
         this.knockbackDamping = playerStats.getKnockBackDamping();
         pressedKeys = new HashSet<>();
-        this.baseArmor += PlayerStats.getInstance().getBaseArmor();
+        this.baseArmor = 0 + PlayerStats.baseArmor;
+        this.attackSpeed = PlayerStats.getInstance().getBaseAttackSpeed();
 
         boolean shouldLoadEngineAnim = true;
         if (PlayerStats.getInstance().getPlayerClass().equals(PlayerClass.Carrier)) {
-            this.baseArmor += PlayerStats.getInstance().getCarrierBaseArmor();
             SpriteConfiguration spriteConfiguration = new SpriteConfiguration();
             spriteConfiguration.setImageType(ImageEnums.ProtossCarrier);
             spriteConfiguration.setxCoordinate(this.xCoordinate);
@@ -150,11 +184,6 @@ public class SpaceShip extends GameObject {
     }
 
     private void applyOnCreationEffects() {
-        for (Item item : PlayerInventory.getInstance().getItemsByApplicationMethod(ItemApplicationEnum.ApplyOnCreation)) {
-            item.applyEffectToObject(this);
-        }
-
-
         if (PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.FocusCrystal) != null) {
             SpriteConfiguration focusCrystalConfig = new SpriteConfiguration();
             focusCrystalConfig.setxCoordinate(getXCoordinate());
@@ -178,17 +207,22 @@ public class SpaceShip extends GameObject {
     private void postCreationActivities() {
         //This method exists because some managers or methods REQUIRE the spaceship to have finished initializing
         if (!firedPostCreationEffects) {
+            //todo deze is verplaatst uit applyOnCreationEffects dus dit kan buggy gevolgen hebben maar multiplayer he....
+            for (Item item : PlayerInventory.getInstance().getItemsByApplicationMethod(ItemApplicationEnum.ApplyOnCreation)) {
+                item.applyEffectToObject(this);
+            }
+
             for (int i = 0; i < playerStats.getAmountOfDrones(); i++) {
-                FriendlyManager.getInstance().addDrone();
+                FriendlyManager.getInstance().addDrone(this);
             }
 
             if (PlayerStats.getInstance().getPlayerClass().equals(PlayerClass.Carrier)) {
                 for (int i = 0; i < 2; i++) {
-                    FriendlyManager.getInstance().addProtossShip(DroneTypes.ProtossScout);
+                    FriendlyManager.getInstance().addProtossShip(DroneTypes.ProtossScout, this);
                 }
             }
 
-            OrbitingObjectsFormatter.reformatOrbitingObjects(this, PlayerStats.getInstance().getDroneOrbitRadius());
+            OrbitingObjectsFormatter.reformatOrbitingObjects(this, this.getDroneOrbitRadius());
             firedPostCreationEffects = true;
         }
     }
@@ -235,7 +269,7 @@ public class SpaceShip extends GameObject {
             lastGameSecondDamageTaken = GameState.getInstance().getGameSeconds();
             this.currentShieldRegenDelayFrame = 0;
 
-            if(PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.GlassCannon) != null){
+            if (PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.GlassCannon) != null) {
                 damageTaken *= 2f;
             }
 
@@ -275,7 +309,7 @@ public class SpaceShip extends GameObject {
 
     public void changeShieldHitpoints(float change) {
         this.currentShieldPoints += change;
-        float maxShieldPoints = playerStats.getMaxShieldHitPoints() * playerStats.getMaxOverloadingShieldMultiplier();
+        float maxShieldPoints = playerStats.getMaxShieldHitPoints() * this.maxShieldModifier;
         if (currentShieldPoints > (maxShieldPoints)) {
             currentShieldPoints = maxShieldPoints;
         }
@@ -287,11 +321,22 @@ public class SpaceShip extends GameObject {
         }
     }
 
+
+
+    public boolean isAllowedToBuildProtoss = true;
+    public float protossShipBuilderTimer = 0.0f;
+    public float protossShipBuildTime = 5;
+    public float overBuildResidu = 0;
+    private int scoutCount = PlayerStats.getDefaultCarrierStartingScouts();
+    private int corsairCount = 0;
+    private int arbiterCount = 0;
+    private int shuttleCount = 0;
+
     public void updateGameTick() {
         this.currentShieldRegenDelayFrame++;
         postCreationActivities();
-        primaryPlayerGun.updateFrameCount();
-        spaceShipSpecialGun.updateFrameCount();
+        primaryPlayerGun.updateFrameCount(this);
+        spaceShipSpecialGun.updateFrameCount(this);
 
         movePlayerAnimations();
         moveSpecialAttacks();
@@ -300,23 +345,20 @@ public class SpaceShip extends GameObject {
         reduceOverloadedShieldPoints();
 
         if (PlayerStats.getInstance().getPlayerClass().equals(PlayerClass.Carrier)) {
-            ProtossUtils.getInstance().buildProtossShips();
+            ProtossUtils.getInstance().buildProtossShips(this);
         }
 
         boolean shouldRegenShields = false;
 
-        if (PlayerStats.getInstance().isContinueShieldRegenThroughDamage() && currentShieldPoints < playerStats.getMaxShieldHitPoints()) {
+        if (this.isContinueShieldRegenThroughDamage() && currentShieldPoints < playerStats.getMaxShieldHitPoints()) {
             shouldRegenShields = true;
         } else if (currentShieldRegenDelayFrame >= playerStats.getShieldRegenDelay() && currentShieldPoints < playerStats.getMaxShieldHitPoints()) {
             shouldRegenShields = true;
         }
 
         if (shouldRegenShields) {
-            repairShields(PlayerStats.getInstance().getShieldRegenPerTick());
-//            repairHealth(0.4f);
+            repairShields(PlayerStats.getInstance().getShieldRegenPerTick() * shieldRegenModifier);
         }
-
-
     }
 
 
@@ -327,14 +369,7 @@ public class SpaceShip extends GameObject {
     }
 
     private void removeInvisibleAnimations() {
-        Iterator<SpriteAnimation> iterator = playerFollowingAnimations.iterator();
-        while (iterator.hasNext()) {
-            SpriteAnimation animation = iterator.next();
-            if (!animation.isVisible()) {
-                iterator.remove();
-            }
-        }
-
+        playerFollowingAnimations.removeIf(animation -> !animation.isVisible());
     }
 
 
@@ -377,7 +412,7 @@ public class SpaceShip extends GameObject {
 
 
         KineticDynamo kineticDynamo = (KineticDynamo) PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.KineticDynamo);
-        if(kineticDynamo != null){
+        if (kineticDynamo != null) {
             kineticDynamo.buildUpEnergy(directionx, directiony);
         }
 
@@ -478,7 +513,7 @@ public class SpaceShip extends GameObject {
     }
 
     @Override
-    public void setCenterCoordinates(int newXCoordinate, int newYCoordinate){
+    public void setCenterCoordinates(int newXCoordinate, int newYCoordinate) {
         super.setCenterCoordinates(newXCoordinate, newYCoordinate);
         this.previousAccumulatedY = this.yCoordinate;
         this.previousAccumulatedX = this.xCoordinate;
@@ -573,8 +608,19 @@ public class SpaceShip extends GameObject {
 
     // Launch a missile from the center point of the spaceship
     private void startPrimaryFiring() {
-        primaryPlayerGun.fire(this.xCoordinate + this.width, this.getCenterYCoordinate(),
-                playerStats.getAttackType());
+        primaryPlayerGun.fire(this.xCoordinate + this.width, this.getCenterYCoordinate(), playerStats.getAttackType(), this);
+    }
+
+    public float getDamage() {
+        float attackDamage = PlayerStats.getInstance().getBaseDamage() * this.bonusDamageMultiplier;
+        if (isACrit && this.isFriendly()) {
+            attackDamage *= critDamageModifier;
+        }
+        if (attackDamage < 0.05) {
+            return 0.05f;
+        } else {
+            return attackDamage;
+        }
     }
 
     private void haltPrimaryFiring() {
@@ -583,7 +629,7 @@ public class SpaceShip extends GameObject {
 
     private void fireSpecialAttack() {
         spaceShipSpecialGun.fire(this.getCenterXCoordinate(), this.getCenterYCoordinate(),
-                playerStats.getPlayerSpecialAttackType());
+                playerStats.getPlayerSpecialAttackType(), this);
     }
 
     public void repairHealth(float healAmount) {
@@ -635,7 +681,11 @@ public class SpaceShip extends GameObject {
                     case (KeyEvent.VK_ENTER):
                         fireSpecialAttack();
                         break;
-//                    case (KeyEvent.VK_SHIFT):
+                    case (KeyEvent.VK_SHIFT):
+                        if (DevTestSettings.alloweSuicidebutton && GameState.getInstance().getGameState() == GameStatusEnums.Playing) {
+                            this.takeDamage(1000000000f);
+                        }
+                        break;
                     case (KeyEvent.VK_Y):
                         spawnPortal();
                         break;
@@ -645,7 +695,7 @@ public class SpaceShip extends GameObject {
     }
 
     //Cheat code method
-    private void spawnPortal(){
+    private void spawnPortal() {
         DirectorManager.getInstance().setEnabled(false);
         GameState.getInstance().setGameState(GameStatusEnums.Level_Finished);
     }
@@ -674,7 +724,7 @@ public class SpaceShip extends GameObject {
     // Called by GameBoard every loop if a controller is connected
     private boolean isFiringPrimary = false;
 
-    public void update(ControllerInputReader controllerInputReader) {
+    public void update() {
         controlledByKeyboard = false;
         controllerInputReader.pollController();
 
@@ -712,7 +762,7 @@ public class SpaceShip extends GameObject {
     }
 
     private void moveLeftQuick(float multiplier) {
-        directionx = -(Math.abs(multiplier) * playerStats.getMovementSpeed());
+        directionx = -(Math.abs(multiplier) * this.getMovementSpeed());
     }
 
     private void haltMoveLeft() {
@@ -721,7 +771,7 @@ public class SpaceShip extends GameObject {
 
 
     private void moveRightQuick(float multiplier) {
-        directionx = Math.abs(multiplier) * playerStats.getMovementSpeed();
+        directionx = Math.abs(multiplier) * this.getMovementSpeed();
     }
 
     private void haltMoveRight() {
@@ -730,7 +780,7 @@ public class SpaceShip extends GameObject {
 
 
     private void moveUpQuick(float multiplier) {
-        directiony = -(Math.abs(multiplier) * playerStats.getMovementSpeed());
+        directiony = -(Math.abs(multiplier) * this.getMovementSpeed());
     }
 
     private void haltMoveUp() {
@@ -739,7 +789,7 @@ public class SpaceShip extends GameObject {
 
 
     private void moveDownQuick(float multiplier) {
-        directiony = Math.abs(multiplier) * playerStats.getMovementSpeed();
+        directiony = Math.abs(multiplier) * this.getMovementSpeed();
     }
 
     private void haltMoveDown() {
@@ -784,5 +834,225 @@ public class SpaceShip extends GameObject {
 
     public void setLastTimeCollisionDamageTaken(double lastTimeCollisionDamageTaken) {
         this.lastTimeCollisionDamageTaken = lastTimeCollisionDamageTaken;
+    }
+
+    public float getAttackSpeedModifier() {
+        return attackSpeedModifier;
+    }
+
+    public void modifyAttackSpeedModifier(float attackSpeedModifier) {
+        this.attackSpeedModifier += attackSpeedModifier;
+    }
+
+    public float getMovementSpeedModifier() {
+        return movementSpeedModifier;
+    }
+
+    public void modifyMovementSpeedModifier(float movementSpeedModifier) {
+        this.movementSpeedModifier += movementSpeedModifier;
+    }
+
+    public float getProtossConstructionSpeedModifier() {
+        return protossConstructionSpeedModifier;
+    }
+
+    public void modifyProtossConstructionSpeedModifier(float protossConstructionSpeedModifier) {
+        this.protossConstructionSpeedModifier += protossConstructionSpeedModifier;
+    }
+
+    public float getSpecialAttackRechargeCooldownBonusModifier() {
+        return specialAttackRechargeCooldownBonusModifier;
+    }
+
+    public void modifySpecialAttackRechargeCooldownBonusModifier(float specialAttackRechargeCooldownBonusModifier) {
+        this.specialAttackRechargeCooldownBonusModifier += specialAttackRechargeCooldownBonusModifier;
+    }
+
+    public float getThornsDamageModifier() {
+        return thornsDamageModifier;
+    }
+
+    public void modifyThornsDamageModifier(float thornsDamageModifier) {
+        this.thornsDamageModifier += thornsDamageModifier;
+    }
+
+    public float getIgniteDamageModifier() {
+        return igniteDamageModifier;
+    }
+
+    public void modifyIgniteDamageModifier(float igniteDamageModifier) {
+        this.igniteDamageModifier += igniteDamageModifier;
+    }
+
+    public float getDroneDamageModifier() {
+        return this.droneDamageModifier;
+    }
+
+    public void modifyDroneDamageModifier(float droneDamageModifier) {
+        this.droneDamageModifier += droneDamageModifier;
+    }
+
+    public float getMovementSpeed() {
+        if(PlayerStats.getInstance().getPlayerClass().equals(PlayerClass.Carrier)){
+            return 2.5f * this.movementSpeedModifier; //todo voor de carrier move speed is dit een hele dirty hack
+        }
+
+        return PlayerStats.baseMoveSpeed * this.movementSpeedModifier;
+    }
+
+    public void modifyMaxShieldMultiplier(float modifier) {
+        this.maxShieldModifier += modifier;
+    }
+
+    //deprecated
+    public void modifyMaxOverloadingShieldMultiplier(float modifier) {
+        this.maxOverloadedShieldModifier += modifier;
+    }
+
+    public int getMaxSpecialAttackCharges() {
+        return maxSpecialAttackCharges;
+    }
+
+    public void setMaxSpecialAttackCharges(int maxSpecialAttackCharges) {
+        this.maxSpecialAttackCharges = maxSpecialAttackCharges;
+    }
+
+    public void modifySpecialAttackRechargeCooldown(float v) {
+        this.specialAttackRechargeCooldownModifier += v;
+    }
+
+    public float getSpecialAttackRechargeCooldownModifier() {
+        return specialAttackRechargeCooldownModifier;
+    }
+
+    public float getSpecialAttackDamage() {
+        return ((PlayerStats.getInstance().getBaseDamage() * this.specialAttackDamageModifier) * this.bonusDamageMultiplier);
+    }
+
+    public void modifySpecialAttackDamageModifier(float modifier) {
+        this.specialAttackDamageModifier += modifier;
+    }
+
+    public void modifyFuelCannisterUsageMultiplier(float modifier) {
+        this.fuelCannisterUsageModifier += modifier;
+    }
+
+    public float getFuelCannisterUsageModifier() {
+        return fuelCannisterUsageModifier;
+    }
+
+    public void modifyFuelCannisterMaxCapacityModifier(float modifier) {
+        this.fuelCannisterMaxCapacityModifier += modifier;
+    }
+
+    public float getFuelCannisterMaxCapacityModifier() {
+        return fuelCannisterMaxCapacityModifier;
+    }
+
+    public void modifyFuelCannisterRegenMultiplier(float modifier) {
+        this.fuelCannisterRegenModifier += modifier;
+    }
+
+    public float getFuelCannisterRegenModifier() {
+        return fuelCannisterRegenModifier;
+    }
+
+    public void modifyDroneOrbitRadius(float modifier){
+        this.droneOrbitRadius += modifier;
+    }
+
+    public float getDroneOrbitRadius(){
+        return droneOrbitRadius;
+    }
+
+    public void setDroneType(DroneTypes droneTypes){
+        this.droneTypes = droneTypes;
+    }
+
+    public DroneTypes getDroneType(){
+        return droneTypes;
+    }
+
+    public void modifyShieldRegenModifier(float modifier){
+        this.shieldRegenModifier += modifier;
+    }
+
+    public float getShieldRegenModifier(){
+        return shieldRegenModifier;
+    }
+
+    public boolean isContinueShieldRegenThroughDamage() {
+        return continueShieldRegenThroughDamage;
+    }
+
+    public void setContinueShieldRegenThroughDamage(boolean continueShieldRegenThroughDamage) {
+        this.continueShieldRegenThroughDamage = continueShieldRegenThroughDamage;
+    }
+
+    public void modifyIgniteDurationModifier(float modifier) {
+        this.igniteDurationModifier += modifier;
+    }
+
+    public float getIgniteDurationModifier(){
+        return this.igniteDurationModifier;
+    }
+
+    public void modifyCritDamageModifier(float modifier){
+        this.critDamageModifier += modifier;
+    }
+
+    public float getCritDamageModifier() {
+        return this.critDamageModifier;
+    }
+
+    public float getProtossShipBuilderTimer() {
+        return protossShipBuilderTimer;
+    }
+
+    public float getProtossShipBuildTime() {
+        return protossShipBuildTime;
+    }
+    public int getShuttleCount() {
+        return shuttleCount;
+    }
+
+    public void setShuttleCount(int shuttleCount) {
+        this.shuttleCount = shuttleCount;
+    }
+
+    public int getArbiterCount() {
+        return arbiterCount;
+    }
+
+    public void setArbiterCount(int arbiterCount) {
+        this.arbiterCount = arbiterCount;
+    }
+
+    public int getCorsairCount() {
+        return corsairCount;
+    }
+
+    public void setCorsairCount(int corsairCount) {
+        this.corsairCount = corsairCount;
+    }
+
+    public int getScoutCount() {
+        return scoutCount;
+    }
+
+    public void setScoutCount(int scoutCount) {
+        this.scoutCount = scoutCount;
+    }
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        SpaceShip spaceShip = (SpaceShip) o;
+        return Objects.equals(controllerInputReader, spaceShip.controllerInputReader);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), controllerInputReader);
     }
 }

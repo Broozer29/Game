@@ -3,40 +3,30 @@ package net.riezebos.bruus.tbd.game.items.items.firefighter;
 import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerClass;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
+import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SpaceShip;
 import net.riezebos.bruus.tbd.game.items.Item;
 import net.riezebos.bruus.tbd.game.items.ItemEnums;
 import net.riezebos.bruus.tbd.game.items.enums.ItemApplicationEnum;
 
 public class StickyOil extends Item {
 
-    private boolean shouldApply;
     public static float bonusDurationMultiplier = 0.4f;
 
     public StickyOil(){
         super(ItemEnums.StickyOil, 1,  ItemApplicationEnum.ApplyOnCreation);
-        shouldApply = true;
     }
 
     @Override
     public void applyEffectToObject(GameObject gameObject){
-        if(shouldApply) {
-            PlayerStats.getInstance().modifyIgniteDurationModifier(this.quantity * bonusDurationMultiplier);
-            shouldApply = false;
+        if(gameObject instanceof SpaceShip spaceShip) {
+            spaceShip.modifyIgniteDurationModifier(this.quantity * bonusDurationMultiplier);
         }
     }
 
-    private void removeEffect(){
-        if(quantity > 0) {
-            PlayerStats.getInstance().modifyIgniteDurationModifier(-(this.quantity * bonusDurationMultiplier));
-        }
-    }
 
     @Override
     public void increaseQuantityOfItem (int amount) {
-        shouldApply = true;
-        removeEffect();
         this.quantity += amount;
-        applyEffectToObject(null);
     }
 
     @Override

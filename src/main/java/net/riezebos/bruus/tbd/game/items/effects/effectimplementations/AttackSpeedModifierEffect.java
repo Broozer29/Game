@@ -1,8 +1,6 @@
 package net.riezebos.bruus.tbd.game.items.effects.effectimplementations;
 
 import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
-import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
-import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SpaceShip;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.items.effects.EffectActivationTypes;
 import net.riezebos.bruus.tbd.game.items.effects.EffectIdentifiers;
@@ -42,12 +40,7 @@ public class AttackSpeedModifierEffect implements EffectInterface {
     public void activateEffect(GameObject gameObject) {
         if (!appliedToObject) {
             float percentageChange = attackSpeedModifierAmount * 100;
-
-            if (gameObject instanceof SpaceShip) {
-                PlayerStats.getInstance().modifyAttackSpeedBonus(percentageChange);
-            } else {
-                gameObject.modifyAttackSpeedBonus(percentageChange);
-            }
+            gameObject.modifyAttackSpeedBonus(percentageChange);
             appliedToObject = true;
         }
 
@@ -62,11 +55,7 @@ public class AttackSpeedModifierEffect implements EffectInterface {
         }
 
         float percentageChange = -(attackSpeedModifierAmount * 100);
-        if (gameObject instanceof SpaceShip) {
-            PlayerStats.getInstance().modifyAttackSpeedBonus(percentageChange);
-        } else {
-            gameObject.modifyAttackSpeedBonus(percentageChange);
-        }
+        gameObject.modifyAttackSpeedBonus(percentageChange);
 
         appliedToObject = false;
     }

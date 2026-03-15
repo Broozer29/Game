@@ -3,6 +3,7 @@ package net.riezebos.bruus.tbd.game.items.items.carrier;
 import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
 import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.droneTypes.protoss.ProtossUtils;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerClass;
+import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
 import net.riezebos.bruus.tbd.game.items.Item;
 import net.riezebos.bruus.tbd.game.items.ItemEnums;
@@ -11,13 +12,13 @@ import net.riezebos.bruus.tbd.game.items.enums.ItemApplicationEnum;
 public class ProtossScoutItem extends Item {
 
     public ProtossScoutItem(){
-        super(ItemEnums.ProtossScout, 1,  ItemApplicationEnum.UponAcquiring);
+        super(ItemEnums.ProtossScout, 1,  ItemApplicationEnum.ApplyOnCreation);
     }
 
 
     @Override
     public void applyEffectToObject (GameObject gameObject) {
-        PlayerStats.getInstance().setAmountOfProtossScouts(PlayerStats.getInstance().getCarrierStartingScouts() + quantity);
+        PlayerManager.getInstance().getAllSpaceShips().forEach(spaceShip -> spaceShip.setScoutCount(spaceShip.getScoutCount() + quantity));
     }
 
     public void increaseQuantityOfItem(int amount) {
@@ -34,6 +35,6 @@ public class ProtossScoutItem extends Item {
             return false;
         }
 
-        return ProtossUtils.canHostMoreProtoss();
+        return ProtossUtils.canHostMoreProtossToRollItems();
     }
 }

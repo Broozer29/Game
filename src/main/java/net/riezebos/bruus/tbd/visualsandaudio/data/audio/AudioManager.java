@@ -128,11 +128,11 @@ public class AudioManager {
         }
 
         if (GameState.getInstance().getGameState().equals(GameStatusEnums.Dead) || GameState.getInstance().getGameState().equals(GameStatusEnums.Show_Level_Score_Card)) {
-            if (this.musicMediaPlayer == MusicMediaPlayer.iTunesMacOS) {
+            if (this.musicMediaPlayer == MusicMediaPlayer.iTunesMacOS && !DevTestSettings.devTestMuteMode) { //if mute mode is on, dont stop playback since it shouldnt have started
                 macOSMediaPlayer.stopPlayback();
                 macOSMediaPlayer.resetCurrentSeconds();
             }
-            if (this.musicMediaPlayer == MusicMediaPlayer.Spotify) {
+            if (this.musicMediaPlayer == MusicMediaPlayer.Spotify && !DevTestSettings.devTestMuteMode) {  //if mute mode is on, dont stop playback since it shouldnt have started
                 spotifyMediaPlayer.stopPlayback();
             }
             backGroundMusic = null;

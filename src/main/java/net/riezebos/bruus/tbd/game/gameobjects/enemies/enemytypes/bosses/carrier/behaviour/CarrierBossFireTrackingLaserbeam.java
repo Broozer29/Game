@@ -95,7 +95,7 @@ public class CarrierBossFireTrackingLaserbeam implements BossActionable {
         float damage = enemy.getDamage() * 0.2f;
         LaserbeamConfiguration upperLaserbeamConfiguration = new LaserbeamConfiguration(true, damage);
         upperLaserbeamConfiguration.setAmountOfLaserbeamSegments(20);
-        upperLaserbeamConfiguration.setTargetToAimAt(PlayerManager.getInstance().getSpaceship());
+        upperLaserbeamConfiguration.setTargetToAimAt(PlayerManager.getInstance().getFurthestSpaceShip(enemy));
         upperLaserbeamConfiguration.setOriginPoint(new Point(
                 chargingAnimation.getCenterXCoordinate() - Laserbeam.bodyWidth / 2 + 4,
                 chargingAnimation.getCenterYCoordinate() - Laserbeam.bodyWidth / 2 + 12

@@ -1,6 +1,7 @@
 package net.riezebos.bruus.tbd.game.gameobjects.neutral.interactable;
 
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
+import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SpaceShip;
 import net.riezebos.bruus.tbd.game.util.collision.CollisionDetector;
 import net.riezebos.bruus.tbd.game.util.collision.CollisionInfo;
 import net.riezebos.bruus.tbd.game.util.performancelogger.PerformanceLogger;
@@ -41,10 +42,13 @@ public class InteractableManager {
     }
 
     private void checkCollisionWithPlayer(Interactable interactable){
-        CollisionInfo collisionInfo = CollisionDetector.getInstance().detectCollision(PlayerManager.getInstance().getSpaceship(), interactable);
-        if(collisionInfo != null && collisionInfo.isCollided()){
-            interactable.activateObject();
-            interactable.setVisible(false);
+        for(SpaceShip spaceShip : PlayerManager.getInstance().getAllSpaceShips()){
+            CollisionInfo collisionInfo = CollisionDetector.getInstance().detectCollision(spaceShip, interactable);
+            if(collisionInfo != null && collisionInfo.isCollided()){
+                interactable.activateObject();
+                interactable.activateObject(spaceShip);
+                interactable.setVisible(false);
+            }
         }
     }
 

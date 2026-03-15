@@ -9,7 +9,7 @@ public class OrbitingObjectsFormatter {
 
     }
 
-    public static void reformatOrbitingObjects(GameObject gameObject, int radius) {
+    public static void reformatOrbitingObjects(GameObject gameObject, float radius) {
         double meanX = gameObject.getCenterXCoordinate();
         double meanY = gameObject.getCenterYCoordinate();
 

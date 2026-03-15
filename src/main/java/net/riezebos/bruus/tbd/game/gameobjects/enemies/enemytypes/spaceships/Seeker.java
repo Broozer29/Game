@@ -95,7 +95,7 @@ public class Seeker extends Enemy {
         Missile missile = MissileCreator.getInstance().createMissile(spriteConfiguration, missileConfiguration, movementConfiguration);
 
         //get the coordinates for rotation of the missile
-        SpaceShip spaceship = PlayerManager.getInstance().getSpaceship();
+        SpaceShip spaceship = PlayerManager.getInstance().getClosestSpaceShip(this);
         Point rotationCoordinates = new Point(
                 spaceship.getCenterXCoordinate() - missile.getWidth() / 2,
                 spaceship.getCenterYCoordinate() - missile.getHeight() / 2

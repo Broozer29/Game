@@ -1,8 +1,8 @@
 package net.riezebos.bruus.tbd.guiboards.boards;
 
-import net.riezebos.bruus.tbd.controllerInput.ConnectedControllersManager;
 import net.riezebos.bruus.tbd.controllerInput.ControllerInputEnums;
 import net.riezebos.bruus.tbd.controllerInput.ControllerInputReader;
+import net.riezebos.bruus.tbd.controllerInput.ControllerManager;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerClass;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
@@ -39,7 +39,7 @@ public class ShopBoard extends JPanel implements TimerHolder {
 
     private BackgroundManager backgroundManager = BackgroundManager.getInstance();
     private AnimationManager animationManager = AnimationManager.getInstance();
-    private ConnectedControllersManager controllers = ConnectedControllersManager.getInstance();
+    private ControllerManager controllers = ControllerManager.getInstance();
     private ShopManager shopManager = ShopManager.getInstance();
 
     private List<GUIComponent> regularGridFirstRow = new ArrayList<>();
@@ -125,7 +125,7 @@ public class ShopBoard extends JPanel implements TimerHolder {
             controllerInputReader = controllers.getFirstController();
         }
 
-        timer = new Timer(GameState.getInstance().getDELAY(), e -> repaint(0, 0, DataClass.getInstance().getWindowWidth(), DataClass.getInstance().getWindowHeight()));
+        timer = new Timer(GameState.getInstance().getDELAY(), e -> repaint(0, 0, DataClass.getInstance().getWindowWidth(), DataClass.getInstance().getWindowHeight() + 5));
         timer.start();
     }
 

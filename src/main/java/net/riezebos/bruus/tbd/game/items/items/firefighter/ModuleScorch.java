@@ -4,6 +4,7 @@ import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
 import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.droneTypes.DroneTypes;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerClass;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
+import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SpaceShip;
 import net.riezebos.bruus.tbd.game.items.Item;
 import net.riezebos.bruus.tbd.game.items.ItemEnums;
 import net.riezebos.bruus.tbd.game.items.PlayerInventory;
@@ -11,39 +12,24 @@ import net.riezebos.bruus.tbd.game.items.enums.ItemApplicationEnum;
 
 public class ModuleScorch extends Item {
 
-    private float orbitrangeBonus;
-    private boolean shouldApply;
+    private float orbitrangeBonus = 30;
 
     public ModuleScorch () {
         super(ItemEnums.ModuleScorch, 1, ItemApplicationEnum.ApplyOnCreation);
-        shouldApply = true;
-        orbitrangeBonus = 30;
     }
 
     @Override
     public void increaseQuantityOfItem (int amount) {
-        //Additional stacks don't really do anything
-        shouldApply = true;
-        removeEffect();
         this.quantity += amount;
-        applyEffectToObject(null);
     }
 
     @Override
     public void applyEffectToObject (GameObject gameObject) {
-        if (shouldApply) {
-            PlayerStats.getInstance().setDroneType(DroneTypes.FireBall);
-            PlayerStats.getInstance().addDroneBonusOrbitRange(this.orbitrangeBonus);
-            shouldApply = false;
+        if (gameObject instanceof SpaceShip spaceShip) {
+            spaceShip.setDroneType(DroneTypes.FireBall);
+            spaceShip.modifyDroneOrbitRadius(this.orbitrangeBonus);
         }
     }
-
-    private void removeEffect () {
-        if (quantity > 0) {
-            PlayerStats.getInstance().addDroneBonusDamage(-this.orbitrangeBonus);
-        }
-    }
-
 
     @Override
     public boolean isAvailable(){

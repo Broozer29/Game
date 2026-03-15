@@ -46,6 +46,12 @@ public class PlayerInventory {
         return instance;
     }
 
+    public int getCountOfItem(ItemEnums itemEnum) {
+        if(items.containsKey(itemEnum)) {
+            return items.get(itemEnum).getQuantity();
+        }
+        return 0;
+    }
 
     public void addItem(ItemEnums itemEnum) {
         Item item = items.compute(itemEnum, (key, existingItem) -> {

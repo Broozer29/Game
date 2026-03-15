@@ -164,11 +164,8 @@ public class StrikerBossCloneLaserbeamAttack implements BossActionable {
     }
 
     private void rotateBossToPlayer(GameObject boss){
-        boss.rotateGameObjectTowards(
-                PlayerManager.getInstance().getSpaceship().getCenterXCoordinate(),
-                PlayerManager.getInstance().getSpaceship().getCenterYCoordinate(),
-                false
-        );
+        GameObject closestPlayer = PlayerManager.getInstance().getClosestSpaceShip(boss);
+        boss.rotateGameObjectTowards(closestPlayer.getCenterXCoordinate(), closestPlayer.getCenterYCoordinate(), false);
     }
 
     private void playSmokeAnimation(GameObject target) {
@@ -238,7 +235,7 @@ public class StrikerBossCloneLaserbeamAttack implements BossActionable {
         float damage = boss.getDamage() * damageRatio;
         LaserbeamConfiguration upperLaserbeamConfiguration = new LaserbeamConfiguration(false, damage);
         upperLaserbeamConfiguration.setAmountOfLaserbeamSegments(laserbeamBodySegmentLength);
-        upperLaserbeamConfiguration.setTargetToAimAt(PlayerManager.getInstance().getSpaceship());
+        upperLaserbeamConfiguration.setTargetToAimAt(PlayerManager.getInstance().getClosestSpaceShip(boss));
         upperLaserbeamConfiguration.setOriginPoint(new Point(
                 boss.getCenterXCoordinate(),
                 boss.getCenterYCoordinate()

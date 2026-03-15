@@ -128,7 +128,8 @@ public class TwinBossQuickMissileAttack implements BossActionable {
 
 
         Missile missile = MissileCreator.getInstance().createMissile(spriteConfiguration, missileConfiguration, movementConfiguration);
-        SpaceShip spaceship = PlayerManager.getInstance().getSpaceship();
+        SpaceShip spaceship = PlayerManager.getInstance().getClosestSpaceShip(enemy);
+
         Point rotationCoordinates = new Point(
                 spaceship.getCenterXCoordinate() - missile.getWidth() / 2,
                 spaceship.getCenterYCoordinate() - missile.getHeight() / 2 + 4

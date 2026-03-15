@@ -8,7 +8,6 @@ import net.riezebos.bruus.tbd.game.gameobjects.missiles.specialAttacks.SpecialAt
 import net.riezebos.bruus.tbd.game.gameobjects.neutral.Explosion;
 import net.riezebos.bruus.tbd.game.gameobjects.neutral.ExplosionConfiguration;
 import net.riezebos.bruus.tbd.game.gameobjects.neutral.ExplosionManager;
-import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.items.effects.DormentExplosionActivationMethods;
 import net.riezebos.bruus.tbd.game.items.effects.EffectActivationTypes;
@@ -41,11 +40,12 @@ public class DormentExplosion implements EffectInterface {
     private float delayBeforeExplosion;
     private EffectIdentifiers effectIdentifier;
     private AudioEnums audioEnums;
+    private GameObject ownerOrCreator;
 
     private List<EffectInterface> additionalEffects = new ArrayList<>();
 
     public DormentExplosion (float damage, ImageEnums explosionType, DormentExplosionActivationMethods activationMethod, boolean boxCollision
-            , EffectIdentifiers effectIdentifier, float delayBeforeExplosion, EffectActivationTypes activationType, boolean allowedToApplyOnHitEffects) {
+            , EffectIdentifiers effectIdentifier, float delayBeforeExplosion, EffectActivationTypes activationType, boolean allowedToApplyOnHitEffects, GameObject ownerOrCreator) {
         this.damage = damage;
         this.boxCollision = boxCollision;
         this.imageType = explosionType;
@@ -56,7 +56,7 @@ public class DormentExplosion implements EffectInterface {
         this.activationTime = GameState.getInstance().getGameSeconds() + delayBeforeExplosion;
         this.effectIdentifier = effectIdentifier;
         this.allowedToApplyOnHitEffects = allowedToApplyOnHitEffects;
-
+        this.ownerOrCreator = ownerOrCreator;
     }
 
     public void addAdditionalEffects (EffectInterface effect) {
@@ -106,7 +106,7 @@ public class DormentExplosion implements EffectInterface {
         explosion.setCenterCoordinates(gameObject.getCenterXCoordinate(), gameObject.getCenterYCoordinate());
         explosion.getAnimation().setCenterCoordinates(gameObject.getCenterXCoordinate(), gameObject.getCenterYCoordinate());
         explosion.setBoxCollision(boxCollision);
-        explosion.setOwnerOrCreator(PlayerManager.getInstance().getSpaceship()); //Assume it's the player who has items, never the enemies. Could hinder later design
+        explosion.setOwnerOrCreator(ownerOrCreator);
 
         if (this.effectIdentifier.equals(EffectIdentifiers.GasolineDormantExplosion)) {
             explosion.setScale(1.35f);
@@ -195,7 +195,7 @@ public class DormentExplosion implements EffectInterface {
 
     @Override
     public EffectInterface copy () {
-        return new DormentExplosion(burningDamage, imageType, activationMethod, boxCollision, effectIdentifier, delayBeforeExplosion, activationTypes, allowedToApplyOnHitEffects);
+        return new DormentExplosion(burningDamage, imageType, activationMethod, boxCollision, effectIdentifier, delayBeforeExplosion, activationTypes, allowedToApplyOnHitEffects, ownerOrCreator);
     }
 
     public float getDamage () {

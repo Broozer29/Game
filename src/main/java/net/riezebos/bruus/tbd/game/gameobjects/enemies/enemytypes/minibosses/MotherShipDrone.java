@@ -47,7 +47,7 @@ public class MotherShipDrone extends Enemy {
             this.damage = this.ownerOrCreator.getDamage() / 2;
             this.attackSpeed = 1f;
             justInitialized = false;
-            target = PlayerManager.getInstance().getSpaceship();
+            target = PlayerManager.getInstance().getClosestSpaceShip(this);
         }
 
         if(this.ownerOrCreator != null && this.ownerOrCreator.getCurrentHitpoints() <= 0){

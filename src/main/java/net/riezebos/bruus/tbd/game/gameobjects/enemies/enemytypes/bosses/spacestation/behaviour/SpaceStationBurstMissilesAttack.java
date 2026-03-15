@@ -187,7 +187,7 @@ public class SpaceStationBurstMissilesAttack implements BossActionable {
         Missile missile = MissileCreator.getInstance().createMissile(spriteConfiguration, missileConfiguration, movementConfiguration);
 
         //get the coordinates for rotation of the missile
-        SpaceShip spaceship = PlayerManager.getInstance().getSpaceship();
+        SpaceShip spaceship = PlayerManager.getInstance().getClosestSpaceShip(enemy);
         Point destinationCoordinates = new Point(
                 spaceship.getCenterXCoordinate() - missile.getWidth() / 2,
                 spaceship.getCenterYCoordinate() - missile.getHeight() / 2 + 4

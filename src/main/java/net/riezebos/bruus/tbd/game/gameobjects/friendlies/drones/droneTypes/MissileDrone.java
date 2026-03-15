@@ -6,7 +6,6 @@ import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyManager;
 import net.riezebos.bruus.tbd.game.gameobjects.friendlies.FriendlyObjectConfiguration;
 import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.Drone;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.*;
-import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
 import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SpaceShip;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
@@ -53,7 +52,9 @@ public class MissileDrone extends Drone {
 
         float xMovementSpeed = 7.5f;
         float yMovementSpeed = 7.5f;
-        float damage = PlayerStats.getInstance().getDroneDamage();
+
+        SpaceShip spaceship = (SpaceShip) this.ownerOrCreator;
+        float damage = PlayerStats.getInstance().getBaseDroneDamage() + spaceship.getDroneDamageModifier();
         Direction rotation = Direction.RIGHT;
         MovementPatternSize movementPatternSize = MovementPatternSize.SMALL;
         PathFinder pathFinder = selectPathFinder();
@@ -88,7 +89,7 @@ public class MissileDrone extends Drone {
 
     private void adjustStraightLinePathFinder (MovementConfiguration movementConfiguration, GameObject missile) {
         if (allowedToAimAtTarget()) {
-            SpaceShip spaceship = PlayerManager.getInstance().getSpaceship();
+            GameObject spaceship = this.ownerOrCreator;
             Enemy closestEnemy = EnemyManager.getInstance().getClosestEnemy(spaceship.getCenterXCoordinate(), spaceship.getCenterYCoordinate());
             if (closestEnemy != null) {
                 Point point = new Point(closestEnemy.getCenterXCoordinate(), closestEnemy.getCenterYCoordinate());

@@ -6,6 +6,7 @@ import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyManager;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.BossActionable;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyEnums;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
+import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SpaceShip;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.level.LevelManager;
 import net.riezebos.bruus.tbd.game.movement.Direction;
@@ -109,9 +110,11 @@ public class CarrierBossSpawnProtossBeacon implements BossActionable {
     private void setBeaconDestination(Enemy enemy) {
         enemy.setAllowedToMove(true);
         enemy.getMovementConfiguration().setPathFinder(new DestinationPathFinder());
+
+        SpaceShip closestSpaceShip = PlayerManager.getInstance().getClosestSpaceShip(enemy.getCenterXCoordinate(), enemy.getCenterYCoordinate());
         enemy.getMovementConfiguration().setDestination(new Point(
-                PlayerManager.getInstance().getSpaceship().getCenterXCoordinate() - (enemy.getWidth() / 2),
-                PlayerManager.getInstance().getSpaceship().getCenterYCoordinate() - (enemy.getHeight() / 2)
+                closestSpaceShip.getCenterXCoordinate() - (enemy.getWidth() / 2),
+                closestSpaceShip.getCenterYCoordinate() - (enemy.getHeight() / 2)
         ));
     }
 

@@ -7,8 +7,8 @@ import net.riezebos.bruus.tbd.game.gameobjects.friendlies.FriendlyManager;
 import net.riezebos.bruus.tbd.game.gameobjects.friendlies.FriendlyObjectConfiguration;
 import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.Drone;
 import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.droneTypes.DroneTypes;
-import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
+import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.items.ItemEnums;
 import net.riezebos.bruus.tbd.game.items.PlayerInventory;
 import net.riezebos.bruus.tbd.game.items.items.carrier.ArbiterDamage;
@@ -36,6 +36,10 @@ public class ProtossArbiter extends Drone {
     private boolean isMovingAroundCarrierDrone = false;
     private boolean canAcquireTarget = true;
 
+    private double lastGameSecondsCheckedForTarget = 0;
+    private double checkingTargetCooldown = (double) (GameState.getInstance().getDELAY() * 3) / 1000; //every 3 gameticks
+
+
     public ProtossArbiter(SpriteAnimationConfiguration spriteAnimationConfiguration, FriendlyObjectConfiguration droneConfiguration, MovementConfiguration movementConfiguration) {
         super(spriteAnimationConfiguration, droneConfiguration, movementConfiguration);
         super.isProtoss = true;
@@ -56,11 +60,11 @@ public class ProtossArbiter extends Drone {
             this.movementConfiguration.resetMovementPath();
             this.movementConfiguration.setCurrentLocation(new Point(this.getXCoordinate(), this.getYCoordinate()));
             this.setAllowedVisualsToRotate(true);
-            this.movementConfiguration.setDestination(ProtossUtils.getRandomPoint());
-            this.isMovingAroundCarrierDrone = ProtossUtils.carrierDroneIsPresent();
+            this.movementConfiguration.setDestination(ProtossUtils.getRandomPoint(this.ownerOrCreator));
+            this.isMovingAroundCarrierDrone = ProtossUtils.carrierDroneIsPresent(this.ownerOrCreator);
         }
 
-        if (!ProtossUtils.carrierDroneIsPresent() && this.isMovingAroundCarrierDrone) {
+        if (!ProtossUtils.carrierDroneIsPresent(this.ownerOrCreator) && this.isMovingAroundCarrierDrone) {
             immediatlyReturnToCarrier();
         }
 
@@ -71,14 +75,23 @@ public class ProtossArbiter extends Drone {
         this.movementConfiguration.resetMovementPath();
         this.movementConfiguration.setCurrentLocation(new Point(this.getXCoordinate(), this.getYCoordinate()));
         this.setAllowedVisualsToRotate(true);
-        this.movementConfiguration.setDestination(ProtossUtils.getRandomPoint());
-        this.isMovingAroundCarrierDrone = ProtossUtils.carrierDroneIsPresent();
+        this.movementConfiguration.setDestination(ProtossUtils.getRandomPoint(this.ownerOrCreator));
+        this.isMovingAroundCarrierDrone = ProtossUtils.carrierDroneIsPresent(this.ownerOrCreator);
     }
 
 
     public void fireAction() {
+        //Als de eigenaar null is of dood, self-destruct
+        if(this.ownerOrCreator == null || (!this.ownerOrCreator.isVisible() || this.ownerOrCreator.getCurrentHitpoints() <= 0)){
+            this.takeDamage(this.maxHitPoints * 200);
+        }
+
         // Acquire player and targetable drones
         if (!canAcquireTarget) {
+            return;
+        }
+
+        if(GameState.getInstance().getGameSeconds() <= lastGameSecondsCheckedForTarget + checkingTargetCooldown){
             return;
         }
 
@@ -106,10 +119,14 @@ public class ProtossArbiter extends Drone {
             return; // Stop adding if max limit is reached
         }
 
-        GameObject player = PlayerManager.getInstance().getSpaceship();
-        List<GameObject> targetableDrones = FriendlyManager.getInstance().getAllProtossDrones().stream()
-                .filter(ship -> ship.getCurrentHitpoints() < ship.getMaxHitPoints())
-                .filter(ship -> !(ship instanceof CarrierDrone))
+        if(GameState.getInstance().getGameSeconds() <= lastGameSecondsCheckedForTarget + checkingTargetCooldown){
+            return;
+        }
+
+        GameObject player = this.getOwnerOrCreator(); //should be the player who created this protoss ship
+        List<GameObject> targetableDrones = FriendlyManager.getInstance().getAllProtossDrones(this.ownerOrCreator).stream()
+                .filter(ship -> ship.getCurrentHitpoints() < ship.getMaxHitPoints() && ship.getOwnerOrCreator() != null && ship.getOwnerOrCreator().equals(this.getOwnerOrCreator()))
+                .filter(ship -> !(ship instanceof CarrierBeacon)) //filter out the beacon, this one isnt supposed to be healed
                 .collect(Collectors.toList());
 
         boolean shouldHealPlayer = player.getCurrentHitpoints() < player.getMaxHitPoints();
@@ -132,9 +149,12 @@ public class ProtossArbiter extends Drone {
                 addAnimationToNewTarget(drone, true);
             }
         }
+        lastGameSecondsCheckedForTarget = GameState.getInstance().getGameSeconds();
     }
 
     private void handleDamage() {
+
+
         for (GameObject target : new ArrayList<>(targets)) { // vermijd ConcurrentModificationException, al kan een iterator pattern ook
             damageTarget(target);
             updateAnimationLocation(target);
@@ -146,6 +166,10 @@ public class ProtossArbiter extends Drone {
 
         if (targets.size() >= maxTargetsAllowedSimultaneously) {
             return; // Stop adding if max limit is reached
+        }
+
+        if(GameState.getInstance().getGameSeconds() <= lastGameSecondsCheckedForTarget + checkingTargetCooldown){
+            return;
         }
 
         List<GameObject> targetableEnemies = EnemyManager.getInstance().getEnemies().stream()
@@ -162,6 +186,7 @@ public class ProtossArbiter extends Drone {
                 addAnimationToNewTarget(enemy, false);
             }
         }
+        lastGameSecondsCheckedForTarget = GameState.getInstance().getGameSeconds();
     }
 
     private void rotateTowardsFirstTargetOrDestination() {
@@ -204,7 +229,7 @@ public class ProtossArbiter extends Drone {
 
         if (PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.EmergencyRepairs) != null) {
             EmergencyRepairs emergencyRepairs = (EmergencyRepairs) PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.EmergencyRepairs);
-            emergencyRepairs.applyEffectToObject(PlayerManager.getInstance().getSpaceship());
+            emergencyRepairs.applyEffectToObject(this.ownerOrCreator);
         }
 
         if (PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.VengeanceProtocol) != null) {
@@ -249,7 +274,7 @@ public class ProtossArbiter extends Drone {
         if (!target.isVisible()
                 || target.getCurrentHitpoints() <= 0
                 || target.getCurrentHitpoints() >= target.getMaxHitPoints()
-                || !FriendlyManager.getInstance().getAllProtossDrones().contains(target)) {  //The target died and cant be retrieved from FriendlyManager in the update loop, thus wont get checked for hitpoints/visibility
+                || !FriendlyManager.getInstance().getAllProtossDrones(this.ownerOrCreator).contains(target)) {  //The target died and cant be retrieved from FriendlyManager in the update loop, thus wont get checked for hitpoints/visibility
             return true;
         } else return false;
     }

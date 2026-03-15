@@ -5,7 +5,6 @@ import net.riezebos.bruus.tbd.game.gameobjects.neutral.Explosion;
 import net.riezebos.bruus.tbd.game.gameobjects.neutral.ExplosionConfiguration;
 import net.riezebos.bruus.tbd.game.gameobjects.neutral.ExplosionManager;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerClass;
-import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
 import net.riezebos.bruus.tbd.game.items.Item;
 import net.riezebos.bruus.tbd.game.items.ItemEnums;
@@ -29,10 +28,10 @@ public class InverseRetrieval extends Item {
 
     @Override
     public void applyEffectToObject(GameObject gameObject) {
-        if(gameObject == null){
+        if(gameObject == null || gameObject.getOwnerOrCreator() == null){
             return;
         }
-        PlayerManager.getInstance().getSpaceship().setCenterCoordinates(gameObject.getCenterXCoordinate(), gameObject.getCenterYCoordinate());
+        gameObject.getOwnerOrCreator().setCenterCoordinates(gameObject.getCenterXCoordinate(), gameObject.getCenterYCoordinate());
         ExplosionManager.getInstance().addExplosion(this.createExplosion(gameObject.getCenterXCoordinate(), gameObject.getCenterYCoordinate()));
         AudioManager.getInstance().addAudio(AudioEnums.ScarabExplosion);
     }

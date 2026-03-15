@@ -1,8 +1,8 @@
 package net.riezebos.bruus.tbd.guiboards.boards;
 
-import net.riezebos.bruus.tbd.controllerInput.ConnectedControllersManager;
 import net.riezebos.bruus.tbd.controllerInput.ControllerInputEnums;
 import net.riezebos.bruus.tbd.controllerInput.ControllerInputReader;
+import net.riezebos.bruus.tbd.controllerInput.ControllerManager;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerClass;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
@@ -41,7 +41,7 @@ public class ClassSelectionBoard extends JPanel implements TimerHolder {
     private AudioManager audioManager = AudioManager.getInstance();
     private BackgroundManager backgroundManager = BackgroundManager.getInstance();
     private AnimationManager animationManager = AnimationManager.getInstance();
-    private ConnectedControllersManager controllers = ConnectedControllersManager.getInstance();
+    private ControllerManager controllers = ControllerManager.getInstance();
 
     /*Board Components*/
     private GUIComponent classSelectionBackgroundCard;
@@ -57,8 +57,8 @@ public class ClassSelectionBoard extends JPanel implements TimerHolder {
     private GUITextCollection selectCaptainTextButton;
     private GUITextCollection selectFireFighterTextButton;
     private GUITextCollection selectCarrierTextButton;
-    private GUIComponent BoonButtonBackgroundCard;
-    private GUITextCollection boonButton;
+    private GUIComponent startGameButtonBackgroundCard;
+    private GUITextCollection startGameButton;
     private GUIComponent returnToMenuBackgroundCard;
     private GUITextCollection returnToMenuButton;
     /*Board Components*/
@@ -95,7 +95,7 @@ public class ClassSelectionBoard extends JPanel implements TimerHolder {
         }
 
         initMenuTiles();
-        timer = new Timer(GameState.getInstance().getDELAY(), e -> repaint(0, 0, DataClass.getInstance().getWindowWidth(), DataClass.getInstance().getWindowHeight()));
+        timer = new Timer(GameState.getInstance().getDELAY(), e -> repaint(0, 0, DataClass.getInstance().getWindowWidth(), DataClass.getInstance().getWindowHeight() + 5));
         timer.start();
     }
 
@@ -120,8 +120,10 @@ public class ClassSelectionBoard extends JPanel implements TimerHolder {
         selectFireFighterTextButton = ClassSelectionBoardCreator.createSelectFireFighter(classSelectionBackgroundCard);
         selectCarrierTextButton = ClassSelectionBoardCreator.createSelectCarrier(classSelectionBackgroundCard);
 
-        BoonButtonBackgroundCard = ClassSelectionBoardCreator.createBoonButtonBackgroundCard();
-        boonButton = ClassSelectionBoardCreator.createBoonSelectionButton(BoonButtonBackgroundCard);
+        startGameButtonBackgroundCard = ClassSelectionBoardCreator.createStartGameButtonBackground();
+        startGameButton = ClassSelectionBoardCreator.createStartGameButton(startGameButtonBackgroundCard);
+
+
         menuCursor = ClassSelectionBoardCreator.createCursor(returnToMenuButton);
         initializedMenuObjects = true;
     }
@@ -143,7 +145,7 @@ public class ClassSelectionBoard extends JPanel implements TimerHolder {
         grid.clear();
         offTheGridObjects.clear();
 
-        offTheGridObjects.add(BoonButtonBackgroundCard);
+        offTheGridObjects.add(startGameButtonBackgroundCard);
         offTheGridObjects.add(returnToMenuBackgroundCard);
         offTheGridObjects.add(classSelectionTitleImage);
         offTheGridObjects.add(classSelectionBackgroundCard);
@@ -168,8 +170,8 @@ public class ClassSelectionBoard extends JPanel implements TimerHolder {
         addAllButFirstComponent(returnToMenuButton);
 
 
-        addToGrid(secondColumn, boonButton.getComponents().get(0), 1, 0);
-        addAllButFirstComponent(boonButton);
+        addToGrid(secondColumn, startGameButton.getComponents().get(0), 1, 0);
+        addAllButFirstComponent(startGameButton);
 
         offTheGridObjects.add(menuCursor);
 
@@ -472,12 +474,12 @@ public class ClassSelectionBoard extends JPanel implements TimerHolder {
     private boolean handleLeftOrRightNavigationOverwrites() {
         //If overwritten a navigation, return true, if not return false
         if (menuCursor.getSelectedMenuTile().equals(this.returnToMenuButton.getComponents().get(0))) {
-            selectedColumn = boonButton.getComponents().get(0).getColumn();
-            selectedRow = boonButton.getComponents().get(0).getRow();
+            selectedColumn = startGameButton.getComponents().get(0).getColumn();
+            selectedRow = startGameButton.getComponents().get(0).getRow();
             return true;
         }
 
-        if (menuCursor.getSelectedMenuTile().equals(this.boonButton.getComponents().get(0))) {
+        if (menuCursor.getSelectedMenuTile().equals(this.startGameButton.getComponents().get(0))) {
             selectedColumn = returnToMenuButton.getComponents().get(0).getColumn();
             selectedRow = returnToMenuButton.getComponents().get(0).getRow();
             return true;

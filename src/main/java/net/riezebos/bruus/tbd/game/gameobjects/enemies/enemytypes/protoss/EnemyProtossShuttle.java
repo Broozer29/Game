@@ -44,7 +44,7 @@ public class EnemyProtossShuttle extends Enemy {
             this.damage = this.ownerOrCreator.getDamage();
             this.attackSpeed = 3f;
             justInitialized = false;
-            target = PlayerManager.getInstance().getSpaceship();
+            target = PlayerManager.getInstance().getClosestSpaceShip(this);
         }
 
         if(this.ownerOrCreator != null && this.ownerOrCreator.getCurrentHitpoints() <= 0){

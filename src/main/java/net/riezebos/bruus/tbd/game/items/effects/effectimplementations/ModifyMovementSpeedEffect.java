@@ -1,8 +1,6 @@
 package net.riezebos.bruus.tbd.game.items.effects.effectimplementations;
 
 import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
-import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
-import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SpaceShip;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.items.effects.EffectActivationTypes;
 import net.riezebos.bruus.tbd.game.items.effects.EffectIdentifiers;
@@ -25,11 +23,11 @@ public class ModifyMovementSpeedEffect implements EffectInterface {
     private EffectIdentifiers effectIdentifier;
     private int amountOfStacks;
 
-    public ModifyMovementSpeedEffect (float movementSpeedModifierAmountPerStack, double durationInSeconds, SpriteAnimation animation, EffectIdentifiers effectIdentifier) {
+    public ModifyMovementSpeedEffect(float movementSpeedModifierAmountPerStack, double durationInSeconds, SpriteAnimation animation, EffectIdentifiers effectIdentifier) {
         this.movementSpeedModifieramount = movementSpeedModifierAmountPerStack;
         this.movementSpeedMofifierAmountPerStack = movementSpeedModifierAmountPerStack;
         this.durationInSeconds = durationInSeconds;
-        if(animation != null) {
+        if (animation != null) {
             this.animationList.add(animation);
         }
         this.startTimeInSeconds = GameState.getInstance().getGameSeconds();
@@ -40,19 +38,13 @@ public class ModifyMovementSpeedEffect implements EffectInterface {
     }
 
     @Override
-    public void activateEffect (GameObject gameObject) {
+    public void activateEffect(GameObject gameObject) {
         if (gameObject == null) {
             return;
         }
 
         if (!appliedToObject) {
-            if (gameObject instanceof SpaceShip) {
-                // Player
-                PlayerStats.getInstance().modifyMovementSpeedModifier(movementSpeedModifieramount);
-            } else {
-                // Enemy
-                gameObject.modifyMovementSpeedModifier(movementSpeedModifieramount);
-            }
+            gameObject.modifyMovementSpeedModifier(movementSpeedModifieramount);
             appliedToObject = true;
             this.startTimeInSeconds = GameState.getInstance().getGameSeconds();
         }
@@ -62,23 +54,15 @@ public class ModifyMovementSpeedEffect implements EffectInterface {
         }
     }
 
-    private void removeEffectsBeforeRemovingEffect (GameObject gameObject) {
-        if(gameObject == null){
+    private void removeEffectsBeforeRemovingEffect(GameObject gameObject) {
+        if (gameObject == null) {
             return;
         }
-
-        if (gameObject instanceof SpaceShip) {
-            // Correctly subtract the originally applied modifier
-            PlayerStats.getInstance().modifyMovementSpeedModifier(-movementSpeedModifieramount);
-        } else {
-            // Correctly subtract the originally applied modifier
-            gameObject.modifyMovementSpeedModifier(-movementSpeedModifieramount);
-        }
-
+        gameObject.modifyMovementSpeedModifier(-movementSpeedModifieramount);
         appliedToObject = false;
     }
 
-    private void centerAnimation (GameObject object) {
+    private void centerAnimation(GameObject object) {
         if (object.getAnimation() != null) {
             SpriteAnimation objectVisuals = object.getAnimation();
             animationList.get(0).setCenterCoordinates(objectVisuals.getCenterXCoordinate(), objectVisuals.getCenterYCoordinate());
@@ -90,7 +74,7 @@ public class ModifyMovementSpeedEffect implements EffectInterface {
     }
 
     @Override
-    public boolean shouldBeRemoved (GameObject gameObject) {
+    public boolean shouldBeRemoved(GameObject gameObject) {
         if (GameState.getInstance().getGameSeconds() - startTimeInSeconds >= durationInSeconds) {
             return true;
         } else return false;
@@ -102,17 +86,17 @@ public class ModifyMovementSpeedEffect implements EffectInterface {
     }
 
     @Override
-    public EffectActivationTypes getEffectTypesEnums () {
+    public EffectActivationTypes getEffectTypesEnums() {
         return effectTypesEnums;
     }
 
     @Override
-    public void resetDuration () {
+    public void resetDuration() {
         this.startTimeInSeconds = GameState.getInstance().getGameSeconds();
     }
 
     @Override
-    public void increaseEffectStrength (GameObject gameObject) {
+    public void increaseEffectStrength(GameObject gameObject) {
         if (this.effectIdentifier.equals(EffectIdentifiers.DevourerMoveSpeedDebuff)) {
             int maxStacks = 4;
             if (amountOfStacks < maxStacks) {
@@ -122,21 +106,21 @@ public class ModifyMovementSpeedEffect implements EffectInterface {
             movementSpeedModifieramount = movementSpeedMofifierAmountPerStack * amountOfStacks;
             activateEffect(gameObject);
 
-            if(!this.animationList.isEmpty() && this.animationList.get(0) != null){
-            switch (amountOfStacks) {
-                case 1:
-                    animationList.get(0).changeImagetype(ImageEnums.DevourerDebuffStage1);
-                    break;
-                case 2:
-                    animationList.get(0).changeImagetype(ImageEnums.DevourerDebuffStage2);
-                    break;
-                case 3:
-                    animationList.get(0).changeImagetype(ImageEnums.DevourerDebuffStage3);
-                    break;
-                case 4:
-                    animationList.get(0).changeImagetype(ImageEnums.DevourerDebuffStage4);
-                    break;
-            }
+            if (!this.animationList.isEmpty() && this.animationList.get(0) != null) {
+                switch (amountOfStacks) {
+                    case 1:
+                        animationList.get(0).changeImagetype(ImageEnums.DevourerDebuffStage1);
+                        break;
+                    case 2:
+                        animationList.get(0).changeImagetype(ImageEnums.DevourerDebuffStage2);
+                        break;
+                    case 3:
+                        animationList.get(0).changeImagetype(ImageEnums.DevourerDebuffStage3);
+                        break;
+                    case 4:
+                        animationList.get(0).changeImagetype(ImageEnums.DevourerDebuffStage4);
+                        break;
+                }
             }
 
 
@@ -144,7 +128,7 @@ public class ModifyMovementSpeedEffect implements EffectInterface {
     }
 
     @Override
-    public EffectInterface copy () {
+    public EffectInterface copy() {
         SpriteAnimation animation = null;
         if (!this.animationList.isEmpty() && this.animationList.get(0) != null) {
             animation = this.animationList.get(0);
@@ -155,13 +139,13 @@ public class ModifyMovementSpeedEffect implements EffectInterface {
     }
 
     @Override
-    public EffectIdentifiers getEffectIdentifier () {
+    public EffectIdentifiers getEffectIdentifier() {
         return effectIdentifier;
     }
 
     @Override
-    public void removeEffect (GameObject gameObject) {
-        if(!this.animationList.isEmpty() && this.animationList.get(0) != null){
+    public void removeEffect(GameObject gameObject) {
+        if (!this.animationList.isEmpty() && this.animationList.get(0) != null) {
             animationList.get(0).setInfiniteLoop(false);
             animationList.get(0).setVisible(false);
         }

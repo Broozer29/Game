@@ -1,8 +1,8 @@
 package net.riezebos.bruus.tbd.guiboards.boards;
 
-import net.riezebos.bruus.tbd.controllerInput.ConnectedControllersManager;
 import net.riezebos.bruus.tbd.controllerInput.ControllerInputEnums;
 import net.riezebos.bruus.tbd.controllerInput.ControllerInputReader;
+import net.riezebos.bruus.tbd.controllerInput.ControllerManager;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.gamestate.save.SaveManager;
 import net.riezebos.bruus.tbd.game.util.OnScreenText;
@@ -32,7 +32,7 @@ public class MainMenuBoard extends JPanel implements TimerHolder {
     private DataClass data = DataClass.getInstance();
     private BackgroundManager backgroundManager = BackgroundManager.getInstance();
     private AnimationManager animationManager = AnimationManager.getInstance();
-    private ConnectedControllersManager controllers = ConnectedControllersManager.getInstance();
+    private ControllerManager controllers = ControllerManager.getInstance();
     private final int boardWidth = data.getWindowWidth();
     private final int boardHeight = data.getWindowHeight();
     private AudioManager audioManager = AudioManager.getInstance();
@@ -59,7 +59,7 @@ public class MainMenuBoard extends JPanel implements TimerHolder {
     private GUITextCollection testingButton;
 
     private Timer timer;
-    private boolean foundControllerBool = false;
+    private int controllersConnected = 0;
     private boolean initializedMenuObjects = false;
     private ControllerInputReader controllerInputReader;
 
@@ -73,12 +73,12 @@ public class MainMenuBoard extends JPanel implements TimerHolder {
         setPreferredSize(new Dimension(boardWidth, boardHeight));
 
         if (controllers.getFirstController() != null) {
-            foundControllerBool = true;
+            controllersConnected = controllers.getControllerInputReaders().size();
             controllerInputReader = controllers.getFirstController();
         }
 
         initMenuTiles();
-        timer = new Timer(GameState.getInstance().getDELAY(), e -> repaint(0, 0, DataClass.getInstance().getWindowWidth(), DataClass.getInstance().getWindowHeight()));
+        timer = new Timer(GameState.getInstance().getDELAY(), e -> repaint(0, 0, DataClass.getInstance().getWindowWidth(), DataClass.getInstance().getWindowHeight() + 5));
         timer.start();
     }
 
@@ -92,7 +92,8 @@ public class MainMenuBoard extends JPanel implements TimerHolder {
         menuCursor = MenuBoardCreator.createMenuCursor(selectClassBoard.getComponents().get(0));
         openShopButton = MenuBoardCreator.openShopButton(selectClassBoard);
         continueSaveFile = MenuBoardCreator.continueSaveFileButton(openShopButton);
-        foundController = MenuBoardCreator.foundControllerText(foundControllerBool, titleImage);
+        testingButton = MenuBoardCreator.testingButton(continueSaveFile);
+        foundController = MenuBoardCreator.foundControllerText(controllersConnected, titleImage);
 
         selectMusicOptionBackgroundCard = MenuBoardCreator.selectMusicPlayerBackgroundCard(startGameBackgroundCard);
         selectMusicOptionText = MenuBoardCreator.selectMusicText(selectMusicOptionBackgroundCard);
@@ -127,7 +128,7 @@ public class MainMenuBoard extends JPanel implements TimerHolder {
             offTheGridObjects.add(menuCursor);
 //            offTheGridObjects.addAll(selectMusicOptionText.getComponents());
 
-            if (foundControllerBool) {
+            if (controllersConnected > 0) {
                 offTheGridObjects.add(inputMapping);
             }
 
@@ -165,7 +166,7 @@ public class MainMenuBoard extends JPanel implements TimerHolder {
         addAllButFirstComponent(openShopButton);
 
         if (SaveManager.getInstance().doesSaveFileExist()) {
-            addToGrid(firstColumn, continueSaveFile.getComponents().get(0), 0, 1);
+            addToGrid(firstColumn, continueSaveFile.getComponents().get(0), 0, 2);
             addAllButFirstComponent(continueSaveFile);
         }
 

@@ -3,58 +3,36 @@ package net.riezebos.bruus.tbd.game.items.items.captain;
 import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerClass;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
+import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SpaceShip;
 import net.riezebos.bruus.tbd.game.items.Item;
 import net.riezebos.bruus.tbd.game.items.ItemEnums;
 import net.riezebos.bruus.tbd.game.items.enums.ItemApplicationEnum;
 
 public class ElectricSupercharger extends Item {
     public static float buffAmount = 3f;
-    private float currentlyAppliedAmount = 0;
-    private boolean shouldApply;
-    public ElectricSupercharger () {
+
+    public ElectricSupercharger() {
         super(ItemEnums.ElectricSupercharger, 1, ItemApplicationEnum.ApplyOnCreation);
-        shouldApply = true;
     }
 
     @Override
-    public void increaseQuantityOfItem (int amount) {
-        removeCurrentlyAppliedAmount();
+    public void increaseQuantityOfItem(int amount) {
         this.quantity += amount;
-        shouldApply = true;
-        applyEffectToObject(null);
-    }
-
-    private void setCurrentlyAppliedAmount(float amount){
-        this.currentlyAppliedAmount = amount;
-    }
-
-    private void removeCurrentlyAppliedAmount(){
-        if(quantity > 0) {
-            PlayerStats.getInstance().modifySpecialBonusDamageMultiplier(-this.currentlyAppliedAmount);
-        }
-    }
-
-    private void addAppliedAmount(float amount){
-            PlayerStats.getInstance().modifySpecialBonusDamageMultiplier(amount);
-            setCurrentlyAppliedAmount(amount);
     }
 
     @Override
-    public void applyEffectToObject (GameObject gameObject) {
-        if(shouldApply) {
-            if (quantity >= 1) {
-                PlayerStats.getInstance().setHasImprovedElectroShred(true);
-            }
-            float ratio = quantity * buffAmount;
-            addAppliedAmount(ratio);
-            setCurrentlyAppliedAmount(ratio);
-            shouldApply = false;
+    public void applyEffectToObject(GameObject gameObject) {
+        if (quantity >= 1) {
+            PlayerStats.getInstance().setHasImprovedElectroShred(true);
+        }
+        if (gameObject instanceof SpaceShip spaceShip) {
+            spaceShip.modifySpecialAttackDamageModifier(quantity * buffAmount);
         }
     }
 
     @Override
-    public boolean isAvailable(){
-        if(!this.itemEnum.isEnabled()){
+    public boolean isAvailable() {
+        if (!this.itemEnum.isEnabled()) {
             return false;
         }
         return PlayerStats.getInstance().getPlayerClass().equals(PlayerClass.Captain);

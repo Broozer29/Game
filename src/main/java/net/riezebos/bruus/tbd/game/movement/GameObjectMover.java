@@ -15,11 +15,11 @@ public class GameObjectMover {
     private GameObjectMover() {
     }
 
-    public static GameObjectMover getInstance () {
+    public static GameObjectMover getInstance() {
         return instance;
     }
 
-    private boolean shouldUpdatePathSettings (GameObject gameObject) {
+    private boolean shouldUpdatePathSettings(GameObject gameObject) {
 
         MovementConfiguration moveConfig = gameObject.getMovementConfiguration();
         boolean bool = false;
@@ -31,7 +31,7 @@ public class GameObjectMover {
         return bool; //This returns TRUE, and thus a new path is generated
     }
 
-    public void moveGameObject (GameObject gameObject, MovementConfiguration moveConfig) {
+    public void moveGameObject(GameObject gameObject, MovementConfiguration moveConfig) {
         if (gameObject.getCurrentLocation() != null && moveConfig.getCurrentLocation() == null) {
             moveConfig.setCurrentLocation(gameObject.getCurrentLocation());
         }
@@ -39,83 +39,23 @@ public class GameObjectMover {
         if (shouldUpdatePathSettings(gameObject)) {
             updatePath(gameObject, moveConfig);
         }
-        if (moveConfig.getPathFinder() instanceof HomingPathFinder) {
-            moveHomingPathFinders(gameObject, moveConfig);
-        } else {
-            handleNextWaypointRemoval(moveConfig);
-            if (moveConfig.getPathFinder() instanceof BouncingPathFinder) {
-                handleBouncingPathFinder(gameObject, moveConfig);
-            }
-            moveTowardsNextPoint(gameObject, moveConfig);
+        handleNextWaypointRemoval(moveConfig);
+        if (moveConfig.getPathFinder() instanceof BouncingPathFinder) {
+            handleBouncingPathFinder(gameObject, moveConfig);
         }
+        moveTowardsNextPoint(gameObject, moveConfig);
 
         handleAdditionalBehaviors(gameObject, moveConfig);
     }
 
-    private void updatePath (GameObject gameObject, MovementConfiguration moveConfig) {
+    private void updatePath(GameObject gameObject, MovementConfiguration moveConfig) {
 //        PathFinderConfig config = PathFinderConfigCreator.createConfig(gameObject, moveConfig);
         moveConfig.setCurrentPath(moveConfig.getPathFinder().findPath(gameObject));
         moveConfig.setLastUsedXMovementSpeed(moveConfig.getXMovementSpeed());
         moveConfig.setLastUsedYMovementSpeed(moveConfig.getYMovementSpeed());
     }
 
-    private void moveHomingPathFinders (GameObject gameObject, MovementConfiguration moveConfig) {
-        if (moveConfig.getTargetToChase() != null) {
-            moveConfig.getCurrentPath().setTarget(moveConfig.getTargetToChase());
-            if (!moveConfig.getCurrentPath().getTarget().isVisible()) {
-                acquireNewTarget(gameObject, moveConfig);
-            }
-        }
-
-        if (moveConfig.getTargetToChase() == null && moveConfig.getCurrentPath().getTarget() == null) {
-            acquireNewTarget(gameObject, moveConfig);
-        }
-
-        // check if the missile has lost lock
-        boolean hasPassedPlayerOrNeverHadLock = false;
-
-        if (moveConfig.getPathFinder().shouldRecalculatePath(gameObject)) {
-            hasPassedPlayerOrNeverHadLock = true; // if it should recalculate path, it means it lost lock or never had
-            moveConfig.getUntrackableObjects().add(moveConfig.getTargetToChase());
-        }
-
-        if (hasPassedPlayerOrNeverHadLock) {
-            moveConfig.setHasLock(false);
-        }
-
-
-        // only calculate next direction and update location if missile still has lock
-        if (moveConfig.hasLock() && moveConfig.getCurrentPath().getTarget() != null) {
-            // Get the direction of the next step
-            HomingPathFinder pathfinder = (HomingPathFinder) moveConfig.getPathFinder();
-
-            Direction nextStep = pathfinder.getNextStep(gameObject, moveConfig.getRotation());
-
-
-            // Based on the direction, calculate the next point. Overwrite the regular calculator with homing's specific one
-            Point nextPoint = pathfinder.calculateNextPoint(moveConfig, nextStep,
-                    moveConfig.getXMovementSpeed(), moveConfig.getYMovementSpeed(), moveConfig.getCurrentPath().getTarget());
-
-
-            moveConfig.setNextPoint(nextPoint);
-            moveConfig.getCurrentPath().setFallbackDirection(nextStep);
-        } else {
-            // if missile lost lock, it should keep moving in the last direction
-            moveConfig.setDirection(moveConfig.getCurrentPath().getFallbackDirection());
-            moveConfig.setNextPoint(calculateNextPointForHomingPathFinder(moveConfig.getCurrentLocation(),
-                    moveConfig.getCurrentPath().getFallbackDirection(), moveConfig.getXMovementSpeed(),
-                    moveConfig.getYMovementSpeed()));
-        }
-
-        // Update the current location
-        if (moveConfig.getNextPoint() != null) {
-            moveConfig.setCurrentLocation(moveConfig.getNextPoint());
-            gameObject.setXCoordinate(moveConfig.getNextPoint().getX());
-            gameObject.setYCoordinate(moveConfig.getNextPoint().getY());
-        }
-    }
-
-    private boolean handleNextWaypointRemoval (MovementConfiguration moveConfig) {
+    private boolean handleNextWaypointRemoval(MovementConfiguration moveConfig) {
         // If reached the next point, remove it from the path
         if (!moveConfig.getCurrentPath().getWaypoints().isEmpty() &&
                 moveConfig.getCurrentLocation().equals(moveConfig.getCurrentPath().getWaypoints().get(0))) {
@@ -125,7 +65,7 @@ public class GameObjectMover {
         return false;
     }
 
-    private void handleBouncingPathFinder (GameObject gameObject, MovementConfiguration moveConfig) {
+    private void handleBouncingPathFinder(GameObject gameObject, MovementConfiguration moveConfig) {
         // Bouncing specific logic
 
         if (!((BouncingPathFinder) moveConfig.getPathFinder()).isAllowedToBounce()) {
@@ -141,7 +81,7 @@ public class GameObjectMover {
         }
     }
 
-    private void moveTowardsNextPoint (GameObject gameObject, MovementConfiguration moveConfig) {
+    private void moveTowardsNextPoint(GameObject gameObject, MovementConfiguration moveConfig) {
         if (gameObject.isAllowedToMove() && !moveConfig.getCurrentPath().getWaypoints().isEmpty()) {
             gameObject.updateCurrentLocation(moveConfig.getCurrentPath().getWaypoints().get(0));
             gameObject.setXCoordinate(moveConfig.getCurrentPath().getWaypoints().get(0).getX());
@@ -152,7 +92,7 @@ public class GameObjectMover {
         }
     }
 
-    private void handleAdditionalBehaviors (GameObject gameObject, MovementConfiguration moveConfig) {
+    private void handleAdditionalBehaviors(GameObject gameObject, MovementConfiguration moveConfig) {
         gameObject.rotateAfterMovement();
 
 
@@ -171,7 +111,7 @@ public class GameObjectMover {
     }
 
 
-    private void adjustOrbitPath (MovementConfiguration moveConfig) {
+    private void adjustOrbitPath(MovementConfiguration moveConfig) {
         OrbitPathFinder pathFinder = (OrbitPathFinder) moveConfig.getPathFinder();
         Sprite target = pathFinder.getTarget();
         int deltaX = target.getCenterXCoordinate() - moveConfig.getLastKnownTargetX();
@@ -185,7 +125,7 @@ public class GameObjectMover {
     }
 
     //Helper method for acquiring a new target, used in homing pathfinders
-    private void acquireNewTarget (GameObject sprite, MovementConfiguration moveConfig) {
+    private void acquireNewTarget(GameObject sprite, MovementConfiguration moveConfig) {
         moveConfig.getUntrackableObjects().add(moveConfig.getTargetToChase());
         moveConfig.getCurrentPath().setTarget(null);
 
@@ -199,7 +139,7 @@ public class GameObjectMover {
     }
 
     // Needed for non-orbiting PathFinders, so added to missiles
-    private Point calculateNextPointForHomingPathFinder (Point currentLocation, Direction direction, float XStepSize, float YStepSize) {
+    private Point calculateNextPointForHomingPathFinder(Point currentLocation, Direction direction, float XStepSize, float YStepSize) {
         float x = currentLocation.getX();
         float y = currentLocation.getY();
 
@@ -236,7 +176,6 @@ public class GameObjectMover {
                 // no movement
                 break;
         }
-
 
 
         return new Point(Math.round(x), Math.round(y));

@@ -58,8 +58,10 @@ public class StrikerBossBombingRunAttack implements BossActionable {
         float minYCoordinate = 0;
         float maxYCoordinate = DataClass.getInstance().getPlayableWindowMaxHeight();
 
-        float playerXCoordinate = PlayerManager.getInstance().getSpaceship().getCenterXCoordinate();
-        float playerYCoordinate = PlayerManager.getInstance().getSpaceship().getCenterYCoordinate();
+
+        GameObject closestSpaceship = PlayerManager.getInstance().getFurthestSpaceShip(enemy);
+        float playerXCoordinate = closestSpaceship.getCenterXCoordinate();
+        float playerYCoordinate = closestSpaceship.getCenterYCoordinate();
 
         float bossXCoordinate = enemy.getCenterXCoordinate();
         float bossYCoordinate = enemy.getCenterYCoordinate();

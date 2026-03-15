@@ -12,6 +12,8 @@ import net.riezebos.bruus.tbd.visualsandaudio.data.DataClass;
 import java.util.ArrayList;
 import java.util.List;
 
+
+//todo homingpathfinder verwijderen of fatsoenlijk maken dat hij 1 stap tegelijkertijd maakt via straightlinepathfinder. Deze implementatie functioneert NIET
 public class HomingPathFinder implements PathFinder {
     @Override
     public Path findPath (GameObject gameObject) {
@@ -139,7 +141,7 @@ public class HomingPathFinder implements PathFinder {
             EnemyManager enemyManager = EnemyManager.getInstance();
             if (enemyManager.getClosestEnemy(start.getX(), start.getY()) == null) {
                 int endXCoordinate = DataClass.getInstance().getWindowWidth();
-                int endYCoordinate = PlayerManager.getInstance().getSpaceship().getCenterYCoordinate();
+                int endYCoordinate = start.getY();
                 return new Point(endXCoordinate, endYCoordinate);
             } else
                 return enemyManager.getClosestEnemy(start.getX(), start.getY()).getCurrentLocation();
@@ -164,7 +166,7 @@ public class HomingPathFinder implements PathFinder {
         if (isFriendly) {
             return EnemyManager.getInstance().getClosestEnemy(xCoordinate, yCoordinate);
         } else {
-            return PlayerManager.getInstance().getSpaceship();
+            return PlayerManager.getInstance().getClosestSpaceShip(xCoordinate, yCoordinate);
         }
     }
 

@@ -2,6 +2,7 @@ package net.riezebos.bruus.tbd.guiboards.boardcreators;
 
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
 import net.riezebos.bruus.tbd.game.gamestate.ShopManager;
+import net.riezebos.bruus.tbd.game.items.ItemEnums;
 import net.riezebos.bruus.tbd.game.items.PlayerInventory;
 import net.riezebos.bruus.tbd.game.items.enums.ItemRarityEnums;
 import net.riezebos.bruus.tbd.game.level.LevelManager;
@@ -159,7 +160,9 @@ public class ShopBoardCreator {
         int startingXCoordinate = Math.round(backgroundCard.getXCoordinate() + backgroundCard.getWidth() * 0.2f);
         int moneyY = Math.round(backgroundCard.getYCoordinate() + backgroundCard.getHeight() * 0.85f);
 
-        int amount = PlayerStats.getInstance().getAmountOfProtossArbiters() + PlayerStats.getInstance().getAmountOfProtossShuttles() + PlayerStats.getInstance().getAmountOfProtossScouts() + PlayerStats.getInstance().getAmountOfProtossCorsairs();
+
+        int scoutCount = PlayerStats.getDefaultCarrierStartingScouts() + PlayerInventory.getInstance().getCountOfItem(ItemEnums.ProtossScout);
+        int amount = scoutCount + PlayerInventory.getInstance().getCountOfItem(ItemEnums.ProtossArbiter) + PlayerInventory.getInstance().getCountOfItem(ItemEnums.ProtossShuttle) + PlayerInventory.getInstance().getCountOfItem(ItemEnums.ProtossCorsair);
         String text = "" + amount + ":" + PlayerStats.getInstance().getMaxAmountOfProtoss();
 
         GUITextCollection textCollection = new GUITextCollection(startingXCoordinate, moneyY, text);

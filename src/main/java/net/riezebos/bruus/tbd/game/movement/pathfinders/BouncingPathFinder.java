@@ -49,7 +49,6 @@ public class BouncingPathFinder implements PathFinder {
 
     @Override
     public Direction getNextStep (GameObject gameObject, Direction fallbackDirection) {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -114,7 +113,6 @@ public class BouncingPathFinder implements PathFinder {
     @Override
     public Point calculateEndPointBySteps (Point start, Direction rotation, int steps, int xMovementspeed,
                                            int yMovementspeed) {
-        // TODO Auto-generated method stub
         return null;
     }
 

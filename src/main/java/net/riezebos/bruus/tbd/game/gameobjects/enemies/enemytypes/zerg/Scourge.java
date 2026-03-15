@@ -63,7 +63,7 @@ public class Scourge extends Enemy {
         }
 
         // Align towards the player's current position.
-        SpaceShip spaceship = PlayerManager.getInstance().getSpaceship();
+        SpaceShip spaceship = PlayerManager.getInstance().getClosestSpaceShip(this);
         Point destination = new Point(
                 spaceship.getCenterXCoordinate() - this.getWidth() / 2,
                 spaceship.getCenterYCoordinate() - this.getHeight() / 2);
@@ -75,7 +75,7 @@ public class Scourge extends Enemy {
 
 
     private boolean isCloseEnough (int range) {
-        return CollisionDetector.getInstance().isNearby(this, PlayerManager.getInstance().getSpaceship(), range);
+        return CollisionDetector.getInstance().isNearby(this, PlayerManager.getInstance().getClosestSpaceShip(this), range);
     }
 
 

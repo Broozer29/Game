@@ -11,12 +11,12 @@ import net.riezebos.bruus.tbd.game.items.items.carrier.RallyTheFleet;
 import net.riezebos.bruus.tbd.game.movement.MovementConfiguration;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteAnimationConfiguration;
 
-public class CarrierDrone extends Drone {
+public class CarrierBeacon extends Drone {
 
     private boolean hasProccedRallyTheFleet = false;
     private double gameSecondsPlaced = 0;
 
-    public CarrierDrone(SpriteAnimationConfiguration spriteAnimationConfiguration, FriendlyObjectConfiguration droneConfiguration, MovementConfiguration movementConfiguration) {
+    public CarrierBeacon(SpriteAnimationConfiguration spriteAnimationConfiguration, FriendlyObjectConfiguration droneConfiguration, MovementConfiguration movementConfiguration) {
         super(spriteAnimationConfiguration, droneConfiguration, movementConfiguration);
         this.setAllowedVisualsToRotate(false);
         this.setAllowedToMove(false);
@@ -42,7 +42,10 @@ public class CarrierDrone extends Drone {
     }
 
     public void fireAction (){
-        //to do
+        //Als de eigenaar null is of dood, self-destruct
+        if(this.ownerOrCreator == null || (!this.ownerOrCreator.isVisible() || this.ownerOrCreator.getCurrentHitpoints() <= 0)){
+            this.takeDamage(this.maxHitPoints * 200);
+        }
     }
 
     public void triggerOnDeathActions(){

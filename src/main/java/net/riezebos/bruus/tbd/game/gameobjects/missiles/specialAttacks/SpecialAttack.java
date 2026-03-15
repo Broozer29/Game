@@ -2,7 +2,7 @@ package net.riezebos.bruus.tbd.game.gameobjects.missiles.specialAttacks;
 
 import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.Missile;
-import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
+import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SpaceShip;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.items.ItemEnums;
 import net.riezebos.bruus.tbd.game.items.PlayerInventory;
@@ -65,7 +65,11 @@ public class SpecialAttack extends GameObject {
             PrecisionAmplifier precisionAmplifier = (PrecisionAmplifier) PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.PrecisionAmplifier);
             isACrit = precisionAmplifier.rollCritDice();
             if (isACrit) {
-                damage *= PlayerStats.getInstance().getCriticalStrikeDamageMultiplier();
+                if(ownerOrCreator instanceof SpaceShip spaceShip){
+                    damage *= spaceShip.getCritDamageModifier();
+                } else {
+                    damage *= 2;
+                }
             }
         }
 

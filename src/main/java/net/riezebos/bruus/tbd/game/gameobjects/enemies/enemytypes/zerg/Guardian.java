@@ -125,7 +125,7 @@ public class Guardian extends Enemy {
         missile.setKnockbackStrength(6);
 
         //get the coordinates for rotation of the missile
-        SpaceShip spaceship = PlayerManager.getInstance().getSpaceship();
+        SpaceShip spaceship = PlayerManager.getInstance().getClosestSpaceShip(this);
         Point rotationCoordinates = new Point(
                 spaceship.getCenterXCoordinate() - (missile.getAnimation().getWidth() / 2),
                 spaceship.getCenterYCoordinate() - (missile.getHeight() * 0.15f) //Small offset because it aims too low, probably because of non-cropped sprites

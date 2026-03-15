@@ -51,7 +51,7 @@ public class ClassDescription {
                 description = "The Carrier cannot attack. The Carrier creates an armada of Protoss ships to fight around him. " +
                         "The Carrier can deploy a destructable beacon, Protoss ships will prioritize flying around the beacon. Switching gears allows the Carrier to rebuild destroyed Protoss ships or " +
                         "rapidly move away from danger.";
-                maxHitpoints = PlayerStats.carrierHitpoints;
+                maxHitpoints = PlayerStats.carrierBaseHitpoints;
                 difficulty = "Easy";
                 unlockCondition = "Defeat the third boss to unlock this class.";
                 break;

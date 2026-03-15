@@ -1,6 +1,7 @@
 package net.riezebos.bruus.tbd.game.gameobjects.neutral.interactable;
 
 import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
+import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SpaceShip;
 import net.riezebos.bruus.tbd.game.movement.MovementConfiguration;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteAnimationConfiguration;
 
@@ -14,6 +15,10 @@ public abstract class Interactable extends GameObject {
     }
 
     public void activateObject() {
+        //supposed to be overriden
+    }
+
+    public void activateObject(SpaceShip activator) {
         //supposed to be overriden
     }
 

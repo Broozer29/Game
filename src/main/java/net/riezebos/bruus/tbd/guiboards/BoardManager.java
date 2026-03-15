@@ -1,6 +1,6 @@
 package net.riezebos.bruus.tbd.guiboards;
 
-import net.riezebos.bruus.tbd.controllerInput.ConnectedControllersManager;
+import net.riezebos.bruus.tbd.controllerInput.ControllerManager;
 import net.riezebos.bruus.tbd.game.items.PlayerInventory;
 import net.riezebos.bruus.tbd.guiboards.boards.*;
 import net.riezebos.bruus.tbd.visualsandaudio.data.DataClass;
@@ -34,10 +34,23 @@ public class BoardManager extends JFrame {
 
     private BoardManager() {
         setResizable(false);
-        setTitle("Alpha version 0.1");
-        setLocationRelativeTo(null);
+        setTitle("Game");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(data.getWindowWidth(), data.getWindowHeight());
+            setExtendedState(JFrame.MAXIMIZED_BOTH);
+            setUndecorated(true);
+
+//        if (System.getProperty("os.name").toLowerCase().contains("mac")) {
+//            System.setProperty("apple.awt.application.appearance", "system");
+//            GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
+//            if (gd.isFullScreenSupported()) {
+//                setUndecorated(true);
+//                gd.setFullScreenWindow(this);
+//            }
+//        }
+
+        data.setWindowWidth(getWidth());
+        data.setWindowHeight(getHeight());
 
         // Initialize screens
         mainMenuBoard = new MainMenuBoard();
@@ -57,18 +70,18 @@ public class BoardManager extends JFrame {
             playMenuMusic();
             mainMenuBoard.recreateWindow();
             mainMenuBoard.getTimer().restart();
-            ConnectedControllersManager.getInstance().setControllerSensitive(false);
+            ControllerManager.getInstance().setControllerSensitive(false);
         });
 
         screenActions.put(ScreenType.UPGRADE_SELECTION, () -> {
             boonSelectionBoard.recreateWindow();
             boonSelectionBoard.getTimer().restart();
-            ConnectedControllersManager.getInstance().setControllerSensitive(false);
+            ControllerManager.getInstance().setControllerSensitive(false);
         });
         screenActions.put(ScreenType.GAME, () -> {
             stopMusic();
             gameBoard.startGame();
-            ConnectedControllersManager.getInstance().setControllerSensitive(true);
+            ControllerManager.getInstance().setControllerSensitive(true);
         });
 
         screenActions.put(ScreenType.SHOP, () -> {
@@ -76,14 +89,14 @@ public class BoardManager extends JFrame {
             PlayerInventory.getInstance().setCashMoney(Math.round(PlayerInventory.getInstance().getCashMoney()));
             shopBoard.initShopBoardGUIComponents();
             shopBoard.getTimer().restart();
-            ConnectedControllersManager.getInstance().setControllerSensitive(false);
+            ControllerManager.getInstance().setControllerSensitive(false);
         });
 
         screenActions.put(ScreenType.CLASS_SELECTION, () -> {
             classSelectionBoard.initMenuTiles(); //Kinda sloppy, recreates ALL components when only a set amount need to be remade but its a quick fix
             classSelectionBoard.recreateWindow();
             classSelectionBoard.getTimer().restart();
-            ConnectedControllersManager.getInstance().setControllerSensitive(false);
+            ControllerManager.getInstance().setControllerSensitive(false);
         });
     }
 

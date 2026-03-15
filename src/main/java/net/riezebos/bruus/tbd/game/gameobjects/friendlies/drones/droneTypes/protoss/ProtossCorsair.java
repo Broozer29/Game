@@ -9,8 +9,8 @@ import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.droneTypes.Dron
 import net.riezebos.bruus.tbd.game.gameobjects.neutral.Explosion;
 import net.riezebos.bruus.tbd.game.gameobjects.neutral.ExplosionConfiguration;
 import net.riezebos.bruus.tbd.game.gameobjects.neutral.ExplosionManager;
-import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
+import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.items.ItemEnums;
 import net.riezebos.bruus.tbd.game.items.PlayerInventory;
 import net.riezebos.bruus.tbd.game.items.effects.EffectActivationTypes;
@@ -47,7 +47,6 @@ public class ProtossCorsair extends Drone {
         super.droneType = DroneTypes.ProtossCorsair;
         super.deathSound = AudioEnums.ProtossShipDeath;
         super.appliesOnHitEffects = true;
-        this.ownerOrCreator = PlayerManager.getInstance().getSpaceship();
 
 //        SpawnScrapMetalOnDeath spawnScrapMetalOnDeath = new SpawnScrapMetalOnDeath(0.25f);
 //        this.effects.add(spawnScrapMetalOnDeath);
@@ -63,11 +62,11 @@ public class ProtossCorsair extends Drone {
             this.movementConfiguration.resetMovementPath();
             this.movementConfiguration.setCurrentLocation(new Point(this.getXCoordinate(), this.getYCoordinate()));
             this.setAllowedVisualsToRotate(true);
-            this.movementConfiguration.setDestination(ProtossUtils.getRandomPoint());
-            this.isMovingAroundCarrierDrone = ProtossUtils.carrierDroneIsPresent();
+            this.movementConfiguration.setDestination(ProtossUtils.getRandomPoint(this.ownerOrCreator));
+            this.isMovingAroundCarrierDrone = ProtossUtils.carrierDroneIsPresent(this.ownerOrCreator);
         }
 
-        if (!ProtossUtils.carrierDroneIsPresent() && this.isMovingAroundCarrierDrone) {
+        if (!ProtossUtils.carrierDroneIsPresent(this.ownerOrCreator) && this.isMovingAroundCarrierDrone) {
             immediatlyReturnToCarrier();
         }
         fireAction();
@@ -77,14 +76,17 @@ public class ProtossCorsair extends Drone {
         this.movementConfiguration.resetMovementPath();
         this.movementConfiguration.setCurrentLocation(new Point(this.getXCoordinate(), this.getYCoordinate()));
         this.setAllowedVisualsToRotate(true);
-        this.movementConfiguration.setDestination(ProtossUtils.getRandomPoint());
-        this.isMovingAroundCarrierDrone = ProtossUtils.carrierDroneIsPresent();
+        this.movementConfiguration.setDestination(ProtossUtils.getRandomPoint(this.ownerOrCreator));
+        this.isMovingAroundCarrierDrone = ProtossUtils.carrierDroneIsPresent(this.ownerOrCreator);
     }
 
+    private double lastGameSecondsCheckedForTarget = 0;
+    private double checkingTargetCooldown = (double) (GameState.getInstance().getDELAY() * 3) / 1000; //every 3 gameticks
 
-    public void fireAction() {
-        if (target == null) {
+    public void fireAction () {
+        if(target == null && GameState.getInstance().getGameSeconds() >= lastGameSecondsCheckedForTarget + checkingTargetCooldown){
             target = EnemyManager.getInstance().getClosestEnemyTargetWithinDistance(this.getCenterXCoordinate(), this.getCenterYCoordinate(), detectionRange);
+            lastGameSecondsCheckedForTarget = GameState.getInstance().getGameSeconds();
         }
 
         if (target != null && !isCharging) {
@@ -121,7 +123,7 @@ public class ProtossCorsair extends Drone {
         spriteConfiguration1.setyCoordinate(this.yCoordinate);
         spriteConfiguration1.setScale(explosionSize);
 
-        float damage = PlayerStats.getInstance().getNormalAttackDamage() * explosionDamageFactor; //failsafe but is expected to always be overwritten
+        float damage = PlayerStats.getInstance().getBaseDamage() * explosionDamageFactor; //failsafe but is expected to always be overwritten
 
         ProtossCorsairItem item = (ProtossCorsairItem) PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.ProtossCorsair);
         if(item != null){
@@ -163,8 +165,8 @@ public class ProtossCorsair extends Drone {
         Rectangle targetBounds = target.getBounds(); // Get target's bounding box
 
         GameObject currentHoveringOwner = this.ownerOrCreator;
-        if(ProtossUtils.carrierDroneIsPresent()){
-            currentHoveringOwner = FriendlyManager.getInstance().getDronesByDroneType(DroneTypes.CarrierDrone).get(0);
+        if(ProtossUtils.carrierDroneIsPresent(this.ownerOrCreator)){
+            currentHoveringOwner = FriendlyManager.getInstance().getDronesByDroneType(DroneTypes.CarrierDrone, this.ownerOrCreator).get(0);
         }
         double distance = ProtossUtils.getDistanceToRectangle(currentHoveringOwner.getCenterXCoordinate(), currentHoveringOwner.getCenterYCoordinate(), targetBounds);
 
@@ -176,7 +178,7 @@ public class ProtossCorsair extends Drone {
         super.triggerOnDeathActions();
         if (PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.EmergencyRepairs) != null) {
             EmergencyRepairs emergencyRepairs = (EmergencyRepairs) PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.EmergencyRepairs);
-            emergencyRepairs.applyEffectToObject(PlayerManager.getInstance().getSpaceship());
+            emergencyRepairs.applyEffectToObject(this.ownerOrCreator);
         }
 
         if (PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.VengeanceProtocol) != null) {

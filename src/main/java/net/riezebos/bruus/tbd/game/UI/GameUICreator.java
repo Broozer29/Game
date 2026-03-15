@@ -2,7 +2,9 @@ package net.riezebos.bruus.tbd.game.UI;
 
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
 import net.riezebos.bruus.tbd.game.level.LevelManager;
+import net.riezebos.bruus.tbd.guiboards.guicomponents.DisplayOnly;
 import net.riezebos.bruus.tbd.guiboards.guicomponents.GUIComponent;
+import net.riezebos.bruus.tbd.guiboards.guicomponents.MenuButton;
 import net.riezebos.bruus.tbd.visualsandaudio.data.DataClass;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.AnimationManager;
@@ -42,6 +44,27 @@ public class GameUICreator {
     private UIObject gameOverCardTitle;
     private UIObject damageOverlay;
     private UIObject mineralIcon;
+
+
+    private DisplayOnly firstRelicBackgroundCard;
+    private DisplayOnly secondRelicBackgroundCard;
+    private DisplayOnly thirdRelicBackgroundCard;
+
+    private MenuButton firstRelicButton;
+    private MenuButton secondRelicButton;
+    private MenuButton thirdRelicButton;
+
+    private UIObject firstRelicTitle;
+    private UIObject secondRelicTitle;
+    private UIObject thirdRelicTitle;
+
+
+    private void createRelicBackgroundCards() {
+        int firstRelicXCoordinate = Math.round(DataClass.getInstance().getBoardBlockWidth() * 0.25f);
+
+        int centerYCoordinate = Math.round(DataClass.getInstance().getPlayableWindowMaxHeight() * 0.5f);
+
+    }
 
     private List<UIObject> informationCards = new ArrayList<>();
 
@@ -111,13 +134,11 @@ public class GameUICreator {
             wingsImageEnum = LevelManager.getInstance().getImageEnumByDifficultyScore(currentLevelDifficultyScore);
         }
 
-        int xCoordinate = Math.round(DataClass.getInstance().getWindowWidth() * 0.60305f);
+        int xCoordinate = 4;
 
-        float scale = 1 * DataClass.getInstance().getResolutionFactor();
-        difficultyWings = new UIObject(createUIConfiguration(0, DataClass.getInstance().getPlayableWindowMaxHeight() + 20, scale, wingsImageEnum));
-        difficultyWings.setCenterCoordinates(xCoordinate,
-                (DataClass.getInstance().getPlayableWindowMaxHeight() + (difficultyWings.getHeight() / 2))
-        );
+        float scale = 0.8f * DataClass.getInstance().getResolutionFactor();
+        difficultyWings = new UIObject(createUIConfiguration(xCoordinate, DataClass.getInstance().getPlayableWindowMaxHeight() - 20, scale, wingsImageEnum));
+        difficultyWings.setCenterCoordinates(difficultyWings.getCenterXCoordinate(), 40);
     }
 
     public GUIComponent createEmeraldObtainedIcon(int xCoordinate, int yCoordinate){
@@ -202,12 +223,11 @@ public class GameUICreator {
         overloadingShieldBar.resizeToDimensions(healthBarWidth, healthBarHeight);
     }
 
-    private void createProgressBar(){
-        int xCoordinate = Math.round(DataClass.getInstance().getWindowWidth() * 0.35305f);
-        int yCoordinate = DataClass.getInstance().getPlayableWindowMaxHeight() + 20;
-
-        float progressBarScale = 1 * DataClass.getInstance().getResolutionFactor();
-        float progressBarFillingScale = 0.95f * DataClass.getInstance().getResolutionFactor();
+    public void createProgressBar(){
+        int xCoordinate = difficultyWings.getXCoordinate() + Math.round(difficultyWings.getWidth() * 1.2f);
+        int yCoordinate = 15;
+        float progressBarScale = 1 * 0.8f * DataClass.getInstance().getResolutionFactor();
+        float progressBarFillingScale = 0.95f * 0.8f* DataClass.getInstance().getResolutionFactor();
         float progressBarSpaceShipIndicatorScale = 0.3f * DataClass.getInstance().getResolutionFactor();
 
         progressBarFrame = new UIObject((createUIConfiguration(xCoordinate, yCoordinate, progressBarScale, ImageEnums.ProgressBar)));
@@ -273,10 +293,17 @@ public class GameUICreator {
         gameOverCardTitle.setCenterCoordinates(titleCardX, titleCardY);
     }
 
-    private void createMineralIcon(){
-        int xCoordinate = Math.round(DataClass.getInstance().getWindowWidth() * 0.265f);
-        int yCoordinate = Math.round(DataClass.getInstance().getPlayableWindowMaxHeight() + ((DataClass.getInstance().getInformationCardHeight() / 2) * 0.9f));
+    public void createMineralIcon(){
+        int xCoordinate = Math.round(DataClass.getInstance().getWindowWidth() * 0.15f);
+        int yCoordinate = Math.round(3);
 
+        if(difficultyWings != null && LevelManager.getInstance().isNextLevelABossLevel()){
+            xCoordinate = difficultyWings.getXCoordinate() + Math.round(difficultyWings.getWidth() + 30);
+            yCoordinate = difficultyWings.getYCoordinate() + 40;
+        } else if(progressBarFrame != null){
+            xCoordinate = progressBarFrame.getXCoordinate() + Math.round(progressBarFrame.getWidth() + 30f);
+            yCoordinate = progressBarFrame.getCenterYCoordinate();
+        }
 
         float scale = 0.5f * DataClass.getInstance().getResolutionFactor();
         mineralIcon = new UIObject(createUIConfiguration(xCoordinate, yCoordinate, scale, ImageEnums.TopazGem7));
@@ -329,6 +356,7 @@ public class GameUICreator {
     }
 
     public void resetManager () {
+        createDifficultyWings(LevelManager.getInstance().isNextLevelABossLevel(), LevelManager.getInstance().getCurrentLevelDifficultyScore());
         createHealthBar();
         createShieldBar();
         createSpecialAttackUIObjects();

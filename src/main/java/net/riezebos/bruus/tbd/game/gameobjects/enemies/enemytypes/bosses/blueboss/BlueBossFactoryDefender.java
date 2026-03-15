@@ -26,24 +26,30 @@ public class BlueBossFactoryDefender extends Enemy {
 
     public BlueBossFactoryDefender(SpriteAnimationConfiguration spriteAnimationConfigurationion, EnemyConfiguration enemyConfiguration, MovementConfiguration movementConfiguration) {
         super(spriteAnimationConfigurationion, enemyConfiguration, movementConfiguration);
-        target = PlayerManager.getInstance().getSpaceship();
         this.setAllowedVisualsToRotate(true);
         this.attackSpeed = 0.65f;
         this.knockbackStrength = 9;
+        this.lastTimeTargetSearched = GameState.getInstance().getGameSeconds();
     }
+
+
+    private double lastTimeTargetSearched = 0;
 
     @Override
     public void fireAction() {
         this.setAllowedVisualsToRotate(true);
         this.rotateGameObjectTowards(target.getCenterXCoordinate(), target.getCenterYCoordinate(), false);
+        double currentTime = GameState.getInstance().getGameSeconds();
+
+        if(currentTime >= lastTimeTargetSearched + 0.5){ //elke 0.5 seconden kan hij retargeten vanwege performance redenen
+            target = PlayerManager.getInstance().getClosestSpaceShip(this);
+            lastTimeTargetSearched = GameState.getInstance().getGameSeconds();
+        }
+
         if(this.ownerOrCreator != null && this.ownerOrCreator.getCurrentHitpoints() <= 0 || !this.ownerOrCreator.isVisible()){
             this.takeDamage(this.getMaxHitPoints() * 100);
         }
 
-        //todo, actual firing
-
-
-        double currentTime = GameState.getInstance().getGameSeconds();
         super.updateChargingAttackAnimationCoordination();
         if (currentTime >= lastAttackTime + this.getAttackSpeed() && !isTooFarAway()) {
             shootMissile();

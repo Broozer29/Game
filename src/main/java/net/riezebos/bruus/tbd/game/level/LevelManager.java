@@ -11,6 +11,7 @@ import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyTribes;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
 import net.riezebos.bruus.tbd.game.gameobjects.player.boons.BoonManager;
 import net.riezebos.bruus.tbd.game.gameobjects.player.boons.boonimplementations.BoonActivationEnums;
+import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SpaceShip;
 import net.riezebos.bruus.tbd.game.gamestate.GameMode;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.gamestate.GameStatusEnums;
@@ -119,7 +120,10 @@ public class LevelManager {
         shopManager.setRowsUnlockedByDifficulty(this.currentLevelDifficultyScore);
         shopManager.calculateRerollCost();
 
-        PlayerManager.getInstance().getSpaceship().setImmune(true);
+        for (SpaceShip spaceShip : PlayerManager.getInstance().getAllSpaceShips()) {
+            spaceShip.setImmune(true);
+        }
+
         gameState.setGameState(GameStatusEnums.Show_Level_Score_Card);
         //disabling this causes the game to remember the players last selected option
 //        this.currentLevelLength = null;
@@ -129,7 +133,6 @@ public class LevelManager {
     }
 
 
-    // Called when a level starts, to saturate enemy list
     public void startLevel() {
         BoonManager.getInstance().activateBoons(BoonActivationEnums.Start_of_Level);
         GameState.getInstance().setLevelStartTime(GameState.getInstance().getGameSeconds());
@@ -140,10 +143,12 @@ public class LevelManager {
             this.levelType = LevelTypes.Boss;
         }
 
-        GameUICreator.getInstance().createDifficultyWings(this.levelType.equals(LevelTypes.Boss), currentLevelDifficultyScore);
+        GameUICreator.getInstance().createDifficultyWings(this.levelType.equals(LevelTypes.Boss), getDifficultyScore());
+        GameUICreator.getInstance().createProgressBar();
+        GameUICreator.getInstance().createMineralIcon();
 
-        if (DevTestSettings.enablePlayerMovingPastBoundaries) {
-            PlayerManager.getInstance().getSpaceship().allowMovementBeyondBoundaries = true;
+        for (SpaceShip spaceShip : PlayerManager.getInstance().getAllSpaceShips()) {
+            spaceShip.allowMovementBeyondBoundaries = DevTestSettings.enablePlayerMovingPastBoundaries;
         }
 
         if (!DevTestSettings.blockDirectors) {
@@ -207,22 +212,22 @@ public class LevelManager {
     }
 
     public EnemyEnums getNextBoss() {
-//        return EnemyEnums.YellowBoss;
-        int bossesDefeated = GameState.getInstance().getBossesDefeated();
-        switch (bossesDefeated % EnemyEnums.getAmountOfBossEnemies()) {
-            case 0:
-                return EnemyEnums.RedBoss;
-            case 1:
-                return EnemyEnums.SpaceStationBoss;
-            case 2:
-                return EnemyEnums.CarrierBoss;
-            case 3:
-                return EnemyEnums.StrikerBoss;
-            case 4:
-                return EnemyEnums.BlueBoss;
-            default:
-                return EnemyEnums.RedBoss;
-        }
+        return EnemyEnums.YellowBoss;
+//        int bossesDefeated = GameState.getInstance().getBossesDefeated();
+//        switch (bossesDefeated % EnemyEnums.getAmountOfBossEnemies()) {
+//            case 0:
+//                return EnemyEnums.RedBoss;
+//            case 1:
+//                return EnemyEnums.SpaceStationBoss;
+//            case 2:
+//                return EnemyEnums.CarrierBoss;
+//            case 3:
+//                return EnemyEnums.StrikerBoss;
+//            case 4:
+//                return EnemyEnums.BlueBoss;
+//            default:
+//                return EnemyEnums.RedBoss;
+//        }
     }
 
 

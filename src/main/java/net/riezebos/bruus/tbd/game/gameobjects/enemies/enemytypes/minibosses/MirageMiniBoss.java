@@ -120,7 +120,8 @@ public class MirageMiniBoss extends Enemy {
         }
 
         this.setAllowedVisualsToRotate(true);
-        this.rotateGameObjectTowards(PlayerManager.getInstance().getSpaceship().getCenterXCoordinate(), PlayerManager.getInstance().getSpaceship().getCenterYCoordinate(), true);
+        SpaceShip closestSpaceShip = PlayerManager.getInstance().getClosestSpaceShip(this);
+        this.rotateGameObjectTowards(closestSpaceShip.getCenterXCoordinate(), closestSpaceShip.getCenterYCoordinate(), true);
         this.setAllowedVisualsToRotate(false);
     }
 
@@ -159,7 +160,7 @@ public class MirageMiniBoss extends Enemy {
         Missile missile = MissileCreator.getInstance().createMissile(spriteConfiguration, missileConfiguration, movementConfiguration);
 
         //get the coordinates for rotation of the missile
-        SpaceShip spaceship = PlayerManager.getInstance().getSpaceship();
+        SpaceShip spaceship = PlayerManager.getInstance().getClosestSpaceShip(this);
         Point rotationCoordinates = new Point(
                 spaceship.getCenterXCoordinate() - missile.getWidth() / 2,
                 spaceship.getCenterYCoordinate() - missile.getHeight() / 2
@@ -212,6 +213,9 @@ public class MirageMiniBoss extends Enemy {
         clonedEnemy.getMovementConfiguration().setDirection(getRandomDirection());
         //give it a random direction for the bouncing pathfinder
         clonedEnemy.setCenterCoordinates(this.getCenterXCoordinate(), this.getCenterYCoordinate());
+
+        clonedEnemy.getEffects().forEach(effect -> {effect.removeEffect(clonedEnemy);}); //remove the spawncoinsondeath effect
+        clonedEnemy.getEffects().clear(); //remove the spawncoinsondeath effect
 
         EnemyManager.getInstance().addEnemy(clonedEnemy);
     }

@@ -26,7 +26,10 @@ public class Martyrdom extends Item {
 
     @Override
     public void applyEffectToObject(GameObject gameObject) {
-        for(Drone drone : FriendlyManager.getInstance().getAllProtossDrones()){
+    }
+
+    public void applyEffect(GameObject spaceship){
+        for(Drone drone : FriendlyManager.getInstance().getAllProtossDrones(spaceship)){
             AttackSpeedModifierEffect attackSpeedModifierEffect = new AttackSpeedModifierEffect((attackSpeedIncrease * this.quantity),
                     duration, createAnimation(), EffectIdentifiers.MartyrdomAttackSpeed);
             drone.addEffect(attackSpeedModifierEffect);

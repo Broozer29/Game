@@ -7,12 +7,9 @@ import net.riezebos.bruus.tbd.game.gameobjects.missiles.MissileCreator;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.MissileEnums;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
-import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SpaceShip;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
-import net.riezebos.bruus.tbd.game.items.Item;
 import net.riezebos.bruus.tbd.game.items.ItemEnums;
 import net.riezebos.bruus.tbd.game.items.PlayerInventory;
-import net.riezebos.bruus.tbd.game.items.enums.ItemApplicationEnum;
 import net.riezebos.bruus.tbd.game.items.items.firefighter.EntanglingFlames;
 import net.riezebos.bruus.tbd.game.movement.Direction;
 import net.riezebos.bruus.tbd.game.movement.MovementConfiguration;
@@ -28,7 +25,10 @@ import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteAnimation;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteAnimationConfiguration;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteConfiguration;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Random;
 
 public class ThornsDamageDealer {
 
@@ -96,13 +96,13 @@ public class ThornsDamageDealer {
         missile.rotateObjectTowardsDestination(true);
         missile.setAllowedVisualsToRotate(false);
         missile.setDamage(missile.getDamage() * PlayerStats.getInstance().getThornsDamageRatio());
-        missile.setOwnerOrCreator(PlayerManager.getInstance().getSpaceship());
+        missile.setOwnerOrCreator(PlayerManager.getInstance().getAllSpaceShips().get(0)); //tijdelijk fix om code te kunnen compileren, deze methode wordt alleen gebruikt door reflective shielding dat disabled/verwijderd is
     }
 
-    public Missile createMissile(Point origin, GameObject target) {
+    public Missile createMissile(GameObject originObject, GameObject target) {
         int movementSpeed = 5;
         MissileCreator missileCreator1 = MissileCreator.getInstance();
-        SpriteConfiguration spriteConfiguration = missileCreator1.createMissileSpriteConfig(origin.getX(), origin.getY(),
+        SpriteConfiguration spriteConfiguration = missileCreator1.createMissileSpriteConfig(originObject.getCenterXCoordinate(), originObject.getCenterYCoordinate(),
                 ImageEnums.AlienLaserBeamAnimated, 1);
 
 
@@ -119,7 +119,7 @@ public class ThornsDamageDealer {
         AudioEnums deathSound = null;
         boolean allowedToDealDamage = true;
         String objectType = "Player Missile";
-        float damage = playerStats.getNormalAttackDamage() * PlayerStats.getInstance().getThornsDamageRatio();
+        float damage = playerStats.getBaseDamage() * PlayerStats.getInstance().getThornsDamageRatio();
 
         if(PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.BeckoningFlames) != null){
             EntanglingFlames item = (EntanglingFlames) PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.BeckoningFlames);
@@ -140,9 +140,8 @@ public class ThornsDamageDealer {
         }
 
         Missile missile = missileCreator1.createMissile(spriteConfiguration, missileConfiguration, movementConfiguration);
-        SpaceShip spaceship = PlayerManager.getInstance().getSpaceship();
-        missile.setOwnerOrCreator(spaceship);
-        missile.setCenterCoordinates(spaceship.getCenterXCoordinate(), spaceship.getCenterYCoordinate());
+        missile.setOwnerOrCreator(originObject);
+        missile.setCenterCoordinates(originObject.getCenterXCoordinate(), originObject.getCenterYCoordinate());
         missile.resetMovementPath();
         missile.getMovementConfiguration().setDestination(
                 new Point(target.getCenterXCoordinate() - missile.getWidth() / 2
@@ -166,7 +165,7 @@ public class ThornsDamageDealer {
             int remainingAttacks = entry.getValue();
 
             if (gameObject.isVisible() && gameObject.getCurrentHitpoints() > 0) {
-                dealThornsDamageTo(gameObject, PlayerStats.getInstance().getThornsDamage());
+                dealThornsDamageTo(gameObject, PlayerStats.getInstance().getBaseDamage()); //todo dit moet eigenlijk damage ophalen van spaceship maar dit is deprecated code dus meh
                 remainingAttacks--;
 
                 if (remainingAttacks > 0) {
@@ -184,7 +183,7 @@ public class ThornsDamageDealer {
     }
 
     public void dealThornsDamageTo(GameObject target, float thornsDamage) {
-        if (this.playerStats.getThornsDamage() <= 0 || target == null || !this.playerStats.isHasThornsEnabled()) {
+        if (target == null || !this.playerStats.isHasThornsEnabled()) {
             return;
         }
 
@@ -208,16 +207,16 @@ public class ThornsDamageDealer {
     }
 
     //Currently unused
-    private void applyOnHitEffects(GameObject target) {
-        float roll = random.nextFloat(); // Roll a number between 0.0 and 1.0
-        if (roll < playerStats.getChanceForThornsToApplyOnHitEffects()) {
-            List<Item> onHitItems = PlayerInventory.getInstance().getItemsByApplicationMethod(ItemApplicationEnum.AfterCollision);
-            for (Item item : onHitItems) {
-                item.applyEffectToObject(target);
-                item.applyEffectToObject(PlayerManager.getInstance().getSpaceship(), target);
-            }
-        }
-    }
+//    private void applyOnHitEffects(GameObject target) {
+//        float roll = random.nextFloat(); // Roll a number between 0.0 and 1.0
+//        if (roll < playerStats.getChanceForThornsToApplyOnHitEffects()) {
+//            List<Item> onHitItems = PlayerInventory.getInstance().getItemsByApplicationMethod(ItemApplicationEnum.AfterCollision);
+//            for (Item item : onHitItems) {
+//                item.applyEffectToObject(target);
+//                item.applyEffectToObject(PlayerManager.getInstance().getSpaceship(), target);
+//            }
+//        }
+//    }
 
 
     private void scaleAnimationToTarget(GameObject target, SpriteAnimation animation) {

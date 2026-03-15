@@ -18,7 +18,7 @@ import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.Sprit
 public class StationaryExplodingBomb extends Missile {
 
 
-    private static int ANGLE_INCREMENT = 45;
+    private int angleIncrement = 45;
     private double amountOfTimesAnimHasSpedUp = 0;
     private float explosionSize = 2.5f;
     private boolean createMissilesOnExplosion = false;
@@ -55,10 +55,8 @@ public class StationaryExplodingBomb extends Missile {
     }
 
     private void createExplosion() {
-        //todo FIX DIT in een fatsoenlijke implementatie, dit is proof of concept
         if(createMissilesOnExplosion){
             createMissileRing();
-            explosionSize = 1f; //manual reduction
         }
 
         SpriteConfiguration spriteConfiguration1 = new SpriteConfiguration();
@@ -80,8 +78,7 @@ public class StationaryExplodingBomb extends Missile {
     }
 
     private void createMissileRing(){
-        ANGLE_INCREMENT = 45;
-        for (int angle = 0; angle < (361 - ANGLE_INCREMENT); angle += ANGLE_INCREMENT) {
+        for (int angle = 0; angle < (361 - angleIncrement); angle += angleIncrement) {
             // Directly call shootMissiles using current angle
             shootMissiles(angle);
         }
@@ -162,5 +159,13 @@ public class StationaryExplodingBomb extends Missile {
 
     public void setExplosionSize(float explosionSize) {
         this.explosionSize = explosionSize;
+    }
+
+    public int getAngleIncrement() {
+        return angleIncrement;
+    }
+
+    public void setAngleIncrement(int angleIncrement) {
+        this.angleIncrement = angleIncrement;
     }
 }

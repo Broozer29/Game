@@ -11,12 +11,8 @@ public class DataClass {
 	private int windowHeight = 1077;
 	private String textFont = "Lucida Grande";
 
-	private int informationCardWidth = 0;
-	private int informationCardHeight = 0;
-	
+
 	private DataClass() {
-		informationCardWidth = windowWidth;
-		informationCardHeight = Math.round(100 * getResolutionFactor());
 	}
 
 	public float getResolutionFactor(){
@@ -41,15 +37,11 @@ public class DataClass {
 	}
 
 	public int getPlayableWindowMaxHeight(){
-		return windowHeight - informationCardHeight;
-	}
-
-	public int getInformationCardWidth () {
-		return informationCardWidth;
+		return windowHeight;
 	}
 
 	public int getInformationCardHeight () {
-		return informationCardHeight;
+		return Math.round(60 * getResolutionFactor());
 	}
 
 	public int getBoardBlockWidth() {
@@ -58,6 +50,14 @@ public class DataClass {
 
 	public int getBoardBlockAmount(){
 		return 8;
+	}
+
+	public void setWindowHeight(int windowHeight) {
+		this.windowHeight = windowHeight;
+	}
+
+	public void setWindowWidth(int windowWidth) {
+		this.windowWidth = windowWidth;
 	}
 
 	public String getTextFont () {

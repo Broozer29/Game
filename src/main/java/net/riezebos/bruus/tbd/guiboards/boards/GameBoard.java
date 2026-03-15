@@ -1,7 +1,6 @@
 package net.riezebos.bruus.tbd.guiboards.boards;
 
-import net.riezebos.bruus.tbd.controllerInput.ConnectedControllersManager;
-import net.riezebos.bruus.tbd.controllerInput.ControllerInputEnums;
+import net.riezebos.bruus.tbd.controllerInput.ControllerManager;
 import net.riezebos.bruus.tbd.game.UI.GameUICreator;
 import net.riezebos.bruus.tbd.game.UI.UIObject;
 import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
@@ -57,6 +56,8 @@ import net.riezebos.bruus.tbd.visualsandaudio.data.audio.AudioManager;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.AudioEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.MusicMediaPlayer;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
+import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageResizer;
+import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageRotator;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.AnimationManager;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.Sprite;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteAnimation;
@@ -103,7 +104,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
     private PlayerStats playerStats = PlayerStats.getInstance();
     private GameUICreator gameUICreator = GameUICreator.getInstance();
     private OnScreenTextManager textManager = OnScreenTextManager.getInstance();
-    private ConnectedControllersManager controllers = ConnectedControllersManager.getInstance();
+    private ControllerManager controllerManager = ControllerManager.getInstance();
     private int firstTextColumnXCoordinate = 0;
     private int secondTextColumnXCoordinate = 0;
     private PerformanceLogger performanceLogger;
@@ -178,6 +179,11 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
         inputDelay = 0;
         this.isPlayingDeathMusic = false;
         this.hasExportedLogs = false;
+
+
+        //Free up any cached graphics that have not been used in 5 minutes. Might cause lag spikes but should help significantly with memory usage and heap-size errors
+        ImageRotator.getInstance().cleanupOldCacheEntries();
+        ImageResizer.getInstance().cleanupOldCacheEntries();
     }
 
     private void resetManagersForNextLevel() {
@@ -232,6 +238,8 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
             drawZoningIn(g2d);
         } else if (gameState.getGameState() == GameStatusEnums.Zoning_Out) {
             drawZoningOut(g2d);
+        } else if(gameState.getGameState() == GameStatusEnums.SelectingRelic) {
+            //todo show the 3 relic cards
         }
 
         //Achievement UI moet boven alles getekent worden, dit is een beetje een uitzonderlijke fix
@@ -252,8 +260,6 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
 
     private void goToNextLevel() {
         if (zoningOutAlpha >= 1) {
-            playerManager.getSpaceship().setXCoordinate(DataClass.getInstance().getWindowWidth() / 10);
-            playerManager.getSpaceship().setYCoordinate(DataClass.getInstance().getWindowHeight() / 2);
             gameState.setGameState(GameStatusEnums.Shopping);
             gameState.setStagesCompleted(gameState.getStagesCompleted() + 1);
             backgroundManager.resetManager();
@@ -412,7 +418,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
         g2d.setColor(new Color(0, 0, 0, zoningInAlpha));
 
         // Draw a rectangle covering the whole screen
-        g2d.fillRect(0, 0, boardWidth, boardHeight);
+        g2d.fillRect(0, 0, boardWidth, boardHeight + 5);
 
         // Decrease alpha for next time
         zoningInAlpha -= 0.02f; // Adjust this value to control the speed of the fade
@@ -428,7 +434,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
         g2d.setColor(new Color(0, 0, 0, zoningOutAlpha));
 
         // Draw a rectangle covering the whole screen
-        g2d.fillRect(0, 0, boardWidth, boardHeight);
+        g2d.fillRect(0, 0, boardWidth, boardHeight + 5);
 
         // Increase alpha for next time
         zoningOutAlpha += 0.02f; // Adjust this value to control the speed of the fade
@@ -495,15 +501,16 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
             }
         }
 
-        // Draw friendly spaceship
-        if (playerManager.getSpaceship().isVisible()) {
-            if (playerManager.getSpaceship().getAnimation() != null) {
-                drawAnimation(g, playerManager.getSpaceship().getAnimation());
-            } else {
-                drawImage(g, playerManager.getSpaceship());
+        for(SpaceShip spaceShip : playerManager.getAllSpaceShips()){
+            if(spaceShip.isVisible()){
+                if(spaceShip.getAnimation() != null) {
+                    drawAnimation(g, spaceShip.getAnimation());
+                } else {
+                    drawImage(g, spaceShip);
+                }
+                drawPlayerSpecialAttackBar(g, spaceShip);
+                drawPlayerSpecialBar(g, spaceShip);
             }
-
-            drawPlayerSpecialBar(g, playerManager.getSpaceship());
         }
 
         drawSpecialAttacks(VisualLayer.Upper, g);
@@ -517,36 +524,34 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
             drawOnScreenText(g, text);
         }
 
-        for (UIObject obj : gameUICreator.getInformationCards()) {
-            drawImage(g, obj);
+
+//        for (UIObject obj : gameUICreator.getInformationCards()) {
+//            drawImage(g, obj);
+//        }
+
+        //todo backwards compatability fix, drawPlayerHealthBars moet waarschijnlijk geheel verwijderd worden. drawHealthBarsAtTheSpaceShip moet voor alle VISIBLE spaceships uitgevoerd worden
+//        if (playerManager.getAllSpaceShips().size() == 1 && playerManager.getAllSpaceShips().get(0).isVisible()) {
+//            drawPlayerHealthBars(g, playerManager.getAllSpaceShips().get(0)); //todo wss verwijderen want deze ui is niet compatible met multiplayer
+//            drawSpecialAttackFrame(g, playerManager.getAllSpaceShips().get(0)); //todo wss verwijderen want deze ui is niet compatible met multiplayer
+//        }
+
+        drawLowHealthPlayerOverlay(g);
+
+        //seperate loop at the end since the ordering of the drawing matters, healthbar should be on top of everything so its always visible
+        for(SpaceShip spaceShip : PlayerManager.getInstance().getAllSpaceShips()){
+            drawHealthbarsAtSpaceship(g, spaceShip);
         }
 
-        drawPlayerHealthBars(g);
-        drawHealthbarsAtTheSpaceship(g);
-        drawSpecialAttackFrame(g);
         drawSongProgressBar(g);
-
+        drawCurrentAmountOFMinerals(g);
 
         if (gameUICreator.getDifficultyWings() != null) {
             drawImage(g, gameUICreator.getDifficultyWings());
         }
 
-        g.setFont(new Font(DataClass.getInstance().getTextFont(), Font.PLAIN, Math.round(14 * DataClass.getInstance().getResolutionFactor())));
-        drawCurrentAmountOFMinerals(g);
-
-        g.setColor(Color.WHITE);
-        g.setFont(new Font(DataClass.getInstance().getTextFont(), Font.BOLD, Math.round(12 * DataClass.getInstance().getResolutionFactor())));
-        g.drawString("Difficulty coeff: " + gameState.getDifficultyCoefficient(), firstTextColumnXCoordinate, DataClass.getInstance().getPlayableWindowMaxHeight() + 25);
-        g.drawString("Current stage: " + gameState.getStagesCompleted(), firstTextColumnXCoordinate, DataClass.getInstance().getPlayableWindowMaxHeight() + 45);
-        g.drawString("Enemy level: " + gameState.getMonsterLevel(), firstTextColumnXCoordinate, DataClass.getInstance().getPlayableWindowMaxHeight() + 65);
-
-
-        g.drawString("Player level: " + Math.round(playerStats.getCurrentLevel()), secondTextColumnXCoordinate, DataClass.getInstance().getPlayableWindowMaxHeight() + 25);
-        g.drawString("XP to next level: " + Math.round(playerStats.getXpToNextLevel() - playerStats.getCurrentXP()), secondTextColumnXCoordinate, DataClass.getInstance().getPlayableWindowMaxHeight() + 45);
-
-
         if (gameState.getGameState().equals(GameStatusEnums.Paused)) {
             g.setFont(new Font(DataClass.getInstance().getTextFont(), Font.BOLD, Math.round(50 * DataClass.getInstance().getResolutionFactor())));
+            g.setColor(Color.WHITE);
             g.drawString("PAUSED",
                     DataClass.getInstance().getWindowWidth() * 0.43f, //todo hardcoded magic number that needs to be dynamically calculated based on text width
                     DataClass.getInstance().getWindowHeight() / 2);
@@ -555,6 +560,38 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
 
         double end = System.currentTimeMillis();
         this.performanceLogger.logMetric("Draw Objects", end - start);
+    }
+
+    private void drawLowHealthPlayerOverlay(Graphics2D g) {
+
+        SpaceShip player = PlayerManager.getInstance().getAllSpaceShips().stream()
+                .min(Comparator.comparing(SpaceShip::getCurrentHitpoints))
+                .orElse(null);
+
+        if (player == null) {
+            return; // No players exist
+        }
+
+        float playerMaxHealth = player.getMaxHitPoints();
+        float playerMaxShields = player.getMaxShieldPoints();
+
+        float maxTotalHitpoints = playerMaxHealth + playerMaxShields;
+        float currentTotalHitpoints = player.getCurrentHitpoints() + player.getCurrentShieldPoints(); // Bug fix: was getCurrentHitpoints() twice
+
+        if (currentTotalHitpoints <= maxTotalHitpoints * 0.35f) {
+
+            float minHealthThreshold = maxTotalHitpoints * 0.01f;
+            float maxHealthThreshold = maxTotalHitpoints * 0.8f;
+
+            float clampedHitpoints = Math.max(minHealthThreshold, Math.min(currentTotalHitpoints, maxHealthThreshold));
+
+            float transparencyRange = 0.75f;
+            float newTransparancyAlpha = transparencyRange * (1 - (clampedHitpoints - minHealthThreshold) / (maxHealthThreshold - minHealthThreshold));
+
+            UIObject damageOverlay = this.gameUICreator.getDamageOverlay();
+            damageOverlay.setTransparancyAlpha(false, newTransparancyAlpha, 0);
+            drawImage(g, damageOverlay);
+        }
     }
 
     //Helper method to centralize drawing of special attacks
@@ -643,10 +680,50 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
         g.fillRect((gameobject.getXCoordinate() + gameobject.getWidth() + 10), gameobject.getYCoordinate(), 2, actualAmount);
     }
 
+    private void drawPlayerSpecialAttackBar(Graphics2D g, SpaceShip player) {
+        SpaceShipSpecialGun gun = player.getSpecialGun();
+        int charges = gun.getSpecialAttackCharges();
+
+        // Draw the cooldown progress bar only if there are no charges
+        double remainingSeconds = gun.getSecondsUntilNextAttackCharge();
+        double totalCooldown = playerStats.getSpecialAttackCooldown();
+        float percentage = (float) (1.0 - remainingSeconds / totalCooldown); // Properly compute the fill percentage
+
+        int playerHeight = player.getHeight();
+        if (playerHeight <= 40) {
+            playerHeight = 40; // Minimum height for the bar
+        }
+        int actualAmount = Math.round(playerHeight * percentage);
+
+        // Save the original composite to restore after drawing
+        if(playerHeight == actualAmount){
+            return; //dont draw
+        }
+        Composite originalComposite = g.getComposite();
+        g.setColor(new Color(110, 69, 1));
+        g.fillRect(
+                (player.getXCoordinate() - Math.max(10, Math.round(player.getWidth() * 0.125f))),
+                player.getYCoordinate(),
+                3,
+                playerHeight
+        );
+
+        // Draw the filled portion of the bar with slightly less transparency
+        g.setColor(Color.YELLOW);
+        g.fillRect(
+                (player.getXCoordinate() - Math.max(10, Math.round(player.getWidth() * 0.125f))),
+                player.getYCoordinate(),
+                3,
+                actualAmount
+        );
+
+        // Restore the original composite
+        g.setComposite(originalComposite);
+    }
 
     private void drawPlayerSpecialBar(Graphics2D g, SpaceShip player) {
-        float currentValue = player.getSpaceShipRegularGun().getOrangeBarCurrentValue();
-        float maxValue = player.getSpaceShipRegularGun().getOrangeBarMaxValue();
+        float currentValue = player.getSpaceShipRegularGun().getOrangeBarCurrentValue(player);
+        float maxValue = player.getSpaceShipRegularGun().getOrangeBarMaxValue(player);
 
         if (currentValue < 0 || maxValue < 0) {
             return; // Don't draw
@@ -689,15 +766,15 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
         UIObject mineralIcon = GameUICreator.getInstance().getMineralIcon();
         drawImage(g, mineralIcon);
         g.setColor(Color.WHITE);
-        g.drawString("Minerals:", mineralIcon.getXCoordinate(), mineralIcon.getYCoordinate() - 10);
+        g.setFont(new Font("Helvetica", Font.BOLD, 11));
         g.drawString("" + Math.round(PlayerInventory.getInstance().getCashMoney()),
-                mineralIcon.getXCoordinate() + mineralIcon.getWidth(),
-                mineralIcon.getCenterYCoordinate());
+                mineralIcon.getXCoordinate(),
+                mineralIcon.getYCoordinate() + mineralIcon.getHeight() - 3);
     }
 
 
-    private void drawPlayerHealthBars(Graphics2D g) {
-        float playerHealth = playerManager.getSpaceship().getCurrentHitpoints();
+    private void drawPlayerHealthBars(Graphics2D g, SpaceShip player) {
+        float playerHealth = player.getCurrentHitpoints();
         float playerMaxHealth = playerStats.getMaxHitPoints();
         UIObject healthFrame = gameUICreator.getHealthFrame();
         UIObject healthBar = gameUICreator.getHealthBar();
@@ -717,7 +794,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
                 healthBar.getYCoordinate() + gameUICreator.getHealthBarHeight() * 0.85f);
 
 
-        float playerShields = playerManager.getSpaceship().getCurrentShieldPoints();
+        float playerShields = player.getCurrentShieldPoints();
         float playerMaxShields = playerStats.getMaxShieldHitPoints();
         UIObject shieldFrame = this.gameUICreator.getShieldFrame();
         UIObject shieldBar = this.gameUICreator.getShieldBar();
@@ -767,14 +844,13 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
 
     }
 
-    private void drawHealthbarsAtTheSpaceship(Graphics2D g) {
-        float playerShields = playerManager.getSpaceship().getCurrentShieldPoints();
+    private void drawHealthbarsAtSpaceship(Graphics2D g, SpaceShip player) {
+        float playerShields = player.getCurrentShieldPoints();
         float playerMaxShields = playerStats.getMaxShieldHitPoints();
-        float playerHealth = playerManager.getSpaceship().getCurrentHitpoints();
+        float playerHealth = player.getCurrentHitpoints();
         float playerMaxHealth = playerStats.getMaxHitPoints();
 
         //Lines at the player (Health and Shields)
-        GameObject player = PlayerManager.getInstance().getSpaceship();
         float factor = playerHealth / playerMaxHealth;
         int actualAmount = Math.round(player.getWidth() * factor);
 
@@ -853,15 +929,12 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
         if (levelManager.getCurrentLevelSong() != null && !levelManager.isNextLevelABossLevel() && audioManager.getMusicMediaPlayer().equals(MusicMediaPlayer.LocalFiles)) {
             g.setColor(Color.white);
             g.drawString("Song: " + levelManager.getCurrentLevelSong().toString(), progressBar.getXCoordinate(), progressBar.getYCoordinate() + progressBar.getHeight() + 10);
-        } else if (levelManager.isNextLevelABossLevel()) {
-            g.setColor(Color.white);
-            g.drawString("Defeat the boss!", progressBar.getXCoordinate(), progressBar.getYCoordinate() + progressBar.getHeight() + 10);
         }
     }
 
-    private void drawSpecialAttackFrame(Graphics2D g) {
+    private void drawSpecialAttackFrame(Graphics2D g, SpaceShip spaceship) {
         drawImage(g, gameUICreator.getSpecialAttackFrame());
-        SpaceShipSpecialGun gun = playerManager.getSpaceship().getSpecialGun();
+        SpaceShipSpecialGun gun = spaceship.getSpecialGun();
         int charges = gun.getSpecialAttackCharges();
 
         if (charges > 0) {
@@ -869,7 +942,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
         }
 
         // Draw the cooldown progress bar only if there are no charges
-        double remainingSeconds = gun.getCurrentSpecialAttackFrame();
+        double remainingSeconds = gun.getSecondsUntilNextAttackCharge();
         double totalCooldown = playerStats.getSpecialAttackCooldown();
         float percentage = (float) (1.0 - remainingSeconds / totalCooldown); // Properly compute the fill percentage
 
@@ -929,7 +1002,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
             lastKnownState = gameState.getGameState();
             System.out.println("Last known gamestate: " + lastKnownState);
         }
-        repaint(0, 0, DataClass.getInstance().getWindowWidth(), DataClass.getInstance().getWindowHeight());
+        repaint(0, 0, DataClass.getInstance().getWindowWidth(), DataClass.getInstance().getWindowHeight() + 5);
     }
 
     private boolean shouldIncreaseInputDelay() {
@@ -946,7 +1019,14 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
     private class KeyboardListener extends KeyAdapter {
         @Override
         public void keyReleased(KeyEvent e) {
-            playerManager.getSpaceship().keyReleased(e);
+            SpaceShip spaceShip = playerManager.getAllSpaceShips().get(0);
+
+            if(spaceShip == null){ //multiplayer update allows for an empty list of spaceships, if there are no spaceships (the players died), return
+                System.out.printf("GameBoard keyReleased: no spaceship found, returning\n");
+                return;
+            }
+
+            spaceShip.keyReleased(e);
 
             if (e.getKeyCode() == (KeyEvent.VK_P)) {
                 if (gameState.getGameState().equals(GameStatusEnums.Playing) && gameState.isAllowedToPause()) {
@@ -984,7 +1064,17 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
                     inputDelay = 0;
                 }
             } else {
-                playerManager.getSpaceship().keyPressed(e);
+                if(playerManager.getAllSpaceShips().isEmpty()){
+                    return;
+                }
+
+                SpaceShip spaceShip = playerManager.getAllSpaceShips().get(0);
+
+                if(spaceShip == null){ //multiplayer update allows for an empty list of spaceships, if there are no spaceships (the players died), return
+                    System.out.printf("GameBoard keyPressed: no spaceship found, returning\n");
+                    return;
+                }
+                spaceShip.keyPressed(e);
             }
         }
     }
@@ -994,11 +1084,9 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
             boardManager = BoardManager.getInstance();
         }
 
-
-        if (controllers.getFirstController() != null) {
-
+        if (!controllerManager.getControllerInputReaders().isEmpty()) { //if there are connected controllers, read their input
             //Pause or unpause
-            if (controllers.getFirstController().isInputActive(ControllerInputEnums.PAUSE)) {
+            if (controllerManager.isPausePressed()) {
                 if (gameState.getGameState().equals(GameStatusEnums.Playing) && gameState.isAllowedToPause()) {
                     gameState.setGameState(GameStatusEnums.Paused);
                     audioManager.pauseAllAudio();
@@ -1012,8 +1100,8 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
 
             //Check if we need to go to the main menu after dying
             if (gameState.getGameState() == GameStatusEnums.Dead) {
-                controllers.getFirstController().pollController();
-                if (controllers.getFirstController().isInputActive(ControllerInputEnums.FIRE) && inputDelay >= MOVE_COOLDOWN) {
+                controllerManager.pollControllers();
+                if (controllerManager.isFirePressed() && inputDelay >= MOVE_COOLDOWN) {
                     boardManager.initMainMenu();
                     inputDelay = 0;
                     GameStatsTracker.getInstance().resetGameStatsTracker();
@@ -1021,15 +1109,17 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
                 }
                 //Check if we need to go to the shop
             } else if (gameState.getGameState() == GameStatusEnums.Show_Level_Score_Card) {
-                controllers.getFirstController().pollController();
-                if (controllers.getFirstController().isInputActive(ControllerInputEnums.FIRE) && inputDelay >= MOVE_COOLDOWN) {
+                controllerManager.pollControllers();
+                if (controllerManager.isFirePressed() && inputDelay >= MOVE_COOLDOWN) {
                     gameState.setGameState(GameStatusEnums.Transition_To_Next_Stage);
                     inputDelay = 0;
                 }
             }
             //Execute the player input through the spaceship
             else {
-                playerManager.getSpaceship().update(controllers.getFirstController());
+                for(SpaceShip spaceShip : playerManager.getAllSpaceShips()){
+                    spaceShip.update();
+                }
             }
         }
 
