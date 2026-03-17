@@ -112,6 +112,12 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
     private List<GUIComponent> floatingIcons = new ArrayList<>();
     private List<BossHealthBar> bossHealthBars = new ArrayList<>();
 
+    private List<GUIComponent> relicSelectionBackgroundComponents = new ArrayList<>();
+    private List<GUIComponent> relicSelectionGrid = new ArrayList<>();
+    private GUIComponent cursor;
+    private GUIComponent selectedComponent;
+    private int selectedComponentIndex = 0;
+
 
     public GameBoard() {
         animationManager = AnimationManager.getInstance();
@@ -130,6 +136,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
         firstTextColumnXCoordinate = Math.round(DataClass.getInstance().getWindowWidth() * 0.7f);
         secondTextColumnXCoordinate = Math.round(DataClass.getInstance().getWindowWidth() * 0.85f);
         this.performanceLogger = new PerformanceLogger("GameBoard");
+        cursor = GameUICreator.getInstance().createCursor();
         initBoard();
     }
 
@@ -179,6 +186,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
         inputDelay = 0;
         this.isPlayingDeathMusic = false;
         this.hasExportedLogs = false;
+        this.showRelicSelection = false;
 
 
         //Free up any cached graphics that have not been used in 5 minutes. Might cause lag spikes but should help significantly with memory usage and heap-size errors
@@ -205,7 +213,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
 
 
             //reset stuivers best friend if it exists
-            if(PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.Stuivie) != null) {
+            if (PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.Stuivie) != null) {
                 StuiversBestFriend stuiversBestFriend = (StuiversBestFriend) PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.Stuivie);
                 stuiversBestFriend.setHasActivatedThisRound(false);
             }
@@ -216,7 +224,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
     }
 
 
-    public void setDrawnTimerDelay(int amount){
+    public void setDrawnTimerDelay(int amount) {
         this.drawTimer.setDelay(amount);
     }
 
@@ -238,9 +246,10 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
             drawZoningIn(g2d);
         } else if (gameState.getGameState() == GameStatusEnums.Zoning_Out) {
             drawZoningOut(g2d);
-        } else if(gameState.getGameState() == GameStatusEnums.SelectingRelic) {
-            //todo show the 3 relic cards
         }
+//        else if(gameState.getGameState() == GameStatusEnums.SelectingRelic) {
+//            //todo show the 3 relic cards
+//        }
 
         //Achievement UI moet boven alles getekent worden, dit is een beetje een uitzonderlijke fix
         for (GUIComponent obj : this.floatingIcons) {
@@ -250,7 +259,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
 
         for (BossHealthBar obj : this.bossHealthBars) {
             obj.updateHealthbarLength();
-            for(Sprite healthBarComponent : obj.getDrawableComponents()){
+            for (Sprite healthBarComponent : obj.getDrawableComponents()) {
                 drawImage(g2d, healthBarComponent);
             }
         }
@@ -501,9 +510,9 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
             }
         }
 
-        for(SpaceShip spaceShip : playerManager.getAllSpaceShips()){
-            if(spaceShip.isVisible()){
-                if(spaceShip.getAnimation() != null) {
+        for (SpaceShip spaceShip : playerManager.getAllSpaceShips()) {
+            if (spaceShip.isVisible()) {
+                if (spaceShip.getAnimation() != null) {
                     drawAnimation(g, spaceShip.getAnimation());
                 } else {
                     drawImage(g, spaceShip);
@@ -538,7 +547,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
         drawLowHealthPlayerOverlay(g);
 
         //seperate loop at the end since the ordering of the drawing matters, healthbar should be on top of everything so its always visible
-        for(SpaceShip spaceShip : PlayerManager.getInstance().getAllSpaceShips()){
+        for (SpaceShip spaceShip : PlayerManager.getInstance().getAllSpaceShips()) {
             drawHealthbarsAtSpaceship(g, spaceShip);
         }
 
@@ -547,6 +556,16 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
 
         if (gameUICreator.getDifficultyWings() != null) {
             drawImage(g, gameUICreator.getDifficultyWings());
+        }
+
+        if(showRelicSelection){
+            for (GUIComponent obj : this.relicSelectionBackgroundComponents) {
+                drawImage(g, obj);
+            }
+            for(GUIComponent obj : this.relicSelectionGrid){
+                drawImage(g, obj);
+            }
+            drawImage(g, cursor);
         }
 
         if (gameState.getGameState().equals(GameStatusEnums.Paused)) {
@@ -696,7 +715,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
         int actualAmount = Math.round(playerHeight * percentage);
 
         // Save the original composite to restore after drawing
-        if(playerHeight == actualAmount){
+        if (playerHeight == actualAmount) {
             return; //dont draw
         }
         Composite originalComposite = g.getComposite();
@@ -1007,7 +1026,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
 
     private boolean shouldIncreaseInputDelay() {
         GameStatusEnums gameStatus = gameState.getGameState();
-        return gameStatus == GameStatusEnums.Show_Level_Score_Card || gameStatus == GameStatusEnums.Paused || gameStatus == GameStatusEnums.Dead;
+        return gameStatus == GameStatusEnums.Show_Level_Score_Card || gameStatus == GameStatusEnums.Paused || gameStatus == GameStatusEnums.Dead || gameStatus == GameStatusEnums.SelectingRelic;
     }
 
     public Timer getTimer() {
@@ -1021,7 +1040,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
         public void keyReleased(KeyEvent e) {
             SpaceShip spaceShip = playerManager.getAllSpaceShips().get(0);
 
-            if(spaceShip == null){ //multiplayer update allows for an empty list of spaceships, if there are no spaceships (the players died), return
+            if (spaceShip == null) { //multiplayer update allows for an empty list of spaceships, if there are no spaceships (the players died), return
                 System.out.printf("GameBoard keyReleased: no spaceship found, returning\n");
                 return;
             }
@@ -1058,25 +1077,60 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
                     GameStatsTracker.getInstance().resetGameStatsTracker();
                 }
             }
+
+            if (gameState.getGameState() == GameStatusEnums.SelectingRelic && showRelicSelection) {
+                //navigate left/right
+                if (inputDelay >= MOVE_COOLDOWN) {
+                    if (e.getKeyCode() == KeyEvent.VK_LEFT) {
+                        navigateLeft();
+                    } else if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
+                        navigateRight();
+                    } else if(e.getKeyCode() == KeyEvent.VK_ENTER) {
+                        selectedComponent.activateComponent();
+                    }
+                    inputDelay = 0;
+                }
+            }
+
             if (gameState.getGameState() == GameStatusEnums.Show_Level_Score_Card) {
                 if (inputDelay >= MOVE_COOLDOWN) {
                     gameState.setGameState(GameStatusEnums.Transition_To_Next_Stage);
                     inputDelay = 0;
                 }
             } else {
-                if(playerManager.getAllSpaceShips().isEmpty()){
+                if (playerManager.getAllSpaceShips().isEmpty()) {
                     return;
                 }
 
                 SpaceShip spaceShip = playerManager.getAllSpaceShips().get(0);
 
-                if(spaceShip == null){ //multiplayer update allows for an empty list of spaceships, if there are no spaceships (the players died), return
+                if (spaceShip == null) { //multiplayer update allows for an empty list of spaceships, if there are no spaceships (the players died), return
                     System.out.printf("GameBoard keyPressed: no spaceship found, returning\n");
                     return;
                 }
                 spaceShip.keyPressed(e);
             }
         }
+    }
+
+    private void navigateLeft() {
+        selectedComponentIndex--;
+        if (selectedComponentIndex < 0) {
+            selectedComponentIndex = relicSelectionGrid.size() - 1;
+        }
+        selectedComponent = relicSelectionGrid.get(selectedComponentIndex);
+        cursor.setXCoordinate(selectedComponent.getXCoordinate() - cursor.getWidth());
+        cursor.setCenterYCoordinate(selectedComponent.getCenterYCoordinate());
+    }
+
+    private void navigateRight() {
+        selectedComponentIndex++;
+        if (selectedComponentIndex >= relicSelectionGrid.size()) {
+            selectedComponentIndex = 0;
+        }
+        selectedComponent = relicSelectionGrid.get(selectedComponentIndex);
+        cursor.setXCoordinate(selectedComponent.getXCoordinate() - cursor.getWidth());
+        cursor.setCenterYCoordinate(selectedComponent.getCenterYCoordinate());
     }
 
     public void executeControllerInput() {
@@ -1114,10 +1168,23 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
                     gameState.setGameState(GameStatusEnums.Transition_To_Next_Stage);
                     inputDelay = 0;
                 }
+            } else if(gameState.getGameState() == GameStatusEnums.SelectingRelic && showRelicSelection) {
+                controllerManager.pollControllers();
+                if(controllerManager.isFirePressed() && inputDelay >= MOVE_COOLDOWN) {
+                    selectedComponent.activateComponent();
+                    inputDelay = 0;
+                } else if(controllerManager.isPrimaryControllerLeftPressed() && inputDelay >= MOVE_COOLDOWN){
+                    navigateLeft();
+                    inputDelay = 0;
+                } else if(controllerManager.isPrimaryControllerRightPressed() && inputDelay >= MOVE_COOLDOWN){
+                    navigateRight();
+                    inputDelay = 0;
+                }
+
             }
             //Execute the player input through the spaceship
             else {
-                for(SpaceShip spaceShip : playerManager.getAllSpaceShips()){
+                for (SpaceShip spaceShip : playerManager.getAllSpaceShips()) {
                     spaceShip.update();
                 }
             }
@@ -1145,5 +1212,29 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
 
     public void resetBossHealthBars() {
         this.bossHealthBars.clear();
+    }
+
+    public void signalThatRelicHasBeenChosen() {
+        this.gameState.setGameState(GameStatusEnums.Show_Level_Score_Card);
+        showRelicSelection = false;
+        inputDelay = 0;
+    }
+
+    private boolean showRelicSelection = false;
+    public void showRelicSelection() {
+        this.relicSelectionBackgroundComponents.addAll(GameUICreator.getInstance().getRelicBackgroundCards());
+        GameUICreator.getInstance().getRelicTitles().forEach(relicTitle -> {
+            for (GUIComponent component : relicTitle.getComponents()) {
+                this.relicSelectionBackgroundComponents.add(component);
+            }
+        });
+        this.relicSelectionGrid.addAll(GameUICreator.getInstance().getRelicShopItems());
+        this.showRelicSelection = true;
+        if(this.cursor == null){
+            this.cursor = GameUICreator.getInstance().createCursor();
+        }
+        cursor.setXCoordinate(relicSelectionGrid.get(0).getXCoordinate() - cursor.getWidth());
+        cursor.setCenterYCoordinate(relicSelectionGrid.get(0).getCenterYCoordinate());
+        selectedComponent = relicSelectionGrid.get(0);
     }
 }

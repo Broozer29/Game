@@ -6,6 +6,7 @@ import net.riezebos.bruus.tbd.game.items.ItemDescriptionRetriever;
 import net.riezebos.bruus.tbd.game.items.ItemEnums;
 import net.riezebos.bruus.tbd.game.items.PlayerInventory;
 import net.riezebos.bruus.tbd.game.items.enums.ItemRarityEnums;
+import net.riezebos.bruus.tbd.guiboards.BoardManager;
 import net.riezebos.bruus.tbd.guiboards.GUIComponentItemInformation;
 import net.riezebos.bruus.tbd.guiboards.boardEnums.MenuFunctionEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.AudioDatabase;
@@ -83,7 +84,12 @@ public class ShopItem extends GUIComponent {
     }
 
     public void purchaseItemInShop () {
-        if (shopItemInformation.isAvailable() && shopItemInformation.canAfford()) {
+        if(shopItemInformation.getItemRarity().equals(ItemRarityEnums.Relic)) {
+            PlayerInventory.getInstance().addItem(shopItemInformation.getItem());
+            SaveManager.getInstance().exportCurrentSave();
+            AudioManager.getInstance().addAudio(AudioEnums.GenericSelect);
+            BoardManager.getInstance().getGameBoard().signalThatRelicHasBeenChosen(); //sloppy implementation, this way, Relic shopitems are not compatible with shopboard as the active screen
+        } else if (shopItemInformation.isAvailable() && shopItemInformation.canAfford()) {
             AudioManager.getInstance().addAudio(AudioEnums.GenericSelect);
             PlayerInventory.getInstance().addItem(shopItemInformation.getItem());
             PlayerInventory.getInstance().spendCashMoney(shopItemInformation.getCost());

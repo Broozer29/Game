@@ -348,7 +348,7 @@ public class ClassSelectionBoardCreator {
         int xCoordinate = backgroundCard.getCenterXCoordinate();
         int yCoordinate = backgroundCard.getCenterYCoordinate() - Math.round(DataClass.getInstance().getResolutionFactor() * 10);
 
-        GUITextCollection textCollection = new GUITextCollection(xCoordinate, yCoordinate, "SELECT BOONS");
+        GUITextCollection textCollection = new GUITextCollection(xCoordinate, yCoordinate, "START GAME");
         textCollection.setScale(1.5f * DataClass.getInstance().getResolutionFactor());
         textCollection.setStartingXCoordinate(xCoordinate - (textCollection.getWidth() / 2));
         textCollection.setMenuFunctionality(MenuFunctionEnums.Start_Game);

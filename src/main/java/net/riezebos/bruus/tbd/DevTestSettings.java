@@ -12,6 +12,6 @@ public class DevTestSettings {
     public static boolean spawnTargetDummy = false; //if true, spawns a target dummy at the start of a level
     public static boolean instantlySpawnPortal = false; //spawns a portla at the start of the level
     public static boolean instaKill = false; //multiplies basedamage by 100
-    public static boolean playerIsImmune = true; //makes the player invincible by preventing takeDamage being executed
+    public static boolean playerIsImmune = false; //makes the player invincible by preventing takeDamage being executed
     public static boolean alloweSuicidebutton = false; //Enables the suicide button, causing 9999999 damage to the player(s)
 }

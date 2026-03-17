@@ -84,6 +84,14 @@ public class ControllerManager {
         return false;
     }
 
+    public boolean isPrimaryControllerLeftPressed(){
+        return getFirstController().isInputActive(ControllerInputEnums.MOVE_LEFT);
+    }
+
+    public boolean isPrimaryControllerRightPressed(){
+        return getFirstController().isInputActive(ControllerInputEnums.MOVE_RIGHT);
+    }
+
     //Required because controllerInput is not read after the spaceship dies, thus if all players are dead and game over screen is shown, this method is needed to continue
     public void pollControllers(){
         for(ControllerInputReader controllerInputReader : controllerInputReaders.values()){

@@ -1,10 +1,9 @@
 package net.riezebos.bruus.tbd.game.UI;
 
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
+import net.riezebos.bruus.tbd.game.items.enums.ItemRarityEnums;
 import net.riezebos.bruus.tbd.game.level.LevelManager;
-import net.riezebos.bruus.tbd.guiboards.guicomponents.DisplayOnly;
-import net.riezebos.bruus.tbd.guiboards.guicomponents.GUIComponent;
-import net.riezebos.bruus.tbd.guiboards.guicomponents.MenuButton;
+import net.riezebos.bruus.tbd.guiboards.guicomponents.*;
 import net.riezebos.bruus.tbd.visualsandaudio.data.DataClass;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.AnimationManager;
@@ -12,6 +11,7 @@ import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteAnimation;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteConfiguration;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
@@ -50,20 +50,92 @@ public class GameUICreator {
     private DisplayOnly secondRelicBackgroundCard;
     private DisplayOnly thirdRelicBackgroundCard;
 
-    private MenuButton firstRelicButton;
-    private MenuButton secondRelicButton;
-    private MenuButton thirdRelicButton;
+    private ShopItem firstRelicShopItem;
+    private ShopItem secondRelicShopItem;
+    private ShopItem thirdRelicShopItem;
 
-    private UIObject firstRelicTitle;
-    private UIObject secondRelicTitle;
-    private UIObject thirdRelicTitle;
+    private GUITextCollection firstRelicTitle;
+    private GUITextCollection secondRelicTitle;
+    private GUITextCollection thirdRelicTitle;
 
 
-    private void createRelicBackgroundCards() {
+    private void createRelicSelectionComponents() {
         int firstRelicXCoordinate = Math.round(DataClass.getInstance().getBoardBlockWidth() * 0.25f);
-
+        int secondRelicXCoordinate = Math.round(DataClass.getInstance().getBoardBlockWidth() * 0.5f);
+        int thirdRelicXCoordinate = Math.round(DataClass.getInstance().getBoardBlockWidth() * 0.75f);
         int centerYCoordinate = Math.round(DataClass.getInstance().getPlayableWindowMaxHeight() * 0.5f);
+        float cardScale = 1 * DataClass.getInstance().getResolutionFactor();
 
+        SpriteConfiguration firstRelicCardConfig = new SpriteConfiguration(firstRelicXCoordinate, centerYCoordinate, cardScale, ImageEnums.Long_Card);
+        SpriteConfiguration secondRelicCardConfig = new SpriteConfiguration(secondRelicXCoordinate, centerYCoordinate, cardScale, ImageEnums.Long_Card);
+        SpriteConfiguration thirdRelicCardConfig = new SpriteConfiguration(thirdRelicXCoordinate, centerYCoordinate, cardScale, ImageEnums.Long_Card);
+
+        firstRelicBackgroundCard = new DisplayOnly(firstRelicCardConfig);
+        firstRelicBackgroundCard.setCenterCoordinates(firstRelicXCoordinate, centerYCoordinate);
+        secondRelicBackgroundCard = new DisplayOnly(secondRelicCardConfig);
+        secondRelicBackgroundCard.setCenterCoordinates(secondRelicXCoordinate, centerYCoordinate);
+        thirdRelicBackgroundCard = new DisplayOnly(thirdRelicCardConfig);
+        thirdRelicBackgroundCard.setCenterCoordinates(thirdRelicXCoordinate, centerYCoordinate);
+
+        createRelicShopItems();
+    }
+
+    public void createRelicShopItems(){
+        float cardScale = 1 * DataClass.getInstance().getResolutionFactor();
+        int firstRelicButtonXCoordinate = firstRelicBackgroundCard.getCenterXCoordinate();
+        int firstRelicButtonYCoordinate = Math.round(firstRelicBackgroundCard.getHeight() * 0.75f);
+        SpriteConfiguration firstRelicButtonConfig = new SpriteConfiguration(firstRelicButtonXCoordinate, firstRelicButtonYCoordinate, cardScale, ImageEnums.GlassCannon);
+        firstRelicShopItem = new ShopItem(firstRelicButtonConfig, ItemRarityEnums.Relic);
+        firstRelicShopItem.setCenterCoordinates(firstRelicButtonXCoordinate, firstRelicButtonYCoordinate);
+
+        int secondRelicButtonXCoordinate = secondRelicBackgroundCard.getCenterXCoordinate();
+        int secondRelicButtonYCoordinate = Math.round(secondRelicBackgroundCard.getHeight() * 0.75f);
+        SpriteConfiguration secondRelicButtonConfig = new SpriteConfiguration(secondRelicButtonXCoordinate, secondRelicButtonYCoordinate, cardScale, ImageEnums.GlassCannon);
+        secondRelicShopItem = new ShopItem(secondRelicButtonConfig, ItemRarityEnums.Relic);
+        secondRelicShopItem.setCenterCoordinates(secondRelicButtonXCoordinate, secondRelicButtonYCoordinate);
+
+
+        int thirdRelicButtonXCoordinate = thirdRelicBackgroundCard.getCenterXCoordinate();
+        int thirdRelicButtonYCoordinate = Math.round(thirdRelicBackgroundCard.getHeight() * 0.75f);
+        SpriteConfiguration thirdRelicButtonConfig = new SpriteConfiguration(thirdRelicButtonXCoordinate, thirdRelicButtonYCoordinate, cardScale, ImageEnums.GlassCannon);
+        thirdRelicShopItem = new ShopItem(thirdRelicButtonConfig, ItemRarityEnums.Relic);
+        thirdRelicShopItem.setCenterCoordinates(thirdRelicButtonXCoordinate, thirdRelicButtonYCoordinate);
+
+        int firstRelicTitleXCoordinate = firstRelicBackgroundCard.getCenterXCoordinate();
+        int firstRelicTitleYCoordinate = Math.round(firstRelicBackgroundCard.getHeight() * 0.2f);
+        firstRelicTitle = new GUITextCollection(firstRelicTitleXCoordinate, firstRelicTitleYCoordinate, firstRelicShopItem.getShopItemInformation().getItem().getItemName());
+        firstRelicTitle.setCenterXCoordinate(firstRelicTitleXCoordinate);
+
+        int secondRelicTitleXCoordinate = secondRelicBackgroundCard.getCenterXCoordinate();
+        int secondRelicTitleYCoordinate = Math.round(secondRelicBackgroundCard.getHeight() * 0.2f);
+        secondRelicTitle = new GUITextCollection(secondRelicTitleXCoordinate, secondRelicTitleYCoordinate, secondRelicShopItem.getShopItemInformation().getItem().getItemName());
+        secondRelicTitle.setCenterXCoordinate(secondRelicTitleXCoordinate);
+
+        int thirdRelicTitleXCoordinate = thirdRelicBackgroundCard.getCenterXCoordinate();
+        int thirdRelicTitleYCoordinate = Math.round(thirdRelicBackgroundCard.getHeight() * 0.2f);
+        thirdRelicTitle = new GUITextCollection(thirdRelicTitleXCoordinate, thirdRelicTitleYCoordinate, thirdRelicShopItem.getShopItemInformation().getItem().getItemName());
+        thirdRelicTitle.setCenterXCoordinate(thirdRelicTitleXCoordinate);
+    }
+
+    public GUIComponent createCursor() {
+        int initCursorX = -50;
+        int initCursorY = -50;
+        float scale = 1 * DataClass.getInstance().getResolutionFactor();
+        SpriteConfiguration spriteConfiguration = new SpriteConfiguration(initCursorX, initCursorY, scale, PlayerStats.getInstance().getSpaceShipImage());
+        MenuCursor button = new MenuCursor(spriteConfiguration);
+        return button;
+    }
+
+    public List<GUIComponent> getRelicBackgroundCards() {
+        return Arrays.asList(firstRelicBackgroundCard, secondRelicBackgroundCard, thirdRelicBackgroundCard);
+    }
+
+    public List<GUIComponent> getRelicShopItems(){
+        return Arrays.asList(firstRelicShopItem, secondRelicShopItem, thirdRelicShopItem);
+    }
+
+    public List<GUITextCollection> getRelicTitles(){
+        return Arrays.asList(firstRelicTitle, secondRelicTitle, thirdRelicTitle);
     }
 
     private List<UIObject> informationCards = new ArrayList<>();
@@ -73,12 +145,13 @@ public class GameUICreator {
 
     private static GameUICreator instance = new GameUICreator();
 
-    private GameUICreator () {
+    private GameUICreator() {
         initGameOverPeepos();
         createDamageOverlay();
+        createRelicSelectionComponents();
     }
 
-    public static GameUICreator getInstance () {
+    public static GameUICreator getInstance() {
         return instance;
     }
 
@@ -121,14 +194,14 @@ public class GameUICreator {
     }
 
 
-    public void createGameBoardGUI () {
+    public void createGameBoardGUI() {
         resetManager();
     }
 
     //Called by LevelManager each time a level is generated
-    public void createDifficultyWings(boolean isBossLevel, int currentLevelDifficultyScore){
+    public void createDifficultyWings(boolean isBossLevel, int currentLevelDifficultyScore) {
         ImageEnums wingsImageEnum = null;
-        if(isBossLevel){
+        if (isBossLevel) {
             wingsImageEnum = ImageEnums.RedWings5;
         } else {
             wingsImageEnum = LevelManager.getInstance().getImageEnumByDifficultyScore(currentLevelDifficultyScore);
@@ -141,7 +214,7 @@ public class GameUICreator {
         difficultyWings.setCenterCoordinates(difficultyWings.getCenterXCoordinate(), 40);
     }
 
-    public GUIComponent createEmeraldObtainedIcon(int xCoordinate, int yCoordinate){
+    public GUIComponent createEmeraldObtainedIcon(int xCoordinate, int yCoordinate) {
         SpriteConfiguration spriteConfiguration = new SpriteConfiguration();
         spriteConfiguration.setxCoordinate(xCoordinate);
         spriteConfiguration.setyCoordinate(yCoordinate);
@@ -154,14 +227,14 @@ public class GameUICreator {
         return emeraldObtainedIcon;
     }
 
-    private void createInformationCards () {
+    private void createInformationCards() {
         this.informationCards.clear();
         UIObject botInfoCard = new UIObject(createUIConfiguration(0, DataClass.getInstance().getPlayableWindowMaxHeight(), 1, ImageEnums.InformationCard));
         botInfoCard.setImageDimensions(DataClass.getInstance().getWindowWidth(), DataClass.getInstance().getInformationCardHeight());
         this.informationCards.add(botInfoCard);
     }
 
-    private void createSpecialAttackUIObjects () {
+    private void createSpecialAttackUIObjects() {
         ImageEnums frameType = null;
         switch (PlayerStats.getInstance().getPlayerSpecialAttackType()) {
             case EMP:
@@ -183,7 +256,7 @@ public class GameUICreator {
         }
 
         specialAttackFrame = new UIObject(createUIConfiguration(healthBarWidth + 60, DataClass.getInstance().getPlayableWindowMaxHeight() + 10, 1, frameType));
-        specialAttackHighlight = AnimationManager.getInstance().createAnimation(150, specialAttackFrame.getYCoordinate(), ImageEnums.Highlight, true,1);
+        specialAttackHighlight = AnimationManager.getInstance().createAnimation(150, specialAttackFrame.getYCoordinate(), ImageEnums.Highlight, true, 1);
         specialAttackHighlight.setAnimationScale(0.9142f);
 
         specialAttackHighlight.setXCoordinate(specialAttackFrame.getXCoordinate() - 2);
@@ -191,7 +264,7 @@ public class GameUICreator {
 
     }
 
-    private void createDamageOverlay(){
+    private void createDamageOverlay() {
         int xCoordinate = 0;
         int yCoordinate = 0;
 
@@ -203,7 +276,7 @@ public class GameUICreator {
     }
 
 
-    private void createHealthBar () {
+    private void createHealthBar() {
         int xCoordinate = 10;
         int yCoordinate = DataClass.getInstance().getPlayableWindowMaxHeight() + 15;
         healthFrame = new UIObject(createUIConfiguration(xCoordinate, yCoordinate, 1, ImageEnums.Frame));
@@ -212,7 +285,7 @@ public class GameUICreator {
         healthBar.resizeToDimensions(healthBarWidth, healthBarHeight);
     }
 
-    private void createShieldBar () {
+    private void createShieldBar() {
         int xCoordinate = 10;
         int yCoordinate = DataClass.getInstance().getPlayableWindowMaxHeight() + 35;
         shieldFrame = new UIObject(createUIConfiguration(xCoordinate, yCoordinate, 1, ImageEnums.Frame));
@@ -223,22 +296,22 @@ public class GameUICreator {
         overloadingShieldBar.resizeToDimensions(healthBarWidth, healthBarHeight);
     }
 
-    public void createProgressBar(){
+    public void createProgressBar() {
         int xCoordinate = difficultyWings.getXCoordinate() + Math.round(difficultyWings.getWidth() * 1.2f);
         int yCoordinate = 15;
         float progressBarScale = 1 * 0.8f * DataClass.getInstance().getResolutionFactor();
-        float progressBarFillingScale = 0.95f * 0.8f* DataClass.getInstance().getResolutionFactor();
+        float progressBarFillingScale = 0.95f * 0.8f * DataClass.getInstance().getResolutionFactor();
         float progressBarSpaceShipIndicatorScale = 0.3f * DataClass.getInstance().getResolutionFactor();
 
         progressBarFrame = new UIObject((createUIConfiguration(xCoordinate, yCoordinate, progressBarScale, ImageEnums.ProgressBar)));
         progressBarFilling = new UIObject((createUIConfiguration(xCoordinate + 5, yCoordinate, progressBarFillingScale, ImageEnums.ProgressBarFilling)));
         progressBarFilling.setCenterYCoordinate(progressBarFrame.getCenterYCoordinate());
 
-        progressBarSpaceShipIndicator = new UIObject(createUIConfiguration(xCoordinate,yCoordinate, progressBarSpaceShipIndicatorScale, ImageEnums.Player_Spaceship_Model_3));
+        progressBarSpaceShipIndicator = new UIObject(createUIConfiguration(xCoordinate, yCoordinate, progressBarSpaceShipIndicatorScale, ImageEnums.Player_Spaceship_Model_3));
         progressBarSpaceShipIndicator.setCenterYCoordinate(progressBarFilling.getCenterYCoordinate());
     }
 
-    private SpriteConfiguration createUIConfiguration (int xCoordinate, int yCoordinate, float scale, ImageEnums imageType) {
+    private SpriteConfiguration createUIConfiguration(int xCoordinate, int yCoordinate, float scale, ImageEnums imageType) {
         SpriteConfiguration spriteConfiguration = new SpriteConfiguration();
         spriteConfiguration.setxCoordinate(xCoordinate);
         spriteConfiguration.setyCoordinate(yCoordinate);
@@ -247,7 +320,7 @@ public class GameUICreator {
         return spriteConfiguration;
     }
 
-    public int calculateHealthbarWidth (float currentHitpoints, float maximumHitpoints) {
+    public int calculateHealthbarWidth(float currentHitpoints, float maximumHitpoints) {
         // Calculate the percentage of currentHitpoints out of maximumHitpoints
         double percentage = (double) currentHitpoints / maximumHitpoints * 100;
         // Calculate what this percentage is of thirdNumber
@@ -262,7 +335,7 @@ public class GameUICreator {
         return width;
     }
 
-    private void createGameOverCard(){
+    private void createGameOverCard() {
         int centerScreenX = DataClass.getInstance().getWindowWidth() / 2;
         int centerScreenY = DataClass.getInstance().getWindowHeight() / 2;
 
@@ -293,14 +366,14 @@ public class GameUICreator {
         gameOverCardTitle.setCenterCoordinates(titleCardX, titleCardY);
     }
 
-    public void createMineralIcon(){
+    public void createMineralIcon() {
         int xCoordinate = Math.round(DataClass.getInstance().getWindowWidth() * 0.15f);
         int yCoordinate = Math.round(3);
 
-        if(difficultyWings != null && LevelManager.getInstance().isNextLevelABossLevel()){
+        if (difficultyWings != null && LevelManager.getInstance().isNextLevelABossLevel()) {
             xCoordinate = difficultyWings.getXCoordinate() + Math.round(difficultyWings.getWidth() + 30);
             yCoordinate = difficultyWings.getYCoordinate() + 40;
-        } else if(progressBarFrame != null){
+        } else if (progressBarFrame != null) {
             xCoordinate = progressBarFrame.getXCoordinate() + Math.round(progressBarFrame.getWidth() + 30f);
             yCoordinate = progressBarFrame.getCenterYCoordinate();
         }
@@ -312,8 +385,9 @@ public class GameUICreator {
 
 
     private int gameOverPeepoRandomNumber = -100;
-    public ImageEnums getRandomGameOverPeepo(){
-        if(gameOverPeepoRandomNumber < 0) {
+
+    public ImageEnums getRandomGameOverPeepo() {
+        if (gameOverPeepoRandomNumber < 0) {
             gameOverPeepoRandomNumber = random.nextInt(0, gameOverPeepos.size() - 1);
         }
         return gameOverPeepos.get(gameOverPeepoRandomNumber);
@@ -327,35 +401,35 @@ public class GameUICreator {
     }
 
 
-    public int getHealthBarWidth () {
+    public int getHealthBarWidth() {
         return healthBarWidth;
     }
 
-    public int getHealthBarHeight () {
+    public int getHealthBarHeight() {
         return healthBarHeight;
     }
 
-    public UIObject getHealthFrame () {
+    public UIObject getHealthFrame() {
         return healthFrame;
     }
 
-    public UIObject getHealthBar () {
+    public UIObject getHealthBar() {
         return healthBar;
     }
 
-    public UIObject getShieldFrame () {
+    public UIObject getShieldFrame() {
         return shieldFrame;
     }
 
-    public UIObject getShieldBar () {
+    public UIObject getShieldBar() {
         return shieldBar;
     }
 
-    public UIObject getOverloadingShieldBar () {
+    public UIObject getOverloadingShieldBar() {
         return overloadingShieldBar;
     }
 
-    public void resetManager () {
+    public void resetManager() {
         createDifficultyWings(LevelManager.getInstance().isNextLevelABossLevel(), LevelManager.getInstance().getCurrentLevelDifficultyScore());
         createHealthBar();
         createShieldBar();
@@ -367,19 +441,19 @@ public class GameUICreator {
         gameOverPeepoRandomNumber = -100;
     }
 
-    public UIObject getSpecialAttackFrame () {
+    public UIObject getSpecialAttackFrame() {
         return specialAttackFrame;
     }
 
-    public SpriteAnimation getSpecialAttackHighlight () {
+    public SpriteAnimation getSpecialAttackHighlight() {
         return specialAttackHighlight;
     }
 
-    public List<UIObject> getInformationCards () {
+    public List<UIObject> getInformationCards() {
         return informationCards;
     }
 
-    public UIObject getDifficultyWings () {
+    public UIObject getDifficultyWings() {
         return difficultyWings;
     }
 
@@ -387,35 +461,35 @@ public class GameUICreator {
         return progressBarFrame;
     }
 
-    public UIObject getProgressBarFilling () {
+    public UIObject getProgressBarFilling() {
         return progressBarFilling;
     }
 
-    public UIObject getProgressBarSpaceShipIndicator () {
+    public UIObject getProgressBarSpaceShipIndicator() {
         return progressBarSpaceShipIndicator;
     }
 
-    public UIObject getGameOverCard () {
+    public UIObject getGameOverCard() {
         return gameOverCard;
     }
 
-    public UIObject getGradeSC2iconObject () {
+    public UIObject getGradeSC2iconObject() {
         return gradeSC2iconObject;
     }
 
-    public UIObject getGradeTextObject () {
+    public UIObject getGradeTextObject() {
         return gradeTextObject;
     }
 
-    public UIObject getGameOverCardTitle () {
+    public UIObject getGameOverCardTitle() {
         return gameOverCardTitle;
     }
 
-    public UIObject getDamageOverlay () {
+    public UIObject getDamageOverlay() {
         return damageOverlay;
     }
 
-    public UIObject getMineralIcon () {
+    public UIObject getMineralIcon() {
         return mineralIcon;
     }
 }

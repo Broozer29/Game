@@ -28,6 +28,13 @@ public class SpriteConfiguration {
         this.transparancyStepSize = transparancyStepSize;
     }
 
+    public SpriteConfiguration(int xCoordinate, int yCoordinate, float scale, ImageEnums imageType) {
+        this.xCoordinate = xCoordinate;
+        this.yCoordinate = yCoordinate;
+        this.scale = scale;
+        this.imageType = imageType;
+    }
+
     public SpriteConfiguration() {
         this.transparancyAlpha = 1;
         this.xOffset = 0;

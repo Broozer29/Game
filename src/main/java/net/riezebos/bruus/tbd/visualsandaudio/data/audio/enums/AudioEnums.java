@@ -131,7 +131,7 @@ public enum AudioEnums {
             case CarrierBoss:
                 return AudioEnums.nomad;
             case YellowBoss:
-                return AudioEnums.WaveshaperMonster;
+                return AudioEnums.nomad;
             case StrikerBoss:
                 return AudioEnums.Arisen;
             case BlueBoss:

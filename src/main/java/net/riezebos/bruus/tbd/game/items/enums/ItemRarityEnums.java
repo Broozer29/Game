@@ -38,10 +38,6 @@ public enum ItemRarityEnums {
         } else if (chance < (96 - PlayerStats.getInstance().getRelicChanceModifier())) {
             return ItemRarityEnums.Rare;
         } else {
-            //5% kans op om hier een relic te rollen als je een legendary rolled
-            if(rand.nextInt(0, 101) < 8 + PlayerStats.getInstance().getRelicChanceModifier()){
-                return ItemRarityEnums.Relic;
-            }
             return ItemRarityEnums.Legendary;
         }
     }
@@ -53,10 +49,8 @@ public enum ItemRarityEnums {
 
         if (chance < 84 - PlayerStats.getInstance().getRelicChanceModifier()) {
             return ItemRarityEnums.Rare;
-        } else if (chance < 96 - PlayerStats.getInstance().getRelicChanceModifier()) {
-            return ItemRarityEnums.Legendary;
         } else {
-            return ItemRarityEnums.Relic;
+            return ItemRarityEnums.Legendary;
         }
     }
 
