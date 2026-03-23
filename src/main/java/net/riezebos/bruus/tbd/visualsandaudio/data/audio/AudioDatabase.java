@@ -97,6 +97,7 @@ public class AudioDatabase {
         put(AudioEnums.Flamethrower, 1);
         put(AudioEnums.NotEnoughMinerals, 3);
         put(AudioEnums.StickyGrenadeExplosion, 3);
+        put(AudioEnums.ChargingBigIronLaserbeam, 4);
         put(AudioEnums.NewPlayerLaserbeam, 9);
         put(AudioEnums.PlayerTakesDamage, 5);
         put(AudioEnums.SpecialAttackFinishedCharging, 2);

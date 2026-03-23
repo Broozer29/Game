@@ -62,17 +62,14 @@ public class SpaceShip extends GameObject {
     private double lastTimeCollisionDamageTaken = 0;
 
 
-    private float attackSpeedModifier = 1f;
     private float critDamageModifier = 2f;
     private float movementSpeedModifier = 1f;
-    private float specialAttackRechargeCooldownBonusModifier = 0;
     private float specialAttackDamageModifier = 1f;
     private float protossConstructionSpeedModifier = 1f;
     private float thornsDamageModifier = 0f; //starting at 0 causes thorns to be disabled by default
     private float igniteDamageModifier = 1f;
     private float droneDamageModifier = 1f;
     private float maxShieldModifier = 1;
-    private float maxOverloadedShieldModifier = 2;
     private int maxSpecialAttackCharges = 1;
     private float specialAttackRechargeCooldownModifier = 1f;
     private float shieldRegenModifier = 1;
@@ -624,7 +621,7 @@ public class SpaceShip extends GameObject {
     }
 
     private void haltPrimaryFiring() {
-        primaryPlayerGun.stopFiring();
+        primaryPlayerGun.stopFiring(this);
     }
 
     private void fireSpecialAttack() {
@@ -837,11 +834,7 @@ public class SpaceShip extends GameObject {
     }
 
     public float getAttackSpeedModifier() {
-        return attackSpeedModifier;
-    }
-
-    public void modifyAttackSpeedModifier(float attackSpeedModifier) {
-        this.attackSpeedModifier += attackSpeedModifier;
+        return (super.attackSpeedBonusPercentage) * 0.01f; //transform percentage back into a modifier, only used by bigiron so far
     }
 
     public float getMovementSpeedModifier() {
@@ -858,14 +851,6 @@ public class SpaceShip extends GameObject {
 
     public void modifyProtossConstructionSpeedModifier(float protossConstructionSpeedModifier) {
         this.protossConstructionSpeedModifier += protossConstructionSpeedModifier;
-    }
-
-    public float getSpecialAttackRechargeCooldownBonusModifier() {
-        return specialAttackRechargeCooldownBonusModifier;
-    }
-
-    public void modifySpecialAttackRechargeCooldownBonusModifier(float specialAttackRechargeCooldownBonusModifier) {
-        this.specialAttackRechargeCooldownBonusModifier += specialAttackRechargeCooldownBonusModifier;
     }
 
     public float getThornsDamageModifier() {
@@ -900,14 +885,6 @@ public class SpaceShip extends GameObject {
         return PlayerStats.baseMoveSpeed * this.movementSpeedModifier;
     }
 
-    public void modifyMaxShieldMultiplier(float modifier) {
-        this.maxShieldModifier += modifier;
-    }
-
-    //deprecated
-    public void modifyMaxOverloadingShieldMultiplier(float modifier) {
-        this.maxOverloadedShieldModifier += modifier;
-    }
 
     public int getMaxSpecialAttackCharges() {
         return maxSpecialAttackCharges;
@@ -1043,6 +1020,17 @@ public class SpaceShip extends GameObject {
     public void setScoutCount(int scoutCount) {
         this.scoutCount = scoutCount;
     }
+
+    public ImageEnums getElectroShredImageEnum(){
+        if(PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.AnionInverter) != null){
+            return ImageEnums.NegativeElectroShred;
+        } else if(PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.ElectricSupercharger) != null){
+            return ImageEnums.ElectroShredImproved;
+        } else {
+            return ImageEnums.Electroshred;
+        }
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;

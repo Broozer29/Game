@@ -72,12 +72,12 @@ public class RedBoss extends Enemy {
     public void triggerOnDeathActions() {
         super.triggerOnDeathActions();
 
-        if(PlayerProfileManager.getInstance().getLoadedProfile().getNepotismLevel() <= 0) {
-            BoardManager.getInstance().getGameBoard().addGUIAnimation(AchievementUnlockHelper.createUnlockGUIComponent(ImageEnums.NepotismUnlock));
-            PlayerProfileManager.getInstance().getLoadedProfile().setNepotismLevel(1);
-            PlayerProfileManager.getInstance().exportCurrentProfile();
-            AudioManager.getInstance().addAudio(AudioEnums.AchievementUnlocked);
-        }
+//        if(PlayerProfileManager.getInstance().getLoadedProfile().getNepotismLevel() <= 0) {
+//            BoardManager.getInstance().getGameBoard().addGUIAnimation(AchievementUnlockHelper.createUnlockGUIComponent(ImageEnums.NepotismUnlock));
+//            PlayerProfileManager.getInstance().getLoadedProfile().setNepotismLevel(1);
+//            PlayerProfileManager.getInstance().exportCurrentProfile();
+//            AudioManager.getInstance().addAudio(AudioEnums.AchievementUnlocked);
+//        }
 
         if(!PlayerProfileManager.getInstance().getLoadedProfile().isFireFighterUnlocked()) {
             BoardManager.getInstance().getGameBoard().addGUIAnimation(AchievementUnlockHelper.createUnlockGUIComponent(ImageEnums.FireFighterUnlock));

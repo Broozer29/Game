@@ -35,6 +35,7 @@ public class PlayerInventory {
     public void resetInventory() {
         items.clear();
 
+        addItem(ItemEnums.HelpRequested);
         if (DevTestSettings.infiniteMoney) {
             cashMoney = 999999999;
         } else {
@@ -47,7 +48,7 @@ public class PlayerInventory {
     }
 
     public int getCountOfItem(ItemEnums itemEnum) {
-        if(items.containsKey(itemEnum)) {
+        if (items.containsKey(itemEnum)) {
             return items.get(itemEnum).getQuantity();
         }
         return 0;
@@ -69,8 +70,8 @@ public class PlayerInventory {
             activateUponPurchaseItemEffects(item);
         }
 
-        checkClubAccessUnlockCondition();
-        checkTreasureHunterUnlockCondition();
+//        checkClubAccessUnlockCondition();
+//        checkTreasureHunterUnlockCondition();
     }
 
     private void checkClubAccessUnlockCondition() {
@@ -99,6 +100,12 @@ public class PlayerInventory {
 
     public Item createItemFromEnum(ItemEnums itemEnum) {
         switch (itemEnum) {
+            case HelpRequested:
+                return new HelpRequested();
+            case BigIron:
+                return new BigIron();
+            case OneShotOneKill:
+                return new OneShotOneKill();
             case ModuleScorch:
                 return new ModuleScorch();
             case PlasmaLauncher:
@@ -141,14 +148,18 @@ public class PlayerInventory {
                 return new BarrierSupersizer();
             case PiercingMissiles:
                 return new PiercingMissiles();
-            case BouncingModuleAddon:
+            case BouncingLasers:
                 return new BouncingModuleAddon();
             case VIPTicket:
                 return new VIPTicket();
             case ElectricDestabilizer:
                 return new ElectricDestabilizer();
+            case ModulePower:
+                return new ModulePower();
             case ModuleAccuracy:
                 return new ModuleAccuracy();
+            case ModuleFocusFire:
+                return new ModuleFocusFire();
             case ElectricSupercharger:
                 return new ElectricSupercharger();
             case ReflectiveShielding:
@@ -207,6 +218,8 @@ public class PlayerInventory {
                 return new SynergeticLink();
             case FuelCannister:
                 return new FuelCannister();
+            case AnionInverter:
+                return new AnionInverter();
             case InfernalPreIgniter:
                 return new InfernalPreIgniter();
             case ConstructionKit:

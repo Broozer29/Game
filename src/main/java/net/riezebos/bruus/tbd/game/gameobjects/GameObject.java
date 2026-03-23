@@ -434,7 +434,6 @@ public class GameObject extends Sprite {
             OnScreenTextManager.getInstance().addDamageNumberText(Math.round(damage), target.getCenterXCoordinate(),
                     target.getCenterYCoordinate(), isACrit);
         }
-
     }
 
 
@@ -1095,6 +1094,10 @@ public class GameObject extends Sprite {
 
     public boolean isACrit() {
         return isACrit;
+    }
+
+    public void setIsACrit(boolean isACrit) {
+        this.isACrit = isACrit;
     }
 
     public void setACrit(boolean ACrit) {

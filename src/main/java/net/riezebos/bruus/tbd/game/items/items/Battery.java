@@ -10,7 +10,7 @@ import net.riezebos.bruus.tbd.game.items.enums.ItemApplicationEnum;
 
 public class Battery extends Item {
 
-    public static float cooldownReduction = 0.05f;
+    public static float cooldownReduction = 0.04f;
     public Battery () {
         super(ItemEnums.Battery, 1, ItemApplicationEnum.ApplyOnCreation);
     }

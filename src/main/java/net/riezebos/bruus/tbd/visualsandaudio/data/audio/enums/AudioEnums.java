@@ -16,6 +16,7 @@ public enum AudioEnums {
     StickyGrenadeExplosion,
     SilentAudio,
     ChargingLaserbeam,
+    ChargingBigIronLaserbeam,
     SpaceStationChargingUpMovement,
     SpaceStationBlastingOff,
     Alien_Bomb_Destroyed,

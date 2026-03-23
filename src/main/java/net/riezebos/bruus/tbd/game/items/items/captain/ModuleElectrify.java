@@ -1,7 +1,8 @@
 package net.riezebos.bruus.tbd.game.items.items.captain;
 
 import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
-import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.droneTypes.DroneTypes;
+import net.riezebos.bruus.tbd.game.gameobjects.friendlies.FriendlyManager;
+import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.Drone;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerClass;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
 import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SpaceShip;
@@ -11,7 +12,7 @@ import net.riezebos.bruus.tbd.game.items.PlayerInventory;
 import net.riezebos.bruus.tbd.game.items.enums.ItemApplicationEnum;
 
 public class ModuleElectrify extends Item {
-    public static float orbitrangeBonus = 40;
+    public static float cooldown = 1.5f;
 
     public ModuleElectrify () {
         super(ItemEnums.ModuleElectrify, 1, ItemApplicationEnum.ApplyOnCreation);
@@ -26,8 +27,9 @@ public class ModuleElectrify extends Item {
     @Override
     public void applyEffectToObject (GameObject gameObject) {
         if(gameObject instanceof SpaceShip spaceShip) {
-            spaceShip.setDroneType(DroneTypes.ElectroShred);
-            spaceShip.modifyDroneOrbitRadius(orbitrangeBonus);
+            for(Drone drone : FriendlyManager.getInstance().getAllPlayerDrones(spaceShip)){
+                drone.spawnElectroShredAttack();
+            }
         }
     }
 

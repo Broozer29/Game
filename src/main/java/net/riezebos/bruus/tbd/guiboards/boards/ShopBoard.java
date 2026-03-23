@@ -11,6 +11,7 @@ import net.riezebos.bruus.tbd.game.items.Item;
 import net.riezebos.bruus.tbd.game.items.ItemDescriptionRetriever;
 import net.riezebos.bruus.tbd.game.items.ItemEnums;
 import net.riezebos.bruus.tbd.game.items.PlayerInventory;
+import net.riezebos.bruus.tbd.game.items.enums.ItemRarityEnums;
 import net.riezebos.bruus.tbd.game.level.LevelManager;
 import net.riezebos.bruus.tbd.game.util.OnScreenTextManager;
 import net.riezebos.bruus.tbd.guiboards.GUIComponentItemInformation;
@@ -719,7 +720,7 @@ public class ShopBoard extends JPanel implements TimerHolder {
 
             if (currentTime - lastMoveTime > MOVE_COOLDOWN &&
                     controllerInputReader.isInputActive(ControllerInputEnums.SPECIAL_ATTACK) &&
-                showInventory) {
+                    showInventory) {
                 // Select menu option
                 showInventory = false;
                 needsUpdate = true;
@@ -901,7 +902,14 @@ public class ShopBoard extends JPanel implements TimerHolder {
                     , xCoordinate
                     , yCoordinate + object.getHeight() + Math.round(22 * DataClass.getInstance().getResolutionFactor()));
 
-            g.drawString("$" + object.getShopItemInformation().getCost()
+
+            boolean isFree = object.getShopItemInformation().getCost() <= 0.001f;
+            String cost = isFree ? "Free" : "$" + Math.round(object.getShopItemInformation().getCost());
+            if(isFree){
+                g.setFont(new Font(textFont, Font.BOLD, Math.round(14 * DataClass.getInstance().getResolutionFactor())));
+                g.setColor(ItemRarityEnums.Rare.getColor());
+            }
+            g.drawString(cost
                     , xCoordinate
                     , yCoordinate + object.getHeight() + Math.round(34 * DataClass.getInstance().getResolutionFactor()));
         } else {

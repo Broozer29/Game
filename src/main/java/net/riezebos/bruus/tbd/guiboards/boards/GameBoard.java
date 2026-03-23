@@ -17,10 +17,8 @@ import net.riezebos.bruus.tbd.game.gameobjects.neutral.ExplosionManager;
 import net.riezebos.bruus.tbd.game.gameobjects.neutral.interactable.InteractableManager;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
-import net.riezebos.bruus.tbd.game.gameobjects.player.boons.BoonEnums;
 import net.riezebos.bruus.tbd.game.gameobjects.player.boons.BoonManager;
 import net.riezebos.bruus.tbd.game.gameobjects.player.boons.boonimplementations.BoonActivationEnums;
-import net.riezebos.bruus.tbd.game.gameobjects.player.boons.boonimplementations.utility.CompoundWealth;
 import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SpaceShip;
 import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SpaceShipSpecialGun;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
@@ -36,7 +34,6 @@ import net.riezebos.bruus.tbd.game.level.directors.DirectorManager;
 import net.riezebos.bruus.tbd.game.level.directors.GodRunDetector;
 import net.riezebos.bruus.tbd.game.level.enums.LevelTypes;
 import net.riezebos.bruus.tbd.game.movement.Direction;
-import net.riezebos.bruus.tbd.game.playerprofile.PlayerProfileManager;
 import net.riezebos.bruus.tbd.game.util.OnScreenText;
 import net.riezebos.bruus.tbd.game.util.OnScreenTextManager;
 import net.riezebos.bruus.tbd.game.util.ThornsDamageDealer;
@@ -47,7 +44,6 @@ import net.riezebos.bruus.tbd.guiboards.BoardManager;
 import net.riezebos.bruus.tbd.guiboards.TimerHolder;
 import net.riezebos.bruus.tbd.guiboards.background.BackgroundManager;
 import net.riezebos.bruus.tbd.guiboards.background.BackgroundObject;
-import net.riezebos.bruus.tbd.guiboards.boardcreators.AchievementUnlockHelper;
 import net.riezebos.bruus.tbd.guiboards.guicomponents.BossHealthBar;
 import net.riezebos.bruus.tbd.guiboards.guicomponents.GUIComponent;
 import net.riezebos.bruus.tbd.visualsandaudio.data.DataClass;
@@ -112,8 +108,9 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
     private List<GUIComponent> floatingIcons = new ArrayList<>();
     private List<BossHealthBar> bossHealthBars = new ArrayList<>();
 
-    private List<GUIComponent> relicSelectionBackgroundComponents = new ArrayList<>();
+    private List<GUIComponent> relicBackgroundCards = new ArrayList<>();
     private List<GUIComponent> relicSelectionGrid = new ArrayList<>();
+    private GUIComponent chooseOne;
     private GUIComponent cursor;
     private GUIComponent selectedComponent;
     private int selectedComponentIndex = 0;
@@ -201,6 +198,10 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
             enemyManager.resetManager();
             missileManager.resetManager();
             levelManager = LevelManager.getInstance();
+            relicBackgroundCards.clear();
+            relicSelectionGrid.clear();
+            GameUICreator.getInstance().resetRelicShopItems();
+            selectedComponentIndex = 0;
             playerManager.resetManager();
             audioManager.resetManager();
             explosionManager.resetManager();
@@ -282,12 +283,12 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
             SaveManager.getInstance().exportCurrentSave();
             BoardManager.getInstance().openShopWindow();
 
-            if (PlayerInventory.getInstance().getCashMoney() >= CompoundWealth.mineralUnlockRequirement && PlayerProfileManager.getInstance().getLoadedProfile().getCompoundWealthLevel() < 1) {
-                PlayerProfileManager.getInstance().getLoadedProfile().setCompoundWealthLevel(1);
-                PlayerProfileManager.getInstance().exportCurrentProfile();
-                BoardManager.getInstance().getShopBoard().addGUIAnimation(AchievementUnlockHelper.createUnlockGUIComponent(BoonEnums.COMPOUND_WEALTH.getUnlockImage()));
-                AudioManager.getInstance().addAudio(AudioEnums.AchievementUnlocked);
-            }
+//            if (PlayerInventory.getInstance().getCashMoney() >= CompoundWealth.mineralUnlockRequirement && PlayerProfileManager.getInstance().getLoadedProfile().getCompoundWealthLevel() < 1) {
+//                PlayerProfileManager.getInstance().getLoadedProfile().setCompoundWealthLevel(1);
+//                PlayerProfileManager.getInstance().exportCurrentProfile();
+//                BoardManager.getInstance().getShopBoard().addGUIAnimation(AchievementUnlockHelper.createUnlockGUIComponent(BoonEnums.COMPOUND_WEALTH.getUnlockImage()));
+//                AudioManager.getInstance().addAudio(AudioEnums.AchievementUnlocked);
+//            }
             BoonManager.getInstance().activateBoons(BoonActivationEnums.Whenever_Entering_Shop);
 
 
@@ -533,17 +534,6 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
             drawOnScreenText(g, text);
         }
 
-
-//        for (UIObject obj : gameUICreator.getInformationCards()) {
-//            drawImage(g, obj);
-//        }
-
-        //todo backwards compatability fix, drawPlayerHealthBars moet waarschijnlijk geheel verwijderd worden. drawHealthBarsAtTheSpaceShip moet voor alle VISIBLE spaceships uitgevoerd worden
-//        if (playerManager.getAllSpaceShips().size() == 1 && playerManager.getAllSpaceShips().get(0).isVisible()) {
-//            drawPlayerHealthBars(g, playerManager.getAllSpaceShips().get(0)); //todo wss verwijderen want deze ui is niet compatible met multiplayer
-//            drawSpecialAttackFrame(g, playerManager.getAllSpaceShips().get(0)); //todo wss verwijderen want deze ui is niet compatible met multiplayer
-//        }
-
         drawLowHealthPlayerOverlay(g);
 
         //seperate loop at the end since the ordering of the drawing matters, healthbar should be on top of everything so its always visible
@@ -552,20 +542,19 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
         }
 
         drawSongProgressBar(g);
-        drawCurrentAmountOFMinerals(g);
 
         if (gameUICreator.getDifficultyWings() != null) {
             drawImage(g, gameUICreator.getDifficultyWings());
         }
 
-        if(showRelicSelection){
-            for (GUIComponent obj : this.relicSelectionBackgroundComponents) {
-                drawImage(g, obj);
+        if (showRelicSelection) {
+            for (int i = 0; i < this.relicBackgroundCards.size(); i++) {
+                drawGUIComponent(g, this.relicBackgroundCards.get(i));
+                drawGUIComponent(g, this.relicSelectionGrid.get(i));
+                drawDescriptionInfo(g, this.relicSelectionGrid.get(i), this.relicBackgroundCards.get(i));
             }
-            for(GUIComponent obj : this.relicSelectionGrid){
-                drawImage(g, obj);
-            }
-            drawImage(g, cursor);
+            drawGUIComponent(g, chooseOne);
+            drawGUIComponent(g, cursor);
         }
 
         if (gameState.getGameState().equals(GameStatusEnums.Paused)) {
@@ -671,6 +660,14 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
             g.setComposite(originalComposite);
         }
     }
+
+    private void drawGUIComponent(Graphics2D g, GUIComponent component) {
+        if (component.getImage() != null) {
+            //todo dit is een aparte methode omdat de displayonly guicomponenten een transparante value hebben van 0, dus het verschil met drawimage is dat er geen transparantie over de graphics gezet word
+            g.drawImage(component.getImage(), component.getXCoordinate(), component.getYCoordinate(), this);
+        }
+    }
+
 
     private void drawAnimation(Graphics2D g, SpriteAnimation animation) {
         if (animation.getCurrentFrameImage(false) != null && animation.isVisible()) {
@@ -1078,21 +1075,19 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
                 }
             }
 
-            if (gameState.getGameState() == GameStatusEnums.SelectingRelic && showRelicSelection) {
+            if (gameState.getGameState() == GameStatusEnums.SelectingRelic) {
                 //navigate left/right
-                if (inputDelay >= MOVE_COOLDOWN) {
-                    if (e.getKeyCode() == KeyEvent.VK_LEFT) {
+                if (inputDelay >= MOVE_COOLDOWN / 2) {
+                    if (e.getKeyCode() == KeyEvent.VK_LEFT || e.getKeyCode() == KeyEvent.VK_A) {
                         navigateLeft();
-                    } else if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
+                    } else if (e.getKeyCode() == KeyEvent.VK_RIGHT || e.getKeyCode() == KeyEvent.VK_D) {
                         navigateRight();
-                    } else if(e.getKeyCode() == KeyEvent.VK_ENTER) {
+                    } else if (e.getKeyCode() == KeyEvent.VK_ENTER) {
                         selectedComponent.activateComponent();
                     }
                     inputDelay = 0;
                 }
-            }
-
-            if (gameState.getGameState() == GameStatusEnums.Show_Level_Score_Card) {
+            } else if (gameState.getGameState() == GameStatusEnums.Show_Level_Score_Card) {
                 if (inputDelay >= MOVE_COOLDOWN) {
                     gameState.setGameState(GameStatusEnums.Transition_To_Next_Stage);
                     inputDelay = 0;
@@ -1168,22 +1163,20 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
                     gameState.setGameState(GameStatusEnums.Transition_To_Next_Stage);
                     inputDelay = 0;
                 }
-            } else if(gameState.getGameState() == GameStatusEnums.SelectingRelic && showRelicSelection) {
+            } else if (gameState.getGameState() == GameStatusEnums.SelectingRelic) {
                 controllerManager.pollControllers();
-                if(controllerManager.isFirePressed() && inputDelay >= MOVE_COOLDOWN) {
+                if (controllerManager.isFirePressed() && inputDelay >= MOVE_COOLDOWN) {
                     selectedComponent.activateComponent();
                     inputDelay = 0;
-                } else if(controllerManager.isPrimaryControllerLeftPressed() && inputDelay >= MOVE_COOLDOWN){
+                } else if (controllerManager.isPrimaryControllerLeftPressed() && inputDelay >= MOVE_COOLDOWN) {
                     navigateLeft();
                     inputDelay = 0;
-                } else if(controllerManager.isPrimaryControllerRightPressed() && inputDelay >= MOVE_COOLDOWN){
+                } else if (controllerManager.isPrimaryControllerRightPressed() && inputDelay >= MOVE_COOLDOWN) {
                     navigateRight();
                     inputDelay = 0;
                 }
 
-            }
-            //Execute the player input through the spaceship
-            else {
+            } else {
                 for (SpaceShip spaceShip : playerManager.getAllSpaceShips()) {
                     spaceShip.update();
                 }
@@ -1221,20 +1214,78 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
     }
 
     private boolean showRelicSelection = false;
+
     public void showRelicSelection() {
-        this.relicSelectionBackgroundComponents.addAll(GameUICreator.getInstance().getRelicBackgroundCards());
-        GameUICreator.getInstance().getRelicTitles().forEach(relicTitle -> {
-            for (GUIComponent component : relicTitle.getComponents()) {
-                this.relicSelectionBackgroundComponents.add(component);
-            }
-        });
+        this.gameState.setGameState(GameStatusEnums.SelectingRelic);
+        chooseOne = GameUICreator.getInstance().getChooseOne();
+        this.relicBackgroundCards.addAll(GameUICreator.getInstance().getRelicBackgroundCards());
+//        GameUICreator.getInstance().getRelicTitles().forEach(relicTitle -> {
+//            for (GUIComponent component : relicTitle.getComponents()) {
+//                this.relicTitleComponents.add(component);
+//            }
+//        });
         this.relicSelectionGrid.addAll(GameUICreator.getInstance().getRelicShopItems());
         this.showRelicSelection = true;
-        if(this.cursor == null){
+        if (this.cursor == null) {
             this.cursor = GameUICreator.getInstance().createCursor();
         }
         cursor.setXCoordinate(relicSelectionGrid.get(0).getXCoordinate() - cursor.getWidth());
         cursor.setCenterYCoordinate(relicSelectionGrid.get(0).getCenterYCoordinate());
         selectedComponent = relicSelectionGrid.get(0);
     }
+
+    private void drawDescriptionInfo(Graphics2D g2d, GUIComponent shopItem, GUIComponent backgroundCard) {
+        int boxWidth = backgroundCard.getWidth();
+        int boxHeight = backgroundCard.getHeight();
+        String textFont = DataClass.getInstance().getTextFont();
+        int maxTextWidth = Math.round(boxWidth - (50 * DataClass.getInstance().getResolutionFactor()));
+
+        int descriptionX = backgroundCard.getXCoordinate() + 25;
+        int descriptionY = shopItem.getYCoordinate() + shopItem.getHeight() + 40;
+        int titleY = shopItem.getYCoordinate() - 25;
+
+        if (shopItem.getShopItemInformation() != null) {
+            g2d.setFont(new Font(textFont, Font.BOLD, Math.round(17 * DataClass.getInstance().getResolutionFactor())));
+            FontMetrics titleMetrics = g2d.getFontMetrics();
+            String itemName = shopItem.getShopItemInformation().getItem().getItemName();
+            int textWidth = titleMetrics.stringWidth(itemName);
+            int centeredX = shopItem.getCenterXCoordinate() - (textWidth / 2);
+            g2d.setColor(shopItem.getShopItemInformation().getItemRarity().getColor());
+            g2d.drawString(itemName, centeredX, titleY);
+        }
+
+        if (shopItem.getShopItemInformation() != null) {
+            g2d.setFont(new Font(textFont, Font.PLAIN, Math.round(14 * DataClass.getInstance().getResolutionFactor())));  // Larger font for the title
+            drawDescriptionText(g2d, shopItem.getShopItemInformation().getItemDescription(), descriptionX, descriptionY, maxTextWidth, Color.WHITE);
+            FontMetrics titleMetrics = g2d.getFontMetrics();
+            descriptionY += titleMetrics.getHeight() + Math.round(10 * DataClass.getInstance().getResolutionFactor());  // Spacing after the title
+        }
+    }
+
+    //Helper method to centralize the actual drawing on the screen
+    private void drawDescriptionText(Graphics2D g2d, String text, int x, int y, int maxWidth, Color color) {
+        FontMetrics metrics = g2d.getFontMetrics();
+        int lineHeight = metrics.getHeight() + 2;
+        String[] words = text.split(" ");
+        StringBuilder line = new StringBuilder();
+        g2d.setColor(color);
+
+        for (String word : words) {
+            // If adding the new word exceeds the maximum line width, draw the line and start a new one
+            if (metrics.stringWidth(line.toString() + word) > maxWidth) {
+                g2d.drawString(line.toString(), x, y);
+                line = new StringBuilder(word).append(" ");
+                y += lineHeight;
+            } else {
+                // Append the word to the current line
+                line.append(word).append(" ");
+            }
+        }
+
+        // Draw the remaining text
+        if (line.length() > 0) {
+            g2d.drawString(line.toString(), x, y);
+        }
+    }
+
 }

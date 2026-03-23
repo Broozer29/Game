@@ -300,6 +300,12 @@ public class ShopBoardCreator {
         return config;
     }
 
+    private void handleHelpRequestedRelic(ShopItem shopItem) {
+        if(PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.HelpRequested) != null && shopItem.getShopItemInformation().getItem().equals(ItemEnums.Contract)) {
+            shopItem.getShopItemInformation().setCost(0);
+        }
+    }
+
     public List<GUIComponent> createNewFirstRowOfItems() {
         List<GUIComponent> firstRow = new ArrayList<>();
         boolean rolledRare = false;
@@ -323,6 +329,8 @@ public class ShopBoardCreator {
             if(shopItem.getShopItemInformation().getItemRarity() == ItemRarityEnums.Rare) {
                 rolledRare = true;
             }
+
+            handleHelpRequestedRelic(shopItem);
         }
         return firstRow;
     }
@@ -352,6 +360,7 @@ public class ShopBoardCreator {
             if(shopItem.getShopItemInformation().getItemRarity() == ItemRarityEnums.Rare) {
                 rolledRare = true;
             }
+            handleHelpRequestedRelic(shopItem);
         }
         return secondRow;
     }
@@ -380,6 +389,7 @@ public class ShopBoardCreator {
             if(shopItem.getShopItemInformation().getItemRarity() == ItemRarityEnums.Rare) {
                 rolledRare = true;
             }
+            handleHelpRequestedRelic(shopItem);
         }
         return thirdRow;
     }

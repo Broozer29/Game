@@ -91,6 +91,8 @@ public class AudioLoader {
                 return "/audio/godrundetected.wav";
             case StickyGrenadeExplosion:
                 return "/audio/StickyGrenadeExplosion.wav";
+            case ChargingBigIronLaserbeam:
+                return "/audio/ChargingBigIronLaserbeam.wav";
             case NewPlayerLaserbeam:
                 return  "/audio/NewPlayerLaserbeam.wav";
             case PlayerTakesDamage:

@@ -212,7 +212,7 @@ public class LevelManager {
     }
 
     public EnemyEnums getNextBoss() {
-        return EnemyEnums.YellowBoss;
+        return EnemyEnums.RedBoss;
 //        int bossesDefeated = GameState.getInstance().getBossesDefeated();
 //        switch (bossesDefeated % EnemyEnums.getAmountOfBossEnemies()) {
 //            case 0:
@@ -323,7 +323,7 @@ public class LevelManager {
     }
 
     public boolean isNextLevelABossLevel() {
-        if (GameState.getInstance().getGameMode().equals(GameMode.ManMode)) {
+        if (GameState.getInstance().getGameMode().equals(GameMode.ManMode) || DevTestSettings.onlyBossLevels) {
             return true;
         }
 

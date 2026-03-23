@@ -38,17 +38,17 @@ public class PlayerStats {
     public static float igniteDamageMultiplier = 0.025f;
     public static float igniteDuration = 1.15f;
     private int baseMaxIgniteStacks = 1;
-    public static int fireFighterHitpoints = 75;
+    public static int fireFighterHitpoints = 80;
 
     //captain
     public static float captainBaseDamage = 10f;
     public static float captainBaseAttackSpeed = 0.28f;
-    public static int captainBaseHitpoints = 60;
+    public static int captainBaseHitpoints = 65;
 
     //carrier
     public static float carrierBaseDamage = 10f;
     public static float carrierBaseAttackSpeed = 1;
-    public static int carrierBaseHitpoints = 75;
+    public static int carrierBaseHitpoints = 80;
     public static float carrierSlowSpeed = 2.5f;
     public static float carrierFastSpeed = 4f;
 
@@ -235,15 +235,17 @@ public class PlayerStats {
     }
 
     public void addXP(float xp) {
-        this.currentXP += xp;
-        int loopBreaker = 0;
-        while (currentXP >= xpToNextLevel) {
-            increasePlayerLevel();
-            loopBreaker++;
-            if (loopBreaker > 10) {
-                return;
-            }
-        }
+        return; //leveling system disabled, ik weet niet of ik dit nog wil hebben of niet
+
+//        this.currentXP += xp;
+//        int loopBreaker = 0;
+//        while (currentXP >= xpToNextLevel) {
+//            increasePlayerLevel();
+//            loopBreaker++;
+//            if (loopBreaker > 10) {
+//                return;
+//            }
+//        }
     }
 
     private void increasePlayerLevel() {

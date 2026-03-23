@@ -17,8 +17,7 @@ public class BarrierSupersizer extends Item {
     @Override
     public void applyEffectToObject (GameObject gameObject) {
         if(gameObject instanceof SpaceShip spaceShip) {
-            spaceShip.modifyMaxShieldMultiplier(modifierBonus * quantity);
-            spaceShip.modifyMaxOverloadingShieldMultiplier(modifierBonus * quantity * 2);
+            //deprecated & removed
         }
     }
 

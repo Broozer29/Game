@@ -95,10 +95,10 @@ public class ItemDescriptionRetriever {
             case PiercingMissiles -> {
                 return "Missiles pierce 1 additional time";
             }
-            case BouncingModuleAddon -> {
+            case BouncingLasers -> {
                 return "Piercing missiles bounce towards enemies instead. Missiles deal +" +
                         Math.round(BouncingModuleAddon.bonusDamagePercentage * 100) +
-                        "% additional damage after each bounce..";
+                        "% additional damage after each bounce.";
             }
             case VIPTicket -> {
                 return "When entering the shop, grants 1 free shop refresh.";
@@ -106,8 +106,11 @@ public class ItemDescriptionRetriever {
             case ElectricDestabilizer -> {
                 return "Your Electro Shred ability now stuns non-boss enemies for " + ElectricDestabilizer.duration + " +(" + ElectricDestabilizer.duration + ") seconds.";
             }
+            case ModulePower -> {
+                return "Drones deal " + Math.round(ModuleAccuracy.damageBonus * 100) + "% (+" + Math.round(ModuleAccuracy.damageBonus * 100) + "%) damage.";
+            }
             case ModuleAccuracy -> {
-                return "Drones now fire towards the closest enemy. Drones deal " + Math.round(ModuleAccuracy.damageBonus * 100) + "% (+" + Math.round(ModuleAccuracy.damageBonus * 100) + "%) damage.";
+                return "Drones now aim towards the enemy closest to you.";
             }
             case ElectricSupercharger -> {
                 return "Your Electro Shred area of effect is improved. Electro Shred deals +" +
@@ -129,12 +132,15 @@ public class ItemDescriptionRetriever {
                 return "Your missiles have a " + Math.round(BarbedMissiles.procChance * 100) + "% (+" + Math.round(BarbedMissiles.procChance * 100) + "%) chance to deal an additional 100% Thorns damage.";
             }
             case ModuleElectrify -> {
-                return "Drones fire Electro Shred instead of missiles. Drones now orbit " +
-                        Math.round(ModuleElectrify.orbitrangeBonus) +
-                        " yards further away";
+                return "Whenever you fire Electroshred, your drones fire a copy of it. Can occur once every " +
+                        String.format("%.1f", ModuleElectrify.cooldown) +
+                        " seconds. Electroshred fired from drones destroy enemy projectiles.";
             }
             case ModuleCommand -> {
                 return "Your drones now fire whenever you fire. Maximum drone capacity is increased to " + ModuleCommand.maxDronesCapacity + ".";
+            }
+            case AnionInverter -> {
+                return "Electroshred cooldown decreased by " + Math.round(AnionInverter.cooldownModifier * 100) + "%. Electroshred damage reduced by " + Math.round(AnionInverter.damageModifier * 100) + "%. Electroshred does NOT destroy enemy projectiles.";
             }
             case Contract -> {
                 return "After killing " + Contract.killCountRequired + " enemies, transform into a random rare or legendary item upon entering the shop.";
@@ -166,7 +172,7 @@ public class ItemDescriptionRetriever {
                 return "Gain 1 Scorching Fury, 1 Sticky Oil and 1 Escalating Flames.";
             }
             case ShieldStabilizer -> {
-                return "Taking damage no longer halts shield regeneration. Reduces shield regeneration rate by " + Math.round(ShieldStabilizer.shieldRegenMultiplier * 100) + "%.";
+                return "Taking damage no longer halts shield regeneration. Reduces shield regeneration rate by -" + Math.round(ShieldStabilizer.shieldRegenMultiplier * 100) + "%.";
             }
             case ProtossScout -> {
                 return "Gain 1 Protoss Scout dealing " + Math.round(ProtossScout.scoutDamageFactor * 100) + "% damage. Takes up 1 Hangar Bay slot.";
@@ -257,6 +263,18 @@ public class ItemDescriptionRetriever {
             }
             case HighVelocityLasers -> {
                 return "Your missiles gain " + (Math.round(HighVelocityLasers.moveSpeedModifier * 100) + "% movement speed.");
+            }
+            case ModuleFocusFire -> {
+                return "Your drones no longer fire automatically. After your laserbeam hits a target, all drones immediately fire 1 shot towards the target.";
+            }
+            case OneShotOneKill -> {
+                return "Your missiles that strike enemies with " + Math.round(OneShotOneKill.hpRequirement * 100) + "% hp will always critically strike and deal " + Math.round(OneShotOneKill.damageAmplificationModifier * 100) + "% bonus damage.";
+            }
+            case BigIron -> {
+                return "You now charge your laserbeam over " + Math.round(BigIron.maxChargeSeconds) + " seconds. Fully charged laserbeams deal " + Math.round((BigIron.damagePerInterval * BigIron.amountOfIntervals) * 100) + "% bonus damage and are " + Math.round((BigIron.scaleGrowthPerInterval * BigIron.amountOfIntervals) * 100) + "% larger. Bonus attack speed now increases the damage dealt.";
+            }
+            case HelpRequested -> {
+                return "Contracts sold in the shop are now free and always reward Legendary quality items. Contracts now require " + Math.round((Contract.killCountRequired * (1 + HelpRequested.additionalKillsRequiredModifier))) + " kills to be completed.";
             }
 
             default -> {

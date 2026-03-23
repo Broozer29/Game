@@ -225,6 +225,7 @@ public class ImageDatabase {
     private BufferedImage emeraldGem5;
     private BufferedImage topazGem7;
     private BufferedImage laserBullet;
+    private BufferedImage chooseone;
 
     private BufferedImage peepoDeepFriedSadge;
     private BufferedImage peepoFeelsCringeMan;
@@ -779,6 +780,7 @@ public class ImageDatabase {
         this.yellowWings4 = imgLoader.getImage(ImageEnums.YellowWings4);
         this.yellowWings5 = imgLoader.getImage(ImageEnums.YellowWings5);
 
+        this.chooseone = imgLoader.getImage(ImageEnums.ChooseOne);
         this.upWhite = imgLoader.getImage(ImageEnums.UpWhite);
         this.upOrange = imgLoader.getImage(ImageEnums.UpOrange);
         this.upGrey = imgLoader.getImage(ImageEnums.UpGrey);
@@ -980,6 +982,7 @@ public class ImageDatabase {
 
     public BufferedImage getImage(ImageEnums imageType) {
         switch (imageType) {
+            case ChooseOne: return this.chooseone;
             case BossHealthBarBackground:
                 return bossHealthBarBackground;
             case BossHealthBarFront:
@@ -1840,7 +1843,7 @@ public class ImageDatabase {
                 return thornsDamage;
             case ElectroShredImproved:
                 return electroShredImproved;
-            case DroneElectroShred:
+            case NegativeElectroShred:
                 return droneElectroShred;
             case Tazer:
                 return tazer;

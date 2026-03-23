@@ -165,7 +165,7 @@ public class Missile extends GameObject {
             addCollidedObject(collidedObject);
             amountOfPiercesLeft--;
 
-            Item bouncingModuleAddon = PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.BouncingModuleAddon);
+            Item bouncingModuleAddon = PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.BouncingLasers);
             if (bouncingModuleAddon != null && canBounce) {
                 GameObject newTarget = EnemyManager.getInstance().findEnemyForMissileToBounceTo(collidedObject, this.collidedObjects);
                 if (newTarget != null) {

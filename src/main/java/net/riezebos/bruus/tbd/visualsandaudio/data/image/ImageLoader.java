@@ -359,6 +359,8 @@ public class ImageLoader {
                 return "/images/selectclass.png";
             case SelectBoons:
                 return "/images/selectboons.png";
+            case ChooseOne:
+                return "/images/UI/chooseone.png";
             case Long_Card:
                 return "/images/UI/Cards/Long Card.png";
             case Square_Card:

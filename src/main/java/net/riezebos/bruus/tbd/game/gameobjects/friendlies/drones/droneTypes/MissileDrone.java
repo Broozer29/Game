@@ -30,7 +30,7 @@ public class MissileDrone extends Drone {
     @Override
     public void activateObject () {
         PlayerInventory playerInventory = PlayerInventory.getInstance();
-        if (playerInventory.getItemFromInventoryIfExists(ItemEnums.ModuleCommand) != null) {
+        if (playerInventory.getItemFromInventoryIfExists(ItemEnums.ModuleCommand) != null || playerInventory.getItemFromInventoryIfExists(ItemEnums.ModuleFocusFire) != null) {
             return;
         }
 
@@ -102,6 +102,57 @@ public class MissileDrone extends Drone {
 
     private boolean allowedToAimAtTarget () {
         return PlayerInventory.getInstance().getItems().containsKey(ItemEnums.ModuleAccuracy);
+    }
+
+
+    //Used for FocusFire item specifically, as we need a specific target
+    @Override
+    public void fireAction (GameObject target) {
+        MissileEnums missileType = MissileEnums.PlayerLaserbeam;
+        SpriteConfiguration missileSpriteConfiguration = new SpriteConfiguration();
+        missileSpriteConfiguration.setxCoordinate(this.getCenterXCoordinate());
+        missileSpriteConfiguration.setyCoordinate(this.getCenterYCoordinate());
+        missileSpriteConfiguration.setImageType(missileType.getImageType());
+        missileSpriteConfiguration.setScale(1f);
+
+        float xMovementSpeed = 10f; //10 ipv 7,5 om te helpen met de accuracy voor focusfire item
+        float yMovementSpeed = 10f; //10 ipv 7,5 om te helpen met de accuracy voor focusfire item
+
+        SpaceShip spaceship = (SpaceShip) this.ownerOrCreator;
+        float damage = PlayerStats.getInstance().getBaseDroneDamage() + spaceship.getDroneDamageModifier();
+        Direction rotation = Direction.RIGHT;
+        MovementPatternSize movementPatternSize = MovementPatternSize.SMALL;
+        PathFinder pathFinder = selectPathFinder();
+
+        MovementConfiguration movementConfiguration = MissileCreator.getInstance().createMissileMovementConfig(
+                xMovementSpeed, yMovementSpeed, pathFinder, movementPatternSize, rotation
+        );
+        movementConfiguration.initDefaultSettingsForSpecializedPathFinders();
+
+        boolean isFriendly = true;
+
+        MissileConfiguration missileConfiguration = MissileCreator.getInstance().createMissileConfiguration(missileType
+                , 100, 100, null, damage, ImageEnums.Impact_Explosion_One, isFriendly, allowedToDealDamage, objectType,
+                missileType.isUsesBoxCollision(), false, false, false);
+
+        Missile missile = MissileCreator.getInstance().createMissile(missileSpriteConfiguration, missileConfiguration, movementConfiguration);
+
+        missile.setOwnerOrCreator(this);
+        missile.setObjectType("Drone Missile");
+
+        missile.resetMovementPath();
+        Point enemyPoint = new Point(target.getCenterXCoordinate(), target.getCenterYCoordinate());
+        enemyPoint.setX(enemyPoint.getX() - missile.getWidth() / 2);
+        enemyPoint.setY(enemyPoint.getY() - missile.getHeight() / 2);
+        movementConfiguration.setDestination(enemyPoint);
+        missile.setCenterCoordinates(this.getAnimation().getCenterXCoordinate(), this.getAnimation().getCenterYCoordinate());
+
+        missile.rotateObjectTowardsDestination(true);
+        missile.setAllowedVisualsToRotate(false); //Prevent it from being rotated again by the SpriteMover
+
+        missile.setOwnerOrCreator(this);
+
+        MissileManager.getInstance().addExistingMissile(missile);
     }
 
     private PathFinder selectPathFinder () {

@@ -24,8 +24,28 @@ public enum ItemEnums {
     PyrrhicProtocol(ItemRarityEnums.Legendary, ItemCategory.Offense, ImageEnums.PyrrhicProtocolIcon, "Pyrrhic Protocol", false),
     VengeanceProtocol(ItemRarityEnums.Rare, ItemCategory.Offense, ImageEnums.VengeanceProtocolIcon, "Vengeance Protocol", false),
     EnergySiphon(ItemRarityEnums.Common, ItemCategory.Defense, ImageEnums.Starcraft2_Energy_Siphon, "Energy Siphon", false),
-    //-----------------------------
+    Stuivie(ItemRarityEnums.Relic, ItemCategory.Defense, ImageEnums.StuiversBestFriend, "Stuivie", false),
+
+
+    //Relics 2.0
+    ModuleAccuracy(ItemRarityEnums.Relic, ItemCategory.Offense, ImageEnums.Starcraft2LockOn, "Module: Accuracy", true),
+    BouncingLasers(ItemRarityEnums.Relic, ItemCategory.Offense, ImageEnums.Starcraft2BouncingLaser, "Bouncing Lasers", true),
+    ModuleElectrify(ItemRarityEnums.Relic, ItemCategory.Offense, ImageEnums.ModuleElectrify, "Module: Electric Razor", true),
+    ModuleCommand(ItemRarityEnums.Relic, ItemCategory.Offense, ImageEnums.ModuleCommand, "Module: Synergize", true),
+    ModuleFocusFire(ItemRarityEnums.Relic, ItemCategory.Offense, ImageEnums.Star, "Module: Focus Fire", true),
+    ModuleScorch(ItemRarityEnums.Relic, ItemCategory.Offense, ImageEnums.ModuleScorchIcon, "Module: Scorch", true),
+    ShieldStabilizer(ItemRarityEnums.Relic, ItemCategory.Defense, ImageEnums.ShieldStabilizer, "Shield Stabilizer", true),
     BeckoningFlames(ItemRarityEnums.Relic, ItemCategory.Offense, ImageEnums.EntanglingFlames, "Beckoning Flames", true),
+    ArbiterDamage(ItemRarityEnums.Relic, ItemCategory.Offense, ImageEnums.ArbiterDamage, "Arbit Inversion", true),
+    GlassCannon(ItemRarityEnums.Relic, ItemCategory.Offense, ImageEnums.GlassCannon, "Glass Cannon", true),
+    AnionInverter(ItemRarityEnums.Relic, ItemCategory.Offense, ImageEnums.Test_Image, "Anion Inverter", true),
+    BigIron(ItemRarityEnums.Relic, ItemCategory.Offense, ImageEnums.Test_Image, "Big Iron", true),
+    OneShotOneKill(ItemRarityEnums.Relic, ItemCategory.Offense, ImageEnums.Test_Image, "One shot, one kill", true),
+    HelpRequested(ItemRarityEnums.Relic, ItemCategory.Utility, ImageEnums.Test_Image, "Help Requested", true),
+
+
+
+    //-----------------------------
     PlasmaCoatedBullets(ItemRarityEnums.Common, ItemCategory.Offense, ImageEnums.Starcraft2_Blue_Flame, "Plasma Bullets", true),
     PhotonPiercer(ItemRarityEnums.Common, ItemCategory.Offense, ImageEnums.Starcraft2_Concussive_Shells, "Photon Piercer", true),
     CannisterOfGasoline(ItemRarityEnums.Rare, ItemCategory.Offense, ImageEnums.CannisterOfGasoline, "Gasoline", true),
@@ -40,13 +60,10 @@ public enum ItemEnums {
     GuardianDrone(ItemRarityEnums.Rare, ItemCategory.Offense, ImageEnums.Starcraft2_Seeker_Missile, "Guardian Drone", true),
     CriticalOverloadCapacitor(ItemRarityEnums.Legendary, ItemCategory.Offense, ImageEnums.Starcraft2_Auto_Tracking, "Precision Overloader", true),
     PiercingMissiles(ItemRarityEnums.Legendary, ItemCategory.Offense, ImageEnums.PiercingLaser, "Piercing Lasers", true),
-    BouncingModuleAddon(ItemRarityEnums.Relic, ItemCategory.Offense, ImageEnums.Starcraft2BouncingLaser, "Bouncing Lasers", true),
     VIPTicket(ItemRarityEnums.Legendary, ItemCategory.Utility, ImageEnums.VIPTicket, "VIP Ticket", true),
     ElectricDestabilizer(ItemRarityEnums.Legendary, ItemCategory.Offense, ImageEnums.Starcraft2_Protoss_Shield_Disintegrate, "Electric Destabilizer", true),
-    ModuleAccuracy(ItemRarityEnums.Legendary, ItemCategory.Offense, ImageEnums.Starcraft2LockOn, "Module: Accuracy", true),
+    ModulePower(ItemRarityEnums.Legendary, ItemCategory.Offense, ImageEnums.Star, "Module: Power", true),
     ElectricSupercharger(ItemRarityEnums.Legendary, ItemCategory.Offense, ImageEnums.Starcraft2_Psi_Storm2, "Electric Supercharger", true),
-    ModuleElectrify(ItemRarityEnums.Relic, ItemCategory.Offense, ImageEnums.ModuleElectrify, "Module: Electric Razor", true),
-    ModuleCommand(ItemRarityEnums.Relic, ItemCategory.Offense, ImageEnums.ModuleCommand, "Module: Synergize", true),
     Contract(ItemRarityEnums.Common, ItemCategory.Utility, ImageEnums.Contract, "Contract", true),
     StickyOil(ItemRarityEnums.Rare, ItemCategory.Offense, ImageEnums.StickyOilIcon, "Sticky Oil", true),
     CorrosiveOil(ItemRarityEnums.Legendary, ItemCategory.Offense, ImageEnums.CorrosiveOil, "Corrosive Oil", true),
@@ -55,8 +72,6 @@ public enum ItemEnums {
     EscalatingFlames(ItemRarityEnums.Rare, ItemCategory.Offense, ImageEnums.EscalatingFlames, "Escalating Flames", true),
     FuelCannister(ItemRarityEnums.Legendary, ItemCategory.Offense, ImageEnums.FuelCannister, "Fuel Cannister", true),
     BargainBucket(ItemRarityEnums.Legendary, ItemCategory.Offense, ImageEnums.BargainBucket, "Bargain Bucket", true),
-    ModuleScorch(ItemRarityEnums.Relic, ItemCategory.Offense, ImageEnums.ModuleScorchIcon, "Module: Scorch", true),
-    ShieldStabilizer(ItemRarityEnums.Relic, ItemCategory.Defense, ImageEnums.ShieldStabilizer, "Shield Stabilizer", true),
     ProtossScout(ItemRarityEnums.Common, ItemCategory.Utility, ImageEnums.ScoutItem, "Hangar Bay: Scout", true),
     ProtossArbiter(ItemRarityEnums.Rare, ItemCategory.Utility, ImageEnums.ArbiterItem, "Hangar Bay: Arbiter", true),
     ProtossShuttle(ItemRarityEnums.Common, ItemCategory.Utility, ImageEnums.ShuttleItem, "Hangar Bay: Shuttle", true),
@@ -70,12 +85,9 @@ public enum ItemEnums {
     ConstructionKit(ItemRarityEnums.Legendary, ItemCategory.Utility, ImageEnums.ConstructionKitIcon, "Construction Kit", true),
     SynergeticLink(ItemRarityEnums.Legendary, ItemCategory.Utility, ImageEnums.SynergeticLinkIcon, "Synergetic Link", false),
     EmergencyRepairs(ItemRarityEnums.Rare, ItemCategory.Utility, ImageEnums.EmergencyRepairsIcon, "Emergency Repairs", true),
-    ArbiterDamage(ItemRarityEnums.Relic, ItemCategory.Offense, ImageEnums.ArbiterDamage, "Arbit Inversion", true),
     StickyDynamite(ItemRarityEnums.Common, ItemCategory.Offense, ImageEnums.StickyDynamite, "Sticky Dynamite", true),
     EternaFlame(ItemRarityEnums.Legendary, ItemCategory.Offense, ImageEnums.Eternaflame, "EternaBurn", true),
     EphemeralBlaze(ItemRarityEnums.Rare, ItemCategory.Offense, ImageEnums.EphemeralBlaze, "Ephemeral Blaze", true),
-    Stuivie(ItemRarityEnums.Relic, ItemCategory.Defense, ImageEnums.StuiversBestFriend, "Stuivie", false),
-    GlassCannon(ItemRarityEnums.Relic, ItemCategory.Offense, ImageEnums.GlassCannon, "Glass Cannon", true),
     AimAssist(ItemRarityEnums.Legendary, ItemCategory.Offense, ImageEnums.AimAssist, "Aim Assist", true),
     HighVelocityLasers(ItemRarityEnums.Common, ItemCategory.Offense, ImageEnums.HighVelocityLasers, "High Velocity Lasers", true),
     InfernalPreIgniter(ItemRarityEnums.Legendary, ItemCategory.Offense, ImageEnums.InfernalPreIgniter, "Infernal Pre-igniter", true);

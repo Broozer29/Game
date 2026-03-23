@@ -1,7 +1,6 @@
 package net.riezebos.bruus.tbd.game.gamestate;
 
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
-import net.riezebos.bruus.tbd.game.gameobjects.player.boons.BoonEnums;
 import net.riezebos.bruus.tbd.game.gamestate.save.SaveManager;
 import net.riezebos.bruus.tbd.game.items.Item;
 import net.riezebos.bruus.tbd.game.items.ItemEnums;
@@ -12,10 +11,8 @@ import net.riezebos.bruus.tbd.game.items.items.util.ContractCounter;
 import net.riezebos.bruus.tbd.game.items.items.util.ContractHelper;
 import net.riezebos.bruus.tbd.game.level.enums.LevelDifficulty;
 import net.riezebos.bruus.tbd.game.level.enums.MiniBossConfig;
-import net.riezebos.bruus.tbd.game.playerprofile.PlayerProfileManager;
 import net.riezebos.bruus.tbd.game.util.OnScreenTextManager;
 import net.riezebos.bruus.tbd.guiboards.BoardManager;
-import net.riezebos.bruus.tbd.guiboards.boardcreators.AchievementUnlockHelper;
 import net.riezebos.bruus.tbd.guiboards.boardcreators.ShopBoardCreator;
 import net.riezebos.bruus.tbd.guiboards.guicomponents.GUIComponent;
 import net.riezebos.bruus.tbd.visualsandaudio.data.DataClass;
@@ -36,36 +33,36 @@ public class ShopManager {
 
     private static ShopManager instance = new ShopManager();
 
-    private ShopManager () {
+    private ShopManager() {
 
     }
 
-    public static ShopManager getInstance () {
+    public static ShopManager getInstance() {
         return instance;
     }
 
-    public int getAmountOfFreeItems () {
+    public int getAmountOfFreeItems() {
         return amountOfFreeItems;
     }
 
-    public void setAmountOfFreeItems (int amountOfFreeItems) {
+    public void setAmountOfFreeItems(int amountOfFreeItems) {
         this.amountOfFreeItems = amountOfFreeItems;
     }
 
-    public int getRowsUnlocked () {
+    public int getRowsUnlocked() {
         return rowsUnlocked;
     }
 
 
-    public int getLastLevelDifficultyScore () {
+    public int getLastLevelDifficultyScore() {
         return lastLevelDifficultyScore;
     }
 
-    public void setLastLevelDifficultyScore (int lastLevelDifficultyScore) {
+    public void setLastLevelDifficultyScore(int lastLevelDifficultyScore) {
         this.lastLevelDifficultyScore = lastLevelDifficultyScore;
     }
 
-    public MiniBossConfig setLastMiniBossConfig () {
+    public MiniBossConfig setLastMiniBossConfig() {
         return lastMiniBossConfig;
     }
 
@@ -73,15 +70,15 @@ public class ShopManager {
         this.lastMiniBossConfig = lastMiniBossConfig;
     }
 
-    public LevelDifficulty getLastLevelDifficulty () {
+    public LevelDifficulty getLastLevelDifficulty() {
         return lastLevelDifficulty;
     }
 
-    public void setLastLevelDifficulty (LevelDifficulty lastLevelDifficulty) {
+    public void setLastLevelDifficulty(LevelDifficulty lastLevelDifficulty) {
         this.lastLevelDifficulty = lastLevelDifficulty;
     }
 
-    public void setRowsUnlockedByDifficulty (int difficulty) {
+    public void setRowsUnlockedByDifficulty(int difficulty) {
         if (difficulty == 2 || difficulty == 3) {
             rowsUnlocked = 1;
         } else if (difficulty == 4 || difficulty == 5) {
@@ -91,7 +88,7 @@ public class ShopManager {
         }
     }
 
-    public void calculateRerollCost () {
+    public void calculateRerollCost() {
         if (PlayerInventory.getInstance() == null) {
             return; //It's not initialized yet, don't use it
         }
@@ -110,31 +107,35 @@ public class ShopManager {
         }
     }
 
-    public void resetFreeRerolls () {
+    public void resetFreeRerolls() {
         this.freeRerollsLeft = PlayerStats.getInstance().getAmountOfFreeRerolls();
     }
 
-    public void spendFreeReroll () {
+    public void spendFreeReroll() {
         this.freeRerollsLeft -= 1;
     }
 
-    public int getFreeRefreshessLeft () {
+    public int getFreeRefreshessLeft() {
         return freeRerollsLeft;
     }
 
-    public int getRerollCost () {
-        if(rerollCost < 1) {
+    public int getRerollCost() {
+        if (rerollCost < 1) {
             calculateRerollCost();
         }
         return rerollCost;
     }
 
-    public void activateFinishedContracts(){
+    public void activateFinishedContracts() {
         int yOffset = 0;
-        int bountyHunterCounter = 0;
+//        int bountyHunterCounter = 0;
         boolean shouldExport = false;
-        for(ContractCounter contractCounter : ContractHelper.getInstance().getFinishedContracts()){
+        for (ContractCounter contractCounter : ContractHelper.getInstance().getFinishedContracts()) {
             ItemRarityEnums itemRarity = ItemRarityEnums.getRandomRareItemSlot();
+            if (PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.HelpRequested) != null) {
+                itemRarity = ItemRarityEnums.Legendary;
+            }
+
             ItemEnums itemToAdd = getRandomAvailableItemByRarity(itemRarity);
             PlayerInventory.getInstance().addItem(itemToAdd);
             AudioManager.getInstance().addAudio(AudioEnums.GenericSelect);
@@ -142,28 +143,28 @@ public class ShopManager {
             BoardManager.getInstance().getShopBoard().addGUIAnimation(getContractAnimation(itemToAdd, yOffset));
             yOffset += ShopBoardCreator.shopItemIconDimensions + 5;
 
-            if(PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.Contract) != null){
+            if (PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.Contract) != null) {
                 Contract contract = (Contract) PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.Contract);
                 contract.subtractItem(1);
             }
-            bountyHunterCounter += 1;
-
-            if(bountyHunterCounter >= 3 && PlayerProfileManager.getInstance().getLoadedProfile().getBountyHunterLevel() <= 0){
-                PlayerProfileManager.getInstance().getLoadedProfile().setBountyHunterLevel(1);
-                PlayerProfileManager.getInstance().exportCurrentProfile();
-                BoardManager.getInstance().getShopBoard().addGUIAnimation(AchievementUnlockHelper.createUnlockGUIComponent(BoonEnums.BOUNTY_HUNTER.getUnlockImage()));
-                AudioManager.getInstance().addAudio(AudioEnums.AchievementUnlocked);
-            }
+//            bountyHunterCounter += 1;
+//
+//            if(bountyHunterCounter >= 3 && PlayerProfileManager.getInstance().getLoadedProfile().getBountyHunterLevel() <= 0){
+//                PlayerProfileManager.getInstance().getLoadedProfile().setBountyHunterLevel(1);
+//                PlayerProfileManager.getInstance().exportCurrentProfile();
+//                BoardManager.getInstance().getShopBoard().addGUIAnimation(AchievementUnlockHelper.createUnlockGUIComponent(BoonEnums.BOUNTY_HUNTER.getUnlockImage()));
+//                AudioManager.getInstance().addAudio(AudioEnums.AchievementUnlocked);
+//            }
             shouldExport = true;
         }
-        if(shouldExport){
+        if (shouldExport) {
             SaveManager.getInstance().exportCurrentSave();
         }
     }
 
 
     //helper method for creating an animation for the contract completing
-    private GUIComponent getContractAnimation(ItemEnums itemEnums, int yOffset){
+    private GUIComponent getContractAnimation(ItemEnums itemEnums, int yOffset) {
         SpriteConfiguration spriteConfiguration = new SpriteConfiguration();
         spriteConfiguration.setxCoordinate(DataClass.getInstance().getWindowWidth() / 2);
         spriteConfiguration.setyCoordinate(DataClass.getInstance().getWindowHeight() / 2);
@@ -201,7 +202,7 @@ public class ShopManager {
         return ItemEnums.Overclock;
     }
 
-    public void setRerollCost (int rerollCost) {
+    public void setRerollCost(int rerollCost) {
         this.rerollCost = rerollCost;
     }
 }

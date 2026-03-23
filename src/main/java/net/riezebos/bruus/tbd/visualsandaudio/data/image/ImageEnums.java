@@ -4,6 +4,7 @@ public enum ImageEnums {
 
     /// / Menu Buttons
     Test_Image,
+    ChooseOne,
     BossHealthBarBackground,
     BossHealthBarRed,
     BossHealthBarFront,
@@ -153,7 +154,7 @@ public enum ImageEnums {
     LightningOrbDestruction,
     LevelUpAnimation,
     ElectroShredImproved,
-    DroneElectroShred,
+    NegativeElectroShred,
     ThornsDamage,
     FreezeEffect,
     ShurikenEnemy,

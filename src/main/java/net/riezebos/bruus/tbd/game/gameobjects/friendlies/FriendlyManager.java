@@ -47,6 +47,7 @@ public class FriendlyManager {
         Drone drone = FriendlyCreator.createDrone(spaceShip);
         spaceShip.getObjectOrbitingThis().add(drone);
         OrbitingObjectsFormatter.reformatOrbitingObjects(spaceShip, spaceShip.getDroneOrbitRadius());
+        drones.add(drone);
     }
 
     public void placeCarrierBeacon(Drone drone){

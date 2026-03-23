@@ -8,8 +8,6 @@ import net.riezebos.bruus.tbd.game.items.enums.ItemApplicationEnum;
 import net.riezebos.bruus.tbd.game.items.enums.ItemRarityEnums;
 
 public class GlassCannon extends Item {
-    public static float modifierBonus = 0.5f;
-    public static float damageBonus = 1;
     private boolean shouldApply;
 
     public GlassCannon(){

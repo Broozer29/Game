@@ -1,6 +1,5 @@
 package net.riezebos.bruus.tbd.game.gameobjects.enemies;
 
-import net.riezebos.bruus.tbd.game.UI.GameUICreator;
 import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyCategory;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyEnums;
@@ -19,7 +18,6 @@ import net.riezebos.bruus.tbd.game.movement.pathfinders.DestinationPathFinder;
 import net.riezebos.bruus.tbd.game.playerprofile.PlayerProfileManager;
 import net.riezebos.bruus.tbd.guiboards.BoardManager;
 import net.riezebos.bruus.tbd.guiboards.guicomponents.BossHealthBar;
-import net.riezebos.bruus.tbd.guiboards.guicomponents.GUIComponent;
 import net.riezebos.bruus.tbd.visualsandaudio.data.DataClass;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteAnimation;
@@ -137,7 +135,8 @@ public class Enemy extends GameObject {
             }
             this.currentShieldPoints = maxShieldPoints;
 
-            this.damage += level / 2;
+            //damage groei staat weer uit omdat speler max HP niet meer groeit
+//            this.damage += level / 2;
 
             // XP on death is multiplied by 50% of difficulty coefficient
 //            this.xpOnDeath *= (1 + (0.5 * difficultyCoeff));
@@ -185,13 +184,16 @@ public class Enemy extends GameObject {
     public void triggerOnDeathActions() {
         if (LevelManager.getInstance().isNextLevelABossLevel() && this.enemyType.getEnemyCategory().equals(EnemyCategory.Boss)) {
             GameStatsTracker.getInstance().addEnemyKilled(1);
-            GodRunDetector.getInstance().addBoardBlock(this.movementConfiguration.getRotation().equals(Direction.RIGHT) ? Math.min(this.currentBoardBlock + 5, 8): this.currentBoardBlock); //5 is roughly the bonus required to offset coming from the right
-            PlayerProfileManager.getInstance().getLoadedProfile().addEmeralds(1);
+//            PlayerProfileManager.getInstance().getLoadedProfile().addEmeralds(1);
             PlayerProfileManager.getInstance().exportCurrentProfile();
-            GUIComponent emeraldIcon = GameUICreator.getInstance().createEmeraldObtainedIcon(this.getCenterXCoordinate(), this.getCenterYCoordinate());
-            BoardManager.getInstance().getGameBoard().addGUIAnimation(emeraldIcon);
+            BoardManager.getInstance().getGameBoard().showRelicSelection();
+//            GUIComponent emeraldIcon = GameUICreator.getInstance().createEmeraldObtainedIcon(this.getCenterXCoordinate(), this.getCenterYCoordinate());
+//            BoardManager.getInstance().getGameBoard().addGUIAnimation(emeraldIcon);
+
+
         } else if (!LevelManager.getInstance().isNextLevelABossLevel() && !this.enemyType.getEnemyCategory().equals(EnemyCategory.Summon)) {
             //seperate if statement because i might want to handle something else here
+            GodRunDetector.getInstance().addBoardBlock(this.movementConfiguration.getRotation().equals(Direction.RIGHT) ? Math.min(this.currentBoardBlock + 5, 8): this.currentBoardBlock); //5 is roughly the bonus required to offset coming from the right
             if (!this.hasEffect(EffectIdentifiers.EndOfLevelBurn)) {
                 GameStatsTracker.getInstance().addEnemyKilled(1);
             }

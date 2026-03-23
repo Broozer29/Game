@@ -14,7 +14,7 @@ public class BouncingModuleAddon extends Item {
     public static float bonusDamagePercentage = 0.25f;
 
     public BouncingModuleAddon () {
-        super(ItemEnums.BouncingModuleAddon, 1, ItemApplicationEnum.BeforeCollision);
+        super(ItemEnums.BouncingLasers, 1, ItemApplicationEnum.BeforeCollision);
     }
 
     @Override

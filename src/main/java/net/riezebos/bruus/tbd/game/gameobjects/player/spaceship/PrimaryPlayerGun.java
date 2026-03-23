@@ -13,6 +13,7 @@ import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.items.ItemEnums;
 import net.riezebos.bruus.tbd.game.items.PlayerInventory;
+import net.riezebos.bruus.tbd.game.items.items.captain.BigIron;
 import net.riezebos.bruus.tbd.game.items.items.captain.HighVelocityLasers;
 import net.riezebos.bruus.tbd.game.items.items.carrier.KineticDynamo;
 import net.riezebos.bruus.tbd.game.movement.Direction;
@@ -20,7 +21,9 @@ import net.riezebos.bruus.tbd.game.movement.MovementConfiguration;
 import net.riezebos.bruus.tbd.game.movement.MovementPatternSize;
 import net.riezebos.bruus.tbd.game.movement.pathfinders.PathFinder;
 import net.riezebos.bruus.tbd.game.movement.pathfinders.RegularPathFinder;
+import net.riezebos.bruus.tbd.visualsandaudio.data.audio.AudioDatabase;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.AudioManager;
+import net.riezebos.bruus.tbd.visualsandaudio.data.audio.CustomAudioClip;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.AudioEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.AnimationManager;
@@ -87,10 +90,10 @@ public class PrimaryPlayerGun {
         }
     }
 
-    private void updateKineticDynamo(boolean newValue, GameObject owner){
+    private void updateKineticDynamo(boolean newValue, GameObject owner) {
         KineticDynamo kineticDynamo = (KineticDynamo) PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.KineticDynamo);
-        if(kineticDynamo != null){
-            if(!newValue){
+        if (kineticDynamo != null) {
+            if (!newValue) {
                 kineticDynamo.applyEffectToObject(owner);
             }
             kineticDynamo.isMovingFast = newValue;
@@ -114,14 +117,73 @@ public class PrimaryPlayerGun {
     }
 
     private void handleRegularMissile(int xCoordinate, int yCoordinate, PlayerPrimaryAttackTypes playerAttackType, SpaceShip owner) {
-        ImageEnums visualImage = playerStats.getPlayerMissileImage();
-        float scale = 1;
-        PathFinder pathFinder = new RegularPathFinder();
-        fireMissile(xCoordinate, yCoordinate, visualImage, scale, pathFinder, playerAttackType.getCorrespondingMissileEnum(), owner);
-        playFiringAudio(playerAttackType);
-
+        if (PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.BigIron) != null) {
+            handleChargingLaserbeam(owner);
+        } else {
+            ImageEnums visualImage = playerStats.getPlayerMissileImage();
+            PathFinder pathFinder = new RegularPathFinder();
+            fireMissile(xCoordinate, yCoordinate, visualImage, 1, pathFinder, playerAttackType.getCorrespondingMissileEnum(), owner);
+            playFiringAudio(playerAttackType);
+        }
         orangeBarCurrentValue = -1;
         orangeBarMaxValue = -1;
+    }
+
+    private float totalScaleBonus = 0f;
+    private float totalDamageBonus = 0f;
+    private double secondsStartedCharging = 0.0d;
+    private boolean isCharging = false;
+    private SpriteAnimation chargingAnimation = this.initBigIronChargingAnimation();
+    private CustomAudioClip chargingAudioClip = AudioDatabase.getInstance().getAudioClip(AudioEnums.ChargingBigIronLaserbeam);
+
+    private void handleChargingLaserbeam(SpaceShip owner) {
+        if (!isCharging) {
+            isCharging = true;
+            secondsStartedCharging = GameState.getInstance().getGameSeconds();
+            chargingAnimation = this.initBigIronChargingAnimation(); //reset animation
+            owner.addPlayerFollowingAnimation(chargingAnimation);
+            AnimationManager.getInstance().addUpperAnimation(chargingAnimation);
+            chargingAudioClip = AudioDatabase.getInstance().getAudioClip(AudioEnums.ChargingBigIronLaserbeam);
+            chargingAudioClip.setLoop(true);
+            chargingAudioClip.startClip();
+            totalScaleBonus = 0f;
+            totalDamageBonus = 0f;
+        }
+        if (isCharging) {
+            double timeCharged = GameState.getInstance().getGameSeconds() - secondsStartedCharging;
+            int intervals = (int) (timeCharged / BigIron.interval);
+            totalScaleBonus = intervals * (BigIron.scaleGrowthPerInterval + 0.025f); //klein beetje extra scaling op de charge anim
+            totalDamageBonus = intervals * (BigIron.damagePerInterval * (1 + owner.getAttackSpeedModifier()));
+            chargingAnimation.setAnimationScale(1 + totalScaleBonus);
+            chargingAudioClip.setLoop(true);
+//            chargingAnimation.setCenterCoordinates(owner.getCenterXCoordinate(), owner.getCenterYCoordinate()); //recenter the animation, might not be need
+        }
+        if (isCharging && secondsStartedCharging + BigIron.maxChargeSeconds < GameState.getInstance().getGameSeconds()) {
+            releaseChargingLaserbeam(owner);
+        }
+    }
+
+    public void releaseChargingLaserbeam(SpaceShip owner) {
+        //release it
+        if (chargingAnimation != null) {
+            chargingAnimation.setVisible(false);
+        }
+        if(chargingAudioClip != null){
+            chargingAudioClip.setLoop(false);
+            chargingAudioClip.stopClip();
+        }
+
+        if(!isCharging){
+            return; //if we werent charging, dont fire anything
+        }
+        ImageEnums visualImage = playerStats.getPlayerMissileImage();
+        PathFinder pathFinder = new RegularPathFinder();
+        fireMissile(owner.getXCoordinate() + owner.getWidth(), owner.getCenterYCoordinate(), visualImage, 1 * (1 + totalScaleBonus), pathFinder, PlayerPrimaryAttackTypes.Laserbeam.getCorrespondingMissileEnum(), owner);
+        playFiringAudio(PlayerPrimaryAttackTypes.Laserbeam);
+        totalScaleBonus = 0f;
+        totalDamageBonus = 0f;
+        lastAttackTime = GameState.getInstance().getGameSeconds();
+        isCharging = false;
     }
 
 
@@ -156,7 +218,7 @@ public class PrimaryPlayerGun {
         }
     }
 
-    private void updateFlameThrowerDamageFromInfernalPreIgniter(SpecialAttack specialAttack){
+    private void updateFlameThrowerDamageFromInfernalPreIgniter(SpecialAttack specialAttack) {
         //deprecated item effect but still functional, can be reused for a different item now that infernal preigniter has been reworked
 //        if(PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.InfernalPreIgniter) != null){
 //            specialAttack.setDamage(playerStats.getNormalAttackDamage() * ((this.orangeBarCurrentValue / this.orangeBarMaxValue) * InfernalPreIgniter.maxDamageBonnus));
@@ -164,10 +226,13 @@ public class PrimaryPlayerGun {
     }
 
 
-    public void stopFiring() {
+    public void stopFiring(SpaceShip owner) {
         if (this.channeledAttack != null && !this.channeledAttack.isDissipating()) {
             this.channeledAttack.startDissipating();
             timeChannelAttackGetsCleared = GameState.getInstance().getGameSeconds();
+        }
+        if (PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.BigIron) != null) {
+            releaseChargingLaserbeam(owner);
         }
     }
 
@@ -201,6 +266,9 @@ public class PrimaryPlayerGun {
         boolean allowedToDealDamage = true;
         String objectType = "Player Missile";
         float damage = owner.getDamage() * 2;
+
+
+        damage *= 1 + (totalDamageBonus); //bigiron dmg bonus
         boolean isExplosive = false;
 
 
@@ -215,7 +283,7 @@ public class PrimaryPlayerGun {
         }
         Missile missile = missileCreator1.createMissile(spriteConfiguration, missileConfiguration, movementConfiguration);
 
-        if(PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.HighVelocityLasers) != null){
+        if (PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.HighVelocityLasers) != null) {
             HighVelocityLasers lasers = (HighVelocityLasers) PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.HighVelocityLasers);
             lasers.applyEffectToObject(missile);
         }
@@ -242,31 +310,31 @@ public class PrimaryPlayerGun {
         }
 
         if (PlayerStats.getInstance().getPlayerClass().equals(PlayerClass.FireFighter)) {
-            if(orangeBarMaxValue < 0) {
+            if (orangeBarMaxValue < 0) {
                 orangeBarMaxValue = 125 * owner.getFuelCannisterMaxCapacityModifier();
             }
 
-            if(orangeBarCurrentValue < 0){
+            if (orangeBarCurrentValue < 0) {
                 orangeBarCurrentValue = orangeBarMaxValue;
             }
 
-            if(this.channeledAttack == null && orangeBarCurrentValue < orangeBarMaxValue) {
+            if (this.channeledAttack == null && orangeBarCurrentValue < orangeBarMaxValue) {
                 orangeBarCurrentValue += FUEL_REGENERATION_RATE * owner.getFuelCannisterRegenModifier();
                 if (orangeBarCurrentValue > orangeBarMaxValue) {
                     orangeBarCurrentValue = orangeBarMaxValue; // Clamp at max value
                 }
             }
 
-            if(channeledAttack != null) {
+            if (channeledAttack != null) {
                 if (orangeBarCurrentValue <= 0) {
                     // If no fuel is available, prevent firing
-                    stopFiring();
+                    stopFiring(owner);
                     return;
                 }
 
                 // Deplete fuel while firing
                 updateFlameThrowerDamageFromInfernalPreIgniter(this.channeledAttack);
-                orangeBarCurrentValue -= Math.max(FUEL_DEPLETION_RATE * owner.getFuelCannisterUsageModifier() , 0.01f);
+                orangeBarCurrentValue -= Math.max(FUEL_DEPLETION_RATE * owner.getFuelCannisterUsageModifier(), 0.01f);
                 if (orangeBarCurrentValue < 0) {
                     orangeBarCurrentValue = 0; // Clamp at 0
                 }
@@ -286,5 +354,19 @@ public class PrimaryPlayerGun {
             return owner.getProtossShipBuilderTimer();
         }
         return orangeBarCurrentValue;
+    }
+
+
+    private SpriteAnimation initBigIronChargingAnimation() {
+        SpriteConfiguration spriteConfiguration = new SpriteConfiguration();
+        spriteConfiguration.setxCoordinate(-300);
+        spriteConfiguration.setyCoordinate(-300);
+        spriteConfiguration.setScale(1);
+        spriteConfiguration.setImageType(ImageEnums.Charging);
+
+        SpriteAnimationConfiguration spriteAnimationConfiguration = new SpriteAnimationConfiguration(spriteConfiguration, 1, true);
+        SpriteAnimation spriteAnimation = new SpriteAnimation(spriteAnimationConfiguration);
+        spriteAnimation.addXOffset(60);
+        return spriteAnimation;
     }
 }

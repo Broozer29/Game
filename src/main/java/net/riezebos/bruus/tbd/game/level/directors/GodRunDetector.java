@@ -87,8 +87,8 @@ public class GodRunDetector {
         }
     }
 
-    private float enemyKillRatioRequiredWhenLowGodRunScore = 6f;
-    private float enemyKillRatioRequiredWhenHighGodRunScore = 5f;
+    private float enemyKillRatioRequiredWhenLowGodRunScore = 7f;
+    private float enemyKillRatioRequiredWhenHighGodRunScore = 6f;
     private float ratioThresholdWhenLowGodRunScore = 0.75f;
     private float ratioThresholdWhenHighGodRunScore = 0.65f;
     private float sustainSecondsWhenLowGodrunScore = 7.5f;

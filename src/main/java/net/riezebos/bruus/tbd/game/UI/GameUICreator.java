@@ -1,6 +1,7 @@
 package net.riezebos.bruus.tbd.game.UI;
 
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
+import net.riezebos.bruus.tbd.game.items.ItemEnums;
 import net.riezebos.bruus.tbd.game.items.enums.ItemRarityEnums;
 import net.riezebos.bruus.tbd.game.level.LevelManager;
 import net.riezebos.bruus.tbd.guiboards.guicomponents.*;
@@ -49,6 +50,7 @@ public class GameUICreator {
     private DisplayOnly firstRelicBackgroundCard;
     private DisplayOnly secondRelicBackgroundCard;
     private DisplayOnly thirdRelicBackgroundCard;
+    private DisplayOnly chooseOne;
 
     private ShopItem firstRelicShopItem;
     private ShopItem secondRelicShopItem;
@@ -60,11 +62,11 @@ public class GameUICreator {
 
 
     private void createRelicSelectionComponents() {
-        int firstRelicXCoordinate = Math.round(DataClass.getInstance().getBoardBlockWidth() * 0.25f);
-        int secondRelicXCoordinate = Math.round(DataClass.getInstance().getBoardBlockWidth() * 0.5f);
-        int thirdRelicXCoordinate = Math.round(DataClass.getInstance().getBoardBlockWidth() * 0.75f);
+        int firstRelicXCoordinate = Math.round(DataClass.getInstance().getWindowWidth() * 0.2f);
+        int secondRelicXCoordinate = Math.round(DataClass.getInstance().getWindowWidth() * 0.5f);
+        int thirdRelicXCoordinate = Math.round(DataClass.getInstance().getWindowWidth() * 0.8f);
         int centerYCoordinate = Math.round(DataClass.getInstance().getPlayableWindowMaxHeight() * 0.5f);
-        float cardScale = 1 * DataClass.getInstance().getResolutionFactor();
+        float cardScale = 0.3f * DataClass.getInstance().getResolutionFactor();
 
         SpriteConfiguration firstRelicCardConfig = new SpriteConfiguration(firstRelicXCoordinate, centerYCoordinate, cardScale, ImageEnums.Long_Card);
         SpriteConfiguration secondRelicCardConfig = new SpriteConfiguration(secondRelicXCoordinate, centerYCoordinate, cardScale, ImageEnums.Long_Card);
@@ -77,44 +79,69 @@ public class GameUICreator {
         thirdRelicBackgroundCard = new DisplayOnly(thirdRelicCardConfig);
         thirdRelicBackgroundCard.setCenterCoordinates(thirdRelicXCoordinate, centerYCoordinate);
 
-        createRelicShopItems();
+        float chooseOneScale = 0.7f * DataClass.getInstance().getResolutionFactor();
+        SpriteConfiguration chooseOneConfig = new SpriteConfiguration(DataClass.getInstance().getWindowWidth() / 2, DataClass.getInstance().getPlayableWindowMaxHeight() / 2, chooseOneScale, ImageEnums.ChooseOne);
+        chooseOne = new DisplayOnly(chooseOneConfig);
+        chooseOne.setCenterCoordinates(
+                Math.round(DataClass.getInstance().getWindowWidth() / 2),
+                Math.round(DataClass.getInstance().getPlayableWindowMaxHeight() * 0.1));
+        resetRelicShopItems();
     }
 
-    public void createRelicShopItems(){
+    public DisplayOnly getChooseOne() {
+        return chooseOne;
+    }
+
+    public void resetRelicShopItems() {
         float cardScale = 1 * DataClass.getInstance().getResolutionFactor();
-        int firstRelicButtonXCoordinate = firstRelicBackgroundCard.getCenterXCoordinate();
-        int firstRelicButtonYCoordinate = Math.round(firstRelicBackgroundCard.getHeight() * 0.75f);
-        SpriteConfiguration firstRelicButtonConfig = new SpriteConfiguration(firstRelicButtonXCoordinate, firstRelicButtonYCoordinate, cardScale, ImageEnums.GlassCannon);
-        firstRelicShopItem = new ShopItem(firstRelicButtonConfig, ItemRarityEnums.Relic);
-        firstRelicShopItem.setCenterCoordinates(firstRelicButtonXCoordinate, firstRelicButtonYCoordinate);
+        float titleScale = 1f * DataClass.getInstance().getResolutionFactor();
+        int relicDimensions = Math.round(80 * DataClass.getInstance().getResolutionFactor());
+        List<ItemEnums> alreadySelectedRelics = new ArrayList<>();
 
-        int secondRelicButtonXCoordinate = secondRelicBackgroundCard.getCenterXCoordinate();
-        int secondRelicButtonYCoordinate = Math.round(secondRelicBackgroundCard.getHeight() * 0.75f);
-        SpriteConfiguration secondRelicButtonConfig = new SpriteConfiguration(secondRelicButtonXCoordinate, secondRelicButtonYCoordinate, cardScale, ImageEnums.GlassCannon);
-        secondRelicShopItem = new ShopItem(secondRelicButtonConfig, ItemRarityEnums.Relic);
-        secondRelicShopItem.setCenterCoordinates(secondRelicButtonXCoordinate, secondRelicButtonYCoordinate);
+        // Create relics
+        firstRelicShopItem = createUniqueRelicShopItem(firstRelicBackgroundCard, cardScale, relicDimensions, alreadySelectedRelics);
+        secondRelicShopItem = createUniqueRelicShopItem(secondRelicBackgroundCard, cardScale, relicDimensions, alreadySelectedRelics);
+        thirdRelicShopItem = createUniqueRelicShopItem(thirdRelicBackgroundCard, cardScale, relicDimensions, alreadySelectedRelics);
 
+        // Create titles
+        firstRelicTitle = createRelicTitle(firstRelicBackgroundCard, firstRelicShopItem, titleScale);
+        secondRelicTitle = createRelicTitle(secondRelicBackgroundCard, secondRelicShopItem, titleScale);
+        thirdRelicTitle = createRelicTitle(thirdRelicBackgroundCard, thirdRelicShopItem, titleScale);
+    }
 
-        int thirdRelicButtonXCoordinate = thirdRelicBackgroundCard.getCenterXCoordinate();
-        int thirdRelicButtonYCoordinate = Math.round(thirdRelicBackgroundCard.getHeight() * 0.75f);
-        SpriteConfiguration thirdRelicButtonConfig = new SpriteConfiguration(thirdRelicButtonXCoordinate, thirdRelicButtonYCoordinate, cardScale, ImageEnums.GlassCannon);
-        thirdRelicShopItem = new ShopItem(thirdRelicButtonConfig, ItemRarityEnums.Relic);
-        thirdRelicShopItem.setCenterCoordinates(thirdRelicButtonXCoordinate, thirdRelicButtonYCoordinate);
+    private ShopItem createUniqueRelicShopItem(DisplayOnly backgroundCard, float cardScale, int relicDimensions, List<ItemEnums> alreadySelectedRelics) {
+        int xCoordinate = backgroundCard.getCenterXCoordinate();
+        int yCoordinate = Math.round(backgroundCard.getYCoordinate() + backgroundCard.getHeight() * 0.45f);
+        SpriteConfiguration config = new SpriteConfiguration(xCoordinate, yCoordinate, cardScale, ImageEnums.GlassCannon);
 
-        int firstRelicTitleXCoordinate = firstRelicBackgroundCard.getCenterXCoordinate();
-        int firstRelicTitleYCoordinate = Math.round(firstRelicBackgroundCard.getHeight() * 0.2f);
-        firstRelicTitle = new GUITextCollection(firstRelicTitleXCoordinate, firstRelicTitleYCoordinate, firstRelicShopItem.getShopItemInformation().getItem().getItemName());
-        firstRelicTitle.setCenterXCoordinate(firstRelicTitleXCoordinate);
+        ShopItem shopItem = new ShopItem(config, ItemRarityEnums.Relic);
 
-        int secondRelicTitleXCoordinate = secondRelicBackgroundCard.getCenterXCoordinate();
-        int secondRelicTitleYCoordinate = Math.round(secondRelicBackgroundCard.getHeight() * 0.2f);
-        secondRelicTitle = new GUITextCollection(secondRelicTitleXCoordinate, secondRelicTitleYCoordinate, secondRelicShopItem.getShopItemInformation().getItem().getItemName());
-        secondRelicTitle.setCenterXCoordinate(secondRelicTitleXCoordinate);
+        int attempts = 0;
+        while (alreadySelectedRelics.contains(shopItem.getShopItemInformation().getItem()) && attempts < 10) {
+            shopItem = new ShopItem(config, ItemRarityEnums.Relic);
+            attempts++;
+        }
 
-        int thirdRelicTitleXCoordinate = thirdRelicBackgroundCard.getCenterXCoordinate();
-        int thirdRelicTitleYCoordinate = Math.round(thirdRelicBackgroundCard.getHeight() * 0.2f);
-        thirdRelicTitle = new GUITextCollection(thirdRelicTitleXCoordinate, thirdRelicTitleYCoordinate, thirdRelicShopItem.getShopItemInformation().getItem().getItemName());
-        thirdRelicTitle.setCenterXCoordinate(thirdRelicTitleXCoordinate);
+        if (attempts >= 10) {
+            shopItem = new ShopItem(config, ItemRarityEnums.Relic);
+            shopItem.getShopItemInformation().setItem(ItemEnums.Locked);
+            shopItem.getShopItemInformation().setItemDescription("You obtained the unobtainable, congratulations! This item does literally nothing.");
+        }
+
+        shopItem.setImageDimensions(relicDimensions, relicDimensions);
+        shopItem.setCenterCoordinates(xCoordinate, yCoordinate);
+        alreadySelectedRelics.add(shopItem.getShopItemInformation().getItem());
+
+        return shopItem;
+    }
+
+    private GUITextCollection createRelicTitle(DisplayOnly backgroundCard, ShopItem shopItem, float titleScale) {
+        int xCoordinate = backgroundCard.getCenterXCoordinate();
+        int yCoordinate = Math.round(backgroundCard.getYCoordinate() + backgroundCard.getHeight() * 0.2f);
+        GUITextCollection title = new GUITextCollection(xCoordinate, yCoordinate, shopItem.getShopItemInformation().getItem().getItemName().toUpperCase());
+        title.setScale(titleScale);
+        title.setCenterXCoordinate(xCoordinate);
+        return title;
     }
 
     public GUIComponent createCursor() {
@@ -130,11 +157,11 @@ public class GameUICreator {
         return Arrays.asList(firstRelicBackgroundCard, secondRelicBackgroundCard, thirdRelicBackgroundCard);
     }
 
-    public List<GUIComponent> getRelicShopItems(){
+    public List<GUIComponent> getRelicShopItems() {
         return Arrays.asList(firstRelicShopItem, secondRelicShopItem, thirdRelicShopItem);
     }
 
-    public List<GUITextCollection> getRelicTitles(){
+    public List<GUITextCollection> getRelicTitles() {
         return Arrays.asList(firstRelicTitle, secondRelicTitle, thirdRelicTitle);
     }
 

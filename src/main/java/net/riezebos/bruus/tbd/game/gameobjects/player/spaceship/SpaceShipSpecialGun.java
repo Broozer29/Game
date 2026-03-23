@@ -14,6 +14,7 @@ import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.items.ItemEnums;
 import net.riezebos.bruus.tbd.game.items.PlayerInventory;
+import net.riezebos.bruus.tbd.game.items.items.captain.AnionInverter;
 import net.riezebos.bruus.tbd.game.items.items.carrier.InverseRetrieval;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.AudioManager;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.AudioEnums;
@@ -37,7 +38,7 @@ public class SpaceShipSpecialGun {
 
     public void fire(int xCoordinate, int yCoordinate, PlayerSpecialAttackTypes attackType, SpaceShip owner) {
         double currentTime = GameState.getInstance().getGameSeconds();
-        if (specialAttackCharges > 0 && currentTime >= (lastSecondsSpecialAttackUsed + 0.15)) {
+        if (specialAttackCharges > 0 && currentTime >= lastSecondsSpecialAttackUsed + 0.15) {
             switch (attackType) {
                 case EMP:
                     fireElectroShred(xCoordinate, yCoordinate, owner);
@@ -78,9 +79,9 @@ public class SpaceShipSpecialGun {
         }
     }
 
-    private void handleInverseRetrieval(GameObject carrierBeacon){
+    private void handleInverseRetrieval(GameObject carrierBeacon) {
         InverseRetrieval item = (InverseRetrieval) PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.InverseRetrieval);
-        if(item != null){
+        if (item != null) {
             item.applyEffectToObject(carrierBeacon);
         }
     }
@@ -119,31 +120,38 @@ public class SpaceShipSpecialGun {
     }
 
     //Creates a special attack with an animation that follows the player
-    private void fireElectroShred(int xCoordinate, int yCoordinate, SpaceShip owner) {
-        float damage = owner.getSpecialAttackDamage() * 1.5f;
-        SpriteAnimationConfiguration spriteAnimationConfiguration = createConfig(xCoordinate, yCoordinate, ImageEnums.Electroshred, 1, false);
-        spriteAnimationConfiguration.setFrameDelay(3);
+    public static float electroShredBonusDamageModifier = 1.5f;
 
-        if (playerStats.isHasImprovedElectroShred()) {
-            spriteAnimationConfiguration.getSpriteConfiguration().setImageType(ImageEnums.ElectroShredImproved);
+    private void fireElectroShred(int xCoordinate, int yCoordinate, SpaceShip owner) {
+        float damage = owner.getSpecialAttackDamage() * electroShredBonusDamageModifier;
+        float scale = 1.5f;
+        if (PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.AnionInverter) != null) {
+            scale *= (1 + AnionInverter.scaleBonus);
         }
+
+        SpriteAnimationConfiguration spriteAnimationConfiguration = createConfig(xCoordinate, yCoordinate, owner.getElectroShredImageEnum(), 1, false);
+        spriteAnimationConfiguration.setFrameDelay(3);
 
         SpecialAttackConfiguration missileConfiguration = new SpecialAttackConfiguration(damage, true, true, false, true, true, true);
         SpecialAttack specialAttack = new ElectroShred(spriteAnimationConfiguration, missileConfiguration);
         specialAttack.setCenteredAroundObject(true);
-        specialAttack.setScale(1.5f);
+        specialAttack.setScale(scale);
         specialAttack.setOwnerOrCreator(owner);
+        specialAttack.setTransparancyAlpha(false, 0.5f, 0);
         AudioManager.getInstance().addAudio(AudioEnums.Default_EMP);
         owner.addFollowingSpecialAttack(specialAttack);
         MissileManager.getInstance().addSpecialAttack(specialAttack);
 
+        if (PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.ModuleElectrify) != null) {
+            PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.ModuleElectrify).applyEffectToObject(owner);
+        }
     }
 
     public void updateFrameCount(SpaceShip owner) {
         double currentTime = GameState.getInstance().getGameSeconds();
         // Gain a new charge if enough time has passed since the last charge was gained and there is a slot available
         if (specialAttackCharges < owner.getMaxSpecialAttackCharges()) {
-            if (currentTime >= lastSecondsSpecialAttackChargeGained + playerStats.getSpecialAttackCooldown()) {
+            if (currentTime >= Math.max(lastSecondsSpecialAttackChargeGained + (playerStats.getSpecialAttackCooldown() * owner.getSpecialAttackRechargeCooldownModifier()), 0.15f)) {
                 lastSecondsSpecialAttackChargeGained = currentTime;
                 specialAttackCharges++;
                 AudioManager.getInstance().addAudio(AudioEnums.SpecialAttackFinishedCharging);
@@ -152,12 +160,10 @@ public class SpaceShipSpecialGun {
 
         // Calculate time until next charge
         if (specialAttackCharges < owner.getMaxSpecialAttackCharges()) {
-            secondsUntilNextSpecialAttackCharge = playerStats.getSpecialAttackCooldown() - (currentTime - lastSecondsSpecialAttackChargeGained);
+            secondsUntilNextSpecialAttackCharge = Math.max((playerStats.getSpecialAttackCooldown() * owner.getSpecialAttackRechargeCooldownModifier()) - (currentTime - lastSecondsSpecialAttackChargeGained), 0.15f);
         } else {
             secondsUntilNextSpecialAttackCharge = 0; // No charging if full
         }
-
-
     }
 
     public int getSpecialAttackCharges() {
