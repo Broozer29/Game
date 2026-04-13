@@ -104,7 +104,6 @@ public class DormentExplosion implements EffectInterface {
         handleSpecialAttack(explosion);
 
         explosion.setCenterCoordinates(gameObject.getCenterXCoordinate(), gameObject.getCenterYCoordinate());
-        explosion.getAnimation().setCenterCoordinates(gameObject.getCenterXCoordinate(), gameObject.getCenterYCoordinate());
         explosion.setBoxCollision(boxCollision);
         explosion.setOwnerOrCreator(ownerOrCreator);
 
@@ -120,6 +119,7 @@ public class DormentExplosion implements EffectInterface {
                 explosion.addEffectToApply(burning);
             }
         }
+        explosion.getAnimation().setCenterCoordinates(gameObject.getCenterXCoordinate(), gameObject.getCenterYCoordinate());
 
         if (audioEnums != null) {
             AudioManager.getInstance().addAudio(audioEnums);

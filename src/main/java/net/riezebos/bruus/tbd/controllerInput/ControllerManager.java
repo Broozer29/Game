@@ -12,7 +12,7 @@ public class ControllerManager {
     private static ControllerManager instance = new ControllerManager();
     private int firstControllerIndex = -1;
     private Map<Integer, ControllerInputReader> controllerInputReaders = new HashMap<>();
-    private Controller firstController; //Multiplayer update: deze is nog nodig om te bepalen welke controller mag sturen in shop/menu en andere schermen. De "primaire" gebruiker.
+    private Controller primaryController; //Multiplayer update: deze is nog nodig om te bepalen welke controller mag sturen in shop/menu en andere schermen. De "primaire" gebruiker.
 
     private ControllerManager() {
     }
@@ -23,7 +23,7 @@ public class ControllerManager {
 
     public void initControllers() {
         controllerInputReaders.clear();
-        firstController = null;
+        primaryController = null;
         firstControllerIndex = -1;
         try {
             Thread.sleep(500); // Allow time for initialization
@@ -37,9 +37,9 @@ public class ControllerManager {
 
         for (Controller controller : controllers) {
             if (controller.getType() == Controller.Type.GAMEPAD || controller.getType() == Controller.Type.STICK) {
-                firstController = controller;
+                primaryController = controller;
                 firstControllerIndex = index;
-                controllerInputReaders.put(firstControllerIndex, new ControllerInputReader(firstController));
+                controllerInputReaders.put(firstControllerIndex, new ControllerInputReader(primaryController));
                 System.out.println("First controller detected: " + controller.getName());
             }
             index++;
@@ -62,7 +62,7 @@ public class ControllerManager {
         }
     }
 
-    public ControllerInputReader getFirstController() {
+    public ControllerInputReader getPrimaryController() {
         return controllerInputReaders.get(firstControllerIndex);
     }
 
@@ -85,11 +85,11 @@ public class ControllerManager {
     }
 
     public boolean isPrimaryControllerLeftPressed(){
-        return getFirstController().isInputActive(ControllerInputEnums.MOVE_LEFT);
+        return getPrimaryController().isInputActive(ControllerInputEnums.MOVE_LEFT);
     }
 
     public boolean isPrimaryControllerRightPressed(){
-        return getFirstController().isInputActive(ControllerInputEnums.MOVE_RIGHT);
+        return getPrimaryController().isInputActive(ControllerInputEnums.MOVE_RIGHT);
     }
 
     //Required because controllerInput is not read after the spaceship dies, thus if all players are dead and game over screen is shown, this method is needed to continue
@@ -97,5 +97,9 @@ public class ControllerManager {
         for(ControllerInputReader controllerInputReader : controllerInputReaders.values()){
             controllerInputReader.pollController();
         }
+    }
+
+    public void requestControl(ControllerInputReader controllerInputReader) {
+        this.primaryController = controllerInputReader.getController();
     }
 }

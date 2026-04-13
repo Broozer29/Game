@@ -126,6 +126,8 @@ public class EnemyCreator {
         moveConfig.setCurrentLocation(new Point(xCoordinate, yCoordinate));
         moveConfig.setXMovementSpeed(movementSpeed);
         moveConfig.setYMovementSpeed(movementSpeed);
+        moveConfig.setOriginalXMovementSpeed(movementSpeed);
+        moveConfig.setOriginalYMovementSpeed(movementSpeed);
         moveConfig.setPathFinder(pathFinder);
         moveConfig.setDirection(movementDirection);
         moveConfig.setPatternSize(MovementPatternSize.SMALL);

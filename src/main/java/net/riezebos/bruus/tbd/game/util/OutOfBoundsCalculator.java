@@ -57,10 +57,10 @@ public class OutOfBoundsCalculator {
             int windowMinWidth = 0;
 
             // Check if the missile is out of bounds in any direction
-            if (yCoordinate <= (playableWindowMinHeight - height) // Out at the top
-                    || yCoordinate >= (playableWindowMaxHeight + height) // Out at the bottom
-                    || xCoordinate <= (windowMinWidth - width) // Out on the left
-                    || xCoordinate >= (windowMaxWidth + width)) { // Out on the right
+            if (yCoordinate <= (playableWindowMinHeight - (height * 2)) // Out at the top
+                    || yCoordinate >= (playableWindowMaxHeight + (height * 2)) // Out at the bottom
+                    || xCoordinate <= (windowMinWidth - (width * 2)) // Out on the left
+                    || xCoordinate >= (windowMaxWidth + (width * 2))) { // Out on the right
                 return true;
             }
         }

@@ -121,6 +121,10 @@ public class BlueBossFactory extends Enemy {
             spawnNeedler();
             lastTimeNeedlerBuild = GameState.getInstance().getGameSeconds();
         }
+
+        if(this.ownerOrCreator != null && (this.ownerOrCreator.getCurrentHitpoints() <= 0 || !this.ownerOrCreator.isVisible())){
+            this.takeDamage(this.getMaxHitPoints() * 100); //self destruct
+        }
     }
 
     private void playSpawnAnimation(){

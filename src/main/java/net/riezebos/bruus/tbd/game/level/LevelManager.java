@@ -28,6 +28,8 @@ import net.riezebos.bruus.tbd.visualsandaudio.data.audio.AudioManager;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.AudioEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class LevelManager {
@@ -48,7 +50,7 @@ public class LevelManager {
     private int currentLevelDifficultyScore;
     private LevelTypes levelType;
     private EnemyTribes currentEnemyTribe;
-    private int stagesBeforeBoss = 3;
+    private int stagesBeforeBoss = 2;
     private PerformanceLogger performanceLogger = null;
 
     private LevelManager() {
@@ -67,6 +69,7 @@ public class LevelManager {
         currentMiniBossConfig = MiniBossConfig.Easy;
         currentEnemyTribe = EnemyTribes.Pirates;
         performanceLogger.reset();
+        loopBreaker = 0;
     }
 
 
@@ -105,7 +108,6 @@ public class LevelManager {
 
             if (!bossAlive) {
                 gameState.setGameState(GameStatusEnums.Level_Finished);
-                gameState.setBossesDefeated(gameState.getBossesDefeated() + 1);
                 DirectorManager.getInstance().setEnabled(false);
                 enemyManager.deleteAllEnemies();
             }
@@ -211,32 +213,32 @@ public class LevelManager {
 //        this.currentEnemyTribe = EnemyTribes.Zerg;
     }
 
+
+
+    private List<EnemyEnums> lastSpawnedBosses = new ArrayList<>();
+    private int loopBreaker = 0;
     public EnemyEnums getNextBoss() {
-        return EnemyEnums.RedBoss;
-//        int bossesDefeated = GameState.getInstance().getBossesDefeated();
-//        switch (bossesDefeated % EnemyEnums.getAmountOfBossEnemies()) {
-//            case 0:
-//                return EnemyEnums.RedBoss;
-//            case 1:
-//                return EnemyEnums.SpaceStationBoss;
-//            case 2:
-//                return EnemyEnums.CarrierBoss;
-//            case 3:
-//                return EnemyEnums.StrikerBoss;
-//            case 4:
-//                return EnemyEnums.BlueBoss;
-//            default:
-//                return EnemyEnums.RedBoss;
-//        }
+        List<EnemyEnums> eligibleBosses = Arrays.stream(EnemyEnums.values()).filter(enemyEnums ->
+                enemyEnums.getEnemyCategory().equals(EnemyCategory.Boss) &&
+                        GameState.getInstance().getBossesDefeated() >= enemyEnums.getBossKillCountRequiredBeforeAllowedToSpawn()
+        ).toList();
+        int randomlySelectedBoss = (int) (Math.random() * eligibleBosses.size());
+
+        if (lastSpawnedBosses.contains(eligibleBosses.get(randomlySelectedBoss))) {
+            loopBreaker++;
+            if( loopBreaker > 1000){
+                lastSpawnedBosses.clear(); //if no bosses can be spawned, clear last used so we can re-use them again
+            }
+            return getNextBoss();
+        }
+        lastSpawnedBosses.add(eligibleBosses.get(randomlySelectedBoss));
+        return eligibleBosses.get(randomlySelectedBoss);
     }
 
 
-    //This needs to be reworked if infinite boss scaling abilities is to be achieved
+    //Returns the bossDifficultyLevel which is basically the bosses killed so far, creative enough?
     public int getBossDifficultyLevel() {
-        if (GameState.getInstance().getBossesDefeated() > 4 || GameState.getInstance().getGameMode().equals(GameMode.Nightmare)) { //cycled through all bosses, keep this number updated manually for now
-            return 1;
-        }
-        return 0;
+        return GameState.getInstance().getBossesDefeated();
     }
 
 
@@ -417,5 +419,9 @@ public class LevelManager {
         if (difficultyScore == 4) return ImageEnums.PurpleWings3; // Image 3
         if (difficultyScore == 5) return ImageEnums.PurpleWings4; // Image 4
         return ImageEnums.PurpleWings5; // Image 5
+    }
+
+    public void resetBossUsed() {
+        lastSpawnedBosses.clear();
     }
 }

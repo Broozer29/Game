@@ -56,7 +56,7 @@ public class FourDirectionalDrone extends Enemy {
             spriteConfiguration.setyCoordinate(position.getY());
             spriteConfiguration.setImageType(ImageEnums.Charging);
 
-            SpriteAnimationConfiguration spriteAnimationConfiguration = new SpriteAnimationConfiguration(spriteConfiguration, 1, false);
+            SpriteAnimationConfiguration spriteAnimationConfiguration = new SpriteAnimationConfiguration(spriteConfiguration, 0, false);
             SpriteAnimation animation = new SpriteAnimation(spriteAnimationConfiguration);
 
             animation.setCenterCoordinates(position.getX(), position.getY());

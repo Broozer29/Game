@@ -6,13 +6,25 @@ import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.BossAct
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.yellowboss.behaviour.YellowBossLaserbeamMissileAttack;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.yellowboss.behaviour.YellowBossMissileWaveAttack;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.yellowboss.behaviour.YellowBossSpawnReflectingBarrier;
-import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.yellowboss.behaviour.YellowBossSpawnShurikens;
+import net.riezebos.bruus.tbd.game.gameobjects.missiles.MissileConfiguration;
+import net.riezebos.bruus.tbd.game.gameobjects.missiles.MissileCreator;
+import net.riezebos.bruus.tbd.game.gameobjects.missiles.MissileEnums;
+import net.riezebos.bruus.tbd.game.gameobjects.missiles.MissileManager;
+import net.riezebos.bruus.tbd.game.gameobjects.missiles.missiletypes.YellowBossOrb;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
+import net.riezebos.bruus.tbd.game.movement.Direction;
 import net.riezebos.bruus.tbd.game.movement.MovementConfiguration;
+import net.riezebos.bruus.tbd.game.movement.MovementPatternSize;
+import net.riezebos.bruus.tbd.game.movement.Point;
+import net.riezebos.bruus.tbd.game.movement.pathfinders.PathFinder;
+import net.riezebos.bruus.tbd.game.movement.pathfinders.StraightLinePathFinder;
 import net.riezebos.bruus.tbd.game.util.WithinVisualBoundariesCalculator;
+import net.riezebos.bruus.tbd.visualsandaudio.data.DataClass;
+import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.AudioEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteAnimation;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteAnimationConfiguration;
+import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteConfiguration;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -32,9 +44,10 @@ public class YellowBoss extends Enemy {
         destroyedExplosionfiguration.getSpriteConfiguration().setImageType(ImageEnums.BossExplosion);
         destroyedExplosionfiguration.getSpriteConfiguration().setScale(1);
         this.destructionAnimation = new SpriteAnimation(destroyedExplosionfiguration);
-        this.damage = 12;
+        this.damage = 10;
         this.allowedVisualsToRotate = false;
         this.knockbackStrength = 9;
+        this.allowedToFire = false;
 
 
         YellowBossLaserbeamMissileAttack laserbeamMissileAttack = new YellowBossLaserbeamMissileAttack();
@@ -46,8 +59,8 @@ public class YellowBoss extends Enemy {
         BossActionable reflectingBarrier = new YellowBossSpawnReflectingBarrier();
         bossBehaviourList.add(reflectingBarrier);
 
-        BossActionable spawnShurikens = new YellowBossSpawnShurikens();
-        bossBehaviourList.add(spawnShurikens);
+//        BossActionable spawnShurikens = new YellowBossSpawnShurikens();
+//        bossBehaviourList.add(spawnShurikens);
 
         bossBehaviourList = bossBehaviourList.stream()
                 .sorted(Comparator.comparingInt(BossActionable::getPriority).reversed())
@@ -75,9 +88,17 @@ public class YellowBoss extends Enemy {
     public void fireAction() {
         if (!allowedToFire && WithinVisualBoundariesCalculator.isWithinBoundaries(this)) {
             this.allowedToFire = true; // Boss is allowed to fire
+            this.orbCreationAllowed = true;
         }
 
         updateChargingAttackAnimationCoordination();
+
+        if (orbCreationAllowed && GameState.getInstance().getGameSeconds() >= lastGameSecondsOrbSpawned + orbCreationCooldown) {
+            lastGameSecondsOrbSpawned = GameState.getInstance().getGameSeconds();
+//            for(int i = 0; i < 2; i++) {
+                createRandomOrb();
+//            }
+        }
 
         // If there's an active behavior, try to execute it
         if (currentActiveBehavior != null) {
@@ -105,5 +126,66 @@ public class YellowBoss extends Enemy {
                 }
             }
         }
+    }
+
+
+    private double lastGameSecondsOrbSpawned = GameState.getInstance().getGameSeconds() + 8; //immediatly on cooldown
+    private double orbCreationCooldown = 0;
+    private boolean orbCreationAllowed = false;
+    private void createRandomOrb() {
+        orbCreationCooldown = 1.15f;
+        MissileEnums missileType = MissileEnums.YellowBossOrb;
+        Point spawnPoint = new Point(-50, random.nextInt(0, DataClass.getInstance().getPlayableWindowMaxHeight()));
+
+        float rolledValue = random.nextFloat();
+        boolean isHealOrb = false;
+        if (rolledValue < 0.125f) {
+            isHealOrb = true;
+        }
+        float scale = isHealOrb ? 0.7f : 0.65f;
+        SpriteConfiguration spriteConfiguration = MissileCreator.getInstance().createMissileSpriteConfig(
+                spawnPoint.getX(),
+                spawnPoint.getY(),
+                isHealOrb ? ImageEnums.YellowBossHealMissile : ImageEnums.YellowBossVoidMisisle, scale);
+
+
+        float movementSpeed = isHealOrb ? 1.5f : 1.95f;
+        PathFinder missilePathFinder = new StraightLinePathFinder();
+        MovementPatternSize movementPatternSize = MovementPatternSize.SMALL;
+        MovementConfiguration movementConfiguration = MissileCreator.getInstance().createMissileMovementConfig(
+                movementSpeed, movementSpeed, missilePathFinder, movementPatternSize, Direction.RIGHT
+        );
+
+
+        //Create remaining missile attributes and a missile configuration
+        boolean isFriendly = false;
+        int maxHitPoints = 100;
+        int maxShields = 100;
+        AudioEnums deathSound = null;
+        boolean allowedToDealDamage = true;
+        String objectType = "Yellow Boss Orb";
+
+        MissileConfiguration missileConfiguration = MissileCreator.getInstance().createMissileConfiguration(missileType, maxHitPoints, maxShields,
+                deathSound, this.getDamage(),
+                isHealOrb ? null : ImageEnums.YellowBossVoidCollision,
+                isFriendly, allowedToDealDamage, objectType,
+                false, false, true, false);
+
+
+        //Create the missile and finalize the creation process, then add it to the manager and consequently the game
+        YellowBossOrb yellowBossOrb = (YellowBossOrb) MissileCreator.getInstance().createMissile(spriteConfiguration, missileConfiguration, movementConfiguration);
+        yellowBossOrb.setScale(scale);
+        yellowBossOrb.resetMovementPath();
+        yellowBossOrb.setCenterCoordinates(spawnPoint.getX(), spawnPoint.getY());
+        yellowBossOrb.getMovementConfiguration().setDestination(new Point(
+                this.getCenterXCoordinate() - (yellowBossOrb.getWidth() / 2),
+                this.getCenterYCoordinate() - (yellowBossOrb.getHeight() / 2)));
+        yellowBossOrb.setAllowedVisualsToRotate(true);
+        yellowBossOrb.rotateGameObjectTowards(yellowBossOrb.getCenterXCoordinate(), yellowBossOrb.getCenterYCoordinate(), false);
+        yellowBossOrb.setOwnerOrCreator(this);
+        yellowBossOrb.initOrbVersion(isHealOrb);
+
+        //Finalized and ready for addition to the game
+        MissileManager.getInstance().addExistingMissile(yellowBossOrb);
     }
 }

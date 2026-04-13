@@ -1,6 +1,8 @@
 package net.riezebos.bruus.tbd.game.items.effects;
 
 public enum EffectIdentifiers {
+    YellowBossVoidAttackSpeedModifier,
+    YellowBossVoidMoveSpeedModifier,
     TazerAttackSpeedModifier,
     TazerDamageModifier,
     PlasmaCoatedBulletsBurning,
@@ -26,5 +28,6 @@ public enum EffectIdentifiers {
     PulsingDroneSlow,
     EmergencyRepairsConstructionIncrease,
     StuivieArmorBonus,
-    MartyrdomAttackSpeed;
+    YellowBossOrbHeal,
+    MartyrdomAttackSpeed, ElectroShedding;
 }

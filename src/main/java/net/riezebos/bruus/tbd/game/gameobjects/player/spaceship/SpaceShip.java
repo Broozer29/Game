@@ -56,7 +56,7 @@ public class SpaceShip extends GameObject {
 
     private List<SpriteAnimation> playerFollowingAnimations = new ArrayList<SpriteAnimation>();  //inherit from gameobject?
     private PrimaryPlayerGun primaryPlayerGun = null;
-    private SpaceShipSpecialGun spaceShipSpecialGun = null;
+    private SecondaryPlayerGun spaceShipSpecialGun = null;
     private List<SpecialAttack> playerFollowingSpecialAttacks = new ArrayList<SpecialAttack>();
     public boolean allowMovementBeyondBoundaries = false;
     private double lastTimeCollisionDamageTaken = 0;
@@ -160,7 +160,7 @@ public class SpaceShip extends GameObject {
 
         currentShieldRegenDelayFrame = 0;
         this.primaryPlayerGun = new PrimaryPlayerGun();
-        this.spaceShipSpecialGun = new SpaceShipSpecialGun();
+        this.spaceShipSpecialGun = new SecondaryPlayerGun();
         if (shouldLoadEngineAnim) {
             initExhaustAnimation(ImageEnums.Default_Player_Engine);
             this.exhaustAnimation.setAnimationScale(0.3f);
@@ -637,7 +637,7 @@ public class SpaceShip extends GameObject {
         changeShieldHitpoints(healAmount);
     }
 
-    public SpaceShipSpecialGun getSpecialGun() {
+    public SecondaryPlayerGun getSpecialGun() {
         return this.spaceShipSpecialGun;
     }
 
@@ -821,7 +821,7 @@ public class SpaceShip extends GameObject {
         return primaryPlayerGun;
     }
 
-    public SpaceShipSpecialGun getSpaceShipSpecialGun() {
+    public SecondaryPlayerGun getSpaceShipSpecialGun() {
         return spaceShipSpecialGun;
     }
 

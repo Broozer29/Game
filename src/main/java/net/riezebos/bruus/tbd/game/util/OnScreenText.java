@@ -16,6 +16,17 @@ public class OnScreenText {
 	private Color color;
 
 
+    public OnScreenText(int xCoordinate, int yCoordinate, String message, int fontSize){
+        this.xCoordinate = xCoordinate;
+        this.yCoordinate = yCoordinate;
+        this.transparencyValue = 1;
+        this.transparancyStepSize = (float) 0.01;
+        this.text = message;
+        this.fontSize = Math.round(fontSize * DataClass.getInstance().getResolutionFactor());
+        this.color = Color.WHITE;
+    }
+
+
 	public OnScreenText(int xCoordinate, int yCoordinate, String message){
 		this.xCoordinate = xCoordinate;
 		this.yCoordinate = yCoordinate;

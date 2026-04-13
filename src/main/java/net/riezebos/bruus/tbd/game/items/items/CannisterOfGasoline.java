@@ -15,7 +15,7 @@ import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
 
 public class CannisterOfGasoline extends Item {
 
-    public static float igniteDurationBonus = 0.2f;
+    public static float igniteDamageBonus = 0.2f;
 
     public CannisterOfGasoline() {
         super(ItemEnums.CannisterOfGasoline, 1, ItemApplicationEnum.BeforeCollision); //Before collision to ensure the explosion goes off even if the target already has 0 HP
@@ -35,8 +35,8 @@ public class CannisterOfGasoline extends Item {
         DormentExplosion dormentExplosion = new DormentExplosion(0, ImageEnums.GasolineExplosion,
                 DormentExplosionActivationMethods.OnDeath, false, EffectIdentifiers.GasolineDormantExplosion,
                 0, EffectActivationTypes.OnObjectDeath, true, origin.getOwnerOrCreator());
-        dormentExplosion.setBurningDamage(PlayerStats.getInstance().getIgniteDamage()); //todo moeten deze waardes opgehaald worden van spaceship?
-        dormentExplosion.setBurningDuration(PlayerStats.getInstance().getIgniteDuration() * (1 + (this.quantity * igniteDurationBonus)));
+        dormentExplosion.setBurningDamage(PlayerStats.getInstance().getIgniteDamage() * (1 + (this.quantity * igniteDamageBonus))); //todo moeten deze waardes opgehaald worden van spaceship?
+        dormentExplosion.setBurningDuration(PlayerStats.getInstance().getIgniteDuration());
         dormentExplosion.setAudioEnums(AudioEnums.Firewall);
         gameObject.addEffect(dormentExplosion);
     }

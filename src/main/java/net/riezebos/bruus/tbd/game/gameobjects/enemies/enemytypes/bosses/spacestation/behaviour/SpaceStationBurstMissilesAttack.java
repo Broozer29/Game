@@ -33,7 +33,7 @@ public class SpaceStationBurstMissilesAttack implements BossActionable {
     private int burstShotsFired = 0;
     private double lastSingleShotAttackTime = 0;
     private double intermittenAttackCooldown = 0.2;
-    private int amountOfShotsPerBurst = 12 + (LevelManager.getInstance().getBossDifficultyLevel() * 2);
+    private int amountOfShotsPerBurst = Math.min(12 + (LevelManager.getInstance().getBossDifficultyLevel()), 16);
 
 
     private static final Point[] BASE_ORIGIN_POINTS = {
@@ -163,7 +163,7 @@ public class SpaceStationBurstMissilesAttack implements BossActionable {
                 missileType.getImageType(), enemy.getScale() * 0.75f);
 
 
-        float movementSpeed = 6 + (LevelManager.getInstance().getBossDifficultyLevel() * 0.5f);;
+        float movementSpeed = Math.min(6f + (LevelManager.getInstance().getBossDifficultyLevel() * 0.5f), Missile.maxEnemyMissileMoveSpeedAllowed);
         //Create missile movement attributes and create a movement configuration
         PathFinder missilePathFinder = new StraightLinePathFinder();
         MovementConfiguration movementConfiguration = MissileCreator.getInstance().createMissileMovementConfig(

@@ -4,6 +4,7 @@ import net.riezebos.bruus.tbd.game.gameobjects.enemies.Enemy;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyCreator;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyManager;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.BossActionable;
+import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.protoss.EnemyProtossShuttle;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyEnums;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.level.LevelManager;
@@ -74,12 +75,13 @@ public class CarrierBossSpawnProtossShuttle implements BossActionable {
 
     private Enemy createProtossScout(Enemy enemy) {
         EnemyEnums enemyEnums = EnemyEnums.EnemyProtossShuttle;
-        Enemy enemyProtossScout = EnemyCreator.createEnemy(enemyEnums, enemy.getXCoordinate(), enemy.getYCoordinate(), Direction.LEFT,
+        EnemyProtossShuttle enemyProtossShuttle = (EnemyProtossShuttle) EnemyCreator.createEnemy(enemyEnums, enemy.getXCoordinate(), enemy.getYCoordinate(), Direction.LEFT,
                 enemyEnums.getDefaultScale(), enemyEnums.getMovementSpeed());
 
         //Scout should immediatly change its move config upon spawning, so its responsible itself for surrounding the carrier
-        enemyProtossScout.setOwnerOrCreator(enemy);
-        return enemyProtossScout;
+        enemyProtossShuttle.setOwnerOrCreator(enemy);
+        enemyProtossShuttle.setMaxDistanceFromCarrier(Math.min(350 + LevelManager.getInstance().getBossDifficultyLevel() * 10, 475));
+        return enemyProtossShuttle;
     }
 
     @Override

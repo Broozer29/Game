@@ -1,5 +1,6 @@
 package net.riezebos.bruus.tbd.game.gameobjects.missiles;
 
+import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.Enemy;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyManager;
 import net.riezebos.bruus.tbd.game.gameobjects.friendlies.FriendlyManager;
@@ -14,12 +15,19 @@ import net.riezebos.bruus.tbd.game.gameobjects.missiles.specialAttacks.SpecialAt
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
 import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SpaceShip;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
+import net.riezebos.bruus.tbd.game.movement.MovementConfiguration;
+import net.riezebos.bruus.tbd.game.movement.MovementPatternSize;
+import net.riezebos.bruus.tbd.game.movement.Point;
+import net.riezebos.bruus.tbd.game.movement.pathfinders.PathFinder;
+import net.riezebos.bruus.tbd.game.movement.pathfinders.StraightLinePathFinder;
 import net.riezebos.bruus.tbd.game.util.VisualLayer;
 import net.riezebos.bruus.tbd.game.util.collision.CollisionDetector;
 import net.riezebos.bruus.tbd.game.util.collision.CollisionInfo;
 import net.riezebos.bruus.tbd.game.util.performancelogger.PerformanceLogger;
 import net.riezebos.bruus.tbd.game.util.performancelogger.PerformanceLoggerManager;
+import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.AudioEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.AnimationManager;
+import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteConfiguration;
 
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -105,7 +113,7 @@ public class MissileManager {
             }
 
             laserbeam.update();
-            for(SpaceShip spaceship : PlayerManager.getInstance().getAllSpaceShips()) {
+            for (SpaceShip spaceship : PlayerManager.getInstance().getAllSpaceShips()) {
                 CollisionInfo collisionInfo = CollisionDetector.getInstance().detectCollision(spaceship, laserbeam);
                 if (collisionInfo.isCollided()) {
                     if (laserbeam.isBlocksMovement()) {
@@ -193,7 +201,7 @@ public class MissileManager {
                     checkSpecialAttackWithEnemyCollision(specialAttack);
                     checkSpecialAttackWithEnemyMissileCollision(specialAttack);
                 } else {
-                    for(SpaceShip spaceship : PlayerManager.getInstance().getAllSpaceShips()) {
+                    for (SpaceShip spaceship : PlayerManager.getInstance().getAllSpaceShips()) {
                         specialAttack.checkEnemySpecialAttackCollision(spaceship);
                     }
                     checkEnemySpecialAttackMissileCollision(specialAttack);
@@ -419,5 +427,55 @@ public class MissileManager {
 
     public PerformanceLogger getPerformanceLogger() {
         return this.performanceLogger;
+    }
+
+    public Missile createMissileToClosestPlayerFromCenter(GameObject gameObject, float missileSpeed) {
+        MissileEnums missileType = MissileEnums.DefaultLaserBullet;
+        // The charging up attack animation has finished, create and fire the missile
+        //Create the sprite configuration which gets upgraded to spriteanimation if needed by the MissileCreator
+        SpriteConfiguration spriteConfiguration = MissileCreator.getInstance().createMissileSpriteConfig(gameObject.getCenterXCoordinate(), gameObject.getCenterYCoordinate(),
+                missileType.getImageType(), 0.55f);
+
+
+        PathFinder missilePathFinder = new StraightLinePathFinder();
+        MovementPatternSize movementPatternSize = MovementPatternSize.SMALL;
+        MovementConfiguration movementConfiguration = MissileCreator.getInstance().createMissileMovementConfig(
+                missileSpeed, missileSpeed, missilePathFinder, movementPatternSize, gameObject.getMovementConfiguration().getRotation()
+        );
+
+
+        //Create remaining missile attributes and a missile configuration
+        boolean isFriendly = false;
+        int maxHitPoints = 100;
+        int maxShields = 100;
+        AudioEnums deathSound = null;
+        boolean allowedToDealDamage = true;
+        String objectType = "Generic Player Seeking Missile";
+
+        MissileConfiguration missileConfiguration = MissileCreator.getInstance().createMissileConfiguration(missileType, maxHitPoints, maxShields,
+                deathSound, gameObject.getDamage(), missileType.getDeathOrExplosionImageEnum(), isFriendly, allowedToDealDamage, objectType,
+                false, false, true, false);
+
+
+        Missile missile = MissileCreator.getInstance().createMissile(spriteConfiguration, missileConfiguration, movementConfiguration);
+
+        SpaceShip spaceship = PlayerManager.getInstance().getClosestSpaceShip(gameObject);
+        Point rotationCoordinates = new Point(
+                spaceship.getCenterXCoordinate() - missile.getWidth() / 2,
+                spaceship.getCenterYCoordinate() - missile.getHeight() / 2
+        );
+
+        missile.resetMovementPath();
+
+        missile.setCenterCoordinates(gameObject.getCenterXCoordinate(), gameObject.getCenterYCoordinate());
+        missile.getMovementConfiguration().setDestination(rotationCoordinates); // again because reset removes it
+        missile.rotateObjectTowardsDestination(true);
+        missile.setCenterCoordinates(gameObject.getCenterXCoordinate(), gameObject.getCenterYCoordinate());
+        missile.setAllowedVisualsToRotate(false); //Prevent it from being rotated again by the SpriteMover
+
+        missile.setOwnerOrCreator(gameObject);
+
+        //Finalized and ready for addition to the game
+        return missile;
     }
 }

@@ -1,5 +1,6 @@
 package net.riezebos.bruus.tbd.game.gamestate;
 
+import net.riezebos.bruus.tbd.DevTestSettings;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
 import net.riezebos.bruus.tbd.game.gamestate.save.SaveManager;
 import net.riezebos.bruus.tbd.game.items.Item;
@@ -50,6 +51,10 @@ public class ShopManager {
     }
 
     public int getRowsUnlocked() {
+        if (DevTestSettings.rollFullShop) {
+            return 3;
+        }
+
         return rowsUnlocked;
     }
 

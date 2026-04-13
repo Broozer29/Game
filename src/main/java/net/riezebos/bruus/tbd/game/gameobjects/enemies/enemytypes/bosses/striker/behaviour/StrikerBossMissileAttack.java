@@ -124,7 +124,7 @@ public class StrikerBossMissileAttack implements BossActionable {
                 missileType.getImageType(), enemy.getScale());
 
 
-        float movementSpeed = 5.5f + (LevelManager.getInstance().getBossDifficultyLevel() * 0.5f);
+        float movementSpeed = Math.min(5.5f + (LevelManager.getInstance().getBossDifficultyLevel() * 0.5f), Missile.maxEnemyMissileMoveSpeedAllowed);
 
         //Create missile movement attributes and create a movement configuration
         PathFinder missilePathFinder = new StraightLinePathFinder();

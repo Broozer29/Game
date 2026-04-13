@@ -10,6 +10,7 @@ import net.riezebos.bruus.tbd.game.items.items.util.ContractHelper;
 
 public class Contract extends Item{
 
+    public static int originalCountRequired = 100;
     public static int killCountRequired = 100;
     public Contract () {
         super(ItemEnums.Contract, 1, ItemApplicationEnum.UponAcquiring);

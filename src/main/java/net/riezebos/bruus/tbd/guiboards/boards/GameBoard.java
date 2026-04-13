@@ -19,8 +19,8 @@ import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
 import net.riezebos.bruus.tbd.game.gameobjects.player.boons.BoonManager;
 import net.riezebos.bruus.tbd.game.gameobjects.player.boons.boonimplementations.BoonActivationEnums;
+import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SecondaryPlayerGun;
 import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SpaceShip;
-import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SpaceShipSpecialGun;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.gamestate.GameStatsTracker;
 import net.riezebos.bruus.tbd.game.gamestate.GameStatusEnums;
@@ -155,6 +155,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
         gameState.setGameState(GameStatusEnums.Zoning_In);
         drawTimer.start();
         floatingIcons.clear();
+        selectedComponent = null;
     }
 
     // Resets the game after dying
@@ -184,6 +185,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
         this.isPlayingDeathMusic = false;
         this.hasExportedLogs = false;
         this.showRelicSelection = false;
+        selectedComponent = null;
 
 
         //Free up any cached graphics that have not been used in 5 minutes. Might cause lag spikes but should help significantly with memory usage and heap-size errors
@@ -211,6 +213,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
             textManager.resetManager();
             GodRunDetector.getInstance().resetGodRunDetector();
             this.hasExportedLogs = false;
+            selectedComponent = null;
 
 
             //reset stuivers best friend if it exists
@@ -310,6 +313,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
         if (!hasSurvived && !isPlayingDeathMusic) {
             playDeathMusic();
             isPlayingDeathMusic = true;
+            LevelManager.getInstance().resetBossUsed(); //sloppy fix to reset the boss used flag, this could be refactored into something better
             SaveManager.getInstance().deleteSaveFile();
         }
 
@@ -586,7 +590,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
         float maxTotalHitpoints = playerMaxHealth + playerMaxShields;
         float currentTotalHitpoints = player.getCurrentHitpoints() + player.getCurrentShieldPoints(); // Bug fix: was getCurrentHitpoints() twice
 
-        if (currentTotalHitpoints <= maxTotalHitpoints * 0.35f) {
+        if (currentTotalHitpoints <= maxTotalHitpoints * 0.4f) {
 
             float minHealthThreshold = maxTotalHitpoints * 0.01f;
             float maxHealthThreshold = maxTotalHitpoints * 0.8f;
@@ -697,7 +701,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
     }
 
     private void drawPlayerSpecialAttackBar(Graphics2D g, SpaceShip player) {
-        SpaceShipSpecialGun gun = player.getSpecialGun();
+        SecondaryPlayerGun gun = player.getSpecialGun();
         int charges = gun.getSpecialAttackCharges();
 
         // Draw the cooldown progress bar only if there are no charges
@@ -950,7 +954,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
 
     private void drawSpecialAttackFrame(Graphics2D g, SpaceShip spaceship) {
         drawImage(g, gameUICreator.getSpecialAttackFrame());
-        SpaceShipSpecialGun gun = spaceship.getSpecialGun();
+        SecondaryPlayerGun gun = spaceship.getSpecialGun();
         int charges = gun.getSpecialAttackCharges();
 
         if (charges > 0) {
@@ -1082,7 +1086,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
                         navigateLeft();
                     } else if (e.getKeyCode() == KeyEvent.VK_RIGHT || e.getKeyCode() == KeyEvent.VK_D) {
                         navigateRight();
-                    } else if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                    } else if (e.getKeyCode() == KeyEvent.VK_ENTER && selectedComponent != null) {
                         selectedComponent.activateComponent();
                     }
                     inputDelay = 0;
@@ -1169,9 +1173,17 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
                     selectedComponent.activateComponent();
                     inputDelay = 0;
                 } else if (controllerManager.isPrimaryControllerLeftPressed() && inputDelay >= MOVE_COOLDOWN) {
+                    if(isUsersFirstInputForRelicselection){
+                        overRideFirstSelection();
+                        return; //exit early
+                    }
                     navigateLeft();
                     inputDelay = 0;
                 } else if (controllerManager.isPrimaryControllerRightPressed() && inputDelay >= MOVE_COOLDOWN) {
+                    if(isUsersFirstInputForRelicselection){
+                        overRideFirstSelection();
+                        return; //exit early
+                    }
                     navigateRight();
                     inputDelay = 0;
                 }
@@ -1183,6 +1195,13 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
             }
         }
 
+    }
+
+    private void overRideFirstSelection(){
+        cursor.setXCoordinate(relicSelectionGrid.get(0).getXCoordinate() - cursor.getWidth());
+        cursor.setCenterYCoordinate(relicSelectionGrid.get(0).getCenterYCoordinate());
+        selectedComponent = relicSelectionGrid.get(0);
+        isUsersFirstInputForRelicselection = false;
     }
 
     public void addGUIAnimation(GUIComponent incomingComponent) {
@@ -1210,28 +1229,28 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
     public void signalThatRelicHasBeenChosen() {
         this.gameState.setGameState(GameStatusEnums.Show_Level_Score_Card);
         showRelicSelection = false;
+        isUsersFirstInputForRelicselection = false;
         inputDelay = 0;
     }
 
     private boolean showRelicSelection = false;
+    private boolean isUsersFirstInputForRelicselection = false;
 
     public void showRelicSelection() {
         this.gameState.setGameState(GameStatusEnums.SelectingRelic);
         chooseOne = GameUICreator.getInstance().getChooseOne();
         this.relicBackgroundCards.addAll(GameUICreator.getInstance().getRelicBackgroundCards());
-//        GameUICreator.getInstance().getRelicTitles().forEach(relicTitle -> {
-//            for (GUIComponent component : relicTitle.getComponents()) {
-//                this.relicTitleComponents.add(component);
-//            }
-//        });
         this.relicSelectionGrid.addAll(GameUICreator.getInstance().getRelicShopItems());
         this.showRelicSelection = true;
         if (this.cursor == null) {
             this.cursor = GameUICreator.getInstance().createCursor();
         }
-        cursor.setXCoordinate(relicSelectionGrid.get(0).getXCoordinate() - cursor.getWidth());
-        cursor.setCenterYCoordinate(relicSelectionGrid.get(0).getCenterYCoordinate());
-        selectedComponent = relicSelectionGrid.get(0);
+        isUsersFirstInputForRelicselection = true;
+
+        cursor.setCenterCoordinates(-500, -500); //zet hem buiten het scherm, nu word hij wel getekend maar verschijnt pas na de eerste input
+        for(SpaceShip spaceShip : playerManager.getAllSpaceShips()) {
+            spaceShip.setImmune(true); //make them immune so they can't be damaged by any surviving projectiles or enemies whilst choosing a relic
+        }
     }
 
     private void drawDescriptionInfo(Graphics2D g2d, GUIComponent shopItem, GUIComponent backgroundCard) {
@@ -1242,7 +1261,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
 
         int descriptionX = backgroundCard.getXCoordinate() + 25;
         int descriptionY = shopItem.getYCoordinate() + shopItem.getHeight() + 40;
-        int titleY = shopItem.getYCoordinate() - 25;
+        int titleY = shopItem.getYCoordinate() - 40;
 
         if (shopItem.getShopItemInformation() != null) {
             g2d.setFont(new Font(textFont, Font.BOLD, Math.round(17 * DataClass.getInstance().getResolutionFactor())));

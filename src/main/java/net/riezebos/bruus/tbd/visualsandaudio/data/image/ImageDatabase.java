@@ -29,6 +29,7 @@ public class ImageDatabase {
     private BufferedImage highVelocityLasers;
     private BufferedImage bountyHunterUnlock;
     private BufferedImage compoundWealthUnlock;
+    private BufferedImage electroshedding;
     private BufferedImage clubAccessUnlock;
     private BufferedImage treasureHunterUnlock;
     private BufferedImage stuiversBestFriend;
@@ -144,6 +145,7 @@ public class ImageDatabase {
     private BufferedImage moneyPrinter;
     private BufferedImage stickyDynamite;
     private BufferedImage starcraft2Keystone;
+    private BufferedImage puncturingpierces;
 
     // Font Letters
     private BufferedImage letter_A;
@@ -477,6 +479,12 @@ public class ImageDatabase {
     private BufferedImage corsairItem;
 
 
+
+    private List<BufferedImage> yellowBossHealMissile = new ArrayList<>();
+    private List<BufferedImage> yellowBossHealCollision = new ArrayList<>();
+    private List<BufferedImage> yellowBossVoidMissile = new ArrayList<>();
+    private List<BufferedImage> yellowBossVoidCollision = new ArrayList<>();
+    private List<BufferedImage> yellowBossVoidEffect = new ArrayList<>();
     private List<BufferedImage> scrapMetalAnim = new ArrayList<>();
     private List<BufferedImage> smokeExplosion = new ArrayList<>();
     private List<BufferedImage> mirageMiniBoss = new ArrayList<>();
@@ -559,6 +567,7 @@ public class ImageDatabase {
     private BufferedImage carrierUnlock;
     private BufferedImage firefighterUnlock;
     private BufferedImage aimAssist;
+    private BufferedImage anionInverter;
 
     private ImageDatabase() {
         initializeImages();
@@ -595,6 +604,7 @@ public class ImageDatabase {
         this.bossHealthBarBackground = imgLoader.getImage(ImageEnums.BossHealthBarBackground);
         this.bossHealthBarFront = imgLoader.getImage(ImageEnums.BossHealthBarFront);
         this.bossHealthBarRed = imgLoader.getImage(ImageEnums.BossHealthBarRed);
+        this.puncturingpierces = imgLoader.getImage(ImageEnums.PuncturingPierces);
     }
 
     private void initEnemies() {
@@ -616,6 +626,7 @@ public class ImageDatabase {
 
     private void initGameUIobjects() {
         this.frame = imgLoader.getImage(ImageEnums.Frame);
+        this.electroshedding = imgLoader.getImage(ImageEnums.Electroshedding);
         this.redFilling = imgLoader.getImage(ImageEnums.Red_Filling);
         this.goldFilling = imgLoader.getImage(ImageEnums.Gold_Filling);
         this.blueFilling = imgLoader.getImage(ImageEnums.Blue_Filling);
@@ -790,6 +801,7 @@ public class ImageDatabase {
         this.treasureHunterUnlock = imgLoader.getImage(ImageEnums.TreasureHunterUnlock);
         this.clubAccessUnlock = imgLoader.getImage(ImageEnums.ClubAcessUnlock);
         this.highVelocityLasers = imgLoader.getImage(ImageEnums.HighVelocityLasers);
+        this.anionInverter = imgLoader.getImage(ImageEnums.AnionInverter);
 
         this.progressBar = imgLoader.getImage(ImageEnums.ProgressBar);
         this.progressBarFilling = imgLoader.getImage(ImageEnums.ProgressBarFilling);
@@ -982,6 +994,7 @@ public class ImageDatabase {
 
     public BufferedImage getImage(ImageEnums imageType) {
         switch (imageType) {
+            case AnionInverter: return this.anionInverter;
             case ChooseOne: return this.chooseone;
             case BossHealthBarBackground:
                 return bossHealthBarBackground;
@@ -1114,10 +1127,14 @@ public class ImageDatabase {
                 return this.carrierPlaceDroneIcon;
             case CarrierSwitchGearsIcon:
                 return this.carrierSwitchGearsIcon;
+            case PuncturingPierces:
+                return this.puncturingpierces;
             case ClubAcessUnlock:
                 return this.clubAccessUnlock;
             case CompoundWealthUnlock:
                 return this.compoundWealthUnlock;
+            case Electroshedding:
+                return this.electroshedding;
             case TreasureHunterUnlock:
                 return this.treasureHunterUnlock;
             case ProtossCarrierWithoutEngine:
@@ -1677,6 +1694,16 @@ public class ImageDatabase {
 
     public List<BufferedImage> getAnimation(ImageEnums imageType) {
         switch (imageType) {
+            case YellowBossHealCollision:
+                return this.yellowBossHealCollision;
+            case YellowBossHealMissile:
+                return this.yellowBossHealMissile;
+            case YellowBossVoidCollision:
+                return this.yellowBossVoidCollision;
+            case YellowBossVoidEffect:
+                return this.yellowBossVoidEffect;
+            case YellowBossVoidMisisle:
+                return this.yellowBossVoidMissile;
             case ReverseHealing:
                 return reverseHealing;
             case Explosion3:
@@ -2566,6 +2593,36 @@ public class ImageDatabase {
             String sourceString = String.format("/images/gif/PNGtoGIF/FreezeEffect/%d.png", i);
             BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
             freezeEffect.add(image);
+        }
+
+        for (int i = 9; i < 36; i++) {
+            String sourceString = String.format("/images/gif/PNGtoGIF/YellowBossHealCollision/%d.png", i);
+            BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+            yellowBossHealCollision.add(image);
+        }
+
+        for (int i = 0; i < 14; i++) {
+            String sourceString = String.format("/images/gif/PNGtoGIF/YellowBossHealProjectile/%d.png", i);
+            BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+            yellowBossHealMissile.add(image);
+        }
+
+        for (int i = 0; i < 37; i++) {
+            String sourceString = String.format("/images/gif/PNGtoGIF/YellowBossVoidCollision/%d.png", i);
+            BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+            yellowBossVoidCollision.add(image);
+        }
+
+        for (int i = 0; i < 36; i++) {
+            String sourceString = String.format("/images/gif/PNGtoGIF/YellowBossVoidEffect/%d.png", i);
+            BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+            yellowBossVoidEffect.add(image);
+        }
+
+        for (int i = 0; i < 64; i++) {
+            String sourceString = String.format("/images/gif/PNGtoGIF/YellowBossVoidProjectile/%d.png", i);
+            BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+            yellowBossVoidMissile.add(image);
         }
 
         for (int i = 0; i < 91; i++) {

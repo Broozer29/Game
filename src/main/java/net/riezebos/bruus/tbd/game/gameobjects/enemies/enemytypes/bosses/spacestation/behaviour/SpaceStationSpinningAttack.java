@@ -37,7 +37,7 @@ public class SpaceStationSpinningAttack implements BossActionable {
     private boolean isGoingBackToCenter = false;
 
     private float oldMoveSpeed = 0.0f;
-    private float newMoveSpeedModifier = 2.75f + (LevelManager.getInstance().getBossDifficultyLevel() * 0.25f);
+    private float newMoveSpeedModifier = Math.min(2.75f + (LevelManager.getInstance().getBossDifficultyLevel() * 0.25f), 4f);
 
     private int bounceCount = 0;
 

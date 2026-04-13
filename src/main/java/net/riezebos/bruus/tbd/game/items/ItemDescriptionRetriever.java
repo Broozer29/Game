@@ -23,27 +23,27 @@ public class ItemDescriptionRetriever {
                         Math.round(Math.round(PlasmaCoatedBullets.burningDamage * 100) * (PlasmaCoatedBullets.duration / DamageOverTime.damageInterval)) +
                         "% (+" +
                         Math.round(Math.round(PlasmaCoatedBullets.burningDamage * 100) * (PlasmaCoatedBullets.duration / DamageOverTime.damageInterval)) + "%) damage over " +
-                        PlasmaCoatedBullets.duration + " seconds (+" + PlasmaCoatedBullets.duration + ")";
+                        PlasmaCoatedBullets.duration + " seconds.";
             }
             case PhotonPiercer -> {
                 return "Your missiles that hit enemies with " + Math.round(PhotonPiercer.hpRequirement * 100) + "% or more health deal " +
                         Math.round(PhotonPiercer.damageAmplificationModifier * 100) + "% (+" + Math.round(PhotonPiercer.damageAmplificationModifier * 100) +
-                        " %) additional damage.";
+                        "%) additional damage.";
             }
             case CannisterOfGasoline -> {
                 return "Enemies explode on death, creating an explosion that applies Ignite to enemies dealing " +
-                        Math.round(Math.round(PlayerStats.igniteDamageMultiplier * 100) * (PlayerStats.igniteDuration / DamageOverTime.damageInterval)) + "% damage during " +
-                        PlayerStats.igniteDuration + " (+" + Math.round(CannisterOfGasoline.igniteDurationBonus * 100) + "%) seconds";
+                        Math.round(Math.round(PlayerStats.igniteDamageMultiplier * 100) * (PlayerStats.igniteDuration / DamageOverTime.damageInterval)) + "% (+" + Math.round(CannisterOfGasoline.igniteDamageBonus * 100) + "%) damage over " +
+                        PlayerStats.igniteDuration + " seconds.";
             }
             case SelfRepairingSteel -> {
                 double value = SelfRepairingSteel.repairAmount * (1000f / 15f);
                 return "Regenerate " + String.format("%.1f", value) +
-                        "(+" +
+                        " (+" +
                         String.format("%.1f", value) +
                         ") hitpoints per second.";
             }
             case Battery -> {
-                return "Your special attack gains 1 (+1) additional charge. Your special attack recharges " + Math.round(Battery.cooldownReduction * 100) + "% (+ " + Math.round(Battery.cooldownReduction * 100) + "faster.";
+                return "Your special attack gains 1 (+1) additional charge. Your special attack recharges " + Math.round(Battery.cooldownReduction * 100) + "% (+ " + Math.round(Battery.cooldownReduction * 100) + "%) faster.";
             }
             case FocusCrystal -> {
                 return "Your missiles deal " + Math.round(FocusCrystal.damageAmplificationModifier * 100) +
@@ -55,7 +55,7 @@ public class ItemDescriptionRetriever {
                 return "Gain " + Math.round(PrecisionAmplifier.critChance * 100) + "% (+" + Math.round(PrecisionAmplifier.critChance * 100) + "%) critical strike chance. Critical strikes deal double damage.";
             }
             case PlatinumSponge -> {
-                return "Reduces all damage taken by " + PlatinumSponge.damageReduction + " (+" + PlatinumSponge.damageReduction + "). Damage taken cannot be reduced below 1";
+                return "Reduces all damage taken by " + Math.round(PlatinumSponge.damageReduction) + " (+" + Math.round(PlatinumSponge.damageReduction) + "). Damage taken cannot be reduced below 1";
             }
             case EmergencyRepairBot -> {
                 return "When dropping below " + Math.round(EmergencyRepairBot.healthActivationRatio * 100) + "% health, instantly heals you for " +
@@ -84,7 +84,7 @@ public class ItemDescriptionRetriever {
                 return Math.round(PlasmaLauncher.procChance * 100) + "% Chance on hitting an enemy to fire a piercing plasma shot for " + Math.round(PlasmaLauncher.damageMultiplier * 100) + "% (+" + Math.round(PlasmaLauncher.damageMultiplier * 100) + "%) damage";
             }
             case GuardianDrone -> {
-                return "Gain 1 invincible drone.";
+                return "Gain 1 invincible drone. It attacks automatically.";
             }
             case CriticalOverloadCapacitor -> {
                 return "Critical strikes deal an additional " + Math.round(CriticalOverloadCapacitor.damageMultiplier * 100) + "% (+" + Math.round(CriticalOverloadCapacitor.damageMultiplier * 100) + "%) damage.";
@@ -101,21 +101,27 @@ public class ItemDescriptionRetriever {
                         "% additional damage after each bounce.";
             }
             case VIPTicket -> {
-                return "When entering the shop, grants 1 free shop refresh.";
+                return "When entering the shop, grants 1 FREE shop reroll.";
             }
             case ElectricDestabilizer -> {
-                return "Your Electro Shred ability now stuns non-boss enemies for " + ElectricDestabilizer.duration + " +(" + ElectricDestabilizer.duration + ") seconds.";
+                return "Your Electro Shred ability now stuns non-boss enemies for " + Math.round(ElectricDestabilizer.duration) + " seconds.";
             }
             case ModulePower -> {
-                return "Drones deal " + Math.round(ModuleAccuracy.damageBonus * 100) + "% (+" + Math.round(ModuleAccuracy.damageBonus * 100) + "%) damage.";
+                return "Drones deal " + Math.round(ModulePower.damageBonus * 100) + "% (+" + Math.round(ModulePower.damageBonus * 100) + "%) damage.";
             }
             case ModuleAccuracy -> {
                 return "Drones now aim towards the enemy closest to you.";
             }
+            case ElectroShedding -> {
+                return "Electroshred now permanently reduces enemy armor by " + Math.round(ElectroShedding.armorReduction) + " (+" + Math.round(ElectroShedding.armorReduction) + ") whenever it deals damage. Note: Electroshred strikes nearby enemies up to 12 times over a single use.";
+            }
+            case PuncturingPierce -> { //different formula of *10 factor intead of 100, mathmatically no difference but this math perspective suits the user better
+                return "Your missiles now deal an additional " + Math.round(PuncturingPierce.damageIncreasePerMoveSpeedIncreaseModifier * 10) +"% additional damage for every 10% increased move speed.";
+            }
             case ElectricSupercharger -> {
                 return "Your Electro Shred area of effect is improved. Electro Shred deals +" +
                         Math.round(ElectricSupercharger.buffAmount * 100) +
-                        "% (+%" + Math.round(ElectricSupercharger.buffAmount * 100) + "%) damage.";
+                        "% (+" + Math.round(ElectricSupercharger.buffAmount * 100) + "%) damage.";
             }
             case ReflectiveShielding -> {
                 return "Whilst your shield is up, colliding with enemy missiles returns a missile dealing " +
@@ -140,7 +146,7 @@ public class ItemDescriptionRetriever {
                 return "Your drones now fire whenever you fire. Maximum drone capacity is increased to " + ModuleCommand.maxDronesCapacity + ".";
             }
             case AnionInverter -> {
-                return "Electroshred cooldown decreased by " + Math.round(AnionInverter.cooldownModifier * 100) + "%. Electroshred damage reduced by " + Math.round(AnionInverter.damageModifier * 100) + "%. Electroshred does NOT destroy enemy projectiles.";
+                return "Electroshred cooldown decreased by " + Math.abs(Math.round(AnionInverter.cooldownModifier * 100)) + "%. Electroshred damage increased by " + Math.round(AnionInverter.damageModifier * 100) + "%. Electroshred does NOT destroy enemy projectiles.";
             }
             case Contract -> {
                 return "After killing " + Contract.killCountRequired + " enemies, transform into a random rare or legendary item upon entering the shop.";
@@ -172,7 +178,7 @@ public class ItemDescriptionRetriever {
                 return "Gain 1 Scorching Fury, 1 Sticky Oil and 1 Escalating Flames.";
             }
             case ShieldStabilizer -> {
-                return "Taking damage no longer halts shield regeneration. Reduces shield regeneration rate by -" + Math.round(ShieldStabilizer.shieldRegenMultiplier * 100) + "%.";
+                return "Taking damage no longer halts shield regeneration. Reduces shield regeneration rate by " + Math.round(ShieldStabilizer.shieldRegenMultiplier * 100) + "%.";
             }
             case ProtossScout -> {
                 return "Gain 1 Protoss Scout dealing " + Math.round(ProtossScout.scoutDamageFactor * 100) + "% damage. Takes up 1 Hangar Bay slot.";

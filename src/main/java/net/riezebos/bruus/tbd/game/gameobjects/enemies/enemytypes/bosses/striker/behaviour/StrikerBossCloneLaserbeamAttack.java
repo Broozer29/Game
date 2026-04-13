@@ -42,7 +42,7 @@ public class StrikerBossCloneLaserbeamAttack implements BossActionable {
     private double lastFiredTime = GameState.getInstance().getGameSeconds() + 4;
     private boolean isFiringLaserbeams;
     private double startedFiringTime = 0;
-    private double duration = 4 + (LevelManager.getInstance().getBossDifficultyLevel() * 2);
+    private double duration = Math.min(4 + (LevelManager.getInstance().getBossDifficultyLevel()), 7);
     private SpriteAnimation chargingAnimation;
     private TrackingLaserBeam trackingLaserbeam;
 
@@ -51,6 +51,7 @@ public class StrikerBossCloneLaserbeamAttack implements BossActionable {
     private int boardBlockForTheRealStriker = 0;
 
     public StrikerBossCloneLaserbeamAttack() {
+        maxLaserbeamRotationsPerUpdate = 0.2f + (LevelManager.getInstance().getBossDifficultyLevel() * 0.025f); // +0.025 movespeed per boss killed, is al een deadly attack dont need to overdo it
     }
 
     private void recreateClones(GameObject parent) {

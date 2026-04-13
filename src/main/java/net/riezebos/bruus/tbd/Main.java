@@ -4,13 +4,8 @@ import javafx.application.Platform;
 import net.riezebos.bruus.tbd.controllerInput.ControllerManager;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.Enemy;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyCreator;
-import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.redboss.behaviour.RedBossCrossingLaserbeamsAttack;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyEnums;
-import net.riezebos.bruus.tbd.game.gameobjects.missiles.laserbeams.AngledLaserBeam;
-import net.riezebos.bruus.tbd.game.gameobjects.missiles.laserbeams.Laserbeam;
-import net.riezebos.bruus.tbd.game.gameobjects.missiles.laserbeams.LaserbeamConfiguration;
 import net.riezebos.bruus.tbd.game.movement.Direction;
-import net.riezebos.bruus.tbd.game.movement.Point;
 import net.riezebos.bruus.tbd.guiboards.BoardManager;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.AudioDatabase;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageDatabase;
@@ -84,8 +79,8 @@ public class Main {
 				enemyEnum.getDefaultScale(), enemyEnum.getMovementSpeed());
 		yellowBoss.deleteObject();
 
-		simulateAttackAngles(true);
-		simulateAttackAngles(false);
+//		simulateAttackAngles(true);
+//		simulateAttackAngles(false);
 
 		runtime = Runtime.getRuntime();
 		usedMemory = runtime.totalMemory() - runtime.freeMemory();
@@ -93,47 +88,47 @@ public class Main {
 
 	}
 
-	private static void simulateAttackAngles(boolean inwards) {
-		// Use the centralized static values from CrossingLaserbeamsAttack
-		int lowerLaserbeamLowestAngle = RedBossCrossingLaserbeamsAttack.lowerLaserbeamLowestAngle;
-		int lowerLaserbeamHighestAngle = RedBossCrossingLaserbeamsAttack.lowerLaserbeamHighestAngle;
-		int upperLaserbeamLowestAngle = RedBossCrossingLaserbeamsAttack.upperLaserbeamLowestAngle;
-		int upperLaserbeamHighestAngle = RedBossCrossingLaserbeamsAttack.upperLaserbeamHighestAngle;
-		float angleStepSize = RedBossCrossingLaserbeamsAttack.angleStepSize;
-
-		// Adjust angles like the CrossingLaserbeamsAttack settings
-		if (inwards) {
-			lowerLaserbeamHighestAngle = 185;
-			upperLaserbeamLowestAngle = 175;
-		} else {
-			lowerLaserbeamLowestAngle = 160;
-			lowerLaserbeamHighestAngle = 190;
-			upperLaserbeamLowestAngle = 170;
-			upperLaserbeamHighestAngle = 200;
-			angleStepSize = 0.25f;
-		}
-
-		LaserbeamConfiguration lowerConfig = new LaserbeamConfiguration(false, 0);
-		lowerConfig.setAmountOfLaserbeamSegments(20);
-		lowerConfig.setOriginPoint(new Point(0, 0));
-		Laserbeam lowerLaserbeam = new AngledLaserBeam(lowerConfig);
-
-		LaserbeamConfiguration upperConfig = new LaserbeamConfiguration(false, 0);
-		upperConfig.setAmountOfLaserbeamSegments(20);
-		upperConfig.setOriginPoint(new Point(0, 0));
-		Laserbeam upperLaserbeam = new AngledLaserBeam(upperConfig);
-
-		// Simulate lower laserbeam movement
-		for (float angle = lowerLaserbeamLowestAngle; angle <= lowerLaserbeamHighestAngle; angle += angleStepSize) {
-			lowerLaserbeam.setAngleDegrees(angle);
-			lowerLaserbeam.update(); // Caching automatically happens here
-		}
-
-		// Simulate upper laserbeam movement
-		for (float angle = upperLaserbeamLowestAngle; angle <= upperLaserbeamHighestAngle; angle += angleStepSize) {
-			upperLaserbeam.setAngleDegrees(angle);
-			upperLaserbeam.update(); // Caching automatically happens here
-		}
-	}
+//	private static void simulateAttackAngles(boolean inwards) {
+//		// Use the centralized static values from CrossingLaserbeamsAttack
+//		int lowerLaserbeamLowestAngle = RedBossCrossingLaserbeamsAttack.lowerLaserbeamLowestAngle;
+//		int lowerLaserbeamHighestAngle = RedBossCrossingLaserbeamsAttack.lowerLaserbeamHighestAngle;
+//		int upperLaserbeamLowestAngle = RedBossCrossingLaserbeamsAttack.upperLaserbeamLowestAngle;
+//		int upperLaserbeamHighestAngle = RedBossCrossingLaserbeamsAttack.upperLaserbeamHighestAngle;
+//		float angleStepSize = RedBossCrossingLaserbeamsAttack.angleStepSize;
+//
+//		// Adjust angles like the CrossingLaserbeamsAttack settings
+//		if (inwards) {
+//			lowerLaserbeamHighestAngle = 185;
+//			upperLaserbeamLowestAngle = 175;
+//		} else {
+//			lowerLaserbeamLowestAngle = 160;
+//			lowerLaserbeamHighestAngle = 190;
+//			upperLaserbeamLowestAngle = 170;
+//			upperLaserbeamHighestAngle = 200;
+//			angleStepSize = 0.25f;
+//		}
+//
+//		LaserbeamConfiguration lowerConfig = new LaserbeamConfiguration(false, 0);
+//		lowerConfig.setAmountOfLaserbeamSegments(20);
+//		lowerConfig.setOriginPoint(new Point(0, 0));
+//		Laserbeam lowerLaserbeam = new AngledLaserBeam(lowerConfig);
+//
+//		LaserbeamConfiguration upperConfig = new LaserbeamConfiguration(false, 0);
+//		upperConfig.setAmountOfLaserbeamSegments(20);
+//		upperConfig.setOriginPoint(new Point(0, 0));
+//		Laserbeam upperLaserbeam = new AngledLaserBeam(upperConfig);
+//
+//		// Simulate lower laserbeam movement
+//		for (float angle = lowerLaserbeamLowestAngle; angle <= lowerLaserbeamHighestAngle; angle += angleStepSize) {
+//			lowerLaserbeam.setAngleDegrees(angle);
+//			lowerLaserbeam.update(); // Caching automatically happens here
+//		}
+//
+//		// Simulate upper laserbeam movement
+//		for (float angle = upperLaserbeamLowestAngle; angle <= upperLaserbeamHighestAngle; angle += angleStepSize) {
+//			upperLaserbeam.setAngleDegrees(angle);
+//			upperLaserbeam.update(); // Caching automatically happens here
+//		}
+//	}
 
 }

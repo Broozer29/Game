@@ -26,9 +26,9 @@ public class YellowBossMissileWaveAttack implements BossActionable {
     private double lastAttackTime = 0;
     private double lastSingleShotAttackTime = 0;
     private boolean allowedToFireBurst = false;
-    private double intermittenAttackCooldown = 0.25f;
+    private double intermittenAttackCooldown = 0.275f;
     private int burstShotsFired = 0; // Track the number of shots fired in the burst
-    private int amountOfShotsPerAttack = 6 + (LevelManager.getInstance().getBossDifficultyLevel() * 2);
+    private int amountOfShotsPerAttack = 8 + (LevelManager.getInstance().getBossDifficultyLevel() * 2);
     private double attackCooldown = 5;
 
     private int priority = 1;
@@ -38,7 +38,7 @@ public class YellowBossMissileWaveAttack implements BossActionable {
 
     public YellowBossMissileWaveAttack() {
         missileAnglesList.clear();
-        for (int i = 120; i <= 240; i += 10) {
+        for (int i = 0; i <= 350; i += 10) {
             missileAnglesList.add(i);
         }
     }
@@ -80,6 +80,7 @@ public class YellowBossMissileWaveAttack implements BossActionable {
                     lastAttackTime = currentTime;
                     allowedToFireBurst = false;
                     enemy.setAttacking(false);
+                    bonusAngle = 0;
                     return true; //We finished
                 }
             }
@@ -104,9 +105,11 @@ public class YellowBossMissileWaveAttack implements BossActionable {
                 enemy.getCenterYCoordinate());
     }
 
+    private int bonusAngle = 0;
     private void fireMissile(Enemy enemy) {
+        bonusAngle += 3;
         for (int angle : missileAnglesList) {
-            Point destination = calculateBulletDestination(angle, 500, missileChargingAnimation.getCenterXCoordinate(), missileChargingAnimation.getCenterYCoordinate());
+            Point destination = calculateBulletDestination(angle + bonusAngle, 500, missileChargingAnimation.getCenterXCoordinate(), missileChargingAnimation.getCenterYCoordinate());
             MissileManager.getInstance().addExistingMissile(createMissile(enemy, destination));
         }
     }
@@ -115,10 +118,10 @@ public class YellowBossMissileWaveAttack implements BossActionable {
         MissileEnums missileType = MissileEnums.DefaultLaserBullet;
         SpriteConfiguration spriteConfiguration = MissileCreator.getInstance().createMissileSpriteConfig(
                 enemy.getXCoordinate(), enemy.getCenterYCoordinate(),
-                missileType.getImageType(), enemy.getScale());
+                missileType.getImageType(), 1);
 
 
-        int movementSpeed = 5;
+        float movementSpeed = 4.5f;
         //Create missile movement attributes and create a movement configuration
         PathFinder missilePathFinder = new StraightLinePathFinder();
         MovementPatternSize movementPatternSize = MovementPatternSize.SMALL;
@@ -149,7 +152,8 @@ public class YellowBossMissileWaveAttack implements BossActionable {
         missile.setAllowedVisualsToRotate(false); //Prevent it from being rotated again by the SpriteMover
 
         missile.setOwnerOrCreator(enemy);
-
+        missile.setSpeedsUp(true);
+        missile.setSpeedUpIncreaseAmount(1.4f);
         return missile;
     }
 

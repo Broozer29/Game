@@ -34,7 +34,7 @@ public class YellowBossLaserbeamMissileAttack implements BossActionable {
     public static int lowerLaserbeamHighestAngle = 225;
     public static int upperLaserbeamLowestAngle = 135;
     public static int upperLaserbeamHighestAngle = 225;
-    public static float angleStepSize = 0.35f;
+    public static float angleStepSize = 0.275f;
 
     private Point upperLaserbeamOriginPoint;
     private Point lowerLaserbeamOriginPoint;
@@ -47,7 +47,7 @@ public class YellowBossLaserbeamMissileAttack implements BossActionable {
 
     private SpriteAnimation missileChargingAnimation;
     private double lastFireMissileTie = 0;
-    private double fireMissileCooldown = 0.65f - (LevelManager.getInstance().getBossDifficultyLevel() * 0.15f);
+    private double fireMissileCooldown = 0.85f - (LevelManager.getInstance().getBossDifficultyLevel() * 0.15f);
     private boolean isFiringMissiles = false;
 
     private List<Integer> missileAnglesList = new ArrayList<>();
@@ -330,7 +330,8 @@ public class YellowBossLaserbeamMissileAttack implements BossActionable {
         missile.setAllowedVisualsToRotate(false); //Prevent it from being rotated again by the SpriteMover
 
         missile.setOwnerOrCreator(enemy);
-
+        missile.setSpeedsUp(true);
+        missile.setSpeedUpIncreaseAmount(1.3f);
         return missile;
     }
 

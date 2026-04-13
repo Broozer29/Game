@@ -58,6 +58,14 @@ public class ControllerInputReader {
             if (comp.getIdentifier() == Component.Identifier.Button._11) {
                 inputState.put(ControllerInputEnums.PAUSE, value == 1.0f); // D-Pad Up
             }
+
+            if (comp.getIdentifier() == Component.Identifier.Button._11) {
+                inputState.put(ControllerInputEnums.REQUEST_PRIMARY_CONTROLLER, value == 1.0f);
+            }
+        }
+
+        if(this.isInputActive(ControllerInputEnums.REQUEST_PRIMARY_CONTROLLER)){
+            ControllerManager.getInstance().requestControl(this);
         }
     }
 
@@ -104,5 +112,9 @@ public class ControllerInputReader {
 
     public float getyAxisValue() {
         return yAxisValue;
+    }
+
+    public Controller getController() {
+        return controller;
     }
 }

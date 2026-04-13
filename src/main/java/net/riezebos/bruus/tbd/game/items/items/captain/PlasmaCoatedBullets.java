@@ -38,7 +38,7 @@ public class PlasmaCoatedBullets extends Item {
         SpriteAnimationConfiguration spriteAnimationConfiguration = new SpriteAnimationConfiguration(spriteConfiguration, 3, true);
         SpriteAnimation spriteAnimation = new SpriteAnimation(spriteAnimationConfiguration);
 
-        DamageOverTime burningEffect = new DamageOverTime((burningDamage * PlayerStats.getInstance().getBaseDamage()) * quantity, duration * quantity, spriteAnimation, EffectIdentifiers.PlasmaCoatedBulletsBurning);
+        DamageOverTime burningEffect = new DamageOverTime((burningDamage * PlayerStats.getInstance().getBaseDamage()) * quantity, duration, spriteAnimation, EffectIdentifiers.PlasmaCoatedBulletsBurning);
         if(burningEffect.getAnimations().get(0) != null){
             burningEffect.getAnimations().get(0).setCenterCoordinates(gameObject.getCenterXCoordinate(), gameObject.getCenterYCoordinate());
         }

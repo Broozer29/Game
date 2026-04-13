@@ -14,6 +14,7 @@ public enum MissileEnums {
     ProtossShuttleMissile(false, "Shuttle Missile", ImageEnums.ProtossShuttleMissileExplosion, ImageEnums.ProtossShuttleMissile),
     ReflectiveBlocks(false, "Reflective Blocks", ImageEnums.ProtossShuttleMissileExplosion, ImageEnums.RotatingBoxes),
     StationaryExplodingBomb(false, "Stationary Exploding Bomb", ImageEnums.Bomba_Missile_Explosion, ImageEnums.Bomba_Missile),
+    YellowBossOrb(false, "Stationary Exploding Bomb", ImageEnums.Impact_Explosion_One, ImageEnums.AlienLaserBeamAnimated),
     BarrierProjectile(false, "BarrierProjectile", ImageEnums.BarrierProjectileDestruction, ImageEnums.BarrierProjectile);
 
     private final boolean usesBoxCollision;

@@ -65,15 +65,13 @@ public class OnScreenTextManager {
 		this.onScreenTexts.add(onScreenText);
 	}
 
-	public void addDamageNumberText(float damageNumber, int xCoordinate, int yCoordinate, boolean isCrit){
-		OnScreenText onScreenText = new OnScreenText(xCoordinate, yCoordinate, String.valueOf(Math.round(damageNumber)));
+	public void addDamageNumberText(float damageNumber, int xCoordinate, int yCoordinate, boolean isCrit, int fontSize){
+		OnScreenText onScreenText = new OnScreenText(xCoordinate, yCoordinate, String.valueOf(Math.round(damageNumber)), fontSize);
 		onScreenText.setTransparancyStepSize(0.0175f);
-
+        onScreenText.setFontSize(fontSize);
 		if(isCrit){
-			onScreenText.setFontSize(16);
 			onScreenText.setColor(Color.ORANGE);
 		} else {
-			onScreenText.setFontSize(14);
 			onScreenText.setColor(Color.YELLOW);
 		}
 		this.onScreenTexts.add(onScreenText);

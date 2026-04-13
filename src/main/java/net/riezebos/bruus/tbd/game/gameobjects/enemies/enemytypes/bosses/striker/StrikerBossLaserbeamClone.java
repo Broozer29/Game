@@ -126,6 +126,6 @@ public class StrikerBossLaserbeamClone extends Enemy {
         trackingLaserbeam = new TrackingLaserBeam(upperLaserbeamConfiguration);
         updateLaserbeamOriginPoints();
         trackingLaserbeam.setOwner(this);
-        trackingLaserbeam.setMaxRotationPerUpdate(StrikerBossCloneLaserbeamAttack.maxLaserbeamRotationsPerUpdate);
+        trackingLaserbeam.setMaxRotationPerUpdate(StrikerBossCloneLaserbeamAttack.maxLaserbeamRotationsPerUpdate); //points to a static value that gets recalculated everytime the attack is constructed
     }
 }

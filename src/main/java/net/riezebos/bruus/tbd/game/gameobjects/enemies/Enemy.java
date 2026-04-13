@@ -199,6 +199,9 @@ public class Enemy extends GameObject {
             }
         }
 
+        if(this.enemyType.getEnemyCategory().equals(EnemyCategory.Boss)) {
+            GameState.getInstance().increaseBossDefeated();
+        }
     }
 
     public EnemyEnums getEnemyType() {

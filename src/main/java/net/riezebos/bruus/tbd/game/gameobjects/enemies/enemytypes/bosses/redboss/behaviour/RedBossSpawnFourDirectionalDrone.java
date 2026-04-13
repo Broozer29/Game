@@ -11,6 +11,7 @@ import net.riezebos.bruus.tbd.game.movement.BoardBlockUpdater;
 import net.riezebos.bruus.tbd.game.movement.Direction;
 import net.riezebos.bruus.tbd.game.movement.Point;
 import net.riezebos.bruus.tbd.game.util.WithinVisualBoundariesCalculator;
+import net.riezebos.bruus.tbd.visualsandaudio.data.DataClass;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.AnimationManager;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteAnimation;
@@ -26,6 +27,7 @@ public class RedBossSpawnFourDirectionalDrone implements BossActionable {
     private double spawnCooldown = 18;
     private Random random;
     private int priority = 3;
+    private int amountToSpawn = 2;
 
     private SpriteAnimation spawnAnimation;
 
@@ -49,7 +51,7 @@ public class RedBossSpawnFourDirectionalDrone implements BossActionable {
 
 
             if (spawnAnimation.isPlaying() && spawnAnimation.getCurrentFrame() == 4) {
-                for (int i = 0; i < 2; i++) {
+                for (int i = 0; i < amountToSpawn; i++) {
                     Enemy fourDirectionalDrone = createFourDirectionalDrone(enemy);
                     fourDirectionalDrone.setCenterCoordinates(spawnAnimation.getCenterXCoordinate(), spawnAnimation.getCenterYCoordinate());
                     EnemyManager.getInstance().addEnemy(fourDirectionalDrone);
@@ -66,7 +68,7 @@ public class RedBossSpawnFourDirectionalDrone implements BossActionable {
 
     private void updateSpawnCooldown(Enemy enemy) {
         if (enemy.getCurrentHitpoints() <= (enemy.getMaxHitPoints() * 0.25f)) {
-            spawnCooldown = 14;
+            spawnCooldown = 11;
         }
     }
 
@@ -96,11 +98,11 @@ public class RedBossSpawnFourDirectionalDrone implements BossActionable {
         return random.nextInt(1, 3);
     }
 
+    private int spawnedCounter = 0;
+
     private Enemy createFourDirectionalDrone(Enemy enemy) {
         EnemyEnums enemyEnums = EnemyEnums.FourDirectionalDrone;
-
         float bonusSpeed = LevelManager.getInstance().getBossDifficultyLevel() > 0.1f ? LevelManager.getInstance().getBossDifficultyLevel() / 2 : 0;
-
         Enemy fourDirectionalDrone = EnemyCreator.createEnemy(enemyEnums, enemy.getXCoordinate(), enemy.getYCoordinate(), Direction.LEFT,
                 enemyEnums.getDefaultScale(),
                 enemyEnums.getMovementSpeed() + bonusSpeed);
@@ -108,8 +110,29 @@ public class RedBossSpawnFourDirectionalDrone implements BossActionable {
         Point point = BoardBlockUpdater.getRandomCoordinateInBlock(getRandomBoardBlock(), fourDirectionalDrone.getWidth(), fourDirectionalDrone.getHeight());
         fourDirectionalDrone.getMovementConfiguration().setDestination(point);
         fourDirectionalDrone.setOwnerOrCreator(enemy);
+
+        //Zet de Y coordinates uit elkaar zodat de kruisjes verschillende kanten op gaan
+        if (spawnedCounter == 0 || spawnedCounter % 2 == 0) {
+            point.setY(getYCoordinate(true));
+        } else {
+            point.setY(getYCoordinate(false));
+        }
+        spawnedCounter++;
+        if (spawnedCounter % amountToSpawn == 0) {
+            spawnedCounter = 0;
+        }
+
         return fourDirectionalDrone;
     }
+
+    private int getYCoordinate(boolean upperHalf) {
+        if (upperHalf) {
+            return random.nextInt(60, DataClass.getInstance().getPlayableWindowMaxHeight() / 2);
+        } else {
+            return random.nextInt(DataClass.getInstance().getPlayableWindowMaxHeight() / 2, DataClass.getInstance().getPlayableWindowMaxHeight() - 60);
+        }
+    }
+
 
     @Override
     public int getPriority() {

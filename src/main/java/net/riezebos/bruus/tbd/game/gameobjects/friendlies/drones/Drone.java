@@ -8,8 +8,8 @@ import net.riezebos.bruus.tbd.game.gameobjects.missiles.MissileManager;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.specialAttacks.ElectroShred;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.specialAttacks.SpecialAttack;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.specialAttacks.SpecialAttackConfiguration;
+import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SecondaryPlayerGun;
 import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SpaceShip;
-import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SpaceShipSpecialGun;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.items.ItemEnums;
 import net.riezebos.bruus.tbd.game.items.PlayerInventory;
@@ -105,7 +105,7 @@ public abstract class Drone extends GameObject {
         SpaceShip owner = (SpaceShip) this.ownerOrCreator;
         electroShredSpriteConfig.setImageType(owner.getElectroShredImageEnum());
         electroShredSpriteConfig.setScale(scale);
-        float damage = (owner.getSpecialAttackDamage() * SpaceShipSpecialGun.electroShredBonusDamageModifier) * owner.getDroneDamageModifier();
+        float damage = (owner.getSpecialAttackDamage() * SecondaryPlayerGun.electroShredBonusDamageModifier) * owner.getDroneDamageModifier();
 
         SpriteAnimationConfiguration spriteAnimationConfiguration = new SpriteAnimationConfiguration(electroShredSpriteConfig, 2, false);
         SpecialAttackConfiguration missileConfiguration = new SpecialAttackConfiguration(damage, true, true, false, true, true, true);

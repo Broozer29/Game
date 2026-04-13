@@ -62,7 +62,9 @@ public class ImageRotator {
         ImageCacheKey imageCacheKey = findOrCreateCacheKey(rotatedFramesCache, keyString);
         if (imageCacheKey != null && rotatedFramesCache.containsKey(imageCacheKey)) {
             imageCacheKey.updateAccessTime();
-            return rotatedFramesCache.get(imageCacheKey);
+
+            List<BufferedImage> rotatedFrames = rotatedFramesCache.get(imageCacheKey);
+            return rotatedFrames;
         }
 
         // Prepare a list to store the adjusted frames, whether rotated or flipped

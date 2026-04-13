@@ -16,6 +16,9 @@ public class MovementConfiguration {
 	private int stepsTaken;
 	private float XMovementSpeed;
 	private float YMovementSpeed;
+    private float originalXMovementSpeed;
+    private float originalYMovementSpeed;
+
 	private float lastUsedXMovementSpeed;
 	private float lastUsedYMovementSpeed;
 	private int currentBoardBlock;
@@ -159,8 +162,23 @@ public class MovementConfiguration {
 		return YMovementSpeed * movementSpeedModifier;
 	}
 
+    public float getOriginalXMovementSpeed() {
+        return originalXMovementSpeed;
+    }
 
-	public void setYMovementSpeed(float yMovementSpeed) {
+    public void setOriginalXMovementSpeed(float originalXMovementSpeed) {
+        this.originalXMovementSpeed = originalXMovementSpeed;
+    }
+
+    public float getOriginalYMovementSpeed() {
+        return originalYMovementSpeed;
+    }
+
+    public void setOriginalYMovementSpeed(float originalYMovementSpeed) {
+        this.originalYMovementSpeed = originalYMovementSpeed;
+    }
+
+    public void setYMovementSpeed(float yMovementSpeed) {
 		YMovementSpeed = yMovementSpeed;
 	}
 

@@ -77,7 +77,7 @@ public class SpecialAttack extends GameObject {
 
         if (showDamage && damage >= 1) {
             OnScreenTextManager.getInstance().addDamageNumberText(Math.round(damage), target.getCenterXCoordinate(),
-                    target.getCenterYCoordinate(), isACrit);
+                    target.getCenterYCoordinate(), isACrit,super.calculateFontSizeBasedOnDamageAmount(this, damage));
         }
     }
 

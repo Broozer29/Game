@@ -75,7 +75,6 @@ public class ReflectiveBlocks extends Missile {
         missile.setDamage(this.damage);
         missile.setFriendly(this.isFriendly()); //change teams
         missile.setOwnerOrCreator(this.ownerOrCreator);
-        missile.setDamage(missile.getDamage() * 0.5f);
     }
 
     private double calculateMovementAngle(List<Point> waypoints) {

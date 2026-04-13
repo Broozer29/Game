@@ -112,8 +112,8 @@ public class BoonSelectionBoard extends JPanel implements TimerHolder {
         setBackground(Color.BLACK);
         setPreferredSize(new Dimension(DataClass.getInstance().getWindowWidth(), DataClass.getInstance().getWindowHeight()));
 
-        if (controllers.getFirstController() != null) {
-            controllerInputReader = controllers.getFirstController();
+        if (controllers.getPrimaryController() != null) {
+            controllerInputReader = controllers.getPrimaryController();
         }
 
         initMenuTiles();
@@ -548,7 +548,7 @@ public class BoonSelectionBoard extends JPanel implements TimerHolder {
     private static final long MOVE_COOLDOWN = 350; // milliseconds
 
     public void executeControllerInput() {
-        if (controllers.getFirstController() != null) {
+        if (controllers.getPrimaryController() != null) {
             boolean needsUpdate = false;
             controllerInputReader.pollController();
             long currentTime = System.currentTimeMillis();

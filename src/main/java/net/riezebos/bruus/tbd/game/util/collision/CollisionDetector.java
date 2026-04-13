@@ -44,6 +44,22 @@ public class CollisionDetector {
         return null;
     }
 
+    //This should only be used when objects are designed to collide with their owner, only the YellowBoss has such behaviour as of now
+    public CollisionInfo detectCollisionIgnoringOwnerRules(GameObject gameObject1, GameObject gameObject2) {
+        if (isNearby(gameObject1, gameObject2, threshold)) {
+            Rectangle r1 = gameObject1.getBounds();
+            Rectangle r2 = gameObject2.getBounds();
+
+            if (r1.intersects(r2)) {
+                Point collisionPoint = checkPixelCollision(gameObject1, gameObject2);
+                if (collisionPoint != null) {
+                    return new CollisionInfo(true, collisionPoint);
+                }
+            }
+        }
+        return null;
+    }
+
     public CollisionInfo detectCollision(BackgroundObject bgo1, BackgroundObject bgo2) {
         // Objects should not collide with their owners
         Rectangle r1 = bgo1.getBounds();

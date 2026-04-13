@@ -34,8 +34,9 @@ public class PlayerInventory {
 
     public void resetInventory() {
         items.clear();
+        Contract.killCountRequired = Contract.originalCountRequired; //Sloppy fix, if HelpRequested is removed from the inventory, contract count will be wrong and require a reset
 
-        addItem(ItemEnums.HelpRequested);
+//        addItem(ItemEnums.HelpRequested);
         if (DevTestSettings.infiniteMoney) {
             cashMoney = 999999999;
         } else {
@@ -116,6 +117,10 @@ public class PlayerInventory {
                 return new ArmorPiercingRounds();
             case EnergySiphon:
                 return new EnergySyphon();
+            case ElectroShedding:
+                return new ElectroShedding();
+            case PuncturingPierce:
+                return new PuncturingPierce();
             case StickyDynamite:
                 return new StickyDynamite();
             case PlasmaCoatedBullets:

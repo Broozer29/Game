@@ -51,7 +51,7 @@ public class YellowBossSpawnReflectingBarrier implements BossActionable {
         Point middlePoint = new Point(DataClass.getInstance().getWindowWidth() / 2,
                 DataClass.getInstance().getWindowHeight() / 2);
         Point lowerPoint = new Point(DataClass.getInstance().getWindowWidth() / 2,
-                DataClass.getInstance().getWindowHeight() * 0.7948);
+                DataClass.getInstance().getPlayableWindowMaxHeight() * 0.84);
 
         reflectiveMissilesSpawnPoints.add(upperPoint);
         reflectiveMissilesSpawnPoints.add(middlePoint);
@@ -193,7 +193,7 @@ public class YellowBossSpawnReflectingBarrier implements BossActionable {
                 missileType.getImageType(), 0.8f * DataClass.getInstance().getResolutionFactor());
 
 
-        int movementSpeed = 1;
+        float movementSpeed = 1.65f;
         //Create missile movement attributes and create a movement configuration
         PathFinder missilePathFinder = new RegularPathFinder();
         MovementPatternSize movementPatternSize = MovementPatternSize.SMALL;
@@ -207,8 +207,8 @@ public class YellowBossSpawnReflectingBarrier implements BossActionable {
         int maxShields = 100;
         AudioEnums deathSound = null;
         boolean allowedToDealDamage = true;
-        String objectType = "Boss Burst Missile";
-        float damage = enemy.getDamage() * 0.5f;
+        String objectType = "Reflective barrier";
+        float damage = enemy.getDamage() * 0.4f;
 
         MissileConfiguration missileConfiguration = MissileCreator.getInstance().createMissileConfiguration(missileType, maxHitPoints, maxShields,
                 deathSound, damage, missileType.getDeathOrExplosionImageEnum(), isFriendly, allowedToDealDamage, objectType,
@@ -218,7 +218,7 @@ public class YellowBossSpawnReflectingBarrier implements BossActionable {
         //Create the missile and finalize the creation process, then add it to the manager and consequently the game
         Missile missile = MissileCreator.getInstance().createMissile(spriteConfiguration, missileConfiguration, movementConfiguration);
         missile.resetMovementPath();
-        missile.setCenterCoordinates(enemy.getXCoordinate(), spawnLocation.getY());
+        missile.setCenterCoordinates(DataClass.getInstance().getWindowWidth() - 50, spawnLocation.getY());
         missile.resetMovementPath();
         missile.setDamageable(true);
         missile.setDestructable(false);

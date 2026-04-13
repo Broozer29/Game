@@ -50,11 +50,10 @@ public class GenericMissile extends Missile {
 			stepsTaken++;
 
 			if(stepsTaken % moduloDivider == 0){
-				this.movementConfiguration.setXMovementSpeed(this.getMovementConfiguration().getXMovementSpeed() * 1.2f);
-				this.movementConfiguration.setYMovementSpeed(this.getMovementConfiguration().getYMovementSpeed() * 1.2f);
+				this.movementConfiguration.setXMovementSpeed(this.getMovementConfiguration().getXMovementSpeed() * speedUpIncreaseAmount);
+				this.movementConfiguration.setYMovementSpeed(this.getMovementConfiguration().getYMovementSpeed() * speedUpIncreaseAmount);
 				moduloDivider = Math.round(moduloDivider * 1.5f);
 			}
 		}
 	}
-
 }

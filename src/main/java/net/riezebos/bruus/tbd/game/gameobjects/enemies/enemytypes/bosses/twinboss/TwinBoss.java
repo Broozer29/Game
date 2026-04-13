@@ -1,6 +1,5 @@
 package net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.twinboss;
 
-import net.riezebos.bruus.tbd.game.UI.GameUICreator;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.Enemy;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyConfiguration;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyManager;
@@ -19,7 +18,6 @@ import net.riezebos.bruus.tbd.game.playerprofile.PlayerProfileManager;
 import net.riezebos.bruus.tbd.game.util.ArmorCalculator;
 import net.riezebos.bruus.tbd.game.util.WithinVisualBoundariesCalculator;
 import net.riezebos.bruus.tbd.guiboards.BoardManager;
-import net.riezebos.bruus.tbd.guiboards.guicomponents.GUIComponent;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.AudioManager;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.AnimationManager;
@@ -108,13 +106,13 @@ public class TwinBoss extends Enemy {
     public void triggerOnDeathActions() {
         if(!TwinBossManager.isHasGrantedKillRewards()) {
             GameStatsTracker.getInstance().addEnemyKilled(1);
-            PlayerProfileManager.getInstance().getLoadedProfile().addEmeralds(1);
             PlayerProfileManager.getInstance().exportCurrentProfile();
-            GUIComponent emeraldIcon = GameUICreator.getInstance().createEmeraldObtainedIcon(this.getCenterXCoordinate(), this.getCenterYCoordinate());
-            BoardManager.getInstance().getGameBoard().addGUIAnimation(emeraldIcon);
-
+            GameState.getInstance().increaseBossDefeated();
             TwinBossManager.setHasGrantedKillRewards(true);
+            BoardManager.getInstance().getGameBoard().showRelicSelection();
         }
+
+
     }
 
     @Override

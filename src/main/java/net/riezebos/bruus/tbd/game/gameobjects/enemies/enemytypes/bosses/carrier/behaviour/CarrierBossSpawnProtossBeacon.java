@@ -102,6 +102,9 @@ public class CarrierBossSpawnProtossBeacon implements BossActionable {
         enemyProtossBeacon.setCenterCoordinates(spawnAnimation.getCenterXCoordinate(), spawnAnimation.getCenterYCoordinate());
         enemyProtossBeacon.setAllowedVisualsToRotate(false); //dont want to rotate this visual
         enemyProtossBeacon.setAllowedToFire(false); //it doesnt have an attack
+        enemyProtossBeacon.getMovementConfiguration().setXMovementSpeed(
+                enemyProtossBeacon.getMovementConfiguration().getXMovementSpeed() * 1 + (Math.min(LevelManager.getInstance().getBossDifficultyLevel() * 0.1f, 0.45f)) //max 45% move speed, cant have it moving too fast
+        );
         setBeaconDestination(enemyProtossBeacon);
         this.beacon = enemyProtossBeacon;
         return enemyProtossBeacon;

@@ -4,6 +4,7 @@ import net.riezebos.bruus.tbd.game.gameobjects.enemies.Enemy;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyCreator;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyManager;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.BossActionable;
+import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.protoss.EnemyProtossScout;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyEnums;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.level.LevelManager;
@@ -18,7 +19,7 @@ import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.Sprit
 public class CarrierBossSpawnProtossScout implements BossActionable {
 
     private double lastSpawnedTime = 0;
-    private double spawnCooldown = Math.max(6 - LevelManager.getInstance().getBossDifficultyLevel(), 3);
+    private double spawnCooldown = Math.max(6 - LevelManager.getInstance().getBossDifficultyLevel() * 0.5f, 3);
     private int priority = 10;
 
     private SpriteAnimation spawnAnimation;
@@ -74,11 +75,12 @@ public class CarrierBossSpawnProtossScout implements BossActionable {
 
     private Enemy createProtossScout(Enemy enemy){
         EnemyEnums enemyEnums = EnemyEnums.EnemyProtossScout;
-        Enemy enemyProtossScout = EnemyCreator.createEnemy(enemyEnums, enemy.getXCoordinate(), enemy.getYCoordinate(), Direction.LEFT,
+        EnemyProtossScout enemyProtossScout = (EnemyProtossScout) EnemyCreator.createEnemy(enemyEnums, enemy.getXCoordinate(), enemy.getYCoordinate(), Direction.LEFT,
                 enemyEnums.getDefaultScale(), enemyEnums.getMovementSpeed());
 
         //Scout should immediatly change its move config upon spawning, so its responsible itself for surrounding the carrier
         enemyProtossScout.setOwnerOrCreator(enemy);
+        enemyProtossScout.setMaxDistanceFromCarrier(Math.min(350 + LevelManager.getInstance().getBossDifficultyLevel() * 10, 475));
         return enemyProtossScout;
     }
 

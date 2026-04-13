@@ -24,7 +24,7 @@ import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteAnimation;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteAnimationConfiguration;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteConfiguration;
 
-public class SpaceShipSpecialGun {
+public class SecondaryPlayerGun {
     private PlayerStats playerStats = PlayerStats.getInstance();
 
     private int specialAttackCharges;
@@ -32,7 +32,7 @@ public class SpaceShipSpecialGun {
     private double lastSecondsSpecialAttackChargeGained = 0.0;
     private double secondsUntilNextSpecialAttackCharge = 0.0;
 
-    public SpaceShipSpecialGun() {
+    public SecondaryPlayerGun() {
         specialAttackCharges = 1;
     }
 
@@ -137,7 +137,10 @@ public class SpaceShipSpecialGun {
         specialAttack.setCenteredAroundObject(true);
         specialAttack.setScale(scale);
         specialAttack.setOwnerOrCreator(owner);
-        specialAttack.setTransparancyAlpha(false, 0.5f, 0);
+
+        if (PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.AnionInverter) != null) {
+            specialAttack.setTransparancyAlpha(false, 0.5f, 0);
+        }
         AudioManager.getInstance().addAudio(AudioEnums.Default_EMP);
         owner.addFollowingSpecialAttack(specialAttack);
         MissileManager.getInstance().addSpecialAttack(specialAttack);

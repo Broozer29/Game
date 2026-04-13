@@ -168,6 +168,10 @@ public class GameState {
         this.bossesDefeated = bossesDefeated;
     }
 
+    public void increaseBossDefeated(){
+        this.bossesDefeated++;
+    }
+
 
     public void setGameSeconds(double gameSeconds) {
         this.gameSeconds = gameSeconds;

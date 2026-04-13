@@ -29,7 +29,7 @@ public class BlueBossFactoryDefender extends Enemy {
         this.setAllowedVisualsToRotate(true);
         this.attackSpeed = 0.65f;
         this.knockbackStrength = 9;
-        this.lastTimeTargetSearched = GameState.getInstance().getGameSeconds();
+        target = PlayerManager.getInstance().getClosestSpaceShip(this);
     }
 
 
@@ -38,33 +38,35 @@ public class BlueBossFactoryDefender extends Enemy {
     @Override
     public void fireAction() {
         this.setAllowedVisualsToRotate(true);
-        this.rotateGameObjectTowards(target.getCenterXCoordinate(), target.getCenterYCoordinate(), false);
         double currentTime = GameState.getInstance().getGameSeconds();
 
-        if(currentTime >= lastTimeTargetSearched + 0.5){ //elke 0.5 seconden kan hij retargeten vanwege performance redenen
+        if (currentTime >= lastTimeTargetSearched + 0.5) { //elke 0.5 seconden kan hij retargeten vanwege performance redenen
             target = PlayerManager.getInstance().getClosestSpaceShip(this);
             lastTimeTargetSearched = GameState.getInstance().getGameSeconds();
         }
+        if (target != null) {
+            this.rotateGameObjectTowards(target.getCenterXCoordinate(), target.getCenterYCoordinate(), false);
+        }
 
-        if(this.ownerOrCreator != null && this.ownerOrCreator.getCurrentHitpoints() <= 0 || !this.ownerOrCreator.isVisible()){
+        if (this.ownerOrCreator != null && this.ownerOrCreator.getCurrentHitpoints() <= 0 || !this.ownerOrCreator.isVisible()) {
             this.takeDamage(this.getMaxHitPoints() * 100);
         }
 
         super.updateChargingAttackAnimationCoordination();
-        if (currentTime >= lastAttackTime + this.getAttackSpeed() && !isTooFarAway()) {
+        if (currentTime >= lastAttackTime + this.getAttackSpeed() && !isTooFarAway() && target != null && target.isVisible()) {
             shootMissile();
             lastAttackTime = currentTime;
         }
     }
 
     @Override
-    public boolean isShowHealthBar(){
+    public boolean isShowHealthBar() {
         return false;
     }
 
     private boolean isTooFarAway() {
         int attackRangeToCheck = attackRange;
-        if(wasFiringAtTarget){
+        if (wasFiringAtTarget) {
             attackRangeToCheck += 25; //voorkomt het constant roteren van locking/losing lock
         }
 

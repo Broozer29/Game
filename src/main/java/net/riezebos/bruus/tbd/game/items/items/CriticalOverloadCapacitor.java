@@ -7,7 +7,7 @@ import net.riezebos.bruus.tbd.game.items.ItemEnums;
 import net.riezebos.bruus.tbd.game.items.enums.ItemApplicationEnum;
 
 public class CriticalOverloadCapacitor extends Item {
-    public static float damageMultiplier = 1;
+    public static float damageMultiplier = 0.5f;
 
     public CriticalOverloadCapacitor () {
         super(ItemEnums.CriticalOverloadCapacitor, 1, ItemApplicationEnum.ApplyOnCreation);

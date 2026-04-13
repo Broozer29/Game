@@ -5,6 +5,7 @@ import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyCreator;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyManager;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.BossActionable;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyEnums;
+import net.riezebos.bruus.tbd.game.level.LevelManager;
 import net.riezebos.bruus.tbd.game.movement.Direction;
 import net.riezebos.bruus.tbd.game.util.WithinVisualBoundariesCalculator;
 import net.riezebos.bruus.tbd.visualsandaudio.data.DataClass;
@@ -22,6 +23,10 @@ import java.util.Set;
 public class StrikerBossCallingInTheTroops implements BossActionable {
     private static float healthActivationInterval = 0.2f;
     private Set<Float> activatedThresholds = new HashSet<>();
+
+    public StrikerBossCallingInTheTroops() {
+        healthActivationInterval = Math.max(0.2f - (LevelManager.getInstance().getBossDifficultyLevel() * 0.025f) , 0.1f); //elke boss kill, 2,5% HP interval reduced. Capped bij 4 bazen met elke 10%
+    }
 
     @Override
     public boolean activateBehaviour(Enemy enemy) {

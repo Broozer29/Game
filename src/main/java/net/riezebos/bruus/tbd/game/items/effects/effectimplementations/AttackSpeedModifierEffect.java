@@ -5,6 +5,7 @@ import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.items.effects.EffectActivationTypes;
 import net.riezebos.bruus.tbd.game.items.effects.EffectIdentifiers;
 import net.riezebos.bruus.tbd.game.items.effects.EffectInterface;
+import net.riezebos.bruus.tbd.visualsandaudio.objects.AnimationManager;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteAnimation;
 
 import java.util.ArrayList;
@@ -29,7 +30,7 @@ public class AttackSpeedModifierEffect implements EffectInterface {
         if(animation != null) {
             this.animationList.add(animation);
         }
-        this.startTimeInSeconds = GameState.getInstance().getGameSeconds();
+        this.startTimeInSeconds = GameState.getInstance().getGameSeconds(); //default safety net but should be overwritten by activateEffect
         this.effectTypesEnums = EffectActivationTypes.CheckEveryGameTick;
         this.appliedToObject = false;
         this.effectIdentifier = effectIdentifier;
@@ -42,9 +43,11 @@ public class AttackSpeedModifierEffect implements EffectInterface {
             float percentageChange = attackSpeedModifierAmount * 100;
             gameObject.modifyAttackSpeedBonus(percentageChange);
             appliedToObject = true;
+            this.startTimeInSeconds = GameState.getInstance().getGameSeconds();
         }
 
         if (!this.animationList.isEmpty() && this.animationList.get(0) != null) {
+            AnimationManager.getInstance().addUpperAnimation(this.animationList.get(0));
             centerAnimation(gameObject);
         }
     }

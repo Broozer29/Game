@@ -122,8 +122,8 @@ public class ShopBoard extends JPanel implements TimerHolder {
         setFocusable(true);
         showInventory = false;
         shopBoardCreator = new ShopBoardCreator();
-        if (controllers.getFirstController() != null) {
-            controllerInputReader = controllers.getFirstController();
+        if (controllers.getPrimaryController() != null) {
+            controllerInputReader = controllers.getPrimaryController();
         }
 
         timer = new Timer(GameState.getInstance().getDELAY(), e -> repaint(0, 0, DataClass.getInstance().getWindowWidth(), DataClass.getInstance().getWindowHeight() + 5));
@@ -669,7 +669,7 @@ public class ShopBoard extends JPanel implements TimerHolder {
     private static final long MOVE_COOLDOWN = 300; // milliseconds
 
     public void executeControllerInput() {
-        if (controllers.getFirstController() != null) {
+        if (controllers.getPrimaryController() != null) {
             boolean needsUpdate = false;
             controllerInputReader.pollController();
             long currentTime = System.currentTimeMillis();

@@ -9,6 +9,7 @@ import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.droneTypes.prot
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.*;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
+import net.riezebos.bruus.tbd.game.level.LevelManager;
 import net.riezebos.bruus.tbd.game.movement.Direction;
 import net.riezebos.bruus.tbd.game.movement.MovementConfiguration;
 import net.riezebos.bruus.tbd.game.movement.MovementPatternSize;
@@ -76,22 +77,22 @@ public class EnemyProtossShuttle extends Enemy {
 
     }
 
+    private int minDistanceFromCarrier = 80;
+    private int maxDistanceFromCarrier = 350;
     private void updateMovementPath() {
         this.movementConfiguration.resetMovementPath();
         this.movementConfiguration.setCurrentLocation(new Point(this.getXCoordinate(), this.getYCoordinate()));
         this.setAllowedVisualsToRotate(true);
 
         GameObject target = this.ownerOrCreator;
-        int minDistance = 80;
-        int maxDistance = 350;
 
         if(!EnemyManager.getInstance().getEnemiesByType(EnemyEnums.EnemyCarrierBeacon).isEmpty()){
             target = EnemyManager.getInstance().getEnemiesByType(EnemyEnums.EnemyCarrierBeacon).get(0);
-            minDistance = 20;
-            maxDistance = 150;
+            minDistanceFromCarrier = 20;
+            maxDistanceFromCarrier = 250 + Math.min((LevelManager.getInstance().getBossDifficultyLevel() * 10), 50);
         }
 
-        this.movementConfiguration.setDestination(ProtossUtils.getRandomPoint(target, minDistance, maxDistance));
+        this.movementConfiguration.setDestination(ProtossUtils.getRandomPoint(target, minDistanceFromCarrier, maxDistanceFromCarrier));
     }
 
     private void rotateObjectTowardsDestination() {
@@ -173,5 +174,9 @@ public class EnemyProtossShuttle extends Enemy {
         missile.setAllowedVisualsToRotate(false); //Prevent it from being rotated again by the SpriteMover
         missile.setOwnerOrCreator(this);
         MissileManager.getInstance().addExistingMissile(missile);
+    }
+
+    public void setMaxDistanceFromCarrier(int min) {
+
     }
 }

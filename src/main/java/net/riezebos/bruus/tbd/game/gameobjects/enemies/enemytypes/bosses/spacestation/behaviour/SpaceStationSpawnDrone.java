@@ -17,6 +17,8 @@ import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteAnimation;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteAnimationConfiguration;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteConfiguration;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 public class SpaceStationSpawnDrone implements BossActionable {
@@ -34,8 +36,6 @@ public class SpaceStationSpawnDrone implements BossActionable {
             initSpawnAnimation(enemy);
         }
 
-        updateSpawnCooldown(enemy);
-
         if (enemy.isAllowedToFire() && currentTime >= lastSpawnedTime + spawnCooldown && WithinVisualBoundariesCalculator.isWithinBoundaries(enemy)) {
             updateSpawnAnimationLocation(enemy);
 
@@ -47,26 +47,21 @@ public class SpaceStationSpawnDrone implements BossActionable {
 
 
             if(spawnAnimation.isPlaying() && spawnAnimation.getCurrentFrame() == 4) {
-                for(int i = 0; i < LevelManager.getInstance().getBossDifficultyLevel() + 1; i++) {
+                for(int i = 0; i < Math.min(LevelManager.getInstance().getBossDifficultyLevel() + 1, 6); i++) {
                     Enemy pulsingDrone = createPulsingDrone(enemy);
                     pulsingDrone.setCenterCoordinates(spawnAnimation.getCenterXCoordinate(), spawnAnimation.getCenterYCoordinate());
                     EnemyManager.getInstance().addEnemy(pulsingDrone);
                 }
                 lastSpawnedTime = currentTime;
                 enemy.setAttacking(false);
+                usedBoardBlocks.clear();
+                loopBreaker = 0;
                 return true; //We finished
             }
 
             return false; //we not finished yet
         }
         return true; //We dont have anything to do at this point
-    }
-
-
-    private void updateSpawnCooldown(Enemy enemy) {
-        if(enemy.getCurrentHitpoints() <= (enemy.getMaxHitPoints() * 0.5f)){
-            spawnCooldown = 14;
-        }
     }
 
     private void initSpawnAnimation (Enemy enemy) {
@@ -86,6 +81,10 @@ public class SpaceStationSpawnDrone implements BossActionable {
         spawnAnimation.setCenterCoordinates(enemy.getCenterXCoordinate(), enemy.getCenterYCoordinate());
     }
 
+
+    private List<Integer> usedBoardBlocks = new ArrayList<>();
+    private int loopBreaker = 0;
+    //try and get different boardblocks for each spawn to prevent drones overlapping on top of each other
     private int getRandomBoardBlock() {
         if (random == null) {
             random = new Random();
@@ -93,10 +92,15 @@ public class SpaceStationSpawnDrone implements BossActionable {
 
         int value = random.nextInt(1, 8);
 
-        if (value >= 4 && value <= 5) {
+        if ((value >= 4 && value <= 5) || usedBoardBlocks.contains(value)) {
+            loopBreaker++;
+            if(loopBreaker >= 10){
+                usedBoardBlocks.clear();
+            }
             return getRandomBoardBlock();
         }
 
+        usedBoardBlocks.add(value);
         return value;
     }
 

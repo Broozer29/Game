@@ -18,6 +18,8 @@ import java.util.List;
 
 public class Missile extends GameObject {
 
+    public static final int maxEnemyMissileMoveSpeedAllowed = 12;
+
     protected List<GameObject> collidedObjects;
     protected MissileEnums missileEnum;
     protected boolean isExplosive;
@@ -29,6 +31,7 @@ public class Missile extends GameObject {
     protected boolean isDestructable;
     protected boolean speedsUp;
     protected boolean isDamageable;
+    protected float speedUpIncreaseAmount = 1.2f;
 
 
     public Missile (SpriteConfiguration spriteConfiguration, MissileConfiguration missileConfiguration, MovementConfiguration movementConfiguration) {
@@ -75,6 +78,9 @@ public class Missile extends GameObject {
 
     }
 
+    public void setSpeedUpIncreaseAmount(float speedUpIncreaseAmount) {
+        this.speedUpIncreaseAmount = speedUpIncreaseAmount;
+    }
 
     public SpriteAnimation getAnimation () {
         if (this.animation != null) {

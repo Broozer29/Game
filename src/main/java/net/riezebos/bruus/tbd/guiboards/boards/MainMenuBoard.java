@@ -72,9 +72,9 @@ public class MainMenuBoard extends JPanel implements TimerHolder {
         setBackground(Color.BLACK);
         setPreferredSize(new Dimension(boardWidth, boardHeight));
 
-        if (controllers.getFirstController() != null) {
+        if (controllers.getPrimaryController() != null) {
             controllersConnected = controllers.getControllerInputReaders().size();
-            controllerInputReader = controllers.getFirstController();
+            controllerInputReader = controllers.getPrimaryController();
         }
 
         initMenuTiles();
@@ -340,7 +340,8 @@ public class MainMenuBoard extends JPanel implements TimerHolder {
     private static final long MOVE_COOLDOWN = 350; // milliseconds
 
     public void executeControllerInput() {
-        if (controllers.getFirstController() != null) {
+
+        if (controllers.getPrimaryController() != null) {
             boolean needsUpdate = false;
             controllerInputReader.pollController();
             long currentTime = System.currentTimeMillis();

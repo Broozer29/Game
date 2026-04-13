@@ -28,7 +28,7 @@ public class YellowBossSpawnShurikens implements BossActionable {
     private int spawnCooldown = 30;
     private Random random;
     private double lastSpawnedTime;
-    private int maxShurikens = 9 + (LevelManager.getInstance().getBossDifficultyLevel() * 4); // spawns in groups of 4
+    private int maxShurikens = 8 + (LevelManager.getInstance().getBossDifficultyLevel() * 4); // spawns in groups of 4
     private float moveSpeedModifier = 0.75f;
     private List<Point> spawnPoints = new ArrayList<>();
     private List<SpriteAnimation> spawnAnimations = new ArrayList<>();
@@ -139,6 +139,6 @@ public class YellowBossSpawnShurikens implements BossActionable {
         return enemy.isAllowedToFire()
                 && GameState.getInstance().getGameSeconds() >= lastSpawnedTime + spawnCooldown
                 && WithinVisualBoundariesCalculator.isWithinBoundaries(enemy)
-                && EnemyManager.getInstance().getEnemiesByType(EnemyEnums.Shuriken).size() < maxShurikens;
+                && (EnemyManager.getInstance().getEnemiesByType(EnemyEnums.Shuriken).size() + 4) <= maxShurikens; //+4 om te checken of er ruimte is om nog 4 shurikens te spawnen
     }
 }

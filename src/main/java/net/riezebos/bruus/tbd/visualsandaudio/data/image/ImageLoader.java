@@ -291,6 +291,8 @@ public class ImageLoader {
                 return "/images/Letters/Letter-Y.png";
             case Letter_Z:
                 return "/images/Letters/Letter-Z.png";
+            case Electroshedding:
+                return "/images/Icons/electroshedding.png";
             case Letter_a:
                 return "/images/Letters/Letter-LowercaseA.png";
             case Letter_b:
@@ -439,6 +441,8 @@ public class ImageLoader {
                 return "/images/Icons/Starcraft2 Armor Piercing.png";
             case MoneyPrinter:
                 return "/images/Icons/moneyprinter.png";
+            case PuncturingPierces:
+                return "/images/Icons/puncturingpierces.png";
             case StickyDynamite:
                 return "/images/Icons/stickydynamite.png";
             case Star_Blue1:
@@ -753,6 +757,8 @@ public class ImageLoader {
                 return "/images/Icons/Barbed Missiles.png";
             case ScoutItem:
                 return "/images/Icons/scoutitem.png";
+            case AnionInverter:
+                return "/images/Icons/anioninverter.png";
             case ArbiterItem:
                 return "/images/Icons/arbiteritem.png";
             case ShuttleItem:

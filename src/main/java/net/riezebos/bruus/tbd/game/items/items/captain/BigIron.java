@@ -9,7 +9,7 @@ import net.riezebos.bruus.tbd.game.items.PlayerInventory;
 import net.riezebos.bruus.tbd.game.items.enums.ItemApplicationEnum;
 
 public class BigIron extends Item {
-    public static float maxChargeSeconds = 4;
+    public static float maxChargeSeconds = 3;
     public static float amountOfIntervals = 8f;
     public static float interval = 4f / amountOfIntervals;
     public static float damagePerInterval = 0.75f;

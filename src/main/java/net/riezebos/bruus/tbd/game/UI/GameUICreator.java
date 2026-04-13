@@ -111,7 +111,7 @@ public class GameUICreator {
 
     private ShopItem createUniqueRelicShopItem(DisplayOnly backgroundCard, float cardScale, int relicDimensions, List<ItemEnums> alreadySelectedRelics) {
         int xCoordinate = backgroundCard.getCenterXCoordinate();
-        int yCoordinate = Math.round(backgroundCard.getYCoordinate() + backgroundCard.getHeight() * 0.45f);
+        int yCoordinate = Math.round(backgroundCard.getYCoordinate() + backgroundCard.getHeight() * 0.4f);
         SpriteConfiguration config = new SpriteConfiguration(xCoordinate, yCoordinate, cardScale, ImageEnums.GlassCannon);
 
         ShopItem shopItem = new ShopItem(config, ItemRarityEnums.Relic);

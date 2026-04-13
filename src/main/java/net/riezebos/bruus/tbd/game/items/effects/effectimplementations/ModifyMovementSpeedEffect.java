@@ -6,6 +6,7 @@ import net.riezebos.bruus.tbd.game.items.effects.EffectActivationTypes;
 import net.riezebos.bruus.tbd.game.items.effects.EffectIdentifiers;
 import net.riezebos.bruus.tbd.game.items.effects.EffectInterface;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
+import net.riezebos.bruus.tbd.visualsandaudio.objects.AnimationManager;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteAnimation;
 
 import java.util.ArrayList;
@@ -50,6 +51,7 @@ public class ModifyMovementSpeedEffect implements EffectInterface {
         }
 
         if (!this.animationList.isEmpty() && this.animationList.get(0) != null) {
+            AnimationManager.getInstance().addUpperAnimation(this.animationList.get(0));
             centerAnimation(gameObject);
         }
     }

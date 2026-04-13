@@ -23,11 +23,11 @@ public class RedBossCrossingLaserbeamsAttack implements BossActionable {
     private double attackCooldown = 30;
     private int priority = 10;
 
-    public static int lowerLaserbeamLowestAngle = 135;
-    public static int lowerLaserbeamHighestAngle = 225;
-    public static int upperLaserbeamLowestAngle = 135;
-    public static int upperLaserbeamHighestAngle = 225;
-    public static float angleStepSize = 0.3f;
+    public int lowerLaserbeamLowestAngle = 135;
+    public int lowerLaserbeamHighestAngle = 225;
+    public int upperLaserbeamLowestAngle = 135;
+    public int upperLaserbeamHighestAngle = 225;
+    public float angleStepSize = 0.3f;
 
     private Point upperLaserbeamOriginPoint;
     private Point lowerLaserbeamOriginPoint;
@@ -45,19 +45,18 @@ public class RedBossCrossingLaserbeamsAttack implements BossActionable {
         setAngles();
     }
 
-    //These variables are static now, meaning that this method will NOT play nice if there are 2 or more enemies with this behaviour at the same time
     private void setAngles () {
         if (inwards) {
             lowerLaserbeamHighestAngle = 185;
             upperLaserbeamLowestAngle = 175;
-            angleStepSize = 0.25f + (LevelManager.getInstance().getBossDifficultyLevel() * 0.05f);
+            angleStepSize = Math.min(0.25f + (LevelManager.getInstance().getBossDifficultyLevel() * 0.05f), 0.5f);
         } else {
             lowerLaserbeamLowestAngle = 160;  // Start closer to the center
             lowerLaserbeamHighestAngle = 190; // Diverging outward
 
             upperLaserbeamLowestAngle = 170;  // Start closer to the center
             upperLaserbeamHighestAngle = 200; // Diverging outward
-            angleStepSize = 0.25f + (LevelManager.getInstance().getBossDifficultyLevel() * 0.05f);
+            angleStepSize = Math.min(0.25f + (LevelManager.getInstance().getBossDifficultyLevel() * 0.05f), 0.5f);
         }
     }
 

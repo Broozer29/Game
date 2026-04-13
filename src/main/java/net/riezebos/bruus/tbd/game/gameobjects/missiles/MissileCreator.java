@@ -44,6 +44,8 @@ public class MissileCreator {
         MovementConfiguration movementConfiguration = new MovementConfiguration();
         movementConfiguration.setXMovementSpeed(xSpeed);
         movementConfiguration.setYMovementSpeed(ySpeed);
+        movementConfiguration.setOriginalXMovementSpeed(xSpeed);
+        movementConfiguration.setOriginalYMovementSpeed(ySpeed);
         movementConfiguration.setPathFinder(pathFinder);
         movementConfiguration.setPatternSize(movementPatternSize);
         movementConfiguration.setDirection(rotation);
@@ -82,6 +84,9 @@ public class MissileCreator {
             }
             case ReflectiveBlocks -> {
                 return new ReflectiveBlocks(upgradeConfig(spriteConfiguration, 2), missileConfiguration, movementConfiguration);
+            }
+            case YellowBossOrb -> {
+                return new YellowBossOrb(upgradeConfig(spriteConfiguration, 0), missileConfiguration, movementConfiguration);
             }
         }
         return null;

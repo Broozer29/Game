@@ -40,11 +40,15 @@ public class AnimationManager {
 	}
 
 	public void addUpperAnimation(SpriteAnimation animation) {
-		this.upperAnimationList.add(animation);
+        if(!upperAnimationList.contains(animation)){
+            this.upperAnimationList.add(animation);
+        }
 	}
 
 	public void addLowerAnimation(SpriteAnimation animation) {
-		this.lowerAnimationList.add(animation);
+        if(!lowerAnimationList.contains(animation)){
+            this.lowerAnimationList.add(animation);
+        }
 	}
 
 	public SpriteAnimation createAnimation(int xCoordinate, int yCoordinate, ImageEnums animationType,

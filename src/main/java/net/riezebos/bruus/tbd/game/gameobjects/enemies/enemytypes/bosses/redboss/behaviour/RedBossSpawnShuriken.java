@@ -20,7 +20,8 @@ import java.util.Random;
 
 public class RedBossSpawnShuriken implements BossActionable {
     private double lastSpawnedTime = 0;
-    private double spawnCooldown = 14;
+    private double spawnCooldown = 0;
+    private double defaultSpawnTime = 8;
     private Random random;
     private int priority = 2;
 
@@ -32,6 +33,8 @@ public class RedBossSpawnShuriken implements BossActionable {
         if (spawnAnimation == null) {
             initSpawnAnimation(enemy);
         }
+
+        spawnCooldown = defaultSpawnTime + EnemyManager.getInstance().getEnemiesByType(EnemyEnums.Shuriken).size();
 
         if (enemy.isAllowedToFire() && currentTime >= lastSpawnedTime + spawnCooldown && WithinVisualBoundariesCalculator.isWithinBoundaries(enemy)) {
             updateSpawnAnimationLocation(enemy);
@@ -87,6 +90,9 @@ public class RedBossSpawnShuriken implements BossActionable {
 
         BouncingPathFinder pathFinder = new BouncingPathFinder();
         pathFinder.setMaxBounces(15);
+
+        shuriken.setMaxHitPoints(shuriken.getMaxHitPoints() * (1 + (LevelManager.getInstance().getBossDifficultyLevel() * 0.15f))); //15% hitpoints per boss killed
+        shuriken.setCurrentHitpoints(shuriken.getMaxHitPoints());
         shuriken.getMovementConfiguration().setPathFinder(new BouncingPathFinder());
         shuriken.setOwnerOrCreator(enemy);
         return shuriken;
@@ -117,6 +123,7 @@ public class RedBossSpawnShuriken implements BossActionable {
     @Override
     public boolean isAvailable(Enemy enemy) {
         return enemy.isAllowedToFire()
+                && EnemyManager.getInstance().getEnemiesByType(EnemyEnums.Shuriken).size() < 8 //maximum of 8 shurikens at once
                 && GameState.getInstance().getGameSeconds() >= lastSpawnedTime + spawnCooldown
                 && WithinVisualBoundariesCalculator.isWithinBoundaries(enemy);
     }

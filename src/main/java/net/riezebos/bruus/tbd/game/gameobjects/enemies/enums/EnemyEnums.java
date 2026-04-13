@@ -64,8 +64,8 @@ public enum EnemyEnums {
 
     FourDirectionalDrone(175, 0, true,
             AudioEnums.Alien_Spaceship_Destroyed, "Four Directional Drone",
-            ImageEnums.FourDirectionalDrone, ImageEnums.Explosion2, 0, EnemyCategory.Summon, EnemyTribes.Pirates, 10,
-            0, 0, 0, 1.5f, 0.4f, 170, 170,
+            ImageEnums.FourDirectionalDrone, ImageEnums.Explosion2, 0, EnemyCategory.Summon, EnemyTribes.Pirates, 20,
+            0, 0, 0, 1.85f, 0.4f, 170, 170,
             0),
     EnemyProtossScout(150, 0, true,
             AudioEnums.ProtossShipDeath, "Enemy Protoss Scout",
@@ -90,32 +90,12 @@ public enum EnemyEnums {
             0, 0, 0, 1, 0.6f, 100, 100,
             0),
 
-    RedBoss(4000, 0, true,
-            AudioEnums.Alien_Spaceship_Destroyed, "Red Boss",
-            ImageEnums.RedBoss, ImageEnums.BossExplosion, 0, EnemyCategory.Boss, EnemyTribes.Pirates, 20,
-            850, 500, 0, 1.25f, 1, 861, 641,
-            0),
 
-    SpaceStationBoss(4850, 0, true,
-            AudioEnums.Alien_Spaceship_Destroyed, "Space Station Boss",
-            ImageEnums.SpaceStationBoss, ImageEnums.BossExplosion, 0, EnemyCategory.Boss, EnemyTribes.Pirates, 20,
-            950, 500, 0, 1.75f, 1, 850, 850,
-            0),
-    CarrierBoss(5100, 0, true,
-            AudioEnums.Alien_Spaceship_Destroyed, "Carrier Boss",
-            ImageEnums.CarrierBoss, ImageEnums.BossExplosion, 0, EnemyCategory.Boss, EnemyTribes.Pirates, 20,
-            1050, 500, 0, 1.25f, 0.75f, 465, 252,
-            0),
-    YellowBoss(5550, 0, true,
-            AudioEnums.Alien_Spaceship_Destroyed, "Yellow Boss",
-            ImageEnums.YellowBoss, ImageEnums.BossExplosion, 0, EnemyCategory.Boss, EnemyTribes.Pirates, 20,
-            1150, 500, 0, 1.25f, 0.75f, 843, 800,
-            0),
 
-    Shuriken(85, 0, false,
+    Shuriken(125, 0, false,
             AudioEnums.Alien_Spaceship_Destroyed, "Shuriken",
             ImageEnums.ShurikenEnemy, ImageEnums.Explosion2, 0, EnemyCategory.Summon, EnemyTribes.Pirates, 10,
-            0, 0, 0, 2.5f, 0.25f, 300, 300,
+            0, 0, 0, 2f, 0.25f, 300, 300,
             0),
 
     PulsingDrone(225, 0, true,
@@ -178,12 +158,6 @@ public enum EnemyEnums {
             0,0, 0, 1.5f, 0.35f, 269, 125,
             0),
 
-    StrikerBoss(4750, 0, true,
-            AudioEnums.Alien_Spaceship_Destroyed, "Striker Boss",
-            ImageEnums.StrikerBoss, ImageEnums.BossExplosion, 0, EnemyCategory.Boss, EnemyTribes.Pirates, 20,
-            1150, 500, 0, 1.3f, 1, 445, 346,
-            0),
-
     StrikerBossLaserbeamClone(250, 0, true,
             AudioEnums.Alien_Spaceship_Destroyed, "StrikerBoss Laserbeam Clone",
             ImageEnums.StrikerBoss, ImageEnums.BossExplosion, 0, EnemyCategory.Summon, EnemyTribes.Pirates, 0,
@@ -196,17 +170,45 @@ public enum EnemyEnums {
             0,0, 0, 1, 1f, 118, 66,
             0),
 
+    RedBoss(4000, 0, true,
+            AudioEnums.Alien_Spaceship_Destroyed, "Red Boss",
+            ImageEnums.RedBoss, ImageEnums.BossExplosion, 0, EnemyCategory.Boss, EnemyTribes.Pirates, 20,
+            850, 500, 0, 1.25f, 1, 861, 641,
+            0),
+
+    SpaceStationBoss(4850, 0, true,
+            AudioEnums.Alien_Spaceship_Destroyed, "Space Station Boss",
+            ImageEnums.SpaceStationBoss, ImageEnums.BossExplosion, 0, EnemyCategory.Boss, EnemyTribes.Pirates, 20,
+            950, 500, 0, 1.75f, 1, 850, 850,
+            0),
+    CarrierBoss(5100, 0, true,
+            AudioEnums.Alien_Spaceship_Destroyed, "Carrier Boss",
+            ImageEnums.CarrierBoss, ImageEnums.BossExplosion, 0, EnemyCategory.Boss, EnemyTribes.Pirates, 20,
+            1050, 500, 0, 1.25f, 0.75f, 465, 252,
+            1),
+    YellowBoss(5550, 0, true,
+            AudioEnums.Alien_Spaceship_Destroyed, "Yellow Boss",
+            ImageEnums.YellowBoss, ImageEnums.BossExplosion, 0, EnemyCategory.Boss, EnemyTribes.Pirates, 20,
+            1150, 500, 0, 1.25f, 0.75f, 843, 800,
+            2),
+
     TwinBoss(6000, 0, true,
             AudioEnums.Alien_Spaceship_Destroyed, "Striker Boss",
             ImageEnums.TwinBoss, ImageEnums.BossExplosion, 0, EnemyCategory.Boss, EnemyTribes.Pirates, 20,
             1150, 500, 0, 2, 0.5f, 386, 285,
-            0),
+            3),
+
+    StrikerBoss(4750, 0, true,
+            AudioEnums.Alien_Spaceship_Destroyed, "Striker Boss",
+            ImageEnums.StrikerBoss, ImageEnums.BossExplosion, 0, EnemyCategory.Boss, EnemyTribes.Pirates, 20,
+            1150, 500, 0, 1.3f, 1, 445, 346,
+            2),
 
     BlueBoss(6250, 0, true,
             AudioEnums.Alien_Spaceship_Destroyed, "Blue Boss",
             ImageEnums.BlueBoss, ImageEnums.BossExplosion, 0, EnemyCategory.Boss, EnemyTribes.Pirates, 20,
             1150, 500, 0, 0.15f, 1, 337, 196,
-            0),
+            2),
 
     BlueBossFactory(250, 0, true,
             AudioEnums.Alien_Spaceship_Destroyed, "StrikerBoss Laserbeam Clone",
@@ -403,5 +405,9 @@ public enum EnemyEnums {
 
     public EnemyTribes getEnemyTribe() {
         return enemyTribe;
+    }
+
+    public int getBossKillCountRequiredBeforeAllowedToSpawn(){
+        return this.minimumStageLevelRequired; //since bosses cannot be spawn regularly, we can simply re-use this field
     }
 }

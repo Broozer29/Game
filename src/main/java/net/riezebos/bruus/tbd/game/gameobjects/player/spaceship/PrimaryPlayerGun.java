@@ -145,7 +145,6 @@ public class PrimaryPlayerGun {
             AnimationManager.getInstance().addUpperAnimation(chargingAnimation);
             chargingAudioClip = AudioDatabase.getInstance().getAudioClip(AudioEnums.ChargingBigIronLaserbeam);
             chargingAudioClip.setLoop(true);
-            chargingAudioClip.startClip();
             totalScaleBonus = 0f;
             totalDamageBonus = 0f;
         }
@@ -155,7 +154,11 @@ public class PrimaryPlayerGun {
             totalScaleBonus = intervals * (BigIron.scaleGrowthPerInterval + 0.025f); //klein beetje extra scaling op de charge anim
             totalDamageBonus = intervals * (BigIron.damagePerInterval * (1 + owner.getAttackSpeedModifier()));
             chargingAnimation.setAnimationScale(1 + totalScaleBonus);
-            chargingAudioClip.setLoop(true);
+
+            if(timeCharged >= 2 && !chargingAudioClip.isRunning()) {
+                chargingAudioClip.startClip();
+                chargingAudioClip.setLoop(true);
+            }
 //            chargingAnimation.setCenterCoordinates(owner.getCenterXCoordinate(), owner.getCenterYCoordinate()); //recenter the animation, might not be need
         }
         if (isCharging && secondsStartedCharging + BigIron.maxChargeSeconds < GameState.getInstance().getGameSeconds()) {
@@ -272,6 +275,7 @@ public class PrimaryPlayerGun {
         boolean isExplosive = false;
 
 
+//        damage = 2000;
         MissileConfiguration missileConfiguration = missileCreator1.createMissileConfiguration(attackType, maxHitPoints, maxShields,
                 deathSound, damage, attackType.getDeathOrExplosionImageEnum(), isFriendly, allowedToDealDamage, objectType, attackType.isUsesBoxCollision(),
                 isExplosive, true, false);
