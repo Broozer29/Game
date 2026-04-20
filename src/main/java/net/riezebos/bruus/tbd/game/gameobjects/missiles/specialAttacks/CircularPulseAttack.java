@@ -8,8 +8,8 @@ import net.riezebos.bruus.tbd.game.util.ArmorCalculator;
 import net.riezebos.bruus.tbd.game.util.collision.CollisionInfo;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteAnimationConfiguration;
 
-public class FlamerForceField extends SpecialAttack {
-    public FlamerForceField(SpriteAnimationConfiguration spriteAnimationConfiguration, SpecialAttackConfiguration missileConfiguration) {
+public class CircularPulseAttack extends SpecialAttack {
+    public CircularPulseAttack(SpriteAnimationConfiguration spriteAnimationConfiguration, SpecialAttackConfiguration missileConfiguration) {
         super(spriteAnimationConfiguration, missileConfiguration);
         this.setObjectType("FlamerForceField");
         this.allowRepeatedDamage = false;

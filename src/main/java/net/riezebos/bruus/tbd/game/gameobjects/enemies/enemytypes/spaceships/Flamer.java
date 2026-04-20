@@ -3,7 +3,7 @@ package net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.spaceships;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.Enemy;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyConfiguration;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.MissileManager;
-import net.riezebos.bruus.tbd.game.gameobjects.missiles.specialAttacks.FlamerForceField;
+import net.riezebos.bruus.tbd.game.gameobjects.missiles.specialAttacks.CircularPulseAttack;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.specialAttacks.SpecialAttack;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.specialAttacks.SpecialAttackConfiguration;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
@@ -61,7 +61,7 @@ public class Flamer extends Enemy {
         SpriteAnimationConfiguration spriteAnimationConfiguration = new SpriteAnimationConfiguration(missileSpriteConfiguration, 2, false);
 
         SpecialAttackConfiguration specialAttackConfiguration = new SpecialAttackConfiguration(this.getDamage(), false, true, false, false, false, false);
-        SpecialAttack specialAttack = new FlamerForceField(spriteAnimationConfiguration, specialAttackConfiguration);
+        SpecialAttack specialAttack = new CircularPulseAttack(spriteAnimationConfiguration, specialAttackConfiguration);
         specialAttack.setOwnerOrCreator(this);
         specialAttack.setObjectType("Flamer Special Attack");
 

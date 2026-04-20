@@ -239,6 +239,9 @@ public class ItemDescriptionRetriever {
             case ConstructionKit -> {
                 return "Increases Protoss Ship construction speed by " + Math.round(ConstructionKit.additionalConstructionSpeed * 100) + "%.";
             }
+            case PulsingBeacon -> {
+                return "Your beacon now casts a damaging pulse every " + Math.round(PulsingBeacon.cooldown) + " second dealing " + Math.round(PulsingBeacon.damageModifier * 100) + "% damage. Every pulse increases the damage of subsequent pulses by " + Math.round(PulsingBeacon.damageBonusPerCast * 100) + "%";
+            }
             case EmergencyRepairs -> {
                 return "Increases Protoss Ship construction speed by " + Math.round(EmergencyRepairs.constructionSpeedBonusMultiplier * 100) + "% (+" + Math.round(EmergencyRepairs.constructionSpeedBonusMultiplier * 100) + "%). For " + Math.round(EmergencyRepairs.duration) + " seconds after a Protoss Ship dies.";
             }

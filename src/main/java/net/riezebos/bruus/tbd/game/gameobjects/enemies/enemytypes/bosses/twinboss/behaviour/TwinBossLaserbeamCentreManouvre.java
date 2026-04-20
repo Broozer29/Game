@@ -4,15 +4,16 @@ import net.riezebos.bruus.tbd.game.gameobjects.enemies.Enemy;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.BossActionable;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.twinboss.TwinBoss;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.twinboss.TwinBossManager;
-import net.riezebos.bruus.tbd.game.gameobjects.missiles.MissileManager;
+import net.riezebos.bruus.tbd.game.gameobjects.missiles.*;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.laserbeams.AngledLaserBeam;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.laserbeams.Laserbeam;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.laserbeams.LaserbeamConfiguration;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
-import net.riezebos.bruus.tbd.game.movement.BoardBlockUpdater;
-import net.riezebos.bruus.tbd.game.movement.Direction;
-import net.riezebos.bruus.tbd.game.movement.Point;
+import net.riezebos.bruus.tbd.game.level.LevelManager;
+import net.riezebos.bruus.tbd.game.movement.*;
 import net.riezebos.bruus.tbd.game.movement.pathfinders.HoverPathFinder;
+import net.riezebos.bruus.tbd.game.movement.pathfinders.PathFinder;
+import net.riezebos.bruus.tbd.game.movement.pathfinders.StraightLinePathFinder;
 import net.riezebos.bruus.tbd.game.util.OnScreenTextManager;
 import net.riezebos.bruus.tbd.visualsandaudio.data.DataClass;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.AudioDatabase;
@@ -27,7 +28,7 @@ import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.Sprit
 public class TwinBossLaserbeamCentreManouvre implements BossActionable {
 
     public static double lastAttackTime = GameState.getInstance().getGameSeconds();
-    private static double attackCooldown = 20;
+    private static double attackCooldown = 25;
     private static int priority = 3;
 
     private static int twinsChargingUpLaser = 0;
@@ -89,10 +90,9 @@ public class TwinBossLaserbeamCentreManouvre implements BossActionable {
         }
 
         //0.5 seconds after laserbeams exist, start updating it
-        if (twinsFiringLaser == TwinBossManager.twinCount
-//                && GameState.getInstance().getGameSeconds() >= gameSecondsLaserbeamStartedFiring + delayBeforeUpdatingLaserbeams
-        ) {
+        if (twinsFiringLaser == TwinBossManager.twinCount) {
             updateLaserbeams(enemy);
+            fireMissiles(enemy);
         }
 
         if (twinsFiringLaser == TwinBossManager.twinCount && GameState.getInstance().getGameSeconds() >= gameSecondsLaserbeamStartedFiring + duration) {
@@ -119,6 +119,91 @@ public class TwinBossLaserbeamCentreManouvre implements BossActionable {
         return false;
     }
 
+    private static float missileCooldown = 1.5f;
+    private static int ANGLE_INCREMENT = 45;
+    private static double lastSecondsMissilesFired = 0;
+    private static int twinBossCounterModulo = 0;
+    private void fireMissiles(TwinBoss enemy){
+        double currentTime = GameState.getInstance().getGameSeconds();
+        missileCooldown = 1.5f;
+        ANGLE_INCREMENT = 60;
+        if (currentTime >= lastSecondsMissilesFired + missileCooldown) {
+            for (int angle = 0; angle < (360 - ANGLE_INCREMENT); angle += ANGLE_INCREMENT) {
+                shootMissiles(angle, enemy);
+            }
+
+            twinBossCounterModulo++;
+
+            if(twinBossCounterModulo == TwinBossManager.twinCount){
+                lastSecondsMissilesFired = GameState.getInstance().getGameSeconds();
+                twinBossCounterModulo = 0;
+            }
+        }
+    }
+
+    private void shootMissiles(double angleDegrees, TwinBoss enemy) {
+        SpriteConfiguration spriteConfiguration = MissileCreator.getInstance().createMissileSpriteConfig(enemy.getXCoordinate(),enemy.getYCoordinate() ,
+                ImageEnums.LaserBullet, 0.55f);
+
+
+        float movementSpeed = 3 + (LevelManager.getInstance().getBossDifficultyLevel() * 0.25f);
+        MissileEnums missileType = MissileEnums.DefaultLaserBullet;
+        PathFinder missilePathFinder = new StraightLinePathFinder();
+        MovementPatternSize movementPatternSize = MovementPatternSize.SMALL;
+        MovementConfiguration movementConfiguration = MissileCreator.getInstance().createMissileMovementConfig(
+                movementSpeed, movementSpeed, missilePathFinder, movementPatternSize, Direction.RIGHT
+        );
+
+
+        //Create remaining missile attributes and a missile configuration
+        boolean isFriendly = false;
+        int maxHitPoints = 100;
+        int maxShields = 100;
+        AudioEnums deathSound = null;
+        boolean allowedToDealDamage = true;
+        String objectType = "Enemy Protoss Beacon";
+
+        MissileConfiguration missileConfiguration = MissileCreator.getInstance().createMissileConfiguration(missileType, maxHitPoints, maxShields,
+                deathSound, enemy.getDamage() / 2, missileType.getDeathOrExplosionImageEnum(), isFriendly, allowedToDealDamage, objectType,
+                false, false, true, false);
+
+
+        //Create the missile and finalize the creation process, then add it to the manager and consequently the game
+        Missile missile = MissileCreator.getInstance().createMissile(spriteConfiguration, missileConfiguration, movementConfiguration);
+
+
+        //Calculate the angle based on the current chargingAnimation. Because we want to fire from 4 directions, we also need to keep
+        //track of the angle that the given chargingAnimation has in this method
+        Point bulletOrigin = new Point(enemy.getCenterXCoordinate(), enemy.getCenterYCoordinate());
+        Point bulletDestination = calculateBulletDestination(angleDegrees, 400, enemy.getCenterXCoordinate(), enemy.getCenterYCoordinate());
+
+        missile.resetMovementPath();
+
+        missile.setCenterCoordinates(bulletOrigin.getX(), bulletOrigin.getY());
+        missile.getMovementConfiguration().setDestination(bulletDestination); // again because reset removes it
+        missile.rotateObjectTowardsDestination(true);
+        missile.setCenterCoordinates(bulletOrigin.getX(), bulletOrigin.getY());
+        missile.setAllowedVisualsToRotate(false); //Prevent it from being rotated again by the SpriteMover
+
+        missile.setOwnerOrCreator(enemy);
+
+        //Finalized and ready for addition to the game
+        MissileManager.getInstance().addExistingMissile(missile);
+    }
+
+    private Point calculateBulletDestination(double angleDegrees, int distance, int centerX, int centerY) {
+        // Convert the angle from degrees to radians because Math functions use radians
+        double angleRadians = Math.toRadians(angleDegrees);
+
+        // Calculate the X and Y coordinates
+        int targetX = centerX + (int) (Math.cos(angleRadians) * distance);
+        int targetY = centerY + (int) (Math.sin(angleRadians) * distance);
+
+        // Return the calculated coordinates as a Point object
+        return new Point(targetX, targetY);
+    }
+
+
     private void revertToOldMovement(TwinBoss enemy) {
         HoverPathFinder hoverPathFinder = new HoverPathFinder();
         hoverPathFinder.setSecondsToHoverStill(0);
@@ -138,7 +223,7 @@ public class TwinBossLaserbeamCentreManouvre implements BossActionable {
         spriteConfiguration.setxCoordinate(enemy.getXCoordinate());
         spriteConfiguration.setyCoordinate(enemy.getCenterYCoordinate());
         spriteConfiguration.setScale(1);
-        spriteConfiguration.setImageType(ImageEnums.LaserbeamCharging);
+        spriteConfiguration.setImageType(ImageEnums.PinkLaserbeamCharging);
 
         return new SpriteAnimationConfiguration(spriteConfiguration, 1, false);
     }
@@ -204,7 +289,7 @@ public class TwinBossLaserbeamCentreManouvre implements BossActionable {
 
     private Laserbeam createLaserbeam(Enemy enemy, double angle) {
         float damage = enemy.getDamage();
-        LaserbeamConfiguration upperLaserbeamConfiguration = new LaserbeamConfiguration(true, damage);
+        LaserbeamConfiguration upperLaserbeamConfiguration = new LaserbeamConfiguration(false, damage);
         upperLaserbeamConfiguration.setAmountOfLaserbeamSegments(15);
 
         //Not setting the origin point causes a nullpointer exception, it's mandatory

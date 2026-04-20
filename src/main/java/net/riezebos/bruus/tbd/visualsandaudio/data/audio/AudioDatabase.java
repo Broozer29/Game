@@ -32,6 +32,7 @@ public class AudioDatabase {
 
     private Map<AudioEnums, Integer> clipSizeConfig = new HashMap<>() {{
         put(AudioEnums.Lemmino_Firecracker, 1);
+        put(AudioEnums.Filth, 1);
         put(AudioEnums.LeanRockShred, 1);
         put(AudioEnums.GodRunDetected, 1);
         put(AudioEnums.VendlaSonrisa, 1);

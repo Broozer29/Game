@@ -23,14 +23,15 @@ import java.util.Set;
 
 public class TwinBossQuickMissileAttack implements BossActionable {
 
-    private static double lastAttackTime = GameState.getInstance().getGameSeconds();
-    private static double attackCooldown = 4;
+    private static double lastAttackTime = GameState.getInstance().getGameSeconds() - 3;
+    private static double attackCooldown = 3;
     private static int priority = 1;
 
     private static int missilesFired = 0;
     private static int missilesAllowedToFire = 0;
     private static float intermittenMissileCooldown = 0.125f;
     private static double lastMissileFiredTime = 0;
+    private static int missilesFiredPerRound = 6;
 
     private static int twinsPlayingChargingAnimation = 0;
 
@@ -39,7 +40,7 @@ public class TwinBossQuickMissileAttack implements BossActionable {
     private static Set<TwinBoss> twinBossesThatFiredARound = new HashSet<>();
 
     public TwinBossQuickMissileAttack() {
-        missilesAllowedToFire = 6 * TwinBossManager.twinCount; //6 missiles for each twinboss
+        missilesAllowedToFire = missilesFiredPerRound * TwinBossManager.twinCount; //6 missiles for each twinboss
     }
 
     public static void resetBehaviour(){
@@ -55,6 +56,12 @@ public class TwinBossQuickMissileAttack implements BossActionable {
     @Override
     public boolean activateBehaviour(Enemy enemy) {
         TwinBoss twinBoss = (TwinBoss) enemy; //we can safely cast since this behaviour is never added to other enemy types
+
+
+
+        intermittenMissileCooldown = 0.095f;
+        attackCooldown = 2f;
+
 
         if (twinsPlayingChargingAnimation < TwinBossManager.twinCount) {
             //Note of potential buggyness: should a twinboss have a chargingAttack animation that is already playing, the behaviour will not be properly synchronized from the beginning
@@ -102,10 +109,10 @@ public class TwinBossQuickMissileAttack implements BossActionable {
         MissileEnums missileType = MissileEnums.DefaultLaserBullet;
         SpriteConfiguration spriteConfiguration = MissileCreator.getInstance().createMissileSpriteConfig(
                 enemy.getXCoordinate(), enemy.getCenterYCoordinate(),
-                missileType.getImageType(),0.65f);
+                missileType.getImageType(),0.7f);
 
 
-        float movementSpeed = 6;
+        float movementSpeed = 7;
 
         //Create missile movement attributes and create a movement configuration
         PathFinder missilePathFinder = new StraightLinePathFinder();
@@ -141,7 +148,9 @@ public class TwinBossQuickMissileAttack implements BossActionable {
         missile.rotateObjectTowardsDestination(true);
         missile.setCenterCoordinates(chargingCenterCoords.getX(), chargingCenterCoords.getY());
         missile.setAllowedVisualsToRotate(false); //Prevent it from being rotated again by the SpriteMover
-
+//        missile.setSpeedsUp(true);
+//        missile.setStepsBetweenSpeedUpIncrease(15);
+//        missile.setSpeedUpIncreaseAmount(1.25f);
         missile.setOwnerOrCreator(enemy);
 
         return missile;

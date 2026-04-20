@@ -31,7 +31,7 @@ public class TwinBossLeftRightManouvre implements BossActionable {
     public static double lastAttackTime = GameState.getInstance().getGameSeconds();
     private static double attackCooldown = 15;
     private static double lastBombDroppedTime = 0;
-    private static double bombDropCooldown = 0.3f;
+    private static double bombDropCooldown = 0.4f;
     private static int priority = 2;
     private static float speedModifier = 5.75f;
 
@@ -55,8 +55,8 @@ public class TwinBossLeftRightManouvre implements BossActionable {
 
     private static float firstIndexHeight = DataClass.getInstance().getPlayableWindowMaxHeight() * 0.2f;
     private static float secondIndexHeight = DataClass.getInstance().getPlayableWindowMaxHeight() * 0.4f;
-    private static float thirdIndexHeight = DataClass.getInstance().getPlayableWindowMaxHeight() * 0.6f;
-    private static float fourthIndexHeight = DataClass.getInstance().getPlayableWindowMaxHeight() * 0.8f;
+    private static float thirdIndexHeight = DataClass.getInstance().getPlayableWindowMaxHeight() * 0.615f;
+    private static float fourthIndexHeight = DataClass.getInstance().getPlayableWindowMaxHeight() * 0.83f;
 
     public static void resetBehaviour(){
         twinsPlacedInPosition = 0;
@@ -88,6 +88,11 @@ public class TwinBossLeftRightManouvre implements BossActionable {
 
     @Override
     public boolean activateBehaviour(Enemy enemy1) {
+        speedModifier = 6.25f;
+        bombDropCooldown = 0.25f;
+
+
+
         TwinBoss enemy = (TwinBoss) enemy1; //we can safely cast since this behaviour is never added to other enemy types
         if (twinsWaitingToMove < TwinBossManager.twinCount) { //if not all 4 are ready to move
             if (chargingUpMovement == null || chargingUpMovement.getMediaPlayer() == null) {
@@ -229,6 +234,10 @@ public class TwinBossLeftRightManouvre implements BossActionable {
 
     private static void createExplosion(Enemy enemy) {
         //Create the sprite configuration which gets upgraded to spriteanimation if needed by the MissileCreator
+        if(enemy.getMovementConfiguration().getPathFinder() instanceof HoverPathFinder) {
+            return; //quick fix to prevent boss from making explosions whilst NOT charging
+        }
+
         SpriteConfiguration spriteConfiguration = MissileCreator.getInstance().createMissileSpriteConfig(enemy.getCenterXCoordinate(), enemy.getCenterYCoordinate(),
                 ImageEnums.Bomba_Missile, 0.6f);
 
@@ -320,9 +329,12 @@ public class TwinBossLeftRightManouvre implements BossActionable {
     }
 
     private void teleportBossToOriginalPosition(TwinBoss boss) {
+        if(boss.getPointToTeleportBackTo() == null){
+            return;
+        }
         boss.setCenterCoordinates(boss.getPointToTeleportBackTo().getX(), boss.getPointToTeleportBackTo().getY());
+        boss.setPointToTeleportBackTo(null);
     }
-
     @Override
     public int getPriority() {
         return priority;

@@ -88,7 +88,7 @@ public enum AudioEnums {
     GodRunDetected,
     MausoleumMash,
     Arisen,
-    DistressCall;
+    DistressCall, Filth;
 
     public static AudioEnums getSelectClassAudioByClass(PlayerClass playerClass) {
         List<AudioEnums> availableSounds = new ArrayList<>();
@@ -132,7 +132,7 @@ public enum AudioEnums {
             case CarrierBoss:
                 return AudioEnums.nomad;
             case YellowBoss:
-                return AudioEnums.nomad;
+                return AudioEnums.Filth;
             case StrikerBoss:
                 return AudioEnums.Arisen;
             case BlueBoss:

@@ -195,7 +195,7 @@ public enum EnemyEnums {
     TwinBoss(6000, 0, true,
             AudioEnums.Alien_Spaceship_Destroyed, "Striker Boss",
             ImageEnums.TwinBoss, ImageEnums.BossExplosion, 0, EnemyCategory.Boss, EnemyTribes.Pirates, 20,
-            1150, 500, 0, 2, 0.5f, 386, 285,
+            1150, 500, 0, 2.15f, 0.5f, 386, 285,
             3),
 
     StrikerBoss(4750, 0, true,

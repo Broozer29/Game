@@ -32,6 +32,7 @@ public class Missile extends GameObject {
     protected boolean speedsUp;
     protected boolean isDamageable;
     protected float speedUpIncreaseAmount = 1.2f;
+    protected float stepsBetweenSpeedUpIncrease = 20;
 
 
     public Missile (SpriteConfiguration spriteConfiguration, MissileConfiguration missileConfiguration, MovementConfiguration movementConfiguration) {
@@ -252,6 +253,14 @@ public class Missile extends GameObject {
 
     public boolean isCanBounce() {
         return canBounce;
+    }
+
+    public float getStepsBetweenSpeedUpIncrease() {
+        return stepsBetweenSpeedUpIncrease;
+    }
+
+    public void setStepsBetweenSpeedUpIncrease(float stepsBetweenSpeedUpIncrease) {
+        this.stepsBetweenSpeedUpIncrease = stepsBetweenSpeedUpIncrease;
     }
 
     public void setCanBounce(boolean canBounce) {

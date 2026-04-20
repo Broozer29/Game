@@ -44,15 +44,15 @@ public class GenericMissile extends Missile {
 
 
 	private int stepsTaken = 0;
-	private int moduloDivider = 90;
+
 	public void missileAction() {
 		if(this.speedsUp){
 			stepsTaken++;
 
-			if(stepsTaken % moduloDivider == 0){
+			if(stepsTaken % stepsBetweenSpeedUpIncrease == 0){
 				this.movementConfiguration.setXMovementSpeed(this.getMovementConfiguration().getXMovementSpeed() * speedUpIncreaseAmount);
 				this.movementConfiguration.setYMovementSpeed(this.getMovementConfiguration().getYMovementSpeed() * speedUpIncreaseAmount);
-				moduloDivider = Math.round(moduloDivider * 1.5f);
+                stepsBetweenSpeedUpIncrease = Math.round(stepsBetweenSpeedUpIncrease * 1.5f);
 			}
 		}
 	}

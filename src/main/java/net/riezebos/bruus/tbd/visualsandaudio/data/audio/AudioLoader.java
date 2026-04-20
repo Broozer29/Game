@@ -124,6 +124,8 @@ public class AudioLoader {
                 return "/audio/Firewall.wav";
             case mainmenu:
                 return "/audio/music/mainmenu.wav";
+            case Filth:
+                return "/audio/music/Filth.wav";
             case Viq_Rose:
                 return "/audio/music/Diq - Rose.wav";
             case Blood_On_The_Dancefloor:

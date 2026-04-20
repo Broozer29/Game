@@ -43,7 +43,7 @@ public enum ItemEnums {
     OneShotOneKill(ItemRarityEnums.Relic, ItemCategory.Offense, ImageEnums.Test_Image, "One shot, one kill", true),
     HelpRequested(ItemRarityEnums.Relic, ItemCategory.Utility, ImageEnums.MoneyPrinter, "Help Requested", true),
     ElectricDestabilizer(ItemRarityEnums.Relic, ItemCategory.Offense, ImageEnums.Starcraft2_Protoss_Shield_Disintegrate, "Electric Destabilizer", true),
-
+    PulsingBeacon(ItemRarityEnums.Relic, ItemCategory.Offense, ImageEnums.Test_Image, "Pulsing Beacon", true),
 
     //-----------------------------
     ElectroShedding(ItemRarityEnums.Legendary, ItemCategory.Offense, ImageEnums.Electroshedding, "Electro Shedding", true),

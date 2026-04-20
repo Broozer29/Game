@@ -149,6 +149,8 @@ public class PlayerInventory {
                 return new GuardianDrones();
             case CriticalOverloadCapacitor:
                 return new CriticalOverloadCapacitor();
+            case ConstructionKit:
+                return new ConstructionKit();
             case BarrierSuperSizer:
                 return new BarrierSupersizer();
             case PiercingMissiles:
@@ -227,8 +229,8 @@ public class PlayerInventory {
                 return new AnionInverter();
             case InfernalPreIgniter:
                 return new InfernalPreIgniter();
-            case ConstructionKit:
-                return new ConstructionKit();
+            case PulsingBeacon:
+                return new PulsingBeacon();
             case EmergencyRepairs:
                 return new EmergencyRepairs();
             case VengeanceProtocol:

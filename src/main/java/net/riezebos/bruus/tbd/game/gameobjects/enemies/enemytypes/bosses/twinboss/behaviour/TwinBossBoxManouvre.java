@@ -29,10 +29,10 @@ import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.Sprit
 public class TwinBossBoxManouvre implements BossActionable {
 
     public static double lastAttackTime = GameState.getInstance().getGameSeconds();
-    private static double attackCooldown = 25;
+    private static double attackCooldown = 20;
     private static int priority = 4;
     private static double lastBombDroppedTime = 0;
-    private static double bombDropCooldown = 1f;
+    private static double bombDropCooldown = 1.5f;
     private static float speedModifier = 3.25f;
 
     private static CustomAudioClip chargingUpMovement = null;
@@ -276,7 +276,7 @@ public class TwinBossBoxManouvre implements BossActionable {
                     twinsPlacedInPosition++;
                     break;
                 case 1:
-                    boss.setCenterCoordinates(Math.round(DataClass.getInstance().getWindowWidth() * 0.1f), Math.round(DataClass.getInstance().getPlayableWindowMaxHeight() * 0.9f));
+                    boss.setCenterCoordinates(Math.round(DataClass.getInstance().getWindowWidth() * 0.1f), Math.round(DataClass.getInstance().getPlayableWindowMaxHeight() * 0.93f));
                     twinsPlacedInPosition++;
                     break;
                 case 2:
@@ -284,7 +284,7 @@ public class TwinBossBoxManouvre implements BossActionable {
                     twinsPlacedInPosition++;
                     break;
                 case 3:
-                    boss.setCenterCoordinates(Math.round(DataClass.getInstance().getWindowWidth() * 0.95f), Math.round(DataClass.getInstance().getPlayableWindowMaxHeight() * 0.9f));
+                    boss.setCenterCoordinates(Math.round(DataClass.getInstance().getWindowWidth() * 0.95f), Math.round(DataClass.getInstance().getPlayableWindowMaxHeight() * 0.93f));
                     twinsPlacedInPosition++;
                     break;
             }
@@ -297,7 +297,11 @@ public class TwinBossBoxManouvre implements BossActionable {
     }
 
     private void teleportBossToOriginalPosition(TwinBoss boss) {
+        if(boss.getPointToTeleportBackTo() == null){
+            return;
+        }
         boss.setCenterCoordinates(boss.getPointToTeleportBackTo().getX(), boss.getPointToTeleportBackTo().getY());
+        boss.setPointToTeleportBackTo(null);
     }
 
     @Override

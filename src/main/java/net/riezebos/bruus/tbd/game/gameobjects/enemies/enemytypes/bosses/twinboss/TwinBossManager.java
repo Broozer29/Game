@@ -42,17 +42,18 @@ public class TwinBossManager {
 
     public static void setCooldownToPreventBackToBackTeleportBehaviour(BossActionable bossActionable) {
 
-        double currentGameSeconds = GameState.getInstance().getGameSeconds() - 5;
-
-        if (!(bossActionable instanceof TwinBossLeftRightManouvre)) {
-            TwinBossLeftRightManouvre.lastAttackTime = currentGameSeconds;
-        }
-        if (!(bossActionable instanceof TwinBossBoxManouvre)) {
-            TwinBossBoxManouvre.lastAttackTime = currentGameSeconds;
-        }
-        if (!(bossActionable instanceof TwinBossLaserbeamCentreManouvre)) {
-            TwinBossLaserbeamCentreManouvre.lastAttackTime = currentGameSeconds;
-        }
+//        double currentGameSeconds = GameState.getInstance().getGameSeconds() - 5;
+//        Random random = new Random();
+//
+//        if (!(bossActionable instanceof TwinBossLeftRightManouvre)) {
+//            TwinBossLeftRightManouvre.lastAttackTime = currentGameSeconds + random.nextInt(0, 10);
+//        }
+//        if (!(bossActionable instanceof TwinBossBoxManouvre)) {
+//            TwinBossBoxManouvre.lastAttackTime = currentGameSeconds + random.nextInt(0, 10);
+//        }
+//        if (!(bossActionable instanceof TwinBossLaserbeamCentreManouvre)) {
+//            TwinBossLaserbeamCentreManouvre.lastAttackTime = currentGameSeconds + random.nextInt(0, 10);
+//        }
     }
 
     public void resetTwinBossManager() {
