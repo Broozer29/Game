@@ -7,14 +7,12 @@ import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.level.LevelManager;
 import net.riezebos.bruus.tbd.game.movement.Direction;
 import net.riezebos.bruus.tbd.game.movement.MovementConfiguration;
-import net.riezebos.bruus.tbd.game.movement.MovementPatternSize;
 import net.riezebos.bruus.tbd.game.movement.Point;
 import net.riezebos.bruus.tbd.game.movement.pathfinders.PathFinder;
 import net.riezebos.bruus.tbd.game.movement.pathfinders.RegularPathFinder;
 import net.riezebos.bruus.tbd.game.movement.pathfinders.StraightLinePathFinder;
 import net.riezebos.bruus.tbd.game.util.WithinVisualBoundariesCalculator;
 import net.riezebos.bruus.tbd.visualsandaudio.data.DataClass;
-import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.AudioEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.AnimationManager;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteAnimation;
@@ -142,22 +140,16 @@ public class YellowBossSpawnReflectingBarrier implements BossActionable {
         int movementSpeed = 5 + LevelManager.getInstance().getBossDifficultyLevel();
         //Create missile movement attributes and create a movement configuration
         PathFinder missilePathFinder = new StraightLinePathFinder();
-        MovementPatternSize movementPatternSize = MovementPatternSize.SMALL;
         MovementConfiguration movementConfiguration = MissileCreator.getInstance().createMissileMovementConfig(
-                movementSpeed, movementSpeed, missilePathFinder, movementPatternSize, enemy.getMovementConfiguration().getRotation()
+                movementSpeed, missilePathFinder, enemy.getMovementConfiguration().getRotation()
         );
 
 
         boolean isFriendly = false;
-        float maxHitPoints = 200 * (1 + (LevelManager.getInstance().getBossDifficultyLevel() * 0.5f));
-        int maxShields = 100;
-        AudioEnums deathSound = null;
-        boolean allowedToDealDamage = true;
-        String objectType = "Boss Burst Missile";
 
-        MissileConfiguration missileConfiguration = MissileCreator.getInstance().createMissileConfiguration(missileType, maxHitPoints, maxShields,
-                deathSound, enemy.getDamage(), missileType.getDeathOrExplosionImageEnum(), isFriendly, allowedToDealDamage, objectType,
-                false, false, true, false);
+        MissileConfiguration missileConfiguration = MissileCreator.getInstance().createMissileConfiguration(missileType,
+                enemy.getDamage(), missileType.getDeathOrExplosionImageEnum(), isFriendly,
+                false, true, true);
 
 
         //Create the missile and finalize the creation process, then add it to the manager and consequently the game
@@ -196,27 +188,24 @@ public class YellowBossSpawnReflectingBarrier implements BossActionable {
         float movementSpeed = 1.65f;
         //Create missile movement attributes and create a movement configuration
         PathFinder missilePathFinder = new RegularPathFinder();
-        MovementPatternSize movementPatternSize = MovementPatternSize.SMALL;
         MovementConfiguration movementConfiguration = MissileCreator.getInstance().createMissileMovementConfig(
-                movementSpeed, movementSpeed, missilePathFinder, movementPatternSize, Direction.LEFT
+                movementSpeed, missilePathFinder, Direction.LEFT
         );
 
 
         boolean isFriendly = false;
         int maxHitPoints = 500;
-        int maxShields = 100;
-        AudioEnums deathSound = null;
-        boolean allowedToDealDamage = true;
-        String objectType = "Reflective barrier";
         float damage = enemy.getDamage() * 0.4f;
 
-        MissileConfiguration missileConfiguration = MissileCreator.getInstance().createMissileConfiguration(missileType, maxHitPoints, maxShields,
-                deathSound, damage, missileType.getDeathOrExplosionImageEnum(), isFriendly, allowedToDealDamage, objectType,
-                false, false, true, false);
+        MissileConfiguration missileConfiguration = MissileCreator.getInstance().createMissileConfiguration(missileType,
+                damage, missileType.getDeathOrExplosionImageEnum(), isFriendly,
+                false, false, false);
 
 
         //Create the missile and finalize the creation process, then add it to the manager and consequently the game
         Missile missile = MissileCreator.getInstance().createMissile(spriteConfiguration, missileConfiguration, movementConfiguration);
+        missile.setMaxHitPoints(maxHitPoints);
+        missile.setCurrentHitpoints(maxHitPoints);
         missile.resetMovementPath();
         missile.setCenterCoordinates(DataClass.getInstance().getWindowWidth() - 50, spawnLocation.getY());
         missile.resetMovementPath();

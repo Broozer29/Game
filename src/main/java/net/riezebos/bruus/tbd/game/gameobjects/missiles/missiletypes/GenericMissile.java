@@ -50,8 +50,7 @@ public class GenericMissile extends Missile {
 			stepsTaken++;
 
 			if(stepsTaken % stepsBetweenSpeedUpIncrease == 0){
-				this.movementConfiguration.setXMovementSpeed(this.getMovementConfiguration().getXMovementSpeed() * speedUpIncreaseAmount);
-				this.movementConfiguration.setYMovementSpeed(this.getMovementConfiguration().getYMovementSpeed() * speedUpIncreaseAmount);
+				this.movementConfiguration.setMovementSpeed(this.getMovementConfiguration().getMovementSpeed() * speedUpIncreaseAmount);
                 stepsBetweenSpeedUpIncrease = Math.round(stepsBetweenSpeedUpIncrease * 1.5f);
 			}
 		}

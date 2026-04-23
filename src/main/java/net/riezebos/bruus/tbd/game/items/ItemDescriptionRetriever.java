@@ -104,7 +104,7 @@ public class ItemDescriptionRetriever {
                 return "When entering the shop, grants 1 FREE shop reroll.";
             }
             case ElectricDestabilizer -> {
-                return "Your Electro Shred ability now stuns non-boss enemies for " + Math.round(ElectricDestabilizer.duration) + " seconds.";
+                return "Your Electroshred ability now stuns non-boss enemies for " + Math.round(ElectricDestabilizer.duration) + " seconds.";
             }
             case ModulePower -> {
                 return "Drones deal " + Math.round(ModulePower.damageBonus * 100) + "% (+" + Math.round(ModulePower.damageBonus * 100) + "%) damage.";
@@ -122,6 +122,9 @@ public class ItemDescriptionRetriever {
                 return "Your Electro Shred area of effect is improved. Electro Shred deals +" +
                         Math.round(ElectricSupercharger.buffAmount * 100) +
                         "% (+" + Math.round(ElectricSupercharger.buffAmount * 100) + "%) damage.";
+            }
+            case Adrenaline -> {
+                return "Taking damage increases your attack speed by " + Math.round(Adrenaline.attackSpeedIncrease * 100) + "% (+" + Math.round(Adrenaline.attackSpeedIncrease * 100) + "%) for " + Math.round(Adrenaline.duration) + " seconds. Taking damage again refreshes the duration of the effect.";
             }
             case ReflectiveShielding -> {
                 return "Whilst your shield is up, colliding with enemy missiles returns a missile dealing " +

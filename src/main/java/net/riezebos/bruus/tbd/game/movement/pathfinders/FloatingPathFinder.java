@@ -22,8 +22,8 @@ public class FloatingPathFinder implements PathFinder {
 
         Point start = new Point(gameObject.getXCoordinate(), gameObject.getYCoordinate());
         Point end = this.calculateNewDestination(gameObject);
-        float maxStepSizeX = config.getXMovementSpeed();
-        float maxStepSizeY = config.getYMovementSpeed();
+        float maxStepSizeX = config.getMovementSpeed();
+        float maxStepSizeY = config.getMovementSpeed();
 
         List<Point> pathList = new ArrayList<>();
         pathList.add(start);

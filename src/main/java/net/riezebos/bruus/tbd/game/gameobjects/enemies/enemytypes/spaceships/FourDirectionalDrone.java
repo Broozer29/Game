@@ -5,13 +5,11 @@ import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyConfiguration;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.*;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.movement.MovementConfiguration;
-import net.riezebos.bruus.tbd.game.movement.MovementPatternSize;
 import net.riezebos.bruus.tbd.game.movement.Point;
 import net.riezebos.bruus.tbd.game.movement.pathfinders.DestinationPathFinder;
 import net.riezebos.bruus.tbd.game.movement.pathfinders.PathFinder;
 import net.riezebos.bruus.tbd.game.movement.pathfinders.StraightLinePathFinder;
 import net.riezebos.bruus.tbd.game.util.WithinVisualBoundariesCalculator;
-import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.AudioEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.AnimationManager;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteAnimation;
@@ -28,7 +26,7 @@ public class FourDirectionalDrone extends Enemy {
     private List<SpriteAnimation> chargingUpAnimations = new ArrayList<>();
     private Map<SpriteAnimation, Double> animationAngles = new HashMap<>(); // Map to track angles of charging animations
 
-    public FourDirectionalDrone (SpriteConfiguration spriteConfig, EnemyConfiguration enemyConfiguration, MovementConfiguration movementConfiguration) {
+    public FourDirectionalDrone(SpriteConfiguration spriteConfig, EnemyConfiguration enemyConfiguration, MovementConfiguration movementConfiguration) {
         super(spriteConfig, enemyConfiguration, movementConfiguration);
 
         SpriteAnimationConfiguration destroyedExplosionfiguration = new SpriteAnimationConfiguration(spriteConfig, 0, false);
@@ -44,7 +42,7 @@ public class FourDirectionalDrone extends Enemy {
     }
 
 
-    private void initChargingUpAnimations () {
+    private void initChargingUpAnimations() {
         double[] initialAngles = {0, 90, 180, 270}; // RIGHT, DOWN, LEFT, UP angles in degrees
 
         for (double angle : initialAngles) {
@@ -67,7 +65,7 @@ public class FourDirectionalDrone extends Enemy {
 
 
     @Override
-    public void fireAction () {
+    public void fireAction() {
         if (this.movementConfiguration.getPathFinder() instanceof DestinationPathFinder) {
             allowedToFire = this.movementConfiguration.getCurrentPath().getWaypoints().isEmpty();
         }
@@ -97,7 +95,7 @@ public class FourDirectionalDrone extends Enemy {
     }
 
 
-    private void shootMissiles (SpriteAnimation chargingUpAnimation) {
+    private void shootMissiles(SpriteAnimation chargingUpAnimation) {
         // The charging up attack animation has finished, create and fire the missile
         //Create the sprite configuration which gets upgraded to spriteanimation if needed by the MissileCreator
         SpriteConfiguration spriteConfiguration = MissileCreator.getInstance().createMissileSpriteConfig(xCoordinate, yCoordinate,
@@ -108,23 +106,17 @@ public class FourDirectionalDrone extends Enemy {
         //Create missile movement attributes and create a movement configuration
         MissileEnums missileType = MissileEnums.DefaultLaserBullet;
         PathFinder missilePathFinder = new StraightLinePathFinder();
-        MovementPatternSize movementPatternSize = MovementPatternSize.SMALL;
         MovementConfiguration movementConfiguration = MissileCreator.getInstance().createMissileMovementConfig(
-                movementSpeed, movementSpeed, missilePathFinder, movementPatternSize, this.movementRotation
+                movementSpeed, missilePathFinder, this.movementRotation
         );
 
 
         //Create remaining missile attributes and a missile configuration
         boolean isFriendly = false;
-        int maxHitPoints = 100;
-        int maxShields = 100;
-        AudioEnums deathSound = null;
-        boolean allowedToDealDamage = true;
-        String objectType = "Rotating Drone Missile";
 
-        MissileConfiguration missileConfiguration = MissileCreator.getInstance().createMissileConfiguration(missileType, maxHitPoints, maxShields,
-                deathSound, this.getDamage(), missileType.getDeathOrExplosionImageEnum(), isFriendly, allowedToDealDamage, objectType,
-                false, false, true, false);
+        MissileConfiguration missileConfiguration = MissileCreator.getInstance().createMissileConfiguration(missileType, this.getDamage(),
+                missileType.getDeathOrExplosionImageEnum(), isFriendly,
+                false, true, true);
 
 
         //Create the missile and finalize the creation process, then add it to the manager and consequently the game
@@ -150,7 +142,7 @@ public class FourDirectionalDrone extends Enemy {
         MissileManager.getInstance().addExistingMissile(missile);
     }
 
-    private Point calculateBulletDestination (double angleDegrees, int distance, int centerX, int centerY) {
+    private Point calculateBulletDestination(double angleDegrees, int distance, int centerX, int centerY) {
         // Convert the angle from degrees to radians because Math functions use radians
         double angleRadians = Math.toRadians(angleDegrees);
 
@@ -162,7 +154,7 @@ public class FourDirectionalDrone extends Enemy {
         return new Point(targetX, targetY);
     }
 
-    private double increaseRotationAngle (double rotationAngle) {
+    private double increaseRotationAngle(double rotationAngle) {
         double newAngle = rotationAngle + 1;
         if (newAngle > 360) {
             newAngle = 0;
@@ -171,7 +163,7 @@ public class FourDirectionalDrone extends Enemy {
         return newAngle;
     }
 
-    private void adjustChargingAnimationForRotation () {
+    private void adjustChargingAnimationForRotation() {
         double baseAngle = this.rotationAngle; // Use the current rotation angle of the object
 
         double[] angles = {baseAngle, baseAngle + 90, baseAngle + 180, baseAngle + 270};

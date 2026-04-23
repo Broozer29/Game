@@ -26,7 +26,7 @@ public class OrbitPathFinder implements PathFinder {
         MovementConfiguration orbitConfig = gameObject.getMovementConfiguration();
         Direction fallbackDirection = orbitConfig.getRotation();
         double radius = orbitConfig.getOrbitRadius(); // Use the radius from the config
-        int totalFrames = orbitConfig.getOrbitSpeed(); // Use the total frames from the config
+        int totalFrames = 300; // Not entirely sure what this does todo uitvogelen wat dit is en hernoemen
 
         int maximumSteps = 300;
         if(gameObject instanceof Drone){

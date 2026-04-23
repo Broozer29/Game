@@ -10,7 +10,10 @@ import net.riezebos.bruus.tbd.game.gameobjects.missiles.laserbeams.Laserbeam;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.laserbeams.LaserbeamConfiguration;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.level.LevelManager;
-import net.riezebos.bruus.tbd.game.movement.*;
+import net.riezebos.bruus.tbd.game.movement.BoardBlockUpdater;
+import net.riezebos.bruus.tbd.game.movement.Direction;
+import net.riezebos.bruus.tbd.game.movement.MovementConfiguration;
+import net.riezebos.bruus.tbd.game.movement.Point;
 import net.riezebos.bruus.tbd.game.movement.pathfinders.HoverPathFinder;
 import net.riezebos.bruus.tbd.game.movement.pathfinders.PathFinder;
 import net.riezebos.bruus.tbd.game.movement.pathfinders.StraightLinePathFinder;
@@ -50,6 +53,7 @@ public class TwinBossLaserbeamCentreManouvre implements BossActionable {
         twinsFiringLaser = 0;
         twinsTeleportedToMiddle = 0;
         twinsReset = 0;
+        lastAttackTime = GameState.getInstance().getGameSeconds();
 
         chargingLaserbeamSoundEffect.setMediaPlayerFinished(false);
         chargingLaserbeamSoundEffect.setMediaPlayerPlaying(false);
@@ -149,23 +153,17 @@ public class TwinBossLaserbeamCentreManouvre implements BossActionable {
         float movementSpeed = 3 + (LevelManager.getInstance().getBossDifficultyLevel() * 0.25f);
         MissileEnums missileType = MissileEnums.DefaultLaserBullet;
         PathFinder missilePathFinder = new StraightLinePathFinder();
-        MovementPatternSize movementPatternSize = MovementPatternSize.SMALL;
         MovementConfiguration movementConfiguration = MissileCreator.getInstance().createMissileMovementConfig(
-                movementSpeed, movementSpeed, missilePathFinder, movementPatternSize, Direction.RIGHT
+                movementSpeed, missilePathFinder, Direction.RIGHT
         );
 
 
         //Create remaining missile attributes and a missile configuration
         boolean isFriendly = false;
-        int maxHitPoints = 100;
-        int maxShields = 100;
-        AudioEnums deathSound = null;
-        boolean allowedToDealDamage = true;
-        String objectType = "Enemy Protoss Beacon";
 
-        MissileConfiguration missileConfiguration = MissileCreator.getInstance().createMissileConfiguration(missileType, maxHitPoints, maxShields,
-                deathSound, enemy.getDamage() / 2, missileType.getDeathOrExplosionImageEnum(), isFriendly, allowedToDealDamage, objectType,
-                false, false, true, false);
+        MissileConfiguration missileConfiguration = MissileCreator.getInstance().createMissileConfiguration(missileType,
+                enemy.getDamage() / 2, missileType.getDeathOrExplosionImageEnum(), isFriendly,
+                false, true, true);
 
 
         //Create the missile and finalize the creation process, then add it to the manager and consequently the game

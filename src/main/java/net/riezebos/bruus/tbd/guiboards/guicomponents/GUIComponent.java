@@ -2,7 +2,6 @@ package net.riezebos.bruus.tbd.guiboards.guicomponents;
 
 import net.riezebos.bruus.tbd.guiboards.GUIComponentItemInformation;
 import net.riezebos.bruus.tbd.guiboards.boardEnums.MenuFunctionEnums;
-import net.riezebos.bruus.tbd.guiboards.boardEnums.MenuObjectEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.Sprite;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteAnimation;
@@ -13,7 +12,6 @@ public class GUIComponent extends Sprite implements Actionable{
 
     protected SpriteAnimation animation;
     protected MenuFunctionEnums menuFunctionality;
-    private MenuObjectEnums menuObjectType;
     protected String descriptionOfComponent; //The description that gets shown in the description box
     protected GUIComponentItemInformation shopItemInformation;
     private int row;
@@ -57,14 +55,6 @@ public class GUIComponent extends Sprite implements Actionable{
 
     public void setMenuFunctionality (MenuFunctionEnums menuFunctionality) {
         this.menuFunctionality = menuFunctionality;
-    }
-
-    public MenuObjectEnums getMenuObjectType () {
-        return menuObjectType;
-    }
-
-    public void setMenuObjectType (MenuObjectEnums menuObjectType) {
-        this.menuObjectType = menuObjectType;
     }
 
     public GUIComponentItemInformation getShopItemInformation () {

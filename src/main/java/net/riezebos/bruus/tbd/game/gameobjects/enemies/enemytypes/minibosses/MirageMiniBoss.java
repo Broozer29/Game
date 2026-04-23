@@ -12,13 +12,11 @@ import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.items.effects.effectimplementations.SpawnCoinsOnDeath;
 import net.riezebos.bruus.tbd.game.movement.Direction;
 import net.riezebos.bruus.tbd.game.movement.MovementConfiguration;
-import net.riezebos.bruus.tbd.game.movement.MovementPatternSize;
 import net.riezebos.bruus.tbd.game.movement.Point;
 import net.riezebos.bruus.tbd.game.movement.pathfinders.BouncingPathFinder;
 import net.riezebos.bruus.tbd.game.movement.pathfinders.PathFinder;
 import net.riezebos.bruus.tbd.game.movement.pathfinders.StraightLinePathFinder;
 import net.riezebos.bruus.tbd.game.util.WithinVisualBoundariesCalculator;
-import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.AudioEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.AnimationManager;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteAnimation;
@@ -137,23 +135,17 @@ public class MirageMiniBoss extends Enemy {
         //Create missile movement attributes and create a movement configuration
 
         PathFinder missilePathFinder = new StraightLinePathFinder();
-        MovementPatternSize movementPatternSize = MovementPatternSize.SMALL;
         MovementConfiguration movementConfiguration = MissileCreator.getInstance().createMissileMovementConfig(
-                movementSpeed, movementSpeed, missilePathFinder, movementPatternSize, this.movementRotation
+                movementSpeed, missilePathFinder, this.movementRotation
         );
 
 
         //Create remaining missile attributes and a missile configuration
         boolean isFriendly = false;
-        int maxHitPoints = 100;
-        int maxShields = 100;
-        AudioEnums deathSound = null;
-        boolean allowedToDealDamage = true;
-        String objectType = "Mirage Mini Boss projectile";
 
-        MissileConfiguration missileConfiguration = MissileCreator.getInstance().createMissileConfiguration(missileType, maxHitPoints, maxShields,
-                deathSound, this.getDamage(), missileType.getDeathOrExplosionImageEnum(), isFriendly, allowedToDealDamage, objectType,
-                false, false, true, false);
+        MissileConfiguration missileConfiguration = MissileCreator.getInstance().createMissileConfiguration(missileType,
+                this.getDamage(), missileType.getDeathOrExplosionImageEnum(), isFriendly,
+                false, true, true);
 
 
         //Create the missile and finalize the creation process, then add it to the manager and consequently the game
@@ -206,10 +198,9 @@ public class MirageMiniBoss extends Enemy {
         clonedEnemy.getDestructionAnimation().setFrameDelay(2);
 
         clonedEnemy.resetMovementPath();
-        float newSpeed = getDifferentMovementSpeed(getDifferentMovementSpeed(this.getMovementConfiguration().getXMovementSpeed()));
+        float newSpeed = getDifferentMovementSpeed(getDifferentMovementSpeed(this.getMovementConfiguration().getMovementSpeed()));
 
-        clonedEnemy.getMovementConfiguration().setXMovementSpeed(newSpeed);
-        clonedEnemy.getMovementConfiguration().setYMovementSpeed(newSpeed);
+        clonedEnemy.getMovementConfiguration().setMovementSpeed(newSpeed);
         clonedEnemy.getMovementConfiguration().setDirection(getRandomDirection());
         //give it a random direction for the bouncing pathfinder
         clonedEnemy.setCenterCoordinates(this.getCenterXCoordinate(), this.getCenterYCoordinate());

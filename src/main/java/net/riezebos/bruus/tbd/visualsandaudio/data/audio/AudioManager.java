@@ -4,9 +4,7 @@ import net.riezebos.bruus.tbd.DevTestSettings;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.gamestate.GameStatusEnums;
 import net.riezebos.bruus.tbd.game.level.LevelManager;
-import net.riezebos.bruus.tbd.game.level.enums.LevelDifficulty;
 import net.riezebos.bruus.tbd.game.level.enums.LevelTypes;
-import net.riezebos.bruus.tbd.game.level.enums.MiniBossConfig;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.AudioEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.MusicMediaPlayer;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.osmediaplayers.MacOSMediaPlayer;
@@ -22,7 +20,7 @@ public class AudioManager {
     private AudioDatabase audioDatabase = AudioDatabase.getInstance();
     private AudioEnums currentSong;
     private Map<AudioEnums, Long> lastPlayTimeMap = new HashMap<>();
-    private MusicMediaPlayer musicMediaPlayer = MusicMediaPlayer.iTunesMacOS;
+    private MusicMediaPlayer musicMediaPlayer = MusicMediaPlayer.LocalFiles;
     private MacOSMediaPlayer macOSMediaPlayer = MacOSMediaPlayer.getInstance();
     private SpotifyMediaPlayer spotifyMediaPlayer = SpotifyMediaPlayer.getInstance();
     private double predictedEndGameSeconds = -1; // Predicted game seconds when the song will end
@@ -99,9 +97,9 @@ public class AudioManager {
     }
 
     // Plays the background music directly, overwriting existing music
-    public void playDefaultBackgroundMusic(AudioEnums audioType, boolean loop) {
+    public void playDefaultBackgroundMusicForALevel(AudioEnums audioType, boolean loop) {
         if (backGroundMusic != null) {
-            backGroundMusic.setLoop(false);
+            backGroundMusic.setLoop(loop);
             backGroundMusic.setPlaybackPosition(0);
             backGroundMusic.stopClip();
         }
@@ -163,29 +161,32 @@ public class AudioManager {
 
     public boolean isLevelMusicFinished() {
         if (LevelManager.getInstance().getLevelType().equals(LevelTypes.Boss) || this.musicMediaPlayer == MusicMediaPlayer.LocalFiles) {
-            if(backGroundMusic != null) {
-                return backGroundMusic.isFinished();
-            } else {
-                return false;
-            }
-        }
-
-        if (this.musicMediaPlayer == MusicMediaPlayer.iTunesMacOS || this.musicMediaPlayer == MusicMediaPlayer.Spotify) {
-            if (!hasStartedMusic()) {
-                return false; // Song hasn't started yet
-            }
-
-            if (predictedEndGameSeconds > 0) {
+            if (backGroundMusic != null) {
                 if (shouldResync(GameState.getInstance().getGameSeconds())) {
                     synchronizePrediction();
                     lastSyncGameSeconds = GameState.getInstance().getGameSeconds();
                 }
-                // Check if the current game seconds match or exceed the predicted end time
-                if (GameState.getInstance().getGameSeconds() >= predictedEndGameSeconds - 2f) {
-                    stopPlayback();
-                    goToNextSong();
-                    return true;
-                }
+                return backGroundMusic.isFinished();
+            } else {
+                return false; //might never be reached but safetynet should music fail to play
+            }
+        }
+
+        if (!hasStartedMusic()) {
+            return false; // Song hasn't started yet
+        }
+
+        //For itunes/spotify
+        if (predictedEndGameSeconds > 0) {
+            if (shouldResync(GameState.getInstance().getGameSeconds())) {
+                synchronizePrediction();
+                lastSyncGameSeconds = GameState.getInstance().getGameSeconds();
+            }
+            // Check if the current game seconds match or exceed the predicted end time
+            if (GameState.getInstance().getGameSeconds() >= predictedEndGameSeconds - 2f) {
+                stopPlayback();
+                goToNextSong();
+                return true;
             }
         }
 
@@ -198,6 +199,8 @@ public class AudioManager {
             return macOSMediaPlayer.hasStartedMusic();
         } else if (this.musicMediaPlayer == MusicMediaPlayer.Spotify) {
             return spotifyMediaPlayer.hasStartedMusic();
+        } else if (this.musicMediaPlayer == MusicMediaPlayer.LocalFiles) {
+            return this.backGroundMusic != null && this.backGroundMusic.isRunning();
         }
         return false;
     }
@@ -207,6 +210,8 @@ public class AudioManager {
             macOSMediaPlayer.stopPlayback();
         } else if (this.musicMediaPlayer == MusicMediaPlayer.Spotify) {
             spotifyMediaPlayer.stopPlayback();
+        } else if (this.musicMediaPlayer == MusicMediaPlayer.LocalFiles) {
+            backGroundMusic.stopClip();
         }
     }
 
@@ -215,6 +220,12 @@ public class AudioManager {
             macOSMediaPlayer.goToNextSong();
         } else if (this.musicMediaPlayer == MusicMediaPlayer.Spotify) {
             spotifyMediaPlayer.goToNextSong();
+        } else if (this.musicMediaPlayer == MusicMediaPlayer.LocalFiles) {
+            //idk moet dit iets doen? Reset de clip en stop hem voor de zekerheid, mogelijk geheel onnodig
+            backGroundMusic.setPlaybackPosition(0);
+            backGroundMusic.setLoop(false);
+            backGroundMusic.stopClip();
+            backGroundMusic = null; //release het attribuut voor de volgende
         }
     }
 
@@ -222,8 +233,8 @@ public class AudioManager {
         // Default resync interval
         double resyncInterval = 10;
 
-        if(predictedEndGameSeconds - currentGameSeconds < 10 ){
-            return false; //Never resync if we are almost finished to prevent incorrect portal spawning?
+        if (predictedEndGameSeconds > 1 && predictedEndGameSeconds - currentGameSeconds < 10) {
+            return false; //Never resync if we are almost finished to prevent incorrect portal spawning
         }
 
         // Determine if it's time to resync
@@ -243,24 +254,14 @@ public class AudioManager {
             spotifyMediaPlayer.synchronizePlaybackInfo();
             actualCurrentSeconds = spotifyMediaPlayer.getCurrentSeconds();
             totalSeconds = spotifyMediaPlayer.getTotalSeconds();
+        } else if (this.musicMediaPlayer == MusicMediaPlayer.LocalFiles) {
+            actualCurrentSeconds = backGroundMusic.getCurrentSecondsInPlayback();
+            totalSeconds = backGroundMusic.getTotalSecondsInPlayback();
         }
 
         if (actualCurrentSeconds >= 0 && totalSeconds > 0) {
             predictedEndGameSeconds = GameState.getInstance().getGameSeconds() + (totalSeconds - actualCurrentSeconds);
         }
-    }
-
-    public double getBackgroundSongTotalLength() {
-        if (this.musicMediaPlayer == MusicMediaPlayer.LocalFiles) {
-            return backGroundMusic.getTotalSecondsInPlayback();
-        }
-        if (this.musicMediaPlayer == MusicMediaPlayer.iTunesMacOS) {
-            return macOSMediaPlayer.getTotalSeconds();
-        }
-        if (this.musicMediaPlayer == MusicMediaPlayer.Spotify) {
-            return spotifyMediaPlayer.getTotalSeconds();
-        }
-        return -1;
     }
 
 
@@ -271,12 +272,20 @@ public class AudioManager {
         return false;
     }
 
-    public void playDefaultBackgroundMusic(LevelDifficulty difficulty, MiniBossConfig miniBossConfig, boolean loop) {
+    public void playDefaultBackgroundMusicForALevel() {
         if (this.musicMediaPlayer == MusicMediaPlayer.LocalFiles) {
-            //deprecated
-        }
+            if (backGroundMusic != null) {
+                backGroundMusic.setLoop(false);
+                backGroundMusic.setPlaybackPosition(0);
+                backGroundMusic.stopClip();
+            }
 
-        if (this.musicMediaPlayer == MusicMediaPlayer.iTunesMacOS) {
+            CustomAudioClip clip = new CustomAudioClip(AudioEnums.CustomMusicFile); //create a new customaudioclip as the database does NOT preload these, loop defaults to false
+            clip.startClip(); //fire & forget
+            backGroundMusic = clip;
+
+            lastSyncGameSeconds = GameState.getInstance().getGameSeconds() - 9; //manually force a resync after 1 sec through the isLevelMusicFinished() method
+        } else if (this.musicMediaPlayer == MusicMediaPlayer.iTunesMacOS) {
             macOSMediaPlayer.setPlaybackPositionTo0();
             macOSMediaPlayer.startPlayback();
 
@@ -287,7 +296,6 @@ public class AudioManager {
         } else if (this.musicMediaPlayer == MusicMediaPlayer.Spotify) {
             spotifyMediaPlayer.setPlaybackPositionTo0();
             spotifyMediaPlayer.startPlayback();
-            synchronizePrediction();
 
             double trackDuration = spotifyMediaPlayer.getTotalSeconds();
             predictedEndGameSeconds = GameState.getInstance().getGameSeconds() + trackDuration;
@@ -295,47 +303,8 @@ public class AudioManager {
         }
     }
 
-    public double getCurrentSecondsInPlayback() {
-        if (this.musicMediaPlayer == MusicMediaPlayer.LocalFiles) {
-            if (backGroundMusic == null) {
-                return -1;
-            }
-            return backGroundMusic.getCurrentSecondsInPlayback();
-        }
-
-        if (this.musicMediaPlayer == MusicMediaPlayer.iTunesMacOS) {
-            return macOSMediaPlayer.getCurrentSeconds();
-        }
-
-        if(this.musicMediaPlayer == MusicMediaPlayer.Spotify){
-            return spotifyMediaPlayer.getCurrentSeconds();
-        }
-
-        return -1;
-    }
-
-    public double getTotalPlaybackLengthInSeconds() {
-        if (this.musicMediaPlayer == MusicMediaPlayer.LocalFiles) {
-            if (backGroundMusic == null) {
-                return 0;
-            }
-            return backGroundMusic.getTotalSecondsInPlayback();
-        }
-
-        if (this.musicMediaPlayer == MusicMediaPlayer.iTunesMacOS) {
-            return macOSMediaPlayer.getTotalSeconds();
-        }
-
-        if(this.musicMediaPlayer == MusicMediaPlayer.Spotify){
-            return spotifyMediaPlayer.getTotalSeconds();
-        }
-
-        return -1;
-    }
-
-
     public void pauseAllAudio() {
-        if(DevTestSettings.devTestMuteMode){
+        if (DevTestSettings.devTestMuteMode) {
             return; //No audio should be playing at all
         }
 
@@ -361,7 +330,7 @@ public class AudioManager {
     }
 
     public void resumeAllAudio() {
-        if(DevTestSettings.devTestMuteMode){
+        if (DevTestSettings.devTestMuteMode) {
             return; //No audio should be playing at all
         }
 
@@ -387,23 +356,7 @@ public class AudioManager {
 
     }
 
-    public CustomAudioClip getBackGroundMusicCustomAudioclip() {
-        return backGroundMusic;
-    }
-
     public double getPredictedEndGameSeconds() {
         return predictedEndGameSeconds;
-    }
-
-    public void setPredictedEndGameSeconds(double predictedEndGameSeconds) {
-        this.predictedEndGameSeconds = predictedEndGameSeconds;
-    }
-
-    public boolean isMusicControlledByThirdPartyApp() {
-        return isMusicControlledByThirdPartyApp;
-    }
-
-    public void setMusicControlledByThirdPartyApp(boolean musicControlledByThirdPartyApp) {
-        isMusicControlledByThirdPartyApp = musicControlledByThirdPartyApp;
     }
 }

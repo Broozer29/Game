@@ -47,8 +47,7 @@ public class ProtossArbiter extends Drone {
         this.currentHitpoints = maxHitPoints;
         this.baseArmor = PlayerStats.getInstance().getProtossShipBaseArmor();
         super.initProtossDeathExplosion();
-        this.movementConfiguration.setXMovementSpeed(2.5f);
-        this.movementConfiguration.setYMovementSpeed(2.5f);
+        this.movementConfiguration.setMovementSpeed(2.5f);
         super.droneType = DroneTypes.ProtossArbiter;
         super.deathSound = AudioEnums.ProtossShipDeath;
         super.appliesOnHitEffects = true;

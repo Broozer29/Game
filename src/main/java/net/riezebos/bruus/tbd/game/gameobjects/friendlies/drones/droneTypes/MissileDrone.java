@@ -13,7 +13,6 @@ import net.riezebos.bruus.tbd.game.items.ItemEnums;
 import net.riezebos.bruus.tbd.game.items.PlayerInventory;
 import net.riezebos.bruus.tbd.game.movement.Direction;
 import net.riezebos.bruus.tbd.game.movement.MovementConfiguration;
-import net.riezebos.bruus.tbd.game.movement.MovementPatternSize;
 import net.riezebos.bruus.tbd.game.movement.Point;
 import net.riezebos.bruus.tbd.game.movement.pathfinders.PathFinder;
 import net.riezebos.bruus.tbd.game.movement.pathfinders.StraightLinePathFinder;
@@ -50,25 +49,23 @@ public class MissileDrone extends Drone {
         missileSpriteConfiguration.setImageType(missileType.getImageType());
         missileSpriteConfiguration.setScale(1f);
 
-        float xMovementSpeed = 7.5f;
-        float yMovementSpeed = 7.5f;
+        float movementSpeed = 7.5f;
 
         SpaceShip spaceship = (SpaceShip) this.ownerOrCreator;
         float damage = PlayerStats.getInstance().getBaseDroneDamage() + spaceship.getDroneDamageModifier();
         Direction rotation = Direction.RIGHT;
-        MovementPatternSize movementPatternSize = MovementPatternSize.SMALL;
         PathFinder pathFinder = selectPathFinder();
 
         MovementConfiguration movementConfiguration = MissileCreator.getInstance().createMissileMovementConfig(
-                xMovementSpeed, yMovementSpeed, pathFinder, movementPatternSize, rotation
+                movementSpeed, pathFinder, rotation
         );
         movementConfiguration.initDefaultSettingsForSpecializedPathFinders();
 
         boolean isFriendly = true;
 
         MissileConfiguration missileConfiguration = MissileCreator.getInstance().createMissileConfiguration(missileType
-                , 100, 100, null, damage, ImageEnums.Impact_Explosion_One, isFriendly, allowedToDealDamage, objectType,
-                missileType.isUsesBoxCollision(), false, false, false);
+                , damage, ImageEnums.Impact_Explosion_One, isFriendly,
+                false, true, false);
 
         Missile missile = MissileCreator.getInstance().createMissile(missileSpriteConfiguration, missileConfiguration, movementConfiguration);
 
@@ -115,25 +112,23 @@ public class MissileDrone extends Drone {
         missileSpriteConfiguration.setImageType(missileType.getImageType());
         missileSpriteConfiguration.setScale(1f);
 
-        float xMovementSpeed = 10f; //10 ipv 7,5 om te helpen met de accuracy voor focusfire item
-        float yMovementSpeed = 10f; //10 ipv 7,5 om te helpen met de accuracy voor focusfire item
+        float movementSpeed = 10f; //10 ipv 7,5 om te helpen met de accuracy voor focusfire item
 
         SpaceShip spaceship = (SpaceShip) this.ownerOrCreator;
         float damage = PlayerStats.getInstance().getBaseDroneDamage() + spaceship.getDroneDamageModifier();
         Direction rotation = Direction.RIGHT;
-        MovementPatternSize movementPatternSize = MovementPatternSize.SMALL;
         PathFinder pathFinder = selectPathFinder();
 
         MovementConfiguration movementConfiguration = MissileCreator.getInstance().createMissileMovementConfig(
-                xMovementSpeed, yMovementSpeed, pathFinder, movementPatternSize, rotation
+                movementSpeed, pathFinder, rotation
         );
         movementConfiguration.initDefaultSettingsForSpecializedPathFinders();
 
         boolean isFriendly = true;
 
-        MissileConfiguration missileConfiguration = MissileCreator.getInstance().createMissileConfiguration(missileType
-                , 100, 100, null, damage, ImageEnums.Impact_Explosion_One, isFriendly, allowedToDealDamage, objectType,
-                missileType.isUsesBoxCollision(), false, false, false);
+        MissileConfiguration missileConfiguration = MissileCreator.getInstance().createMissileConfiguration(missileType,
+                damage, ImageEnums.Impact_Explosion_One, isFriendly,
+                false, true, false);
 
         Missile missile = MissileCreator.getInstance().createMissile(missileSpriteConfiguration, missileConfiguration, movementConfiguration);
 

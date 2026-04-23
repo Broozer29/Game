@@ -14,13 +14,11 @@ import net.riezebos.bruus.tbd.game.gameobjects.missiles.missiletypes.YellowBossO
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.movement.Direction;
 import net.riezebos.bruus.tbd.game.movement.MovementConfiguration;
-import net.riezebos.bruus.tbd.game.movement.MovementPatternSize;
 import net.riezebos.bruus.tbd.game.movement.Point;
 import net.riezebos.bruus.tbd.game.movement.pathfinders.PathFinder;
 import net.riezebos.bruus.tbd.game.movement.pathfinders.StraightLinePathFinder;
 import net.riezebos.bruus.tbd.game.util.WithinVisualBoundariesCalculator;
 import net.riezebos.bruus.tbd.visualsandaudio.data.DataClass;
-import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.AudioEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteAnimation;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteAnimationConfiguration;
@@ -151,25 +149,18 @@ public class YellowBoss extends Enemy {
 
         float movementSpeed = isHealOrb ? 1.5f : 1.95f;
         PathFinder missilePathFinder = new StraightLinePathFinder();
-        MovementPatternSize movementPatternSize = MovementPatternSize.SMALL;
         MovementConfiguration movementConfiguration = MissileCreator.getInstance().createMissileMovementConfig(
-                movementSpeed, movementSpeed, missilePathFinder, movementPatternSize, Direction.RIGHT
+                movementSpeed, missilePathFinder, Direction.RIGHT
         );
 
 
         //Create remaining missile attributes and a missile configuration
         boolean isFriendly = false;
-        int maxHitPoints = 100;
-        int maxShields = 100;
-        AudioEnums deathSound = null;
-        boolean allowedToDealDamage = true;
-        String objectType = "Yellow Boss Orb";
 
-        MissileConfiguration missileConfiguration = MissileCreator.getInstance().createMissileConfiguration(missileType, maxHitPoints, maxShields,
-                deathSound, this.getDamage(),
+        MissileConfiguration missileConfiguration = MissileCreator.getInstance().createMissileConfiguration(missileType, this.getDamage(),
                 isHealOrb ? null : ImageEnums.YellowBossVoidCollision,
-                isFriendly, allowedToDealDamage, objectType,
-                false, false, true, false);
+                isFriendly,
+                false, true, false);
 
 
         //Create the missile and finalize the creation process, then add it to the manager and consequently the game

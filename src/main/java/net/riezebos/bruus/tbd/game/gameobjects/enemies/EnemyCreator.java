@@ -24,7 +24,6 @@ import net.riezebos.bruus.tbd.game.gamestate.GameMode;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.movement.Direction;
 import net.riezebos.bruus.tbd.game.movement.MovementConfiguration;
-import net.riezebos.bruus.tbd.game.movement.MovementPatternSize;
 import net.riezebos.bruus.tbd.game.movement.Point;
 import net.riezebos.bruus.tbd.game.movement.pathfinders.*;
 import net.riezebos.bruus.tbd.visualsandaudio.data.DataClass;
@@ -124,13 +123,10 @@ public class EnemyCreator {
     public static MovementConfiguration createMovementConfiguration(int xCoordinate, int yCoordinate, Direction movementDirection, float movementSpeed, PathFinder pathFinder) {
         MovementConfiguration moveConfig = new MovementConfiguration();
         moveConfig.setCurrentLocation(new Point(xCoordinate, yCoordinate));
-        moveConfig.setXMovementSpeed(movementSpeed);
-        moveConfig.setYMovementSpeed(movementSpeed);
-        moveConfig.setOriginalXMovementSpeed(movementSpeed);
-        moveConfig.setOriginalYMovementSpeed(movementSpeed);
+        moveConfig.setMovementSpeed(movementSpeed);
+        moveConfig.setOriginalMovementSpeed(movementSpeed);
         moveConfig.setPathFinder(pathFinder);
         moveConfig.setDirection(movementDirection);
-        moveConfig.setPatternSize(MovementPatternSize.SMALL);
 
         moveConfig.initDefaultSettingsForSpecializedPathFinders();
         //Specialized specific settings here if non-default settings need to be overwritten

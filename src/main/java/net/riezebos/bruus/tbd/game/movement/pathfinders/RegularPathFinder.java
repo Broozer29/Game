@@ -33,8 +33,8 @@ public class RegularPathFinder implements PathFinder {
         Point end = config.getDestination();
         Direction fallbackDirection = config.getRotation();
         boolean isFriendly = gameObject.isFriendly();
-        float XStepSize = config.getXMovementSpeed();
-        float YStepSize = config.getYMovementSpeed();
+        float XStepSize = config.getMovementSpeed();
+        float YStepSize = config.getMovementSpeed();
 
         if (end == null) {
             gameObjectWidth = gameObject.getWidth();

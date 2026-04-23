@@ -8,12 +8,10 @@ import net.riezebos.bruus.tbd.game.gameobjects.missiles.MissileCreator;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.MissileEnums;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.movement.MovementConfiguration;
-import net.riezebos.bruus.tbd.game.movement.MovementPatternSize;
 import net.riezebos.bruus.tbd.game.movement.pathfinders.HoverPathFinder;
 import net.riezebos.bruus.tbd.game.movement.pathfinders.PathFinder;
 import net.riezebos.bruus.tbd.game.movement.pathfinders.RegularPathFinder;
 import net.riezebos.bruus.tbd.game.util.WithinVisualBoundariesCalculator;
-import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.AudioEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.AnimationManager;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteAnimation;
@@ -30,7 +28,6 @@ public class Energizer extends Enemy {
 
 		this.damage = 15;
 		this.attackSpeed = 4f;
-//		allowedToFire = true;
 		this.detonateOnCollision = false;
 		this.knockbackStrength = 8;
 	}
@@ -70,23 +67,17 @@ public class Energizer extends Enemy {
 		//Create missile movement attributes and create a movement configuration
 		MissileEnums missileType = MissileEnums.BarrierProjectile;
 		PathFinder missilePathFinder = new RegularPathFinder();
-		MovementPatternSize movementPatternSize = MovementPatternSize.SMALL;
 		MovementConfiguration movementConfiguration = MissileCreator.getInstance().createMissileMovementConfig(
-				movementSpeed, movementSpeed, missilePathFinder, movementPatternSize, this.movementRotation
+				movementSpeed, missilePathFinder, this.movementRotation
 		);
 
 
 		//Create remaining missile attributes and a missile configuration
 		boolean isFriendly = false;
-		int maxHitPoints = 100;
-		int maxShields = 100;
-		AudioEnums deathSound = null;
-		boolean allowedToDealDamage = true;
-		String objectType = "Barrier Projectile";
 
-		MissileConfiguration missileConfiguration = MissileCreator.getInstance().createMissileConfiguration(missileType, maxHitPoints, maxShields,
-				deathSound, this.getDamage(), missileType.getDeathOrExplosionImageEnum(), isFriendly, allowedToDealDamage, objectType, false,
-				false, true, false);
+		MissileConfiguration missileConfiguration = MissileCreator.getInstance().createMissileConfiguration(missileType,
+                this.getDamage(), missileType.getDeathOrExplosionImageEnum(), isFriendly, false,
+				true, true);
 
 
 		//Create the missile and finalize the creation process, then add it to the manager and consequently the game

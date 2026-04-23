@@ -17,7 +17,6 @@ public class ContractCounter {
     }
 
     public boolean isFinished(){
-        System.out.println("Contract status: " + GameStatsTracker.getInstance().getEnemiesKilled() + " out of: " + (this.startCount + Contract.killCountRequired));
         return (this.startCount + Contract.killCountRequired) <= GameStatsTracker.getInstance().getEnemiesKilled();
     }
 

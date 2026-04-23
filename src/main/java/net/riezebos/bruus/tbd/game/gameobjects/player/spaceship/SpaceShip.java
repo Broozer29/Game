@@ -270,6 +270,11 @@ public class SpaceShip extends GameObject {
                 damageTaken *= 2f;
             }
 
+            Item item = PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.Adrenaline);
+            if(item != null){
+                item.applyEffectToObject(this); //apply adrenaline attack speed or refresh it
+            }
+
             damageTaken = Math.max(damageTaken - PlayerStats.getInstance().getFlatDamageReduction(), Math.min(1, damageTaken));
 
             AudioManager.getInstance().addAudio(AudioEnums.PlayerTakesDamage);

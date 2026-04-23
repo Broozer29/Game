@@ -29,7 +29,7 @@ public class HoverPathFinder implements PathFinder {
         Point start = new Point(gameObject.getXCoordinate(), gameObject.getYCoordinate());
 
         // Calculate the path to the randomly chosen end point
-        List<Point> pathList = calculatePath(start, endPoint, config.getXMovementSpeed(), config.getYMovementSpeed());
+        List<Point> pathList = calculatePath(start, endPoint, config.getMovementSpeed(), config.getMovementSpeed());
 
         return new Path(pathList, config.getRotation());
     }

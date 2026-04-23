@@ -12,6 +12,8 @@ public class CustomAudioClip {
     private boolean loop;
     private double pausedPosition = 0; // Position to remember on pause
 
+    private double songDuration = 0; //fallback for local files since the game doesnt wait for it to load before playing, thus returning 0
+
     private boolean isMediaPlayerPlaying = false; // Flag to track if MediaPlayer is playing
     private boolean isMediaPlayerFinished = false; // Flag to track if MediaPlayer has finished
     private boolean isPaused = false; // Flag to track paused state
@@ -40,6 +42,11 @@ public class CustomAudioClip {
                     isMediaPlayerPlaying = false; // Mark media as stopped
                     isMediaPlayerFinished = true; // Mark media as finished
                 });
+
+
+                if(clipType.equals(AudioEnums.CustomMusicFile)){
+                    this.songDuration = mediaPlayer.getTotalDuration().toSeconds(); //try to load it prematurely as a fallback
+                }
             }
         } catch (Exception e) {
             System.out.println("Missing song file: " + this.getAudioType());
@@ -52,7 +59,7 @@ public class CustomAudioClip {
         if (mediaPlayer != null && mediaPlayer.getTotalDuration() != null) {
             return mediaPlayer.getTotalDuration().toSeconds();
         }
-        return 0; // Default or fallback value
+        return songDuration; // Default or fallback value, defaults to 0
     }
 
     // Get the current playback position in seconds (for MediaPlayer and streams)

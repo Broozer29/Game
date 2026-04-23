@@ -36,8 +36,7 @@ public class BombaProjectile extends Missile {
 			//Prepare the missile for explosion
 			if(this.animation.getCurrentFrame() == this.animation.getTotalFrames()){
 				amountOfAnimationCyclesBeforeExplosion++;
-				this.movementConfiguration.setXMovementSpeed(this.movementConfiguration.getXMovementSpeed() * 0.9f);
-				this.movementConfiguration.setYMovementSpeed(this.movementConfiguration.getYMovementSpeed() * 0.9f);
+				this.movementConfiguration.setMovementSpeed(this.movementConfiguration.getMovementSpeed() * 0.9f);
 			}
 
 			//Explode the missile
@@ -52,8 +51,7 @@ public class BombaProjectile extends Missile {
 			int newFrameDelay = Math.max(0, this.animation.getFrameDelay() - 1);
 			//Slow the missile down if the animation isn't at max speed yet
 			if(newFrameDelay > 0){
-				this.movementConfiguration.setXMovementSpeed(this.movementConfiguration.getXMovementSpeed() * 0.8f);
-				this.movementConfiguration.setYMovementSpeed(this.movementConfiguration.getYMovementSpeed() * 0.8f);
+				this.movementConfiguration.setMovementSpeed(this.movementConfiguration.getMovementSpeed() * 0.8f);
 			}
 			this.animation.setFrameDelay(newFrameDelay);
 		}

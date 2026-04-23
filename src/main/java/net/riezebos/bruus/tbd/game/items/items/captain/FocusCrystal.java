@@ -28,7 +28,7 @@ public class FocusCrystal extends Item {
         //Not needed
     }
 
-    private boolean isValidOwner(GameObject attack, GameObject target) {
+    private boolean isValidOwner(GameObject attack) {
         GameObject ownerOrCreator = attack.getOwnerOrCreator();
         if (ownerOrCreator == null) {
             return false;
@@ -40,7 +40,7 @@ public class FocusCrystal extends Item {
     }
 
     public void modifyAttackingObject (GameObject attack, GameObject target) {
-        if(!isValidOwner(attack, target)){
+        if(!isValidOwner(attack)){
             return;
         }
 

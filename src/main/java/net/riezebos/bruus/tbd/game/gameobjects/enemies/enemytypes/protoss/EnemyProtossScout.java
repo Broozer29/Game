@@ -12,7 +12,6 @@ import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.level.LevelManager;
 import net.riezebos.bruus.tbd.game.movement.Direction;
 import net.riezebos.bruus.tbd.game.movement.MovementConfiguration;
-import net.riezebos.bruus.tbd.game.movement.MovementPatternSize;
 import net.riezebos.bruus.tbd.game.movement.Point;
 import net.riezebos.bruus.tbd.game.movement.pathfinders.DestinationPathFinder;
 import net.riezebos.bruus.tbd.game.movement.pathfinders.PathFinder;
@@ -49,14 +48,13 @@ public class EnemyProtossScout extends Enemy {
             target = PlayerManager.getInstance().getClosestSpaceShip(this);
         }
 
-        if(this.ownerOrCreator != null && this.ownerOrCreator.getCurrentHitpoints() <= 0){
+        if (this.ownerOrCreator != null && this.ownerOrCreator.getCurrentHitpoints() <= 0) {
             this.takeDamage(99999);
         }
 
         if (this.getCurrentLocation().equals(this.movementConfiguration.getDestination())) {
             updateMovementPath();
         }
-
 
 
         if (isTooFarAway()) {
@@ -83,6 +81,7 @@ public class EnemyProtossScout extends Enemy {
 
     private int minDistanceFromCarrier = 80;
     private int maxDistanceFromCarrier = 350;
+
     private void updateMovementPath() {
         this.movementConfiguration.resetMovementPath();
         this.movementConfiguration.setCurrentLocation(new Point(this.getXCoordinate(), this.getYCoordinate()));
@@ -90,7 +89,7 @@ public class EnemyProtossScout extends Enemy {
 
         GameObject target = this.ownerOrCreator;
 
-        if(!EnemyManager.getInstance().getEnemiesByType(EnemyEnums.EnemyCarrierBeacon).isEmpty()){
+        if (!EnemyManager.getInstance().getEnemiesByType(EnemyEnums.EnemyCarrierBeacon).isEmpty()) {
             target = EnemyManager.getInstance().getEnemiesByType(EnemyEnums.EnemyCarrierBeacon).get(0);
             minDistanceFromCarrier = 20;
             maxDistanceFromCarrier = 250 + Math.min((LevelManager.getInstance().getBossDifficultyLevel() * 10), 50);
@@ -127,13 +126,13 @@ public class EnemyProtossScout extends Enemy {
         if (slow != isMovingSlow) { // Only update if there is a state change
             isMovingSlow = slow;
             float newSpeed = slow ? (defaultMoveSpeed * 0.7f) : defaultMoveSpeed;
-            this.getMovementConfiguration().setXMovementSpeed(newSpeed); // Only call when needed
+            this.getMovementConfiguration().setMovementSpeed(newSpeed); // Only call when needed
         }
     }
 
     private boolean isTooFarAway() {
         int attackRangeToCheck = attackRange;
-        if(wasFiringAtTarget){
+        if (wasFiringAtTarget) {
             attackRangeToCheck += 25; //voorkomt het constant roteren van locking/losing lock
         }
 
@@ -151,21 +150,18 @@ public class EnemyProtossScout extends Enemy {
         missileSpriteConfiguration.setImageType(missileType.getImageType());
         missileSpriteConfiguration.setScale(1f);
 
-        float xMovementSpeed = 5f;
-        float yMovementSpeed = 5f;
+        float movementSpeed = 5f;
         Direction rotation = Direction.RIGHT;
-        MovementPatternSize movementPatternSize = MovementPatternSize.SMALL;
         PathFinder pathFinder = new StraightLinePathFinder();
 
         MovementConfiguration movementConfiguration = MissileCreator.getInstance().createMissileMovementConfig(
-                xMovementSpeed, yMovementSpeed, pathFinder, movementPatternSize, rotation
+                movementSpeed, pathFinder, rotation
         );
         movementConfiguration.initDefaultSettingsForSpecializedPathFinders();
 
-        boolean isFriendly = false;
         MissileConfiguration missileConfiguration = MissileCreator.getInstance().createMissileConfiguration(missileType
-                , 100, 100, null, damage, ImageEnums.Impact_Explosion_One, isFriendly, allowedToDealDamage, objectType,
-                missileType.isUsesBoxCollision(), false, false, false);
+                ,damage, ImageEnums.Impact_Explosion_One, false,
+                false, true, true);
 
         Missile missile = MissileCreator.getInstance().createMissile(missileSpriteConfiguration, missileConfiguration, movementConfiguration);
         missile.setOwnerOrCreator(this);

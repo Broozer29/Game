@@ -38,18 +38,11 @@ public class Needler extends Enemy {
     private void activateNeedler(){
         if(!activated) {
             OnScreenTextManager.getInstance().addText("!", this.getCenterXCoordinate(), this.getCenterYCoordinate(), 25);
-            if (this.movementConfiguration.getXMovementSpeed() < 1) {
-                this.movementConfiguration.setXMovementSpeed(1);
+            if (this.movementConfiguration.getMovementSpeed() < 1) {
+                this.movementConfiguration.setMovementSpeed(1);
             } else {
-                this.movementConfiguration.setXMovementSpeed(this.movementConfiguration.getXMovementSpeed() * 2);
+                this.movementConfiguration.setMovementSpeed(this.movementConfiguration.getMovementSpeed() * 2);
             }
-
-            if (this.movementConfiguration.getYMovementSpeed() < 1) {
-                this.movementConfiguration.setYMovementSpeed(1);
-            } else {
-                this.movementConfiguration.setYMovementSpeed(this.movementConfiguration.getYMovementSpeed() * 2);
-            }
-
 
             SpaceShip spaceship = PlayerManager.getInstance().getClosestSpaceShip(this);
             Point destination = new Point(

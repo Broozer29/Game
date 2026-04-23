@@ -1,10 +1,6 @@
 package net.riezebos.bruus.tbd.game.movement;
 
-import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
 import net.riezebos.bruus.tbd.game.movement.pathfinders.PathFinder;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class MovementConfiguration {
 
@@ -14,51 +10,18 @@ public class MovementConfiguration {
 	private PathFinder pathFinder;
 	private Path currentPath;
 	private int stepsTaken;
-	private float XMovementSpeed;
-	private float YMovementSpeed;
-    private float originalXMovementSpeed;
-    private float originalYMovementSpeed;
-
-	private float lastUsedXMovementSpeed;
-	private float lastUsedYMovementSpeed;
+	private float movementSpeed;
+    private float originalMovementSpeed;
+	private float lastUsedMovementSpeed;
 	private int currentBoardBlock;
 	private int lastKnownTargetX;
 	private int lastKnownTargetY;
 
 	//For the diamond shape pathfinder
-	private int diamondWidth;
-	private int diamondHeight;
-	//
-	
-	protected boolean hasLock;
-	private Point nextPoint;
-	private GameObject targetToChase;
-
-	//For the zigzag pathfinder
-	private int stepsBeforeBounceInOtherDirection;
-	//
-
-	//For the spiral / Orbit pathfinder
-	private int curveDistance;
-	private double angleStep;
-	private double spiralRadius;
-	private double radiusIncrement;
-
-	//For orbit
 	private double orbitRadius;
-
-	//For the Triangle pathfinder:
-	private int primaryDirectionStepAmount;
-	private int firstDiagonalDirectionStepAmount;
-	private int secondDiagonalDirectionStepAmount;
-
-	private List<GameObject> untrackableObjects = new ArrayList<GameObject>();
 
 	//For the hover pathfinder
 	private int boardBlockToHoverIn;
-
-	private MovementPatternSize patternSize;
-	private int orbitSpeed;
 	private float movementSpeedModifier = 1.0f;
 
 
@@ -68,41 +31,16 @@ public class MovementConfiguration {
 
 	public void resetMovementPath(){
 		this.currentPath = null;
-		this.nextPoint = null;
 		this.destination = null;
 		this.currentLocation = null;
 	}
 
 	public void initDefaultSettingsForSpecializedPathFinders(){
-		if(patternSize != null) {
-			//Diamnond
-			setDiamondWidth(patternSize.getDiamondWidth());
-			setDiamondHeight(patternSize.getDiamondHeight());
-			setStepsBeforeBounceInOtherDirection(patternSize.getStepsBeforeBounceInOtherDirection());
-
-			//Spiral
-			setRadiusIncrement(patternSize.getRadiusIncrement());
-
-			//Triangle
-			setPrimaryDirectionStepAmount(patternSize.getPrimaryDirectionStepAmount());
-			setFirstDiagonalDirectionStepAmount(patternSize.getSecondaryDirectionStepAmount());
-			setSecondDiagonalDirectionStepAmount(patternSize.getSecondaryDirectionStepAmount());
-
-
-		}
-		//spiral
-		setAngleStep(0.1);
-		setCurveDistance(1);
-		setSpiralRadius(5);
-
-
 		//Hover
 		setBoardBlockToHoverIn(6);
-		setHasLock(true);
 
 		//orbit
 		setOrbitRadius(85);
-		setOrbitSpeed(300);
 	}
 
 
@@ -145,63 +83,34 @@ public class MovementConfiguration {
 	}
 
 
-	public float getXMovementSpeed() {
-		return XMovementSpeed * movementSpeedModifier;
+	public float getMovementSpeed() {
+		return movementSpeed * movementSpeedModifier;
 	}
 
 
-	public void setXMovementSpeed(float xMovementSpeed) {
-		XMovementSpeed = xMovementSpeed;
+	public void setMovementSpeed(float xMovementSpeed) {
+		movementSpeed = xMovementSpeed;
 	}
 
 
-	public float getYMovementSpeed() {
-		if(YMovementSpeed == 0){
-			YMovementSpeed = XMovementSpeed;
-		}
-		return YMovementSpeed * movementSpeedModifier;
-	}
 
-    public float getOriginalXMovementSpeed() {
-        return originalXMovementSpeed;
+    public float getOriginalMovementSpeed() {
+        return originalMovementSpeed;
     }
 
-    public void setOriginalXMovementSpeed(float originalXMovementSpeed) {
-        this.originalXMovementSpeed = originalXMovementSpeed;
+    public void setOriginalMovementSpeed(float originalMovementSpeed) {
+        this.originalMovementSpeed = originalMovementSpeed;
     }
 
-    public float getOriginalYMovementSpeed() {
-        return originalYMovementSpeed;
-    }
 
-    public void setOriginalYMovementSpeed(float originalYMovementSpeed) {
-        this.originalYMovementSpeed = originalYMovementSpeed;
-    }
-
-    public void setYMovementSpeed(float yMovementSpeed) {
-		YMovementSpeed = yMovementSpeed;
+	public float getLastUsedMovementSpeed() {
+		return lastUsedMovementSpeed;
 	}
 
 
-	public float getLastUsedXMovementSpeed() {
-		return lastUsedXMovementSpeed;
+	public void setLastUsedMovementSpeed(float lastUsedMovementSpeed) {
+		this.lastUsedMovementSpeed = lastUsedMovementSpeed;
 	}
-
-
-	public void setLastUsedXMovementSpeed(float lastUsedXMovementSpeed) {
-		this.lastUsedXMovementSpeed = lastUsedXMovementSpeed;
-	}
-
-
-	public float getLastUsedYMovementSpeed() {
-		return lastUsedYMovementSpeed;
-	}
-
-
-	public void setLastUsedYMovementSpeed(float lastUsedYMovementSpeed) {
-		this.lastUsedYMovementSpeed = lastUsedYMovementSpeed;
-	}
-
 
 	public int getCurrentBoardBlock() {
 		return currentBoardBlock;
@@ -252,146 +161,13 @@ public class MovementConfiguration {
 		return this.stepsTaken;
 	}
 
-
-	public boolean hasLock() {
-		return hasLock;
-	}
-
-
-	public void setHasLock(boolean hasLock) {
-		this.hasLock = hasLock;
-	}
-
-
-	public Point getNextPoint() {
-		return nextPoint;
-	}
-
-
-	public void setNextPoint(Point nextPoint) {
-		this.nextPoint = nextPoint;
-	}
-
-
-	public GameObject getTargetToChase () {
-		return targetToChase;
-	}
-
-
-	public void setTargetToChase (GameObject targetToChase) {
-		this.targetToChase = targetToChase;
-	}
-
-	public int getDiamondWidth () {
-		return diamondWidth;
-	}
-
-	public void setDiamondWidth (int diamondWidth) {
-		this.diamondWidth = diamondWidth;
-	}
-
-	public int getDiamondHeight () {
-		return diamondHeight;
-	}
-
-	public void setDiamondHeight (int diamondHeight) {
-		this.diamondHeight = diamondHeight;
-	}
-
-	public boolean isHasLock () {
-		return hasLock;
-	}
-
-	public int getStepsBeforeBounceInOtherDirection () {
-		return stepsBeforeBounceInOtherDirection;
-	}
-
-	public void setStepsBeforeBounceInOtherDirection (int stepsBeforeBounceInOtherDirection) {
-		this.stepsBeforeBounceInOtherDirection = stepsBeforeBounceInOtherDirection;
-	}
-
-	public int getCurveDistance () {
-		return curveDistance;
-	}
-
-	//KEEP THIS SMALL, IT'S THE MOVEMENT SPEED
-	public void setCurveDistance (int curveDistance) {
-		this.curveDistance = curveDistance;
-	}
-
-	public double getAngleStep () {
-		return angleStep;
-	}
-
-	public void setAngleStep (double angleStep) {
-		this.angleStep = angleStep;
-	}
-
-	public double getSpiralRadius () {
-		return spiralRadius;
-	}
-
-	public void setSpiralRadius (double spiralRadius) {
-		this.spiralRadius = spiralRadius;
-	}
-
-	public double getRadiusIncrement () {
-		return radiusIncrement;
-	}
-
-	public void setRadiusIncrement (double radiusIncrement) {
-		this.radiusIncrement = radiusIncrement;
-	}
-
-	public int getPrimaryDirectionStepAmount () {
-		return primaryDirectionStepAmount;
-	}
-
-	public void setPrimaryDirectionStepAmount (int primaryDirectionStepAmount) {
-		this.primaryDirectionStepAmount = primaryDirectionStepAmount;
-	}
-
-	public int getFirstDiagonalDirectionStepAmount () {
-		return firstDiagonalDirectionStepAmount;
-	}
-
-	public void setFirstDiagonalDirectionStepAmount (int firstDiagonalDirectionStepAmount) {
-		this.firstDiagonalDirectionStepAmount = firstDiagonalDirectionStepAmount;
-	}
-
-	public int getSecondDiagonalDirectionStepAmount () {
-		return secondDiagonalDirectionStepAmount;
-	}
-
-	public void setSecondDiagonalDirectionStepAmount (int secondDiagonalDirectionStepAmount) {
-		this.secondDiagonalDirectionStepAmount = secondDiagonalDirectionStepAmount;
-	}
-
-	public List<GameObject> getUntrackableObjects () {
-		return untrackableObjects;
-	}
-
-	public void setUntrackableObjects (List<GameObject> untrackableObjects) {
-		this.untrackableObjects = untrackableObjects;
-	}
-
 	public void deleteConfiguration(){
-		this.targetToChase = null;
 		this.pathFinder = null;
 		this.currentPath = null;
-		this.nextPoint = null;
 	}
 
 	public double getOrbitRadius () {
 		return orbitRadius;
-	}
-
-	public int getOrbitSpeed () {
-		return orbitSpeed;
-	}
-
-	public void setOrbitSpeed (int orbitSpeed) {
-		this.orbitSpeed = orbitSpeed;
 	}
 
 	public void setOrbitRadius (double orbitRadius) {
@@ -404,14 +180,6 @@ public class MovementConfiguration {
 
 	public void setBoardBlockToHoverIn (int boardBlockToHoverIn) {
 		this.boardBlockToHoverIn = boardBlockToHoverIn;
-	}
-
-	public MovementPatternSize getPatternSize () {
-		return patternSize;
-	}
-
-	public void setPatternSize (MovementPatternSize patternSize) {
-		this.patternSize = patternSize;
 	}
 
 	public float getMovementSpeedModifier () {

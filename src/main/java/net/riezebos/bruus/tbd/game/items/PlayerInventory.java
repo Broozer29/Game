@@ -101,6 +101,8 @@ public class PlayerInventory {
 
     public Item createItemFromEnum(ItemEnums itemEnum) {
         switch (itemEnum) {
+            case Adrenaline:
+                return new Adrenaline();
             case HelpRequested:
                 return new HelpRequested();
             case BigIron:

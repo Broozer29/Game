@@ -3,7 +3,6 @@ package net.riezebos.bruus.tbd.game.gameobjects.missiles.missiletypes;
 import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.*;
 import net.riezebos.bruus.tbd.game.movement.MovementConfiguration;
-import net.riezebos.bruus.tbd.game.movement.MovementPatternSize;
 import net.riezebos.bruus.tbd.game.movement.pathfinders.OrbitPathFinder;
 import net.riezebos.bruus.tbd.game.util.OrbitingObjectsFormatter;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
@@ -61,23 +60,21 @@ public class OrbitterWithOrbits extends Missile {
 
         MovementConfiguration movementConfiguration1 = target.getMovementConfiguration();
         MovementConfiguration moveConfig = MissileCreator.getInstance().createMissileMovementConfig(
-                movementConfiguration1.getXMovementSpeed(), movementConfiguration1.getYMovementSpeed(),
-                new OrbitPathFinder(target), MovementPatternSize.SMALL,
+                movementConfiguration1.getMovementSpeed(),
+                new OrbitPathFinder(target),
                 movementConfiguration1.getRotation());
         moveConfig.initDefaultSettingsForSpecializedPathFinders();
         moveConfig.setLastKnownTargetX(target.getCenterXCoordinate());
         moveConfig.setLastKnownTargetY(target.getCenterYCoordinate());
-        moveConfig.setLastUsedXMovementSpeed(movementConfiguration1.getXMovementSpeed());
-        moveConfig.setLastUsedYMovementSpeed(movementConfiguration1.getYMovementSpeed());
+        moveConfig.setLastUsedMovementSpeed(movementConfiguration1.getMovementSpeed());
         moveConfig.setOrbitRadius(orbitRadius);
 
         float damage = 10;
 
         MissileConfiguration missileConfig = MissileCreator.getInstance().createMissileConfiguration(
-                MissileEnums.Orbitter, 100, 0, null, damage,
+                MissileEnums.Orbitter, damage,
                 MissileEnums.Orbitter.getDeathOrExplosionImageEnum(),
-                target.isFriendly(), true, "OrbitterMissile", false, false, true
-                , false);
+                target.isFriendly(),  false, true, true);
 
         Missile orbitingMissile = MissileCreator.getInstance().createMissile(spriteConfig, missileConfig, moveConfig);
         orbitingMissile.setAllowedVisualsToRotate(false);

@@ -108,14 +108,14 @@ public class BoardManager extends JFrame {
     private void playMenuMusic () {
 //        if(audioManager.getBackGroundMusicCustomAudioclip() != null && !audioManager.getBackGroundMusicCustomAudioclip().getAudioType().equals(AudioEnums.mainmenu)) {
             audioManager.stopMusicAudio();
-            audioManager.playDefaultBackgroundMusic(AudioEnums.mainmenu, true);
+            audioManager.playDefaultBackgroundMusicForALevel(AudioEnums.mainmenu, true);
 //        }
 
     }
 
     private void playShopMenuMusic () {
         audioManager.stopMusicAudio();
-        audioManager.playDefaultBackgroundMusic(AudioEnums.Lemmino_Firecracker, true);
+        audioManager.playDefaultBackgroundMusicForALevel(AudioEnums.Lemmino_Firecracker, true);
     }
 
     private void stopMusic(){

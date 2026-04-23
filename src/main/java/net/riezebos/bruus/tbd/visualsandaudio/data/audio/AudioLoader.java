@@ -4,7 +4,9 @@ import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.AudioEnums;
 
+import java.io.File;
 import java.net.URL;
+import java.util.Random;
 
 public class AudioLoader {
 
@@ -36,7 +38,38 @@ public class AudioLoader {
     }
 
 
+    /**
+     * Helper method to get a random custom music file from /audio/music/custom/ folder.
+     * If the folder is empty or doesn't exist, falls back to a random boss song.
+     * @return The path to a random custom music file or fallback boss song
+     */
+    private String getRandomCustomMusicFile() {
+        try {
+            URL customFolderUrl = getClass().getResource("/audio/music/custom");
+            if (customFolderUrl != null) {
+                File customFolder = new File(customFolderUrl.toURI());
+                if (customFolder.exists() && customFolder.isDirectory()) {
+                    File[] wavFiles = customFolder.listFiles((dir, name) -> name.toLowerCase().endsWith(".wav"));
+                    if (wavFiles != null && wavFiles.length > 0) {
+                        Random random = new Random();
+                        File selectedFile = wavFiles[random.nextInt(wavFiles.length)];
+                        return "/audio/music/custom/" + selectedFile.getName();
+                    }
+                }
+            }
+        } catch (Exception e) {
+            System.err.println("Error accessing custom music folder: " + e.getMessage());
+        }
+        // Fallback to random boss song if folder is empty or doesn't exist
+        return convertAudioToFileString(AudioEnums.getRandomBossSong());
+    }
+
     public String convertAudioToFileString (AudioEnums audioFile) {
+        if(audioFile == AudioEnums.CustomMusicFile){
+            return getRandomCustomMusicFile();
+        }
+
+
         switch (audioFile) {
             case CaptainMisc0: return "/audio/selectclass/captain/misc0.wav";
             case CaptainMisc1: return "/audio/selectclass/captain/misc1.wav";
@@ -134,6 +167,8 @@ public class AudioLoader {
                 return "/audio/music/Mausoleum mash.wav";
             case Arisen:
                 return "/audio/music/Arisen.wav";
+            case Enraged:
+                return "/audio/music/enraged.wav";
             case Lemmino_Firecracker:
                 return "/audio/music/lemmino Firecracker.wav";
             case NotEnoughMinerals:

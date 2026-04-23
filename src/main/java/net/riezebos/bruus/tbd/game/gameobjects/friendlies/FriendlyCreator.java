@@ -51,10 +51,8 @@ public class FriendlyCreator {
         MovementConfiguration movementConfiguration = new MovementConfiguration();
         movementConfiguration.setPathFinder(new OrbitPathFinder(spaceShip));
         movementConfiguration.initDefaultSettingsForSpecializedPathFinders();
-        movementConfiguration.setXMovementSpeed(droneTypes.getMovementSpeed());
-        movementConfiguration.setYMovementSpeed(droneTypes.getMovementSpeed());
-        movementConfiguration.setLastUsedXMovementSpeed(droneTypes.getMovementSpeed());
-        movementConfiguration.setLastUsedYMovementSpeed(droneTypes.getMovementSpeed());
+        movementConfiguration.setMovementSpeed(droneTypes.getMovementSpeed());
+        movementConfiguration.setLastUsedMovementSpeed(droneTypes.getMovementSpeed());
         movementConfiguration.setDirection(Direction.RIGHT);
         movementConfiguration.setOrbitRadius(50);
 
@@ -91,10 +89,8 @@ public class FriendlyCreator {
         MovementConfiguration movementConfiguration = new MovementConfiguration();
         movementConfiguration.setPathFinder(new DestinationPathFinder());
         movementConfiguration.initDefaultSettingsForSpecializedPathFinders();
-        movementConfiguration.setXMovementSpeed(droneType.getMovementSpeed());
-        movementConfiguration.setYMovementSpeed(droneType.getMovementSpeed());
-        movementConfiguration.setLastUsedXMovementSpeed(droneType.getMovementSpeed());
-        movementConfiguration.setLastUsedYMovementSpeed(droneType.getMovementSpeed());
+        movementConfiguration.setMovementSpeed(droneType.getMovementSpeed());
+        movementConfiguration.setLastUsedMovementSpeed(droneType.getMovementSpeed());
         movementConfiguration.setDirection(Direction.RIGHT);
         movementConfiguration.setDestination(ProtossUtils.getRandomPoint(owner));
         DamageReduction damageReduction = new DamageReduction(9999999, 0.25f, null);
@@ -146,8 +142,7 @@ public class FriendlyCreator {
         MovementConfiguration movementConfiguration = new MovementConfiguration();
         movementConfiguration.setPathFinder(new DestinationPathFinder());
         movementConfiguration.initDefaultSettingsForSpecializedPathFinders();
-        movementConfiguration.setXMovementSpeed(DroneTypes.CarrierDrone.getMovementSpeed());
-        movementConfiguration.setYMovementSpeed(DroneTypes.CarrierDrone.getMovementSpeed());
+        movementConfiguration.setMovementSpeed(DroneTypes.CarrierDrone.getMovementSpeed());
         movementConfiguration.setDirection(Direction.RIGHT);
 
         CarrierBeacon carrierBeacon = new CarrierBeacon(spriteAnimationConfiguration, friendlyObjectConfiguration, movementConfiguration);

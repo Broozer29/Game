@@ -13,16 +13,6 @@ public class AudioDatabase {
 
     private static AudioDatabase instance = new AudioDatabase();
     private PerformanceLogger performanceLogger = null;
-    private CustomAudioClip FuriWisdomOfRage;
-    private CustomAudioClip nomad;
-    private CustomAudioClip keygen;
-    private CustomAudioClip bloodOnTheDanceFloor;
-    private CustomAudioClip waveshaperMonster;
-    private CustomAudioClip mausoleumMash;
-    private CustomAudioClip arisen;
-
-    private CustomAudioClip silentAudio;
-
 
     private List<AudioEnums> clipsWithThresholds = new ArrayList<>();
 
@@ -31,6 +21,15 @@ public class AudioDatabase {
     private Map<AudioEnums, List<CustomAudioClip>> audioClipsMap = new HashMap<>();
 
     private Map<AudioEnums, Integer> clipSizeConfig = new HashMap<>() {{
+        put(AudioEnums.Furi_Wisdowm_Of_Rage, 1);
+        put(AudioEnums.nomad, 1);
+        put(AudioEnums.keygen, 1);
+        put(AudioEnums.Blood_On_The_Dancefloor, 1);
+        put(AudioEnums.WaveshaperMonster, 1);
+        put(AudioEnums.MausoleumMash, 1);
+        put(AudioEnums.Arisen, 1);
+        put(AudioEnums.SilentAudio, 1);
+        put(AudioEnums.Enraged, 1);
         put(AudioEnums.Lemmino_Firecracker, 1);
         put(AudioEnums.Filth, 1);
         put(AudioEnums.LeanRockShred, 1);
@@ -131,7 +130,6 @@ public class AudioDatabase {
         clipsWithThresholds.add(AudioEnums.Large_Ship_Destroyed);
         clipsWithThresholds.add(AudioEnums.Destroyed_Explosion);
         clipsWithThresholds.add(AudioEnums.Alien_Bomb_Impact);
-        initMusic();
         loadSoundEffects();
     }
 
@@ -149,17 +147,6 @@ public class AudioDatabase {
             }
             return false; // Keep in list
         });
-    }
-
-    private void initMusic() {
-        FuriWisdomOfRage = new CustomAudioClip(AudioEnums.Furi_Wisdowm_Of_Rage);
-        bloodOnTheDanceFloor = new CustomAudioClip(AudioEnums.Blood_On_The_Dancefloor);
-        silentAudio = new CustomAudioClip(AudioEnums.SilentAudio);
-        keygen = new CustomAudioClip(AudioEnums.keygen);
-        nomad = new CustomAudioClip(AudioEnums.nomad);
-        waveshaperMonster = new CustomAudioClip(AudioEnums.WaveshaperMonster);
-        mausoleumMash = new CustomAudioClip(AudioEnums.MausoleumMash);
-        arisen = new CustomAudioClip(AudioEnums.Arisen);
     }
 
     private void loadSoundEffects() {
@@ -193,26 +180,7 @@ public class AudioDatabase {
 
 
     public CustomAudioClip getAudioClip(AudioEnums audioType) {
-        switch (audioType) {
-            case SilentAudio:
-                return silentAudio;
-            case Furi_Wisdowm_Of_Rage:
-                return FuriWisdomOfRage;
-            case Blood_On_The_Dancefloor:
-                return bloodOnTheDanceFloor;
-            case nomad:
-                return this.nomad;
-            case keygen:
-                return this.keygen;
-            case WaveshaperMonster:
-                return this.waveshaperMonster;
-            case MausoleumMash:
-                return this.mausoleumMash;
-            case Arisen:
-                return this.arisen;
-            default:
-                return getAvailableClip(audioType);
-        }
+        return getAvailableClip(audioType);
     }
 
 

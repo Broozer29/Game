@@ -19,8 +19,7 @@ public class HighVelocityLasers extends Item {
     @Override
     public void applyEffectToObject (GameObject gameObject) {
         if(gameObject instanceof Missile missile){
-            missile.getMovementConfiguration().setXMovementSpeed(missile.getMovementConfiguration().getXMovementSpeed() * (1 + (moveSpeedModifier * quantity)));
-            missile.getMovementConfiguration().setYMovementSpeed(missile.getMovementConfiguration().getYMovementSpeed() * (1 + (moveSpeedModifier * quantity)));
+            missile.getMovementConfiguration().setMovementSpeed(missile.getMovementConfiguration().getMovementSpeed() * (1 + (moveSpeedModifier * quantity)));
         }
     }
 

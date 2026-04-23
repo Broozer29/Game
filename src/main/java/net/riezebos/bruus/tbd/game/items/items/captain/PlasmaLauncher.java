@@ -10,10 +10,8 @@ import net.riezebos.bruus.tbd.game.items.ItemEnums;
 import net.riezebos.bruus.tbd.game.items.enums.ItemApplicationEnum;
 import net.riezebos.bruus.tbd.game.movement.Direction;
 import net.riezebos.bruus.tbd.game.movement.MovementConfiguration;
-import net.riezebos.bruus.tbd.game.movement.MovementPatternSize;
 import net.riezebos.bruus.tbd.game.movement.Point;
 import net.riezebos.bruus.tbd.game.movement.pathfinders.StraightLinePathFinder;
-import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.AudioEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteConfiguration;
 
@@ -62,7 +60,7 @@ public class PlasmaLauncher extends Item {
         int movementSpeed = 6;
         StraightLinePathFinder pathFinder = new StraightLinePathFinder();
         MovementConfiguration movementConfiguration = MissileCreator.getInstance().createMissileMovementConfig(
-                movementSpeed, movementSpeed, pathFinder, MovementPatternSize.SMALL, Direction.RIGHT
+                movementSpeed, pathFinder, Direction.RIGHT
         );
         movementConfiguration.initDefaultSettingsForSpecializedPathFinders();
 
@@ -97,17 +95,11 @@ public class PlasmaLauncher extends Item {
 
     private MissileConfiguration getMissileConfiguration(boolean isFriendly) {
         ImageEnums impactType = PlayerStats.getInstance().getPlayerMissileImpactImage();
-        int maxHitPoints = 1000;
-        int maxShields = 0;
-        AudioEnums deathSound = null;
-
-        boolean allowedToDealDamage = true;
-        String objectType = "Plasma Launcher Missile";
         float damage = PlayerStats.getInstance().getBaseDamage() * (damageMultiplier * quantity);
 
         return MissileCreator.getInstance().createMissileConfiguration(MissileEnums.DefaultAnimatedBullet,
-                maxHitPoints, maxShields, deathSound, damage, impactType, isFriendly, allowedToDealDamage,
-                objectType, false, false, false, false);
+                damage, impactType, isFriendly,
+                false, false, true);
     }
 
     @Override

@@ -67,9 +67,8 @@ public class SpaceStationSpinningAttack implements BossActionable {
             pathFinder.setUseCenteredCoordinatesInstead(true);
             enemy.getMovementConfiguration().setDirection(getRandomDirection());
             enemy.setPathFinder(pathFinder);
-            oldMoveSpeed = enemy.getMovementConfiguration().getXMovementSpeed();
-            enemy.getMovementConfiguration().setXMovementSpeed(oldMoveSpeed * newMoveSpeedModifier);
-            enemy.getMovementConfiguration().setYMovementSpeed(oldMoveSpeed * newMoveSpeedModifier);
+            oldMoveSpeed = enemy.getMovementConfiguration().getMovementSpeed();
+            enemy.getMovementConfiguration().setMovementSpeed(oldMoveSpeed * newMoveSpeedModifier);
             isMoving = true;
             isBouncing = true;
             if(boostingAway != null) {
@@ -105,8 +104,7 @@ public class SpaceStationSpinningAttack implements BossActionable {
                     lastAttackedTime = currentTime;
                     bounceCount = 0;
                     enemy.getAnimation().setFrameDelay(2);
-                    enemy.getMovementConfiguration().setXMovementSpeed(oldMoveSpeed);
-                    enemy.getMovementConfiguration().setYMovementSpeed(oldMoveSpeed);
+                    enemy.getMovementConfiguration().setMovementSpeed(oldMoveSpeed);
                     return true;
                 }
             }

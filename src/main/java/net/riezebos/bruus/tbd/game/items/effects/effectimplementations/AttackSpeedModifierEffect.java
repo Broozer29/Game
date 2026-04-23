@@ -24,7 +24,7 @@ public class AttackSpeedModifierEffect implements EffectInterface {
     private int amountOfStacks;
 
     public AttackSpeedModifierEffect(float attackSpeedModifierAmountPerStack, double durationInSeconds, SpriteAnimation animation, EffectIdentifiers effectIdentifier) {
-        this.attackSpeedModifierAmountPerStack = attackSpeedModifierAmountPerStack;
+        this.attackSpeedModifierAmountPerStack = attackSpeedModifierAmountPerStack; //Expects a float value! A value if 0.1 is a 10% attack speed increase
         this.attackSpeedModifierAmount = attackSpeedModifierAmountPerStack;
         this.durationInSeconds = durationInSeconds;
         if(animation != null) {

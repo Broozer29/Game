@@ -2,8 +2,6 @@ package net.riezebos.bruus.tbd.game.movement;
 
 import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
 import net.riezebos.bruus.tbd.game.movement.pathfinders.BouncingPathFinder;
-import net.riezebos.bruus.tbd.game.movement.pathfinders.DiamondShapePathFinder;
-import net.riezebos.bruus.tbd.game.movement.pathfinders.HomingPathFinder;
 import net.riezebos.bruus.tbd.game.movement.pathfinders.OrbitPathFinder;
 import net.riezebos.bruus.tbd.game.util.OutOfBoundsCalculator;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.Sprite;
@@ -26,8 +24,7 @@ public class GameObjectMover {
         bool =
                 moveConfig.getCurrentPath() == null ||
                         moveConfig.getPathFinder().shouldRecalculatePath(gameObject) ||
-                        moveConfig.getXMovementSpeed() != moveConfig.getLastUsedXMovementSpeed() ||
-                        moveConfig.getYMovementSpeed() != moveConfig.getLastUsedYMovementSpeed();
+                        moveConfig.getMovementSpeed() != moveConfig.getLastUsedMovementSpeed();
         return bool; //This returns TRUE, and thus a new path is generated
     }
 
@@ -49,10 +46,8 @@ public class GameObjectMover {
     }
 
     private void updatePath(GameObject gameObject, MovementConfiguration moveConfig) {
-//        PathFinderConfig config = PathFinderConfigCreator.createConfig(gameObject, moveConfig);
         moveConfig.setCurrentPath(moveConfig.getPathFinder().findPath(gameObject));
-        moveConfig.setLastUsedXMovementSpeed(moveConfig.getXMovementSpeed());
-        moveConfig.setLastUsedYMovementSpeed(moveConfig.getYMovementSpeed());
+        moveConfig.setLastUsedMovementSpeed(moveConfig.getMovementSpeed());
     }
 
     private boolean handleNextWaypointRemoval(MovementConfiguration moveConfig) {
@@ -66,8 +61,6 @@ public class GameObjectMover {
     }
 
     private void handleBouncingPathFinder(GameObject gameObject, MovementConfiguration moveConfig) {
-        // Bouncing specific logic
-
         if (!((BouncingPathFinder) moveConfig.getPathFinder()).isAllowedToBounce()) {
             return; //Should maybe be "setVisible(false);
         }
@@ -100,10 +93,6 @@ public class GameObjectMover {
             adjustOrbitPath(moveConfig);
         }
 
-        if (moveConfig.getPathFinder() instanceof DiamondShapePathFinder && moveConfig.getCurrentPath().getWaypoints().isEmpty()) {
-            gameObject.setVisible(false);
-        }
-
         if (OutOfBoundsCalculator.isOutOfBounds(gameObject) && !(moveConfig.getPathFinder() instanceof BouncingPathFinder)) {
             gameObject.setVisible(false);
             gameObject.setAllowedToMove(false);
@@ -123,62 +112,4 @@ public class GameObjectMover {
             pathFinder.adjustPathForTargetMovement(moveConfig.getCurrentPath(), deltaX, deltaY);
         }
     }
-
-    //Helper method for acquiring a new target, used in homing pathfinders
-    private void acquireNewTarget(GameObject sprite, MovementConfiguration moveConfig) {
-        moveConfig.getUntrackableObjects().add(moveConfig.getTargetToChase());
-        moveConfig.getCurrentPath().setTarget(null);
-
-        HomingPathFinder pathFinder = (HomingPathFinder) moveConfig.getPathFinder();
-        GameObject newObjectToChase = pathFinder.getTarget(sprite.isFriendly(), sprite.getXCoordinate(), sprite.getYCoordinate());
-
-        if (!moveConfig.getUntrackableObjects().contains(newObjectToChase)) {
-            moveConfig.setTargetToChase(newObjectToChase);
-            moveConfig.getCurrentPath().setTarget(newObjectToChase);
-        }
-    }
-
-    // Needed for non-orbiting PathFinders, so added to missiles
-    private Point calculateNextPointForHomingPathFinder(Point currentLocation, Direction direction, float XStepSize, float YStepSize) {
-        float x = currentLocation.getX();
-        float y = currentLocation.getY();
-
-        switch (direction) {
-            case UP:
-                y -= YStepSize;
-                break;
-            case DOWN:
-                y += YStepSize;
-                break;
-            case LEFT:
-                x -= XStepSize;
-                break;
-            case RIGHT:
-                x += XStepSize;
-                break;
-            case LEFT_UP:
-                x -= XStepSize;
-                y -= YStepSize;
-                break;
-            case LEFT_DOWN:
-                x -= XStepSize;
-                y += YStepSize;
-                break;
-            case RIGHT_UP:
-                x += XStepSize;
-                y -= YStepSize;
-                break;
-            case RIGHT_DOWN:
-                x += XStepSize;
-                y += YStepSize;
-                break;
-            case NONE:
-                // no movement
-                break;
-        }
-
-
-        return new Point(Math.round(x), Math.round(y));
-    }
-
 }

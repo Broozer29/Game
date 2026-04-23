@@ -14,7 +14,6 @@ import net.riezebos.bruus.tbd.game.items.effects.EffectInterface;
 import net.riezebos.bruus.tbd.game.items.enums.ItemApplicationEnum;
 import net.riezebos.bruus.tbd.game.movement.*;
 import net.riezebos.bruus.tbd.game.movement.Point;
-import net.riezebos.bruus.tbd.game.movement.pathfinders.HomingPathFinder;
 import net.riezebos.bruus.tbd.game.movement.pathfinders.PathFinder;
 import net.riezebos.bruus.tbd.game.util.ArmorCalculator;
 import net.riezebos.bruus.tbd.game.util.OnScreenTextManager;
@@ -97,7 +96,7 @@ public class GameObject extends Sprite {
     //Other
     protected String objectType;
     protected Direction movementRotation;
-    protected boolean boxCollision;
+    protected boolean boxCollision = false;
     protected double lastGameSecondDamageTaken;
     protected GameObject ownerOrCreator;
     protected boolean centeredAroundObject = false;
@@ -151,11 +150,7 @@ public class GameObject extends Sprite {
         if (movementConfiguration.getDestination() == null) {
             movementConfiguration.setDestination(movementConfiguration.getPathFinder().calculateInitialEndpoint(currentLocation, movementRotation, this.friendly));
         }
-        if (movementConfiguration.getPathFinder() instanceof HomingPathFinder) {
-            movementConfiguration.setTargetToChase(((HomingPathFinder) movementConfiguration.getPathFinder()).getTarget(this.friendly, this.xCoordinate, this.yCoordinate));
-            movementConfiguration.setHasLock(true);
-        }
-        if (movementConfiguration.getXMovementSpeed() == 0 && movementConfiguration.getYMovementSpeed() == 0) {
+        if (movementConfiguration.getMovementSpeed() == 0) {
             this.rotationAngle = this.movementRotation.toAngle();
         }
         movementConfiguration.setStepsTaken(0);
@@ -179,16 +174,10 @@ public class GameObject extends Sprite {
 
 
         movementConfiguration.setCurrentLocation(this.currentLocation);
-        this.movementConfiguration.setLastUsedXMovementSpeed(movementConfiguration.getXMovementSpeed());
+        this.movementConfiguration.setLastUsedMovementSpeed(movementConfiguration.getMovementSpeed());
         if (movementConfiguration.getDestination() == null) {
             movementConfiguration.setDestination(movementConfiguration.getPathFinder().calculateInitialEndpoint(this.currentLocation, movementRotation, this.friendly));
         }
-
-        if (movementConfiguration.getPathFinder() instanceof HomingPathFinder) {
-            movementConfiguration.setTargetToChase(((HomingPathFinder) movementConfiguration.getPathFinder()).getTarget(this.friendly, this.xCoordinate, this.yCoordinate));
-            movementConfiguration.setHasLock(true);
-        }
-
         movementConfiguration.setStepsTaken(0);
     }
 
@@ -798,15 +787,6 @@ public class GameObject extends Sprite {
 
     public void setObjectToCenterAround(GameObject objectToCenterAround) {
         this.objectToCenterAround = objectToCenterAround;
-    }
-
-    public GameObject getObjectToFollow() {
-        return objectToFollow;
-    }
-
-    public void setObjectToFollow(GameObject objectToFollow) {
-        this.objectToFollow = objectToFollow;
-        this.movementConfiguration.setTargetToChase(objectToFollow);
     }
 
     public MovementConfiguration getMovementConfiguration() {

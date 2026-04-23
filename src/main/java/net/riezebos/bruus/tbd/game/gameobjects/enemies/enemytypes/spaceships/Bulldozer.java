@@ -7,7 +7,6 @@ import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyEnums;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.MissileManager;
 import net.riezebos.bruus.tbd.game.movement.Direction;
 import net.riezebos.bruus.tbd.game.movement.MovementConfiguration;
-import net.riezebos.bruus.tbd.game.movement.MovementPatternSize;
 import net.riezebos.bruus.tbd.game.movement.Point;
 import net.riezebos.bruus.tbd.game.movement.pathfinders.OrbitPathFinder;
 import net.riezebos.bruus.tbd.game.movement.pathfinders.PathFinder;
@@ -87,13 +86,11 @@ public class Bulldozer extends Enemy {
 
         MovementConfiguration movementConfiguration = new MovementConfiguration();
         movementConfiguration.setCurrentLocation(new Point(xCoordinate, yCoordinate));
-        movementConfiguration.setXMovementSpeed(1);
-        movementConfiguration.setYMovementSpeed(1);
+        movementConfiguration.setMovementSpeed(1);
         movementConfiguration.setPathFinder(pathFinder);
 
         movementConfiguration.initDefaultSettingsForSpecializedPathFinders();
         movementConfiguration.setDirection(Direction.LEFT);
-        movementConfiguration.setPatternSize(MovementPatternSize.SMALL);
 
         Enemy alienBomb = new AlienBomb(spriteConfiguration, enemyConfiguration, movementConfiguration);
         return alienBomb;

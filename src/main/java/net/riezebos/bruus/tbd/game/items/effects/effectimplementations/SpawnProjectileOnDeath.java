@@ -7,7 +7,6 @@ import net.riezebos.bruus.tbd.game.items.effects.EffectIdentifiers;
 import net.riezebos.bruus.tbd.game.items.effects.EffectInterface;
 import net.riezebos.bruus.tbd.game.movement.Direction;
 import net.riezebos.bruus.tbd.game.movement.MovementConfiguration;
-import net.riezebos.bruus.tbd.game.movement.MovementPatternSize;
 import net.riezebos.bruus.tbd.game.movement.Point;
 import net.riezebos.bruus.tbd.game.movement.pathfinders.StraightLinePathFinder;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
@@ -28,8 +27,8 @@ public class SpawnProjectileOnDeath implements EffectInterface {
     private boolean hasActivated = false;
     private ImageEnums missileImpactImage;
 
-    public SpawnProjectileOnDeath (EffectActivationTypes effectActivationType, EffectIdentifiers effectIdentifier,
-                                   int amountOfProjectiles, MissileEnums missileType, ImageEnums missileImage, ImageEnums missileImpactImage) {
+    public SpawnProjectileOnDeath(EffectActivationTypes effectActivationType, EffectIdentifiers effectIdentifier,
+                                  int amountOfProjectiles, MissileEnums missileType, ImageEnums missileImage, ImageEnums missileImpactImage) {
         this.effectActivationType = effectActivationType;
         this.effectIdentifier = effectIdentifier;
         this.amountOfMissiles = amountOfProjectiles;
@@ -44,6 +43,8 @@ public class SpawnProjectileOnDeath implements EffectInterface {
 
             for (int i = 0; i < amountOfMissiles; i++) {
                 Missile missile = createMissile(gameObject);
+                missile.setCurrentHitpoints(40); //todo hardcoded
+                missile.setMaxHitPoints(40); //todo hardcoded
                 missile.setOwnerOrCreator(gameObject);
                 missile.setDestructable(true);
                 missile.setDamageable(true);
@@ -62,8 +63,7 @@ public class SpawnProjectileOnDeath implements EffectInterface {
     }
 
 
-
-    private Missile createMissile (GameObject gameObject) {
+    private Missile createMissile(GameObject gameObject) {
         SpriteConfiguration spriteConfiguration = new SpriteConfiguration();
         spriteConfiguration.setxCoordinate(gameObject.getXCoordinate());
         spriteConfiguration.setyCoordinate(gameObject.getYCoordinate());
@@ -71,14 +71,13 @@ public class SpawnProjectileOnDeath implements EffectInterface {
         spriteConfiguration.setImageType(this.missileImage);
 
         MissileConfiguration missileConfiguration = MissileCreator.getInstance().createMissileConfiguration(
-                this.missileType, 40, 0, null, gameObject.getDamage(), missileImpactImage,
-                gameObject.isFriendly(), true, "Spawn On Death missile " + missileType, missileType.isUsesBoxCollision(), false
-                , true, false
-        );
+                this.missileType, gameObject.getDamage(), missileImpactImage,
+                gameObject.isFriendly(), false, true
+                , true);
 
         StraightLinePathFinder straightLinePathFinder = new StraightLinePathFinder();
         MovementConfiguration movementConfiguration = MissileCreator.getInstance().createMissileMovementConfig(
-                2, 2, straightLinePathFinder, MovementPatternSize.SMALL, Direction.LEFT
+                2, straightLinePathFinder,  Direction.LEFT
         );
         movementConfiguration.setDestination(getRandomPoint(gameObject, 200, 200));
 
@@ -99,7 +98,7 @@ public class SpawnProjectileOnDeath implements EffectInterface {
     }
 
     @Override
-    public boolean shouldBeRemoved (GameObject gameObject) {
+    public boolean shouldBeRemoved(GameObject gameObject) {
         return false;
     }
 
@@ -109,48 +108,48 @@ public class SpawnProjectileOnDeath implements EffectInterface {
     }
 
     @Override
-    public EffectActivationTypes getEffectTypesEnums () {
+    public EffectActivationTypes getEffectTypesEnums() {
         return this.effectActivationType;
     }
 
     @Override
-    public void resetDuration () {
+    public void resetDuration() {
         //Not needed
     }
 
     @Override
-    public void increaseEffectStrength (GameObject gameObject) {
+    public void increaseEffectStrength(GameObject gameObject) {
 //Not needed
     }
 
     @Override
-    public EffectIdentifiers getEffectIdentifier () {
+    public EffectIdentifiers getEffectIdentifier() {
         return this.effectIdentifier;
     }
 
     @Override
-    public void removeEffect (GameObject gameObject) {
+    public void removeEffect(GameObject gameObject) {
 
     }
 
     @Override
-    public EffectInterface copy () {
+    public EffectInterface copy() {
         return null;
     }
 
-    public ImageEnums getMissileImage () {
+    public ImageEnums getMissileImage() {
         return missileImage;
     }
 
-    public void setMissileImage (ImageEnums missileImage) {
+    public void setMissileImage(ImageEnums missileImage) {
         this.missileImage = missileImage;
     }
 
-    public MissileEnums getMissileType () {
+    public MissileEnums getMissileType() {
         return missileType;
     }
 
-    public void setMissileType (MissileEnums missileType) {
+    public void setMissileType(MissileEnums missileType) {
         this.missileType = missileType;
     }
 }

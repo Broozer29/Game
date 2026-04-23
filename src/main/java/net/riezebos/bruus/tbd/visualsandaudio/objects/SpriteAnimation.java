@@ -100,9 +100,9 @@ public class SpriteAnimation extends Sprite implements Cloneable{
 
 		//Doesnt use original frames because possible resizes, possible loss of performance and quality but maybe not enough to do anything about it
 		if(!this.increasedSizeFrames.isEmpty()){
-			this.frames = ImageRotator.getInstance().getRotatedFrames(increasedSizeFrames, angle, crop);
+			this.frames = ImageRotator.getInstance().getRotatedFrames(increasedSizeFrames, angle);
 		} else {
-			this.frames = ImageRotator.getInstance().getRotatedFrames(frames, angle, crop);
+			this.frames = ImageRotator.getInstance().getRotatedFrames(frames, angle);
 		}
 		recalculateBoundsAndSize();
 	}

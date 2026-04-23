@@ -50,16 +50,10 @@ public class Scourge extends Enemy {
     private void activateScourge () {
         OnScreenTextManager.getInstance().addText("!", this.getCenterXCoordinate(), this.getCenterYCoordinate());
         // Adjust movement speed.
-        if (this.movementConfiguration.getXMovementSpeed() < 1) {
-            this.movementConfiguration.setXMovementSpeed(1);
+        if (this.movementConfiguration.getMovementSpeed() < 1) {
+            this.movementConfiguration.setMovementSpeed(1);
         } else {
-            this.movementConfiguration.setXMovementSpeed(Math.min(this.movementConfiguration.getXMovementSpeed() * 1.5f, 5));
-        }
-
-        if (this.movementConfiguration.getYMovementSpeed() < 1) {
-            this.movementConfiguration.setYMovementSpeed(1);
-        } else {
-            this.movementConfiguration.setYMovementSpeed(Math.min(this.movementConfiguration.getXMovementSpeed() * 1.5f, 5));
+            this.movementConfiguration.setMovementSpeed(Math.min(this.movementConfiguration.getMovementSpeed() * 1.5f, 5));
         }
 
         // Align towards the player's current position.

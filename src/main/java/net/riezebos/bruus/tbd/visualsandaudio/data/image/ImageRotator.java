@@ -54,7 +54,7 @@ public class ImageRotator {
         return newFrames;
     }
 
-    public List<BufferedImage> getRotatedFrames (List<BufferedImage> frames, double angleInDegrees, boolean crop) {
+    public List<BufferedImage> getRotatedFrames (List<BufferedImage> frames, double angleInDegrees) {
         String keyString = frames.stream()
                 .map(image -> Integer.toString(image.hashCode()))
                 .collect(Collectors.joining("_")) + "_" + angleInDegrees;

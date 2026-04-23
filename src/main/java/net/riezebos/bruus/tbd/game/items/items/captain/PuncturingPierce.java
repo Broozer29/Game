@@ -20,8 +20,8 @@ public class PuncturingPierce extends Item {
     @Override
     public void applyEffectToObject (GameObject gameObject) {
         if(gameObject instanceof Missile missile && missile.getOwnerOrCreator() instanceof SpaceShip){
-            float difference = Math.abs(missile.getMovementConfiguration().getXMovementSpeed() - missile.getMovementConfiguration().getOriginalXMovementSpeed())
-                    / missile.getMovementConfiguration().getOriginalXMovementSpeed();
+            float difference = Math.abs(missile.getMovementConfiguration().getMovementSpeed() - missile.getMovementConfiguration().getOriginalMovementSpeed())
+                    / missile.getMovementConfiguration().getOriginalMovementSpeed();
             missile.modifyBonusDamageMultiplier(this.quantity * (damageIncreasePerMoveSpeedIncreaseModifier * difference));
         }
     }

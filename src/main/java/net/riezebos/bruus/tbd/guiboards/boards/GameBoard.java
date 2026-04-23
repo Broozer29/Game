@@ -302,7 +302,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
 
     private void playDeathMusic() {
         audioManager.stopMusicAudio();
-        audioManager.playDefaultBackgroundMusic(AudioEnums.VendlaSonrisa, true);
+        audioManager.playDefaultBackgroundMusicForALevel(AudioEnums.VendlaSonrisa, true);
     }
 
     // Draw the game over screen

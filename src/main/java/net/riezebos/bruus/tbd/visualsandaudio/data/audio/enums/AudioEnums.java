@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Random;
 
 public enum AudioEnums {
+    CustomMusicFile,
     GenericError,
     Player_Laserbeam,
     SpecialAttackFinishedCharging,
@@ -88,6 +89,7 @@ public enum AudioEnums {
     GodRunDetected,
     MausoleumMash,
     Arisen,
+    Enraged,
     DistressCall, Filth;
 
     public static AudioEnums getSelectClassAudioByClass(PlayerClass playerClass) {
@@ -138,7 +140,7 @@ public enum AudioEnums {
             case BlueBoss:
                 return AudioEnums.MausoleumMash;
             case TwinBoss:
-                return AudioEnums.WaveshaperMonster;
+                return AudioEnums.Enraged;
             default:
                 return getRandomBossSong();
         }

@@ -5,12 +5,10 @@ import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.BossAct
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.*;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.movement.MovementConfiguration;
-import net.riezebos.bruus.tbd.game.movement.MovementPatternSize;
 import net.riezebos.bruus.tbd.game.movement.Point;
 import net.riezebos.bruus.tbd.game.movement.pathfinders.PathFinder;
 import net.riezebos.bruus.tbd.game.movement.pathfinders.StraightLinePathFinder;
 import net.riezebos.bruus.tbd.game.util.WithinVisualBoundariesCalculator;
-import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.AudioEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.AnimationManager;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteAnimation;
@@ -35,14 +33,14 @@ public class BlueBossMissileAttack implements BossActionable {
     private List<Integer> angleList = new ArrayList<>();
     private SpriteAnimation chargingAttackAnimation = null;
 
-    public BlueBossMissileAttack(){
-        for(int i = 0; i < 360; i += 10){
+    public BlueBossMissileAttack() {
+        for (int i = 0; i < 360; i += 10) {
             angleList.add(i);
         }
     }
 
     @Override
-    public boolean activateBehaviour (Enemy enemy) {
+    public boolean activateBehaviour(Enemy enemy) {
         double currentTime = GameState.getInstance().getGameSeconds();
         angleIncrement = 4;
         intermittenAttackCooldown = 0.75f;
@@ -92,7 +90,7 @@ public class BlueBossMissileAttack implements BossActionable {
         return true; //We dont have anything to do at this point
     }
 
-    private void initChargingAttackAnimation (Enemy enemy) {
+    private void initChargingAttackAnimation(Enemy enemy) {
         SpriteConfiguration spriteConfiguration = new SpriteConfiguration();
         spriteConfiguration.setImageType(ImageEnums.Charging);
         spriteConfiguration.setxCoordinate(enemy.getXCoordinate());
@@ -105,18 +103,17 @@ public class BlueBossMissileAttack implements BossActionable {
 
     }
 
-    private void updateChargingAttackAnimationLocation (Enemy enemy) {
+    private void updateChargingAttackAnimationLocation(Enemy enemy) {
         chargingAttackAnimation.setCenterCoordinates(enemy.getCenterXCoordinate(), enemy.getCenterYCoordinate());
     }
 
 
-
-    private void fireMissile (Enemy enemy, Integer angleDegrees) {
+    private void fireMissile(Enemy enemy, Integer angleDegrees) {
         Missile missile = createMissile(enemy, angleDegrees);
         MissileManager.getInstance().addExistingMissile(missile);
     }
 
-    private Missile createMissile (Enemy enemy, Integer angleDegrees) {
+    private Missile createMissile(Enemy enemy, Integer angleDegrees) {
         MissileEnums missileType = MissileEnums.DefaultLaserBullet;
         SpriteConfiguration spriteConfiguration = MissileCreator.getInstance().createMissileSpriteConfig(
                 enemy.getXCoordinate(), enemy.getCenterYCoordinate(),
@@ -127,22 +124,14 @@ public class BlueBossMissileAttack implements BossActionable {
 
         //Create missile movement attributes and create a movement configuration
         PathFinder missilePathFinder = new StraightLinePathFinder();
-        MovementPatternSize movementPatternSize = MovementPatternSize.SMALL;
         MovementConfiguration movementConfiguration = MissileCreator.getInstance().createMissileMovementConfig(
-                movementSpeed, movementSpeed, missilePathFinder, movementPatternSize, enemy.getMovementConfiguration().getRotation()
+                movementSpeed, missilePathFinder, enemy.getMovementConfiguration().getRotation()
         );
 
 
         boolean isFriendly = false;
-        int maxHitPoints = 100;
-        int maxShields = 100;
-        AudioEnums deathSound = null;
-        boolean allowedToDealDamage = true;
-        String objectType = "Boss Burst Missile";
-
-        MissileConfiguration missileConfiguration = MissileCreator.getInstance().createMissileConfiguration(missileType, maxHitPoints, maxShields,
-                deathSound, enemy.getDamage(), missileType.getDeathOrExplosionImageEnum(), isFriendly, allowedToDealDamage, objectType,
-                false, false, true, false);
+        MissileConfiguration missileConfiguration = MissileCreator.getInstance().createMissileConfiguration(missileType, enemy.getDamage(), missileType.getDeathOrExplosionImageEnum(), isFriendly,
+                false, false, true);
 
 
         Missile missile = MissileCreator.getInstance().createMissile(spriteConfiguration, missileConfiguration, movementConfiguration);

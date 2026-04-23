@@ -10,7 +10,10 @@ import net.riezebos.bruus.tbd.game.gameobjects.missiles.MissileEnums;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.MissileManager;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.missiletypes.StationaryExplodingBomb;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
-import net.riezebos.bruus.tbd.game.movement.*;
+import net.riezebos.bruus.tbd.game.movement.BoardBlockUpdater;
+import net.riezebos.bruus.tbd.game.movement.Direction;
+import net.riezebos.bruus.tbd.game.movement.MovementConfiguration;
+import net.riezebos.bruus.tbd.game.movement.Point;
 import net.riezebos.bruus.tbd.game.movement.pathfinders.DestinationPathFinder;
 import net.riezebos.bruus.tbd.game.movement.pathfinders.HoverPathFinder;
 import net.riezebos.bruus.tbd.game.movement.pathfinders.PathFinder;
@@ -28,7 +31,7 @@ import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.Sprit
 
 public class TwinBossBoxManouvre implements BossActionable {
 
-    public static double lastAttackTime = GameState.getInstance().getGameSeconds();
+    public static double lastAttackTime = GameState.getInstance().getGameSeconds() - 18;
     private static double attackCooldown = 20;
     private static int priority = 4;
     private static double lastBombDroppedTime = 0;
@@ -66,6 +69,7 @@ public class TwinBossBoxManouvre implements BossActionable {
         twinsWaitingToMove = 0;
         twinsReset = 0;
         bombDropIndexCounter = 0;
+        lastAttackTime = GameState.getInstance().getGameSeconds() - 18;
 
         if(boostingAway != null) {
             boostingAway.setMediaPlayerFinished(false);
@@ -144,10 +148,8 @@ public class TwinBossBoxManouvre implements BossActionable {
         playSmokeAnimation(enemy.getCenterXCoordinate(), enemy.getCenterYCoordinate()); //Place it at the current location
 //        playSmokeAnimationAtFirstStep(enemy); //Place it at the location the boss teleports back to
 
-        enemy.getMovementConfiguration().setLastUsedYMovementSpeed(enemy.getEnemyType().getMovementSpeed() * speedModifier);
-        enemy.getMovementConfiguration().setLastUsedXMovementSpeed(enemy.getEnemyType().getMovementSpeed() * speedModifier);
-        enemy.getMovementConfiguration().setYMovementSpeed(enemy.getEnemyType().getMovementSpeed());
-        enemy.getMovementConfiguration().setXMovementSpeed(enemy.getEnemyType().getMovementSpeed());
+        enemy.getMovementConfiguration().setLastUsedMovementSpeed(enemy.getEnemyType().getMovementSpeed() * speedModifier);
+        enemy.getMovementConfiguration().setMovementSpeed(enemy.getEnemyType().getMovementSpeed());
         enemy.setAllowedVisualsToRotate(true);
 
 
@@ -176,10 +178,8 @@ public class TwinBossBoxManouvre implements BossActionable {
         enemy.resetMovementPath();
 
         enemy.getMovementConfiguration().setDestination(selectedEndDestination);
-        enemy.getMovementConfiguration().setLastUsedYMovementSpeed(enemy.getEnemyType().getMovementSpeed());
-        enemy.getMovementConfiguration().setYMovementSpeed(enemy.getEnemyType().getMovementSpeed() * speedModifier);
-        enemy.getMovementConfiguration().setLastUsedXMovementSpeed(enemy.getEnemyType().getMovementSpeed());
-        enemy.getMovementConfiguration().setXMovementSpeed(enemy.getEnemyType().getMovementSpeed() * speedModifier);
+        enemy.getMovementConfiguration().setLastUsedMovementSpeed(enemy.getEnemyType().getMovementSpeed());
+        enemy.getMovementConfiguration().setMovementSpeed(enemy.getEnemyType().getMovementSpeed() * speedModifier);
         enemy.rotateObjectTowardsDestination(false);
 
         enemy.setAllowedVisualsToRotate(false);
@@ -214,23 +214,16 @@ public class TwinBossBoxManouvre implements BossActionable {
         //Create missile movement attributes and create a movement configuration
         MissileEnums missileType = MissileEnums.StationaryExplodingBomb;
         PathFinder missilePathFinder = new RegularPathFinder();
-        MovementPatternSize movementPatternSize = MovementPatternSize.SMALL;
         MovementConfiguration movementConfiguration = MissileCreator.getInstance().createMissileMovementConfig(
-                movementSpeed, movementSpeed, missilePathFinder, movementPatternSize, Direction.LEFT
+                movementSpeed, missilePathFinder, Direction.LEFT
         );
 
 
         //Create remaining missile attributes and a missile configuration
-        boolean isFriendly = false;
-        int maxHitPoints = 100000;
-        int maxShields = 0;
-        AudioEnums deathSound = null;
-        boolean allowedToDealDamage = true;
-        String objectType = "Bomba Missile";
 
-        MissileConfiguration missileConfiguration = MissileCreator.getInstance().createMissileConfiguration(missileType, maxHitPoints, maxShields,
-                deathSound, enemy.getDamage() * 2f, missileType.getDeathOrExplosionImageEnum(), isFriendly, allowedToDealDamage, objectType, false,
-                true, false, false);
+        MissileConfiguration missileConfiguration = MissileCreator.getInstance().createMissileConfiguration(missileType,
+                enemy.getDamage() * 2f, missileType.getDeathOrExplosionImageEnum(), false, true,
+                true, true);
 
 
         //Create the missile and finalize the creation process, then add it to the manager and consequently the game

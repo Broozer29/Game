@@ -18,7 +18,6 @@ import net.riezebos.bruus.tbd.game.items.items.captain.HighVelocityLasers;
 import net.riezebos.bruus.tbd.game.items.items.carrier.KineticDynamo;
 import net.riezebos.bruus.tbd.game.movement.Direction;
 import net.riezebos.bruus.tbd.game.movement.MovementConfiguration;
-import net.riezebos.bruus.tbd.game.movement.MovementPatternSize;
 import net.riezebos.bruus.tbd.game.movement.pathfinders.PathFinder;
 import net.riezebos.bruus.tbd.game.movement.pathfinders.RegularPathFinder;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.AudioDatabase;
@@ -255,30 +254,17 @@ public class PrimaryPlayerGun {
                 playerMissileType, missileScale);
 
 
-        MovementPatternSize movementPatternSize = MovementPatternSize.SMALL; //Hardcoded, should be dynamic somewhere? Idk not decided how i want to use this behaviour yet
         MovementConfiguration movementConfiguration = missileCreator1.createMissileMovementConfig(
-                movementSpeed, movementSpeed, missilePathFinder, movementPatternSize, Direction.RIGHT
+                movementSpeed, missilePathFinder, Direction.RIGHT
         );
 
 
         boolean isFriendly = true;
-
-        int maxHitPoints = 100;
-        int maxShields = 0;
-        AudioEnums deathSound = null;
-        boolean allowedToDealDamage = true;
-        String objectType = "Player Missile";
         float damage = owner.getDamage() * 2;
-
-
         damage *= 1 + (totalDamageBonus); //bigiron dmg bonus
         boolean isExplosive = false;
-
-
-//        damage = 2000;
-        MissileConfiguration missileConfiguration = missileCreator1.createMissileConfiguration(attackType, maxHitPoints, maxShields,
-                deathSound, damage, attackType.getDeathOrExplosionImageEnum(), isFriendly, allowedToDealDamage, objectType, attackType.isUsesBoxCollision(),
-                isExplosive, true, false);
+        MissileConfiguration missileConfiguration = missileCreator1.createMissileConfiguration(attackType, damage, attackType.getDeathOrExplosionImageEnum(), isFriendly, isExplosive,
+                true, true);
 
         PlayerStats instance = PlayerStats.getInstance();
         if (!isExplosive) {

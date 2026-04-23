@@ -9,7 +9,6 @@ import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.movement.Direction;
 import net.riezebos.bruus.tbd.game.movement.MovementConfiguration;
-import net.riezebos.bruus.tbd.game.movement.MovementPatternSize;
 import net.riezebos.bruus.tbd.game.movement.Point;
 import net.riezebos.bruus.tbd.game.movement.pathfinders.PathFinder;
 import net.riezebos.bruus.tbd.game.movement.pathfinders.StraightLinePathFinder;
@@ -48,7 +47,7 @@ public class BlueBossFactoryDefender extends Enemy {
             this.rotateGameObjectTowards(target.getCenterXCoordinate(), target.getCenterYCoordinate(), false);
         }
 
-        if (this.ownerOrCreator != null && this.ownerOrCreator.getCurrentHitpoints() <= 0 || !this.ownerOrCreator.isVisible()) {
+        if (this.ownerOrCreator != null && (this.ownerOrCreator.getCurrentHitpoints() <= 0 || !this.ownerOrCreator.isVisible())) {
             this.takeDamage(this.getMaxHitPoints() * 100);
         }
 
@@ -83,21 +82,19 @@ public class BlueBossFactoryDefender extends Enemy {
         missileSpriteConfiguration.setImageType(ImageEnums.MotherShipDroneMissile);
         missileSpriteConfiguration.setScale(0.125f);
 
-        float xMovementSpeed = 1.5f;
-        float yMovementSpeed = 1.5f;
+        float movementSpeed = 1.5f;
         Direction rotation = Direction.RIGHT;
-        MovementPatternSize movementPatternSize = MovementPatternSize.SMALL;
         PathFinder pathFinder = new StraightLinePathFinder();
 
         MovementConfiguration movementConfiguration = MissileCreator.getInstance().createMissileMovementConfig(
-                xMovementSpeed, yMovementSpeed, pathFinder, movementPatternSize, rotation
+                movementSpeed, pathFinder, rotation
         );
         movementConfiguration.initDefaultSettingsForSpecializedPathFinders();
 
         boolean isFriendly = false;
         MissileConfiguration missileConfiguration = MissileCreator.getInstance().createMissileConfiguration(missileType
-                , 100, 100, null, this.ownerOrCreator.getDamage() / 2, ImageEnums.Impact_Explosion_One, isFriendly, allowedToDealDamage, objectType,
-                missileType.isUsesBoxCollision(), false, false, false);
+                ,this.ownerOrCreator.getDamage() / 2, ImageEnums.Impact_Explosion_One, isFriendly,
+                false, false, false);
 
         Missile missile = MissileCreator.getInstance().createMissile(missileSpriteConfiguration, missileConfiguration, movementConfiguration);
         missile.setOwnerOrCreator(this);

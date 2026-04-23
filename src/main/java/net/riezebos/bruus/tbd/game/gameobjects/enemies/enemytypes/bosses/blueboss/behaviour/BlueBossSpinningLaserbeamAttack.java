@@ -90,10 +90,7 @@ public class BlueBossSpinningLaserbeamAttack implements BossActionable {
     }
 
     private boolean attackIsFinished(double currenttime) {
-        if (currenttime >= startedFiringTime + attackDuration) {
-            return true;
-        }
-        return false;
+        return currenttime >= startedFiringTime + attackDuration;
     }
 
 

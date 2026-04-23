@@ -157,7 +157,7 @@ public class ProtossCorsair extends Drone {
         if (slow != isMovingSlow) { // Only update if there is a state change
             isMovingSlow = slow;
             float newSpeed = slow ? (defaultMoveSpeed * 0.7f) : defaultMoveSpeed;
-            this.getMovementConfiguration().setXMovementSpeed(newSpeed); // Only call when needed
+            this.getMovementConfiguration().setMovementSpeed(newSpeed); // Only call when needed
         }
     }
 

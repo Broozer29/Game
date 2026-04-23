@@ -69,9 +69,7 @@ public class DamageModifierEffect implements EffectInterface {
 
     @Override
     public boolean shouldBeRemoved(GameObject gameObject) {
-        if (GameState.getInstance().getGameSeconds() - startTimeInSeconds >= durationInSeconds) {
-            return true;
-        } else return false;
+        return GameState.getInstance().getGameSeconds() - startTimeInSeconds >= durationInSeconds;
     }
 
     @Override
@@ -117,6 +115,5 @@ public class DamageModifierEffect implements EffectInterface {
         }
         removeEffectsBeforeRemovingEffect(gameObject);
         this.animationList.clear();
-        ;
     }
 }

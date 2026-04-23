@@ -8,12 +8,10 @@ import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SpaceShip;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.level.LevelManager;
 import net.riezebos.bruus.tbd.game.movement.MovementConfiguration;
-import net.riezebos.bruus.tbd.game.movement.MovementPatternSize;
 import net.riezebos.bruus.tbd.game.movement.Point;
 import net.riezebos.bruus.tbd.game.movement.pathfinders.PathFinder;
 import net.riezebos.bruus.tbd.game.movement.pathfinders.StraightLinePathFinder;
 import net.riezebos.bruus.tbd.game.util.WithinVisualBoundariesCalculator;
-import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.AudioEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.AnimationManager;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteAnimation;
@@ -35,7 +33,7 @@ public class RedBossBurstMainAttackBossBehaviour implements BossActionable {
 
 
     @Override
-    public boolean activateBehaviour (Enemy enemy) {
+    public boolean activateBehaviour(Enemy enemy) {
         double currentTime = GameState.getInstance().getGameSeconds();
 
         if (chargingAttackAnimation == null) {
@@ -63,7 +61,7 @@ public class RedBossBurstMainAttackBossBehaviour implements BossActionable {
             if (burstShotsFired < amountOfShotsPerBurst && canFireAgain) {
                 // Fire a missile and update lastAttackTime
 
-                for(SpaceShip spaceShip : PlayerManager.getInstance().getAllSpaceShips()){
+                for (SpaceShip spaceShip : PlayerManager.getInstance().getAllSpaceShips()) {
                     fireMissile(enemy, spaceShip);
                 }
                 burstShotsFired++;
@@ -82,7 +80,7 @@ public class RedBossBurstMainAttackBossBehaviour implements BossActionable {
         return true; //We dont have anything to do at this point
     }
 
-    private void initChargingAttackAnimation (Enemy enemy) {
+    private void initChargingAttackAnimation(Enemy enemy) {
         SpriteConfiguration spriteConfiguration = new SpriteConfiguration();
         spriteConfiguration.setImageType(ImageEnums.Charging);
         spriteConfiguration.setxCoordinate(enemy.getXCoordinate());
@@ -96,16 +94,16 @@ public class RedBossBurstMainAttackBossBehaviour implements BossActionable {
 
     }
 
-    private void updateChargingAttackAnimationLocation (Enemy enemy) {
+    private void updateChargingAttackAnimationLocation(Enemy enemy) {
         chargingAttackAnimation.setCenterCoordinates(enemy.getXCoordinate(), enemy.getCenterYCoordinate());
     }
 
-    private void fireMissile (Enemy enemy, SpaceShip spaceShip) {
+    private void fireMissile(Enemy enemy, SpaceShip spaceShip) {
         Missile missile = createMissile(enemy, spaceShip);
         MissileManager.getInstance().addExistingMissile(missile);
     }
 
-    private Missile createMissile (Enemy enemy, SpaceShip spaceship) {
+    private Missile createMissile(Enemy enemy, SpaceShip spaceship) {
         MissileEnums missileType = MissileEnums.DefaultLaserBullet;
         SpriteConfiguration spriteConfiguration = MissileCreator.getInstance().createMissileSpriteConfig(
                 enemy.getXCoordinate(), enemy.getCenterYCoordinate(),
@@ -116,22 +114,12 @@ public class RedBossBurstMainAttackBossBehaviour implements BossActionable {
 
         //Create missile movement attributes and create a movement configuration
         PathFinder missilePathFinder = new StraightLinePathFinder();
-        MovementPatternSize movementPatternSize = MovementPatternSize.SMALL;
         MovementConfiguration movementConfiguration = MissileCreator.getInstance().createMissileMovementConfig(
-                movementSpeed, movementSpeed, missilePathFinder, movementPatternSize, enemy.getMovementConfiguration().getRotation()
+                movementSpeed, missilePathFinder, enemy.getMovementConfiguration().getRotation()
         );
 
-
-        boolean isFriendly = false;
-        int maxHitPoints = 100;
-        int maxShields = 100;
-        AudioEnums deathSound = null;
-        boolean allowedToDealDamage = true;
-        String objectType = "Boss Burst Missile";
-
-        MissileConfiguration missileConfiguration = MissileCreator.getInstance().createMissileConfiguration(missileType, maxHitPoints, maxShields,
-                deathSound, enemy.getDamage(), missileType.getDeathOrExplosionImageEnum(), isFriendly, allowedToDealDamage, objectType,
-                false, false, true, false);
+        MissileConfiguration missileConfiguration = MissileCreator.getInstance().createMissileConfiguration(missileType, enemy.getDamage(), missileType.getDeathOrExplosionImageEnum(), false,
+                false, false, true);
 
 
         //Create the missile and finalize the creation process, then add it to the manager and consequently the game
@@ -160,41 +148,41 @@ public class RedBossBurstMainAttackBossBehaviour implements BossActionable {
         return missile;
     }
 
-    public double getAttackCooldown () {
+    public double getAttackCooldown() {
         return attackCooldown;
     }
 
-    public void setAttackCooldown (double attackCooldown) {
+    public void setAttackCooldown(double attackCooldown) {
         this.attackCooldown = attackCooldown;
     }
 
-    public int getAmountOfShotsPerBurst () {
+    public int getAmountOfShotsPerBurst() {
         return amountOfShotsPerBurst;
     }
 
-    public void setAmountOfShotsPerBurst (int amountOfShotsPerBurst) {
+    public void setAmountOfShotsPerBurst(int amountOfShotsPerBurst) {
         this.amountOfShotsPerBurst = amountOfShotsPerBurst;
     }
 
-    public double getIntermittenAttackCooldown () {
+    public double getIntermittenAttackCooldown() {
         return intermittenAttackCooldown;
     }
 
-    public void setIntermittenAttackCooldown (double intermittenAttackCooldown) {
+    public void setIntermittenAttackCooldown(double intermittenAttackCooldown) {
         this.intermittenAttackCooldown = intermittenAttackCooldown;
     }
 
     @Override
-    public int getPriority () {
+    public int getPriority() {
         return priority;
     }
 
-    public void setPriority (int priority) {
+    public void setPriority(int priority) {
         this.priority = priority;
     }
 
     @Override
-    public boolean isAvailable (Enemy enemy) {
+    public boolean isAvailable(Enemy enemy) {
         return enemy.isAllowedToFire()
                 && GameState.getInstance().getGameSeconds() >= lastAttackTime + attackCooldown
                 && WithinVisualBoundariesCalculator.isWithinBoundaries(enemy);

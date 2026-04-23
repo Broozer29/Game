@@ -13,12 +13,10 @@ import net.riezebos.bruus.tbd.game.items.PlayerInventory;
 import net.riezebos.bruus.tbd.game.items.items.firefighter.EntanglingFlames;
 import net.riezebos.bruus.tbd.game.movement.Direction;
 import net.riezebos.bruus.tbd.game.movement.MovementConfiguration;
-import net.riezebos.bruus.tbd.game.movement.MovementPatternSize;
 import net.riezebos.bruus.tbd.game.movement.Point;
 import net.riezebos.bruus.tbd.game.movement.pathfinders.StraightLinePathFinder;
 import net.riezebos.bruus.tbd.game.util.performancelogger.PerformanceLogger;
 import net.riezebos.bruus.tbd.game.util.performancelogger.PerformanceLoggerManager;
-import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.AudioEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.AnimationManager;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteAnimation;
@@ -91,7 +89,7 @@ public class ThornsDamageDealer {
                         missile.getOwnerOrCreator().getCenterXCoordinate() - missile.getWidth() / 2,
                         missile.getOwnerOrCreator().getCenterYCoordinate() - missile.getHeight() / 2
                 ));
-        missile.getMovementConfiguration().setXMovementSpeed(Math.min(missile.getMovementConfiguration().getXMovementSpeed(), 4));
+        missile.getMovementConfiguration().setMovementSpeed(Math.min(missile.getMovementConfiguration().getMovementSpeed(), 4));
         missile.setPathFinder(new StraightLinePathFinder());
         missile.rotateObjectTowardsDestination(true);
         missile.setAllowedVisualsToRotate(false);
@@ -106,19 +104,12 @@ public class ThornsDamageDealer {
                 ImageEnums.AlienLaserBeamAnimated, 1);
 
 
-        MovementPatternSize movementPatternSize = MovementPatternSize.SMALL; //Hardcoded, should be dynamic somewhere? Idk not decided how i want to use this behaviour yet
         MovementConfiguration movementConfiguration = missileCreator1.createMissileMovementConfig(
-                movementSpeed, movementSpeed, new StraightLinePathFinder(), movementPatternSize, Direction.RIGHT
+                movementSpeed, new StraightLinePathFinder(), Direction.RIGHT
         );
 
 
         boolean isFriendly = true;
-
-        int maxHitPoints = 100;
-        int maxShields = 0;
-        AudioEnums deathSound = null;
-        boolean allowedToDealDamage = true;
-        String objectType = "Player Missile";
         float damage = playerStats.getBaseDamage() * PlayerStats.getInstance().getThornsDamageRatio();
 
         if(PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.BeckoningFlames) != null){
@@ -128,9 +119,9 @@ public class ThornsDamageDealer {
 
         boolean isExplosive = false;
 
-        MissileConfiguration missileConfiguration = missileCreator1.createMissileConfiguration(MissileEnums.DefaultAnimatedBullet, maxHitPoints, maxShields,
-                deathSound, damage, MissileEnums.DefaultAnimatedBullet.getDeathOrExplosionImageEnum(), isFriendly, allowedToDealDamage, objectType, MissileEnums.DefaultAnimatedBullet.isUsesBoxCollision(),
-                isExplosive, true, false);
+        MissileConfiguration missileConfiguration = missileCreator1.createMissileConfiguration(MissileEnums.DefaultAnimatedBullet,
+                damage, MissileEnums.DefaultAnimatedBullet.getDeathOrExplosionImageEnum(), isFriendly, isExplosive,
+                false, false);
 
         PlayerStats instance = PlayerStats.getInstance();
 

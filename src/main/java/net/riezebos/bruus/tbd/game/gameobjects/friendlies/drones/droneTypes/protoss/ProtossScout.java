@@ -16,7 +16,6 @@ import net.riezebos.bruus.tbd.game.items.items.carrier.SynergeticLink;
 import net.riezebos.bruus.tbd.game.items.items.carrier.VengeanceProtocol;
 import net.riezebos.bruus.tbd.game.movement.Direction;
 import net.riezebos.bruus.tbd.game.movement.MovementConfiguration;
-import net.riezebos.bruus.tbd.game.movement.MovementPatternSize;
 import net.riezebos.bruus.tbd.game.movement.Point;
 import net.riezebos.bruus.tbd.game.movement.pathfinders.PathFinder;
 import net.riezebos.bruus.tbd.game.movement.pathfinders.StraightLinePathFinder;
@@ -130,7 +129,7 @@ public class ProtossScout extends Drone {
         if (slow != isMovingSlow) {
             isMovingSlow = slow;
             float newSpeed = slow ? (defaultMoveSpeed * 0.7f) : defaultMoveSpeed;
-            this.getMovementConfiguration().setXMovementSpeed(newSpeed);
+            this.getMovementConfiguration().setMovementSpeed(newSpeed);
         }
     }
 
@@ -151,22 +150,20 @@ public class ProtossScout extends Drone {
         missileSpriteConfiguration.setImageType(missileType.getImageType());
         missileSpriteConfiguration.setScale(1f);
 
-        float xMovementSpeed = 10f;
-        float yMovementSpeed = 10f;
+        float movementSpeed = 10f;
         float damage = PlayerStats.getInstance().getBaseDamage() * scoutDamageFactor;
         Direction rotation = Direction.RIGHT;
-        MovementPatternSize movementPatternSize = MovementPatternSize.SMALL;
         PathFinder pathFinder = new StraightLinePathFinder();
 
         MovementConfiguration movementConfiguration = MissileCreator.getInstance().createMissileMovementConfig(
-                xMovementSpeed, yMovementSpeed, pathFinder, movementPatternSize, rotation
+                movementSpeed, pathFinder, rotation
         );
         movementConfiguration.initDefaultSettingsForSpecializedPathFinders();
 
         boolean isFriendly = true;
-        MissileConfiguration missileConfiguration = MissileCreator.getInstance().createMissileConfiguration(missileType
-                , 100, 100, null, damage, ImageEnums.Impact_Explosion_One, isFriendly, allowedToDealDamage, objectType,
-                missileType.isUsesBoxCollision(), false, false, false);
+        MissileConfiguration missileConfiguration = MissileCreator.getInstance().createMissileConfiguration(missileType,
+                damage, ImageEnums.Impact_Explosion_One, isFriendly,
+                false, true, false);
 
         missileConfiguration.setPiercesMissiles(PlayerStats.getInstance().getPiercingMissilesAmount() > 0);
         missileConfiguration.setAmountOfPierces(PlayerStats.getInstance().getPiercingMissilesAmount());

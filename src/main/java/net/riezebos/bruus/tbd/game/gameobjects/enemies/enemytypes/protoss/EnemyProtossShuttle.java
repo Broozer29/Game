@@ -12,7 +12,6 @@ import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.level.LevelManager;
 import net.riezebos.bruus.tbd.game.movement.Direction;
 import net.riezebos.bruus.tbd.game.movement.MovementConfiguration;
-import net.riezebos.bruus.tbd.game.movement.MovementPatternSize;
 import net.riezebos.bruus.tbd.game.movement.Point;
 import net.riezebos.bruus.tbd.game.movement.pathfinders.DestinationPathFinder;
 import net.riezebos.bruus.tbd.game.movement.pathfinders.PathFinder;
@@ -119,7 +118,7 @@ public class EnemyProtossShuttle extends Enemy {
         if (slow != isMovingSlow) { // Only update if there is a state change
             isMovingSlow = slow;
             float newSpeed = slow ? (defaultMoveSpeed * 0.7f) : defaultMoveSpeed;
-            this.getMovementConfiguration().setXMovementSpeed(newSpeed); // Only call when needed
+            this.getMovementConfiguration().setMovementSpeed(newSpeed); // Only call when needed
         }
     }
 
@@ -143,21 +142,19 @@ public class EnemyProtossShuttle extends Enemy {
         missileSpriteConfiguration.setImageType(missileType.getImageType());
         missileSpriteConfiguration.setScale(0.225f);
 
-        float xMovementSpeed = 2;
-        float yMovementSpeed = 2;
+        float movementSpeed = 2;
         Direction rotation = Direction.RIGHT;
-        MovementPatternSize movementPatternSize = MovementPatternSize.SMALL;
         PathFinder pathFinder = new StraightLinePathFinder();
 
         MovementConfiguration movementConfiguration = MissileCreator.getInstance().createMissileMovementConfig(
-                xMovementSpeed, yMovementSpeed, pathFinder, movementPatternSize, rotation
+                movementSpeed, pathFinder, rotation
         );
         movementConfiguration.initDefaultSettingsForSpecializedPathFinders();
 
         boolean isFriendly = false;
         MissileConfiguration missileConfiguration = MissileCreator.getInstance().createMissileConfiguration(missileType
-                , 100, 100, null, damage, missileType.getDeathOrExplosionImageEnum(), isFriendly, allowedToDealDamage, objectType,
-                missileType.isUsesBoxCollision(), true, false, false);
+                , damage, missileType.getDeathOrExplosionImageEnum(), isFriendly,
+                false, true, false);
 
         Missile missile = MissileCreator.getInstance().createMissile(missileSpriteConfiguration, missileConfiguration, movementConfiguration);
         missile.setOwnerOrCreator(this);

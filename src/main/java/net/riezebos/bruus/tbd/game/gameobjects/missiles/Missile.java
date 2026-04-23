@@ -53,23 +53,17 @@ public class Missile extends GameObject {
 
     private void initMissile (MissileConfiguration missileConfiguration) {
         this.friendly = missileConfiguration.isFriendly();
-        this.maxHitPoints = missileConfiguration.getMaxHitPoints();
-        this.maxShieldPoints = missileConfiguration.getMaxShields();
-        this.currentHitpoints = maxHitPoints;
-        this.currentShieldPoints = maxShieldPoints;
-        this.deathSound = missileConfiguration.getDeathSound();
-        this.allowedToDealDamage = missileConfiguration.isAllowedToDealDamage();
-        this.objectType = missileConfiguration.getObjectType();
         this.damage = missileConfiguration.getDamage();
         this.missileEnum = missileConfiguration.getMissileType();
-        this.boxCollision = missileConfiguration.isBoxCollision();
         this.piercesThroughObjects = missileConfiguration.isPiercesMissiles();
         this.maximumAmountOfPierces = missileConfiguration.getAmountOfPierces();
         this.amountOfPiercesLeft = maximumAmountOfPierces;
-        this.isExplosive = missileConfiguration.isExplosive();
         this.collidedObjects = new ArrayList<>();
         this.appliesOnHitEffects = missileConfiguration.isAppliesOnHitEffects();
         this.isDestructable = missileConfiguration.isDestructable();
+
+        this.maxHitPoints = 1; //default, should be overwritten otherwise its not used at all
+        this.currentHitpoints = maxHitPoints;
 
         if (missileConfiguration.getDestructionType() != null) {
             SpriteAnimationConfiguration destructionAnimation = new SpriteAnimationConfiguration(spriteConfiguration, 2, false);

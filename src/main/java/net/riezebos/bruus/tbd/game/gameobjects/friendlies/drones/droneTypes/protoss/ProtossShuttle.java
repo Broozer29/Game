@@ -16,7 +16,6 @@ import net.riezebos.bruus.tbd.game.items.items.carrier.SynergeticLink;
 import net.riezebos.bruus.tbd.game.items.items.carrier.VengeanceProtocol;
 import net.riezebos.bruus.tbd.game.movement.Direction;
 import net.riezebos.bruus.tbd.game.movement.MovementConfiguration;
-import net.riezebos.bruus.tbd.game.movement.MovementPatternSize;
 import net.riezebos.bruus.tbd.game.movement.Point;
 import net.riezebos.bruus.tbd.game.movement.pathfinders.PathFinder;
 import net.riezebos.bruus.tbd.game.movement.pathfinders.StraightLinePathFinder;
@@ -46,9 +45,9 @@ public class ProtossShuttle extends Drone {
         super.deathSound = AudioEnums.ProtossShipDeath;
         super.appliesOnHitEffects = true;
 
-        if(PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.AimAssist) != null){
+        if (PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.AimAssist) != null) {
             AimAssist aimAssist = (AimAssist) PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.AimAssist);
-            this.attackRange *= (1+ aimAssist.getAttackRangeBonus());
+            this.attackRange *= (1 + aimAssist.getAttackRangeBonus());
         }
 
     }
@@ -63,14 +62,14 @@ public class ProtossShuttle extends Drone {
             this.isMovingAroundCarrierDrone = ProtossUtils.carrierDroneIsPresent(this.ownerOrCreator);
         }
 
-        if(!ProtossUtils.carrierDroneIsPresent(this.ownerOrCreator) && this.isMovingAroundCarrierDrone){
+        if (!ProtossUtils.carrierDroneIsPresent(this.ownerOrCreator) && this.isMovingAroundCarrierDrone) {
             immediatlyReturnToCarrier();
         }
 
         fireAction();
     }
 
-    private void immediatlyReturnToCarrier(){
+    private void immediatlyReturnToCarrier() {
         this.movementConfiguration.resetMovementPath();
         this.movementConfiguration.setCurrentLocation(new Point(this.getXCoordinate(), this.getYCoordinate()));
         this.setAllowedVisualsToRotate(true);
@@ -82,19 +81,19 @@ public class ProtossShuttle extends Drone {
     private double lastGameSecondsCheckedForTarget = 0;
     private double checkingTargetCooldown = (double) (GameState.getInstance().getDELAY() * 3) / 1000; //every 3 gameticks
 
-    public void fireAction () {
-        if(target == null && GameState.getInstance().getGameSeconds() >= lastGameSecondsCheckedForTarget + checkingTargetCooldown){
+    public void fireAction() {
+        if (target == null && GameState.getInstance().getGameSeconds() >= lastGameSecondsCheckedForTarget + checkingTargetCooldown) {
             target = EnemyManager.getInstance().getClosestEnemyTargetWithinDistance(this.getCenterXCoordinate(), this.getCenterYCoordinate(), attackRange);
             lastGameSecondsCheckedForTarget = GameState.getInstance().getGameSeconds();
         }
 
         //Als de eigenaar null is of dood, self-destruct
-        if(this.ownerOrCreator == null || (!this.ownerOrCreator.isVisible() || this.ownerOrCreator.getCurrentHitpoints() <= 0)){
+        if (this.ownerOrCreator == null || (!this.ownerOrCreator.isVisible() || this.ownerOrCreator.getCurrentHitpoints() <= 0)) {
             this.takeDamage(this.maxHitPoints * 200);
         }
 
-        if(target != null){
-            if(isTooFarAway() || isTargetDeadOrInvisible()){
+        if (target != null) {
+            if (isTooFarAway() || isTargetDeadOrInvisible()) {
                 updateMoveSpeed(false);
                 target = null;
                 this.setAllowedVisualsToRotate(true); //Allow for rotation towards destination again
@@ -114,7 +113,7 @@ public class ProtossShuttle extends Drone {
         }
     }
 
-    private boolean isTargetDeadOrInvisible(){
+    private boolean isTargetDeadOrInvisible() {
         return target != null && (!target.isVisible() || target.getCurrentHitpoints() <= 0);
     }
 
@@ -122,7 +121,7 @@ public class ProtossShuttle extends Drone {
         if (slow != isMovingSlow) { // Only update if there is a state change
             isMovingSlow = slow;
             float newSpeed = slow ? (defaultMoveSpeed * 0.7f) : defaultMoveSpeed;
-            this.getMovementConfiguration().setXMovementSpeed(newSpeed); // Only call when needed
+            this.getMovementConfiguration().setMovementSpeed(newSpeed); // Only call when needed
         }
     }
 
@@ -134,8 +133,7 @@ public class ProtossShuttle extends Drone {
     }
 
 
-
-    private void shootMissile(){
+    private void shootMissile() {
         MissileEnums missileType = MissileEnums.ProtossShuttleMissile;
         SpriteConfiguration missileSpriteConfiguration = new SpriteConfiguration();
         missileSpriteConfiguration.setxCoordinate(this.getCenterXCoordinate());
@@ -147,25 +145,24 @@ public class ProtossShuttle extends Drone {
         float yMovementSpeed = 3f;
 
         SynergeticLink synergeticLink = (SynergeticLink) PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.SynergeticLink);
-        if(synergeticLink != null){
-            xMovementSpeed *=  (1 + synergeticLink.getCurrentShuttleMissileSpeedBonus());
-            yMovementSpeed *=  (1 + synergeticLink.getCurrentShuttleMissileSpeedBonus());
+        if (synergeticLink != null) {
+            xMovementSpeed *= (1 + synergeticLink.getCurrentShuttleMissileSpeedBonus());
+            yMovementSpeed *= (1 + synergeticLink.getCurrentShuttleMissileSpeedBonus());
         }
 
         float damage = PlayerStats.getInstance().getBaseDamage() * shuttleDamageRatio;
         Direction rotation = Direction.RIGHT;
-        MovementPatternSize movementPatternSize = MovementPatternSize.SMALL;
         PathFinder pathFinder = new StraightLinePathFinder();
 
         MovementConfiguration movementConfiguration = MissileCreator.getInstance().createMissileMovementConfig(
-                xMovementSpeed, yMovementSpeed, pathFinder, movementPatternSize, rotation
+                xMovementSpeed, pathFinder, rotation
         );
         movementConfiguration.initDefaultSettingsForSpecializedPathFinders();
 
         boolean isFriendly = true;
-        MissileConfiguration missileConfiguration = MissileCreator.getInstance().createMissileConfiguration(missileType
-                , 100, 100, null, damage, missileType.getDeathOrExplosionImageEnum(), isFriendly, allowedToDealDamage, objectType,
-                missileType.isUsesBoxCollision(), true, false, false);
+        MissileConfiguration missileConfiguration = MissileCreator.getInstance().createMissileConfiguration(missileType,
+                damage, missileType.getDeathOrExplosionImageEnum(), isFriendly,
+                true, true, false);
 
         Missile missile = MissileCreator.getInstance().createMissile(missileSpriteConfiguration, missileConfiguration, movementConfiguration);
         missile.setOwnerOrCreator(this);
@@ -186,11 +183,11 @@ public class ProtossShuttle extends Drone {
     @Override
     public void triggerOnDeathActions() {
         super.triggerOnDeathActions();
-        if(PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.EmergencyRepairs) != null){
+        if (PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.EmergencyRepairs) != null) {
             EmergencyRepairs emergencyRepairs = (EmergencyRepairs) PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.EmergencyRepairs);
             emergencyRepairs.applyEffectToObject(this.ownerOrCreator);
         }
-        if(PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.VengeanceProtocol) != null){
+        if (PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.VengeanceProtocol) != null) {
             VengeanceProtocol vengeanceProtocol = (VengeanceProtocol) PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.VengeanceProtocol);
             vengeanceProtocol.applyEffectToObject(this);
         }
