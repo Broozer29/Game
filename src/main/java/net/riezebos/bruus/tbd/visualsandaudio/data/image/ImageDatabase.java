@@ -72,6 +72,8 @@ public class ImageDatabase {
     private List<BufferedImage> shurikenEnemy = new ArrayList<>();
     private List<BufferedImage> moduleScorchFlames = new ArrayList<>();
     private List<BufferedImage> yellowBoss = new ArrayList<>();
+    private List<BufferedImage> explosion4 = new ArrayList<>();
+    private List<BufferedImage> guillotineEffect = new ArrayList<>();
 
 
     // Ship numbers to names:
@@ -113,7 +115,11 @@ public class ImageDatabase {
     private BufferedImage redFilling;
     private BufferedImage goldFilling;
     private BufferedImage blueFilling;
+    private BufferedImage adrenaline;
+    private BufferedImage explosiveLaserbeams;
+    private BufferedImage explosiveGreed;
     private BufferedImage selectBoonsUI;
+    private BufferedImage guillotineIcon;
 
 
     // Icons
@@ -133,6 +139,8 @@ public class ImageDatabase {
     private BufferedImage starcraft2Contract;
     private BufferedImage starcraft2ModuleElectrify;
     private BufferedImage starcraft2ModuleCommand;
+    private BufferedImage moduleFocusFire;
+    private BufferedImage oneShotOneKill;
     private BufferedImage starcraft2_Advanced_Optics;
     private BufferedImage cannisterOfGasoline;
     private BufferedImage starcraft2_PlatinumSponge;
@@ -479,7 +487,6 @@ public class ImageDatabase {
     private BufferedImage corsairItem;
 
 
-
     private List<BufferedImage> yellowBossHealMissile = new ArrayList<>();
     private List<BufferedImage> yellowBossHealCollision = new ArrayList<>();
     private List<BufferedImage> yellowBossVoidMissile = new ArrayList<>();
@@ -568,6 +575,8 @@ public class ImageDatabase {
     private BufferedImage firefighterUnlock;
     private BufferedImage aimAssist;
     private BufferedImage anionInverter;
+    private BufferedImage bigIron;
+
 
     private ImageDatabase() {
         initializeImages();
@@ -605,6 +614,7 @@ public class ImageDatabase {
         this.bossHealthBarFront = imgLoader.getImage(ImageEnums.BossHealthBarFront);
         this.bossHealthBarRed = imgLoader.getImage(ImageEnums.BossHealthBarRed);
         this.puncturingpierces = imgLoader.getImage(ImageEnums.PuncturingPierces);
+        this.guillotineIcon = imgLoader.getImage(ImageEnums.Guillotine);
     }
 
     private void initEnemies() {
@@ -630,6 +640,9 @@ public class ImageDatabase {
         this.redFilling = imgLoader.getImage(ImageEnums.Red_Filling);
         this.goldFilling = imgLoader.getImage(ImageEnums.Gold_Filling);
         this.blueFilling = imgLoader.getImage(ImageEnums.Blue_Filling);
+        this.adrenaline = imgLoader.getImage(ImageEnums.Adrenaline);
+        this.explosiveLaserbeams = imgLoader.getImage(ImageEnums.ExplosiveLaserbeams);
+        this.explosiveGreed = imgLoader.getImage(ImageEnums.ExplosiveGreed);
         this.blueNebula7 = imgLoader.getImage(ImageEnums.Blue_Nebula_7);
         this.blueNebula8 = imgLoader.getImage(ImageEnums.Blue_Nebula_8);
         this.blueNebula9 = imgLoader.getImage(ImageEnums.Blue_Nebula_9);
@@ -802,6 +815,7 @@ public class ImageDatabase {
         this.clubAccessUnlock = imgLoader.getImage(ImageEnums.ClubAcessUnlock);
         this.highVelocityLasers = imgLoader.getImage(ImageEnums.HighVelocityLasers);
         this.anionInverter = imgLoader.getImage(ImageEnums.AnionInverter);
+        this.bigIron = imgLoader.getImage(ImageEnums.BigIron);
 
         this.progressBar = imgLoader.getImage(ImageEnums.ProgressBar);
         this.progressBarFilling = imgLoader.getImage(ImageEnums.ProgressBarFilling);
@@ -966,6 +980,8 @@ public class ImageDatabase {
 
         this.starcraft2Contract = imgLoader.getImage(ImageEnums.Contract);
         this.starcraft2ModuleCommand = imgLoader.getImage(ImageEnums.ModuleCommand);
+        this.moduleFocusFire = imgLoader.getImage(ImageEnums.ModuleFocusFire);
+        this.oneShotOneKill = imgLoader.getImage(ImageEnums.OneShotOneKill);
         this.starcraft2ModuleElectrify = imgLoader.getImage(ImageEnums.ModuleElectrify);
         this.sc2BatteryUpgrade = imgLoader.getImage(ImageEnums.Starcraft2_BatteryUpgrade);
         this.sc2MineExplosion = imgLoader.getImage(ImageEnums.Starcraft2_MineExplosion);
@@ -994,8 +1010,18 @@ public class ImageDatabase {
 
     public BufferedImage getImage(ImageEnums imageType) {
         switch (imageType) {
-            case AnionInverter: return this.anionInverter;
-            case ChooseOne: return this.chooseone;
+            case Guillotine:
+                return this.guillotineIcon;
+            case ExplosiveGreed:
+                return this.explosiveGreed;
+            case ExplosiveLaserbeams:
+                return this.explosiveLaserbeams;
+            case AnionInverter:
+                return this.anionInverter;
+            case BigIron:
+                return this.bigIron;
+            case ChooseOne:
+                return this.chooseone;
             case BossHealthBarBackground:
                 return bossHealthBarBackground;
             case BossHealthBarFront:
@@ -1173,6 +1199,10 @@ public class ImageDatabase {
                 return starcraft2ModuleElectrify;
             case ModuleCommand:
                 return starcraft2ModuleCommand;
+            case ModuleFocusFire:
+                return moduleFocusFire;
+            case OneShotOneKill:
+                return oneShotOneKill;
             case Starcraft2RepairBeam:
                 return sc2RepairBeam;
             case Starcraft2_BatteryUpgrade:
@@ -1687,6 +1717,8 @@ public class ImageDatabase {
                 return starcraft2_Battery;
             case Blue_Filling:
                 return blueFilling;
+            case Adrenaline:
+                return adrenaline;
             default:
                 return star;
         }
@@ -1694,6 +1726,8 @@ public class ImageDatabase {
 
     public List<BufferedImage> getAnimation(ImageEnums imageType) {
         switch (imageType) {
+            case GuillotineEffect:
+                return this.guillotineEffect;
             case YellowBossHealCollision:
                 return this.yellowBossHealCollision;
             case YellowBossHealMissile:
@@ -1798,6 +1832,8 @@ public class ImageDatabase {
                 return guardianMutaliskCocoon;
             case ScourgeDeath:
                 return scourgeDeath;
+            case Explosion4:
+                return this.explosion4;
             case ScourgeIdle:
                 return scourgeIdle;
             case ScourgeExplosion:
@@ -2193,6 +2229,18 @@ public class ImageDatabase {
             String sourceString = String.format("/images/gif/PNGtoGIF/ProtossShuttleMissile/%d.png", i);
             BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
             protossShuttleMissile.add(image);
+        }
+
+        for (int i = 0; i < 10; i++) {
+            String sourceString = String.format("/images/gif/PNGtoGIF/Explosion4/%d.png", i);
+            BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+            explosion4.add(image);
+        }
+
+        for (int i = 0; i < 8; i++) {
+            String sourceString = String.format("/images/gif/PNGtoGIF/Guillotine/%d.png", i);
+            BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+            guillotineEffect.add(image);
         }
 
 
@@ -2810,7 +2858,6 @@ public class ImageDatabase {
             BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
             protossCarrier.add(image);
         }
-
 
 
         for (int i = 2; i < 35; i++) {

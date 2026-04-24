@@ -227,6 +227,8 @@ public class ImageLoader {
                 return "/images/Icons/Starcraft2 Keystone.png";
             case Starcraft2RepairBeam:
                 return "/images/Icons/Starcraft2 Repair Beam.png";
+            case Adrenaline:
+                return "/images/Icons/adrenaline.png";
             case FireShieldIcon:
                 return "/images/Icons/fireshieldicon.png";
             case ModuleScorchIcon:
@@ -401,8 +403,20 @@ public class ImageLoader {
                 return "/images/Icons/Starcraft2 Firebat Weapon.png";
             case VengeanceProtocolIcon:
                 return "/images/Icons/VengeanceProtocol.png";
+            case BigIron:
+                return "/images/Icons/bigiron.png";
             case EmergencyRepairsIcon:
                 return "/images/Icons/EmergencyRepairs.png";
+            case ExplosiveLaserbeams:
+                return "/images/Icons/explosivelaserbeams.png";
+            case ExplosiveGreed:
+                return "/images/Icons/explosivegreed.png";
+            case Guillotine:
+                return "/images/Icons/guillotine.png";
+            case ModuleFocusFire:
+                return "/images/Icons/focusfire.png";
+            case OneShotOneKill:
+                return "/images/Icons/oneshotonekill.png";
             case ConstructionKitIcon:
                 return "/images/Icons/ConstructionKit.png";
             case SynergeticLinkIcon:

@@ -113,6 +113,70 @@
                 </executions>
             </plugin>
 
+            <plugin>
+                <groupId>org.panteleyev</groupId>
+                <artifactId>jpackage-maven-plugin</artifactId>
+                <version>1.6.0</version>
+                <configuration>
+                    <name>YourGameName</name>
+                    <appVersion>1.0</appVersion>
+                    <vendor>Your Name</vendor>
+                    <destination>target/dist</destination>
+                    <input>target/jpackage-input</input>
+                    <mainJar>Game-0.0.1-SNAPSHOT.jar</mainJar>
+                    <mainClass>net.riezebos.bruus.tbd.Main</mainClass>
+                    <javaOptions>
+                        <option>-Djava.library.path=$APPDIR/lib</option>
+                        <option>-Xms4g</option>
+                        <option>-Xmx8g</option>
+                        <option>-XX:+UseG1GC</option>
+                    </javaOptions>
+                    <!-- Options: APP_IMAGE, DMG (macOS), PKG (macOS), EXE (Windows), MSI (Windows), DEB (Linux), RPM (Linux) -->
+                    <!-- APP_IMAGE = no installer needed, just extract and run -->
+                    <type>APP_IMAGE</type>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>3.3.0</version>
+                <executions>
+                    <execution>
+                        <id>copy-natives</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>target/jpackage-input/lib</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>src/main/resources/libraries</directory>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>copy-jar</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>target/jpackage-input</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>target</directory>
+                                    <includes>
+                                        <include>Game-0.0.1-SNAPSHOT.jar</include>
+                                    </includes>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 </project>

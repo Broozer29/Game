@@ -97,9 +97,9 @@ public class ExplosionManager {
             if (!explosion.dealtDamageToTarget(enemy)) {
                 CollisionInfo collisionInfo = CollisionDetector.getInstance().detectCollision(explosion, enemy);
                 if (collisionInfo != null) {
-                    explosion.applyBeforeCollisionAttackModifyingItemEffects(enemy);
+                    explosion.applyBeforeCollisionAttackModifyingItemEffects(enemy, collisionInfo);
                     if (explosion.isApplyOnHitEffects()) {
-                        explosion.applyAfterCollisionItemEffects(enemy);
+                        explosion.applyAfterCollisionItemEffects(enemy, collisionInfo);
                     }
                     explosion.applyExplosionOnHitEffects(enemy);
                     explosion.addCollidedSprite(enemy);

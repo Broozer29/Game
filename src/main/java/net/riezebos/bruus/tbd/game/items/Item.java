@@ -2,6 +2,7 @@ package net.riezebos.bruus.tbd.game.items;
 
 import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
 import net.riezebos.bruus.tbd.game.items.enums.ItemApplicationEnum;
+import net.riezebos.bruus.tbd.game.util.collision.CollisionInfo;
 
 public abstract class Item implements ItemInterface{
 
@@ -26,6 +27,11 @@ public abstract class Item implements ItemInterface{
     };
 
     public void applyEffectToObject (GameObject applier, GameObject target) {
+        //Applies an effect to an object, with the applier provided for certain conditions
+    }
+
+    @Override
+    public void applyEffectToObject (GameObject applier, GameObject target, CollisionInfo collisionInfo) {
         //Applies an effect to an object, with the applier provided for certain conditions
     }
 

@@ -116,7 +116,13 @@ public class ItemDescriptionRetriever {
                 return "Electroshred now permanently reduces enemy armor by " + Math.round(ElectroShedding.armorReduction) + " (+" + Math.round(ElectroShedding.armorReduction) + ") whenever it deals damage. Note: Electroshred strikes nearby enemies up to 12 times over a single use.";
             }
             case PuncturingPierce -> { //different formula of *10 factor intead of 100, mathmatically no difference but this math perspective suits the user better
-                return "Your missiles now deal an additional " + Math.round(PuncturingPierce.damageIncreasePerMoveSpeedIncreaseModifier * 10) +"% additional damage for every 10% increased move speed.";
+                return "Your missiles now deal an additional " + Math.round(PuncturingPierce.damageIncreasePerMoveSpeedIncreaseModifier * 10) + "% additional damage for every 10% increased move speed.";
+            }
+            case Guillotine -> {
+                return "Enemies that are damaged below " + Math.round(Guillotine.hitpointsThreshold * 100) + " % (+" + Math.round(Guillotine.hitpointsThreshold * 100) + "%) of their hitpoints are instantly killed.";
+            }
+            case ExplosiveGreed -> {
+                return "Picking up coins releases a large explosion dealing " + Math.round(ExplosiveGreed.damageModifier * 100) + "% (+" + Math.round(ExplosiveGreed.damageModifier * 100) + "%) damage.";
             }
             case ElectricSupercharger -> {
                 return "Your Electro Shred area of effect is improved. Electro Shred deals +" +
@@ -129,6 +135,9 @@ public class ItemDescriptionRetriever {
             case ReflectiveShielding -> {
                 return "Whilst your shield is up, colliding with enemy missiles returns a missile dealing " +
                         Math.round(ReflectiveShielding.buffAmount * 100) + "% (+" + Math.round(ReflectiveShielding.buffAmount * 100) + "%) damage";
+            }
+            case ExplosiveLaserbeams -> {
+                return "Your missiles cause an explosion when colliding with enemies dealing " + Math.round(ExplosiveLaserbeams.damageModifier * 100) + "% (+" + Math.round(ExplosiveLaserbeams.damageModifier * 100) + "%) damage.";
             }
             case Thornweaver -> {
                 return "Colliding with enemies now applies 100% Thorns damage to them. You take " + Math.round(Thornweaver.collisionDamageReduction * 100) +

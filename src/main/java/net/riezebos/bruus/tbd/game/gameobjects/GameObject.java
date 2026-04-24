@@ -19,6 +19,7 @@ import net.riezebos.bruus.tbd.game.util.ArmorCalculator;
 import net.riezebos.bruus.tbd.game.util.OnScreenTextManager;
 import net.riezebos.bruus.tbd.game.util.OutOfBoundsCalculator;
 import net.riezebos.bruus.tbd.game.util.VisualLayer;
+import net.riezebos.bruus.tbd.game.util.collision.CollisionInfo;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.AudioManager;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.AudioEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
@@ -382,21 +383,22 @@ public class GameObject extends Sprite {
         //Supposed to be overriden. Used for "Enemy kill counter" for example
     }
 
-    public void applyAfterCollisionItemEffects(GameObject target) {
+    public void applyAfterCollisionItemEffects(GameObject target, CollisionInfo collisionInfo) {
         if (this.appliesOnHitEffects) {
             List<Item> onHitItems = PlayerInventory.getInstance().getItemsByApplicationMethod(ItemApplicationEnum.AfterCollision);
             for (Item item : onHitItems) {
                 item.applyEffectToObject(target);
                 item.applyEffectToObject(this, target);
+                item.applyEffectToObject(this, target, collisionInfo); //collisioninfo might be null
             }
         }
     }
 
-    public void applyBeforeCollisionAttackModifyingItemEffects(GameObject target) {
+    public void applyBeforeCollisionAttackModifyingItemEffects(GameObject target, CollisionInfo collisionInfo) {
         for (Item item : PlayerInventory.getInstance().getItemsByApplicationMethod(ItemApplicationEnum.BeforeCollision)) {
             item.modifyAttackingObject(this, target);
             item.applyEffectToObject(target);
-            item.applyEffectToObject(this, target);
+            item.applyEffectToObject(this, target, collisionInfo);
         }
     }
 

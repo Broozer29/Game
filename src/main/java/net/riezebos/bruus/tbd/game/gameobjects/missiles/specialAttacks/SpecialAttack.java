@@ -96,17 +96,17 @@ public class SpecialAttack extends GameObject {
     }
 
 
-    public void tryDealDamageAndApplyEffects(GameObject target) {
+    public void tryDealDamageAndApplyEffects(GameObject target, CollisionInfo collisionInfo) {
         double currentTime = GameState.getInstance().getGameSeconds();
         double lastAffectedTime = affectedObjects.getOrDefault(target, 0.0);
 
         if (currentTime >= lastAffectedTime + internalTickCooldown) {
             if (isAllowOnHitEffects()) {
-                applyBeforeCollisionAttackModifyingItemEffects(target); //Might be problematic? Handle within item classes itself if it is problematic for some
+                applyBeforeCollisionAttackModifyingItemEffects(target, collisionInfo); //Might be problematic? Handle within item classes itself if it is problematic for some
             }
             dealDamageToGameObject(target);
             if (isAllowOnHitEffects() && appliesItemEffects) {
-                applyAfterCollisionItemEffects(target);
+                applyAfterCollisionItemEffects(target, collisionInfo);
             }
             affectedObjects.put(target, currentTime); // Update the last affected time
         }

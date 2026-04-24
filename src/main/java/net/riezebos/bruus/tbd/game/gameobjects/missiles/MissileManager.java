@@ -227,7 +227,7 @@ public class MissileManager {
         for (Enemy enemy : enemyManager.getEnemies()) {
             CollisionInfo collisionInfo = collisionDetector.detectCollision(enemy, specialAttack);
             if (collisionInfo != null) {
-                specialAttack.tryDealDamageAndApplyEffects(enemy);
+                specialAttack.tryDealDamageAndApplyEffects(enemy, collisionInfo);
             }
         }
     }
@@ -266,9 +266,9 @@ public class MissileManager {
                     ((TazerProjectile) missile).applyTazerMissileEffect(enemy);
                 } else { //It's a player missile
                     if (!missile.hasCollidedBeforeWith(enemy)) {
-                        missile.applyBeforeCollisionAttackModifyingItemEffects(enemy);
+                        missile.applyBeforeCollisionAttackModifyingItemEffects(enemy, collisionInfo);
                         missile.handleCollision(enemy);
-                        missile.applyAfterCollisionItemEffects(enemy);
+                        missile.applyAfterCollisionItemEffects(enemy, collisionInfo);
                     }
                 }
 

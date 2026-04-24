@@ -101,6 +101,10 @@ public class PlayerInventory {
 
     public Item createItemFromEnum(ItemEnums itemEnum) {
         switch (itemEnum) {
+            case Guillotine:
+                return new Guillotine();
+            case ExplosiveLaserbeams:
+                return new ExplosiveLaserbeams();
             case Adrenaline:
                 return new Adrenaline();
             case HelpRequested:
@@ -137,6 +141,8 @@ public class PlayerInventory {
                 return new Battery();
             case FocusCrystal:
                 return new FocusCrystal();
+            case ExplosiveGreed:
+                return new ExplosiveGreed();
             case PrecisionAmplifier:
                 return new PrecisionAmplifier();
             case PlatinumSponge:
