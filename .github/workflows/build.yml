@@ -30,10 +30,10 @@ jobs:
         uses: actions/checkout@v4
 
       # Step 2: Install Java 17 (required to build your game)
-      - name: Setup Java 17
+      - name: Setup Java 21
         uses: actions/setup-java@v4
         with:
-          java-version: '17'
+          java-version: '21'
           distribution: 'temurin'  # Eclipse Temurin JDK
           cache: 'maven'  # Cache Maven dependencies for faster builds
 
