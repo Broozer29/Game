@@ -1,0 +1,50 @@
+name: Build Game for All Platforms
+
+# When to run this workflow
+on:
+  push:
+    branches: [ production, cleanup-and-refactoring ]  # Run on pushes to these branches
+  pull_request:
+    branches: [ production ]  # Run on PRs to production
+  workflow_dispatch:  # Allow manual triggering from GitHub UI
+
+jobs:
+  build:
+    # Build matrix: run the job on 3 different operating systems
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        include:
+          - os: ubuntu-latest
+            artifact-name: Linux
+          - os: windows-latest
+            artifact-name: Windows
+          - os: macos-latest
+            artifact-name: macOS
+
+    runs-on: ${{ matrix.os }}  # Which OS to run on
+
+    steps:
+      # Step 1: Download your code from GitHub
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Step 2: Install Java 17 (required to build your game)
+      - name: Setup Java 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'  # Eclipse Temurin JDK
+          cache: 'maven'  # Cache Maven dependencies for faster builds
+
+      # Step 3: Build the JAR and create the jpackage executable
+      - name: Build with Maven
+        run: mvn clean package jpackage:jpackage
+
+      # Step 4: Upload the built application as a downloadable artifact
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: Game-${{ matrix.artifact-name }}  # Name: Game-Windows, Game-macOS, Game-Linux
+          path: target/dist/  # The jpackage output folder
+          retention-days: 30  # Keep artifacts for 30 days
