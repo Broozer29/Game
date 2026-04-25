@@ -118,9 +118,9 @@
                 <artifactId>jpackage-maven-plugin</artifactId>
                 <version>1.6.0</version>
                 <configuration>
-                    <name>YourGameName</name>
+                    <name>Game</name>
                     <appVersion>1.0</appVersion>
-                    <vendor>Your Name</vendor>
+                    <vendor>Bruus Riezebos</vendor>
                     <destination>target/dist</destination>
                     <input>target/jpackage-input</input>
                     <mainJar>Game-0.0.1-SNAPSHOT.jar</mainJar>
