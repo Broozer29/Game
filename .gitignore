@@ -5,3 +5,17 @@ target/
 .idea/workspace.xml
 dependency-reduced-pom.xml
 *.DS_Store
+.DS_Store
+.github/.DS_Store
+src/.DS_Store
+src/main/.DS_Store
+src/main/java/.DS_Store
+src/main/resources/.DS_Store
+src/main/resources/audio/.DS_Store
+src/main/resources/images/.DS_Store
+src/main/resources/images/gif/.DS_Store
+src/main/resources/images/gif/PNGtoGIF/.DS_Store
+src/main/resources/images/gif/PNGtoGIF/Fireshield2/.DS_Store
+src/main/resources/images/Ships/.DS_Store
+src/main/resources/images/Ships/Enemy Ships/.DS_Store
+src/main/resources/images/UI/.DS_Store
