@@ -3,6 +3,8 @@ package net.riezebos.bruus.tbd.game.gameobjects.enemies;
 import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyCategory;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyEnums;
+import net.riezebos.bruus.tbd.game.gameobjects.friendlies.FriendlyManager;
+import net.riezebos.bruus.tbd.game.gameobjects.friendlies.FriendlyStation;
 import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.droneTypes.protoss.ProtossUtils;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.Missile;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.MissileManager;
@@ -73,6 +75,7 @@ public class EnemyManager {
     public void updateGameTick() {
         PerformanceLoggerManager.timeAndLog(performanceLogger, "Update Enemies", this::updateEnemies);
         PerformanceLoggerManager.timeAndLog(performanceLogger, "Check Spaceship Collision", this::checkSpaceshipCollisions);
+        PerformanceLoggerManager.timeAndLog(performanceLogger, "Check Friendly Station Collision", this::checkFriendlyStationCollision);
         PerformanceLoggerManager.timeAndLog(performanceLogger, "Trigger Enemy Actions", this::triggerEnemyActions);
     }
 
@@ -86,7 +89,7 @@ public class EnemyManager {
     }
 
     private void checkSpaceshipCollisions() {
-        for(SpaceShip spaceship : PlayerManager.getInstance().getAllSpaceShips()) {
+        for (SpaceShip spaceship : PlayerManager.getInstance().getAllSpaceShips()) {
             for (Enemy enemy : enemyList) {
                 if (enemy.isVisible()) {
                     CollisionInfo collisionInfo = CollisionDetector.getInstance().detectCollision(enemy, spaceship);
@@ -105,6 +108,20 @@ public class EnemyManager {
                             handleAdditionalKnockbackBehaviour(enemy);
                         }
                         spaceship.applyKnockback(collisionInfo, enemy.getKnockbackStrength());
+                    }
+                }
+            }
+        }
+    }
+
+    private void checkFriendlyStationCollision() {
+        for (FriendlyStation station : FriendlyManager.getInstance().getFriendlyStations()) {
+            for (Enemy enemy : enemyList) {
+                if (enemy.isDetonateOnCollision() && enemy.isVisible()) {
+                    CollisionInfo collisionInfo = CollisionDetector.getInstance().detectCollision(enemy, station);
+                    if (collisionInfo != null) {
+                        detonateEnemy(enemy);
+                        enemy.dealDamageToGameObject(station);
                     }
                 }
             }

@@ -4,6 +4,7 @@ import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.Enemy;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyManager;
 import net.riezebos.bruus.tbd.game.gameobjects.friendlies.FriendlyManager;
+import net.riezebos.bruus.tbd.game.gameobjects.friendlies.FriendlyStation;
 import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.Drone;
 import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.droneTypes.protoss.ProtossUtils;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.laserbeams.Laserbeam;
@@ -186,6 +187,9 @@ public class MissileManager {
                     checkMissileCollisionWithPlayer(missile);
                 }
 
+                if(!missile.isFriendly()){ //reduces checks on friendly missiles and thus saves some performance
+                    checkMissileCollisionWitFriendlyStations(missile);
+                }
                 if (missile.interactsWithMissiles()) {
                     checkMissileCollisionWithMissiles(missile);
                 }
@@ -305,6 +309,18 @@ public class MissileManager {
         }
     }
 
+
+    private void checkMissileCollisionWitFriendlyStations(Missile missile) {
+        for (FriendlyStation station : FriendlyManager.getInstance().getFriendlyStations()) {
+            CollisionInfo collisionInfo = collisionDetector.detectCollision(missile, station);
+            if (collisionInfo != null) {
+                if (missile.getMissileEnum().equals(MissileEnums.TazerProjectile)) {
+                    ((TazerProjectile) missile).applyTazerMissileEffect(station);
+                }
+                missile.handleCollision(station);
+            }
+        }
+    }
     private void checkMissileCollisionWithDrones(Missile missile, SpaceShip spaceship) {
         for (Drone drone : FriendlyManager.getInstance().getAllProtossDrones(spaceship)) {
             CollisionInfo collisionInfo = collisionDetector.detectCollision(missile, drone);

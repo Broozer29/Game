@@ -8,6 +8,7 @@ import net.riezebos.bruus.tbd.game.gameobjects.enemies.Enemy;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyManager;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.twinboss.TwinBossManager;
 import net.riezebos.bruus.tbd.game.gameobjects.friendlies.FriendlyManager;
+import net.riezebos.bruus.tbd.game.gameobjects.friendlies.FriendlyStation;
 import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.Drone;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.Missile;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.MissileManager;
@@ -27,6 +28,7 @@ import net.riezebos.bruus.tbd.game.gamestate.GameStatusEnums;
 import net.riezebos.bruus.tbd.game.gamestate.save.SaveManager;
 import net.riezebos.bruus.tbd.game.items.ItemEnums;
 import net.riezebos.bruus.tbd.game.items.PlayerInventory;
+import net.riezebos.bruus.tbd.game.items.items.BonusKaart;
 import net.riezebos.bruus.tbd.game.items.items.StuiversBestFriend;
 import net.riezebos.bruus.tbd.game.items.items.util.ContractHelper;
 import net.riezebos.bruus.tbd.game.level.LevelManager;
@@ -220,6 +222,11 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
             if (PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.Stuivie) != null) {
                 StuiversBestFriend stuiversBestFriend = (StuiversBestFriend) PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.Stuivie);
                 stuiversBestFriend.setHasActivatedThisRound(false);
+            }
+
+            if (PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.BonusKaart) != null) {
+                BonusKaart bonusKaart = (BonusKaart) PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.BonusKaart);
+                bonusKaart.setUsedThisShop(false);
             }
 
             //These should probably to be refactored into osmething new
@@ -511,6 +518,16 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
 
                 if (drone.isShowHealthBar()) {
                     drawHealthBars(g, drone);
+                }
+            }
+        }
+
+        for (FriendlyStation friendlyStation : friendlyManager.getFriendlyStations()) {
+            if (friendlyStation.isVisible()) {
+                drawImage(g, friendlyStation); //doesnt have an animation (yet?)
+
+                if (friendlyStation.isShowHealthBar()) {
+                    drawHealthBars(g, friendlyStation);
                 }
             }
         }

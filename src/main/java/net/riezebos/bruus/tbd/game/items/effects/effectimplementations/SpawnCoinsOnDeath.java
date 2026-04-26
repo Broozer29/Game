@@ -30,13 +30,15 @@ public class SpawnCoinsOnDeath implements EffectInterface {
 
     private List<SpriteAnimation> animationList = new ArrayList<>();
     private List<Direction> usedRotations = new ArrayList<>();
+    private float chanceToSpawn = 1.0f; //default to 100%;
 
-    public SpawnCoinsOnDeath(float goldAmount, int coinAmount) {
+    public SpawnCoinsOnDeath(float goldAmount, int coinAmount, float chanceToSpawn) {
         this.effectActivationType = EffectActivationTypes.OnObjectDeath;
         this.effectIdentifier = EffectIdentifiers.SpawnCoinsOnDeath;
         this.goldAmount = goldAmount;
         this.activated = false;
         this.coinAmount = coinAmount;
+        this.chanceToSpawn = chanceToSpawn;
     }
 
 
@@ -44,6 +46,12 @@ public class SpawnCoinsOnDeath implements EffectInterface {
     public void activateEffect(GameObject gameObject) {
         if (gameObject.getCurrentHitpoints() <= 0 && !activated) {
             activated = true;
+
+
+            //break out of not rolled succesfully
+            if(Math.random() > chanceToSpawn){
+                return;
+            }
 
             if(coinAmount > 4){
                 coinAmount = 4; //Only 4 diagonal directions

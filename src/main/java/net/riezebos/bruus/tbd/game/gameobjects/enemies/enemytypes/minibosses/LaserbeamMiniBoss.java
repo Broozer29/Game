@@ -40,7 +40,7 @@ public class LaserbeamMiniBoss extends Enemy {
         this.knockbackStrength = 10;
         this.attackSpeed = 0.025f;
 
-        SpawnCoinsOnDeath goldOnDeathEffect = new SpawnCoinsOnDeath(25, 3);
+        SpawnCoinsOnDeath goldOnDeathEffect = new SpawnCoinsOnDeath(25, 3,1.0f);
         this.addEffect(goldOnDeathEffect);
     }
 

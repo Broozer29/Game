@@ -33,7 +33,8 @@ public class FriendlyManager {
 
     private static FriendlyManager instance = new FriendlyManager();
     private EnemyManager enemyManager = EnemyManager.getInstance();
-    private List<Drone> drones = new ArrayList<Drone>();
+    private List<Drone> drones = new ArrayList<>();
+    private List<FriendlyStation> friendlyStations = new ArrayList<>();
     private Portal finishedLevelPortal;
     private GameState gameState = GameState.getInstance();
     private PerformanceLogger performanceLogger = null;
@@ -63,6 +64,10 @@ public class FriendlyManager {
 
     public static FriendlyManager getInstance() {
         return instance;
+    }
+
+    public void addFriendlyStation(FriendlyStation friendlyStation) {
+        friendlyStations.add(friendlyStation);
     }
 
 
@@ -101,9 +106,9 @@ public class FriendlyManager {
     }
 
     private void updateFriendlyObjects() {
-        Iterator<Drone> iterator = drones.iterator();
-        while (iterator.hasNext()) {
-            Drone friendlyObject =  iterator.next();
+        Iterator<Drone> droneIterator = drones.iterator();
+        while (droneIterator.hasNext()) {
+            Drone friendlyObject =  droneIterator.next();
 
             if(friendlyObject.isProtoss() && friendlyObject.getCurrentHitpoints() <= 0){
                 friendlyObject.setVisible(false);
@@ -118,9 +123,11 @@ public class FriendlyManager {
                 friendlyObject.updateGameObjectEffects();
                 friendlyObject.setShowHealthBar(friendlyObject.getCurrentHitpoints() < friendlyObject.getMaxHitPoints());
             } else {
-                iterator.remove();
+                droneIterator.remove();
             }
         }
+
+        friendlyStations.removeIf(friendlyStation -> !friendlyStation.isVisible());
 
 
         SynergeticLink synergeticLink = (SynergeticLink) PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.SynergeticLink);
@@ -134,6 +141,9 @@ public class FriendlyManager {
     private void activateFriendlyObjects() {
         for (Drone drone : drones) {
             drone.activateObject();
+        }
+        for (FriendlyStation friendlyStation : friendlyStations) {
+            friendlyStation.activateObject();
         }
     }
 
@@ -230,5 +240,9 @@ public class FriendlyManager {
 
     public PerformanceLogger getPerformanceLogger() {
         return performanceLogger;
+    }
+
+    public List<FriendlyStation> getFriendlyStations() {
+        return friendlyStations;
     }
 }

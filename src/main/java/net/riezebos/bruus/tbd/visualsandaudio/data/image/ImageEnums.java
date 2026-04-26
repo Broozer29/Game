@@ -201,6 +201,7 @@ public enum ImageEnums {
     GreenPlanet3,
     GreenPlanet4,
     GreenPlanet5,
+    SpaceStationAlly,
     AimAssist,
     Lava_Planet, Planet_One, Planet_Two, Planet_Three, Mars_Planet, Star,
     Blue_Nebula_1, Blue_Nebula_2, Blue_Nebula_3,
@@ -314,7 +315,7 @@ public enum ImageEnums {
     Letter_N, Letter_O, Letter_P, Letter_Q, Letter_R, Letter_S, Letter_T, Letter_U, Letter_V, Letter_W, Letter_X,
     Letter_Y, Letter_Z, Letter_Percentage, Letter_Komma, Letter_One, Letter_Two, Letter_Three, Letter_Four, Letter_Five,
     Letter_Six, Letter_Seven, Letter_Eight, Letter_Nine, Letter_Zero, SpaceStationBoss, FireFighter, Starcraft2ConcentratedLaser, Starcraft2RepairBeam, Starcraft2_BatteryUpgrade, Starcraft2_MineExplosion, StickyOilIcon, SelectNewClassAnimation, EscalatingFlames, EntanglingFlames, ProtossShuttleMissileExplosion, ArbiterMultiTargetIcon,
-    CarrierUnlock, DefenderMiniBoss, ReverseHealing, ProtossCorsairExplosion, CallForHelp, Explosion4, Adrenaline, ExplosiveLaserbeams, Guillotine;
+    CarrierUnlock, DefenderMiniBoss, ReverseHealing, ProtossCorsairExplosion, CallForHelp, Explosion4, Adrenaline, ExplosiveLaserbeams, Guillotine, BonusKaart;
 
     public static ImageEnums fromChar(char c) {
         switch (c) {

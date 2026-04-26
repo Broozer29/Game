@@ -10,8 +10,10 @@ import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SpaceShip;
 import net.riezebos.bruus.tbd.game.items.effects.effectimplementations.DamageReduction;
 import net.riezebos.bruus.tbd.game.movement.Direction;
 import net.riezebos.bruus.tbd.game.movement.MovementConfiguration;
+import net.riezebos.bruus.tbd.game.movement.Point;
 import net.riezebos.bruus.tbd.game.movement.pathfinders.DestinationPathFinder;
 import net.riezebos.bruus.tbd.game.movement.pathfinders.OrbitPathFinder;
+import net.riezebos.bruus.tbd.game.movement.pathfinders.RegularPathFinder;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteAnimationConfiguration;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteConfiguration;
@@ -42,7 +44,6 @@ public class FriendlyCreator {
         object.setOwnerOrCreator(spaceShip);
         return object;
     }
-
 
     private static Drone createDrone(SpriteConfiguration spriteConfiguration, FriendlyObjectConfiguration friendlyObjectConfiguration, GameObject owner) {
         SpaceShip spaceShip = (SpaceShip) owner;
@@ -183,6 +184,28 @@ public class FriendlyCreator {
                 return 0.2f;
             }
         }
+    }
+
+    public static FriendlyStation createFriendlyStation(SpaceShip owner, Point spawnLocation) {
+        SpriteConfiguration spriteConfiguration = new SpriteConfiguration();
+        spriteConfiguration.setxCoordinate(spawnLocation.getX());
+        spriteConfiguration.setyCoordinate(spawnLocation.getY());
+        spriteConfiguration.setScale(1);
+        spriteConfiguration.setImageType(ImageEnums.SpaceStationAlly);
+
+        FriendlyObjectConfiguration friendlyObjectConfiguration = new FriendlyObjectConfiguration(FriendlyObjectEnums.SpaceStation, 0.5f, false);
+        MovementConfiguration movementConfiguration = new MovementConfiguration();
+        movementConfiguration.setPathFinder(new RegularPathFinder());
+        movementConfiguration.setMovementSpeed(0.1f);
+        movementConfiguration.setDirection(Direction.RIGHT); //shouldnt matter as we set allowedToMove = false;
+        movementConfiguration.initDefaultSettingsForSpecializedPathFinders();
+        FriendlyStation friendlyStation = new FriendlyStation(spriteConfiguration, friendlyObjectConfiguration, movementConfiguration);
+
+        friendlyStation.setCenterCoordinates(spawnLocation.getX(), spawnLocation.getY());
+        if (owner != null) {
+            friendlyStation.setOwnerOrCreator(owner);
+        }
+        return friendlyStation;
     }
 
 }

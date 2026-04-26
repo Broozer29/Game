@@ -3,6 +3,8 @@ package net.riezebos.bruus.tbd.game.gameobjects.enemies;
 import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyCategory;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyEnums;
+import net.riezebos.bruus.tbd.game.gameobjects.friendlies.FriendlyCreator;
+import net.riezebos.bruus.tbd.game.gameobjects.friendlies.FriendlyManager;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.MissileManager;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
@@ -10,7 +12,10 @@ import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SpaceShip;
 import net.riezebos.bruus.tbd.game.gamestate.GameMode;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.gamestate.GameStatsTracker;
+import net.riezebos.bruus.tbd.game.items.ItemEnums;
+import net.riezebos.bruus.tbd.game.items.PlayerInventory;
 import net.riezebos.bruus.tbd.game.items.effects.EffectIdentifiers;
+import net.riezebos.bruus.tbd.game.items.items.SpawnSpaceStationTBD;
 import net.riezebos.bruus.tbd.game.level.LevelManager;
 import net.riezebos.bruus.tbd.game.level.directors.GodRunDetector;
 import net.riezebos.bruus.tbd.game.movement.*;
@@ -201,6 +206,13 @@ public class Enemy extends GameObject {
 
         if(this.enemyType.getEnemyCategory().equals(EnemyCategory.Boss)) {
             GameState.getInstance().increaseBossDefeated();
+        }
+
+
+
+        if(PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.SpawnSpaceStationTBD) != null &&
+                FriendlyManager.getInstance().getFriendlyStations().size() < PlayerManager.getInstance().getPlayerCount() * SpawnSpaceStationTBD.maxStations) {
+            FriendlyManager.getInstance().addFriendlyStation(FriendlyCreator.createFriendlyStation(null, this.getCurrentCenterLocation()));
         }
     }
 

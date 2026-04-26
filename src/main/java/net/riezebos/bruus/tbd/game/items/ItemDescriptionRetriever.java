@@ -124,10 +124,16 @@ public class ItemDescriptionRetriever {
             case ExplosiveGreed -> {
                 return "Picking up coins releases a large explosion dealing " + Math.round(ExplosiveGreed.damageModifier * 100) + "% (+" + Math.round(ExplosiveGreed.damageModifier * 100) + "%) damage.";
             }
+            case BonusKaart -> {
+                return "Gain an additional copy of the first item you purchase in the shop. Can be used multiple times.";
+            }
             case ElectricSupercharger -> {
                 return "Your Electro Shred area of effect is improved. Electro Shred deals +" +
                         Math.round(ElectricSupercharger.buffAmount * 100) +
                         "% (+" + Math.round(ElectricSupercharger.buffAmount * 100) + "%) damage.";
+            }
+            case GreedIsGood -> {
+                return "Cash carriers no longer spawn. Instead, medium sized enemies have a " + Math.round(GreedIsGood.mineralsPerPickupChance * 100) + "% chance to drop a coin worth " + GreedIsGood.mineralsPerPickup +" minerals.";
             }
             case Adrenaline -> {
                 return "Taking damage increases your attack speed by " + Math.round(Adrenaline.attackSpeedIncrease * 100) + "% (+" + Math.round(Adrenaline.attackSpeedIncrease * 100) + "%) for " + Math.round(Adrenaline.duration) + " seconds. Taking damage again refreshes the duration of the effect.";

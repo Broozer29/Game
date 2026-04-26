@@ -53,7 +53,7 @@ public class MirageMiniBoss extends Enemy {
         }
         lastTimeCloned = GameState.getInstance().getGameSeconds() - 12; //spawn with clones on cooldown
 
-        SpawnCoinsOnDeath goldOnDeathEffect = new SpawnCoinsOnDeath(25, 3);
+        SpawnCoinsOnDeath goldOnDeathEffect = new SpawnCoinsOnDeath(25, 3,1.0f);
         this.addEffect(goldOnDeathEffect);
     }
 

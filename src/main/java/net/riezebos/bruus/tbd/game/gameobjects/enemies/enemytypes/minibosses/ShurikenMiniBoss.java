@@ -25,7 +25,7 @@ public class ShurikenMiniBoss extends Enemy {
             bouncingPathFinder.setUseCenteredCoordinatesInstead(true);
         }
 
-        SpawnCoinsOnDeath goldOnDeathEffect = new SpawnCoinsOnDeath(25, 3);
+        SpawnCoinsOnDeath goldOnDeathEffect = new SpawnCoinsOnDeath(25, 3,1.0f);
         this.addEffect(goldOnDeathEffect);
     }
 

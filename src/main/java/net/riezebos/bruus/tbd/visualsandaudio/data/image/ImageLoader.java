@@ -109,6 +109,8 @@ public class ImageLoader {
                 return "/images/background/star.png";
             case Player_Spaceship_Model_3:
                 return "/images/Ships/Player Ships/TM_3_Better_Model_Upgrade.png";
+            case SpaceStationAlly:
+                return "/images/Ships/Player Ships/smalldrone.png";
             case FireFighter:
                 return "/images/Ships/Player Ships/FireFighter.png";
             case Frame:
@@ -459,6 +461,8 @@ public class ImageLoader {
                 return "/images/Icons/puncturingpierces.png";
             case StickyDynamite:
                 return "/images/Icons/stickydynamite.png";
+            case BonusKaart:
+                return "/images/Icons/bonuskaart.png";
             case Star_Blue1:
                 return "/images/background/LargeStars/star_blue01.png";
             case Star_Blue2:

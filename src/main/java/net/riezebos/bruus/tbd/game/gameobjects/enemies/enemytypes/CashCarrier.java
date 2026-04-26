@@ -12,25 +12,25 @@ import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteAnimation;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteAnimationConfiguration;
 
 public class CashCarrier extends Enemy {
-    public CashCarrier (SpriteAnimationConfiguration spriteConfiguration, EnemyConfiguration enemyConfiguration, MovementConfiguration movementConfiguration) {
+    public CashCarrier(SpriteAnimationConfiguration spriteConfiguration, EnemyConfiguration enemyConfiguration, MovementConfiguration movementConfiguration) {
         super(spriteConfiguration, enemyConfiguration, movementConfiguration);
         SpriteAnimationConfiguration destroyedExplosionfiguration = new SpriteAnimationConfiguration(spriteConfiguration.getSpriteConfiguration(), 0, false);
         destroyedExplosionfiguration.getSpriteConfiguration().setImageType(this.enemyType.getDestructionType());
         this.destructionAnimation = new SpriteAnimation(destroyedExplosionfiguration);
         this.destructionAnimation.setAnimationScale(this.scale * 1.5f);
 
-        //Gold gain should be 0, as this effect is cosmetic ONLY!
-        SpawnCoinsOnDeath goldOnDeathEffect = new SpawnCoinsOnDeath(25, 3);
+
+        SpawnCoinsOnDeath goldOnDeathEffect = new SpawnCoinsOnDeath(25, 3, 1.0f);
         this.addEffect(goldOnDeathEffect);
         this.detonateOnCollision = false;
         this.knockbackStrength = 8;
 
-        if(LevelManager.getInstance().getCurrentEnemyTribe().equals(EnemyTribes.Zerg)){
+        if (LevelManager.getInstance().getCurrentEnemyTribe().equals(EnemyTribes.Zerg)) {
             initAsOverlord();
         }
     }
 
-    private void initAsOverlord(){
+    private void initAsOverlord() {
         this.getAnimation().changeImagetype(ImageEnums.Overlord);
         this.getAnimation().setFrameDelay(9);
         this.setAllowedVisualsToRotate(true);
@@ -40,7 +40,7 @@ public class CashCarrier extends Enemy {
         this.getDestructionAnimation().setFrameDelay(3);
     }
 
-    public void fireAction(){
+    public void fireAction() {
         //Probably do nothing?
     }
 

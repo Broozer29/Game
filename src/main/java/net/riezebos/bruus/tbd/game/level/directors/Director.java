@@ -5,6 +5,8 @@ import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyCategory;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyEnums;
 import net.riezebos.bruus.tbd.game.gamestate.GameMode;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
+import net.riezebos.bruus.tbd.game.items.ItemEnums;
+import net.riezebos.bruus.tbd.game.items.PlayerInventory;
 import net.riezebos.bruus.tbd.game.level.EnemyFormation;
 import net.riezebos.bruus.tbd.game.level.FormationCreator;
 import net.riezebos.bruus.tbd.game.level.LevelManager;
@@ -81,6 +83,11 @@ public class Director {
     }
 
     private double calculateCashCarrierChance(DirectorType directorType) {
+        if(PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.BonusKaart) != null){
+            return 0f; //bonuskaart disables cash carriers
+        }
+
+
         return switch (directorType) {
             case Slow -> 0.1f;
             case Fast -> 0.05f;

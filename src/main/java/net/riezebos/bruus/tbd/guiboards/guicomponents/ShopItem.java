@@ -6,6 +6,7 @@ import net.riezebos.bruus.tbd.game.items.ItemDescriptionRetriever;
 import net.riezebos.bruus.tbd.game.items.ItemEnums;
 import net.riezebos.bruus.tbd.game.items.PlayerInventory;
 import net.riezebos.bruus.tbd.game.items.enums.ItemRarityEnums;
+import net.riezebos.bruus.tbd.game.items.items.BonusKaart;
 import net.riezebos.bruus.tbd.guiboards.BoardManager;
 import net.riezebos.bruus.tbd.guiboards.GUIComponentItemInformation;
 import net.riezebos.bruus.tbd.guiboards.boardEnums.MenuFunctionEnums;
@@ -21,7 +22,7 @@ public class ShopItem extends GUIComponent {
 
     private ItemRarityEnums itemRarity;
 
-    public ShopItem (SpriteConfiguration spriteConfiguration, ItemRarityEnums itemRarity) {
+    public ShopItem(SpriteConfiguration spriteConfiguration, ItemRarityEnums itemRarity) {
         super(spriteConfiguration);
         this.itemRarity = itemRarity;
         this.menuFunctionality = MenuFunctionEnums.PurchaseItem;
@@ -71,7 +72,7 @@ public class ShopItem extends GUIComponent {
         return ItemEnums.Overclock;
     }
 
-    public void lockItemInShop () {
+    public void lockItemInShop() {
         spriteConfiguration.setImageType(ImageEnums.LockedIcon);
         this.imageEnum = ImageEnums.LockedIcon;
         shopItemInformation.setItemDescription("Locked");
@@ -83,16 +84,27 @@ public class ShopItem extends GUIComponent {
         super.setImageDimensions(shopItemIconDimensions, shopItemIconDimensions);
     }
 
-    public void purchaseItemInShop () {
-        if(shopItemInformation.getItemRarity().equals(ItemRarityEnums.Relic)) {
+    public void purchaseItemInShop() {
+        if (shopItemInformation.getItemRarity().equals(ItemRarityEnums.Relic)) {
             PlayerInventory.getInstance().addItem(shopItemInformation.getItem());
             SaveManager.getInstance().exportCurrentSave();
             AudioManager.getInstance().addAudio(AudioEnums.GenericSelect);
             BoardManager.getInstance().getGameBoard().signalThatRelicHasBeenChosen(); //sloppy implementation, this way, Relic shopitems are not compatible with shopboard as the active screen
         } else if (shopItemInformation.isAvailable() && shopItemInformation.canAfford()) {
             AudioManager.getInstance().addAudio(AudioEnums.GenericSelect);
-            PlayerInventory.getInstance().addItem(shopItemInformation.getItem());
-            PlayerInventory.getInstance().spendCashMoney(shopItemInformation.getCost());
+
+            BonusKaart bonusKaart = (BonusKaart) PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.BonusKaart);
+            int amountOfTimes = 1;
+            if (bonusKaart != null && !bonusKaart.isUsedThisShop()) {
+                amountOfTimes += 1;
+                bonusKaart.setUsedThisShop(true);
+            }
+
+            for(int i = 0; i < amountOfTimes; i++){
+                PlayerInventory.getInstance().addItem(shopItemInformation.getItem());
+                PlayerInventory.getInstance().spendCashMoney(shopItemInformation.getCost());
+            }
+
             lockItemInShop();
             SaveManager.getInstance().exportCurrentSave();
         } else if (shopItemInformation.isAvailable() && !shopItemInformation.canAfford()) {
@@ -100,12 +112,12 @@ public class ShopItem extends GUIComponent {
         }
     }
 
-    public GUIComponentItemInformation getShopItemInformation () {
+    public GUIComponentItemInformation getShopItemInformation() {
         return shopItemInformation;
     }
 
     @Override
-    public void activateComponent () {
+    public void activateComponent() {
         AudioDatabase.getInstance().updateGameTick();
         purchaseItemInShop();
     }

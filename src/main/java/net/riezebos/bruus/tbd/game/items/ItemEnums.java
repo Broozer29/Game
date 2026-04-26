@@ -27,6 +27,9 @@ public enum ItemEnums {
 
 
     //Relics 2.0
+    SpawnSpaceStationTBD(ItemRarityEnums.Relic, ImageEnums.Test_Image, "Name tbd", true),
+    BonusKaart(ItemRarityEnums.Relic, ImageEnums.BonusKaart, "Bonus Kaart", true),
+    GreedIsGood(ItemRarityEnums.Relic, ImageEnums.Test_Image, "Greed is Good", true),
     ModuleAccuracy(ItemRarityEnums.Relic, ImageEnums.Starcraft2LockOn, "Module: Accuracy", true),
     BouncingLasers(ItemRarityEnums.Relic,  ImageEnums.Starcraft2BouncingLaser, "Bouncing Lasers", true),
     ModuleElectrify(ItemRarityEnums.Relic,  ImageEnums.ModuleElectrify, "Module: Electric Razor", true),

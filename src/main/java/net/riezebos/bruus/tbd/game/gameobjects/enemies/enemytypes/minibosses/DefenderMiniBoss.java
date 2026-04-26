@@ -33,7 +33,7 @@ public class DefenderMiniBoss extends Enemy {
         this.detonateOnCollision = false;
         this.knockbackStrength = 10;
 
-        SpawnCoinsOnDeath goldOnDeathEffect = new SpawnCoinsOnDeath(25, 3);
+        SpawnCoinsOnDeath goldOnDeathEffect = new SpawnCoinsOnDeath(25, 3,1.0f);
         this.addEffect(goldOnDeathEffect);
     }
 
