@@ -10,7 +10,7 @@ public class CriticalOverloadCapacitor extends Item {
     public static float damageMultiplier = 0.5f;
 
     public CriticalOverloadCapacitor () {
-        super(ItemEnums.CriticalOverloadCapacitor, 1, ItemApplicationEnum.ApplyOnCreation);
+        super(ItemEnums.CriticalOverloadCapacitor, 1, ItemApplicationEnum.ApplyOnSpaceShipCreation);
     }
 
     @Override

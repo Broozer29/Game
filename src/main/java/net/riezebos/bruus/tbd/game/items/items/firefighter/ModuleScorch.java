@@ -15,7 +15,7 @@ public class ModuleScorch extends Item {
     private float orbitrangeBonus = 30;
 
     public ModuleScorch () {
-        super(ItemEnums.ModuleScorch, 1, ItemApplicationEnum.ApplyOnCreation);
+        super(ItemEnums.ModuleScorch, 1, ItemApplicationEnum.ApplyOnSpaceShipCreation);
     }
 
     @Override

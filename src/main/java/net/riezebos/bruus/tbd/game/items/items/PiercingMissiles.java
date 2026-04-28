@@ -10,7 +10,7 @@ import net.riezebos.bruus.tbd.game.items.enums.ItemApplicationEnum;
 public class PiercingMissiles extends Item {
 
     public PiercingMissiles() {
-        super(ItemEnums.PiercingMissiles, 1, ItemApplicationEnum.ApplyOnCreation);
+        super(ItemEnums.PiercingMissiles, 1, ItemApplicationEnum.ApplyOnSpaceShipCreation);
     }
 
     @Override

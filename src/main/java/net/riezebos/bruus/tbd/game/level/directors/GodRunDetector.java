@@ -2,8 +2,6 @@ package net.riezebos.bruus.tbd.game.level.directors;
 
 import net.riezebos.bruus.tbd.game.gamestate.GameMode;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
-import net.riezebos.bruus.tbd.visualsandaudio.data.audio.AudioManager;
-import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.AudioEnums;
 
 public class GodRunDetector {
 
@@ -125,13 +123,11 @@ public class GodRunDetector {
         }
 
         if (GameState.getInstance().getStagesCompleted() <= 3)
-            godRunScore = 0; //if early game, never enable godrun modifications
+            godRunScore = 0; //if early game, set the godrunscore to 0 since the levels before the first boss should give the player a grace period to get his build going
 
         if (lastGodRunScore != godRunScore && now - lastGameSecondsGodRunScoreUpdated >= 10) { //only update the godrunscore a maximum of once every X seconds
             lastGodRunScore = godRunScore;
             lastGameSecondsGodRunScoreUpdated = now;
-            AudioManager.getInstance().addAudio(AudioEnums.GodRunDetected);
-//            OnScreenTextManager.getInstance().addText("GOD RUN DETECTED, SCORE: " + godRunScore);
         }
 
     }

@@ -13,7 +13,7 @@ public class EmergencyRepairBot extends Item {
     public static float healthActivationRatio = 0.25f;
 
     public EmergencyRepairBot () {
-        super(ItemEnums.EmergencyRepairBot, 1, ItemApplicationEnum.ApplyOnCreation);
+        super(ItemEnums.EmergencyRepairBot, 1, ItemApplicationEnum.ApplyOnSpaceShipCreation);
     }
 
     @Override

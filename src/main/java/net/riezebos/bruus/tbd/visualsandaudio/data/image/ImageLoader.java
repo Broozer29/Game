@@ -179,6 +179,8 @@ public class ImageLoader {
                 return "/images/background/Starfield3.png";
             case Star_Field_4:
                 return "/images/background/Starfield4.png";
+            case SmallDroneItemIcon:
+                return "/images/Icons/smalldroneicon.jpg";
             case Starcraft2_Auto_Tracking:
                 return "/images/Icons/Starcraft2 Auto Tracking.png";
             case Starcraft2_Blue_Flame:

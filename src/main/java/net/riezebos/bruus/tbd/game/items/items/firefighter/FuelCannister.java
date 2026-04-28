@@ -13,7 +13,7 @@ public class FuelCannister extends Item {
     public static float bonusFuelMultiplier = 0.25f;
 
     public FuelCannister() {
-        super(ItemEnums.FuelCannister, 1, ItemApplicationEnum.ApplyOnCreation);
+        super(ItemEnums.FuelCannister, 1, ItemApplicationEnum.ApplyOnSpaceShipCreation);
     }
 
     @Override

@@ -11,7 +11,7 @@ public class Thornweaver extends Item {
     private boolean shouldApply;
     public static float collisionDamageReduction = 0.9f;
     public Thornweaver(){
-        super(ItemEnums.Thornweaver, 1, ItemApplicationEnum.ApplyOnCreation);
+        super(ItemEnums.Thornweaver, 1, ItemApplicationEnum.ApplyOnSpaceShipCreation);
         shouldApply = true;
     }
 

@@ -12,7 +12,7 @@ public class Overclock extends Item {
     public static float attackSpeedBonus = 15;
 
     public Overclock(){
-        super(ItemEnums.Overclock, 1,  ItemApplicationEnum.ApplyOnCreation);
+        super(ItemEnums.Overclock, 1,  ItemApplicationEnum.ApplyOnSpaceShipCreation);
     }
 
     @Override

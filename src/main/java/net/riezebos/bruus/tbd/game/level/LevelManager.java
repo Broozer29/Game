@@ -50,8 +50,9 @@ public class LevelManager {
     private int currentLevelDifficultyScore;
     private LevelTypes levelType;
     private EnemyTribes currentEnemyTribe;
-    private int stagesBeforeBoss = 2;
+    private int stagesBeforeBoss = 3;
     private PerformanceLogger performanceLogger = null;
+    private EnemyEnums selectedBoss = null;
 
     private LevelManager() {
         this.performanceLogger = new PerformanceLogger("Level Manager");
@@ -218,7 +219,7 @@ public class LevelManager {
     private List<EnemyEnums> lastSpawnedBosses = new ArrayList<>();
     private int loopBreaker = 0;
     public EnemyEnums getNextBoss() {
-//        return EnemyEnums.TwinBoss;
+//        return EnemyEnums.RedBoss;
 
         List<EnemyEnums> eligibleBosses = Arrays.stream(EnemyEnums.values()).filter(enemyEnums ->
                 enemyEnums.getEnemyCategory().equals(EnemyCategory.Boss) &&
@@ -235,9 +236,15 @@ public class LevelManager {
         }
         lastSpawnedBosses.add(eligibleBosses.get(randomlySelectedBoss));
         return eligibleBosses.get(randomlySelectedBoss);
-
     }
 
+    public EnemyEnums getSelectedBoss() {
+        return selectedBoss;
+    }
+
+    public void setSelectedBoss(EnemyEnums selectedBoss) {
+        this.selectedBoss = selectedBoss;
+    }
 
     //Returns the bossDifficultyLevel which is basically the bosses killed so far, creative enough?
     public int getBossDifficultyLevel() {
@@ -259,7 +266,8 @@ public class LevelManager {
                 this.currentLevelSong = audioManager.getCurrentSong();
             }
             case Boss -> {
-                audioManager.playDefaultBackgroundMusicForALevel(AudioEnums.getBossTheme(getNextBoss()), true);
+                selectedBoss = getNextBoss(); //todo slordig het selecteren van de baas verstopt in deze methode
+                audioManager.playDefaultBackgroundMusicForALevel(AudioEnums.getBossTheme(selectedBoss), true);
                 this.currentLevelSong = audioManager.getCurrentSong();
                 //to implement
             }
@@ -335,6 +343,13 @@ public class LevelManager {
         int stagesCompleted = GameState.getInstance().getStagesCompleted();
         if (stagesCompleted == 0) {
             return false;
+        }
+
+        //Initially 3 levels between bosses, then after the second boss every 2 levels are boss levels, sloppy implementation
+        if(stagesCompleted >= 5){
+            stagesBeforeBoss = 2;
+        } else {
+            stagesBeforeBoss = 3;
         }
         return stagesCompleted % stagesBeforeBoss == 0;
     }

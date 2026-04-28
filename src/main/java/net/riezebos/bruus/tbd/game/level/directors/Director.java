@@ -38,7 +38,8 @@ public class Director {
     private FormationCreator formationCreator;
     private boolean isInSpawnWindow = false; // New flag to track if we're in the spawn window
 
-    private double spawnWindowDuration = 3.0; // seconds, adjust as needed
+    private double defaultSpawnWindowDuration = 2; // in secondes
+    private double spawnWindowDuration = defaultSpawnWindowDuration;
 
     private DirectorType directorType;
 
@@ -61,6 +62,7 @@ public class Director {
     }
 
     private long updateSpawnInterval(DirectorType directorType) {
+        spawnWindowDuration = defaultSpawnWindowDuration + (GodRunDetector.getInstance().getGodRunScore() * 0.25f); //spawn voor 0.25 sec langer per "wave" des te hoger de godrunscore is om te helpen altijd iets op het scherm te hebben
         int defaultTime = 0;
         switch (directorType) {
             case Slow -> {
@@ -252,7 +254,7 @@ public class Director {
     }
 
     private void spawnBoss() {
-        spawnBoss(LevelManager.getInstance().getNextBoss());
+        spawnBoss(LevelManager.getInstance().getSelectedBoss());
         EnemyManager.getInstance().setHasSpawnedABoss(true);
     }
 

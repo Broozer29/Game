@@ -15,7 +15,7 @@ public class ModuleElectrify extends Item {
     public static float cooldown = 1.5f;
 
     public ModuleElectrify () {
-        super(ItemEnums.ModuleElectrify, 1, ItemApplicationEnum.ApplyOnCreation);
+        super(ItemEnums.ModuleElectrify, 1, ItemApplicationEnum.ApplyOnSpaceShipCreation);
     }
 
     @Override

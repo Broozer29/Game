@@ -12,7 +12,7 @@ public class ModuleAccuracy extends Item {
     public static float damageBonus = 0.35f;
 
     public ModuleAccuracy() {
-        super(ItemEnums.ModuleAccuracy, 1, ItemApplicationEnum.ApplyOnCreation);
+        super(ItemEnums.ModuleAccuracy, 1, ItemApplicationEnum.ApplyOnSpaceShipCreation);
     }
 
 

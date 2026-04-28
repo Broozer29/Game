@@ -205,7 +205,7 @@ public class SpaceShip extends GameObject {
         //This method exists because some managers or methods REQUIRE the spaceship to have finished initializing
         if (!firedPostCreationEffects) {
             //todo deze is verplaatst uit applyOnCreationEffects dus dit kan buggy gevolgen hebben maar multiplayer he....
-            for (Item item : PlayerInventory.getInstance().getItemsByApplicationMethod(ItemApplicationEnum.ApplyOnCreation)) {
+            for (Item item : PlayerInventory.getInstance().getItemsByApplicationMethod(ItemApplicationEnum.ApplyOnSpaceShipCreation)) {
                 item.applyEffectToObject(this);
             }
 

@@ -13,7 +13,7 @@ public class StickyOil extends Item {
     public static float bonusDurationMultiplier = 0.4f;
 
     public StickyOil(){
-        super(ItemEnums.StickyOil, 1,  ItemApplicationEnum.ApplyOnCreation);
+        super(ItemEnums.StickyOil, 1,  ItemApplicationEnum.ApplyOnSpaceShipCreation);
     }
 
     @Override

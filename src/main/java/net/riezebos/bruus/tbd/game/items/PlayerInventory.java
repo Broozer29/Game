@@ -34,9 +34,8 @@ public class PlayerInventory {
 
     public void resetInventory() {
         items.clear();
-        Contract.killCountRequired = Contract.originalCountRequired; //Sloppy fix, if HelpRequested is removed from the inventory, contract count will be wrong and require a reset
+        Contract.killCountRequired = Contract.originalCountRequired; //todo Sloppy fix, if HelpRequested is removed from the inventory, contract count will be wrong and require a reset
 
-        addItem(ItemEnums.SpawnSpaceStationTBD);
         if (DevTestSettings.infiniteMoney) {
             cashMoney = 999999999;
         } else {
@@ -101,6 +100,8 @@ public class PlayerInventory {
 
     public Item createItemFromEnum(ItemEnums itemEnum) {
         switch (itemEnum) {
+            case CalmInChaos:
+                return new CalmInChaos();
             case SpawnSpaceStationTBD:
                 return new SpawnSpaceStationTBD();
             case GreedIsGood:

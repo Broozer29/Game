@@ -27,7 +27,7 @@ public enum ItemEnums {
 
 
     //Relics 2.0
-    SpawnSpaceStationTBD(ItemRarityEnums.Relic, ImageEnums.Test_Image, "Name tbd", true),
+    SpawnSpaceStationTBD(ItemRarityEnums.Relic, ImageEnums.SmallDroneItemIcon, "Placeholder name", true),
     BonusKaart(ItemRarityEnums.Relic, ImageEnums.BonusKaart, "Bonus Kaart", true),
     GreedIsGood(ItemRarityEnums.Relic, ImageEnums.Test_Image, "Greed is Good", true),
     ModuleAccuracy(ItemRarityEnums.Relic, ImageEnums.Starcraft2LockOn, "Module: Accuracy", true),
@@ -48,6 +48,7 @@ public enum ItemEnums {
     PulsingBeacon(ItemRarityEnums.Relic, ImageEnums.Test_Image, "Pulsing Beacon", true),
 
     //-----------------------------
+    CalmInChaos(ItemRarityEnums.Legendary,  ImageEnums.Test_Image, "Calm in chaos", true),
     ElectroShedding(ItemRarityEnums.Legendary,  ImageEnums.Electroshedding, "Electro Shedding", true),
     PlasmaCoatedBullets(ItemRarityEnums.Common, ImageEnums.Starcraft2_Blue_Flame, "Plasma Bullets", true),
     PuncturingPierce(ItemRarityEnums.Legendary,  ImageEnums.PuncturingPierces, "Puncturing Pierce", true),

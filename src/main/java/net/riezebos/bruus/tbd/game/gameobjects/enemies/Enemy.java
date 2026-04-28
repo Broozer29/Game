@@ -129,14 +129,14 @@ public class Enemy extends GameObject {
             // Apply both enemy level scaling and difficulty scaling
             this.maxHitPoints *= (Math.pow(getScalingFactor(), level) * difficultyScalingFactor);
             if(PlayerManager.getInstance().getPlayerCount() > 1) {
-                this.maxHitPoints *= 1 + ((PlayerManager.getInstance().getPlayerCount() - 1) * 0.75f); //voor elke extra speler, 75% max hp
+                this.maxHitPoints *= PlayerManager.getInstance().getPlayerCount(); //voor elke extra speler, 100% max hp
             }
             this.currentHitpoints = maxHitPoints;
 
 
             this.maxShieldPoints *= Math.pow(getScalingFactor(), level) * difficultyScalingFactor;
             if(PlayerManager.getInstance().getPlayerCount() > 1) {
-                this.maxShieldPoints *= 1 + ((PlayerManager.getInstance().getPlayerCount() - 1) * 0.75f); //voor elke extra speler, 75% max hp
+                this.maxShieldPoints *= PlayerManager.getInstance().getPlayerCount(); //voor elke extra speler, 75% max hp
             }
             this.currentShieldPoints = maxShieldPoints;
 
@@ -145,10 +145,11 @@ public class Enemy extends GameObject {
 
             // XP on death is multiplied by 50% of difficulty coefficient
 //            this.xpOnDeath *= (1 + (0.5 * difficultyCoeff));
+            this.cashMoneyWorth *= 0.85f; //flat 15% reduction on money earned for snap balancing
             this.cashMoneyWorth *= PlayerStats.getInstance().getMineralModifier();
 
             if(PlayerManager.getInstance().getPlayerCount() > 1 && !this.enemyType.getEnemyCategory().equals(EnemyCategory.Boss)) {
-                this.cashMoneyWorth *= 1 + (Math.pow(0.15, PlayerManager.getInstance().getPlayerCount() - 1)); //voor elke extra speler, 15% cash money
+                this.cashMoneyWorth *= Math.max(1.15 - (PlayerManager.getInstance().getPlayerCount() * 0.15f) , 0.5f); //-15% for each player, 100% for 1 player, min 50% for 5+ players
             }
         }
 
@@ -165,14 +166,14 @@ public class Enemy extends GameObject {
 
     private float getScalingFactor() {
         if(this.enemyType.getEnemyCategory().equals(EnemyCategory.Boss)){
-            return 1.2f;
+            return 1.25f;
         }
 
         if(GodRunDetector.getInstance().getGodRunScore() >= 3){
-            return 1.15f;
+            return 1.2f;
         }
 
-        return 1.12f;
+        return 1.15f;
     }
 
     private void initChargingUpAnimation(SpriteConfiguration spriteConfiguration) {

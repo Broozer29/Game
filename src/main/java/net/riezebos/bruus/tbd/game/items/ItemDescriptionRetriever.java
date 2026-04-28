@@ -98,7 +98,7 @@ public class ItemDescriptionRetriever {
             case BouncingLasers -> {
                 return "Piercing missiles bounce towards enemies instead. Missiles deal +" +
                         Math.round(BouncingModuleAddon.bonusDamagePercentage * 100) +
-                        "% additional damage after each bounce.";
+                        "% additional damage after each bounce. Missiles pierce 1 additional time.";
             }
             case VIPTicket -> {
                 return "When entering the shop, grants 1 FREE shop reroll.";
@@ -134,6 +134,12 @@ public class ItemDescriptionRetriever {
             }
             case GreedIsGood -> {
                 return "Cash carriers no longer spawn. Instead, medium sized enemies have a " + Math.round(GreedIsGood.mineralsPerPickupChance * 100) + "% chance to drop a coin worth " + GreedIsGood.mineralsPerPickup +" minerals.";
+            }
+            case SpawnSpaceStationTBD -> {
+                return "Killing an enemy spawns a friendly stationary drone that attacks nearby enemies. Up to 4 drones per player can be spawned at a time.";
+            }
+            case CalmInChaos -> {
+                return "Deal " + Math.round(CalmInChaos.damageBonus * 100) + "% (+" + Math.round(CalmInChaos.damageBonus * 100) + "%) additional damage. This bonus is lost for " + CalmInChaos.cooldown + " seconds after taking damage.";
             }
             case Adrenaline -> {
                 return "Taking damage increases your attack speed by " + Math.round(Adrenaline.attackSpeedIncrease * 100) + "% (+" + Math.round(Adrenaline.attackSpeedIncrease * 100) + "%) for " + Math.round(Adrenaline.duration) + " seconds. Taking damage again refreshes the duration of the effect.";

@@ -15,7 +15,7 @@ public class AnionInverter extends Item {
     public static float scaleBonus = 0.2f;
 
     public AnionInverter() {
-        super(ItemEnums.AnionInverter, 1, ItemApplicationEnum.ApplyOnCreation);
+        super(ItemEnums.AnionInverter, 1, ItemApplicationEnum.ApplyOnSpaceShipCreation);
     }
 
 

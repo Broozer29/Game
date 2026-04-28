@@ -10,7 +10,7 @@ import net.riezebos.bruus.tbd.game.items.enums.ItemApplicationEnum;
 
 public class GuardianDrones extends Item {
     public GuardianDrones() {
-        super(ItemEnums.GuardianDrone, 1, ItemApplicationEnum.ApplyOnCreation);
+        super(ItemEnums.GuardianDrone, 1, ItemApplicationEnum.ApplyOnSpaceShipCreation);
     }
 
     @Override

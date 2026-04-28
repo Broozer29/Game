@@ -17,7 +17,7 @@ public class ReflectiveShielding extends Item {
     private static Random random = new Random();
 
     public ReflectiveShielding() {
-        super(ItemEnums.ReflectiveShielding, 1, ItemApplicationEnum.ApplyOnCreation);
+        super(ItemEnums.ReflectiveShielding, 1, ItemApplicationEnum.ApplyOnSpaceShipCreation);
         shouldApply = true;
     }
 

@@ -425,6 +425,9 @@ public class PlayerStats {
     }
 
     public int getPiercingMissilesAmount() {
+        if(PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.BouncingLasers) != null){
+            return piercingMissilesAmount + 1; //todo slordige implementatie van bouncing lasers, refactor het naar een modify method ipv settern
+        }
         return piercingMissilesAmount;
     }
 

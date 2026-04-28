@@ -303,7 +303,7 @@ public enum ImageEnums {
     peepoPauseChamp, peepoClown, peepoCringe, peepoLaugh, peepoLyingSadge, peepoOkay, peepoSad, peepoSad2, peepoShrug,
     peepoSmadge, peepoSmokedge, peepoSmug, peepoStare, peepoUhm, peepoAngy, peepoBruh, peepoCoffee, peepoConfused, peepoGottem,
     peepoHands, peepoLaugh2, peepoPointLaugh, peepoW, peepoSadClown, peepoSadge, peepoSadgeCry, peepoShruge, peepoSkillIssue,
-    GUIRefresh,
+    GUIRefresh, SmallDroneItemIcon,
 
 
     // Letters

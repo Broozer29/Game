@@ -32,15 +32,19 @@ public class FourDirectionalDrone extends Enemy {
         SpriteAnimationConfiguration destroyedExplosionfiguration = new SpriteAnimationConfiguration(spriteConfig, 0, false);
         destroyedExplosionfiguration.getSpriteConfiguration().setImageType(this.enemyType.getDestructionType());
         this.destructionAnimation = new SpriteAnimation(destroyedExplosionfiguration);
-        this.damage = 7;
+        this.damage = 4;
         this.allowedToMove = true;
         this.allowedVisualsToRotate = false;
-        this.attackSpeed = 0.25f;
+        this.attackSpeed = 0.6f;
         initChargingUpAnimations();
         this.detonateOnCollision = false;
         this.knockbackStrength = 9;
     }
 
+    @Override
+    public boolean isShowHealthBar() {
+        return false;
+    }
 
     private void initChargingUpAnimations() {
         double[] initialAngles = {0, 90, 180, 270}; // RIGHT, DOWN, LEFT, UP angles in degrees
@@ -99,10 +103,10 @@ public class FourDirectionalDrone extends Enemy {
         // The charging up attack animation has finished, create and fire the missile
         //Create the sprite configuration which gets upgraded to spriteanimation if needed by the MissileCreator
         SpriteConfiguration spriteConfiguration = MissileCreator.getInstance().createMissileSpriteConfig(xCoordinate, yCoordinate,
-                ImageEnums.LaserBullet, 0.5f);
+                ImageEnums.LaserBullet, 0.4f);
 
 
-        float movementSpeed = 2.75f;
+        float movementSpeed = 2.25f;
         //Create missile movement attributes and create a movement configuration
         MissileEnums missileType = MissileEnums.DefaultLaserBullet;
         PathFinder missilePathFinder = new StraightLinePathFinder();

@@ -143,6 +143,14 @@ public class MissileManager {
                     }
                 }
             }
+
+            for (FriendlyStation station : FriendlyManager.getInstance().getFriendlyStations()) {
+                CollisionInfo collisionInfo = CollisionDetector.getInstance().detectCollision(station, laserbeam);
+                if (collisionInfo.isCollided() && GameState.getInstance().getGameSeconds() - station.getLastTimeDamageTakenFromLaserbeams() >= laserBeamCooldownBetweenHits) {
+                    station.takeDamage(laserbeam.getDamage());
+                    station.setLastTimeDamageTakenFromLaserbeams(GameState.getInstance().getGameSeconds());
+                }
+            }
         }
 
     }
@@ -187,7 +195,7 @@ public class MissileManager {
                     checkMissileCollisionWithPlayer(missile);
                 }
 
-                if(!missile.isFriendly()){ //reduces checks on friendly missiles and thus saves some performance
+                if (!missile.isFriendly()) { //reduces checks on friendly missiles and thus saves some performance
                     checkMissileCollisionWitFriendlyStations(missile);
                 }
                 if (missile.interactsWithMissiles()) {
@@ -321,6 +329,7 @@ public class MissileManager {
             }
         }
     }
+
     private void checkMissileCollisionWithDrones(Missile missile, SpaceShip spaceship) {
         for (Drone drone : FriendlyManager.getInstance().getAllProtossDrones(spaceship)) {
             CollisionInfo collisionInfo = collisionDetector.detectCollision(missile, drone);
@@ -460,7 +469,7 @@ public class MissileManager {
         //Create remaining missile attributes and a missile configuration
         boolean isFriendly = false;
         MissileConfiguration missileConfiguration = MissileCreator.getInstance().createMissileConfiguration(missileType,
-                 gameObject.getDamage(), missileType.getDeathOrExplosionImageEnum(), isFriendly,
+                gameObject.getDamage(), missileType.getDeathOrExplosionImageEnum(), isFriendly,
                 false, true, true);
 
 

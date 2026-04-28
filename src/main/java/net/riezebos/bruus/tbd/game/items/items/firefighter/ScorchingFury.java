@@ -13,7 +13,7 @@ public class ScorchingFury extends Item {
     public static float bonusDamageMultiplier = 0.15f;
 
     public ScorchingFury(){
-        super(ItemEnums.ScorchingFury, 1,  ItemApplicationEnum.ApplyOnCreation);
+        super(ItemEnums.ScorchingFury, 1,  ItemApplicationEnum.ApplyOnSpaceShipCreation);
     }
 
     @Override
