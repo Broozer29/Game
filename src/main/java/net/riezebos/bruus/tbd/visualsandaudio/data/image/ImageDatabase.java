@@ -558,6 +558,7 @@ public class ImageDatabase {
     private BufferedImage starcraft2LockOn;
     private BufferedImage bonusKaart;
     private BufferedImage smallDrone;
+    private BufferedImage smallDroneIcon;
     private BufferedImage starcraft2_Psi_Storm2;
     private List<BufferedImage> carrierDroneExplosion = new ArrayList<>();
     private List<BufferedImage> protossShuttleMissileExplosion = new ArrayList<>();
@@ -977,6 +978,7 @@ public class ImageDatabase {
         this.starcraft2LockOn = imgLoader.getImage(ImageEnums.Starcraft2LockOn);
         this.bonusKaart = imgLoader.getImage(ImageEnums.BonusKaart);
         this.smallDrone = imgLoader.getImage(ImageEnums.SpaceStationAlly);
+        this.smallDroneIcon = imgLoader.getImage(ImageEnums.SmallDroneItemIcon);
         this.thornedplates = imgLoader.getImage(ImageEnums.Thornedplates);
         this.thornweaver = imgLoader.getImage(ImageEnums.ThornWeaver);
         this.barbedmissiles = imgLoader.getImage(ImageEnums.BarbedMissiles);
@@ -1245,6 +1247,8 @@ public class ImageDatabase {
                 return bonusKaart;
             case SpaceStationAlly:
                 return this.smallDrone;
+            case SmallDroneItemIcon:
+                return smallDroneIcon;
             case VIPTicket:
                 return VIPTicket;
             case PiercingLaser:

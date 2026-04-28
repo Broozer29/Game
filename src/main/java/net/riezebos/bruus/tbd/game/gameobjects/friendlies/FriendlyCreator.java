@@ -193,7 +193,7 @@ public class FriendlyCreator {
         spriteConfiguration.setScale(1);
         spriteConfiguration.setImageType(ImageEnums.SpaceStationAlly);
 
-        FriendlyObjectConfiguration friendlyObjectConfiguration = new FriendlyObjectConfiguration(FriendlyObjectEnums.SpaceStation, 0.5f, false);
+        FriendlyObjectConfiguration friendlyObjectConfiguration = new FriendlyObjectConfiguration(FriendlyObjectEnums.SpaceStation, 0.15f, false);
         MovementConfiguration movementConfiguration = new MovementConfiguration();
         movementConfiguration.setPathFinder(new RegularPathFinder());
         movementConfiguration.setMovementSpeed(0.1f);

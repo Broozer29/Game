@@ -10,7 +10,7 @@ public class RepulsionArmorPlate extends Item {
     private float armorAmount;
 
     public RepulsionArmorPlate(){
-        super(ItemEnums.RepulsionArmorPlate, 1, ItemApplicationEnum.ApplyOnCreation);
+        super(ItemEnums.RepulsionArmorPlate, 1, ItemApplicationEnum.ApplyOnSpaceShipCreation);
         armorAmount = 10;
     }
 

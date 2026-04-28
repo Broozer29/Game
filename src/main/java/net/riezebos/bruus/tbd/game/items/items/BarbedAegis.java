@@ -15,7 +15,7 @@ public class BarbedAegis extends Item {
     private static Random random = new Random();
 
     public BarbedAegis() {
-        super(ItemEnums.BarbedAegis, 1, ItemApplicationEnum.ApplyOnCreation);
+        super(ItemEnums.BarbedAegis, 1, ItemApplicationEnum.ApplyOnSpaceShipCreation);
     }
 
     @Override

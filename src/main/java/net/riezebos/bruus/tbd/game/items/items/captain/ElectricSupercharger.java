@@ -12,7 +12,7 @@ public class ElectricSupercharger extends Item {
     public static float buffAmount = 3f;
 
     public ElectricSupercharger() {
-        super(ItemEnums.ElectricSupercharger, 1, ItemApplicationEnum.ApplyOnCreation);
+        super(ItemEnums.ElectricSupercharger, 1, ItemApplicationEnum.ApplyOnSpaceShipCreation);
     }
 
     @Override

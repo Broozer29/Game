@@ -14,7 +14,7 @@ public class EphemeralBlaze extends Item {
     public static float igniteDamageReduction = 0.15f; //25%
 
     public EphemeralBlaze(){
-        super(ItemEnums.EphemeralBlaze, 1,  ItemApplicationEnum.ApplyOnCreation);
+        super(ItemEnums.EphemeralBlaze, 1,  ItemApplicationEnum.ApplyOnSpaceShipCreation);
     }
 
     @Override

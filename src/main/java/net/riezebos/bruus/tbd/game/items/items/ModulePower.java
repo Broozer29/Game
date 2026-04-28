@@ -12,7 +12,7 @@ public class ModulePower extends Item {
     public static float damageBonus = 0.25f;
 
     public ModulePower() {
-        super(ItemEnums.ModulePower, 1, ItemApplicationEnum.ApplyOnCreation);
+        super(ItemEnums.ModulePower, 1, ItemApplicationEnum.ApplyOnSpaceShipCreation);
     }
 
 

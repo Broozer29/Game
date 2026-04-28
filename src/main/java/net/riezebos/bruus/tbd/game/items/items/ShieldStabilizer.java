@@ -10,7 +10,7 @@ import net.riezebos.bruus.tbd.game.items.enums.ItemApplicationEnum;
 public class ShieldStabilizer extends Item {
     public static float shieldRegenMultiplier = 0.75f;
     public ShieldStabilizer () {
-        super(ItemEnums.ShieldStabilizer, 1, ItemApplicationEnum.ApplyOnCreation);
+        super(ItemEnums.ShieldStabilizer, 1, ItemApplicationEnum.ApplyOnSpaceShipCreation);
     }
 
     @Override

@@ -14,7 +14,7 @@ public class ProtossCorsairItem extends Item {
     public static int maxDamageIncrease = 50;
 
     public ProtossCorsairItem(){
-        super(ItemEnums.ProtossCorsair, 1,  ItemApplicationEnum.ApplyOnCreation);
+        super(ItemEnums.ProtossCorsair, 1,  ItemApplicationEnum.ApplyOnSpaceShipCreation);
     }
     @Override
     public void applyEffectToObject (GameObject gameObject) {

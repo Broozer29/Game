@@ -10,7 +10,7 @@ public class BarrierSupersizer extends Item {
     public static float modifierBonus = 0.2f;
 
     public BarrierSupersizer(){
-        super(ItemEnums.BarrierSuperSizer, 1, ItemApplicationEnum.ApplyOnCreation);
+        super(ItemEnums.BarrierSuperSizer, 1, ItemApplicationEnum.ApplyOnSpaceShipCreation);
     }
 
     //Increases the maximum shield and overloaded shield by 10% and 20% per item

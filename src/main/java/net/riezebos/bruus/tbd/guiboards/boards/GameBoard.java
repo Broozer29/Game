@@ -258,9 +258,6 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
         } else if (gameState.getGameState() == GameStatusEnums.Zoning_Out) {
             drawZoningOut(g2d);
         }
-//        else if(gameState.getGameState() == GameStatusEnums.SelectingRelic) {
-//            //todo show the 3 relic cards
-//        }
 
         //Achievement UI moet boven alles getekent worden, dit is een beetje een uitzonderlijke fix
         for (GUIComponent obj : this.floatingIcons) {
@@ -1301,7 +1298,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
     //Helper method to centralize the actual drawing on the screen
     private void drawDescriptionText(Graphics2D g2d, String text, int x, int y, int maxWidth, Color color) {
         FontMetrics metrics = g2d.getFontMetrics();
-        int lineHeight = metrics.getHeight() + 2;
+        int lineHeight = metrics.getHeight() + 4;
         String[] words = text.split(" ");
         StringBuilder line = new StringBuilder();
         g2d.setColor(color);

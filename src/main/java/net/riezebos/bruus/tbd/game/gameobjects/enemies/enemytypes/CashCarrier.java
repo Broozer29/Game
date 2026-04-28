@@ -20,7 +20,7 @@ public class CashCarrier extends Enemy {
         this.destructionAnimation.setAnimationScale(this.scale * 1.5f);
 
 
-        SpawnCoinsOnDeath goldOnDeathEffect = new SpawnCoinsOnDeath(25, 3, 1.0f);
+        SpawnCoinsOnDeath goldOnDeathEffect = new SpawnCoinsOnDeath(20, 3, 1.0f);
         this.addEffect(goldOnDeathEffect);
         this.detonateOnCollision = false;
         this.knockbackStrength = 8;

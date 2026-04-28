@@ -12,7 +12,7 @@ public class Battery extends Item {
 
     public static float cooldownReduction = 0.04f;
     public Battery () {
-        super(ItemEnums.Battery, 1, ItemApplicationEnum.ApplyOnCreation);
+        super(ItemEnums.Battery, 1, ItemApplicationEnum.ApplyOnSpaceShipCreation);
     }
 
     @Override

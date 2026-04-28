@@ -13,7 +13,7 @@ public class ConstructionKit extends Item {
     public static float additionalConstructionSpeed = 1f;
 
     public ConstructionKit() {
-        super(ItemEnums.ConstructionKit, 1, ItemApplicationEnum.ApplyOnCreation);
+        super(ItemEnums.ConstructionKit, 1, ItemApplicationEnum.ApplyOnSpaceShipCreation);
     }
 
     @Override

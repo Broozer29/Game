@@ -6,6 +6,7 @@ public enum EffectIdentifiers {
     YellowBossVoidMoveSpeedModifier,
     TazerAttackSpeedModifier,
     TazerDamageModifier,
+    CalmInChaosDamageBonusModifier,
     PlasmaCoatedBulletsBurning,
     GasolineDormantExplosion,
     Ignite,

@@ -13,6 +13,8 @@ import net.riezebos.bruus.tbd.game.movement.Point;
 import net.riezebos.bruus.tbd.game.movement.pathfinders.PathFinder;
 import net.riezebos.bruus.tbd.game.movement.pathfinders.StraightLinePathFinder;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
+import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteAnimation;
+import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteAnimationConfiguration;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteConfiguration;
 
 import java.awt.*;
@@ -21,10 +23,15 @@ public class FriendlyStation extends GameObject {
     protected double lastAttackTime = 0.0;
     protected FriendlyObjectEnums friendlyObjectType;
     private GameObject target;
-    private int attackRange = 700;
+    private int attackRange = 250;
 
     protected FriendlyStation(SpriteConfiguration spriteConfiguration, FriendlyObjectConfiguration droneConfiguration, MovementConfiguration movementConfiguration) {
         super(spriteConfiguration);
+
+        SpriteAnimationConfiguration destroyedExplosionfiguration = new SpriteAnimationConfiguration(spriteConfiguration, 2, false);
+        destroyedExplosionfiguration.getSpriteConfiguration().setImageType(ImageEnums.WarpIn);
+        this.destructionAnimation = new SpriteAnimation(destroyedExplosionfiguration);
+        this.destructionAnimation.setAnimationScale(0.25f);
         this.maxHitPoints = 100;
         this.currentHitpoints = maxHitPoints;
         this.maxShieldPoints = 0;
@@ -42,6 +49,7 @@ public class FriendlyStation extends GameObject {
     private double lastGameSecondsCheckedForTarget = 0;
     private double checkingTargetCooldown = (double) (GameState.getInstance().getDELAY() * 3) / 1000; //every 3 gameticks
     public void activateObject() {
+        this.currentHitpoints-= 0.3f;
         this.setAllowedToMove(false);
         if(target == null && GameState.getInstance().getGameSeconds() >= lastGameSecondsCheckedForTarget + checkingTargetCooldown){
             target = EnemyManager.getInstance().getClosestEnemyTargetWithinDistance(this.getCenterXCoordinate(), this.getCenterYCoordinate(), attackRange);
@@ -89,11 +97,11 @@ public class FriendlyStation extends GameObject {
         missileSpriteConfiguration.setxCoordinate(this.getCenterXCoordinate());
         missileSpriteConfiguration.setyCoordinate(this.getCenterYCoordinate());
         missileSpriteConfiguration.setImageType(missileType.getImageType());
-        missileSpriteConfiguration.setScale(0.4f);
+        missileSpriteConfiguration.setScale(0.8f);
 
-        float movementSpeed = 10f;
+        float movementSpeed = 12f;
 
-        float damage = (PlayerStats.getInstance().getBaseDroneDamage() + PlayerManager.getInstance().getRandomSpaceShip().getDroneDamageModifier()) * 0.5f; //50% of drone damage should equate to 10 damage
+        float damage = (PlayerStats.getInstance().getBaseDroneDamage() + PlayerManager.getInstance().getRandomSpaceShip().getDroneDamageModifier()) * 0.15f; //50% of drone damage should equate to 10 damage
         Direction rotation = Direction.RIGHT;
         PathFinder pathFinder = new StraightLinePathFinder();
 

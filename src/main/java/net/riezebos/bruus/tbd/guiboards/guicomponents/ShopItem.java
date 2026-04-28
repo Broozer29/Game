@@ -102,9 +102,9 @@ public class ShopItem extends GUIComponent {
 
             for(int i = 0; i < amountOfTimes; i++){
                 PlayerInventory.getInstance().addItem(shopItemInformation.getItem());
-                PlayerInventory.getInstance().spendCashMoney(shopItemInformation.getCost());
             }
 
+            PlayerInventory.getInstance().spendCashMoney(shopItemInformation.getCost());
             lockItemInShop();
             SaveManager.getInstance().exportCurrentSave();
         } else if (shopItemInformation.isAvailable() && !shopItemInformation.canAfford()) {

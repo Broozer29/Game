@@ -25,8 +25,9 @@ public class Seeker extends Enemy {
         SpriteAnimationConfiguration destroyedExplosionfiguration = new SpriteAnimationConfiguration(spriteConfiguration.getSpriteConfiguration(), 0, false);
         destroyedExplosionfiguration.getSpriteConfiguration().setImageType(this.enemyType.getDestructionType());
         this.destructionAnimation = new SpriteAnimation(destroyedExplosionfiguration);
+        this.destructionAnimation.setAnimationScale(1f);
         this.missileTypePathFinders = PathFinderEnums.StraightLine;
-        this.damage = 15;
+        this.damage = 13;
         this.attackSpeed = 5;
         this.detonateOnCollision = false;
         this.knockbackStrength = 8;

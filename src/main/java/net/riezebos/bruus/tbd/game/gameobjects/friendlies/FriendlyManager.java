@@ -19,6 +19,7 @@ import net.riezebos.bruus.tbd.game.util.collision.CollisionDetector;
 import net.riezebos.bruus.tbd.game.util.collision.CollisionInfo;
 import net.riezebos.bruus.tbd.game.util.performancelogger.PerformanceLogger;
 import net.riezebos.bruus.tbd.game.util.performancelogger.PerformanceLoggerManager;
+import net.riezebos.bruus.tbd.guiboards.BoardManager;
 import net.riezebos.bruus.tbd.visualsandaudio.data.DataClass;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.AnimationManager;
@@ -51,8 +52,8 @@ public class FriendlyManager {
         drones.add(drone);
     }
 
-    public void placeCarrierBeacon(Drone drone){
-        if(!this.drones.contains(drone)) {
+    public void placeCarrierBeacon(Drone drone) {
+        if (!this.drones.contains(drone)) {
             drones.add(drone);
         }
     }
@@ -86,6 +87,10 @@ public class FriendlyManager {
             object.setVisible(false);
         }
 
+        for (FriendlyStation friendlyStation : friendlyStations) {
+            friendlyStation.setVisible(false);
+        }
+
         removeInvisibleObjects();
         drones = new ArrayList<>();
         initPortal();
@@ -108,13 +113,13 @@ public class FriendlyManager {
     private void updateFriendlyObjects() {
         Iterator<Drone> droneIterator = drones.iterator();
         while (droneIterator.hasNext()) {
-            Drone friendlyObject =  droneIterator.next();
+            Drone friendlyObject = droneIterator.next();
 
-            if(friendlyObject.isProtoss() && friendlyObject.getCurrentHitpoints() <= 0){
+            if (friendlyObject.isProtoss() && friendlyObject.getCurrentHitpoints() <= 0) {
                 friendlyObject.setVisible(false);
             }
 
-            if(friendlyObject.getOwnerOrCreator() == null || friendlyObject.getOwnerOrCreator().getCurrentHitpoints() <= 0){
+            if (friendlyObject.getOwnerOrCreator() == null || friendlyObject.getOwnerOrCreator().getCurrentHitpoints() <= 0) {
                 friendlyObject.setVisible(false);
             }
 
@@ -127,11 +132,20 @@ public class FriendlyManager {
             }
         }
 
+        for (FriendlyStation friendlyStation : friendlyStations) {
+            if (friendlyStation.getCurrentHitpoints() <= 0) {
+                if (friendlyStation.getDestructionAnimation() != null) {
+                    friendlyStation.getDestructionAnimation().setCenterCoordinates(friendlyStation.getCenterXCoordinate(), friendlyStation.getCenterYCoordinate());
+                    AnimationManager.getInstance().addUpperAnimation(friendlyStation.getDestructionAnimation());
+                }
+                friendlyStation.setVisible(false);
+            }
+        }
         friendlyStations.removeIf(friendlyStation -> !friendlyStation.isVisible());
 
 
         SynergeticLink synergeticLink = (SynergeticLink) PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.SynergeticLink);
-        if(synergeticLink != null){
+        if (synergeticLink != null) {
             synergeticLink.applyEffectToObject(null); //Update synergetic link values
         }
 
@@ -155,6 +169,13 @@ public class FriendlyManager {
                 i--;
             }
         }
+        for (int i = 0; i < friendlyStations.size(); i++) {
+            if (!friendlyStations.get(i).isVisible()) {
+                friendlyStations.get(i).deleteObject();
+                friendlyStations.remove(i);
+                i--;
+            }
+        }
     }
 
     // Checks collision between friendly objects and enemies
@@ -166,16 +187,16 @@ public class FriendlyManager {
         for (Drone drone : drones) {
             if (drone.isVisible() && drone.isProtoss()) { //Only check collision for protoss ships, as this checks enemy collision rules
                 for (Enemy enemy : enemyManager.getEnemies()) {
-                    if(enemy.isVisible() && (enemy.isDetonateOnCollision() || drone.getDroneType().equals(DroneTypes.ProtossCorsair))) {
+                    if (enemy.isVisible() && (enemy.isDetonateOnCollision() || drone.getDroneType().equals(DroneTypes.ProtossCorsair))) {
                         CollisionInfo collisionInfo = CollisionDetector.getInstance().detectCollision(drone, enemy);
                         if (collisionInfo != null) {
                             //If its a corsair, let the corsair do its thing
-                            if(drone.getDroneType().equals(DroneTypes.ProtossCorsair)){
+                            if (drone.getDroneType().equals(DroneTypes.ProtossCorsair)) {
                                 ProtossCorsair corsair = (ProtossCorsair) drone;
                                 corsair.dealDamageToGameObject(enemy);
                             }
                             //If the enemy still lives but should detonate on contact, handle it's detonation like normally
-                            if(enemy.getCurrentHitpoints() > 0.0f && enemy.isDetonateOnCollision()) {
+                            if (enemy.getCurrentHitpoints() > 0.0f && enemy.isDetonateOnCollision()) {
                                 EnemyManager.getInstance().detonateEnemy(enemy);
                             }
                             enemy.dealDamageToGameObject(drone);
@@ -188,17 +209,19 @@ public class FriendlyManager {
 
         // Checks collision between the finished level portal and player
         if (gameState.getGameState() == GameStatusEnums.Level_Finished && finishedLevelPortal.isVisible()) {
-            for(SpaceShip spaceShip : PlayerManager.getInstance().getAllSpaceShips()){
+            for (SpaceShip spaceShip : PlayerManager.getInstance().getAllSpaceShips()) {
                 CollisionInfo collisionInfo = CollisionDetector.getInstance().detectCollision(spaceShip, finishedLevelPortal);
                 if (collisionInfo != null && finishedLevelPortal.getTransparancyAlpha() >= 0.5f) {
                     gameState.setGameState(GameStatusEnums.Level_Completed);
+                    if (gameState.getStagesCompleted() == 0) { //choose a free relic at the start of the game
+                        BoardManager.getInstance().getGameBoard().showRelicSelection();
+                    }
                     finishedLevelPortal.setTransparancyAlpha(true, 1.0f, -0.02f);
                     finishedLevelPortal.setSpawned(false);
                 }
             }
         }
     }
-
 
 
     public List<Drone> getDrones() {

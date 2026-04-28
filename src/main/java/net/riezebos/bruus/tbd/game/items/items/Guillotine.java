@@ -44,10 +44,10 @@ public class Guillotine extends Item {
         spriteConfiguration.setScale(1);
         spriteConfiguration.setImageType(ImageEnums.GuillotineEffect);
 
-        SpriteAnimationConfiguration spriteAnimationConfiguration = new SpriteAnimationConfiguration(spriteConfiguration, 0, true);
+        SpriteAnimationConfiguration spriteAnimationConfiguration = new SpriteAnimationConfiguration(spriteConfiguration, 2, false);
         SpriteAnimation spriteAnimation = new SpriteAnimation(spriteAnimationConfiguration);
-        spriteAnimation.setCenterCoordinates(target.getCenterXCoordinate(), target.getCenterYCoordinate());
         EffectAnimationHelper.scaleAnimation(target, spriteAnimation);
+        spriteAnimation.setCenterCoordinates(target.getCenterXCoordinate(), target.getCenterYCoordinate());
         return spriteAnimation;
     }
 
