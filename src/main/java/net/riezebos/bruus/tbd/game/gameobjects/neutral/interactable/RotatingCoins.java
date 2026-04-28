@@ -13,6 +13,7 @@ public class RotatingCoins extends Interactable{
     private float amountOfMineralsGained;
     private boolean activated = false;
 
+
     public RotatingCoins(SpriteAnimationConfiguration spriteAnimationConfiguration, MovementConfiguration movementConfiguration, float amountOfMineralsGained) {
         super(spriteAnimationConfiguration, movementConfiguration);
         this.amountOfMineralsGained = amountOfMineralsGained;

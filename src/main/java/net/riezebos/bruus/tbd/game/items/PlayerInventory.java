@@ -171,7 +171,7 @@ public class PlayerInventory {
             case PiercingMissiles:
                 return new PiercingMissiles();
             case BouncingLasers:
-                return new BouncingModuleAddon();
+                return new BouncingLasers();
             case VIPTicket:
                 return new VIPTicket();
             case ElectricDestabilizer:

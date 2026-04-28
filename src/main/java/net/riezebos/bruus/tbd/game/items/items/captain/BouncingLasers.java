@@ -9,11 +9,11 @@ import net.riezebos.bruus.tbd.game.items.ItemEnums;
 import net.riezebos.bruus.tbd.game.items.PlayerInventory;
 import net.riezebos.bruus.tbd.game.items.enums.ItemApplicationEnum;
 
-public class BouncingModuleAddon extends Item {
+public class BouncingLasers extends Item {
 
     public static float bonusDamagePercentage = 0.25f;
 
-    public BouncingModuleAddon () {
+    public BouncingLasers() {
         super(ItemEnums.BouncingLasers, 1, ItemApplicationEnum.BeforeCollision);
     }
 

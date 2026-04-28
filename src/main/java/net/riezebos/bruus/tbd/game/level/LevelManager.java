@@ -163,7 +163,7 @@ public class LevelManager {
         gameState.setGameState(GameStatusEnums.Playing);
 
         if (DevTestSettings.spawnTargetDummy) {
-            EnemyEnums enemyType = EnemyEnums.Flamer;
+            EnemyEnums enemyType = EnemyEnums.CashCarrier;
             Enemy dummy = EnemyCreator.createEnemy(enemyType, 1600, 500, Direction.LEFT, enemyType.getDefaultScale()
                     , enemyType.getMovementSpeed());
             dummy.setXCoordinate(600);

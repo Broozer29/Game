@@ -6,13 +6,13 @@ import net.riezebos.bruus.tbd.game.gameobjects.missiles.Missile;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerClass;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
 import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SpaceShip;
+import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.items.Item;
 import net.riezebos.bruus.tbd.game.items.ItemEnums;
 import net.riezebos.bruus.tbd.game.items.PlayerInventory;
 import net.riezebos.bruus.tbd.game.items.enums.ItemApplicationEnum;
 
 public class ModuleFocusFire extends Item {
-    public static float damageBonus = 0.35f;
 
     public ModuleFocusFire() {
         super(ItemEnums.ModuleAccuracy, 1, ItemApplicationEnum.AfterCollision);
@@ -57,6 +57,10 @@ public class ModuleFocusFire extends Item {
         }
 
         if(PlayerInventory.getInstance().getItemFromInventoryIfExists(this.itemEnum) != null){
+            return false;
+        }
+
+        if(GameState.getInstance().getStagesCompleted() == 0){
             return false;
         }
 

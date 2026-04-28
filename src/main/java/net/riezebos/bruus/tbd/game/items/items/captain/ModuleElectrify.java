@@ -6,6 +6,7 @@ import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.Drone;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerClass;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
 import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SpaceShip;
+import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.items.Item;
 import net.riezebos.bruus.tbd.game.items.ItemEnums;
 import net.riezebos.bruus.tbd.game.items.PlayerInventory;
@@ -40,14 +41,18 @@ public class ModuleElectrify extends Item {
 
     @Override
     public boolean isAvailable(){
-        boolean isAvailable = false;
         if(!this.itemEnum.isEnabled()){
             return false;
         }
-        if(PlayerStats.getInstance().getPlayerClass().equals(PlayerClass.Captain) && PlayerInventory.getInstance().getItemFromInventoryIfExists(this.itemEnum) == null){
-            isAvailable = true;
+
+        if(GameState.getInstance().getStagesCompleted() == 0){
+            return false;
         }
 
-        return isAvailable;
+        if(PlayerStats.getInstance().getPlayerClass().equals(PlayerClass.Captain) && PlayerInventory.getInstance().getItemFromInventoryIfExists(this.itemEnum) == null){
+            return true;
+        }
+
+        return false;
     }
 }

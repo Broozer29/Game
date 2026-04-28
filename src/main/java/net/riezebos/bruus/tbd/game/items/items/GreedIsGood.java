@@ -5,6 +5,7 @@ import net.riezebos.bruus.tbd.game.gameobjects.enemies.Enemy;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyCategory;
 import net.riezebos.bruus.tbd.game.items.Item;
 import net.riezebos.bruus.tbd.game.items.ItemEnums;
+import net.riezebos.bruus.tbd.game.items.PlayerInventory;
 import net.riezebos.bruus.tbd.game.items.effects.effectimplementations.SpawnCoinsOnDeath;
 import net.riezebos.bruus.tbd.game.items.enums.ItemApplicationEnum;
 
@@ -36,6 +37,10 @@ public class GreedIsGood extends Item {
     @Override
     public boolean isAvailable() {
         if (!this.itemEnum.isEnabled()) {
+            return false;
+        }
+
+        if(PlayerInventory.getInstance().getItemFromInventoryIfExists(this.itemEnum) != null){
             return false;
         }
         return true;
