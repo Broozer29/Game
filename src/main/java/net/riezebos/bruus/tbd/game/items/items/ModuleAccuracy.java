@@ -3,6 +3,7 @@ package net.riezebos.bruus.tbd.game.items.items;
 import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerClass;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
+import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.items.Item;
 import net.riezebos.bruus.tbd.game.items.ItemEnums;
 import net.riezebos.bruus.tbd.game.items.PlayerInventory;
@@ -23,8 +24,6 @@ public class ModuleAccuracy extends Item {
 
     @Override
     public void applyEffectToObject (GameObject gameObject) {
-
-
         //doesnt do anything, the existence of the item is checked
     }
 
@@ -44,6 +43,14 @@ public class ModuleAccuracy extends Item {
         }
 
         if(PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.ModuleFocusFire) != null){
+            return false;
+        }
+
+        if(GameState.getInstance().getStagesCompleted() == 0){
+            return false;
+        }
+
+        if(PlayerInventory.getInstance().getItemFromInventoryIfExists(this.itemEnum) != null){
             return false;
         }
 

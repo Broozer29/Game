@@ -1254,6 +1254,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
         this.gameState.setGameState(GameStatusEnums.SelectingRelic);
         chooseOne = GameUICreator.getInstance().getChooseOne();
         this.relicBackgroundCards.addAll(GameUICreator.getInstance().getRelicBackgroundCards());
+        GameUICreator.getInstance().resetRelicShopItems(); //cause it to manually reset beforing refreshing the shop, ensuring rules are applied on the first shop
         this.relicSelectionGrid.addAll(GameUICreator.getInstance().getRelicShopItems());
         this.showRelicSelection = true;
         if (this.cursor == null) {

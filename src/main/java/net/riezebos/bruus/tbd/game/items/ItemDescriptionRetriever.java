@@ -97,7 +97,7 @@ public class ItemDescriptionRetriever {
             }
             case BouncingLasers -> {
                 return "Piercing missiles bounce towards enemies instead. Missiles deal +" +
-                        Math.round(BouncingModuleAddon.bonusDamagePercentage * 100) +
+                        Math.round(BouncingLasers.bonusDamagePercentage * 100) +
                         "% additional damage after each bounce. Missiles pierce 1 additional time.";
             }
             case VIPTicket -> {

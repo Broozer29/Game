@@ -3,6 +3,7 @@ package net.riezebos.bruus.tbd.visualsandaudio.objects;
 import net.riezebos.bruus.tbd.game.movement.Direction;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.*;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteAnimationConfiguration;
+import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteConfiguration;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -342,4 +343,13 @@ public class SpriteAnimation extends Sprite implements Cloneable{
 	public boolean isInfiniteLoop () {
 		return infiniteLoop;
 	}
+
+    public static SpriteAnimationConfiguration createDefaultSpriteAnimationConfig(ImageEnums imageEnum){
+        SpriteConfiguration spriteConfiguration = new SpriteConfiguration();
+        spriteConfiguration.setImageType(imageEnum);
+        spriteConfiguration.setScale(1);
+        spriteConfiguration.setxCoordinate(-100);
+        spriteConfiguration.setyCoordinate(-100);
+        return new SpriteAnimationConfiguration(spriteConfiguration, 2, false);
+    }
 }
