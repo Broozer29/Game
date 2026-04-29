@@ -84,7 +84,7 @@ public class ItemDescriptionRetriever {
                 return Math.round(PlasmaLauncher.procChance * 100) + "% Chance on hitting an enemy to fire a piercing plasma shot for " + Math.round(PlasmaLauncher.damageMultiplier * 100) + "% (+" + Math.round(PlasmaLauncher.damageMultiplier * 100) + "%) damage";
             }
             case GuardianDrone -> {
-                return "Gain 1 invincible drone. It attacks automatically.";
+                return "Gain 1 orbiting drone. It attacks automatically dealing 100% damage.";
             }
             case CriticalOverloadCapacitor -> {
                 return "Critical strikes deal an additional " + Math.round(CriticalOverloadCapacitor.damageMultiplier * 100) + "% (+" + Math.round(CriticalOverloadCapacitor.damageMultiplier * 100) + "%) damage.";

@@ -543,8 +543,7 @@ public class ShopBoardCreator {
         selectEasyDifficulty.setCenterCoordinates(x1, y);
 
         int amount = 2;
-        selectEasyDifficulty.setDescriptionOfComponent("Adds " + amount + " to the difficulty score." +
-                ". Enemies have 12.5% more hitpoints.");
+        selectEasyDifficulty.setDescriptionOfComponent("Adds " + amount + " to the difficulty score. Spawns more enemies.");
         return selectEasyDifficulty;
     }
 
@@ -562,8 +561,7 @@ public class ShopBoardCreator {
 
         int amount = 3;
 
-        selectEasyDifficulty.setDescriptionOfComponent("Adds " + amount + " to the difficulty score." +
-                 ". Enemies have 25% more hitpoints. Stronger enemies spawn more frequently.");
+        selectEasyDifficulty.setDescriptionOfComponent("Adds " + amount + " to the difficulty score. Spawns more enemies. Stronger enemies spawn more frequently.");
         return selectEasyDifficulty;
     }
 
