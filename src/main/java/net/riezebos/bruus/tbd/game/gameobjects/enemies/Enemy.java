@@ -120,23 +120,18 @@ public class Enemy extends GameObject {
             }
 
 
-        int difficultyScore = LevelManager.getInstance().getCurrentLevelDifficultyScore(); // Ranges between 2 and 6 (inclusive)
-
-        // Calculate scaling factor (1.0 at Easy, up to 1.25 at Hard)
-        float difficultyScalingFactor = 1 + ((difficultyScore - 2) / 4.0f) * 0.25f;
-
         if (level > 1) {
-            // Apply both enemy level scaling and difficulty scaling
-            this.maxHitPoints *= (Math.pow(getScalingFactor(), level) * difficultyScalingFactor);
+            this.maxHitPoints *= Math.pow(getScalingFactor(), level);
+
             if(PlayerManager.getInstance().getPlayerCount() > 1) {
                 this.maxHitPoints *= PlayerManager.getInstance().getPlayerCount(); //voor elke extra speler, 100% max hp
             }
             this.currentHitpoints = maxHitPoints;
 
 
-            this.maxShieldPoints *= Math.pow(getScalingFactor(), level) * difficultyScalingFactor;
+            this.maxShieldPoints *= Math.pow(getScalingFactor(), level);
             if(PlayerManager.getInstance().getPlayerCount() > 1) {
-                this.maxShieldPoints *= PlayerManager.getInstance().getPlayerCount(); //voor elke extra speler, 75% max hp
+                this.maxShieldPoints *= PlayerManager.getInstance().getPlayerCount();
             }
             this.currentShieldPoints = maxShieldPoints;
 
@@ -144,8 +139,7 @@ public class Enemy extends GameObject {
 //            this.damage += level / 2;
 
             // XP on death is multiplied by 50% of difficulty coefficient
-//            this.xpOnDeath *= (1 + (0.5 * difficultyCoeff));
-            this.cashMoneyWorth *= 0.85f; //flat 15% reduction on money earned for snap balancing
+            this.cashMoneyWorth *= 0.8f; //flat 20% reduction on money earned for snap balancing, should actually be manually applied in EnemyEnums and removed from here
             this.cashMoneyWorth *= PlayerStats.getInstance().getMineralModifier();
 
             if(PlayerManager.getInstance().getPlayerCount() > 1 && !this.enemyType.getEnemyCategory().equals(EnemyCategory.Boss)) {

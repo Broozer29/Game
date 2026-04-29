@@ -574,7 +574,7 @@ public class Director {
         float basicIncreaseRate = 2f; // Increase basic enemy weight by a significant factor early on
         float decayRateForBasicEnemies = 0.2f; // Slower decay for Basic enemies (less aggressive than before)
         float growthRateForStrongEnemies = 0.175f; // Slower growth for stronger enemies
-        float mediumEnemyDifficultyBonus = LevelManager.getInstance().getCurrentLevelDifficulty().equals(LevelDifficulty.Hard) ? 0.15f : 0f;
+        float mediumEnemyDifficultyBonus = LevelManager.getInstance().getCurrentLevelDifficulty().equals(LevelDifficulty.Hard) ? 0.25f : 0f;
 
         switch (category) {
             case Small:

@@ -30,6 +30,7 @@ public class CriticalOverloadCapacitor extends Item {
         if(!this.itemEnum.isEnabled()){
             return false;
         }
+
         return true;
     }
 
