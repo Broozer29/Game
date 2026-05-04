@@ -1,4 +1,4 @@
-package net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.spaceships;
+package net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.pirates;
 
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.Enemy;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyConfiguration;

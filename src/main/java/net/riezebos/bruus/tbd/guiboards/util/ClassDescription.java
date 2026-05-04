@@ -37,7 +37,7 @@ public class ClassDescription {
                         "The Fire Fighter specializes in applying damage over time effects but has a very short attack range.";
                 maxHitpoints = PlayerStats.fireFighterHitpoints;
                 difficulty = "Hard";
-                unlockCondition = "Defeat the first boss to unlock this class.";
+                unlockCondition = "Temporarily disabled";
                 break;
             case Captain:
                 title = "Captain";
@@ -53,7 +53,7 @@ public class ClassDescription {
                         "rapidly move away from danger.";
                 maxHitpoints = PlayerStats.carrierBaseHitpoints;
                 difficulty = "Easy";
-                unlockCondition = "Defeat the third boss to unlock this class.";
+                unlockCondition = "Temporarily disabled";
                 break;
             default:
                 break;

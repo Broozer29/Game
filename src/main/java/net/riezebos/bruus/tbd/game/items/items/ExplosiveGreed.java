@@ -7,7 +7,6 @@ import net.riezebos.bruus.tbd.game.gameobjects.neutral.ExplosionManager;
 import net.riezebos.bruus.tbd.game.items.Item;
 import net.riezebos.bruus.tbd.game.items.ItemEnums;
 import net.riezebos.bruus.tbd.game.items.enums.ItemApplicationEnum;
-import net.riezebos.bruus.tbd.game.util.collision.CollisionInfo;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteAnimationConfiguration;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteConfiguration;
@@ -20,20 +19,20 @@ public class ExplosiveGreed extends Item {
         super(ItemEnums.ExplosiveGreed, 1, ItemApplicationEnum.CustomActivation);
     }
 
+    @Override
     public void increaseQuantityOfItem(int amount) {
         this.quantity += amount;
     }
 
     @Override
-    public void applyEffectToObject (GameObject applier, GameObject target, CollisionInfo collisionInfo) {
-        //Applies an effect to an object, with the applier provided for certain conditions
-        if(collisionInfo != null && target != null){
-            ExplosionManager.getInstance().addExplosion(createExplosion(target, collisionInfo));
+    public void applyEffectToObject (GameObject object) {
+        if(object != null){
+            ExplosionManager.getInstance().addExplosion(createExplosion(object));
         }
     }
 
 
-    private Explosion createExplosion(GameObject target, CollisionInfo collisionInfo){
+    private Explosion createExplosion(GameObject target){
         float damage = target.getDamage() * (damageModifier * quantity);
         SpriteConfiguration spriteConfiguration = new SpriteConfiguration();
         spriteConfiguration.setImageType(ImageEnums.CarrierWarpExplosion); //todo placeholder
@@ -44,7 +43,7 @@ public class ExplosiveGreed extends Item {
         SpriteAnimationConfiguration spriteAnimationConfiguration = new SpriteAnimationConfiguration(spriteConfiguration, 2, false);
         ExplosionConfiguration explosionConfiguration = new ExplosionConfiguration(true, damage, true, false);
         Explosion explosion = new Explosion(spriteAnimationConfiguration, explosionConfiguration);
-        explosion.setCenterCoordinates(collisionInfo.getCollisionPoint().getX(), collisionInfo.getCollisionPoint().getY());
+        explosion.setCenterCoordinates(target.getCenterXCoordinate(), target.getCenterYCoordinate());
         return explosion;
     }
 

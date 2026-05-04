@@ -38,6 +38,13 @@ public class ImageDatabase {
     private BufferedImage protossShipAmountIcon;
 
     private BufferedImage alienBombImage;
+    private List<BufferedImage> royalGuardCaptain = new ArrayList<>();
+    private List<BufferedImage> royalGuardBarricade = new ArrayList<>();
+    private List<BufferedImage> royalGuardFlagbearer = new ArrayList<>();
+    private List<BufferedImage> royalGuardGrenadier = new ArrayList<>();
+    private List<BufferedImage> royalGuardGuardsmen = new ArrayList<>();
+    private List<BufferedImage> frontShield = new ArrayList<>();
+    private List<BufferedImage> royalGuardShieldbearer = new ArrayList<>();
     private List<BufferedImage> twinBoss = new ArrayList<>();
     private List<BufferedImage> strikerBoss = new ArrayList<>();
     private List<BufferedImage> strikerCornerDrone = new ArrayList<>();
@@ -1766,6 +1773,20 @@ public class ImageDatabase {
                 return this.strikerBoss;
             case TwinBoss:
                 return this.twinBoss;
+            case RoyalGuardBarricade:
+                return this.royalGuardBarricade;
+            case RoyalGuardGuardsmen:
+                return this.royalGuardGuardsmen;
+            case RoyalGuardGrenadier:
+                return this.royalGuardGrenadier;
+            case RoyalGuardShieldbearer:
+                return this.royalGuardShieldbearer;
+            case FrontShield:
+                return this.frontShield;
+            case RoyalGuardCaptain:
+                return this.royalGuardCaptain;
+            case RoyalGuardFlagbearer:
+                return this.royalGuardFlagbearer;
             case StrikerCornerDrone:
                 return this.strikerCornerDrone;
             case CallForHelp:
@@ -2897,6 +2918,42 @@ public class ImageDatabase {
         }
 
         for (int i = 0; i < 4; i++) {
+            String sourceString = String.format("/images/Ships/Enemy Ships/royalguard/captain/%d.png", i);
+            BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+            royalGuardCaptain.add(image);
+        }
+
+        for (int i = 0; i < 4; i++) {
+            String sourceString = String.format("/images/Ships/Enemy Ships/royalguard/barricade/%d.png", i);
+            BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+            royalGuardBarricade.add(image);
+        }
+
+        for (int i = 0; i < 4; i++) {
+            String sourceString = String.format("/images/Ships/Enemy Ships/royalguard/flagbearer/%d.png", i);
+            BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+            royalGuardFlagbearer.add(image);
+        }
+
+        for (int i = 0; i < 4; i++) {
+            String sourceString = String.format("/images/Ships/Enemy Ships/royalguard/grenadier/%d.png", i);
+            BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+            royalGuardGrenadier.add(image);
+        }
+
+        for (int i = 0; i < 4; i++) {
+            String sourceString = String.format("/images/Ships/Enemy Ships/royalguard/guardsmen/%d.png", i);
+            BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+            royalGuardGuardsmen.add(image);
+        }
+
+        for (int i = 0; i < 4; i++) {
+            String sourceString = String.format("/images/Ships/Enemy Ships/royalguard/shieldbearer/%d.png", i);
+            BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+            royalGuardShieldbearer.add(image);
+        }
+
+        for (int i = 0; i < 4; i++) {
             String sourceString = String.format("/images/Ships/Enemy Ships/StrikerCornerDrone/%d.png", i);
             BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
             strikerCornerDrone.add(image);
@@ -2906,6 +2963,13 @@ public class ImageDatabase {
             String sourceString = String.format("/images/gif/PNGtoGIF/CarrierSwitchingGears/%d.png", i);
             BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
             carrierSwitchFast.add(image);
+        }
+
+
+        for (int i = 0; i < 16; i++) {
+            String sourceString = String.format("/images/gif/PNGtoGIF/FrontShield/%d.png", i);
+            BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+            frontShield.add(image);
         }
 
         for (int i = 10; i > 0; i--) {

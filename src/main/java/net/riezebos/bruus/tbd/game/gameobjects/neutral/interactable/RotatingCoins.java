@@ -1,5 +1,7 @@
 package net.riezebos.bruus.tbd.game.gameobjects.neutral.interactable;
 
+import net.riezebos.bruus.tbd.game.items.Item;
+import net.riezebos.bruus.tbd.game.items.ItemEnums;
 import net.riezebos.bruus.tbd.game.items.PlayerInventory;
 import net.riezebos.bruus.tbd.game.movement.MovementConfiguration;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.AudioManager;
@@ -25,15 +27,13 @@ public class RotatingCoins extends Interactable{
             activated = true;
             PlayerInventory.getInstance().addMinerals(amountOfMineralsGained);
             AudioManager.getInstance().addAudio(AudioEnums.CoinCollected); //placeholder
+
+
+            Item explosiveGreed = PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.ExplosiveGreed);
+            if(explosiveGreed != null){
+                explosiveGreed.applyEffectToObject(this);
+            }
             this.setVisible(false);
         }
-    }
-
-    public float getAmountOfMineralsGained() {
-        return amountOfMineralsGained;
-    }
-
-    public void setAmountOfMineralsGained(float amountOfMineralsGained) {
-        this.amountOfMineralsGained = amountOfMineralsGained;
     }
 }

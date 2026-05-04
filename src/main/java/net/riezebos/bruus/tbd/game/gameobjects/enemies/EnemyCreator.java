@@ -13,11 +13,12 @@ import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.striker
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.twinboss.TwinBoss;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.yellowboss.YellowBoss;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.minibosses.*;
+import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.pirates.*;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.protoss.CarrierPulsinDrone;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.protoss.EnemyProtossBeacon;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.protoss.EnemyProtossScout;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.protoss.EnemyProtossShuttle;
-import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.spaceships.*;
+import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.royalguard.*;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.zerg.*;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyEnums;
 import net.riezebos.bruus.tbd.game.gamestate.GameMode;
@@ -52,7 +53,7 @@ public class EnemyCreator {
         boolean isFormatted = GameState.getInstance().getGameMode().equals(GameMode.Formatted);
 
         switch (enemyType) {
-            case Seeker, Energizer, Tazer, Scout, RedBoss, CarrierBoss, ZergDevourer, ZergGuardian, ZergQueen,
+            case Seeker, Energizer, Tazer, Scout, RoyalGuardGuardsmen, RedBoss, CarrierBoss, ZergDevourer, ZergGuardian, ZergQueen,
                  YellowBoss, MotherShipMiniBoss, StrikerBoss, TwinBoss -> {
                 if (isFormatted && (
                         enemyType.equals(EnemyEnums.Scout) || enemyType.equals(EnemyEnums.Energizer) || enemyType.equals(EnemyEnums.Seeker)
@@ -84,7 +85,7 @@ public class EnemyCreator {
             case Seeker, YellowBoss -> {
                 setBoardBlockToHoverIn(movementConfiguration, 6);
             }
-            case Tazer, MotherShipMiniBoss, Scout, ZergQueen, StrikerBoss -> {
+            case Tazer, MotherShipMiniBoss, Scout, RoyalGuardGuardsmen, ZergQueen, StrikerBoss -> {
                 setBoardBlockToHoverIn(movementConfiguration, 7);
             }
             case RedBoss, CarrierBoss -> {
@@ -273,6 +274,24 @@ public class EnemyCreator {
             }
             case TwinBoss -> {
                 return new TwinBoss(upgradeConfig(spriteConfiguration, 2, true), enemyConfiguration, movementConfiguration);
+            }
+            case RoyalGuardCaptain -> {
+                return new RoyalGuardCaptain(upgradeConfig(spriteConfiguration, 2, true), enemyConfiguration, movementConfiguration);
+            }
+            case RoyalGuardBarricade -> {
+                return new RoyalGuardBarricade(upgradeConfig(spriteConfiguration, 2, true), enemyConfiguration, movementConfiguration);
+            }
+            case RoyalGuardFlagbearer -> {
+                return new RoyalGuardFlagBearer(upgradeConfig(spriteConfiguration, 2, true), enemyConfiguration, movementConfiguration);
+            }
+            case RoyalGuardGrenadier -> {
+                return new RoyalGuardGrenadier(upgradeConfig(spriteConfiguration, 2, true), enemyConfiguration, movementConfiguration);
+            }
+            case RoyalGuardGuardsmen -> {
+                return new RoyalGuardGuardsmen(upgradeConfig(spriteConfiguration, 2, true), enemyConfiguration, movementConfiguration);
+            }
+            case RoyalGuardShieldbearer -> {
+                return new RoyalGuardShieldbearer(upgradeConfig(spriteConfiguration, 2, true), enemyConfiguration, movementConfiguration);
             }
 
         }

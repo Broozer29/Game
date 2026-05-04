@@ -211,7 +211,7 @@ public class LevelManager {
         } else {
             this.currentEnemyTribe = EnemyTribes.Pirates;
         }
-//        this.currentEnemyTribe = EnemyTribes.Zerg;
+        this.currentEnemyTribe = EnemyTribes.RoyalGuard;
     }
 
 

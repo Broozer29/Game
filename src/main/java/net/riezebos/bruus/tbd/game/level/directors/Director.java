@@ -214,7 +214,7 @@ public class Director {
         int mediumEnemyDifficultyBonus = LevelManager.getInstance().getCurrentLevelDifficulty().equals(LevelDifficulty.Hard) ? 2 : 0;
 
         if (enemyEnums.equals(EnemyEnums.ZergQueen)) {
-            return EnemyManager.getInstance().getAmountOfEnemyTypesAlive(EnemyEnums.ZergQueen) < 3 + mediumEnemyDifficultyBonus;
+            return EnemyManager.getInstance().getAmountOfEnemyTypesAlive(EnemyEnums.ZergQueen) < 2 + mediumEnemyDifficultyBonus;
         }
 
         if (enemyEnums.equals(EnemyEnums.ZergDevourer)) {
