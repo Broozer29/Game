@@ -452,46 +452,51 @@ public class MissileManager {
         return this.performanceLogger;
     }
 
-    public Missile createMissileToClosestPlayerFromCenter(GameObject gameObject, float missileSpeed) {
+    public static Missile createMissileToClosestPlayerFromCenter(GameObject gameObject, float missileSpeed) {
+        return createMissileToSpecificTargetFromCenter(gameObject, PlayerManager.getInstance().getClosestSpaceShip(gameObject), missileSpeed);
+    }
+
+    public static Missile createMissileToSpecificTargetFromCenter(GameObject owner, GameObject target, float missileSpeed){
+        if(target == null){
+            target = PlayerManager.getInstance().getClosestSpaceShip(owner);
+        }
+
         MissileEnums missileType = MissileEnums.DefaultLaserBullet;
         // The charging up attack animation has finished, create and fire the missile
         //Create the sprite configuration which gets upgraded to spriteanimation if needed by the MissileCreator
-        SpriteConfiguration spriteConfiguration = MissileCreator.getInstance().createMissileSpriteConfig(gameObject.getCenterXCoordinate(), gameObject.getCenterYCoordinate(),
+        SpriteConfiguration spriteConfiguration = MissileCreator.getInstance().createMissileSpriteConfig(owner.getCenterXCoordinate(), owner.getCenterYCoordinate(),
                 missileType.getImageType(), 0.55f);
 
 
         PathFinder missilePathFinder = new StraightLinePathFinder();
         MovementConfiguration movementConfiguration = MissileCreator.getInstance().createMissileMovementConfig(
-                missileSpeed, missilePathFinder, gameObject.getMovementConfiguration().getRotation()
+                missileSpeed, missilePathFinder, owner.getMovementConfiguration().getRotation()
         );
 
 
         //Create remaining missile attributes and a missile configuration
         boolean isFriendly = false;
         MissileConfiguration missileConfiguration = MissileCreator.getInstance().createMissileConfiguration(missileType,
-                gameObject.getDamage(), missileType.getDeathOrExplosionImageEnum(), isFriendly,
+                owner.getDamage(), missileType.getDeathOrExplosionImageEnum(), isFriendly,
                 false, true, true);
 
 
         Missile missile = MissileCreator.getInstance().createMissile(spriteConfiguration, missileConfiguration, movementConfiguration);
 
-        SpaceShip spaceship = PlayerManager.getInstance().getClosestSpaceShip(gameObject);
         Point rotationCoordinates = new Point(
-                spaceship.getCenterXCoordinate() - missile.getWidth() / 2,
-                spaceship.getCenterYCoordinate() - missile.getHeight() / 2
+                target.getCenterXCoordinate() - missile.getWidth() / 2,
+                target.getCenterYCoordinate() - missile.getHeight() / 2
         );
 
         missile.resetMovementPath();
 
-        missile.setCenterCoordinates(gameObject.getCenterXCoordinate(), gameObject.getCenterYCoordinate());
+        missile.setCenterCoordinates(owner.getCenterXCoordinate(), owner.getCenterYCoordinate());
         missile.getMovementConfiguration().setDestination(rotationCoordinates); // again because reset removes it
         missile.rotateObjectTowardsDestination(true);
-        missile.setCenterCoordinates(gameObject.getCenterXCoordinate(), gameObject.getCenterYCoordinate());
+        missile.setCenterCoordinates(owner.getCenterXCoordinate(), owner.getCenterYCoordinate());
         missile.setAllowedVisualsToRotate(false); //Prevent it from being rotated again by the SpriteMover
 
-        missile.setOwnerOrCreator(gameObject);
-
-        //Finalized and ready for addition to the game
+        missile.setOwnerOrCreator(owner);
         return missile;
     }
 }

@@ -113,7 +113,7 @@ public class ItemDescriptionRetriever {
                 return "Drones now aim towards the enemy closest to you.";
             }
             case ElectroShedding -> {
-                return "Electroshred now permanently reduces enemy armor by " + Math.round(ElectroShedding.armorReduction) + " (+" + Math.round(ElectroShedding.armorReduction) + ") whenever it deals damage. Note: Electroshred strikes nearby enemies up to 12 times over a single use.";
+                return "Electroshred now permanently reduces enemy armor by " + Math.round(ElectroShedding.armorReduction) + " (+" + Math.round(ElectroShedding.armorReduction) + ") whenever it deals damage. Losing armor increases ALL damage taken.";
             }
             case PuncturingPierce -> { //different formula of *10 factor intead of 100, mathmatically no difference but this math perspective suits the user better
                 return "Your missiles now deal an additional " + Math.round(PuncturingPierce.damageIncreasePerMoveSpeedIncreaseModifier * 10) + "% additional damage for every 10% increased move speed.";

@@ -135,7 +135,13 @@ public class Sprite {
             this.transparancyAlpha += this.transparancyStepSize;
         }
 
-        if(this.transparancyAlpha <= 0.05f && this.transparancyStepSize < 0.0f) {
+        if(this.transparancyAlpha > 1.0f) {
+            this.transparancyAlpha = 1.0f; //clamp it for certainty
+        } else if(this.transparancyAlpha < 0.0f) {
+            this.transparancyAlpha = 0.0f;  //clamp it for certainty
+        }
+
+        if(this.transparancyAlpha <= 0.05f && this.transparancyStepSize < 0.0f) { //if its almost fully transparant AND still growing more transparant, set it invisible
             this.setVisible(false);
         }
         return image;

@@ -105,7 +105,8 @@ public class PlayerProfile {
     }
 
     public boolean isCarrierUnlocked() {
-        return carrierUnlocked;
+        return false; //temporarily locked
+//        return carrierUnlocked;
     }
 
     public void setCarrierUnlocked(boolean carrierUnlocked) {
@@ -113,7 +114,8 @@ public class PlayerProfile {
     }
 
     public boolean isFireFighterUnlocked() {
-        return fireFighterUnlocked;
+        return false; //temporarily locked
+//        return fireFighterUnlocked;
     }
 
     public void setFireFighterUnlocked(boolean fireFighterUnlocked) {

@@ -157,7 +157,11 @@ public class SecondaryPlayerGun {
             if (currentTime >= Math.max(lastSecondsSpecialAttackChargeGained + (playerStats.getSpecialAttackCooldown() * owner.getSpecialAttackRechargeCooldownModifier()), 0.15f)) {
                 lastSecondsSpecialAttackChargeGained = currentTime;
                 specialAttackCharges++;
-                AudioManager.getInstance().addAudio(AudioEnums.SpecialAttackFinishedCharging);
+
+                //als hij het kan spammen geen audio recharge effect spammen, heel irritant
+                if(owner.getMaxSpecialAttackCharges() <= 3 && PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.AnionInverter) == null) {
+                    AudioManager.getInstance().addAudio(AudioEnums.SpecialAttackFinishedCharging);
+                }
             }
         }
 

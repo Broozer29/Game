@@ -2,7 +2,7 @@ package net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.droneTypes.pro
 
 import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyManager;
-import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.spaceships.AlienBomb;
+import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.pirates.AlienBomb;
 import net.riezebos.bruus.tbd.game.gameobjects.friendlies.FriendlyManager;
 import net.riezebos.bruus.tbd.game.gameobjects.friendlies.FriendlyObjectConfiguration;
 import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.Drone;
