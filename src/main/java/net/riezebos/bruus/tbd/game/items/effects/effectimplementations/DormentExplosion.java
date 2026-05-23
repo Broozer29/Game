@@ -2,7 +2,7 @@ package net.riezebos.bruus.tbd.game.items.effects.effectimplementations;
 
 import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.MissileManager;
-import net.riezebos.bruus.tbd.game.gameobjects.missiles.specialAttacks.LingeringFlame;
+import net.riezebos.bruus.tbd.game.gameobjects.missiles.specialAttacks.LingeringAttack;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.specialAttacks.SpecialAttack;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.specialAttacks.SpecialAttackConfiguration;
 import net.riezebos.bruus.tbd.game.gameobjects.neutral.Explosion;
@@ -143,7 +143,7 @@ public class DormentExplosion implements EffectInterface {
 
         SpecialAttackConfiguration specialAttackConfiguration = new SpecialAttackConfiguration(0, true,
                 true, false, true, false, false);
-        SpecialAttack lingeringFlame = new LingeringFlame(spriteAnimationConfiguration, specialAttackConfiguration);
+        SpecialAttack lingeringFlame = new LingeringAttack(spriteAnimationConfiguration, specialAttackConfiguration);
         lingeringFlame.setCenterCoordinates(gameObject.getCenterXCoordinate(), gameObject.getCenterYCoordinate());
         handleSpecialAttack(lingeringFlame);
         MissileManager.getInstance().addSpecialAttack(lingeringFlame);

@@ -18,14 +18,17 @@ public class BoardManager extends JFrame {
     private GameBoard gameBoard;
     private ShopBoard shopBoard;
     private ClassSelectionBoard classSelectionBoard;
+    private DifficultySelectionBoard difficultySelectionBoard;
     private BoonSelectionBoard boonSelectionBoard;
     private static BoardManager instance = new BoardManager();
     private AudioManager audioManager = AudioManager.getInstance();
 
     private JPanel currentBoard = null;
 
+
+
     public enum ScreenType {
-        MAIN_MENU, GAME, SHOP, UPGRADE_SELECTION, CLASS_SELECTION
+        MAIN_MENU, GAME, SHOP, UPGRADE_SELECTION, CLASS_SELECTION, DIFFICULTY_SELECTION
     }
 
     private Map<ScreenType, JPanel> screens = new EnumMap<>(ScreenType.class);
@@ -37,8 +40,8 @@ public class BoardManager extends JFrame {
         setTitle("Game");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(data.getWindowWidth(), data.getWindowHeight());
-            setExtendedState(JFrame.MAXIMIZED_BOTH);
-            setUndecorated(true);
+        setExtendedState(JFrame.MAXIMIZED_BOTH);
+        setUndecorated(true);
 
 //        if (System.getProperty("os.name").toLowerCase().contains("mac")) {
 //            System.setProperty("apple.awt.application.appearance", "system");
@@ -58,12 +61,14 @@ public class BoardManager extends JFrame {
         shopBoard = new ShopBoard();
         classSelectionBoard = new ClassSelectionBoard();
         boonSelectionBoard = new BoonSelectionBoard();
+        difficultySelectionBoard = new DifficultySelectionBoard();
 
         screens.put(ScreenType.MAIN_MENU, mainMenuBoard);
         screens.put(ScreenType.GAME, gameBoard);
         screens.put(ScreenType.SHOP, shopBoard);
         screens.put(ScreenType.CLASS_SELECTION, classSelectionBoard);
         screens.put(ScreenType.UPGRADE_SELECTION, boonSelectionBoard);
+        screens.put(ScreenType.DIFFICULTY_SELECTION, difficultySelectionBoard);
 
         // Define actions for each screen
         screenActions.put(ScreenType.MAIN_MENU, () -> {
@@ -98,27 +103,34 @@ public class BoardManager extends JFrame {
             classSelectionBoard.getTimer().restart();
             ControllerManager.getInstance().setControllerSensitive(false);
         });
+
+        screenActions.put(ScreenType.DIFFICULTY_SELECTION, () -> {
+            difficultySelectionBoard.initMenuTiles();
+            difficultySelectionBoard.recreateWindow();
+            difficultySelectionBoard.getTimer().restart();
+            ControllerManager.getInstance().setControllerSensitive(false);
+        });
     }
 
-    public static BoardManager getInstance () {
+    public static BoardManager getInstance() {
         return instance;
     }
 
 
-    private void playMenuMusic () {
+    private void playMenuMusic() {
 //        if(audioManager.getBackGroundMusicCustomAudioclip() != null && !audioManager.getBackGroundMusicCustomAudioclip().getAudioType().equals(AudioEnums.mainmenu)) {
-            audioManager.stopMusicAudio();
-            audioManager.playDefaultBackgroundMusicForALevel(AudioEnums.mainmenu, true);
+        audioManager.stopMusicAudio();
+        audioManager.playDefaultBackgroundMusicForALevel(AudioEnums.mainmenu, true);
 //        }
 
     }
 
-    private void playShopMenuMusic () {
+    private void playShopMenuMusic() {
         audioManager.stopMusicAudio();
         audioManager.playDefaultBackgroundMusicForALevel(AudioEnums.Lemmino_Firecracker, true);
     }
 
-    private void stopMusic(){
+    private void stopMusic() {
         audioManager.stopMusicAudio();
     }
 
@@ -169,12 +181,15 @@ public class BoardManager extends JFrame {
     public void menuToClassSelection() {
         switchScreen(ScreenType.CLASS_SELECTION);
     }
+    public void openDifficultyScreen() {
+        switchScreen(ScreenType.DIFFICULTY_SELECTION);
+    }
 
-    public ClassSelectionBoard getClassSelectionBoard () {
+    public ClassSelectionBoard getClassSelectionBoard() {
         return classSelectionBoard;
     }
 
-    public ShopBoard getShopBoard () {
+    public ShopBoard getShopBoard() {
         return shopBoard;
     }
 
@@ -188,5 +203,9 @@ public class BoardManager extends JFrame {
 
     public MainMenuBoard getMainMenuBoard() {
         return mainMenuBoard;
+    }
+
+    public DifficultySelectionBoard getDifficultySelectionBoard() {
+        return difficultySelectionBoard;
     }
 }

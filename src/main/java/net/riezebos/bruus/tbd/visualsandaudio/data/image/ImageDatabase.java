@@ -38,8 +38,10 @@ public class ImageDatabase {
     private BufferedImage protossShipAmountIcon;
 
     private BufferedImage alienBombImage;
+    private BufferedImage chooseDifficulty;
     private List<BufferedImage> royalGuardCaptain = new ArrayList<>();
     private List<BufferedImage> royalGuardBarricade = new ArrayList<>();
+    private List<BufferedImage> royalGuardBarricadeMinion = new ArrayList<>();
     private List<BufferedImage> royalGuardFlagbearer = new ArrayList<>();
     private List<BufferedImage> royalGuardGrenadier = new ArrayList<>();
     private List<BufferedImage> royalGuardGuardsmen = new ArrayList<>();
@@ -500,6 +502,7 @@ public class ImageDatabase {
     private List<BufferedImage> yellowBossVoidCollision = new ArrayList<>();
     private List<BufferedImage> yellowBossVoidEffect = new ArrayList<>();
     private List<BufferedImage> scrapMetalAnim = new ArrayList<>();
+    private List<BufferedImage> poisonCloud = new ArrayList<>();
     private List<BufferedImage> smokeExplosion = new ArrayList<>();
     private List<BufferedImage> mirageMiniBoss = new ArrayList<>();
     private List<BufferedImage> carrierDronePulse = new ArrayList<>();
@@ -629,6 +632,7 @@ public class ImageDatabase {
 
     private void initEnemies() {
         this.alienBombImage = imgLoader.getImage(ImageEnums.Alien_Bomb);
+        this.chooseDifficulty = imgLoader.getImage(ImageEnums.ChooseDifficulty);
         this.fourDirectionalDrone = imgLoader.getImage(ImageEnums.FourDirectionalDrone);
         this.spaceStationBoss = imgLoader.getImage(ImageEnums.SpaceStationBoss);
         selectBoonsUI = imgLoader.getImage(ImageEnums.SelectBoons);
@@ -1023,6 +1027,8 @@ public class ImageDatabase {
 
     public BufferedImage getImage(ImageEnums imageType) {
         switch (imageType) {
+            case ChooseDifficulty:
+                return this.chooseDifficulty;
             case Guillotine:
                 return this.guillotineIcon;
             case ExplosiveGreed:
@@ -1745,6 +1751,8 @@ public class ImageDatabase {
 
     public List<BufferedImage> getAnimation(ImageEnums imageType) {
         switch (imageType) {
+            case PoisonCloud:
+                return this.poisonCloud;
             case GuillotineEffect:
                 return this.guillotineEffect;
             case YellowBossHealCollision:
@@ -1775,6 +1783,8 @@ public class ImageDatabase {
                 return this.twinBoss;
             case RoyalGuardBarricade:
                 return this.royalGuardBarricade;
+            case RoyalGuardBarricadeMinion:
+                return this.royalGuardBarricadeMinion;
             case RoyalGuardGuardsmen:
                 return this.royalGuardGuardsmen;
             case RoyalGuardGrenadier:
@@ -2362,6 +2372,12 @@ public class ImageDatabase {
             warpFrames.add(image);
         }
 
+        for (int i = 0; i < 12; i++) {
+            String sourceString = String.format("/images/gif/PNGtoGIF/PoisonCloud/%d.png", i);
+            BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+            poisonCloud.add(image);
+        }
+
         for (int i = 0; i < 9; i++) {
             String sourceString = String.format("/images/gif/PNGtoGIF/Charging/charging%d.png", i);
             BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
@@ -2927,6 +2943,12 @@ public class ImageDatabase {
             String sourceString = String.format("/images/Ships/Enemy Ships/royalguard/barricade/%d.png", i);
             BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
             royalGuardBarricade.add(image);
+        }
+
+        for (int i = 0; i < 10; i++) {
+            String sourceString = String.format("/images/Ships/Enemy Ships/royalguard/barricade/minion/%d.png", i);
+            BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+            royalGuardBarricadeMinion.add(image);
         }
 
         for (int i = 0; i < 4; i++) {

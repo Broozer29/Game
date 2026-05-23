@@ -2,6 +2,7 @@ package net.riezebos.bruus.tbd.guiboards.boardEnums;
 
 public enum MenuFunctionEnums {
 	Start_Game,
+    OpenDifficultySelectionBoard,
 	SelectBossMode,
 	OpenClassSelectWindow,
 	Return_To_Main_Menu,

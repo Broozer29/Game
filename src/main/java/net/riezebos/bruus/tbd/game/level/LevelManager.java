@@ -163,14 +163,14 @@ public class LevelManager {
         gameState.setGameState(GameStatusEnums.Playing);
 
         if (DevTestSettings.spawnTargetDummy) {
-            EnemyEnums enemyType = EnemyEnums.CashCarrier;
+            EnemyEnums enemyType = EnemyEnums.RoyalGuardCaptain;
             Enemy dummy = EnemyCreator.createEnemy(enemyType, 1600, 500, Direction.LEFT, enemyType.getDefaultScale()
                     , enemyType.getMovementSpeed());
-            dummy.setXCoordinate(600);
+//            dummy.setXCoordinate(600);
             dummy.setMaxHitPoints(1000);
             dummy.setCurrentHitpoints(1000);
 //            dummy.setAllowedToFire(false);
-            dummy.setAllowedToMove(false);
+//            dummy.setAllowedToMove(false);
             EnemyManager.getInstance().addEnemy(dummy);
         }
 
@@ -206,18 +206,29 @@ public class LevelManager {
     }
 
     private void selectEnemyTribe() {
-        if (GameState.getInstance().getBossesDefeated() >= 3) {
-            this.currentEnemyTribe = EnemyTribes.Zerg;
-        } else {
+        if(this.isNextLevelABossLevel()){
+            //Theoretically, this attribute is never used in boss levels, but keeping it for now
             this.currentEnemyTribe = EnemyTribes.Pirates;
+            return;
         }
-        this.currentEnemyTribe = EnemyTribes.RoyalGuard;
-    }
 
+        switch (this.currentLevelDifficulty) {
+            case Easy -> {
+                this.currentEnemyTribe = EnemyTribes.Pirates;
+            }
+            case Medium -> {
+                this.currentEnemyTribe = EnemyTribes.Zerg;
+            }
+            case Hard -> {
+                this.currentEnemyTribe = EnemyTribes.RoyalGuard;
+            }
+        }
+    }
 
 
     private List<EnemyEnums> lastSpawnedBosses = new ArrayList<>();
     private int loopBreaker = 0;
+
     public EnemyEnums getNextBoss() {
 //        return EnemyEnums.RedBoss;
 
@@ -229,7 +240,7 @@ public class LevelManager {
 
         if (lastSpawnedBosses.contains(eligibleBosses.get(randomlySelectedBoss))) {
             loopBreaker++;
-            if( loopBreaker > 1000){
+            if (loopBreaker > 1000) {
                 lastSpawnedBosses.clear(); //if no bosses can be spawned, clear last used so we can re-use them again
             }
             return getNextBoss();
@@ -346,7 +357,7 @@ public class LevelManager {
         }
 
         //Initially 3 levels between bosses, then after the second boss every 2 levels are boss levels, sloppy implementation
-        if(stagesCompleted >= 5){
+        if (stagesCompleted >= 5) {
             stagesBeforeBoss = 2;
         } else {
             stagesBeforeBoss = 3;

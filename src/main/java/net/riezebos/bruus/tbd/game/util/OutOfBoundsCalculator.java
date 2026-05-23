@@ -4,6 +4,7 @@ import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.minibosses.MotherShipDrone;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.protoss.EnemyProtossScout;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.protoss.EnemyProtossShuttle;
+import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.royalguard.RoyalGuardBarricadeMinion;
 import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.Drone;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.Missile;
 import net.riezebos.bruus.tbd.game.movement.Direction;
@@ -27,6 +28,12 @@ public class OutOfBoundsCalculator {
     private static boolean isExempt(GameObject gameObject) {
         if (gameObject instanceof Drone || gameObject instanceof EnemyProtossScout || gameObject instanceof EnemyProtossShuttle || gameObject instanceof MotherShipDrone) {
             return true;
+        }
+
+        if(gameObject instanceof RoyalGuardBarricadeMinion minion) {
+            if(minion.isAttached()){ //as long as the minion is attached to a parent barricade enemy, he is exempt from out of bounds removal
+                return true;
+            }
         }
 
 

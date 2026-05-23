@@ -8,10 +8,12 @@ import net.riezebos.bruus.tbd.game.gameobjects.friendlies.FriendlyStation;
 import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.Drone;
 import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.droneTypes.protoss.ProtossUtils;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.laserbeams.Laserbeam;
+import net.riezebos.bruus.tbd.game.gameobjects.missiles.laserbeams.LaserbeamIndicator;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.missiletypes.ReflectiveBlocks;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.missiletypes.TazerProjectile;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.specialAttacks.FireShield;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.specialAttacks.FlameThrower;
+import net.riezebos.bruus.tbd.game.gameobjects.missiles.specialAttacks.FrontShield;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.specialAttacks.SpecialAttack;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
 import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SpaceShip;
@@ -28,6 +30,7 @@ import net.riezebos.bruus.tbd.game.util.performancelogger.PerformanceLoggerManag
 import net.riezebos.bruus.tbd.visualsandaudio.objects.AnimationManager;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteConfiguration;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
@@ -43,6 +46,7 @@ public class MissileManager {
     private CopyOnWriteArrayList<Missile> missiles = new CopyOnWriteArrayList<Missile>();
     private CopyOnWriteArrayList<SpecialAttack> specialAttacks = new CopyOnWriteArrayList<SpecialAttack>();
     private CopyOnWriteArrayList<Laserbeam> laserbeams = new CopyOnWriteArrayList<>();
+    private List<LaserbeamIndicator> laserbeamIndicators = new ArrayList<>();
     private PerformanceLogger performanceLogger = null;
     private static float laserBeamCooldownBetweenHits = 0.045f;
 
@@ -102,13 +106,12 @@ public class MissileManager {
 
 
     private void updateLaserBeams() {
+        laserbeamIndicators.removeIf(laserbeamIndicator -> !laserbeamIndicator.isActive());
+        laserbeams.removeIf(laserbeam -> !laserbeam.isVisible());
+
         for (Laserbeam laserbeam : laserbeams) {
             if (!laserbeam.getOwner().isVisible()) {
                 laserbeam.setVisible(false);
-            }
-            if (!laserbeam.isVisible()) {
-                laserbeams.remove(laserbeam);
-                continue; //It's gone so updating it will crash
             }
 
             laserbeam.update();
@@ -186,7 +189,7 @@ public class MissileManager {
     private void checkMissileCollisions() {
         for (Missile missile : missiles) {
             if (missile.isVisible()) {
-                if (missile.getMissileEnum().equals(MissileEnums.TazerProjectile)) { //Check special interactions first currently only tazers
+                if (missile.isNeutral()) { //
                     checkMissileCollisionWithPlayer(missile);
                     checkMissileCollisionWithEnemies(missile);
                 } else if (missile.isFriendly()) {  //Then generic friendly missiles on enemies
@@ -195,7 +198,7 @@ public class MissileManager {
                     checkMissileCollisionWithPlayer(missile);
                 }
 
-                if (!missile.isFriendly()) { //reduces checks on friendly missiles and thus saves some performance
+                if (!missile.isFriendly()) { //removes checking with friendly missiles and thus saves some performance
                     checkMissileCollisionWitFriendlyStations(missile);
                 }
                 if (missile.interactsWithMissiles()) {
@@ -207,14 +210,25 @@ public class MissileManager {
         // Handle special attacks
         for (SpecialAttack specialAttack : specialAttacks) {
             if (specialAttack.getAnimation().isVisible()) {
-                if (specialAttack.isFriendly()) {
+                //todo slordige implementatie van neutral in deze if statements
+                if (specialAttack.isFriendly() || specialAttack.isNeutral()) {
                     checkSpecialAttackWithEnemyCollision(specialAttack);
                     checkSpecialAttackWithEnemyMissileCollision(specialAttack);
-                } else {
+                } else if(!specialAttack.isFriendly() || specialAttack.isNeutral()) {
                     for (SpaceShip spaceship : PlayerManager.getInstance().getAllSpaceShips()) {
                         specialAttack.checkEnemySpecialAttackCollision(spaceship);
                     }
                     checkEnemySpecialAttackMissileCollision(specialAttack);
+                    checkSpecialAttackWithFriendlyStationCollision(specialAttack);
+                }
+
+
+                //todo uitvogelen waarom shielbearer shields soms blijven bestaan
+                if(specialAttack instanceof FrontShield frontShield){
+                    if(!frontShield.getOwnerOrCreator().isVisible() && !frontShield.isDissipating()){
+                        frontShield.startDissipating();
+                        System.out.println("Frontshield is handmatig in de missile manager verwijderd, dit zou niet mogen gebeuren en moet in de shieldbearer opgelost worden");
+                    }
                 }
             }
         }
@@ -240,6 +254,16 @@ public class MissileManager {
             CollisionInfo collisionInfo = collisionDetector.detectCollision(enemy, specialAttack);
             if (collisionInfo != null) {
                 specialAttack.tryDealDamageAndApplyEffects(enemy, collisionInfo);
+            }
+        }
+    }
+
+    // Checks collision between special attacks and enemies
+    private void checkSpecialAttackWithFriendlyStationCollision(SpecialAttack specialAttack) {
+        for (FriendlyStation station : FriendlyManager.getInstance().getFriendlyStations()) {
+            CollisionInfo collisionInfo = collisionDetector.detectCollision(station, specialAttack);
+            if (collisionInfo != null) {
+                specialAttack.tryDealDamageAndApplyEffects(station, collisionInfo);
             }
         }
     }
@@ -498,5 +522,13 @@ public class MissileManager {
 
         missile.setOwnerOrCreator(owner);
         return missile;
+    }
+
+    public List<LaserbeamIndicator> getLaserbeamIndicators() {
+        return laserbeamIndicators;
+    }
+
+    public void addLaserbeamIndicator(LaserbeamIndicator laserbeamIndicator) {
+        this.laserbeamIndicators.add(laserbeamIndicator);
     }
 }

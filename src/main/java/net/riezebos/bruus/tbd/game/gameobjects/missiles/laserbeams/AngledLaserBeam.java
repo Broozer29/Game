@@ -19,6 +19,7 @@ public class AngledLaserBeam extends Laserbeam {
             return;
         }
         int frameAmount = this.laserBodies.get(0).getCurrentFrame();
+        super.updateTransparancyconfig();
         for(SpriteAnimation animation : this.laserBodies){
             animation.setCurrentFrame(frameAmount);
         }

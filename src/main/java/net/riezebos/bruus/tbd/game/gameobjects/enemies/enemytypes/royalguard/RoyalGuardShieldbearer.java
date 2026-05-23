@@ -7,6 +7,7 @@ import net.riezebos.bruus.tbd.game.gameobjects.missiles.specialAttacks.FrontShie
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.specialAttacks.SpecialAttackConfiguration;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
+import net.riezebos.bruus.tbd.game.movement.Direction;
 import net.riezebos.bruus.tbd.game.movement.MovementConfiguration;
 import net.riezebos.bruus.tbd.game.util.WithinVisualBoundariesCalculator;
 import net.riezebos.bruus.tbd.game.util.collision.CollisionDetector;
@@ -25,7 +26,7 @@ public class RoyalGuardShieldbearer extends Enemy {
      */
 
     private FrontShield frontShield = null;
-    private int detectionRange = 165;
+    private int detectionRange = 185;
 
     public RoyalGuardShieldbearer(SpriteAnimationConfiguration spriteConfiguration, EnemyConfiguration enemyConfiguration, MovementConfiguration movementConfiguration) {
         super(spriteConfiguration, enemyConfiguration, movementConfiguration);
@@ -34,8 +35,16 @@ public class RoyalGuardShieldbearer extends Enemy {
         this.destructionAnimation = new SpriteAnimation(destroyedExplosionfiguration);
         this.destructionAnimation.setAnimationScale(1f);
         this.damage = 10;
-        this.attackSpeed = 4;
+        this.attackSpeed = 0.1f;
         this.knockbackStrength = 8;
+    }
+
+    @Override
+    public void triggerOnDeathActions(){
+        if(this.frontShield != null){
+            this.frontShield.startDissipating();
+        }
+        super.triggerOnDeathActions();
     }
 
     @Override
@@ -54,7 +63,7 @@ public class RoyalGuardShieldbearer extends Enemy {
         //If the shield exists but no players are close, start dissipating it
         if(frontShield != null && frontShield.isVisible()){
             frontShield.setCenterCoordinates(this.getCenterXCoordinate(), this.getCenterYCoordinate());
-            if(!frontShield.isDissipating() && !CollisionDetector.getInstance().isNearby(this, PlayerManager.getInstance().getClosestSpaceShip(this), Math.round(detectionRange * 1.25f))){ // 25% bonus range zodat hij niet meteen weer stopt
+            if(!frontShield.isDissipating() && !CollisionDetector.getInstance().isNearby(this, PlayerManager.getInstance().getClosestSpaceShip(this), Math.round(detectionRange * 1.4f))){ // 25% bonus range zodat hij niet meteen weer stopt
                 frontShield.startDissipating();
                 lastAttackTime = currentTime; //set cooldown once it starts dissipating
             }
@@ -70,7 +79,7 @@ public class RoyalGuardShieldbearer extends Enemy {
         SpriteConfiguration spriteConfiguration1 = new SpriteConfiguration();
         spriteConfiguration1.setxCoordinate(this.getCenterXCoordinate());
         spriteConfiguration1.setyCoordinate(this.getCenterYCoordinate());
-        spriteConfiguration1.setScale(1); //todo zet een fatsoenlijk schaal, kan niet testen op werk
+        spriteConfiguration1.setScale(0.75f); //todo zet een fatsoenlijk schaal, kan niet testen op werk
         spriteConfiguration1.setImageType(ImageEnums.FrontShield);
 
         SpriteAnimationConfiguration spriteAnimationConfiguration = new SpriteAnimationConfiguration(spriteConfiguration1, 2, true);
@@ -78,6 +87,8 @@ public class RoyalGuardShieldbearer extends Enemy {
         frontShield = new FrontShield(spriteAnimationConfiguration, specialAttackConfiguration);
         frontShield.setCenterCoordinates(this.getCenterXCoordinate(), this.getCenterYCoordinate());
         //todo apply een offset zodat het visueel goed eruit ziet, kan niet testen op werk
+        frontShield.rotateObjectTowardsAngle(this.rotationAngle, false);
+        frontShield.addXOffset(this.movementRotation.equals(Direction.RIGHT) ? 40 : -40); //assume this guy only goes left/right in a straight line, otherwise this offset breaks if he moves diagonally
         frontShield.setOwnerOrCreator(this);
         frontShield.setTransparancyAlpha(true, 0.05f, 0.035f);
         MissileManager.getInstance().addSpecialAttack(frontShield);

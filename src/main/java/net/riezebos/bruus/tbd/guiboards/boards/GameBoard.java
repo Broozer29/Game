@@ -13,6 +13,7 @@ import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.Drone;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.Missile;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.MissileManager;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.laserbeams.Laserbeam;
+import net.riezebos.bruus.tbd.game.gameobjects.missiles.laserbeams.LaserbeamIndicator;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.specialAttacks.SpecialAttack;
 import net.riezebos.bruus.tbd.game.gameobjects.neutral.ExplosionManager;
 import net.riezebos.bruus.tbd.game.gameobjects.neutral.interactable.InteractableManager;
@@ -188,6 +189,8 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
         this.hasExportedLogs = false;
         this.showRelicSelection = false;
         selectedComponent = null;
+        BoardManager.getInstance().getShopBoard().updateSelectedDifficultyIcons(); //manually update the last selected difficulties
+        BoardManager.getInstance().getDifficultySelectionBoard().updateSelectedDifficultyIcons(); //manually update the last selected difficulties
 
 
         //Free up any cached graphics that have not been used in 5 minutes. Might cause lag spikes but should help significantly with memory usage and heap-size errors
@@ -465,6 +468,14 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
             drawImage(g, bgObject);
         }
 
+
+        for(LaserbeamIndicator laserbeamIndicator : missileManager.getLaserbeamIndicators()){
+            Color originalColor = g.getColor(); // store the original color
+            Color color = new Color(1, 0, 0, 0.75f); //Red and slightly transparant
+            g.setColor(color);
+            g.drawLine(laserbeamIndicator.getStartingXCoordinate(), laserbeamIndicator.getStartingYCoordinate(), laserbeamIndicator.getEndingXCoordinate(), laserbeamIndicator.getEndingYCoordinate());
+            g.setColor(originalColor);
+        }
 
         for (Laserbeam laserbeam : missileManager.getLaserbeams()) {
             if (laserbeam.getLaserBodies() != null) {

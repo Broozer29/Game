@@ -3,7 +3,7 @@ package net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.droneTypes;
 import net.riezebos.bruus.tbd.game.gameobjects.friendlies.FriendlyObjectConfiguration;
 import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.Drone;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.MissileManager;
-import net.riezebos.bruus.tbd.game.gameobjects.missiles.specialAttacks.LingeringFlame;
+import net.riezebos.bruus.tbd.game.gameobjects.missiles.specialAttacks.LingeringAttack;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.specialAttacks.SpecialAttackConfiguration;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
 import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SpaceShip;
@@ -59,7 +59,7 @@ public class SpecialAttackDrone extends Drone {
             SpriteAnimationConfiguration spriteAnimationConfiguration = new SpriteAnimationConfiguration(orbitingLingeringFlame, 0, true);
             SpecialAttackConfiguration missileConfiguration = new SpecialAttackConfiguration(damage, true, true, false, true, false, false);
 
-            LingeringFlame lingeringFlame = new LingeringFlame(spriteAnimationConfiguration, missileConfiguration);
+            LingeringAttack lingeringFlame = new LingeringAttack(spriteAnimationConfiguration, missileConfiguration);
             lingeringFlame.setAllowedVisualsToRotate(false);
             lingeringFlame.setOwnerOrCreator(this);
             lingeringFlame.setDuration(999999999); //practically infinite

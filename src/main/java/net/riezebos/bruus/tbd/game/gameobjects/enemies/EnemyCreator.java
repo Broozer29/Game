@@ -53,8 +53,9 @@ public class EnemyCreator {
         boolean isFormatted = GameState.getInstance().getGameMode().equals(GameMode.Formatted);
 
         switch (enemyType) {
-            case Seeker, Energizer, Tazer, Scout, RoyalGuardGuardsmen, RedBoss, CarrierBoss, ZergDevourer, ZergGuardian, ZergQueen,
-                 YellowBoss, MotherShipMiniBoss, StrikerBoss, TwinBoss -> {
+            case Seeker, Energizer, Tazer, Scout, RoyalGuardGuardsmen, RoyalGuardCaptain, RedBoss, CarrierBoss,
+                 ZergDevourer, ZergGuardian, ZergQueen,
+                 YellowBoss, MotherShipMiniBoss, RoyalGuardFlagbearer, StrikerBoss, TwinBoss -> {
                 if (isFormatted && (
                         enemyType.equals(EnemyEnums.Scout) || enemyType.equals(EnemyEnums.Energizer) || enemyType.equals(EnemyEnums.Seeker)
                                 || enemyType.equals(EnemyEnums.Tazer) || enemyType.equals(EnemyEnums.ZergDevourer) || enemyType.equals(EnemyEnums.ZergGuardian))) {
@@ -85,14 +86,15 @@ public class EnemyCreator {
             case Seeker, YellowBoss -> {
                 setBoardBlockToHoverIn(movementConfiguration, 6);
             }
-            case Tazer, MotherShipMiniBoss, Scout, RoyalGuardGuardsmen, ZergQueen, StrikerBoss -> {
+            case Tazer, RoyalGuardCaptain, MotherShipMiniBoss, Scout, RoyalGuardGuardsmen, ZergQueen, StrikerBoss,
+                 RoyalGuardFlagbearer -> {
                 setBoardBlockToHoverIn(movementConfiguration, 7);
             }
             case RedBoss, CarrierBoss -> {
                 setBoardBlockToHoverIn(movementConfiguration, 4);
             }
             case TwinBoss -> {
-                if(movementConfiguration.getCurrentLocation().getX() < DataClass.getInstance().getWindowWidth()/2){
+                if (movementConfiguration.getCurrentLocation().getX() < DataClass.getInstance().getWindowWidth() / 2) {
                     movementConfiguration.setBoardBlockToHoverIn(0);
                 } else {
                     setBoardBlockToHoverIn(movementConfiguration, 6);
@@ -280,6 +282,9 @@ public class EnemyCreator {
             }
             case RoyalGuardBarricade -> {
                 return new RoyalGuardBarricade(upgradeConfig(spriteConfiguration, 2, true), enemyConfiguration, movementConfiguration);
+            }
+            case RoyalGuardBarricadeMinion -> {
+                return new RoyalGuardBarricadeMinion(upgradeConfig(spriteConfiguration, 2, true), enemyConfiguration, movementConfiguration);
             }
             case RoyalGuardFlagbearer -> {
                 return new RoyalGuardFlagBearer(upgradeConfig(spriteConfiguration, 2, true), enemyConfiguration, movementConfiguration);

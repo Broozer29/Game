@@ -31,6 +31,9 @@ public abstract class Laserbeam {
     protected int yOffset;
     protected GameObject owner;
     protected float damage;
+    protected float transparancyAlpha = 1;
+    protected float transparancyAlphaStepSize = 0;
+    protected boolean increaseTransparancyAlpha = false;
 
     protected boolean blocksMovement;
     protected int amountOfLaserbeamBodySegments;
@@ -128,6 +131,12 @@ public abstract class Laserbeam {
     // Abstract method to be implemented by subclasses
     public abstract void update();
 
+    protected void updateTransparancyconfig(){
+        if(this.laserBodies.get(0).getTransparancyAlpha() <= 0.1){
+            this.visible = false;
+        }
+    }
+
     // Method to calculate the end point based on the angle
     protected Point calculateEndPoint(double angleRadians) {
         // Extend the laser beam beyond the screen in the direction of angleRadians
@@ -187,7 +196,7 @@ public abstract class Laserbeam {
         return this.knockbackStrength;
     }
 
-    public void setKnockbackStrength (float knockbackStrength) {
+    public void setKnockbackStrength(float knockbackStrength) {
         this.knockbackStrength = knockbackStrength;
     }
 
@@ -207,36 +216,47 @@ public abstract class Laserbeam {
         this.damage = damage;
     }
 
-    public double getAngleDegrees () {
+    public double getAngleDegrees() {
         return angleDegrees;
     }
 
-    public void setAngleDegrees (double angleDegrees) {
+    public void setAngleDegrees(double angleDegrees) {
         this.angleDegrees = angleDegrees;
-        if(this.angleDegrees > 360){
+        if (this.angleDegrees > 360) {
             angleDegrees = 0;
         }
         angleRadians = Math.toRadians(angleDegrees);
     }
 
-    public double getAngleRadians () {
+    public double getAngleRadians() {
         return angleRadians;
     }
 
-    public void setAngleRadians (double angleRadians) {
+    public void setAngleRadians(double angleRadians) {
         this.angleRadians = angleRadians;
     }
 
-    public boolean isVisible () {
-        return visible;
+    public boolean isVisible() {
+        return this.visible;
     }
 
+    public void setTransparancyAlpha(boolean shouldIncrease, float newAlphaTransparancy, float transparacyStepSize) {
+        for (SpriteAnimation spriteAnimation : laserBodies) {
+            spriteAnimation.setTransparancyAlpha(shouldIncrease, newAlphaTransparancy, transparacyStepSize);
+        }
+    }
+
+    public float getTransparancyAlpha() {
+        return laserBodies.get(0).getTransparancyAlpha();
+    }
+
+
     //todo replace all laserbeam centering magic number logic with these methods
-    public static double getXOffsetForCentering(){
+    public static double getXOffsetForCentering() {
         return Laserbeam.bodyWidth / 2 + 4;
     }
 
-    public static double getYOffsetForCentering(){
-        return  Laserbeam.bodyWidth / 2 + 12;
+    public static double getYOffsetForCentering() {
+        return Laserbeam.bodyWidth / 2 + 12;
     }
 }

@@ -509,7 +509,7 @@ public class ShopBoardCreator {
         return nextLevelDifficultyBackgroundCard;
     }
 
-    public MenuButton createSelectEasyDifficulty(GUIComponent backgroundCard) {
+    public MenuButton createSelectPirateTribe(GUIComponent backgroundCard) {
         int y = fourthRowYCoordinate + 40;
         int x0 = backgroundCard.getXCoordinate() + backgroundCard.getWidth() / 6;
         SpriteConfiguration spriteConfiguration = createSpriteConfiguration(
@@ -521,11 +521,11 @@ public class ShopBoardCreator {
         selectEasyDifficulty.setMenuFunctionality(MenuFunctionEnums.SelectSongDifficulty);
         selectEasyDifficulty.setCenterCoordinates(x0, y);
         int amount = 1;
-        selectEasyDifficulty.setDescriptionOfComponent("Adds " + amount + " to the difficulty score.");
+        selectEasyDifficulty.setDescriptionOfComponent("Fight space pirates. Adds " + amount + " to the difficulty score.");
         return selectEasyDifficulty;
     }
 
-    public MenuButton createSelectMediumDifficulty(GUIComponent backgroundCard) {
+    public MenuButton createSelectZergTribe(GUIComponent backgroundCard) {
         float y = fourthRowYCoordinate + 40;
         float x1 = shopItemIconDimensions + horizontalSpacing + backgroundCard.getXCoordinate() + backgroundCard.getWidth() / 6;
         ImageEnums iconEnum = ImageEnums.BlueWings3;
@@ -543,11 +543,11 @@ public class ShopBoardCreator {
         selectEasyDifficulty.setCenterCoordinates(x1, y);
 
         int amount = 2;
-        selectEasyDifficulty.setDescriptionOfComponent("Adds " + amount + " to the difficulty score. Spawns more enemies.");
+        selectEasyDifficulty.setDescriptionOfComponent("Fight the Zerg. Adds " + amount + " to the difficulty score.");
         return selectEasyDifficulty;
     }
 
-    public MenuButton createSelectHardDifficulty(GUIComponent backgroundCard) {
+    public MenuButton createSelectRoyalGuard(GUIComponent backgroundCard) {
         float y = fourthRowYCoordinate + 40;
         float x2 = 2 * (shopItemIconDimensions + horizontalSpacing) + backgroundCard.getXCoordinate() + backgroundCard.getWidth() / 6;
         SpriteConfiguration spriteConfiguration = createSpriteConfiguration(
@@ -561,7 +561,7 @@ public class ShopBoardCreator {
 
         int amount = 3;
 
-        selectEasyDifficulty.setDescriptionOfComponent("Adds " + amount + " to the difficulty score. Spawns more enemies. Stronger enemies spawn more frequently.");
+        selectEasyDifficulty.setDescriptionOfComponent("Fight the Royal Guard. Adds " + amount + " to the difficulty score.");
         return selectEasyDifficulty;
     }
 
@@ -574,7 +574,7 @@ public class ShopBoardCreator {
     }
 
 
-    public GUIComponent createShortSongSelection(GUIComponent backgroundCard) {
+    public GUIComponent createNoMiniBossSelection(GUIComponent backgroundCard) {
         float y = fourthRowYCoordinate + 40;
         float x0 = backgroundCard.getXCoordinate() + backgroundCard.getWidth() / 6;
         SpriteConfiguration spriteConfiguration = createSpriteConfiguration(
@@ -590,7 +590,7 @@ public class ShopBoardCreator {
     }
 
 
-    public GUIComponent createMediumSongSelection(GUIComponent backgroundCard) {
+    public GUIComponent createOneMinibossSelection(GUIComponent backgroundCard) {
         float y = fourthRowYCoordinate + 40;
         float x1 = backgroundCard.getXCoordinate() + backgroundCard.getWidth() / 6 + (shopItemIconDimensions + horizontalSpacing);
         SpriteConfiguration spriteConfiguration = createSpriteConfiguration(
@@ -606,7 +606,7 @@ public class ShopBoardCreator {
     }
 
 
-    public GUIComponent createLongSelection(GUIComponent backgroundCard) {
+    public GUIComponent createTwoMiniBossSelection(GUIComponent backgroundCard) {
         float y = fourthRowYCoordinate + 40;
         float x2 = backgroundCard.getXCoordinate() + backgroundCard.getWidth() / 6 + 2 * (shopItemIconDimensions + horizontalSpacing);
         SpriteConfiguration spriteConfiguration = createSpriteConfiguration(
@@ -638,13 +638,12 @@ public class ShopBoardCreator {
         return new DisplayOnly(spriteConfiguration);
     }
 
-    public void updateDifficultyIconsToDifficulty(LevelDifficulty currentLevelDifficulty, GUIComponent easy,
+    public static void updateDifficultyIconsToDifficulty(LevelDifficulty currentLevelDifficulty, GUIComponent easy,
                                                   GUIComponent medium, GUIComponent hard) {
         if (LevelManager.getInstance().isNextLevelABossLevel()) {
             medium.setImage(ImageEnums.RedWings5);
             return;
         }
-
 
         if (currentLevelDifficulty.equals(LevelDifficulty.Easy)) {
             easy.setNewImage(ImageEnums.YellowWings1);
@@ -661,7 +660,7 @@ public class ShopBoardCreator {
         }
     }
 
-    public void updateMiniBossIconsToSelection(MiniBossConfig currentMiniBossConfig, GUIComponent shortLength,
+    public static void updateMiniBossIconsToSelection(MiniBossConfig currentMiniBossConfig, GUIComponent shortLength,
                                                GUIComponent mediumMediumLength, GUIComponent longLength) {
         if (LevelManager.getInstance().isNextLevelABossLevel()) {
             mediumMediumLength.setNewImage(ImageEnums.RedWings5);
