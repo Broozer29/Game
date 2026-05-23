@@ -21,7 +21,6 @@ public class ExplosionManager {
     private static ExplosionManager instance = new ExplosionManager();
     private PlayerManager friendlyManager = PlayerManager.getInstance();
     private EnemyManager enemyManager = EnemyManager.getInstance();
-    //    private List<Explosion> explosionList = new ArrayList<Explosion>();
     private CopyOnWriteArrayList<Explosion> explosionList = new CopyOnWriteArrayList<>();
     private PerformanceLogger performanceLogger = null;
 
@@ -30,9 +29,7 @@ public class ExplosionManager {
     }
 
     public void updateGametick() {
-//        PerformanceLoggerManager.timeAndLog(performanceLogger, "Total", () -> {
         PerformanceLoggerManager.timeAndLog(performanceLogger, "Update Explosions", this::updateExplosions);
-//        });
     }
 
     private void updateExplosions() {
@@ -102,7 +99,7 @@ public class ExplosionManager {
                         explosion.applyAfterCollisionItemEffects(enemy, collisionInfo);
                     }
                     explosion.applyExplosionOnHitEffects(enemy);
-                    explosion.addCollidedSprite(enemy);
+                    explosion.addCollidedGameObject(enemy);
                     explosion.dealDamageToGameObject(enemy);
                 }
             }
@@ -115,7 +112,7 @@ public class ExplosionManager {
                 CollisionInfo collisionInfo = CollisionDetector.getInstance().detectCollision(explosion, spaceship);
                 if (collisionInfo != null) {
                     explosion.dealDamageToGameObject(spaceship);
-                    explosion.addCollidedSprite(spaceship);
+                    explosion.addCollidedGameObject(spaceship);
                 }
             }
 
@@ -124,7 +121,19 @@ public class ExplosionManager {
                     CollisionInfo collisionInfo = CollisionDetector.getInstance().detectCollision(explosion, drone);
                     if (collisionInfo != null) {
                         explosion.dealDamageToGameObject(drone);
-                        explosion.addCollidedSprite(drone);
+                        explosion.addCollidedGameObject(drone);
+                    }
+                }
+            }
+        }
+        //neutral collision checks, only works for explosions as of now
+        if(explosion.isNeutral()){
+            for(Enemy enemy : EnemyManager.getInstance().getEnemies()){
+                if(!explosion.dealtDamageToTarget(enemy)){
+                    CollisionInfo collisionInfo = CollisionDetector.getInstance().detectCollision(explosion, enemy);
+                    if (collisionInfo != null) {
+                        explosion.dealtDamageToTarget(enemy);
+                        explosion.addCollidedGameObject(enemy);
                     }
                 }
             }

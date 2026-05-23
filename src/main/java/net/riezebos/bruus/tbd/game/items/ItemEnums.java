@@ -27,7 +27,7 @@ public enum ItemEnums {
 
 
     //Relics 2.0
-    SpawnSpaceStationTBD(ItemRarityEnums.Relic, ImageEnums.SmallDroneItemIcon, "Placeholder name", true),
+    SpawnSpaceStationTBD(ItemRarityEnums.Relic, ImageEnums.SmallDroneItemIcon, "Placeholder", true),
     BonusKaart(ItemRarityEnums.Relic, ImageEnums.BonusKaart, "Bonus Kaart", true),
     GreedIsGood(ItemRarityEnums.Relic, ImageEnums.Test_Image, "Greed is Good", true),
     ModuleAccuracy(ItemRarityEnums.Relic, ImageEnums.Starcraft2LockOn, "Module: Accuracy", true),

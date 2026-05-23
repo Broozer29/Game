@@ -7,19 +7,20 @@ public class FrontShield extends SpecialAttack {
 
     public FrontShield (SpriteAnimationConfiguration spriteAnimationConfiguration, SpecialAttackConfiguration missileConfiguration) {
         super(spriteAnimationConfiguration, missileConfiguration);
-        this.setObjectType("FireShield");
+        this.setObjectType("FrontShield");
         this.allowRepeatedDamage = true;
         this.appliesOnHitEffects = true;
         this.destroysMissiles = true;
         this.damagesMissiles = true;
         this.visualLayer = VisualLayer.Upper;
         this.knockbackStrength = 14;
+        super.internalTickCooldown = 0.15f;
     }
 
 
     @Override
     public void updateSpecialAttack() {
-        super.internalTickCooldown = this.ownerOrCreator.getAttackSpeed(); //todo dit is eigenlijk een initialize variabele maar owner word gezet na de constructor, code smell
+        //empty for now
     }
 
     public void startDissipating(){

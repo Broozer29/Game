@@ -45,8 +45,10 @@ public class MotherShipMiniBoss extends Enemy {
 
 
     public void fireAction () {
-        if(this.getCurrentBoardBlock() != lastRegisteredBoardBlock && droneList.size() < 4){
-            addDrone();
+        if(this.getCurrentBoardBlock() != lastRegisteredBoardBlock){
+            if(this.droneList.size() < 4) {
+                addDrone();
+            }
             lastRegisteredBoardBlock = this.getCurrentBoardBlock();
         }
 

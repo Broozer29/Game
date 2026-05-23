@@ -29,9 +29,9 @@ public class Explosion extends GameObject {
     }
 
 
-    public void addCollidedSprite (GameObject sprite) {
-        if (!this.skipCollision.contains(sprite)) {
-            this.skipCollision.add(sprite);
+    public void addCollidedGameObject(GameObject object) {
+        if (!this.skipCollision.contains(object)) {
+            this.skipCollision.add(object);
         }
     }
 

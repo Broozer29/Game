@@ -166,16 +166,20 @@ public class SpecialAttack extends GameObject {
     }
 
 
-    public void checkEnemySpecialAttackCollision(GameObject gameObject) {
+    public void checkEnemySpecialAttackCollision(SpaceShip spaceShip) {
         if (this.getSpecialAttackMissiles().isEmpty()) {
-            CollisionInfo collisionInfo = CollisionDetector.getInstance().detectCollision(gameObject, this);
+            CollisionInfo collisionInfo = CollisionDetector.getInstance().detectCollision(spaceShip, this);
             if (collisionInfo != null) {
                 if (this.isAllowedToDealDamage()) {
-                    this.dealDamageToGameObject(gameObject);
+                    this.dealDamageToGameObject(spaceShip);
                 }
 
                 if (!this.isAllowRepeatedDamage()) {
                     this.setAllowedToDealDamage(false);
+                }
+
+                if(this.knockbackStrength > 0){
+                    spaceShip.applyKnockback(collisionInfo, this.knockbackStrength);
                 }
             }
         }

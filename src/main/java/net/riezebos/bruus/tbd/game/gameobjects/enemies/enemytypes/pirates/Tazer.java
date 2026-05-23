@@ -108,6 +108,7 @@ public class Tazer extends Enemy {
         missile.setAllowedVisualsToRotate(false);
         missile.setCenterCoordinates(chargingUpAttackAnimation.getCenterXCoordinate(), chargingUpAttackAnimation.getCenterYCoordinate());
         missile.resetMovementPath();
+        missile.setNeutral(true);
 
         this.missileManager.addExistingMissile(missile);
     }

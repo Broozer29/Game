@@ -68,6 +68,9 @@ public class MenuButton extends GUIComponent {
             case OpenBoonSelectionBoard:
                 boardManager.openUpgradeSelectionScreen();
                 break;
+            case OpenDifficultySelectionBoard:
+                boardManager.openDifficultyScreen();
+                break;
             case SelectSongDifficulty:
                 changeLevelDifficulty();
                 break;

@@ -10,7 +10,6 @@ import net.riezebos.bruus.tbd.game.items.PlayerInventory;
 import net.riezebos.bruus.tbd.game.level.EnemyFormation;
 import net.riezebos.bruus.tbd.game.level.FormationCreator;
 import net.riezebos.bruus.tbd.game.level.LevelManager;
-import net.riezebos.bruus.tbd.game.level.enums.LevelDifficulty;
 import net.riezebos.bruus.tbd.game.level.enums.MiniBossConfig;
 import net.riezebos.bruus.tbd.game.level.enums.SpawnFormationEnums;
 import net.riezebos.bruus.tbd.game.movement.Direction;
@@ -77,7 +76,7 @@ public class Director {
         }
 
         //If godrun detected, spawn more often
-        if(GodRunDetector.getInstance().getGodRunScore() >= 1){
+        if (GodRunDetector.getInstance().getGodRunScore() >= 1) {
             defaultTime = Math.round(defaultTime * 0.65f);
         }
 
@@ -85,7 +84,7 @@ public class Director {
     }
 
     private double calculateCashCarrierChance(DirectorType directorType) {
-        if(PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.BonusKaart) != null){
+        if (PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.BonusKaart) != null) {
             return 0f; //bonuskaart disables cash carriers
         }
 
@@ -211,43 +210,64 @@ public class Director {
 
     private boolean canSpawnMoreOfThisEnemy(EnemyEnums enemyEnums) {
 
-        int mediumEnemyDifficultyBonus = LevelManager.getInstance().getCurrentLevelDifficulty().equals(LevelDifficulty.Hard) ? 2 : 0;
+        if (enemyEnums.equals(EnemyEnums.RoyalGuardFlagbearer)) {
+            if (EnemyManager.getInstance().getEnemies().stream().filter(enemy -> !enemy.getEnemyType().getEnemyCategory().equals(EnemyCategory.Summon)).count() <= 8) {
+                return false; //mag niet spawnen als er niet genoeg non-summoned enemies zijn
+            }
+
+            return EnemyManager.getInstance().getAmountOfEnemyTypesAlive(EnemyEnums.RoyalGuardFlagbearer) < 2;
+        }
+
+        if (enemyEnums.equals(EnemyEnums.RoyalGuardCaptain)) {
+            if (this.directorType.equals(DirectorType.Instant) || GameState.getInstance().getCurrentLevelProgression() < 0.15f) { //we dont immediatly want to spawn these bad boys
+                return false;
+            }
+            return EnemyManager.getInstance().getAmountOfEnemyTypesAlive(EnemyEnums.RoyalGuardCaptain) < 2;
+        }
+
+        if (enemyEnums.equals(EnemyEnums.RoyalGuardBarricade)) {
+            return EnemyManager.getInstance().getAmountOfEnemyTypesAlive(EnemyEnums.RoyalGuardBarricade) < 6;
+        }
+
+        if (enemyEnums.equals(EnemyEnums.RoyalGuardShieldbearer)) {
+            return EnemyManager.getInstance().getAmountOfEnemyTypesAlive(EnemyEnums.RoyalGuardBarricade) < 10;
+        }
 
         if (enemyEnums.equals(EnemyEnums.ZergQueen)) {
-            return EnemyManager.getInstance().getAmountOfEnemyTypesAlive(EnemyEnums.ZergQueen) < 2 + mediumEnemyDifficultyBonus;
+            return EnemyManager.getInstance().getAmountOfEnemyTypesAlive(EnemyEnums.ZergQueen) < 2;
         }
 
         if (enemyEnums.equals(EnemyEnums.ZergDevourer)) {
-            return EnemyManager.getInstance().getAmountOfEnemyTypesAlive(EnemyEnums.ZergDevourer) < 8 + (mediumEnemyDifficultyBonus * 2);
+            return EnemyManager.getInstance().getAmountOfEnemyTypesAlive(EnemyEnums.ZergDevourer) < 8;
         }
 
         if (enemyEnums.equals(EnemyEnums.ZergGuardian)) {
-            return EnemyManager.getInstance().getAmountOfEnemyTypesAlive(EnemyEnums.ZergGuardian) < 14 + (mediumEnemyDifficultyBonus * 2);
+            return EnemyManager.getInstance().getAmountOfEnemyTypesAlive(EnemyEnums.ZergGuardian) < 12;
         }
 
         if (enemyEnums.equals(EnemyEnums.Tazer)) {
-            return EnemyManager.getInstance().getAmountOfEnemyTypesAlive(EnemyEnums.Tazer) < 3 + mediumEnemyDifficultyBonus;
+            return EnemyManager.getInstance().getAmountOfEnemyTypesAlive(EnemyEnums.Tazer) < 3;
         }
 
         if (enemyEnums.equals(EnemyEnums.Bulldozer)) {
-            return EnemyManager.getInstance().getAmountOfEnemyTypesAlive(EnemyEnums.Bulldozer) < 5 + mediumEnemyDifficultyBonus;
+            return EnemyManager.getInstance().getAmountOfEnemyTypesAlive(EnemyEnums.Bulldozer) < 7;
         }
         if (enemyEnums.equals(EnemyEnums.Energizer)) {
-            return EnemyManager.getInstance().getAmountOfEnemyTypesAlive(EnemyEnums.Energizer) < 5 + mediumEnemyDifficultyBonus;
+            return EnemyManager.getInstance().getAmountOfEnemyTypesAlive(EnemyEnums.Energizer) < 7;
         }
 
         if (enemyEnums.equals(EnemyEnums.Seeker)) {
-            return EnemyManager.getInstance().getAmountOfEnemyTypesAlive(EnemyEnums.Seeker) < 6 + (mediumEnemyDifficultyBonus * 2);
+            return EnemyManager.getInstance().getAmountOfEnemyTypesAlive(EnemyEnums.Seeker) < 10;
         }
         if (enemyEnums.equals(EnemyEnums.Bomba)) {
-            return EnemyManager.getInstance().getAmountOfEnemyTypesAlive(EnemyEnums.Bomba) < 6 + (mediumEnemyDifficultyBonus * 2);
+            return EnemyManager.getInstance().getAmountOfEnemyTypesAlive(EnemyEnums.Bomba) < 8;
         }
 
         return true;
     }
 
     private boolean canSpawnInFormation(EnemyEnums enemyEnums) {
-        if (enemyEnums.equals(EnemyEnums.ZergQueen) || enemyEnums.equals(EnemyEnums.Tazer)) {
+        if (enemyEnums.equals(EnemyEnums.ZergQueen) || enemyEnums.equals(EnemyEnums.Tazer) || enemyEnums.equals(EnemyEnums.RoyalGuardFlagbearer) || enemyEnums.equals(EnemyEnums.RoyalGuardCaptain)) {
             return false;
         }
         return true;
@@ -267,10 +287,10 @@ public class Director {
         int xCoordinate = DataClass.getInstance().getWindowWidth() + Math.round(enemyEnums.getBaseWidth() * 0.88f);
         int yCoordinate = DataClass.getInstance().getPlayableWindowMaxHeight() / 2;
 
-        if(enemyEnums.equals(EnemyEnums.BlueBoss)){
-            xCoordinate = Math.round((DataClass.getInstance().getWindowWidth() *0.5f));
+        if (enemyEnums.equals(EnemyEnums.BlueBoss)) {
+            xCoordinate = Math.round((DataClass.getInstance().getWindowWidth() * 0.5f));
             AnimationManager.getInstance().addUpperAnimation(createWarpInAnimation(xCoordinate, yCoordinate));
-        } else if(enemyEnums.equals(EnemyEnums.TwinBoss)){
+        } else if (enemyEnums.equals(EnemyEnums.TwinBoss)) {
             //spawn right twins
             xCoordinate = DataClass.getInstance().getWindowWidth() + Math.round(EnemyEnums.TwinBoss.getBaseWidth() * scale);
             LevelManager.getInstance().spawnEnemy(
@@ -307,7 +327,7 @@ public class Director {
                 enemyEnums, direction, scale, false, xMovementSpeed);
     }
 
-    private SpriteAnimation createWarpInAnimation(int xCoordinate, int yCoordinate){
+    private SpriteAnimation createWarpInAnimation(int xCoordinate, int yCoordinate) {
         SpriteConfiguration spriteConfiguration = new SpriteConfiguration();
         spriteConfiguration.setxCoordinate(xCoordinate);
         spriteConfiguration.setyCoordinate(yCoordinate);
@@ -574,7 +594,6 @@ public class Director {
         float basicIncreaseRate = 2f; // Increase basic enemy weight by a significant factor early on
         float decayRateForBasicEnemies = 0.2f; // Slower decay for Basic enemies (less aggressive than before)
         float growthRateForStrongEnemies = 0.175f; // Slower growth for stronger enemies
-        float mediumEnemyDifficultyBonus = LevelManager.getInstance().getCurrentLevelDifficulty().equals(LevelDifficulty.Hard) ? 0.25f : 0f;
 
         switch (category) {
             case Small:
@@ -583,7 +602,7 @@ public class Director {
             case Medium:
             case Boss:
                 // Gradually increase weight for stronger enemies as difficulty increases
-                return baseWeight * (1 + difficultyCoefficient * growthRateForStrongEnemies) + mediumEnemyDifficultyBonus;
+                return baseWeight * (1 + difficultyCoefficient * growthRateForStrongEnemies);
             case Summon:
                 return 0; // Should never be spawned
             default:

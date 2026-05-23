@@ -75,13 +75,13 @@ public class ShopBoard extends JPanel implements TimerHolder {
     private DisplayOnly inventoryButtonBackgroundCard;
     private DisplayOnly startNextLevelBackgroundCard;
 
-    private GUIComponent selectEasyDifficulty;
-    private GUIComponent selectMediumDifficulty;
-    private GUIComponent selectHardDifficulty;
+    private GUIComponent selectPirateTribe;
+    private GUIComponent selectZergTribe;
+    private GUIComponent selectRoyalGuard;
     private GUIComponent easyMiniBossConfig;
     private GUIComponent mediumMiniBossConfig;
     private GUIComponent hardMiniBossConfig;
-    private GUITextCollection difficultySelectionText;
+    private GUITextCollection tribeSelectionText;
     private GUITextCollection lengthSelectionText;
     private GUITextCollection nextLevelDifficultyIcon;
     private GUITextCollection additionalTextCollection;
@@ -166,29 +166,29 @@ public class ShopBoard extends JPanel implements TimerHolder {
         shopManager.activateFinishedContracts();
 
         // Create difficulty and song length settings using the respective background cards
-        selectEasyDifficulty = shopBoardCreator.createSelectEasyDifficulty(songDifficultyBackgroundCard);
-        selectMediumDifficulty = shopBoardCreator.createSelectMediumDifficulty(songDifficultyBackgroundCard);
-        selectHardDifficulty = shopBoardCreator.createSelectHardDifficulty(songDifficultyBackgroundCard);
-        difficultySelectionText = shopBoardCreator.createSelectDifficultyText(songDifficultyBackgroundCard, selectHardDifficulty);
+        selectPirateTribe = shopBoardCreator.createSelectPirateTribe(songDifficultyBackgroundCard);
+        selectZergTribe = shopBoardCreator.createSelectZergTribe(songDifficultyBackgroundCard);
+        selectRoyalGuard = shopBoardCreator.createSelectRoyalGuard(songDifficultyBackgroundCard);
+        tribeSelectionText = shopBoardCreator.createSelectDifficultyText(songDifficultyBackgroundCard, selectRoyalGuard);
 
 
         if (!LevelManager.getInstance().isNextLevelABossLevel()) {
-            regularGridFourthRow.add(selectEasyDifficulty);
+            regularGridFourthRow.add(selectPirateTribe);
         }
-        regularGridFourthRow.add(selectMediumDifficulty); //This gets set to red wings if its a boss level so always add it
+        regularGridFourthRow.add(selectZergTribe); //This gets set to red wings if its a boss level so always add it
         if (!LevelManager.getInstance().isNextLevelABossLevel()) {
-            regularGridFourthRow.add(selectHardDifficulty);
+            regularGridFourthRow.add(selectRoyalGuard);
         }
 
-        offTheGridObjects.addAll(difficultySelectionText.getComponents());
+        offTheGridObjects.addAll(tribeSelectionText.getComponents());
         offTheGridObjects.addAll(nextLevelModifiersTextCollection.getComponents());
 
         if (!LevelManager.getInstance().isNextLevelABossLevel()) {
-            easyMiniBossConfig = shopBoardCreator.createShortSongSelection(songLengthBackgroundCard);
+            easyMiniBossConfig = shopBoardCreator.createNoMiniBossSelection(songLengthBackgroundCard);
         }
-        mediumMiniBossConfig = shopBoardCreator.createMediumSongSelection(songLengthBackgroundCard); //This gets set to red wings if its a boss level so always add it
+        mediumMiniBossConfig = shopBoardCreator.createOneMinibossSelection(songLengthBackgroundCard); //This gets set to red wings if its a boss level so always add it
         if (!LevelManager.getInstance().isNextLevelABossLevel()) {
-            hardMiniBossConfig = shopBoardCreator.createLongSelection(songLengthBackgroundCard);
+            hardMiniBossConfig = shopBoardCreator.createTwoMiniBossSelection(songLengthBackgroundCard);
         }
 
 
@@ -238,6 +238,7 @@ public class ShopBoard extends JPanel implements TimerHolder {
         createInventoryGrid();
         // Rebuild the UI elements list
         recreateList();
+
     }
 
 
@@ -257,11 +258,14 @@ public class ShopBoard extends JPanel implements TimerHolder {
         }
     }
 
-    private void updateSelectedDifficultyIcons() {
-        shopBoardCreator.updateDifficultyIconsToDifficulty(LevelManager.getInstance().getLastSelectedDifficulty(),
-                selectEasyDifficulty, selectMediumDifficulty, selectHardDifficulty);
+    public void updateSelectedDifficultyIcons() {
+        if(selectPirateTribe == null){
+            return; //none of the components have been created yet, so we can't update the icons yet
+        }
+        ShopBoardCreator.updateDifficultyIconsToDifficulty(LevelManager.getInstance().getLastSelectedDifficulty(),
+                selectPirateTribe, selectZergTribe, selectRoyalGuard);
 
-        shopBoardCreator.updateMiniBossIconsToSelection(LevelManager.getInstance().getLastSelectedMiniBossConfig(),
+        ShopBoardCreator.updateMiniBossIconsToSelection(LevelManager.getInstance().getLastSelectedMiniBossConfig(),
                 easyMiniBossConfig, mediumMiniBossConfig, hardMiniBossConfig);
     }
 
@@ -305,7 +309,7 @@ public class ShopBoard extends JPanel implements TimerHolder {
 //        regularGridFirstRow.add(rerollButton);
 
 
-        nextLevelDifficultyIcon = shopBoardCreator.createNextLevelDifficultyIcon(nextLevelDifficultyBackground);
+
         moneyIcon = shopBoardCreator.createMoneyObject(itemRowsBackgroundCard);
 
 
@@ -324,7 +328,7 @@ public class ShopBoard extends JPanel implements TimerHolder {
         offTheGridObjects.addAll(moneyIcon.getComponents());
         offTheGridObjects.addAll(nextLevelDifficultyIcon.getComponents());
 
-        offTheGridObjects.addAll(difficultySelectionText.getComponents());
+        offTheGridObjects.addAll(tribeSelectionText.getComponents());
         offTheGridObjects.add(rerollBackgroundCard);
         offTheGridObjects.addAll(rerollCostText.getComponents());
         offTheGridObjects.addAll(rerollCost.getComponents());
@@ -722,7 +726,7 @@ public class ShopBoard extends JPanel implements TimerHolder {
                     controllerInputReader.isInputActive(ControllerInputEnums.SPECIAL_ATTACK) &&
                     showInventory) {
                 // Select menu option
-                showInventory = false;
+                setShowInventory(false);
                 needsUpdate = true;
                 lastMoveTime = currentTime;
             }

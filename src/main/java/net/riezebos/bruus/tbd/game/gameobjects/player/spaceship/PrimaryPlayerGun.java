@@ -149,7 +149,7 @@ public class PrimaryPlayerGun {
         }
         if (isCharging) {
             double timeCharged = GameState.getInstance().getGameSeconds() - secondsStartedCharging;
-            int intervals = (int) (timeCharged / BigIron.interval);
+            int intervals = Math.round((float) (timeCharged / BigIron.maxChargeSeconds * BigIron.amountOfIntervals)); //how many intervals have passed since we started charging
             totalScaleBonus = intervals * (BigIron.scaleGrowthPerInterval + 0.025f); //klein beetje extra scaling op de charge anim
             totalDamageBonus = intervals * (BigIron.damagePerInterval * (1 + owner.getAttackSpeedModifier()));
             chargingAnimation.setAnimationScale(1 + totalScaleBonus);

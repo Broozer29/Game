@@ -337,7 +337,7 @@ public class ClassSelectionBoardCreator {
         SpriteConfiguration spriteConfiguration = createSpriteConfiguration(xCoordinate, yCoordinate, 1, ImageEnums.Wide_Card);
         GUIComponent backgroundCard = new DisplayOnly(spriteConfiguration);
 
-        int newWidth = Math.round(DataClass.getInstance().getResolutionFactor() * 240);
+        int newWidth = Math.round(DataClass.getInstance().getResolutionFactor() * 300);
         int newHeight = Math.round(DataClass.getInstance().getResolutionFactor() * 70);
         backgroundCard.setImageDimensions(newWidth, newHeight);
 
@@ -348,10 +348,10 @@ public class ClassSelectionBoardCreator {
         int xCoordinate = backgroundCard.getCenterXCoordinate();
         int yCoordinate = backgroundCard.getCenterYCoordinate() - Math.round(DataClass.getInstance().getResolutionFactor() * 10);
 
-        GUITextCollection textCollection = new GUITextCollection(xCoordinate, yCoordinate, "START GAME");
+        GUITextCollection textCollection = new GUITextCollection(xCoordinate, yCoordinate, "SELECT DIFFICULTY");
         textCollection.setScale(1.5f * DataClass.getInstance().getResolutionFactor());
         textCollection.setStartingXCoordinate(xCoordinate - (textCollection.getWidth() / 2));
-        textCollection.setMenuFunctionality(MenuFunctionEnums.Start_Game);
+        textCollection.setMenuFunctionality(MenuFunctionEnums.OpenDifficultySelectionBoard);
 
         return textCollection;
     }

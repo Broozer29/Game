@@ -78,6 +78,7 @@ public class GameObject extends Sprite {
 
     //Game logic variables
     protected boolean friendly;
+    protected boolean isNeutral; //Neutral should only be used for enemies that affect other enemies, ideally keep this to special attacks, explosions or missiles
 
     //Movement variables
     protected GameObject objectToCenterAround;
@@ -429,7 +430,7 @@ public class GameObject extends Sprite {
     }
 
     protected int calculateFontSizeBasedOnDamageAmount(GameObject target, float damage) {
-        if(this.isFriendly() || (this.ownerOrCreator != null && this.ownerOrCreator instanceof SpaceShip)) {
+        if (this.isFriendly() || (this.ownerOrCreator != null && this.ownerOrCreator instanceof SpaceShip)) {
             int percentage = Math.round((damage / PlayerStats.getInstance().getBaseDamage()) / 10); //elke 10% is +1 increment op de font size
             return Math.min(14 + percentage, 25);
         } else {
@@ -470,6 +471,8 @@ public class GameObject extends Sprite {
         // Show the health bar if the object has taken damage
         if (this.currentHitpoints < this.maxHitPoints) {
             showHealthBar = true;
+        } else if (maxHitPoints - currentHitpoints < 0.1f) {
+            showHealthBar = false;
         }
     }
 
@@ -506,6 +509,10 @@ public class GameObject extends Sprite {
 
 
     //*****************VISUAL ALTERATION*******************************
+    public void rotateGameObjectTowards(double angleDegrees, boolean crop) {
+
+    }
+
     public void rotateGameObjectTowards(Direction direction, boolean crop) {
         if (ImageRotator.getInstance().isBlockedFromRotating(this.getImageEnum())) {
             return;
@@ -562,7 +569,7 @@ public class GameObject extends Sprite {
         rotateObjectTowardsAngle(calculatedAngle, crop);
     }
 
-    protected void rotateObjectTowardsAngle(double calculatedAngle, boolean crop) {
+    public void rotateObjectTowardsAngle(double calculatedAngle, boolean crop) {
         if (ImageRotator.getInstance().isBlockedFromRotating(this.getImageEnum())) {
             return;
         }
@@ -1186,5 +1193,32 @@ public class GameObject extends Sprite {
                 .filter(effect -> effect.getEffectIdentifier().equals(effectIdentifiers))
                 .findFirst()
                 .orElse(null);
+    }
+
+    public boolean isNeutral() {
+        return isNeutral;
+    }
+
+    public void setNeutral(boolean neutral) {
+        isNeutral = neutral;
+    }
+
+    public void healDamage(float amount, boolean showAnim) {
+        this.currentHitpoints += amount;
+        if (this.currentHitpoints > this.maxHitPoints) {
+            this.currentHitpoints = this.maxHitPoints;
+        }
+
+        if (showAnim) {
+            SpriteConfiguration spriteConfiguration = new SpriteConfiguration();
+            spriteConfiguration.setxCoordinate(this.getXCoordinate());
+            spriteConfiguration.setyCoordinate(this.getYCoordinate());
+            spriteConfiguration.setScale(1);
+            spriteConfiguration.setImageType(ImageEnums.Healing);
+            SpriteAnimationConfiguration spriteAnimationConfiguration = new SpriteAnimationConfiguration(spriteConfiguration, 1, false);
+            SpriteAnimation spriteAnimation = new SpriteAnimation(spriteAnimationConfiguration);
+            this.effectAnimations.add(spriteAnimation);
+            AnimationManager.getInstance().addUpperAnimation(spriteAnimation);
+        }
     }
 }

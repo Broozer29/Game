@@ -11,6 +11,19 @@ import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.Sprit
 
 public class RoyalGuardGrenadier extends Enemy {
 
+    /*
+        Slingert grenades naar de speler?
+            - Doen vanaf de backline zoals Seekers doen?
+                - Zorgt ervoor dat er een vorm van permanent backline stacking is
+                - Mag dan maximaal 4 tot 6 van zijn op het veld
+                - Mag niet in formations gespawned worden
+            - Slingert grenades naar de speler
+                - Langzaam bewegende projectielen of snel?
+                - Exploderen zodra ze de bestemming bereiken?
+            - Probleem met deze implementatie:
+                - Guardsmen, Shieldbearer en Barricade laten de speler al een hoop bewegen, dit kan misschien teveel projectielen van alle kanten zijn
+     */
+
     public RoyalGuardGrenadier (SpriteAnimationConfiguration spriteConfiguration, EnemyConfiguration enemyConfiguration, MovementConfiguration movementConfiguration) {
         super(spriteConfiguration, enemyConfiguration, movementConfiguration);
         SpriteAnimationConfiguration destroyedExplosionfiguration = new SpriteAnimationConfiguration(spriteConfiguration.getSpriteConfiguration(), 0, false);
