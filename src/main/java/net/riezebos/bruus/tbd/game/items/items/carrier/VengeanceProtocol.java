@@ -36,7 +36,7 @@ public class VengeanceProtocol extends Item {
 
         SpriteAnimationConfiguration spriteAnimationConfiguration = new SpriteAnimationConfiguration(spriteConfiguration, 0, false);
         ExplosionConfiguration explosionConfiguration = new ExplosionConfiguration(gameObject.isFriendly(), PlayerStats.getInstance().getBaseDamage() * explosionDamageMultiplier,
-                true, true);
+                true);
 
         Explosion explosion = new Explosion(spriteAnimationConfiguration, explosionConfiguration);
         explosion.setCenterCoordinates(gameObject.getCenterXCoordinate(), gameObject.getCenterYCoordinate());

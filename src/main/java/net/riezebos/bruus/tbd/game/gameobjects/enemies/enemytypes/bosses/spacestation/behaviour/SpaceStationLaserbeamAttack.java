@@ -8,6 +8,7 @@ import net.riezebos.bruus.tbd.game.gameobjects.missiles.MissileManager;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.laserbeams.AngledLaserBeam;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.laserbeams.Laserbeam;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.laserbeams.LaserbeamConfiguration;
+import net.riezebos.bruus.tbd.game.gameobjects.missiles.laserbeams.LaserbeamIndicator;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.movement.Point;
 import net.riezebos.bruus.tbd.game.util.WithinVisualBoundariesCalculator;
@@ -34,6 +35,7 @@ public class SpaceStationLaserbeamAttack implements BossActionable {
     private List<Laserbeam> laserbeamList = new LinkedList<>();
     private List<SpriteAnimation> chargingAnimations = new LinkedList<>();
     private List<Point> laserBeamAimingPoints = new LinkedList<>();
+    private List<LaserbeamIndicator> laserbeamIndicators = new LinkedList<>();
 
     private int newFrameDelay = 0;
     private int oldFrameDelay = 0;
@@ -45,7 +47,7 @@ public class SpaceStationLaserbeamAttack implements BossActionable {
             new Point(367, 708)
     };
 
-    public SpaceStationLaserbeamAttack () {
+    public SpaceStationLaserbeamAttack() {
         centerPoint = EnemyCreator.calculateSpaceStationBossDestination(EnemyEnums.SpaceStationBoss);
         for (int i = 0; i < BASE_ORIGIN_POINTS.length; i++) {
             laserBeamAimingPoints.add(new Point(0, 0));
@@ -54,7 +56,7 @@ public class SpaceStationLaserbeamAttack implements BossActionable {
     }
 
     @Override
-    public boolean activateBehaviour (Enemy enemy) {
+    public boolean activateBehaviour(Enemy enemy) {
         double currentTime = GameState.getInstance().getGameSeconds();
         int currentRotationAngle = getCurrentRotationAngle(enemy);
 
@@ -73,6 +75,16 @@ public class SpaceStationLaserbeamAttack implements BossActionable {
                 enemy.getAnimation().setFrameDelay(newFrameDelay);
                 enemy.setAttacking(true);
                 AudioManager.getInstance().addAudio(AudioEnums.ChargingLaserbeam);
+
+                createLaserbeamIndicators(enemy);
+
+                for(LaserbeamIndicator laserbeamIndicator : laserbeamIndicators){
+                    MissileManager.getInstance().addLaserbeamIndicator(laserbeamIndicator);
+                }
+            }
+
+            if(!laserbeamIndicators.isEmpty()){
+                updateLaserbeamIndicators(currentRotationAngle, enemy);
             }
 
 
@@ -85,6 +97,11 @@ public class SpaceStationLaserbeamAttack implements BossActionable {
                 for (Laserbeam laserbeam : laserbeamList) {
                     MissileManager.getInstance().addLaserBeam(laserbeam);
                 }
+
+                for(LaserbeamIndicator laserbeamIndicator : laserbeamIndicators){
+                    laserbeamIndicator.setActive(false);
+                }
+                laserbeamIndicators.clear();
             }
 
         }
@@ -109,7 +126,7 @@ public class SpaceStationLaserbeamAttack implements BossActionable {
         return isFiringLaserbeams;
     }
 
-    private boolean attackIsFinished (double currenttime) {
+    private boolean attackIsFinished(double currenttime) {
         if (currenttime >= startedFiringTime + attackDuration) {
             return true;
         }
@@ -117,7 +134,9 @@ public class SpaceStationLaserbeamAttack implements BossActionable {
     }
 
 
-    private void createLaserbeams (Enemy enemy) {
+    private int laserbeamBodyAmount = 25;
+
+    private void createLaserbeams(Enemy enemy) {
         float scale = enemy.getScale();
 
         for (int i = 0; i < BASE_ORIGIN_POINTS.length; i++) {
@@ -131,7 +150,7 @@ public class SpaceStationLaserbeamAttack implements BossActionable {
             laserBeamAimingPoints.get(i).setY(actualYCoordinate);
 
             LaserbeamConfiguration laserbeamConfiguration = new LaserbeamConfiguration(true, enemy.getDamage() / 2);
-            laserbeamConfiguration.setAmountOfLaserbeamSegments(25);
+            laserbeamConfiguration.setAmountOfLaserbeamSegments(laserbeamBodyAmount);
             laserbeamConfiguration.setOriginPoint(laserBeamAimingPoints.get(i));
             laserbeamConfiguration.setAngleDegrees(calculateAngleFromCenter(laserBeamAimingPoints.get(i), enemy));
 
@@ -142,7 +161,7 @@ public class SpaceStationLaserbeamAttack implements BossActionable {
         }
     }
 
-    private void updateLaserbeamCoordinates (int angleDegrees, Enemy enemy) {
+    private void updateLaserbeamCoordinates(int angleDegrees, Enemy enemy) {
         // Update positions based on rotation
         for (int i = 0; i < BASE_ORIGIN_POINTS.length; i++) {
             Point newPoint = getCoordinatesBasedOnTheAngle(BASE_ORIGIN_POINTS[i], enemy, angleDegrees);
@@ -156,7 +175,38 @@ public class SpaceStationLaserbeamAttack implements BossActionable {
         }
     }
 
-    private void createChargingAnimations () {
+    private void createLaserbeamIndicators(Enemy enemy) {
+        float scale = enemy.getScale();
+        for (int i = 0; i < BASE_ORIGIN_POINTS.length; i++) {
+            int scaledX = (int) (BASE_ORIGIN_POINTS[i].getX() * scale);
+            int scaledY = (int) (BASE_ORIGIN_POINTS[i].getY() * scale);
+
+            int actualXCoordinate = enemy.getXCoordinate() + scaledX;
+            int actualYCoordinate = enemy.getYCoordinate() + scaledY;
+
+            laserBeamAimingPoints.get(i).setX(actualXCoordinate);
+            laserBeamAimingPoints.get(i).setY(actualYCoordinate);
+
+            int angle = Math.toIntExact(Math.round(calculateAngleFromCenter(laserBeamAimingPoints.get(i), enemy)));
+            int distance = (laserbeamBodyAmount + 2) * Laserbeam.bodyWidth;
+            LaserbeamIndicator indicator = new LaserbeamIndicator(laserBeamAimingPoints.get(i).getX(), laserBeamAimingPoints.get(i).getY(), angle, distance, enemy);
+            laserbeamIndicators.add(indicator);
+        }
+    }
+
+    private void updateLaserbeamIndicators(int angleDegrees, Enemy enemy) {
+        // Update positions based on rotation
+        for (int i = 0; i < BASE_ORIGIN_POINTS.length; i++) {
+            Point newPoint = getCoordinatesBasedOnTheAngle(BASE_ORIGIN_POINTS[i], enemy, angleDegrees);
+            int distance = (laserbeamBodyAmount + 2) * Laserbeam.bodyWidth;
+            laserBeamAimingPoints.set(i, new Point(newPoint.getX() - Laserbeam.bodyWidth / 2, newPoint.getY() - Laserbeam.bodyWidth / 2));
+            laserbeamIndicators.get(i).setCurrentAngleDegrees(calculateAngleFromCenter(laserBeamAimingPoints.get(i), enemy), distance);
+            laserbeamIndicators.get(i).setStartingXCoordinate(enemy.getCenterXCoordinate() - Laserbeam.bodyWidth / 2 );
+            laserbeamIndicators.get(i).setStartingYCoordinate(enemy.getCenterYCoordinate() - Laserbeam.bodyWidth / 2);
+        }
+    }
+
+    private void createChargingAnimations() {
         for (int i = 0; i < BASE_ORIGIN_POINTS.length; i++) {
             SpriteConfiguration spriteConfiguration = new SpriteConfiguration();
             spriteConfiguration.setScale(1);
@@ -170,14 +220,14 @@ public class SpaceStationLaserbeamAttack implements BossActionable {
         }
     }
 
-    private void updateChargingAnimationLocations (Enemy enemy, int angleDegrees) {
+    private void updateChargingAnimationLocations(Enemy enemy, int angleDegrees) {
         for (int i = 0; i < BASE_ORIGIN_POINTS.length; i++) {
             Point newPoint = getCoordinatesBasedOnTheAngle(BASE_ORIGIN_POINTS[i], enemy, angleDegrees);
             chargingAnimations.get(i).setCenterCoordinates(newPoint.getX(), newPoint.getY());
         }
     }
 
-    private Point getCoordinatesBasedOnTheAngle (Point basePoint, Enemy enemy, int angleDegrees) {
+    private Point getCoordinatesBasedOnTheAngle(Point basePoint, Enemy enemy, int angleDegrees) {
         double angleRadians = Math.toRadians(angleDegrees);
         int scaledX = (int) (basePoint.getX() * enemy.getScale());
         int scaledY = (int) (basePoint.getY() * enemy.getScale());
@@ -199,12 +249,12 @@ public class SpaceStationLaserbeamAttack implements BossActionable {
     }
 
     @Override
-    public int getPriority () {
+    public int getPriority() {
         return priority;
     }
 
     @Override
-    public boolean isAvailable (Enemy enemy) {
+    public boolean isAvailable(Enemy enemy) {
         return enemy.isAllowedToFire()
                 && GameState.getInstance().getGameSeconds() >= lastAttackedTime + attackCooldown
                 && WithinVisualBoundariesCalculator.isWithinBoundaries(enemy)
@@ -215,7 +265,7 @@ public class SpaceStationLaserbeamAttack implements BossActionable {
 
     private int counterForRotationAngle = 0;
 
-    private int getCurrentRotationAngle (Enemy enemy) {
+    private int getCurrentRotationAngle(Enemy enemy) {
         if (enemy.getAnimation().getCurrentFrame() == 120) {
             counterForRotationAngle += 1;
         }
@@ -227,7 +277,7 @@ public class SpaceStationLaserbeamAttack implements BossActionable {
         return enemy.getAnimation().getCurrentFrame() - 1 + (counterForRotationAngle * 120);
     }
 
-    private double calculateAngleFromCenter (Point point, Enemy enemy) {
+    private double calculateAngleFromCenter(Point point, Enemy enemy) {
         // Get the center coordinates of the enemy
         int enemyCenterX = enemy.getCenterXCoordinate() - Laserbeam.bodyWidth / 2;
         int enemyCenterY = enemy.getCenterYCoordinate() - Laserbeam.bodyWidth / 2;

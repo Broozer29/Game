@@ -47,7 +47,7 @@ public class ExplosiveLaserbeams extends Item {
         spriteConfiguration.setScale(1f);
 
         SpriteAnimationConfiguration spriteAnimationConfiguration = new SpriteAnimationConfiguration(spriteConfiguration, 2, false);
-        ExplosionConfiguration explosionConfiguration = new ExplosionConfiguration(true, damage, true, false);
+        ExplosionConfiguration explosionConfiguration = new ExplosionConfiguration(true, damage,  false);
         Explosion explosion = new Explosion(spriteAnimationConfiguration, explosionConfiguration);
         explosion.setCenterCoordinates(collisionInfo.getCollisionPoint().getX(), collisionInfo.getCollisionPoint().getY());
         return explosion;

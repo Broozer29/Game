@@ -28,7 +28,7 @@ public class FlagBearerPulse extends SpecialAttack {
             float damage = ArmorCalculator.calculateDamage(getDamage(), target);
             target.takeDamage(damage);
         } else {
-            target.healDamage(getDamage(), true);
+            target.heal(getDamage(), true);
         }
     }
 }

@@ -426,9 +426,13 @@ public class PlayerStats {
 
     public int getPiercingMissilesAmount() {
         if(PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.BouncingLasers) != null){
-            return piercingMissilesAmount + 1; //todo slordige implementatie van bouncing lasers, refactor het naar een modify method ipv settern
+            return piercingMissilesAmount + 1; //todo slordige implementatie van bouncing lasers maar bouncingLasers gebruik beforeCollision activation dus dit is een hack om ook applyOnCreation te simuleren
         }
         return piercingMissilesAmount;
+    }
+
+    public void modifyPiercingMissilesAmount(int piercingMissilesAmount) {
+        this.piercingMissilesAmount += piercingMissilesAmount;
     }
 
     public void setPiercingMissilesAmount(int piercingMissilesAmount) {

@@ -1,11 +1,13 @@
 package net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.blueboss.behaviour;
 
+import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.Enemy;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.BossActionable;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.MissileManager;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.laserbeams.AngledLaserBeam;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.laserbeams.Laserbeam;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.laserbeams.LaserbeamConfiguration;
+import net.riezebos.bruus.tbd.game.gameobjects.missiles.laserbeams.LaserbeamIndicator;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.movement.Point;
 import net.riezebos.bruus.tbd.game.util.WithinVisualBoundariesCalculator;
@@ -30,6 +32,7 @@ public class BlueBossSpinningLaserbeamAttack implements BossActionable {
     private boolean isFiringLaserbeams = false;
     private int priority = 10;
     private List<Laserbeam> laserbeamList = new LinkedList<>();
+    private List<LaserbeamIndicator> laserbeamIndicators = new LinkedList<>();
     private SpriteAnimation chargingAnimation = null;
     private List<Integer> angleDegrees = new ArrayList<>();
 
@@ -55,7 +58,14 @@ public class BlueBossSpinningLaserbeamAttack implements BossActionable {
                 AnimationManager.getInstance().addUpperAnimation(chargingAnimation);
                 enemy.setAttacking(true);
                 AudioManager.getInstance().addAudio(AudioEnums.ChargingLaserbeam);
+                createLaserBeamIndicators(enemy);
+
+                for(LaserbeamIndicator laserbeamIndicator : laserbeamIndicators){
+                    MissileManager.getInstance().addLaserbeamIndicator(laserbeamIndicator);
+                }
             }
+
+            updateLaserbeamIndicators(chargingAnimation);
 
             if (chargingAnimation.isPlaying() && !isFiringLaserbeams &&
                     chargingAnimation.getCurrentFrame() == chargingAnimation.getTotalFrames() - 1) {
@@ -65,6 +75,9 @@ public class BlueBossSpinningLaserbeamAttack implements BossActionable {
                 startedFiringTime = currentTime;
                 for (Laserbeam laserbeam : laserbeamList) {
                     MissileManager.getInstance().addLaserBeam(laserbeam);
+                }
+                for(LaserbeamIndicator laserbeamIndicator : laserbeamIndicators){
+                    laserbeamIndicator.setActive(false);
                 }
             }
 
@@ -93,12 +106,27 @@ public class BlueBossSpinningLaserbeamAttack implements BossActionable {
         return currenttime >= startedFiringTime + attackDuration;
     }
 
+    private void createLaserBeamIndicators(GameObject owner){
+        for (Integer integer : angleDegrees) {
+            int distance = (laserbeamBodyAmount + 2) * Laserbeam.bodyWidth;
+            laserbeamIndicators.add(new LaserbeamIndicator(owner.getCenterXCoordinate(), owner.getCenterYCoordinate(), integer, distance, owner));
+        }
+    }
 
+    private void updateLaserbeamIndicators(SpriteAnimation chargingAnimation) {
+        for(LaserbeamIndicator laserbeamIndicator : laserbeamIndicators){
+            laserbeamIndicator.setStartingXCoordinate(chargingAnimation.getCenterXCoordinate());
+            laserbeamIndicator.setStartingYCoordinate(chargingAnimation.getCenterYCoordinate());
+        }
+    }
+
+
+    private int laserbeamBodyAmount = 25;
     private void createLaserbeams(Enemy enemy) {
 
         for (Integer integer : angleDegrees) {
             LaserbeamConfiguration laserbeamConfiguration = new LaserbeamConfiguration(true, enemy.getDamage() / 2);
-            laserbeamConfiguration.setAmountOfLaserbeamSegments(25);
+            laserbeamConfiguration.setAmountOfLaserbeamSegments(laserbeamBodyAmount);
             laserbeamConfiguration.setBlocksMovement(false);
             laserbeamConfiguration.setOriginPoint(enemy.getCurrentCenterLocation());
             laserbeamConfiguration.setAngleDegrees(integer);
@@ -121,6 +149,7 @@ public class BlueBossSpinningLaserbeamAttack implements BossActionable {
         }
     }
 
+    private int yOffset = -25;
     private void createChargingAnimation(Enemy enemy) {
         SpriteConfiguration spriteConfiguration = new SpriteConfiguration();
         spriteConfiguration.setScale(2);
@@ -130,7 +159,7 @@ public class BlueBossSpinningLaserbeamAttack implements BossActionable {
 
         SpriteAnimationConfiguration spriteAnimationConfiguration = new SpriteAnimationConfiguration(spriteConfiguration, 10, false);
         this.chargingAnimation = new SpriteAnimation(spriteAnimationConfiguration);
-        this.chargingAnimation.addYOffset(-25);
+        this.chargingAnimation.addYOffset(yOffset);
 
     }
 

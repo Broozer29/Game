@@ -19,6 +19,7 @@ import net.riezebos.bruus.tbd.game.gameobjects.neutral.ExplosionManager;
 import net.riezebos.bruus.tbd.game.gameobjects.neutral.interactable.InteractableManager;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
+import net.riezebos.bruus.tbd.game.gameobjects.player.SpaceShipReviver;
 import net.riezebos.bruus.tbd.game.gameobjects.player.boons.BoonManager;
 import net.riezebos.bruus.tbd.game.gameobjects.player.boons.boonimplementations.BoonActivationEnums;
 import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SecondaryPlayerGun;
@@ -35,7 +36,9 @@ import net.riezebos.bruus.tbd.game.items.items.util.ContractHelper;
 import net.riezebos.bruus.tbd.game.level.LevelManager;
 import net.riezebos.bruus.tbd.game.level.directors.DirectorManager;
 import net.riezebos.bruus.tbd.game.level.directors.GodRunDetector;
+import net.riezebos.bruus.tbd.game.level.enums.LevelDifficulty;
 import net.riezebos.bruus.tbd.game.level.enums.LevelTypes;
+import net.riezebos.bruus.tbd.game.level.enums.MiniBossConfig;
 import net.riezebos.bruus.tbd.game.movement.Direction;
 import net.riezebos.bruus.tbd.game.util.OnScreenText;
 import net.riezebos.bruus.tbd.game.util.OnScreenTextManager;
@@ -231,6 +234,8 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
                 BonusKaart bonusKaart = (BonusKaart) PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.BonusKaart);
                 bonusKaart.setUsedThisShop(false);
             }
+            LevelManager.getInstance().setLastSelectedDifficulty(LevelDifficulty.Easy);
+            LevelManager.getInstance().setLastSelectedMiniBossConfig(MiniBossConfig.Easy);
 
             //These should probably to be refactored into osmething new
             hasResetManagersForNextLevel = true;
@@ -468,6 +473,10 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
             drawImage(g, bgObject);
         }
 
+        for(SpaceShipReviver reviver : PlayerManager.getInstance().getSpaceShipReviverList()){
+            drawCircle(g, Math.round(reviver.getReviveRadius() * reviver.getCharge()), reviver.getSpaceShip().getCenterXCoordinate(), reviver.getSpaceShip().getCenterYCoordinate(), Color.GREEN, 1, false);
+            drawCircle(g, reviver.getReviveRadius(), reviver.getSpaceShip().getCenterXCoordinate(), reviver.getSpaceShip().getCenterYCoordinate(), Color.GREEN, reviver.getCharge() * reviver.getMaxAlphaTransparancy(), true);
+        }
 
         for(LaserbeamIndicator laserbeamIndicator : missileManager.getLaserbeamIndicators()){
             Color originalColor = g.getColor(); // store the original color
@@ -597,6 +606,28 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
 
         double end = System.currentTimeMillis();
         this.performanceLogger.logMetric("Draw Objects", end - start);
+    }
+
+
+    public void drawCircle(Graphics2D g2d, int size, int centerX, int centerY, Color color, float alpha, boolean fill) {
+        // Save original composite
+        Composite originalComposite = g2d.getComposite();
+
+        // Set transparency
+        g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha));
+
+        // Set color
+        g2d.setColor(color);
+
+        // Draw filled circle (use drawOval for outline only)
+        if(fill) {
+            g2d.fillOval(centerX - size / 2, centerY - size / 2, size, size);
+        } else {
+            g2d.drawOval(centerX - size / 2, centerY - size / 2, size, size);
+        }
+
+        // Restore original composite
+        g2d.setComposite(originalComposite);
     }
 
     private void drawLowHealthPlayerOverlay(Graphics2D g) {

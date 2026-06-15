@@ -265,7 +265,7 @@ public class ShopBoard extends JPanel implements TimerHolder {
         ShopBoardCreator.updateDifficultyIconsToDifficulty(LevelManager.getInstance().getLastSelectedDifficulty(),
                 selectPirateTribe, selectZergTribe, selectRoyalGuard);
 
-        ShopBoardCreator.updateMiniBossIconsToSelection(LevelManager.getInstance().getLastSelectedMiniBossConfig(),
+        ShopBoardCreator.updateMiniBossIconsToSelection(LevelManager.getInstance().getCurrentMiniBossConfig(),
                 easyMiniBossConfig, mediumMiniBossConfig, hardMiniBossConfig);
     }
 

@@ -29,7 +29,7 @@ public class Guardian extends Enemy {
         destroyedExplosionfiguration.getSpriteConfiguration().setImageType(this.enemyType.getDestructionType());
         this.destructionAnimation = new SpriteAnimation(destroyedExplosionfiguration);
         this.missileTypePathFinders = PathFinderEnums.StraightLine;
-        this.damage = 10;
+        this.damage = 8;
         this.attackSpeed = 3;
         this.detonateOnCollision = false;
         this.knockbackStrength = 8;
@@ -97,7 +97,7 @@ public class Guardian extends Enemy {
                 missileType.getImageType(), scale);
 
 
-        float movementSpeed = 5.75f;
+        float movementSpeed = 5f;
         //Create missile movement attributes and create a movement configuration
         PathFinder missilePathFinder = new StraightLinePathFinder();
         MovementConfiguration movementConfiguration = MissileCreator.getInstance().createMissileMovementConfig(

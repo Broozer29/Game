@@ -50,7 +50,7 @@ public class InverseRetrieval extends Item {
 
         SpriteAnimationConfiguration spriteAnimationConfiguration = new SpriteAnimationConfiguration(spriteConfiguration, 2, false);
         ExplosionConfiguration explosionConfiguration = new ExplosionConfiguration(true, PlayerStats.getInstance().getBaseDamage() * (this.quantity * explosionDamageRatio),
-                true, true);
+                true);
 
         Explosion explosion = new Explosion(spriteAnimationConfiguration, explosionConfiguration);
 

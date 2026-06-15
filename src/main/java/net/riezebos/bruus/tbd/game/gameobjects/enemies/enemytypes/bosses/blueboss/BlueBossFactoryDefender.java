@@ -109,6 +109,7 @@ public class BlueBossFactoryDefender extends Enemy {
         missile.rotateObjectTowardsDestination(true);
         missile.setAllowedVisualsToRotate(false); //Prevent it from being rotated again by the SpriteMover
         missile.setOwnerOrCreator(this);
+        missile.setDestructionAnimation(null); //todo een fatsoenlijke animatie toevoegen
         MissileManager.getInstance().addExistingMissile(missile);
     }
 

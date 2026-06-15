@@ -24,7 +24,7 @@ public class Scourge extends Enemy {
         destroyedExplosionfiguration.getSpriteConfiguration().setImageType(this.enemyType.getDestructionType());
         this.destructionAnimation = new SpriteAnimation(destroyedExplosionfiguration);
         this.destructionAnimation.setAnimationScale(this.scale);
-        this.damage = 15;
+        this.damage = 13;
         this.detonateOnCollision = true;
         this.knockbackStrength = 10;
     }
@@ -35,13 +35,13 @@ public class Scourge extends Enemy {
             return;
         }
 
-        if (!activatedFirstTime && isCloseEnough(200)) {
+        if (!activatedFirstTime && isCloseEnough(240)) {
             activateScourge();
             activatedFirstTime = true;
             return;
         }
 
-        if (activatedFirstTime && !activatedSecondTime && isCloseEnough(125)) {
+        if (activatedFirstTime && !activatedSecondTime && isCloseEnough(140)) {
             activateScourge();
             activatedSecondTime = true;
         }

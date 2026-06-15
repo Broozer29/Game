@@ -453,6 +453,8 @@ public class ImageLoader {
                 return "/images/Icons/highvelocitylasers.png";
             case Eternaflame:
                 return "/images/Icons/eternaflame.png";
+            case LeechingLasers:
+                return "/images/Icons/leechinglasers.png";
             case GlassCannon:
                 return "/images/Icons/glasscannon.png";
             case Starcraft2_Overclock:

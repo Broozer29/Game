@@ -10,297 +10,289 @@ import java.util.stream.Collectors;
 
 
 public enum EnemyEnums {
-    Alien_Bomb(25, 0, false,
-            AudioEnums.Alien_Bomb_Destroyed, "Alien Bomb",
+    Alien_Bomb(25,
+            AudioEnums.Alien_Bomb_Destroyed,
             ImageEnums.Alien_Bomb, ImageEnums.Alien_Bomb_Explosion, 3, EnemyCategory.Summon, EnemyTribes.Pirates, 0,
             0, 0, 0, 1, 1, 25, 15,
             0),
-    Seeker(125, 0, true,
-            AudioEnums.Large_Ship_Destroyed, "Enemy Seeker",
+    Seeker(125,
+            AudioEnums.Large_Ship_Destroyed,
             ImageEnums.Seeker, ImageEnums.Explosion2, 55, EnemyCategory.Medium, EnemyTribes.Pirates, 10,
             8, 15, 0.55f, 1.3f, 0.9f, 75, 29,
             0),
-    Tazer(125, 0, true,
-            AudioEnums.Large_Ship_Destroyed, "Enemy Tazer",
+    Tazer(125,
+            AudioEnums.Large_Ship_Destroyed,
             ImageEnums.Tazer, ImageEnums.Explosion2, 55, EnemyCategory.Medium, EnemyTribes.Pirates, 10,
             8, 15, 0.35f, 1f, 1, 94, 34,
             1),
-    Energizer(150, 0, true,
-            AudioEnums.Large_Ship_Destroyed, "Enemy Energizer",
+    Energizer(150,
+            AudioEnums.Large_Ship_Destroyed,
             ImageEnums.Energizer, ImageEnums.Explosion2, 50, EnemyCategory.Medium, EnemyTribes.Pirates, 10,
-            8, 15, 0.7f, 1, 1, 106, 39,
+            9, 15, 0.7f, 1, 1, 106, 39,
             2),
-    Bulldozer(200, 0, false,
-            AudioEnums.Large_Ship_Destroyed, "Enemy Bulldozer",
+    Bulldozer(200,
+            AudioEnums.Large_Ship_Destroyed,
             ImageEnums.Bulldozer, ImageEnums.Explosion2, 50, EnemyCategory.Medium, EnemyTribes.Pirates, 20,
-            13, 15, 0.65f, 1.3f, 1, 119, 46,
+            10, 15, 0.65f, 1.3f, 1, 119, 46,
             0),
-    Flamer(150, 0, true,
-            AudioEnums.Large_Ship_Destroyed, "Enemy Flamer",
+    Flamer(150,
+            AudioEnums.Large_Ship_Destroyed,
             ImageEnums.Flamer, ImageEnums.Explosion2, 50, EnemyCategory.Medium, EnemyTribes.Pirates, 10,
-            13, 15, 0.65f, 1, 1, 137, 61,
+            10, 15, 0.65f, 1, 1, 137, 61,
             1),
-    Bomba(200, 0, true,
-            AudioEnums.Large_Ship_Destroyed, "Enemy Bomba",
+    Bomba(200,
+            AudioEnums.Large_Ship_Destroyed,
             ImageEnums.Bomba, ImageEnums.Explosion2, 55, EnemyCategory.Medium, EnemyTribes.Pirates, 20,
-            13, 15, 0.45f, 1, 1, 140, 75,
+            10, 15, 0.45f, 1, 1, 140, 75,
             2),
-    Needler(50, 0, false,
-            AudioEnums.Alien_Spaceship_Destroyed, "Enemy Needler",
+    Needler(50,
+            AudioEnums.Alien_Spaceship_Destroyed,
             ImageEnums.Needler, ImageEnums.Explosion2, 30, EnemyCategory.Small, EnemyTribes.Pirates, 10,
             3f, 3, 0.7f, 2, 0.85f, 76, 40,
             0),
 
-    CashCarrier(200, 0, false,
-            AudioEnums.Alien_Spaceship_Destroyed, "Cash Carrier",
+    CashCarrier(200,
+            AudioEnums.Alien_Spaceship_Destroyed,
             ImageEnums.CashCarrier, ImageEnums.Explosion2, 0, EnemyCategory.Special, EnemyTribes.Pirates, 30,
             8, 25, 0, 1.2f, 0.8f, 171, 98,
             0),
-    Scout(50, 0, true,
-            AudioEnums.Alien_Spaceship_Destroyed, "Enemy Scout",
+    Scout(50,
+            AudioEnums.Alien_Spaceship_Destroyed,
             ImageEnums.Scout, ImageEnums.Explosion2, 30, EnemyCategory.Small, EnemyTribes.Pirates, 10,
             3f, 3, 0.9f, 1.4f, 0.9f, 65, 38,
             0),
 
-    FourDirectionalDrone(175, 0, true,
-            AudioEnums.Alien_Spaceship_Destroyed, "Four Directional Drone",
+    FourDirectionalDrone(175,
+            AudioEnums.Alien_Spaceship_Destroyed,
             ImageEnums.FourDirectionalDrone, ImageEnums.Explosion2, 0, EnemyCategory.Summon, EnemyTribes.Generic, 20,
             0, 0, 0, 1.85f, 0.4f, 170, 170,
             0),
-    EnemyProtossScout(150, 0, true,
-            AudioEnums.ProtossShipDeath, "Enemy Protoss Scout",
+    EnemyProtossScout(150,
+            AudioEnums.ProtossShipDeath,
             ImageEnums.ProtossScout, ImageEnums.ProtossDestroyedExplosion, 0, EnemyCategory.Summon, EnemyTribes.Generic, 0,
             0, 0, 0, 2.5f, 0.25f, 207, 116,
             0),
 
-    EnemyProtossShuttle(200, 0, true,
-            AudioEnums.ProtossShipDeath, "Enemy Protoss Shuttle",
+    EnemyProtossShuttle(200,
+            AudioEnums.ProtossShipDeath,
             ImageEnums.ProtossShuttle, ImageEnums.ProtossDestroyedExplosion, 0, EnemyCategory.Summon, EnemyTribes.Generic, 0,
             0, 0, 0, 1.5f, 0.25f, 231, 125,
             0),
-    CarrierPulsingDrone(2000, 0, true,
-            AudioEnums.Alien_Spaceship_Destroyed, "Enemy Protoss Pulsing Drone",
+    CarrierPulsingDrone(2000,
+            AudioEnums.Alien_Spaceship_Destroyed,
             ImageEnums.CarrierPulsingDrone, ImageEnums.ProtossDestroyedExplosion, 0, EnemyCategory.Summon, EnemyTribes.Generic, 0,
             0, 0, 0, 1, 0.75f, 100, 100,
             0),
 
-    EnemyCarrierBeacon(200, 0, true,
-            AudioEnums.Alien_Spaceship_Destroyed, "Enemy Protoss Beacon",
+    EnemyCarrierBeacon(200,
+            AudioEnums.Alien_Spaceship_Destroyed,
             ImageEnums.ProtossCarrierBeacon, ImageEnums.ProtossDestroyedExplosion, 0, EnemyCategory.Summon, EnemyTribes.Generic, 0,
             0, 0, 0, 1, 0.6f, 100, 100,
             0),
 
-
-
-    Shuriken(125, 0, false,
-            AudioEnums.Alien_Spaceship_Destroyed, "Shuriken",
+    Shuriken(125,
+            AudioEnums.Alien_Spaceship_Destroyed,
             ImageEnums.ShurikenEnemy, ImageEnums.Explosion2, 0, EnemyCategory.Summon, EnemyTribes.Generic, 10,
             0, 0, 0, 2f, 0.25f, 300, 300,
             0),
 
-    PulsingDrone(225, 0, true,
-            AudioEnums.Alien_Spaceship_Destroyed, "Pulsing Drone",
+    PulsingDrone(225,
+            AudioEnums.Alien_Spaceship_Destroyed,
             ImageEnums.DestructableOrbitCenterMissile, ImageEnums.Explosion2, 0, EnemyCategory.Summon, EnemyTribes.Generic, 0,
             0, 0, 0, 2f, 0.3f, 160, 119,
             0),
 
-    ZergDevourer(145, 0, true,
-            AudioEnums.DevourerDeath, "Zerg Devourer",
-            ImageEnums.DevourerIdle, ImageEnums.DevourerDeath, 35, EnemyCategory.Medium, EnemyTribes.Zerg, 10,
-            8, 15, 0.55f, 1.2f, 1, 66, 54,
-            0),
+    ZergDevourer(90,
+            AudioEnums.DevourerDeath,
+            ImageEnums.DevourerIdle, ImageEnums.DevourerDeath, 55, EnemyCategory.Medium, EnemyTribes.Zerg, 10,
+            7, 15, 0.55f, 1.2f, 1, 66, 54,
+            1),
 
-    ZergGuardian(115, 0, true,
-            AudioEnums.GuardianDeath, "Zerg Guardian",
-            ImageEnums.GuardianIdle, ImageEnums.GuardianDeath, 35, EnemyCategory.Medium, EnemyTribes.Zerg, 10,
-            8, 15, 0.75f, 1.1f, 1, 78, 71,
+    ZergGuardian(90,
+            AudioEnums.GuardianDeath,
+            ImageEnums.GuardianIdle, ImageEnums.GuardianDeath, 55, EnemyCategory.Medium, EnemyTribes.Zerg, 10,
+            7, 15, 0.75f, 1.1f, 1, 78, 71,
             0),
-    ZergQueen(250, 0, true,
-            AudioEnums.QueenDeath, "Zerg Death",
-            ImageEnums.QueenIdle, ImageEnums.QueenDeath, 35, EnemyCategory.Medium, EnemyTribes.Zerg, 0,
+    ZergQueen(100,
+            AudioEnums.QueenDeath,
+            ImageEnums.QueenIdle, ImageEnums.QueenDeath, 65, EnemyCategory.Medium, EnemyTribes.Zerg, 0,
             10, 20, 2, 1.35f, 1, 75, 68,
+            2),
+    ZergScourge(35,
+            AudioEnums.ScourgeDeath,
+            ImageEnums.ScourgeIdle, ImageEnums.ScourgeDeath, 30, EnemyCategory.Small, EnemyTribes.Zerg, 0,
+            3, 3, 0.7f, 2.5f, 1.4f, 31, 27,
             0),
-    ZergScourge(55, 0, false,
-            AudioEnums.ScourgeDeath, "Zerg Scourge",
-            ImageEnums.ScourgeIdle, ImageEnums.ScourgeDeath, 15, EnemyCategory.Small, EnemyTribes.Zerg, 0,
-            3, 3, 0.7f, 1.75f, 1.4f, 31, 27,
+    ZergMutalisk(100,
+            AudioEnums.MutaliskDeath,
+            ImageEnums.MutaliskIdle, ImageEnums.MutaliskDeath, 30, EnemyCategory.Small, EnemyTribes.Zerg, 10,
+            7f, 15, 0.65f, 1.55f, 1.2f, 64, 72,
             0),
-    ZergMutalisk(125, 0, false,
-            AudioEnums.MutaliskDeath, "Zerg Guardian",
-            ImageEnums.MutaliskIdle, ImageEnums.MutaliskDeath, 10, EnemyCategory.Small, EnemyTribes.Zerg, 10,
-            4f, 15, 0.65f, 1.55f, 1.2f, 64, 72,
-            0),
-    DevourerCocoon(150, 0, false,
-            AudioEnums.ScourgeDeath, "Zerg Cocoon",
+    DevourerCocoon(50,
+            AudioEnums.ScourgeDeath,
             ImageEnums.DevourerCocoon, ImageEnums.DevourerDeath, 0, EnemyCategory.Summon, EnemyTribes.Zerg, 0,
             0, 3, 1, 1f, 1, 95, 82,
             0),
-    MutaGuardianCocoon(150, 0, false,
-            AudioEnums.ScourgeDeath, "Zerg Cocoon",
+    MutaGuardianCocoon(50,
+            AudioEnums.ScourgeDeath,
             ImageEnums.GuardianMutaliskCocoon, ImageEnums.GuardianDeath, 0, EnemyCategory.Summon, EnemyTribes.Zerg, 0,
             0, 3, 1, 1f, 1, 60, 42,
             0),
 
-    ShurikenMiniBoss(850, 0, false,
-            AudioEnums.Alien_Spaceship_Destroyed, "Shuriken Mini Boss",
+    ShurikenMiniBoss(850,
+            AudioEnums.Alien_Spaceship_Destroyed,
             ImageEnums.ShurikenMiniBoss, ImageEnums.Explosion2, 0, EnemyCategory.MiniBoss, EnemyTribes.Generic, 25,
             50, 100, 1, 2f, 1, 600, 600,
             0),
 
-    MotherShipMiniBoss(850, 0, false,
-            AudioEnums.Alien_Spaceship_Destroyed, "Mothership Mini Boss",
+    MotherShipMiniBoss(850,
+            AudioEnums.Alien_Spaceship_Destroyed,
             ImageEnums.MothershipMiniboss, ImageEnums.Explosion2, 0, EnemyCategory.MiniBoss, EnemyTribes.Generic, 10,
             50, 100, 1, 1f, 0.9f, 238, 125,
             0),
-    MotherShipDrone(125, 0, true,
-            AudioEnums.Alien_Spaceship_Destroyed, "Mothership drone",
+    MotherShipDrone(125,
+            AudioEnums.Alien_Spaceship_Destroyed,
             ImageEnums.MotherShipDrone, ImageEnums.Explosion2, 0, EnemyCategory.Summon, EnemyTribes.Generic, 0,
-            0,0, 0, 1.5f, 0.35f, 269, 125,
+            0, 0, 0, 1.5f, 0.35f, 269, 125,
             0),
 
-    StrikerBossLaserbeamClone(250, 0, true,
-            AudioEnums.Alien_Spaceship_Destroyed, "StrikerBoss Laserbeam Clone",
+    StrikerBossLaserbeamClone(250,
+            AudioEnums.Alien_Spaceship_Destroyed,
             ImageEnums.StrikerBoss, ImageEnums.BossExplosion, 0, EnemyCategory.Summon, EnemyTribes.Generic, 0,
-            0,0, 0, 1, 1f, 445, 346,
+            0, 0, 0, 1, 1f, 445, 346,
             0),
 
-    StrikerBossCornerDrone(99999999, 0, true,
-            AudioEnums.Alien_Spaceship_Destroyed, "StrikerBoss Corner Drone",
+    StrikerBossCornerDrone(99999999,
+            AudioEnums.Alien_Spaceship_Destroyed,
             ImageEnums.StrikerCornerDrone, ImageEnums.Explosion2, 0, EnemyCategory.Summon, EnemyTribes.Generic, 0,
-            0,0, 0, 1, 1f, 118, 66,
+            0, 0, 0, 1, 1f, 118, 66,
             0),
 
-    RedBoss(6000, 0, true,
-            AudioEnums.Alien_Spaceship_Destroyed, "Red Boss",
+    RedBoss(6000,
+            AudioEnums.Alien_Spaceship_Destroyed,
             ImageEnums.RedBoss, ImageEnums.BossExplosion, 0, EnemyCategory.Boss, EnemyTribes.Generic, 20,
             850, 500, 0, 1.25f, 1, 861, 641,
             0),
 
-    SpaceStationBoss(5850, 0, true,
-            AudioEnums.Alien_Spaceship_Destroyed, "Space Station Boss",
+    SpaceStationBoss(5850,
+            AudioEnums.Alien_Spaceship_Destroyed,
             ImageEnums.SpaceStationBoss, ImageEnums.BossExplosion, 0, EnemyCategory.Boss, EnemyTribes.Generic, 20,
             950, 500, 0, 1.75f, 1, 850, 850,
             0),
-    CarrierBoss(6100, 0, true,
-            AudioEnums.Alien_Spaceship_Destroyed, "Carrier Boss",
+    CarrierBoss(6100,
+            AudioEnums.Alien_Spaceship_Destroyed,
             ImageEnums.CarrierBoss, ImageEnums.BossExplosion, 0, EnemyCategory.Boss, EnemyTribes.Generic, 20,
             1050, 500, 0, 1.25f, 0.75f, 465, 252,
             1),
-    YellowBoss(6550, 0, true,
-            AudioEnums.Alien_Spaceship_Destroyed, "Yellow Boss",
+    YellowBoss(6550,
+            AudioEnums.Alien_Spaceship_Destroyed,
             ImageEnums.YellowBoss, ImageEnums.BossExplosion, 0, EnemyCategory.Boss, EnemyTribes.Generic, 20,
             1150, 500, 0, 1.25f, 0.75f, 843, 800,
             1),
 
-    TwinBoss(7000, 0, true,
-            AudioEnums.Alien_Spaceship_Destroyed, "Striker Boss",
+    TwinBoss(7000,
+            AudioEnums.Alien_Spaceship_Destroyed,
             ImageEnums.TwinBoss, ImageEnums.BossExplosion, 0, EnemyCategory.Boss, EnemyTribes.Generic, 20,
             1150, 500, 0, 2.15f, 0.5f, 386, 285,
             2),
 
-    StrikerBoss(4750, 0, true,
-            AudioEnums.Alien_Spaceship_Destroyed, "Striker Boss",
+    StrikerBoss(4750,
+            AudioEnums.Alien_Spaceship_Destroyed,
             ImageEnums.StrikerBoss, ImageEnums.BossExplosion, 0, EnemyCategory.Boss, EnemyTribes.Generic, 20,
             1150, 500, 0, 1.3f, 1, 445, 346,
             1),
 
-    BlueBoss(6250, 0, true,
-            AudioEnums.Alien_Spaceship_Destroyed, "Blue Boss",
+    BlueBoss(6250,
+            AudioEnums.Alien_Spaceship_Destroyed,
             ImageEnums.BlueBoss, ImageEnums.BossExplosion, 0, EnemyCategory.Boss, EnemyTribes.Generic, 20,
             1150, 500, 0, 0.15f, 1, 337, 196,
             2),
 
-    BlueBossFactory(25000, 0, true,
-            AudioEnums.Alien_Spaceship_Destroyed, "StrikerBoss Laserbeam Clone",
+    BlueBossFactory(25000,
+            AudioEnums.Alien_Spaceship_Destroyed,
             ImageEnums.BlueBossFactory, ImageEnums.Explosion2, 0, EnemyCategory.Summon, EnemyTribes.Generic, 0,
-            0,0, 0, 0.15f, 1f, 323, 149,
+            0, 0, 0, 0.15f, 1f, 323, 149,
             0),
 
-    BlueBossFactoryDefender(250, 0, true,
-            AudioEnums.Alien_Spaceship_Destroyed, "StrikerBoss Laserbeam Clone",
+    BlueBossFactoryDefender(250,
+            AudioEnums.Alien_Spaceship_Destroyed,
             ImageEnums.BlueBossFactoryDefender, ImageEnums.Explosion2, 0, EnemyCategory.Summon, EnemyTribes.Generic, 0,
-            0,0, 0, 4, 0.5f, 92, 57,
+            0, 0, 0, 4, 0.5f, 92, 57,
             0),
 
-    MirageMiniBoss(750, 0, true,
-            AudioEnums.Alien_Spaceship_Destroyed, "Mirage Mini Boss",
+    MirageMiniBoss(750,
+            AudioEnums.Alien_Spaceship_Destroyed,
             ImageEnums.MirageMiniBoss, ImageEnums.Explosion2, 0, EnemyCategory.MiniBoss, EnemyTribes.Generic, 0,
             50, 100, 1, 1.55f, 0.8f, 154, 99,
             0),
 
-    DefenderMiniBoss(850, 0, true,
-            AudioEnums.Alien_Spaceship_Destroyed, "Defender Mini Boss",
+    DefenderMiniBoss(850,
+            AudioEnums.Alien_Spaceship_Destroyed,
             ImageEnums.DefenderMiniBoss, ImageEnums.Explosion2, 0, EnemyCategory.MiniBoss, EnemyTribes.Generic, 25,
             50, 100, 1, 1.4f, 1, 250, 250,
             0),
 
-    LaserbeamMiniBoss(850, 0, true,
-            AudioEnums.Alien_Spaceship_Destroyed, "Laserbeam Mini Boss",
+    LaserbeamMiniBoss(850,
+            AudioEnums.Alien_Spaceship_Destroyed,
             ImageEnums.LaserMiniBoss, ImageEnums.Explosion2, 0, EnemyCategory.MiniBoss, EnemyTribes.Generic, 25,
             50, 100, 1, 1.4f, 1, 250, 250,
             0),
 
-    LaserOriginDrone(125, 0, false,
-            AudioEnums.Alien_Spaceship_Destroyed, "LaserOriginDrone",
+    LaserOriginDrone(125,
+            AudioEnums.Alien_Spaceship_Destroyed,
             ImageEnums.Test_Image, ImageEnums.Explosion2, 0, EnemyCategory.Summon, EnemyTribes.Generic, 0,
             0, 0, 0, 0f, 0.5f, 170, 170,
             0),
 
-    RoyalGuardBarricade(200, 0, true,
-           AudioEnums.Large_Ship_Destroyed, "Royal Guard",
-           ImageEnums.RoyalGuardBarricade, ImageEnums.Explosion2, 90, EnemyCategory.Medium, EnemyTribes.RoyalGuard, 10,
-            9, 15, 0.55f, 0.8f, 0.65f, 257, 170,
-                   0),
-    RoyalGuardBarricadeMinion(75, 0, true,
-            AudioEnums.Alien_Bomb_Destroyed, "Royal Guard",
+    RoyalGuardBarricade(200,
+            AudioEnums.Large_Ship_Destroyed,
+            ImageEnums.RoyalGuardBarricade, ImageEnums.Explosion2, 75, EnemyCategory.Medium, EnemyTribes.RoyalGuard, 10,
+            10, 15, 0.55f, 0.8f, 0.65f, 257, 170,
+            0),
+    RoyalGuardBarricadeMinion(75,
+            AudioEnums.Alien_Bomb_Destroyed,
             ImageEnums.RoyalGuardBarricadeMinion, ImageEnums.Alien_Bomb_Explosion, 0, EnemyCategory.Summon, EnemyTribes.RoyalGuard, 0,
             0, 0, 0.55f, 2, 1, 44, 28,
-            5),
+            50),
 
-    RoyalGuardCaptain(125, 0, true,
-            AudioEnums.Large_Ship_Destroyed, "Royal Guard",
+    RoyalGuardCaptain(125,
+            AudioEnums.Large_Ship_Destroyed,
             ImageEnums.RoyalGuardCaptain, ImageEnums.Explosion2, 55, EnemyCategory.Medium, EnemyTribes.RoyalGuard, 10,
-            9, 15, 0.2f, 1, 0.65f, 201, 84,
-            0),
+            10, 15, 0.2f, 1, 0.65f, 201, 84,
+            1),
 
-    RoyalGuardFlagbearer(120, 0, true,
-            AudioEnums.Large_Ship_Destroyed, "Royal Guard",
+    RoyalGuardFlagbearer(120,
+            AudioEnums.Large_Ship_Destroyed,
             ImageEnums.RoyalGuardFlagbearer, ImageEnums.Explosion2, 85, EnemyCategory.Medium, EnemyTribes.RoyalGuard, 10,
-            9, 15, 0.3f, 1.6f, 0.55f, 175, 61,
-            0),
+            10, 15, 0.3f, 1.6f, 0.55f, 175, 61,
+            1),
 
 
-    RoyalGuardGrenadier(125, 0, true,
-            AudioEnums.Large_Ship_Destroyed, "Royal Guard",
+    RoyalGuardGrenadier(125,
+            AudioEnums.Large_Ship_Destroyed,
             ImageEnums.RoyalGuardGrenadier, ImageEnums.Explosion2, 55, EnemyCategory.Medium, EnemyTribes.RoyalGuard, 10,
-            9, 15, 0.55f, 1, 0.65f, 190, 128,
-            5),
+            10, 15, 0.55f, 1, 0.65f, 190, 128,
+            50),
 
-    RoyalGuardGuardsmen(150, 0, true,
-            AudioEnums.Large_Ship_Destroyed, "Royal Guard",
+    RoyalGuardGuardsmen(150,
+            AudioEnums.Large_Ship_Destroyed,
             ImageEnums.RoyalGuardGuardsmen, ImageEnums.Explosion2, 75, EnemyCategory.Medium, EnemyTribes.RoyalGuard, 10,
-            9, 15, 0.55f, 1.3f, 0.5f, 177, 67,
+            10, 15, 0.55f, 1.3f, 0.5f, 177, 67,
             0),
 
 
-    RoyalGuardShieldbearer(180, 0, true,
-            AudioEnums.Large_Ship_Destroyed, "Royal Guard",
+    RoyalGuardShieldbearer(180,
+            AudioEnums.Large_Ship_Destroyed,
             ImageEnums.RoyalGuardShieldbearer, ImageEnums.Explosion2, 75, EnemyCategory.Medium, EnemyTribes.RoyalGuard, 10,
-            9, 15, 0.55f, 1, 0.65f, 221, 122,
+            10, 15, 0.55f, 1, 0.65f, 221, 122,
             0),
 
     ;
 
 
     private final int baseHitPoints;
-    private final int baseShieldPoints;
 
-    private final boolean hasAttack;
     private final AudioEnums deathSound;
-
-    private final String objectType;
-
-
     private final ImageEnums imageType;
 
     private final ImageEnums destructionType;
@@ -320,17 +312,14 @@ public enum EnemyEnums {
     private int minimumStageLevelRequired;
 
 
-    EnemyEnums(int baseHitPoints, int baseShieldPoints, boolean hasAttack, AudioEnums deathSound, String objectType,
+    EnemyEnums(int baseHitPoints, AudioEnums deathSound,
                ImageEnums imageType, ImageEnums destructionType, float creditCost,
                EnemyCategory enemyCategory, EnemyTribes enemyTribe, float baseArmor, float cashMoneyWorth, float xpOnDeath,
                float weight, float movementSpeed, float defaultScale, int baseWidth, int baseHeight,
                int minimumStageLevelRequired) {
         this.enemyTribe = enemyTribe;
         this.baseHitPoints = baseHitPoints;
-        this.baseShieldPoints = baseShieldPoints;
-        this.hasAttack = hasAttack;
         this.deathSound = deathSound;
-        this.objectType = objectType;
         this.imageType = imageType;
         this.destructionType = destructionType;
         this.creditCost = creditCost;
@@ -350,20 +339,9 @@ public enum EnemyEnums {
         return baseHitPoints;
     }
 
-    public int getBaseShieldPoints() {
-        return baseShieldPoints;
-    }
-
-    public boolean hasAttack() {
-        return hasAttack;
-    }
 
     public AudioEnums getDeathSound() {
         return deathSound;
-    }
-
-    public String getObjectType() {
-        return objectType;
     }
 
     public ImageEnums getImageEnum() {
@@ -444,15 +422,11 @@ public enum EnemyEnums {
                 .toList().size();
     }
 
-    public boolean isHasAttack() {
-        return hasAttack;
-    }
-
     public EnemyTribes getEnemyTribe() {
         return enemyTribe;
     }
 
-    public int getBossKillCountRequiredBeforeAllowedToSpawn(){
+    public int getBossKillCountRequiredBeforeAllowedToSpawn() {
         return this.minimumStageLevelRequired; //since bosses cannot be spawn regularly, we can simply re-use this field
     }
 }

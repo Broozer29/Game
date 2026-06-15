@@ -139,20 +139,14 @@ public class EnemyCreator {
 
     private static EnemyConfiguration createEnemyConfiguration(EnemyEnums enemyType) {
         int maxHitpoints = enemyType.getBaseHitPoints();
-        int maxShields = enemyType.getBaseShieldPoints();
-        boolean hasAttack = enemyType.hasAttack();
-        boolean showHealthBar = false;
         AudioEnums deathSound = enemyType.getDeathSound();
-        boolean allowedToDealDamage = true;
-        String objectType = enemyType.getObjectType();
         float baseArmor = enemyType.getBaseArmor();
         float xpOnDeath = enemyType.getXpOnDeath();
         float cashMoneyWorth = enemyType.getCashMoneyWorth();
 
 
-        return new EnemyConfiguration(enemyType, maxHitpoints, maxShields
-                , hasAttack, showHealthBar, deathSound, allowedToDealDamage,
-                objectType, false, baseArmor, cashMoneyWorth, xpOnDeath);
+        return new EnemyConfiguration(enemyType, maxHitpoints,
+                deathSound, baseArmor, cashMoneyWorth, xpOnDeath);
     }
 
     private static Enemy createSpecificEnemy(SpriteConfiguration spriteConfiguration, EnemyConfiguration enemyConfiguration, MovementConfiguration movementConfiguration) {

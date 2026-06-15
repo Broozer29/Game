@@ -94,7 +94,7 @@ public class Devourer extends Enemy {
                 missileType.getImageType(), 1);
 
 
-        float movementSpeed = 4.5f;
+        float movementSpeed = 3f;
         //Create missile movement attributes and create a movement configuration
 
         PathFinder missilePathFinder = new StraightLinePathFinder();
@@ -152,7 +152,7 @@ public class Devourer extends Enemy {
         SpriteAnimationConfiguration spriteAnimationConfiguration = new SpriteAnimationConfiguration(spriteConfiguration1, 2, true);
         SpriteAnimation spriteAnimation = new SpriteAnimation(spriteAnimationConfiguration);
 
-        return new ModifyMovementSpeedEffect(-0.1f, 4, spriteAnimation, EffectIdentifiers.DevourerMoveSpeedDebuff);
+        return new ModifyMovementSpeedEffect(-0.035f, 3, spriteAnimation, EffectIdentifiers.DevourerMoveSpeedDebuff);
     }
 
     private EffectInterface getDevourerAttackSpeedEffect(){
@@ -165,7 +165,7 @@ public class Devourer extends Enemy {
 
         SpriteAnimationConfiguration spriteAnimationConfiguration = new SpriteAnimationConfiguration(spriteConfiguration1, 2, true);
         SpriteAnimation spriteAnimation = new SpriteAnimation(spriteAnimationConfiguration);
-        return new AttackSpeedModifierEffect(-0.3f, 4, spriteAnimation, EffectIdentifiers.DevourerAttackSpeedDebuff);
+        return new AttackSpeedModifierEffect(-0.1f, 3, spriteAnimation, EffectIdentifiers.DevourerAttackSpeedDebuff);
     }
 
 }

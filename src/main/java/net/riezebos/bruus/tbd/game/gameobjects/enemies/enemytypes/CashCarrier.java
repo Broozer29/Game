@@ -40,6 +40,8 @@ public class CashCarrier extends Enemy {
         if (LevelManager.getInstance().getCurrentEnemyTribe().equals(EnemyTribes.Zerg)) {
             initAsOverlord();
         }
+
+        this.hasAttack = false;
     }
 
     private void initAsOverlord() {

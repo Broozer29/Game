@@ -106,7 +106,7 @@ public class MissileManager {
 
 
     private void updateLaserBeams() {
-        laserbeamIndicators.removeIf(laserbeamIndicator -> !laserbeamIndicator.isActive());
+        laserbeamIndicators.removeIf(laserbeamIndicator -> !laserbeamIndicator.isActive() || laserbeamIndicator.getOwner() == null || !laserbeamIndicator.getOwner().isVisible());
         laserbeams.removeIf(laserbeam -> !laserbeam.isVisible());
 
         for (Laserbeam laserbeam : laserbeams) {

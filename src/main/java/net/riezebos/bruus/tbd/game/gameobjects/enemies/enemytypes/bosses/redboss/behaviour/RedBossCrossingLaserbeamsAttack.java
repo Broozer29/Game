@@ -1,11 +1,13 @@
 package net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.redboss.behaviour;
 
+import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.Enemy;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.BossActionable;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.MissileManager;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.laserbeams.AngledLaserBeam;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.laserbeams.Laserbeam;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.laserbeams.LaserbeamConfiguration;
+import net.riezebos.bruus.tbd.game.gameobjects.missiles.laserbeams.LaserbeamIndicator;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.level.LevelManager;
 import net.riezebos.bruus.tbd.game.movement.Point;
@@ -37,6 +39,9 @@ public class RedBossCrossingLaserbeamsAttack implements BossActionable {
     private Laserbeam lowerLaserbeam;
     private boolean isFiringLaserbeams;
     private boolean inwards;
+
+    private LaserbeamIndicator upperLaserbeamIndicator;
+    private LaserbeamIndicator lowerLaserbeamIndicator;
 
 
     public RedBossCrossingLaserbeamsAttack(boolean inwards) {
@@ -81,8 +86,25 @@ public class RedBossCrossingLaserbeamsAttack implements BossActionable {
                 AnimationManager.getInstance().addUpperAnimation(lowerChargingUpAnimation);
                 AudioManager.getInstance().addAudio(AudioEnums.ChargingLaserbeam);
                 setAngles();
+
+                if(inwards) {
+                    upperLaserbeamIndicator = createLaserBeamIndicator(upperLaserbeamHighestAngle, upperChargingUpAnimation.getCenterXCoordinate(), upperChargingUpAnimation.getCenterYCoordinate(), enemy);
+                    lowerLaserbeamIndicator = createLaserBeamIndicator(lowerLaserbeamLowestAngle, lowerChargingUpAnimation.getCenterXCoordinate(), lowerChargingUpAnimation.getCenterYCoordinate(), enemy);
+                } else {
+                    upperLaserbeamIndicator = createLaserBeamIndicator(upperLaserbeamLowestAngle, upperChargingUpAnimation.getCenterXCoordinate(), upperChargingUpAnimation.getCenterYCoordinate(), enemy);
+                    lowerLaserbeamIndicator = createLaserBeamIndicator(lowerLaserbeamHighestAngle, lowerChargingUpAnimation.getCenterXCoordinate(), lowerChargingUpAnimation.getCenterYCoordinate(), enemy);
+                }
+
+                MissileManager.getInstance().addLaserbeamIndicator(lowerLaserbeamIndicator);
+                MissileManager.getInstance().addLaserbeamIndicator(upperLaserbeamIndicator);
             }
 
+            if(lowerChargingUpAnimation.isPlaying()){
+                updateLaserbeamIndicators();
+            }
+
+
+            //todo known bug: if the game is paused, the animation continues playing and skipping this condition since the animation becomes finished, never actually firing the laserbeams
             if (lowerChargingUpAnimation.isPlaying() &&
                     lowerChargingUpAnimation.getCurrentFrame() == lowerChargingUpAnimation.getTotalFrames() - 1 &&
                     !isFiringLaserbeams) {
@@ -90,6 +112,8 @@ public class RedBossCrossingLaserbeamsAttack implements BossActionable {
                 createLaserbeams(enemy);
                 lowerChargingUpAnimation.setVisible(false);
                 upperChargingUpAnimation.setVisible(false);
+                lowerLaserbeamIndicator.setActive(false);
+                upperLaserbeamIndicator.setActive(false);
                 upperLaserbeam.update();
                 lowerLaserbeam.update();
                 MissileManager.getInstance().addLaserBeam(upperLaserbeam);
@@ -117,6 +141,18 @@ public class RedBossCrossingLaserbeamsAttack implements BossActionable {
 
     }
 
+    private void updateLaserbeamIndicators() {
+        if (upperLaserbeamIndicator != null && upperLaserbeamIndicator.isActive()) {
+            upperLaserbeamIndicator.setStartingXCoordinate(upperChargingUpAnimation.getCenterXCoordinate());
+            upperLaserbeamIndicator.setStartingYCoordinate(upperChargingUpAnimation.getCenterYCoordinate());
+        }
+
+        if (lowerLaserbeamIndicator != null && lowerLaserbeamIndicator.isActive()) {
+            lowerLaserbeamIndicator.setStartingXCoordinate(lowerChargingUpAnimation.getCenterXCoordinate());
+            lowerLaserbeamIndicator.setStartingYCoordinate(lowerChargingUpAnimation.getCenterYCoordinate());
+        }
+    }
+
     private void changeLaserbeamAngle () {
         if (inwards) {
             upperLaserbeam.setAngleDegrees(upperLaserbeam.getAngleDegrees() - angleStepSize);
@@ -139,6 +175,10 @@ public class RedBossCrossingLaserbeamsAttack implements BossActionable {
                 lowerLaserbeam.setVisible(false);
             }
         }
+    }
+
+    private LaserbeamIndicator createLaserBeamIndicator(int angleDegrees, int startingXCoordinate, int startingYCoordinate, GameObject owner){
+        return new LaserbeamIndicator(startingXCoordinate, startingYCoordinate, angleDegrees, 2000, owner);
     }
 
 
@@ -234,6 +274,8 @@ public class RedBossCrossingLaserbeamsAttack implements BossActionable {
         return new SpriteAnimationConfiguration(spriteConfiguration, 1, false);
     }
 
+
+    //todo uitzoeken of deze methode uberhaupt nodig is of iets doet?
     private void updateAnimationLocations (Enemy enemy) {
         upperChargingUpAnimation.setCenterCoordinates(
                 enemy.getXCoordinate() + Math.round(enemy.getWidth() * 0.24f),

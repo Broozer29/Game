@@ -19,7 +19,7 @@ public class Explosion extends GameObject {
         super(spriteAnimationConfiguration);
         this.friendly = explosionConfiguration.isFriendly();
         this.damage = explosionConfiguration.getDamage();
-        this.allowedToDealDamage = explosionConfiguration.isAllowedToDealDamage();
+        this.allowedToDealDamage = true;
         this.applyOnHitEffects = explosionConfiguration.isApplyOnHitEffects();
         this.setObjectType("Explosion");
 

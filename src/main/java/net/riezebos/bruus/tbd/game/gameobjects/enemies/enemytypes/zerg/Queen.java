@@ -22,11 +22,16 @@ import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteAnimation;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteAnimationConfiguration;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteConfiguration;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 public class Queen extends Enemy {
 
     private boolean isAttackingRightNow = false;
     private boolean laidEggDuringCurrentHover = false;
+    private List<Enemy> spawnedEnemies = new ArrayList<>();
+    private int maxEnemiesAllowedToSpawn = 5;
 
     public Queen (SpriteAnimationConfiguration spriteConfiguration, EnemyConfiguration enemyConfiguration, MovementConfiguration movementConfiguration) {
         super(spriteConfiguration, enemyConfiguration, movementConfiguration);
@@ -48,6 +53,7 @@ public class Queen extends Enemy {
             }
             allowedToFire = this.movementConfiguration.getCurrentPath().getWaypoints().isEmpty();
         }
+        this.spawnedEnemies.removeIf(enemy -> !enemy.isVisible() || enemy.getCurrentHitpoints() <= 0);
 
         super.updateChargingAttackAnimationCoordination();
         // If the enemy is attacking, check if the animation has finished.
@@ -106,7 +112,7 @@ public class Queen extends Enemy {
 
 
     private boolean determineAction () {
-        if (this.movementConfiguration.getPathFinder() instanceof HoverPathFinder hoverPathFinder &&
+        if (this.movementConfiguration.getPathFinder() instanceof HoverPathFinder hoverPathFinder && spawnedEnemies.size() < maxEnemiesAllowedToSpawn &&
                 !laidEggDuringCurrentHover && hoverPathFinder.isHovering() &&
                     (GameState.getInstance().getGameSeconds() > hoverPathFinder.getGameSecondsSinceEmptyList() + (hoverPathFinder.getSecondsToHoverStill() - 1))
 //                &&
@@ -200,5 +206,8 @@ public class Queen extends Enemy {
         MissileManager.getInstance().addExistingMissile(missile);
     }
 
+    public void addSpawnedZerg(Enemy enemy){
+        this.spawnedEnemies.add(enemy);
+    }
 
 }

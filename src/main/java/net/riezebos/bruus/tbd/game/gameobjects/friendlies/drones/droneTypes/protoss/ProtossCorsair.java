@@ -134,7 +134,7 @@ public class ProtossCorsair extends Drone {
         SpriteAnimationConfiguration spriteAnimationConfiguration = new SpriteAnimationConfiguration(spriteConfiguration1, 2, false);
         spriteAnimationConfiguration.getSpriteConfiguration().setImageType(ImageEnums.ProtossCorsairExplosion);
 
-        ExplosionConfiguration explosionConfiguration = new ExplosionConfiguration(this.isFriendly(), damage, true, true);
+        ExplosionConfiguration explosionConfiguration = new ExplosionConfiguration(this.isFriendly(), damage, true);
         Explosion explosion = new Explosion(spriteAnimationConfiguration, explosionConfiguration);
         explosion.setOwnerOrCreator(this.ownerOrCreator);
         explosion.setScale(explosionSize);

@@ -35,7 +35,7 @@ public class StickyDynamite extends Item {
     @Override
     public void applyEffectToObject (GameObject gameObject) {
         if (random.nextFloat() <= chanceToProc) {
-            ExplosionConfiguration explosionConfiguration = new ExplosionConfiguration(true, explosionDamage * quantity, true, false);
+            ExplosionConfiguration explosionConfiguration = new ExplosionConfiguration(true, explosionDamage * quantity,  false);
             SpriteConfiguration spriteConfiguration = new SpriteConfiguration();
             spriteConfiguration.setImageType(ImageEnums.StickyDynamiteExplosion);
             spriteConfiguration.setxCoordinate(gameObject.getCenterXCoordinate());

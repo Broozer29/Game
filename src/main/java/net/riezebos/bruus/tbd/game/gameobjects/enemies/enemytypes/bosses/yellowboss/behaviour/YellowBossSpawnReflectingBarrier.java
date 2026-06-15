@@ -194,7 +194,7 @@ public class YellowBossSpawnReflectingBarrier implements BossActionable {
 
 
         boolean isFriendly = false;
-        int maxHitPoints = 500;
+        int maxHitPoints = 300;
         float damage = enemy.getDamage() * 0.4f;
 
         MissileConfiguration missileConfiguration = MissileCreator.getInstance().createMissileConfiguration(missileType,

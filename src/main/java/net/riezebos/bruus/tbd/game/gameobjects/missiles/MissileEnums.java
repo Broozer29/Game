@@ -7,7 +7,6 @@ public enum MissileEnums {
     TazerProjectile(ImageEnums.LightningOrbDestruction, ImageEnums.LightningOrb),
     PlayerLaserbeam(ImageEnums.Impact_Explosion_One, ImageEnums.AlienLaserBeamAnimated),
     DefaultAnimatedBullet(ImageEnums.Impact_Explosion_One, ImageEnums.AlienLaserBeamAnimated),
-    DefaultRocket(ImageEnums.Rocket_1_Explosion, ImageEnums.Rocket_1),
     DefaultLaserBullet(ImageEnums.LaserBulletDestruction, ImageEnums.LaserBullet),
     OrbitCenter(ImageEnums.Destroyed_Explosion, ImageEnums.DestructableOrbitCenterMissile),
     Orbitter(ImageEnums.BarrierProjectileDestruction, ImageEnums.BarrierProjectile),

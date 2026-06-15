@@ -11,7 +11,6 @@ import net.riezebos.bruus.tbd.game.movement.Point;
 import net.riezebos.bruus.tbd.game.movement.pathfinders.OrbitPathFinder;
 import net.riezebos.bruus.tbd.game.movement.pathfinders.PathFinder;
 import net.riezebos.bruus.tbd.game.util.OrbitingObjectsFormatter;
-import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.AudioEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteAnimation;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteAnimationConfiguration;
@@ -31,7 +30,7 @@ public class Bulldozer extends Enemy {
         this.destructionAnimation = new SpriteAnimation(destroyedExplosionfiguration);
         this.detonateOnCollision = false;
         this.knockbackStrength = 8;
-
+        this.hasAttack = false;
     }
 
     private void createRotatingBombs () {
@@ -74,15 +73,14 @@ public class Bulldozer extends Enemy {
                 scale,
                 ImageEnums.Alien_Bomb,
                 0, 0,
-                (float) 1.0, false, 0
+                1.0f, false, 0
         );
 
         EnemyConfiguration enemyConfiguration = new EnemyConfiguration(
                 EnemyEnums.Alien_Bomb,
-                25, 0,
-                false, false, AudioEnums.Alien_Bomb_Destroyed,
-                true, "Alien Bomb", false,
-                EnemyEnums.Alien_Bomb.getBaseArmor(), 0, 0);
+                EnemyEnums.Alien_Bomb.getBaseHitPoints(),
+                EnemyEnums.Alien_Bomb.getDeathSound(),
+                EnemyEnums.Alien_Bomb.getBaseArmor(), EnemyEnums.Alien_Bomb.getXpOnDeath(), EnemyEnums.Alien_Bomb.getCashMoneyWorth());
 
         MovementConfiguration movementConfiguration = new MovementConfiguration();
         movementConfiguration.setCurrentLocation(new Point(xCoordinate, yCoordinate));

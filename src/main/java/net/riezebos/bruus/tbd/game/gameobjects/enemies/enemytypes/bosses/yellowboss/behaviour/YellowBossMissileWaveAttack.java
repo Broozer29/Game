@@ -116,10 +116,10 @@ public class YellowBossMissileWaveAttack implements BossActionable {
         MissileEnums missileType = MissileEnums.DefaultLaserBullet;
         SpriteConfiguration spriteConfiguration = MissileCreator.getInstance().createMissileSpriteConfig(
                 enemy.getXCoordinate(), enemy.getCenterYCoordinate(),
-                missileType.getImageType(), 1);
+                missileType.getImageType(), 0.7f);
 
 
-        float movementSpeed = 4.5f;
+        float movementSpeed = 3.5f;
         //Create missile movement attributes and create a movement configuration
         PathFinder missilePathFinder = new StraightLinePathFinder();
         MovementConfiguration movementConfiguration = MissileCreator.getInstance().createMissileMovementConfig(
@@ -145,7 +145,7 @@ public class YellowBossMissileWaveAttack implements BossActionable {
 
         missile.setOwnerOrCreator(enemy);
         missile.setSpeedsUp(true);
-        missile.setSpeedUpIncreaseAmount(1.4f);
+        missile.setSpeedUpIncreaseAmount(1.2f);
         return missile;
     }
 
