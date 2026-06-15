@@ -13,13 +13,13 @@ import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.Sprit
 public class Mutalisk extends Enemy {
 
 
-    public static float cloudDuration = 1.5f;
+    public static float cloudDuration = 3;
     public Mutalisk(SpriteAnimationConfiguration spriteConfiguration, EnemyConfiguration enemyConfiguration, MovementConfiguration movementConfiguration) {
         super(spriteConfiguration, enemyConfiguration, movementConfiguration);
         SpriteAnimationConfiguration destroyedExplosionfiguration = new SpriteAnimationConfiguration(spriteConfiguration.getSpriteConfiguration(), 3, false);
         destroyedExplosionfiguration.getSpriteConfiguration().setImageType(this.enemyType.getDestructionType());
         this.destructionAnimation = new SpriteAnimation(destroyedExplosionfiguration);
-        this.damage = 15;
+        this.damage = 0.5f;
         this.hasAttack = false;
         this.attackSpeed = 2;
         this.detonateOnCollision = false;

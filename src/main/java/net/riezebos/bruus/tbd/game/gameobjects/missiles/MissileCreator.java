@@ -61,9 +61,6 @@ public class MissileCreator {
             case DefaultAnimatedBullet, Orbitter, PlayerLaserbeam -> {
                 return new GenericMissile(upgradeConfig(spriteConfiguration, 2), missileConfiguration, movementConfiguration);
             }
-            case DefaultRocket -> {
-                return new Rocket1(upgradeConfig(spriteConfiguration, 2), missileConfiguration, movementConfiguration);
-            }
             case BarrierProjectile -> {
                 return new BarrierProjectile(upgradeConfig(spriteConfiguration, 3), missileConfiguration, movementConfiguration);
             }

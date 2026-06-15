@@ -27,6 +27,7 @@ public class ZergCocoon extends Enemy {
         this.currentHitpoints = maxHitPoints * 0.1f; //start at 10% hp
         this.showHealthBar = true;
         this.allowedToMove = false;
+        this.hasAttack = false;
 
         this.zergToSpawn = selectZergToSpawn();
     }

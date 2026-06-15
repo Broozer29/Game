@@ -29,7 +29,6 @@ import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.AudioEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class LevelManager {
@@ -146,6 +145,10 @@ public class LevelManager {
             this.levelType = LevelTypes.Boss;
         }
 
+        if (this.levelType.equals(LevelTypes.Boss)) {
+            selectedBoss = getNextBoss();
+        }
+
         GameUICreator.getInstance().createDifficultyWings(this.levelType.equals(LevelTypes.Boss), getDifficultyScore());
         GameUICreator.getInstance().createProgressBar();
         GameUICreator.getInstance().createMineralIcon();
@@ -206,7 +209,7 @@ public class LevelManager {
     }
 
     private void selectEnemyTribe() {
-        if(this.isNextLevelABossLevel()){
+        if (this.isNextLevelABossLevel()) {
             //Theoretically, this attribute is never used in boss levels, but keeping it for now
             this.currentEnemyTribe = EnemyTribes.Pirates;
             return;
@@ -230,23 +233,23 @@ public class LevelManager {
     private int loopBreaker = 0;
 
     public EnemyEnums getNextBoss() {
-//        return EnemyEnums.RedBoss;
+        return EnemyEnums.TwinBoss;
 
-        List<EnemyEnums> eligibleBosses = Arrays.stream(EnemyEnums.values()).filter(enemyEnums ->
-                enemyEnums.getEnemyCategory().equals(EnemyCategory.Boss) &&
-                        GameState.getInstance().getBossesDefeated() >= enemyEnums.getBossKillCountRequiredBeforeAllowedToSpawn()
-        ).toList();
-        int randomlySelectedBoss = (int) (Math.random() * eligibleBosses.size());
-
-        if (lastSpawnedBosses.contains(eligibleBosses.get(randomlySelectedBoss))) {
-            loopBreaker++;
-            if (loopBreaker > 1000) {
-                lastSpawnedBosses.clear(); //if no bosses can be spawned, clear last used so we can re-use them again
-            }
-            return getNextBoss();
-        }
-        lastSpawnedBosses.add(eligibleBosses.get(randomlySelectedBoss));
-        return eligibleBosses.get(randomlySelectedBoss);
+//        List<EnemyEnums> eligibleBosses = Arrays.stream(EnemyEnums.values()).filter(enemyEnums ->
+//                enemyEnums.getEnemyCategory().equals(EnemyCategory.Boss) &&
+//                        GameState.getInstance().getBossesDefeated() >= enemyEnums.getBossKillCountRequiredBeforeAllowedToSpawn()
+//        ).toList();
+//        int randomlySelectedBoss = (int) (Math.random() * eligibleBosses.size());
+//
+//        if (lastSpawnedBosses.contains(eligibleBosses.get(randomlySelectedBoss))) {
+//            loopBreaker++;
+//            if (loopBreaker > 1000) {
+//                lastSpawnedBosses.clear(); //if no bosses can be spawned, clear last used so we can re-use them again
+//            }
+//            return getNextBoss();
+//        }
+//        lastSpawnedBosses.add(eligibleBosses.get(randomlySelectedBoss));
+//        return eligibleBosses.get(randomlySelectedBoss);
     }
 
     public EnemyEnums getSelectedBoss() {
@@ -277,7 +280,6 @@ public class LevelManager {
                 this.currentLevelSong = audioManager.getCurrentSong();
             }
             case Boss -> {
-                selectedBoss = getNextBoss(); //todo slordig het selecteren van de baas verstopt in deze methode
                 audioManager.playDefaultBackgroundMusicForALevel(AudioEnums.getBossTheme(selectedBoss), true);
                 this.currentLevelSong = audioManager.getCurrentSong();
                 //to implement

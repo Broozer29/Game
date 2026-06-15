@@ -98,7 +98,7 @@ public class DormentExplosion implements EffectInterface {
         spriteConfiguration.setScale(1);
         spriteConfiguration.setImageType(imageType);
         SpriteAnimationConfiguration spriteAnimationConfiguration = new SpriteAnimationConfiguration(spriteConfiguration, getFrameDelayByExplosionType(), false);
-        ExplosionConfiguration explosionConfiguration = new ExplosionConfiguration(true, damage, true, allowedToApplyOnHitEffects);
+        ExplosionConfiguration explosionConfiguration = new ExplosionConfiguration(true, damage,  allowedToApplyOnHitEffects);
 
         Explosion explosion = new Explosion(spriteAnimationConfiguration, explosionConfiguration);
         handleSpecialAttack(explosion);

@@ -84,7 +84,7 @@ public class DifficultySelectionBoardCreator {
         selectEasyDifficulty.setMenuFunctionality(MenuFunctionEnums.SelectSongDifficulty);
         selectEasyDifficulty.setCenterCoordinates(x0, y);
         int amount = 1;
-        selectEasyDifficulty.setDescriptionOfComponent("Fight space pirates. Adds " + amount + " to the difficulty score.");
+        selectEasyDifficulty.setDescriptionOfComponent("Fight space pirates. Adds " + amount + " to the difficulty score. Space pirates have fragile ships and the bounty on their head is worth a few minerals.");
         return selectEasyDifficulty;
     }
 
@@ -102,7 +102,7 @@ public class DifficultySelectionBoardCreator {
         selectEasyDifficulty.setCenterCoordinates(x1, y);
 
         int amount = 2;
-        selectEasyDifficulty.setDescriptionOfComponent("Fight the Zerg. Adds " + amount + " to the difficulty score.");
+        selectEasyDifficulty.setDescriptionOfComponent("Fight the Zerg. Adds " + amount + " to the difficulty score. Zergs are a considerable foe, you might be overwhelmed before you realize it but many people happily pay minerals for culling their numbers.");
         return selectEasyDifficulty;
     }
 
@@ -120,7 +120,7 @@ public class DifficultySelectionBoardCreator {
 
         int amount = 3;
 
-        selectEasyDifficulty.setDescriptionOfComponent("Fight the Royal Guard. Adds " + amount + " to the difficulty score.");
+        selectEasyDifficulty.setDescriptionOfComponent("Fight the Royal Guard. Adds " + amount + " to the difficulty score. Braving the Royal Guard is a dangerous task, but the reward is worth it if you are strong and skilled enough.");
         return selectEasyDifficulty;
     }
 
@@ -135,7 +135,7 @@ public class DifficultySelectionBoardCreator {
         button.setMiniBossConfig(MiniBossConfig.Easy);
         button.setMenuFunctionality(MenuFunctionEnums.SelectSongLength);
         button.setCenterCoordinates(x0, y);
-        button.setDescriptionOfComponent("Spawns 0 minibosses during the next level. Increases the difficulty score by 1");
+        button.setDescriptionOfComponent("Spawns no minibosses during the next level. Increases the difficulty score by 1");
         return button;
     }
 

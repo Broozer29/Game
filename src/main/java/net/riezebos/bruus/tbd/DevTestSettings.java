@@ -15,4 +15,5 @@ public class DevTestSettings {
     public static boolean playerIsImmune = false; //makes the player invincible by preventing takeDamage being executed
     public static boolean alloweSuicidebutton = false; //Enables the suicide button, causing 9999999 damage to the player(s)
     public static boolean rollFullShop = false; //If true, all 3 rows in the shop are available
+    public static boolean blockPlayerRevivers = true; //todo niet een echte test setting, verwijderen wanneer dit getest is
 }

@@ -38,7 +38,7 @@ public class PyrrhicProtocol extends Item {
         SpriteAnimationConfiguration spriteAnimationConfiguration = new SpriteAnimationConfiguration(explosionSpriteConfig, 2, false);
         ExplosionConfiguration explosionConfiguration = new ExplosionConfiguration(true,
                 PlayerStats.getInstance().getBaseDamage() * (this.getQuantity() * PyrrhicProtocol.explosionDamageRatio),
-                true, false);
+                false);
         Explosion explosion = new Explosion(spriteAnimationConfiguration, explosionConfiguration);
         explosion.setOwnerOrCreator(gameObject.getOwnerOrCreator());
         explosion.setScale(1);

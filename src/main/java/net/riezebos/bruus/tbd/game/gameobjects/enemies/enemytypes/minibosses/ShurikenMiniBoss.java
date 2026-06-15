@@ -20,6 +20,7 @@ public class ShurikenMiniBoss extends Enemy {
         this.detonateOnCollision = false;
         this.knockbackStrength = 8;
 
+        this.hasAttack = false;
         if(this.movementConfiguration.getPathFinder() instanceof BouncingPathFinder bouncingPathFinder){
             bouncingPathFinder.setMaxBounces(100);
             bouncingPathFinder.setUseCenteredCoordinatesInstead(true);

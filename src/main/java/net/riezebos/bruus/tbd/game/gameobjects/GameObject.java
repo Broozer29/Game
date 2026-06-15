@@ -1203,7 +1203,7 @@ public class GameObject extends Sprite {
         isNeutral = neutral;
     }
 
-    public void healDamage(float amount, boolean showAnim) {
+    public void heal(float amount, boolean showAnim) {
         this.currentHitpoints += amount;
         if (this.currentHitpoints > this.maxHitPoints) {
             this.currentHitpoints = this.maxHitPoints;

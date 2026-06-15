@@ -32,6 +32,7 @@ public class MotherShipMiniBoss extends Enemy {
         this.updateBoardBlock();
         this.lastRegisteredBoardBlock = this.getCurrentBoardBlock();
         this.damage = 10;
+        this.hasAttack = false;
 
         if(this.movementConfiguration.getPathFinder() instanceof HoverPathFinder hoverPathFinder){
             hoverPathFinder.setSecondsToHoverStill(0);

@@ -26,6 +26,9 @@ public enum AudioEnums {
     Large_Ship_Destroyed,
     Default_EMP,
     Furi_Wisdowm_Of_Rage,
+    RMChase,
+    FullConfession,
+    MeatGrinder,
     Destroyed_Explosion,
     GenericSelect,
     Flamethrower,
@@ -33,15 +36,12 @@ public enum AudioEnums {
     NONE,
     Firewall,
     mainmenu,
-    Viq_Rose,
     Blood_On_The_Dancefloor,
     Lemmino_Firecracker,
-    LeanRockShred,
     VendlaSonrisa,
-    keygen,
     nomad,
     NotEnoughMinerals,
-    BroodlingAttached,
+    BroodlingAttached, //unused but the idea behind this audio effect is still interesting/cool
     AchievementUnlocked,
     OverlordDeath,
     DevourerBirth,
@@ -56,8 +56,8 @@ public enum AudioEnums {
     ScourgeDeath,
     ScourgeNoticed,
     WaveshaperMonster,
-    RiskOfDanger,
-    BossBattle,
+    RiskOfDanger, //unused
+    BossBattle, //unused
     ClassCarrierSpeedingUp,
     ClassCarrierSlowingDown,
     CaptainMisc0,
@@ -90,7 +90,8 @@ public enum AudioEnums {
     MausoleumMash,
     Arisen,
     Enraged,
-    DistressCall, Filth;
+    DistressCall,
+    Filth;
 
     public static AudioEnums getSelectClassAudioByClass(PlayerClass playerClass) {
         List<AudioEnums> availableSounds = new ArrayList<>();
@@ -130,7 +131,7 @@ public enum AudioEnums {
             case SpaceStationBoss:
                 return AudioEnums.Furi_Wisdowm_Of_Rage;
             case RedBoss:
-                return AudioEnums.Blood_On_The_Dancefloor;
+                return AudioEnums.RMChase;
             case CarrierBoss:
                 return AudioEnums.nomad;
             case YellowBoss:

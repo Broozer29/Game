@@ -3,13 +3,11 @@ package net.riezebos.bruus.tbd.game.gameobjects.neutral;
 public class ExplosionConfiguration {
     private boolean isFriendly;
     private float damage;
-    private boolean allowedToDealDamage;
     private boolean applyOnHitEffects;
 
-    public ExplosionConfiguration (boolean isFriendly, float damage, boolean allowedToDealDamage, boolean applyOnHitEffects) {
+    public ExplosionConfiguration (boolean isFriendly, float damage, boolean applyOnHitEffects) {
         this.isFriendly = isFriendly;
         this.damage = damage;
-        this.allowedToDealDamage = allowedToDealDamage;
         this.applyOnHitEffects = applyOnHitEffects;
     }
 
@@ -27,14 +25,6 @@ public class ExplosionConfiguration {
 
     public void setDamage (float damage) {
         this.damage = damage;
-    }
-
-    public boolean isAllowedToDealDamage () {
-        return allowedToDealDamage;
-    }
-
-    public void setAllowedToDealDamage (boolean allowedToDealDamage) {
-        this.allowedToDealDamage = allowedToDealDamage;
     }
 
     public boolean isApplyOnHitEffects () {

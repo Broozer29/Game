@@ -76,7 +76,7 @@ public class KineticDynamo extends Item {
 
         SpriteAnimationConfiguration spriteAnimationConfiguration = new SpriteAnimationConfiguration(spriteConfiguration, 2, false);
         ExplosionConfiguration explosionConfiguration = new ExplosionConfiguration(true, damage,
-                true, true);
+                 true);
 
         Explosion explosion = new Explosion(spriteAnimationConfiguration, explosionConfiguration);
         explosion.setCenterCoordinates(gameObject.getCenterXCoordinate(), gameObject.getCenterYCoordinate());

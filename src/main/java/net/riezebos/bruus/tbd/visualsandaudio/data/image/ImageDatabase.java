@@ -33,10 +33,8 @@ public class ImageDatabase {
     private BufferedImage clubAccessUnlock;
     private BufferedImage treasureHunterUnlock;
     private BufferedImage stuiversBestFriend;
-
     private BufferedImage frenzyIcon;
     private BufferedImage protossShipAmountIcon;
-
     private BufferedImage alienBombImage;
     private BufferedImage chooseDifficulty;
     private List<BufferedImage> royalGuardCaptain = new ArrayList<>();
@@ -75,7 +73,6 @@ public class ImageDatabase {
     private List<BufferedImage> blueBoss = new ArrayList<>();
     private List<BufferedImage> blueBossFactory = new ArrayList<>();
     private List<BufferedImage> blueBossFactoryDefender = new ArrayList<>();
-
     private List<BufferedImage> needler = new ArrayList<>();
     private List<BufferedImage> destructableOrbitCenterMissile = new ArrayList<>();
     private List<BufferedImage> shurikenEnemy = new ArrayList<>();
@@ -83,24 +80,11 @@ public class ImageDatabase {
     private List<BufferedImage> yellowBoss = new ArrayList<>();
     private List<BufferedImage> explosion4 = new ArrayList<>();
     private List<BufferedImage> guillotineEffect = new ArrayList<>();
-
-
-    // Ship numbers to names:
-    /*
-     * Ship1 = Seeker Ship2 = Tazer Ship3 = Energizer Ship4 = Bulldozer Ship5 = Flamer
-     * Ship6 = Bomba
-     */
-
-    // Projectile images
-
-
-    // Menu images
     private BufferedImage titleImage;
     private BufferedImage entanglingFlames;
     private BufferedImage longCard;
     private BufferedImage wideCard;
     private BufferedImage squareCard;
-
     private BufferedImage sc2GradeBronze;
     private BufferedImage sc2GradeSilver;
     private BufferedImage sc2GradeGold;
@@ -110,14 +94,9 @@ public class ImageDatabase {
     private BufferedImage sc2GradeGrandMaster;
     private BufferedImage stickyOil;
     private BufferedImage escalatingFlames;
-
-
     private BufferedImage UIScoreTextImage;
     private BufferedImage UIYouDied;
     private BufferedImage UILevelCompleted;
-
-    // Game GUI images
-
     private BufferedImage progressBar;
     private BufferedImage progressBarFilling;
     private BufferedImage frame;
@@ -129,9 +108,6 @@ public class ImageDatabase {
     private BufferedImage explosiveGreed;
     private BufferedImage selectBoonsUI;
     private BufferedImage guillotineIcon;
-
-
-    // Icons
     private BufferedImage starcraft2_Protoss_Shield_Disintegrate;
     private BufferedImage starcraft2_Dual_Rockets;
     private BufferedImage starcraft2_Auto_Tracking;
@@ -153,7 +129,6 @@ public class ImageDatabase {
     private BufferedImage starcraft2_Advanced_Optics;
     private BufferedImage cannisterOfGasoline;
     private BufferedImage starcraft2_PlatinumSponge;
-
     private BufferedImage starcraft2_Battery;
     private BufferedImage starcraft2_FocusedCrystal;
     private BufferedImage starcraft2_FireBatWeapon;
@@ -163,13 +138,10 @@ public class ImageDatabase {
     private BufferedImage stickyDynamite;
     private BufferedImage starcraft2Keystone;
     private BufferedImage puncturingpierces;
-
-    // Font Letters
     private BufferedImage letter_A;
     private BufferedImage letter_B;
     private BufferedImage letter_LowercaseA;
     private BufferedImage letter_LowercaseB;
-
     private BufferedImage letter_C;
     private BufferedImage letter_D;
     private BufferedImage letter_E;
@@ -194,7 +166,6 @@ public class ImageDatabase {
     private BufferedImage letter_X;
     private BufferedImage letter_Y;
     private BufferedImage letter_Z;
-
     private BufferedImage letter_LowercaseC;
     private BufferedImage letter_LowercaseD;
     private BufferedImage letter_LowercaseE;
@@ -229,7 +200,6 @@ public class ImageDatabase {
     private BufferedImage letter_Greater_Than;
     private BufferedImage letter_Smaller_Than;
     private BufferedImage letter_Dot;
-
     private BufferedImage letter_Zero;
     private BufferedImage letter_One;
     private BufferedImage letter_Two;
@@ -240,12 +210,10 @@ public class ImageDatabase {
     private BufferedImage letter_Seven;
     private BufferedImage letter_Eight;
     private BufferedImage letter_Nine;
-
     private BufferedImage emeraldGem5;
     private BufferedImage topazGem7;
     private BufferedImage laserBullet;
     private BufferedImage chooseone;
-
     private BufferedImage peepoDeepFriedSadge;
     private BufferedImage peepoFeelsCringeMan;
     private BufferedImage peepoFeelsRetardedMan;
@@ -281,7 +249,6 @@ public class ImageDatabase {
     private BufferedImage peepoSadgeCry;
     private BufferedImage peepoShruge;
     private BufferedImage peepoSkillIssue;
-
     private BufferedImage VIPTicket;
     private BufferedImage piercingLaser;
     private BufferedImage thornweaver;
@@ -301,6 +268,7 @@ public class ImageDatabase {
     private BufferedImage emergencyRepairsIcon;
     private BufferedImage ephemeralBlaze;
     private BufferedImage eternaFlame;
+    private BufferedImage leechingLasers;
     private BufferedImage glassCannon;
     private BufferedImage redplanet1;
     private BufferedImage redplanet2;
@@ -308,7 +276,6 @@ public class ImageDatabase {
     private BufferedImage spaceclouds2;
     private BufferedImage spaceclouds3;
     private BufferedImage spaceclouds4;
-
     private List<BufferedImage> cashCarrierFrames = new ArrayList<>();
     private List<BufferedImage> spaceStationBossFrames = new ArrayList<>();
     private List<BufferedImage> impactExplosionOneFrames = new ArrayList<>();
@@ -316,8 +283,6 @@ public class ImageDatabase {
     private List<BufferedImage> alienBombExplosionFrames = new ArrayList<>();
     private List<BufferedImage> selectNewClassAnimation = new ArrayList<>();
     private List<BufferedImage> carrierBossFrames = new ArrayList<>();
-
-    // Animations
     private List<BufferedImage> playerEMPFrames = new ArrayList<>();
     private List<BufferedImage> defaultPlayerShieldDamage = new ArrayList<>();
     private List<BufferedImage> guardianBotFrames = new ArrayList<>();
@@ -325,46 +290,33 @@ public class ImageDatabase {
     private List<BufferedImage> warpFrames = new ArrayList<>();
     private List<BufferedImage> chargingFrames = new ArrayList<>();
     private List<BufferedImage> energyCircleFrames = new ArrayList<>();
-
     private List<BufferedImage> plasmaCoatedDebuff = new ArrayList<>();
     private List<BufferedImage> gasolineExplosion = new ArrayList<>();
     private List<BufferedImage> gasolineBurning = new ArrayList<>();
     private List<BufferedImage> healingAnimation = new ArrayList<>();
     private List<BufferedImage> stickyDynamiteExplosion = new ArrayList<>();
     private List<BufferedImage> plasmaLauncherMissileFrames = new ArrayList<>();
-
     private List<BufferedImage> superChargedFrames = new ArrayList<>();
     private List<BufferedImage> laserBulletDeathFrames = new ArrayList<>();
     private List<BufferedImage> lightningOrbDestruction = new ArrayList<>();
     private List<BufferedImage> freezeEffect = new ArrayList<>();
-
-    // Enemy Projectile Animations
-    private List<BufferedImage> seekerProjectileFrames = new ArrayList<>();
     private List<BufferedImage> bombaProjectileFrames = new ArrayList<>();
-    private List<BufferedImage> Rocket1ProjectileFrames = new ArrayList<>();
-    private List<BufferedImage> Rocket1ExplosionFrames = new ArrayList<>();
     private List<BufferedImage> barrierProjectileDestruction = new ArrayList<>();
     private List<BufferedImage> laserbeamChargingFrames = new ArrayList<>();
     private List<BufferedImage> pinklaserbeamChargingFrames = new ArrayList<>();
-
-    // Enemy Exhaust Animations
     private List<BufferedImage> explosion2 = new ArrayList<>();
     private List<BufferedImage> electroShredImproved = new ArrayList<>();
     private List<BufferedImage> droneElectroShred = new ArrayList<>();
     private List<BufferedImage> bossExplosion = new ArrayList<>();
-
-    // Enemy projectile explosions
     private List<BufferedImage> bombaProjectileExplosion = new ArrayList<>();
     private List<BufferedImage> alienLaserBeamAnimated = new ArrayList<>();
-
     private List<BufferedImage> barrierProjectile = new ArrayList<>();
     private List<BufferedImage> lightningOrb = new ArrayList<>();
     private List<BufferedImage> levelUpAnimation = new ArrayList<>();
     private List<BufferedImage> cashExplosion = new ArrayList<>();
     private List<BufferedImage> redBossFrames = new ArrayList<>();
     private List<BufferedImage> reverseHealing = new ArrayList<>();
-
-    // Background images
+    private List<BufferedImage> healingOrb = new ArrayList<>();
     private BufferedImage moon;
     private BufferedImage moon2;
     private BufferedImage moon3;
@@ -430,7 +382,6 @@ public class ImageDatabase {
     private BufferedImage starfield2;
     private BufferedImage starfield3;
     private BufferedImage starfield4;
-
     private BufferedImage starRed1;
     private BufferedImage starRed2;
     private BufferedImage starRed3;
@@ -440,12 +391,10 @@ public class ImageDatabase {
     private BufferedImage starYellow2;
     private BufferedImage starYellow3;
     private BufferedImage starYellow4;
-
     private BufferedImage starWhite1;
     private BufferedImage starWhite2;
     private BufferedImage starWhite3;
     private BufferedImage starWhite4;
-
     private BufferedImage starBlue1;
     private BufferedImage starBlue2;
     private BufferedImage starBlue3;
@@ -454,25 +403,20 @@ public class ImageDatabase {
     private BufferedImage corrosiveOil;
     private BufferedImage fireShieldIcon;
     private BufferedImage moduleScorchIcon;
-
-
     private BufferedImage starOrange1;
     private BufferedImage starOrange2;
     private BufferedImage starOrange3;
     private BufferedImage starOrange4;
-
     private BufferedImage yellowWings1;
     private BufferedImage yellowWings2;
     private BufferedImage yellowWings3;
     private BufferedImage yellowWings4;
     private BufferedImage yellowWings5;
-
     private BufferedImage redWings1;
     private BufferedImage redWings2;
     private BufferedImage redWings3;
     private BufferedImage redWings4;
     private BufferedImage redWings5;
-
     private BufferedImage blueWings1;
     private BufferedImage blueWings2;
     private BufferedImage blueWings3;
@@ -494,8 +438,6 @@ public class ImageDatabase {
     private BufferedImage scoutItem;
     private BufferedImage shuttleItem;
     private BufferedImage corsairItem;
-
-
     private List<BufferedImage> yellowBossHealMissile = new ArrayList<>();
     private List<BufferedImage> yellowBossHealCollision = new ArrayList<>();
     private List<BufferedImage> yellowBossVoidMissile = new ArrayList<>();
@@ -513,7 +455,6 @@ public class ImageDatabase {
     private List<BufferedImage> protossCorsairExplosion = new ArrayList<>();
     private List<BufferedImage> protossCarrier = new ArrayList<>();
     private List<BufferedImage> scout = new ArrayList<>();
-
     private List<BufferedImage> carrierSwitchFast = new ArrayList<>();
     private List<BufferedImage> carrierSwitchSlow = new ArrayList<>();
     private List<BufferedImage> carrierDrone = new ArrayList<>();
@@ -558,10 +499,7 @@ public class ImageDatabase {
     private List<BufferedImage> broodlingDeath = new ArrayList<>();
     private List<BufferedImage> carrierPulsingDrone = new ArrayList<>();
     private List<BufferedImage> laserMiniBoss = new ArrayList<>();
-    // testimages
     private BufferedImage invisible;
-
-    // Images to Gifs
     private List<BufferedImage> defaultPlayerEngine = new ArrayList<>();
     private BufferedImage guirefresh;
     private BufferedImage warcraft3HealingWave;
@@ -606,13 +544,7 @@ public class ImageDatabase {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        this.initBackgroundObjects();
-        this.initEnemies();
-        this.initMenuImages();
-        this.initProjectiles();
         this.initPNGtoGIFAnimation();
-        this.initGameUIobjects();
-        this.initIcons();
         this.initLetters();
     }
 
@@ -628,27 +560,14 @@ public class ImageDatabase {
         this.bossHealthBarRed = imgLoader.getImage(ImageEnums.BossHealthBarRed);
         this.puncturingpierces = imgLoader.getImage(ImageEnums.PuncturingPierces);
         this.guillotineIcon = imgLoader.getImage(ImageEnums.Guillotine);
-    }
-
-    private void initEnemies() {
         this.alienBombImage = imgLoader.getImage(ImageEnums.Alien_Bomb);
         this.chooseDifficulty = imgLoader.getImage(ImageEnums.ChooseDifficulty);
         this.fourDirectionalDrone = imgLoader.getImage(ImageEnums.FourDirectionalDrone);
         this.spaceStationBoss = imgLoader.getImage(ImageEnums.SpaceStationBoss);
         selectBoonsUI = imgLoader.getImage(ImageEnums.SelectBoons);
-
-    }
-
-    private void initProjectiles() {
         this.invisible = imgLoader.getImage(ImageEnums.Invisible);
-    }
-
-    private void initMenuImages() {
         this.titleImage = imgLoader.getImage(ImageEnums.Title_Image);
         this.informationCard = imgLoader.getImage(ImageEnums.InformationCard);
-    }
-
-    private void initGameUIobjects() {
         this.frame = imgLoader.getImage(ImageEnums.Frame);
         this.electroshedding = imgLoader.getImage(ImageEnums.Electroshedding);
         this.redFilling = imgLoader.getImage(ImageEnums.Red_Filling);
@@ -664,9 +583,6 @@ public class ImageDatabase {
         this.starfield2 = imgLoader.getImage(ImageEnums.Star_Field_2);
         this.starfield3 = imgLoader.getImage(ImageEnums.Star_Field_3);
         this.starfield4 = imgLoader.getImage(ImageEnums.Star_Field_4);
-    }
-
-    private void initIcons() {
         this.synergeticLinkIcon = imgLoader.getImage(ImageEnums.SynergeticLinkIcon);
         this.vengeancerProtocolIcon = imgLoader.getImage(ImageEnums.VengeanceProtocolIcon);
         this.constructionKitIcon = imgLoader.getImage(ImageEnums.ConstructionKitIcon);
@@ -715,86 +631,6 @@ public class ImageDatabase {
         this.infernalPreIgniter = imgLoader.getImage(ImageEnums.InfernalPreIgniter);
         this.fuelCannister = imgLoader.getImage(ImageEnums.FuelCannister);
         this.glassCannon = imgLoader.getImage(ImageEnums.GlassCannon);
-    }
-
-
-    private void initLetters() {
-        this.letter_A = imgLoader.getImage(ImageEnums.Letter_A);
-        this.letter_B = imgLoader.getImage(ImageEnums.Letter_B);
-        this.letter_C = imgLoader.getImage(ImageEnums.Letter_C);
-        this.letter_D = imgLoader.getImage(ImageEnums.Letter_D);
-        this.letter_E = imgLoader.getImage(ImageEnums.Letter_E);
-        this.letter_F = imgLoader.getImage(ImageEnums.Letter_F);
-        this.letter_G = imgLoader.getImage(ImageEnums.Letter_G);
-        this.letter_H = imgLoader.getImage(ImageEnums.Letter_H);
-        this.letter_I = imgLoader.getImage(ImageEnums.Letter_I);
-        this.letter_J = imgLoader.getImage(ImageEnums.Letter_J);
-        this.letter_K = imgLoader.getImage(ImageEnums.Letter_K);
-        this.letter_L = imgLoader.getImage(ImageEnums.Letter_L);
-        this.letter_M = imgLoader.getImage(ImageEnums.Letter_M);
-        this.letter_N = imgLoader.getImage(ImageEnums.Letter_N);
-        this.letter_O = imgLoader.getImage(ImageEnums.Letter_O);
-        this.letter_P = imgLoader.getImage(ImageEnums.Letter_P);
-        this.letter_Q = imgLoader.getImage(ImageEnums.Letter_Q);
-        this.letter_R = imgLoader.getImage(ImageEnums.Letter_R);
-        this.letter_S = imgLoader.getImage(ImageEnums.Letter_S);
-        this.letter_T = imgLoader.getImage(ImageEnums.Letter_T);
-        this.letter_U = imgLoader.getImage(ImageEnums.Letter_U);
-        this.letter_V = imgLoader.getImage(ImageEnums.Letter_V);
-        this.letter_W = imgLoader.getImage(ImageEnums.Letter_W);
-        this.letter_X = imgLoader.getImage(ImageEnums.Letter_X);
-        this.letter_Y = imgLoader.getImage(ImageEnums.Letter_Y);
-        this.letter_Z = imgLoader.getImage(ImageEnums.Letter_Z);
-
-        this.letter_LowercaseA = imgLoader.getImage(ImageEnums.Letter_a);
-        this.letter_LowercaseB = imgLoader.getImage(ImageEnums.Letter_b);
-        this.letter_LowercaseC = imgLoader.getImage(ImageEnums.Letter_c);
-        this.letter_LowercaseD = imgLoader.getImage(ImageEnums.Letter_d);
-        this.letter_LowercaseE = imgLoader.getImage(ImageEnums.Letter_e);
-        this.letter_LowercaseF = imgLoader.getImage(ImageEnums.Letter_f);
-        this.letter_LowercaseG = imgLoader.getImage(ImageEnums.Letter_g);
-        this.letter_LowercaseH = imgLoader.getImage(ImageEnums.Letter_h);
-        this.letter_LowercaseI = imgLoader.getImage(ImageEnums.Letter_i);
-        this.letter_LowercaseJ = imgLoader.getImage(ImageEnums.Letter_j);
-        this.letter_LowercaseK = imgLoader.getImage(ImageEnums.Letter_k);
-        this.letter_LowercaseL = imgLoader.getImage(ImageEnums.Letter_l);
-        this.letter_LowercaseM = imgLoader.getImage(ImageEnums.Letter_m);
-        this.letter_LowercaseN = imgLoader.getImage(ImageEnums.Letter_n);
-        this.letter_LowercaseO = imgLoader.getImage(ImageEnums.Letter_o);
-        this.letter_LowercaseP = imgLoader.getImage(ImageEnums.Letter_p);
-        this.letter_LowercaseQ = imgLoader.getImage(ImageEnums.Letter_q);
-        this.letter_LowercaseR = imgLoader.getImage(ImageEnums.Letter_r);
-        this.letter_LowercaseS = imgLoader.getImage(ImageEnums.Letter_s);
-        this.letter_LowercaseT = imgLoader.getImage(ImageEnums.Letter_t);
-        this.letter_LowercaseU = imgLoader.getImage(ImageEnums.Letter_u);
-        this.letter_LowercaseV = imgLoader.getImage(ImageEnums.Letter_v);
-        this.letter_LowercaseW = imgLoader.getImage(ImageEnums.Letter_w);
-        this.letter_LowercaseX = imgLoader.getImage(ImageEnums.Letter_x);
-        this.letter_LowercaseY = imgLoader.getImage(ImageEnums.Letter_y);
-        this.letter_LowercaseZ = imgLoader.getImage(ImageEnums.Letter_z);
-
-        this.letter_Open_Bracket = imgLoader.getImage(ImageEnums.Letter_Open_Bracket);
-        this.letter_Closing_Bracket = imgLoader.getImage(ImageEnums.Letter_Closing_Bracket);
-        this.letter_Double_Points = imgLoader.getImage(ImageEnums.Letter_double_points);
-        this.letter_Equals = imgLoader.getImage(ImageEnums.Letter_equals);
-        this.letter_Point_Comma = imgLoader.getImage(ImageEnums.Letter_point_comma);
-        this.letter_Greater_Than = imgLoader.getImage(ImageEnums.Letter_greater_than);
-        this.letter_Smaller_Than = imgLoader.getImage(ImageEnums.Letter_smaller_than);
-        this.letter_Dot = imgLoader.getImage(ImageEnums.Letter_Dot);
-        this.letter_Percentage = imgLoader.getImage(ImageEnums.Letter_Percentage);
-        this.letter_Komma = imgLoader.getImage(ImageEnums.Letter_Komma);
-
-        this.letter_Zero = imgLoader.getImage(ImageEnums.Letter_Zero);
-        this.letter_One = imgLoader.getImage(ImageEnums.Letter_One);
-        this.letter_Two = imgLoader.getImage(ImageEnums.Letter_Two);
-        this.letter_Three = imgLoader.getImage(ImageEnums.Letter_Three);
-        this.letter_Four = imgLoader.getImage(ImageEnums.Letter_Four);
-        this.letter_Five = imgLoader.getImage(ImageEnums.Letter_Five);
-        this.letter_Six = imgLoader.getImage(ImageEnums.Letter_Six);
-        this.letter_Seven = imgLoader.getImage(ImageEnums.Letter_Seven);
-        this.letter_Eight = imgLoader.getImage(ImageEnums.Letter_Eight);
-        this.letter_Nine = imgLoader.getImage(ImageEnums.Letter_Nine);
-
         this.longCard = imgLoader.getImage(ImageEnums.Long_Card);
         this.wideCard = imgLoader.getImage(ImageEnums.Wide_Card);
         this.squareCard = imgLoader.getImage(ImageEnums.Square_Card);
@@ -890,9 +726,6 @@ public class ImageDatabase {
         this.shuttleItem = imgLoader.getImage(ImageEnums.ShuttleItem);
         this.corsairItem = imgLoader.getImage(ImageEnums.CorsairItemIcon);
         this.frenzyIcon = imgLoader.getImage(ImageEnums.FrenzyIcon);
-    }
-
-    private void initBackgroundObjects() {
         this.moon = imgLoader.getImage(ImageEnums.Moon);
         this.lavaPlanet = imgLoader.getImage(ImageEnums.Lava_Planet);
         this.planetOne = imgLoader.getImage(ImageEnums.Planet_One);
@@ -1020,9 +853,88 @@ public class ImageDatabase {
         this.arbiterDamage = imgLoader.getImage(ImageEnums.ArbiterDamage);
         this.ephemeralBlaze = imgLoader.getImage(ImageEnums.EphemeralBlaze);
         this.eternaFlame = imgLoader.getImage(ImageEnums.Eternaflame);
+        this.leechingLasers = imgLoader.getImage(ImageEnums.LeechingLasers);
         this.redplanet1 = imgLoader.getImage(ImageEnums.RedPlanet1);
         this.redplanet2 = imgLoader.getImage(ImageEnums.RedPlanet1);
         this.aimAssist = imgLoader.getImage(ImageEnums.AimAssist);
+    }
+
+    private void initLetters() {
+        this.letter_A = imgLoader.getImage(ImageEnums.Letter_A);
+        this.letter_B = imgLoader.getImage(ImageEnums.Letter_B);
+        this.letter_C = imgLoader.getImage(ImageEnums.Letter_C);
+        this.letter_D = imgLoader.getImage(ImageEnums.Letter_D);
+        this.letter_E = imgLoader.getImage(ImageEnums.Letter_E);
+        this.letter_F = imgLoader.getImage(ImageEnums.Letter_F);
+        this.letter_G = imgLoader.getImage(ImageEnums.Letter_G);
+        this.letter_H = imgLoader.getImage(ImageEnums.Letter_H);
+        this.letter_I = imgLoader.getImage(ImageEnums.Letter_I);
+        this.letter_J = imgLoader.getImage(ImageEnums.Letter_J);
+        this.letter_K = imgLoader.getImage(ImageEnums.Letter_K);
+        this.letter_L = imgLoader.getImage(ImageEnums.Letter_L);
+        this.letter_M = imgLoader.getImage(ImageEnums.Letter_M);
+        this.letter_N = imgLoader.getImage(ImageEnums.Letter_N);
+        this.letter_O = imgLoader.getImage(ImageEnums.Letter_O);
+        this.letter_P = imgLoader.getImage(ImageEnums.Letter_P);
+        this.letter_Q = imgLoader.getImage(ImageEnums.Letter_Q);
+        this.letter_R = imgLoader.getImage(ImageEnums.Letter_R);
+        this.letter_S = imgLoader.getImage(ImageEnums.Letter_S);
+        this.letter_T = imgLoader.getImage(ImageEnums.Letter_T);
+        this.letter_U = imgLoader.getImage(ImageEnums.Letter_U);
+        this.letter_V = imgLoader.getImage(ImageEnums.Letter_V);
+        this.letter_W = imgLoader.getImage(ImageEnums.Letter_W);
+        this.letter_X = imgLoader.getImage(ImageEnums.Letter_X);
+        this.letter_Y = imgLoader.getImage(ImageEnums.Letter_Y);
+        this.letter_Z = imgLoader.getImage(ImageEnums.Letter_Z);
+
+        this.letter_LowercaseA = imgLoader.getImage(ImageEnums.Letter_a);
+        this.letter_LowercaseB = imgLoader.getImage(ImageEnums.Letter_b);
+        this.letter_LowercaseC = imgLoader.getImage(ImageEnums.Letter_c);
+        this.letter_LowercaseD = imgLoader.getImage(ImageEnums.Letter_d);
+        this.letter_LowercaseE = imgLoader.getImage(ImageEnums.Letter_e);
+        this.letter_LowercaseF = imgLoader.getImage(ImageEnums.Letter_f);
+        this.letter_LowercaseG = imgLoader.getImage(ImageEnums.Letter_g);
+        this.letter_LowercaseH = imgLoader.getImage(ImageEnums.Letter_h);
+        this.letter_LowercaseI = imgLoader.getImage(ImageEnums.Letter_i);
+        this.letter_LowercaseJ = imgLoader.getImage(ImageEnums.Letter_j);
+        this.letter_LowercaseK = imgLoader.getImage(ImageEnums.Letter_k);
+        this.letter_LowercaseL = imgLoader.getImage(ImageEnums.Letter_l);
+        this.letter_LowercaseM = imgLoader.getImage(ImageEnums.Letter_m);
+        this.letter_LowercaseN = imgLoader.getImage(ImageEnums.Letter_n);
+        this.letter_LowercaseO = imgLoader.getImage(ImageEnums.Letter_o);
+        this.letter_LowercaseP = imgLoader.getImage(ImageEnums.Letter_p);
+        this.letter_LowercaseQ = imgLoader.getImage(ImageEnums.Letter_q);
+        this.letter_LowercaseR = imgLoader.getImage(ImageEnums.Letter_r);
+        this.letter_LowercaseS = imgLoader.getImage(ImageEnums.Letter_s);
+        this.letter_LowercaseT = imgLoader.getImage(ImageEnums.Letter_t);
+        this.letter_LowercaseU = imgLoader.getImage(ImageEnums.Letter_u);
+        this.letter_LowercaseV = imgLoader.getImage(ImageEnums.Letter_v);
+        this.letter_LowercaseW = imgLoader.getImage(ImageEnums.Letter_w);
+        this.letter_LowercaseX = imgLoader.getImage(ImageEnums.Letter_x);
+        this.letter_LowercaseY = imgLoader.getImage(ImageEnums.Letter_y);
+        this.letter_LowercaseZ = imgLoader.getImage(ImageEnums.Letter_z);
+
+        this.letter_Open_Bracket = imgLoader.getImage(ImageEnums.Letter_Open_Bracket);
+        this.letter_Closing_Bracket = imgLoader.getImage(ImageEnums.Letter_Closing_Bracket);
+        this.letter_Double_Points = imgLoader.getImage(ImageEnums.Letter_double_points);
+        this.letter_Equals = imgLoader.getImage(ImageEnums.Letter_equals);
+        this.letter_Point_Comma = imgLoader.getImage(ImageEnums.Letter_point_comma);
+        this.letter_Greater_Than = imgLoader.getImage(ImageEnums.Letter_greater_than);
+        this.letter_Smaller_Than = imgLoader.getImage(ImageEnums.Letter_smaller_than);
+        this.letter_Dot = imgLoader.getImage(ImageEnums.Letter_Dot);
+        this.letter_Percentage = imgLoader.getImage(ImageEnums.Letter_Percentage);
+        this.letter_Komma = imgLoader.getImage(ImageEnums.Letter_Komma);
+
+        this.letter_Zero = imgLoader.getImage(ImageEnums.Letter_Zero);
+        this.letter_One = imgLoader.getImage(ImageEnums.Letter_One);
+        this.letter_Two = imgLoader.getImage(ImageEnums.Letter_Two);
+        this.letter_Three = imgLoader.getImage(ImageEnums.Letter_Three);
+        this.letter_Four = imgLoader.getImage(ImageEnums.Letter_Four);
+        this.letter_Five = imgLoader.getImage(ImageEnums.Letter_Five);
+        this.letter_Six = imgLoader.getImage(ImageEnums.Letter_Six);
+        this.letter_Seven = imgLoader.getImage(ImageEnums.Letter_Seven);
+        this.letter_Eight = imgLoader.getImage(ImageEnums.Letter_Eight);
+        this.letter_Nine = imgLoader.getImage(ImageEnums.Letter_Nine);
     }
 
     public BufferedImage getImage(ImageEnums imageType) {
@@ -1118,6 +1030,8 @@ public class ImageDatabase {
                 return this.glassCannon;
             case Eternaflame:
                 return this.eternaFlame;
+            case LeechingLasers:
+                return this.leechingLasers;
             case ArbiterDamage:
                 return this.arbiterDamage;
             case StuiversBestFriend:
@@ -1767,6 +1681,8 @@ public class ImageDatabase {
                 return this.yellowBossVoidMissile;
             case ReverseHealing:
                 return reverseHealing;
+            case HealingOrb:
+                return healingOrb;
             case Explosion3:
                 return this.explosion3;
             case MotherShipDroneMissile:
@@ -2003,8 +1919,6 @@ public class ImageDatabase {
                 return this.destroyedExplosionUpFrames;
             case Alien_Bomb_Explosion:
                 return this.alienBombExplosionFrames;
-            case Seeker_Missile:
-                return this.seekerProjectileFrames;
             case MirageMiniBoss:
                 return this.mirageMiniBoss;
             case SmokeExplosion:
@@ -2027,18 +1941,14 @@ public class ImageDatabase {
                 return this.guardianBotFrames;
             case Highlight:
                 return HighlightImages;
-            case Rocket_1:
-                return Rocket1ProjectileFrames;
-            case Rocket_1_Explosion:
-                return Rocket1ExplosionFrames;
             case Portal5:
                 return portal5Frames;
             case WarpIn:
                 return warpFrames;
             case Charging:
-                return chargingFrames; // animation addition update: unused
+                return chargingFrames;
             case EnergyCircle:
-                return energyCircleFrames; // animation addition update: unused
+                return energyCircleFrames;
             case PlasmaCoatedDebuff:
                 return plasmaCoatedDebuff;
             case GasolineExplosion:
@@ -2078,11 +1988,6 @@ public class ImageDatabase {
         reader.setInput(
                 ImageIO.createImageInputStream(getClass().getResourceAsStream("/images/gif/Alien Bomb Explosion.gif")));
         alienBombExplosionFrames = gifToImageIcons(reader);
-
-        // Enemy projectiles
-        reader.setInput(ImageIO.createImageInputStream(
-                getClass().getResourceAsStream("/images/Ships/Ship 1/Ship 1 - Projectile.gif")));
-        seekerProjectileFrames = gifToImageIcons(reader);
     }
 
     private void initPNGtoGIFAnimation() {
@@ -2348,17 +2253,6 @@ public class ImageDatabase {
             HighlightImages.add(image);
         }
 
-        for (int i = 0; i < 9; i++) {
-            String sourceString = String.format("/images/gif/PNGtoGIF/Missile1/Missile_1_Explosion_00%d.png", i);
-            BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
-            Rocket1ExplosionFrames.add(image);
-        }
-
-        for (int i = 0; i < 10; i++) {
-            String sourceString = String.format("/images/gif/PNGtoGIF/Missile1/Missile_1_Flying_00%d.png", i);
-            BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
-            Rocket1ProjectileFrames.add(image);
-        }
 
         for (int i = 1; i < 65; i++) {
             String sourceString = String.format("/images/gif/PNGtoGIF/Portal5/portal%d.png", i);
@@ -2450,6 +2344,12 @@ public class ImageDatabase {
             String sourceString = String.format("/images/gif/PNGtoGIF/Reverse Healing/%d.png", i);
             BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
             reverseHealing.add(image);
+        }
+
+        for (int i = 0; i < 5; i++) {
+            String sourceString = String.format("/images/gif/PNGtoGIF/HealingOrb/%d.png", i);
+            BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+            healingOrb.add(image);
         }
 
         for (int i = 0; i < 24; i++) {

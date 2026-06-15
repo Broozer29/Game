@@ -41,7 +41,7 @@ public class ExplosiveGreed extends Item {
         spriteConfiguration.setScale(2);
 
         SpriteAnimationConfiguration spriteAnimationConfiguration = new SpriteAnimationConfiguration(spriteConfiguration, 2, false);
-        ExplosionConfiguration explosionConfiguration = new ExplosionConfiguration(true, damage, true, false);
+        ExplosionConfiguration explosionConfiguration = new ExplosionConfiguration(true, damage,  false);
         Explosion explosion = new Explosion(spriteAnimationConfiguration, explosionConfiguration);
         explosion.setCenterCoordinates(target.getCenterXCoordinate(), target.getCenterYCoordinate());
         return explosion;

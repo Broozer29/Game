@@ -22,8 +22,10 @@ public class AudioDatabase {
 
     private Map<AudioEnums, Integer> clipSizeConfig = new HashMap<>() {{
         put(AudioEnums.Furi_Wisdowm_Of_Rage, 1);
+        put(AudioEnums.FullConfession, 1);
+        put(AudioEnums.MeatGrinder, 1);
+        put(AudioEnums.RMChase, 1);
         put(AudioEnums.nomad, 1);
-        put(AudioEnums.keygen, 1);
         put(AudioEnums.Blood_On_The_Dancefloor, 1);
         put(AudioEnums.WaveshaperMonster, 1);
         put(AudioEnums.MausoleumMash, 1);
@@ -32,7 +34,6 @@ public class AudioDatabase {
         put(AudioEnums.Enraged, 1);
         put(AudioEnums.Lemmino_Firecracker, 1);
         put(AudioEnums.Filth, 1);
-        put(AudioEnums.LeanRockShred, 1);
         put(AudioEnums.GodRunDetected, 1);
         put(AudioEnums.VendlaSonrisa, 1);
         put(AudioEnums.mainmenu, 1);

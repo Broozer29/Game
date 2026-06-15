@@ -88,14 +88,11 @@ public class Enemy extends GameObject {
         this.enemyType = enemyConfiguration.getEnemyType();
         this.maxHitPoints = enemyConfiguration.getMaxHitPoints();
         this.currentHitpoints = maxHitPoints;
-        this.maxShieldPoints = enemyConfiguration.getMaxShields();
-        this.currentShieldPoints = maxShieldPoints;
-        this.hasAttack = enemyConfiguration.isHasAttack();
-        this.showHealthBar = enemyConfiguration.isShowHealthBar();
+        this.hasAttack = true;
+        this.showHealthBar = false;
         this.deathSound = enemyConfiguration.getDeathSound();
         this.currentLocation = new Point(xCoordinate, yCoordinate);
         this.currentBoardBlock = BoardBlockUpdater.getBoardBlock(xCoordinate);
-        this.boxCollision = enemyConfiguration.isBoxCollision();
         this.baseArmor = enemyConfiguration.getBaseArmor();
         this.cashMoneyWorth = this.enemyType.getCashMoneyWorth();
         this.xpOnDeath = enemyConfiguration.getXpOnDeath();
@@ -104,11 +101,9 @@ public class Enemy extends GameObject {
         this.setFriendly(false);
 
         if(!enemyType.equals(EnemyEnums.ShurikenMiniBoss)) {
-//            boolean shouldCrop = !this.enemyType.equals(EnemyEnums.TwinBoss); //Exception for the twinboss due to multitude of reasons, if cropped the sprite animation bounces left/right due to differing sizes of individual frames
             this.rotateGameObjectTowards(movementRotation, true);
         }
 
-        this.objectType = enemyConfiguration.getObjectType();
         this.allowedToFire = true;
     }
 
@@ -128,13 +123,6 @@ public class Enemy extends GameObject {
             }
             this.currentHitpoints = maxHitPoints;
 
-
-            this.maxShieldPoints *= Math.pow(getScalingFactor(), level);
-            if(PlayerManager.getInstance().getPlayerCount() > 1) {
-                this.maxShieldPoints *= PlayerManager.getInstance().getPlayerCount();
-            }
-            this.currentShieldPoints = maxShieldPoints;
-
             //damage groei staat weer uit omdat speler max HP niet meer groeit
 //            this.damage += level / 2;
 
@@ -151,8 +139,6 @@ public class Enemy extends GameObject {
         if(GameState.getInstance().getGameMode().equals(GameMode.DoubleTrouble) && !(this.enemyType.getEnemyCategory().equals(EnemyCategory.Boss) || this.enemyType.getEnemyCategory().equals(EnemyCategory.MiniBoss))){
             this.maxHitPoints *= 0.5f;
             this.currentHitpoints = maxHitPoints;
-            this.maxShieldPoints *= 0.5f;
-            this.currentShieldPoints = maxShieldPoints;
             this.xpOnDeath *= 0.5f;
             this.cashMoneyWorth *= 0.5f;
         }

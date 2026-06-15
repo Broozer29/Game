@@ -24,6 +24,7 @@ public class EnemyProtossBeacon extends Enemy {
         this.knockbackStrength = 9;
         this.allowedToFire = false;
         canAttractProtoss = true;
+        this.hasAttack = false;
     }
 
     public void fireAction() {

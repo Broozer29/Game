@@ -41,13 +41,14 @@ public enum ItemEnums {
     ArbiterDamage(ItemRarityEnums.Relic,  ImageEnums.ArbiterDamage, "Arbit Inversion", true),
     GlassCannon(ItemRarityEnums.Relic,  ImageEnums.GlassCannon, "Glass Cannon", true),
     AnionInverter(ItemRarityEnums.Relic, ImageEnums.AnionInverter, "Anion Inverter", true),
-    BigIron(ItemRarityEnums.Relic,  ImageEnums.BigIron, "Big Iron", true),
+    BigIron(ItemRarityEnums.Relic,  ImageEnums.BigIron, "Big Iron", false),
     OneShotOneKill(ItemRarityEnums.Relic, ImageEnums.OneShotOneKill, "One shot, one kill", true),
     HelpRequested(ItemRarityEnums.Relic, ImageEnums.MoneyPrinter, "Help Requested", true),
     ElectricDestabilizer(ItemRarityEnums.Relic, ImageEnums.Starcraft2_Protoss_Shield_Disintegrate, "Electric Destabilizer", true),
     PulsingBeacon(ItemRarityEnums.Relic, ImageEnums.Test_Image, "Pulsing Beacon", true),
 
     //-----------------------------
+    LeechingLasers(ItemRarityEnums.Rare,  ImageEnums.LeechingLasers, "Leeching Lasers", true),
     CalmInChaos(ItemRarityEnums.Legendary,  ImageEnums.Test_Image, "Calm in chaos", true),
     ElectroShedding(ItemRarityEnums.Legendary,  ImageEnums.Electroshedding, "Electro Shedding", true),
     PlasmaCoatedBullets(ItemRarityEnums.Common, ImageEnums.Starcraft2_Blue_Flame, "Plasma Bullets", true),

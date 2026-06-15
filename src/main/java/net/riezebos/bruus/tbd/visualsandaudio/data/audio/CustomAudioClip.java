@@ -152,13 +152,6 @@ public class CustomAudioClip {
                 case Default_EMP -> 0.07f * 0.7f;
                 case NotEnoughMinerals -> 0.6f * 0.7f;
                 case GenericError -> 0.6f * 0.7f;
-                case Furi_Wisdowm_Of_Rage -> 0.7f;
-                case Blood_On_The_Dancefloor -> 0.7f;
-                case LeanRockShred -> 0.7f;
-                case nomad -> 0.7f;
-                case keygen -> 0.7f;
-                case MausoleumMash -> 0.7f;
-                case Arisen -> 0.7f;
                 case ChargingBigIronLaserbeam -> 0.5f;
                 default -> 0.7f;
             };

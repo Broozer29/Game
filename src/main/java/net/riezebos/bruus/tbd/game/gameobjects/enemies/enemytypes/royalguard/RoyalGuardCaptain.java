@@ -44,7 +44,7 @@ public class RoyalGuardCaptain extends Enemy {
         destroyedExplosionfiguration.getSpriteConfiguration().setImageType(this.enemyType.getDestructionType());
         this.destructionAnimation = new SpriteAnimation(destroyedExplosionfiguration);
         this.destructionAnimation.setAnimationScale(1f);
-        this.damage = 6;
+        this.damage = 4;
         this.attackSpeed = 1;
         this.knockbackStrength = 8;
         this.allowedVisualsToRotate = false;
@@ -78,7 +78,7 @@ public class RoyalGuardCaptain extends Enemy {
         }
 
         if(this.isLiningUp && this.laserbeamIndicator == null){
-            laserbeamIndicator = new LaserbeamIndicator(chargingUpAttackAnimation.getCenterXCoordinate(), chargingUpAttackAnimation.getCenterYCoordinate(), target.getCenterXCoordinate(), target.getCenterYCoordinate(), angleDegreeIncrement);
+            laserbeamIndicator = new LaserbeamIndicator(chargingUpAttackAnimation.getCenterXCoordinate(), chargingUpAttackAnimation.getCenterYCoordinate(), target.getCenterXCoordinate(), target.getCenterYCoordinate(), angleDegreeIncrement, this);
             MissileManager.getInstance().addLaserbeamIndicator(laserbeamIndicator);
         }
 

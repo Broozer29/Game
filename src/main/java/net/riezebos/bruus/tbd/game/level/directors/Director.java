@@ -238,7 +238,7 @@ public class Director {
         }
 
         if (enemyEnums.equals(EnemyEnums.ZergDevourer)) {
-            return EnemyManager.getInstance().getAmountOfEnemyTypesAlive(EnemyEnums.ZergDevourer) < 8;
+            return EnemyManager.getInstance().getAmountOfEnemyTypesAlive(EnemyEnums.ZergDevourer) < 6;
         }
 
         if (enemyEnums.equals(EnemyEnums.ZergGuardian)) {

@@ -1,11 +1,13 @@
 package net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.yellowboss.behaviour;
 
+import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.Enemy;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.BossActionable;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.*;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.laserbeams.AngledLaserBeam;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.laserbeams.Laserbeam;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.laserbeams.LaserbeamConfiguration;
+import net.riezebos.bruus.tbd.game.gameobjects.missiles.laserbeams.LaserbeamIndicator;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.level.LevelManager;
 import net.riezebos.bruus.tbd.game.movement.MovementConfiguration;
@@ -41,6 +43,8 @@ public class YellowBossLaserbeamMissileAttack implements BossActionable {
     private SpriteAnimation lowerChargingUpAnimation;
     private Laserbeam upperLaserbeam;
     private Laserbeam lowerLaserbeam;
+    private LaserbeamIndicator upperLaserbeamIndicator;
+    private LaserbeamIndicator lowerLaserbeamIndicator;
     private boolean isFiringLaserbeams;
 
 
@@ -87,7 +91,16 @@ public class YellowBossLaserbeamMissileAttack implements BossActionable {
                 enemy.setAttacking(true);
                 AnimationManager.getInstance().addUpperAnimation(upperChargingUpAnimation);
                 AnimationManager.getInstance().addUpperAnimation(lowerChargingUpAnimation);
+                upperLaserbeamIndicator = createLaserBeamIndicator(upperLaserbeamHighestAngle, upperChargingUpAnimation.getCenterXCoordinate(), upperChargingUpAnimation.getCenterYCoordinate(), enemy);
+                lowerLaserbeamIndicator = createLaserBeamIndicator(lowerLaserbeamLowestAngle, upperChargingUpAnimation.getCenterXCoordinate(), upperChargingUpAnimation.getCenterYCoordinate(), enemy);
+                MissileManager.getInstance().addLaserbeamIndicator(upperLaserbeamIndicator);
+                MissileManager.getInstance().addLaserbeamIndicator(lowerLaserbeamIndicator);
+
                 AudioManager.getInstance().addAudio(AudioEnums.ChargingLaserbeam);
+            }
+
+            if (lowerChargingUpAnimation.isPlaying()) {
+                updateLaserbeamIndicators();
             }
 
             if (lowerChargingUpAnimation.isPlaying() &&
@@ -97,6 +110,8 @@ public class YellowBossLaserbeamMissileAttack implements BossActionable {
                 createLaserbeams(enemy);
                 lowerChargingUpAnimation.setVisible(false);
                 upperChargingUpAnimation.setVisible(false);
+                upperLaserbeamIndicator.setActive(false);
+                lowerLaserbeamIndicator.setActive(false);
                 upperLaserbeam.update();
                 lowerLaserbeam.update();
                 MissileManager.getInstance().addLaserBeam(upperLaserbeam);
@@ -136,6 +151,22 @@ public class YellowBossLaserbeamMissileAttack implements BossActionable {
         return isFiringLaserbeams; //Laserbeams should removed and this attack is finished
     }
 
+    private LaserbeamIndicator createLaserBeamIndicator(int angleDegrees, int startingXCoordinate, int startingYCoordinate, GameObject owner) {
+        int distance = (laserBeamBodyAmount + 2) * Laserbeam.bodyWidth;
+        return new LaserbeamIndicator(startingXCoordinate, startingYCoordinate, angleDegrees, distance, owner);
+    }
+
+    private void updateLaserbeamIndicators() {
+        if (upperLaserbeamIndicator != null && upperLaserbeamIndicator.isActive()) {
+            upperLaserbeamIndicator.setStartingXCoordinate(upperChargingUpAnimation.getCenterXCoordinate());
+            upperLaserbeamIndicator.setStartingYCoordinate(upperChargingUpAnimation.getCenterYCoordinate());
+        }
+
+        if (lowerLaserbeamIndicator != null && lowerLaserbeamIndicator.isActive()) {
+            lowerLaserbeamIndicator.setStartingXCoordinate(lowerChargingUpAnimation.getCenterXCoordinate());
+            lowerLaserbeamIndicator.setStartingYCoordinate(lowerChargingUpAnimation.getCenterYCoordinate());
+        }
+    }
 
     private void initMissileChargingAnimation(Enemy enemy) {
         SpriteConfiguration spriteConfiguration = new SpriteConfiguration();
@@ -161,6 +192,8 @@ public class YellowBossLaserbeamMissileAttack implements BossActionable {
     }
 
 
+    private int laserBeamBodyAmount = 20;
+
     private void createLaserbeams(Enemy enemy) {
         //Create upper laserbeam
 
@@ -170,7 +203,7 @@ public class YellowBossLaserbeamMissileAttack implements BossActionable {
         upperLaserbeamConfiguration.setOriginPoint(upperLaserbeamOriginPoint);
 
         LaserbeamConfiguration lowerLaserbeamConfiguration = new LaserbeamConfiguration(true, damage);
-        lowerLaserbeamConfiguration.setAmountOfLaserbeamSegments(20);
+        lowerLaserbeamConfiguration.setAmountOfLaserbeamSegments(laserBeamBodyAmount);
         lowerLaserbeamConfiguration.setOriginPoint(lowerLaserbeamOriginPoint);
 
         upperLaserbeamConfiguration.setAngleDegrees(upperLaserbeamHighestAngle);

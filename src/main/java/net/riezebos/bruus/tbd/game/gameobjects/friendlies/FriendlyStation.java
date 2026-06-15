@@ -34,8 +34,6 @@ public class FriendlyStation extends GameObject {
         this.destructionAnimation.setAnimationScale(0.25f);
         this.maxHitPoints = 100;
         this.currentHitpoints = maxHitPoints;
-        this.maxShieldPoints = 0;
-        this.currentShieldPoints = maxShieldPoints;
 
         this.friendlyObjectType = droneConfiguration.getFriendlyType();
         this.attackSpeed = droneConfiguration.getAttackSpeedCooldown();

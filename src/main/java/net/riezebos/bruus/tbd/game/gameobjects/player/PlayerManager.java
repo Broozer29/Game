@@ -1,5 +1,6 @@
 package net.riezebos.bruus.tbd.game.gameobjects.player;
 
+import net.riezebos.bruus.tbd.DevTestSettings;
 import net.riezebos.bruus.tbd.controllerInput.ControllerInputReader;
 import net.riezebos.bruus.tbd.controllerInput.ControllerManager;
 import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
@@ -23,7 +24,6 @@ import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.Sprit
 
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.LinkedList;
 import java.util.List;
 
 public class PlayerManager {
@@ -33,8 +33,9 @@ public class PlayerManager {
     private GameState gameState = GameState.getInstance();
 
 
-    private SpaceShip spaceship;  //todo spaceship attribuut verwijderen want dit is residu van singleplayer
     private List<SpaceShip> allSpaceShips = new ArrayList<>();
+    private List<SpaceShip> allDeadSpaceShips = new ArrayList<>();
+    private List<SpaceShipReviver> spaceShipReviverList = new ArrayList<>();
     private boolean initializedSpaceShips = false;
 
 
@@ -61,7 +62,6 @@ public class PlayerManager {
         }
         this.initializedSpaceShips = false;
         this.allSpaceShips.clear();
-        this.spaceship = null;
         hasStartedDyingScene = false;
         performanceLogger.reset();
     }
@@ -148,11 +148,16 @@ public class PlayerManager {
 
 
             if(spaceShip.getCurrentHitpoints() <= 0){
-
                 AnimationManager.getInstance().addUpperAnimation(spaceShip.getDestructionAnimation());
 
                 if(spaceShip.isVisible()) { //to ensure the audio only plays once
                     AudioManager.getInstance().addAudio(AudioEnums.Destroyed_Explosion);
+                    if(allSpaceShips.size() != 1){ //only create a reviver if there is someone alive that could revive
+
+                        if(!DevTestSettings.blockPlayerRevivers) {
+                            spaceShipReviverList.add(new SpaceShipReviver(spaceShip));
+                        }
+                    }
                 }
 
                 spaceShip.setVisible(false);
@@ -206,7 +211,17 @@ public class PlayerManager {
                     spaceShip2.takeDamage(2.5f * (1 - PlayerStats.getInstance().getCollisionDamageReduction()));
                 }
             }
+
+
+            for(SpaceShipReviver spaceShipReviver : spaceShipReviverList){
+                if(spaceShipReviver.isWithinRange(spaceShip1)){
+                    spaceShipReviver.increaseCharge(spaceShip1);
+                }
+            }
         }
+
+        spaceShipReviverList.forEach(SpaceShipReviver::attemptRevive);
+        spaceShipReviverList.removeIf(spaceShipReviver -> !spaceShipReviver.isActive());
     }
 
     private void initSpaceShip() {
@@ -267,14 +282,6 @@ public class PlayerManager {
         }
     }
 
-    //todo check, dit wordt gebruikt door homingpathfinder maar word hominhpathfinder uberhaupt gebruikt? denk het niet en zo niet, verwijderen
-    public LinkedList<Integer> getNearestFriendlyHomingCoordinates() {
-        LinkedList<Integer> playerCoordinatesList = new LinkedList<>();
-        playerCoordinatesList.add(0, spaceship.getCenterXCoordinate());
-        playerCoordinatesList.add(1, spaceship.getCenterYCoordinate());
-        return playerCoordinatesList;
-    }
-
     public PerformanceLogger getPerformanceLogger() {
         return this.performanceLogger;
     }
@@ -285,5 +292,26 @@ public class PlayerManager {
         } else {
             return ControllerManager.getInstance().getControllerInputReaders().size(); //voor elke controller: 1 speler (levend of dood)
         }
+    }
+
+    public List<SpaceShip> getAllDeadSpaceShips() {
+        return allDeadSpaceShips;
+    }
+
+    public void addDeadSpaceShip(SpaceShip spaceShip){
+        this.allDeadSpaceShips.add(spaceShip);
+    }
+
+    public void reviveSpaceShip(SpaceShip spaceShip){
+        this.allDeadSpaceShips.remove(spaceShip);
+        this.allSpaceShips.add(spaceShip);
+    }
+
+    public List<SpaceShipReviver> getSpaceShipReviverList() {
+        return spaceShipReviverList;
+    }
+
+    public void setSpaceShipReviverList(List<SpaceShipReviver> spaceShipReviverList) {
+        this.spaceShipReviverList = spaceShipReviverList;
     }
 }

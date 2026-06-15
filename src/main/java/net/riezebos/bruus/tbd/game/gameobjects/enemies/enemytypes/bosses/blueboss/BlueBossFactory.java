@@ -1,5 +1,6 @@
 package net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.blueboss;
 
+import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.Enemy;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyConfiguration;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyCreator;
@@ -10,6 +11,7 @@ import net.riezebos.bruus.tbd.game.gameobjects.missiles.MissileManager;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.laserbeams.AngledLaserBeam;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.laserbeams.Laserbeam;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.laserbeams.LaserbeamConfiguration;
+import net.riezebos.bruus.tbd.game.gameobjects.missiles.laserbeams.LaserbeamIndicator;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
 import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SpaceShip;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
@@ -35,6 +37,9 @@ public class BlueBossFactory extends Enemy {
     private SpriteAnimation chargingAnimation;
     private Laserbeam primaryLaserbeam = null;
     private Laserbeam secondaryLaserbeam = null;
+
+    private LaserbeamIndicator primaryLaserbeamIndicator = null;
+    private LaserbeamIndicator secondaryLaserbeamIndicator = null;
 
     private boolean startChargingLaserbeams = false;
     private boolean isFiringLaserbeams = false;
@@ -91,9 +96,22 @@ public class BlueBossFactory extends Enemy {
         if(startChargingLaserbeams && !isFiringLaserbeams){
             if(chargingAnimation.isPlaying()){
                 this.chargingAnimation.setCenterCoordinates(this.getCenterXCoordinate(), this.getCenterYCoordinate());
+                //update laserbeam indicators
+                if(primaryLaserbeamIndicator == null || !primaryLaserbeamIndicator.isActive()){
+                    primaryLaserbeamIndicator = createLaserBeamIndicator((int) primaryDirection.toAngle(), chargingAnimation.getCenterXCoordinate(), chargingAnimation.getCenterYCoordinate(), this);
+                    secondaryLaserbeamIndicator = createLaserBeamIndicator((int) secondaryDirection.toAngle(), chargingAnimation.getCenterXCoordinate(), chargingAnimation.getCenterYCoordinate(), this);
+                    MissileManager.getInstance().addLaserbeamIndicator(primaryLaserbeamIndicator);
+                    MissileManager.getInstance().addLaserbeamIndicator(secondaryLaserbeamIndicator);
+                }
+
+                updateLaserbeamIndicators();
+
+
                 if(chargingAnimation.getCurrentFrame() == chargingAnimation.getTotalFrames() - 1){
                     isFiringLaserbeams = true;
                     startChargingLaserbeams = false;
+                    primaryLaserbeamIndicator.setActive(false);
+                    secondaryLaserbeamIndicator.setActive(false);
 
                     primaryLaserbeam = createLaserbeam(primaryDirection.toAngle());
                     secondaryLaserbeam = createLaserbeam(secondaryDirection.toAngle());
@@ -124,6 +142,24 @@ public class BlueBossFactory extends Enemy {
 
         if(this.ownerOrCreator != null && (this.ownerOrCreator.getCurrentHitpoints() <= 0 || !this.ownerOrCreator.isVisible())){
             this.takeDamage(this.getMaxHitPoints() * 100); //self destruct
+        }
+    }
+
+
+    private LaserbeamIndicator createLaserBeamIndicator(int angleDegrees, int startingXCoordinate, int startingYCoordinate, GameObject owner){
+        int distance = (laserBeamBodyAmount + 2) * Laserbeam.bodyWidth; //+2 voor de starting en ending animations die niet worden mee geteld
+        return new LaserbeamIndicator(startingXCoordinate, startingYCoordinate, angleDegrees, distance, owner);
+    }
+
+    private void updateLaserbeamIndicators() {
+        if (primaryLaserbeamIndicator != null && primaryLaserbeamIndicator.isActive()) {
+            primaryLaserbeamIndicator.setStartingXCoordinate(chargingAnimation.getCenterXCoordinate());
+            primaryLaserbeamIndicator.setStartingYCoordinate(chargingAnimation.getCenterYCoordinate());
+        }
+
+        if (secondaryLaserbeamIndicator != null && secondaryLaserbeamIndicator.isActive()) {
+            secondaryLaserbeamIndicator.setStartingXCoordinate(chargingAnimation.getCenterXCoordinate());
+            secondaryLaserbeamIndicator.setStartingYCoordinate(chargingAnimation.getCenterYCoordinate());
         }
     }
 
@@ -194,10 +230,12 @@ public class BlueBossFactory extends Enemy {
         this.canBuildNeedlers = true;
     }
 
+
+    private int laserBeamBodyAmount = BlueBossFireLaserbeams.laserbeamBodySegmentLength + 5;
     private Laserbeam createLaserbeam(double angleDegrees) {
         float damage = this.getDamage() * BlueBossFireLaserbeams.damageRatio;
         LaserbeamConfiguration upperLaserbeamConfiguration = new LaserbeamConfiguration(true, damage);
-        upperLaserbeamConfiguration.setAmountOfLaserbeamSegments(BlueBossFireLaserbeams.laserbeamBodySegmentLength + 5);
+        upperLaserbeamConfiguration.setAmountOfLaserbeamSegments(laserBeamBodyAmount);
         upperLaserbeamConfiguration.setOriginPoint(new Point(
                 this.getCenterXCoordinate(),
                 this.getCenterYCoordinate()

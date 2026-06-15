@@ -43,7 +43,7 @@ public class SpawnSpecialAttackOnDeath implements EffectInterface {
         SpriteConfiguration spriteConfiguration = new SpriteConfiguration();
         spriteConfiguration.setxCoordinate(gameObject.getXCoordinate());
         spriteConfiguration.setyCoordinate(gameObject.getYCoordinate());
-        spriteConfiguration.setScale(0.4f);
+        spriteConfiguration.setScale(0.55f);
         spriteConfiguration.setImageType(this.specialAttackImage);
 
         //todo een hoop van deze configuratie is hardcoded omdat het alleen gebruikt wordt door de mutalisk atm, moet generieker gemaakt worden als dit hergebruikt gaat worden
@@ -52,6 +52,7 @@ public class SpawnSpecialAttackOnDeath implements EffectInterface {
 
         SpecialAttack specialAttack = new LingeringAttack(spriteAnimationConfiguration, specialAttackConfiguration);
         specialAttack.setCenterCoordinates(gameObject.getCenterXCoordinate(), gameObject.getCenterYCoordinate());
+        specialAttack.setTransparancyAlpha(false, 0.8f, 0.0f);
         return specialAttack;
     }
 

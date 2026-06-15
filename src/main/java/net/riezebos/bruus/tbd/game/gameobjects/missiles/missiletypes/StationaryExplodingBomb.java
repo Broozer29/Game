@@ -65,7 +65,7 @@ public class StationaryExplodingBomb extends Missile {
         SpriteAnimationConfiguration spriteAnimationConfiguration = new SpriteAnimationConfiguration(spriteConfiguration1, 1, false);
         spriteAnimationConfiguration.getSpriteConfiguration().setImageType(ImageEnums.Bomba_Missile_Explosion);
 
-        ExplosionConfiguration explosionConfiguration = new ExplosionConfiguration(this.isFriendly(), damage, true, false);
+        ExplosionConfiguration explosionConfiguration = new ExplosionConfiguration(this.isFriendly(), damage,  false);
         Explosion explosion = new Explosion(spriteAnimationConfiguration, explosionConfiguration);
         explosion.setOwnerOrCreator(this.ownerOrCreator);
         explosion.setScale(explosionSize);

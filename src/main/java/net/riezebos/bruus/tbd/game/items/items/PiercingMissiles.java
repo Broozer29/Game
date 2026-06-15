@@ -8,19 +8,33 @@ import net.riezebos.bruus.tbd.game.items.ItemEnums;
 import net.riezebos.bruus.tbd.game.items.enums.ItemApplicationEnum;
 
 public class PiercingMissiles extends Item {
+    private boolean shouldApply;
 
     public PiercingMissiles() {
-        super(ItemEnums.PiercingMissiles, 1, ItemApplicationEnum.ApplyOnSpaceShipCreation);
+        super(ItemEnums.PiercingMissiles, 1, ItemApplicationEnum.UponAcquiring);
+        shouldApply = true;
     }
 
     @Override
     public void applyEffectToObject(GameObject gameObject) {
-        PlayerStats.getInstance().setPiercingMissilesAmount(this.quantity);
+        if (shouldApply) {
+            shouldApply = false;
+            PlayerStats.getInstance().modifyPiercingMissilesAmount(this.quantity);
+        }
     }
 
-    public void increaseQuantityOfItem(int amount) {
+    @Override
+    public void increaseQuantityOfItem (int amount) {
+        shouldApply = true;
+        removeEffect();
         this.quantity += amount;
         applyEffectToObject(null);
+    }
+
+    public void removeEffect(){
+        if(this.quantity > 0){
+            PlayerStats.getInstance().modifyPiercingMissilesAmount(-this.quantity);
+        }
     }
 
     @Override

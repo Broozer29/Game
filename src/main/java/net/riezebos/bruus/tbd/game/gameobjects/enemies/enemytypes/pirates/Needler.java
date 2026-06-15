@@ -23,6 +23,7 @@ public class Needler extends Enemy {
         this.damage = 13;
         this.detonateOnCollision = true;
         this.knockbackStrength = 10;
+        this.hasAttack = false;
     }
 
     @Override

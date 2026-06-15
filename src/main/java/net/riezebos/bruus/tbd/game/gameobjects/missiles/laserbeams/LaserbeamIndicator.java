@@ -1,5 +1,6 @@
 package net.riezebos.bruus.tbd.game.gameobjects.missiles.laserbeams;
 
+import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
 import net.riezebos.bruus.tbd.visualsandaudio.data.DataClass;
 
 public class LaserbeamIndicator {
@@ -14,20 +15,34 @@ public class LaserbeamIndicator {
 
     private float maxAngleDegreeChange;
     private double currentAngleDegrees = 0;
+    private GameObject owner;
 
-    public LaserbeamIndicator(int startingXCoordinate, int startingYCoordinate, int endingXCoordinate, int endingYCoordinate, float maxAngleDegreeChange) {
+    public LaserbeamIndicator(int startingXCoordinate, int startingYCoordinate, int endingXCoordinate, int endingYCoordinate, float maxAngleDegreeChange, GameObject owner) {
         this.startingXCoordinate = startingXCoordinate;
         this.startingYCoordinate = startingYCoordinate;
         this.endingXCoordinate = endingXCoordinate;
         this.endingYCoordinate = endingYCoordinate;
         this.maxAngleDegreeChange = maxAngleDegreeChange;
-
+        this.owner = owner;
         // Calculate initial angle based on starting and ending coordinates
         this.currentAngleDegrees = Math.toDegrees(Math.atan2(
                 endingYCoordinate - startingYCoordinate,
                 endingXCoordinate - startingXCoordinate
         ));
     }
+
+    public LaserbeamIndicator(int startingXCoordinate, int startingYCoordinate, int currentAngleDegrees, int distance, GameObject owner) {
+        this.startingXCoordinate = startingXCoordinate;
+        this.startingYCoordinate = startingYCoordinate;
+        this.currentAngleDegrees = currentAngleDegrees;
+        this.maxAngleDegreeChange = 0;
+        this.owner = owner;
+        // Calculate ending coordinates based on angle and distance
+        double angleRadians = Math.toRadians(currentAngleDegrees);
+        this.endingXCoordinate = (int) (startingXCoordinate + Math.cos(angleRadians) * distance);
+        this.endingYCoordinate = (int) (startingYCoordinate + Math.sin(angleRadians) * distance);
+    }
+
 
     public void targetTowardsCoordinates(int targetXCoordinate, int targetYCoordinate) {
         // Calculate the desired angle to the target
@@ -111,8 +126,12 @@ public class LaserbeamIndicator {
         return currentAngleDegrees;
     }
 
-    public void setCurrentAngleDegrees(double currentAngleDegrees) {
+    public void setCurrentAngleDegrees(double currentAngleDegrees, int distance) {
         this.currentAngleDegrees = currentAngleDegrees;
+
+        double angleRadians = Math.toRadians(currentAngleDegrees);
+        this.endingXCoordinate = (int) (startingXCoordinate + Math.cos(angleRadians) * distance);
+        this.endingYCoordinate = (int) (startingYCoordinate + Math.sin(angleRadians) * distance);
     }
 
     public float getMaxAngleDegreeChange() {
@@ -121,5 +140,13 @@ public class LaserbeamIndicator {
 
     public void setMaxAngleDegreeChange(float maxAngleDegreeChange) {
         this.maxAngleDegreeChange = maxAngleDegreeChange;
+    }
+
+    public GameObject getOwner() {
+        return owner;
+    }
+
+    public void setOwner(GameObject owner) {
+        this.owner = owner;
     }
 }

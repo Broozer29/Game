@@ -133,7 +133,7 @@ public class ItemDescriptionRetriever {
                         "% (+" + Math.round(ElectricSupercharger.buffAmount * 100) + "%) damage.";
             }
             case GreedIsGood -> {
-                return "Cash carriers no longer spawn. Instead, medium sized enemies have a " + Math.round(GreedIsGood.mineralsPerPickupChance * 100) + "% chance to drop a coin worth " + GreedIsGood.mineralsPerPickup +" minerals.";
+                return "Cash carriers no longer spawn. Instead, medium sized enemies have a " + Math.round(GreedIsGood.mineralsPerPickupChance * 100) + "% chance to drop a coin worth " + GreedIsGood.mineralsPerPickup + " minerals.";
             }
             case SpawnSpaceStationTBD -> {
                 return "Killing an enemy spawns a friendly stationary drone that attacks nearby enemies. Up to 4 drones per player can be spawned at a time.";
@@ -179,6 +179,9 @@ public class ItemDescriptionRetriever {
                 return "Ignite duration increased by " +
                         Math.round(StickyOil.bonusDurationMultiplier * 100) +
                         "%. ";
+            }
+            case LeechingLasers -> {
+                return "Missiles that critically strike heal for " + LeechingLasers.healAmount + " (+" + LeechingLasers.healAmount + ") damage.";
             }
             case CorrosiveOil -> {
                 return "Ignite reduces armor by " + CorrosiveOil.amountPerStack + " (+" + CorrosiveOil.amountPerStack + ") per stack of Ignite.";

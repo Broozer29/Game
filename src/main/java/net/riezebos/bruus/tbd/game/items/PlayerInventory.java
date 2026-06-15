@@ -100,6 +100,8 @@ public class PlayerInventory {
 
     public Item createItemFromEnum(ItemEnums itemEnum) {
         switch (itemEnum) {
+            case LeechingLasers:
+                return new LeechingLasers();
             case CalmInChaos:
                 return new CalmInChaos();
             case SpawnSpaceStationTBD:

@@ -123,6 +123,8 @@ public class DifficultySelectionBoard extends JPanel implements TimerHolder {
         returnToMenuButton = DifficultySelectionBoardCreator.createReturn(returnToMenuBackgroundCard);
         menuCursor = DifficultySelectionBoardCreator.createCursor(selectPirates);
         initializedMenuObjects = true;
+
+        updateSelectedDifficultyIcons();
     }
 
     public void recreateWindow() {
@@ -200,7 +202,7 @@ public class DifficultySelectionBoard extends JPanel implements TimerHolder {
             ShopBoardCreator.updateDifficultyIconsToDifficulty(LevelManager.getInstance().getLastSelectedDifficulty(),
                     selectPirates, selectZerg, selectRoyalGuard);
 
-            ShopBoardCreator.updateMiniBossIconsToSelection(LevelManager.getInstance().getLastSelectedMiniBossConfig(),
+            ShopBoardCreator.updateMiniBossIconsToSelection(LevelManager.getInstance().getCurrentMiniBossConfig(),
                     selectNoMiniBoss, selectOneMiniBoss, selectTwoMiniBoss);
         }
     }
