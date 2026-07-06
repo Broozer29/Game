@@ -214,6 +214,7 @@ public class MenuButton extends GUIComponent {
     private void changeLevelDifficulty() {
         if (this.levelDifficulty != null) {
             LevelManager.getInstance().setCurrentLevelDifficulty(this.levelDifficulty);
+            LevelManager.getInstance().setLastSelectedDifficulty(this.levelDifficulty);
         }
     }
 

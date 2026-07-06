@@ -17,6 +17,7 @@ import net.riezebos.bruus.tbd.game.items.PlayerInventory;
 import net.riezebos.bruus.tbd.game.items.effects.EffectIdentifiers;
 import net.riezebos.bruus.tbd.game.items.items.SpawnSpaceStationTBD;
 import net.riezebos.bruus.tbd.game.level.LevelManager;
+import net.riezebos.bruus.tbd.game.level.directors.DirectorManager;
 import net.riezebos.bruus.tbd.game.level.directors.GodRunDetector;
 import net.riezebos.bruus.tbd.game.movement.*;
 import net.riezebos.bruus.tbd.game.movement.pathfinders.DestinationPathFinder;
@@ -119,7 +120,7 @@ public class Enemy extends GameObject {
             this.maxHitPoints *= Math.pow(getScalingFactor(), level);
 
             if(PlayerManager.getInstance().getPlayerCount() > 1) {
-                this.maxHitPoints *= PlayerManager.getInstance().getPlayerCount(); //voor elke extra speler, 100% max hp
+                this.maxHitPoints *= (PlayerManager.getInstance().getPlayerCount() * 0.75f); //voor elke extra speler, 75% max hp
             }
             this.currentHitpoints = maxHitPoints;
 
@@ -129,6 +130,7 @@ public class Enemy extends GameObject {
             // XP on death is multiplied by 50% of difficulty coefficient
             this.cashMoneyWorth *= 0.8f; //flat 20% reduction on money earned for snap balancing, should actually be manually applied in EnemyEnums and removed from here
             this.cashMoneyWorth *= PlayerStats.getInstance().getMineralModifier();
+            this.cashMoneyWorth *= DirectorManager.getInstance().getMineralPenaltyModifier();
 
             if(PlayerManager.getInstance().getPlayerCount() > 1 && !this.enemyType.getEnemyCategory().equals(EnemyCategory.Boss)) {
                 this.cashMoneyWorth *= Math.max(1.15 - (PlayerManager.getInstance().getPlayerCount() * 0.15f) , 0.5f); //-15% for each player, 100% for 1 player, min 50% for 5+ players

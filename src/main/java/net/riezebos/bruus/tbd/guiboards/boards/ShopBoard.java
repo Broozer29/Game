@@ -12,6 +12,8 @@ import net.riezebos.bruus.tbd.game.items.ItemDescriptionRetriever;
 import net.riezebos.bruus.tbd.game.items.ItemEnums;
 import net.riezebos.bruus.tbd.game.items.PlayerInventory;
 import net.riezebos.bruus.tbd.game.items.enums.ItemRarityEnums;
+import net.riezebos.bruus.tbd.game.items.items.WisdomBall;
+import net.riezebos.bruus.tbd.game.items.items.util.WisdomBallRollManager;
 import net.riezebos.bruus.tbd.game.level.LevelManager;
 import net.riezebos.bruus.tbd.game.util.OnScreenTextManager;
 import net.riezebos.bruus.tbd.guiboards.GUIComponentItemInformation;
@@ -22,9 +24,11 @@ import net.riezebos.bruus.tbd.guiboards.boardEnums.MenuFunctionEnums;
 import net.riezebos.bruus.tbd.guiboards.boardcreators.ShopBoardCreator;
 import net.riezebos.bruus.tbd.guiboards.guicomponents.*;
 import net.riezebos.bruus.tbd.visualsandaudio.data.DataClass;
+import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.AnimationManager;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.Sprite;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteAnimation;
+import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteAnimationConfiguration;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteConfiguration;
 
 import javax.swing.*;
@@ -259,7 +263,7 @@ public class ShopBoard extends JPanel implements TimerHolder {
     }
 
     public void updateSelectedDifficultyIcons() {
-        if(selectPirateTribe == null){
+        if (selectPirateTribe == null) {
             return; //none of the components have been created yet, so we can't update the icons yet
         }
         ShopBoardCreator.updateDifficultyIconsToDifficulty(LevelManager.getInstance().getLastSelectedDifficulty(),
@@ -307,7 +311,6 @@ public class ShopBoard extends JPanel implements TimerHolder {
         addAllButFirstComponent(nextLevelButton);
 
 //        regularGridFirstRow.add(rerollButton);
-
 
 
         moneyIcon = shopBoardCreator.createMoneyObject(itemRowsBackgroundCard);
@@ -379,6 +382,18 @@ public class ShopBoard extends JPanel implements TimerHolder {
         regularGridFirstRow = shopBoardCreator.createNewFirstRowOfItems();
         regularGridSecondRow = shopBoardCreator.createNewSecondRowOfItems();
         regularGridThirdRow = shopBoardCreator.createNewThirdRowOfItems();
+
+        WisdomBall wisdomball = (WisdomBall) PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.WisdomBall);
+
+        if (wisdomball != null) {
+            if (wisdomball.shouldActivate()) {
+                List<List<GUIComponent>> shopRows = new ArrayList<>();
+                shopRows.add(regularGridFirstRow);
+                shopRows.add(regularGridSecondRow);
+                shopRows.add(regularGridThirdRow);
+                WisdomBallRollManager.getInstance().applyWisdomBallRoll(shopRows);
+            }
+        }
     }
 
     private void populateInventoryGridWithItems() {
@@ -909,7 +924,7 @@ public class ShopBoard extends JPanel implements TimerHolder {
 
             boolean isFree = object.getShopItemInformation().getCost() <= 0.001f;
             String cost = isFree ? "Free" : "$" + Math.round(object.getShopItemInformation().getCost());
-            if(isFree){
+            if (isFree) {
                 g.setFont(new Font(textFont, Font.BOLD, Math.round(14 * DataClass.getInstance().getResolutionFactor())));
                 g.setColor(ItemRarityEnums.Rare.getColor());
             }
@@ -970,5 +985,25 @@ public class ShopBoard extends JPanel implements TimerHolder {
             }
         }
         popGUIComponentList.add(incomingComponent);
+    }
+
+    public void playWisdomBallAnimation(List<GUIComponent> itemsToShowAnimAt) {
+        //todo play audio cue
+
+
+        for (GUIComponent item : itemsToShowAnimAt) {
+            SpriteConfiguration spriteConfiguration = new SpriteConfiguration();
+            spriteConfiguration.setxCoordinate(item.getXCoordinate());
+            spriteConfiguration.setyCoordinate(item.getYCoordinate());
+            spriteConfiguration.setScale(1 * DataClass.getInstance().getResolutionFactor());
+            spriteConfiguration.setImageType(ImageEnums.SelectNewClassAnimation); //placeholder
+
+
+            SpriteAnimationConfiguration spriteAnimationConfiguration = new SpriteAnimationConfiguration(spriteConfiguration, 0, false);
+            SpriteAnimation spriteAnimation = new SpriteAnimation(spriteAnimationConfiguration);
+            spriteAnimation.setCenterCoordinates(item.getCenterXCoordinate(), item.getCenterYCoordinate());
+
+            animationManager.addUpperAnimation(spriteAnimation);
+        }
     }
 }

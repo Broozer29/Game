@@ -48,9 +48,9 @@ public class SpaceStationSpawnDrone implements BossActionable {
             if (spawnAnimation.isPlaying() && spawnAnimation.getCurrentFrame() == 4) {
 //                for(int i = 0; i < Math.min(LevelManager.getInstance().getBossDifficultyLevel() + 1, 2); i++) {
                 Enemy pulsingDrone = createPulsingDrone(enemy);
-                pulsingDrone.setMaxHitPoints(1000000000);
-                pulsingDrone.setBaseArmor(999);
-                pulsingDrone.setCurrentHitpoints(pulsingDrone.getMaxHitPoints());
+//                pulsingDrone.setMaxHitPoints(1000000000);
+//                pulsingDrone.setBaseArmor(999);
+//                pulsingDrone.setCurrentHitpoints(pulsingDrone.getMaxHitPoints());
                 pulsingDrone.setCenterCoordinates(spawnAnimation.getCenterXCoordinate(), spawnAnimation.getCenterYCoordinate());
                 EnemyManager.getInstance().addEnemy(pulsingDrone);
 //                }

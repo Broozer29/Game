@@ -199,7 +199,7 @@ public class DifficultySelectionBoard extends JPanel implements TimerHolder {
 
     public void updateSelectedDifficultyIcons() {
         if(initializedMenuObjects) {
-            ShopBoardCreator.updateDifficultyIconsToDifficulty(LevelManager.getInstance().getLastSelectedDifficulty(),
+            ShopBoardCreator.updateDifficultyIconsToDifficulty(LevelManager.getInstance().getCurrentLevelDifficulty(),
                     selectPirates, selectZerg, selectRoyalGuard);
 
             ShopBoardCreator.updateMiniBossIconsToSelection(LevelManager.getInstance().getCurrentMiniBossConfig(),

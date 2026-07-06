@@ -30,7 +30,7 @@ public class RoyalGuardGuardsmen extends Enemy {
         Beweegt uit het scherm
      */
 
-    private int attackRange = 400;
+    private int attackRange = 450;
     private GameObject target = null;
     public RoyalGuardGuardsmen(SpriteAnimationConfiguration spriteConfiguration, EnemyConfiguration enemyConfiguration, MovementConfiguration movementConfiguration) {
         super(spriteConfiguration, enemyConfiguration, movementConfiguration);
@@ -39,7 +39,7 @@ public class RoyalGuardGuardsmen extends Enemy {
         this.destructionAnimation = new SpriteAnimation(destroyedExplosionfiguration);
         this.destructionAnimation.setAnimationScale(1f);
         this.damage = 10;
-        this.attackSpeed = 2.4f;
+        this.attackSpeed = 1.5f;
         this.knockbackStrength = 8;
 
         if(this.movementConfiguration.getPathFinder() instanceof HoverPathFinder pathFinder){
@@ -60,6 +60,8 @@ public class RoyalGuardGuardsmen extends Enemy {
     private int gameTickPerformanceCounter = 0;
     @Override
     public void fireAction() {
+        this.chargingUpAttackAnimation.setFrameDelay(0);
+
         this.allowedVisualsToRotate = true; //might not be needed
         double currentTime = GameState.getInstance().getGameSeconds();
         if(gameTickPerformanceCounter % gameTickPerformanceSaver == 0 || (target == null || !target.isVisible())) {
@@ -118,10 +120,10 @@ public class RoyalGuardGuardsmen extends Enemy {
         // The charging up attack animation has finished, create and fire the missile
         //Create the sprite configuration which gets upgraded to spriteanimation if needed by the MissileCreator
         SpriteConfiguration spriteConfiguration = MissileCreator.getInstance().createMissileSpriteConfig(xCoordinate, yCoordinate,
-                missileType.getImageType(), 0.55f);
+                missileType.getImageType(), 0.5f);
 
 
-        int movementSpeed = 4;
+        int movementSpeed = 3;
         //Create missile movement attributes and create a movement configuration
 
         PathFinder missilePathFinder = new StraightLinePathFinder();

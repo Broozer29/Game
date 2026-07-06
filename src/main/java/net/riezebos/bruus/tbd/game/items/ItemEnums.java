@@ -24,35 +24,43 @@ public enum ItemEnums {
     VengeanceProtocol(ItemRarityEnums.Rare, ImageEnums.VengeanceProtocolIcon, "Vengeance Protocol", false),
     EnergySiphon(ItemRarityEnums.Common, ImageEnums.Starcraft2_Energy_Siphon, "Energy Siphon", false),
     Stuivie(ItemRarityEnums.Relic, ImageEnums.StuiversBestFriend, "Stuivie", false),
-
-
+    ModulePower(ItemRarityEnums.Legendary,  ImageEnums.Test_Image, "Module: Power", false), //disabled omdat drones al genoeg snowballen, dit zou extra op extra zijn
+    PuncturingPierce(ItemRarityEnums.Legendary,  ImageEnums.PuncturingPierces, "Puncturing Pierce", false), //disabled want saai
     //Relics 2.0
+    //generic relics
     SpawnSpaceStationTBD(ItemRarityEnums.Relic, ImageEnums.SmallDroneItemIcon, "Placeholder", true),
     BonusKaart(ItemRarityEnums.Relic, ImageEnums.BonusKaart, "Bonus Kaart", true),
     GreedIsGood(ItemRarityEnums.Relic, ImageEnums.Test_Image, "Greed is Good", true),
+    ShieldStabilizer(ItemRarityEnums.Relic,  ImageEnums.ShieldStabilizer, "Shield Stabilizer", true),
+    GlassCannon(ItemRarityEnums.Relic,  ImageEnums.GlassCannon, "Glass Cannon", true),
+    HelpRequested(ItemRarityEnums.Relic, ImageEnums.MoneyPrinter, "Help Requested", true),
+    WisdomBall(ItemRarityEnums.Relic, ImageEnums.Test_Image, "Wisdomball", true),
+
+    //captain relics
     ModuleAccuracy(ItemRarityEnums.Relic, ImageEnums.Starcraft2LockOn, "Module: Accuracy", true),
     BouncingLasers(ItemRarityEnums.Relic,  ImageEnums.Starcraft2BouncingLaser, "Bouncing Lasers", true),
     ModuleElectrify(ItemRarityEnums.Relic,  ImageEnums.ModuleElectrify, "Module: Electric Razor", true),
     ModuleCommand(ItemRarityEnums.Relic,  ImageEnums.ModuleCommand, "Module: Synergize", true),
     ModuleFocusFire(ItemRarityEnums.Relic,  ImageEnums.ModuleFocusFire, "Module: Focus Fire", true),
-    ModuleScorch(ItemRarityEnums.Relic,  ImageEnums.ModuleScorchIcon, "Module: Scorch", true),
-    ShieldStabilizer(ItemRarityEnums.Relic,  ImageEnums.ShieldStabilizer, "Shield Stabilizer", true),
-    BeckoningFlames(ItemRarityEnums.Relic,  ImageEnums.EntanglingFlames, "Beckoning Flames", true),
-    ArbiterDamage(ItemRarityEnums.Relic,  ImageEnums.ArbiterDamage, "Arbit Inversion", true),
-    GlassCannon(ItemRarityEnums.Relic,  ImageEnums.GlassCannon, "Glass Cannon", true),
     AnionInverter(ItemRarityEnums.Relic, ImageEnums.AnionInverter, "Anion Inverter", true),
-    BigIron(ItemRarityEnums.Relic,  ImageEnums.BigIron, "Big Iron", false),
+    BigIron(ItemRarityEnums.Relic,  ImageEnums.BigIron, "Big Iron", false), //disabled want dit voelt buggy aan en ook niet echt fijn om mee te spelen
     OneShotOneKill(ItemRarityEnums.Relic, ImageEnums.OneShotOneKill, "One shot, one kill", true),
-    HelpRequested(ItemRarityEnums.Relic, ImageEnums.MoneyPrinter, "Help Requested", true),
     ElectricDestabilizer(ItemRarityEnums.Relic, ImageEnums.Starcraft2_Protoss_Shield_Disintegrate, "Electric Destabilizer", true),
+
+    //firefighter relics
+    ModuleScorch(ItemRarityEnums.Relic,  ImageEnums.ModuleScorchIcon, "Module: Scorch", true),
+    BeckoningFlames(ItemRarityEnums.Relic,  ImageEnums.EntanglingFlames, "Beckoning Flames", true),
+
+    //carrier relics
+    ArbiterDamage(ItemRarityEnums.Relic,  ImageEnums.ArbiterDamage, "Arbit Inversion", true),
     PulsingBeacon(ItemRarityEnums.Relic, ImageEnums.Test_Image, "Pulsing Beacon", true),
 
     //-----------------------------
-    LeechingLasers(ItemRarityEnums.Rare,  ImageEnums.LeechingLasers, "Leeching Lasers", true),
+    LeechingLasers(ItemRarityEnums.Rare,  ImageEnums.LeechingLasers, "Leeching Lasers", false),
     CalmInChaos(ItemRarityEnums.Legendary,  ImageEnums.Test_Image, "Calm in chaos", true),
     ElectroShedding(ItemRarityEnums.Legendary,  ImageEnums.Electroshedding, "Electro Shedding", true),
     PlasmaCoatedBullets(ItemRarityEnums.Common, ImageEnums.Starcraft2_Blue_Flame, "Plasma Bullets", true),
-    PuncturingPierce(ItemRarityEnums.Legendary,  ImageEnums.PuncturingPierces, "Puncturing Pierce", true),
+
     PhotonPiercer(ItemRarityEnums.Common,  ImageEnums.Starcraft2_Concussive_Shells, "Photon Piercer", true),
     CannisterOfGasoline(ItemRarityEnums.Rare,  ImageEnums.CannisterOfGasoline, "Gasoline", true),
     SelfRepairingSteel(ItemRarityEnums.Common,  ImageEnums.Starcraft2_Heal, "Regenerative Steel", true),
@@ -67,7 +75,6 @@ public enum ItemEnums {
     CriticalOverloadCapacitor(ItemRarityEnums.Rare,  ImageEnums.Starcraft2_Auto_Tracking, "Precision Overloader", true),
     PiercingMissiles(ItemRarityEnums.Legendary,  ImageEnums.PiercingLaser, "Piercing Lasers", true),
     VIPTicket(ItemRarityEnums.Legendary,  ImageEnums.VIPTicket, "VIP Ticket", true),
-    ModulePower(ItemRarityEnums.Rare,  ImageEnums.Star, "Module: Power", true),
     ElectricSupercharger(ItemRarityEnums.Legendary,  ImageEnums.Starcraft2_Psi_Storm2, "Electric Supercharger", true),
     Adrenaline(ItemRarityEnums.Legendary,  ImageEnums.Adrenaline, "Adrenaline", true),
     ExplosiveLaserbeams(ItemRarityEnums.Legendary,  ImageEnums.ExplosiveLaserbeams, "Explosive Laserbeams", true),
@@ -98,7 +105,7 @@ public enum ItemEnums {
     EternaFlame(ItemRarityEnums.Legendary,  ImageEnums.Eternaflame, "EternaBurn", true),
     EphemeralBlaze(ItemRarityEnums.Rare,  ImageEnums.EphemeralBlaze, "Ephemeral Blaze", true),
     AimAssist(ItemRarityEnums.Legendary,  ImageEnums.AimAssist, "Aim Assist", true),
-    HighVelocityLasers(ItemRarityEnums.Common,  ImageEnums.HighVelocityLasers, "High Velocity Lasers", true),
+    HighVelocityLasers(ItemRarityEnums.Rare,  ImageEnums.HighVelocityLasers, "High Velocity Lasers", true),
     InfernalPreIgniter(ItemRarityEnums.Legendary,  ImageEnums.InfernalPreIgniter, "Infernal Pre-igniter", true);
 
     private ItemRarityEnums itemRarity;
@@ -148,5 +155,21 @@ public enum ItemEnums {
 
     public boolean isEnabled() {
         return enabled;
+    }
+
+    public static boolean isRelicAvailable() {
+        // Check every relic item
+        for (ItemEnums item : ItemEnums.values()) {
+            if (item.getItemRarity() == ItemRarityEnums.Relic) {
+                // If this relic is not in the player's inventory,
+                // then there is still a relic available to obtain.
+                if (PlayerInventory.getInstance().getItemFromInventoryIfExists(item) == null) {
+                    return true;
+                }
+            }
+        }
+
+        // All relics are already in the inventory.
+        return false;
     }
 }

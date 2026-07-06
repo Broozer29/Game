@@ -80,7 +80,7 @@ public class ImageLoader {
             case ProgressBarFilling:
                 return "/images/UI/progressbarfilling.png";
             case Test_Image:
-                return "/images/testimage.jpg";
+                return "/images/background/star.png";
             case Alien_Bomb:
                 return "/images/Alien bomb.png";
             case Moon:

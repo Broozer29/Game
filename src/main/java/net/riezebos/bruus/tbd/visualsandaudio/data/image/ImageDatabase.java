@@ -51,6 +51,7 @@ public class ImageDatabase {
     private List<BufferedImage> callForHelp = new ArrayList<>();
     private List<BufferedImage> rotatingBoxes = new ArrayList<>();
     private List<BufferedImage> explosion3 = new ArrayList<>();
+    private List<BufferedImage> explosion5 = new ArrayList<>();
     private List<BufferedImage> mothershipdroneMissile = new ArrayList<>();
     private List<BufferedImage> shurikenMiniBoss = new ArrayList<>();
     private List<BufferedImage> mothershipMiniBoss = new ArrayList<>();
@@ -1685,6 +1686,8 @@ public class ImageDatabase {
                 return healingOrb;
             case Explosion3:
                 return this.explosion3;
+            case Explosion5:
+                return this.explosion5;
             case MotherShipDroneMissile:
                 return mothershipdroneMissile;
             case RotatingCoins:
@@ -2397,6 +2400,13 @@ public class ImageDatabase {
             String sourceString = String.format("/images/gif/PNGtoGIF/Explosion 3/%d.png", i);
             BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
             explosion3.add(image);
+        }
+
+
+        for (int i = 0; i < 32; i++) {
+            String sourceString = String.format("/images/gif/PNGtoGIF/Explosion5/%d.png", i);
+            BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+            explosion5.add(image);
         }
 
         for (int i = 0; i < 4; i++) {

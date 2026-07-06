@@ -32,6 +32,7 @@ public enum ImageEnums {
     ConstructionKitIcon,
     VengeanceProtocolIcon,
     Explosion3,
+    Explosion5,
     StrikerBoss,
     ExplosiveGreed,
     StrikerCornerDrone,

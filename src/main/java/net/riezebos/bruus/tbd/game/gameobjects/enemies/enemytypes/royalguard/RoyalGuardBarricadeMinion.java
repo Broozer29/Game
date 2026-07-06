@@ -3,7 +3,11 @@ package net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.royalguard;
 import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.Enemy;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyConfiguration;
+import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyManager;
 import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.droneTypes.protoss.ProtossUtils;
+import net.riezebos.bruus.tbd.game.gameobjects.neutral.Explosion;
+import net.riezebos.bruus.tbd.game.gameobjects.neutral.ExplosionConfiguration;
+import net.riezebos.bruus.tbd.game.gameobjects.neutral.ExplosionManager;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
 import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SpaceShip;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
@@ -12,8 +16,10 @@ import net.riezebos.bruus.tbd.game.movement.Point;
 import net.riezebos.bruus.tbd.game.movement.pathfinders.StraightLinePathFinder;
 import net.riezebos.bruus.tbd.game.util.OnScreenTextManager;
 import net.riezebos.bruus.tbd.game.util.collision.CollisionDetector;
+import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteAnimation;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteAnimationConfiguration;
+import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteConfiguration;
 
 
 /*
@@ -29,7 +35,8 @@ public class RoyalGuardBarricadeMinion extends Enemy {
     private boolean warmingUp = true;
     private double spawnedTime = 0;
     private boolean increasedInSpeed = false;
-    private int detectionRange = 145;
+    private int detectionRange = 165;
+    private int explosionRange = 70;
     private boolean isAttached = true;
 
     public RoyalGuardBarricadeMinion(SpriteAnimationConfiguration spriteConfiguration, EnemyConfiguration enemyConfiguration, MovementConfiguration movementConfiguration) {
@@ -64,6 +71,37 @@ public class RoyalGuardBarricadeMinion extends Enemy {
         if (!activated && CollisionDetector.getInstance().isNearby(this, PlayerManager.getInstance().getClosestSpaceShip(this), detectionRange)) {
             engageTarget();
         }
+
+
+        if(activated && CollisionDetector.getInstance().isNearby(this, PlayerManager.getInstance().getClosestSpaceShip(this), explosionRange)){
+            explode();
+        }
+    }
+
+    private void explode() {
+        EnemyManager.getInstance().detonateEnemy(this);
+        ExplosionManager.getInstance().addExplosion(createExplosion());
+    }
+
+    private float explosionSize = 2f;
+    private Explosion createExplosion(){
+        SpriteConfiguration spriteConfiguration1 = new SpriteConfiguration();
+        spriteConfiguration1.setxCoordinate(this.xCoordinate);
+        spriteConfiguration1.setyCoordinate(this.yCoordinate);
+        spriteConfiguration1.setScale(explosionSize);
+
+        SpriteAnimationConfiguration spriteAnimationConfiguration = new SpriteAnimationConfiguration(spriteConfiguration1, 0, false);
+        spriteAnimationConfiguration.getSpriteConfiguration().setImageType(ImageEnums.Explosion5);
+
+        ExplosionConfiguration explosionConfiguration = new ExplosionConfiguration(this.isFriendly(), damage, false);
+        Explosion explosion = new Explosion(spriteAnimationConfiguration, explosionConfiguration);
+        explosion.setOwnerOrCreator(this.ownerOrCreator);
+        explosion.setScale(explosionSize);
+        explosion.setCenterCoordinates(this.animation.getCenterXCoordinate(), this.animation.getCenterYCoordinate());
+        explosion.setTransparancyAlpha(false, 0.5f, 0f);
+        ExplosionManager.getInstance().addExplosion(explosion);
+
+        return explosion;
     }
 
 

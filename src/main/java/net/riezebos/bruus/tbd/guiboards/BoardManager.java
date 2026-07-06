@@ -40,8 +40,8 @@ public class BoardManager extends JFrame {
         setTitle("Game");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(data.getWindowWidth(), data.getWindowHeight());
-        setExtendedState(JFrame.MAXIMIZED_BOTH);
-        setUndecorated(true);
+//        setExtendedState(JFrame.MAXIMIZED_BOTH);
+//        setUndecorated(true);
 
 //        if (System.getProperty("os.name").toLowerCase().contains("mac")) {
 //            System.setProperty("apple.awt.application.appearance", "system");
@@ -52,8 +52,8 @@ public class BoardManager extends JFrame {
 //            }
 //        }
 
-        data.setWindowWidth(getWidth());
-        data.setWindowHeight(getHeight());
+//        data.setWindowWidth(getWidth());
+//        data.setWindowHeight(getHeight());
 
         // Initialize screens
         mainMenuBoard = new MainMenuBoard();
