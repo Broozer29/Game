@@ -2,6 +2,7 @@ package net.riezebos.bruus.tbd.game.items;
 
 import net.riezebos.bruus.tbd.DevTestSettings;
 import net.riezebos.bruus.tbd.game.gameobjects.player.boons.BoonEnums;
+import net.riezebos.bruus.tbd.game.gamestate.GameStatsTracker;
 import net.riezebos.bruus.tbd.game.items.enums.ItemApplicationEnum;
 import net.riezebos.bruus.tbd.game.items.enums.ItemRarityEnums;
 import net.riezebos.bruus.tbd.game.items.items.*;
@@ -38,6 +39,7 @@ public class PlayerInventory {
 
         if (DevTestSettings.infiniteMoney) {
             cashMoney = 999999999;
+            addItem(ItemEnums.WisdomBall);
         } else {
             cashMoney = 0;
         }
@@ -100,6 +102,8 @@ public class PlayerInventory {
 
     public Item createItemFromEnum(ItemEnums itemEnum) {
         switch (itemEnum) {
+            case WisdomBall:
+                return new WisdomBall();
             case LeechingLasers:
                 return new LeechingLasers();
             case CalmInChaos:
@@ -306,6 +310,7 @@ public class PlayerInventory {
     }
 
     public void addMinerals(float amount) {
+        GameStatsTracker.getInstance().addMoneyAcquired(amount);
         this.cashMoney += amount;
     }
 

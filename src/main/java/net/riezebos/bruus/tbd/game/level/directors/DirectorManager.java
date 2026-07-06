@@ -6,6 +6,7 @@ import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyTribes;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
 import net.riezebos.bruus.tbd.game.gamestate.GameMode;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
+import net.riezebos.bruus.tbd.game.gamestate.GameStatsTracker;
 import net.riezebos.bruus.tbd.game.level.LevelManager;
 import net.riezebos.bruus.tbd.game.level.enums.LevelTypes;
 import net.riezebos.bruus.tbd.game.util.performancelogger.PerformanceLogger;
@@ -61,7 +62,7 @@ public class DirectorManager {
 //        Create fast & slow director(s)
         int loopCount = GameState.getInstance().getGameMode().equals(GameMode.DoubleTrouble) ? 2 : 1;
 
-        for(int i = 0; i < loopCount; i++) {
+        for (int i = 0; i < loopCount; i++) {
             Director slowDirector = new Director(DirectorType.Slow, baseMonsterCards);
             directorList.add(slowDirector);
 
@@ -72,6 +73,11 @@ public class DirectorManager {
 
             int minMultiplier = GameState.getInstance().getGameMode().equals(GameMode.Formatted) ? 400 : 200;
             int maxAmount = GameState.getInstance().getGameMode().equals(GameMode.Formatted) ? 1200 : 650;
+
+            if (LevelManager.getInstance().getCurrentEnemyTribe().equals(EnemyTribes.RoyalGuard)) {
+                minMultiplier *= 1.5f;
+                maxAmount *= 1.5f;
+            }
 
             instantDirector.receiveCredits(Math.min(minMultiplier * GameState.getInstance().getDifficultyCoefficient(), maxAmount));
             directorList.add(instantDirector);
@@ -158,7 +164,7 @@ public class DirectorManager {
 
 
         if (godRunDetector.getGodRunScore() >= 1) {
-            if(godRunDetector.getGodRunScore() >= 3){
+            if (godRunDetector.getGodRunScore() >= 3) {
                 creditAmount *= (1 + (this.godRunCreditsBonus + 0.2f));
             } else {
                 creditAmount *= (1 + this.godRunCreditsBonus);
@@ -210,5 +216,22 @@ public class DirectorManager {
 
     public PerformanceLogger getPerformanceLogger() {
         return this.performanceLogger;
+    }
+
+    public float getMineralPenaltyModifier() {
+        float minerals = GameStatsTracker.getInstance().getMineralsAcquired();
+        float multiplier = 1;
+
+        if (minerals >= 0 && minerals <= 300) {
+            multiplier = 1.25f;
+        } else if (minerals >= 600 && minerals <= 900) {
+            multiplier = 0.75f;
+        } else if (minerals >= 900 && minerals <= 1200) {
+            multiplier = 0.5f;
+        } else if (minerals >= 1200) {
+            multiplier = 0.25f;
+        }
+
+        return multiplier;
     }
 }

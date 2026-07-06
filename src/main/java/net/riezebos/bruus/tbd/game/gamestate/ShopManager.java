@@ -98,7 +98,7 @@ public class ShopManager {
             return; //It's not initialized yet, don't use it
         }
 
-        rerollCost = Math.round(PlayerInventory.getInstance().getCashMoney() * 0.25f);
+        rerollCost = Math.round(PlayerInventory.getInstance().getCashMoney() * 0.15f);
         float discount = PlayerStats.getInstance().getShopRerollDiscount();
         if (discount > 100) {
             discount = 100;

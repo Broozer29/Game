@@ -124,9 +124,9 @@ public class RedBossSpawnFourDirectionalDrone implements BossActionable {
 
 
         //invincible
-        fourDirectionalDrone.setMaxHitPoints(1000000000);
-        fourDirectionalDrone.setCurrentHitpoints(fourDirectionalDrone.getMaxHitPoints());
-        fourDirectionalDrone.setBaseArmor(999);
+//        fourDirectionalDrone.setMaxHitPoints(1000000000);
+//        fourDirectionalDrone.setCurrentHitpoints(fourDirectionalDrone.getMaxHitPoints());
+//        fourDirectionalDrone.setBaseArmor(999);
         return fourDirectionalDrone;
     }
 

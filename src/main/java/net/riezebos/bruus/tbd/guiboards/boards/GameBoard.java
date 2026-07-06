@@ -32,13 +32,12 @@ import net.riezebos.bruus.tbd.game.items.ItemEnums;
 import net.riezebos.bruus.tbd.game.items.PlayerInventory;
 import net.riezebos.bruus.tbd.game.items.items.BonusKaart;
 import net.riezebos.bruus.tbd.game.items.items.StuiversBestFriend;
+import net.riezebos.bruus.tbd.game.items.items.WisdomBall;
 import net.riezebos.bruus.tbd.game.items.items.util.ContractHelper;
 import net.riezebos.bruus.tbd.game.level.LevelManager;
 import net.riezebos.bruus.tbd.game.level.directors.DirectorManager;
 import net.riezebos.bruus.tbd.game.level.directors.GodRunDetector;
-import net.riezebos.bruus.tbd.game.level.enums.LevelDifficulty;
 import net.riezebos.bruus.tbd.game.level.enums.LevelTypes;
-import net.riezebos.bruus.tbd.game.level.enums.MiniBossConfig;
 import net.riezebos.bruus.tbd.game.movement.Direction;
 import net.riezebos.bruus.tbd.game.util.OnScreenText;
 import net.riezebos.bruus.tbd.game.util.OnScreenTextManager;
@@ -199,6 +198,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
         //Free up any cached graphics that have not been used in 5 minutes. Might cause lag spikes but should help significantly with memory usage and heap-size errors
         ImageRotator.getInstance().cleanupOldCacheEntries();
         ImageResizer.getInstance().cleanupOldCacheEntries();
+        WisdomBall.setCurrentBonusChance(0); //manually reset the wisdomball, regardless wether the player had it or not
     }
 
     private void resetManagersForNextLevel() {
@@ -234,8 +234,8 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
                 BonusKaart bonusKaart = (BonusKaart) PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.BonusKaart);
                 bonusKaart.setUsedThisShop(false);
             }
-            LevelManager.getInstance().setLastSelectedDifficulty(LevelDifficulty.Easy);
-            LevelManager.getInstance().setLastSelectedMiniBossConfig(MiniBossConfig.Easy);
+            LevelManager.getInstance().setLastSelectedDifficulty(LevelManager.getInstance().getCurrentLevelDifficulty());
+            LevelManager.getInstance().setLastSelectedMiniBossConfig(LevelManager.getInstance().getCurrentMiniBossConfig());
 
             //These should probably to be refactored into osmething new
             hasResetManagersForNextLevel = true;
@@ -322,12 +322,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
     private boolean hasExportedLogs = false;
 
     private void drawEndOfLevelScreen(Graphics2D g, boolean hasSurvived) {
-        if (!hasSurvived && !isPlayingDeathMusic) {
-            playDeathMusic();
-            isPlayingDeathMusic = true;
-            LevelManager.getInstance().resetBossUsed(); //sloppy fix to reset the boss used flag, this could be refactored into something better
-            SaveManager.getInstance().deleteSaveFile();
-        }
+        GameStatsTracker gameStatsTracker = GameStatsTracker.getInstance();
 
         if (!hasExportedLogs) {
             String stageNumber = String.valueOf(GameState.getInstance().getStagesCompleted());
@@ -336,6 +331,12 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
             hasExportedLogs = true;
         }
 
+        if (!hasSurvived && !isPlayingDeathMusic) {
+            playDeathMusic();
+            isPlayingDeathMusic = true;
+            LevelManager.getInstance().resetBossUsed(); //sloppy fix to reset the boss used flag, this could be refactored into something better
+            SaveManager.getInstance().deleteSaveFile();
+        }
 
         //Create font
         Font font = new Font("Monospaced", Font.PLAIN, Math.round(15 * DataClass.getInstance().getResolutionFactor()));
@@ -351,7 +352,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
 
         //Draw the first column of messages
 
-        GameStatsTracker gameStatsTracker = GameStatsTracker.getInstance();
+
         int firstRowXCoordinate = Math.round(gameOverCard.getXCoordinate() + (gameOverCard.getWidth() * 0.1f));
         int firstRowYCoordinate = Math.round(gameOverCard.getYCoordinate() + (gameOverCard.getHeight() * 0.3f));
         int messageHeight = 24;
@@ -1137,7 +1138,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
 
             if (gameState.getGameState() == GameStatusEnums.SelectingRelic) {
                 //navigate left/right
-                if (inputDelay >= MOVE_COOLDOWN / 2) {
+                if (inputDelay >= MOVE_COOLDOWN / 5) {
                     if (e.getKeyCode() == KeyEvent.VK_LEFT || e.getKeyCode() == KeyEvent.VK_A) {
                         navigateLeft();
                     } else if (e.getKeyCode() == KeyEvent.VK_RIGHT || e.getKeyCode() == KeyEvent.VK_D) {

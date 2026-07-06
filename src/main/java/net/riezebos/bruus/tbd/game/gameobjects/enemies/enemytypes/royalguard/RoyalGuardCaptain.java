@@ -35,7 +35,7 @@ public class RoyalGuardCaptain extends Enemy {
     private LaserbeamIndicator laserbeamIndicator;
     private AngledLaserBeam laserbeam;
     private GameObject target = null;
-    private float angleDegreeIncrement = 0.12f;
+    private float angleDegreeIncrement = 0.11f;
     private boolean isLiningUp = false;
 
     public RoyalGuardCaptain(SpriteAnimationConfiguration spriteConfiguration, EnemyConfiguration enemyConfiguration, MovementConfiguration movementConfiguration) {
@@ -45,7 +45,7 @@ public class RoyalGuardCaptain extends Enemy {
         this.destructionAnimation = new SpriteAnimation(destroyedExplosionfiguration);
         this.destructionAnimation.setAnimationScale(1f);
         this.damage = 4;
-        this.attackSpeed = 1;
+        this.attackSpeed = 1.5f;
         this.knockbackStrength = 8;
         this.allowedVisualsToRotate = false;
 
@@ -79,6 +79,7 @@ public class RoyalGuardCaptain extends Enemy {
 
         if(this.isLiningUp && this.laserbeamIndicator == null){
             laserbeamIndicator = new LaserbeamIndicator(chargingUpAttackAnimation.getCenterXCoordinate(), chargingUpAttackAnimation.getCenterYCoordinate(), target.getCenterXCoordinate(), target.getCenterYCoordinate(), angleDegreeIncrement, this);
+            laserbeamIndicator.setLength(laserBeamSegments * Laserbeam.bodyWidth);
             MissileManager.getInstance().addLaserbeamIndicator(laserbeamIndicator);
         }
 
@@ -116,16 +117,17 @@ public class RoyalGuardCaptain extends Enemy {
         return allowedToMove;
     }
 
+    private int laserBeamSegments = 15;
     private void fireLaserBeam() {
         LaserbeamConfiguration laserbeamConfiguration = new LaserbeamConfiguration(false, this.getDamage());
-        laserbeamConfiguration.setAmountOfLaserbeamSegments(17);
+        laserbeamConfiguration.setAmountOfLaserbeamSegments(laserBeamSegments);
         laserbeamConfiguration.setOriginPoint(new Point(
                 chargingUpAttackAnimation.getCenterXCoordinate() - Laserbeam.bodyWidth,
                 chargingUpAttackAnimation.getCenterYCoordinate() - Laserbeam.bodyWidth / 2 + 14
         ));
 
         AngledLaserBeam laserBeam = new AngledLaserBeam(laserbeamConfiguration);
-        laserBeam.setTransparancyAlpha(true, 1, -0.075f);
+        laserBeam.setTransparancyAlpha(true, 1, -0.07f);
         laserBeam.setAngleDegrees(this.laserbeamIndicator.getCurrentAngleDegrees());
         laserBeam.setOwner(this);
 //        laserBeam.setOriginPoint(new Point(chargingUpAttackAnimation.getCenterXCoordinate() - Laserbeam.getXOffsetForCentering(), chargingUpAttackAnimation.getCenterYCoordinate() - (Laserbeam.getYOffsetForCentering() / 2)));

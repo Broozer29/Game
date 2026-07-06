@@ -228,14 +228,14 @@ public enum EnemyEnums {
 
     DefenderMiniBoss(850,
             AudioEnums.Alien_Spaceship_Destroyed,
-            ImageEnums.DefenderMiniBoss, ImageEnums.Explosion2, 0, EnemyCategory.MiniBoss, EnemyTribes.Generic, 25,
-            50, 100, 1, 1.4f, 1, 250, 250,
+            ImageEnums.DefenderMiniBoss, ImageEnums.Explosion2, 0, EnemyCategory.MiniBoss, EnemyTribes.Generic, 35,
+            50, 100, 1, 1.45f, 1, 250, 250,
             0),
 
     LaserbeamMiniBoss(850,
             AudioEnums.Alien_Spaceship_Destroyed,
             ImageEnums.LaserMiniBoss, ImageEnums.Explosion2, 0, EnemyCategory.MiniBoss, EnemyTribes.Generic, 25,
-            50, 100, 1, 1.4f, 1, 250, 250,
+            50, 100, 1, 1.45f, 1, 250, 250,
             0),
 
     LaserOriginDrone(125,
@@ -259,7 +259,7 @@ public enum EnemyEnums {
             AudioEnums.Large_Ship_Destroyed,
             ImageEnums.RoyalGuardCaptain, ImageEnums.Explosion2, 55, EnemyCategory.Medium, EnemyTribes.RoyalGuard, 10,
             10, 15, 0.2f, 1, 0.65f, 201, 84,
-            1),
+            0),
 
     RoyalGuardFlagbearer(120,
             AudioEnums.Large_Ship_Destroyed,
@@ -281,10 +281,10 @@ public enum EnemyEnums {
             0),
 
 
-    RoyalGuardShieldbearer(180,
+    RoyalGuardShieldbearer(140,
             AudioEnums.Large_Ship_Destroyed,
             ImageEnums.RoyalGuardShieldbearer, ImageEnums.Explosion2, 75, EnemyCategory.Medium, EnemyTribes.RoyalGuard, 10,
-            10, 15, 0.55f, 1, 0.65f, 221, 122,
+            10, 15, 0.55f, 1.3f, 0.5f, 221, 122,
             0),
 
     ;

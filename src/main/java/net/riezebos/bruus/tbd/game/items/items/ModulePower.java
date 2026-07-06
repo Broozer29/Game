@@ -9,7 +9,7 @@ import net.riezebos.bruus.tbd.game.items.ItemEnums;
 import net.riezebos.bruus.tbd.game.items.enums.ItemApplicationEnum;
 
 public class ModulePower extends Item {
-    public static float damageBonus = 0.25f;
+    public static float damageBonus = 0.3f;
 
     public ModulePower() {
         super(ItemEnums.ModulePower, 1, ItemApplicationEnum.ApplyOnSpaceShipCreation);

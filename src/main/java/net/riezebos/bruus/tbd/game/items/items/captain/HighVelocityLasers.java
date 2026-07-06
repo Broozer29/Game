@@ -10,7 +10,7 @@ import net.riezebos.bruus.tbd.game.items.enums.ItemApplicationEnum;
 
 public class HighVelocityLasers extends Item {
 
-    public static float moveSpeedModifier = 0.2f;
+    public static float moveSpeedModifier = 0.4f;
 
     public HighVelocityLasers () {
         super(ItemEnums.HighVelocityLasers, 1, ItemApplicationEnum.CustomActivation);

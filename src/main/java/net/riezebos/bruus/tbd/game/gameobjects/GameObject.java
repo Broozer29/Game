@@ -5,7 +5,6 @@ import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyCategory;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
 import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SpaceShip;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
-import net.riezebos.bruus.tbd.game.gamestate.GameStatsTracker;
 import net.riezebos.bruus.tbd.game.items.Item;
 import net.riezebos.bruus.tbd.game.items.PlayerInventory;
 import net.riezebos.bruus.tbd.game.items.effects.EffectActivationTypes;
@@ -375,8 +374,6 @@ public class GameObject extends Sprite {
             this.setVisible(false);
             activateOnDeathEffects();
             PlayerInventory.getInstance().addMinerals(this.cashMoneyWorth);
-            GameStatsTracker.getInstance().addMoneyAcquired(this.cashMoneyWorth);
-
         }
     }
 
