@@ -20,7 +20,7 @@ public class AudioManager {
     private AudioDatabase audioDatabase = AudioDatabase.getInstance();
     private AudioEnums currentSong;
     private Map<AudioEnums, Long> lastPlayTimeMap = new HashMap<>();
-    private MusicMediaPlayer musicMediaPlayer = MusicMediaPlayer.iTunesMacOS;
+    private MusicMediaPlayer musicMediaPlayer = MusicMediaPlayer.LocalFiles;
     private MacOSMediaPlayer macOSMediaPlayer = MacOSMediaPlayer.getInstance();
     private SpotifyMediaPlayer spotifyMediaPlayer = SpotifyMediaPlayer.getInstance();
     private double predictedEndGameSeconds = -1; // Predicted game seconds when the song will end
