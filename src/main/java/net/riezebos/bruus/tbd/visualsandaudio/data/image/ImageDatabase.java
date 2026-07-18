@@ -2237,7 +2237,7 @@ public class ImageDatabase {
         }
 
         for (int i = 1; i < 41; i++) {
-            String sourceString = String.format("/images/gif/PNGtoGIF/FireWall/fire_1f_40_%d.png", i);
+            String sourceString = String.format("/images/gif/PNGtoGIF/Firewall/fire_1f_40_%d.png", i);
             BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
             fireWall.add(image);
         }
