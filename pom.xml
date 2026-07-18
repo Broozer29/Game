@@ -126,11 +126,12 @@
                     <mainJar>Game-0.0.1-SNAPSHOT.jar</mainJar>
                     <mainClass>net.riezebos.bruus.tbd.Main</mainClass>
                     <javaOptions>
-                        <option>-Djava.library.path=$ROOTDIR/lib</option>
+                        <option>-Djava.library.path=$APPDIR/lib</option>
                         <option>-Xms4g</option>
                         <option>-Xmx8g</option>
                         <option>-XX:+UseG1GC</option>
                     </javaOptions>
+                    <resourceDir>src/main/resources</resourceDir>
                     <!-- Options: APP_IMAGE, DMG (macOS), PKG (macOS), EXE (Windows), MSI (Windows), DEB (Linux), RPM (Linux) -->
                     <!-- APP_IMAGE = no installer needed, just extract and run -->
                     <type>APP_IMAGE</type>
