@@ -19,7 +19,7 @@ public class Mutalisk extends Enemy {
         SpriteAnimationConfiguration destroyedExplosionfiguration = new SpriteAnimationConfiguration(spriteConfiguration.getSpriteConfiguration(), 3, false);
         destroyedExplosionfiguration.getSpriteConfiguration().setImageType(this.enemyType.getDestructionType());
         this.destructionAnimation = new SpriteAnimation(destroyedExplosionfiguration);
-        this.damage = 0.5f;
+        this.damage = 0.3f;
         this.hasAttack = false;
         this.attackSpeed = 2;
         this.detonateOnCollision = false;

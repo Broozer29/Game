@@ -81,7 +81,11 @@ public class Enemy extends GameObject {
             BossHealthBar bossHealthBar = new BossHealthBar(healthBarConfig, this);
             bossHealthBar.centerHealthBar();
             bossHealthBar.setTransparancyAlpha(false, 0.8f, 0);
-            BoardManager.getInstance().getGameBoard().addBossHealthBar(bossHealthBar);
+
+            //preloading causes a nullpointer exception if we try to add a healthbar because the game doesnt exist yet, sloppy fix
+            if(BoardManager.getInstance().getGameBoard() != null){
+                BoardManager.getInstance().getGameBoard().addBossHealthBar(bossHealthBar);
+            }
         }
     }
 
@@ -128,9 +132,12 @@ public class Enemy extends GameObject {
 //            this.damage += level / 2;
 
             // XP on death is multiplied by 50% of difficulty coefficient
-            this.cashMoneyWorth *= 0.8f; //flat 20% reduction on money earned for snap balancing, should actually be manually applied in EnemyEnums and removed from here
             this.cashMoneyWorth *= PlayerStats.getInstance().getMineralModifier();
-            this.cashMoneyWorth *= DirectorManager.getInstance().getMineralPenaltyModifier();
+
+
+            if(!enemyType.getEnemyCategory().equals(EnemyCategory.Boss)) {
+                this.cashMoneyWorth *= DirectorManager.getInstance().getMineralPenaltyModifier();
+            }
 
             if(PlayerManager.getInstance().getPlayerCount() > 1 && !this.enemyType.getEnemyCategory().equals(EnemyCategory.Boss)) {
                 this.cashMoneyWorth *= Math.max(1.15 - (PlayerManager.getInstance().getPlayerCount() * 0.15f) , 0.5f); //-15% for each player, 100% for 1 player, min 50% for 5+ players

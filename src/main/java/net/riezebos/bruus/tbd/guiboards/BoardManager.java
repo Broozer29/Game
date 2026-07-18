@@ -8,6 +8,7 @@ import net.riezebos.bruus.tbd.visualsandaudio.data.audio.AudioManager;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.AudioEnums;
 
 import javax.swing.*;
+import java.awt.*;
 import java.util.EnumMap;
 import java.util.Map;
 
@@ -24,6 +25,7 @@ public class BoardManager extends JFrame {
     private AudioManager audioManager = AudioManager.getInstance();
 
     private JPanel currentBoard = null;
+    private JPanel loadingScreen = null;
 
 
 
@@ -39,21 +41,37 @@ public class BoardManager extends JFrame {
         setResizable(false);
         setTitle("Game");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(data.getWindowWidth(), data.getWindowHeight());
-//        setExtendedState(JFrame.MAXIMIZED_BOTH);
-//        setUndecorated(true);
+        setUndecorated(true);
+        setExtendedState(JFrame.MAXIMIZED_BOTH);
 
-//        if (System.getProperty("os.name").toLowerCase().contains("mac")) {
-//            System.setProperty("apple.awt.application.appearance", "system");
-//            GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
-//            if (gd.isFullScreenSupported()) {
-//                setUndecorated(true);
-//                gd.setFullScreenWindow(this);
-//            }
-//        }
+        // Create and display loading screen
+        loadingScreen = createLoadingScreen();
+        add(loadingScreen);
+    }
 
-//        data.setWindowWidth(getWidth());
-//        data.setWindowHeight(getHeight());
+    private JPanel createLoadingScreen() {
+        JPanel panel = new JPanel() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                g.setColor(Color.WHITE);
+                Font font = new Font("Monospaced", Font.BOLD, 48);
+                g.setFont(font);
+                FontMetrics fm = g.getFontMetrics();
+                String text = "Loading...";
+                int x = (getWidth() - fm.stringWidth(text)) / 2;
+                int y = (getHeight() - fm.getHeight()) / 2 + fm.getAscent();
+                g.drawString(text, x, y);
+            }
+        };
+        panel.setBackground(Color.BLACK);
+        return panel;
+    }
+
+    public void finishInitialization() {
+        // Now that window is visible, get actual dimensions
+        data.setWindowWidth(getWidth());
+        data.setWindowHeight(getHeight());
 
         // Initialize screens
         mainMenuBoard = new MainMenuBoard();
@@ -110,6 +128,10 @@ public class BoardManager extends JFrame {
             difficultySelectionBoard.getTimer().restart();
             ControllerManager.getInstance().setControllerSensitive(false);
         });
+
+        // Remove loading screen
+        remove(loadingScreen);
+        loadingScreen = null;
     }
 
     public static BoardManager getInstance() {

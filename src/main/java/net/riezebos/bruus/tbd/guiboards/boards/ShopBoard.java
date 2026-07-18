@@ -231,6 +231,8 @@ public class ShopBoard extends JPanel implements TimerHolder {
         itemDescription = shopBoardCreator.createDescriptionBox(descriptionBackgroundCard);
         menuCursor = shopBoardCreator.createCursor(returnToMainMenu);
 
+        selectedRow = 0;
+        selectedColumn = 0;
 
         // Money and Difficulty indicators
         moneyIcon = shopBoardCreator.createMoneyObject(itemRowsBackgroundCard);
@@ -685,7 +687,6 @@ public class ShopBoard extends JPanel implements TimerHolder {
     }
 
     private long lastMoveTime = 0;
-    private static final long MOVE_COOLDOWN = 300; // milliseconds
 
     public void executeControllerInput() {
         if (controllers.getPrimaryController() != null) {
@@ -694,7 +695,7 @@ public class ShopBoard extends JPanel implements TimerHolder {
             long currentTime = System.currentTimeMillis();
 
             // Left and right navigation
-            if (currentTime - lastMoveTime > MOVE_COOLDOWN) {
+            if (currentTime - lastMoveTime > DataClass.CONTROLLER_INPUT_COOLDOWN) {
                 if (controllerInputReader.isInputActive(ControllerInputEnums.MOVE_UP)) {
                     //Gaat naar boven
                     // Menu option to the left
@@ -711,7 +712,7 @@ public class ShopBoard extends JPanel implements TimerHolder {
             }
 
             // Up and down navigation
-            if (currentTime - lastMoveTime > MOVE_COOLDOWN) {
+            if (currentTime - lastMoveTime > DataClass.CONTROLLER_INPUT_COOLDOWN) {
                 if (controllerInputReader.isInputActive(ControllerInputEnums.MOVE_LEFT)) {
                     //Gaat naar links
                     // Menu option upwards
@@ -727,7 +728,7 @@ public class ShopBoard extends JPanel implements TimerHolder {
                 }
             }
 
-            if (currentTime - lastMoveTime > MOVE_COOLDOWN &&
+            if (currentTime - lastMoveTime > DataClass.CONTROLLER_INPUT_COOLDOWN &&
                     controllerInputReader.isInputActive(ControllerInputEnums.FIRE)) {
                 // Select menu option
                 selectMenuTile();
@@ -737,7 +738,7 @@ public class ShopBoard extends JPanel implements TimerHolder {
 
             //hier checken op specialattack en of de inventory open is, zo ja, close de inventory.
 
-            if (currentTime - lastMoveTime > MOVE_COOLDOWN &&
+            if (currentTime - lastMoveTime > DataClass.CONTROLLER_INPUT_COOLDOWN &&
                     controllerInputReader.isInputActive(ControllerInputEnums.SPECIAL_ATTACK) &&
                     showInventory) {
                 // Select menu option
@@ -758,29 +759,35 @@ public class ShopBoard extends JPanel implements TimerHolder {
     /*---------------------------Drawing methods-------------------------------*/
     @Override
     public void paintComponent(Graphics g) {
-        super.paintComponent(g);
-        Graphics2D g2d = (Graphics2D) g;
-        // Draws all background objects
-        for (BackgroundObject bgObject : backgroundManager.getAllBGO()) {
-            drawImage(g2d, bgObject);
+        try {
+            super.paintComponent(g);
+            Graphics2D g2d = (Graphics2D) g;
+            // Draws all background objects
+            for (BackgroundObject bgObject : backgroundManager.getAllBGO()) {
+                drawImage(g2d, bgObject);
+            }
+
+            for (SpriteAnimation animation : animationManager.getLowerAnimations()) {
+                drawAnimation(g2d, animation);
+            }
+
+            drawObjects(g2d);
+            drawDescriptionInfo(g2d, currentDescriptionInfo);
+
+            for (SpriteAnimation animation : animationManager.getUpperAnimations()) {
+                drawAnimation(g2d, animation);
+            }
+            animationManager.updateGameTick();
+            backgroundManager.updateGameTick();
+            Toolkit.getDefaultToolkit().sync();
+
+            // Reading controller input
+            executeControllerInput();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            timer.stop();
+            System.exit(1);
         }
-
-        for (SpriteAnimation animation : animationManager.getLowerAnimations()) {
-            drawAnimation(g2d, animation);
-        }
-
-        drawObjects(g2d);
-        drawDescriptionInfo(g2d, currentDescriptionInfo);
-
-        for (SpriteAnimation animation : animationManager.getUpperAnimations()) {
-            drawAnimation(g2d, animation);
-        }
-        animationManager.updateGameTick();
-        backgroundManager.updateGameTick();
-        Toolkit.getDefaultToolkit().sync();
-
-        // Reading controller input
-        executeControllerInput();
     }
 
 

@@ -27,6 +27,11 @@ public class TrackingLaserBeam extends Laserbeam {
 
     @Override
     public void update() {
+        if(laserBodies.isEmpty()){
+            this.setVisible(false);
+            return;
+        }
+
         int frameAmount = this.laserBodies.get(0).getCurrentFrame();
         super.updateTransparancyconfig();
         for (SpriteAnimation animation : this.laserBodies) {

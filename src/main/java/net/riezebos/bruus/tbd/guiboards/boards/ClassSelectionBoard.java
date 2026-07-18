@@ -81,8 +81,6 @@ public class ClassSelectionBoard extends JPanel implements TimerHolder {
         setFocusable(true);
         setBackground(Color.BLACK);
         setPreferredSize(new Dimension(DataClass.getInstance().getWindowWidth(), DataClass.getInstance().getWindowHeight()));
-
-
         addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
@@ -579,7 +577,6 @@ public class ClassSelectionBoard extends JPanel implements TimerHolder {
     }
 
     private long lastMoveTime = 0;
-    private static final long MOVE_COOLDOWN = 350; // milliseconds
 
     public void executeControllerInput() {
         if (controllers.getPrimaryController() != null) {
@@ -588,7 +585,7 @@ public class ClassSelectionBoard extends JPanel implements TimerHolder {
             long currentTime = System.currentTimeMillis();
 
             // Left and right navigation
-            if (currentTime - lastMoveTime > MOVE_COOLDOWN) {
+            if (currentTime - lastMoveTime > DataClass.CONTROLLER_INPUT_COOLDOWN) {
                 if (controllerInputReader.isInputActive(ControllerInputEnums.MOVE_LEFT)) {
                     // Menu option to the left
                     navigateLeft();
@@ -622,7 +619,7 @@ public class ClassSelectionBoard extends JPanel implements TimerHolder {
                 }
             }
 
-            if (currentTime - lastMoveTime > MOVE_COOLDOWN &&
+            if (currentTime - lastMoveTime > DataClass.CONTROLLER_INPUT_COOLDOWN &&
                     controllerInputReader.isInputActive(ControllerInputEnums.SPECIAL_ATTACK)) {
                 // Select menu option
                 BoardManager.getInstance().switchScreen(BoardManager.ScreenType.MAIN_MENU);
@@ -641,40 +638,46 @@ public class ClassSelectionBoard extends JPanel implements TimerHolder {
     /*---------------------------Drawing methods-------------------------------*/
     @Override
     public void paintComponent(Graphics g) {
-        super.paintComponent(g);
-        Graphics2D g2d = (Graphics2D) g.create(); // Create a copy to avoid modifying the original graphics context
-
         try {
-            // Draws all background objects
-            for (BackgroundObject bgObject : backgroundManager.getAllBGO()) {
-                drawImage(g2d, bgObject);
+            super.paintComponent(g);
+            Graphics2D g2d = (Graphics2D) g.create(); // Create a copy to avoid modifying the original graphics context
+
+            try {
+                // Draws all background objects
+                for (BackgroundObject bgObject : backgroundManager.getAllBGO()) {
+                    drawImage(g2d, bgObject);
+                }
+
+                for (SpriteAnimation animation : animationManager.getLowerAnimations()) {
+                    drawAnimation(g2d, animation);
+                }
+
+                drawObjects(g2d);
+                drawDescriptionBoxText(g2d);
+                drawClassDescriptionText(g2d);
+
+                for (SpriteAnimation animation : animationManager.getUpperAnimations()) {
+                    drawAnimation(g2d, animation);
+                }
+
+                for (OnScreenText text : OnScreenTextManager.getInstance().getOnScreenTexts()) {
+                    drawText(g2d, text);
+                }
+            } finally {
+                g2d.dispose(); // Ensure resources are released
             }
 
-            for (SpriteAnimation animation : animationManager.getLowerAnimations()) {
-                drawAnimation(g2d, animation);
-            }
+            animationManager.updateGameTick();
+            backgroundManager.updateGameTick();
+            Toolkit.getDefaultToolkit().sync();
 
-            drawObjects(g2d);
-            drawDescriptionBoxText(g2d);
-            drawClassDescriptionText(g2d);
-
-            for (SpriteAnimation animation : animationManager.getUpperAnimations()) {
-                drawAnimation(g2d, animation);
-            }
-
-            for (OnScreenText text : OnScreenTextManager.getInstance().getOnScreenTexts()) {
-                drawText(g2d, text);
-            }
-        } finally {
-            g2d.dispose(); // Ensure resources are released
+            // readControllerState();
+            executeControllerInput();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            timer.stop();
+            System.exit(1);
         }
-
-        animationManager.updateGameTick();
-        backgroundManager.updateGameTick();
-        Toolkit.getDefaultToolkit().sync();
-
-        // readControllerState();
-        executeControllerInput();
 
     }
 

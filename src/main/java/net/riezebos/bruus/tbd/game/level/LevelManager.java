@@ -102,10 +102,9 @@ public class LevelManager {
         } else if (levelType == LevelTypes.Boss) {
             boolean bossAlive = EnemyManager.getInstance().isBossAlive();
 
-            //Theoretically this can be removed, but test it first with this disabled.
-//            if (audioManager.isLevelMusicFinished() && bossAlive) {
-//                audioManager.playDefaultBackgroundMusic(AudioEnums.getBossTheme(getNextBoss()), false);
-//            }
+            if (audioManager.isLevelMusicFinished() && bossAlive) {
+                audioManager.playDefaultBackgroundMusicForALevel(AudioEnums.getBossTheme(selectedBoss), false);
+            }
 
             if (!bossAlive) {
                 gameState.setGameState(GameStatusEnums.Level_Finished);
@@ -115,7 +114,7 @@ public class LevelManager {
         }
     }
 
-    private void finishLevel() {
+    public void finishLevel() {
         ShopManager shopManager = ShopManager.getInstance();
         shopManager.setLastLevelDifficulty(this.currentLevelDifficulty);
         shopManager.setLastMiniBossConfig(this.currentMiniBossConfig);
@@ -128,11 +127,6 @@ public class LevelManager {
         }
 
         gameState.setGameState(GameStatusEnums.Show_Level_Score_Card);
-        //disabling this causes the game to remember the players last selected option
-//        this.currentLevelLength = null;
-//        this.currentLevelDifficulty = null;
-//        this.currentLevelDifficultyScore = 2;
-
     }
 
 
@@ -360,7 +354,7 @@ public class LevelManager {
         }
 
         //Initially 3 levels between bosses, then after the second boss every other level is a boss level
-        if (stagesCompleted >= 5) {
+        if (stagesCompleted >= 6) {
             stagesBeforeBoss = 2;
         } else {
             stagesBeforeBoss = 3;

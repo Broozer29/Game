@@ -135,7 +135,7 @@ public class Devourer extends Enemy {
         missile.setAllowedVisualsToRotate(false); //Prevent it from being rotated again by the SpriteMover
 
         missile.setOwnerOrCreator(this);
-        missile.addEffectToApply(getDevourerSlowEffect());
+//        missile.addEffectToApply(getDevourerSlowEffect()); //slow disabled because there are enough things to dodge, slow makes it unfair
         missile.addEffectToApply(getDevourerAttackSpeedEffect());
 
         //Finalized and ready for addition to the game

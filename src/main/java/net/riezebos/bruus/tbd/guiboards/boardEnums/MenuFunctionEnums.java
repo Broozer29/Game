@@ -18,7 +18,7 @@ public enum MenuFunctionEnums {
 	SelectFireFighterClass,
 	SelectCarrierClass,
 	ContinueSaveFile,
-	ReconnectAllControllers,
+    CloseGame,
     OpenBoonSelectionBoard,
 	SelectNepotism,
 	UpgradeNepotism,

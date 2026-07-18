@@ -126,7 +126,7 @@
                     <mainJar>Game-0.0.1-SNAPSHOT.jar</mainJar>
                     <mainClass>net.riezebos.bruus.tbd.Main</mainClass>
                     <javaOptions>
-                        <option>-Djava.library.path=$APPDIR/lib</option>
+                        <option>-Djava.library.path=$ROOTDIR/lib</option>
                         <option>-Xms4g</option>
                         <option>-Xmx8g</option>
                         <option>-XX:+UseG1GC</option>

@@ -30,11 +30,11 @@ public enum ItemEnums {
     //generic relics
     SpawnSpaceStationTBD(ItemRarityEnums.Relic, ImageEnums.SmallDroneItemIcon, "Placeholder", true),
     BonusKaart(ItemRarityEnums.Relic, ImageEnums.BonusKaart, "Bonus Kaart", true),
-    GreedIsGood(ItemRarityEnums.Relic, ImageEnums.Test_Image, "Greed is Good", true),
+    GreedIsGood(ItemRarityEnums.Relic, ImageEnums.Test_Image, "Cash Infusion", true),
     ShieldStabilizer(ItemRarityEnums.Relic,  ImageEnums.ShieldStabilizer, "Shield Stabilizer", true),
     GlassCannon(ItemRarityEnums.Relic,  ImageEnums.GlassCannon, "Glass Cannon", true),
     HelpRequested(ItemRarityEnums.Relic, ImageEnums.MoneyPrinter, "Help Requested", true),
-    WisdomBall(ItemRarityEnums.Relic, ImageEnums.Test_Image, "Wisdomball", true),
+    WisdomBall(ItemRarityEnums.Relic, ImageEnums.WondrousWisdomball, "Wondrous Wisdomball", true),
 
     //captain relics
     ModuleAccuracy(ItemRarityEnums.Relic, ImageEnums.Starcraft2LockOn, "Module: Accuracy", true),
@@ -57,7 +57,7 @@ public enum ItemEnums {
 
     //-----------------------------
     LeechingLasers(ItemRarityEnums.Rare,  ImageEnums.LeechingLasers, "Leeching Lasers", false),
-    CalmInChaos(ItemRarityEnums.Legendary,  ImageEnums.Test_Image, "Calm in chaos", true),
+    CalmInChaos(ItemRarityEnums.Legendary,  ImageEnums.CalmInChaos, "Calm in chaos", true),
     ElectroShedding(ItemRarityEnums.Legendary,  ImageEnums.Electroshedding, "Electro Shedding", true),
     PlasmaCoatedBullets(ItemRarityEnums.Common, ImageEnums.Starcraft2_Blue_Flame, "Plasma Bullets", true),
 
@@ -71,7 +71,7 @@ public enum ItemEnums {
     EmergencyRepairBot(ItemRarityEnums.Common,  ImageEnums.Starcraft2_Vespene_Drone, "Repair Bot", true),
     Overclock(ItemRarityEnums.Common,  ImageEnums.Starcraft2_Overclock, "Overclock", true),
     PlasmaLauncher(ItemRarityEnums.Rare,  ImageEnums.Starcraft2_Focused_Crystal, "Plasma Launcher", true),
-    GuardianDrone(ItemRarityEnums.Rare,  ImageEnums.Starcraft2_Seeker_Missile, "Guardian Drone", true),
+    GuardianDrone(ItemRarityEnums.Common,  ImageEnums.Starcraft2_Seeker_Missile, "Guardian Drone", true),
     CriticalOverloadCapacitor(ItemRarityEnums.Rare,  ImageEnums.Starcraft2_Auto_Tracking, "Precision Overloader", true),
     PiercingMissiles(ItemRarityEnums.Legendary,  ImageEnums.PiercingLaser, "Piercing Lasers", true),
     VIPTicket(ItemRarityEnums.Legendary,  ImageEnums.VIPTicket, "VIP Ticket", true),

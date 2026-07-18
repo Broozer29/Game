@@ -19,6 +19,7 @@ import net.riezebos.bruus.tbd.game.util.collision.CollisionDetector;
 import net.riezebos.bruus.tbd.game.util.collision.CollisionInfo;
 import net.riezebos.bruus.tbd.game.util.performancelogger.PerformanceLogger;
 import net.riezebos.bruus.tbd.game.util.performancelogger.PerformanceLoggerManager;
+import net.riezebos.bruus.tbd.guiboards.BoardManager;
 import net.riezebos.bruus.tbd.visualsandaudio.data.DataClass;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.AnimationManager;
@@ -212,6 +213,9 @@ public class FriendlyManager {
                 CollisionInfo collisionInfo = CollisionDetector.getInstance().detectCollision(spaceShip, finishedLevelPortal);
                 if (collisionInfo != null && finishedLevelPortal.getTransparancyAlpha() >= 0.5f) {
                     gameState.setGameState(GameStatusEnums.Level_Completed);
+                    if (gameState.getStagesCompleted() == 0) { //choose a free relic at the start of the game
+                        BoardManager.getInstance().getGameBoard().showRelicSelection();
+                    }
                     finishedLevelPortal.setTransparancyAlpha(true, 1.0f, -0.02f);
                     finishedLevelPortal.setSpawned(false);
                 }

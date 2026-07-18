@@ -240,7 +240,7 @@ public class PrimaryPlayerGun {
 
     private void playFiringAudio(PlayerPrimaryAttackTypes playerAttackType) {
         switch (playerAttackType) {
-            case Laserbeam -> playMissileAudio(AudioEnums.NewPlayerLaserbeam);
+//            case Laserbeam -> playMissileAudio(AudioEnums.NewPlayerLaserbeam);
             case Flamethrower -> playMissileAudio(AudioEnums.Firewall);
         }
     }

@@ -11,7 +11,7 @@ import net.riezebos.bruus.tbd.game.items.enums.ItemApplicationEnum;
 
 public class GreedIsGood extends Item {
     public static int mineralsPerPickup = 25;
-    public static float mineralsPerPickupChance = 0.1f;
+    public static float mineralsPerPickupChance = 0.125f;
 
     public GreedIsGood() {
         super(ItemEnums.GreedIsGood, 1, ItemApplicationEnum.AfterCollision);

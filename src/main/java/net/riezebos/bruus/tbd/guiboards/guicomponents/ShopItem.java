@@ -1,5 +1,7 @@
 package net.riezebos.bruus.tbd.guiboards.guicomponents;
 
+import net.riezebos.bruus.tbd.game.gamestate.GameState;
+import net.riezebos.bruus.tbd.game.gamestate.GameStatusEnums;
 import net.riezebos.bruus.tbd.game.gamestate.save.SaveManager;
 import net.riezebos.bruus.tbd.game.items.Item;
 import net.riezebos.bruus.tbd.game.items.ItemDescriptionRetriever;
@@ -85,7 +87,7 @@ public class ShopItem extends GUIComponent {
     }
 
     public void purchaseItemInShop() {
-        if (shopItemInformation.getItemRarity().equals(ItemRarityEnums.Relic)) {
+        if (shopItemInformation.getItemRarity().equals(ItemRarityEnums.Relic) && GameState.getInstance().getGameState().equals(GameStatusEnums.SelectingRelic)) {
             PlayerInventory.getInstance().addItem(shopItemInformation.getItem());
             SaveManager.getInstance().exportCurrentSave();
             AudioManager.getInstance().addAudio(AudioEnums.GenericSelect);

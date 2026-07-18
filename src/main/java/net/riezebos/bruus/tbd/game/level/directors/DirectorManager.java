@@ -225,11 +225,11 @@ public class DirectorManager {
         if (minerals >= 0 && minerals <= 300) {
             multiplier = 1.25f;
         } else if (minerals >= 600 && minerals <= 900) {
-            multiplier = 0.75f;
+            multiplier = 0.8f;
         } else if (minerals >= 900 && minerals <= 1200) {
-            multiplier = 0.5f;
+            multiplier = 0.6f;
         } else if (minerals >= 1200) {
-            multiplier = 0.25f;
+            multiplier = 0.4f;
         }
 
         return multiplier;

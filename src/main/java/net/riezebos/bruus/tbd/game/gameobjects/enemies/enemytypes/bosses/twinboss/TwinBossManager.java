@@ -1,9 +1,9 @@
 package net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.twinboss;
 
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.BossActionable;
-import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.twinboss.behaviour.TwinBossBoxManouvre;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.twinboss.behaviour.TwinBossLaserbeamCentreManouvre;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.twinboss.behaviour.TwinBossLeftRightManouvre;
+import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.twinboss.behaviour.TwinBossProjectileBombManouvre;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.twinboss.behaviour.TwinBossQuickMissileAttack;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
 
@@ -34,7 +34,7 @@ public class TwinBossManager {
         resetTwinBossManager();
         twinBossList.clear();
         //These resets are required IF the bosses die whilst attacking, as the attacks will not be properly reset by the activateBehaviour method and they must be reset due to static variables
-        TwinBossBoxManouvre.resetBehaviour();
+        TwinBossProjectileBombManouvre.resetBehaviour();
         TwinBossLeftRightManouvre.resetBehaviour();
         TwinBossQuickMissileAttack.resetBehaviour();
         TwinBossLaserbeamCentreManouvre.resetBehaviour();
@@ -63,8 +63,8 @@ public class TwinBossManager {
         twinBossCurrentHealth = 0;
 
         //recreate behaviour for all enemies
-        TwinBossBoxManouvre twinBossBoxManouvre = new TwinBossBoxManouvre();
-        bossBehaviourList.add(twinBossBoxManouvre);
+        TwinBossProjectileBombManouvre twinBossProjectileBombManouvre = new TwinBossProjectileBombManouvre();
+        bossBehaviourList.add(twinBossProjectileBombManouvre);
 
         TwinBossLeftRightManouvre twinBossLeftRightManouvre = new TwinBossLeftRightManouvre();
         bossBehaviourList.add(twinBossLeftRightManouvre);
