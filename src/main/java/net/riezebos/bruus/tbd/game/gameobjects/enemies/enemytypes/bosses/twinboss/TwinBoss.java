@@ -5,6 +5,7 @@ import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyConfiguration;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyManager;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.BossActionable;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.laserbeams.Laserbeam;
+import net.riezebos.bruus.tbd.game.gameobjects.missiles.laserbeams.LaserbeamIndicator;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
 import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SpaceShip;
@@ -34,6 +35,7 @@ public class TwinBoss extends Enemy {
     private Point pointToTeleportBackTo = null;
 
     private List<Laserbeam> laserbeamList = new ArrayList<>();
+    private List<LaserbeamIndicator> laserbeamIndicatorList = new ArrayList<>();
 
 
     //todo the original sprite does not have identical dimensions for each image in the animation, need to go to GIMP and correct it so the boss doesnt jump around after cropping
@@ -104,7 +106,7 @@ public class TwinBoss extends Enemy {
 
     @Override
     public void triggerOnDeathActions() {
-        if(!TwinBossManager.isHasGrantedKillRewards()) {
+        if (!TwinBossManager.isHasGrantedKillRewards()) {
             GameStatsTracker.getInstance().addEnemyKilled(1);
             PlayerProfileManager.getInstance().exportCurrentProfile();
             GameState.getInstance().increaseBossDefeated();
@@ -161,7 +163,7 @@ public class TwinBoss extends Enemy {
     public void rotateAfterMovement() {
         if (this.isAllowedVisualsToRotate()) {
             SpaceShip spaceShip = PlayerManager.getInstance().getClosestSpaceShip(this);
-            if(spaceShip != null){
+            if (spaceShip != null) {
                 this.rotateGameObjectTowards(
                         spaceShip.getCenterXCoordinate(),
                         spaceShip.getCenterYCoordinate(),
@@ -199,8 +201,8 @@ public class TwinBoss extends Enemy {
         this.laserbeamList.add(laserbeam);
     }
 
-    public void clearLaserbeams(){
-        for(Laserbeam laserbeam : this.laserbeamList) {
+    public void clearLaserbeams() {
+        for (Laserbeam laserbeam : this.laserbeamList) {
             laserbeam.setVisible(false);
         }
         this.laserbeamList.clear();
@@ -209,4 +211,20 @@ public class TwinBoss extends Enemy {
     public List<Laserbeam> getLaserbeamList() {
         return laserbeamList;
     }
+
+    public void addLaserbeamIndicator(LaserbeamIndicator laserbeamIndicator) {
+        this.laserbeamIndicatorList.add(laserbeamIndicator);
+    }
+
+    public void clearLaserbeamIndicators() {
+        for (LaserbeamIndicator laserbeamIndicator : laserbeamIndicatorList) {
+            laserbeamIndicator.setActive(false);
+        }
+        this.laserbeamIndicatorList.clear();
+    }
+
+    public List<LaserbeamIndicator> getLaserbeamIndicatorList() {
+        return laserbeamIndicatorList;
+    }
+
 }

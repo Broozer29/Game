@@ -18,7 +18,7 @@ public class GameState {
 
     private double gameSeconds;
     private double levelStartTime;
-    private int stagesCompleted;
+    private int stagesCompleted = 1;
     private long gameTicksExecuted;
 
 
@@ -40,7 +40,7 @@ public class GameState {
         setDELAY(15);
         this.gameTicksExecuted = 0;
         this.gameSeconds = 0;
-        this.stagesCompleted = 0;
+        this.stagesCompleted = 1; //start op 1 zodat de 1e boss 1 level eerder spawned
         this.monsterLevel = 0;
         this.initialOffset = (1 / 0.33f);
         this.bossesDefeated = 0;

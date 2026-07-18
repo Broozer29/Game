@@ -9,6 +9,14 @@ import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteAnimation;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteAnimationConfiguration;
 
 public class ShurikenMiniBoss extends Enemy {
+
+    /*
+
+        Rework: Make it smaller, slightly slower but do something on each bounce. Leave a stationary drone or something, make it a nuisance if it stays alive too long
+        placed drones are destructable and detonate when this dies
+     */
+
+
     public ShurikenMiniBoss(SpriteAnimationConfiguration spriteAnimationConfigurationion, EnemyConfiguration enemyConfiguration, MovementConfiguration movementConfiguration) {
         super(spriteAnimationConfigurationion, enemyConfiguration, movementConfiguration);
         this.setAllowedVisualsToRotate(false);

@@ -15,7 +15,7 @@ import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
 
 public class CannisterOfGasoline extends Item {
 
-    public static float igniteDamageBonus = 0.2f;
+    public static float igniteDamageBonus = 0.3f;
 
     public CannisterOfGasoline() {
         super(ItemEnums.CannisterOfGasoline, 1, ItemApplicationEnum.BeforeCollision); //Before collision to ensure the explosion goes off even if the target already has 0 HP

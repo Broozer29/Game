@@ -22,24 +22,24 @@ public class ItemDescriptionRetriever {
                                 (generics + class specific + shared = total amount)
             CAPTAIN:
                 Relics:         7 + 6 + 1   = 14
-                Legendaries:    5 + 2 + 1   = 8
-                Rares:          6 + 2       = 8
-                Commons:        4 + 3 + 1   = 8
+                Legendaries:    4 + 3 + 1   = 8
+                Rares:          4 + 2       = 6
+                Commons:        6 + 3 + 1   = 10
                 TOTAL:                      = 37 (24 can be rolled in the shop)
 
             FIREFIGHTER:
                 Relics:         7 + 2 + 1   = 10
-                Legendaries:    5 + 6 + 1   = 12
-                Rares:          6 + 3       = 9
-                Commons:        4 + 1       = 5
-                TOTAL:                      = 35 (26 can be rolled in the shop)
+                Legendaries:    4 + 6 + 1   = 11
+                Rares:          4 + 3       = 7
+                Commons:        6 + 1       = 7
+                TOTAL:                      = 34 (25 can be rolled in the shop)
 
             CARRIER:
                 Relics:         7 + 2       = 9
-                Legendaries:    5 + 6 + 1   = 12
-                Rares:          6 + 6       = 12
-                Commons:        4 + 2 + 1   = 7
-                TOTAL:                      = 39 (31 can be rolled in the shop)
+                Legendaries:    4 + 6 + 1   = 11
+                Rares:          5 + 6       = 11
+                Commons:        5 + 2 + 1   = 8
+                TOTAL:                      = 38 (30 can be rolled in the shop)
 
 
 
@@ -55,10 +55,9 @@ public class ItemDescriptionRetriever {
     public static String getDescriptionOfItem(ItemEnums itemEnums) {
         switch (itemEnums) {
             //--------------------------------------generic items--------------------------------------
-            //6
+            //7
             case GlassCannon -> {
-                return "You deal double damage. You take double damage.";
-            } //relic
+                return "You deal double damage. You take double damage.";} //relic
             case HelpRequested -> {
                 return "Contracts sold in the shop are now free and always reward Legendary quality items. Contracts now require " + Math.round((Contract.killCountRequired * (1 + HelpRequested.additionalKillsRequiredModifier))) + " kills to be completed.";
             } //relic
@@ -77,15 +76,12 @@ public class ItemDescriptionRetriever {
             case SpawnSpaceStationTBD -> {
                 return "Killing an enemy spawns a friendly stationary drone that attacks nearby enemies. Up to 4 drones per player can be spawned at a time.";
             } //relic
-            case WisdomBall -> {return "Refreshes in the shop have a chance to be more beneficial";}
+            case WisdomBall -> {return "Refreshes in the shop have a chance to be wondrous.";}
 
 
-            //5
+            //4
             case VIPTicket -> {
                 return "When entering the shop, grants 1 FREE shop reroll.";
-            } //legendary
-            case ElectroShedding -> {
-                return "Electroshred now permanently reduces enemy armor by " + Math.round(ElectroShedding.armorReduction) + " (+" + Math.round(ElectroShedding.armorReduction) + ") whenever it deals damage. Losing armor increases ALL damage taken.";
             } //legendary
             case Guillotine -> {
                 return "Enemies that are damaged below " + Math.round(Guillotine.hitpointsThreshold * 100) + " % (+" + Math.round(Guillotine.hitpointsThreshold * 100) + "%) of their hitpoints are instantly killed.";
@@ -97,7 +93,7 @@ public class ItemDescriptionRetriever {
                 return "Deal " + Math.round(CalmInChaos.damageBonus * 100) + "% (+" + Math.round(CalmInChaos.damageBonus * 100) + "%) additional damage. This bonus is lost for " + CalmInChaos.cooldown + " seconds after taking damage.";
             } //legendary
 
-            //6
+            //4
             case CannisterOfGasoline -> {
                 return "Enemies explode on death, creating an explosion that applies Ignite to enemies dealing " +
                         Math.round(Math.round(PlayerStats.igniteDamageMultiplier * 100) * (PlayerStats.igniteDuration / DamageOverTime.damageInterval)) + "% (+" + Math.round(CannisterOfGasoline.igniteDamageBonus * 100) + "%) damage over " +
@@ -106,20 +102,14 @@ public class ItemDescriptionRetriever {
             case Battery -> {
                 return "Your special attack gains 1 (+1) additional charge. Your special attack recharges " + Math.round(Battery.cooldownReduction * 100) + "% (+ " + Math.round(Battery.cooldownReduction * 100) + "%) faster.";
             } //rare
-            case Contract -> {
-                return "After killing " + Contract.killCountRequired + " enemies, transform into a random rare or legendary item upon entering the shop.";
-            } //rare
             case PlatinumSponge -> {
                 return "Reduces all damage taken by " + Math.round(PlatinumSponge.damageReduction) + " (+" + Math.round(PlatinumSponge.damageReduction) + "). Damage taken cannot be reduced below 1";
-            } //rare
-            case GuardianDrone -> {
-                return "Gain 1 orbiting drone. It attacks automatically dealing 100% damage.";
             } //rare
             case CriticalOverloadCapacitor -> {
                 return "Critical strikes deal an additional " + Math.round(CriticalOverloadCapacitor.damageMultiplier * 100) + "% (+" + Math.round(CriticalOverloadCapacitor.damageMultiplier * 100) + "%) damage.";
             } //rare
 
-            //4
+            //6
             case EmergencyRepairBot -> {
                 return "When dropping below " + Math.round(EmergencyRepairBot.healthActivationRatio * 100) + "% health, instantly heals you for " +
                         Math.round(EmergencyRepairBot.healingFactor * 100) + "% max hitpoints. Consumed on use.";
@@ -137,6 +127,12 @@ public class ItemDescriptionRetriever {
                         String.format("%.1f", value) +
                         ") hitpoints per second.";
             } //commmon
+            case GuardianDrone -> {
+                return "Gain 1 orbiting drone. It attacks automatically dealing 100% damage.";
+            } //common
+            case Contract -> {
+                return "After killing " + Contract.killCountRequired + " enemies, transform into a random rare or legendary item upon entering the shop.";
+            } //common
             //--------------------------------------captain items--------------------------------------
             //6
             case BouncingLasers -> {
@@ -170,6 +166,9 @@ public class ItemDescriptionRetriever {
             } //legendary
             case ExplosiveLaserbeams -> {
                 return "Your missiles cause an explosion when colliding with enemies dealing " + Math.round(ExplosiveLaserbeams.damageModifier * 100) + "% (+" + Math.round(ExplosiveLaserbeams.damageModifier * 100) + "%) damage.";
+            } //legendary
+            case ElectroShedding -> {
+                return "Electroshred now permanently reduces enemy armor by " + Math.round(ElectroShedding.armorReduction) + " (+" + Math.round(ElectroShedding.armorReduction) + ") whenever it deals damage. Losing armor increases ALL damage taken.";
             } //legendary
 
             //2
@@ -333,7 +332,7 @@ public class ItemDescriptionRetriever {
                 return "Your missiles apply damage over time. Enemies take " +
                         Math.round(Math.round(PlasmaCoatedBullets.burningDamage * 100) * (PlasmaCoatedBullets.duration / DamageOverTime.damageInterval)) +
                         "% (+" +
-                        Math.round(Math.round(PlasmaCoatedBullets.burningDamage * 100) * (PlasmaCoatedBullets.duration / DamageOverTime.damageInterval)) + "%) damage over " +
+                        Math.round(Math.round(PlasmaCoatedBullets.burningDamage * 100) * (PlasmaCoatedBullets.duration / DamageOverTime.damageInterval)) + "%) damage every " +
                         PlasmaCoatedBullets.duration + " seconds.";
             } //common -> carrier/captain
 

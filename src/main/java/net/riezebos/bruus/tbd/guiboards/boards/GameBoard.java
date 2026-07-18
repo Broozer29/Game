@@ -82,14 +82,11 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
     private DataClass data = DataClass.getInstance();
     private AudioDatabase audioDatabase = AudioDatabase.getInstance();
     private GameState gameState = GameState.getInstance();
-    private final int boardWidth = data.getWindowWidth();
-    private final int boardHeight = data.getWindowHeight();
 
     private float zoningInAlpha = 1.0f;
     private float zoningOutAlpha = 0.0f;
 
     private long inputDelay = 0;
-    private static final long MOVE_COOLDOWN = 100;
 
     private boolean hasResetManagersForNextLevel = false;
     private BoardManager boardManager = BoardManager.getInstance();
@@ -148,7 +145,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
         addKeyListener(new KeyboardListener());
         setFocusable(true);
         setBackground(Color.BLACK);
-        setPreferredSize(new Dimension(boardWidth, boardHeight));
+        setPreferredSize(new Dimension(data.getWindowWidth(), data.getWindowHeight()));
     }
 
     public void startGame() {
@@ -427,8 +424,8 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
 
 
         //Draw the next level/main menu instructions
-        if (inputDelay > MOVE_COOLDOWN) {
-            msgToDraw = "Press fire to go back to the main menu";
+        if (inputDelay > DataClass.CONTROLLER_INPUT_COOLDOWN * 2) {
+            msgToDraw = "Press any button to go back to the main menu";
             int goNextYCoordinate = Math.round(gameOverCard.getYCoordinate() + (gameOverCard.getHeight() * 0.9f));
             g.drawString(msgToDraw, firstRowXCoordinate, goNextYCoordinate);
         }
@@ -445,7 +442,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
         g2d.setColor(new Color(0, 0, 0, zoningInAlpha));
 
         // Draw a rectangle covering the whole screen
-        g2d.fillRect(0, 0, boardWidth, boardHeight + 5);
+        g2d.fillRect(0, 0, data.getWindowWidth(), data.getWindowHeight() + 5);
 
         // Decrease alpha for next time
         zoningInAlpha -= 0.02f; // Adjust this value to control the speed of the fade
@@ -461,7 +458,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
         g2d.setColor(new Color(0, 0, 0, zoningOutAlpha));
 
         // Draw a rectangle covering the whole screen
-        g2d.fillRect(0, 0, boardWidth, boardHeight + 5);
+        g2d.fillRect(0, 0, data.getWindowWidth(), data.getWindowHeight() + 5);
 
         // Increase alpha for next time
         zoningOutAlpha += 0.02f; // Adjust this value to control the speed of the fade
@@ -1047,39 +1044,45 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
 
     // Called on every action/input. Essentially the infinite loop that plays the game
     public void actionPerformed(ActionEvent e) {
-        if (gameState.getGameState() == GameStatusEnums.Zoning_In) {
-            if (this.zoningInAlpha <= 0.05) {
-                levelManager.startLevel();
-                zoningInAlpha = 1.0f;
+        try {
+            if (gameState.getGameState() == GameStatusEnums.Zoning_In) {
+                if (this.zoningInAlpha <= 0.05) {
+                    levelManager.startLevel();
+                    zoningInAlpha = 1.0f;
+                }
             }
-        }
 
-        if (gameState.getGameState() != GameStatusEnums.Dead && gameState.getGameState() != GameStatusEnums.Paused) {
-            PerformanceLoggerManager.logUpdateGameTick(playerManager.getPerformanceLogger(), playerManager::updateGameTick);
-            PerformanceLoggerManager.logUpdateGameTick(InteractableManager.getInstance().getPerformanceLogger(), InteractableManager.getInstance()::updateGameTick);
-            PerformanceLoggerManager.logUpdateGameTick(missileManager.getPerformanceLogger(), missileManager::updateGameTick);
-            PerformanceLoggerManager.logUpdateGameTick(enemyManager.getPerformanceLogger(), enemyManager::updateGameTick);
-            PerformanceLoggerManager.logUpdateGameTick(levelManager.getPerformanceLogger(), levelManager::updateGameTick);
-            PerformanceLoggerManager.logUpdateGameTick(animationManager.getPerformanceLogger(), animationManager::updateGameTick);
-            PerformanceLoggerManager.logUpdateGameTick(backgroundManager.getPerformanceLogger(), backgroundManager::updateGameTick);
-            PerformanceLoggerManager.logUpdateGameTick(audioDatabase.getPerformanceLogger(), audioDatabase::updateGameTick);
-            PerformanceLoggerManager.logUpdateGameTick(explosionManager.getPerformanceLogger(), explosionManager::updateGametick);
-            PerformanceLoggerManager.logUpdateGameTick(friendlyManager.getPerformanceLogger(), friendlyManager::updateGameTick);
-            PerformanceLoggerManager.logUpdateGameTick(ThornsDamageDealer.getInstance().getPerformanceLogger(), ThornsDamageDealer.getInstance()::updateGameTick);
-            PerformanceLoggerManager.logUpdateGameTick(DirectorManager.getInstance().getPerformanceLogger(), DirectorManager.getInstance()::updateGameTick);
-            gameState.addGameTicks(1);
-        }
-        executeControllerInput();
+            if (gameState.getGameState() != GameStatusEnums.Dead && gameState.getGameState() != GameStatusEnums.Paused) {
+                PerformanceLoggerManager.logUpdateGameTick(playerManager.getPerformanceLogger(), playerManager::updateGameTick);
+                PerformanceLoggerManager.logUpdateGameTick(InteractableManager.getInstance().getPerformanceLogger(), InteractableManager.getInstance()::updateGameTick);
+                PerformanceLoggerManager.logUpdateGameTick(missileManager.getPerformanceLogger(), missileManager::updateGameTick);
+                PerformanceLoggerManager.logUpdateGameTick(enemyManager.getPerformanceLogger(), enemyManager::updateGameTick);
+                PerformanceLoggerManager.logUpdateGameTick(levelManager.getPerformanceLogger(), levelManager::updateGameTick);
+                PerformanceLoggerManager.logUpdateGameTick(animationManager.getPerformanceLogger(), animationManager::updateGameTick);
+                PerformanceLoggerManager.logUpdateGameTick(backgroundManager.getPerformanceLogger(), backgroundManager::updateGameTick);
+                PerformanceLoggerManager.logUpdateGameTick(audioDatabase.getPerformanceLogger(), audioDatabase::updateGameTick);
+                PerformanceLoggerManager.logUpdateGameTick(explosionManager.getPerformanceLogger(), explosionManager::updateGametick);
+                PerformanceLoggerManager.logUpdateGameTick(friendlyManager.getPerformanceLogger(), friendlyManager::updateGameTick);
+                PerformanceLoggerManager.logUpdateGameTick(ThornsDamageDealer.getInstance().getPerformanceLogger(), ThornsDamageDealer.getInstance()::updateGameTick);
+                PerformanceLoggerManager.logUpdateGameTick(DirectorManager.getInstance().getPerformanceLogger(), DirectorManager.getInstance()::updateGameTick);
+                gameState.addGameTicks(1);
+            }
+            executeControllerInput();
 
-        if (shouldIncreaseInputDelay()) {
-            inputDelay++;
-        }
+            if (shouldIncreaseInputDelay()) {
+                inputDelay++;
+            }
 
-        if (lastKnownState == null || lastKnownState != gameState.getGameState()) {
-            lastKnownState = gameState.getGameState();
-            System.out.println("Last known gamestate: " + lastKnownState);
+            if (lastKnownState == null || lastKnownState != gameState.getGameState()) {
+                lastKnownState = gameState.getGameState();
+                System.out.println("Last known gamestate: " + lastKnownState);
+            }
+            repaint(0, 0, DataClass.getInstance().getWindowWidth(), DataClass.getInstance().getWindowHeight() + 5);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            drawTimer.stop();
+            System.exit(1);
         }
-        repaint(0, 0, DataClass.getInstance().getWindowWidth(), DataClass.getInstance().getWindowHeight() + 5);
     }
 
     private boolean shouldIncreaseInputDelay() {
@@ -1128,7 +1131,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
             }
 
             if (gameState.getGameState() == GameStatusEnums.Dead) {
-                if (inputDelay >= MOVE_COOLDOWN) {
+                if (inputDelay >= DataClass.CONTROLLER_INPUT_COOLDOWN) {
                     boardManager.initMainMenu();
                     drawTimer.stop();
                     inputDelay = 0;
@@ -1138,7 +1141,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
 
             if (gameState.getGameState() == GameStatusEnums.SelectingRelic) {
                 //navigate left/right
-                if (inputDelay >= MOVE_COOLDOWN / 5) {
+                if (inputDelay >= DataClass.CONTROLLER_INPUT_COOLDOWN / 5) {
                     if (e.getKeyCode() == KeyEvent.VK_LEFT || e.getKeyCode() == KeyEvent.VK_A) {
                         navigateLeft();
                     } else if (e.getKeyCode() == KeyEvent.VK_RIGHT || e.getKeyCode() == KeyEvent.VK_D) {
@@ -1149,7 +1152,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
                     inputDelay = 0;
                 }
             } else if (gameState.getGameState() == GameStatusEnums.Show_Level_Score_Card) {
-                if (inputDelay >= MOVE_COOLDOWN) {
+                if (inputDelay >= DataClass.CONTROLLER_INPUT_COOLDOWN) {
                     gameState.setGameState(GameStatusEnums.Transition_To_Next_Stage);
                     inputDelay = 0;
                 }
@@ -1201,7 +1204,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
                     gameState.setGameState(GameStatusEnums.Paused);
                     audioManager.pauseAllAudio();
                     inputDelay = 0;
-                } else if (gameState.getGameState().equals(GameStatusEnums.Paused) && inputDelay >= (MOVE_COOLDOWN / 2)) {
+                } else if (gameState.getGameState().equals(GameStatusEnums.Paused) && inputDelay >= (DataClass.CONTROLLER_INPUT_COOLDOWN / 2)) {
                     gameState.setGameState(GameStatusEnums.Playing);
                     audioManager.resumeAllAudio();
                     inputDelay = 0;
@@ -1211,7 +1214,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
             //Check if we need to go to the main menu after dying
             if (gameState.getGameState() == GameStatusEnums.Dead) {
                 controllerManager.pollControllers();
-                if (controllerManager.isFirePressed() && inputDelay >= MOVE_COOLDOWN) {
+                if (controllerManager.isFirePressed() && inputDelay >= DataClass.CONTROLLER_INPUT_COOLDOWN) {
                     boardManager.initMainMenu();
                     inputDelay = 0;
                     GameStatsTracker.getInstance().resetGameStatsTracker();
@@ -1220,23 +1223,23 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
                 //Check if we need to go to the shop
             } else if (gameState.getGameState() == GameStatusEnums.Show_Level_Score_Card) {
                 controllerManager.pollControllers();
-                if (controllerManager.isFirePressed() && inputDelay >= MOVE_COOLDOWN) {
+                if (controllerManager.isFirePressed() && inputDelay >= DataClass.CONTROLLER_INPUT_COOLDOWN) {
                     gameState.setGameState(GameStatusEnums.Transition_To_Next_Stage);
                     inputDelay = 0;
                 }
             } else if (gameState.getGameState() == GameStatusEnums.SelectingRelic) {
                 controllerManager.pollControllers();
-                if (controllerManager.isFirePressed() && inputDelay >= MOVE_COOLDOWN) {
+                if (controllerManager.isFirePressed() && inputDelay >= DataClass.CONTROLLER_INPUT_COOLDOWN) {
                     selectedComponent.activateComponent();
                     inputDelay = 0;
-                } else if (controllerManager.isPrimaryControllerLeftPressed() && inputDelay >= MOVE_COOLDOWN) {
+                } else if (controllerManager.isPrimaryControllerLeftPressed() && inputDelay >= DataClass.CONTROLLER_INPUT_COOLDOWN) {
                     if(isUsersFirstInputForRelicselection){
                         overRideFirstSelection();
                         return; //exit early
                     }
                     navigateLeft();
                     inputDelay = 0;
-                } else if (controllerManager.isPrimaryControllerRightPressed() && inputDelay >= MOVE_COOLDOWN) {
+                } else if (controllerManager.isPrimaryControllerRightPressed() && inputDelay >= DataClass.CONTROLLER_INPUT_COOLDOWN) {
                     if(isUsersFirstInputForRelicselection){
                         overRideFirstSelection();
                         return; //exit early
@@ -1285,6 +1288,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
 
     public void signalThatRelicHasBeenChosen() {
         this.gameState.setGameState(GameStatusEnums.Show_Level_Score_Card);
+        LevelManager.getInstance().finishLevel();
         showRelicSelection = false;
         isUsersFirstInputForRelicselection = false;
         inputDelay = 0;

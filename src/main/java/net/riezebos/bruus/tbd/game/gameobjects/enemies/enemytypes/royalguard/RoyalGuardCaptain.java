@@ -45,12 +45,12 @@ public class RoyalGuardCaptain extends Enemy {
         this.destructionAnimation = new SpriteAnimation(destroyedExplosionfiguration);
         this.destructionAnimation.setAnimationScale(1f);
         this.damage = 4;
-        this.attackSpeed = 1.5f;
+        this.attackSpeed = 2.5f;
         this.knockbackStrength = 8;
         this.allowedVisualsToRotate = false;
 
         this.chargingUpAttackAnimation.changeImagetype(ImageEnums.PinkLaserbeamCharging);
-        this.chargingUpAttackAnimation.setFrameDelay(3);
+        this.chargingUpAttackAnimation.setFrameDelay(4);
     }
 
     @Override

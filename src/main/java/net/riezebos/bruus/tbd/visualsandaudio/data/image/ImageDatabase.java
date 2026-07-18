@@ -210,6 +210,7 @@ public class ImageDatabase {
     private BufferedImage letter_Six;
     private BufferedImage letter_Seven;
     private BufferedImage letter_Eight;
+    private BufferedImage wisdomball;
     private BufferedImage letter_Nine;
     private BufferedImage emeraldGem5;
     private BufferedImage topazGem7;
@@ -277,6 +278,9 @@ public class ImageDatabase {
     private BufferedImage spaceclouds2;
     private BufferedImage spaceclouds3;
     private BufferedImage spaceclouds4;
+    private BufferedImage calminchaos;
+
+
     private List<BufferedImage> cashCarrierFrames = new ArrayList<>();
     private List<BufferedImage> spaceStationBossFrames = new ArrayList<>();
     private List<BufferedImage> impactExplosionOneFrames = new ArrayList<>();
@@ -579,6 +583,7 @@ public class ImageDatabase {
         this.explosiveGreed = imgLoader.getImage(ImageEnums.ExplosiveGreed);
         this.blueNebula7 = imgLoader.getImage(ImageEnums.Blue_Nebula_7);
         this.blueNebula8 = imgLoader.getImage(ImageEnums.Blue_Nebula_8);
+        this.calminchaos = imgLoader.getImage(ImageEnums.CalmInChaos);
         this.blueNebula9 = imgLoader.getImage(ImageEnums.Blue_Nebula_9);
         this.starfield1 = imgLoader.getImage(ImageEnums.Star_Field_1);
         this.starfield2 = imgLoader.getImage(ImageEnums.Star_Field_2);
@@ -936,10 +941,15 @@ public class ImageDatabase {
         this.letter_Seven = imgLoader.getImage(ImageEnums.Letter_Seven);
         this.letter_Eight = imgLoader.getImage(ImageEnums.Letter_Eight);
         this.letter_Nine = imgLoader.getImage(ImageEnums.Letter_Nine);
+        this.wisdomball = imgLoader.getImage(ImageEnums.WondrousWisdomball);
     }
 
     public BufferedImage getImage(ImageEnums imageType) {
         switch (imageType) {
+            case CalmInChaos:
+                return this.calminchaos;
+            case WondrousWisdomball:
+                return this.wisdomball;
             case ChooseDifficulty:
                 return this.chooseDifficulty;
             case Guillotine:

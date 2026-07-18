@@ -27,7 +27,7 @@ public class RedBossSpawnFourDirectionalDrone implements BossActionable {
     private double spawnCooldown = 25;
     private Random random;
     private int priority = 3;
-    private int amountToSpawn = 1;
+    private int amountToSpawn = 2;
 
     private SpriteAnimation spawnAnimation;
 
@@ -112,11 +112,11 @@ public class RedBossSpawnFourDirectionalDrone implements BossActionable {
         fourDirectionalDrone.setOwnerOrCreator(enemy);
 
         //Zet de Y coordinates uit elkaar zodat de kruisjes verschillende kanten op gaan
-//        if (spawnedCounter == 0 || spawnedCounter % 2 == 0) {
-//            point.setY(getYCoordinate(true));
-//        } else {
-//            point.setY(getYCoordinate(false));
-//        }
+        if (spawnedCounter == 0 || spawnedCounter % 2 == 0) {
+            point.setY(getYCoordinate(true));
+        } else {
+            point.setY(getYCoordinate(false));
+        }
         spawnedCounter++;
         if (spawnedCounter % amountToSpawn == 0) {
             spawnedCounter = 0;
@@ -153,6 +153,6 @@ public class RedBossSpawnFourDirectionalDrone implements BossActionable {
         return enemy.isAllowedToFire()
                 && GameState.getInstance().getGameSeconds() >= lastSpawnedTime + spawnCooldown
                 && WithinVisualBoundariesCalculator.isWithinBoundaries(enemy)
-                && EnemyManager.getInstance().getEnemiesByType(EnemyEnums.FourDirectionalDrone).size() < 4;
+                && EnemyManager.getInstance().getEnemiesByType(EnemyEnums.FourDirectionalDrone).size() < 6;
     }
 }

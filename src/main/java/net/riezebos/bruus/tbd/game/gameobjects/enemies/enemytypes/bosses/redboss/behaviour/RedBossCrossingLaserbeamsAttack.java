@@ -21,8 +21,8 @@ import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.Sprit
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteConfiguration;
 
 public class RedBossCrossingLaserbeamsAttack implements BossActionable {
-    private double lastAttackedTime = GameState.getInstance().getGameSeconds() + 5; //Start with a cooldown
-    private double attackCooldown = 30;
+    private double lastAttackedTime = GameState.getInstance().getGameSeconds() - 5; //Start with a cooldown
+    private double attackCooldown = 25;
     private int priority = 10;
 
     public int lowerLaserbeamLowestAngle = 135;

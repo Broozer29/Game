@@ -38,13 +38,13 @@ public class PlasmaLauncher extends Item {
             return; //we cant activate this if the origin or target does not exist
         }
 
-        if(origin.getOwnerOrCreator() == null || !(gameObject.getOwnerOrCreator() instanceof SpaceShip)){
+        if(!(origin.getOwnerOrCreator() instanceof SpaceShip)){
             return; //if the owner is not explicitly the spaceship (player) do not activate, only direct attacks/effects should be able to proc this item
         }
 
         float chance = rand.nextFloat(0.0f, 1.01f); // Generates a float between 0.0 (inclusive) and 1.0 (exclusive)
         if (chance <= procChance) {
-            createPlasmaMissile(origin, gameObject);
+            createPlasmaMissile(origin.getOwnerOrCreator(), gameObject);
         }
     }
 

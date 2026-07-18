@@ -16,7 +16,6 @@ import net.riezebos.bruus.tbd.guiboards.guicomponents.GUIComponent;
 import net.riezebos.bruus.tbd.guiboards.guicomponents.GUITextCollection;
 import net.riezebos.bruus.tbd.guiboards.guicomponents.MenuCursor;
 import net.riezebos.bruus.tbd.visualsandaudio.data.DataClass;
-import net.riezebos.bruus.tbd.visualsandaudio.data.audio.AudioManager;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.AnimationManager;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.Sprite;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteAnimation;
@@ -29,13 +28,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MainMenuBoard extends JPanel implements TimerHolder {
-    private DataClass data = DataClass.getInstance();
     private BackgroundManager backgroundManager = BackgroundManager.getInstance();
     private AnimationManager animationManager = AnimationManager.getInstance();
     private ControllerManager controllers = ControllerManager.getInstance();
-    private final int boardWidth = data.getWindowWidth();
-    private final int boardHeight = data.getWindowHeight();
-    private AudioManager audioManager = AudioManager.getInstance();
 
     private List<GUIComponent> firstColumn = new ArrayList<>();
     private List<GUIComponent> secondColumn = new ArrayList<>();
@@ -56,7 +51,7 @@ public class MainMenuBoard extends JPanel implements TimerHolder {
     private GUIComponent inputMapping;
     private GUITextCollection foundController;
 
-    private GUITextCollection testingButton;
+    private GUITextCollection closeGameButton;
 
     private Timer timer;
     private int controllersConnected = 0;
@@ -70,7 +65,7 @@ public class MainMenuBoard extends JPanel implements TimerHolder {
         addKeyListener(new KeyInputReader());
         setFocusable(true);
         setBackground(Color.BLACK);
-        setPreferredSize(new Dimension(boardWidth, boardHeight));
+        setPreferredSize(new Dimension(DataClass.getInstance().getWindowWidth(), DataClass.getInstance().getWindowHeight()));
 
         if (controllers.getPrimaryController() != null) {
             controllersConnected = controllers.getControllerInputReaders().size();
@@ -92,7 +87,7 @@ public class MainMenuBoard extends JPanel implements TimerHolder {
         menuCursor = MenuBoardCreator.createMenuCursor(selectClassBoard.getComponents().get(0));
         openShopButton = MenuBoardCreator.openShopButton(selectClassBoard);
         continueSaveFile = MenuBoardCreator.continueSaveFileButton(openShopButton);
-        testingButton = MenuBoardCreator.testingButton(continueSaveFile);
+        closeGameButton = MenuBoardCreator.testingButton(continueSaveFile);
         foundController = MenuBoardCreator.foundControllerText(controllersConnected, titleImage);
 
         selectMusicOptionBackgroundCard = MenuBoardCreator.selectMusicPlayerBackgroundCard(startGameBackgroundCard);
@@ -170,8 +165,8 @@ public class MainMenuBoard extends JPanel implements TimerHolder {
             addAllButFirstComponent(continueSaveFile);
         }
 
-//        addToGrid(firstColumn, testingButton.getComponents().get(0), 0, 3);
-//        addAllButFirstComponent(testingButton);
+        addToGrid(firstColumn, closeGameButton.getComponents().get(0), 0, 3);
+        addAllButFirstComponent(closeGameButton);
 
 //        secondColumn.add(selectDefaultMusicButton.getComponents().get(0));
 //        addAllButFirstComponent(selectDefaultMusicButton);
@@ -284,6 +279,10 @@ public class MainMenuBoard extends JPanel implements TimerHolder {
         }
     }
 
+    public void closeGame() {
+        System.exit(1);
+    }
+
     private class KeyInputReader extends KeyAdapter {
 
         @Override
@@ -337,7 +336,6 @@ public class MainMenuBoard extends JPanel implements TimerHolder {
     }
 
     private long lastMoveTime = 0;
-    private static final long MOVE_COOLDOWN = 350; // milliseconds
 
     public void executeControllerInput() {
 
@@ -348,7 +346,7 @@ public class MainMenuBoard extends JPanel implements TimerHolder {
 
             // Left and right navigation
 
-            if (currentTime - lastMoveTime > MOVE_COOLDOWN) {
+            if (currentTime - lastMoveTime > DataClass.CONTROLLER_INPUT_COOLDOWN) {
                 if (controllerInputReader.isInputActive(ControllerInputEnums.MOVE_LEFT)) {
                     // Menu option to the left
                     previousMenuTile();
@@ -395,38 +393,44 @@ public class MainMenuBoard extends JPanel implements TimerHolder {
     /*---------------------------Drawing methods-------------------------------*/
     @Override
     public void paintComponent(Graphics g) {
-        super.paintComponent(g);
-        Graphics2D g2d = (Graphics2D) g.create(); // Create a copy to avoid modifying the original graphics context
-
         try {
-            // Draws all background objects
-            for (BackgroundObject bgObject : backgroundManager.getAllBGO()) {
-                drawImage(g2d, bgObject);
+            super.paintComponent(g);
+            Graphics2D g2d = (Graphics2D) g.create(); // Create a copy to avoid modifying the original graphics context
+
+            try {
+                // Draws all background objects
+                for (BackgroundObject bgObject : backgroundManager.getAllBGO()) {
+                    drawImage(g2d, bgObject);
+                }
+
+                for (SpriteAnimation animation : animationManager.getLowerAnimations()) {
+                    drawAnimation(g2d, animation);
+                }
+
+                drawObjects(g2d);
+
+                for (SpriteAnimation animation : animationManager.getUpperAnimations()) {
+                    drawAnimation(g2d, animation);
+                }
+
+                for (OnScreenText text : OnScreenTextManager.getInstance().getOnScreenTexts()) {
+                    drawText(g2d, text);
+                }
+            } finally {
+                g2d.dispose(); // Ensure resources are released
             }
 
-            for (SpriteAnimation animation : animationManager.getLowerAnimations()) {
-                drawAnimation(g2d, animation);
-            }
+            animationManager.updateGameTick();
+            backgroundManager.updateGameTick();
+            Toolkit.getDefaultToolkit().sync();
 
-            drawObjects(g2d);
-
-            for (SpriteAnimation animation : animationManager.getUpperAnimations()) {
-                drawAnimation(g2d, animation);
-            }
-
-            for (OnScreenText text : OnScreenTextManager.getInstance().getOnScreenTexts()) {
-                drawText(g2d, text);
-            }
-        } finally {
-            g2d.dispose(); // Ensure resources are released
+            // readControllerState();
+            executeControllerInput();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            timer.stop();
+            System.exit(1);
         }
-
-        animationManager.updateGameTick();
-        backgroundManager.updateGameTick();
-        Toolkit.getDefaultToolkit().sync();
-
-        // readControllerState();
-        executeControllerInput();
     }
 
 

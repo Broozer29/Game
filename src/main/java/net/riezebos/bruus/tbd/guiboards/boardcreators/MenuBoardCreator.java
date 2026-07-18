@@ -195,9 +195,9 @@ public class MenuBoardCreator {
         int xCoordinate = component.getXCoordinate();
         int yCoordinate = component.getYCoordinate() + 50;
 
-        GUITextCollection textCollection = new GUITextCollection(xCoordinate,yCoordinate, "TEST BUTTON");
+        GUITextCollection textCollection = new GUITextCollection(xCoordinate,yCoordinate, "CLOSE GAME");
         textCollection.setScale(imageScale);
-        textCollection.setMenuFunctionality(MenuFunctionEnums.ReconnectAllControllers);
+        textCollection.setMenuFunctionality(MenuFunctionEnums.CloseGame);
         return textCollection;
     }
 

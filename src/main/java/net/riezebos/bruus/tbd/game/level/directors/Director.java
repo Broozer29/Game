@@ -219,10 +219,10 @@ public class Director {
         }
 
         if (enemyEnums.equals(EnemyEnums.RoyalGuardCaptain)) {
-            if (this.directorType.equals(DirectorType.Instant) || GameState.getInstance().getCurrentLevelProgression() < 0.15f) { //we dont immediatly want to spawn these bad boys
+            if (this.directorType.equals(DirectorType.Instant) || GameState.getInstance().getCurrentLevelProgression() < 0.35f) { //we dont immediatly want to spawn these bad boys
                 return false;
             }
-            return EnemyManager.getInstance().getAmountOfEnemyTypesAlive(EnemyEnums.RoyalGuardCaptain) < 2;
+            return EnemyManager.getInstance().getAmountOfEnemyTypesAlive(EnemyEnums.RoyalGuardCaptain) < 1;
         }
 
         if (enemyEnums.equals(EnemyEnums.RoyalGuardBarricade)) {

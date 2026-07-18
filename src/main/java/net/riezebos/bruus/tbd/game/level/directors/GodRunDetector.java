@@ -92,6 +92,16 @@ public class GodRunDetector {
     private float sustainSecondsWhenLowGodrunScore = 7.5f;
     private float sustainSecondsWhenHighGodRunScore = 7.5f;
 
+
+    /*
+        GodRunScore effects:
+        Directors: Spawnen iets langzamer voor elke godrunscore, om te balanceren dat ze niet teveel spawnen en meteen hun bonus cash spenderen
+        1.) Directors spawn 35% more often (10-15 sec * 0.65). Directors krijgen 35% bonus credits.
+        2.) Enemies kunnen links en rechts spawnen.
+        3.) Enemy hitpoints schaalt NOG meer met hun huidige level (exponentieel). DifficultyCoefficient groeit 20% harder. Directors krijgen 55% bonus credits
+
+     */
+
     public void updateGodRunStatus() {
         if (GameState.getInstance().getGameMode().equals(GameMode.Nightmare)) {
             this.godRunScore = GameState.getInstance().getStagesCompleted() > 0 ? 3 : 0; //maximum hardcoded for now
@@ -118,12 +128,13 @@ public class GodRunDetector {
             godRunScore++;
         }
 
-        if(gameSecondsWithHighKillRatio >= 35){
+        if(gameSecondsWithHighKillRatio >= 30){
             godRunScore++;
         }
 
-        if (GameState.getInstance().getStagesCompleted() <= 3)
-            godRunScore = 0; //if early game, set the godrunscore to 0 since the levels before the first boss should give the player a grace period to get his build going
+        if (GameState.getInstance().getBossesDefeated() <= 0) {
+            godRunScore = Math.min(godRunScore, 1); //if early game, dont let it progress past 2
+        }
 
         if (lastGodRunScore != godRunScore && now - lastGameSecondsGodRunScoreUpdated >= 10) { //only update the godrunscore a maximum of once every X seconds
             lastGodRunScore = godRunScore;

@@ -41,15 +41,16 @@ public class ExplosiveLaserbeams extends Item {
     private Explosion createExplosion(GameObject applier, GameObject target, CollisionInfo collisionInfo){
         float damage = target.getDamage() * quantity;
         SpriteConfiguration spriteConfiguration = new SpriteConfiguration();
-        spriteConfiguration.setImageType(ImageEnums.Explosion4);
+        spriteConfiguration.setImageType(ImageEnums.Explosion5);
         spriteConfiguration.setxCoordinate(applier.getCenterXCoordinate());
         spriteConfiguration.setyCoordinate(applier.getCenterYCoordinate());
-        spriteConfiguration.setScale(1f);
+        spriteConfiguration.setScale(3f);
 
-        SpriteAnimationConfiguration spriteAnimationConfiguration = new SpriteAnimationConfiguration(spriteConfiguration, 2, false);
+        SpriteAnimationConfiguration spriteAnimationConfiguration = new SpriteAnimationConfiguration(spriteConfiguration, 0, false);
         ExplosionConfiguration explosionConfiguration = new ExplosionConfiguration(true, damage,  false);
         Explosion explosion = new Explosion(spriteAnimationConfiguration, explosionConfiguration);
         explosion.setCenterCoordinates(collisionInfo.getCollisionPoint().getX(), collisionInfo.getCollisionPoint().getY());
+        explosion.setTransparancyAlpha(false, 0.25f, 0);
         return explosion;
     }
 

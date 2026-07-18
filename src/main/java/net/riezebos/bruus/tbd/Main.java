@@ -13,80 +13,108 @@ import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageDatabase;
 import java.awt.*;
 
 public class Main {
-	public static void main(String[] args) {
-		ControllerManager.getInstance().initControllers();
-
-		Platform.startup(() -> {
-			// This initializes the JavaFX application thread, which is needed for MediaPlayer
-		});
-
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				AudioDatabase loadingAudioInstance = AudioDatabase.getInstance();
-				ImageDatabase loadingImageInstance = ImageDatabase.getInstance();
-				BoardManager ex = BoardManager.getInstance();
-
-				preloadThings();
-				ex.initMainMenu();
-				ex.setVisible(true);
-				ex.getMainMenuBoard().requestFocus();
-			}
-		});
-		BoardManager ex = BoardManager.getInstance();
-		ex.getMainMenuBoard().requestFocusInWindow();
-	}
-	private static void preloadThings(){
-		// Load LARGE animations so it doesn't lag upon creation of them
+    public static void main(String[] args) {
+        try {
 
 
-		Runtime runtime = Runtime.getRuntime();
-		long usedMemory = runtime.totalMemory() - runtime.freeMemory();
-		System.out.printf("Before preload memory usage: %.3f GB%n", usedMemory / (1024.0 * 1024.0 * 1024.0));
+            ControllerManager.getInstance().initControllers();
 
-		EnemyEnums enemyEnum = EnemyEnums.Shuriken;
-		Enemy shuriken = EnemyCreator.createEnemy(enemyEnum, 0, 0, Direction.LEFT,
-				enemyEnum.getDefaultScale(), enemyEnum.getMovementSpeed());
-		shuriken.deleteObject();
+            Platform.startup(() -> {
+                // This initializes the JavaFX application thread, which is needed for MediaPlayer
+            });
 
-		enemyEnum = EnemyEnums.SpaceStationBoss;
-		Enemy spaceStation = EnemyCreator.createEnemy(enemyEnum, 0, 0, Direction.LEFT,
-				enemyEnum.getDefaultScale(), enemyEnum.getMovementSpeed());
-		spaceStation.deleteObject();
+            EventQueue.invokeLater(new Runnable() {
+                public void run() {
+                    // Create and show the window with loading screen first
+                    BoardManager ex = BoardManager.getInstance();
+                    ex.setVisible(true);
+                    ex.validate();
+                    ex.repaint();
 
-		enemyEnum = EnemyEnums.ShurikenMiniBoss;
-		Enemy shurikenMiniBoss = EnemyCreator.createEnemy(enemyEnum, 0, 0, Direction.LEFT,
-				enemyEnum.getDefaultScale(), enemyEnum.getMovementSpeed());
-		shurikenMiniBoss.deleteObject();
+                    // Force the loading screen to be painted before continuing
+                    try {
+                        Thread.sleep(150);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
 
-		enemyEnum = EnemyEnums.CashCarrier;
-		Enemy cashCarrier = EnemyCreator.createEnemy(enemyEnum, 0, 0, Direction.LEFT,
-				enemyEnum.getDefaultScale(), enemyEnum.getMovementSpeed());
-		cashCarrier.deleteObject();
+                    // Load assets on a background thread to not block EDT
+                    new Thread(() -> {
+                        System.out.println("Loading assets...");
+                        AudioDatabase loadingAudioInstance = AudioDatabase.getInstance();
+                        ImageDatabase loadingImageInstance = ImageDatabase.getInstance();
+
+                        System.out.println("Preloading assets...");
+                        preloadThings();
+
+                        // Finish initialization back on EDT
+                        EventQueue.invokeLater(() -> {
+                            System.out.println("Finishing initialization...");
+                            ex.finishInitialization();
+                            ex.initMainMenu();
+                            ex.getMainMenuBoard().requestFocus();
+                        });
+                    }).start();
+                }
+            });
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            System.exit(1);
+        }
+    }
+
+    private static void preloadThings() {
+        // Load LARGE animations so it doesn't lag upon creation of them
 
 
-		enemyEnum = EnemyEnums.RedBoss;
-		Enemy redBoss = EnemyCreator.createEnemy(enemyEnum, 0, 0, Direction.LEFT,
-				enemyEnum.getDefaultScale(), enemyEnum.getMovementSpeed());
-		redBoss.deleteObject();
+        Runtime runtime = Runtime.getRuntime();
+        long usedMemory = runtime.totalMemory() - runtime.freeMemory();
+        System.out.printf("Before preload memory usage: %.3f GB%n", usedMemory / (1024.0 * 1024.0 * 1024.0));
 
-		enemyEnum = EnemyEnums.FourDirectionalDrone;
-		Enemy fDrone = EnemyCreator.createEnemy(enemyEnum, 0, 0, Direction.LEFT,
-				enemyEnum.getDefaultScale(), enemyEnum.getMovementSpeed());
-		fDrone.deleteObject();
+        EnemyEnums enemyEnum = EnemyEnums.Shuriken;
+        Enemy shuriken = EnemyCreator.createEnemy(enemyEnum, 0, 0, Direction.LEFT,
+                enemyEnum.getDefaultScale(), enemyEnum.getMovementSpeed());
+        shuriken.deleteObject();
 
-		enemyEnum = EnemyEnums.YellowBoss;
-		Enemy yellowBoss = EnemyCreator.createEnemy(enemyEnum, 0, 0, Direction.LEFT,
-				enemyEnum.getDefaultScale(), enemyEnum.getMovementSpeed());
-		yellowBoss.deleteObject();
+        enemyEnum = EnemyEnums.SpaceStationBoss;
+        Enemy spaceStation = EnemyCreator.createEnemy(enemyEnum, 0, 0, Direction.LEFT,
+                enemyEnum.getDefaultScale(), enemyEnum.getMovementSpeed());
+        spaceStation.deleteObject();
+
+        enemyEnum = EnemyEnums.ShurikenMiniBoss;
+        Enemy shurikenMiniBoss = EnemyCreator.createEnemy(enemyEnum, 0, 0, Direction.LEFT,
+                enemyEnum.getDefaultScale(), enemyEnum.getMovementSpeed());
+        shurikenMiniBoss.deleteObject();
+
+        enemyEnum = EnemyEnums.CashCarrier;
+        Enemy cashCarrier = EnemyCreator.createEnemy(enemyEnum, 0, 0, Direction.LEFT,
+                enemyEnum.getDefaultScale(), enemyEnum.getMovementSpeed());
+        cashCarrier.deleteObject();
+
+
+        enemyEnum = EnemyEnums.RedBoss;
+        Enemy redBoss = EnemyCreator.createEnemy(enemyEnum, 0, 0, Direction.LEFT,
+                enemyEnum.getDefaultScale(), enemyEnum.getMovementSpeed());
+        redBoss.deleteObject();
+
+        enemyEnum = EnemyEnums.FourDirectionalDrone;
+        Enemy fDrone = EnemyCreator.createEnemy(enemyEnum, 0, 0, Direction.LEFT,
+                enemyEnum.getDefaultScale(), enemyEnum.getMovementSpeed());
+        fDrone.deleteObject();
+
+        enemyEnum = EnemyEnums.YellowBoss;
+        Enemy yellowBoss = EnemyCreator.createEnemy(enemyEnum, 0, 0, Direction.LEFT,
+                enemyEnum.getDefaultScale(), enemyEnum.getMovementSpeed());
+        yellowBoss.deleteObject();
 
 //		simulateAttackAngles(true);
 //		simulateAttackAngles(false);
 
-		runtime = Runtime.getRuntime();
-		usedMemory = runtime.totalMemory() - runtime.freeMemory();
-		System.out.printf("After preload memory usage: %.3f GB%n", usedMemory / (1024.0 * 1024.0 * 1024.0));
+        runtime = Runtime.getRuntime();
+        usedMemory = runtime.totalMemory() - runtime.freeMemory();
+        System.out.printf("After preload memory usage: %.3f GB%n", usedMemory / (1024.0 * 1024.0 * 1024.0));
 
-	}
+    }
 
 //	private static void simulateAttackAngles(boolean inwards) {
 //		// Use the centralized static values from CrossingLaserbeamsAttack

@@ -689,6 +689,10 @@ public class ImageLoader {
                 return "/images/Icons/upwhite.png";
             case CarrierPlaceDroneIcon:
                 return "/images/Icons/CarrierDroneIcon.png";
+            case CalmInChaos:
+                return "/images/Icons/calminchaos.png";
+            case WondrousWisdomball:
+                return "/images/Icons/wisdomball.png";
             case CarrierSwitchGearsIcon:
                 return "/images/Icons/CarrierSwitchGearsIcon.png";
             case UpOrange:

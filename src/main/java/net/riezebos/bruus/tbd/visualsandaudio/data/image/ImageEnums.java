@@ -12,6 +12,8 @@ public enum ImageEnums {
     Eternaflame,
     HealingOrb,
     LeechingLasers,
+    CalmInChaos,
+    WondrousWisdomball,
     ChooseDifficulty,
     ArbiterDamage,
     StuiversBestFriend,

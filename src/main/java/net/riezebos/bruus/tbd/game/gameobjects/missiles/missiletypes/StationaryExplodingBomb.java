@@ -16,7 +16,7 @@ import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.Sprit
 public class StationaryExplodingBomb extends Missile {
 
 
-    private int angleIncrement = 45;
+    private int angleIncrement = 60;
     private double amountOfTimesAnimHasSpedUp = 0;
     private float explosionSize = 2.5f;
     private boolean createMissilesOnExplosion = false;

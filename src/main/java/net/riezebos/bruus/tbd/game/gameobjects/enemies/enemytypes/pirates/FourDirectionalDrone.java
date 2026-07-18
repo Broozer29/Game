@@ -32,18 +32,13 @@ public class FourDirectionalDrone extends Enemy {
         SpriteAnimationConfiguration destroyedExplosionfiguration = new SpriteAnimationConfiguration(spriteConfig, 0, false);
         destroyedExplosionfiguration.getSpriteConfiguration().setImageType(this.enemyType.getDestructionType());
         this.destructionAnimation = new SpriteAnimation(destroyedExplosionfiguration);
-        this.damage = 4;
+        this.damage = 6;
         this.allowedToMove = true;
         this.allowedVisualsToRotate = false;
-        this.attackSpeed = 0.6f;
+        this.attackSpeed = 0.4f;
         initChargingUpAnimations();
         this.detonateOnCollision = false;
         this.knockbackStrength = 9;
-    }
-
-    @Override
-    public boolean isShowHealthBar() {
-        return false;
     }
 
     private void initChargingUpAnimations() {

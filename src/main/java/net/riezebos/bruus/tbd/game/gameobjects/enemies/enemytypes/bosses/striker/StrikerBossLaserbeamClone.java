@@ -50,6 +50,7 @@ public class StrikerBossLaserbeamClone extends Enemy {
 
         if (WithinVisualBoundariesCalculator.isWithinBoundaries(this) && allowedToFire && !isFiringLaserbeams) {
             GameObject closestPlayer = PlayerManager.getInstance().getClosestSpaceShip(this);
+
             setLaserbeamOriginAnimation();
             this.rotateGameObjectTowards(closestPlayer.getCenterXCoordinate(), closestPlayer.getCenterYCoordinate(), false);
             if (!chargingAnimation.isPlaying() && !isFiringLaserbeams) {

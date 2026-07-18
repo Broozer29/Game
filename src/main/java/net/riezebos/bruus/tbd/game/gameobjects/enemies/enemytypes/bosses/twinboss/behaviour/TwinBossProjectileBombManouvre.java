@@ -29,7 +29,7 @@ import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteAnimation;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteAnimationConfiguration;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteConfiguration;
 
-public class TwinBossBoxManouvre implements BossActionable {
+public class TwinBossProjectileBombManouvre implements BossActionable {
 
     public static double lastAttackTime = GameState.getInstance().getGameSeconds() - 18;
     private static double attackCooldown = 20;
@@ -49,7 +49,7 @@ public class TwinBossBoxManouvre implements BossActionable {
 
     private static Point selectedEndDestination;
 
-    public TwinBossBoxManouvre() {
+    public TwinBossProjectileBombManouvre() {
         chargingUpMovement = AudioDatabase.getInstance().getAudioClip(AudioEnums.SpaceStationChargingUpMovement);
         boostingAway = AudioDatabase.getInstance().getAudioClip(AudioEnums.SpaceStationBlastingOff);
         selectedEndDestination = calculateEndDestination();

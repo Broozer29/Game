@@ -8,6 +8,7 @@ import net.riezebos.bruus.tbd.game.gameobjects.missiles.*;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.laserbeams.AngledLaserBeam;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.laserbeams.Laserbeam;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.laserbeams.LaserbeamConfiguration;
+import net.riezebos.bruus.tbd.game.gameobjects.missiles.laserbeams.LaserbeamIndicator;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.level.LevelManager;
 import net.riezebos.bruus.tbd.game.movement.BoardBlockUpdater;
@@ -86,6 +87,7 @@ public class TwinBossLaserbeamCentreManouvre implements BossActionable {
 
         if (chargingLaserbeamSoundEffect.isFinished() && twinsChargingUpLaser == TwinBossManager.twinCount && twinsFiringLaser < TwinBossManager.twinCount) {
             activateLaserbeams(enemy); //start firing the real laser
+            enemy.clearLaserbeamIndicators();
             twinsFiringLaser++;
 
             if (twinsFiringLaser == TwinBossManager.twinCount) {
@@ -239,7 +241,31 @@ public class TwinBossLaserbeamCentreManouvre implements BossActionable {
                 boss.getChargingUpAttackAnimation().getCenterXCoordinate(),
                 boss.getChargingUpAttackAnimation().getCenterYCoordinate()
         );
+        createLaserbeamIndicator(boss, chargingAnimation);
         AnimationManager.getInstance().addUpperAnimation(chargingAnimation);
+    }
+
+    private void createLaserbeamIndicator(TwinBoss boss, SpriteAnimation chargingAnimation){
+        double angle = 0;
+        switch (twinsChargingUpLaser) {
+            case 0:
+                angle = Direction.LEFT.toAngle();
+                break;
+            case 1:
+                angle = Direction.UP.toAngle();
+                break;
+            case 2:
+                angle = Direction.RIGHT.toAngle();
+                break;
+            case 3:
+                angle = Direction.DOWN.toAngle();
+                break;
+        }
+        for (int i = 0; i < 2; i++) {
+            LaserbeamIndicator laserbeamIndicator = createLaserbeamIndicator(boss, angle, chargingAnimation);
+            boss.addLaserbeamIndicator(laserbeamIndicator);
+            MissileManager.getInstance().addLaserbeamIndicator(laserbeamIndicator);
+        }
     }
 
     private void activateLaserbeams(TwinBoss boss) {
@@ -285,10 +311,12 @@ public class TwinBossLaserbeamCentreManouvre implements BossActionable {
         }
     }
 
+
+    private int laserBeamBodySegments = 15;
     private Laserbeam createLaserbeam(Enemy enemy, double angle) {
         float damage = enemy.getDamage();
         LaserbeamConfiguration upperLaserbeamConfiguration = new LaserbeamConfiguration(false, damage);
-        upperLaserbeamConfiguration.setAmountOfLaserbeamSegments(15);
+        upperLaserbeamConfiguration.setAmountOfLaserbeamSegments(laserBeamBodySegments);
 
         //Not setting the origin point causes a nullpointer exception, it's mandatory
         //todo fix this nullpointer exception by either checking for an existing origin point or make it mandatory for the laserbeam config or smth
@@ -312,6 +340,11 @@ public class TwinBossLaserbeamCentreManouvre implements BossActionable {
         );
         laserbeam.update();
         return laserbeam;
+    }
+
+    private LaserbeamIndicator createLaserbeamIndicator(TwinBoss boss, double angle, SpriteAnimation chargingAnimation){
+        LaserbeamIndicator laserbeamIndicator = new LaserbeamIndicator(chargingAnimation.getCenterXCoordinate(), chargingAnimation.getCenterYCoordinate(), (int) Math.round(angle), laserBeamBodySegments * Laserbeam.bodyWidth, boss);
+        return laserbeamIndicator;
     }
 
     private void playSmokeAnimation(float xCoordinate, float yCoordinate) {

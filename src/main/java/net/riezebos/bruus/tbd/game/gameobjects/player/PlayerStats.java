@@ -62,7 +62,7 @@ public class PlayerStats {
 
 
     //all classes
-    public static float droneBaseDamage = 20f;
+    public static float droneBaseDamage = 10f;
     private boolean hasThornsEnabled = false;
     private float thornsDamageRatio = 1.0f;
     public static float baseArmor = 0;
