@@ -96,9 +96,9 @@ public class ShopBoardCreator {
         return textCollection;
     }
 
-    public DisplayOnly createReturnToMainMenuBackgroundCard() {
+    public DisplayOnly createReturnToMainMenuBackgroundCard(GUIComponent backgroundCard) {
         int xCoordinate = Math.round(boardWidth * 0.06944f);
-        int yCoordinate = boardHeight - Math.round(boardHeight * 0.09f);
+        int yCoordinate = backgroundCard.getYCoordinate() + Math.round(backgroundCard.getHeight() * 1.1f);
 
         SpriteConfiguration spriteConfiguration = createSpriteConfiguration(xCoordinate, yCoordinate, 1, ImageEnums.Wide_Card);
         DisplayOnly displayOnly = new DisplayOnly(spriteConfiguration);
@@ -108,9 +108,9 @@ public class ShopBoardCreator {
         return displayOnly;
     }
 
-    public DisplayOnly createInventoryButtonBackgroundCard() {
+    public DisplayOnly createInventoryButtonBackgroundCard(GUIComponent backgroundCard) {
         int xCoordinate = Math.round(boardWidth * 0.3472f);
-        int yCoordinate = boardHeight - Math.round(boardHeight * 0.09f);
+        int yCoordinate = backgroundCard.getYCoordinate() + Math.round(backgroundCard.getHeight() * 1.1f);
 
         SpriteConfiguration spriteConfiguration = createSpriteConfiguration(xCoordinate, yCoordinate, 1, ImageEnums.Wide_Card);
         DisplayOnly displayOnly = new DisplayOnly(spriteConfiguration);
@@ -120,9 +120,9 @@ public class ShopBoardCreator {
         return displayOnly;
     }
 
-    public DisplayOnly createStartNextLevelBackgroundCard() {
+    public DisplayOnly createStartNextLevelBackgroundCard(GUIComponent backgroundCard) {
         int xCoordinate = Math.round(boardWidth * 0.6416f);
-        int yCoordinate = boardHeight - Math.round(boardHeight * 0.09f);
+        int yCoordinate = backgroundCard.getYCoordinate() + Math.round(backgroundCard.getHeight() * 1.1f);
 
         SpriteConfiguration spriteConfiguration = createSpriteConfiguration(xCoordinate, yCoordinate, 1, ImageEnums.Wide_Card);
         DisplayOnly displayOnly = new DisplayOnly(spriteConfiguration);
@@ -187,7 +187,7 @@ public class ShopBoardCreator {
 
     public GUITextCollection createNextLevelDifficultyIcon(GUIComponent backgroundCard) {
         int xCoordinate = backgroundCard.getCenterXCoordinate();
-        int YCoordinate = backgroundCard.getCenterYCoordinate() + Math.round(backgroundCard.getHeight() * 0.3f);
+        int YCoordinate = backgroundCard.getCenterYCoordinate() + Math.min(Math.round(backgroundCard.getHeight() * 0.1f), 100);
         int difficulty = 0;
         ImageEnums iconEnum = null;
         String string = "";
@@ -252,7 +252,7 @@ public class ShopBoardCreator {
         int yCoordinate = backgroundCard.getYCoordinate();
 
 
-        String string = "REROLL SHOP: ";
+        String string = "REFRESH SHOP";
         GUITextCollection textCollection = new GUITextCollection(xCoordinate, yCoordinate + Math.round(backgroundCard.getHeight() * 0.2f), string);
         textCollection.setScale(1.1f * DataClass.getInstance().getResolutionFactor());
         textCollection.setStartingXCoordinate(backgroundCard.getCenterXCoordinate() - (textCollection.getWidth() / 2));

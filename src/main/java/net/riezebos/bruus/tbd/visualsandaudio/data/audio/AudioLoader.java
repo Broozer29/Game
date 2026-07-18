@@ -6,11 +6,15 @@ import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.AudioEnums;
 
 import java.io.File;
 import java.net.URL;
+import java.util.LinkedList;
 import java.util.Random;
 
 public class AudioLoader {
 
     private static AudioLoader instance = new AudioLoader();
+    private final LinkedList<String> recentTracks = new LinkedList<>();
+    private static final int MAX_HISTORY_SIZE = 10;
+    private static final int MAX_RETRIES = 10;
 
     private AudioLoader () {
 
@@ -40,6 +44,7 @@ public class AudioLoader {
 
     /**
      * Helper method to get a random custom music file from /audio/music/custom/ folder.
+     * Prevents repeating recently played tracks by maintaining a history of the last 10 tracks.
      * If the folder is empty or doesn't exist, falls back to a random boss song.
      * @return The path to a random custom music file or fallback boss song
      */
@@ -52,8 +57,37 @@ public class AudioLoader {
                     File[] wavFiles = customFolder.listFiles((dir, name) -> name.toLowerCase().endsWith(".wav"));
                     if (wavFiles != null && wavFiles.length > 0) {
                         Random random = new Random();
-                        File selectedFile = wavFiles[random.nextInt(wavFiles.length)];
-                        return "/audio/music/custom/" + selectedFile.getName();
+                        String selectedTrack = null;
+                        int attempts = 0;
+
+                        // Try to find a track not in recent history
+                        while (attempts < MAX_RETRIES) {
+                            File selectedFile = wavFiles[random.nextInt(wavFiles.length)];
+                            selectedTrack = "/audio/music/custom/" + selectedFile.getName();
+
+                            if (!recentTracks.contains(selectedTrack)) {
+                                break;
+                            }
+                            attempts++;
+                        }
+
+                        // If we couldn't find a non-recent track after MAX_RETRIES, clear history
+                        if (attempts >= MAX_RETRIES) {
+                            recentTracks.clear();
+                            // Pick a fresh random track after clearing history
+                            File selectedFile = wavFiles[random.nextInt(wavFiles.length)];
+                            selectedTrack = "/audio/music/custom/" + selectedFile.getName();
+                        }
+
+                        // Add to history
+                        recentTracks.add(selectedTrack);
+
+                        // Maintain max history size (FIFO - remove oldest if exceeds limit)
+                        if (recentTracks.size() > MAX_HISTORY_SIZE) {
+                            recentTracks.removeFirst();
+                        }
+
+                        return selectedTrack;
                     }
                 }
             }

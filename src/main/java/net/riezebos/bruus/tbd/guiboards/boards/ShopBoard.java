@@ -215,13 +215,13 @@ public class ShopBoard extends JPanel implements TimerHolder {
         nextLevelDifficultyIcon = shopBoardCreator.createNextLevelDifficultyIcon(nextLevelDifficultyBackground);
 
         // Setup buttons and cursor
-        returnToMainMenuBackgroundCard = shopBoardCreator.createReturnToMainMenuBackgroundCard();
+        returnToMainMenuBackgroundCard = shopBoardCreator.createReturnToMainMenuBackgroundCard(nextLevelDifficultyBackground);
         returnToMainMenu = shopBoardCreator.createReturnToMainMenu(returnToMainMenuBackgroundCard);
 
-        startNextLevelBackgroundCard = shopBoardCreator.createStartNextLevelBackgroundCard();
+        startNextLevelBackgroundCard = shopBoardCreator.createStartNextLevelBackgroundCard(nextLevelDifficultyBackground);
         nextLevelButton = shopBoardCreator.createStartNextLevelButton(startNextLevelBackgroundCard);
 
-        inventoryButtonBackgroundCard = shopBoardCreator.createInventoryButtonBackgroundCard();
+        inventoryButtonBackgroundCard = shopBoardCreator.createInventoryButtonBackgroundCard(nextLevelDifficultyBackground);
         playerInventoryButton = shopBoardCreator.createPlayerInventoryButton(inventoryButtonBackgroundCard);
 
         shopManager.resetFreeRerolls();

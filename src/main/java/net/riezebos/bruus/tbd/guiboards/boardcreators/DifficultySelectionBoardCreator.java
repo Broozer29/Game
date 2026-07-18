@@ -102,7 +102,7 @@ public class DifficultySelectionBoardCreator {
         selectEasyDifficulty.setCenterCoordinates(x1, y);
 
         int amount = 2;
-        selectEasyDifficulty.setDescriptionOfComponent("Fight the Zerg. Adds " + amount + " to the difficulty score. Zergs are a considerable foe, you might be overwhelmed before you realize it but many people happily pay minerals for culling their numbers.");
+        selectEasyDifficulty.setDescriptionOfComponent("Fight the Zerg. Adds " + amount + " to the difficulty score. Zergs are considerable foes, you might be overwhelmed before you realize it.");
         return selectEasyDifficulty;
     }
 
@@ -120,7 +120,7 @@ public class DifficultySelectionBoardCreator {
 
         int amount = 3;
 
-        selectEasyDifficulty.setDescriptionOfComponent("Fight the Royal Guard. Adds " + amount + " to the difficulty score. Braving the Royal Guard is a dangerous task, but the reward is worth it if you are strong and skilled enough.");
+        selectEasyDifficulty.setDescriptionOfComponent("Fight the Royal Guard. Adds " + amount + " to the difficulty score. The Royal Guard bring no small ships to the field.");
         return selectEasyDifficulty;
     }
 
