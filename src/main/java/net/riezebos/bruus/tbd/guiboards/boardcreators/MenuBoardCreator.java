@@ -101,7 +101,7 @@ public class MenuBoardCreator {
     }
 
     public static GUIComponent startGameBackgroundCard(){
-        int xCoordinate = 30;
+        int xCoordinate = DataClass.getInstance().getWindowWidth() / 2;
         int yCoordinate = (DataClass.getInstance().getWindowHeight() / 2) - 50;
 
         SpriteConfiguration spriteConfiguration = new SpriteConfiguration();
@@ -114,8 +114,9 @@ public class MenuBoardCreator {
 
         int newWidth = Math.round(400 * DataClass.getInstance().getResolutionFactor());
         int newHeight = Math.round(250 * DataClass.getInstance().getResolutionFactor());
-
         backgroundCard.setImageDimensions(newWidth,newHeight);
+
+        backgroundCard.setCenterXCoordinate(xCoordinate);
 
         return backgroundCard;
     }

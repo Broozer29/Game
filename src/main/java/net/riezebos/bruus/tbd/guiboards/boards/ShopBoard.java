@@ -153,8 +153,8 @@ public class ShopBoard extends JPanel implements TimerHolder {
 
         // Initialize background cards first since they are dependencies
         itemRowsBackgroundCard = shopBoardCreator.createShopItemsBackground();
-        songDifficultyBackgroundCard = shopBoardCreator.createSongDifficultyBackgroundCard();
-        songLengthBackgroundCard = shopBoardCreator.createSongLengthBackgroundCard();
+        songDifficultyBackgroundCard = shopBoardCreator.createSongDifficultyBackgroundCard(itemRowsBackgroundCard);
+        songLengthBackgroundCard = shopBoardCreator.createSongLengthBackgroundCard(itemRowsBackgroundCard);
 
         inventoryBackgroundCard = shopBoardCreator.createInventoryBackgroundCard();
         rerollBackgroundCard = shopBoardCreator.createRerollBackgroundCard(itemRowsBackgroundCard);
@@ -196,7 +196,7 @@ public class ShopBoard extends JPanel implements TimerHolder {
         }
 
 
-        songLengthBackgroundCard = shopBoardCreator.createSongLengthBackgroundCard(); //why is this needed broken???
+        songLengthBackgroundCard = shopBoardCreator.createSongLengthBackgroundCard(itemRowsBackgroundCard); //why is this needed broken???
         lengthSelectionText = shopBoardCreator.createSongSelectionText(songLengthBackgroundCard, mediumMiniBossConfig);
 
         if (!LevelManager.getInstance().isNextLevelABossLevel()) {

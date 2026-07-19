@@ -26,9 +26,6 @@ public class AudioManager {
     private double predictedEndGameSeconds = -1; // Predicted game seconds when the song will end
     private double lastSyncGameSeconds = -1; // Initialize to a value ensuring immediate sync on the first check
 
-    private boolean isMusicControlledByThirdPartyApp = true;
-
-
     private AudioManager() {
         CustomAudioClip silenceClip = AudioDatabase.getInstance().getAudioClip(AudioEnums.SilentAudio);
         silenceClip.setLoop(true);
@@ -152,11 +149,6 @@ public class AudioManager {
 
     public void setMusicMediaPlayer(MusicMediaPlayer musicMediaPlayer) {
         this.musicMediaPlayer = musicMediaPlayer;
-        if (musicMediaPlayer.equals(MusicMediaPlayer.iTunesMacOS) || musicMediaPlayer.equals(MusicMediaPlayer.Spotify)) {
-            isMusicControlledByThirdPartyApp = true;
-        } else {
-            isMusicControlledByThirdPartyApp = false;
-        }
     }
 
     public boolean isLevelMusicFinished() {

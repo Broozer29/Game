@@ -24,10 +24,8 @@ public class ShopBoardCreator {
     private float verticalSpacing;
     private float horizontalScreenDistance;
     private float verticalScreenDistance;
-    private float imageScale;
     private float objectScale;
 
-    private int fourthRowYCoordinate;
     private ShopManager shopManager;
     public static int shopItemIconDimensions = Math.round(75 * DataClass.getInstance().getResolutionFactor());
 
@@ -39,10 +37,7 @@ public class ShopBoardCreator {
         this.horizontalScreenDistance = 75 * DataClass.getInstance().getResolutionFactor();
         this.verticalScreenDistance = 20 * DataClass.getInstance().getResolutionFactor();
         this.shopManager = ShopManager.getInstance();
-        this.imageScale = Math.round(1 * DataClass.getInstance().getResolutionFactor());
         this.objectScale = Math.round(1 * DataClass.getInstance().getResolutionFactor());
-        fourthRowYCoordinate = Math.round((3.3f * (shopItemIconDimensions + verticalSpacing) + verticalSpacing)
-                * DataClass.getInstance().getResolutionFactor());
     }
 
 
@@ -420,19 +415,20 @@ public class ShopBoardCreator {
     }
 
 
-    public DisplayOnly createSongDifficultyBackgroundCard() {
+    public DisplayOnly createSongDifficultyBackgroundCard(GUIComponent backgroundCard) {
         float widthRatio = 425 / 1440f;
         float heightRatio = 150f / 875f;
         int cardWidth = Math.round((boardWidth * widthRatio));
         int cardHeight = Math.round((boardHeight * heightRatio));
-        SpriteConfiguration spriteConfiguration = createSpriteConfiguration(30, fourthRowYCoordinate - 20, 1, ImageEnums.Square_Card);
-        DisplayOnly backgroundCard = new DisplayOnly(spriteConfiguration);
-        backgroundCard.setImageDimensions(cardWidth, cardHeight);
-        return backgroundCard;
+        int yCoordinate = backgroundCard.getYCoordinate() + Math.round(backgroundCard.getHeight() * 1.1f);
+        SpriteConfiguration spriteConfiguration = createSpriteConfiguration(30, yCoordinate, 1, ImageEnums.Square_Card);
+        DisplayOnly songDiffbackgroundCard = new DisplayOnly(spriteConfiguration);
+        songDiffbackgroundCard.setImageDimensions(cardWidth, cardHeight);
+        return songDiffbackgroundCard;
     }
 
 
-    public DisplayOnly createSongLengthBackgroundCard() {
+    public DisplayOnly createSongLengthBackgroundCard(GUIComponent backgroundCard) {
         float widthRatio = 425 / 1440f;
         float heightRatio = 150f / 875f;
         float xCoordPaddingRatio = 50 / 1440f;
@@ -440,15 +436,16 @@ public class ShopBoardCreator {
         int cardHeight = Math.round((boardHeight * heightRatio));
         int xCoordPadding = Math.round((boardWidth * xCoordPaddingRatio));
         float xCoord = (3 * (shopItemIconDimensions + horizontalSpacing)) + (horizontalScreenDistance * 2) * DataClass.getInstance().getResolutionFactor();
+        int yCoordinate = backgroundCard.getYCoordinate() + Math.round(backgroundCard.getHeight() * 1.1f);
 
         SpriteConfiguration spriteConfiguration = createSpriteConfiguration(
                 xCoord - xCoordPadding,
-                Math.round((fourthRowYCoordinate - 20)),
+                yCoordinate,
                 1, ImageEnums.Square_Card);
-        DisplayOnly backgroundCard = new DisplayOnly(spriteConfiguration);
-        backgroundCard.setImageDimensions(cardWidth, cardHeight);
+        DisplayOnly songLengthBackgroundCard = new DisplayOnly(spriteConfiguration);
+        songLengthBackgroundCard.setImageDimensions(cardWidth, cardHeight);
 
-        return backgroundCard;
+        return songLengthBackgroundCard;
     }
 
     public DisplayOnly createDescriptionRowsBackgroundCard(GUIComponent rerollBackgroundCard) {
@@ -491,7 +488,7 @@ public class ShopBoardCreator {
 
     public DisplayOnly createShowNextLevelDifficultyBackground(GUIComponent backgroundCard) {
         int xCoordinate = backgroundCard.getXCoordinate() + backgroundCard.getWidth() + Math.round(10 * DataClass.getInstance().getResolutionFactor());
-        int yCoordinate = fourthRowYCoordinate - Math.round(15 * DataClass.getInstance().getResolutionFactor());
+        int yCoordinate = backgroundCard.getYCoordinate();
 
         float widthRatio = 300 / 1440f;
         float heightRatio = 175 / 875f;
@@ -510,7 +507,7 @@ public class ShopBoardCreator {
     }
 
     public MenuButton createSelectPirateTribe(GUIComponent backgroundCard) {
-        int y = fourthRowYCoordinate + 40;
+        int y = backgroundCard.getCenterYCoordinate() - 20;
         int x0 = backgroundCard.getXCoordinate() + backgroundCard.getWidth() / 6;
         SpriteConfiguration spriteConfiguration = createSpriteConfiguration(
                 x0,
@@ -526,7 +523,7 @@ public class ShopBoardCreator {
     }
 
     public MenuButton createSelectZergTribe(GUIComponent backgroundCard) {
-        float y = fourthRowYCoordinate + 40;
+        int y = backgroundCard.getCenterYCoordinate() - 20;
         float x1 = shopItemIconDimensions + horizontalSpacing + backgroundCard.getXCoordinate() + backgroundCard.getWidth() / 6;
         ImageEnums iconEnum = ImageEnums.BlueWings3;
         if (LevelManager.getInstance().isNextLevelABossLevel()) {
@@ -548,7 +545,7 @@ public class ShopBoardCreator {
     }
 
     public MenuButton createSelectRoyalGuard(GUIComponent backgroundCard) {
-        float y = fourthRowYCoordinate + 40;
+        int y = backgroundCard.getCenterYCoordinate() - 20;
         float x2 = 2 * (shopItemIconDimensions + horizontalSpacing) + backgroundCard.getXCoordinate() + backgroundCard.getWidth() / 6;
         SpriteConfiguration spriteConfiguration = createSpriteConfiguration(
                 x2,
@@ -567,15 +564,15 @@ public class ShopBoardCreator {
 
 
     public GUITextCollection createSelectDifficultyText(GUIComponent songDifficultyBackgroundCard, GUIComponent difficultyHard) {
-        int textX = songDifficultyBackgroundCard.getXCoordinate() + (songDifficultyBackgroundCard.getWidth() / 3);
-        int textY = difficultyHard.getYCoordinate() + difficultyHard.getHeight();
+        float textX = songDifficultyBackgroundCard.getXCoordinate() + (songDifficultyBackgroundCard.getWidth() / 3);
+        float textY = difficultyHard.getYCoordinate() + (difficultyHard.getHeight() * 1.5f);
         GUITextCollection textCollection = new GUITextCollection(textX, textY, "SELECT DIFFICULTY");
         return textCollection;
     }
 
 
     public GUIComponent createNoMiniBossSelection(GUIComponent backgroundCard) {
-        float y = fourthRowYCoordinate + 40;
+        int y = backgroundCard.getCenterYCoordinate() - 20;
         float x0 = backgroundCard.getXCoordinate() + backgroundCard.getWidth() / 6;
         SpriteConfiguration spriteConfiguration = createSpriteConfiguration(
                 x0,
@@ -591,7 +588,7 @@ public class ShopBoardCreator {
 
 
     public GUIComponent createOneMinibossSelection(GUIComponent backgroundCard) {
-        float y = fourthRowYCoordinate + 40;
+        int y = backgroundCard.getCenterYCoordinate() - 20;
         float x1 = backgroundCard.getXCoordinate() + backgroundCard.getWidth() / 6 + (shopItemIconDimensions + horizontalSpacing);
         SpriteConfiguration spriteConfiguration = createSpriteConfiguration(
                 x1,
@@ -607,7 +604,7 @@ public class ShopBoardCreator {
 
 
     public GUIComponent createTwoMiniBossSelection(GUIComponent backgroundCard) {
-        float y = fourthRowYCoordinate + 40;
+        int y = backgroundCard.getCenterYCoordinate() - 20;
         float x2 = backgroundCard.getXCoordinate() + backgroundCard.getWidth() / 6 + 2 * (shopItemIconDimensions + horizontalSpacing);
         SpriteConfiguration spriteConfiguration = createSpriteConfiguration(
                 x2,
@@ -624,7 +621,7 @@ public class ShopBoardCreator {
 
     public GUITextCollection createSongSelectionText(GUIComponent backgroundCard, GUIComponent selectLongMenuButton) {
         float textX = backgroundCard.getXCoordinate() + (backgroundCard.getWidth() / 3);
-        float textY = selectLongMenuButton.getYCoordinate() + selectLongMenuButton.getHeight();
+        float textY = selectLongMenuButton.getYCoordinate() + (selectLongMenuButton.getHeight() * 1.5f);
         return new GUITextCollection(textX, textY, "MINIBOSS SELECTION");
     }
 
