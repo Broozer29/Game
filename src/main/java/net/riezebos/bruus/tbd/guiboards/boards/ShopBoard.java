@@ -273,6 +273,8 @@ public class ShopBoard extends JPanel implements TimerHolder {
 
         ShopBoardCreator.updateMiniBossIconsToSelection(LevelManager.getInstance().getCurrentMiniBossConfig(),
                 easyMiniBossConfig, mediumMiniBossConfig, hardMiniBossConfig);
+
+        nextLevelDifficultyIcon = shopBoardCreator.createNextLevelDifficultyIcon(nextLevelDifficultyBackground);
     }
 
 
