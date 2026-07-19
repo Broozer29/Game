@@ -220,6 +220,7 @@ public class MenuButton extends GUIComponent {
     private void changeLevelLength() {
         if (this.miniBossConfig != null) {
             LevelManager.getInstance().setCurrentMiniBossConfig(this.miniBossConfig);
+            LevelManager.getInstance().setLastSelectedMiniBossConfig(this.miniBossConfig);
         }
     }
 

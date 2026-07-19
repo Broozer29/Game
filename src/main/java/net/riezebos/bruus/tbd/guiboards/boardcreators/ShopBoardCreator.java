@@ -192,7 +192,7 @@ public class ShopBoardCreator {
             difficulty = 6;
             string = "NEXT: BOSS LEVEL";
         } else {
-            difficulty = LevelManager.getInstance().getDifficultyScore();
+            difficulty = LevelManager.getInstance().getSelectedDifficultyScore();
             iconEnum = LevelManager.getInstance().getImageEnumByDifficultyScore(difficulty);
             string = "NEXT DIFFICULTY: " + difficulty;
         }

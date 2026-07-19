@@ -55,7 +55,6 @@ import net.riezebos.bruus.tbd.visualsandaudio.data.DataClass;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.AudioDatabase;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.AudioManager;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.AudioEnums;
-import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.MusicMediaPlayer;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageResizer;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageRotator;
@@ -231,8 +230,8 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
                 BonusKaart bonusKaart = (BonusKaart) PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.BonusKaart);
                 bonusKaart.setUsedThisShop(false);
             }
-            LevelManager.getInstance().setLastSelectedDifficulty(LevelManager.getInstance().getCurrentLevelDifficulty());
-            LevelManager.getInstance().setLastSelectedMiniBossConfig(LevelManager.getInstance().getCurrentMiniBossConfig());
+//            LevelManager.getInstance().setLastSelectedDifficulty(LevelManager.getInstance().getCurrentLevelDifficulty());
+//            LevelManager.getInstance().setLastSelectedMiniBossConfig(LevelManager.getInstance().getCurrentMiniBossConfig());
 
             //These should probably to be refactored into osmething new
             hasResetManagersForNextLevel = true;
@@ -999,10 +998,6 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
             drawImage(g, progressBar);
             drawImage(g, progressBarFilling);
             drawImage(g, spaceShipIndicator);
-        }
-        if (levelManager.getCurrentLevelSong() != null && !levelManager.isNextLevelABossLevel() && audioManager.getMusicMediaPlayer().equals(MusicMediaPlayer.LocalFiles)) {
-            g.setColor(Color.white);
-            g.drawString("Song: " + levelManager.getCurrentLevelSong().toString(), progressBar.getXCoordinate(), progressBar.getYCoordinate() + progressBar.getHeight() + 10);
         }
     }
 

@@ -372,14 +372,12 @@ public class LevelManager {
     public void setCurrentLevelDifficulty(LevelDifficulty currentLevelDifficulty) {
         if (!isNextLevelABossLevel()) {
             this.currentLevelDifficulty = currentLevelDifficulty;
-            this.lastSelectedDifficulty = currentLevelDifficulty;
         }
     }
 
     public MiniBossConfig getCurrentMiniBossConfig() {
         if (currentMiniBossConfig == null) {
             currentMiniBossConfig = MiniBossConfig.getRandomMiniBossConfig();
-            this.lastSelectedMiniBossConfig = currentMiniBossConfig;
         }
         return currentMiniBossConfig;
     }
@@ -434,8 +432,22 @@ public class LevelManager {
     }
 
     public int getDifficultyScore() {
-        int difficultyWeight = this.currentLevelDifficulty.ordinal() + 1; // Assuming Enum order is EASY, MEDIUM, HARD
-        int lengthWeight = this.currentMiniBossConfig.ordinal() + 1; // Assuming Enum order is SHORT, MEDIUM, LONG
+        LevelDifficulty difficulty = this.lastSelectedDifficulty == null ? getCurrentLevelDifficulty() : this.lastSelectedDifficulty;
+        MiniBossConfig length = this.lastSelectedMiniBossConfig == null ? getCurrentMiniBossConfig() : this.lastSelectedMiniBossConfig;
+
+
+        int difficultyWeight = difficulty.ordinal() + 1; // Assuming Enum order is EASY, MEDIUM, HARD
+        int lengthWeight = length.ordinal() + 1; // Assuming Enum order is SHORT, MEDIUM, LONG
+        return difficultyWeight + lengthWeight;
+    }
+
+    public int getSelectedDifficultyScore() {
+        LevelDifficulty difficulty = this.lastSelectedDifficulty == null ? getCurrentLevelDifficulty() : this.lastSelectedDifficulty;
+        MiniBossConfig length = this.lastSelectedMiniBossConfig == null ? getCurrentMiniBossConfig() : this.lastSelectedMiniBossConfig;
+
+
+        int difficultyWeight = difficulty.ordinal() + 1; // Assuming Enum order is EASY, MEDIUM, HARD
+        int lengthWeight = length.ordinal() + 1; // Assuming Enum order is SHORT, MEDIUM, LONG
         return difficultyWeight + lengthWeight;
     }
 
