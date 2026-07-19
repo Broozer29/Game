@@ -5,6 +5,7 @@ import net.riezebos.bruus.tbd.controllerInput.ControllerManager;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.Enemy;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyCreator;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyEnums;
+import net.riezebos.bruus.tbd.game.level.SpawningCoordinator;
 import net.riezebos.bruus.tbd.game.movement.Direction;
 import net.riezebos.bruus.tbd.guiboards.BoardManager;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.AudioDatabase;
@@ -53,6 +54,7 @@ public class Main {
                             ex.finishInitialization();
                             ex.initMainMenu();
                             ex.getMainMenuBoard().requestFocus();
+                            SpawningCoordinator.getInstance().recalcDimensions();
                         });
                     }).start();
                 }

@@ -17,19 +17,6 @@ public class SpawningCoordinator {
     private static SpawningCoordinator instance = new SpawningCoordinator();
     private Random random = new Random();
 
-    // Al deze ranges moeten eigenlijk dynamisch berekend worden, want nu is het
-    // niet resizable
-
-
-    private int maximumBGOWidthRange = DataClass.getInstance().getWindowWidth() + 200;
-    private int minimumBGOWidthRange = -200;
-    private int maximumBGOHeightRange = DataClass.getInstance().getWindowHeight();
-    private int minimumBGOHeightRange = 0;
-
-
-    private int maximumBombEnemyHeightDownRange = 0;
-    private int minimumBombEnemyHeightDownRange = -200;
-
     //Left Spawning block
     private int leftEnemyMaxHeightRange = DataClass.getInstance().getPlayableWindowMaxHeight() - 100;
     private int leftEnemyMinHeightRange = DataClass.getInstance().getPlayableWindowMinHeight();
@@ -69,6 +56,40 @@ public class SpawningCoordinator {
 
     private SpawningCoordinator () {
 
+    }
+
+    //needed for dynamic resizing of the game window, as the default values are configured only for the developers laptop, sloppy fix tbh
+    public void recalcDimensions(){
+        leftEnemyMaxHeightRange = DataClass.getInstance().getPlayableWindowMaxHeight() - 100;
+        leftEnemyMinHeightRange = DataClass.getInstance().getPlayableWindowMinHeight();
+        leftEnemyMaxWidthRange = 500;
+        leftEnemyMinWidthRange = 250;
+
+        bottomLeftEnemyMinHeightRange = DataClass.getInstance().getPlayableWindowMaxHeight() - 100;
+        bottomLeftEnemyMaxHeightRange = DataClass.getInstance().getPlayableWindowMaxHeight() + 50;
+        topLeftEnemyMinHeightRange = DataClass.getInstance().getPlayableWindowMinHeight();
+        topLeftEnemyMaxHeightRange = DataClass.getInstance().getPlayableWindowMinHeight() + 100;
+
+        rightEnemyMaxWidthRange = DataClass.getInstance().getWindowWidth() + 200;
+        rightEnemyMinWidthRange = DataClass.getInstance().getWindowWidth();
+        rightEnemyMaxHeightRange = DataClass.getInstance().getPlayableWindowMaxHeight() - 100;
+        rightEnemyMinHeightRange = DataClass.getInstance().getPlayableWindowMinHeight() + 100;
+
+        bottomRightEnemyMinHeightRange = DataClass.getInstance().getPlayableWindowMaxHeight() - 100;
+        bottomRightEnemyMaxHeightRange = DataClass.getInstance().getPlayableWindowMaxHeight() + 50;
+
+        topRightEnemyMinHeightRange = DataClass.getInstance().getPlayableWindowMinHeight() + 100;
+        topRightEnemyMaxHeightRange = DataClass.getInstance().getPlayableWindowMinHeight() + 200;
+
+        upEnemyMaxWidthRange = DataClass.getInstance().getWindowWidth() - 50;
+        upEnemyMinWidthRange = 100;
+        upEnemyMaxHeightRange = DataClass.getInstance().getPlayableWindowMinHeight() + 150;
+        upEnemyMinHeightRange = DataClass.getInstance().getPlayableWindowMinHeight();
+
+        downEnemyMaxWidthRange = DataClass.getInstance().getWindowWidth() - 50;
+        downEnemyMinWidthRange = 50;
+        downEnemyMaxHeightRange = DataClass.getInstance().getPlayableWindowMaxHeight() + 200;
+        downEnemyMinHeightRange = DataClass.getInstance().getPlayableWindowMaxHeight() + 50;
     }
 
     public static SpawningCoordinator getInstance () {
@@ -174,6 +195,8 @@ public class SpawningCoordinator {
 
     public int getRandomXBGOCoordinate (BGOEnums bgoType) {
         int randomNumber = 0;
+        int maximumBGOWidthRange = DataClass.getInstance().getWindowWidth() + 200;
+        int minimumBGOWidthRange = -200;
         if(bgoType == BGOEnums.Clouds){
             randomNumber = random.nextInt(((maximumBGOWidthRange * 3) - minimumBGOWidthRange) + 1) + minimumBGOWidthRange;
         } else {
@@ -185,6 +208,8 @@ public class SpawningCoordinator {
 
     public int getRandomYBGOCoordinate (BGOEnums bgoType) {
         int randomNumber = 0;
+        int maximumBGOHeightRange = DataClass.getInstance().getWindowHeight();
+        int minimumBGOHeightRange = 0;
         if(bgoType == BGOEnums.Clouds){
             int modifiedMin = - (int) (maximumBGOHeightRange * 0.5); // 25% of the max height shifted negatively
             int modifiedMax = (int) (maximumBGOHeightRange * 0.5);    // 50% of the max height

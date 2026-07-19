@@ -4,9 +4,13 @@ import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.AudioEnums;
 
-import java.io.File;
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Random;
 
 public class AudioLoader {
@@ -43,58 +47,81 @@ public class AudioLoader {
 
 
     /**
-     * Helper method to get a random custom music file from /audio/music/custom/ folder.
+     * Helper method to get a random custom music file.
+     * Falls back to JAR resources if external folder is empty/missing.
      * Prevents repeating recently played tracks by maintaining a history of the last 10 tracks.
-     * If the folder is empty or doesn't exist, falls back to a random boss song.
-     * @return The path to a random custom music file or fallback boss song
+     * @return The path/URL to a random custom music file or fallback boss song
      */
     private String getRandomCustomMusicFile() {
-        try {
-            URL customFolderUrl = getClass().getResource("/audio/music/custom");
-            if (customFolderUrl != null) {
-                File customFolder = new File(customFolderUrl.toURI());
-                if (customFolder.exists() && customFolder.isDirectory()) {
-                    File[] wavFiles = customFolder.listFiles((dir, name) -> name.toLowerCase().endsWith(".wav"));
-                    if (wavFiles != null && wavFiles.length > 0) {
-                        Random random = new Random();
-                        String selectedTrack = null;
-                        int attempts = 0;
+        List<Object> availableTracks = new ArrayList<>(); // Can hold File or String (resource path)
+        boolean isExternalFolder = false;
 
-                        // Try to find a track not in recent history
-                        while (attempts < MAX_RETRIES) {
-                            File selectedFile = wavFiles[random.nextInt(wavFiles.length)];
-                            selectedTrack = "/audio/music/custom/" + selectedFile.getName();
-
-                            if (!recentTracks.contains(selectedTrack)) {
-                                break;
+        // If no external tracks found, load from JAR resources
+        if (availableTracks.isEmpty()) {
+            try {
+                InputStream tracksListStream = getClass().getResourceAsStream("/audio/music/custom/tracks.txt");
+                if (tracksListStream != null) {
+                    try (BufferedReader reader = new BufferedReader(new InputStreamReader(tracksListStream))) {
+                        String line;
+                        while ((line = reader.readLine()) != null) {
+                            line = line.trim();
+                            if (!line.isEmpty() && line.toLowerCase().endsWith(".wav")) {
+                                availableTracks.add("/audio/music/custom/" + line);
                             }
-                            attempts++;
                         }
-
-                        // If we couldn't find a non-recent track after MAX_RETRIES, clear history
-                        if (attempts >= MAX_RETRIES) {
-                            recentTracks.clear();
-                            // Pick a fresh random track after clearing history
-                            File selectedFile = wavFiles[random.nextInt(wavFiles.length)];
-                            selectedTrack = "/audio/music/custom/" + selectedFile.getName();
-                        }
-
-                        // Add to history
-                        recentTracks.add(selectedTrack);
-
-                        // Maintain max history size (FIFO - remove oldest if exceeds limit)
-                        if (recentTracks.size() > MAX_HISTORY_SIZE) {
-                            recentTracks.removeFirst();
-                        }
-
-                        return selectedTrack;
                     }
                 }
+            } catch (Exception e) {
+                System.err.println("Error accessing JAR custom music tracks: " + e.getMessage());
             }
-        } catch (Exception e) {
-            System.err.println("Error accessing custom music folder: " + e.getMessage());
         }
-        // Fallback to random boss song if folder is empty or doesn't exist
+
+        // Select a random track with history tracking
+        if (!availableTracks.isEmpty()) {
+            Random random = new Random();
+            Object selectedTrack = null;
+            String trackIdentifier = null;
+            int attempts = 0;
+
+            // Try to find a track not in recent history
+            while (attempts < MAX_RETRIES) {
+                selectedTrack = availableTracks.get(random.nextInt(availableTracks.size()));
+                trackIdentifier = selectedTrack instanceof java.io.File
+                    ? ((java.io.File) selectedTrack).getName()
+                    : (String) selectedTrack;
+
+                if (!recentTracks.contains(trackIdentifier)) {
+                    break;
+                }
+                attempts++;
+            }
+
+            // If we couldn't find a non-recent track after MAX_RETRIES, clear history
+            if (attempts >= MAX_RETRIES) {
+                recentTracks.clear();
+                selectedTrack = availableTracks.get(random.nextInt(availableTracks.size()));
+                trackIdentifier = selectedTrack instanceof java.io.File
+                    ? ((java.io.File) selectedTrack).getName()
+                    : (String) selectedTrack;
+            }
+
+            // Add to history
+            recentTracks.add(trackIdentifier);
+
+            // Maintain max history size (FIFO - remove oldest if exceeds limit)
+            if (recentTracks.size() > MAX_HISTORY_SIZE) {
+                recentTracks.removeFirst();
+            }
+
+            // Return appropriate path/URL
+            if (isExternalFolder && selectedTrack instanceof java.io.File) {
+                return ((java.io.File) selectedTrack).toURI().toString();
+            } else {
+                return (String) selectedTrack;
+            }
+        }
+
+        // Fallback to random boss song if no custom tracks available
         return convertAudioToFileString(AudioEnums.getRandomBossSong());
     }
 
