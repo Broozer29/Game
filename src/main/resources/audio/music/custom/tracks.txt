@@ -19,7 +19,6 @@ Radium.wav
 Recompile.wav
 Rose.wav
 Severed.wav
-The Rain Formerly Known As Purple.wav
 Turismo.wav
 VIQ - Girl from Nowhere.wav
 never as it seems.wav
