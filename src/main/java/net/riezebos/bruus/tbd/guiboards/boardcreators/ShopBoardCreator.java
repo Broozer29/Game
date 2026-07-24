@@ -37,7 +37,7 @@ public class ShopBoardCreator {
         this.horizontalScreenDistance = 75 * DataClass.getInstance().getResolutionFactor();
         this.verticalScreenDistance = 20 * DataClass.getInstance().getResolutionFactor();
         this.shopManager = ShopManager.getInstance();
-        this.objectScale = Math.round(1 * DataClass.getInstance().getResolutionFactor());
+        this.objectScale = Math.min(Math.round(1 * DataClass.getInstance().getResolutionFactor()), 2f);
     }
 
 
