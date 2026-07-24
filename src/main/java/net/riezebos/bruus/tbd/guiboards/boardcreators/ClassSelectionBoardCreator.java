@@ -100,6 +100,27 @@ public class ClassSelectionBoardCreator {
         return textCollection;
     }
 
+    public static GUITextCollection createSelectMutalisk(GUIComponent backgroundCard) {
+        int xCoordinate = Math.round(backgroundCard.getXCoordinate() + backgroundCard.getWidth() * 0.2f);
+        int yCoordinate = Math.round(backgroundCard.getYCoordinate() + backgroundCard.getHeight() * 0.485f);
+
+
+        String text = "MUTALISK";
+        if (!PlayerProfileManager.getInstance().getLoadedProfile().isMutaliskUnlocked()) {
+            text = "LOCKED";
+        }
+
+        GUITextCollection textCollection = new GUITextCollection(xCoordinate, yCoordinate, text);
+        textCollection.setScale(1 * DataClass.getInstance().getResolutionFactor());
+        textCollection.getComponents().get(0).setDescriptionOfComponent("Select Mutalisk class");
+
+        if (PlayerProfileManager.getInstance().getLoadedProfile().isMutaliskUnlocked()) {
+            textCollection.setMenuFunctionality(MenuFunctionEnums.SelectMutaliskClass);
+        }
+
+        return textCollection;
+    }
+
     public static GUIComponent createClassDescriptionBackgroundCard() {
         int xCoordinate = Math.round(DataClass.getInstance().getWindowWidth() * 0.302f);
         int yCoordinate = Math.round(DataClass.getInstance().getWindowHeight() * 0.3394f);
@@ -189,7 +210,7 @@ public class ClassSelectionBoardCreator {
                 return "Shoot a laserbeam dealing 200% damage.";
             case FireFighter:
                 if (PlayerProfileManager.getInstance().getLoadedProfile().isFireFighterUnlocked()) {
-                    return "Hold fire to unleash a flamethrower which deals damage and destroys missiles. Deals " + Math.round(PrimaryPlayerGun.fireFighterBonusDamageRatio * 100) +"% damage and applies Ignite.";
+                    return "Hold fire to unleash a flamethrower which deals damage and destroys missiles. Deals " + Math.round(PrimaryPlayerGun.fireFighterBonusDamageRatio * 100) + "% damage and applies Ignite.";
                 }
 
                 return ClassDescription.getInstance(PlayerClass.FireFighter).getUnlockCondition();
@@ -199,6 +220,13 @@ public class ClassSelectionBoardCreator {
                 }
 
                 return ClassDescription.getInstance(PlayerClass.Carrier).getUnlockCondition();
+            case Mutalisk:
+                if (PlayerProfileManager.getInstance().getLoadedProfile().isMutaliskUnlocked()) {
+                    return "Mutalisk primary";
+                }
+
+                return ClassDescription.getInstance(PlayerClass.Mutalisk).getUnlockCondition();
+
         }
         return "Placeholder";
     }
@@ -241,6 +269,11 @@ public class ClassSelectionBoardCreator {
                     return "Secondary: Protoss Beacon";
                 }
                 return "Locked";
+            case Mutalisk:
+                if (PlayerProfileManager.getInstance().getLoadedProfile().isMutaliskUnlocked()) {
+                    return "Secondary: Mutalisk secondary";
+                }
+                return "Locked";
         }
         return "Placeholder";
     }
@@ -252,6 +285,9 @@ public class ClassSelectionBoardCreator {
             }
             case FireFighter -> {
                 return PlayerProfileManager.getInstance().getLoadedProfile().isFireFighterUnlocked();
+            }
+            case Mutalisk -> {
+                return PlayerProfileManager.getInstance().getLoadedProfile().isMutaliskUnlocked();
             }
             default -> {
                 return true;
@@ -387,7 +423,14 @@ public class ClassSelectionBoardCreator {
         SpriteConfiguration config = new SpriteConfiguration();
         config.setxCoordinate(xCoordinate);
         config.setyCoordinate(yCoordinate);
-        config.setScale(scale);
+
+        //todo waarom geef ik niet gewoon een lagere value in de scale? sloppy
+        if (imageType == ImageEnums.Mutalisk) {
+            config.setScale(0.65f * scale);
+        } else {
+            config.setScale(scale);
+        }
+
         config.setImageType(imageType);
         return config;
     }

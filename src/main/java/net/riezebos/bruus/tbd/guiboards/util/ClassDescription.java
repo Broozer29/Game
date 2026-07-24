@@ -37,12 +37,11 @@ public class ClassDescription {
                         "The Fire Fighter specializes in applying damage over time effects but has a very short attack range.";
                 maxHitpoints = PlayerStats.fireFighterHitpoints;
                 difficulty = "Hard";
-                unlockCondition = "Temporarily disabled";
+                unlockCondition = "Defeat 2 bosses in a single run";
                 break;
             case Captain:
                 title = "Captain";
-                description = "The Captain shoots laserbeams and uses a rapidly recharging EMP to destroy any nearby missiles or enemies. " +
-                        "";
+                description = "The Captain shoots laserbeams and uses a rapidly recharging EMP to destroy any nearby missiles or enemies. ";
                 maxHitpoints = PlayerStats.captainBaseHitpoints;
                 difficulty = "Medium";
                 break;
@@ -53,8 +52,14 @@ public class ClassDescription {
                         "rapidly move away from danger.";
                 maxHitpoints = PlayerStats.carrierBaseHitpoints;
                 difficulty = "Easy";
-                unlockCondition = "Temporarily disabled";
+                unlockCondition = "Encounter and defeat the Carrier boss";
                 break;
+            case Mutalisk:
+                title = "Mutalisk";
+                description = "Mutalisk";
+                maxHitpoints = PlayerStats.mutaliskBaseHitpoints;
+                difficulty = "Hard";
+                unlockCondition = "Placeholder Unlock Condition";
             default:
                 break;
         }

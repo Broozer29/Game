@@ -9,12 +9,7 @@ import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.redboss
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.redboss.behaviour.RedBossSpawnShuriken;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.movement.MovementConfiguration;
-import net.riezebos.bruus.tbd.game.playerprofile.PlayerProfileManager;
 import net.riezebos.bruus.tbd.game.util.WithinVisualBoundariesCalculator;
-import net.riezebos.bruus.tbd.guiboards.BoardManager;
-import net.riezebos.bruus.tbd.guiboards.boardcreators.AchievementUnlockHelper;
-import net.riezebos.bruus.tbd.visualsandaudio.data.audio.AudioManager;
-import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.AudioEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteAnimation;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteAnimationConfiguration;
@@ -79,12 +74,7 @@ public class RedBoss extends Enemy {
 //            AudioManager.getInstance().addAudio(AudioEnums.AchievementUnlocked);
 //        }
 
-        if(!PlayerProfileManager.getInstance().getLoadedProfile().isFireFighterUnlocked()) {
-            BoardManager.getInstance().getGameBoard().addGUIAnimation(AchievementUnlockHelper.createUnlockGUIComponent(ImageEnums.FireFighterUnlock));
-            PlayerProfileManager.getInstance().getLoadedProfile().setFireFighterUnlocked(true);
-            PlayerProfileManager.getInstance().exportCurrentProfile();
-            AudioManager.getInstance().addAudio(AudioEnums.AchievementUnlocked);
-        }
+
     }
 
 

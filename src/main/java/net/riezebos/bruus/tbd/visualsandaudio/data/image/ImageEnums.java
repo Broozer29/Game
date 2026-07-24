@@ -13,6 +13,7 @@ public enum ImageEnums {
     HealingOrb,
     LeechingLasers,
     CalmInChaos,
+    Mutalisk,
     WondrousWisdomball,
     ChooseDifficulty,
     ArbiterDamage,
@@ -252,6 +253,7 @@ public enum ImageEnums {
 
     // Missile Images
     AlienLaserBeamAnimated,
+    AlienLaserBeamAnimatedOrange,
     LaserBullet,
 
     // Friendly images

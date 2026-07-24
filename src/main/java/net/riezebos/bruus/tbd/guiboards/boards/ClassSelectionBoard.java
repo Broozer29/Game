@@ -57,6 +57,7 @@ public class ClassSelectionBoard extends JPanel implements TimerHolder {
     private GUITextCollection selectCaptainTextButton;
     private GUITextCollection selectFireFighterTextButton;
     private GUITextCollection selectCarrierTextButton;
+    private GUITextCollection selectMutaliskTextButton;
     private GUIComponent startGameButtonBackgroundCard;
     private GUITextCollection startGameButton;
     private GUIComponent returnToMenuBackgroundCard;
@@ -117,6 +118,7 @@ public class ClassSelectionBoard extends JPanel implements TimerHolder {
         selectCaptainTextButton = ClassSelectionBoardCreator.createSelectCaptain(classSelectionBackgroundCard);
         selectFireFighterTextButton = ClassSelectionBoardCreator.createSelectFireFighter(classSelectionBackgroundCard);
         selectCarrierTextButton = ClassSelectionBoardCreator.createSelectCarrier(classSelectionBackgroundCard);
+        selectMutaliskTextButton = ClassSelectionBoardCreator.createSelectMutalisk(classSelectionBackgroundCard);
 
         startGameButtonBackgroundCard = ClassSelectionBoardCreator.createStartGameButtonBackground();
         startGameButton = ClassSelectionBoardCreator.createStartGameButton(startGameButtonBackgroundCard);
@@ -164,7 +166,11 @@ public class ClassSelectionBoard extends JPanel implements TimerHolder {
         addToGrid(firstColumn, selectCarrierTextButton.getComponents().get(0), 0, 2);
         addAllButFirstComponent(selectCarrierTextButton);
 
-        addToGrid(firstColumn, returnToMenuButton.getComponents().get(0), 0, 3);
+
+        addToGrid(firstColumn, selectMutaliskTextButton.getComponents().get(0), 0, 3);
+        addAllButFirstComponent(selectMutaliskTextButton);
+
+        addToGrid(firstColumn, returnToMenuButton.getComponents().get(0), 0, 4);
         addAllButFirstComponent(returnToMenuButton);
 
 
@@ -209,7 +215,11 @@ public class ClassSelectionBoard extends JPanel implements TimerHolder {
         } else if (component.equals(selectCarrierTextButton.getComponents().get(0))) {
             lastHoveredOtion = PlayerClass.Carrier;
             setWeaponIcons(PlayerClass.Carrier);
-        } else {
+        } else if(component.equals(selectMutaliskTextButton.getComponents().get(0))){
+            lastHoveredOtion = PlayerClass.Mutalisk;
+            setWeaponIcons(PlayerClass.Mutalisk);
+        }
+        else {
             lastHoveredOtion = PlayerStats.getInstance().getPlayerClass();
             setWeaponIcons(lastHoveredOtion);
         }
@@ -242,6 +252,14 @@ public class ClassSelectionBoard extends JPanel implements TimerHolder {
                     secondaryWeaponIcon.setNewImage(ImageEnums.LockedIcon);
                 }
                 break;
+            case Mutalisk:
+                if (PlayerProfileManager.getInstance().getLoadedProfile().isMutaliskUnlocked()) {
+                    primaryWeaponIcon.setNewImage(ImageEnums.Test_Image);
+                    secondaryWeaponIcon.setNewImage(ImageEnums.Test_Image);
+                } else {
+                    primaryWeaponIcon.setNewImage(ImageEnums.LockedIcon);
+                    secondaryWeaponIcon.setNewImage(ImageEnums.LockedIcon);
+                }
             default:
                 break;
         }

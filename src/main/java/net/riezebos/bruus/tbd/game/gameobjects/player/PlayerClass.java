@@ -3,7 +3,8 @@ package net.riezebos.bruus.tbd.game.gameobjects.player;
 public enum PlayerClass {
     Captain(PlayerPrimaryAttackTypes.Laserbeam, PlayerSpecialAttackTypes.EMP),
     FireFighter(PlayerPrimaryAttackTypes.Flamethrower, PlayerSpecialAttackTypes.FlameShield),
-    Carrier(PlayerPrimaryAttackTypes.Carrier, PlayerSpecialAttackTypes.PlaceCarrierDrone);
+    Carrier(PlayerPrimaryAttackTypes.Carrier, PlayerSpecialAttackTypes.PlaceCarrierDrone),
+    Mutalisk(PlayerPrimaryAttackTypes.Mutalisk, PlayerSpecialAttackTypes.MutaliskSecondary);
 
     private PlayerPrimaryAttackTypes primaryAttackType;
     private PlayerSpecialAttackTypes secondaryAttackType;

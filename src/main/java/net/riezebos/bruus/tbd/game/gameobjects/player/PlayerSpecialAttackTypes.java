@@ -4,5 +4,6 @@ public enum PlayerSpecialAttackTypes {
 	EMP,
 	Rocket_Cluster,
 	FlameShield,
-	PlaceCarrierDrone
+    MutaliskSecondary,
+    PlaceCarrierDrone
 }

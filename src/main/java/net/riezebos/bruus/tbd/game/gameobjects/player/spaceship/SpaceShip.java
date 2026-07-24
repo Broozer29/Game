@@ -15,6 +15,8 @@ import net.riezebos.bruus.tbd.game.gamestate.GameStatusEnums;
 import net.riezebos.bruus.tbd.game.items.Item;
 import net.riezebos.bruus.tbd.game.items.ItemEnums;
 import net.riezebos.bruus.tbd.game.items.PlayerInventory;
+import net.riezebos.bruus.tbd.game.items.effects.EffectIdentifiers;
+import net.riezebos.bruus.tbd.game.items.effects.effectimplementations.PassiveHealthRegeneration;
 import net.riezebos.bruus.tbd.game.items.enums.ItemApplicationEnum;
 import net.riezebos.bruus.tbd.game.items.items.carrier.KineticDynamo;
 import net.riezebos.bruus.tbd.game.level.directors.DirectorManager;
@@ -108,7 +110,15 @@ public class SpaceShip extends GameObject {
             spriteConfiguration.setxCoordinate(this.xCoordinate);
             spriteConfiguration.setyCoordinate(this.yCoordinate);
             spriteConfiguration.setScale(0.9f);
-
+            SpriteAnimationConfiguration spriteAnimationConfiguration = new SpriteAnimationConfiguration(spriteConfiguration, 2, true);
+            setAnimation(new SpriteAnimation(spriteAnimationConfiguration));
+            shouldLoadEngineAnim = false;
+        } else if (PlayerStats.getInstance().getPlayerClass().equals(PlayerClass.Mutalisk)) {
+            SpriteConfiguration spriteConfiguration = new SpriteConfiguration();
+            spriteConfiguration.setImageType(ImageEnums.Mutalisk);
+            spriteConfiguration.setxCoordinate(this.xCoordinate);
+            spriteConfiguration.setyCoordinate(this.yCoordinate);
+            spriteConfiguration.setScale(1);
             SpriteAnimationConfiguration spriteAnimationConfiguration = new SpriteAnimationConfiguration(spriteConfiguration, 2, true);
             setAnimation(new SpriteAnimation(spriteAnimationConfiguration));
             shouldLoadEngineAnim = false;
@@ -143,14 +153,24 @@ public class SpaceShip extends GameObject {
         this.attackSpeed = PlayerStats.getInstance().getBaseAttackSpeed();
 
         boolean shouldLoadEngineAnim = true;
+
+        //todo deze if statement is code duplication
         if (PlayerStats.getInstance().getPlayerClass().equals(PlayerClass.Carrier)) {
             SpriteConfiguration spriteConfiguration = new SpriteConfiguration();
             spriteConfiguration.setImageType(ImageEnums.ProtossCarrier);
             spriteConfiguration.setxCoordinate(this.xCoordinate);
             spriteConfiguration.setyCoordinate(this.yCoordinate);
             spriteConfiguration.setScale(0.9f);
-
             SpriteAnimationConfiguration spriteAnimationConfiguration = new SpriteAnimationConfiguration(spriteConfiguration, 2, true);
+            setAnimation(new SpriteAnimation(spriteAnimationConfiguration));
+            shouldLoadEngineAnim = false;
+        } else if (PlayerStats.getInstance().getPlayerClass().equals(PlayerClass.Mutalisk)) {
+            SpriteConfiguration spriteConfiguration = new SpriteConfiguration();
+            spriteConfiguration.setImageType(ImageEnums.Mutalisk);
+            spriteConfiguration.setxCoordinate(this.xCoordinate);
+            spriteConfiguration.setyCoordinate(this.yCoordinate);
+            spriteConfiguration.setScale(0.6f);
+            SpriteAnimationConfiguration spriteAnimationConfiguration = new SpriteAnimationConfiguration(spriteConfiguration, 3, true);
             setAnimation(new SpriteAnimation(spriteAnimationConfiguration));
             shouldLoadEngineAnim = false;
         } else {
@@ -196,6 +216,11 @@ public class SpaceShip extends GameObject {
 
             addPlayerFollowingAnimation(focusCrystalAnimation);
             AnimationManager.getInstance().addUpperAnimation(focusCrystalAnimation);
+        }
+
+        if(PlayerStats.getInstance().getPlayerClass().equals(PlayerClass.Mutalisk)){
+            PassiveHealthRegeneration mutaliskPassiveHealingEffect = new PassiveHealthRegeneration(PlayerStats.getMutaliskHealthRegeneration(), EffectIdentifiers.MutaliskPassiveHealing);
+            this.addEffect(mutaliskPassiveHealingEffect);
         }
     }
 
@@ -271,7 +296,7 @@ public class SpaceShip extends GameObject {
             }
 
             Item item = PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.Adrenaline);
-            if(item != null){
+            if (item != null) {
                 item.applyEffectToObject(this); //apply adrenaline attack speed or refresh it
             }
 
@@ -322,7 +347,6 @@ public class SpaceShip extends GameObject {
             currentShieldPoints -= playerStats.getOverloadedShieldDiminishAmount();
         }
     }
-
 
 
     public boolean isAllowedToBuildProtoss = true;
@@ -883,7 +907,7 @@ public class SpaceShip extends GameObject {
     }
 
     public float getMovementSpeed() {
-        if(PlayerStats.getInstance().getPlayerClass().equals(PlayerClass.Carrier)){
+        if (PlayerStats.getInstance().getPlayerClass().equals(PlayerClass.Carrier)) {
             return 2.5f * this.movementSpeedModifier; //todo voor de carrier move speed is dit een hele dirty hack
         }
 
@@ -939,27 +963,27 @@ public class SpaceShip extends GameObject {
         return fuelCannisterRegenModifier;
     }
 
-    public void modifyDroneOrbitRadius(float modifier){
+    public void modifyDroneOrbitRadius(float modifier) {
         this.droneOrbitRadius += modifier;
     }
 
-    public float getDroneOrbitRadius(){
+    public float getDroneOrbitRadius() {
         return droneOrbitRadius;
     }
 
-    public void setDroneType(DroneTypes droneTypes){
+    public void setDroneType(DroneTypes droneTypes) {
         this.droneTypes = droneTypes;
     }
 
-    public DroneTypes getDroneType(){
+    public DroneTypes getDroneType() {
         return droneTypes;
     }
 
-    public void modifyShieldRegenModifier(float modifier){
+    public void modifyShieldRegenModifier(float modifier) {
         this.shieldRegenModifier += modifier;
     }
 
-    public float getShieldRegenModifier(){
+    public float getShieldRegenModifier() {
         return shieldRegenModifier;
     }
 
@@ -975,11 +999,11 @@ public class SpaceShip extends GameObject {
         this.igniteDurationModifier += modifier;
     }
 
-    public float getIgniteDurationModifier(){
+    public float getIgniteDurationModifier() {
         return this.igniteDurationModifier;
     }
 
-    public void modifyCritDamageModifier(float modifier){
+    public void modifyCritDamageModifier(float modifier) {
         this.critDamageModifier += modifier;
     }
 
@@ -994,6 +1018,7 @@ public class SpaceShip extends GameObject {
     public float getProtossShipBuildTime() {
         return protossShipBuildTime;
     }
+
     public int getShuttleCount() {
         return shuttleCount;
     }
@@ -1026,10 +1051,10 @@ public class SpaceShip extends GameObject {
         this.scoutCount = scoutCount;
     }
 
-    public ImageEnums getElectroShredImageEnum(){
-        if(PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.AnionInverter) != null){
+    public ImageEnums getElectroShredImageEnum() {
+        if (PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.AnionInverter) != null) {
             return ImageEnums.NegativeElectroShred;
-        } else if(PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.ElectricSupercharger) != null){
+        } else if (PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.ElectricSupercharger) != null) {
             return ImageEnums.ElectroShredImproved;
         } else {
             return ImageEnums.Electroshred;

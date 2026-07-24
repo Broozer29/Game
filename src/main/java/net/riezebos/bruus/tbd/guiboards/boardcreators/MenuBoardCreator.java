@@ -24,6 +24,7 @@ public class MenuBoardCreator {
         textCollection.setScale(imageScale);
         textCollection.setMenuFunctionality(MenuFunctionEnums.OpenClassSelectWindow);
 
+        textCollection.setCenterXCoordinate(backgroundCard.getCenterXCoordinate());
         return textCollection;
     }
 
@@ -112,7 +113,7 @@ public class MenuBoardCreator {
 
         GUIComponent backgroundCard = new DisplayOnly(spriteConfiguration);
 
-        int newWidth = Math.round(400 * DataClass.getInstance().getResolutionFactor());
+        int newWidth = Math.round(250 * DataClass.getInstance().getResolutionFactor());
         int newHeight = Math.round(250 * DataClass.getInstance().getResolutionFactor());
         backgroundCard.setImageDimensions(newWidth,newHeight);
 
@@ -155,7 +156,7 @@ public class MenuBoardCreator {
         int xCoordinate = component.getXCoordinate();
         int yCoordinate = component.getYCoordinate() + 50;
 
-        GUITextCollection textCollection = new GUITextCollection(xCoordinate,yCoordinate, "CONTINUE SAVE FILE");
+        GUITextCollection textCollection = new GUITextCollection(xCoordinate,yCoordinate, "CONTINUE RUN");
         textCollection.setScale(imageScale);
         textCollection.setMenuFunctionality(MenuFunctionEnums.ContinueSaveFile);
         return textCollection;

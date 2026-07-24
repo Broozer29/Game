@@ -35,9 +35,9 @@ public class PlayerStats {
     //firefighter
     public static float fireFighterBaseDamage = 10f;
     public static float fireFighterAttackSpeed = 0.28f;
-    public static float igniteDamageMultiplier = 0.025f;
-    public static float igniteDuration = 1.15f;
-    private int baseMaxIgniteStacks = 1;
+    public static float igniteDamageMultiplier = 0.011f;
+    public static float igniteDuration = 1.65f;
+    private int maxIgniteStacks;
     public static int fireFighterHitpoints = 85;
 
     //captain
@@ -51,6 +51,14 @@ public class PlayerStats {
     public static int carrierBaseHitpoints = 90;
     public static float carrierSlowSpeed = 2.5f;
     public static float carrierFastSpeed = 4f;
+
+    //mutalisk
+    public static float mutaliskBaseDamage = 10f;
+    public static float mutaliskBaseAttackSpeed = 0.28f;
+    public static int mutaliskBaseHitpoints = 100;
+    public static float mutaliskHealthRegeneration = 1;
+    public static float mutaliskSecondaryChargeUpTime = 1;
+    public static float mutaliskSecondaryDamageModifier = 2f;
 
     //todo deze attributen moeten eigenlijk naar spaceship, maar kunnen voor nu in playerstats blijven omdat ze (voor nu) altijd shared zijn bij alle spelers
     private float arbiterHealingMultiplier = 1f;
@@ -123,6 +131,10 @@ public class PlayerStats {
             attackType = PlayerPrimaryAttackTypes.Carrier;
             specialAttackType = PlayerSpecialAttackTypes.PlaceCarrierDrone;
             spaceShipImage = ImageEnums.ProtossCarrier;
+        } else if(playerClass.equals(PlayerClass.Mutalisk)){
+            attackType = PlayerPrimaryAttackTypes.Mutalisk;
+            specialAttackType = PlayerSpecialAttackTypes.MutaliskSecondary;
+            spaceShipImage = ImageEnums.Mutalisk;
         }
 
         loadClassPreset();
@@ -152,7 +164,7 @@ public class PlayerStats {
         mineralModifier = 1;
         amountOfDrones = 0;
         maximumAmountOfDrones = 8;
-        baseMaxIgniteStacks = 1;
+        maxIgniteStacks = 5;
 
         //Hack for free rerolls
         setShopRerollDiscount(0);
@@ -185,6 +197,9 @@ public class PlayerStats {
             case Carrier:
                 initCarrierPreset();
                 break;
+            case Mutalisk:
+                initMutaliskPreset();
+                break;
         }
     }
 
@@ -211,12 +226,25 @@ public class PlayerStats {
         setPlayerMissileImage(ImageEnums.FireFighterFlameThrowerLooping);
         setPlayerMissileImpactImage(null);
         igniteDuration = 1.75f;
-        baseMaxIgniteStacks = 2;
+        maxIgniteStacks = 5;
         this.maxHitPoints = fireFighterHitpoints;
         this.maxShieldHitPoints = fireFighterHitpoints;
 
         //special
         setSpecialAttackRechargeCooldown(10f);
+    }
+
+    private void initMutaliskPreset(){
+        //mutalisk
+        setAttackSpeed(mutaliskBaseAttackSpeed);
+        setBaseDamage(mutaliskBaseDamage);
+        this.attackType = PlayerPrimaryAttackTypes.Mutalisk;
+        setPlayerMissileImage(ImageEnums.FireFighterFlameThrowerLooping); //tbd
+        setPlayerMissileImpactImage(null);
+        this.maxHitPoints = mutaliskBaseHitpoints;
+        this.maxShieldHitPoints = 0; //disabled for mutalisk since its biological
+
+        setSpecialAttackRechargeCooldown(1f);
     }
 
 
@@ -517,11 +545,11 @@ public class PlayerStats {
     }
 
     public void modifyMaxIgniteStacks(int igniteStacks) {
-        this.baseMaxIgniteStacks += igniteStacks;
+        this.maxIgniteStacks += igniteStacks;
     }
 
-    public int getBaseMaxIgniteStacks() {
-        return baseMaxIgniteStacks;
+    public int getMaxIgniteStacks() {
+        return maxIgniteStacks;
     }
 
     public float getBaseDroneDamage() {
@@ -638,5 +666,53 @@ public class PlayerStats {
 
     public static int getDefaultCarrierStartingScouts() {
         return defaultCarrierStartingScouts;
+    }
+
+    public static float getMutaliskBaseDamage() {
+        return mutaliskBaseDamage;
+    }
+
+    public static void setMutaliskBaseDamage(float mutaliskBaseDamage) {
+        PlayerStats.mutaliskBaseDamage = mutaliskBaseDamage;
+    }
+
+    public static float getMutaliskBaseAttackSpeed() {
+        return mutaliskBaseAttackSpeed;
+    }
+
+    public static void setMutaliskBaseAttackSpeed(float mutaliskBaseAttackSpeed) {
+        PlayerStats.mutaliskBaseAttackSpeed = mutaliskBaseAttackSpeed;
+    }
+
+    public static int getMutaliskBaseHitpoints() {
+        return mutaliskBaseHitpoints;
+    }
+
+    public static void setMutaliskBaseHitpoints(int mutaliskBaseHitpoints) {
+        PlayerStats.mutaliskBaseHitpoints = mutaliskBaseHitpoints;
+    }
+
+    public static float getMutaliskHealthRegeneration() {
+        return mutaliskHealthRegeneration;
+    }
+
+    public static void setMutaliskHealthRegeneration(float mutaliskHealthRegeneration) {
+        PlayerStats.mutaliskHealthRegeneration = mutaliskHealthRegeneration;
+    }
+
+    public static float getMutaliskSecondaryChargeUpTime() {
+        return mutaliskSecondaryChargeUpTime;
+    }
+
+    public static void setMutaliskSecondaryChargeUpTime(float mutaliskSecondaryChargeUpTime) {
+        PlayerStats.mutaliskSecondaryChargeUpTime = mutaliskSecondaryChargeUpTime;
+    }
+
+    public static float getMutaliskSecondaryDamageModifier() {
+        return mutaliskSecondaryDamageModifier;
+    }
+
+    public static void setMutaliskSecondaryDamageModifier(float mutaliskSecondaryDamageModifier) {
+        PlayerStats.mutaliskSecondaryDamageModifier = mutaliskSecondaryDamageModifier;
     }
 }

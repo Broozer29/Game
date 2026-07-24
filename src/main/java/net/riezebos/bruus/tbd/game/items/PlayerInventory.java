@@ -38,8 +38,9 @@ public class PlayerInventory {
         Contract.killCountRequired = Contract.originalCountRequired; //todo Sloppy fix, if HelpRequested is removed from the inventory, contract count will be wrong and require a reset
 
         if (DevTestSettings.infiniteMoney) {
+
             cashMoney = 999999999;
-            addItem(ItemEnums.WisdomBall);
+            addItem(ItemEnums.FireWithoutGasIsAss);
         } else {
             cashMoney = 0;
         }
@@ -108,8 +109,8 @@ public class PlayerInventory {
                 return new LeechingLasers();
             case CalmInChaos:
                 return new CalmInChaos();
-            case SpawnSpaceStationTBD:
-                return new SpawnSpaceStationTBD();
+            case Placeholder:
+                return new Placeholder();
             case GreedIsGood:
                 return new GreedIsGood();
             case Guillotine:
@@ -192,6 +193,12 @@ public class PlayerInventory {
                 return new ElectricSupercharger();
             case ReflectiveShielding:
                 return new ReflectiveShielding();
+            case RingOfFire:
+                return new RingOfFire();
+            case FieryImplosion:
+                return new FieryImplosion();
+            case FireWithoutGasIsAss:
+                return new FireWithoutGasIsAss();
             case Thornweaver:
                 return new Thornweaver();
             case BarbedAegis:
@@ -215,7 +222,7 @@ public class PlayerInventory {
             case EscalatingFlames:
                 return new EscalatingFlames();
             case BeckoningFlames:
-                return new EntanglingFlames();
+                return new BeckoningFlames();
             case BargainBucket:
                 return new BargainBucket();
             case ShieldStabilizer:

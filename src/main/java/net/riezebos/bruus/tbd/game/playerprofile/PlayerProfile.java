@@ -1,11 +1,14 @@
 package net.riezebos.bruus.tbd.game.playerprofile;
 
+import net.riezebos.bruus.tbd.DevTestSettings;
+
 public class PlayerProfile {
     private int enemyKilledCounter;
     private int highestStageCompleted;
     private int bossesKilledCounter;
     private boolean carrierUnlocked = false;
     private boolean fireFighterUnlocked = false;
+    private boolean mutaliskUnlocked = DevTestSettings.enableMutalisk; //todo implementeer een unlock conditie
     private int emeralds = 0;
     private int nepotismLevel = 0;
     private int clubAccessLevel = 0;
@@ -105,8 +108,8 @@ public class PlayerProfile {
     }
 
     public boolean isCarrierUnlocked() {
-        return false; //temporarily locked
-//        return carrierUnlocked;
+//        return false; //temporarily locked
+        return carrierUnlocked;
     }
 
     public void setCarrierUnlocked(boolean carrierUnlocked) {
@@ -114,8 +117,8 @@ public class PlayerProfile {
     }
 
     public boolean isFireFighterUnlocked() {
-        return false; //temporarily locked
-//        return fireFighterUnlocked;
+//        return false; //temporarily locked
+        return fireFighterUnlocked;
     }
 
     public void setFireFighterUnlocked(boolean fireFighterUnlocked) {
@@ -128,5 +131,9 @@ public class PlayerProfile {
 
     public void setThickHideLevel(int thickHideLevel) {
         ThickHideLevel = thickHideLevel;
+    }
+
+    public boolean isMutaliskUnlocked() {
+        return mutaliskUnlocked;
     }
 }

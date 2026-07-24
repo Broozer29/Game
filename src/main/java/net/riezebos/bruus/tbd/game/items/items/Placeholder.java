@@ -6,12 +6,12 @@ import net.riezebos.bruus.tbd.game.items.ItemEnums;
 import net.riezebos.bruus.tbd.game.items.PlayerInventory;
 import net.riezebos.bruus.tbd.game.items.enums.ItemApplicationEnum;
 
-public class SpawnSpaceStationTBD extends Item {
+public class Placeholder extends Item {
 
     public static int maxStations = 4;
 
-    public SpawnSpaceStationTBD() {
-        super(ItemEnums.SpawnSpaceStationTBD, 1, ItemApplicationEnum.CustomActivation);
+    public Placeholder() {
+        super(ItemEnums.Placeholder, 1, ItemApplicationEnum.CustomActivation);
     }
 
     public void increaseQuantityOfItem(int amount) {

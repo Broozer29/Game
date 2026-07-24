@@ -7,6 +7,7 @@ import net.riezebos.bruus.tbd.game.items.PlayerInventory;
 import net.riezebos.bruus.tbd.game.items.effects.EffectIdentifiers;
 import net.riezebos.bruus.tbd.game.items.effects.EffectInterface;
 import net.riezebos.bruus.tbd.game.items.effects.effectimplementations.DamageOverTime;
+import net.riezebos.bruus.tbd.game.items.effects.effectimplementations.WithoutGasItsAss;
 import net.riezebos.bruus.tbd.game.util.VisualLayer;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteAnimationConfiguration;
@@ -23,6 +24,10 @@ public class FlameThrower extends SpecialAttack {
         super.damagesMissiles = true;
         super.maxHPDamagePercentageForMissiles = 0.018f;
         super.visualLayer = VisualLayer.Lower;
+
+        if(PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.FireWithoutGasIsAss) != null){
+            initIgniteMagnificationEffect();
+        }
     }
 
     private void initIgniteEffect(){
@@ -30,6 +35,12 @@ public class FlameThrower extends SpecialAttack {
         float damage = PlayerStats.getInstance().getIgniteDamage();
         EffectInterface ignite = new DamageOverTime(damage, duration, EffectIdentifiers.Ignite);
         this.effectsToApply.add(ignite);
+    }
+
+    private void initIgniteMagnificationEffect(){
+        float duration = 0.05f;
+        EffectInterface igniteModifier = new WithoutGasItsAss(duration, EffectIdentifiers.WithoutGasItsAssDamageBonus);
+        this.effectsToApply.add(igniteModifier);
     }
 
     @Override

@@ -1,5 +1,6 @@
 package net.riezebos.bruus.tbd.guiboards.boards;
 
+import net.riezebos.bruus.tbd.DevTestSettings;
 import net.riezebos.bruus.tbd.controllerInput.ControllerInputEnums;
 import net.riezebos.bruus.tbd.controllerInput.ControllerInputReader;
 import net.riezebos.bruus.tbd.controllerInput.ControllerManager;
@@ -84,10 +85,9 @@ public class MainMenuBoard extends JPanel implements TimerHolder {
         startGameBackgroundCard = MenuBoardCreator.startGameBackgroundCard();
 
         selectClassBoard = MenuBoardCreator.createStartGameButton(startGameBackgroundCard);
-        menuCursor = MenuBoardCreator.createMenuCursor(selectClassBoard.getComponents().get(0));
-        openShopButton = MenuBoardCreator.openShopButton(selectClassBoard);
-        continueSaveFile = MenuBoardCreator.continueSaveFileButton(openShopButton);
-        closeGameButton = MenuBoardCreator.testingButton(continueSaveFile);
+        continueSaveFile = MenuBoardCreator.continueSaveFileButton(selectClassBoard);
+        openShopButton = MenuBoardCreator.openShopButton(continueSaveFile);
+        closeGameButton = MenuBoardCreator.testingButton(openShopButton);
         foundController = MenuBoardCreator.foundControllerText(controllersConnected, titleImage);
 
         selectMusicOptionBackgroundCard = MenuBoardCreator.selectMusicPlayerBackgroundCard(startGameBackgroundCard);
@@ -100,6 +100,14 @@ public class MainMenuBoard extends JPanel implements TimerHolder {
 
     public void recreateWindow() {
         if (initializedMenuObjects) {
+            startGameBackgroundCard = MenuBoardCreator.startGameBackgroundCard();
+            selectClassBoard = MenuBoardCreator.createStartGameButton(startGameBackgroundCard);
+            menuCursor = MenuBoardCreator.createMenuCursor(selectClassBoard.getComponents().get(0));
+            openShopButton = MenuBoardCreator.openShopButton(selectClassBoard);
+            continueSaveFile = MenuBoardCreator.continueSaveFileButton(openShopButton);
+            closeGameButton = MenuBoardCreator.testingButton(continueSaveFile);
+            foundController = MenuBoardCreator.foundControllerText(controllersConnected, titleImage);
+
             animationManager.resetManager();
             firstColumn.clear();
             secondColumn.clear();
@@ -113,9 +121,9 @@ public class MainMenuBoard extends JPanel implements TimerHolder {
             selectedRow = 0;
             addTilesToColumns();
 
-            for (GUITextCollection explanation : controlExplanations) {
-                offTheGridObjects.addAll(explanation.getComponents());
-            }
+//            for (GUITextCollection explanation : controlExplanations) {
+//                offTheGridObjects.addAll(explanation.getComponents());
+//            }
 
             offTheGridObjects.add(startGameBackgroundCard);
 //            offTheGridObjects.add(selectMusicOptionBackgroundCard);
@@ -157,15 +165,17 @@ public class MainMenuBoard extends JPanel implements TimerHolder {
         addToGrid(firstColumn, selectClassBoard.getComponents().get(0), 0, 0);
         addAllButFirstComponent(selectClassBoard);
 
-        addToGrid(firstColumn, openShopButton.getComponents().get(0), 0, 1);
-        addAllButFirstComponent(openShopButton);
-
         if (SaveManager.getInstance().doesSaveFileExist()) {
-            addToGrid(firstColumn, continueSaveFile.getComponents().get(0), 0, 2);
+            addToGrid(firstColumn, continueSaveFile.getComponents().get(0), 0, 0);
             addAllButFirstComponent(continueSaveFile);
         }
 
-        addToGrid(firstColumn, closeGameButton.getComponents().get(0), 0, 3);
+        if(DevTestSettings.enableDirectShopAccess) {
+            addToGrid(firstColumn, openShopButton.getComponents().get(0), 0, 0);
+            addAllButFirstComponent(openShopButton);
+        }
+
+        addToGrid(firstColumn, closeGameButton.getComponents().get(0), 0, 0);
         addAllButFirstComponent(closeGameButton);
 
 //        secondColumn.add(selectDefaultMusicButton.getComponents().get(0));

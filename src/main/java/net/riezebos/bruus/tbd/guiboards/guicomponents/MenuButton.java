@@ -113,6 +113,13 @@ public class MenuButton extends GUIComponent {
                 AudioManager.getInstance().addAudio(AudioEnums.GenericSelect);
                 AudioManager.getInstance().addAudio(AudioEnums.getSelectClassAudioByClass(PlayerClass.Carrier));
                 break;
+            case SelectMutaliskClass:
+                PlayerStats.getInstance().setPlayerClass(PlayerClass.Mutalisk);
+                BoardManager.getInstance().getClassSelectionBoard().recreateCursor();
+                BoardManager.getInstance().getClassSelectionBoard().addCursorAnimation();
+                AudioManager.getInstance().addAudio(AudioEnums.GenericSelect);
+                AudioManager.getInstance().addAudio(AudioEnums.getSelectClassAudioByClass(PlayerClass.Carrier));
+                break;
             case ContinueSaveFile:
                 SaveManager.getInstance().loadSaveFile();
                 boardManager.openShopWindow();

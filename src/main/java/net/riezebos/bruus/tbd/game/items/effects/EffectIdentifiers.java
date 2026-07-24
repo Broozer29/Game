@@ -14,6 +14,7 @@ public enum EffectIdentifiers {
     EnergySyphonHealPlayerOnDeath,
     PlatinumSpongeArmorBonus,
     SelfRepairingSteelHealthRegeneration,
+    MutaliskPassiveHealing,
     MoneyPrinterGoldOnDeath,
     SpawnCoinsOnDeath,
     SpawnScrapMetalOnDeath,
@@ -31,5 +32,6 @@ public enum EffectIdentifiers {
     EmergencyRepairsConstructionIncrease,
     StuivieArmorBonus,
     YellowBossOrbHeal,
+    WithoutGasItsAssDamageBonus,
     MartyrdomAttackSpeed, ElectroShedding;
 }

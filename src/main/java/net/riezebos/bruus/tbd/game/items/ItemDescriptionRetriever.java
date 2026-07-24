@@ -28,18 +28,18 @@ public class ItemDescriptionRetriever {
                 TOTAL:                      = 37 (24 can be rolled in the shop)
 
             FIREFIGHTER:
-                Relics:         7 + 2 + 1   = 10
-                Legendaries:    4 + 6 + 1   = 11
+                Relics:         7 + 5 + 1   = 13
+                Legendaries:    4 + 5 + 1   = 10
                 Rares:          4 + 3       = 7
-                Commons:        6 + 1       = 7
-                TOTAL:                      = 34 (25 can be rolled in the shop)
+                Commons:        6 + 2       = 8
+                TOTAL:                      = 37 (25 can be rolled in the shop)
 
             CARRIER:
-                Relics:         7 + 2       = 9
-                Legendaries:    4 + 6 + 1   = 11
+                Relics:         7 + 3       = 10
+                Legendaries:    4 + 4 + 1   = 9
                 Rares:          5 + 6       = 11
                 Commons:        5 + 2 + 1   = 8
-                TOTAL:                      = 38 (30 can be rolled in the shop)
+                TOTAL:                      = 38 (29 can be rolled in the shop)
 
 
 
@@ -73,7 +73,7 @@ public class ItemDescriptionRetriever {
             case GreedIsGood -> {
                 return "Cash carriers no longer spawn. Instead, medium sized enemies have a " + Math.round(GreedIsGood.mineralsPerPickupChance * 100) + "% chance to drop a coin worth " + GreedIsGood.mineralsPerPickup + " minerals.";
             } //relic
-            case SpawnSpaceStationTBD -> {
+            case Placeholder -> {
                 return "Killing an enemy spawns a friendly stationary drone that attacks nearby enemies. Up to 4 drones per player can be spawned at a time.";
             } //relic
             case WisdomBall -> {return "Refreshes in the shop have a chance to be wondrous.";}
@@ -158,7 +158,7 @@ public class ItemDescriptionRetriever {
                 return "Your missiles that strike enemies with " + Math.round(OneShotOneKill.hpRequirement * 100) + "% hp will always critically strike and deal " + Math.round(OneShotOneKill.damageAmplificationModifier * 100) + "% bonus damage.";
             } //relic
 
-            //2
+            //3
             case ElectricSupercharger -> {
                 return "Your Electro Shred area of effect is improved. Electro Shred deals +" +
                         Math.round(ElectricSupercharger.buffAmount * 100) +
@@ -198,15 +198,20 @@ public class ItemDescriptionRetriever {
             //--------------------------------------firefighter items--------------------------------------
             //2
             case BeckoningFlames -> {
-                return "Automatically fire a missile dealing " + Math.round(EntanglingFlames.damageBonus * 100) + "% damage to Ignited targets every 0.75 seconds they are affected by Ignite.";
+                return "Automatically fire a missile dealing " + Math.round(BeckoningFlames.damageBonus * 100) + "% damage to Ignited targets every 0.75 seconds they are affected by Ignite.";
             } //relic
             case ModuleScorch -> {
                 return "Drones are transformed into fireballs that damage and apply Ignite.";
             } //relic
-            //new item: whilst secondary is active, fire missiles in 360 degrees around the player, these missiles apply ignite on hit
-            //new item: when max ignite stacks is reached, the stacks detonate dealing the remaining damage in an AOE explosion and consumes the ignite
-            //new item(fire without gas is plain ass): Ignite duration & damage reduced by 50%. Opponents taking damage from your Flamethrower take 400% increased damage from Ignite.
-                                                        //problem, dit is technisch slordig om te implementeren momenteel, ignite moet checken of de enemy in een flamethrower staat, maar moet dit een boolean attribuut worden?
+            case RingOfFire -> {
+                return "While your Fire Shield is active, shoot missiles in all directions dealing " + Math.round(RingOfFire.projectileDamage * 100) + "% damage and apply ignite.";
+            } //relic
+            case FieryImplosion -> {
+                return "When ignite reaches maximum stacks it instantly explodes dealing the full damage in a large explosion.";
+            } //relic
+            case FireWithoutGasIsAss -> {
+                return "Ignite damage is reduced by " + Math.round(FireWithoutGasIsAss.reduction * 100) + "%. Enemies taking damage from your Flamethrower take "+ Math.round(FireWithoutGasIsAss.increase * 100) +"% increased damage from Ignite.";
+            } //relic
 
             //6
             case CorrosiveOil -> {
@@ -225,18 +230,14 @@ public class ItemDescriptionRetriever {
                         String.format("%.1f", value) +
                         "%) per second.";
             } //legendary  (flamethrower build)
-            case FuelCannister -> {
-                return "Increases maximum fuel capacity and fuel regeneration by " + Math.round(FuelCannister.bonusFuelMultiplier * 100) + "%.";
-            } //legendary (flamethrower build)
             case EternaFlame -> {
                 return "Your ignite deals " + Math.round(EternaBurn.igniteDamageReduction * 100) + "% reduced damage. Flamethrower requires " + Math.round(EternaBurn.fuelUsagereduction * 100) + "% less fuel.";
             } //legendary,  (flamethrower build) make it a common -> Remove ignite damage reduction and keep flamethrower fuel consumption reduction?
-                                                                                        //Problem with this approach: fuel reduction on a common trivializes the fuel mechanic?
 
             //3
-            case EscalatingFlames -> {
-                return "Ignite can stack 1 additional time.";
-            } //rare    (ignite build)
+            case FuelCannister -> {
+                return "Increases maximum fuel capacity and fuel regeneration by " + Math.round(FuelCannister.bonusFuelMultiplier * 100) + "%.";
+            } //Rare (flamethrower build)
             case StickyOil -> {
                 return "Ignite duration increased by " +
                         Math.round(StickyOil.bonusDurationMultiplier * 100) +
@@ -247,36 +248,35 @@ public class ItemDescriptionRetriever {
                         "Your flamethrower deals " + Math.round(EphemeralBlaze.primaryDamagePerIgniteStack * 100) + "% (+" + Math.round(EphemeralBlaze.primaryDamagePerIgniteStack * 100) + "%) increased damage per stack of ignite on the target. ";
             } //rare      (flamethrower build)
 
-            //1
+            //2
             case ScorchingFury -> {
                 return "Ignite deals " + Math.round(ScorchingFury.bonusDamageMultiplier * 100) + "% more damage.";
             } //common     (ignite build)
+            case EscalatingFlames -> {
+                return "Ignite can stack 1 additional time.";
+            } //common    (ignite build)
             //--------------------------------------carrier items--------------------------------------
-            //2
+            //3
             case PulsingBeacon -> {
                 return "Your beacon now casts a damaging pulse every " + Math.round(PulsingBeacon.cooldown) + " second dealing " + Math.round(PulsingBeacon.damageModifier * 100) + "% damage. Every pulse increases the damage of subsequent pulses by " + Math.round(PulsingBeacon.damageBonusPerCast * 100) + "%";
             } //relic
             case ArbiterDamage -> {
                 return "Protoss Arbiters no longer heal allies. Protoss Arbiters gain " + Math.round(ArbiterDamage.damageIncreaseMultiplier * 100) + "% increased effectiveness and damage random enemies.";
             } //relic
+            case InverseRetrieval -> {
+                return "Instead of recalling beacons, teleport on top of them. After teleporting release a shockwave dealing " +
+                        Math.round(InverseRetrieval.explosionDamageRatio * 100) + "% (+" + Math.round(InverseRetrieval.explosionDamageRatio * 100) + ") damage that stuns enemies for " +
+                        InverseRetrieval.disableDuration + " seconds.";
+            } //Relic
 
-            //6
+            //4
             case HangarBayUpgrade -> {
                 return "Maximum amount of available Hangar Bay slots increased by " + HangarBayUpgrade.additionalShipsPerItem;
-            } //legendary
-            case PyrrhicProtocol -> {
-                return "Beacons explode upon dying dealing " + Math.round(PyrrhicProtocol.explosionDamageRatio * 100) + "% " +
-                        "+(" + Math.round(PyrrhicProtocol.explosionDamageRatio * 100) + "%) damage.";
             } //legendary
             case Martyrdom -> {
                 return "When a Protoss Ship dies, remaining Protoss Ships become frenzied for " + Martyrdom.duration + " seconds. Gaining " +
                         Math.round(Martyrdom.attackSpeedIncrease * 100) + "% " + "(+" + Math.round(Martyrdom.attackSpeedIncrease * 100) + "%) attack speed.";
             } //legendary
-            case InverseRetrieval -> {
-                return "Instead of recalling beacons, teleport on top of them. After teleporting release a shockwave dealing " +
-                        Math.round(InverseRetrieval.explosionDamageRatio * 100) + "% (+" + Math.round(InverseRetrieval.explosionDamageRatio * 100) + ") damage that stuns enemies for " +
-                        InverseRetrieval.disableDuration + " seconds.";
-            } //legendary (make it a relic?)
             case AimAssist -> {
                 return "Protoss ships gain " + Math.round(AimAssist.protossAttackRangeBonus * 100) + "% attack range.";
             }  //legendary
@@ -305,7 +305,7 @@ public class ItemDescriptionRetriever {
                 return "Protoss Ships explode upon death, dealing " + Math.round(VengeanceProtocol.explosionDamageMultiplier * 100) + "% (+" + Math.round(VengeanceProtocol.explosionDamageMultiplier * 100) + "%) damage";
             } //rare
             case ProtossCorsair -> {
-                return "Gain 1 Protoss Corsair. Corsairs are suicide bombers that deal 25% of the enemies maximum hitpoints as damage. Corsairs deal a maximum of " + Math.round(ProtossCorsairItem.maxDamageBase) + " (+" + Math.round(ProtossCorsairItem.maxDamageIncrease) + ") damage.";
+                return "Gain 1 Protoss Corsair. Corsairs are suicide bombers that deal " + Math.round(ProtossCorsairItem.hitpointsDamage * 100 ) + "% of the enemies maximum hitpoints as damage. Corsairs deal a maximum of " + Math.round(ProtossCorsairItem.maxDamageBase) + " (+" + Math.round(ProtossCorsairItem.maxDamageIncrease) + ") damage.";
             } //rare
 
             //2
@@ -337,6 +337,10 @@ public class ItemDescriptionRetriever {
             } //common -> carrier/captain
 
             //--------------------------------------Disabled or deprecated items--------------------------------------
+            case PyrrhicProtocol -> {
+                return "Beacons explode upon dying dealing " + Math.round(PyrrhicProtocol.explosionDamageRatio * 100) + "% " +
+                        "+(" + Math.round(PyrrhicProtocol.explosionDamageRatio * 100) + "%) damage.";
+            } //legendary, marked for possible removal as this just doesn't fit any playstyle/archetype?
             case RepulsionArmorPlate -> {
                 return "Gain 10 armor. Armor increases damage reduction.";  //disabled
             }

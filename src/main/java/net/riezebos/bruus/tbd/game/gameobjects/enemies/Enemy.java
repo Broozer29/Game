@@ -15,7 +15,7 @@ import net.riezebos.bruus.tbd.game.gamestate.GameStatsTracker;
 import net.riezebos.bruus.tbd.game.items.ItemEnums;
 import net.riezebos.bruus.tbd.game.items.PlayerInventory;
 import net.riezebos.bruus.tbd.game.items.effects.EffectIdentifiers;
-import net.riezebos.bruus.tbd.game.items.items.SpawnSpaceStationTBD;
+import net.riezebos.bruus.tbd.game.items.items.Placeholder;
 import net.riezebos.bruus.tbd.game.level.LevelManager;
 import net.riezebos.bruus.tbd.game.level.directors.DirectorManager;
 import net.riezebos.bruus.tbd.game.level.directors.GodRunDetector;
@@ -200,8 +200,8 @@ public class Enemy extends GameObject {
 
 
 
-        if(PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.SpawnSpaceStationTBD) != null &&
-                FriendlyManager.getInstance().getFriendlyStations().size() < PlayerManager.getInstance().getPlayerCount() * SpawnSpaceStationTBD.maxStations) {
+        if(PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.Placeholder) != null &&
+                FriendlyManager.getInstance().getFriendlyStations().size() < PlayerManager.getInstance().getPlayerCount() * Placeholder.maxStations) {
             FriendlyManager.getInstance().addFriendlyStation(FriendlyCreator.createFriendlyStation(null, this.getCurrentCenterLocation()));
         }
     }

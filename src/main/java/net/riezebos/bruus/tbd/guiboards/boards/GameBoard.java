@@ -1,5 +1,6 @@
 package net.riezebos.bruus.tbd.guiboards.boards;
 
+import net.riezebos.bruus.tbd.DevTestSettings;
 import net.riezebos.bruus.tbd.controllerInput.ControllerManager;
 import net.riezebos.bruus.tbd.game.UI.GameUICreator;
 import net.riezebos.bruus.tbd.game.UI.UIObject;
@@ -17,6 +18,7 @@ import net.riezebos.bruus.tbd.game.gameobjects.missiles.laserbeams.LaserbeamIndi
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.specialAttacks.SpecialAttack;
 import net.riezebos.bruus.tbd.game.gameobjects.neutral.ExplosionManager;
 import net.riezebos.bruus.tbd.game.gameobjects.neutral.interactable.InteractableManager;
+import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerClass;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
 import net.riezebos.bruus.tbd.game.gameobjects.player.SpaceShipReviver;
@@ -320,7 +322,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
     private void drawEndOfLevelScreen(Graphics2D g, boolean hasSurvived) {
         GameStatsTracker gameStatsTracker = GameStatsTracker.getInstance();
 
-        if (!hasExportedLogs) {
+        if (!hasExportedLogs && DevTestSettings.exportPerformanceLogs) {
             String stageNumber = String.valueOf(GameState.getInstance().getStagesCompleted());
             PerformanceLoggerManager.getInstance().exportToJson("Stage_" + stageNumber);
             PerformanceLoggerManager.getInstance().reset();
@@ -470,12 +472,12 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
             drawImage(g, bgObject);
         }
 
-        for(SpaceShipReviver reviver : PlayerManager.getInstance().getSpaceShipReviverList()){
+        for (SpaceShipReviver reviver : PlayerManager.getInstance().getSpaceShipReviverList()) {
             drawCircle(g, Math.round(reviver.getReviveRadius() * reviver.getCharge()), reviver.getSpaceShip().getCenterXCoordinate(), reviver.getSpaceShip().getCenterYCoordinate(), Color.GREEN, 1, false);
             drawCircle(g, reviver.getReviveRadius(), reviver.getSpaceShip().getCenterXCoordinate(), reviver.getSpaceShip().getCenterYCoordinate(), Color.GREEN, reviver.getCharge() * reviver.getMaxAlphaTransparancy(), true);
         }
 
-        for(LaserbeamIndicator laserbeamIndicator : missileManager.getLaserbeamIndicators()){
+        for (LaserbeamIndicator laserbeamIndicator : missileManager.getLaserbeamIndicators()) {
             Color originalColor = g.getColor(); // store the original color
             Color color = new Color(1, 0, 0, 0.75f); //Red and slightly transparant
             g.setColor(color);
@@ -617,7 +619,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
         g2d.setColor(color);
 
         // Draw filled circle (use drawOval for outline only)
-        if(fill) {
+        if (fill) {
             g2d.fillOval(centerX - size / 2, centerY - size / 2, size, size);
         } else {
             g2d.drawOval(centerX - size / 2, centerY - size / 2, size, size);
@@ -941,32 +943,33 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
         g.fillRect(player.getXCoordinate(), player.getYCoordinate() + (player.getHeight() + 3), actualAmount, 3);
 
         // Reset for shield bars
-        factor = playerShields / playerMaxShields;
-        if (factor > 1) {
-            factor = 1;
+        if (!PlayerStats.getInstance().getPlayerClass().equals(PlayerClass.Mutalisk)) {
+            factor = playerShields / playerMaxShields;
+            if (factor > 1) {
+                factor = 1;
+            }
+            actualAmount = Math.round(player.getWidth() * factor);
+
+            // Draw the blue background for shields with transparency
+            g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.5f)); // 50% opacity
+            g.setColor(Color.BLUE);
+            g.fillRect(player.getXCoordinate(), player.getYCoordinate() + (player.getHeight() + 7), player.getWidth(), 3);
+
+            // Draw the cyan filled part of the shield bar with transparency
+            g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.8f)); // 80% opacity
+            g.setColor(Color.CYAN);
+            g.fillRect(player.getXCoordinate(), player.getYCoordinate() + (player.getHeight() + 7), actualAmount, 3);
+
+            if (playerShields > playerMaxShields) {
+                float overloadingFactor = (playerShields - playerMaxShields) / playerMaxShields;
+                int overloadingAmount = Math.round(player.getWidth() * overloadingFactor);
+
+                // Set the color to orange and draw the overload bar
+                g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.6f));
+                g.setColor(Color.ORANGE);
+                g.fillRect(player.getXCoordinate(), player.getYCoordinate() + (player.getHeight() + 7), overloadingAmount, 3);
+            }
         }
-        actualAmount = Math.round(player.getWidth() * factor);
-
-        // Draw the blue background for shields with transparency
-        g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.5f)); // 50% opacity
-        g.setColor(Color.BLUE);
-        g.fillRect(player.getXCoordinate(), player.getYCoordinate() + (player.getHeight() + 7), player.getWidth(), 3);
-
-        // Draw the cyan filled part of the shield bar with transparency
-        g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.8f)); // 80% opacity
-        g.setColor(Color.CYAN);
-        g.fillRect(player.getXCoordinate(), player.getYCoordinate() + (player.getHeight() + 7), actualAmount, 3);
-
-        if (playerShields > playerMaxShields) {
-            float overloadingFactor = (playerShields - playerMaxShields) / playerMaxShields;
-            int overloadingAmount = Math.round(player.getWidth() * overloadingFactor);
-
-            // Set the color to orange and draw the overload bar
-            g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.6f));
-            g.setColor(Color.ORANGE);
-            g.fillRect(player.getXCoordinate(), player.getYCoordinate() + (player.getHeight() + 7), overloadingAmount, 3);
-        }
-
 
         // Restore the original composite
         g.setComposite(originalComposite);
@@ -1228,14 +1231,14 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
                     selectedComponent.activateComponent();
                     inputDelay = 0;
                 } else if (controllerManager.isPrimaryControllerLeftPressed() && inputDelay >= DataClass.CONTROLLER_INPUT_COOLDOWN) {
-                    if(isUsersFirstInputForRelicselection){
+                    if (isUsersFirstInputForRelicselection) {
                         overRideFirstSelection();
                         return; //exit early
                     }
                     navigateLeft();
                     inputDelay = 0;
                 } else if (controllerManager.isPrimaryControllerRightPressed() && inputDelay >= DataClass.CONTROLLER_INPUT_COOLDOWN) {
-                    if(isUsersFirstInputForRelicselection){
+                    if (isUsersFirstInputForRelicselection) {
                         overRideFirstSelection();
                         return; //exit early
                     }
@@ -1252,7 +1255,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
 
     }
 
-    private void overRideFirstSelection(){
+    private void overRideFirstSelection() {
         cursor.setXCoordinate(relicSelectionGrid.get(0).getXCoordinate() - cursor.getWidth());
         cursor.setCenterYCoordinate(relicSelectionGrid.get(0).getCenterYCoordinate());
         selectedComponent = relicSelectionGrid.get(0);
@@ -1305,7 +1308,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
         isUsersFirstInputForRelicselection = true;
 
         cursor.setCenterCoordinates(-500, -500); //zet hem buiten het scherm, nu word hij wel getekend maar verschijnt pas na de eerste input
-        for(SpaceShip spaceShip : playerManager.getAllSpaceShips()) {
+        for (SpaceShip spaceShip : playerManager.getAllSpaceShips()) {
             spaceShip.setImmune(true); //make them immune so they can't be damaged by any surviving projectiles or enemies whilst choosing a relic
         }
     }

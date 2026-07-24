@@ -2,6 +2,9 @@ package net.riezebos.bruus.tbd.game.items.effects.effectimplementations;
 
 import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.MissileManager;
+import net.riezebos.bruus.tbd.game.gameobjects.neutral.Explosion;
+import net.riezebos.bruus.tbd.game.gameobjects.neutral.ExplosionConfiguration;
+import net.riezebos.bruus.tbd.game.gameobjects.neutral.ExplosionManager;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
 import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SpaceShip;
@@ -13,6 +16,7 @@ import net.riezebos.bruus.tbd.game.items.effects.EffectIdentifiers;
 import net.riezebos.bruus.tbd.game.items.effects.EffectInterface;
 import net.riezebos.bruus.tbd.game.items.effects.util.EffectAnimationHelper;
 import net.riezebos.bruus.tbd.game.items.items.firefighter.CorrosiveOil;
+import net.riezebos.bruus.tbd.game.items.items.firefighter.FireWithoutGasIsAss;
 import net.riezebos.bruus.tbd.game.util.ThornsDamageDealer;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.AnimationManager;
@@ -52,6 +56,7 @@ public class DamageOverTime implements EffectInterface {
             this.animationList.add(animation);
         }
         this.effectIdentifier = effectIdentifier;
+        updateForFireWithoutGasIsAss();
     }
 
     public DamageOverTime(float damage, double durationInSeconds, EffectIdentifiers effectIdentifier) {
@@ -62,6 +67,14 @@ public class DamageOverTime implements EffectInterface {
         this.startTimeInSeconds = GameState.getInstance().getGameSeconds();
         this.animationList.add(initDefaultIgniteAnimation());
         this.effectIdentifier = effectIdentifier;
+        updateForFireWithoutGasIsAss();
+    }
+
+    private void updateForFireWithoutGasIsAss(){
+        if(PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.FireWithoutGasIsAss) != null && this.effectIdentifier.equals(EffectIdentifiers.Ignite)) {
+            this.damage *= FireWithoutGasIsAss.reduction;
+//            this.durationInSeconds *= FireWithoutGasIsAss.reduction;
+        }
     }
 
     private SpriteAnimation initDefaultIgniteAnimation() {
@@ -96,7 +109,12 @@ public class DamageOverTime implements EffectInterface {
         //Deal actual damage
         if (currentTime - startTimeInSeconds < durationInSeconds && dotStacks > 0) {
             if (currentTime - lastDamageTime >= damageInterval) {
-                target.takeDamage(this.damage * dotStacks);
+
+                if(this.effectIdentifier.equals(EffectIdentifiers.Ignite) && target.hasEffect(EffectIdentifiers.WithoutGasItsAssDamageBonus)){
+                    target.takeDamage(this.damage * dotStacks * FireWithoutGasIsAss.increase);
+                } else {
+                    target.takeDamage(this.damage * dotStacks);
+                }
                 lastDamageTime = currentTime; // Update the last damage time
 
                 if (this.effectIdentifier.equals(EffectIdentifiers.Ignite)) {
@@ -123,7 +141,7 @@ public class DamageOverTime implements EffectInterface {
     @Override
     public void increaseEffectStrength(GameObject gameObject) {
         if (this.effectIdentifier.equals(EffectIdentifiers.Ignite) &&
-                this.dotStacks < PlayerStats.getInstance().getBaseMaxIgniteStacks()) {
+                this.dotStacks < PlayerStats.getInstance().getMaxIgniteStacks()) {
             this.dotStacks += 1;
             applyCorrosiveOil(gameObject);
 
@@ -136,7 +154,31 @@ public class DamageOverTime implements EffectInterface {
                 AnimationManager.getInstance().addUpperAnimation(animation);
             }
 
+            if(this.dotStacks >= PlayerStats.getInstance().getMaxIgniteStacks() && PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.FieryImplosion) != null){
+                explodeIgnite(gameObject);
+            }
         }
+    }
+
+    private void explodeIgnite(GameObject gameObject){
+        SpriteConfiguration spriteConfiguration = new SpriteConfiguration();
+        spriteConfiguration.setyCoordinate(gameObject.getYCoordinate());
+        spriteConfiguration.setxCoordinate(gameObject.getXCoordinate());
+        spriteConfiguration.setScale(0.7f);
+        spriteConfiguration.setImageType(ImageEnums.Explosion3);
+
+        double remainingDuration = durationInSeconds - (GameState.getInstance().getGameSeconds() - startTimeInSeconds);
+        float damage = (float) ((remainingDuration / damageInterval) * (this.damage * this.dotStacks)); //
+        SpriteAnimationConfiguration spriteAnimationConfiguration = new SpriteAnimationConfiguration(spriteConfiguration, 0, false);
+        ExplosionConfiguration explosionConfiguration = new ExplosionConfiguration(true, damage, true);
+        Explosion explosion = new Explosion(spriteAnimationConfiguration, explosionConfiguration);
+        explosion.setCenterCoordinates(gameObject.getCenterXCoordinate(), gameObject.getCenterYCoordinate());
+
+        explosion.setTransparancyAlpha(false, 0.45f, 0);
+        ExplosionManager.getInstance().addExplosion(explosion);
+
+
+        this.dotStacks = 0;
     }
 
     private double lastTimeBeckoningFlamesFired = 0;

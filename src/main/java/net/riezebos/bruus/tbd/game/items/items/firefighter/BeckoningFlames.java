@@ -8,12 +8,12 @@ import net.riezebos.bruus.tbd.game.items.ItemEnums;
 import net.riezebos.bruus.tbd.game.items.PlayerInventory;
 import net.riezebos.bruus.tbd.game.items.enums.ItemApplicationEnum;
 
-public class EntanglingFlames extends Item {
+public class BeckoningFlames extends Item {
 
     public static float damageBonus = 4f;
 
 
-    public EntanglingFlames() {
+    public BeckoningFlames() {
         super(ItemEnums.BeckoningFlames, 1, ItemApplicationEnum.UponAcquiring);
     }
 

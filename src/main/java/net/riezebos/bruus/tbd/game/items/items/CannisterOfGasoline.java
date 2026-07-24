@@ -2,6 +2,7 @@ package net.riezebos.bruus.tbd.game.items.items;
 
 import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.pirates.AlienBomb;
+import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerClass;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
 import net.riezebos.bruus.tbd.game.items.Item;
 import net.riezebos.bruus.tbd.game.items.ItemEnums;
@@ -46,7 +47,8 @@ public class CannisterOfGasoline extends Item {
         if (!this.itemEnum.isEnabled()) {
             return false;
         }
-        return true;
+
+        return PlayerStats.getInstance().getPlayerClass().equals(PlayerClass.FireFighter);
     }
 
 }

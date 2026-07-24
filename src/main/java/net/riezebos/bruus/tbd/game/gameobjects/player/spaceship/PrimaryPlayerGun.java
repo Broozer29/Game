@@ -20,6 +20,7 @@ import net.riezebos.bruus.tbd.game.movement.Direction;
 import net.riezebos.bruus.tbd.game.movement.MovementConfiguration;
 import net.riezebos.bruus.tbd.game.movement.pathfinders.PathFinder;
 import net.riezebos.bruus.tbd.game.movement.pathfinders.RegularPathFinder;
+import net.riezebos.bruus.tbd.game.util.OnScreenTextManager;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.AudioDatabase;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.AudioManager;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.CustomAudioClip;
@@ -64,9 +65,15 @@ public class PrimaryPlayerGun {
                 startFiringFlameThrower(xCoordinate, yCoordinate, owner);
             } else if (playerAttackType.equals(PlayerPrimaryAttackTypes.Carrier)) {
                 handleCarrierAttack(owner);
+            } else if(playerAttackType.equals(PlayerPrimaryAttackTypes.Mutalisk)){
+                handleMutaliskAttack(owner);
             }
 
         }
+    }
+
+    private void handleMutaliskAttack(SpaceShip owner){
+        OnScreenTextManager.getInstance().addText("Mutalisk primary attack does not exist yet");
     }
 
     private boolean carrierFastSwitch = false;
@@ -190,12 +197,13 @@ public class PrimaryPlayerGun {
 
 
     // Fuel tank mechanics
-    private final float FUEL_DEPLETION_RATE = 0.475f;
-    private final float FUEL_REGENERATION_RATE = 0.35f;
-    private final float FUEL_MINIMUM_REQUIRED = 10f;
-    public static float fireFighterBonusDamageRatio = 1.15f;
+    private float FUEL_DEPLETION_RATE = 0.3f;
+    private float FUEL_REGENERATION_RATE = 0.35f;
+    private float FUEL_MINIMUM_REQUIRED = 10f;
+    public static float fireFighterBonusDamageRatio = 1;
 
     private void startFiringFlameThrower(int xCoordinate, int yCoordinate, SpaceShip owner) {
+
         if (this.channeledAttack == null && orangeBarCurrentValue >= FUEL_MINIMUM_REQUIRED) {
             SpriteConfiguration spriteConfiguration = new SpriteConfiguration();
             spriteConfiguration.setxCoordinate(xCoordinate);
@@ -203,7 +211,6 @@ public class PrimaryPlayerGun {
             spriteConfiguration.setImageType(ImageEnums.FireFighterFlameThrowerAppearing);
 
             float damage = owner.getDamage() * fireFighterBonusDamageRatio;
-
 
             SpriteAnimationConfiguration spriteAnimationConfiguration = new SpriteAnimationConfiguration(spriteConfiguration, 3, true);
             SpecialAttackConfiguration missileConfiguration = new SpecialAttackConfiguration(damage, true, true, false, true, false, true);

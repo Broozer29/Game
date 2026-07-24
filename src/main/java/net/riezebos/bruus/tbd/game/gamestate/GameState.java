@@ -4,7 +4,12 @@ import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
 import net.riezebos.bruus.tbd.game.gamestate.save.SaveFile;
 import net.riezebos.bruus.tbd.game.level.LevelManager;
 import net.riezebos.bruus.tbd.game.level.directors.GodRunDetector;
+import net.riezebos.bruus.tbd.game.playerprofile.PlayerProfileManager;
+import net.riezebos.bruus.tbd.guiboards.BoardManager;
+import net.riezebos.bruus.tbd.guiboards.boardcreators.AchievementUnlockHelper;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.AudioManager;
+import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.AudioEnums;
+import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
 
 public class GameState {
 
@@ -170,6 +175,13 @@ public class GameState {
 
     public void increaseBossDefeated(){
         this.bossesDefeated++;
+
+        if(!PlayerProfileManager.getInstance().getLoadedProfile().isFireFighterUnlocked() && bossesDefeated >= 2) {
+            BoardManager.getInstance().getGameBoard().addGUIAnimation(AchievementUnlockHelper.createUnlockGUIComponent(ImageEnums.FireFighterUnlock));
+            PlayerProfileManager.getInstance().getLoadedProfile().setFireFighterUnlocked(true);
+            PlayerProfileManager.getInstance().exportCurrentProfile();
+            AudioManager.getInstance().addAudio(AudioEnums.AchievementUnlocked);
+        }
     }
 
 

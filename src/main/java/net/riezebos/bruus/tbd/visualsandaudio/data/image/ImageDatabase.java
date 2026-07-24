@@ -314,6 +314,8 @@ public class ImageDatabase {
     private List<BufferedImage> droneElectroShred = new ArrayList<>();
     private List<BufferedImage> bossExplosion = new ArrayList<>();
     private List<BufferedImage> bombaProjectileExplosion = new ArrayList<>();
+    private List<BufferedImage> alienLaserBeamAnimatedOrange = new ArrayList<>();
+    private List<BufferedImage> mutaliskAnim = new ArrayList<>();
     private List<BufferedImage> alienLaserBeamAnimated = new ArrayList<>();
     private List<BufferedImage> barrierProjectile = new ArrayList<>();
     private List<BufferedImage> lightningOrb = new ArrayList<>();
@@ -946,6 +948,8 @@ public class ImageDatabase {
 
     public BufferedImage getImage(ImageEnums imageType) {
         switch (imageType) {
+            case Mutalisk:
+                return mutaliskAnim.get(0); //sloppy fix so we dont have to load a static mutalisk anim
             case CalmInChaos:
                 return this.calminchaos;
             case WondrousWisdomball:
@@ -1676,6 +1680,8 @@ public class ImageDatabase {
 
     public List<BufferedImage> getAnimation(ImageEnums imageType) {
         switch (imageType) {
+            case Mutalisk:
+                return this.mutaliskAnim;
             case PoisonCloud:
                 return this.poisonCloud;
             case GuillotineEffect:
@@ -1908,6 +1914,8 @@ public class ImageDatabase {
                 return destructableOrbitCenterMissile;
             case AlienLaserBeamAnimated:
                 return alienLaserBeamAnimated;
+            case AlienLaserBeamAnimatedOrange:
+                    return alienLaserBeamAnimatedOrange;
             case RedBoss:
                 return redBossFrames;
             case CarrierBoss:
@@ -2551,6 +2559,20 @@ public class ImageDatabase {
             BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
             alienLaserBeamAnimated.add(image);
         }
+
+        for (int i = 1; i < 5; i++) {
+            String sourceString = String.format("/images/gif/PNGtoGIF/AlienLaserBeamOrange/%d.png", i);
+            BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+            alienLaserBeamAnimatedOrange.add(image);
+        }
+
+        for (int i = 0; i < 16; i++) {
+            String sourceString = String.format("/images/gif/PNGtoGIF/MutaliskAnim/%d.png", i);
+            BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+            mutaliskAnim.add(image);
+        }
+
+
 
         for (int i = 1; i < 10; i++) {
             String sourceString = String.format("/images/gif/PNGtoGIF/Player EMP/doubled/%d.png", i);

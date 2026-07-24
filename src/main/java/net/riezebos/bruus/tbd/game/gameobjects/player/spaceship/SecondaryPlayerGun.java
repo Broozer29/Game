@@ -16,6 +16,7 @@ import net.riezebos.bruus.tbd.game.items.ItemEnums;
 import net.riezebos.bruus.tbd.game.items.PlayerInventory;
 import net.riezebos.bruus.tbd.game.items.items.captain.AnionInverter;
 import net.riezebos.bruus.tbd.game.items.items.carrier.InverseRetrieval;
+import net.riezebos.bruus.tbd.game.util.OnScreenTextManager;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.AudioManager;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.AudioEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
@@ -51,6 +52,9 @@ public class SecondaryPlayerGun {
                 case PlaceCarrierDrone:
                     handleCarrierSpecialAttack(owner);
                     break;
+                case MutaliskSecondary:
+                    handleMutaliskSpecialAttack(owner);
+                    break;
             }
             if (specialAttackCharges > 0) {
                 specialAttackCharges--;
@@ -62,6 +66,10 @@ public class SecondaryPlayerGun {
                 }
             }
         }
+    }
+
+    private void handleMutaliskSpecialAttack(SpaceShip owner) {
+        OnScreenTextManager.getInstance().addText("Mutalisk secondary does not exist yet");
     }
 
     private void handleCarrierSpecialAttack(SpaceShip owner) {

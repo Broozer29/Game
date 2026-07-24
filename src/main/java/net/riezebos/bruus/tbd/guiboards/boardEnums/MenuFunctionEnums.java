@@ -17,6 +17,7 @@ public enum MenuFunctionEnums {
 	SelectCaptainClass,
 	SelectFireFighterClass,
 	SelectCarrierClass,
+    SelectMutaliskClass,
 	ContinueSaveFile,
     CloseGame,
     OpenBoonSelectionBoard,

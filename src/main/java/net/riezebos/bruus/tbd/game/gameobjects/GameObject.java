@@ -1218,4 +1218,8 @@ public class GameObject extends Sprite {
             AnimationManager.getInstance().addUpperAnimation(spriteAnimation);
         }
     }
+
+    public List<EffectInterface> getEffectsToApply() {
+        return this.effectsToApply;
+    }
 }

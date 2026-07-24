@@ -276,6 +276,9 @@ public class GameUICreator {
             case PlaceCarrierDrone:
                 frameType = ImageEnums.CarrierPlaceDroneIcon;
                 break;
+            case MutaliskSecondary:
+                frameType = ImageEnums.Test_Image;
+                break;
             default:
                 frameType = ImageEnums.Test_Image;
                 break;

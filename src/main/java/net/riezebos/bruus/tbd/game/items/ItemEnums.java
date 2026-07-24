@@ -28,7 +28,7 @@ public enum ItemEnums {
     PuncturingPierce(ItemRarityEnums.Legendary,  ImageEnums.PuncturingPierces, "Puncturing Pierce", false), //disabled want saai
     //Relics 2.0
     //generic relics
-    SpawnSpaceStationTBD(ItemRarityEnums.Relic, ImageEnums.SmallDroneItemIcon, "Placeholder", true),
+    Placeholder(ItemRarityEnums.Relic, ImageEnums.SmallDroneItemIcon, "Placeholder", true),
     BonusKaart(ItemRarityEnums.Relic, ImageEnums.BonusKaart, "Bonus Kaart", true),
     GreedIsGood(ItemRarityEnums.Relic, ImageEnums.Test_Image, "Cash Infusion", true),
     ShieldStabilizer(ItemRarityEnums.Relic,  ImageEnums.ShieldStabilizer, "Shield Stabilizer", true),
@@ -50,10 +50,14 @@ public enum ItemEnums {
     //firefighter relics
     ModuleScorch(ItemRarityEnums.Relic,  ImageEnums.ModuleScorchIcon, "Module: Scorch", true),
     BeckoningFlames(ItemRarityEnums.Relic,  ImageEnums.EntanglingFlames, "Beckoning Flames", true),
+    RingOfFire(ItemRarityEnums.Relic, ImageEnums.Test_Image, "Ring of Fire", true),
+    FieryImplosion(ItemRarityEnums.Relic, ImageEnums.Test_Image, "Fiery Implosion", true),
+    FireWithoutGasIsAss(ItemRarityEnums.Relic, ImageEnums.Test_Image, "Without gas it's ass", true),
 
     //carrier relics
     ArbiterDamage(ItemRarityEnums.Relic,  ImageEnums.ArbiterDamage, "Arbit Inversion", true),
     PulsingBeacon(ItemRarityEnums.Relic, ImageEnums.Test_Image, "Pulsing Beacon", true),
+    InverseRetrieval(ItemRarityEnums.Relic,  ImageEnums.InversionRetrieval, "Inverse Retrieval", true),
 
     //-----------------------------
     LeechingLasers(ItemRarityEnums.Rare,  ImageEnums.LeechingLasers, "Leeching Lasers", false),
@@ -85,8 +89,8 @@ public enum ItemEnums {
     CorrosiveOil(ItemRarityEnums.Legendary,  ImageEnums.CorrosiveOil, "Corrosive Oil", true),
     ScorchingFury(ItemRarityEnums.Common,  ImageEnums.Starcraft2RepairBeam, "Scorching Fury", true),
     FlameDetonation(ItemRarityEnums.Legendary,  ImageEnums.Starcraft2_MineExplosion, "Flame Detonation", true),
-    EscalatingFlames(ItemRarityEnums.Rare,  ImageEnums.EscalatingFlames, "Escalating Flames", true),
-    FuelCannister(ItemRarityEnums.Legendary,  ImageEnums.FuelCannister, "Fuel Cannister", true),
+    EscalatingFlames(ItemRarityEnums.Common,  ImageEnums.EscalatingFlames, "Escalating Flames", true),
+    FuelCannister(ItemRarityEnums.Rare,  ImageEnums.FuelCannister, "Fuel Cannister", true),
     BargainBucket(ItemRarityEnums.Legendary,  ImageEnums.BargainBucket, "Bargain Bucket", true),
     ProtossScout(ItemRarityEnums.Common,  ImageEnums.ScoutItem, "Hangar Bay: Scout", true),
     ProtossArbiter(ItemRarityEnums.Rare,  ImageEnums.ArbiterItem, "Hangar Bay: Arbiter", true),
@@ -94,7 +98,6 @@ public enum ItemEnums {
     ProtossCorsair(ItemRarityEnums.Rare,  ImageEnums.CorsairItemIcon, "Hangar Bay: Corsair", true),
     HangarBayUpgrade(ItemRarityEnums.Legendary,  ImageEnums.HangarBayIcon, "Hangar Bay Upgrade", true),
     RallyTheFleet(ItemRarityEnums.Rare,  ImageEnums.RallyTheFleetIcon, "Rally the Fleet", true),
-    InverseRetrieval(ItemRarityEnums.Legendary,  ImageEnums.InversionRetrieval, "Inverse Retrieval", true),
     Martyrdom(ItemRarityEnums.Legendary,  ImageEnums.FrenzyIcon, "Martyrdom", true),
     KineticDynamo(ItemRarityEnums.Legendary,  ImageEnums.KineticDynamoIcon, "Kinetic Dynamo", false),
     ArbiterMultiTargeting(ItemRarityEnums.Rare,  ImageEnums.ArbiterMultiTargetIcon, "Arbiter Multi Targeting", true),

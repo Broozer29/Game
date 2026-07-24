@@ -108,7 +108,7 @@ public class DormentExplosion implements EffectInterface {
         explosion.setOwnerOrCreator(ownerOrCreator);
 
         if (this.effectIdentifier.equals(EffectIdentifiers.GasolineDormantExplosion)) {
-            explosion.setScale(1.35f);
+            explosion.setScale(1.65f);
 
             if (burningDuration != 0 && burningDamage != 0) {
                 SpriteAnimationConfiguration burningConfig = new SpriteAnimationConfiguration(spriteConfiguration, 2, true);

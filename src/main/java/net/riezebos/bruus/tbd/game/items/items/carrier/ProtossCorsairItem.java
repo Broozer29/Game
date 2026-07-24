@@ -12,6 +12,7 @@ import net.riezebos.bruus.tbd.game.items.enums.ItemApplicationEnum;
 public class ProtossCorsairItem extends Item {
     public static int maxDamageBase = 100;
     public static int maxDamageIncrease = 50;
+    public static float hitpointsDamage = 0.25f;
 
     public ProtossCorsairItem(){
         super(ItemEnums.ProtossCorsair, 1,  ItemApplicationEnum.ApplyOnSpaceShipCreation);
@@ -27,7 +28,7 @@ public class ProtossCorsairItem extends Item {
     }
 
     public float getMaxDamage(GameObject target) {
-        return Math.min(target.getMaxHitPoints() * 0.5f, (maxDamageBase + this.quantity * maxDamageIncrease));
+        return Math.min(target.getMaxHitPoints() * hitpointsDamage, (maxDamageBase + this.quantity * maxDamageIncrease));
     }
 
     @Override

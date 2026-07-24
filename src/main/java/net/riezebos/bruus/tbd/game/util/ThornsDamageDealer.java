@@ -10,7 +10,7 @@ import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.items.ItemEnums;
 import net.riezebos.bruus.tbd.game.items.PlayerInventory;
-import net.riezebos.bruus.tbd.game.items.items.firefighter.EntanglingFlames;
+import net.riezebos.bruus.tbd.game.items.items.firefighter.BeckoningFlames;
 import net.riezebos.bruus.tbd.game.movement.Direction;
 import net.riezebos.bruus.tbd.game.movement.MovementConfiguration;
 import net.riezebos.bruus.tbd.game.movement.Point;
@@ -113,8 +113,8 @@ public class ThornsDamageDealer {
         float damage = playerStats.getBaseDamage() * PlayerStats.getInstance().getThornsDamageRatio();
 
         if(PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.BeckoningFlames) != null){
-            EntanglingFlames item = (EntanglingFlames) PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.BeckoningFlames);
-            damage = damage * (item.getQuantity() * EntanglingFlames.damageBonus);
+            BeckoningFlames item = (BeckoningFlames) PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.BeckoningFlames);
+            damage = damage * (item.getQuantity() * BeckoningFlames.damageBonus);
         }
 
         boolean isExplosive = false;
