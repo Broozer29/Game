@@ -24,14 +24,14 @@ public class ElectroShedding extends Item {
 
     @Override
     public void applyEffectToObject(GameObject gameObject) {
-        ArmorModifierEffect armorModifierEffect = new ArmorModifierEffect(armorReduction, 9999999, null, EffectIdentifiers.ElectroShedding);
+        ArmorModifierEffect armorModifierEffect = new ArmorModifierEffect(-armorReduction, 9999999, null, EffectIdentifiers.ElectroShedding);
         gameObject.addEffect(armorModifierEffect);
     }
 
     @Override
     public void applyEffectToObject(GameObject applier, GameObject target) {
         if (applier instanceof ElectroShred) {
-            ArmorModifierEffect armorModifierEffect = new ArmorModifierEffect(armorReduction, 9999999, null, EffectIdentifiers.ElectroShedding);
+            ArmorModifierEffect armorModifierEffect = new ArmorModifierEffect(-armorReduction, 9999999, null, EffectIdentifiers.ElectroShedding);
             target.addEffect(armorModifierEffect);
         }
     }

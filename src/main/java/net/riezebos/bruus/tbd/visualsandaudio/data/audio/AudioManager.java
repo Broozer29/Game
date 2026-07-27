@@ -224,6 +224,9 @@ public class AudioManager {
     private boolean shouldResync(double currentGameSeconds) {
         // Default resync interval
         double resyncInterval = 10;
+        if(this.musicMediaPlayer == MusicMediaPlayer.LocalFiles) {
+            resyncInterval = 2; //local files can sync much more without issues
+        }
 
         if (predictedEndGameSeconds > 1 && predictedEndGameSeconds - currentGameSeconds < 10) {
             return false; //Never resync if we are almost finished to prevent incorrect portal spawning

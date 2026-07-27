@@ -11,11 +11,12 @@ import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteConfiguration;
 
 public class DifficultySelectionBoardCreator {
+    private static float resolutionFactor = Math.min(1 * DataClass.getInstance().getResolutionFactor(), DataClass.maxResolutionFactor) ;
 
     public static MenuCursor createCursor(GUIComponent comp) {
         int initCursorX = comp.getXCoordinate();
         int initCursorY = comp.getCenterYCoordinate();
-        float scale = 1 * DataClass.getInstance().getResolutionFactor();
+        float scale = resolutionFactor;
         ImageEnums imageEnums = PlayerStats.getInstance().getSpaceShipImage();
         SpriteConfiguration spriteConfiguration = createSpriteConfiguration(initCursorX, initCursorY, scale, imageEnums);
         MenuCursor button = new MenuCursor(spriteConfiguration);
@@ -67,7 +68,7 @@ public class DifficultySelectionBoardCreator {
         float textX = backgroundCard.getCenterXCoordinate();
         float textY = backgroundCard.getYCoordinate() + Math.round(backgroundCard.getHeight() * 0.15f);
         GUITextCollection textCollection = new GUITextCollection(textX, textY, text);
-        textCollection.setScale(1.75f * DataClass.getInstance().getResolutionFactor());
+        textCollection.setScale(1.75f * resolutionFactor);
         textCollection.setCenterXCoordinate(backgroundCard.getCenterXCoordinate());
         return textCollection;
     }
@@ -195,13 +196,13 @@ public class DifficultySelectionBoardCreator {
         String  string = "NEXT DIFFICULTY: " + difficulty;
 
         //The difficulty icon
-        SpriteConfiguration spriteConfiguration = createSpriteConfiguration(xCoordinate, YCoordinate, 1.2f * DataClass.getInstance().getResolutionFactor(), iconEnum);
+        SpriteConfiguration spriteConfiguration = createSpriteConfiguration(xCoordinate, YCoordinate, 1.2f * resolutionFactor, iconEnum);
         DisplayOnly icon = new DisplayOnly(spriteConfiguration);
         icon.setCenterCoordinates(xCoordinate, backgroundCard.getCenterYCoordinate() - Math.round(icon.getHeight() * 0.1f));
 
 
         GUITextCollection textCollection = new GUITextCollection(xCoordinate, YCoordinate, string);
-        textCollection.setScale(1.2f * DataClass.getInstance().getResolutionFactor());
+        textCollection.setScale(1.2f * resolutionFactor);
         xCoordinate = backgroundCard.getCenterXCoordinate() - (textCollection.getWidth() / 2);
         textCollection.setStartingXCoordinate(xCoordinate);
         textCollection.addComponentToCollection(icon); //Add the wings seperately
@@ -230,8 +231,8 @@ public class DifficultySelectionBoardCreator {
         SpriteConfiguration spriteConfiguration = createSpriteConfiguration(xCoordinate, yCoordinate, 1, ImageEnums.Wide_Card);
         GUIComponent backgroundCard = new DisplayOnly(spriteConfiguration);
 
-        int newWidth = Math.round(DataClass.getInstance().getResolutionFactor() * 200);
-        int newHeight = Math.round(DataClass.getInstance().getResolutionFactor() * 70);
+        int newWidth = Math.round(resolutionFactor * 200);
+        int newHeight = Math.round(resolutionFactor * 70);
         backgroundCard.setImageDimensions(newWidth, newHeight);
 
         return backgroundCard;
@@ -239,11 +240,11 @@ public class DifficultySelectionBoardCreator {
 
     public static GUITextCollection createReturn(GUIComponent backgroundCard) {
         int xCoordinate = backgroundCard.getCenterXCoordinate();
-        int yCoordinate = backgroundCard.getCenterYCoordinate() - Math.round(DataClass.getInstance().getResolutionFactor() * 10);
+        int yCoordinate = backgroundCard.getCenterYCoordinate() - Math.round(resolutionFactor * 10);
 
         String text = "RETURN";
         GUITextCollection textCollection = new GUITextCollection(xCoordinate, yCoordinate, text);
-        textCollection.setScale(1.5f * DataClass.getInstance().getResolutionFactor());
+        textCollection.setScale(1.5f * resolutionFactor);
         textCollection.setStartingXCoordinate(xCoordinate - (textCollection.getWidth() / 2));
         textCollection.setMenuFunctionality(MenuFunctionEnums.OpenClassSelectWindow);
         textCollection.getComponents().get(0).setDescriptionOfComponent("Return to class selection.");
@@ -257,8 +258,8 @@ public class DifficultySelectionBoardCreator {
         SpriteConfiguration spriteConfiguration = createSpriteConfiguration(xCoordinate, yCoordinate, 1, ImageEnums.Wide_Card);
         GUIComponent backgroundCard = new DisplayOnly(spriteConfiguration);
 
-        int newWidth = Math.round(DataClass.getInstance().getResolutionFactor() * 240);
-        int newHeight = Math.round(DataClass.getInstance().getResolutionFactor() * 70);
+        int newWidth = Math.round(resolutionFactor * 240);
+        int newHeight = Math.round(resolutionFactor * 70);
         backgroundCard.setImageDimensions(newWidth, newHeight);
 
         return backgroundCard;
@@ -266,10 +267,10 @@ public class DifficultySelectionBoardCreator {
 
     public static GUITextCollection createStartGameButton(GUIComponent backgroundCard) {
         int xCoordinate = backgroundCard.getCenterXCoordinate();
-        int yCoordinate = backgroundCard.getCenterYCoordinate() - Math.round(DataClass.getInstance().getResolutionFactor() * 10);
+        int yCoordinate = backgroundCard.getCenterYCoordinate() - Math.round(resolutionFactor * 10);
 
         GUITextCollection textCollection = new GUITextCollection(xCoordinate, yCoordinate, "START GAME");
-        textCollection.setScale(1.5f * DataClass.getInstance().getResolutionFactor());
+        textCollection.setScale(1.5f * resolutionFactor);
         textCollection.setStartingXCoordinate(xCoordinate - (textCollection.getWidth() / 2));
         textCollection.setMenuFunctionality(MenuFunctionEnums.Start_Game);
         textCollection.getComponents().get(0).setDescriptionOfComponent("Start the game.");
@@ -283,7 +284,7 @@ public class DifficultySelectionBoardCreator {
         SpriteConfiguration spriteConfiguration = new SpriteConfiguration();
         spriteConfiguration.setxCoordinate(xCoordinate);
         spriteConfiguration.setyCoordinate(yCoordinate);
-        spriteConfiguration.setScale(0.8f * DataClass.getInstance().getResolutionFactor());
+        spriteConfiguration.setScale(0.8f * resolutionFactor);
         spriteConfiguration.setImageType(ImageEnums.ChooseDifficulty);
 
         GUIComponent titleImage = new DisplayOnly(spriteConfiguration);

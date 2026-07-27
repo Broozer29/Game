@@ -17,7 +17,7 @@ public class DevTestSettings {
     public static boolean rollFullShop = false; //If true, all 3 rows in the shop are available
     public static boolean exportPerformanceLogs = false;
     public static boolean enableMutalisk = false;
-    public static boolean enableDirectShopAccess = false;
+    public static boolean enableDirectShopAccess = true;
 
 
 

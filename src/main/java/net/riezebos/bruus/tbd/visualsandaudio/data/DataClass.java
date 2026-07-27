@@ -10,6 +10,7 @@ public class DataClass {
 	private int windowWidth = 1728;
 	private int windowHeight = 1077;
 	private String textFont = "Lucida Grande";
+    public static float maxResolutionFactor = 1.778f;
 
     public static final int CONTROLLER_INPUT_COOLDOWN = 200;
 

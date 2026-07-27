@@ -18,6 +18,7 @@ import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.Sprit
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteConfiguration;
 
 public class ClassSelectionBoardCreator {
+    private static float resolutionFactor = Math.min(1 * DataClass.getInstance().getResolutionFactor(), DataClass.maxResolutionFactor) ;
 
     public static GUIComponent createSelectShipBackgroundCard() {
         int xCoordinate = Math.round(DataClass.getInstance().getWindowWidth() * 0.0694f);
@@ -26,8 +27,8 @@ public class ClassSelectionBoardCreator {
         SpriteConfiguration spriteConfiguration = createSpriteConfiguration(xCoordinate, yCoordinate, 1, ImageEnums.Long_Card);
         GUIComponent backgroundCard = new DisplayOnly(spriteConfiguration);
 
-        int newWidth = Math.round(DataClass.getInstance().getResolutionFactor() * 275);
-        int newHeight = Math.round(DataClass.getInstance().getResolutionFactor() * 375);
+        int newWidth = Math.round(resolutionFactor * 275);
+        int newHeight = Math.round(resolutionFactor * 375);
 
         backgroundCard.setImageDimensions(newWidth, newHeight);
         return backgroundCard;
@@ -39,7 +40,7 @@ public class ClassSelectionBoardCreator {
 
         String text = "SELECT CLASS";
         GUITextCollection textCollection = new GUITextCollection(xCoordinate, yCoordinate, text);
-        textCollection.setScale(1.5f * DataClass.getInstance().getResolutionFactor());
+        textCollection.setScale(1.5f * resolutionFactor);
         textCollection.getComponents().get(0).setDescriptionOfComponent("Select class text");
 
         return textCollection;
@@ -52,7 +53,7 @@ public class ClassSelectionBoardCreator {
 
         String text = "CAPTAIN";
         GUITextCollection textCollection = new GUITextCollection(xCoordinate, yCoordinate, text);
-        textCollection.setScale(1 * DataClass.getInstance().getResolutionFactor());
+        textCollection.setScale(resolutionFactor);
         textCollection.getComponents().get(0).setDescriptionOfComponent("Select captain class");
         textCollection.setMenuFunctionality(MenuFunctionEnums.SelectCaptainClass);
 
@@ -69,7 +70,7 @@ public class ClassSelectionBoardCreator {
         }
 
         GUITextCollection textCollection = new GUITextCollection(xCoordinate, yCoordinate, text);
-        textCollection.setScale(1 * DataClass.getInstance().getResolutionFactor());
+        textCollection.setScale(resolutionFactor);
         textCollection.getComponents().get(0).setDescriptionOfComponent("Select FireFighter class");
 
         if (PlayerProfileManager.getInstance().getLoadedProfile().isFireFighterUnlocked()) {
@@ -90,7 +91,7 @@ public class ClassSelectionBoardCreator {
         }
 
         GUITextCollection textCollection = new GUITextCollection(xCoordinate, yCoordinate, text);
-        textCollection.setScale(1 * DataClass.getInstance().getResolutionFactor());
+        textCollection.setScale(resolutionFactor);
         textCollection.getComponents().get(0).setDescriptionOfComponent("Select Carrier class");
 
         if (PlayerProfileManager.getInstance().getLoadedProfile().isCarrierUnlocked()) {
@@ -111,7 +112,7 @@ public class ClassSelectionBoardCreator {
         }
 
         GUITextCollection textCollection = new GUITextCollection(xCoordinate, yCoordinate, text);
-        textCollection.setScale(1 * DataClass.getInstance().getResolutionFactor());
+        textCollection.setScale(resolutionFactor);
         textCollection.getComponents().get(0).setDescriptionOfComponent("Select Mutalisk class");
 
         if (PlayerProfileManager.getInstance().getLoadedProfile().isMutaliskUnlocked()) {
@@ -127,8 +128,8 @@ public class ClassSelectionBoardCreator {
 
         SpriteConfiguration spriteConfiguration = createSpriteConfiguration(xCoordinate, yCoordinate, 1, ImageEnums.Long_Card);
         GUIComponent backgroundCard = new DisplayOnly(spriteConfiguration);
-        int newWidth = Math.round(DataClass.getInstance().getResolutionFactor() * 385);
-        int newHeight = Math.round(DataClass.getInstance().getResolutionFactor() * 375);
+        int newWidth = Math.round(resolutionFactor * 385);
+        int newHeight = Math.round(resolutionFactor * 375);
 
         backgroundCard.setImageDimensions(newWidth, newHeight);
         return backgroundCard;
@@ -141,8 +142,8 @@ public class ClassSelectionBoardCreator {
         SpriteConfiguration spriteConfiguration = createSpriteConfiguration(xCoordinate, yCoordinate, 1, ImageEnums.Wide_Card);
         GUIComponent backgroundCard = new DisplayOnly(spriteConfiguration);
 
-        int newWidth = Math.round(DataClass.getInstance().getResolutionFactor() * 425);
-        int newHeight = Math.round(DataClass.getInstance().getResolutionFactor() * 175);
+        int newWidth = Math.round(resolutionFactor * 425);
+        int newHeight = Math.round(resolutionFactor * 175);
         backgroundCard.setImageDimensions(newWidth, newHeight);
         return backgroundCard;
     }
@@ -166,8 +167,8 @@ public class ClassSelectionBoardCreator {
         SpriteConfiguration spriteConfiguration = createSpriteConfiguration(xCoordinate, yCoordinate, 1, image);
         GUIComponent primaryWeaponIcon = new DisplayOnly(spriteConfiguration);
 
-        int newWidth = Math.round(DataClass.getInstance().getResolutionFactor() * 60);
-        int newHeight = Math.round(DataClass.getInstance().getResolutionFactor() * 60);
+        int newWidth = Math.round(resolutionFactor * 60);
+        int newHeight = Math.round(resolutionFactor * 60);
         primaryWeaponIcon.setImageDimensions(newWidth, newHeight);
         primaryWeaponIcon.setCenterYCoordinate(yCoordinate);
         return primaryWeaponIcon;
@@ -238,8 +239,8 @@ public class ClassSelectionBoardCreator {
         SpriteConfiguration spriteConfiguration = createSpriteConfiguration(xCoordinate, yCoordinate, 1, ImageEnums.Wide_Card);
         GUIComponent backgroundCard = new DisplayOnly(spriteConfiguration);
 
-        int newWidth = Math.round(DataClass.getInstance().getResolutionFactor() * 425);
-        int newHeight = Math.round(DataClass.getInstance().getResolutionFactor() * 175);
+        int newWidth = Math.round(resolutionFactor * 425);
+        int newHeight = Math.round(resolutionFactor * 175);
         backgroundCard.setImageDimensions(newWidth, newHeight);
         return backgroundCard;
     }
@@ -333,8 +334,8 @@ public class ClassSelectionBoardCreator {
         SpriteConfiguration spriteConfiguration = createSpriteConfiguration(xCoordinate, yCoordinate, 1, image);
         GUIComponent weaponIcon = new DisplayOnly(spriteConfiguration);
 
-        int newWidth = Math.round(DataClass.getInstance().getResolutionFactor() * 60);
-        int newHeight = Math.round(DataClass.getInstance().getResolutionFactor() * 60);
+        int newWidth = Math.round(resolutionFactor * 60);
+        int newHeight = Math.round(resolutionFactor * 60);
         weaponIcon.setImageDimensions(newWidth, newHeight);
         weaponIcon.setCenterYCoordinate(yCoordinate);
         return weaponIcon;
@@ -344,11 +345,12 @@ public class ClassSelectionBoardCreator {
         int xCoordinate = Math.round(DataClass.getInstance().getWindowWidth() * 0.0694f);
         int yCoordinate = Math.round(DataClass.getInstance().getWindowHeight() * 0.84f);
 
+
         SpriteConfiguration spriteConfiguration = createSpriteConfiguration(xCoordinate, yCoordinate, 1, ImageEnums.Wide_Card);
         GUIComponent backgroundCard = new DisplayOnly(spriteConfiguration);
 
-        int newWidth = Math.round(DataClass.getInstance().getResolutionFactor() * 340);
-        int newHeight = Math.round(DataClass.getInstance().getResolutionFactor() * 70);
+        int newWidth = Math.round(resolutionFactor * 340);
+        int newHeight = Math.round(resolutionFactor * 70);
         backgroundCard.setImageDimensions(newWidth, newHeight);
 
         return backgroundCard;
@@ -356,11 +358,11 @@ public class ClassSelectionBoardCreator {
 
     public static GUITextCollection createReturnToMainMenu(GUIComponent backgroundCard) {
         int xCoordinate = backgroundCard.getCenterXCoordinate();
-        int yCoordinate = backgroundCard.getCenterYCoordinate() - Math.round(DataClass.getInstance().getResolutionFactor() * 10);
+        int yCoordinate = backgroundCard.getCenterYCoordinate() - Math.round(resolutionFactor * 10);
 
-        String text = "RETURN TO MAIN MENU";
+        String text = "MAIN MENU";
         GUITextCollection textCollection = new GUITextCollection(xCoordinate, yCoordinate, text);
-        textCollection.setScale(1.5f * DataClass.getInstance().getResolutionFactor());
+        textCollection.setScale(resolutionFactor);
         textCollection.setStartingXCoordinate(xCoordinate - (textCollection.getWidth() / 2));
         textCollection.setMenuFunctionality(MenuFunctionEnums.Return_To_Main_Menu);
         return textCollection;
@@ -373,8 +375,8 @@ public class ClassSelectionBoardCreator {
         SpriteConfiguration spriteConfiguration = createSpriteConfiguration(xCoordinate, yCoordinate, 1, ImageEnums.Wide_Card);
         GUIComponent backgroundCard = new DisplayOnly(spriteConfiguration);
 
-        int newWidth = Math.round(DataClass.getInstance().getResolutionFactor() * 300);
-        int newHeight = Math.round(DataClass.getInstance().getResolutionFactor() * 70);
+        int newWidth = Math.round(resolutionFactor * 300);
+        int newHeight = Math.round(resolutionFactor * 70);
         backgroundCard.setImageDimensions(newWidth, newHeight);
 
         return backgroundCard;
@@ -385,7 +387,7 @@ public class ClassSelectionBoardCreator {
         int yCoordinate = backgroundCard.getCenterYCoordinate() - Math.round(DataClass.getInstance().getResolutionFactor() * 10);
 
         GUITextCollection textCollection = new GUITextCollection(xCoordinate, yCoordinate, "SELECT DIFFICULTY");
-        textCollection.setScale(1.5f * DataClass.getInstance().getResolutionFactor());
+        textCollection.setScale(resolutionFactor);
         textCollection.setStartingXCoordinate(xCoordinate - (textCollection.getWidth() / 2));
         textCollection.setMenuFunctionality(MenuFunctionEnums.OpenDifficultySelectionBoard);
 
@@ -395,9 +397,8 @@ public class ClassSelectionBoardCreator {
     public static MenuCursor createCursor(GUITextCollection textC) {
         int initCursorX = textC.getComponents().get(0).getXCoordinate();
         int initCursorY = textC.getComponents().get(0).getYCoordinate();
-        float scale = 1 * DataClass.getInstance().getResolutionFactor();
         ImageEnums imageEnums = PlayerStats.getInstance().getSpaceShipImage();
-        SpriteConfiguration spriteConfiguration = createSpriteConfiguration(initCursorX, initCursorY, scale, imageEnums);
+        SpriteConfiguration spriteConfiguration = createSpriteConfiguration(initCursorX, initCursorY, resolutionFactor, imageEnums);
         MenuCursor button = new MenuCursor(spriteConfiguration);
         return button;
     }
@@ -409,7 +410,7 @@ public class ClassSelectionBoardCreator {
         SpriteConfiguration spriteConfiguration = new SpriteConfiguration();
         spriteConfiguration.setxCoordinate(xCoordinate);
         spriteConfiguration.setyCoordinate(yCoordinate);
-        spriteConfiguration.setScale(0.5f * DataClass.getInstance().getResolutionFactor());
+        spriteConfiguration.setScale(0.5f * resolutionFactor);
         spriteConfiguration.setImageType(ImageEnums.SelectClass);
 
         GUIComponent titleImage = new DisplayOnly(spriteConfiguration);
@@ -440,7 +441,7 @@ public class ClassSelectionBoardCreator {
         SpriteConfiguration config = new SpriteConfiguration();
         config.setxCoordinate(cursor.getXCoordinate());
         config.setyCoordinate(cursor.getYCoordinate());
-        config.setScale(1 * DataClass.getInstance().getResolutionFactor());
+        config.setScale(resolutionFactor);
         config.setImageType(ImageEnums.SelectNewClassAnimation);
 
         SpriteAnimationConfiguration spriteAnimationConfiguration = new SpriteAnimationConfiguration(config, 0, false);

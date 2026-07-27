@@ -37,7 +37,8 @@ public class ShopBoardCreator {
         this.horizontalScreenDistance = 75 * DataClass.getInstance().getResolutionFactor();
         this.verticalScreenDistance = 20 * DataClass.getInstance().getResolutionFactor();
         this.shopManager = ShopManager.getInstance();
-        this.objectScale = Math.min(Math.round(1 * DataClass.getInstance().getResolutionFactor()), 2f);
+        this.objectScale = Math.min(1 * DataClass.getInstance().getResolutionFactor(), DataClass.maxResolutionFactor);
+        shopItemIconDimensions = Math.round(75 * objectScale);
     }
 
 
@@ -53,8 +54,8 @@ public class ShopBoardCreator {
 
     public GUITextCollection createReturnToMainMenu(GUIComponent backgroundCard) {
         int xCoordinate = backgroundCard.getCenterXCoordinate();
-        int yCoordinate = backgroundCard.getCenterYCoordinate() - Math.round(5 * DataClass.getInstance().getResolutionFactor());
-        String text = "RETURN TO MAIN MENU";
+        int yCoordinate = backgroundCard.getCenterYCoordinate() - Math.round(5 * objectScale);
+        String text = "MAIN MENU";
         GUITextCollection textCollection = new GUITextCollection(xCoordinate, yCoordinate, text);
         textCollection.setScale(objectScale);
         xCoordinate = backgroundCard.getCenterXCoordinate() - (textCollection.getWidth() / 2);
@@ -66,7 +67,7 @@ public class ShopBoardCreator {
 
     public GUITextCollection createStartNextLevelButton(GUIComponent backgroundCard) {
         int xCoordinate = backgroundCard.getCenterXCoordinate();
-        int yCoordinate = backgroundCard.getCenterYCoordinate() - Math.round(5 * DataClass.getInstance().getResolutionFactor());
+        int yCoordinate = backgroundCard.getCenterYCoordinate() - Math.round(5 * objectScale);
         String text = "START NEXT LEVEL";
         GUITextCollection textCollection = new GUITextCollection(xCoordinate, yCoordinate, text);
         textCollection.setScale(objectScale);
@@ -79,8 +80,8 @@ public class ShopBoardCreator {
 
     public GUITextCollection createPlayerInventoryButton(GUIComponent backgroundCard) {
         int xCoordinate = backgroundCard.getCenterXCoordinate();
-        int yCoordinate = backgroundCard.getCenterYCoordinate() - Math.round(5 * DataClass.getInstance().getResolutionFactor());
-        String text = "VIEW OR HIDE INVENTORY";
+        int yCoordinate = backgroundCard.getCenterYCoordinate() - Math.round(5 * objectScale);
+        String text = "INVENTORY";
 
         GUITextCollection textCollection = new GUITextCollection(xCoordinate, yCoordinate, text);
         textCollection.setScale(objectScale);
@@ -97,8 +98,8 @@ public class ShopBoardCreator {
 
         SpriteConfiguration spriteConfiguration = createSpriteConfiguration(xCoordinate, yCoordinate, 1, ImageEnums.Wide_Card);
         DisplayOnly displayOnly = new DisplayOnly(spriteConfiguration);
-        int width = Math.round(200 * DataClass.getInstance().getResolutionFactor());
-        int height = Math.round(50 * DataClass.getInstance().getResolutionFactor());
+        int width = Math.round(200 * objectScale);
+        int height = Math.round(50 * objectScale);
         displayOnly.setImageDimensions(width, height);
         return displayOnly;
     }
@@ -109,8 +110,8 @@ public class ShopBoardCreator {
 
         SpriteConfiguration spriteConfiguration = createSpriteConfiguration(xCoordinate, yCoordinate, 1, ImageEnums.Wide_Card);
         DisplayOnly displayOnly = new DisplayOnly(spriteConfiguration);
-        int width = Math.round(220 * DataClass.getInstance().getResolutionFactor());
-        int height = Math.round(50 * DataClass.getInstance().getResolutionFactor());
+        int width = Math.round(220 * objectScale);
+        int height = Math.round(50 * objectScale);
         displayOnly.setImageDimensions(width, height);
         return displayOnly;
     }
@@ -121,8 +122,8 @@ public class ShopBoardCreator {
 
         SpriteConfiguration spriteConfiguration = createSpriteConfiguration(xCoordinate, yCoordinate, 1, ImageEnums.Wide_Card);
         DisplayOnly displayOnly = new DisplayOnly(spriteConfiguration);
-        int width = Math.round(180 * DataClass.getInstance().getResolutionFactor());
-        int height = Math.round(50 * DataClass.getInstance().getResolutionFactor());
+        int width = Math.round(180 * objectScale);
+        int height = Math.round(50 * objectScale);
         displayOnly.setImageDimensions(width, height);
         return displayOnly;
     }
@@ -133,14 +134,14 @@ public class ShopBoardCreator {
         int moneyY = Math.round(backgroundCard.getYCoordinate() + backgroundCard.getHeight() * 0.85f);
 
         GUITextCollection textCollection = new GUITextCollection(startingXCoordinate, moneyY, "MINERALS: " + Math.round(PlayerInventory.getInstance().getCashMoney()));
-        textCollection.setScale(1.75f * DataClass.getInstance().getResolutionFactor());
+        textCollection.setScale(1.75f * objectScale);
 
         startingXCoordinate = startingXCoordinate - textCollection.getWidth() / 2;
         textCollection.setStartingXCoordinate(startingXCoordinate);
 
         int moneyX1 = startingXCoordinate + textCollection.getWidth(); //Manually place it at the correct X coordinate
         int moneyY1 = textCollection.getComponents().get(0).getYCoordinate();
-        float scale = 0.5f * DataClass.getInstance().getResolutionFactor();
+        float scale = 0.5f * objectScale;
 
         SpriteConfiguration spriteConfiguration = createSpriteConfiguration(moneyX1, moneyY1, scale, ImageEnums.TopazGem7);
         DisplayOnly moneyImage = new DisplayOnly(spriteConfiguration);
@@ -161,14 +162,14 @@ public class ShopBoardCreator {
         String text = "" + amount + ":" + PlayerStats.getInstance().getMaxAmountOfProtoss();
 
         GUITextCollection textCollection = new GUITextCollection(startingXCoordinate, moneyY, text);
-        textCollection.setScale(1.25f * DataClass.getInstance().getResolutionFactor());
+        textCollection.setScale(1.25f * objectScale);
 
         startingXCoordinate = startingXCoordinate - textCollection.getWidth() / 2;
         textCollection.setStartingXCoordinate(startingXCoordinate);
 
         int shipX = startingXCoordinate + textCollection.getWidth(); //Manually place it at the correct X coordinate
         int shipY = textCollection.getComponents().get(0).getCenterYCoordinate();
-        float scale = 0.275f * DataClass.getInstance().getResolutionFactor();
+        float scale = 0.275f * objectScale;
 
         SpriteConfiguration spriteConfiguration = createSpriteConfiguration(shipX, shipY, scale, ImageEnums.ProtossShipAmountIcon);
         DisplayOnly scoutImage = new DisplayOnly(spriteConfiguration);
@@ -198,13 +199,13 @@ public class ShopBoardCreator {
         }
 
         //The difficulty icon
-        SpriteConfiguration spriteConfiguration = createSpriteConfiguration(xCoordinate, YCoordinate, 1.2f * DataClass.getInstance().getResolutionFactor(), iconEnum);
+        SpriteConfiguration spriteConfiguration = createSpriteConfiguration(xCoordinate, YCoordinate, 1.2f * objectScale, iconEnum);
         DisplayOnly icon = new DisplayOnly(spriteConfiguration);
         icon.setCenterCoordinates(xCoordinate, backgroundCard.getCenterYCoordinate() - Math.round(icon.getHeight() * 0.1f));
 
 
         GUITextCollection textCollection = new GUITextCollection(xCoordinate, YCoordinate, string);
-        textCollection.setScale(1.2f * DataClass.getInstance().getResolutionFactor());
+        textCollection.setScale(1.2f * objectScale);
         xCoordinate = backgroundCard.getCenterXCoordinate() - (textCollection.getWidth() / 2);
         textCollection.setStartingXCoordinate(xCoordinate);
         textCollection.addComponentToCollection(icon); //Add the wings seperately
@@ -214,7 +215,7 @@ public class ShopBoardCreator {
     public GUIComponent createRerollBackgroundCard(GUIComponent nextDifficultyCard) {
         int xCoordinate = nextDifficultyCard.getXCoordinate() + nextDifficultyCard.getWidth();
         int yCoordinate = nextDifficultyCard.getYCoordinate();
-        float scale = 0.25f * DataClass.getInstance().getResolutionFactor();
+        float scale = 0.25f * objectScale;
 
         SpriteConfiguration spriteConfiguration = new SpriteConfiguration();
         spriteConfiguration.setxCoordinate(xCoordinate);
@@ -235,7 +236,7 @@ public class ShopBoardCreator {
         GUIComponent refreshButton = new MenuButton(spriteConfiguration);
         refreshButton.setMenuFunctionality(MenuFunctionEnums.RerollShop);
 
-        int rerollButonDimensions = Math.round((backgroundCard.getWidth() / 4) * DataClass.getInstance().getResolutionFactor());
+        int rerollButonDimensions = Math.round((backgroundCard.getWidth() / 4) * objectScale);
         refreshButton.setImageDimensions(rerollButonDimensions, rerollButonDimensions);
         refreshButton.setCenterCoordinates(xCoordinate, yCoordinate);
         refreshButton.setDescriptionOfComponent("Refreshes all items in the shop, allowing you to purchase new items. Cost is equal to 25% of minerals you entered the shop with.");
@@ -249,7 +250,7 @@ public class ShopBoardCreator {
 
         String string = "REFRESH SHOP";
         GUITextCollection textCollection = new GUITextCollection(xCoordinate, yCoordinate + Math.round(backgroundCard.getHeight() * 0.2f), string);
-        textCollection.setScale(1.1f * DataClass.getInstance().getResolutionFactor());
+        textCollection.setScale(1.1f * objectScale);
         textCollection.setStartingXCoordinate(backgroundCard.getCenterXCoordinate() - (textCollection.getWidth() / 2));
         return textCollection;
     }
@@ -265,11 +266,11 @@ public class ShopBoardCreator {
 
 
         GUITextCollection textCollection = new GUITextCollection(xCoordinate, yCoordinate, rerollCost);
-        textCollection.setScale(1.1f * DataClass.getInstance().getResolutionFactor());
+        textCollection.setScale(1.1f * objectScale);
         textCollection.setStartingXCoordinate(backgroundCard.getCenterXCoordinate() - (textCollection.getWidth() / 2));
 
         int iconXCoordinate = textCollection.getComponents().get(0).getXCoordinate() + textCollection.getWidth();
-        SpriteConfiguration spriteConfiguration = createSpriteConfiguration(iconXCoordinate, yCoordinate, 0.4f * DataClass.getInstance().getResolutionFactor(), ImageEnums.TopazGem7);
+        SpriteConfiguration spriteConfiguration = createSpriteConfiguration(iconXCoordinate, yCoordinate, 0.4f * objectScale, ImageEnums.TopazGem7);
         DisplayOnly icon = new DisplayOnly(spriteConfiguration);
         icon.setYCoordinate(icon.getYCoordinate() - (icon.getHeight() / 4));
         textCollection.addComponentToCollection(icon);
@@ -403,11 +404,11 @@ public class ShopBoardCreator {
 
     public GUITextCollection createLevelModifiersText(GUIComponent backgroundCard) {
         int xCoordinate = DataClass.getInstance().getWindowWidth() / 2;
-        int yCoordinate = backgroundCard.getYCoordinate() - Math.round(30 * DataClass.getInstance().getResolutionFactor());
+        int yCoordinate = backgroundCard.getYCoordinate() - Math.round(30 * objectScale);
         String text = "NEXT LEVEL SETTINGS";
 
         GUITextCollection guiTextCollection = new GUITextCollection(xCoordinate, yCoordinate, text);
-        guiTextCollection.setScale(1.2f * DataClass.getInstance().getResolutionFactor());
+        guiTextCollection.setScale(1.2f * objectScale);
         xCoordinate = xCoordinate - guiTextCollection.getWidth() / 2;
         guiTextCollection.setStartingXCoordinate(xCoordinate);
 
@@ -435,7 +436,7 @@ public class ShopBoardCreator {
         int cardWidth = Math.round((boardWidth * widthRatio));
         int cardHeight = Math.round((boardHeight * heightRatio));
         int xCoordPadding = Math.round((boardWidth * xCoordPaddingRatio));
-        float xCoord = (3 * (shopItemIconDimensions + horizontalSpacing)) + (horizontalScreenDistance * 2) * DataClass.getInstance().getResolutionFactor();
+        float xCoord = (3 * (shopItemIconDimensions + horizontalSpacing)) + (horizontalScreenDistance * 2) * objectScale;
         int yCoordinate = backgroundCard.getYCoordinate() + Math.round(backgroundCard.getHeight() * 1.1f);
 
         SpriteConfiguration spriteConfiguration = createSpriteConfiguration(
@@ -474,20 +475,20 @@ public class ShopBoardCreator {
         int cardWidth = Math.round((boardWidth * widthRatio));
         int cardHeight = Math.round((boardHeight * heightRatio));
         SpriteConfiguration spriteConfiguration = createSpriteConfiguration(
-                Math.round((boardWidth / 6) * DataClass.getInstance().getResolutionFactor()),
+                Math.round((boardWidth / 6) * objectScale),
                 Math.round((boardHeight / 2 - (boardHeight / 4))),
                 1, ImageEnums.Square_Card);
         DisplayOnly backgroundCard = new DisplayOnly(spriteConfiguration);
         backgroundCard.setImageDimensions(cardWidth, cardHeight);
-        backgroundCard.setXCoordinate(Math.round(40 * DataClass.getInstance().getResolutionFactor()));
-        backgroundCard.setYCoordinate(Math.round(20 * DataClass.getInstance().getResolutionFactor()));
+        backgroundCard.setXCoordinate(Math.round(40 * objectScale));
+        backgroundCard.setYCoordinate(Math.round(20 * objectScale));
 
         return backgroundCard;
     }
 
 
     public DisplayOnly createShowNextLevelDifficultyBackground(GUIComponent backgroundCard) {
-        int xCoordinate = backgroundCard.getXCoordinate() + backgroundCard.getWidth() + Math.round(10 * DataClass.getInstance().getResolutionFactor());
+        int xCoordinate = backgroundCard.getXCoordinate() + backgroundCard.getWidth() + Math.round(10 * objectScale);
         int yCoordinate = backgroundCard.getYCoordinate();
 
         float widthRatio = 300 / 1440f;

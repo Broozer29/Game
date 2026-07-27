@@ -60,6 +60,17 @@ public class Main {
                 }
             });
         } catch (Exception ex) {
+            //log the exception to a .txt file
+            try {
+                java.io.FileWriter fw = new java.io.FileWriter("error_log.txt", true);
+                java.io.PrintWriter pw = new java.io.PrintWriter(fw);
+                pw.println("=== Error at " + java.time.LocalDateTime.now() + " ===");
+                ex.printStackTrace(pw);
+                pw.println();
+                pw.close();
+            } catch (java.io.IOException e) {
+                e.printStackTrace();
+            }
             ex.printStackTrace();
             System.exit(1);
         }

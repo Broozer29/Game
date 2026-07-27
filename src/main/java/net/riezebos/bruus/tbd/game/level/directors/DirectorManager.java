@@ -219,7 +219,7 @@ public class DirectorManager {
     }
 
     public float getMineralPenaltyModifier() {
-        float minerals = GameStatsTracker.getInstance().getMineralsAcquired();
+        float minerals = GameStatsTracker.getInstance().getMineralsGainedThisRound();
         float multiplier = 1;
 
         if (minerals >= 0 && minerals <= 300) {

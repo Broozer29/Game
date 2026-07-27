@@ -15,13 +15,13 @@ import java.util.List;
 
 public class MenuBoardCreator {
 
-    private static float imageScale = 1 * DataClass.getInstance().getResolutionFactor() ;
+    private static float resolutionFactor = Math.min(1 * DataClass.getInstance().getResolutionFactor(), DataClass.maxResolutionFactor) ;
 
     public static GUITextCollection createStartGameButton(GUIComponent backgroundCard){
         int xCoordinate = backgroundCard.getXCoordinate() + 120;
         int yCoordinate = backgroundCard.getYCoordinate() + 50;
         GUITextCollection textCollection = new GUITextCollection(xCoordinate, yCoordinate, "SELECT CLASS");
-        textCollection.setScale(imageScale);
+        textCollection.setScale(resolutionFactor);
         textCollection.setMenuFunctionality(MenuFunctionEnums.OpenClassSelectWindow);
 
         textCollection.setCenterXCoordinate(backgroundCard.getCenterXCoordinate());
@@ -36,7 +36,7 @@ public class MenuBoardCreator {
         SpriteConfiguration spriteConfiguration = new SpriteConfiguration();
         spriteConfiguration.setxCoordinate(xCoordinate);
         spriteConfiguration.setyCoordinate(yCoordinate);
-        spriteConfiguration.setScale(imageScale);
+        spriteConfiguration.setScale(resolutionFactor);
         spriteConfiguration.setImageType(PlayerStats.getInstance().getSpaceShipImage());
 
         MenuCursor menuCursor = new MenuCursor(spriteConfiguration);
@@ -54,7 +54,7 @@ public class MenuBoardCreator {
         SpriteConfiguration spriteConfiguration = new SpriteConfiguration();
         spriteConfiguration.setxCoordinate(xCoordinate);
         spriteConfiguration.setyCoordinate(yCoordinate);
-        spriteConfiguration.setScale(imageScale);
+        spriteConfiguration.setScale(resolutionFactor);
         spriteConfiguration.setImageType(ImageEnums.Title_Image);
 
         GUIComponent titleImage = new DisplayOnly(spriteConfiguration);
@@ -70,7 +70,7 @@ public class MenuBoardCreator {
         SpriteConfiguration spriteConfiguration = new SpriteConfiguration();
         spriteConfiguration.setxCoordinate(xCoordinate);
         spriteConfiguration.setyCoordinate(yCoordinate);
-        spriteConfiguration.setScale(1.5f * imageScale);
+        spriteConfiguration.setScale(1.5f * resolutionFactor);
         spriteConfiguration.setImageType(ImageEnums.InputMapping);
 
         GUIComponent inputMapping = new DisplayOnly(spriteConfiguration);
@@ -83,19 +83,19 @@ public class MenuBoardCreator {
     public static List<GUITextCollection> createControlsExplanations(){
         List<GUITextCollection> controlExplanations = new ArrayList<>();
         int xCoordinate = 15;
-        int yCoordinate = (DataClass.getInstance().getWindowHeight() / 2) + Math.round(300 * DataClass.getInstance().getResolutionFactor());
+        int yCoordinate = (DataClass.getInstance().getWindowHeight() / 2) + Math.round(300 * resolutionFactor);
 
 
         GUITextCollection wasdExplanation = new GUITextCollection(xCoordinate, yCoordinate, "MOVEMENT = WASD OR ARROWS OR JOYSTICK");
-        wasdExplanation.setScale(imageScale);
+        wasdExplanation.setScale(resolutionFactor);
         controlExplanations.add(wasdExplanation);
 
-        GUITextCollection attackExplanation = new GUITextCollection(xCoordinate, yCoordinate + Math.round(20 * DataClass.getInstance().getResolutionFactor()), "SPACEBAR OR X = NORMAL ATTACK");
-        attackExplanation.setScale(imageScale);
+        GUITextCollection attackExplanation = new GUITextCollection(xCoordinate, yCoordinate + Math.round(20 * resolutionFactor), "SPACEBAR OR X = NORMAL ATTACK");
+        attackExplanation.setScale(resolutionFactor);
         controlExplanations.add(attackExplanation);
 
-        GUITextCollection specialExplanation = new GUITextCollection(xCoordinate, yCoordinate + Math.round(40 * DataClass.getInstance().getResolutionFactor()), "ENTER OR Y = SPECIAL ATTACK");
-        specialExplanation.setScale(imageScale);
+        GUITextCollection specialExplanation = new GUITextCollection(xCoordinate, yCoordinate + Math.round(40 * resolutionFactor), "ENTER OR Y = SPECIAL ATTACK");
+        specialExplanation.setScale(resolutionFactor);
         controlExplanations.add(specialExplanation);
 
         return controlExplanations;
@@ -108,13 +108,13 @@ public class MenuBoardCreator {
         SpriteConfiguration spriteConfiguration = new SpriteConfiguration();
         spriteConfiguration.setxCoordinate(xCoordinate);
         spriteConfiguration.setyCoordinate(yCoordinate);
-        spriteConfiguration.setScale(imageScale);
+        spriteConfiguration.setScale(resolutionFactor);
         spriteConfiguration.setImageType(ImageEnums.Square_Card);
 
         GUIComponent backgroundCard = new DisplayOnly(spriteConfiguration);
 
-        int newWidth = Math.round(250 * DataClass.getInstance().getResolutionFactor());
-        int newHeight = Math.round(250 * DataClass.getInstance().getResolutionFactor());
+        int newWidth = Math.round(250 * resolutionFactor);
+        int newHeight = Math.round(250 * resolutionFactor);
         backgroundCard.setImageDimensions(newWidth,newHeight);
 
         backgroundCard.setCenterXCoordinate(xCoordinate);
@@ -129,12 +129,12 @@ public class MenuBoardCreator {
         SpriteConfiguration spriteConfiguration = new SpriteConfiguration();
         spriteConfiguration.setxCoordinate(xCoordinate);
         spriteConfiguration.setyCoordinate(yCoordinate);
-        spriteConfiguration.setScale(imageScale);
+        spriteConfiguration.setScale(resolutionFactor);
         spriteConfiguration.setImageType(ImageEnums.Square_Card);
 
         GUIComponent backgroundCard = new DisplayOnly(spriteConfiguration);
-        int newWidth = Math.round(400 * DataClass.getInstance().getResolutionFactor());
-        int newHeight = Math.round(250 * DataClass.getInstance().getResolutionFactor());
+        int newWidth = Math.round(400 * resolutionFactor);
+        int newHeight = Math.round(250 * resolutionFactor);
 
         backgroundCard.setImageDimensions(newWidth,newHeight);
         return backgroundCard;
@@ -146,7 +146,7 @@ public class MenuBoardCreator {
         int yCoordinate = component.getYCoordinate() + 50;
 
         GUITextCollection textCollection = new GUITextCollection(xCoordinate,yCoordinate, "OPEN SHOP");
-        textCollection.setScale(imageScale);
+        textCollection.setScale(resolutionFactor);
         textCollection.setMenuFunctionality(MenuFunctionEnums.Open_Shop_Window);
         return textCollection;
     }
@@ -157,7 +157,7 @@ public class MenuBoardCreator {
         int yCoordinate = component.getYCoordinate() + 50;
 
         GUITextCollection textCollection = new GUITextCollection(xCoordinate,yCoordinate, "CONTINUE RUN");
-        textCollection.setScale(imageScale);
+        textCollection.setScale(resolutionFactor);
         textCollection.setMenuFunctionality(MenuFunctionEnums.ContinueSaveFile);
         return textCollection;
     }
@@ -181,14 +181,14 @@ public class MenuBoardCreator {
         }
 
         //Center it under the title image
-        textCollection.setScale(imageScale);
+        textCollection.setScale(resolutionFactor);
         GUIComponent lastComponent = textCollection.getComponents().get(textCollection.getComponents().size() - 1);
         GUIComponent firstComponent = textCollection.getComponents().get(0);
 
         int textCollectionWidth = (lastComponent.getXCoordinate() + lastComponent.getWidth() - firstComponent.getXCoordinate());
         int newxCoordinate = titleImage.getCenterXCoordinate() - (textCollectionWidth / 2);
         textCollection = new GUITextCollection(newxCoordinate, yCoordinate, text);
-        textCollection.setScale(imageScale);
+        textCollection.setScale(resolutionFactor);
         return textCollection;
     }
 
@@ -198,7 +198,7 @@ public class MenuBoardCreator {
         int yCoordinate = component.getYCoordinate() + 50;
 
         GUITextCollection textCollection = new GUITextCollection(xCoordinate,yCoordinate, "CLOSE GAME");
-        textCollection.setScale(imageScale);
+        textCollection.setScale(resolutionFactor);
         textCollection.setMenuFunctionality(MenuFunctionEnums.CloseGame);
         return textCollection;
     }
@@ -208,7 +208,7 @@ public class MenuBoardCreator {
         int yCoordinate = backgroundCard.getYCoordinate() + 30;
 
         GUITextCollection textCollection = new GUITextCollection(xCoordinate,yCoordinate, "USE LOCAL FILES");
-        textCollection.setScale(imageScale);
+        textCollection.setScale(resolutionFactor);
         textCollection.setMenuFunctionality(MenuFunctionEnums.SelectDefaultMediaPlayer);
         return textCollection;
     }
@@ -219,7 +219,7 @@ public class MenuBoardCreator {
         int yCoordinate = component.getYCoordinate() + 50;
 
         GUITextCollection textCollection = new GUITextCollection(xCoordinate,yCoordinate, "USE ITUNES");
-        textCollection.setScale(imageScale);
+        textCollection.setScale(resolutionFactor);
         textCollection.setMenuFunctionality(MenuFunctionEnums.SelectMacOSMediaPlayer);
         return textCollection;
     }
@@ -229,7 +229,7 @@ public class MenuBoardCreator {
         int yCoordinate = backgroundCard.getYCoordinate() - 30;
 
         GUITextCollection textCollection = new GUITextCollection(xCoordinate,yCoordinate, "GAME SETTINGS");
-        textCollection.setScale(imageScale * 2);
+        textCollection.setScale(resolutionFactor * 2);
         return textCollection;
     }
 }
