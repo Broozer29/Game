@@ -4,6 +4,7 @@ import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
 import net.riezebos.bruus.tbd.game.gameobjects.neutral.Explosion;
 import net.riezebos.bruus.tbd.game.gameobjects.neutral.ExplosionConfiguration;
 import net.riezebos.bruus.tbd.game.gameobjects.neutral.ExplosionManager;
+import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
 import net.riezebos.bruus.tbd.game.items.Item;
 import net.riezebos.bruus.tbd.game.items.ItemEnums;
 import net.riezebos.bruus.tbd.game.items.enums.ItemApplicationEnum;
@@ -13,7 +14,7 @@ import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.Sprit
 
 public class ExplosiveGreed extends Item {
 
-    public static float damageModifier = 15;
+    public static float damageModifier = 25;
 
     public ExplosiveGreed() {
         super(ItemEnums.ExplosiveGreed, 1, ItemApplicationEnum.CustomActivation);
@@ -33,7 +34,7 @@ public class ExplosiveGreed extends Item {
 
 
     private Explosion createExplosion(GameObject target){
-        float damage = target.getDamage() * (damageModifier * quantity);
+        float damage = PlayerManager.getInstance().getRandomSpaceShip().getDamage() * (damageModifier * quantity);
         SpriteConfiguration spriteConfiguration = new SpriteConfiguration();
         spriteConfiguration.setImageType(ImageEnums.CarrierWarpExplosion); //todo placeholder
         spriteConfiguration.setxCoordinate(target.getCenterXCoordinate());
