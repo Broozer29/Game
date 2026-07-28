@@ -1078,8 +1078,17 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
             }
             repaint(0, 0, DataClass.getInstance().getWindowWidth(), DataClass.getInstance().getWindowHeight() + 5);
         } catch (Exception ex) {
+            try {
+                java.io.FileWriter fw = new java.io.FileWriter("error_log.txt", true);
+                java.io.PrintWriter pw = new java.io.PrintWriter(fw);
+                pw.println("=== Error at " + java.time.LocalDateTime.now() + " ===");
+                ex.printStackTrace(pw);
+                pw.println();
+                pw.close();
+            } catch (java.io.IOException exe) {
+                exe.printStackTrace();
+            }
             ex.printStackTrace();
-            drawTimer.stop();
             System.exit(1);
         }
     }

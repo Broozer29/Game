@@ -121,6 +121,11 @@ public class BackgroundManager {
         ImageEnums nebula = getNebulaImage(this.nebulaTheme);
         fillBGOList(BGOEnums.Nebula, nebula, 1, 25, 4, 25);
 
+        // Add second row of nebulas for tall screens (4K and higher)
+        if (dataClass.getWindowHeight() > 1600) {
+            fillBGOList(BGOEnums.Nebula, nebula, 1, 25, 4, 25, true);
+        }
+
 
         if (this.spaceTheme.equals(SpaceThemeEnums.Star_Clear)) {
             for (int i = 0; i < 5; i++) {
@@ -145,6 +150,10 @@ public class BackgroundManager {
     }
 
     private void fillBGOList(BGOEnums bgoType, ImageEnums imageType, float scale, int amount, int depthLevel, int maxTries) {
+        fillBGOList(bgoType, imageType, scale, amount, depthLevel, maxTries, false);
+    }
+
+    private void fillBGOList(BGOEnums bgoType, ImageEnums imageType, float scale, int amount, int depthLevel, int maxTries, boolean isSecondRow) {
         List<BackgroundObject> listToFill = backgroundObjectsMap.computeIfAbsent(bgoType, k -> new ArrayList<>());
         BufferedImage bgoImage = imageDatabase.getImage(imageType);
         if (bgoImage == null) {
@@ -156,8 +165,9 @@ public class BackgroundManager {
 
         int bgoSpawned = 0;
         int tries = 0;
+
         while (sizeOfDepthLevel(listToFill, depthLevel) < amount && tries < maxTries) {
-            BackgroundObject bgo = createBackgroundObject(bgoType, imageType, bgoImage, scale, depthLevel, listToFill, bgoSpawned);
+            BackgroundObject bgo = createBackgroundObject(bgoType, imageType, bgoImage, scale, depthLevel, listToFill, bgoSpawned, isSecondRow);
             if (bgo != null) {
                 listToFill.add(bgo);
                 bgoSpawned++;
@@ -176,7 +186,7 @@ public class BackgroundManager {
         return count;
     }
 
-    private BackgroundObject createBackgroundObject(BGOEnums bgoType, ImageEnums imageType, BufferedImage bgoImage, float scale, int depthLevel, List<BackgroundObject> existingObjects, int bgoSpawned) {
+    private BackgroundObject createBackgroundObject(BGOEnums bgoType, ImageEnums imageType, BufferedImage bgoImage, float scale, int depthLevel, List<BackgroundObject> existingObjects, int bgoSpawned, boolean isSecondRow) {
         int xCoordinate = randomCoordinator.getRandomXBGOCoordinate(bgoType);
         int yCoordinate = randomCoordinator.getRandomYBGOCoordinate(bgoType);
 
@@ -196,7 +206,9 @@ public class BackgroundManager {
         if (bgoType == BGOEnums.Nebula) {
             // Place Nebula objects next to each other horizontally
             xCoordinate = bgoImage.getWidth() * bgoSpawned;
-            yCoordinate = 0;
+
+            //The yCoordinate should be bgoImage.getHeight() if this nebula should be placed UNDEARNEATH which is relevant for the comment on line 160
+            yCoordinate = isSecondRow ? bgoImage.getHeight() : 0;
             SpriteConfiguration spriteConfiguration = createSpriteConfiguration(xCoordinate, yCoordinate, imageType, scale);
             BackgroundObjectConfiguration bgoConfiguration = createBGOConfiguration(depthLevel, bgoType);
             return new BackgroundObject(spriteConfiguration, bgoConfiguration);
