@@ -124,8 +124,8 @@ public class Main {
                 enemyEnum.getDefaultScale(), enemyEnum.getMovementSpeed());
         yellowBoss.deleteObject();
 
-		simulateAttackAngles(true);
-		simulateAttackAngles(false);
+//		simulateAttackAngles(true);
+//		simulateAttackAngles(false);
 
         runtime = Runtime.getRuntime();
         usedMemory = runtime.totalMemory() - runtime.freeMemory();
