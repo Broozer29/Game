@@ -130,6 +130,8 @@
                         <option>-Xms4g</option>
                         <option>-Xmx8g</option>
                         <option>-XX:+UseG1GC</option>
+                        <option>-Dsun.java2d.opengl=true</option>
+                        <option>-Dsun.java2d.accthresh=0</option>
                     </javaOptions>
                     <resourceDir>src/main/resources</resourceDir>
                     <!-- Options: APP_IMAGE, DMG (macOS), PKG (macOS), EXE (Windows), MSI (Windows), DEB (Linux), RPM (Linux) -->
