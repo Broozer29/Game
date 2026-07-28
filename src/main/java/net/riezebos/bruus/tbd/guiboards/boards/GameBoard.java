@@ -220,6 +220,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
             GodRunDetector.getInstance().resetGodRunDetector();
             this.hasExportedLogs = false;
             selectedComponent = null;
+            ImageRotator.getInstance().cleanupOldCacheEntries();
 
 
             //reset stuivers best friend if it exists
