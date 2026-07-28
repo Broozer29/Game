@@ -166,10 +166,10 @@ public class SecondaryPlayerGun {
                 lastSecondsSpecialAttackChargeGained = currentTime;
                 specialAttackCharges++;
 
-                //als hij het kan spammen geen audio recharge effect spammen, heel irritant
-                if(owner.getMaxSpecialAttackCharges() <= 3 && PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.AnionInverter) == null) {
-                    AudioManager.getInstance().addAudio(AudioEnums.SpecialAttackFinishedCharging);
-                }
+                //todo aanzetten: special attack recharge sound effect weg want het kan heel irritant worden imo
+//                if(owner.getMaxSpecialAttackCharges() <= 3 && PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.AnionInverter) == null) {
+//                    AudioManager.getInstance().addAudio(AudioEnums.SpecialAttackFinishedCharging);
+//                }
             }
         }
 
