@@ -1069,7 +1069,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
             executeControllerInput();
 
             if (shouldIncreaseInputDelay()) {
-                inputDelay++;
+                inputDelay += 15; // because a single tick represents 15ms and the dataclass delay is represented in ms but we want an increased slight delay
             }
 
             if (lastKnownState == null || lastKnownState != gameState.getGameState()) {
@@ -1149,7 +1149,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
 
             if (gameState.getGameState() == GameStatusEnums.SelectingRelic) {
                 //navigate left/right
-                if (inputDelay >= DataClass.CONTROLLER_INPUT_COOLDOWN / 5) {
+                if (inputDelay >= DataClass.CONTROLLER_INPUT_COOLDOWN) {
                     if (e.getKeyCode() == KeyEvent.VK_LEFT || e.getKeyCode() == KeyEvent.VK_A) {
                         navigateLeft();
                     } else if (e.getKeyCode() == KeyEvent.VK_RIGHT || e.getKeyCode() == KeyEvent.VK_D) {
@@ -1212,7 +1212,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
                     gameState.setGameState(GameStatusEnums.Paused);
                     audioManager.pauseAllAudio();
                     inputDelay = 0;
-                } else if (gameState.getGameState().equals(GameStatusEnums.Paused) && inputDelay >= (DataClass.CONTROLLER_INPUT_COOLDOWN / 2)) {
+                } else if (gameState.getGameState().equals(GameStatusEnums.Paused) && inputDelay >= DataClass.CONTROLLER_INPUT_COOLDOWN) {
                     gameState.setGameState(GameStatusEnums.Playing);
                     audioManager.resumeAllAudio();
                     inputDelay = 0;
@@ -1237,7 +1237,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
                 }
             } else if (gameState.getGameState() == GameStatusEnums.SelectingRelic) {
                 controllerManager.pollControllers();
-                if (controllerManager.isFirePressed() && inputDelay >= DataClass.CONTROLLER_INPUT_COOLDOWN) {
+                if (controllerManager.isFirePressed() && inputDelay >= DataClass.CONTROLLER_INPUT_COOLDOWN && selectedComponent != null) {
                     selectedComponent.activateComponent();
                     inputDelay = 0;
                 } else if (controllerManager.isPrimaryControllerLeftPressed() && inputDelay >= DataClass.CONTROLLER_INPUT_COOLDOWN) {
@@ -1270,6 +1270,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
         cursor.setCenterYCoordinate(relicSelectionGrid.get(0).getCenterYCoordinate());
         selectedComponent = relicSelectionGrid.get(0);
         isUsersFirstInputForRelicselection = false;
+        inputDelay = 0;
     }
 
     public void addGUIAnimation(GUIComponent incomingComponent) {

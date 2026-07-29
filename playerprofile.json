@@ -1,14 +1,1 @@
-{
-  "enemyKilledCounter": 0,
-  "highestStageCompleted": 0,
-  "bossesKilledCounter": 0,
-  "carrierUnlocked": true,
-  "fireFighterUnlocked": true,
-  "emeralds": 0,
-  "nepotismLevel": 5,
-  "clubAccessLevel": 5,
-  "compoundWealthLevel": 5,
-  "treasureHunterLevel": 5,
-  "bountyHunterLevel": 5,
-  "thickHideLevel": 5
-}
+{"enemyKilledCounter":0,"highestStageCompleted":0,"bossesKilledCounter":0,"carrierUnlocked":true,"fireFighterUnlocked":true,"mutaliskUnlocked":false,"emeralds":0,"nepotismLevel":5,"clubAccessLevel":5,"compoundWealthLevel":5,"treasureHunterLevel":5,"bountyHunterLevel":5,"thickHideLevel":5}

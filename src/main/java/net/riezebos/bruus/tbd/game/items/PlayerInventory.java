@@ -40,7 +40,7 @@ public class PlayerInventory {
         if (DevTestSettings.infiniteMoney) {
 
             cashMoney = 999999999;
-            addItem(ItemEnums.FireWithoutGasIsAss);
+            addItem(ItemEnums.Stuivie);
         } else {
             cashMoney = 0;
         }

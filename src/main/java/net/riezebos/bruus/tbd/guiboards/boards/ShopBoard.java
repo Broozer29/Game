@@ -817,15 +817,15 @@ public class ShopBoard extends JPanel implements TimerHolder {
 
 
         if (descriptionInfo.title != null) {
-            g2d.setFont(new Font(textFont, Font.BOLD, Math.round(22 * DataClass.getInstance().getResolutionFactor())));  // Larger font for the title
+            g2d.setFont(new Font(textFont, Font.BOLD, Math.round(22 * Math.min(DataClass.getInstance().getResolutionFactor(), DataClass.maxResolutionFactor))));  // Larger font for the title
             drawDescriptionText(g2d, descriptionInfo.title, descriptionX, descriptionY, maxTextWidth, descriptionInfo.rarityColor);
             FontMetrics titleMetrics = g2d.getFontMetrics();
-            descriptionY += titleMetrics.getHeight() + Math.round(10 * DataClass.getInstance().getResolutionFactor());  // Spacing after the title
+            descriptionY += titleMetrics.getHeight() + Math.round(10 * Math.min(DataClass.getInstance().getResolutionFactor(), DataClass.maxResolutionFactor));  // Spacing after the title
         }
 
         // Set font and draw the description if available
         if (descriptionInfo.descriptionText != null) {
-            g2d.setFont(new Font(textFont, Font.PLAIN, Math.round(18 * DataClass.getInstance().getResolutionFactor())));  // Default font for description
+            g2d.setFont(new Font(textFont, Font.PLAIN, Math.round(18 * Math.min(DataClass.getInstance().getResolutionFactor(), DataClass.maxResolutionFactor))));  // Default font for description
             drawDescriptionText(g2d, descriptionInfo.descriptionText, descriptionX, descriptionY, maxTextWidth, Color.WHITE);
             FontMetrics descriptionMetrics = g2d.getFontMetrics();
             descriptionY += descriptionMetrics.getHeight() * ((descriptionInfo.descriptionText.length() / maxTextWidth) + 1); // Estimate line height
@@ -833,7 +833,7 @@ public class ShopBoard extends JPanel implements TimerHolder {
 
         // Set font and draw the cost if available
         if (descriptionInfo.cost != null) {
-            g2d.setFont(new Font(textFont, Font.ITALIC, Math.round(16 * DataClass.getInstance().getResolutionFactor())));  // Slightly smaller italic font for the cost
+            g2d.setFont(new Font(textFont, Font.ITALIC, Math.round(16 * Math.min(DataClass.getInstance().getResolutionFactor(), DataClass.maxResolutionFactor))));  // Slightly smaller italic font for the cost
             FontMetrics costMetrics = g2d.getFontMetrics();
             int costY = itemDescription.getYCoordinate() + boxHeight - verticalPadding - costMetrics.getHeight();
             drawDescriptionText(g2d, descriptionInfo.cost, descriptionX, costY, maxTextWidth, Color.WHITE);

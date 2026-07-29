@@ -140,31 +140,31 @@ public class StraightLinePathFinder implements PathFinder {
                 break;
             case LEFT:
                 endYCoordinate = yCoordinate;
-                endXCoordinate = 0 - 150;
+                endXCoordinate = 0 - 250;
                 break;
             case RIGHT:
                 endYCoordinate = yCoordinate;
-                endXCoordinate = dataClass.getWindowWidth() + 150;
+                endXCoordinate = dataClass.getWindowWidth() + 250;
                 break;
             case RIGHT_UP:
                 endYCoordinate = DataClass.getInstance().getPlayableWindowMinHeight();
-                endXCoordinate = dataClass.getWindowWidth() + 150;
+                endXCoordinate = dataClass.getWindowWidth() + 250;
                 break;
             case RIGHT_DOWN:
                 endYCoordinate = DataClass.getInstance().getPlayableWindowMaxHeight();
-                endXCoordinate = dataClass.getWindowWidth() + 150;
+                endXCoordinate = dataClass.getWindowWidth() + 250;
                 break;
             case LEFT_UP:
                 endYCoordinate = DataClass.getInstance().getPlayableWindowMinHeight();
-                endXCoordinate = 0 - 150;
+                endXCoordinate = 0 - 250;
                 break;
             case LEFT_DOWN:
                 endYCoordinate = DataClass.getInstance().getPlayableWindowMaxHeight();
-                endXCoordinate = 0 - 150;
+                endXCoordinate = 0 - 250;
                 break;
             default:
                 endYCoordinate = yCoordinate;
-                endXCoordinate = 0 - 150;
+                endXCoordinate = 0 - 250;
                 break;
         }
 

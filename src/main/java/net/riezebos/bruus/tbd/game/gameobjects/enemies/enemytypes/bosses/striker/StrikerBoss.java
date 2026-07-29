@@ -32,7 +32,7 @@ public class StrikerBoss extends Enemy {
         SpriteAnimationConfiguration destroyedExplosionfiguration = new SpriteAnimationConfiguration(spriteConfiguration.getSpriteConfiguration(), 0, false);
         destroyedExplosionfiguration.getSpriteConfiguration().setImageType(ImageEnums.Explosion2);
         this.destructionAnimation = new SpriteAnimation(destroyedExplosionfiguration);
-        this.damage = 10;
+        this.damage = 9;
         this.knockbackStrength = 9;
         this.allowedVisualsToRotate = true;
 

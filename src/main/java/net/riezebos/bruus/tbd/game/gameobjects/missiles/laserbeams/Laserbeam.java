@@ -259,4 +259,10 @@ public abstract class Laserbeam {
     public static double getYOffsetForCentering() {
         return Laserbeam.bodyWidth / 2 + 12;
     }
+
+    public void deleteObject(){
+        this.laserBodies.clear();
+        this.originObject = null;
+        this.owner = null;
+    }
 }

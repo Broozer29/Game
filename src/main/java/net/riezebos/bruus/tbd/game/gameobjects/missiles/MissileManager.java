@@ -72,8 +72,13 @@ public class MissileManager {
             laserbeam.setVisible(false);
         }
 
+        for(LaserbeamIndicator laserbeamIndicator : laserbeamIndicators){
+            laserbeamIndicator.setActive(false);
+        }
+
         removeInvisibleProjectiles();
 
+        laserbeamIndicators.clear();
         missiles.clear();
         specialAttacks.clear();
         laserbeams.clear();
@@ -172,6 +177,13 @@ public class MissileManager {
             if (!specialAttacks.get(i).isVisible()) {
                 specialAttacks.get(i).deleteObject();
                 specialAttacks.remove(i);
+                i--;
+            }
+        }
+        for (int i = 0; i < laserbeams.size(); i++) {
+            if (!laserbeams.get(i).isVisible()) {
+                laserbeams.get(i).deleteObject();
+                laserbeams.remove(i);
                 i--;
             }
         }

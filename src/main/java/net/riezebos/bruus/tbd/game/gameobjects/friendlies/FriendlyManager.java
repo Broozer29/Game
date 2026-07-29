@@ -92,7 +92,8 @@ public class FriendlyManager {
         }
 
         removeInvisibleObjects();
-        drones = new ArrayList<>();
+        friendlyStations.clear();
+        drones.clear();
         initPortal();
         performanceLogger.reset();
     }

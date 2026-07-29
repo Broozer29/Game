@@ -23,7 +23,6 @@ public enum ItemEnums {
     PyrrhicProtocol(ItemRarityEnums.Legendary, ImageEnums.PyrrhicProtocolIcon, "Pyrrhic Protocol", false),
     VengeanceProtocol(ItemRarityEnums.Rare, ImageEnums.VengeanceProtocolIcon, "Vengeance Protocol", false),
     EnergySiphon(ItemRarityEnums.Common, ImageEnums.Starcraft2_Energy_Siphon, "Energy Siphon", false),
-    Stuivie(ItemRarityEnums.Relic, ImageEnums.StuiversBestFriend, "Stuivie", false),
     ModulePower(ItemRarityEnums.Legendary,  ImageEnums.Test_Image, "Module: Power", false), //disabled omdat drones al genoeg snowballen, dit zou extra op extra zijn
     PuncturingPierce(ItemRarityEnums.Legendary,  ImageEnums.PuncturingPierces, "Puncturing Pierce", false), //disabled want saai
     //Relics 2.0
@@ -35,6 +34,7 @@ public enum ItemEnums {
     GlassCannon(ItemRarityEnums.Relic,  ImageEnums.GlassCannon, "Glass Cannon", true),
     HelpRequested(ItemRarityEnums.Relic, ImageEnums.MoneyPrinter, "Help Requested", true),
     WisdomBall(ItemRarityEnums.Relic, ImageEnums.WondrousWisdomball, "Wondrous Wisdomball", true),
+    Stuivie(ItemRarityEnums.Relic, ImageEnums.StuiversBestFriend, "Stuivie", true),
 
     //captain relics
     ModuleAccuracy(ItemRarityEnums.Relic, ImageEnums.Starcraft2LockOn, "Module: Accuracy", true),

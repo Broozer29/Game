@@ -3,6 +3,7 @@ package net.riezebos.bruus.tbd.game.items.items.captain;
 import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerClass;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
+import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SpaceShip;
 import net.riezebos.bruus.tbd.game.items.Item;
 import net.riezebos.bruus.tbd.game.items.ItemEnums;
 import net.riezebos.bruus.tbd.game.items.effects.EffectIdentifiers;
@@ -27,23 +28,28 @@ public class PlasmaCoatedBullets extends Item {
     }
 
     @Override
-    public void applyEffectToObject(GameObject gameObject) {
+    public void applyEffectToObject(GameObject applier, GameObject target) {
 
-        SpriteConfiguration spriteConfiguration = new SpriteConfiguration();
-        spriteConfiguration.setxCoordinate(gameObject.getXCoordinate());
-        spriteConfiguration.setyCoordinate(gameObject.getYCoordinate());
-        spriteConfiguration.setScale(1);
-        spriteConfiguration.setImageType(ImageEnums.PlasmaCoatedDebuff);
-
-        SpriteAnimationConfiguration spriteAnimationConfiguration = new SpriteAnimationConfiguration(spriteConfiguration, 3, true);
-        SpriteAnimation spriteAnimation = new SpriteAnimation(spriteAnimationConfiguration);
-
-        DamageOverTime burningEffect = new DamageOverTime((burningDamage * PlayerStats.getInstance().getBaseDamage()) * quantity, duration, spriteAnimation, EffectIdentifiers.PlasmaCoatedBulletsBurning);
-        if(burningEffect.getAnimations().get(0) != null){
-            burningEffect.getAnimations().get(0).setCenterCoordinates(gameObject.getCenterXCoordinate(), gameObject.getCenterYCoordinate());
+        if(!target.isVisible() || target.getCurrentHitpoints() <= 0){
+            return; //target is already dead
         }
 
-        gameObject.addEffect(burningEffect);
+        if(applier.getOwnerOrCreator() != null && applier.getOwnerOrCreator() instanceof SpaceShip) {
+            SpriteConfiguration spriteConfiguration = new SpriteConfiguration();
+            spriteConfiguration.setxCoordinate(target.getXCoordinate());
+            spriteConfiguration.setyCoordinate(target.getYCoordinate());
+            spriteConfiguration.setScale(1);
+            spriteConfiguration.setImageType(ImageEnums.PlasmaCoatedDebuff);
+
+            SpriteAnimationConfiguration spriteAnimationConfiguration = new SpriteAnimationConfiguration(spriteConfiguration, 3, true);
+            SpriteAnimation spriteAnimation = new SpriteAnimation(spriteAnimationConfiguration);
+
+            DamageOverTime burningEffect = new DamageOverTime((burningDamage * PlayerStats.getInstance().getBaseDamage()) * quantity, duration, spriteAnimation, EffectIdentifiers.PlasmaCoatedBulletsBurning);
+            if (burningEffect.getAnimations().get(0) != null) {
+                burningEffect.getAnimations().get(0).setCenterCoordinates(target.getCenterXCoordinate(), target.getCenterYCoordinate());
+            }
+            target.addEffect(burningEffect);
+        }
     }
 
 

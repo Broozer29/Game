@@ -90,7 +90,7 @@ public class OnScreenTextManager {
 
 		removeInvisibleText();
 
-		onScreenTexts = new ArrayList<>();
+		onScreenTexts.clear();
 	}
 
 }

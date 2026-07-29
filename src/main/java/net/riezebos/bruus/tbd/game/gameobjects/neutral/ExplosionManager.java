@@ -58,6 +58,7 @@ public class ExplosionManager {
             explosion.deleteObject();
         }
 
+        explosionList.clear();
         explosionList = new CopyOnWriteArrayList<>();
         performanceLogger.reset();
     }

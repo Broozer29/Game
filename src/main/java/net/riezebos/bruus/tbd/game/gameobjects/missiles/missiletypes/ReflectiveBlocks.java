@@ -28,6 +28,11 @@ public class ReflectiveBlocks extends Missile {
             super.collidedObjects.clear();
             lastCheckedTime = GameState.getInstance().getGameSeconds();
         }
+
+        //sloppy temporary (maybe) fix for the blocks not being destroyed when they are out of the screen
+        if(this.xCoordinate <= 200){
+            setVisible(false);
+        }
     }
 
     @Override

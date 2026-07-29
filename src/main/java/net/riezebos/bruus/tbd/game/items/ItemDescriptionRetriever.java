@@ -77,6 +77,9 @@ public class ItemDescriptionRetriever {
                 return "Killing an enemy spawns a friendly stationary drone that attacks nearby enemies. Up to 4 drones per player can be spawned at a time.";
             } //relic
             case WisdomBall -> {return "Refreshes in the shop have a chance to be wondrous.";}
+            case Stuivie -> {
+                return "Once per round you get revived after dying. Upon reviving unleash an explosion dealing " + Math.round(StuiversBestFriend.explosionDamageAmount * 100) + "% damage.";
+            } //relic / disabled in multiplayer
 
 
             //4
@@ -128,7 +131,7 @@ public class ItemDescriptionRetriever {
                         ") hitpoints per second.";
             } //commmon
             case GuardianDrone -> {
-                return "Gain 1 orbiting drone. It attacks automatically dealing 100% damage.";
+                return "Gain 1 orbiting drone. It attacks automatically dealing 100% damage. Drones do not apply item effects.";
             } //common
             case Contract -> {
                 return "After killing " + Contract.killCountRequired + " enemies, transform into a random rare or legendary item upon entering the shop.";
@@ -155,7 +158,7 @@ public class ItemDescriptionRetriever {
                 return "Your drones no longer fire automatically. After your laserbeam hits a target, all drones immediately fire 1 shot towards the target.";
             } //relic
             case OneShotOneKill -> {
-                return "Your missiles that strike enemies with " + Math.round(OneShotOneKill.hpRequirement * 100) + "% hp will always critically strike and deal " + Math.round(OneShotOneKill.damageAmplificationModifier * 100) + "% bonus damage.";
+                return "Your missiles that strike enemies with " + Math.round(OneShotOneKill.hpRequirement * 100) + "% hp will always critically strike and deal " + Math.round(OneShotOneKill.damageAmplificationModifier * 100) + "% damage.";
             } //relic
 
             //3
@@ -322,19 +325,26 @@ public class ItemDescriptionRetriever {
             } //relic -> captain/firefighter
 
             case PiercingMissiles -> {
-                return "Missiles pierce 1 additional time";
+                return "Your missiles pierce 1 additional time";
             } //legendary -> carrier/captain
             case Adrenaline -> {
                 return "Taking damage increases your attack speed by " + Math.round(Adrenaline.attackSpeedIncrease * 100) + "% (+" + Math.round(Adrenaline.attackSpeedIncrease * 100) + "%) for " + Math.round(Adrenaline.duration) + " seconds. Taking damage again refreshes the duration of the effect.";
             } //legendary -> captain/firefighter
 
             case PlasmaCoatedBullets -> {
-                return "Your missiles apply damage over time. Enemies take " +
+                return "Your attacks apply damage over time. Enemies take " +
                         Math.round(Math.round(PlasmaCoatedBullets.burningDamage * 100) * (PlasmaCoatedBullets.duration / DamageOverTime.damageInterval)) +
                         "% (+" +
                         Math.round(Math.round(PlasmaCoatedBullets.burningDamage * 100) * (PlasmaCoatedBullets.duration / DamageOverTime.damageInterval)) + "%) damage every " +
                         PlasmaCoatedBullets.duration + " seconds.";
             } //common -> carrier/captain
+
+
+
+            //--------------------------------------Uncounted--------------------------------------
+            case ModulePower -> {
+                return "Drones deal " + Math.round(ModulePower.damageBonus * 100) + "% (+" + Math.round(ModulePower.damageBonus * 100) + "%) damage.";
+            }
 
             //--------------------------------------Disabled or deprecated items--------------------------------------
             case PyrrhicProtocol -> {
@@ -355,9 +365,6 @@ public class ItemDescriptionRetriever {
             }
             case BarrierSuperSizer -> {
                 return "Inceases maximum shield by " + Math.round(BarrierSupersizer.modifierBonus * 100) + "%";
-            }
-            case ModulePower -> {
-                return "Drones deal " + Math.round(ModulePower.damageBonus * 100) + "% (+" + Math.round(ModulePower.damageBonus * 100) + "%) damage.";
             }
             case PuncturingPierce -> { //different formula of *10 factor intead of 100, mathmatically no difference but this math perspective suits the user better
                 return "Your missiles now deal an additional " + Math.round(PuncturingPierce.damageIncreasePerMoveSpeedIncreaseModifier * 10) + "% additional damage for every 10% increased move speed.";
@@ -389,9 +396,6 @@ public class ItemDescriptionRetriever {
                 return "Your Protoss Scouts gain " + Math.round(100 * SynergeticLink.scoutBonusDamagePerShip) + "% (+" + Math.round(100 * SynergeticLink.scoutBonusDamagePerShip) + "%) damage per Protoss Shuttle that is alive." +
                         "Your Protoss Shuttles gain " + Math.round(100 * SynergeticLink.shuttleMissileSpeedPerStack) + "% (+" + Math.round(100 * SynergeticLink.shuttleMissileSpeedPerStack) + "%) missile speed per Protoss Scout that is alive."; //This is WILDLY oversimplified, as it changes the base attack speed
             } //disabled because it needs a refactor, implementation doesn't live up to intended fantasy
-            case Stuivie -> {
-                return "Once per round you get revived after dying. Upon reviving unleash an explosion dealing " + Math.round(StuiversBestFriend.explosionDamageAmount * 100) + "% damage.";
-            } //relic / disabled due to multiplayer
             case BigIron -> {
                 return "You now charge your laserbeam over " + Math.round(BigIron.maxChargeSeconds) + " seconds. Fully charged laserbeams deal " + Math.round((BigIron.damagePerInterval * BigIron.amountOfIntervals) * 100) + "% bonus damage and are " + Math.round((BigIron.scaleGrowthPerInterval * BigIron.amountOfIntervals) * 100) + "% larger. Bonus attack speed now increases the damage dealt.";
             } //relic / disabled due to it feeling bad and being buggy

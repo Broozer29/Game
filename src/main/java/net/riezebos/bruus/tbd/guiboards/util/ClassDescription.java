@@ -59,7 +59,7 @@ public class ClassDescription {
                 description = "Mutalisk";
                 maxHitpoints = PlayerStats.mutaliskBaseHitpoints;
                 difficulty = "Hard";
-                unlockCondition = "Placeholder Unlock Condition";
+                unlockCondition = "Deze gaat nog heel lang duren voordat die speelbaar is";
             default:
                 break;
         }

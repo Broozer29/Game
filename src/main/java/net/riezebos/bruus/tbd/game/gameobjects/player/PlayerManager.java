@@ -10,6 +10,7 @@ import net.riezebos.bruus.tbd.game.gamestate.GameStatusEnums;
 import net.riezebos.bruus.tbd.game.items.ItemEnums;
 import net.riezebos.bruus.tbd.game.items.PlayerInventory;
 import net.riezebos.bruus.tbd.game.items.effects.EffectInterface;
+import net.riezebos.bruus.tbd.game.items.items.StuiversBestFriend;
 import net.riezebos.bruus.tbd.game.util.collision.CollisionDetector;
 import net.riezebos.bruus.tbd.game.util.collision.CollisionInfo;
 import net.riezebos.bruus.tbd.game.util.performancelogger.PerformanceLogger;
@@ -61,7 +62,9 @@ public class PlayerManager {
             }
         }
         this.initializedSpaceShips = false;
+        this.allDeadSpaceShips.clear();
         this.allSpaceShips.clear();
+        this.spaceShipReviverList.clear();
         hasStartedDyingScene = false;
         performanceLogger.reset();
     }
@@ -185,8 +188,9 @@ public class PlayerManager {
         //if there are no players left, we have created them AND we are currently playing, the player "died"
         if(allSpaceShips.size() == 1 && (allSpaceShips.get(0).getCurrentHitpoints() <= 0 || !allSpaceShips.get(0).isVisible()) && initializedSpaceShips && gameState.getGameState() == GameStatusEnums.Playing){
             //enter the dying animation for the final player
-            allSpaceShips.get(0).getDestructionAnimation().setFrameDelay(45);
+//            allSpaceShips.get(0).getDestructionAnimation().setFrameDelay(45);
             gameState.setGameState(GameStatusEnums.Dying);
+
         }
     }
 
@@ -262,20 +266,21 @@ public class PlayerManager {
         }
 
 
-        if(hasStartedDyingScene && System.currentTimeMillis() >= milliSecondsSinceDyingBegan + 5000){ //5 seconds of slow motion dying
+        if(hasStartedDyingScene && System.currentTimeMillis() >= milliSecondsSinceDyingBegan + 3){ //3 seconds of slow motion dying
             //todo Stuivie logica, momenteel uitgezet want ik weet niet wat stuivie moet doen wanneer er meerdere spelers zijn
-//            if (PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.Stuivie) != null) {
-//                StuiversBestFriend stuiversBestFriend = (StuiversBestFriend) PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.Stuivie);
-//                if (stuiversBestFriend != null && !stuiversBestFriend.isHasActivatedThisRound()) {
-//                    spaceship.reviveSpaceShip();
-//                    stuiversBestFriend.applyEffectToObject(spaceship);
-//                    BoardManager.getInstance().getGameBoard().setDrawnTimerDelay(gameState.getDELAY());
-//                    gameState.setGameState(GameStatusEnums.Playing);
-//                } else { //we already have been revived, we die this time fr fr
-//                    gameState.setGameState(GameStatusEnums.Dead);
-//                    PlayerInventory.getInstance().resetInventory();
-//                }
-//            }
+            if (PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.Stuivie) != null && allSpaceShips.size() == 1) {
+                StuiversBestFriend stuiversBestFriend = (StuiversBestFriend) PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.Stuivie);
+                if (stuiversBestFriend != null && !stuiversBestFriend.isHasActivatedThisRound()) {
+                    allSpaceShips.get(0).reviveSpaceShip();
+                    stuiversBestFriend.applyEffectToObject(allSpaceShips.get(0));
+                    BoardManager.getInstance().getGameBoard().setDrawnTimerDelay(gameState.getDELAY());
+                    gameState.setGameState(GameStatusEnums.Playing);
+                    return;
+                } else { //we already have been revived, we die this time fr fr
+                    gameState.setGameState(GameStatusEnums.Dead);
+                    PlayerInventory.getInstance().resetInventory();
+                }
+            }
 
             gameState.setGameState(GameStatusEnums.Dead);
             PlayerInventory.getInstance().resetInventory();

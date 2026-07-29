@@ -121,10 +121,8 @@ public class BackgroundManager {
         ImageEnums nebula = getNebulaImage(this.nebulaTheme);
         fillBGOList(BGOEnums.Nebula, nebula, 1, 25, 4, 25);
 
-        // Add second row of nebulas for tall screens (4K and higher)
-        if (dataClass.getWindowHeight() > 1600) {
-            fillBGOList(BGOEnums.Nebula, nebula, 1, 25, 4, 25, true);
-        }
+        // Second row of nebulas for large screens, should actually be conditional on the resolution ratio me thinks
+        fillBGOList(BGOEnums.Nebula, nebula, 1, 25, 4, 25, true);
 
 
         if (this.spaceTheme.equals(SpaceThemeEnums.Star_Clear)) {

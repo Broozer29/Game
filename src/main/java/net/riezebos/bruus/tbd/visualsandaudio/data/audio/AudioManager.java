@@ -34,9 +34,6 @@ public class AudioManager {
 
     //Resets the manager
     public void resetManager() {
-        // Removing or placing the line below somewhere else completely bricks level
-        // transitioning, idfk why tho
-
         if (backGroundMusic != null) {
             backGroundMusic.stopClip();
             backGroundMusic.setLoop(false);
@@ -224,7 +221,7 @@ public class AudioManager {
     private boolean shouldResync(double currentGameSeconds) {
         // Default resync interval
         double resyncInterval = 10;
-        if(this.musicMediaPlayer == MusicMediaPlayer.LocalFiles) {
+        if(this.musicMediaPlayer == MusicMediaPlayer.LocalFiles || LevelManager.getInstance().getLevelType().equals(LevelTypes.Boss)) {
             resyncInterval = 2; //local files can sync much more without issues
         }
 

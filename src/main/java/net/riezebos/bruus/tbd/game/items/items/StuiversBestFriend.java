@@ -4,6 +4,7 @@ import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
 import net.riezebos.bruus.tbd.game.gameobjects.neutral.Explosion;
 import net.riezebos.bruus.tbd.game.gameobjects.neutral.ExplosionConfiguration;
 import net.riezebos.bruus.tbd.game.gameobjects.neutral.ExplosionManager;
+import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
 import net.riezebos.bruus.tbd.game.items.Item;
 import net.riezebos.bruus.tbd.game.items.ItemEnums;
@@ -73,6 +74,10 @@ public class StuiversBestFriend extends Item {
         }
 
         if (this.itemEnum.getItemRarity().equals(ItemRarityEnums.Relic) && PlayerInventory.getInstance().getItemFromInventoryIfExists(this.itemEnum) != null) {
+            return false;
+        }
+
+        if(PlayerManager.getInstance().getPlayerCount() > 1){
             return false;
         }
         return true;

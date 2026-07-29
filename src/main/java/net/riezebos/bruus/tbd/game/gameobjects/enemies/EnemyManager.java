@@ -63,9 +63,9 @@ public class EnemyManager {
 
     public void resetManager() {
         for (Enemy enemy : enemyList) {
-            enemy.setVisible(false);
+            enemy.deleteObject();
         }
-        updateEnemies();
+        enemyList.clear();
         enemyList = new CopyOnWriteArrayList<Enemy>();
         audioManager = AudioManager.getInstance();
         hasSpawnedABoss = false;

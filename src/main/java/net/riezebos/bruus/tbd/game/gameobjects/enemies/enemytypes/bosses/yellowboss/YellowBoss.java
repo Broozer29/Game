@@ -42,7 +42,7 @@ public class YellowBoss extends Enemy {
         destroyedExplosionfiguration.getSpriteConfiguration().setImageType(ImageEnums.BossExplosion);
         destroyedExplosionfiguration.getSpriteConfiguration().setScale(1);
         this.destructionAnimation = new SpriteAnimation(destroyedExplosionfiguration);
-        this.damage = 10;
+        this.damage = 9;
         this.allowedVisualsToRotate = false;
         this.knockbackStrength = 9;
         this.allowedToFire = false;

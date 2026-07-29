@@ -8,7 +8,7 @@ import net.riezebos.bruus.tbd.game.items.effects.effectimplementations.PassiveHe
 import net.riezebos.bruus.tbd.game.items.enums.ItemApplicationEnum;
 
 public class SelfRepairingSteel extends Item {
-    public static float repairAmount = 0.0105f;
+    public static float repairAmount = 0.0115f;
 
     public SelfRepairingSteel () {
         super(ItemEnums.SelfRepairingSteel, 1, ItemApplicationEnum.ApplyOnSpaceShipCreation);

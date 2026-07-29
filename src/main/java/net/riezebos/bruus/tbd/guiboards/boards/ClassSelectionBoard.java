@@ -383,14 +383,14 @@ public class ClassSelectionBoard extends JPanel implements TimerHolder {
             int descriptionY = weaponIcon.getYCoordinate();
 
             if (abilityName != null) {
-                g.setFont(new Font(textFont, Font.BOLD, Math.round(18 * DataClass.getInstance().getResolutionFactor())));  // Larger font for the title
+                g.setFont(new Font(textFont, Font.BOLD, Math.round(18 * Math.min(DataClass.getInstance().getResolutionFactor(), DataClass.maxResolutionFactor))));  // Larger font for the title
                 drawDescriptionText(g, abilityName, descriptionX, descriptionY, maxTextWidth, Color.GREEN);
                 FontMetrics titleMetrics = g.getFontMetrics();
-                descriptionY += titleMetrics.getHeight() + Math.round(10 * DataClass.getInstance().getResolutionFactor());  // Spacing after the title
+                descriptionY += titleMetrics.getHeight() + Math.round(10 * Math.min(DataClass.getInstance().getResolutionFactor(), DataClass.maxResolutionFactor));  // Spacing after the title
             }
 
             if (abilityDescription != null) {
-                g.setFont(new Font(textFont, Font.PLAIN, Math.round(14 * DataClass.getInstance().getResolutionFactor())));  // Default font for description
+                g.setFont(new Font(textFont, Font.PLAIN, Math.round(14 * Math.min(DataClass.getInstance().getResolutionFactor(), DataClass.maxResolutionFactor))));  // Default font for description
                 drawDescriptionText(g, abilityDescription, descriptionX, descriptionY, maxTextWidth, Color.WHITE);
                 FontMetrics descriptionMetrics = g.getFontMetrics();
                 descriptionY += descriptionMetrics.getHeight() * ((abilityDescription.length() / maxTextWidth) + 1); // Estimate line height

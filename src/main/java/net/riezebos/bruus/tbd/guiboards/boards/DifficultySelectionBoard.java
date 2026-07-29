@@ -225,7 +225,7 @@ public class DifficultySelectionBoard extends JPanel implements TimerHolder {
         int descriptionY = backgroundCard.getYCoordinate() + verticalPadding;
 
         if (description != null) {
-            g.setFont(new Font(textFont, Font.PLAIN, Math.round(18 * DataClass.getInstance().getResolutionFactor())));
+            g.setFont(new Font(textFont, Font.PLAIN, Math.round(18 * Math.min(DataClass.getInstance().getResolutionFactor(), DataClass.maxResolutionFactor))));
             drawDescriptionText(g, description, descriptionX, descriptionY, maxTextWidth, Color.WHITE);
         }
     }
