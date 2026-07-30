@@ -128,10 +128,9 @@ public class YellowBoss extends Enemy {
 
 
     private double lastGameSecondsOrbSpawned = GameState.getInstance().getGameSeconds() + 8; //immediatly on cooldown
-    private double orbCreationCooldown = 0;
+    private double orbCreationCooldown = 1;
     private boolean orbCreationAllowed = false;
     private void createRandomOrb() {
-        orbCreationCooldown = 1.15f;
         MissileEnums missileType = MissileEnums.YellowBossOrb;
         Point spawnPoint = new Point(-50, random.nextInt(0, DataClass.getInstance().getPlayableWindowMaxHeight()));
 

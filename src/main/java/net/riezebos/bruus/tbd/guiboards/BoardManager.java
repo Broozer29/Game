@@ -15,25 +15,24 @@ import java.util.Map;
 public class BoardManager extends JFrame {
 
     private DataClass data = DataClass.getInstance();
-    private MainMenuBoard mainMenuBoard;
-    private GameBoard gameBoard;
-    private ShopBoard shopBoard;
-    private ClassSelectionBoard classSelectionBoard;
-    private DifficultySelectionBoard difficultySelectionBoard;
-    private BoonSelectionBoard boonSelectionBoard;
     private static BoardManager instance = new BoardManager();
     private AudioManager audioManager = AudioManager.getInstance();
 
     private JPanel currentBoard = null;
     private JPanel loadingScreen = null;
 
-
+    // Single instance cache for each board type
+    private MainMenuBoard mainMenuBoard;
+    private GameBoard gameBoard;
+    private ShopBoard shopBoard;
+    private ClassSelectionBoard classSelectionBoard;
+    private DifficultySelectionBoard difficultySelectionBoard;
+    private BoonSelectionBoard boonSelectionBoard;
 
     public enum ScreenType {
         MAIN_MENU, GAME, SHOP, UPGRADE_SELECTION, CLASS_SELECTION, DIFFICULTY_SELECTION
     }
 
-    private Map<ScreenType, JPanel> screens = new EnumMap<>(ScreenType.class);
     private Map<ScreenType, Runnable> screenActions = new EnumMap<>(ScreenType.class);
 
 
@@ -72,21 +71,6 @@ public class BoardManager extends JFrame {
         // Now that window is visible, get actual dimensions
         data.setWindowWidth(getWidth());
         data.setWindowHeight(getHeight());
-
-        // Initialize screens
-        mainMenuBoard = new MainMenuBoard();
-        gameBoard = new GameBoard();
-        shopBoard = new ShopBoard();
-        classSelectionBoard = new ClassSelectionBoard();
-        boonSelectionBoard = new BoonSelectionBoard();
-        difficultySelectionBoard = new DifficultySelectionBoard();
-
-        screens.put(ScreenType.MAIN_MENU, mainMenuBoard);
-        screens.put(ScreenType.GAME, gameBoard);
-        screens.put(ScreenType.SHOP, shopBoard);
-        screens.put(ScreenType.CLASS_SELECTION, classSelectionBoard);
-        screens.put(ScreenType.UPGRADE_SELECTION, boonSelectionBoard);
-        screens.put(ScreenType.DIFFICULTY_SELECTION, difficultySelectionBoard);
 
         // Define actions for each screen
         screenActions.put(ScreenType.MAIN_MENU, () -> {
@@ -157,19 +141,17 @@ public class BoardManager extends JFrame {
     }
 
     public void switchScreen(ScreenType screenType) {
-        // Stop timers for all screens
-        screens.values().forEach(screen -> {
-            if (screen instanceof TimerHolder) {
-                ((TimerHolder) screen).getTimer().stop();
-            }
-        });
-
-        // Change screen
-        JPanel newBoard = screens.get(screenType);
+        // Stop timer on current screen
         if (currentBoard != null) {
+            if (currentBoard instanceof TimerHolder) {
+                ((TimerHolder) currentBoard).getTimer().stop();
+            }
             remove(currentBoard);
-            currentBoard.revalidate();
+            currentBoard = null; // Allow garbage collection
         }
+
+        // Create new board instance
+        JPanel newBoard = createBoardForType(screenType);
         currentBoard = newBoard;
         add(currentBoard);
         currentBoard.revalidate();
@@ -183,8 +165,47 @@ public class BoardManager extends JFrame {
         }
     }
 
+    private JPanel createBoardForType(ScreenType type) {
+        switch (type) {
+            case MAIN_MENU:
+                if (mainMenuBoard == null) {
+                    mainMenuBoard = new MainMenuBoard();
+                }
+                return mainMenuBoard;
+            case GAME:
+                if (gameBoard == null) {
+                    gameBoard = new GameBoard();
+                }
+                return gameBoard;
+            case SHOP:
+                if (shopBoard == null) {
+                    shopBoard = new ShopBoard();
+                }
+                return shopBoard;
+            case CLASS_SELECTION:
+                if (classSelectionBoard == null) {
+                    classSelectionBoard = new ClassSelectionBoard();
+                }
+                return classSelectionBoard;
+            case UPGRADE_SELECTION:
+                if (boonSelectionBoard == null) {
+                    boonSelectionBoard = new BoonSelectionBoard();
+                }
+                return boonSelectionBoard;
+            case DIFFICULTY_SELECTION:
+                if (difficultySelectionBoard == null) {
+                    difficultySelectionBoard = new DifficultySelectionBoard();
+                }
+                return difficultySelectionBoard;
+            default:
+                throw new IllegalArgumentException("Unknown screen type: " + type);
+        }
+    }
+
     public void initMainMenu() {
-        gameBoard.resetGame();
+        if (gameBoard != null) {
+            gameBoard.resetGame();
+        }
         switchScreen(ScreenType.MAIN_MENU);
     }
 
@@ -212,22 +233,37 @@ public class BoardManager extends JFrame {
     }
 
     public ShopBoard getShopBoard() {
+        if (shopBoard == null) {
+            shopBoard = new ShopBoard();
+        }
         return shopBoard;
     }
 
     public BoonSelectionBoard getUpgradeSelectionBoard() {
+        if (boonSelectionBoard == null) {
+            boonSelectionBoard = new BoonSelectionBoard();
+        }
         return boonSelectionBoard;
     }
 
     public GameBoard getGameBoard() {
+        if (gameBoard == null) {
+            gameBoard = new GameBoard();
+        }
         return gameBoard;
     }
 
     public MainMenuBoard getMainMenuBoard() {
+        if (mainMenuBoard == null) {
+            mainMenuBoard = new MainMenuBoard();
+        }
         return mainMenuBoard;
     }
 
     public DifficultySelectionBoard getDifficultySelectionBoard() {
+        if (difficultySelectionBoard == null) {
+            difficultySelectionBoard = new DifficultySelectionBoard();
+        }
         return difficultySelectionBoard;
     }
 }

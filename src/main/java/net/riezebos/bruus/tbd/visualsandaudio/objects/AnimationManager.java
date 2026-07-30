@@ -64,18 +64,8 @@ public class AnimationManager {
 	}
 
 	private void removeInvisibleAnimations() {
-		for (int i = 0; i < upperAnimationList.size(); i++) {
-			if (!upperAnimationList.get(i).isVisible()) {
-				this.upperAnimationList.remove(upperAnimationList.get(i));
-
-			}
-		}
-		for (int i = 0; i < lowerAnimationList.size(); i++) {
-			if (!lowerAnimationList.get(i).isVisible()) {
-				this.lowerAnimationList.remove(lowerAnimationList.get(i));
-			}
-		}
-
+        upperAnimationList.removeIf(animation -> !animation.isVisible());
+        lowerAnimationList.removeIf(animation -> !animation.isVisible());
 	}
 
 	public List<SpriteAnimation> getUpperAnimations() {

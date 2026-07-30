@@ -165,28 +165,9 @@ public class MissileManager {
 
 
     private void removeInvisibleProjectiles() {
-        for (int i = 0; i < missiles.size(); i++) {
-            if (!missiles.get(i).isVisible()) {
-                missiles.get(i).deleteObject();
-                missiles.remove(i);
-                i--;
-            }
-        }
-
-        for (int i = 0; i < specialAttacks.size(); i++) {
-            if (!specialAttacks.get(i).isVisible()) {
-                specialAttacks.get(i).deleteObject();
-                specialAttacks.remove(i);
-                i--;
-            }
-        }
-        for (int i = 0; i < laserbeams.size(); i++) {
-            if (!laserbeams.get(i).isVisible()) {
-                laserbeams.get(i).deleteObject();
-                laserbeams.remove(i);
-                i--;
-            }
-        }
+        missiles.removeIf(missile -> !missile.isVisible());
+        specialAttacks.removeIf(missile -> !missile.isVisible());
+        laserbeams.removeIf(missile -> !missile.isVisible());
     }
 
     private void moveMissiles() {

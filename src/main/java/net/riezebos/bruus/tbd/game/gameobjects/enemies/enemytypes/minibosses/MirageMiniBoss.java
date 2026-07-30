@@ -31,6 +31,7 @@ public class MirageMiniBoss extends Enemy {
 
     private double lastTimeCloned;
     private int cloneCooldown = 20;
+    private boolean isChild = false;
 
     private List<Direction> availableDirections = new ArrayList<>();
 
@@ -46,6 +47,7 @@ public class MirageMiniBoss extends Enemy {
         this.attackSpeed = 2;
 
         initializeDirections();
+
 
         if (this.movementConfiguration.getPathFinder() instanceof BouncingPathFinder pathFinder) {
             pathFinder.setMaxBounces(1000);
@@ -81,13 +83,14 @@ public class MirageMiniBoss extends Enemy {
 
         if (this.ownerOrCreator instanceof MirageMiniBoss && (this.ownerOrCreator.getCurrentHitpoints() <= 0 || !this.ownerOrCreator.isVisible())) {
             //the original died
+            isChild = true;
             this.takeDamage(9999);
         }
 
         double currentTime = GameState.getInstance().getGameSeconds();
 
-        if (currentTime >= lastTimeCloned + cloneCooldown && WithinVisualBoundariesCalculator.isWithinBoundaries(this)
-                && allowedToFire && !(this.ownerOrCreator instanceof MirageMiniBoss)) {
+        if (!isChild && currentTime >= lastTimeCloned + cloneCooldown && WithinVisualBoundariesCalculator.isWithinBoundaries(this)
+                && allowedToFire) {
             spawnCloneAnimation();
             super.cleanseAllEffects();
 

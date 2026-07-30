@@ -99,6 +99,14 @@ public class CustomAudioClip {
         }
     }
 
+    public void dispose() {
+        if (mediaPlayer != null && this.clipType.equals(AudioEnums.CustomMusicFile)) {
+            mediaPlayer.stop();
+            mediaPlayer.dispose(); // Release native resources
+            mediaPlayer = null;
+        }
+    }
+
 
     public void startClip() {
         adjustVolume();

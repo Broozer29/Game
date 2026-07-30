@@ -25,11 +25,7 @@ public class OnScreenTextManager {
 	}
 	
 	private void removeInvisibleText() {
-		for (int i = 0; i < onScreenTexts.size(); i++){
-			if(onScreenTexts.get(i).getTransparencyValue() < 0.05) {
-				onScreenTexts.remove(i);
-			}
-		}
+        onScreenTexts.removeIf(text -> text.getTransparencyValue() < 0.05);
 	}
 
 	public void addTextObject (OnScreenText text) {

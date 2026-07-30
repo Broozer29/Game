@@ -266,7 +266,7 @@ public class PlayerManager {
         }
 
 
-        if(hasStartedDyingScene && System.currentTimeMillis() >= milliSecondsSinceDyingBegan + 3){ //3 seconds of slow motion dying
+        if(hasStartedDyingScene && System.currentTimeMillis() >= milliSecondsSinceDyingBegan + 3000){ //3 seconds of slow motion dying
             //todo Stuivie logica, momenteel uitgezet want ik weet niet wat stuivie moet doen wanneer er meerdere spelers zijn
             if (PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.Stuivie) != null && allSpaceShips.size() == 1) {
                 StuiversBestFriend stuiversBestFriend = (StuiversBestFriend) PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.Stuivie);

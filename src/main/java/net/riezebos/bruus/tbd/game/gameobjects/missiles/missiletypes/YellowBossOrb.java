@@ -52,7 +52,7 @@ public class YellowBossOrb extends Missile {
 
             SpriteAnimationConfiguration spriteAnimationConfiguration = new SpriteAnimationConfiguration(spriteConfiguration, 0, false);
             SpriteAnimation spriteAnimation = new SpriteAnimation(spriteAnimationConfiguration);
-            DirectHeal directHeal = new DirectHeal(0.075f, spriteAnimation, EffectIdentifiers.YellowBossOrbHeal); //heal 7.5% hp
+            DirectHeal directHeal = new DirectHeal(0.045f, spriteAnimation, EffectIdentifiers.YellowBossOrbHeal); //heal 7.5% hp
             this.addEffectToApply(directHeal);
         } else {
             SpriteConfiguration spriteConfiguration = new SpriteConfiguration();

@@ -98,6 +98,7 @@ public class LevelManager {
                 DirectorManager.getInstance().setEnabled(false);
                 enemyManager.removeOutOfBoundsEnemies();
                 enemyManager.startBurningEnemies();
+                audioManager.tryToDisposeBackgroundMusic();
             }
         } else if (levelType == LevelTypes.Boss) {
             boolean bossAlive = EnemyManager.getInstance().isBossAlive();

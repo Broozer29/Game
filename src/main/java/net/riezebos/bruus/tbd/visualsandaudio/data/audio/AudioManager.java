@@ -148,6 +148,13 @@ public class AudioManager {
         this.musicMediaPlayer = musicMediaPlayer;
     }
 
+    public void tryToDisposeBackgroundMusic() {
+        if (backGroundMusic != null) {
+            backGroundMusic.dispose();
+            backGroundMusic = null;
+        }
+    }
+
     public boolean isLevelMusicFinished() {
         if (LevelManager.getInstance().getLevelType().equals(LevelTypes.Boss) || this.musicMediaPlayer == MusicMediaPlayer.LocalFiles) {
             if (backGroundMusic != null) {

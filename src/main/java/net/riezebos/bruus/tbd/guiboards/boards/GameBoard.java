@@ -426,8 +426,8 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
 
 
         //Draw the next level/main menu instructions
-        if (inputDelay > DataClass.CONTROLLER_INPUT_COOLDOWN * 2) {
-            msgToDraw = "Press any button to go back to the main menu";
+        if (inputDelay > DataClass.CONTROLLER_INPUT_COOLDOWN) {
+            msgToDraw = "Press any button";
             int goNextYCoordinate = Math.round(gameOverCard.getYCoordinate() + (gameOverCard.getHeight() * 0.9f));
             g.drawString(msgToDraw, firstRowXCoordinate, goNextYCoordinate);
         }
@@ -644,7 +644,11 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
         float playerMaxShields = player.getMaxShieldPoints();
 
         float maxTotalHitpoints = playerMaxHealth + playerMaxShields;
-        float currentTotalHitpoints = player.getCurrentHitpoints() + player.getCurrentShieldPoints(); // Bug fix: was getCurrentHitpoints() twice
+        float currentTotalHitpoints = player.getCurrentHitpoints() + player.getCurrentShieldPoints();
+
+        if(playerMaxHealth <= 0 ){
+            return; //something broke
+        }
 
         if (currentTotalHitpoints <= maxTotalHitpoints * 0.4f) {
 
@@ -1069,7 +1073,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
             executeControllerInput();
 
             if (shouldIncreaseInputDelay()) {
-                inputDelay += 15; // because a single tick represents 15ms and the dataclass delay is represented in ms but we want an increased slight delay
+                inputDelay += 1; // because a single tick represents 15ms and the dataclass delay is represented in ms but we want an increased slight delay
             }
 
             if (lastKnownState == null || lastKnownState != gameState.getGameState()) {

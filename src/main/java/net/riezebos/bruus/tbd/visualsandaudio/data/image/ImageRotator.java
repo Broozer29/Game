@@ -275,7 +275,7 @@ public class ImageRotator {
      * This method should be called periodically to prevent memory buildup.
      */
     public void cleanupOldCacheEntries() {
-        long maxAge = 300000; // 5 minutes in milliseconds
+        long maxAge = 120000; // 2 minutes in milliseconds
 
         rotatedImageCache.entrySet().removeIf(entry ->
             entry.getKey().getTimeSinceLastAccess() > maxAge

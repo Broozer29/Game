@@ -163,20 +163,8 @@ public class FriendlyManager {
     }
 
     private void removeInvisibleObjects() {
-        for (int i = 0; i < drones.size(); i++) {
-            if (!drones.get(i).isVisible()) {
-                drones.get(i).deleteObject();
-                drones.remove(i);
-                i--;
-            }
-        }
-        for (int i = 0; i < friendlyStations.size(); i++) {
-            if (!friendlyStations.get(i).isVisible()) {
-                friendlyStations.get(i).deleteObject();
-                friendlyStations.remove(i);
-                i--;
-            }
-        }
+        drones.removeIf(drone -> !drone.isVisible());
+        friendlyStations.removeIf(station -> !station.isVisible());
     }
 
     // Checks collision between friendly objects and enemies
