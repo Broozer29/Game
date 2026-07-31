@@ -51,6 +51,7 @@ public class SpaceShip extends GameObject {
     private boolean controlledByKeyboard = true;
     private Set<Integer> pressedKeys = new HashSet<>();
     private boolean isImmune;
+    private boolean isAllowedToAttack = true;
 
     private SpriteAnimation exhaustAnimation = null;  //inherit from gameobject
 
@@ -1072,5 +1073,13 @@ public class SpaceShip extends GameObject {
     @Override
     public int hashCode() {
         return Objects.hash(super.hashCode(), controllerInputReader);
+    }
+
+    public boolean isAllowedToAttack() {
+        return isAllowedToAttack;
+    }
+
+    public void setAllowedToAttack(boolean allowedToAttack) {
+        isAllowedToAttack = allowedToAttack;
     }
 }

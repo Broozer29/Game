@@ -18,7 +18,6 @@ public enum ItemEnums {
     ProtossThorns(ItemRarityEnums.Rare, ImageEnums.Test_Image, "Thorned Ships", false),
     Locked(ItemRarityEnums.Locked, ImageEnums.LockedIcon, "Locked", false),
     RepulsionArmorPlate(ItemRarityEnums.Common, ImageEnums.Starcraft2_Health_Upgrade_2, "Armor Plate", false), //It's boring and never used
-    ArmorPiercingRounds(ItemRarityEnums.Common, ImageEnums.Starcraft2_Armor_Piercing, "Piercing Rounds", false), //It's boring and deprecated
     MoneyPrinter(ItemRarityEnums.Rare, ImageEnums.MoneyPrinter, "Loot Box", false), //Completely fucks up the pacing & has broken implementation
     PyrrhicProtocol(ItemRarityEnums.Legendary, ImageEnums.PyrrhicProtocolIcon, "Pyrrhic Protocol", false),
     VengeanceProtocol(ItemRarityEnums.Rare, ImageEnums.VengeanceProtocolIcon, "Vengeance Protocol", false),
@@ -60,6 +59,7 @@ public enum ItemEnums {
     InverseRetrieval(ItemRarityEnums.Relic,  ImageEnums.InversionRetrieval, "Inverse Retrieval", true),
 
     //-----------------------------
+    ArmorPiercingRounds(ItemRarityEnums.Rare, ImageEnums.Starcraft2_Armor_Piercing, "Piercing Rounds", true),
     LeechingLasers(ItemRarityEnums.Rare,  ImageEnums.LeechingLasers, "Leeching Lasers", false),
     CalmInChaos(ItemRarityEnums.Legendary,  ImageEnums.CalmInChaos, "Calm in chaos", true),
     ElectroShedding(ItemRarityEnums.Legendary,  ImageEnums.Electroshedding, "Electro Shedding", true),
@@ -108,7 +108,7 @@ public enum ItemEnums {
     EternaFlame(ItemRarityEnums.Legendary,  ImageEnums.Eternaflame, "EternaBurn", true),
     EphemeralBlaze(ItemRarityEnums.Rare,  ImageEnums.EphemeralBlaze, "Ephemeral Blaze", true),
     AimAssist(ItemRarityEnums.Legendary,  ImageEnums.AimAssist, "Aim Assist", true),
-    HighVelocityLasers(ItemRarityEnums.Rare,  ImageEnums.HighVelocityLasers, "High Velocity Lasers", true),
+    HighVelocityLasers(ItemRarityEnums.Rare,  ImageEnums.HighVelocityLasers, "High Velocity Lasers", false),
     InfernalPreIgniter(ItemRarityEnums.Legendary,  ImageEnums.InfernalPreIgniter, "Infernal Pre-igniter", true);
 
     private ItemRarityEnums itemRarity;

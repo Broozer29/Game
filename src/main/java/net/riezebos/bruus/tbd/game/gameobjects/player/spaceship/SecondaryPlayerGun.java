@@ -38,6 +38,9 @@ public class SecondaryPlayerGun {
     }
 
     public void fire(int xCoordinate, int yCoordinate, PlayerSpecialAttackTypes attackType, SpaceShip owner) {
+        if(!owner.isAllowedToAttack()){
+            return;
+        }
         double currentTime = GameState.getInstance().getGameSeconds();
         if (specialAttackCharges > 0 && currentTime >= lastSecondsSpecialAttackUsed + 0.15) {
             switch (attackType) {

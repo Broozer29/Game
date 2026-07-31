@@ -22,7 +22,7 @@ public class FlameThrower extends SpecialAttack {
         this.appliesOnHitEffects = true;
         initIgniteEffect();
         super.damagesMissiles = true;
-        super.maxHPDamagePercentageForMissiles = 0.018f;
+        super.maxHPDamagePercentageForMissiles = 0.045f;
         super.visualLayer = VisualLayer.Lower;
 
         if(PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.FireWithoutGasIsAss) != null){

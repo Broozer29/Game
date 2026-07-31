@@ -9,6 +9,7 @@ import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
 import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SpaceShip;
 import net.riezebos.bruus.tbd.game.items.Item;
 import net.riezebos.bruus.tbd.game.items.ItemEnums;
+import net.riezebos.bruus.tbd.game.items.PlayerInventory;
 import net.riezebos.bruus.tbd.game.items.effects.effectimplementations.FreezeEffect;
 import net.riezebos.bruus.tbd.game.items.enums.ItemApplicationEnum;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
@@ -61,6 +62,11 @@ public class ElectricDestabilizer extends Item {
         if(!this.itemEnum.isEnabled()){
             return false;
         }
+
+        if(PlayerInventory.getInstance().getItemFromInventoryIfExists(this.itemEnum) != null || PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.AnionInverter) != null){
+            return false;
+        }
+
         return PlayerStats.getInstance().getPlayerClass().equals(PlayerClass.Captain);
     }
 }

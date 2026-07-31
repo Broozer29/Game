@@ -14,6 +14,8 @@ import net.riezebos.bruus.tbd.game.gamestate.GameStatusEnums;
 import net.riezebos.bruus.tbd.game.items.ItemEnums;
 import net.riezebos.bruus.tbd.game.items.PlayerInventory;
 import net.riezebos.bruus.tbd.game.items.items.carrier.SynergeticLink;
+import net.riezebos.bruus.tbd.game.level.LevelManager;
+import net.riezebos.bruus.tbd.game.level.enums.LevelTypes;
 import net.riezebos.bruus.tbd.game.util.OrbitingObjectsFormatter;
 import net.riezebos.bruus.tbd.game.util.collision.CollisionDetector;
 import net.riezebos.bruus.tbd.game.util.collision.CollisionInfo;
@@ -100,7 +102,10 @@ public class FriendlyManager {
 
 
     private void spawnFinishedLevelPortal() {
-        if (gameState.getGameState() == GameStatusEnums.Level_Finished && !finishedLevelPortal.isSpawned()) {
+        if (finishedLevelPortal.isSpawned()) {
+            return;
+        }
+        if (gameState.getGameState() == GameStatusEnums.Level_Finished && !LevelManager.getInstance().getLevelType().equals(LevelTypes.Boss)) {
             if (finishedLevelPortal == null) {
                 initPortal();
             }
@@ -203,7 +208,7 @@ public class FriendlyManager {
                 if (collisionInfo != null && finishedLevelPortal.getTransparancyAlpha() >= 0.5f) {
                     gameState.setGameState(GameStatusEnums.Level_Completed);
                     if (gameState.getStagesCompleted() == 0) { //choose a free relic at the start of the game
-                        BoardManager.getInstance().getGameBoard().showRelicSelection();
+                        BoardManager.getInstance().getGameBoard().startRelicSelection();
                     }
                     finishedLevelPortal.setTransparancyAlpha(true, 1.0f, -0.02f);
                     finishedLevelPortal.setSpawned(false);

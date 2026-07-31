@@ -221,7 +221,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
             this.hasExportedLogs = false;
             selectedComponent = null;
             ImageRotator.getInstance().cleanupOldCacheEntries();
-
+            relicSelectionEnabled = false;
 
             //reset stuivers best friend if it exists
             if (PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.Stuivie) != null) {
@@ -1070,10 +1070,17 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
                 PerformanceLoggerManager.logUpdateGameTick(DirectorManager.getInstance().getPerformanceLogger(), DirectorManager.getInstance()::updateGameTick);
                 gameState.addGameTicks(1);
             }
+
+            if(GameState.getInstance().getGameState() == GameStatusEnums.Level_Finished){
+                if(shouldShowRelicSelection()){
+                    showRelicSelection();
+                }
+            }
+
             executeControllerInput();
 
             if (shouldIncreaseInputDelay()) {
-                inputDelay += 1; // because a single tick represents 15ms and the dataclass delay is represented in ms but we want an increased slight delay
+                inputDelay += 5; // because a single tick represents 15ms and the dataclass delay is represented in ms but we want an increased slight delay
             }
 
             if (lastKnownState == null || lastKnownState != gameState.getGameState()) {
@@ -1220,6 +1227,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
                     gameState.setGameState(GameStatusEnums.Playing);
                     audioManager.resumeAllAudio();
                     inputDelay = 0;
+
                 }
             }
 
@@ -1309,8 +1317,16 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
 
     private boolean showRelicSelection = false;
     private boolean isUsersFirstInputForRelicselection = false;
+    private double gameSecondsSinceBossDied = 0;
+    private boolean relicSelectionEnabled = false;
+    private boolean shouldShowRelicSelection(){
+        if(relicSelectionEnabled && gameSecondsSinceBossDied + 1 < GameState.getInstance().getGameSeconds()){
+            return true;
+        }
+        return false;
+    }
 
-    public void showRelicSelection() {
+    public void showRelicSelection(){
         this.gameState.setGameState(GameStatusEnums.SelectingRelic);
         chooseOne = GameUICreator.getInstance().getChooseOne();
         this.relicBackgroundCards.addAll(GameUICreator.getInstance().getRelicBackgroundCards());
@@ -1321,8 +1337,15 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
             this.cursor = GameUICreator.getInstance().createCursor();
         }
         isUsersFirstInputForRelicselection = true;
+        this.selectedComponent = null;
 
         cursor.setCenterCoordinates(-500, -500); //zet hem buiten het scherm, nu word hij wel getekend maar verschijnt pas na de eerste input
+    }
+
+    public void startRelicSelection() {
+        gameSecondsSinceBossDied = GameState.getInstance().getGameSeconds();
+        relicSelectionEnabled = true;
+
         for (SpaceShip spaceShip : playerManager.getAllSpaceShips()) {
             spaceShip.setImmune(true); //make them immune so they can't be damaged by any surviving projectiles or enemies whilst choosing a relic
         }

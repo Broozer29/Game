@@ -10,7 +10,6 @@ import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.droneTypes.prot
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.laserbeams.Laserbeam;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.laserbeams.LaserbeamIndicator;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.missiletypes.ReflectiveBlocks;
-import net.riezebos.bruus.tbd.game.gameobjects.missiles.missiletypes.TazerProjectile;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.specialAttacks.FireShield;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.specialAttacks.FlameThrower;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.specialAttacks.FrontShield;
@@ -72,7 +71,7 @@ public class MissileManager {
             laserbeam.setVisible(false);
         }
 
-        for(LaserbeamIndicator laserbeamIndicator : laserbeamIndicators){
+        for (LaserbeamIndicator laserbeamIndicator : laserbeamIndicators) {
             laserbeamIndicator.setActive(false);
         }
 
@@ -207,7 +206,7 @@ public class MissileManager {
                 if (specialAttack.isFriendly() || specialAttack.isNeutral()) {
                     checkSpecialAttackWithEnemyCollision(specialAttack);
                     checkSpecialAttackWithEnemyMissileCollision(specialAttack);
-                } else if(!specialAttack.isFriendly() || specialAttack.isNeutral()) {
+                } else if (!specialAttack.isFriendly() || specialAttack.isNeutral()) {
                     for (SpaceShip spaceship : PlayerManager.getInstance().getAllSpaceShips()) {
                         specialAttack.checkEnemySpecialAttackCollision(spaceship);
                     }
@@ -217,8 +216,8 @@ public class MissileManager {
 
 
                 //todo uitvogelen waarom shielbearer shields soms blijven bestaan
-                if(specialAttack instanceof FrontShield frontShield){
-                    if(!frontShield.getOwnerOrCreator().isVisible() && !frontShield.isDissipating()){
+                if (specialAttack instanceof FrontShield frontShield) {
+                    if (!frontShield.getOwnerOrCreator().isVisible() && !frontShield.isDissipating()) {
                         frontShield.startDissipating();
                         System.out.println("Frontshield is handmatig in de missile manager verwijderd, dit zou niet mogen gebeuren en moet in de shieldbearer opgelost worden");
                     }
@@ -291,14 +290,10 @@ public class MissileManager {
         for (Enemy enemy : enemyManager.getEnemies()) {
             CollisionInfo collisionInfo = collisionDetector.detectCollision(missile, enemy);
             if (collisionInfo != null) {
-                if (missile.getMissileEnum().equals(MissileEnums.TazerProjectile)) {
-                    ((TazerProjectile) missile).applyTazerMissileEffect(enemy);
-                } else { //It's a player missile
-                    if (!missile.hasCollidedBeforeWith(enemy)) {
-                        missile.applyBeforeCollisionAttackModifyingItemEffects(enemy, collisionInfo);
-                        missile.handleCollision(enemy);
-                        missile.applyAfterCollisionItemEffects(enemy, collisionInfo);
-                    }
+                if (!missile.hasCollidedBeforeWith(enemy)) {
+                    missile.applyBeforeCollisionAttackModifyingItemEffects(enemy, collisionInfo);
+                    missile.handleCollision(enemy);
+                    missile.applyAfterCollisionItemEffects(enemy, collisionInfo);
                 }
 
             }
@@ -319,10 +314,6 @@ public class MissileManager {
 ////                return; //don't want to continue since we reflected/blocked the missile
 //                }
 
-                if (missile.getMissileEnum().equals(MissileEnums.TazerProjectile)) {
-                    ((TazerProjectile) missile).applyTazerMissileEffect(spaceship);
-                }
-
                 missile.handleCollision(spaceship);
 
                 if (missile.getKnockbackStrength() > 0) {
@@ -339,9 +330,6 @@ public class MissileManager {
         for (FriendlyStation station : FriendlyManager.getInstance().getFriendlyStations()) {
             CollisionInfo collisionInfo = collisionDetector.detectCollision(missile, station);
             if (collisionInfo != null) {
-                if (missile.getMissileEnum().equals(MissileEnums.TazerProjectile)) {
-                    ((TazerProjectile) missile).applyTazerMissileEffect(station);
-                }
                 missile.handleCollision(station);
             }
         }
@@ -351,10 +339,6 @@ public class MissileManager {
         for (Drone drone : FriendlyManager.getInstance().getAllProtossDrones(spaceship)) {
             CollisionInfo collisionInfo = collisionDetector.detectCollision(missile, drone);
             if (collisionInfo != null) {
-                if (missile.getMissileEnum().equals(MissileEnums.TazerProjectile)) {
-                    ((TazerProjectile) missile).applyTazerMissileEffect(drone);
-                }
-
                 missile.setShowDamage(false);
                 missile.handleCollision(drone);
                 drone.setShowHealthBar(true);
@@ -473,8 +457,8 @@ public class MissileManager {
         return createMissileToSpecificTargetFromCenter(gameObject, PlayerManager.getInstance().getClosestSpaceShip(gameObject), missileSpeed);
     }
 
-    public static Missile createMissileToSpecificTargetFromCenter(GameObject owner, GameObject target, float missileSpeed){
-        if(target == null){
+    public static Missile createMissileToSpecificTargetFromCenter(GameObject owner, GameObject target, float missileSpeed) {
+        if (target == null) {
             target = PlayerManager.getInstance().getClosestSpaceShip(owner);
         }
 

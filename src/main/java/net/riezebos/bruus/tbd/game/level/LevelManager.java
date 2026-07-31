@@ -162,7 +162,7 @@ public class LevelManager {
         gameState.setGameState(GameStatusEnums.Playing);
 
         if (DevTestSettings.spawnTargetDummy) {
-            EnemyEnums enemyType = EnemyEnums.RoyalGuardCaptain;
+            EnemyEnums enemyType = EnemyEnums.Tazer;
             Enemy dummy = EnemyCreator.createEnemy(enemyType, 1600, 500, Direction.LEFT, enemyType.getDefaultScale()
                     , enemyType.getMovementSpeed());
 //            dummy.setXCoordinate(600);

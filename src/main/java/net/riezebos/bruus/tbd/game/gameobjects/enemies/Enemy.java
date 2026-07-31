@@ -181,7 +181,7 @@ public class Enemy extends GameObject {
             GameStatsTracker.getInstance().addEnemyKilled(1);
 //            PlayerProfileManager.getInstance().getLoadedProfile().addEmeralds(1);
             PlayerProfileManager.getInstance().exportCurrentProfile();
-            BoardManager.getInstance().getGameBoard().showRelicSelection();
+            BoardManager.getInstance().getGameBoard().startRelicSelection();
 //            GUIComponent emeraldIcon = GameUICreator.getInstance().createEmeraldObtainedIcon(this.getCenterXCoordinate(), this.getCenterYCoordinate());
 //            BoardManager.getInstance().getGameBoard().addGUIAnimation(emeraldIcon);
 

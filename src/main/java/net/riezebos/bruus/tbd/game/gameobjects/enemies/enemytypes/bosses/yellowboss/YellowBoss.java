@@ -40,7 +40,8 @@ public class YellowBoss extends Enemy {
 
         SpriteAnimationConfiguration destroyedExplosionfiguration = new SpriteAnimationConfiguration(spriteConfiguration.getSpriteConfiguration(), 2, false);
         destroyedExplosionfiguration.getSpriteConfiguration().setImageType(ImageEnums.BossExplosion);
-        destroyedExplosionfiguration.getSpriteConfiguration().setScale(1);
+        destroyedExplosionfiguration.getSpriteConfiguration().setScale(4);
+
         this.destructionAnimation = new SpriteAnimation(destroyedExplosionfiguration);
         this.damage = 9;
         this.allowedVisualsToRotate = false;
@@ -136,7 +137,7 @@ public class YellowBoss extends Enemy {
 
         float rolledValue = random.nextFloat();
         boolean isHealOrb = false;
-        if (rolledValue < 0.125f) {
+        if (rolledValue < 0.105f) {
             isHealOrb = true;
         }
         float scale = isHealOrb ? 0.7f : 0.65f;
@@ -146,7 +147,7 @@ public class YellowBoss extends Enemy {
                 isHealOrb ? ImageEnums.YellowBossHealMissile : ImageEnums.YellowBossVoidMisisle, scale);
 
 
-        float movementSpeed = isHealOrb ? 1.5f : 1.95f;
+        float movementSpeed = isHealOrb ? 1.4f : 1.95f;
         PathFinder missilePathFinder = new StraightLinePathFinder();
         MovementConfiguration movementConfiguration = MissileCreator.getInstance().createMissileMovementConfig(
                 movementSpeed, missilePathFinder, Direction.RIGHT

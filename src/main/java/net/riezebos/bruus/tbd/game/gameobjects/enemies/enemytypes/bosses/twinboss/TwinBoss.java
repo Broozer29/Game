@@ -111,7 +111,7 @@ public class TwinBoss extends Enemy {
             PlayerProfileManager.getInstance().exportCurrentProfile();
             GameState.getInstance().increaseBossDefeated();
             TwinBossManager.setHasGrantedKillRewards(true);
-            BoardManager.getInstance().getGameBoard().showRelicSelection();
+            BoardManager.getInstance().getGameBoard().startRelicSelection();
         }
 
 

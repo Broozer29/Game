@@ -8,6 +8,7 @@ import net.riezebos.bruus.tbd.game.items.effects.effectimplementations.DamageOve
 import net.riezebos.bruus.tbd.game.items.items.*;
 import net.riezebos.bruus.tbd.game.items.items.captain.*;
 import net.riezebos.bruus.tbd.game.items.items.carrier.*;
+import net.riezebos.bruus.tbd.game.items.items.deprecated.ArmorPiercingRounds;
 import net.riezebos.bruus.tbd.game.items.items.firefighter.*;
 
 public class ItemDescriptionRetriever {
@@ -345,6 +346,9 @@ public class ItemDescriptionRetriever {
             case ModulePower -> {
                 return "Drones deal " + Math.round(ModulePower.damageBonus * 100) + "% (+" + Math.round(ModulePower.damageBonus * 100) + "%) damage.";
             }
+            case ArmorPiercingRounds -> {
+                return "Increases damage dealt to Mini Bosses by " + Math.round(ArmorPiercingRounds.damageModifier * 100) + "%";  //disabled
+            }
 
             //--------------------------------------Disabled or deprecated items--------------------------------------
             case PyrrhicProtocol -> {
@@ -353,9 +357,6 @@ public class ItemDescriptionRetriever {
             } //legendary, marked for possible removal as this just doesn't fit any playstyle/archetype?
             case RepulsionArmorPlate -> {
                 return "Gain 10 armor. Armor increases damage reduction.";  //disabled
-            }
-            case ArmorPiercingRounds -> {
-                return "Increases damage dealt to Medium sized enemies by 20% (+20%)";  //disabled
             }
             case EnergySiphon -> {
                 return "Gain " + Math.round(EnergySyphon.barrierAmount) + " (+" + Math.round(EnergySyphon.barrierAmount) + ") shields when killing an enemy.";

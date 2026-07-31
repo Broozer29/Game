@@ -49,6 +49,10 @@ public class PrimaryPlayerGun {
     }
 
     public void fire(int xCoordinate, int yCoordinate, PlayerPrimaryAttackTypes playerAttackType, SpaceShip owner) {
+        if(!owner.isAllowedToAttack()){
+            return;
+        }
+
         double currentTime = GameState.getInstance().getGameSeconds();
         if (currentTime >= lastAttackTime + owner.getAttackSpeed()) {
             lastAttackTime = currentTime;  // Update the last attack time

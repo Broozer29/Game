@@ -41,8 +41,8 @@ public class AnionInverter extends Item {
         if(!PlayerStats.getInstance().getPlayerClass().equals(PlayerClass.Captain)){
             return false;
         }
-
-        if(PlayerInventory.getInstance().getItemFromInventoryIfExists(this.itemEnum) != null){
+        
+        if(PlayerInventory.getInstance().getItemFromInventoryIfExists(this.itemEnum) != null || PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.AnionInverter) != null){
             return false;
         }
 

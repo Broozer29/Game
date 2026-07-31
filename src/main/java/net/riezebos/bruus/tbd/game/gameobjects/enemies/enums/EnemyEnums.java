@@ -23,7 +23,7 @@ public enum EnemyEnums {
     Tazer(125,
             AudioEnums.Large_Ship_Destroyed,
             ImageEnums.Tazer, ImageEnums.Explosion2, 55, EnemyCategory.Medium, EnemyTribes.Pirates, 10,
-            8, 15, 0.35f, 1f, 1, 94, 34,
+            8, 15, 0.35f, 1.1f, 1, 94, 34,
             99999),
     Energizer(150,
             AudioEnums.Large_Ship_Destroyed,
@@ -229,7 +229,7 @@ public enum EnemyEnums {
     DefenderMiniBoss(850,
             AudioEnums.Alien_Spaceship_Destroyed,
             ImageEnums.DefenderMiniBoss, ImageEnums.Explosion2, 0, EnemyCategory.MiniBoss, EnemyTribes.Generic, 35,
-            50, 100, 1, 1.45f, 1, 250, 250,
+            50, 100, 1, 1.55f, 1, 250, 250,
             0),
 
     LaserbeamMiniBoss(850,
