@@ -1,6 +1,6 @@
 package net.riezebos.bruus.tbd.game.util;
 
-import net.riezebos.bruus.tbd.game.UI.GameUICreator;
+import net.riezebos.bruus.tbd.game.UI.GameBoardCreator;
 import net.riezebos.bruus.tbd.game.UI.UIObject;
 import net.riezebos.bruus.tbd.visualsandaudio.data.DataClass;
 
@@ -53,7 +53,7 @@ public class OnScreenTextManager {
 	}
 
 	public void addMineralsGainedText(float amount){
-		UIObject mineralIcon = GameUICreator.getInstance().getMineralIcon();
+		UIObject mineralIcon = GameBoardCreator.getInstance().getMineralIcon();
 		int xCoordinate = mineralIcon.getXCoordinate() - Math.round(mineralIcon.getWidth() * 0.5f);
 		int yCoordinate = mineralIcon.getYCoordinate() + Math.round(mineralIcon.getHeight() * 1.5f);
 

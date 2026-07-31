@@ -16,7 +16,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
-public class GameUICreator {
+public class GameBoardCreator {
     Random random = new Random();
 
     private int healthBarWidth = Math.round(200 * DataClass.getInstance().getResolutionFactor());
@@ -170,15 +170,15 @@ public class GameUICreator {
     private List<ImageEnums> gameOverPeepos = new ArrayList<>();
 
 
-    private static GameUICreator instance = new GameUICreator();
+    private static GameBoardCreator instance = new GameBoardCreator();
 
-    private GameUICreator() {
+    private GameBoardCreator() {
         initGameOverPeepos();
         createDamageOverlay();
         createRelicSelectionComponents();
     }
 
-    public static GameUICreator getInstance() {
+    public static GameBoardCreator getInstance() {
         return instance;
     }
 

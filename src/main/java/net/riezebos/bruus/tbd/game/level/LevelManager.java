@@ -1,7 +1,7 @@
 package net.riezebos.bruus.tbd.game.level;
 
 import net.riezebos.bruus.tbd.DevTestSettings;
-import net.riezebos.bruus.tbd.game.UI.GameUICreator;
+import net.riezebos.bruus.tbd.game.UI.GameBoardCreator;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.Enemy;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyCreator;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyManager;
@@ -145,9 +145,9 @@ public class LevelManager {
             selectedBoss = getNextBoss();
         }
 
-        GameUICreator.getInstance().createDifficultyWings(this.levelType.equals(LevelTypes.Boss), getDifficultyScore());
-        GameUICreator.getInstance().createProgressBar();
-        GameUICreator.getInstance().createMineralIcon();
+        GameBoardCreator.getInstance().createDifficultyWings(this.levelType.equals(LevelTypes.Boss), getDifficultyScore());
+        GameBoardCreator.getInstance().createProgressBar();
+        GameBoardCreator.getInstance().createMineralIcon();
 
         for (SpaceShip spaceShip : PlayerManager.getInstance().getAllSpaceShips()) {
             spaceShip.allowMovementBeyondBoundaries = DevTestSettings.enablePlayerMovingPastBoundaries;

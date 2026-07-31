@@ -150,6 +150,9 @@ public class BoardManager extends JFrame {
             currentBoard = null; // Allow garbage collection
         }
 
+        data.setWindowWidth(getWidth());
+        data.setWindowHeight(getHeight());
+
         // Create new board instance
         JPanel newBoard = createBoardForType(screenType);
         currentBoard = newBoard;

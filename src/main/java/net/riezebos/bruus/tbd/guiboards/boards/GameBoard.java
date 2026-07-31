@@ -2,7 +2,7 @@ package net.riezebos.bruus.tbd.guiboards.boards;
 
 import net.riezebos.bruus.tbd.DevTestSettings;
 import net.riezebos.bruus.tbd.controllerInput.ControllerManager;
-import net.riezebos.bruus.tbd.game.UI.GameUICreator;
+import net.riezebos.bruus.tbd.game.UI.GameBoardCreator;
 import net.riezebos.bruus.tbd.game.UI.UIObject;
 import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.Enemy;
@@ -101,7 +101,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
     private ExplosionManager explosionManager = ExplosionManager.getInstance();
     private FriendlyManager friendlyManager = FriendlyManager.getInstance();
     private PlayerStats playerStats = PlayerStats.getInstance();
-    private GameUICreator gameUICreator = GameUICreator.getInstance();
+    private GameBoardCreator gameUICreator = GameBoardCreator.getInstance();
     private OnScreenTextManager textManager = OnScreenTextManager.getInstance();
     private ControllerManager controllerManager = ControllerManager.getInstance();
     private int firstTextColumnXCoordinate = 0;
@@ -130,13 +130,13 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
         explosionManager = ExplosionManager.getInstance();
         friendlyManager = FriendlyManager.getInstance();
         playerStats = PlayerStats.getInstance();
-        gameUICreator = GameUICreator.getInstance();
+        gameUICreator = GameBoardCreator.getInstance();
         textManager = OnScreenTextManager.getInstance();
 
         firstTextColumnXCoordinate = Math.round(DataClass.getInstance().getWindowWidth() * 0.7f);
         secondTextColumnXCoordinate = Math.round(DataClass.getInstance().getWindowWidth() * 0.85f);
         this.performanceLogger = new PerformanceLogger("GameBoard");
-        cursor = GameUICreator.getInstance().createCursor();
+        cursor = GameBoardCreator.getInstance().createCursor();
         initBoard();
     }
 
@@ -208,7 +208,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
             levelManager = LevelManager.getInstance();
             relicBackgroundCards.clear();
             relicSelectionGrid.clear();
-            GameUICreator.getInstance().resetRelicShopItems();
+            GameBoardCreator.getInstance().resetRelicShopItems();
             selectedComponentIndex = 0;
             playerManager.resetManager();
             audioManager.resetManager();
@@ -344,7 +344,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
         g.setFont(font);
 
         //Draw the background
-        GameUICreator gameUICreator = GameUICreator.getInstance();
+        GameBoardCreator gameUICreator = GameBoardCreator.getInstance();
         UIObject gameOverCard = gameUICreator.getGameOverCard();
         drawImage(g, gameOverCard);
 
@@ -843,7 +843,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
     }
 
     private void drawCurrentAmountOFMinerals(Graphics2D g) {
-        UIObject mineralIcon = GameUICreator.getInstance().getMineralIcon();
+        UIObject mineralIcon = GameBoardCreator.getInstance().getMineralIcon();
         drawImage(g, mineralIcon);
         g.setColor(Color.WHITE);
         g.setFont(new Font("Helvetica", Font.BOLD, 11));
@@ -859,7 +859,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
         UIObject healthFrame = gameUICreator.getHealthFrame();
         UIObject healthBar = gameUICreator.getHealthBar();
 
-        GameUICreator gameUICreator = GameUICreator.getInstance();
+        GameBoardCreator gameUICreator = GameBoardCreator.getInstance();
         int healthBarWidth = gameUICreator.calculateHealthbarWidth(playerHealth, playerMaxHealth);
         if (healthBarWidth > healthFrame.getWidth()) {
             healthBarWidth = healthFrame.getWidth();
@@ -993,7 +993,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
 
         if (!LevelManager.getInstance().getLevelType().equals(LevelTypes.Boss)) {
             // Calculate the width of the progress bar filling based on the current position of the song
-            int progressBarWidth = GameUICreator.getInstance().calculateProgressBarFillingWidth(GameState.getInstance().getCurrentLevelProgression(), AudioManager.getInstance().getPredictedEndGameSeconds() - GameState.getInstance().getLevelStartTime());
+            int progressBarWidth = GameBoardCreator.getInstance().calculateProgressBarFillingWidth(GameState.getInstance().getCurrentLevelProgression(), AudioManager.getInstance().getPredictedEndGameSeconds() - GameState.getInstance().getLevelStartTime());
 
             // Resize the progress bar filling
             progressBarFilling.resizeToDimensions(progressBarWidth, progressBarFilling.getHeight());
@@ -1328,13 +1328,13 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
 
     public void showRelicSelection(){
         this.gameState.setGameState(GameStatusEnums.SelectingRelic);
-        chooseOne = GameUICreator.getInstance().getChooseOne();
-        this.relicBackgroundCards.addAll(GameUICreator.getInstance().getRelicBackgroundCards());
-        GameUICreator.getInstance().resetRelicShopItems(); //cause it to manually reset beforing refreshing the shop, ensuring rules are applied on the first shop
-        this.relicSelectionGrid.addAll(GameUICreator.getInstance().getRelicShopItems());
+        chooseOne = GameBoardCreator.getInstance().getChooseOne();
+        this.relicBackgroundCards.addAll(GameBoardCreator.getInstance().getRelicBackgroundCards());
+        GameBoardCreator.getInstance().resetRelicShopItems(); //cause it to manually reset beforing refreshing the shop, ensuring rules are applied on the first shop
+        this.relicSelectionGrid.addAll(GameBoardCreator.getInstance().getRelicShopItems());
         this.showRelicSelection = true;
         if (this.cursor == null) {
-            this.cursor = GameUICreator.getInstance().createCursor();
+            this.cursor = GameBoardCreator.getInstance().createCursor();
         }
         isUsersFirstInputForRelicselection = true;
         this.selectedComponent = null;
