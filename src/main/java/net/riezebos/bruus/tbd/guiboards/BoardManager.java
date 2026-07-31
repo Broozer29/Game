@@ -1,6 +1,7 @@
 package net.riezebos.bruus.tbd.guiboards;
 
 import net.riezebos.bruus.tbd.controllerInput.ControllerManager;
+import net.riezebos.bruus.tbd.game.UI.GameBoardCreator;
 import net.riezebos.bruus.tbd.game.items.PlayerInventory;
 import net.riezebos.bruus.tbd.guiboards.boards.*;
 import net.riezebos.bruus.tbd.visualsandaudio.data.DataClass;
@@ -87,6 +88,7 @@ public class BoardManager extends JFrame {
         });
         screenActions.put(ScreenType.GAME, () -> {
             stopMusic();
+            GameBoardCreator.getInstance().resetManager();
             gameBoard.startGame();
             ControllerManager.getInstance().setControllerSensitive(true);
         });

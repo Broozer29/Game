@@ -298,7 +298,7 @@ public class GameBoardCreator {
         int xCoordinate = 0;
         int yCoordinate = 0;
 
-        int width = DataClass.getInstance().getWindowWidth();
+        int width = Math.round(DataClass.getInstance().getWindowWidth() * DataClass.getInstance().getResolutionFactor());
         int height = DataClass.getInstance().getPlayableWindowMaxHeight();
         damageOverlay = new UIObject(createUIConfiguration(xCoordinate, yCoordinate, 1, ImageEnums.UIDamageOverlay));
         damageOverlay.resizeToDimensions(width, height);
@@ -468,6 +468,8 @@ public class GameBoardCreator {
         createProgressBar();
         createGameOverCard();
         createMineralIcon();
+
+        createDamageOverlay();
         gameOverPeepoRandomNumber = -100;
     }
 
