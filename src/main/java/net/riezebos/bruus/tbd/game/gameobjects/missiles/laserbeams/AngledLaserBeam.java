@@ -58,7 +58,9 @@ public class AngledLaserBeam extends Laserbeam {
 
             // Only need to rotate once since angle doesn't change
             if (needsUpdate) {
-                segment.rotateAnimation(angleDegrees, false);
+                // Round to nearest 0.2 interval for cache optimization
+                double roundedAngle = Math.round(angleDegrees * 5.0) / 5.0;
+                segment.rotateAnimation(roundedAngle, false, maintainCacheKey);
             }
 
             x += deltaX_per_segment;

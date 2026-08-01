@@ -35,6 +35,10 @@ public class ImageRotator {
     }
 
     public List<BufferedImage> getRotatedFrames (List<BufferedImage> frames, Direction rotation, boolean crop) {
+        return getRotatedFrames(frames, rotation, crop, false);
+    }
+
+    public List<BufferedImage> getRotatedFrames (List<BufferedImage> frames, Direction rotation, boolean crop, boolean maintainCacheKey) {
         String keyString = frames.stream()
                 .map(image -> Integer.toString(image.hashCode()))
                 .collect(Collectors.joining("_")) + "_" + rotation;
@@ -46,6 +50,7 @@ public class ImageRotator {
         }
 
         imageCacheKey = new ImageCacheKey(keyString);
+        imageCacheKey.setMustNeverBeReleased(maintainCacheKey);
         ArrayList<BufferedImage> newFrames = new ArrayList<>();
         for (BufferedImage frame : frames) {
             newFrames.add(rotate(frame, rotation, crop));
@@ -55,6 +60,10 @@ public class ImageRotator {
     }
 
     public List<BufferedImage> getRotatedFrames (List<BufferedImage> frames, double angleInDegrees) {
+        return getRotatedFrames(frames, angleInDegrees, false);
+    }
+
+    public List<BufferedImage> getRotatedFrames (List<BufferedImage> frames, double angleInDegrees, boolean mainainCacheKey) {
         String keyString = frames.stream()
                 .map(image -> Integer.toString(image.hashCode()))
                 .collect(Collectors.joining("_")) + "_" + angleInDegrees;
@@ -71,6 +80,7 @@ public class ImageRotator {
         ArrayList<BufferedImage> adjustedFrames = new ArrayList<>();
 
         imageCacheKey = new ImageCacheKey(keyString);
+        imageCacheKey.setMustNeverBeReleased(mainainCacheKey);
         // Process each frame using the rotateOrFlip method
         for (BufferedImage frame : frames) {
             BufferedImage adjustedFrame = rotateOrFlip(frame, angleInDegrees, false);
@@ -91,7 +101,10 @@ public class ImageRotator {
     }
 
 
-    private BufferedImage rotate (BufferedImage image, double angle, boolean crop) {
+    private BufferedImage rotate(BufferedImage image, double angle, boolean crop){
+        return rotate(image, angle, crop, false);
+    }
+    private BufferedImage rotate (BufferedImage image, double angle, boolean crop, boolean maintainCacheKey) {
         String keyString = image.hashCode() + "_" + angle;
         ImageCacheKey imageCacheKey = findOrCreateCacheKey(rotatedImageCache, keyString);
         if (imageCacheKey != null && rotatedImageCache.containsKey(imageCacheKey)) {
@@ -100,6 +113,7 @@ public class ImageRotator {
         }
 
         imageCacheKey = new ImageCacheKey(keyString);
+        imageCacheKey.setMustNeverBeReleased(maintainCacheKey);
         // Convert the angle to radians
         double rad = Math.toRadians(angle);
 
@@ -278,11 +292,11 @@ public class ImageRotator {
         long maxAge = 120000; // 2 minutes in milliseconds
 
         rotatedImageCache.entrySet().removeIf(entry ->
-            entry.getKey().getTimeSinceLastAccess() > maxAge
+            entry.getKey().getTimeSinceLastAccess() > maxAge && !entry.getKey().mustNeverBeReleased()
         );
 
         rotatedFramesCache.entrySet().removeIf(entry ->
-            entry.getKey().getTimeSinceLastAccess() > maxAge
+            entry.getKey().getTimeSinceLastAccess() > maxAge && !entry.getKey().mustNeverBeReleased()
         );
     }
 }

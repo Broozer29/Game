@@ -19,7 +19,9 @@ import net.riezebos.bruus.tbd.game.items.effects.EffectIdentifiers;
 import net.riezebos.bruus.tbd.game.items.effects.effectimplementations.PassiveHealthRegeneration;
 import net.riezebos.bruus.tbd.game.items.enums.ItemApplicationEnum;
 import net.riezebos.bruus.tbd.game.items.items.carrier.KineticDynamo;
+import net.riezebos.bruus.tbd.game.level.LevelManager;
 import net.riezebos.bruus.tbd.game.level.directors.DirectorManager;
+import net.riezebos.bruus.tbd.game.level.enums.LevelTypes;
 import net.riezebos.bruus.tbd.game.movement.Point;
 import net.riezebos.bruus.tbd.game.util.OrbitingObjectsFormatter;
 import net.riezebos.bruus.tbd.game.util.collision.CollisionInfo;
@@ -724,7 +726,12 @@ public class SpaceShip extends GameObject {
     //Cheat code method
     private void spawnPortal() {
         DirectorManager.getInstance().setEnabled(false);
-        GameState.getInstance().setGameState(GameStatusEnums.Level_Finished);
+        if(LevelManager.getInstance().getLevelType().equals(LevelTypes.Boss)){
+            GameState.getInstance().setGameState(GameStatusEnums.Show_Level_Score_Card);
+        } else {
+            GameState.getInstance().setGameState(GameStatusEnums.Level_Finished);
+        }
+
     }
 
     public synchronized void keyReleased(KeyEvent e) {

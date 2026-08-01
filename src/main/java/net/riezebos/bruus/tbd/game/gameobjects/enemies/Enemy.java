@@ -155,7 +155,7 @@ public class Enemy extends GameObject {
 
     private float getScalingFactor() {
         if(this.enemyType.getEnemyCategory().equals(EnemyCategory.Boss)){
-            return 1.25f;
+            return 1.15f;
         }
 
         if(GodRunDetector.getInstance().getGodRunScore() >= 3){

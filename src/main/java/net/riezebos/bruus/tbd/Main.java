@@ -124,56 +124,40 @@ public class Main {
                 enemyEnum.getDefaultScale(), enemyEnum.getMovementSpeed());
         yellowBoss.deleteObject();
 
-//		simulateAttackAngles(true);
-//		simulateAttackAngles(false);
+        runtime = Runtime.getRuntime();
+        usedMemory = runtime.totalMemory() - runtime.freeMemory();
+        System.out.printf("Before preloading laserbeams memory usage: %.3f GB%n", usedMemory / (1024.0 * 1024.0 * 1024.0));
+
+        simulateAttackAngles();
 
         runtime = Runtime.getRuntime();
         usedMemory = runtime.totalMemory() - runtime.freeMemory();
-        System.out.printf("After preload memory usage: %.3f GB%n", usedMemory / (1024.0 * 1024.0 * 1024.0));
+        System.out.printf("After complete preload memory usage: %.3f GB%n", usedMemory / (1024.0 * 1024.0 * 1024.0));
 
     }
 
-	private static void simulateAttackAngles(boolean inwards) {
-		// Use the centralized static values from CrossingLaserbeamsAttack
-		int lowerLaserbeamLowestAngle = 0;
-		int lowerLaserbeamHighestAngle = 0;
-		int upperLaserbeamLowestAngle = 0;
-		int upperLaserbeamHighestAngle = 0;
-		float angleStepSize = 0;
+	private static void simulateAttackAngles() {
+		LaserbeamConfiguration pinkLaserbeamConfig = new LaserbeamConfiguration(false, 0);
+        pinkLaserbeamConfig.setAmountOfLaserbeamSegments(50);
+        pinkLaserbeamConfig.setOriginPoint(new Point(0, 0));
+		Laserbeam pinkLaserBeam = new AngledLaserBeam(pinkLaserbeamConfig);
 
-		// Adjust angles like the CrossingLaserbeamsAttack settings
-		if (inwards) {
-			lowerLaserbeamHighestAngle = 185;
-			upperLaserbeamLowestAngle = 175;
-		} else {
-			lowerLaserbeamLowestAngle = 160;
-			lowerLaserbeamHighestAngle = 190;
-			upperLaserbeamLowestAngle = 170;
-			upperLaserbeamHighestAngle = 200;
-			angleStepSize = 0.25f;
-		}
+        for(float i = 0; i < 360; i += Laserbeam.defaultMaxRotationPerUpdate){
+            pinkLaserBeam.setAngleDegrees(i);
+            pinkLaserBeam.update();
+        }
 
-		LaserbeamConfiguration lowerConfig = new LaserbeamConfiguration(false, 0);
-		lowerConfig.setAmountOfLaserbeamSegments(20);
-		lowerConfig.setOriginPoint(new Point(0, 0));
-		Laserbeam lowerLaserbeam = new AngledLaserBeam(lowerConfig);
 
-		LaserbeamConfiguration upperConfig = new LaserbeamConfiguration(false, 0);
-		upperConfig.setAmountOfLaserbeamSegments(20);
-		upperConfig.setOriginPoint(new Point(0, 0));
-		Laserbeam upperLaserbeam = new AngledLaserBeam(upperConfig);
+        LaserbeamConfiguration blueLaserbeamConfig = new LaserbeamConfiguration(true, 0);
+        blueLaserbeamConfig.setAmountOfLaserbeamSegments(50);
+        blueLaserbeamConfig.setOriginPoint(new Point(0, 0));
+        Laserbeam blueLaserBeam = new AngledLaserBeam(blueLaserbeamConfig);
 
-		// Simulate lower laserbeam movement
-		for (float angle = lowerLaserbeamLowestAngle; angle <= lowerLaserbeamHighestAngle; angle += angleStepSize) {
-			lowerLaserbeam.setAngleDegrees(angle);
-			lowerLaserbeam.update(); // Caching automatically happens here
-		}
 
-		// Simulate upper laserbeam movement
-		for (float angle = upperLaserbeamLowestAngle; angle <= upperLaserbeamHighestAngle; angle += angleStepSize) {
-			upperLaserbeam.setAngleDegrees(angle);
-			upperLaserbeam.update(); // Caching automatically happens here
-		}
-	}
+        for(float i = 0; i < 360; i += Laserbeam.defaultMaxRotationPerUpdate){
+            blueLaserBeam.setAngleDegrees(i);
+            blueLaserBeam.update();
+        }
+    }
 
 }

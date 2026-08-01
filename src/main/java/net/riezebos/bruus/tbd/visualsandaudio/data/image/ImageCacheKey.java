@@ -5,6 +5,7 @@ import java.util.Objects;
 public class ImageCacheKey {
     private final String key;
     private long lastAccessTime;
+    private boolean mustNeverBeReleased = false;
 
     public ImageCacheKey(String key) {
         this.key = key;
@@ -43,5 +44,17 @@ public class ImageCacheKey {
     @Override
     public String toString() {
         return key;
+    }
+
+    public void setLastAccessTime(long lastAccessTime) {
+        this.lastAccessTime = lastAccessTime;
+    }
+
+    public boolean mustNeverBeReleased() {
+        return mustNeverBeReleased;
+    }
+
+    public void setMustNeverBeReleased(boolean mustNeverBeReleased) {
+        this.mustNeverBeReleased = mustNeverBeReleased;
     }
 }

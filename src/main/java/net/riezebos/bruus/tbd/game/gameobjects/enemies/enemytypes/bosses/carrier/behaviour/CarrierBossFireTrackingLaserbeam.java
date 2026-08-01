@@ -109,7 +109,7 @@ public class CarrierBossFireTrackingLaserbeam implements BossActionable {
         trackingLaserbeam = new TrackingLaserBeam(upperLaserbeamConfiguration);
         updateLaserbeamOriginPoints();
         trackingLaserbeam.setOwner(enemy);
-        trackingLaserbeam.setMaxRotationPerUpdate(0.2f);
+        trackingLaserbeam.setMaxRotationPerUpdate(Laserbeam.defaultMaxRotationPerUpdate);
     }
 
     private void initSpawnAnimations(Enemy enemy) {

@@ -38,6 +38,8 @@ public class AudioManager {
             backGroundMusic.stopClip();
             backGroundMusic.setLoop(false);
         }
+        predictedEndGameSeconds = -1;
+        lastSyncGameSeconds = -1;
         backGroundMusic = null;
         audioDatabase.resetAudio();
         lastPlayTimeMap.clear();
@@ -226,6 +228,10 @@ public class AudioManager {
     }
 
     private boolean shouldResync(double currentGameSeconds) {
+        if(predictedEndGameSeconds <= 0){
+            return true;
+        }
+
         // Default resync interval
         double resyncInterval = 10;
         if(this.musicMediaPlayer == MusicMediaPlayer.LocalFiles || LevelManager.getInstance().getLevelType().equals(LevelTypes.Boss)) {

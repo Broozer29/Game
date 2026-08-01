@@ -265,7 +265,7 @@ public class ShopBoard extends JPanel implements TimerHolder {
     }
 
     public void updateSelectedDifficultyIcons() {
-        if (selectPirateTribe == null) {
+        if (selectPirateTribe == null || easyMiniBossConfig == null) {
             return; //none of the components have been created yet, so we can't update the icons yet
         }
         ShopBoardCreator.updateDifficultyIconsToDifficulty(LevelManager.getInstance().getLastSelectedDifficulty(),

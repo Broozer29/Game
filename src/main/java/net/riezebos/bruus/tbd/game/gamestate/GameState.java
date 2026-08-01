@@ -223,11 +223,6 @@ public class GameState {
         return AudioManager.getInstance().getPredictedEndGameSeconds();
     }
 
-
-    public double getCurrentGameSeconds() {
-        return this.gameSeconds;
-    }
-
     public double getCurrentLevelProgression(){
         return this.gameSeconds - levelStartTime;
     }

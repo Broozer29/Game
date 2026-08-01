@@ -34,10 +34,10 @@ import java.util.Random;
 public class StrikerBossCloneLaserbeamAttack implements BossActionable {
 
     public static float damageRatio = 0.2f;
-    public static float maxLaserbeamRotationsPerUpdate = 0.2f;
+    public static float maxLaserbeamRotationsPerUpdate = Laserbeam.defaultMaxRotationPerUpdate;
     public static int laserbeamBodySegmentLength = 10;
 
-    private double attackCooldown = 20;
+    private double attackCooldown = 25;
     private int priority = 15;
     private double lastFiredTime = GameState.getInstance().getGameSeconds() + 4;
     private boolean isFiringLaserbeams;
@@ -51,7 +51,6 @@ public class StrikerBossCloneLaserbeamAttack implements BossActionable {
     private int boardBlockForTheRealStriker = 0;
 
     public StrikerBossCloneLaserbeamAttack() {
-        maxLaserbeamRotationsPerUpdate = 0.2f + (LevelManager.getInstance().getBossDifficultyLevel() * 0.025f); // +0.025 movespeed per boss killed, is al een deadly attack dont need to overdo it
     }
 
     private void recreateClones(GameObject parent) {

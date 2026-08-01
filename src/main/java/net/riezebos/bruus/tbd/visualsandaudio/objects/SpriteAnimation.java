@@ -108,6 +108,20 @@ public class SpriteAnimation extends Sprite implements Cloneable{
 		recalculateBoundsAndSize();
 	}
 
+    //Should ONLY be used for the laserbeam animation and nothing else, as laserbeam animations are a special case
+    public void rotateAnimation(double angle, boolean crop, boolean maintainCacheKey){
+        if(ImageRotator.getInstance().isBlockedFromRotating(this.getImageEnum())){
+            return;
+        }
+
+        if(!this.increasedSizeFrames.isEmpty()){
+            this.frames = ImageRotator.getInstance().getRotatedFrames(increasedSizeFrames, angle, maintainCacheKey);
+        } else {
+            this.frames = ImageRotator.getInstance().getRotatedFrames(frames, angle, maintainCacheKey);
+        }
+        recalculateBoundsAndSize();
+    }
+
 	private void removeAnimation() {
 		if (this.currentFrame >= frames.size() && !infiniteLoop) {
 			this.setVisible(false);

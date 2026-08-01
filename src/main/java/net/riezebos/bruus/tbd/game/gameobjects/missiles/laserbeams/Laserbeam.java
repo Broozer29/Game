@@ -35,8 +35,12 @@ public abstract class Laserbeam {
     protected float transparancyAlphaStepSize = 0;
     protected boolean increaseTransparancyAlpha = false;
 
+    public static final float defaultMaxRotationPerUpdate = 0.2f;
+
     protected boolean blocksMovement;
     protected int amountOfLaserbeamBodySegments;
+
+    protected boolean maintainCacheKey = true;
 
     protected boolean needsUpdate = true; // Flag to control when to update
 
@@ -118,7 +122,7 @@ public abstract class Laserbeam {
         SpriteAnimationConfiguration bodyAnimConfig = new SpriteAnimationConfiguration(laserBodyConfig, 1, true);
         SpriteAnimation laserBodyPart = new SpriteAnimation(bodyAnimConfig);
 
-        laserBodyPart.rotateAnimation(angleDegrees, false);
+        laserBodyPart.rotateAnimation(angleDegrees, false, maintainCacheKey);
 
         // Synchronize the frame with the first segment if it exists
         if (!laserBodies.isEmpty()) {
@@ -221,11 +225,12 @@ public abstract class Laserbeam {
     }
 
     public void setAngleDegrees(double angleDegrees) {
-        this.angleDegrees = angleDegrees;
-        if (this.angleDegrees > 360) {
-            angleDegrees = 0;
+        // Round to nearest 0.2 interval for cache optimization
+        this.angleDegrees = Math.round(angleDegrees * 5.0) / 5.0;
+        if (this.angleDegrees >= 360) {
+            this.angleDegrees = 0;
         }
-        angleRadians = Math.toRadians(angleDegrees);
+        angleRadians = Math.toRadians(this.angleDegrees);
     }
 
     public double getAngleRadians() {

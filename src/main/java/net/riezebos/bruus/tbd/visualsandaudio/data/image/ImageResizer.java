@@ -26,7 +26,12 @@ public class ImageResizer {
         return instance;
     }
 
+
     public BufferedImage getScaledImage(BufferedImage image, float scale) {
+        return getScaledImage(image, scale, false);
+    }
+
+    public BufferedImage getScaledImage(BufferedImage image, float scale, boolean maintainCacheKey) {
         if (Math.abs(scale - 1) <= 0.01 || scale == 0) {
             return image;
         }
@@ -40,6 +45,7 @@ public class ImageResizer {
         }
 
         imageCacheKey = new ImageCacheKey(keyString);
+        imageCacheKey.setMustNeverBeReleased(maintainCacheKey);
         transform.setToIdentity();
         transform.scale(scale, scale);
         transformop = new AffineTransformOp(transform, AffineTransformOp.TYPE_BICUBIC);
@@ -51,6 +57,10 @@ public class ImageResizer {
     }
 
     public List<BufferedImage> getScaledFrames(List<BufferedImage> frames, float scale) {
+        return getScaledFrames(frames, scale, false);
+    }
+
+    public List<BufferedImage> getScaledFrames(List<BufferedImage> frames, float scale, boolean maintainCacheKey) {
         if (Math.abs(scale - 1) <= 0.01) {
             return frames;
         }
@@ -66,6 +76,7 @@ public class ImageResizer {
         }
 
         imageCacheKey = new ImageCacheKey(keyString);
+        imageCacheKey.setMustNeverBeReleased(maintainCacheKey);
         ArrayList<BufferedImage> newFrames = new ArrayList<>();
         for (int i = 0; i < frames.size(); i++) {
             bufferedImage = getScaledImage(frames.get(i), scale);
@@ -119,11 +130,11 @@ public class ImageResizer {
         long maxAge = 120000; // 2 minutes in milliseconds
 
         bufferedImageCache.entrySet().removeIf(entry ->
-            entry.getKey().getTimeSinceLastAccess() > maxAge
+                entry.getKey().getTimeSinceLastAccess() > maxAge && !entry.getKey().mustNeverBeReleased()
         );
 
         bufferedImageListCache.entrySet().removeIf(entry ->
-            entry.getKey().getTimeSinceLastAccess() > maxAge
+                entry.getKey().getTimeSinceLastAccess() > maxAge && !entry.getKey().mustNeverBeReleased()
         );
     }
 

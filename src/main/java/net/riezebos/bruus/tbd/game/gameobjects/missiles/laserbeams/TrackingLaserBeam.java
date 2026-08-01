@@ -14,8 +14,6 @@ public class TrackingLaserBeam extends Laserbeam {
     private float maxRotationPerUpdate;
     private double desiredDegrees;
 
-    private boolean firstAngleCalculationCompleted = false;
-
     public TrackingLaserBeam(LaserbeamConfiguration laserbeamConfiguration) {
         super(laserbeamConfiguration);
         this.targetObject = laserbeamConfiguration.getTargetToAimAt();
@@ -91,7 +89,7 @@ public class TrackingLaserBeam extends Laserbeam {
             segment.setYCoordinate((int) y);
 
             // Rotate the segment based on the new angle
-            segment.rotateAnimation(angleDegrees, false);
+            segment.rotateAnimation(angleDegrees, false, maintainCacheKey);
 
             x += deltaX_per_segment;
             y += deltaY_per_segment;
@@ -140,9 +138,11 @@ public class TrackingLaserBeam extends Laserbeam {
         // Apply the clamped angle change to the current angle
         angleDegrees = (currentAngleDegrees + clampedAngleChange + 360) % 360;
 
+        // Round to nearest 0.2 interval for cache optimization
+        angleDegrees = Math.round(angleDegrees * 5.0) / 5.0;
+
         // Update angleRadians (if needed in other parts of the code)
         angleRadians = Math.toRadians(angleDegrees);
-        firstAngleCalculationCompleted = true;
     }
 
 
