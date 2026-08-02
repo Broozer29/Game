@@ -1356,14 +1356,14 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
         int boxWidth = backgroundCard.getWidth();
         int boxHeight = backgroundCard.getHeight();
         String textFont = DataClass.getInstance().getTextFont();
-        int maxTextWidth = Math.round(boxWidth - (50 * DataClass.getInstance().getResolutionFactor()));
+        int maxTextWidth = Math.round(boxWidth - (50 * Math.min(DataClass.getInstance().getResolutionFactor(), DataClass.maxResolutionFactor)));
 
         int descriptionX = backgroundCard.getXCoordinate() + 25;
         int descriptionY = shopItem.getYCoordinate() + shopItem.getHeight() + 40;
         int titleY = shopItem.getYCoordinate() - 40;
 
         if (shopItem.getShopItemInformation() != null) {
-            g2d.setFont(new Font(textFont, Font.BOLD, Math.round(17 * DataClass.getInstance().getResolutionFactor())));
+            g2d.setFont(new Font(textFont, Font.BOLD, Math.round(17 * Math.min(DataClass.getInstance().getResolutionFactor(), DataClass.maxResolutionFactor))));
             FontMetrics titleMetrics = g2d.getFontMetrics();
             String itemName = shopItem.getShopItemInformation().getItem().getItemName();
             int textWidth = titleMetrics.stringWidth(itemName);
@@ -1373,10 +1373,10 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
         }
 
         if (shopItem.getShopItemInformation() != null) {
-            g2d.setFont(new Font(textFont, Font.PLAIN, Math.round(14 * DataClass.getInstance().getResolutionFactor())));  // Larger font for the title
+            g2d.setFont(new Font(textFont, Font.PLAIN, Math.round(14 * Math.min(DataClass.getInstance().getResolutionFactor(), DataClass.maxResolutionFactor))));  // Larger font for the title
             drawDescriptionText(g2d, shopItem.getShopItemInformation().getItemDescription(), descriptionX, descriptionY, maxTextWidth, Color.WHITE);
             FontMetrics titleMetrics = g2d.getFontMetrics();
-            descriptionY += titleMetrics.getHeight() + Math.round(10 * DataClass.getInstance().getResolutionFactor());  // Spacing after the title
+            descriptionY += titleMetrics.getHeight() + Math.round(10 * Math.min(DataClass.getInstance().getResolutionFactor(), DataClass.maxResolutionFactor));  // Spacing after the title
         }
     }
 

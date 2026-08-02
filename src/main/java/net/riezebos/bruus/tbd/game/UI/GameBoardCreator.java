@@ -469,7 +469,7 @@ public class GameBoardCreator {
         createGameOverCard();
         createMineralIcon();
 
-        createDamageOverlay();
+        createRelicSelectionComponents();
         gameOverPeepoRandomNumber = -100;
     }
 
