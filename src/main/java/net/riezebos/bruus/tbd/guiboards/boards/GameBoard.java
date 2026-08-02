@@ -159,6 +159,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
         drawTimer.start();
         floatingIcons.clear();
         selectedComponent = null;
+        SaveManager.getInstance().exportCurrentSave();
     }
 
     // Resets the game after dying

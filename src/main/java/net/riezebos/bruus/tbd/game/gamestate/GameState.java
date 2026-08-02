@@ -209,6 +209,8 @@ public class GameState {
         this.gameTicksExecuted = saveFile.getGameTicksExecuted();
         this.gameMode = saveFile.getGameModes();
         this.lastPause = 0;
+        this.gameState = saveFile.getGameStateEnums();
+
     }
 
     public GameMode getGameMode() {

@@ -16,6 +16,7 @@ import net.riezebos.bruus.tbd.game.gamestate.GameMode;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.gamestate.GameStatusEnums;
 import net.riezebos.bruus.tbd.game.gamestate.ShopManager;
+import net.riezebos.bruus.tbd.game.gamestate.save.SaveFile;
 import net.riezebos.bruus.tbd.game.level.directors.DirectorManager;
 import net.riezebos.bruus.tbd.game.level.enums.LevelDifficulty;
 import net.riezebos.bruus.tbd.game.level.enums.LevelTypes;
@@ -29,6 +30,7 @@ import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.AudioEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class LevelManager {
@@ -40,7 +42,6 @@ public class LevelManager {
     private GameState gameState = GameState.getInstance();
 
 
-    private AudioEnums currentLevelSong;
     private LevelDifficulty currentLevelDifficulty;
     private MiniBossConfig currentMiniBossConfig;
     private LevelDifficulty lastSelectedDifficulty = null;
@@ -63,7 +64,6 @@ public class LevelManager {
     }
 
     public void resetManager() {
-        currentLevelSong = null;
         levelType = LevelTypes.Regular;
         currentLevelDifficulty = LevelDifficulty.Easy;
         currentMiniBossConfig = MiniBossConfig.Easy;
@@ -103,7 +103,7 @@ public class LevelManager {
             boolean bossAlive = EnemyManager.getInstance().isBossAlive();
 
             if (audioManager.isLevelMusicFinished() && bossAlive) {
-                audioManager.playDefaultBackgroundMusicForALevel(AudioEnums.getBossTheme(selectedBoss), false);
+                audioManager.playDefaultBackgroundMusicForALevel(AudioEnums.getBossTheme(selectedBoss), true);
             }
 
             if (!bossAlive) {
@@ -228,23 +228,23 @@ public class LevelManager {
     private int loopBreaker = 0;
 
     public EnemyEnums getNextBoss() {
-        return EnemyEnums.StrikerBoss;
+//        return EnemyEnums.StrikerBoss;
 
-//        List<EnemyEnums> eligibleBosses = Arrays.stream(EnemyEnums.values()).filter(enemyEnums ->
-//                enemyEnums.getEnemyCategory().equals(EnemyCategory.Boss) &&
-//                        GameState.getInstance().getBossesDefeated() >= enemyEnums.getBossKillCountRequiredBeforeAllowedToSpawn()
-//        ).toList();
-//        int randomlySelectedBoss = (int) (Math.random() * eligibleBosses.size());
-//
-//        if (lastSpawnedBosses.contains(eligibleBosses.get(randomlySelectedBoss))) {
-//            loopBreaker++;
-//            if (loopBreaker > 1000) {
-//                lastSpawnedBosses.clear(); //if no bosses can be spawned, clear last used so we can re-use them again
-//            }
-//            return getNextBoss();
-//        }
-//        lastSpawnedBosses.add(eligibleBosses.get(randomlySelectedBoss));
-//        return eligibleBosses.get(randomlySelectedBoss);
+        List<EnemyEnums> eligibleBosses = Arrays.stream(EnemyEnums.values()).filter(enemyEnums ->
+                enemyEnums.getEnemyCategory().equals(EnemyCategory.Boss) &&
+                        GameState.getInstance().getBossesDefeated() >= enemyEnums.getBossKillCountRequiredBeforeAllowedToSpawn()
+        ).toList();
+        int randomlySelectedBoss = (int) (Math.random() * eligibleBosses.size());
+
+        if (lastSpawnedBosses.contains(eligibleBosses.get(randomlySelectedBoss))) {
+            loopBreaker++;
+            if (loopBreaker > 1000) {
+                lastSpawnedBosses.clear(); //if no bosses can be spawned, clear last used so we can re-use them again
+            }
+            return getNextBoss();
+        }
+        lastSpawnedBosses.add(eligibleBosses.get(randomlySelectedBoss));
+        return eligibleBosses.get(randomlySelectedBoss);
     }
 
     public EnemyEnums getSelectedBoss() {
@@ -272,11 +272,9 @@ public class LevelManager {
         switch (levelType) {
             case Regular -> {
                 audioManager.playDefaultBackgroundMusicForALevel();
-                this.currentLevelSong = audioManager.getCurrentSong();
             }
             case Boss -> {
                 audioManager.playDefaultBackgroundMusicForALevel(AudioEnums.getBossTheme(selectedBoss), true);
-                this.currentLevelSong = audioManager.getCurrentSong();
                 //to implement
             }
             case Special -> {
@@ -333,14 +331,6 @@ public class LevelManager {
             return true;
         }
         return false;
-    }
-
-    public AudioEnums getCurrentLevelSong() {
-        return currentLevelSong;
-    }
-
-    public void setCurrentLevelSong(AudioEnums currentLevelSong) {
-        this.currentLevelSong = currentLevelSong;
     }
 
     public boolean isNextLevelABossLevel() {
@@ -461,5 +451,14 @@ public class LevelManager {
 
     public void resetBossUsed() {
         lastSpawnedBosses.clear();
+    }
+
+    public void loadInSaveFile(SaveFile saveFile) {
+        this.currentLevelDifficulty = saveFile.getLastKnownLevelDifficulty();
+        this.currentLevelDifficultyScore = saveFile.getLastKnownDifficultyScore();
+
+        this.currentMiniBossConfig = saveFile.getLastKnownMiniBossConfig();
+        this.lastSelectedDifficulty = saveFile.getLastKnownLevelDifficulty();
+        this.lastSelectedMiniBossConfig = saveFile.getLastKnownMiniBossConfig();
     }
 }

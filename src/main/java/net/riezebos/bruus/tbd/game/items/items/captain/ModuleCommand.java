@@ -26,6 +26,10 @@ public class ModuleCommand extends Item {
             return false;
         }
 
+        if(PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.ModuleFocusFire) != null){
+            return false;
+        }
+
         return PlayerStats.getInstance().getPlayerClass().equals(PlayerClass.Captain) && PlayerInventory.getInstance().getItemFromInventoryIfExists(this.itemEnum) == null;
     }
 }

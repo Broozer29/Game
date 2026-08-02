@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
 import net.riezebos.bruus.tbd.game.gameobjects.player.boons.BoonManager;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
+import net.riezebos.bruus.tbd.game.gamestate.ShopManager;
+import net.riezebos.bruus.tbd.game.level.LevelManager;
 
 import java.io.File;
 import java.io.IOException;
@@ -51,6 +53,13 @@ public class SaveManager {
             PlayerStats.getInstance().loadInSaveFile(saveFile);
             GameState.getInstance().loadInSaveFile(saveFile);
             BoonManager.getInstance().loadInSaveFile(saveFile);
+            LevelManager.getInstance().loadInSaveFile(saveFile);
+
+            ShopManager.getInstance().setLastLevelDifficultyScore(saveFile.getLastKnownDifficultyScore());
+            ShopManager.getInstance().setLastLevelDifficulty(saveFile.getLastKnownLevelDifficulty());
+            ShopManager.getInstance().setLastMiniBossConfig(saveFile.getLastKnownMiniBossConfig());
+
+
             System.out.println("Game successfully loaded!");
         } catch (IOException e) {
             e.printStackTrace();

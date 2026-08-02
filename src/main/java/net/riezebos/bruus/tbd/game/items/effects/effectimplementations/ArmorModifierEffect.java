@@ -11,7 +11,7 @@ import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteAnimation;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ArmorModifierEffect implements EffectInterface {
+public class  ArmorModifierEffect implements EffectInterface {
 
     private float armorBonus = 1.0f;
     private EffectActivationTypes effectTypesEnums;
@@ -102,7 +102,7 @@ public class ArmorModifierEffect implements EffectInterface {
         //For electroshedding, remove the effect and re-apply it after increasing its strength
         if(this.effectIdentifier.equals(EffectIdentifiers.ElectroShedding)){
             removeEffectsBeforeRemovingEffect(gameObject);
-            armorBonus += ElectroShedding.armorReduction;
+            armorBonus -= ElectroShedding.armorReduction;
             appliedToObject = false;
             activateEffect(gameObject);
         }

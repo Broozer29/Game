@@ -6,9 +6,13 @@ import net.riezebos.bruus.tbd.game.gameobjects.player.boons.BoonEnums;
 import net.riezebos.bruus.tbd.game.gameobjects.player.boons.BoonManager;
 import net.riezebos.bruus.tbd.game.gamestate.GameMode;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
+import net.riezebos.bruus.tbd.game.gamestate.GameStatusEnums;
 import net.riezebos.bruus.tbd.game.items.Item;
 import net.riezebos.bruus.tbd.game.items.ItemEnums;
 import net.riezebos.bruus.tbd.game.items.PlayerInventory;
+import net.riezebos.bruus.tbd.game.level.LevelManager;
+import net.riezebos.bruus.tbd.game.level.enums.LevelDifficulty;
+import net.riezebos.bruus.tbd.game.level.enums.MiniBossConfig;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -19,6 +23,7 @@ public class SaveFile {
     private int playerLevel;
     private float playerXP;
     private GameMode gameMode;
+    private GameStatusEnums gameStateEnums;
 
     private Map<ItemEnums, Integer> items;
 
@@ -27,6 +32,9 @@ public class SaveFile {
     private int bossesDefeated;
     private long gameTicksExecuted;
     private float money;
+    private int lastKnownDifficultyScore = 0;
+    private LevelDifficulty lastKnownLevelDifficulty = LevelDifficulty.Easy;
+    private MiniBossConfig lastKnownMiniBossConfig = MiniBossConfig.Easy;
 
     private BoonEnums selectedBoon;
 
@@ -40,6 +48,10 @@ public class SaveFile {
         bossesDefeated = GameState.getInstance().getBossesDefeated();
         gameTicksExecuted = GameState.getInstance().getGameTicksExecuted();
         money = PlayerInventory.getInstance().getCashMoney();
+        gameStateEnums = GameState.getInstance().getGameState();
+        lastKnownDifficultyScore = LevelManager.getInstance().getDifficultyScore();
+        lastKnownLevelDifficulty = LevelManager.getInstance().getCurrentLevelDifficulty();
+        lastKnownMiniBossConfig = LevelManager.getInstance().getCurrentMiniBossConfig();
 
 
         selectedBoon = BoonManager.getInstance().getActiveBoon() != null ? BoonManager.getInstance().getActiveBoon().getBoonEnum() : null;
@@ -138,5 +150,37 @@ public class SaveFile {
 
     public void setGameModes(GameMode gameMode) {
         this.gameMode = gameMode;
+    }
+
+    public GameStatusEnums getGameStateEnums() {
+        return gameStateEnums;
+    }
+
+    public void setGameStateEnums(GameStatusEnums gameStateEnums) {
+        this.gameStateEnums = gameStateEnums;
+    }
+
+    public int getLastKnownDifficultyScore() {
+        return lastKnownDifficultyScore;
+    }
+
+    public void setLastKnownDifficultyScore(int lastKnownDifficultyScore) {
+        this.lastKnownDifficultyScore = lastKnownDifficultyScore;
+    }
+
+    public LevelDifficulty getLastKnownLevelDifficulty() {
+        return lastKnownLevelDifficulty;
+    }
+
+    public void setLastKnownLevelDifficulty(LevelDifficulty lastKnownLevelDifficulty) {
+        this.lastKnownLevelDifficulty = lastKnownLevelDifficulty;
+    }
+
+    public MiniBossConfig getLastKnownMiniBossConfig() {
+        return lastKnownMiniBossConfig;
+    }
+
+    public void setLastKnownMiniBossConfig(MiniBossConfig lastKnownMiniBossConfig) {
+        this.lastKnownMiniBossConfig = lastKnownMiniBossConfig;
     }
 }

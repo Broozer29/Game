@@ -64,9 +64,11 @@ public class ImageRotator {
     }
 
     public List<BufferedImage> getRotatedFrames (List<BufferedImage> frames, double angleInDegrees, boolean mainainCacheKey) {
+        double roundedDegrees = Math.round(angleInDegrees * 5.0) / 5.0;
+
         String keyString = frames.stream()
                 .map(image -> Integer.toString(image.hashCode()))
-                .collect(Collectors.joining("_")) + "_" + angleInDegrees;
+                .collect(Collectors.joining("_")) + "_" + roundedDegrees;
 
         ImageCacheKey imageCacheKey = findOrCreateCacheKey(rotatedFramesCache, keyString);
         if (imageCacheKey != null && rotatedFramesCache.containsKey(imageCacheKey)) {
@@ -83,7 +85,7 @@ public class ImageRotator {
         imageCacheKey.setMustNeverBeReleased(mainainCacheKey);
         // Process each frame using the rotateOrFlip method
         for (BufferedImage frame : frames) {
-            BufferedImage adjustedFrame = rotateOrFlip(frame, angleInDegrees, false);
+            BufferedImage adjustedFrame = rotateOrFlip(frame, roundedDegrees, false);
             adjustedFrames.add(adjustedFrame);
         }
 
@@ -94,7 +96,6 @@ public class ImageRotator {
         return adjustedFrames;
     }
 
-    // In ImageRotator class
     public BufferedImage rotate (BufferedImage image, Direction direction, boolean crop) {
         double angle = direction.toAngle();
         return rotateOrFlip(image, angle, crop);
@@ -105,7 +106,8 @@ public class ImageRotator {
         return rotate(image, angle, crop, false);
     }
     private BufferedImage rotate (BufferedImage image, double angle, boolean crop, boolean maintainCacheKey) {
-        String keyString = image.hashCode() + "_" + angle;
+        double roundedDegrees = Math.round(angle * 5.0) / 5.0;
+        String keyString = image.hashCode() + "_" + roundedDegrees;
         ImageCacheKey imageCacheKey = findOrCreateCacheKey(rotatedImageCache, keyString);
         if (imageCacheKey != null && rotatedImageCache.containsKey(imageCacheKey)) {
             imageCacheKey.updateAccessTime();
@@ -115,7 +117,7 @@ public class ImageRotator {
         imageCacheKey = new ImageCacheKey(keyString);
         imageCacheKey.setMustNeverBeReleased(maintainCacheKey);
         // Convert the angle to radians
-        double rad = Math.toRadians(angle);
+        double rad = Math.toRadians(roundedDegrees);
 
         // Calculate the diagonal length of the image
         double diagonal = Math.sqrt(Math.pow(image.getWidth(), 2) + Math.pow(image.getHeight(), 2));

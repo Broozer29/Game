@@ -591,10 +591,15 @@ public class ShopBoardCreator {
     public GUIComponent createOneMinibossSelection(GUIComponent backgroundCard) {
         int y = backgroundCard.getCenterYCoordinate() - 20;
         float x1 = backgroundCard.getXCoordinate() + backgroundCard.getWidth() / 6 + (shopItemIconDimensions + horizontalSpacing);
+        ImageEnums iconEnum = ImageEnums.BlueWings3;
+        if (LevelManager.getInstance().isNextLevelABossLevel()) {
+            iconEnum = ImageEnums.RedWings5;
+        }
+
         SpriteConfiguration spriteConfiguration = createSpriteConfiguration(
                 x1,
                 y,
-                1, ImageEnums.BlueWings3);
+                1, iconEnum);
         MenuButton button = new MenuButton(spriteConfiguration);
         button.setMiniBossConfig(MiniBossConfig.Medium);
         button.setMenuFunctionality(MenuFunctionEnums.SelectSongLength);

@@ -56,6 +56,10 @@ public class ModuleFocusFire extends Item {
             return false;
         }
 
+        if(PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.ModuleCommand) != null){
+            return false;
+        }
+
         if(PlayerInventory.getInstance().getItemFromInventoryIfExists(this.itemEnum) != null){
             return false;
         }

@@ -23,6 +23,8 @@ public class StrikerBossLaserbeamClone extends Enemy {
     private SpriteAnimation chargingAnimation;
     private boolean isFiringLaserbeams = false;
 
+    private boolean shouldBeDead = false;
+
     public StrikerBossLaserbeamClone(SpriteAnimationConfiguration spriteConfiguration, EnemyConfiguration enemyConfiguration, MovementConfiguration movementConfiguration) {
         super(spriteConfiguration, enemyConfiguration, movementConfiguration);
         SpriteAnimationConfiguration destroyedExplosionfiguration = new SpriteAnimationConfiguration(spriteConfiguration.getSpriteConfiguration(), 1, false);
@@ -80,11 +82,19 @@ public class StrikerBossLaserbeamClone extends Enemy {
                 isFiringLaserbeams = false;
             }
         }
+
+        //Theoretically, this should never happen, but there are reports that clones are not correctly deleted so this might be a safeguard
+        if(shouldBeDead){
+            this.destructionAnimation.setCenterCoordinates(this.getCenterXCoordinate(), this.getCenterYCoordinate());
+            this.takeDamage(this.getMaxHitPoints() * 100000);
+            this.setVisible(false);
+        }
     }
 
     public void detonateClone() {
         this.destructionAnimation.setCenterCoordinates(this.getCenterXCoordinate(), this.getCenterYCoordinate());
-        this.takeDamage(this.getMaxHitPoints() * 10);
+        this.takeDamage(this.getMaxHitPoints() * 100000);
+        shouldBeDead = true;
     }
 
     private void createChargingAnimationConfig() {
