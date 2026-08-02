@@ -80,10 +80,13 @@ public class MirageMiniBoss extends Enemy {
 
 
     public void fireAction() {
-
-        if (this.ownerOrCreator instanceof MirageMiniBoss && (this.ownerOrCreator.getCurrentHitpoints() <= 0 || !this.ownerOrCreator.isVisible())) {
-            //the original died
+        if(this.ownerOrCreator instanceof MirageMiniBoss){
             isChild = true;
+        }
+
+
+        if (isChild && (this.ownerOrCreator.getCurrentHitpoints() <= 0 || !this.ownerOrCreator.isVisible())) {
+            //the original died
             this.takeDamage(9999);
         }
 
@@ -94,7 +97,7 @@ public class MirageMiniBoss extends Enemy {
             spawnCloneAnimation();
             super.cleanseAllEffects();
 
-            for (int i = 0; i < 2; i++) {
+            for (int i = 0; i < 1; i++) {
                 createClone();
             }
 
