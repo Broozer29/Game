@@ -38,7 +38,7 @@ public class WisdomBall extends Item {
             return true;
         }
 
-        currentBonusChance += 0.15f;
+        currentBonusChance += 0.175f;
         return false;
     }
 

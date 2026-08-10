@@ -76,6 +76,9 @@ public class MissileCreator {
             case YellowBossOrb -> {
                 return new YellowBossOrb(upgradeConfig(spriteConfiguration, 0), missileConfiguration, movementConfiguration);
             }
+            case MutaliskMissile -> {
+                return new MutaliskMissile(upgradeConfig(spriteConfiguration, 2), missileConfiguration, movementConfiguration);
+            }
         }
         return null;
     }

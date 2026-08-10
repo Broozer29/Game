@@ -155,6 +155,7 @@ public class LevelManager {
         if (!DevTestSettings.blockDirectors) {
             activateDirectors(this.levelType);
         }
+
         if (!DevTestSettings.blockMusic) {
             activateMusic(this.levelType);
         }

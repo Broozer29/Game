@@ -10,6 +10,14 @@ import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.droneTypes.prot
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.specialAttacks.SpecialAttack;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerClass;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
+import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.primary.CaptainPrimaryGun;
+import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.primary.CarrierPrimaryGun;
+import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.primary.FireFighterPrimaryGun;
+import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.primary.MutaliskPrimaryGun;
+import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.secondary.CaptainSecondaryGun;
+import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.secondary.CarrierSecondaryGun;
+import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.secondary.FireFighterSecondaryGun;
+import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.secondary.MutaliskSecondaryGun;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.gamestate.GameStatusEnums;
 import net.riezebos.bruus.tbd.game.items.Item;
@@ -60,8 +68,8 @@ public class SpaceShip extends GameObject {
     private PlayerStats playerStats = PlayerStats.getInstance();
 
     private List<SpriteAnimation> playerFollowingAnimations = new ArrayList<SpriteAnimation>();  //inherit from gameobject?
-    private PrimaryPlayerGun primaryPlayerGun = null;
-    private SecondaryPlayerGun spaceShipSpecialGun = null;
+    private PrimaryPlayerGun primaryGun = null;
+    private SecondaryPlayerGun secondaryGun = null;
     private List<SpecialAttack> playerFollowingSpecialAttacks = new ArrayList<SpecialAttack>();
     public boolean allowMovementBeyondBoundaries = false;
     private double lastTimeCollisionDamageTaken = 0;
@@ -182,8 +190,26 @@ public class SpaceShip extends GameObject {
 
 
         currentShieldRegenDelayFrame = 0;
-        this.primaryPlayerGun = new PrimaryPlayerGun();
-        this.spaceShipSpecialGun = new SecondaryPlayerGun();
+
+        switch (PlayerStats.getInstance().getPlayerClass()) {
+            case Captain -> {
+                this.primaryGun = new CaptainPrimaryGun();
+                this.secondaryGun = new CaptainSecondaryGun();
+            }
+            case FireFighter -> {
+                this.primaryGun = new FireFighterPrimaryGun();
+                this.secondaryGun = new FireFighterSecondaryGun();
+            }
+            case Carrier -> {
+                this.primaryGun = new CarrierPrimaryGun();
+                this.secondaryGun = new CarrierSecondaryGun();
+            }
+            case Mutalisk -> {
+                this.primaryGun = new MutaliskPrimaryGun();
+                this.secondaryGun = new MutaliskSecondaryGun();
+            }
+        }
+
         if (shouldLoadEngineAnim) {
             initExhaustAnimation(ImageEnums.Default_Player_Engine);
             this.exhaustAnimation.setAnimationScale(0.3f);
@@ -195,6 +221,7 @@ public class SpaceShip extends GameObject {
         this.hasAttack = true;
 
         this.currentHitpoints = playerStats.getMaxHitPoints();
+        this.maxHitPoints = playerStats.getMaxHitPoints();
         this.currentShieldPoints = playerStats.getMaxShieldHitPoints();
         applyOnCreationEffects();
 
@@ -222,7 +249,7 @@ public class SpaceShip extends GameObject {
         }
 
         if(PlayerStats.getInstance().getPlayerClass().equals(PlayerClass.Mutalisk)){
-            PassiveHealthRegeneration mutaliskPassiveHealingEffect = new PassiveHealthRegeneration(PlayerStats.getMutaliskHealthRegeneration(), EffectIdentifiers.MutaliskPassiveHealing);
+            PassiveHealthRegeneration mutaliskPassiveHealingEffect = new PassiveHealthRegeneration(PlayerStats.mutaliskHealthRegeneration, EffectIdentifiers.MutaliskPassiveHealing);
             this.addEffect(mutaliskPassiveHealingEffect);
         }
     }
@@ -364,8 +391,8 @@ public class SpaceShip extends GameObject {
     public void updateGameTick() {
         this.currentShieldRegenDelayFrame++;
         postCreationActivities();
-        primaryPlayerGun.updateFrameCount(this);
-        spaceShipSpecialGun.updateFrameCount(this);
+        primaryGun.updateFrameCount(this);
+        secondaryGun.updateFrameCount(this);
 
         movePlayerAnimations();
         moveSpecialAttacks();
@@ -637,7 +664,7 @@ public class SpaceShip extends GameObject {
 
     // Launch a missile from the center point of the spaceship
     private void startPrimaryFiring() {
-        primaryPlayerGun.fire(this.xCoordinate + this.width, this.getCenterYCoordinate(), playerStats.getAttackType(), this);
+        primaryGun.fire(this.xCoordinate + this.width, this.getCenterYCoordinate(), playerStats.getAttackType(), this);
     }
 
     public float getDamage() {
@@ -653,11 +680,15 @@ public class SpaceShip extends GameObject {
     }
 
     private void haltPrimaryFiring() {
-        primaryPlayerGun.stopFiring(this);
+        primaryGun.stopFiring(this);
+    }
+
+    private void haltSecondaryFiring() {
+        secondaryGun.stopFiring(this);
     }
 
     private void fireSpecialAttack() {
-        spaceShipSpecialGun.fire(this.getCenterXCoordinate(), this.getCenterYCoordinate(),
+        secondaryGun.fire(this.getCenterXCoordinate(), this.getCenterYCoordinate(),
                 playerStats.getPlayerSpecialAttackType(), this);
     }
 
@@ -670,7 +701,7 @@ public class SpaceShip extends GameObject {
     }
 
     public SecondaryPlayerGun getSpecialGun() {
-        return this.spaceShipSpecialGun;
+        return this.secondaryGun;
     }
 
     public void addFollowingSpecialAttack(SpecialAttack specialAttack) {
@@ -738,7 +769,7 @@ public class SpaceShip extends GameObject {
         pressedKeys.remove(e.getKeyCode());
         int key = e.getKeyCode();
 
-        if (key == KeyEvent.VK_SPACE || key == KeyEvent.VK_Q) {
+        if (key == KeyEvent.VK_SPACE) {
             haltPrimaryFiring();
         }
         if (key == KeyEvent.VK_A || key == KeyEvent.VK_LEFT) {
@@ -753,10 +784,14 @@ public class SpaceShip extends GameObject {
         if (key == KeyEvent.VK_S || key == KeyEvent.VK_DOWN) {
             haltMoveDown();
         }
+        if (key == KeyEvent.VK_Q || key == KeyEvent.VK_ENTER) {
+            haltSecondaryFiring();
+        }
     }
 
     // Called by GameBoard every loop if a controller is connected
     private boolean isFiringPrimary = false;
+    private boolean isFiringSecondary = false;
 
     public void update() {
         controlledByKeyboard = false;
@@ -785,6 +820,7 @@ public class SpaceShip extends GameObject {
             }
             if (controllerInputReader.isInputActive(ControllerInputEnums.SPECIAL_ATTACK)) {
                 fireSpecialAttack();
+                isFiringSecondary = true;
             }
         }
 
@@ -792,6 +828,11 @@ public class SpaceShip extends GameObject {
         if (isFiringPrimary && !controllerInputReader.isInputActive(ControllerInputEnums.FIRE)) {
             haltPrimaryFiring();
             isFiringPrimary = false;
+        }
+
+        if (isFiringSecondary && !controllerInputReader.isInputActive(ControllerInputEnums.SPECIAL_ATTACK)) {
+            haltSecondaryFiring();
+            isFiringSecondary = false;
         }
     }
 
@@ -855,11 +896,11 @@ public class SpaceShip extends GameObject {
     }
 
     public PrimaryPlayerGun getSpaceShipRegularGun() {
-        return primaryPlayerGun;
+        return primaryGun;
     }
 
-    public SecondaryPlayerGun getSpaceShipSpecialGun() {
-        return spaceShipSpecialGun;
+    public SecondaryPlayerGun getSecondaryGun() {
+        return secondaryGun;
     }
 
     public double getLastTimeCollisionDamageTaken() {

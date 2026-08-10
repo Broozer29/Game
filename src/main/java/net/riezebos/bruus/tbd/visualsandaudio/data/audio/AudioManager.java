@@ -20,7 +20,7 @@ public class AudioManager {
     private AudioDatabase audioDatabase = AudioDatabase.getInstance();
     private AudioEnums currentSong;
     private Map<AudioEnums, Long> lastPlayTimeMap = new HashMap<>();
-    private MusicMediaPlayer musicMediaPlayer = MusicMediaPlayer.LocalFiles;
+    private MusicMediaPlayer musicMediaPlayer = DevTestSettings.useItunes ? MusicMediaPlayer.iTunesMacOS : MusicMediaPlayer.LocalFiles;
     private MacOSMediaPlayer macOSMediaPlayer = MacOSMediaPlayer.getInstance();
     private SpotifyMediaPlayer spotifyMediaPlayer = SpotifyMediaPlayer.getInstance();
     private double predictedEndGameSeconds = -1; // Predicted game seconds when the song will end
@@ -30,6 +30,8 @@ public class AudioManager {
         CustomAudioClip silenceClip = AudioDatabase.getInstance().getAudioClip(AudioEnums.SilentAudio);
         silenceClip.setLoop(true);
         silenceClip.startClip();
+
+
     }
 
     //Resets the manager

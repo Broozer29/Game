@@ -10,8 +10,8 @@ import net.riezebos.bruus.tbd.game.items.items.util.ContractHelper;
 
 public class Contract extends Item{
 
-    public static int originalCountRequired = 100;
-    public static int killCountRequired = 100;
+    public static int originalCountRequired = 150;
+    public static int killCountRequired = 150;
     public Contract () {
         super(ItemEnums.Contract, 1, ItemApplicationEnum.UponAcquiring);
         //Dont add the contract to the helper here, since this will mess with the "isAvailable" method handling

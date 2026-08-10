@@ -28,6 +28,8 @@ public class Placeholder extends Item {
         if (!this.itemEnum.isEnabled()) {
             return false;
         }
+
+
         if(PlayerInventory.getInstance().getItemFromInventoryIfExists(this.itemEnum) != null){
             return false;
         }

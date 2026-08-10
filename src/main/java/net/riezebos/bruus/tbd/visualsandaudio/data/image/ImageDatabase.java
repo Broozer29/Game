@@ -316,6 +316,10 @@ public class ImageDatabase {
     private List<BufferedImage> bombaProjectileExplosion = new ArrayList<>();
     private List<BufferedImage> alienLaserBeamAnimatedOrange = new ArrayList<>();
     private List<BufferedImage> mutaliskAnim = new ArrayList<>();
+    private List<BufferedImage> playerMutaliskMissile = new ArrayList<>();
+    private List<BufferedImage> mutaliskChargingUp = new ArrayList<>();
+    private List<BufferedImage> mutaliskExplosion = new ArrayList<>();
+    private List<BufferedImage> mutaliskMissileExplosion = new ArrayList<>();
     private List<BufferedImage> alienLaserBeamAnimated = new ArrayList<>();
     private List<BufferedImage> barrierProjectile = new ArrayList<>();
     private List<BufferedImage> lightningOrb = new ArrayList<>();
@@ -1680,8 +1684,16 @@ public class ImageDatabase {
 
     public List<BufferedImage> getAnimation(ImageEnums imageType) {
         switch (imageType) {
+            case MutaliskExplosion:
+                return mutaliskExplosion;
+            case MutaliskChargeUp:
+                return mutaliskChargingUp;
+            case MutaliskMissileExplosion:
+                return this.mutaliskMissileExplosion;
             case Mutalisk:
                 return this.mutaliskAnim;
+            case MutaliskPlayerMissile:
+                return this.playerMutaliskMissile;
             case PoisonCloud:
                 return this.poisonCloud;
             case GuillotineEffect:
@@ -2572,7 +2584,29 @@ public class ImageDatabase {
             mutaliskAnim.add(image);
         }
 
+        for (int i = 0; i < 8; i++) {
+            String sourceString = String.format("/images/gif/PNGtoGIF/MutaliskProjectile/%d.png", i);
+            BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+            playerMutaliskMissile.add(image);
+        }
 
+        for (int i = 0; i < 35; i++) {
+            String sourceString = String.format("/images/gif/PNGtoGIF/MutaliskChargingUp/%d.png", i);
+            BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+            mutaliskChargingUp.add(image);
+        }
+
+        for (int i = 0; i < 7; i++) {
+            String sourceString = String.format("/images/gif/PNGtoGIF/MutaliskProjectileExplosion/%d.png", i);
+            BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+            mutaliskMissileExplosion.add(image);
+        }
+
+        for (int i = 0; i < 40; i++) {
+            String sourceString = String.format("/images/gif/PNGtoGIF/MutaliskExplosion/%d.png", i);
+            BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+            mutaliskExplosion.add(image);
+        }
 
         for (int i = 1; i < 10; i++) {
             String sourceString = String.format("/images/gif/PNGtoGIF/Player EMP/doubled/%d.png", i);

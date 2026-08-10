@@ -58,6 +58,10 @@ public enum ItemEnums {
     PulsingBeacon(ItemRarityEnums.Relic, ImageEnums.Test_Image, "Pulsing Beacon", true),
     InverseRetrieval(ItemRarityEnums.Relic,  ImageEnums.InversionRetrieval, "Inverse Retrieval", true),
 
+
+    //Mutalisk relics
+    Consume(ItemRarityEnums.Relic, ImageEnums.Test_Image, "Consume", true),
+
     //-----------------------------
     ArmorPiercingRounds(ItemRarityEnums.Rare, ImageEnums.Starcraft2_Armor_Piercing, "Piercing Rounds", true),
     LeechingLasers(ItemRarityEnums.Rare,  ImageEnums.LeechingLasers, "Leeching Lasers", false),

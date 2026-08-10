@@ -1,6 +1,8 @@
 package net.riezebos.bruus.tbd.game.items.items;
 
 import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
+import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerClass;
+import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
 import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SpaceShip;
 import net.riezebos.bruus.tbd.game.items.Item;
 import net.riezebos.bruus.tbd.game.items.ItemEnums;
@@ -30,6 +32,11 @@ public class CriticalOverloadCapacitor extends Item {
         if(!this.itemEnum.isEnabled()){
             return false;
         }
+
+        if(PlayerStats.getInstance().getPlayerClass().equals(PlayerClass.Mutalisk)){
+            return false;
+        }
+
 
         return true;
     }

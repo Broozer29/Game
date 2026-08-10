@@ -33,6 +33,11 @@ public class GuardianDrones extends Item {
         if (PlayerStats.getInstance().getPlayerClass().equals(PlayerClass.Carrier)) {
             return false;
         }
+        if(PlayerStats.getInstance().getPlayerClass().equals(PlayerClass.Mutalisk)){
+            return false;
+        }
+
+
         if (PlayerInventory.getInstance().getItemFromInventoryIfExists(this.itemEnum) != null) {
             return PlayerInventory.getInstance().getItemFromInventoryIfExists(this.itemEnum).getQuantity() < PlayerStats.getInstance().getMaximumAmountOfDrones();
         }

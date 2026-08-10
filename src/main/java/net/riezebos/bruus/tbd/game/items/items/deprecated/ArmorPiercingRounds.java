@@ -39,6 +39,11 @@ public class ArmorPiercingRounds extends Item {
             return false;
         }
 
+        if(PlayerStats.getInstance().getPlayerClass().equals(PlayerClass.Mutalisk)){
+            return false;
+        }
+
+
         return true;
     }
 }

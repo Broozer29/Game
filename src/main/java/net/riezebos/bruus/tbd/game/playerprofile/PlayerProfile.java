@@ -8,7 +8,7 @@ public class PlayerProfile {
     private int bossesKilledCounter;
     private boolean carrierUnlocked = false;
     private boolean fireFighterUnlocked = false;
-    private boolean mutaliskUnlocked = DevTestSettings.enableMutalisk; //todo implementeer een unlock conditie
+    private boolean mutaliskUnlocked = false; //todo implementeer een unlock conditie
     private int emeralds = 0;
     private int nepotismLevel = 0;
     private int clubAccessLevel = 0;
@@ -134,6 +134,10 @@ public class PlayerProfile {
     }
 
     public boolean isMutaliskUnlocked() {
+        if(DevTestSettings.enableMutalisk){
+            return true;
+        }
+
         return mutaliskUnlocked;
     }
 }

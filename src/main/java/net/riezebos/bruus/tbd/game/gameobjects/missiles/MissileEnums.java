@@ -14,6 +14,7 @@ public enum MissileEnums {
     ReflectiveBlocks(ImageEnums.ProtossShuttleMissileExplosion, ImageEnums.RotatingBoxes),
     StationaryExplodingBomb(ImageEnums.Bomba_Missile_Explosion, ImageEnums.Bomba_Missile),
     YellowBossOrb(ImageEnums.Impact_Explosion_One, ImageEnums.AlienLaserBeamAnimated),
+    MutaliskMissile(ImageEnums.GuardianMissileImpact, ImageEnums.MutaliskPlayerMissile),
     BarrierProjectile(ImageEnums.BarrierProjectileDestruction, ImageEnums.BarrierProjectile);
 
     private ImageEnums deathOrExplosionImageEnum;

@@ -37,6 +37,10 @@ public class ModuleAccuracy extends Item {
         if(PlayerStats.getInstance().getPlayerClass().equals(PlayerClass.Carrier)){
             return false;
         }
+        if(PlayerStats.getInstance().getPlayerClass().equals(PlayerClass.Mutalisk)){
+            return false;
+        }
+
 
         if(PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.ModuleScorch) != null){
             return false;

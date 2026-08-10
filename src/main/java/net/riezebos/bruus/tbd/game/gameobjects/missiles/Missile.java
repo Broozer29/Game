@@ -159,7 +159,7 @@ public class Missile extends GameObject {
         }
     }
 
-    private void pierceAndBounce (GameObject collidedObject) {
+    protected void pierceAndBounce (GameObject collidedObject) {
         //Removed the "hasColliddedWithObjects" check since we already do this chcek in MissileManager
         if (piercesThroughObjects && amountOfPiercesLeft > 0) {
             dealDamageToGameObject(collidedObject);

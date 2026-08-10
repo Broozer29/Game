@@ -33,6 +33,11 @@ public class Battery extends Item {
             return false;
         }
 
+        if(PlayerStats.getInstance().getPlayerClass().equals(PlayerClass.Mutalisk)){
+            return false;
+        }
+
+
         if(PlayerStats.getInstance().getPlayerClass().equals(PlayerClass.Carrier)){
             return false;
         }

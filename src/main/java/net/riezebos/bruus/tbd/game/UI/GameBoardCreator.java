@@ -4,7 +4,10 @@ import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
 import net.riezebos.bruus.tbd.game.items.ItemEnums;
 import net.riezebos.bruus.tbd.game.items.enums.ItemRarityEnums;
 import net.riezebos.bruus.tbd.game.level.LevelManager;
-import net.riezebos.bruus.tbd.guiboards.guicomponents.*;
+import net.riezebos.bruus.tbd.guiboards.guicomponents.DisplayOnly;
+import net.riezebos.bruus.tbd.guiboards.guicomponents.GUIComponent;
+import net.riezebos.bruus.tbd.guiboards.guicomponents.MenuCursor;
+import net.riezebos.bruus.tbd.guiboards.guicomponents.ShopItem;
 import net.riezebos.bruus.tbd.visualsandaudio.data.DataClass;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.AnimationManager;
@@ -56,10 +59,6 @@ public class GameBoardCreator {
     private ShopItem secondRelicShopItem;
     private ShopItem thirdRelicShopItem;
 
-    private GUITextCollection firstRelicTitle;
-    private GUITextCollection secondRelicTitle;
-    private GUITextCollection thirdRelicTitle;
-
 
     private void createRelicSelectionComponents() {
         int firstRelicXCoordinate = Math.round(DataClass.getInstance().getWindowWidth() * 0.2f);
@@ -94,7 +93,6 @@ public class GameBoardCreator {
 
     public void resetRelicShopItems() {
         float cardScale = 1 * DataClass.getInstance().getResolutionFactor();
-        float titleScale = 1f * DataClass.getInstance().getResolutionFactor();
         int relicDimensions = Math.round(80 * DataClass.getInstance().getResolutionFactor());
         List<ItemEnums> alreadySelectedRelics = new ArrayList<>();
 
@@ -103,10 +101,6 @@ public class GameBoardCreator {
         secondRelicShopItem = createUniqueRelicShopItem(secondRelicBackgroundCard, cardScale, relicDimensions, alreadySelectedRelics);
         thirdRelicShopItem = createUniqueRelicShopItem(thirdRelicBackgroundCard, cardScale, relicDimensions, alreadySelectedRelics);
 
-        // Create titles
-        firstRelicTitle = createRelicTitle(firstRelicBackgroundCard, firstRelicShopItem, titleScale);
-        secondRelicTitle = createRelicTitle(secondRelicBackgroundCard, secondRelicShopItem, titleScale);
-        thirdRelicTitle = createRelicTitle(thirdRelicBackgroundCard, thirdRelicShopItem, titleScale);
     }
 
     private ShopItem createUniqueRelicShopItem(DisplayOnly backgroundCard, float cardScale, int relicDimensions, List<ItemEnums> alreadySelectedRelics) {
@@ -135,15 +129,6 @@ public class GameBoardCreator {
         return shopItem;
     }
 
-    private GUITextCollection createRelicTitle(DisplayOnly backgroundCard, ShopItem shopItem, float titleScale) {
-        int xCoordinate = backgroundCard.getCenterXCoordinate();
-        int yCoordinate = Math.round(backgroundCard.getYCoordinate() + backgroundCard.getHeight() * 0.2f);
-        GUITextCollection title = new GUITextCollection(xCoordinate, yCoordinate, shopItem.getShopItemInformation().getItem().getItemName().toUpperCase());
-        title.setScale(titleScale);
-        title.setCenterXCoordinate(xCoordinate);
-        return title;
-    }
-
     public GUIComponent createCursor() {
         int initCursorX = -50;
         int initCursorY = -50;
@@ -161,9 +146,6 @@ public class GameBoardCreator {
         return Arrays.asList(firstRelicShopItem, secondRelicShopItem, thirdRelicShopItem);
     }
 
-    public List<GUITextCollection> getRelicTitles() {
-        return Arrays.asList(firstRelicTitle, secondRelicTitle, thirdRelicTitle);
-    }
 
     private List<UIObject> informationCards = new ArrayList<>();
 

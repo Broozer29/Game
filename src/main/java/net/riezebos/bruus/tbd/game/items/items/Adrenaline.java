@@ -48,6 +48,10 @@ public class Adrenaline extends Item {
         if (PlayerStats.getInstance().getPlayerClass().equals(PlayerClass.Carrier)) {
             return false;
         }
+
+        if(PlayerStats.getInstance().getPlayerClass().equals(PlayerClass.Mutalisk)){
+            return false;
+        }
         return true;
     }
 

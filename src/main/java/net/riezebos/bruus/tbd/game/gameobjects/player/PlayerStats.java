@@ -54,9 +54,9 @@ public class PlayerStats {
 
     //mutalisk
     public static float mutaliskBaseDamage = 10f;
-    public static float mutaliskBaseAttackSpeed = 0.28f;
+    public static float mutaliskBaseAttackSpeed = 1.3f;
     public static int mutaliskBaseHitpoints = 100;
-    public static float mutaliskHealthRegeneration = 1;
+    public static float mutaliskHealthRegeneration = 0.125f;
     public static float mutaliskSecondaryChargeUpTime = 1;
     public static float mutaliskSecondaryDamageModifier = 2f;
 
@@ -131,7 +131,7 @@ public class PlayerStats {
             attackType = PlayerPrimaryAttackTypes.Carrier;
             specialAttackType = PlayerSpecialAttackTypes.PlaceCarrierDrone;
             spaceShipImage = ImageEnums.ProtossCarrier;
-        } else if(playerClass.equals(PlayerClass.Mutalisk)){
+        } else if (playerClass.equals(PlayerClass.Mutalisk)) {
             attackType = PlayerPrimaryAttackTypes.Mutalisk;
             specialAttackType = PlayerSpecialAttackTypes.MutaliskSecondary;
             spaceShipImage = ImageEnums.Mutalisk;
@@ -234,17 +234,17 @@ public class PlayerStats {
         setSpecialAttackRechargeCooldown(10f);
     }
 
-    private void initMutaliskPreset(){
+    private void initMutaliskPreset() {
         //mutalisk
         setAttackSpeed(mutaliskBaseAttackSpeed);
         setBaseDamage(mutaliskBaseDamage);
         this.attackType = PlayerPrimaryAttackTypes.Mutalisk;
-        setPlayerMissileImage(ImageEnums.FireFighterFlameThrowerLooping); //tbd
-        setPlayerMissileImpactImage(null);
+        setPlayerMissileImage(ImageEnums.MutaliskPlayerMissile);
+        setPlayerMissileImpactImage(ImageEnums.GuardianMissileImpact);
         this.maxHitPoints = mutaliskBaseHitpoints;
         this.maxShieldHitPoints = 0; //disabled for mutalisk since its biological
 
-        setSpecialAttackRechargeCooldown(1f);
+        setSpecialAttackRechargeCooldown(4f);
     }
 
 
@@ -453,7 +453,7 @@ public class PlayerStats {
     }
 
     public int getPiercingMissilesAmount() {
-        if(PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.BouncingLasers) != null){
+        if (PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.BouncingLasers) != null) {
             return piercingMissilesAmount + 1; //todo slordige implementatie van bouncing lasers maar bouncingLasers gebruik beforeCollision activation dus dit is een hack om ook applyOnCreation te simuleren
         }
         return piercingMissilesAmount;
@@ -666,53 +666,5 @@ public class PlayerStats {
 
     public static int getDefaultCarrierStartingScouts() {
         return defaultCarrierStartingScouts;
-    }
-
-    public static float getMutaliskBaseDamage() {
-        return mutaliskBaseDamage;
-    }
-
-    public static void setMutaliskBaseDamage(float mutaliskBaseDamage) {
-        PlayerStats.mutaliskBaseDamage = mutaliskBaseDamage;
-    }
-
-    public static float getMutaliskBaseAttackSpeed() {
-        return mutaliskBaseAttackSpeed;
-    }
-
-    public static void setMutaliskBaseAttackSpeed(float mutaliskBaseAttackSpeed) {
-        PlayerStats.mutaliskBaseAttackSpeed = mutaliskBaseAttackSpeed;
-    }
-
-    public static int getMutaliskBaseHitpoints() {
-        return mutaliskBaseHitpoints;
-    }
-
-    public static void setMutaliskBaseHitpoints(int mutaliskBaseHitpoints) {
-        PlayerStats.mutaliskBaseHitpoints = mutaliskBaseHitpoints;
-    }
-
-    public static float getMutaliskHealthRegeneration() {
-        return mutaliskHealthRegeneration;
-    }
-
-    public static void setMutaliskHealthRegeneration(float mutaliskHealthRegeneration) {
-        PlayerStats.mutaliskHealthRegeneration = mutaliskHealthRegeneration;
-    }
-
-    public static float getMutaliskSecondaryChargeUpTime() {
-        return mutaliskSecondaryChargeUpTime;
-    }
-
-    public static void setMutaliskSecondaryChargeUpTime(float mutaliskSecondaryChargeUpTime) {
-        PlayerStats.mutaliskSecondaryChargeUpTime = mutaliskSecondaryChargeUpTime;
-    }
-
-    public static float getMutaliskSecondaryDamageModifier() {
-        return mutaliskSecondaryDamageModifier;
-    }
-
-    public static void setMutaliskSecondaryDamageModifier(float mutaliskSecondaryDamageModifier) {
-        PlayerStats.mutaliskSecondaryDamageModifier = mutaliskSecondaryDamageModifier;
     }
 }

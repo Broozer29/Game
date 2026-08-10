@@ -12,7 +12,7 @@ import net.riezebos.bruus.tbd.game.items.enums.ItemApplicationEnum;
 
 public class OneShotOneKill extends Item {
 
-    public static float damageAmplificationModifier = 2f;
+    public static float damageAmplificationModifier = 2.5f;
     public static float hpRequirement = 1;
 
     public OneShotOneKill () {
