@@ -3,6 +3,10 @@ package net.riezebos.bruus.tbd.game.gameobjects.missiles.missiletypes;
 import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.*;
 import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SpaceShip;
+import net.riezebos.bruus.tbd.game.gamestate.GameState;
+import net.riezebos.bruus.tbd.game.items.ItemEnums;
+import net.riezebos.bruus.tbd.game.items.PlayerInventory;
+import net.riezebos.bruus.tbd.game.items.items.mutalisk.BileTravelPlaceholder;
 import net.riezebos.bruus.tbd.game.movement.Direction;
 import net.riezebos.bruus.tbd.game.movement.MovementConfiguration;
 import net.riezebos.bruus.tbd.game.movement.Point;
@@ -20,15 +24,17 @@ public class MutaliskMissile extends Missile {
     private int stepsTaken = 0;
     private boolean isBileBit = false;
     private float flatHealValue = 0;
-    public static float healAmount = 1f;
+    public static float healAmount = 10f;
+    private double gameSecondsSinceLastBileItemActivation = 0;
+    private int amountOfBileBits = 20;
 
     public MutaliskMissile(SpriteAnimationConfiguration spriteConfiguration, MissileConfiguration missileConfiguration, MovementConfiguration movementConfiguration) {
         super(spriteConfiguration, missileConfiguration, movementConfiguration);
         initDestructionAnimation(missileConfiguration);
         this.isDamageable = false;
         this.isDestructable = true;
-
-        healAmount = 10f;
+        gameSecondsSinceLastBileItemActivation = GameState.getInstance().getGameSeconds() - 0.25f;
+        BileTravelPlaceholder.timeBetweenExplosion = 0.35f;
     }
 
     private void initDestructionAnimation(MissileConfiguration missileConfiguration) {
@@ -41,7 +47,7 @@ public class MutaliskMissile extends Missile {
 
     public void missileAction() {
         if (!firstTimeMoved) {
-            if(movementConfiguration.getCurrentPath() == null){
+            if (movementConfiguration.getCurrentPath() == null) {
                 return;
             }
             firstTimeMoved = true;
@@ -54,6 +60,16 @@ public class MutaliskMissile extends Missile {
         stepsTaken++;
         float percent = 1.0f - ((float) stepsTaken / (float) stepsInPath);
         percent = Math.max(0.0f, Math.min(1.0f, percent)); // Clamp to [0, 1]
+
+        if (PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.BileTravelRange) != null &&
+                !isBileBit &&
+                GameState.getInstance().getGameSeconds() - gameSecondsSinceLastBileItemActivation > BileTravelPlaceholder.timeBetweenExplosion) {
+            for (int i = 0; i < amountOfBileBits; i++) {
+                fireMissile(this);
+            }
+            gameSecondsSinceLastBileItemActivation = GameState.getInstance().getGameSeconds();
+        }
+
 
         if (!isBileBit && percent <= 0.15f) {
             detonate();
@@ -81,7 +97,7 @@ public class MutaliskMissile extends Missile {
         playDetonationAnimation();
     }
 
-    private void playDetonationAnimation(){
+    private void playDetonationAnimation() {
         SpriteConfiguration spriteConfig = new SpriteConfiguration();
         spriteConfig.setxCoordinate(-500);
         spriteConfig.setyCoordinate(-500);
@@ -95,7 +111,7 @@ public class MutaliskMissile extends Missile {
     }
 
     private void detonate() {
-        for (int i = 0; i < 20; i++) {
+        for (int i = 0; i < amountOfBileBits; i++) {
             fireMissile(this);
         }
         this.setVisible(false);

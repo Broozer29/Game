@@ -4,6 +4,9 @@ import net.riezebos.bruus.tbd.game.gameobjects.missiles.*;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerPrimaryAttackTypes;
 import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.PrimaryPlayerGun;
 import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SpaceShip;
+import net.riezebos.bruus.tbd.game.items.ItemEnums;
+import net.riezebos.bruus.tbd.game.items.PlayerInventory;
+import net.riezebos.bruus.tbd.game.items.items.mutalisk.BileTravelPlaceholder;
 import net.riezebos.bruus.tbd.game.movement.Direction;
 import net.riezebos.bruus.tbd.game.movement.MovementConfiguration;
 import net.riezebos.bruus.tbd.game.movement.Point;
@@ -11,6 +14,8 @@ import net.riezebos.bruus.tbd.game.movement.pathfinders.DestinationPathFinder;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteConfiguration;
 
 public class MutaliskPrimaryGun extends PrimaryPlayerGun {
+
+    public static float damageRatio = 1f;
 
     @Override
     public void fire(int xCoordinate, int yCoordinate, PlayerPrimaryAttackTypes playerAttackType, SpaceShip owner) {
@@ -44,7 +49,7 @@ public class MutaliskPrimaryGun extends PrimaryPlayerGun {
 
 
         boolean isFriendly = true;
-        float damage = owner.getDamage() * 1f;
+        float damage = owner.getDamage() * damageRatio;
         boolean isExplosive = false;
         MissileConfiguration missileConfiguration = missileCreator1.createMissileConfiguration(MissileEnums.MutaliskMissile, damage, MissileEnums.MutaliskMissile.getDeathOrExplosionImageEnum(), isFriendly, isExplosive,
                 true, true);
@@ -65,6 +70,11 @@ public class MutaliskPrimaryGun extends PrimaryPlayerGun {
         double ownerCenterX = owner.getCenterXCoordinate();
         double ownerCenterY = owner.getCenterYCoordinate();
 
-        return new Point(ownerCenterX + 150, ownerCenterY);
+        float distanceToTravel = 150;
+        if(PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.BileTravelRange) != null){
+            distanceToTravel += BileTravelPlaceholder.bonusTravelRange;
+        }
+
+        return new Point(ownerCenterX + distanceToTravel, ownerCenterY);
     }
 }

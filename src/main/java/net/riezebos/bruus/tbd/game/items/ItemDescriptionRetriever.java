@@ -1,5 +1,6 @@
 package net.riezebos.bruus.tbd.game.items;
 
+import net.riezebos.bruus.tbd.game.gameobjects.friendlies.FriendlyStation;
 import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.droneTypes.protoss.ProtossArbiter;
 import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.droneTypes.protoss.ProtossScout;
 import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.droneTypes.protoss.ProtossShuttle;
@@ -10,6 +11,9 @@ import net.riezebos.bruus.tbd.game.items.items.captain.*;
 import net.riezebos.bruus.tbd.game.items.items.carrier.*;
 import net.riezebos.bruus.tbd.game.items.items.deprecated.ArmorPiercingRounds;
 import net.riezebos.bruus.tbd.game.items.items.firefighter.*;
+import net.riezebos.bruus.tbd.game.items.items.mutalisk.Consume;
+import net.riezebos.bruus.tbd.game.items.items.mutalisk.InstantViralEruption;
+import net.riezebos.bruus.tbd.game.items.items.mutalisk.ThickHide;
 
 public class ItemDescriptionRetriever {
 
@@ -53,13 +57,13 @@ public class ItemDescriptionRetriever {
             case GlassCannon -> {
                 return "You deal double damage. You take double damage.";} //relic
             case HelpRequested -> {
-                return "Contracts become FREE and always reward LEGENDARY quality items. Contracts now require " + Math.round((Contract.killCountRequired * (1 + HelpRequested.additionalKillsRequiredModifier))) + " kills to be completed.";
+                return "Contracts become FREE and will always reward LEGENDARY items. Contracts now require " + Math.round((Contract.killCountRequired * (1 + HelpRequested.additionalKillsRequiredModifier))) + " kills to be completed.";
             } //relic
             case ElectricDestabilizer -> {
-                return "Your Electroshred ability now stuns non-boss enemies for " + Math.round(ElectricDestabilizer.duration) + " seconds. Preventing them from moving and attacking.";
+                return "Electroshred now stuns non-boss enemies for " + Math.round(ElectricDestabilizer.duration) + " seconds. Preventing them from moving and attacking.";
             } //relic
             case ShieldStabilizer -> {
-                return "Your shield regeneration is no longer interrupted by taking damage.";
+                return "Shield regeneration is no longer interrupted by taking damage.";
             } //relic
             case BonusKaart -> {
                 return "Gain an additional copy of every first item you purchase in the shop.";
@@ -68,7 +72,7 @@ public class ItemDescriptionRetriever {
                 return "Cash carriers no longer spawn. Instead, medium sized enemies have a " + Math.round(GreedIsGood.mineralsPerPickupChance * 100) + "% chance to drop a coin worth " + GreedIsGood.mineralsPerPickup + " minerals.";
             } //relic
             case Placeholder -> {
-                return "Killing an enemy spawns a friendly stationary drone that attacks nearby enemies.";
+                return "Killing an enemy spawns a temporary stationary drone that attacks every " + FriendlyStation.attackSpeed + " seconds dealing " + Math.round((FriendlyStation.damageModifier * 100)) + "% damage. Maximum of 4 drones can be spawned at once.";
             } //relic
             case WisdomBall -> {return "Refreshes in the shop have a chance to be wondrous.";}
             case Stuivie -> {
@@ -115,12 +119,12 @@ public class ItemDescriptionRetriever {
                 return "Increases attack speed by " + Math.round(Overclock.attackSpeedBonus) + "%";
             } //common
             case PrecisionAmplifier -> {
-                return "Gain " + Math.round(PrecisionAmplifier.critChance * 100) + "% critical strike chance. Critical strikes deal double damage.";
+                return "Your attacks gain " + Math.round(PrecisionAmplifier.critChance * 100) + "% additional critical strike chance. Critical strikes deal double damage.";
             } //common
             case SelfRepairingSteel -> {
                 double value = SelfRepairingSteel.repairAmount * (1000f / 15f);
                 return "Regenerate " + String.format("%.1f", value) +
-                        " hitpoints per second.";
+                        " additional hitpoints per second.";
             } //commmon
             case GuardianDrone -> {
                 return "Gain 1 invincible drone. It attacks automatically dealing 100% damage. Drones do not apply item effects.";
@@ -138,13 +142,13 @@ public class ItemDescriptionRetriever {
             case ModuleElectrify -> {
                 return "Whenever you fire Electroshred, your drones fire a copy of it. Can occur once every " +
                         String.format("%.1f", ModuleElectrify.cooldown) +
-                        " seconds. Electroshred fired from drones destroy enemy projectiles.";
+                        " seconds. Electroshred fired from drones destroys enemy projectiles.";
             } //relic
             case ModuleCommand -> {
-                return "Your drones now fire whenever you fire. Maximum drone capacity is increased to " + ModuleCommand.maxDronesCapacity + ".";
+                return "Your drones now fire when you fire. Maximum drone capacity is increased to " + ModuleCommand.maxDronesCapacity + ".";
             } //relic
             case AnionInverter -> {
-                return "Electroshred cooldown decreased by " + Math.abs(Math.round(AnionInverter.cooldownModifier * 100)) + "%. Electroshred damage increased by " + Math.round(AnionInverter.damageModifier * 100) + "%. Electroshred does NOT destroy enemy projectiles.";
+                return "Electroshred cooldown decreased by " + Math.abs(Math.round(AnionInverter.cooldownModifier * 100)) + "%. Electroshred damage increased by " + Math.round(AnionInverter.damageModifier * 100) + "%. Electroshred NO LONGER destroys projectiles.";
             } //relic
             case ModuleFocusFire -> {
                 return "Your drones no longer fire automatically. After your laserbeam hits a target, all drones immediately fire 1 shot towards the target.";
@@ -160,7 +164,7 @@ public class ItemDescriptionRetriever {
                         "% damage.";
             } //legendary
             case ExplosiveLaserbeams -> {
-                return "Your missiles cause an explosion when colliding with enemies dealing " + Math.round(ExplosiveLaserbeams.damageModifier * 100) + "% damage.";
+                return "Your missiles cause an explosion when striking enemies dealing " + Math.round(ExplosiveLaserbeams.damageModifier * 100) + "% additional damage.";
             } //legendary
             case ElectroShedding -> {
                 return "Electroshred now permanently reduces enemy armor by " + Math.round(ElectroShedding.armorReduction) + " whenever it deals damage. Losing armor increases ALL damage taken.";
@@ -191,16 +195,16 @@ public class ItemDescriptionRetriever {
             //--------------------------------------firefighter items--------------------------------------
             //2
             case BeckoningFlames -> {
-                return "Automatically fire a missile dealing " + Math.round(BeckoningFlames.damageBonus * 100) + "% damage to Ignited targets every 0.75 seconds they are affected by Ignite.";
+                return "Automatically fire a missile dealing " + Math.round(BeckoningFlames.damageBonus * 100) + "% damage to Ignited targets every 0.75 seconds.";
             } //relic
             case ModuleScorch -> {
                 return "Drones are transformed into fireballs that damage enemies and apply Ignite.";
             } //relic
             case RingOfFire -> {
-                return "While your Fire Shield is active, fire missiles in all directions dealing " + Math.round(RingOfFire.projectileDamage * 100) + "% damage and apply ignite.";
+                return "While your Fire Shield is active, fire missiles in all directions dealing " + Math.round(RingOfFire.projectileDamage * 100) + "% damage that apply ignite.";
             } //relic
             case FieryImplosion -> {
-                return "When ignite reaches maximum stacks it instantly explodes dealing the full damage in a large explosion.";
+                return "When ignite reaches maximum stacks it instantly explodes dealing the full ignite damage in a large explosion and consuming all ignite stacks..";
             } //relic
             case FireWithoutGasIsAss -> {
                 return "Ignite damage is reduced by " + Math.round(FireWithoutGasIsAss.reduction * 100) + "%. Enemies taking damage from your Flamethrower take "+ Math.round(FireWithoutGasIsAss.increase * 100) +"% increased damage from Ignite.";
@@ -328,6 +332,16 @@ public class ItemDescriptionRetriever {
             } //common -> carrier/captain
 
 
+            //--------------------------------------Mutalisk items--------------------------------------
+            case Consume -> {
+                return "For every " + Consume.killsRequiredPerHitPoint + " enemies you kill, gain " + Consume.hitsPointsGrantedPerKill + " permanent maximum health.";
+            }
+            case ThickHide -> {
+                return "Increases maximum health by " + Math.round(ThickHide.maxHitpointsModifier * 100) + "%";
+            }
+            case InstantViralEruption -> {
+                return "Instead of charging up your SECONDARY_PLACEHOLDER now instantly releases and consumes " + Math.round(InstantViralEruption.hitpointsPerUse * 100) + " % of your maximum health.";
+            }
 
             //--------------------------------------Uncounted--------------------------------------
             case ModulePower -> {

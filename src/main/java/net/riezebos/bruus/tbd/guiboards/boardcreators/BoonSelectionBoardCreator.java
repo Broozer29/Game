@@ -2,7 +2,6 @@ package net.riezebos.bruus.tbd.guiboards.boardcreators;
 
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
 import net.riezebos.bruus.tbd.game.gameobjects.player.boons.Boon;
-import net.riezebos.bruus.tbd.game.gameobjects.player.boons.boonimplementations.defensive.ThickHide;
 import net.riezebos.bruus.tbd.game.gameobjects.player.boons.boonimplementations.utility.*;
 import net.riezebos.bruus.tbd.game.gamestate.GameMode;
 import net.riezebos.bruus.tbd.game.playerprofile.PlayerProfileManager;
@@ -350,10 +349,6 @@ public class BoonSelectionBoardCreator {
             case SelectTreasureHunter, UpgradeTreasureHunter -> {
                 return TreasureHunter.getInstance();
             }
-            case SelectThickHide, UpgradeThickHide -> {
-                return ThickHide.getInstance();
-            }
-
         }
         return null;
     }

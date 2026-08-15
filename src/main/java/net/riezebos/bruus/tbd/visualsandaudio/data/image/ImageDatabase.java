@@ -104,6 +104,9 @@ public class ImageDatabase {
     private BufferedImage redFilling;
     private BufferedImage goldFilling;
     private BufferedImage blueFilling;
+    private BufferedImage consume;
+    private BufferedImage vileEruption;
+    private BufferedImage bile;
     private BufferedImage adrenaline;
     private BufferedImage explosiveLaserbeams;
     private BufferedImage explosiveGreed;
@@ -549,7 +552,7 @@ public class ImageDatabase {
     }
 
     private void initializeImages() {
-        this.initFriendlies();
+        this.initImages();
         try {
             this.initAnimations();
         } catch (IOException e) {
@@ -559,7 +562,7 @@ public class ImageDatabase {
         this.initLetters();
     }
 
-    private void initFriendlies() {
+    private void initImages() {
         this.model3BetterUpgrade = imgLoader.getImage(ImageEnums.Player_Spaceship_Model_3);
         this.stuiversBestFriend = imgLoader.getImage(ImageEnums.StuiversBestFriend);
         this.spaceclouds1 = imgLoader.getImage(ImageEnums.SpaceClouds1);
@@ -585,6 +588,9 @@ public class ImageDatabase {
         this.goldFilling = imgLoader.getImage(ImageEnums.Gold_Filling);
         this.blueFilling = imgLoader.getImage(ImageEnums.Blue_Filling);
         this.adrenaline = imgLoader.getImage(ImageEnums.Adrenaline);
+        this.consume = imgLoader.getImage(ImageEnums.Consume);
+        this.bile = imgLoader.getImage(ImageEnums.BileIcon);
+        this.vileEruption = imgLoader.getImage(ImageEnums.VileEruptionIcon);
         this.explosiveLaserbeams = imgLoader.getImage(ImageEnums.ExplosiveLaserbeams);
         this.explosiveGreed = imgLoader.getImage(ImageEnums.ExplosiveGreed);
         this.blueNebula7 = imgLoader.getImage(ImageEnums.Blue_Nebula_7);
@@ -952,6 +958,10 @@ public class ImageDatabase {
 
     public BufferedImage getImage(ImageEnums imageType) {
         switch (imageType) {
+            case VileEruptionIcon:
+                return this.vileEruption;
+            case BileIcon:
+                return this.bile;
             case Mutalisk:
                 return mutaliskAnim.get(0); //sloppy fix so we dont have to load a static mutalisk anim
             case CalmInChaos:
@@ -1677,6 +1687,8 @@ public class ImageDatabase {
                 return blueFilling;
             case Adrenaline:
                 return adrenaline;
+            case Consume:
+                return consume;
             default:
                 return star;
         }

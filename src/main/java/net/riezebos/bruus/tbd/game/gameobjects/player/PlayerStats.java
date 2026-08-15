@@ -32,6 +32,9 @@ public class PlayerStats {
         initDefaultSettings();
     }
 
+    //todo vervang iedereens basedamage met deze want ik wil dat damage overal 10 is
+    public static float sharedBaseDamage = 10f;
+
     //firefighter
     public static float fireFighterBaseDamage = 10f;
     public static float fireFighterAttackSpeed = 0.28f;
@@ -205,7 +208,7 @@ public class PlayerStats {
 
     private void initCarrierPreset() {
         setAttackSpeed(carrierBaseAttackSpeed);
-        setBaseDamage(DevTestSettings.instaKill ? carrierBaseDamage * 100 : carrierBaseDamage);
+        setBaseDamage(carrierBaseDamage);
         this.maxHitPoints = carrierBaseHitpoints;
         this.maxShieldHitPoints = carrierBaseHitpoints;
         this.defaultMaxAmountOfProtoss = 12;
@@ -221,7 +224,7 @@ public class PlayerStats {
 
     private void initFireFighterPreset() {
         setAttackSpeed(fireFighterAttackSpeed);
-        setBaseDamage(DevTestSettings.instaKill ? fireFighterBaseDamage * 100 : fireFighterBaseDamage);
+        setBaseDamage(fireFighterBaseDamage);
         this.attackType = PlayerPrimaryAttackTypes.Flamethrower;
         setPlayerMissileImage(ImageEnums.FireFighterFlameThrowerLooping);
         setPlayerMissileImpactImage(null);
@@ -401,7 +404,7 @@ public class PlayerStats {
     }
 
     public float getBaseDamage() {
-        return baseDamage;
+        return DevTestSettings.instaKill ? baseDamage * 100000 : baseDamage;
     }
 
     public int getCurrentLevel() {

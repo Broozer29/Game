@@ -31,8 +31,6 @@ public enum MenuFunctionEnums {
 	UpgradeBountyHunter,
 	SelectTreasureHunter,
 	UpgradeTreasureHunter,
-	SelectThickHide,
-	UpgradeThickHide,
 	SelectDefaultGameMode,
 	SelectManModeGameMode,
 	SelectMonoCulturalGameMode,

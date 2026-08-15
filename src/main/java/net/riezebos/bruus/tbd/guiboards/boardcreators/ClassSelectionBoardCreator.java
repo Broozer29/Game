@@ -1,8 +1,10 @@
 package net.riezebos.bruus.tbd.guiboards.boardcreators;
 
+import net.riezebos.bruus.tbd.game.gameobjects.missiles.missiletypes.MutaliskMissile;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerClass;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
 import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.primary.FireFighterPrimaryGun;
+import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.primary.MutaliskPrimaryGun;
 import net.riezebos.bruus.tbd.game.playerprofile.PlayerProfileManager;
 import net.riezebos.bruus.tbd.guiboards.boardEnums.MenuFunctionEnums;
 import net.riezebos.bruus.tbd.guiboards.guicomponents.DisplayOnly;
@@ -179,7 +181,6 @@ public class ClassSelectionBoardCreator {
         String descriptionText = getPrimaryWeaponDescription(playerClass);
 
         WeaponDescription weaponDescription = new WeaponDescription(descriptionTitle, descriptionText);
-        weaponDescription.setAttackType(playerClass.getPrimaryAttackType());
 
         return weaponDescription;
     }
@@ -198,6 +199,12 @@ public class ClassSelectionBoardCreator {
             case Carrier:
                 if (PlayerProfileManager.getInstance().getLoadedProfile().isCarrierUnlocked()) {
                     return "Primary: Switch gears";
+                }
+
+                return "Locked";
+            case Mutalisk:
+                if (PlayerProfileManager.getInstance().getLoadedProfile().isMutaliskUnlocked()) {
+                    return "Primary: Bile";
                 }
 
                 return "Locked";
@@ -223,7 +230,7 @@ public class ClassSelectionBoardCreator {
                 return ClassDescription.getInstance(PlayerClass.Carrier).getUnlockCondition();
             case Mutalisk:
                 if (PlayerProfileManager.getInstance().getLoadedProfile().isMutaliskUnlocked()) {
-                    return "Mutalisk primary";
+                    return "Spit a ball of Bile that explodes after a short distance. Exploding Bile creates Bile Bits that damages enemies. If Bile strikes an enemy instead, deal " + Math.round(MutaliskPrimaryGun.damageRatio * 100) + "% damage and heal for " + Math.round(MutaliskMissile.healAmount) + " hitpoints.";
                 }
 
                 return ClassDescription.getInstance(PlayerClass.Mutalisk).getUnlockCondition();
@@ -250,7 +257,6 @@ public class ClassSelectionBoardCreator {
         String descriptionText = getSecondarySkillDescription(playerClass);
 
         WeaponDescription weaponDescription = new WeaponDescription(descriptionTitle, descriptionText);
-        weaponDescription.setSpecialAttackType(playerClass.getSecondaryAttackType());
 
         return weaponDescription;
     }
@@ -272,7 +278,7 @@ public class ClassSelectionBoardCreator {
                 return "Locked";
             case Mutalisk:
                 if (PlayerProfileManager.getInstance().getLoadedProfile().isMutaliskUnlocked()) {
-                    return "Secondary: Mutalisk secondary";
+                    return "Secondary: Vile Eruption";
                 }
                 return "Locked";
         }
@@ -311,6 +317,11 @@ public class ClassSelectionBoardCreator {
                     return "Places a beacon in front of you. Protoss ships will prioritize hovering around the beacon instead of the Carrier.";
                 }
                 return ClassDescription.getInstance(PlayerClass.Carrier).getUnlockCondition();
+            case Mutalisk:
+                if(PlayerProfileManager.getInstance().getLoadedProfile().isMutaliskUnlocked()) {
+                    return "Hold your secondary to charge up a devastating explosion. The longer you charge the harder it hits but you rapidly lose health whilst charging.";
+                }
+                return ClassDescription.getInstance(PlayerClass.Mutalisk).getUnlockCondition();
         }
         return "Placeholder";
     }

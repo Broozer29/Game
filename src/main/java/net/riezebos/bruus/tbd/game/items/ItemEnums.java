@@ -60,7 +60,11 @@ public enum ItemEnums {
 
 
     //Mutalisk relics
-    Consume(ItemRarityEnums.Relic, ImageEnums.Test_Image, "Consume", true),
+    Consume(ItemRarityEnums.Relic, ImageEnums.Consume, "Consume", true),
+    ThickHide(ItemRarityEnums.Common, ImageEnums.Test_Image, "Thick Hide", true),
+    InstantViralEruption(ItemRarityEnums.Relic, ImageEnums.Test_Image, "InstantViralEruption", true),
+    BileTravelRange(ItemRarityEnums.Relic, ImageEnums.Test_Image, "BileTravelTRange", true),
+
 
     //-----------------------------
     ArmorPiercingRounds(ItemRarityEnums.Rare, ImageEnums.Starcraft2_Armor_Piercing, "Piercing Rounds", true),

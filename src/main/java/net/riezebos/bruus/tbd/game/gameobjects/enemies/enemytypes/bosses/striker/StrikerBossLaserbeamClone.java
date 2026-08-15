@@ -85,7 +85,9 @@ public class StrikerBossLaserbeamClone extends Enemy {
 
         //Theoretically, this should never happen, but there are reports that clones are not correctly deleted so this might be a safeguard
         if(shouldBeDead){
-            this.destructionAnimation.setCenterCoordinates(this.getCenterXCoordinate(), this.getCenterYCoordinate());
+            if(this.destructionAnimation != null) {
+                this.destructionAnimation.setCenterCoordinates(this.getCenterXCoordinate(), this.getCenterYCoordinate());
+            }
             this.takeDamage(this.getMaxHitPoints() * 100000);
             this.setVisible(false);
         }

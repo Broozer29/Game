@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
 import net.riezebos.bruus.tbd.game.gameobjects.player.boons.BoonManager;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
+import net.riezebos.bruus.tbd.game.gamestate.GameStatsTracker;
 import net.riezebos.bruus.tbd.game.gamestate.ShopManager;
 import net.riezebos.bruus.tbd.game.level.LevelManager;
 
@@ -54,6 +55,7 @@ public class SaveManager {
             GameState.getInstance().loadInSaveFile(saveFile);
             BoonManager.getInstance().loadInSaveFile(saveFile);
             LevelManager.getInstance().loadInSaveFile(saveFile);
+            GameStatsTracker.getInstance().loadInSaveFile(saveFile);
 
             ShopManager.getInstance().setLastLevelDifficultyScore(saveFile.getLastKnownDifficultyScore());
             ShopManager.getInstance().setLastLevelDifficulty(saveFile.getLastKnownLevelDifficulty());

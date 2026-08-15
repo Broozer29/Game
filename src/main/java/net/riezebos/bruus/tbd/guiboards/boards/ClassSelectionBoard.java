@@ -254,8 +254,8 @@ public class ClassSelectionBoard extends JPanel implements TimerHolder {
                 break;
             case Mutalisk:
                 if (PlayerProfileManager.getInstance().getLoadedProfile().isMutaliskUnlocked()) {
-                    primaryWeaponIcon.setNewImage(ImageEnums.Test_Image);
-                    secondaryWeaponIcon.setNewImage(ImageEnums.Test_Image);
+                    primaryWeaponIcon.setNewImage(ImageEnums.BileIcon);
+                    secondaryWeaponIcon.setNewImage(ImageEnums.VileEruptionIcon);
                 } else {
                     primaryWeaponIcon.setNewImage(ImageEnums.LockedIcon);
                     secondaryWeaponIcon.setNewImage(ImageEnums.LockedIcon);
@@ -284,6 +284,8 @@ public class ClassSelectionBoard extends JPanel implements TimerHolder {
             String desciption = classDescription.getDescription();
             String title = classDescription.getTitle();
             String hitpoints = "Hitpoints: " + classDescription.getMaxHitpoints();
+            String damage = "Damage: " + PlayerStats.sharedBaseDamage;
+            String attackSpeed = "Attack speed: " + classDescription.getAttackSpeed();
             String difficulty = "Difficulty: " + classDescription.getDifficulty();
 
 
@@ -323,6 +325,18 @@ public class ClassSelectionBoard extends JPanel implements TimerHolder {
                 g.setFont(new Font(textFont, Font.PLAIN, Math.round(16 * DataClass.getInstance().getResolutionFactor())));
                 FontMetrics metrics = g.getFontMetrics();
                 drawDescriptionText(g, hitpoints, descriptionX, descriptionY, maxTextWidth, Color.ORANGE);
+                descriptionY += metrics.getHeight();
+            }
+
+            if (damage != null) {
+                FontMetrics metrics = g.getFontMetrics();
+                drawDescriptionText(g, damage, descriptionX, descriptionY, maxTextWidth, Color.ORANGE);
+                descriptionY += metrics.getHeight();
+            }
+
+            if (attackSpeed != null) {
+                FontMetrics metrics = g.getFontMetrics();
+                drawDescriptionText(g, attackSpeed, descriptionX, descriptionY, maxTextWidth, Color.ORANGE);
                 descriptionY += metrics.getHeight();
             }
 

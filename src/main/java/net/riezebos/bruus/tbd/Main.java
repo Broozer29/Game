@@ -8,14 +8,17 @@ import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyEnums;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.laserbeams.AngledLaserBeam;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.laserbeams.Laserbeam;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.laserbeams.LaserbeamConfiguration;
+import net.riezebos.bruus.tbd.game.items.ItemDescriptionRetriever;
 import net.riezebos.bruus.tbd.game.level.SpawningCoordinator;
 import net.riezebos.bruus.tbd.game.movement.Direction;
 import net.riezebos.bruus.tbd.game.movement.Point;
 import net.riezebos.bruus.tbd.guiboards.BoardManager;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.AudioDatabase;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageDatabase;
+import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageResizer;
 
 import java.awt.*;
+import java.awt.image.BufferedImage;
 
 public class Main {
     private static volatile boolean guiInitialized = false;
@@ -27,35 +30,22 @@ public class Main {
 
         try {
             logDiagnostic("=== Application Starting ===");
-            logDiagnostic("Java Version: " + System.getProperty("java.version"));
-            logDiagnostic("OS: " + System.getProperty("os.name") + " " + System.getProperty("os.version"));
-
             // Detect and log OpenGL/hardware acceleration availability
             detectHardwareAcceleration();
 
             logDiagnostic("OpenGL enabled: " + System.getProperty("sun.java2d.opengl"));
-            logDiagnostic("Graphics Environment: " + GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getIDstring());
-
             ControllerManager.getInstance().initControllers();
-            logDiagnostic("Controllers initialized");
-
             Platform.startup(() -> {
                 // This initializes the JavaFX application thread, which is needed for MediaPlayer
             });
-            logDiagnostic("JavaFX Platform started");
-
             EventQueue.invokeLater(new Runnable() {
                 public void run() {
                     try {
-                        logDiagnostic("EventQueue started");
                         // Create and show the window with loading screen first
                         BoardManager ex = BoardManager.getInstance();
-                        logDiagnostic("BoardManager instance created");
-
                         ex.setVisible(true);
                         ex.validate();
                         ex.repaint();
-                        logDiagnostic("Window set to visible");
 
                         guiInitialized = true;
 
@@ -68,20 +58,18 @@ public class Main {
 
                         // Load assets on a background thread to not block EDT
                         new Thread(() -> {
-                            System.out.println("Loading assets...");
                             logDiagnostic("Loading assets...");
                             AudioDatabase loadingAudioInstance = AudioDatabase.getInstance();
                             ImageDatabase loadingImageInstance = ImageDatabase.getInstance();
 
-                            System.out.println("Preloading assets...");
                             logDiagnostic("Preloading assets...");
                             preloadThings();
 
+//                            exportItemDescriptions();
                             assetsLoaded = true;
 
                             // Finish initialization back on EDT
                             EventQueue.invokeLater(() -> {
-                                System.out.println("Finishing initialization...");
                                 logDiagnostic("Finishing initialization...");
                                 ex.finishInitialization();
                                 ex.initMainMenu();
@@ -160,27 +148,24 @@ public class Main {
             GraphicsConfiguration gc = gd.getDefaultConfiguration();
 
             // Check if hardware acceleration is available
-            logDiagnostic("Graphics Device: " + gd.getIDstring());
-            logDiagnostic("Available Accelerated Memory: " + gd.getAvailableAcceleratedMemory() + " bytes");
 
             // Check what's actually being used by Java2D
             String openglEnabled = System.getProperty("sun.java2d.opengl");
-            String d3dEnabled = System.getProperty("sun.java2d.d3d");
-            String noddrawEnabled = System.getProperty("sun.java2d.noddraw");
 
-            logDiagnostic("sun.java2d.opengl property: " + (openglEnabled != null ? openglEnabled : "not set"));
-            logDiagnostic("sun.java2d.d3d property: " + (d3dEnabled != null ? d3dEnabled : "not set"));
-            logDiagnostic("sun.java2d.noddraw property: " + (noddrawEnabled != null ? noddrawEnabled : "not set"));
-
-            // Try to detect if OpenGL pipeline is actually loaded
-            String pipelineClass = System.getProperty("sun.java2d.opengl.fbobject");
+            // Check if OpenGL was enabled but is not actually working
             if (openglEnabled != null && openglEnabled.equals("true")) {
                 if (gd.getAvailableAcceleratedMemory() == 0) {
-                    logDiagnostic("WARNING: OpenGL enabled but no accelerated memory available - may cause issues");
-                    logDiagnostic("RECOMMENDATION: Consider disabling OpenGL acceleration for this system");
+                    logDiagnostic("WARNING: OpenGL enabled but no accelerated memory available");
+                    logDiagnostic("This may cause rendering issues or crashes");
+                    logDiagnostic("Hardware acceleration will be used anyway - if you experience issues,");
+                    logDiagnostic("you can disable it by editing the launch configuration");
                 } else {
-                    logDiagnostic("OpenGL appears to be available and properly configured");
+                    logDiagnostic("OpenGL hardware acceleration is active and functioning");
+                    logDiagnostic("This should improve performance, especially on 4K displays");
                 }
+            } else {
+                logDiagnostic("Hardware acceleration is NOT enabled (using software rendering)");
+                logDiagnostic("Performance may be reduced, especially at higher resolutions");
             }
 
             // Check if we're in a headless environment
@@ -188,10 +173,10 @@ public class Main {
                 logDiagnostic("ERROR: Running in headless environment - GUI will not work");
             }
 
-            // Log graphics card capabilities
-            logDiagnostic("Graphics Configuration: " + gc.toString());
-            logDiagnostic("Color Model: " + gc.getColorModel().toString());
-
+            // Log display information for 4K troubleshooting
+            DisplayMode dm = gd.getDisplayMode();
+            logDiagnostic("Display Resolution: " + dm.getWidth() + "x" + dm.getHeight() +
+                         " @" + dm.getRefreshRate() + "Hz " + dm.getBitDepth() + "bit");
         } catch (Exception e) {
             logError("Error detecting hardware acceleration capabilities", e);
         }
@@ -274,6 +259,95 @@ public class Main {
         for(float i = 0; i < 360; i += Laserbeam.defaultMaxRotationPerUpdate){
             blueLaserBeam.setAngleDegrees(i);
             blueLaserBeam.update();
+        }
+    }
+
+
+    /*
+       The ideal version of this method does the following:
+       Exports a .csv file with the item descriptions using the following setup
+
+       <ItemEnums.name>
+       <ItemEnums.itemIcon>
+       <ItemEnums.itemRarity>
+       <Item Cost>
+       <ItemEnums.itemDescription>
+       <break line>
+
+       <ItemEnums.name>
+       <ItemEnums.itemIcon>
+       <ItemEnums.itemRarity>
+       <Item Cost>
+       <ItemEnums.itemDescription>
+       <break line>
+
+
+       How to retrieve this info:
+       Iterate over all entries in ItemEnums and filter out the ones that are not enabled (ItemEnums.enabled)
+       Iterate over the remaining entries and retrieve the string description using ItemDescriptionRetriever.getItemDescription(itemEnums)
+       Iterate over the remaining entries and retrieve the image using ImageDatabase.getInstance().getImage(ItemEnum.getItemIcon());
+       Iterate over the remaining entries and retrieve the rarity using ItemEnums.getItemRarity()
+       Iterate over the remaining entries and retrieve the cost using ItemEnums.getItemRarity().getCost
+       Iterate over the remaining entries and retrieve the name using ItemEnums.getItemName()
+     */
+    private static void exportItemDescriptions(){
+        try (java.io.PrintWriter writer = new java.io.PrintWriter(new java.io.FileWriter("item_descriptions.html"))) {
+            writer.println("<!DOCTYPE html>");
+            writer.println("<html>");
+            writer.println("<head>");
+            writer.println("<meta charset=\"UTF-8\">");
+            writer.println("<title>Item Descriptions</title>");
+            writer.println("<style>");
+            writer.println("body { font-family: Arial, sans-serif; margin: 20px; background-color: #1a1a1a; color: #ffffff; }");
+            writer.println(".item { margin-bottom: 20px; padding: 10px; border: 1px solid #444; background-color: #2a2a2a; }");
+            writer.println(".item img { width: 140px; height: 140px; }");
+            writer.println(".item-name { font-weight: bold; font-size: 1.75em; margin-bottom: 5px; }");
+            writer.println("</style>");
+            writer.println("</head>");
+            writer.println("<body>");
+
+            for (net.riezebos.bruus.tbd.game.items.ItemEnums item : net.riezebos.bruus.tbd.game.items.ItemEnums.values()) {
+                if (!item.isEnabled()) {
+                    continue;
+                }
+
+                String name = item.getItemName();
+                BufferedImage iconImage = ImageDatabase.getInstance().getImage(item.getItemIcon());
+                iconImage = ImageResizer.getInstance().resizeImageToDimensions(iconImage, 200, 200);
+                String rarity = item.getItemRarity().toString();
+                Color rarityColor = item.getItemRarity().getColor();
+                String colorHex = String.format("#%02x%02x%02x", rarityColor.getRed(), rarityColor.getGreen(), rarityColor.getBlue());
+                int cost = Math.round(item.getItemRarity().getItemCost());
+                String description = ItemDescriptionRetriever.getDescriptionOfItem(item);
+
+                writer.println("<div class=\"item\">");
+                writer.println("<div class=\"item-name\">" + name + "</div>");
+
+                // Embed image as base64
+                if (iconImage != null) {
+                    try {
+                        java.io.ByteArrayOutputStream baos = new java.io.ByteArrayOutputStream();
+                        javax.imageio.ImageIO.write(iconImage, "png", baos);
+                        String base64Image = java.util.Base64.getEncoder().encodeToString(baos.toByteArray());
+                        writer.println("<div><img src=\"data:image/png;base64," + base64Image + "\" alt=\"" + name + "\"></div>");
+                    } catch (Exception e) {
+                        writer.println("<div>No image</div>");
+                    }
+                }
+
+                writer.println("<div style=\"color: " + colorHex + ";\">" + rarity + "</div>");
+                writer.println("<div>$" + cost + "</div>");
+                writer.println("<div>" + description + "</div>");
+                writer.println("</div>");
+                writer.println();
+            }
+
+            writer.println("</body>");
+            writer.println("</html>");
+
+            System.out.println("Item descriptions exported to item_descriptions.html");
+        } catch (java.io.IOException e) {
+            logError("Failed to export item descriptions", e);
         }
     }
 

@@ -89,6 +89,8 @@ public class FriendlyStation extends GameObject {
         return distance > attackRange;
     }
 
+    public static float damageModifier = 0.15f;
+    public static float attackSpeed = 0.15f;
     private void fireAction() {
         MissileEnums missileType = MissileEnums.PlayerLaserbeam;
         SpriteConfiguration missileSpriteConfiguration = new SpriteConfiguration();
@@ -99,7 +101,7 @@ public class FriendlyStation extends GameObject {
 
         float movementSpeed = 12f;
 
-        float damage = (PlayerStats.getInstance().getBaseDroneDamage() * (PlayerManager.getInstance().getRandomSpaceShip().getDroneDamageModifier() * 1.5f)) * 0.15f; //small increase in drone damage modifier to enable drone scaling because of the massive damage reduction
+        float damage = (PlayerStats.getInstance().getBaseDroneDamage() * (PlayerManager.getInstance().getRandomSpaceShip().getDroneDamageModifier() * 1.5f)) * damageModifier; //small increase in drone damage modifier to enable drone scaling because of the massive damage reduction
         Direction rotation = Direction.RIGHT;
         PathFinder pathFinder = new StraightLinePathFinder();
 

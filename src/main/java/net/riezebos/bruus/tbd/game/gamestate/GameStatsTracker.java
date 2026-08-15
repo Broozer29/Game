@@ -1,5 +1,9 @@
 package net.riezebos.bruus.tbd.game.gamestate;
 
+import net.riezebos.bruus.tbd.game.gamestate.save.SaveFile;
+import net.riezebos.bruus.tbd.game.items.ItemEnums;
+import net.riezebos.bruus.tbd.game.items.PlayerInventory;
+import net.riezebos.bruus.tbd.game.items.items.mutalisk.Consume;
 import net.riezebos.bruus.tbd.game.level.directors.GodRunDetector;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
 
@@ -60,6 +64,11 @@ public class GameStatsTracker {
         enemiesKilled += amount;
         enemiesKilledThisRound += amount;
         GodRunDetector.getInstance().addEnemyKilled();
+
+        if(PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.Consume) != null){
+            Consume consume = (Consume) PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.Consume);
+            consume.applyEffectToObject(null); //recheck how much hitpoints should be given
+        }
     }
 
     public void addMoneyAcquired (float amount) {
@@ -111,5 +120,9 @@ public class GameStatsTracker {
 
     public int getEnemiesSpawned () {
         return enemiesSpawned;
+    }
+
+    public void loadInSaveFile(SaveFile saveFile) {
+        this.enemiesKilled = saveFile.getEnemiesKilled();
     }
 }

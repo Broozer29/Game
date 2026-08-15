@@ -4,8 +4,12 @@ import net.riezebos.bruus.tbd.game.gameobjects.neutral.Explosion;
 import net.riezebos.bruus.tbd.game.gameobjects.neutral.ExplosionConfiguration;
 import net.riezebos.bruus.tbd.game.gameobjects.neutral.ExplosionManager;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerSpecialAttackTypes;
+import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
 import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SecondaryPlayerGun;
 import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SpaceShip;
+import net.riezebos.bruus.tbd.game.items.ItemEnums;
+import net.riezebos.bruus.tbd.game.items.PlayerInventory;
+import net.riezebos.bruus.tbd.game.items.items.mutalisk.InstantViralEruption;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.AnimationManager;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteAnimation;
@@ -15,14 +19,18 @@ import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.Sprit
 public class MutaliskSecondaryGun extends SecondaryPlayerGun {
 
     private SpriteAnimation chargingUpAnimation;
-    public static float healthPercentagePerTick = 0.015f;
-    public static float damagePerTickBonus = 0.15f;
+    public static float healthPercentagePerTick = 0.012f;
+    private float hitPointsPerTick = 0;
+    public static float damagePerTickBonus = 0.175f;
     public static float damageModifier = 1.5f;
     public int ticksCounted = 0;
 
 
     public MutaliskSecondaryGun() {
         initBlankChargeUpAnim();
+        // MAAK EEN KEUZE: Doet het % van maxHealth? Dan helpt max hitpoints scaling alleen tegen enemies en heeft het hier geen synergy
+        //               OF: Doet het een vaste hoeveelheid? (Huidig) nu heb je het probleem dat health regen dit eventueel kan outscalen?
+        hitPointsPerTick = PlayerStats.mutaliskBaseHitpoints * healthPercentagePerTick;
     }
 
     private void initBlankChargeUpAnim() {
@@ -41,9 +49,6 @@ public class MutaliskSecondaryGun extends SecondaryPlayerGun {
         if (!owner.isAllowedToAttack()) {
             return;
         }
-
-        healthPercentagePerTick = 0.012f;
-        damagePerTickBonus = 0.175f;
 
         if (specialAttackCharges > 0) {
             handleMutaliskSpecialAttack(owner);
@@ -94,6 +99,11 @@ public class MutaliskSecondaryGun extends SecondaryPlayerGun {
             return;
         }
 
+        if(PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.InstantViralEruption) != null){
+            handleInstantSecondaryCharge(owner);
+            return; //intentionally break early
+        }
+
 
         //if the owner would DIE from this tick, release it instead
         if(owner.getCurrentHitpoints() - (owner.getMaxHitPoints() * healthPercentagePerTick) <= 1){
@@ -110,8 +120,22 @@ public class MutaliskSecondaryGun extends SecondaryPlayerGun {
         }
 
         chargingUpAnimation.setCenterCoordinates(owner.getCenterXCoordinate(), owner.getCenterYCoordinate());
-        owner.setCurrentHitpoints(owner.getCurrentHitpoints() - (owner.getMaxHitPoints() * healthPercentagePerTick));
+        owner.setCurrentHitpoints(owner.getCurrentHitpoints() - hitPointsPerTick);
         ticksCounted += 1;
     }
+
+
+    private void handleInstantSecondaryCharge(SpaceShip owner){
+        if(owner.getCurrentHitpoints() - (owner.getMaxHitPoints() * (InstantViralEruption.hitpointsPerUse)) <= 1){
+            return; //dont fire as it would kill us
+        }
+
+        float healthCost = owner.getMaxHitPoints() * (InstantViralEruption.hitpointsPerUse);
+
+        ticksCounted = Math.round(InstantViralEruption.hitpointsPerUse / healthPercentagePerTick);
+        owner.setCurrentHitpoints(owner.getCurrentHitpoints() - healthCost);
+        stopFiring(owner);
+    }
+
 
 }

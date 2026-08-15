@@ -12,6 +12,10 @@ import net.riezebos.bruus.tbd.game.items.items.deprecated.ArmorPiercingRounds;
 import net.riezebos.bruus.tbd.game.items.items.deprecated.MoneyPrinter;
 import net.riezebos.bruus.tbd.game.items.items.deprecated.RepulsionArmorPlate;
 import net.riezebos.bruus.tbd.game.items.items.firefighter.*;
+import net.riezebos.bruus.tbd.game.items.items.mutalisk.BileTravelPlaceholder;
+import net.riezebos.bruus.tbd.game.items.items.mutalisk.Consume;
+import net.riezebos.bruus.tbd.game.items.items.mutalisk.InstantViralEruption;
+import net.riezebos.bruus.tbd.game.items.items.mutalisk.ThickHide;
 import net.riezebos.bruus.tbd.game.playerprofile.PlayerProfileManager;
 import net.riezebos.bruus.tbd.guiboards.BoardManager;
 import net.riezebos.bruus.tbd.guiboards.boardcreators.AchievementUnlockHelper;
@@ -35,12 +39,15 @@ public class PlayerInventory {
 
     public void resetInventory() {
         items.clear();
-        Contract.killCountRequired = Contract.originalCountRequired; //todo Sloppy fix, if HelpRequested is removed from the inventory, contract count will be wrong and require a reset
+
+        //todo Sloppy fixes to reset items here tbh
+        Contract.killCountRequired = Contract.originalCountRequired;
+        Consume.currentKillCount = 0;
+        Consume.currentMaxHpBonus = 0;
 
         if (DevTestSettings.infiniteMoney) {
-
             cashMoney = 999999999999f;
-            addItem(ItemEnums.Stuivie);
+            addItem(ItemEnums.BileTravelRange);
         } else {
             cashMoney = 0;
         }
@@ -103,6 +110,14 @@ public class PlayerInventory {
 
     public Item createItemFromEnum(ItemEnums itemEnum) {
         switch (itemEnum) {
+            case BileTravelRange:
+                return new BileTravelPlaceholder();
+            case InstantViralEruption:
+                return new InstantViralEruption();
+            case ThickHide:
+                return new ThickHide();
+            case Consume:
+                return new Consume();
             case WisdomBall:
                 return new WisdomBall();
             case LeechingLasers:

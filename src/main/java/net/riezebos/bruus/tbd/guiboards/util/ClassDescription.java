@@ -15,6 +15,7 @@ public class ClassDescription {
     private int maxHitpoints;
     private String difficulty;
     private String unlockCondition;
+    private float attackSpeed;
 
     private ClassDescription(PlayerClass playerClass) {
         updateClassDescriptionBox(playerClass);
@@ -37,12 +38,14 @@ public class ClassDescription {
                         "The Fire Fighter specializes in applying damage over time effects but has a very short attack range.";
                 maxHitpoints = PlayerStats.fireFighterHitpoints;
                 difficulty = "Hard";
+                attackSpeed = PlayerStats.fireFighterAttackSpeed;
                 unlockCondition = "Defeat 2 bosses in a single run";
                 break;
             case Captain:
                 title = "Captain";
                 description = "The Captain shoots laserbeams and uses a rapidly recharging EMP to destroy any nearby missiles or enemies. ";
                 maxHitpoints = PlayerStats.captainBaseHitpoints;
+                attackSpeed = PlayerStats.captainBaseAttackSpeed;
                 difficulty = "Medium";
                 break;
             case Carrier:
@@ -51,6 +54,7 @@ public class ClassDescription {
                         "The Carrier can deploy a destructable beacon, Protoss ships will prioritize flying around the beacon. Switching gears allows the Carrier to rebuild destroyed Protoss ships or " +
                         "rapidly move away from danger.";
                 maxHitpoints = PlayerStats.carrierBaseHitpoints;
+                attackSpeed = PlayerStats.carrierBaseAttackSpeed;
                 difficulty = "Easy";
                 unlockCondition = "Encounter and defeat the Carrier boss";
                 break;
@@ -58,7 +62,8 @@ public class ClassDescription {
                 title = "Mutalisk";
                 description = "Mutalisk";
                 maxHitpoints = PlayerStats.mutaliskBaseHitpoints;
-                difficulty = "Hard";
+                attackSpeed = PlayerStats.mutaliskBaseAttackSpeed;
+                difficulty = "Very Difficult";
                 unlockCondition = "Deze gaat nog heel lang duren voordat die speelbaar is";
             default:
                 break;
@@ -92,5 +97,9 @@ public class ClassDescription {
 
     public String getUnlockCondition() {
         return unlockCondition;
+    }
+
+    public Float getAttackSpeed() {
+        return attackSpeed;
     }
 }

@@ -143,7 +143,6 @@ public class MenuButton extends GUIComponent {
             case SelectCompoundWealth:
             case SelectTreasureHunter:
             case SelectBountyHunter:
-            case SelectThickHide:
                 if (BoonSelectionBoardCreator.getBoonByMenuFunctionality(menuFunctionality).isUnlocked()) {
                     BoonManager.getInstance().setUtilityBoon(BoonSelectionBoardCreator.getBoonByMenuFunctionality(menuFunctionality));
                 }
@@ -153,7 +152,6 @@ public class MenuButton extends GUIComponent {
             case UpgradeCompoundWealth:
             case UpgradeTreasureHunter:
             case UpgradeBountyHunter:
-            case UpgradeThickHide:
                 Boon boon = BoonSelectionBoardCreator.getBoonByMenuFunctionality(menuFunctionality);
                 boon.upgradeBoon();
                 BoardManager.getInstance().getUpgradeSelectionBoard().recreateList();

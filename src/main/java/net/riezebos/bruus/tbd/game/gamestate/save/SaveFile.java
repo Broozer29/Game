@@ -6,6 +6,7 @@ import net.riezebos.bruus.tbd.game.gameobjects.player.boons.BoonEnums;
 import net.riezebos.bruus.tbd.game.gameobjects.player.boons.BoonManager;
 import net.riezebos.bruus.tbd.game.gamestate.GameMode;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
+import net.riezebos.bruus.tbd.game.gamestate.GameStatsTracker;
 import net.riezebos.bruus.tbd.game.gamestate.GameStatusEnums;
 import net.riezebos.bruus.tbd.game.items.Item;
 import net.riezebos.bruus.tbd.game.items.ItemEnums;
@@ -30,6 +31,7 @@ public class SaveFile {
     private float difficultyCoefficient = GameState.getInstance().getDifficultyCoefficient();
     private int stagesCompleted;
     private int bossesDefeated;
+    private int enemiesKilled;
     private long gameTicksExecuted;
     private float money;
     private int lastKnownDifficultyScore = 0;
@@ -52,7 +54,7 @@ public class SaveFile {
         lastKnownDifficultyScore = LevelManager.getInstance().getDifficultyScore();
         lastKnownLevelDifficulty = LevelManager.getInstance().getCurrentLevelDifficulty();
         lastKnownMiniBossConfig = LevelManager.getInstance().getCurrentMiniBossConfig();
-
+        enemiesKilled = GameStatsTracker.getInstance().getEnemiesKilled();
 
         selectedBoon = BoonManager.getInstance().getActiveBoon() != null ? BoonManager.getInstance().getActiveBoon().getBoonEnum() : null;
 
@@ -182,5 +184,13 @@ public class SaveFile {
 
     public void setLastKnownMiniBossConfig(MiniBossConfig lastKnownMiniBossConfig) {
         this.lastKnownMiniBossConfig = lastKnownMiniBossConfig;
+    }
+
+    public int getEnemiesKilled() {
+        return enemiesKilled;
+    }
+
+    public void setEnemiesKilled(int enemiesKilled) {
+        this.enemiesKilled = enemiesKilled;
     }
 }

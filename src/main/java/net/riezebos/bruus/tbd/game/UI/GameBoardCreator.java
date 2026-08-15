@@ -450,6 +450,7 @@ public class GameBoardCreator {
         createProgressBar();
         createGameOverCard();
         createMineralIcon();
+        createDamageOverlay();
 
         createRelicSelectionComponents();
         gameOverPeepoRandomNumber = -100;

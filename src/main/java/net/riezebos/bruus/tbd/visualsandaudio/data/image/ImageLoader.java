@@ -181,6 +181,12 @@ public class ImageLoader {
                 return "/images/background/Starfield4.png";
             case SmallDroneItemIcon:
                 return "/images/Icons/smalldroneicon.jpg";
+            case Consume:
+                return "/images/Icons/consume.png";
+            case VileEruptionIcon:
+                return "/images/Icons/viraleruption.png";
+            case BileIcon:
+                return "/images/Icons/bile.png";
             case Starcraft2_Auto_Tracking:
                 return "/images/Icons/Starcraft2 Auto Tracking.png";
             case Starcraft2_Blue_Flame:

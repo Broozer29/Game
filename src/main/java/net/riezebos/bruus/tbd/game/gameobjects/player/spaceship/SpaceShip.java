@@ -27,6 +27,7 @@ import net.riezebos.bruus.tbd.game.items.effects.EffectIdentifiers;
 import net.riezebos.bruus.tbd.game.items.effects.effectimplementations.PassiveHealthRegeneration;
 import net.riezebos.bruus.tbd.game.items.enums.ItemApplicationEnum;
 import net.riezebos.bruus.tbd.game.items.items.carrier.KineticDynamo;
+import net.riezebos.bruus.tbd.game.items.items.mutalisk.Consume;
 import net.riezebos.bruus.tbd.game.level.LevelManager;
 import net.riezebos.bruus.tbd.game.level.directors.DirectorManager;
 import net.riezebos.bruus.tbd.game.level.enums.LevelTypes;
@@ -87,6 +88,7 @@ public class SpaceShip extends GameObject {
     private float specialAttackRechargeCooldownModifier = 1f;
     private float shieldRegenModifier = 1;
     private boolean continueShieldRegenThroughDamage = false;
+    private float maxHitpointsModifier = 1;
 
     private float igniteDurationModifier = 1;
     private float fuelCannisterUsageModifier = 1;
@@ -892,7 +894,12 @@ public class SpaceShip extends GameObject {
 
     @Override
     public float getMaxHitPoints() {
-        return PlayerStats.getInstance().getMaxHitPoints();
+        float bonus = 0;
+        if(PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.Consume) != null){
+            bonus = Consume.currentMaxHpBonus;
+        }
+
+        return PlayerStats.getInstance().getMaxHitPoints() * maxHitpointsModifier + bonus;
     }
 
     public PrimaryPlayerGun getSpaceShipRegularGun() {
@@ -1130,4 +1137,13 @@ public class SpaceShip extends GameObject {
     public void setAllowedToAttack(boolean allowedToAttack) {
         isAllowedToAttack = allowedToAttack;
     }
+
+    public float getMaxHitpointsModifier() {
+        return maxHitpointsModifier;
+    }
+
+    public void setMaxHitpointsModifier(float maxHitpointsModifier) {
+        this.maxHitpointsModifier = maxHitpointsModifier;
+    }
+
 }

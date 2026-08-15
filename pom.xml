@@ -130,7 +130,7 @@
                         <option>-Xms4g</option>
                         <option>-Xmx8g</option>
                         <option>-XX:+UseG1GC</option>
-                        <option>-Dsun.java2d.opengl=false</option>
+                        <option>-Dsun.java2d.opengl=true</option>
                         <option>-Dsun.java2d.accthresh=0</option>
                     </javaOptions>
                     <resourceDir>src/main/resources</resourceDir>
