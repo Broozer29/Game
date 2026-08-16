@@ -9,8 +9,8 @@ import net.riezebos.bruus.tbd.game.items.PlayerInventory;
 import net.riezebos.bruus.tbd.game.items.enums.ItemApplicationEnum;
 
 public class BileTravelPlaceholder extends Item {
-    public static float bonusTravelRange = 150f;
-    public static float timeBetweenExplosion = 0.5f;
+    public static float bonusTravelRange = 2;
+    public static float timeBetweenExplosion = 0.35f;
 
     public BileTravelPlaceholder () {
         super(ItemEnums.BileTravelRange, 1, ItemApplicationEnum.CustomActivation);

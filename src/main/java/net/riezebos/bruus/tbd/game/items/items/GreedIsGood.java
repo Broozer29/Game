@@ -14,7 +14,7 @@ public class GreedIsGood extends Item {
     public static float mineralsPerPickupChance = 0.125f;
 
     public GreedIsGood() {
-        super(ItemEnums.GreedIsGood, 1, ItemApplicationEnum.AfterCollision);
+        super(ItemEnums.CashInfusion, 1, ItemApplicationEnum.AfterCollision);
     }
 
 

@@ -28,7 +28,7 @@ public enum ItemEnums {
     //generic relics
     Placeholder(ItemRarityEnums.Relic, ImageEnums.SmallDroneItemIcon, "Placeholder", true),
     BonusKaart(ItemRarityEnums.Relic, ImageEnums.BonusKaart, "Bonus Kaart", true),
-    GreedIsGood(ItemRarityEnums.Relic, ImageEnums.Test_Image, "Cash Infusion", true),
+    CashInfusion(ItemRarityEnums.Relic, ImageEnums.CashInfusion, "Cash Infusion", true),
     ShieldStabilizer(ItemRarityEnums.Relic,  ImageEnums.ShieldStabilizer, "Shield Stabilizer", true),
     GlassCannon(ItemRarityEnums.Relic,  ImageEnums.GlassCannon, "Glass Cannon", true),
     HelpRequested(ItemRarityEnums.Relic, ImageEnums.MoneyPrinter, "Help Requested", true),
@@ -49,21 +49,29 @@ public enum ItemEnums {
     //firefighter relics
     ModuleScorch(ItemRarityEnums.Relic,  ImageEnums.ModuleScorchIcon, "Module: Scorch", true),
     BeckoningFlames(ItemRarityEnums.Relic,  ImageEnums.EntanglingFlames, "Beckoning Flames", true),
-    RingOfFire(ItemRarityEnums.Relic, ImageEnums.Test_Image, "Ring of Fire", true),
-    FieryImplosion(ItemRarityEnums.Relic, ImageEnums.Test_Image, "Fiery Implosion", true),
-    FireWithoutGasIsAss(ItemRarityEnums.Relic, ImageEnums.Test_Image, "Without gas it's ass", true),
+    RingOfFire(ItemRarityEnums.Relic, ImageEnums.RingOfFire, "Ring of Fire", true),
+    FieryImplosion(ItemRarityEnums.Relic, ImageEnums.FieryImplosion, "Fiery Implosion", true),
+    FireWithoutGasIsAss(ItemRarityEnums.Relic, ImageEnums.WithoutGasItsAss, "Without gas it's ass", true),
 
     //carrier relics
     ArbiterDamage(ItemRarityEnums.Relic,  ImageEnums.ArbiterDamage, "Arbit Inversion", true),
-    PulsingBeacon(ItemRarityEnums.Relic, ImageEnums.Test_Image, "Pulsing Beacon", true),
+    PulsingBeacon(ItemRarityEnums.Relic, ImageEnums.PulsingBeacon, "Pulsing Beacon", true),
     InverseRetrieval(ItemRarityEnums.Relic,  ImageEnums.InversionRetrieval, "Inverse Retrieval", true),
 
 
     //Mutalisk relics
-    Consume(ItemRarityEnums.Relic, ImageEnums.Consume, "Consume", true),
-    ThickHide(ItemRarityEnums.Common, ImageEnums.Test_Image, "Thick Hide", true),
-    InstantViralEruption(ItemRarityEnums.Relic, ImageEnums.Test_Image, "InstantViralEruption", true),
-    BileTravelRange(ItemRarityEnums.Relic, ImageEnums.Test_Image, "BileTravelTRange", true),
+    Consume(ItemRarityEnums.Relic, ImageEnums.Consume, "Consume", false),
+    ThickHide(ItemRarityEnums.Common, ImageEnums.Test_Image, "Thick Hide", false),
+    InstantViralEruption(ItemRarityEnums.Relic, ImageEnums.Test_Image, "InstantViralEruption", false),
+    BileTravelRange(ItemRarityEnums.Relic, ImageEnums.Test_Image, "BileTravelTRange", false),
+
+
+    //Mutalisk items
+    MutaliskHealingBonus(ItemRarityEnums.Common, ImageEnums.Test_Image, "MutaliskHealingBonus", false),
+    MutaliskAttackSpeed(ItemRarityEnums.Common, ImageEnums.Test_Image, "MutaliskAttackSpeed", false),
+    PoisonedNeedles(ItemRarityEnums.Common, ImageEnums.Test_Image, "Poison Needles", false),
+    FragmentationSacs(ItemRarityEnums.Common, ImageEnums.Test_Image, "Fragmentation Sacs", false),
+
 
 
     //-----------------------------

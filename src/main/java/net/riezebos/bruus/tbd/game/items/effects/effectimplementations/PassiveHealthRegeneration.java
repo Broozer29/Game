@@ -39,7 +39,7 @@ public class PassiveHealthRegeneration implements EffectInterface {
                 centerHealingAnimation(gameObject);
             }
 
-            gameObject.takeDamage(-healingAmount); // Apply healing
+            gameObject.heal(healingAmount, false); // Apply healing
         } else {
             if (!this.animationList.isEmpty() && this.animationList.get(0) != null) {
                 hideHealingAnimation();

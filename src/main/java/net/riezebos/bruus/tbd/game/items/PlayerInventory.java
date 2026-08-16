@@ -12,10 +12,7 @@ import net.riezebos.bruus.tbd.game.items.items.deprecated.ArmorPiercingRounds;
 import net.riezebos.bruus.tbd.game.items.items.deprecated.MoneyPrinter;
 import net.riezebos.bruus.tbd.game.items.items.deprecated.RepulsionArmorPlate;
 import net.riezebos.bruus.tbd.game.items.items.firefighter.*;
-import net.riezebos.bruus.tbd.game.items.items.mutalisk.BileTravelPlaceholder;
-import net.riezebos.bruus.tbd.game.items.items.mutalisk.Consume;
-import net.riezebos.bruus.tbd.game.items.items.mutalisk.InstantViralEruption;
-import net.riezebos.bruus.tbd.game.items.items.mutalisk.ThickHide;
+import net.riezebos.bruus.tbd.game.items.items.mutalisk.*;
 import net.riezebos.bruus.tbd.game.playerprofile.PlayerProfileManager;
 import net.riezebos.bruus.tbd.guiboards.BoardManager;
 import net.riezebos.bruus.tbd.guiboards.boardcreators.AchievementUnlockHelper;
@@ -47,7 +44,11 @@ public class PlayerInventory {
 
         if (DevTestSettings.infiniteMoney) {
             cashMoney = 999999999999f;
-            addItem(ItemEnums.BileTravelRange);
+            addItem(ItemEnums.FragmentationSacs);
+            addItem(ItemEnums.FragmentationSacs);
+            addItem(ItemEnums.FragmentationSacs);
+            addItem(ItemEnums.FragmentationSacs);
+            addItem(ItemEnums.FragmentationSacs);
         } else {
             cashMoney = 0;
         }
@@ -110,6 +111,14 @@ public class PlayerInventory {
 
     public Item createItemFromEnum(ItemEnums itemEnum) {
         switch (itemEnum) {
+            case FragmentationSacs:
+                return new FragmentationSacs();
+            case MutaliskHealingBonus:
+                return new MutaliskHealingBonus();
+            case PoisonedNeedles:
+                return new PoisonedNeedles();
+            case MutaliskAttackSpeed:
+                return new MutaliskAttackSpeed();
             case BileTravelRange:
                 return new BileTravelPlaceholder();
             case InstantViralEruption:
@@ -126,7 +135,7 @@ public class PlayerInventory {
                 return new CalmInChaos();
             case Placeholder:
                 return new Placeholder();
-            case GreedIsGood:
+            case CashInfusion:
                 return new GreedIsGood();
             case Guillotine:
                 return new Guillotine();

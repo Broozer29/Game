@@ -17,6 +17,7 @@ import net.riezebos.bruus.tbd.game.items.effects.EffectInterface;
 import net.riezebos.bruus.tbd.game.items.effects.util.EffectAnimationHelper;
 import net.riezebos.bruus.tbd.game.items.items.firefighter.CorrosiveOil;
 import net.riezebos.bruus.tbd.game.items.items.firefighter.FireWithoutGasIsAss;
+import net.riezebos.bruus.tbd.game.items.items.mutalisk.PoisonedNeedles;
 import net.riezebos.bruus.tbd.game.util.ThornsDamageDealer;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.AnimationManager;
@@ -112,7 +113,11 @@ public class DamageOverTime implements EffectInterface {
 
                 if(this.effectIdentifier.equals(EffectIdentifiers.Ignite) && target.hasEffect(EffectIdentifiers.WithoutGasItsAssDamageBonus)){
                     target.takeDamage(this.damage * dotStacks * FireWithoutGasIsAss.increase);
-                } else {
+                } else if(this.effectIdentifier.equals(EffectIdentifiers.PoisonedNeedlesDoT)){
+                    PoisonedNeedles poisonedNeedles = (PoisonedNeedles) PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.PoisonedNeedles);
+                    target.takeDamage(Math.min(5, target.getMaxHitPoints() * (poisonedNeedles.getQuantity() * PoisonedNeedles.hpDamageRatio)));
+                }
+                else {
                     target.takeDamage(this.damage * dotStacks);
                 }
                 lastDamageTime = currentTime; // Update the last damage time

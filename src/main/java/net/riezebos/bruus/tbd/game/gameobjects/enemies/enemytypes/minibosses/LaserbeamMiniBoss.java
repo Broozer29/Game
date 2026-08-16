@@ -17,10 +17,10 @@ import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.Sprit
 public class LaserbeamMiniBoss extends Enemy {
 
 
-    private int firstRotationAngleDegrees = 0;
-    private int secondRotationAngleDegrees = 180;
-    private int thirdRotationAngleDegrees = 90;
-    private int fourthRotationAngleDegrees = 270;
+    private float firstRotationAngleDegrees = 0;
+    private float secondRotationAngleDegrees = 180;
+    private float thirdRotationAngleDegrees = 90;
+    private float fourthRotationAngleDegrees = 270;
 
     private Laserbeam firstLaserbeam;
     private Laserbeam secondLaserbeam;
@@ -55,16 +55,16 @@ public class LaserbeamMiniBoss extends Enemy {
 
         if(!isFiring && WithinVisualBoundariesCalculator.isWithinBoundaries(this) && allowedToFire){
             //init the laserbeams and fire
-            firstLaserbeam = createLaserbeam(firstRotationAngleDegrees);
+            firstLaserbeam = createLaserbeam(Math.round(firstRotationAngleDegrees));
             MissileManager.getInstance().addLaserBeam(firstLaserbeam);
 
-            secondLaserbeam = createLaserbeam(secondRotationAngleDegrees);
+            secondLaserbeam = createLaserbeam(Math.round(secondRotationAngleDegrees));
             MissileManager.getInstance().addLaserBeam(secondLaserbeam);
 
-            thirdLaserbeam = createLaserbeam(thirdRotationAngleDegrees);
+            thirdLaserbeam = createLaserbeam(Math.round(thirdRotationAngleDegrees));
             MissileManager.getInstance().addLaserBeam(thirdLaserbeam);
 
-            fourthLaserbeam = createLaserbeam(fourthRotationAngleDegrees);
+            fourthLaserbeam = createLaserbeam(Math.round(fourthRotationAngleDegrees));
             MissileManager.getInstance().addLaserBeam(fourthLaserbeam);
 
             this.isFiring = true;
@@ -95,11 +95,12 @@ public class LaserbeamMiniBoss extends Enemy {
 
 
 
+    private int amountOfLaserbeamBodies = 20;
     private Laserbeam createLaserbeam(int angleDegrees) {
         LaserbeamConfiguration laserbeamConfiguration = new LaserbeamConfiguration(false, this.damage);
         laserbeamConfiguration.setOriginObject(this);
         laserbeamConfiguration.setOwner(this);
-        laserbeamConfiguration.setAmountOfLaserbeamSegments(6);
+        laserbeamConfiguration.setAmountOfLaserbeamSegments(amountOfLaserbeamBodies);
         laserbeamConfiguration.setAngleDegrees(angleDegrees);
 
         AngledLaserBeam laserbeam = new AngledLaserBeam(laserbeamConfiguration);
@@ -109,8 +110,8 @@ public class LaserbeamMiniBoss extends Enemy {
         return laserbeam;
     }
 
-    private int increaseRotationAngle(int rotationAngle) {
-        int newAngle = rotationAngle + 1;
+    private float increaseRotationAngle(float rotationAngle) {
+        float newAngle = rotationAngle + 0.5f;
         if (newAngle > 360) {
             newAngle = 0;
         }

@@ -417,6 +417,11 @@ public class ImageDatabase {
     private BufferedImage corrosiveOil;
     private BufferedImage fireShieldIcon;
     private BufferedImage moduleScorchIcon;
+    private BufferedImage cashInfusion;
+    private BufferedImage ringOfFire;
+    private BufferedImage fieryImplosion;
+    private BufferedImage withoutGasItsAss;
+    private BufferedImage pulsingBeacon;
     private BufferedImage starOrange1;
     private BufferedImage starOrange2;
     private BufferedImage starOrange3;
@@ -484,6 +489,7 @@ public class ImageDatabase {
     private List<BufferedImage> devourerDeath = new ArrayList<>();
     private List<BufferedImage> devourerMissile = new ArrayList<>();
     private List<BufferedImage> devourerMissileExplosion = new ArrayList<>();
+    private List<BufferedImage> mutaliskPoison = new ArrayList<>();
     private List<BufferedImage> devourerDebuffStage1 = new ArrayList<>();
     private List<BufferedImage> devourerDebuffStage2 = new ArrayList<>();
     private List<BufferedImage> devourerDebuffStage3 = new ArrayList<>();
@@ -858,6 +864,11 @@ public class ImageDatabase {
         this.bargainBucket = imgLoader.getImage(ImageEnums.BargainBucket);
         this.corrosiveOil = imgLoader.getImage(ImageEnums.CorrosiveOil);
         this.moduleScorchIcon = imgLoader.getImage(ImageEnums.ModuleScorchIcon);
+        this.cashInfusion = imgLoader.getImage(ImageEnums.CashInfusion);
+        this.fieryImplosion = imgLoader.getImage(ImageEnums.FieryImplosion);
+        this.withoutGasItsAss = imgLoader.getImage(ImageEnums.WithoutGasItsAss);
+        this.pulsingBeacon = imgLoader.getImage(ImageEnums.PulsingBeacon);
+        this.ringOfFire = imgLoader.getImage(ImageEnums.RingOfFire);
         this.fireShieldIcon = imgLoader.getImage(ImageEnums.FireShieldIcon);
         this.shieldStabilizer = imgLoader.getImage(ImageEnums.ShieldStabilizer);
         this.pyrrhicProtocolIcon = imgLoader.getImage(ImageEnums.PyrrhicProtocolIcon);
@@ -972,6 +983,10 @@ public class ImageDatabase {
                 return this.chooseDifficulty;
             case Guillotine:
                 return this.guillotineIcon;
+            case WithoutGasItsAss:
+                return this.withoutGasItsAss;
+            case PulsingBeacon:
+                return this.pulsingBeacon;
             case ExplosiveGreed:
                 return this.explosiveGreed;
             case ExplosiveLaserbeams:
@@ -1143,6 +1158,12 @@ public class ImageDatabase {
                 return corrosiveOil;
             case ModuleScorchIcon:
                 return moduleScorchIcon;
+            case CashInfusion:
+                return cashInfusion;
+            case RingOfFire:
+                return ringOfFire;
+            case FieryImplosion:
+                return fieryImplosion;
             case FireShieldIcon:
                 return fireShieldIcon;
             case BargainBucket:
@@ -1802,6 +1823,8 @@ public class ImageDatabase {
                 return moduleScorchFlames;
             case LingeringFlameLooping:
                 return fireWall;
+            case MutaliskPoison:
+                return mutaliskPoison;
             case FireFighterFlameThrowerLooping:
                 return fireFighterFlameThrowerLooping;
             case FireFighterFlameThrowerAppearing:
@@ -2253,6 +2276,12 @@ public class ImageDatabase {
             String sourceString = String.format("/images/gif/PNGtoGIF/Default Player Engine/%d.png", i);
             BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
             defaultPlayerEngine.add(image);
+        }
+
+        for (int i = 0; i < 15; i++) {
+            String sourceString = String.format("/images/gif/PNGtoGIF/Mutalisk Poison/%d.png", i);
+            BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+            mutaliskPoison.add(image);
         }
 
         for (int i = 0; i < 8; i++) {

@@ -26,7 +26,7 @@ public class EmergencyRepairBot extends Item {
         // Check if current HP is 25% or lower of the max HP and if more than 1 quantity is left
         if (currentHp <= maxHp * healthActivationRatio && this.quantity >= 1) {
             float healingAmount = maxHp * healingFactor; // Calculate 75% of max HP
-            gameObject.takeDamage(-healingAmount); // Apply healing
+            gameObject.heal(healingAmount, true); // Apply healing
             // Reduce the quantity of the item by 1
             this.decreaseQuantityOfItem(1);
             AudioManager.getInstance().addAudio(AudioEnums.GenericSelect);

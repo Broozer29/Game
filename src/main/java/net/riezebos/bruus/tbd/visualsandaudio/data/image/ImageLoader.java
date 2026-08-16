@@ -187,6 +187,10 @@ public class ImageLoader {
                 return "/images/Icons/viraleruption.png";
             case BileIcon:
                 return "/images/Icons/bile.png";
+            case CashInfusion:
+                return "/images/Icons/cashinfusion.png";
+            case RingOfFire:
+                return "/images/Icons/ringoffire.png";
             case Starcraft2_Auto_Tracking:
                 return "/images/Icons/Starcraft2 Auto Tracking.png";
             case Starcraft2_Blue_Flame:
@@ -305,6 +309,12 @@ public class ImageLoader {
                 return "/images/Letters/Letter-Z.png";
             case Electroshedding:
                 return "/images/Icons/electroshedding.png";
+            case FieryImplosion:
+                return "/images/Icons/fieryimplosion.png";
+            case WithoutGasItsAss:
+                return "/images/Icons/withoutgasitsass.png";
+            case PulsingBeacon:
+                return "/images/Icons/pulsingbeacon.png";
             case Letter_a:
                 return "/images/Letters/Letter-LowercaseA.png";
             case Letter_b:

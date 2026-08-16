@@ -62,6 +62,7 @@ public class GameObject extends Sprite {
     protected float baseArmor;
     protected float armorBonus;
     protected float damageReductionMultiplier = 1;
+    protected float bonusHealMultiplier = 1;
 
 
     //Damage variables
@@ -1201,7 +1202,7 @@ public class GameObject extends Sprite {
     }
 
     public void heal(float amount, boolean showAnim) {
-        this.currentHitpoints += amount;
+        this.currentHitpoints += (amount * this.bonusHealMultiplier);
         if (this.currentHitpoints > this.maxHitPoints) {
             this.currentHitpoints = this.maxHitPoints;
         }
@@ -1221,5 +1222,9 @@ public class GameObject extends Sprite {
 
     public List<EffectInterface> getEffectsToApply() {
         return this.effectsToApply;
+    }
+
+    public void modifyHealingBonus(float v) {
+        this.bonusHealMultiplier += v;
     }
 }

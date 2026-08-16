@@ -34,7 +34,6 @@ public class MutaliskMissile extends Missile {
         this.isDamageable = false;
         this.isDestructable = true;
         gameSecondsSinceLastBileItemActivation = GameState.getInstance().getGameSeconds() - 0.25f;
-        BileTravelPlaceholder.timeBetweenExplosion = 0.35f;
     }
 
     private void initDestructionAnimation(MissileConfiguration missileConfiguration) {
@@ -54,6 +53,8 @@ public class MutaliskMissile extends Missile {
             stepsInPath = movementConfiguration.getCurrentPath().getWaypoints().size();
 
             if (!this.isBileBit) {
+                SpaceShip spaceShip = (SpaceShip) this.ownerOrCreator;
+                this.amountOfBileBits += spaceShip.getBonusBileBits();
                 this.flatHealValue = healAmount;
             }
         }
@@ -145,7 +146,7 @@ public class MutaliskMissile extends Missile {
         Missile missile = missileCreator1.createMissile(spriteConfiguration, missileConfiguration, movementConfiguration);
 
         missile.setAllowedVisualsToRotate(false);
-        missile.setOwnerOrCreator(owner);
+        missile.setOwnerOrCreator(spaceShip);
         missile.resetMovementPath();
         missile.setCenterCoordinates(centerXCoordinate, centerYCoordinate);
         missile.getMovementConfiguration().setDestination(destination);

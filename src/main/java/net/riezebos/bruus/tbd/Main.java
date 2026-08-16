@@ -65,7 +65,7 @@ public class Main {
                             logDiagnostic("Preloading assets...");
                             preloadThings();
 
-//                            exportItemDescriptions();
+                            exportItemDescriptions();
                             assetsLoaded = true;
 
                             // Finish initialization back on EDT

@@ -4,9 +4,15 @@ public enum ImageEnums {
 
     /// / Menu Buttons
     Test_Image,
+    RingOfFire,
+    CashInfusion,
+    FieryImplosion,
+    WithoutGasItsAss,
+    PulsingBeacon,
     MutaliskMissileExplosion,
     ChooseOne,
     Consume,
+    MutaliskPoison,
     BileIcon,
     VileEruptionIcon,
     BossHealthBarBackground,

@@ -72,7 +72,7 @@ public class MutaliskPrimaryGun extends PrimaryPlayerGun {
 
         float distanceToTravel = 150;
         if(PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.BileTravelRange) != null){
-            distanceToTravel += BileTravelPlaceholder.bonusTravelRange;
+            distanceToTravel *= BileTravelPlaceholder.bonusTravelRange;
         }
 
         return new Point(ownerCenterX + distanceToTravel, ownerCenterY);

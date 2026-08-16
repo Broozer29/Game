@@ -11,9 +11,7 @@ import net.riezebos.bruus.tbd.game.items.items.captain.*;
 import net.riezebos.bruus.tbd.game.items.items.carrier.*;
 import net.riezebos.bruus.tbd.game.items.items.deprecated.ArmorPiercingRounds;
 import net.riezebos.bruus.tbd.game.items.items.firefighter.*;
-import net.riezebos.bruus.tbd.game.items.items.mutalisk.Consume;
-import net.riezebos.bruus.tbd.game.items.items.mutalisk.InstantViralEruption;
-import net.riezebos.bruus.tbd.game.items.items.mutalisk.ThickHide;
+import net.riezebos.bruus.tbd.game.items.items.mutalisk.*;
 
 public class ItemDescriptionRetriever {
 
@@ -55,7 +53,8 @@ public class ItemDescriptionRetriever {
             //--------------------------------------generic items--------------------------------------
             //7
             case GlassCannon -> {
-                return "You deal double damage. You take double damage.";} //relic
+                return "You deal double damage. You take double damage.";
+            } //relic
             case HelpRequested -> {
                 return "Contracts become FREE and will always reward LEGENDARY items. Contracts now require " + Math.round((Contract.killCountRequired * (1 + HelpRequested.additionalKillsRequiredModifier))) + " kills to be completed.";
             } //relic
@@ -68,13 +67,15 @@ public class ItemDescriptionRetriever {
             case BonusKaart -> {
                 return "Gain an additional copy of every first item you purchase in the shop.";
             } //relic
-            case GreedIsGood -> {
+            case CashInfusion -> {
                 return "Cash carriers no longer spawn. Instead, medium sized enemies have a " + Math.round(GreedIsGood.mineralsPerPickupChance * 100) + "% chance to drop a coin worth " + GreedIsGood.mineralsPerPickup + " minerals.";
             } //relic
             case Placeholder -> {
                 return "Killing an enemy spawns a temporary stationary drone that attacks every " + FriendlyStation.attackSpeed + " seconds dealing " + Math.round((FriendlyStation.damageModifier * 100)) + "% damage. Maximum of 4 drones can be spawned at once.";
             } //relic
-            case WisdomBall -> {return "Refreshes in the shop have a chance to be wondrous.";}
+            case WisdomBall -> {
+                return "Refreshes in the shop have a chance to be wondrous.";
+            }
             case Stuivie -> {
                 return "Gain 1 free revival per round. Upon reviving unleash an explosion dealing " + Math.round(StuiversBestFriend.explosionDamageAmount * 100) + "% damage.";
             } //relic / disabled in multiplayer
@@ -207,7 +208,7 @@ public class ItemDescriptionRetriever {
                 return "When ignite reaches maximum stacks it instantly explodes dealing the full ignite damage in a large explosion and consuming all ignite stacks..";
             } //relic
             case FireWithoutGasIsAss -> {
-                return "Ignite damage is reduced by " + Math.round(FireWithoutGasIsAss.reduction * 100) + "%. Enemies taking damage from your Flamethrower take "+ Math.round(FireWithoutGasIsAss.increase * 100) +"% increased damage from Ignite.";
+                return "Ignite damage is reduced by " + Math.round(FireWithoutGasIsAss.reduction * 100) + "%. Enemies taking damage from your Flamethrower take " + Math.round(FireWithoutGasIsAss.increase * 100) + "% increased damage from Ignite.";
             } //relic
 
             //6
@@ -300,7 +301,7 @@ public class ItemDescriptionRetriever {
                 return "Protoss Ships explode upon death, dealing " + Math.round(VengeanceProtocol.explosionDamageMultiplier * 100) + "% damage";
             } //rare
             case ProtossCorsair -> {
-                return "Gain 1 Protoss Corsair. Corsairs are suicide bombers that deal " + Math.round(ProtossCorsairItem.hitpointsDamage * 100 ) + "% of the targets maximum hitpoints as damage. Corsairs deal a maximum of " + Math.round(ProtossCorsairItem.maxDamageBase) + " (+" + Math.round(ProtossCorsairItem.maxDamageIncrease) + ") damage. Takes up 1 Hangar Bay slot.";
+                return "Gain 1 Protoss Corsair. Corsairs are suicide bombers that deal " + Math.round(ProtossCorsairItem.hitpointsDamage * 100) + "% of the targets maximum hitpoints as damage. Corsairs deal a maximum of " + Math.round(ProtossCorsairItem.maxDamageBase) + " (+" + Math.round(ProtossCorsairItem.maxDamageIncrease) + ") damage. Takes up 1 Hangar Bay slot.";
             } //rare
 
             //2
@@ -327,7 +328,7 @@ public class ItemDescriptionRetriever {
                 return "Your attacks apply damage over time. Enemies take " +
                         Math.round(Math.round(PlasmaCoatedBullets.burningDamage * 100) * (PlasmaCoatedBullets.duration / DamageOverTime.damageInterval)) +
                         "% (+" +
-                        Math.round(Math.round(PlasmaCoatedBullets.burningDamage * 100) * (PlasmaCoatedBullets.duration / DamageOverTime.damageInterval)) + "%) damage every " +
+                        Math.round(Math.round(PlasmaCoatedBullets.burningDamage * 100) * (PlasmaCoatedBullets.duration / DamageOverTime.damageInterval)) + "%) damage over " +
                         PlasmaCoatedBullets.duration + " seconds.";
             } //common -> carrier/captain
 
@@ -343,6 +344,25 @@ public class ItemDescriptionRetriever {
                 return "Instead of charging up your SECONDARY_PLACEHOLDER now instantly releases and consumes " + Math.round(InstantViralEruption.hitpointsPerUse * 100) + " % of your maximum health.";
             }
 
+            case MutaliskAttackSpeed -> {
+                return "Increases attack speed by " + Math.round(MutaliskAttackSpeed.attackSpeedBonus) + "%";
+            } //common
+
+            case PoisonedNeedles -> {
+                double damagePerSecond = (PoisonedNeedles.hpDamageRatio / DamageOverTime.damageInterval) * 100;
+                return "Your attacks apply damage over time. Enemies take " +
+                        Math.round(damagePerSecond) +
+                        "% of their maximum hitpoints per second. Reduced effectiveness against Bosses.";
+            }
+            case MutaliskHealingBonus -> {
+                return "Increases ALL healing by " + Math.round(MutaliskHealingBonus.healingBonus * 100) + "%";
+            }
+            case BileTravelRange -> {
+                return "Increases the range of Bile by " + Math.round(BileTravelPlaceholder.bonusTravelRange * 100) + "% and causes it to release Bile Bits whilst traveling.";
+            }
+            case FragmentationSacs -> {
+                return "Increases the amount of Bile Bits created from Bile by " + FragmentationSacs.bonusBileBits + ".";
+            }
             //--------------------------------------Uncounted--------------------------------------
             case ModulePower -> {
                 return "Drones deal " + Math.round(ModulePower.damageBonus * 100) + "% more damage.";

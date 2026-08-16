@@ -90,10 +90,14 @@ public class SpaceShip extends GameObject {
     private boolean continueShieldRegenThroughDamage = false;
     private float maxHitpointsModifier = 1;
 
+    //firefighter
     private float igniteDurationModifier = 1;
     private float fuelCannisterUsageModifier = 1;
     private float fuelCannisterMaxCapacityModifier = 1;
     private float fuelCannisterRegenModifier = 1;
+
+    //mutalisk
+    private int bonusBileBits = 0;
 
     private int droneOrbitRadius = 85;
     private DroneTypes droneTypes = DroneTypes.Missile;
@@ -1146,4 +1150,11 @@ public class SpaceShip extends GameObject {
         this.maxHitpointsModifier = maxHitpointsModifier;
     }
 
+    public int getBonusBileBits() {
+        return bonusBileBits;
+    }
+
+    public void addBonusBileBits(int bonusBileBits) {
+        this.bonusBileBits += bonusBileBits;
+    }
 }

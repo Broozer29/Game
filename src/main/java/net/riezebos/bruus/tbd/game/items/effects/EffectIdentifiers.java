@@ -2,6 +2,7 @@ package net.riezebos.bruus.tbd.game.items.effects;
 
 public enum EffectIdentifiers {
     AdrenalineAttackSpeedModifier,
+    PoisonedNeedlesDoT,
     YellowBossVoidAttackSpeedModifier,
     YellowBossVoidMoveSpeedModifier,
     TazerAttackDisable,
