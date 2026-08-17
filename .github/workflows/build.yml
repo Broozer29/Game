@@ -2,11 +2,7 @@ name: Build Game for All Platforms
 
 # When to run this workflow
 on:
-  push:
-    branches: [ production, cleanup-and-refactoring ]  # Run on pushes to these branches
-  pull_request:
-    branches: [ production ]  # Run on PRs to production
-  workflow_dispatch:  # Allow manual triggering from GitHub UI
+  workflow_dispatch:  # Manual triggering only from GitHub UI
 
 jobs:
   build:
@@ -53,3 +49,34 @@ jobs:
           name: Game-${{ matrix.artifact-name }}-${{ matrix.profile-name }}  # e.g., Game-Windows-HardwareAccel, Game-Linux-SoftwareRenderer
           path: target/dist/  # The jpackage output folder
           retention-days: 30  # Keep artifacts for 30 days
+
+  # Create/update the "latest" release with all build artifacts
+  release:
+    needs: build  # Wait for all builds to complete
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write  # Required to create/update releases
+
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts/
+
+      - name: Create release archives
+        run: |
+          cd artifacts
+          for dir in */; do
+            zip -r "${dir%/}.zip" "$dir"
+          done
+
+      - name: Update Latest Release
+        uses: ncipollo/release-action@v1
+        with:
+          tag: "latest"
+          name: "Latest Build"
+          allowUpdates: true
+          replacesArtifacts: true
+          makeLatest: true
+          body: "Latest automated build from the production branch. Download the appropriate version for your platform."
+          artifacts: "artifacts/*.zip"
