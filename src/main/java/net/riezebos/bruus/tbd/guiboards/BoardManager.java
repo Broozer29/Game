@@ -1,7 +1,10 @@
 package net.riezebos.bruus.tbd.guiboards;
 
 import net.riezebos.bruus.tbd.controllerInput.ControllerManager;
+import net.riezebos.bruus.tbd.discordconnector.DiscordConnector;
 import net.riezebos.bruus.tbd.game.UI.GameBoardCreator;
+import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
+import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.items.PlayerInventory;
 import net.riezebos.bruus.tbd.guiboards.boards.*;
 import net.riezebos.bruus.tbd.visualsandaudio.data.DataClass;
@@ -79,6 +82,7 @@ public class BoardManager extends JFrame {
             mainMenuBoard.recreateWindow();
             mainMenuBoard.getTimer().restart();
             ControllerManager.getInstance().setControllerSensitive(false);
+            DiscordConnector.getInstance().setStatus("Just booted up", "Main Menu");
         });
 
         screenActions.put(ScreenType.UPGRADE_SELECTION, () -> {
@@ -91,6 +95,7 @@ public class BoardManager extends JFrame {
             GameBoardCreator.getInstance().resetManager();
             gameBoard.startGame();
             ControllerManager.getInstance().setControllerSensitive(true);
+            DiscordConnector.getInstance().setStatus(PlayerStats.getInstance().getPlayerClass() + ", on stage " + GameState.getInstance().getStagesCompleted(), "Fighting");
         });
 
         screenActions.put(ScreenType.SHOP, () -> {
@@ -99,6 +104,7 @@ public class BoardManager extends JFrame {
             shopBoard.initShopBoardGUIComponents();
             shopBoard.getTimer().restart();
             ControllerManager.getInstance().setControllerSensitive(false);
+            DiscordConnector.getInstance().setStatus("Shopping with " + Math.round(PlayerInventory.getInstance().getCashMoney()) + " minerals.", "Shop");
         });
 
         screenActions.put(ScreenType.CLASS_SELECTION, () -> {
@@ -106,6 +112,7 @@ public class BoardManager extends JFrame {
             classSelectionBoard.recreateWindow();
             classSelectionBoard.getTimer().restart();
             ControllerManager.getInstance().setControllerSensitive(false);
+            DiscordConnector.getInstance().setStatus("Deciding a class", "Class Selection");
         });
 
         screenActions.put(ScreenType.DIFFICULTY_SELECTION, () -> {
@@ -113,6 +120,7 @@ public class BoardManager extends JFrame {
             difficultySelectionBoard.recreateWindow();
             difficultySelectionBoard.getTimer().restart();
             ControllerManager.getInstance().setControllerSensitive(false);
+            DiscordConnector.getInstance().setStatus("Choosing difficulty as a " + PlayerStats.getInstance().getPlayerClass() + ".", "Class Selection");
         });
 
         // Remove loading screen
@@ -222,7 +230,7 @@ public class BoardManager extends JFrame {
         switchScreen(ScreenType.SHOP);
     }
 
-    public void openUpgradeSelectionScreen() {
+    public void openBoonSelectionScreen() {
         switchScreen(ScreenType.UPGRADE_SELECTION);
     }
 

@@ -2,6 +2,7 @@ package net.riezebos.bruus.tbd;
 
 import javafx.application.Platform;
 import net.riezebos.bruus.tbd.controllerInput.ControllerManager;
+import net.riezebos.bruus.tbd.discordconnector.DiscordConnector;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.Enemy;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyCreator;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyEnums;
@@ -20,7 +21,7 @@ import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageResizer;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
-public class Main {
+public class Game {
     private static volatile boolean guiInitialized = false;
     private static volatile boolean assetsLoaded = false;
 
@@ -43,9 +44,14 @@ public class Main {
                     try {
                         // Create and show the window with loading screen first
                         BoardManager ex = BoardManager.getInstance();
+                        DiscordConnector.getInstance().connect();
                         ex.setVisible(true);
                         ex.validate();
                         ex.repaint();
+
+                        Runtime.getRuntime().addShutdownHook(
+                                new Thread(DiscordConnector.getInstance()::close, "Discord-Shutdown")
+                        );
 
                         guiInitialized = true;
 

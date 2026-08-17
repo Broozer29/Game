@@ -68,7 +68,7 @@ public class MenuButton extends GUIComponent {
                 boardManager.openShopWindow();
                 break;
             case OpenBoonSelectionBoard:
-                boardManager.openUpgradeSelectionScreen();
+                boardManager.openBoonSelectionScreen();
                 break;
             case OpenDifficultySelectionBoard:
                 boardManager.openDifficultyScreen();
