@@ -75,6 +75,30 @@
 
 
     </dependencies>
+
+    <profiles>
+        <!-- Profile for hardware acceleration ENABLED (default, best performance) -->
+        <profile>
+            <id>hw-accel</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <app.name>Game</app.name>
+                <opengl.enabled>true</opengl.enabled>
+            </properties>
+        </profile>
+
+        <!-- Profile for hardware acceleration DISABLED (compatibility mode) -->
+        <profile>
+            <id>no-hw-accel</id>
+            <properties>
+                <app.name>Game-SoftwareRenderer</app.name>
+                <opengl.enabled>false</opengl.enabled>
+            </properties>
+        </profile>
+    </profiles>
+
     <build>
         <plugins>
             <plugin>
@@ -118,7 +142,7 @@
                 <artifactId>jpackage-maven-plugin</artifactId>
                 <version>1.6.0</version>
                 <configuration>
-                    <name>Game</name>
+                    <name>${app.name}</name>
                     <appVersion>1.0</appVersion>
                     <vendor>Bruus Riezebos</vendor>
                     <destination>target/dist</destination>
@@ -130,7 +154,9 @@
                         <option>-Xms4g</option>
                         <option>-Xmx8g</option>
                         <option>-XX:+UseG1GC</option>
-                        <option>-Dsun.java2d.opengl=false</option>
+                        <option>-Dsun.java2d.opengl=${opengl.enabled}</option>
+                        <option>-Dsun.java2d.d3d=${opengl.enabled}</option>
+                        <option>-Dsun.java2d.metal=${opengl.enabled}</option>
                         <option>-Dsun.java2d.accthresh=0</option>
                     </javaOptions>
                     <resourceDir>src/main/resources</resourceDir>

@@ -79,13 +79,13 @@ public class Main {
                             });
                         }).start();
                     } catch (Exception e) {
-                        logError("Error in EventQueue initialization", e);
+                        logDiagnostic("Error in EventQueue initialization");
                         throw e;
                     }
                 }
             });
         } catch (Exception ex) {
-            logError("Fatal error during startup", ex);
+            logDiagnostic("Fatal error during startup");
             ex.printStackTrace();
             System.exit(1);
         }
@@ -98,7 +98,7 @@ public class Main {
                 Thread.sleep(60000);
 
                 if (!guiInitialized) {
-                    logError("CRITICAL: GUI failed to initialize within 60 seconds", null);
+                    logDiagnostic("CRITICAL: GUI failed to initialize within 60 seconds");
                     logDiagnostic("GUI initialization timeout - window may not be visible");
                     logDiagnostic("Possible causes: OpenGL incompatibility, graphics driver issue, AWT/JavaFX conflict");
                 } else if (!assetsLoaded) {
@@ -116,7 +116,7 @@ public class Main {
     private static void logDiagnostic(String message) {
         System.out.println(message);
         try {
-            java.io.FileWriter fw = new java.io.FileWriter("error_log.txt", true);
+            java.io.FileWriter fw = new java.io.FileWriter("startup_log.txt", true);
             java.io.PrintWriter pw = new java.io.PrintWriter(fw);
             pw.println("[" + java.time.LocalDateTime.now() + "] " + message);
             pw.close();
@@ -178,7 +178,7 @@ public class Main {
             logDiagnostic("Display Resolution: " + dm.getWidth() + "x" + dm.getHeight() +
                          " @" + dm.getRefreshRate() + "Hz " + dm.getBitDepth() + "bit");
         } catch (Exception e) {
-            logError("Error detecting hardware acceleration capabilities", e);
+            logDiagnostic("Error detecting hardware acceleration capabilities");
         }
     }
 
