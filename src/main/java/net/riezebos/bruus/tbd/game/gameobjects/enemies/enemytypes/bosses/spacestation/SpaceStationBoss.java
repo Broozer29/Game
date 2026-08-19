@@ -32,7 +32,6 @@ public class SpaceStationBoss extends Enemy {
         this.destructionAnimation = new SpriteAnimation(destroyedExplosionfiguration);
 
         this.knockbackStrength = 10;
-        this.damage = 11;
 
 
         SpaceStationLaserbeamAttack spaceStationLaserbeamAttack = new SpaceStationLaserbeamAttack();

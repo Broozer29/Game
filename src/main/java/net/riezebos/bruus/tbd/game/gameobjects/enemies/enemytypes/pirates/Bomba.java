@@ -2,6 +2,7 @@ package net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.pirates;
 
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.Enemy;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyConfiguration;
+import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyManager;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.Missile;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.MissileConfiguration;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.MissileCreator;
@@ -34,8 +35,8 @@ public class Bomba extends Enemy {
 
         //Specialized behaviour configuration stuff
         this.initDirectionFromRotation();
-        this.damage = 15;
-        this.attackSpeed = 5;
+        this.attackSpeed = 5 - (EnemyManager.getInstance().getEnemyDifficultyModifier() * 0.25f);
+        this.movementConfiguration.setMovementSpeed(this.movementConfiguration.getOriginalMovementSpeed() + EnemyManager.getInstance().getEnemyDifficultyModifier() * 0.05f);
         this.detonateOnCollision = false;
         this.knockbackStrength = 8;
     }
@@ -64,7 +65,7 @@ public class Bomba extends Enemy {
             SpriteConfiguration spriteConfiguration = MissileCreator.getInstance().createMissileSpriteConfig(xCoordinate, yCoordinate,
                     ImageEnums.Bomba_Missile, 0.5f);
 
-            float movementSpeed = 2f;
+            float movementSpeed = 2 + (EnemyManager.getInstance().getEnemyDifficultyModifier() * 0.1f);
 
 
             //Create missile movement attributes and create a movement configuration

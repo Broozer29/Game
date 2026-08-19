@@ -5,6 +5,7 @@ import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.AudioEnums;
 
 public class EnemyConfiguration {
     private EnemyEnums enemyType;
+    private float baseDamage;
 
     private int maxHitPoints;
     private AudioEnums deathSound;
@@ -14,13 +15,22 @@ public class EnemyConfiguration {
 
     private float cashMoneyWorth;
 
-    public EnemyConfiguration (EnemyEnums enemyType, int maxHitPoints, AudioEnums deathSound,float baseArmor, float xpOnDeath, float cashMoneyWorth) {
+    public EnemyConfiguration (EnemyEnums enemyType, int maxHitPoints, float baseDamage, AudioEnums deathSound,float baseArmor, float xpOnDeath, float cashMoneyWorth) {
         this.enemyType = enemyType;
+        this.baseDamage = baseDamage;
         this.maxHitPoints = maxHitPoints;
         this.deathSound = deathSound;
         this.baseArmor = baseArmor;
         this.xpOnDeath = xpOnDeath;
         this.cashMoneyWorth = cashMoneyWorth;
+    }
+
+    public float getBaseDamage() {
+        return baseDamage;
+    }
+
+    public void setBaseDamage(float baseDamage) {
+        this.baseDamage = baseDamage;
     }
 
     public EnemyEnums getEnemyType () {

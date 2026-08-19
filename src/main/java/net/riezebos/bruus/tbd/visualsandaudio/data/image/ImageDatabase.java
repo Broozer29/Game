@@ -114,6 +114,7 @@ public class ImageDatabase {
     private BufferedImage guillotineIcon;
     private BufferedImage starcraft2_Protoss_Shield_Disintegrate;
     private BufferedImage starcraft2_Dual_Rockets;
+    private BufferedImage sideCannons;
     private BufferedImage starcraft2_Auto_Tracking;
     private BufferedImage starcraft2_Blue_Flame;
     private BufferedImage starcraft2_Concussive_Shells;
@@ -615,6 +616,7 @@ public class ImageDatabase {
                 .getImage(ImageEnums.Starcraft2_Protoss_Shield_Disintegrate);
         this.starcraft2_Psi_Storm2 = imgLoader.getImage(ImageEnums.Starcraft2_Psi_Storm2);
         this.starcraft2_Dual_Rockets = imgLoader.getImage(ImageEnums.Starcraft2_Dual_Rockets);
+        this.sideCannons = imgLoader.getImage(ImageEnums.SideCannons);
         this.starcraft2_Auto_Tracking = imgLoader.getImage(ImageEnums.Starcraft2_Auto_Tracking);
         this.starcraft2_Blue_Flame = imgLoader.getImage(ImageEnums.Starcraft2_Blue_Flame);
         this.starcraft2_Concussive_Shells = imgLoader.getImage(ImageEnums.Starcraft2_Concussive_Shells);
@@ -1516,6 +1518,8 @@ public class ImageDatabase {
                 return starcraft2_Psi_Storm2;
             case Starcraft2_Dual_Rockets:
                 return starcraft2_Dual_Rockets;
+            case SideCannons:
+                return sideCannons;
             case Starcraft2_Auto_Tracking:
                 return starcraft2_Auto_Tracking;
             case Starcraft2_Blue_Flame:

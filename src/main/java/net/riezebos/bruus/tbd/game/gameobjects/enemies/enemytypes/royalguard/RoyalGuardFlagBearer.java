@@ -35,7 +35,6 @@ public class RoyalGuardFlagBearer extends Enemy {
         destroyedExplosionfiguration.getSpriteConfiguration().setImageType(this.enemyType.getDestructionType());
         this.destructionAnimation = new SpriteAnimation(destroyedExplosionfiguration);
         this.destructionAnimation.setAnimationScale(1f);
-        this.damage = 5;
         this.attackSpeed = 0.025f;
         this.knockbackStrength = 8;
 

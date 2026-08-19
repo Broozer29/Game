@@ -1,5 +1,6 @@
 package net.riezebos.bruus.tbd.game.gameobjects.missiles.specialAttacks;
 
+import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyManager;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.zerg.Mutalisk;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
 import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SpaceShip;
@@ -37,7 +38,7 @@ public class LingeringAttack extends SpecialAttack{
         } else if(this.imageEnum.equals(ImageEnums.PoisonCloud)){
             super.internalTickCooldown = 0.45; //roughly every 0.5 seconds it applies damage
             this.damage = specialAttackConfiguration.getDamage();
-            this.duration = Mutalisk.cloudDuration;
+            this.duration = Mutalisk.cloudDuration + (EnemyManager.getInstance().getEnemyDifficultyModifier() * 0.2f);
         }
 
         gamesecondsStarted = GameState.getInstance().getGameSeconds();

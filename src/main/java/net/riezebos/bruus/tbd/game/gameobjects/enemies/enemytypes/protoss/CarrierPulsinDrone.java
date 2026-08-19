@@ -24,7 +24,6 @@ public class CarrierPulsinDrone extends Enemy {
         SpriteAnimationConfiguration destroyedExplosionfiguration = new SpriteAnimationConfiguration(spriteConfig.getSpriteConfiguration(), 0, false);
         destroyedExplosionfiguration.getSpriteConfiguration().setImageType(this.enemyType.getDestructionType());
         this.destructionAnimation = new SpriteAnimation(destroyedExplosionfiguration);
-        this.damage = 8;
         this.allowedToMove = true;
         this.allowedVisualsToRotate = false;
         this.attackSpeed = 1.5f;

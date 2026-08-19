@@ -2,6 +2,7 @@ package net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.pirates;
 
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.Enemy;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyConfiguration;
+import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyManager;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.*;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
 import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SpaceShip;
@@ -27,8 +28,8 @@ public class Seeker extends Enemy {
         this.destructionAnimation = new SpriteAnimation(destroyedExplosionfiguration);
         this.destructionAnimation.setAnimationScale(1f);
         this.missileTypePathFinders = PathFinderEnums.StraightLine;
-        this.damage = 13;
-        this.attackSpeed = 5;
+        this.attackSpeed = 5 - (EnemyManager.getInstance().getEnemyDifficultyModifier() * 0.5f);
+        this.movementConfiguration.setMovementSpeed(this.movementConfiguration.getOriginalMovementSpeed() + EnemyManager.getInstance().getEnemyDifficultyModifier() * 0.25f);
         this.detonateOnCollision = false;
         this.knockbackStrength = 8;
 //        this.attackSpeed = 1;
@@ -67,7 +68,7 @@ public class Seeker extends Enemy {
                 missileType.getImageType(), 0.55f);
 
 
-        int movementSpeed = 3;
+        float movementSpeed = 3 + (EnemyManager.getInstance().getEnemyDifficultyModifier() * 0.5f);
         //Create missile movement attributes and create a movement configuration
 
         PathFinder missilePathFinder = new StraightLinePathFinder();

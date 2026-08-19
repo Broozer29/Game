@@ -157,6 +157,9 @@ public class ItemDescriptionRetriever {
             case OneShotOneKill -> {
                 return "Your missiles that strike enemies with " + Math.round(OneShotOneKill.hpRequirement * 100) + "% hp will always critically strike and deal " + Math.round(OneShotOneKill.damageAmplificationModifier * 100) + "% damage.";
             } //relic
+            case SideCannons -> {
+                return "Fire " + SideCannons.additionalMissiles + " additional missiles whenever you fire a laserbeam.";
+            }
 
             //3
             case ElectricSupercharger -> {

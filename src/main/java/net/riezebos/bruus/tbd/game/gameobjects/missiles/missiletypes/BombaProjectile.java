@@ -1,6 +1,7 @@
 
 package net.riezebos.bruus.tbd.game.gameobjects.missiles.missiletypes;
 
+import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyManager;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.Missile;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.MissileConfiguration;
 import net.riezebos.bruus.tbd.game.gameobjects.neutral.Explosion;
@@ -75,7 +76,7 @@ public class BombaProjectile extends Missile {
 		ExplosionConfiguration explosionConfiguration = new ExplosionConfiguration(this.isFriendly(), damage, false);
 		Explosion explosion = new Explosion(spriteAnimationConfiguration, explosionConfiguration);
 		explosion.setOwnerOrCreator(this.ownerOrCreator);
-		explosion.setScale(explosionSize);
+		explosion.setScale(explosionSize + (EnemyManager.getInstance().getEnemyDifficultyModifier() * 0.15f));
 		explosion.setCenterCoordinates(this.animation.getCenterXCoordinate(), this.animation.getCenterYCoordinate());
 		ExplosionManager.getInstance().addExplosion(explosion);
 

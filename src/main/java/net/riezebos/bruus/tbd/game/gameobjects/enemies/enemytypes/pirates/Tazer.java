@@ -23,6 +23,7 @@ import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.Sprit
 
 public class Tazer extends Enemy {
 
+    //disabled as of now
     public Tazer (SpriteAnimationConfiguration spriteConfiguration, EnemyConfiguration enemyConfiguration, MovementConfiguration movementConfiguration) {
         super(spriteConfiguration, enemyConfiguration, movementConfiguration);
 
@@ -30,7 +31,6 @@ public class Tazer extends Enemy {
         destroyedExplosionfiguration.getSpriteConfiguration().setImageType(this.enemyType.getDestructionType());
         this.destructionAnimation = new SpriteAnimation(destroyedExplosionfiguration);
         this.attackSpeed = 3f;
-        this.damage = 10;
         this.detonateOnCollision = false;
         this.missileTypePathFinders = PathFinderEnums.StraightLine;
         this.knockbackStrength = 8;

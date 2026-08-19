@@ -44,11 +44,7 @@ public class PlayerInventory {
 
         if (DevTestSettings.infiniteMoney) {
             cashMoney = 999999999999f;
-            addItem(ItemEnums.FragmentationSacs);
-            addItem(ItemEnums.FragmentationSacs);
-            addItem(ItemEnums.FragmentationSacs);
-            addItem(ItemEnums.FragmentationSacs);
-            addItem(ItemEnums.FragmentationSacs);
+            addItem(ItemEnums.SideCannons);
         } else {
             cashMoney = 0;
         }
@@ -111,6 +107,8 @@ public class PlayerInventory {
 
     public Item createItemFromEnum(ItemEnums itemEnum) {
         switch (itemEnum) {
+            case SideCannons:
+                return new SideCannons();
             case FragmentationSacs:
                 return new FragmentationSacs();
             case MutaliskHealingBonus:

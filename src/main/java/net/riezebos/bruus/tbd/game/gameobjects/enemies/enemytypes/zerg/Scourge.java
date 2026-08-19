@@ -2,6 +2,7 @@ package net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.zerg;
 
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.Enemy;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyConfiguration;
+import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyManager;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
 import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SpaceShip;
 import net.riezebos.bruus.tbd.game.movement.MovementConfiguration;
@@ -16,6 +17,7 @@ public class Scourge extends Enemy {
 
     private boolean activatedFirstTime = false;
     private boolean activatedSecondTime = false;
+    private int firstDetectionRange = 240;
 
     public Scourge (SpriteAnimationConfiguration spriteConfiguration, EnemyConfiguration enemyConfiguration, MovementConfiguration movementConfiguration) {
         super(spriteConfiguration, enemyConfiguration, movementConfiguration);
@@ -24,9 +26,10 @@ public class Scourge extends Enemy {
         destroyedExplosionfiguration.getSpriteConfiguration().setImageType(this.enemyType.getDestructionType());
         this.destructionAnimation = new SpriteAnimation(destroyedExplosionfiguration);
         this.destructionAnimation.setAnimationScale(this.scale);
-        this.damage = 13;
         this.detonateOnCollision = true;
-        this.knockbackStrength = 10;
+        this.knockbackStrength = 10 + EnemyManager.getInstance().getEnemyDifficultyModifier();
+        this.movementConfiguration.setMovementSpeed(this.movementConfiguration.getOriginalMovementSpeed() + EnemyManager.getInstance().getEnemyDifficultyModifier() * 0.15f);
+        this.firstDetectionRange = 240 + Math.round(EnemyManager.getInstance().getEnemyDifficultyModifier() * 10f);
     }
 
     @Override
@@ -35,7 +38,7 @@ public class Scourge extends Enemy {
             return;
         }
 
-        if (!activatedFirstTime && isCloseEnough(240)) {
+        if (!activatedFirstTime && isCloseEnough(firstDetectionRange)) {
             activateScourge();
             activatedFirstTime = true;
             return;

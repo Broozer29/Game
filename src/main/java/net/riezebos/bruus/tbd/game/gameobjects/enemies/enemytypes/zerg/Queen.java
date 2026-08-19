@@ -39,10 +39,12 @@ public class Queen extends Enemy {
         destroyedExplosionfiguration.getSpriteConfiguration().setImageType(this.enemyType.getDestructionType());
         this.destructionAnimation = new SpriteAnimation(destroyedExplosionfiguration);
         this.missileTypePathFinders = PathFinderEnums.StraightLine;
-        this.damage = 10;
         this.attackSpeed = 4;
         this.detonateOnCollision = false;
         this.knockbackStrength = 8;
+        this.maxEnemiesAllowedToSpawn = 5 + EnemyManager.getInstance().getEnemyDifficultyModifier();
+        this.movementConfiguration.setMovementSpeed(this.movementConfiguration.getOriginalMovementSpeed() + EnemyManager.getInstance().getEnemyDifficultyModifier() * 0.15f);
+        this.maxHitPoints *= 1 + (EnemyManager.getInstance().getEnemyDifficultyModifier() * 0.1f);
     }
 
     @Override

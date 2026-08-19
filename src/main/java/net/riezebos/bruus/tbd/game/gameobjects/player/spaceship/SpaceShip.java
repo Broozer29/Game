@@ -675,14 +675,15 @@ public class SpaceShip extends GameObject {
 
     public float getDamage() {
         float attackDamage = PlayerStats.getInstance().getBaseDamage() * this.bonusDamageMultiplier;
-        if (isACrit && this.isFriendly()) {
-            attackDamage *= critDamageModifier;
-        }
         if (attackDamage < 0.05) {
             return 0.05f;
         } else {
             return attackDamage;
         }
+    }
+
+    public float getCritModifier(){
+        return this.critDamageModifier;
     }
 
     private void haltPrimaryFiring() {

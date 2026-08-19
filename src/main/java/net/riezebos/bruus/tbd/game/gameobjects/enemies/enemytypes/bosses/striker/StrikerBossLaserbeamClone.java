@@ -32,7 +32,6 @@ public class StrikerBossLaserbeamClone extends Enemy {
         this.destructionAnimation = new SpriteAnimation(destroyedExplosionfiguration);
         this.destructionAnimation.setAnimationScale(1.15f);
         this.deathSound = null;
-        this.damage = 15;
         this.attackSpeed = 5;
         this.knockbackStrength = 9;
         this.allowedToFire = false;

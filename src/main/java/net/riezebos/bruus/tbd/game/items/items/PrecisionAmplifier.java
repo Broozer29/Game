@@ -4,6 +4,7 @@ import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.specialAttacks.SpecialAttack;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerClass;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
+import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SpaceShip;
 import net.riezebos.bruus.tbd.game.items.Item;
 import net.riezebos.bruus.tbd.game.items.ItemEnums;
 import net.riezebos.bruus.tbd.game.items.PlayerInventory;
@@ -40,6 +41,10 @@ public class PrecisionAmplifier extends Item {
 
         if (roll < (critChance * quantity)) {
             attack.setACrit(true);
+            if(attack.getOwnerOrCreator() instanceof SpaceShip spaceShip){
+                attack.setDamage(attack.getDamage() * spaceShip.getCritModifier());
+            }
+
         }
     }
 

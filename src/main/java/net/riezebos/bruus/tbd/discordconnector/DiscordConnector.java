@@ -20,12 +20,6 @@ public final class DiscordConnector implements AutoCloseable {
     private DiscordIPC discord;
     private boolean connected;
 
-    /**
-     * Attempts to connect to the locally running Discord desktop client.
-     * <p>
-     * Failure is intentionally non-fatal: the game should still run normally
-     * when Discord is closed or not installed.
-     */
     public boolean connect() {
         if (connected) {
             return true;
@@ -55,12 +49,6 @@ public final class DiscordConnector implements AutoCloseable {
         }
     }
 
-    /**
-     * Sets the current game activity.
-     *
-     * @param details Main activity description, e.g. "Exploring the Dungeon"
-     * @param state   Secondary information, e.g. "Floor 4"
-     */
     public void setStatus(String details, String state) {
         if (!isConnected()) {
             return;
@@ -80,34 +68,6 @@ public final class DiscordConnector implements AutoCloseable {
         }
     }
 
-    /**
-     * Same thing, but with a session start time.
-     * <p>
-     * Discord expects timestamps in Unix seconds.
-     */
-    public void setStatus(
-            String details,
-            String state,
-            long sessionStartMillis) {
-
-        if (!isConnected()) {
-            return;
-        }
-
-        Activity activity = new Activity.Builder()
-                .setType(ActivityType.PLAYING)
-                .setDetails(details)
-                .setState(state)
-                .setStartTimestamp(sessionStartMillis / 1000L)
-                .setLargeImage("game_logo", "My Game")
-                .build();
-
-        try {
-            discord.setActivity(activity);
-        } catch (Exception e) {
-            connected = false;
-        }
-    }
 
     public boolean isConnected() {
         return connected

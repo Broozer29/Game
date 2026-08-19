@@ -3,6 +3,7 @@ package net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.royalguard;
 import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.Enemy;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyConfiguration;
+import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyManager;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.MissileManager;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.laserbeams.AngledLaserBeam;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.laserbeams.Laserbeam;
@@ -14,6 +15,7 @@ import net.riezebos.bruus.tbd.game.movement.MovementConfiguration;
 import net.riezebos.bruus.tbd.game.movement.Point;
 import net.riezebos.bruus.tbd.game.movement.pathfinders.HoverPathFinder;
 import net.riezebos.bruus.tbd.game.util.WithinVisualBoundariesCalculator;
+import net.riezebos.bruus.tbd.visualsandaudio.data.DataClass;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.AnimationManager;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteAnimation;
@@ -44,11 +46,10 @@ public class RoyalGuardCaptain extends Enemy {
         destroyedExplosionfiguration.getSpriteConfiguration().setImageType(this.enemyType.getDestructionType());
         this.destructionAnimation = new SpriteAnimation(destroyedExplosionfiguration);
         this.destructionAnimation.setAnimationScale(1f);
-        this.damage = 4;
-        this.attackSpeed = 2.5f;
+        this.attackSpeed = 2.5f - (EnemyManager.getInstance().getEnemyDifficultyModifier() * 0.1f);
         this.knockbackStrength = 8;
         this.allowedVisualsToRotate = false;
-
+        angleDegreeIncrement += (EnemyManager.getInstance().getEnemyDifficultyModifier() * 0.0075f);
         this.chargingUpAttackAnimation.changeImagetype(ImageEnums.PinkLaserbeamCharging);
         this.chargingUpAttackAnimation.setFrameDelay(4);
     }
@@ -117,7 +118,7 @@ public class RoyalGuardCaptain extends Enemy {
         return allowedToMove;
     }
 
-    private int laserBeamSegments = 15;
+    private int laserBeamSegments = Math.max(15, Math.round(15 * (DataClass.getInstance().getResolutionFactor() * 0.5f))); //minimum of 15, but increasingly more depending on resolution scale
     private void fireLaserBeam() {
         LaserbeamConfiguration laserbeamConfiguration = new LaserbeamConfiguration(false, this.getDamage());
         laserbeamConfiguration.setAmountOfLaserbeamSegments(laserBeamSegments);

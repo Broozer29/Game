@@ -33,6 +33,7 @@ public class MirageMiniBoss extends Enemy {
     private int cloneCooldown = 20;
     private boolean isChild = false;
 
+    private int cloneCount = 1;
     private List<Direction> availableDirections = new ArrayList<>();
 
     public MirageMiniBoss(SpriteAnimationConfiguration spriteAnimationConfigurationion, EnemyConfiguration enemyConfiguration, MovementConfiguration movementConfiguration) {
@@ -43,8 +44,8 @@ public class MirageMiniBoss extends Enemy {
         this.destructionAnimation.setAnimationScale(3f);
         this.detonateOnCollision = false;
         this.knockbackStrength = 8;
-        this.damage = 10;
         this.attackSpeed = 2;
+        cloneCount += Math.min(EnemyManager.getInstance().getEnemyDifficultyModifier(), 3);
 
         initializeDirections();
 
@@ -97,7 +98,7 @@ public class MirageMiniBoss extends Enemy {
             spawnCloneAnimation();
             super.cleanseAllEffects();
 
-            for (int i = 0; i < 1; i++) {
+            for (int i = 0; i < cloneCount; i++) {
                 createClone();
             }
 
@@ -194,11 +195,11 @@ public class MirageMiniBoss extends Enemy {
     private void createClone() {
         Enemy clonedEnemy = EnemyCreator.createEnemy(EnemyEnums.MirageMiniBoss, this.xCoordinate, this.yCoordinate, Direction.LEFT,
                 this.scale, EnemyEnums.MirageMiniBoss.getMovementSpeed());
-        clonedEnemy.setDamage(0); //overwrite the damage to 0
+        clonedEnemy.setDamage(EnemyManager.getInstance().getEnemyDifficultyModifier());
         clonedEnemy.setOwnerOrCreator(this);
         clonedEnemy.setMaxHitPoints(this.maxHitPoints);
         clonedEnemy.setCurrentHitpoints(this.currentHitpoints);
-        clonedEnemy.setBaseArmor(-100); // massively increased damage taken
+        clonedEnemy.setBaseArmor(-200); // massively increased damage taken
         clonedEnemy.getDestructionAnimation().changeImagetype(ImageEnums.SmokeExplosion);
         clonedEnemy.getDestructionAnimation().setAnimationScale(0.65f);
         clonedEnemy.getDestructionAnimation().setFrameDelay(2);

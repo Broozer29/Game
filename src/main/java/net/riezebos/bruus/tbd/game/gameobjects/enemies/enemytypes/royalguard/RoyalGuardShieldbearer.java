@@ -3,6 +3,7 @@ package net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.royalguard;
 import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.Enemy;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyConfiguration;
+import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyManager;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.MissileManager;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.specialAttacks.FrontShield;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.specialAttacks.SpecialAttackConfiguration;
@@ -26,7 +27,7 @@ public class RoyalGuardShieldbearer extends Enemy {
      */
 
     private FrontShield frontShield = null;
-    private int detectionRange = 185;
+    private int detectionRange = 0;
     private GameObject target = null;
 
     public RoyalGuardShieldbearer(SpriteAnimationConfiguration spriteConfiguration, EnemyConfiguration enemyConfiguration, MovementConfiguration movementConfiguration) {
@@ -35,8 +36,10 @@ public class RoyalGuardShieldbearer extends Enemy {
         destroyedExplosionfiguration.getSpriteConfiguration().setImageType(this.enemyType.getDestructionType());
         this.destructionAnimation = new SpriteAnimation(destroyedExplosionfiguration);
         this.destructionAnimation.setAnimationScale(1f);
-        this.damage = 10;
         this.attackSpeed = 0.1f;
+        this.detectionRange = 185 + (EnemyManager.getInstance().getEnemyDifficultyModifier() * 10);
+        this.baseArmor += (EnemyManager.getInstance().getEnemyDifficultyModifier() * 5);
+        this.movementConfiguration.setMovementSpeed(this.movementConfiguration.getOriginalMovementSpeed() + EnemyManager.getInstance().getEnemyDifficultyModifier() * 0.175f);
         this.knockbackStrength = 8;
     }
 
@@ -92,14 +95,13 @@ public class RoyalGuardShieldbearer extends Enemy {
         SpriteConfiguration spriteConfiguration1 = new SpriteConfiguration();
         spriteConfiguration1.setxCoordinate(this.getCenterXCoordinate());
         spriteConfiguration1.setyCoordinate(this.getCenterYCoordinate());
-        spriteConfiguration1.setScale(0.75f); //todo zet een fatsoenlijk schaal, kan niet testen op werk
+        spriteConfiguration1.setScale(0.75f);
         spriteConfiguration1.setImageType(ImageEnums.FrontShield);
 
         SpriteAnimationConfiguration spriteAnimationConfiguration = new SpriteAnimationConfiguration(spriteConfiguration1, 2, true);
         SpecialAttackConfiguration specialAttackConfiguration = new SpecialAttackConfiguration(this.damage, this.isFriendly(), true, false, true, true, false);
         frontShield = new FrontShield(spriteAnimationConfiguration, specialAttackConfiguration);
         frontShield.setCenterCoordinates(this.getCenterXCoordinate(), this.getCenterYCoordinate());
-        //todo apply een offset zodat het visueel goed eruit ziet, kan niet testen op werk
         frontShield.rotateObjectTowardsAngle(this.rotationAngle, false);
 //        frontShield.addXOffset(this.movementRotation.equals(Direction.RIGHT) ? 40 : -40); //assume this guy only goes left/right in a straight line, otherwise this offset breaks if he moves diagonally
         frontShield.setOwnerOrCreator(this);

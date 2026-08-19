@@ -52,7 +52,6 @@ public class EnemyManager {
     private boolean hasSpawnedABoss = false;
     private PerformanceLogger performanceLogger = null;
 
-
     private EnemyManager() {
         this.performanceLogger = new PerformanceLogger("Enemy Manager");
     }
@@ -377,5 +376,9 @@ public class EnemyManager {
         return new DamageOverTime(enemy.getMaxHitPoints() * 0.035f, 9999, spriteAnimation, EffectIdentifiers.EndOfLevelBurn);
     }
 
+    public int getEnemyDifficultyModifier(){
+        return 4;
+//        return Math.min(GameState.getInstance().getBossesDefeated(), 4); //Capping at 5 to prevent infinite scaling and since I intend the 5th boss to be the final boss of a run which doesnt exist yet
+    }
 
 }

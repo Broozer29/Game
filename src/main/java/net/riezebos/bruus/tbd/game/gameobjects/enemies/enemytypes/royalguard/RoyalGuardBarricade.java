@@ -39,8 +39,11 @@ public class RoyalGuardBarricade extends Enemy {
         destroyedExplosionfiguration.getSpriteConfiguration().setImageType(this.enemyType.getDestructionType());
         this.destructionAnimation = new SpriteAnimation(destroyedExplosionfiguration);
         this.destructionAnimation.setAnimationScale(1f);
-        this.damage = 12;
-        this.attackSpeed = 2;
+        this.attackSpeed = 2 - (EnemyManager.getInstance().getEnemyDifficultyModifier() * 0.2f);
+        this.movementConfiguration.setMovementSpeed(this.movementConfiguration.getOriginalMovementSpeed() + EnemyManager.getInstance().getEnemyDifficultyModifier() * 0.15f);
+        this.maxMinionCount += EnemyManager.getInstance().getEnemyDifficultyModifier();
+        this.attackRange += Math.round(EnemyManager.getInstance().getEnemyDifficultyModifier() * 2f);
+        this.minionSpawnCooldown -= EnemyManager.getInstance().getEnemyDifficultyModifier() * 0.25f;
         this.knockbackStrength = 8;
         this.warpInAnimation = initSpawnAnimation(this);
 

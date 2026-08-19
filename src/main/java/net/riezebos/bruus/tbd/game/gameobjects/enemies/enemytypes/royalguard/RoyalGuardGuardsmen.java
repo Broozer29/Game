@@ -3,6 +3,7 @@ package net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.royalguard;
 import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.Enemy;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyConfiguration;
+import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyManager;
 import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.droneTypes.protoss.ProtossUtils;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.*;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
@@ -38,9 +39,10 @@ public class RoyalGuardGuardsmen extends Enemy {
         destroyedExplosionfiguration.getSpriteConfiguration().setImageType(this.enemyType.getDestructionType());
         this.destructionAnimation = new SpriteAnimation(destroyedExplosionfiguration);
         this.destructionAnimation.setAnimationScale(1f);
-        this.damage = 10;
-        this.attackSpeed = 1.5f;
-        this.knockbackStrength = 8;
+        this.movementConfiguration.setMovementSpeed(this.movementConfiguration.getOriginalMovementSpeed() + EnemyManager.getInstance().getEnemyDifficultyModifier() * 0.1f);
+        this.attackSpeed = 1.5f - (EnemyManager.getInstance().getEnemyDifficultyModifier() * 0.05f);
+        this.knockbackStrength = 11;
+        this.attackRange += Math.round(EnemyManager.getInstance().getEnemyDifficultyModifier() * 10f);
 
         if(this.movementConfiguration.getPathFinder() instanceof HoverPathFinder pathFinder){
             movementConfiguration.setBoardBlockToHoverIn(6);
@@ -123,7 +125,7 @@ public class RoyalGuardGuardsmen extends Enemy {
                 missileType.getImageType(), 0.5f);
 
 
-        int movementSpeed = 3;
+        float movementSpeed = 3f + (EnemyManager.getInstance().getEnemyDifficultyModifier() * 0.25f);
         //Create missile movement attributes and create a movement configuration
 
         PathFinder missilePathFinder = new StraightLinePathFinder();

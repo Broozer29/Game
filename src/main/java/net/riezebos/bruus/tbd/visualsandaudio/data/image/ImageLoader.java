@@ -199,6 +199,8 @@ public class ImageLoader {
                 return "/images/Icons/Starcraft2 Concussive Shells.png";
             case Starcraft2_Dual_Rockets:
                 return "/images/Icons/Starcraft2 Dual Rockets.png";
+            case SideCannons:
+                return "/images/Icons/sidecannons.png";
             case Starcraft2ConcentratedLaser:
                 return "/images/Icons/Starcraft2 Concentrated Laser.png";
             case Starcraft2_Energy_Siphon:

@@ -116,10 +116,9 @@ public class GameBoardCreator {
             attempts++;
         }
 
-        if (attempts >= 10) {
-            shopItem = new ShopItem(config, ItemRarityEnums.Relic);
-            shopItem.getShopItemInformation().setItem(ItemEnums.Locked);
-            shopItem.getShopItemInformation().setItemDescription("You obtained the unobtainable, congratulations! This item does literally nothing.");
+        if (attempts >= 150) {
+            shopItem = new ShopItem(config, ItemRarityEnums.Legendary);
+            shopItem.getShopItemInformation().setItem(ItemEnums.getRandomItemByRarity(ItemRarityEnums.Legendary));
         }
 
         shopItem.setImageDimensions(relicDimensions, relicDimensions);

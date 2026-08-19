@@ -30,7 +30,6 @@ public class RoyalGuardGrenadier extends Enemy {
         destroyedExplosionfiguration.getSpriteConfiguration().setImageType(this.enemyType.getDestructionType());
         this.destructionAnimation = new SpriteAnimation(destroyedExplosionfiguration);
         this.destructionAnimation.setAnimationScale(1f);
-        this.damage = 10;
         this.attackSpeed = 1;
         this.knockbackStrength = 8;
     }

@@ -2,6 +2,7 @@ package net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.zerg;
 
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.Enemy;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyConfiguration;
+import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyManager;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.*;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
 import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SpaceShip;
@@ -29,7 +30,6 @@ public class Guardian extends Enemy {
         destroyedExplosionfiguration.getSpriteConfiguration().setImageType(this.enemyType.getDestructionType());
         this.destructionAnimation = new SpriteAnimation(destroyedExplosionfiguration);
         this.missileTypePathFinders = PathFinderEnums.StraightLine;
-        this.damage = 8;
         this.attackSpeed = 3;
         this.detonateOnCollision = false;
         this.knockbackStrength = 8;
@@ -39,7 +39,7 @@ public class Guardian extends Enemy {
 
         if(this.movementConfiguration.getPathFinder() instanceof HoverPathFinder){
             HoverPathFinder pathFinder = (HoverPathFinder) this.movementConfiguration.getPathFinder();
-
+            pathFinder.setSecondsToHoverStill(5 - (EnemyManager.getInstance().getEnemyDifficultyModifier() * 0.5));
             pathFinder.setShouldDecreaseBoardBlock(true);
             if(this.movementConfiguration.getRotation().equals(Direction.RIGHT)) {
                 pathFinder.setDecreaseBoardBlockAmountBy(-1);
@@ -97,7 +97,7 @@ public class Guardian extends Enemy {
                 missileType.getImageType(), scale);
 
 
-        float movementSpeed = 5f;
+        float movementSpeed = 4.5f + EnemyManager.getInstance().getEnemyDifficultyModifier() * 0.15f;
         //Create missile movement attributes and create a movement configuration
         PathFinder missilePathFinder = new StraightLinePathFinder();
         MovementConfiguration movementConfiguration = MissileCreator.getInstance().createMissileMovementConfig(
@@ -118,7 +118,7 @@ public class Guardian extends Enemy {
         missile.getAnimation().changeImagetype(ImageEnums.GuardianMissile);
         missile.getDestructionAnimation().changeImagetype(ImageEnums.GuardianMissileImpact);
         missile.getAnimation().setFrameDelay(1);
-        missile.setKnockbackStrength(6);
+        missile.setKnockbackStrength(6 + Math.round(EnemyManager.getInstance().getEnemyDifficultyModifier() * 0.75f));
 
         //get the coordinates for rotation of the missile
         SpaceShip spaceship = PlayerManager.getInstance().getClosestSpaceShip(this);

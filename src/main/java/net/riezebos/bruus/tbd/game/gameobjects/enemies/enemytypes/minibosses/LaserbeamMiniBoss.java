@@ -2,6 +2,7 @@ package net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.minibosses;
 
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.Enemy;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyConfiguration;
+import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyManager;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.MissileManager;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.laserbeams.AngledLaserBeam;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.laserbeams.Laserbeam;
@@ -35,9 +36,9 @@ public class LaserbeamMiniBoss extends Enemy {
         destroyedExplosionfiguration.getSpriteConfiguration().setImageType(this.enemyType.getDestructionType());
         this.destructionAnimation = new SpriteAnimation(destroyedExplosionfiguration);
         this.destructionAnimation.setAnimationScale(3);
-        this.damage = 6;
         this.detonateOnCollision = false;
         this.knockbackStrength = 10;
+        this.movementConfiguration.setMovementSpeed(this.movementConfiguration.getOriginalMovementSpeed() + EnemyManager.getInstance().getEnemyDifficultyModifier() * 0.35f);
         this.attackSpeed = 0.025f;
 
         SpawnCoinsOnDeath goldOnDeathEffect = new SpawnCoinsOnDeath(25, 3,1.0f);
@@ -111,7 +112,7 @@ public class LaserbeamMiniBoss extends Enemy {
     }
 
     private float increaseRotationAngle(float rotationAngle) {
-        float newAngle = rotationAngle + 0.5f;
+        float newAngle = rotationAngle + (0.5f * (1 + EnemyManager.getInstance().getEnemyDifficultyModifier() * 0.2f)); //grows by 20% per boss defeated
         if (newAngle > 360) {
             newAngle = 0;
         }

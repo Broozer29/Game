@@ -25,7 +25,6 @@ public class PulsingDrone extends Enemy {
         SpriteAnimationConfiguration destroyedExplosionfiguration = new SpriteAnimationConfiguration(spriteConfig.getSpriteConfiguration(), 0, false);
         destroyedExplosionfiguration.getSpriteConfiguration().setImageType(this.enemyType.getDestructionType());
         this.destructionAnimation = new SpriteAnimation(destroyedExplosionfiguration);
-        this.damage = 0;
         this.attackSpeed = 4;
         this.chargingUpAttackAnimation.setFrameDelay(10);
         this.chargingUpAttackAnimation.setAnimationScale(1.6f);

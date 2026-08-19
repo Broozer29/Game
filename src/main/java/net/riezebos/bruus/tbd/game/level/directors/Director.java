@@ -3,6 +3,7 @@ package net.riezebos.bruus.tbd.game.level.directors;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyManager;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyCategory;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyEnums;
+import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyTribes;
 import net.riezebos.bruus.tbd.game.gamestate.GameMode;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.items.ItemEnums;
@@ -374,6 +375,10 @@ public class Director {
             enemyCreditCost *= 1.5f;
         } else {
             enemyCreditCost *= 3f;
+        }
+
+        if(enemyType.getEnemyTribe().equals(EnemyTribes.RoyalGuard)){
+            enemyCreditCost *= 1 - (EnemyManager.getInstance().getEnemyDifficultyModifier() * 0.05f);
         }
 
         float enemyCount = formationType.getEnemyCountInFormation();

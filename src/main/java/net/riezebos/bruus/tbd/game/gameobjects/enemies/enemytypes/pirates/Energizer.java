@@ -2,6 +2,7 @@ package net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.pirates;
 
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.Enemy;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyConfiguration;
+import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyManager;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.Missile;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.MissileConfiguration;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.MissileCreator;
@@ -26,7 +27,6 @@ public class Energizer extends Enemy {
 		destroyedExplosionfiguration.getSpriteConfiguration().setImageType(this.enemyType.getDestructionType());
 		this.destructionAnimation = new SpriteAnimation(destroyedExplosionfiguration);
 
-		this.damage = 15;
 		this.attackSpeed = 4f;
 		this.detonateOnCollision = false;
 		this.knockbackStrength = 8;
@@ -79,13 +79,14 @@ public class Energizer extends Enemy {
                 this.getDamage(), missileType.getDeathOrExplosionImageEnum(), isFriendly, false,
 				true, true);
 
+        float scale = 0.3f + (EnemyManager.getInstance().getEnemyDifficultyModifier() * 0.05f);
 
 		//Create the missile and finalize the creation process, then add it to the manager and consequently the game
 		Missile missile = MissileCreator.getInstance().createMissile(spriteConfiguration, missileConfiguration, movementConfiguration);
 		missile.getDestructionAnimation().setFrameDelay(1);
-		missile.getDestructionAnimation().setAnimationScale(0.3f);
+		missile.getDestructionAnimation().setAnimationScale(scale);
 		missile.setOwnerOrCreator(this);
-		missile.getAnimation().setAnimationScale(0.3f);
+		missile.getAnimation().setAnimationScale(scale);
 		missile.setCenterCoordinates(chargingUpAttackAnimation.getCenterXCoordinate(), chargingUpAttackAnimation.getCenterYCoordinate());
 		missile.rotateObjectTowardsDestination(true);
 		missile.setCenterCoordinates(chargingUpAttackAnimation.getCenterXCoordinate(), chargingUpAttackAnimation.getCenterYCoordinate());

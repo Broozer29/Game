@@ -45,6 +45,7 @@ public enum ItemEnums {
     BigIron(ItemRarityEnums.Relic,  ImageEnums.BigIron, "Big Iron", false), //disabled want dit voelt buggy aan en ook niet echt fijn om mee te spelen
     OneShotOneKill(ItemRarityEnums.Relic, ImageEnums.OneShotOneKill, "One shot, one kill", true),
     ElectricDestabilizer(ItemRarityEnums.Relic, ImageEnums.Starcraft2_Protoss_Shield_Disintegrate, "Electric Destabilizer", true),
+    SideCannons(ItemRarityEnums.Relic, ImageEnums.SideCannons, "Side Cannons", true),
 
     //firefighter relics
     ModuleScorch(ItemRarityEnums.Relic,  ImageEnums.ModuleScorchIcon, "Module: Scorch", true),

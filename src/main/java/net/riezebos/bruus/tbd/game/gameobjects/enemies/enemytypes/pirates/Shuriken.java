@@ -34,7 +34,6 @@ public class Shuriken extends Enemy {
         this.destructionAnimation = new SpriteAnimation(destroyedExplosionfiguration);
         this.deathSound = AudioEnums.Alien_Bomb_Impact;
         this.detonateOnCollision = true;
-        this.damage = 30;
         this.knockbackStrength = 14;
         this.attackSpeed = 2.5f;
     }

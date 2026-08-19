@@ -2,6 +2,7 @@ package net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.pirates;
 
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.Enemy;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyConfiguration;
+import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyManager;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.Missile;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.MissileConfiguration;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.MissileCreator;
@@ -25,8 +26,7 @@ public class Scout extends Enemy {
         destroyedExplosionfiguration.getSpriteConfiguration().setImageType(this.enemyType.getDestructionType());
         this.destructionAnimation = new SpriteAnimation(destroyedExplosionfiguration);
         this.destructionAnimation.setAnimationScale(this.scale / 1.5f);
-        this.attackSpeed = 5;
-        this.damage = 9;
+        this.attackSpeed = 5 - (EnemyManager.getInstance().getEnemyDifficultyModifier() * 0.5f);
         this.detonateOnCollision = false;
         this.knockbackStrength = 5;
 
@@ -75,7 +75,7 @@ public class Scout extends Enemy {
         SpriteConfiguration spriteConfiguration = MissileCreator.getInstance().createMissileSpriteConfig(xCoordinate, yCoordinate, missileType.getImageType()
                 , this.scale / 2);
 
-        int movementSpeed = 3;
+        float movementSpeed = 3 + EnemyManager.getInstance().getEnemyDifficultyModifier() * 0.4f;
 
         //Create missile movement attributes and create a movement configuration
         PathFinder missilePathFinder = new RegularPathFinder();

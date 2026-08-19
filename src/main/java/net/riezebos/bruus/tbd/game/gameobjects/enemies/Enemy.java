@@ -93,6 +93,7 @@ public class Enemy extends GameObject {
         this.enemyType = enemyConfiguration.getEnemyType();
         this.maxHitPoints = enemyConfiguration.getMaxHitPoints();
         this.currentHitpoints = maxHitPoints;
+        this.damage = enemyConfiguration.getBaseDamage();
         this.hasAttack = true;
         this.showHealthBar = false;
         this.deathSound = enemyConfiguration.getDeathSound();
@@ -121,7 +122,7 @@ public class Enemy extends GameObject {
 
 
         if (level > 1) {
-            this.maxHitPoints *= Math.pow(getScalingFactor(), level);
+            this.maxHitPoints *= Math.pow(getScalingFactor(), level - 1);
 
             if(PlayerManager.getInstance().getPlayerCount() > 1) {
                 this.maxHitPoints *= (PlayerManager.getInstance().getPlayerCount() * 0.75f); //voor elke extra speler, 75% max hp

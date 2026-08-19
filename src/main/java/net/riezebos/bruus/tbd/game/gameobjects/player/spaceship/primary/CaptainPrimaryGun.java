@@ -15,8 +15,10 @@ import net.riezebos.bruus.tbd.game.items.items.captain.BigIron;
 import net.riezebos.bruus.tbd.game.items.items.captain.HighVelocityLasers;
 import net.riezebos.bruus.tbd.game.movement.Direction;
 import net.riezebos.bruus.tbd.game.movement.MovementConfiguration;
+import net.riezebos.bruus.tbd.game.movement.Point;
 import net.riezebos.bruus.tbd.game.movement.pathfinders.PathFinder;
 import net.riezebos.bruus.tbd.game.movement.pathfinders.RegularPathFinder;
+import net.riezebos.bruus.tbd.game.movement.pathfinders.StraightLinePathFinder;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.AudioDatabase;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.CustomAudioClip;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.AudioEnums;
@@ -46,6 +48,11 @@ public class CaptainPrimaryGun extends PrimaryPlayerGun {
             ImageEnums visualImage = playerStats.getPlayerMissileImage();
             PathFinder pathFinder = new RegularPathFinder();
             fireMissile(xCoordinate, yCoordinate, visualImage, 1, pathFinder, playerAttackType.getCorrespondingMissileEnum(), owner);
+
+            if(PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.SideCannons) != null){
+                fireSideCannonMissiles(owner, playerAttackType.getCorrespondingMissileEnum().getImageType(),true);
+                fireSideCannonMissiles(owner, playerAttackType.getCorrespondingMissileEnum().getImageType(),false);
+            }
             playFiringAudio(playerAttackType);
         }
         orangeBarCurrentValue = -1;
@@ -108,7 +115,60 @@ public class CaptainPrimaryGun extends PrimaryPlayerGun {
         missile.setCanBounce(true);
 
         this.missileManager.addExistingMissile(missile);
+    }
 
+    private void fireSideCannonMissiles(SpaceShip owner, ImageEnums playerMissileType, boolean upOrDown) {
+        int movementSpeed = 6;
+        MissileCreator missileCreator1 = MissileCreator.getInstance();
+        SpriteConfiguration spriteConfiguration = missileCreator1.createMissileSpriteConfig(owner.getXCoordinate(), owner.getYCoordinate(),
+                playerMissileType, 1);
+
+
+        MovementConfiguration movementConfiguration = missileCreator1.createMissileMovementConfig(
+                movementSpeed, new StraightLinePathFinder(), Direction.RIGHT
+        );
+
+
+        boolean isFriendly = true;
+        float damage = owner.getDamage() * 2;
+        damage *= 1 + (totalDamageBonus); //bigiron dmg bonus
+        boolean isExplosive = false;
+        MissileConfiguration missileConfiguration = missileCreator1.createMissileConfiguration(MissileEnums.DefaultAnimatedBullet, damage, MissileEnums.DefaultAnimatedBullet.getDeathOrExplosionImageEnum(), isFriendly, isExplosive,
+                true, true);
+        if (!isExplosive) {
+            missileConfiguration.setPiercesMissiles(PlayerStats.getInstance().getPiercingMissilesAmount() > 0);
+            missileConfiguration.setAmountOfPierces(PlayerStats.getInstance().getPiercingMissilesAmount());
+        }
+
+        Missile missile = missileCreator1.createMissile(spriteConfiguration, missileConfiguration, movementConfiguration);
+
+        if (PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.HighVelocityLasers) != null) {
+            HighVelocityLasers lasers = (HighVelocityLasers) PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.HighVelocityLasers);
+            lasers.applyEffectToObject(missile);
+        }
+
+        missile.resetMovementPath();
+        double angle = upOrDown ? Direction.RIGHT.toAngle() + 10 : Direction.RIGHT.toAngle() - 20;
+        Point bulletDestination = calculateBulletDestination(angle, 200, owner.getCenterXCoordinate() + 200, owner.getCenterYCoordinate());
+        missile.setOwnerOrCreator(owner);
+        missile.setCenterCoordinates(owner.getXCoordinate() + owner.getWidth() - 10, owner.getCenterYCoordinate());
+        missile.getMovementConfiguration().setDestination(bulletDestination);
+
+        missile.setCanBounce(true);
+
+        this.missileManager.addExistingMissile(missile);
+    }
+
+    private Point calculateBulletDestination(double angleDegrees, int distance, int centerX, int centerY) {
+        // Convert the angle from degrees to radians because Math functions use radians
+        double angleRadians = Math.toRadians(angleDegrees);
+
+        // Calculate the X and Y coordinates
+        int targetX = centerX + (int) (Math.cos(angleRadians) * distance);
+        int targetY = centerY + (int) (Math.sin(angleRadians) * distance);
+
+        // Return the calculated coordinates as a Point object
+        return new Point(targetX, targetY);
     }
 
     private float totalScaleBonus = 0f;

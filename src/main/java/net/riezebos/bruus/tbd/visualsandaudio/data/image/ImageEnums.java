@@ -303,6 +303,7 @@ public enum ImageEnums {
     Starcraft2_Protoss_Shield_Disintegrate,
     Starcraft2_Psi_Storm2,
     Starcraft2_Dual_Rockets,
+    SideCannons,
     Starcraft2_Auto_Tracking,
     Starcraft2_Blue_Flame,
     Starcraft2_Concussive_Shells,

@@ -143,9 +143,9 @@ public class EnemyCreator {
         float baseArmor = enemyType.getBaseArmor();
         float xpOnDeath = enemyType.getXpOnDeath();
         float cashMoneyWorth = enemyType.getCashMoneyWorth();
+        float baseDamage = enemyType.getBaseDamage();
 
-
-        return new EnemyConfiguration(enemyType, maxHitpoints,
+        return new EnemyConfiguration(enemyType, maxHitpoints, baseDamage,
                 deathSound, baseArmor, cashMoneyWorth, xpOnDeath);
     }
 

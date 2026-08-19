@@ -29,6 +29,7 @@ public class Bulldozer extends Enemy {
         destroyedExplosionfiguration.getSpriteConfiguration().setImageType(this.enemyType.getDestructionType());
         this.destructionAnimation = new SpriteAnimation(destroyedExplosionfiguration);
         this.detonateOnCollision = false;
+        this.movementConfiguration.setMovementSpeed(this.movementConfiguration.getOriginalMovementSpeed() + EnemyManager.getInstance().getEnemyDifficultyModifier() * 0.1f);
         this.knockbackStrength = 8;
         this.hasAttack = false;
     }
@@ -43,7 +44,7 @@ public class Bulldozer extends Enemy {
 
         double angleIncrement = 2 * Math.PI / amountOfBombs;
 
-        int radius = 85;
+        int radius = 85 + (EnemyManager.getInstance().getEnemyDifficultyModifier() * 5);
         for (int iterator = 0; iterator < amountOfBombs; iterator++) {
             // 2. Find the next angle
             double nextAngle = angleIncrement * iterator;
@@ -57,7 +58,7 @@ public class Bulldozer extends Enemy {
             alienBomb.setOwnerOrCreator(this);
             alienBomb.getMovementConfiguration().setLastKnownTargetX(this.getCenterXCoordinate());
             alienBomb.getMovementConfiguration().setLastKnownTargetY(this.getCenterYCoordinate());
-            alienBomb.getMovementConfiguration().setOrbitRadius(85);
+            alienBomb.getMovementConfiguration().setOrbitRadius(radius);
             //Bomb rotation is done in GameObject, not initialization because it's dependent on the owner (bulldozer) so it rotates with bulldozer
             this.objectOrbitingThis.add(alienBomb);
             EnemyManager.getInstance().addEnemy(alienBomb);
@@ -79,6 +80,7 @@ public class Bulldozer extends Enemy {
         EnemyConfiguration enemyConfiguration = new EnemyConfiguration(
                 EnemyEnums.Alien_Bomb,
                 EnemyEnums.Alien_Bomb.getBaseHitPoints(),
+                EnemyEnums.Alien_Bomb.getBaseDamage(),
                 EnemyEnums.Alien_Bomb.getDeathSound(),
                 EnemyEnums.Alien_Bomb.getBaseArmor(), EnemyEnums.Alien_Bomb.getXpOnDeath(), EnemyEnums.Alien_Bomb.getCashMoneyWorth());
 

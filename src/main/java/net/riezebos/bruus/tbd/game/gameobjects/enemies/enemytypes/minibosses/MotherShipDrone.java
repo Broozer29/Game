@@ -3,6 +3,7 @@ package net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.minibosses;
 import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.Enemy;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyConfiguration;
+import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyManager;
 import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.droneTypes.protoss.ProtossUtils;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.*;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
@@ -33,6 +34,9 @@ public class MotherShipDrone extends Enemy {
         this.destructionAnimation.setAnimationScale(1f);
         this.detonateOnCollision = false;
         this.knockbackStrength = 8;
+
+        this.attackSpeed = this.attackSpeed * (1 + (EnemyManager.getInstance().getEnemyDifficultyModifier() * 0.1f));
+        this.movementConfiguration.setMovementSpeed(this.movementConfiguration.getOriginalMovementSpeed() + EnemyManager.getInstance().getEnemyDifficultyModifier() * 0.15f);
         justInitialized = true;
     }
 

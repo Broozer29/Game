@@ -2,6 +2,7 @@ package net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.minibosses;
 
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.Enemy;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyConfiguration;
+import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyManager;
 import net.riezebos.bruus.tbd.game.items.effects.effectimplementations.SpawnCoinsOnDeath;
 import net.riezebos.bruus.tbd.game.movement.MovementConfiguration;
 import net.riezebos.bruus.tbd.game.movement.pathfinders.BouncingPathFinder;
@@ -27,6 +28,8 @@ public class ShurikenMiniBoss extends Enemy {
         this.destructionAnimation.setAnimationScale(3f);
         this.detonateOnCollision = false;
         this.knockbackStrength = 8;
+
+        this.movementConfiguration.setMovementSpeed(this.movementConfiguration.getOriginalMovementSpeed() + EnemyManager.getInstance().getEnemyDifficultyModifier() * 0.25f);
 
         this.hasAttack = false;
         if(this.movementConfiguration.getPathFinder() instanceof BouncingPathFinder bouncingPathFinder){

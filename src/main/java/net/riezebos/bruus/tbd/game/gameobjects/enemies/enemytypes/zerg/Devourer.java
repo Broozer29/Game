@@ -2,6 +2,7 @@ package net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.zerg;
 
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.Enemy;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyConfiguration;
+import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyManager;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.*;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
 import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SpaceShip;
@@ -94,7 +95,7 @@ public class Devourer extends Enemy {
                 missileType.getImageType(), 1);
 
 
-        float movementSpeed = 3f;
+        float movementSpeed = 3f + EnemyManager.getInstance().getEnemyDifficultyModifier() * 0.15f;
         //Create missile movement attributes and create a movement configuration
 
         PathFinder missilePathFinder = new StraightLinePathFinder();
@@ -165,7 +166,7 @@ public class Devourer extends Enemy {
 
         SpriteAnimationConfiguration spriteAnimationConfiguration = new SpriteAnimationConfiguration(spriteConfiguration1, 2, true);
         SpriteAnimation spriteAnimation = new SpriteAnimation(spriteAnimationConfiguration);
-        return new AttackSpeedModifierEffect(-0.1f, 3, spriteAnimation, EffectIdentifiers.DevourerAttackSpeedDebuff);
+        return new AttackSpeedModifierEffect(-0.1f + (EnemyManager.getInstance().getEnemyDifficultyModifier() * 0.05f), 3, spriteAnimation, EffectIdentifiers.DevourerAttackSpeedDebuff);
     }
 
 }

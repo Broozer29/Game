@@ -2,6 +2,7 @@ package net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.pirates;
 
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.Enemy;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyConfiguration;
+import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyManager;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.MissileManager;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.specialAttacks.CircularPulseAttack;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.specialAttacks.SpecialAttack;
@@ -23,10 +24,10 @@ public class Flamer extends Enemy {
         SpriteAnimationConfiguration destroyedExplosionfiguration = new SpriteAnimationConfiguration(spriteConfiguration.getSpriteConfiguration(), 0, false);
         destroyedExplosionfiguration.getSpriteConfiguration().setImageType(this.enemyType.getDestructionType());
         this.destructionAnimation = new SpriteAnimation(destroyedExplosionfiguration);
-        this.damage = 5;
-        this.attackSpeed = 5;
+        this.attackSpeed = 5 - (EnemyManager.getInstance().getEnemyDifficultyModifier() * 0.25f);
         this.detonateOnCollision = false;
         this.knockbackStrength = 8;
+        this.movementConfiguration.setMovementSpeed(this.movementConfiguration.getOriginalMovementSpeed() + EnemyManager.getInstance().getEnemyDifficultyModifier() * 0.15f);
         if(this.chargingUpAttackAnimation != null){
             this.chargingUpAttackAnimation.setFrameDelay(this.chargingUpAttackAnimation.getFrameDelay() + 1); //idk what the default value is so this
         }
@@ -55,7 +56,9 @@ public class Flamer extends Enemy {
         SpriteConfiguration missileSpriteConfiguration = new SpriteConfiguration();
         missileSpriteConfiguration.setxCoordinate(this.getCenterXCoordinate());
         missileSpriteConfiguration.setyCoordinate(this.getCenterYCoordinate());
-        missileSpriteConfiguration.setScale(1.25f);
+        float scale = 1.25f + (EnemyManager.getInstance().getEnemyDifficultyModifier() * 0.05f);
+
+        missileSpriteConfiguration.setScale(scale);
         missileSpriteConfiguration.setImageType(ImageEnums.EnergyCircle);
 
         SpriteAnimationConfiguration spriteAnimationConfiguration = new SpriteAnimationConfiguration(missileSpriteConfiguration, 2, false);
