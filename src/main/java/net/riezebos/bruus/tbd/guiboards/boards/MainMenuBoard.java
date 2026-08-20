@@ -63,19 +63,37 @@ public class MainMenuBoard extends JPanel implements TimerHolder {
     private int selectedColumn = 0;
 
     public MainMenuBoard() {
+        logDiagnostic("MainMenuBoard constructor: Starting...");
         addKeyListener(new KeyInputReader());
         setFocusable(true);
         setBackground(Color.BLACK);
+        logDiagnostic("MainMenuBoard constructor: Setting preferred size...");
         setPreferredSize(new Dimension(DataClass.getInstance().getWindowWidth(), DataClass.getInstance().getWindowHeight()));
 
+        logDiagnostic("MainMenuBoard constructor: Checking controllers...");
         if (controllers.getPrimaryController() != null) {
             controllersConnected = controllers.getControllerInputReaders().size();
             controllerInputReader = controllers.getPrimaryController();
         }
 
+        logDiagnostic("MainMenuBoard constructor: Calling initMenuTiles()...");
         initMenuTiles();
+        logDiagnostic("MainMenuBoard constructor: Creating timer...");
         timer = new Timer(GameState.getInstance().getDELAY(), e -> repaint(0, 0, DataClass.getInstance().getWindowWidth(), DataClass.getInstance().getWindowHeight() + 5));
-        timer.start();
+        // Don't start timer in constructor - let it be started explicitly via getTimer().restart()
+        logDiagnostic("MainMenuBoard constructor: Completed");
+    }
+
+    private void logDiagnostic(String message) {
+        System.out.println(message);
+        try {
+            java.io.FileWriter fw = new java.io.FileWriter("startup_log.txt", true);
+            java.io.PrintWriter pw = new java.io.PrintWriter(fw);
+            pw.println("[" + java.time.LocalDateTime.now() + "] " + message);
+            pw.close();
+        } catch (java.io.IOException e) {
+            // Silently fail if can't write to log
+        }
     }
 
     // Initialize all starter pointers
@@ -99,7 +117,9 @@ public class MainMenuBoard extends JPanel implements TimerHolder {
     }
 
     public void recreateWindow() {
+        logDiagnostic("recreateWindow: Starting...");
         if (initializedMenuObjects) {
+            logDiagnostic("recreateWindow: Creating menu components...");
             startGameBackgroundCard = MenuBoardCreator.startGameBackgroundCard();
             selectClassBoard = MenuBoardCreator.createStartGameButton(startGameBackgroundCard);
             menuCursor = MenuBoardCreator.createMenuCursor(selectClassBoard.getComponents().get(0));
@@ -108,6 +128,7 @@ public class MainMenuBoard extends JPanel implements TimerHolder {
             closeGameButton = MenuBoardCreator.testingButton(continueSaveFile);
             foundController = MenuBoardCreator.foundControllerText(controllersConnected, titleImage);
 
+            logDiagnostic("recreateWindow: Resetting managers and clearing lists...");
             animationManager.resetManager();
             firstColumn.clear();
             secondColumn.clear();
@@ -116,9 +137,11 @@ public class MainMenuBoard extends JPanel implements TimerHolder {
             lastMoveTime = System.currentTimeMillis(); //To prevent the user from immediatly pressing another button after going to this screen
 
 
+            logDiagnostic("recreateWindow: Creating menu cursor...");
             menuCursor = MenuBoardCreator.createMenuCursor(selectClassBoard.getComponents().get(0));
             selectedColumn = 0;
             selectedRow = 0;
+            logDiagnostic("recreateWindow: Adding tiles to columns...");
             addTilesToColumns();
 
 //            for (GUITextCollection explanation : controlExplanations) {
@@ -139,11 +162,15 @@ public class MainMenuBoard extends JPanel implements TimerHolder {
             offTheGridObjects.addAll(foundController.getComponents());
             this.menuCursor.setSelectedMenuTile(selectClassBoard.getComponents().get(0));
 
+            logDiagnostic("recreateWindow: Building grid...");
             grid.add(firstColumn);
             grid.add(secondColumn);
             grid.add(thirdColumn);
+            logDiagnostic("recreateWindow: Calling recreateList()...");
             recreateList(); // Fill the columns
+            logDiagnostic("recreateWindow: Updating cursor...");
             updateCursor();
+            logDiagnostic("recreateWindow: Completed");
         }
     }
 

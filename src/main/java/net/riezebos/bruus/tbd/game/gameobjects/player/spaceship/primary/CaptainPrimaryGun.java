@@ -29,7 +29,7 @@ import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.Sprit
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteConfiguration;
 
 public class CaptainPrimaryGun extends PrimaryPlayerGun {
-
+    public static float damageModifier = 2;
     @Override
     public void fire(int xCoordinate, int yCoordinate, PlayerPrimaryAttackTypes playerAttackType, SpaceShip owner) {
         if (!owner.isAllowedToAttack()) {
@@ -53,15 +53,11 @@ public class CaptainPrimaryGun extends PrimaryPlayerGun {
                 fireSideCannonMissiles(owner, playerAttackType.getCorrespondingMissileEnum().getImageType(),true);
                 fireSideCannonMissiles(owner, playerAttackType.getCorrespondingMissileEnum().getImageType(),false);
             }
-            playFiringAudio(playerAttackType);
         }
         orangeBarCurrentValue = -1;
         orangeBarMaxValue = -1;
     }
 
-    private void playFiringAudio(PlayerPrimaryAttackTypes playerAttackType) {
-//        playMissileAudio(AudioEnums.NewPlayerLaserbeam); //turned it off since it became tedious to listen to and breaks the music
-    }
 
     @Override
     public void stopFiring(SpaceShip owner) {
@@ -70,82 +66,19 @@ public class CaptainPrimaryGun extends PrimaryPlayerGun {
         }
     }
 
-
-    private void playMissileAudio(AudioEnums audioEnum) {
-        this.audioManager.addAudio(audioEnum);
-    }
-
-
     private void fireMissile(int xCoordinate, int yCoordinate, ImageEnums playerMissileType,
                              float missileScale, PathFinder missilePathFinder, MissileEnums attackType, SpaceShip owner) {
-        int movementSpeed = 6;
-        MissileCreator missileCreator1 = MissileCreator.getInstance();
-        SpriteConfiguration spriteConfiguration = missileCreator1.createMissileSpriteConfig(xCoordinate, yCoordinate,
-                playerMissileType, missileScale);
-
-
-        MovementConfiguration movementConfiguration = missileCreator1.createMissileMovementConfig(
-                movementSpeed, missilePathFinder, Direction.RIGHT
-        );
-
-
-        boolean isFriendly = true;
-        float damage = owner.getDamage() * 2;
-        damage *= 1 + (totalDamageBonus); //bigiron dmg bonus
-        boolean isExplosive = false;
-        MissileConfiguration missileConfiguration = missileCreator1.createMissileConfiguration(attackType, damage, attackType.getDeathOrExplosionImageEnum(), isFriendly, isExplosive,
-                true, true);
-
-        PlayerStats instance = PlayerStats.getInstance();
-        if (!isExplosive) {
-            missileConfiguration.setPiercesMissiles(instance.getPiercingMissilesAmount() > 0);
-            missileConfiguration.setAmountOfPierces(instance.getPiercingMissilesAmount());
-        }
-        Missile missile = missileCreator1.createMissile(spriteConfiguration, missileConfiguration, movementConfiguration);
-
-        if (PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.HighVelocityLasers) != null) {
-            HighVelocityLasers lasers = (HighVelocityLasers) PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.HighVelocityLasers);
-            lasers.applyEffectToObject(missile);
-        }
-
+        Missile missile = createBaseMissile(xCoordinate, yCoordinate, playerMissileType, missileScale, missilePathFinder, attackType, owner);
         missile.setOwnerOrCreator(owner);
         missile.setCenterCoordinates(missile.getCenterXCoordinate(), owner.getCenterYCoordinate());
         missile.resetMovementPath();
-
         missile.setCanBounce(true);
-
         this.missileManager.addExistingMissile(missile);
     }
 
     private void fireSideCannonMissiles(SpaceShip owner, ImageEnums playerMissileType, boolean upOrDown) {
-        int movementSpeed = 6;
-        MissileCreator missileCreator1 = MissileCreator.getInstance();
-        SpriteConfiguration spriteConfiguration = missileCreator1.createMissileSpriteConfig(owner.getXCoordinate(), owner.getYCoordinate(),
-                playerMissileType, 1);
-
-
-        MovementConfiguration movementConfiguration = missileCreator1.createMissileMovementConfig(
-                movementSpeed, new StraightLinePathFinder(), Direction.RIGHT
-        );
-
-
-        boolean isFriendly = true;
-        float damage = owner.getDamage() * 2;
-        damage *= 1 + (totalDamageBonus); //bigiron dmg bonus
-        boolean isExplosive = false;
-        MissileConfiguration missileConfiguration = missileCreator1.createMissileConfiguration(MissileEnums.DefaultAnimatedBullet, damage, MissileEnums.DefaultAnimatedBullet.getDeathOrExplosionImageEnum(), isFriendly, isExplosive,
-                true, true);
-        if (!isExplosive) {
-            missileConfiguration.setPiercesMissiles(PlayerStats.getInstance().getPiercingMissilesAmount() > 0);
-            missileConfiguration.setAmountOfPierces(PlayerStats.getInstance().getPiercingMissilesAmount());
-        }
-
-        Missile missile = missileCreator1.createMissile(spriteConfiguration, missileConfiguration, movementConfiguration);
-
-        if (PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.HighVelocityLasers) != null) {
-            HighVelocityLasers lasers = (HighVelocityLasers) PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.HighVelocityLasers);
-            lasers.applyEffectToObject(missile);
-        }
+        Missile missile = createBaseMissile(owner.getXCoordinate(), owner.getYCoordinate(), playerMissileType, 1,
+                new StraightLinePathFinder(), MissileEnums.DefaultAnimatedBullet, owner);
 
         missile.resetMovementPath();
         double angle = upOrDown ? Direction.RIGHT.toAngle() + 10 : Direction.RIGHT.toAngle() - 20;
@@ -153,10 +86,42 @@ public class CaptainPrimaryGun extends PrimaryPlayerGun {
         missile.setOwnerOrCreator(owner);
         missile.setCenterCoordinates(owner.getXCoordinate() + owner.getWidth() - 10, owner.getCenterYCoordinate());
         missile.getMovementConfiguration().setDestination(bulletDestination);
-
         missile.setCanBounce(true);
-
         this.missileManager.addExistingMissile(missile);
+    }
+
+    private Missile createBaseMissile(int xCoordinate, int yCoordinate, ImageEnums playerMissileType,
+                                      float missileScale, PathFinder missilePathFinder, MissileEnums attackType, SpaceShip owner) {
+        int movementSpeed = 6;
+        MissileCreator missileCreator = MissileCreator.getInstance();
+
+        SpriteConfiguration spriteConfiguration = missileCreator.createMissileSpriteConfig(xCoordinate, yCoordinate,
+                playerMissileType, missileScale);
+
+        MovementConfiguration movementConfiguration = missileCreator.createMissileMovementConfig(
+                movementSpeed, missilePathFinder, Direction.RIGHT);
+
+        boolean isFriendly = true;
+        float damage = owner.getDamage() * damageModifier;
+        damage *= 1 + (totalDamageBonus);
+        boolean isExplosive = false;
+
+        MissileConfiguration missileConfiguration = missileCreator.createMissileConfiguration(attackType, damage,
+                attackType.getDeathOrExplosionImageEnum(), isFriendly, isExplosive, true, true);
+
+        if (!isExplosive) {
+            missileConfiguration.setPiercesMissiles(PlayerStats.getInstance().getPiercingMissilesAmount() > 0);
+            missileConfiguration.setAmountOfPierces(PlayerStats.getInstance().getPiercingMissilesAmount());
+        }
+
+        Missile missile = missileCreator.createMissile(spriteConfiguration, missileConfiguration, movementConfiguration);
+
+        if (PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.HighVelocityLasers) != null) {
+            HighVelocityLasers lasers = (HighVelocityLasers) PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.HighVelocityLasers);
+            lasers.applyEffectToObject(missile);
+        }
+
+        return missile;
     }
 
     private Point calculateBulletDestination(double angleDegrees, int distance, int centerX, int centerY) {
@@ -224,7 +189,6 @@ public class CaptainPrimaryGun extends PrimaryPlayerGun {
         ImageEnums visualImage = playerStats.getPlayerMissileImage();
         PathFinder pathFinder = new RegularPathFinder();
         fireMissile(owner.getXCoordinate() + owner.getWidth(), owner.getCenterYCoordinate(), visualImage, 1 * (1 + totalScaleBonus), pathFinder, PlayerPrimaryAttackTypes.Laserbeam.getCorrespondingMissileEnum(), owner);
-        playFiringAudio(PlayerPrimaryAttackTypes.Laserbeam);
         totalScaleBonus = 0f;
         totalDamageBonus = 0f;
         lastAttackTime = GameState.getInstance().getGameSeconds();

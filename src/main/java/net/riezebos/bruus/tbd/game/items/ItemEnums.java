@@ -65,7 +65,7 @@ public enum ItemEnums {
     ThickHide(ItemRarityEnums.Common, ImageEnums.Test_Image, "Thick Hide", false),
     InstantViralEruption(ItemRarityEnums.Relic, ImageEnums.Test_Image, "InstantViralEruption", false),
     BileTravelRange(ItemRarityEnums.Relic, ImageEnums.Test_Image, "BileTravelTRange", false),
-
+    MutaliskSideCannons(ItemRarityEnums.Relic, ImageEnums.Test_Image, "MutaliskSideCannons", false),
 
     //Mutalisk items
     MutaliskHealingBonus(ItemRarityEnums.Common, ImageEnums.Test_Image, "MutaliskHealingBonus", false),

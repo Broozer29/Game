@@ -77,9 +77,15 @@ public class Game {
                             // Finish initialization back on EDT
                             EventQueue.invokeLater(() -> {
                                 logDiagnostic("Finishing initialization...");
+                                logDiagnostic("Calling finishInitialization()...");
                                 ex.finishInitialization();
+                                logDiagnostic("finishInitialization() completed");
+                                logDiagnostic("Calling initMainMenu()...");
                                 ex.initMainMenu();
+                                logDiagnostic("initMainMenu() completed");
+                                logDiagnostic("Requesting focus...");
                                 ex.getMainMenuBoard().requestFocus();
+                                logDiagnostic("Calling recalcDimensions()...");
                                 SpawningCoordinator.getInstance().recalcDimensions();
                                 logDiagnostic("=== Application fully initialized ===");
                             });
