@@ -21,32 +21,34 @@ public final class DiscordConnector implements AutoCloseable {
     private boolean connected;
 
     public boolean connect() {
-        if (connected) {
-            return true;
-        }
+        return false;
 
-        try {
-            discord = DiscordIPC.create(APPLICATION_ID);
-            discord.connect();
-
-            connected = discord.isConnected();
-
-            if (connected) {
-                System.out.println("Connected to Discord Rich Presence.");
-            }
-
-            return connected;
-
-        } catch (Exception e) {
-            System.out.println(
-                    "Discord unavailable; continuing without Rich Presence."
-            );
-
-            connected = false;
-            discord = null;
-
-            return false;
-        }
+//        if (connected) {
+//            return true;
+//        }
+//
+//        try {
+//            discord = DiscordIPC.create(APPLICATION_ID);
+//            discord.connect();
+//
+//            connected = discord.isConnected();
+//
+//            if (connected) {
+//                System.out.println("Connected to Discord Rich Presence.");
+//            }
+//
+//            return connected;
+//
+//        } catch (Exception e) {
+//            System.out.println(
+//                    "Discord unavailable; continuing without Rich Presence."
+//            );
+//
+//            connected = false;
+//            discord = null;
+//
+//            return false;
+//        }
     }
 
     public void setStatus(String details, String state) {
