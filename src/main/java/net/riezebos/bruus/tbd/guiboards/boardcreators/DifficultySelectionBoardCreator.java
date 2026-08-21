@@ -212,8 +212,8 @@ public class DifficultySelectionBoardCreator {
     public static GUIComponent createDescriptionBoxBackgroundCard() {
         float xCoordinate = DataClass.getInstance().getWindowWidth() * 0.75f;
         float yCoordinate = DataClass.getInstance().getWindowHeight() * 0.32f;
-        int cardWidth = 340;
-        int cardHeight = 400;
+        int cardWidth = Math.round(340 * resolutionFactor);
+        int cardHeight =  Math.round(400 * resolutionFactor);;
 
         SpriteConfiguration spriteConfiguration = createSpriteConfiguration(
                 xCoordinate,

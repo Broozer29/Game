@@ -9,7 +9,7 @@ public final class DiscordConnector implements AutoCloseable {
     private static final long APPLICATION_ID = 1538958017670680587L;
     public static DiscordConnector instance = new DiscordConnector();
     private DiscordConnector() {
-        connect();
+//        connect();
     }
 
     public static DiscordConnector getInstance() {
@@ -18,7 +18,7 @@ public final class DiscordConnector implements AutoCloseable {
 
 
     private DiscordIPC discord;
-    private boolean connected;
+    private boolean connected = false;
 
     public boolean connect() {
         return false;

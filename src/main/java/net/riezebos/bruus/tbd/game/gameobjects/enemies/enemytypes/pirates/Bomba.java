@@ -35,8 +35,8 @@ public class Bomba extends Enemy {
 
         //Specialized behaviour configuration stuff
         this.initDirectionFromRotation();
-        this.attackSpeed = 5 - (EnemyManager.getInstance().getEnemyDifficultyModifier() * 0.25f);
-        this.movementConfiguration.setMovementSpeed(this.movementConfiguration.getOriginalMovementSpeed() + EnemyManager.getInstance().getEnemyDifficultyModifier() * 0.05f);
+        this.attackSpeed = 5 - (EnemyManager.getInstance().getEnemyDifficultyModifier() * 0.3f);
+        this.movementConfiguration.setMovementSpeed(this.movementConfiguration.getOriginalMovementSpeed() + EnemyManager.getInstance().getEnemyDifficultyModifier() * 0.15f);
         this.detonateOnCollision = false;
         this.knockbackStrength = 8;
     }
@@ -65,7 +65,7 @@ public class Bomba extends Enemy {
             SpriteConfiguration spriteConfiguration = MissileCreator.getInstance().createMissileSpriteConfig(xCoordinate, yCoordinate,
                     ImageEnums.Bomba_Missile, 0.5f);
 
-            float movementSpeed = 2 + (EnemyManager.getInstance().getEnemyDifficultyModifier() * 0.1f);
+            float movementSpeed = 2 + (EnemyManager.getInstance().getEnemyDifficultyModifier() * 0.2f);
 
 
             //Create missile movement attributes and create a movement configuration

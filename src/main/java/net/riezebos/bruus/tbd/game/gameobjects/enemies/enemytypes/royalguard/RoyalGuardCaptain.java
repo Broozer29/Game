@@ -48,6 +48,7 @@ public class RoyalGuardCaptain extends Enemy {
         this.destructionAnimation.setAnimationScale(1f);
         this.attackSpeed = 2.5f - (EnemyManager.getInstance().getEnemyDifficultyModifier() * 0.1f);
         this.knockbackStrength = 8;
+        this.movementConfiguration.setMovementSpeed(this.movementConfiguration.getOriginalMovementSpeed() + EnemyManager.getInstance().getEnemyDifficultyModifier() * 0.25f);
         this.allowedVisualsToRotate = false;
         angleDegreeIncrement += (EnemyManager.getInstance().getEnemyDifficultyModifier() * 0.0075f);
         this.chargingUpAttackAnimation.changeImagetype(ImageEnums.PinkLaserbeamCharging);

@@ -37,9 +37,9 @@ public class RoyalGuardShieldbearer extends Enemy {
         this.destructionAnimation = new SpriteAnimation(destroyedExplosionfiguration);
         this.destructionAnimation.setAnimationScale(1f);
         this.attackSpeed = 0.1f;
-        this.detectionRange = 185 + (EnemyManager.getInstance().getEnemyDifficultyModifier() * 10);
+        this.detectionRange = 185 + (EnemyManager.getInstance().getEnemyDifficultyModifier() * 15);
         this.baseArmor += (EnemyManager.getInstance().getEnemyDifficultyModifier() * 5);
-        this.movementConfiguration.setMovementSpeed(this.movementConfiguration.getOriginalMovementSpeed() + EnemyManager.getInstance().getEnemyDifficultyModifier() * 0.175f);
+        this.movementConfiguration.setMovementSpeed(this.movementConfiguration.getOriginalMovementSpeed() + EnemyManager.getInstance().getEnemyDifficultyModifier() * 0.2f);
         this.knockbackStrength = 8;
     }
 

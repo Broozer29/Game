@@ -33,6 +33,8 @@ public class Guardian extends Enemy {
         this.attackSpeed = 3;
         this.detonateOnCollision = false;
         this.knockbackStrength = 8;
+        this.movementConfiguration.setMovementSpeed(this.movementConfiguration.getOriginalMovementSpeed() + EnemyManager.getInstance().getEnemyDifficultyModifier() * 0.2f);
+
         this.chargingUpAttackAnimation.changeImagetype(ImageEnums.GuardianChargingAnimation);
         this.chargingUpAttackAnimation.cropAnimation();
         this.chargingUpAttackAnimation.setFrameDelay(3);

@@ -35,6 +35,7 @@ public class Devourer extends Enemy {
         this.missileTypePathFinders = PathFinderEnums.StraightLine;
         this.damage = 10;
         this.attackSpeed = 4;
+        this.movementConfiguration.setMovementSpeed(this.movementConfiguration.getOriginalMovementSpeed() + EnemyManager.getInstance().getEnemyDifficultyModifier() * 0.2f);
         this.detonateOnCollision = false;
         this.knockbackStrength = 8;
     }

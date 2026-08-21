@@ -71,8 +71,8 @@ public class DirectorManager {
 
             Director instantDirector = new Director(DirectorType.Instant, baseMonsterCards);
 
-            int minMultiplier = GameState.getInstance().getGameMode().equals(GameMode.Formatted) ? 400 : 200;
-            int maxAmount = GameState.getInstance().getGameMode().equals(GameMode.Formatted) ? 1200 : 650;
+            int minMultiplier = GameState.getInstance().getGameMode().equals(GameMode.Formatted) ? 400 : 400;
+            int maxAmount = GameState.getInstance().getGameMode().equals(GameMode.Formatted) ? 1200 : 950;
 
             if (LevelManager.getInstance().getCurrentEnemyTribe().equals(EnemyTribes.RoyalGuard)) {
                 minMultiplier *= 1.5f;
@@ -224,12 +224,12 @@ public class DirectorManager {
 
         if (minerals >= 0 && minerals <= 300) {
             multiplier = 1.05f;
-        } else if (minerals >= 600 && minerals <= 900) {
-            multiplier = 0.75f;
-        } else if (minerals >= 900 && minerals <= 1200) {
-            multiplier = 0.45f;
-        } else if (minerals >= 1200) {
-            multiplier = 0.3f;
+        } else if (minerals >= 601 && minerals <= 800) {
+            multiplier = 0.7f;
+        } else if (minerals >= 801 && minerals <= 1200) {
+            multiplier = 0.4f;
+        } else if (minerals >= 1201) {
+            multiplier = 0.2f;
         }
 
         return multiplier;

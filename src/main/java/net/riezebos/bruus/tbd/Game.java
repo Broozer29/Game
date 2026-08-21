@@ -2,7 +2,6 @@ package net.riezebos.bruus.tbd;
 
 import javafx.application.Platform;
 import net.riezebos.bruus.tbd.controllerInput.ControllerManager;
-import net.riezebos.bruus.tbd.discordconnector.DiscordConnector;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.Enemy;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyCreator;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyEnums;
@@ -44,14 +43,14 @@ public class Game {
                     try {
                         // Create and show the window with loading screen first
                         BoardManager ex = BoardManager.getInstance();
-                        DiscordConnector.getInstance().connect();
+//                        DiscordConnector.getInstance().connect();
                         ex.setVisible(true);
                         ex.validate();
                         ex.repaint();
 
-                        Runtime.getRuntime().addShutdownHook(
-                                new Thread(DiscordConnector.getInstance()::close, "Discord-Shutdown")
-                        );
+//                        Runtime.getRuntime().addShutdownHook(
+//                                new Thread(DiscordConnector.getInstance()::close, "Discord-Shutdown")
+//                        );
 
                         guiInitialized = true;
 

@@ -87,8 +87,8 @@ public class GodRunDetector {
 
     private float enemyKillRatioRequiredWhenLowGodRunScore = 7f;
     private float enemyKillRatioRequiredWhenHighGodRunScore = 6f;
-    private float ratioThresholdWhenLowGodRunScore = 0.75f;
-    private float ratioThresholdWhenHighGodRunScore = 0.65f;
+    private float ratioThresholdWhenLowGodRunScore = 0.7f;
+    private float ratioThresholdWhenHighGodRunScore = 0.6f;
     private float sustainSecondsWhenLowGodrunScore = 7.5f;
     private float sustainSecondsWhenHighGodRunScore = 7.5f;
 
@@ -99,7 +99,7 @@ public class GodRunDetector {
         1.) Directors spawn 35% more often (10-15 sec * 0.65). Directors krijgen 35% bonus credits.
         2.) Enemies kunnen links en rechts spawnen.
         3.) Enemy hitpoints schaalt NOG meer met hun huidige level (exponentieel). DifficultyCoefficient groeit 20% harder. Directors krijgen 55% bonus credits
-
+        4.) Enemies spawnen nu ook van boven en onder
      */
 
     public void updateGodRunStatus() {
@@ -128,17 +128,17 @@ public class GodRunDetector {
             godRunScore++;
         }
 
-        if(gameSecondsWithHighKillRatio >= 30){
+        if(gameSecondsWithHighKillRatio >= 20){
             godRunScore++;
         }
 
-        if (GameState.getInstance().getBossesDefeated() <= 0) {
-            godRunScore = Math.min(godRunScore, 1); //if early game, dont let it progress past 2
+        if(gameSecondsWithHighKillRatio >= 40){
+            godRunScore++;
         }
 
-        if (lastGodRunScore != godRunScore && now - lastGameSecondsGodRunScoreUpdated >= 10) { //only update the godrunscore a maximum of once every X seconds
+        if (lastGodRunScore != godRunScore) {
             lastGodRunScore = godRunScore;
-            lastGameSecondsGodRunScoreUpdated = now;
+//            lastGameSecondsGodRunScoreUpdated = now; //testen een versie waar de godrunscore direct bijgewerkt wordt ipv elke 10 sec
         }
 
     }

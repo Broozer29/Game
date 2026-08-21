@@ -107,7 +107,7 @@ public class EnemyCreator {
 
     private static void setBoardBlockToHoverIn(MovementConfiguration movementConfiguration, int boardBlockToHoverIn) {
         if (movementConfiguration.getRotation().equals(Direction.RIGHT)) {
-            movementConfiguration.setBoardBlockToHoverIn(Math.max(7 - boardBlockToHoverIn, 1));
+            movementConfiguration.setBoardBlockToHoverIn(Math.max(6 - boardBlockToHoverIn, 1));
         } else {
             movementConfiguration.setBoardBlockToHoverIn(boardBlockToHoverIn);
         }

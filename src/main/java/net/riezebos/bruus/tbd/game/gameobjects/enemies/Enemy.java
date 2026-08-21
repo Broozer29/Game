@@ -70,8 +70,8 @@ public class Enemy extends GameObject {
         initBossHealthBar();
     }
 
-    private void initBossHealthBar(){
-        if(this.enemyType.getEnemyCategory().equals(EnemyCategory.Boss)){
+    private void initBossHealthBar() {
+        if (this.enemyType.getEnemyCategory().equals(EnemyCategory.Boss)) {
             SpriteConfiguration healthBarConfig = new SpriteConfiguration();
             healthBarConfig.setImageType(ImageEnums.BossHealthBarFront);
             healthBarConfig.setyCoordinate(10);
@@ -83,7 +83,7 @@ public class Enemy extends GameObject {
             bossHealthBar.setTransparancyAlpha(false, 0.8f, 0);
 
             //preloading causes a nullpointer exception if we try to add a healthbar because the game doesnt exist yet, sloppy fix
-            if(BoardManager.getInstance().getGameBoard() != null){
+            if (BoardManager.getInstance().getGameBoard() != null) {
                 BoardManager.getInstance().getGameBoard().addBossHealthBar(bossHealthBar);
             }
         }
@@ -106,7 +106,7 @@ public class Enemy extends GameObject {
         this.setVisible(true);
         this.setFriendly(false);
 
-        if(!enemyType.equals(EnemyEnums.ShurikenMiniBoss)) {
+        if (!enemyType.equals(EnemyEnums.ShurikenMiniBoss)) {
             this.rotateGameObjectTowards(movementRotation, true);
         }
 
@@ -116,37 +116,37 @@ public class Enemy extends GameObject {
     private void modifyStatsBasedOnLevelAndDifficulty() {
         level = GameState.getInstance().getMonsterLevel();
 
-        if(this.ownerOrCreator instanceof Enemy enemy && enemy.getEnemyType().getEnemyCategory().equals(EnemyCategory.Boss)){
-                level = enemy.getLevel(); //Prevents summons from bosses to outscale, only noticeable on man mode
-            }
+        if (this.ownerOrCreator instanceof Enemy enemy && enemy.getEnemyType().getEnemyCategory().equals(EnemyCategory.Boss)) {
+            level = enemy.getLevel(); //Prevents summons from bosses to outscale, only noticeable on man mode
+        }
 
 
         if (level > 1) {
             this.maxHitPoints *= Math.pow(getScalingFactor(), level - 1);
 
-            if(PlayerManager.getInstance().getPlayerCount() > 1) {
+            if (PlayerManager.getInstance().getPlayerCount() > 1) {
                 this.maxHitPoints *= (PlayerManager.getInstance().getPlayerCount() * 0.75f); //voor elke extra speler, 75% max hp
             }
             this.currentHitpoints = maxHitPoints;
 
             //damage groei staat weer uit omdat speler max HP niet meer groeit
-//            this.damage += level / 2;
+            this.damage += (level * 0.5f);
 
             // XP on death is multiplied by 50% of difficulty coefficient
             this.cashMoneyWorth *= PlayerStats.getInstance().getMineralModifier();
 
 
-            if(!enemyType.getEnemyCategory().equals(EnemyCategory.Boss)) {
+            if (!enemyType.getEnemyCategory().equals(EnemyCategory.Boss)) {
                 this.cashMoneyWorth *= DirectorManager.getInstance().getMineralPenaltyModifier();
             }
 
-            if(PlayerManager.getInstance().getPlayerCount() > 1 && !this.enemyType.getEnemyCategory().equals(EnemyCategory.Boss)) {
-                this.cashMoneyWorth *= Math.max(1.15 - (PlayerManager.getInstance().getPlayerCount() * 0.15f) , 0.5f); //-15% for each player, 100% for 1 player, min 50% for 5+ players
+            if (PlayerManager.getInstance().getPlayerCount() > 1 && !this.enemyType.getEnemyCategory().equals(EnemyCategory.Boss)) {
+                this.cashMoneyWorth *= Math.max(1.15 - (PlayerManager.getInstance().getPlayerCount() * 0.15f), 0.5f); //-15% for each player, 100% for 1 player, min 50% for 5+ players
             }
         }
 
 
-        if(GameState.getInstance().getGameMode().equals(GameMode.DoubleTrouble) && !(this.enemyType.getEnemyCategory().equals(EnemyCategory.Boss) || this.enemyType.getEnemyCategory().equals(EnemyCategory.MiniBoss))){
+        if (GameState.getInstance().getGameMode().equals(GameMode.DoubleTrouble) && !(this.enemyType.getEnemyCategory().equals(EnemyCategory.Boss) || this.enemyType.getEnemyCategory().equals(EnemyCategory.MiniBoss))) {
             this.maxHitPoints *= 0.5f;
             this.currentHitpoints = maxHitPoints;
             this.xpOnDeath *= 0.5f;
@@ -155,15 +155,15 @@ public class Enemy extends GameObject {
     }
 
     private float getScalingFactor() {
-        if(this.enemyType.getEnemyCategory().equals(EnemyCategory.Boss)){
-            return 1.15f;
+        if (this.enemyType.getEnemyCategory().equals(EnemyCategory.Boss)) {
+            return 1.25f;
         }
 
-        if(GodRunDetector.getInstance().getGodRunScore() >= 3){
-            return 1.2f;
+        if (GodRunDetector.getInstance().getGodRunScore() >= 3) {
+            return 1.25f;
         }
 
-        return 1.15f;
+        return 1.175f;
     }
 
     private void initChargingUpAnimation(SpriteConfiguration spriteConfiguration) {
@@ -188,20 +188,25 @@ public class Enemy extends GameObject {
 
 
         } else if (!LevelManager.getInstance().isNextLevelABossLevel() && !this.enemyType.getEnemyCategory().equals(EnemyCategory.Summon)) {
-            //seperate if statement because i might want to handle something else here
-            GodRunDetector.getInstance().addBoardBlock(this.movementConfiguration.getRotation().equals(Direction.RIGHT) ? Math.min(this.currentBoardBlock + 5, 8): this.currentBoardBlock); //5 is roughly the bonus required to offset coming from the right
+            if (this.movementConfiguration.getRotation().equals(Direction.RIGHT)) {
+                GodRunDetector.getInstance().addBoardBlock(Math.max(8 - this.currentBoardBlock, 0)); //the inverse with a minimum of 0
+            } else if (this.movementConfiguration.getRotation().equals(Direction.UP) || this.movementConfiguration.getRotation().equals(Direction.DOWN)) {
+                GodRunDetector.getInstance().addBoardBlock(5); //hardcoded 5 because these enemies dont change their boardblock when moving up or down so 5 is above average to easily maintain godrunscore
+            } else {
+                GodRunDetector.getInstance().addBoardBlock(this.currentBoardBlock);
+            }
+
             if (!this.hasEffect(EffectIdentifiers.EndOfLevelBurn)) {
                 GameStatsTracker.getInstance().addEnemyKilled(1);
             }
         }
 
-        if(this.enemyType.getEnemyCategory().equals(EnemyCategory.Boss)) {
+        if (this.enemyType.getEnemyCategory().equals(EnemyCategory.Boss)) {
             GameState.getInstance().increaseBossDefeated();
         }
 
 
-
-        if(PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.Placeholder) != null &&
+        if (PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.Placeholder) != null &&
                 FriendlyManager.getInstance().getFriendlyStations().size() < PlayerManager.getInstance().getPlayerCount() * Placeholder.maxStations) {
             FriendlyManager.getInstance().addFriendlyStation(FriendlyCreator.createFriendlyStation(null, this.getCurrentCenterLocation()));
         }
@@ -215,7 +220,6 @@ public class Enemy extends GameObject {
         // This could contain default behaviour but SHOULD be overriden by specific enemytype
         // classes.
     }
-
 
 
     public void rotateAfterMovement() {

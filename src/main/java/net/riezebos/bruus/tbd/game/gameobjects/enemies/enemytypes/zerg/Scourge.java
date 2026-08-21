@@ -28,7 +28,7 @@ public class Scourge extends Enemy {
         this.destructionAnimation.setAnimationScale(this.scale);
         this.detonateOnCollision = true;
         this.knockbackStrength = 10 + EnemyManager.getInstance().getEnemyDifficultyModifier();
-        this.movementConfiguration.setMovementSpeed(this.movementConfiguration.getOriginalMovementSpeed() + EnemyManager.getInstance().getEnemyDifficultyModifier() * 0.15f);
+        this.movementConfiguration.setMovementSpeed(this.movementConfiguration.getOriginalMovementSpeed() + EnemyManager.getInstance().getEnemyDifficultyModifier() * 0.25f);
         this.firstDetectionRange = 240 + Math.round(EnemyManager.getInstance().getEnemyDifficultyModifier() * 10f);
     }
 

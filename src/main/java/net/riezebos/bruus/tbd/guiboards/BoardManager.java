@@ -78,19 +78,11 @@ public class BoardManager extends JFrame {
 
         // Define actions for each screen
         screenActions.put(ScreenType.MAIN_MENU, () -> {
-            logDiagnostic("MAIN_MENU action: Starting playMenuMusic()...");
             playMenuMusic();
-            logDiagnostic("MAIN_MENU action: playMenuMusic() completed");
-            logDiagnostic("MAIN_MENU action: Starting recreateWindow()...");
             mainMenuBoard.recreateWindow();
-            logDiagnostic("MAIN_MENU action: recreateWindow() completed");
-            logDiagnostic("MAIN_MENU action: Restarting timer...");
             mainMenuBoard.getTimer().restart();
-            logDiagnostic("MAIN_MENU action: Setting controller sensitivity...");
             ControllerManager.getInstance().setControllerSensitive(false);
-            logDiagnostic("MAIN_MENU action: Setting Discord status...");
             DiscordConnector.getInstance().setStatus("Just booted up", "Main Menu");
-            logDiagnostic("MAIN_MENU action: Completed");
         });
 
         screenActions.put(ScreenType.UPGRADE_SELECTION, () -> {

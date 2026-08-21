@@ -45,6 +45,8 @@ public class TwinBoss extends Enemy {
         destroyedExplosionfiguration.getSpriteConfiguration().setImageType(ImageEnums.BossExplosion);
         destroyedExplosionfiguration.getSpriteConfiguration().setScale(4);
 
+        this.movementConfiguration.setMovementSpeed(this.movementConfiguration.getOriginalMovementSpeed() + EnemyManager.getInstance().getEnemyDifficultyModifier() * 0.1f);
+
         this.destructionAnimation = new SpriteAnimation(destroyedExplosionfiguration);
         this.knockbackStrength = 9;
         this.allowedVisualsToRotate = true;

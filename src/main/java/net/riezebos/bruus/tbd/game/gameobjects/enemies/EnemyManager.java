@@ -377,8 +377,8 @@ public class EnemyManager {
     }
 
     public int getEnemyDifficultyModifier(){
-//        return 4;
-        return Math.min(GameState.getInstance().getBossesDefeated(), 4); //Capping at 5 to prevent infinite scaling and since I intend the 5th boss to be the final boss of a run which doesnt exist yet
+//        return 5;
+        return Math.min(GameState.getInstance().getBossesDefeated(), 5); //Capping at 5 to prevent infinite scaling and since I intend the 5th boss to be the final boss of a run which doesnt exist yet
     }
 
 }

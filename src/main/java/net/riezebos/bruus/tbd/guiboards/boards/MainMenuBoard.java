@@ -117,9 +117,7 @@ public class MainMenuBoard extends JPanel implements TimerHolder {
     }
 
     public void recreateWindow() {
-        logDiagnostic("recreateWindow: Starting...");
         if (initializedMenuObjects) {
-            logDiagnostic("recreateWindow: Creating menu components...");
             startGameBackgroundCard = MenuBoardCreator.startGameBackgroundCard();
             selectClassBoard = MenuBoardCreator.createStartGameButton(startGameBackgroundCard);
             menuCursor = MenuBoardCreator.createMenuCursor(selectClassBoard.getComponents().get(0));
@@ -128,7 +126,6 @@ public class MainMenuBoard extends JPanel implements TimerHolder {
             closeGameButton = MenuBoardCreator.testingButton(continueSaveFile);
             foundController = MenuBoardCreator.foundControllerText(controllersConnected, titleImage);
 
-            logDiagnostic("recreateWindow: Resetting managers and clearing lists...");
             animationManager.resetManager();
             firstColumn.clear();
             secondColumn.clear();
@@ -137,11 +134,9 @@ public class MainMenuBoard extends JPanel implements TimerHolder {
             lastMoveTime = System.currentTimeMillis(); //To prevent the user from immediatly pressing another button after going to this screen
 
 
-            logDiagnostic("recreateWindow: Creating menu cursor...");
             menuCursor = MenuBoardCreator.createMenuCursor(selectClassBoard.getComponents().get(0));
             selectedColumn = 0;
             selectedRow = 0;
-            logDiagnostic("recreateWindow: Adding tiles to columns...");
             addTilesToColumns();
 
 //            for (GUITextCollection explanation : controlExplanations) {
@@ -162,15 +157,11 @@ public class MainMenuBoard extends JPanel implements TimerHolder {
             offTheGridObjects.addAll(foundController.getComponents());
             this.menuCursor.setSelectedMenuTile(selectClassBoard.getComponents().get(0));
 
-            logDiagnostic("recreateWindow: Building grid...");
             grid.add(firstColumn);
             grid.add(secondColumn);
             grid.add(thirdColumn);
-            logDiagnostic("recreateWindow: Calling recreateList()...");
             recreateList(); // Fill the columns
-            logDiagnostic("recreateWindow: Updating cursor...");
             updateCursor();
-            logDiagnostic("recreateWindow: Completed");
         }
     }
 

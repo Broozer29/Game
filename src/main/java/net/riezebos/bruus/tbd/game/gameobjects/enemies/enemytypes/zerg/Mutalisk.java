@@ -24,7 +24,7 @@ public class Mutalisk extends Enemy {
         this.attackSpeed = 2;
         this.detonateOnCollision = false;
         this.knockbackStrength = 8;
-        this.movementConfiguration.setMovementSpeed(this.movementConfiguration.getOriginalMovementSpeed() + EnemyManager.getInstance().getEnemyDifficultyModifier() * 0.15f);
+        this.movementConfiguration.setMovementSpeed(this.movementConfiguration.getOriginalMovementSpeed() + EnemyManager.getInstance().getEnemyDifficultyModifier() * 0.25f);
         initOnDeathEffect();
     }
 

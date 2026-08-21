@@ -2,6 +2,7 @@ package net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.yellow
 
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.Enemy;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyConfiguration;
+import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyManager;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.BossActionable;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.yellowboss.behaviour.YellowBossLaserbeamMissileAttack;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.yellowboss.behaviour.YellowBossMissileWaveAttack;
@@ -47,6 +48,7 @@ public class YellowBoss extends Enemy {
         this.knockbackStrength = 9;
         this.allowedToFire = false;
 
+        this.movementConfiguration.setMovementSpeed(this.movementConfiguration.getOriginalMovementSpeed() + EnemyManager.getInstance().getEnemyDifficultyModifier() * 0.15f);
 
         YellowBossLaserbeamMissileAttack laserbeamMissileAttack = new YellowBossLaserbeamMissileAttack();
         bossBehaviourList.add(laserbeamMissileAttack);

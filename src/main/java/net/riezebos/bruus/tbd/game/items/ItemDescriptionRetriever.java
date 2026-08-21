@@ -115,7 +115,7 @@ public class ItemDescriptionRetriever {
             case EmergencyRepairBot -> {
                 return "When dropping below " + Math.round(EmergencyRepairBot.healthActivationRatio * 100) + "% health, instantly heals you for " +
                         Math.round(EmergencyRepairBot.healingFactor * 100) + "% max hitpoints. Consumed on use.";
-            } //common
+            } //rare
             case Overclock -> {
                 return "Increases attack speed by " + Math.round(Overclock.attackSpeedBonus) + "%";
             } //common

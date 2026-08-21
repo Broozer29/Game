@@ -29,7 +29,7 @@ public class Scout extends Enemy {
         this.attackSpeed = 5 - (EnemyManager.getInstance().getEnemyDifficultyModifier() * 0.5f);
         this.detonateOnCollision = false;
         this.knockbackStrength = 5;
-
+        this.movementConfiguration.setMovementSpeed(this.movementConfiguration.getOriginalMovementSpeed() + EnemyManager.getInstance().getEnemyDifficultyModifier() * 0.15f);
         this.movementConfiguration.setPathFinder(new HoverPathFinder());
 
 

@@ -26,7 +26,7 @@ public class Energizer extends Enemy {
 		SpriteAnimationConfiguration destroyedExplosionfiguration = new SpriteAnimationConfiguration(spriteConfiguration.getSpriteConfiguration(), 0, false);
 		destroyedExplosionfiguration.getSpriteConfiguration().setImageType(this.enemyType.getDestructionType());
 		this.destructionAnimation = new SpriteAnimation(destroyedExplosionfiguration);
-
+        this.movementConfiguration.setMovementSpeed(this.movementConfiguration.getOriginalMovementSpeed() + EnemyManager.getInstance().getEnemyDifficultyModifier() * 0.2f);
 		this.attackSpeed = 4f;
 		this.detonateOnCollision = false;
 		this.knockbackStrength = 8;

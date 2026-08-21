@@ -2,6 +2,7 @@ package net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.carrie
 
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.Enemy;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyConfiguration;
+import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyManager;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.BossActionable;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.carrier.behaviour.*;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
@@ -39,6 +40,8 @@ public class CarrierBoss extends Enemy {
         this.allowedVisualsToRotate = false;
         this.destructionAnimation.setAnimationScale(4);
         this.knockbackStrength = 9;
+
+        this.movementConfiguration.setMovementSpeed(this.movementConfiguration.getOriginalMovementSpeed() + EnemyManager.getInstance().getEnemyDifficultyModifier() * 0.15f);
 
         BossActionable bossBehaviour1 = new CarrierBossSpawnProtossScout();
         bossBehaviourList.add(bossBehaviour1);

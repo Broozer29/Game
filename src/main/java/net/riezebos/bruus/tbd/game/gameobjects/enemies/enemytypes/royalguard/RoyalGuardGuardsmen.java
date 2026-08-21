@@ -39,10 +39,11 @@ public class RoyalGuardGuardsmen extends Enemy {
         destroyedExplosionfiguration.getSpriteConfiguration().setImageType(this.enemyType.getDestructionType());
         this.destructionAnimation = new SpriteAnimation(destroyedExplosionfiguration);
         this.destructionAnimation.setAnimationScale(1f);
-        this.movementConfiguration.setMovementSpeed(this.movementConfiguration.getOriginalMovementSpeed() + EnemyManager.getInstance().getEnemyDifficultyModifier() * 0.1f);
+        this.movementConfiguration.setMovementSpeed(this.movementConfiguration.getOriginalMovementSpeed() + EnemyManager.getInstance().getEnemyDifficultyModifier() * 0.15f);
         this.attackSpeed = 1.5f - (EnemyManager.getInstance().getEnemyDifficultyModifier() * 0.05f);
         this.knockbackStrength = 11;
-        this.attackRange += Math.round(EnemyManager.getInstance().getEnemyDifficultyModifier() * 10f);
+        this.attackRange += Math.round(EnemyManager.getInstance().getEnemyDifficultyModifier() * 20f);
+        this.baseArmor += EnemyManager.getInstance().getEnemyDifficultyModifier() * 7.5f;
 
         if(this.movementConfiguration.getPathFinder() instanceof HoverPathFinder pathFinder){
             movementConfiguration.setBoardBlockToHoverIn(6);

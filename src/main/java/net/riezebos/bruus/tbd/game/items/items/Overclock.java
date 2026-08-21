@@ -9,7 +9,7 @@ import net.riezebos.bruus.tbd.game.items.enums.ItemApplicationEnum;
 
 public class Overclock extends Item {
 
-    public static float attackSpeedBonus = 15;
+    public static float attackSpeedBonus = 30;
 
     public Overclock(){
         super(ItemEnums.Overclock, 1,  ItemApplicationEnum.ApplyOnSpaceShipCreation);

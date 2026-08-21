@@ -202,7 +202,7 @@ public class Director {
                     spawnRegularFormation(formationType, enemyType);
                     credits -= totalFormationCost;
                 } else if (credits >= selectedCard.getCreditCost() && !GameState.getInstance().getGameMode().equals(GameMode.Formatted)) {
-                    spawnEnemy(enemyType, true);
+                    spawnEnemy(enemyType);
                     credits -= selectedCard.getCreditCost();
                 }
             }
@@ -265,6 +265,27 @@ public class Director {
         }
 
         return true;
+    }
+
+    private List<EnemyEnums> getEnemiesThatCanSpawnFromUpOrDown() {
+        List<EnemyEnums> eligibleEnemies = new ArrayList<>();
+
+        switch (LevelManager.getInstance().getCurrentEnemyTribe()) {
+            case Zerg -> {
+                eligibleEnemies.add(EnemyEnums.ZergGuardian);
+                eligibleEnemies.add(EnemyEnums.ZergScourge);
+            }
+            case Pirates -> {
+                eligibleEnemies.add(EnemyEnums.Bulldozer);
+                eligibleEnemies.add(EnemyEnums.Needler);
+            }
+            case RoyalGuard -> {
+                eligibleEnemies.add(EnemyEnums.RoyalGuardShieldbearer);
+                eligibleEnemies.add(EnemyEnums.RoyalGuardBarricade);
+            }
+        }
+
+        return eligibleEnemies;
     }
 
     private boolean canSpawnInFormation(EnemyEnums enemyEnums) {
@@ -377,7 +398,7 @@ public class Director {
             enemyCreditCost *= 3f;
         }
 
-        if(enemyType.getEnemyTribe().equals(EnemyTribes.RoyalGuard)){
+        if (enemyType.getEnemyTribe().equals(EnemyTribes.RoyalGuard)) {
             enemyCreditCost *= 1 - (EnemyManager.getInstance().getEnemyDifficultyModifier() * 0.05f);
         }
 
@@ -427,56 +448,55 @@ public class Director {
         return (currentSeconds / maxSeconds);
     }
 
-    private void spawnEnemy(EnemyEnums enemyType, boolean randomLocation) {
+    private void spawnEnemy(EnemyEnums enemyType) {
         // Set parameters for spawning
-        Direction direction = getSpawnDirection();
+        Direction direction = getSpawnDirection(enemyType);
         float scale = enemyType.getDefaultScale();
         float xMovementSpeed = enemyType.getMovementSpeed();
 
         // Call LevelManager's spawnEnemy method
         LevelManager.getInstance().spawnEnemy(
-                DataClass.getInstance().getWindowWidth() + Math.round(enemyType.getBaseWidth() * scale),
-                DataClass.getInstance().getPlayableWindowMaxHeight() / 2 - Math.round((enemyType.getBaseHeight() * scale) / 2),
-                enemyType, direction, scale, randomLocation, xMovementSpeed);
+                0, 0, //actual coordinates will be recalculated because of random = true
+                enemyType, direction, scale, true, xMovementSpeed);
     }
 
     public void spawnRegularFormation(SpawnFormationEnums formationType, EnemyEnums enemyType) {
-        spawnFormationWithParameters(formationType, enemyType, null, false);
+        spawnFormationWithParameters(formationType, enemyType);
     }
 
     private void spawnCashCarrier() {
-        spawnEnemy(EnemyEnums.CashCarrier, true);
+        spawnEnemy(EnemyEnums.CashCarrier);
     }
 
-    private void spawnEntourageFormation(SpawnFormationEnums formationType, EnemyEnums primaryEnemy, EnemyEnums secondaryEnemy) {
-        spawnFormationWithParameters(formationType, primaryEnemy, secondaryEnemy, true);
-    }
+    private Direction getSpawnDirection(EnemyEnums enemyType) {
+        int godRunScore = GodRunDetector.getInstance().getGodRunScore();
+        Random random = new Random();
 
-    private Direction getSpawnDirection() {
-        Direction direction = Direction.LEFT;
-
-        if (GodRunDetector.getInstance().getGodRunScore() >= 2) {
-            Random random = new Random();
-            direction = random.nextInt(0, 2) == 0 ? Direction.RIGHT : Direction.LEFT;
+        // Score >= 4: enemies that can spawn from any direction do so
+        if (godRunScore >= 4 && this.getEnemiesThatCanSpawnFromUpOrDown().contains(enemyType)) {
+            Direction[] cardinalDirections = {Direction.UP, Direction.DOWN, Direction.LEFT, Direction.RIGHT};
+            return cardinalDirections[random.nextInt(4)];
         }
-        return direction;
+
+        // Score >= 2: spawn from left or right randomly
+        if (godRunScore >= 2) {
+            return random.nextBoolean() ? Direction.RIGHT : Direction.LEFT;
+        }
+
+        // Default: spawn from left
+        return Direction.LEFT;
     }
 
-    private void spawnFormationWithParameters(SpawnFormationEnums formationType, EnemyEnums primaryEnemyType, EnemyEnums secondaryEnemyType, boolean isEntourage) {
-        Direction direction = getSpawnDirection();
-        float xMovementSpeed = isEntourage ? secondaryEnemyType.getMovementSpeed() : primaryEnemyType.getMovementSpeed();
+    private void spawnFormationWithParameters(SpawnFormationEnums formationType, EnemyEnums enemyType) {
+        Direction direction = getSpawnDirection(enemyType);
+        float xMovementSpeed = enemyType.getMovementSpeed();
         float yMovementSpeed = xMovementSpeed;
 
         int formationWDistance;
         int formationHDistance;
 
-        if (isEntourage) {
-            formationWDistance = Math.round((secondaryEnemyType.getBaseWidth() * secondaryEnemyType.getDefaultScale()));
-            formationHDistance = Math.round((secondaryEnemyType.getBaseWidth() * secondaryEnemyType.getDefaultScale()));
-        } else {
-            formationWDistance = Math.round((primaryEnemyType.getBaseWidth() * primaryEnemyType.getDefaultScale()));
-            formationHDistance = Math.round((primaryEnemyType.getBaseWidth() * primaryEnemyType.getDefaultScale()));
-        }
+        formationWDistance = Math.round((enemyType.getBaseWidth() * enemyType.getDefaultScale()));
+        formationHDistance = Math.round((enemyType.getBaseWidth() * enemyType.getDefaultScale()));
 
         EnemyFormation formation = formationCreator.createFormation(formationType, formationWDistance, formationHDistance);
         int totalFormationWidth = formation.getFormationWidth() * formation.getWidthDistance();
@@ -485,11 +505,7 @@ public class Director {
         int baseX = calculateBaseX(totalFormationWidth, direction);
         int baseY = calculateBaseY(totalFormationHeight, direction);
 
-        if (isEntourage) {
-            formation.spawnFormation(baseX, baseY, primaryEnemyType, secondaryEnemyType, direction, xMovementSpeed, yMovementSpeed);
-        } else {
-            formation.spawnFormation(baseX, baseY, primaryEnemyType, primaryEnemyType, direction, xMovementSpeed, yMovementSpeed);
-        }
+        formation.spawnFormation(baseX, baseY, enemyType, enemyType, direction, xMovementSpeed, yMovementSpeed);
         lastFormationSpawnTime = currentTime;
     }
 
