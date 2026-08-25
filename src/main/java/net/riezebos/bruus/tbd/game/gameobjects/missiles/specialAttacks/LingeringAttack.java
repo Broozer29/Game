@@ -28,7 +28,7 @@ public class LingeringAttack extends SpecialAttack{
         super.showDamage = false;
 
         //Its the lingering flame version
-        if(this.imageEnum.equals(ImageEnums.LingeringFlameLooping)) {
+        if(this.imageEnum.equals(ImageEnums.LingeringFlameLooping) || this.imageEnum.equals(ImageEnums.ModuleScorchFlames)) {
             this.addYOffset(-Math.round(this.getScale() * 35)); //To offset the large empty space in the spritesheet
             if(PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.FlameDetonation) != null){
                 FlameDetonation flameDetonation = (FlameDetonation) PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.FlameDetonation);

@@ -36,7 +36,6 @@ public class FriendlyStation extends GameObject {
         this.currentHitpoints = maxHitPoints;
 
         this.friendlyObjectType = droneConfiguration.getFriendlyType();
-        this.attackSpeed = droneConfiguration.getAttackSpeedCooldown();
         this.setFriendly(true);
         if (movementConfiguration != null) {
             initMovementConfiguration(movementConfiguration);
@@ -69,7 +68,7 @@ public class FriendlyStation extends GameObject {
                 double currentTime = GameState.getInstance().getGameSeconds();
                 this.rotateGameObjectTowards(target.getCenterXCoordinate(), target.getCenterYCoordinate(), true);
                 this.setAllowedVisualsToRotate(false);
-                if (currentTime >= lastAttackTime + this.getAttackSpeed()) {
+                if (currentTime >= lastAttackTime + FriendlyStation.attackSpeed) {
                     fireAction();
                     lastAttackTime = currentTime;
                 }

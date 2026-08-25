@@ -103,8 +103,8 @@ public class MissileManager {
         initManagersIfNull();
         PerformanceLoggerManager.timeAndLog(performanceLogger, "Move Missiles", this::moveMissiles);
         PerformanceLoggerManager.timeAndLog(performanceLogger, "Remove Invisible Projects", this::removeInvisibleProjectiles);
-        PerformanceLoggerManager.timeAndLog(performanceLogger, "Check Missile Collision", this::checkMissileCollisions);
         PerformanceLoggerManager.timeAndLog(performanceLogger, "Trigger Missile Actions", this::triggerMissileActions);
+        PerformanceLoggerManager.timeAndLog(performanceLogger, "Check Missile Collision", this::checkMissileCollisions);
         PerformanceLoggerManager.timeAndLog(performanceLogger, "Update Laserbeams", this::updateLaserBeams);
     }
 
