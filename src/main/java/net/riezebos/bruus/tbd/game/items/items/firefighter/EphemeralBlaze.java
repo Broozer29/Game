@@ -10,8 +10,8 @@ import net.riezebos.bruus.tbd.game.items.enums.ItemApplicationEnum;
 
 public class EphemeralBlaze extends Item {
 
-    public static float primaryDamagePerIgniteStack = 0.1f; //1%
-    public static float igniteDamageReduction = 0.15f; //25%
+    public static float primaryDamagePerIgniteStack = 0.25f; //25 %
+    public static float igniteDamageReduction = 0; //0%
 
     public EphemeralBlaze(){
         super(ItemEnums.EphemeralBlaze, 1,  ItemApplicationEnum.ApplyOnSpaceShipCreation);

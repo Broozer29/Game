@@ -81,6 +81,7 @@ public enum ItemEnums {
     CalmInChaos(ItemRarityEnums.Legendary,  ImageEnums.CalmInChaos, "Calm in chaos", true),
     ElectroShedding(ItemRarityEnums.Legendary,  ImageEnums.Electroshedding, "Electro Shedding", true),
     PlasmaCoatedBullets(ItemRarityEnums.Common, ImageEnums.Starcraft2_Blue_Flame, "Plasma Bullets", true),
+    Recycler(ItemRarityEnums.Rare, ImageEnums.Recycler, "Recycler", true),
 
     PhotonPiercer(ItemRarityEnums.Common,  ImageEnums.Starcraft2_Concussive_Shells, "Photon Piercer", true),
     CannisterOfGasoline(ItemRarityEnums.Rare,  ImageEnums.CannisterOfGasoline, "Gasoline", true),

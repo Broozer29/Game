@@ -102,7 +102,7 @@ public class ItemDescriptionRetriever {
                         PlayerStats.igniteDuration + " seconds.";
             } //rare
             case Battery -> {
-                return "Your special attack gains 1 (+1) additional charge. Your special attack recharges " + Math.round(Battery.cooldownReduction * 100) + "% (+ " + Math.round(Battery.cooldownReduction * 100) + "%) faster.";
+                return "Your special attack gains 1 (+1) additional charge.";
             } //rare
             case PlatinumSponge -> {
                 return "Reduces all damage taken by " + Math.round(PlatinumSponge.damageReduction) + ". Damage taken cannot be reduced below 1";
@@ -110,6 +110,9 @@ public class ItemDescriptionRetriever {
             case CriticalOverloadCapacitor -> {
                 return "Critical strikes deal an additional " + Math.round(CriticalOverloadCapacitor.damageMultiplier * 100) + "% damage.";
             } //rare
+            case Recycler -> {
+                return "Enemies damaged by your Laserbeam or Electroshred gain a " + Math.round(Recycler.spawnChance * 100) + " % (+" + Math.round(Recycler.spawnChance * 100) + "%) chance to spawn a Recycle Part on death. Picking up a Recycle Part instantly restores a charge for your secondary attack.";
+            }
 
             //6
             case EmergencyRepairBot -> {
@@ -205,13 +208,13 @@ public class ItemDescriptionRetriever {
                 return "Drones are transformed into fireballs that damage enemies and apply Ignite.";
             } //relic
             case RingOfFire -> {
-                return "While your Fire Shield is active, fire missiles in all directions dealing " + Math.round(RingOfFire.projectileDamage * 100) + "% damage that apply ignite.";
+                return "Your Fire Shield now also fires missiles in all directions dealing " + Math.round(RingOfFire.projectileDamage * 100) + "% damage that apply ignite.";
             } //relic
             case FieryImplosion -> {
                 return "When ignite reaches maximum stacks it instantly explodes dealing the full ignite damage in a large explosion and consuming all ignite stacks..";
             } //relic
             case FireWithoutGasIsAss -> {
-                return "Ignite damage is reduced by " + Math.round(FireWithoutGasIsAss.reduction * 100) + "%. Enemies taking damage from your Flamethrower take " + Math.round(FireWithoutGasIsAss.increase * 100) + "% increased damage from Ignite.";
+                return "Enemies taking damage from your Flamethrower take " + Math.round(FireWithoutGasIsAss.increase * 100) + "% increased damage from Ignite.";
             } //relic
 
             //6
@@ -243,8 +246,7 @@ public class ItemDescriptionRetriever {
                         "%. ";
             } //rare           (ignite build)
             case EphemeralBlaze -> {
-                return "Your ignite deals " + Math.round(EphemeralBlaze.igniteDamageReduction * 100) + "% reduced damage. " +
-                        "Your flamethrower deals " + Math.round(EphemeralBlaze.primaryDamagePerIgniteStack * 100) + "% increased damage per stack of ignite on the target. ";
+                return "Your flamethrower deals " + Math.round(EphemeralBlaze.primaryDamagePerIgniteStack * 100) + "% increased damage per stack of ignite on the target. ";
             } //rare      (flamethrower build)
 
             //2

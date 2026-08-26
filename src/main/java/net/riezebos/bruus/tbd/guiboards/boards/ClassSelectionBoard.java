@@ -294,6 +294,8 @@ public class ClassSelectionBoard extends JPanel implements TimerHolder {
                 desciption = classDescription.getUnlockCondition();
                 hitpoints = null;
                 difficulty = null;
+                damage = null;
+                attackSpeed = null;
             }
 
             int descriptionX = backgroundCard.getXCoordinate() + horizontalPadding;

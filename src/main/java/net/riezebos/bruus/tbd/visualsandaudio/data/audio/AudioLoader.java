@@ -197,10 +197,6 @@ public class AudioLoader {
                 return "/audio/Alien Spaceship Destroyed.wav";
             case Furi_Wisdowm_Of_Rage:
                 return "/audio/music/Waveshaper wisdom of rage.wav";
-            case FullConfession:
-                return "/audio/music/Full Confession.wav";
-            case MeatGrinder:
-                return "/audio/music/Meat Grinder.wav";
             case Alien_Bomb_Impact:
                 return "/audio/Alien Bomb Impact.wav";
             case Large_Ship_Destroyed:
@@ -216,8 +212,6 @@ public class AudioLoader {
                 return "/audio/Rocket Launcher.wav";
             case Flamethrower:
                 return "/audio/Flamethrower.wav";
-            case NONE:
-                break;
             case Firewall:
                 return "/audio/Firewall.wav";
             case mainmenu:
@@ -251,8 +245,6 @@ public class AudioLoader {
             case VendlaSonrisa:return "/audio/music/Vendla - Sonrisa (Royalty Free Music).wav";
             case nomad:return "/audio/music/nomad.wav";
             case WaveshaperMonster: return "/audio/music/Waveshaper - Monster.wav";
-            case RiskOfDanger: return "/audio/music/Risk of Danger.wav";
-            case BossBattle: return "/audio/music/boss battle.wav";
             case RMChase: return "/audio/music/RM Chase.wav";
         }
         return null;

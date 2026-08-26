@@ -11,7 +11,7 @@ import net.riezebos.bruus.tbd.game.items.enums.ItemApplicationEnum;
 public class EternaBurn extends Item {
 
     public static float fuelUsagereduction = 0.15f; //15%
-    public static float igniteDamageReduction = 0.25f; //25%
+    public static float igniteDamageReduction = 0.15f; //15%
 
     public EternaBurn(){
         super(ItemEnums.EternaFlame, 1,  ItemApplicationEnum.UponAcquiring);

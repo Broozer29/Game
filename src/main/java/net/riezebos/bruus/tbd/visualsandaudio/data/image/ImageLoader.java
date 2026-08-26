@@ -231,6 +231,8 @@ public class ImageLoader {
                 return "/images/Icons/Starcraft2 Psi Storm2.png";
             case Starcraft2_Seeker_Missile:
                 return "/images/Icons/Starcraft2 Seeker Missile.png";
+            case Recycler:
+                return "/images/Icons/recycler.png";
             case Starcraft2_Vespene_Drone:
                 return "/images/Icons/Starcraft2 Drone Vespene Siphon.png";
             case Starcraft2_Heal:

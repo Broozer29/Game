@@ -44,7 +44,7 @@ public class PlayerInventory {
 
         if (DevTestSettings.infiniteMoney) {
             cashMoney = 999999999999f;
-            addItem(ItemEnums.MutaliskSideCannons);
+            addItem(ItemEnums.Recycler);
         } else {
             cashMoney = 0;
         }
@@ -107,6 +107,8 @@ public class PlayerInventory {
 
     public Item createItemFromEnum(ItemEnums itemEnum) {
         switch (itemEnum) {
+            case Recycler:
+                return new Recycler();
             case MutaliskSideCannons:
                 return new MutaliskSideCannons();
             case SideCannons:

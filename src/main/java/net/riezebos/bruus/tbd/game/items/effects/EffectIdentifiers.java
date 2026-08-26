@@ -18,6 +18,7 @@ public enum EffectIdentifiers {
     MoneyPrinterGoldOnDeath,
     SpawnCoinsOnDeath,
     SpawnScrapMetalOnDeath,
+    SpawnRecyclePartOnDeath,
     ElectricDestabilizerFreeze,
     DevourerMoveSpeedDebuff,
     DevourerAttackSpeedDebuff,

@@ -72,10 +72,10 @@ public class DamageOverTime implements EffectInterface {
     }
 
     private void updateForFireWithoutGasIsAss(){
-        if(PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.FireWithoutGasIsAss) != null && this.effectIdentifier.equals(EffectIdentifiers.Ignite)) {
-            this.damage *= FireWithoutGasIsAss.reduction;
-//            this.durationInSeconds *= FireWithoutGasIsAss.reduction;
-        }
+        //turned off for
+//        if(PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.FireWithoutGasIsAss) != null && this.effectIdentifier.equals(EffectIdentifiers.Ignite)) {
+//            this.damage *= FireWithoutGasIsAss.reduction;
+//        }
     }
 
     private SpriteAnimation initDefaultIgniteAnimation() {

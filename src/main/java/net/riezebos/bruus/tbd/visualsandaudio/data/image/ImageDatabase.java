@@ -16,7 +16,7 @@ public class ImageDatabase {
     private BufferedImage bossHealthBarBackground;
     private BufferedImage bossHealthBarRed;
     private BufferedImage bossHealthBarFront;
-
+    private BufferedImage recyclerIcon;
     private BufferedImage model3BetterUpgrade;
     private BufferedImage fuelCannister;
     private BufferedImage infernalPreIgniter;
@@ -570,6 +570,7 @@ public class ImageDatabase {
     }
 
     private void initImages() {
+        this.recyclerIcon = imgLoader.getImage(ImageEnums.Recycler);
         this.model3BetterUpgrade = imgLoader.getImage(ImageEnums.Player_Spaceship_Model_3);
         this.stuiversBestFriend = imgLoader.getImage(ImageEnums.StuiversBestFriend);
         this.spaceclouds1 = imgLoader.getImage(ImageEnums.SpaceClouds1);
@@ -1466,6 +1467,8 @@ public class ImageDatabase {
                 return this.star;
             case Player_Spaceship_Model_3:
                 return this.model3BetterUpgrade;
+            case Recycler:
+                return this.recyclerIcon;
             case Frame:
                 return this.frame;
             case Red_Filling:

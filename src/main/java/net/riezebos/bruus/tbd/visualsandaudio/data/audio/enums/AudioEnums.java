@@ -27,13 +27,10 @@ public enum AudioEnums {
     Default_EMP,
     Furi_Wisdowm_Of_Rage,
     RMChase,
-    FullConfession,
-    MeatGrinder,
     Destroyed_Explosion,
     GenericSelect,
     Flamethrower,
     Rocket_Launcher,
-    NONE,
     Firewall,
     mainmenu,
     Blood_On_The_Dancefloor,
@@ -56,8 +53,6 @@ public enum AudioEnums {
     ScourgeDeath,
     ScourgeNoticed,
     WaveshaperMonster,
-    RiskOfDanger, //unused
-    BossBattle, //unused
     ClassCarrierSpeedingUp,
     ClassCarrierSlowingDown,
     CaptainMisc0,

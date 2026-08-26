@@ -73,7 +73,7 @@ public abstract class SecondaryPlayerGun {
         }
     }
 
-    public void stopFiring(SpaceShip owner){
+    public void stopFiring(SpaceShip owner) {
         //to be overridden
     }
 
@@ -83,5 +83,14 @@ public abstract class SecondaryPlayerGun {
 
     public double getSecondsUntilNextAttackCharge() {
         return secondsUntilNextSpecialAttackCharge;
+    }
+
+    public void addSpecialCharge(SpaceShip owner) {
+        this.specialAttackCharges += 1;
+        if (this.specialAttackCharges >= owner.getMaxSpecialAttackCharges()) {
+            this.specialAttackCharges = owner.getMaxSpecialAttackCharges();
+            lastSecondsSpecialAttackChargeGained = GameState.getInstance().getGameSeconds();
+            secondsUntilNextSpecialAttackCharge = 0;
+        }
     }
 }

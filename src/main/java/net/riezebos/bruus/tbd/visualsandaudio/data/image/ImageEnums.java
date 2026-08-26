@@ -311,6 +311,7 @@ public enum ImageEnums {
     Starcraft2_Fire_Hardened_Shields,
     Starcraft2_Health_Upgrade_2,
     Starcraft2_Seeker_Missile,
+    Recycler,
     Starcraft2_Vespene_Drone,
     Starcraft2_Heal,
     Starcraft2_Electric_Field,

@@ -19,7 +19,7 @@ public class Battery extends Item {
     public void applyEffectToObject (GameObject gameObject) {
         if(gameObject instanceof SpaceShip spaceShip){
             spaceShip.setMaxSpecialAttackCharges(1 + quantity);
-            spaceShip.modifySpecialAttackRechargeCooldown(-(this.quantity * cooldownReduction));
+//            spaceShip.modifySpecialAttackRechargeCooldown(-(this.quantity * cooldownReduction));
         }
     }
 
