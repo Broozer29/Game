@@ -168,7 +168,7 @@ public enum EnemyEnums {
             0, 0, 0, 1, 1f, 118, 66,
             0),
 
-    RedBoss(45000, 9,
+    RedBoss(4500, 9,
             AudioEnums.Alien_Spaceship_Destroyed,
             ImageEnums.RedBoss, ImageEnums.BossExplosion, 0, EnemyCategory.Boss, EnemyTribes.Generic, 20,
             950, 500, 0, 1.25f, 1, 861, 641,
