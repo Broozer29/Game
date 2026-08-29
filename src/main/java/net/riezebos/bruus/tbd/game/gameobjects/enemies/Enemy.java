@@ -125,7 +125,7 @@ public class Enemy extends GameObject {
             this.maxHitPoints *= Math.pow(getScalingFactor(), level - 1);
 
             if (PlayerManager.getInstance().getPlayerCount() > 1) {
-                this.maxHitPoints *= (PlayerManager.getInstance().getPlayerCount() * 0.75f); //voor elke extra speler, 75% max hp
+                this.maxHitPoints *= (PlayerManager.getInstance().getPlayerCount() * 0.5f); //voor elke extra speler, 75% max hp
             }
             this.currentHitpoints = maxHitPoints;
 
