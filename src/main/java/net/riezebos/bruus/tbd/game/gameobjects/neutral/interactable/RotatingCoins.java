@@ -28,10 +28,10 @@ public class RotatingCoins extends Interactable {
             activated = true;
             PlayerInventory.getInstance().addMinerals(amountOfMineralsGained);
             AudioManager.getInstance().addAudio(AudioEnums.CoinCollected); //placeholder
-            ExplosiveGreed.coinsPickedUp += 1;
 
             Item explosiveGreed = PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.ExplosiveGreed);
             if (explosiveGreed != null) {
+                ExplosiveGreed.coinsPickedUp += 1;
                 explosiveGreed.applyEffectToObject(this);
             }
             this.setVisible(false);
