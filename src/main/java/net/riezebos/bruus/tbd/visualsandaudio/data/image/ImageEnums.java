@@ -322,6 +322,7 @@ public enum ImageEnums {
     Starcraft2_Platinum_Sponge,
     Starcraft2_Overclock,
     Starcraft2_Armor_Piercing,
+    FinalBossAnim,
 
 
     //Peepo's

@@ -304,7 +304,9 @@ public class Director {
         // Set parameters for spawning
         Direction direction = Direction.LEFT;
         float scale = enemyEnums.getDefaultScale();
+//        float scale = 0.35f;
         float xMovementSpeed = enemyEnums.getMovementSpeed();
+//        float xMovementSpeed = 3f;
 
         int xCoordinate = DataClass.getInstance().getWindowWidth() + Math.round(enemyEnums.getBaseWidth() * 0.88f);
         int yCoordinate = DataClass.getInstance().getPlayableWindowMaxHeight() / 2;

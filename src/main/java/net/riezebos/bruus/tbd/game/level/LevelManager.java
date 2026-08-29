@@ -229,7 +229,7 @@ public class LevelManager {
     private int loopBreaker = 0;
 
     public EnemyEnums getNextBoss() {
-//        return EnemyEnums.StrikerBoss;
+//        return EnemyEnums.FinalBoss;
 
         List<EnemyEnums> eligibleBosses = Arrays.stream(EnemyEnums.values()).filter(enemyEnums ->
                 enemyEnums.getEnemyCategory().equals(EnemyCategory.Boss) &&

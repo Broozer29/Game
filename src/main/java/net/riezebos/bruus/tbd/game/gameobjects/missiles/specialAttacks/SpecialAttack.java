@@ -9,6 +9,7 @@ import net.riezebos.bruus.tbd.game.items.PlayerInventory;
 import net.riezebos.bruus.tbd.game.items.effects.EffectIdentifiers;
 import net.riezebos.bruus.tbd.game.items.effects.EffectInterface;
 import net.riezebos.bruus.tbd.game.items.effects.effectimplementations.DamageOverTime;
+import net.riezebos.bruus.tbd.game.items.items.CashInfusion;
 import net.riezebos.bruus.tbd.game.items.items.PrecisionAmplifier;
 import net.riezebos.bruus.tbd.game.items.items.firefighter.EphemeralBlaze;
 import net.riezebos.bruus.tbd.game.movement.BoardBlockUpdater;
@@ -78,6 +79,10 @@ public class SpecialAttack extends GameObject {
         if (showDamage && damage >= 1) {
             OnScreenTextManager.getInstance().addDamageNumberText(Math.round(damage), target.getCenterXCoordinate(),
                     target.getCenterYCoordinate(), isACrit,super.calculateFontSizeBasedOnDamageAmount(this, damage));
+        }
+
+        if(isACrit && PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.CashInfusion) != null){
+            CashInfusion.spawnCoin(this, target);
         }
     }
 

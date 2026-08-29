@@ -5,6 +5,7 @@ import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.bluebos
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.blueboss.BlueBossFactory;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.blueboss.BlueBossFactoryDefender;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.carrier.CarrierBoss;
+import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.finalboss.FinalBoss;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.redboss.RedBoss;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.spacestation.SpaceStationBoss;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.striker.StrikerBoss;
@@ -55,7 +56,7 @@ public class EnemyCreator {
         switch (enemyType) {
             case Seeker, Energizer, Tazer, Scout, RoyalGuardGuardsmen, RoyalGuardCaptain, RedBoss, CarrierBoss,
                  ZergDevourer, ZergGuardian, ZergQueen,
-                 YellowBoss, MotherShipMiniBoss, RoyalGuardFlagbearer, StrikerBoss, TwinBoss -> {
+                 YellowBoss, MotherShipMiniBoss, RoyalGuardFlagbearer, StrikerBoss, TwinBoss, FinalBoss -> {
                 if (isFormatted && (
                         enemyType.equals(EnemyEnums.Scout) || enemyType.equals(EnemyEnums.Energizer) || enemyType.equals(EnemyEnums.Seeker)
                                 || enemyType.equals(EnemyEnums.Tazer) || enemyType.equals(EnemyEnums.ZergDevourer) || enemyType.equals(EnemyEnums.ZergGuardian))) {
@@ -83,7 +84,7 @@ public class EnemyCreator {
         switch (enemyType) {
             case ZergDevourer, Energizer -> setBoardBlockToHoverIn(movementConfiguration, 5);
             case ZergGuardian -> setBoardBlockToHoverIn(movementConfiguration, 6);
-            case Seeker, YellowBoss -> {
+            case Seeker, YellowBoss, FinalBoss -> {
                 setBoardBlockToHoverIn(movementConfiguration, 6);
             }
             case Tazer, RoyalGuardCaptain, MotherShipMiniBoss, Scout, RoyalGuardGuardsmen, ZergQueen, StrikerBoss,
@@ -291,6 +292,9 @@ public class EnemyCreator {
             }
             case RoyalGuardShieldbearer -> {
                 return new RoyalGuardShieldbearer(upgradeConfig(spriteConfiguration, 2, true), enemyConfiguration, movementConfiguration);
+            }
+            case FinalBoss -> {
+                return new FinalBoss(upgradeConfig(spriteConfiguration, 2, true), enemyConfiguration, movementConfiguration);
             }
 
         }

@@ -37,6 +37,7 @@ public class ImageDatabase {
     private BufferedImage protossShipAmountIcon;
     private BufferedImage alienBombImage;
     private BufferedImage chooseDifficulty;
+    private List<BufferedImage> finalBossAnim = new ArrayList<>();
     private List<BufferedImage> royalGuardCaptain = new ArrayList<>();
     private List<BufferedImage> royalGuardBarricade = new ArrayList<>();
     private List<BufferedImage> royalGuardBarricadeMinion = new ArrayList<>();
@@ -1782,6 +1783,8 @@ public class ImageDatabase {
                 return this.frontShield;
             case RoyalGuardCaptain:
                 return this.royalGuardCaptain;
+            case FinalBossAnim:
+                return this.finalBossAnim;
             case RoyalGuardFlagbearer:
                 return this.royalGuardFlagbearer;
             case StrikerCornerDrone:
@@ -2979,6 +2982,12 @@ public class ImageDatabase {
             String sourceString = String.format("/images/Ships/Enemy Ships/royalguard/flagbearer/%d.png", i);
             BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
             royalGuardFlagbearer.add(image);
+        }
+
+        for (int i = 0; i < 4; i++) {
+            String sourceString = String.format("/images/Ships/Enemy Ships/finalboss/%d.png", i);
+            BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+            finalBossAnim.add(image);
         }
 
         for (int i = 0; i < 4; i++) {

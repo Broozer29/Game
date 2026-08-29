@@ -5,6 +5,7 @@ import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.droneTypes.prot
 import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.droneTypes.protoss.ProtossScout;
 import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.droneTypes.protoss.ProtossShuttle;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
+import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.items.effects.effectimplementations.DamageOverTime;
 import net.riezebos.bruus.tbd.game.items.items.*;
 import net.riezebos.bruus.tbd.game.items.items.captain.*;
@@ -68,7 +69,7 @@ public class ItemDescriptionRetriever {
                 return "Gain an additional copy of every first item you purchase in the shop.";
             } //relic
             case CashInfusion -> {
-                return "Cash carriers no longer spawn. Instead, medium sized enemies have a " + Math.round(GreedIsGood.mineralsPerPickupChance * 100) + "% chance to drop a coin worth " + GreedIsGood.mineralsPerPickup + " minerals.";
+                return "Cash carriers no longer spawn. Critical Strikes have a " + Math.round(CashInfusion.spawnChance * 100) + "% chance to drop a coin worth " + CashInfusion.mineralsPerPickup + " minerals.";
             } //relic
             case Placeholder -> {
                 return "Killing an enemy spawns a temporary stationary drone that attacks every " + FriendlyStation.attackSpeed + " seconds dealing " + Math.round((FriendlyStation.damageModifier * 100)) + "% damage. Maximum of 4 drones can be spawned at once.";
@@ -89,7 +90,7 @@ public class ItemDescriptionRetriever {
                 return "Enemies that are damaged below " + Math.round(Guillotine.hitpointsThreshold * 100) + " % (+" + Math.round(Guillotine.hitpointsThreshold * 100) + "%) of their health are instantly killed.";
             } //legendary
             case ExplosiveGreed -> {
-                return "Coins now explode on pickup for " + Math.round(ExplosiveGreed.damageModifier * 100) + "% (+" + Math.round(ExplosiveGreed.damageModifier * 100) + "%) damage.";
+                return "Coins now explode on pickup for " + Math.round(ExplosiveGreed.damageModifierPerCoinPickup * 100) + "% (+" + Math.round(ExplosiveGreed.damageModifierPerCoinPickup * 100) + "%) damage for every coin you have picked up since acquiring this item.";
             } //legendary
             case CalmInChaos -> {
                 return "Deal " + Math.round(CalmInChaos.damageBonus * 100) + "% (+" + Math.round(CalmInChaos.damageBonus * 100) + "%) additional damage. This bonus is lost for " + CalmInChaos.cooldown + " seconds after taking damage.";
@@ -158,7 +159,7 @@ public class ItemDescriptionRetriever {
                 return "Your drones no longer fire automatically. After your laserbeam hits a target, all drones immediately fire 1 shot towards the target.";
             } //relic
             case OneShotOneKill -> {
-                return "Your missiles that strike enemies with " + Math.round(OneShotOneKill.hpRequirement * 100) + "% hp will always critically strike and deal " + Math.round(OneShotOneKill.damageAmplificationModifier * 100) + "% damage.";
+                return "Your missiles that strike enemies with " + Math.round(OneShotOneKill.hpRequirement * 100) + "% hp will always critically strike and have their damage increased by " + Math.round(OneShotOneKill.damageAmplificationModifier * 100) + "%.";
             } //relic
             case SideCannons -> {
                 return "Fire " + SideCannons.additionalMissiles + " additional missiles whenever you fire a laserbeam.";
@@ -211,7 +212,7 @@ public class ItemDescriptionRetriever {
                 return "Your Fire Shield now also fires missiles in all directions dealing " + Math.round(RingOfFire.projectileDamage * 100) + "% damage that apply ignite.";
             } //relic
             case FieryImplosion -> {
-                return "When ignite reaches maximum stacks it instantly explodes dealing the full ignite damage in a large explosion and consuming all ignite stacks..";
+                return "When ignite reaches maximum stacks it instantly explodes dealing the full ignite damage in a large explosion and consuming all ignite stacks.";
             } //relic
             case FireWithoutGasIsAss -> {
                 return "Enemies taking damage from your Flamethrower take " + Math.round(FireWithoutGasIsAss.increase * 100) + "% increased damage from Ignite.";
@@ -228,10 +229,12 @@ public class ItemDescriptionRetriever {
                 return "Gain 1 Scorching Fury, 1 Sticky Oil and 1 Escalating Flames.";
             } //legendary       (flamethrower build)
             case InfernalPreIgniter -> {
-                double value = InfernalPreIgniter.scalingFactor * (1000f / 15f);
-                return "While your Flamethrower is active, it's damage exponentially increases with  " + String.format("%.1f", value) +
-                        "% per second.";
-            } //legendary  (flamethrower build)
+                double ticksPerSecond = 1000f / GameState.getInstance().getDELAY();
+                double perSecondMultiplier = Math.pow(1 + InfernalPreIgniter.scalingFactor, ticksPerSecond);
+                double percentageIncrease = (perSecondMultiplier - 1) * 100;
+                return "While your Flamethrower is active, it's damage exponentially increases by " +
+                        String.format("%.1f", percentageIncrease) + "% per second.";
+            }
             case EternaFlame -> {
                 return "Your ignite deals " + Math.round(EternaBurn.igniteDamageReduction * 100) + "% reduced damage. Flamethrower requires " + Math.round(EternaBurn.fuelUsagereduction * 100) + "% less fuel.";
             } //legendary,  (flamethrower build) make it a common -> Remove ignite damage reduction and keep flamethrower fuel consumption reduction?

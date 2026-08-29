@@ -3,12 +3,13 @@ package net.riezebos.bruus.tbd.game.gameobjects.neutral.interactable;
 import net.riezebos.bruus.tbd.game.items.Item;
 import net.riezebos.bruus.tbd.game.items.ItemEnums;
 import net.riezebos.bruus.tbd.game.items.PlayerInventory;
+import net.riezebos.bruus.tbd.game.items.items.ExplosiveGreed;
 import net.riezebos.bruus.tbd.game.movement.MovementConfiguration;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.AudioManager;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.AudioEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteAnimationConfiguration;
 
-public class RotatingCoins extends Interactable{
+public class RotatingCoins extends Interactable {
 
     public static float defaultMovementSpeed = 1.25f;
     public static int maxBounces = 2;
@@ -23,14 +24,14 @@ public class RotatingCoins extends Interactable{
 
     @Override
     public void activateObject() {
-        if(!activated){
+        if (!activated) {
             activated = true;
             PlayerInventory.getInstance().addMinerals(amountOfMineralsGained);
             AudioManager.getInstance().addAudio(AudioEnums.CoinCollected); //placeholder
-
+            ExplosiveGreed.coinsPickedUp += 1;
 
             Item explosiveGreed = PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.ExplosiveGreed);
-            if(explosiveGreed != null){
+            if (explosiveGreed != null) {
                 explosiveGreed.applyEffectToObject(this);
             }
             this.setVisible(false);

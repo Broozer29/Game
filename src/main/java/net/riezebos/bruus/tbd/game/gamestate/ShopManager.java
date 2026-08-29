@@ -180,7 +180,7 @@ public class ShopManager {
 
         GUIComponent itemSprite = new GUIComponent(spriteConfiguration);
         itemSprite.setImageDimensions(ShopBoardCreator.shopItemIconDimensions, ShopBoardCreator.shopItemIconDimensions);
-        itemSprite.setTransparancyAlpha(true, 1, -0.002f);
+        itemSprite.setTransparancyAlpha(true, 1, -0.00175f);
         itemSprite.setCenterCoordinates(DataClass.getInstance().getWindowWidth() / 2,
                 (DataClass.getInstance().getWindowHeight() / 2) - yOffset);
         return itemSprite;

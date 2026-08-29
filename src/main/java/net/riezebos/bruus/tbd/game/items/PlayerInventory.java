@@ -41,10 +41,25 @@ public class PlayerInventory {
         Contract.killCountRequired = Contract.originalCountRequired;
         Consume.currentKillCount = 0;
         Consume.currentMaxHpBonus = 0;
+        ExplosiveGreed.coinsPickedUp = 0;
 
         if (DevTestSettings.infiniteMoney) {
             cashMoney = 999999999999f;
-            addItem(ItemEnums.Recycler);
+            addItem(ItemEnums.CashInfusion);
+            addItem(ItemEnums.ExplosiveGreed);
+            addItem(ItemEnums.PrecisionAmplifier);
+            addItem(ItemEnums.PrecisionAmplifier);
+            addItem(ItemEnums.PrecisionAmplifier);
+            addItem(ItemEnums.PrecisionAmplifier);
+            addItem(ItemEnums.PrecisionAmplifier);
+            addItem(ItemEnums.PrecisionAmplifier);
+            addItem(ItemEnums.PrecisionAmplifier);
+            addItem(ItemEnums.PrecisionAmplifier);
+            addItem(ItemEnums.PrecisionAmplifier);
+            addItem(ItemEnums.PrecisionAmplifier);
+            addItem(ItemEnums.PrecisionAmplifier);
+            addItem(ItemEnums.PrecisionAmplifier);
+            addItem(ItemEnums.PrecisionAmplifier);
         } else {
             cashMoney = 0;
         }
@@ -138,7 +153,7 @@ public class PlayerInventory {
             case Placeholder:
                 return new Placeholder();
             case CashInfusion:
-                return new GreedIsGood();
+                return new CashInfusion();
             case Guillotine:
                 return new Guillotine();
             case ExplosiveLaserbeams:

@@ -6,11 +6,13 @@ import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
 import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SpaceShip;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.items.Item;
+import net.riezebos.bruus.tbd.game.items.ItemEnums;
 import net.riezebos.bruus.tbd.game.items.PlayerInventory;
 import net.riezebos.bruus.tbd.game.items.effects.EffectActivationTypes;
 import net.riezebos.bruus.tbd.game.items.effects.EffectIdentifiers;
 import net.riezebos.bruus.tbd.game.items.effects.EffectInterface;
 import net.riezebos.bruus.tbd.game.items.enums.ItemApplicationEnum;
+import net.riezebos.bruus.tbd.game.items.items.CashInfusion;
 import net.riezebos.bruus.tbd.game.movement.*;
 import net.riezebos.bruus.tbd.game.movement.Point;
 import net.riezebos.bruus.tbd.game.movement.pathfinders.PathFinder;
@@ -425,6 +427,10 @@ public class GameObject extends Sprite {
             OnScreenTextManager.getInstance().addDamageNumberText(Math.round(damage), target.getCenterXCoordinate(),
                     target.getCenterYCoordinate(), isACrit, calculateFontSizeBasedOnDamageAmount(target, damage));
         }
+
+        if(isACrit && PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.CashInfusion) != null){
+            CashInfusion.spawnCoin(this, target);
+        }
     }
 
     protected int calculateFontSizeBasedOnDamageAmount(GameObject target, float damage) {
@@ -507,9 +513,6 @@ public class GameObject extends Sprite {
 
 
     //*****************VISUAL ALTERATION*******************************
-    public void rotateGameObjectTowards(double angleDegrees, boolean crop) {
-
-    }
 
     public void rotateGameObjectTowards(Direction direction, boolean crop) {
         if (ImageRotator.getInstance().isBlockedFromRotating(this.getImageEnum())) {
@@ -1226,5 +1229,9 @@ public class GameObject extends Sprite {
 
     public void modifyHealingBonus(float v) {
         this.bonusHealMultiplier += v;
+    }
+
+    protected void rotateGameObjectTowards(GameObject object) {
+        this.rotateObjectTowardsPoint(object.getCurrentLocation(), false);
     }
 }
