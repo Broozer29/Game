@@ -615,6 +615,7 @@ public class ClassSelectionBoard extends JPanel implements TimerHolder {
     public void executeControllerInput() {
         if (controllers.getPrimaryController() != null) {
             boolean needsUpdate = false;
+            controllerInputReader = controllers.getPrimaryController();
             controllerInputReader.pollController();
             long currentTime = System.currentTimeMillis();
 

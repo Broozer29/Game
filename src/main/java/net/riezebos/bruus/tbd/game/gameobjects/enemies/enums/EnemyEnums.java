@@ -148,7 +148,7 @@ public enum EnemyEnums {
     MotherShipMiniBoss(1050, 10,
             AudioEnums.Alien_Spaceship_Destroyed,
             ImageEnums.MothershipMiniboss, ImageEnums.Explosion2, 0, EnemyCategory.MiniBoss, EnemyTribes.Generic, 10,
-            50, 100, 1, 1f, 0.35f, 238, 125,
+            50, 100, 1, 1f, 0.9f, 238, 125,
             0),
     MotherShipDrone(125, 0, //damage overwritten by mothership
             AudioEnums.Alien_Spaceship_Destroyed,

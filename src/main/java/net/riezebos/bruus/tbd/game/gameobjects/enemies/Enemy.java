@@ -141,7 +141,7 @@ public class Enemy extends GameObject {
             }
 
             if (PlayerManager.getInstance().getPlayerCount() > 1 && !this.enemyType.getEnemyCategory().equals(EnemyCategory.Boss)) {
-                this.cashMoneyWorth *= Math.max(1.15 - (PlayerManager.getInstance().getPlayerCount() * 0.15f), 0.5f); //-15% for each player, 100% for 1 player, min 50% for 5+ players
+                this.cashMoneyWorth *= Math.max(1.15 - (PlayerManager.getInstance().getPlayerCount() * 0.25f), 0.35f); //-15% for each player, 100% for 1 player, min 50% for 5+ players
             }
         }
 
