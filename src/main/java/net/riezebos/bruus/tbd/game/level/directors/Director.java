@@ -304,6 +304,11 @@ public class Director {
         // Set parameters for spawning
         Direction direction = Direction.LEFT;
         float scale = enemyEnums.getDefaultScale();
+
+        if(enemyEnums == EnemyEnums.SpaceStationBoss && DataClass.getInstance().getResolutionFactor() < 1){
+            scale = 0.6f;
+        }
+
 //        float scale = 0.35f;
         float xMovementSpeed = enemyEnums.getMovementSpeed();
 //        float xMovementSpeed = 3f;

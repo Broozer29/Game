@@ -177,7 +177,7 @@ public enum EnemyEnums {
     SpaceStationBoss(4450,11,
             AudioEnums.Alien_Spaceship_Destroyed,
             ImageEnums.SpaceStationBoss, ImageEnums.BossExplosion, 0, EnemyCategory.Boss, EnemyTribes.Generic, 20,
-            950, 500, 0, 1.75f, 1, 850, 850,
+            950, 500, 0, 1.75f, 0.9f, 850, 850,
             0),
     CarrierBoss(4800, 10,
             AudioEnums.Alien_Spaceship_Destroyed,
