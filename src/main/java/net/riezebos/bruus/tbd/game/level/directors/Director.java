@@ -305,6 +305,10 @@ public class Director {
         Direction direction = Direction.LEFT;
         float scale = enemyEnums.getDefaultScale();
 
+        if(DataClass.getInstance().getResolutionFactor() < 1){
+            scale *= 0.7f;
+        }
+
         if(enemyEnums == EnemyEnums.SpaceStationBoss && DataClass.getInstance().getResolutionFactor() < 1){
             scale = 0.6f;
         }

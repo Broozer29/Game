@@ -22,6 +22,7 @@ public class Mutalisk extends Enemy {
         this.destructionAnimation = new SpriteAnimation(destroyedExplosionfiguration);
         this.hasAttack = false;
         this.attackSpeed = 2;
+        this.damage = 2;
         this.detonateOnCollision = false;
         this.knockbackStrength = 8;
         this.movementConfiguration.setMovementSpeed(this.movementConfiguration.getOriginalMovementSpeed() + EnemyManager.getInstance().getEnemyDifficultyModifier() * 0.25f);
