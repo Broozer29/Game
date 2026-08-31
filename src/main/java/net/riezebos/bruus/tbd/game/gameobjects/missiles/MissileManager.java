@@ -291,7 +291,7 @@ public class MissileManager {
             CollisionInfo collisionInfo = collisionDetector.detectCollision(missile, enemy);
             if (collisionInfo != null) {
                 if (!missile.hasCollidedBeforeWith(enemy)) {
-                    missile.applyBeforeCollisionAttackModifyingItemEffects(enemy, collisionInfo);
+                    missile.applyBeforeCollisionItemEffects(enemy, collisionInfo);
                     missile.handleCollision(enemy);
                     missile.applyAfterCollisionItemEffects(enemy, collisionInfo);
                 }

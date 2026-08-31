@@ -27,7 +27,7 @@ public class SpaceStationSpinningAttack implements BossActionable {
 
     private double lastAttackedTime = 0;
     private int attackCooldown = 30;
-    private Point centerPoint;
+    private Point centerPoint = null;
     private CustomAudioClip chargingUpMovement = null;
     private CustomAudioClip boostingAway = null;
     private boolean allowedToBlastAway = false;
@@ -42,7 +42,14 @@ public class SpaceStationSpinningAttack implements BossActionable {
     private int bounceCount = 0;
 
     public SpaceStationSpinningAttack () {
-        centerPoint = EnemyCreator.calculateSpaceStationBossDestination(EnemyEnums.SpaceStationBoss);
+        // centerPoint calculated lazily when first needed to ensure correct window dimensions
+    }
+
+    private Point getCenterPoint() {
+        if (centerPoint == null) {
+            centerPoint = EnemyCreator.calculateSpaceStationBossDestination(EnemyEnums.SpaceStationBoss);
+        }
+        return centerPoint;
     }
 
 
@@ -87,7 +94,7 @@ public class SpaceStationSpinningAttack implements BossActionable {
 
                 if (pathFinder.getCurrentBounces() > 5) {
                     DestinationPathFinder destinationPathFinder = new DestinationPathFinder();
-                    enemy.getMovementConfiguration().setDestination(centerPoint);
+                    enemy.getMovementConfiguration().setDestination(getCenterPoint());
                     enemy.setPathFinder(destinationPathFinder);
                     isBouncing = false;
                     isGoingBackToCenter = true;
@@ -161,10 +168,11 @@ public class SpaceStationSpinningAttack implements BossActionable {
 
     @Override
     public boolean isAvailable (Enemy enemy) {
+        Point center = getCenterPoint();
         return enemy.isAllowedToFire()
                 && GameState.getInstance().getGameSeconds() >= lastAttackedTime + attackCooldown
                 && WithinVisualBoundariesCalculator.isWithinBoundaries(enemy)
-                && Math.abs(enemy.getXCoordinate() - centerPoint.getX()) <= 1
-                && Math.abs(enemy.getYCoordinate() - centerPoint.getY()) <= 1;
+                && Math.abs(enemy.getXCoordinate() - center.getX()) <= 1
+                && Math.abs(enemy.getYCoordinate() - center.getY()) <= 1;
     }
 }

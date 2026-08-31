@@ -25,7 +25,7 @@ import java.util.List;
 
 public class SpaceStationLaserbeamAttack implements BossActionable {
 
-    private Point centerPoint;
+    private Point centerPoint = null;
     private int attackCooldown = 17;
     private double lastAttackedTime = 0;
     private double startedFiringTime = 0;
@@ -48,11 +48,18 @@ public class SpaceStationLaserbeamAttack implements BossActionable {
     };
 
     public SpaceStationLaserbeamAttack() {
-        centerPoint = EnemyCreator.calculateSpaceStationBossDestination(EnemyEnums.SpaceStationBoss);
+        // centerPoint calculated lazily when first needed to ensure correct window dimensions
         for (int i = 0; i < BASE_ORIGIN_POINTS.length; i++) {
             laserBeamAimingPoints.add(new Point(0, 0));
         }
         createChargingAnimations();
+    }
+
+    private Point getCenterPoint() {
+        if (centerPoint == null) {
+            centerPoint = EnemyCreator.calculateSpaceStationBossDestination(EnemyEnums.SpaceStationBoss);
+        }
+        return centerPoint;
     }
 
     @Override
@@ -255,11 +262,12 @@ public class SpaceStationLaserbeamAttack implements BossActionable {
 
     @Override
     public boolean isAvailable(Enemy enemy) {
+        Point center = getCenterPoint();
         return enemy.isAllowedToFire()
                 && GameState.getInstance().getGameSeconds() >= lastAttackedTime + attackCooldown
                 && WithinVisualBoundariesCalculator.isWithinBoundaries(enemy)
-                && Math.abs(enemy.getXCoordinate() - centerPoint.getX()) <= 1
-                && Math.abs(enemy.getYCoordinate() - centerPoint.getY()) <= 1;
+                && Math.abs(enemy.getXCoordinate() - center.getX()) <= 1
+                && Math.abs(enemy.getYCoordinate() - center.getY()) <= 1;
     }
 
 

@@ -107,7 +107,7 @@ public class SpecialAttack extends GameObject {
 
         if (currentTime >= lastAffectedTime + internalTickCooldown) {
             if (isAllowOnHitEffects()) {
-                applyBeforeCollisionAttackModifyingItemEffects(target, collisionInfo); //Might be problematic? Handle within item classes itself if it is problematic for some
+                applyBeforeCollisionItemEffects(target, collisionInfo); //Might be problematic? Handle within item classes itself if it is problematic for some
             }
             dealDamageToGameObject(target);
             if (isAllowOnHitEffects() && appliesItemEffects) {

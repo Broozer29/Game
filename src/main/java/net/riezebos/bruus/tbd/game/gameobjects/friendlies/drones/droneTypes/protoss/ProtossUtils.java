@@ -19,9 +19,6 @@ import java.util.Random;
 public class ProtossUtils {
 
 
-    //todo protossutils is niet multiplayer compatible:
-    // - Static attributen die gedeeld gebruikt worden (building timer, fast/slow movement, ships luisteren niet naar hun eigen beacon maar naar iedereens beacon)
-    // - Max aantal protoss ships logica gaat er nog vanuit dat er maar 1 speler is
     private static final Random random = new Random();
     private static ProtossUtils instance = new ProtossUtils();
     public static int maxHoverDistance = 200;

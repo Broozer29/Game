@@ -20,8 +20,7 @@ import java.util.Random;
 public class StickyDynamite extends Item {
 
     public static float explosionDamage = 1.75f;
-    private float scaleFactor = 1;
-    public static float chanceToProc = 0.15f;
+    public static float chanceToProc = 0.2f;
     private Random random = new Random();
 
     public StickyDynamite () {
@@ -40,7 +39,7 @@ public class StickyDynamite extends Item {
             spriteConfiguration.setImageType(ImageEnums.StickyDynamiteExplosion);
             spriteConfiguration.setxCoordinate(gameObject.getCenterXCoordinate());
             spriteConfiguration.setyCoordinate(gameObject.getCenterYCoordinate());
-            spriteConfiguration.setScale(0.5f * scaleFactor);
+            spriteConfiguration.setScale(0.6f);
 
             SpriteAnimationConfiguration spriteAnimationConfiguration = new SpriteAnimationConfiguration(spriteConfiguration, 1, false);
             Explosion explosion = new Explosion(spriteAnimationConfiguration, explosionConfiguration);

@@ -14,7 +14,8 @@ import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.Sprit
 
 public class ExplosiveGreed extends Item {
 
-    public static float damageModifierPerCoinPickup = 1f;
+    public static float damageModifierPerCoinPickup = 0.5f;
+    public static float baseDamageModifier = 4f;
     public static int coinsPickedUp = 0;
 
     public ExplosiveGreed() {
@@ -35,7 +36,10 @@ public class ExplosiveGreed extends Item {
 
 
     private Explosion createExplosion(GameObject target){
-        float damage = PlayerManager.getInstance().getRandomSpaceShip().getDamage() * ((damageModifierPerCoinPickup * quantity) * coinsPickedUp);
+
+        float baseDamage = PlayerManager.getInstance().getRandomSpaceShip().getDamage() * baseDamageModifier;
+        float stackingDamage = PlayerManager.getInstance().getRandomSpaceShip().getDamage() * (quantity * damageModifierPerCoinPickup) * coinsPickedUp;
+        float damage = baseDamage + stackingDamage;
         SpriteConfiguration spriteConfiguration = new SpriteConfiguration();
         spriteConfiguration.setImageType(ImageEnums.CarrierWarpExplosion); //todo placeholder
         spriteConfiguration.setxCoordinate(target.getCenterXCoordinate());

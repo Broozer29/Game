@@ -26,6 +26,7 @@ public class InteractableManager {
     public void updateGameTick(){
         for(Interactable interactable : interactables) {
             interactable.move();
+            interactable.updateObject();
             checkCollisionWithPlayer(interactable);
         }
         removeInvisibleInteractables();

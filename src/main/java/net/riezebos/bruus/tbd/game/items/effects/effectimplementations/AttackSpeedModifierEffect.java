@@ -49,6 +49,10 @@ public class AttackSpeedModifierEffect implements EffectInterface {
         if (!this.animationList.isEmpty() && this.animationList.get(0) != null) {
             AnimationManager.getInstance().addUpperAnimation(this.animationList.get(0));
             centerAnimation(gameObject);
+
+            if(!gameObject.isVisible()){
+                this.animationList.forEach(a -> a.setVisible(false));
+            }
         }
     }
 

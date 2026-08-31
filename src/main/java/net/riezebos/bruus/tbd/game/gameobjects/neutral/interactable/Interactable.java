@@ -22,5 +22,9 @@ public abstract class Interactable extends GameObject {
         //supposed to be overriden
     }
 
+    public void updateObject(){
+        //supposed to be overriden
+    }
+
 
 }

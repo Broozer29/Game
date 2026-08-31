@@ -58,6 +58,10 @@ public class FlameThrower extends SpecialAttack {
         if(this.ownerOrCreator instanceof SpaceShip && PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.InfernalPreIgniter) != null){
             PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.InfernalPreIgniter).applyEffectToObject(this);
         }
+
+        if(this.ownerOrCreator instanceof SpaceShip && (ownerOrCreator.getCurrentHitpoints() <= 0 || !ownerOrCreator.isVisible())){
+            this.setVisible(false);
+        }
         super.internalTickCooldown = this.ownerOrCreator.getAttackSpeed(); //todo dit is eigenlijk een initialize variabele maar owner word gezet na de constructor, code smell
 
 

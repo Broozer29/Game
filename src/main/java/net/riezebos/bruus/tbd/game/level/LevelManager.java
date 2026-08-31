@@ -102,10 +102,8 @@ public class LevelManager {
         } else if (levelType == LevelTypes.Boss) {
             boolean bossAlive = EnemyManager.getInstance().isBossAlive();
 
-            if (audioManager.isLevelMusicFinished() && bossAlive) {
-                audioManager.playDefaultBackgroundMusicForALevel(AudioEnums.getBossTheme(selectedBoss), true);
-            }
-
+            // For boss levels, music is set to loop=true at start, so no need to check if finished
+            // Only end the level when boss is defeated
             if (!bossAlive) {
                 gameState.setGameState(GameStatusEnums.Level_Finished);
                 DirectorManager.getInstance().setEnabled(false);
@@ -189,10 +187,20 @@ public class LevelManager {
         boolean nextLevelABossLevel = isNextLevelABossLevel();
         if (nextLevelABossLevel) {
             this.levelType = LevelTypes.Boss;
+            // Save non-boss settings before overwriting for boss level
+            lastSelectedDifficulty = currentLevelDifficulty;
+            lastSelectedMiniBossConfig = currentMiniBossConfig;
             currentLevelDifficulty = LevelDifficulty.Hard;
             currentMiniBossConfig = MiniBossConfig.Hard;
         } else {
             this.levelType = LevelTypes.Regular;
+            // For non-boss levels, restore the last selected difficulty
+            if (lastSelectedDifficulty != null) {
+                currentLevelDifficulty = lastSelectedDifficulty;
+            }
+            if (lastSelectedMiniBossConfig != null) {
+                currentMiniBossConfig = lastSelectedMiniBossConfig;
+            }
         }
 
         if (!nextLevelABossLevel) {

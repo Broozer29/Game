@@ -182,7 +182,7 @@ public class Director {
         double timeSinceLastCashCarrier = currentTime - DirectorManager.getInstance().getLastCashCarrierSpawnTime();
 
         // Check for cash carrier spawn conditions
-        if (randomNumber <= spawnCashCarrierChance && timeSinceLastCashCarrier >= 45) {
+        if (PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.CashInfusion) == null && randomNumber <= spawnCashCarrierChance && timeSinceLastCashCarrier >= 45) {
             int amount = GameState.getInstance().getGameMode().equals(GameMode.DoubleTrouble) ? 2 : 1;
             for (int i = 0; i < amount; i++) {
                 spawnCashCarrier();
@@ -307,10 +307,6 @@ public class Director {
 
         if(DataClass.getInstance().getResolutionFactor() < 1){
             scale *= 0.7f;
-        }
-
-        if(enemyEnums == EnemyEnums.SpaceStationBoss && DataClass.getInstance().getResolutionFactor() < 1){
-            scale = 0.6f;
         }
 
 //        float scale = 0.35f;
@@ -464,6 +460,10 @@ public class Director {
         Direction direction = getSpawnDirection(enemyType);
         float scale = enemyType.getDefaultScale();
         float xMovementSpeed = enemyType.getMovementSpeed();
+
+        if(DataClass.getInstance().getResolutionFactor() < 1){
+            scale *= 0.7f;
+        }
 
         // Call LevelManager's spawnEnemy method
         LevelManager.getInstance().spawnEnemy(

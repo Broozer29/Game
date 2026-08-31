@@ -4,6 +4,7 @@ import net.riezebos.bruus.tbd.controllerInput.ControllerInputEnums;
 import net.riezebos.bruus.tbd.controllerInput.ControllerInputReader;
 import net.riezebos.bruus.tbd.controllerInput.ControllerManager;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
+import net.riezebos.bruus.tbd.game.items.PlayerInventory;
 import net.riezebos.bruus.tbd.game.level.LevelManager;
 import net.riezebos.bruus.tbd.game.util.OnScreenText;
 import net.riezebos.bruus.tbd.game.util.OnScreenTextManager;
@@ -262,6 +263,7 @@ public class DifficultySelectionBoard extends JPanel implements TimerHolder {
     private void selectMenuTile() {
         grid.get(selectedRow).get(selectedColumn).activateComponent();
         if (grid.get(selectedRow).get(selectedColumn).getMenuFunctionality() == MenuFunctionEnums.Start_Game) {
+            PlayerInventory.getInstance().resetInventory();
             timer.stop();
         }
     }

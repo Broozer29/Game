@@ -369,6 +369,7 @@ public class MainMenuBoard extends JPanel implements TimerHolder {
 
         if (controllers.getPrimaryController() != null) {
             boolean needsUpdate = false;
+            controllerInputReader = controllers.getPrimaryController();
             controllerInputReader.pollController();
             long currentTime = System.currentTimeMillis();
 

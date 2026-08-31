@@ -395,10 +395,11 @@ public class GameObject extends Sprite {
         }
     }
 
-    public void applyBeforeCollisionAttackModifyingItemEffects(GameObject target, CollisionInfo collisionInfo) {
+    public void applyBeforeCollisionItemEffects(GameObject target, CollisionInfo collisionInfo) {
         for (Item item : PlayerInventory.getInstance().getItemsByApplicationMethod(ItemApplicationEnum.BeforeCollision)) {
             item.modifyAttackingObject(this, target);
             item.applyEffectToObject(target);
+            item.applyEffectToObject(this, target);
             item.applyEffectToObject(this, target, collisionInfo);
         }
     }

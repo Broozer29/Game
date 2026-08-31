@@ -21,7 +21,7 @@ import java.util.List;
 
 public class SpaceStationSpawnNeedlers implements BossActionable {
 
-    private Point centerPoint;
+    private Point centerPoint = null;
     private int priority = 2;
     private double attackCooldown = 20f;
     private double lastAttackedTime = 0;
@@ -33,8 +33,15 @@ public class SpaceStationSpawnNeedlers implements BossActionable {
 
 
     public SpaceStationSpawnNeedlers () {
-        centerPoint = EnemyCreator.calculateSpaceStationBossDestination(EnemyEnums.SpaceStationBoss);
+        // centerPoint calculated lazily when first needed to ensure correct window dimensions
         createAnimations();
+    }
+
+    private Point getCenterPoint() {
+        if (centerPoint == null) {
+            centerPoint = EnemyCreator.calculateSpaceStationBossDestination(EnemyEnums.SpaceStationBoss);
+        }
+        return centerPoint;
     }
 
     private void createAnimations () {
@@ -142,10 +149,11 @@ public class SpaceStationSpawnNeedlers implements BossActionable {
 
     @Override
     public boolean isAvailable (Enemy enemy) {
+        Point center = getCenterPoint();
         return enemy.isAllowedToFire()
                 && GameState.getInstance().getGameSeconds() >= lastAttackedTime + attackCooldown
                 && WithinVisualBoundariesCalculator.isWithinBoundaries(enemy)
-                && Math.abs(enemy.getXCoordinate() - centerPoint.getX()) <= 1
-                && Math.abs(enemy.getYCoordinate() - centerPoint.getY()) <= 1;
+                && Math.abs(enemy.getXCoordinate() - center.getX()) <= 1
+                && Math.abs(enemy.getYCoordinate() - center.getY()) <= 1;
     }
 }

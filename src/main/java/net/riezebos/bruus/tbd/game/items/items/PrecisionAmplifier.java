@@ -13,7 +13,7 @@ import java.util.Random;
 
 public class PrecisionAmplifier extends Item {
 
-    public static float critChance = 0.1f;
+    public static float critChance = 0.125f;
     private Random random = new Random();
 
     public PrecisionAmplifier () {
@@ -71,7 +71,7 @@ public class PrecisionAmplifier extends Item {
 
 
         if(PlayerInventory.getInstance().getItemFromInventoryIfExists(this.itemEnum) != null){
-            return PlayerInventory.getInstance().getItemFromInventoryIfExists(this.itemEnum).getQuantity() < 10; //Check if player already has 10 of them
+            return (quantity * critChance) >= 1;
         } else {
             return true; //Player has 0 stacks, so we return true
         }

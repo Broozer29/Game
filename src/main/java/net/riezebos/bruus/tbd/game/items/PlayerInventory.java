@@ -45,21 +45,16 @@ public class PlayerInventory {
 
         if (DevTestSettings.infiniteMoney) {
             cashMoney = 999999999999f;
-            addItem(ItemEnums.CashInfusion);
-            addItem(ItemEnums.ExplosiveGreed);
-            addItem(ItemEnums.PrecisionAmplifier);
-            addItem(ItemEnums.PrecisionAmplifier);
-            addItem(ItemEnums.PrecisionAmplifier);
-            addItem(ItemEnums.PrecisionAmplifier);
-            addItem(ItemEnums.PrecisionAmplifier);
-            addItem(ItemEnums.PrecisionAmplifier);
-            addItem(ItemEnums.PrecisionAmplifier);
-            addItem(ItemEnums.PrecisionAmplifier);
-            addItem(ItemEnums.PrecisionAmplifier);
-            addItem(ItemEnums.PrecisionAmplifier);
-            addItem(ItemEnums.PrecisionAmplifier);
-            addItem(ItemEnums.PrecisionAmplifier);
-            addItem(ItemEnums.PrecisionAmplifier);
+            addItem(ItemEnums.Recycler);
+            addItem(ItemEnums.Recycler);
+            addItem(ItemEnums.Recycler);
+            addItem(ItemEnums.Recycler);
+            addItem(ItemEnums.Recycler);
+            addItem(ItemEnums.Recycler);
+            addItem(ItemEnums.Recycler);
+            addItem(ItemEnums.Recycler);
+            addItem(ItemEnums.Recycler);
+            addItem(ItemEnums.Recycler);
         } else {
             cashMoney = 0;
         }

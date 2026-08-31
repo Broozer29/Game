@@ -90,7 +90,7 @@ public class ItemDescriptionRetriever {
                 return "Enemies that are damaged below " + Math.round(Guillotine.hitpointsThreshold * 100) + " % (+" + Math.round(Guillotine.hitpointsThreshold * 100) + "%) of their health are instantly killed.";
             } //legendary
             case ExplosiveGreed -> {
-                return "Coins now explode on pickup for " + Math.round(ExplosiveGreed.damageModifierPerCoinPickup * 100) + "% (+" + Math.round(ExplosiveGreed.damageModifierPerCoinPickup * 100) + "%) damage for every coin you have picked up since acquiring this item.";
+                return "Coins now explode on pickup for " + Math.round(ExplosiveGreed.baseDamageModifier * 100) + "% damage. Damage is increased by " + Math.round(ExplosiveGreed.damageModifierPerCoinPickup * 100) + "% (+" + Math.round(ExplosiveGreed.damageModifierPerCoinPickup * 100) + "%) for every coin you have picked up since acquiring this item.";
             } //legendary
             case CalmInChaos -> {
                 return "Deal " + Math.round(CalmInChaos.damageBonus * 100) + "% (+" + Math.round(CalmInChaos.damageBonus * 100) + "%) additional damage. This bonus is lost for " + CalmInChaos.cooldown + " seconds after taking damage.";
@@ -183,7 +183,7 @@ public class ItemDescriptionRetriever {
                 return "Your missiles gain " + (Math.round(HighVelocityLasers.moveSpeedModifier * 100) + "% movement speed.");
             } //rare
             case PlasmaLauncher -> {
-                return "Your attacks gain a" + Math.round(PlasmaLauncher.procChance * 100) + "% chance on hitting an enemy to fire a piercing plasma shot for " + Math.round(PlasmaLauncher.damageMultiplier * 100) + "% (+" + Math.round(PlasmaLauncher.damageMultiplier * 100) + "%) damage";
+                return "Your attacks gain a " + Math.round(PlasmaLauncher.procChance * 100) + "% chance on hitting an enemy to fire a piercing plasma shot for " + Math.round(PlasmaLauncher.damageMultiplier * 100) + "% (+" + Math.round(PlasmaLauncher.damageMultiplier * 100) + "%) damage";
             } //rare
 
             //3
