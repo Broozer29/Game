@@ -9,11 +9,11 @@ import net.riezebos.bruus.tbd.game.items.effects.EffectIdentifiers;
 import net.riezebos.bruus.tbd.game.items.effects.effectimplementations.PassiveHealthRegeneration;
 import net.riezebos.bruus.tbd.game.items.enums.ItemApplicationEnum;
 
-public class SelfRepairingSteel extends Item {
+public class RegenerativeSteel extends Item {
     public static float repairAmount = 0.0115f;
 
-    public SelfRepairingSteel () {
-        super(ItemEnums.SelfRepairingSteel, 1, ItemApplicationEnum.ApplyOnSpaceShipCreation);
+    public RegenerativeSteel() {
+        super(ItemEnums.RegenerativeSteel, 1, ItemApplicationEnum.ApplyOnSpaceShipCreation);
     }
 
 

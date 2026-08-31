@@ -9,11 +9,13 @@ import net.riezebos.bruus.tbd.game.items.ItemEnums;
 import net.riezebos.bruus.tbd.game.items.effects.EffectIdentifiers;
 import net.riezebos.bruus.tbd.game.items.effects.EffectInterface;
 import net.riezebos.bruus.tbd.game.items.effects.effectimplementations.AttackSpeedModifierEffect;
+import net.riezebos.bruus.tbd.game.items.effects.effectimplementations.PassiveHealthRegeneration;
 import net.riezebos.bruus.tbd.game.items.enums.ItemApplicationEnum;
 
 public class Adrenaline extends Item {
 
-    public static float attackSpeedIncrease = 0.4f;
+    public static float attackSpeedIncrease = 0.6f;
+    public static float hpRegen = 0.023f;
     public static float duration = 2f;
 
     public Adrenaline() {
@@ -29,8 +31,9 @@ public class Adrenaline extends Item {
                 existingEffect.resetDuration();
             } else {
                 AttackSpeedModifierEffect attackSpeedModifierEffect = new AttackSpeedModifierEffect(attackSpeedIncrease * this.quantity, duration, null, EffectIdentifiers.AdrenalineAttackSpeedModifier);
-                //todo een animatie toevoegen
+                PassiveHealthRegeneration passiveHealthRegeneration = new PassiveHealthRegeneration(hpRegen * quantity, duration, EffectIdentifiers.AdrenalineHealthRegen);
                 spaceShip.addEffect(attackSpeedModifierEffect);
+                spaceShip.addEffect(passiveHealthRegeneration);
             }
         }
     }

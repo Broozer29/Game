@@ -183,8 +183,8 @@ public class PlayerInventory {
                 return new PhotonPiercer();
             case CannisterOfGasoline:
                 return new CannisterOfGasoline();
-            case SelfRepairingSteel:
-                return new SelfRepairingSteel();
+            case RegenerativeSteel:
+                return new RegenerativeSteel();
             case Battery:
                 return new Battery();
             case FocusCrystal:

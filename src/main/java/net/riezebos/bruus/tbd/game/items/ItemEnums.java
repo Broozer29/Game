@@ -85,7 +85,7 @@ public enum ItemEnums {
 
     PhotonPiercer(ItemRarityEnums.Common,  ImageEnums.Starcraft2_Concussive_Shells, "Photon Piercer", true),
     CannisterOfGasoline(ItemRarityEnums.Rare,  ImageEnums.CannisterOfGasoline, "Gasoline", true),
-    SelfRepairingSteel(ItemRarityEnums.Common,  ImageEnums.Starcraft2_Heal, "Regenerative Steel", true),
+    RegenerativeSteel(ItemRarityEnums.Common,  ImageEnums.Starcraft2_Heal, "Regenerative Steel", true),
     Battery(ItemRarityEnums.Rare,  ImageEnums.Starcraft2_Battery, "Battery", true),
     FocusCrystal(ItemRarityEnums.Common,  ImageEnums.Starcraft2Keystone, "Focus Crystal", true),
     PrecisionAmplifier(ItemRarityEnums.Common,  ImageEnums.Starcraft2_Advanced_Optics, "Advanced Optics", true),
@@ -93,7 +93,7 @@ public enum ItemEnums {
     EmergencyRepairBot(ItemRarityEnums.Common,  ImageEnums.Starcraft2_Vespene_Drone, "Repair Bot", true),
     Overclock(ItemRarityEnums.Rare,  ImageEnums.Starcraft2_Overclock, "Overclock", true),
     PlasmaLauncher(ItemRarityEnums.Rare,  ImageEnums.Starcraft2_Focused_Crystal, "Plasma Launcher", true),
-    GuardianDrone(ItemRarityEnums.Rare,  ImageEnums.Starcraft2_Seeker_Missile, "Guardian Drone", true),
+    GuardianDrone(ItemRarityEnums.Common,  ImageEnums.Starcraft2_Seeker_Missile, "Guardian Drone", true),
     CriticalOverloadCapacitor(ItemRarityEnums.Rare,  ImageEnums.Starcraft2_Auto_Tracking, "Precision Overloader", true),
     PiercingMissiles(ItemRarityEnums.Legendary,  ImageEnums.PiercingLaser, "Piercing Lasers", true),
     VIPTicket(ItemRarityEnums.Legendary,  ImageEnums.VIPTicket, "VIP Ticket", true),

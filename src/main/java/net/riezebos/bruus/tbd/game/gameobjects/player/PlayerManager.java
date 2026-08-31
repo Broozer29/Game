@@ -157,7 +157,7 @@ public class PlayerManager {
                     AudioManager.getInstance().addAudio(AudioEnums.Destroyed_Explosion);
                     if(allSpaceShips.size() != 1){ //only create a reviver if there is someone alive that could revive
 
-                        if(!DevTestSettings.blockPlayerRevivers) {
+                        if(DevTestSettings.enablePlayerRevivers) {
                             spaceShipReviverList.add(new SpaceShipReviver(spaceShip));
                         }
                     }

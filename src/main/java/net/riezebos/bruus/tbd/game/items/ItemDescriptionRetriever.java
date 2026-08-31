@@ -126,8 +126,8 @@ public class ItemDescriptionRetriever {
             case PrecisionAmplifier -> {
                 return "Your attacks gain " + Math.round(PrecisionAmplifier.critChance * 100) + "% additional critical strike chance. Critical strikes deal double damage.";
             } //common
-            case SelfRepairingSteel -> {
-                double value = SelfRepairingSteel.repairAmount * (1000f / 15f);
+            case RegenerativeSteel -> {
+                double value = RegenerativeSteel.repairAmount * (1000f / 15f);
                 return "Regenerate " + String.format("%.1f", value) +
                         " additional hitpoints per second.";
             } //commmon
@@ -329,7 +329,8 @@ public class ItemDescriptionRetriever {
                 return "Your missiles pierce 1 additional time";
             } //legendary -> carrier/captain
             case Adrenaline -> {
-                return "Taking damage increases your attack speed by " + Math.round(Adrenaline.attackSpeedIncrease * 100) + "% (+" + Math.round(Adrenaline.attackSpeedIncrease * 100) + "%) for " + Math.round(Adrenaline.duration) + " seconds. Taking damage again refreshes the duration of the effect.";
+                double value = Adrenaline.hpRegen * (1000f / 15f);
+                return "Taking damage increases your attack speed by " + Math.round(Adrenaline.attackSpeedIncrease * 100) + "% and health regeneration by " + String.format("%.1f", value)+ " for " + Math.round(Adrenaline.duration) + " seconds. Taking damage again refreshes the duration of the effect.";
             } //legendary -> captain/firefighter
 
             case PlasmaCoatedBullets -> {

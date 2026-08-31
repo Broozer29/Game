@@ -17,7 +17,8 @@ public class PassiveHealthRegeneration implements EffectInterface {
     private float healingAmount;
     private double lastTimeDamageTaken;
     private EffectIdentifiers effectIdentifier;
-
+    private float duration;
+    private double timeStartedHealing = -1;
     private List<SpriteAnimation> animationList = new ArrayList<>();
 
     public PassiveHealthRegeneration (float healingAmount, EffectIdentifiers effectIdentifier) {
@@ -25,11 +26,23 @@ public class PassiveHealthRegeneration implements EffectInterface {
         this.lastTimeDamageTaken = GameState.getInstance().getGameSeconds();
         this.effectActivationTypes = EffectActivationTypes.CheckEveryGameTick;
         this.effectIdentifier = effectIdentifier;
+        this.duration = -1;
+    }
+
+    public PassiveHealthRegeneration (float healingAmount, float duration, EffectIdentifiers effectIdentifier) {
+        this.healingAmount = healingAmount;
+        this.lastTimeDamageTaken = GameState.getInstance().getGameSeconds();
+        this.effectActivationTypes = EffectActivationTypes.CheckEveryGameTick;
+        this.effectIdentifier = effectIdentifier;
+        this.duration = duration;
     }
 
     @Override
     public void activateEffect (GameObject gameObject) {
         double currentTime = GameState.getInstance().getGameSeconds();
+        if(timeStartedHealing <= 0){
+            timeStartedHealing = currentTime;
+        }
         if (currentTime - gameObject.getLastGameSecondDamageTaken() > 0.001 && // More than 10ms have passed
                 gameObject.getCurrentHitpoints() < gameObject.getMaxHitPoints()) {
 
@@ -66,7 +79,9 @@ public class PassiveHealthRegeneration implements EffectInterface {
 
     @Override
     public boolean shouldBeRemoved (GameObject gameObject) {
-        return false;
+        if(duration <= 0) { //negative duration should be infinitely lasting
+            return false;
+        } else return GameState.getInstance().getGameSeconds() - lastTimeDamageTaken >= duration;
     }
 
     @Override
@@ -82,7 +97,7 @@ public class PassiveHealthRegeneration implements EffectInterface {
 
     @Override
     public void resetDuration () {
-        //Considering it should always be active but activate when in combat, this is not needed
+        timeStartedHealing = GameState.getInstance().getGameSeconds();
     }
 
     @Override
