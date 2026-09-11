@@ -2,6 +2,7 @@ package net.riezebos.bruus.tbd.game.movement.pathfinders;
 
 import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
 import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.Drone;
+import net.riezebos.bruus.tbd.game.gameobjects.missiles.Missile;
 import net.riezebos.bruus.tbd.game.movement.Direction;
 import net.riezebos.bruus.tbd.game.movement.MovementConfiguration;
 import net.riezebos.bruus.tbd.game.movement.Path;
@@ -14,6 +15,7 @@ import java.util.List;
 public class OrbitPathFinder implements PathFinder {
 
     private GameObject target;
+    private boolean reverse = false;
 
     public OrbitPathFinder (GameObject target) {
         this.target = target;
@@ -21,20 +23,24 @@ public class OrbitPathFinder implements PathFinder {
 
     @Override
     public Path findPath (GameObject gameObject) {
-
-
         MovementConfiguration orbitConfig = gameObject.getMovementConfiguration();
         Direction fallbackDirection = orbitConfig.getRotation();
-        double radius = orbitConfig.getOrbitRadius(); // Use the radius from the config
-        int totalFrames = 300; // Not entirely sure what this does todo uitvogelen wat dit is en hernoemen
+        double radius = orbitConfig.getOrbitRadius();
+        float movementSpeed = orbitConfig.getMovementSpeed();
 
-        int maximumSteps = 300;
-        if(gameObject instanceof Drone){
-            maximumSteps = 20000;
-        }
+        // Calculate angle step based on movement speed and radius
+        // Arc length = radius * angle, so angle = arc_length / radius
+        // We want each step to move approximately 'movementSpeed' pixels along the arc
+        double angleStep = movementSpeed / radius;
 
-        double angleStep = Math.PI * 2 / totalFrames;
-        List<Point> waypoints = new ArrayList<>();
+        // Calculate how many complete orbits we want to generate
+        int numberOfOrbits = (gameObject instanceof Drone || gameObject instanceof Missile) ? 50 : 2;
+
+        // Total angle to cover (multiple complete circles)
+        double totalAngle = numberOfOrbits * Math.PI * 2;
+
+        // Calculate the number of steps needed
+        int maximumSteps = (int) Math.ceil(totalAngle / angleStep);
 
         // Determine the angle for the starting point relative to the target
         double startAngle = Math.atan2(
@@ -42,18 +48,17 @@ public class OrbitPathFinder implements PathFinder {
                 gameObject.getCenterXCoordinate() - target.getCenterXCoordinate()
         );
 
-        // Generate waypoints that include a smooth transition from start to orbit
         // Precompute constant values
         double gameObjectHalfWidth = gameObject.getWidth() / 2.0;
         double gameObjectHalfHeight = gameObject.getHeight() / 2.0;
 
         // Initialize waypoints with an appropriate size
-        waypoints = new ArrayList<>(maximumSteps);
+        List<Point> waypoints = new ArrayList<>(maximumSteps);
 
         for (int i = 0; i < maximumSteps; i++) {
-            double angle = angleStep * i + startAngle; // Start angle relative to the initial position
+            double angle = (reverse ? -angleStep : angleStep) * i + startAngle;
 
-            // Efficiently calculate x and y
+            // Calculate x and y coordinates on the orbit
             double x = (target.getCenterXCoordinate() + Math.cos(angle) * radius - gameObjectHalfWidth);
             double y = (target.getCenterYCoordinate() + Math.sin(angle) * radius - gameObjectHalfHeight);
 
@@ -157,5 +162,13 @@ public class OrbitPathFinder implements PathFinder {
                                            int yMovementspeed) {
         // Should not be used for OrbitPathFinders
         return start;
+    }
+
+    public boolean isReverse() {
+        return reverse;
+    }
+
+    public void setReverse(boolean reverse) {
+        this.reverse = reverse;
     }
 }

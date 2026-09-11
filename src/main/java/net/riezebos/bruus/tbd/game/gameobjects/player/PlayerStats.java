@@ -253,7 +253,7 @@ public class PlayerStats {
 
     private void initCaptainPreset() {
         setAttackSpeed(captainBaseAttackSpeed);
-        setBaseDamage(DevTestSettings.instaKill ? captainBaseDamage * 100 : captainBaseDamage);
+        setBaseDamage(captainBaseDamage);
         this.attackType = PlayerPrimaryAttackTypes.Laserbeam;
         setPlayerMissileImage(this.attackType.getCorrespondingMissileEnum().getImageType());
         setPlayerMissileImpactImage(ImageEnums.Impact_Explosion_One);
@@ -404,7 +404,7 @@ public class PlayerStats {
     }
 
     public float getBaseDamage() {
-        return DevTestSettings.instaKill ? baseDamage * 100000 : baseDamage;
+        return DevTestSettings.instaKill ? baseDamage * 3 : baseDamage;
     }
 
     public int getCurrentLevel() {

@@ -30,6 +30,9 @@ public class AudioDatabase {
         put(AudioEnums.Arisen, 1);
         put(AudioEnums.SilentAudio, 1);
         put(AudioEnums.Enraged, 1);
+        put(AudioEnums.FinalBossPhase1, 1);
+        put(AudioEnums.FinalBossPhase2, 1);
+        put(AudioEnums.FinalBossPhase3, 1);
         put(AudioEnums.Lemmino_Firecracker, 1);
         put(AudioEnums.Filth, 1);
         put(AudioEnums.GodRunDetected, 1);
@@ -47,6 +50,31 @@ public class AudioDatabase {
         put(AudioEnums.ClassCarrierSlowingDown, 4);
         put(AudioEnums.ClassCarrierSpeedingUp, 2);
         put(AudioEnums.DistressCall, 1);
+
+        put(AudioEnums.FinalBossMock1, 1);
+        put(AudioEnums.FinalBossMock2, 1);
+        put(AudioEnums.FinalBossMock3, 1);
+        put(AudioEnums.FinalBossMock4, 1);
+        put(AudioEnums.FinalBossMock5, 1);
+        put(AudioEnums.FinalBossMock6, 1);
+        put(AudioEnums.FinalBossMock7, 1);
+        put(AudioEnums.FinalBossMock8, 1);
+        put(AudioEnums.FinalBossGreeting, 1);
+        put(AudioEnums.FinalBossTaunt1, 1);
+        put(AudioEnums.FinalBossTaunt2, 1);
+        put(AudioEnums.FinalBossTaunt3, 1);
+        put(AudioEnums.FinalBossTaunt4WhenLowHp, 1);
+        put(AudioEnums.FinalBossPhaseTransition1, 1);
+        put(AudioEnums.FinalBossPhaseTransition2, 1);
+        put(AudioEnums.FinalBossPhaseTransition3, 1);
+        put(AudioEnums.FinalBossPhaseTransition4, 1);
+        put(AudioEnums.FinalBossPhaseTransition5, 1);
+        put(AudioEnums.FinalBossOh, 1);
+        put(AudioEnums.FinalBossManyBulletsTaunt1, 1);
+        put(AudioEnums.FinalBossManyBulletsTaunt2, 1);
+        put(AudioEnums.FinalBossManyBulletsTaunt3, 1);
+
+
 
         put(AudioEnums.CarrierRdy0, 1);
         put(AudioEnums.CarrierWhat0, 1);

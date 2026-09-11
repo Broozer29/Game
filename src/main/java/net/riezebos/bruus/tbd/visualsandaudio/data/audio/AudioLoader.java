@@ -175,6 +175,28 @@ public class AudioLoader {
             case GuardianDeath: return "/audio/Zerg/GuardianDeath.wav";
             case BroodlingAttached: return "/audio/Zerg/BroodlingAttached.wav";
             case OverlordDeath: return "/audio/Zerg/OverlordDeath.wav";
+            case FinalBossMock1: return "/audio/finalbossbarks/mock1.wav";
+            case FinalBossMock2: return "/audio/finalbossbarks/mock2.wav";
+            case FinalBossMock3: return "/audio/finalbossbarks/mock3.wav";
+            case FinalBossMock4: return "/audio/finalbossbarks/mock4.wav";
+            case FinalBossMock5: return "/audio/finalbossbarks/mock5.wav";
+            case FinalBossMock6: return "/audio/finalbossbarks/mock6.wav";
+            case FinalBossMock7: return "/audio/finalbossbarks/mock7.wav";
+            case FinalBossMock8: return "/audio/finalbossbarks/mock8.wav";
+            case FinalBossGreeting: return "/audio/finalbossbarks/greeting.wav";
+            case FinalBossTaunt1: return "/audio/finalbossbarks/taunt1.wav";
+            case FinalBossTaunt2: return "/audio/finalbossbarks/taunt2.wav";
+            case FinalBossTaunt3: return "/audio/finalbossbarks/taunt3.wav";
+            case FinalBossTaunt4WhenLowHp: return "/audio/finalbossbarks/taunt4.wav";
+            case FinalBossPhaseTransition1: return "/audio/finalbossbarks/phasetransition1.wav";
+            case FinalBossPhaseTransition2: return "/audio/finalbossbarks/phasetransition2.wav";
+            case FinalBossPhaseTransition3: return "/audio/finalbossbarks/phasetransition3.wav";
+            case FinalBossPhaseTransition4: return "/audio/finalbossbarks/phasetransition4.wav";
+            case FinalBossPhaseTransition5: return "/audio/finalbossbarks/phasetransition5.wav";
+            case FinalBossOh: return "/audio/finalbossbarks/Oh.wav";
+            case FinalBossManyBulletsTaunt1: return "/audio/finalbossbarks/manybulletstaunt1.wav";
+            case FinalBossManyBulletsTaunt2: return "/audio/finalbossbarks/manybulletstaunt2.wav";
+            case FinalBossManyBulletsTaunt3: return "/audio/finalbossbarks/manybulletstaunt3.wav";
             case AchievementUnlocked: return "/audio/achievement.wav";
             case CoinCollected: return "/audio/coin.wav";
             case GenericError: return "/audio/genericerror.wav";
@@ -220,6 +242,12 @@ public class AudioLoader {
                 return "/audio/music/Filth.wav";
             case Blood_On_The_Dancefloor:
                 return "/audio/music/Blood_On_The_Dancefloor.wav";
+            case FinalBossPhase1:
+                return "/audio/music/phase1.wav";
+            case FinalBossPhase2:
+                return "/audio/music/phase2.wav";
+            case FinalBossPhase3:
+                return "/audio/music/phase3.wav";
             case MausoleumMash:
                 return "/audio/music/Mausoleum mash.wav";
             case Arisen:

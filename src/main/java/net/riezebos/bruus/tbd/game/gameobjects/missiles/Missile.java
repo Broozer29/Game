@@ -33,6 +33,8 @@ public class Missile extends GameObject {
     protected boolean isDamageable;
     protected float speedUpIncreaseAmount = 1.2f;
     protected float stepsBetweenSpeedUpIncrease = 20;
+    protected int timesReflected = 0;
+    protected int maxReflections = 2; // Default max to prevent infinite bouncing
 
 
     public Missile (SpriteConfiguration spriteConfiguration, MissileConfiguration missileConfiguration, MovementConfiguration movementConfiguration) {
@@ -259,5 +261,26 @@ public class Missile extends GameObject {
 
     public void setCanBounce(boolean canBounce) {
         this.canBounce = canBounce;
+    }
+
+    public int getTimesReflected() {
+        return timesReflected;
+    }
+
+    public void incrementTimesReflected() {
+        this.timesReflected++;
+    }
+
+    public int getMaxReflections() {
+        return maxReflections;
+    }
+
+    public void setMaxReflections(int maxReflections) {
+        this.maxReflections = maxReflections;
+    }
+
+    public boolean canBeReflected() {
+        maxReflections = 2;
+        return timesReflected < maxReflections;
     }
 }

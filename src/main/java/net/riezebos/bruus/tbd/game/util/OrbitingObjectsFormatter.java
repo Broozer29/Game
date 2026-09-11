@@ -9,21 +9,22 @@ public class OrbitingObjectsFormatter {
 
     }
 
-    public static void reformatOrbitingObjects(GameObject gameObject, float radius) {
+    public static void reformatOrbitingObjects(GameObject gameObject, int layerIndex, float radius, boolean reverse) {
         double meanX = gameObject.getCenterXCoordinate();
         double meanY = gameObject.getCenterYCoordinate();
 
-        // Counting only the GuardianDrones
-        int numberOfDrones = gameObject.getObjectOrbitingThis().size();
-        if (numberOfDrones == 0) {
+        // Get objects for the specific layer
+        var orbitingObjects = gameObject.getOrbitingObjectsAtLayer(layerIndex);
+        int numberOfObjects = orbitingObjects.size();
+        if (numberOfObjects == 0) {
             return; // No objects to reformat
         }
 
-        double angleIncrement = 2 * Math.PI / numberOfDrones;
+        double angleIncrement = 2 * Math.PI / numberOfObjects;
 
         int iterator = 0;
 
-        for (GameObject object : gameObject.getObjectOrbitingThis()) {
+        for (GameObject object : orbitingObjects) {
             double nextAngle = angleIncrement * iterator;
 
             int x = (int) (meanX + Math.cos(nextAngle) * radius);
@@ -33,7 +34,8 @@ public class OrbitingObjectsFormatter {
 
             // Create a new OrbitPathFinder with the correct offset angle
             OrbitPathFinder newOrbit = new OrbitPathFinder(gameObject);
-            // Update the GuardianDrone's path finder
+            newOrbit.setReverse(reverse);
+            // Update the object's path finder
 
             object.resetMovementPath();
             object.getMovementConfiguration().setOrbitRadius(radius);
@@ -43,6 +45,17 @@ public class OrbitingObjectsFormatter {
             iterator++;
         }
 
+    }
+
+    // Convenience method for backward compatibility - formats all layers
+    public static void reformatOrbitingObjects(GameObject gameObject, float radius) {
+        for (Integer layerIndex : gameObject.getObjectOrbitingThisByLayers().keySet()) {
+            reformatOrbitingObjects(gameObject, layerIndex, radius, false);
+        }
+    }
+
+    public static void reformatOrbitingObjects(GameObject gameObject, float radius, int layerIndex, boolean reverse) {
+        reformatOrbitingObjects(gameObject, layerIndex, radius, reverse);
     }
 }
 

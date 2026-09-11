@@ -13,7 +13,7 @@ public enum EnemyEnums {
     Alien_Bomb(25, 9,
             AudioEnums.Alien_Bomb_Destroyed,
             ImageEnums.Alien_Bomb, ImageEnums.Alien_Bomb_Explosion, 3, EnemyCategory.Summon, EnemyTribes.Pirates, 0,
-            0, 0, 0, 1, 1, 25, 15,
+            0, 0, 0, 2, 1, 25, 15,
             0),
     Seeker(125, 13,
             AudioEnums.Large_Ship_Destroyed,

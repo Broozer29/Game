@@ -60,7 +60,7 @@ public class Bulldozer extends Enemy {
             alienBomb.getMovementConfiguration().setLastKnownTargetY(this.getCenterYCoordinate());
             alienBomb.getMovementConfiguration().setOrbitRadius(radius);
             //Bomb rotation is done in GameObject, not initialization because it's dependent on the owner (bulldozer) so it rotates with bulldozer
-            this.objectOrbitingThis.add(alienBomb);
+            this.addOrbitingObject(alienBomb, 0);
             EnemyManager.getInstance().addEnemy(alienBomb);
         }
 
@@ -86,7 +86,7 @@ public class Bulldozer extends Enemy {
 
         MovementConfiguration movementConfiguration = new MovementConfiguration();
         movementConfiguration.setCurrentLocation(new Point(xCoordinate, yCoordinate));
-        movementConfiguration.setMovementSpeed(1);
+        movementConfiguration.setMovementSpeed(EnemyEnums.Alien_Bomb.getMovementSpeed());
         movementConfiguration.setPathFinder(pathFinder);
 
         movementConfiguration.initDefaultSettingsForSpecializedPathFinders();

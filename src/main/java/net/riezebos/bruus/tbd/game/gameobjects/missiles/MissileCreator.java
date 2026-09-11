@@ -79,6 +79,9 @@ public class MissileCreator {
             case MutaliskMissile -> {
                 return new MutaliskMissile(upgradeConfig(spriteConfiguration, 2), missileConfiguration, movementConfiguration);
             }
+            case FinalBossTrackingMissileGrenade -> {
+                return new FinalBossTrackingMissileGrenade(upgradeConfig(spriteConfiguration, 2), missileConfiguration, movementConfiguration);
+            }
         }
         return null;
     }

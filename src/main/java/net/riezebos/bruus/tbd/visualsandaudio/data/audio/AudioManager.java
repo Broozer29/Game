@@ -1,6 +1,7 @@
 package net.riezebos.bruus.tbd.visualsandaudio.data.audio;
 
 import net.riezebos.bruus.tbd.DevTestSettings;
+import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.finalboss.FinalBoss;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.gamestate.GameStatusEnums;
 import net.riezebos.bruus.tbd.game.level.LevelManager;
@@ -365,5 +366,10 @@ public class AudioManager {
 
     public double getPredictedEndGameSeconds() {
         return predictedEndGameSeconds;
+    }
+
+    public boolean bossIsBarking(FinalBoss finalBoss) {
+        return audioDatabase.getAllActiveClips().stream()
+                .anyMatch(clip -> finalBoss.getBossBarker().getAllBarkEnums().contains(clip.getAudioType()));
     }
 }

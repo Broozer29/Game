@@ -5,6 +5,7 @@ import net.riezebos.bruus.tbd.game.UI.GameBoardCreator;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.Enemy;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyCreator;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyManager;
+import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.finalboss.FinalBoss;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyCategory;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyEnums;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyTribes;
@@ -102,6 +103,9 @@ public class LevelManager {
         } else if (levelType == LevelTypes.Boss) {
             boolean bossAlive = EnemyManager.getInstance().isBossAlive();
 
+            if(bossAlive){
+                audioManager.isLevelMusicFinished(); //todo VERY sloppy way of restarting music through the isFinished() method but it works for now
+            }
             // For boss levels, music is set to loop=true at start, so no need to check if finished
             // Only end the level when boss is defeated
             if (!bossAlive) {
@@ -160,7 +164,7 @@ public class LevelManager {
         gameState.setGameState(GameStatusEnums.Playing);
 
         if (DevTestSettings.spawnTargetDummy) {
-            EnemyEnums enemyType = EnemyEnums.Tazer;
+            EnemyEnums enemyType = EnemyEnums.Bulldozer;
             Enemy dummy = EnemyCreator.createEnemy(enemyType, 1600, 500, Direction.LEFT, enemyType.getDefaultScale()
                     , enemyType.getMovementSpeed());
 //            dummy.setXCoordinate(600);
@@ -237,7 +241,9 @@ public class LevelManager {
     private int loopBreaker = 0;
 
     public EnemyEnums getNextBoss() {
-//        return EnemyEnums.FinalBoss;
+        if(DevTestSettings.testFinalBossMode) {
+            return EnemyEnums.FinalBoss;
+        }
 
         List<EnemyEnums> eligibleBosses = Arrays.stream(EnemyEnums.values()).filter(enemyEnums ->
                 enemyEnums.getEnemyCategory().equals(EnemyCategory.Boss) &&
@@ -253,7 +259,13 @@ public class LevelManager {
             return getNextBoss();
         }
         lastSpawnedBosses.add(eligibleBosses.get(randomlySelectedBoss));
-        return eligibleBosses.get(randomlySelectedBoss);
+
+        EnemyEnums chosenBoss = eligibleBosses.get(randomlySelectedBoss);
+        if(chosenBoss.equals(EnemyEnums.FinalBoss)) {
+            FinalBoss.initBossAssets();
+        }
+
+        return chosenBoss;
     }
 
     public EnemyEnums getSelectedBoss() {

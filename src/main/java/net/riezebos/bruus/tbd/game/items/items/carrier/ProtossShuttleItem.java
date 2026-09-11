@@ -18,7 +18,7 @@ public class ProtossShuttleItem extends Item {
 
     @Override
     public void applyEffectToObject (GameObject gameObject) {
-        PlayerManager.getInstance().getAllSpaceShips().forEach(spaceShip -> spaceShip.setScoutCount(quantity));
+        PlayerManager.getInstance().getAllSpaceShips().forEach(spaceShip -> spaceShip.setShuttleCount(quantity));
     }
 
     public void increaseQuantityOfItem(int amount) {

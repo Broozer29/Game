@@ -33,11 +33,11 @@ import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.Sprit
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteConfiguration;
 
 import java.awt.*;
-import java.util.ArrayList;
+import java.util.*;
 import java.util.List;
-import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 public class GameObject extends Sprite {
 
@@ -95,7 +95,7 @@ public class GameObject extends Sprite {
 
     //Objects following this object
     protected List<GameObject> objectsFollowingThis = new ArrayList<GameObject>();
-    protected List<GameObject> objectOrbitingThis = new ArrayList<GameObject>();
+    protected Map<Integer, List<GameObject>> objectOrbitingThis = new HashMap<>();
 
     //Other
     protected String objectType;
@@ -313,7 +313,7 @@ public class GameObject extends Sprite {
             object.deleteObject();
         }
 
-        for (GameObject object : objectOrbitingThis) {
+        for (GameObject object : getAllOrbitingObjects()) {
             object.deleteObject();
         }
 
@@ -363,7 +363,7 @@ public class GameObject extends Sprite {
                 }
             }
 
-            for (GameObject object : objectOrbitingThis) {
+            for (GameObject object : getAllOrbitingObjects()) {
                 if (object.isVisible()) {
                     object.setCashMoneyWorth(0);
                     object.takeDamage(object.getMaxHitPoints() * 5);
@@ -871,10 +871,30 @@ public class GameObject extends Sprite {
         }
     }
 
-    public List<GameObject> getObjectOrbitingThis() {
-        return objectOrbitingThis;
+
+    //Returns all objects orbiting, regardless of layer
+    public List<GameObject> getAllOrbitingObjects() {
+        return objectOrbitingThis.values().stream()
+                .flatMap(List::stream)
+                .collect(Collectors.toList());
     }
 
+    //Returns objects orbiting at a specific layer
+    public List<GameObject> getOrbitingObjectsAtLayer(int layerIndex) {
+        return objectOrbitingThis.getOrDefault(layerIndex, new ArrayList<>());
+    }
+
+    //Returns all orbiting objects
+    public List<GameObject> getObjectOrbitingThis() {
+        return objectOrbitingThis.values()
+                .stream()
+                .flatMap(List::stream)
+                .toList();
+    }
+
+    public Map<Integer, List<GameObject>> getObjectOrbitingThisByLayers() {
+        return objectOrbitingThis;
+    }
 
     public boolean isBoxCollision() {
         return boxCollision;
@@ -1234,5 +1254,9 @@ public class GameObject extends Sprite {
 
     protected void rotateGameObjectTowards(GameObject object) {
         this.rotateObjectTowardsPoint(object.getCurrentLocation(), false);
+    }
+
+    public void addOrbitingObject(GameObject object, int layerIndex) {
+        this.objectOrbitingThis.computeIfAbsent(layerIndex, k -> new ArrayList<>()).add(object);
     }
 }

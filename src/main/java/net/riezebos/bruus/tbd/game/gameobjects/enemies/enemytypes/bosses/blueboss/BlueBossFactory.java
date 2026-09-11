@@ -208,7 +208,7 @@ public class BlueBossFactory extends Enemy {
             blueBossFactoryDefender.getMovementConfiguration().setLastKnownTargetY(this.getCenterYCoordinate());
             blueBossFactoryDefender.setMaxHitPoints(100000000);
             blueBossFactoryDefender.setCurrentHitpoints(blueBossFactoryDefender.getMaxHitPoints());
-            this.objectOrbitingThis.add(blueBossFactoryDefender);
+            this.addOrbitingObject(blueBossFactoryDefender, 0);
             EnemyManager.getInstance().addEnemy(blueBossFactoryDefender);
         }
         OrbitingObjectsFormatter.reformatOrbitingObjects(this, 100);

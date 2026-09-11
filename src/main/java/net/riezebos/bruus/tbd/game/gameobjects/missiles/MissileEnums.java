@@ -4,6 +4,7 @@ import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
 
 public enum MissileEnums {
     BombaProjectile(ImageEnums.Bomba_Missile_Explosion, ImageEnums.Bomba_Missile),
+    FinalBossTrackingMissileGrenade(ImageEnums.Bomba_Missile_Explosion, ImageEnums.Bomba_Missile),
     TazerProjectile(ImageEnums.LightningOrbDestruction, ImageEnums.LightningOrb),
     PlayerLaserbeam(ImageEnums.Impact_Explosion_One, ImageEnums.AlienLaserBeamAnimated),
     DefaultAnimatedBullet(ImageEnums.Impact_Explosion_One, ImageEnums.AlienLaserBeamAnimated),

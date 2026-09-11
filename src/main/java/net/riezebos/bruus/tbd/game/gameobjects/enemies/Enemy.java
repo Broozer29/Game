@@ -289,7 +289,7 @@ public class Enemy extends GameObject {
             object.deleteObject();
         }
 
-        for (GameObject object : objectOrbitingThis) {
+        for (GameObject object : getObjectOrbitingThis()) {
             object.deleteObject();
         }
 

@@ -373,6 +373,18 @@ public class MissileManager {
                     }
 
                 }
+
+                // Also check same-team missiles if this missile has been reflected, out of performance reasons make this reflection check. This is NOT scalable
+                if (missile.getTimesReflected() > 0) {
+                    for (Missile friendlyMissile : missiles) {
+                        if (friendlyMissile.isFriendly() && friendlyMissile instanceof ReflectiveBlocks reflectiveBlocks) {
+                            CollisionInfo collisionInfo = collisionDetector.detectCollision(missile, friendlyMissile);
+                            if (collisionInfo != null) {
+                                handleReflection(missile, reflectiveBlocks);
+                            }
+                        }
+                    }
+                }
             } else {
                 //Check for all friendly missiles in the missile list, this is used by enemy missiles
                 for (Missile friendlyMissile : missiles) {
@@ -389,6 +401,18 @@ public class MissileManager {
                             } else if (missile.isDamageable()) {
                                 friendlyMissile.dealDamageToGameObject(missile);
                                 friendlyMissile.destroyMissile();
+                            }
+                        }
+                    }
+                }
+
+                // Also check same-team missiles if this missile has been reflected
+                if (missile.getTimesReflected() > 0) {
+                    for (Missile enemyMissile : missiles) {
+                        if (!enemyMissile.isFriendly() && enemyMissile instanceof ReflectiveBlocks reflectiveBlocks) {
+                            CollisionInfo collisionInfo = collisionDetector.detectCollision(missile, enemyMissile);
+                            if (collisionInfo != null) {
+                                handleReflection(missile, reflectiveBlocks);
                             }
                         }
                     }

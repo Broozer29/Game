@@ -161,6 +161,19 @@ public class CustomAudioClip {
                 case NotEnoughMinerals -> 0.6f * 0.7f;
                 case GenericError -> 0.6f * 0.7f;
                 case ChargingBigIronLaserbeam -> 0.5f;
+                case ScourgeDeath -> 0.5f;
+                case ScourgeCollision -> 0.5f;
+                case ScourgeNoticed -> 0.5f;
+                case MutaliskBirth -> 0.5f;
+                case MutaliskDeath -> 0.5f;
+                case QueenDeath -> 0.5f;
+                case DevourerBirth -> 0.5f;
+                case DevourerDeath -> 0.5f;
+                case DevourerHit -> 0.5f;
+                case BroodlingAttached -> 0.5f;
+                case GuardianBirth -> 0.5f;
+                case GuardianDeath -> 0.5f;
+                case OverlordDeath -> 0.5f;
                 default -> 0.7f;
             };
 
@@ -176,6 +189,11 @@ public class CustomAudioClip {
     public boolean isFinished() {
         if (isPaused) {
             return false;
+        }
+
+        if(isMediaPlayerFinished && this.isLoop()){
+            this.setPlaybackPosition(0);
+            this.startClip();
         }
         // Use the finished flag for MediaPlayer
         if (isMediaPlayerFinished) {

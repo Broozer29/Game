@@ -33,7 +33,7 @@ public class OrbitterWithOrbits extends Missile {
         }
 
         OrbitingObjectsFormatter.reformatOrbitingObjects(this, orbitRadius);
-        for (GameObject object : objectOrbitingThis) {
+        for (GameObject object : getObjectOrbitingThis()) {
             object.resetMovementPath();
         }
     }

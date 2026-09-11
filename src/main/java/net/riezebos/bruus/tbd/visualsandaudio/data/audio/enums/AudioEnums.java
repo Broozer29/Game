@@ -78,6 +78,28 @@ public enum AudioEnums {
     FireFighterYes1,
     FireFighterYes2,
     FireFighterYes3,
+    FinalBossTaunt1,
+    FinalBossTaunt2,
+    FinalBossTaunt3,
+    FinalBossTaunt4WhenLowHp,
+    FinalBossPhaseTransition1,
+    FinalBossPhaseTransition2,
+    FinalBossPhaseTransition3,
+    FinalBossPhaseTransition4,
+    FinalBossPhaseTransition5,
+    FinalBossOh,
+    FinalBossMock1,
+    FinalBossMock2,
+    FinalBossMock3,
+    FinalBossMock4,
+    FinalBossMock5,
+    FinalBossMock6,
+    FinalBossMock7,
+    FinalBossMock8,
+    FinalBossGreeting,
+    FinalBossManyBulletsTaunt1,
+    FinalBossManyBulletsTaunt2,
+    FinalBossManyBulletsTaunt3,
     ProtossShipDeath,
     CoinCollected,
     ScarabExplosion,
@@ -86,7 +108,10 @@ public enum AudioEnums {
     Arisen,
     Enraged,
     DistressCall,
-    Filth;
+    Filth,
+    FinalBossPhase1,
+    FinalBossPhase2,
+    FinalBossPhase3;
 
     public static AudioEnums getSelectClassAudioByClass(PlayerClass playerClass) {
         List<AudioEnums> availableSounds = new ArrayList<>();
@@ -137,6 +162,8 @@ public enum AudioEnums {
                 return AudioEnums.MausoleumMash;
             case TwinBoss:
                 return AudioEnums.Enraged;
+            case FinalBoss:
+                return AudioEnums.FinalBossPhase1;
             default:
                 return getRandomBossSong();
         }

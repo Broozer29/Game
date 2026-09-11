@@ -49,7 +49,7 @@ public class FriendlyManager {
 
     public void addDrone(SpaceShip spaceShip) {
         Drone drone = FriendlyCreator.createDrone(spaceShip);
-        spaceShip.getObjectOrbitingThis().add(drone);
+        spaceShip.addOrbitingObject(drone, 0);
         OrbitingObjectsFormatter.reformatOrbitingObjects(spaceShip, spaceShip.getDroneOrbitRadius());
         drones.add(drone);
     }
@@ -202,7 +202,7 @@ public class FriendlyManager {
         }
 
         // Checks collision between the finished level portal and player
-        if (gameState.getGameState() == GameStatusEnums.Level_Finished && finishedLevelPortal.isVisible()) {
+        if (gameState.getGameState() == GameStatusEnums.Level_Finished && !LevelManager.getInstance().getLevelType().equals(LevelTypes.Boss)) {
             for (SpaceShip spaceShip : PlayerManager.getInstance().getAllSpaceShips()) {
                 CollisionInfo collisionInfo = CollisionDetector.getInstance().detectCollision(spaceShip, finishedLevelPortal);
                 if (collisionInfo != null && finishedLevelPortal.getTransparancyAlpha() >= 0.5f) {

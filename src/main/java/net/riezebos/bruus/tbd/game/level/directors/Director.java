@@ -319,7 +319,11 @@ public class Director {
         if (enemyEnums.equals(EnemyEnums.BlueBoss)) {
             xCoordinate = Math.round((DataClass.getInstance().getWindowWidth() * 0.5f));
             AnimationManager.getInstance().addUpperAnimation(createWarpInAnimation(xCoordinate, yCoordinate));
-        } else if (enemyEnums.equals(EnemyEnums.TwinBoss)) {
+        } else if(enemyEnums.equals(EnemyEnums.FinalBoss)){
+            xCoordinate = Math.round((DataClass.getInstance().getWindowWidth() * 0.5f));
+            AnimationManager.getInstance().addUpperAnimation(createWarpInAnimation(xCoordinate, yCoordinate));
+        }
+        else if (enemyEnums.equals(EnemyEnums.TwinBoss)) {
             //spawn right twins
             xCoordinate = DataClass.getInstance().getWindowWidth() + Math.round(EnemyEnums.TwinBoss.getBaseWidth() * scale);
             LevelManager.getInstance().spawnEnemy(
