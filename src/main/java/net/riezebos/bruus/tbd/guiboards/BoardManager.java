@@ -4,6 +4,7 @@ import net.riezebos.bruus.tbd.controllerInput.ControllerManager;
 import net.riezebos.bruus.tbd.discordconnector.DiscordConnector;
 import net.riezebos.bruus.tbd.game.UI.GameBoardCreator;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
+import net.riezebos.bruus.tbd.game.gamestate.GameMode;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.items.PlayerInventory;
 import net.riezebos.bruus.tbd.guiboards.boards.*;
@@ -116,6 +117,7 @@ public class BoardManager extends JFrame {
         });
 
         screenActions.put(ScreenType.DIFFICULTY_SELECTION, () -> {
+            GameState.getInstance().setGameMode(GameMode.Default);
             difficultySelectionBoard.initMenuTiles();
             difficultySelectionBoard.recreateWindow();
             difficultySelectionBoard.getTimer().restart();

@@ -179,6 +179,7 @@ public class MenuButton extends GUIComponent {
             case SelectManModeGameMode:
                 GameState.getInstance().setGameMode(GameMode.ManMode);
                 AudioManager.getInstance().addAudio(AudioEnums.GenericSelect);
+                boardManager.initGame();
                 break;
             case SelectMonoCulturalGameMode:
                 GameState.getInstance().setGameMode(GameMode.MonoCultural);

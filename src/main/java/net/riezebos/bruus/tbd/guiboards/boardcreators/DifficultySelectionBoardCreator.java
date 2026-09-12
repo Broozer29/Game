@@ -33,6 +33,33 @@ public class DifficultySelectionBoardCreator {
         return config;
     }
 
+    public static GUIComponent createManModeBackgroundCard() {
+        int xCoordinate = Math.round(DataClass.getInstance().getWindowWidth() * 0.5f);
+        int yCoordinate = Math.round(DataClass.getInstance().getWindowHeight() * 0.95f);
+
+        SpriteConfiguration spriteConfiguration = createSpriteConfiguration(xCoordinate, yCoordinate, 1, ImageEnums.Wide_Card);
+        GUIComponent backgroundCard = new DisplayOnly(spriteConfiguration);
+
+        int newWidth = Math.round(resolutionFactor * 170);
+        int newHeight = Math.round(resolutionFactor * 60);
+        backgroundCard.setImageDimensions(newWidth, newHeight);
+        backgroundCard.setCenterCoordinates(xCoordinate, yCoordinate);
+
+        return backgroundCard;
+    }
+
+    public static GUITextCollection createManModeButton(GUIComponent backgroundCard) {
+        int xCoordinate = backgroundCard.getCenterXCoordinate();
+        int yCoordinate = backgroundCard.getCenterYCoordinate() - Math.round(resolutionFactor * 10);
+
+        GUITextCollection textCollection = new GUITextCollection(xCoordinate, yCoordinate, "START MAN MODE");
+        textCollection.setScale(resolutionFactor);
+        textCollection.setStartingXCoordinate(xCoordinate - (textCollection.getWidth() / 2));
+        textCollection.setMenuFunctionality(MenuFunctionEnums.SelectManModeGameMode);
+        textCollection.getComponents().get(0).setDescriptionOfComponent("Start the game in MAN MODE. Every level will be a boss level.");
+        return textCollection;
+    }
+
     public static DisplayOnly createDifficultySelectionBackgroundCard() {
         float xCoordinate = DataClass.getInstance().getWindowWidth() * 0.05f;
         float yCoordinate = DataClass.getInstance().getWindowHeight() * 0.35f;
@@ -174,7 +201,7 @@ public class DifficultySelectionBoardCreator {
 
     public static DisplayOnly createTotalDifficultyBackgroundCard() {
         float xCoordinate = DataClass.getInstance().getWindowWidth() * 0.5f;
-        float yCoordinate = DataClass.getInstance().getWindowHeight() * 0.8f;
+        float yCoordinate = DataClass.getInstance().getWindowHeight() * 0.7f;
         int cardWidth = 500;
         int cardHeight = 250;
 

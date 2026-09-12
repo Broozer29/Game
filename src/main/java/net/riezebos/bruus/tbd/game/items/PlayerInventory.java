@@ -45,12 +45,7 @@ public class PlayerInventory {
 
         if (DevTestSettings.infiniteMoney) {
             cashMoney = 999999999999f;
-            addItem(ItemEnums.ProtossScout);
-            addItem(ItemEnums.ProtossShuttle);
-            addItem(ItemEnums.ProtossShuttle);
-            addItem(ItemEnums.ProtossScout);
-            addItem(ItemEnums.ProtossScout);
-            addItem(ItemEnums.ProtossScout);
+//            addItem(ItemEnums.ProtossScout);
         } else {
             cashMoney = 0;
         }

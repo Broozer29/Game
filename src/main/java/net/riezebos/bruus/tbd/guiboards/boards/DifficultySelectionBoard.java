@@ -43,6 +43,9 @@ public class DifficultySelectionBoard extends JPanel implements TimerHolder {
     private GUIComponent returnToMenuBackgroundCard;
     private GUITextCollection returnToMenuButton;
 
+    private GUIComponent manModeBackgroundCard;
+    private GUITextCollection manModeButton;
+
     private GUIComponent selectTribeBackgroundCard;
     private GUITextCollection selectTribe;
     private GUIComponent selectMiniBossBackgroundCard;
@@ -122,6 +125,10 @@ public class DifficultySelectionBoard extends JPanel implements TimerHolder {
 
         returnToMenuBackgroundCard = DifficultySelectionBoardCreator.createReturnToMainMenuBackgroundCard();
         returnToMenuButton = DifficultySelectionBoardCreator.createReturn(returnToMenuBackgroundCard);
+
+        manModeBackgroundCard = DifficultySelectionBoardCreator.createManModeBackgroundCard();
+        manModeButton = DifficultySelectionBoardCreator.createManModeButton(manModeBackgroundCard);
+
         menuCursor = DifficultySelectionBoardCreator.createCursor(selectPirates);
         initializedMenuObjects = true;
 
@@ -158,6 +165,7 @@ public class DifficultySelectionBoard extends JPanel implements TimerHolder {
         offTheGridObjects.add(selectTribeBackgroundCard);
         offTheGridObjects.add(selectMiniBossBackgroundCard);
         offTheGridObjects.add(returnToMenuBackgroundCard);
+        offTheGridObjects.add(manModeBackgroundCard);
         offTheGridObjects.addAll(selectTribe.getComponents());
         offTheGridObjects.addAll(selectMiniboss.getComponents());
         offTheGridObjects.add(totalDifficultyBackgroundCard);
@@ -178,6 +186,8 @@ public class DifficultySelectionBoard extends JPanel implements TimerHolder {
         List<GUIComponent> secondRow = new ArrayList<>();
         secondRow.add(returnToMenuButton.getComponents().get(0));
         addAllButFirstComponent(returnToMenuButton);
+        secondRow.add(manModeButton.getComponents().get(0));
+        addAllButFirstComponent(manModeButton);
         secondRow.add(startGameButton.getComponents().get(0));
         addAllButFirstComponent(startGameButton);
         grid.add(firstRow);
