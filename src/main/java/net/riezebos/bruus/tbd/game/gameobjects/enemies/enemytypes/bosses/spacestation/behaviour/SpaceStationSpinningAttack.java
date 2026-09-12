@@ -172,7 +172,7 @@ public class SpaceStationSpinningAttack implements BossActionable {
         return enemy.isAllowedToFire()
                 && GameState.getInstance().getGameSeconds() >= lastAttackedTime + attackCooldown
                 && WithinVisualBoundariesCalculator.isWithinBoundaries(enemy)
-                && Math.abs(enemy.getXCoordinate() - center.getX()) <= 1
-                && Math.abs(enemy.getYCoordinate() - center.getY()) <= 1;
+                && Math.abs(enemy.getXCoordinate() - center.getX()) <= 3
+                && Math.abs(enemy.getYCoordinate() - center.getY()) <= 3;
     }
 }
