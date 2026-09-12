@@ -38,10 +38,7 @@ public class SpaceStationSpawnNeedlers implements BossActionable {
     }
 
     private Point getCenterPoint() {
-        if (centerPoint == null) {
-            centerPoint = EnemyCreator.calculateSpaceStationBossDestination(EnemyEnums.SpaceStationBoss);
-        }
-        return centerPoint;
+        return EnemyCreator.calculateSpaceStationBossDestination(EnemyEnums.SpaceStationBoss);
     }
 
     private void createAnimations () {

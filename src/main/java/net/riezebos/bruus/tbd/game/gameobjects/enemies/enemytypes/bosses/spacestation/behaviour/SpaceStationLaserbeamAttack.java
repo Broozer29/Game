@@ -56,10 +56,7 @@ public class SpaceStationLaserbeamAttack implements BossActionable {
     }
 
     private Point getCenterPoint() {
-        if (centerPoint == null) {
-            centerPoint = EnemyCreator.calculateSpaceStationBossDestination(EnemyEnums.SpaceStationBoss);
-        }
-        return centerPoint;
+        return EnemyCreator.calculateSpaceStationBossDestination(EnemyEnums.SpaceStationBoss);
     }
 
     @Override
@@ -85,12 +82,12 @@ public class SpaceStationLaserbeamAttack implements BossActionable {
 
                 createLaserbeamIndicators(enemy);
 
-                for(LaserbeamIndicator laserbeamIndicator : laserbeamIndicators){
+                for (LaserbeamIndicator laserbeamIndicator : laserbeamIndicators) {
                     MissileManager.getInstance().addLaserbeamIndicator(laserbeamIndicator);
                 }
             }
 
-            if(!laserbeamIndicators.isEmpty()){
+            if (!laserbeamIndicators.isEmpty()) {
                 updateLaserbeamIndicators(currentRotationAngle, enemy);
             }
 
@@ -105,7 +102,7 @@ public class SpaceStationLaserbeamAttack implements BossActionable {
                     MissileManager.getInstance().addLaserBeam(laserbeam);
                 }
 
-                for(LaserbeamIndicator laserbeamIndicator : laserbeamIndicators){
+                for (LaserbeamIndicator laserbeamIndicator : laserbeamIndicators) {
                     laserbeamIndicator.setActive(false);
                 }
                 laserbeamIndicators.clear();
@@ -208,7 +205,7 @@ public class SpaceStationLaserbeamAttack implements BossActionable {
             int distance = (laserbeamBodyAmount + 2) * Laserbeam.bodyWidth;
             laserBeamAimingPoints.set(i, new Point(newPoint.getX() - Laserbeam.bodyWidth / 2, newPoint.getY() - Laserbeam.bodyWidth / 2));
             laserbeamIndicators.get(i).setCurrentAngleDegrees(calculateAngleFromCenter(laserBeamAimingPoints.get(i), enemy), distance);
-            laserbeamIndicators.get(i).setStartingXCoordinate(enemy.getCenterXCoordinate() - Laserbeam.bodyWidth / 2 );
+            laserbeamIndicators.get(i).setStartingXCoordinate(enemy.getCenterXCoordinate() - Laserbeam.bodyWidth / 2);
             laserbeamIndicators.get(i).setStartingYCoordinate(enemy.getCenterYCoordinate() - Laserbeam.bodyWidth / 2);
         }
     }

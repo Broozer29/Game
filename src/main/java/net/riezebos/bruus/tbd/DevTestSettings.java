@@ -7,7 +7,7 @@ public class DevTestSettings {
     public static boolean useItunes = false;
     public static boolean enablePlayerMovingPastBoundaries = false; //if true: allow the player to move outside the screen
     public static boolean devTestMuteMode = false; //if true: mutes all audio after starting a level
-    public static boolean onlyBossLevels = false; //if true: all levels are boss levels
+    public static boolean onlyBossLevels = true; //if true: all levels are boss levels
     public static boolean infiniteMoney = false; //if true: add 9999999 money to the inventory
     public static boolean freeReroll = false; //if true; set reroll discount to 99
     public static boolean spawnTargetDummy = false; //if true, spawns a target dummy at the start of a level
@@ -20,7 +20,7 @@ public class DevTestSettings {
     public static boolean enableMutalisk = false;
     public static boolean enableDirectShopAccess = false;
 
-    public static boolean testFinalBossMode = false;
+    public static boolean testFinalBossMode = true;
 
 
 

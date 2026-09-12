@@ -242,7 +242,7 @@ public class LevelManager {
 
     public EnemyEnums getNextBoss() {
         if(DevTestSettings.testFinalBossMode) {
-            return EnemyEnums.FinalBoss;
+            return EnemyEnums.YellowBoss;
         }
 
         List<EnemyEnums> eligibleBosses = Arrays.stream(EnemyEnums.values()).filter(enemyEnums ->
