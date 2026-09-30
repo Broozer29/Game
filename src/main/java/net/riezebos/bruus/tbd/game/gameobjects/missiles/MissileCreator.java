@@ -1,6 +1,9 @@
 package net.riezebos.bruus.tbd.game.gameobjects.missiles;
 
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.missiletypes.*;
+import net.riezebos.bruus.tbd.game.gameobjects.missiles.missiletypes.finalboss.FinalBossMine;
+import net.riezebos.bruus.tbd.game.gameobjects.missiles.missiletypes.finalboss.FinalBossOrbitMissile;
+import net.riezebos.bruus.tbd.game.gameobjects.missiles.missiletypes.finalboss.FinalBossSpreadMissile;
 import net.riezebos.bruus.tbd.game.movement.Direction;
 import net.riezebos.bruus.tbd.game.movement.MovementConfiguration;
 import net.riezebos.bruus.tbd.game.movement.pathfinders.PathFinder;
@@ -80,7 +83,16 @@ public class MissileCreator {
                 return new MutaliskMissile(upgradeConfig(spriteConfiguration, 2), missileConfiguration, movementConfiguration);
             }
             case FinalBossTrackingMissileGrenade -> {
-                return new FinalBossTrackingMissileGrenade(upgradeConfig(spriteConfiguration, 2), missileConfiguration, movementConfiguration);
+                return new FinalBossMine(upgradeConfig(spriteConfiguration, 2), missileConfiguration, movementConfiguration);
+            }
+            case FinalBossChargingMissile -> {
+                return new FinalBossOrbitMissile(upgradeConfig(spriteConfiguration, 1), missileConfiguration, movementConfiguration);
+            }
+            case FinalBossSpreadMissile -> {
+                return new FinalBossSpreadMissile(upgradeConfig(spriteConfiguration, 1), missileConfiguration, movementConfiguration);
+            }
+            case FinalBossMine -> {
+                return new FinalBossMine(upgradeConfig(spriteConfiguration, 2), missileConfiguration, movementConfiguration);
             }
         }
         return null;

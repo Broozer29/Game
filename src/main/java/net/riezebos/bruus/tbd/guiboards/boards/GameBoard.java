@@ -90,6 +90,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
     private long inputDelay = 0;
 
     private boolean hasResetManagersForNextLevel = false;
+    private boolean hasChosenRelic = false;
     private BoardManager boardManager = BoardManager.getInstance();
     private AnimationManager animationManager = AnimationManager.getInstance();
     private EnemyManager enemyManager = EnemyManager.getInstance();
@@ -189,6 +190,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
         this.isPlayingDeathMusic = false;
         this.hasExportedLogs = false;
         this.showRelicSelection = false;
+        hasChosenRelic = false;
         selectedComponent = null;
         BoardManager.getInstance().getShopBoard().updateSelectedDifficultyIcons(); //manually update the last selected difficulties
         BoardManager.getInstance().getDifficultySelectionBoard().updateSelectedDifficultyIcons(); //manually update the last selected difficulties
@@ -203,6 +205,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
     private void resetManagersForNextLevel() {
         if (!hasResetManagersForNextLevel) {
             animationManager.resetManager();
+            hasChosenRelic = false;
             TwinBossManager.getInstance().resetTwinBossManager();
             enemyManager.resetManager();
             missileManager.resetManager();
@@ -215,7 +218,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
             audioManager.resetManager();
             explosionManager.resetManager();
             friendlyManager.resetManager();
-            friendlyManager.resetPortal();
+            friendlyManager.resetPortals();
             gameUICreator.resetManager();
             textManager.resetManager();
             GodRunDetector.getInstance().resetGodRunDetector();
@@ -647,7 +650,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
         float maxTotalHitpoints = playerMaxHealth + playerMaxShields;
         float currentTotalHitpoints = player.getCurrentHitpoints() + player.getCurrentShieldPoints();
 
-        if(playerMaxHealth <= 0 ){
+        if (playerMaxHealth <= 0) {
             return; //something broke
         }
 
@@ -1072,8 +1075,8 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
                 gameState.addGameTicks(1);
             }
 
-            if(GameState.getInstance().getGameState() == GameStatusEnums.Level_Finished){
-                if(shouldShowRelicSelection()){
+            if (GameState.getInstance().getGameState() == GameStatusEnums.Level_Finished && !hasChosenRelic) {
+                if (shouldShowRelicSelection()) {
                     showRelicSelection();
                 }
             }
@@ -1309,9 +1312,9 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
     }
 
     public void signalThatRelicHasBeenChosen() {
-        this.gameState.setGameState(GameStatusEnums.Show_Level_Score_Card);
-        LevelManager.getInstance().finishLevel();
+        this.gameState.setGameState(GameStatusEnums.Level_Finished);
         showRelicSelection = false;
+        hasChosenRelic = true;
         isUsersFirstInputForRelicselection = false;
         inputDelay = 0;
     }
@@ -1320,14 +1323,15 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
     private boolean isUsersFirstInputForRelicselection = false;
     private double gameSecondsSinceBossDied = 0;
     private boolean relicSelectionEnabled = false;
-    private boolean shouldShowRelicSelection(){
-        if(relicSelectionEnabled && gameSecondsSinceBossDied + 1 < GameState.getInstance().getGameSeconds()){
+
+    private boolean shouldShowRelicSelection() {
+        if (relicSelectionEnabled && gameSecondsSinceBossDied + 1 < GameState.getInstance().getGameSeconds()) {
             return true;
         }
         return false;
     }
 
-    public void showRelicSelection(){
+    public void showRelicSelection() {
         this.gameState.setGameState(GameStatusEnums.SelectingRelic);
         chooseOne = GameBoardCreator.getInstance().getChooseOne();
         this.relicBackgroundCards.addAll(GameBoardCreator.getInstance().getRelicBackgroundCards());

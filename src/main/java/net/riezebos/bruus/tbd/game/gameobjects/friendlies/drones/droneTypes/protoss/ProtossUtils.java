@@ -123,6 +123,7 @@ public class ProtossUtils {
                 buildProtossScout(spaceShip);
                 hasBuildShips = true;
             }
+
             if (canFitMoreShips(DroneTypes.ProtossShuttle, spaceShip)) {
                 buildProtossShuttle(spaceShip);
                 hasBuildShips = true;

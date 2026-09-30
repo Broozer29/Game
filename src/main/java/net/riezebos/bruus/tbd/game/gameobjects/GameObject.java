@@ -458,6 +458,14 @@ public class GameObject extends Sprite {
         moveAnimations();
         updateBoardBlock();
         updateVisibility();
+        updateOrbitingObjects();
+    }
+
+    protected void updateOrbitingObjects() {
+        for (Map.Entry<Integer, List<GameObject>> entry : objectOrbitingThis.entrySet()) {
+            List<GameObject> objects = entry.getValue();
+            objects.removeIf(object -> !object.isVisible());
+        }
     }
 
     private void toggleHealthBar() {

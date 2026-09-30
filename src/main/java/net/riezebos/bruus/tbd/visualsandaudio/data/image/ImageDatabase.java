@@ -297,6 +297,7 @@ public class ImageDatabase {
     private List<BufferedImage> defaultPlayerShieldDamage = new ArrayList<>();
     private List<BufferedImage> guardianBotFrames = new ArrayList<>();
     private List<BufferedImage> portal5Frames = new ArrayList<>();
+    private List<BufferedImage> redPortalFrames = new ArrayList<>();
     private List<BufferedImage> warpFrames = new ArrayList<>();
     private List<BufferedImage> chargingFrames = new ArrayList<>();
     private List<BufferedImage> energyCircleFrames = new ArrayList<>();
@@ -485,6 +486,8 @@ public class ImageDatabase {
     private List<BufferedImage> fireFighterFireShield = new ArrayList<>();
     private List<BufferedImage> fireFighterFireShieldAppearing = new ArrayList<>();
     private List<BufferedImage> HighlightImages = new ArrayList<>();
+    private List<BufferedImage> finalBossMine = new ArrayList<>();
+    private List<BufferedImage> finalBossChargingMissile = new ArrayList<>();
     private List<BufferedImage> thornsDamage = new ArrayList<>();
     private List<BufferedImage> devourerIdle = new ArrayList<>();
     private List<BufferedImage> devourerAttacking = new ArrayList<>();
@@ -1972,7 +1975,7 @@ public class ImageDatabase {
             case AlienLaserBeamAnimated:
                 return alienLaserBeamAnimated;
             case AlienLaserBeamAnimatedOrange:
-                    return alienLaserBeamAnimatedOrange;
+                return alienLaserBeamAnimatedOrange;
             case RedBoss:
                 return redBossFrames;
             case CarrierBoss:
@@ -2019,8 +2022,14 @@ public class ImageDatabase {
                 return this.guardianBotFrames;
             case Highlight:
                 return HighlightImages;
+            case FinalBossChargingMissile:
+                return finalBossChargingMissile;
+            case FinalBossMine:
+                return finalBossMine;
             case Portal5:
                 return portal5Frames;
+            case RedPortal:
+                return redPortalFrames;
             case WarpIn:
                 return warpFrames;
             case Charging:
@@ -2337,11 +2346,29 @@ public class ImageDatabase {
             HighlightImages.add(image);
         }
 
+        for (int i = 0; i < 8; i++) {
+            String sourceString = String.format("/images/gif/PNGtoGIF/FinalBossChargingMissile/%d.png", i);
+            BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+            finalBossChargingMissile.add(image);
+        }
+
+        for (int i = 0; i < 20; i++) {
+            String sourceString = String.format("/images/gif/PNGtoGIF/FinalBossMine/%d.png", i);
+            BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+            finalBossMine.add(image);
+        }
+
 
         for (int i = 1; i < 65; i++) {
             String sourceString = String.format("/images/gif/PNGtoGIF/Portal5/portal%d.png", i);
             BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
             portal5Frames.add(image);
+        }
+
+        for (int i = 0; i < 64; i++) {
+            String sourceString = String.format("/images/gif/PNGtoGIF/RedPortal/%d.png", i);
+            BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+            redPortalFrames.add(image);
         }
 
         for (int i = 1; i < 10; i++) {

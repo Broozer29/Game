@@ -404,7 +404,7 @@ public class PlayerStats {
     }
 
     public float getBaseDamage() {
-        return DevTestSettings.instaKill ? baseDamage * 3 : baseDamage;
+        return DevTestSettings.instaKill ? baseDamage * 100 : baseDamage;
     }
 
     public int getCurrentLevel() {

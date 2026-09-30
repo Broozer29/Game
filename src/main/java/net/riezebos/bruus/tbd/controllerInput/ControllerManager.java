@@ -10,9 +10,8 @@ import java.util.Map;
 
 public class ControllerManager {
     private static ControllerManager instance = new ControllerManager();
-    private int firstControllerIndex = -1;
     private Map<Integer, ControllerInputReader> controllerInputReaders = new HashMap<>();
-    private Controller primaryController; //Multiplayer update: deze is nog nodig om te bepalen welke controller mag sturen in shop/menu en andere schermen. De "primaire" gebruiker.
+    private ControllerInputReader primaryReader; //Multiplayer update: deze is nog nodig om te bepalen welke controller mag sturen in shop/menu en andere schermen. De "primaire" gebruiker.
 
     private ControllerManager() {
     }
@@ -23,8 +22,7 @@ public class ControllerManager {
 
     public void initControllers() {
         controllerInputReaders.clear();
-        primaryController = null;
-        firstControllerIndex = -1;
+        primaryReader = null;
         try {
             Thread.sleep(500); // Allow time for initialization
         } catch (InterruptedException e) {
@@ -37,15 +35,19 @@ public class ControllerManager {
 
         for (Controller controller : controllers) {
             if (controller.getType() == Controller.Type.GAMEPAD || controller.getType() == Controller.Type.STICK) {
-                primaryController = controller;
-                firstControllerIndex = index;
-                controllerInputReaders.put(firstControllerIndex, new ControllerInputReader(primaryController));
-                System.out.println("First controller detected: " + controller.getName());
+                ControllerInputReader reader = new ControllerInputReader(controller);
+                controllerInputReaders.put(index, reader);
+                if (primaryReader == null) {
+                    primaryReader = reader; // Only the first detected controller becomes primary
+                    System.out.println("First controller detected: " + controller.getName());
+                } else {
+                    System.out.println("Additional controller detected: " + controller.getName());
+                }
             }
             index++;
         }
 
-        if (firstControllerIndex == -1) {
+        if (primaryReader == null) {
             System.out.println("No controllers found.");
         } else {
             System.out.println("ControllerManager initialized with " + controllerInputReaders.size() + " controllers.");
@@ -63,7 +65,7 @@ public class ControllerManager {
     }
 
     public ControllerInputReader getPrimaryController() {
-        return controllerInputReaders.get(firstControllerIndex);
+        return primaryReader;
     }
 
     public boolean isPausePressed(){
@@ -100,6 +102,12 @@ public class ControllerManager {
     }
 
     public void requestControl(ControllerInputReader controllerInputReader) {
-        this.primaryController = controllerInputReader.getController();
+        this.primaryReader = controllerInputReader;
+    }
+
+    public void resetInputStates(){
+        for(ControllerInputReader controllerInputReader : controllerInputReaders.values()){
+            controllerInputReader.resetInputStates();
+        }
     }
 }

@@ -13,7 +13,6 @@ import java.util.List;
 
 public class StraightLinePathFinder implements PathFinder {
 
-
     @Override
     public Path findPath (GameObject gameObject) {
         MovementConfiguration config = gameObject.getMovementConfiguration();

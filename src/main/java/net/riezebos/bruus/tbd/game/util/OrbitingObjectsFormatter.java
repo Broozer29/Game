@@ -54,6 +54,7 @@ public class OrbitingObjectsFormatter {
         }
     }
 
+    //todo deze call parameters zijn bijna identiek als de echte en maakt call ambiguity
     public static void reformatOrbitingObjects(GameObject gameObject, float radius, int layerIndex, boolean reverse) {
         reformatOrbitingObjects(gameObject, layerIndex, radius, reverse);
     }

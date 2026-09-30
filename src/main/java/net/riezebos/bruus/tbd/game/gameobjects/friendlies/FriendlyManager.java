@@ -14,14 +14,11 @@ import net.riezebos.bruus.tbd.game.gamestate.GameStatusEnums;
 import net.riezebos.bruus.tbd.game.items.ItemEnums;
 import net.riezebos.bruus.tbd.game.items.PlayerInventory;
 import net.riezebos.bruus.tbd.game.items.items.carrier.SynergeticLink;
-import net.riezebos.bruus.tbd.game.level.LevelManager;
-import net.riezebos.bruus.tbd.game.level.enums.LevelTypes;
 import net.riezebos.bruus.tbd.game.util.OrbitingObjectsFormatter;
 import net.riezebos.bruus.tbd.game.util.collision.CollisionDetector;
 import net.riezebos.bruus.tbd.game.util.collision.CollisionInfo;
 import net.riezebos.bruus.tbd.game.util.performancelogger.PerformanceLogger;
 import net.riezebos.bruus.tbd.game.util.performancelogger.PerformanceLoggerManager;
-import net.riezebos.bruus.tbd.guiboards.BoardManager;
 import net.riezebos.bruus.tbd.visualsandaudio.data.DataClass;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.AnimationManager;
@@ -39,11 +36,12 @@ public class FriendlyManager {
     private List<Drone> drones = new ArrayList<>();
     private List<FriendlyStation> friendlyStations = new ArrayList<>();
     private Portal finishedLevelPortal;
+    private Portal finalBossPortal;
     private GameState gameState = GameState.getInstance();
     private PerformanceLogger performanceLogger = null;
 
     private FriendlyManager() {
-        initPortal();
+        resetPortals();
         this.performanceLogger = new PerformanceLogger("Friendly Manager");
     }
 
@@ -79,7 +77,7 @@ public class FriendlyManager {
         PerformanceLoggerManager.timeAndLog(performanceLogger, "Check Friendly Object Collision", this::checkFriendlyObjectCollision);
         PerformanceLoggerManager.timeAndLog(performanceLogger, "Move Friendly Objects", this::updateFriendlyObjects);
         PerformanceLoggerManager.timeAndLog(performanceLogger, "Remove Invisible Objects", this::removeInvisibleObjects);
-        PerformanceLoggerManager.timeAndLog(performanceLogger, "Spawn Finished Level Portal", this::spawnFinishedLevelPortal);
+        PerformanceLoggerManager.timeAndLog(performanceLogger, "Spawn Portals", this::spawnPortals);
 
     }
 
@@ -96,23 +94,43 @@ public class FriendlyManager {
         removeInvisibleObjects();
         friendlyStations.clear();
         drones.clear();
-        initPortal();
+        initNextLevelPortal();
         performanceLogger.reset();
     }
 
+    private void spawnPortals() {
+        spawnFinishedLevelPortal();
+        spawnFinalBossPortal();
+    }
 
     private void spawnFinishedLevelPortal() {
         if (finishedLevelPortal.isSpawned()) {
             return;
         }
-        if (gameState.getGameState() == GameStatusEnums.Level_Finished && !LevelManager.getInstance().getLevelType().equals(LevelTypes.Boss)) {
+        if (gameState.getGameState() == GameStatusEnums.Level_Finished) {
             if (finishedLevelPortal == null) {
-                initPortal();
+                initNextLevelPortal();
             }
             finishedLevelPortal.setSpawned(true);
             finishedLevelPortal.setVisible(true);
-            finishedLevelPortal.setTransparancyAlpha(true, 0.0f, 0.01f);
+            finishedLevelPortal.setTransparancyAlpha(true, 0.0f, 0.0075f);
             AnimationManager.getInstance().addUpperAnimation(finishedLevelPortal.getAnimation());
+        }
+    }
+
+    private void spawnFinalBossPortal() {
+        if (finalBossPortal.isSpawned()) {
+            return;
+        }
+        if (gameState.getGameState() == GameStatusEnums.Level_Finished) {
+            if (finalBossPortal == null) {
+                initNextLevelPortal();
+            }
+            finalBossPortal.setSpawned(true);
+            finalBossPortal.setVisible(true);
+
+            finalBossPortal.setTransparancyAlpha(true, 0.0f, 0.0075f);
+            AnimationManager.getInstance().addUpperAnimation(finalBossPortal.getAnimation());
         }
     }
 
@@ -202,16 +220,19 @@ public class FriendlyManager {
         }
 
         // Checks collision between the finished level portal and player
-        if (gameState.getGameState() == GameStatusEnums.Level_Finished && !LevelManager.getInstance().getLevelType().equals(LevelTypes.Boss)) {
+        if (gameState.getGameState() == GameStatusEnums.Level_Finished) {
             for (SpaceShip spaceShip : PlayerManager.getInstance().getAllSpaceShips()) {
-                CollisionInfo collisionInfo = CollisionDetector.getInstance().detectCollision(spaceShip, finishedLevelPortal);
-                if (collisionInfo != null && finishedLevelPortal.getTransparancyAlpha() >= 0.5f) {
-                    gameState.setGameState(GameStatusEnums.Level_Completed);
-                    if (gameState.getStagesCompleted() == 0) { //choose a free relic at the start of the game
-                        BoardManager.getInstance().getGameBoard().startRelicSelection();
-                    }
-                    finishedLevelPortal.setTransparancyAlpha(true, 1.0f, -0.02f);
-                    finishedLevelPortal.setSpawned(false);
+                CollisionInfo collisionWithNextLevelPortal = CollisionDetector.getInstance().detectCollision(spaceShip, finishedLevelPortal);
+                if (collisionWithNextLevelPortal != null && finishedLevelPortal.getTransparancyAlpha() >= 0.9f) {
+                    finishedLevelPortal.activatePortal();
+                    finalBossPortal.despawnPortal();
+                    finishedLevelPortal.despawnPortal();
+                }
+                CollisionInfo collisionWithFinalBossPortal = CollisionDetector.getInstance().detectCollision(spaceShip, finalBossPortal);
+                if (collisionWithFinalBossPortal != null && finalBossPortal.getTransparancyAlpha() >= 0.9f) {
+                    finalBossPortal.activatePortal();
+                    finalBossPortal.despawnPortal();
+                    finishedLevelPortal.despawnPortal();
                 }
             }
         }
@@ -223,11 +244,12 @@ public class FriendlyManager {
     }
 
 
-    public void resetPortal() {
-        initPortal();
+    public void resetPortals() {
+        initNextLevelPortal();
+        initFinalBossPortal();
     }
 
-    private void initPortal() {
+    private void initNextLevelPortal() {
         int portalXCoordinate = (int) Math.floor(DataClass.getInstance().getWindowWidth() * 0.55);
         int portalYCoordinate = (DataClass.getInstance().getWindowHeight() / 2);
 
@@ -235,12 +257,28 @@ public class FriendlyManager {
         spriteConfiguration.setxCoordinate(portalXCoordinate);
         spriteConfiguration.setyCoordinate(portalYCoordinate);
         spriteConfiguration.setImageType(ImageEnums.Portal5);
-        spriteConfiguration.setScale(1);
+        spriteConfiguration.setScale(0.75f);
 
         SpriteAnimationConfiguration spriteAnimationConfiguration = new SpriteAnimationConfiguration(spriteConfiguration, 2, true);
 
-        finishedLevelPortal = new Portal(spriteAnimationConfiguration);
+        finishedLevelPortal = new Portal(spriteAnimationConfiguration, false);
         finishedLevelPortal.setCenterCoordinates(portalXCoordinate, portalYCoordinate);
+    }
+
+    private void initFinalBossPortal() {
+        int portalXCoordinate = (int) Math.floor(DataClass.getInstance().getWindowWidth() * 0.9);
+        int portalYCoordinate = (DataClass.getInstance().getWindowHeight() / 2);
+
+        SpriteConfiguration spriteConfiguration = new SpriteConfiguration();
+        spriteConfiguration.setxCoordinate(portalXCoordinate);
+        spriteConfiguration.setyCoordinate(portalYCoordinate);
+        spriteConfiguration.setImageType(ImageEnums.RedPortal);
+        spriteConfiguration.setScale(0.5f);
+
+        SpriteAnimationConfiguration spriteAnimationConfiguration = new SpriteAnimationConfiguration(spriteConfiguration, 2, true);
+
+        finalBossPortal = new Portal(spriteAnimationConfiguration, true);
+        finalBossPortal.setCenterCoordinates(portalXCoordinate, portalYCoordinate);
     }
 
     public List<Drone> getAllPlayerDrones(SpaceShip spaceship) {

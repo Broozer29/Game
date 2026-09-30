@@ -87,7 +87,7 @@ public class BossAttackTemplateForDev implements BossActionable {
     public boolean isAvailable(Enemy enemy) {
         if (enemy instanceof FinalBoss finalBoss) {
             return finalBoss.isAllowedToFire()
-                    && finalBoss.getBossPhase() == 1
+                    && finalBoss.getBossPhase() == FinalBoss.BOSSPHASE_1
                     && GameState.getInstance().getGameSeconds() >= lastAttackedTime + attackCooldown
                     && WithinVisualBoundariesCalculator.isWithinBoundaries(finalBoss);
         }

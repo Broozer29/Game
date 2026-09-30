@@ -83,12 +83,14 @@ public class BoardManager extends JFrame {
             mainMenuBoard.recreateWindow();
             mainMenuBoard.getTimer().restart();
             ControllerManager.getInstance().setControllerSensitive(false);
+            ControllerManager.getInstance().resetInputStates();
             DiscordConnector.getInstance().setStatus("Just booted up", "Main Menu");
         });
 
         screenActions.put(ScreenType.UPGRADE_SELECTION, () -> {
             boonSelectionBoard.recreateWindow();
             boonSelectionBoard.getTimer().restart();
+            ControllerManager.getInstance().resetInputStates();
             ControllerManager.getInstance().setControllerSensitive(false);
         });
         screenActions.put(ScreenType.GAME, () -> {
@@ -96,6 +98,7 @@ public class BoardManager extends JFrame {
             GameBoardCreator.getInstance().resetManager();
             gameBoard.startGame();
             ControllerManager.getInstance().setControllerSensitive(true);
+            ControllerManager.getInstance().resetInputStates();
             DiscordConnector.getInstance().setStatus(PlayerStats.getInstance().getPlayerClass() + ", on stage " + GameState.getInstance().getStagesCompleted(), "Fighting");
         });
 
@@ -105,6 +108,7 @@ public class BoardManager extends JFrame {
             shopBoard.initShopBoardGUIComponents();
             shopBoard.getTimer().restart();
             ControllerManager.getInstance().setControllerSensitive(false);
+            ControllerManager.getInstance().resetInputStates();
             DiscordConnector.getInstance().setStatus("Shopping with " + Math.round(PlayerInventory.getInstance().getCashMoney()) + " minerals.", "Shop");
         });
 
@@ -113,6 +117,7 @@ public class BoardManager extends JFrame {
             classSelectionBoard.recreateWindow();
             classSelectionBoard.getTimer().restart();
             ControllerManager.getInstance().setControllerSensitive(false);
+            ControllerManager.getInstance().resetInputStates();
             DiscordConnector.getInstance().setStatus("Deciding a class", "Class Selection");
         });
 
@@ -122,6 +127,7 @@ public class BoardManager extends JFrame {
             difficultySelectionBoard.recreateWindow();
             difficultySelectionBoard.getTimer().restart();
             ControllerManager.getInstance().setControllerSensitive(false);
+            ControllerManager.getInstance().resetInputStates();
             DiscordConnector.getInstance().setStatus("Choosing difficulty as a " + PlayerStats.getInstance().getPlayerClass() + ".", "Class Selection");
         });
 

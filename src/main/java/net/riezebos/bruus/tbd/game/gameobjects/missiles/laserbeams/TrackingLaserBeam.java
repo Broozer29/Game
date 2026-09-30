@@ -25,7 +25,7 @@ public class TrackingLaserBeam extends Laserbeam {
 
     @Override
     public void update() {
-        if(laserBodies.isEmpty()){
+        if (laserBodies.isEmpty()) {
             this.setVisible(false);
             return;
         }
@@ -67,7 +67,8 @@ public class TrackingLaserBeam extends Laserbeam {
         }
 
         // Check if the current angle differs from the target (desired) angle
-        if (Math.abs(angleDegrees - this.desiredDegrees) > 0.01) {
+        // Use raw angleDegrees without offset for tracking logic
+        if (Math.abs(getAngleDegrees() - this.desiredDegrees) > 0.01) {
             needsUpdate = true;
         }
 
@@ -76,8 +77,8 @@ public class TrackingLaserBeam extends Laserbeam {
         calculateAngle();
 
         // Recalculate positions
-        double deltaX_per_segment = Math.cos(angleRadians) * bodyWidth;
-        double deltaY_per_segment = Math.sin(angleRadians) * bodyWidth;
+        double deltaX_per_segment = Math.cos(getAngleRadians()) * bodyWidth;
+        double deltaY_per_segment = Math.sin(getAngleRadians()) * bodyWidth;
 
         double x = originPoint.getX();
         double y = originPoint.getY();
@@ -89,22 +90,23 @@ public class TrackingLaserBeam extends Laserbeam {
             segment.setYCoordinate((int) y);
 
             // Rotate the segment based on the new angle
-            segment.rotateAnimation(angleDegrees, false, maintainCacheKey);
+            segment.rotateAnimation(getAngleDegrees(), false, maintainCacheKey);
 
             x += deltaX_per_segment;
             y += deltaY_per_segment;
         }
 
         // If the laser beam has reached the desired angle, stop updating
-        if (Math.abs(angleDegrees - this.desiredDegrees) <= 0.01) {
+        // Use raw angleDegrees without offset for tracking logic
+        if (Math.abs(getAngleDegrees() - this.desiredDegrees) <= 0.01) {
             needsUpdate = false;
         }
     }
 
     private void calculateAngle() {
 
-        // Store the current angle degrees
-        double currentAngleDegrees = angleDegrees;
+        // Store the current angle degrees (without offset for tracking calculation)
+        double currentAngleDegrees = getAngleDegrees() - angleOffset;
 
         // Calculate the desired angle to the target
         int laserBodyWidth = laserBodies.get(1).getWidth();
@@ -136,13 +138,12 @@ public class TrackingLaserBeam extends Laserbeam {
         }
 
         // Apply the clamped angle change to the current angle
-        angleDegrees = (currentAngleDegrees + clampedAngleChange + 360) % 360;
-
+        double angleDegrees = (currentAngleDegrees + clampedAngleChange + 360) % 360;
         // Round to nearest 0.2 interval for cache optimization
-        angleDegrees = Math.round(angleDegrees * 5.0) / 5.0;
+        setAngleDegrees(Math.round(angleDegrees * 5.0) / 5.0);
 
         // Update angleRadians (if needed in other parts of the code)
-        angleRadians = Math.toRadians(angleDegrees);
+        setAngleRadians(Math.toRadians(angleDegrees));
     }
 
 

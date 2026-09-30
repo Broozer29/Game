@@ -139,7 +139,7 @@ public class FinalBossCreateRotatingReflectingBlocks implements BossActionable {
 
 
         boolean isFriendly = false;
-        int maxHitPoints = 300;
+        float maxHitPoints = Math.min(60 * (GameState.getInstance().getDifficultyCoefficient()), 500); //max 500 hp
         float damage = enemy.getDamage() * 0.4f;
 
         MissileConfiguration missileConfiguration = MissileCreator.getInstance().createMissileConfiguration(missileType,

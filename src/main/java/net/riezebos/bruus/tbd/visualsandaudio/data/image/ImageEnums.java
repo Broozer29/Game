@@ -9,9 +9,11 @@ public enum ImageEnums {
     FieryImplosion,
     WithoutGasItsAss,
     PulsingBeacon,
+    RedPortal,
     MutaliskMissileExplosion,
     ChooseOne,
     Consume,
+    FinalBossMine,
     MutaliskPoison,
     BileIcon,
     VileEruptionIcon,
@@ -190,6 +192,7 @@ public enum ImageEnums {
     LightningOrb,
     Explosion2,
     LaserBulletDestruction,
+    FinalBossChargingMissile,
     LightningOrbDestruction,
     LevelUpAnimation,
     ElectroShredImproved,
@@ -342,7 +345,7 @@ public enum ImageEnums {
     Letter_N, Letter_O, Letter_P, Letter_Q, Letter_R, Letter_S, Letter_T, Letter_U, Letter_V, Letter_W, Letter_X,
     Letter_Y, Letter_Z, Letter_Percentage, Letter_Komma, Letter_One, Letter_Two, Letter_Three, Letter_Four, Letter_Five,
     Letter_Six, Letter_Seven, Letter_Eight, Letter_Nine, Letter_Zero, SpaceStationBoss, FireFighter, Starcraft2ConcentratedLaser, Starcraft2RepairBeam, Starcraft2_BatteryUpgrade, Starcraft2_MineExplosion, StickyOilIcon, SelectNewClassAnimation, EscalatingFlames, EntanglingFlames, ProtossShuttleMissileExplosion, ArbiterMultiTargetIcon,
-    CarrierUnlock, DefenderMiniBoss, ReverseHealing, ProtossCorsairExplosion, CallForHelp, Explosion4, Adrenaline, ExplosiveLaserbeams, Guillotine, BonusKaart, MutaliskPlayerMissile, MutaliskExplosion, MutaliskChargeUp;
+    CarrierUnlock, DefenderMiniBoss, ReverseHealing, ProtossCorsairExplosion, CallForHelp, Explosion4, Adrenaline, ExplosiveLaserbeams, Guillotine, BonusKaart, MutaliskPlayerMissile, MutaliskExplosion, MutaliskChargeUp, ;
 
     public static ImageEnums fromChar(char c) {
         switch (c) {

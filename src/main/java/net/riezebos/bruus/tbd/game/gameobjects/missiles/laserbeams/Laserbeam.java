@@ -18,8 +18,8 @@ public abstract class Laserbeam {
     protected Point originPoint;
     protected GameObject originObject;
 
-    protected double angleDegrees;       // Angle in degrees for rotation
-    protected double angleRadians;      // Angle in radians for calculations
+    private double angleDegrees;       // Angle in degrees for rotation
+    private double angleRadians;      // Angle in radians for calculations
 
     protected static final float scale = 1; // This should remain at 1 for now
     protected static int screenWidth = DataClass.getInstance().getWindowWidth();
@@ -29,6 +29,7 @@ public abstract class Laserbeam {
     protected boolean visible;
     protected int xOffset;
     protected int yOffset;
+    protected float angleOffset = 0;
     protected GameObject owner;
     protected float damage;
     protected float transparancyAlpha = 1;
@@ -221,7 +222,13 @@ public abstract class Laserbeam {
     }
 
     public double getAngleDegrees() {
-        return angleDegrees;
+        if(angleDegrees + angleOffset > 360){
+            return angleDegrees + angleOffset - 360;
+        }
+        if(angleDegrees + angleOffset < 0){
+            return angleDegrees + angleOffset + 360;
+        }
+        return angleDegrees + angleOffset;
     }
 
     public void setAngleDegrees(double angleDegrees) {
@@ -234,7 +241,14 @@ public abstract class Laserbeam {
     }
 
     public double getAngleRadians() {
-        return angleRadians;
+        double result = angleRadians + Math.toRadians(angleOffset);
+        if(result > 2 * Math.PI){
+            return result - 2 * Math.PI;
+        }
+        if(result < 0){
+            return result + 2 * Math.PI;
+        }
+        return result;
     }
 
     public void setAngleRadians(double angleRadians) {
@@ -269,5 +283,13 @@ public abstract class Laserbeam {
         this.laserBodies.clear();
         this.originObject = null;
         this.owner = null;
+    }
+
+    public float getAngleOffset() {
+        return angleOffset;
+    }
+
+    public void setAngleOffset(float angleOffset) {
+        this.angleOffset = angleOffset;
     }
 }

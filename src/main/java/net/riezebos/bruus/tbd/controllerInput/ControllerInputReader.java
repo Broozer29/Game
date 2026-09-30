@@ -64,7 +64,7 @@ public class ControllerInputReader {
             }
         }
 
-        if(this.isInputActive(ControllerInputEnums.REQUEST_PRIMARY_CONTROLLER)){
+        if (this.isInputActive(ControllerInputEnums.REQUEST_PRIMARY_CONTROLLER)) {
             ControllerManager.getInstance().requestControl(this);
         }
     }
@@ -116,5 +116,19 @@ public class ControllerInputReader {
 
     public Controller getController() {
         return controller;
+    }
+
+    public void resetInputStates() {
+        // Handle axis movement (Left Stick)
+        inputState.put(ControllerInputEnums.MOVE_LEFT, false);
+        inputState.put(ControllerInputEnums.MOVE_RIGHT, false);
+        inputState.put(ControllerInputEnums.MOVE_UP, false);
+        inputState.put(ControllerInputEnums.MOVE_DOWN, false);
+
+        // Handle button presses
+        inputState.put(ControllerInputEnums.FIRE, false); // Button A
+        inputState.put(ControllerInputEnums.SPECIAL_ATTACK,false ); // Button B
+        inputState.put(ControllerInputEnums.PAUSE, false); // D-Pad Up
+        inputState.put(ControllerInputEnums.REQUEST_PRIMARY_CONTROLLER, false);
     }
 }

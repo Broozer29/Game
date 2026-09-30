@@ -127,8 +127,6 @@ public class LevelManager {
         for (SpaceShip spaceShip : PlayerManager.getInstance().getAllSpaceShips()) {
             spaceShip.setImmune(true);
         }
-
-        gameState.setGameState(GameStatusEnums.Show_Level_Score_Card);
     }
 
 
@@ -242,7 +240,11 @@ public class LevelManager {
 
     public EnemyEnums getNextBoss() {
         if(DevTestSettings.testFinalBossMode) {
-            return EnemyEnums.YellowBoss;
+            return EnemyEnums.FinalBoss;
+        }
+
+        if(GameState.getInstance().isSpawnFinalBoss()) {
+            return EnemyEnums.FinalBoss;
         }
 
         List<EnemyEnums> eligibleBosses = Arrays.stream(EnemyEnums.values()).filter(enemyEnums ->
@@ -356,6 +358,10 @@ public class LevelManager {
 
     public boolean isNextLevelABossLevel() {
         if (GameState.getInstance().getGameMode().equals(GameMode.ManMode) || DevTestSettings.onlyBossLevels) {
+            return true;
+        }
+
+        if(GameState.getInstance().isSpawnFinalBoss()){
             return true;
         }
 

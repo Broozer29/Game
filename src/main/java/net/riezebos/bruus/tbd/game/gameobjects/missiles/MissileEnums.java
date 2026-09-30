@@ -8,6 +8,8 @@ public enum MissileEnums {
     TazerProjectile(ImageEnums.LightningOrbDestruction, ImageEnums.LightningOrb),
     PlayerLaserbeam(ImageEnums.Impact_Explosion_One, ImageEnums.AlienLaserBeamAnimated),
     DefaultAnimatedBullet(ImageEnums.Impact_Explosion_One, ImageEnums.AlienLaserBeamAnimated),
+    FinalBossChargingMissile(ImageEnums.Impact_Explosion_One, ImageEnums.FinalBossChargingMissile),
+    FinalBossSpreadMissile(ImageEnums.Impact_Explosion_One, ImageEnums.FinalBossChargingMissile),
     DefaultLaserBullet(ImageEnums.LaserBulletDestruction, ImageEnums.LaserBullet),
     OrbitCenter(ImageEnums.Destroyed_Explosion, ImageEnums.DestructableOrbitCenterMissile),
     Orbitter(ImageEnums.BarrierProjectileDestruction, ImageEnums.BarrierProjectile),
@@ -16,7 +18,8 @@ public enum MissileEnums {
     StationaryExplodingBomb(ImageEnums.Bomba_Missile_Explosion, ImageEnums.Bomba_Missile),
     YellowBossOrb(ImageEnums.Impact_Explosion_One, ImageEnums.AlienLaserBeamAnimated),
     MutaliskMissile(ImageEnums.GuardianMissileImpact, ImageEnums.MutaliskPlayerMissile),
-    BarrierProjectile(ImageEnums.BarrierProjectileDestruction, ImageEnums.BarrierProjectile);
+    BarrierProjectile(ImageEnums.BarrierProjectileDestruction, ImageEnums.BarrierProjectile),
+    FinalBossMine(ImageEnums.Bomba_Missile_Explosion, ImageEnums.Bomba_Missile);
 
     private ImageEnums deathOrExplosionImageEnum;
     private ImageEnums imageType;

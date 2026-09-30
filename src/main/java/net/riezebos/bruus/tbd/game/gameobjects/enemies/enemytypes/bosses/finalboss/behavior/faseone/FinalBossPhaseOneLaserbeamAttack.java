@@ -25,17 +25,20 @@ public class FinalBossPhaseOneLaserbeamAttack implements BossActionable {
     //Vuurt een tracking laserbeam vanaf de neus die de speler volgt
     private int priority = 15;
     private float cooldown = 7.5f;
-    private double lastFiredTime = GameState.getInstance().getGameSeconds(); //Immediatly set it to prevent carrier from immediatly sniping the player
+    private double lastFiredTime = GameState.getInstance().getGameSeconds();
     private boolean isFiringLaserbeams;
     private double startedFiringTime = 0;
     private double duration = 3;
     private boolean isLiningUp = false;
 
     private SpriteAnimation chargingAnimation;
-    private TrackingLaserBeam trackingLaserbeam;
-    private LaserbeamIndicator laserbeamIndicator;
+    private TrackingLaserBeam upperTrackingLaserbeam;
+    private LaserbeamIndicator upperLaserbeamIndicator;
+    private TrackingLaserBeam lowerTrackingLaserbeam;
+    private LaserbeamIndicator lowerLaserbeamIndicator;
+
     private GameObject target;
-    private float angleDegreeIncrement = 0.13f;
+    private float angleDegreeIncrement = 0.14f;
 
 
     @Override
@@ -43,7 +46,9 @@ public class FinalBossPhaseOneLaserbeamAttack implements BossActionable {
 
         double currentTime = GameState.getInstance().getGameSeconds();
         if (chargingAnimation == null) {
-            initSpawnAnimations(enemy);
+            initLaserbeamChargeAnimations(enemy);
+        } else {
+            updateLaserbeamChargeAnimation(enemy);
         }
 
         if (enemy.isAllowedToFire() && currentTime >= lastFiredTime + cooldown && WithinVisualBoundariesCalculator.isWithinBoundaries(enemy)) {
@@ -61,9 +66,14 @@ public class FinalBossPhaseOneLaserbeamAttack implements BossActionable {
                     chargingAnimation.getCurrentFrame() == chargingAnimation.getTotalFrames() - 1 &&
                     !isFiringLaserbeams) {
                 createLaserbeams(enemy);
-                trackingLaserbeam.update(); //Prevents the laserbeams from "jumping" to the right position by doing it before adding them to missilemanager
+
+                for (int i = 0; i < 200; i++) {
+                    upperTrackingLaserbeam.update(); //Engine bug: Prevents the laserbeams from "jumping" to the right position by doing it before adding them to missilemanager
+                    lowerTrackingLaserbeam.update();
+                }
                 chargingAnimation.setVisible(false);
-                MissileManager.getInstance().addLaserBeam(trackingLaserbeam);
+                MissileManager.getInstance().addLaserBeam(upperTrackingLaserbeam);
+                MissileManager.getInstance().addLaserBeam(lowerTrackingLaserbeam);
                 startedFiringTime = currentTime;
                 isFiringLaserbeams = true;
                 isLiningUp = false;
@@ -71,27 +81,37 @@ public class FinalBossPhaseOneLaserbeamAttack implements BossActionable {
 
         }
 
-        if (this.isLiningUp && this.laserbeamIndicator == null) {
-            laserbeamIndicator = new LaserbeamIndicator(chargingAnimation.getCenterXCoordinate(), chargingAnimation.getCenterYCoordinate(), target.getCenterXCoordinate(), target.getCenterYCoordinate(), 1, enemy);
-            laserbeamIndicator.setLength(20 * Laserbeam.bodyWidth);
-            MissileManager.getInstance().addLaserbeamIndicator(laserbeamIndicator);
+        if (this.isLiningUp && this.upperLaserbeamIndicator == null) {
+            upperLaserbeamIndicator = new LaserbeamIndicator(chargingAnimation.getCenterXCoordinate(), chargingAnimation.getCenterYCoordinate(), target.getCenterXCoordinate(), target.getCenterYCoordinate(), 1, enemy);
+            upperLaserbeamIndicator.setLength(20 * Laserbeam.bodyWidth);
+            MissileManager.getInstance().addLaserbeamIndicator(upperLaserbeamIndicator);
+
+            lowerLaserbeamIndicator = new LaserbeamIndicator(chargingAnimation.getCenterXCoordinate(), chargingAnimation.getCenterYCoordinate(), target.getCenterXCoordinate(), target.getCenterYCoordinate(), 1, enemy);
+            lowerLaserbeamIndicator.setLength(20 * Laserbeam.bodyWidth);
+            MissileManager.getInstance().addLaserbeamIndicator(lowerLaserbeamIndicator);
         }
 
-        if (this.isLiningUp && this.laserbeamIndicator != null) {
-            laserbeamIndicator.setStartingXCoordinate(chargingAnimation.getCenterXCoordinate());
-            laserbeamIndicator.setStartingYCoordinate(chargingAnimation.getCenterYCoordinate());
-            this.laserbeamIndicator.targetTowardsCoordinates(target.getCenterXCoordinate(), target.getCenterYCoordinate());
+        if (this.isLiningUp && this.upperLaserbeamIndicator != null) {
+            upperLaserbeamIndicator.setStartingXCoordinate(chargingAnimation.getCenterXCoordinate());
+            upperLaserbeamIndicator.setStartingYCoordinate(chargingAnimation.getCenterYCoordinate());
+            lowerLaserbeamIndicator.setStartingXCoordinate(chargingAnimation.getCenterXCoordinate());
+            lowerLaserbeamIndicator.setStartingYCoordinate(chargingAnimation.getCenterYCoordinate());
+            this.upperLaserbeamIndicator.targetTowardsCoordinates(target.getCenterXCoordinate(), target.getCenterYCoordinate());
+            this.lowerLaserbeamIndicator.targetTowardsCoordinates(target.getCenterXCoordinate(), target.getCenterYCoordinate());
         }
 
         if (isFiringLaserbeams) {
             updateLaserbeamOriginPoints(enemy);
             updateLaserbeamVisibility();
-            if (laserbeamIndicator != null && laserbeamIndicator.isActive()) {
-                laserbeamIndicator.setActive(false);
-                laserbeamIndicator = null;
+            if (upperLaserbeamIndicator != null && upperLaserbeamIndicator.isActive()) {
+                upperLaserbeamIndicator.setActive(false);
+                lowerLaserbeamIndicator.setActive(false);
+                upperLaserbeamIndicator = null;
+                lowerLaserbeamIndicator = null;
             }
-            if (!trackingLaserbeam.isVisible()) {
-                trackingLaserbeam = null;
+            if (!upperTrackingLaserbeam.isVisible()) {
+                upperTrackingLaserbeam = null;
+                lowerTrackingLaserbeam = null;
                 enemy.setAttacking(false);
                 isFiringLaserbeams = false;
                 lastFiredTime = currentTime;
@@ -104,38 +124,53 @@ public class FinalBossPhaseOneLaserbeamAttack implements BossActionable {
     }
 
     private void updateLaserbeamVisibility() {
-        if (trackingLaserbeam != null && startedFiringTime + duration < GameState.getInstance().getGameSeconds()) {
-            trackingLaserbeam.setVisible(false);
+        if (upperTrackingLaserbeam != null && startedFiringTime + duration < GameState.getInstance().getGameSeconds()) {
+            upperTrackingLaserbeam.setVisible(false);
+            lowerTrackingLaserbeam.setVisible(false);
         }
     }
 
-    private void lockOnTarget(Enemy enemy){
+    private void lockOnTarget(Enemy enemy) {
         target = PlayerManager.getInstance().getFurthestSpaceShip(enemy);
     }
 
     private void createLaserbeams(Enemy enemy) {
         //Create upper laserbeam
         float damage = enemy.getDamage() * 0.2f;
-        LaserbeamConfiguration upperLaserbeamConfiguration = new LaserbeamConfiguration(true, damage);
-        upperLaserbeamConfiguration.setAmountOfLaserbeamSegments(20);
-        upperLaserbeamConfiguration.setTargetToAimAt(target);
-        upperLaserbeamConfiguration.setOriginPoint(new Point(
+        LaserbeamConfiguration laserbeamConfiguration = new LaserbeamConfiguration(true, damage);
+        laserbeamConfiguration.setAmountOfLaserbeamSegments(20);
+        laserbeamConfiguration.setTargetToAimAt(target);
+        laserbeamConfiguration.setOriginPoint(new Point(
                 chargingAnimation.getCenterXCoordinate() - Laserbeam.bodyWidth / 2 + 4,
                 chargingAnimation.getCenterYCoordinate() - Laserbeam.bodyWidth / 2 + 12
         ));
-        upperLaserbeamConfiguration.setBlocksMovement(true);
+        laserbeamConfiguration.setBlocksMovement(true);
 
-        if (trackingLaserbeam != null) {
-            trackingLaserbeam.setVisible(false);
+        if (upperTrackingLaserbeam != null) {
+            upperTrackingLaserbeam.setVisible(false);
         }
 
-        trackingLaserbeam = new TrackingLaserBeam(upperLaserbeamConfiguration);
+        upperTrackingLaserbeam = new TrackingLaserBeam(laserbeamConfiguration);
         updateLaserbeamOriginPoints(enemy);
-        trackingLaserbeam.setOwner(enemy);
-        trackingLaserbeam.setMaxRotationPerUpdate(angleDegreeIncrement);
+        upperTrackingLaserbeam.setOwner(enemy);
+        upperTrackingLaserbeam.setMaxRotationPerUpdate(angleDegreeIncrement);
+        upperTrackingLaserbeam.setAngleOffset(10);
+
+        if (lowerTrackingLaserbeam != null) {
+            lowerTrackingLaserbeam.setVisible(false);
+        }
+        lowerTrackingLaserbeam = new TrackingLaserBeam(laserbeamConfiguration);
+        updateLaserbeamOriginPoints(enemy);
+        lowerTrackingLaserbeam.setOwner(enemy);
+        lowerTrackingLaserbeam.setMaxRotationPerUpdate(angleDegreeIncrement);
+        lowerTrackingLaserbeam.setAngleOffset(-10);
     }
 
-    private void initSpawnAnimations(Enemy enemy) {
+    private void updateLaserbeamChargeAnimation(Enemy enemy) {
+        chargingAnimation.setCenterCoordinates(enemy.getCenterXCoordinate(), enemy.getCenterYCoordinate());
+    }
+
+    private void initLaserbeamChargeAnimations(Enemy enemy) {
         chargingAnimation = new SpriteAnimation(createChargingAnimationConfig(enemy));
         chargingAnimation.setAnimationScale(2f);
         chargingAnimation.setFrameDelay(10);
@@ -160,8 +195,14 @@ public class FinalBossPhaseOneLaserbeamAttack implements BossActionable {
     }
 
     private void updateLaserbeamOriginPoints(Enemy enemy) {
-        if (trackingLaserbeam != null) {
-            trackingLaserbeam.setOriginPoint(new Point(
+        if (upperTrackingLaserbeam != null) {
+            upperTrackingLaserbeam.setOriginPoint(new Point(
+                    enemy.getCenterXCoordinate() - Laserbeam.bodyWidth / 2 + 4,
+                    enemy.getCenterYCoordinate() - Laserbeam.bodyWidth / 2 + 12
+            ));
+        }
+        if (lowerTrackingLaserbeam != null) {
+            lowerTrackingLaserbeam.setOriginPoint(new Point(
                     enemy.getCenterXCoordinate() - Laserbeam.bodyWidth / 2 + 4,
                     enemy.getCenterYCoordinate() - Laserbeam.bodyWidth / 2 + 12
             ));

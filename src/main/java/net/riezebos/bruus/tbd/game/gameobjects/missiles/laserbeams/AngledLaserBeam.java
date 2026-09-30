@@ -7,9 +7,9 @@ public class AngledLaserBeam extends Laserbeam {
 
     public AngledLaserBeam(LaserbeamConfiguration laserbeamConfiguration) {
         super(laserbeamConfiguration);
-        this.angleDegrees = laserbeamConfiguration.getAngleDegrees();
-        this.angleRadians = Math.toRadians(angleDegrees);
-        this.lastAngleDegrees = angleDegrees;
+        setAngleDegrees(laserbeamConfiguration.getAngleDegrees());
+        setAngleRadians(Math.toRadians(laserbeamConfiguration.getAngleDegrees()));
+        this.lastAngleDegrees = getAngleDegrees();
         initAnimations();
     }
 
@@ -37,15 +37,15 @@ public class AngledLaserBeam extends Laserbeam {
             }
         }
 
-        if(angleDegrees != lastAngleDegrees){
+        if(getAngleDegrees() != lastAngleDegrees){
             needsUpdate = true;
         }
 
         if (!needsUpdate) return;
 
         // Recalculate positions
-        double deltaX_per_segment = Math.cos(angleRadians) * bodyWidth;
-        double deltaY_per_segment = Math.sin(angleRadians) * bodyWidth;
+        double deltaX_per_segment = Math.cos(getAngleRadians()) * bodyWidth;
+        double deltaY_per_segment = Math.sin(getAngleRadians()) * bodyWidth;
 
         double x = originPoint.getX();
         double y = originPoint.getY();
@@ -59,7 +59,7 @@ public class AngledLaserBeam extends Laserbeam {
             // Only need to rotate once since angle doesn't change
             if (needsUpdate) {
                 // Round to nearest 0.2 interval for cache optimization
-                double roundedAngle = Math.round(angleDegrees * 5.0) / 5.0;
+                double roundedAngle = Math.round(getAngleDegrees() * 5.0) / 5.0;
                 segment.rotateAnimation(roundedAngle, false, maintainCacheKey);
             }
 

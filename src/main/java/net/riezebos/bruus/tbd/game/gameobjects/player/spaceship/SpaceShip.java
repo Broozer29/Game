@@ -405,6 +405,7 @@ public class SpaceShip extends GameObject {
         removeInvisibleAnimations();
         updateGameObjectEffects();
         reduceOverloadedShieldPoints();
+        super.updateOrbitingObjects();
 
         if (PlayerStats.getInstance().getPlayerClass().equals(PlayerClass.Carrier)) {
             ProtossUtils.getInstance().buildProtossShips(this);

@@ -26,6 +26,7 @@ public class GameState {
     private int stagesCompleted = 1;
     private long gameTicksExecuted;
 
+    private boolean spawnFinalBoss = false;
 
     private float difficultyCoefficient;
     private int monsterLevel;
@@ -51,6 +52,7 @@ public class GameState {
         this.bossesDefeated = 0;
         difficultyCoefficient = 1;
         lastPause = 0;
+        spawnFinalBoss = false;
     }
 
 
@@ -229,5 +231,12 @@ public class GameState {
         return this.gameSeconds - levelStartTime;
     }
 
+    public boolean isSpawnFinalBoss() {
+        return spawnFinalBoss;
+    }
+
+    public void setSpawnFinalBoss(boolean spawnFinalBoss) {
+        this.spawnFinalBoss = spawnFinalBoss;
+    }
 }
 
