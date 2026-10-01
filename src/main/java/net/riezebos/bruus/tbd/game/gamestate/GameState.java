@@ -60,8 +60,8 @@ public class GameState {
 
     public void updateDifficultyCoefficient() {
         float playerFactor = 1 + (PlayerManager.getInstance().getPlayerCount() - 1) * 0.15f; //15% extra for each player
-        float baseTimeFactor = 0.0786f; // Base factor for time, at LevelManager difficulty 2
-        float maxTimeFactor = 0.1275f;   // Maximum time factor for LevelManager difficulty 6
+        float baseTimeFactor = 0.0826f; // Base factor for time, at LevelManager difficulty 2
+        float maxTimeFactor = 0.1375f;   // Maximum time factor for LevelManager difficulty 6
         float stageFactor = (float) Math.pow(1.08, stagesCompleted); // Exponential growth for each stage completed
 
         float songDifficultyModifier = LevelManager.getInstance().getCurrentLevelDifficultyScore();
@@ -70,7 +70,7 @@ public class GameState {
 
         double timeInMinutes = 0.015f / 60.0f; // Convert seconds to minutes
 
-        float godRunBonus = GodRunDetector.getInstance().getGodRunScore() >= 3 ? 1.2f : 1;
+        float godRunBonus = GodRunDetector.getInstance().getGodRunScore() >= 3 ? 1.5f : 1;
         // Calculate the additional difficulty increment
         float increment = (float)((timeInMinutes * timeFactor) * stageFactor) + testingVariableBonus * godRunBonus * playerFactor;
 
