@@ -4,6 +4,7 @@ import net.java.games.input.Component;
 import net.java.games.input.Controller;
 import net.java.games.input.Event;
 import net.java.games.input.EventQueue;
+import net.riezebos.bruus.tbd.game.gamestate.GameState;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -16,6 +17,8 @@ public class ControllerInputReader {
     private float yAxisValue;
     private float inputStrengthRequired;
     private boolean sensitiveInput;
+    private double lastGameSecondsTogglePressed = 0;
+    private double toggleDelay = 1;
 
     public ControllerInputReader(Controller controller) {
         this.controller = controller;
@@ -52,9 +55,17 @@ public class ControllerInputReader {
             if (comp.getIdentifier() == Component.Identifier.Button._0) {
                 inputState.put(ControllerInputEnums.FIRE, value == 1.0f); // Button A
             }
+            if (comp.getIdentifier() == Component.Identifier.Button._4) {
+                if (value == 1.0f && GameState.getInstance().getGameSeconds() - lastGameSecondsTogglePressed > toggleDelay) {
+                    lastGameSecondsTogglePressed = GameState.getInstance().getGameSeconds();
+                    toggleHoldFire();
+                }
+//                inputState.put(ControllerInputEnums.HOLD_FIRE, value == 1.0f); // Button A
+            }
             if (comp.getIdentifier() == Component.Identifier.Button._1 || comp.getIdentifier() == Component.Identifier.Button._6 || comp.getIdentifier() == Component.Identifier.Button._7) {
                 inputState.put(ControllerInputEnums.SPECIAL_ATTACK, value == 1.0f); // Button B
             }
+
             if (comp.getIdentifier() == Component.Identifier.Button._11) {
                 inputState.put(ControllerInputEnums.PAUSE, value == 1.0f); // D-Pad Up
             }
@@ -67,6 +78,10 @@ public class ControllerInputReader {
         if (this.isInputActive(ControllerInputEnums.REQUEST_PRIMARY_CONTROLLER)) {
             ControllerManager.getInstance().requestControl(this);
         }
+    }
+
+    private void toggleHoldFire() {
+        inputState.put(ControllerInputEnums.HOLD_FIRE, !inputState.getOrDefault(ControllerInputEnums.HOLD_FIRE, false));
     }
 
     public boolean isInputActive(ControllerInputEnums input) {
@@ -126,8 +141,9 @@ public class ControllerInputReader {
         inputState.put(ControllerInputEnums.MOVE_DOWN, false);
 
         // Handle button presses
+        inputState.put(ControllerInputEnums.HOLD_FIRE, false); // Button Y
         inputState.put(ControllerInputEnums.FIRE, false); // Button A
-        inputState.put(ControllerInputEnums.SPECIAL_ATTACK,false ); // Button B
+        inputState.put(ControllerInputEnums.SPECIAL_ATTACK, false); // Button B
         inputState.put(ControllerInputEnums.PAUSE, false); // D-Pad Up
         inputState.put(ControllerInputEnums.REQUEST_PRIMARY_CONTROLLER, false);
     }

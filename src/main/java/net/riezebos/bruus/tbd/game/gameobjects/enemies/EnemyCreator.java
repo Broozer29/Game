@@ -6,6 +6,7 @@ import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.bluebos
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.blueboss.BlueBossFactoryDefender;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.carrier.CarrierBoss;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.finalboss.FinalBoss;
+import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.finalboss.behavior.fasetwo.FinalBossLaserbeamClone;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.redboss.RedBoss;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.spacestation.SpaceStationBoss;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.striker.StrikerBoss;
@@ -295,6 +296,9 @@ public class EnemyCreator {
             }
             case FinalBoss -> {
                 return new FinalBoss(upgradeConfig(spriteConfiguration, 2, true), enemyConfiguration, movementConfiguration);
+            }
+            case FinalBossLaserbeamClone -> {
+                return new FinalBossLaserbeamClone(upgradeConfig(spriteConfiguration, 2, true), enemyConfiguration, movementConfiguration);
             }
 
         }

@@ -208,6 +208,12 @@ public enum EnemyEnums {
             1150, 500, 0, 2f, 0.25f, 337, 196,
             99999),
 
+    FinalBossLaserbeamClone(7000, 12,
+            AudioEnums.Alien_Spaceship_Destroyed,
+            ImageEnums.FinalBossAnim, ImageEnums.BossExplosion, 0, EnemyCategory.Boss, EnemyTribes.Generic, 20,
+            1150, 500, 0, 2f, 0.25f, 337, 196,
+            99999),
+
     BlueBoss(4850, 9,
             AudioEnums.Alien_Spaceship_Destroyed,
             ImageEnums.BlueBoss, ImageEnums.BossExplosion, 0, EnemyCategory.Boss, EnemyTribes.Generic, 20,

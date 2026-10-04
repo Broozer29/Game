@@ -6,6 +6,7 @@ public enum ControllerInputEnums {
     MOVE_UP,
     MOVE_DOWN,
     FIRE,
+    HOLD_FIRE,
     SPECIAL_ATTACK,
     PAUSE,
     REQUEST_PRIMARY_CONTROLLER,

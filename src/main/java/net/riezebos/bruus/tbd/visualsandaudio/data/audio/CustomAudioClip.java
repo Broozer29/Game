@@ -1,6 +1,7 @@
 package net.riezebos.bruus.tbd.visualsandaudio.data.audio;
 
 import javafx.scene.media.MediaPlayer;
+import net.riezebos.bruus.tbd.DevTestSettings;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.AudioEnums;
 
 
@@ -176,8 +177,10 @@ public class CustomAudioClip {
                 case OverlordDeath -> 0.5f;
                 default -> 0.7f;
             };
-
             mediaPlayer.setVolume(volume);
+            if(DevTestSettings.devTestMuteMode){
+                mediaPlayer.setVolume(0.01);
+            }
         }
     }
 

@@ -32,8 +32,8 @@ import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.Sprit
 import java.util.Random;
 
 public class FinalBossDropMineCharge implements BossActionable {
-    private double lastAttackTime = GameState.getInstance().getGameSeconds() - 22;
-    private double attackCooldown = 25;
+    private double lastAttackTime = GameState.getInstance().getGameSeconds() - 32;
+    private double attackCooldown = 35;
     private double lastBombDroppedTime = 0;
     private double bombDropCooldown = 0.1f;
     private int priority = 13;

@@ -22,7 +22,7 @@ public class FinalBossSpreadMissileAttack implements BossActionable {
     private double lastAttackedTime = GameState.getInstance().getGameSeconds() - 15;
     private double attackCooldown = 20;
     private int priority = 2;
-    private int missilesPerBoardBlock = 4;
+    private int missilesPerBoardBlock = 2;
     private int missileWavesFired = 1;
 
     private SpriteAnimation attackingAnimation;
