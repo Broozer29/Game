@@ -70,13 +70,13 @@ public class MenuBoardCreator {
         SpriteConfiguration spriteConfiguration = new SpriteConfiguration();
         spriteConfiguration.setxCoordinate(xCoordinate);
         spriteConfiguration.setyCoordinate(yCoordinate);
-        spriteConfiguration.setScale(1.5f * resolutionFactor);
+        spriteConfiguration.setScale(0.55f * resolutionFactor);
         spriteConfiguration.setImageType(ImageEnums.InputMapping);
 
         GUIComponent inputMapping = new DisplayOnly(spriteConfiguration);
         inputMapping.setDescriptionOfComponent("Input mapping image");
-        inputMapping.setXCoordinate(Math.round(xCoordinate - (inputMapping.getWidth() * 1.1f)));
-        inputMapping.setYCoordinate(Math.round(yCoordinate - (inputMapping.getHeight() * 1.3f)));
+        inputMapping.setXCoordinate(Math.round(xCoordinate - (inputMapping.getWidth() * 1f)));
+        inputMapping.setYCoordinate(Math.round(yCoordinate - (inputMapping.getHeight() * 1f)));
         return inputMapping;
     }
 
