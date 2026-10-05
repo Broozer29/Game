@@ -15,7 +15,7 @@ import net.riezebos.bruus.tbd.game.items.enums.ItemApplicationEnum;
 public class ModuleFocusFire extends Item {
 
     public ModuleFocusFire() {
-        super(ItemEnums.ModuleAccuracy, 1, ItemApplicationEnum.AfterCollision);
+        super(ItemEnums.ModuleFocusFire, 1, ItemApplicationEnum.AfterCollision);
     }
 
 
