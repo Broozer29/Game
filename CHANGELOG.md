@@ -2,6 +2,13 @@
 
 All notable changes on the `Nelis` branch.
 
+## 2026-10-06
+
+### Changed
+- Faster startup (about 36 s to 19 s on the measuring machine): images start loading as soon as the game launches, alongside the rest of the startup, and are decoded in memory instead of through temp files.
+- Image resize and rotate cache lookups go straight to the stored key instead of checking every key, so they no longer slow down as the cache grows.
+- Image cropping reads transparency a row at a time instead of pixel by pixel.
+
 ## 2026-10-05
 
 ### Added

@@ -18,6 +18,9 @@ public class ImageResizer {
 
     private Map<ImageCacheKey, BufferedImage> bufferedImageCache = new HashMap<>();
     private Map<ImageCacheKey, ArrayList<BufferedImage>> bufferedImageListCache = new HashMap<>();
+    // Look up the stored cache key by its string, so a cache lookup doesn't have to scan every key
+    private Map<String, ImageCacheKey> bufferedImageCacheKeys = new HashMap<>();
+    private Map<String, ImageCacheKey> bufferedImageListCacheKeys = new HashMap<>();
 
     private ImageResizer() {
     }
@@ -37,7 +40,7 @@ public class ImageResizer {
         }
 
         String keyString = image.hashCode() + "_" + scale;
-        ImageCacheKey imageCacheKey = findOrCreateCacheKey(bufferedImageCache, keyString);
+        ImageCacheKey imageCacheKey = findOrCreateCacheKey(bufferedImageCacheKeys, keyString);
 
         if (imageCacheKey != null && bufferedImageCache.containsKey(imageCacheKey)) {
             imageCacheKey.updateAccessTime();
@@ -52,6 +55,7 @@ public class ImageResizer {
 
         bufferedImage = transformop.filter(image, null);
         bufferedImageCache.put(imageCacheKey, bufferedImage);
+        bufferedImageCacheKeys.put(keyString, imageCacheKey);
 
         return bufferedImage;
     }
@@ -69,7 +73,7 @@ public class ImageResizer {
                 .map(image -> Integer.toString(image.hashCode()))
                 .collect(Collectors.joining("_")) + "_" + scale;
 
-        ImageCacheKey imageCacheKey = findOrCreateCacheKey(bufferedImageListCache, keyString);
+        ImageCacheKey imageCacheKey = findOrCreateCacheKey(bufferedImageListCacheKeys, keyString);
         if (imageCacheKey != null && bufferedImageListCache.containsKey(imageCacheKey)) {
             imageCacheKey.updateAccessTime();
             return bufferedImageListCache.get(imageCacheKey);
@@ -84,6 +88,7 @@ public class ImageResizer {
         }
 
         bufferedImageListCache.put(imageCacheKey, newFrames);
+        bufferedImageListCacheKeys.put(keyString, imageCacheKey);
 
         return newFrames;
     }
@@ -95,7 +100,7 @@ public class ImageResizer {
         }
         String keyString = image.hashCode() + "_" + width + "x" + height;
 
-        ImageCacheKey imageCacheKey = findOrCreateCacheKey(bufferedImageCache, keyString);
+        ImageCacheKey imageCacheKey = findOrCreateCacheKey(bufferedImageCacheKeys, keyString);
         if (imageCacheKey != null && bufferedImageCache.containsKey(imageCacheKey)) {
             imageCacheKey.updateAccessTime();
             return bufferedImageCache.get(imageCacheKey);
@@ -109,17 +114,13 @@ public class ImageResizer {
 
         bufferedImage = bilinearScaleOp.filter(image, new BufferedImage(width, height, image.getType()));
         bufferedImageCache.put(imageCacheKey, bufferedImage);
+        bufferedImageCacheKeys.put(keyString, imageCacheKey);
 
         return bufferedImage;
     }
 
-    private <T> ImageCacheKey findOrCreateCacheKey(Map<ImageCacheKey, T> cache, String keyString) {
-        for (ImageCacheKey key : cache.keySet()) {
-            if (key.getKey().equals(keyString)) {
-                return key;
-            }
-        }
-        return null;
+    private ImageCacheKey findOrCreateCacheKey(Map<String, ImageCacheKey> cacheKeys, String keyString) {
+        return cacheKeys.get(keyString);
     }
 
     /**
@@ -136,6 +137,9 @@ public class ImageResizer {
         bufferedImageListCache.entrySet().removeIf(entry ->
                 entry.getKey().getTimeSinceLastAccess() > maxAge && !entry.getKey().mustNeverBeReleased()
         );
+
+        bufferedImageCacheKeys.values().removeIf(key -> !bufferedImageCache.containsKey(key));
+        bufferedImageListCacheKeys.values().removeIf(key -> !bufferedImageListCache.containsKey(key));
     }
 
 }

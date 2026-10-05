@@ -30,6 +30,12 @@ public class Game {
 
         try {
             logDiagnostic("=== Application Starting ===");
+            // Start loading images right away, so it runs while JavaFX, the controllers, the window and the audio start up
+            new Thread(() -> {
+                // Decode images in memory instead of copying every image to a temp file first
+                javax.imageio.ImageIO.setUseCache(false);
+                ImageDatabase.getInstance();
+            }, "ImageLoading").start();
             // Detect and log OpenGL/hardware acceleration availability
             detectHardwareAcceleration();
 
@@ -237,6 +243,7 @@ public class Game {
                 enemyEnum.getDefaultScale(), enemyEnum.getMovementSpeed());
         yellowBoss.deleteObject();
 
+        logDiagnostic("Preloading laserbeams...");
         runtime = Runtime.getRuntime();
         usedMemory = runtime.totalMemory() - runtime.freeMemory();
         System.out.printf("Before preloading laserbeams memory usage: %.3f GB%n", usedMemory / (1024.0 * 1024.0 * 1024.0));

@@ -20,6 +20,9 @@ public class ImageRotator {
 
     private Map<ImageCacheKey, BufferedImage> rotatedImageCache = new HashMap<>();
     private Map<ImageCacheKey, ArrayList<BufferedImage>> rotatedFramesCache = new HashMap<>();
+    // Look up the stored cache key by its string, so a cache lookup doesn't have to scan every key
+    private Map<String, ImageCacheKey> rotatedImageCacheKeys = new HashMap<>();
+    private Map<String, ImageCacheKey> rotatedFramesCacheKeys = new HashMap<>();
     private List<ImageEnums> blockedFromRotating = new ArrayList<>();
 
     private ImageRotator () {
@@ -43,7 +46,7 @@ public class ImageRotator {
                 .map(image -> Integer.toString(image.hashCode()))
                 .collect(Collectors.joining("_")) + "_" + rotation;
 
-        ImageCacheKey imageCacheKey = findOrCreateCacheKey(rotatedFramesCache, keyString);
+        ImageCacheKey imageCacheKey = findOrCreateCacheKey(rotatedFramesCacheKeys, keyString);
         if (imageCacheKey != null && rotatedFramesCache.containsKey(imageCacheKey)) {
             imageCacheKey.updateAccessTime();
             return rotatedFramesCache.get(imageCacheKey);
@@ -56,6 +59,7 @@ public class ImageRotator {
             newFrames.add(rotate(frame, rotation, crop));
         }
         rotatedFramesCache.put(imageCacheKey, newFrames);
+        rotatedFramesCacheKeys.put(keyString, imageCacheKey);
         return newFrames;
     }
 
@@ -70,7 +74,7 @@ public class ImageRotator {
                 .map(image -> Integer.toString(image.hashCode()))
                 .collect(Collectors.joining("_")) + "_" + roundedDegrees;
 
-        ImageCacheKey imageCacheKey = findOrCreateCacheKey(rotatedFramesCache, keyString);
+        ImageCacheKey imageCacheKey = findOrCreateCacheKey(rotatedFramesCacheKeys, keyString);
         if (imageCacheKey != null && rotatedFramesCache.containsKey(imageCacheKey)) {
             imageCacheKey.updateAccessTime();
 
@@ -92,6 +96,7 @@ public class ImageRotator {
 
         ImageCropper.getInstance().cropFramesToUniformContent(adjustedFrames);
         rotatedFramesCache.put(imageCacheKey, adjustedFrames);
+        rotatedFramesCacheKeys.put(keyString, imageCacheKey);
         // Return the list of adjusted frames
         return adjustedFrames;
     }
@@ -108,7 +113,7 @@ public class ImageRotator {
     private BufferedImage rotate (BufferedImage image, double angle, boolean crop, boolean maintainCacheKey) {
         double roundedDegrees = Math.round(angle * 5.0) / 5.0;
         String keyString = image.hashCode() + "_" + roundedDegrees;
-        ImageCacheKey imageCacheKey = findOrCreateCacheKey(rotatedImageCache, keyString);
+        ImageCacheKey imageCacheKey = findOrCreateCacheKey(rotatedImageCacheKeys, keyString);
         if (imageCacheKey != null && rotatedImageCache.containsKey(imageCacheKey)) {
             imageCacheKey.updateAccessTime();
             return rotatedImageCache.get(imageCacheKey);
@@ -152,6 +157,7 @@ public class ImageRotator {
         }
 
         rotatedImageCache.put(imageCacheKey, bufferedImage);
+        rotatedImageCacheKeys.put(keyString, imageCacheKey);
         return bufferedImage;
     }
 
@@ -163,9 +169,11 @@ public class ImageRotator {
         int maxY = 0;
 
         // Traverse the image to find the bounding box of non-transparent pixels
+        int[] alphaRow = new int[image.getWidth()];
         for (int y = 0; y < image.getHeight(); y++) {
+            ImageCropper.getInstance().readAlphaRow(image, y, alphaRow);
             for (int x = 0; x < image.getWidth(); x++) {
-                int alpha = (image.getRGB(x, y) >> 24) & 255;
+                int alpha = alphaRow[x];
                 if (alpha > 0) { // Pixel is not fully transparent
                     if (x < minX) minX = x;
                     if (y < minY) minY = y;
@@ -277,13 +285,8 @@ public class ImageRotator {
         return blockedFromRotating.contains(imageEnums);
     }
 
-    private <T> ImageCacheKey findOrCreateCacheKey(Map<ImageCacheKey, T> cache, String keyString) {
-        for (ImageCacheKey key : cache.keySet()) {
-            if (key.getKey().equals(keyString)) {
-                return key;
-            }
-        }
-        return null;
+    private ImageCacheKey findOrCreateCacheKey(Map<String, ImageCacheKey> cacheKeys, String keyString) {
+        return cacheKeys.get(keyString);
     }
 
     /**
@@ -300,5 +303,8 @@ public class ImageRotator {
         rotatedFramesCache.entrySet().removeIf(entry ->
             entry.getKey().getTimeSinceLastAccess() > maxAge && !entry.getKey().mustNeverBeReleased()
         );
+
+        rotatedImageCacheKeys.values().removeIf(key -> !rotatedImageCache.containsKey(key));
+        rotatedFramesCacheKeys.values().removeIf(key -> !rotatedFramesCache.containsKey(key));
     }
 }
