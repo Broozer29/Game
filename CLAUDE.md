@@ -52,6 +52,8 @@ Searching the whole codebase is expensive. Start from these files for a subject 
 - Match the existing code style of the surrounding file. Do not restyle, rename, or refactor code
   outside the task at hand.
 - Work happens on the `Nelis` branch. Commit only there.
+- Every change we commit gets a line in `CHANGELOG.md` under today's date (Added / Changed / Fixed),
+  in the same commit.
 - Work in this repo is not tracked in the Plan, and there are no project bindings; skills fall
   back to their stated defaults here.
 
