@@ -57,7 +57,7 @@ public class ItemDescriptionRetriever {
                 return "You deal double damage. You take double damage.";
             } //relic
             case HelpRequested -> {
-                return "Contracts become FREE and will always reward LEGENDARY items. Contracts now require " + Math.round((Contract.killCountRequired * (1 + HelpRequested.additionalKillsRequiredModifier))) + " kills to be completed.";
+                return "Contracts become FREE and will always reward LEGENDARY items. Contracts now require you to kill " + HelpRequested.miniBossesRequired + " mini bosses during a SINGLE LEVEL to be completed.";
             } //relic
             case ElectricDestabilizer -> {
                 return "Electroshred now stuns non-boss enemies for " + Math.round(ElectricDestabilizer.duration) + " seconds. Preventing them from moving and attacking.";

@@ -13,6 +13,7 @@ import net.riezebos.bruus.tbd.game.items.items.deprecated.MoneyPrinter;
 import net.riezebos.bruus.tbd.game.items.items.deprecated.RepulsionArmorPlate;
 import net.riezebos.bruus.tbd.game.items.items.firefighter.*;
 import net.riezebos.bruus.tbd.game.items.items.mutalisk.*;
+import net.riezebos.bruus.tbd.game.items.items.util.ContractType;
 import net.riezebos.bruus.tbd.game.playerprofile.PlayerProfileManager;
 import net.riezebos.bruus.tbd.guiboards.BoardManager;
 import net.riezebos.bruus.tbd.guiboards.boardcreators.AchievementUnlockHelper;
@@ -28,6 +29,7 @@ public class PlayerInventory {
     private static PlayerInventory instance = new PlayerInventory();
     private Map<ItemEnums, Item> items = new HashMap<>();
     private float cashMoney = 0;
+    private ContractType contractType = ContractType.DEFAULT;
 
     private PlayerInventory() {
         resetInventory();
@@ -39,6 +41,7 @@ public class PlayerInventory {
 
         //todo Sloppy fixes to reset items here tbh
         Contract.killCountRequired = Contract.originalCountRequired;
+        contractType = ContractType.DEFAULT;
         Consume.currentKillCount = 0;
         Consume.currentMaxHpBonus = 0;
         ExplosiveGreed.coinsPickedUp = 0;
@@ -356,5 +359,13 @@ public class PlayerInventory {
         if (this.items.containsKey(item)) {
             items.remove(item);
         }
+    }
+
+    public ContractType getContractType() {
+        return contractType;
+    }
+
+    public void setContractType(ContractType contractType) {
+        this.contractType = contractType;
     }
 }

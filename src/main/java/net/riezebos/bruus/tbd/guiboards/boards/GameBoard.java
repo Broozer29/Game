@@ -157,6 +157,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
         PlayerManager.getInstance().createSpaceShip();
         gameUICreator.createGameBoardGUI();
         gameState.setGameState(GameStatusEnums.Zoning_In);
+        GameState.getInstance().resetForNextLevel();
         drawTimer.start();
         floatingIcons.clear();
         selectedComponent = null;
@@ -290,6 +291,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
         if (zoningOutAlpha >= 1) {
             gameState.setGameState(GameStatusEnums.Shopping);
             gameState.setStagesCompleted(gameState.getStagesCompleted() + 1);
+            gameState.giveEndOfLevelBoost();
             backgroundManager.resetManager();
             zoningInAlpha = 1;
             zoningOutAlpha = 0;

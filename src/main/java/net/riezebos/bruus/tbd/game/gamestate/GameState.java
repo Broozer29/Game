@@ -32,6 +32,7 @@ public class GameState {
     private int monsterLevel;
     private float initialOffset;
     private int bossesDefeated;
+    private int miniBossesDefeatedThisLevel = 0;
 
     private GameState() {
         resetGameState();
@@ -53,6 +54,14 @@ public class GameState {
         difficultyCoefficient = 1;
         lastPause = 0;
         spawnFinalBoss = false;
+    }
+
+    public void resetForNextLevel(){
+        this.miniBossesDefeatedThisLevel = 0;
+    }
+
+    public void addMiniBossKilledThisLevel(){
+        this.miniBossesDefeatedThisLevel++;
     }
 
 
@@ -138,6 +147,10 @@ public class GameState {
     public void addGameTicks (long gameTick) {
         this.gameTicksExecuted += gameTick;
         updateGameTimeByExecutedGameTicks();
+    }
+
+    public void giveEndOfLevelBoost(){
+        this.gameTicksExecuted += this.gameTicksExecuted * 0.1;
     }
 
     private void updateGameTimeByExecutedGameTicks () {
@@ -237,6 +250,10 @@ public class GameState {
 
     public void setSpawnFinalBoss(boolean spawnFinalBoss) {
         this.spawnFinalBoss = spawnFinalBoss;
+    }
+
+    public int getMiniBossesDefeatedThisLevel() {
+        return miniBossesDefeatedThisLevel;
     }
 }
 

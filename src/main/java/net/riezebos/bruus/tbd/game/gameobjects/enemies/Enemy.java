@@ -125,7 +125,7 @@ public class Enemy extends GameObject {
             this.maxHitPoints *= Math.pow(getScalingFactor(), level - 1);
 
             if (PlayerManager.getInstance().getPlayerCount() > 1) {
-                this.maxHitPoints *= (PlayerManager.getInstance().getPlayerCount() * 0.5f); //voor elke extra speler, 50% max hp
+                this.maxHitPoints *= (1 + PlayerManager.getInstance().getPlayerCount() * 0.5f); //voor elke extra speler, 50% max hp
             }
             this.currentHitpoints = maxHitPoints;
 
@@ -156,7 +156,7 @@ public class Enemy extends GameObject {
 
     private float getScalingFactor() {
         if (this.enemyType.getEnemyCategory().equals(EnemyCategory.Boss)) {
-            return 1.2f;
+            return 1.35f;
         }
 
         if (GodRunDetector.getInstance().getGodRunScore() >= 3) {
@@ -203,6 +203,8 @@ public class Enemy extends GameObject {
 
         if (this.enemyType.getEnemyCategory().equals(EnemyCategory.Boss)) {
             GameState.getInstance().increaseBossDefeated();
+        } else if(this.enemyType.getEnemyCategory().equals(EnemyCategory.MiniBoss)){
+            GameState.getInstance().addMiniBossKilledThisLevel();
         }
 
 

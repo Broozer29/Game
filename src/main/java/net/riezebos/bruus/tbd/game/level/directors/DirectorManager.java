@@ -223,12 +223,12 @@ public class DirectorManager {
         float multiplier = 1;
 
         if (minerals >= 0 && minerals <= 300) {
-            multiplier = 1.05f;
-        } else if (minerals >= 601 && minerals <= 800) {
+            multiplier = 1f;
+        } else if (minerals >= 501 && minerals <= 700) {
             multiplier = 0.7f;
-        } else if (minerals >= 801 && minerals <= 1200) {
+        } else if (minerals >= 701 && minerals <= 1100) {
             multiplier = 0.4f;
-        } else if (minerals >= 1201) {
+        } else if (minerals >= 1101) {
             multiplier = 0.2f;
         }
 

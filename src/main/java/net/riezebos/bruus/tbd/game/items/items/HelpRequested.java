@@ -5,10 +5,11 @@ import net.riezebos.bruus.tbd.game.items.Item;
 import net.riezebos.bruus.tbd.game.items.ItemEnums;
 import net.riezebos.bruus.tbd.game.items.PlayerInventory;
 import net.riezebos.bruus.tbd.game.items.enums.ItemApplicationEnum;
+import net.riezebos.bruus.tbd.game.items.items.util.ContractType;
 
 public class HelpRequested extends Item {
 
-    public static float additionalKillsRequiredModifier = 2;
+    public static int miniBossesRequired = 2;
     public HelpRequested() {
         super(ItemEnums.HelpRequested, 1, ItemApplicationEnum.UponAcquiring);
     }
@@ -21,7 +22,8 @@ public class HelpRequested extends Item {
 
     @Override
     public void applyEffectToObject (GameObject gameObject) {
-        Contract.killCountRequired = (int) (Contract.killCountRequired * (1 + additionalKillsRequiredModifier));
+        PlayerInventory.getInstance().setContractType(ContractType.HELP_REQUESTED);
+        Contract.killCountRequired = miniBossesRequired;
         //Logic is applied in shopboardcreator when items are created
     }
 
@@ -35,6 +37,8 @@ public class HelpRequested extends Item {
         if(PlayerInventory.getInstance().getItemFromInventoryIfExists(this.itemEnum) != null){
             return false;
         }
+
+
 
         return true;
     }
