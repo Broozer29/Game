@@ -232,8 +232,11 @@ public class GameObject extends Sprite {
         cleanseAllEffects();
     }
 
+    public static final int EFFECT_UPDATE_INTERVAL = 15;
     public void updateGameObjectEffects() {
-        activateEffects(EffectActivationTypes.CheckEveryGameTick);
+        if(GameState.getInstance().getGameTicksExecuted() % EFFECT_UPDATE_INTERVAL == 0) {
+            activateEffects(EffectActivationTypes.CheckEveryGameTick);
+        }
     }
 
 

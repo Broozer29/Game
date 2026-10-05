@@ -16,11 +16,11 @@ public class DevTestSettings {
     public static boolean playerIsImmune = false; //makes the player invincible by preventing takeDamage being executed
     public static boolean alloweSuicidebutton = false; //Enables the suicide button, causing 9999999 damage to the player(s)
     public static boolean rollFullShop = false; //If true, all 3 rows in the shop are available
-    public static boolean exportPerformanceLogs = false;
-    public static boolean enableMutalisk = false;
-    public static boolean enableDirectShopAccess = false;
+    public static boolean exportPerformanceLogs = false; //If true, exports logs after each level to help analyze performance
+    public static boolean enableMutalisk = false; //If true, enables the mutalisk class
+    public static boolean enableDirectShopAccess = false; //If true, enables direct access to the shop
 
-    public static boolean testFinalBossMode = false;
+    public static boolean testFinalBossMode = false; //If true, spawns the final boss instead of any other boss
 
 
 

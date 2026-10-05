@@ -119,34 +119,27 @@ public class CollisionDetector {
         return gameObject1.getOwnerOrCreator() != null && gameObject1.getOwnerOrCreator().equals(gameObject2);
     }
 
-    // Reusable method for pixel-perfect collision detection
     private Point checkPixelCollision(BufferedImage img1, int x1, int y1, BufferedImage img2, int x2, int y2) {
-        int alphaThreshold = 50;
-
-        if (img1 != null && img2 != null) {
-            // Calculate overlap rectangle
-            int xStart = Math.max(x1, x2);
-            int yStart = Math.max(y1, y2);
-            int xEnd = Math.min(x1 + img1.getWidth(), x2 + img2.getWidth());
-            int yEnd = Math.min(y1 + img1.getHeight(), y2 + img2.getHeight());
-
-            for (int y = yStart; y < yEnd; y++) {
-                for (int x = xStart; x < xEnd; x++) {
-                    int pixel1 = img1.getRGB(x - x1, y - y1);
-                    int alpha1 = (pixel1 >> 24) & 0xff;
-
-                    int pixel2 = img2.getRGB(x - x2, y - y2);
-                    int alpha2 = (pixel2 >> 24) & 0xff;
-                    if (alpha1 > alphaThreshold && alpha2 > alphaThreshold) {
-                        // Collision detected at (x, y)
-                        return new Point(x, y);
-                    }
-                }
-            }
-            return null; // No collision detected
-        } else {
+        if (img1 == null || img2 == null) {
             return null; // One of the images is missing; assume no collision
         }
+
+        AlphaMask mask1 = AlphaMask.of(img1);
+        AlphaMask mask2 = AlphaMask.of(img2);
+
+        int xStart = Math.max(x1, x2);
+        int yStart = Math.max(y1, y2);
+        int xEnd = Math.min(x1 + img1.getWidth(), x2 + img2.getWidth());
+        int yEnd = Math.min(y1 + img1.getHeight(), y2 + img2.getHeight());
+
+        for (int y = yStart; y < yEnd; y++) {
+            for (int x = xStart; x < xEnd; x++) {
+                if (mask1.isOpaque(x - x1, y - y1) && mask2.isOpaque(x - x2, y - y2)) {
+                    return new Point(x, y);
+                }
+            }
+        }
+        return null;
     }
 
     // Refactored pixel-perfect collision between two GameObjects

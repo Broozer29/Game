@@ -36,8 +36,7 @@ public class DamageReduction implements EffectInterface {
 
     @Override
     public void activateEffect(GameObject target) {
-        double currentTime = GameState.getInstance().getGameSeconds();
-        if (this.animationList.size() > 0 && this.animationList.get(0) != null) {
+        if (!this.animationList.isEmpty() && this.animationList.get(0) != null) {
             if (!scaledToTarget) {
                 EffectAnimationHelper.scaleAnimation(target, this.animationList.get(0));
                 scaledToTarget = true;

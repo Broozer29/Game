@@ -37,7 +37,9 @@ public class ExplosionManager {
         for (Explosion explosion : explosionList) {
             if (explosion.isVisible()) {
                 explosion.updateAllowedToDealDamage();
-                checkExplosionCollisions(explosion);
+                if(explosion.isAllowedToDealDamage()) {
+                    checkExplosionCollisions(explosion);
+                }
             } else {
                 explosion.deleteObject();
                 toRemove.add(explosion);
@@ -133,7 +135,7 @@ public class ExplosionManager {
                 if(!explosion.dealtDamageToTarget(enemy)){
                     CollisionInfo collisionInfo = CollisionDetector.getInstance().detectCollision(explosion, enemy);
                     if (collisionInfo != null) {
-                        explosion.dealtDamageToTarget(enemy);
+                        explosion.dealDamageToGameObject(enemy);
                         explosion.addCollidedGameObject(enemy);
                     }
                 }

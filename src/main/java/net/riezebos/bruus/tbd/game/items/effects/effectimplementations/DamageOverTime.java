@@ -112,13 +112,13 @@ public class DamageOverTime implements EffectInterface {
             if (currentTime - lastDamageTime >= damageInterval) {
 
                 if(this.effectIdentifier.equals(EffectIdentifiers.Ignite) && target.hasEffect(EffectIdentifiers.WithoutGasItsAssDamageBonus)){
-                    target.takeDamage(this.damage * dotStacks * FireWithoutGasIsAss.increase);
+                    target.takeDamage((this.damage * dotStacks * FireWithoutGasIsAss.increase) * GameObject.EFFECT_UPDATE_INTERVAL);
                 } else if(this.effectIdentifier.equals(EffectIdentifiers.PoisonedNeedlesDoT)){
                     PoisonedNeedles poisonedNeedles = (PoisonedNeedles) PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.PoisonedNeedles);
-                    target.takeDamage(Math.min(5, target.getMaxHitPoints() * (poisonedNeedles.getQuantity() * PoisonedNeedles.hpDamageRatio)));
+                    target.takeDamage(Math.min(5, (target.getMaxHitPoints() * (poisonedNeedles.getQuantity() * PoisonedNeedles.hpDamageRatio)) * GameObject.EFFECT_UPDATE_INTERVAL));
                 }
                 else {
-                    target.takeDamage(this.damage * dotStacks);
+                    target.takeDamage((this.damage * dotStacks) * GameObject.EFFECT_UPDATE_INTERVAL);
                 }
                 lastDamageTime = currentTime; // Update the last damage time
 
