@@ -5,7 +5,10 @@
       "label": "compile",
       "type": "shell",
       "command": "mvn -q compile",
-      "group": "build",
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
       "problemMatcher": []
     }
   ]

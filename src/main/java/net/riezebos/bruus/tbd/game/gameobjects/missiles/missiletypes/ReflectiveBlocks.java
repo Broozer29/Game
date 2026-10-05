@@ -115,7 +115,7 @@ public class ReflectiveBlocks extends Missile {
         }
 
         double newAngle = 0;
-        if(!missile.getMovementConfiguration().getCurrentPath().getWaypoints().isEmpty()){
+        if(missile.getMovementConfiguration().getCurrentPath() != null && !missile.getMovementConfiguration().getCurrentPath().getWaypoints().isEmpty()){
             newAngle = calculateMovementAngle(missile.getMovementConfiguration().getCurrentPath().getWaypoints());
         } else {
             newAngle = Direction.LEFT.toAngle();
