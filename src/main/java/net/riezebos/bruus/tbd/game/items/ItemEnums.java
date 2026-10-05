@@ -46,6 +46,7 @@ public enum ItemEnums {
     OneShotOneKill(ItemRarityEnums.Relic, ImageEnums.OneShotOneKill, "One shot, one kill", true),
     ElectricDestabilizer(ItemRarityEnums.Relic, ImageEnums.Starcraft2_Protoss_Shield_Disintegrate, "Electric Destabilizer", true),
     SideCannons(ItemRarityEnums.Relic, ImageEnums.SideCannons, "Side Cannons", true),
+    RocketLauncher(ItemRarityEnums.Rare, ImageEnums.Starcraft2_Dual_Rockets, "Rocket Launcher", true),
 
     //firefighter relics
     ModuleScorch(ItemRarityEnums.Relic,  ImageEnums.ModuleScorchIcon, "Module: Scorch", true),

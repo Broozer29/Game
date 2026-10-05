@@ -152,6 +152,9 @@ public class ItemDescriptionRetriever {
             case ModuleCommand -> {
                 return "Your drones now fire when you fire. Maximum drone capacity is increased to " + ModuleCommand.maxDronesCapacity + ".";
             } //relic
+            case RocketLauncher -> {
+                return "Drone attacks have a " + Math.round(RocketLauncher.rocketChance * 100) + "% chance to fire an exploding rocket instead, dealing " + Math.round(RocketLauncher.damagePerStack * 100) + "% drone damage per stack.";
+            } //rare
             case AnionInverter -> {
                 return "Electroshred cooldown decreased by " + Math.abs(Math.round(AnionInverter.cooldownModifier * 100)) + "%. Electroshred damage increased by " + Math.round(AnionInverter.damageModifier * 100) + "%. Electroshred NO LONGER destroys projectiles.";
             } //relic

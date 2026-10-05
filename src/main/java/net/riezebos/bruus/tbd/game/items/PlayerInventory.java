@@ -239,6 +239,8 @@ public class PlayerInventory {
                 return new ModuleElectrify();
             case ModuleCommand:
                 return new ModuleCommand();
+            case RocketLauncher:
+                return new RocketLauncher();
             case Contract:
                 return new Contract();
             case StickyOil:
