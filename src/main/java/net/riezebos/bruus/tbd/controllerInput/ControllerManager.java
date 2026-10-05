@@ -79,7 +79,7 @@ public class ControllerManager {
 
     public boolean isFirePressed(){
         for(ControllerInputReader controllerInputReader : controllerInputReaders.values()){
-            if(controllerInputReader.isInputActive(ControllerInputEnums.FIRE) || controllerInputReader.isInputActive(ControllerInputEnums.HOLD_FIRE)){
+            if(controllerInputReader.isInputActive(ControllerInputEnums.FIRE)){
                 return true; //return true if 1 of them has it pressed,
             }
         }

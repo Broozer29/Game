@@ -822,7 +822,7 @@ public class SpaceShip extends GameObject {
                 moveDownQuick(controllerInputReader.getyAxisValue());
             }
 
-            if (controllerInputReader.isInputActive(ControllerInputEnums.FIRE) || controllerInputReader.isInputActive(ControllerInputEnums.HOLD_FIRE)) {
+            if (controllerInputReader.isInputActive(ControllerInputEnums.FIRE) || (controllerInputReader.isInputActive(ControllerInputEnums.HOLD_FIRE) && PlayerStats.getInstance().getPlayerClass().equals(PlayerClass.Captain))) {
                 startPrimaryFiring();
                 isFiringPrimary = true;
             }

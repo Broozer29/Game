@@ -100,7 +100,7 @@ public class FriendlyManager {
 
     private void spawnPortals() {
         spawnFinishedLevelPortal();
-        spawnFinalBossPortal();
+//        spawnFinalBossPortal();
     }
 
     private void spawnFinishedLevelPortal() {
