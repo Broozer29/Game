@@ -6,7 +6,8 @@
       "Bash(mvn package:*)",
       "Bash(mvn clean package:*)",
       "Bash(./mvnw compile:*)",
-      "Bash(./mvnw package:*)"
+      "Bash(./mvnw package:*)",
+      "Bash(bash .claude/scripts/planboard.sh:*)"
     ]
   }
 }

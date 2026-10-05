@@ -33,3 +33,10 @@ Requires **JDK 21** (the compiler targets 21; CI uses Temurin 21).
 - Work happens on the `Nelis` branch. Commit only there.
 - Work in this repo is not tracked in the Plan, and there are no project bindings; skills fall
   back to their stated defaults here.
+
+## Planboard
+
+In this repo, "planboard" means `docs/planboard/`: one Markdown file per game area listing bugs,
+features, balance tweaks and ideas. Its rules are in `docs/planboard/README.md`; follow them when
+adding or removing entries. Read it with
+`bash .claude/scripts/planboard.sh <bugs|features|balance|ideas|all> [area ...]`.
