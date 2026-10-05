@@ -23,9 +23,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class FinalBossOrbitMissileAttack implements BossActionable {
-    private double attackCooldown = 10;
+    private double attackCooldown = 9;
     private double lastAttackedTime = 0 - attackCooldown;
-    private int priority = 10;
+    private int priority = 2;
 
     private SpriteAnimation attackingAnimation;
 

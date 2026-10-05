@@ -1,13 +1,12 @@
 package net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.finalboss.behavior.fasetwo;
 
-import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.Enemy;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyConfiguration;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.MissileManager;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.laserbeams.AngledLaserBeam;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.laserbeams.Laserbeam;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.laserbeams.LaserbeamConfiguration;
-import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
+import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.movement.MovementConfiguration;
 import net.riezebos.bruus.tbd.game.movement.Point;
 import net.riezebos.bruus.tbd.game.util.WithinVisualBoundariesCalculator;
@@ -23,8 +22,9 @@ public class FinalBossLaserbeamClone extends Enemy {
     private boolean isFiringLaserbeams = false;
 
     private float laserbeamAngle;
-    private static int laserbeamBodyLength = 6;
+    private static int laserbeamBodyLength = 20;
     private boolean shouldBeDead = false;
+    private double timeStartedFiring = 0;
 
     public FinalBossLaserbeamClone(SpriteAnimationConfiguration spriteConfiguration, EnemyConfiguration enemyConfiguration, MovementConfiguration movementConfiguration) {
 
@@ -50,15 +50,13 @@ public class FinalBossLaserbeamClone extends Enemy {
     @Override
     public void fireAction() {
         updateChargingAttackAnimationCoordination();
+        laserbeamBodyLength = 15;
 
         if (WithinVisualBoundariesCalculator.isWithinBoundaries(this) && allowedToFire && !isFiringLaserbeams) {
-            GameObject closestPlayer = PlayerManager.getInstance().getClosestSpaceShip(this);
-
             setLaserbeamOriginAnimation();
-            this.rotateGameObjectTowards(closestPlayer.getCenterXCoordinate(), closestPlayer.getCenterYCoordinate(), false);
             if (!chargingAnimation.isPlaying() && !isFiringLaserbeams) {
+                timeStartedFiring = GameState.getInstance().getGameSeconds();
                 this.isAttacking = true;
-                chargingAnimation.refreshAnimation();
                 AnimationManager.getInstance().addUpperAnimation(chargingAnimation);
                 //DO NOT PLAY AUDIO charging, the StrikerBoss should play the audio once, not these lads
             }
@@ -74,9 +72,13 @@ public class FinalBossLaserbeamClone extends Enemy {
             }
         }
 
-        //Keep firing and don't stop, the StrikerBoss sends the signal to stop/detonate
         if (isFiringLaserbeams) {
             updateLaserbeamOriginPoints();
+            if (GameState.getInstance().getGameSeconds() > timeStartedFiring + FinalBossLaserbeamCloneAttack.laserbeamFiringTime) {
+                angledLaserbeam.setVisible(false);
+                setAllowedToFire(false);
+            }
+
             if (!angledLaserbeam.isVisible()) {
                 angledLaserbeam = null;
                 this.setAttacking(false);
@@ -96,7 +98,12 @@ public class FinalBossLaserbeamClone extends Enemy {
 
     public void detonateClone() {
         this.destructionAnimation.setCenterCoordinates(this.getCenterXCoordinate(), this.getCenterYCoordinate());
+        this.chargingAnimation.setVisible(false);
+
         this.takeDamage(this.getMaxHitPoints() * 100000);
+        if (this.angledLaserbeam != null) {
+            this.angledLaserbeam.setVisible(false);
+        }
         shouldBeDead = true;
     }
 
@@ -105,11 +112,11 @@ public class FinalBossLaserbeamClone extends Enemy {
         spriteConfiguration.setxCoordinate(this.getChargingUpAttackAnimation().getCenterXCoordinate());
         spriteConfiguration.setyCoordinate(this.getChargingUpAttackAnimation().getCenterYCoordinate());
         spriteConfiguration.setScale(1);
-        spriteConfiguration.setImageType(ImageEnums.PinkLaserbeamCharging);
+        spriteConfiguration.setImageType(ImageEnums.LaserbeamCharging);
 
         chargingAnimation = new SpriteAnimation(new SpriteAnimationConfiguration(spriteConfiguration, 1, false));
         chargingAnimation.setAnimationScale(2f);
-        chargingAnimation.setFrameDelay(10);
+        chargingAnimation.setFrameDelay(5);
     }
 
     private void setLaserbeamOriginAnimation() {
@@ -130,7 +137,7 @@ public class FinalBossLaserbeamClone extends Enemy {
 
     private void createLaserbeams() {
         float damage = this.getDamage() * FinalBossLaserbeamCloneAttack.damageRatio;
-        LaserbeamConfiguration upperLaserbeamConfiguration = new LaserbeamConfiguration(false, damage);
+        LaserbeamConfiguration upperLaserbeamConfiguration = new LaserbeamConfiguration(true, damage);
         upperLaserbeamConfiguration.setAmountOfLaserbeamSegments(laserbeamBodyLength);
         upperLaserbeamConfiguration.setAngleDegrees(this.laserbeamAngle);
         upperLaserbeamConfiguration.setOriginPoint(new Point(
@@ -144,7 +151,7 @@ public class FinalBossLaserbeamClone extends Enemy {
 
 
         //dirty hack that should help recenter the angledLaserbeam before its added to the game
-        for(int i = 0; i< 10; i++){
+        for (int i = 0; i < 10; i++) {
             angledLaserbeam.update();
         }
     }

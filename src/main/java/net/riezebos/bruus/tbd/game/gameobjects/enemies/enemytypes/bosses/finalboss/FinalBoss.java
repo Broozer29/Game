@@ -9,6 +9,7 @@ import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.finalbo
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.finalboss.behavior.faseone.FinalBossPeriodicMissileBarrage;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.finalboss.behavior.faseone.FinalBossPhaseOneLaserbeamAttack;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.finalboss.behavior.fasetwo.FinalBossDropMineCharge;
+import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.finalboss.behavior.fasetwo.FinalBossLaserbeamCloneAttack;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.finalboss.behavior.fasetwo.FinalBossOrbitMissileAttack;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.finalboss.behavior.fasetwo.FinalBossSpreadMissileAttack;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.*;
@@ -61,6 +62,7 @@ public class FinalBoss extends Enemy {
     private FinalBossOrbitMissileAttack phase2OrbitMissileAttack;
     private FinalBossDropMineCharge phase2DropMineCharge;
     private FinalBossSpreadMissileAttack phase2SpreadMissileAttack;
+    private FinalBossLaserbeamCloneAttack phase2LaserbeamCloneAttack;
 
     public FinalBoss(SpriteAnimationConfiguration spriteConfiguration, EnemyConfiguration enemyConfiguration, MovementConfiguration movementConfiguration) {
         super(spriteConfiguration, enemyConfiguration, movementConfiguration);
@@ -77,20 +79,22 @@ public class FinalBoss extends Enemy {
 
         //phase 1 abilities
         FinalBossCreateRotatingReflectingBlocks finalBossCreateRotatingReflectingBlocks = new FinalBossCreateRotatingReflectingBlocks();
-        bossBehaviourList.add(finalBossCreateRotatingReflectingBlocks);
-
         FinalBossPhaseOneLaserbeamAttack finalBossPhaseOneLaserbeamAttack = new FinalBossPhaseOneLaserbeamAttack();
+
+        bossBehaviourList.add(finalBossCreateRotatingReflectingBlocks);
         bossBehaviourList.add(finalBossPhaseOneLaserbeamAttack);
 
         //phase 2 abilities
         phase2OrbitMissileAttack = new FinalBossOrbitMissileAttack();
-        bossBehaviourList.add(phase2OrbitMissileAttack);
-//
         phase2DropMineCharge = new FinalBossDropMineCharge();
-        bossBehaviourList.add(phase2DropMineCharge);
-
         phase2SpreadMissileAttack = new FinalBossSpreadMissileAttack();
+        phase2LaserbeamCloneAttack = new FinalBossLaserbeamCloneAttack();
+
+        bossBehaviourList.add(phase2OrbitMissileAttack);
+        bossBehaviourList.add(phase2DropMineCharge);
         bossBehaviourList.add(phase2SpreadMissileAttack);
+        bossBehaviourList.add(phase2LaserbeamCloneAttack);
+
 
         //phase 3 abilities
 
@@ -120,21 +124,17 @@ public class FinalBoss extends Enemy {
         }
 
         if (getBossPhase() == BOSSPHASE_1) {
-            changePhaseToNextPhase();
-            return;
-//            firePhaseOnePassiveAbilities();
+            firePhaseOnePassiveAbilities();
         }
 
-//        attemptBark();
+        attemptBark();
 
 
-//        if (bossPhase == BOSSPHASE_1) {
         if(!(this.currentActiveBehavior instanceof FinalBossDropMineCharge)) {
             this.setAllowedVisualsToRotate(true);
             this.rotateGameObjectTowards(PlayerManager.getInstance().getClosestSpaceShip(this));
             this.setAllowedVisualsToRotate(false);
         }
-//        }
 
         if (this.movementConfiguration.getPathFinder() instanceof HoverPathFinder hoverPathFinder) {
             if (this.getCurrentBoardBlock() <= 2) { // if its reaches 0 it will move out of bounds
@@ -466,6 +466,7 @@ public class FinalBoss extends Enemy {
         phase2DropMineCharge.setLastAttackTime(GameState.getInstance().getGameSeconds() - 22);
         phase2OrbitMissileAttack.setLastAttackTime(GameState.getInstance().getGameSeconds());
         phase2SpreadMissileAttack.setLastAttackTime(GameState.getInstance().getGameSeconds() - 5);
+        phase2LaserbeamCloneAttack.setLastAttackedTime(GameState.getInstance().getGameSeconds() - 34);
     }
 
     private void setPhaseThreeCooldowns(){

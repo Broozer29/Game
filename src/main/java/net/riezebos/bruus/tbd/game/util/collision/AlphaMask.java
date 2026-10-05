@@ -8,7 +8,7 @@ import java.util.WeakHashMap;
 /*
  * Cached per-image bitmask of pixels whose alpha exceeds the collision threshold
  * Tl;dr we create and store the pixels that we want to check for collision ONCE so that we can re-use them when actually checking collision
- * Saving a lot of computation and thus, improving performance drastically (in theory)
+ * Saving a lot of computation because we are only calling getRGB() once, instead of EVERY collision check and thus, improving performance drastically (in theory)
  */
 final class AlphaMask {
 

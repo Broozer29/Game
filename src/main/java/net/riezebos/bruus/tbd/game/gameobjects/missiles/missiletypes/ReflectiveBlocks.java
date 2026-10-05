@@ -5,6 +5,7 @@ import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.yellowb
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.Missile;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.MissileConfiguration;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
+import net.riezebos.bruus.tbd.game.movement.Direction;
 import net.riezebos.bruus.tbd.game.movement.MovementConfiguration;
 import net.riezebos.bruus.tbd.game.movement.Point;
 import net.riezebos.bruus.tbd.game.movement.pathfinders.StraightLinePathFinder;
@@ -113,8 +114,13 @@ public class ReflectiveBlocks extends Missile {
             return;
         }
 
+        double newAngle = 0;
+        if(!missile.getMovementConfiguration().getCurrentPath().getWaypoints().isEmpty()){
+            newAngle = calculateMovementAngle(missile.getMovementConfiguration().getCurrentPath().getWaypoints());
+        } else {
+            newAngle = Direction.LEFT.toAngle();
+        }
 
-        double newAngle = calculateMovementAngle(missile.getMovementConfiguration().getCurrentPath().getWaypoints());
         Point newDestination = calculatePositionBasedOnAngle(newAngle,
                 300, missile.getCenterXCoordinate(), missile.getCenterYCoordinate());
         missile.resetMovementPath();

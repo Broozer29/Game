@@ -20,9 +20,9 @@ import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.Sprit
 
 public class FinalBossSpreadMissileAttack implements BossActionable {
     private double lastAttackedTime = GameState.getInstance().getGameSeconds() - 15;
-    private double attackCooldown = 20;
-    private int priority = 2;
-    private int missilesPerBoardBlock = 2;
+    private double attackCooldown = 15;
+    private int priority = 10;
+    private int missilesPerBoardBlock = 3;
     private int missileWavesFired = 1;
 
     private SpriteAnimation attackingAnimation;
