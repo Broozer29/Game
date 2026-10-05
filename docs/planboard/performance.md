@@ -1,3 +1,240 @@
 # Performance
 Frame rate, lag, loading times and memory use.
 - PlasmaLauncher missiles, I suspect these have a significant impact on performance due to not being deleted
+  - Checked 2026-10-05: they are removed when they leave the screen (GameObjectMover.java:96-98). The real costs: PlasmaLauncher.java:80-81 repeats the image change and scaling the constructor already did, and with 99999 pierces the "already hit" list only grows and is searched one by one
+  - Edge case: if a missile's start equals its destination, StraightLinePathFinder divides by zero and the missile may never leave the screen
+
+## Bugs
+- Lag when the Module: Scorch "sun" drone burns enemies, and the game slows down the longer a level lasts
+  - Every new ignite stack crops the burn animation with `SpriteAnimation.cropAnimation()` (SpriteAnimation.java:271-276)
+  - At scale 1 that animation holds ImageDatabase's own frame list, so the crop overwrites the shared master frames with new image objects
+  - The resize cache identifies frames by object identity, so after every crop it never finds a match: all 25 burn frames are resized bicubically again and the cache grows
+  - Same problem in four more places: thorns hits (ThornsDamageDealer.java:214), every Guardian spawn (Guardian.java:39), Portal.java:20, and `EnemyManager.startBurningEnemies` at level end, which burns every remaining enemy in one frame
+  - Fix: crop into a new list instead of overwriting the shared one, and crop and size the effect frames once at load time
+- Image cache lookups check every stored key one by one, so the game slows down as the cache grows
+  - `findOrCreateCacheKey` in ImageResizer and ImageRotator; every lookup also first builds a long key string from every frame's ID
+  - Runs for every new animation, rotation and rescale; the cache is only cleaned between levels
+  - Fixed on 2026-10-05, not committed yet: each cache now keeps a second map from key string to the stored key, so a lookup is one map get. The stored key is still returned, so last-used times and cleanup work as before
+  - Measured: the laserbeam preload at startup went from about 11 s to 4 s. Effect during play is not measured
+  - Still open: the key string is still built from every frame's ID on every lookup, including cache hits
+- Cropping a rotated image read its pixels one at a time
+  - `ImageCropper.cropFramesToUniformContent` and `ImageRotator.cropTransparentPixels` called `getRGB` once per pixel to find the transparent edges, before storing the result in the cache
+  - Fixed on 2026-10-05, not committed yet: a new `ImageCropper.readAlphaRow` reads one row of transparency values at once
+  - Checked against the old per-pixel read on 800 images in five image formats: every pixel matched
+  - Measured: the laserbeam preload went from about 4 s to 2 s. It also speeds up every new laser angle during play
+- Startup pre-renders every laser angle in 0.2-degree steps and never frees them
+  - `Game.simulateAttackAngles()` (Game.java:253) with `Laserbeam.defaultMaxRotationPerUpdate`; laser entries are marked "never release"
+  - The rotation itself rounds to whole degrees (confirmed at ImageRotator.java:258), so 4 of every 5 cached rotations are duplicates
+  - Estimated at about 10,800 permanent cache entries and several hundred MB (not measured)
+  - Fix: pre-render and cache whole degrees only. After the fixes above this saves about 1.6 s of startup; the main gain is memory
+- Tracking laser beams re-rotate all of their segments on every angle change
+  - TrackingLaserBeam.java:93 and AngledLaserBeam.java:63; each new angle that has not been cached rotates every frame and reads every pixel to crop it (ImageRotator.java:86-92)
+  - The pixel reading is now a row at a time (see the cropping entry above), but every segment is still rotated and cropped
+- Rotated images can come back cropped or uncropped depending on who asked first
+  - The crop setting is not part of the rotation cache keys; the Queen and the Twin Boss rotate both ways
+- Flipped rotations (angles between 91 and 269 degrees) are never cached
+  - `rotateOrFlip` flips after the cache lookup, so every call builds a new image, and collision then rebuilds its pixel mask for it
+- Health, shield, overload and progress bars are resized every frame
+  - `UIObject.resizeToDimensions` (UIObject.java:16) has no "same size as last time" check; called from GameBoard.java:874, 893, 903 and 1005
+  - Each new pixel width costs a bicubic resize and a cache entry. Fix: draw the bar at its target size instead of resizing it
+- Drones keep every electro-shred attack they fire in their follower list for the whole run
+  - Drone.java:122 adds it; nothing removes it. GameObject.move() (GameObject.java:457) moves every old entry every frame
+  - Same pattern in CarrierBeacon.java:93, Flamer.java:76 and RoyalGuardFlagBearer.java:96 (bounded by the owner's lifetime)
+  - Fix: drop entries that are no longer visible before the loop
+- Healing animations pile up on the player and drones until they die
+  - GameObject.java:1253 (`heal`) and DirectHeal.java:50 add an animation per visible heal; the list is only cleared on death, and every entry is re-positioned every frame (GameObject.java:502)
+- Removed drones are not cleaned up, so their attacks stay alive until the next reset
+  - FriendlyManager removes drones without calling `deleteObject()`, e.g. the near-infinite scorch flame from SpecialAttackDrone.java:67
+- Background music players are not released with the "local files" music option
+  - AudioManager.java:291 makes a new player each level; only the normal level-finished path frees it (LevelManager.java:101). Dying, quitting and boss levels leak one native player each
+- Every special-attack hit copies the burn effect, including a new animation, even when the enemy is already burning
+  - SpecialAttack.java:54-57; the copy is thrown away by `GameObject.addEffect`. Fix: check for an existing burn first
+- Missile-against-missile collision compares every pair every frame
+  - MissileManager.java:353-420; the code comment says "This is NOT scalable"
+- The performance logger builds two strings per enemy per frame
+  - EnemyManager.java:163-164 (`timeAndLog`). Fix: an off switch for release builds
+- Boss death saves the player profile to disk on the game thread
+  - Enemy.java (`triggerOnDeathActions`, about line 184), one spike per boss
+- Smaller per-hit and per-frame costs
+  - Item lookups stream and build a new list on every hit (`PlayerInventory.getItemsByApplicationMethod`)
+  - On Carrier, the drone list is rebuilt for every enemy missile (`FriendlyManager.getAllProtossDrones`)
+  - Each damage number creates a new font every frame (GameBoard `drawOnScreenText`)
+- The save file is written to disk on the game thread on every purchase, relic pick and level change
+  - `SaveManager.exportCurrentSave()` creates a new `ObjectMapper` and writes the file synchronously; called from ShopItem.java:92 and 111, ShopManager.java:168, MenuButton.java:96 and GameBoard.java:164 and 303
+  - `PlayerProfileManager` does the same on boss deaths, `GameState`, `PlayerInventory` and several boons
+  - Fix: one shared `ObjectMapper`, and write in the background or once when leaving the shop
+- When a frame takes longer than 15 ms the whole game runs in slow motion instead of skipping frames
+  - Game time is ticks times the timer delay (GameState.java:157), and the tick and the drawing share the Swing thread (`GameBoard` timer, `actionPerformed`)
+  - Fix: advance game time from the real clock, or use a fixed-step loop that can skip drawing
+- Menu screens update their animations and poll the controller inside the paint method
+  - ShopBoard.java:783-788 and the boon, class, difficulty and main menu boards; each also calls `Toolkit.sync()` every paint, so menu speed depends on paint speed
+- Shop and relic cards rebuild fonts and re-wrap description text every frame
+  - `ShopBoard.drawDescriptionInfo` and `drawItemsInShop` (about 3 fonts per item per frame), duplicated in BoonSelectionBoard and GameBoard relic cards
+  - Fix: keep fonts as constants and cache the wrapped lines when the selection changes
+- Screen switches write about ten diagnostic lines, each opening and closing startup_log.txt
+  - `BoardManager.logDiagnostic` and `Game.logDiagnostic`; fix: remove them or use one buffered logger
+- Startup loads everything one at a time on a single thread
+  - About 376 images, then about 250 JavaFX media players built up front (`AudioDatabase.loadSoundEffects`)
+  - `Game.exportItemDescriptions` rewrites item_descriptions.html on every launch; it is dev tooling and could sit behind a `DevTestSettings` flag
+  - Measured on 2026-10-05, two runs each, from the timestamps in startup_log.txt. A "Preloading laserbeams..." line was added to Game.java to split the preload in two
+  - Before any fix: 36 s total (window appears 2.7 s, images 13-15 s, enemy preload 7-8 s, laserbeam preload 11-12 s)
+  - After the three fixes in this file (not committed yet): 19 s total (window 2.7 s, images 6.5 s, enemy preload 7-7.6 s, laserbeam preload 2 s)
+  - Image loading now starts on its own thread at the very start of `main`, so it runs while JavaFX, the controllers, the window and the audio start up (not committed yet). Measured: about 16 s total (15.8, 16.1 and 16.4 s; one outlier run took 22 s). The window still appears after about 2.8 s
+  - Still open: images are decoded on one thread, about 4,500 PNG files. Decoding on all CPU cores could cut the 6.5 s further; `ImageLoader`'s shared `bufferedImage` field must become a local variable first
+  - Still open: audio loads before the window appears, because BoardManager's `AudioManager` field creates the whole `AudioDatabase`. Moving it to the loading thread shows the window sooner and lets a loading bar include audio
+  - Audio measured on its own: building all 189 players takes about 1.25 s, of which the reset of every player takes 0.12 s. A player for a large music file takes as long to create as one for a short sound (about 5.7 ms each), so converting the music from WAV to MP3 would not speed up startup. It would only shrink the jar
+- Every image was copied to a temporary file before it was decoded
+  - Java's image reader does this by default when reading from a stream. With about 4,500 PNGs this was half of the image loading time (shown by a Java Flight Recorder profile)
+  - Fixed on 2026-10-05, not committed yet: `ImageIO.setUseCache(false)` at the start of loading in Game.java
+  - Measured: image loading went from about 13 s to 6.7 s
+- The enemy preload spends about 7 s resizing big enemy animations
+  - `ImageResizer.getScaledImage` uses bicubic scaling, the slowest and highest-quality mode; the profile shows the preload time inside it
+  - Option: bilinear scaling is faster but looks slightly softer, so compare the sprites first
+  - Measured on 2026-10-05 as a test, then put back to bicubic: with bilinear scaling the enemy preload took 2.2-2.9 s instead of about 7 s, and startup took 11-12 s in total. It changes how scaled sprites look everywhere in the game, not only at startup
+  - Option: resize the frames on several CPU cores at once; sprites look the same but it is more work
+- The audio system started about 17,000 threads in a 30-second recording
+  - Seen in the Java Flight Recorder profile on 2026-10-05; the threads have no Java stack, so they are made by JavaFX's native media code
+  - They come in two bursts. About 12,300 start while `AudioDatabase` builds its players, before the window appears. About 4,800 start at "Finishing initialization", when `initMainMenu` calls `gameBoard.resetGame()`, which calls `AudioDatabase.resetAudio()`
+  - Every sound copy is a full JavaFX `MediaPlayer`: 189 players for 102 sounds (`clipSizeConfig` in AudioDatabase.java). `resetAudio()` seeks and stops every one of them, and each stop or seek starts and ends native threads
+  - That is roughly 65 threads per player at startup. It likely accounts for most of the 2.7 s before the window appears (not measured separately)
+  - The same `resetAudio()` runs on every game reset (GameBoard.java:174 and 219)
+  - Options: only reset players that actually played; create players for music only when needed; or play short sound effects through a lighter API (`javax.sound.sampled.Clip` or a mixer). A code comment says the game moved from `Clip` to `MediaPlayer` on purpose, so find out why first
+- A sound that is skipped because of its cooldown is still added to the active sound list, and added again on every try
+  - `AudioDatabase.getAvailableClip` adds the clip to `allActiveClips` before `AudioManager.canPlayAudio` checks the cooldown; a clip that never starts never counts as finished, so it stays until the next reset
+  - Affects the sounds with a cooldown: PlayerTakesDamage, NotEnoughMinerals, the Carrier speed sounds and AchievementUnlocked. Every game tick then loops over the extra entries (`resetClips`), and pause and resume do too
+  - Read from the code, not measured
+- When every copy of a sound is already playing, the new sound is dropped without a message
+  - `getAvailableClip` returns null and `playAudio` skips it. Each sound has a fixed number of copies (1 to 9)
+- Small per-frame allocations in GameBoard drawing
+  - New `Color` objects per laser indicator and per player bar every frame; fix: constants
+  - `drawOnScreenText` also creates a new `Color` per damage number per frame, next to the new font; fix: cache fonts per size
+- The low-health overlay searches the player list every frame and may draw a full-screen transparent image every frame
+  - `GameBoard.drawLowHealthPlayerOverlay` (GameBoard.java:639-672), below 40% health; the overlay image size is not checked yet
+  - Fix: find the lowest-health player once per tick, and draw the overlay as a transparent `fillRect` or a pre-sized image
+- Laser segments are each drawn as a separate animation, including the ones off screen
+  - Laserbeam.java:84-106 builds one animation per segment; `drawAnimation` looks up the frame twice and switches transparency mode per segment
+- In-game animations advance their frames inside paint, so animation speed follows paint speed
+  - `drawAnimation` calls `getCurrentFrameImage(true)` (GameBoard.java:750)
+- Sprite-sheet frames are views into the whole sheet (`getSubimage`), so each frame keeps the full sheet in memory
+  - ImageDatabase.java:3084, ImageCropper and ImageRotator; not measured
+- `-Xms4g` reserves 4 GB at launch, which slows startup slightly; no pause-time setting (`-XX:MaxGCPauseMillis`) is set for G1
+- Every moving object builds its whole route up front as up to a few thousand points, then removes the first point each step
+  - RegularPathFinder.java:45-68 (up to twice the window width divided by the step size) and StraightLinePathFinder; `GameObjectMover.handleNextWaypointRemoval` does `getWaypoints().remove(0)`, which shifts the whole list every time
+  - Formation enemies build their route twice (`resetMovementPath()` in `LevelManager.spawnEnemy`)
+  - Makes wave spawns and boss missile rings expensive, e.g. BlueBossMissileAttack fires 36 missiles in one tick
+  - Fix: keep an index into the route instead of removing, or compute the next point on demand
+- The final boss's phase-one laser attack runs 400 laser updates in one tick
+  - FinalBossPhaseOneLaserbeamAttack.java:70 loops `update()` 200 times on two tracking lasers to stop them "jumping"; each update re-rotates every segment
+  - Fix: set the laser straight to its target angle once
+- Wave spawns create a whole formation in one tick, and every add or remove copies the enemy list
+  - `EnemyManager.enemyList` is a `CopyOnWriteArrayList`, so `addEnemy` and `enemyList.remove(en)` in the update loop each copy the whole array; mass deaths copy it several times in one tick
+  - Fix: add the formation with one `addAll`, remove the dead with one `removeIf`
+- Carrier drones search the whole drone list several times per drone per tick
+  - `ProtossUtils` and the Scout, Corsair, Shuttle and Arbiter call `FriendlyManager.getDronesByDroneType(...)`, which streams and builds a new list each time; cost grows with the square of the drone count
+  - Fix: keep a flag or counter for "owner has a carrier drone" that updates on add and remove
+- Smaller per-tick searches
+  - `EnemyManager.getClosestEnemyTargetWithinDistance` streams every missile to find ReflectiveBlocks on each call
+  - Boss `isAvailable()` checks and `EnemyManager.isBossAlive()` stream all enemies every tick
+  - Director spawn attempts roll a new `Random` and rebuild monster cards every tick inside the spawn window
+- Plasma Coated Bullets and Electric Destabilizer build a new effect and animation on every hit, then throw them away if the enemy already has the effect
+  - PlasmaCoatedBullets.java:38-51 and ElectricDestabilizer.java:43-48; `GameObject.addEffect` refreshes the existing effect and drops the new one
+  - Fix: check `target.hasEffect(id)` first and only build the effect when it is missing
+- Every burn stack crops and resizes its own animation, although the enemy size is the same for every stack
+  - `DamageOverTime.increaseEffectStrength` calls `EffectAnimationHelper.scaleAnimation` per stack (up to 5 per enemy); `applyRandomOffset` also makes a `new Random()` per stack
+  - Fix: prepare the burn frames once per enemy size
+- Effect copies from explosions and special attacks clone the animation through the full resize path, even when the copy is thrown away
+  - `DamageOverTime.copy`, `FreezeEffect.copy` and `ArmorModifierEffect.copy` call `SpriteAnimation.clone()`; callers are Explosion.java:79 and SpecialAttack.java:55
+- Friendly explosions probably keep checking collisions with every enemy for their whole animation
+  - Explosion.java:61 sets the damage window to the total frame count for friendly explosions, and the check at line 53 only stops when the current frame is past it; hostile explosions stop after 10 or 14 frames
+  - Large sparse explosions (e.g. Explosion5 at scale 3) can run the pixel check over a big overlap area per enemy
+  - Fix: close the damage window early, or use box collision for friendly explosions
+- Explosive Laserbeams creates a large explosion on every missile hit, with no cooldown or chance roll
+  - ExplosiveLaserbeams.java:33-53 (Explosion5 at scale 3); a fast gun keeps dozens of explosions alive and colliding at once
+  - Fix: add a cooldown, a chance roll or a cap on live explosions
+- Beckoning Flames fires once per burning enemy every 0.75 seconds, not once per player
+  - `lastTimeBeckoningFlamesFired` (DamageOverTime.java:189) is stored per burn effect, so 30 burning enemies fire 30 missiles per interval
+  - Fix: make the cooldown shared, if that matches the intended design
+- Expiring effects remove their animations from the animation manager's list one by one, although the manager already sweeps them
+  - GameObject.java:256, commented "Redundant"; each call searches the whole list, so a burning wave expiring at once does hundreds of full-list searches
+  - `AnimationManager.addUpperAnimation` also searches the whole list before every add
+- The effect update allocates a new list per enemy and always calls `removeAll`, even when nothing expired
+  - `GameObject.activateEffects` (GameObject.java:244-266); the logger wrapper around `updateGameObjectEffects` also runs every tick per enemy, although effects only update every `EFFECT_UPDATE_INTERVAL` ticks
+- Every effect animation is re-positioned every tick, even when its target did not move
+  - `GameObject.moveAnimations` (GameObject.java:502); five burn stacks means five re-positions per enemy per tick
+- Item hooks rebuild the item list twice per hit per target
+  - `PlayerInventory.getItemsByApplicationMethod` streams the whole inventory and builds a new list, called at GameObject.java:392 and 402, inside the explosion loop over enemies
+  - Fix: keep a prebuilt list per application method, rebuilt when the inventory changes
+- A mass kill spawns everything in the same tick
+  - Each kill with a typical late-game build creates a death animation, a sound, up to 4 coins with routes, a recycle part and possibly an explosion, so a 20-kill area hit creates hundreds of objects in one frame
+  - Fix: queue on-death spawns and release a few per tick
+- Effect lookups use streams on every hit and every burn update
+  - `GameObject.getExistingEffect`, `hasEffect` and `getEffectIfExists`; fix: a plain loop or a map by `EffectIdentifiers`
+- Images are never converted to the screen's own pixel format
+  - No `createCompatibleImage` or `TYPE_INT_ARGB_PRE` anywhere in the source; `ImageLoader` uses plain `ImageIO.read`, and resized, rotated and cropped copies keep non-premultiplied types
+  - Every draw and every upload to the graphics card pays a format conversion
+  - Fix: convert once at load time and after each resize, rotate or crop; measure before and after, this could speed up every draw
+- The background draws about 50 nebula tiles every frame, most of them off screen
+  - `BackgroundManager.initBackgroundObjects` builds 25 tiles per row in two rows (each image is 1229x1229), plus up to 105 stars and the planets; GameBoard.java:477-479 draws all of them, each with a transparency-mode switch
+  - Fix: skip sprites outside the visible area (`g.hitClip`) and keep only a few nebula tiles that wrap around
+- The background list is copied and sorted every frame
+  - `BackgroundManager.getAllBGO()` builds and sorts a new list on every paint, in the game and every menu; the order never changes
+- The hardware-acceleration build profile turns on OpenGL and Direct3D together
+  - pom.xml:164-167 sets `sun.java2d.opengl` and `sun.java2d.d3d` to the same value; on Windows OpenGL then takes over, and Direct3D alone is usually the more reliable choice
+  - These options only apply to the packaged build, so running the jar directly renders differently
+  - Worth testing `-Dsun.java2d.uiScale=1` on a display with Windows scaling above 100%
+- Collision's board-block filter lets about half of all pairs through, so collision is close to checking every pair
+  - `CollisionDetector.isWithinBoardBlockThreshold` recomputes both objects' board block for every pair and accepts any pair within a few of the 9 vertical slices
+  - Estimated 5,000 to 8,000 collision checks per frame in a busy wave
+  - Fix: a uniform grid of enemies rebuilt once per tick, and stop recomputing board blocks per pair
+- Missile-against-missile pairs are checked from both sides
+  - MissileManager.java:353-420 runs the check for friendly missiles against enemy missiles and again the other way round
+- Every missile and enemy builds its destruction animation when it spawns, even if it never explodes
+  - Missile.java:71-73; enemies also build a charging animation in `Enemy.initChargingUpAnimation` even when they never charge
+  - A 36-missile boss ring means 72 animations, and their cache lookups, in one tick. Fix: create them on first use
+- The out-of-bounds check runs twice per moving object per tick
+  - `GameObjectMover.handleAdditionalBehaviors` and `GameObject.updateVisibility` both call `OutOfBoundsCalculator.isOutOfBounds`
+- Smaller per-tick allocations
+  - `ExplosionManager.updateExplosions` builds a `toRemove` list every tick and calls `removeAll` on a `CopyOnWriteArrayList`
+  - `GameObject.updateOrbitingObjects` creates an iterator per object per tick, even when nothing orbits it
+  - In co-op, `PlayerManager.getClosestSpaceShip` streams the players for every aiming enemy every tick
+  - `RoyalGuardBarricadeMinion.updateMovementPath`, the Protoss Scout and the Shuttle each call `EnemyManager.getEnemiesByType` twice, which streams all enemies
+- The pixel collision check takes a global lock and tests one pixel at a time
+  - `AlphaMask.of()` is a `synchronizedMap(WeakHashMap).computeIfAbsent`, called twice per overlapping pair; `CollisionDetector.checkPixelCollision` scans the whole overlap pixel by pixel
+  - Fix: store the mask with the frame, and compare whole rows at once with 64-bit operations
+- Missile-against-enemy collision computes the distance before the cheap rectangle test
+  - `CollisionDetector.isNearby` recomputes both board blocks and calls `Math.hypot` before `Rectangle.intersects`; with 300 missiles and 60 enemies that is about 18,000 pairs per tick
+- Biggest per-tick sources of garbage, in order (estimated from the code)
+  - The performance logger's wrapper objects per enemy, streams (`getEnemiesByType`, `getItemsByApplicationMethod`, co-op `getClosestSpaceShip`), route points, animations built per missile and enemy, collision results per hit, and the per-tick lists in ExplosionManager and BackgroundManager
+- Special attacks run collision against every enemy every tick, although they can only damage each enemy every 0.15 to 0.28 seconds
+  - MissileManager.java:244-251 calls `detectCollision` first; the per-enemy cooldown is only checked afterwards in `SpecialAttack.tryDealDamageAndApplyEffects`
+  - Flamethrower, Electro Shred and Fire Shield sprites are large, so almost every enemy passes the distance filter and many reach the pixel check
+  - Fix: skip enemies that are still on cooldown before checking collision
+  - `checkSpecialAttackWithEnemyMissileCollision` (MissileManager.java:265) checks every enemy missile every tick with no cooldown at all
+- Drone orbit paths store 50 full orbits as points, and every point is moved whenever the player moves
+  - OrbitPathFinder.java:37 uses 50 orbits for drones and missiles, about 13,000 points per drone at speed 2; `adjustPathForTargetMovement` (line 148) shifts every point each tick the player moves
+  - Carrier drones that change speed rebuild the whole path
+  - Fix: store the orbit as an angle and compute the next point on demand
+- Every player missile checks every enemy missile every tick, although it can only interact with reflective blocks
+  - Captain, generic and Mutalisk missiles are marked destructible, so `interactsWithMissiles()` is true for all of them (MissileManager.java:357-375)
+  - Fix: keep a separate list of reflective blocks and only check those
+- A non-piercing missile that hits keeps checking the other enemies in the same tick
+  - MissileManager.java:289-300 has no stop after a hit, so a missile overlapping two enemies likely hits both and adds its destruction animation twice
+- Mutalisk bile bursts build 20 full missiles in one tick, and Bile Travel Range repeats that every 0.35 seconds per bit
+  - MutaliskMissile.java:114-162; each bit builds its animation, two destruction animations and a route
+- The destruction animation is built twice per missile
+  - Missile.java:70-74, then again in `GenericMissile.initDestructionAnimation` and MutaliskMissile.java:39-45
+- Smaller weapon costs
+  - Bouncing Lasers rebuilds the route on each bounce and searches the "already hit" list one by one (`EnemyManager.findEnemyForMissileToBounceTo`)
+  - Big Iron rescales its charging animation every tick while charging (`CaptainPrimaryGun.handleChargingLaserbeam`)
+  - `Drone.fireElectroShred` builds and scales an animation it never uses
+  - The Mutalisk secondary gun searches the whole animation list every tick while charging
+  - Lasers stream the drone list once per laser per tick (MissileManager.java:139, `getAllProtossDrones`)
+  - A faster flamethrower lowers its damage cooldown, so more burn-effect copies are made per second
+
+## Ideas
+- Redesign the image cache so it keys on what an image is, not which object it is
+  - Key by `ImageEnums` plus whole-number scale, angle, crop and flip values, looked up directly
+  - Never modify a list the cache or ImageDatabase hands out
+  - Always transform from the original frames in one step; chained transforms lose earlier steps (`setAnimationScale` drops rotation and crop, `changeImagetype` drops scale, `clone()` drops both)
+  - Cache flipped images, cap the cache size or clean it per wave, and make the scratch fields in ImageResizer and ImageRotator local
+  - Touches ImageResizer, ImageRotator, SpriteAnimation and about ten call sites, so plan it before coding
