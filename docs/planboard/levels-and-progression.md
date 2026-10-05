@@ -1,2 +1,55 @@
 # Levels & Progression
 Level flow, portals, the structure of a run and saved progress.
+
+## Bugs
+- "Continue" from a save gives the first level a wrong clock, so it counts as almost finished
+  - `GameState.loadInSaveFile` (GameState.java:219-229) restores `gameTicksExecuted` but never recalculates `gameSeconds`; the level start time is then 0 while the first tick jumps to the saved time
+  - The progress bar is full and the directors pace spawns as if the level is nearly over. Fix: call `updateGameTimeByExecutedGameTicks()` at the end of `loadInSaveFile`
+- Loading a save is fragile and can leave the game half-loaded
+  - `SaveFile` has no version; a renamed or removed item, boon or class makes Jackson fail, the error is only printed, and `MenuButton` starts a fresh run anyway
+  - Only `IOException` is caught; a null player class throws in `PlayerStats.setPlayerClass`. The five `loadInSaveFile` calls are not atomic, so a failure part-way leaves the inventory wiped
+  - Fields missing from an old save keep the live values instead of defaults, because `SaveFile`'s constructor copies the current game state
+- Save and profile files are overwritten in place in the current folder
+  - `SaveManager` and `PlayerProfileManager` write `savefile.json` and `playerprofile.json` directly; a crash mid-write leaves broken JSON
+  - A broken profile leaves `loadedProfile` null, so later profile reads crash and the next save writes null: all unlocks and emeralds are lost
+  - Running from another folder starts a fresh profile; an installed game in a read-only folder fails to save silently
+  - Fix: write to a temp file and rename it, keep the bad file aside, and use a per-user data folder
+- Some run state is not saved, so "Continue" resets it
+  - Consume's kill count and max-HP bonus, Explosive Greed's coins, contract type and progress, Wisdom Ball's bonus chance, the shop contents and rerolls, and the monster level
+  - Contracts re-added on load start counting from a stale kill count, because `GameStatsTracker.loadInSaveFile` runs last (SaveManager.java:54-58)
+  - Boon "already applied this run" flags (Bounty Hunter, Treasure Hunter, Club Access) are not reset on load (not confirmed)
+- Not every route back to the menu resets the run
+  - `GameBoard.resetGame()` doesn't reset `TwinBossManager`, `InteractableManager` or `GameStatsTracker`; the stats tracker only resets on the death screen's key or controller path
+  - `ThornsDamageDealer.resetThornsDamageDealer()` doesn't clear `thornsMissileMap`, and it isn't called between levels
+- `LevelManager.getNextBoss` (LevelManager.java:255-264) retries with recursion until a counter passes 1000, and that counter is never reset
+- The Instant director never spawns anything, so the opening wave at level start never happens
+  - `Director.attemptSpawn()` (Director.java:122-132) handles Boss, Fast, Slow and MiniBoss but has no Instant branch; its credits (DirectorManager.java:82) are never spent
+- Enemy caps are checked before the formation size is known, so formations blow through them
+  - `canSpawnMoreOfThisEnemy` (Director.java:168) only checks "alive < cap", then a formation of up to 21 spawns; affects Bulldozer, Seeker, Bomba, Energizer and Zerg Guardian
+- The Shieldbearer cap counts Barricades instead of Shieldbearers
+  - Director.java:233 uses `EnemyEnums.RoyalGuardBarricade` inside the `RoyalGuardShieldbearer` branch, so Shieldbearers are effectively uncapped
+- The Royal Guard Captain's "not at the start of a level" delay only lasts 0.35 seconds
+  - Director.java:223 compares `getCurrentLevelProgression() < 0.35f`, but that method returns seconds since the level started (GameState.java:243-244), not a fraction of the level
+- The mini boss card list gains duplicates every level and across runs
+  - DirectorManager.java:134-142 appends to `miniBossMonsterCards` without clearing it, so early mini bosses get many copies and newly unlocked ones become rare
+- Small-enemy weights reach zero and then go negative at a difficulty coefficient of 10 or more
+  - Director.java:267 `baseWeight * (2f - difficultyCoefficient * 0.2f)`; `weightedRandomSelection` assumes weights are not negative. Reachable in long runs (not confirmed in play)
+- Difficulty stops scaling in one place but keeps growing in another
+  - EnemyManager.java:379 caps the modifier at 5 bosses (boss speed, mini boss armor), while credits, weights and monster level keep growing without a cap
+- Formations use the enemy's width for vertical spacing too, so tall formations overflow the screen and the lost rows are still paid for
+  - Director.java:144-145; rows outside the playable area are culled after the full cost is charged
+- Left-moving formations spawn about a full screen width too far to the right, so waves arrive late
+  - Director.java:162-163 adds the window width twice
+- Spawn chances are rolled every tick inside the spawn window, so the stated percentages mean little
+  - Cash carriers (Director.java:156) effectively spawn every 45 seconds, formations whenever affordable after their cooldown; the cooldown is per director, so directors can overlap
+- God-run spawn speed bonuses are only calculated when the level starts
+  - `updateSpawnInterval` is only called from the Director constructor (Director.java:57)
+- A spawn that fails to find a free spot still costs credits, and a skipped cash carrier still starts its 45-second lockout
+  - LevelManager.java:319 and Director.java:176-177
+- Edge cases that can crash or misbehave
+  - Director.java:241 and LevelManager.java:254 pick from lists that can be empty
+  - `calculateLevelProgression` (Director.java:62-64) divides by the predicted level length, which can be 0 or stale with local music
+  - `isBossAlive()` also counts `FinalBossLaserbeamClone`, which may keep a boss level open
+- Unreachable or unused flow
+  - `LevelTypes.Special` is never assigned; the final boss needs 99999 kills and its portal is commented out (FriendlyManager.java:103), so runs are endless
+  - `getMineralPenaltyModifier` has no band for 301 to 500 (may be intended); in Man Mode or `onlyBossLevels`, the selected difficulty is overwritten with Hard on later levels (LevelManager.java:193)
