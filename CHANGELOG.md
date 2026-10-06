@@ -21,6 +21,7 @@ All notable changes on the `Nelis` branch.
 ### Fixed
 - The "only boss levels" dev test switch was left on in committed code; all dev test switches are off again.
 - Rotated images are now cached separately for cropped and uncropped requests, so a caller always gets the version it asked for.
+- The background music player is stopped and released on every music change (dying, quitting, boss levels, skipping a song), not only when a level ends normally, so local music files no longer leak a player each time.
 
 - Burn and Scorch effects no longer overwrite the game's shared animation frames when they crop them, and cropped frames are reused, so their resized images come from the cache instead of being rebuilt for every burn stack. In the stress test cropping allocated 69% less memory and used 75% less CPU.
 ## 2026-10-05
