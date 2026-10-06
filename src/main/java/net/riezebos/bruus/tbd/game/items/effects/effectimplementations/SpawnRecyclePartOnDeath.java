@@ -47,7 +47,7 @@ public class SpawnRecyclePartOnDeath implements EffectInterface {
             Random random = new Random();
             //should be null safe, since this effect cannot be created but from the recycler class
             Recycler recycler = (Recycler) PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.Recycler);
-            if(random.nextInt(0, 1) < (recycler.getQuantity() * Recycler.spawnChance)){
+            if(random.nextFloat() < (recycler.getQuantity() * Recycler.spawnChance)){
                 InteractableManager.getInstance().addInteractable(getRecyclerPart(gameObject));
             }
         }

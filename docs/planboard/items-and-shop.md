@@ -2,8 +2,6 @@
 Items, boons, the shop, rerolls and prices.
 
 ## Bugs
-- Recycler always drops a recycle part instead of rolling its chance
-  - SpawnRecyclePartOnDeath.java:50 compares `random.nextInt(0, 1)`, which is always 0, against `quantity * Recycler.spawnChance`
 - Missiles put the same effect object on every enemy they hit instead of a copy
   - `GameObject.dealDamageToGameObject` (GameObject.java:422-423) adds `effectsToApply` directly; explosions and special attacks copy first
   - On piercing missiles, several enemies would share one effect's stacks and animations (not confirmed in play)
