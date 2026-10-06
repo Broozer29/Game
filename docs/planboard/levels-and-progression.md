@@ -2,9 +2,6 @@
 Level flow, portals, the structure of a run and saved progress.
 
 ## Bugs
-- "Continue" from a save gives the first level a wrong clock, so it counts as almost finished
-  - `GameState.loadInSaveFile` (GameState.java:219-229) restores `gameTicksExecuted` but never recalculates `gameSeconds`; the level start time is then 0 while the first tick jumps to the saved time
-  - The progress bar is full and the directors pace spawns as if the level is nearly over. Fix: call `updateGameTimeByExecutedGameTicks()` at the end of `loadInSaveFile`
 - Loading a save is fragile and can leave the game half-loaded
   - `SaveFile` has no version; a renamed or removed item, boon or class makes Jackson fail, the error is only printed, and `MenuButton` starts a fresh run anyway
   - Only `IOException` is caught; a null player class throws in `PlayerStats.setPlayerClass`. The five `loadInSaveFile` calls are not atomic, so a failure part-way leaves the inventory wiped

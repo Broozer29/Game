@@ -7,6 +7,7 @@ All notable changes on the `Nelis` branch.
 ### Fixed
 - Wondrous Wisdomball's "Copy Inventory" roll no longer also copies a legendary item.
 
+- Continuing a saved run starts the level with the right clock: the song progress bar starts empty and enemies spawn at the normal pace, instead of the level counting as almost finished.
 ## 2026-10-06
 
 ### Added
