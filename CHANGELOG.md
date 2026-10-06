@@ -12,6 +12,11 @@ All notable changes on the `Nelis` branch.
 - Faster startup (about 36 s to 19 s on the measuring machine): images start loading as soon as the game launches, alongside the rest of the startup, and are decoded in memory instead of through temp files.
 - Image resize and rotate cache lookups go straight to the stored key instead of checking every key, so they no longer slow down as the cache grows.
 - Image cropping reads transparency a row at a time instead of pixel by pixel.
+- Claude setup: work is now also tracked on a `game` board in Nelis's Plan, with project bindings in .claude/bindings (design-review as the reviewer, `mvn -q compile` as the build, a check that all dev test switches are off). CLAUDE.md says to translate Bruus's Dutch text to English before reasoning on it.
+- Planboard: performance entries now record the 2026-10-06 discussion with Bruus on the laser preload, tracking lasers and the rotation crop flag.
+
+### Fixed
+- The "only boss levels" dev test switch was left on in committed code; all dev test switches are off again.
 
 ## 2026-10-05
 

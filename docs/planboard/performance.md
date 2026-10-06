@@ -39,17 +39,29 @@ Frame rate, lag, loading times and memory use.
   - The rotation itself rounds to whole degrees (confirmed at ImageRotator.java:258), so 4 of every 5 cached rotations are duplicates
   - Estimated at about 10,800 permanent cache entries and several hundred MB (not measured)
   - Fix: pre-render and cache whole degrees only. After the fixes above this saves about 1.6 s of startup; the main gain is memory
+  - Discussed on 2026-10-06: two roundings disagree. The cache key rounds the angle to 0.2° (ImageRotator.java:71 and 114), but the rotation rounds to a whole degree (ImageRotator.java:258)
+    - Example: 9.6°, 9.8°, 10.0°, 10.2° and 10.4° are five cache entries, all holding the same picture rotated by 10°
+    - The preload already steps by `Laserbeam.defaultMaxRotationPerUpdate` (Game.java:265 and 277), so reusing it is what creates the duplicates
+    - Nothing changes on screen: a tracking laser turns 0.2° per update, but its picture only changes once per whole degree
+    - Fix: round the cache key to whole degrees too, and preload in 1° steps. Rotating in true 0.2° steps instead would look smoother but cost five times the memory
+    - Bruus agrees it can be fixed. It shortens startup and frees memory; it does not speed up gameplay
+    - To measure: Game.java prints memory use before and after the laser preload; compare those lines before and after the fix
 - Tracking laser beams re-rotate all of their segments on every angle change
   - Bruus insight:
     - **Mening:** Not sure what he is talking about here. Laserbeams need to rotate every frame because skipping frames visually looks like laggy gameplay. If the issue is that the image is not cached, it's kind of a duplicate of the previous discovery about cropping animations
     - **Mijn voorstel:** Needs more info, I don't understand what the implicated problem is.
   - TrackingLaserBeam.java:93 and AngledLaserBeam.java:63; each new angle that has not been cached rotates every frame and reads every pixel to crop it (ImageRotator.java:86-92)
   - The pixel reading is now a row at a time (see the cropping entry above), but every segment is still rotated and cropped
+  - Discussed on 2026-10-06: once the preload covers every whole degree (entry above), every laser angle is already cached. What is left is one cache lookup per segment per angle change, which is the key-string cost in the cache lookup entry. Likely a duplicate of those two entries; delete it once they are fixed
 - Rotated images can come back cropped or uncropped depending on who asked first
   - Bruus insight:
     - **Mening:** Will not impact performance in any way. Croppen doen we vgm letterlijk ALTIJD, de boolean die hier mee gegeven wordt is eigenlijk dead code. De rotate/resizers croppen automatisch en negeren deze boolean parameter
     - **Mijn voorstel:** Liever de crop parameter verwijderen uit de codebase dan opslaan denk ik. Verifieer of ik niet _ergens_ niet crop, maar dat zal een uitzondering zijn op de norm. 
   - The crop setting is not part of the rotation cache keys; the Queen and the Twin Boss rotate both ways
+  - Discussed on 2026-10-06: the crop flag is not dead code. `rotate` only crops when it is true (ImageRotator.java:155); the angle path passes false and crops all frames to one size afterwards (ImageRotator.java:92-97); UIObject.java:40 passes false
+    - The key is `image.hashCode() + "_" + roundedDegrees` (ImageRotator.java:115), so whoever asks first decides whether the stored picture is cropped
+    - This is a correctness bug, not a performance one, and no gameplay mechanic shows it today
+    - Fix: add the crop setting to the cache key; keep the flag. Bruus gave the go
 - Flipped rotations (angles between 91 and 269 degrees) are never cached
   - Bruus insight:
     - **Mening:** Ahja, straight up een oversight & bug. 
@@ -87,7 +99,7 @@ Frame rate, lag, loading times and memory use.
   - Bruus insight:
     - **Mening:** Bugje, vind het een goeie fix
     - **Mijn voorstel:** Go fix!
-- SpecialAttack.java:54-57; the copy is thrown away by `GameObject.addEffect`. Fix: check for an existing burn first
+  - SpecialAttack.java:54-57; the copy is thrown away by `GameObject.addEffect`. Fix: check for an existing burn first
 - Missile-against-missile collision compares every pair every frame
   - Bruus insight:
     - **Mening:** Disagree. Er zijn 2 bazen die het mogelijk maken om neutral missiles te hebben en dan zijn het er een gelimiteerde hoeveelheid. Non-issue
