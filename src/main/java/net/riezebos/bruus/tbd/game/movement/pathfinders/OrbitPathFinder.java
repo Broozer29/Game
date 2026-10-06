@@ -14,6 +14,9 @@ import java.util.List;
 
 public class OrbitPathFinder implements PathFinder {
 
+    // Drones and missiles get a short route; when it runs out, a new one starts from their current angle
+    private static final int DRONE_AND_MISSILE_ORBITS = 2;
+
     private GameObject target;
     private boolean reverse = false;
 
@@ -34,7 +37,7 @@ public class OrbitPathFinder implements PathFinder {
         double angleStep = movementSpeed / radius;
 
         // Calculate how many complete orbits we want to generate
-        int numberOfOrbits = (gameObject instanceof Drone || gameObject instanceof Missile) ? 50 : 2;
+        int numberOfOrbits = (gameObject instanceof Drone || gameObject instanceof Missile) ? DRONE_AND_MISSILE_ORBITS : 2;
 
         // Total angle to cover (multiple complete circles)
         double totalAngle = numberOfOrbits * Math.PI * 2;
