@@ -14,9 +14,11 @@ All notable changes on the `Nelis` branch.
 - Image cropping reads transparency a row at a time instead of pixel by pixel.
 - Claude setup: work is now also tracked on a `game` board in Nelis's Plan, with project bindings in .claude/bindings (design-review as the reviewer, `mvn -q compile` as the build, a check that all dev test switches are off). CLAUDE.md says to translate Bruus's Dutch text to English before reasoning on it.
 - Planboard: performance entries now record the 2026-10-06 discussion with Bruus on the laser preload, tracking lasers and the rotation crop flag.
+- Planboard reading script: free text and unknown headings print as notes where they stand instead of as entries, and `--unanswered` lists only entries without a reply from Bruus. The README describes Bruus's reply format.
 
 ### Fixed
 - The "only boss levels" dev test switch was left on in committed code; all dev test switches are off again.
+- Rotated images are now cached separately for cropped and uncropped requests, so a caller always gets the version it asked for.
 
 ## 2026-10-05
 
