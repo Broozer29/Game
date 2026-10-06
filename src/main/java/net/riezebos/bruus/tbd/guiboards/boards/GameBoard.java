@@ -859,6 +859,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
     }
 
 
+    @Deprecated
     private void drawPlayerHealthBars(Graphics2D g, SpaceShip player) {
         float playerHealth = player.getCurrentHitpoints();
         float playerMaxHealth = playerStats.getMaxHitPoints();
