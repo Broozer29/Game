@@ -68,7 +68,7 @@ public class ImageRotator {
     }
 
     public List<BufferedImage> getRotatedFrames (List<BufferedImage> frames, double angleInDegrees, boolean mainainCacheKey) {
-        double roundedDegrees = Math.round(angleInDegrees * 5.0) / 5.0;
+        int roundedDegrees = toWholeDegree(angleInDegrees);
 
         String keyString = frames.stream()
                 .map(image -> Integer.toString(image.hashCode()))
@@ -111,7 +111,7 @@ public class ImageRotator {
         return rotate(image, angle, crop, false);
     }
     private BufferedImage rotate (BufferedImage image, double angle, boolean crop, boolean maintainCacheKey) {
-        double roundedDegrees = Math.round(angle * 5.0) / 5.0;
+        int roundedDegrees = toWholeDegree(angle);
         String keyString = image.hashCode() + "_" + roundedDegrees + "_" + crop;
         ImageCacheKey imageCacheKey = findOrCreateCacheKey(rotatedImageCacheKeys, keyString);
         if (imageCacheKey != null && rotatedImageCache.containsKey(imageCacheKey)) {
@@ -121,6 +121,19 @@ public class ImageRotator {
 
         imageCacheKey = new ImageCacheKey(keyString);
         imageCacheKey.setMustNeverBeReleased(maintainCacheKey);
+        BufferedImage rotatedImage = rotateWithoutCaching(image, roundedDegrees, crop);
+        rotatedImageCache.put(imageCacheKey, rotatedImage);
+        rotatedImageCacheKeys.put(keyString, imageCacheKey);
+        return rotatedImage;
+    }
+
+    // Rounds an angle to a whole degree and wraps it into 0-359, so equal-looking angles share one cache key
+    private int toWholeDegree (double angle) {
+        int wholeDegree = (int) (Math.round(angle) % 360);
+        return (wholeDegree + 360) % 360;
+    }
+
+    private BufferedImage rotateWithoutCaching (BufferedImage image, int roundedDegrees, boolean crop) {
         // Convert the angle to radians
         double rad = Math.toRadians(roundedDegrees);
 
@@ -156,8 +169,6 @@ public class ImageRotator {
             bufferedImage = cropTransparentPixels(bufferedImage);
         }
 
-        rotatedImageCache.put(imageCacheKey, bufferedImage);
-        rotatedImageCacheKeys.put(keyString, imageCacheKey);
         return bufferedImage;
     }
 
@@ -243,28 +254,29 @@ public class ImageRotator {
 
 
     public BufferedImage rotateOrFlip(BufferedImage image, double angleDegrees, boolean crop) {
-        // Normalize the angle to be within the range of 0 to 360.
-        angleDegrees = (angleDegrees + 360) % 360;
+        // Round to a whole degree first, so the flip decision is the same for every angle that shares a cache key.
+        int wholeDegree = toWholeDegree(angleDegrees);
 
         // Determine if the image is facing the left half of the circle and needs to be flipped vertically.
-        boolean isLeftHalf = angleDegrees > 90 && angleDegrees < 270;
+        boolean isLeftHalf = wholeDegree > 90 && wholeDegree < 270;
 
-
-        // If the image is on the left half of the circle, mirror the angle for rotation.
-        if (isLeftHalf) {
-            angleDegrees = 360 - angleDegrees;
+        if (!isLeftHalf) {
+            return rotate(image, wholeDegree, crop);
         }
 
-        angleDegrees = Math.round(angleDegrees);
-        // Rotate the image to the adjusted angle.
-        BufferedImage processedImage = rotate(image, angleDegrees, crop);
-
-        // If the image was on the left half of the circle, apply the vertical flip after rotation.
-        if (isLeftHalf) {
-            processedImage = flipVertically(processedImage);
+        String keyString = image.hashCode() + "_" + wholeDegree + "_" + crop + "_flip";
+        ImageCacheKey imageCacheKey = findOrCreateCacheKey(rotatedImageCacheKeys, keyString);
+        if (imageCacheKey != null && rotatedImageCache.containsKey(imageCacheKey)) {
+            imageCacheKey.updateAccessTime();
+            return rotatedImageCache.get(imageCacheKey);
         }
 
-        return processedImage;
+        // Mirror the angle for rotation, then apply the vertical flip after rotation. Only the flipped result is cached.
+        BufferedImage flippedImage = flipVertically(rotateWithoutCaching(image, 360 - wholeDegree, crop));
+        imageCacheKey = new ImageCacheKey(keyString);
+        rotatedImageCache.put(imageCacheKey, flippedImage);
+        rotatedImageCacheKeys.put(keyString, imageCacheKey);
+        return flippedImage;
     }
 
     public BufferedImage flipHorizontally (BufferedImage image) {

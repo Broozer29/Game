@@ -262,8 +262,8 @@ public class Game {
         pinkLaserbeamConfig.setOriginPoint(new Point(0, 0));
 		Laserbeam pinkLaserBeam = new AngledLaserBeam(pinkLaserbeamConfig);
 
-        for(float i = 0; i < 360; i += Laserbeam.defaultMaxRotationPerUpdate){
-            pinkLaserBeam.setAngleDegrees(i);
+        for(int degree = 0; degree < 360; degree++){
+            pinkLaserBeam.setAngleDegrees(degree);
             pinkLaserBeam.update();
         }
 
@@ -274,8 +274,8 @@ public class Game {
         Laserbeam blueLaserBeam = new AngledLaserBeam(blueLaserbeamConfig);
 
 
-        for(float i = 0; i < 360; i += Laserbeam.defaultMaxRotationPerUpdate){
-            blueLaserBeam.setAngleDegrees(i);
+        for(int degree = 0; degree < 360; degree++){
+            blueLaserBeam.setAngleDegrees(degree);
             blueLaserBeam.update();
         }
     }
