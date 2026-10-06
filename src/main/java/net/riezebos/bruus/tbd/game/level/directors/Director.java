@@ -231,7 +231,7 @@ public class Director {
         }
 
         if (enemyEnums.equals(EnemyEnums.RoyalGuardShieldbearer)) {
-            return EnemyManager.getInstance().getAmountOfEnemyTypesAlive(EnemyEnums.RoyalGuardBarricade) < 10;
+            return EnemyManager.getInstance().getAmountOfEnemyTypesAlive(EnemyEnums.RoyalGuardShieldbearer) < 10;
         }
 
         if (enemyEnums.equals(EnemyEnums.ZergQueen)) {

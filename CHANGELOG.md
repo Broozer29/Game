@@ -12,6 +12,7 @@ All notable changes on the `Nelis` branch.
 - Precision Amplifier stops being offered once 8 copies reach 100% crit chance, so a 9th copy can no longer push it to 112%.
 - Guillotine now works as its text says: each copy raises the execute threshold by 10%, up to 80% at the 8-copy limit.
 - Recycler now rolls its drop chance (10% per copy) instead of dropping a part from every kill.
+- The Royal Guard Shieldbearer limit (10 at a time) now counts Shieldbearers instead of Barricades.
 
 ## 2026-10-06
 

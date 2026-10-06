@@ -23,8 +23,6 @@ Level flow, portals, the structure of a run and saved progress.
   - `Director.attemptSpawn()` (Director.java:122-132) handles Boss, Fast, Slow and MiniBoss but has no Instant branch; its credits (DirectorManager.java:82) are never spent
 - Enemy caps are checked before the formation size is known, so formations blow through them
   - `canSpawnMoreOfThisEnemy` (Director.java:168) only checks "alive < cap", then a formation of up to 21 spawns; affects Bulldozer, Seeker, Bomba, Energizer and Zerg Guardian
-- The Shieldbearer cap counts Barricades instead of Shieldbearers
-  - Director.java:233 uses `EnemyEnums.RoyalGuardBarricade` inside the `RoyalGuardShieldbearer` branch, so Shieldbearers are effectively uncapped
 - The Royal Guard Captain's "not at the start of a level" delay only lasts 0.35 seconds
   - Director.java:223 compares `getCurrentLevelProgression() < 0.35f`, but that method returns seconds since the level started (GameState.java:243-244), not a fraction of the level
 - The mini boss card list gains duplicates every level and across runs
