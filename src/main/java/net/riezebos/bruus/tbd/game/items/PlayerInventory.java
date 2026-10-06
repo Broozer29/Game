@@ -336,6 +336,14 @@ public class PlayerInventory {
         return items.get(itemName);
     }
 
+    public Item getItemForAvailabilityCheck(ItemEnums itemEnum) {
+        Item ownedItem = getItemFromInventoryIfExists(itemEnum);
+        if (ownedItem != null) {
+            return ownedItem;
+        }
+        return createItemFromEnum(itemEnum);
+    }
+
     public Map<ItemEnums, Item> getItems() {
         return items;
     }

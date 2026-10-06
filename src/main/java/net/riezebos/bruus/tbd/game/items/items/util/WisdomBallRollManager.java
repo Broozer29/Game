@@ -312,7 +312,7 @@ public class WisdomBallRollManager {
 
         while (attempts < maxAttempts) {
             ItemEnums randomItem = ItemEnums.getRandomItemByRarity(category);
-            Item tempItem = PlayerInventory.getInstance().createItemFromEnum(randomItem);
+            Item tempItem = PlayerInventory.getInstance().getItemForAvailabilityCheck(randomItem);
 
             if (tempItem != null && tempItem.isAvailable()) {
                 return randomItem;
