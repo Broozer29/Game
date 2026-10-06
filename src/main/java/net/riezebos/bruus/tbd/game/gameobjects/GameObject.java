@@ -454,6 +454,7 @@ public class GameObject extends Sprite {
             GameObjectMover.getInstance().moveGameObject(this, movementConfiguration);
             this.bounds.setBounds(xCoordinate + xOffset, yCoordinate + yOffset, width, height);
 
+            objectsFollowingThis.removeIf(o -> !o.isVisible());
             for (GameObject object : objectsFollowingThis) {
                 object.setCenterCoordinates(this.getCenterXCoordinate(), this.getCenterYCoordinate());
             }

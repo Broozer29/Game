@@ -23,6 +23,7 @@ All notable changes on the `Nelis` branch.
 - Rotated images are now cached separately for cropped and uncropped requests, so a caller always gets the version it asked for.
 - The background music player is stopped and released on every music change (dying, quitting, boss levels, skipping a song), not only when a level ends normally, so local music files no longer leak a player each time.
 - A special-attack hit on an enemy that already has the effect no longer copies the effect and its animation only to throw the copy away.
+- Objects no longer keep finished attacks in their follower list: invisible followers are removed before followers are moved.
 
 - Burn and Scorch effects no longer overwrite the game's shared animation frames when they crop them, and cropped frames are reused, so their resized images come from the cache instead of being rebuilt for every burn stack. In the stress test cropping allocated 69% less memory and used 75% less CPU.
 ## 2026-10-05
