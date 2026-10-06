@@ -529,7 +529,7 @@ public class Director {
         if (direction == Direction.LEFT) {
             // For LEFT direction, spawn at or beyond the right edge of the board
             int bound = instance.getWindowWidth() + (random.nextInt((int) Math.round(totalFormationWidth * 0.5)));
-            return instance.getWindowWidth() + Math.max(0, bound);
+            return Math.max(0, bound);
         } else if (direction == Direction.RIGHT) {
             // For RIGHT direction, spawn at or before the left edge of the board
             int bound = -(totalFormationWidth + random.nextInt(totalFormationWidth));

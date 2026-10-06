@@ -31,8 +31,6 @@ Level flow, portals, the structure of a run and saved progress.
   - EnemyManager.java:379 caps the modifier at 5 bosses (boss speed, mini boss armor), while credits, weights and monster level keep growing without a cap
 - Formations use the enemy's width for vertical spacing too, so tall formations overflow the screen and the lost rows are still paid for
   - Director.java:144-145; rows outside the playable area are culled after the full cost is charged
-- Left-moving formations spawn about a full screen width too far to the right, so waves arrive late
-  - Director.java:162-163 adds the window width twice
 - Spawn chances are rolled every tick inside the spawn window, so the stated percentages mean little
   - Cash carriers (Director.java:156) effectively spawn every 45 seconds, formations whenever affordable after their cooldown; the cooldown is per director, so directors can overlap
 - God-run spawn speed bonuses are only calculated when the level starts

@@ -17,6 +17,7 @@ All notable changes on the `Nelis` branch.
 - Item stack limits now work in the shop and for the Wondrous Wisdomball: Barbed Missiles stops being offered at 5 copies and Recycler at 10.
 - Every unlocked mini boss now has a fair chance to appear; the mini boss list no longer gains duplicates of early mini bosses every level and run.
 - Corrosive Oil lowers an enemy's armor once per burn (and once per extra ignite stack), as intended, instead of on every burn tick.
+- Enemy formations moving left now spawn just off-screen like the ones moving right, instead of a full screen width away, so they arrive on time.
 
 ## 2026-10-06
 
