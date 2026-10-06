@@ -6,51 +6,98 @@ Frame rate, lag, loading times and memory use.
 
 ## Bugs
 - Lag when the Module: Scorch "sun" drone burns enemies, and the game slows down the longer a level lasts
+  - Bruus insight: 
+    - **Mening:** Yeah, this will make a big impact. De cropAnimation gaat niet door de ImageResizer.java heen, waar het cachen zit. M.a.w. de game cached dit niet. 
+    - **Mijn voorstel:** Deze manier van croppen toevoegen of via de ImageResizer.java doen en cachen.
   - Every new ignite stack crops the burn animation with `SpriteAnimation.cropAnimation()` (SpriteAnimation.java:271-276)
   - At scale 1 that animation holds ImageDatabase's own frame list, so the crop overwrites the shared master frames with new image objects
   - The resize cache identifies frames by object identity, so after every crop it never finds a match: all 25 burn frames are resized bicubically again and the cache grows
   - Same problem in four more places: thorns hits (ThornsDamageDealer.java:214), every Guardian spawn (Guardian.java:39), Portal.java:20, and `EnemyManager.startBurningEnemies` at level end, which burns every remaining enemy in one frame
   - Fix: crop into a new list instead of overwriting the shared one, and crop and size the effect frames once at load time
 - Image cache lookups check every stored key one by one, so the game slows down as the cache grows
+  - Bruus insight:
+    - **Mening:** Risicoloze wijziging, zie geen reden om het niet te doen, gratis performance winst is gratis performance winst, ik onderschatte de computational cost van een string genereren.
+    - **Mijn voorstel:** Custom object maken voor de cache key die shared is voor het cache systeem van image rotator/resizer/cropper
   - `findOrCreateCacheKey` in ImageResizer and ImageRotator; every lookup also first builds a long key string from every frame's ID
   - Runs for every new animation, rotation and rescale; the cache is only cleaned between levels
   - Fixed on 2026-10-05, not committed yet: each cache now keeps a second map from key string to the stored key, so a lookup is one map get. The stored key is still returned, so last-used times and cleanup work as before
   - Measured: the laserbeam preload at startup went from about 11 s to 4 s. Effect during play is not measured
   - Still open: the key string is still built from every frame's ID on every lookup, including cache hits
 - Cropping a rotated image read its pixels one at a time
+  - Bruus insight:
+    - **Mening:** Goeie, dit is de theorie achter de AlphaMask performance update doorzetten naar de ImageCropper
+    - **Mijn voorstel:** Go for it! Denk dat claude voor zich spreekt.
   - `ImageCropper.cropFramesToUniformContent` and `ImageRotator.cropTransparentPixels` called `getRGB` once per pixel to find the transparent edges, before storing the result in the cache
   - Fixed on 2026-10-05, not committed yet: a new `ImageCropper.readAlphaRow` reads one row of transparency values at once
   - Checked against the old per-pixel read on 800 images in five image formats: every pixel matched
   - Measured: the laserbeam preload went from about 4 s to 2 s. It also speeds up every new laser angle during play
 - Startup pre-renders every laser angle in 0.2-degree steps and never frees them
+  - Bruus insight:
+    - **Mening:** Goeie, ik heb de rotationDegrees geclamped naar vaste waardes maar dit niet doorgezet naar het preloaden, dit is inderdaad memory dat niks doet en blijft hangen. We willen wel laserbeams preloaden en vasthouden, anders gaat het weer enorm laggen wanneer een enemy een laserbeam vuurt.
+    - **Mijn voorstel:** Bij het preloaden de `Laserbeam.defaultMaxRotationPerUpdate` static variable hergebruiken zodat deze altijd gelijk op gaan.
   - `Game.simulateAttackAngles()` (Game.java:253) with `Laserbeam.defaultMaxRotationPerUpdate`; laser entries are marked "never release"
   - The rotation itself rounds to whole degrees (confirmed at ImageRotator.java:258), so 4 of every 5 cached rotations are duplicates
   - Estimated at about 10,800 permanent cache entries and several hundred MB (not measured)
   - Fix: pre-render and cache whole degrees only. After the fixes above this saves about 1.6 s of startup; the main gain is memory
 - Tracking laser beams re-rotate all of their segments on every angle change
+  - Bruus insight:
+    - **Mening:** Not sure what he is talking about here. Laserbeams need to rotate every frame because skipping frames visually looks like laggy gameplay. If the issue is that the image is not cached, it's kind of a duplicate of the previous discovery about cropping animations
+    - **Mijn voorstel:** Needs more info, I don't understand what the implicated problem is.
   - TrackingLaserBeam.java:93 and AngledLaserBeam.java:63; each new angle that has not been cached rotates every frame and reads every pixel to crop it (ImageRotator.java:86-92)
   - The pixel reading is now a row at a time (see the cropping entry above), but every segment is still rotated and cropped
 - Rotated images can come back cropped or uncropped depending on who asked first
+  - Bruus insight:
+    - **Mening:** Will not impact performance in any way. Croppen doen we vgm letterlijk ALTIJD, de boolean die hier mee gegeven wordt is eigenlijk dead code. De rotate/resizers croppen automatisch en negeren deze boolean parameter
+    - **Mijn voorstel:** Liever de crop parameter verwijderen uit de codebase dan opslaan denk ik. Verifieer of ik niet _ergens_ niet crop, maar dat zal een uitzondering zijn op de norm. 
   - The crop setting is not part of the rotation cache keys; the Queen and the Twin Boss rotate both ways
 - Flipped rotations (angles between 91 and 269 degrees) are never cached
+  - Bruus insight:
+    - **Mening:** Ahja, straight up een oversight & bug. 
+    - **Mijn voorstel:** Go fix!
   - `rotateOrFlip` flips after the cache lookup, so every call builds a new image, and collision then rebuilds its pixel mask for it
 - Health, shield, overload and progress bars are resized every frame
+  - Bruus insight:
+    - **Mening:** Will not impact performance. Deze bars zijn deprecated en worden niet getoond op de UI, en dus ook niet getekend. Als ze nog wel geupdate worden kan dit wel uitgezet worden, maar is geen probleem
+    - **Mijn voorstel:** Netjes deprecated spul los koppelen, niet verwijderen want misschien willen we het ooit terug brengen
   - `UIObject.resizeToDimensions` (UIObject.java:16) has no "same size as last time" check; called from GameBoard.java:874, 893, 903 and 1005
   - Each new pixel width costs a bicubic resize and a cache entry. Fix: draw the bar at its target size instead of resizing it
 - Drones keep every electro-shred attack they fire in their follower list for the whole run
+  - Bruus insight:
+    - **Mening:** Straight up bug. Zal weinig tot geen performance improvements hebben.
+    - **Mijn voorstel:** Gewoon verwijderen uit de lijst als de attack SpecialAttack.isVisible() == false is.
   - Drone.java:122 adds it; nothing removes it. GameObject.move() (GameObject.java:457) moves every old entry every frame
   - Same pattern in CarrierBeacon.java:93, Flamer.java:76 and RoyalGuardFlagBearer.java:96 (bounded by the owner's lifetime)
   - Fix: drop entries that are no longer visible before the loop
 - Healing animations pile up on the player and drones until they die
+  - Bruus insight:
+    - **Mening:** Straight up bug. Zal geen improvement performance leveren. Animations die uitgespeeld zijn en "!isVisible()" zijn, zijn effectief "dead" animations en wachten om opgepakt te worden door de garbage collector.
+    - **Mijn voorstel:** Kan het fixen maar dit zal geen echt verschil maken.
   - GameObject.java:1253 (`heal`) and DirectHeal.java:50 add an animation per visible heal; the list is only cleared on death, and every entry is re-positioned every frame (GameObject.java:502)
 - Removed drones are not cleaned up, so their attacks stay alive until the next reset
+  - Bruus insight:
+    - **Mening:** Straight up bug. Zal weinig tot geen performance improvements hebben. Als het goed is maken de fireball drones maar 1x hun attack aan. Dus je hebt ten alle tijden drone x quantity = amount of attacks **per level**. Dus 8 drones = 8 SpecialAttacks in totaal. Bij resetManager() worden ze weer verwijderd
+    - **Mijn voorstel:** Kun je fixen maar is mogelijk de tokens geeneens waard.
   - FriendlyManager removes drones without calling `deleteObject()`, e.g. the near-infinite scorch flame from SpecialAttackDrone.java:67
 - Background music players are not released with the "local files" music option
+  - Bruus insight:
+    - **Mening:** Bug en zou nog wel eens een serieuze kunnen zijn. Als ik het goed begrijp en denk dat de garbage collector dan ook de .wav nooit released is dit een memory leak.
+    - **Mijn voorstel:** Kan geen kwaad om te fixen en nog wel een verschil maken bij lange game sessies. Go fix
   - AudioManager.java:291 makes a new player each level; only the normal level-finished path frees it (LevelManager.java:101). Dying, quitting and boss levels leak one native player each
 - Every special-attack hit copies the burn effect, including a new animation, even when the enemy is already burning
-  - SpecialAttack.java:54-57; the copy is thrown away by `GameObject.addEffect`. Fix: check for an existing burn first
+  - Bruus insight:
+    - **Mening:** Bugje, vind het een goeie fix
+    - **Mijn voorstel:** Go fix!
+- SpecialAttack.java:54-57; the copy is thrown away by `GameObject.addEffect`. Fix: check for an existing burn first
 - Missile-against-missile collision compares every pair every frame
+  - Bruus insight:
+    - **Mening:** Disagree. Er zijn 2 bazen die het mogelijk maken om neutral missiles te hebben en dan zijn het er een gelimiteerde hoeveelheid. Non-issue
+    - **Mijn voorstel:** Leave it as is. Not an issue as of now.
   - MissileManager.java:353-420; the code comment says "This is NOT scalable"
+
+# Negeer de onderstaande
+
+De punten hieronder hebben opzich wel gelijk, maar de performance impact van deze zaken is dusdanig nihil dat het **niet de moeite waard is** om hier tijd, energie (en tokens) in te steken. 
+
 - The performance logger builds two strings per enemy per frame
   - EnemyManager.java:163-164 (`timeAndLog`). Fix: an off switch for release builds
 - Boss death saves the player profile to disk on the game thread
