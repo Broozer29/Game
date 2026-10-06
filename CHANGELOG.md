@@ -13,6 +13,7 @@ All notable changes on the `Nelis` branch.
 - Guillotine now works as its text says: each copy raises the execute threshold by 10%, up to 80% at the 8-copy limit.
 - Recycler now rolls its drop chance (10% per copy) instead of dropping a part from every kill.
 - The Royal Guard Shieldbearer limit (10 at a time) now counts Shieldbearers instead of Barricades.
+- Shop texts now match what the game does: rerolls cost 15% of the minerals you entered the shop with, VIP Ticket gives one free refresh per copy, and Treasure Hunter raises the chance for Legendary items.
 
 ## 2026-10-06
 

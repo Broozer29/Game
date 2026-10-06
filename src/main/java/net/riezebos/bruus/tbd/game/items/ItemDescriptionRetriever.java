@@ -84,7 +84,7 @@ public class ItemDescriptionRetriever {
 
             //4
             case VIPTicket -> {
-                return "Grants 1 FREE shop refresh whenever you enter the shop.";
+                return "Grants 1 (+1) FREE shop refresh whenever you enter the shop.";
             } //legendary
             case Guillotine -> {
                 return "Enemies that are damaged below " + Math.round(Guillotine.hitpointsThreshold * 100) + " % (+" + Math.round(Guillotine.hitpointsThreshold * 100) + "%) of their health are instantly killed.";

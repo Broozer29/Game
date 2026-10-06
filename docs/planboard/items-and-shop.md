@@ -26,9 +26,8 @@ Items, boons, the shop, rerolls and prices.
 - Bounty Hunter's bonus and the mineral penalties skip level-1 enemies
   - Enemy.java:136-146 puts them inside `if (level > 1)`
 - Smaller item and shop issues (from the item audit, not each checked)
-  - Treasure Hunter's text promises more relics, but ItemRarityEnums.java:36-50 only shifts Common into Rare and Legendary
-  - Reroll text says 25% (ShopBoardCreator.java:242), the code uses 15% (ShopManager.java:97), and the cost is computed before the end-of-level increase
-  - VIP Ticket's text says 1 free refresh, the code gives one per stack; Contract's text says "enemies" even when it counts mini bosses
+  - The reroll cost is computed before the end-of-level increase
+  - Contract's text says "enemies" even when it counts mini bosses
   - `ItemEnums.isRelicAvailable` counts disabled relics, so Wisdom Ball's "Add a Relic" can fall back to Overclock
   - Bonus Kaart adds the item twice (ShopItem.java:105), which can push capped items past their limit
   - FragmentationSacs and MutaliskHealingBonus pass the wrong `ItemEnums` (both disabled)

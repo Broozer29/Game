@@ -51,7 +51,7 @@ public class TreasureHunter implements Boon {
 
     @Override
     public String getBoonDescription() {
-        return "Increases the chance for Relic items to appear in the shop by " + (PlayerProfileManager.getInstance().getLoadedProfile().getTreasureHunterLevel() * chanceShiftAmount) + " %.";
+        return "Increases the chance for Legendary items to appear in the shop by " + (PlayerProfileManager.getInstance().getLoadedProfile().getTreasureHunterLevel() * chanceShiftAmount) + " %.";
     }
 
     @Override
