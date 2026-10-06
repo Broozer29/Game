@@ -25,8 +25,6 @@ Level flow, portals, the structure of a run and saved progress.
   - `canSpawnMoreOfThisEnemy` (Director.java:168) only checks "alive < cap", then a formation of up to 21 spawns; affects Bulldozer, Seeker, Bomba, Energizer and Zerg Guardian
 - The Royal Guard Captain's "not at the start of a level" delay only lasts 0.35 seconds
   - Director.java:223 compares `getCurrentLevelProgression() < 0.35f`, but that method returns seconds since the level started (GameState.java:243-244), not a fraction of the level
-- The mini boss card list gains duplicates every level and across runs
-  - DirectorManager.java:134-142 appends to `miniBossMonsterCards` without clearing it, so early mini bosses get many copies and newly unlocked ones become rare
 - Small-enemy weights reach zero and then go negative at a difficulty coefficient of 10 or more
   - Director.java:267 `baseWeight * (2f - difficultyCoefficient * 0.2f)`; `weightedRandomSelection` assumes weights are not negative. Reachable in long runs (not confirmed in play)
 - Difficulty stops scaling in one place but keeps growing in another

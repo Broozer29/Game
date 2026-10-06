@@ -136,6 +136,7 @@ public class DirectorManager {
                 .filter(enemyEnums -> enemyEnums.getEnemyCategory().equals(EnemyCategory.MiniBoss))
                 .toList();
 
+        miniBossMonsterCards.clear();
         for (EnemyEnums enemy : miniBosses) {
             MonsterCard card = new MonsterCard(enemy, enemy.getCreditCost(), enemy.getWeight());
             miniBossMonsterCards.add(card);
