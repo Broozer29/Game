@@ -34,7 +34,6 @@ Items, boons, the shop, rerolls and prices.
   - Reroll text says 25% (ShopBoardCreator.java:242), the code uses 15% (ShopManager.java:97), and the cost is computed before the end-of-level increase
   - VIP Ticket's text says 1 free refresh, the code gives one per stack; Contract's text says "enemies" even when it counts mini bosses
   - `ItemEnums.isRelicAvailable` counts disabled relics, so Wisdom Ball's "Add a Relic" can fall back to Overclock
-  - Precision Amplifier's cap check uses `<= 1`, so a 9th stack gives 112% crit chance
   - Bonus Kaart adds the item twice (ShopItem.java:105), which can push capped items past their limit
   - FragmentationSacs and MutaliskHealingBonus pass the wrong `ItemEnums` (both disabled)
   - Anion Inverter and Electric Destabilizer, and Inverse Retrieval and Arbiter Damage, only exclude each other one way
