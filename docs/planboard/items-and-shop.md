@@ -11,8 +11,6 @@ Items, boons, the shop, rerolls and prices.
   - `DormentExplosion.copy()`; not confirmed in play
 - Nepotism never pays out, and four Captain relics can appear in the very first shop
   - Nepotism.java:31, BouncingLasers.java:46, ModuleElectrify.java:48, ModuleFocusFire.java:67 and ModuleAccuracy.java:53 check `getStagesCompleted() == 0`, but `GameState` starts the count at 1
-- Wisdom Ball's "Copy Inventory" roll also runs "Copy a Legendary"
-  - WisdomBallRollManager.java:35 is missing a `break`
 - The first Protoss Arbiter never gets its healing bonus, and extra Arbiters add no ships
   - ProtossArbiterItem.java:13 starts `shouldApply` as false, so the first purchase skips `modifyArbiterHealingMultiplier`; `setArbiterCount(1)` is fixed
 - Relic selection can offer duplicates or a wrong card

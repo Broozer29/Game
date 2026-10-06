@@ -2,6 +2,11 @@
 
 All notable changes on the `Nelis` branch.
 
+## 2026-10-07
+
+### Fixed
+- Wondrous Wisdomball's "Copy Inventory" roll no longer also copies a legendary item.
+
 ## 2026-10-06
 
 ### Added

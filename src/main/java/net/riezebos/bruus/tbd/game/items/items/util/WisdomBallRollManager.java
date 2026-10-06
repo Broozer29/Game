@@ -34,6 +34,7 @@ public class WisdomBallRollManager {
         switch (selectedEffect) {
             case Copy_Inventory:
                 modifiedItems.addAll(handleCopyInventory(shopItems));
+                break;
             case Copy_A_Legendary:
                 modifiedItems.addAll(handleCopyALegendary(shopItems));
                 break;
