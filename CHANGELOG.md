@@ -8,6 +8,7 @@ All notable changes on the `Nelis` branch.
 - Wondrous Wisdomball's "Copy Inventory" roll no longer also copies a legendary item.
 - Continuing a saved run starts the level with the right clock: the song progress bar starts empty and enemies spawn at the normal pace, instead of the level counting as almost finished.
 - Unplugging a controller no longer leaves a fire button or direction stuck, and the console says "Controller disconnected." once instead of every tick. If the controller libraries fail to load, the game starts without controllers instead of failing.
+- The game-over screen can now show every game-over picture, including the last one, and no longer crashes when there is only one.
 
 ## 2026-10-06
 

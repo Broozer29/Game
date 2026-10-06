@@ -399,7 +399,7 @@ public class GameBoardCreator {
 
     public ImageEnums getRandomGameOverPeepo() {
         if (gameOverPeepoRandomNumber < 0) {
-            gameOverPeepoRandomNumber = random.nextInt(0, gameOverPeepos.size() - 1);
+            gameOverPeepoRandomNumber = random.nextInt(0, gameOverPeepos.size());
         }
         return gameOverPeepos.get(gameOverPeepoRandomNumber);
     }

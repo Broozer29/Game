@@ -10,7 +10,6 @@ Settings, startup, Discord status, builds, packaging and dev tooling.
   - `deleteObject()` nulls `movementConfiguration` and `ownerOrCreator`; Enemy.java:246 and MissileManager.java:498 read the owner's movement, and Drone.java:105 and MissileDrone.java:60, 128 and 175 cast the owner to `SpaceShip`
   - MissileDrone.java:176 reads `getItemFromInventoryIfExists(RocketLauncher).getQuantity()` without a null check
   - `SpriteAnimation` reads `frames.get(0)` and `frames.get(currentFrame - 1)` without checking for empty frames; missing images fall back silently to a star or return null
-- `GameBoardCreator.getRandomGameOverPeepo` (UI/GameBoardCreator.java:402) never picks the last image and throws if the list has one entry
 - Shared fields in `ImageLoader.getImage` and the image caches are not thread-safe; only the startup order keeps the loader threads from overlapping
 - Dev test switches are `true` in committed code on both `production` and `Nelis`
   - DevTestSettings.java lines 10, 15, 16 and 23: `onlyBossLevels`, `instaKill`, `playerIsImmune` and `testFinalBossMode`; CI builds `production`, so its downloads are an invincible, insta-kill, final-boss-only build
