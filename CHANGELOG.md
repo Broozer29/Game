@@ -24,6 +24,7 @@ All notable changes on the `Nelis` branch.
 
 ### Added
 - Developer test switch `DevTestSettings.stressTestSpawns`: when on, enemy directors get 5 times the spawn credits, for memory and performance test runs. Off by default.
+- Claude setup for test runs: ready-made test saves (.claude/test-saves) with an install script, a recording watcher and a startup-time report (.claude/scripts), a "Run Game (recording memory)" launch configuration, and startup_log.txt in .gitignore. The VS Code run buttons no longer compile first.
 
 ## 2026-10-06
 
