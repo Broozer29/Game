@@ -11,9 +11,6 @@ Settings, startup, Discord status, builds, packaging and dev tooling.
   - MissileDrone.java:176 reads `getItemFromInventoryIfExists(RocketLauncher).getQuantity()` without a null check
   - `SpriteAnimation` reads `frames.get(0)` and `frames.get(currentFrame - 1)` without checking for empty frames; missing images fall back silently to a star or return null
 - Shared fields in `ImageLoader.getImage` and the image caches are not thread-safe; only the startup order keeps the loader threads from overlapping
-- Dev test switches are `true` in committed code on both `production` and `Nelis`
-  - DevTestSettings.java lines 10, 15, 16 and 23: `onlyBossLevels`, `instaKill`, `playerIsImmune` and `testFinalBossMode`; CI builds `production`, so its downloads are an invincible, insta-kill, final-boss-only build
-  - Nothing enforces the "all false" rule. Fix: commit the false values, and add a CI step that fails when any switch in DevTestSettings.java is `true`
 - CI never builds the `Nelis` branch
   - .github/workflows/build.yml:5-8 runs on pushes to `production` and `cleanup-and-refactoring` and on pull requests to `production`; a compile error on Nelis is only caught when a pull request is opened
   - Fix: add `Nelis`, or a single Linux job that runs `mvn -q compile` on every push

@@ -14,6 +14,14 @@ Bosses and the final boss: attacks, phases, difficulty and rewards.
 - Twin boss attack timers carry over into the next run
   - The twin boss behaviour classes keep static timers such as `TwinBossLeftRightManouvre.lastAttackTime`; `resetBehaviour()` only runs in the `TwinBossManager` constructor, and `GameBoard.resetGame` doesn't reset the twin boss manager
   - In a new run the twin boss can't attack until the previous run's game time is reached again
+  - Found on 2026-10-06 while preparing a fix: the problem is bigger than one timer. 11 timers in 5 classes keep the previous run's game time:
+    - `TwinBossManager.finishedAttackTime` (and `lastUsedBossActionable`)
+    - `lastAttackTime` in TwinBossLaserbeamCentreManouvre, TwinBossLeftRightManouvre, TwinBossProjectileBombManouvre and TwinBossQuickMissileAttack; each is set once when the class loads, from the game time at that moment
+    - `gameSecondsLaserbeamStartedFiring` and `lastSecondsMissilesFired` (TwinBossLaserbeamCentreManouvre)
+    - `lastBombDroppedTime` and `timeStartedCharging` (TwinBossLeftRightManouvre and TwinBossProjectileBombManouvre)
+    - `lastMissileFiredTime` (TwinBossQuickMissileAttack)
+  - Proposed fix: every attack's `resetBehaviour()` sets all its own timers back (the `lastAttackTime` ones to the current game time with the same offset as now, the others to 0), and the manager calls them, plus its own reset, when the first twin of a boss level is added. About 15 lines in 5 files
+  - Question for Bruus: is this the intended way to reset the twin boss, or would you rather turn the static timers into normal fields per boss instance? Nelis wants your view before we build it
 - `TwinBossManager.resetTwinBossManager` adds its four behaviours again every level without clearing the list
   - TwinBossManager.java:60-80; the list keeps growing and is filtered every tick
 - Yellow Boss heal orbs heal any target they hit, including the player (YellowBossOrb.java:127; check whether intended)

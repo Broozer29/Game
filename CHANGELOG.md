@@ -21,6 +21,7 @@ All notable changes on the `Nelis` branch.
 
 ### Changed
 - Damage numbers and other on-screen texts reuse their fonts and fade settings instead of creating new ones for every text on every frame, which cuts work on the drawing thread when many hits land at once.
+- Planboard: removed entries for bugs that are already fixed, added the twin boss timer findings and questions for Bruus (twin boss reset, the stage-count checks of Nepotism and four relics, the Royal Guard Captain delay).
 
 ### Added
 - Developer test switch `DevTestSettings.stressTestSpawns`: when on, enemy directors get 5 times the spawn credits, for memory and performance test runs. Off by default.

@@ -9,6 +9,7 @@ Items, boons, the shop, rerolls and prices.
   - `DormentExplosion.copy()`; not confirmed in play
 - Nepotism never pays out, and four Captain relics can appear in the very first shop
   - Nepotism.java:31, BouncingLasers.java:46, ModuleElectrify.java:48, ModuleFocusFire.java:67 and ModuleAccuracy.java:53 check `getStagesCompleted() == 0`, but `GameState` starts the count at 1
+  - Question for Bruus (2026-10-07): the count starts at 1, so these checks are never true. Should they be `<= 1` (Nepotism pays out in the first shop, the four relics leave the first shop), or is today's behaviour intended?
 - The first Protoss Arbiter never gets its healing bonus, and extra Arbiters add no ships
   - ProtossArbiterItem.java:13 starts `shouldApply` as false, so the first purchase skips `modifyArbiterHealingMultiplier`; `setArbiterCount(1)` is fixed
 - Relic selection can offer duplicates or a wrong card

@@ -5,23 +5,12 @@ Frame rate, lag, loading times and memory use.
   - Edge case: if a missile's start equals its destination, StraightLinePathFinder divides by zero and the missile may never leave the screen
 
 ## Bugs
-- Image cache lookups check every stored key one by one, so the game slows down as the cache grows
+- Image cache keys are built as a long string from every frame's ID on every lookup, including cache hits
   - Bruus insight:
     - **Mening:** Risicoloze wijziging, zie geen reden om het niet te doen, gratis performance winst is gratis performance winst, ik onderschatte de computational cost van een string genereren.
     - **Mijn voorstel:** Custom object maken voor de cache key die shared is voor het cache systeem van image rotator/resizer/cropper
-  - `findOrCreateCacheKey` in ImageResizer and ImageRotator; every lookup also first builds a long key string from every frame's ID
-  - Runs for every new animation, rotation and rescale; the cache is only cleaned between levels
-  - Fixed on 2026-10-05, not committed yet: each cache now keeps a second map from key string to the stored key, so a lookup is one map get. The stored key is still returned, so last-used times and cleanup work as before
-  - Measured: the laserbeam preload at startup went from about 11 s to 4 s. Effect during play is not measured
-  - Still open: the key string is still built from every frame's ID on every lookup, including cache hits
-- Cropping a rotated image read its pixels one at a time
-  - Bruus insight:
-    - **Mening:** Goeie, dit is de theorie achter de AlphaMask performance update doorzetten naar de ImageCropper
-    - **Mijn voorstel:** Go for it! Denk dat claude voor zich spreekt.
-  - `ImageCropper.cropFramesToUniformContent` and `ImageRotator.cropTransparentPixels` called `getRGB` once per pixel to find the transparent edges, before storing the result in the cache
-  - Fixed on 2026-10-05, not committed yet: a new `ImageCropper.readAlphaRow` reads one row of transparency values at once
-  - Checked against the old per-pixel read on 800 images in five image formats: every pixel matched
-  - Measured: the laserbeam preload went from about 4 s to 2 s. It also speeds up every new laser angle during play
+  - The one-by-one key search is fixed (f620aced: a second map from key string to stored key); building the string is what is left
+  - Bruus's proposal, a shared cache key object for ImageRotator, ImageResizer and ImageCropper, needs a design session
 - Healing animations pile up on the player and drones until they die
   - Bruus insight:
     - **Mening:** Straight up bug. Zal geen improvement performance leveren. Animations die uitgespeeld zijn en "!isVisible()" zijn, zijn effectief "dead" animations en wachten om opgepakt te worden door de garbage collector.
@@ -68,14 +57,14 @@ De punten hieronder hebben opzich wel gelijk, maar de performance impact van dez
   - `Game.exportItemDescriptions` rewrites item_descriptions.html on every launch; it is dev tooling and could sit behind a `DevTestSettings` flag
   - Measured on 2026-10-05, two runs each, from the timestamps in startup_log.txt. A "Preloading laserbeams..." line was added to Game.java to split the preload in two
   - Before any fix: 36 s total (window appears 2.7 s, images 13-15 s, enemy preload 7-8 s, laserbeam preload 11-12 s)
-  - After the three fixes in this file (not committed yet): 19 s total (window 2.7 s, images 6.5 s, enemy preload 7-7.6 s, laserbeam preload 2 s)
-  - Image loading now starts on its own thread at the very start of `main`, so it runs while JavaFX, the controllers, the window and the audio start up (not committed yet). Measured: about 16 s total (15.8, 16.1 and 16.4 s; one outlier run took 22 s). The window still appears after about 2.8 s
+  - After the three fixes in this file: 19 s total (window 2.7 s, images 6.5 s, enemy preload 7-7.6 s, laserbeam preload 2 s)
+  - Image loading now starts on its own thread at the very start of `main`, so it runs while JavaFX, the controllers, the window and the audio start up. Measured: about 16 s total (15.8, 16.1 and 16.4 s; one outlier run took 22 s). The window still appears after about 2.8 s
   - Still open: images are decoded on one thread, about 4,500 PNG files. Decoding on all CPU cores could cut the 6.5 s further; `ImageLoader`'s shared `bufferedImage` field must become a local variable first
   - Still open: audio loads before the window appears, because BoardManager's `AudioManager` field creates the whole `AudioDatabase`. Moving it to the loading thread shows the window sooner and lets a loading bar include audio
   - Audio measured on its own: building all 189 players takes about 1.25 s, of which the reset of every player takes 0.12 s. A player for a large music file takes as long to create as one for a short sound (about 5.7 ms each), so converting the music from WAV to MP3 would not speed up startup. It would only shrink the jar
 - Every image was copied to a temporary file before it was decoded
   - Java's image reader does this by default when reading from a stream. With about 4,500 PNGs this was half of the image loading time (shown by a Java Flight Recorder profile)
-  - Fixed on 2026-10-05, not committed yet: `ImageIO.setUseCache(false)` at the start of loading in Game.java
+  - Fixed on 2026-10-05: `ImageIO.setUseCache(false)` at the start of loading in Game.java
   - Measured: image loading went from about 13 s to 6.7 s
 - The enemy preload spends about 7 s resizing big enemy animations
   - `ImageResizer.getScaledImage` uses bicubic scaling, the slowest and highest-quality mode; the profile shows the preload time inside it
@@ -199,10 +188,6 @@ De punten hieronder hebben opzich wel gelijk, maar de performance impact van dez
   - Flamethrower, Electro Shred and Fire Shield sprites are large, so almost every enemy passes the distance filter and many reach the pixel check
   - Fix: skip enemies that are still on cooldown before checking collision
   - `checkSpecialAttackWithEnemyMissileCollision` (MissileManager.java:265) checks every enemy missile every tick with no cooldown at all
-- Drone orbit paths store 50 full orbits as points, and every point is moved whenever the player moves
-  - OrbitPathFinder.java:37 uses 50 orbits for drones and missiles, about 13,000 points per drone at speed 2; `adjustPathForTargetMovement` (line 148) shifts every point each tick the player moves
-  - Carrier drones that change speed rebuild the whole path
-  - Fix: store the orbit as an angle and compute the next point on demand
 - Every player missile checks every enemy missile every tick, although it can only interact with reflective blocks
   - Captain, generic and Mutalisk missiles are marked destructible, so `interactsWithMissiles()` is true for all of them (MissileManager.java:357-375)
   - Fix: keep a separate list of reflective blocks and only check those
@@ -225,5 +210,5 @@ De punten hieronder hebben opzich wel gelijk, maar de performance impact van dez
   - Key by `ImageEnums` plus whole-number scale, angle, crop and flip values, looked up directly
   - Never modify a list the cache or ImageDatabase hands out
   - Always transform from the original frames in one step; chained transforms lose earlier steps (`setAnimationScale` drops rotation and crop, `changeImagetype` drops scale, `clone()` drops both)
-  - Cache flipped images, cap the cache size or clean it per wave, and make the scratch fields in ImageResizer and ImageRotator local
+  - Cap the cache size or clean it per wave, and make the scratch fields in ImageResizer and ImageRotator local
   - Touches ImageResizer, ImageRotator, SpriteAnimation and about ten call sites, so plan it before coding
