@@ -3,11 +3,15 @@ package net.riezebos.bruus.tbd.visualsandaudio.data.image;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.WritableRaster;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.WeakHashMap;
 
 public class ImageCropper {
     private static ImageCropper instance = new ImageCropper();
     private static final int SKIP_PIXELS = 2;  // Check every 2nd pixel
+    private final Map<BufferedImage, BufferedImage> croppedFrameCache = Collections.synchronizedMap(new WeakHashMap<>());
 
     private ImageCropper() {
 
@@ -32,6 +36,19 @@ public class ImageCropper {
     }
     
     public BufferedImage cropToContent(BufferedImage img) {
+        BufferedImage cachedCrop = croppedFrameCache.get(img);
+        if (cachedCrop != null) {
+            return cachedCrop;
+        }
+        BufferedImage cropped = cropToContentUncached(img);
+        // A fully transparent frame comes back as itself; caching it would keep its own key alive
+        if (cropped != img) {
+            croppedFrameCache.put(img, cropped);
+        }
+        return cropped;
+    }
+
+    private BufferedImage cropToContentUncached(BufferedImage img) {
         int minX = img.getWidth();
         int minY = img.getHeight();
         int maxX = 0;

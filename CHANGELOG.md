@@ -22,6 +22,7 @@ All notable changes on the `Nelis` branch.
 - The "only boss levels" dev test switch was left on in committed code; all dev test switches are off again.
 - Rotated images are now cached separately for cropped and uncropped requests, so a caller always gets the version it asked for.
 
+- Burn and Scorch effects no longer overwrite the game's shared animation frames when they crop them, and cropped frames are reused, so their resized images come from the cache instead of being rebuilt for every burn stack. In the stress test cropping allocated 69% less memory and used 75% less CPU.
 ## 2026-10-05
 
 ### Added

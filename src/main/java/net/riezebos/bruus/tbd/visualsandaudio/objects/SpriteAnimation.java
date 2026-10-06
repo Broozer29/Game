@@ -235,9 +235,12 @@ public class SpriteAnimation extends Sprite implements Cloneable{
 	@Override
 	public void setImageDimensions(int newWidth, int newHeight) {
 		ImageResizer imageResizer = ImageResizer.getInstance();
+		List<BufferedImage> resizedFrames = new ArrayList<>(frames.size());
 		for (int i = 0; i < frames.size(); i++) {
-			frames.set(i, imageResizer.resizeImageToDimensions(frames.get(i), newWidth, newHeight));
+			resizedFrames.add(imageResizer.resizeImageToDimensions(frames.get(i), newWidth, newHeight));
 		}
+		this.frames = resizedFrames;
+		this.increasedSizeFrames = resizedFrames;
 		recalculateBoundsAndSize();
 	}
 
@@ -269,11 +272,17 @@ public class SpriteAnimation extends Sprite implements Cloneable{
 	}
 
 	public void cropAnimation() {
+		this.originalFrames = cropFrames(originalFrames);
+		setAnimationScale(this.scale);
+	}
+
+	private List<BufferedImage> cropFrames(List<BufferedImage> sourceFrames) {
 		ImageCropper imageCropper = ImageCropper.getInstance();
-		for (int i = 0; i < frames.size(); i++) {
-			frames.set(i, imageCropper.cropToContent(frames.get(i)));
+		List<BufferedImage> croppedFrames = new ArrayList<>(sourceFrames.size());
+		for (int i = 0; i < sourceFrames.size(); i++) {
+			croppedFrames.add(imageCropper.cropToContent(sourceFrames.get(i)));
 		}
-		recalculateBoundsAndSize();
+		return croppedFrames;
 	}
 
 

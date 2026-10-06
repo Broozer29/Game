@@ -5,15 +5,6 @@ Frame rate, lag, loading times and memory use.
   - Edge case: if a missile's start equals its destination, StraightLinePathFinder divides by zero and the missile may never leave the screen
 
 ## Bugs
-- Lag when the Module: Scorch "sun" drone burns enemies, and the game slows down the longer a level lasts
-  - Bruus insight: 
-    - **Mening:** Yeah, this will make a big impact. De cropAnimation gaat niet door de ImageResizer.java heen, waar het cachen zit. M.a.w. de game cached dit niet. 
-    - **Mijn voorstel:** Deze manier van croppen toevoegen of via de ImageResizer.java doen en cachen.
-  - Every new ignite stack crops the burn animation with `SpriteAnimation.cropAnimation()` (SpriteAnimation.java:271-276)
-  - At scale 1 that animation holds ImageDatabase's own frame list, so the crop overwrites the shared master frames with new image objects
-  - The resize cache identifies frames by object identity, so after every crop it never finds a match: all 25 burn frames are resized bicubically again and the cache grows
-  - Same problem in four more places: thorns hits (ThornsDamageDealer.java:214), every Guardian spawn (Guardian.java:39), Portal.java:20, and `EnemyManager.startBurningEnemies` at level end, which burns every remaining enemy in one frame
-  - Fix: crop into a new list instead of overwriting the shared one, and crop and size the effect frames once at load time
 - Image cache lookups check every stored key one by one, so the game slows down as the cache grows
   - Bruus insight:
     - **Mening:** Risicoloze wijziging, zie geen reden om het niet te doen, gratis performance winst is gratis performance winst, ik onderschatte de computational cost van een string genereren.
