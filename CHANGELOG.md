@@ -25,6 +25,7 @@ All notable changes on the `Nelis` branch.
 - A special-attack hit on an enemy that already has the effect no longer copies the effect and its animation only to throw the copy away.
 - Objects no longer keep finished attacks in their follower list: invisible followers are removed before followers are moved.
 - The song progress bar is no longer resized every frame when its size has not changed. The unused health, shield and overload bar drawing is marked deprecated and kept.
+- Tracking laser beams that fire from a moving object now follow that object. No boss uses this today, so nothing changes in play yet; it removes a hidden bug for future lasers.
 
 - Burn and Scorch effects no longer overwrite the game's shared animation frames when they crop them, and cropped frames are reused, so their resized images come from the cache instead of being rebuilt for every burn stack. In the stress test cropping allocated 69% less memory and used 75% less CPU.
 ## 2026-10-05

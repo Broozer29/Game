@@ -3,8 +3,6 @@ Bosses and the final boss: attacks, phases, difficulty and rewards.
 
 ## Bugs
 - The white battlecruiser boss sometimes crashes the game
-- Tracking laser beams never notice when the object they fire from moves
-  - TrackingLaserBeam.java:40-47 stores the new origin position first and then compares it with itself, so the "has the origin moved" check is never true
 - The white battlecruiser crash is probably the reflective-block crash fixed in commit a7ccbe1b
   - error_log.txt (2026-10-05) shows `ReflectiveBlocks.reflectMissile` reading the path of a missile that had none; the Yellow Boss and the final boss both use reflective blocks. Re-test to confirm
   - The same unguarded `getCurrentPath().getWaypoints()` read remains elsewhere: Enemy.java:254, GameObject.java:617 and 634, DestinationPathFinder.java:113, FloatingPathFinder.java:125, SpaceStationSpinningAttack.java:102, and the `allowedToFire` checks in Scout, Seeker, Queen and others

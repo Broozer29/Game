@@ -38,8 +38,6 @@ public class TrackingLaserBeam extends Laserbeam {
 
         // Update origin point if originObject is not null
         if (originObject != null) {
-            lastOriginXCoordinate = originObject.getCenterXCoordinate() + this.xOffset;
-            lastOriginYCoordinate = originObject.getCenterYCoordinate() + this.yOffset;
             int newX = originObject.getCenterXCoordinate() + this.xOffset;
             int newY = originObject.getCenterYCoordinate() + this.yOffset;
 
