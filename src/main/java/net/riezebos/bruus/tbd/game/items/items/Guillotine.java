@@ -4,6 +4,7 @@ import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
 import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SpaceShip;
 import net.riezebos.bruus.tbd.game.items.Item;
 import net.riezebos.bruus.tbd.game.items.ItemEnums;
+import net.riezebos.bruus.tbd.game.items.PlayerInventory;
 import net.riezebos.bruus.tbd.game.items.effects.util.EffectAnimationHelper;
 import net.riezebos.bruus.tbd.game.items.enums.ItemApplicationEnum;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
@@ -29,7 +30,7 @@ public class Guillotine extends Item {
         //Applies an effect to an object, with the applier provided for certain conditions
 
         if(applier.getOwnerOrCreator() != null && applier.getOwnerOrCreator() instanceof SpaceShip){
-            if(target.getCurrentHitpoints() <= (target.getMaxHitPoints() * hitpointsThreshold)){
+            if(target.getCurrentHitpoints() <= (target.getMaxHitPoints() * hitpointsThreshold * quantity)){
                 target.takeDamage(target.getMaxHitPoints() * 999); //execute it
                 target.setDestructionAnimation(null); //remove the animation and play the guillotine animation instead
                 AnimationManager.getInstance().addUpperAnimation(createExecuteAnimation(target));
@@ -61,7 +62,8 @@ public class Guillotine extends Item {
         }
 
 
-        if(this.quantity >= 8){ //bij meer dan 8 gaat de speler alles one-tappen dus deze niet available maken
+        Item owned = PlayerInventory.getInstance().getItemFromInventoryIfExists(this.itemEnum);
+        if(owned != null && owned.getQuantity() >= 8){ //bij meer dan 8 gaat de speler alles one-tappen dus deze niet available maken
             return false;
         }
         return true;

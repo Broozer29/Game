@@ -10,6 +10,7 @@ All notable changes on the `Nelis` branch.
 - Unplugging a controller no longer leaves a fire button or direction stuck, and the console says "Controller disconnected." once instead of every tick. If the controller libraries fail to load, the game starts without controllers instead of failing.
 - The game-over screen can now show every game-over picture, including the last one, and no longer crashes when there is only one.
 - Precision Amplifier stops being offered once 8 copies reach 100% crit chance, so a 9th copy can no longer push it to 112%.
+- Guillotine now works as its text says: each copy raises the execute threshold by 10%, up to 80% at the 8-copy limit.
 
 ## 2026-10-06
 
