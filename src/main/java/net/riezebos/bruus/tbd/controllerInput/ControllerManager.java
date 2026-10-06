@@ -30,7 +30,13 @@ public class ControllerManager {
         }
 
 
-        Controller[] controllers = ControllerEnvironment.getDefaultEnvironment().getControllers();
+        Controller[] controllers;
+        try {
+            controllers = ControllerEnvironment.getDefaultEnvironment().getControllers();
+        } catch (LinkageError e) {
+            System.out.println("Could not load the controller library: " + e.getMessage());
+            controllers = new Controller[0];
+        }
         int index = 0;
 
         for (Controller controller : controllers) {

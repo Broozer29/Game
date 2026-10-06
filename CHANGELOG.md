@@ -6,8 +6,9 @@ All notable changes on the `Nelis` branch.
 
 ### Fixed
 - Wondrous Wisdomball's "Copy Inventory" roll no longer also copies a legendary item.
-
 - Continuing a saved run starts the level with the right clock: the song progress bar starts empty and enemies spawn at the normal pace, instead of the level counting as almost finished.
+- Unplugging a controller no longer leaves a fire button or direction stuck, and the console says "Controller disconnected." once instead of every tick. If the controller libraries fail to load, the game starts without controllers instead of failing.
+
 ## 2026-10-06
 
 ### Added
@@ -34,6 +35,7 @@ All notable changes on the `Nelis` branch.
 - Tracking laser beams that fire from a moving object now follow that object. No boss uses this today, so nothing changes in play yet; it removes a hidden bug for future lasers.
 
 - Burn and Scorch effects no longer overwrite the game's shared animation frames when they crop them, and cropped frames are reused, so their resized images come from the cache instead of being rebuilt for every burn stack. In the stress test cropping allocated 69% less memory and used 75% less CPU.
+
 ## 2026-10-05
 
 ### Added
