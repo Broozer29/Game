@@ -1,5 +1,6 @@
 package net.riezebos.bruus.tbd.game.level.directors;
 
+import net.riezebos.bruus.tbd.DevTestSettings;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyCategory;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyEnums;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyTribes;
@@ -162,6 +163,9 @@ public class DirectorManager {
         GameState gameStateInfo = GameState.getInstance();
         float creditAmount = (float) ((0.425f + 0.05 * gameStateInfo.getDifficultyCoefficient()));
         creditAmount *= 1 + (PlayerManager.getInstance().getPlayerCount() * 0.15f);
+        if (DevTestSettings.stressTestSpawns) {
+            creditAmount *= 5;
+        }
 
 
         if (godRunDetector.getGodRunScore() >= 1) {

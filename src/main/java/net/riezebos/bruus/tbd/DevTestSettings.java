@@ -6,6 +6,7 @@ public class DevTestSettings {
     public static boolean blockMusic = false; // if true: does NOT activate music during levels, making it impossible to
                                               // end the level too and breaks localfiles audio
     public static boolean useItunes = false;
+    public static boolean stressTestSpawns = false; // if true: directors receive 5x spawn credits, for memory and performance test runs
     public static boolean enablePlayerMovingPastBoundaries = false; // if true: allow the player to move outside the
                                                                     // screen
     public static boolean devTestMuteMode = false; // if true: mutes all audio after starting a level
