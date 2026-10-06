@@ -49,7 +49,6 @@ De punten hieronder hebben opzich wel gelijk, maar de performance impact van dez
 - Smaller per-hit and per-frame costs
   - Item lookups stream and build a new list on every hit (`PlayerInventory.getItemsByApplicationMethod`)
   - On Carrier, the drone list is rebuilt for every enemy missile (`FriendlyManager.getAllProtossDrones`)
-  - Each damage number creates a new font every frame (GameBoard `drawOnScreenText`)
 - The save file is written to disk on the game thread on every purchase, relic pick and level change
   - `SaveManager.exportCurrentSave()` creates a new `ObjectMapper` and writes the file synchronously; called from ShopItem.java:92 and 111, ShopManager.java:168, MenuButton.java:96 and GameBoard.java:164 and 303
   - `PlayerProfileManager` does the same on boss deaths, `GameState`, `PlayerInventory` and several boons
@@ -98,7 +97,6 @@ De punten hieronder hebben opzich wel gelijk, maar de performance impact van dez
   - `getAvailableClip` returns null and `playAudio` skips it. Each sound has a fixed number of copies (1 to 9)
 - Small per-frame allocations in GameBoard drawing
   - New `Color` objects per laser indicator and per player bar every frame; fix: constants
-  - `drawOnScreenText` also creates a new `Color` per damage number per frame, next to the new font; fix: cache fonts per size
 - The low-health overlay searches the player list every frame and may draw a full-screen transparent image every frame
   - `GameBoard.drawLowHealthPlayerOverlay` (GameBoard.java:639-672), below 40% health; the overlay image size is not checked yet
   - Fix: find the lowest-health player once per tick, and draw the overlay as a transparent `fillRect` or a pre-sized image

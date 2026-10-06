@@ -19,6 +19,9 @@ All notable changes on the `Nelis` branch.
 - Corrosive Oil lowers an enemy's armor once per burn (and once per extra ignite stack), as intended, instead of on every burn tick.
 - Enemy formations moving left now spawn just off-screen like the ones moving right, instead of a full screen width away, so they arrive on time.
 
+### Changed
+- Damage numbers and other on-screen texts reuse their fonts and fade settings instead of creating new ones for every text on every frame, which cuts work on the drawing thread when many hits land at once.
+
 ## 2026-10-06
 
 ### Added

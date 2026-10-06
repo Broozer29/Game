@@ -72,13 +72,17 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class GameBoard extends JPanel implements ActionListener, TimerHolder {
 
     private Timer drawTimer;
 
     private GameStatusEnums lastKnownState = null;
+    private final Map<Integer, Font> onScreenTextFonts = new HashMap<>();
+    private final AlphaComposite[] onScreenTextComposites = createOnScreenTextComposites();
 
     private DataClass data = DataClass.getInstance();
     private AudioDatabase audioDatabase = AudioDatabase.getInstance();
@@ -574,9 +578,20 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
             drawAnimation(g, animation);
         }
 
+        Font originalTextFont = g.getFont();
+        Color originalTextColor = g.getColor();
+        Composite originalTextComposite = g.getComposite();
+        int lastOnScreenTextSize = -1;
         for (OnScreenText text : textManager.getOnScreenTexts()) {
+            if (text.getFontSize() != lastOnScreenTextSize) {
+                lastOnScreenTextSize = text.getFontSize();
+                g.setFont(onScreenTextFonts.computeIfAbsent(lastOnScreenTextSize, size -> new Font("Helvetica", Font.PLAIN, size)));
+            }
             drawOnScreenText(g, text);
         }
+        g.setFont(originalTextFont);
+        g.setColor(originalTextColor);
+        g.setComposite(originalTextComposite);
 
         drawLowHealthPlayerOverlay(g);
 
@@ -686,22 +701,21 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
 
     }
 
+    private static AlphaComposite[] createOnScreenTextComposites() {
+        AlphaComposite[] composites = new AlphaComposite[101];
+        for (int i = 0; i < composites.length; i++) {
+            composites[i] = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, i / 100f);
+        }
+        return composites;
+    }
+
     private void drawOnScreenText(Graphics2D g, OnScreenText text) {
         // Ensure that transparency value is within the appropriate bounds.
         float transparency = Math.max(0, Math.min(1, text.getTransparencyValue()));
-        Color originalColor = g.getColor(); // store the original color
-        Font originalFont = g.getFont();
 
-        // Set the color with the specified transparency.
-        Color colorWithTransparency = new Color(
-                text.getColor().getRed(),
-                text.getColor().getGreen(),
-                text.getColor().getBlue(),
-                (int) (transparency * 255) // alpha value must be between 0 and 255
-        );
-
-        g.setColor(colorWithTransparency);
-        g.setFont(new Font("Helvetica", Font.PLAIN, text.getFontSize()));
+        // Set the text color and draw the fade through a cached composite, so no Color is created per text.
+        g.setColor(text.getColor());
+        g.setComposite(onScreenTextComposites[Math.round(transparency * 100)]);
         // Draw the text at the current coordinates.
         g.drawString(text.getText(), text.getXCoordinate(), text.getYCoordinate());
 
@@ -710,9 +724,6 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
 
         // Decrease the transparency for the next draw
         text.setTransparency(transparency - text.getTransparancyStepSize()); // decrease transparency
-
-        g.setColor(originalColor); // restore the original color
-        g.setFont(originalFont);
     }
 
     private void drawImage(Graphics2D g, Sprite sprite) {
