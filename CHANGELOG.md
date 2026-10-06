@@ -16,6 +16,7 @@ All notable changes on the `Nelis` branch.
 - Shop texts now match what the game does: rerolls cost 15% of the minerals you entered the shop with, VIP Ticket gives one free refresh per copy, and Treasure Hunter raises the chance for Legendary items.
 - Item stack limits now work in the shop and for the Wondrous Wisdomball: Barbed Missiles stops being offered at 5 copies and Recycler at 10.
 - Every unlocked mini boss now has a fair chance to appear; the mini boss list no longer gains duplicates of early mini bosses every level and run.
+- Corrosive Oil lowers an enemy's armor once per burn (and once per extra ignite stack), as intended, instead of on every burn tick.
 
 ## 2026-10-06
 
