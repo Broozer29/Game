@@ -15,7 +15,7 @@ import java.util.List;
 public class OrbitPathFinder implements PathFinder {
 
     // Drones and missiles get a short route; when it runs out, a new one starts from their current angle
-    private static final int DRONE_AND_MISSILE_ORBITS = 2;
+    private static final int DRONE_AND_MISSILE_ORBITS = 50;
 
     private GameObject target;
     private boolean reverse = false;
