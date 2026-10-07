@@ -231,7 +231,20 @@ Decisions for the experiment:
 - When the budget is full, the image used longest ago is dropped and `flush()`ed, so its graphics card copy is freed too
 - Laser rotations are no longer kept forever. A laser that is firing keeps being used, so it stays in the cache
 - Animations are cached once, as the whole frame list, instead of both as a list and per frame. Otherwise dropping one layer frees no memory
-- At a level change the cache is emptied completely. The new level rebuilds what it uses, and rebuilding costs little: all rotate and resize work together was under 3% of CPU time in the stress runs
+- ~~At a level change the cache is emptied completely~~ Dropped after the first test: emptying it made the portal and shop rebuild their pictures, which delayed the shop by several seconds. Copies from earlier levels now stay until the budget needs the space
 - The cache counts its images, megabytes, hits and misses, and the recording watcher prints them
 - A dev switch turns the budget off, so old and new behaviour can be compared in the same build
 - Scales are rounded to steps of 0.05, so scales computed from difficulty or enemy size stop creating new copy families. This is a separate later step, after the budget is measured
+
+Result of the first test (2026-10-07, 5-minute stress run, level 1, compared with the same run on the old cache):
+- Cached images 53,966 instead of 118,097, live heap 3,808 MB instead of 4,313 MB, whole process 6,560 MB instead of 7,364 MB
+- The cache found the image it needed 99.5% of the time (1.8 million hits, 9,800 misses). One stress level needs about 2.1 GB, so the 2.5 GB budget was never reached and nothing was dropped
+- The saving comes from storing animations once instead of twice. The budget is the safety limit
+- The number of graphics card copies did not change (about 48,000)
+
+Not done, possible later steps if memory needs to come down further:
+- Store each rotated copy at its real size instead of a full square as wide as the diagonal; today a crop is only a view on that square, so it saves no memory
+- Round scales to steps of 0.05, so scales computed from difficulty or enemy size stop creating new copy families
+- Coarser angle steps for small sprites (2 to 3 degrees); bosses and lasers keep 1 degree
+- Convert images to the screen's own pixel format at load; resizing the old indexed-colour images is what made the first Mirage mini boss freeze the game
+- Lower `-Xmx` from 8 GB once a 20 to 30 minute run shows how the heap behaves
