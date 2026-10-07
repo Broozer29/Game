@@ -19,6 +19,8 @@ public class OrbitPathFinder implements PathFinder {
 
     private GameObject target;
     private boolean reverse = false;
+    // Angle one step past the end of the last route, so a rebuilt route continues exactly where the old one ended
+    private Double continueAngle = null;
 
     public OrbitPathFinder (GameObject target) {
         this.target = target;
@@ -45,11 +47,20 @@ public class OrbitPathFinder implements PathFinder {
         // Calculate the number of steps needed
         int maximumSteps = (int) Math.ceil(totalAngle / angleStep);
 
-        // Determine the angle for the starting point relative to the target
-        double startAngle = Math.atan2(
-                gameObject.getCenterYCoordinate() - target.getCenterYCoordinate(),
-                gameObject.getCenterXCoordinate() - target.getCenterXCoordinate()
-        );
+        // Determine the angle for the starting point relative to the target.
+        // Only a route that ran out continues from the stored angle; a fresh path finder or a rebuild mid-route
+        // (after a speed change) measures it from the object's position
+        Path currentPath = orbitConfig.getCurrentPath();
+        boolean routeRanOut = currentPath != null && currentPath.getWaypoints().isEmpty();
+        double startAngle;
+        if (routeRanOut && continueAngle != null) {
+            startAngle = continueAngle;
+        } else {
+            startAngle = Math.atan2(
+                    gameObject.getCenterYCoordinate() - target.getCenterYCoordinate(),
+                    gameObject.getCenterXCoordinate() - target.getCenterXCoordinate()
+            );
+        }
 
         // Precompute constant values
         double gameObjectHalfWidth = gameObject.getWidth() / 2.0;
@@ -67,6 +78,7 @@ public class OrbitPathFinder implements PathFinder {
 
             waypoints.add(new Point(x, y));
         }
+        continueAngle = startAngle + (reverse ? -angleStep : angleStep) * maximumSteps;
 
         return new Path(waypoints, fallbackDirection);
     }
