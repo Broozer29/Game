@@ -18,15 +18,6 @@
       "projectName": "Game",
       "cwd": "${workspaceFolder}",
       "vmArgs": "-Djava.library.path=src/main/resources/libraries -Xms4g -Xmx8g -XX:+UseG1GC -Dsun.java2d.opengl=true -Dsun.java2d.d3d=true -Dsun.java2d.accthresh=0 -XX:MaxGCPauseMillis=50 -XX:NativeMemoryTracking=summary -XX:StartFlightRecording=filename=target/perf/run-%t.jfr,settings=profile,dumponexit=true -Xlog:gc:file=target/perf/gc-%t.log:time,uptime"
-    },
-    {
-      "type": "java",
-      "name": "Run Game (software renderer)",
-      "request": "launch",
-      "mainClass": "net.riezebos.bruus.tbd.Game",
-      "projectName": "Game",
-      "cwd": "${workspaceFolder}",
-      "vmArgs": "-Djava.library.path=src/main/resources/libraries -Xms4g -Xmx8g -XX:+UseG1GC -Dsun.java2d.opengl=false -Dsun.java2d.d3d=false -Dsun.java2d.accthresh=0"
     }
   ]
 }
