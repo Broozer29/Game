@@ -23,6 +23,7 @@ All notable changes on the `Nelis` branch.
 - Claude setup for test runs: the recording watcher saves a class histogram and a native memory summary at every reading, and checks whether the game still runs with `tasklist` instead of starting `jcmd` every few seconds. The "Run Game (recording memory)" configuration adds a 50 ms GC pause target and native memory tracking. savefile.json is in .gitignore.
 - Damage numbers and other on-screen texts reuse their fonts and fade settings instead of creating new ones for every text on every frame, which cuts work on the drawing thread when many hits land at once.
 - Planboard: removed entries for bugs that are already fixed, added the twin boss timer findings and questions for Bruus (twin boss reset, the stage-count checks of Nepotism and four relics, the Royal Guard Captain delay).
+- Planboard: new feature entry to remove the on-screen damage numbers, with a question for Bruus.
 
 ### Added
 - Developer test switch `DevTestSettings.stressTestSpawns`: when on, enemy directors get 5 times the spawn credits, for memory and performance test runs. Off by default.
