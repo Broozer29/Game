@@ -138,6 +138,7 @@ public class TrackingLaserBeam extends Laserbeam {
         // Apply the clamped angle change to the current angle
         double angleDegrees = (currentAngleDegrees + clampedAngleChange + 360) % 360;
         // Round to nearest 0.2 interval for cache optimization
+        // This requires to be rounded to 0.2 interval in order to update its position, if it's rounded, it remains stuck even though the actual sprite rotation angle is rounded to a whole
         setAngleDegrees(Math.round(angleDegrees * 5.0) / 5.0);
 
         // Update angleRadians (if needed in other parts of the code)
