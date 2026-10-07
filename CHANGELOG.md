@@ -22,6 +22,7 @@ All notable changes on the `Nelis` branch.
 - Enemy formations moving left now spawn just off-screen like the ones moving right, instead of a full screen width away, so they arrive on time.
 
 ### Changed
+- Planboard: the damage-number entry records Nelis's decision (stop drawing them, keep recording hits) and the stress-run evidence; new entry for an end-of-level damage overview; the sound-player thread entry has new evidence and a question for Bruus; the image cache budget experiment and its decisions are written down for Bruus under "Probeerseltje".
 - VS Code launch configurations: the software-renderer configuration is removed; "Run Game" and "Run Game (recording memory)" remain.
 - Claude setup for test runs: the recording watcher saves a class histogram and a native memory summary at every reading, and checks whether the game still runs with `tasklist` instead of starting `jcmd` every few seconds. The "Run Game (recording memory)" configuration adds a 50 ms GC pause target and native memory tracking. savefile.json is in .gitignore.
 - Damage numbers and other on-screen texts reuse their fonts and fade settings instead of creating new ones for every text on every frame, which cuts work on the drawing thread when many hits land at once.

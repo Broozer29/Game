@@ -78,6 +78,9 @@ De punten hieronder hebben opzich wel gelijk, maar de performance impact van dez
   - That is roughly 65 threads per player at startup. It likely accounts for most of the 2.7 s before the window appears (not measured separately)
   - The same `resetAudio()` runs on every game reset (GameBoard.java:174 and 219)
   - Options: only reset players that actually played; create players for music only when needed; or play short sound effects through a lighter API (`javax.sound.sampled.Clip` or a mixer). A code comment says the game moved from `Clip` to `MediaPlayer` on purpose, so find out why first
+  - New on 2026-10-07: the threads keep coming during play, not only at startup. A 13-minute stress run started about 228,000 of them (about 360 per second), and Windows counted 835 threads in the game against about 230 Java threads. Their native memory is invisible to the game's own memory tracking and may be part of the memory that crashed the PC (target/perf/STRESSRUN-2026-10-07-2104.md)
+  - Another option: JavaFX `AudioClip` for short sound effects, which plays overlapping copies of one loaded sound without a player per copy; music stays on `MediaPlayer`
+  - Question for Bruus (2026-10-07): with this evidence, is it still not worth the effort? And why did the game move from `Clip` to `MediaPlayer`?
 - A sound that is skipped because of its cooldown is still added to the active sound list, and added again on every try
   - `AudioDatabase.getAvailableClip` adds the clip to `allActiveClips` before `AudioManager.canPlayAudio` checks the cooldown; a clip that never starts never counts as finished, so it stays until the next reset
   - Affects the sounds with a cooldown: PlayerTakesDamage, NotEnoughMinerals, the Carrier speed sounds and AchievementUnlocked. Every game tick then loops over the extra entries (`resetClips`), and pause and resume do too
@@ -212,3 +215,23 @@ De punten hieronder hebben opzich wel gelijk, maar de performance impact van dez
   - Always transform from the original frames in one step; chained transforms lose earlier steps (`setAnimationScale` drops rotation and crop, `changeImagetype` drops scale, `clone()` drops both)
   - Cap the cache size or clean it per wave, and make the scratch fields in ImageResizer and ImageRotator local
   - Touches ImageResizer, ImageRotator, SpriteAnimation and about ten call sites, so plan it before coding
+
+## Probeerseltje. Kijk maar of je er wat mee gaat doen
+
+An experiment by Nelis, 2026-10-07: a memory budget for the image cache. Built to measure, not yet a decision for the game.
+
+Why: on 2026-10-07 a 15-minute stress run used up all of the PC's memory and crashed it. Most of the game's memory is cached rotated and resized sprite copies. The cache only frees images at a level change, so one level keeps about 110,000 images and 2.1 GB of pixel data. Each of those images also gets a copy on the graphics card. Measurements and the full analysis: `target/perf/POSTMORTEM-2026-10-07.md`, `target/perf/STRESSRUN-2026-10-07-2104.md` and `target/perf/CACHE-PLAN-DRAFT-2026-10-07.md` (local files, not in git).
+
+The slow motion in busy levels turned out to be a different problem: damage numbers piling up (see Menus & UI). The cache does not cause the slowdown, only the memory use.
+
+Decisions for the experiment:
+- One shared cache class, `ImageCache` in `visualsandaudio/data/image/`, holds both rotated and resized images, with one memory budget for both
+- The budget is a constant at the top of that class, first set to about 2.5 GB, which is above what one level needs today. It can be lowered once each image takes less memory
+- Memory is counted as width × height × 4 bytes per image, each image counted once even if two entries point to it
+- When the budget is full, the image used longest ago is dropped and `flush()`ed, so its graphics card copy is freed too
+- Laser rotations are no longer kept forever. A laser that is firing keeps being used, so it stays in the cache
+- Animations are cached once, as the whole frame list, instead of both as a list and per frame. Otherwise dropping one layer frees no memory
+- At a level change the cache is emptied completely. The new level rebuilds what it uses, and rebuilding costs little: all rotate and resize work together was under 3% of CPU time in the stress runs
+- The cache counts its images, megabytes, hits and misses, and the recording watcher prints them
+- A dev switch turns the budget off, so old and new behaviour can be compared in the same build
+- Scales are rounded to steps of 0.05, so scales computed from difficulty or enemy size stop creating new copy families. This is a separate later step, after the budget is measured
