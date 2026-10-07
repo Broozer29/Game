@@ -6,7 +6,7 @@ perf="$root/target/perf"
 start=$(date +%s)
 echo "watcher armed; waiting for the game to start"
 log="$root/startup_log.txt"
-inits=$(grep -c "fully initialized" "$log" 2>/dev/null || echo 0)
+inits=$(grep -c "fully initialized" "$log" 2>/dev/null || true); inits=${inits:-0}
 
 pid=""
 while [ -z "$pid" ]; do
@@ -33,27 +33,38 @@ fi
 liveheap() {
   jcmd "$pid" GC.run >/dev/null 2>&1
   jcmd "$pid" GC.heap_info 2>/dev/null | grep -oE 'used [0-9]+K' | head -n 1 | awk '{printf "%.0f MB", $2/1024}'
+  # The top classes by live bytes show what the memory is made of; one file per reading
+  jcmd "$pid" GC.class_histogram 2>/dev/null | head -n 33 > "$perf/histogram-$(date +%Y-%m-%d_%H-%M-%S).txt"
+  # Native memory per category (heap, GC, threads, code, other); only when started with -XX:NativeMemoryTracking
+  jcmd "$pid" VM.native_memory summary 2>/dev/null > "$perf/nmt-$(date +%Y-%m-%d_%H-%M-%S).txt"
+}
+# Prints the process's total committed memory from the latest native memory summary, if there is one
+nativetotal() {
+  local f; f=$(ls -t "$perf"/nmt-*.txt 2>/dev/null | head -n 1)
+  [ -n "$f" ] && grep -m1 -oE 'Total: reserved=[0-9]+KB, committed=[0-9]+KB' "$f" | grep -oE 'committed=[0-9]+' | awk -F= '{printf "; process total %.0f MB", $2/1024}'
 }
 heaplog="$perf/heap-$(date +%Y-%m-%d_%H-%M-%S).txt"
 for i in $(seq 1 60); do
-  [ "$(grep -c "fully initialized" "$log" 2>/dev/null || echo 0)" -gt "$inits" ] && break
+  now_inits=$(grep -c "fully initialized" "$log" 2>/dev/null || true)
+  [ "${now_inits:-0}" -gt "$inits" ] && break
   sleep 1
 done
 echo "startup (s): $(bash "$(dirname "$0")/startup-times.sh" 1 | tail -n 1)"
 bash "$(dirname "$0")/startup-times.sh" 1 | tail -n 1 >> "$heaplog"
 sleep 5
 h=$(liveheap); echo "$(( $(date +%s) - gstart ))s $h" >> "$heaplog"
-echo "live heap after start: $h"
+echo "live heap after start: $h$(nativetotal)"
 
 last=$(date +%s)
-while jcmd -l 2>/dev/null | awk '{print $1}' | grep -qx "$pid"; do
+# tasklist is cheap; jcmd -l starts a whole JVM every time, too heavy to poll every few seconds
+while tasklist //FI "PID eq $pid" //NH 2>/dev/null | grep -q " $pid "; do
   now=$(date +%s)
   if [ $((now - last)) -ge 180 ]; then
     h=$(liveheap); echo "$(( now - gstart ))s $h" >> "$heaplog"
-    echo "still running, $(( (now - gstart) / 60 )) min; live heap $h"
+    echo "still running, $(( (now - gstart) / 60 )) min; live heap $h$(nativetotal)"
     last=$now
   fi
-  sleep 3
+  sleep 5
 done
 
 echo "game closed after $(( ($(date +%s) - gstart) / 60 )) min $(( ($(date +%s) - gstart) % 60 )) s"

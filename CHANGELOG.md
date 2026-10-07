@@ -20,6 +20,7 @@ All notable changes on the `Nelis` branch.
 - Enemy formations moving left now spawn just off-screen like the ones moving right, instead of a full screen width away, so they arrive on time.
 
 ### Changed
+- Claude setup for test runs: the recording watcher saves a class histogram and a native memory summary at every reading, and checks whether the game still runs with `tasklist` instead of starting `jcmd` every few seconds. The "Run Game (recording memory)" configuration adds a 50 ms GC pause target and native memory tracking. savefile.json is in .gitignore.
 - Damage numbers and other on-screen texts reuse their fonts and fade settings instead of creating new ones for every text on every frame, which cuts work on the drawing thread when many hits land at once.
 - Planboard: removed entries for bugs that are already fixed, added the twin boss timer findings and questions for Bruus (twin boss reset, the stage-count checks of Nepotism and four relics, the Royal Guard Captain delay).
 
