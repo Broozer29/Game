@@ -43,6 +43,11 @@ nativetotal() {
   local f; f=$(ls -t "$perf"/nmt-*.txt 2>/dev/null | head -n 1)
   [ -n "$f" ] && grep -m1 -oE 'Total: reserved=[0-9]+KB, committed=[0-9]+KB' "$f" | grep -oE 'committed=[0-9]+' | awk -F= '{printf "; process total %.0f MB", $2/1024}'
 }
+# Prints the last line of the newest image cache log written during this watch, if there is one
+cachestats() {
+  local f; f=$(ls -t "$perf"/cache-*.log 2>/dev/null | head -n 1)
+  [ -n "$f" ] && [ "$(stat -c %Y "$f")" -ge "$start" ] && tail -n 1 "$f"
+}
 heaplog="$perf/heap-$(date +%Y-%m-%d_%H-%M-%S).txt"
 for i in $(seq 1 60); do
   now_inits=$(grep -c "fully initialized" "$log" 2>/dev/null || true)
@@ -54,6 +59,7 @@ bash "$(dirname "$0")/startup-times.sh" 1 | tail -n 1 >> "$heaplog"
 sleep 5
 h=$(liveheap); echo "$(( $(date +%s) - gstart ))s $h" >> "$heaplog"
 echo "live heap after start: $h$(nativetotal)"
+c=$(cachestats); [ -n "$c" ] && echo "image cache: $c"
 
 last=$(date +%s)
 # tasklist is cheap; jcmd -l starts a whole JVM every time, too heavy to poll every few seconds
@@ -62,6 +68,7 @@ while tasklist //FI "PID eq $pid" //NH 2>/dev/null | grep -q " $pid "; do
   if [ $((now - last)) -ge 180 ]; then
     h=$(liveheap); echo "$(( now - gstart ))s $h" >> "$heaplog"
     echo "still running, $(( (now - gstart) / 60 )) min; live heap $h$(nativetotal)"
+    c=$(cachestats); [ -n "$c" ] && echo "image cache: $c"
     last=$now
   fi
   sleep 5
