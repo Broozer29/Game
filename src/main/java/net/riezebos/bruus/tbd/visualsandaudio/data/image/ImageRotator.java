@@ -8,9 +8,7 @@ import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.awt.image.RasterFormatException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 public class ImageRotator {
@@ -18,11 +16,7 @@ public class ImageRotator {
     private static ImageRotator instance = new ImageRotator();
     private BufferedImage bufferedImage = null;
 
-    private Map<ImageCacheKey, BufferedImage> rotatedImageCache = new HashMap<>();
-    private Map<ImageCacheKey, ArrayList<BufferedImage>> rotatedFramesCache = new HashMap<>();
-    // Look up the stored cache key by its string, so a cache lookup doesn't have to scan every key
-    private Map<String, ImageCacheKey> rotatedImageCacheKeys = new HashMap<>();
-    private Map<String, ImageCacheKey> rotatedFramesCacheKeys = new HashMap<>();
+    private final ImageCache cache = ImageCache.getInstance();
     private List<ImageEnums> blockedFromRotating = new ArrayList<>();
 
     private ImageRotator () {
@@ -38,65 +32,48 @@ public class ImageRotator {
     }
 
     public List<BufferedImage> getRotatedFrames (List<BufferedImage> frames, Direction rotation, boolean crop) {
-        return getRotatedFrames(frames, rotation, crop, false);
-    }
-
-    public List<BufferedImage> getRotatedFrames (List<BufferedImage> frames, Direction rotation, boolean crop, boolean maintainCacheKey) {
-        String keyString = frames.stream()
+        String keyString = "rot_frames:" + frames.stream()
                 .map(image -> Integer.toString(image.hashCode()))
                 .collect(Collectors.joining("_")) + "_" + rotation + "_" + crop;
 
-        ImageCacheKey imageCacheKey = findOrCreateCacheKey(rotatedFramesCacheKeys, keyString);
-        if (imageCacheKey != null && rotatedFramesCache.containsKey(imageCacheKey)) {
-            imageCacheKey.updateAccessTime();
-            return rotatedFramesCache.get(imageCacheKey);
+        ArrayList<BufferedImage> cachedFrames = cache.getFrames(keyString);
+        if (cachedFrames != null) {
+            return cachedFrames;
         }
 
-        imageCacheKey = new ImageCacheKey(keyString);
-        imageCacheKey.setMustNeverBeReleased(maintainCacheKey);
+        // The frames are cached as one list, not one by one
         ArrayList<BufferedImage> newFrames = new ArrayList<>();
         for (BufferedImage frame : frames) {
-            newFrames.add(rotate(frame, rotation, crop));
+            newFrames.add(rotateOrFlipWithoutCaching(frame, rotation.toAngle(), crop));
         }
-        rotatedFramesCache.put(imageCacheKey, newFrames);
-        rotatedFramesCacheKeys.put(keyString, imageCacheKey);
+        cache.putFrames(keyString, newFrames);
         return newFrames;
     }
 
     public List<BufferedImage> getRotatedFrames (List<BufferedImage> frames, double angleInDegrees) {
-        return getRotatedFrames(frames, angleInDegrees, false);
-    }
-
-    public List<BufferedImage> getRotatedFrames (List<BufferedImage> frames, double angleInDegrees, boolean mainainCacheKey) {
         int roundedDegrees = toWholeDegree(angleInDegrees);
 
-        String keyString = frames.stream()
+        String keyString = "rot_frames:" + frames.stream()
                 .map(image -> Integer.toString(image.hashCode()))
                 .collect(Collectors.joining("_")) + "_" + roundedDegrees;
 
-        ImageCacheKey imageCacheKey = findOrCreateCacheKey(rotatedFramesCacheKeys, keyString);
-        if (imageCacheKey != null && rotatedFramesCache.containsKey(imageCacheKey)) {
-            imageCacheKey.updateAccessTime();
-
-            List<BufferedImage> rotatedFrames = rotatedFramesCache.get(imageCacheKey);
-            return rotatedFrames;
+        ArrayList<BufferedImage> cachedFrames = cache.getFrames(keyString);
+        if (cachedFrames != null) {
+            return cachedFrames;
         }
 
         // Prepare a list to store the adjusted frames, whether rotated or flipped
         ArrayList<BufferedImage> adjustedFrames = new ArrayList<>();
 
-        imageCacheKey = new ImageCacheKey(keyString);
-        imageCacheKey.setMustNeverBeReleased(mainainCacheKey);
-        // Process each frame using the rotateOrFlip method
+        // Process each frame, without caching it separately
         for (BufferedImage frame : frames) {
-            BufferedImage adjustedFrame = rotateOrFlip(frame, roundedDegrees, false);
+            BufferedImage adjustedFrame = rotateOrFlipWithoutCaching(frame, roundedDegrees, false);
             adjustedFrames.add(adjustedFrame);
         }
 
 
         ImageCropper.getInstance().cropFramesToUniformContent(adjustedFrames);
-        rotatedFramesCache.put(imageCacheKey, adjustedFrames);
-        rotatedFramesCacheKeys.put(keyString, imageCacheKey);
+        cache.putFrames(keyString, adjustedFrames);
         // Return the list of adjusted frames
         return adjustedFrames;
     }
@@ -107,23 +84,16 @@ public class ImageRotator {
     }
 
 
-    private BufferedImage rotate(BufferedImage image, double angle, boolean crop){
-        return rotate(image, angle, crop, false);
-    }
-    private BufferedImage rotate (BufferedImage image, double angle, boolean crop, boolean maintainCacheKey) {
+    private BufferedImage rotate (BufferedImage image, double angle, boolean crop) {
         int roundedDegrees = toWholeDegree(angle);
-        String keyString = image.hashCode() + "_" + roundedDegrees + "_" + crop;
-        ImageCacheKey imageCacheKey = findOrCreateCacheKey(rotatedImageCacheKeys, keyString);
-        if (imageCacheKey != null && rotatedImageCache.containsKey(imageCacheKey)) {
-            imageCacheKey.updateAccessTime();
-            return rotatedImageCache.get(imageCacheKey);
+        String keyString = "rot_img:" + image.hashCode() + "_" + roundedDegrees + "_" + crop;
+        BufferedImage cachedImage = cache.getImage(keyString);
+        if (cachedImage != null) {
+            return cachedImage;
         }
 
-        imageCacheKey = new ImageCacheKey(keyString);
-        imageCacheKey.setMustNeverBeReleased(maintainCacheKey);
         BufferedImage rotatedImage = rotateWithoutCaching(image, roundedDegrees, crop);
-        rotatedImageCache.put(imageCacheKey, rotatedImage);
-        rotatedImageCacheKeys.put(keyString, imageCacheKey);
+        cache.putImage(keyString, rotatedImage);
         return rotatedImage;
     }
 
@@ -264,19 +234,26 @@ public class ImageRotator {
             return rotate(image, wholeDegree, crop);
         }
 
-        String keyString = image.hashCode() + "_" + wholeDegree + "_" + crop + "_flip";
-        ImageCacheKey imageCacheKey = findOrCreateCacheKey(rotatedImageCacheKeys, keyString);
-        if (imageCacheKey != null && rotatedImageCache.containsKey(imageCacheKey)) {
-            imageCacheKey.updateAccessTime();
-            return rotatedImageCache.get(imageCacheKey);
+        String keyString = "rot_img:" + image.hashCode() + "_" + wholeDegree + "_" + crop + "_flip";
+        BufferedImage cachedImage = cache.getImage(keyString);
+        if (cachedImage != null) {
+            return cachedImage;
         }
 
         // Mirror the angle for rotation, then apply the vertical flip after rotation. Only the flipped result is cached.
         BufferedImage flippedImage = flipVertically(rotateWithoutCaching(image, 360 - wholeDegree, crop));
-        imageCacheKey = new ImageCacheKey(keyString);
-        rotatedImageCache.put(imageCacheKey, flippedImage);
-        rotatedImageCacheKeys.put(keyString, imageCacheKey);
+        cache.putImage(keyString, flippedImage);
         return flippedImage;
+    }
+
+    // Same transformation as rotateOrFlip, but the result is not stored in the cache (for frames that are cached as a list)
+    private BufferedImage rotateOrFlipWithoutCaching (BufferedImage image, double angleDegrees, boolean crop) {
+        int wholeDegree = toWholeDegree(angleDegrees);
+        boolean isLeftHalf = wholeDegree > 90 && wholeDegree < 270;
+        if (!isLeftHalf) {
+            return rotateWithoutCaching(image, wholeDegree, crop);
+        }
+        return flipVertically(rotateWithoutCaching(image, 360 - wholeDegree, crop));
     }
 
     public BufferedImage flipHorizontally (BufferedImage image) {
@@ -295,28 +272,5 @@ public class ImageRotator {
 
     public boolean isBlockedFromRotating (ImageEnums imageEnums){
         return blockedFromRotating.contains(imageEnums);
-    }
-
-    private ImageCacheKey findOrCreateCacheKey(Map<String, ImageCacheKey> cacheKeys, String keyString) {
-        return cacheKeys.get(keyString);
-    }
-
-    /**
-     * Removes all cache entries that have not been accessed in more than 5 minutes (300000 milliseconds).
-     * This method should be called periodically to prevent memory buildup.
-     */
-    public void cleanupOldCacheEntries() {
-        long maxAge = 120000; // 2 minutes in milliseconds
-
-        rotatedImageCache.entrySet().removeIf(entry ->
-            entry.getKey().getTimeSinceLastAccess() > maxAge && !entry.getKey().mustNeverBeReleased()
-        );
-
-        rotatedFramesCache.entrySet().removeIf(entry ->
-            entry.getKey().getTimeSinceLastAccess() > maxAge && !entry.getKey().mustNeverBeReleased()
-        );
-
-        rotatedImageCacheKeys.values().removeIf(key -> !rotatedImageCache.containsKey(key));
-        rotatedFramesCacheKeys.values().removeIf(key -> !rotatedFramesCache.containsKey(key));
     }
 }

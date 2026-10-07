@@ -24,6 +24,7 @@ public class DevTestSettings {
                                                          // performance
     public static boolean enableMutalisk = false; // If true, enables the mutalisk class
     public static boolean enableDirectShopAccess = false; // If true, enables direct access to the shop
+    public static boolean disableImageCacheBudget = false; // If true, the rotated/resized image cache has no memory budget and never evicts, to compare old and new behaviour
 
     public static boolean testFinalBossMode = false; // If true, spawns the final boss instead of any other boss
 

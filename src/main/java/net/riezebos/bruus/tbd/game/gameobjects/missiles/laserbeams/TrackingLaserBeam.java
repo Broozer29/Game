@@ -88,7 +88,7 @@ public class TrackingLaserBeam extends Laserbeam {
             segment.setYCoordinate((int) y);
 
             // Rotate the segment based on the new angle
-            segment.rotateAnimation(getAngleDegrees(), false, maintainCacheKey);
+            segment.rotateAnimation(getAngleDegrees(), false);
 
             x += deltaX_per_segment;
             y += deltaY_per_segment;

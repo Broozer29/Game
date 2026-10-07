@@ -222,6 +222,14 @@ public class Game {
                 enemyEnum.getDefaultScale(), enemyEnum.getMovementSpeed());
         shurikenMiniBoss.deleteObject();
 
+        // The other mini bosses scale large destruction animations too; without a preload the first one froze the game
+        for (EnemyEnums miniBossEnum : new EnemyEnums[]{EnemyEnums.MirageMiniBoss, EnemyEnums.MotherShipMiniBoss,
+                EnemyEnums.DefenderMiniBoss, EnemyEnums.LaserbeamMiniBoss}) {
+            Enemy miniBoss = EnemyCreator.createEnemy(miniBossEnum, 0, 0, Direction.LEFT,
+                    miniBossEnum.getDefaultScale(), miniBossEnum.getMovementSpeed());
+            miniBoss.deleteObject();
+        }
+
         enemyEnum = EnemyEnums.CashCarrier;
         Enemy cashCarrier = EnemyCreator.createEnemy(enemyEnum, 0, 0, Direction.LEFT,
                 enemyEnum.getDefaultScale(), enemyEnum.getMovementSpeed());

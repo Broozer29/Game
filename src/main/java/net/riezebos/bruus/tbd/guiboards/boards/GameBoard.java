@@ -58,8 +58,6 @@ import net.riezebos.bruus.tbd.visualsandaudio.data.audio.AudioDatabase;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.AudioManager;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.AudioEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
-import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageResizer;
-import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageRotator;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.AnimationManager;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.Sprite;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteAnimation;
@@ -201,9 +199,6 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
         BoardManager.getInstance().getDifficultySelectionBoard().updateSelectedDifficultyIcons(); //manually update the last selected difficulties
 
 
-        //Free up any cached graphics that have not been used in 5 minutes. Might cause lag spikes but should help significantly with memory usage and heap-size errors
-        ImageRotator.getInstance().cleanupOldCacheEntries();
-        ImageResizer.getInstance().cleanupOldCacheEntries();
         WisdomBall.setCurrentBonusChance(0); //manually reset the wisdomball, regardless wether the player had it or not
     }
 
@@ -229,7 +224,6 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
             GodRunDetector.getInstance().resetGodRunDetector();
             this.hasExportedLogs = false;
             selectedComponent = null;
-            ImageRotator.getInstance().cleanupOldCacheEntries();
             relicSelectionEnabled = false;
 
             //reset stuivers best friend if it exists
