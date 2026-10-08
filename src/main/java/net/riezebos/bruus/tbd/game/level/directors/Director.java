@@ -517,18 +517,19 @@ public class Director {
         int totalFormationWidth = formation.getFormationWidth() * formation.getWidthDistance();
         int totalFormationHeight = formation.getFormationHeight() * formation.getHeightDistance();
 
-        int baseX = calculateBaseX(totalFormationWidth, direction);
+        int baseX = calculateBaseX(totalFormationWidth, formation.getWidthDistance(), direction);
         int baseY = calculateBaseY(totalFormationHeight, direction);
 
         formation.spawnFormation(baseX, baseY, enemyType, enemyType, direction, xMovementSpeed, yMovementSpeed);
         lastFormationSpawnTime = currentTime;
     }
 
-    private int calculateBaseX(int totalFormationWidth, Direction direction) {
+    private int calculateBaseX(int totalFormationWidth, int enemyWidth, Direction direction) {
         DataClass instance = DataClass.getInstance();
         if (direction == Direction.LEFT) {
-            // For LEFT direction, spawn at or beyond the right edge of the board
-            int bound = instance.getWindowWidth() + (random.nextInt((int) Math.round(totalFormationWidth * 0.5)));
+            // For LEFT direction, spawn beyond the right edge of the board. Enemies are placed by their center,
+            // so one enemy width keeps the first column fully off-screen, like the RIGHT direction does
+            int bound = instance.getWindowWidth() + enemyWidth + (random.nextInt((int) Math.round(totalFormationWidth * 0.5)));
             return Math.max(0, bound);
         } else if (direction == Direction.RIGHT) {
             // For RIGHT direction, spawn at or before the left edge of the board
