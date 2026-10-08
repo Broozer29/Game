@@ -14,7 +14,6 @@ import java.util.stream.Collectors;
 public class ImageRotator {
 
     private static ImageRotator instance = new ImageRotator();
-    private BufferedImage bufferedImage = null;
 
     private final ImageCache cache = ImageCache.getInstance();
     private List<ImageEnums> blockedFromRotating = new ArrayList<>();
@@ -111,7 +110,7 @@ public class ImageRotator {
         double diagonal = Math.sqrt(Math.pow(image.getWidth(), 2) + Math.pow(image.getHeight(), 2));
 
         // Create a new image that is a square with side length equal to the diagonal of the original image
-        bufferedImage = new BufferedImage((int) diagonal, (int) diagonal, BufferedImage.TYPE_INT_ARGB);
+        BufferedImage bufferedImage = new BufferedImage((int) diagonal, (int) diagonal, BufferedImage.TYPE_INT_ARGB);
 
         // Create a graphics object to draw the original image onto the square image
         Graphics2D g = (Graphics2D) bufferedImage.getGraphics();

@@ -143,7 +143,7 @@ public class YellowBossOrb extends Missile {
 
         if (showDamage && damage >= 1) {
             OnScreenTextManager.getInstance().addDamageNumberText(Math.round(damage), target.getCenterXCoordinate(),
-                    target.getCenterYCoordinate(), isACrit, calculateFontSizeBasedOnDamageAmount(target, damage));
+                    target.getCenterYCoordinate(), isACrit);
         }
     }
 

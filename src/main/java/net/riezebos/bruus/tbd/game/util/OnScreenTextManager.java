@@ -62,7 +62,7 @@ public class OnScreenTextManager {
 
 	// Damage numbers are no longer drawn: in busy levels over 100,000 of them piled up and slowed the whole game down.
 	// Every hit is still reported here, so a damage overview at the end of a level can collect them later.
-	public void addDamageNumberText(float damageNumber, int xCoordinate, int yCoordinate, boolean isCrit, int fontSize){
+	public void addDamageNumberText(float damageNumber, int xCoordinate, int yCoordinate, boolean isCrit){
 	}
 
 

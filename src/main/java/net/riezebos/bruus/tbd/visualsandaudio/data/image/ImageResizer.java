@@ -10,9 +10,6 @@ import java.util.stream.Collectors;
 public class ImageResizer {
 
     private static ImageResizer instance = new ImageResizer();
-    private BufferedImage bufferedImage = null;
-    private AffineTransform transform = new AffineTransform();
-    private AffineTransformOp transformop = null;
 
     private final ImageCache cache = ImageCache.getInstance();
 
@@ -35,16 +32,15 @@ public class ImageResizer {
             return cachedImage;
         }
 
-        bufferedImage = scaleWithoutCaching(image, scale);
+        BufferedImage bufferedImage = scaleWithoutCaching(image, scale);
         cache.putImage(keyString, bufferedImage);
 
         return bufferedImage;
     }
 
     private BufferedImage scaleWithoutCaching(BufferedImage image, float scale) {
-        transform.setToIdentity();
-        transform.scale(scale, scale);
-        transformop = new AffineTransformOp(transform, AffineTransformOp.TYPE_BICUBIC);
+        AffineTransform transform = AffineTransform.getScaleInstance(scale, scale);
+        AffineTransformOp transformop = new AffineTransformOp(transform, AffineTransformOp.TYPE_BICUBIC);
 
         return transformop.filter(image, null);
     }
@@ -66,6 +62,7 @@ public class ImageResizer {
         // The frames are cached as one list, not one by one
         ArrayList<BufferedImage> newFrames = new ArrayList<>();
         for (int i = 0; i < frames.size(); i++) {
+            BufferedImage bufferedImage;
             if (scale == 0) {
                 bufferedImage = frames.get(i);
             } else {
@@ -82,7 +79,7 @@ public class ImageResizer {
     public BufferedImage resizeImageToDimensions(BufferedImage image, int width, int height) {
         if (width >= 2147483647) {
             System.out.println("Width dimension too large, probably tried to divide or multiply by 0");
-            return bufferedImage;
+            return image;
         }
         String keyString = "scale_img:" + image.hashCode() + "_" + width + "x" + height;
 
@@ -96,7 +93,7 @@ public class ImageResizer {
         AffineTransform scaleTransform = AffineTransform.getScaleInstance(scaleX, scaleY);
         AffineTransformOp bilinearScaleOp = new AffineTransformOp(scaleTransform, AffineTransformOp.TYPE_BICUBIC);
 
-        bufferedImage = bilinearScaleOp.filter(image, new BufferedImage(width, height, image.getType()));
+        BufferedImage bufferedImage = bilinearScaleOp.filter(image, new BufferedImage(width, height, image.getType()));
         cache.putImage(keyString, bufferedImage);
 
         return bufferedImage;

@@ -78,7 +78,7 @@ public class SpecialAttack extends GameObject {
 
         if (showDamage && damage >= 1) {
             OnScreenTextManager.getInstance().addDamageNumberText(Math.round(damage), target.getCenterXCoordinate(),
-                    target.getCenterYCoordinate(), isACrit,super.calculateFontSizeBasedOnDamageAmount(this, damage));
+                    target.getCenterYCoordinate(), isACrit);
         }
 
         if(isACrit && PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.CashInfusion) != null){
