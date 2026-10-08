@@ -9,6 +9,7 @@ All notable changes on the `Nelis` branch.
 
 ### Changed
 - Resizing and rotating sprites no longer share one working image between calls, so two threads preparing sprites at the same time can no longer get each other's picture. Hits no longer work out a font size for damage numbers that are not drawn anymore, and the unused text constructor for them is removed.
+- Planboard: the collision entries record the stress-run measurements and Bruus's replies of 2026-10-08. The agreed fixes (check order, missile interaction split) move under Bugs; explosions, the pixel check and stopping after a hit stay as they are.
 
 ## 2026-10-07
 

@@ -26,6 +26,31 @@ Frame rate, lag, loading times and memory use.
     - **Mening:** Disagree. Er zijn 2 bazen die het mogelijk maken om neutral missiles te hebben en dan zijn het er een gelimiteerde hoeveelheid. Non-issue
     - **Mijn voorstel:** Leave it as is. Not an issue as of now.
   - MissileManager.java:353-420; the code comment says "This is NOT scalable"
+  - Measured 2026-10-07 (stress runs): missile-against-missile is 11-12% of the game thread. `interactsWithMissiles()` is true for every destructible missile, and eleven missile classes set `isDestructable = true` (GenericMissile, Seeker, Bomba, Tazer, Mutalisk, final boss missiles and more), so most enemy missiles pass the filter
+  - Bruus insight (2026-10-08):
+    - **Mening:** Hier heeft hij misschien een punt, dit hoeft maar van 1 kant te gebeuren maar dit moet wel gebeuren. Sommige missiles moeten gewoonweg interacten met andere missiles want dat is hun doel. Wat ik bedoelde met "negligible" is dat grotendeels van de missiles die zullen bestaan (>95%) niet hoeven te interacten met andere missiles en deze collision check zouden moeten overslaan vanwege `if (missile.interactsWithMissiles())` in MissileManager. Reactie: Oh.... yeah he makes a point. De "isDestructable" is belangrijk voor SpecialAttacks en de BarrierProjectile.java. Een Seeker of Bomba missile hoeft niet te kijken naar andere missiles want die zullen altijd op hetzelfde team zitten als de Energizer die de barrierprojectiles schiet (tot ik een item introduceer waardoor GameObjects/enemies van team switchen, maar dat is een maybe).
+    - **Mijn voorstel:** `interactsWithMissiles()` (`return destroysMissiles || isDestructable || isDamageable;`) opsplitsen in 3 methodes en dan de juiste aanroepen op basis van de context. Dit is voornamelijk van toepassing op Missiles en SpecialAttacks in MissileManager.
+  - Nelis agrees (2026-10-08). Next: a design session for the split
+- Collision's board-block filter lets about half of all pairs through, so collision is close to checking every pair
+  - `CollisionDetector.isWithinBoardBlockThreshold` recomputes both objects' board block for every pair and accepts any pair within a few of the 9 vertical slices
+  - Estimated 5,000 to 8,000 collision checks per frame in a busy wave
+  - Fix: a uniform grid of enemies rebuilt once per tick, and stop recomputing board blocks per pair
+  - Part of the check-order fix (2026-10-08): with the rectangle test first, the board-block check only runs for pairs whose boxes overlap
+- Missile-against-missile pairs are checked from both sides
+  - MissileManager.java:353-420 runs the check for friendly missiles against enemy missiles and again the other way round
+  - Bruus agreed on 2026-10-08; see his reply under "Missile-against-missile collision compares every pair every frame"
+- Missile-against-enemy collision computes the distance before the cheap rectangle test
+  - `CollisionDetector.isNearby` recomputes both board blocks and calls `Math.hypot` before `Rectangle.intersects`; with 300 missiles and 60 enemies that is about 18,000 pairs per tick
+  - Measured 2026-10-07 (stress runs): collision is 42-48% of the game thread. The distance stage (board block, coordinates, `Math.hypot`) is 15-17%, `Math.hypot` alone 6-7.5%
+  - `getBounds()` returns the rectangle each object already keeps, so the rectangle test creates no new objects. Both tests must pass anyway, so swapping them does not change which pairs collide
+  - Bruus insight (2026-10-08):
+    - **Mening:** Interesting, ik dacht juist dat het andersom was. Ik was onder de indruk dat het maken van Rectangles en de bounds overlappen een zwaardere taak op performance was dan een Math.hypot. Reactie: Is dit niet flawed data omdat grotendeels van de checks niet voorbij de hypot komen en dus de box test niet bereiken (en dus niet uitgevoerd worden). Desalniettemin, als de volgorde omdraaien simpelweg leid tot betere performance, gewoon implementeren.
+    - **Mijn voorstel:** De volgorde omdraaien is een risicoloze fix.
+  - Nelis agrees (2026-10-08). The before/after stress run measures whether the total goes down
+- Every player missile checks every enemy missile every tick, although it can only interact with reflective blocks
+  - Captain, generic and Mutalisk missiles are marked destructible, so `interactsWithMissiles()` is true for all of them (MissileManager.java:357-375)
+  - Fix: keep a separate list of reflective blocks and only check those
+  - Bruus agreed on 2026-10-08; see his reply under "Missile-against-missile collision compares every pair every frame"
 
 # Negeer de onderstaande
 
@@ -129,6 +154,10 @@ De punten hieronder hebben opzich wel gelijk, maar de performance impact van dez
   - Explosion.java:61 sets the damage window to the total frame count for friendly explosions, and the check at line 53 only stops when the current frame is past it; hostile explosions stop after 10 or 14 frames
   - Large sparse explosions (e.g. Explosion5 at scale 3) can run the pixel check over a big overlap area per enemy
   - Fix: close the damage window early, or use box collision for friendly explosions
+  - Measured 2026-10-07 (stress runs): 23-28% of the game thread, the largest single collision cost, most of it in the pixel check
+  - Bruus insight (2026-10-08):
+    - **Mening:** Dit is zeer waarschijnlijk explosive laserbeams ja, maar dit is simpelweg the cost of doing business. Een missile hoeft maar 1x op zijn spriteanimation te checken en is daarna verwijderd want hij collide al. Explosies blijven bestaan dus die moeten blijven checken voor collision. Ik zou niet weten wat hieraan verbeterd kan worden zonder functionaliteit te verliezen
+  - Nelis agrees (2026-10-08): left as is
 - Explosive Laserbeams creates a large explosion on every missile hit, with no cooldown or chance roll
   - ExplosiveLaserbeams.java:33-53 (Explosion5 at scale 3); a fast gun keeps dozens of explosions alive and colliding at once
   - Fix: add a cooldown, a chance roll or a cap on live explosions
@@ -163,12 +192,6 @@ De punten hieronder hebben opzich wel gelijk, maar de performance impact van dez
   - pom.xml:164-167 sets `sun.java2d.opengl` and `sun.java2d.d3d` to the same value; on Windows OpenGL then takes over, and Direct3D alone is usually the more reliable choice
   - These options only apply to the packaged build, so running the jar directly renders differently
   - Worth testing `-Dsun.java2d.uiScale=1` on a display with Windows scaling above 100%
-- Collision's board-block filter lets about half of all pairs through, so collision is close to checking every pair
-  - `CollisionDetector.isWithinBoardBlockThreshold` recomputes both objects' board block for every pair and accepts any pair within a few of the 9 vertical slices
-  - Estimated 5,000 to 8,000 collision checks per frame in a busy wave
-  - Fix: a uniform grid of enemies rebuilt once per tick, and stop recomputing board blocks per pair
-- Missile-against-missile pairs are checked from both sides
-  - MissileManager.java:353-420 runs the check for friendly missiles against enemy missiles and again the other way round
 - Every missile and enemy builds its destruction animation when it spawns, even if it never explodes
   - Missile.java:71-73; enemies also build a charging animation in `Enemy.initChargingUpAnimation` even when they never charge
   - A 36-missile boss ring means 72 animations, and their cache lookups, in one tick. Fix: create them on first use
@@ -182,8 +205,10 @@ De punten hieronder hebben opzich wel gelijk, maar de performance impact van dez
 - The pixel collision check takes a global lock and tests one pixel at a time
   - `AlphaMask.of()` is a `synchronizedMap(WeakHashMap).computeIfAbsent`, called twice per overlapping pair; `CollisionDetector.checkPixelCollision` scans the whole overlap pixel by pixel
   - Fix: store the mask with the frame, and compare whole rows at once with 64-bit operations
-- Missile-against-enemy collision computes the distance before the cheap rectangle test
-  - `CollisionDetector.isNearby` recomputes both board blocks and calls `Math.hypot` before `Rectangle.intersects`; with 300 missiles and 60 enemies that is about 18,000 pairs per tick
+  - Measured 2026-10-07 (stress runs): mask lookup and pixel loop together about 5% of the game thread; no lock waits were recorded
+  - Bruus insight (2026-10-08):
+    - **Mening:** Dit is met de AlphaMask update al geaddreseerd, ik denk niet dat we hier veel performance winst kunnen halen tenzij we iets doen als elke 2 pixels tellen ipv elke pixel.
+  - Nelis agrees (2026-10-08): left as is
 - Biggest per-tick sources of garbage, in order (estimated from the code)
   - The performance logger's wrapper objects per enemy, streams (`getEnemiesByType`, `getItemsByApplicationMethod`, co-op `getClosestSpaceShip`), route points, animations built per missile and enemy, collision results per hit, and the per-tick lists in ExplosionManager and BackgroundManager
 - Special attacks run collision against every enemy every tick, although they can only damage each enemy every 0.15 to 0.28 seconds
@@ -191,11 +216,11 @@ De punten hieronder hebben opzich wel gelijk, maar de performance impact van dez
   - Flamethrower, Electro Shred and Fire Shield sprites are large, so almost every enemy passes the distance filter and many reach the pixel check
   - Fix: skip enemies that are still on cooldown before checking collision
   - `checkSpecialAttackWithEnemyMissileCollision` (MissileManager.java:265) checks every enemy missile every tick with no cooldown at all
-- Every player missile checks every enemy missile every tick, although it can only interact with reflective blocks
-  - Captain, generic and Mutalisk missiles are marked destructible, so `interactsWithMissiles()` is true for all of them (MissileManager.java:357-375)
-  - Fix: keep a separate list of reflective blocks and only check those
 - A non-piercing missile that hits keeps checking the other enemies in the same tick
   - MissileManager.java:289-300 has no stop after a hit, so a missile overlapping two enemies likely hits both and adds its destruction animation twice
+  - Bruus insight (2026-10-08):
+    - **Mening:** Deze lijkt mij wel negligible. Missiles die piercen bij enemies die direct op elkaar zitten zou leiden tot een 1-gametick delay voor collision op de 2e enemy (m.a.w. 1 missile kan niet langer 2 of meer enemies tegelijkertijd raken) maar dit is zo'n edge case dat spelers die niet zullen merken.
+  - Nelis agrees (2026-10-08): left as is
 - Mutalisk bile bursts build 20 full missiles in one tick, and Bile Travel Range repeats that every 0.35 seconds per bit
   - MutaliskMissile.java:114-162; each bit builds its animation, two destruction animations and a route
 - The destruction animation is built twice per missile
