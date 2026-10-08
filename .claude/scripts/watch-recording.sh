@@ -43,6 +43,10 @@ nativetotal() {
   local f; f=$(ls -t "$perf"/nmt-*.txt 2>/dev/null | head -n 1)
   [ -n "$f" ] && grep -m1 -oE 'Total: reserved=[0-9]+KB, committed=[0-9]+KB' "$f" | grep -oE 'committed=[0-9]+' | awk -F= '{printf "; process total %.0f MB", $2/1024}'
 }
+# Prints the game process's private memory and thread count, read through Windows
+procstats() {
+  powershell -NoProfile -Command "\$p=Get-Process -Id $pid; '{0} {1}' -f \$p.PrivateMemorySize64, \$p.Threads.Count" 2>/dev/null | tr -d '\r' | awk 'NF==2 {printf "; process private %.0f MB, %d threads", $1/1048576, $2}'
+}
 # Prints the last line of the newest image cache log written during this watch, if there is one
 cachestats() {
   local f; f=$(ls -t "$perf"/cache-*.log 2>/dev/null | head -n 1)
@@ -57,8 +61,8 @@ done
 echo "startup (s): $(bash "$(dirname "$0")/startup-times.sh" 1 | tail -n 1)"
 bash "$(dirname "$0")/startup-times.sh" 1 | tail -n 1 >> "$heaplog"
 sleep 5
-h=$(liveheap); echo "$(( $(date +%s) - gstart ))s $h" >> "$heaplog"
-echo "live heap after start: $h$(nativetotal)"
+h=$(liveheap); echo "$(( $(date +%s) - gstart ))s $h$(procstats)" >> "$heaplog"
+echo "live heap after start: $h$(nativetotal)$(procstats)"
 c=$(cachestats); [ -n "$c" ] && echo "image cache: $c"
 
 last=$(date +%s)
@@ -66,8 +70,8 @@ last=$(date +%s)
 while tasklist //FI "PID eq $pid" //NH 2>/dev/null | grep -q " $pid "; do
   now=$(date +%s)
   if [ $((now - last)) -ge 180 ]; then
-    h=$(liveheap); echo "$(( now - gstart ))s $h" >> "$heaplog"
-    echo "still running, $(( (now - gstart) / 60 )) min; live heap $h$(nativetotal)"
+    h=$(liveheap); echo "$(( now - gstart ))s $h$(procstats)" >> "$heaplog"
+    echo "still running, $(( (now - gstart) / 60 )) min; live heap $h$(nativetotal)$(procstats)"
     c=$(cachestats); [ -n "$c" ] && echo "image cache: $c"
     last=$now
   fi

@@ -9,6 +9,7 @@ All notable changes on the `Nelis` branch.
 - Boss attacks with a boost sound (final boss mine charge, Striker bombing run, Twin boss manoeuvres) no longer crash the game when no copy of that sound is free. A sound that is still on its cooldown is no longer kept in the active sound list, game resets only rewind sounds that actually played, and the silent sound that looped at startup is removed.
 
 ### Changed
+- Dev tooling: the stress-run watcher now also logs the game process's private memory and thread count at every reading, so memory outside Java's own tracking can be measured.
 - Collision checks are cheaper in busy levels (branch `collision-performance`). Two objects are first tested for overlapping boxes, which most pairs fail, before the distance check, and the distance check no longer takes a square root; the same hits land as before. Enemy missiles that can only be shot down no longer check every player missile themselves; the missile or reflective block that acts on them still finds them.
 - Resizing and rotating sprites no longer share one working image between calls, so two threads preparing sprites at the same time can no longer get each other's picture. Hits no longer work out a font size for damage numbers that are not drawn anymore, and the unused text constructor for them is removed.
 - Planboard: the collision entries record the stress-run measurements and Bruus's replies of 2026-10-08. The agreed fixes (check order, missile interaction split) move under Bugs; explosions, the pixel check and stopping after a hit stay as they are.
