@@ -159,7 +159,7 @@ public class DirectorManager {
 
     public void distributeCredits() {
         GameState gameStateInfo = GameState.getInstance();
-        float creditAmount = (float) ((0.425f + 0.05 * gameStateInfo.getDifficultyCoefficient()));
+        float creditAmount = (float) ((0.425f + 0.06 * gameStateInfo.getDifficultyCoefficient()));
         creditAmount *= 1 + (PlayerManager.getInstance().getPlayerCount() * 0.15f);
 
 

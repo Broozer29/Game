@@ -24,6 +24,7 @@ public enum ItemEnums {
     EnergySiphon(ItemRarityEnums.Common, ImageEnums.Starcraft2_Energy_Siphon, "Energy Siphon", false),
     ModulePower(ItemRarityEnums.Legendary,  ImageEnums.Test_Image, "Module: Power", false), //disabled omdat drones al genoeg snowballen, dit zou extra op extra zijn
     PuncturingPierce(ItemRarityEnums.Legendary,  ImageEnums.PuncturingPierces, "Puncturing Pierce", false), //disabled want saai
+    Guillotine(ItemRarityEnums.Legendary,  ImageEnums.Guillotine, "Guillotine", false), //disabled want fundamenteel niet eens met de spirit van deze item, saaie item en een nachtmerrie om omheen te designen
     //Relics 2.0
     //generic relics
     Placeholder(ItemRarityEnums.Relic, ImageEnums.SmallDroneItemIcon, "Placeholder", true),
@@ -40,7 +41,7 @@ public enum ItemEnums {
     BouncingLasers(ItemRarityEnums.Relic,  ImageEnums.Starcraft2BouncingLaser, "Bouncing Lasers", true),
     ModuleElectrify(ItemRarityEnums.Relic,  ImageEnums.ModuleElectrify, "Module: Electric Razor", true),
     ModuleCommand(ItemRarityEnums.Relic,  ImageEnums.ModuleCommand, "Module: Synergize", true),
-    ModuleFocusFire(ItemRarityEnums.Relic,  ImageEnums.ModuleFocusFire, "Module: Focus Fire", true),
+    UpgradeFocusFire(ItemRarityEnums.Relic,  ImageEnums.ModuleFocusFire, "Upgrade: Focus Fire", true),
     AnionInverter(ItemRarityEnums.Relic, ImageEnums.AnionInverter, "Anion Inverter", true),
     BigIron(ItemRarityEnums.Relic,  ImageEnums.BigIron, "Big Iron", false), //disabled want dit voelt buggy aan en ook niet echt fijn om mee te spelen
     OneShotOneKill(ItemRarityEnums.Relic, ImageEnums.OneShotOneKill, "One shot, one kill", true),
@@ -79,7 +80,7 @@ public enum ItemEnums {
     ArmorPiercingRounds(ItemRarityEnums.Rare, ImageEnums.Starcraft2_Armor_Piercing, "Piercing Rounds", true),
     LeechingLasers(ItemRarityEnums.Rare,  ImageEnums.LeechingLasers, "Leeching Lasers", false),
     CalmInChaos(ItemRarityEnums.Legendary,  ImageEnums.CalmInChaos, "Calm in chaos", true),
-    ElectroShedding(ItemRarityEnums.Legendary,  ImageEnums.Electroshedding, "Electro Shedding", true),
+    ElectroShredding(ItemRarityEnums.Legendary,  ImageEnums.Electroshedding, "Electro Shredding", true),
     PlasmaCoatedBullets(ItemRarityEnums.Common, ImageEnums.Starcraft2_Blue_Flame, "Plasma Bullets", true),
     Recycler(ItemRarityEnums.Rare, ImageEnums.Recycler, "Recycler", true),
 
@@ -88,20 +89,21 @@ public enum ItemEnums {
     RegenerativeSteel(ItemRarityEnums.Common,  ImageEnums.Starcraft2_Heal, "Regenerative Steel", true),
     Battery(ItemRarityEnums.Rare,  ImageEnums.Starcraft2_Battery, "Battery", true),
     FocusCrystal(ItemRarityEnums.Common,  ImageEnums.Starcraft2Keystone, "Focus Crystal", true),
-    PrecisionAmplifier(ItemRarityEnums.Common,  ImageEnums.Starcraft2_Advanced_Optics, "Advanced Optics", true),
+    AdvancedOptics(ItemRarityEnums.Common,  ImageEnums.Starcraft2_Advanced_Optics, "Advanced Optics", true),
     PlatinumSponge(ItemRarityEnums.Rare,  ImageEnums.Starcraft2_Platinum_Sponge, "Platinum Sponge", true),
     EmergencyRepairBot(ItemRarityEnums.Common,  ImageEnums.Starcraft2_Vespene_Drone, "Repair Bot", true),
     Overclock(ItemRarityEnums.Rare,  ImageEnums.Starcraft2_Overclock, "Overclock", true),
     PlasmaLauncher(ItemRarityEnums.Rare,  ImageEnums.Starcraft2_Focused_Crystal, "Plasma Launcher", true),
     GuardianDrone(ItemRarityEnums.Common,  ImageEnums.Starcraft2_Seeker_Missile, "Guardian Drone", true),
-    CriticalOverloadCapacitor(ItemRarityEnums.Rare,  ImageEnums.Starcraft2_Auto_Tracking, "Precision Overloader", true),
+    UpgradeOverload(ItemRarityEnums.Rare,  ImageEnums.Starcraft2_Auto_Tracking, "Upgrade: Overload", true),
+    UpgradePrecision(ItemRarityEnums.Legendary,  ImageEnums.Test_Image, "Upgrade: Precision", true),
+    UpgradeSpeed(ItemRarityEnums.Rare,  ImageEnums.Test_Image, "Upgrade: Speed", true),
     PiercingMissiles(ItemRarityEnums.Legendary,  ImageEnums.PiercingLaser, "Piercing Lasers", true),
     VIPTicket(ItemRarityEnums.Legendary,  ImageEnums.VIPTicket, "VIP Ticket", true),
     ElectricSupercharger(ItemRarityEnums.Legendary,  ImageEnums.Starcraft2_Psi_Storm2, "Electric Supercharger", true),
     Adrenaline(ItemRarityEnums.Legendary,  ImageEnums.Adrenaline, "Adrenaline", true),
     ExplosiveLaserbeams(ItemRarityEnums.Legendary,  ImageEnums.ExplosiveLaserbeams, "Explosive Laserbeams", true),
     ExplosiveGreed(ItemRarityEnums.Legendary,  ImageEnums.ExplosiveGreed, "Explosive Greed", true),
-    Guillotine(ItemRarityEnums.Legendary,  ImageEnums.Guillotine, "Guillotine", true),
     Contract(ItemRarityEnums.Common,  ImageEnums.Contract, "Contract", true),
     StickyOil(ItemRarityEnums.Rare,  ImageEnums.StickyOilIcon, "Sticky Oil", true),
     CorrosiveOil(ItemRarityEnums.Legendary,  ImageEnums.CorrosiveOil, "Corrosive Oil", true),

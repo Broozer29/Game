@@ -100,7 +100,7 @@ public class FriendlyStation extends GameObject {
 
         float movementSpeed = 12f;
 
-        float damage = (PlayerStats.getInstance().getBaseDroneDamage() * (PlayerManager.getInstance().getRandomSpaceShip().getDroneDamageModifier() * 1.5f)) * damageModifier; //small increase in drone damage modifier to enable drone scaling because of the massive damage reduction
+        float damage = (PlayerStats.getInstance().getBaseDroneDamage() * (PlayerManager.getInstance().getRandomSpaceShip().getDroneDamageModifier() * 2)) * damageModifier; //small increase in drone damage modifier to enable drone scaling because of the massive damage reduction
         Direction rotation = Direction.RIGHT;
         PathFinder pathFinder = new StraightLinePathFinder();
 

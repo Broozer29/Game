@@ -12,10 +12,10 @@ import net.riezebos.bruus.tbd.game.items.ItemEnums;
 import net.riezebos.bruus.tbd.game.items.PlayerInventory;
 import net.riezebos.bruus.tbd.game.items.enums.ItemApplicationEnum;
 
-public class ModuleFocusFire extends Item {
+public class UpgradeFocusFire extends Item {
 
-    public ModuleFocusFire() {
-        super(ItemEnums.ModuleFocusFire, 1, ItemApplicationEnum.AfterCollision);
+    public UpgradeFocusFire() {
+        super(ItemEnums.UpgradeFocusFire, 1, ItemApplicationEnum.AfterCollision);
     }
 
 
@@ -26,15 +26,9 @@ public class ModuleFocusFire extends Item {
 
     @Override
     public void applyEffectToObject (GameObject applier, GameObject target) {
-        if(PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.ModuleAccuracy) != null){
-            return; //failsafe, mocht de speler het spel breken en beide accuracy en focusfire hebben, focusfire dan negeren.
-        }
-
-        //Als de applier een laserbeam is die van een spaceship komt, alleen dan activeren
         if(applier.getOwnerOrCreator() instanceof SpaceShip spaceShip && applier instanceof Missile){
             FriendlyManager.getInstance().getAllPlayerDrones(spaceShip).forEach(drone -> drone.fireAction(target));
         }
-        //Applies an effect to an object, with the applier provided for certain conditions
     }
 
 

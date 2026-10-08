@@ -9,8 +9,8 @@ import net.riezebos.bruus.tbd.game.items.PlayerInventory;
 import net.riezebos.bruus.tbd.game.items.effects.EffectIdentifiers;
 import net.riezebos.bruus.tbd.game.items.effects.EffectInterface;
 import net.riezebos.bruus.tbd.game.items.effects.effectimplementations.DamageOverTime;
+import net.riezebos.bruus.tbd.game.items.items.AdvancedOptics;
 import net.riezebos.bruus.tbd.game.items.items.CashInfusion;
-import net.riezebos.bruus.tbd.game.items.items.PrecisionAmplifier;
 import net.riezebos.bruus.tbd.game.items.items.firefighter.EphemeralBlaze;
 import net.riezebos.bruus.tbd.game.movement.BoardBlockUpdater;
 import net.riezebos.bruus.tbd.game.util.OnScreenTextManager;
@@ -62,9 +62,9 @@ public class SpecialAttack extends GameObject {
 
         float damage = calculateDamage(target);
         boolean isACrit = false;
-        if (PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.PrecisionAmplifier) != null) {
-            PrecisionAmplifier precisionAmplifier = (PrecisionAmplifier) PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.PrecisionAmplifier);
-            isACrit = precisionAmplifier.rollCritDice();
+        if (PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.AdvancedOptics) != null) {
+            AdvancedOptics advancedOptics = (AdvancedOptics) PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.AdvancedOptics);
+            isACrit = advancedOptics.rollCritDice();
             if (isACrit) {
                 if(ownerOrCreator instanceof SpaceShip spaceShip){
                     damage *= spaceShip.getCritDamageModifier();

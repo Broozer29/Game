@@ -11,7 +11,7 @@ import net.riezebos.bruus.tbd.game.items.enums.ItemApplicationEnum;
 
 public class AnionInverter extends Item {
     public static float damageModifier = 0.75f;
-    public static float cooldownModifier = -0.6f;
+    public static float cooldownModifier = -0.7f;
     public static float scaleBonus = 0.2f;
 
     public AnionInverter() {

@@ -21,7 +21,7 @@ import java.util.Random;
 public class RedBossSpawnShuriken implements BossActionable {
     private double lastSpawnedTime = 0;
     private double spawnCooldown = 0;
-    private double defaultSpawnTime = 10;
+    private double defaultSpawnTime = 9;
     private Random random;
     private int priority = 2;
 

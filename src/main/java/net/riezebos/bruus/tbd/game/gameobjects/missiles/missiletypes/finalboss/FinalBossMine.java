@@ -17,7 +17,6 @@ public class FinalBossMine extends Missile {
 
     private int rangeThreshold = 150;
     private boolean activated = false;
-    private double gameTimeCharged = 0;
     private double timeLastSpedUp = 0;
 
     public FinalBossMine(SpriteAnimationConfiguration spriteConfiguration, MissileConfiguration missileConfiguration, MovementConfiguration movementConfiguration) {
@@ -43,7 +42,6 @@ public class FinalBossMine extends Missile {
             this.movementConfiguration.setMovementSpeed(this.getMovementConfiguration().getMovementSpeed() * 0.99f);
         } else if(this.isAllowedToMove()){
             this.setAllowedToMove(false);
-            this.gameTimeCharged = GameState.getInstance().getGameSeconds();
         }
 
 

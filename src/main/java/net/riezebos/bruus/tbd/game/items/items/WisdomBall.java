@@ -10,7 +10,7 @@ import java.util.Random;
 
 public class WisdomBall extends Item {
 
-    public static float procChance = 0.2f;
+    public static float procChance = 0.3f;
     public static float currentBonusChance = 0.0f;
 
     public WisdomBall() {
@@ -31,14 +31,13 @@ public class WisdomBall extends Item {
     public boolean shouldActivate(){
         Random random = new Random();
         float chance = random.nextFloat();
-        procChance = 0.2f;
 
         if(chance < (procChance + currentBonusChance)){
             currentBonusChance = 0;
             return true;
         }
 
-        currentBonusChance += 0.175f;
+        currentBonusChance += 0.2f;
         return false;
     }
 

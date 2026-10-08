@@ -31,7 +31,7 @@ public class DefenderMiniBoss extends Enemy {
         this.destructionAnimation.setAnimationScale(this.scale / 1.5f);
         this.attackSpeed = 0.15f;
         this.damage = 10;
-        this.movementConfiguration.setMovementSpeed(this.movementConfiguration.getOriginalMovementSpeed() + EnemyManager.getInstance().getEnemyDifficultyModifier() * 0.35f);
+        this.movementConfiguration.setMovementSpeed(this.movementConfiguration.getOriginalMovementSpeed() + EnemyManager.getInstance().getEnemyDifficultyModifier() * 0.4f);
         this.detonateOnCollision = false;
         this.knockbackStrength = 10;
 

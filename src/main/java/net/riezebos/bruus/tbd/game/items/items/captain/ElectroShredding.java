@@ -1,21 +1,18 @@
 package net.riezebos.bruus.tbd.game.items.items.captain;
 
 import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
-import net.riezebos.bruus.tbd.game.gameobjects.missiles.specialAttacks.ElectroShred;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerClass;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
 import net.riezebos.bruus.tbd.game.items.Item;
 import net.riezebos.bruus.tbd.game.items.ItemEnums;
-import net.riezebos.bruus.tbd.game.items.effects.EffectIdentifiers;
-import net.riezebos.bruus.tbd.game.items.effects.effectimplementations.ArmorModifierEffect;
 import net.riezebos.bruus.tbd.game.items.enums.ItemApplicationEnum;
 
-public class ElectroShedding extends Item {
+public class ElectroShredding extends Item {
 
-    public static float armorReduction = 1;
+    public static float bonusDamage = 1;
 
-    public ElectroShedding() {
-        super(ItemEnums.ElectroShedding, 1, ItemApplicationEnum.AfterCollision);
+    public ElectroShredding() {
+        super(ItemEnums.ElectroShredding, 1, ItemApplicationEnum.CustomActivation);
     }
 
     public void increaseQuantityOfItem(int amount) {
@@ -24,16 +21,16 @@ public class ElectroShedding extends Item {
 
     @Override
     public void applyEffectToObject(GameObject gameObject) {
-        ArmorModifierEffect armorModifierEffect = new ArmorModifierEffect(-armorReduction, 9999999, null, EffectIdentifiers.ElectroShedding);
-        gameObject.addEffect(armorModifierEffect);
+//        ArmorModifierEffect armorModifierEffect = new ArmorModifierEffect(-bonusDamage, 9999999, null, EffectIdentifiers.ElectroShedding);
+//        gameObject.addEffect(armorModifierEffect);
     }
 
     @Override
     public void applyEffectToObject(GameObject applier, GameObject target) {
-        if (applier instanceof ElectroShred) {
-            ArmorModifierEffect armorModifierEffect = new ArmorModifierEffect(-armorReduction, 9999999, null, EffectIdentifiers.ElectroShedding);
-            target.addEffect(armorModifierEffect);
-        }
+//        if (applier instanceof ElectroShred) {
+//            ArmorModifierEffect armorModifierEffect = new ArmorModifierEffect(-bonusDamage, 9999999, null, EffectIdentifiers.ElectroShedding);
+//            target.addEffect(armorModifierEffect);
+//        }
     }
 
 

@@ -150,7 +150,7 @@ public class GameState {
     }
 
     public void giveEndOfLevelBoost(){
-        this.gameTicksExecuted += this.gameTicksExecuted * 0.05f;
+        this.gameTicksExecuted += (this.gameTicksExecuted * 0.04f);
     }
 
     private void updateGameTimeByExecutedGameTicks () {

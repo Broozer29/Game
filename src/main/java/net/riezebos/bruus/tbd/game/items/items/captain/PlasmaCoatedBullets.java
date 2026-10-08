@@ -16,8 +16,8 @@ import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.Sprit
 
 public class PlasmaCoatedBullets extends Item {
 
-    public static float burningDamage = 0.018f;
-    public static double duration = 1.5f;
+    public static float burningDamage = 0.02f;
+    public static double duration = 2f;
 
     public PlasmaCoatedBullets() {
         super(ItemEnums.PlasmaCoatedBullets, 1, ItemApplicationEnum.AfterCollision);

@@ -31,7 +31,7 @@ public class MotherShipMiniBoss extends Enemy {
         this.knockbackStrength = 8;
         this.updateBoardBlock();
         this.lastRegisteredBoardBlock = this.getCurrentBoardBlock();
-        this.movementConfiguration.setMovementSpeed(this.movementConfiguration.getOriginalMovementSpeed() + EnemyManager.getInstance().getEnemyDifficultyModifier() * 0.15f);
+        this.movementConfiguration.setMovementSpeed(this.movementConfiguration.getOriginalMovementSpeed() + EnemyManager.getInstance().getEnemyDifficultyModifier() * 0.3f);
         this.baseArmor += (EnemyManager.getInstance().getEnemyDifficultyModifier() * 25);
         this.hasAttack = false;
 
@@ -48,7 +48,7 @@ public class MotherShipMiniBoss extends Enemy {
 
     public void fireAction () {
         if(this.getCurrentBoardBlock() != lastRegisteredBoardBlock){
-            if(this.droneList.size() < 4) {
+            if(this.droneList.size() < 4 + (Math.round(EnemyManager.getInstance().getEnemyDifficultyModifier()))) {
                 addDrone();
             }
             lastRegisteredBoardBlock = this.getCurrentBoardBlock();

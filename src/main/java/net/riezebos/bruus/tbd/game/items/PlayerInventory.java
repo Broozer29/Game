@@ -165,8 +165,8 @@ public class PlayerInventory {
                 return new ArmorPiercingRounds();
             case EnergySiphon:
                 return new EnergySyphon();
-            case ElectroShedding:
-                return new ElectroShedding();
+            case ElectroShredding:
+                return new ElectroShredding();
             case PuncturingPierce:
                 return new PuncturingPierce();
             case StickyDynamite:
@@ -185,8 +185,8 @@ public class PlayerInventory {
                 return new FocusCrystal();
             case ExplosiveGreed:
                 return new ExplosiveGreed();
-            case PrecisionAmplifier:
-                return new PrecisionAmplifier();
+            case AdvancedOptics:
+                return new AdvancedOptics();
             case PlatinumSponge:
                 return new PlatinumSponge();
             case EmergencyRepairBot:
@@ -199,8 +199,12 @@ public class PlayerInventory {
                 return new RepulsionArmorPlate();
             case GuardianDrone:
                 return new GuardianDrones();
-            case CriticalOverloadCapacitor:
-                return new CriticalOverloadCapacitor();
+            case UpgradeOverload:
+                return new UpgradeOverload();
+            case UpgradeSpeed:
+                return new UpgradeSpeed();
+            case UpgradePrecision:
+                return new UpgradePrecision();
             case ConstructionKit:
                 return new ConstructionKit();
             case BarrierSuperSizer:
@@ -217,8 +221,8 @@ public class PlayerInventory {
                 return new ModulePower();
             case ModuleAccuracy:
                 return new ModuleAccuracy();
-            case ModuleFocusFire:
-                return new ModuleFocusFire();
+            case UpgradeFocusFire:
+                return new UpgradeFocusFire();
             case ElectricSupercharger:
                 return new ElectricSupercharger();
             case ReflectiveShielding:

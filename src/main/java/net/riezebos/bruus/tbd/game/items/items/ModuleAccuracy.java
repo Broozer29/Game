@@ -46,10 +46,6 @@ public class ModuleAccuracy extends Item {
             return false;
         }
 
-        if(PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.ModuleFocusFire) != null){
-            return false;
-        }
-
         if(GameState.getInstance().getStagesCompleted() == 0){
             return false;
         }

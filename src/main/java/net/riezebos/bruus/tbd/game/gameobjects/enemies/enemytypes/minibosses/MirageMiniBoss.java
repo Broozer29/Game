@@ -45,7 +45,7 @@ public class MirageMiniBoss extends Enemy {
         this.detonateOnCollision = false;
         this.knockbackStrength = 8;
         this.attackSpeed = 2;
-        cloneCount += Math.min(EnemyManager.getInstance().getEnemyDifficultyModifier(), 3);
+        cloneCount += Math.min(Math.max(EnemyManager.getInstance().getEnemyDifficultyModifier(),1), 3);
 
         initializeDirections();
 

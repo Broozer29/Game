@@ -8,7 +8,7 @@ import net.riezebos.bruus.tbd.game.items.enums.ItemApplicationEnum;
 
 public class Placeholder extends Item {
 
-    public static int maxStations = 4;
+    public static int maxStations = 8;
 
     public Placeholder() {
         super(ItemEnums.Placeholder, 1, ItemApplicationEnum.CustomActivation);

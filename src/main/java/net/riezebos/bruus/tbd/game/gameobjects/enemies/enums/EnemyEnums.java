@@ -168,7 +168,7 @@ public enum EnemyEnums {
             0, 0, 0, 1, 1f, 118, 66,
             0),
 
-    RedBoss(4500, 9,
+    RedBoss(4400, 9,
             AudioEnums.Alien_Spaceship_Destroyed,
             ImageEnums.RedBoss, ImageEnums.BossExplosion, 0, EnemyCategory.Boss, EnemyTribes.Generic, 20,
             950, 500, 0, 1.25f, 1, 861, 641,
@@ -184,11 +184,11 @@ public enum EnemyEnums {
             ImageEnums.CarrierBoss, ImageEnums.BossExplosion, 0, EnemyCategory.Boss, EnemyTribes.Generic, 20,
             1050, 500, 0, 1.25f, 0.75f, 465, 252,
             1),
-    YellowBoss(5000, 9,
+    YellowBoss(4500, 7,
             AudioEnums.Alien_Spaceship_Destroyed,
             ImageEnums.YellowBoss, ImageEnums.BossExplosion, 0, EnemyCategory.Boss, EnemyTribes.Generic, 20,
             1150, 500, 0, 1.25f, 0.75f, 843, 800,
-            1),
+            2),
 
     TwinBoss(4000, 9,
             AudioEnums.Alien_Spaceship_Destroyed,

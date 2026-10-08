@@ -11,13 +11,13 @@ import net.riezebos.bruus.tbd.game.items.enums.ItemApplicationEnum;
 
 import java.util.Random;
 
-public class PrecisionAmplifier extends Item {
+public class AdvancedOptics extends Item {
 
     public static float critChance = 0.125f;
     private Random random = new Random();
 
-    public PrecisionAmplifier () {
-        super(ItemEnums.PrecisionAmplifier, 1,  ItemApplicationEnum.BeforeCollision);
+    public AdvancedOptics() {
+        super(ItemEnums.AdvancedOptics, 1,  ItemApplicationEnum.BeforeCollision);
     }
 
     public void increaseQuantityOfItem(int amount) {

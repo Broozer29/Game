@@ -61,7 +61,7 @@ public class Guillotine extends Item {
         }
 
 
-        if(this.quantity >= 8){ //bij meer dan 8 gaat de speler alles one-tappen dus deze niet available maken
+        if(this.quantity * hitpointsThreshold >= 0.4f){ //bij meer dan 4 gaat de speler alles one-tappen dus deze niet available maken
             return false;
         }
         return true;

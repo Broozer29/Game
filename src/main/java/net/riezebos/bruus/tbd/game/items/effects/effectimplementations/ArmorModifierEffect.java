@@ -5,7 +5,7 @@ import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.items.effects.EffectActivationTypes;
 import net.riezebos.bruus.tbd.game.items.effects.EffectIdentifiers;
 import net.riezebos.bruus.tbd.game.items.effects.EffectInterface;
-import net.riezebos.bruus.tbd.game.items.items.captain.ElectroShedding;
+import net.riezebos.bruus.tbd.game.items.items.captain.ElectroShredding;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteAnimation;
 
 import java.util.ArrayList;
@@ -102,7 +102,7 @@ public class  ArmorModifierEffect implements EffectInterface {
         //For electroshedding, remove the effect and re-apply it after increasing its strength
         if(this.effectIdentifier.equals(EffectIdentifiers.ElectroShedding)){
             removeEffectsBeforeRemovingEffect(gameObject);
-            armorBonus -= ElectroShedding.armorReduction;
+            armorBonus -= ElectroShredding.bonusDamage;
             appliedToObject = false;
             activateEffect(gameObject);
         }

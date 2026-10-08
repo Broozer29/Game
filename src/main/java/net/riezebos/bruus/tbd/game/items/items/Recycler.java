@@ -11,7 +11,7 @@ import net.riezebos.bruus.tbd.game.items.enums.ItemApplicationEnum;
 
 public class Recycler  extends Item {
 
-    public static float spawnChance = 0.10f;
+    public static float spawnChance = 0.075f;
 
     public Recycler() {
         super(ItemEnums.Recycler, 1, ItemApplicationEnum.BeforeCollision);

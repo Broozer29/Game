@@ -35,7 +35,7 @@ public class FriendlyCreator {
         spriteConfiguration.setScale(scale);
 
         FriendlyObjectConfiguration friendlyObjectConfiguration = new FriendlyObjectConfiguration(friendlyType,
-                getDroneAttackSpeed(spaceShip.getDroneType()), false);
+                getDroneAttackSpeed(spaceShip.getDroneType()) * spaceShip.getDroneSpeedModifier(), false);
         Drone object = FriendlyCreator.createDrone(spriteConfiguration, friendlyObjectConfiguration, spaceShip);
         object.getMovementConfiguration().setLastKnownTargetX(spaceShip.getCenterXCoordinate());
         object.getMovementConfiguration().setLastKnownTargetY(spaceShip.getCenterYCoordinate());
@@ -161,7 +161,7 @@ public class FriendlyCreator {
             }
 
             default -> {
-                return 0.5f;
+                return 0.75f;
             }
         }
     }

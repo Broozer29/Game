@@ -37,9 +37,9 @@ public class PlayerStats {
 
     //firefighter
     public static float fireFighterBaseDamage = 10f;
-    public static float fireFighterAttackSpeed = 0.28f;
-    public static float igniteDamageMultiplier = 0.011f;
-    public static float igniteDuration = 1.65f;
+    public static float fireFighterAttackSpeed = 0.22f;
+    public static float igniteDamageMultiplier = 0.013f;
+    public static float igniteDuration = 2.35f;
     private int maxIgniteStacks;
     public static int fireFighterHitpoints = 85;
 

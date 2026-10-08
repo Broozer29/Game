@@ -10,6 +10,7 @@ import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SpaceShip;
 import net.riezebos.bruus.tbd.game.items.ItemEnums;
 import net.riezebos.bruus.tbd.game.items.PlayerInventory;
 import net.riezebos.bruus.tbd.game.items.items.captain.AnionInverter;
+import net.riezebos.bruus.tbd.game.items.items.captain.ElectroShredding;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.AudioManager;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.AudioEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteAnimationConfiguration;
@@ -30,6 +31,15 @@ public class CaptainSecondaryGun extends SecondaryPlayerGun {
     public static float electroShredBonusDamageModifier = 1.5f;
     private void fireElectroShred(int xCoordinate, int yCoordinate, SpaceShip owner) {
         float damage = owner.getSpecialAttackDamage() * electroShredBonusDamageModifier;
+
+        //todo sloppy fix, ideallt this goes through a modifyGameObject method in ElectroShredding
+        if(PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.ElectroShredding) != null){
+            ElectroShredding electroShredding = (ElectroShredding) PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.ElectroShredding);
+
+            float percentage = owner.getCurrentHitpoints() / owner.getMaxHitPoints() * 100f;
+            damage *= (electroShredding.getQuantity() * ElectroShredding.bonusDamage) * (1 + percentage);
+        }
+
         float scale = 1.5f;
         if (PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.AnionInverter) != null) {
             scale *= (1 + AnionInverter.scaleBonus);

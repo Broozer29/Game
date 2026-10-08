@@ -72,7 +72,7 @@ public class ItemDescriptionRetriever {
                 return "Cash carriers no longer spawn. Critical Strikes have a " + Math.round(CashInfusion.spawnChance * 100) + "% chance to drop a coin worth " + CashInfusion.mineralsPerPickup + " minerals.";
             } //relic
             case Placeholder -> {
-                return "Killing an enemy spawns a temporary stationary drone that attacks every " + FriendlyStation.attackSpeed + " seconds dealing " + Math.round((FriendlyStation.damageModifier * 100)) + "% damage. Maximum of 4 drones can be spawned at once.";
+                return "Killing an enemy spawns a temporary stationary drone that  attacks every " + FriendlyStation.attackSpeed + " seconds dealing " + Math.round((FriendlyStation.damageModifier * 100)) + "% damage. Placeholder drones gain double the bonus of Drone damage items. Maximum of " + Placeholder.maxStations + " drones can be spawned at once.";
             } //relic
             case WisdomBall -> {
                 return "Refreshes in the shop have a chance to be wondrous.";
@@ -108,9 +108,15 @@ public class ItemDescriptionRetriever {
             case PlatinumSponge -> {
                 return "Reduces all damage taken by " + Math.round(PlatinumSponge.damageReduction) + ". Damage taken cannot be reduced below 1";
             } //rare
-            case CriticalOverloadCapacitor -> {
-                return "Critical strikes deal an additional " + Math.round(CriticalOverloadCapacitor.damageMultiplier * 100) + "% damage.";
+            case UpgradeOverload -> {
+                return "Drones deal an additional " + Math.round(UpgradeOverload.damageMultiplier * 100) + "% damage.";
             } //rare
+            case UpgradeSpeed -> {
+                return "Drones gain " + Math.round(UpgradeSpeed.attackSpeedModifier * 100) + "% increased attack speed.";
+            } //rare
+            case UpgradePrecision -> {
+                return "Drones gain " + Math.round(UpgradePrecision.critChance * 100) + "% chance to critically strike, dealing double damage..";
+            }
             case Recycler -> {
                 return "Enemies damaged by your Laserbeam or Electroshred gain a " + Math.round(Recycler.spawnChance * 100) + " % (+" + Math.round(Recycler.spawnChance * 100) + "%) chance to spawn a Recycle Part on death. Picking up a Recycle Part instantly restores a charge for your secondary attack.";
             }
@@ -123,8 +129,8 @@ public class ItemDescriptionRetriever {
             case Overclock -> {
                 return "Increases attack speed by " + Math.round(Overclock.attackSpeedBonus) + "%";
             } //common
-            case PrecisionAmplifier -> {
-                return "Your attacks gain " + Math.round(PrecisionAmplifier.critChance * 100) + "% additional critical strike chance. Critical strikes deal double damage.";
+            case AdvancedOptics -> {
+                return "Your attacks gain " + Math.round(AdvancedOptics.critChance * 100) + "% additional critical strike chance. Critical strikes deal double damage.";
             } //common
             case RegenerativeSteel -> {
                 double value = RegenerativeSteel.repairAmount * (1000f / 15f);
@@ -132,7 +138,7 @@ public class ItemDescriptionRetriever {
                         " additional hitpoints per second.";
             } //commmon
             case GuardianDrone -> {
-                return "Gain 1 invincible drone. It attacks automatically dealing 100% damage. Drones do not apply item effects.";
+                return "Gain 1 invincible drone. It attacks automatically dealing 100% damage. Drones do not apply item effects unless otherwise stated.";
             } //common
             case Contract -> {
                 return "After killing " + Contract.killCountRequired + " enemies, transform into a random rare or legendary item upon entering the shop.";
@@ -155,8 +161,8 @@ public class ItemDescriptionRetriever {
             case AnionInverter -> {
                 return "Electroshred cooldown decreased by " + Math.abs(Math.round(AnionInverter.cooldownModifier * 100)) + "%. Electroshred damage increased by " + Math.round(AnionInverter.damageModifier * 100) + "%. Electroshred NO LONGER destroys projectiles.";
             } //relic
-            case ModuleFocusFire -> {
-                return "Your drones no longer fire automatically. After your laserbeam hits a target, all drones immediately fire 1 shot towards the target.";
+            case UpgradeFocusFire -> {
+                return "After your laserbeam hits a target, all drones immediately fire 1 shot towards the target.";
             } //relic
             case OneShotOneKill -> {
                 return "Your missiles that strike enemies with " + Math.round(OneShotOneKill.hpRequirement * 100) + "% hp will always critically strike and have their damage increased by " + Math.round(OneShotOneKill.damageAmplificationModifier * 100) + "%.";
@@ -172,10 +178,10 @@ public class ItemDescriptionRetriever {
                         "% damage.";
             } //legendary
             case ExplosiveLaserbeams -> {
-                return "Your missiles cause an explosion when striking enemies dealing " + Math.round(ExplosiveLaserbeams.damageModifier * 100) + "% additional damage.";
+                return "Your missiles cause an additional explosion when striking enemies dealing " + Math.round(ExplosiveLaserbeams.damageModifier * 100) + "% additional damage.";
             } //legendary
-            case ElectroShedding -> {
-                return "Electroshred now permanently reduces enemy armor by " + Math.round(ElectroShedding.armorReduction) + " whenever it deals damage. Losing armor increases ALL damage taken.";
+            case ElectroShredding -> {
+                return "Electroshred damage is increased by up to" + Math.round(ElectroShredding.bonusDamage) + "% (+" + Math.round(ElectroShredding.bonusDamage) + "%) based on the percentage of your current shield hitpoints.";
             } //legendary
 
             //2
@@ -220,7 +226,7 @@ public class ItemDescriptionRetriever {
 
             //6
             case CorrosiveOil -> {
-                return "Ignite reduces armor by " + CorrosiveOil.amountPerStack + " per stack of Ignite.";
+                return "Ignite reduces armor by " + CorrosiveOil.amountPerStack + " per stack of Ignite. Causing the enemy to permanently take increased damage from all sources.";
             } //legendary        (ignite build)
             case FlameDetonation -> {
                 return "Ignite causes enemies to explode leaving behind a flame for " + Math.round(FlameDetonation.duration) + " (+" + Math.round(FlameDetonation.duration) + ") seconds that applies Ignite.";
@@ -330,7 +336,7 @@ public class ItemDescriptionRetriever {
             } //legendary -> carrier/captain
             case Adrenaline -> {
                 double value = Adrenaline.hpRegen * (1000f / 15f);
-                return "Taking damage increases your attack speed by " + Math.round(Adrenaline.attackSpeedIncrease * 100) + "% and health regeneration by " + String.format("%.1f", value)+ " for " + Math.round(Adrenaline.duration) + " seconds. Taking damage again refreshes the duration of the effect.";
+                return "Taking damage increases your attack speed by " + Math.round(Adrenaline.attackSpeedIncrease * 100) + "% and health regeneration by " + String.format("%.1f", value) + " hitpoints per second for " + Math.round(Adrenaline.duration) + " seconds. Taking damage again refreshes the duration of the effect.";
             } //legendary -> captain/firefighter
 
             case PlasmaCoatedBullets -> {

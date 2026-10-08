@@ -20,7 +20,7 @@ import java.util.Random;
 public class PlasmaLauncher extends Item {
 
     public static float procChance = 0.1f;
-    public static float damageMultiplier = 2;
+    public static float damageMultiplier = 2.5f;
     private Random rand;
 
     public PlasmaLauncher() {

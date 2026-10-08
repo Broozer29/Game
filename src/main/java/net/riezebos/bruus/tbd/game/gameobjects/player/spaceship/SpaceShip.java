@@ -83,6 +83,7 @@ public class SpaceShip extends GameObject {
     private float thornsDamageModifier = 0f; //starting at 0 causes thorns to be disabled by default
     private float igniteDamageModifier = 1f;
     private float droneDamageModifier = 1f;
+    private float droneSpeedModifier = 1f;
     private float maxShieldModifier = 1;
     private int maxSpecialAttackCharges = 1;
     private float specialAttackRechargeCooldownModifier = 1f;
@@ -966,6 +967,14 @@ public class SpaceShip extends GameObject {
 
     public void modifyDroneDamageModifier(float droneDamageModifier) {
         this.droneDamageModifier += droneDamageModifier;
+    }
+
+    public float getDroneSpeedModifier() {
+        return this.droneSpeedModifier;
+    }
+
+    public void modifyDroneSpeedModifier(float droneSpeedModifier) {
+        this.droneSpeedModifier += droneSpeedModifier;
     }
 
     public float getMovementSpeed() {

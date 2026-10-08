@@ -38,7 +38,7 @@ public class LaserbeamMiniBoss extends Enemy {
         this.destructionAnimation.setAnimationScale(3);
         this.detonateOnCollision = false;
         this.knockbackStrength = 10;
-        this.movementConfiguration.setMovementSpeed(this.movementConfiguration.getOriginalMovementSpeed() + EnemyManager.getInstance().getEnemyDifficultyModifier() * 0.35f);
+        this.movementConfiguration.setMovementSpeed(this.movementConfiguration.getOriginalMovementSpeed() + EnemyManager.getInstance().getEnemyDifficultyModifier() * 0.5f);
         this.attackSpeed = 0.025f;
 
         SpawnCoinsOnDeath goldOnDeathEffect = new SpawnCoinsOnDeath(25, 3,1.0f);

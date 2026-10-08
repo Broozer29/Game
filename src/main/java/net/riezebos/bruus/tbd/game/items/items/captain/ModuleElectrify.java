@@ -13,7 +13,7 @@ import net.riezebos.bruus.tbd.game.items.PlayerInventory;
 import net.riezebos.bruus.tbd.game.items.enums.ItemApplicationEnum;
 
 public class ModuleElectrify extends Item {
-    public static float cooldown = 1.5f;
+    public static float cooldown = 0.5f;
 
     public ModuleElectrify () {
         super(ItemEnums.ModuleElectrify, 1, ItemApplicationEnum.ApplyOnSpaceShipCreation);

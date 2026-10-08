@@ -26,9 +26,11 @@ public class Adrenaline extends Item {
     public void applyEffectToObject(GameObject gameObject) {
         if (gameObject instanceof SpaceShip spaceShip) {
             //applied from the takeDamage method of SpaceShip
-            EffectInterface existingEffect = spaceShip.getEffectIfExists(EffectIdentifiers.AdrenalineAttackSpeedModifier);
-            if (existingEffect != null) {
-                existingEffect.resetDuration();
+            EffectInterface attackSpeed = spaceShip.getEffectIfExists(EffectIdentifiers.AdrenalineAttackSpeedModifier);
+            EffectInterface healRegen = spaceShip.getEffectIfExists(EffectIdentifiers.AdrenalineHealthRegen);
+            if (attackSpeed != null && healRegen != null) {
+                attackSpeed.resetDuration();
+                healRegen.resetDuration();
             } else {
                 AttackSpeedModifierEffect attackSpeedModifierEffect = new AttackSpeedModifierEffect(attackSpeedIncrease * this.quantity, duration, null, EffectIdentifiers.AdrenalineAttackSpeedModifier);
                 PassiveHealthRegeneration passiveHealthRegeneration = new PassiveHealthRegeneration(hpRegen * quantity, duration, EffectIdentifiers.AdrenalineHealthRegen);

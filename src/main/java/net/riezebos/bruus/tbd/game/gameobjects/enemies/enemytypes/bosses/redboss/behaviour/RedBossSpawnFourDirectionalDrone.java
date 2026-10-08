@@ -24,10 +24,11 @@ public class RedBossSpawnFourDirectionalDrone implements BossActionable {
 
 
     private double lastSpawnedTime = GameState.getInstance().getGameSeconds() - 15;
-    private double spawnCooldown = 25;
+    private double spawnCooldown = defaultSpawnCooldown;
+    private static double defaultSpawnCooldown = 22;
     private Random random;
     private int priority = 3;
-    private int amountToSpawn = 2;
+    private int amountToSpawn = 3;
 
     private SpriteAnimation spawnAnimation;
 
@@ -67,9 +68,7 @@ public class RedBossSpawnFourDirectionalDrone implements BossActionable {
     }
 
     private void updateSpawnCooldown(Enemy enemy) {
-        if (enemy.getCurrentHitpoints() <= (enemy.getMaxHitPoints() * 0.25f)) {
-            spawnCooldown = 11;
-        }
+        spawnCooldown = defaultSpawnCooldown + (EnemyManager.getInstance().getEnemiesByType(EnemyEnums.FourDirectionalDrone).size() * 2);
     }
 
     private void initSpawnAnimation(Enemy enemy) {
@@ -153,6 +152,6 @@ public class RedBossSpawnFourDirectionalDrone implements BossActionable {
         return enemy.isAllowedToFire()
                 && GameState.getInstance().getGameSeconds() >= lastSpawnedTime + spawnCooldown
                 && WithinVisualBoundariesCalculator.isWithinBoundaries(enemy)
-                && EnemyManager.getInstance().getEnemiesByType(EnemyEnums.FourDirectionalDrone).size() < 6;
+                && EnemyManager.getInstance().getEnemiesByType(EnemyEnums.FourDirectionalDrone).size() < 7;
     }
 }

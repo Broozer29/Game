@@ -376,9 +376,10 @@ public class EnemyManager {
         return new DamageOverTime(enemy.getMaxHitPoints() * 0.035f, 9999, spriteAnimation, EffectIdentifiers.EndOfLevelBurn);
     }
 
-    public int getEnemyDifficultyModifier(){
+    public float getEnemyDifficultyModifier() {
+        return Math.min(0 + (GameState.getInstance().getDifficultyCoefficient() - 1), 7); // game should feel more zoomy this way
 //        return 5;
-        return Math.min(GameState.getInstance().getBossesDefeated(), 5); //Capping at 5 to prevent infinite scaling and since I intend the 5th boss to be the final boss of a run which doesnt exist yet
+//        return Math.min(GameState.getInstance().getBossesDefeated(), 5); //Capping at 5 to prevent infinite scaling and since I intend the 5th boss to be the final boss of a run which doesnt exist yet
     }
 
 }
