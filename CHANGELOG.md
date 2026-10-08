@@ -4,6 +4,9 @@ All notable changes on the `Nelis` branch.
 
 ## 2026-10-08
 
+### Fixed
+- Enemy formations moving left no longer appear half on screen at the right edge. Formation enemies are placed by their center, so the first column now starts one enemy width past the edge, the same margin formations moving right get.
+
 ### Changed
 - Resizing and rotating sprites no longer share one working image between calls, so two threads preparing sprites at the same time can no longer get each other's picture. Hits no longer work out a font size for damage numbers that are not drawn anymore, and the unused text constructor for them is removed.
 
