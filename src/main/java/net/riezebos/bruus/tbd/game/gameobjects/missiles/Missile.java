@@ -94,10 +94,6 @@ public class Missile extends GameObject {
         //Exists to be overriden by explosive missiles
     }
 
-    public boolean interactsWithMissiles () {
-        return destroysMissiles || isDestructable || isDamageable;
-    }
-
     public void setDestroysMissiles (boolean destroysMissiles) {
         this.destroysMissiles = destroysMissiles;
     }

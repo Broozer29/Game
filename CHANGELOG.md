@@ -8,6 +8,7 @@ All notable changes on the `Nelis` branch.
 - Enemy formations moving left no longer appear half on screen at the right edge. Formation enemies are placed by their center, so the first column now starts one enemy width past the edge, the same margin formations moving right get.
 
 ### Changed
+- Collision checks are cheaper in busy levels (branch `collision-performance`). Two objects are first tested for overlapping boxes, which most pairs fail, before the distance check, and the distance check no longer takes a square root; the same hits land as before. Enemy missiles that can only be shot down no longer check every player missile themselves; the missile or reflective block that acts on them still finds them.
 - Resizing and rotating sprites no longer share one working image between calls, so two threads preparing sprites at the same time can no longer get each other's picture. Hits no longer work out a font size for damage numbers that are not drawn anymore, and the unused text constructor for them is removed.
 - Planboard: the collision entries record the stress-run measurements and Bruus's replies of 2026-10-08. The agreed fixes (check order, missile interaction split) move under Bugs; explosions, the pixel check and stopping after a hit stay as they are.
 

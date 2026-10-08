@@ -193,7 +193,7 @@ public class MissileManager {
                 if (!missile.isFriendly()) { //removes checking with friendly missiles and thus saves some performance
                     checkMissileCollisionWitFriendlyStations(missile);
                 }
-                if (missile.interactsWithMissiles()) {
+                if (checksOtherMissiles(missile)) {
                     checkMissileCollisionWithMissiles(missile);
                 }
             }
@@ -351,7 +351,7 @@ public class MissileManager {
 
 
     private void checkMissileCollisionWithMissiles(Missile missile) {
-        if (missile.interactsWithMissiles()) {
+        if (checksOtherMissiles(missile)) {
             if (missile.isFriendly()) {
                 //Check for all non-friendly missiles in the missile list, this is used by friendly missiles
                 for (Missile enemyMissile : missiles) {
@@ -419,6 +419,14 @@ public class MissileManager {
                 }
             }
         }
+    }
+
+    // Only missiles that act on other missiles, or can be damaged by them, need their own missile check.
+    // A missile that can only be destroyed is handled by the check of the missile destroying it, and reflective blocks
+    // are damageable so they reflect it from their own check. Reflected missiles keep their check for same-team blocks.
+    private boolean checksOtherMissiles(Missile missile) {
+        return missile.isDeletesMissiles() || missile.isDamageable()
+                || (missile.isDestructable() && missile.getTimesReflected() > 0);
     }
 
     private void handleReflection(Missile nonReflectiveMissile, Missile reflectiveMissile) {
