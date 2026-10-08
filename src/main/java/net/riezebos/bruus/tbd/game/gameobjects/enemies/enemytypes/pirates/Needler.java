@@ -25,8 +25,7 @@ public class Needler extends Enemy {
         this.movementConfiguration.setMovementSpeed(this.movementConfiguration.getOriginalMovementSpeed() + EnemyManager.getInstance().getEnemyDifficultyModifier() * 0.3f);
         this.damage = 13;
         this.detonateOnCollision = true;
-        this.knockbackStrength = 10 + EnemyManager.getInstance().getEnemyDifficultyModifier();
-        this.hasAttack = false;
+        this.knockbackStrength = 10 + Math.round(EnemyManager.getInstance().getEnemyDifficultyModifier());
         this.rangeThreshold = Math.round(125 + (EnemyManager.getInstance().getEnemyDifficultyModifier() * 7.5f));
         this.moveSpeedBoost = 2 + (EnemyManager.getInstance().getEnemyDifficultyModifier() * 0.055f);
     }

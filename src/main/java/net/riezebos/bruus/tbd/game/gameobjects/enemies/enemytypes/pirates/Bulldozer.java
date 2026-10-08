@@ -44,7 +44,7 @@ public class Bulldozer extends Enemy {
 
         double angleIncrement = 2 * Math.PI / amountOfBombs;
 
-        int radius = 85 + (EnemyManager.getInstance().getEnemyDifficultyModifier() * 5);
+        int radius = 85 + (Math.round(EnemyManager.getInstance().getEnemyDifficultyModifier() * 5));
         for (int iterator = 0; iterator < amountOfBombs; iterator++) {
             // 2. Find the next angle
             double nextAngle = angleIncrement * iterator;

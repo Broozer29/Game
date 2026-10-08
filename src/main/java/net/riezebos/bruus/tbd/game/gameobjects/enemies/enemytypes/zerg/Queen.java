@@ -42,7 +42,7 @@ public class Queen extends Enemy {
         this.attackSpeed = 4;
         this.detonateOnCollision = false;
         this.knockbackStrength = 8;
-        this.maxEnemiesAllowedToSpawn = 5 + EnemyManager.getInstance().getEnemyDifficultyModifier();
+        this.maxEnemiesAllowedToSpawn = 5 + Math.round(EnemyManager.getInstance().getEnemyDifficultyModifier());
         this.movementConfiguration.setMovementSpeed(this.movementConfiguration.getOriginalMovementSpeed() + EnemyManager.getInstance().getEnemyDifficultyModifier() * 0.25f);
         this.maxHitPoints *= 1 + (EnemyManager.getInstance().getEnemyDifficultyModifier() * 0.1f);
     }
