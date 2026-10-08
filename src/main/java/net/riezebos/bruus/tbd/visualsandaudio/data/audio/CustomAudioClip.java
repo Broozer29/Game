@@ -18,6 +18,7 @@ public class CustomAudioClip {
     private boolean isMediaPlayerPlaying = false; // Flag to track if MediaPlayer is playing
     private boolean isMediaPlayerFinished = false; // Flag to track if MediaPlayer has finished
     private boolean isPaused = false; // Flag to track paused state
+    private boolean startedSinceReset = false; // Set when the clip starts, so a reset only touches clips that played
 
     public CustomAudioClip(AudioEnums clipType) {
         this.clipType = clipType;
@@ -81,13 +82,12 @@ public class CustomAudioClip {
     }
 
     private boolean aboveThreshold() {
-        double currentTimeInSeconds = getCurrentSecondsInPlayback();
         switch (clipType) {
             case Large_Ship_Destroyed:
             case Alien_Bomb_Impact:
-                return currentTimeInSeconds > 1.2;
+                return getCurrentSecondsInPlayback() > 1.2;
             case Destroyed_Explosion:
-                return currentTimeInSeconds > 0.5;
+                return getCurrentSecondsInPlayback() > 0.5;
             default:
                 return false;
         }
@@ -112,6 +112,7 @@ public class CustomAudioClip {
     public void startClip() {
         adjustVolume();
         mediaPlayer.play();
+        startedSinceReset = true;
 
         //Wordt al gehandeld in een runnable op de mediaPlayer zelf, maar misschien voorkomt dit de audio bug?
         isMediaPlayerPlaying = true;
@@ -184,6 +185,14 @@ public class CustomAudioClip {
         }
     }
 
+
+    public boolean hasStartedSinceReset() {
+        return startedSinceReset;
+    }
+
+    public void clearStartedSinceReset() {
+        startedSinceReset = false;
+    }
 
     public boolean isRunning() {
         return mediaPlayer != null && mediaPlayer.getStatus() == MediaPlayer.Status.PLAYING;

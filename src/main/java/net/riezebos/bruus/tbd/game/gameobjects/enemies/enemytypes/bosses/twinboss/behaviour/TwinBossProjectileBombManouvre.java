@@ -184,11 +184,13 @@ public class TwinBossProjectileBombManouvre implements BossActionable {
 
         enemy.setAllowedVisualsToRotate(false);
         enemy.move();
-        if (boostingAway == null && boostingAway.getMediaPlayer() == null) {
+        if (boostingAway == null || boostingAway.getMediaPlayer() == null) {
             boostingAway = AudioDatabase.getInstance().getAudioClip(AudioEnums.SpaceStationBlastingOff);
         }
-        boostingAway.setPlaybackPosition(0);
-        boostingAway.startClip();
+        if (boostingAway != null) {
+            boostingAway.setPlaybackPosition(0);
+            boostingAway.startClip();
+        }
     }
 
     private static int bombDropIndexCounter = 0;

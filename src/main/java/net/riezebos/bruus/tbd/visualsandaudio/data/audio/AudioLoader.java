@@ -268,8 +268,6 @@ public class AudioLoader {
                 return "/audio/ElectroShredFinishedCharging.wav";
             case ScarabExplosion:
                 return "/audio/scarabexplosion.wav";
-            case SilentAudio:
-                return "/audio/silence.wav";
             case VendlaSonrisa:return "/audio/music/Vendla - Sonrisa (Royalty Free Music).wav";
             case nomad:return "/audio/music/nomad.wav";
             case WaveshaperMonster: return "/audio/music/Waveshaper - Monster.wav";

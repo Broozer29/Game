@@ -28,9 +28,6 @@ public class AudioManager {
     private double lastSyncGameSeconds = -1; // Initialize to a value ensuring immediate sync on the first check
 
     private AudioManager() {
-        CustomAudioClip silenceClip = AudioDatabase.getInstance().getAudioClip(AudioEnums.SilentAudio);
-        silenceClip.setLoop(true);
-        silenceClip.startClip();
 
 
     }
@@ -65,9 +62,9 @@ public class AudioManager {
 
     // Play singular audios
     private void playAudio(AudioEnums audioType) {
-        if (audioType != null) {
+        if (audioType != null && canPlayAudio(audioType)) {
             CustomAudioClip clip = audioDatabase.getAudioClip(audioType);
-            if (clip != null && canPlayAudio(audioType)) {
+            if (clip != null) {
                 clip.startClip();
 
                 if (soundCooldownMap.containsKey(audioType)) {

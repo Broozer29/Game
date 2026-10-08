@@ -6,6 +6,7 @@ All notable changes on the `Nelis` branch.
 
 ### Fixed
 - Enemy formations moving left no longer appear half on screen at the right edge. Formation enemies are placed by their center, so the first column now starts one enemy width past the edge, the same margin formations moving right get.
+- Boss attacks with a boost sound (final boss mine charge, Striker bombing run, Twin boss manoeuvres) no longer crash the game when no copy of that sound is free. A sound that is still on its cooldown is no longer kept in the active sound list, game resets only rewind sounds that actually played, and the silent sound that looped at startup is removed.
 
 ### Changed
 - Collision checks are cheaper in busy levels (branch `collision-performance`). Two objects are first tested for overlapping boxes, which most pairs fail, before the distance check, and the distance check no longer takes a square root; the same hits land as before. Enemy missiles that can only be shot down no longer check every player missile themselves; the missile or reflective block that acts on them still finds them.

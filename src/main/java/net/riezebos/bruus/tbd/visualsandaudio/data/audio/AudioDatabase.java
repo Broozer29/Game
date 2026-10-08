@@ -28,7 +28,6 @@ public class AudioDatabase {
         put(AudioEnums.WaveshaperMonster, 1);
         put(AudioEnums.MausoleumMash, 1);
         put(AudioEnums.Arisen, 1);
-        put(AudioEnums.SilentAudio, 1);
         put(AudioEnums.Enraged, 1);
         put(AudioEnums.FinalBossPhase1, 1);
         put(AudioEnums.FinalBossPhase2, 1);
@@ -145,8 +144,11 @@ public class AudioDatabase {
     public void resetAudio() {
         for (List<CustomAudioClip> clipList : audioClipsMap.values()) {
             for (CustomAudioClip clip : clipList) {
-                clip.setPlaybackPosition(0);
-                clip.stopClip();
+                if (clip.hasStartedSinceReset()) {
+                    clip.clearStartedSinceReset();
+                    clip.setPlaybackPosition(0);
+                    clip.stopClip();
+                }
             }
         }
         allActiveClips.clear();
