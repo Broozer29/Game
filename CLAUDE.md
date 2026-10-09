@@ -51,13 +51,22 @@ Searching the whole codebase is expensive. Start from these files for a subject 
 
 - Match the existing code style of the surrounding file. Do not restyle, rename, or refactor code
   outside the task at hand.
+- Bruus writes notes, code comments and commit messages in a mix of Dutch and English. Translate
+  any of his text to English first, and reason only on the English version.
 - Work happens on the `Nelis` branch. Commit only there.
-- Work in this repo is not tracked in the Plan, and there are no project bindings; skills fall
-  back to their stated defaults here.
+- Every change we commit gets a line in `CHANGELOG.md` under today's date (Added / Changed / Fixed),
+  in the same commit.
+- Project bindings live in `.claude/bindings/`.
 
-## Planboard
+## Planboard and the Plan
 
-In this repo, "planboard" means `docs/planboard/`: one Markdown file per game area listing bugs,
-features, balance tweaks and ideas. Its rules are in `docs/planboard/README.md`; follow them when
-adding or removing entries. Read it with
-`bash .claude/scripts/planboard.sh <bugs|features|balance|ideas|all> [area ...]`.
+Work is tracked twice, and both copies are kept in step:
+
+- In this repo, "planboard" means `docs/planboard/`: one Markdown file per game area listing bugs,
+  features, balance tweaks and ideas. It is how Nelis and Bruus talk about the work. Its rules are
+  in `docs/planboard/README.md`; follow them when adding or removing entries. Read it with
+  `bash .claude/scripts/planboard.sh <bugs|features|balance|ideas|all> [area ...]`.
+- The Plan's `game` board holds Nelis's own items, under `plan-workflow`. Items are captured when
+  work on a planboard entry starts, never imported in bulk.
+- A Plan item names the planboard file and entry it belongs to. When either copy changes, update
+  the other in the same session. Closing the Plan item deletes the planboard entry.

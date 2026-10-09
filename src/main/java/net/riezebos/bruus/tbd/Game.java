@@ -30,6 +30,12 @@ public class Game {
 
         try {
             logDiagnostic("=== Application Starting ===");
+            // Start loading images right away, so it runs while JavaFX, the controllers, the window and the audio start up
+            new Thread(() -> {
+                // Decode images in memory instead of copying every image to a temp file first
+                javax.imageio.ImageIO.setUseCache(false);
+                ImageDatabase.getInstance();
+            }, "ImageLoading").start();
             // Detect and log OpenGL/hardware acceleration availability
             detectHardwareAcceleration();
 
@@ -216,6 +222,14 @@ public class Game {
                 enemyEnum.getDefaultScale(), enemyEnum.getMovementSpeed());
         shurikenMiniBoss.deleteObject();
 
+        // The other mini bosses scale large destruction animations too; without a preload the first one froze the game
+        for (EnemyEnums miniBossEnum : new EnemyEnums[]{EnemyEnums.MirageMiniBoss, EnemyEnums.MotherShipMiniBoss,
+                EnemyEnums.DefenderMiniBoss, EnemyEnums.LaserbeamMiniBoss}) {
+            Enemy miniBoss = EnemyCreator.createEnemy(miniBossEnum, 0, 0, Direction.LEFT,
+                    miniBossEnum.getDefaultScale(), miniBossEnum.getMovementSpeed());
+            miniBoss.deleteObject();
+        }
+
         enemyEnum = EnemyEnums.CashCarrier;
         Enemy cashCarrier = EnemyCreator.createEnemy(enemyEnum, 0, 0, Direction.LEFT,
                 enemyEnum.getDefaultScale(), enemyEnum.getMovementSpeed());
@@ -237,6 +251,7 @@ public class Game {
                 enemyEnum.getDefaultScale(), enemyEnum.getMovementSpeed());
         yellowBoss.deleteObject();
 
+        logDiagnostic("Preloading laserbeams...");
         runtime = Runtime.getRuntime();
         usedMemory = runtime.totalMemory() - runtime.freeMemory();
         System.out.printf("Before preloading laserbeams memory usage: %.3f GB%n", usedMemory / (1024.0 * 1024.0 * 1024.0));
@@ -255,8 +270,8 @@ public class Game {
         pinkLaserbeamConfig.setOriginPoint(new Point(0, 0));
 		Laserbeam pinkLaserBeam = new AngledLaserBeam(pinkLaserbeamConfig);
 
-        for(float i = 0; i < 360; i += Laserbeam.defaultMaxRotationPerUpdate){
-            pinkLaserBeam.setAngleDegrees(i);
+        for(int degree = 0; degree < 360; degree++){
+            pinkLaserBeam.setAngleDegrees(degree);
             pinkLaserBeam.update();
         }
 
@@ -267,8 +282,8 @@ public class Game {
         Laserbeam blueLaserBeam = new AngledLaserBeam(blueLaserbeamConfig);
 
 
-        for(float i = 0; i < 360; i += Laserbeam.defaultMaxRotationPerUpdate){
-            blueLaserBeam.setAngleDegrees(i);
+        for(int degree = 0; degree < 360; degree++){
+            blueLaserBeam.setAngleDegrees(degree);
             blueLaserBeam.update();
         }
     }

@@ -52,7 +52,7 @@ public class SpecialAttack extends GameObject {
     //its effect to multiple, thus copies are required
     public void dealDamageToGameObject(GameObject target) {
         for (EffectInterface effect : effectsToApply) {
-            EffectInterface effectCopy = effect.copy();
+            EffectInterface effectCopy = target.hasEffect(effect.getEffectIdentifier()) ? null : effect.copy();
             if (effectCopy != null) {
                 target.addEffect(effectCopy);
             } else target.addEffect(effect);
@@ -78,7 +78,7 @@ public class SpecialAttack extends GameObject {
 
         if (showDamage && damage >= 1) {
             OnScreenTextManager.getInstance().addDamageNumberText(Math.round(damage), target.getCenterXCoordinate(),
-                    target.getCenterYCoordinate(), isACrit,super.calculateFontSizeBasedOnDamageAmount(this, damage));
+                    target.getCenterYCoordinate(), isACrit);
         }
 
         if(isACrit && PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.CashInfusion) != null){

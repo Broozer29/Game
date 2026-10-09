@@ -189,11 +189,13 @@ public class FinalBossDropMineCharge implements BossActionable {
         isCharging = true;
         chargingUp = false;
 
-        if (boostingAway == null && boostingAway.getMediaPlayer() == null) {
+        if (boostingAway == null || boostingAway.getMediaPlayer() == null) {
             boostingAway = AudioDatabase.getInstance().getAudioClip(AudioEnums.SpaceStationBlastingOff);
         }
-        boostingAway.setPlaybackPosition(0);
-        boostingAway.startClip();
+        if (boostingAway != null) {
+            boostingAway.setPlaybackPosition(0);
+            boostingAway.startClip();
+        }
     }
 
     private void dropBomb(Enemy enemy) {

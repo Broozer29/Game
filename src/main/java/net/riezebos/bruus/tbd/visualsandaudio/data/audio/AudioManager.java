@@ -28,24 +28,28 @@ public class AudioManager {
     private double lastSyncGameSeconds = -1; // Initialize to a value ensuring immediate sync on the first check
 
     private AudioManager() {
-        CustomAudioClip silenceClip = AudioDatabase.getInstance().getAudioClip(AudioEnums.SilentAudio);
-        silenceClip.setLoop(true);
-        silenceClip.startClip();
 
 
     }
 
     //Resets the manager
     public void resetManager() {
-        if (backGroundMusic != null) {
-            backGroundMusic.stopClip();
-            backGroundMusic.setLoop(false);
-        }
+        releaseBackgroundMusic();
         predictedEndGameSeconds = -1;
         lastSyncGameSeconds = -1;
-        backGroundMusic = null;
         audioDatabase.resetAudio();
         lastPlayTimeMap.clear();
+    }
+
+    //Stops the current background music, disposes it (a no-op for database clips) and clears the field
+    private void releaseBackgroundMusic() {
+        if (backGroundMusic != null) {
+            backGroundMusic.setLoop(false);
+            backGroundMusic.setPlaybackPosition(0);
+            backGroundMusic.stopClip();
+            backGroundMusic.dispose();
+            backGroundMusic = null;
+        }
     }
 
     public static AudioManager getInstance() {
@@ -58,9 +62,9 @@ public class AudioManager {
 
     // Play singular audios
     private void playAudio(AudioEnums audioType) {
-        if (audioType != null) {
+        if (audioType != null && canPlayAudio(audioType)) {
             CustomAudioClip clip = audioDatabase.getAudioClip(audioType);
-            if (clip != null && canPlayAudio(audioType)) {
+            if (clip != null) {
                 clip.startClip();
 
                 if (soundCooldownMap.containsKey(audioType)) {
@@ -97,11 +101,7 @@ public class AudioManager {
 
     // Plays the background music directly, overwriting existing music
     public void playDefaultBackgroundMusicForALevel(AudioEnums audioType, boolean loop) {
-        if (backGroundMusic != null) {
-            backGroundMusic.setLoop(loop);
-            backGroundMusic.setPlaybackPosition(0);
-            backGroundMusic.stopClip();
-        }
+        releaseBackgroundMusic();
 
         backGroundMusic = audioDatabase.getAudioClip(audioType);
         if (backGroundMusic != null) {
@@ -117,10 +117,8 @@ public class AudioManager {
 
     public void stopMusicAudio() {
         if (backGroundMusic != null) {
-            backGroundMusic.stopClip();
-            backGroundMusic.setLoop(false);
             AudioDatabase.getInstance().removeClipFromActiveClips(backGroundMusic);
-            backGroundMusic = null;
+            releaseBackgroundMusic();
             currentSong = null;
         }
 
@@ -132,7 +130,7 @@ public class AudioManager {
             if (this.musicMediaPlayer == MusicMediaPlayer.Spotify && !DevTestSettings.devTestMuteMode) {  //if mute mode is on, dont stop playback since it shouldnt have started
                 spotifyMediaPlayer.stopPlayback();
             }
-            backGroundMusic = null;
+            releaseBackgroundMusic();
             currentSong = null;
         }
     }
@@ -212,7 +210,9 @@ public class AudioManager {
         } else if (this.musicMediaPlayer == MusicMediaPlayer.Spotify) {
             spotifyMediaPlayer.stopPlayback();
         } else if (this.musicMediaPlayer == MusicMediaPlayer.LocalFiles) {
-            backGroundMusic.stopClip();
+            if (backGroundMusic != null) {
+                backGroundMusic.stopClip();
+            }
         }
     }
 
@@ -223,10 +223,7 @@ public class AudioManager {
             spotifyMediaPlayer.goToNextSong();
         } else if (this.musicMediaPlayer == MusicMediaPlayer.LocalFiles) {
             //idk moet dit iets doen? Reset de clip en stop hem voor de zekerheid, mogelijk geheel onnodig
-            backGroundMusic.setPlaybackPosition(0);
-            backGroundMusic.setLoop(false);
-            backGroundMusic.stopClip();
-            backGroundMusic = null; //release het attribuut voor de volgende
+            releaseBackgroundMusic(); //release het attribuut voor de volgende
         }
     }
 
@@ -263,8 +260,10 @@ public class AudioManager {
             actualCurrentSeconds = spotifyMediaPlayer.getCurrentSeconds();
             totalSeconds = spotifyMediaPlayer.getTotalSeconds();
         } else if (this.musicMediaPlayer == MusicMediaPlayer.LocalFiles) {
-            actualCurrentSeconds = backGroundMusic.getCurrentSecondsInPlayback();
-            totalSeconds = backGroundMusic.getTotalSecondsInPlayback();
+            if (backGroundMusic != null) {
+                actualCurrentSeconds = backGroundMusic.getCurrentSecondsInPlayback();
+                totalSeconds = backGroundMusic.getTotalSecondsInPlayback();
+            }
         }
 
         if (actualCurrentSeconds >= 0 && totalSeconds > 0) {
@@ -275,6 +274,9 @@ public class AudioManager {
 
     public boolean isBackgroundMusicInitializing() {
         if (this.musicMediaPlayer == MusicMediaPlayer.LocalFiles) {
+            if (backGroundMusic == null) {
+                return false;
+            }
             return backGroundMusic.getTotalSecondsInPlayback() < 0;
         }
         return false;
@@ -282,11 +284,7 @@ public class AudioManager {
 
     public void playDefaultBackgroundMusicForALevel() {
         if (this.musicMediaPlayer == MusicMediaPlayer.LocalFiles) {
-            if (backGroundMusic != null) {
-                backGroundMusic.setLoop(false);
-                backGroundMusic.setPlaybackPosition(0);
-                backGroundMusic.stopClip();
-            }
+            releaseBackgroundMusic();
 
             CustomAudioClip clip = new CustomAudioClip(AudioEnums.CustomMusicFile); //create a new customaudioclip as the database does NOT preload these, loop defaults to false
             clip.startClip(); //fire & forget
@@ -321,7 +319,9 @@ public class AudioManager {
         }
 
         if (this.musicMediaPlayer.equals(MusicMediaPlayer.LocalFiles)) {
-            backGroundMusic.pauseClip();
+            if (backGroundMusic != null) {
+                backGroundMusic.pauseClip();
+            }
         } else if (this.musicMediaPlayer.equals(MusicMediaPlayer.iTunesMacOS)) {
             if (LevelManager.getInstance().getLevelType().equals(LevelTypes.Boss) && backGroundMusic != null) {
                 backGroundMusic.pauseClip();
@@ -329,7 +329,7 @@ public class AudioManager {
                 macOSMediaPlayer.stopPlayback();
             }
         } else if (this.musicMediaPlayer.equals(MusicMediaPlayer.Spotify)) {
-            if (LevelManager.getInstance().getLevelType().equals(LevelTypes.Boss)) {
+            if (LevelManager.getInstance().getLevelType().equals(LevelTypes.Boss) && backGroundMusic != null) {
                 backGroundMusic.pauseClip();
             } else {
                 spotifyMediaPlayer.stopPlayback();
@@ -347,7 +347,9 @@ public class AudioManager {
         }
 
         if (this.musicMediaPlayer.equals(MusicMediaPlayer.LocalFiles)) {
-            backGroundMusic.resumeClip();
+            if (backGroundMusic != null) {
+                backGroundMusic.resumeClip();
+            }
         } else if (this.musicMediaPlayer.equals(MusicMediaPlayer.iTunesMacOS)) {
             if (LevelManager.getInstance().getLevelType().equals(LevelTypes.Boss) && backGroundMusic != null) {
                 backGroundMusic.resumeClip();
@@ -355,7 +357,7 @@ public class AudioManager {
                 macOSMediaPlayer.resumePlayback();
             }
         } else if (this.musicMediaPlayer.equals(MusicMediaPlayer.Spotify)) {
-            if (LevelManager.getInstance().getLevelType().equals(LevelTypes.Boss)) {
+            if (LevelManager.getInstance().getLevelType().equals(LevelTypes.Boss) && backGroundMusic != null) {
                 backGroundMusic.resumeClip();
             } else {
                 spotifyMediaPlayer.resumePlayback();

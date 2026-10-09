@@ -11,6 +11,7 @@ import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SpaceShip;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.items.ItemEnums;
 import net.riezebos.bruus.tbd.game.items.PlayerInventory;
+import net.riezebos.bruus.tbd.game.items.items.captain.RocketLauncher;
 import net.riezebos.bruus.tbd.game.movement.Direction;
 import net.riezebos.bruus.tbd.game.movement.MovementConfiguration;
 import net.riezebos.bruus.tbd.game.movement.Point;
@@ -42,6 +43,11 @@ public class MissileDrone extends Drone {
 
     @Override
     public void fireAction () {
+        if (PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.RocketLauncher) != null && Math.random() < RocketLauncher.rocketChance) {
+            fireRocket(null);
+            return;
+        }
+
         MissileEnums missileType = MissileEnums.PlayerLaserbeam;
         SpriteConfiguration missileSpriteConfiguration = new SpriteConfiguration();
         missileSpriteConfiguration.setxCoordinate(this.getCenterXCoordinate());
@@ -105,6 +111,11 @@ public class MissileDrone extends Drone {
     //Used for FocusFire item specifically, as we need a specific target
     @Override
     public void fireAction (GameObject target) {
+        if (PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.RocketLauncher) != null && Math.random() < RocketLauncher.rocketChance) {
+            fireRocket(target);
+            return;
+        }
+
         MissileEnums missileType = MissileEnums.PlayerLaserbeam;
         SpriteConfiguration missileSpriteConfiguration = new SpriteConfiguration();
         missileSpriteConfiguration.setxCoordinate(this.getCenterXCoordinate());
@@ -140,6 +151,59 @@ public class MissileDrone extends Drone {
         enemyPoint.setX(enemyPoint.getX() - missile.getWidth() / 2);
         enemyPoint.setY(enemyPoint.getY() - missile.getHeight() / 2);
         movementConfiguration.setDestination(enemyPoint);
+        missile.setCenterCoordinates(this.getAnimation().getCenterXCoordinate(), this.getAnimation().getCenterYCoordinate());
+
+        missile.rotateObjectTowardsDestination(true);
+        missile.setAllowedVisualsToRotate(false); //Prevent it from being rotated again by the SpriteMover
+
+        missile.setOwnerOrCreator(this);
+
+        MissileManager.getInstance().addExistingMissile(missile);
+    }
+
+    //Used by the RocketLauncher item: an exploding missile that replaces the normal laser
+    private void fireRocket (GameObject target) {
+        MissileEnums missileType = MissileEnums.ProtossShuttleMissile;
+        SpriteConfiguration missileSpriteConfiguration = new SpriteConfiguration();
+        missileSpriteConfiguration.setxCoordinate(this.getCenterXCoordinate());
+        missileSpriteConfiguration.setyCoordinate(this.getCenterYCoordinate());
+        missileSpriteConfiguration.setImageType(missileType.getImageType());
+        missileSpriteConfiguration.setScale(0.15f);
+
+        float movementSpeed = 7.5f;
+
+        SpaceShip spaceship = (SpaceShip) this.ownerOrCreator;
+        int quantity = PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.RocketLauncher).getQuantity();
+        float damage = (PlayerStats.getInstance().getBaseDroneDamage() + spaceship.getDroneDamageModifier()) * RocketLauncher.damagePerStack * quantity;
+        Direction rotation = Direction.RIGHT;
+        PathFinder pathFinder = selectPathFinder();
+
+        MovementConfiguration movementConfiguration = MissileCreator.getInstance().createMissileMovementConfig(
+                movementSpeed, pathFinder, rotation
+        );
+        movementConfiguration.initDefaultSettingsForSpecializedPathFinders();
+
+        boolean isFriendly = true;
+
+        MissileConfiguration missileConfiguration = MissileCreator.getInstance().createMissileConfiguration(missileType,
+                damage, missileType.getDeathOrExplosionImageEnum(), isFriendly,
+                true, true, false);
+
+        Missile missile = MissileCreator.getInstance().createMissile(missileSpriteConfiguration, missileConfiguration, movementConfiguration);
+
+        missile.setOwnerOrCreator(this);
+        missile.setObjectType("Drone Missile");
+
+        missile.resetMovementPath();
+        if (target == null) {
+            target = EnemyManager.getInstance().getClosestEnemy(spaceship.getCenterXCoordinate(), spaceship.getCenterYCoordinate());
+        }
+        if (target != null) {
+            Point point = new Point(target.getCenterXCoordinate(), target.getCenterYCoordinate());
+            point.setX(point.getX() - missile.getWidth() / 2);
+            point.setY(point.getY() - missile.getHeight() / 2);
+            movementConfiguration.setDestination(point);
+        }
         missile.setCenterCoordinates(this.getAnimation().getCenterXCoordinate(), this.getAnimation().getCenterYCoordinate());
 
         missile.rotateObjectTowardsDestination(true);

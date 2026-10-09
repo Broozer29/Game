@@ -193,7 +193,7 @@ public class ShopManager {
         while (attempts < MAX_ATTEMPTS) {
             ItemEnums randomItem = ItemEnums.getRandomItemByRarity(category);
 
-            Item tempItem = PlayerInventory.getInstance().createItemFromEnum(randomItem);
+            Item tempItem = PlayerInventory.getInstance().getItemForAvailabilityCheck(randomItem);
 
             if (tempItem != null && tempItem.isAvailable()) {
                 return randomItem;

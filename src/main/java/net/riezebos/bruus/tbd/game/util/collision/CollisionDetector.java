@@ -30,15 +30,14 @@ public class CollisionDetector {
             return null;
         }
 
-        if (isNearby(gameObject1, gameObject2, threshold)) {
-            Rectangle r1 = gameObject1.getBounds();
-            Rectangle r2 = gameObject2.getBounds();
+        // The box test is much cheaper than the distance check, and most pairs fail it, so it runs first
+        Rectangle r1 = gameObject1.getBounds();
+        Rectangle r2 = gameObject2.getBounds();
 
-            if (r1.intersects(r2)) {
-                Point collisionPoint = checkPixelCollision(gameObject1, gameObject2);
-                if (collisionPoint != null) {
-                    return new CollisionInfo(true, collisionPoint);
-                }
+        if (r1.intersects(r2) && isNearby(gameObject1, gameObject2, threshold)) {
+            Point collisionPoint = checkPixelCollision(gameObject1, gameObject2);
+            if (collisionPoint != null) {
+                return new CollisionInfo(true, collisionPoint);
             }
         }
         return null;
@@ -46,15 +45,13 @@ public class CollisionDetector {
 
     //This should only be used when objects are designed to collide with their owner, only the YellowBoss has such behaviour as of now
     public CollisionInfo detectCollisionIgnoringOwnerRules(GameObject gameObject1, GameObject gameObject2) {
-        if (isNearby(gameObject1, gameObject2, threshold)) {
-            Rectangle r1 = gameObject1.getBounds();
-            Rectangle r2 = gameObject2.getBounds();
+        Rectangle r1 = gameObject1.getBounds();
+        Rectangle r2 = gameObject2.getBounds();
 
-            if (r1.intersects(r2)) {
-                Point collisionPoint = checkPixelCollision(gameObject1, gameObject2);
-                if (collisionPoint != null) {
-                    return new CollisionInfo(true, collisionPoint);
-                }
+        if (r1.intersects(r2) && isNearby(gameObject1, gameObject2, threshold)) {
+            Point collisionPoint = checkPixelCollision(gameObject1, gameObject2);
+            if (collisionPoint != null) {
+                return new CollisionInfo(true, collisionPoint);
             }
         }
         return null;
@@ -235,8 +232,7 @@ public class CollisionDetector {
         int y2 = getGameObjectYCoordinate(gameObject2);
 
 
-        double distance = Math.hypot(x1 - x2, y1 - y2);
-        return distance < actualRangeUsed;
+        return isWithinRange(x1 - x2, y1 - y2, actualRangeUsed);
     }
 
     // Helper method to check if a GameObject and SpriteAnimation are nearby
@@ -247,8 +243,12 @@ public class CollisionDetector {
         int x2 = spriteAnimation.getXCoordinate();
         int y2 = spriteAnimation.getYCoordinate();
 
-        double distance = Math.hypot(x1 - x2, y1 - y2);
-        return distance < rangeThreshold;
+        return isWithinRange(x1 - x2, y1 - y2, rangeThreshold);
+    }
+
+    // Same answer as Math.hypot(dx, dy) < range for whole numbers, without the slow square root
+    private boolean isWithinRange(int dx, int dy, int range) {
+        return (long) dx * dx + (long) dy * dy < (long) range * range;
     }
 
     // Helper method to check if two GameObjects are within board block threshold

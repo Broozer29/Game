@@ -193,7 +193,7 @@ public class ThornsDamageDealer {
         target.takeDamage(damage);
 
         OnScreenTextManager.getInstance().addDamageNumberText(damage, target.getCenterXCoordinate(),
-                target.getCenterYCoordinate(), false, 10);
+                target.getCenterYCoordinate(), false);
         AnimationManager.getInstance().addUpperAnimation(animation);
     }
 

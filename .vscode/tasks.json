@@ -1,0 +1,25 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "compile",
+      "type": "shell",
+      "command": "mvn -q compile",
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "reset test save",
+      "type": "process",
+      "command": "C:\\Program Files\\Git\\bin\\bash.exe",
+      "args": ["-c", "bash .claude/scripts/use-test-save.sh captain-items && mkdir -p target/perf"],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": []
+    }
+  ]
+}

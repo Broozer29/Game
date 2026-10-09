@@ -3,7 +3,6 @@ package net.riezebos.bruus.tbd.game.gameobjects;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.Enemy;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyCategory;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
-import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SpaceShip;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.items.Item;
 import net.riezebos.bruus.tbd.game.items.ItemEnums;
@@ -429,20 +428,11 @@ public class GameObject extends Sprite {
 
         if (showDamage && damage >= 1) {
             OnScreenTextManager.getInstance().addDamageNumberText(Math.round(damage), target.getCenterXCoordinate(),
-                    target.getCenterYCoordinate(), isACrit, calculateFontSizeBasedOnDamageAmount(target, damage));
+                    target.getCenterYCoordinate(), isACrit);
         }
 
         if(isACrit && PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.CashInfusion) != null){
             CashInfusion.spawnCoin(this, target);
-        }
-    }
-
-    protected int calculateFontSizeBasedOnDamageAmount(GameObject target, float damage) {
-        if (this.isFriendly() || (this.ownerOrCreator != null && this.ownerOrCreator instanceof SpaceShip)) {
-            int percentage = Math.round((damage / PlayerStats.getInstance().getBaseDamage()) / 10); //elke 10% is +1 increment op de font size
-            return Math.min(14 + percentage, 25);
-        } else {
-            return 10;
         }
     }
 
@@ -454,6 +444,7 @@ public class GameObject extends Sprite {
             GameObjectMover.getInstance().moveGameObject(this, movementConfiguration);
             this.bounds.setBounds(xCoordinate + xOffset, yCoordinate + yOffset, width, height);
 
+            objectsFollowingThis.removeIf(o -> !o.isVisible());
             for (GameObject object : objectsFollowingThis) {
                 object.setCenterCoordinates(this.getCenterXCoordinate(), this.getCenterYCoordinate());
             }

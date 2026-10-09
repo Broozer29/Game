@@ -222,6 +222,7 @@ public class GameState {
         this.bossesDefeated = saveFile.getBossesDefeated();
         this.difficultyCoefficient = saveFile.getDifficultyCoefficient();
         this.gameTicksExecuted = saveFile.getGameTicksExecuted();
+        updateGameTimeByExecutedGameTicks();
         this.gameMode = saveFile.getGameModes();
         this.lastPause = 0;
         this.gameState = saveFile.getGameStateEnums();

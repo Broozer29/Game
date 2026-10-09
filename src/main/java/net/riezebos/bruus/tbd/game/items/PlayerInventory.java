@@ -243,6 +243,8 @@ public class PlayerInventory {
                 return new ModuleElectrify();
             case ModuleCommand:
                 return new ModuleCommand();
+            case RocketLauncher:
+                return new RocketLauncher();
             case Contract:
                 return new Contract();
             case StickyOil:
@@ -336,6 +338,14 @@ public class PlayerInventory {
 
     public Item getItemFromInventoryIfExists(ItemEnums itemName) {
         return items.get(itemName);
+    }
+
+    public Item getItemForAvailabilityCheck(ItemEnums itemEnum) {
+        Item ownedItem = getItemFromInventoryIfExists(itemEnum);
+        if (ownedItem != null) {
+            return ownedItem;
+        }
+        return createItemFromEnum(itemEnum);
     }
 
     public Map<ItemEnums, Item> getItems() {

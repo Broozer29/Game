@@ -1,2 +1,51 @@
 # Levels & Progression
 Level flow, portals, the structure of a run and saved progress.
+
+## Bugs
+- Enemies flying down (and formations flying down or up) appear inside the screen instead of entering from outside it (Nelis, 2026-10-08)
+  - Single enemies: `SpawningCoordinator.getUpBlockYCoordinate` returns a y between -150 and 0, the top edge of the sprite, so most of a tall enemy is already on screen when it spawns
+  - Formations: `Director.calculateBaseY` keeps only 10 pixels between the top or bottom edge and the formation's first row, and enemies are placed by their center, so the first row starts half visible
+  - Only seen once the god run score reaches 4, when enemies also come from the top and bottom. Same kind of fix as the left-moving formations of 2026-10-08: add one enemy height of margin
+- Loading a save is fragile and can leave the game half-loaded
+  - `SaveFile` has no version; a renamed or removed item, boon or class makes Jackson fail, the error is only printed, and `MenuButton` starts a fresh run anyway
+  - Only `IOException` is caught; a null player class throws in `PlayerStats.setPlayerClass`. The five `loadInSaveFile` calls are not atomic, so a failure part-way leaves the inventory wiped
+  - Fields missing from an old save keep the live values instead of defaults, because `SaveFile`'s constructor copies the current game state
+- Save and profile files are overwritten in place in the current folder
+  - `SaveManager` and `PlayerProfileManager` write `savefile.json` and `playerprofile.json` directly; a crash mid-write leaves broken JSON
+  - A broken profile leaves `loadedProfile` null, so later profile reads crash and the next save writes null: all unlocks and emeralds are lost
+  - Running from another folder starts a fresh profile; an installed game in a read-only folder fails to save silently
+  - Fix: write to a temp file and rename it, keep the bad file aside, and use a per-user data folder
+- Some run state is not saved, so "Continue" resets it
+  - Consume's kill count and max-HP bonus, Explosive Greed's coins, contract type and progress, Wisdom Ball's bonus chance, the shop contents and rerolls, and the monster level
+  - Contracts re-added on load start counting from a stale kill count, because `GameStatsTracker.loadInSaveFile` runs last (SaveManager.java:54-58)
+  - Boon "already applied this run" flags (Bounty Hunter, Treasure Hunter, Club Access) are not reset on load (not confirmed)
+- Not every route back to the menu resets the run
+  - `GameBoard.resetGame()` doesn't reset `TwinBossManager`, `InteractableManager` or `GameStatsTracker`; the stats tracker only resets on the death screen's key or controller path
+  - `ThornsDamageDealer.resetThornsDamageDealer()` doesn't clear `thornsMissileMap`, and it isn't called between levels
+- `LevelManager.getNextBoss` (LevelManager.java:255-264) retries with recursion until a counter passes 1000, and that counter is never reset
+- The Instant director never spawns anything, so the opening wave at level start never happens
+  - `Director.attemptSpawn()` (Director.java:122-132) handles Boss, Fast, Slow and MiniBoss but has no Instant branch; its credits (DirectorManager.java:82) are never spent
+- Enemy caps are checked before the formation size is known, so formations blow through them
+  - `canSpawnMoreOfThisEnemy` (Director.java:168) only checks "alive < cap", then a formation of up to 21 spawns; affects Bulldozer, Seeker, Bomba, Energizer and Zerg Guardian
+- The Royal Guard Captain's "not at the start of a level" delay only lasts 0.35 seconds
+  - Director.java:223 compares `getCurrentLevelProgression() < 0.35f`, but that method returns seconds since the level started (GameState.java:243-244), not a fraction of the level
+  - Question for Bruus (2026-10-07): this compares seconds with 0.35, so it is always true. Was it meant as 35% of the level (the progression fraction), 35 seconds, or something else?
+- Small-enemy weights reach zero and then go negative at a difficulty coefficient of 10 or more
+  - Director.java:267 `baseWeight * (2f - difficultyCoefficient * 0.2f)`; `weightedRandomSelection` assumes weights are not negative. Reachable in long runs (not confirmed in play)
+- Difficulty stops scaling in one place but keeps growing in another
+  - EnemyManager.java:379 caps the modifier at 5 bosses (boss speed, mini boss armor), while credits, weights and monster level keep growing without a cap
+- Formations use the enemy's width for vertical spacing too, so tall formations overflow the screen and the lost rows are still paid for
+  - Director.java:144-145; rows outside the playable area are culled after the full cost is charged
+- Spawn chances are rolled every tick inside the spawn window, so the stated percentages mean little
+  - Cash carriers (Director.java:156) effectively spawn every 45 seconds, formations whenever affordable after their cooldown; the cooldown is per director, so directors can overlap
+- God-run spawn speed bonuses are only calculated when the level starts
+  - `updateSpawnInterval` is only called from the Director constructor (Director.java:57)
+- A spawn that fails to find a free spot still costs credits, and a skipped cash carrier still starts its 45-second lockout
+  - LevelManager.java:319 and Director.java:176-177
+- Edge cases that can crash or misbehave
+  - Director.java:241 and LevelManager.java:254 pick from lists that can be empty
+  - `calculateLevelProgression` (Director.java:62-64) divides by the predicted level length, which can be 0 or stale with local music
+  - `isBossAlive()` also counts `FinalBossLaserbeamClone`, which may keep a boss level open
+- Unreachable or unused flow
+  - `LevelTypes.Special` is never assigned; the final boss needs 99999 kills and its portal is commented out (FriendlyManager.java:103), so runs are endless
+  - `getMineralPenaltyModifier` has no band for 301 to 500 (may be intended); in Man Mode or `onlyBossLevels`, the selected difficulty is overwritten with Hard on later levels (LevelManager.java:193)
