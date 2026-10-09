@@ -6,6 +6,7 @@ All notable changes on the `Nelis` branch.
 
 ### Changed
 - The build no longer pulls in the old JInput 2.0.5 native-library package next to JInput 2.0.10. It contained no files; the controller libraries the game uses come from its own libraries folder, so controllers work as before.
+- Dev tooling: "Run Game (recording memory)" resets the save to the captain-items test save before every run, so test runs no longer continue from a grown save. A new "Run Game (Direct3D only, recording)" configuration tests drawing without OpenGL, for the second-monitor lag.
 
 ## 2026-10-08
 
