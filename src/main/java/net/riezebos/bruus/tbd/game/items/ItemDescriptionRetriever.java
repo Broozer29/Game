@@ -72,7 +72,8 @@ public class ItemDescriptionRetriever {
                 return "Cash carriers no longer spawn. Critical Strikes have a " + Math.round(CashInfusion.spawnChance * 100) + "% chance to drop a coin worth " + CashInfusion.mineralsPerPickup + " minerals.";
             } //relic
             case Placeholder -> {
-                return "Killing an enemy spawns a temporary stationary drone that  attacks every " + FriendlyStation.attackSpeed + " seconds dealing " + Math.round((FriendlyStation.damageModifier * 100)) + "% damage. Placeholder drones gain double the bonus of Drone damage items. Maximum of " + Placeholder.maxStations + " drones can be spawned at once.";
+                double value = FriendlyStation.damageModifier * (1000f / 15f);
+                return "Killing an enemy spawns a temporary stationary drone dealing " + String.format("%.1f", value) + " damage per second. Drone upgrades are twice as effective on Placeholder drones. Maximum of " + Placeholder.maxStations + " drones can be spawned at once.";
             } //relic
             case WisdomBall -> {
                 return "Refreshes in the shop have a chance to be wondrous.";
@@ -115,12 +116,11 @@ public class ItemDescriptionRetriever {
                 return "Drones gain " + Math.round(UpgradeSpeed.attackSpeedModifier * 100) + "% increased attack speed.";
             } //rare
             case UpgradePrecision -> {
-                return "Drones gain " + Math.round(UpgradePrecision.critChance * 100) + "% chance to critically strike, dealing double damage..";
+                return "Drones gain " + Math.round(UpgradePrecision.critChance * 100) + "% chance to critically strike, dealing double damage.";
             }
             case Recycler -> {
                 return "Enemies damaged by your Laserbeam or Electroshred gain a " + Math.round(Recycler.spawnChance * 100) + " % (+" + Math.round(Recycler.spawnChance * 100) + "%) chance to spawn a Recycle Part on death. Picking up a Recycle Part instantly restores a charge for your secondary attack.";
             }
-
             //6
             case EmergencyRepairBot -> {
                 return "When dropping below " + Math.round(EmergencyRepairBot.healthActivationRatio * 100) + "% health, instantly heals you for " +

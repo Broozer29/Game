@@ -117,6 +117,8 @@ public class ImageDatabase {
     private BufferedImage starcraft2_Dual_Rockets;
     private BufferedImage sideCannons;
     private BufferedImage starcraft2_Auto_Tracking;
+    private BufferedImage upgradePrecision;
+    private BufferedImage upgradeSpeed;
     private BufferedImage starcraft2_Blue_Flame;
     private BufferedImage starcraft2_Concussive_Shells;
     private BufferedImage starcraft2_Energy_Siphon;
@@ -623,6 +625,8 @@ public class ImageDatabase {
         this.starcraft2_Dual_Rockets = imgLoader.getImage(ImageEnums.Starcraft2_Dual_Rockets);
         this.sideCannons = imgLoader.getImage(ImageEnums.SideCannons);
         this.starcraft2_Auto_Tracking = imgLoader.getImage(ImageEnums.Starcraft2_Auto_Tracking);
+        this.upgradePrecision = imgLoader.getImage(ImageEnums.UpgradePrecision);
+        this.upgradeSpeed = imgLoader.getImage(ImageEnums.UpgradeSpeed);
         this.starcraft2_Blue_Flame = imgLoader.getImage(ImageEnums.Starcraft2_Blue_Flame);
         this.starcraft2_Concussive_Shells = imgLoader.getImage(ImageEnums.Starcraft2_Concussive_Shells);
         this.starcraft2_Energy_Siphon = imgLoader.getImage(ImageEnums.Starcraft2_Energy_Siphon);
@@ -1529,6 +1533,10 @@ public class ImageDatabase {
                 return sideCannons;
             case Starcraft2_Auto_Tracking:
                 return starcraft2_Auto_Tracking;
+            case UpgradePrecision:
+                return upgradePrecision;
+            case UpgradeSpeed:
+                return upgradeSpeed;
             case Starcraft2_Blue_Flame:
                 return starcraft2_Blue_Flame;
             case Starcraft2_Concussive_Shells:

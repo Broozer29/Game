@@ -8,6 +8,7 @@ import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.droneTypes.Spec
 import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.droneTypes.protoss.*;
 import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SpaceShip;
 import net.riezebos.bruus.tbd.game.items.effects.effectimplementations.DamageReduction;
+import net.riezebos.bruus.tbd.game.items.items.Placeholder;
 import net.riezebos.bruus.tbd.game.movement.Direction;
 import net.riezebos.bruus.tbd.game.movement.MovementConfiguration;
 import net.riezebos.bruus.tbd.game.movement.Point;
@@ -193,7 +194,7 @@ public class FriendlyCreator {
         spriteConfiguration.setScale(1);
         spriteConfiguration.setImageType(ImageEnums.SpaceStationAlly);
 
-        FriendlyObjectConfiguration friendlyObjectConfiguration = new FriendlyObjectConfiguration(FriendlyObjectEnums.SpaceStation, FriendlyStation.attackSpeed, false);
+        FriendlyObjectConfiguration friendlyObjectConfiguration = new FriendlyObjectConfiguration(FriendlyObjectEnums.SpaceStation, FriendlyStation.attackSpeed * (owner.getDroneSpeedModifier() * Placeholder.placeHolderDroneEffectiveness), false);
         MovementConfiguration movementConfiguration = new MovementConfiguration();
         movementConfiguration.setPathFinder(new RegularPathFinder());
         movementConfiguration.setMovementSpeed(0.1f);

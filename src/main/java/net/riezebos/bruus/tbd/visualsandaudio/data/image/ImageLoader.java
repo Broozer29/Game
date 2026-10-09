@@ -193,6 +193,10 @@ public class ImageLoader {
                 return "/images/Icons/ringoffire.png";
             case Starcraft2_Auto_Tracking:
                 return "/images/Icons/Starcraft2 Auto Tracking.png";
+            case UpgradePrecision:
+                return "/images/Icons/upradeprecision.png";
+            case UpgradeSpeed:
+                return "/images/Icons/upgradespeed.png";
             case Starcraft2_Blue_Flame:
                 return "/images/Icons/Starcraft2 Blue Flame.png";
             case Starcraft2_Concussive_Shells:

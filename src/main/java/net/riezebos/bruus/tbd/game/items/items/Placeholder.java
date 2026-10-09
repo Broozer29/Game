@@ -9,6 +9,7 @@ import net.riezebos.bruus.tbd.game.items.enums.ItemApplicationEnum;
 public class Placeholder extends Item {
 
     public static int maxStations = 8;
+    public static float placeHolderDroneEffectiveness = 2;
 
     public Placeholder() {
         super(ItemEnums.Placeholder, 1, ItemApplicationEnum.CustomActivation);

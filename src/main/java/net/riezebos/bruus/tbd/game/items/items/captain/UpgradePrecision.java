@@ -1,6 +1,7 @@
 package net.riezebos.bruus.tbd.game.items.items.captain;
 
 import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
+import net.riezebos.bruus.tbd.game.gameobjects.friendlies.FriendlyStation;
 import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.droneTypes.MissileDrone;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.Missile;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerClass;
@@ -23,6 +24,10 @@ public class UpgradePrecision extends Item {
     public void applyEffectToObject(GameObject gameObject) {
         if (gameObject instanceof Missile missile && missile.getOwnerOrCreator() instanceof MissileDrone) {
             if(random.nextFloat(0, 1) < critChance){
+                missile.setIsACrit(true);
+            }
+        } else if (gameObject instanceof Missile missile && missile.getOwnerOrCreator() instanceof FriendlyStation){
+            if(random.nextFloat(0, 1) < critChance * 2){
                 missile.setIsACrit(true);
             }
         }

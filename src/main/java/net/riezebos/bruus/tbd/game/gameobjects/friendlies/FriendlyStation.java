@@ -4,9 +4,10 @@ import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyManager;
 import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.droneTypes.protoss.ProtossUtils;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.*;
-import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
+import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SpaceShip;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
+import net.riezebos.bruus.tbd.game.items.items.Placeholder;
 import net.riezebos.bruus.tbd.game.movement.Direction;
 import net.riezebos.bruus.tbd.game.movement.MovementConfiguration;
 import net.riezebos.bruus.tbd.game.movement.Point;
@@ -99,8 +100,9 @@ public class FriendlyStation extends GameObject {
         missileSpriteConfiguration.setScale(0.8f);
 
         float movementSpeed = 12f;
+        SpaceShip owner = (SpaceShip) this.ownerOrCreator;
 
-        float damage = (PlayerStats.getInstance().getBaseDroneDamage() * (PlayerManager.getInstance().getRandomSpaceShip().getDroneDamageModifier() * 2)) * damageModifier; //small increase in drone damage modifier to enable drone scaling because of the massive damage reduction
+        float damage = (PlayerStats.getInstance().getBaseDroneDamage() * damageModifier * (owner.getDroneDamageModifier() * Placeholder.placeHolderDroneEffectiveness)); //small increase in drone damage modifier to enable drone scaling because of the massive damage reduction
         Direction rotation = Direction.RIGHT;
         PathFinder pathFinder = new StraightLinePathFinder();
 
