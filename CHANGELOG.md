@@ -2,6 +2,11 @@
 
 All notable changes on the `Nelis` branch.
 
+## 2026-10-09
+
+### Changed
+- The build no longer pulls in the old JInput 2.0.5 native-library package next to JInput 2.0.10. It contained no files; the controller libraries the game uses come from its own libraries folder, so controllers work as before.
+
 ## 2026-10-08
 
 ### Fixed
