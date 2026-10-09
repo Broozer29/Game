@@ -2,6 +2,10 @@
 Level flow, portals, the structure of a run and saved progress.
 
 ## Bugs
+- Enemies flying down (and formations flying down or up) appear inside the screen instead of entering from outside it (Nelis, 2026-10-08)
+  - Single enemies: `SpawningCoordinator.getUpBlockYCoordinate` returns a y between -150 and 0, the top edge of the sprite, so most of a tall enemy is already on screen when it spawns
+  - Formations: `Director.calculateBaseY` keeps only 10 pixels between the top or bottom edge and the formation's first row, and enemies are placed by their center, so the first row starts half visible
+  - Only seen once the god run score reaches 4, when enemies also come from the top and bottom. Same kind of fix as the left-moving formations of 2026-10-08: add one enemy height of margin
 - Loading a save is fragile and can leave the game half-loaded
   - `SaveFile` has no version; a renamed or removed item, boon or class makes Jackson fail, the error is only printed, and `MenuButton` starts a fresh run anyway
   - Only `IOException` is caught; a null player class throws in `PlayerStats.setPlayerClass`. The five `loadInSaveFile` calls are not atomic, so a failure part-way leaves the inventory wiped

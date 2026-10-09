@@ -7,6 +7,7 @@ All notable changes on the `Nelis` branch.
 ### Changed
 - The build no longer pulls in the old JInput 2.0.5 native-library package next to JInput 2.0.10. It contained no files; the controller libraries the game uses come from its own libraries folder, so controllers work as before.
 - Dev tooling: "Run Game (recording memory)" resets the save to the captain-items test save before every run, so test runs no longer continue from a grown save. A new "Run Game (Direct3D only, recording)" configuration tests drawing without OpenGL, for the second-monitor lag.
+- Planboard: Bruus's answers on the sound engine and the outcome (no engine change, small fixes done), the second-monitor lag with its cause and a question for Bruus about Direct3D, enemies spawning inside the screen from above, slow relic selection with the stick, and boss image preparation and memory notes.
 
 ## 2026-10-08
 

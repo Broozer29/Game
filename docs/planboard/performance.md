@@ -5,6 +5,11 @@ Frame rate, lag, loading times and memory use.
   - Edge case: if a missile's start equals its destination, StraightLinePathFinder divides by zero and the missile may never leave the screen
 
 ## Bugs
+- On the second monitor the game draws in software and lags heavily once a lot is on screen (Nelis, 2026-10-09)
+  - Java2D's OpenGL drawing only works for the window on the main monitor. Dragged to the second monitor, the same run went from 0 to about 200 software draws per minute and lagged while firing; on the main monitor the same code stayed smooth for 9 minutes
+  - Not caused by any code change: the smooth and the laggy runs of 2026-10-08 and 2026-10-09 ran the same code. Full report: `~/.claude/projects/d--GitHub-Game/research/render-fallback-2026-10-08/BUG-REPORT.md`
+  - Possible fix: Direct3D only (`-Dsun.java2d.opengl=false -Dsun.java2d.d3d=true`), in the launch configurations and the `hw-accel` build profile; test launch configuration "Run Game (Direct3D only, recording)". Not yet tested; affects every Windows player with two monitors
+  - Question for Bruus: OK to switch the Windows build from OpenGL to Direct3D if a test run shows it smooth on both monitors?
 - Image cache keys are built as a long string from every frame's ID on every lookup, including cache hits
   - Bruus insight:
     - **Mening:** Risicoloze wijziging, zie geen reden om het niet te doen, gratis performance winst is gratis performance winst, ik onderschatte de computational cost van een string genereren.
@@ -106,10 +111,13 @@ De punten hieronder hebben opzich wel gelijk, maar de performance impact van dez
   - New on 2026-10-07: the threads keep coming during play, not only at startup. A 13-minute stress run started about 228,000 of them (about 360 per second), and Windows counted 835 threads in the game against about 230 Java threads. Their native memory is invisible to the game's own memory tracking and may be part of the memory that crashed the PC (target/perf/STRESSRUN-2026-10-07-2104.md)
   - Another option: JavaFX `AudioClip` for short sound effects, which plays overlapping copies of one loaded sound without a player per copy; music stays on `MediaPlayer`
   - Question for Bruus (2026-10-07): with this evidence, is it still not worth the effort? And why did the game move from `Clip` to `MediaPlayer`?
-- A sound that is skipped because of its cooldown is still added to the active sound list, and added again on every try
-  - `AudioDatabase.getAvailableClip` adds the clip to `allActiveClips` before `AudioManager.canPlayAudio` checks the cooldown; a clip that never starts never counts as finished, so it stays until the next reset
-  - Affects the sounds with a cooldown: PlayerTakesDamage, NotEnoughMinerals, the Carrier speed sounds and AchievementUnlocked. Every game tick then loops over the extra entries (`resetClips`), and pause and resume do too
-  - Read from the code, not measured
+  - Bruus insight (2026-10-08):
+    - **Mening:** Audio bestanden zijn honderden MB's. Als je deze niet pre-load in memory, gaat het spel even hikken bij het starten van de game (na de phase-in animatie). De oplossing: Nummer pre-loaden en cachen. Nadeel: Veels te duur op memory, not viable. Oplossing: Niet inladen & afspelen, maar streamen! Nadeel: Audio streamen betekent niet inladen. Ergo, audio terugspoelen is hoofdpijn. Van te voren bepalen hoe lang de audio is, is hoofdpijn. Stream stoppen/starten en syncen is hoofdpijn. Waarom geen Clip meer? Clip kan niet streamen, een andere class was nodig.
+    - **Mening:** `SilentAudio` is onnodig en moet verwijderd worden. Het was een slordige bugfix van 2+ jaar terug.
+  - What this means (Nelis, 2026-10-08): the reason to leave `Clip` was the music, which is hundreds of MB and must be streamed. The 90 sound effects together are 28.8 MB, so they can be loaded into memory, and moving only the effects off `MediaPlayer` does not bring that problem back. Music stays on `MediaPlayer`
+  - Bruus asked which sound "does not exist". None: every sound has its file. Five sounds are never played by the game: `NewPlayerLaserbeam`, `Rocket_Launcher`, `Player_Laserbeam`, `Flamethrower` (together 14 players built at startup) and `BroodlingAttached` (marked unused in the code, no players)
+  - Bruus (2026-10-08): no audio engine change without a goal or a big gain; the extra threads close after use. Nelis agrees: the engine stays. The next stress run logs the game's private memory and thread count, and the question comes back only if those show sound uses a lot of memory
+  - Done 2026-10-08 (commit 5c3b6878): `SilentAudio` removed, game resets only rewind sounds that played, the cooldown fix and the four boss null checks
 - When every copy of a sound is already playing, the new sound is dropped without a message
   - `getAvailableClip` returns null and `playAudio` skips it. Each sound has a fixed number of copies (1 to 9)
 - Small per-frame allocations in GameBoard drawing
@@ -240,6 +248,18 @@ De punten hieronder hebben opzich wel gelijk, maar de performance impact van dez
   - Always transform from the original frames in one step; chained transforms lose earlier steps (`setAnimationScale` drops rotation and crop, `changeImagetype` drops scale, `clone()` drops both)
   - Cap the cache size or clean it per wave, and make the scratch fields in ImageResizer and ImageRotator local
   - Touches ImageResizer, ImageRotator, SpriteAnimation and about ten call sites, so plan it before coding
+- Never build boss images during a level: prepare them at game start, run start or level start (Nelis, 2026-10-08)
+  - Today `Game.preloadThings` prepares the Space Station, Red and Yellow bosses and all five mini bosses at startup; the Twin boss, the Striker boss and the final boss are not prepared, so their first appearance builds their images during play
+  - The image cache now drops the copies used longest ago once it is full (2.5 GB, reached after 6 to 9 minutes in the stress runs of 2026-10-08), so a boss prepared at startup can be dropped again and rebuilt when it appears, which freezes the game for a moment
+  - Proposal: when leaving the shop, prepare the boss of the next level if it is a boss level (boss levels are known in advance); prepare the possible mini bosses at level start and keep them from being dropped until the level ends; keep preparing every boss at startup, including the three missing ones
+  - Check first: a freeze analysis of the two stress recordings of 2026-10-08 (target/perf/run-2026_10_08_20_59_06.jfr and run-2026_10_08_21_17_44.jfr) shows whether the freezes come from rebuilt boss images, other large images, garbage collection pauses or sound. If other large images also cause them, the same rule applies to them
+- Why the game uses so much memory but hardly any processor or graphics card (Nelis, 2026-10-08: the PC almost ran out of memory again)
+  - The process reached 7.9 GB and 8.5 GB in the two stress runs of 2026-10-08. After a forced garbage collection the Java heap held 3.9 to 4.4 GB, of which the image cache is 2.5 GB; the rest is outside the heap
+  - The heap: `-Xms4g` reserves 4 GB at start and `-Xmx8g` allows 8 GB; Java keeps memory it has grown to, so Windows shows the peak
+  - The image cache keeps every rotated and resized sprite fully decoded at 4 bytes per pixel, and each rotated copy is a square as wide as the sprite's diagonal
+  - Outside the heap: about 600 sound threads with their own memory, JavaFX media buffers, and the graphics driver's copies of the cached images (`-Dsun.java2d.accthresh=0` gives every cached image a graphics card copy)
+  - The processor is barely used because the game logic runs on one thread (one busy core of 16 shows as about 6%), and the caches exist so it does not redo rotations and scaling; drawing 2D sprites is light work for the graphics card
+  - Levers already on the list: a lower `-Xmx` after a 20 to 30 minute run, rotated copies at their real size, and the sound fix (see the audio entry under "Negeer de onderstaande")
 
 ## Probeerseltje. Kijk maar of je er wat mee gaat doen
 
