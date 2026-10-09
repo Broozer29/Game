@@ -38,8 +38,6 @@ public class TrackingLaserBeam extends Laserbeam {
 
         // Update origin point if originObject is not null
         if (originObject != null) {
-            lastOriginXCoordinate = originObject.getCenterXCoordinate() + this.xOffset;
-            lastOriginYCoordinate = originObject.getCenterYCoordinate() + this.yOffset;
             int newX = originObject.getCenterXCoordinate() + this.xOffset;
             int newY = originObject.getCenterYCoordinate() + this.yOffset;
 
@@ -90,7 +88,7 @@ public class TrackingLaserBeam extends Laserbeam {
             segment.setYCoordinate((int) y);
 
             // Rotate the segment based on the new angle
-            segment.rotateAnimation(getAngleDegrees(), false, maintainCacheKey);
+            segment.rotateAnimation(getAngleDegrees(), false);
 
             x += deltaX_per_segment;
             y += deltaY_per_segment;
@@ -140,6 +138,7 @@ public class TrackingLaserBeam extends Laserbeam {
         // Apply the clamped angle change to the current angle
         double angleDegrees = (currentAngleDegrees + clampedAngleChange + 360) % 360;
         // Round to nearest 0.2 interval for cache optimization
+        // This requires to be rounded to 0.2 interval in order to update its position, if it's rounded, it remains stuck even though the actual sprite rotation angle is rounded to a whole
         setAngleDegrees(Math.round(angleDegrees * 5.0) / 5.0);
 
         // Update angleRadians (if needed in other parts of the code)

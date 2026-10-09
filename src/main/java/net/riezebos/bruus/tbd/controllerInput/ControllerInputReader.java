@@ -19,6 +19,7 @@ public class ControllerInputReader {
     private boolean sensitiveInput;
     private double lastGameSecondsTogglePressed = 0;
     private double toggleDelay = 1;
+    private boolean disconnected = false;
 
     public ControllerInputReader(Controller controller) {
         this.controller = controller;
@@ -26,7 +27,23 @@ public class ControllerInputReader {
     }
 
     public void pollController() {
-        if (!controller.poll()) {
+        if (disconnected) {
+            return;
+        }
+
+        boolean polled;
+        try {
+            polled = controller.poll();
+        } catch (Exception e) {
+            resetInputStates();
+            disconnected = true;
+            System.out.println(e.getMessage() + " Controller disconnected.");
+            return;
+        }
+
+        if (!polled) {
+            resetInputStates();
+            disconnected = true;
             System.out.println("Controller disconnected.");
             return;
         }

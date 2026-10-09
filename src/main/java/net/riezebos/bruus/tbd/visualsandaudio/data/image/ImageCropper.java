@@ -2,11 +2,16 @@ package net.riezebos.bruus.tbd.visualsandaudio.data.image;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.awt.image.WritableRaster;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.WeakHashMap;
 
 public class ImageCropper {
     private static ImageCropper instance = new ImageCropper();
     private static final int SKIP_PIXELS = 2;  // Check every 2nd pixel
+    private final Map<BufferedImage, BufferedImage> croppedFrameCache = Collections.synchronizedMap(new WeakHashMap<>());
 
     private ImageCropper() {
 
@@ -31,6 +36,19 @@ public class ImageCropper {
     }
     
     public BufferedImage cropToContent(BufferedImage img) {
+        BufferedImage cachedCrop = croppedFrameCache.get(img);
+        if (cachedCrop != null) {
+            return cachedCrop;
+        }
+        BufferedImage cropped = cropToContentUncached(img);
+        // A fully transparent frame comes back as itself; caching it would keep its own key alive
+        if (cropped != img) {
+            croppedFrameCache.put(img, cropped);
+        }
+        return cropped;
+    }
+
+    private BufferedImage cropToContentUncached(BufferedImage img) {
         int minX = img.getWidth();
         int minY = img.getHeight();
         int maxX = 0;
@@ -80,9 +98,11 @@ public class ImageCropper {
             int maxX = 0;
             int maxY = 0;
 
+            int[] alphaRow = new int[img.getWidth()];
             for (int y = 0; y < img.getHeight(); y++) {
+                readAlphaRow(img, y, alphaRow);
                 for (int x = 0; x < img.getWidth(); x++) {
-                    int alpha = (img.getRGB(x, y) >> 24) & 255;
+                    int alpha = alphaRow[x];
                     if (alpha > 0) {
                         minX = Math.min(minX, x);
                         minY = Math.min(minY, y);
@@ -106,6 +126,19 @@ public class ImageCropper {
             if (width > 0 && height > 0) {
                 frames.set(i, img.getSubimage(globalMinX, globalMinY, width, height));
             }
+        }
+    }
+
+    // Reads one row of alpha values at once; reading pixel by pixel with getRGB is much slower
+    public void readAlphaRow(BufferedImage img, int y, int[] alphaRow) {
+        WritableRaster alphaRaster = img.getAlphaRaster();
+        if (alphaRaster != null && alphaRaster.getSampleModel().getSampleSize(0) == 8) {
+            alphaRaster.getSamples(0, y, img.getWidth(), 1, 0, alphaRow);
+            return;
+        }
+        img.getRGB(0, y, img.getWidth(), 1, alphaRow, 0, img.getWidth());
+        for (int x = 0; x < alphaRow.length; x++) {
+            alphaRow[x] = (alphaRow[x] >> 24) & 255;
         }
     }
 

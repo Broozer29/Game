@@ -239,7 +239,7 @@ public class ShopBoardCreator {
         int rerollButonDimensions = Math.round((backgroundCard.getWidth() / 4) * objectScale);
         refreshButton.setImageDimensions(rerollButonDimensions, rerollButonDimensions);
         refreshButton.setCenterCoordinates(xCoordinate, yCoordinate);
-        refreshButton.setDescriptionOfComponent("Refreshes all items in the shop, allowing you to purchase new items. Cost is equal to 25% of minerals you entered the shop with.");
+        refreshButton.setDescriptionOfComponent("Refreshes all items in the shop, allowing you to purchase new items. Cost is equal to 15% of minerals you entered the shop with.");
         return refreshButton;
     }
 

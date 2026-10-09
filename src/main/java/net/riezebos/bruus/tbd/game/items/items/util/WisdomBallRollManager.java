@@ -34,6 +34,7 @@ public class WisdomBallRollManager {
         switch (selectedEffect) {
             case Copy_Inventory:
                 modifiedItems.addAll(handleCopyInventory(shopItems));
+                break;
             case Copy_A_Legendary:
                 modifiedItems.addAll(handleCopyALegendary(shopItems));
                 break;
@@ -311,7 +312,7 @@ public class WisdomBallRollManager {
 
         while (attempts < maxAttempts) {
             ItemEnums randomItem = ItemEnums.getRandomItemByRarity(category);
-            Item tempItem = PlayerInventory.getInstance().createItemFromEnum(randomItem);
+            Item tempItem = PlayerInventory.getInstance().getItemForAvailabilityCheck(randomItem);
 
             if (tempItem != null && tempItem.isAvailable()) {
                 return randomItem;

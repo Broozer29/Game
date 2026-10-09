@@ -70,8 +70,9 @@ public class AdvancedOptics extends Item {
         }
 
 
-        if(PlayerInventory.getInstance().getItemFromInventoryIfExists(this.itemEnum) != null){
-            return (quantity * critChance) <= 1;
+        Item owned = PlayerInventory.getInstance().getItemFromInventoryIfExists(this.itemEnum);
+        if(owned != null){
+            return (owned.getQuantity() * critChance) < 1;
         } else {
             return true; //Player has 0 stacks, so we return true
         }

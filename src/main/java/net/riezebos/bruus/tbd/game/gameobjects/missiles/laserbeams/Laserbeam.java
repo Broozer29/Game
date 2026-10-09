@@ -41,8 +41,6 @@ public abstract class Laserbeam {
     protected boolean blocksMovement;
     protected int amountOfLaserbeamBodySegments;
 
-    protected boolean maintainCacheKey = true;
-
     protected boolean needsUpdate = true; // Flag to control when to update
 
     public Laserbeam(LaserbeamConfiguration laserbeamConfiguration) {
@@ -123,7 +121,7 @@ public abstract class Laserbeam {
         SpriteAnimationConfiguration bodyAnimConfig = new SpriteAnimationConfiguration(laserBodyConfig, 1, true);
         SpriteAnimation laserBodyPart = new SpriteAnimation(bodyAnimConfig);
 
-        laserBodyPart.rotateAnimation(angleDegrees, false, maintainCacheKey);
+        laserBodyPart.rotateAnimation(angleDegrees, false);
 
         // Synchronize the frame with the first segment if it exists
         if (!laserBodies.isEmpty()) {

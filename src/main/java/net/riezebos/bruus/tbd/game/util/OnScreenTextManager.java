@@ -4,7 +4,6 @@ import net.riezebos.bruus.tbd.game.UI.GameBoardCreator;
 import net.riezebos.bruus.tbd.game.UI.UIObject;
 import net.riezebos.bruus.tbd.visualsandaudio.data.DataClass;
 
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -61,16 +60,9 @@ public class OnScreenTextManager {
 		this.onScreenTexts.add(onScreenText);
 	}
 
-	public void addDamageNumberText(float damageNumber, int xCoordinate, int yCoordinate, boolean isCrit, int fontSize){
-		OnScreenText onScreenText = new OnScreenText(xCoordinate, yCoordinate, String.valueOf(Math.round(damageNumber)), fontSize);
-		onScreenText.setTransparancyStepSize(0.0175f);
-        onScreenText.setFontSize(fontSize);
-		if(isCrit){
-			onScreenText.setColor(Color.ORANGE);
-		} else {
-			onScreenText.setColor(Color.YELLOW);
-		}
-		this.onScreenTexts.add(onScreenText);
+	// Damage numbers are no longer drawn: in busy levels over 100,000 of them piled up and slowed the whole game down.
+	// Every hit is still reported here, so a damage overview at the end of a level can collect them later.
+	public void addDamageNumberText(float damageNumber, int xCoordinate, int yCoordinate, boolean isCrit){
 	}
 
 

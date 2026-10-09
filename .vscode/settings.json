@@ -1,0 +1,9 @@
+{
+  // Launches build through the "compile" task (Maven), not the Java extension's own build.
+  "java.debug.settings.forceBuildBeforeLaunch": false,
+
+  // Keep the original author's formatting; don't reformat whole files on save.
+  "[java]": {
+    "editor.formatOnSave": false
+  }
+}

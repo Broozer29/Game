@@ -46,7 +46,7 @@ public class FireFighterPrimaryGun extends PrimaryPlayerGun {
 
             SpriteAnimationConfiguration spriteAnimationConfiguration = new SpriteAnimationConfiguration(spriteConfiguration, 3, true);
             SpecialAttackConfiguration missileConfiguration = new SpecialAttackConfiguration(damage, true, true, false, true, false, true);
-            SpecialAttack specialAttack = new FlameThrower(spriteAnimationConfiguration, missileConfiguration);
+            SpecialAttack specialAttack = new FlameThrower(spriteAnimationConfiguration, missileConfiguration, owner); //todo sloppy bugfix to pass owner here, I'd not add it to the constructor but this is a quick fix
             specialAttack.setCenteredAroundObject(true);
             specialAttack.setScale(0.9f);
             specialAttack.addXOffset((specialAttack.getAnimation().getWidth() / 2) - Math.round((specialAttack.getAnimation().getWidth() * 0.005f)));

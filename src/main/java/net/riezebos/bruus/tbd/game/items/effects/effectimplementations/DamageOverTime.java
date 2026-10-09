@@ -104,7 +104,10 @@ public class DamageOverTime implements EffectInterface {
                 offsetApplied = true;
             }
 
-            applyCorrosiveOil(target); //Apply it once upon creation
+            if (!appliedArmorDebuff) {
+                applyCorrosiveOil(target); //Apply it once upon creation
+                appliedArmorDebuff = true;
+            }
         }
 
         //Deal actual damage

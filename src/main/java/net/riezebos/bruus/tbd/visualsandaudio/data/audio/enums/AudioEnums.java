@@ -15,7 +15,6 @@ public enum AudioEnums {
     PlayerTakesDamage,
     NewPlayerLaserbeam,
     StickyGrenadeExplosion,
-    SilentAudio,
     ChargingLaserbeam,
     ChargingBigIronLaserbeam,
     SpaceStationChargingUpMovement,
