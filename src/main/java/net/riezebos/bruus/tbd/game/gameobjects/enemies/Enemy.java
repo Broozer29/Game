@@ -163,7 +163,7 @@ public class Enemy extends GameObject {
             return 1.25f;
         }
 
-        return 1.185f;
+        return 1.175f;
     }
 
     private void initChargingUpAnimation(SpriteConfiguration spriteConfiguration) {
