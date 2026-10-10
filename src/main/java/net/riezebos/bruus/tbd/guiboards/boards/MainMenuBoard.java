@@ -1,9 +1,9 @@
 package net.riezebos.bruus.tbd.guiboards.boards;
 
 import net.riezebos.bruus.tbd.DevTestSettings;
-import net.riezebos.bruus.tbd.controllerInput.ControllerInputEnums;
-import net.riezebos.bruus.tbd.controllerInput.ControllerInputReader;
 import net.riezebos.bruus.tbd.controllerInput.ControllerManager;
+import net.riezebos.bruus.tbd.controllerInput.MenuAction;
+import net.riezebos.bruus.tbd.controllerInput.MenuInput;
 import net.riezebos.bruus.tbd.controllerInput.ControllerNotices;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.gamestate.save.SaveManager;
@@ -24,15 +24,12 @@ import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteAnimation;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.List;
 
 public class MainMenuBoard extends JPanel implements TimerHolder {
     private BackgroundManager backgroundManager = BackgroundManager.getInstance();
     private AnimationManager animationManager = AnimationManager.getInstance();
-    private ControllerManager controllers = ControllerManager.getInstance();
 
     private List<GUIComponent> firstColumn = new ArrayList<>();
     private List<GUIComponent> secondColumn = new ArrayList<>();
@@ -56,23 +53,18 @@ public class MainMenuBoard extends JPanel implements TimerHolder {
 
     private Timer timer;
     private boolean initializedMenuObjects = false;
-    private ControllerInputReader controllerInputReader;
 
     private int selectedRow = 0;
     private int selectedColumn = 0;
 
     public MainMenuBoard() {
         logDiagnostic("MainMenuBoard constructor: Starting...");
-        addKeyListener(new KeyInputReader());
         setFocusable(true);
         setBackground(Color.BLACK);
         logDiagnostic("MainMenuBoard constructor: Setting preferred size...");
         setPreferredSize(new Dimension(DataClass.getInstance().getWindowWidth(), DataClass.getInstance().getWindowHeight()));
 
         logDiagnostic("MainMenuBoard constructor: Checking controllers...");
-        if (controllers.getPrimaryController() != null) {
-            controllerInputReader = controllers.getPrimaryController();
-        }
 
         logDiagnostic("MainMenuBoard constructor: Calling initMenuTiles()...");
         initMenuTiles();
@@ -127,7 +119,6 @@ public class MainMenuBoard extends JPanel implements TimerHolder {
             secondColumn.clear();
             thirdColumn.clear();
             offTheGridObjects.clear();
-            lastMoveTime = System.currentTimeMillis(); //To prevent the user from immediatly pressing another button after going to this screen
 
 
             menuCursor = MenuBoardCreator.createMenuCursor(selectClassBoard.getComponents().get(0));
@@ -305,111 +296,38 @@ public class MainMenuBoard extends JPanel implements TimerHolder {
         System.exit(1);
     }
 
-    private class KeyInputReader extends KeyAdapter {
-
-        @Override
-        public void keyReleased(KeyEvent e) {
-            int key = e.getKeyCode();
-            boolean needsUpdate = false;
-            switch (key) {
-                case (KeyEvent.VK_ENTER):
-                    selectMenuTile();
-                    needsUpdate = true;
-                    break;
-                case (KeyEvent.VK_A):
+    // Acts on what MenuInput reports: keys and the main controller, one set of rules for every menu screen
+    public void executeMenuInput() {
+        boolean needsUpdate = false;
+        for (MenuAction action : MenuInput.getInstance().poll()) {
+            switch (action) {
+                case LEFT:
                     previousMenuTile();
                     needsUpdate = true;
                     break;
-                case (KeyEvent.VK_D):
+                case RIGHT:
                     nextMenuTile();
                     needsUpdate = true;
                     break;
-                case (KeyEvent.VK_W):
+                case UP:
                     previousMenuColumn();
                     needsUpdate = true;
                     break;
-                case (KeyEvent.VK_S):
+                case DOWN:
                     nextMenuColumn();
                     needsUpdate = true;
                     break;
-            }
-
-            if (needsUpdate) {
-                recreateList();
-            }
-        }
-
-        @Override
-        public void keyPressed(KeyEvent e) {
-            int key = e.getKeyCode();
-            switch (key) {
-                case (KeyEvent.VK_ENTER):
-                    break;
-                case (KeyEvent.VK_A):
-                    break;
-                case (KeyEvent.VK_D):
-                    break;
-                case (KeyEvent.VK_W):
-                    break;
-                case (KeyEvent.VK_S):
-                    break;
-            }
-        }
-    }
-
-    private long lastMoveTime = 0;
-
-    public void executeControllerInput() {
-
-        if (controllers.getPrimaryController() != null) {
-            boolean needsUpdate = false;
-            controllerInputReader = controllers.getPrimaryController();
-            controllerInputReader.pollController();
-            long currentTime = System.currentTimeMillis();
-
-            // Left and right navigation
-
-            if (currentTime - lastMoveTime > DataClass.CONTROLLER_INPUT_COOLDOWN) {
-                if (controllerInputReader.isInputActive(ControllerInputEnums.MOVE_LEFT)) {
-                    // Menu option to the left
-                    previousMenuTile();
-                    needsUpdate = true;
-                    lastMoveTime = currentTime;
-                } else if (controllerInputReader.isInputActive(ControllerInputEnums.MOVE_RIGHT)) {
-                    // Menu option to the right
-                    nextMenuTile();
-                    needsUpdate = true;
-                    lastMoveTime = currentTime;
-                }
-
-                // Up and down navigation
-                if (controllerInputReader.isInputActive(ControllerInputEnums.MOVE_UP)) {
-                    // Menu option upwards
-                    previousMenuColumn();
-                    needsUpdate = true;
-                    lastMoveTime = currentTime;
-                } else if (controllerInputReader.isInputActive(ControllerInputEnums.MOVE_DOWN)) {
-                    // Menu option downwards
-                    nextMenuColumn();
-                    needsUpdate = true;
-                    lastMoveTime = currentTime;
-                }
-
-                if (controllerInputReader.isInputActive(ControllerInputEnums.FIRE)) {
-                    // Select menu option
+                case CONFIRM:
                     selectMenuTile();
-                    needsUpdate = true;
-                    lastMoveTime = currentTime;
-                }
-            }
-
-            if (needsUpdate) {
-                recreateList(); // Update the GUI only if there was an action that requires it
+                    recreateList();
+                    return; // selecting can change the screen
             }
         }
+
+        if (needsUpdate) {
+            recreateList(); // Update the GUI only if there was an action that requires it
+        }
     }
-
-
 
     /*-----------------------------End of navigation methods--------------------------*/
 
@@ -450,7 +368,7 @@ public class MainMenuBoard extends JPanel implements TimerHolder {
             Toolkit.getDefaultToolkit().sync();
 
             // readControllerState();
-            executeControllerInput();
+            executeMenuInput();
         } catch (Exception ex) {
             try {
                 java.io.FileWriter fw = new java.io.FileWriter("error_log.txt", true);

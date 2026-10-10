@@ -1,8 +1,7 @@
 package net.riezebos.bruus.tbd.guiboards.boards;
 
-import net.riezebos.bruus.tbd.controllerInput.ControllerInputEnums;
-import net.riezebos.bruus.tbd.controllerInput.ControllerInputReader;
-import net.riezebos.bruus.tbd.controllerInput.ControllerManager;
+import net.riezebos.bruus.tbd.controllerInput.MenuAction;
+import net.riezebos.bruus.tbd.controllerInput.MenuInput;
 import net.riezebos.bruus.tbd.controllerInput.ControllerNotices;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.items.PlayerInventory;
@@ -26,8 +25,6 @@ import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteAnimation;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,7 +32,6 @@ public class DifficultySelectionBoard extends JPanel implements TimerHolder {
 
     private BackgroundManager backgroundManager = BackgroundManager.getInstance();
     private AnimationManager animationManager = AnimationManager.getInstance();
-    private ControllerManager controllers = ControllerManager.getInstance();
 
 
     private GUIComponent chooseDifficultyText;
@@ -78,21 +74,16 @@ public class DifficultySelectionBoard extends JPanel implements TimerHolder {
     private List<GUIComponent> offTheGridObjects = new ArrayList<>();
     private MenuCursor menuCursor;
     private Timer timer;
-    private ControllerInputReader controllerInputReader;
     private int selectedRow = 0;
     private int selectedColumn = 0;
     private boolean initializedMenuObjects = false;
 
 
     public DifficultySelectionBoard() {
-        addKeyListener(new DifficultySelectionBoard.KeyInputReader());
         setFocusable(true);
         setBackground(Color.BLACK);
         setPreferredSize(new Dimension(DataClass.getInstance().getWindowWidth(), DataClass.getInstance().getWindowHeight()));
 
-        if (controllers.getPrimaryController() != null) {
-            controllerInputReader = controllers.getPrimaryController();
-        }
 
         initMenuTiles();
         timer = new Timer(GameState.getInstance().getDELAY(), e -> repaint(0, 0, DataClass.getInstance().getWindowWidth(), DataClass.getInstance().getWindowHeight() + 5));
@@ -138,7 +129,6 @@ public class DifficultySelectionBoard extends JPanel implements TimerHolder {
 
     public void recreateWindow() {
         if (initializedMenuObjects) {
-            lastMoveTime = System.currentTimeMillis();
             //Clear all existing columns/rows/grid then re-add them
             recreateList();
             selectedColumn = 0;
@@ -361,113 +351,40 @@ public class DifficultySelectionBoard extends JPanel implements TimerHolder {
         }
     }
 
-    private class KeyInputReader extends KeyAdapter {
-
-        @Override
-        public void keyReleased(KeyEvent e) {
-            int key = e.getKeyCode();
-            boolean needsUpdate = false;
-            switch (key) {
-                case (KeyEvent.VK_ENTER):
-                    selectMenuTile();
-                    needsUpdate = true;
-                    break;
-                case (KeyEvent.VK_A):
+    // Acts on what MenuInput reports: keys and the main controller, one set of rules for every menu screen
+    public void executeMenuInput() {
+        boolean needsUpdate = false;
+        for (MenuAction action : MenuInput.getInstance().poll()) {
+            switch (action) {
+                case LEFT:
                     navigateLeft();
                     needsUpdate = true;
                     break;
-                case (KeyEvent.VK_D):
+                case RIGHT:
                     navigateRight();
                     needsUpdate = true;
                     break;
-                case (KeyEvent.VK_W):
+                case UP:
                     navigateUp();
                     needsUpdate = true;
                     break;
-                case (KeyEvent.VK_S):
+                case DOWN:
                     navigateDown();
                     needsUpdate = true;
                     break;
-            }
-
-            if (needsUpdate) {
-                recreateList();
-            }
-        }
-
-        @Override
-        public void keyPressed(KeyEvent e) {
-            int key = e.getKeyCode();
-            switch (key) {
-                case (KeyEvent.VK_ENTER):
-                    break;
-                case (KeyEvent.VK_A):
-                    break;
-                case (KeyEvent.VK_D):
-                    break;
-                case (KeyEvent.VK_W):
-                    break;
-                case (KeyEvent.VK_S):
-                    break;
-            }
-        }
-    }
-
-    private long lastMoveTime = 0;
-
-    public void executeControllerInput() {
-        if (controllers.getPrimaryController() != null) {
-            boolean needsUpdate = false;
-            controllerInputReader = controllers.getPrimaryController();
-            controllerInputReader.pollController();
-            long currentTime = System.currentTimeMillis();
-
-            // Left and right navigation
-            if (currentTime - lastMoveTime > DataClass.CONTROLLER_INPUT_COOLDOWN) {
-                if (controllerInputReader.isInputActive(ControllerInputEnums.MOVE_LEFT)) {
-                    // Menu option to the left
-                    navigateLeft();
-                    needsUpdate = true;
-                    lastMoveTime = currentTime;
-                } else if (controllerInputReader.isInputActive(ControllerInputEnums.MOVE_RIGHT)) {
-                    // Menu option to the right
-                    navigateRight();
-                    needsUpdate = true;
-                    lastMoveTime = currentTime;
-                }
-
-                // Up and down navigation
-                if (controllerInputReader.isInputActive(ControllerInputEnums.MOVE_UP)) {
-                    // Menu option upwards
-                    navigateUp();
-                    needsUpdate = true;
-                    lastMoveTime = currentTime;
-                } else if (controllerInputReader.isInputActive(ControllerInputEnums.MOVE_DOWN)) {
-                    // Menu option downwards
-                    navigateDown();
-                    needsUpdate = true;
-                    lastMoveTime = currentTime;
-                }
-
-                if (controllerInputReader.isInputActive(ControllerInputEnums.FIRE)) {
-                    // Select menu option
+                case CONFIRM:
                     selectMenuTile();
-                    needsUpdate = true;
-                    lastMoveTime = currentTime;
-                }
+                    recreateList();
+                    return; // selecting can change the screen
+                case BACK:
+                    BoardManager.getInstance().switchScreen(BoardManager.ScreenType.CLASS_SELECTION);
+                    recreateList();
+                    return; // the screen has changed
             }
+        }
 
-            if (currentTime - lastMoveTime > DataClass.CONTROLLER_INPUT_COOLDOWN &&
-                    controllerInputReader.isInputActive(ControllerInputEnums.SPECIAL_ATTACK)) {
-                // Select menu option
-                BoardManager.getInstance().switchScreen(BoardManager.ScreenType.CLASS_SELECTION);
-                needsUpdate = true;
-                lastMoveTime = currentTime;
-            }
-
-            if (needsUpdate) {
-                recreateList(); // Update the GUI only if there was an action that requires it
-            }
+        if (needsUpdate) {
+            recreateList(); // Update the GUI only if there was an action that requires it
         }
     }
 
@@ -512,7 +429,7 @@ public class DifficultySelectionBoard extends JPanel implements TimerHolder {
             Toolkit.getDefaultToolkit().sync();
 
             // readControllerState();
-            executeControllerInput();
+            executeMenuInput();
         } catch (Exception ex) {
             try {
                 java.io.FileWriter fw = new java.io.FileWriter("error_log.txt", true);

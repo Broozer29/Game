@@ -9,6 +9,13 @@ All notable changes on the `Nelis` branch.
 
 ### Changed
 - docs/claude-changelog.md is rewritten for players: grouped by topic (controls, performance, items, classes, enemies and bosses, bug fixes), without technical terms, with a short section for developers.
+- Menus now react the moment you press a key, instead of when you let go. The arrow keys, Space and Escape work in every menu, next to W, A, S, D, Enter and the controller.
+- In menus, one push of the stick moves one slot, and holding it scrolls after a short wait. The d-pad works in every menu, including the relic screen, and the relic cursor reacts at once.
+- A key or button that is still held down when a new screen opens does nothing on that screen until you let go of it. This also applies to the score card and the game over screen.
+- The score card and the game over screen continue on any key or any controller button except the stick and the d-pad, and they say "Press any key to continue".
+
+### Fixed
+- The stick no longer keeps moving the cursor on its own during the first seconds of the shop.
 
 ## 2026-10-10
 

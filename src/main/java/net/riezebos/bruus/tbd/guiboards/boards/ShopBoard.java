@@ -1,8 +1,7 @@
 package net.riezebos.bruus.tbd.guiboards.boards;
 
-import net.riezebos.bruus.tbd.controllerInput.ControllerInputEnums;
-import net.riezebos.bruus.tbd.controllerInput.ControllerInputReader;
-import net.riezebos.bruus.tbd.controllerInput.ControllerManager;
+import net.riezebos.bruus.tbd.controllerInput.MenuAction;
+import net.riezebos.bruus.tbd.controllerInput.MenuInput;
 import net.riezebos.bruus.tbd.controllerInput.ControllerNotices;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerClass;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
@@ -34,8 +33,6 @@ import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.Sprit
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -45,7 +42,6 @@ public class ShopBoard extends JPanel implements TimerHolder {
 
     private BackgroundManager backgroundManager = BackgroundManager.getInstance();
     private AnimationManager animationManager = AnimationManager.getInstance();
-    private ControllerManager controllers = ControllerManager.getInstance();
     private ShopManager shopManager = ShopManager.getInstance();
 
     private List<GUIComponent> regularGridFirstRow = new ArrayList<>();
@@ -108,7 +104,6 @@ public class ShopBoard extends JPanel implements TimerHolder {
     private Timer timer;
     private int selectedRow = 0;
     private int selectedColumn = 0;
-    private ControllerInputReader controllerInputReader;
     private boolean showInventory;
     private ShopBoardCreator shopBoardCreator;
 
@@ -123,13 +118,9 @@ public class ShopBoard extends JPanel implements TimerHolder {
 
 
     public ShopBoard() {
-        addKeyListener(new TAdapter());
         setFocusable(true);
         showInventory = false;
         shopBoardCreator = new ShopBoardCreator();
-        if (controllers.getPrimaryController() != null) {
-            controllerInputReader = controllers.getPrimaryController();
-        }
 
         timer = new Timer(GameState.getInstance().getDELAY(), e -> repaint(0, 0, DataClass.getInstance().getWindowWidth(), DataClass.getInstance().getWindowHeight() + 5));
         timer.start();
@@ -149,7 +140,6 @@ public class ShopBoard extends JPanel implements TimerHolder {
             component.setVisible(false);
         }
         offTheGridObjects.clear();
-        lastMoveTime = System.currentTimeMillis(); //To prevent the user from immediatly pressing another button after going to this screen
 
 
         // Initialize background cards first since they are dependencies
@@ -648,113 +638,42 @@ public class ShopBoard extends JPanel implements TimerHolder {
         }
     }
 
-    private class TAdapter extends KeyAdapter {
-
-        @Override
-        public void keyReleased(KeyEvent e) {
-            //This is reversed in shopboard lmao
-            int key = e.getKeyCode();
-            boolean needsUpdate = false;
-            switch (key) {
-                case (KeyEvent.VK_ENTER):
+    // Acts on what MenuInput reports: keys and the main controller, one set of rules for every menu screen
+    public void executeMenuInput() {
+        boolean needsUpdate = false;
+        for (MenuAction action : MenuInput.getInstance().poll()) {
+            switch (action) {
+                case LEFT:
+                    navigateLeft();
+                    needsUpdate = true;
+                    break;
+                case RIGHT:
+                    navigateRight();
+                    needsUpdate = true;
+                    break;
+                case UP:
+                    navigateUp();
+                    needsUpdate = true;
+                    break;
+                case DOWN:
+                    navigateDown();
+                    needsUpdate = true;
+                    break;
+                case CONFIRM:
                     selectMenuTile();
-                    needsUpdate = true;
+                    recreateList();
+                    return; // selecting can change the screen
+                case BACK:
+                    if (showInventory) {
+                        setShowInventory(false);
+                        needsUpdate = true;
+                    }
                     break;
-                case (KeyEvent.VK_A):
-                    navigateLeft();
-                    needsUpdate = true;
-                    break;
-                case (KeyEvent.VK_D):
-                    navigateRight();
-                    needsUpdate = true;
-                    break;
-                case (KeyEvent.VK_W):
-                    navigateUp();
-                    needsUpdate = true;
-                    break;
-                case (KeyEvent.VK_S):
-                    navigateDown();
-                    needsUpdate = true;
-                    break;
-            }
-
-            if (needsUpdate) {
-                recreateList(); // Update the GUI only if there was an action that requires it
             }
         }
 
-        @Override
-        public void keyPressed(KeyEvent e) {
-            //Shouldnt do anything, keyrelease activates input
-        }
-    }
-
-    private long lastMoveTime = 0;
-
-    public void executeControllerInput() {
-        if (controllers.getPrimaryController() != null) {
-            boolean needsUpdate = false;
-            controllerInputReader = controllers.getPrimaryController();
-            controllerInputReader.pollController();
-            long currentTime = System.currentTimeMillis();
-
-            // Left and right navigation
-            if (currentTime - lastMoveTime > DataClass.CONTROLLER_INPUT_COOLDOWN) {
-                if (controllerInputReader.isInputActive(ControllerInputEnums.MOVE_UP)) {
-                    //Gaat naar boven
-                    // Menu option to the left
-                    navigateUp();
-                    needsUpdate = true;
-                    lastMoveTime = currentTime;
-                } else if (controllerInputReader.isInputActive(ControllerInputEnums.MOVE_DOWN)) {
-                    //Gaat nar beneden
-                    // Menu option to the right
-                    navigateDown();
-                    needsUpdate = true;
-                    lastMoveTime = currentTime;
-                }
-            }
-
-            // Up and down navigation
-            if (currentTime - lastMoveTime > DataClass.CONTROLLER_INPUT_COOLDOWN) {
-                if (controllerInputReader.isInputActive(ControllerInputEnums.MOVE_LEFT)) {
-                    //Gaat naar links
-                    // Menu option upwards
-                    navigateLeft();
-                    needsUpdate = true;
-                    lastMoveTime = currentTime;
-                } else if (controllerInputReader.isInputActive(ControllerInputEnums.MOVE_RIGHT)) {
-                    // Menu option downwards
-                    //Gaat naar rechts
-                    navigateRight();
-                    needsUpdate = true;
-                    lastMoveTime = currentTime;
-                }
-            }
-
-            if (currentTime - lastMoveTime > DataClass.CONTROLLER_INPUT_COOLDOWN &&
-                    controllerInputReader.isInputActive(ControllerInputEnums.FIRE)) {
-                // Select menu option
-                selectMenuTile();
-                needsUpdate = true;
-                lastMoveTime = currentTime;
-            }
-
-            //hier checken op specialattack en of de inventory open is, zo ja, close de inventory.
-
-            if (currentTime - lastMoveTime > DataClass.CONTROLLER_INPUT_COOLDOWN &&
-                    controllerInputReader.isInputActive(ControllerInputEnums.SPECIAL_ATTACK) &&
-                    showInventory) {
-                // Select menu option
-                setShowInventory(false);
-                needsUpdate = true;
-                lastMoveTime = currentTime;
-            }
-
-
-            if (needsUpdate) {
-                recreateList(); // Update the GUI only if there was an action that requires it
-            }
+        if (needsUpdate) {
+            recreateList(); // Update the GUI only if there was an action that requires it
         }
     }
 
@@ -788,7 +707,7 @@ public class ShopBoard extends JPanel implements TimerHolder {
             Toolkit.getDefaultToolkit().sync();
 
             // Reading controller input
-            executeControllerInput();
+            executeMenuInput();
         } catch (Exception ex) {
             try {
                 java.io.FileWriter fw = new java.io.FileWriter("error_log.txt", true);

@@ -1,8 +1,7 @@
 package net.riezebos.bruus.tbd.guiboards.boards;
 
-import net.riezebos.bruus.tbd.controllerInput.ControllerInputEnums;
-import net.riezebos.bruus.tbd.controllerInput.ControllerInputReader;
-import net.riezebos.bruus.tbd.controllerInput.ControllerManager;
+import net.riezebos.bruus.tbd.controllerInput.MenuAction;
+import net.riezebos.bruus.tbd.controllerInput.MenuInput;
 import net.riezebos.bruus.tbd.controllerInput.ControllerNotices;
 import net.riezebos.bruus.tbd.game.gameobjects.player.boons.Boon;
 import net.riezebos.bruus.tbd.game.gameobjects.player.boons.BoonEnums;
@@ -32,15 +31,12 @@ import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteAnimation;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.List;
 
 public class BoonSelectionBoard extends JPanel implements TimerHolder {
     private BackgroundManager backgroundManager = BackgroundManager.getInstance();
     private AnimationManager animationManager = AnimationManager.getInstance();
-    private ControllerManager controllers = ControllerManager.getInstance();
     private MenuCursor menuCursor;
 
     private List<GUIComponent> firstColumn = new ArrayList<>();
@@ -92,7 +88,6 @@ public class BoonSelectionBoard extends JPanel implements TimerHolder {
     private GUITextCollection gameModifiersColumnTitleText;
 
     private Timer timer;
-    private ControllerInputReader controllerInputReader;
     private int textPadding = Math.round(40 * DataClass.getInstance().getResolutionFactor());
     private int selectedColumn = 0;
     private int selectedRow = 0;
@@ -108,14 +103,10 @@ public class BoonSelectionBoard extends JPanel implements TimerHolder {
     }
 
     public BoonSelectionBoard() {
-        addKeyListener(new BoonSelectionBoard.KeyInputReader());
         setFocusable(true);
         setBackground(Color.BLACK);
         setPreferredSize(new Dimension(DataClass.getInstance().getWindowWidth(), DataClass.getInstance().getWindowHeight()));
 
-        if (controllers.getPrimaryController() != null) {
-            controllerInputReader = controllers.getPrimaryController();
-        }
 
         initMenuTiles();
         timer = new Timer(GameState.getInstance().getDELAY(), e -> repaint(0, 0, DataClass.getInstance().getWindowWidth(), DataClass.getInstance().getWindowHeight() + 5));
@@ -155,7 +146,6 @@ public class BoonSelectionBoard extends JPanel implements TimerHolder {
 
     public void recreateWindow() {
         if (initializedMenuObjects) {
-            lastMoveTime = System.currentTimeMillis();
             menuCursor = BoonSelectionBoardCreator.createCursor(selectNepotism.getComponents().get(0));
             //Clear all existing columns/rows/grid then re-add them
             recreateList();
@@ -493,113 +483,40 @@ public class BoonSelectionBoard extends JPanel implements TimerHolder {
         return descriptionInfo;
     }
 
-    private class KeyInputReader extends KeyAdapter {
-
-        @Override
-        public void keyReleased(KeyEvent e) {
-            int key = e.getKeyCode();
-            boolean needsUpdate = false;
-            switch (key) {
-                case (KeyEvent.VK_ENTER):
-                    selectMenuTile();
-                    needsUpdate = true;
-                    break;
-                case (KeyEvent.VK_A):
+    // Acts on what MenuInput reports: keys and the main controller, one set of rules for every menu screen
+    public void executeMenuInput() {
+        boolean needsUpdate = false;
+        for (MenuAction action : MenuInput.getInstance().poll()) {
+            switch (action) {
+                case LEFT:
                     previousColumn();
                     needsUpdate = true;
                     break;
-                case (KeyEvent.VK_D):
+                case RIGHT:
                     nextColumn();
                     needsUpdate = true;
                     break;
-                case (KeyEvent.VK_W):
+                case UP:
                     previousRow();
                     needsUpdate = true;
                     break;
-                case (KeyEvent.VK_S):
+                case DOWN:
                     nextRow();
                     needsUpdate = true;
                     break;
-            }
-
-            if (needsUpdate) {
-                recreateList();
-            }
-        }
-
-        @Override
-        public void keyPressed(KeyEvent e) {
-            int key = e.getKeyCode();
-            switch (key) {
-                case (KeyEvent.VK_ENTER):
-                    break;
-                case (KeyEvent.VK_A):
-                    break;
-                case (KeyEvent.VK_D):
-                    break;
-                case (KeyEvent.VK_W):
-                    break;
-                case (KeyEvent.VK_S):
-                    break;
-            }
-        }
-    }
-
-    private long lastMoveTime = 0;
-
-    public void executeControllerInput() {
-        if (controllers.getPrimaryController() != null) {
-            controllerInputReader = controllers.getPrimaryController();
-            boolean needsUpdate = false;
-            controllerInputReader.pollController();
-            long currentTime = System.currentTimeMillis();
-
-            // Left and right navigation
-            if (currentTime - lastMoveTime > DataClass.CONTROLLER_INPUT_COOLDOWN) {
-                if (controllerInputReader.isInputActive(ControllerInputEnums.MOVE_LEFT)) {
-                    // Menu option to the left
-                    previousColumn();
-                    needsUpdate = true;
-                    lastMoveTime = currentTime;
-                } else if (controllerInputReader.isInputActive(ControllerInputEnums.MOVE_RIGHT)) {
-                    // Menu option to the right
-                    nextColumn();
-                    needsUpdate = true;
-                    lastMoveTime = currentTime;
-                }
-
-                // Up and down navigation
-                if (controllerInputReader.isInputActive(ControllerInputEnums.MOVE_UP)) {
-                    // Menu option upwards
-                    previousRow();
-                    needsUpdate = true;
-                    lastMoveTime = currentTime;
-                } else if (controllerInputReader.isInputActive(ControllerInputEnums.MOVE_DOWN)) {
-                    // Menu option downwards
-                    nextRow();
-                    needsUpdate = true;
-                    lastMoveTime = currentTime;
-                }
-
-                if (controllerInputReader.isInputActive(ControllerInputEnums.FIRE)) {
-                    // Select menu option
+                case CONFIRM:
                     selectMenuTile();
-                    needsUpdate = true;
-                    lastMoveTime = currentTime;
-                }
+                    recreateList();
+                    return; // selecting can change the screen
+                case BACK:
+                    BoardManager.getInstance().switchScreen(BoardManager.ScreenType.CLASS_SELECTION);
+                    recreateList();
+                    return; // the screen has changed
             }
+        }
 
-            if (currentTime - lastMoveTime > DataClass.CONTROLLER_INPUT_COOLDOWN &&
-                    controllerInputReader.isInputActive(ControllerInputEnums.SPECIAL_ATTACK)) {
-                // Select menu option
-                BoardManager.getInstance().switchScreen(BoardManager.ScreenType.CLASS_SELECTION);
-                needsUpdate = true;
-                lastMoveTime = currentTime;
-            }
-
-            if (needsUpdate) {
-                recreateList(); // Update the GUI only if there was an action that requires it
-            }
+        if (needsUpdate) {
+            recreateList(); // Update the GUI only if there was an action that requires it
         }
     }
 
@@ -643,7 +560,7 @@ public class BoonSelectionBoard extends JPanel implements TimerHolder {
             Toolkit.getDefaultToolkit().sync();
 
             // readControllerState();
-            executeControllerInput();
+            executeMenuInput();
         } catch (Exception ex) {
             ex.printStackTrace();
             timer.stop();

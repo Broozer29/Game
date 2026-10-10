@@ -796,9 +796,6 @@ public class SpaceShip extends GameObject {
 
     public void update() {
         ControllerInputReader controllerInputReader = seat.getReader(); //null when the seat has no real controller
-        if (controllerInputReader != null) {
-            controllerInputReader.pollController();
-        }
 
         // Direction is worked out from scratch each tick: the stick where it steers, else (seat 1 only) the held keys, else standing still
         boolean keyboardSeat = seat.getNumber() == 1;

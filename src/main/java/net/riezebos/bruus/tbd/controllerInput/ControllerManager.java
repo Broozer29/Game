@@ -21,7 +21,6 @@ public class ControllerManager {
     private com.studiohartman.jamepad.ControllerManager sdlManager;
     private Configuration configuration;
     private Timer controllerClock;
-    private boolean sensitiveInput = false; // the current screen's setting, so a controller that joins later gets it too
 
     private ControllerManager() {
     }
@@ -142,7 +141,6 @@ public class ControllerManager {
     // The controller takes the seat; its own input is ignored until it is released
     private void joinSeat(Seat seat, int deviceInstanceId, ControllerIndex controllerIndex) {
         ControllerInputReader reader = new ControllerInputReader();
-        reader.setSensitiveInput(sensitiveInput);
         reader.resetInputStates();
         reader.ignoreInputUntilReleased(); //So the joining input does not also confirm a menu or fire
         seat.setController(deviceInstanceId, reader);
@@ -273,13 +271,6 @@ public class ControllerManager {
         return readers;
     }
 
-    public void setControllerSensitive(boolean sensitive) {
-        this.sensitiveInput = sensitive;
-        for (ControllerInputReader inputReader : getControllerInputReaders()) {
-            inputReader.setSensitiveInput(sensitive);
-        }
-    }
-
     // The reader of the main seat: the lowest seat that has a real controller. Worked out each time, so the menus follow the main seat when it changes.
     public ControllerInputReader getPrimaryController() {
         for (Seat seat : seats) {
@@ -298,29 +289,6 @@ public class ControllerManager {
             }
         }
         return pressed;
-    }
-
-    // Only the main seat confirms the game-over screen, the score card and the relic choice
-    public boolean isMainSeatFirePressed(){
-        ControllerInputReader primary = getPrimaryController();
-        return primary != null && primary.isInputActive(ControllerInputEnums.FIRE);
-    }
-
-    public boolean isPrimaryControllerLeftPressed(){
-        ControllerInputReader primary = getPrimaryController();
-        return primary != null && primary.isInputActive(ControllerInputEnums.MOVE_LEFT);
-    }
-
-    public boolean isPrimaryControllerRightPressed(){
-        ControllerInputReader primary = getPrimaryController();
-        return primary != null && primary.isInputActive(ControllerInputEnums.MOVE_RIGHT);
-    }
-
-    //Required because controllerInput is not read after the spaceship dies, thus if all players are dead and game over screen is shown, this method is needed to continue
-    public void pollControllers(){
-        for(ControllerInputReader controllerInputReader : getControllerInputReaders()){
-            controllerInputReader.pollController();
-        }
     }
 
     public void resetInputStates(){
