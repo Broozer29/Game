@@ -2,6 +2,11 @@
 
 All notable changes on the `Nelis` branch.
 
+## 2026-10-10
+
+### Added
+- The startup log (startup_log.txt) now shows how long each controller detection step takes (the fixed wait, loading the controller library, reading the device list) and lists every device found, with whether the game uses it as a controller. Controllers work as before.
+
 ## 2026-10-09
 
 ### Changed

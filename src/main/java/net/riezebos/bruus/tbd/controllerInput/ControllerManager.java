@@ -23,24 +23,34 @@ public class ControllerManager {
     public void initControllers() {
         controllerInputReaders.clear();
         primaryReader = null;
+        long startTime = System.currentTimeMillis();
         try {
             Thread.sleep(500); // Allow time for initialization
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+        long stepStart = System.currentTimeMillis();
+        logDiagnostic("Controllers: sleep took " + (stepStart - startTime) + " ms");
 
 
         Controller[] controllers;
         try {
-            controllers = ControllerEnvironment.getDefaultEnvironment().getControllers();
+            ControllerEnvironment environment = ControllerEnvironment.getDefaultEnvironment();
+            logDiagnostic("Controllers: JInput environment loaded in " + (System.currentTimeMillis() - stepStart) + " ms");
+            stepStart = System.currentTimeMillis();
+            controllers = environment.getControllers();
+            logDiagnostic("Controllers: device list read in " + (System.currentTimeMillis() - stepStart) + " ms, " + controllers.length + " devices");
         } catch (LinkageError e) {
             System.out.println("Could not load the controller library: " + e.getMessage());
+            logDiagnostic("Controllers: could not load the controller library after " + (System.currentTimeMillis() - stepStart) + " ms");
             controllers = new Controller[0];
         }
         int index = 0;
 
         for (Controller controller : controllers) {
-            if (controller.getType() == Controller.Type.GAMEPAD || controller.getType() == Controller.Type.STICK) {
+            boolean used = controller.getType() == Controller.Type.GAMEPAD || controller.getType() == Controller.Type.STICK;
+            logDiagnostic("Controllers:   device \"" + controller.getName() + "\" type " + controller.getType() + ", " + (used ? "used" : "skipped"));
+            if (used) {
                 ControllerInputReader reader = new ControllerInputReader(controller);
                 controllerInputReaders.put(index, reader);
                 if (primaryReader == null) {
@@ -57,6 +67,19 @@ public class ControllerManager {
             System.out.println("No controllers found.");
         } else {
             System.out.println("ControllerManager initialized with " + controllerInputReaders.size() + " controllers.");
+        }
+        logDiagnostic("Controllers: done in " + (System.currentTimeMillis() - startTime) + " ms, " + controllerInputReaders.size() + " controller(s) in use");
+    }
+
+    private void logDiagnostic(String message) {
+        System.out.println(message);
+        try {
+            java.io.FileWriter fw = new java.io.FileWriter("startup_log.txt", true);
+            java.io.PrintWriter pw = new java.io.PrintWriter(fw);
+            pw.println("[" + java.time.LocalDateTime.now() + "] " + message);
+            pw.close();
+        } catch (java.io.IOException e) {
+            // Silently fail if can't write to log
         }
     }
 
