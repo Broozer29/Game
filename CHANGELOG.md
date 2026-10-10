@@ -13,6 +13,7 @@ All notable changes on the `Nelis` branch.
 - Planboard: the controller disconnect entry drops the note about button numbers, and the build setup entries drop the JInput and native-plugin notes.
 - Planboard: the request to Nelis's brother now also asks for his startup_log.txt, which lists the controllers the game found.
 - Planboard: new entries for auto attack sometimes stopping for a level, a controls menu for rebinding buttons, the outdated controls picture, choosing hardware acceleration in the game, and one shared startup logger; the relic-selection entry adds the shop skipping two slots and the agreed fix; a question for Bruus about the removed pause wait.
+- Planboard: the Jamepad switch is done, so its entry is removed; the question for Bruus about the pause wait moves to a Balance entry.
 
 ## 2026-10-09
 
