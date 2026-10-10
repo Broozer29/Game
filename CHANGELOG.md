@@ -7,6 +7,9 @@ All notable changes on the `Nelis` branch.
 ### Added
 - docs/claude-changelog.md: one changelog of everything present today since the `Nelis` branch was created, with changes that were later undone left out, and Bruus's merged changes in their own section.
 
+### Changed
+- docs/claude-changelog.md is rewritten for players: grouped by topic (controls, performance, items, classes, enemies and bosses, bug fixes), without technical terms, with a short section for developers.
+
 ## 2026-10-10
 
 ### Added
