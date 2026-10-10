@@ -1,6 +1,7 @@
 package net.riezebos.bruus.tbd.guiboards;
 
 import net.riezebos.bruus.tbd.controllerInput.ControllerManager;
+import net.riezebos.bruus.tbd.controllerInput.MenuInput;
 import net.riezebos.bruus.tbd.discordconnector.DiscordConnector;
 import net.riezebos.bruus.tbd.game.UI.GameBoardCreator;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
@@ -77,27 +78,27 @@ public class BoardManager extends JFrame {
         data.setWindowWidth(getWidth());
         data.setWindowHeight(getHeight());
 
+        // Created before any screen opens, so the key tracking is in place from the start
+        MenuInput.getInstance();
+
         // Define actions for each screen
         screenActions.put(ScreenType.MAIN_MENU, () -> {
             playMenuMusic();
             mainMenuBoard.recreateWindow();
             mainMenuBoard.getTimer().restart();
-            ControllerManager.getInstance().setControllerSensitive(false);
-            ControllerManager.getInstance().resetInputStates();
+            MenuInput.getInstance().startScreen();
             DiscordConnector.getInstance().setStatus("Just booted up", "Main Menu");
         });
 
         screenActions.put(ScreenType.UPGRADE_SELECTION, () -> {
             boonSelectionBoard.recreateWindow();
             boonSelectionBoard.getTimer().restart();
-            ControllerManager.getInstance().resetInputStates();
-            ControllerManager.getInstance().setControllerSensitive(false);
+            MenuInput.getInstance().startScreen();
         });
         screenActions.put(ScreenType.GAME, () -> {
             stopMusic();
             GameBoardCreator.getInstance().resetManager();
             gameBoard.startGame();
-            ControllerManager.getInstance().setControllerSensitive(true);
             ControllerManager.getInstance().resetInputStates();
             DiscordConnector.getInstance().setStatus(PlayerStats.getInstance().getPlayerClass() + ", on stage " + GameState.getInstance().getStagesCompleted(), "Fighting");
         });
@@ -107,8 +108,7 @@ public class BoardManager extends JFrame {
             PlayerInventory.getInstance().setCashMoney(Math.round(PlayerInventory.getInstance().getCashMoney()));
             shopBoard.initShopBoardGUIComponents();
             shopBoard.getTimer().restart();
-            ControllerManager.getInstance().setControllerSensitive(false);
-            ControllerManager.getInstance().resetInputStates();
+            MenuInput.getInstance().startScreen();
             DiscordConnector.getInstance().setStatus("Shopping with " + Math.round(PlayerInventory.getInstance().getCashMoney()) + " minerals.", "Shop");
         });
 
@@ -116,8 +116,7 @@ public class BoardManager extends JFrame {
             classSelectionBoard.initMenuTiles(); //Kinda sloppy, recreates ALL components when only a set amount need to be remade but its a quick fix
             classSelectionBoard.recreateWindow();
             classSelectionBoard.getTimer().restart();
-            ControllerManager.getInstance().setControllerSensitive(false);
-            ControllerManager.getInstance().resetInputStates();
+            MenuInput.getInstance().startScreen();
             DiscordConnector.getInstance().setStatus("Deciding a class", "Class Selection");
         });
 
@@ -126,8 +125,7 @@ public class BoardManager extends JFrame {
             difficultySelectionBoard.initMenuTiles();
             difficultySelectionBoard.recreateWindow();
             difficultySelectionBoard.getTimer().restart();
-            ControllerManager.getInstance().setControllerSensitive(false);
-            ControllerManager.getInstance().resetInputStates();
+            MenuInput.getInstance().startScreen();
             DiscordConnector.getInstance().setStatus("Choosing difficulty as a " + PlayerStats.getInstance().getPlayerClass() + ".", "Class Selection");
         });
 

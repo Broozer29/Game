@@ -1,8 +1,8 @@
 package net.riezebos.bruus.tbd.game.gameobjects.player;
 
 import net.riezebos.bruus.tbd.DevTestSettings;
-import net.riezebos.bruus.tbd.controllerInput.ControllerInputReader;
 import net.riezebos.bruus.tbd.controllerInput.ControllerManager;
+import net.riezebos.bruus.tbd.controllerInput.Seat;
 import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
 import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SpaceShip;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
@@ -38,6 +38,7 @@ public class PlayerManager {
     private List<SpaceShip> allDeadSpaceShips = new ArrayList<>();
     private List<SpaceShipReviver> spaceShipReviverList = new ArrayList<>();
     private boolean initializedSpaceShips = false;
+    private int playerCountThisLevel = 1; //Fixed at level start, so it does not change when a controller joins or leaves
 
 
     private PerformanceLogger performanceLogger;
@@ -62,6 +63,7 @@ public class PlayerManager {
             }
         }
         this.initializedSpaceShips = false;
+        this.playerCountThisLevel = 1;
         this.allDeadSpaceShips.clear();
         this.allSpaceShips.clear();
         this.spaceShipReviverList.clear();
@@ -70,13 +72,11 @@ public class PlayerManager {
     }
 
     public void createSpaceShip() {
-        for(int i = 0; i < ControllerManager.getInstance().getControllerInputReaders().size(); i++){
-            initSpaceShip(ControllerManager.getInstance().getControllerInputReaders().get(i), i);
-        }
-
-        //we found no controllers so create a singular spaceship for keyboard input instead, multiplayer effectively disabled
-        if(allSpaceShips.isEmpty()){
-            initSpaceShip();
+        //One ship per seat that has a controller; with no controller at all this is seat 1, played with the keyboard
+        List<Seat> seatsInRun = ControllerManager.getInstance().prepareSeatsForLevel();
+        this.playerCountThisLevel = seatsInRun.size();
+        for(int i = 0; i < seatsInRun.size(); i++){
+            initSpaceShip(seatsInRun.get(i), i);
         }
 
         this.initializedSpaceShips = true;
@@ -228,16 +228,7 @@ public class PlayerManager {
         spaceShipReviverList.removeIf(spaceShipReviver -> !spaceShipReviver.isActive());
     }
 
-    private void initSpaceShip() {
-        SpriteConfiguration spriteConfiguration = new SpriteConfiguration();
-        spriteConfiguration.setxCoordinate(DataClass.getInstance().getWindowWidth() / 10);
-        spriteConfiguration.setyCoordinate(DataClass.getInstance().getWindowHeight() / 2);
-        spriteConfiguration.setScale(0.7f * DataClass.getInstance().getResolutionFactor());
-        spriteConfiguration.setImageType(ImageEnums.Player_Spaceship_Model_3); //placeholder, gets overwritten anyway
-        allSpaceShips.add(new SpaceShip(spriteConfiguration));
-    }
-
-    private void initSpaceShip(ControllerInputReader controllerInputReader, int index) {
+    private void initSpaceShip(Seat seat, int index) {
         SpriteConfiguration spriteConfiguration = new SpriteConfiguration();
         spriteConfiguration.setxCoordinate(DataClass.getInstance().getWindowWidth() / 10);
 
@@ -248,7 +239,7 @@ public class PlayerManager {
         }
         spriteConfiguration.setScale(0.7f * DataClass.getInstance().getResolutionFactor());
         spriteConfiguration.setImageType(ImageEnums.Player_Spaceship_Model_3); //placeholder, gets overwritten anyway
-        SpaceShip spaceShip = new SpaceShip(spriteConfiguration, controllerInputReader);
+        SpaceShip spaceShip = new SpaceShip(spriteConfiguration, seat);
         spaceShip.setAttackSpeed(PlayerStats.getInstance().getBaseAttackSpeed());
         this.allSpaceShips.add(spaceShip);
     }
@@ -292,11 +283,11 @@ public class PlayerManager {
     }
 
     public int getPlayerCount() {
-        if(ControllerManager.getInstance().getControllerInputReaders().isEmpty()){
-            return 1; //als er geen controllers zijn, is er maar 1 speler: keyboard
-        } else {
-            return ControllerManager.getInstance().getControllerInputReaders().size(); //voor elke controller: 1 speler (levend of dood)
+        if (initializedSpaceShips) {
+            return Math.max(1, playerCountThisLevel); //het aantal schepen dat aan het begin van het level is gebouwd (levend of dood)
         }
+        //Outside a level (the shop): the controllers connected now, which is what the next level starts with
+        return Math.max(1, ControllerManager.getInstance().getControllerInputReaders().size());
     }
 
     public List<SpaceShip> getAllDeadSpaceShips() {

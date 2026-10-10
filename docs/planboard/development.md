@@ -17,20 +17,17 @@ Settings, startup, Discord status, builds, packaging and dev tooling.
 - JavaFX versions are mixed: `javafx-swing` 19 and `javafx-media` 21.0.2 in pom.xml
   - Maven keeps one version of the shared JavaFX modules, so media 21 probably runs on base and graphics 19 (not tested). Fix: one version property, 21.0.x
 - Stale build setup in pom.xml
-  - `maven-nativedependencies-plugin` has no version or executions, so it does nothing
   - The `repositories` block points at the dead `jcenter.bintray.com` under the id `central`; only JitPack is needed (for jDRPC)
-  - jinput-platform 2.0.5 sits next to jinput 2.0.10 and osx-plugin 2.0.10
   - jpackage `appVersion` is fixed at 1.0 and there is no icon; `<resourceDir>` points at `src/main/resources`, which may copy all 2 GB of assets into the app image a second time (not verified)
   - Old libraries to bump when convenient: gson 2.8.9, jackson-databind 2.15.0, org.json 20230618 (versions up to this one have a known denial-of-service issue), shade plugin 3.2.4
 - The jar only runs on the operating system that built it, because JavaFX natives are picked from the build machine; CI builds one jar per OS, so CI downloads are fine
-- JInput natives exist only for 64-bit Windows, 64-bit Linux and Intel macOS; the VS Code configs and the documented `java -jar` command only find them when started from the repo root
 - Runtime files are not ignored, and some junk is tracked
   - `playerprofile.json` is tracked and rewritten by the game; `savefile.json`, `error_log.txt` and `startup_log.txt` are not ignored (`.gitignore` has `*.log`, not `.txt`)
   - About 60 `.DS_Store` files, 6 `.idea` files and 2 `.settings` files are tracked
   - Untracking needs `git rm --cached`, which has to be done by hand outside Claude
 - The repository is 3.78 GiB because 133 music WAV files (1.7 GB) are stored as plain git objects; every music change adds a full copy. Converting the music (see Visuals & Audio) and deciding on Git LFS would fix it
 - CI runs 6 jobs (3 operating systems, 2 render profiles) that each upload a ~2 GB artifact kept 30 days, which uses a lot of GitHub storage
-- README.md says the game "only uses JamePad and Java Swing"; it actually uses JavaFX, JInput, Jackson, Gson and jDRPC
+- README.md says the game "only uses JamePad and Java Swing"; it actually uses JavaFX, Jackson, Gson and jDRPC
 
 ## Features
 - Log runs to show how much damage each player does, so player power creep is visible
@@ -46,3 +43,6 @@ Settings, startup, Discord status, builds, packaging and dev tooling.
   - Replace the ~80 copy-pasted animation loops with a table of folder and frame range, or read whatever frames are in the folder
   - Report a missing image loudly at startup instead of silently drawing the star fallback
   - Agree it with Bruus first, since it changes how every new image is added
+- One shared logger for startup_log.txt: Game, BoardManager, MainMenuBoard and ControllerManager each have their own private `logDiagnostic` copy (Nelis, 2026-10-10)
+- Let the player choose hardware acceleration: a screen on first start, remembered, changeable in settings after a restart; could replace the two CI builds (Nelis, 2026-10-10)
+  - Discuss with Bruus first

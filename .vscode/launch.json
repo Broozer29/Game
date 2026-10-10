@@ -8,7 +8,7 @@
       "mainClass": "net.riezebos.bruus.tbd.Game",
       "projectName": "Game",
       "cwd": "${workspaceFolder}",
-      "vmArgs": "-Djava.library.path=src/main/resources/libraries -Xms4g -Xmx8g -XX:+UseG1GC -Dsun.java2d.opengl=true -Dsun.java2d.d3d=true -Dsun.java2d.accthresh=0"
+      "vmArgs": "-Xms4g -Xmx8g -XX:+UseG1GC -Dsun.java2d.opengl=true -Dsun.java2d.d3d=true -Dsun.java2d.accthresh=0"
     },
     {
       "type": "java",
@@ -18,7 +18,7 @@
       "mainClass": "net.riezebos.bruus.tbd.Game",
       "projectName": "Game",
       "cwd": "${workspaceFolder}",
-      "vmArgs": "-Djava.library.path=src/main/resources/libraries -Xms4g -Xmx8g -XX:+UseG1GC -Dsun.java2d.opengl=true -Dsun.java2d.d3d=true -Dsun.java2d.accthresh=0 -XX:MaxGCPauseMillis=50 -XX:NativeMemoryTracking=summary -XX:StartFlightRecording=filename=target/perf/run-%t.jfr,settings=profile,dumponexit=true -Xlog:gc:file=target/perf/gc-%t.log:time,uptime -Dgame.cacheStatsDir=target/perf"
+      "vmArgs": "-Xms4g -Xmx8g -XX:+UseG1GC -Dsun.java2d.opengl=true -Dsun.java2d.d3d=true -Dsun.java2d.accthresh=0 -XX:MaxGCPauseMillis=50 -XX:NativeMemoryTracking=summary -XX:StartFlightRecording=filename=target/perf/run-%t.jfr,settings=profile,dumponexit=true -Xlog:gc:file=target/perf/gc-%t.log:time,uptime -Dgame.cacheStatsDir=target/perf"
     },
     {
       "type": "java",
@@ -28,7 +28,7 @@
       "mainClass": "net.riezebos.bruus.tbd.Game",
       "projectName": "Game",
       "cwd": "${workspaceFolder}",
-      "vmArgs": "-Djava.library.path=src/main/resources/libraries -Xms4g -Xmx8g -XX:+UseG1GC -Dsun.java2d.opengl=false -Dsun.java2d.d3d=true -Dsun.java2d.accthresh=0 -XX:MaxGCPauseMillis=50 -XX:NativeMemoryTracking=summary -XX:StartFlightRecording=filename=target/perf/run-%t.jfr,settings=profile,dumponexit=true -Xlog:gc:file=target/perf/gc-%t.log:time,uptime -Dgame.cacheStatsDir=target/perf"
+      "vmArgs": "-Xms4g -Xmx8g -XX:+UseG1GC -Dsun.java2d.opengl=false -Dsun.java2d.d3d=true -Dsun.java2d.accthresh=0 -XX:MaxGCPauseMillis=50 -XX:NativeMemoryTracking=summary -XX:StartFlightRecording=filename=target/perf/run-%t.jfr,settings=profile,dumponexit=true -Xlog:gc:file=target/perf/gc-%t.log:time,uptime -Dgame.cacheStatsDir=target/perf"
     }
   ]
 }

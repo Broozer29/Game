@@ -90,13 +90,17 @@ public class MenuBoardCreator {
         wasdExplanation.setScale(resolutionFactor);
         controlExplanations.add(wasdExplanation);
 
-        GUITextCollection attackExplanation = new GUITextCollection(xCoordinate, yCoordinate + Math.round(20 * resolutionFactor), "SPACEBAR OR X = NORMAL ATTACK");
+        GUITextCollection attackExplanation = new GUITextCollection(xCoordinate, yCoordinate + Math.round(20 * resolutionFactor), "SPACEBAR OR A = NORMAL ATTACK");
         attackExplanation.setScale(resolutionFactor);
         controlExplanations.add(attackExplanation);
 
-        GUITextCollection specialExplanation = new GUITextCollection(xCoordinate, yCoordinate + Math.round(40 * resolutionFactor), "ENTER OR Y = SPECIAL ATTACK");
+        GUITextCollection specialExplanation = new GUITextCollection(xCoordinate, yCoordinate + Math.round(40 * resolutionFactor), "ENTER OR B = SPECIAL ATTACK");
         specialExplanation.setScale(resolutionFactor);
         controlExplanations.add(specialExplanation);
+
+        GUITextCollection pauseExplanation = new GUITextCollection(xCoordinate, yCoordinate + Math.round(60 * resolutionFactor), "P OR MENU BUTTON = PAUSE");
+        pauseExplanation.setScale(resolutionFactor);
+        controlExplanations.add(pauseExplanation);
 
         return controlExplanations;
     }
@@ -159,36 +163,6 @@ public class MenuBoardCreator {
         GUITextCollection textCollection = new GUITextCollection(xCoordinate,yCoordinate, "CONTINUE RUN");
         textCollection.setScale(resolutionFactor);
         textCollection.setMenuFunctionality(MenuFunctionEnums.ContinueSaveFile);
-        return textCollection;
-    }
-
-    public static GUITextCollection foundControllerText(int foundController, GUIComponent titleImage){
-        GUITextCollection textCollection = null;
-        String text = null;
-        int yCoordinate = 0;
-        if(foundController > 0){
-            int xCoordinate = (DataClass.getInstance().getWindowWidth() / 2) - 100;
-            yCoordinate = titleImage.getYCoordinate() + titleImage.getHeight() + 10;
-            text = "FOUND " + foundController + " CONTROLLERS";
-            textCollection = new GUITextCollection(xCoordinate,yCoordinate,text);
-        }
-        else {
-            int xCoordinate = 100;
-            yCoordinate = titleImage.getYCoordinate() + titleImage.getHeight() + 10;
-            text = "NO CONTROLLER COULD BE FOUND. MAKE SURE THE CONTROLLER IS CONNECTED THEN RESTART";
-            textCollection = new GUITextCollection(xCoordinate,yCoordinate,text);
-
-        }
-
-        //Center it under the title image
-        textCollection.setScale(resolutionFactor);
-        GUIComponent lastComponent = textCollection.getComponents().get(textCollection.getComponents().size() - 1);
-        GUIComponent firstComponent = textCollection.getComponents().get(0);
-
-        int textCollectionWidth = (lastComponent.getXCoordinate() + lastComponent.getWidth() - firstComponent.getXCoordinate());
-        int newxCoordinate = titleImage.getCenterXCoordinate() - (textCollectionWidth / 2);
-        textCollection = new GUITextCollection(newxCoordinate, yCoordinate, text);
-        textCollection.setScale(resolutionFactor);
         return textCollection;
     }
 

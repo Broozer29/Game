@@ -1,7 +1,7 @@
 # CLAUDE.md — Game
 
-A 2D shooter built on a custom Java engine (Swing rendering, JavaFX for audio, JInput for
-controllers). Written almost entirely by Bruus Riezebos; Nelis works on it from the `Nelis` branch.
+A 2D shooter built on a custom Java engine (Swing rendering, JavaFX for audio, Jamepad (SDL2)
+for controllers). Written almost entirely by Bruus Riezebos; Nelis works on it from the `Nelis` branch.
 `production` is the main branch and the one CI builds.
 
 ## Project facts
@@ -25,10 +25,10 @@ Requires **JDK 21** (the compiler targets 21; CI uses Temurin 21).
 | compile | `mvn -q compile` |
 | package jar | `mvn package` |
 | packaged app (as CI does) | `mvn clean package jpackage:jpackage -Phw-accel` (or `-Pno-hw-accel` for the software renderer) |
-| run the jar | `java -Djava.library.path=src/main/resources/libraries -Xms4g -Xmx8g -XX:+UseG1GC -jar target/Game-0.0.1-SNAPSHOT.jar` |
+| run the jar | `java -Xms4g -Xmx8g -XX:+UseG1GC -jar target/Game-0.0.1-SNAPSHOT.jar` |
 
-Any run configuration needs those three JVM settings: `java.library.path` points at the native
-controller libraries, `-Xms4g -Xmx8g` raises memory, and `-XX:+UseG1GC` picks the garbage collector.
+Any run configuration needs those two JVM settings: `-Xms4g -Xmx8g` raises memory, and
+`-XX:+UseG1GC` picks the garbage collector.
 The packaged jar is about 2 GB because all assets go into it, so prefer `mvn -q compile` to check a
 change.
 

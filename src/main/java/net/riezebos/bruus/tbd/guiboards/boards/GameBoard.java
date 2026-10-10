@@ -2,6 +2,9 @@ package net.riezebos.bruus.tbd.guiboards.boards;
 
 import net.riezebos.bruus.tbd.DevTestSettings;
 import net.riezebos.bruus.tbd.controllerInput.ControllerManager;
+import net.riezebos.bruus.tbd.controllerInput.MenuAction;
+import net.riezebos.bruus.tbd.controllerInput.MenuInput;
+import net.riezebos.bruus.tbd.controllerInput.ControllerNotices;
 import net.riezebos.bruus.tbd.game.UI.GameBoardCreator;
 import net.riezebos.bruus.tbd.game.UI.UIObject;
 import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
@@ -89,7 +92,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
     private float zoningInAlpha = 1.0f;
     private float zoningOutAlpha = 0.0f;
 
-    private long inputDelay = 0;
+    private GameStatusEnums lastMenuState = null; //To see the moment the relic screen, score card or game over opens
 
     private boolean hasResetManagersForNextLevel = false;
     private boolean hasChosenRelic = false;
@@ -160,6 +163,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
         gameUICreator.createGameBoardGUI();
         gameState.setGameState(GameStatusEnums.Zoning_In);
         GameState.getInstance().resetForNextLevel();
+        lastMenuState = null;
         drawTimer.start();
         floatingIcons.clear();
         selectedComponent = null;
@@ -189,7 +193,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
         this.drawTimer.setDelay(gameState.getDELAY());
         zoningInAlpha = 1.0f;
         zoningOutAlpha = 0.0f;
-        inputDelay = 0;
+        lastMenuState = null;
         this.isPlayingDeathMusic = false;
         this.hasExportedLogs = false;
         this.showRelicSelection = false;
@@ -281,6 +285,8 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
                 drawImage(g2d, healthBarComponent);
             }
         }
+
+        ControllerNotices.getInstance().draw(g2d);
 
         Toolkit.getDefaultToolkit().sync();
     }
@@ -430,11 +436,9 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
 
 
         //Draw the next level/main menu instructions
-        if (inputDelay > DataClass.CONTROLLER_INPUT_COOLDOWN) {
-            msgToDraw = "Press any button";
-            int goNextYCoordinate = Math.round(gameOverCard.getYCoordinate() + (gameOverCard.getHeight() * 0.9f));
-            g.drawString(msgToDraw, firstRowXCoordinate, goNextYCoordinate);
-        }
+        msgToDraw = "Press any key to continue";
+        int goNextYCoordinate = Math.round(gameOverCard.getYCoordinate() + (gameOverCard.getHeight() * 0.9f));
+        g.drawString(msgToDraw, firstRowXCoordinate, goNextYCoordinate);
 
         //Reset the drawTimer delay to the regular speed because slow-mo death animation slows it
         drawTimer.setDelay(gameState.getDELAY());
@@ -1091,10 +1095,6 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
 
             executeControllerInput();
 
-            if (shouldIncreaseInputDelay()) {
-                inputDelay += 5; // because a single tick represents 15ms and the dataclass delay is represented in ms but we want an increased slight delay
-            }
-
             if (lastKnownState == null || lastKnownState != gameState.getGameState()) {
                 lastKnownState = gameState.getGameState();
                 System.out.println("Last known gamestate: " + lastKnownState);
@@ -1116,11 +1116,6 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
         }
     }
 
-    private boolean shouldIncreaseInputDelay() {
-        GameStatusEnums gameStatus = gameState.getGameState();
-        return gameStatus == GameStatusEnums.Show_Level_Score_Card || gameStatus == GameStatusEnums.Paused || gameStatus == GameStatusEnums.Dead || gameStatus == GameStatusEnums.SelectingRelic;
-    }
-
     public Timer getTimer() {
         return drawTimer;
     }
@@ -1130,21 +1125,19 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
     private class KeyboardListener extends KeyAdapter {
         @Override
         public void keyReleased(KeyEvent e) {
-            SpaceShip spaceShip = playerManager.getAllSpaceShips().get(0);
+            SpaceShip spaceShip = findSeatOneSpaceShip();
 
-            if (spaceShip == null) { //multiplayer update allows for an empty list of spaceships, if there are no spaceships (the players died), return
-                System.out.printf("GameBoard keyReleased: no spaceship found, returning\n");
-                return;
+            if (spaceShip != null) { //seat 1 has no ship when its player died or joined after the level started; the pause key below still works
+                spaceShip.keyReleased(e);
             }
 
-            spaceShip.keyReleased(e);
-
             if (e.getKeyCode() == (KeyEvent.VK_P)) {
-                if (gameState.getGameState().equals(GameStatusEnums.Playing) && gameState.isAllowedToPause()) {
+                if (gameState.getGameState().equals(GameStatusEnums.Playing)) {
+                    stateBeforePause = GameStatusEnums.Playing;
                     gameState.setGameState(GameStatusEnums.Paused);
                     audioManager.pauseAllAudio();
                 } else if (gameState.getGameState().equals(GameStatusEnums.Paused)) {
-                    gameState.setGameState(GameStatusEnums.Playing);
+                    gameState.setGameState(stateBeforePause);
                     audioManager.resumeAllAudio();
                 }
             }
@@ -1157,50 +1150,33 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
                 boardManager = BoardManager.getInstance();
             }
 
+            controllerManager.keyboardUsed(); //Marks seat 1 as played by the keyboard; before the paused return so P after a disconnect pause counts
+
             if (gameState.getGameState() == GameStatusEnums.Paused) {
                 return; //We only want to listen to unpause commands in keyrelease
             }
 
-            if (gameState.getGameState() == GameStatusEnums.Dead) {
-                if (inputDelay >= DataClass.CONTROLLER_INPUT_COOLDOWN) {
-                    boardManager.initMainMenu();
-                    drawTimer.stop();
-                    inputDelay = 0;
-                    GameStatsTracker.getInstance().resetGameStatsTracker();
-                }
-            }
-
-            if (gameState.getGameState() == GameStatusEnums.SelectingRelic) {
-                //navigate left/right
-                if (inputDelay >= DataClass.CONTROLLER_INPUT_COOLDOWN) {
-                    if (e.getKeyCode() == KeyEvent.VK_LEFT || e.getKeyCode() == KeyEvent.VK_A) {
-                        navigateLeft();
-                    } else if (e.getKeyCode() == KeyEvent.VK_RIGHT || e.getKeyCode() == KeyEvent.VK_D) {
-                        navigateRight();
-                    } else if (e.getKeyCode() == KeyEvent.VK_ENTER && selectedComponent != null) {
-                        selectedComponent.activateComponent();
-                    }
-                    inputDelay = 0;
-                }
-            } else if (gameState.getGameState() == GameStatusEnums.Show_Level_Score_Card) {
-                if (inputDelay >= DataClass.CONTROLLER_INPUT_COOLDOWN) {
-                    gameState.setGameState(GameStatusEnums.Transition_To_Next_Stage);
-                    inputDelay = 0;
-                }
+            if (gameState.getGameState() == GameStatusEnums.SelectingRelic || gameState.getGameState() == GameStatusEnums.Show_Level_Score_Card) {
+                //MenuInput reads the keys on these screens; the ship does not get them
             } else {
-                if (playerManager.getAllSpaceShips().isEmpty()) {
-                    return;
-                }
+                SpaceShip spaceShip = findSeatOneSpaceShip();
 
-                SpaceShip spaceShip = playerManager.getAllSpaceShips().get(0);
-
-                if (spaceShip == null) { //multiplayer update allows for an empty list of spaceships, if there are no spaceships (the players died), return
-                    System.out.printf("GameBoard keyPressed: no spaceship found, returning\n");
+                if (spaceShip == null) { //seat 1 has no ship when its player died or joined after the level started
                     return;
                 }
                 spaceShip.keyPressed(e);
             }
         }
+    }
+
+    // The ship of seat 1, the one the keyboard steers. Dead ships leave the list, so the list index is not the seat.
+    private SpaceShip findSeatOneSpaceShip() {
+        for (SpaceShip spaceShip : playerManager.getAllSpaceShips()) {
+            if (spaceShip != null && spaceShip.getSeat() != null && spaceShip.getSeat().getNumber() == 1) {
+                return spaceShip;
+            }
+        }
+        return null;
     }
 
     private void navigateLeft() {
@@ -1223,70 +1199,101 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
         cursor.setCenterYCoordinate(selectedComponent.getCenterYCoordinate());
     }
 
+    private GameStatusEnums stateBeforePause = GameStatusEnums.Playing; //So a pause during the portal phase resumes there, not in Playing
+
+    private boolean isAnyLivingShipControlled() {
+        for (SpaceShip spaceShip : playerManager.getAllSpaceShips()) {
+            if (spaceShip.getSeat().hasController()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public void executeControllerInput() {
         if (boardManager == null) {
             boardManager = BoardManager.getInstance();
         }
 
+        //Disconnect pause: no living ship has a controller (or seat 1's keyboard), so nobody can play.
+        //Also while flying to the portal. Menu or P resumes it, joining does not.
+        GameStatusEnums currentState = gameState.getGameState();
+        if ((currentState == GameStatusEnums.Playing || currentState == GameStatusEnums.Level_Finished) && !isAnyLivingShipControlled()) {
+            stateBeforePause = currentState;
+            gameState.setGameState(GameStatusEnums.Paused);
+            audioManager.pauseAllAudio();
+        }
+
         if (!controllerManager.getControllerInputReaders().isEmpty()) { //if there are connected controllers, read their input
             //Pause or unpause
             if (controllerManager.isPausePressed()) {
-                if (gameState.getGameState().equals(GameStatusEnums.Playing) && gameState.isAllowedToPause()) {
+                if (gameState.getGameState().equals(GameStatusEnums.Playing)) {
+                    stateBeforePause = GameStatusEnums.Playing;
                     gameState.setGameState(GameStatusEnums.Paused);
                     audioManager.pauseAllAudio();
-                    inputDelay = 0;
-                } else if (gameState.getGameState().equals(GameStatusEnums.Paused) && inputDelay >= DataClass.CONTROLLER_INPUT_COOLDOWN) {
-                    gameState.setGameState(GameStatusEnums.Playing);
+                } else if (gameState.getGameState().equals(GameStatusEnums.Paused)) {
+                    gameState.setGameState(stateBeforePause);
                     audioManager.resumeAllAudio();
-                    inputDelay = 0;
-
-                }
-            }
-
-            //Check if we need to go to the main menu after dying
-            if (gameState.getGameState() == GameStatusEnums.Dead) {
-                controllerManager.pollControllers();
-                if (controllerManager.isFirePressed() && inputDelay >= DataClass.CONTROLLER_INPUT_COOLDOWN) {
-                    boardManager.initMainMenu();
-                    inputDelay = 0;
-                    GameStatsTracker.getInstance().resetGameStatsTracker();
-                    drawTimer.stop();
-                }
-                //Check if we need to go to the shop
-            } else if (gameState.getGameState() == GameStatusEnums.Show_Level_Score_Card) {
-                controllerManager.pollControllers();
-                if (controllerManager.isFirePressed() && inputDelay >= DataClass.CONTROLLER_INPUT_COOLDOWN) {
-                    gameState.setGameState(GameStatusEnums.Transition_To_Next_Stage);
-                    inputDelay = 0;
-                }
-            } else if (gameState.getGameState() == GameStatusEnums.SelectingRelic) {
-                controllerManager.pollControllers();
-                if (controllerManager.isFirePressed() && inputDelay >= DataClass.CONTROLLER_INPUT_COOLDOWN && selectedComponent != null) {
-                    selectedComponent.activateComponent();
-                    inputDelay = 0;
-                } else if (controllerManager.isPrimaryControllerLeftPressed() && inputDelay >= DataClass.CONTROLLER_INPUT_COOLDOWN) {
-                    if (isUsersFirstInputForRelicselection) {
-                        overRideFirstSelection();
-                        return; //exit early
-                    }
-                    navigateLeft();
-                    inputDelay = 0;
-                } else if (controllerManager.isPrimaryControllerRightPressed() && inputDelay >= DataClass.CONTROLLER_INPUT_COOLDOWN) {
-                    if (isUsersFirstInputForRelicselection) {
-                        overRideFirstSelection();
-                        return; //exit early
-                    }
-                    navigateRight();
-                    inputDelay = 0;
-                }
-
-            } else {
-                for (SpaceShip spaceShip : playerManager.getAllSpaceShips()) {
-                    spaceShip.update();
                 }
             }
         }
 
+        //The relic screen, score card and game over take their input from MenuInput, with or without a controller
+        GameStatusEnums menuScreenState = gameState.getGameState();
+        if (menuScreenState != lastMenuState) {
+            lastMenuState = menuScreenState;
+            if (menuScreenState == GameStatusEnums.SelectingRelic || menuScreenState == GameStatusEnums.Show_Level_Score_Card || menuScreenState == GameStatusEnums.Dead) {
+                MenuInput.getInstance().startScreen();
+            }
+        }
+        if (menuScreenState == GameStatusEnums.SelectingRelic || menuScreenState == GameStatusEnums.Show_Level_Score_Card || menuScreenState == GameStatusEnums.Dead) {
+            executeMenuScreenInput(menuScreenState);
+        }
+
+        //Ships always read their seat, whether or not a controller is connected right now
+        if (gameState.getGameState() != GameStatusEnums.Dead && gameState.getGameState() != GameStatusEnums.Show_Level_Score_Card && gameState.getGameState() != GameStatusEnums.SelectingRelic) {
+            for (SpaceShip spaceShip : playerManager.getAllSpaceShips()) {
+                spaceShip.update();
+            }
+        } else {
+            //Ships still move in these screens, so stop them; nothing reads their input here
+            for (SpaceShip spaceShip : playerManager.getAllSpaceShips()) {
+                spaceShip.stopMoving();
+            }
+        }
+    }
+
+    // The relic screen, score card and game over act on what MenuInput reports
+    private void executeMenuScreenInput(GameStatusEnums screenState) {
+        for (MenuAction action : MenuInput.getInstance().poll()) {
+            if (screenState == GameStatusEnums.SelectingRelic) {
+                if (action == MenuAction.LEFT) {
+                    if (isUsersFirstInputForRelicselection) {
+                        overRideFirstSelection(); //The first push only puts the cursor on the first relic
+                    } else {
+                        navigateLeft();
+                    }
+                } else if (action == MenuAction.RIGHT) {
+                    if (isUsersFirstInputForRelicselection) {
+                        overRideFirstSelection();
+                    } else {
+                        navigateRight();
+                    }
+                } else if (action == MenuAction.CONFIRM && selectedComponent != null) {
+                    selectedComponent.activateComponent();
+                    return;
+                }
+            } else if (action == MenuAction.ANY_BUTTON) {
+                if (screenState == GameStatusEnums.Show_Level_Score_Card) {
+                    gameState.setGameState(GameStatusEnums.Transition_To_Next_Stage);
+                } else {
+                    boardManager.initMainMenu();
+                    GameStatsTracker.getInstance().resetGameStatsTracker();
+                    drawTimer.stop();
+                }
+                return;
+            }
+        }
     }
 
     private void overRideFirstSelection() {
@@ -1294,7 +1301,6 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
         cursor.setCenterYCoordinate(relicSelectionGrid.get(0).getCenterYCoordinate());
         selectedComponent = relicSelectionGrid.get(0);
         isUsersFirstInputForRelicselection = false;
-        inputDelay = 0;
     }
 
     public void addGUIAnimation(GUIComponent incomingComponent) {
@@ -1324,7 +1330,6 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
         showRelicSelection = false;
         hasChosenRelic = true;
         isUsersFirstInputForRelicselection = false;
-        inputDelay = 0;
     }
 
     private boolean showRelicSelection = false;

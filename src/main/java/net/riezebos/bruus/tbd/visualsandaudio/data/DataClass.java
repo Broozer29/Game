@@ -12,7 +12,8 @@ public class DataClass {
 	private String textFont = "Lucida Grande";
     public static float maxResolutionFactor = 1.778f;
 
-    public static final int CONTROLLER_INPUT_COOLDOWN = 200;
+    public static final int MENU_REPEAT_FIRST_DELAY = 300; // ms a menu direction is held before it repeats
+    public static final int MENU_REPEAT_INTERVAL = 100; // ms between repeats after that
 
 	private DataClass() {
 	}
