@@ -43,12 +43,12 @@ Tests laser beam rotation and pile-ups of drone Electro Shred special attacks.
 | SideCannons | 1 | two extra lasers per shot |
 | Overclock | 4 | +120% attack speed, many more lasers |
 | AdvancedOptics | 4 | crits (50% chance) |
-| CriticalOverloadCapacitor | 2 | crit damage |
+| UpgradeOverload | 2 | crit damage |
 | FocusCrystal, PhotonPiercer | 3, 2 | laser damage, so enemies die and are replaced faster |
 | StickyDynamite | 2 | extra explosions on hit |
 | GuardianDrone | 8 | maximum drones (8) |
 | ModuleElectrify | 1 | every drone copies the Electro Shred (the follower-list code in `Drone.java`) |
-| ElectroShedding | 1 | Electro Shred permanently removes armor |
+| ElectroShredding | 1 | Electro Shred permanently removes armor |
 | ElectricSupercharger | 2 | bigger Electro Shred area and damage |
 | AnionInverter | 1 | -60% Electro Shred cooldown, so shreds pile up (cannot be combined with Electric Destabilizer in the shop) |
 | Battery | 3 | more special attack charges |
