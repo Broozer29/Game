@@ -3,6 +3,7 @@ package net.riezebos.bruus.tbd.guiboards.boards;
 import net.riezebos.bruus.tbd.controllerInput.ControllerInputEnums;
 import net.riezebos.bruus.tbd.controllerInput.ControllerInputReader;
 import net.riezebos.bruus.tbd.controllerInput.ControllerManager;
+import net.riezebos.bruus.tbd.controllerInput.ControllerNotices;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.items.PlayerInventory;
 import net.riezebos.bruus.tbd.game.level.LevelManager;
@@ -500,6 +501,8 @@ public class DifficultySelectionBoard extends JPanel implements TimerHolder {
                 for (OnScreenText text : OnScreenTextManager.getInstance().getOnScreenTexts()) {
                     drawText(g2d, text);
                 }
+
+                ControllerNotices.getInstance().draw(g2d);
             } finally {
                 g2d.dispose(); // Ensure resources are released
             }

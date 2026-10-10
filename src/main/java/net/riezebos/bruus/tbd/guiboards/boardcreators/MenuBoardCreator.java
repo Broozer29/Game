@@ -166,36 +166,6 @@ public class MenuBoardCreator {
         return textCollection;
     }
 
-    public static GUITextCollection foundControllerText(int foundController, GUIComponent titleImage){
-        GUITextCollection textCollection = null;
-        String text = null;
-        int yCoordinate = 0;
-        if(foundController > 0){
-            int xCoordinate = (DataClass.getInstance().getWindowWidth() / 2) - 100;
-            yCoordinate = titleImage.getYCoordinate() + titleImage.getHeight() + 10;
-            text = "FOUND " + foundController + " CONTROLLERS";
-            textCollection = new GUITextCollection(xCoordinate,yCoordinate,text);
-        }
-        else {
-            int xCoordinate = 100;
-            yCoordinate = titleImage.getYCoordinate() + titleImage.getHeight() + 10;
-            text = "NO CONTROLLER COULD BE FOUND. MAKE SURE THE CONTROLLER IS CONNECTED THEN RESTART";
-            textCollection = new GUITextCollection(xCoordinate,yCoordinate,text);
-
-        }
-
-        //Center it under the title image
-        textCollection.setScale(resolutionFactor);
-        GUIComponent lastComponent = textCollection.getComponents().get(textCollection.getComponents().size() - 1);
-        GUIComponent firstComponent = textCollection.getComponents().get(0);
-
-        int textCollectionWidth = (lastComponent.getXCoordinate() + lastComponent.getWidth() - firstComponent.getXCoordinate());
-        int newxCoordinate = titleImage.getCenterXCoordinate() - (textCollectionWidth / 2);
-        textCollection = new GUITextCollection(newxCoordinate, yCoordinate, text);
-        textCollection.setScale(resolutionFactor);
-        return textCollection;
-    }
-
     public static GUITextCollection testingButton(GUITextCollection openShopButton){
         GUIComponent component = openShopButton.getComponents().get(0);
         int xCoordinate = component.getXCoordinate();

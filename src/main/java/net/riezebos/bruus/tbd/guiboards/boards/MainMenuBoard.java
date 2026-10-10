@@ -4,6 +4,7 @@ import net.riezebos.bruus.tbd.DevTestSettings;
 import net.riezebos.bruus.tbd.controllerInput.ControllerInputEnums;
 import net.riezebos.bruus.tbd.controllerInput.ControllerInputReader;
 import net.riezebos.bruus.tbd.controllerInput.ControllerManager;
+import net.riezebos.bruus.tbd.controllerInput.ControllerNotices;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.gamestate.save.SaveManager;
 import net.riezebos.bruus.tbd.game.util.OnScreenText;
@@ -50,12 +51,10 @@ public class MainMenuBoard extends JPanel implements TimerHolder {
     private GUITextCollection selectDefaultMusicButton;
     private GUIComponent titleImage;
     private GUIComponent inputMapping;
-    private GUITextCollection foundController;
 
     private GUITextCollection closeGameButton;
 
     private Timer timer;
-    private int controllersConnected = 0;
     private boolean initializedMenuObjects = false;
     private ControllerInputReader controllerInputReader;
 
@@ -72,7 +71,6 @@ public class MainMenuBoard extends JPanel implements TimerHolder {
 
         logDiagnostic("MainMenuBoard constructor: Checking controllers...");
         if (controllers.getPrimaryController() != null) {
-            controllersConnected = controllers.getControllerInputReaders().size();
             controllerInputReader = controllers.getPrimaryController();
         }
 
@@ -106,7 +104,6 @@ public class MainMenuBoard extends JPanel implements TimerHolder {
         continueSaveFile = MenuBoardCreator.continueSaveFileButton(selectClassBoard);
         openShopButton = MenuBoardCreator.openShopButton(continueSaveFile);
         closeGameButton = MenuBoardCreator.testingButton(openShopButton);
-        foundController = MenuBoardCreator.foundControllerText(controllersConnected, titleImage);
 
         selectMusicOptionBackgroundCard = MenuBoardCreator.selectMusicPlayerBackgroundCard(startGameBackgroundCard);
         selectMusicOptionText = MenuBoardCreator.selectMusicText(selectMusicOptionBackgroundCard);
@@ -124,7 +121,6 @@ public class MainMenuBoard extends JPanel implements TimerHolder {
             openShopButton = MenuBoardCreator.openShopButton(selectClassBoard);
             continueSaveFile = MenuBoardCreator.continueSaveFileButton(openShopButton);
             closeGameButton = MenuBoardCreator.testingButton(continueSaveFile);
-            foundController = MenuBoardCreator.foundControllerText(controllersConnected, titleImage);
 
             animationManager.resetManager();
             firstColumn.clear();
@@ -149,12 +145,10 @@ public class MainMenuBoard extends JPanel implements TimerHolder {
             offTheGridObjects.add(menuCursor);
 //            offTheGridObjects.addAll(selectMusicOptionText.getComponents());
 
-            if (controllersConnected > 0) {
+            if (ControllerManager.getInstance().getPrimaryController() != null) {
                 offTheGridObjects.add(inputMapping);
             }
 
-
-            offTheGridObjects.addAll(foundController.getComponents());
             this.menuCursor.setSelectedMenuTile(selectClassBoard.getComponents().get(0));
 
             grid.add(firstColumn);
@@ -445,6 +439,8 @@ public class MainMenuBoard extends JPanel implements TimerHolder {
                 for (OnScreenText text : OnScreenTextManager.getInstance().getOnScreenTexts()) {
                     drawText(g2d, text);
                 }
+
+                ControllerNotices.getInstance().draw(g2d);
             } finally {
                 g2d.dispose(); // Ensure resources are released
             }

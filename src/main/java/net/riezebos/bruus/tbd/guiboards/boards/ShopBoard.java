@@ -3,6 +3,7 @@ package net.riezebos.bruus.tbd.guiboards.boards;
 import net.riezebos.bruus.tbd.controllerInput.ControllerInputEnums;
 import net.riezebos.bruus.tbd.controllerInput.ControllerInputReader;
 import net.riezebos.bruus.tbd.controllerInput.ControllerManager;
+import net.riezebos.bruus.tbd.controllerInput.ControllerNotices;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerClass;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
@@ -780,6 +781,8 @@ public class ShopBoard extends JPanel implements TimerHolder {
             for (SpriteAnimation animation : animationManager.getUpperAnimations()) {
                 drawAnimation(g2d, animation);
             }
+
+            ControllerNotices.getInstance().draw(g2d);
             animationManager.updateGameTick();
             backgroundManager.updateGameTick();
             Toolkit.getDefaultToolkit().sync();

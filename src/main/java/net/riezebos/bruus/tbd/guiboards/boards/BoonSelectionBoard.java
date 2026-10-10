@@ -3,6 +3,7 @@ package net.riezebos.bruus.tbd.guiboards.boards;
 import net.riezebos.bruus.tbd.controllerInput.ControllerInputEnums;
 import net.riezebos.bruus.tbd.controllerInput.ControllerInputReader;
 import net.riezebos.bruus.tbd.controllerInput.ControllerManager;
+import net.riezebos.bruus.tbd.controllerInput.ControllerNotices;
 import net.riezebos.bruus.tbd.game.gameobjects.player.boons.Boon;
 import net.riezebos.bruus.tbd.game.gameobjects.player.boons.BoonEnums;
 import net.riezebos.bruus.tbd.game.gameobjects.player.boons.BoonManager;
@@ -548,6 +549,7 @@ public class BoonSelectionBoard extends JPanel implements TimerHolder {
 
     public void executeControllerInput() {
         if (controllers.getPrimaryController() != null) {
+            controllerInputReader = controllers.getPrimaryController();
             boolean needsUpdate = false;
             controllerInputReader.pollController();
             long currentTime = System.currentTimeMillis();
@@ -630,6 +632,8 @@ public class BoonSelectionBoard extends JPanel implements TimerHolder {
                 for (OnScreenText text : OnScreenTextManager.getInstance().getOnScreenTexts()) {
                     drawText(g2d, text);
                 }
+
+                ControllerNotices.getInstance().draw(g2d);
             } finally {
                 g2d.dispose(); // Ensure resources are released
             }

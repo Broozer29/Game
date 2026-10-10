@@ -10,7 +10,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ControllerInputReader {
-    private ControllerIndex controller;
     private Map<ControllerInputEnums, Boolean> inputState = new HashMap<>();
 
     private float xAxisValue;
@@ -22,24 +21,34 @@ public class ControllerInputReader {
     private boolean holdFireButtonWasPressed = false;
     private boolean pauseButtonWasPressed = false;
     private boolean pausePressedSinceLastCheck = false;
-    private boolean disconnected = false;
+    private boolean waitingForRelease = false;
 
-    public ControllerInputReader(ControllerIndex controller) {
-        this.controller = controller;
+    public ControllerInputReader() {
         this.setSensitiveInput(false);
     }
 
     public void pollController() {
-        if (disconnected) {
+        // The controller clock in ControllerManager reads the controller; this stays so the callers keep working
+    }
+
+    // After joining a seat, the input that joined is ignored until everything is let go
+    void ignoreInputUntilReleased() {
+        waitingForRelease = true;
+    }
+
+    // Called by the controller clock every tick with the slot that holds this reader's controller
+    void readController(ControllerIndex controller) {
+        if (controller == null || !controller.isConnected()) {
+            resetInputStates();
             return;
         }
 
-        ControllerManager.getInstance().updateSdl();
-        if (!controller.isConnected()) {
-            resetInputStates();
-            disconnected = true;
-            System.out.println("Controller disconnected.");
-            return;
+        if (waitingForRelease) {
+            if (ControllerManager.isAnyInputActive(controller)) {
+                resetInputStates();
+                return;
+            }
+            waitingForRelease = false;
         }
 
         try {
@@ -82,7 +91,6 @@ public class ControllerInputReader {
             holdFireButtonWasPressed = holdFireButtonPressed;
         } catch (ControllerUnpluggedException e) {
             resetInputStates();
-            disconnected = true;
             System.out.println(e.getMessage() + " Controller disconnected.");
         }
     }

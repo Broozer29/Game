@@ -1,21 +1,33 @@
 package net.riezebos.bruus.tbd.controllerInput;
 
 import com.studiohartman.jamepad.Configuration;
+import com.studiohartman.jamepad.ControllerAxis;
+import com.studiohartman.jamepad.ControllerButton;
 import com.studiohartman.jamepad.ControllerIndex;
 import com.studiohartman.jamepad.ControllerUnpluggedException;
 
+import javax.swing.Timer;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class ControllerManager {
     private static ControllerManager instance = new ControllerManager();
-    private Map<Integer, ControllerInputReader> controllerInputReaders = new HashMap<>();
+    private static final int SEAT_COUNT = 4;
+    private static final int CONTROLLER_CLOCK_DELAY = 15;
+    private final List<Seat> seats = new ArrayList<>();
     private com.studiohartman.jamepad.ControllerManager sdlManager;
-    private ControllerInputReader primaryReader; //Multiplayer update: deze is nog nodig om te bepalen welke controller mag sturen in shop/menu en andere schermen. De "primaire" gebruiker.
+    private Configuration configuration;
+    private Timer controllerClock;
+    private boolean sensitiveInput = false; // the current screen's setting, so a controller that joins later gets it too
 
     private ControllerManager() {
+        for (int i = 1; i <= SEAT_COUNT; i++) {
+            seats.add(new Seat(i));
+        }
     }
 
     public static ControllerManager getInstance() {
@@ -23,11 +35,16 @@ public class ControllerManager {
     }
 
     public void initControllers() {
-        controllerInputReaders.clear();
-        primaryReader = null;
+        if (controllerClock != null) {
+            controllerClock.stop();
+            controllerClock = null;
+        }
+        for (Seat seat : seats) {
+            seat.clearController();
+        }
         sdlManager = null;
         long startTime = System.currentTimeMillis();
-        Configuration configuration = new Configuration();
+        configuration = new Configuration();
         try {
             com.studiohartman.jamepad.ControllerManager manager = new com.studiohartman.jamepad.ControllerManager(configuration);
             manager.initSDLGamepad();
@@ -39,42 +56,149 @@ public class ControllerManager {
         }
 
         if (sdlManager != null) {
+            // Every connected controller gets a seat, in slot order
             for (int slot = 0; slot < configuration.maxNumControllers; slot++) {
                 ControllerIndex controllerIndex = sdlManager.getControllerIndex(slot);
                 if (!controllerIndex.isConnected()) {
                     continue;
                 }
                 String name;
+                int deviceInstanceId;
                 try {
                     name = controllerIndex.getName();
+                    deviceInstanceId = controllerIndex.getDeviceInstanceID();
                 } catch (ControllerUnpluggedException e) {
                     continue;
                 }
-                logDiagnostic("Controllers:   pad in slot " + slot + ": " + name);
-                ControllerInputReader reader = new ControllerInputReader(controllerIndex);
-                controllerInputReaders.put(slot, reader);
-                if (primaryReader == null) {
-                    primaryReader = reader; // Only the first detected controller becomes primary
-                    System.out.println("First controller detected: " + name);
-                } else {
-                    System.out.println("Additional controller detected: " + name);
+                Seat seat = findFreeSeat();
+                if (seat == null) {
+                    logDiagnostic("Controllers:   controller in slot " + slot + " has no free seat: " + name);
+                    continue;
                 }
+                seat.setController(deviceInstanceId, new ControllerInputReader());
+                logDiagnostic("Controllers:   controller in slot " + slot + ", seat " + seat.getNumber() + ": " + name);
             }
         }
 
-        if (primaryReader == null) {
+        int seated = getControllerInputReaders().size();
+        if (seated == 0) {
             System.out.println("No controllers found.");
         } else {
-            System.out.println("ControllerManager initialized with " + controllerInputReaders.size() + " controllers.");
+            System.out.println("ControllerManager initialized with " + seated + " controllers.");
         }
-        logDiagnostic("Controllers: done in " + (System.currentTimeMillis() - startTime) + " ms, " + controllerInputReaders.size() + " controller(s) in use");
+        logDiagnostic("Controllers: done in " + (System.currentTimeMillis() - startTime) + " ms, " + seated + " controller(s) in use");
+
+        if (sdlManager != null) {
+            controllerClock = new Timer(CONTROLLER_CLOCK_DELAY, e -> controllerClockTick());
+            controllerClock.start();
+        }
     }
 
-    // Lets Jamepad read the pads' current state; the readers call this before they read their slot
-    void updateSdl() {
-        if (sdlManager != null) {
-            sdlManager.update();
+    // The controller clock: the only place that updates Jamepad and reads the controllers. Runs on the Swing thread.
+    private void controllerClockTick() {
+        sdlManager.update();
+
+        // Controllers connected now, by device instance id
+        Map<Integer, ControllerIndex> connected = new LinkedHashMap<>();
+        for (int slot = 0; slot < configuration.maxNumControllers; slot++) {
+            ControllerIndex controllerIndex = sdlManager.getControllerIndex(slot);
+            if (!controllerIndex.isConnected()) {
+                continue;
+            }
+            try {
+                connected.put(controllerIndex.getDeviceInstanceID(), controllerIndex);
+            } catch (ControllerUnpluggedException e) {
+                // Went away between the two calls; seen as not connected
+            }
         }
+
+        // A controller that disappeared leaves its seat
+        for (Seat seat : seats) {
+            if (seat.hasController() && !connected.containsKey(seat.getDeviceInstanceId())) {
+                seat.getReader().resetInputStates(); //So no direction or fire stays held on a ship that still holds this reader
+                seat.clearController();
+                ControllerNotices.getInstance().addNotice("CONTROLLER " + seat.getNumber() + " DISCONNECTED");
+                logDiagnostic("Controllers: controller left seat " + seat.getNumber());
+            }
+        }
+
+        // A free controller takes a seat on any input
+        Set<Integer> justJoined = new HashSet<>();
+        for (Map.Entry<Integer, ControllerIndex> entry : connected.entrySet()) {
+            if (findSeatOfController(entry.getKey()) != null) {
+                continue;
+            }
+            Seat seat = findFreeSeat();
+            if (seat == null) {
+                break; //No seat available, the free controllers wait
+            }
+            if (isAnyInputActive(entry.getValue())) {
+                ControllerInputReader reader = new ControllerInputReader();
+                reader.setSensitiveInput(sensitiveInput);
+                reader.resetInputStates();
+                reader.ignoreInputUntilReleased(); //So the joining input does not also confirm a menu or fire
+                seat.setController(entry.getKey(), reader);
+                justJoined.add(seat.getNumber());
+                ControllerNotices.getInstance().addNotice("CONTROLLER " + seat.getNumber() + " CONNECTED");
+                String name;
+                try {
+                    name = entry.getValue().getName();
+                } catch (ControllerUnpluggedException e) {
+                    name = "unknown";
+                }
+                logDiagnostic("Controllers: controller joined seat " + seat.getNumber() + ": " + name);
+            }
+        }
+
+        // Every seated reader reads its controller; slots shift, so the reader gets the slot that now holds its id
+        for (Seat seat : seats) {
+            if (seat.hasController() && !justJoined.contains(seat.getNumber())) {
+                seat.getReader().readController(connected.get(seat.getDeviceInstanceId()));
+            }
+        }
+    }
+
+    // The lowest seat that is in the run but has no controller, else the lowest seat without a controller
+    private Seat findFreeSeat() {
+        for (Seat seat : seats) {
+            if (seat.isInRun() && !seat.hasController()) {
+                return seat;
+            }
+        }
+        for (Seat seat : seats) {
+            if (!seat.hasController()) {
+                return seat;
+            }
+        }
+        return null;
+    }
+
+    private Seat findSeatOfController(int deviceInstanceId) {
+        for (Seat seat : seats) {
+            if (seat.hasController() && seat.getDeviceInstanceId() == deviceInstanceId) {
+                return seat;
+            }
+        }
+        return null;
+    }
+
+    // Any button, or a stick or trigger pushed past halfway, lets a free controller join
+    static boolean isAnyInputActive(ControllerIndex controllerIndex) {
+        try {
+            for (ControllerButton button : ControllerButton.values()) {
+                if (controllerIndex.isButtonPressed(button)) {
+                    return true;
+                }
+            }
+            for (ControllerAxis axis : ControllerAxis.values()) {
+                if (Math.abs(controllerIndex.getAxisState(axis)) > 0.5f) {
+                    return true;
+                }
+            }
+        } catch (ControllerUnpluggedException e) {
+            // Gone again; the next tick sees it as not connected
+        }
+        return false;
     }
 
     private void logDiagnostic(String message) {
@@ -90,22 +214,35 @@ public class ControllerManager {
     }
 
     public List<ControllerInputReader> getControllerInputReaders() {
-        return new ArrayList<>(controllerInputReaders.values());
+        List<ControllerInputReader> readers = new ArrayList<>();
+        for (Seat seat : seats) {
+            if (seat.hasController()) {
+                readers.add(seat.getReader());
+            }
+        }
+        return readers;
     }
 
     public void setControllerSensitive(boolean sensitive) {
-        for (ControllerInputReader inputReader : controllerInputReaders.values()) {
+        this.sensitiveInput = sensitive;
+        for (ControllerInputReader inputReader : getControllerInputReaders()) {
             inputReader.setSensitiveInput(sensitive);
         }
     }
 
+    // The reader of the main seat: the lowest seat that has a controller. Worked out each time, so the menus follow the main seat when it changes.
     public ControllerInputReader getPrimaryController() {
-        return primaryReader;
+        for (Seat seat : seats) {
+            if (seat.hasController()) {
+                return seat.getReader();
+            }
+        }
+        return null;
     }
 
     public boolean isPausePressed(){
         boolean pressed = false;
-        for(ControllerInputReader controllerInputReader : controllerInputReaders.values()){
+        for(ControllerInputReader controllerInputReader : getControllerInputReaders()){
             if(controllerInputReader.consumePausePress()){
                 pressed = true; //true if 1 of them pressed it; every reader is asked so no old press is left behind
             }
@@ -114,7 +251,7 @@ public class ControllerManager {
     }
 
     public boolean isFirePressed(){
-        for(ControllerInputReader controllerInputReader : controllerInputReaders.values()){
+        for(ControllerInputReader controllerInputReader : getControllerInputReaders()){
             if(controllerInputReader.isInputActive(ControllerInputEnums.FIRE)){
                 return true; //return true if 1 of them has it pressed,
             }
@@ -123,22 +260,24 @@ public class ControllerManager {
     }
 
     public boolean isPrimaryControllerLeftPressed(){
-        return getPrimaryController().isInputActive(ControllerInputEnums.MOVE_LEFT);
+        ControllerInputReader primary = getPrimaryController();
+        return primary != null && primary.isInputActive(ControllerInputEnums.MOVE_LEFT);
     }
 
     public boolean isPrimaryControllerRightPressed(){
-        return getPrimaryController().isInputActive(ControllerInputEnums.MOVE_RIGHT);
+        ControllerInputReader primary = getPrimaryController();
+        return primary != null && primary.isInputActive(ControllerInputEnums.MOVE_RIGHT);
     }
 
     //Required because controllerInput is not read after the spaceship dies, thus if all players are dead and game over screen is shown, this method is needed to continue
     public void pollControllers(){
-        for(ControllerInputReader controllerInputReader : controllerInputReaders.values()){
+        for(ControllerInputReader controllerInputReader : getControllerInputReaders()){
             controllerInputReader.pollController();
         }
     }
 
     public void resetInputStates(){
-        for(ControllerInputReader controllerInputReader : controllerInputReaders.values()){
+        for(ControllerInputReader controllerInputReader : getControllerInputReaders()){
             controllerInputReader.resetInputStates();
         }
     }

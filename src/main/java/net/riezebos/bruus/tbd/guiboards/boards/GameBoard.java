@@ -2,6 +2,7 @@ package net.riezebos.bruus.tbd.guiboards.boards;
 
 import net.riezebos.bruus.tbd.DevTestSettings;
 import net.riezebos.bruus.tbd.controllerInput.ControllerManager;
+import net.riezebos.bruus.tbd.controllerInput.ControllerNotices;
 import net.riezebos.bruus.tbd.game.UI.GameBoardCreator;
 import net.riezebos.bruus.tbd.game.UI.UIObject;
 import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
@@ -281,6 +282,8 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
                 drawImage(g2d, healthBarComponent);
             }
         }
+
+        ControllerNotices.getInstance().draw(g2d);
 
         Toolkit.getDefaultToolkit().sync();
     }
