@@ -56,6 +56,7 @@ import net.riezebos.bruus.tbd.guiboards.background.BackgroundManager;
 import net.riezebos.bruus.tbd.guiboards.background.BackgroundObject;
 import net.riezebos.bruus.tbd.guiboards.guicomponents.BossHealthBar;
 import net.riezebos.bruus.tbd.guiboards.guicomponents.GUIComponent;
+import net.riezebos.bruus.tbd.guiboards.guicomponents.PauseWindow;
 import net.riezebos.bruus.tbd.visualsandaudio.data.DataClass;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.AudioDatabase;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.AudioManager;
@@ -116,6 +117,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
 
     private List<GUIComponent> floatingIcons = new ArrayList<>();
     private List<BossHealthBar> bossHealthBars = new ArrayList<>();
+    private PauseWindow pauseWindow;
 
     private List<GUIComponent> relicBackgroundCards = new ArrayList<>();
     private List<GUIComponent> relicSelectionGrid = new ArrayList<>();
@@ -161,6 +163,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
         PlayerManager.getInstance().resetManager();
         PlayerManager.getInstance().createSpaceShip();
         gameUICreator.createGameBoardGUI();
+        this.pauseWindow = new PauseWindow();
         gameState.setGameState(GameStatusEnums.Zoning_In);
         GameState.getInstance().resetForNextLevel();
         lastMenuState = null;
@@ -615,11 +618,9 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
         }
 
         if (gameState.getGameState().equals(GameStatusEnums.Paused)) {
-            g.setFont(new Font(DataClass.getInstance().getTextFont(), Font.BOLD, Math.round(50 * DataClass.getInstance().getResolutionFactor())));
-            g.setColor(Color.WHITE);
-            g.drawString("PAUSED",
-                    DataClass.getInstance().getWindowWidth() * 0.43f, //todo hardcoded magic number that needs to be dynamically calculated based on text width
-                    DataClass.getInstance().getWindowHeight() / 2);
+            for (GUIComponent component : pauseWindow.getComponents()) {
+                drawGUIComponent(g, component);
+            }
         }
 
 

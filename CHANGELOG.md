@@ -8,6 +8,8 @@ All notable changes on the `Nelis` branch.
 - docs/claude-changelog.md: one changelog of everything present today since the `Nelis` branch was created, with changes that were later undone left out, and Bruus's merged changes in their own section.
 
 ### Changed
+- Pausing now shows a small window in the middle of the screen, in the style of the main menu, with "PAUSED" in the menu letters. The game stays visible around it.
+- Up to 16 controllers can be connected at once (was 8); the limit comes from the Jamepad library, which watches a fixed number of controller slots.
 - docs/claude-changelog.md is rewritten for players: grouped by topic (controls, performance, items, classes, enemies and bosses, bug fixes), without technical terms, with a short section for developers.
 - Menus now react the moment you press a key, instead of when you let go. The arrow keys, Space and Escape work in every menu, next to W, A, S, D, Enter and the controller.
 - In menus, one push of the stick moves one slot, and holding it scrolls after a short wait. The d-pad works in every menu, including the relic screen, and the relic cursor reacts at once.

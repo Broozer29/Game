@@ -6,7 +6,7 @@ Everything that changed since 5 October 2026.
 
 - Plug controllers in and out while playing. Press any button on a new controller to join.
 - A short message shows when a controller connects or disconnects.
-- Up to 8 players: every level starts with one ship per controller.
+- Every level starts with one ship per connected controller.
 - Lost your controller mid-level? Reconnect it to take your ship back. A controller that joins
   mid-level plays from the next level.
 - The game pauses when no living player has a controller. Press P or Menu to continue.
@@ -15,6 +15,12 @@ Everything that changed since 5 October 2026.
 - The keyboard controls player 1, also when controllers are connected.
 - New: press E on the keyboard to toggle auto attack (Captain).
 - Pausing reacts instantly and works at any moment during play.
+- Pausing shows a small window in the middle of the screen.
+- Menus react the moment you press a key. Arrow keys move, Space confirms and Escape goes back.
+- In menus, one push of the stick or d-pad moves one step; hold it to scroll. The d-pad also
+  works on the relic screen.
+- A button you are still holding from the previous screen no longer does anything on the next one.
+- The score card and the game-over screen continue on any key or controller button except the d-pad.
 - Only player 1 confirms the relic choice, the level score and the game-over screen.
 
 ## Performance

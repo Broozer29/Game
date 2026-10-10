@@ -40,7 +40,7 @@ public class ControllerManager {
         sdlManager = null;
         long startTime = System.currentTimeMillis();
         configuration = new Configuration();
-        configuration.maxNumControllers = 8;
+        configuration.maxNumControllers = 16; //Jamepad watches a fixed number of slots; seats themselves have no limit
         try {
             com.studiohartman.jamepad.ControllerManager manager = new com.studiohartman.jamepad.ControllerManager(configuration);
             manager.initSDLGamepad();
