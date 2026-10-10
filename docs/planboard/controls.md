@@ -2,8 +2,6 @@
 Keyboard and controller input.
 
 ## Bugs
-- Investigate controller disconnect issues
-  - Since 2026-10-10 controllers can join and leave while the game runs (seats); ships, the player count and the disconnect pause follow in the next step
 - Nelis' brother reports frequent crashes when the game keeps checking for a controller (2026-10-06); earlier proposed fixes didn't help
   - The cause is still unknown; since 2026-10-10 a 15 ms controller clock checks for controllers through Jamepad
   - Needed from him: the `hs_err_pid*.log` file from the game folder, `java -version` output, OS, controller model and connection (USB, Bluetooth, dongle), whether it crashes with no controller plugged in, when it crashes (startup, menu, mid-game, after unplugging or sleep), how he launches the game, his error_log.txt, and his startup_log.txt (it lists the controllers the game found)

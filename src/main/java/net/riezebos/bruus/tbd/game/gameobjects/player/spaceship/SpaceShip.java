@@ -3,6 +3,7 @@ package net.riezebos.bruus.tbd.game.gameobjects.player.spaceship;
 import net.riezebos.bruus.tbd.DevTestSettings;
 import net.riezebos.bruus.tbd.controllerInput.ControllerInputEnums;
 import net.riezebos.bruus.tbd.controllerInput.ControllerInputReader;
+import net.riezebos.bruus.tbd.controllerInput.Seat;
 import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
 import net.riezebos.bruus.tbd.game.gameobjects.friendlies.FriendlyManager;
 import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.droneTypes.DroneTypes;
@@ -59,7 +60,6 @@ public class SpaceShip extends GameObject {
     private float knockbackDamping = 0.9f;  // How quickly knockback reduces each update
 
     private float currentShieldRegenDelayFrame;
-    private boolean controlledByKeyboard = true;
     private Set<Integer> pressedKeys = new HashSet<>();
     private boolean isImmune;
     private boolean isAllowedToAttack = true;
@@ -103,19 +103,17 @@ public class SpaceShip extends GameObject {
     private int droneOrbitRadius = 85;
     private DroneTypes droneTypes = DroneTypes.Missile;
 
-    private ControllerInputReader controllerInputReader;
+    private Seat seat;
 
-    public SpaceShip(SpriteConfiguration spriteConfiguration) {
+    public SpaceShip(SpriteConfiguration spriteConfiguration, Seat seat) {
         super(spriteConfiguration);
         playerStats = PlayerStats.getInstance();
+        this.seat = seat;
         initShip();
     }
 
-    public SpaceShip(SpriteConfiguration spriteConfiguration, ControllerInputReader controllerInputReader) {
-        super(spriteConfiguration);
-        playerStats = PlayerStats.getInstance();
-        this.controllerInputReader = controllerInputReader;
-        initShip();
+    public Seat getSeat() {
+        return seat;
     }
 
     //This method should only be used to bring the player back after dying, not as a general "reset"
@@ -551,14 +549,6 @@ public class SpaceShip extends GameObject {
         bounds.setBounds(xCoordinate + xOffset, yCoordinate + yOffset, width, height);
         this.currentLocation = new Point(this.xCoordinate, this.yCoordinate);
 
-        // Reset directions if controlled by keyboard
-        if (!controlledByKeyboard) {
-            haltMoveDown();
-            haltMoveLeft();
-            haltMoveRight();
-            haltMoveUp();
-        }
-
         if (this.exhaustAnimation != null) {
             this.exhaustAnimation.setXCoordinate(this.xCoordinate - (exhaustAnimation.getWidth() / 2));
             this.exhaustAnimation.setYCoordinate(this.getCenterYCoordinate() - (this.exhaustAnimation.getHeight() / 2) + 3);
@@ -723,13 +713,16 @@ public class SpaceShip extends GameObject {
 
 
     public synchronized void keyPressed(KeyEvent e) {
+        // E toggles auto attack, once per press (holding E repeats the key event), with the same 1 s guard as LB
+        if (e.getKeyCode() == KeyEvent.VK_E && !pressedKeys.contains(KeyEvent.VK_E)
+                && GameState.getInstance().getGameSeconds() - lastGameSecondsKeyboardHoldFireToggled > 1) {
+            lastGameSecondsKeyboardHoldFireToggled = GameState.getInstance().getGameSeconds();
+            keyboardHoldFire = !keyboardHoldFire;
+        }
         pressedKeys.add(e.getKeyCode());
         if (!pressedKeys.isEmpty()) {
             for (Iterator<Integer> it = pressedKeys.iterator(); it.hasNext(); ) {
                 switch (it.next()) {
-                    case (KeyEvent.VK_SPACE):
-                        startPrimaryFiring();
-                        break;
                     case (KeyEvent.VK_A):
                     case (KeyEvent.VK_LEFT):
                         moveLeftQuick(1);
@@ -778,9 +771,6 @@ public class SpaceShip extends GameObject {
         pressedKeys.remove(e.getKeyCode());
         int key = e.getKeyCode();
 
-        if (key == KeyEvent.VK_SPACE) {
-            haltPrimaryFiring();
-        }
         if (key == KeyEvent.VK_A || key == KeyEvent.VK_LEFT) {
             haltMoveLeft();
         }
@@ -798,48 +788,76 @@ public class SpaceShip extends GameObject {
         }
     }
 
-    // Called by GameBoard every loop if a controller is connected
+    // Called by GameBoard every loop. The ship reads its seat's current controller, so a controller that left and came back drives it again.
     private boolean isFiringPrimary = false;
+    private boolean keyboardHoldFire = false;
+    private double lastGameSecondsKeyboardHoldFireToggled = 0;
     private boolean isFiringSecondary = false;
 
     public void update() {
-        controlledByKeyboard = false;
-        controllerInputReader.pollController();
+        ControllerInputReader controllerInputReader = seat.getReader(); //null when the seat has no real controller
+        if (controllerInputReader != null) {
+            controllerInputReader.pollController();
+        }
+
+        // Direction is worked out from scratch each tick: the stick where it steers, else (seat 1 only) the held keys, else standing still
+        boolean keyboardSeat = seat.getNumber() == 1;
+        directionx = 0;
+        directiony = 0;
+
+        if (controllerInputReader != null && controllerInputReader.isInputActive(ControllerInputEnums.MOVE_LEFT)) {
+            moveLeftQuick(controllerInputReader.getxAxisValue());
+        } else if (controllerInputReader != null && controllerInputReader.isInputActive(ControllerInputEnums.MOVE_RIGHT)) {
+            moveRightQuick(controllerInputReader.getxAxisValue());
+        } else if (keyboardSeat) {
+            boolean left = pressedKeys.contains(KeyEvent.VK_A) || pressedKeys.contains(KeyEvent.VK_LEFT);
+            boolean right = pressedKeys.contains(KeyEvent.VK_D) || pressedKeys.contains(KeyEvent.VK_RIGHT);
+            if (left && !right) {
+                moveLeftQuick(1);
+            } else if (right && !left) {
+                moveRightQuick(1);
+            }
+        }
+
+        if (controllerInputReader != null && controllerInputReader.isInputActive(ControllerInputEnums.MOVE_UP)) {
+            moveUpQuick(controllerInputReader.getyAxisValue());
+        } else if (controllerInputReader != null && controllerInputReader.isInputActive(ControllerInputEnums.MOVE_DOWN)) {
+            moveDownQuick(controllerInputReader.getyAxisValue());
+        } else if (keyboardSeat) {
+            boolean up = pressedKeys.contains(KeyEvent.VK_W) || pressedKeys.contains(KeyEvent.VK_UP);
+            boolean down = pressedKeys.contains(KeyEvent.VK_S) || pressedKeys.contains(KeyEvent.VK_DOWN);
+            if (up && !down) {
+                moveUpQuick(1);
+            } else if (down && !up) {
+                moveDownQuick(1);
+            }
+        }
+
+        // Firing: the controller's A or auto attack, and for seat 1 also space held or the keyboard's auto attack (E)
+        boolean captain = PlayerStats.getInstance().getPlayerClass().equals(PlayerClass.Captain);
+        boolean fireHeld = (controllerInputReader != null && controllerInputReader.isInputActive(ControllerInputEnums.FIRE))
+                || (keyboardSeat && pressedKeys.contains(KeyEvent.VK_SPACE));
+        boolean autoAttack = captain && ((controllerInputReader != null && controllerInputReader.isInputActive(ControllerInputEnums.HOLD_FIRE))
+                || (keyboardSeat && keyboardHoldFire));
+        boolean specialHeld = controllerInputReader != null && controllerInputReader.isInputActive(ControllerInputEnums.SPECIAL_ATTACK);
 
         if (GameState.getInstance().getGameState() != GameStatusEnums.Paused && GameState.getInstance().getGameState() != GameStatusEnums.Dying) {
-            if (controllerInputReader.isInputActive(ControllerInputEnums.MOVE_LEFT)) {
-                moveLeftQuick(controllerInputReader.getxAxisValue());
-            }
-
-            if (controllerInputReader.isInputActive(ControllerInputEnums.MOVE_RIGHT)) {
-                moveRightQuick(controllerInputReader.getxAxisValue());
-            }
-
-            if (controllerInputReader.isInputActive(ControllerInputEnums.MOVE_UP)) {
-                moveUpQuick(controllerInputReader.getyAxisValue());
-            }
-
-            if (controllerInputReader.isInputActive(ControllerInputEnums.MOVE_DOWN)) {
-                moveDownQuick(controllerInputReader.getyAxisValue());
-            }
-
-            if (controllerInputReader.isInputActive(ControllerInputEnums.FIRE) || (controllerInputReader.isInputActive(ControllerInputEnums.HOLD_FIRE) && PlayerStats.getInstance().getPlayerClass().equals(PlayerClass.Captain))) {
+            if (fireHeld || autoAttack) {
                 startPrimaryFiring();
                 isFiringPrimary = true;
             }
-            if (controllerInputReader.isInputActive(ControllerInputEnums.SPECIAL_ATTACK)) {
+            if (specialHeld) {
                 fireSpecialAttack();
                 isFiringSecondary = true;
             }
         }
 
-
-        if (isFiringPrimary && !controllerInputReader.isInputActive(ControllerInputEnums.FIRE)) {
+        if (isFiringPrimary && !fireHeld) {
             haltPrimaryFiring();
             isFiringPrimary = false;
         }
 
-        if (isFiringSecondary && !controllerInputReader.isInputActive(ControllerInputEnums.SPECIAL_ATTACK)) {
+        if (isFiringSecondary && !specialHeld) {
             haltSecondaryFiring();
             isFiringSecondary = false;
         }
@@ -847,6 +865,11 @@ public class SpaceShip extends GameObject {
 
     private void moveLeftQuick(float multiplier) {
         directionx = -(Math.abs(multiplier) * this.getMovementSpeed());
+    }
+
+    public void stopMoving() {
+        directionx = 0;
+        directiony = 0;
     }
 
     private void haltMoveLeft() {
@@ -1137,12 +1160,12 @@ public class SpaceShip extends GameObject {
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
         SpaceShip spaceShip = (SpaceShip) o;
-        return Objects.equals(controllerInputReader, spaceShip.controllerInputReader);
+        return Objects.equals(seat, spaceShip.seat);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), controllerInputReader);
+        return Objects.hash(super.hashCode(), seat);
     }
 
     public boolean isAllowedToAttack() {
