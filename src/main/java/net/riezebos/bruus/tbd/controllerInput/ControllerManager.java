@@ -1,7 +1,8 @@
 package net.riezebos.bruus.tbd.controllerInput;
 
-import net.java.games.input.Controller;
-import net.java.games.input.ControllerEnvironment;
+import com.studiohartman.jamepad.Configuration;
+import com.studiohartman.jamepad.ControllerIndex;
+import com.studiohartman.jamepad.ControllerUnpluggedException;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -11,6 +12,7 @@ import java.util.Map;
 public class ControllerManager {
     private static ControllerManager instance = new ControllerManager();
     private Map<Integer, ControllerInputReader> controllerInputReaders = new HashMap<>();
+    private com.studiohartman.jamepad.ControllerManager sdlManager;
     private ControllerInputReader primaryReader; //Multiplayer update: deze is nog nodig om te bepalen welke controller mag sturen in shop/menu en andere schermen. De "primaire" gebruiker.
 
     private ControllerManager() {
@@ -23,44 +25,41 @@ public class ControllerManager {
     public void initControllers() {
         controllerInputReaders.clear();
         primaryReader = null;
+        sdlManager = null;
         long startTime = System.currentTimeMillis();
+        Configuration configuration = new Configuration();
         try {
-            Thread.sleep(500); // Allow time for initialization
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+            com.studiohartman.jamepad.ControllerManager manager = new com.studiohartman.jamepad.ControllerManager(configuration);
+            manager.initSDLGamepad();
+            sdlManager = manager;
+            logDiagnostic("Controllers: SDL started in " + (System.currentTimeMillis() - startTime) + " ms");
+        } catch (Throwable e) {
+            System.out.println("Could not start the controller library: " + e.getMessage());
+            logDiagnostic("Controllers: could not start SDL after " + (System.currentTimeMillis() - startTime) + " ms: " + e);
         }
-        long stepStart = System.currentTimeMillis();
-        logDiagnostic("Controllers: sleep took " + (stepStart - startTime) + " ms");
 
-
-        Controller[] controllers;
-        try {
-            ControllerEnvironment environment = ControllerEnvironment.getDefaultEnvironment();
-            logDiagnostic("Controllers: JInput environment loaded in " + (System.currentTimeMillis() - stepStart) + " ms");
-            stepStart = System.currentTimeMillis();
-            controllers = environment.getControllers();
-            logDiagnostic("Controllers: device list read in " + (System.currentTimeMillis() - stepStart) + " ms, " + controllers.length + " devices");
-        } catch (LinkageError e) {
-            System.out.println("Could not load the controller library: " + e.getMessage());
-            logDiagnostic("Controllers: could not load the controller library after " + (System.currentTimeMillis() - stepStart) + " ms");
-            controllers = new Controller[0];
-        }
-        int index = 0;
-
-        for (Controller controller : controllers) {
-            boolean used = controller.getType() == Controller.Type.GAMEPAD || controller.getType() == Controller.Type.STICK;
-            logDiagnostic("Controllers:   device \"" + controller.getName() + "\" type " + controller.getType() + ", " + (used ? "used" : "skipped"));
-            if (used) {
-                ControllerInputReader reader = new ControllerInputReader(controller);
-                controllerInputReaders.put(index, reader);
+        if (sdlManager != null) {
+            for (int slot = 0; slot < configuration.maxNumControllers; slot++) {
+                ControllerIndex controllerIndex = sdlManager.getControllerIndex(slot);
+                if (!controllerIndex.isConnected()) {
+                    continue;
+                }
+                String name;
+                try {
+                    name = controllerIndex.getName();
+                } catch (ControllerUnpluggedException e) {
+                    continue;
+                }
+                logDiagnostic("Controllers:   pad in slot " + slot + ": " + name);
+                ControllerInputReader reader = new ControllerInputReader(controllerIndex);
+                controllerInputReaders.put(slot, reader);
                 if (primaryReader == null) {
                     primaryReader = reader; // Only the first detected controller becomes primary
-                    System.out.println("First controller detected: " + controller.getName());
+                    System.out.println("First controller detected: " + name);
                 } else {
-                    System.out.println("Additional controller detected: " + controller.getName());
+                    System.out.println("Additional controller detected: " + name);
                 }
             }
-            index++;
         }
 
         if (primaryReader == null) {
@@ -69,6 +68,13 @@ public class ControllerManager {
             System.out.println("ControllerManager initialized with " + controllerInputReaders.size() + " controllers.");
         }
         logDiagnostic("Controllers: done in " + (System.currentTimeMillis() - startTime) + " ms, " + controllerInputReaders.size() + " controller(s) in use");
+    }
+
+    // Lets Jamepad read the pads' current state; the readers call this before they read their slot
+    void updateSdl() {
+        if (sdlManager != null) {
+            sdlManager.update();
+        }
     }
 
     private void logDiagnostic(String message) {
@@ -98,12 +104,13 @@ public class ControllerManager {
     }
 
     public boolean isPausePressed(){
+        boolean pressed = false;
         for(ControllerInputReader controllerInputReader : controllerInputReaders.values()){
-            if(controllerInputReader.isInputActive(ControllerInputEnums.PAUSE)){
-                return true; //return true if 1 of them has it pressed,
+            if(controllerInputReader.consumePausePress()){
+                pressed = true; //true if 1 of them pressed it; every reader is asked so no old press is left behind
             }
         }
-        return false;
+        return pressed;
     }
 
     public boolean isFirePressed(){
@@ -128,10 +135,6 @@ public class ControllerManager {
         for(ControllerInputReader controllerInputReader : controllerInputReaders.values()){
             controllerInputReader.pollController();
         }
-    }
-
-    public void requestControl(ControllerInputReader controllerInputReader) {
-        this.primaryReader = controllerInputReader;
     }
 
     public void resetInputStates(){

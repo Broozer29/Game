@@ -40,7 +40,13 @@ public class Game {
             detectHardwareAcceleration();
 
             logDiagnostic("OpenGL enabled: " + System.getProperty("sun.java2d.opengl"));
-            ControllerManager.getInstance().initControllers();
+            try {
+                EventQueue.invokeAndWait(() -> ControllerManager.getInstance().initControllers());
+            } catch (Exception e) {
+                // invokeAndWait wraps the real error, so log its cause
+                Throwable cause = e.getCause() != null ? e.getCause() : e;
+                logDiagnostic("Controllers: could not run on the event thread: " + cause);
+            }
             Platform.startup(() -> {
                 // This initializes the JavaFX application thread, which is needed for MediaPlayer
             });

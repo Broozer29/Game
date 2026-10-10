@@ -90,13 +90,17 @@ public class MenuBoardCreator {
         wasdExplanation.setScale(resolutionFactor);
         controlExplanations.add(wasdExplanation);
 
-        GUITextCollection attackExplanation = new GUITextCollection(xCoordinate, yCoordinate + Math.round(20 * resolutionFactor), "SPACEBAR OR X = NORMAL ATTACK");
+        GUITextCollection attackExplanation = new GUITextCollection(xCoordinate, yCoordinate + Math.round(20 * resolutionFactor), "SPACEBAR OR A = NORMAL ATTACK");
         attackExplanation.setScale(resolutionFactor);
         controlExplanations.add(attackExplanation);
 
-        GUITextCollection specialExplanation = new GUITextCollection(xCoordinate, yCoordinate + Math.round(40 * resolutionFactor), "ENTER OR Y = SPECIAL ATTACK");
+        GUITextCollection specialExplanation = new GUITextCollection(xCoordinate, yCoordinate + Math.round(40 * resolutionFactor), "ENTER OR B = SPECIAL ATTACK");
         specialExplanation.setScale(resolutionFactor);
         controlExplanations.add(specialExplanation);
+
+        GUITextCollection pauseExplanation = new GUITextCollection(xCoordinate, yCoordinate + Math.round(60 * resolutionFactor), "P OR MENU BUTTON = PAUSE");
+        pauseExplanation.setScale(resolutionFactor);
+        controlExplanations.add(pauseExplanation);
 
         return controlExplanations;
     }

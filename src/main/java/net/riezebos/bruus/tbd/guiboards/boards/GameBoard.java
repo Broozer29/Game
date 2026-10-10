@@ -1140,7 +1140,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
             spaceShip.keyReleased(e);
 
             if (e.getKeyCode() == (KeyEvent.VK_P)) {
-                if (gameState.getGameState().equals(GameStatusEnums.Playing) && gameState.isAllowedToPause()) {
+                if (gameState.getGameState().equals(GameStatusEnums.Playing)) {
                     gameState.setGameState(GameStatusEnums.Paused);
                     audioManager.pauseAllAudio();
                 } else if (gameState.getGameState().equals(GameStatusEnums.Paused)) {
@@ -1231,11 +1231,11 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
         if (!controllerManager.getControllerInputReaders().isEmpty()) { //if there are connected controllers, read their input
             //Pause or unpause
             if (controllerManager.isPausePressed()) {
-                if (gameState.getGameState().equals(GameStatusEnums.Playing) && gameState.isAllowedToPause()) {
+                if (gameState.getGameState().equals(GameStatusEnums.Playing)) {
                     gameState.setGameState(GameStatusEnums.Paused);
                     audioManager.pauseAllAudio();
                     inputDelay = 0;
-                } else if (gameState.getGameState().equals(GameStatusEnums.Paused) && inputDelay >= DataClass.CONTROLLER_INPUT_COOLDOWN) {
+                } else if (gameState.getGameState().equals(GameStatusEnums.Paused)) {
                     gameState.setGameState(GameStatusEnums.Playing);
                     audioManager.resumeAllAudio();
                     inputDelay = 0;

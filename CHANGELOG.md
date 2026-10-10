@@ -5,7 +5,14 @@ All notable changes on the `Nelis` branch.
 ## 2026-10-10
 
 ### Added
-- The startup log (startup_log.txt) now shows how long each controller detection step takes (the fixed wait, loading the controller library, reading the device list) and lists every device found, with whether the game uses it as a controller. Controllers work as before.
+- The startup log (startup_log.txt) now shows how long starting the controller library takes and lists the controllers found. If the controller library cannot be started, the log also says why.
+
+### Changed
+- Dev tooling: the test saves use the item names from Bruus's balance update (Upgrade: Overload, Electro Shredding); with the old names CONTINUE RUN quietly started an empty run. The launch configurations and CLAUDE.md no longer pass `-Djava.library.path`.
+- Controllers now go through Jamepad (SDL2) instead of JInput. Pause on a controller works on the Menu button, the special attack is on B only, pausing no longer hands menu control to that controller, and the d-pad moves the cursor in menus. The game no longer needs the native libraries folder or `-Djava.library.path`, and start-up skips the half-second controller wait. More controller brands are recognised, because the game ships SDL's community controller list. Pause on the pad and on P now reacts at once. The controls text in the main menu now names A for attack, B for special attack and P or the Menu button for pause.
+- Planboard: the controller disconnect entry drops the note about button numbers, and the build setup entries drop the JInput and native-plugin notes.
+- Planboard: the request to Nelis's brother now also asks for his startup_log.txt, which lists the controllers the game found.
+- Planboard: new entries for auto attack sometimes stopping for a level, a controls menu for rebinding buttons, the outdated controls picture, choosing hardware acceleration in the game, and one shared startup logger; the relic-selection entry adds the shop skipping two slots and the agreed fix; a question for Bruus about the removed pause wait.
 
 ## 2026-10-09
 

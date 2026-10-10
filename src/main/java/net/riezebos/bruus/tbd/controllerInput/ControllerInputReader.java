@@ -1,16 +1,16 @@
 package net.riezebos.bruus.tbd.controllerInput;
 
-import net.java.games.input.Component;
-import net.java.games.input.Controller;
-import net.java.games.input.Event;
-import net.java.games.input.EventQueue;
+import com.studiohartman.jamepad.ControllerAxis;
+import com.studiohartman.jamepad.ControllerButton;
+import com.studiohartman.jamepad.ControllerIndex;
+import com.studiohartman.jamepad.ControllerUnpluggedException;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class ControllerInputReader {
-    private Controller controller;
+    private ControllerIndex controller;
     private Map<ControllerInputEnums, Boolean> inputState = new HashMap<>();
 
     private float xAxisValue;
@@ -19,9 +19,12 @@ public class ControllerInputReader {
     private boolean sensitiveInput;
     private double lastGameSecondsTogglePressed = 0;
     private double toggleDelay = 1;
+    private boolean holdFireButtonWasPressed = false;
+    private boolean pauseButtonWasPressed = false;
+    private boolean pausePressedSinceLastCheck = false;
     private boolean disconnected = false;
 
-    public ControllerInputReader(Controller controller) {
+    public ControllerInputReader(ControllerIndex controller) {
         this.controller = controller;
         this.setSensitiveInput(false);
     }
@@ -31,74 +34,68 @@ public class ControllerInputReader {
             return;
         }
 
-        boolean polled;
-        try {
-            polled = controller.poll();
-        } catch (Exception e) {
-            resetInputStates();
-            disconnected = true;
-            System.out.println(e.getMessage() + " Controller disconnected.");
-            return;
-        }
-
-        if (!polled) {
+        ControllerManager.getInstance().updateSdl();
+        if (!controller.isConnected()) {
             resetInputStates();
             disconnected = true;
             System.out.println("Controller disconnected.");
             return;
         }
-//        printPressedButton();
 
-        EventQueue queue = controller.getEventQueue();
-        Event event = new Event();
+        try {
+            // Left stick. SDL reports up as negative, same as the screen, so no flip is needed
+            xAxisValue = controller.getAxisState(ControllerAxis.LEFTX);
+            yAxisValue = controller.getAxisState(ControllerAxis.LEFTY);
+            boolean left = xAxisValue <= -inputStrengthRequired;
+            boolean right = xAxisValue >= inputStrengthRequired;
+            boolean up = yAxisValue <= -inputStrengthRequired;
+            boolean down = yAxisValue >= inputStrengthRequired;
 
-        while (queue.getNextEvent(event)) {
-            Component comp = event.getComponent();
-            float value = event.getValue();
+            // The d-pad only moves the cursor in menus, not while flying
+            if (!sensitiveInput) {
+                left |= controller.isButtonPressed(ControllerButton.DPAD_LEFT);
+                right |= controller.isButtonPressed(ControllerButton.DPAD_RIGHT);
+                up |= controller.isButtonPressed(ControllerButton.DPAD_UP);
+                down |= controller.isButtonPressed(ControllerButton.DPAD_DOWN);
+            }
+            inputState.put(ControllerInputEnums.MOVE_LEFT, left);
+            inputState.put(ControllerInputEnums.MOVE_RIGHT, right);
+            inputState.put(ControllerInputEnums.MOVE_UP, up);
+            inputState.put(ControllerInputEnums.MOVE_DOWN, down);
 
-            // Handle axis movement (Left Stick)
-            if (comp.getIdentifier() == Component.Identifier.Axis.X) {
-                xAxisValue = value;
-                inputState.put(ControllerInputEnums.MOVE_LEFT, xAxisValue <= -inputStrengthRequired);
-                inputState.put(ControllerInputEnums.MOVE_RIGHT, xAxisValue >= inputStrengthRequired);
+            inputState.put(ControllerInputEnums.FIRE, controller.isButtonPressed(ControllerButton.A)); // Button A
+            inputState.put(ControllerInputEnums.SPECIAL_ATTACK, controller.isButtonPressed(ControllerButton.B)); // Button B
+            boolean pauseButtonPressed = controller.isButtonPressed(ControllerButton.START); // Menu button
+            inputState.put(ControllerInputEnums.PAUSE, pauseButtonPressed);
+            // Remember the moment the button goes down, so holding it does not pause and unpause every frame
+            if (pauseButtonPressed && !pauseButtonWasPressed) {
+                pausePressedSinceLastCheck = true;
             }
-            if (comp.getIdentifier() == Component.Identifier.Axis.Y) {
-                yAxisValue = value;
-                inputState.put(ControllerInputEnums.MOVE_UP, yAxisValue <= -inputStrengthRequired);
-                inputState.put(ControllerInputEnums.MOVE_DOWN, yAxisValue >= inputStrengthRequired);
-            }
+            pauseButtonWasPressed = pauseButtonPressed;
 
-            // Handle button presses
-            if (comp.getIdentifier() == Component.Identifier.Button._0) {
-                inputState.put(ControllerInputEnums.FIRE, value == 1.0f); // Button A
+            // Toggle only when LB goes down, so holding it does not toggle again every second
+            boolean holdFireButtonPressed = controller.isButtonPressed(ControllerButton.LEFTBUMPER);
+            if (holdFireButtonPressed && !holdFireButtonWasPressed && GameState.getInstance().getGameSeconds() - lastGameSecondsTogglePressed > toggleDelay) {
+                lastGameSecondsTogglePressed = GameState.getInstance().getGameSeconds();
+                toggleHoldFire();
             }
-            if (comp.getIdentifier() == Component.Identifier.Button._4) {
-                if (value == 1.0f && GameState.getInstance().getGameSeconds() - lastGameSecondsTogglePressed > toggleDelay) {
-                    lastGameSecondsTogglePressed = GameState.getInstance().getGameSeconds();
-                    toggleHoldFire();
-                }
-//                inputState.put(ControllerInputEnums.HOLD_FIRE, value == 1.0f); // Button A
-            }
-            if (comp.getIdentifier() == Component.Identifier.Button._1 || comp.getIdentifier() == Component.Identifier.Button._6 || comp.getIdentifier() == Component.Identifier.Button._7) {
-                inputState.put(ControllerInputEnums.SPECIAL_ATTACK, value == 1.0f); // Button B
-            }
-
-            if (comp.getIdentifier() == Component.Identifier.Button._11) {
-                inputState.put(ControllerInputEnums.PAUSE, value == 1.0f); // D-Pad Up
-            }
-
-            if (comp.getIdentifier() == Component.Identifier.Button._11) {
-                inputState.put(ControllerInputEnums.REQUEST_PRIMARY_CONTROLLER, value == 1.0f);
-            }
-        }
-
-        if (this.isInputActive(ControllerInputEnums.REQUEST_PRIMARY_CONTROLLER)) {
-            ControllerManager.getInstance().requestControl(this);
+            holdFireButtonWasPressed = holdFireButtonPressed;
+        } catch (ControllerUnpluggedException e) {
+            resetInputStates();
+            disconnected = true;
+            System.out.println(e.getMessage() + " Controller disconnected.");
         }
     }
 
     private void toggleHoldFire() {
         inputState.put(ControllerInputEnums.HOLD_FIRE, !inputState.getOrDefault(ControllerInputEnums.HOLD_FIRE, false));
+    }
+
+    // True once per press of the pause button; asking clears it
+    public boolean consumePausePress() {
+        boolean pressed = pausePressedSinceLastCheck;
+        pausePressedSinceLastCheck = false;
+        return pressed;
     }
 
     public boolean isInputActive(ControllerInputEnums input) {
@@ -118,36 +115,12 @@ public class ControllerInputReader {
         }
     }
 
-    public void printPressedButton() {
-        if (!controller.poll()) {
-            System.out.println("Controller disconnected.");
-            return;
-        }
-
-        EventQueue queue = controller.getEventQueue();
-        Event event = new Event();
-
-        while (queue.getNextEvent(event)) {
-            Component component = event.getComponent();
-            float value = event.getValue();
-
-            // Check if the component's value corresponds to a fully pressed state
-            if (value == 1.0f) {
-                System.out.println("Pressed: " + component.getIdentifier());
-            }
-        }
-    }
-
     public float getxAxisValue() {
         return xAxisValue;
     }
 
     public float getyAxisValue() {
         return yAxisValue;
-    }
-
-    public Controller getController() {
-        return controller;
     }
 
     public void resetInputStates() {
@@ -158,10 +131,10 @@ public class ControllerInputReader {
         inputState.put(ControllerInputEnums.MOVE_DOWN, false);
 
         // Handle button presses
-        inputState.put(ControllerInputEnums.HOLD_FIRE, false); // Button Y
+        inputState.put(ControllerInputEnums.HOLD_FIRE, false); // LB
         inputState.put(ControllerInputEnums.FIRE, false); // Button A
         inputState.put(ControllerInputEnums.SPECIAL_ATTACK, false); // Button B
-        inputState.put(ControllerInputEnums.PAUSE, false); // D-Pad Up
-        inputState.put(ControllerInputEnums.REQUEST_PRIMARY_CONTROLLER, false);
+        inputState.put(ControllerInputEnums.PAUSE, false); // Menu button
+        pausePressedSinceLastCheck = false;
     }
 }
