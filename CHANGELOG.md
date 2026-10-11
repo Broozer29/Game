@@ -30,6 +30,7 @@ All notable changes on the `Nelis` branch.
 - The score card and the game over screen continue on any key or any controller button except the stick and the d-pad, and they say "Press any key to continue".
 - Planboard: the outdated Electro Shedding entry is removed.
 - Internal refactor: the class selection screen is built on the shared base for menu screens (MenuBoard and MenuGrid). Nothing changes for players: same buttons, cursor movement, descriptions, Back and confirm behaviour.
+- Internal refactor: the main menu is built on the shared base for menu screens (MenuBoard and MenuGrid). Nothing changes for players: same buttons, cursor movement, Settings page and confirm behaviour.
 
 ### Fixed
 - The stick no longer keeps moving the cursor on its own during the first seconds of the shop.

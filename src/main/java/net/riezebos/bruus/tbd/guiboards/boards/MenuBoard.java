@@ -82,6 +82,15 @@ public abstract class MenuBoard extends JPanel implements TimerHolder {
     protected void drawScreenContent(Graphics2D g) {
     }
 
+    // A screen that hosts a page over its menu takes the poll here; true means the menu does not act on it
+    protected boolean handleHostedInput(List<MenuAction> actions) {
+        return false;
+    }
+
+    // Drawn right after the cursor and before the upper animations
+    protected void drawScreenOverlay(Graphics2D g) {
+    }
+
     // Drawn after the on screen texts and before the controller notices
     protected void drawScreenExtras(Graphics2D g) {
     }
@@ -93,7 +102,11 @@ public abstract class MenuBoard extends JPanel implements TimerHolder {
     // Acts on what MenuInput reports: keys and the main controller, one set of rules for every menu screen
     private void executeMenuInput() {
         boolean needsUpdate = false;
-        for (MenuAction action : MenuInput.getInstance().poll()) {
+        List<MenuAction> actions = MenuInput.getInstance().poll();
+        if (handleHostedInput(actions)) {
+            return;
+        }
+        for (MenuAction action : actions) {
             switch (action) {
                 case LEFT:
                 case RIGHT:
@@ -144,6 +157,7 @@ public abstract class MenuBoard extends JPanel implements TimerHolder {
                 drawGrids(g2d);
                 drawScreenContent(g2d);
                 drawImage(g2d, menuCursor);
+                drawScreenOverlay(g2d);
 
                 for (SpriteAnimation animation : animationManager.getUpperAnimations()) {
                     drawAnimation(g2d, animation);
