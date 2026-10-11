@@ -755,7 +755,9 @@ public class SpaceShip extends GameObject {
                         }
                         break;
                     case (KeyEvent.VK_Y):
-                        spawnPortal();
+                        if (DevTestSettings.enablePortalCheatKey) {
+                            spawnPortal();
+                        }
                         break;
                 }
             }
