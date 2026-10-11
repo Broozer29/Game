@@ -46,6 +46,18 @@ public class MenuGrid {
         return true; // If no non-empty rows are found, the grid is empty
     }
 
+    // Puts the selection on the given tile; nothing changes when the tile is not in the grid
+    public void select(GUIComponent tile) {
+        for (int row = 0; row < rows.size(); row++) {
+            int column = rows.get(row).indexOf(tile);
+            if (column >= 0) {
+                selectedRow = row;
+                selectedColumn = column;
+                return;
+            }
+        }
+    }
+
     // Go one menu tile left, wrapping around inside the row
     public void moveLeft() {
         if (isEmpty()) {
