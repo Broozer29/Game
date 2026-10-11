@@ -310,6 +310,7 @@ public enum ImageEnums {
     Starcraft2_Auto_Tracking,
     UpgradePrecision,
     UpgradeSpeed,
+    CalmInChaosEffect,
     Starcraft2_Blue_Flame,
     Starcraft2_Concussive_Shells,
     Starcraft2_Energy_Siphon,

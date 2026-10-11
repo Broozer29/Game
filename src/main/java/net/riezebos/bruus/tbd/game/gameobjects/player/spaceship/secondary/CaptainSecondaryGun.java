@@ -36,8 +36,8 @@ public class CaptainSecondaryGun extends SecondaryPlayerGun {
         if(PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.ElectroShredding) != null){
             ElectroShredding electroShredding = (ElectroShredding) PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.ElectroShredding);
 
-            float percentage = owner.getCurrentHitpoints() / owner.getMaxHitPoints() * 100f;
-            damage *= (electroShredding.getQuantity() * ElectroShredding.bonusDamage) * (1 + percentage);
+            float percentage = owner.getCurrentShieldPoints() / owner.getMaxShieldPoints();
+            damage *= 1f + (electroShredding.getQuantity() * ElectroShredding.bonusDamage * percentage);
         }
 
         float scale = 1.5f;

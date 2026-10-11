@@ -44,12 +44,12 @@ public class ControllerInputReader {
     private final BlockingQueue<ControllerButton> pressedButtons = new ArrayBlockingQueue<>(MAX_QUEUED_BUTTONS);
 
     // After joining a seat, the input that joined is ignored until everything is let go
-    void ignoreInputUntilReleased() {
+    public void ignoreInputUntilReleased() {
         waitingForRelease = true;
     }
 
     // Called by the controller clock every tick with the slot that holds this reader's controller
-    void readController(ControllerIndex controller) {
+    public void readController(ControllerIndex controller) {
         if (controller == null || !controller.isConnected()) {
             resetInputStates();
             return;
@@ -190,7 +190,7 @@ public class ControllerInputReader {
     }
 
     // What the menu sees right now: LEFT..DOWN from the stick or d-pad, CONFIRM = A, BACK = B, ANY_BUTTON = any other button, PREVIOUS_TAB = LB, NEXT_TAB = RB
-    boolean isMenuInputActive(MenuAction action) {
+    public boolean isMenuInputActive(MenuAction action) {
         return menuState.getOrDefault(action, false);
     }
 
