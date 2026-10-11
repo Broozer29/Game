@@ -1,7 +1,6 @@
 package net.riezebos.bruus.tbd.guiboards.boards;
 
 import net.riezebos.bruus.tbd.DevTestSettings;
-import net.riezebos.bruus.tbd.controllerInput.ControllerManager;
 import net.riezebos.bruus.tbd.controllerInput.MenuAction;
 import net.riezebos.bruus.tbd.controllerInput.MenuInput;
 import net.riezebos.bruus.tbd.controllerInput.ControllerNotices;
@@ -39,7 +38,6 @@ public class MainMenuBoard extends JPanel implements TimerHolder {
     private List<GUIComponent> offTheGridObjects = new ArrayList<>();
     private MenuCursor menuCursor;
     private GUITextCollection selectClassBoard;
-    private List<GUITextCollection> controlExplanations;
     private GUIComponent startGameBackgroundCard;
     private GUITextCollection selectMusicOptionText;
     private GUIComponent selectMusicOptionBackgroundCard;
@@ -49,7 +47,6 @@ public class MainMenuBoard extends JPanel implements TimerHolder {
     private GUITextCollection selectMacOSMediaPlayerButton;
     private GUITextCollection selectDefaultMusicButton;
     private GUIComponent titleImage;
-    private GUIComponent inputMapping;
 
     private GUITextCollection closeGameButton;
 
@@ -91,14 +88,12 @@ public class MainMenuBoard extends JPanel implements TimerHolder {
     // Initialize all starter pointers
     private void initMenuTiles() {
         titleImage = MenuBoardCreator.createTitleImage();
-        controlExplanations = MenuBoardCreator.createControlsExplanations();
         createCardAndButtons();
 
         selectMusicOptionBackgroundCard = MenuBoardCreator.selectMusicPlayerBackgroundCard(startGameBackgroundCard);
         selectMusicOptionText = MenuBoardCreator.selectMusicText(selectMusicOptionBackgroundCard);
         selectDefaultMusicButton = MenuBoardCreator.selectDefaultLocalMusicPlayer(selectMusicOptionBackgroundCard);
         selectMacOSMediaPlayerButton = MenuBoardCreator.selectMacOSItunesMediaPlayer(selectDefaultMusicButton);
-        inputMapping = MenuBoardCreator.createInputMapping();
         initializedMenuObjects = true;
     }
 
@@ -128,19 +123,12 @@ public class MainMenuBoard extends JPanel implements TimerHolder {
     private void buildOffTheGridObjects() {
         offTheGridObjects.clear();
 
-//        for (GUITextCollection explanation : controlExplanations) {
-//            offTheGridObjects.addAll(explanation.getComponents());
-//        }
-
         offTheGridObjects.add(startGameBackgroundCard);
 //        offTheGridObjects.add(selectMusicOptionBackgroundCard);
         offTheGridObjects.add(titleImage);
         offTheGridObjects.add(menuCursor);
 //        offTheGridObjects.addAll(selectMusicOptionText.getComponents());
 
-        if (ControllerManager.getInstance().getPrimaryController() != null) {
-            offTheGridObjects.add(inputMapping);
-        }
         addLettersToOffTheGrid();
     }
 

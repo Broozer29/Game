@@ -11,9 +11,6 @@ import net.riezebos.bruus.tbd.visualsandaudio.data.DataClass;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteConfiguration;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class MenuBoardCreator {
 
     private static float resolutionFactor = Math.min(1 * DataClass.getInstance().getResolutionFactor(), DataClass.maxResolutionFactor) ;
@@ -62,48 +59,6 @@ public class MenuBoardCreator {
         titleImage.setDescriptionOfComponent("Title Image");
         titleImage.setCenterCoordinates(xCoordinate,yCoordinate);
         return titleImage;
-    }
-
-    public static GUIComponent createInputMapping(){
-        int xCoordinate = DataClass.getInstance().getWindowWidth();
-        int yCoordinate = DataClass.getInstance().getWindowHeight();
-
-        SpriteConfiguration spriteConfiguration = new SpriteConfiguration();
-        spriteConfiguration.setxCoordinate(xCoordinate);
-        spriteConfiguration.setyCoordinate(yCoordinate);
-        spriteConfiguration.setScale(0.55f * resolutionFactor);
-        spriteConfiguration.setImageType(ImageEnums.InputMapping);
-
-        GUIComponent inputMapping = new DisplayOnly(spriteConfiguration);
-        inputMapping.setDescriptionOfComponent("Input mapping image");
-        inputMapping.setXCoordinate(Math.round(xCoordinate - (inputMapping.getWidth() * 1f)));
-        inputMapping.setYCoordinate(Math.round(yCoordinate - (inputMapping.getHeight() * 1f)));
-        return inputMapping;
-    }
-
-    public static List<GUITextCollection> createControlsExplanations(){
-        List<GUITextCollection> controlExplanations = new ArrayList<>();
-        int xCoordinate = 15;
-        int yCoordinate = (DataClass.getInstance().getWindowHeight() / 2) + Math.round(300 * resolutionFactor);
-
-
-        GUITextCollection wasdExplanation = new GUITextCollection(xCoordinate, yCoordinate, "MOVEMENT = WASD OR ARROWS OR JOYSTICK");
-        wasdExplanation.setScale(resolutionFactor);
-        controlExplanations.add(wasdExplanation);
-
-        GUITextCollection attackExplanation = new GUITextCollection(xCoordinate, yCoordinate + Math.round(20 * resolutionFactor), "SPACEBAR OR A = NORMAL ATTACK");
-        attackExplanation.setScale(resolutionFactor);
-        controlExplanations.add(attackExplanation);
-
-        GUITextCollection specialExplanation = new GUITextCollection(xCoordinate, yCoordinate + Math.round(40 * resolutionFactor), "Q OR B = SPECIAL ATTACK");
-        specialExplanation.setScale(resolutionFactor);
-        controlExplanations.add(specialExplanation);
-
-        GUITextCollection pauseExplanation = new GUITextCollection(xCoordinate, yCoordinate + Math.round(60 * resolutionFactor), "P OR MENU BUTTON = PAUSE");
-        pauseExplanation.setScale(resolutionFactor);
-        controlExplanations.add(pauseExplanation);
-
-        return controlExplanations;
     }
 
     //The card is as high as the buttons need, 50 per button plus 50 at the top and the bottom, plus 50 for the two gaps between the button groups, so the border stays the same thickness

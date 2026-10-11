@@ -7,12 +7,16 @@ All notable changes on the `Nelis` branch.
 ### Added
 - A settings page: pick SETTINGS in the pause window (between RESUME and EXIT RUN) to turn the music and the sound effects down in steps of 10%. The changes are heard at once. SAVE keeps them in settings.json and closes the page; leaving the page with unsaved changes asks SAVE CHANGES with SAVE or DISCARD, and both return to where you came from. Apple Music and Spotify are not affected.
 - The main menu has a SETTINGS button (right above CLOSE GAME) that opens the same settings page, so the sound can be set before a run starts. The main menu card grows to fit all its buttons, which are grouped: SELECT CLASS and CONTINUE RUN, then SETTINGS, then CLOSE GAME.
+- The CONTROLS tab of the settings page: pick FIRE, SPECIAL ATTACK or AUTO FIRE and press a key or button to bind it; the column shows the keyboard or the controller, whichever you used last. An input already used by another action leaves that action unbound (NONE), and the page says so. RESET restores both layouts; SAVE keeps them in settings.json. Escape cancels a rebind.
+- Planboard: the controls menu entry and the outdated controls picture entry are done and removed.
 - docs/claude-changelog.md: one changelog of everything present today since the `Nelis` branch was created, with changes that were later undone left out, and Bruus's merged changes in their own section.
 
 ### Changed
+- The settings page now has two tabs, CONTROLS and SOUND, and opens on CONTROLS. LB and RB, or Shift+Tab and Tab, switch tabs, and Tab cycles from the last tab back to the first; the page keeps the same size on both tabs and one SAVE saves both.
 - Pressing Y no longer ends the level by spawning the portal; that cheat is now behind a test switch (`DevTestSettings.enablePortalCheatKey`), so Y can be bound to an action.
-- The keys and controller buttons for fire, special attack, hold fire and pause are now stored in settings.json, with the same layout as before as the default; a binding that is not valid falls back to its default. Enter no longer fires the special attack; Q does.
+- The keys and controller buttons for fire, special attack and hold fire are now stored in settings.json, with the same layout as before as the default; a binding that is not valid falls back to its default. Enter no longer fires the special attack; Q does.
 - Pausing now shows a small window in the middle of the screen, in the style of the main menu, with "PAUSED" in the menu letters and a RESUME option with the ship cursor beside it. Pick RESUME, or press B or Escape, to continue (P and Menu still work). The game stays visible around it. The window also has EXIT RUN, which asks "ARE YOU SURE" first (YES or NO) and then returns to the main menu. CONTINUE RUN restarts the level you were on.
+- Pause can not be rebound: P and the Menu button always pause. The main menu no longer shows the controls picture.
 - P and the Menu button also pause after the relic is chosen, while flying to the portal.
 - The controller connect and disconnect notices now each show in their own card with the border of the pause window, in the menu letters. At most 3 show at once, stacked at the top, and a new one pushes the oldest out.
 - In menus the stick counts a push from 60% and lets go below 35%, and only its stronger direction counts, so the cursor no longer jumps when the stick wobbles or is pushed diagonally.

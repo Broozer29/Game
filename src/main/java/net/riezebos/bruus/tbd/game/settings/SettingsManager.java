@@ -9,7 +9,7 @@ public class SettingsManager {
 
     private static SettingsManager instance = new SettingsManager();
     private static final String SETTINGS_FILE_PATH = "settings.json";
-    //Read by the controller thread and the game loop as well as the one that loads them
+    //Volatile, because the audio code may read the settings from another thread than the Swing thread that changes them
     private volatile Settings settings; //What the game uses right now, including changes that are not saved yet
     private volatile Settings savedSettings; //What settings.json holds
 
@@ -70,6 +70,11 @@ public class SettingsManager {
         } catch (IOException e) {
             System.out.println("Could not write " + SETTINGS_FILE_PATH + ": " + e.getMessage());
         }
+    }
+
+    //Puts these bindings in use by swapping in a new Settings object, so the bindings in use are never changed in place
+    public void replaceInputBindings(InputBindings bindings) {
+        this.settings = getSettings().withInputBindings(bindings);
     }
 
     //Puts the saved values back in use

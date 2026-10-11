@@ -5,15 +5,20 @@ import com.studiohartman.jamepad.ControllerButton;
 import com.studiohartman.jamepad.ControllerIndex;
 import com.studiohartman.jamepad.ControllerUnpluggedException;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
+import net.riezebos.bruus.tbd.game.gamestate.GameStatusEnums;
 import net.riezebos.bruus.tbd.game.settings.BindableAction;
 import net.riezebos.bruus.tbd.game.settings.InputBindings;
 import net.riezebos.bruus.tbd.game.settings.SettingsManager;
 
 import java.util.EnumMap;
 import java.util.EnumSet;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
 
 public class ControllerInputReader {
     private Map<ControllerInputEnums, Boolean> inputState = new HashMap<>();
@@ -33,6 +38,10 @@ public class ControllerInputReader {
     private boolean pauseButtonWasPressed = false;
     private boolean pausePressedSinceLastCheck = false;
     private boolean waitingForRelease = false;
+    private static final int MAX_QUEUED_BUTTONS = 16;
+    private final Set<ControllerButton> buttonsDown = EnumSet.noneOf(ControllerButton.class); // as seen by the last tick
+    // Buttons that went down, for the CONTROLS tab: filled by the controller clock, drained by the settings page (both on the Swing thread); a full queue drops new presses
+    private final BlockingQueue<ControllerButton> pressedButtons = new ArrayBlockingQueue<>(MAX_QUEUED_BUTTONS);
 
     // After joining a seat, the input that joined is ignored until everything is let go
     void ignoreInputUntilReleased() {
@@ -77,11 +86,16 @@ public class ControllerInputReader {
             menuState.put(MenuAction.CONFIRM, controller.isButtonPressed(ControllerButton.A));
             menuState.put(MenuAction.BACK, controller.isButtonPressed(ControllerButton.B));
             menuState.put(MenuAction.ANY_BUTTON, isAnyMenuButtonPressed(controller));
+            // Menus keep fixed buttons, whatever the action bindings are: the bumpers switch tabs
+            menuState.put(MenuAction.PREVIOUS_TAB, controller.isButtonPressed(ControllerButton.LEFTBUMPER));
+            menuState.put(MenuAction.NEXT_TAB, controller.isButtonPressed(ControllerButton.RIGHTBUMPER));
+
+            queueButtonsThatWentDown(controller);
 
             InputBindings bindings = SettingsManager.getInstance().getSettings().getInputBindings();
-            inputState.put(ControllerInputEnums.FIRE, controller.isButtonPressed(bindings.getButton(BindableAction.FIRE))); // The bound fire button
-            inputState.put(ControllerInputEnums.SPECIAL_ATTACK, controller.isButtonPressed(bindings.getButton(BindableAction.SPECIAL_ATTACK))); // The bound special attack button
-            boolean pauseButtonPressed = controller.isButtonPressed(bindings.getButton(BindableAction.PAUSE)); // The bound pause button
+            inputState.put(ControllerInputEnums.FIRE, isBoundButtonPressed(controller, bindings.getButton(BindableAction.FIRE))); // The bound fire button
+            inputState.put(ControllerInputEnums.SPECIAL_ATTACK, isBoundButtonPressed(controller, bindings.getButton(BindableAction.SPECIAL_ATTACK))); // The bound special attack button
+            boolean pauseButtonPressed = controller.isButtonPressed(ControllerButton.START); // The Menu button; pause can not be rebound
             inputState.put(ControllerInputEnums.PAUSE, pauseButtonPressed);
             // Remember the moment the button goes down, so holding it does not pause and unpause every frame
             if (pauseButtonPressed && !pauseButtonWasPressed) {
@@ -90,8 +104,10 @@ public class ControllerInputReader {
             pauseButtonWasPressed = pauseButtonPressed;
 
             // Toggle only when the bound hold fire button goes down, so holding it does not toggle again every second
-            boolean holdFireButtonPressed = controller.isButtonPressed(bindings.getButton(BindableAction.HOLD_FIRE));
-            if (holdFireButtonPressed && !holdFireButtonWasPressed && GameState.getInstance().getGameSeconds() - lastGameSecondsTogglePressed > toggleDelay) {
+            boolean holdFireButtonPressed = isBoundButtonPressed(controller, bindings.getButton(BindableAction.HOLD_FIRE));
+            // Not while paused: LB switches tabs in the paused settings page, so that press must not flip auto attack for after resume
+            boolean paused = GameState.getInstance().getGameState() == GameStatusEnums.Paused;
+            if (holdFireButtonPressed && !holdFireButtonWasPressed && !paused && GameState.getInstance().getGameSeconds() - lastGameSecondsTogglePressed > toggleDelay) {
                 lastGameSecondsTogglePressed = GameState.getInstance().getGameSeconds();
                 toggleHoldFire();
             }
@@ -100,6 +116,36 @@ public class ControllerInputReader {
             resetInputStates();
             System.out.println(e.getMessage() + " Controller disconnected.");
         }
+    }
+
+    // An action with nothing bound (null) is never pressed
+    private boolean isBoundButtonPressed(ControllerIndex controller, ControllerButton button) throws ControllerUnpluggedException {
+        return button != null && controller.isButtonPressed(button);
+    }
+
+    // Every button that went down since the last tick goes into the queue, except the d-pad which only steers menus; a full queue drops the newest
+    private void queueButtonsThatWentDown(ControllerIndex controller) throws ControllerUnpluggedException {
+        for (ControllerButton button : ControllerButton.values()) {
+            if (controller.isButtonPressed(button)) {
+                if (buttonsDown.add(button) && !isDpad(button)) {
+                    pressedButtons.offer(button);
+                }
+            } else {
+                buttonsDown.remove(button);
+            }
+        }
+    }
+
+    private boolean isDpad(ControllerButton button) {
+        return button == ControllerButton.DPAD_UP || button == ControllerButton.DPAD_DOWN
+                || button == ControllerButton.DPAD_LEFT || button == ControllerButton.DPAD_RIGHT;
+    }
+
+    // The buttons that went down since the last call, in order; asking clears them
+    List<ControllerButton> pollPressedButtons() {
+        List<ControllerButton> buttons = new ArrayList<>();
+        pressedButtons.drainTo(buttons);
+        return buttons;
     }
 
     // Remembers per direction whether the stick holds it: on past MENU_PRESS, off only below MENU_RELEASE
@@ -143,7 +189,7 @@ public class ControllerInputReader {
         return inputState.getOrDefault(input, false);
     }
 
-    // What the menu sees right now: LEFT..DOWN from the stick or d-pad, CONFIRM = A, BACK = B, ANY_BUTTON = any other button
+    // What the menu sees right now: LEFT..DOWN from the stick or d-pad, CONFIRM = A, BACK = B, ANY_BUTTON = any other button, PREVIOUS_TAB = LB, NEXT_TAB = RB
     boolean isMenuInputActive(MenuAction action) {
         return menuState.getOrDefault(action, false);
     }
@@ -167,8 +213,10 @@ public class ControllerInputReader {
         inputState.put(ControllerInputEnums.HOLD_FIRE, false); // The bound hold fire button
         inputState.put(ControllerInputEnums.FIRE, false); // The bound fire button
         inputState.put(ControllerInputEnums.SPECIAL_ATTACK, false); // The bound special attack button
-        inputState.put(ControllerInputEnums.PAUSE, false); // The bound pause button
+        inputState.put(ControllerInputEnums.PAUSE, false); // The Menu button
         pausePressedSinceLastCheck = false;
+        buttonsDown.clear();
+        pressedButtons.clear();
         menuState.clear();
         stickDirections.clear();
     }

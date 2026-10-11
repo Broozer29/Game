@@ -11,9 +11,6 @@ Keyboard and controller input.
   - Switching hold fire off at every screen change stays: it stops a relic being picked by itself
 
 ## Features
-- The controls picture in the main menu shows the old layout: the d-pad is labelled "Movement" (it only moves the menu cursor after the Jamepad switch), and the labels on Y and B are unreadable (Nelis, 2026-10-10)
-  - To do together with a controls menu for rebinding buttons
-- A controls menu where players rebind which controller button does which action (fire, special attack, hold fire, pause) (Nelis, 2026-10-10)
 
 ## Balance
 - Pause has no wait anymore: on the pad and on P it pauses and unpauses at once; the 1 s wait after unpausing (`GameState.isAllowedToPause`) was removed (Nelis, 2026-10-10)

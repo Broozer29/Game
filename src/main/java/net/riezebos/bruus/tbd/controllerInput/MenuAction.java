@@ -9,4 +9,7 @@ public enum MenuAction {
     CONFIRM,
     BACK,
     ANY_BUTTON,
+    PREVIOUS_TAB,
+    NEXT_TAB,
+    CYCLE_TAB, // the next tab, and from the last tab back to the first
 }

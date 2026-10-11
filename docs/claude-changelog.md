@@ -4,7 +4,9 @@ Everything that changed since 5 October 2026.
 
 ## Controls
 
-- Pause, or use SETTINGS on the main menu, to turn the music and sound effects down. SAVE keeps your choice; leaving with unsaved changes asks whether to save them.
+- Pause, or use SETTINGS on the main menu, to turn the music and sound effects down. The settings page has two tabs, CONTROLS first and SOUND second, and opens on CONTROLS; LB and RB, or Shift+Tab and Tab, switch tabs, and Tab cycles from the last tab back to the first. SAVE keeps your choice on both tabs; leaving with unsaved changes asks whether to save them.
+- Change the controls on the CONTROLS tab: pick FIRE, SPECIAL ATTACK or AUTO FIRE, then press the key or button you want. The list shows the keys or the buttons, whichever you used last. If that key or button was already used by another action, that action is left with NONE and the page tells you. Escape cancels, RESET puts the standard layout back, and SAVE keeps it. Pause stays on P and the Menu button.
+- The controls picture on the main menu is gone; the CONTROLS tab replaces it.
 - Plug controllers in and out while playing. Press any button on a new controller to join.
 - A short message shows when a controller connects or disconnects.
 - Every level starts with one ship per connected controller.
@@ -12,7 +14,7 @@ Everything that changed since 5 October 2026.
   mid-level plays from the next level.
 - The game pauses when no living player has a controller. Press P or Menu to continue.
 - More controller brands work, and every controller uses the same buttons: A attacks, B is the
-  special attack, LB toggles auto attack, Menu pauses. The d-pad moves through menus.
+  special attack, LB toggles auto attack in a level, Menu pauses (you can change the first three on the CONTROLS tab). The d-pad moves through menus.
 - The keyboard controls player 1, also when controllers are connected.
 - New: press E on the keyboard to toggle auto attack (Captain).
 - Pausing reacts instantly and works at any moment during play.

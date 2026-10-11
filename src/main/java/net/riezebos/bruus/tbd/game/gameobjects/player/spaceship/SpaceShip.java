@@ -720,7 +720,7 @@ public class SpaceShip extends GameObject {
         int holdFireKey = bindings.getKey(BindableAction.HOLD_FIRE);
         int specialKey = bindings.getKey(BindableAction.SPECIAL_ATTACK);
         // The bound hold fire key toggles auto attack, once per press (holding it repeats the key event), with the same 1 s guard as the controller button
-        if (e.getKeyCode() == holdFireKey && !pressedKeys.contains(holdFireKey)
+        if (holdFireKey != KeyEvent.VK_UNDEFINED && e.getKeyCode() == holdFireKey && !pressedKeys.contains(holdFireKey)
                 && GameState.getInstance().getGameSeconds() - lastGameSecondsKeyboardHoldFireToggled > 1) {
             lastGameSecondsKeyboardHoldFireToggled = GameState.getInstance().getGameSeconds();
             keyboardHoldFire = !keyboardHoldFire;
@@ -729,7 +729,7 @@ public class SpaceShip extends GameObject {
         if (!pressedKeys.isEmpty()) {
             for (Iterator<Integer> it = pressedKeys.iterator(); it.hasNext(); ) {
                 int pressedKey = it.next();
-                if (pressedKey == specialKey) {
+                if (specialKey != KeyEvent.VK_UNDEFINED && pressedKey == specialKey) { //0 means nothing is bound
                     fireSpecialAttack();
                 }
                 switch (pressedKey) {
@@ -791,7 +791,8 @@ public class SpaceShip extends GameObject {
         if (key == KeyEvent.VK_S || key == KeyEvent.VK_DOWN) {
             haltMoveDown();
         }
-        if (key == SettingsManager.getInstance().getSettings().getInputBindings().getKey(BindableAction.SPECIAL_ATTACK)) {
+        int specialKey = SettingsManager.getInstance().getSettings().getInputBindings().getKey(BindableAction.SPECIAL_ATTACK);
+        if (specialKey != KeyEvent.VK_UNDEFINED && key == specialKey) {
             haltSecondaryFiring();
         }
     }
@@ -840,8 +841,9 @@ public class SpaceShip extends GameObject {
 
         // Firing: the controller's bound fire button or auto attack, and for seat 1 also the bound fire key held or the keyboard's auto attack (the bound hold fire key)
         boolean captain = PlayerStats.getInstance().getPlayerClass().equals(PlayerClass.Captain);
+        int fireKey = SettingsManager.getInstance().getSettings().getInputBindings().getKey(BindableAction.FIRE);
         boolean fireHeld = (controllerInputReader != null && controllerInputReader.isInputActive(ControllerInputEnums.FIRE))
-                || (keyboardSeat && pressedKeys.contains(SettingsManager.getInstance().getSettings().getInputBindings().getKey(BindableAction.FIRE)));
+                || (keyboardSeat && fireKey != KeyEvent.VK_UNDEFINED && pressedKeys.contains(fireKey));
         boolean autoAttack = captain && ((controllerInputReader != null && controllerInputReader.isInputActive(ControllerInputEnums.HOLD_FIRE))
                 || (keyboardSeat && keyboardHoldFire));
         boolean specialHeld = controllerInputReader != null && controllerInputReader.isInputActive(ControllerInputEnums.SPECIAL_ATTACK);

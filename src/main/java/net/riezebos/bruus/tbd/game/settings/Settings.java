@@ -36,6 +36,7 @@ public class Settings {
         return inputBindings;
     }
 
+    //Only for loading settings.json; the bindings in use are replaced through withInputBindings
     public void setInputBindings(InputBindings inputBindings) {
         this.inputBindings = inputBindings != null ? inputBindings : new InputBindings();
     }
@@ -46,6 +47,13 @@ public class Settings {
         copy.musicVolume = this.musicVolume;
         copy.effectsVolume = this.effectsVolume;
         copy.inputBindings = this.inputBindings.copyOf();
+        return copy;
+    }
+
+    //A copy with these bindings, so the settings in use are replaced whole and never changed in place
+    public Settings withInputBindings(InputBindings bindings) {
+        Settings copy = copyOf();
+        copy.inputBindings = bindings != null ? bindings : new InputBindings();
         return copy;
     }
 

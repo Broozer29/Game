@@ -4,6 +4,5 @@ package net.riezebos.bruus.tbd.game.settings;
 public enum BindableAction {
     FIRE,
     SPECIAL_ATTACK,
-    HOLD_FIRE,
-    PAUSE
+    HOLD_FIRE
 }

@@ -1,5 +1,6 @@
 package net.riezebos.bruus.tbd.controllerInput;
 
+import com.studiohartman.jamepad.ControllerButton;
 import net.riezebos.bruus.tbd.visualsandaudio.data.DataClass;
 
 import java.awt.KeyEventDispatcher;
@@ -23,6 +24,8 @@ public class MenuInput {
     private static final MenuAction[] CONTROLLER_ACTIONS = MenuAction.values();
 
     private final Deque<MenuAction> keyActions = new ArrayDeque<>();
+    private final Deque<Integer> pressedKeyCodes = new ArrayDeque<>(); // every first key press, for the CONTROLS tab to bind
+    private InputDevice lastDevice = InputDevice.KEYBOARD; // the device that gave the last input
     private final Set<Integer> heldKeys = new HashSet<>();
     private final Set<Integer> ignoredKeys = new HashSet<>(); // held when the screen opened, ignored until released once
 
@@ -50,6 +53,7 @@ public class MenuInput {
     // Called whenever a screen opens. Drops what came in while nobody polled, and ignores everything that is held until it is released once.
     public void startScreen() {
         keyActions.clear();
+        pressedKeyCodes.clear();
         ignoredKeys.clear();
         ignoredKeys.addAll(heldKeys);
 
@@ -57,10 +61,40 @@ public class MenuInput {
         controllerInputsDown.clear();
         lastReader = ControllerManager.getInstance().getPrimaryController();
         markHeldControllerInputs(lastReader);
+        if (lastReader != null) {
+            lastReader.pollPressedButtons(); // a button held now went down earlier and is no press; what came in before is dropped
+        }
+    }
+
+    public InputDevice getLastDevice() {
+        return lastDevice;
+    }
+
+    // The key codes of the first presses since the last call, in order; asking clears them
+    public List<Integer> pollPressedKeys() {
+        List<Integer> keyCodes = new ArrayList<>(pressedKeyCodes);
+        pressedKeyCodes.clear();
+        return keyCodes;
+    }
+
+    // The buttons of the main controller that went down since the last call, without the d-pad; asking clears them
+    public List<ControllerButton> pollPressedButtons() {
+        ControllerInputReader reader = ControllerManager.getInstance().getPrimaryController();
+        if (reader == null) {
+            return new ArrayList<>();
+        }
+        List<ControllerButton> buttons = reader.pollPressedButtons();
+        if (reader != lastReader) {
+            return new ArrayList<>(); // a different main controller: what it pressed before the next poll is not counted
+        }
+        if (!buttons.isEmpty()) {
+            lastDevice = InputDevice.CONTROLLER;
+        }
+        return buttons;
     }
 
     // The actions since the last call, in order: keys first, then the main controller.
-    // Confirm, back and any button come at most once per call.
+    // Confirm, back, any button and the tab actions come at most once per call.
     public List<MenuAction> poll() {
         List<MenuAction> actions = new ArrayList<>(keyActions);
         keyActions.clear();
@@ -69,7 +103,8 @@ public class MenuInput {
         Set<MenuAction> seenOnce = EnumSet.noneOf(MenuAction.class);
         List<MenuAction> result = new ArrayList<>();
         for (MenuAction action : actions) {
-            boolean oncePerPoll = action == MenuAction.CONFIRM || action == MenuAction.BACK || action == MenuAction.ANY_BUTTON;
+            boolean oncePerPoll = action == MenuAction.CONFIRM || action == MenuAction.BACK || action == MenuAction.ANY_BUTTON
+                    || action == MenuAction.PREVIOUS_TAB || action == MenuAction.NEXT_TAB || action == MenuAction.CYCLE_TAB;
             if (oncePerPoll && !seenOnce.add(action)) {
                 continue;
             }
@@ -112,6 +147,7 @@ public class MenuInput {
             boolean repeats = isDirection(action);
             if (controllerInputsDown.add(action)) {
                 actions.add(action);
+                lastDevice = InputDevice.CONTROLLER;
                 if (repeats) {
                     nextRepeatTime.put(action, now + DataClass.MENU_REPEAT_FIRST_DELAY);
                 }
@@ -137,7 +173,7 @@ public class MenuInput {
     private KeyEventDispatcher keyDispatcher() {
         return event -> {
             if (event.getID() == KeyEvent.KEY_PRESSED) {
-                onKeyPressed(event.getKeyCode());
+                onKeyPressed(event.getKeyCode(), event.isShiftDown());
             } else if (event.getID() == KeyEvent.KEY_RELEASED) {
                 heldKeys.remove(event.getKeyCode());
                 ignoredKeys.remove(event.getKeyCode());
@@ -146,10 +182,17 @@ public class MenuInput {
         };
     }
 
-    private void onKeyPressed(int keyCode) {
+    private void onKeyPressed(int keyCode, boolean shiftDown) {
         boolean firstPress = heldKeys.add(keyCode); // a repeat from the operating system is not a first press
         if (ignoredKeys.contains(keyCode)) {
             return;
+        }
+        lastDevice = InputDevice.KEYBOARD;
+        if (firstPress) {
+            if (pressedKeyCodes.size() >= MAX_QUEUED_KEY_ACTIONS) {
+                pressedKeyCodes.pollFirst(); // the oldest goes first
+            }
+            pressedKeyCodes.addLast(keyCode);
         }
         MenuAction direction = directionOf(keyCode);
         if (direction != null) {
@@ -158,6 +201,8 @@ public class MenuInput {
             queueKeyAction(MenuAction.CONFIRM);
         } else if (firstPress && keyCode == KeyEvent.VK_ESCAPE) {
             queueKeyAction(MenuAction.BACK);
+        } else if (firstPress && keyCode == KeyEvent.VK_TAB) {
+            queueKeyAction(shiftDown ? MenuAction.PREVIOUS_TAB : MenuAction.CYCLE_TAB); // Tab cycles through the tabs, Shift+Tab stops at the first
         }
         if (firstPress) {
             queueKeyAction(MenuAction.ANY_BUTTON);
