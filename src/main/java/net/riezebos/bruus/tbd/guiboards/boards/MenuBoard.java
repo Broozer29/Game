@@ -87,6 +87,11 @@ public abstract class MenuBoard extends JPanel implements TimerHolder {
         return false;
     }
 
+    // A screen that draws the cursor itself, in its own layer, returns false and adds the cursor to offTheGridObjects
+    protected boolean drawsMenuCursor() {
+        return true;
+    }
+
     // Drawn right after the cursor and before the upper animations
     protected void drawScreenOverlay(Graphics2D g) {
     }
@@ -156,7 +161,9 @@ public abstract class MenuBoard extends JPanel implements TimerHolder {
 
                 drawGrids(g2d);
                 drawScreenContent(g2d);
-                drawImage(g2d, menuCursor);
+                if (drawsMenuCursor()) {
+                    drawImage(g2d, menuCursor);
+                }
                 drawScreenOverlay(g2d);
 
                 for (SpriteAnimation animation : animationManager.getUpperAnimations()) {
