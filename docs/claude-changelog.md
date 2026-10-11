@@ -4,6 +4,7 @@ Everything that changed since 5 October 2026.
 
 ## Controls
 
+- Pause, or use SETTINGS on the main menu, to turn the music and sound effects down. SAVE keeps your choice; leaving with unsaved changes asks whether to save them.
 - Plug controllers in and out while playing. Press any button on a new controller to join.
 - A short message shows when a controller connects or disconnects.
 - Every level starts with one ship per connected controller.
@@ -15,7 +16,8 @@ Everything that changed since 5 October 2026.
 - The keyboard controls player 1, also when controllers are connected.
 - New: press E on the keyboard to toggle auto attack (Captain).
 - Pausing reacts instantly and works at any moment during play.
-- Pausing shows a small window in the middle of the screen.
+- You can also pause while flying to the portal after choosing a relic.
+- Pausing shows a small window in the middle of the screen. Pick RESUME, or press B or Escape, to continue; SETTINGS opens the settings page. EXIT RUN asks first, then returns to the main menu; CONTINUE RUN restarts the level you were on.
 - Menus react the moment you press a key. Arrow keys move, Space confirms and Escape goes back.
 - In menus, one push of the stick or d-pad moves one step; hold it to scroll. The d-pad also
   works on the relic screen.

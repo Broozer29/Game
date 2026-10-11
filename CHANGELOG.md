@@ -5,10 +5,14 @@ All notable changes on the `Nelis` branch.
 ## 2026-10-11
 
 ### Added
+- A settings page: pick SETTINGS in the pause window (between RESUME and EXIT RUN) to turn the music and the sound effects down in steps of 10%. The changes are heard at once. SAVE keeps them in settings.json and closes the page; leaving the page with unsaved changes asks SAVE CHANGES with SAVE or DISCARD, and both return to where you came from. Apple Music and Spotify are not affected.
+- The main menu has a SETTINGS button (right above CLOSE GAME) that opens the same settings page, so the sound can be set before a run starts. The main menu card grows to fit all its buttons, which are grouped: SELECT CLASS and CONTINUE RUN, then SETTINGS, then CLOSE GAME.
 - docs/claude-changelog.md: one changelog of everything present today since the `Nelis` branch was created, with changes that were later undone left out, and Bruus's merged changes in their own section.
 
 ### Changed
-- Pausing now shows a small window in the middle of the screen, in the style of the main menu, with "PAUSED" in the menu letters. The game stays visible around it.
+- Pausing now shows a small window in the middle of the screen, in the style of the main menu, with "PAUSED" in the menu letters and a RESUME option with the ship cursor beside it. Pick RESUME, or press B or Escape, to continue (P and Menu still work). The game stays visible around it. The window also has EXIT RUN, which asks "ARE YOU SURE" first (YES or NO) and then returns to the main menu. CONTINUE RUN restarts the level you were on.
+- P and the Menu button also pause after the relic is chosen, while flying to the portal.
+- In menus the stick counts a push from 60% and lets go below 35%, and only its stronger direction counts, so the cursor no longer jumps when the stick wobbles or is pushed diagonally.
 - Up to 16 controllers can be connected at once (was 8); the limit comes from the Jamepad library, which watches a fixed number of controller slots.
 - docs/claude-changelog.md is rewritten for players: grouped by topic (controls, performance, items, classes, enemies and bosses, bug fixes), without technical terms, with a short section for developers.
 - Menus now react the moment you press a key, instead of when you let go. The arrow keys, Space and Escape work in every menu, next to W, A, S, D, Enter and the controller.

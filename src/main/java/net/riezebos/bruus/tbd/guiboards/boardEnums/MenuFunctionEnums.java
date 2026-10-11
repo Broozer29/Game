@@ -37,5 +37,13 @@ public enum MenuFunctionEnums {
 	SelectDoubleTroubleGameMode,
 	SelectFormattedGameMode,
 	Open_Inventory,
+	Resume_Game,
+	Exit_Run,
+	Confirm_Exit_Run,
+	Cancel_Exit_Run,
+	Open_Settings,
+	Save_Settings,
+	Save_Settings_Changes,
+	Discard_Settings_Changes,
 	SelectNightmareGameMode;
 }

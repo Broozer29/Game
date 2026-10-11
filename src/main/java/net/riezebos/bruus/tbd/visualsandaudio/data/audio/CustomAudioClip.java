@@ -2,6 +2,8 @@ package net.riezebos.bruus.tbd.visualsandaudio.data.audio;
 
 import javafx.scene.media.MediaPlayer;
 import net.riezebos.bruus.tbd.DevTestSettings;
+import net.riezebos.bruus.tbd.game.settings.Settings;
+import net.riezebos.bruus.tbd.game.settings.SettingsManager;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.AudioEnums;
 
 
@@ -19,6 +21,7 @@ public class CustomAudioClip {
     private boolean isMediaPlayerFinished = false; // Flag to track if MediaPlayer has finished
     private boolean isPaused = false; // Flag to track paused state
     private boolean startedSinceReset = false; // Set when the clip starts, so a reset only touches clips that played
+    private boolean music = false; // Set by the AudioManager while the clip is the background music; every other clip is an effect
 
     public CustomAudioClip(AudioEnums clipType) {
         this.clipType = clipType;
@@ -151,7 +154,7 @@ public class CustomAudioClip {
     }
 
     //Dit is allemaa; "* 0.7f" omdat de default audio levels zijn veranderd met het gebruik van MediaPlayer ipv Clip objecten
-    private void adjustVolume() {
+    public void adjustVolume() {
         if (mediaPlayer != null) {
             double volume = switch (clipType) {
                 case Player_Laserbeam -> 0.65 * 0.7f;
@@ -178,6 +181,7 @@ public class CustomAudioClip {
                 case OverlordDeath -> 0.5f;
                 default -> 0.7f;
             };
+            volume *= getSettingsFactor();
             mediaPlayer.setVolume(volume);
             if(DevTestSettings.devTestMuteMode){
                 mediaPlayer.setVolume(0.01);
@@ -185,6 +189,16 @@ public class CustomAudioClip {
         }
     }
 
+
+    //The player's choice from the settings page: the music or the effects percentage
+    private double getSettingsFactor() {
+        Settings settings = SettingsManager.getInstance().getSettings();
+        return (music ? settings.getMusicVolume() : settings.getEffectsVolume()) / 100.0;
+    }
+
+    public void setMusic(boolean music) {
+        this.music = music;
+    }
 
     public boolean hasStartedSinceReset() {
         return startedSinceReset;

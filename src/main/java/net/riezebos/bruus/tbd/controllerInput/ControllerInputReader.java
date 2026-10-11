@@ -7,8 +7,10 @@ import com.studiohartman.jamepad.ControllerUnpluggedException;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
 
 import java.util.EnumMap;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 public class ControllerInputReader {
     private Map<ControllerInputEnums, Boolean> inputState = new HashMap<>();
@@ -17,6 +19,10 @@ public class ControllerInputReader {
     private float yAxisValue;
     private static final float INPUT_STRENGTH_REQUIRED = 0.1f;
     private static final float MENU_INPUT_STRENGTH_REQUIRED = 0.5f;
+    // The stick turns a menu direction on past 60% and off again only below 35%, so a stick resting near the edge does not flicker
+    private static final float MENU_PRESS = 0.6f;
+    private static final float MENU_RELEASE = 0.35f;
+    private final Set<MenuAction> stickDirections = EnumSet.noneOf(MenuAction.class);
     private final Map<MenuAction, Boolean> menuState = new EnumMap<>(MenuAction.class);
     private double lastGameSecondsTogglePressed = 0;
     private double toggleDelay = 1;
@@ -55,11 +61,16 @@ public class ControllerInputReader {
             inputState.put(ControllerInputEnums.MOVE_UP, yAxisValue <= -INPUT_STRENGTH_REQUIRED);
             inputState.put(ControllerInputEnums.MOVE_DOWN, yAxisValue >= INPUT_STRENGTH_REQUIRED);
 
-            // Menus: the stick at 50% or the d-pad
-            menuState.put(MenuAction.LEFT, xAxisValue <= -MENU_INPUT_STRENGTH_REQUIRED || controller.isButtonPressed(ControllerButton.DPAD_LEFT));
-            menuState.put(MenuAction.RIGHT, xAxisValue >= MENU_INPUT_STRENGTH_REQUIRED || controller.isButtonPressed(ControllerButton.DPAD_RIGHT));
-            menuState.put(MenuAction.UP, yAxisValue <= -MENU_INPUT_STRENGTH_REQUIRED || controller.isButtonPressed(ControllerButton.DPAD_UP));
-            menuState.put(MenuAction.DOWN, yAxisValue >= MENU_INPUT_STRENGTH_REQUIRED || controller.isButtonPressed(ControllerButton.DPAD_DOWN));
+            // Menus: the stick (only its stronger axis counts) or the d-pad
+            boolean horizontal = Math.abs(xAxisValue) >= Math.abs(yAxisValue);
+            boolean stickLeft = stickDirectionOn(MenuAction.LEFT, horizontal && xAxisValue <= 0 ? -xAxisValue : 0);
+            boolean stickRight = stickDirectionOn(MenuAction.RIGHT, horizontal && xAxisValue >= 0 ? xAxisValue : 0);
+            boolean stickUp = stickDirectionOn(MenuAction.UP, !horizontal && yAxisValue <= 0 ? -yAxisValue : 0);
+            boolean stickDown = stickDirectionOn(MenuAction.DOWN, !horizontal && yAxisValue >= 0 ? yAxisValue : 0);
+            menuState.put(MenuAction.LEFT, stickLeft || controller.isButtonPressed(ControllerButton.DPAD_LEFT));
+            menuState.put(MenuAction.RIGHT, stickRight || controller.isButtonPressed(ControllerButton.DPAD_RIGHT));
+            menuState.put(MenuAction.UP, stickUp || controller.isButtonPressed(ControllerButton.DPAD_UP));
+            menuState.put(MenuAction.DOWN, stickDown || controller.isButtonPressed(ControllerButton.DPAD_DOWN));
             menuState.put(MenuAction.CONFIRM, controller.isButtonPressed(ControllerButton.A));
             menuState.put(MenuAction.BACK, controller.isButtonPressed(ControllerButton.B));
             menuState.put(MenuAction.ANY_BUTTON, isAnyMenuButtonPressed(controller));
@@ -85,6 +96,17 @@ public class ControllerInputReader {
             resetInputStates();
             System.out.println(e.getMessage() + " Controller disconnected.");
         }
+    }
+
+    // Remembers per direction whether the stick holds it: on past MENU_PRESS, off only below MENU_RELEASE
+    private boolean stickDirectionOn(MenuAction direction, float strength) {
+        boolean on = strength >= (stickDirections.contains(direction) ? MENU_RELEASE : MENU_PRESS);
+        if (on) {
+            stickDirections.add(direction);
+        } else {
+            stickDirections.remove(direction);
+        }
+        return on;
     }
 
     // Every button except the d-pad, and a trigger past halfway; stick clicks count, stick movement does not
@@ -144,5 +166,6 @@ public class ControllerInputReader {
         inputState.put(ControllerInputEnums.PAUSE, false); // Menu button
         pausePressedSinceLastCheck = false;
         menuState.clear();
+        stickDirections.clear();
     }
 }

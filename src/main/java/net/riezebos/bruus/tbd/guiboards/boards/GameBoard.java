@@ -54,9 +54,11 @@ import net.riezebos.bruus.tbd.guiboards.BoardManager;
 import net.riezebos.bruus.tbd.guiboards.TimerHolder;
 import net.riezebos.bruus.tbd.guiboards.background.BackgroundManager;
 import net.riezebos.bruus.tbd.guiboards.background.BackgroundObject;
+import net.riezebos.bruus.tbd.guiboards.boardEnums.MenuFunctionEnums;
 import net.riezebos.bruus.tbd.guiboards.guicomponents.BossHealthBar;
 import net.riezebos.bruus.tbd.guiboards.guicomponents.GUIComponent;
-import net.riezebos.bruus.tbd.guiboards.guicomponents.PauseWindow;
+import net.riezebos.bruus.tbd.guiboards.guicomponents.MenuWindow;
+import net.riezebos.bruus.tbd.guiboards.guicomponents.SettingsWindow;
 import net.riezebos.bruus.tbd.visualsandaudio.data.DataClass;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.AudioDatabase;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.AudioManager;
@@ -117,7 +119,9 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
 
     private List<GUIComponent> floatingIcons = new ArrayList<>();
     private List<BossHealthBar> bossHealthBars = new ArrayList<>();
-    private PauseWindow pauseWindow;
+    private MenuWindow pauseWindow;
+    private MenuWindow exitRunQuestion;
+    private MenuWindow openWindow; //The window shown and steered while paused: the pause window or the exit run question (the settings page steers itself)
 
     private List<GUIComponent> relicBackgroundCards = new ArrayList<>();
     private List<GUIComponent> relicSelectionGrid = new ArrayList<>();
@@ -163,7 +167,16 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
         PlayerManager.getInstance().resetManager();
         PlayerManager.getInstance().createSpaceShip();
         gameUICreator.createGameBoardGUI();
-        this.pauseWindow = new PauseWindow();
+        this.pauseWindow = new MenuWindow("PAUSED", List.of(
+                new MenuWindow.MenuRow("RESUME", MenuFunctionEnums.Resume_Game),
+                new MenuWindow.MenuRow("SETTINGS", MenuFunctionEnums.Open_Settings),
+                new MenuWindow.MenuRow("EXIT RUN", MenuFunctionEnums.Exit_Run)));
+        //The menu letters have no question mark, so the question has none
+        this.exitRunQuestion = new MenuWindow("ARE YOU SURE", List.of(
+                new MenuWindow.MenuRow("YES", MenuFunctionEnums.Confirm_Exit_Run),
+                new MenuWindow.MenuRow("NO", MenuFunctionEnums.Cancel_Exit_Run)));
+        this.openWindow = pauseWindow;
+        SettingsWindow.getInstance().closeSilently();
         gameState.setGameState(GameStatusEnums.Zoning_In);
         GameState.getInstance().resetForNextLevel();
         lastMenuState = null;
@@ -618,8 +631,14 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
         }
 
         if (gameState.getGameState().equals(GameStatusEnums.Paused)) {
-            for (GUIComponent component : pauseWindow.getComponents()) {
-                drawGUIComponent(g, component);
+            if (SettingsWindow.getInstance().isOpen()) {
+                for (GUIComponent component : SettingsWindow.getInstance().getComponents()) {
+                    drawGUIComponent(g, component);
+                }
+            } else {
+                for (GUIComponent component : openWindow.getComponents()) {
+                    drawGUIComponent(g, component);
+                }
             }
         }
 
@@ -1133,13 +1152,11 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
             }
 
             if (e.getKeyCode() == (KeyEvent.VK_P)) {
-                if (gameState.getGameState().equals(GameStatusEnums.Playing)) {
-                    stateBeforePause = GameStatusEnums.Playing;
-                    gameState.setGameState(GameStatusEnums.Paused);
-                    audioManager.pauseAllAudio();
+                GameStatusEnums currentState = gameState.getGameState();
+                if (currentState.equals(GameStatusEnums.Playing) || currentState.equals(GameStatusEnums.Level_Finished)) {
+                    pauseGame(currentState);
                 } else if (gameState.getGameState().equals(GameStatusEnums.Paused)) {
-                    gameState.setGameState(stateBeforePause);
-                    audioManager.resumeAllAudio();
+                    pauseKeyWhilePaused();
                 }
             }
 
@@ -1202,6 +1219,69 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
 
     private GameStatusEnums stateBeforePause = GameStatusEnums.Playing; //So a pause during the portal phase resumes there, not in Playing
 
+    //The one place that pauses: the state and the audio. The press that paused must not act in the pause window, hence startScreen()
+    private void pauseGame(GameStatusEnums stateToReturnTo) {
+        stateBeforePause = stateToReturnTo;
+        gameState.setGameState(GameStatusEnums.Paused);
+        audioManager.pauseAllAudio();
+        openWindow = pauseWindow;
+        SettingsWindow.getInstance().closeSilently();
+        pauseWindow.selectFirstOption();
+        MenuInput.getInstance().startScreen();
+    }
+
+    //The one place that resumes; does nothing unless the game is paused
+    public void resumeGame() {
+        if (gameState.getGameState() != GameStatusEnums.Paused) {
+            return;
+        }
+        openWindow = pauseWindow; //Closes the exit run question too
+        SettingsWindow.getInstance().closeSilently(); //And the settings page
+        gameState.setGameState(stateBeforePause);
+        audioManager.resumeAllAudio();
+    }
+
+    //Shows the exit run question over the paused game, NO selected first so a double press does not leave the run
+    public void openExitRunQuestion() {
+        openWindow = exitRunQuestion;
+        exitRunQuestion.selectOption(1);
+        MenuInput.getInstance().startScreen();
+    }
+
+    //Back to the pause window with EXIT RUN selected
+    public void closeExitRunQuestion() {
+        openWindow = pauseWindow;
+        pauseWindow.selectOption(2);
+        MenuInput.getInstance().startScreen();
+    }
+
+    //P and the Menu button while paused: with unsaved settings they ask what to do with them first
+    private void pauseKeyWhilePaused() {
+        if (SettingsWindow.getInstance().isOpen() && SettingsWindow.getInstance().askBeforeLeaving()) {
+            return; //The page asks about unsaved settings first; the player answers the question
+        }
+        resumeGame();
+    }
+
+    //Shows the settings page over the paused game; when it closes, back to the pause window with SETTINGS selected
+    public void openSettings() {
+        SettingsWindow.getInstance().open(() -> {
+            openWindow = pauseWindow;
+            pauseWindow.selectOption(1);
+            MenuInput.getInstance().startScreen();
+        });
+    }
+
+    //Leaves the run for the main menu like the game over screen does, but keeps the save so CONTINUE RUN restarts the level that was left
+    public void exitRun() {
+        resumeGame(); //Clears the paused flag of the clips, which stopping them does not
+        boardManager.initMainMenu();
+        audioManager.stopExternalMusicPlayer(); //Game over stops Apple Music or Spotify too; resuming above started it again
+        GameStatsTracker.getInstance().resetGameStatsTracker();
+        LevelManager.getInstance().resetBossUsed();
+        drawTimer.stop();
+    }
+
     private boolean isAnyLivingShipControlled() {
         for (SpaceShip spaceShip : playerManager.getAllSpaceShips()) {
             if (spaceShip.getSeat().hasController()) {
@@ -1220,23 +1300,24 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
         //Also while flying to the portal. Menu or P resumes it, joining does not.
         GameStatusEnums currentState = gameState.getGameState();
         if ((currentState == GameStatusEnums.Playing || currentState == GameStatusEnums.Level_Finished) && !isAnyLivingShipControlled()) {
-            stateBeforePause = currentState;
-            gameState.setGameState(GameStatusEnums.Paused);
-            audioManager.pauseAllAudio();
+            pauseGame(currentState);
         }
 
         if (!controllerManager.getControllerInputReaders().isEmpty()) { //if there are connected controllers, read their input
             //Pause or unpause
             if (controllerManager.isPausePressed()) {
-                if (gameState.getGameState().equals(GameStatusEnums.Playing)) {
-                    stateBeforePause = GameStatusEnums.Playing;
-                    gameState.setGameState(GameStatusEnums.Paused);
-                    audioManager.pauseAllAudio();
-                } else if (gameState.getGameState().equals(GameStatusEnums.Paused)) {
-                    gameState.setGameState(stateBeforePause);
-                    audioManager.resumeAllAudio();
+                GameStatusEnums stateNow = gameState.getGameState(); //Read again, the disconnect pause above may have changed it
+                if (stateNow.equals(GameStatusEnums.Playing) || stateNow.equals(GameStatusEnums.Level_Finished)) {
+                    pauseGame(stateNow);
+                } else if (stateNow.equals(GameStatusEnums.Paused)) {
+                    pauseKeyWhilePaused();
                 }
             }
+        }
+
+        //The pause window takes its input from MenuInput, with or without a controller
+        if (gameState.getGameState() == GameStatusEnums.Paused) {
+            executePauseInput();
         }
 
         //The relic screen, score card and game over take their input from MenuInput, with or without a controller
@@ -1260,6 +1341,31 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
             //Ships still move in these screens, so stop them; nothing reads their input here
             for (SpaceShip spaceShip : playerManager.getAllSpaceShips()) {
                 spaceShip.stopMoving();
+            }
+        }
+    }
+
+    // The pause window acts on what MenuInput reports
+    private void executePauseInput() {
+        if (SettingsWindow.getInstance().isOpen()) {
+            SettingsWindow.getInstance().handleInput(MenuInput.getInstance().poll());
+            return;
+        }
+        for (MenuAction action : MenuInput.getInstance().poll()) {
+            if (action == MenuAction.UP) {
+                openWindow.selectPreviousOption();
+            } else if (action == MenuAction.DOWN) {
+                openWindow.selectNextOption();
+            } else if (action == MenuAction.CONFIRM) {
+                openWindow.activateSelectedOption();
+                return;
+            } else if (action == MenuAction.BACK) {
+                if (openWindow == exitRunQuestion) {
+                    closeExitRunQuestion();
+                } else {
+                    resumeGame();
+                }
+                return;
             }
         }
     }

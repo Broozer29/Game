@@ -6,6 +6,7 @@ import net.riezebos.bruus.tbd.guiboards.guicomponents.DisplayOnly;
 import net.riezebos.bruus.tbd.guiboards.guicomponents.GUIComponent;
 import net.riezebos.bruus.tbd.guiboards.guicomponents.GUITextCollection;
 import net.riezebos.bruus.tbd.guiboards.guicomponents.MenuCursor;
+import net.riezebos.bruus.tbd.guiboards.guicomponents.ResizableCard;
 import net.riezebos.bruus.tbd.visualsandaudio.data.DataClass;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteConfiguration;
@@ -105,21 +106,21 @@ public class MenuBoardCreator {
         return controlExplanations;
     }
 
-    public static GUIComponent startGameBackgroundCard(){
+    //The card is as high as the buttons need, 50 per button plus 50 at the top and the bottom, plus 50 for the two gaps between the button groups, so the border stays the same thickness
+    public static ResizableCard startGameBackgroundCard(int buttonCount){
         int xCoordinate = DataClass.getInstance().getWindowWidth() / 2;
         int yCoordinate = (DataClass.getInstance().getWindowHeight() / 2) - 50;
 
         SpriteConfiguration spriteConfiguration = new SpriteConfiguration();
         spriteConfiguration.setxCoordinate(xCoordinate);
         spriteConfiguration.setyCoordinate(yCoordinate);
-        spriteConfiguration.setScale(resolutionFactor);
+        spriteConfiguration.setScale(1);
         spriteConfiguration.setImageType(ImageEnums.Square_Card);
 
-        GUIComponent backgroundCard = new DisplayOnly(spriteConfiguration);
-
         int newWidth = Math.round(250 * resolutionFactor);
-        int newHeight = Math.round(250 * resolutionFactor);
-        backgroundCard.setImageDimensions(newWidth,newHeight);
+        //The buttons start 50 below the top and are 50 apart (unscaled), so the same 50 below the last button keeps both margins even
+        int newHeight = 50 + (buttonCount - 1) * 50 + Math.round(14 * resolutionFactor) + 50 + 50;
+        ResizableCard backgroundCard = new ResizableCard(spriteConfiguration, newWidth, newHeight);
 
         backgroundCard.setCenterXCoordinate(xCoordinate);
 
@@ -166,10 +167,21 @@ public class MenuBoardCreator {
         return textCollection;
     }
 
+    public static GUITextCollection settingsButton(GUITextCollection previousButton){
+        GUIComponent component = previousButton.getComponents().get(0);
+        int xCoordinate = component.getXCoordinate();
+        int yCoordinate = component.getYCoordinate() + 75; // 50 plus a gap of 25 before this group
+
+        GUITextCollection textCollection = new GUITextCollection(xCoordinate,yCoordinate, "SETTINGS");
+        textCollection.setScale(resolutionFactor);
+        textCollection.setMenuFunctionality(MenuFunctionEnums.Open_Settings);
+        return textCollection;
+    }
+
     public static GUITextCollection testingButton(GUITextCollection openShopButton){
         GUIComponent component = openShopButton.getComponents().get(0);
         int xCoordinate = component.getXCoordinate();
-        int yCoordinate = component.getYCoordinate() + 50;
+        int yCoordinate = component.getYCoordinate() + 75; // 50 plus a gap of 25 before this group
 
         GUITextCollection textCollection = new GUITextCollection(xCoordinate,yCoordinate, "CLOSE GAME");
         textCollection.setScale(resolutionFactor);

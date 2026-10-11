@@ -44,6 +44,7 @@ public class AudioManager {
     //Stops the current background music, disposes it (a no-op for database clips) and clears the field
     private void releaseBackgroundMusic() {
         if (backGroundMusic != null) {
+            backGroundMusic.setMusic(false); //Database clips are reused as effects
             backGroundMusic.setLoop(false);
             backGroundMusic.setPlaybackPosition(0);
             backGroundMusic.stopClip();
@@ -110,8 +111,20 @@ public class AudioManager {
                 backGroundMusic.muteAudioClip();
             }
             backGroundMusic.setLoop(loop);
+            backGroundMusic.setMusic(true);
             backGroundMusic.startClip();
             this.currentSong = backGroundMusic.getAudioType();
+        }
+    }
+
+    //Stops Apple Music or Spotify when one of them plays the music, as when leaving a run
+    public void stopExternalMusicPlayer() {
+        if (this.musicMediaPlayer == MusicMediaPlayer.iTunesMacOS && !DevTestSettings.devTestMuteMode) { //if mute mode is on, dont stop playback since it shouldnt have started
+            macOSMediaPlayer.stopPlayback();
+            macOSMediaPlayer.resetCurrentSeconds();
+        }
+        if (this.musicMediaPlayer == MusicMediaPlayer.Spotify && !DevTestSettings.devTestMuteMode) {  //if mute mode is on, dont stop playback since it shouldnt have started
+            spotifyMediaPlayer.stopPlayback();
         }
     }
 
@@ -123,13 +136,7 @@ public class AudioManager {
         }
 
         if (GameState.getInstance().getGameState().equals(GameStatusEnums.Dead) || GameState.getInstance().getGameState().equals(GameStatusEnums.Show_Level_Score_Card)) {
-            if (this.musicMediaPlayer == MusicMediaPlayer.iTunesMacOS && !DevTestSettings.devTestMuteMode) { //if mute mode is on, dont stop playback since it shouldnt have started
-                macOSMediaPlayer.stopPlayback();
-                macOSMediaPlayer.resetCurrentSeconds();
-            }
-            if (this.musicMediaPlayer == MusicMediaPlayer.Spotify && !DevTestSettings.devTestMuteMode) {  //if mute mode is on, dont stop playback since it shouldnt have started
-                spotifyMediaPlayer.stopPlayback();
-            }
+            stopExternalMusicPlayer();
             releaseBackgroundMusic();
             currentSong = null;
         }
@@ -153,6 +160,7 @@ public class AudioManager {
 
     public void tryToDisposeBackgroundMusic() {
         if (backGroundMusic != null) {
+            backGroundMusic.setMusic(false);
             backGroundMusic.dispose();
             backGroundMusic = null;
         }
@@ -287,6 +295,7 @@ public class AudioManager {
             releaseBackgroundMusic();
 
             CustomAudioClip clip = new CustomAudioClip(AudioEnums.CustomMusicFile); //create a new customaudioclip as the database does NOT preload these, loop defaults to false
+            clip.setMusic(true);
             clip.startClip(); //fire & forget
             backGroundMusic = clip;
 
@@ -306,6 +315,16 @@ public class AudioManager {
             double trackDuration = spotifyMediaPlayer.getTotalSeconds();
             predictedEndGameSeconds = GameState.getInstance().getGameSeconds() + trackDuration;
             lastSyncGameSeconds = GameState.getInstance().getGameSeconds();
+        }
+    }
+
+    //Applies the volume settings to the music and every sound playing now, so a change is heard at once
+    public void applyVolumeSettings() {
+        if (backGroundMusic != null) {
+            backGroundMusic.adjustVolume();
+        }
+        for (CustomAudioClip audioClip : audioDatabase.getAllActiveClips()) {
+            audioClip.adjustVolume();
         }
     }
 

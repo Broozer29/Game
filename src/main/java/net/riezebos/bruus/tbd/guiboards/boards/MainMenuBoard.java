@@ -17,6 +17,7 @@ import net.riezebos.bruus.tbd.guiboards.boardcreators.MenuBoardCreator;
 import net.riezebos.bruus.tbd.guiboards.guicomponents.GUIComponent;
 import net.riezebos.bruus.tbd.guiboards.guicomponents.GUITextCollection;
 import net.riezebos.bruus.tbd.guiboards.guicomponents.MenuCursor;
+import net.riezebos.bruus.tbd.guiboards.guicomponents.SettingsWindow;
 import net.riezebos.bruus.tbd.visualsandaudio.data.DataClass;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.AnimationManager;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.Sprite;
@@ -44,6 +45,7 @@ public class MainMenuBoard extends JPanel implements TimerHolder {
     private GUIComponent selectMusicOptionBackgroundCard;
     private GUITextCollection openShopButton;
     private GUITextCollection continueSaveFile;
+    private GUITextCollection settingsButton;
     private GUITextCollection selectMacOSMediaPlayerButton;
     private GUITextCollection selectDefaultMusicButton;
     private GUIComponent titleImage;
@@ -90,12 +92,7 @@ public class MainMenuBoard extends JPanel implements TimerHolder {
     private void initMenuTiles() {
         titleImage = MenuBoardCreator.createTitleImage();
         controlExplanations = MenuBoardCreator.createControlsExplanations();
-        startGameBackgroundCard = MenuBoardCreator.startGameBackgroundCard();
-
-        selectClassBoard = MenuBoardCreator.createStartGameButton(startGameBackgroundCard);
-        continueSaveFile = MenuBoardCreator.continueSaveFileButton(selectClassBoard);
-        openShopButton = MenuBoardCreator.openShopButton(continueSaveFile);
-        closeGameButton = MenuBoardCreator.testingButton(openShopButton);
+        createCardAndButtons();
 
         selectMusicOptionBackgroundCard = MenuBoardCreator.selectMusicPlayerBackgroundCard(startGameBackgroundCard);
         selectMusicOptionText = MenuBoardCreator.selectMusicText(selectMusicOptionBackgroundCard);
@@ -107,47 +104,65 @@ public class MainMenuBoard extends JPanel implements TimerHolder {
 
     public void recreateWindow() {
         if (initializedMenuObjects) {
-            startGameBackgroundCard = MenuBoardCreator.startGameBackgroundCard();
-            selectClassBoard = MenuBoardCreator.createStartGameButton(startGameBackgroundCard);
-            menuCursor = MenuBoardCreator.createMenuCursor(selectClassBoard.getComponents().get(0));
-            openShopButton = MenuBoardCreator.openShopButton(selectClassBoard);
-            continueSaveFile = MenuBoardCreator.continueSaveFileButton(openShopButton);
-            closeGameButton = MenuBoardCreator.testingButton(continueSaveFile);
-
+            SettingsWindow.getInstance().closeSilently();
+            createCardAndButtons();
             animationManager.resetManager();
-            firstColumn.clear();
-            secondColumn.clear();
-            thirdColumn.clear();
-            offTheGridObjects.clear();
-
 
             menuCursor = MenuBoardCreator.createMenuCursor(selectClassBoard.getComponents().get(0));
+            menuCursor.setSelectedMenuTile(selectClassBoard.getComponents().get(0));
             selectedColumn = 0;
             selectedRow = 0;
-            addTilesToColumns();
 
-//            for (GUITextCollection explanation : controlExplanations) {
-//                offTheGridObjects.addAll(explanation.getComponents());
-//            }
-
-            offTheGridObjects.add(startGameBackgroundCard);
-//            offTheGridObjects.add(selectMusicOptionBackgroundCard);
-            offTheGridObjects.add(titleImage);
-            offTheGridObjects.add(menuCursor);
-//            offTheGridObjects.addAll(selectMusicOptionText.getComponents());
-
-            if (ControllerManager.getInstance().getPrimaryController() != null) {
-                offTheGridObjects.add(inputMapping);
-            }
-
-            this.menuCursor.setSelectedMenuTile(selectClassBoard.getComponents().get(0));
-
+            buildOffTheGridObjects();
+            grid.clear();
             grid.add(firstColumn);
             grid.add(secondColumn);
             grid.add(thirdColumn);
             recreateList(); // Fill the columns
             updateCursor();
         }
+    }
+
+    // Everything that is drawn but never selected, built in one place in drawing order:
+    // what is added later is drawn on top, so the card comes before the letters on it
+    private void buildOffTheGridObjects() {
+        offTheGridObjects.clear();
+
+//        for (GUITextCollection explanation : controlExplanations) {
+//            offTheGridObjects.addAll(explanation.getComponents());
+//        }
+
+        offTheGridObjects.add(startGameBackgroundCard);
+//        offTheGridObjects.add(selectMusicOptionBackgroundCard);
+        offTheGridObjects.add(titleImage);
+        offTheGridObjects.add(menuCursor);
+//        offTheGridObjects.addAll(selectMusicOptionText.getComponents());
+
+        if (ControllerManager.getInstance().getPrimaryController() != null) {
+            offTheGridObjects.add(inputMapping);
+        }
+        addLettersToOffTheGrid();
+    }
+
+    // Creates the card and the buttons that are shown, each one below the last shown button, and makes the card as high as they need
+    private void createCardAndButtons() {
+        boolean showContinue = SaveManager.getInstance().doesSaveFileExist();
+        boolean showShop = DevTestSettings.enableDirectShopAccess;
+        int buttonCount = 3 + (showContinue ? 1 : 0) + (showShop ? 1 : 0); // SELECT CLASS, SETTINGS and CLOSE GAME are always shown
+
+        startGameBackgroundCard = MenuBoardCreator.startGameBackgroundCard(buttonCount);
+        selectClassBoard = MenuBoardCreator.createStartGameButton(startGameBackgroundCard);
+        GUITextCollection lastButton = selectClassBoard;
+        continueSaveFile = MenuBoardCreator.continueSaveFileButton(lastButton);
+        if (showContinue) {
+            lastButton = continueSaveFile;
+        }
+        openShopButton = MenuBoardCreator.openShopButton(lastButton);
+        if (showShop) {
+            lastButton = openShopButton;
+        }
+        settingsButton = MenuBoardCreator.settingsButton(lastButton);
+        closeGameButton = MenuBoardCreator.testingButton(settingsButton);
     }
 
     // Recreate the tilesList that gets drawn by drawComponents
@@ -164,22 +179,33 @@ public class MainMenuBoard extends JPanel implements TimerHolder {
         }
     }
 
+    // The other letters of each shown button are drawn but never selected, so they are added once per window, not on every recreateList
+    private void addLettersToOffTheGrid() {
+        addAllButFirstComponent(selectClassBoard);
+        if (SaveManager.getInstance().doesSaveFileExist()) {
+            addAllButFirstComponent(continueSaveFile);
+        }
+        if (DevTestSettings.enableDirectShopAccess) {
+            addAllButFirstComponent(openShopButton);
+        }
+        addAllButFirstComponent(settingsButton);
+        addAllButFirstComponent(closeGameButton);
+    }
+
     private void addTilesToColumns() {
         addToGrid(firstColumn, selectClassBoard.getComponents().get(0), 0, 0);
-        addAllButFirstComponent(selectClassBoard);
 
         if (SaveManager.getInstance().doesSaveFileExist()) {
             addToGrid(firstColumn, continueSaveFile.getComponents().get(0), 0, 0);
-            addAllButFirstComponent(continueSaveFile);
         }
 
         if(DevTestSettings.enableDirectShopAccess) {
             addToGrid(firstColumn, openShopButton.getComponents().get(0), 0, 0);
-            addAllButFirstComponent(openShopButton);
         }
 
+        addToGrid(firstColumn, settingsButton.getComponents().get(0), 0, 0);
+
         addToGrid(firstColumn, closeGameButton.getComponents().get(0), 0, 0);
-        addAllButFirstComponent(closeGameButton);
 
 //        secondColumn.add(selectDefaultMusicButton.getComponents().get(0));
 //        addAllButFirstComponent(selectDefaultMusicButton);
@@ -292,12 +318,26 @@ public class MainMenuBoard extends JPanel implements TimerHolder {
         }
     }
 
+    // Shows the settings page over the main menu; when it closes, SETTINGS is selected again
+    public void openSettings() {
+        SettingsWindow.getInstance().open(() -> {
+            selectedRow = 0;
+            selectedColumn = firstColumn.indexOf(settingsButton.getComponents().get(0));
+            updateCursor();
+            MenuInput.getInstance().startScreen();
+        });
+    }
+
     public void closeGame() {
         System.exit(1);
     }
 
     // Acts on what MenuInput reports: keys and the main controller, one set of rules for every menu screen
     public void executeMenuInput() {
+        if (SettingsWindow.getInstance().isOpen()) {
+            SettingsWindow.getInstance().handleInput(MenuInput.getInstance().poll()); // The page takes the input, the menu does not move
+            return;
+        }
         boolean needsUpdate = false;
         for (MenuAction action : MenuInput.getInstance().poll()) {
             switch (action) {
@@ -400,6 +440,11 @@ public class MainMenuBoard extends JPanel implements TimerHolder {
             }
         }
 
+        if (SettingsWindow.getInstance().isOpen()) {
+            for (GUIComponent component : SettingsWindow.getInstance().getComponents()) {
+                drawGUIComponent(g, component);
+            }
+        }
     }
 
     private void drawGUIComponent(Graphics2D g, GUIComponent component) {

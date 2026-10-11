@@ -284,6 +284,15 @@ public class BoardManager extends JFrame {
         return boonSelectionBoard;
     }
 
+    //Opens the settings page on the screen that is shown: the main menu, otherwise the paused game
+    public void openSettings() {
+        if (mainMenuBoard != null && currentBoard == mainMenuBoard) {
+            mainMenuBoard.openSettings();
+        } else {
+            getGameBoard().openSettings();
+        }
+    }
+
     public GameBoard getGameBoard() {
         if (gameBoard == null) {
             gameBoard = new GameBoard();

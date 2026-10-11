@@ -20,7 +20,7 @@ Level flow, portals, the structure of a run and saved progress.
   - Contracts re-added on load start counting from a stale kill count, because `GameStatsTracker.loadInSaveFile` runs last (SaveManager.java:54-58)
   - Boon "already applied this run" flags (Bounty Hunter, Treasure Hunter, Club Access) are not reset on load (not confirmed)
 - Not every route back to the menu resets the run
-  - `GameBoard.resetGame()` doesn't reset `TwinBossManager`, `InteractableManager` or `GameStatsTracker`; the stats tracker only resets on the death screen's key or controller path
+  - `GameBoard.resetGame()` doesn't reset `TwinBossManager`, `InteractableManager` or `GameStatsTracker`; the stats tracker only resets on the death screen's key or controller path and on EXIT RUN in the pause window (since 2026-10-11)
   - `ThornsDamageDealer.resetThornsDamageDealer()` doesn't clear `thornsMissileMap`, and it isn't called between levels
 - `LevelManager.getNextBoss` (LevelManager.java:255-264) retries with recursion until a counter passes 1000, and that counter is never reset
 - The Instant director never spawns anything, so the opening wave at level start never happens

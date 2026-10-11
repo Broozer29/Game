@@ -64,6 +64,30 @@ public class MenuButton extends GUIComponent {
             case Open_Inventory:
                 boardManager.getShopBoard().setShowInventory(!boardManager.getShopBoard().isShowInventory());
                 break;
+            case Resume_Game:
+                boardManager.getGameBoard().resumeGame();
+                break;
+            case Exit_Run:
+                boardManager.getGameBoard().openExitRunQuestion();
+                break;
+            case Confirm_Exit_Run:
+                boardManager.getGameBoard().exitRun();
+                break;
+            case Cancel_Exit_Run:
+                boardManager.getGameBoard().closeExitRunQuestion();
+                break;
+            case Open_Settings:
+                boardManager.openSettings();
+                break;
+            case Save_Settings:
+                SettingsWindow.getInstance().saveAndClose();
+                break;
+            case Save_Settings_Changes:
+                SettingsWindow.getInstance().saveAndClose();
+                break;
+            case Discard_Settings_Changes:
+                SettingsWindow.getInstance().discardAndClose();
+                break;
             case Open_Shop_Window:
                 boardManager.openShopWindow();
                 break;

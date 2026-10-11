@@ -11,6 +11,5 @@ Menus, screens, the HUD and health bars.
   - Confirmed on 2026-10-07: a stress run with damage numbers switched off had no lag at all for the whole level
   - Question for Bruus (2026-10-07): any objection to removing the on-screen numbers?
 - A damage overview at the end of a level and of a run: average damage per second, highest hit and lowest hit
-- Give up run button
 - Pimp out the loading screen
 - Player profile in the shop (show max hitpoints, attack speed, crit chance, health regen etc etc)
