@@ -435,7 +435,7 @@ public class SpaceShip extends GameObject {
     private void updateItemEffects(){
         CalmInChaos calmInChaos = (CalmInChaos) PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.CalmInChaos);
         if(calmInChaos != null){
-            if(currentShieldPoints >= playerStats.getMaxShieldHitPoints() && !MissileManager.getInstance().getSpecialAttacks().contains(calmInChaosStorm)){
+            if(currentShieldPoints >= (playerStats.getMaxShieldHitPoints() * CalmInChaos.hitPointRequirement) && !MissileManager.getInstance().getSpecialAttacks().contains(calmInChaosStorm)){
                 if(calmInChaosStorm == null){
                     calmInChaosStorm = CalmInChaosStorm.createEffect(this);
                 }

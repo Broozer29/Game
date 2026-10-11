@@ -16,7 +16,7 @@ import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.Sprit
 public class FlameThrower extends SpecialAttack {
 
 
-    public FlameThrower (SpriteAnimationConfiguration spriteAnimationConfiguration, SpecialAttackConfiguration missileConfiguration, GameObject owner) {
+    public FlameThrower(SpriteAnimationConfiguration spriteAnimationConfiguration, SpecialAttackConfiguration missileConfiguration, GameObject owner) {
         super(spriteAnimationConfiguration, missileConfiguration);
         this.setObjectType("FlameThrower");
         this.allowRepeatedDamage = true;
@@ -27,12 +27,18 @@ public class FlameThrower extends SpecialAttack {
         this.ownerOrCreator = owner;
         initIgniteEffect();
 
-        if(PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.FireWithoutGasIsAss) != null){
+        if (PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.FireWithoutGasIsAss) != null) {
             initIgniteMagnificationEffect();
+        }
+
+        if (PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.DistributedHeat) != null) {
+            this.animation.changeImagetype(ImageEnums.DistributedHeatEffect);
+            this.setTransparancyAlpha(true, 0.1f, 0.075f);
+            this.setCenteredAroundObject(true);
         }
     }
 
-    private void initIgniteEffect(){
+    private void initIgniteEffect() {
         float duration = PlayerStats.getInstance().getIgniteDuration();
         float damage = PlayerStats.getInstance().getIgniteDamage();
         SpaceShip owner = (SpaceShip) this.ownerOrCreator;
@@ -41,29 +47,33 @@ public class FlameThrower extends SpecialAttack {
         this.effectsToApply.add(ignite);
     }
 
-    private void initIgniteMagnificationEffect(){
+    private void initIgniteMagnificationEffect() {
         float duration = 0.05f;
         EffectInterface igniteModifier = new WithoutGasItsAss(duration, EffectIdentifiers.WithoutGasItsAssDamageBonus);
         this.effectsToApply.add(igniteModifier);
     }
 
     @Override
-    public void startDissipating(){
-        this.animation.changeImagetype(ImageEnums.FireFighterFlameThrowerDissipating);
-        this.animation.setCurrentFrame(0);
-        this.animation.setAnimationScale(this.scale);
-        this.animation.setInfiniteLoop(false);
+    public void startDissipating() {
+        if (this.imageEnum == ImageEnums.FireFighterFlameThrowerLooping) {
+            this.animation.changeImagetype(ImageEnums.FireFighterFlameThrowerDissipating);
+            this.animation.setCurrentFrame(0);
+            this.animation.setAnimationScale(this.scale);
+            this.animation.setInfiniteLoop(false);
+        } else {
+            this.setTransparancyAlpha(true, 1, -0.08f);
+        }
         super.isDissipating = true;
     }
 
 
     @Override
     public void updateSpecialAttack() {
-        if(this.ownerOrCreator instanceof SpaceShip && PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.InfernalPreIgniter) != null){
+        if (this.ownerOrCreator instanceof SpaceShip && PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.InfernalPreIgniter) != null) {
             PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.InfernalPreIgniter).applyEffectToObject(this);
         }
 
-        if(this.ownerOrCreator instanceof SpaceShip && (ownerOrCreator.getCurrentHitpoints() <= 0 || !ownerOrCreator.isVisible())){
+        if (this.ownerOrCreator instanceof SpaceShip && (ownerOrCreator.getCurrentHitpoints() <= 0 || !ownerOrCreator.isVisible())) {
             this.setVisible(false);
         }
         super.internalTickCooldown = this.ownerOrCreator.getAttackSpeed(); //todo dit is eigenlijk een initialize variabele maar owner word gezet na de constructor, code smell

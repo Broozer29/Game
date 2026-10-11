@@ -311,6 +311,8 @@ public enum ImageEnums {
     UpgradePrecision,
     UpgradeSpeed,
     CalmInChaosEffect,
+    DistributedHeatEffect,
+    DistributedHeatIcon,
     Starcraft2_Blue_Flame,
     Starcraft2_Concussive_Shells,
     Starcraft2_Energy_Siphon,

@@ -179,6 +179,8 @@ public class ImageLoader {
                 return "/images/background/Starfield3.png";
             case Star_Field_4:
                 return "/images/background/Starfield4.png";
+            case DistributedHeatIcon:
+                return "/images/Icons/DistributedHeat.png";
             case SmallDroneItemIcon:
                 return "/images/Icons/smalldroneicon.jpg";
             case Consume:

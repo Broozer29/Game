@@ -98,7 +98,7 @@ public class ItemDescriptionRetriever {
                 double value = CalmInChaos.damageModifier
                         * (1.0 / SpecialAttack.defaultInternalTickCooldown)
                         * 100.0;
-                return "Whilst your shields are at maximum health, they generate a storm of ice dealing "
+                return "Whilst your shields are above " + Math.round(CalmInChaos.hitPointRequirement * 100) + "% health, they generate a storm of ice dealing "
                         + Math.round(value) + "% (+" + Math.round(value) + "%) damage per second.";
             } //legendary
 
@@ -108,6 +108,9 @@ public class ItemDescriptionRetriever {
                         Math.round(Math.round(PlayerStats.igniteDamageMultiplier * 100) * (PlayerStats.igniteDuration / DamageOverTime.damageInterval)) + "% (+" + Math.round(CannisterOfGasoline.igniteDamageBonus * 100) + "%) damage over " +
                         PlayerStats.igniteDuration + " seconds.";
             } //rare
+            case DistributedHeat -> {
+                return "Your flamethrower now fires in ALL directions but at reduced intensity. Flamethrower deals " + Math.round(Math.abs(1 - DistributedHeat.damageRatio) * 100) + "% reduced damage.";
+            }
             case Battery -> {
                 return "Your special attack gains 1 (+1) additional charge.";
             } //rare

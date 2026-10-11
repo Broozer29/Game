@@ -8,6 +8,9 @@ import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerPrimaryAttackTypes;
 import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.PrimaryPlayerGun;
 import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SpaceShip;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
+import net.riezebos.bruus.tbd.game.items.ItemEnums;
+import net.riezebos.bruus.tbd.game.items.PlayerInventory;
+import net.riezebos.bruus.tbd.game.items.items.firefighter.DistributedHeat;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.AudioManager;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.AudioEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
@@ -48,8 +51,15 @@ public class FireFighterPrimaryGun extends PrimaryPlayerGun {
             SpecialAttackConfiguration missileConfiguration = new SpecialAttackConfiguration(damage, true, true, false, true, false, true);
             SpecialAttack specialAttack = new FlameThrower(spriteAnimationConfiguration, missileConfiguration, owner); //todo sloppy bugfix to pass owner here, I'd not add it to the constructor but this is a quick fix
             specialAttack.setCenteredAroundObject(true);
-            specialAttack.setScale(0.9f);
-            specialAttack.addXOffset((specialAttack.getAnimation().getWidth() / 2) - Math.round((specialAttack.getAnimation().getWidth() * 0.005f)));
+
+            if(PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.DistributedHeat) == null) {
+                specialAttack.setScale(0.9f);
+                specialAttack.addXOffset((specialAttack.getAnimation().getWidth() / 2) - Math.round((specialAttack.getAnimation().getWidth() * 0.005f)));
+            } else {
+                specialAttack.setDamage(damage * DistributedHeat.damageRatio);
+                specialAttack.setScale(DistributedHeat.scale);
+                specialAttack.setCenterCoordinates(owner.getCenterXCoordinate(), owner.getCenterYCoordinate());
+            }
             specialAttack.setOwnerOrCreator(owner);
             owner.addFollowingSpecialAttack(specialAttack);
             this.channeledAttack = specialAttack;

@@ -48,7 +48,7 @@ public class PlayerInventory {
 
         if (DevTestSettings.infiniteMoney) {
             cashMoney = 999999999999f;
-            addItem(ItemEnums.CalmInChaos);
+            addItem(ItemEnums.DistributedHeat);
         } else {
             cashMoney = 0;
         }
@@ -237,6 +237,8 @@ public class PlayerInventory {
                 return new Thornweaver();
             case BarbedAegis:
                 return new BarbedAegis();
+            case DistributedHeat:
+                return new DistributedHeat();
             case BarbedMissiles:
                 return new BarbedMissiles();
             case ModuleElectrify:
