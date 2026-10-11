@@ -13,6 +13,7 @@ All notable changes on the `Nelis` branch.
 - docs/claude-changelog.md: one changelog of everything present today since the `Nelis` branch was created, with changes that were later undone left out, and Bruus's merged changes in their own section.
 
 ### Changed
+- Internal refactor: the difficulty screen is built on a new shared base for menu screens (MenuBoard and MenuGrid). Nothing changes for players: same buttons, cursor movement, descriptions and Back and Start behaviour.
 - The settings page now has two tabs, CONTROLS and SOUND, and opens on CONTROLS. LB and RB, or Shift+Tab and Tab, switch tabs, and Tab cycles from the last tab back to the first; the page keeps the same size on both tabs and one SAVE saves both.
 - Pressing Y no longer ends the level by spawning the portal; that cheat is now behind a test switch (`DevTestSettings.enablePortalCheatKey`), so Y can be bound to an action.
 - The keys and controller buttons for fire, special attack and hold fire are now stored in settings.json, with the same layout as before as the default; a binding that is not valid falls back to its default. Enter no longer fires the special attack; Q does.
