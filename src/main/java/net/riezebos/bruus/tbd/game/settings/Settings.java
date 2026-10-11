@@ -11,6 +11,7 @@ public class Settings {
 
     private int musicVolume = MAX_VOLUME; //Whole percentage, 100 is the loudness every sound has in code
     private int effectsVolume = MAX_VOLUME;
+    private InputBindings inputBindings = new InputBindings();
 
     public Settings() {
     }
@@ -31,18 +32,28 @@ public class Settings {
         this.effectsVolume = clampVolume(effectsVolume);
     }
 
+    public InputBindings getInputBindings() {
+        return inputBindings;
+    }
+
+    public void setInputBindings(InputBindings inputBindings) {
+        this.inputBindings = inputBindings != null ? inputBindings : new InputBindings();
+    }
+
     //A separate object with the same values, used to remember what was saved
     public Settings copyOf() {
         Settings copy = new Settings();
         copy.musicVolume = this.musicVolume;
         copy.effectsVolume = this.effectsVolume;
+        copy.inputBindings = this.inputBindings.copyOf();
         return copy;
     }
 
     public boolean hasSameValuesAs(Settings other) {
         return other != null
                 && this.musicVolume == other.musicVolume
-                && this.effectsVolume == other.effectsVolume;
+                && this.effectsVolume == other.effectsVolume
+                && this.inputBindings.hasSameValuesAs(other.inputBindings);
     }
 
     private static int clampVolume(int volume) {

@@ -44,6 +44,8 @@ import net.riezebos.bruus.tbd.game.level.directors.DirectorManager;
 import net.riezebos.bruus.tbd.game.level.directors.GodRunDetector;
 import net.riezebos.bruus.tbd.game.level.enums.LevelTypes;
 import net.riezebos.bruus.tbd.game.movement.Direction;
+import net.riezebos.bruus.tbd.game.settings.BindableAction;
+import net.riezebos.bruus.tbd.game.settings.SettingsManager;
 import net.riezebos.bruus.tbd.game.util.OnScreenText;
 import net.riezebos.bruus.tbd.game.util.OnScreenTextManager;
 import net.riezebos.bruus.tbd.game.util.ThornsDamageDealer;
@@ -1151,7 +1153,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
                 spaceShip.keyReleased(e);
             }
 
-            if (e.getKeyCode() == (KeyEvent.VK_P)) {
+            if (e.getKeyCode() == SettingsManager.getInstance().getSettings().getInputBindings().getKey(BindableAction.PAUSE)) {
                 GameStatusEnums currentState = gameState.getGameState();
                 if (currentState.equals(GameStatusEnums.Playing) || currentState.equals(GameStatusEnums.Level_Finished)) {
                     pauseGame(currentState);

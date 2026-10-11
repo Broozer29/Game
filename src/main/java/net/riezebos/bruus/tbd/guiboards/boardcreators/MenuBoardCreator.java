@@ -95,7 +95,7 @@ public class MenuBoardCreator {
         attackExplanation.setScale(resolutionFactor);
         controlExplanations.add(attackExplanation);
 
-        GUITextCollection specialExplanation = new GUITextCollection(xCoordinate, yCoordinate + Math.round(40 * resolutionFactor), "ENTER OR B = SPECIAL ATTACK");
+        GUITextCollection specialExplanation = new GUITextCollection(xCoordinate, yCoordinate + Math.round(40 * resolutionFactor), "Q OR B = SPECIAL ATTACK");
         specialExplanation.setScale(resolutionFactor);
         controlExplanations.add(specialExplanation);
 

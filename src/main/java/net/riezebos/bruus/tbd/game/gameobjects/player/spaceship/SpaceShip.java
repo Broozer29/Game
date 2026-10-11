@@ -33,6 +33,9 @@ import net.riezebos.bruus.tbd.game.level.LevelManager;
 import net.riezebos.bruus.tbd.game.level.directors.DirectorManager;
 import net.riezebos.bruus.tbd.game.level.enums.LevelTypes;
 import net.riezebos.bruus.tbd.game.movement.Point;
+import net.riezebos.bruus.tbd.game.settings.BindableAction;
+import net.riezebos.bruus.tbd.game.settings.InputBindings;
+import net.riezebos.bruus.tbd.game.settings.SettingsManager;
 import net.riezebos.bruus.tbd.game.util.OrbitingObjectsFormatter;
 import net.riezebos.bruus.tbd.game.util.collision.CollisionInfo;
 import net.riezebos.bruus.tbd.visualsandaudio.data.DataClass;
@@ -713,8 +716,11 @@ public class SpaceShip extends GameObject {
 
 
     public synchronized void keyPressed(KeyEvent e) {
-        // E toggles auto attack, once per press (holding E repeats the key event), with the same 1 s guard as LB
-        if (e.getKeyCode() == KeyEvent.VK_E && !pressedKeys.contains(KeyEvent.VK_E)
+        InputBindings bindings = SettingsManager.getInstance().getSettings().getInputBindings();
+        int holdFireKey = bindings.getKey(BindableAction.HOLD_FIRE);
+        int specialKey = bindings.getKey(BindableAction.SPECIAL_ATTACK);
+        // The bound hold fire key toggles auto attack, once per press (holding it repeats the key event), with the same 1 s guard as the controller button
+        if (e.getKeyCode() == holdFireKey && !pressedKeys.contains(holdFireKey)
                 && GameState.getInstance().getGameSeconds() - lastGameSecondsKeyboardHoldFireToggled > 1) {
             lastGameSecondsKeyboardHoldFireToggled = GameState.getInstance().getGameSeconds();
             keyboardHoldFire = !keyboardHoldFire;
@@ -722,7 +728,11 @@ public class SpaceShip extends GameObject {
         pressedKeys.add(e.getKeyCode());
         if (!pressedKeys.isEmpty()) {
             for (Iterator<Integer> it = pressedKeys.iterator(); it.hasNext(); ) {
-                switch (it.next()) {
+                int pressedKey = it.next();
+                if (pressedKey == specialKey) {
+                    fireSpecialAttack();
+                }
+                switch (pressedKey) {
                     case (KeyEvent.VK_A):
                     case (KeyEvent.VK_LEFT):
                         moveLeftQuick(1);
@@ -738,10 +748,6 @@ public class SpaceShip extends GameObject {
                     case (KeyEvent.VK_S):
                     case (KeyEvent.VK_DOWN):
                         moveDownQuick(1);
-                        break;
-                    case (KeyEvent.VK_Q):
-                    case (KeyEvent.VK_ENTER):
-                        fireSpecialAttack();
                         break;
                     case (KeyEvent.VK_SHIFT):
                         if (DevTestSettings.alloweSuicidebutton && GameState.getInstance().getGameState() == GameStatusEnums.Playing) {
@@ -783,7 +789,7 @@ public class SpaceShip extends GameObject {
         if (key == KeyEvent.VK_S || key == KeyEvent.VK_DOWN) {
             haltMoveDown();
         }
-        if (key == KeyEvent.VK_Q || key == KeyEvent.VK_ENTER) {
+        if (key == SettingsManager.getInstance().getSettings().getInputBindings().getKey(BindableAction.SPECIAL_ATTACK)) {
             haltSecondaryFiring();
         }
     }
@@ -830,10 +836,10 @@ public class SpaceShip extends GameObject {
             }
         }
 
-        // Firing: the controller's A or auto attack, and for seat 1 also space held or the keyboard's auto attack (E)
+        // Firing: the controller's bound fire button or auto attack, and for seat 1 also the bound fire key held or the keyboard's auto attack (the bound hold fire key)
         boolean captain = PlayerStats.getInstance().getPlayerClass().equals(PlayerClass.Captain);
         boolean fireHeld = (controllerInputReader != null && controllerInputReader.isInputActive(ControllerInputEnums.FIRE))
-                || (keyboardSeat && pressedKeys.contains(KeyEvent.VK_SPACE));
+                || (keyboardSeat && pressedKeys.contains(SettingsManager.getInstance().getSettings().getInputBindings().getKey(BindableAction.FIRE)));
         boolean autoAttack = captain && ((controllerInputReader != null && controllerInputReader.isInputActive(ControllerInputEnums.HOLD_FIRE))
                 || (keyboardSeat && keyboardHoldFire));
         boolean specialHeld = controllerInputReader != null && controllerInputReader.isInputActive(ControllerInputEnums.SPECIAL_ATTACK);

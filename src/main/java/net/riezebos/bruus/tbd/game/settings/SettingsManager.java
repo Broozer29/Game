@@ -9,8 +9,9 @@ public class SettingsManager {
 
     private static SettingsManager instance = new SettingsManager();
     private static final String SETTINGS_FILE_PATH = "settings.json";
-    private Settings settings; //What the game uses right now, including changes that are not saved yet
-    private Settings savedSettings; //What settings.json holds
+    //Read by the controller thread and the game loop as well as the one that loads them
+    private volatile Settings settings; //What the game uses right now, including changes that are not saved yet
+    private volatile Settings savedSettings; //What settings.json holds
 
     private SettingsManager() {
     }
@@ -35,7 +36,10 @@ public class SettingsManager {
     }
 
     //A missing file gives the defaults without writing one; an unreadable file gives the defaults and a log line
-    private void loadSettings() {
+    private synchronized void loadSettings() {
+        if (settings != null) {
+            return;
+        }
         Settings loaded = null;
         File file = new File(SETTINGS_FILE_PATH);
         if (file.exists()) {
@@ -52,8 +56,10 @@ public class SettingsManager {
             loaded = new Settings();
         }
         //The setters clamp, but Jackson sets the fields through them, so a value outside 0-100 is already clamped here
-        this.settings = loaded;
+        //Invalid bindings fall back to their defaults
+        loaded.getInputBindings().repair();
         this.savedSettings = loaded.copyOf();
+        this.settings = loaded;
     }
 
     //Writes the settings in use to settings.json; the saved copy only changes when the write worked

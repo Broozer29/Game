@@ -5,6 +5,9 @@ import com.studiohartman.jamepad.ControllerButton;
 import com.studiohartman.jamepad.ControllerIndex;
 import com.studiohartman.jamepad.ControllerUnpluggedException;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
+import net.riezebos.bruus.tbd.game.settings.BindableAction;
+import net.riezebos.bruus.tbd.game.settings.InputBindings;
+import net.riezebos.bruus.tbd.game.settings.SettingsManager;
 
 import java.util.EnumMap;
 import java.util.EnumSet;
@@ -75,9 +78,10 @@ public class ControllerInputReader {
             menuState.put(MenuAction.BACK, controller.isButtonPressed(ControllerButton.B));
             menuState.put(MenuAction.ANY_BUTTON, isAnyMenuButtonPressed(controller));
 
-            inputState.put(ControllerInputEnums.FIRE, controller.isButtonPressed(ControllerButton.A)); // Button A
-            inputState.put(ControllerInputEnums.SPECIAL_ATTACK, controller.isButtonPressed(ControllerButton.B)); // Button B
-            boolean pauseButtonPressed = controller.isButtonPressed(ControllerButton.START); // Menu button
+            InputBindings bindings = SettingsManager.getInstance().getSettings().getInputBindings();
+            inputState.put(ControllerInputEnums.FIRE, controller.isButtonPressed(bindings.getButton(BindableAction.FIRE))); // The bound fire button
+            inputState.put(ControllerInputEnums.SPECIAL_ATTACK, controller.isButtonPressed(bindings.getButton(BindableAction.SPECIAL_ATTACK))); // The bound special attack button
+            boolean pauseButtonPressed = controller.isButtonPressed(bindings.getButton(BindableAction.PAUSE)); // The bound pause button
             inputState.put(ControllerInputEnums.PAUSE, pauseButtonPressed);
             // Remember the moment the button goes down, so holding it does not pause and unpause every frame
             if (pauseButtonPressed && !pauseButtonWasPressed) {
@@ -85,8 +89,8 @@ public class ControllerInputReader {
             }
             pauseButtonWasPressed = pauseButtonPressed;
 
-            // Toggle only when LB goes down, so holding it does not toggle again every second
-            boolean holdFireButtonPressed = controller.isButtonPressed(ControllerButton.LEFTBUMPER);
+            // Toggle only when the bound hold fire button goes down, so holding it does not toggle again every second
+            boolean holdFireButtonPressed = controller.isButtonPressed(bindings.getButton(BindableAction.HOLD_FIRE));
             if (holdFireButtonPressed && !holdFireButtonWasPressed && GameState.getInstance().getGameSeconds() - lastGameSecondsTogglePressed > toggleDelay) {
                 lastGameSecondsTogglePressed = GameState.getInstance().getGameSeconds();
                 toggleHoldFire();
@@ -160,10 +164,10 @@ public class ControllerInputReader {
         inputState.put(ControllerInputEnums.MOVE_DOWN, false);
 
         // Handle button presses
-        inputState.put(ControllerInputEnums.HOLD_FIRE, false); // LB
-        inputState.put(ControllerInputEnums.FIRE, false); // Button A
-        inputState.put(ControllerInputEnums.SPECIAL_ATTACK, false); // Button B
-        inputState.put(ControllerInputEnums.PAUSE, false); // Menu button
+        inputState.put(ControllerInputEnums.HOLD_FIRE, false); // The bound hold fire button
+        inputState.put(ControllerInputEnums.FIRE, false); // The bound fire button
+        inputState.put(ControllerInputEnums.SPECIAL_ATTACK, false); // The bound special attack button
+        inputState.put(ControllerInputEnums.PAUSE, false); // The bound pause button
         pausePressedSinceLastCheck = false;
         menuState.clear();
         stickDirections.clear();

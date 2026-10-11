@@ -10,6 +10,7 @@ All notable changes on the `Nelis` branch.
 - docs/claude-changelog.md: one changelog of everything present today since the `Nelis` branch was created, with changes that were later undone left out, and Bruus's merged changes in their own section.
 
 ### Changed
+- The keys and controller buttons for fire, special attack, hold fire and pause are now stored in settings.json, with the same layout as before as the default; a binding that is not valid falls back to its default. Enter no longer fires the special attack; Q does.
 - Pausing now shows a small window in the middle of the screen, in the style of the main menu, with "PAUSED" in the menu letters and a RESUME option with the ship cursor beside it. Pick RESUME, or press B or Escape, to continue (P and Menu still work). The game stays visible around it. The window also has EXIT RUN, which asks "ARE YOU SURE" first (YES or NO) and then returns to the main menu. CONTINUE RUN restarts the level you were on.
 - P and the Menu button also pause after the relic is chosen, while flying to the portal.
 - The controller connect and disconnect notices now each show in their own card with the border of the pause window, in the menu letters. At most 3 show at once, stacked at the top, and a new one pushes the oldest out.
