@@ -14,6 +14,7 @@ Level flow, portals, the structure of a run and saved progress.
   - `SaveManager` and `PlayerProfileManager` write `savefile.json` and `playerprofile.json` directly; a crash mid-write leaves broken JSON
   - A broken profile leaves `loadedProfile` null, so later profile reads crash and the next save writes null: all unlocks and emeralds are lost
   - Running from another folder starts a fresh profile; an installed game in a read-only folder fails to save silently
+  - `SettingsManager` writes `settings.json` the same way: the file is emptied and then rewritten, so a crash in that moment loses every volume and binding (Nelis, 2026-10-11)
   - Fix: write to a temp file and rename it, keep the bad file aside, and use a per-user data folder
 - Some run state is not saved, so "Continue" resets it
   - Consume's kill count and max-HP bonus, Explosive Greed's coins, contract type and progress, Wisdom Ball's bonus chance, the shop contents and rerolls, and the monster level

@@ -9,6 +9,7 @@ All notable changes on the `Nelis` branch.
 - The main menu has a SETTINGS button (right above CLOSE GAME) that opens the same settings page, so the sound can be set before a run starts. The main menu card grows to fit all its buttons, which are grouped: SELECT CLASS and CONTINUE RUN, then SETTINGS, then CLOSE GAME.
 - The CONTROLS tab of the settings page: pick FIRE, SPECIAL ATTACK or AUTO FIRE and press a key or button to bind it; the column shows the keyboard or the controller, whichever you used last. An input already used by another action leaves that action unbound (NONE), and the page says so. RESET restores both layouts; SAVE keeps them in settings.json. Escape cancels a rebind.
 - Planboard: the controls menu entry and the outdated controls picture entry are done and removed.
+- Planboard: the entry on save files being overwritten in place now also covers settings.json.
 - docs/claude-changelog.md: one changelog of everything present today since the `Nelis` branch was created, with changes that were later undone left out, and Bruus's merged changes in their own section.
 
 ### Changed
