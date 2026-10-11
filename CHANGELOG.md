@@ -30,6 +30,8 @@ All notable changes on the `Nelis` branch.
 - Planboard: the outdated Electro Shedding entry is removed.
 
 ### Fixed
+- The difficulty screen no longer overlaps its cards on smaller windows, such as a TV with Windows display scaling at 250% or more: the cards and wing icons now scale with the window, and look the same as before at 1920x1080.
+- Auto attack (LB or the bound key) could ignore presses for a while after starting a new run or continuing a run, because its 1-second guard used the game clock, which restarts; it now uses real time.
 - The stick no longer keeps moving the cursor on its own during the first seconds of the shop.
 - Electro Shredding's description now shows its real bonus (+100% per item at full shield), and Electrify drones' Electro Shred gets that bonus too.
 - Scorching Fury, Ephemeral Blaze and Eterna Burn now change the burn from the Fire Shield, lingering flames and the gasoline explosion too, not only from the flamethrower.

@@ -747,8 +747,8 @@ public class SpaceShip extends GameObject {
         int specialKey = bindings.getKey(BindableAction.SPECIAL_ATTACK);
         // The bound hold fire key toggles auto attack, once per press (holding it repeats the key event), with the same 1 s guard as the controller button
         if (holdFireKey != KeyEvent.VK_UNDEFINED && e.getKeyCode() == holdFireKey && !pressedKeys.contains(holdFireKey)
-                && GameState.getInstance().getGameSeconds() - lastGameSecondsKeyboardHoldFireToggled > 1) {
-            lastGameSecondsKeyboardHoldFireToggled = GameState.getInstance().getGameSeconds();
+                && System.currentTimeMillis() - lastKeyboardHoldFireToggleMillis > 1000) {
+            lastKeyboardHoldFireToggleMillis = System.currentTimeMillis();
             keyboardHoldFire = !keyboardHoldFire;
         }
         pressedKeys.add(e.getKeyCode());
@@ -826,7 +826,7 @@ public class SpaceShip extends GameObject {
     // Called by GameBoard every loop. The ship reads its seat's current controller, so a controller that left and came back drives it again.
     private boolean isFiringPrimary = false;
     private boolean keyboardHoldFire = false;
-    private double lastGameSecondsKeyboardHoldFireToggled = 0;
+    private long lastKeyboardHoldFireToggleMillis = 0; //Real time, like the controller toggle, so a game clock reset cannot block it
     private boolean isFiringSecondary = false;
 
     public void update() {
