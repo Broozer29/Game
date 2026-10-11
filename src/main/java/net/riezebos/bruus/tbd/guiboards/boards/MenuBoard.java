@@ -56,12 +56,17 @@ public abstract class MenuBoard extends JPanel implements TimerHolder {
     protected void onInputHandled() {
     }
 
-    // Moves the first grid; a screen overrides this for its own jumps and calls super for the rest
+    // The grid the default onDirection moves: the first one; a screen with several grids returns the one in use
+    protected MenuGrid activeGrid() {
+        return grids.isEmpty() ? null : grids.get(0);
+    }
+
+    // Moves the active grid; a screen overrides this for its own jumps and calls super for the rest
     protected void onDirection(MenuAction action) {
-        if (grids.isEmpty()) {
+        MenuGrid grid = activeGrid();
+        if (grid == null) {
             return;
         }
-        MenuGrid grid = grids.get(0);
         switch (action) {
             case LEFT:
                 grid.moveLeft();
@@ -94,6 +99,11 @@ public abstract class MenuBoard extends JPanel implements TimerHolder {
 
     // Drawn right after the cursor and before the upper animations
     protected void drawScreenOverlay(Graphics2D g) {
+    }
+
+    // A screen that never shows the on screen texts returns false
+    protected boolean drawsOnScreenTexts() {
+        return true;
     }
 
     // Drawn after the on screen texts and before the controller notices
@@ -170,8 +180,10 @@ public abstract class MenuBoard extends JPanel implements TimerHolder {
                     drawAnimation(g2d, animation);
                 }
 
-                for (OnScreenText text : OnScreenTextManager.getInstance().getOnScreenTexts()) {
-                    drawText(g2d, text);
+                if (drawsOnScreenTexts()) {
+                    for (OnScreenText text : OnScreenTextManager.getInstance().getOnScreenTexts()) {
+                        drawText(g2d, text);
+                    }
                 }
 
                 drawScreenExtras(g2d);

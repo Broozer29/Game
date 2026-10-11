@@ -32,6 +32,7 @@ All notable changes on the `Nelis` branch.
 - Internal refactor: the class selection screen is built on the shared base for menu screens (MenuBoard and MenuGrid). Nothing changes for players: same buttons, cursor movement, descriptions, Back and confirm behaviour.
 - Internal refactor: the main menu is built on the shared base for menu screens (MenuBoard and MenuGrid). Nothing changes for players: same buttons, cursor movement, Settings page and confirm behaviour.
 - Internal refactor: the boon screen is built on the shared base for menu screens (MenuBoard and MenuGrid). Nothing changes for players: same buttons, cursor movement, checkmarks, descriptions, Back and confirm behaviour. Only a crash on this screen now also writes error_log.txt.
+- Internal refactor: the shop is built on the shared base for menu screens (MenuBoard and MenuGrid), with one grid for the items and buttons and one for the inventory. Nothing changes for players: same buttons, cursor movement, inventory, purchases, rerolls, descriptions, Back and confirm behaviour.
 
 ### Fixed
 - The stick no longer keeps moving the cursor on its own during the first seconds of the shop.

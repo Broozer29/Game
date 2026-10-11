@@ -106,7 +106,7 @@ public class BoardManager extends JFrame {
         screenActions.put(ScreenType.SHOP, () -> {
             playShopMenuMusic();
             PlayerInventory.getInstance().setCashMoney(Math.round(PlayerInventory.getInstance().getCashMoney()));
-            shopBoard.initShopBoardGUIComponents();
+            shopBoard.recreateWindow();
             shopBoard.getTimer().restart();
             MenuInput.getInstance().startScreen();
             DiscordConnector.getInstance().setStatus("Shopping with " + Math.round(PlayerInventory.getInstance().getCashMoney()) + " minerals.", "Shop");

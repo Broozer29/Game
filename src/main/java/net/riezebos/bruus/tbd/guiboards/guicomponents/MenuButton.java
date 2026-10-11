@@ -152,7 +152,7 @@ public class MenuButton extends GUIComponent {
 
                 if (Objects.requireNonNull(GameState.getInstance().getGameState()) == GameStatusEnums.Shopping) {
                     ShopManager.getInstance().setRowsUnlockedByDifficulty(LevelManager.getInstance().getDifficultyScore());
-                    boardManager.getShopBoard().initShopBoardGUIComponents();
+                    boardManager.getShopBoard().recreateWindow();
                     boardManager.openShopWindow();
                 } else {
                     boardManager.initGame();
