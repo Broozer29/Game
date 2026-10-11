@@ -8,8 +8,9 @@ Everything that changed since 5 October 2026.
 - Change the controls on the CONTROLS tab: pick FIRE, SPECIAL ATTACK or AUTO FIRE, then press the key or button you want. The list shows the keys or the buttons, whichever you used last. If that key or button was already used by another action, that action is left with NONE and the page tells you. Escape cancels, RESET puts the standard layout back, and SAVE keeps it. Pause stays on P and the Menu button.
 - The controls picture on the main menu is gone; the CONTROLS tab replaces it.
 - Plug controllers in and out while playing. Press any button on a new controller to join.
-- A short message shows when a controller connects or disconnects.
-- Every level starts with one ship per connected controller.
+- A short message shows when a controller connects or disconnects, up to 3 at a time at the top of
+  the screen.
+- Up to 16 controllers, and every level starts with one ship per connected controller.
 - Lost your controller mid-level? Reconnect it to take your ship back. A controller that joins
   mid-level plays from the next level.
 - The game pauses when no living player has a controller. Press P or Menu to continue.
@@ -17,6 +18,7 @@ Everything that changed since 5 October 2026.
   special attack, LB toggles auto attack in a level, Menu pauses (you can change the first three on the CONTROLS tab). The d-pad moves through menus.
 - The keyboard controls player 1, also when controllers are connected.
 - New: press E on the keyboard to toggle auto attack (Captain).
+- The keyboard special attack is now Q instead of Enter.
 - Pausing reacts instantly and works at any moment during play.
 - You can also pause while flying to the portal after choosing a relic.
 - Pausing shows a small window in the middle of the screen. Pick RESUME, or press B or Escape, to continue; SETTINGS opens the settings page. EXIT RUN asks first, then returns to the main menu; CONTINUE RUN restarts the level you were on.
@@ -37,8 +39,6 @@ Everything that changed since 5 October 2026.
 ## Items
 
 ### New
-- **Rocket Launcher** (Captain, Rare): drone shots have a 10% chance to fire an exploding rocket at
-  the nearest enemy.
 - **Upgrade: Speed** (Captain, Rare): drones attack 15% faster per stack.
 - **Upgrade: Precision** (Captain, Legendary): drones get a 20% chance per stack to deal double
   damage. Placeholder drones get twice that.
@@ -49,8 +49,10 @@ Everything that changed since 5 October 2026.
 - **Module: Focus Fire** is now **Upgrade: Focus Fire**: drones keep firing on their own, and all
   fire one extra shot when your laserbeam hits. It now works together with Module: Accuracy and
   Module: Synergize.
+- **Calm in Chaos**: while your shields are full, an ice storm around your ship deals 200% damage
+  per second per stack. It fades when your shields take a hit.
 - **Electro Shedding** is now **Electro Shredding**: it no longer lowers enemy armor. Instead your
-  Electroshred deals more damage the more health you have.
+  Electroshred deals more damage the fuller your shields are.
 - **Placeholder**: up to 8 drones instead of 4, and drone upgrades are twice as strong on them.
 - Drones fire a little slower by default: one shot every 0.75s instead of 0.5s.
 - **Wondrous Wisdomball**: starting chance 20% to 30%, bonus per failed roll 17.5% to 20%.
@@ -95,8 +97,7 @@ Everything that changed since 5 October 2026.
 
 ### Difficulty
 - Enemies get stronger as the difficulty rises during a run, not only after each boss.
-- Bosses gain less health per level, normal enemies slightly more.
-- Enemies spawn a little faster as difficulty rises.
+- Bosses gain less health per level.
 - The time bonus at the end of a level is smaller: 4% instead of 10%.
 
 ## Bug fixes
@@ -122,3 +123,6 @@ Everything that changed since 5 October 2026.
 - Claude Code setup: `CLAUDE.md`, `.claude/bindings/`, test saves in `.claude/test-saves/`, and
   recording scripts in `.claude/scripts/`.
 - VS Code launch configurations and a compile task.
+- Key bindings and sound settings are saved in `settings.json`.
+- The Y key that spawns the portal only works with the `DevTestSettings.enablePortalCheatKey` switch
+  on.
