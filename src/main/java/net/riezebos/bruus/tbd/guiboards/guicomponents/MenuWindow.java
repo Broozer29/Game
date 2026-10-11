@@ -32,6 +32,11 @@ public class MenuWindow {
         rebuild();
     }
 
+    //The width of the card for the current window size, also used by other cards that want the same border thickness
+    public static int cardWidth () {
+        return Math.round(CARD_WIDTH * Math.min(DataClass.getInstance().getResolutionFactor(), DataClass.maxResolutionFactor));
+    }
+
     //Computes the size and positions from the current window size
     private void rebuild () {
         DataClass data = DataClass.getInstance();
@@ -41,7 +46,7 @@ public class MenuWindow {
         int margin = Math.round(MARGIN * resolutionFactor);
         int titleGap = Math.round(TITLE_GAP * resolutionFactor);
         int optionGap = Math.round(OPTION_GAP * resolutionFactor);
-        int cardWidth = Math.round(CARD_WIDTH * resolutionFactor);
+        int cardWidth = cardWidth();
         int cardHeight = margin * 2 + titleGap + (rowTexts.size() - 2) * optionGap;
         int cardX = (data.getWindowWidth() - cardWidth) / 2;
         int cardY = (data.getWindowHeight() - cardHeight) / 2;

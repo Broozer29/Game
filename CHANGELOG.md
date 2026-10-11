@@ -12,6 +12,7 @@ All notable changes on the `Nelis` branch.
 ### Changed
 - Pausing now shows a small window in the middle of the screen, in the style of the main menu, with "PAUSED" in the menu letters and a RESUME option with the ship cursor beside it. Pick RESUME, or press B or Escape, to continue (P and Menu still work). The game stays visible around it. The window also has EXIT RUN, which asks "ARE YOU SURE" first (YES or NO) and then returns to the main menu. CONTINUE RUN restarts the level you were on.
 - P and the Menu button also pause after the relic is chosen, while flying to the portal.
+- The controller connect and disconnect notices now each show in their own card with the border of the pause window, in the menu letters. At most 3 show at once, stacked at the top, and a new one pushes the oldest out.
 - In menus the stick counts a push from 60% and lets go below 35%, and only its stronger direction counts, so the cursor no longer jumps when the stick wobbles or is pushed diagonally.
 - Up to 16 controllers can be connected at once (was 8); the limit comes from the Jamepad library, which watches a fixed number of controller slots.
 - docs/claude-changelog.md is rewritten for players: grouped by topic (controls, performance, items, classes, enemies and bosses, bug fixes), without technical terms, with a short section for developers.

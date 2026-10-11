@@ -12,12 +12,17 @@ public class ResizableCard extends DisplayOnly {
     private static final int CORNER_SIZE = 80; //In pixels of the source image, large enough to hold the rounded border and corner
 
     public ResizableCard (SpriteConfiguration spriteConfiguration, int targetWidth, int targetHeight) {
-        super(spriteConfiguration);
-        //Cut the unscaled image from the database, since CORNER_SIZE is measured in its pixels
-        setImage(createNinePieceImage(imgDatabase.getImage(spriteConfiguration.getImageType()), targetWidth, targetHeight));
+        this(spriteConfiguration, targetWidth, targetHeight, targetWidth);
     }
 
-    private BufferedImage createNinePieceImage (BufferedImage source, int targetWidth, int targetHeight) {
+    //The corners get the size they would have on a card of referenceWidth, so cards of different widths can share one border thickness
+    public ResizableCard (SpriteConfiguration spriteConfiguration, int targetWidth, int targetHeight, int referenceWidth) {
+        super(spriteConfiguration);
+        //Cut the unscaled image from the database, since CORNER_SIZE is measured in its pixels
+        setImage(createNinePieceImage(imgDatabase.getImage(spriteConfiguration.getImageType()), targetWidth, targetHeight, referenceWidth));
+    }
+
+    private BufferedImage createNinePieceImage (BufferedImage source, int targetWidth, int targetHeight, int referenceWidth) {
         BufferedImage result = new BufferedImage(targetWidth, targetHeight, BufferedImage.TYPE_INT_ARGB);
         Graphics2D g = result.createGraphics();
         g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
@@ -25,7 +30,7 @@ public class ResizableCard extends DisplayOnly {
 
         int sourceWidth = source.getWidth();
         int sourceHeight = source.getHeight();
-        float scale = (float) targetWidth / sourceWidth; //Same scale for both directions so the corners stay undistorted
+        float scale = (float) referenceWidth / sourceWidth; //Same scale for both directions so the corners stay undistorted
         int corner = Math.min(Math.round(CORNER_SIZE * scale), Math.min(targetWidth, targetHeight) / 2);
 
         int[] sourceX = {0, CORNER_SIZE, sourceWidth - CORNER_SIZE, sourceWidth};
