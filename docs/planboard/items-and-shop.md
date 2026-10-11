@@ -20,8 +20,6 @@ Items, boons, the shop, rerolls and prices.
   - ExplosiveLaserbeams.java:42 `target.getDamage() * quantity`; the static `damageModifier` is never read
 - Sticky Dynamite's explosion deals about 1.75 flat damage instead of 175%
   - StickyDynamite.java:37 passes `explosionDamage * quantity` as raw damage, without the player's damage
-- Electro Shedding shreds armor on every hit, and twice on Electro Shred hits
-  - The one-argument `applyEffectToObject` (ElectroShedding.java:26) has no Electro Shred check, and GameObject.java:392-396 calls all three overloads per hit
 - Adrenaline's regeneration ends after 2 seconds while its attack-speed bonus keeps refreshing
   - Adrenaline.java:31 only refreshes the attack-speed effect; `PassiveHealthRegeneration` expires 2 seconds after it was created
 - Bounty Hunter's bonus and the mineral penalties skip level-1 enemies

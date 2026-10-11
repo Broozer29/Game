@@ -14,6 +14,7 @@ import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.items.ItemEnums;
 import net.riezebos.bruus.tbd.game.items.PlayerInventory;
 import net.riezebos.bruus.tbd.game.items.items.captain.AnionInverter;
+import net.riezebos.bruus.tbd.game.items.items.captain.ElectroShredding;
 import net.riezebos.bruus.tbd.game.items.items.captain.ModuleElectrify;
 import net.riezebos.bruus.tbd.game.items.items.carrier.Martyrdom;
 import net.riezebos.bruus.tbd.game.movement.MovementConfiguration;
@@ -106,6 +107,7 @@ public abstract class Drone extends GameObject {
         electroShredSpriteConfig.setImageType(owner.getElectroShredImageEnum());
         electroShredSpriteConfig.setScale(scale);
         float damage = (owner.getSpecialAttackDamage() * CaptainSecondaryGun.electroShredBonusDamageModifier) * owner.getDroneDamageModifier();
+        damage *= ElectroShredding.damageMultiplier(owner);
 
         SpriteAnimationConfiguration spriteAnimationConfiguration = new SpriteAnimationConfiguration(electroShredSpriteConfig, 2, false);
         SpecialAttackConfiguration missileConfiguration = new SpecialAttackConfiguration(damage, true, true, false, true, true, true);

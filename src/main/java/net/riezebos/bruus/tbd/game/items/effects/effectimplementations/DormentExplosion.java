@@ -8,6 +8,7 @@ import net.riezebos.bruus.tbd.game.gameobjects.missiles.specialAttacks.SpecialAt
 import net.riezebos.bruus.tbd.game.gameobjects.neutral.Explosion;
 import net.riezebos.bruus.tbd.game.gameobjects.neutral.ExplosionConfiguration;
 import net.riezebos.bruus.tbd.game.gameobjects.neutral.ExplosionManager;
+import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.items.effects.DormentExplosionActivationMethods;
 import net.riezebos.bruus.tbd.game.items.effects.EffectActivationTypes;
@@ -115,7 +116,7 @@ public class DormentExplosion implements EffectInterface {
                 burningConfig.getSpriteConfiguration().setImageType(ImageEnums.IgniteBurning);
                 burningConfig.getSpriteConfiguration().setScale(1);
                 SpriteAnimation burningAnimation = new SpriteAnimation(burningConfig);
-                DamageOverTime burning = new DamageOverTime(burningDamage, burningDuration, burningAnimation, EffectIdentifiers.Ignite);
+                DamageOverTime burning = new DamageOverTime(burningDamage * PlayerManager.getInstance().getIgniteDamageModifier(ownerOrCreator), burningDuration, burningAnimation, EffectIdentifiers.Ignite);
                 explosion.addEffectToApply(burning);
             }
         }
@@ -143,7 +144,7 @@ public class DormentExplosion implements EffectInterface {
 
         SpecialAttackConfiguration specialAttackConfiguration = new SpecialAttackConfiguration(0, true,
                 true, false, true, false, false);
-        SpecialAttack lingeringFlame = new LingeringAttack(spriteAnimationConfiguration, specialAttackConfiguration);
+        SpecialAttack lingeringFlame = new LingeringAttack(spriteAnimationConfiguration, specialAttackConfiguration, ownerOrCreator);
         lingeringFlame.setCenterCoordinates(gameObject.getCenterXCoordinate(), gameObject.getCenterYCoordinate());
         handleSpecialAttack(lingeringFlame);
         MissileManager.getInstance().addSpecialAttack(lingeringFlame);

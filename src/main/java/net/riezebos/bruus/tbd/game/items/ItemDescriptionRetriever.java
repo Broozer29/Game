@@ -189,7 +189,7 @@ public class ItemDescriptionRetriever {
                 return "Your missiles cause an additional explosion when striking enemies dealing " + Math.round(ExplosiveLaserbeams.damageModifier * 100) + "% additional damage.";
             } //legendary
             case ElectroShredding -> {
-                return "Electroshred damage is increased by up to" + Math.round(ElectroShredding.bonusDamage) + "% (+" + Math.round(ElectroShredding.bonusDamage) + "%) based on the percentage of your current shield hitpoints.";
+                return "Electroshred damage is increased by up to " + Math.round(ElectroShredding.bonusDamage * 100) + "% (+" + Math.round(ElectroShredding.bonusDamage * 100) + "%) based on the percentage of your current shield hitpoints. Also applies to the Electroshred of your drones.";
             } //legendary
 
             //2

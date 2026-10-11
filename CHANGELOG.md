@@ -27,9 +27,12 @@ All notable changes on the `Nelis` branch.
 - In menus, one push of the stick moves one slot, and holding it scrolls after a short wait. The d-pad works in every menu, including the relic screen, and the relic cursor reacts at once.
 - A key or button that is still held down when a new screen opens does nothing on that screen until you let go of it. This also applies to the score card and the game over screen.
 - The score card and the game over screen continue on any key or any controller button except the stick and the d-pad, and they say "Press any key to continue".
+- Planboard: the outdated Electro Shedding entry is removed.
 
 ### Fixed
 - The stick no longer keeps moving the cursor on its own during the first seconds of the shop.
+- Electro Shredding's description now shows its real bonus (+100% per item at full shield), and Electrify drones' Electro Shred gets that bonus too.
+- Scorching Fury, Ephemeral Blaze and Eterna Burn now change the burn from the Fire Shield, lingering flames and the gasoline explosion too, not only from the flamethrower.
 
 ## 2026-10-10
 

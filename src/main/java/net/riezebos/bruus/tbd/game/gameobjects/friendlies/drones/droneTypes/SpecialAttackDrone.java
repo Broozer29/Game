@@ -59,7 +59,7 @@ public class SpecialAttackDrone extends Drone {
             SpriteAnimationConfiguration spriteAnimationConfiguration = new SpriteAnimationConfiguration(orbitingLingeringFlame, 0, true);
             SpecialAttackConfiguration missileConfiguration = new SpecialAttackConfiguration(damage, true, true, false, true, false, false);
 
-            LingeringAttack lingeringFlame = new LingeringAttack(spriteAnimationConfiguration, missileConfiguration);
+            LingeringAttack lingeringFlame = new LingeringAttack(spriteAnimationConfiguration, missileConfiguration, this);
             lingeringFlame.setAllowedVisualsToRotate(false);
             lingeringFlame.setOwnerOrCreator(this);
             lingeringFlame.setDuration(999999999); //practically infinite

@@ -31,14 +31,7 @@ public class CaptainSecondaryGun extends SecondaryPlayerGun {
     public static float electroShredBonusDamageModifier = 1.5f;
     private void fireElectroShred(int xCoordinate, int yCoordinate, SpaceShip owner) {
         float damage = owner.getSpecialAttackDamage() * electroShredBonusDamageModifier;
-
-        //todo sloppy fix, ideallt this goes through a modifyGameObject method in ElectroShredding
-        if(PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.ElectroShredding) != null){
-            ElectroShredding electroShredding = (ElectroShredding) PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.ElectroShredding);
-
-            float percentage = owner.getCurrentShieldPoints() / owner.getMaxShieldPoints();
-            damage *= 1f + (electroShredding.getQuantity() * ElectroShredding.bonusDamage * percentage);
-        }
+        damage *= ElectroShredding.damageMultiplier(owner);
 
         float scale = 1.5f;
         if (PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.AnionInverter) != null) {

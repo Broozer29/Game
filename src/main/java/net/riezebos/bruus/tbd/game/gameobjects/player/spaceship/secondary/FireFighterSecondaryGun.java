@@ -29,7 +29,7 @@ public class FireFighterSecondaryGun extends SecondaryPlayerGun {
         float damage = owner.getSpecialAttackDamage();
         SpriteAnimationConfiguration spriteAnimationConfiguration = createConfig(xCoordinate, yCoordinate, ImageEnums.FireFighterFireShieldAppearing, 1, true);
         SpecialAttackConfiguration missileConfiguration = new SpecialAttackConfiguration(damage, true, true, false, true, true, true);
-        SpecialAttack specialAttack = new FireShield(spriteAnimationConfiguration, missileConfiguration);
+        SpecialAttack specialAttack = new FireShield(spriteAnimationConfiguration, missileConfiguration, owner);
         specialAttack.setCenteredAroundObject(true);
         specialAttack.setScale(1.1f);
         specialAttack.setOwnerOrCreator(owner);

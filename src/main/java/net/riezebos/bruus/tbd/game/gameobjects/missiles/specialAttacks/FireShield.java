@@ -1,6 +1,8 @@
 package net.riezebos.bruus.tbd.game.gameobjects.missiles.specialAttacks;
 
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.*;
+import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
+import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.items.ItemEnums;
@@ -22,8 +24,9 @@ import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.Sprit
 public class FireShield extends SpecialAttack {
     private double gamesecondsStarted;
     private double duration;
-    public FireShield (SpriteAnimationConfiguration spriteAnimationConfiguration, SpecialAttackConfiguration missileConfiguration) {
+    public FireShield (SpriteAnimationConfiguration spriteAnimationConfiguration, SpecialAttackConfiguration missileConfiguration, GameObject owner) {
         super(spriteAnimationConfiguration, missileConfiguration);
+        this.ownerOrCreator = owner;
         this.setObjectType("FireShield");
         this.allowRepeatedDamage = true;
         this.appliesOnHitEffects = true;
@@ -37,7 +40,7 @@ public class FireShield extends SpecialAttack {
 
     private EffectInterface initIgniteEffect(){
         float duration = PlayerStats.getInstance().getIgniteDuration();
-        float damage = PlayerStats.getInstance().getIgniteDamage();
+        float damage = PlayerStats.getInstance().getIgniteDamage() * PlayerManager.getInstance().getIgniteDamageModifier(this.ownerOrCreator);
         EffectInterface ignite = new DamageOverTime(damage, duration, EffectIdentifiers.Ignite);
         return ignite;
     }

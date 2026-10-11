@@ -2,6 +2,8 @@ package net.riezebos.bruus.tbd.game.gameobjects.missiles.specialAttacks;
 
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyManager;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.zerg.Mutalisk;
+import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
+import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
 import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SpaceShip;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
@@ -18,7 +20,7 @@ public class LingeringAttack extends SpecialAttack{
     private double gamesecondsStarted;
     private double duration;
 
-    public LingeringAttack(SpriteAnimationConfiguration spriteAnimationConfiguration, SpecialAttackConfiguration specialAttackConfiguration) {
+    public LingeringAttack(SpriteAnimationConfiguration spriteAnimationConfiguration, SpecialAttackConfiguration specialAttackConfiguration, GameObject igniteSource) {
         super(spriteAnimationConfiguration, specialAttackConfiguration);
         this.setObjectType("Lingering Attack");
         this.allowRepeatedDamage = true;
@@ -34,7 +36,7 @@ public class LingeringAttack extends SpecialAttack{
                 FlameDetonation flameDetonation = (FlameDetonation) PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.FlameDetonation);
                 this.duration = flameDetonation.getDuration();
             }
-            initIgniteEffect();
+            initIgniteEffect(igniteSource);
         } else if(this.imageEnum.equals(ImageEnums.PoisonCloud)){
             super.internalTickCooldown = 0.45; //roughly every 0.5 seconds it applies damage
             this.damage = specialAttackConfiguration.getDamage();
@@ -44,9 +46,9 @@ public class LingeringAttack extends SpecialAttack{
         gamesecondsStarted = GameState.getInstance().getGameSeconds();
     }
 
-    private void initIgniteEffect(){
+    private void initIgniteEffect(GameObject igniteSource){
         float duration = PlayerStats.getInstance().getIgniteDuration();
-        float damage = PlayerStats.getInstance().getIgniteDamage();
+        float damage = PlayerStats.getInstance().getIgniteDamage() * PlayerManager.getInstance().getIgniteDamageModifier(igniteSource);
         EffectInterface ignite = new DamageOverTime(damage, duration, EffectIdentifiers.Ignite);
         this.effectsToApply.add(ignite);
     }
