@@ -8,6 +8,8 @@ import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
 import net.riezebos.bruus.tbd.game.gameobjects.friendlies.FriendlyManager;
 import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.droneTypes.DroneTypes;
 import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.droneTypes.protoss.ProtossUtils;
+import net.riezebos.bruus.tbd.game.gameobjects.missiles.MissileManager;
+import net.riezebos.bruus.tbd.game.gameobjects.missiles.specialAttacks.CalmInChaosStorm;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.specialAttacks.SpecialAttack;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerClass;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
@@ -27,6 +29,7 @@ import net.riezebos.bruus.tbd.game.items.PlayerInventory;
 import net.riezebos.bruus.tbd.game.items.effects.EffectIdentifiers;
 import net.riezebos.bruus.tbd.game.items.effects.effectimplementations.PassiveHealthRegeneration;
 import net.riezebos.bruus.tbd.game.items.enums.ItemApplicationEnum;
+import net.riezebos.bruus.tbd.game.items.items.CalmInChaos;
 import net.riezebos.bruus.tbd.game.items.items.carrier.KineticDynamo;
 import net.riezebos.bruus.tbd.game.items.items.mutalisk.Consume;
 import net.riezebos.bruus.tbd.game.level.LevelManager;
@@ -102,6 +105,7 @@ public class SpaceShip extends GameObject {
 
     private int droneOrbitRadius = 85;
     private DroneTypes droneTypes = DroneTypes.Missile;
+    private SpecialAttack calmInChaosStorm = null;
 
     private Seat seat;
 
@@ -228,6 +232,7 @@ public class SpaceShip extends GameObject {
         this.currentHitpoints = playerStats.getMaxHitPoints();
         this.maxHitPoints = playerStats.getMaxHitPoints();
         this.currentShieldPoints = playerStats.getMaxShieldHitPoints();
+        this.maxShieldPoints = playerStats.getMaxShieldHitPoints();
         applyOnCreationEffects();
 
         //Again cause Glass Cannon modifies this, so we need to recalculate it if this item exists. Obvious code smell
@@ -404,6 +409,7 @@ public class SpaceShip extends GameObject {
         removeInvisibleAnimations();
         updateGameObjectEffects();
         reduceOverloadedShieldPoints();
+        updateItemEffects();
         super.updateOrbitingObjects();
 
         if (PlayerStats.getInstance().getPlayerClass().equals(PlayerClass.Carrier)) {
@@ -420,6 +426,26 @@ public class SpaceShip extends GameObject {
 
         if (shouldRegenShields) {
             repairShields(PlayerStats.getInstance().getShieldRegenPerTick() * shieldRegenModifier);
+        }
+    }
+
+    private void updateItemEffects(){
+        CalmInChaos calmInChaos = (CalmInChaos) PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.CalmInChaos);
+        if(calmInChaos != null){
+            if(currentShieldPoints >= playerStats.getMaxShieldHitPoints() && !MissileManager.getInstance().getSpecialAttacks().contains(calmInChaosStorm)){
+                if(calmInChaosStorm == null){
+                    calmInChaosStorm = CalmInChaosStorm.createEffect(this);
+                }
+                this.objectsFollowingThis.add(calmInChaosStorm);
+                this.playerFollowingSpecialAttacks.add(calmInChaosStorm);
+                MissileManager.getInstance().getSpecialAttacks().add(calmInChaosStorm);
+            }
+            else {
+                if(calmInChaosStorm != null && (calmInChaosStorm.isDissipating() && calmInChaosStorm.getTransparancyAlpha() <= 0.05f)){
+                    calmInChaosStorm.setVisible(false);
+                    calmInChaosStorm = null;
+                }
+            }
         }
     }
 

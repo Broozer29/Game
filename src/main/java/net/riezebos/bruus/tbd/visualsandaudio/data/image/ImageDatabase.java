@@ -289,6 +289,7 @@ public class ImageDatabase {
 
 
     private List<BufferedImage> cashCarrierFrames = new ArrayList<>();
+    private List<BufferedImage> calmInChaosEffect = new ArrayList<>();
     private List<BufferedImage> spaceStationBossFrames = new ArrayList<>();
     private List<BufferedImage> impactExplosionOneFrames = new ArrayList<>();
     private List<BufferedImage> destroyedExplosionUpFrames = new ArrayList<>();
@@ -1858,6 +1859,8 @@ public class ImageDatabase {
                 return fireFighterFireShield;
             case CashCarrier:
                 return cashCarrierFrames;
+            case CalmInChaosEffect:
+                return calmInChaosEffect;
             case Overlord:
                 return overlordIdle;
             case DevourerBirth:
@@ -2776,6 +2779,12 @@ public class ImageDatabase {
             String sourceString = String.format("/images/gif/PNGtoGIF/YellowBossVoidEffect/%d.png", i);
             BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
             yellowBossVoidEffect.add(image);
+        }
+
+        for (int i = 0; i < 47; i++) {
+            String sourceString = String.format("/images/gif/PNGtoGIF/CalmInChaosEffect/%d.png", i);
+            BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+            calmInChaosEffect.add(image);
         }
 
         for (int i = 0; i < 64; i++) {

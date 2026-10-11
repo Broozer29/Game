@@ -4,6 +4,7 @@ import net.riezebos.bruus.tbd.game.gameobjects.friendlies.FriendlyStation;
 import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.droneTypes.protoss.ProtossArbiter;
 import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.droneTypes.protoss.ProtossScout;
 import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.droneTypes.protoss.ProtossShuttle;
+import net.riezebos.bruus.tbd.game.gameobjects.missiles.specialAttacks.SpecialAttack;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.items.effects.effectimplementations.DamageOverTime;
@@ -94,7 +95,11 @@ public class ItemDescriptionRetriever {
                 return "Coins now explode on pickup for " + Math.round(ExplosiveGreed.baseDamageModifier * 100) + "% damage. Damage is increased by " + Math.round(ExplosiveGreed.damageModifierPerCoinPickup * 100) + "% (+" + Math.round(ExplosiveGreed.damageModifierPerCoinPickup * 100) + "%) for every coin you have picked up since acquiring this item.";
             } //legendary
             case CalmInChaos -> {
-                return "Deal " + Math.round(CalmInChaos.damageBonus * 100) + "% (+" + Math.round(CalmInChaos.damageBonus * 100) + "%) additional damage. This bonus is lost for " + CalmInChaos.cooldown + " seconds after taking damage.";
+                double value = CalmInChaos.damageModifier
+                        * (1.0 / SpecialAttack.defaultInternalTickCooldown)
+                        * 100.0;
+                return "Whilst your shields are at maximum health, they generate a storm of ice dealing "
+                        + Math.round(value) + "% (+" + Math.round(value) + "%) damage per second.";
             } //legendary
 
             //4
@@ -162,7 +167,7 @@ public class ItemDescriptionRetriever {
                 return "Drone attacks have a " + Math.round(RocketLauncher.rocketChance * 100) + "% chance to fire an exploding rocket instead, dealing " + Math.round(RocketLauncher.damagePerStack * 100) + "% drone damage per stack.";
             } //rare
             case AnionInverter -> {
-                return "Electroshred cooldown decreased by " + Math.abs(Math.round(AnionInverter.cooldownModifier * 100)) + "%. Electroshred damage increased by " + Math.round(AnionInverter.damageModifier * 100) + "%. Electroshred NO LONGER destroys projectiles.";
+                return "Electroshred cooldown decreased by " + Math.abs(Math.round(AnionInverter.cooldownModifier * 100)) + "%. Electroshred damage increased by " + Math.round(AnionInverter.damageModifier * 100) + "%. Electroshred size increased by " + Math.round(AnionInverter.scaleBonus * 100) + "%. Electroshred NO LONGER destroys projectiles.";
             } //relic
             case UpgradeFocusFire -> {
                 return "After your laserbeam hits a target, all drones immediately fire 1 shot towards the target.";

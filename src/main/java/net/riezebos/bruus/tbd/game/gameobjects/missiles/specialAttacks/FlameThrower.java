@@ -21,11 +21,11 @@ public class FlameThrower extends SpecialAttack {
         this.setObjectType("FlameThrower");
         this.allowRepeatedDamage = true;
         this.appliesOnHitEffects = true;
-        initIgniteEffect();
         super.damagesMissiles = true;
         super.maxHPDamagePercentageForMissiles = 0.045f;
         super.visualLayer = VisualLayer.Lower;
         this.ownerOrCreator = owner;
+        initIgniteEffect();
 
         if(PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.FireWithoutGasIsAss) != null){
             initIgniteMagnificationEffect();
@@ -35,7 +35,7 @@ public class FlameThrower extends SpecialAttack {
     private void initIgniteEffect(){
         float duration = PlayerStats.getInstance().getIgniteDuration();
         float damage = PlayerStats.getInstance().getIgniteDamage();
-        SpaceShip owner = (SpaceShip) ownerOrCreator;
+        SpaceShip owner = (SpaceShip) this.ownerOrCreator;
 
         EffectInterface ignite = new DamageOverTime(damage * owner.getIgniteDamageModifier(), duration, EffectIdentifiers.Ignite);
         this.effectsToApply.add(ignite);
