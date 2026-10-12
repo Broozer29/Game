@@ -143,19 +143,6 @@ public class PlayerManager {
         return allSpaceShips;
     }
 
-    public float getIgniteDamageModifier (GameObject source) {
-        if (source instanceof SpaceShip) {
-            return ((SpaceShip) source).getIgniteDamageModifier();
-        }
-        if (source != null && source.getOwnerOrCreator() instanceof SpaceShip) {
-            return ((SpaceShip) source.getOwnerOrCreator()).getIgniteDamageModifier();
-        }
-        if (!allSpaceShips.isEmpty()) {
-            return allSpaceShips.get(0).getIgniteDamageModifier();
-        }
-        return 1f;
-    }
-
     private void checkPlayerHealth() {
         for(SpaceShip spaceShip : allSpaceShips){
             if (PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.EmergencyRepairBot) != null) {
@@ -323,4 +310,5 @@ public class PlayerManager {
     public void setSpaceShipReviverList(List<SpaceShipReviver> spaceShipReviverList) {
         this.spaceShipReviverList = spaceShipReviverList;
     }
+
 }

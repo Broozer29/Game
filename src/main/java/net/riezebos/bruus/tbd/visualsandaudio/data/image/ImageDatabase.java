@@ -286,10 +286,12 @@ public class ImageDatabase {
     private BufferedImage spaceclouds3;
     private BufferedImage spaceclouds4;
     private BufferedImage calminchaos;
+    private BufferedImage distributedHeatIcon;
 
 
     private List<BufferedImage> cashCarrierFrames = new ArrayList<>();
     private List<BufferedImage> calmInChaosEffect = new ArrayList<>();
+    private List<BufferedImage> districbutedHeatEffect = new ArrayList<>();
     private List<BufferedImage> spaceStationBossFrames = new ArrayList<>();
     private List<BufferedImage> impactExplosionOneFrames = new ArrayList<>();
     private List<BufferedImage> destroyedExplosionUpFrames = new ArrayList<>();
@@ -611,6 +613,7 @@ public class ImageDatabase {
         this.blueNebula7 = imgLoader.getImage(ImageEnums.Blue_Nebula_7);
         this.blueNebula8 = imgLoader.getImage(ImageEnums.Blue_Nebula_8);
         this.calminchaos = imgLoader.getImage(ImageEnums.CalmInChaos);
+        this.distributedHeatIcon = imgLoader.getImage(ImageEnums.DistributedHeatIcon);
         this.blueNebula9 = imgLoader.getImage(ImageEnums.Blue_Nebula_9);
         this.starfield1 = imgLoader.getImage(ImageEnums.Star_Field_1);
         this.starfield2 = imgLoader.getImage(ImageEnums.Star_Field_2);
@@ -989,6 +992,8 @@ public class ImageDatabase {
                 return mutaliskAnim.get(0); //sloppy fix so we dont have to load a static mutalisk anim
             case CalmInChaos:
                 return this.calminchaos;
+            case DistributedHeatIcon:
+                return this.distributedHeatIcon;
             case WondrousWisdomball:
                 return this.wisdomball;
             case ChooseDifficulty:
@@ -1861,6 +1866,8 @@ public class ImageDatabase {
                 return cashCarrierFrames;
             case CalmInChaosEffect:
                 return calmInChaosEffect;
+            case DistributedHeatEffect:
+                return districbutedHeatEffect;
             case Overlord:
                 return overlordIdle;
             case DevourerBirth:
@@ -2785,6 +2792,12 @@ public class ImageDatabase {
             String sourceString = String.format("/images/gif/PNGtoGIF/CalmInChaosEffect/%d.png", i);
             BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
             calmInChaosEffect.add(image);
+        }
+
+        for (int i = 0; i < 60; i++) {
+            String sourceString = String.format("/images/gif/PNGtoGIF/DistributedHeat/%d.png", i);
+            BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+            districbutedHeatEffect.add(image);
         }
 
         for (int i = 0; i < 64; i++) {

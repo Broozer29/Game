@@ -1,13 +1,12 @@
 package net.riezebos.bruus.tbd.game.gameobjects.missiles.specialAttacks;
 
 import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
-import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
+import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
 import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SpaceShip;
 import net.riezebos.bruus.tbd.game.items.ItemEnums;
 import net.riezebos.bruus.tbd.game.items.PlayerInventory;
 import net.riezebos.bruus.tbd.game.items.effects.EffectIdentifiers;
 import net.riezebos.bruus.tbd.game.items.effects.EffectInterface;
-import net.riezebos.bruus.tbd.game.items.effects.effectimplementations.DamageOverTime;
 import net.riezebos.bruus.tbd.game.items.effects.effectimplementations.WithoutGasItsAss;
 import net.riezebos.bruus.tbd.game.util.VisualLayer;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
@@ -16,7 +15,7 @@ import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.Sprit
 public class FlameThrower extends SpecialAttack {
 
 
-    public FlameThrower (SpriteAnimationConfiguration spriteAnimationConfiguration, SpecialAttackConfiguration missileConfiguration, GameObject owner) {
+    public FlameThrower(SpriteAnimationConfiguration spriteAnimationConfiguration, SpecialAttackConfiguration missileConfiguration, GameObject owner) {
         super(spriteAnimationConfiguration, missileConfiguration);
         this.setObjectType("FlameThrower");
         this.allowRepeatedDamage = true;
@@ -27,43 +26,49 @@ public class FlameThrower extends SpecialAttack {
         this.ownerOrCreator = owner;
         initIgniteEffect();
 
-        if(PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.FireWithoutGasIsAss) != null){
+        if (PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.FireWithoutGasIsAss) != null) {
             initIgniteMagnificationEffect();
+        }
+
+        if (PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.DistributedHeat) != null) {
+            this.animation.changeImagetype(ImageEnums.DistributedHeatEffect);
+            this.setTransparancyAlpha(true, 0.1f, 0.075f);
+            this.setCenteredAroundObject(true);
         }
     }
 
     private void initIgniteEffect(){
-        float duration = PlayerStats.getInstance().getIgniteDuration();
-        float damage = PlayerStats.getInstance().getIgniteDamage();
-        SpaceShip owner = (SpaceShip) this.ownerOrCreator;
-
-        EffectInterface ignite = new DamageOverTime(damage * owner.getIgniteDamageModifier(), duration, EffectIdentifiers.Ignite);
-        this.effectsToApply.add(ignite);
+        SpaceShip spaceShip = PlayerManager.getInstance().getRandomSpaceShip();
+        this.effectsToApply.add(spaceShip.initIgniteEffect());
     }
 
-    private void initIgniteMagnificationEffect(){
+    private void initIgniteMagnificationEffect() {
         float duration = 0.05f;
         EffectInterface igniteModifier = new WithoutGasItsAss(duration, EffectIdentifiers.WithoutGasItsAssDamageBonus);
         this.effectsToApply.add(igniteModifier);
     }
 
     @Override
-    public void startDissipating(){
-        this.animation.changeImagetype(ImageEnums.FireFighterFlameThrowerDissipating);
-        this.animation.setCurrentFrame(0);
-        this.animation.setAnimationScale(this.scale);
-        this.animation.setInfiniteLoop(false);
+    public void startDissipating() {
+        if (this.imageEnum == ImageEnums.FireFighterFlameThrowerLooping) {
+            this.animation.changeImagetype(ImageEnums.FireFighterFlameThrowerDissipating);
+            this.animation.setCurrentFrame(0);
+            this.animation.setAnimationScale(this.scale);
+            this.animation.setInfiniteLoop(false);
+        } else {
+            this.setTransparancyAlpha(true, 1, -0.08f);
+        }
         super.isDissipating = true;
     }
 
 
     @Override
     public void updateSpecialAttack() {
-        if(this.ownerOrCreator instanceof SpaceShip && PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.InfernalPreIgniter) != null){
+        if (this.ownerOrCreator instanceof SpaceShip && PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.InfernalPreIgniter) != null) {
             PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.InfernalPreIgniter).applyEffectToObject(this);
         }
 
-        if(this.ownerOrCreator instanceof SpaceShip && (ownerOrCreator.getCurrentHitpoints() <= 0 || !ownerOrCreator.isVisible())){
+        if (this.ownerOrCreator instanceof SpaceShip && (ownerOrCreator.getCurrentHitpoints() <= 0 || !ownerOrCreator.isVisible())) {
             this.setVisible(false);
         }
         super.internalTickCooldown = this.ownerOrCreator.getAttackSpeed(); //todo dit is eigenlijk een initialize variabele maar owner word gezet na de constructor, code smell

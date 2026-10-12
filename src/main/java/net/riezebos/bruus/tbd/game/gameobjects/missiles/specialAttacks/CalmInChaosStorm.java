@@ -30,7 +30,7 @@ public class CalmInChaosStorm extends SpecialAttack {
         if(!isDissipating && this.getTransparancyAlpha() >= 0.4f){
             this.setTransparancyAlpha(false, 0.4f, 0);
         }
-        if ((ownerOrCreator == null || ownerOrCreator.getCurrentShieldPoints() < ownerOrCreator.getMaxShieldPoints()) && !isDissipating) {
+        if ((ownerOrCreator == null || ownerOrCreator.getCurrentShieldPoints() < (ownerOrCreator.getMaxShieldPoints() * CalmInChaos.hitPointRequirement)) && !isDissipating) {
             startDissipation();
         }
 

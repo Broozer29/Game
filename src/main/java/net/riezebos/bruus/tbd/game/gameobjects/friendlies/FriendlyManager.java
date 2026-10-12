@@ -19,6 +19,7 @@ import net.riezebos.bruus.tbd.game.util.collision.CollisionDetector;
 import net.riezebos.bruus.tbd.game.util.collision.CollisionInfo;
 import net.riezebos.bruus.tbd.game.util.performancelogger.PerformanceLogger;
 import net.riezebos.bruus.tbd.game.util.performancelogger.PerformanceLoggerManager;
+import net.riezebos.bruus.tbd.guiboards.BoardManager;
 import net.riezebos.bruus.tbd.visualsandaudio.data.DataClass;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.AnimationManager;
@@ -106,6 +107,9 @@ public class FriendlyManager {
     private void spawnFinishedLevelPortal() {
         if (finishedLevelPortal.isSpawned()) {
             return;
+        }
+        if (BoardManager.getInstance().getGameBoard().isRelicSelectionPending()) {
+            return; //spawn the portal after the relic has been chosen, so it can't skip the relic selection
         }
         if (gameState.getGameState() == GameStatusEnums.Level_Finished) {
             if (finishedLevelPortal == null) {
@@ -223,13 +227,14 @@ public class FriendlyManager {
         if (gameState.getGameState() == GameStatusEnums.Level_Finished) {
             for (SpaceShip spaceShip : PlayerManager.getInstance().getAllSpaceShips()) {
                 CollisionInfo collisionWithNextLevelPortal = CollisionDetector.getInstance().detectCollision(spaceShip, finishedLevelPortal);
-                if (collisionWithNextLevelPortal != null && finishedLevelPortal.getTransparancyAlpha() >= 0.9f) {
+                //An unspawned portal still has an alpha of 1.0, so it has to be spawned before it can be entered
+                if (collisionWithNextLevelPortal != null && finishedLevelPortal.isSpawned() && finishedLevelPortal.getTransparancyAlpha() >= 0.9f) {
                     finishedLevelPortal.activatePortal();
                     finalBossPortal.despawnPortal();
                     finishedLevelPortal.despawnPortal();
                 }
                 CollisionInfo collisionWithFinalBossPortal = CollisionDetector.getInstance().detectCollision(spaceShip, finalBossPortal);
-                if (collisionWithFinalBossPortal != null && finalBossPortal.getTransparancyAlpha() >= 0.9f) {
+                if (collisionWithFinalBossPortal != null && finalBossPortal.isSpawned() && finalBossPortal.getTransparancyAlpha() >= 0.9f) {
                     finalBossPortal.activatePortal();
                     finalBossPortal.despawnPortal();
                     finishedLevelPortal.despawnPortal();

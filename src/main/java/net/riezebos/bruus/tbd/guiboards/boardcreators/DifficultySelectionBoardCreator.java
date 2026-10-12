@@ -11,12 +11,23 @@ import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteConfiguration;
 
 public class DifficultySelectionBoardCreator {
-    private static float resolutionFactor = Math.min(1 * DataClass.getInstance().getResolutionFactor(), DataClass.maxResolutionFactor) ;
+    //The cards and icons below were sized for a 1920 wide window; they now scale with the window like the buttons, so they keep their gaps on smaller windows (a TV at 250% display scaling reports about 1536x864)
+    private static final float DESIGN_RESOLUTION_FACTOR = 1920f / 1440f;
+
+    //Read on every build, not once when the class loads, so it always follows the current window size
+    private static float resolutionFactor () {
+        return Math.min(DataClass.getInstance().getResolutionFactor(), DataClass.maxResolutionFactor);
+    }
+
+    //A size that was right on a 1920 wide window, scaled to the current window
+    private static int scaledDesignSize (int designSize) {
+        return Math.round(designSize * resolutionFactor() / DESIGN_RESOLUTION_FACTOR);
+    }
 
     public static MenuCursor createCursor(GUIComponent comp) {
         int initCursorX = comp.getXCoordinate();
         int initCursorY = comp.getCenterYCoordinate();
-        float scale = resolutionFactor;
+        float scale = resolutionFactor();
         ImageEnums imageEnums = PlayerStats.getInstance().getSpaceShipImage();
         SpriteConfiguration spriteConfiguration = createSpriteConfiguration(initCursorX, initCursorY, scale, imageEnums);
         MenuCursor button = new MenuCursor(spriteConfiguration);
@@ -40,8 +51,8 @@ public class DifficultySelectionBoardCreator {
         SpriteConfiguration spriteConfiguration = createSpriteConfiguration(xCoordinate, yCoordinate, 1, ImageEnums.Wide_Card);
         GUIComponent backgroundCard = new DisplayOnly(spriteConfiguration);
 
-        int newWidth = Math.round(resolutionFactor * 170);
-        int newHeight = Math.round(resolutionFactor * 60);
+        int newWidth = Math.round(resolutionFactor() * 170);
+        int newHeight = Math.round(resolutionFactor() * 60);
         backgroundCard.setImageDimensions(newWidth, newHeight);
         backgroundCard.setCenterCoordinates(xCoordinate, yCoordinate);
 
@@ -50,10 +61,10 @@ public class DifficultySelectionBoardCreator {
 
     public static GUITextCollection createManModeButton(GUIComponent backgroundCard) {
         int xCoordinate = backgroundCard.getCenterXCoordinate();
-        int yCoordinate = backgroundCard.getCenterYCoordinate() - Math.round(resolutionFactor * 10);
+        int yCoordinate = backgroundCard.getCenterYCoordinate() - Math.round(resolutionFactor() * 10);
 
         GUITextCollection textCollection = new GUITextCollection(xCoordinate, yCoordinate, "START MAN MODE");
-        textCollection.setScale(resolutionFactor);
+        textCollection.setScale(resolutionFactor());
         textCollection.setStartingXCoordinate(xCoordinate - (textCollection.getWidth() / 2));
         textCollection.setMenuFunctionality(MenuFunctionEnums.SelectManModeGameMode);
         textCollection.getComponents().get(0).setDescriptionOfComponent("Start the game in MAN MODE. Every level will be a boss level.");
@@ -63,8 +74,8 @@ public class DifficultySelectionBoardCreator {
     public static DisplayOnly createDifficultySelectionBackgroundCard() {
         float xCoordinate = DataClass.getInstance().getWindowWidth() * 0.05f;
         float yCoordinate = DataClass.getInstance().getWindowHeight() * 0.35f;
-        int cardWidth = 600;
-        int cardHeight = 225;
+        int cardWidth = scaledDesignSize(600);
+        int cardHeight = scaledDesignSize(225);
 
         SpriteConfiguration spriteConfiguration = createSpriteConfiguration(
                 xCoordinate,
@@ -79,8 +90,8 @@ public class DifficultySelectionBoardCreator {
     public static DisplayOnly createMiniBossSelectionBackgroundCard() {
         float xCoordinate = DataClass.getInstance().getWindowWidth() * 0.4f;
         float yCoordinate = DataClass.getInstance().getWindowHeight() * 0.35f;
-        int cardWidth = 600;
-        int cardHeight = 225;
+        int cardWidth = scaledDesignSize(600);
+        int cardHeight = scaledDesignSize(225);
 
         SpriteConfiguration spriteConfiguration = createSpriteConfiguration(
                 xCoordinate,
@@ -95,7 +106,7 @@ public class DifficultySelectionBoardCreator {
         float textX = backgroundCard.getCenterXCoordinate();
         float textY = backgroundCard.getYCoordinate() + Math.round(backgroundCard.getHeight() * 0.15f);
         GUITextCollection textCollection = new GUITextCollection(textX, textY, text);
-        textCollection.setScale(1.75f * resolutionFactor);
+        textCollection.setScale(1.75f * resolutionFactor());
         textCollection.setCenterXCoordinate(backgroundCard.getCenterXCoordinate());
         return textCollection;
     }
@@ -106,7 +117,7 @@ public class DifficultySelectionBoardCreator {
         SpriteConfiguration spriteConfiguration = createSpriteConfiguration(
                 x0,
                 y,
-                1.25f, ImageEnums.BlueWings1);
+                1.25f * resolutionFactor() / DESIGN_RESOLUTION_FACTOR, ImageEnums.BlueWings1);
         MenuButton selectEasyDifficulty = new MenuButton(spriteConfiguration);
         selectEasyDifficulty.setLevelDifficulty(LevelDifficulty.Easy);
         selectEasyDifficulty.setMenuFunctionality(MenuFunctionEnums.SelectSongDifficulty);
@@ -123,7 +134,7 @@ public class DifficultySelectionBoardCreator {
         SpriteConfiguration spriteConfiguration = createSpriteConfiguration(
                 x1,
                 y,
-                1.25f, iconEnum);
+                1.25f * resolutionFactor() / DESIGN_RESOLUTION_FACTOR, iconEnum);
         MenuButton selectEasyDifficulty = new MenuButton(spriteConfiguration);
         selectEasyDifficulty.setLevelDifficulty(LevelDifficulty.Medium);
         selectEasyDifficulty.setMenuFunctionality(MenuFunctionEnums.SelectSongDifficulty);
@@ -140,7 +151,7 @@ public class DifficultySelectionBoardCreator {
         SpriteConfiguration spriteConfiguration = createSpriteConfiguration(
                 x2,
                 y,
-                1.25f, ImageEnums.BlueWings5);
+                1.25f * resolutionFactor() / DESIGN_RESOLUTION_FACTOR, ImageEnums.BlueWings5);
         MenuButton selectEasyDifficulty = new MenuButton(spriteConfiguration);
         selectEasyDifficulty.setLevelDifficulty(LevelDifficulty.Hard);
         selectEasyDifficulty.setMenuFunctionality(MenuFunctionEnums.SelectSongDifficulty);
@@ -158,7 +169,7 @@ public class DifficultySelectionBoardCreator {
         SpriteConfiguration spriteConfiguration = createSpriteConfiguration(
                 x0,
                 y,
-                1.25f, ImageEnums.BlueWings1);
+                1.25f * resolutionFactor() / DESIGN_RESOLUTION_FACTOR, ImageEnums.BlueWings1);
         MenuButton button = new MenuButton(spriteConfiguration);
         button.setMiniBossConfig(MiniBossConfig.Easy);
         button.setMenuFunctionality(MenuFunctionEnums.SelectSongLength);
@@ -174,7 +185,7 @@ public class DifficultySelectionBoardCreator {
         SpriteConfiguration spriteConfiguration = createSpriteConfiguration(
                 x1,
                 y,
-                1.25f, ImageEnums.BlueWings3);
+                1.25f * resolutionFactor() / DESIGN_RESOLUTION_FACTOR, ImageEnums.BlueWings3);
         MenuButton button = new MenuButton(spriteConfiguration);
         button.setMiniBossConfig(MiniBossConfig.Medium);
         button.setMenuFunctionality(MenuFunctionEnums.SelectSongLength);
@@ -190,7 +201,7 @@ public class DifficultySelectionBoardCreator {
         SpriteConfiguration spriteConfiguration = createSpriteConfiguration(
                 x2,
                 y,
-                1.25f, ImageEnums.BlueWings5);
+                1.25f * resolutionFactor() / DESIGN_RESOLUTION_FACTOR, ImageEnums.BlueWings5);
         MenuButton button = new MenuButton(spriteConfiguration);
         button.setMiniBossConfig(MiniBossConfig.Hard);
         button.setMenuFunctionality(MenuFunctionEnums.SelectSongLength);
@@ -202,8 +213,8 @@ public class DifficultySelectionBoardCreator {
     public static DisplayOnly createTotalDifficultyBackgroundCard() {
         float xCoordinate = DataClass.getInstance().getWindowWidth() * 0.5f;
         float yCoordinate = DataClass.getInstance().getWindowHeight() * 0.7f;
-        int cardWidth = 500;
-        int cardHeight = 250;
+        int cardWidth = scaledDesignSize(500);
+        int cardHeight = scaledDesignSize(250);
 
         SpriteConfiguration spriteConfiguration = createSpriteConfiguration(
                 xCoordinate,
@@ -223,13 +234,13 @@ public class DifficultySelectionBoardCreator {
         String  string = "NEXT DIFFICULTY: " + difficulty;
 
         //The difficulty icon
-        SpriteConfiguration spriteConfiguration = createSpriteConfiguration(xCoordinate, YCoordinate, 1.2f * resolutionFactor, iconEnum);
+        SpriteConfiguration spriteConfiguration = createSpriteConfiguration(xCoordinate, YCoordinate, 1.2f * resolutionFactor(), iconEnum);
         DisplayOnly icon = new DisplayOnly(spriteConfiguration);
         icon.setCenterCoordinates(xCoordinate, backgroundCard.getCenterYCoordinate() - Math.round(icon.getHeight() * 0.1f));
 
 
         GUITextCollection textCollection = new GUITextCollection(xCoordinate, YCoordinate, string);
-        textCollection.setScale(1.2f * resolutionFactor);
+        textCollection.setScale(1.2f * resolutionFactor());
         xCoordinate = backgroundCard.getCenterXCoordinate() - (textCollection.getWidth() / 2);
         textCollection.setStartingXCoordinate(xCoordinate);
         textCollection.addComponentToCollection(icon); //Add the wings seperately
@@ -239,8 +250,8 @@ public class DifficultySelectionBoardCreator {
     public static GUIComponent createDescriptionBoxBackgroundCard() {
         float xCoordinate = DataClass.getInstance().getWindowWidth() * 0.75f;
         float yCoordinate = DataClass.getInstance().getWindowHeight() * 0.32f;
-        int cardWidth = Math.round(340 * resolutionFactor);
-        int cardHeight =  Math.round(400 * resolutionFactor);;
+        int cardWidth = Math.round(340 * resolutionFactor());
+        int cardHeight =  Math.round(400 * resolutionFactor());;
 
         SpriteConfiguration spriteConfiguration = createSpriteConfiguration(
                 xCoordinate,
@@ -258,8 +269,8 @@ public class DifficultySelectionBoardCreator {
         SpriteConfiguration spriteConfiguration = createSpriteConfiguration(xCoordinate, yCoordinate, 1, ImageEnums.Wide_Card);
         GUIComponent backgroundCard = new DisplayOnly(spriteConfiguration);
 
-        int newWidth = Math.round(resolutionFactor * 200);
-        int newHeight = Math.round(resolutionFactor * 70);
+        int newWidth = Math.round(resolutionFactor() * 200);
+        int newHeight = Math.round(resolutionFactor() * 70);
         backgroundCard.setImageDimensions(newWidth, newHeight);
 
         return backgroundCard;
@@ -267,11 +278,11 @@ public class DifficultySelectionBoardCreator {
 
     public static GUITextCollection createReturn(GUIComponent backgroundCard) {
         int xCoordinate = backgroundCard.getCenterXCoordinate();
-        int yCoordinate = backgroundCard.getCenterYCoordinate() - Math.round(resolutionFactor * 10);
+        int yCoordinate = backgroundCard.getCenterYCoordinate() - Math.round(resolutionFactor() * 10);
 
         String text = "RETURN";
         GUITextCollection textCollection = new GUITextCollection(xCoordinate, yCoordinate, text);
-        textCollection.setScale(1.5f * resolutionFactor);
+        textCollection.setScale(1.5f * resolutionFactor());
         textCollection.setStartingXCoordinate(xCoordinate - (textCollection.getWidth() / 2));
         textCollection.setMenuFunctionality(MenuFunctionEnums.OpenClassSelectWindow);
         textCollection.getComponents().get(0).setDescriptionOfComponent("Return to class selection.");
@@ -285,8 +296,8 @@ public class DifficultySelectionBoardCreator {
         SpriteConfiguration spriteConfiguration = createSpriteConfiguration(xCoordinate, yCoordinate, 1, ImageEnums.Wide_Card);
         GUIComponent backgroundCard = new DisplayOnly(spriteConfiguration);
 
-        int newWidth = Math.round(resolutionFactor * 240);
-        int newHeight = Math.round(resolutionFactor * 70);
+        int newWidth = Math.round(resolutionFactor() * 240);
+        int newHeight = Math.round(resolutionFactor() * 70);
         backgroundCard.setImageDimensions(newWidth, newHeight);
 
         return backgroundCard;
@@ -294,10 +305,10 @@ public class DifficultySelectionBoardCreator {
 
     public static GUITextCollection createStartGameButton(GUIComponent backgroundCard) {
         int xCoordinate = backgroundCard.getCenterXCoordinate();
-        int yCoordinate = backgroundCard.getCenterYCoordinate() - Math.round(resolutionFactor * 10);
+        int yCoordinate = backgroundCard.getCenterYCoordinate() - Math.round(resolutionFactor() * 10);
 
         GUITextCollection textCollection = new GUITextCollection(xCoordinate, yCoordinate, "START GAME");
-        textCollection.setScale(1.5f * resolutionFactor);
+        textCollection.setScale(1.5f * resolutionFactor());
         textCollection.setStartingXCoordinate(xCoordinate - (textCollection.getWidth() / 2));
         textCollection.setMenuFunctionality(MenuFunctionEnums.Start_Game);
         textCollection.getComponents().get(0).setDescriptionOfComponent("Start the game.");
@@ -311,7 +322,7 @@ public class DifficultySelectionBoardCreator {
         SpriteConfiguration spriteConfiguration = new SpriteConfiguration();
         spriteConfiguration.setxCoordinate(xCoordinate);
         spriteConfiguration.setyCoordinate(yCoordinate);
-        spriteConfiguration.setScale(0.8f * resolutionFactor);
+        spriteConfiguration.setScale(0.8f * resolutionFactor());
         spriteConfiguration.setImageType(ImageEnums.ChooseDifficulty);
 
         GUIComponent titleImage = new DisplayOnly(spriteConfiguration);

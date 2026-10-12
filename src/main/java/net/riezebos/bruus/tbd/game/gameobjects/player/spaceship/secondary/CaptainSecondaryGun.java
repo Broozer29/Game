@@ -31,7 +31,6 @@ public class CaptainSecondaryGun extends SecondaryPlayerGun {
     public static float electroShredBonusDamageModifier = 1.5f;
     private void fireElectroShred(int xCoordinate, int yCoordinate, SpaceShip owner) {
         float damage = owner.getSpecialAttackDamage() * electroShredBonusDamageModifier;
-        damage *= ElectroShredding.damageMultiplier(owner);
 
         float scale = 1.5f;
         if (PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.AnionInverter) != null) {
@@ -50,6 +49,13 @@ public class CaptainSecondaryGun extends SecondaryPlayerGun {
         if (PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.AnionInverter) != null) {
             specialAttack.setTransparancyAlpha(false, 0.5f, 0);
         }
+
+
+        ElectroShredding electroShredding = (ElectroShredding) PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.ElectroShredding);
+        if(electroShredding != null){
+            electroShredding.modifyAttackingObject(owner, specialAttack);
+        }
+
         AudioManager.getInstance().addAudio(AudioEnums.Default_EMP);
         owner.addFollowingSpecialAttack(specialAttack);
         MissileManager.getInstance().addSpecialAttack(specialAttack);

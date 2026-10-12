@@ -12,6 +12,7 @@ import net.riezebos.bruus.tbd.game.gameobjects.missiles.MissileManager;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.specialAttacks.CalmInChaosStorm;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.specialAttacks.SpecialAttack;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerClass;
+import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
 import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.primary.CaptainPrimaryGun;
 import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.primary.CarrierPrimaryGun;
@@ -27,6 +28,8 @@ import net.riezebos.bruus.tbd.game.items.Item;
 import net.riezebos.bruus.tbd.game.items.ItemEnums;
 import net.riezebos.bruus.tbd.game.items.PlayerInventory;
 import net.riezebos.bruus.tbd.game.items.effects.EffectIdentifiers;
+import net.riezebos.bruus.tbd.game.items.effects.EffectInterface;
+import net.riezebos.bruus.tbd.game.items.effects.effectimplementations.DamageOverTime;
 import net.riezebos.bruus.tbd.game.items.effects.effectimplementations.PassiveHealthRegeneration;
 import net.riezebos.bruus.tbd.game.items.enums.ItemApplicationEnum;
 import net.riezebos.bruus.tbd.game.items.items.CalmInChaos;
@@ -435,7 +438,7 @@ public class SpaceShip extends GameObject {
     private void updateItemEffects(){
         CalmInChaos calmInChaos = (CalmInChaos) PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.CalmInChaos);
         if(calmInChaos != null){
-            if(currentShieldPoints >= playerStats.getMaxShieldHitPoints() && !MissileManager.getInstance().getSpecialAttacks().contains(calmInChaosStorm)){
+            if(currentShieldPoints >= (playerStats.getMaxShieldHitPoints() * CalmInChaos.hitPointRequirement) && !MissileManager.getInstance().getSpecialAttacks().contains(calmInChaosStorm)){
                 if(calmInChaosStorm == null){
                     calmInChaosStorm = CalmInChaosStorm.createEffect(this);
                 }
@@ -747,8 +750,8 @@ public class SpaceShip extends GameObject {
         int specialKey = bindings.getKey(BindableAction.SPECIAL_ATTACK);
         // The bound hold fire key toggles auto attack, once per press (holding it repeats the key event), with the same 1 s guard as the controller button
         if (holdFireKey != KeyEvent.VK_UNDEFINED && e.getKeyCode() == holdFireKey && !pressedKeys.contains(holdFireKey)
-                && GameState.getInstance().getGameSeconds() - lastGameSecondsKeyboardHoldFireToggled > 1) {
-            lastGameSecondsKeyboardHoldFireToggled = GameState.getInstance().getGameSeconds();
+                && System.currentTimeMillis() - lastKeyboardHoldFireToggleMillis > 1000) {
+            lastKeyboardHoldFireToggleMillis = System.currentTimeMillis();
             keyboardHoldFire = !keyboardHoldFire;
         }
         pressedKeys.add(e.getKeyCode());
@@ -826,7 +829,7 @@ public class SpaceShip extends GameObject {
     // Called by GameBoard every loop. The ship reads its seat's current controller, so a controller that left and came back drives it again.
     private boolean isFiringPrimary = false;
     private boolean keyboardHoldFire = false;
-    private double lastGameSecondsKeyboardHoldFireToggled = 0;
+    private long lastKeyboardHoldFireToggleMillis = 0; //Real time, like the controller toggle, so a game clock reset cannot block it
     private boolean isFiringSecondary = false;
 
     public void update() {
@@ -903,6 +906,13 @@ public class SpaceShip extends GameObject {
     public void stopMoving() {
         directionx = 0;
         directiony = 0;
+    }
+
+    public EffectInterface initIgniteEffect(){
+        SpaceShip spaceShip = PlayerManager.getInstance().getRandomSpaceShip();
+        float duration = PlayerStats.getInstance().getIgniteDuration() * spaceShip.getIgniteDurationModifier();
+        float damage = PlayerStats.getInstance().getIgniteDamage() * spaceShip.getIgniteDamageModifier();
+        return new DamageOverTime(damage, duration, EffectIdentifiers.Ignite);
     }
 
     private void haltMoveLeft() {

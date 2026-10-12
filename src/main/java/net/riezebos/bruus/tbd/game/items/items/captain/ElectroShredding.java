@@ -6,7 +6,6 @@ import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
 import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SpaceShip;
 import net.riezebos.bruus.tbd.game.items.Item;
 import net.riezebos.bruus.tbd.game.items.ItemEnums;
-import net.riezebos.bruus.tbd.game.items.PlayerInventory;
 import net.riezebos.bruus.tbd.game.items.enums.ItemApplicationEnum;
 
 public class ElectroShredding extends Item {
@@ -17,31 +16,24 @@ public class ElectroShredding extends Item {
         super(ItemEnums.ElectroShredding, 1, ItemApplicationEnum.CustomActivation);
     }
 
-    public static float damageMultiplier (SpaceShip owner) {
-        Item item = PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.ElectroShredding);
-        if (item == null || owner.getMaxShieldPoints() <= 0) {
-            return 1f;
-        }
-        float percentage = owner.getCurrentShieldPoints() / owner.getMaxShieldPoints();
-        return 1f + (item.getQuantity() * bonusDamage * percentage);
-    }
-
     public void increaseQuantityOfItem(int amount) {
         this.quantity += amount;
     }
 
     @Override
     public void applyEffectToObject(GameObject gameObject) {
-//        ArmorModifierEffect armorModifierEffect = new ArmorModifierEffect(-bonusDamage, 9999999, null, EffectIdentifiers.ElectroShedding);
-//        gameObject.addEffect(armorModifierEffect);
+    }
+
+    @Override
+    public void modifyAttackingObject (GameObject applier, GameObject target){
+        if(applier instanceof SpaceShip spaceShip){
+            float percentage = spaceShip.getCurrentShieldPoints() / spaceShip.getMaxShieldPoints();
+            target.setDamage(target.getDamage() * (1f + (quantity * bonusDamage * percentage)));
+        }
     }
 
     @Override
     public void applyEffectToObject(GameObject applier, GameObject target) {
-//        if (applier instanceof ElectroShred) {
-//            ArmorModifierEffect armorModifierEffect = new ArmorModifierEffect(-bonusDamage, 9999999, null, EffectIdentifiers.ElectroShedding);
-//            target.addEffect(armorModifierEffect);
-//        }
     }
 
 

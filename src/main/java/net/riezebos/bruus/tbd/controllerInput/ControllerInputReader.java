@@ -32,8 +32,9 @@ public class ControllerInputReader {
     private static final float MENU_RELEASE = 0.35f;
     private final Set<MenuAction> stickDirections = EnumSet.noneOf(MenuAction.class);
     private final Map<MenuAction, Boolean> menuState = new EnumMap<>(MenuAction.class);
-    private double lastGameSecondsTogglePressed = 0;
-    private double toggleDelay = 1;
+    // Real time, not game seconds: the game clock restarts with every run and jumps back on CONTINUE RUN, which would block the toggle until it caught up
+    private long lastHoldFireToggleMillis = 0;
+    private static final long HOLD_FIRE_TOGGLE_DELAY_MILLIS = 1000;
     private boolean holdFireButtonWasPressed = false;
     private boolean pauseButtonWasPressed = false;
     private boolean pausePressedSinceLastCheck = false;
@@ -107,8 +108,8 @@ public class ControllerInputReader {
             boolean holdFireButtonPressed = isBoundButtonPressed(controller, bindings.getButton(BindableAction.HOLD_FIRE));
             // Not while paused: LB switches tabs in the paused settings page, so that press must not flip auto attack for after resume
             boolean paused = GameState.getInstance().getGameState() == GameStatusEnums.Paused;
-            if (holdFireButtonPressed && !holdFireButtonWasPressed && !paused && GameState.getInstance().getGameSeconds() - lastGameSecondsTogglePressed > toggleDelay) {
-                lastGameSecondsTogglePressed = GameState.getInstance().getGameSeconds();
+            if (holdFireButtonPressed && !holdFireButtonWasPressed && !paused && System.currentTimeMillis() - lastHoldFireToggleMillis > HOLD_FIRE_TOGGLE_DELAY_MILLIS) {
+                lastHoldFireToggleMillis = System.currentTimeMillis();
                 toggleHoldFire();
             }
             holdFireButtonWasPressed = holdFireButtonPressed;

@@ -146,4 +146,12 @@ public class GodRunDetector {
     public int getGodRunScore() {
         return godRunScore;
     }
+
+    public int getBoardBlockTotal() {
+        return boardBlockTotal;
+    }
+
+    public double getGameSecondsWithHighKillRatio() {
+        return gameSecondsWithHighKillRatio;
+    }
 }

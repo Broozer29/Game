@@ -1,15 +1,13 @@
 package net.riezebos.bruus.tbd.game.gameobjects.missiles.specialAttacks;
 
-import net.riezebos.bruus.tbd.game.gameobjects.missiles.*;
 import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
+import net.riezebos.bruus.tbd.game.gameobjects.missiles.*;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
+import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SpaceShip;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.items.ItemEnums;
 import net.riezebos.bruus.tbd.game.items.PlayerInventory;
-import net.riezebos.bruus.tbd.game.items.effects.EffectIdentifiers;
-import net.riezebos.bruus.tbd.game.items.effects.EffectInterface;
-import net.riezebos.bruus.tbd.game.items.effects.effectimplementations.DamageOverTime;
 import net.riezebos.bruus.tbd.game.items.items.firefighter.RingOfFire;
 import net.riezebos.bruus.tbd.game.movement.Direction;
 import net.riezebos.bruus.tbd.game.movement.MovementConfiguration;
@@ -33,16 +31,14 @@ public class FireShield extends SpecialAttack {
         this.destroysMissiles = true;
         this.damagesMissiles = true;
         this.duration = 4;
-        this.effectsToApply.add(initIgniteEffect());
+        initIgniteEffect();
         gamesecondsStarted = GameState.getInstance().getGameSeconds();
         this.visualLayer = VisualLayer.Lower;
     }
 
-    private EffectInterface initIgniteEffect(){
-        float duration = PlayerStats.getInstance().getIgniteDuration();
-        float damage = PlayerStats.getInstance().getIgniteDamage() * PlayerManager.getInstance().getIgniteDamageModifier(this.ownerOrCreator);
-        EffectInterface ignite = new DamageOverTime(damage, duration, EffectIdentifiers.Ignite);
-        return ignite;
+    private void initIgniteEffect(){
+        SpaceShip spaceShip = PlayerManager.getInstance().getRandomSpaceShip();
+        this.effectsToApply.add(spaceShip.initIgniteEffect());
     }
 
     @Override
@@ -129,7 +125,7 @@ public class FireShield extends SpecialAttack {
         missile.setAllowedVisualsToRotate(false); //Prevent it from being rotated again by the SpriteMover
 
         missile.setOwnerOrCreator(this.getOwnerOrCreator());
-        missile.addEffectToApply(initIgniteEffect());
+        missile.addEffectToApply(PlayerManager.getInstance().getRandomSpaceShip().initIgniteEffect());
         //Finalized and ready for addition to the game
         MissileManager.getInstance().addExistingMissile(missile);
     }
