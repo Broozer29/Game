@@ -69,7 +69,7 @@ De punten hieronder hebben opzich wel gelijk, maar de performance impact van dez
   - Item lookups stream and build a new list on every hit (`PlayerInventory.getItemsByApplicationMethod`)
   - On Carrier, the drone list is rebuilt for every enemy missile (`FriendlyManager.getAllProtossDrones`)
 - The save file is written to disk on the game thread on every purchase, shop refresh, relic pick and level change
-  - `SaveManager.exportCurrentSave()` creates a new `ObjectMapper` and writes the file synchronously; called from ShopItem.java:63 and 84, ShopManager.java:211, MenuButton.java:123 and 164, ShopBoard.java:408, and GameBoard.java:185 and 336
+  - `SaveManager.exportCurrentSave()` creates a new `ObjectMapper` and writes the file synchronously; called from ShopItem.java:63 and 84, ShopManager.java:211, MenuButton.java:124 and 165, ShopFreezeService.java:69, and GameBoard.java:185 and 336
   - `PlayerProfileManager` does the same on boss deaths, `GameState`, `PlayerInventory` and several boons
   - Fix: one shared `ObjectMapper`, and write in the background or once when leaving the shop
 - When a frame takes longer than 15 ms the whole game runs in slow motion instead of skipping frames

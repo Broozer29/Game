@@ -251,7 +251,7 @@ public class ShopBoardCreator {
         int freezeButtonDimensions = Math.round((backgroundCard.getWidth() / 4) * objectScale);
         freezeButton.setImageDimensions(freezeButtonDimensions, freezeButtonDimensions);
         freezeButton.setCenterCoordinates(xCoordinate, yCoordinate);
-        freezeButton.setDescriptionOfComponent("Freezes the shop. Items you don't buy come back in the same slots in the next shop. Bought slots get new items. Free, and you can toggle it any time. Refreshing unfreezes the shop.");
+        freezeButton.setDescriptionOfComponent("Freezes the shop. Frozen items remain in the shop until the next turn.");
         return freezeButton;
     }
 

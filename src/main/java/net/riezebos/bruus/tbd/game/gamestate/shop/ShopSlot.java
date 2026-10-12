@@ -11,7 +11,7 @@ public class ShopSlot {
     private ItemRarityEnums rarity;
     private float cost;
     private ShopSlotStatusEnums status;
-    // Set only on a slot carried over from a frozen shop, to play the thaw once. Not saved.
+    // Set on a slot carried over from a frozen shop, and on every available slot when the shop is unfrozen, to play the thaw. Not saved.
     @JsonIgnore
     private boolean carried;
 

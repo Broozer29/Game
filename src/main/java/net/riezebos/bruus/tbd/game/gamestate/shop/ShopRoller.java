@@ -18,6 +18,7 @@ public class ShopRoller {
     // Fills every row of the given contents with freshly rolled slots
     public static void rollShop(ShopContents contents) {
         rollShop(contents, null);
+        contents.setFrozen(false); //Refreshing rerolls every slot and unfreezes the shop
     }
 
     // Fills every row of the given contents; the Available slots of the previous (frozen) shop are carried over

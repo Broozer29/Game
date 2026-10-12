@@ -8,6 +8,7 @@ import net.riezebos.bruus.tbd.game.gamestate.GameMode;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.gamestate.GameStatusEnums;
 import net.riezebos.bruus.tbd.game.gamestate.ShopManager;
+import net.riezebos.bruus.tbd.game.gamestate.shop.ShopFreezeService;
 import net.riezebos.bruus.tbd.game.gamestate.save.SaveManager;
 import net.riezebos.bruus.tbd.game.items.PlayerInventory;
 import net.riezebos.bruus.tbd.game.level.LevelManager;
@@ -123,7 +124,7 @@ public class MenuButton extends GUIComponent {
                 SaveManager.getInstance().exportCurrentSave();
                 break;
             case FreezeShop:
-                boardManager.getShopBoard().toggleFreeze();
+                ShopFreezeService.getInstance().toggleFreeze();
                 break;
             case SelectCaptainClass:
                 PlayerStats.getInstance().setPlayerClass(PlayerClass.Captain);
