@@ -13,7 +13,7 @@ Items, boons, the shop, rerolls and prices.
 - The first Protoss Arbiter never gets its healing bonus, and extra Arbiters add no ships
   - ProtossArbiterItem.java:13 starts `shouldApply` as false, so the first purchase skips `modifyArbiterHealingMultiplier`; `setArbiterCount(1)` is fixed
 - Relic selection can offer duplicates or a wrong card
-  - UI/GameBoardCreator.java:113-119 stops retrying at 10 but only falls back at `attempts >= 150`; `getRandomItemByRarity` also rolls disabled relics, and `ShopItem.java:74` falls back to Overclock for every class
+  - UI/GameBoardCreator.java:114-123 stops retrying at 10 but only falls back at `attempts >= 150`; `getRandomItemByRarity` also rolls disabled relics, and `ShopRoller.getRandomAvailableItemByRarity` falls back to Overclock for every class
 - Escalating Flames probably adds its max-stack bonus twice per extra copy
   - `increaseQuantityOfItem` applies the effect, and `PlayerInventory.activateUponPurchaseItemEffects` applies it again for UponAcquiring items
 - Explosive Laserbeams' explosion uses the enemy's damage, not the player's
@@ -25,10 +25,9 @@ Items, boons, the shop, rerolls and prices.
 - Bounty Hunter's bonus and the mineral penalties skip level-1 enemies
   - Enemy.java:136-146 puts them inside `if (level > 1)`
 - Smaller item and shop issues (from the item audit, not each checked)
-  - The reroll cost is computed before the end-of-level increase
   - Contract's text says "enemies" even when it counts mini bosses
   - `ItemEnums.isRelicAvailable` counts disabled relics, so Wisdom Ball's "Add a Relic" can fall back to Overclock
-  - Bonus Kaart adds the item twice (ShopItem.java:105), which can push capped items past their limit
+  - Bonus Kaart adds the item twice (`ShopItem.purchaseItemInShop`), which can push capped items past their limit
   - FragmentationSacs and MutaliskHealingBonus pass the wrong `ItemEnums` (both disabled)
   - Anion Inverter and Electric Destabilizer, and Inverse Retrieval and Arbiter Damage, only exclude each other one way
 

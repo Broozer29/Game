@@ -3,6 +3,8 @@ package net.riezebos.bruus.tbd.game.gamestate;
 import net.riezebos.bruus.tbd.DevTestSettings;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
 import net.riezebos.bruus.tbd.game.gamestate.save.SaveManager;
+import net.riezebos.bruus.tbd.game.gamestate.shop.ShopContents;
+import net.riezebos.bruus.tbd.game.gamestate.shop.ShopRoller;
 import net.riezebos.bruus.tbd.game.items.Item;
 import net.riezebos.bruus.tbd.game.items.ItemEnums;
 import net.riezebos.bruus.tbd.game.items.PlayerInventory;
@@ -25,8 +27,7 @@ public class ShopManager {
 
     private int amountOfFreeItems;
     private int rowsUnlocked = 1;
-    private int rerollCost;
-    private int freeRerollsLeft = 0;
+    private ShopContents contents;
 
     private int lastLevelDifficultyScore;
     private MiniBossConfig lastMiniBossConfig;
@@ -40,6 +41,27 @@ public class ShopManager {
 
     public static ShopManager getInstance() {
         return instance;
+    }
+
+    public ShopContents getContents() {
+        return contents;
+    }
+
+    public void setContents(ShopContents contents) {
+        this.contents = contents;
+    }
+
+    public boolean hasContents() {
+        return contents != null;
+    }
+
+    //Called once per shop visit: rolls the shop, pays finished contracts, fills the free refreshes and computes the refresh cost
+    public void enterShop() {
+        contents = new ShopContents();
+        ShopRoller.rollShop(contents);
+        activateFinishedContracts();
+        resetFreeRerolls();
+        calculateRerollCost();
     }
 
     public int getAmountOfFreeItems() {
@@ -96,11 +118,11 @@ public class ShopManager {
 
     private static float shopRerollCost = 0.15f;
     public void calculateRerollCost() {
-        if (PlayerInventory.getInstance() == null) {
+        if (PlayerInventory.getInstance() == null || contents == null) {
             return; //It's not initialized yet, don't use it
         }
 
-        rerollCost = Math.round(PlayerInventory.getInstance().getCashMoney() * shopRerollCost);
+        int rerollCost = Math.round(PlayerInventory.getInstance().getCashMoney() * shopRerollCost);
         float discount = PlayerStats.getInstance().getShopRerollDiscount();
         if (discount > 100) {
             discount = 100;
@@ -112,25 +134,35 @@ public class ShopManager {
         if (rerollCost < 1) {
             rerollCost = 1;
         }
+        contents.setRefreshCost(rerollCost);
     }
 
     public void resetFreeRerolls() {
-        this.freeRerollsLeft = PlayerStats.getInstance().getAmountOfFreeRerolls();
+        if (contents == null) {
+            return;
+        }
+        contents.setFreeRefreshesLeft(PlayerStats.getInstance().getAmountOfFreeRerolls());
     }
 
     public void spendFreeReroll() {
-        this.freeRerollsLeft -= 1;
+        contents.setFreeRefreshesLeft(contents.getFreeRefreshesLeft() - 1);
     }
 
     public int getFreeRefreshessLeft() {
-        return freeRerollsLeft;
+        if (contents == null) {
+            return 0;
+        }
+        return contents.getFreeRefreshesLeft();
     }
 
     public int getRerollCost() {
-        if (rerollCost < 1) {
+        if (contents == null) {
+            return 0;
+        }
+        if (contents.getRefreshCost() < 1) {
             calculateRerollCost();
         }
-        return rerollCost;
+        return contents.getRefreshCost();
     }
 
     public void activateFinishedContracts() {
@@ -207,9 +239,5 @@ public class ShopManager {
                 DataClass.getInstance().getWindowWidth() / 2,
                 DataClass.getInstance().getWindowHeight() / 2);
         return ItemEnums.Overclock;
-    }
-
-    public void setRerollCost(int rerollCost) {
-        this.rerollCost = rerollCost;
     }
 }

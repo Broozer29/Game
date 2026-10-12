@@ -89,6 +89,9 @@ public class MenuButton extends GUIComponent {
                 SettingsWindow.getInstance().discardAndClose();
                 break;
             case Open_Shop_Window:
+                if (!ShopManager.getInstance().hasContents()) {
+                    ShopManager.getInstance().enterShop();
+                }
                 boardManager.openShopWindow();
                 break;
             case OpenBoonSelectionBoard:
@@ -152,6 +155,11 @@ public class MenuButton extends GUIComponent {
 
                 if (Objects.requireNonNull(GameState.getInstance().getGameState()) == GameStatusEnums.Shopping) {
                     ShopManager.getInstance().setRowsUnlockedByDifficulty(LevelManager.getInstance().getDifficultyScore());
+                    if (!ShopManager.getInstance().hasContents()) {
+                        //The save has no (readable) shop, so this counts as entering the shop
+                        ShopManager.getInstance().enterShop();
+                        SaveManager.getInstance().exportCurrentSave();
+                    }
                     boardManager.getShopBoard().recreateWindow();
                     boardManager.openShopWindow();
                 } else {

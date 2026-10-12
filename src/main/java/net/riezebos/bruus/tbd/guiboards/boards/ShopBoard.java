@@ -4,6 +4,9 @@ import net.riezebos.bruus.tbd.controllerInput.MenuAction;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerClass;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
 import net.riezebos.bruus.tbd.game.gamestate.ShopManager;
+import net.riezebos.bruus.tbd.game.gamestate.shop.ShopContents;
+import net.riezebos.bruus.tbd.game.gamestate.shop.ShopRoller;
+import net.riezebos.bruus.tbd.game.gamestate.shop.ShopSlot;
 import net.riezebos.bruus.tbd.game.items.Item;
 import net.riezebos.bruus.tbd.game.items.ItemDescriptionRetriever;
 import net.riezebos.bruus.tbd.game.items.ItemEnums;
@@ -31,8 +34,6 @@ import java.util.List;
 import java.util.Map;
 
 public class ShopBoard extends MenuBoard {
-
-    private ShopManager shopManager = ShopManager.getInstance();
 
     private List<GUIComponent> regularGridFirstRow = new ArrayList<>();
     private List<GUIComponent> regularGridSecondRow = new ArrayList<>();
@@ -140,13 +141,8 @@ public class ShopBoard extends MenuBoard {
         descriptionBackgroundCard = shopBoardCreator.createDescriptionRowsBackgroundCard(rerollBackgroundCard);
         nextLevelDifficultyBackground = shopBoardCreator.createShowNextLevelDifficultyBackground(songLengthBackgroundCard);
         nextLevelModifiersTextCollection = shopBoardCreator.createLevelModifiersText(songLengthBackgroundCard);
-        // Create items
-        regularGridFirstRow = shopBoardCreator.createNewFirstRowOfItems();
-        regularGridSecondRow = shopBoardCreator.createNewSecondRowOfItems();
-        regularGridThirdRow = shopBoardCreator.createNewThirdRowOfItems();
-
-        //Activate any contracts if there are any:
-        shopManager.activateFinishedContracts();
+        // Create items from the shop contents
+        buildItemRows();
 
         // Create difficulty and song length settings using the respective background cards
         selectPirateTribe = shopBoardCreator.createSelectPirateTribe(songDifficultyBackgroundCard);
@@ -203,7 +199,6 @@ public class ShopBoard extends MenuBoard {
         inventoryButtonBackgroundCard = shopBoardCreator.createInventoryButtonBackgroundCard(nextLevelDifficultyBackground);
         playerInventoryButton = shopBoardCreator.createPlayerInventoryButton(inventoryButtonBackgroundCard);
 
-        shopManager.resetFreeRerolls();
         rerollCostText = shopBoardCreator.createRerollText(rerollBackgroundCard);
         rerollCost = shopBoardCreator.createRerollCostText(rerollBackgroundCard);
 
@@ -353,21 +348,38 @@ public class ShopBoard extends MenuBoard {
         allInventoryGUIComponents.add(inventoryBackgroundCard);
     }
 
-    public void rerollShop() {
-        regularGridFirstRow = shopBoardCreator.createNewFirstRowOfItems();
-        regularGridSecondRow = shopBoardCreator.createNewSecondRowOfItems();
-        regularGridThirdRow = shopBoardCreator.createNewThirdRowOfItems();
+    private void buildItemRows() {
+        ShopContents contents = ShopManager.getInstance().getContents();
+        regularGridFirstRow = shopBoardCreator.createRowOfItems(0, contents);
+        regularGridSecondRow = shopBoardCreator.createRowOfItems(1, contents);
+        regularGridThirdRow = shopBoardCreator.createRowOfItems(2, contents);
+    }
 
+    public void rerollShop() {
+        ShopContents contents = ShopManager.getInstance().getContents();
+        ShopRoller.rollShop(contents);
+
+        List<ShopSlot> changedSlots = new ArrayList<>();
         WisdomBall wisdomball = (WisdomBall) PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.WisdomBall);
 
         if (wisdomball != null) {
             if (wisdomball.shouldActivate()) {
-                List<List<GUIComponent>> shopRows = new ArrayList<>();
-                shopRows.add(regularGridFirstRow);
-                shopRows.add(regularGridSecondRow);
-                shopRows.add(regularGridThirdRow);
-                WisdomBallRollManager.getInstance().applyWisdomBallRoll(shopRows);
+                changedSlots = WisdomBallRollManager.getInstance().applyWisdomBallRoll(contents);
             }
+        }
+
+        buildItemRows();
+
+        List<GUIComponent> itemsToShowAnimAt = new ArrayList<>();
+        for (List<GUIComponent> row : List.of(regularGridFirstRow, regularGridSecondRow, regularGridThirdRow)) {
+            for (GUIComponent component : row) {
+                if (changedSlots.contains(((ShopItem) component).getSlot())) {
+                    itemsToShowAnimAt.add(component);
+                }
+            }
+        }
+        if (!itemsToShowAnimAt.isEmpty()) {
+            playWisdomBallAnimation(itemsToShowAnimAt);
         }
     }
 

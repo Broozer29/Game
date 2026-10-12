@@ -2,6 +2,17 @@
 
 All notable changes on the `Nelis` branch.
 
+## 2026-10-12
+
+### Changed
+- The shop's refresh cost is now worked out when you enter the shop, instead of when the level ends. It is still 15% of your minerals.
+- Internal: the shop's items, prices, bought slots, free refreshes and refresh cost now live in one saved data model (ShopContents), and the shop is saved after entering it, after every purchase and after every refresh.
+
+### Fixed
+- The shop's refresh cost now includes Compound Wealth's interest, and quitting and continuing in the shop keeps that interest.
+- Quitting to the main menu and pressing CONTINUE RUN during shopping no longer rerolls the shop, refills your free refreshes, re-enables Bonus Kaart's double purchase, or pays out finished contracts again. You get the exact shop you left, including bought items, the refresh cost and the free refreshes you had left.
+- A save file from before this change, or one whose shop names an item that no longer exists, still continues the run and gets a freshly rolled shop.
+
 ## 2026-10-11
 
 ### Added
