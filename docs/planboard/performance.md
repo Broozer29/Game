@@ -96,7 +96,7 @@ De punten hieronder hebben opzich wel gelijk, maar de performance impact van dez
   - Java's image reader does this by default when reading from a stream. With about 4,500 PNGs this was half of the image loading time (shown by a Java Flight Recorder profile)
   - Fixed on 2026-10-05: `ImageIO.setUseCache(false)` at the start of loading in Game.java
   - Measured: image loading went from about 13 s to 6.7 s
-- The enemy preload spends about 7 s resizing big enemy animations
+- Resizing big enemy animations is slow (about 7 s of the startup enemy preload on 2026-10-05; since 2026-10-13 that cost falls on entering a boss or mini-boss level)
   - `ImageResizer.getScaledImage` uses bicubic scaling, the slowest and highest-quality mode; the profile shows the preload time inside it
   - Option: bilinear scaling is faster but looks slightly softer, so compare the sprites first
   - Measured on 2026-10-05 as a test, then put back to bicubic: with bilinear scaling the enemy preload took 2.2-2.9 s instead of about 7 s, and startup took 11-12 s in total. It changes how scaled sprites look everywhere in the game, not only at startup
@@ -249,9 +249,9 @@ De punten hieronder hebben opzich wel gelijk, maar de performance impact van dez
   - Cap the cache size or clean it per wave, and make the scratch fields in ImageResizer and ImageRotator local
   - Touches ImageResizer, ImageRotator, SpriteAnimation and about ten call sites, so plan it before coding
 - Never build boss images during a level: prepare them at game start, run start or level start (Nelis, 2026-10-08)
-  - Today `Game.preloadThings` prepares the Space Station, Red and Yellow bosses and all five mini bosses at startup; the Twin boss, the Striker boss and the final boss are not prepared, so their first appearance builds their images during play
-  - The image cache now drops the copies used longest ago once it is full (2.5 GB, reached after 6 to 9 minutes in the stress runs of 2026-10-08), so a boss prepared at startup can be dropped again and rebuilt when it appears, which freezes the game for a moment
-  - Proposal: when leaving the shop, prepare the boss of the next level if it is a boss level, or its mini bosses if it is a regular level (the level plan, `LevelManager.planNextLevel()`, now decides both before the level starts) and keep them from being dropped until the level ends; keep preparing every boss at startup, including the three missing ones
+  - Startup (`Game.preloadThings`) now prepares only the cash carrier and the laserbeams; bosses, their summons and mini bosses are prepared just before their level by `LevelPreloader`
+  - The image cache now drops the copies used longest ago once it is full (2.5 GB, reached after 6 to 9 minutes in the stress runs of 2026-10-08), so a boss prepared at startup (before 2026-10-13) could be dropped again and rebuilt when it appears, which freezes the game for a moment
+  - Proposal: when leaving the shop, prepare the boss of the next level if it is a boss level, or its mini bosses if it is a regular level (the level plan, `LevelManager.planNextLevel()`, now decides both before the level starts) and keep them from being dropped until the level ends (built on the branch boss-preload, 2026-10-13)
   - Check first: a freeze analysis of the two stress recordings of 2026-10-08 (target/perf/run-2026_10_08_20_59_06.jfr and run-2026_10_08_21_17_44.jfr) shows whether the freezes come from rebuilt boss images, other large images, garbage collection pauses or sound. If other large images also cause them, the same rule applies to them
 - Why the game uses so much memory but hardly any processor or graphics card (Nelis, 2026-10-08: the PC almost ran out of memory again)
   - The process reached 7.9 GB and 8.5 GB in the two stress runs of 2026-10-08. After a forced garbage collection the Java heap held 3.9 to 4.4 GB, of which the image cache is 2.5 GB; the rest is outside the heap

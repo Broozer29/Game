@@ -40,6 +40,7 @@ import net.riezebos.bruus.tbd.game.items.items.StuiversBestFriend;
 import net.riezebos.bruus.tbd.game.items.items.WisdomBall;
 import net.riezebos.bruus.tbd.game.items.items.util.ContractHelper;
 import net.riezebos.bruus.tbd.game.level.LevelManager;
+import net.riezebos.bruus.tbd.game.level.LevelPreloader;
 import net.riezebos.bruus.tbd.game.level.directors.DirectorManager;
 import net.riezebos.bruus.tbd.game.level.directors.GodRunDetector;
 import net.riezebos.bruus.tbd.game.level.enums.LevelTypes;
@@ -191,6 +192,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
         enemyManager.resetManager();
         missileManager.resetManager();
         levelManager.resetManager();
+        LevelPreloader.getInstance().clearLevel();
         playerManager.resetManager();
         audioManager.resetManager();
         GodRunDetector.getInstance().resetGodRunDetector();
@@ -232,6 +234,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
             missileManager.resetManager();
             levelManager = LevelManager.getInstance();
             levelManager.clearPlan();
+            LevelPreloader.getInstance().clearLevel();
             relicBackgroundCards.clear();
             relicSelectionGrid.clear();
             GameBoardCreator.getInstance().resetRelicShopItems();

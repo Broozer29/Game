@@ -82,7 +82,7 @@ public class Enemy extends GameObject {
             bossHealthBar.centerHealthBar();
             bossHealthBar.setTransparancyAlpha(false, 0.8f, 0);
 
-            //preloading causes a nullpointer exception if we try to add a healthbar because the game doesnt exist yet, sloppy fix
+            //a level preload also adds bars here; GameBoard.startGame clears them
             if (BoardManager.getInstance().getGameBoard() != null) {
                 BoardManager.getInstance().getGameBoard().addBossHealthBar(bossHealthBar);
             }

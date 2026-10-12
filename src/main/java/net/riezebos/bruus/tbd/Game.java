@@ -213,49 +213,12 @@ public class Game {
         long usedMemory = runtime.totalMemory() - runtime.freeMemory();
         System.out.printf("Before preload memory usage: %.3f GB%n", usedMemory / (1024.0 * 1024.0 * 1024.0));
 
-        EnemyEnums enemyEnum = EnemyEnums.Shuriken;
-        Enemy shuriken = EnemyCreator.createEnemy(enemyEnum, 0, 0, Direction.LEFT,
-                enemyEnum.getDefaultScale(), enemyEnum.getMovementSpeed());
-        shuriken.deleteObject();
+        // Bosses, mini bosses and their summons are built just before their level by LevelPreloader
 
-        enemyEnum = EnemyEnums.SpaceStationBoss;
-        Enemy spaceStation = EnemyCreator.createEnemy(enemyEnum, 0, 0, Direction.LEFT,
-                enemyEnum.getDefaultScale(), enemyEnum.getMovementSpeed());
-        spaceStation.deleteObject();
-
-        enemyEnum = EnemyEnums.ShurikenMiniBoss;
-        Enemy shurikenMiniBoss = EnemyCreator.createEnemy(enemyEnum, 0, 0, Direction.LEFT,
-                enemyEnum.getDefaultScale(), enemyEnum.getMovementSpeed());
-        shurikenMiniBoss.deleteObject();
-
-        // The other mini bosses scale large destruction animations too; without a preload the first one froze the game
-        for (EnemyEnums miniBossEnum : new EnemyEnums[]{EnemyEnums.MirageMiniBoss, EnemyEnums.MotherShipMiniBoss,
-                EnemyEnums.DefenderMiniBoss, EnemyEnums.LaserbeamMiniBoss}) {
-            Enemy miniBoss = EnemyCreator.createEnemy(miniBossEnum, 0, 0, Direction.LEFT,
-                    miniBossEnum.getDefaultScale(), miniBossEnum.getMovementSpeed());
-            miniBoss.deleteObject();
-        }
-
-        enemyEnum = EnemyEnums.CashCarrier;
+        EnemyEnums enemyEnum = EnemyEnums.CashCarrier;
         Enemy cashCarrier = EnemyCreator.createEnemy(enemyEnum, 0, 0, Direction.LEFT,
                 enemyEnum.getDefaultScale(), enemyEnum.getMovementSpeed());
         cashCarrier.deleteObject();
-
-
-        enemyEnum = EnemyEnums.RedBoss;
-        Enemy redBoss = EnemyCreator.createEnemy(enemyEnum, 0, 0, Direction.LEFT,
-                enemyEnum.getDefaultScale(), enemyEnum.getMovementSpeed());
-        redBoss.deleteObject();
-
-        enemyEnum = EnemyEnums.FourDirectionalDrone;
-        Enemy fDrone = EnemyCreator.createEnemy(enemyEnum, 0, 0, Direction.LEFT,
-                enemyEnum.getDefaultScale(), enemyEnum.getMovementSpeed());
-        fDrone.deleteObject();
-
-        enemyEnum = EnemyEnums.YellowBoss;
-        Enemy yellowBoss = EnemyCreator.createEnemy(enemyEnum, 0, 0, Direction.LEFT,
-                enemyEnum.getDefaultScale(), enemyEnum.getMovementSpeed());
-        yellowBoss.deleteObject();
 
         logDiagnostic("Preloading laserbeams...");
         runtime = Runtime.getRuntime();
