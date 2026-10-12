@@ -2,6 +2,8 @@ package net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.redbos
 
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.Enemy;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyCreator;
+import net.riezebos.bruus.tbd.game.gameobjects.enemies.BossSummons;
+import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemySpawnSettings;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyManager;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.BossActionable;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyEnums;
@@ -84,9 +86,10 @@ public class RedBossSpawnShuriken implements BossActionable {
 
     private Enemy createShuriken(Enemy enemy) {
         EnemyEnums enemyType = EnemyEnums.Shuriken;
-        Direction direction = getRandomDirection();
+        EnemySpawnSettings settings = BossSummons.summon(EnemyEnums.RedBoss, enemyType);
+        Direction direction = getRandomDirection(settings);
         Enemy shuriken = EnemyCreator.createEnemy(enemyType, enemy.getXCoordinate(), enemy.getYCoordinate(), direction,
-                enemyType.getDefaultScale(), enemyType.getMovementSpeed());
+                settings.scale(0), enemyType.getMovementSpeed());
 
         BouncingPathFinder pathFinder = new BouncingPathFinder();
         pathFinder.setMaxBounces(15);
@@ -98,17 +101,12 @@ public class RedBossSpawnShuriken implements BossActionable {
         return shuriken;
     }
 
-    private Direction getRandomDirection() {
+    private Direction getRandomDirection(EnemySpawnSettings settings) {
         if (random == null) {
             random = new Random();
         }
 
-        int number = random.nextInt(0, 2);
-        return switch (number) {
-            case 0 -> Direction.LEFT_UP;
-            case 1 -> Direction.LEFT_DOWN;
-            default -> Direction.LEFT;
-        };
+        return settings.directions().get(random.nextInt(0, settings.directions().size()));
     }
 
     @Override
